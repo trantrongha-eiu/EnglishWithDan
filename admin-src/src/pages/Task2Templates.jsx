@@ -186,7 +186,7 @@ function ItemModal({ item, onClose, onSaved }) {
 }
 
 // ── Exam/practice results tab ────────────────────────────────────────────
-const ATTEMPT_MODE_LABELS = { cloze: 'Cloze', translation: 'Dịch câu', chunks: 'Chunks', build: 'Build', dictation: 'Dictation' };
+const ATTEMPT_MODE_LABELS = { cloze: 'Cloze', translation: 'Dịch câu', chunks: 'Chunks', build: 'Build', dictation: 'Dictation', path: 'Ghép cả bài', review: 'Ôn nhanh' };
 
 function studentLabel(u) {
   if (!u) return '(đã xoá tài khoản)';

@@ -1,617 +1,1531 @@
-// task2-template.html — Task 2 Templates
+// task2-template.html — Task 2 Templates: one short practice path per essay type.
+//
+// Replaces the five separate modes (Cloze / Dịch câu / Chunks / Build /
+// Dictation) with one path the student walks in order. The template
+// sentences are used exactly as stored (Task2Template, fetched from
+// /api/task2/templates) — nothing is reworded.
+//
+//   ① Khung bài   — paragraph structure + put each paragraph's sentences in order
+//   ② Đọc & nghe  — read every sentence with its meaning, key words, audio
+//   ③ Luyện đoạn  — per paragraph: build from chunks → fill fading blanks → recall from Vietnamese
+//   ④ Ghép cả bài — write each paragraph (band 7+: the whole essay, timed) from memory
+//   ⑤ Áp dụng     — write a real essay, then compare with the model essay
+//
+// Band 6+ gets more help (two fade levels, letter-by-letter recall, one
+// paragraph at a time in ④); Band 7+ gets less (one fade level, free typing,
+// whole essay in ④ with a timer). Progress is saved to the account
+// (/api/task2template/progress, no TTL); finished runs are also logged to
+// /api/task2template/save so history and homework completion keep working.
+// Spaced review ("Ôn nhanh") becomes due 1/3/7/14/30 days after ④.
+
 const API = (window.AuthService && window.AuthService.API && window.AuthService.API.replace(/\/api\/?$/, '')) || 'https://englishwithdan.onrender.com';
 
-// playOk/playWrong/toggleWpSound moved to js/shared/sound-effects.js
-// (single source of truth — student UI audit Nhóm 2, 2026-07-25).
-
-// showToast() moved to js/shared/toast.js (single source of truth — Phase 3 audit).
-
+// ── XP badge (local, as before) ─────────────────────────────────
+function _safeParse(json, fallback) { if (json == null) return fallback; try { return JSON.parse(json); } catch { return fallback; } }
 function loadXPFromStorage() {
   const stored = _safeParse(localStorage.getItem('t2_progress'), { xp: 0, streak: 0 });
   document.getElementById('header-xp').textContent     = stored.xp     || 0;
-  document.getElementById('header-streak').textContent = stored.streak  || 0;
+  document.getElementById('header-streak').textContent = stored.streak || 0;
 }
 function updateXPStorage(earned) {
   const stored = _safeParse(localStorage.getItem('t2_progress'), { xp: 0, streak: 0 });
   stored.xp = (stored.xp || 0) + earned;
-  localStorage.setItem('t2_progress', JSON.stringify(stored));
+  try { localStorage.setItem('t2_progress', JSON.stringify(stored)); } catch {}
   document.getElementById('header-xp').textContent     = stored.xp;
   document.getElementById('header-streak').textContent = stored.streak || 0;
 }
-function initUser() {
-  loadXPFromStorage();
-}
 
-// ── Template data ──────────────────────────────────────────────
-let TPL_TYPES = [
-  { id: 'type01', label: 'Type 01', sub: 'Adv & Disadv',    icon: 'fa-scale-balanced',     color: '#2563eb',
-    desc: 'Phân tích ưu điểm và nhược điểm của một xu hướng hiện đại.',
-    structure: 'Intro → Advantages → Disadvantages → Conclusion' },
-  { id: 'type02', label: 'Type 02', sub: 'Discuss Both',    icon: 'fa-comments',           color: '#7c3aed',
-    desc: 'Thảo luận hai quan điểm đối lập và đưa ra ý kiến cá nhân.',
-    structure: 'Intro → View 1 → View 2 → Conclusion' },
-  { id: 'type03', label: 'Type 03', sub: 'Cause–Solution',  icon: 'fa-lightbulb',          color: '#0891b2',
-    desc: 'Phân tích nguyên nhân của một vấn đề và đề xuất giải pháp.',
-    structure: 'Intro → Causes → Solutions → Conclusion' },
-  { id: 'type04', label: 'Type 04', sub: 'Effect–Solution', icon: 'fa-gears',              color: '#dc2626',
-    desc: 'Phân tích tác động của vấn đề và đề xuất giải pháp khắc phục.',
-    structure: 'Intro → Effects → Solutions → Conclusion' },
-  { id: 'type05', label: 'Type 05', sub: 'Cause–Effect',    icon: 'fa-arrow-trend-up',     color: '#d97706',
-    desc: 'Phân tích nguyên nhân và hậu quả của một hiện tượng xã hội.',
-    structure: 'Intro → Causes → Effects → Conclusion' },
-  { id: 'type06', label: 'Type 06', sub: 'Agree/Disagree',  icon: 'fa-check-double',       color: '#16a34a',
-    desc: 'Bày tỏ quan điểm đồng ý hoặc không đồng ý và bảo vệ lập trường.',
-    structure: 'Intro → Main Argument → Counter-argument → Conclusion' },
-  { id: 'type07', label: 'Type 07', sub: 'Pos/Neg Dev',     icon: 'fa-circle-half-stroke', color: '#db2777',
-    desc: 'Đánh giá xem một xu hướng là phát triển tích cực hay tiêu cực.',
-    structure: 'Intro → Main Case → Acknowledge & Reinforce → Conclusion' },
-];
-
-let TPL_DATA = {
-  type01: {
-    name: 'Advantages & Disadvantages',
-    sections: [
-      { title: '① Introduction – Mở bài', items: [
-        { en: 'In recent years, (noun phrase) has become an increasingly ___ feature of modern life, attracting considerable public attention.', answer: 'prominent', vi: '→ Trong những năm gần đây, ... đã trở thành một phần ngày càng nổi bật trong đời sống hiện đại.' },
-        { en: 'With the growing prevalence of (noun phrase), questions have ___ regarding its overall impact.', answer: 'arisen', vi: '→ Khi ... ngày càng phổ biến, nhiều câu hỏi đã được đặt ra về tác động tổng thể của nó.' },
-        { en: 'As society continues to evolve, the emergence of (noun phrase) has ___ widespread debate.', answer: 'sparked', vi: '→ Khi xã hội tiếp tục phát triển, sự xuất hiện của ... đã làm dấy lên nhiều cuộc tranh luận.' },
-        { en: 'This essay will examine both the advantages and ___ of (noun phrase).', answer: 'disadvantages', vi: '→ Bài luận này sẽ phân tích cả ưu điểm và nhược điểm của ...' },
-        { en: 'The following discussion aims to provide a ___ analysis of the positive and negative aspects associated with (noun phrase).', answer: 'balanced', vi: '→ Bài viết sau sẽ đưa ra phân tích cân bằng về các mặt tích cực và tiêu cực của ...' },
-      ]},
-      { title: '② Body 1 – Advantages · Ưu điểm', items: [
-        { en: 'One of the most significant ___ of (noun phrase) is that (clause).', answer: 'advantages', vi: '→ Một trong những lợi ích quan trọng nhất của ... là ...' },
-        { en: 'A key benefit of (noun phrase) ___ in its ability to (verb).', answer: 'lies', vi: '→ Một lợi ích chính của ... nằm ở khả năng ...' },
-        { en: 'To begin with, (noun phrase) ___ individuals to (verb), thereby improving (noun phrase).', answer: 'enables', vi: '→ Trước hết, ... cho phép con người ..., từ đó cải thiện ...' },
-        { en: 'In addition, the adoption of (noun phrase) can contribute to (noun phrase), which plays a ___ role in (verb+ing).', answer: 'crucial', vi: '→ Thêm vào đó, việc áp dụng ... có thể góp phần vào ..., điều này đóng vai trò quan trọng.' },
-        { en: 'Furthermore, (noun phrase) often leads to greater efficiency and ___.', answer: 'productivity', vi: '→ Ngoài ra, ... thường dẫn đến hiệu quả và năng suất cao hơn.' },
-        { en: 'For example, recent studies have shown that (fact/statistic). A clear ___ of this can be seen in (specific example).', answer: 'illustration', vi: '→ Ví dụ, các nghiên cứu gần đây cho thấy ... Một minh chứng rõ ràng có thể thấy ở (ví dụ cụ thể).' },
-        { en: '(Noun phrase) not only ___ individuals to reach their full potential, but also ___ a more equitable and inclusive society.', answers: ['enables', 'fosters'], vi: '→ ... không chỉ giúp cá nhân phát huy tiềm năng mà còn thúc đẩy một xã hội công bằng và bao dung hơn.' },
-      ]},
-      { title: '③ Body 2 – Disadvantages · Hạn chế', items: [
-        { en: 'Despite its advantages, (noun phrase) is not without its ___.', answer: 'limitations', vi: '→ Mặc dù có nhiều lợi ích, ... không phải là không có hạn chế.' },
-        { en: 'However, the increasing ___ on (noun phrase) may give rise to several concerns.', answer: 'reliance', vi: '→ Tuy nhiên, sự phụ thuộc ngày càng nhiều vào ... có thể gây ra một số vấn đề đáng lo ngại.' },
-        { en: 'One major concern is that (clause), which may ___ to (negative consequence).', answer: 'lead', vi: '→ Một mối lo ngại lớn là ..., điều này có thể dẫn đến (hệ quả tiêu cực).' },
-        { en: 'Additionally, dependence on (noun phrase) could result in (noun phrase), thereby ___ (noun phrase).', answer: 'undermining', vi: '→ Thêm vào đó, sự phụ thuộc vào ... có thể dẫn đến ..., từ đó làm suy yếu ...' },
-        { en: 'Another potential ___ involves (noun phrase), which might contribute to (undesirable outcome).', answer: 'drawback', vi: '→ Một hạn chế tiềm ẩn khác liên quan đến ..., điều này có thể góp phần gây ra kết quả không mong muốn.' },
-        { en: 'For instance, research has ___ that (fact/statistic).', answer: 'indicated', vi: '→ Chẳng hạn, nghiên cứu đã chỉ ra rằng (sự thật/thống kê).' },
-        { en: 'Without proper ___, the ___ of (noun phrase) could have far-reaching negative consequences for future generations.', answers: ['regulation', 'proliferation'], vi: '→ Nếu không có sự quản lý phù hợp, sự phổ biến tràn lan của ... có thể gây ra hậu quả tiêu cực sâu rộng cho các thế hệ tương lai.' },
-      ]},
-      { title: '④ Conclusion – Kết bài', items: [
-        { en: 'In conclusion, although (noun phrase) offers clear benefits such as (advantage 1) and (advantage 2), it also ___ notable disadvantages, including (disadvantage 1) and (disadvantage 2).', answer: 'entails', vi: '→ Tóm lại, mặc dù ... mang lại những lợi ích rõ ràng, nó cũng tồn tại những hạn chế đáng kể.' },
-        { en: 'On ___, it can be argued that the advantages of (noun phrase) outweigh its drawbacks.', answer: 'balance', vi: '→ Xét tổng thể, có thể lập luận rằng lợi ích của ... vượt trội hơn hạn chế.' },
-        { en: 'Nevertheless, careful management and ___ are essential to minimize its negative effects.', answer: 'regulation', vi: '→ Tuy nhiên, việc quản lý và điều chỉnh cẩn thận là cần thiết để giảm thiểu tác động tiêu cực.' },
-      ]},
-    ]
-  },
-  type02: {
-    name: 'Discuss Both Views',
-    sections: [
-      { title: '① Introduction – Mở bài', items: [
-        { en: 'In recent decades, the issue of (noun phrase) has ___ increasing public attention.', answer: 'attracted', vi: '→ Trong vài thập kỷ gần đây, vấn đề ... đã thu hút sự quan tâm ngày càng lớn của công chúng.' },
-        { en: 'There has been an ongoing ___ about whether (clause).', answer: 'debate', vi: '→ Đã có một cuộc tranh luận kéo dài về việc liệu ...' },
-        { en: 'With the rapid development of (noun phrase), ___ opinions have emerged regarding its impact.', answer: 'differing', vi: '→ Với sự phát triển nhanh chóng của ..., nhiều quan điểm trái chiều đã xuất hiện.' },
-        { en: 'While some people argue that (clause), ___ believe that (clause).', answer: 'others', vi: '→ Trong khi một số người cho rằng ..., những người khác lại tin rằng ...' },
-        { en: 'This essay will discuss both ___ before presenting my own viewpoint.', answer: 'perspectives', vi: '→ Bài viết này sẽ thảo luận cả hai quan điểm trước khi đưa ra ý kiến cá nhân.' },
-        { en: 'The following discussion will examine the arguments on both sides and offer a ___ conclusion.', answer: 'balanced', vi: '→ Bài viết sau sẽ xem xét lập luận của cả hai phía và đưa ra kết luận cân bằng.' },
-      ]},
-      { title: '② Body 1 – First View · Quan điểm 1', items: [
-        { en: 'There are several convincing reasons why some people ___ (noun/gerund).', answer: 'support', vi: '→ Có nhiều lý do thuyết phục khiến một số người ủng hộ ...' },
-        { en: 'One major reason for this view is that (clause). This is largely because (reason). As a ___, (consequence).', answer: 'result', vi: '→ Điều này chủ yếu là do ... Kết quả là ...' },
-        { en: 'Unlike in the past, when (past situation), ___ (current trend).', answer: 'nowadays', vi: '→ Không giống như trước đây, ngày nay (xu hướng hiện tại).' },
-        { en: 'For instance, research has shown that (fact/statistic). This ___ that (implication).', answer: 'suggests', vi: '→ Ví dụ, nghiên cứu đã chỉ ra rằng ... Điều này cho thấy rằng (hàm ý).' },
-        { en: 'Furthermore, another important factor to ___ is (noun phrase).', answer: 'consider', vi: '→ Hơn nữa, một yếu tố quan trọng khác cần xem xét là ...' },
-        { en: 'In addition, many experts ___ that (clause).', answer: 'believe', vi: '→ Ngoài ra, nhiều chuyên gia tin rằng ...' },
-        { en: 'Advocates of this perspective ___ that such a policy would ___ significant long-term benefits for society as a whole.', answers: ['contend', 'yield'], vi: '→ Những người ủng hộ quan điểm này cho rằng chính sách như vậy sẽ mang lại lợi ích lâu dài đáng kể cho xã hội.' },
-      ]},
-      { title: '③ Body 2 – Opposing View · Quan điểm đối lập', items: [
-        { en: 'On the other ___, critics argue that (clause).', answer: 'hand', vi: '→ Mặt khác, những người phản đối cho rằng ...' },
-        { en: 'However, an ___ perspective suggests that (clause).', answer: 'alternative', vi: '→ Tuy nhiên, một quan điểm khác cho rằng ...' },
-        { en: 'One key concern is that (clause). This may ___ to (negative consequence).', answer: 'lead', vi: '→ Một mối lo ngại chính là ... Điều này có thể dẫn đến (hệ quả tiêu cực).' },
-        { en: 'If (condition), it could result in (outcome). Such a situation is often ___ by (factor).', answer: 'driven', vi: '→ Nếu (điều kiện), nó có thể dẫn đến (kết quả). Tình huống này thường được thúc đẩy bởi (yếu tố).' },
-        { en: 'This highlights the potential risks ___ with (noun/gerund).', answer: 'associated', vi: '→ Điều này làm nổi bật những rủi ro tiềm ẩn liên quan đến ...' },
-        { en: 'This view, while ___, tends to ___ the broader social context in which the issue is embedded.', answers: ['understandable', 'overlook'], vi: '→ Quan điểm này, tuy có thể hiểu được, nhưng có xu hướng bỏ qua bối cảnh xã hội rộng lớn hơn của vấn đề.' },
-      ]},
-      { title: '④ Conclusion – Kết bài', items: [
-        { en: 'In conclusion, both ___ offer valid arguments regarding (noun/gerund).', answer: 'perspectives', vi: '→ Tóm lại, cả hai quan điểm đều đưa ra những lập luận hợp lý về ...' },
-        { en: 'Personally, I believe that (stance) because (main reason). Moving forward, ___ should consider (action) to address these concerns.', answer: 'policymakers', vi: '→ Cá nhân tôi tin rằng (lập trường) vì (lý do chính). Trong tương lai, các nhà hoạch định chính sách nên xem xét (hành động).' },
-      ]},
-    ]
-  },
-  type03: {
-    name: 'Cause – Solution',
-    sections: [
-      { title: '① Introduction – Mở bài', items: [
-        { en: 'In recent years, (noun phrase) has become an increasingly serious ___ in many parts of the world.', answer: 'concern', vi: '→ Trong những năm gần đây, ... đã trở thành một vấn đề ngày càng nghiêm trọng ở nhiều nơi trên thế giới.' },
-        { en: 'One of the major ___ facing modern society today is (noun phrase).', answer: 'challenges', vi: '→ Một trong những thách thức lớn mà xã hội hiện đại đang phải đối mặt là ...' },
-        { en: 'This essay will explore the main ___ of (noun phrase) and propose practical solutions to address this problem.', answer: 'causes', vi: '→ Bài viết này sẽ phân tích các nguyên nhân chính và đề xuất những giải pháp thiết thực.' },
-      ]},
-      { title: '② Body 1 – Causes · Nguyên nhân', items: [
-        { en: 'There are several underlying factors contributing to (noun phrase). The root causes ___ from both social and economic factors.', answer: 'stem', vi: '→ Có nhiều yếu tố cơ bản góp phần gây ra ... Nguyên nhân gốc rễ bắt nguồn từ cả yếu tố xã hội lẫn kinh tế.' },
-        { en: 'One of the ___ reasons behind this problem is (cause). This can largely be attributed to (noun phrase).', answer: 'primary', vi: '→ Một trong những nguyên nhân chính của vấn đề này là ... Điều này phần lớn bắt nguồn từ ...' },
-        { en: 'For instance, (specific example). This ___ that (implication).', answer: 'suggests', vi: '→ Ví dụ, (ví dụ cụ thể). Điều này cho thấy rằng (hàm ý).' },
-        { en: 'Another ___ contributor is (cause). Unlike in the past, when (past situation), today (current trend).', answer: 'significant', vi: '→ Một yếu tố quan trọng khác là ... Không giống như trước đây, ngày nay ...' },
-        { en: 'If this trend continues, it could ___ to (negative consequence).', answer: 'lead', vi: '→ Nếu xu hướng này tiếp diễn, nó có thể dẫn đến (hệ quả tiêu cực).' },
-        { en: 'The ___ of this problem can be ___ to a combination of structural, economic, and policy-related failures.', answers: ['persistence', 'attributed'], vi: '→ Sự dai dẳng của vấn đề này có thể được quy cho sự kết hợp của các thất bại về cấu trúc, kinh tế và chính sách.' },
-      ]},
-      { title: '③ Body 2 – Solutions · Giải pháp', items: [
-        { en: 'Nevertheless, several practical ___ can be taken to address this issue effectively.', answer: 'measures', vi: '→ Tuy nhiên, có thể thực hiện một số biện pháp thiết thực để giải quyết vấn đề này hiệu quả.' },
-        { en: 'One effective way to ___ this problem is to (verb).', answer: 'tackle', vi: '→ Một cách hiệu quả là giải quyết vấn đề này bằng cách ...' },
-        { en: 'This would ensure that (mechanism/explanation), ultimately ___ to (positive outcome).', answer: 'leading', vi: '→ Điều này sẽ đảm bảo rằng (giải thích cơ chế), cuối cùng dẫn đến (kết quả tích cực).' },
-        { en: 'Not only would this help (effect 1), but it would ___ (effect 2).', answer: 'also', vi: '→ Giải pháp này không chỉ giúp ... mà còn ...' },
-        { en: 'Another viable approach ___ (verb+ing). If widely implemented, this could serve as a long-term solution.', answer: 'involves', vi: '→ Một cách tiếp cận khả thi khác là ... Nếu được triển khai rộng rãi, biện pháp này có thể trở thành giải pháp lâu dài.' },
-        { en: 'Research has shown that (evidence/statistic), ___ the effectiveness of this strategy.', answer: 'reinforcing', vi: '→ Nghiên cứu đã chỉ ra rằng ..., củng cố tính hiệu quả của chiến lược này.' },
-        { en: 'Governments must ___ substantial resources and ___ coherent long-term strategies to address this issue effectively.', answers: ['allocate', 'implement'], vi: '→ Chính phủ phải phân bổ đủ nguồn lực và thực hiện các chiến lược dài hạn để giải quyết vấn đề này hiệu quả.' },
-      ]},
-      { title: '④ Conclusion – Kết bài', items: [
-        { en: 'In conclusion, (noun phrase) remains a ___ issue that requires immediate and coordinated action.', answer: 'complex', vi: '→ Kết luận lại, ... vẫn là một vấn đề phức tạp cần hành động khẩn cấp và đồng bộ.' },
-        { en: 'Among the various measures discussed, I believe that (solution) would be the most ___ in the long term.', answer: 'effective', vi: '→ Trong các giải pháp đã nêu, tôi tin rằng ... sẽ hiệu quả nhất trong dài hạn.' },
-        { en: 'If governments, organizations, and individuals work ___, this issue can be significantly alleviated.', answer: 'collaboratively', vi: '→ Nếu chính phủ, tổ chức và cá nhân cùng hợp tác, vấn đề này có thể được giảm thiểu đáng kể.' },
-      ]},
-    ]
-  },
-  type04: {
-    name: 'Effect – Solution',
-    sections: [
-      { title: '① Introduction – Mở bài', items: [
-        { en: 'In recent years, increasing ___ has been paid to the issue of (noun phrase).', answer: 'attention', vi: '→ Trong những năm gần đây, vấn đề ... ngày càng nhận được nhiều sự quan tâm.' },
-        { en: 'One of the most serious ___ facing modern society is (noun phrase).', answer: 'challenges', vi: '→ Một trong những thách thức nghiêm trọng nhất mà xã hội hiện đại đang đối mặt là ...' },
-        { en: 'This essay will examine the major ___ of (noun phrase) and suggest practical solutions to mitigate its impact.', answer: 'effects', vi: '→ Bài viết này sẽ phân tích những tác động chính và đề xuất các giải pháp thực tế để giảm thiểu ảnh hưởng.' },
-        { en: 'This issue has resulted in a range of significant consequences. If left ___, it may lead to even more serious long-term implications.', answer: 'unaddressed', vi: '→ Vấn đề này đã gây ra nhiều hậu quả đáng kể. Nếu không được giải quyết, nó có thể dẫn đến những hệ quả nghiêm trọng hơn.' },
-      ]},
-      { title: '② Body 1 – Effects · Hậu quả', items: [
-        { en: 'Two particularly ___ effects of this issue are (effect 1) and (effect 2).', answer: 'alarming', vi: '→ Hai hậu quả đáng lo ngại nhất của vấn đề này là ... và ...' },
-        { en: 'To begin with, (effect 1) is a major concern. If this situation continues, it may ___ to (long-term consequence).', answer: 'lead', vi: '→ Trước hết, ... là một mối lo ngại lớn. Nếu tình trạng này tiếp diễn, nó có thể dẫn đến (hậu quả lâu dài).' },
-        { en: 'Another ___ impact is (effect 2). As a result, (consequence).', answer: 'significant', vi: '→ Một tác động đáng kể khác là ... Do đó, (hệ quả).' },
-        { en: 'Over time, this can place considerable ___ on (group/system/society).', answer: 'pressure', vi: '→ Theo thời gian, điều này có thể tạo áp lực lớn lên (nhóm/hệ thống/xã hội).' },
-        { en: 'Unless ___ action is taken at both the individual and governmental level, these effects could ___ far beyond what current models predict.', answers: ['immediate', 'extend'], vi: '→ Trừ khi có hành động ngay lập tức ở cả cấp độ cá nhân và chính phủ, những tác động này có thể lan rộng hơn so với dự đoán hiện tại.' },
-      ]},
-      { title: '③ Body 2 – Solutions · Giải pháp', items: [
-        { en: 'Despite these challenges, several effective ___ can be taken to address this issue.', answer: 'measures', vi: '→ Mặc dù có những thách thức này, vẫn có thể thực hiện một số biện pháp hiệu quả để giải quyết vấn đề.' },
-        { en: 'The most ___ solution is to (verb). This approach would not only (benefit 1) but also (benefit 2).', answer: 'practical', vi: '→ Giải pháp thiết thực nhất là ... Cách tiếp cận này không chỉ giúp ... mà còn ...' },
-        { en: 'Another ___ strategy is to (verb). If implemented on a large scale, this measure could bring about long-term improvements.', answer: 'viable', vi: '→ Một chiến lược khả thi khác là ... Nếu được triển khai trên diện rộng, biện pháp này có thể mang lại cải thiện lâu dài.' },
-        { en: 'Both ___ and non-governmental bodies must ___ closely to design countermeasures that are both effective and sustainable.', answers: ['governmental', 'collaborate'], vi: '→ Cả các cơ quan chính phủ và phi chính phủ cần hợp tác chặt chẽ để thiết kế các biện pháp đối phó vừa hiệu quả vừa bền vững.' },
-      ]},
-      { title: '④ Conclusion – Kết bài', items: [
-        { en: 'In conclusion, (noun phrase) continues to ___ serious challenges due to its significant consequences.', answer: 'pose', vi: '→ Tóm lại, ... vẫn gây ra những thách thức nghiêm trọng do những hậu quả đáng kể của nó.' },
-        { en: 'In my opinion, tackling this problem requires both (solution 1) and (solution 2) in order to achieve sustainable ___.', answer: 'results', vi: '→ Theo tôi, việc giải quyết vấn đề này đòi hỏi cả hai giải pháp để đạt được kết quả bền vững.' },
-        { en: 'While the effects are undeniable, they can be ___ through coordinated efforts.', answer: 'addressed', vi: '→ Mặc dù tác động của vấn đề này là không thể phủ nhận, chúng có thể được giải quyết thông qua sự phối hợp đồng bộ.' },
-      ]},
-    ]
-  },
-  type05: {
-    name: 'Cause – Effect',
-    sections: [
-      { title: '① Introduction – Mở bài', items: [
-        { en: 'In today\'s fast-changing world, (noun phrase) has become an increasingly ___ concern.', answer: 'significant', vi: '→ Trong thế giới thay đổi nhanh chóng ngày nay, ... đang trở thành mối quan tâm ngày càng lớn.' },
-        { en: 'It is ___ that (noun phrase) now plays a pivotal role in shaping modern life.', answer: 'undeniable', vi: '→ Không thể phủ nhận rằng ... hiện đóng vai trò quan trọng trong đời sống hiện đại.' },
-        { en: 'Across the globe, societies are ___ with the issue of (noun phrase).', answer: 'grappling', vi: '→ Trên toàn cầu, các xã hội đang vật lộn với vấn đề ...' },
-        { en: 'This essay will examine the underlying ___ of (noun phrase) and analyze its significant effects on society.', answer: 'causes', vi: '→ Bài luận này sẽ xem xét các nguyên nhân sâu xa và phân tích những tác động đáng kể đối với xã hội.' },
-      ]},
-      { title: '② Body 1 – Causes · Nguyên nhân', items: [
-        { en: 'The causes of (noun phrase) are both complex and ___. Several key factors can be identified as contributing to this phenomenon.', answer: 'multifaceted', vi: '→ Nguyên nhân của ... vừa phức tạp vừa đa chiều. Có thể xác định một số yếu tố chính góp phần vào hiện tượng này.' },
-        { en: 'One primary factor is (cause), which significantly contributes to this issue. It is widely ___ that (clause), making it a central driver of this trend.', answer: 'acknowledged', vi: '→ Một yếu tố chính là ..., điều này góp phần đáng kể vào vấn đề. Nhiều người thừa nhận rằng ...' },
-        { en: 'For example, (specific example) clearly ___ how this cause leads to wider consequences.', answer: 'demonstrates', vi: '→ Ví dụ, (ví dụ cụ thể) cho thấy rõ cách nguyên nhân này dẫn đến hậu quả rộng hơn.' },
-        { en: 'This can largely be ___ to (cause), which in turn results in (effect).', answer: 'attributed', vi: '→ Điều này phần lớn là do ..., từ đó dẫn đến ...' },
-        { en: 'Not only does (cause) trigger (effect), but it also creates a ___ effect across society.', answer: 'ripple', vi: '→ ... không chỉ gây ra ... mà còn tạo hiệu ứng lan tỏa trong xã hội.' },
-        { en: 'This ___ is further ___ by the rapid pace of globalisation and advances in digital technology.', answers: ['trend', 'accelerated'], vi: '→ Xu hướng này càng được đẩy nhanh hơn bởi tốc độ toàn cầu hóa và những tiến bộ trong công nghệ kỹ thuật số.' },
-      ]},
-      { title: '③ Body 2 – Effects · Hậu quả', items: [
-        { en: 'The effects of (noun phrase) are both immediate and long-term. This issue brings about several serious ___.', answer: 'consequences', vi: '→ Tác động của ... vừa mang tính tức thời vừa lâu dài. Vấn đề này kéo theo nhiều hậu quả nghiêm trọng.' },
-        { en: 'One significant consequence is (effect). Research has ___ shown that (clause).', answer: 'consistently', vi: '→ Một hậu quả đáng kể là ... Nghiên cứu đã liên tục chỉ ra rằng ...' },
-        { en: 'Furthermore, this phenomenon ___ leads to (noun phrase). More alarmingly, the long-term implications may include (serious effect).', answer: 'inevitably', vi: '→ Hơn nữa, hiện tượng này tất yếu dẫn đến ... Đáng lo ngại hơn, tác động lâu dài có thể bao gồm ...' },
-        { en: 'Over time, these effects may ___, placing substantial pressure on (group/society).', answer: 'accumulate', vi: '→ Theo thời gian, những tác động này có thể tích tụ và gây áp lực lớn lên ...' },
-        { en: 'Without ___ intervention, these effects could ___ lasting damage to both social cohesion and environmental stability.', answers: ['timely', 'inflict'], vi: '→ Nếu không có sự can thiệp kịp thời, những tác động này có thể gây ra thiệt hại lâu dài cho cả sự gắn kết xã hội lẫn ổn định môi trường.' },
-      ]},
-      { title: '④ Conclusion – Kết bài', items: [
-        { en: 'In conclusion, (noun phrase) stems from a range of ___ factors and results in significant consequences.', answer: 'interconnected', vi: '→ Tóm lại, ... bắt nguồn từ nhiều yếu tố liên quan lẫn nhau và gây ra hậu quả đáng kể.' },
-        { en: 'Addressing this problem requires ___ efforts from both individuals and policymakers.', answer: 'coordinated', vi: '→ Giải quyết vấn đề này đòi hỏi sự phối hợp từ cả cá nhân và nhà hoạch định chính sách.' },
-        { en: 'If effective measures are taken, the negative ___ can be significantly reduced.', answer: 'impacts', vi: '→ Nếu có biện pháp hiệu quả, tác động tiêu cực có thể được giảm đáng kể.' },
-      ]},
-    ]
-  },
-  type06: {
-    name: 'Agree / Disagree',
-    sections: [
-      { title: '① Introduction – Mở bài', items: [
-        { en: 'The issue of (topic) has become a subject of considerable ___ in recent years.', answer: 'debate', vi: '→ Vấn đề về ... đã trở thành một chủ đề gây tranh luận đáng kể trong những năm gần đây.' },
-        { en: 'In contemporary society, the question of whether (paraphrase question) remains highly ___.', answer: 'controversial', vi: '→ Trong xã hội hiện đại, câu hỏi liệu ... vẫn còn gây nhiều tranh cãi.' },
-        { en: 'I strongly ___ that (your position) for several compelling reasons.', answer: 'agree', vi: '→ Tôi hoàn toàn đồng ý rằng ... vì một số lý do thuyết phục.' },
-        { en: 'While I ___ that (one side of argument), I believe that (your balanced position).', answer: 'acknowledge', vi: '→ Mặc dù tôi thừa nhận rằng ..., tôi tin rằng (lập trường cân bằng của bạn).' },
-        { en: 'Although there are valid arguments supporting (opposing view), I ___ that (your main stance) outweighs these considerations.', answer: 'contend', vi: '→ Mặc dù có những lập luận hợp lý ủng hộ (quan điểm đối lập), tôi cho rằng (lập trường chính) vượt trội hơn.' },
-      ]},
-      { title: '② Body 1 – Main Argument · Lập luận chính', items: [
-        { en: 'One ___ reason why (your position) is that (reason 1).', answer: 'compelling', vi: '→ Một lý do thuyết phục khiến (lập trường của bạn) là (lý do 1).' },
-        { en: 'It is ___ that (key point) plays a crucial role in (related aspect).', answer: 'undeniable', vi: '→ Không thể phủ nhận rằng ... đóng vai trò quan trọng trong ...' },
-        { en: 'This can be attributed to the fact that (explanation). For instance, (specific example), which clearly ___ that (analysis).', answer: 'illustrates', vi: '→ Điều này có thể là do thực tế rằng ... Ví dụ, ..., điều này minh chứng rõ ràng rằng ...' },
-        { en: 'Research has consistently shown that (finding), thereby ___ the view that (argument).', answer: 'reinforcing', vi: '→ Nghiên cứu đã liên tục chỉ ra rằng ..., từ đó củng cố quan điểm rằng ...' },
-        { en: '(Noun phrase) is fundamentally ___ for sustainable progress, as it ___ individuals and communities to drive meaningful change.', answers: ['essential', 'empowers'], vi: '→ ... là điều căn bản thiết yếu cho sự tiến bộ bền vững, vì nó trao quyền cho cá nhân và cộng đồng thúc đẩy sự thay đổi có ý nghĩa.' },
-      ]},
-      { title: '③ Body 2 – Counter-argument · Phản biện (Band 7.5+)', items: [
-        { en: 'While some may argue that (opposing view), this perspective fails to ___ that (counterargument).', answer: 'consider', vi: '→ Mặc dù một số người có thể cho rằng ..., quan điểm này bỏ sót việc ...' },
-        { en: 'Admittedly, (concession); ___, the overall impact remains predominantly positive/negative.', answer: 'nevertheless', vi: '→ Thừa nhận rằng ...; tuy nhiên, tác động tổng thể vẫn chủ yếu là tích cực/tiêu cực.' },
-        { en: 'While critics ___ that this approach carries risks, such concerns are largely ___ when the full body of evidence is considered.', answers: ['claim', 'outweighed'], vi: '→ Mặc dù những người chỉ trích cho rằng cách tiếp cận này mang theo rủi ro, những lo ngại đó phần lớn bị lấn át khi xem xét toàn bộ bằng chứng.' },
-      ]},
-      { title: '④ Conclusion – Kết bài', items: [
-        { en: 'In conclusion, having examined the arguments presented, I ___ that (restate position).', answer: 'maintain', vi: '→ Tóm lại, sau khi xem xét các lập luận đã trình bày, tôi duy trì rằng ...' },
-        { en: 'Ultimately, striking a ___ between (aspect 1) and (aspect 2) may represent the most pragmatic approach.', answer: 'balance', vi: '→ Cuối cùng, tìm kiếm sự cân bằng giữa ... và ... có thể là cách tiếp cận thực tế nhất.' },
-      ]},
-    ]
-  },
-  type07: {
-    name: 'Positive or Negative Development',
-    sections: [
-      { title: '① Introduction – Mở bài', items: [
-        { en: 'In recent years, (noun phrase) has emerged as one of the most ___ trends in contemporary society, sparking widespread debate.', answer: 'controversial', vi: '→ Trong những năm gần đây, ... đã nổi lên là một trong những xu hướng gây tranh cãi nhất trong xã hội hiện đại.' },
-        { en: 'Views on this development remain deeply ___, with some welcoming it as progress and others raising serious concerns.', answer: 'divided', vi: '→ Quan điểm về sự phát triển này vẫn còn rất phân cực, với một số người hoan nghênh nó và những người khác bày tỏ lo ngại.' },
-        { en: 'While (noun phrase) undoubtedly brings certain ___, it also carries the potential for significant drawbacks.', answer: 'benefits', vi: '→ Mặc dù ... chắc chắn mang lại một số lợi ích, nó cũng tiềm ẩn những hạn chế đáng kể.' },
-        { en: 'I firmly ___ that, on balance, this constitutes a predominantly positive/negative development for the reasons outlined below.', answer: 'believe', vi: '→ Tôi kiên định cho rằng, xét tổng thể, đây là một sự phát triển phần lớn tích cực/tiêu cực.' },
-        { en: 'This essay will ___ both dimensions of this issue before arriving at a well-supported conclusion.', answer: 'examine', vi: '→ Bài viết này sẽ xem xét cả hai khía cạnh của vấn đề trước khi đưa ra kết luận có căn cứ.' },
-      ]},
-      { title: '② Body 1 – Main Case · Lập luận chính', items: [
-        { en: 'There are several ___ reasons to view (noun phrase) as a positive/negative development.', answer: 'compelling', vi: '→ Có một số lý do thuyết phục để coi ... là một sự phát triển tích cực/tiêu cực.' },
-        { en: 'One of the most notable aspects is that (noun phrase) has ___ contributed to (outcome), benefiting/harming a large portion of society.', answer: 'considerably', vi: '→ Một trong những khía cạnh đáng chú ý nhất là ... đã đóng góp đáng kể vào (kết quả).' },
-        { en: 'This is primarily because (reason), which has a ___ and far-reaching effect on (group/society/economy).', answer: 'profound', vi: '→ Nguyên nhân chính là ..., điều này có tác động sâu sắc và rộng khắp đến (nhóm người/xã hội/nền kinh tế).' },
-        { en: 'To illustrate, (specific example) clearly ___ the magnitude of this trend\'s impact on everyday life.', answer: 'demonstrates', vi: '→ Để minh họa, (ví dụ cụ thể) cho thấy rõ mức độ tác động của xu hướng này đối với cuộc sống hàng ngày.' },
-        { en: 'Furthermore, the influence of (noun phrase) ___ well beyond the individual, reshaping communities and institutions alike.', answer: 'extends', vi: '→ Hơn nữa, sức ảnh hưởng của ... vươn xa hơn cá nhân, định hình lại cả các cộng đồng lẫn tổ chức.' },
-        { en: 'Research has consistently ___ that (fact/statistic), providing strong evidence that this development is largely beneficial/harmful.', answer: 'confirmed', vi: '→ Nghiên cứu đã liên tục xác nhận rằng (thực tế/thống kê), cung cấp bằng chứng rõ ràng về sự phát triển này.' },
-        { en: 'This is a ___ that is likely to ___ as societal conditions and technological capabilities continue to evolve.', answers: ['pattern', 'intensify'], vi: '→ Đây là một xu hướng có khả năng ngày càng mạnh mẽ hơn khi các điều kiện xã hội và năng lực công nghệ tiếp tục phát triển.' },
-      ]},
-      { title: '③ Body 2 – Acknowledge & Reinforce · Nhìn nhận đa chiều (Band 7+)', items: [
-        { en: 'Admittedly, (noun phrase) is not without its shortcomings, and critics have raised ___ concerns about (specific issue).', answer: 'legitimate', vi: '→ Thừa nhận rằng, ... không phải là không có thiếu sót, và các nhà phê bình đã đặt ra những lo ngại chính đáng.' },
-        { en: 'However, these concerns, while not entirely ___, do not fundamentally alter the overall trajectory of this development.', answer: 'unfounded', vi: '→ Tuy nhiên, những lo ngại này, dù không hoàn toàn vô căn cứ, nhưng không thay đổi cơ bản xu hướng tổng thể.' },
-        { en: 'When considered in a broader context, the positive/negative aspects of (noun phrase) clearly ___ its drawbacks/merits.', answer: 'outweigh', vi: '→ Khi xem xét trong bối cảnh rộng hơn, các khía cạnh tích cực/tiêu cực của ... rõ ràng vượt trội hơn.' },
-        { en: 'Moreover, any potential risks can be effectively ___ through appropriate governance, public awareness, and informed policy decisions.', answer: 'mitigated', vi: '→ Hơn nữa, bất kỳ rủi ro tiềm ẩn nào cũng có thể được giảm thiểu thông qua quản trị phù hợp và quyết định chính sách sáng suốt.' },
-        { en: 'Ultimately, the ___ benefits of this development far outweigh the associated risks, making a strong case for this position.', answer: 'cumulative', vi: '→ Cuối cùng, những lợi ích tích lũy của sự phát triển này vượt xa so với những rủi ro liên quan.' },
-        { en: 'A ___ reading of the available evidence ___ that the positive outcomes significantly outweigh the concerns raised by critics.', answers: ['careful', 'reveals'], vi: '→ Việc đọc cẩn thận các bằng chứng hiện có cho thấy rằng các kết quả tích cực vượt trội đáng kể so với những lo ngại của nhà phê bình.' },
-      ]},
-      { title: '④ Conclusion – Kết bài', items: [
-        { en: 'In conclusion, having examined this issue from multiple ___, I maintain that this is fundamentally a positive/negative development.', answer: 'angles', vi: '→ Tóm lại, sau khi xem xét vấn đề này từ nhiều góc độ, tôi duy trì rằng đây về cơ bản là một sự phát triển tích cực/tiêu cực.' },
-        { en: 'The evidence ___ suggests that the advantages/disadvantages of (noun phrase) far exceed the drawbacks/merits, warranting a clear position.', answer: 'overwhelmingly', vi: '→ Bằng chứng áp đảo cho thấy lợi ích/tác hại của ... vượt xa so với hạn chế/ưu điểm.' },
-        { en: 'Going forward, it is ___ that individuals, communities, and policymakers take a proactive approach to maximise the gains and minimise the risks of this trend.', answer: 'essential', vi: '→ Trong tương lai, điều thiết yếu là các cá nhân, cộng đồng và nhà hoạch định chính sách cần có cách tiếp cận chủ động.' },
-      ]},
-    ]
-  },
+// ── Template data ───────────────────────────────────────────────
+const TYPE_META = {
+  type01: { icon: 'fa-scale-balanced',     color: '#2563eb', desc: 'Phân tích ưu điểm và nhược điểm của một xu hướng hiện đại.' },
+  type02: { icon: 'fa-comments',           color: '#7c3aed', desc: 'Thảo luận hai quan điểm đối lập và đưa ra ý kiến cá nhân.' },
+  type03: { icon: 'fa-lightbulb',          color: '#0891b2', desc: 'Phân tích nguyên nhân của một vấn đề và đề xuất giải pháp.' },
+  type04: { icon: 'fa-gears',              color: '#dc2626', desc: 'Phân tích tác động của vấn đề và đề xuất giải pháp khắc phục.' },
+  type05: { icon: 'fa-arrow-trend-up',     color: '#d97706', desc: 'Phân tích nguyên nhân và hậu quả của một hiện tượng xã hội.' },
+  type06: { icon: 'fa-check-double',       color: '#16a34a', desc: 'Bày tỏ quan điểm đồng ý hoặc không đồng ý và bảo vệ lập trường.' },
+  type07: { icon: 'fa-circle-half-stroke', color: '#db2777', desc: 'Đánh giá xem một xu hướng là phát triển tích cực hay tiêu cực.' },
 };
+let TPL_TYPES = [];  // [{id, label, sub, name}]
+let TPL_DATA  = {};  // typeId -> { name, sections: [{title, items:[{en, answer|answers, vi}]}] }
 
-// ── State ──────────────────────────────────────────────────────
-let _tplActiveType = 'type01';
-let _tplActiveMode = 'translation'; // 'cloze' | 'translation' | 'chunks' | 'build' | 'dictation' — Dịch câu is the default
-let _tplActiveLevel = 'band6'; // 'band6' | 'band7' — see switchTplLevel(). Band 6+ is the default level shown on page load.
+let _type  = 'type01';
+let _level = 'band6';
+let _progress = {};  // typeId -> progress row for _level (see backend Task2TemplateProgress)
+let _view = 'overview'; // overview | warmup | read | drill | assemble | apply | review | exam
+let _run = null;        // state of the open activity
+let _showVi = true;
 
-// typeId is shared between the Band 6+ and Band 7+ document for the "same"
-// essay type (see Task2Template's {typeId,level} compound key) — but every
-// progress store here (_tplScores, _modeProgress) is still keyed by bare
-// typeId. Without namespacing, completing Band 7+ Type 01 would make Band
-// 6+ Type 01 show as already-completed too (and vice versa), since both
-// would resolve to the exact same "type01-0-0"-style keys. Every read/write
-// of those stores must route the typeId through this first.
-function _lvlKey(typeId) { return _tplActiveLevel === 'band6' ? typeId + '@band6' : typeId; }
-let _tplShowVi     = false;
-let _tplScores     = {};
-let _pendingTypeId   = null;
-let _pendingExamSwitch = false;
+const STEPS = [
+  { key: 'warmup',   num: '①', icon: 'fa-sitemap',     title: 'Khung bài',      desc: 'Mỗi đoạn có mấy câu, bao nhiêu chữ — rồi tự sắp xếp các câu theo đúng thứ tự.' },
+  { key: 'read',     num: '②', icon: 'fa-headphones',  title: 'Đọc & nghe',     desc: 'Đọc từng câu kèm nghĩa tiếng Việt, nghe phát âm, chú ý các từ khoá.' },
+  { key: 'drill',    num: '③', icon: 'fa-layer-group', title: 'Luyện từng đoạn', desc: 'Mỗi đoạn 3 vòng: ghép cụm → điền chữ bị ẩn dần → nhớ lại cả câu từ tiếng Việt.' },
+  { key: 'assemble', num: '④', icon: 'fa-pen-nib',     title: 'Ghép cả bài',    desc: 'Chỉ nhìn khung, viết lại cả đoạn từ trí nhớ. Máy so từng chữ với template.' },
+  { key: 'apply',    num: '⑤', icon: 'fa-flag-checkered', title: 'Áp dụng đề thật', desc: 'Viết bài cho một đề thật bằng template, rồi so với bài mẫu.' },
+];
+const STEP_KEYS = STEPS.map(s => s.key);
+const DRILL_STAGES = ['Ghép cụm', 'Điền dần', 'Nhớ lại'];
+const ASSEMBLE_PASS = 70;  // % words recalled for ④ to count as done
+const RECALL_PASS_B7 = 90; // % words right for a free-typed sentence to count
 
-// Exam mode state — _examMode/_examTimerInterval/_examTimeLeft/_examStartTime
-// are shared by all 5 modes (one exam runs at a time). _examScopeMode records
-// which mode the running exam covers (Cloze grades by scanning its own DOM
-// inputs on submit; Translation/Chunks/Build/Dictation instead tally as they
-// go via _examSessionCorrect/_examSessionTotal since they're one-item-at-a-
-// -time flows, not a single page of inputs).
-let _examMode          = false;
-let _examScopeMode     = null;
-let _examTimerInterval = null;
-let _examTimeLeft      = 1800;
-let _examStartTime     = null;
-let _examSessionCorrect = 0;
-let _examSessionTotal   = 0;
-let _examAutoSubmitTimer = null; // pending tickExamTimer() -> submitExam()/finishExam() at time-up
+// ── Small helpers ──────────────────────────────────────────────
+const esc  = s => (window.escHtml ? window.escHtml(s) : String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]));
+const escA = s => (window.escAttr ? window.escAttr(s) : esc(s));
+const isB7 = () => _level === 'band7';
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+// Shuffle that never returns the original order (when there's more than one item).
+function shuffleNew(arr, same = (x, y) => x === y) {
+  if (arr.length < 2) return arr.slice();
+  for (let k = 0; k < 8; k++) {
+    const s = shuffle(arr);
+    if (s.some((x, i) => !same(x, arr[i]))) return s;
+  }
+  return arr.slice(1).concat(arr[0]);
+}
+function fmtMMSS(secs) { secs = Math.max(0, Math.floor(secs)); return String(Math.floor(secs / 60)).padStart(2, '0') + ':' + String(secs % 60).padStart(2, '0'); }
 
-function saveTplScores() {
-  localStorage.setItem('tpl_scores', JSON.stringify(_tplScores));
+function fullSentence(item) {
+  const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
+  const parts = String(item.en || '').split('___');
+  let out = parts[0];
+  answers.forEach((a, i) => { out += (a || '') + (parts[i + 1] || ''); });
+  return out.replace(/\s+/g, ' ').trim();
 }
 
-// ── Per-type completion tracking (bestScore/latestScore/completed/completedAt) ──
-// Shared model with essential-grammar.html/task1-practice.html/task2-practice.html/
-// writing-practice.html: a type "completes" once its live cloze-accuracy % reaches
-// 80%. bestScore is sticky (survives a manual reset of _tplScores for that type);
-// latestScore always reflects the current live accuracy.
-const TYPE_SCORE_KEY = 't2_tpl_type_scores';
-const TYPE_COMPLETE_THRESHOLD = 80;
-function _safeParse(json, fallback){ if(json==null) return fallback; try{ return JSON.parse(json); }catch{ return fallback; } }
-let _typeScores = _safeParse(localStorage.getItem(TYPE_SCORE_KEY), {});
+// Sentence tokens: "(placeholder)," counts as one fixed token the student
+// never has to type; everything else is a word.
+function tokenize(sentence) {
+  return (String(sentence).match(/\([^()]*\)\S*|\S+/g) || []).map(text => {
+    if (text.startsWith('(')) return { text, ph: true, lead: '', core: text, trail: '' };
+    const m = text.match(/^([^A-Za-z0-9]*)(.*?)([^A-Za-z0-9]*)$/);
+    const core = m ? m[2] : text;
+    return { text, ph: false, lead: m ? m[1] : '', core: core || text, trail: m ? m[3] : '' };
+  });
+}
+function normWord(w) {
+  return String(w || '').toLowerCase().replace(/[’‘`]/g, "'").replace(/[–—]/g, '-')
+    .replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '');
+}
+const stripPh = s => String(s || '').replace(/\([^()]*\)/g, ' ');
+function wordsOf(s) { return stripPh(s).split(/\s+/).map(normWord).filter(Boolean); }
+function countWords(s) { return String(s || '').trim().split(/\s+/).filter(Boolean).length; }
+function viText(item) { return String(item.vi || '').replace(/^→\s*/, ''); }
 
-// _lvlKey()'d for the same reason as _tplScores/_modeProgress — typeId is
-// shared between the Band 6+ and Band 7+ document for a given type, and
-// without namespacing, completing one level's Type 01 would show the
-// OTHER level's Type 01 as already-completed too.
-function getTypeScore(typeId) { return _typeScores[_lvlKey(typeId)] || null; }
-function isTypeCompleted(typeId) { const s = _typeScores[_lvlKey(typeId)]; return !!(s && s.completed); }
+const STOPWORDS = new Set('a an the of in on at to for with by from and or but so as is are was were be been being it its this that these those they them their there which who can could may might will would should has have had do does did not than more most very also such into over'.split(' '));
 
-function saveTypeScore(typeId, score) {
-  const lk = _lvlKey(typeId);
-  const prev = _typeScores[lk] || { bestScore: 0, latestScore: 0, completed: false, completedAt: null };
-  const bestScore = Math.max(prev.bestScore, score);
-  const completed = bestScore >= TYPE_COMPLETE_THRESHOLD;
-  const completedAt = (completed && !prev.completed) ? new Date().toISOString() : prev.completedAt;
-  _typeScores[lk] = { bestScore, latestScore: score, completed, completedAt };
-  localStorage.setItem(TYPE_SCORE_KEY, JSON.stringify(_typeScores));
+// Sentence role inside its paragraph — shown in ① and used to grade the
+// ordering (sentences with the same role, e.g. two alternative openers,
+// may swap places).
+function roleOf(text, si, secCount) {
+  const s = String(text).trim();
+  const intro = si === 0, concl = si === secCount - 1;
+  if (/^(In conclusion|To conclude|In summary|To sum up)\b/i.test(s)) return 'Tóm lại';
+  if (/^(This essay|The following (discussion|essay))\b/i.test(s)) return 'Hướng bài';
+  if (concl) return 'Chốt ý';
+  if (intro) {
+    if (/\b(I (completely |strongly |firmly |partly |fully )?(agree|disagree|believe)|In my (view|opinion)|I contend|I would argue|I firmly)\b/i.test(s)) return 'Nêu quan điểm';
+    if (/^(In recent years|Recently|Nowadays|In today|In (the )?contemporary|In some|The issue of|With the|As society|It is (undeniable|widely)|There (has been|is) (an ongoing|a growing|considerable))/i.test(s)) return 'Mở đề';
+    return 'Bối cảnh';
+  }
+  if (/^(This is (mainly |primarily |largely |partly |largely )?(because|due)|This can be attributed|This stems|The reason)/i.test(s)) return 'Giải thích';
+  if (/^(As a result|Consequently|Therefore|Thus|Hence|This (leads|means))\b/i.test(s)) return 'Kết quả';
+  if (/^(For (example|instance)|To illustrate|A (clear|good|prime) (illustration|example)|Research|Recent studies|Studies)\b/i.test(s)) return 'Ví dụ / dẫn chứng';
+  if (/^(However|On the other hand|Despite|Admittedly|While some|Nevertheless|Although|Conversely|That said|Critics)\b/i.test(s)) return 'Chuyển ý / nhượng bộ';
+  if (/^(Furthermore|Moreover|In addition|Additionally|Another|Besides|Secondly|Finally|Also|Ultimately|When considered)\b/i.test(s)) return 'Ý bổ sung';
+  return 'Câu chủ đề';
 }
 
-function typeStatusHtml(typeId) {
-  const score = getTypeScore(typeId);
-  let html = '';
-  if (score && score.completed) html += '<span class="wp-status-badge wp-status-done"><i class="fas fa-check-circle"></i> Đã hoàn thành</span>';
-  if (score) html += '<span class="wp-status-badge wp-status-best"><i class="fas fa-star"></i> Điểm cao nhất: ' + score.bestScore + '%</span>';
-  const completedTypes = TPL_TYPES.filter(t => isTypeCompleted(t.id)).length;
-  html += '<span class="wp-status-badge"><i class="fas fa-chart-line"></i> Tiến trình: ' + completedTypes + '/' + TPL_TYPES.length + ' dạng bài</span>';
-  return html;
-}
-function updateTypeStatus() {
-  const el = document.getElementById('tpl-type-status');
-  if (el) el.innerHTML = typeStatusHtml(_tplActiveType);
+// Recommended size of each paragraph in a real essay (not the template).
+function paraTarget(si, secCount) {
+  if (si === 0) return { sent: '2–3 câu', words: '40–60 chữ', lo: 40, hi: 60 };
+  if (si === secCount - 1) return { sent: '1–3 câu', words: '30–50 chữ', lo: 30, hi: 50 };
+  return { sent: '4–6 câu', words: '80–110 chữ', lo: 80, hi: 110 };
 }
 
-// ── Per-mode progress (Translation/Chunks/Build/Dictation) ──────
-// Separate localStorage key from tpl_scores/t2_tpl_type_scores (Cloze) —
-// Cloze's own storage/behavior is untouched by any of this. Shape:
-//   { type01: { translation: { "0-0": {status,attempts,lastPracticed}, ... },
-//               chunks: {}, build: {}, dictation: {} }, ... }
-const MODE_PROGRESS_KEY = 't2_tpl_mode_progress';
-let _modeProgress = {};
-try {
-  const savedModeProgress = localStorage.getItem(MODE_PROGRESS_KEY);
-  if (savedModeProgress) _modeProgress = JSON.parse(savedModeProgress);
-} catch (e) {}
-
-function saveModeProgress() {
-  localStorage.setItem(MODE_PROGRESS_KEY, JSON.stringify(_modeProgress));
-}
-
-function setModeItemResult(mode, typeId, si, ii, status) {
-  const lk = _lvlKey(typeId);
-  if (!_modeProgress[lk]) _modeProgress[lk] = {};
-  if (!_modeProgress[lk][mode]) _modeProgress[lk][mode] = {};
-  const key = `${si}-${ii}`;
-  const prev = _modeProgress[lk][mode][key];
-  _modeProgress[lk][mode][key] = {
-    status, attempts: (prev?.attempts || 0) + 1, lastPracticed: new Date().toISOString()
-  };
-  saveModeProgress();
-}
-
-// % of typeId's items marked 'ok' for the given mode. Mirrors the
-// done/total calc already duplicated for Cloze (renderTabs/renderTplContent/
-// updateTplScore) — kept as a separate small helper since it reads a
-// different store (_modeProgress, not _tplScores).
-function modeCompletionPct(mode, typeId) {
-  const type = TPL_DATA[typeId];
-  if (!type) return 0;
-  let done = 0, total = 0;
-  const modeData = _modeProgress[_lvlKey(typeId)]?.[mode] || {};
-  type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
-    total++;
-    if (modeData[`${si}-${ii}`]?.status === 'ok') done++;
+// The active type as paragraphs of sentences.
+function paragraphs(typeId = _type) {
+  const t = TPL_DATA[typeId];
+  if (!t) return [];
+  const n = t.sections.length;
+  return t.sections.map((sec, si) => ({
+    si, title: sec.title,
+    sentences: (sec.items || []).map((item, ii) => {
+      const en = fullSentence(item);
+      const answers = (Array.isArray(item.answers) ? item.answers : [item.answer]).filter(Boolean);
+      return { si, ii, key: `${si}-${ii}`, en, vi: viText(item), role: roleOf(en, si, n),
+        anchors: new Set(answers.join(' ').split(/\s+/).map(normWord).filter(Boolean)) };
+    }),
   }));
-  return total ? Math.round(done / total * 100) : 0;
+}
+function allSentences(typeId = _type) { return paragraphs(typeId).flatMap(p => p.sentences); }
+function shortTitle(title) { return String(title || '').replace(/^[①②③④⑤⑥⑦⑧]\s*/, ''); }
+
+// English sentence as HTML: placeholders as chips, key words underlined.
+function enHtml(s, { anchors = true } = {}) {
+  return tokenize(s.en).map(t => {
+    if (t.ph) return `<span class="pth-ph">${esc(t.text)}</span>`;
+    if (anchors && s.anchors && s.anchors.has(normWord(t.core))) return `${esc(t.lead)}<span class="pth-anchor">${esc(t.core)}</span>${esc(t.trail)}`;
+    return esc(t.text);
+  }).join(' ');
 }
 
-// ── URL sharing ────────────────────────────────────────────────
-const TPL_VALID_MODES = ['cloze', 'translation', 'chunks', 'build', 'dictation'];
-function _syncTplShareUrl(push = false) {
-  const params = new URLSearchParams();
-  if (_tplActiveType && _tplActiveType !== 'type01') params.set('type', _tplActiveType);
-  if (_tplActiveMode && _tplActiveMode !== 'translation') params.set('mode', _tplActiveMode);
-  if (_tplActiveLevel && _tplActiveLevel !== 'band6') params.set('level', _tplActiveLevel);
-  const url = location.pathname.split('?')[0] + (params.toString() ? '?' + params.toString() : '');
-  if (push) history.pushState(null, '', url);
-  else history.replaceState(null, '', url);
+// ── Word-level diff (placeholders ignored) ─────────────────────
+// target: [{w, sid}], typed: string → { ops, matched[] } where matched[i]
+// tells whether target word i was written correctly.
+function alignWords(target, typedText) {
+  const typed = stripPh(typedText).split(/\s+/).filter(Boolean).map(w => ({ w, n: normWord(w) })).filter(x => x.n);
+  const a = target.map(t => normWord(t.w)), b = typed.map(t => t.n);
+  const n = a.length, m = b.length;
+  const dp = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--)
+    dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const raw = [], matched = new Array(n).fill(false);
+  let i = 0, j = 0;
+  while (i < n && j < m) {
+    if (a[i] === b[j]) { raw.push({ type: 'ok', word: typed[j].w }); matched[i] = true; i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) { raw.push({ type: 'miss', word: target[i].w }); i++; }
+    else { raw.push({ type: 'extra', word: typed[j].w }); j++; }
+  }
+  while (i < n) { raw.push({ type: 'miss', word: target[i].w }); i++; }
+  while (j < m) { raw.push({ type: 'extra', word: typed[j].w }); j++; }
+  const ops = [];
+  for (let k = 0; k < raw.length; k++) {
+    const c = raw[k], d = raw[k + 1];
+    if (d && ((c.type === 'miss' && d.type === 'extra') || (c.type === 'extra' && d.type === 'miss'))) {
+      ops.push({ type: 'wrong', word: (c.type === 'extra' ? c : d).word, expected: (c.type === 'miss' ? c : d).word }); k++;
+    } else ops.push(c);
+  }
+  const right = matched.filter(Boolean).length;
+  return { ops, matched, pct: n ? Math.round(right / n * 100) : 100 };
+}
+function diffHtml(ops) {
+  return ops.map(o => {
+    if (o.type === 'ok')    return `<span class="pth-d-ok">${esc(o.word)}</span>`;
+    if (o.type === 'miss')  return `<span class="pth-d-miss" title="Thiếu">${esc(o.word)}</span>`;
+    if (o.type === 'extra') return `<span class="pth-d-extra" title="Thừa">${esc(o.word)}</span>`;
+    return `<span class="pth-d-wrong" title="Đúng là: ${escA(o.expected)}">${esc(o.word)}</span><span class="pth-d-fix">${esc(o.expected)}</span>`;
+  }).join(' ');
+}
+function targetWords(sentences) {
+  const out = [];
+  sentences.forEach(s => stripPh(s.en).split(/\s+/).filter(w => normWord(w)).forEach(w => out.push({ w, sid: s.key })));
+  return out;
 }
 
-// Browser back/forward after switching template type/mode/level
-// (doSwitchType/switchTplMode/switchTplLevel above all push a new history
-// entry per switch via _syncTplShareUrl(true)) — re-derive all three from
-// the URL and re-render without pushing again. Async because a level
-// change needs its own fetch (different TPL_DATA), unlike a bare type/mode
-// change.
-window.addEventListener('popstate', async () => {
-  const _urlParams = new URLSearchParams(location.search);
-  const _urlType   = _urlParams.get('type');
-  const _urlMode   = _urlParams.get('mode');
-  const _urlLevel  = _urlParams.get('level');
-  const nextMode   = TPL_VALID_MODES.includes(_urlMode) ? _urlMode : 'translation';
-  const nextLevel  = (_urlLevel === 'band6' || _urlLevel === 'band7') ? _urlLevel : 'band7';
-  const levelChanged = nextLevel !== _tplActiveLevel;
-  // Can't reliably check _urlType against TPL_DATA until after a possible
-  // level reload below (different TPL_DATA) — if level is changing, assume
-  // something changed and let the precise nextType resolution after reload
-  // decide; otherwise the normal TPL_DATA[_urlType] check applies.
-  if (!levelChanged && (_urlType && TPL_DATA[_urlType] ? _urlType : (TPL_TYPES[0]?.id || 'type01')) === _tplActiveType
-      && nextMode === _tplActiveMode) return;
-
-  if (_examMode) exitExamMode();
-  if (_tplActiveMode === 'dictation' && 'speechSynthesis' in window) speechSynthesis.cancel();
-  saveTplAttemptToServer(_tplActiveType, _tplActiveMode);
-
-  if (levelChanged) {
-    const ok = await _loadTplTemplates(nextLevel);
-    if (ok) {
-      _tplActiveLevel = nextLevel;
-      document.querySelectorAll('.t2-level-btn').forEach(btn => {
-        const isActive = btn.dataset.level === nextLevel;
-        btn.classList.toggle('active', isActive);
-        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      });
-      const subEl = document.getElementById('tpl-page-sub');
-      if (subEl) {
-        const totalAll = Object.values(TPL_DATA).reduce((s, t) =>
-          s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
-        subEl.textContent = `Điền từ ${totalAll} mẫu câu theo 7 dạng bài IELTS Task 2`;
-      }
-    }
-  }
-
-  const nextType = (_urlType && TPL_DATA[_urlType]) ? _urlType : (TPL_TYPES[0]?.id || 'type01');
-  _tplActiveType = nextType;
-  _tplActiveMode = nextMode;
-  document.querySelectorAll('.t2-type-tab-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tplType === nextType);
-  });
-  _applyModeTabUI(nextMode);
-  renderTabs();
-  renderTplContent();
-  updateTplScore();
-  updateOverallBadge();
-  updateModeOverallBadge();
-  updateTypeStatus();
-});
-function copyTplShareUrl() {
-  const params = new URLSearchParams();
-  if (_tplActiveType) params.set('type', _tplActiveType);
-  if (_tplActiveMode && _tplActiveMode !== 'translation') params.set('mode', _tplActiveMode);
-  if (_tplActiveLevel && _tplActiveLevel !== 'band6') params.set('level', _tplActiveLevel);
-  const url = location.origin + location.pathname.split('?')[0] + '?' + params.toString();
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(url)
-      .then(() => showToast('Đã sao chép link chia sẻ!', 'info', 2500))
-      .catch(() => _fallbackCopyTpl(url));
-  } else { _fallbackCopyTpl(url); }
+// ── Audio (browser text-to-speech) ─────────────────────────────
+let _voice = null;
+function _pickVoice() {
+  if (!('speechSynthesis' in window)) return null;
+  const vs = speechSynthesis.getVoices() || [];
+  return vs.find(v => /en-GB/i.test(v.lang) && /Google|Natural|Online/i.test(v.name))
+      || vs.find(v => /en-GB/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null;
 }
-function _fallbackCopyTpl(url) {
-  const ta = document.createElement('textarea');
-  ta.value = url; ta.style.cssText = 'position:fixed;opacity:0';
-  document.body.appendChild(ta); ta.select();
-  try { document.execCommand('copy'); showToast('Đã sao chép link!', 'info', 2500); }
-  catch { showToast('Không thể sao chép', 'warn', 2000); }
-  document.body.removeChild(ta);
+function speak(text, rate = 0.95) {
+  if (!('speechSynthesis' in window)) { showToast('Trình duyệt không hỗ trợ đọc to.', 'warn', 2500); return; }
+  speechSynthesis.cancel();
+  if (!_voice) _voice = _pickVoice();
+  const u = new SpeechSynthesisUtterance(String(text).replace(/[()]/g, ''));
+  u.lang = _voice ? _voice.lang : 'en-GB';
+  if (_voice) u.voice = _voice;
+  u.rate = rate;
+  speechSynthesis.speak(u);
+}
+function speakKey(key) { const s = allSentences().find(x => x.key === key); if (s) speak(s.en); }
+function speakPara(si) { const p = paragraphs()[si]; if (p) speak(p.sentences.map(s => s.en).join(' ')); }
+function stopSpeak() { if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+
+// ── Server I/O ─────────────────────────────────────────────────
+function authHeaders(json) {
+  const token = window.AuthService && window.AuthService.getToken();
+  const h = token ? { Authorization: 'Bearer ' + token } : {};
+  if (json) h['Content-Type'] = 'application/json';
+  return h;
 }
 
-// ── Init ───────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
-  initUser();
-  // Free-plan gate: without this, the page's own hardcoded TPL_DATA
-  // fallback (used when the /api/task2/templates fetch below 403s) would
-  // still render a fully usable practice UI — the backend gate on that
-  // route alone isn't enough since that static fallback ships in the page
-  // source regardless of plan. Stop before any rendering happens.
-  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
-    if (window.openUpgradeModal) window.openUpgradeModal();
-    return;
-  }
-  _primeDictVoice(); // load available voices ahead of Dictation mode's first Play
-  // #tpl-content-area is a stable container that render() only ever
-  // innerHTML's into — one registration here covers every cloze type/card.
-  // Gate: off during an active "thi thử" run (_examMode), on otherwise —
-  // ordinary practice, or once exitExamMode()/finishExam()/submitExam()
-  // has already flipped _examMode back to false to show the result card.
-  setupDictionaryDouble('tpl-content-area', 'task2-template', () => !_examMode);
-
-  // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) — same
-  // _examMode flag this page already refuses its own translate feature for
-  // (see showTranslationHint()'s "Không dùng dịch trong chế độ thi thử!").
-  window.__ewsExamActive = () => _examMode;
-  // Restore type + mode + level from URL params (deep link / bookmark / reload)
-  const _urlParams = new URLSearchParams(location.search);
-  const _urlType   = _urlParams.get('type');
-  const _urlMode   = _urlParams.get('mode');
-  const _urlLevel  = _urlParams.get('level');
-  if (_urlType && TPL_DATA[_urlType]) _tplActiveType = _urlType;
-  if (TPL_VALID_MODES.includes(_urlMode)) {
-    _tplActiveMode = _urlMode;
-  }
-  _applyModeTabUI(_tplActiveMode); // sync tab + toolbar to the active mode (default is 'translation')
-  if (_urlLevel === 'band6' || _urlLevel === 'band7') {
-    _tplActiveLevel = _urlLevel;
-    document.querySelectorAll('.t2-level-btn').forEach(btn => {
-      const isActive = btn.dataset.level === _tplActiveLevel;
-      btn.classList.toggle('active', isActive);
-      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-    });
-  }
-
+let _loadTplSeq = 0;
+async function loadTemplates(level) {
+  const req = ++_loadTplSeq;
   try {
-    const saved = localStorage.getItem('tpl_scores');
-    if (saved) _tplScores = JSON.parse(saved);
-  } catch(e) {}
+    const res = await fetch(`${API}/api/task2/templates?level=${level}`, { headers: authHeaders() });
+    if (req !== _loadTplSeq || !res.ok) return false;
+    const data = await res.json();
+    if (req !== _loadTplSeq || !data.success || !Array.isArray(data.templates) || !data.templates.length) return false;
+    TPL_TYPES = data.templates.map(t => ({ id: t.typeId, label: t.label, sub: t.sub, name: t.name }));
+    TPL_DATA = {};
+    data.templates.forEach(t => { TPL_DATA[t.typeId] = { name: t.name, sections: t.sections || [] }; });
+    return true;
+  } catch { return false; }
+}
 
-  const loadedOk = await _loadTplTemplates(_tplActiveLevel);
-  if (loadedOk && !TPL_DATA[_tplActiveType]) _tplActiveType = TPL_TYPES[0]?.id || 'type01';
-  const subEl = document.getElementById('tpl-page-sub');
-  if (subEl) {
-    const totalAll = Object.values(TPL_DATA).reduce((s, t) =>
-      s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
-    subEl.textContent = `Điền từ ${totalAll} mẫu câu theo 7 dạng bài IELTS Task 2`;
-  }
+async function loadProgress(level) {
+  try {
+    const res = await fetch(`${API}/api/task2template/progress?level=${level}`, { headers: authHeaders() });
+    const data = res.ok ? await res.json() : null;
+    if (level !== _level) return;
+    _progress = {};
+    if (data && data.success) (data.progress || []).forEach(p => { _progress[p.typeId] = p; });
+  } catch { if (level === _level) _progress = {}; }
+}
 
-  renderTabs();
-  renderTplContent();
-  updateOverallBadge();
-  updateModeOverallBadge();
-  updateTypeStatus();
-  document.getElementById('tpl-switch-overlay').addEventListener('click', e => {
-    if (e.target === e.currentTarget) cancelTypeSwitch();
+function prog(typeId = _type) {
+  return _progress[typeId] || { typeId, level: _level, steps: {}, drillRounds: [], mastery: {}, warmupScore: 0, assembleBest: 0, applyText: [], reviewStage: 0, nextReviewAt: null };
+}
+
+// Merge locally right away (so the UI moves), then send. Saves for one
+// type run one after another so a slow request never lands after a newer one.
+let _saveChain = Promise.resolve();
+function saveProg(patch, typeId = _type, level = _level) {
+  const p = JSON.parse(JSON.stringify(prog(typeId)));
+  const now = new Date().toISOString();
+  if (patch.steps) STEP_KEYS.forEach(k => { if (patch.steps[k] && !p.steps[k]) p.steps[k] = now; });
+  if (patch.drillRounds) patch.drillRounds.forEach((v, i) => { p.drillRounds[i] = Math.max(p.drillRounds[i] || 0, v || 0); });
+  if (patch.mastery) Object.assign(p.mastery, patch.mastery);
+  if (patch.warmupScore != null) p.warmupScore = Math.max(p.warmupScore || 0, patch.warmupScore);
+  if (patch.assembleBest != null) p.assembleBest = Math.max(p.assembleBest || 0, patch.assembleBest);
+  if (patch.applyText) p.applyText = patch.applyText.slice();
+  if (level === _level) _progress[typeId] = p;
+
+  const body = JSON.stringify(Object.assign({ level }, patch));
+  _saveChain = _saveChain.then(async () => {
+    try {
+      const res = await fetch(`${API}/api/task2template/progress/${typeId}`, { method: 'PUT', headers: authHeaders(true), body });
+      const data = res.ok ? await res.json() : null;
+      if (data && data.success && data.progress && level === _level) {
+        if (patch.reset) delete _progress[typeId]; else _progress[typeId] = data.progress;
+        renderChrome();
+      } else if (!res.ok) {
+        showToast('Chưa lưu được tiến độ — kiểm tra kết nối mạng.', 'warn', 3000);
+      }
+    } catch { showToast('Chưa lưu được tiến độ — kiểm tra kết nối mạng.', 'warn', 3000); }
   });
-});
+  renderChrome();
+  return _saveChain;
+}
 
-// ── Render tabs (sidebar vertical buttons) ─────────────────────
+// Mastery 0..5 per sentence — changes are applied locally and sent with the
+// next saveProg().
+function masteryOf(key) { return Number(prog().mastery[key] || 0); }
+function bumpMastery(pending, key, delta, floor = 0) {
+  const cur = pending[key] != null ? pending[key] : masteryOf(key);
+  pending[key] = Math.min(5, Math.max(floor, 0, cur + delta));
+}
+
+// One finished run → attempt history (90-day TTL) + homework completion.
+async function saveAttempt({ mode, total, correct, isExam = false, timeTakenSec }) {
+  if (!total) return;
+  const meta = TPL_TYPES.find(t => t.id === _type);
+  try {
+    const res = await fetch(`${API}/api/task2template/save`, {
+      method: 'POST', headers: authHeaders(true),
+      body: JSON.stringify({ templateType: _type, templateName: (meta && meta.label) || _type, totalItems: total, correctItems: correct, mode, isExam, timeTakenSec, level: _level }),
+    });
+    if (window.ApiClient) await window.ApiClient.handleResponse(res);
+  } catch {}
+}
+
+// ── Progress maths ─────────────────────────────────────────────
+function stepDone(key, typeId = _type) { return !!prog(typeId).steps[key]; }
+function stepUnlocked(i, typeId = _type) { return i === 0 || stepDone(STEP_KEYS[i - 1], typeId); }
+function typePct(typeId) {
+  const p = prog(typeId);
+  const nPara = (TPL_DATA[typeId]?.sections || []).length || 1;
+  let done = STEP_KEYS.filter(k => p.steps[k]).length;
+  if (!p.steps.drill) done += Math.min(1, (p.drillRounds || []).reduce((s, r) => s + Math.min(3, r || 0), 0) / (nPara * 3));
+  return Math.round(done / STEP_KEYS.length * 100);
+}
+function reviewDue(typeId) {
+  const p = prog(typeId);
+  return !!(p.steps.assemble && p.nextReviewAt && new Date(p.nextReviewAt) <= new Date());
+}
+function knownCount(typeId) {
+  const m = prog(typeId).mastery || {};
+  return allSentences(typeId).filter(s => (m[s.key] || 0) >= 3).length;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  Page chrome: sidebar, badges, status, URL
+// ══════════════════════════════════════════════════════════════════
+function renderChrome() {
+  renderTabs();
+  const done = TPL_TYPES.filter(t => STEP_KEYS.every(k => stepDone(k, t.id))).length;
+  const main = document.getElementById('tpl-main-badge');
+  if (main) main.textContent = `${done} / ${TPL_TYPES.length} dạng hoàn thành`;
+  const known = TPL_TYPES.reduce((s, t) => s + knownCount(t.id), 0);
+  const total = TPL_TYPES.reduce((s, t) => s + allSentences(t.id).length, 0);
+  const due = TPL_TYPES.filter(t => reviewDue(t.id)).length;
+  const sub = document.getElementById('tpl-mode-badge');
+  if (sub) sub.textContent = `🧠 Đã thuộc ${known}/${total} câu` + (due ? ` · 🔔 ${due} dạng cần ôn` : '');
+  const fill = document.getElementById('tpl-progress-fill');
+  if (fill) fill.style.width = typePct(_type) + '%';
+  const st = document.getElementById('tpl-type-status');
+  if (st) {
+    const p = prog();
+    let h = '';
+    if (STEP_KEYS.every(k => p.steps[k])) h += '<span class="wp-status-badge wp-status-done"><i class="fas fa-check-circle"></i> Đã hoàn thành lộ trình</span>';
+    if (p.assembleBest) h += `<span class="wp-status-badge wp-status-best"><i class="fas fa-star"></i> Ghép bài tốt nhất: ${p.assembleBest}%</span>`;
+    h += `<span class="wp-status-badge"><i class="fas fa-chart-line"></i> Hoàn thành: ${done}/${TPL_TYPES.length} dạng bài</span>`;
+    st.innerHTML = h;
+  }
+  const subEl = document.getElementById('tpl-page-sub');
+  if (subEl) subEl.textContent = `Lộ trình 5 bước để thuộc ${total} mẫu câu theo 7 dạng bài IELTS Task 2 — ${isB7() ? 'Band 7+' : 'Band 6+'}`;
+}
+
 function renderTabs() {
   const wrap = document.getElementById('tpl-type-tabs');
   if (!wrap) return;
   wrap.innerHTML = TPL_TYPES.map(t => {
-    const typeData = TPL_DATA[t.id];
-    let done = 0, total = 0;
-    if (typeData) {
-      typeData.sections.forEach((sec, si) => {
-        sec.items.forEach((item, ii) => {
-          total++;
-          if (_tplScores[`${_lvlKey(t.id)}-${si}-${ii}`] === 'ok') done++;
-        });
-      });
-    }
-    const pct = total ? Math.round(done / total * 100) : 0;
-    if (total > 0) saveTypeScore(t.id, pct);
-    const isDone = isTypeCompleted(t.id);
-    const badge = isDone
-      ? '<span class="t2-tab-done-badge">✓</span>'
-      : (pct > 0 ? `<span class="t2-tab-pct-badge">${pct}%</span>` : '');
-    // Mini mode-progress dots — one per mode: Cloze (type color), Dịch câu
-    // (purple), Chunks (indigo), Build (blue), Dictation (teal).
-    const transPct  = modeCompletionPct('translation', t.id);
-    const chunksPct = modeCompletionPct('chunks', t.id);
-    const buildPct  = modeCompletionPct('build', t.id);
-    const dictPct   = modeCompletionPct('dictation', t.id);
-    const dotTitle = `Cloze ${pct}% · Dịch câu ${transPct}% · Chunks ${chunksPct}% · Build ${buildPct}% · Dictation ${dictPct}%`;
-    const dots = `<div class="t2-tab-mode-dots" title="${escAttr(dotTitle)}">
-        <span class="t2-tab-mode-dot" style="${pct > 0 ? `background:${t.color||'#6366f1'}` : ''}"></span>
-        <span class="t2-tab-mode-dot" style="${transPct > 0 ? 'background:#8b5cf6' : ''}"></span>
-        <span class="t2-tab-mode-dot" style="${chunksPct > 0 ? 'background:#4f46e5' : ''}"></span>
-        <span class="t2-tab-mode-dot" style="${buildPct > 0 ? 'background:#0ea5e9' : ''}"></span>
-        <span class="t2-tab-mode-dot" style="${dictPct > 0 ? 'background:#0d9488' : ''}"></span>
-      </div>`;
+    const meta = TYPE_META[t.id] || {};
+    const color = meta.color || '#6366f1';
+    const pct = typePct(t.id);
+    const allDone = STEP_KEYS.every(k => stepDone(k, t.id));
+    const due = reviewDue(t.id);
+    const badge = due ? '<span class="t2-tab-pct-badge pth-due-badge" title="Đến hạn ôn">🔔</span>'
+      : allDone ? '<span class="t2-tab-done-badge">✓</span>'
+      : pct > 0 ? `<span class="t2-tab-pct-badge">${pct}%</span>` : '';
+    const dots = STEP_KEYS.map(k => `<span class="t2-tab-mode-dot" style="${stepDone(k, t.id) ? `background:${color}` : ''}"></span>`).join('');
     return `
-    <button class="t2-type-tab-btn ${_tplActiveType === t.id ? 'active' : ''}"
-      onclick="switchTplType('${t.id}')" data-tpl-type="${t.id}" style="--tab-color:${t.color||'#6366f1'}">
-      <div class="t2-tab-icon-wrap" style="background:${t.color||'#6366f1'}">
-        ${t.icon ? `<i class="fas ${t.icon}"></i>` : ''}
-      </div>
+    <button class="t2-type-tab-btn ${_type === t.id ? 'active' : ''}" onclick="switchTplType('${t.id}')" data-tpl-type="${t.id}" style="--tab-color:${color}">
+      <div class="t2-tab-icon-wrap" style="background:${color}">${meta.icon ? `<i class="fas ${meta.icon}"></i>` : ''}</div>
       <div class="t2-tab-text">
-        <div class="t2-tab-label">${escHtml(t.label)}</div>
-        <div class="t2-tab-sub">${escHtml(t.sub)}</div>
-        ${total > 0 ? `<div class="t2-tab-prog"><div class="t2-tab-prog-fill" style="width:${pct}%;background:${t.color||'#6366f1'}"></div></div>` : ''}
-        ${dots}
+        <div class="t2-tab-label">${esc(t.label)}</div>
+        <div class="t2-tab-sub">${esc(t.sub)}</div>
+        <div class="t2-tab-prog"><div class="t2-tab-prog-fill" style="width:${pct}%;background:${color}"></div></div>
+        <div class="t2-tab-mode-dots" title="5 bước của lộ trình">${dots}</div>
       </div>
       ${badge}
     </button>`;
   }).join('');
 }
 
-// ── Per-type reference guide (recognise / outline / 6+→7+ / useful language / model essay / mistakes) ──
-let _typeGuides = null;        // typeId -> guide object, once fetched
-let _typeGuidesPromise = null; // in-flight fetch
+function _syncUrl(push = false) {
+  const params = new URLSearchParams();
+  if (_type !== 'type01') params.set('type', _type);
+  if (_level !== 'band6') params.set('level', _level);
+  const url = location.pathname.split('?')[0] + (params.toString() ? '?' + params : '');
+  if (push) history.pushState(null, '', url); else history.replaceState(null, '', url);
+}
+function copyTplShareUrl() {
+  const url = `${location.origin}${location.pathname.split('?')[0]}?type=${_type}${_level !== 'band6' ? '&level=' + _level : ''}`;
+  const ok = () => showToast('Đã sao chép link chia sẻ!', 'info', 2500);
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(ok).catch(() => _copyFallback(url, ok));
+  else _copyFallback(url, ok);
+}
+function _copyFallback(text, onDone) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); onDone(); } catch { showToast('Không thể sao chép', 'warn', 2000); }
+  document.body.removeChild(ta);
+}
+
+// ── Switching type / level (asks first when leaving an activity) ──
+let _pendingLeave = null;
+function _inActivity() { return _view !== 'overview' && _view !== 'read' && !(_run && _run.finished); }
+function _confirmLeave(text, action) {
+  if (!_inActivity()) { action(); return; }
+  _pendingLeave = action;
+  document.getElementById('tpl-switch-sub').textContent = text;
+  document.getElementById('tpl-switch-overlay').classList.remove('hidden');
+}
+function confirmTypeSwitch() {
+  document.getElementById('tpl-switch-overlay').classList.add('hidden');
+  const a = _pendingLeave; _pendingLeave = null;
+  if (a) a();
+}
+function cancelTypeSwitch() {
+  _pendingLeave = null;
+  document.getElementById('tpl-switch-overlay').classList.add('hidden');
+}
+function _leaveActivity() {
+  _stopTimers();
+  stopSpeak();
+  _unmountDrill();
+  _run = null;
+  _view = 'overview';
+}
+
+function switchTplType(typeId) {
+  if (typeId === _type && _view === 'overview') return;
+  _confirmLeave('Phần đang luyện dở của bước này sẽ không được lưu.', () => {
+    _leaveActivity();
+    _type = typeId;
+    _syncUrl(true);
+    renderChrome();
+    renderTypeGuide();
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+async function switchTplLevel(level) {
+  if ((level !== 'band6' && level !== 'band7') || level === _level) return;
+  _confirmLeave('Phần đang luyện dở của bước này sẽ không được lưu.', async () => {
+    _leaveActivity();
+    const ok = await loadTemplates(level);
+    if (!ok) { showToast('Không tải được nội dung. Vui lòng thử lại.', 'error'); return; }
+    _level = level;
+    _syncLevelButtons();
+    await loadProgress(level);
+    if (!TPL_DATA[_type]) _type = TPL_TYPES[0]?.id || 'type01';
+    _syncUrl(true);
+    renderChrome();
+    render();
+  });
+}
+function _syncLevelButtons() {
+  document.querySelectorAll('.t2-level-btn').forEach(btn => {
+    const on = btn.dataset.level === _level;
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+}
+
+window.addEventListener('popstate', async () => {
+  const q = new URLSearchParams(location.search);
+  const level = q.get('level') === 'band7' ? 'band7' : 'band6';
+  _leaveActivity();
+  if (level !== _level && await loadTemplates(level)) {
+    _level = level; _syncLevelButtons(); await loadProgress(level);
+  }
+  const t = q.get('type');
+  _type = t && TPL_DATA[t] ? t : (TPL_TYPES[0]?.id || 'type01');
+  renderChrome(); renderTypeGuide(); render();
+});
+
+// ── Init ───────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+  loadXPFromStorage();
+  if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+    if (window.openUpgradeModal) window.openUpgradeModal();
+    return;
+  }
+  if ('speechSynthesis' in window) {
+    _voice = _pickVoice();
+    speechSynthesis.onvoiceschanged = () => { _voice = _pickVoice(); };
+  }
+  setupDictionaryDouble('tpl-content-area', 'task2-template', () => _view !== 'exam');
+  window.__ewsExamActive = () => _view === 'exam';
+
+  const q = new URLSearchParams(location.search);
+  if (q.get('level') === 'band7') _level = 'band7';
+  _syncLevelButtons();
+
+  const area = document.getElementById('tpl-content-area');
+  if (area) area.innerHTML = '<div class="pth-loading">⏳ Đang tải...</div>';
+  const [ok] = await Promise.all([loadTemplates(_level), loadProgress(_level)]);
+  if (!ok) {
+    if (area) area.innerHTML = '<div class="pth-loading">Không tải được nội dung. Vui lòng tải lại trang.</div>';
+    return;
+  }
+  const t = q.get('type');
+  _type = t && TPL_DATA[t] ? t : (TPL_TYPES[0]?.id || 'type01');
+
+  renderChrome();
+  renderTypeGuide();
+  render();
+  document.getElementById('tpl-switch-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) cancelTypeSwitch(); });
+  window.addEventListener('beforeunload', e => { if (_view === 'exam') { e.preventDefault(); e.returnValue = ''; } });
+});
+
+// ══════════════════════════════════════════════════════════════════
+//  Views
+// ══════════════════════════════════════════════════════════════════
+function area() { return document.getElementById('tpl-content-area'); }
+
+function render() {
+  _unmountDrill();
+  const guide = document.getElementById('tpl-guide-area');
+  if (guide) guide.style.display = _view === 'exam' ? 'none' : '';
+  updateExamBtn();
+  if (!TPL_DATA[_type]) { area().innerHTML = '<div class="pth-loading">Chưa có nội dung</div>'; return; }
+  switch (_view) {
+    case 'warmup':   return renderWarmup();
+    case 'read':     return renderRead();
+    case 'drill':    return renderDrill();
+    case 'assemble': return renderAssemble();
+    case 'apply':    return renderApply();
+    case 'review':
+    case 'exam':     return renderRecallRun();
+    default:         return renderOverview();
+  }
+}
+
+function backToPath() {
+  _leaveActivity();
+  renderChrome();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function activityHeader(stepIdx, right = '') {
+  const s = STEPS[stepIdx];
+  return `<div class="pth-act-hdr">
+    <button class="pth-back" onclick="backToPath()"><i class="fas fa-arrow-left"></i> Lộ trình</button>
+    <div class="pth-act-title">${s.num} ${esc(s.title)}</div>
+    <div class="pth-act-right">${right}</div>
+  </div>`;
+}
+
+// ── Overview: the path ─────────────────────────────────────────
+function renderOverview() {
+  const t = TPL_DATA[_type];
+  const meta = TYPE_META[_type] || {};
+  const p = prog();
+  const paras = paragraphs();
+  const total = allSentences().length;
+  const known = knownCount(_type);
+  const firstOpen = STEP_KEYS.findIndex(k => !p.steps[k]);
+
+  const due = reviewDue(_type);
+  const next = p.nextReviewAt ? new Date(p.nextReviewAt) : null;
+  const reviewCard = p.steps.assemble ? `
+    <div class="pth-review ${due ? 'is-due' : ''}">
+      <div class="pth-review-ic">${due ? '🔔' : '🗓️'}</div>
+      <div class="pth-review-txt">
+        <b>${due ? 'Đến hạn ôn nhanh' : 'Ôn nhanh'}</b>
+        <span>${due ? 'Khoảng 3 phút: nhớ lại những câu bạn hay sai nhất.' : `Lần ôn tiếp theo: ${next ? next.toLocaleDateString('vi-VN') : '—'}. Ôn đúng hẹn giúp nhớ lâu hơn.`}</span>
+      </div>
+      <button class="pth-btn ${due ? 'pth-btn--primary' : ''}" onclick="startReview()"><i class="fas fa-bolt"></i> ${due ? 'Ôn ngay' : 'Ôn sớm'}</button>
+    </div>` : '';
+
+  const cards = STEPS.map((s, i) => {
+    const done = !!p.steps[s.key];
+    const open = stepUnlocked(i);
+    const current = i === firstOpen;
+    let meta2 = '';
+    if (s.key === 'warmup' && done) meta2 = `Xếp đúng ngay lần đầu: ${p.warmupScore || 0}%`;
+    if (s.key === 'drill') {
+      const r = paras.map((_, k) => Math.min(3, p.drillRounds[k] || 0));
+      meta2 = `Đoạn xong: ${r.filter(x => x >= 3).length}/${paras.length}`;
+    }
+    if (s.key === 'assemble' && p.assembleBest) meta2 = `Tốt nhất: ${p.assembleBest}% · cần ≥ ${ASSEMBLE_PASS}%`;
+    if (s.key === 'assemble' && !p.assembleBest) meta2 = `Cần ≥ ${ASSEMBLE_PASS}% để hoàn thành`;
+    const state = done ? 'is-done' : current ? 'is-current' : open ? '' : 'is-locked';
+    const btn = !open ? '<span class="pth-lock"><i class="fas fa-lock"></i></span>'
+      : `<button class="pth-btn ${current ? 'pth-btn--primary' : ''}" onclick="startStep('${s.key}')">${done ? '<i class="fas fa-rotate-right"></i> Luyện lại' : current ? '<i class="fas fa-play"></i> Bắt đầu' : '<i class="fas fa-play"></i> Mở'}</button>`;
+    return `<div class="pth-step ${state}">
+      <div class="pth-step-num">${done ? '<i class="fas fa-check"></i>' : s.num}</div>
+      <div class="pth-step-body">
+        <div class="pth-step-title"><i class="fas ${s.icon}"></i> ${esc(s.title)}</div>
+        <div class="pth-step-desc">${esc(s.desc)}</div>
+        ${meta2 ? `<div class="pth-step-meta">${esc(meta2)}</div>` : ''}
+      </div>
+      <div class="pth-step-act">${btn}</div>
+    </div>`;
+  }).join('');
+
+  area().innerHTML = `
+    <div class="pth-wrap">
+      <div class="t2-type-info-card">
+        <div class="t2-type-info-left">
+          <div class="t2-type-info-icon" style="background:${meta.color || '#6366f1'}"><i class="fas ${meta.icon || 'fa-file'}"></i></div>
+          <div>
+            <div class="t2-type-info-name">${esc(t.name)} · ${isB7() ? '🏆 Band 7+' : '🌱 Band 6+'}</div>
+            ${meta.desc ? `<div class="t2-type-info-desc">${esc(meta.desc)}</div>` : ''}
+          </div>
+        </div>
+        <div class="t2-type-structure"><i class="fas fa-route" style="margin-right:4px;font-size:10px;opacity:.7"></i>${paras.length} đoạn · ${total} câu mẫu</div>
+      </div>
+      ${reviewCard}
+      <div class="pth-steps">${cards}</div>
+      <div class="pth-foot">
+        <span>🧠 Đã thuộc <b>${known}/${total}</b> câu</span>
+        <span class="pth-foot-sep">·</span>
+        <span>${isB7() ? 'Band 7+: ít gợi ý hơn, ghép cả bài có tính giờ.' : 'Band 6+: nhiều gợi ý hơn, ghép từng đoạn một.'}</span>
+        ${STEP_KEYS.some(k => p.steps[k]) || (p.drillRounds || []).some(Boolean) ? `<button class="pth-link" onclick="resetPath()"><i class="fas fa-eraser"></i> Làm lại từ đầu</button>` : ''}
+      </div>
+    </div>`;
+}
+
+function resetPath() {
+  if (!confirm('Xoá tiến độ lộ trình của dạng bài này (cấp độ hiện tại) và làm lại từ đầu?')) return;
+  saveProg({ reset: true });
+  delete _progress[_type];
+  renderChrome();
+  render();
+}
+
+function startStep(key) {
+  const i = STEP_KEYS.indexOf(key);
+  if (i < 0 || !stepUnlocked(i)) return;
+  stopSpeak();
+  if (key === 'warmup') startWarmup();
+  else if (key === 'read') { _view = 'read'; _run = {}; render(); }
+  else if (key === 'drill') startDrill();
+  else if (key === 'assemble') startAssemble();
+  else if (key === 'apply') startApply();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Finishing a step: save, award XP, then show the next one.
+function completeStep(key, extra = {}) {
+  const first = !stepDone(key);
+  saveProg(Object.assign({ steps: { [key]: true } }, extra));
+  if (first) { updateXPStorage(10); showToast(`🎉 Xong bước ${STEPS[STEP_KEYS.indexOf(key)].num} ${STEPS[STEP_KEYS.indexOf(key)].title}! +10 XP`, 'success', 2500); }
+}
+function nextStepButton(key) {
+  const i = STEP_KEYS.indexOf(key);
+  const n = STEPS[i + 1];
+  return n ? `<button class="pth-btn pth-btn--primary" onclick="startStep('${n.key}')">Sang bước ${n.num} ${esc(n.title)} <i class="fas fa-arrow-right"></i></button>`
+           : `<button class="pth-btn pth-btn--primary" onclick="backToPath()">Về lộ trình <i class="fas fa-arrow-right"></i></button>`;
+}
+
+// ── ① Warm-up: paragraph structure + sentence order ────────────
+function startWarmup() {
+  _view = 'warmup';
+  _run = { part: 'intro', p: 0, firstTry: [], tried: false };
+  render();
+}
+
+function renderWarmup() {
+  const paras = paragraphs();
+  if (_run.part === 'intro') {
+    const rows = paras.map(p => {
+      const tgt = paraTarget(p.si, paras.length);
+      const words = p.sentences.reduce((s, x) => s + countWords(x.en), 0);
+      const flow = p.sentences.map(s => `<span class="pth-role">${esc(s.role)}</span>`).join('<i class="fas fa-angle-right pth-flow-arr"></i>');
+      return `<div class="pth-struct-row">
+        <div class="pth-struct-name">${esc(shortTitle(p.title))}</div>
+        <div class="pth-struct-nums">
+          <span><b>${p.sentences.length}</b> câu mẫu · <b>${words}</b> chữ</span>
+          <span class="pth-struct-tgt">Bài thật: ${tgt.sent} · ${tgt.words}</span>
+        </div>
+        <div class="pth-flow">${flow}</div>
+      </div>`;
+    }).join('');
+    area().innerHTML = `${activityHeader(0)}
+      <div class="pth-wrap">
+        <div class="pth-card">
+          <div class="pth-card-title">🗺️ Bộ khung của dạng bài này</div>
+          <p class="pth-muted">Đọc qua: mỗi đoạn có mấy câu, câu nào làm nhiệm vụ gì. Cả bài thật nên dài <b>250–300 chữ</b>.${isB7() ? ' Template Band 7+ có vài câu <b>thay thế nhau</b> (cùng vai trò) — khi viết bài thật chỉ cần chọn một.' : ''}</p>
+          <div class="pth-struct">${rows}</div>
+          <div class="pth-actions"><button class="pth-btn pth-btn--primary" onclick="wuStartOrder()">Bắt đầu sắp xếp câu <i class="fas fa-arrow-right"></i></button></div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  if (_run.part === 'done') {
+    const score = _run.score;
+    area().innerHTML = `${activityHeader(0)}
+      <div class="pth-wrap"><div class="pth-card pth-done">
+        <div class="pth-done-ic">🧩</div>
+        <div class="pth-card-title">Xong phần khung bài!</div>
+        <p class="pth-muted">Xếp đúng ngay lần đầu: <b>${score}%</b> số đoạn.</p>
+        <div class="pth-actions"><button class="pth-btn" onclick="startWarmup()"><i class="fas fa-rotate-right"></i> Làm lại</button>${nextStepButton('warmup')}</div>
+      </div></div>`;
+    return;
+  }
+
+  // part === 'order'
+  const p = paras[_run.p];
+  const r = _run;
+  const picked = r.picked.map((idx, pos) => {
+    const s = p.sentences[idx];
+    const st = r.checked ? (r.checked.wrong.has(pos) ? 'is-wrong' : 'is-ok') : '';
+    const role = r.checked && r.checked.ok ? `<span class="pth-role">${esc(p.sentences[pos].role)}</span>` : '';
+    return `<button class="pth-sent ${st}" ${r.checked && r.checked.ok ? 'disabled' : `onclick="wuUnpick(${pos})"`}><span class="pth-sent-n">${pos + 1}</span><span>${enHtml(s, { anchors: false })}</span>${role}</button>`;
+  }).join('');
+  const pool = r.pool.filter(idx => !r.picked.includes(idx)).map(idx =>
+    `<button class="pth-sent" onclick="wuPick(${idx})"><span>${enHtml(p.sentences[idx], { anchors: false })}</span></button>`).join('');
+  const full = r.picked.length === p.sentences.length;
+  let actions = '';
+  if (r.checked && r.checked.ok) actions = `<button class="pth-btn pth-btn--primary" onclick="wuNext()">${r.p + 1 < paras.length ? 'Đoạn tiếp theo' : 'Hoàn thành'} <i class="fas fa-arrow-right"></i></button>`;
+  else if (r.checked) actions = `<button class="pth-btn" onclick="wuShowAnswer()"><i class="fas fa-eye"></i> Xem đáp án</button><button class="pth-btn pth-btn--primary" onclick="wuRetry()"><i class="fas fa-rotate-right"></i> Sửa lại</button>`;
+  else actions = `<button class="pth-btn pth-btn--primary" onclick="wuCheck()" ${full ? '' : 'disabled'}><i class="fas fa-check"></i> Kiểm tra</button>`;
+
+  area().innerHTML = `${activityHeader(0, `Đoạn ${r.p + 1}/${paras.length}`)}
+    <div class="pth-wrap">
+      <div class="pth-card">
+        <div class="pth-card-title">${esc(shortTitle(p.title))} <span class="pth-chip">${p.sentences.length} câu</span></div>
+        <p class="pth-muted">Bấm các câu bên dưới theo đúng thứ tự xuất hiện trong đoạn. Bấm lại một câu đã chọn để bỏ ra.</p>
+        <div class="pth-order-slots">${picked || '<div class="pth-empty-slot">Chưa chọn câu nào</div>'}</div>
+        ${pool ? `<div class="pth-pool-label">Các câu cần xếp</div><div class="pth-pool">${pool}</div>` : ''}
+        ${r.checked && !r.checked.ok ? '<div class="pth-fb pth-fb--bad">Chưa đúng thứ tự — các câu viền đỏ đang ở sai vị trí.</div>' : ''}
+        ${r.checked && r.checked.ok ? '<div class="pth-fb pth-fb--good">✅ Đúng rồi! Nhìn lại vai trò của từng câu trong đoạn.</div>' : ''}
+        <div class="pth-actions">${actions}</div>
+      </div>
+    </div>`;
+}
+
+function wuStartOrder() { _run.part = 'order'; _run.p = 0; _wuSetupPara(); render(); }
+function _wuSetupPara() {
+  const p = paragraphs()[_run.p];
+  const idx = p.sentences.map((_, i) => i);
+  _run.pool = shuffleNew(idx);
+  _run.picked = p.sentences.length === 1 ? [0] : [];
+  _run.checked = null;
+  _run.tried = false;
+  if (p.sentences.length === 1) { _run.checked = { ok: true, wrong: new Set() }; _run.firstTry[_run.p] = true; }
+}
+function wuPick(idx) { if (_run.checked) return; if (!_run.picked.includes(idx)) _run.picked.push(idx); renderWarmup(); }
+function wuUnpick(pos) { if (_run.checked) return; _run.picked.splice(pos, 1); renderWarmup(); }
+function wuCheck() {
+  const p = paragraphs()[_run.p];
+  const wrong = new Set();
+  _run.picked.forEach((idx, pos) => { if (p.sentences[idx].role !== p.sentences[pos].role) wrong.add(pos); });
+  const ok = wrong.size === 0;
+  if (!_run.tried) _run.firstTry[_run.p] = ok;
+  _run.tried = true;
+  _run.checked = { ok, wrong };
+  if (ok) playOk(); else playWrong();
+  renderWarmup();
+}
+function wuRetry() {
+  // Keep the sentences that were in the right place, return the rest to the pool.
+  const keep = [];
+  for (let pos = 0; pos < _run.picked.length; pos++) { if (_run.checked.wrong.has(pos)) break; keep.push(_run.picked[pos]); }
+  _run.picked = keep;
+  _run.checked = null;
+  renderWarmup();
+}
+function wuShowAnswer() {
+  const p = paragraphs()[_run.p];
+  _run.picked = p.sentences.map((_, i) => i);
+  _run.checked = { ok: true, wrong: new Set() };
+  renderWarmup();
+}
+function wuNext() {
+  const paras = paragraphs();
+  if (_run.p + 1 < paras.length) { _run.p++; _wuSetupPara(); renderWarmup(); return; }
+  const score = Math.round(paras.filter((_, i) => _run.firstTry[i]).length / paras.length * 100);
+  _run.part = 'done'; _run.score = score; _run.finished = true;
+  completeStep('warmup', { warmupScore: score });
+  renderWarmup();
+}
+
+// ── ② Read & listen ───────────────────────────────────────────
+function renderRead() {
+  const paras = paragraphs();
+  const body = paras.map(p => `
+    <div class="pth-read-para">
+      <div class="pth-read-hdr">
+        <span>${esc(shortTitle(p.title))} <span class="pth-chip">${p.sentences.length} câu</span></span>
+        <button class="pth-icon-btn" onclick="speakPara(${p.si})" title="Nghe cả đoạn"><i class="fas fa-volume-high"></i> Cả đoạn</button>
+      </div>
+      ${p.sentences.map(s => `
+        <div class="pth-read-sent">
+          <button class="pth-icon-btn pth-icon-btn--sm" onclick="speakKey('${s.key}')" title="Nghe câu này"><i class="fas fa-volume-high"></i></button>
+          <div>
+            <div class="pth-read-en">${enHtml(s)}</div>
+            <div class="pth-read-vi"${_showVi ? '' : ' style="display:none"'}>${esc(s.vi)}</div>
+            <div class="pth-read-role">${esc(s.role)}</div>
+          </div>
+        </div>`).join('')}
+    </div>`).join('');
+  area().innerHTML = `${activityHeader(1, `<button class="pth-icon-btn" onclick="toggleReadVi()">🇻🇳 ${_showVi ? 'Ẩn tiếng Việt' : 'Hiện tiếng Việt'}</button>`)}
+    <div class="pth-wrap">
+      <div class="pth-card">
+        <p class="pth-muted"><span class="pth-anchor">Gạch chân</span> = từ khoá sẽ bị ẩn ở bước sau. <span class="pth-ph">(…)</span> = chỗ bạn tự điền nội dung theo đề, không cần học thuộc.</p>
+        ${body}
+        <div class="pth-actions">${_run.finished ? nextStepButton('read') : '<button class="pth-btn pth-btn--primary" onclick="readDone()"><i class="fas fa-check"></i> Tôi đã đọc xong</button>'}</div>
+      </div>
+    </div>`;
+}
+function toggleReadVi() { _showVi = !_showVi; renderRead(); }
+function readDone() { stopSpeak(); _run.finished = true; completeStep('read'); renderRead(); }
+
+// ── ③ Drill per paragraph ─────────────────────────────────────
+// Stage 1 build (chunks) → 2 fade (band 6+: 30% then 60% blanks; band 7+:
+// 60%) → 3 recall (band 6+: letter-by-letter drill; band 7+: free typing).
+// A sentence answered wrong comes back at the end of the round (twice at most).
+function startDrill(pIdx) {
+  const paras = paragraphs();
+  const rounds = prog().drillRounds || [];
+  if (pIdx == null) {
+    pIdx = paras.findIndex((_, i) => (rounds[i] || 0) < 3);
+    if (pIdx < 0) pIdx = 0;
+  }
+  if (pIdx > 0 && (rounds[pIdx - 1] || 0) < 3) return;
+  _view = 'drill';
+  const doneStages = rounds[pIdx] || 0;
+  _run = { p: pIdx, stage: doneStages >= 3 ? 1 : doneStages + 1, pending: {}, between: false };
+  _drillSetupStage();
+  render();
+}
+function _drillSetupStage() {
+  const p = paragraphs()[_run.p];
+  const st = _run.stage;
+  let q = [];
+  if (st === 1) q = p.sentences.map(s => ({ key: s.key, kind: 'build' }));
+  if (st === 2) {
+    if (!isB7()) q = p.sentences.map(s => ({ key: s.key, kind: 'fade', lvl: 1 }));
+    q = q.concat(p.sentences.map(s => ({ key: s.key, kind: 'fade', lvl: 2 })));
+  }
+  if (st === 3) q = p.sentences.map(s => ({ key: s.key, kind: 'recall' }));
+  _run.queue = q.map(x => Object.assign(x, { tries: 0 }));
+  _run.pos = 0;
+  _run.item = null;
+  _run.stageFirstOk = 0;
+}
+function _sentence(key) { return allSentences().find(s => s.key === key); }
+
+function renderDrill() {
+  const paras = paragraphs();
+  const rounds = prog().drillRounds || [];
+  const chips = paras.map((p, i) => {
+    const r = Math.min(3, rounds[i] || 0);
+    const locked = i > 0 && (rounds[i - 1] || 0) < 3;
+    return `<button class="pth-para-chip ${i === _run.p ? 'active' : ''} ${r >= 3 ? 'is-done' : ''}" ${locked ? 'disabled' : `onclick="drillSwitchPara(${i})"`}>
+      ${locked ? '<i class="fas fa-lock"></i>' : r >= 3 ? '<i class="fas fa-check"></i>' : ''} ${esc(shortTitle(p.title).split(/[·–-]/)[0].trim())}
+      <span class="pth-para-dots">${[1, 2, 3].map(k => `<i class="${r >= k ? 'on' : ''}"></i>`).join('')}</span>
+    </button>`;
+  }).join('');
+  const stageBar = DRILL_STAGES.map((n, i) => `<span class="pth-stage ${i + 1 === _run.stage ? 'active' : ''} ${i + 1 < _run.stage ? 'done' : ''}">${i + 1}. ${n}</span>`).join('<i class="fas fa-angle-right pth-flow-arr"></i>');
+
+  let inner;
+  if (_run.between) inner = _drillBetweenHtml();
+  else {
+    const it = _run.queue[_run.pos];
+    const s = _sentence(it.key);
+    const left = _run.queue.length - _run.pos;
+    inner = `
+      <div class="pth-drill-meta"><span>Còn ${left} lượt trong vòng này</span>${it.tries ? '<span class="pth-chip pth-chip--warn">Làm lại câu sai</span>' : ''}</div>
+      <div class="pth-vi-prompt"><i class="fas fa-quote-left"></i> ${esc(s.vi)}</div>
+      <div id="pth-item"></div>`;
+  }
+  area().innerHTML = `${activityHeader(2, `Đoạn ${_run.p + 1}/${paras.length}`)}
+    <div class="pth-wrap">
+      <div class="pth-para-chips">${chips}</div>
+      <div class="pth-card">
+        <div class="pth-card-title">${esc(shortTitle(paras[_run.p].title))}</div>
+        <div class="pth-stages">${stageBar}</div>
+        ${inner}
+      </div>
+    </div>`;
+  if (!_run.between) _drillRenderItem();
+}
+
+function drillSwitchPara(i) {
+  if (i === _run.p) return;
+  _unmountDrill();
+  startDrill(i);
+}
+
+function _drillBetweenHtml() {
+  const paras = paragraphs();
+  const st = _run.stage;
+  if (st <= 3) {
+    return `<div class="pth-between">
+      <div class="pth-done-ic">✅</div>
+      <div class="pth-card-title">Xong vòng ${st - 1}: ${DRILL_STAGES[st - 2]}</div>
+      <p class="pth-muted">Tiếp theo: <b>${DRILL_STAGES[st - 1]}</b>${st === 2 ? (isB7() ? ' — 60% số chữ bị ẩn.' : ' — ẩn 30% rồi 60% số chữ.') : st === 3 ? (isB7() ? ' — nhìn tiếng Việt, tự gõ cả câu, không gợi ý.' : ' — nhìn tiếng Việt, gõ từng chữ (có chữ cái đầu).') : ''}</p>
+      <div class="pth-actions"><button class="pth-btn pth-btn--primary" onclick="drillContinue()">Tiếp tục <i class="fas fa-arrow-right"></i></button></div>
+    </div>`;
+  }
+  const allDone = paras.every((_, i) => (prog().drillRounds[i] || 0) >= 3);
+  const nextP = _run.p + 1 < paras.length ? _run.p + 1 : -1;
+  return `<div class="pth-between">
+    <div class="pth-done-ic">🏁</div>
+    <div class="pth-card-title">Xong đoạn ${esc(shortTitle(paras[_run.p].title))}!</div>
+    <p class="pth-muted">Nhớ lại đúng ngay lần đầu: <b>${_run.stageFirstOk}/${paras[_run.p].sentences.length}</b> câu.</p>
+    <div class="pth-actions">
+      <button class="pth-btn" onclick="startDrill(${_run.p})"><i class="fas fa-rotate-right"></i> Luyện lại đoạn này</button>
+      ${nextP >= 0 && !allDone ? `<button class="pth-btn pth-btn--primary" onclick="startDrill(${nextP})">Đoạn tiếp theo <i class="fas fa-arrow-right"></i></button>` : ''}
+      ${allDone ? nextStepButton('drill') : ''}
+    </div>
+  </div>`;
+}
+function drillContinue() { _run.between = false; renderDrill(); }
+
+function _drillRenderItem() {
+  const it = _run.queue[_run.pos];
+  const s = _sentence(it.key);
+  const host = document.getElementById('pth-item');
+  if (!host) return;
+  if (it.kind === 'build') renderBuild(host, s, ok => _drillAnswered(ok));
+  else if (it.kind === 'fade') renderFade(host, s, it.lvl, ok => _drillAnswered(ok));
+  else renderRecall(host, s, { free: isB7(), onDone: ok => _drillAnswered(ok) });
+}
+
+// Called once the student has answered the current item (the item's own UI
+// then shows feedback and a "Tiếp" button that calls drillNext()).
+function _drillAnswered(ok) {
+  const it = _run.queue[_run.pos];
+  if (it.kind === 'recall') {
+    if (ok && !it.tries) { _run.stageFirstOk++; bumpMastery(_run.pending, it.key, 1, 3); updateXPStorage(2); }
+    else if (ok) bumpMastery(_run.pending, it.key, 0, 2);
+    else bumpMastery(_run.pending, it.key, -1);
+  } else if (ok) {
+    bumpMastery(_run.pending, it.key, 0, 1);
+  }
+  if (!ok && it.tries < 2) _run.queue.push({ key: it.key, kind: it.kind, lvl: it.lvl, tries: it.tries + 1 });
+}
+function drillNext() {
+  _unmountDrill();
+  _run.pos++;
+  if (_run.pos < _run.queue.length) { renderDrill(); return; }
+  // Round finished.
+  const rounds = (prog().drillRounds || []).slice();
+  rounds[_run.p] = Math.max(rounds[_run.p] || 0, _run.stage);
+  const paras = paragraphs();
+  const allDone = paras.every((_, i) => (rounds[i] || 0) >= 3);
+  const patch = { drillRounds: rounds, mastery: _run.pending };
+  _run.pending = {};
+  if (allDone && !stepDone('drill')) completeStep('drill', patch);
+  else saveProg(patch);
+  _run.stage++;
+  _run.between = true;
+  if (_run.stage <= 3) _drillSetupStage();
+  else _run.finished = true;
+  renderDrill();
+}
+
+// Build: put the chunks of one sentence in order.
+function chunkSentence(sentence) {
+  const BOUND = new Set(['of', 'in', 'on', 'for', 'with', 'to', 'from', 'at', 'by', 'that', 'which', 'and', 'but', 'because', 'so', 'while', 'although', 'as', 'if', 'than', 'after', 'before', 'when']);
+  const toks = tokenize(sentence).map(t => t.text);
+  const chunks = []; let cur = [];
+  toks.forEach((w, i) => {
+    const bare = normWord(w);
+    if (i > 0 && !w.startsWith('(') && BOUND.has(bare) && cur.length >= 2) { chunks.push(cur.join(' ')); cur = [w]; }
+    else { cur.push(w); if (/,$/.test(w) && cur.length >= 3) { chunks.push(cur.join(' ')); cur = []; } }
+  });
+  if (cur.length) chunks.push(cur.join(' '));
+  const merged = [];
+  chunks.forEach(c => { if (merged.length && c.split(' ').length <= 1) merged[merged.length - 1] += ' ' + c; else merged.push(c); });
+  if (merged.length >= 3) return merged;
+  // Short sentence: pairs of words instead.
+  const pairs = [];
+  for (let i = 0; i < toks.length; i += 2) pairs.push(toks.slice(i, i + 2).join(' '));
+  return pairs;
+}
+let _build = null;
+function renderBuild(host, s, onDone) {
+  const pieces = chunkSentence(s.en).map((text, i) => ({ id: i, text }));
+  _build = { host, s, onDone, target: pieces.map(p => p.text), bank: shuffleNew(pieces, (a, b) => a.text === b.text), picked: [], state: null, wrongs: 0 };
+  _buildDraw();
+}
+function _buildDraw() {
+  const b = _build;
+  const done = b.state === 'ok';
+  b.host.innerHTML = `
+    <div class="pth-build-ans ${b.state === 'bad' ? 'is-bad' : ''} ${done ? 'is-ok' : ''}">${b.picked.map((id, pos) => {
+      const pc = b.bank.find(x => x.id === id);
+      return `<button class="pth-chunk is-picked" ${done ? 'disabled' : `onclick="buildUnpick(${pos})"`}>${esc(pc.text)}</button>`;
+    }).join('') || '<span class="pth-empty-slot">Bấm các cụm bên dưới theo đúng thứ tự</span>'}</div>
+    <div class="pth-build-bank">${b.bank.filter(x => !b.picked.includes(x.id)).map(x => `<button class="pth-chunk" onclick="buildPick(${x.id})">${esc(x.text)}</button>`).join('')}</div>
+    ${b.state === 'bad' ? '<div class="pth-fb pth-fb--bad">Chưa đúng thứ tự — bấm vào cụm để gỡ ra và sửa lại.</div>' : ''}
+    ${done ? `<div class="pth-fb pth-fb--good">✅ ${enHtml(b.s)}</div>` : ''}
+    <div class="pth-actions">
+      ${done ? '<button class="pth-btn pth-btn--primary" id="pth-next" onclick="drillNext()">Tiếp <i class="fas fa-arrow-right"></i></button>'
+        : `${b.wrongs >= 2 ? '<button class="pth-btn" onclick="buildReveal()"><i class="fas fa-eye"></i> Xem đáp án</button>' : ''}`}
+    </div>`;
+  if (done) document.getElementById('pth-next')?.focus();
+}
+function buildPick(id) {
+  const b = _build; if (!b || b.state === 'ok') return;
+  b.picked.push(id); b.state = null;
+  if (b.picked.length === b.bank.length) {
+    const typed = b.picked.map(i => b.bank.find(x => x.id === i).text).join(' ');
+    if (typed === b.target.join(' ')) { b.state = 'ok'; playOk(); b.onDone(b.wrongs === 0); }
+    else { b.state = 'bad'; b.wrongs++; playWrong(); }
+  }
+  _buildDraw();
+}
+function buildUnpick(pos) { const b = _build; if (!b || b.state === 'ok') return; b.picked.splice(pos, 1); b.state = null; _buildDraw(); }
+function buildReveal() {
+  const b = _build; if (!b) return;
+  // Order the bank by the target text (duplicate chunks map to any equal piece).
+  const used = new Set();
+  b.picked = b.target.map(t => { const pc = b.bank.find(x => x.text === t && !used.has(x.id)); used.add(pc.id); return pc.id; });
+  b.state = 'ok';
+  b.onDone(false);
+  _buildDraw();
+}
+
+// Fade: type the hidden words. lvl 1 ≈ 30% (key words first), lvl 2 ≈ 60%.
+let _fade = null;
+function renderFade(host, s, lvl, onDone) {
+  const toks = tokenize(s.en);
+  const cand = toks.map((t, i) => i).filter(i => !toks[i].ph && normWord(toks[i].core).length >= 2);
+  const need = Math.max(1, Math.round(cand.length * (lvl === 1 ? 0.3 : 0.6)));
+  const anchors = cand.filter(i => s.anchors.has(normWord(toks[i].core)));
+  const rest = shuffle(cand.filter(i => !anchors.includes(i)));
+  if (lvl === 1) rest.sort((a, b) => (STOPWORDS.has(normWord(toks[a].core)) ? 1 : 0) - (STOPWORDS.has(normWord(toks[b].core)) ? 1 : 0));
+  const blanks = new Set(anchors.concat(rest).slice(0, Math.max(need, anchors.length)));
+  _fade = { host, s, toks, blanks, onDone, checked: false };
+  let n = 0;
+  const html = toks.map((t, i) => {
+    if (t.ph) return `<span class="pth-ph">${esc(t.text)}</span>`;
+    if (!blanks.has(i)) return esc(t.text);
+    const w = Math.max(3, t.core.length) + 1;
+    return `${esc(t.lead)}<input class="pth-blank" data-i="${i}" data-n="${n++}" style="width:${w}ch" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="fadeKey(event,this)">${esc(t.trail)}`;
+  }).join(' ');
+  host.innerHTML = `
+    <div class="pth-fade">${html}</div>
+    <div class="pth-hint-line">Gõ các chữ bị ẩn · <b>Enter</b> để sang ô tiếp theo / kiểm tra</div>
+    <div id="pth-fade-fb"></div>
+    <div class="pth-actions" id="pth-fade-actions"><button class="pth-btn pth-btn--primary" onclick="fadeCheck()"><i class="fas fa-check"></i> Kiểm tra</button></div>`;
+  setTimeout(() => host.querySelector('.pth-blank')?.focus(), 30);
+}
+function fadeKey(e, el) {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  if (_fade && _fade.checked) { drillNext(); return; }
+  const all = [..._fade.host.querySelectorAll('.pth-blank')];
+  const i = all.indexOf(el);
+  const nextEmpty = all.slice(i + 1).find(x => !x.value.trim());
+  if (nextEmpty) nextEmpty.focus(); else fadeCheck();
+}
+function fadeCheck() {
+  const f = _fade; if (!f || f.checked) return;
+  const inputs = [...f.host.querySelectorAll('.pth-blank')];
+  if (inputs.some(x => !x.value.trim())) { showToast('Hãy điền hết các ô trống.', 'warn', 1800); inputs.find(x => !x.value.trim()).focus(); return; }
+  f.checked = true;
+  let allOk = true;
+  inputs.forEach(inp => {
+    const t = f.toks[+inp.dataset.i];
+    const ok = normWord(inp.value) === normWord(t.core);
+    inp.classList.add(ok ? 'is-ok' : 'is-bad');
+    inp.readOnly = true;
+    if (!ok) { allOk = false; inp.insertAdjacentHTML('afterend', `<span class="pth-blank-fix">${esc(t.core)}</span>`); }
+  });
+  if (allOk) playOk(); else playWrong();
+  document.getElementById('pth-fade-fb').innerHTML = allOk
+    ? '<div class="pth-fb pth-fb--good">✅ Chính xác!</div>'
+    : `<div class="pth-fb pth-fb--bad">Câu đúng: ${enHtml(f.s)}<div class="pth-muted" style="margin-top:4px">Câu này sẽ quay lại cuối vòng.</div></div>`;
+  document.getElementById('pth-fade-actions').innerHTML = '<button class="pth-btn pth-btn--primary" id="pth-next" onclick="drillNext()">Tiếp <i class="fas fa-arrow-right"></i></button>';
+  f.onDone(allOk);
+  document.getElementById('pth-next')?.focus();
+}
+
+// Recall one sentence from its Vietnamese meaning.
+//   free=false → WbwDrill (word masks with first letter, wrong letters rejected)
+//   free=true  → plain textarea, graded by word diff (≥ RECALL_PASS_B7 %)
+let _recall = null;
+function renderRecall(host, s, { free, onDone, nextLabel = 'Tiếp', nextFn = 'drillNext()' }) {
+  _recall = { host, s, onDone, free, done: false, nextLabel, nextFn };
+  host.innerHTML = `
+    <div id="pth-wbw"></div>
+    <textarea class="pth-textarea" id="pth-recall-in" rows="3" placeholder="Gõ lại cả câu tiếng Anh... (không cần gõ phần trong ngoặc)"
+      onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();recallCheck()}"></textarea>
+    <div id="pth-recall-fb"></div>
+    <div class="pth-actions" id="pth-recall-actions">
+      <button class="pth-btn" onclick="recallGiveUp()"><i class="fas fa-eye"></i> Không nhớ</button>
+      <button class="pth-btn pth-btn--primary" id="pth-recall-check" onclick="recallCheck()"><i class="fas fa-check"></i> Kiểm tra</button>
+    </div>`;
+  const input = document.getElementById('pth-recall-in');
+  if (!free && window.WbwDrill) {
+    const words = countWords(s.en);
+    const ok = window.WbwDrill.mount(document.getElementById('pth-wbw'), {
+      answer: s.en, bridgeInput: input, maxErrors: Math.max(4, Math.ceil(words / 3)),
+      onComplete: () => _recallFinish(true, null),
+      onFail: () => _recallFinish(false, null),
+    });
+    if (ok) {
+      input.style.display = 'none';
+      document.getElementById('pth-recall-check').style.display = 'none';
+      return;
+    }
+  }
+  document.getElementById('pth-wbw').style.display = 'none';
+  setTimeout(() => input.focus(), 30);
+}
+function recallCheck() {
+  const r = _recall; if (!r || r.done) return;
+  const input = document.getElementById('pth-recall-in');
+  if (!input.value.trim()) { showToast('Hãy gõ câu trả lời.', 'warn', 1800); return; }
+  const d = alignWords(targetWords([r.s]), input.value);
+  _recallFinish(d.pct >= RECALL_PASS_B7, d);
+}
+function recallGiveUp() {
+  const r = _recall; if (!r || r.done) return;
+  _unmountDrill();
+  _recallFinish(false, null);
+}
+function _recallFinish(ok, diff) {
+  const r = _recall; if (!r || r.done) return;
+  r.done = true;
+  const input = document.getElementById('pth-recall-in');
+  if (input) input.readOnly = true;
+  if (ok) playOk(); else playWrong();
+  const diffPart = diff ? `<div class="pth-diff">${diffHtml(diff.ops)}</div><div class="pth-muted">Đúng ${diff.pct}% số chữ${r.free ? ` (cần ≥ ${RECALL_PASS_B7}%)` : ''}</div>` : '';
+  const fb = document.getElementById('pth-recall-fb');
+  if (fb) fb.innerHTML = ok
+    ? `<div class="pth-fb pth-fb--good">✅ Nhớ đúng!${diffPart}</div>`
+    : `<div class="pth-fb pth-fb--bad">${diffPart}<div><b>Câu đúng:</b> ${enHtml(r.s)}</div></div>`;
+  const acts = document.getElementById('pth-recall-actions');
+  if (acts) acts.innerHTML = `<button class="pth-btn pth-btn--primary" id="pth-next" onclick="${r.nextFn}">${esc(r.nextLabel)} <i class="fas fa-arrow-right"></i></button>`;
+  r.onDone(ok, diff);
+  setTimeout(() => document.getElementById('pth-next')?.focus(), 30);
+}
+function _unmountDrill() {
+  const h = document.getElementById('pth-wbw');
+  if (h && window.WbwDrill) window.WbwDrill.unmount(h);
+}
+
+// ── ④ Assemble the whole essay from memory ────────────────────
+// Band 6+: one paragraph at a time, cue = role + first two words of each
+// sentence. Band 7+: every paragraph on one screen, cue = roles only, timed.
+function startAssemble() {
+  _view = 'assemble';
+  const n = paragraphs().length;
+  _run = { p: 0, texts: new Array(n).fill(''), results: new Array(n).fill(null), start: Date.now(), submitted: false };
+  if (isB7()) _run.timer = setInterval(_asmTick, 1000);
+  render();
+}
+function _asmTick() {
+  const el = document.getElementById('pth-asm-time');
+  if (!el || !_run || _view !== 'assemble') return;
+  el.textContent = fmtMMSS((Date.now() - _run.start) / 1000);
+}
+function _asmCueHtml(p) {
+  return `<ol class="pth-cues">${p.sentences.map(s => {
+    const first = isB7() ? '' : ` — <i>${esc(stripPh(s.en).trim().split(/\s+/).slice(0, 2).join(' '))}…</i>`;
+    return `<li><span class="pth-role">${esc(s.role)}</span>${first}</li>`;
+  }).join('')}</ol>`;
+}
+function _asmBoxHtml(p, i) {
+  const res = _run.results[i];
+  return `<div class="pth-asm-para">
+    <div class="pth-read-hdr"><span>${esc(shortTitle(p.title))} <span class="pth-chip">${p.sentences.length} câu</span></span>${res ? `<span class="pth-chip ${res.pct >= ASSEMBLE_PASS ? 'pth-chip--ok' : 'pth-chip--warn'}">${res.pct}%</span>` : ''}</div>
+    ${_asmCueHtml(p)}
+    ${res ? `<div class="pth-diff pth-diff--box">${diffHtml(res.ops)}</div>`
+      : `<textarea class="pth-textarea pth-asm-in" id="pth-asm-${i}" rows="${Math.max(4, p.sentences.length + 1)}" placeholder="Viết lại cả đoạn từ trí nhớ... (bỏ qua phần trong ngoặc)" oninput="_run.texts[${i}]=this.value">${esc(_run.texts[i])}</textarea>`}
+  </div>`;
+}
+function renderAssemble() {
+  const paras = paragraphs();
+  const r = _run;
+  const right = isB7() ? `<span class="pth-timer"><i class="fas fa-stopwatch"></i> <span id="pth-asm-time">${fmtMMSS((Date.now() - r.start) / 1000)}</span></span>` : `Đoạn ${Math.min(r.p + 1, paras.length)}/${paras.length}`;
+  let body;
+  if (r.submitted) {
+    const tot = _asmTotal();
+    const pass = tot.pct >= ASSEMBLE_PASS;
+    body = `<div class="pth-card">
+        <div class="pth-score ${pass ? 'is-ok' : 'is-bad'}">${tot.pct}%</div>
+        <p class="pth-muted" style="text-align:center">Nhớ đúng ${tot.right}/${tot.total} chữ · ${tot.goodSent}/${tot.sent} câu gần như hoàn hảo${r.secs ? ` · ⏱ ${fmtMMSS(r.secs)}` : ''}</p>
+        ${pass ? '' : `<div class="pth-fb pth-fb--bad">Cần ≥ ${ASSEMBLE_PASS}% để hoàn thành bước này. Xem lại các chữ đỏ/xám rồi thử lại nhé — câu sai đã được đánh dấu để ôn nhiều hơn.</div>`}
+        <div class="pth-legend"><span class="pth-d-ok">đúng</span> <span class="pth-d-wrong">sai</span><span class="pth-d-fix">đáp án</span> <span class="pth-d-miss">thiếu</span> <span class="pth-d-extra">thừa</span></div>
+        ${paras.map((p, i) => _asmBoxHtml(p, i)).join('')}
+        <div class="pth-actions"><button class="pth-btn" onclick="startAssemble()"><i class="fas fa-rotate-right"></i> Làm lại</button>${pass ? nextStepButton('assemble') : ''}</div>
+      </div>`;
+  } else if (isB7()) {
+    body = `<div class="pth-card">
+        <p class="pth-muted">Viết lại toàn bộ template từ trí nhớ, mỗi ô một đoạn. Chỉ có vai trò của từng câu làm gợi ý. Không cần gõ phần trong ngoặc.</p>
+        ${paras.map((p, i) => _asmBoxHtml(p, i)).join('')}
+        <div class="pth-actions"><button class="pth-btn pth-btn--primary" onclick="asmSubmitAll()"><i class="fas fa-paper-plane"></i> Nộp bài</button></div>
+      </div>`;
+  } else {
+    const p = paras[r.p];
+    const res = r.results[r.p];
+    body = `<div class="pth-card">
+        <p class="pth-muted">Viết lại cả đoạn từ trí nhớ. Gợi ý: vai trò và 2 chữ đầu của mỗi câu. Không cần gõ phần trong ngoặc.</p>
+        ${_asmBoxHtml(p, r.p)}
+        <div class="pth-actions">${res
+          ? `<button class="pth-btn pth-btn--primary" onclick="asmNextPara()">${r.p + 1 < paras.length ? 'Đoạn tiếp theo' : 'Xem kết quả'} <i class="fas fa-arrow-right"></i></button>`
+          : `<button class="pth-btn pth-btn--primary" onclick="asmCheckPara()"><i class="fas fa-check"></i> Kiểm tra đoạn này</button>`}</div>
+      </div>`;
+  }
+  area().innerHTML = `${activityHeader(3, right)}<div class="pth-wrap">${body}</div>`;
+  if (!r.submitted) setTimeout(() => document.querySelector('.pth-asm-in')?.focus(), 30);
+}
+function _asmGrade(i) {
+  const p = paragraphs()[i];
+  const tw = targetWords(p.sentences);
+  const d = alignWords(tw, _run.texts[i] || '');
+  // Per-sentence accuracy → mastery.
+  const per = {};
+  tw.forEach((t, k) => { per[t.sid] = per[t.sid] || [0, 0]; per[t.sid][1]++; if (d.matched[k]) per[t.sid][0]++; });
+  _run.results[i] = { ops: d.ops, pct: d.pct, right: d.matched.filter(Boolean).length, total: tw.length, per };
+}
+function asmCheckPara() {
+  const i = _run.p;
+  if (!(_run.texts[i] || '').trim()) { showToast('Hãy viết đoạn văn trước khi kiểm tra.', 'warn', 2000); return; }
+  _asmGrade(i);
+  if (_run.results[i].pct >= ASSEMBLE_PASS) playOk(); else playWrong();
+  renderAssemble();
+}
+function asmNextPara() {
+  if (_run.p + 1 < paragraphs().length) { _run.p++; renderAssemble(); return; }
+  _asmFinish();
+}
+function asmSubmitAll() {
+  const paras = paragraphs();
+  if (_run.texts.every(t => !t.trim())) { showToast('Bạn chưa viết gì.', 'warn', 2000); return; }
+  paras.forEach((_, i) => _asmGrade(i));
+  _asmFinish();
+}
+function _asmTotal() {
+  let right = 0, total = 0, sent = 0, goodSent = 0;
+  _run.results.forEach(r => {
+    if (!r) return;
+    right += r.right; total += r.total;
+    Object.values(r.per).forEach(([a, b]) => { sent++; if (b && a / b >= 0.8) goodSent++; });
+  });
+  return { right, total, sent, goodSent, pct: total ? Math.round(right / total * 100) : 0 };
+}
+function _asmFinish() {
+  _stopTimers();
+  _run.secs = Math.round((Date.now() - _run.start) / 1000);
+  _run.submitted = true;
+  _run.finished = true;
+  const tot = _asmTotal();
+  const pending = {};
+  _run.results.forEach(r => r && Object.entries(r.per).forEach(([key, [a, b]]) => {
+    const acc = b ? a / b : 1;
+    if (acc >= 0.9) bumpMastery(pending, key, 1);
+    else if (acc < 0.6) bumpMastery(pending, key, -1);
+  }));
+  const patch = { mastery: pending, assembleBest: tot.pct };
+  if (tot.pct >= ASSEMBLE_PASS) completeStep('assemble', patch); else saveProg(patch);
+  saveAttempt({ mode: 'path', total: tot.sent, correct: tot.goodSent, timeTakenSec: _run.secs });
+  if (tot.pct >= ASSEMBLE_PASS) playOk();
+  renderAssemble();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── ⑤ Apply: write a real essay, compare with the model essay ──
+function startApply() {
+  _view = 'apply';
+  const n = paragraphs().length;
+  const saved = prog().applyText || [];
+  _run = { texts: Array.from({ length: n }, (_, i) => saved[i] || ''), result: null };
+  render();
+  if (!_typeGuides) _loadTypeGuides().then(() => { if (_view === 'apply' && !_run.result) renderApply(); });
+}
+function _applyWordsHtml(i) {
+  const paras = paragraphs();
+  const tgt = paraTarget(i, paras.length);
+  const n = countWords(_run.texts[i]);
+  const cls = n >= tgt.lo && n <= tgt.hi + 20 ? 'is-ok' : n ? 'is-warn' : '';
+  return `<span class="pth-wc ${cls}">${n} chữ · nên ${tgt.words}</span>`;
+}
+function applyInput(i, el) {
+  _run.texts[i] = el.value;
+  const wc = document.getElementById('pth-wc-' + i);
+  if (wc) wc.innerHTML = _applyWordsHtml(i);
+  const tot = document.getElementById('pth-wc-total');
+  if (tot) tot.textContent = _run.texts.reduce((s, t) => s + countWords(t), 0);
+}
+function renderApply() {
+  const paras = paragraphs();
+  const g = _typeGuides && _typeGuides[_type];
+  const me = (g && g.modelEssay) || null;
+  const r = _run;
+  const prompt = me && me.prompt ? `<div class="pth-prompt"><div class="pth-prompt-lbl">📝 Đề bài</div>${esc(me.prompt)}</div>`
+    : '<div class="pth-prompt">Tự chọn một đề IELTS thuộc dạng bài này và viết bài theo template.</div>';
+  let body;
+  if (r.result) {
+    body = `<div class="pth-card">
+      ${prompt}
+      <div class="pth-score ${r.result.usedPct >= 50 ? 'is-ok' : 'is-bad'}">${r.result.words} chữ</div>
+      <p class="pth-muted" style="text-align:center">Đã dùng khung template cho <b>${r.result.used}/${r.result.total}</b> vai trò câu${r.result.words < 250 ? ' · bài thật cần ít nhất <b>250 chữ</b>' : ''}</p>
+      ${r.result.paras.map(pr => `<div class="pth-asm-para">
+        <div class="pth-read-hdr"><span>${esc(pr.title)}</span><span class="pth-wc ${pr.wcOk ? 'is-ok' : 'is-warn'}">${pr.words} chữ · nên ${esc(pr.target)}</span></div>
+        <div class="pth-mine">${esc(pr.text) || '<i class="pth-muted">(trống)</i>'}</div>
+        <ul class="pth-check">${pr.roles.map(x => `<li class="${x.state}"><span class="pth-check-ic">${x.state === 'is-ok' ? '✓' : x.state === 'is-part' ? '~' : '✗'}</span><span class="pth-role">${esc(x.role)}</span> <span class="pth-check-en">${enHtml(x.best, { anchors: false })}</span></li>`).join('')}</ul>
+      </div>`).join('')}
+      ${isB7() ? '<p class="pth-muted">Mỗi vai trò chỉ cần dùng một trong các câu thay thế nhau của template.</p>' : ''}
+      ${me ? _modelEssayHtml(me) : ''}
+      <div class="pth-actions"><button class="pth-btn" onclick="applyEdit()"><i class="fas fa-pen"></i> Sửa bài</button><button class="pth-btn pth-btn--primary" onclick="backToPath()">Về lộ trình <i class="fas fa-arrow-right"></i></button></div>
+    </div>`;
+  } else {
+    body = `<div class="pth-card">
+      ${prompt}
+      <p class="pth-muted">Viết bài hoàn chỉnh bằng các câu template vừa học, điền nội dung của đề vào chỗ <span class="pth-ph">(…)</span>. Bài thật cần <b>250–300 chữ</b>. Nộp xong sẽ so với bài mẫu.</p>
+      ${paras.map((p, i) => `<div class="pth-asm-para">
+        <div class="pth-read-hdr"><span>${esc(shortTitle(p.title))}</span><span id="pth-wc-${i}">${_applyWordsHtml(i)}</span></div>
+        <textarea class="pth-textarea" rows="${i === 0 || i === paras.length - 1 ? 4 : 7}" oninput="applyInput(${i},this)" placeholder="${escA(shortTitle(p.title))}...">${esc(r.texts[i])}</textarea>
+      </div>`).join('')}
+      <div class="pth-actions">
+        <span class="pth-muted">Tổng: <b id="pth-wc-total">${r.texts.reduce((s, t) => s + countWords(t), 0)}</b> chữ</span>
+        <button class="pth-btn" onclick="applySaveDraft()"><i class="fas fa-floppy-disk"></i> Lưu nháp</button>
+        <button class="pth-btn pth-btn--primary" onclick="applySubmit()"><i class="fas fa-paper-plane"></i> Nộp & so với bài mẫu</button>
+      </div>
+    </div>`;
+  }
+  area().innerHTML = `${activityHeader(4)}<div class="pth-wrap">${body}</div>`;
+}
+function _modelEssayHtml(me) {
+  const T2H = window.T2Highlight;
+  const hl = !!(T2H && T2H.hasAny(me.sections));
+  return `<details class="pth-model" open><summary>📖 Bài mẫu Band 7+${me.wordCount ? ' · ' + esc(me.wordCount) : ''}</summary>
+    <div class="t2-g-essay${hl ? ' t2hl-root' + (T2H.isOff() ? ' t2hl-off' : '') : ''}">
+      ${hl ? T2H.legend(me.sections) : ''}
+      ${(me.sections || []).map(s => `<h5>${esc(s.title)}</h5><div>${hl ? T2H.html(s.text, s.highlights) : esc(s.text)}</div>`).join('')}
+    </div></details>`;
+}
+function applySaveDraft() { saveProg({ applyText: _run.texts }); showToast('Đã lưu nháp vào tài khoản.', 'info', 2000); }
+function applyEdit() { _run.result = null; _run.finished = false; renderApply(); }
+
+// How much of one template sentence's fixed wording (placeholders removed)
+// appears, in order, in the student's paragraph — 0..1.
+function _frameCoverage(sentence, paraWords) {
+  const a = wordsOf(sentence.en);
+  if (!a.length) return 0;
+  const b = paraWords, n = a.length, m = b.length;
+  let prev = new Uint16Array(m + 1), cur = new Uint16Array(m + 1);
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) cur[j] = a[i - 1] === b[j - 1] ? prev[j - 1] + 1 : Math.max(prev[j], cur[j - 1]);
+    [prev, cur] = [cur, prev];
+  }
+  return prev[m] / n;
+}
+function applySubmit() {
+  const paras = paragraphs();
+  const words = _run.texts.reduce((s, t) => s + countWords(t), 0);
+  if (words < 120) { showToast('Bài còn quá ngắn — hãy viết ít nhất 120 chữ trước khi nộp.', 'warn', 3000); return; }
+  let used = 0, total = 0;
+  const resParas = paras.map((p, i) => {
+    const pw = wordsOf(_run.texts[i]);
+    // Group sentences by role: alternatives share a role, the best one counts.
+    const byRole = [];
+    p.sentences.forEach(s => {
+      const cov = _frameCoverage(s, pw);
+      const g = byRole.find(x => x.role === s.role);
+      if (!g) byRole.push({ role: s.role, best: s, cov });
+      else if (cov > g.cov) { g.best = s; g.cov = cov; }
+    });
+    const roles = byRole.map(x => ({ role: x.role, best: x.best, state: x.cov >= 0.7 ? 'is-ok' : x.cov >= 0.4 ? 'is-part' : 'is-miss' }));
+    total += roles.length; used += roles.filter(x => x.state === 'is-ok').length;
+    const tgt = paraTarget(i, paras.length);
+    const n = countWords(_run.texts[i]);
+    return { title: shortTitle(p.title), text: _run.texts[i].trim(), words: n, target: tgt.words, wcOk: n >= tgt.lo && n <= tgt.hi + 20, roles };
+  });
+  _run.result = { words, used, total, usedPct: total ? Math.round(used / total * 100) : 0, paras: resParas };
+  _run.finished = true;
+  completeStep('apply', { applyText: _run.texts });
+  renderApply();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Recall runs: spaced review + mock test ─────────────────────
+// review: up to 6 weakest sentences, band rules, one pass, schedules the next review.
+// exam:   every sentence, plain typing, no hints, one pass, 30-minute timer.
+const EXAM_SECONDS = 30 * 60;
+function startReview() {
+  const pool = allSentences();
+  const m = prog().mastery || {};
+  const items = shuffle(pool).sort((a, b) => (m[a.key] || 0) - (m[b.key] || 0)).slice(0, Math.min(6, pool.length));
+  _view = 'review';
+  _run = { mode: 'review', items, pos: 0, results: [], pending: {}, start: Date.now() };
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function toggleExamMode() {
+  if (_view === 'exam') { examExit(); return; }
+  _confirmLeave('Bắt đầu thi thử sẽ bỏ phần đang luyện dở của bước này.', () => {
+    _leaveActivity();
+    _view = 'exam';
+    _run = { mode: 'exam', items: allSentences(), pos: 0, results: [], start: Date.now(), left: EXAM_SECONDS };
+    _run.timer = setInterval(_examTick, 1000);
+    render();
+    showToast('⏱ Bắt đầu thi thử! Nhớ lại từng câu từ tiếng Việt — không có gợi ý.', 'info', 3000);
+  });
+}
+function updateExamBtn() {
+  const lbl = document.getElementById('tpl-exam-label');
+  const btn = document.getElementById('tpl-exam-btn');
+  if (lbl) lbl.textContent = _view === 'exam' ? 'Thoát thi thử' : 'Thi thử';
+  if (btn) btn.classList.toggle('active', _view === 'exam');
+}
+function _examTick() {
+  if (!_run || _view !== 'exam' || _run.finished) return;
+  _run.left = EXAM_SECONDS - Math.floor((Date.now() - _run.start) / 1000);
+  const el = document.getElementById('pth-exam-time');
+  if (el) { el.textContent = fmtMMSS(_run.left); el.classList.toggle('warn', _run.left <= 300); }
+  if (_run.left <= 0) { showToast('⏰ Hết giờ!', 'warn', 2500); _recallRunFinish(); }
+}
+function _stopTimers() { if (_run && _run.timer) { clearInterval(_run.timer); _run.timer = null; } }
+
+function renderRecallRun() {
+  const r = _run;
+  const isExam = r.mode === 'exam';
+  const bar = isExam ? `<div class="t2-exam-bar">
+      <span class="t2-exam-timer" id="pth-exam-time">${fmtMMSS(r.left)}</span>
+      <span class="t2-exam-label"><i class="fas fa-clock" style="margin-right:4px;opacity:.7"></i>${esc(TPL_DATA[_type].name)} · Thi thử</span>
+      <button class="t2-exam-exit-btn" onclick="examExit()"><i class="fas fa-times"></i> Nộp bài</button>
+    </div>` : `<div class="pth-act-hdr">
+      <button class="pth-back" onclick="backToPath()"><i class="fas fa-arrow-left"></i> Lộ trình</button>
+      <div class="pth-act-title">⚡ Ôn nhanh</div><div class="pth-act-right"></div>
+    </div>`;
+  if (r.finished) {
+    const correct = r.results.filter(Boolean).length, total = r.results.length;
+    const pct = total ? Math.round(correct / total * 100) : 0;
+    const next = prog().nextReviewAt;
+    area().innerHTML = `${isExam ? '' : bar}<div class="pth-wrap"><div class="pth-card pth-done">
+      ${isExam ? `<img src="${_examTierImageSrc(pct)}" alt="" loading="lazy" class="pth-tier-img">` : '<div class="pth-done-ic">⚡</div>'}
+      <div class="pth-score ${pct >= 60 ? 'is-ok' : 'is-bad'}">${pct}%</div>
+      <p class="pth-muted">${correct}/${total} câu nhớ đúng${isExam ? ` · ⏱ ${fmtMMSS(r.secs)}` : ''}</p>
+      ${!isExam && next ? `<p class="pth-muted">Lần ôn tiếp theo: <b>${new Date(next).toLocaleDateString('vi-VN')}</b></p>` : ''}
+      <div class="pth-actions">
+        ${isExam ? '<button class="pth-btn" onclick="toggleExamMode()"><i class="fas fa-redo"></i> Thi lại</button>' : ''}
+        <button class="pth-btn pth-btn--primary" onclick="backToPath()">Về lộ trình <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div></div>`;
+    return;
+  }
+  const s = r.items[r.pos];
+  area().innerHTML = `${bar}<div class="pth-wrap"><div class="pth-card">
+      <div class="pth-drill-meta"><span>Câu ${r.pos + 1} / ${r.items.length}</span><span class="pth-chip">${esc(shortTitle(paragraphs()[s.si].title))}</span></div>
+      <div class="pth-vi-prompt"><i class="fas fa-quote-left"></i> ${esc(s.vi)}</div>
+      <div id="pth-item"></div>
+    </div></div>`;
+  const last = r.pos + 1 >= r.items.length;
+  renderRecall(document.getElementById('pth-item'), s, {
+    free: isExam || isB7(),
+    nextLabel: last ? 'Xem kết quả' : 'Câu tiếp',
+    nextFn: 'recallRunNext()',
+    onDone: ok => {
+      r.results[r.pos] = ok;
+      if (!isExam) bumpMastery(r.pending, s.key, ok ? 1 : -1);
+    },
+  });
+  if (isExam) { const g = document.getElementById('pth-recall-actions')?.querySelector('.pth-btn:not(.pth-btn--primary)'); if (g) g.innerHTML = '<i class="fas fa-forward"></i> Bỏ qua'; }
+}
+function recallRunNext() {
+  _unmountDrill();
+  _run.pos++;
+  if (_run.pos >= _run.items.length) { _recallRunFinish(); return; }
+  renderRecallRun();
+}
+function examExit() {
+  if (!_run || _view !== 'exam') return;
+  if (_run.finished) { backToPath(); return; }
+  _recallRunFinish();
+}
+function _recallRunFinish() {
+  const r = _run;
+  if (!r || r.finished) return;
+  _stopTimers();
+  _unmountDrill();
+  r.finished = true;
+  r.secs = Math.round((Date.now() - r.start) / 1000);
+  const answered = r.results.filter(x => x !== undefined);
+  const total = r.mode === 'exam' ? r.items.length : answered.length;
+  const correct = r.results.filter(Boolean).length;
+  // An exam counts every sentence (unanswered = wrong); a review only what was answered.
+  if (r.mode === 'exam') r.results = r.items.map((_, i) => !!r.results[i]);
+  if (r.mode === 'review' && total) {
+    saveProg({ reviewDone: true, reviewScore: Math.round(correct / total * 100), mastery: r.pending });
+    saveAttempt({ mode: 'review', total, correct, timeTakenSec: r.secs });
+    updateXPStorage(5);
+  }
+  if (r.mode === 'exam' && answered.length) saveAttempt({ mode: 'path', total, correct, isExam: true, timeTakenSec: r.secs });
+  updateExamBtn();
+  renderRecallRun();
+}
+function _examTierImageSrc(pct) {
+  return pct >= 90 ? 'img/vocab_writingabove90%25.jpg'
+       : pct >= 50 ? 'img/writingbelow60%25.jpg'
+       : pct >= 45 ? 'img/writingbelow50%25.jpg'
+       : 'img/writingbelow45%25.jpg';
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  Reference material: type guide, full template, history
+// ══════════════════════════════════════════════════════════════════
+let _typeGuides = null;
+let _typeGuidesPromise = null;
 function _loadTypeGuides() {
   if (_typeGuides) return Promise.resolve(_typeGuides);
   if (_typeGuidesPromise) return _typeGuidesPromise;
-  const token = window.AuthService && window.AuthService.getToken();
-  _typeGuidesPromise = fetch(`${API}/api/task2/type-guides`, { headers: token ? { Authorization: 'Bearer ' + token } : {} })
+  _typeGuidesPromise = fetch(`${API}/api/task2/type-guides`, { headers: authHeaders() })
     .then(r => r.ok ? r.json() : null)
     .then(d => {
       _typeGuides = {};
@@ -624,49 +1538,33 @@ function _loadTypeGuides() {
 function renderTypeGuide() {
   const host = document.getElementById('tpl-guide-area');
   if (!host) return;
-  if (_examMode) { host.innerHTML = ''; return; }
   _loadTypeGuides().then(map => {
-    if (_examMode) { host.innerHTML = ''; return; }
-    const g = map && map[_tplActiveType];
+    const g = map && map[_type];
     if (!g) { host.innerHTML = ''; return; }
-    const e = window.escHtml || (s => String(s == null ? '' : s));
-    const sub = (icon, title, inner) => `<details class="t2-g-sec"><summary>${icon} ${e(title)}</summary><div class="t2-g-inner">${inner}</div></details>`;
-
+    const sub = (icon, title, inner) => `<details class="t2-g-sec"><summary>${icon} ${esc(title)}</summary><div class="t2-g-inner">${inner}</div></details>`;
     const recognise = sub('🔍', 'Nhận diện đề',
-      `<ul>${(g.recognise.stems || []).map(s => `<li>${e(s)}</li>`).join('')}</ul>` +
-      (g.recognise.note ? `<div class="t2-g-note">${e(g.recognise.note)}</div>` : ''));
-
+      `<ul>${((g.recognise || {}).stems || []).map(s => `<li>${esc(s)}</li>`).join('')}</ul>` +
+      ((g.recognise || {}).note ? `<div class="t2-g-note">${esc(g.recognise.note)}</div>` : ''));
     const outline = sub('🧭', 'Dàn ý',
-      `<div class="t2-g-flow">${e(g.outline.flow)}</div>` +
-      (g.outline.perBody ? `<div style="margin-top:6px">${e(g.outline.perBody)}</div>` : ''));
-
+      `<div class="t2-g-flow">${esc((g.outline || {}).flow)}</div>` +
+      ((g.outline || {}).perBody ? `<div style="margin-top:6px">${esc(g.outline.perBody)}</div>` : ''));
     const upgrade = sub('🔼', 'Bảng nâng cấp câu: Band 6+ → Band 7+',
       `<div style="overflow-x:auto"><table class="t2-g-up"><thead><tr><th>Band 6+</th><th>Band 7+</th></tr></thead><tbody>` +
-      (g.upgradePairs || []).map(p => `<tr><td>${e(p[0])}</td><td>${e(p[1])}</td></tr>`).join('') +
-      `</tbody></table></div>`);
-
+      (g.upgradePairs || []).map(p => `<tr><td>${esc(p[0])}</td><td>${esc(p[1])}</td></tr>`).join('') + `</tbody></table></div>`);
     const useful = sub('🧰', 'Useful language',
-      (g.usefulLanguage || []).map(grp =>
-        `<div class="t2-g-ul-grp"><b>${e(grp.label)}</b><ul>${(grp.lines || []).map(l => `<li>${e(l)}</li>`).join('')}</ul></div>`
-      ).join(''));
-
+      (g.usefulLanguage || []).map(grp => `<div class="t2-g-ul-grp"><b>${esc(grp.label)}</b><ul>${(grp.lines || []).map(l => `<li>${esc(l)}</li>`).join('')}</ul></div>`).join(''));
     const me = g.modelEssay || {};
     const essayText = (me.sections || []).map(s => `${s.title}\n${s.text}`).join('\n\n');
-    // Colour-coded sentence roles (hook / topic / idea / supporting) —
-    // js/shared/task2-highlight.js; plain text if the module didn't load.
     const T2H = window.T2Highlight;
     const hl = !!(T2H && T2H.hasAny(me.sections));
-    const model = sub('📝', 'Bài mẫu Band 7+' + (me.wordCount ? ' · ' + e(me.wordCount) : ''),
-      `<div class="t2-g-essay${hl ? ' t2hl-root' + (T2H.isOff() ? ' t2hl-off' : '') : ''}"><div class="t2-g-prompt">${e(me.prompt)}</div>` +
+    const model = sub('📝', 'Bài mẫu Band 7+' + (me.wordCount ? ' · ' + esc(me.wordCount) : ''),
+      `<div class="t2-g-essay${hl ? ' t2hl-root' + (T2H.isOff() ? ' t2hl-off' : '') : ''}"><div class="t2-g-prompt">${esc(me.prompt)}</div>` +
       (hl ? T2H.legend(me.sections) : '') +
-      (me.sections || []).map(s => `<h5>${e(s.title)}</h5><div>${hl ? T2H.html(s.text, s.highlights) : e(s.text)}</div>`).join('') +
-      `<button class="t2-g-copy" onclick="_copyGuideEssay(this)" data-essay="${(window.escAttr || e)(essayText)}"><i class="fas fa-copy"></i> Chép cả bài</button></div>`);
-
-    const mistakes = sub('⚠️', 'Lỗi thường gặp ở dạng này',
-      `<ul>${(g.mistakes || []).map(m => `<li>${e(m)}</li>`).join('')}</ul>`);
-
+      (me.sections || []).map(s => `<h5>${esc(s.title)}</h5><div>${hl ? T2H.html(s.text, s.highlights) : esc(s.text)}</div>`).join('') +
+      `<button class="t2-g-copy" onclick="_copyGuideEssay(this)" data-essay="${escA(essayText)}"><i class="fas fa-copy"></i> Chép cả bài</button></div>`);
+    const mistakes = sub('⚠️', 'Lỗi thường gặp ở dạng này', `<ul>${(g.mistakes || []).map(m => `<li>${esc(m)}</li>`).join('')}</ul>`);
     host.innerHTML =
-      `<details class="t2-guide"><summary><i class="fas fa-book-open"></i> Hướng dẫn dạng bài này — ${e(g.name)}${g.nameVi ? ' · ' + e(g.nameVi) : ''}</summary>` +
+      `<details class="t2-guide"><summary><i class="fas fa-book-open"></i> Hướng dẫn dạng bài này — ${esc(g.name)}${g.nameVi ? ' · ' + esc(g.nameVi) : ''}</summary>` +
       `<div class="t2-guide-body">${recognise}${outline}${upgrade}${useful}${model}${mistakes}</div></details>`;
   });
 }
@@ -678,1801 +1576,37 @@ function _copyGuideEssay(btn) {
   });
 }
 
-// ── Render content ─────────────────────────────────────────────
-function renderTplContent() {
-  // Any mode switch tears down the translation drill (and its pending
-  // auto-submit timer) — renderTranslationMode() re-mounts it if we're
-  // staying in that mode.
-  if (window.WbwDrill) window.WbwDrill.unmount(document.getElementById('trans-wbw-host'));
-  renderTypeGuide();
-  // Dispatch to the active mode — everything below this guard is the
-  // original Cloze renderer, unchanged, still the default/fallback mode.
-  if (_tplActiveMode === 'translation') { renderTranslationMode(); return; }
-  if (_tplActiveMode === 'chunks') { renderChunksMode(); return; }
-  if (_tplActiveMode === 'build') { renderBuildMode(); return; }
-  if (_tplActiveMode === 'dictation') { renderDictationMode(); return; }
-
-  const type = TPL_DATA[_tplActiveType];
-  if (!type) return;
-  const area = document.getElementById('tpl-content-area');
-  if (!area) return;
-
-  let done = 0, total = 0;
-  if (!_examMode) {
-    type.sections.forEach((sec, si) => {
-      sec.items.forEach((item, ii) => {
-        total++;
-        if (_tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`] === 'ok') done++;
-      });
-    });
-  }
-
-  const typeMeta = TPL_TYPES.find(t => t.id === _tplActiveType);
-  const infoCard = typeMeta && typeMeta.icon ? `
-    <div class="t2-type-info-card">
-      <div class="t2-type-info-left">
-        <div class="t2-type-info-icon" style="background:${typeMeta.color||'#6366f1'}"><i class="fas ${typeMeta.icon}"></i></div>
-        <div>
-          <div class="t2-type-info-name">${escHtml(type.name)}</div>
-          ${typeMeta.desc ? `<div class="t2-type-info-desc">${escHtml(typeMeta.desc)}</div>` : ''}
-        </div>
-      </div>
-      ${typeMeta.structure ? `<div class="t2-type-structure"><i class="fas fa-route" style="margin-right:4px;font-size:10px;opacity:.7"></i>${escHtml(typeMeta.structure)}</div>` : ''}
-    </div>` : '';
-
-  const sectionsHtml = type.sections.map((sec, si) => {
-    const itemsHtml = sec.items.map((item, ii) => {
-      const key = `${_lvlKey(_tplActiveType)}-${si}-${ii}`;
-      const scoreState = _examMode ? '' : (_tplScores[key] || '');
-      const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
-      const answersStr = _escOnclickArg(answers.join('||'));
-      const isMulti = answers.length > 1;
-      const parts = item.en.split('___');
-
-      // Build English text with input(s)
-      let enHtml = '';
-      parts.forEach((part, pi) => {
-        enHtml += escHtml(part);
-        if (pi < answers.length) {
-          const inpId = isMulti ? `inp-${key}-b${pi}` : `inp-${key}`;
-          const isLocked = !_examMode && scoreState === 'ok';
-          enHtml += `<input class="t2-cloze-input" id="${inpId}" type="text"
-            placeholder="…" autocomplete="off" spellcheck="false"
-            ${isLocked ? 'disabled' : ''}
-            onkeydown="if(!_examMode && event.key==='Enter'){event.preventDefault();checkCloze('${key}','${answersStr}')}"
-            oninput="resetClozeCard('${key}')"
-            value="${isLocked ? escAttr(answers[pi]) : ''}"
-          />`;
-        }
-      });
-
-      const errDisplay = answers.map(a => `"${escHtml(a)}"`).join(', ');
-      const multiBadge = isMulti ? `<div class="t2-multi-badge"><i class="fas fa-pen-to-square" style="font-size:9px"></i> ${answers.length} từ cần điền</div>` : '';
-
-      if (_examMode) {
-        return `
-        <div class="t2-cloze-card" id="cloze-${key}">
-          ${multiBadge}
-          <div class="t2-cloze-en">${enHtml}</div>
-          <div class="t2-cloze-actions">
-            <span class="t2-cloze-fb" id="fb-${key}"></span>
-          </div>
-        </div>`;
-      }
-
-      return `
-      <div class="t2-cloze-card ${scoreState === 'ok' ? 'tpl-correct' : scoreState === 'err' ? 'tpl-wrong' : ''}"
-           id="cloze-${key}">
-        ${multiBadge}
-        <div class="t2-cloze-en">${enHtml}</div>
-        <div class="t2-cloze-vi ${_tplShowVi ? 'vis' : ''}" id="vi-${key}">${escHtml(item.vi)}</div>
-        <div class="t2-cloze-actions">
-          ${scoreState !== 'ok' ? `
-          <button class="t2-cloze-check" onclick="checkCloze('${key}','${answersStr}')">Kiểm tra</button>
-          <button class="t2-cloze-hint" onclick="showClozeHint('${key}','${answersStr}')">Gợi ý</button>
-          ` : ''}
-          <span class="t2-cloze-fb ${scoreState === 'ok' ? 'ok' : scoreState === 'err' ? 'err' : ''}"
-                id="fb-${key}">${scoreState === 'ok' ? '✅ Đúng!' : scoreState === 'err' ? `❌ Đáp án: ${errDisplay}` : ''}</span>
-        </div>
-      </div>`;
-    }).join('');
-
-    return `<div class="t2-tpl-sub-section" data-sec="${si}">
-      <div class="t2-tpl-sub-title"><i class="fas fa-layer-group"></i> ${sec.title}</div>
-      ${itemsHtml}
-    </div>`;
-  }).join('');
-
-  const pct = total ? Math.round(done / total * 100) : 0;
-
-  const examBar = _examMode ? `
-    <div class="t2-exam-bar" id="exam-bar">
-      <span class="t2-exam-timer" id="exam-time-display">${fmtTime(_examTimeLeft)}</span>
-      <span class="t2-exam-label"><i class="fas fa-clock" style="margin-right:4px;opacity:.7"></i>${escHtml(type.name)} · Chế độ thi thử</span>
-      <button class="t2-exam-exit-btn" onclick="exitExamMode()"><i class="fas fa-times"></i> Thoát</button>
-    </div>` : '';
-
-  const footerHtml = _examMode
-    ? `<div class="t2-tpl-footer">
-        <span class="t2-exam-hint-text">Điền tất cả rồi nhấn nộp bài</span>
-        <button class="t2-exam-submit-btn" onclick="submitExam()"><i class="fas fa-paper-plane"></i> Nộp bài</button>
-       </div>`
-    : `<div class="t2-tpl-footer">
-        <span>Đã đúng: <span class="t2-tpl-score">${done} / ${total}</span> <span class="t2-tpl-pct">${pct}%</span></span>
-        <button class="t2-tpl-reset-btn" onclick="resetTplType()"><i class="fas fa-redo"></i> Làm lại</button>
-       </div>`;
-
-  area.innerHTML = `
-    ${examBar}
-    <div class="t2-tpl-content t2-mode-enter">${infoCard}${sectionsHtml}</div>
-    ${_examMode ? '' : `<div class="t2-tpl-all-done-banner ${done === total && total > 0 ? 'vis' : ''}" id="tpl-done-banner">
-      🎉 Xuất sắc! Bạn đã hoàn thành <b>${escHtml(type.name)}</b>! Nhấn "Làm lại" để ôn tiếp.
-    </div>`}
-    ${footerHtml}`;
-
-  const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = _examMode ? '0%' : (pct + '%');
-}
-
-// ── Check / feedback ───────────────────────────────────────────
-function checkCloze(key, answersStr) {
-  const answers = answersStr.split('||');
-  const card = document.getElementById('cloze-' + key);
-  const fb   = document.getElementById('fb-'    + key);
-  if (!card || !fb) return;
-
-  let anyEmpty = false;
-  answers.forEach((ans, bi) => {
-    const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
-    const inp = document.getElementById(inpId);
-    if (inp && !inp.value.trim()) anyEmpty = true;
-  });
-  if (anyEmpty) { showToast('Vui lòng điền đầy đủ trước khi kiểm tra!', 'warn', 2000); return; }
-
-  const wasNew = !_tplScores[key];
-  let allOk = true;
-  answers.forEach((ans, bi) => {
-    const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
-    const inp = document.getElementById(inpId);
-    if (!inp) return;
-    if (inp.value.trim().toLowerCase() !== ans.toLowerCase()) allOk = false;
-  });
-
-  _tplScores[key] = allOk ? 'ok' : 'err';
-  saveTplScores();
-  card.className = 't2-cloze-card ' + (allOk ? 'tpl-correct' : 'tpl-wrong');
-  fb.className   = 't2-cloze-fb '   + (allOk ? 'ok' : 'err');
-
-  if (allOk) {
-    fb.textContent = '✅ Đúng!';
-    answers.forEach((ans, bi) => {
-      const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
-      const inp = document.getElementById(inpId);
-      if (inp) inp.disabled = true;
-    });
-    playOk();
-    if (wasNew) awardTplXP(card);
-    setTimeout(() => scrollToNextCloze(key), 450);
-  } else {
-    const wrongParts = answers.map((ans, bi) => {
-      const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
-      const inp = document.getElementById(inpId);
-      const uv = inp ? inp.value.trim().toLowerCase() : '';
-      return uv !== ans.toLowerCase() ? `"${ans}"` : null;
-    }).filter(Boolean);
-    fb.textContent = `❌ Đáp án: ${wrongParts.join(', ')}`;
-    playWrong();
-  }
-
-  updateTplScore();
-  updateOverallBadge();
-  updateTypeStatus();
-  checkTypeComplete();
-}
-
-function showClozeHint(key, answersStr) {
-  const answers = answersStr.split('||');
-  answers.forEach((ans, bi) => {
-    const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
-    const inp = document.getElementById(inpId);
-    if (!inp || inp.disabled) return;
-    inp.value = ans.slice(0, Math.ceil(ans.length / 2));
-    inp.focus();
-  });
-  const hints = answers.map(a => `"${a.slice(0, Math.ceil(a.length/2))}…"`).join(', ');
-  showToast('💡 Gợi ý: ' + hints, 'info', 2000);
-}
-
-function resetClozeCard(key) {
-  if (_tplScores[key] === 'err') {
-    const card = document.getElementById('cloze-' + key);
-    const fb   = document.getElementById('fb-'    + key);
-    if (card) card.className = 't2-cloze-card';
-    if (fb)   { fb.className = 't2-cloze-fb'; fb.textContent = ''; }
-    delete _tplScores[key];
-  }
-}
-
-// ── Score display ──────────────────────────────────────────────
-function updateTplScore() {
-  const type = TPL_DATA[_tplActiveType];
-  if (!type) return;
-  let done = 0, total = 0;
-  type.sections.forEach((sec, si) => {
-    sec.items.forEach((item, ii) => {
-      total++;
-      if (_tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`] === 'ok') done++;
-    });
-  });
-  const scoreEl = document.querySelector('.t2-tpl-score');
-  if (scoreEl) scoreEl.textContent = `${done} / ${total}`;
-  const pctEl = document.querySelector('.t2-tpl-pct');
-  if (pctEl) pctEl.textContent = total ? Math.round(done / total * 100) + '%' : '0%';
-  const fill = document.getElementById('tpl-progress-fill');
-  if (fill && !_examMode) fill.style.width = total ? (done / total * 100) + '%' : '0%';
-}
-
-function updateOverallBadge() {
-  const totalAll = Object.values(TPL_DATA).reduce((s, t) =>
-    s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
-  // Keys are namespaced by _lvlKey() ("type01" for band7, "type01@band6" for
-  // band6) — filtering by the current level's suffix keeps this badge
-  // scoped to what TPL_DATA/totalAll above actually represents, instead of
-  // summing completions from both levels into one number bigger than 100%.
-  const doneAll = Object.keys(_tplScores).filter(k =>
-    _tplScores[k] === 'ok' && k.includes('@band6') === (_tplActiveLevel === 'band6')
-  ).length;
-  const badge = document.getElementById('tpl-main-badge');
-  if (badge) badge.textContent = `${doneAll} / ${totalAll} mẫu câu`;
-  renderTabs();
-}
-
-// ── Vietnamese toggle ──────────────────────────────────────────
-function toggleTplVi() {
-  if (_examMode) { showToast('Không dùng dịch trong chế độ thi thử!', 'warn', 2000); return; }
-  _tplShowVi = !_tplShowVi;
-  document.querySelectorAll('.t2-cloze-vi').forEach(el => el.classList.toggle('vis', _tplShowVi));
-  const tabBtn = document.getElementById('tpl-vi-btn');
-  const label  = document.getElementById('tpl-vi-label');
-  if (tabBtn) tabBtn.classList.toggle('active', _tplShowVi);
-  if (label)  label.textContent = _tplShowVi ? 'Ẩn TV' : 'Tiếng Việt';
-}
-
-// ── Reset current type ─────────────────────────────────────────
-function resetTplType() {
-  const type = TPL_DATA[_tplActiveType];
-  if (!type) return;
-  type.sections.forEach((sec, si) => {
-    sec.items.forEach((item, ii) => {
-      delete _tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`];
-    });
-  });
-  saveTplScores();
-  updateOverallBadge();
-  updateTypeStatus();
-  renderTplContent();
-}
-
-// ── Type switch ────────────────────────────────────────────────
-function switchTplType(typeId) {
-  if (typeId === _tplActiveType) return;
-  if (_examMode) {
-    _pendingTypeId     = typeId;
-    _pendingExamSwitch = true;
-    const toMeta = TPL_TYPES.find(t => t.id === typeId);
-    document.getElementById('tpl-switch-sub').innerHTML =
-      `⏱️ Bạn đang ở <b>chế độ thi thử</b>.<br>Chuyển type sẽ <b>thoát khỏi chế độ thi thử</b>. Tiếp tục?`;
-    const confirmBtn = document.getElementById('tpl-switch-confirm-btn');
-    if (confirmBtn) confirmBtn.innerHTML = `<i class="fas fa-exchange-alt"></i> ${toMeta ? `Chuyển → ${escHtml(toMeta.label)}` : 'Chuyển type'}`;
-    document.getElementById('tpl-switch-overlay').classList.remove('hidden');
-    return;
-  }
-  const type = TPL_DATA[_tplActiveType];
-  const hasProgress = type && type.sections.some((sec, si) =>
-    sec.items.some((item, ii) => !!_tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`])
-  );
-  if (hasProgress) {
-    _pendingTypeId = typeId;
-    const fromMeta = TPL_TYPES.find(t => t.id === _tplActiveType);
-    const toMeta   = TPL_TYPES.find(t => t.id === typeId);
-    let done = 0, total = 0;
-    type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
-      total++;
-      if (_tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`] === 'ok') done++;
-    }));
-    document.getElementById('tpl-switch-sub').innerHTML =
-      `Bạn đã làm được <b>${done}/${total}</b> câu của <b>${escHtml(fromMeta ? fromMeta.label : _tplActiveType)}</b>.<br>Tiến độ được <b>lưu lại</b> — bạn có thể quay về bất cứ lúc nào.`;
-    const confirmBtn = document.getElementById('tpl-switch-confirm-btn');
-    if (confirmBtn && toMeta) confirmBtn.innerHTML = `<i class="fas fa-exchange-alt"></i> Chuyển → ${escHtml(toMeta.label)} · ${escHtml(TPL_DATA[typeId]?.name || '')}`;
-    document.getElementById('tpl-switch-overlay').classList.remove('hidden');
-  } else {
-    doSwitchType(typeId);
-  }
-}
-
-function confirmTypeSwitch() {
-  document.getElementById('tpl-switch-overlay').classList.add('hidden');
-  const typeId = _pendingTypeId;
-  const wasExam = _pendingExamSwitch;
-  _pendingTypeId     = null;
-  _pendingExamSwitch = false;
-  if (!typeId) return;
-  if (wasExam) exitExamMode();
-  doSwitchType(typeId);
-}
-
-function cancelTypeSwitch() {
-  document.getElementById('tpl-switch-overlay').classList.add('hidden');
-  _pendingTypeId     = null;
-  _pendingExamSwitch = false;
-}
-
-function doSwitchType(typeId) {
-  _clearBuildAdvance(); // a pending Build-mode round advance must not fire into the new type
-  if (_tplActiveMode === 'dictation' && 'speechSynthesis' in window) speechSynthesis.cancel();
-  saveTplAttemptToServer(_tplActiveType, _tplActiveMode);
-  _tplActiveType = typeId;
-  document.querySelectorAll('.t2-type-tab-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tplType === typeId);
-  });
-  renderTplContent();
-  updateTplScore();
-  updateTypeStatus();
-  _syncTplShareUrl(true);
-}
-
-// ── Band 6+ / Band 7+ level switch ───────────────────────────────
-// Guards against rapid double-clicks (or a slow response for a level the
-// student already navigated away from) resolving out of order — only the
-// most recently-requested level's response is allowed to populate
-// TPL_TYPES/TPL_DATA.
-let _loadTplSeq = 0;
-async function _loadTplTemplates(level) {
-  const requestId = ++_loadTplSeq;
-  try {
-    const token = window.AuthService && window.AuthService.getToken();
-    const res = await fetch(`${API}/api/task2/templates?level=${level}`, {
-      headers: token ? { Authorization: 'Bearer ' + token } : {}
-    });
-    if (requestId !== _loadTplSeq) return false;
-    if (res.ok) {
-      const data = await res.json();
-      if (requestId !== _loadTplSeq) return false;
-      if (data.success && data.templates && data.templates.length > 0) {
-        // Preserve local metadata (icon, color, desc, structure) not stored
-        // in DB — typeId is shared across levels, so this correctly carries
-        // over regardless of which level's fetch populated it last.
-        const localMeta = [...TPL_TYPES];
-        TPL_TYPES = data.templates.map(t => {
-          const lm = localMeta.find(lt => lt.id === t.typeId) || {};
-          return { id: t.typeId, label: t.label, sub: t.sub,
-            icon: lm.icon, color: lm.color, desc: lm.desc, structure: lm.structure };
-        });
-        TPL_DATA = {};
-        data.templates.forEach(t => { TPL_DATA[t.typeId] = { name: t.name, sections: t.sections }; });
-        // Chunks/Build pre-build an ordered {si,ii} queue and only rebuild it
-        // when _tplActiveType changes — typeId is shared across levels, so a
-        // level switch alone (same typeId, different/shorter item list under
-        // it) left both queues pointing at indices that may no longer exist
-        // in the newly-loaded TPL_DATA, throwing on the next render. Forcing
-        // both to rebuild here covers every caller of this function (init,
-        // switchTplLevel, the popstate handler) in one place.
-        _chunkQueueType = null;
-        _buildQueueType = null;
-        return true;
-      }
-    }
-  } catch (e) {}
-  return false;
-}
-
-function switchTplLevel(level) {
-  if (level !== 'band6' && level !== 'band7') return;
-  if (level === _tplActiveLevel) return;
-  if (_examMode) exitExamMode(); // an exam run never survives a level switch
-  if (_tplActiveMode === 'dictation' && 'speechSynthesis' in window) speechSynthesis.cancel();
-  _clearBuildAdvance();
-  saveTplAttemptToServer(_tplActiveType, _tplActiveMode); // flush progress for the level being left
-
-  _loadTplTemplates(level).then(ok => {
-    if (!ok) { showToast('Không tải được nội dung. Vui lòng thử lại.', 'error'); return; }
-    _tplActiveLevel = level;
-    document.querySelectorAll('.t2-level-btn').forEach(btn => {
-      const isActive = btn.dataset.level === level;
-      btn.classList.toggle('active', isActive);
-      btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-    });
-    if (!TPL_DATA[_tplActiveType]) _tplActiveType = TPL_TYPES[0]?.id || 'type01';
-
-    const subEl = document.getElementById('tpl-page-sub');
-    if (subEl) {
-      const totalAll = Object.values(TPL_DATA).reduce((s, t) =>
-        s + t.sections.reduce((ss, sec) => ss + sec.items.length, 0), 0);
-      subEl.textContent = `Điền từ ${totalAll} mẫu câu theo 7 dạng bài IELTS Task 2`;
-    }
-
-    renderTabs();
-    renderTplContent();
-    updateTplScore();
-    updateOverallBadge();
-    updateModeOverallBadge();
-    updateTypeStatus();
-    _syncTplShareUrl(true);
-  });
-}
-
-// ── Learning mode switch (Cloze / Translation / Chunks / Build / Dictation) ──
-function _applyModeTabUI(mode) {
-  document.querySelectorAll('.t2-mode-tab').forEach(btn => {
-    const isActive = btn.dataset.mode === mode;
-    btn.classList.toggle('active', isActive);
-    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
-  });
-  const cloTb   = document.getElementById('tpl-toolbar-cloze');
-  const otherTb = document.getElementById('tpl-toolbar-other');
-  if (cloTb)   cloTb.style.display   = mode === 'cloze' ? '' : 'none';
-  if (otherTb) otherTb.style.display = mode === 'cloze' ? 'none' : '';
-}
-function switchTplMode(mode) {
-  if (mode === _tplActiveMode) return;
-  _clearBuildAdvance(); // a pending Build-mode round advance must not fire into the new mode
-  if (_examMode) exitExamMode(); // an exam run never survives a mode switch
-  if (_tplActiveMode === 'dictation' && 'speechSynthesis' in window) speechSynthesis.cancel();
-  saveTplAttemptToServer(_tplActiveType, _tplActiveMode); // save the session we're leaving
-  _tplActiveMode = mode;
-  _applyModeTabUI(mode);
-  renderTplContent();
-  _syncTplShareUrl(true);
-}
-
-// ── Mode 1: Sentence-by-Sentence Translation ─────────────────────
-let _transIdx = 0; // index into the active type's flattened item list
-let _transHintShown = []; // letters Lulu has opened per word (showTranslationHint) — resets whenever _transIdx changes
-
-function _tplFlatItems(typeId) {
-  const type = TPL_DATA[typeId];
-  if (!type) return [];
-  const flat = [];
-  type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => flat.push({ si, ii, item })));
-  return flat;
-}
-
-// Reconstructs the full correct English sentence from a Cloze item by
-// splicing its answer(s) back into the blanks — reuses TPL_DATA exactly as
-// Cloze does, no new content authored for Translation mode.
-function _fullEnglishSentence(item) {
-  const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
-  const parts = item.en.split('___');
-  let out = parts[0];
-  answers.forEach((a, i) => { out += a + (parts[i + 1] || ''); });
-  return out;
-}
-
-// Word count + first-letter pattern hint, same UX as Task 1/Task 2 writing
-// practice (see backend/utils/textMatch.js buildAnswerHint — reimplemented
-// client-side here since the target sentence is assembled in the browser).
-function _buildAnswerHint(answer) {
-  const words = String(answer || '').trim().split(/\s+/).filter(Boolean);
-  const pattern = words.map(w => w.charAt(0) + w.slice(1).replace(/[a-zA-Z]/g, '_')).join(' ');
-  return { wordCount: words.length, pattern };
-}
-
-function renderTranslationMode() {
-  const flat = _tplFlatItems(_tplActiveType);
-  const area = document.getElementById('tpl-content-area');
-  if (!area) return;
-  // Drop any previous card's word-by-word drill (and its pending hand-off
-  // timer) before area.innerHTML detaches its host below.
-  if (window.WbwDrill) window.WbwDrill.unmount(document.getElementById('trans-wbw-host'));
-  if (!flat.length) { area.innerHTML = '<div class="classroom-empty">Chưa có nội dung</div>'; return; }
-  if (_transIdx >= flat.length) _transIdx = 0;
-
-  const modeData = _modeProgress[_lvlKey(_tplActiveType)]?.translation || {};
-  let done = 0;
-  flat.forEach(({ si, ii }) => { if (modeData[`${si}-${ii}`]?.status === 'ok') done++; });
-  const pct = Math.round(done / flat.length * 100);
-
-  const { si, ii, item } = flat[_transIdx];
-  const key = `${si}-${ii}`;
-  const alreadyOk = !_examMode && modeData[key]?.status === 'ok';
-  const target = _fullEnglishSentence(item);
-  _transHintShown = [];
-  const answerHint = _buildAnswerHint(target);
-  // Word-by-word "gõ từng chữ" drill (same widget as Luyện viết Task 2) for
-  // ordinary practice. Exam mode keeps the plain textarea — the drill needs
-  // the answer client-side, which must never happen during "Thi thử".
-  const useDrill = !alreadyOk && !_examMode && !!window.WbwDrill;
-
-  area.innerHTML = `
-    ${renderExamBarHtml(`${TPL_DATA[_tplActiveType]?.name || ''} · Dịch câu`)}
-    <div class="t2-mode-enter">
-      <div class="t2-trans-progress-hdr">
-        <span>Câu ${_transIdx + 1} / ${flat.length}</span>
-        <span id="trans-done-count">${_examMode ? `${_examSessionCorrect}/${_examSessionTotal} đã đúng` : `${done}/${flat.length} đã đúng · ${pct}%`}</span>
-      </div>
-      <div class="t2-trans-card">
-        <div class="t2-trans-vi"><i class="fas fa-quote-left" style="opacity:.4;font-size:11px;margin-right:5px"></i>${escHtml((item.vi || '').replace(/^→\s*/, ''))}</div>
-        ${!alreadyOk ? `
-        <div class="t2-answer-hint" id="trans-answer-hint"${useDrill ? ' style="display:none"' : ''}>
-          <span class="t2-answer-hint-count">📏 ${answerHint.wordCount} từ</span>
-          <span class="t2-answer-hint-pattern">${escHtml(answerHint.pattern)}</span>
-        </div>` : ''}
-        <div id="trans-wbw-host"></div>
-        <textarea class="t2-trans-input" id="trans-input" placeholder="Nhập câu tiếng Anh..." ${alreadyOk ? 'disabled' : ''}${useDrill ? ' style="display:none"' : ''}
-          onkeydown="if(event.key==='Enter' && (event.ctrlKey||event.metaKey)){event.preventDefault();checkTranslation()}"
-        >${alreadyOk ? escHtml(target) : ''}</textarea>
-        <div class="t2-trans-actions" id="trans-actions">
-          ${!alreadyOk ? `
-            <button class="t2-trans-btn t2-trans-btn--check" id="trans-check-btn" onclick="checkTranslation()"${useDrill ? ' style="display:none"' : ''}><i class="fas fa-check"></i> Kiểm tra</button>
-            ${_examMode || useDrill ? '' : `<button class="t2-trans-btn t2-trans-btn--hint ask-lulu" id="trans-hint-btn" onclick="showTranslationHint()" title="Hỏi Lulu gợi ý từng chữ"><span class="ask-lulu-ic"></span> Hỏi Lulu</button>`}
-            <button class="t2-trans-btn t2-trans-btn--skip" onclick="skipTranslation()"><i class="fas fa-forward"></i> Bỏ qua</button>
-          ` : `
-            <button class="t2-trans-btn t2-trans-btn--next" onclick="nextTranslation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>
-          `}
-        </div>
-        <div class="t2-trans-hint-box" id="trans-hint-box" style="display:none"></div>
-        <div class="t2-trans-result" id="trans-result"></div>
-      </div>
-    </div>`;
-
-  const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = (_examMode ? Math.round(_transIdx / flat.length * 100) : pct) + '%';
-
-  if (alreadyOk) {
-    const resultEl = document.getElementById('trans-result');
-    resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
-    resultEl.innerHTML = `✅ Đã trả lời đúng câu này.<div class="t2-trans-answer"><b>Đáp án:</b> ${escHtml(target)}</div>`;
-  } else if (useDrill && _mountTransDrill(target)) {
-    /* drill mounted — it self-focuses */
-  } else {
-    setTimeout(() => document.getElementById('trans-input')?.focus(), 50);
-  }
-}
-
-// Mount the word-by-word drill into #trans-wbw-host: the student types the
-// target sentence letter by letter (wrong char → red shake, correct word →
-// green + auto-advance, last word → auto-checks via checkTranslation()). The
-// #trans-input textarea is the value bridge and stays hidden while the drill
-// is active. Returns false — and restores the plain textarea + buttons — if
-// the drill can't run (WbwDrill missing / untypable target).
-function _mountTransDrill(target) {
-  const host  = document.getElementById('trans-wbw-host');
-  const input = document.getElementById('trans-input');
-  const cardIdx = _transIdx;
-  const ok = !!(host && window.WbwDrill && window.WbwDrill.mount(host, {
-    answer: target,
-    bridgeInput: input,
-    onComplete: function () {
-      if (_transIdx !== cardIdx) return;            // navigated away during the hand-off delay
-      const res = document.getElementById('trans-result');
-      if (res && res.classList.contains('vis')) return;  // already graded
-      checkTranslation();
-    }
-  }));
-  if (host)  host.style.display  = ok ? '' : 'none';
-  if (input) input.style.display = ok ? 'none' : '';
-  if (!ok) {
-    ['trans-check-btn', 'trans-answer-hint'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.display = '';
-    });
-    setTimeout(() => document.getElementById('trans-input')?.focus(), 50);
-  }
-  return ok;
-}
-
-// Word-level diff between the target sentence and what the student typed.
-// Normalizes case/whitespace/trailing punctuation (spec: ignore minor
-// punctuation, case, extra spaces), aligns tokens via LCS, then merges
-// adjacent missing+extra pairs into a single "wrong" (substituted word)
-// rather than showing them as two separate diff ops — matches the spec's
-// Correct/Incorrect/Missing/Extra categories. Reused by Dictation Mode later.
-function _diffNormalizeToken(w) { return w.toLowerCase().replace(/^[.,!?;:"'’]+|[.,!?;:"'’]+$/g, ''); }
-function _diffTokenize(s) { return (s || '').trim().split(/\s+/).filter(Boolean); }
-
-function diffWords(target, typed) {
-  const aOrig = _diffTokenize(target), bOrig = _diffTokenize(typed);
-  const a = aOrig.map(_diffNormalizeToken), b = bOrig.map(_diffNormalizeToken);
-  const n = a.length, m = b.length;
-  const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
-  for (let i = n - 1; i >= 0; i--) {
-    for (let j = m - 1; j >= 0; j--) {
-      dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
-    }
-  }
-  const ops = [];
-  let i = 0, j = 0;
-  while (i < n && j < m) {
-    if (a[i] === b[j]) { ops.push({ type: 'correct', word: bOrig[j] }); i++; j++; }
-    else if (dp[i + 1][j] >= dp[i][j + 1]) { ops.push({ type: 'missing', word: aOrig[i] }); i++; }
-    else { ops.push({ type: 'extra', word: bOrig[j] }); j++; }
-  }
-  while (i < n) { ops.push({ type: 'missing', word: aOrig[i] }); i++; }
-  while (j < m) { ops.push({ type: 'extra', word: bOrig[j] }); j++; }
-
-  const tokens = [];
-  for (let k = 0; k < ops.length; k++) {
-    const cur = ops[k], nxt = ops[k + 1];
-    if (nxt && ((cur.type === 'missing' && nxt.type === 'extra') || (cur.type === 'extra' && nxt.type === 'missing'))) {
-      const missingTok = cur.type === 'missing' ? cur : nxt;
-      const extraTok   = cur.type === 'extra'   ? cur : nxt;
-      tokens.push({ type: 'wrong', word: extraTok.word, expected: missingTok.word });
-      k++;
-    } else {
-      tokens.push(cur);
-    }
-  }
-
-  const correctCount = tokens.filter(t => t.type === 'correct').length;
-  const isPerfect = tokens.length > 0 && tokens.every(t => t.type === 'correct');
-  const accuracy = a.length ? Math.round(correctCount / a.length * 100) : 100;
-  return { tokens, isPerfect, accuracy };
-}
-
-function renderDiffHtml(diff) {
-  return diff.tokens.map(t => {
-    const esc = escHtml(t.word);
-    if (t.type === 'correct') return `<span class="t2-diff-correct">${esc}</span>`;
-    if (t.type === 'missing') return `<span class="t2-diff-missing">${esc}</span>`;
-    if (t.type === 'extra')   return `<span class="t2-diff-extra">${esc}</span>`;
-    return `<span class="t2-diff-wrong" title="Đáp án: ${escAttr(t.expected)}">${esc}</span>`;
-  }).join(' ');
-}
-
-// checkTranslation()/checkDictation() update the result card in place (not
-// a full re-render, so the textarea/buttons don't flash) — this keeps the
-// "X/N đã đúng" header and the top progress bar in sync with that same
-// in-place update, so progress visibly moves the instant Check is pressed,
-// not only after Next. Shared by both modes since the logic is identical
-// bar which mode/element it reads and writes.
-function _updateModeProgressHeader(mode, flat, countElId) {
-  const modeData = _modeProgress[_lvlKey(_tplActiveType)]?.[mode] || {};
-  let done = 0;
-  flat.forEach(({ si, ii }) => { if (modeData[`${si}-${ii}`]?.status === 'ok') done++; });
-  const pct = flat.length ? Math.round(done / flat.length * 100) : 0;
-  const countEl = document.getElementById(countElId);
-  if (countEl) countEl.textContent = `${done}/${flat.length} đã đúng · ${pct}%`;
-  const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = pct + '%';
-}
-
-function checkTranslation() {
-  const flat = _tplFlatItems(_tplActiveType);
-  const { si, ii, item } = flat[_transIdx];
-  const input = document.getElementById('trans-input');
-  if (!input) return;
-  const typed = input.value.trim();
-  if (!typed) { showToast('Vui lòng nhập câu trả lời!', 'warn', 2000); return; }
-
-  const target = _fullEnglishSentence(item);
-  const diff = diffWords(target, typed);
-  const resultEl   = document.getElementById('trans-result');
-  const actionsEl  = document.getElementById('trans-actions');
-  input.disabled = true;
-
-  if (_examMode) _examSessionTotal++;
-
-  if (diff.isPerfect) {
-    if (_examMode) _examSessionCorrect++;
-    else setModeItemResult('translation', _tplActiveType, si, ii, 'ok');
-    resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
-    resultEl.innerHTML = `🎉 <b>Hoàn hảo!</b><div style="margin-top:6px">${renderDiffHtml(diff)}</div>`;
-    playOk();
-    if (!_examMode) { updateXPStorage(5); _spawnTransXpPop(resultEl, '+5 XP ⭐'); _spawnPerfectParticles(resultEl); }
-  } else {
-    if (!_examMode) setModeItemResult('translation', _tplActiveType, si, ii, 'err');
-    resultEl.className = 't2-trans-result t2-trans-result--ok vis';
-    resultEl.innerHTML = `${renderDiffHtml(diff)}<div class="t2-trans-answer"><b>Đáp án đúng:</b> ${escHtml(target)}</div>`;
-    playWrong();
-    if (!_examMode && diff.accuracy >= 60) updateXPStorage(1);
-  }
-
-  actionsEl.innerHTML = `<button class="t2-trans-btn t2-trans-btn--next" onclick="nextTranslation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>`;
-  if (_examMode) {
-    const countEl = document.getElementById('trans-done-count');
-    if (countEl) countEl.textContent = `${_examSessionCorrect}/${_examSessionTotal} đã đúng`;
-  } else {
-    _updateModeProgressHeader('translation', flat, 'trans-done-count');
-    updateModeOverallBadge();
-    renderTabs();
-  }
-}
-
-// "Hỏi Lulu": each ask opens ONE more letter of the first word the student
-// hasn't typed right yet (AskLulu.letterHint, in js/shared/playful.js) —
-// letter by letter, never the whole sentence.
-function showTranslationHint() {
-  if (_examMode || !window.AskLulu) return; // hint button is hidden during exam mode
-  const flat = _tplFlatItems(_tplActiveType);
-  const target = _fullEnglishSentence(flat[_transIdx].item);
-  const input = document.getElementById('trans-input');
-  const res = AskLulu.letterHint(target, input ? input.value : '', _transHintShown);
-
-  const box = document.getElementById('trans-hint-box');
-  if (box) {
-    box.style.display = 'block';
-    box.innerHTML = `
-      <div class="t2-trans-hint-label">🍊 Lulu gợi ý</div>
-      <div class="t2-trans-hint-text">${escHtml(res.pattern)}</div>`;
-  }
-  AskLulu.say(document.getElementById('trans-hint-btn'), AskLulu.line(res));
-  if (input) input.focus();
-}
-
-function skipTranslation() {
-  const flat = _tplFlatItems(_tplActiveType);
-  const { si, ii } = flat[_transIdx];
-  if (_examMode) { _examSessionTotal++; nextTranslation(); return; }
-  setModeItemResult('translation', _tplActiveType, si, ii, 'skip');
-  nextTranslation();
-}
-
-function nextTranslation() {
-  const flat = _tplFlatItems(_tplActiveType);
-  if (!flat.length) return;
-  if (_examMode) {
-    if (_transIdx + 1 >= flat.length) { finishExam(); return; }
-    _transIdx++;
-  } else {
-    _transIdx = (_transIdx + 1) % flat.length;
-  }
-  renderTranslationMode();
-}
-
-function _spawnTransXpPop(anchorEl, text) {
-  const rect = anchorEl.getBoundingClientRect();
-  const pop = document.createElement('div');
-  pop.className = 't2-trans-xp-pop';
-  pop.textContent = text;
-  pop.style.cssText = `left:${rect.left + window.scrollX + rect.width / 2 - 28}px;top:${rect.top + window.scrollY - 6}px;`;
-  document.body.appendChild(pop);
-  setTimeout(() => pop.remove(), 900);
-}
-
-function _spawnPerfectParticles(anchorEl) {
-  const rect = anchorEl.getBoundingClientRect();
-  const cx = rect.left + rect.width / 2, cy = rect.top + 20;
-  const emojis = ['🎉', '✨', '⭐', '🎊', '💫'];
-  for (let k = 0; k < 8; k++) {
-    const p = document.createElement('div');
-    p.className = 't2-perfect-particle';
-    p.textContent = emojis[k % emojis.length];
-    const angle = (Math.PI * 2 * k) / 8 + Math.random() * 0.4;
-    const dist = 70 + Math.random() * 40;
-    p.style.left = cx + 'px'; p.style.top = cy + 'px';
-    p.style.setProperty('--pend', `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist - 40}px)`);
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 950);
-  }
-}
-
-// Icons for every mode that has REAL progress to show — grows as later
-// phases ship (Build/Dictation get added here once they're wired up).
-const ACTIVE_PROGRESS_MODES = [
-  { mode: 'translation', icon: '🗣' },
-  { mode: 'chunks',      icon: '🔗' },
-  { mode: 'build',       icon: '🧩' },
-  { mode: 'dictation',   icon: '🎧' },
-];
-function updateModeOverallBadge() {
-  const el = document.getElementById('tpl-mode-badge');
-  if (!el) return;
-  const parts = ACTIVE_PROGRESS_MODES.map(({ mode, icon }) => {
-    let done = 0, total = 0;
-    TPL_TYPES.forEach(t => {
-      const type = TPL_DATA[t.id];
-      if (!type) return;
-      const modeData = _modeProgress[_lvlKey(t.id)]?.[mode] || {};
-      type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
-        total++;
-        if (modeData[`${si}-${ii}`]?.status === 'ok') done++;
-      }));
-    });
-    return `${icon} ${done}/${total}`;
-  });
-  el.textContent = parts.join('   ·   ');
-}
-
-// ── Mode 2: Chunks — sentence flashcards with EN-side phrase chunking ──
-// (VI/EN chunk-level pairing was deliberately NOT auto-generated — the
-// dataset only has whole-sentence VI translations, and heuristically
-// guessing per-chunk Vietnamese boundaries risks teaching students an
-// inaccurate translation. Flashcards flip at the sentence level instead;
-// the English back face highlights chunk boundaries so students still get
-// the phrase-structure cue, just without fabricated Vietnamese content.)
-const CHUNK_BOUNDARY_WORDS = new Set([
-  'of', 'in', 'on', 'for', 'with', 'to', 'from', 'at', 'by',
-  'that', 'which', 'and', 'but', 'because', 'so', 'while', 'although',
-  'as', 'if', 'than', 'after', 'before', 'when',
-]);
-// Splits an English sentence into 2-6-word chunks at natural phrase
-// boundaries (prepositions/conjunctions/commas). A visual memorization aid,
-// not a claim of grammatically exact phrase structure — reused by Build
-// mode (Phase 3) for its reorderable blocks.
-function chunkSentence(sentence) {
-  const words = sentence.trim().split(/\s+/);
-  const chunks = [];
-  let current = [];
-  words.forEach((w, idx) => {
-    const bare = w.toLowerCase().replace(/[.,!?;:"']/g, '');
-    if (idx > 0 && CHUNK_BOUNDARY_WORDS.has(bare) && current.length >= 2) {
-      chunks.push(current.join(' ')); current = [w];
-    } else {
-      current.push(w);
-      if (/,$/.test(w) && current.length >= 3) { chunks.push(current.join(' ')); current = []; }
-    }
-  });
-  if (current.length) chunks.push(current.join(' '));
-  // Fold any stray 1-word fragment into its neighbor.
-  const merged = [];
-  chunks.forEach(c => {
-    if (merged.length && c.split(' ').length <= 1) merged[merged.length - 1] += ' ' + c;
-    else merged.push(c);
-  });
-  return merged.length ? merged : [sentence];
-}
-
-let _chunkQueue = []; // session-scoped review queue: [{si, ii}, ...]
-let _chunkQueueType = null; // which typeId _chunkQueue was built for
-let _chunkIdx = 0;
-let _chunkFlipped = false;
-let _chunkSessionRemembered = 0;
-
-function _restartChunkQueue() {
-  _chunkQueueType = null; // forces renderChunksMode() to rebuild fresh
-  renderChunksMode();
-}
-
-function renderChunksMode() {
-  const area = document.getElementById('tpl-content-area');
-  if (!area) return;
-  const flat = _tplFlatItems(_tplActiveType);
-  if (!flat.length) { area.innerHTML = '<div class="classroom-empty">Chưa có nội dung</div>'; return; }
-
-  if (_chunkQueueType !== _tplActiveType) {
-    _chunkQueue = flat.map(({ si, ii }) => ({ si, ii }));
-    _chunkIdx = 0;
-    _chunkQueueType = _tplActiveType;
-    _chunkSessionRemembered = 0;
-  }
-  _chunkFlipped = false;
-
-  const modeData = _modeProgress[_lvlKey(_tplActiveType)]?.chunks || {};
-  const remembered = flat.filter(({ si, ii }) => modeData[`${si}-${ii}`]?.status === 'ok').length;
-  const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = (_examMode
-    ? Math.round(_chunkIdx / _chunkQueue.length * 100)
-    : (flat.length ? Math.round(remembered / flat.length * 100) : 0)) + '%';
-
-  if (_chunkIdx >= _chunkQueue.length) {
-    area.innerHTML = `
-      <div class="t2-mode-enter">
-        <div class="t2-soon-card t2-chunk-done-card">
-          <div class="t2-soon-icon">🎉</div>
-          <div class="t2-soon-title">Hoàn thành phiên ôn Chunks!</div>
-          <div class="t2-soon-sub">Bạn đã nhớ ${remembered}/${flat.length} thẻ của dạng bài này.</div>
-          <button class="t2-trans-btn t2-trans-btn--next" style="margin-top:14px" onclick="_restartChunkQueue()"><i class="fas fa-redo"></i> Ôn lại từ đầu</button>
-        </div>
-      </div>`;
-    return;
-  }
-
-  const { si, ii } = _chunkQueue[_chunkIdx];
-  const item = TPL_DATA[_tplActiveType].sections[si].items[ii];
-  const target = _fullEnglishSentence(item);
-  const chunks = chunkSentence(target);
-
-  area.innerHTML = `
-    ${renderExamBarHtml(`${TPL_DATA[_tplActiveType]?.name || ''} · Chunks`)}
-    <div class="t2-mode-enter">
-      <div class="t2-trans-progress-hdr">
-        <span>Thẻ ${_chunkIdx + 1} / ${_chunkQueue.length}</span>
-        <span id="chunk-done-count">${_examMode ? `${_examSessionCorrect}/${_examSessionTotal} đã nhớ` : `${remembered}/${flat.length} đã nhớ`}</span>
-      </div>
-      <div class="t2-flip-wrap" onclick="flipChunkCard()">
-        <div class="t2-flip-card" id="chunk-flip-card">
-          <div class="t2-flip-face t2-flip-front">
-            <div class="t2-flip-hint">Tiếng Việt — bấm để lật</div>
-            <div class="t2-flip-text">${escHtml((item.vi || '').replace(/^→\s*/, ''))}</div>
-          </div>
-          <div class="t2-flip-face t2-flip-back">
-            <div class="t2-flip-hint">English</div>
-            <div class="t2-flip-chunks">${chunks.map(c => `<span class="t2-chunk-pill">${escHtml(c)}</span>`).join('')}</div>
-          </div>
-        </div>
-      </div>
-      <div class="t2-chunk-actions hidden" id="chunk-actions">
-        <button class="t2-trans-btn t2-chunk-btn--no" onclick="event.stopPropagation();answerChunk(false)"><i class="fas fa-xmark"></i> Chưa nhớ</button>
-        <button class="t2-trans-btn t2-chunk-btn--yes" onclick="event.stopPropagation();answerChunk(true)"><i class="fas fa-check"></i> Tôi nhớ</button>
-      </div>
-      <div class="t2-chunk-flip-cta" id="chunk-flip-cta">Bấm vào thẻ hoặc phím Space để lật</div>
-    </div>`;
-}
-
-function flipChunkCard() {
-  _chunkFlipped = !_chunkFlipped;
-  document.getElementById('chunk-flip-card')?.classList.toggle('flipped', _chunkFlipped);
-  document.getElementById('chunk-actions')?.classList.toggle('hidden', !_chunkFlipped);
-  document.getElementById('chunk-flip-cta')?.classList.toggle('hidden', _chunkFlipped);
-}
-
-// Review queue: "remembered" retires the card for this session; "not yet"
-// re-inserts it 3 cards later (spec: wrong -> repeat after 3 templates) so
-// it comes back around before the session ends instead of only ever being
-// seen once.
-function answerChunk(remembered) {
-  if (!_chunkFlipped) return;
-  const { si, ii } = _chunkQueue[_chunkIdx];
-
-  if (_examMode) {
-    _examSessionTotal++;
-    if (remembered) { _examSessionCorrect++; playOk(); } else { playWrong(); }
-    _chunkIdx++;
-    if (_chunkIdx >= _chunkQueue.length) finishExam();
-    else renderChunksMode();
-    return;
-  }
-
-  setModeItemResult('chunks', _tplActiveType, si, ii, remembered ? 'ok' : 'err');
-  if (remembered) {
-    _chunkSessionRemembered++;
-    playOk();
-  } else {
-    playWrong();
-    const reinsertAt = Math.min(_chunkQueue.length, _chunkIdx + 1 + 3);
-    _chunkQueue.splice(reinsertAt, 0, { si, ii });
-  }
-  _chunkIdx++;
-  updateModeOverallBadge();
-  renderTabs();
-  renderChunksMode();
-}
-
-document.addEventListener('keydown', (e) => {
-  if (_tplActiveMode !== 'chunks' || !document.getElementById('chunk-flip-card')) return;
-  if (e.key === ' ') { e.preventDefault(); flipChunkCard(); }
-  else if (_chunkFlipped && (e.key === 'y' || e.key === 'Y' || e.key === 'Enter')) { answerChunk(true); }
-  else if (_chunkFlipped && (e.key === 'n' || e.key === 'N')) { answerChunk(false); }
-});
-
-// ── Mode 3: Build the Sentence — tap-to-place (not native drag/drop) ──
-// Deliberately reuses task2-practice.html's proven "rearrange" question
-// interaction (tap a bank chip to place it, tap a placed chip to return
-// it) rather than real Pointer-Events dragging — confirmed with the user:
-// this pattern already works reliably across mouse+touch in production,
-// whereas real drag-and-drop would be net-new, higher-risk code with no
-// precedent in this app. Chunk pieces come from chunkSentence() (Phase 2,
-// shared/reused here) so no new sentence-splitting logic was needed.
-let _buildQueue = [];
-let _buildQueueType = null;
-let _buildIdx = 0;
-let _buildBank = [];          // [{id, text, used}] — shuffled pieces for the current round
-let _buildAnswer = [];        // ids, in the order the student tapped them
-let _buildTargetPieces = [];  // correct-order texts for the current round
-let _buildRoundKey = null;    // `${si}-${ii}-${hardMode}` — regenerate only when this changes
-let _buildHardMode = false;   // false = chunks (default), true = individual words
-let _buildAdvanceTimer = null; // pending checkBuild() -> advance() timeout, so a mode/type switch mid-delay can cancel it
-function _clearBuildAdvance() {
-  clearTimeout(_buildAdvanceTimer);
-  _buildAdvanceTimer = null;
-}
-
-function _restartBuildQueue() {
-  _buildQueueType = null;
-  renderBuildMode();
-}
-
-function _newBuildRound(item) {
-  const target = _fullEnglishSentence(item);
-  const pieces = _buildHardMode
-    ? target.replace(/[.,!?]+$/, '').split(/\s+/)
-    : chunkSentence(target).map(c => c.trim());
-  _buildTargetPieces = pieces;
-  const shuffled = pieces.map((text, id) => ({ id, text }));
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  _buildBank = shuffled.map(p => ({ ...p, used: false }));
-  _buildAnswer = [];
-}
-
-function renderBuildMode() {
-  const area = document.getElementById('tpl-content-area');
-  if (!area) return;
-  const flat = _tplFlatItems(_tplActiveType);
-  if (!flat.length) { area.innerHTML = '<div class="classroom-empty">Chưa có nội dung</div>'; return; }
-
-  if (_buildQueueType !== _tplActiveType) {
-    _buildQueue = flat.map(({ si, ii }) => ({ si, ii }));
-    _buildIdx = 0;
-    _buildQueueType = _tplActiveType;
-    _buildRoundKey = null;
-  }
-
-  const modeData = _modeProgress[_lvlKey(_tplActiveType)]?.build || {};
-  const done = flat.filter(({ si, ii }) => modeData[`${si}-${ii}`]?.status === 'ok').length;
-  const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = (_examMode
-    ? Math.round(_buildIdx / _buildQueue.length * 100)
-    : (flat.length ? Math.round(done / flat.length * 100) : 0)) + '%';
-
-  if (_buildIdx >= _buildQueue.length) {
-    area.innerHTML = `
-      <div class="t2-mode-enter">
-        <div class="t2-soon-card t2-chunk-done-card">
-          <div class="t2-soon-icon">🏗️</div>
-          <div class="t2-soon-title">Hoàn thành phiên Build!</div>
-          <div class="t2-soon-sub">Bạn đã dựng đúng ${done}/${flat.length} câu của dạng bài này.</div>
-          <button class="t2-trans-btn t2-trans-btn--next" style="margin-top:14px" onclick="_restartBuildQueue()"><i class="fas fa-redo"></i> Chơi lại</button>
-        </div>
-      </div>`;
-    return;
-  }
-
-  const { si, ii } = _buildQueue[_buildIdx];
-  const item = TPL_DATA[_tplActiveType].sections[si].items[ii];
-  const roundKey = `${si}-${ii}-${_buildHardMode}`;
-  if (_buildRoundKey !== roundKey) { _newBuildRound(item); _buildRoundKey = roundKey; }
-
-  const answerHtml = _buildAnswer.length
-    ? _buildAnswer.map((bid, pos) => {
-        const piece = _buildBank.find(b => b.id === bid);
-        return `<span class="t2-build-chip" onclick="removeBuildPiece(${pos})">${escHtml(piece ? piece.text : '')}</span>`;
-      }).join('')
-    : `<span class="t2-build-placeholder">Bấm vào các cụm bên dưới để xếp câu...</span>`;
-
-  const bankHtml = _buildBank.map(b => `
-    <button class="t2-build-bank-chip ${b.used ? 'used' : ''}" ${b.used ? 'disabled' : ''} onclick="addBuildPiece(${b.id})">${escHtml(b.text)}</button>
-  `).join('');
-
-  const allPlaced = _buildAnswer.length === _buildBank.length;
-
-  area.innerHTML = `
-    ${renderExamBarHtml(`${TPL_DATA[_tplActiveType]?.name || ''} · Build`)}
-    <div class="t2-mode-enter">
-      <div class="t2-trans-progress-hdr">
-        <span>Câu ${_buildIdx + 1} / ${_buildQueue.length}</span>
-        <span>${_examMode ? `${_examSessionCorrect}/${_examSessionTotal} đã đúng` : `${done}/${flat.length} đã đúng`}</span>
-      </div>
-      <div class="t2-trans-card">
-        <div class="t2-trans-vi"><i class="fas fa-quote-left" style="opacity:.4;font-size:11px;margin-right:5px"></i>${escHtml((item.vi || '').replace(/^→\s*/, ''))}</div>
-        <div class="t2-build-answer-area" id="build-answer-area">${answerHtml}</div>
-        <div class="t2-build-bank" id="build-bank">${bankHtml}</div>
-        <div class="t2-trans-actions">
-          <button class="t2-trans-btn t2-trans-btn--check" onclick="checkBuild()" ${allPlaced ? '' : 'disabled'}><i class="fas fa-check"></i> Kiểm tra</button>
-          <button class="t2-trans-btn t2-trans-btn--skip" onclick="resetBuildRound()"><i class="fas fa-rotate-left"></i> Xếp lại</button>
-          <label class="t2-build-hard-toggle">
-            <input type="checkbox" ${_buildHardMode ? 'checked' : ''} onchange="toggleBuildHardMode(this.checked)"> Từng từ (khó)
-          </label>
-        </div>
-        <div class="t2-trans-result" id="build-result"></div>
-      </div>
-    </div>`;
-}
-
-function addBuildPiece(id) {
-  const piece = _buildBank.find(b => b.id === id);
-  if (!piece || piece.used) return;
-  piece.used = true;
-  _buildAnswer.push(id);
-  renderBuildMode();
-}
-
-function removeBuildPiece(pos) {
-  const id = _buildAnswer[pos];
-  _buildAnswer.splice(pos, 1);
-  const piece = _buildBank.find(b => b.id === id);
-  if (piece) piece.used = false;
-  renderBuildMode();
-}
-
-function resetBuildRound() {
-  _buildAnswer = [];
-  _buildBank.forEach(b => { b.used = false; });
-  renderBuildMode();
-}
-
-function toggleBuildHardMode(checked) {
-  _buildHardMode = checked;
-  _buildRoundKey = null; // force regeneration at the new granularity
-  renderBuildMode();
-}
-
-function checkBuild() {
-  const { si, ii } = _buildQueue[_buildIdx];
-  const userOrder = _buildAnswer.map(id => _buildBank.find(b => b.id === id)?.text || '');
-  const norm = s => s.toLowerCase().replace(/[.,!?;:"'’]/g, '').trim();
-  const isCorrect = userOrder.length === _buildTargetPieces.length &&
-    userOrder.every((t, i) => norm(t) === norm(_buildTargetPieces[i]));
-
-  const resultEl    = document.getElementById('build-result');
-  const answerArea   = document.getElementById('build-answer-area');
-  document.querySelectorAll('#build-bank button, .t2-trans-btn').forEach(b => { b.disabled = true; });
-
-  // Advances past the current round; in exam mode ends the pass with
-  // finishExam() once the last item has been attempted.
-  function advance() {
-    if (_examMode && _buildIdx + 1 >= _buildQueue.length) { finishExam(); return; }
-    _buildIdx++;
-    _buildRoundKey = null;
-    renderBuildMode();
-  }
-
-  if (_examMode) _examSessionTotal++;
-
-  if (isCorrect) {
-    if (_examMode) _examSessionCorrect++;
-    else setModeItemResult('build', _tplActiveType, si, ii, 'ok');
-    answerArea.classList.add('t2-build-success');
-    resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
-    resultEl.innerHTML = `🎉 <b>Chính xác!</b>`;
-    playOk();
-    if (!_examMode) { updateXPStorage(5); _spawnTransXpPop(resultEl, '+5 XP ⭐'); _spawnPerfectParticles(resultEl); }
-    _buildAdvanceTimer = setTimeout(advance, 900);
-  } else {
-    if (!_examMode) setModeItemResult('build', _tplActiveType, si, ii, 'err');
-    answerArea.classList.add('t2-build-shake');
-    setTimeout(() => answerArea.classList.remove('t2-build-shake'), 500);
-    resultEl.className = 't2-trans-result t2-trans-result--ok vis';
-    resultEl.innerHTML = `❌ Chưa đúng thứ tự.<div class="t2-trans-answer"><b>Đáp án đúng:</b> ${escHtml(_buildTargetPieces.join(' '))}</div>`;
-    playWrong();
-    if (!_examMode) {
-      // Review queue: wrong -> repeat after 3 templates (same rule as Chunks).
-      const reinsertAt = Math.min(_buildQueue.length, _buildIdx + 1 + 3);
-      _buildQueue.splice(reinsertAt, 0, { si, ii });
-    }
-    _buildAdvanceTimer = setTimeout(advance, 2200);
-  }
-  if (!_examMode) { updateModeOverallBadge(); renderTabs(); }
-}
-
-// ── Mode 4: Dictation — listen (browser Speech Synthesis, no recorded
-// audio exists for these templates) and type what you heard. Reuses
-// diffWords()/renderDiffHtml() from Translation mode as-is — the task is
-// identical (compare typed text to a target sentence), only the prompt
-// (audio vs. Vietnamese text) differs. ──
-let _dictIdx = 0;
-let _dictSpeed = 'normal'; // 'normal' | 'slow'
-let _dictVoice = null;
-
-function _primeDictVoice() {
-  if (!('speechSynthesis' in window)) return;
-  const pick = () => {
-    const voices = speechSynthesis.getVoices();
-    _dictVoice = voices.find(v => v.lang === 'en-US' && /Google|Natural|Neural/i.test(v.name))
-      || voices.find(v => v.lang && v.lang.startsWith('en'))
-      || null;
-  };
-  pick();
-  if ('onvoiceschanged' in speechSynthesis) speechSynthesis.onvoiceschanged = pick;
-}
-
-function playDictationAudio() {
-  if (!('speechSynthesis' in window)) { showToast('Trình duyệt không hỗ trợ phát âm.', 'warn', 2500); return; }
-  const flat = _tplFlatItems(_tplActiveType);
-  const item = flat[_dictIdx]?.item;
-  if (!item) return;
-  const target = _fullEnglishSentence(item);
-  speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(target);
-  utter.lang = 'en-US';
-  utter.rate = _dictSpeed === 'slow' ? 0.6 : 0.95;
-  utter.pitch = 1.0;
-  if (_dictVoice) utter.voice = _dictVoice;
-  speechSynthesis.speak(utter);
-}
-
-function setDictSpeed(speed) {
-  _dictSpeed = speed;
-  document.querySelectorAll('.t2-dict-speed-btn').forEach(b => b.classList.toggle('active', b.dataset.speed === speed));
-}
-
-function renderDictationMode() {
-  const area = document.getElementById('tpl-content-area');
-  if (!area) return;
-  const flat = _tplFlatItems(_tplActiveType);
-  if (!flat.length) { area.innerHTML = '<div class="classroom-empty">Chưa có nội dung</div>'; return; }
-  if (_dictIdx >= flat.length) _dictIdx = 0;
-
-  const modeData = _modeProgress[_lvlKey(_tplActiveType)]?.dictation || {};
-  let done = 0;
-  flat.forEach(({ si, ii }) => { if (modeData[`${si}-${ii}`]?.status === 'ok') done++; });
-  const pct = Math.round(done / flat.length * 100);
-
-  const { si, ii, item } = flat[_dictIdx];
-  const key = `${si}-${ii}`;
-  const alreadyOk = !_examMode && modeData[key]?.status === 'ok';
-  const target = _fullEnglishSentence(item);
-  const answerHint = _buildAnswerHint(target);
-
-  area.innerHTML = `
-    ${renderExamBarHtml(`${TPL_DATA[_tplActiveType]?.name || ''} · Dictation`)}
-    <div class="t2-mode-enter">
-      <div class="t2-trans-progress-hdr">
-        <span>Câu ${_dictIdx + 1} / ${flat.length}</span>
-        <span id="dict-done-count">${_examMode ? `${_examSessionCorrect}/${_examSessionTotal} đã đúng` : `${done}/${flat.length} đã đúng · ${pct}%`}</span>
-      </div>
-      <div class="t2-trans-card">
-        <div class="t2-dict-controls">
-          <button class="t2-dict-play-btn" onclick="playDictationAudio()" title="Nghe câu (có thể bấm lại để nghe lại)">
-            <i class="fas fa-volume-up"></i> ${alreadyOk ? 'Nghe lại' : 'Nghe câu'}
-          </button>
-          <div class="t2-dict-speed-toggle">
-            <button class="t2-dict-speed-btn ${_dictSpeed === 'normal' ? 'active' : ''}" data-speed="normal" onclick="setDictSpeed('normal')">Bình thường</button>
-            <button class="t2-dict-speed-btn ${_dictSpeed === 'slow' ? 'active' : ''}" data-speed="slow" onclick="setDictSpeed('slow')">Chậm</button>
-          </div>
-        </div>
-        ${!alreadyOk ? `
-        <div class="t2-answer-hint">
-          <span class="t2-answer-hint-count">📏 ${answerHint.wordCount} từ</span>
-          <span class="t2-answer-hint-pattern">${escHtml(answerHint.pattern)}</span>
-        </div>` : ''}
-        <textarea class="t2-trans-input" id="dict-input" placeholder="Nghe và gõ lại câu bạn nghe được..." ${alreadyOk ? 'disabled' : ''}
-          onkeydown="if(event.key==='Enter' && (event.ctrlKey||event.metaKey)){event.preventDefault();checkDictation()}"
-        >${alreadyOk ? escHtml(target) : ''}</textarea>
-        <div class="t2-trans-actions" id="dict-actions">
-          ${!alreadyOk ? `
-            <button class="t2-trans-btn t2-trans-btn--check" onclick="checkDictation()"><i class="fas fa-check"></i> Kiểm tra</button>
-            ${_examMode ? '' : `<button class="t2-trans-btn t2-trans-btn--hint" onclick="revealDictation()"><i class="fas fa-eye"></i> Xem đáp án</button>`}
-          ` : `
-            <button class="t2-trans-btn t2-trans-btn--next" onclick="nextDictation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>
-          `}
-        </div>
-        <div class="t2-trans-result" id="dict-result"></div>
-      </div>
-    </div>`;
-
-  const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = (_examMode ? Math.round(_dictIdx / flat.length * 100) : pct) + '%';
-
-  if (alreadyOk) {
-    const resultEl = document.getElementById('dict-result');
-    resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
-    resultEl.innerHTML = `✅ Đã trả lời đúng câu này.<div class="t2-trans-answer"><b>Đáp án:</b> ${escHtml(target)}</div>`;
-  } else {
-    setTimeout(() => document.getElementById('dict-input')?.focus(), 50);
-  }
-}
-
-function checkDictation() {
-  const flat = _tplFlatItems(_tplActiveType);
-  const { si, ii, item } = flat[_dictIdx];
-  const input = document.getElementById('dict-input');
-  if (!input) return;
-  const typed = input.value.trim();
-  if (!typed) { showToast('Vui lòng gõ lại câu bạn nghe được!', 'warn', 2000); return; }
-
-  const target = _fullEnglishSentence(item);
-  const diff = diffWords(target, typed);
-  const resultEl  = document.getElementById('dict-result');
-  const actionsEl = document.getElementById('dict-actions');
-  input.disabled = true;
-
-  if (_examMode) _examSessionTotal++;
-
-  if (diff.isPerfect) {
-    if (_examMode) _examSessionCorrect++;
-    else setModeItemResult('dictation', _tplActiveType, si, ii, 'ok');
-    resultEl.className = 't2-trans-result t2-trans-result--perfect vis';
-    resultEl.innerHTML = `🎉 <b>Hoàn hảo!</b><div style="margin-top:6px">${renderDiffHtml(diff)}</div>`;
-    playOk();
-    if (!_examMode) { updateXPStorage(5); _spawnTransXpPop(resultEl, '+5 XP ⭐'); _spawnPerfectParticles(resultEl); }
-  } else {
-    if (!_examMode) setModeItemResult('dictation', _tplActiveType, si, ii, 'err');
-    resultEl.className = 't2-trans-result t2-trans-result--ok vis';
-    resultEl.innerHTML = `${renderDiffHtml(diff)}<div class="t2-trans-answer"><b>Đáp án đúng:</b> ${escHtml(target)}</div>`;
-    playWrong();
-    if (!_examMode && diff.accuracy >= 60) updateXPStorage(1);
-  }
-
-  actionsEl.innerHTML = `<button class="t2-trans-btn t2-trans-btn--next" onclick="nextDictation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>`;
-  if (_examMode) {
-    const countEl = document.getElementById('dict-done-count');
-    if (countEl) countEl.textContent = `${_examSessionCorrect}/${_examSessionTotal} đã đúng`;
-  } else {
-    _updateModeProgressHeader('dictation', flat, 'dict-done-count');
-    updateModeOverallBadge();
-    renderTabs();
-  }
-}
-
-function revealDictation() {
-  if (_examMode) return; // "Xem đáp án" is hidden during exam mode
-  const flat = _tplFlatItems(_tplActiveType);
-  const { si, ii, item } = flat[_dictIdx];
-  const target = _fullEnglishSentence(item);
-  const input = document.getElementById('dict-input');
-  if (input) { input.value = target; input.disabled = true; }
-  setModeItemResult('dictation', _tplActiveType, si, ii, 'err'); // revealed, not recalled — still tracked as an attempt
-  const resultEl = document.getElementById('dict-result');
-  resultEl.className = 't2-trans-result t2-trans-result--ok vis';
-  resultEl.innerHTML = `<div class="t2-trans-answer"><b>Đáp án:</b> ${escHtml(target)}</div>`;
-  document.getElementById('dict-actions').innerHTML = `<button class="t2-trans-btn t2-trans-btn--next" onclick="nextDictation()"><i class="fas fa-arrow-right"></i> Câu tiếp theo</button>`;
-  _updateModeProgressHeader('dictation', flat, 'dict-done-count');
-  updateModeOverallBadge();
-  renderTabs();
-}
-
-function nextDictation() {
-  const flat = _tplFlatItems(_tplActiveType);
-  if (!flat.length) return;
-  if ('speechSynthesis' in window) speechSynthesis.cancel();
-  if (_examMode) {
-    if (_dictIdx + 1 >= flat.length) { finishExam(); return; }
-    _dictIdx++;
-  } else {
-    _dictIdx = (_dictIdx + 1) % flat.length;
-  }
-  renderDictationMode();
-}
-
-// ── Exam mode ──────────────────────────────────────────────────
-function toggleExamMode() {
-  if (_examMode) exitExamMode();
-  else enterExamMode();
-}
-
-function enterExamMode() {
-  if (_tplShowVi) {
-    _tplShowVi = false;
-    const btn = document.getElementById('tpl-vi-btn');
-    const lbl = document.getElementById('tpl-vi-label');
-    if (btn) btn.classList.remove('active');
-    if (lbl) lbl.textContent = 'Tiếng Việt';
-  }
-  _examMode      = true;
-  _examScopeMode = _tplActiveMode;
-  _examTimeLeft  = 1800;
-  _examStartTime = Date.now();
-  _examSessionCorrect = 0;
-  _examSessionTotal   = 0;
-
-  // Reset the active mode to the start of one fresh, single pass — exam runs
-  // never resume mid-session and never touch persisted practice progress
-  // (mirrors Cloze, whose exam cards ignore _tplScores while _examMode).
-  if (_examScopeMode === 'translation') { _transIdx = 0; _transHintShown = []; }
-  else if (_examScopeMode === 'dictation') { _dictIdx = 0; if ('speechSynthesis' in window) speechSynthesis.cancel(); }
-  else if (_examScopeMode === 'chunks') { _chunkQueueType = null; }
-  else if (_examScopeMode === 'build')  { _buildQueueType = null; }
-
-  renderTplContent();
-  _examTimerInterval = setInterval(tickExamTimer, 1000);
-  updateExamBtn();
-  window.onbeforeunload = e => { if (_examMode) { e.preventDefault(); e.returnValue = ''; } };
-  showToast('⏱ Bắt đầu thi thử! Không có gợi ý – một lượt duy nhất, nộp bài khi xong.', 'info', 3000);
-}
-
-// Exiting mid-exam (the "Thoát" button) used to just silently cancel — no
-// result shown, nothing saved, so a partial attempt vanished without a
-// trace and admin had no record of it. Now it grades whatever was actually
-// attempted and reports it exactly like finishing/submitting normally does,
-// unless literally nothing was answered yet (nothing to report).
-function exitExamMode() {
-  clearInterval(_examTimerInterval);
-  _examTimerInterval = null;
-
-  const mode = _examScopeMode;
-  const timeTaken = _examStartTime ? Math.floor((Date.now() - _examStartTime) / 1000) : 1800 - _examTimeLeft;
-  const { correct, total } = mode === 'cloze'
-    ? _scoreClozeSoFar()
-    : { correct: _examSessionCorrect, total: _examSessionTotal };
-
-  _examMode      = false;
-  _examScopeMode = null;
-  _examStartTime = null;
-  window.onbeforeunload = null;
-  updateExamBtn();
-
-  if (total === 0) {
-    renderTplContent();
-    return;
-  }
-
-  saveExamAttemptToServer(mode, correct, total, timeTaken);
-  const area = document.getElementById('tpl-content-area');
-  if (area) area.innerHTML = _renderExamResultCard(correct, total, timeTaken);
-  const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = '0%';
-}
-
-function updateExamBtn() {
-  ['tpl-exam-btn', 'tpl-exam-btn-other'].forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) btn.classList.toggle('active', _examMode);
-  });
-  ['tpl-exam-label', 'tpl-exam-label-other'].forEach(id => {
-    const lbl = document.getElementById(id);
-    if (lbl) lbl.textContent = _examMode ? 'Đang thi' : 'Thi thử';
-  });
-}
-
-function tickExamTimer() {
-  _examTimeLeft = Math.max(0, _examTimeLeft - 1);
-  const disp = document.getElementById('exam-time-display');
-  if (disp) {
-    disp.textContent = fmtTime(_examTimeLeft);
-    disp.className = 't2-exam-timer' + (_examTimeLeft <= 60 ? ' warn' : '');
-  }
-  if (_examTimeLeft <= 0) {
-    clearInterval(_examTimerInterval);
-    _examTimerInterval = null;
-    showToast('⏰ Hết giờ! Bài đang được chấm tự động...', 'warn', 3000);
-    _examAutoSubmitTimer = setTimeout(() => {
-      _examAutoSubmitTimer = null;
-      if (!_examMode) return; // exited during the 1s toast window — nothing left to submit
-      if (_examScopeMode === 'cloze') submitExam(); else finishExam();
-    }, 1000);
-  }
-}
-
-// ── Exam bar / result-card helpers — shared by Translation/Chunks/Build/
-// Dictation exam variants (Cloze keeps its own inline bar + submitExam(),
-// which grades by scanning its own DOM inputs instead of a running tally) ──
-function renderExamBarHtml(label) {
-  if (!_examMode) return '';
-  return `<div class="t2-exam-bar" id="exam-bar">
-    <span class="t2-exam-timer" id="exam-time-display">${fmtTime(_examTimeLeft)}</span>
-    <span class="t2-exam-label"><i class="fas fa-clock" style="margin-right:4px;opacity:.7"></i>${escHtml(label)} · Chế độ thi thử</span>
-    <button class="t2-exam-exit-btn" onclick="exitExamMode()"><i class="fas fa-times"></i> Thoát</button>
-  </div>`;
-}
-
-// Ends the current single-pass exam for Translation/Chunks/Build/Dictation,
-// saves the result (isExam:true, so it's distinguishable in admin/history
-// from ordinary practice), and shows a summary card in place of the mode's
-// normal content.
-// Score-tier mascot image — same breakpoints/assets as task1-practice.html,
-// task2-practice.html and writing-practice.html's exam-result cards, so the
-// "thi thử" mode here matches the rest of the Writing family instead of
-// showing text-only results.
-function _examTierImageSrc(pct) {
-  return pct >= 90 ? 'img/vocab_writingabove90%25.jpg'
-       : pct >= 50 ? 'img/writingbelow60%25.jpg'
-       : pct >= 45 ? 'img/writingbelow50%25.jpg'
-       : 'img/writingbelow45%25.jpg';
-}
-
-function _renderExamResultCard(correct, total, timeTaken) {
-  const pct  = total ? Math.round(correct / total * 100) : 0;
-  const rank = pct >= 80 ? '😎 Đỉnh của đỉnh!' : pct >= 60 ? '🤔 Tạm ổn thôi...' : '😤 Cày thêm đi bạn!';
-  return `
-    <div class="t2-mode-enter">
-      <div class="t2-soon-card t2-chunk-done-card">
-        <img src="${_examTierImageSrc(pct)}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
-        <div class="t2-soon-icon">📋</div>
-        <div class="t2-soon-title">${pct}% · ${correct}/${total}</div>
-        <div class="t2-soon-sub">${rank}<br>⏱ Thời gian: ${fmtTime(timeTaken)}</div>
-        <button class="t2-trans-btn t2-trans-btn--next" style="margin-top:14px" onclick="enterExamMode()"><i class="fas fa-redo"></i> Thi lại</button>
-        <button class="t2-tpl-reset-btn" style="margin:8px auto 0;display:block" onclick="renderTplContent()"><i class="fas fa-times"></i> Về luyện tập bình thường</button>
-      </div>
-    </div>`;
-}
-
-function finishExam() {
-  clearInterval(_examTimerInterval);
-  _examTimerInterval = null;
-  const timeTaken = _examStartTime ? Math.floor((Date.now() - _examStartTime) / 1000) : 1800 - _examTimeLeft;
-  const mode = _examScopeMode;
-  const correct = _examSessionCorrect, total = _examSessionTotal;
-  _examMode      = false;
-  _examScopeMode = null;
-  _examStartTime = null;
-  window.onbeforeunload = null;
-  updateExamBtn();
-
-  const pct = total ? Math.round(correct / total * 100) : 0;
-  showToast(`📋 Kết quả: ${correct}/${total} (${pct}%) · ${fmtTime(timeTaken)}`,
-    pct >= 80 ? 'success' : pct >= 60 ? 'info' : 'warn', 4500);
-  if (pct >= 80) updateXPStorage(20);
-  saveExamAttemptToServer(mode, correct, total, timeTaken);
-
-  const area = document.getElementById('tpl-content-area');
-  if (area) area.innerHTML = _renderExamResultCard(correct, total, timeTaken);
-  const fill = document.getElementById('tpl-progress-fill');
-  if (fill) fill.style.width = '0%';
-}
-
-// Scores whatever Cloze blanks have actually been typed into so far — used
-// when the student exits mid-exam rather than clicking Nộp bài. Only counts
-// items with at least one non-empty blank as "attempted"; blanks the student
-// never reached don't count against them (unlike submitExam(), which grades
-// every item because the whole exam was actually completed there).
-function _scoreClozeSoFar() {
-  const type = TPL_DATA[_tplActiveType];
-  if (!type) return { correct: 0, total: 0 };
-  let correct = 0, total = 0;
-  type.sections.forEach((sec, si) => {
-    sec.items.forEach((item, ii) => {
-      const key = `${_lvlKey(_tplActiveType)}-${si}-${ii}`;
-      const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
-      let attempted = false, allOk = true;
-      answers.forEach((ans, bi) => {
-        const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
-        const inp = document.getElementById(inpId);
-        const uv  = inp ? inp.value.trim() : '';
-        if (uv) attempted = true;
-        if (uv.toLowerCase() !== ans.toLowerCase()) allOk = false;
-      });
-      if (attempted) { total++; if (allOk) correct++; }
-    });
-  });
-  return { correct, total };
-}
-
-async function saveExamAttemptToServer(mode, correct, total, timeTakenSec) {
-  const token = window.AuthService.getToken();
-  if (!token || !total) return;
-  const type = TPL_DATA[_tplActiveType];
-  const typeMeta = TPL_TYPES.find(t => t.id === _tplActiveType);
-  try {
-    const res = await fetch(`${API}/api/task2template/save`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-      body: JSON.stringify({
-        templateType: _tplActiveType, templateName: typeMeta?.label || type?.name || _tplActiveType,
-        totalItems: total, correctItems: correct, mode, isExam: true, timeTakenSec, level: _tplActiveLevel,
-      })
-    });
-    await window.ApiClient.handleResponse(res);
-  } catch {}
-}
-
-function submitExam() {
-  clearInterval(_examTimerInterval);
-  _examTimerInterval = null;
-
-  const type = TPL_DATA[_tplActiveType];
-  if (!type) return;
-
-  let correct = 0, total = 0;
-  const timeTaken = _examStartTime ? Math.floor((Date.now() - _examStartTime) / 1000) : 1800 - _examTimeLeft;
-
-  type.sections.forEach((sec, si) => {
-    sec.items.forEach((item, ii) => {
-      const key = `${_lvlKey(_tplActiveType)}-${si}-${ii}`;
-      const card = document.getElementById('cloze-' + key);
-      const fb   = document.getElementById('fb-'    + key);
-      const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
-      total++;
-
-      let allOk = true;
-      const wrongAnswers = [];
-      answers.forEach((ans, bi) => {
-        const inpId = answers.length > 1 ? `inp-${key}-b${bi}` : `inp-${key}`;
-        const inp = document.getElementById(inpId);
-        const uv  = inp ? inp.value.trim().toLowerCase() : '';
-        if (uv !== ans.toLowerCase()) { allOk = false; wrongAnswers.push(`"${ans}"`); }
-        if (inp) inp.disabled = true;
-      });
-
-      if (allOk) {
-        correct++;
-        if (card) card.className = 't2-cloze-card tpl-correct';
-        if (fb)   { fb.className = 't2-cloze-fb ok'; fb.textContent = '✅ Đúng!'; }
-      } else {
-        if (card) card.className = 't2-cloze-card tpl-wrong';
-        if (fb)   { fb.className = 't2-cloze-fb err'; fb.textContent = `❌ Đáp án: ${wrongAnswers.join(', ')}`; }
-      }
-    });
-  });
-
-  // Update exam bar with results
-  const bar = document.getElementById('exam-bar');
-  if (bar) {
-    const pct  = Math.round(correct / total * 100);
-    const rank = pct >= 80 ? '😎 Đỉnh của đỉnh!' : pct >= 60 ? '🤔 Tạm ổn thôi...' : '😤 Cày thêm đi bạn!';
-    const scoreVariant = pct >= 80 ? 'good' : pct >= 60 ? 'mid' : 'bad';
-    bar.className = `t2-exam-bar t2-exam-bar--${scoreVariant}`;
-    bar.innerHTML = `
-      <span style="font-size:15px;font-weight:900">${pct}% · ${correct}/${total}</span>
-      <span class="t2-exam-label">${rank} · ⏱ ${fmtTime(timeTaken)}</span>
-      <button class="t2-exam-exit-btn" onclick="exitExamMode()"><i class="fas fa-times"></i> Thoát thi</button>`;
-    bar.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // Update footer
-  const footerEl = document.querySelector('.t2-tpl-footer');
-  if (footerEl) {
-    footerEl.innerHTML = `
-      <span>Đúng: <span class="t2-tpl-score">${correct} / ${total}</span></span>
-      <button class="t2-tpl-reset-btn" onclick="exitExamMode()"><i class="fas fa-times"></i> Thoát thi thử</button>`;
-  }
-
-  // Reset the same fields exitExamMode()/finishExam() do — otherwise its
-  // "Thoát thi" button (still wired to exitExamMode()) finds _examScopeMode
-  // still 'cloze' and _examStartTime still set, re-scores the now-disabled
-  // DOM via _scoreClozeSoFar(), and POSTs a second, duplicate exam attempt.
-  _examMode      = false;
-  _examScopeMode = null;
-  _examStartTime = null;
-  window.onbeforeunload = null;
-  updateExamBtn();
-
-  const pct = Math.round(correct / total * 100);
-  showToast(`📋 Kết quả: ${correct}/${total} (${pct}%) · ${fmtTime(timeTaken)}`,
-    pct >= 80 ? 'success' : pct >= 60 ? 'info' : 'warn', 4500);
-  if (pct >= 80) updateXPStorage(20);
-  saveExamAttemptToServer('cloze', correct, total, timeTaken);
-}
-
-// Delegates to js/shared/utils.js (single source of truth — student UI
-// audit Nhóm 2, 2026-07-25; was duplicated with task2-practice.html's
-// _fmtExamTime, which additionally zero-padded minutes — now standard).
-function fmtTime(secs) { return fmtMMSS(secs); }
-
-// ── XP pop ─────────────────────────────────────────────────────
-function awardTplXP(card) {
-  updateXPStorage(3);
-  const rect = card.getBoundingClientRect();
-  const pop = document.createElement('div');
-  pop.className = 't2-tpl-xp-pop';
-  pop.textContent = '+3 XP ⭐';
-  pop.style.cssText = `left:${rect.left + window.scrollX + rect.width / 2 - 28}px;top:${rect.top + window.scrollY - 10}px;`;
-  document.body.appendChild(pop);
-  setTimeout(() => pop.remove(), 900);
-}
-
-// ── Auto-scroll to next unanswered ─────────────────────────────
-function scrollToNextCloze(currentKey) {
-  const type = TPL_DATA[_tplActiveType];
-  if (!type) return;
-  let found = false;
-  for (let si = 0; si < type.sections.length; si++) {
-    const sec = type.sections[si];
-    for (let ii = 0; ii < sec.items.length; ii++) {
-      const k = `${_lvlKey(_tplActiveType)}-${si}-${ii}`;
-      if (k === currentKey) { found = true; continue; }
-      if (found && (!_tplScores[k] || _tplScores[k] === 'err')) {
-        const nextCard = document.getElementById('cloze-' + k);
-        if (nextCard) {
-          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          // Focus first input of next card
-          const nextInp = nextCard.querySelector('.t2-cloze-input:not([disabled])');
-          if (nextInp) setTimeout(() => nextInp.focus(), 380);
-        }
-        return;
-      }
-    }
-  }
-}
-
-// ── Completion check ───────────────────────────────────────────
-function checkTypeComplete() {
-  const type = TPL_DATA[_tplActiveType];
-  if (!type) return;
-  let done = 0, total = 0;
-  type.sections.forEach((sec, si) => {
-    sec.items.forEach((item, ii) => {
-      total++;
-      if (_tplScores[`${_lvlKey(_tplActiveType)}-${si}-${ii}`] === 'ok') done++;
-    });
-  });
-  if (done < total) return;
-  const banner = document.getElementById('tpl-done-banner');
-  if (banner && !banner.classList.contains('vis')) {
-    banner.classList.add('vis');
-    banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    showToast(`🏆 Hoàn thành ${TPL_DATA[_tplActiveType].name}! +10 XP bonus!`, 'success', 3500);
-    updateXPStorage(10);
-    updateOverallBadge();
-  }
-}
-
-// ── Helpers ────────────────────────────────────────────────────
-// escHtml() / escAttr() moved to js/shared/utils.js (single source of truth — Phase 3 audit).
-// escAttr() HTML-entity-encodes ' as &#39;, which is correct for a plain attribute
-// value but breaks when the string is embedded inside an onclick/onkeydown's own
-// JS string literal: the browser's HTML parser decodes &#39; back to a raw ' before
-// the JS engine ever sees the handler, re-introducing the quote and breaking the
-// string. renderTplContent()'s answersStr is built for exactly that context, so
-// it needs the JS-string-safe form (' -> \') instead.
-function _escOnclickArg(s) {
-  return String(s ?? '').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-}
-
-// ── Template attempt save ──────────────────────────────────────
-async function saveTplAttemptToServer(typeId, mode = 'cloze') {
-  const token = window.AuthService.getToken();
-  if (!token || !typeId) return;
-  const type = TPL_DATA[typeId];
-  if (!type) return;
-  let total = 0, correct = 0, attempted = 0;
-  if (mode === 'cloze') {
-    type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
-      total++;
-      const s = _tplScores[`${_lvlKey(typeId)}-${si}-${ii}`];
-      if (s === 'ok') correct++;
-      if (s === 'ok' || s === 'err') attempted++;
-    }));
-  } else {
-    const modeData = _modeProgress[_lvlKey(typeId)]?.[mode] || {};
-    type.sections.forEach((sec, si) => sec.items.forEach((item, ii) => {
-      total++;
-      const s = modeData[`${si}-${ii}`]?.status;
-      if (s === 'ok') correct++;
-      if (s === 'ok' || s === 'err') attempted++;
-    }));
-  }
-  // correct===0 alone can't tell "never opened this type" apart from "tried
-  // every item and got every one wrong" — the latter is real effort that
-  // should still show up in history/analytics, so gate on attempted instead.
-  if (attempted === 0) return; // Không lưu nếu chưa làm gì
-  const typeMeta = TPL_TYPES.find(t => t.id === typeId);
-  try {
-    const res = await fetch(`${API}/api/task2template/save`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
-      body: JSON.stringify({ templateType: typeId, templateName: typeMeta?.label || type.name || typeId, totalItems: total, correctItems: correct, mode, level: _tplActiveLevel })
-    });
-    await window.ApiClient.handleResponse(res);
-  } catch {}
-}
-window.addEventListener('beforeunload', () => saveTplAttemptToServer(_tplActiveType, _tplActiveMode));
-
-// ── Template history modal ────────────────────────────────────
-// ── "Xem đầy đủ" — full template reader ──────────────────────────
-// Shows the generic fill-in template of the currently-selected essay type —
-// sentence frames with (placeholders) that fit any topic, from the Task 2
-// Template Bank book (js/shared/task2-generic-tpl.js renders it).
-// The practice modes behind the modal keep their topic-based sentences.
-// Either level can be read, independent of the level being practiced.
+// "Xem đầy đủ" — the generic fill-in template of this type (Task2GenericTpl).
 let _tplFullLevel = 'band6';
 let _tplFullShowVi = false;
-
 function _renderTplFullLevelBtns() {
-  document.querySelectorAll('.tpl-full-level-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.level === _tplFullLevel);
-  });
+  document.querySelectorAll('.tpl-full-level-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.level === _tplFullLevel));
 }
-
 async function _renderTplFullBody() {
   const body = document.getElementById('tpl-full-body');
   if (!body) return;
   if (!window.TASK2_GENERIC_TEMPLATES) body.innerHTML = '<div class="tpl-full-loading">⏳ Đang tải...</div>';
   let data = null;
-  try { data = await Task2GenericTpl.load(); } catch (e) {}
-  // Render whatever level is current once loaded (it may have been switched meanwhile).
-  body.innerHTML = data ? Task2GenericTpl.html(data, _tplFullLevel, _tplActiveType, _tplFullShowVi)
+  try { data = await Task2GenericTpl.load(); } catch {}
+  body.innerHTML = data ? Task2GenericTpl.html(data, _tplFullLevel, _type, _tplFullShowVi)
     : '<p style="color:#e53935;text-align:center;padding:24px">Không tải được nội dung. Vui lòng thử lại.</p>';
 }
-
-async function switchTplFullLevel(level) {
-  if (level === _tplFullLevel) return;
-  _tplFullLevel = level;
-  _renderTplFullLevelBtns();
-  await _renderTplFullBody();
-}
-
+async function switchTplFullLevel(level) { if (level === _tplFullLevel) return; _tplFullLevel = level; _renderTplFullLevelBtns(); await _renderTplFullBody(); }
 function toggleTplFullVi() {
   _tplFullShowVi = !_tplFullShowVi;
   const lbl = document.getElementById('tpl-full-vi-label');
   if (lbl) lbl.textContent = _tplFullShowVi ? '🇻🇳 Ẩn tiếng Việt' : '🇻🇳 Hiện tiếng Việt';
   Task2GenericTpl.setVi(document.getElementById('tpl-full-body'), _tplFullShowVi);
 }
-
 function copyTplFullText() {
-  const text = Task2GenericTpl.text(window.TASK2_GENERIC_TEMPLATES, _tplFullLevel, _tplActiveType);
+  const text = Task2GenericTpl.text(window.TASK2_GENERIC_TEMPLATES, _tplFullLevel, _type);
   if (!text) return;
-  const onDone = () => showToast('Đã sao chép văn bản!', 'info', 2500);
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(onDone).catch(() => _copyTplFullTextFallback(text, onDone));
-  } else {
-    _copyTplFullTextFallback(text, onDone);
-  }
+  const ok = () => showToast('Đã sao chép văn bản!', 'info', 2500);
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(ok).catch(() => _copyFallback(text, ok));
+  else _copyFallback(text, ok);
 }
-
-function _copyTplFullTextFallback(text, onDone) {
-  const ta = document.createElement('textarea');
-  ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
-  document.body.appendChild(ta); ta.select();
-  try { document.execCommand('copy'); onDone(); }
-  catch { showToast('Không thể sao chép', 'warn', 2000); }
-  document.body.removeChild(ta);
-}
-
 async function openTplFullView() {
-  _tplFullLevel = _tplActiveLevel;
+  _tplFullLevel = _level;
   if (!document.getElementById('tpl-full-overlay')) {
     const overlay = document.createElement('div');
     overlay.id = 'tpl-full-overlay';
@@ -2484,7 +1618,7 @@ async function openTplFullView() {
           <button class="tpl-hist-close" onclick="document.getElementById('tpl-full-overlay').style.display='none'"><i class="fas fa-times"></i></button>
         </div>
         <div class="tpl-full-toolbar">
-          <div class="tpl-full-level-toggle" id="tpl-full-level-toggle">
+          <div class="tpl-full-level-toggle">
             <button class="tpl-full-level-btn" data-level="band6" onclick="switchTplFullLevel('band6')">🌱 Band 6+</button>
             <button class="tpl-full-level-btn" data-level="band7" onclick="switchTplFullLevel('band7')">🏆 Band 7+</button>
           </div>
@@ -2522,66 +1656,37 @@ function openTplHistory() {
   }
   loadTplHistory();
 }
-
 async function loadTplHistory() {
   const body = document.getElementById('tpl-hist-body');
   body.innerHTML = '<div class="tpl-hist-loading"><div class="tpl-hist-loading-icon">⏳</div><p>Đang tải...</p></div>';
-  const token = window.AuthService.getToken();
-  if (!token) {
-    body.innerHTML = `<div style="text-align:center;padding:32px"><div style="font-size:40px;margin-bottom:12px">🔒</div><p style="color:#555;font-size:14px">Vui lòng đăng nhập để xem lịch sử luyện tập.</p><a href="/login.html" style="display:inline-block;margin-top:12px;padding:8px 20px;background:#6366f1;color:#fff;border-radius:8px;text-decoration:none;font-size:13px;font-weight:600">Đăng nhập</a></div>`;
-    return;
-  }
   try {
-    const res   = await fetch(`${API}/api/task2template/history?limit=200`, {
-      headers: { Authorization: 'Bearer ' + token }
-    });
-    const data  = await window.ApiClient.handleResponse(res);
+    const res = await fetch(`${API}/api/task2template/history?limit=200`, { headers: authHeaders() });
+    const data = await window.ApiClient.handleResponse(res);
     if (!data.success) throw new Error(data.message);
     const attempts = data.attempts || [];
-    if (!attempts.length) {
-      body.innerHTML = '<div class="tpl-hist-empty"><div class="tpl-hist-empty-icon">📭</div><p>Chưa có lịch sử luyện tập</p></div>';
-      return;
-    }
-    const totalSessions = attempts.length;
-    const totalCorrect  = attempts.reduce((s, a) => s + (a.correctItems || 0), 0);
-    const totalItems    = attempts.reduce((s, a) => s + (a.totalItems || 0), 0);
-
-    const MODE_LABELS = { translation: 'Dịch câu', chunks: 'Chunks', build: 'Build', dictation: 'Dictation' };
+    if (!attempts.length) { body.innerHTML = '<div class="tpl-hist-empty"><div class="tpl-hist-empty-icon">📭</div><p>Chưa có lịch sử luyện tập</p></div>'; return; }
+    const totalCorrect = attempts.reduce((s, a) => s + (a.correctItems || 0), 0);
+    const totalItems   = attempts.reduce((s, a) => s + (a.totalItems || 0), 0);
+    const MODE_LABELS = { path: 'Ghép cả bài', review: 'Ôn nhanh', translation: 'Dịch câu', chunks: 'Chunks', build: 'Build', dictation: 'Dictation' };
     const rows = attempts.slice(0, 40).map(a => {
       const acc = a.totalItems > 0 ? Math.round((a.correctItems / a.totalItems) * 100) : 0;
       const badgeCls = acc >= 70 ? 'good' : acc >= 50 ? 'mid' : 'bad';
-      const date = new Date(a.createdAt).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' });
-      // Old attempts (saved before the memorization-modes feature) have no
-      // `mode` field at all — render exactly as before, no badge.
-      const modeBadge = a.mode && a.mode !== 'cloze'
-        ? `<span class="tpl-hist-mode-badge">${escHtml(MODE_LABELS[a.mode] || a.mode)}</span>` : '';
+      const date = new Date(a.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const label = a.isExam ? 'Thi thử' : (MODE_LABELS[a.mode] || (a.mode && a.mode !== 'cloze' ? a.mode : ''));
+      const lvl = a.level === 'band6' ? ' · Band 6+' : ' · Band 7+';
       return `<div class="tpl-hist-entry">
         <div class="tpl-hist-date">${date}</div>
-        <div class="tpl-hist-name">${escHtml(a.templateName || a.templateType || '–')}${modeBadge}</div>
-        <div class="tpl-hist-row">
-          <span class="tpl-hist-score">${a.correctItems}/${a.totalItems} mẫu</span>
-          <span class="tpl-hist-badge tpl-hist-badge--${badgeCls}">${acc}%</span>
-        </div>
+        <div class="tpl-hist-name">${esc(a.templateName || a.templateType || '–')}${esc(lvl)}${label ? `<span class="tpl-hist-mode-badge">${esc(label)}</span>` : ''}</div>
+        <div class="tpl-hist-row"><span class="tpl-hist-score">${a.correctItems}/${a.totalItems} câu</span><span class="tpl-hist-badge tpl-hist-badge--${badgeCls}">${acc}%</span></div>
       </div>`;
     }).join('');
-
     body.innerHTML = `
       <div class="tpl-hist-stats">
-        <div class="tpl-hist-stat">
-          <div class="tpl-hist-stat-val">${totalSessions}</div>
-          <div class="tpl-hist-stat-lbl">Phiên học</div>
-        </div>
-        <div class="tpl-hist-stat">
-          <div class="tpl-hist-stat-val">${totalCorrect}/${totalItems}</div>
-          <div class="tpl-hist-stat-lbl">Đúng/Tổng</div>
-        </div>
-        <div class="tpl-hist-stat">
-          <div class="tpl-hist-stat-val">30</div>
-          <div class="tpl-hist-stat-lbl">Ngày lưu</div>
-        </div>
-      </div>
-      ${rows}`;
+        <div class="tpl-hist-stat"><div class="tpl-hist-stat-val">${attempts.length}</div><div class="tpl-hist-stat-lbl">Phiên học</div></div>
+        <div class="tpl-hist-stat"><div class="tpl-hist-stat-val">${totalCorrect}/${totalItems}</div><div class="tpl-hist-stat-lbl">Đúng/Tổng</div></div>
+        <div class="tpl-hist-stat"><div class="tpl-hist-stat-val">90</div><div class="tpl-hist-stat-lbl">Ngày lưu</div></div>
+      </div>${rows}`;
   } catch (e) {
-    body.innerHTML = `<p style="color:#e53935;text-align:center;padding:24px;font-size:13px">Không thể tải: ${escHtml(e.message)}</p>`;
+    body.innerHTML = `<p style="color:#e53935;text-align:center;padding:24px;font-size:13px">Không thể tải: ${esc(e.message)}</p>`;
   }
 }

@@ -13,7 +13,10 @@ const task2TemplateAttemptSchema = new mongoose.Schema({
   // Optional — absent on every attempt saved before the memorization-modes
   // feature. Defaults to 'cloze' so old rows and old callers (which never
   // send this field) keep meaning exactly what they always meant.
-  mode:         { type: String, enum: ['cloze', 'translation', 'chunks', 'build', 'dictation'], default: 'cloze' },
+  // 'path' = whole-essay recall in the practice path (2026-10 redesign that
+  // replaced the five separate modes); 'review' = a spaced-review session.
+  // The old values stay valid for rows saved before the redesign.
+  mode:         { type: String, enum: ['cloze', 'translation', 'chunks', 'build', 'dictation', 'path', 'review'], default: 'cloze' },
   // Set when this attempt came from "Chế độ thi thử" (timed, single-pass,
   // no hints) rather than regular self-paced practice — lets admin/history
   // tell timed test runs apart from ordinary practice sessions.

@@ -26,3 +26,18 @@ exports.getHistory = guard(async (req, res) => {
   const attempts = await task2TemplateService.getHistory(req.user._id, limit);
   res.json({ success: true, attempts });
 });
+
+// ── Practice-path progress (durable, no TTL) ─────────────────────────
+const task2TemplateProgressService = require('../services/task2TemplateProgressService');
+
+exports.getProgress = guard(async (req, res) => {
+  const progress = await task2TemplateProgressService.getProgress(req.user._id, req.query.level);
+  res.json({ success: true, progress });
+});
+
+exports.saveProgress = guard(async (req, res) => {
+  const body = req.body || {};
+  const progress = await task2TemplateProgressService.saveProgress(req.user._id, body.level, req.params.typeId, body);
+  if (!progress) return res.status(400).json({ success: false, message: 'Dữ liệu không hợp lệ' });
+  res.json({ success: true, progress });
+});

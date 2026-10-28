@@ -1,0 +1,653 @@
+{
+ "templates": [
+  {
+   "level": "band6",
+   "typeId": "type01",
+   "isActive": true,
+   "label": "Type 01",
+   "name": "Advantages & Disadvantages",
+   "orderIndex": 0,
+   "sections": [
+    {
+     "title": "① Introduction – Mở bài",
+     "items": [
+      {
+       "en": "In recent years, (topic) has become increasingly ___ in many parts of the world.",
+       "answer": "common",
+       "vi": "→ Trong những năm gần đây, (chủ đề) ngày càng trở nên phổ biến ở nhiều nơi trên thế giới."
+      },
+      {
+       "en": "While (topic) offers several benefits, it also has some potential ___.",
+       "answer": "drawbacks",
+       "vi": "→ Mặc dù (chủ đề) mang lại một số lợi ích, nó cũng có một số hạn chế nhất định."
+      },
+      {
+       "en": "This essay will discuss the main advantages and ___ of (topic).",
+       "answer": "disadvantages",
+       "vi": "→ Bài viết này sẽ phân tích những ưu điểm và nhược điểm chính của (chủ đề)."
+      }
+     ]
+    },
+    {
+     "title": "② Body 1 – Advantages · Ưu điểm",
+     "items": [
+      {
+       "en": "One of the main advantages of (topic) is that it is highly ___.",
+       "answer": "convenient",
+       "vi": "→ Một trong những ưu điểm chính của (chủ đề) là nó rất tiện lợi."
+      },
+      {
+       "en": "This is mainly because people can buy products from home without having to ___ physical stores.",
+       "answer": "visit",
+       "vi": "→ Điều này chủ yếu là bởi vì mọi người có thể mua sản phẩm tại nhà mà không cần đến các cửa hàng."
+      },
+      {
+       "en": "As a result, they can save a considerable amount of ___.",
+       "answer": "time",
+       "vi": "→ Kết quả là, họ có thể tiết kiệm được một lượng thời gian đáng kể."
+      },
+      {
+       "en": "For example, busy workers can order groceries online ___ of going to a supermarket.",
+       "answer": "instead",
+       "vi": "→ Ví dụ, những người bận rộn có thể đặt hàng tạp hóa trực tuyến thay vì đến siêu thị."
+      }
+     ]
+    },
+    {
+     "title": "③ Body 2 – Disadvantages · Hạn chế",
+     "items": [
+      {
+       "en": "However, (topic) also has some ___.",
+       "answer": "disadvantages",
+       "vi": "→ Tuy nhiên, (chủ đề) cũng có một số hạn chế."
+      },
+      {
+       "en": "One of the main drawbacks is that customers cannot see or ___ products before buying them.",
+       "answer": "try",
+       "vi": "→ Một trong những hạn chế chính là khách hàng không thể xem hoặc thử sản phẩm trước khi mua."
+      },
+      {
+       "en": "This is because they have to ___ on pictures and descriptions provided on websites.",
+       "answer": "rely",
+       "vi": "→ Điều này là bởi vì họ phải dựa vào hình ảnh và mô tả được cung cấp trên trang web."
+      },
+      {
+       "en": "As a result, they may receive products that are ___ from what they expected.",
+       "answer": "different",
+       "vi": "→ Kết quả là, họ có thể nhận được sản phẩm khác với những gì họ mong đợi."
+      },
+      {
+       "en": "For instance, clothes bought online may not ___ properly or look the same as they do in photographs.",
+       "answer": "fit",
+       "vi": "→ Chẳng hạn, quần áo mua trực tuyến có thể không vừa vặn hoặc trông không giống như trong ảnh."
+      }
+     ]
+    },
+    {
+     "title": "④ Conclusion – Kết bài",
+     "items": [
+      {
+       "en": "In conclusion, (topic) has both advantages and ___.",
+       "answer": "disadvantages",
+       "vi": "→ Tóm lại, (chủ đề) có cả ưu điểm và nhược điểm."
+      },
+      {
+       "en": "Overall, I believe that the advantages ___ the disadvantages.",
+       "answer": "outweigh",
+       "vi": "→ Nhìn chung, tôi tin rằng những lợi ích vượt trội hơn những hạn chế."
+      }
+     ]
+    }
+   ],
+   "sub": "Adv & Disadv"
+  },
+  {
+   "typeId": "type01",
+   "label": "Type 01",
+   "sub": "Adv & Disadv",
+   "name": "Advantages & Disadvantages",
+   "sections": [
+    {
+     "title": "① Introduction – Mở bài",
+     "items": [
+      {
+       "en": "In recent years, (noun phrase) has become an increasingly ___ feature of modern life, attracting considerable public attention.",
+       "answer": "prominent",
+       "vi": "→ Trong những năm gần đây, ... đã trở thành một phần ngày càng nổi bật trong đời sống hiện đại."
+      },
+      {
+       "en": "With the growing prevalence of (noun phrase), questions have ___ regarding its overall impact.",
+       "answer": "arisen",
+       "vi": "→ Khi ... ngày càng phổ biến, nhiều câu hỏi đã được đặt ra về tác động tổng thể của nó."
+      },
+      {
+       "en": "As society continues to evolve, the emergence of (noun phrase) has ___ widespread debate.",
+       "answer": "sparked",
+       "vi": "→ Khi xã hội tiếp tục phát triển, sự xuất hiện của ... đã làm dấy lên nhiều cuộc tranh luận."
+      },
+      {
+       "en": "This essay will examine both the advantages and ___ of (noun phrase).",
+       "answer": "disadvantages",
+       "vi": "→ Bài luận này sẽ phân tích cả ưu điểm và nhược điểm của ..."
+      },
+      {
+       "en": "The following discussion aims to provide a ___ analysis of the positive and negative aspects associated with (noun phrase).",
+       "answer": "balanced",
+       "vi": "→ Bài viết sau sẽ đưa ra phân tích cân bằng về các mặt tích cực và tiêu cực của ..."
+      }
+     ]
+    },
+    {
+     "title": "② Body 1 – Advantages · Ưu điểm",
+     "items": [
+      {
+       "en": "One of the most significant ___ of (noun phrase) is that (clause).",
+       "answer": "advantages",
+       "vi": "→ Một trong những lợi ích quan trọng nhất của ... là ..."
+      },
+      {
+       "en": "A key benefit of (noun phrase) ___ in its ability to (verb).",
+       "answer": "lies",
+       "vi": "→ Một lợi ích chính của ... nằm ở khả năng ..."
+      },
+      {
+       "en": "To begin with, (noun phrase) ___ individuals to (verb), thereby improving (noun phrase).",
+       "answer": "enables",
+       "vi": "→ Trước hết, ... cho phép con người ..., từ đó cải thiện ..."
+      },
+      {
+       "en": "In addition, the adoption of (noun phrase) can contribute to (noun phrase), which plays a ___ role in (verb+ing).",
+       "answer": "crucial",
+       "vi": "→ Thêm vào đó, việc áp dụng ... có thể góp phần vào ..., điều này đóng vai trò quan trọng trong việc ..."
+      },
+      {
+       "en": "Furthermore, (noun phrase) often leads to greater efficiency and ___.",
+       "answer": "productivity",
+       "vi": "→ Ngoài ra, ... thường dẫn đến hiệu quả và năng suất cao hơn."
+      },
+      {
+       "en": "For example, recent studies have shown that (fact/statistic). A clear ___ of this can be seen in (specific example), where (positive outcome) occurred.",
+       "answer": "illustration",
+       "vi": "→ Ví dụ, các nghiên cứu gần đây cho thấy rằng ... Một minh chứng rõ ràng có thể thấy ở (ví dụ cụ thể), nơi (kết quả tích cực) đã xảy ra."
+      }
+     ]
+    },
+    {
+     "title": "③ Body 2 – Disadvantages · Hạn chế",
+     "items": [
+      {
+       "en": "Despite its advantages, (noun phrase) is not without its ___.",
+       "answer": "limitations",
+       "vi": "→ Mặc dù có nhiều lợi ích, ... không phải là không có hạn chế."
+      },
+      {
+       "en": "However, the increasing ___ on (noun phrase) may give rise to several concerns.",
+       "answer": "reliance",
+       "vi": "→ Tuy nhiên, sự phụ thuộc ngày càng nhiều vào ... có thể gây ra một số vấn đề đáng lo ngại."
+      },
+      {
+       "en": "One major concern is that (clause), which may ___ to (negative consequence).",
+       "answer": "lead",
+       "vi": "→ Một mối lo ngại lớn là ..., điều này có thể dẫn đến (hệ quả tiêu cực)."
+      },
+      {
+       "en": "Additionally, dependence on (noun phrase) could result in (noun phrase), thereby ___ (noun phrase).",
+       "answer": "undermining",
+       "vi": "→ Thêm vào đó, sự phụ thuộc vào ... có thể dẫn đến ..., từ đó làm suy yếu ..."
+      },
+      {
+       "en": "Another potential ___ involves (noun phrase), which might contribute to (undesirable outcome).",
+       "answer": "drawback",
+       "vi": "→ Một hạn chế tiềm ẩn khác liên quan đến ..., điều này có thể góp phần gây ra kết quả không mong muốn."
+      },
+      {
+       "en": "For instance, research has ___ that (fact/statistic).",
+       "answer": "indicated",
+       "vi": "→ Chẳng hạn, nghiên cứu đã chỉ ra rằng (sự thật/thống kê)."
+      }
+     ]
+    },
+    {
+     "title": "④ Conclusion – Kết bài",
+     "items": [
+      {
+       "en": "In conclusion, although (noun phrase) offers clear benefits such as (advantage 1) and (advantage 2), it also ___ notable disadvantages, including (disadvantage 1) and (disadvantage 2).",
+       "answer": "entails",
+       "vi": "→ Tóm lại, mặc dù ... mang lại những lợi ích rõ ràng như (lợi ích 1) và (lợi ích 2), nó cũng tồn tại những hạn chế đáng kể như (hạn chế 1) và (hạn chế 2)."
+      },
+      {
+       "en": "On ___, it can be argued that the advantages of (noun phrase) outweigh its drawbacks.",
+       "answer": "balance",
+       "vi": "→ Xét tổng thể, có thể lập luận rằng lợi ích của ... vượt trội hơn hạn chế."
+      },
+      {
+       "en": "Nevertheless, careful management and ___ are essential to minimize its negative effects.",
+       "answer": "regulation",
+       "vi": "→ Tuy nhiên, việc quản lý và điều chỉnh cẩn thận là cần thiết để giảm thiểu tác động tiêu cực."
+      }
+     ]
+    }
+   ],
+   "orderIndex": 0,
+   "isActive": true,
+   "level": "band7"
+  },
+  {
+   "typeId": "type02",
+   "level": "band6",
+   "isActive": true,
+   "label": "Type 02",
+   "name": "Discuss Both Views",
+   "orderIndex": 1,
+   "sections": [
+    {
+     "title": "① Introduction – Mở bài",
+     "items": [
+      {
+       "en": "In recent years, (topic) has become a widely ___ issue.",
+       "answer": "discussed",
+       "vi": "→ Trong những năm gần đây, (chủ đề) đã trở thành một vấn đề được thảo luận rộng rãi."
+      },
+      {
+       "en": "There has been an ongoing debate ___ (topic).",
+       "answer": "about",
+       "vi": "→ Đã có một cuộc tranh luận kéo dài về (chủ đề)."
+      },
+      {
+       "en": "While some people believe that (View 1), ___ argue that (View 2).",
+       "answer": "others",
+       "vi": "→ Trong khi một số người cho rằng (quan điểm 1), những người khác lại cho rằng (quan điểm 2)."
+      },
+      {
+       "en": "This essay will discuss both views before ___ why I agree with (View 1/View 2).",
+       "answer": "explaining",
+       "vi": "→ Bài viết này sẽ thảo luận cả hai quan điểm trước khi giải thích tại sao tôi đồng ý với (quan điểm 1/2)."
+      }
+     ]
+    },
+    {
+     "title": "② Body 1 – View 1 · Quan điểm 1",
+     "items": [
+      {
+       "en": "Some people ___ that (View 1).",
+       "answer": "believe",
+       "vi": "→ Một số người cho rằng (quan điểm 1)."
+      },
+      {
+       "en": "One reason for this view is that it would give more students access to ___ education.",
+       "answer": "higher",
+       "vi": "→ Một lý do cho quan điểm này là nó sẽ giúp nhiều học sinh tiếp cận giáo dục đại học hơn."
+      },
+      {
+       "en": "This is because students from low-income families would not have to worry about ___ tuition fees.",
+       "answer": "expensive",
+       "vi": "→ Điều này là bởi vì học sinh từ các gia đình thu nhập thấp sẽ không phải lo lắng về học phí đắt đỏ."
+      },
+      {
+       "en": "As a result, more young people could gain the ___ needed for better jobs.",
+       "answer": "qualifications",
+       "vi": "→ Kết quả là, nhiều người trẻ hơn có thể đạt được bằng cấp cần thiết cho công việc tốt hơn."
+      },
+      {
+       "en": "For example, students from disadvantaged backgrounds could attend university without taking on large amounts of ___.",
+       "answer": "debt",
+       "vi": "→ Ví dụ, học sinh có hoàn cảnh khó khăn có thể học đại học mà không phải gánh khoản nợ lớn."
+      }
+     ]
+    },
+    {
+     "title": "③ Body 2 – View 2 · Quan điểm 2",
+     "items": [
+      {
+       "en": "On the other hand, others ___ that (View 2).",
+       "answer": "argue",
+       "vi": "→ Mặt khác, những người khác cho rằng (quan điểm 2)."
+      },
+      {
+       "en": "This is mainly because governments have ___ budgets and need to spend money on other essential services.",
+       "answer": "limited",
+       "vi": "→ Điều này chủ yếu là bởi vì chính phủ có ngân sách hạn chế và cần chi tiêu cho các dịch vụ thiết yếu khác."
+      },
+      {
+       "en": "As a result, asking students to contribute could ___ the financial burden on the government.",
+       "answer": "reduce",
+       "vi": "→ Kết quả là, yêu cầu học sinh đóng góp có thể giảm bớt gánh nặng tài chính cho chính phủ."
+      },
+      {
+       "en": "For instance, governments could use this money to improve public ___ and schools.",
+       "answer": "healthcare",
+       "vi": "→ Chẳng hạn, chính phủ có thể dùng khoản tiền này để cải thiện y tế công cộng và trường học."
+      }
+     ]
+    },
+    {
+     "title": "④ Conclusion – Kết bài",
+     "items": [
+      {
+       "en": "In conclusion, there are ___ arguments on both sides of this issue.",
+       "answer": "valid",
+       "vi": "→ Tóm lại, có những lập luận hợp lý ở cả hai phía của vấn đề này."
+      },
+      {
+       "en": "However, I believe that (your opinion) ___ (main reason).",
+       "answer": "because",
+       "vi": "→ Tuy nhiên, tôi cho rằng (quan điểm của bạn) bởi vì (lý do chính)."
+      }
+     ]
+    }
+   ],
+   "sub": "Discuss Both"
+  },
+  {
+   "typeId": "type02",
+   "label": "Type 02",
+   "sub": "Discuss Both",
+   "name": "Discuss Both Views",
+   "sections": [
+    {
+     "title": "① Introduction – Mở bài",
+     "items": [
+      {
+       "en": "In recent decades, the issue of (noun phrase) has ___ increasing public attention.",
+       "answer": "attracted",
+       "vi": "→ Trong vài thập kỷ gần đây, vấn đề ... đã thu hút sự quan tâm ngày càng lớn của công chúng."
+      },
+      {
+       "en": "There has been an ongoing ___ about whether (clause).",
+       "answer": "debate",
+       "vi": "→ Đã có một cuộc tranh luận kéo dài về việc liệu ..."
+      },
+      {
+       "en": "With the rapid development of (noun phrase), ___ opinions have emerged regarding its impact.",
+       "answer": "differing",
+       "vi": "→ Với sự phát triển nhanh chóng của ..., nhiều quan điểm trái chiều đã xuất hiện về tác động của nó."
+      },
+      {
+       "en": "While some people argue that (clause), ___ believe that (clause).",
+       "answer": "others",
+       "vi": "→ Trong khi một số người cho rằng ..., những người khác lại tin rằng ..."
+      },
+      {
+       "en": "This essay will discuss both ___ before presenting my own viewpoint.",
+       "answer": "perspectives",
+       "vi": "→ Bài viết này sẽ thảo luận cả hai quan điểm trước khi đưa ra ý kiến cá nhân."
+      },
+      {
+       "en": "The following discussion will examine the arguments on both sides and offer a ___ conclusion.",
+       "answer": "balanced",
+       "vi": "→ Bài viết sau sẽ xem xét lập luận của cả hai phía và đưa ra kết luận cân bằng."
+      }
+     ]
+    },
+    {
+     "title": "② Body 1 – First View · Quan điểm 1",
+     "items": [
+      {
+       "en": "There are several convincing reasons why some people ___ (noun/gerund).",
+       "answer": "support",
+       "vi": "→ Có nhiều lý do thuyết phục khiến một số người ủng hộ ..."
+      },
+      {
+       "en": "One major reason for this view is that (clause). This is largely because (reason). As a ___, (consequence).",
+       "answer": "result",
+       "vi": "→ Điều này chủ yếu là do ... Kết quả là ..."
+      },
+      {
+       "en": "Unlike in the past, when (past situation), ___ (current trend).",
+       "answer": "nowadays",
+       "vi": "→ Không giống như trước đây, khi (tình huống quá khứ), ngày nay (xu hướng hiện tại)."
+      },
+      {
+       "en": "For instance, research has shown that (fact/statistic). This ___ that (implication).",
+       "answer": "suggests",
+       "vi": "→ Ví dụ, nghiên cứu đã chỉ ra rằng ... Điều này cho thấy rằng (hàm ý)."
+      },
+      {
+       "en": "Furthermore, another important factor to ___ is (noun phrase).",
+       "answer": "consider",
+       "vi": "→ Hơn nữa, một yếu tố quan trọng khác cần xem xét là ..."
+      },
+      {
+       "en": "In addition, many experts ___ that (clause).",
+       "answer": "believe",
+       "vi": "→ Ngoài ra, nhiều chuyên gia tin rằng ..."
+      }
+     ]
+    },
+    {
+     "title": "③ Body 2 – Opposing View · Quan điểm đối lập",
+     "items": [
+      {
+       "en": "On the other ___, critics argue that (clause).",
+       "answer": "hand",
+       "vi": "→ Mặt khác, những người phản đối cho rằng ..."
+      },
+      {
+       "en": "However, an ___ perspective suggests that (clause).",
+       "answer": "alternative",
+       "vi": "→ Tuy nhiên, một quan điểm khác cho rằng ..."
+      },
+      {
+       "en": "One key concern is that (clause). This may ___ to (negative consequence).",
+       "answer": "lead",
+       "vi": "→ Một mối lo ngại chính là ... Điều này có thể dẫn đến (hệ quả tiêu cực)."
+      },
+      {
+       "en": "If (condition), it could result in (outcome). Such a situation is often ___ by (factor).",
+       "answer": "driven",
+       "vi": "→ Nếu (điều kiện), nó có thể dẫn đến (kết quả). Tình huống này thường được thúc đẩy bởi (yếu tố)."
+      },
+      {
+       "en": "This highlights the potential risks ___ with (noun/gerund).",
+       "answer": "associated",
+       "vi": "→ Điều này làm nổi bật những rủi ro tiềm ẩn liên quan đến ..."
+      }
+     ]
+    },
+    {
+     "title": "④ Conclusion – Kết bài",
+     "items": [
+      {
+       "en": "In conclusion, both ___ offer valid arguments regarding (noun/gerund).",
+       "answer": "perspectives",
+       "vi": "→ Tóm lại, cả hai quan điểm đều đưa ra những lập luận hợp lý về ..."
+      },
+      {
+       "en": "Personally, I believe that (stance) because (main reason). Moving forward, ___ should consider (action) to address these concerns.",
+       "answer": "policymakers",
+       "vi": "→ Cá nhân tôi tin rằng (lập trường) vì (lý do chính). Trong tương lai, các nhà hoạch định chính sách nên xem xét (hành động) để giải quyết những vấn đề này."
+      }
+     ]
+    }
+   ],
+   "orderIndex": 1,
+   "isActive": true,
+   "level": "band7"
+  }
+ ],
+ "guides": [
+  {
+   "typeId": "type01",
+   "isActive": true,
+   "mistakes": [
+    "Viết hai body dài ngắn chênh lệch. Nếu Body 1 có bốn câu mà Body 2 chỉ có hai, giám khảo sẽ thấy bài mất cân đối. Giữ hai đoạn xấp xỉ bằng nhau.",
+    "Liệt kê ba, bốn ưu điểm mà không giải thích ý nào. Hai ý được phát triển đầy đủ luôn tốt hơn bốn ý bị bỏ dở.",
+    "Quên chọn phe khi đề hỏi \"outweigh\". Đây là lỗi mất điểm nặng nhất ở dạng này.",
+    "Nhầm với dạng Discuss Both Views. Advantages/Disadvantages nói về mặt tốt và mặt xấu của MỘT thứ; Discuss Both Views nói về quan điểm của HAI nhóm người."
+   ],
+   "modelEssay": {
+    "prompt": "In some countries, many people continue to live with or very near their parents even when they are married and have their own children. Does this situation have more advantages or more disadvantages?",
+    "wordCount": "khoảng 265 từ",
+    "sections": [
+     {
+      "title": "INTRODUCTION",
+      "text": "In some societies, it is increasingly common for married adults to live with or in close proximity to their parents, even after starting families of their own. With the growing prevalence of multigenerational households, questions have arisen regarding their overall impact. This essay will examine both the advantages and disadvantages of this arrangement.",
+      "highlights": [
+       {
+        "role": "hook",
+        "text": "In some societies, it is increasingly common for married adults to live with or in close proximity to their parents, even after starting families of their own."
+       },
+       {
+        "role": "hook",
+        "text": "With the growing prevalence of multigenerational households, questions have arisen regarding their overall impact."
+       },
+       {
+        "role": "thesis",
+        "text": "This essay will examine both the advantages and disadvantages of this arrangement."
+       }
+      ]
+     },
+     {
+      "title": "BODY 1 — ADVANTAGES",
+      "text": "One of the most significant advantages of living close to one’s parents is that it provides substantial practical and emotional support. To begin with, this arrangement enables individuals to receive assistance with childcare, thereby improving work–life balance. Grandparents often help look after young children, allowing parents to maintain full-time employment or reduce financial pressure. In addition, sharing a household can contribute to stronger family bonds, which plays a crucial role in fostering emotional stability. For example, children who grow up in extended families may benefit from greater affection, guidance, and a stronger sense of cultural identity.",
+      "highlights": [
+       {
+        "role": "topic",
+        "text": "One of the most significant advantages of living close to one’s parents is that it provides substantial practical and emotional support."
+       },
+       {
+        "role": "idea1",
+        "text": "To begin with, this arrangement enables individuals to receive assistance with childcare, thereby improving work–life balance."
+       },
+       {
+        "role": "support1",
+        "text": "Grandparents often help look after young children, allowing parents to maintain full-time employment or reduce financial pressure."
+       },
+       {
+        "role": "idea2",
+        "text": "In addition, sharing a household can contribute to stronger family bonds, which plays a crucial role in fostering emotional stability."
+       },
+       {
+        "role": "support2",
+        "text": "For example, children who grow up in extended families may benefit from greater affection, guidance, and a stronger sense of cultural identity."
+       }
+      ]
+     },
+     {
+      "title": "BODY 2 — DISADVANTAGES",
+      "text": "Despite its advantages, living with or near parents is not without its limitations. One major concern is that a lack of privacy may lead to tension and conflict between generations. Differences in parenting styles, lifestyle preferences, or financial decisions can create misunderstandings within the household. Additionally, an over-reliance on parents could result in reduced independence, thereby undermining personal growth.",
+      "highlights": [
+       {
+        "role": "topic",
+        "text": "Despite its advantages, living with or near parents is not without its limitations."
+       },
+       {
+        "role": "idea1",
+        "text": "One major concern is that a lack of privacy may lead to tension and conflict between generations."
+       },
+       {
+        "role": "support1",
+        "text": "Differences in parenting styles, lifestyle preferences, or financial decisions can create misunderstandings within the household."
+       },
+       {
+        "role": "idea2",
+        "text": "Additionally, an over-reliance on parents could result in reduced independence, thereby undermining personal growth."
+       }
+      ]
+     },
+     {
+      "title": "CONCLUSION",
+      "text": "In conclusion, although living in close proximity to parents offers clear benefits such as practical support and stronger family connections, it also entails notable disadvantages, including reduced privacy and potential dependency. On balance, it can be argued that the advantages of this arrangement outweigh its drawbacks, particularly in cultures where family cohesion and mutual assistance are highly valued.",
+      "highlights": [
+       {
+        "role": "restate",
+        "text": "In conclusion, although living in close proximity to parents offers clear benefits such as practical support and stronger family connections, it also entails notable disadvantages, including reduced privacy and potential dependency."
+       },
+       {
+        "role": "restate",
+        "text": "On balance, it can be argued that the advantages of this arrangement outweigh its drawbacks, particularly in cultures where family cohesion and mutual assistance are highly valued."
+       }
+      ]
+     }
+    ]
+   },
+   "name": "Advantages & Disadvantages",
+   "nameVi": "Ưu điểm và nhược điểm",
+   "orderIndex": 0,
+   "outline": {
+    "flow": "INTRO → BODY 1: ADVANTAGES → BODY 2: DISADVANTAGES → CONCLUSION + OPINION",
+    "perBody": "IDEA → BECAUSE (tại sao) → RESULT (dẫn đến gì) → EXAMPLE (ví dụ cụ thể)"
+   },
+   "recognise": {
+    "stems": [
+     "What are the advantages and disadvantages of this trend?",
+     "Discuss the advantages and disadvantages of...",
+     "Does this development have more advantages than disadvantages?",
+     "Do the benefits outweigh the drawbacks?"
+    ],
+    "note": "Nếu đề chỉ nói \"discuss the advantages and disadvantages\" → bạn có thể trung lập, không bắt buộc nêu quan điểm. Nếu đề hỏi \"more advantages or more disadvantages\" hoặc \"outweigh\" → bạn BẮT BUỘC chọn một phe và nói rõ ở cả Introduction lẫn Conclusion. Không chọn phe là mất điểm Task Response."
+   },
+   "upgradePairs": [
+    [
+     "In recent years, (topic) has become increasingly common.",
+     "In recent years, (topic) has become an increasingly prominent feature of modern life."
+    ],
+    [
+     "While (topic) offers several benefits, it also has some drawbacks.",
+     "While the merits of (topic) are widely acknowledged, its potential drawbacks deserve equal consideration."
+    ],
+    [
+     "This essay will discuss the advantages and disadvantages.",
+     "This essay will examine both the advantages and disadvantages of (topic)."
+    ],
+    [
+     "One of the main advantages is that...",
+     "One of the most significant advantages lies in its capacity to..."
+    ],
+    [
+     "This is mainly because...",
+     "This can largely be attributed to the fact that..."
+    ],
+    [
+     "As a result, people can save time.",
+     "Consequently, individuals can save a considerable amount of time, thereby freeing up hours for family or study."
+    ],
+    [
+     "For example, (example).",
+     "A clear illustration of this can be seen in (example), where (outcome) occurred."
+    ],
+    [
+     "However, (topic) also has some disadvantages.",
+     "Despite its advantages, (topic) is not without its limitations."
+    ],
+    [
+     "This may cause problems.",
+     "This may give rise to a number of pressing concerns."
+    ],
+    [
+     "Overall, I believe the advantages outweigh the disadvantages.",
+     "On balance, it can be argued that the advantages outweigh the drawbacks, provided that (condition)."
+    ]
+   ],
+   "usefulLanguage": [
+    {
+     "label": "Nói về ưu điểm",
+     "lines": [
+      "One of the main advantages is that... / A key benefit lies in its ability to...",
+      "This makes it easier for people to... / This gives people greater access to...",
+      "a major advantage · a significant benefit · a considerable improvement in...",
+      "enable people to... · allow people to... · save time and money · improve quality of life"
+     ]
+    },
+    {
+     "label": "Nói về nhược điểm",
+     "lines": [
+      "One of the main drawbacks is that... / One major concern is that...",
+      "Despite its advantages, ... is not without its limitations.",
+      "a serious drawback · a potential risk · an unintended consequence",
+      "give rise to... · undermine... · place pressure on... · lead to an over-reliance on..."
+     ]
+    },
+    {
+     "label": "So sánh hai mặt ở kết bài",
+     "lines": [
+      "the advantages outweigh the disadvantages",
+      "the drawbacks are outweighed by the benefits",
+      "the benefits are likely to be more significant in the long term",
+      "provided that appropriate measures are taken"
+     ]
+    }
+   ]
+  }
+ ]
+}

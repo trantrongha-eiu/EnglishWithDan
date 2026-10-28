@@ -20,12 +20,12 @@
   <script src="/js/theme.js?v=81e03964c4"></script>
   <script src="/js/shared/site-guard.js?v=c04e9f321f" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
-  <link rel="stylesheet" href="/css/task2-template.css?v=3df3394714">
+  <link rel="stylesheet" href="/css/task2-template.css?v=80a2585ffb">
   <link rel="stylesheet" href="/css/playful.css?v=ffb392e664"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=829e5d2c02"></script>
-<script src="/js/shared/onboarding-tour.js?v=bba31307cf"></script>
+<script src="/js/bundles/app-shell.js?v=b70fb016a2"></script>
+<script src="/js/shared/onboarding-tour.js?v=aba3683aa6"></script>
 <script src="/js/shared/review-required-popup.js?v=3c690f3016"></script>
 <script src="/js/shared/writing-rewrite-reminder.js?v=2c99b4056c"></script>
 <script src="/js/shared/word-audio.js?v=28a7a7408e"></script>
@@ -39,7 +39,7 @@
   <div class="t2-quit-box">
     <div class="t2-quit-top">
       <div class="t2-quit-mascot">🔀</div>
-      <div class="t2-quit-title">Chuyển template?</div>
+      <div class="t2-quit-title">Rời bài đang luyện?</div>
       <div class="t2-quit-sub" id="tpl-switch-sub"></div>
     </div>
     <div class="t2-quit-actions">
@@ -47,7 +47,7 @@
         <i class="fas fa-arrow-left"></i> Ở lại làm tiếp
       </button>
       <button class="t2-quit-leave" id="tpl-switch-confirm-btn" onclick="confirmTypeSwitch()">
-        <i class="fas fa-exchange-alt"></i> Chuyển sang type mới
+        <i class="fas fa-exchange-alt"></i> Vẫn rời đi
       </button>
     </div>
   </div>
@@ -69,8 +69,8 @@
       <div class="tpl-sidebar-brand"><i class="fas fa-book-open"></i> Task 2 Writing</div>
       <div class="tpl-sidebar-subtitle">7 dạng bài IELTS Task 2</div>
       <div style="display:flex;flex-direction:column;align-items:flex-start;gap:5px">
-        <span class="tpl-sidebar-badge" id="tpl-main-badge">0 / 132 mẫu câu</span>
-        <span class="tpl-sidebar-badge" id="tpl-mode-badge">🗣 0/0   ·   🔗 0/0</span>
+        <span class="tpl-sidebar-badge" id="tpl-main-badge">0 / 7 dạng hoàn thành</span>
+        <span class="tpl-sidebar-badge" id="tpl-mode-badge">🧠 Đã thuộc 0/0 câu</span>
       </div>
     </div>
     <nav id="tpl-type-tabs" class="tpl-type-nav"></nav>
@@ -94,16 +94,12 @@
     <div class="tpl-page-hero">
       <div class="tpl-page-hero-inner">
         <div>
-          <h1 class="tpl-page-title">📚 Template Task 2 Writing – Luyện Cloze</h1>
-          <p class="tpl-page-sub" id="tpl-page-sub">Điền từ 132 mẫu câu theo 7 dạng bài IELTS Task 2</p>
-          <p class="tpl-cache-warning"><i class="fas fa-triangle-exclamation"></i> Tiến độ điền từ được lưu trên trình duyệt này — xoá cache/dữ liệu trình duyệt hoặc đổi thiết bị sẽ mất tiến độ.</p>
+          <h1 class="tpl-page-title">📚 Template Task 2 Writing – Lộ trình ghi nhớ</h1>
+          <p class="tpl-page-sub" id="tpl-page-sub">Lộ trình 5 bước để thuộc mẫu câu theo 7 dạng bài IELTS Task 2</p>
+          <p class="tpl-cache-warning tpl-cache-ok"><i class="fas fa-cloud"></i> Tiến độ được lưu vào tài khoản — học tiếp được trên mọi thiết bị.</p>
           <div class="wp-status-row" id="tpl-type-status"></div>
         </div>
-        <!-- Band 6+ / Band 7+ level toggle — same 7 essay types either way,
-             just simpler vs. more advanced vocab (see task2PracticeService's
-             level-scoped listTemplates()). Deliberately its own toggle, not
-             folded into the mode-tabs bar below, since level applies across
-             ALL modes (Cloze/Dịch câu/Chunks/Build/Dictation) at once. -->
+        <!-- Band 6+ / Band 7+ — same 7 essay types; Band 7+ gets fewer hints. -->
         <div class="t2-level-toggle" id="tpl-level-toggle" role="tablist" aria-label="Trình độ">
           <button class="t2-level-btn active" data-level="band6" onclick="switchTplLevel('band6')" role="tab" aria-selected="true">🌱 Band 6+</button>
           <button class="t2-level-btn" data-level="band7" onclick="switchTplLevel('band7')" role="tab" aria-selected="false">🏆 Band 7+</button>
@@ -111,53 +107,15 @@
       </div>
     </div>
 
-    <!-- Learning mode tabs — Cloze is the original mode; Translation is new
-         and fully working; Chunks/Build/Dictation are placeholders (tab
-         structure exists now so later phases only need to fill the panel,
-         not touch this bar again). -->
-    <div class="t2-mode-tabs" id="tpl-mode-tabs" role="tablist" aria-label="Chế độ học">
-      <button class="t2-mode-tab" data-mode="cloze" onclick="switchTplMode('cloze')" role="tab" aria-selected="false">
-        <i class="fas fa-pen"></i> Cloze
-      </button>
-      <button class="t2-mode-tab active" data-mode="translation" onclick="switchTplMode('translation')" role="tab" aria-selected="true">
-        <i class="fas fa-language"></i> Dịch câu
-      </button>
-      <button class="t2-mode-tab" data-mode="chunks" onclick="switchTplMode('chunks')" role="tab" aria-selected="false">
-        <i class="fas fa-layer-group"></i> Chunks
-      </button>
-      <button class="t2-mode-tab" data-mode="build" onclick="switchTplMode('build')" role="tab" aria-selected="false">
-        <i class="fas fa-puzzle-piece"></i> Build
-      </button>
-      <button class="t2-mode-tab" data-mode="dictation" onclick="switchTplMode('dictation')" role="tab" aria-selected="false">
-        <i class="fas fa-headphones"></i> Dictation
-      </button>
-    </div>
-
-    <!-- Toolbar (Cloze mode) — hidden by default; Dịch câu is the default mode. -->
-    <div class="tpl-toolbar" id="tpl-toolbar-cloze" style="display:none">
-      <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn" onclick="toggleExamMode()" title="Chế độ thi thử – không có gợi ý, nộp bài để xem điểm">
+    <!-- Toolbar — the practice itself is the 5-step path in #tpl-content-area -->
+    <div class="tpl-toolbar" id="tpl-toolbar">
+      <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn" onclick="toggleExamMode()" title="Thi thử: nhớ lại mọi câu từ tiếng Việt, không gợi ý, 30 phút">
         <i class="fas fa-clock"></i> <span id="tpl-exam-label">Thi thử</span>
       </button>
-      <button class="t2-tpl-vi-btn-tab" id="tpl-vi-btn" onclick="toggleTplVi()">
-        🇻🇳 <span id="tpl-vi-label">Tiếng Việt</span>
-      </button>
       <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
         <i class="fas fa-history"></i> Lịch sử
       </button>
-      <button class="t2-tpl-vi-btn-tab" onclick="openTplFullView()" title="Xem toàn bộ mẫu câu của dạng bài này (Band 6+ và Band 7+) để tham khảo khi viết bài">
-        <i class="fas fa-file-lines"></i> Xem đầy đủ
-      </button>
-    </div>
-
-    <!-- Toolbar (every non-Cloze mode — no VI-toggle, each mode has its own way of showing VI) -->
-    <div class="tpl-toolbar" id="tpl-toolbar-other">
-      <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn-other" onclick="toggleExamMode()" title="Chế độ thi thử – không có gợi ý, một lượt duy nhất, nộp bài để xem điểm">
-        <i class="fas fa-clock"></i> <span id="tpl-exam-label-other">Thi thử</span>
-      </button>
-      <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
-        <i class="fas fa-history"></i> Lịch sử
-      </button>
-      <button class="t2-tpl-vi-btn-tab" onclick="openTplFullView()" title="Xem toàn bộ mẫu câu của dạng bài này (Band 6+ và Band 7+) để tham khảo khi viết bài">
+      <button class="t2-tpl-vi-btn-tab" id="tpl-full-btn" onclick="openTplFullView()" title="Xem toàn bộ mẫu câu của dạng bài này (Band 6+ và Band 7+) để tham khảo khi viết bài">
         <i class="fas fa-file-lines"></i> Xem đầy đủ
       </button>
     </div>
@@ -210,6 +168,6 @@
   </div>
 </div>
 
-<script src="/js/task2-template.js?v=d3493bcd99"></script>
+<script src="/js/task2-template.js?v=ad60e22185"></script>
 </body>
 </html>

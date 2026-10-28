@@ -211,10 +211,13 @@
           'Chọn dạng bài (Discuss Both Views, Advantages/Disadvantages, Problem/Solution…), rồi chọn <b>Band 6+</b> hoặc <b>Band 7+</b>.',
           'Bấm <b>Xem đầy đủ</b> để đọc trọn bộ mẫu câu của dạng bài đó.',
         ] },
-        { icon: '🧩', title: 'Các chế độ luyện', items: [
-          '<b>Cloze</b>: điền từ còn thiếu vào mẫu câu.',
-          '<b>Dịch câu</b>, <b>Chunks</b>, <b>Build</b> (ghép câu) và <b>Dictation</b> (nghe – chép) để nhớ chắc hơn.',
-          '<b>Thi thử</b>: tự kiểm tra không có gợi ý. Xem lại kết quả ở <b>Lịch sử</b>.',
+        { icon: '🧩', title: 'Lộ trình 5 bước', items: [
+          '<b>① Khung bài</b>: mỗi đoạn có mấy câu, bao nhiêu chữ, rồi tự xếp các câu theo đúng thứ tự.',
+          '<b>② Đọc & nghe</b>: đọc từng câu kèm nghĩa, nghe phát âm, chú ý từ khoá.',
+          '<b>③ Luyện từng đoạn</b>: ghép cụm → điền chữ bị ẩn dần → nhớ lại cả câu từ tiếng Việt.',
+          '<b>④ Ghép cả bài</b>: viết lại cả đoạn từ trí nhớ (cần ≥ 70%). <b>⑤ Áp dụng</b>: viết bài cho đề thật rồi so với bài mẫu.',
+          'Band 7+ ít gợi ý hơn và ghép cả bài có tính giờ. Tiến độ lưu vào tài khoản.',
+          '<b>Ôn nhanh</b> đến hạn sau 1, 3, 7, 14, 30 ngày. <b>Thi thử</b>: nhớ lại mọi câu, không gợi ý. Xem kết quả ở <b>Lịch sử</b>.',
         ] },
       ],
     },

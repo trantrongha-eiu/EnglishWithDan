@@ -270,8 +270,8 @@
       },
       {
         icon: '🎚️',
-        title: 'Trình độ & chế độ học',
-        body: 'Chọn Band 6+ hoặc Band 7+ rồi điền từ vào chỗ trống để ghi nhớ mẫu câu. Bấm "Thi thử" để tự kiểm tra không có gợi ý.',
+        title: 'Trình độ & lộ trình',
+        body: 'Chọn Band 6+ hoặc Band 7+. Mỗi dạng bài có lộ trình 5 bước: khung bài → đọc & nghe → luyện từng đoạn → ghép cả bài → áp dụng đề thật. Bấm "Thi thử" để tự kiểm tra không có gợi ý.',
         resolve() {
           const el = document.getElementById('tpl-level-toggle');
           return isVisible(el) ? el : null;
@@ -282,10 +282,8 @@
         title: 'Xem đầy đủ mẫu câu',
         body: 'Bấm để đọc toàn bộ mẫu câu của dạng bài này (cả Band 6+ và Band 7+) — tiện tham khảo khi viết bài thật.',
         resolve() {
-          const c1 = document.querySelector('#tpl-toolbar-cloze button[onclick="openTplFullView()"]');
-          if (isVisible(c1)) return c1;
-          const c2 = document.querySelector('#tpl-toolbar-other button[onclick="openTplFullView()"]');
-          return isVisible(c2) ? c2 : null;
+          const el = document.getElementById('tpl-full-btn');
+          return isVisible(el) ? el : null;
         },
         isLast: true
       }
