@@ -20,7 +20,7 @@
   <script src="/js/shared/scroll-reveal.js?v=7010de29cd"></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <script src="/js/shared/pwa-register.js?v=713d4c39e1" defer></script>
-  <link rel="stylesheet" href="/css/dashboard.css?v=858ba699dc">
+  <link rel="stylesheet" href="/css/dashboard.css?v=7a9e4bc289">
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3">
   <link rel="stylesheet" href="/css/playful.css?v=ffb392e664"/>
 </head>
@@ -249,10 +249,10 @@
           </div>
         </div>
 
-        <!-- Homework: this book holds fewer words than a pending "học N từ"
-             assignment asks for (js/dashboard-homework.js hwCollectShortBooks
+        <!-- Homework "học N từ trong sổ": progress bar per pending goal this
+             book counts for (js/dashboard-homework.js hwCollectVocabGoals
              -> dashboard.js renderBookGoalNotice). Not dismissible. -->
-        <div id="book-goal-notice" class="hw-warn" style="display:none;margin:0 0 12px"></div>
+        <div id="book-goal-notice" class="vgoal-wrap" style="display:none"></div>
 
         <!-- "Mách nhỏ" — how to add words. Shown on book open until dismissed. -->
         <div id="book-add-tip" class="book-add-tip hidden">
@@ -390,6 +390,8 @@
         </div>
       </div>
       <div class="mode-body" id="mode-body">
+        <!-- Same homework progress bar, live during this book's practice (dashboard.js _renderVocabGoalBar) -->
+        <div id="vocabGoalBar" class="vgoal-wrap vgoal-wrap--session" style="display:none"></div>
         <div id="smartSessionBar" class="smart-session-bar" style="display:none"></div>
         <div id="studyMode"><div class="vocab-grid" id="vocabGrid"></div></div>
 
@@ -1163,12 +1165,12 @@
 <script src="/js/dashboard-audio.js?v=4d62f2efe9"></script>
 <script src="/js/shared/wbw-drill.js?v=9de4d9a281"></script>
 <script src="/js/dashboard-lesson.js?v=4922e8592e"></script>
-<script src="/js/dashboard-homework.js?v=c7ba2ad563"></script>
+<script src="/js/dashboard-homework.js?v=ed624f025f"></script>
 <script src="/js/dashboard-classinfo.js?v=4762424353"></script>
 <script src="/js/dashboard-review.js?v=4dba13dc0a"></script>
 <script src="/js/dashboard-paraphrase.js?v=f6c0320973"></script>
 <script src="/js/shared/fire-tier.js?v=9d6b07142e"></script>
-<script src="/js/dashboard.js?v=4e7eabda8a"></script>
+<script src="/js/dashboard.js?v=7b95f9cd08"></script>
 <script src="/js/dashboard-browse.js?v=5692652b85"></script>
 </body>
 </html>

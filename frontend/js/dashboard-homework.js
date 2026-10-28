@@ -326,7 +326,7 @@ async function loadHomework() {
     console.error('loadHomework:', err);
     return; // stay hidden on error
   }
-  hwCollectShortBooks(data);
+  hwCollectVocabGoals(data);
   if (!data || !data.hasClasses) { card.style.display = 'none'; return; }
 
   card.style.display = 'block';
@@ -378,19 +378,31 @@ async function loadHomework() {
     <div class="hw-list">${data.assignments.map(hwAssignmentBlock).join('')}</div>`;
 }
 
-// Pending vocab goals whose book holds fewer words than the teacher asked
-// for — dashboard.js shows a "lưu thêm N từ" notice inside that book.
-function hwCollectShortBooks(data) {
+// Vocab goals ("học N từ trong sổ") of assignments not finished yet —
+// dashboard.js shows a live progress bar for them inside the matching book
+// and during its practice session (renderBookGoalNotice / _renderVocabGoalBar).
+function hwCollectVocabGoals(data) {
   const out = [];
   for (const a of (data && data.assignments) || []) {
     if (a.status === 'completed') continue;
     for (const r of a.resources || []) {
       const v = r.vocabGoal;
-      if (r.kind !== 'vocab_goal' || r.completed || !v || v.mode !== 'too_small' || !v.bookId) continue;
-      out.push({ bookId: String(v.bookId), have: v.bookSize || 0, need: v.minSize || v.wordCount || 0, title: a.title || '' });
+      if (r.kind !== 'vocab_goal' || !v) continue;
+      const target = v.target || v.wordCount || r.wordCount || 0;
+      if (!target) continue;
+      out.push({
+        key: `${a._id}:${r.itemId}`,
+        title: a.title || '',
+        since: a.createdAt || null,
+        target,
+        needCorrect: v.needCorrect || Math.ceil(target * 0.7), // = backend PASS_PERCENT 70
+        requiredSlot: v.requiredSlot || r.bookSlot || null,
+        bookId: v.bookId ? String(v.bookId) : null,
+        completed: !!r.completed,
+      });
     }
   }
-  window._hwShortBooks = out;
+  window._hwVocabGoals = out;
   if (typeof window.renderBookGoalNotice === 'function') window.renderBookGoalNotice();
 }
 

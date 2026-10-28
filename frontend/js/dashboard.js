@@ -165,6 +165,12 @@ function _countAnswer() {
     // answer's outcome — the single hook point where "this word was seen
     // this session" can be recorded without touching each mode individually.
     if (currentWord?._id) _vocabWordsSeen.set(currentWord._id, currentWord);
+    // Homework "học N từ" bar — same right/wrong rule the sync below sends
+    // ("wrong at any point this session" = wrong).
+    if (currentWord?._id && (currentWord._reviewBookId || _isBookPractice)) {
+        _goalAnswers.set(String(currentWord._id), !wrongWordSet.has(currentWord.word));
+        _renderVocabGoalBar();
+    }
     // Paraphrase items have no _id (embedded in VocabUnit.words[]) so they
     // can't ride _vocabWordsSeen — record them for the parallel paraphrase-
     // SRS sync (js/dashboard-paraphrase.js) that showResults() fires. Covers
@@ -1059,23 +1065,108 @@ function renderBookContent(book) {
     if (moveBarBtn) moveBarBtn.style.display = book.words.length > 0 && myBooks.length > 1 ? '' : 'none';
 }
 
-// "Lưu thêm N từ" notice for the open book when a pending homework vocab
-// goal needs more words than it holds (window._hwShortBooks, filled by
-// dashboard-homework.js). The word count shown is live, so saving words
-// here shrinks the gap before the homework list is reloaded.
-function renderBookGoalNotice() {
-    const el = document.getElementById('book-goal-notice');
-    if (!el) return;
-    const goals = (window._hwShortBooks || []).filter(g => g.bookId === String(currentBookId));
-    const have = currentBookData && Array.isArray(currentBookData.words) ? currentBookData.words.length : null;
-    const g = goals.sort((a, b) => b.need - a.need)[0];
-    const size = have ?? (g && g.have) ?? 0;
-    if (!g || size >= g.need) { el.style.display = 'none'; el.innerHTML = ''; return; }
-    el.innerHTML = `⚠️ Bài tập${g.title ? ` <b>${_esc(g.title)}</b>` : ''} yêu cầu học <b>${g.need} từ</b> trong sổ này, nhưng sổ mới có <b>${size}</b> từ. `
-        + `Hãy <b>lưu thêm ${g.need - size} từ</b> (bấm <b>+ Add word</b>, <b>Nhập hàng loạt</b>, hoặc lưu từ khi làm bài) rồi luyện tập để được tính hoàn thành.`;
+/* ── Homework "học N từ trong sổ" — live progress bar ──
+   window._hwVocabGoals (dashboard-homework.js) lists the vocab_goal items of
+   unfinished assignments. Progress for the open book is recomputed here with
+   the server's rule (backend services/vocabGoalService.js evaluateBook): a
+   word counts once it got a graded practice answer after the assignment was
+   created, and its latest answer decides right/wrong. Done = the book holds
+   >= N words, >= N of them practised, >= 70% of N answered right.
+   Answers given on this page are taken from _goalAnswers, so the bar moves
+   after every answer, before the end-of-session sync reaches the server. */
+const _goalAnswers = new Map();  // word _id -> right? (outcome of its latest session)
+const _goalDoneToasted = new Set();
+
+// Goals the open book counts for: a fixed slot ("Sổ 2") or any of Sổ 1–5.
+function _goalsForCurrentBook() {
+    const book = currentBookData;
+    if (!book || !currentBookId) return [];
+    return (window._hwVocabGoals || []).filter(g => g.requiredSlot
+        ? (g.bookId === String(currentBookId) || book.defaultSlot === g.requiredSlot)
+        : !!book.isDefault);
+}
+
+// undefined = not practised for this goal yet, true/false = latest answer
+function _goalWordState(g, w, sinceMs) {
+    if (w._id && _goalAnswers.has(String(w._id))) return _goalAnswers.get(String(w._id));
+    if (w.lastPracticedAt && new Date(w.lastPracticedAt).getTime() >= sinceMs) return w.lastPracticeCorrect === true;
+    return undefined;
+}
+
+function _goalProgress(g, words) {
+    const sinceMs = g.since ? new Date(g.since).getTime() : 0;
+    let practiced = 0, correct = 0;
+    for (const w of words) {
+        const st = _goalWordState(g, w, sinceMs);
+        if (st === undefined) continue;
+        practiced++;
+        if (st) correct++;
+    }
+    const size = words.length;
+    const done = g.completed || (size >= g.target && practiced >= g.target && correct >= g.needCorrect);
+    return { practiced, correct, size, done };
+}
+
+function _goalCardHtml(g, p, inSession) {
+    const t = g.target;
+    const head = `📌 Bài tập${g.title ? ` <b>${_esc(g.title)}</b>` : ''}: học <b>${t} từ</b> trong ${g.requiredSlot ? `Sổ ${g.requiredSlot}` : 'một sổ (Sổ 1–5)'}`;
+    if (g.completed) {
+        return `<div class="vgoal vgoal--done"><div class="vgoal-head">${head}</div><div class="vgoal-status">✔ Đã hoàn thành chỉ tiêu này.</div></div>`;
+    }
+    const okW  = Math.round(Math.min(p.correct, t) / t * 1000) / 10;
+    const allW = Math.round(Math.min(p.practiced, t) / t * 1000) / 10;
+    const needMark = Math.round(g.needCorrect / t * 1000) / 10;
+    let status;
+    if (p.done) status = '🎉 Đã đủ chỉ tiêu! Bài tập sẽ được tính là hoàn thành.';
+    else if (p.size < t) status = `⚠️ Sổ mới có <b>${p.size}/${t}</b> từ — hãy <b>lưu thêm ${t - p.size} từ</b> (+ Add word, Nhập hàng loạt, hoặc lưu từ khi làm bài) rồi luyện tập.`;
+    else if (p.practiced < t) status = `Còn <b>${t - p.practiced} từ</b> chưa luyện.`
+        + (p.correct < g.needCorrect && p.practiced - p.correct > 0 ? ' Từ nào trả lời sai thì luyện lại cho đúng.' : '');
+    else status = `Đã luyện đủ ${t} từ — cần thêm <b>${g.needCorrect - p.correct} từ trả lời đúng</b>: luyện lại các từ đang sai.`;
+    const saveHint = inSession && !p.done
+        ? '<div class="vgoal-hint">Kết quả được lưu khi bạn làm hết phiên hoặc bấm dừng / thoát.</div>' : '';
+    return `<div class="vgoal${p.done ? ' vgoal--done' : ''}${p.size < t ? ' vgoal--warn' : ''}">
+        <div class="vgoal-head">${head}</div>
+        <div class="vgoal-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${t}" aria-valuenow="${Math.min(p.practiced, t)}" aria-label="Số từ đã luyện">
+            <div class="vgoal-fill vgoal-fill--all" style="width:${allW}%"></div>
+            <div class="vgoal-fill vgoal-fill--ok" style="width:${okW}%"></div>
+            <div class="vgoal-mark" style="left:${needMark}%" title="Cần ${g.needCorrect} từ đúng"></div>
+        </div>
+        <div class="vgoal-nums"><span>Đã luyện <b>${Math.min(p.practiced, t)}/${t}</b> từ</span><span>Đúng <b>${p.correct}</b> / cần ≥${g.needCorrect}</span></div>
+        <div class="vgoal-status">${status}</div>${saveHint}
+    </div>`;
+}
+
+function _renderGoalCards(el, inSession) {
+    const goals = _goalsForCurrentBook();
+    const words = currentBookData && Array.isArray(currentBookData.words) ? currentBookData.words : [];
+    if (!goals.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+    el.innerHTML = goals.map(g => {
+        const p = _goalProgress(g, words);
+        if (inSession && p.done && !g.completed && !_goalDoneToasted.has(g.key)) {
+            _goalDoneToasted.add(g.key);
+            toast(`🎉 Đã đủ chỉ tiêu bài tập: học ${g.target} từ!`, 'success');
+        }
+        return _goalCardHtml(g, p, inSession);
+    }).join('');
     el.style.display = '';
 }
+
+// Book view (above the word table).
+function renderBookGoalNotice() {
+    const el = document.getElementById('book-goal-notice');
+    if (el) _renderGoalCards(el, false);
+    _renderVocabGoalBar();
+}
 window.renderBookGoalNotice = renderBookGoalNotice;
+
+// Practice view of this book (any graded mode; hidden in Study and for units).
+function _renderVocabGoalBar() {
+    const el = document.getElementById('vocabGoalBar');
+    if (!el) return;
+    const unitShown = document.getElementById('view-unit')?.style.display !== 'none';
+    if (!_isBookPractice || currentMode === 'study' || !unitShown) { el.style.display = 'none'; el.innerHTML = ''; return; }
+    _renderGoalCards(el, true);
+}
 
 // Student closed the "Mách nhỏ" tip — hide it and remember so it doesn't
 // come back on the next book open.
@@ -2152,6 +2243,7 @@ function _activateModeNow(mode) {
 
     if (mode === 'study') { document.getElementById('studyMode').style.display = 'block'; renderStudyGrid(); }
     else startPractice(mode);
+    _renderVocabGoalBar();
     updateKbdHint();
 
     // Reflect the active practice-mode tab in the URL — replaceState since
@@ -2395,6 +2487,7 @@ async function _reportSessionStreak() {
 }
 
 function startPractice(mode) {
+    _flushPracticeEvidence(); // previous session left half-way (mode switch / restart)
     _vocabQuizActive = true;
     wrongWordSet.clear();
     requeuedWords.clear();
@@ -2490,6 +2583,20 @@ function _buildSmartBookSession(words) {
     for (const w of words) {
         if (_wordIsMastered(w) && _wordDueAt(w) > now) restMastered.push(w);
         else core.push(w);
+    }
+    // Homework "học N từ": a hidden mastered word not practised for the goal
+    // yet comes back if the session would otherwise hold too few such words
+    // to reach N.
+    for (const g of _goalsForCurrentBook()) {
+        if (g.completed || words.length < g.target) continue;
+        const sinceMs = g.since ? new Date(g.since).getTime() : 0;
+        const fresh = (w) => _goalWordState(g, w, sinceMs) === undefined;
+        const counted = words.filter(w => !fresh(w)).length;
+        let pull = g.target - counted - core.filter(fresh).length;
+        for (let i = 0; pull > 0 && i < restMastered.length; ) {
+            if (fresh(restMastered[i])) { core.push(restMastered.splice(i, 1)[0]); pull--; }
+            else i++;
+        }
     }
     const score = (w) => {
         let s = (w.srsBox || 0) === 0 && !_wordIsMastered(w) ? 3 : _wordIsMastered(w) ? 0.5 : 2;
@@ -2683,6 +2790,9 @@ function askQuitPractice(onQuit) {
 function confirmQuit() {
     closeModal('modal-quit-practice');
     _reportSessionStreak(); // tính streak nếu đã trả lời >= 5 từ trước khi thoát
+    // Words answered before leaving still count (SRS + homework "học N từ"),
+    // not only a session played to the end. Lesson quizzes keep their own flow.
+    if (!(typeof isQuizInProgress === 'function' && isQuizInProgress())) _flushPracticeEvidence();
     if (_quitCallback) { const cb = _quitCallback; _quitCallback = null; cb(); }
 }
 
@@ -3270,10 +3380,7 @@ function showResults(mode) {
     // Sync graded-practice evidence (SRS box, wrongCount/correctCount,
     // derived status) to the server — chỉ 1 lần mỗi session để tránh
     // double-count, same guard the old wrongCount-only persist used.
-    if (_vocabWordsSeen.size > 0 && !_persistedThisSession) {
-        _persistedThisSession = true;
-        _syncPracticeEvidence();
-    }
+    _flushPracticeEvidence();
     // Parallel path for paraphrase items (no _id, so not in _vocabWordsSeen):
     // push each answered pair's binary outcome into the per-student SRS.
     if (typeof window.syncParaphraseEvidence === 'function') window.syncParaphraseEvidence();
@@ -3393,6 +3500,14 @@ function retryWrongWords() {
     _activateModeNow(currentMode === 'study' ? 'mixed' : currentMode);
 }
 
+// Once per session: send the answered words (no-op if already sent / none).
+function _flushPracticeEvidence() {
+    if (_vocabWordsSeen.size > 0 && !_persistedThisSession) {
+        _persistedThisSession = true;
+        _syncPracticeEvidence();
+    }
+}
+
 /* ── Sync graded-practice evidence to the server (fire-and-forget) ──
    Single call site every practice mode funnels through at session end —
    replaces the old _persistWrongCounts() (wrongCount-only, in-book practice
@@ -3434,6 +3549,9 @@ async function _syncPracticeEvidence() {
     }
     if (!calls.length) return;
     await Promise.all(calls);
+    // A homework "học N từ" may be done now — refresh the homework card
+    // (its ✔ and the goal list behind the progress bars).
+    if ((window._hwVocabGoals || []).some(g => !g.completed) && typeof window.loadHomework === 'function') window.loadHomework();
 }
 
 /* ══════════════════════════════════════════════
