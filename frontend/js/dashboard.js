@@ -41,7 +41,7 @@ let requeuedWords = new Map();  // word -> times requeued this session (capped, 
 let mixedQueue = [];            // [{word, type}] for mixed mode
 let mixedIndex = 0;
 // Gates dictionary double-click/highlight lookup off during any scored vocab
-// quiz (multipleChoice/fillBlank/listening/translation/mixed — all started
+// quiz (multipleChoice/fillBlank/cloze/listening/translation/mixed — all started
 // via startPractice()), on during non-quiz browsing (word list/study mode/
 // flashcard review) and once showResults() ends the session (both on normal
 // completion and via stopPractice()'s early exit).
@@ -1035,14 +1035,8 @@ function renderBookContent(book) {
         addTip.classList.toggle('hidden', dismissed);
     }
 
-    // "Mách nhỏ" — nhắc xếp loại mức độ nhớ (Not yet/So-so/Mastered). Same
-    // show-until-dismissed-once pattern as book-add-tip above, own
-    // localStorage key so dismissing one doesn't hide the other.
-    const classifyTip = document.getElementById('book-classify-tip');
-    if (classifyTip) {
-        const dismissed = (() => { try { return localStorage.getItem('dash_book_classify_tip_dismissed') === '1'; } catch (e) { return false; } })();
-        classifyTip.classList.toggle('hidden', dismissed);
-    }
+    // Floating "Bạn đã thuộc kĩ chưa?" reminder to rate each word.
+    _maybeShowClassifyFloat(book, { da, nho, chua, total });
 
     // Cập nhật nút "Ôn lại từ hay sai" — luôn hiện khi sổ mở
     const hardBtn = document.getElementById('btn-hard-words');
@@ -1176,10 +1170,76 @@ function dismissBookAddTip() {
     try { localStorage.setItem('dash_book_add_tip_dismissed', '1'); } catch (e) {}
 }
 
-function dismissBookClassifyTip() {
-    const el = document.getElementById('book-classify-tip');
-    if (el) el.classList.add('hidden');
-    try { localStorage.setItem('dash_book_classify_tip_dismissed', '1'); } catch (e) {}
+/* ── Floating reminder: "Bạn đã thuộc kĩ chưa?" ─────────────────────────
+   Teacher's ask: remind students to rate each word Not yet / So-so /
+   Mastered. Pops up shortly after a book opens, with the book's counts per
+   level — at most once a day per book, so it nudges without nagging. It is
+   re-rendered on every book refresh (status change, add word…), but the
+   once-a-day mark is set when it shows, so those refreshes don't re-open it;
+   an open card just gets its counts updated. */
+const CLASSIFY_FLOAT_KEY = 'dash_classify_float_seen'; // { [bookId]: 'YYYY-MM-DD' }
+let _classifyFloatTimer = null;
+function _todayKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+function _classifyFloatSeen() {
+    try { return JSON.parse(localStorage.getItem(CLASSIFY_FLOAT_KEY) || '{}') || {}; } catch (e) { return {}; }
+}
+function _fillClassifyFloat(c) {
+    const counts = document.getElementById('classify-float-counts');
+    if (counts) counts.innerHTML = `
+        <span class="status-select-hint chua-thuoc">Not yet <b>${c.chua}</b></span>
+        <span class="status-select-hint nho-so-so">So-so <b>${c.nho}</b></span>
+        <span class="status-select-hint da-thuoc">Mastered <b>${c.da}</b></span>`;
+    const note = document.getElementById('classify-float-note');
+    if (note) {
+        let msg = '';
+        if (c.total && c.chua === c.total) msg = 'Tất cả từ đang ở <b>Not yet</b> — từ nào đã nhớ thì đổi sang So-so hoặc Mastered nhé.';
+        else if (c.nho > 0) msg = `Có <b>${c.nho}</b> từ <b>So-so</b> — từ nào giờ đã nhớ chắc thì nâng lên Mastered.`;
+        note.innerHTML = msg;
+        note.style.display = msg ? '' : 'none';
+    }
+}
+function _maybeShowClassifyFloat(book, c) {
+    const el = document.getElementById('classify-float');
+    if (!el || !book?._id) return;
+    const id = String(book._id);
+    if (!el.hidden) {
+        if (el.dataset.bookId === id) { _fillClassifyFloat(c); return; } // same book → refresh counts
+        el.classList.remove('show'); el.hidden = true;                      // other book → start over
+    }
+    if (!c.total) return;
+    if (_classifyFloatSeen()[id] === _todayKey()) return;
+    clearTimeout(_classifyFloatTimer);
+    // Short delay so it slides in after the book has rendered, not with it.
+    _classifyFloatTimer = setTimeout(() => {
+        if (String(currentBookId) !== id) return; // switched books meanwhile
+        _fillClassifyFloat(c);
+        el.dataset.bookId = id;
+        const seen = _classifyFloatSeen();
+        seen[id] = _todayKey();
+        try { localStorage.setItem(CLASSIFY_FLOAT_KEY, JSON.stringify(seen)); } catch (e) {}
+        el.hidden = false;
+        requestAnimationFrame(() => el.classList.add('show'));
+    }, 900);
+}
+function closeClassifyFloat() {
+    clearTimeout(_classifyFloatTimer);
+    const el = document.getElementById('classify-float');
+    if (!el || el.hidden) return;
+    el.classList.remove('show');
+    setTimeout(() => { el.hidden = true; }, 220);
+}
+// "Phân loại ngay": close, scroll to the word table and pulse the status
+// boxes so the student sees exactly where to click.
+function classifyNow() {
+    closeClassifyFloat();
+    const table = document.querySelector('.words-table-wrap');
+    if (table) table.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const selects = document.querySelectorAll('#words-tbody .status-select');
+    selects.forEach(s => s.classList.add('status-pulse'));
+    setTimeout(() => selects.forEach(s => s.classList.remove('status-pulse')), 3200);
 }
 
 function renderWordsTable(words) {
@@ -2091,7 +2151,7 @@ function openFlashcardMode() {
     document.getElementById('view-unit').style.display   = 'flex';
     document.getElementById('unitTitle').textContent     = `📘 ${currentBookData.name}`;
     if (window.innerWidth <= 768) window.scrollTo({ top: 0, behavior: 'auto' });
-    // Default book practice = Mixed (Quiz/Flashcard/Listen/Dịch shuffled);
+    // Default book practice = Mixed (Quiz/Điền từ/Nghe/Dịch shuffled);
     // the other modes stay one tab away.
     showMode('mixed');
 }
@@ -2227,16 +2287,22 @@ async function loadUnit(unitNumberOverride, push = true, modeOverride) {
 /* ══════════════════════════════════════════════
    MODE SWITCHING
 ══════════════════════════════════════════════ */
+// Practice modes, in tab order. Naming trap: the internal id 'fillBlank' is
+// the FLASHCARD tab (legacy id, kept so bookmarked ?mode= links still work);
+// "Điền từ" — the example sentence with the word blanked out — is 'cloze'.
+const VOCAB_MODES = ['study', 'multipleChoice', 'fillBlank', 'cloze', 'listening', 'translation', 'mixed'];
+const VOCAB_MODE_PANELS = ['studyMode','multipleChoiceMode','fillBlankMode','clozeMode','listeningMode','translationMode','mixedMode'];
+// Mixed draws from the 4 graded types (Flashcard is self-rated, so it stays out).
+const MIXED_TYPES = ['multipleChoice', 'cloze', 'listening', 'translation'];
+
 function _activateModeNow(mode) {
+    if (!VOCAB_MODES.includes(mode)) mode = 'study'; // stale/garbled ?mode= in a bookmark
     _clearAutoNext();
     _unmountVocabDrills();
-    ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode','resultsMode','smartSessionBar']
+    [...VOCAB_MODE_PANELS, 'resultsMode', 'smartSessionBar']
         .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     currentMode = mode;
-    const tabMap = { study: 0, multipleChoice: 1, fillBlank: 2, listening: 3, translation: 4, mixed: 5 };
-    const tabs = document.querySelectorAll('.tab-btn');
-    if (tabs[tabMap[mode]] !== undefined) tabs[tabMap[mode]].classList.add('active');
+    document.querySelectorAll('#mode-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
 
     const stopBtn = document.getElementById('btnStopPractice');
     if (stopBtn) stopBtn.style.display = mode === 'study' ? 'none' : 'inline-flex';
@@ -2260,7 +2326,9 @@ function _activateModeNow(mode) {
 
 function showMode(mode) {
     if (!currentUnit) return;
-    const inActiveSession = currentMode !== 'study' && currentQuestionIndex > 0 &&
+    // Any answered question counts — checking the question index missed a
+    // session where only question 1 had been answered (index still 0).
+    const inActiveSession = currentMode !== 'study' && (correctAnswers + wrongAnswers) > 0 &&
         !document.getElementById('resultsMode')?.style.display?.includes('block');
     if (inActiveSession) {
         // confirm2() hardcodes its button to "Confirm delete" (it's meant
@@ -2521,17 +2589,13 @@ function startPractice(mode) {
     _renderSmartSessionBar(smart, allPracticeWords.length);
 
     if (mode === 'mixed') {
-        // Xây hàng đợi hỗn hợp: mỗi từ được gán ngẫu nhiên 1 trong 3 kiểu
-        const types = ['multipleChoice', 'listening', 'translation'];
-        if (smart) {
-            // keep the smart order; each item gets a random type
-            mixedQueue = smart.list.map((w, i) => ({ word: w, type: types[Math.floor(Math.random() * types.length)], _isRepeat: smart.repeats.has(i) }));
-        } else {
-            const words = [...allPracticeWords];
-            shuffleArray(words);
-            mixedQueue = words.map((w, i) => ({ word: w, type: types[i % types.length] }));
-            shuffleArray(mixedQueue);
-        }
+        // Mixed queue: each word gets one of the 4 graded types (Quiz / Điền
+        // từ / Nghe / Dịch), spread evenly. Words whose example sentence
+        // doesn't contain them can't be a Điền từ question and get another type.
+        let list, repeats;
+        if (smart) { list = smart.list; repeats = smart.repeats; } // keep the smart order
+        else { list = [...allPracticeWords]; shuffleArray(list); repeats = new Set(); }
+        mixedQueue = _assignMixedTypes(list).map((type, i) => ({ word: list[i], type, _isRepeat: repeats.has(i) }));
         document.getElementById('mixedMode').style.display = 'block';
         window.WordAudio?.prefetch(mixedQueue.map(it => it.word?.word));
         showMixedQuestion();
@@ -2540,15 +2604,107 @@ function startPractice(mode) {
 
     if (smart) practiceWords = [...smart.list];
     else { practiceWords = [...allPracticeWords]; shuffleArray(practiceWords); }
+
+    if (mode === 'cloze') {
+        // Điền từ needs an example sentence that actually contains the word.
+        const before = new Set(practiceWords.map(w => w.word)).size;
+        practiceWords = practiceWords.filter(w => _clozeFor(w));
+        const kept = new Set(practiceWords.map(w => w.word)).size;
+        document.getElementById('clozeMode').style.display = 'block';
+        if (!practiceWords.length) { _renderClozeEmpty(); return; }
+        if (kept < before) toast(`Bỏ qua ${before - kept} từ chưa có câu ví dụ chứa từ đó — luyện các từ này ở Dịch hoặc Mixed nhé`, 'info');
+    }
+
     window.WordAudio?.prefetch(practiceWords.map(w => w?.word));
     const modeEl = {
         multipleChoice: 'multipleChoiceMode',
         fillBlank:      'fillBlankMode',
+        cloze:          'clozeMode',
         listening:      'listeningMode',
         translation:    'translationMode'
     }[mode];
     if (modeEl) document.getElementById(modeEl).style.display = 'block';
     showQuestion(mode);
+}
+
+// One question type per word for a Mixed session: each word takes the type
+// used least so far (random tie-break), so the 4 types come up about equally
+// often; never the same type 3 times in a row; Điền từ only for words with a
+// usable example sentence.
+function _assignMixedTypes(words) {
+    const used = Object.fromEntries(MIXED_TYPES.map(t => [t, 0]));
+    const out = [];
+    for (const w of words) {
+        const streak = out.length >= 2 && out[out.length - 1] === out[out.length - 2] ? out[out.length - 1] : null;
+        let fits = MIXED_TYPES.filter(t => (t !== 'cloze' || _clozeFor(w)) && t !== streak);
+        const least = Math.min(...fits.map(t => used[t]));
+        fits = fits.filter(t => used[t] === least);
+        const pick = fits[Math.floor(Math.random() * fits.length)];
+        used[pick]++;
+        out.push(pick);
+    }
+    return out;
+}
+
+/* ── Điền từ (cloze) helpers ─────────────────────────────────────────── */
+// Finds the vocab entry inside its own example sentence so it can be blanked
+// out. Examples often use an inflected form (analyse → analysed, study →
+// studies, stop → stopped), so those are matched too; the blank's answer is
+// the form actually in the sentence. Returns null when the word can't be
+// found — such words are skipped by Điền từ and get another type in Mixed.
+const _clozeCache = new WeakMap();
+function _clozeFor(w) {
+    if (!w || typeof w !== 'object') return null;
+    const key = `${w.word}\u0000${w.example || ''}`;
+    const hit = _clozeCache.get(w);
+    if (hit && hit.key === key) return hit.res;
+    const res = _findClozeTarget(w.example, w.word);
+    _clozeCache.set(w, { key, res });
+    return res;
+}
+function _clozeTokenRe(tok) {
+    const t = tok.toLowerCase();
+    const e = escR(t);
+    const alts = [`${e}(?:s|es|d|ed|ing|er|ers|est|ly)?`];
+    if (t.length >= 3 && /[a-z]e$/.test(t)) alts.push(`${escR(t.slice(0, -1))}(?:ing|ed|er|ers|est)`);
+    if (t.length >= 3 && /[^aeiou]y$/.test(t)) alts.push(`${escR(t.slice(0, -1))}i(?:es|ed|er|ers|est|ly)`);
+    if (t.length >= 3 && /[^aeiou][aeiou][bdgklmnprt]$/.test(t)) alts.push(`${e}${escR(t.slice(-1))}(?:ed|ing|er|ers|est)`);
+    return `(?:${alts.join('|')})`;
+}
+function _findClozeTarget(sentence, word) {
+    const s  = String(sentence || '');
+    const wd = String(word || '').trim();
+    if (!s || !wd || !/[A-Za-z]/.test(wd)) return null;
+    const toks = wd.split(/\s+/);
+    // No lookbehind (older iOS Safari can't parse it) — capture the left edge instead.
+    const tryRe = (body) => {
+        const m = new RegExp(`(^|[^A-Za-z0-9])(${body})(?![A-Za-z0-9])`, 'i').exec(s);
+        if (!m) return null;
+        const start = m.index + m[1].length;
+        return { before: s.slice(0, start), answer: m[2], after: s.slice(start + m[2].length) };
+    };
+    // A phrase may be written with hyphens in the sentence ("up-to-date").
+    const sep = '[\\s-]+';
+    return tryRe(toks.map(escR).join(sep)) || tryRe(toks.map(_clozeTokenRe).join(sep));
+}
+// Sentence with the answer replaced by a blank (or, once answered, shown in
+// place: green if right, red if wrong).
+function _clozeSentenceHtml(c, state) {
+    const mid = state
+        ? `<strong class="cloze-filled ${state === 'ok' ? 'is-ok' : 'is-wrong'}">${_esc(c.answer)}</strong>`
+        : `<span class="cloze-blank" aria-label="chỗ trống">${'_'.repeat(Math.min(Math.max(c.answer.length, 5), 14))}</span>`;
+    return `${_esc(c.before)}${mid}${_esc(c.after)}`;
+}
+function _posChip(w) {
+    return w?.partOfSpeech ? `<span class="pos-chip">${_esc(w.partOfSpeech)}</span>` : '';
+}
+function _renderClozeEmpty() {
+    const card = document.getElementById('clozeCard');
+    const empty = document.getElementById('clozeEmpty');
+    if (card) card.style.display = 'none';
+    if (empty) empty.style.display = '';
+    const prog = document.getElementById('clozeProgress');
+    if (prog) prog.style.display = 'none';
 }
 
 /* ── Smart book session ────────────────────────────────────────────────
@@ -2675,6 +2831,7 @@ function showQuestion(mode) {
     currentWord = practiceWords[currentQuestionIndex];
     if (mode === 'multipleChoice') showMultipleChoiceQuestion();
     else if (mode === 'fillBlank') showFillBlankQuestion();
+    else if (mode === 'cloze') showClozeQuestion();
     else if (mode === 'listening') showListeningQuestion();
     else if (mode === 'translation') showTranslationQuestion();
 }
@@ -2701,8 +2858,11 @@ function requeueWrongWord(word) {
     if (n >= 2) return;
     requeuedWords.set(key, n + 1);
     if (currentMode === 'mixed') {
-        const types = ['multipleChoice', 'listening', 'translation'];
-        const type  = types[Math.floor(Math.random() * types.length)];
+        // Comes back as a different type than the one just missed, so the
+        // retry tests the word from another angle.
+        const missedAs = mixedQueue[mixedIndex]?.type;
+        const types = MIXED_TYPES.filter(t => t !== missedAs && (t !== 'cloze' || _clozeFor(word)));
+        const type  = types[Math.floor(Math.random() * types.length)] || 'multipleChoice';
         const insertAt = Math.min(mixedIndex + 4, mixedQueue.length);
         mixedQueue.splice(insertAt, 0, { word, type, _isRepeat: true });
     } else {
@@ -2818,6 +2978,7 @@ function showMixedQuestion() {
     _unmountVocabDrills();
     const item = mixedQueue[mixedIndex];
     currentWord = item.word;
+    if (item.type === 'cloze' && !_clozeFor(currentWord)) item.type = 'translation'; // safety net
     const type  = item.type;
 
     // Update mixed progress bar. (mixedIndex+1) to match the "N/total" text
@@ -2830,82 +2991,85 @@ function showMixedQuestion() {
     if (txt)  txt.textContent = `${mixedIndex + 1}/${total}`;
 
     // Badge ôn tập nếu là từ bị requeue
-    const repeatBadge = item._isRepeat
-        ? '<span style="background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:12px;padding:2px 10px;font-size:11px;font-weight:700;margin-bottom:10px;display:inline-block">🔁 Review again</span>'
-        : '';
+    const repeatBadge = item._isRepeat ? '<span class="mix-repeat-badge">🔁 Ôn lại</span>' : '';
+    // Every sub-question opens with its type (same name as its tab) and a
+    // one-line instruction, so a student never has to guess what to type.
+    const head = (icon, name, howTo) => `
+            <div class="mix-q-head">
+              <span class="mix-type-chip mix-type-${type}"><i class="fas ${icon}"></i> ${name}</span>${repeatBadge}
+            </div>
+            <div class="mix-q-howto">${howTo}</div>`;
+    const nextBtn = `<button class="btn-next" id="mixBtnNext" onclick="advanceMixed()" style="display:none">Tiếp <i class="fas fa-arrow-right"></i></button>`;
 
-    // Render question theo type vào #mixQuestionWrap
     const wrap = document.getElementById('mixQuestionWrap');
     if (type === 'multipleChoice') {
         const opts = generateOptions(currentWord);
         wrap.innerHTML = `
           <div class="question-card">
-            ${repeatBadge}
-            <div class="question-number" style="font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:700;letter-spacing:.6px;margin-bottom:12px">
-              <i class="fas fa-check-circle"></i> Multiple Choice
-            </div>
-            <div class="question-text" style="font-size:18px;font-weight:700;margin-bottom:20px">
+            ${head('fa-check-circle', 'Quiz', 'Chọn nghĩa đúng của từ')}
+            <div class="question-text">
               "<strong>${_esc(currentWord.word)}</strong>" nghĩa là gì?
               <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Phát âm" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>
             </div>
             <div class="answer-options" id="mixAnswerOptions">
-              ${opts.map(o => `<button class="answer-option" onclick="checkMixedMC(this,'${escH(o)}','${escH(currentWord.meaning)}')">${_esc(o)}</button>`).join('')}
+              ${opts.map((o, i) => `<button class="answer-option" data-opt="${_esc(o)}" onclick="checkMixedMC(this,'${escH(o)}','${escH(currentWord.meaning)}')"><span class="opt-key">${i + 1}</span>${_esc(o)}</button>`).join('')}
             </div>
-            <button class="btn-next" id="mixBtnNext" onclick="advanceMixed()" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
+            ${nextBtn}
+          </div>`;
+    } else if (type === 'cloze') {
+        const c = _clozeFor(currentWord);
+        wrap.innerHTML = `
+          <div class="question-card">
+            ${head('fa-pen', 'Điền từ', 'Gõ từ còn thiếu trong câu')}
+            <div class="cloze-sentence" id="mixClozeSentence">${_clozeSentenceHtml(c)}</div>
+            <div class="cloze-meta">${_posChip(currentWord)}
+              <button type="button" class="btn-reveal-meaning" onclick="revealClozeMeaning(this)" data-meaning="${_esc(currentWord.meaning || '')}"><i class="fas fa-eye"></i> Xem nghĩa</button>
+            </div>
+            <div id="mixClozeWbwHost"></div>
+            <div class="fb-input-row" id="mixClozeInputRow">
+              <input class="trans-input" id="mixClozeInput" placeholder="Gõ từ còn thiếu..." onkeypress="if(event.key==='Enter')checkMixedCloze()"/>
+              <button class="btn-check" onclick="checkMixedCloze()">Kiểm tra</button>
+            </div>
+            <div id="mixClozeFeedback" style="margin-top:10px"></div>
+            ${nextBtn}
           </div>`;
     } else if (type === 'listening') {
         wrap.innerHTML = `
           <div class="question-card">
-            ${repeatBadge}
-            <div class="question-number" style="font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:700;letter-spacing:.6px;margin-bottom:12px">
-              <i class="fas fa-headphones"></i> Listening
-            </div>
+            ${head('fa-headphones', 'Listen', 'Bấm nghe rồi gõ lại từ bạn nghe được')}
             <button class="btn-play-audio" onclick="speakWord('${escH(currentWord.word)}')"><i class="fas fa-volume-up" style="font-size:24px"></i> Play Audio</button>
             <div style="text-align:center"><button class="btn-slow-audio js-slow-speech-btn" onclick="slowAudio()" aria-pressed="false" title="Đọc chậm lại để nghe rõ hơn">🐢 Đọc chậm</button></div>
             <div class="listen-hint" style="font-size:13px;color:var(--text2);margin:10px 0">💡 ${_letterHintMeta(currentWord.word, 'en')}</div>
             <div id="mixListenWbwHost"></div>
             <div class="fb-input-row" id="mixListenInputRow">
               <input class="listen-input" id="mixListenInput" placeholder="Gõ từ bạn nghe được..." onkeypress="if(event.key==='Enter')checkMixedListen()"/>
-              <button class="btn-check" onclick="checkMixedListen()">Check</button>
+              <button class="btn-check" onclick="checkMixedListen()">Kiểm tra</button>
             </div>
             <div id="mixListenFeedback" style="margin-top:10px"></div>
-            <button class="btn-next" id="mixBtnNext" onclick="advanceMixed()" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
+            ${nextBtn}
           </div>`;
     } else {
-        const wordEsc = _esc(currentWord.word);
-        const ex = currentWord.example || '';
-        const exEsc = _esc(ex);
-        // Mask the target word instead of revealing it — see
-        // showTranslationQuestion()'s comment (same direction swap applies
-        // to this Mixed-mode sub-type).
-        const exHtml = ex
-            ? exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'), '<strong class="highlight-word">_____</strong>')
-            : '';
-        const meaningEsc = _esc(String(currentWord.meaning || '').split(/[\/,]/)[0].trim());
         wrap.innerHTML = `
           <div class="question-card">
-            ${repeatBadge}
-            <div class="question-number" style="font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:700;letter-spacing:.6px;margin-bottom:12px">
-              <i class="fas fa-language"></i> Translation
-            </div>
-            ${exHtml ? `<div class="trans-example" style="font-size:15px;color:var(--text2);background:var(--surface2);border-radius:var(--radius-sm);padding:14px 18px;margin-bottom:14px;line-height:1.6">${exHtml}</div>` : ''}
-            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px">Nghĩa: <strong>${meaningEsc}</strong></div>
+            ${head('fa-language', 'Translate', 'Gõ từ tiếng Anh có nghĩa này')}
+            <div class="trans-meaning">${_esc(currentWord.meaning || '')}</div>
+            <div class="cloze-meta">${_posChip(currentWord)}</div>
             <div id="mixTransWbwHost"></div>
             <div class="fb-input-row" id="mixTransInputRow">
               <input class="trans-input" id="mixTransInput" placeholder="Nhập từ tiếng Anh..." onkeypress="if(event.key==='Enter')checkMixedTrans()"/>
-              <button class="btn-check" onclick="checkMixedTrans()">Check</button>
+              <button class="btn-check" onclick="checkMixedTrans()">Kiểm tra</button>
             </div>
             <div id="mixTransFeedback" style="margin-top:10px"></div>
-            <button class="btn-next" id="mixBtnNext" onclick="advanceMixed()" style="display:none">Next <i class="fas fa-arrow-right"></i></button>
+            ${nextBtn}
           </div>`;
-        setTimeout(() => document.getElementById('mixTransInput')?.focus(), 50);
     }
-    // Word-by-word "gõ từng chữ" drill for the Listening / Translation
-    // sub-types (same widget as the standalone Notebook modes above) — both
-    // now target the English word/phrase, graded by _checkExactWordMatch.
+    // Word-by-word "gõ từng chữ" drill for the typed sub-types (same widget
+    // as the standalone modes); Điền từ drills the form used in the sentence.
     if (type === 'listening') {
         _mountVocabDrill('mixListenWbwHost', 'mixListenInputRow', currentWord.word, checkMixedListen);
-    } else if (type !== 'multipleChoice') {
+    } else if (type === 'cloze') {
+        _mountVocabDrill('mixClozeWbwHost', 'mixClozeInputRow', _clozeFor(currentWord).answer, checkMixedCloze);
+    } else if (type === 'translation') {
         _mountVocabDrill('mixTransWbwHost', 'mixTransInputRow', currentWord.word, checkMixedTrans);
     }
     if (typeof syncSlowSpeechBtns === 'function') syncSlowSpeechBtns();
@@ -2931,8 +3095,10 @@ function _checkMCAnswer(btn, selected, correct, optionsSelector, nextBtnId) {
         btn.classList.add('wrong'); wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
         requeueWrongWord(currentWord);
+        // data-opt, not textContent: the button also holds its "1–4" key badge,
+        // and the EN translator may rewrite a meaning's visible text.
         document.querySelectorAll(`${optionsSelector} .answer-option`)
-            .forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
+            .forEach(b => { if (b.dataset.opt === correct) b.classList.add('correct'); });
     }
     // Called after correctAnswers/wrongAnswers are tallied for THIS answer —
     // _reportSessionStreak() (triggered once sessionAnsweredCount hits 5)
@@ -2946,20 +3112,29 @@ function _checkMCAnswer(btn, selected, correct, optionsSelector, nextBtnId) {
 // unconditionally instead of comparing `ua` (which, coming from the drill's
 // bridge input, only ever holds correctly-typed letters and would otherwise
 // read as correct no matter how many wrong letters preceded the give-up).
-function _checkExactWordMatch(inputId, feedbackId, nextBtnId, forceWrong) {
+// expected: the form to accept (Điền từ passes the form used in the sentence,
+// e.g. "analysed" for "analyse"); defaults to the headword. Returns true/false.
+function _normAnswer(s) {
+    return String(s || '').trim().toLowerCase().replace(/[’‘`]/g, "'").replace(/\s+/g, ' ');
+}
+function _checkExactWordMatch(inputId, feedbackId, nextBtnId, forceWrong, expected) {
     if (answered) return; answered = true;
     const inputEl = document.getElementById(inputId);
-    const ua = inputEl?.value.trim().toLowerCase() || '';
-    inputEl.disabled = true;
-    const ok = !forceWrong && ua === currentWord.word.toLowerCase();
+    const ua = _normAnswer(inputEl?.value);
+    if (inputEl) inputEl.disabled = true;
+    const target = expected || currentWord.word;
+    const ok = !forceWrong && ua === _normAnswer(target);
+    const shown = target === currentWord.word || _normAnswer(target) === _normAnswer(currentWord.word)
+        ? `<strong>${_esc(target)}</strong>`
+        : `<strong>${_esc(target)}</strong> <span class="fb-base-form">(từ gốc: ${_esc(currentWord.word)})</span>`;
     const feedbackEl = document.getElementById(feedbackId);
     if (ok) {
         feedbackEl.innerHTML =
-            `<div class="feedback-correct">✅ Đúng! <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}</div>`;
+            `<div class="feedback-correct">✅ Đúng! ${shown} – ${_esc(currentWord.meaning)}</div>`;
         correctAnswers++; playCorrectSound();
     } else {
         feedbackEl.innerHTML =
-            `<div class="feedback-wrong">❌ Đáp án: <strong>${_esc(currentWord.word)}</strong> – ${_esc(currentWord.meaning)}
+            `<div class="feedback-wrong">❌ Đáp án: ${shown} – ${_esc(currentWord.meaning)}
              <button class="btn-check" style="margin-top:8px" onclick="speakWord('${escH(currentWord.word)}')">🔊 Nghe lại</button></div>`;
         wrongAnswers++; playWrongSound();
         wrongWordSet.add(currentWord.word);
@@ -2967,6 +3142,7 @@ function _checkExactWordMatch(inputId, feedbackId, nextBtnId, forceWrong) {
     }
     _countAnswer();
     document.getElementById(nextBtnId).style.display = 'flex';
+    return ok;
 }
 
 function checkMixedMC(btn, selected, correct) {
@@ -2981,6 +3157,61 @@ function checkMixedTrans(forceWrong) {
     _checkExactWordMatch('mixTransInput', 'mixTransFeedback', 'mixBtnNext', forceWrong);
 }
 
+function checkMixedCloze(forceWrong) {
+    _gradeCloze('mixCloze', 'mixBtnNext', forceWrong);
+}
+
+// Shared by the Điền từ tab and its Mixed sub-type (`prefix` = 'cloze' |
+// 'mixCloze'): grade against the sentence's form, then fill the blank in
+// place so the student re-reads the whole sentence with the right word.
+function _gradeCloze(prefix, nextBtnId, forceWrong) {
+    if (answered) return;
+    const c = _clozeFor(currentWord);
+    if (!c) return;
+    const ok = _checkExactWordMatch(`${prefix}Input`, `${prefix}Feedback`, nextBtnId, forceWrong, c.answer);
+    const sentEl = document.getElementById(`${prefix}Sentence`);
+    if (sentEl) sentEl.innerHTML = _clozeSentenceHtml(c, ok ? 'ok' : 'wrong');
+}
+
+// "Xem nghĩa" on a Điền từ question — an optional nudge when several words
+// could fit the sentence; doesn't affect the score.
+function revealClozeMeaning(btn) {
+    if (!btn) return;
+    const m = btn.getAttribute('data-meaning') || '';
+    const span = document.createElement('span');
+    span.className = 'cloze-meaning';
+    span.textContent = m || '(chưa có nghĩa)';
+    btn.replaceWith(span);
+}
+
+/* ── Điền từ (cloze) — standalone tab ── */
+function showClozeQuestion() {
+    answered = false;
+    const card = document.getElementById('clozeCard');
+    const empty = document.getElementById('clozeEmpty');
+    const prog = document.getElementById('clozeProgress');
+    if (card) card.style.display = '';
+    if (empty) empty.style.display = 'none';
+    if (prog) prog.style.display = '';
+    updateProgress('cloze');
+    document.getElementById('clozeQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
+    const c = _clozeFor(currentWord);
+    document.getElementById('clozeSentence').innerHTML = _clozeSentenceHtml(c);
+    document.getElementById('clozeMeta').innerHTML = `${_posChip(currentWord)}
+        <button type="button" class="btn-reveal-meaning" onclick="revealClozeMeaning(this)" data-meaning="${_esc(currentWord.meaning || '')}"><i class="fas fa-eye"></i> Xem nghĩa</button>`;
+    document.getElementById('clozeInput').value = '';
+    document.getElementById('clozeInput').disabled = false;
+    document.getElementById('clozeFeedback').innerHTML = '';
+    document.getElementById('clozeBtnNext').style.display = 'none';
+    _mountVocabDrill('clozeWbwHost', 'clozeInputRow', c.answer, checkCloze);
+    if (!window.WbwDrill || !window.WbwDrill.isMounted?.(document.getElementById('clozeWbwHost'))) {
+        document.getElementById('clozeInput').focus();
+    }
+}
+function checkCloze(forceWrong) {
+    _gradeCloze('cloze', 'clozeBtnNext', forceWrong);
+}
+
 /* ── Multiple Choice ── */
 function showMultipleChoiceQuestion() {
     answered = false;
@@ -2991,15 +3222,16 @@ function showMultipleChoiceQuestion() {
         <button class="btn-audio" onclick="speakWord('${escH(currentWord.word)}')" title="Phát âm" style="font-size:17px;vertical-align:middle;margin-left:6px;opacity:.75">🔊</button>`;
     const opts      = generateOptions(currentWord);
     const container = document.getElementById('mcAnswerOptions');
-    container.innerHTML = opts.map(o =>
-        `<button class="answer-option" onclick="checkMultipleChoice(this,'${escH(o)}','${escH(currentWord.meaning)}')">${_esc(o)}</button>`
+    container.innerHTML = opts.map((o, i) =>
+        `<button class="answer-option" data-opt="${_esc(o)}" onclick="checkMultipleChoice(this,'${escH(o)}','${escH(currentWord.meaning)}')"><span class="opt-key">${i + 1}</span>${_esc(o)}</button>`
     ).join('');
     document.getElementById('mcBtnNext').style.display = 'none';
     setupDictionaryDouble('multipleChoiceMode', 'vocab-quiz', () => !_vocabQuizActive);
 }
 function generateOptions(cw) {
     const opts  = [cw.meaning];
-    const other = currentUnit.words.filter(w => w.word !== cw.word);
+    // Skip entries with no meaning — they used to land as blank options.
+    const other = currentUnit.words.filter(w => w.word !== cw.word && w.meaning);
     while (opts.length < 4 && other.length) {
         const i = Math.floor(Math.random() * other.length);
         if (!opts.includes(other[i].meaning)) opts.push(other[i].meaning);
@@ -3226,7 +3458,7 @@ function _mountVocabDrill(hostId, rowId, answer, onDone) {
 
 function _unmountVocabDrills() {
     if (!window.WbwDrill) return;
-    ['listenWbwHost', 'transWbwHost', 'mixListenWbwHost', 'mixTransWbwHost']
+    ['listenWbwHost', 'transWbwHost', 'clozeWbwHost', 'mixListenWbwHost', 'mixTransWbwHost', 'mixClozeWbwHost']
         .forEach(id => window.WbwDrill.unmount(document.getElementById(id)));
 }
 function playAudio() { speakWord(currentWord?.word); }
@@ -3260,19 +3492,12 @@ function showTranslationQuestion() {
     answered = false;
     updateProgress('trans');
     document.getElementById('transQuestionNumber').textContent = `Câu ${currentQuestionIndex + 1}/${practiceWords.length}`;
-    const wordEsc = _esc(currentWord.word);
-    const ex = currentWord.example || '';
-    const exEsc = _esc(ex);
-    // Mask the target word in the example sentence instead of revealing it —
-    // the student now has to PRODUCE the English word from its Vietnamese
-    // meaning, so showing its exact spelling here would give the answer away.
-    document.getElementById('transExample').innerHTML = ex
-        ? exEsc.replace(new RegExp(`\\b${escR(wordEsc)}\\b`, 'gi'),
-            '<strong class="highlight-word">_____</strong>')
-        : '';
-    setupDictionaryDouble('transExample', 'vocab-quiz', () => !_vocabQuizActive);
-    const meaningEsc = _esc(String(currentWord.meaning || '').split(/[\/,]/)[0].trim());
-    document.getElementById('transWordHighlight').innerHTML = `Nghĩa: <strong>${meaningEsc}</strong>`;
+    // Dịch = meaning only. The example sentence with the word blanked out is
+    // its own tab now (Điền từ); showing it here too made the two modes the
+    // same, and an inflected form in the sentence ("analysed") wasn't masked
+    // at all, giving the answer away.
+    document.getElementById('transWordHighlight').innerHTML =
+        `<div class="trans-meaning">${_esc(currentWord.meaning || '')}</div><div class="cloze-meta">${_posChip(currentWord)}</div>`;
     document.getElementById('transInput').value   = '';
     document.getElementById('transInput').disabled = false;
     document.getElementById('transFeedback').innerHTML = '';
@@ -3294,8 +3519,7 @@ function showResults(mode) {
     _vocabQuizActive = false;
     _clearAutoNext();
     _unmountVocabDrills();
-    ['studyMode','multipleChoiceMode','fillBlankMode','listeningMode','translationMode','mixedMode']
-        .forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
+    VOCAB_MODE_PANELS.forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
     document.getElementById('resultsMode').style.display = 'block';
 
     // Reset any hammer banner left over from a previous "Restart" run in the
@@ -3315,7 +3539,7 @@ function showResults(mode) {
     const total     = mode === 'mixed' ? mixedQueue.length : practiceWords.length;
     const answered_ = correctAnswers + wrongAnswers;
     const pct       = answered_ ? Math.round((correctAnswers / answered_) * 100) : 0;
-    const modeNames = { multipleChoice: 'Quiz', fillBlank: 'Flashcard', listening: 'Listen', translation: 'Translate', mixed: 'Mixed' };
+    const modeNames = { multipleChoice: 'Quiz', fillBlank: 'Flashcard', cloze: 'Điền từ', listening: 'Listen', translation: 'Translate', mixed: 'Mixed' };
     document.getElementById('resultModeTitle').textContent = `Mode: ${modeNames[mode] || mode}`;
     document.getElementById('scorePercent').textContent    = pct + '%';
     document.getElementById('correctCount').textContent    = correctAnswers;
@@ -3414,7 +3638,7 @@ function updateKbdHint() {
         hints.push(['Space', 'Lật thẻ']);
         hints.push(['Enter', 'Câu tiếp']);
     } else if (currentMode === 'multipleChoice' || currentMode === 'mixed') {
-        hints.push(['1 – 4', 'Chọn đáp án']);
+        hints.push(['1 – 4', currentMode === 'mixed' ? 'Chọn đáp án (câu Quiz)' : 'Chọn đáp án']);
         hints.push(['Enter / →', 'Câu tiếp']);
     } else {
         hints.push(['Enter / →', 'Câu tiếp']);
@@ -3448,7 +3672,7 @@ document.addEventListener('keydown', e => {
     if (document.querySelector('.modal-overlay:not(.hidden)')) return;
 
     const _nextBtn = () => {
-        const nextIds = ['mcBtnNext','fbBtnNext','listenBtnNext','transBtnNext','mixBtnNext'];
+        const nextIds = ['mcBtnNext','fbBtnNext','clozeBtnNext','listenBtnNext','transBtnNext','mixBtnNext'];
         for (const id of nextIds) {
             const btn = document.getElementById(id);
             if (btn && btn.style.display !== 'none') { btn.click(); return true; }
@@ -3763,7 +3987,8 @@ window.openAddBookModal   = openAddBookModal;
 window.createBook         = createBook;
 window.openBook           = openBook;
 window.dismissBookAddTip  = dismissBookAddTip;
-window.dismissBookClassifyTip = dismissBookClassifyTip;
+window.closeClassifyFloat = closeClassifyFloat;
+window.classifyNow = classifyNow;
 window.openBookMenu          = openBookMenu;
 window.startRenameFromMenu   = startRenameFromMenu;
 window.deleteBookFromMenu    = deleteBookFromMenu;

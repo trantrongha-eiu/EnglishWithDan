@@ -85,7 +85,8 @@
           'Đánh dấu mức nhớ từng từ: <b>Not yet</b> → <b>So-so</b> → <b>Mastered</b>.',
         ] },
         { icon: '🧠', title: 'Các chế độ học', items: [
-          '<b>Flashcard</b> (lật thẻ, tự đánh giá), <b>Quiz</b> (4 lựa chọn), <b>Listen</b> (nghe rồi gõ từ), <b>Translate</b> (nhìn nghĩa, gõ từ tiếng Anh), <b>Mixed</b> (trộn ngẫu nhiên).',
+          '<b>Flashcard</b> (lật thẻ, tự đánh giá), <b>Quiz</b> (4 lựa chọn), <b>Điền từ</b> (gõ từ còn thiếu trong câu ví dụ), <b>Listen</b> (nghe rồi gõ từ), <b>Translate</b> (nhìn nghĩa, gõ từ tiếng Anh).',
+          '<b>Mixed</b> trộn ngẫu nhiên 4 dạng Quiz · Điền từ · Listen · Translate — từ trả lời sai sẽ quay lại sau vài câu ở dạng khác.',
           '<b>Ôn lại từ hay sai</b> hiện ra khi sổ có từ bạn sai nhiều lần — luyện riêng những từ đó.',
         ] },
         { icon: '📚', title: 'Paraphrase & Vocab Topics', items: [

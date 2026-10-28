@@ -20,12 +20,12 @@
   <script src="/js/shared/scroll-reveal.js?v=7010de29cd"></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <script src="/js/shared/pwa-register.js?v=713d4c39e1" defer></script>
-  <link rel="stylesheet" href="/css/dashboard.css?v=7a9e4bc289">
+  <link rel="stylesheet" href="/css/dashboard.css?v=28c673f737">
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3">
   <link rel="stylesheet" href="/css/playful.css?v=ffb392e664"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=cb09d431e1"></script>
+<script src="/js/bundles/app-shell.js?v=829e5d2c02"></script>
 <script src="/js/shared/onboarding-tour.js?v=bba31307cf"></script>
 <script src="/js/learning-popups.js?v=d05aa08d9c"></script>
 <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
@@ -268,19 +268,25 @@
           <button type="button" class="book-add-tip-close" aria-label="Đóng mách nhỏ" onclick="dismissBookAddTip()">×</button>
         </div>
 
-        <!-- "Mách nhỏ" — remember to classify each word's mức độ nhớ. Shown
-             on book open until dismissed (own localStorage key, independent
-             of book-add-tip above). -->
-        <div id="book-classify-tip" class="book-add-tip hidden">
-          <span class="book-add-tip-emoji">🏷️</span>
-          <div class="book-add-tip-body">
-            <strong>Mách nhỏ:</strong> Đừng quên xếp loại mức độ nhớ cho từng từ! Bấm vào ô trạng thái (<span class="status-select-hint chua-thuoc">Not yet</span> / <span class="status-select-hint nho-so-so">So-so</span> / <span class="status-select-hint da-thuoc">Mastered</span>) ở mỗi từ trong bảng bên dưới — càng cập nhật đúng, hệ thống càng nhắc ôn tập chính xác hơn. Muốn đổi nhiều từ cùng lúc: tick ô vuông đầu mỗi dòng (hoặc ô trên cùng để chọn tất cả) rồi bấm trạng thái mới.
+        <!-- Floating reminder to rate each word's mức độ nhớ (Not yet / So-so /
+             Mastered). Pops up when a book is opened, at most once a day per
+             book (dashboard.js _maybeShowClassifyFloat). Lives inside
+             #book-content, so it disappears with the book view. -->
+        <div id="classify-float" class="classify-float" role="dialog" aria-live="polite" aria-labelledby="classify-float-title" hidden>
+          <button type="button" class="classify-float-close" aria-label="Đóng" onclick="closeClassifyFloat()">×</button>
+          <div class="classify-float-title" id="classify-float-title"><span class="classify-float-emoji">🏷️</span> Bạn đã thuộc kĩ chưa?</div>
+          <p class="classify-float-text">Xem lại mức độ nhớ của từng từ — bấm ô trạng thái ở mỗi dòng để cập nhật.</p>
+          <div class="classify-float-counts" id="classify-float-counts"></div>
+          <p class="classify-float-note" id="classify-float-note"></p>
+          <p class="classify-float-hint">Đổi nhiều từ cùng lúc: tick ô vuông đầu dòng rồi chọn trạng thái mới. Phân loại càng đúng, hệ thống nhắc ôn càng chính xác.</p>
+          <div class="classify-float-btns">
+            <button type="button" class="btn btn-primary btn-sm" onclick="classifyNow()"><i class="fas fa-tags"></i> Phân loại ngay</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="closeClassifyFloat()">Để sau</button>
           </div>
-          <button type="button" class="book-add-tip-close" aria-label="Đóng mách nhỏ" onclick="dismissBookClassifyTip()">×</button>
         </div>
 
         <div class="book-action-bar">
-          <button class="btn btn-primary btn-sm" onclick="openFlashcardMode()" title="Kết hợp ngẫu nhiên Quiz / Flashcard / Nghe / Dịch — có thể đổi chế độ ở thanh tab">
+          <button class="btn btn-primary btn-sm" onclick="openFlashcardMode()" title="Trộn ngẫu nhiên 4 dạng Quiz / Điền từ / Nghe / Dịch — có thể đổi sang từng dạng riêng ở thanh tab">
             <i class="fas fa-random"></i> Luyện tập (Mixed)
           </button>
           <button class="btn btn-ghost btn-sm" onclick="openPreviewMode()">
@@ -381,12 +387,14 @@
       </div>
       <div class="mode-tabs-wrap">
         <div class="mode-tabs" id="mode-tabs">
-          <button class="tab-btn active" onclick="showMode('study')"><i class="fas fa-book-open"></i> Study</button>
-          <button class="tab-btn" onclick="showMode('multipleChoice')"><i class="fas fa-check-circle"></i> Quiz</button>
-          <button class="tab-btn" onclick="showMode('fillBlank')"><i class="fas fa-sync-alt"></i> Flashcard</button>
-          <button class="tab-btn" onclick="showMode('listening')"><i class="fas fa-headphones"></i> Listen</button>
-          <button class="tab-btn" onclick="showMode('translation')"><i class="fas fa-language"></i> Translate</button>
-          <button class="tab-btn" onclick="showMode('mixed')"><i class="fas fa-random"></i> Mixed</button>
+          <!-- data-mode = internal id. 'fillBlank' is the Flashcard tab (legacy id); Điền từ is 'cloze'. -->
+          <button class="tab-btn active" data-mode="study" onclick="showMode('study')" title="Xem lại danh sách từ"><i class="fas fa-book-open"></i> Study</button>
+          <button class="tab-btn" data-mode="multipleChoice" onclick="showMode('multipleChoice')" title="Chọn nghĩa đúng trong 4 lựa chọn"><i class="fas fa-check-circle"></i> Quiz</button>
+          <button class="tab-btn" data-mode="fillBlank" onclick="showMode('fillBlank')" title="Lật thẻ, tự đánh giá đã nhớ hay chưa"><i class="fas fa-sync-alt"></i> Flashcard</button>
+          <button class="tab-btn" data-mode="cloze" onclick="showMode('cloze')" title="Gõ từ còn thiếu trong câu ví dụ"><i class="fas fa-pen"></i> Điền từ</button>
+          <button class="tab-btn" data-mode="listening" onclick="showMode('listening')" title="Nghe phát âm, gõ lại từ"><i class="fas fa-headphones"></i> Listen</button>
+          <button class="tab-btn" data-mode="translation" onclick="showMode('translation')" title="Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh"><i class="fas fa-language"></i> Translate</button>
+          <button class="tab-btn" data-mode="mixed" onclick="showMode('mixed')" title="Trộn ngẫu nhiên Quiz · Điền từ · Nghe · Dịch"><i class="fas fa-random"></i> Mixed</button>
         </div>
       </div>
       <div class="mode-body" id="mode-body">
@@ -447,6 +455,36 @@
           </div>
         </div>
 
+        <div id="clozeMode" style="display:none">
+          <div class="practice-container">
+            <div class="practice-header"><h3><i class="fas fa-pen"></i> Điền từ</h3><p>Đọc câu ví dụ, gõ từ còn thiếu vào chỗ trống</p></div>
+            <div class="practice-progress" id="clozeProgress"><div class="progress-bar"><div class="progress-fill" id="clozeProgressFill"></div></div><div class="progress-text" id="clozeProgressText">0/0</div></div>
+            <div class="question-card" id="clozeCard">
+              <div class="question-number" id="clozeQuestionNumber"></div>
+              <div class="cloze-sentence" id="clozeSentence"></div>
+              <div class="cloze-meta" id="clozeMeta"></div>
+              <!-- Word-by-word drill mounts here (WbwDrill); the input row below
+                   is its value bridge and the fallback when it can't mount. -->
+              <div id="clozeWbwHost"></div>
+              <div class="fb-input-row" id="clozeInputRow">
+                <input class="trans-input" id="clozeInput" placeholder="Gõ từ còn thiếu..." onkeypress="if(event.key==='Enter')checkCloze()"/>
+                <button class="btn-check" onclick="checkCloze()">Kiểm tra</button>
+              </div>
+              <div id="clozeFeedback" style="margin-top:10px"></div>
+              <button class="btn-next" id="clozeBtnNext" onclick="nextQuestion('cloze')" style="display:none">Tiếp <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="cloze-empty" id="clozeEmpty" style="display:none">
+              <div class="cloze-empty-emoji">📝</div>
+              <p><b>Chưa có từ nào luyện Điền từ được.</b></p>
+              <p>Dạng này cần câu ví dụ có chứa từ đó. Thêm câu ví dụ trong sổ, hoặc luyện dạng khác:</p>
+              <div class="cloze-empty-btns">
+                <button class="btn btn-primary btn-sm" onclick="_activateModeNow('translation')"><i class="fas fa-language"></i> Luyện Dịch</button>
+                <button class="btn btn-ghost btn-sm" onclick="_activateModeNow('mixed')"><i class="fas fa-random"></i> Luyện Mixed</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="listeningMode" style="display:none">
           <div class="practice-container">
             <div class="practice-header"><h3><i class="fas fa-headphones"></i> Luyện Nghe</h3><p>Nghe và viết lại từ</p></div>
@@ -475,11 +513,10 @@
 
         <div id="translationMode" style="display:none">
           <div class="practice-container">
-            <div class="practice-header"><h3><i class="fas fa-language"></i> Dịch</h3><p>Xem nghĩa tiếng Việt và câu ví dụ, gõ từ tiếng Anh còn thiếu</p></div>
+            <div class="practice-header"><h3><i class="fas fa-language"></i> Dịch</h3><p>Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh</p></div>
             <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="transProgressFill"></div></div><div class="progress-text" id="transProgressText">0/0</div></div>
             <div class="question-card">
               <div class="question-number" id="transQuestionNumber"></div>
-              <div class="trans-example" id="transExample"></div>
               <div class="trans-word-highlight" id="transWordHighlight"></div>
               <!-- Word-by-word "gõ từng chữ" drill mounts here (WbwDrill); the
                    plain input row below is hidden while it is active and used
@@ -499,7 +536,7 @@
           <div class="practice-container">
             <div class="practice-header">
               <h3><i class="fas fa-random"></i> Mixed</h3>
-              <p>Kết hợp Quiz · Nghe · Dịch – ngẫu nhiên!</p>
+              <p>Trộn ngẫu nhiên 4 dạng: Quiz · Điền từ · Nghe · Dịch</p>
             </div>
             <div class="practice-progress">
               <div class="progress-bar"><div class="progress-fill" id="mixProgressFill"></div></div>
@@ -968,14 +1005,14 @@
           <span class="guide-status-badge" style="background:var(--surface2);color:var(--text2);border-color:var(--border2)">Not yet</span>
           <span>Chưa thuộc, ưu tiên ôn trước.</span>
         </div>
-        <p style="font-size:12px;color:var(--text3);margin-top:8px">Khi học Flashcard, bạn tự đánh giá và cập nhật trạng thái. Các chế độ Quiz/Điền từ sẽ tự tăng điểm sai nếu trả lời sai.</p>
+        <p style="font-size:12px;color:var(--text3);margin-top:8px">Khi học Flashcard, bạn tự đánh giá và cập nhật trạng thái. Các chế độ có chấm điểm (Quiz, Điền từ, Nghe, Dịch, Mixed) tự ghi nhận đúng/sai và tự nâng hoặc hạ mức nhớ của từ.</p>
       </div>
 
       <div class="guide-section">
         <div class="guide-section-title"><span class="guide-num">4</span> Các chế độ học</div>
         <div class="guide-modes-grid">
           <div class="guide-mode-item">
-            <span class="guide-mode-icon" style="background:#eff6ff;color:var(--blue)"><i class="fas fa-layer-group"></i></span>
+            <span class="guide-mode-icon" style="background:#eff6ff;color:var(--blue)"><i class="fas fa-sync-alt"></i></span>
             <div><strong>Flashcard</strong><br>Lật thẻ, đánh giá mức độ nhớ. Bấm xem trước với Preview.</div>
           </div>
           <div class="guide-mode-item">
@@ -983,20 +1020,20 @@
             <div><strong>Quiz</strong><br>Chọn đáp án đúng trong 4 lựa chọn ngẫu nhiên.</div>
           </div>
           <div class="guide-mode-item">
-            <span class="guide-mode-icon" style="background:#fef3c7;color:#d97706"><i class="fas fa-sync-alt"></i></span>
-            <div><strong>Điền từ</strong><br>Đọc ví dụ, gõ từ tiếng Anh còn thiếu.</div>
+            <span class="guide-mode-icon" style="background:#fef3c7;color:#d97706"><i class="fas fa-pen"></i></span>
+            <div><strong>Điền từ</strong><br>Đọc câu ví dụ, gõ từ còn thiếu vào chỗ trống (chỉ dùng từ có câu ví dụ).</div>
           </div>
           <div class="guide-mode-item">
             <span class="guide-mode-icon" style="background:#f5f3ff;color:#7c3aed"><i class="fas fa-headphones"></i></span>
-            <div><strong>Nghe</strong><br>Nghe phát âm, gõ từ bạn nghe thấy.</div>
+            <div><strong>Listen (Nghe)</strong><br>Nghe phát âm, gõ từ bạn nghe thấy.</div>
           </div>
           <div class="guide-mode-item">
             <span class="guide-mode-icon" style="background:#fce7f3;color:#db2777"><i class="fas fa-language"></i></span>
-            <div><strong>Dịch</strong><br>Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh.</div>
+            <div><strong>Translate (Dịch)</strong><br>Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh.</div>
           </div>
           <div class="guide-mode-item">
             <span class="guide-mode-icon" style="background:#fff7ed;color:#ea580c"><i class="fas fa-random"></i></span>
-            <div><strong>Mixed</strong><br>Kết hợp ngẫu nhiên cả 4 chế độ Quiz/Điền/Nghe/Dịch.</div>
+            <div><strong>Mixed</strong><br>Trộn ngẫu nhiên 4 dạng Quiz · Điền từ · Nghe · Dịch. Từ chưa có câu ví dụ sẽ không ra dạng Điền từ. Từ trả lời sai quay lại sau vài câu ở dạng khác.</div>
           </div>
         </div>
         <p style="font-size:12px;color:var(--text3);margin-top:10px"><i class="fas fa-lightbulb"></i> Chế độ học được áp dụng cho cả Học Paraphrase (chọn unit từ sidebar) và sổ từ vựng của bạn.</p>
@@ -1170,7 +1207,7 @@
 <script src="/js/dashboard-review.js?v=4dba13dc0a"></script>
 <script src="/js/dashboard-paraphrase.js?v=f6c0320973"></script>
 <script src="/js/shared/fire-tier.js?v=9d6b07142e"></script>
-<script src="/js/dashboard.js?v=7b95f9cd08"></script>
+<script src="/js/dashboard.js?v=0f7e1fbd7d"></script>
 <script src="/js/dashboard-browse.js?v=5692652b85"></script>
 </body>
 </html>

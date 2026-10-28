@@ -3174,6 +3174,40 @@
     'Ý tưởng, dàn ý, từ vựng... — không được chấm điểm': 'Ideas, outline, vocabulary... — not scored',
     'Yêu cầu (rubric)': 'Requirements (rubric)',
     'Yêu cầu nâng cấp của bạn đã được ghi nhận. Admin sẽ kiểm tra và kích hoạt Premium cho tài khoản của bạn trong vòng 24 giờ.': 'Your upgrade request has been received. An Admin will check it and activate Premium on your account within 24 hours.',
+
+    // Vocab notebook — floating "rate your words" reminder (2026-10-28)
+    'Bạn đã thuộc kĩ chưa?': 'Do you really know these words?',
+    'Xem lại mức độ nhớ của từng từ — bấm ô trạng thái ở mỗi dòng để cập nhật.': 'Check how well you know each word — click the status box on each row to update it.',
+    'Đổi nhiều từ cùng lúc: tick ô vuông đầu dòng rồi chọn trạng thái mới. Phân loại càng đúng, hệ thống nhắc ôn càng chính xác.': 'To change many words at once: tick the box at the start of each row, then pick the new status. The more accurate your ratings, the better your review reminders.',
+    'Phân loại ngay': 'Rate now',
+
+    // Vocab notebook practice — Điền từ tab, 4-type Mixed (2026-10-28)
+    'Xem lại danh sách từ': 'Review the word list',
+    'Chọn nghĩa đúng trong 4 lựa chọn': 'Pick the right meaning out of 4',
+    'Lật thẻ, tự đánh giá đã nhớ hay chưa': 'Flip the card and rate whether you remembered it',
+    'Gõ từ còn thiếu trong câu ví dụ': 'Type the missing word in the example sentence',
+    'Nghe phát âm, gõ lại từ': 'Listen and type the word',
+    'Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh': 'Look at the Vietnamese meaning and type the English word',
+    'Trộn ngẫu nhiên Quiz · Điền từ · Nghe · Dịch': 'Random mix of Quiz · Fill in · Listen · Translate',
+    'Trộn ngẫu nhiên 4 dạng: Quiz · Điền từ · Nghe · Dịch': 'Random mix of 4 types: Quiz · Fill in · Listen · Translate',
+    'Trộn ngẫu nhiên 4 dạng Quiz / Điền từ / Nghe / Dịch — có thể đổi sang từng dạng riêng ở thanh tab': 'Random mix of Quiz / Fill in / Listen / Translate — switch to a single type in the tab bar',
+    'Đọc câu ví dụ, gõ từ còn thiếu vào chỗ trống': 'Read the example sentence and type the missing word',
+    'Đọc câu ví dụ, gõ từ còn thiếu vào chỗ trống (chỉ dùng từ có câu ví dụ).': 'Read the example sentence and type the missing word (only words that have an example).',
+    'Gõ từ còn thiếu...': 'Type the missing word...',
+    'Xem nghĩa': 'Show meaning',
+    'Chọn nghĩa đúng của từ': 'Pick the meaning of the word',
+    'Gõ từ còn thiếu trong câu': 'Type the missing word in the sentence',
+    'Bấm nghe rồi gõ lại từ bạn nghe được': 'Play the audio and type the word you hear',
+    'Gõ từ tiếng Anh có nghĩa này': 'Type the English word with this meaning',
+    'Chưa có từ nào luyện Điền từ được.': 'No words can be practised as Fill in yet.',
+    'Dạng này cần câu ví dụ có chứa từ đó. Thêm câu ví dụ trong sổ, hoặc luyện dạng khác': 'This type needs an example sentence containing the word. Add examples in your notebook, or practise another type',
+    'Luyện Dịch': 'Practise Translate',
+    'Luyện Mixed': 'Practise Mixed',
+    'Chọn đáp án (câu Quiz)': 'Pick an answer (Quiz questions)',
+    'Listen (Nghe)': 'Listen',
+    'Translate (Dịch)': 'Translate',
+    'Các chế độ có chấm điểm (Quiz, Điền từ, Nghe, Dịch, Mixed) tự ghi nhận đúng/sai và tự nâng hoặc hạ mức nhớ của từ.': 'Graded modes (Quiz, Fill in, Listen, Translate, Mixed) record right/wrong answers and move each word\'s memory level up or down.',
+    'Trộn ngẫu nhiên 4 dạng Quiz · Điền từ · Nghe · Dịch. Từ chưa có câu ví dụ sẽ không ra dạng Điền từ. Từ trả lời sai quay lại sau vài câu ở dạng khác.': 'Random mix of Quiz · Fill in · Listen · Translate. Words without an example sentence never come up as Fill in. A missed word comes back a few questions later as a different type.',
   };
   if (window.EWSI18n && window.EWSI18n.extend) window.EWSI18n.extend(DICT);
   else window.__ewsI18nExtra = DICT;

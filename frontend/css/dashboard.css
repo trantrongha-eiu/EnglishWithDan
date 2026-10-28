@@ -730,8 +730,37 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
 .book-add-tip-close:hover{background:rgba(0,0,0,.06);color:var(--text)}
 @media(max-width:768px){.book-add-tip{margin:10px 12px 0}}
 
-/* Small inline pills inside #book-classify-tip's text, mirroring the real
-   .status-select's colors so the tip visually matches what to look for. */
+/* Floating "Bạn đã thuộc kĩ chưa?" reminder (dashboard.js _maybeShowClassifyFloat).
+   Bottom-right, above where #toast appears, slides up on .show. */
+.classify-float{
+  position:fixed;right:24px;bottom:84px;z-index:998;width:340px;max-width:calc(100vw - 32px);
+  background:var(--surface);border:1px solid var(--border);border-left:4px solid #f59e0b;
+  border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:14px 16px 14px;
+  font-size:13px;line-height:1.5;color:var(--text2);
+  opacity:0;transform:translateY(16px);transition:opacity .22s ease,transform .22s ease;
+}
+.classify-float[hidden]{display:none}
+.classify-float.show{opacity:1;transform:translateY(0)}
+.classify-float-close{position:absolute;top:6px;right:8px;border:none;background:none;cursor:pointer;font-size:18px;line-height:1;color:var(--text3);padding:2px 6px;border-radius:6px}
+.classify-float-close:hover{background:rgba(0,0,0,.06);color:var(--text)}
+.classify-float-title{font-size:15px;font-weight:800;color:var(--text);margin:0 24px 4px 0;display:flex;align-items:center;gap:6px}
+.classify-float-emoji{font-size:18px}
+.classify-float-text{margin:0 0 8px}
+.classify-float-counts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.classify-float-counts .status-select-hint{border:1px solid var(--border);padding:2px 10px}
+.classify-float-note{margin:0 0 6px;color:var(--text)}
+.classify-float-hint{margin:0 0 10px;font-size:11.5px;color:var(--text3)}
+.classify-float-btns{display:flex;gap:8px;flex-wrap:wrap}
+[data-theme="dark"] .classify-float{box-shadow:0 12px 32px rgba(0,0,0,.5)}
+[data-theme="dark"] .classify-float-close:hover{background:rgba(255,255,255,.08)}
+@media(max-width:768px){.classify-float{right:16px;left:16px;width:auto;bottom:calc(76px + env(safe-area-inset-bottom,0px))}}
+@media(prefers-reduced-motion:reduce){.classify-float{transition:none}}
+/* "Phân loại ngay" → the status boxes pulse for a few seconds */
+.status-select.status-pulse{animation:statusPulse 1s ease-in-out 3}
+@keyframes statusPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}50%{box-shadow:0 0 0 4px rgba(245,158,11,.45)}}
+
+/* Small inline pills (status-select colors) — used in the classify reminder
+   so it visually matches the boxes students click in the table. */
 .status-select-hint{display:inline-block;padding:1px 8px;border-radius:20px;font-size:11.5px;font-weight:700}
 .status-select-hint.chua-thuoc{color:var(--text2);background:var(--surface2)}
 .status-select-hint.nho-so-so{color:var(--yellow);background:#fffbeb}
@@ -1141,6 +1170,50 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
 }
 .highlight-word{color:var(--blue);font-weight:800;font-style:normal}
 .trans-word-highlight{font-size:15px;font-weight:700;color:var(--text);margin-bottom:12px}
+/* Dịch: the Vietnamese meaning is the whole prompt, so it gets the stage */
+.trans-meaning{font-size:20px;font-weight:800;color:var(--text);line-height:1.4;text-align:center;padding:14px 16px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:10px}
+
+/* Điền từ (cloze) */
+.cloze-sentence{font-size:17px;line-height:1.7;color:var(--text);padding:16px 18px;background:var(--surface2);border-left:4px solid #d97706;border-radius:var(--radius-sm);margin-bottom:10px}
+.cloze-blank{display:inline-block;color:#d97706;font-weight:800;letter-spacing:1px;padding:0 2px}
+.cloze-filled{padding:1px 6px;border-radius:6px;font-weight:800}
+.cloze-filled.is-ok{background:#dcfce7;color:#15803d}
+.cloze-filled.is-wrong{background:#fee2e2;color:#b91c1c}
+.cloze-meta{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;min-height:4px}
+.pos-chip{font-size:11.5px;font-weight:700;font-style:italic;color:var(--text2);background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 10px}
+.btn-reveal-meaning{font:inherit;font-size:12px;font-weight:600;color:var(--blue);background:none;border:1px dashed var(--border2,var(--border));border-radius:20px;padding:3px 11px;cursor:pointer}
+.btn-reveal-meaning:hover{background:#eff6ff}
+.cloze-meaning{font-size:13px;font-weight:600;color:var(--text2)}
+.fb-base-form{font-weight:500;font-size:12.5px;opacity:.8}
+.cloze-empty{text-align:center;background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius);padding:28px 20px;color:var(--text2);font-size:14px;line-height:1.6}
+.cloze-empty-emoji{font-size:36px;margin-bottom:6px}
+.cloze-empty-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+
+/* Mixed: per-question type chip + instruction */
+.mix-q-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.mix-type-chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:3px 10px;border-radius:20px}
+.mix-type-multipleChoice{background:#f0fdf4;color:#15803d}
+.mix-type-cloze{background:#fef3c7;color:#b45309}
+.mix-type-listening{background:#f5f3ff;color:#7c3aed}
+.mix-type-translation{background:#fce7f3;color:#db2777}
+.mix-repeat-badge{background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:12px;padding:2px 10px;font-size:11px;font-weight:700}
+.mix-q-howto{font-size:13px;color:var(--text2);margin-bottom:14px}
+
+/* Quiz: numbered key badge — the 1–4 keyboard shortcut, made visible */
+.opt-key{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;margin-right:10px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);font-size:11.5px;font-weight:800;color:var(--text3);flex-shrink:0;vertical-align:middle}
+.answer-option.correct .opt-key{background:#22c55e;border-color:#22c55e;color:#fff}
+.answer-option.wrong .opt-key{background:#ef4444;border-color:#ef4444;color:#fff}
+
+[data-theme="dark"] .cloze-filled.is-ok{background:rgba(34,197,94,.18);color:#86efac}
+[data-theme="dark"] .cloze-filled.is-wrong{background:rgba(229,57,53,.18);color:#fca5a5}
+[data-theme="dark"] .cloze-blank{color:#fbbf24}
+[data-theme="dark"] .btn-reveal-meaning:hover{background:rgba(61,139,255,.15)}
+[data-theme="dark"] .mix-type-multipleChoice{background:rgba(34,197,94,.15);color:#86efac}
+[data-theme="dark"] .mix-type-cloze{background:rgba(217,119,6,.18);color:#fcd34d}
+[data-theme="dark"] .mix-type-listening{background:rgba(124,58,237,.2);color:#c4b5fd}
+[data-theme="dark"] .mix-type-translation{background:rgba(219,39,119,.18);color:#f9a8d4}
+[data-theme="dark"] .mix-repeat-badge{background:#422006;color:#fcd34d;border-color:#854d0e}
+@media (max-width:640px){.cloze-sentence{font-size:16px;padding:14px}.trans-meaning{font-size:18px}}
 
 /* Results */
 .results-wrap{max-width:480px;margin:40px auto;text-align:center;padding:20px}
