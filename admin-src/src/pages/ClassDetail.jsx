@@ -1307,6 +1307,8 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   const [speakPart, setSpeakPart] = useState('');
   const [speakTopic, setSpeakTopic] = useState('');
   const [speakTopics, setSpeakTopics] = useState([]);
+  // Task 2 Templates: Band 6+ and Band 7+ are separate items — filter to one.
+  const [tplLevel, setTplLevel] = useState('');
 
   useEffect(() => {
     // No synchronous setState here for the cat !== 'speaking' case — that's
@@ -1336,12 +1338,13 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
       if (speakPart) qs.set('part', speakPart);
       if (speakTopic) qs.set('topic', speakTopic);
     }
+    if (cat === 'task2_template' && tplLevel) qs.set('level', tplLevel);
     apiFetch(`/classes/resources/catalog?${qs}`)
       .then((d) => { if (alive) setCatalog(d.items || []); })
       .catch(() => { if (alive) setCatalog([]); })
       .finally(() => { if (alive) setLoadingCat(false); });
     return () => { alive = false; };
-  }, [cat, search, speakPart, speakTopic]);
+  }, [cat, search, speakPart, speakTopic, tplLevel]);
 
   // Adds every item currently listed (i.e. already filtered by search/part/
   // topic above) that isn't picked yet — the "assign this whole topic group"
@@ -1439,7 +1442,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                   // the list never shows the previous type's items (wrong
                   // labels/meta) until the new fetch resolves.
                   setCatalog([]); setLoadingCat(true);
-                  setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]);
+                  setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]); setTplLevel('');
                 }}>
                 {RESOURCE_CATS.map((r) => <option key={r.type} value={r.type}>{r.label}</option>)}
               </select>
@@ -1449,6 +1452,14 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                   <option value="">Tất cả bài</option>
                   <option value="new">Chưa giao</option>
                   <option value="done">Đã giao</option>
+                </select>
+              )}
+              {cat === 'task2_template' && (
+                <select className="form-input" style={{ width: 150 }} value={tplLevel} title="Band 6+ và Band 7+ là 2 bài riêng"
+                  onChange={(e) => { setCatalog([]); setLoadingCat(true); setTplLevel(e.target.value); }}>
+                  <option value="">Cả 2 band</option>
+                  <option value="band6">🌱 Band 6+</option>
+                  <option value="band7">🏆 Band 7+</option>
                 </select>
               )}
               {cat === 'speaking' && (
@@ -1472,6 +1483,13 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
             {cat !== 'mock_test' && !loadingCat && catalog.length > 0 && (
               <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 6 }}>
                 Lớp này: <b style={{ color: 'var(--green)' }}>{assignedCount} đã giao</b> · <b>{catalog.length - assignedCount} chưa giao</b> / {catalog.length} bài
+              </div>
+            )}
+            {cat === 'task2_template' && tplLevel && visibleCatalog.length > 0 && (
+              <div style={{ marginBottom: 8 }}>
+                <button type="button" className="btn btn-ghost btn-sm" onClick={pickAllListed}>
+                  ✓ Chọn cả {visibleCatalog.length} dạng {tplLevel === 'band6' ? 'Band 6+' : 'Band 7+'}{assignedFilter === 'new' ? ' (chưa giao)' : assignedFilter === 'done' ? ' (đã giao)' : ''}
+                </button>
               </div>
             )}
             {cat === 'speaking' && speakPart && visibleCatalog.length > 0 && (

@@ -198,20 +198,22 @@ async function buildResources(input, existing = []) {
 
 // ════════════════════ TEACHER ════════════════════
 
-// GET /api/classes/resources/catalog?type=&search=&limit=&part=&topic=
+// GET /api/classes/resources/catalog?type=&search=&limit=&part=&topic=&level=
 // part/topic: 'speaking' only, for the admin's "assign a whole topic group"
 // bulk-pick (e.g. every Part 1 question under topic "Watching TV") — plain
 // free-text `search` only ever matched the question wording, never the
 // topic, so there was no way to actually filter down to one topic's set.
 exports.getResourceCatalog = async (req, res) => {
   try {
-    const { type, search = '', limit, part, topic } = req.query;
+    const { type, search = '', limit, part, topic, level } = req.query;
     if (!rcs.isValidType(type)) return res.status(400).json({ success: false, message: 'type không hợp lệ' });
     const extraFilters = {};
     if (type === 'speaking') {
       if (part && ['1', '2', '3'].includes(String(part))) extraFilters.part = Number(part);
       if (topic && topic.trim()) extraFilters.topic = topic.trim();
     }
+    // level: 'task2_template' only — Band 6+ and Band 7+ are assigned separately.
+    if (type === 'task2_template' && (level === 'band6' || level === 'band7')) extraFilters.level = level;
     const items = await rcs.listCatalog(type, search, limit, extraFilters);
     res.json({ success: true, type, items });
   } catch (err) {

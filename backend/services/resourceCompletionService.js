@@ -524,7 +524,13 @@ const REGISTRY = {
   task2_template: {
     label: 'Task 2 Templates',
     catalog: { model: Task2Template, filter: { isActive: true }, sort: { level: 1, orderIndex: 1 },
-      shape: (d) => ({ _id: d._id, label: [d.label, d.name].filter(Boolean).join(' – '), meta: d.level === 'band6' ? 'Band 6+' : 'Band 7+' }),
+      // The level is part of the label: Band 6+ and Band 7+ are separate
+      // homework items with the same type name, and the label is what the
+      // student's homework list shows.
+      shape: (d) => {
+        const lvl = d.level === 'band6' ? 'Band 6+' : 'Band 7+';
+        return { _id: d._id, label: `${[d.label, d.name].filter(Boolean).join(' – ')} (${lvl})`, meta: '' };
+      },
       deepLinkKey: (d) => `${d.typeId}||${d.level || 'band7'}` },
     attempt: { check: checkTask2Templates },
   },

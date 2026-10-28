@@ -75,6 +75,20 @@ test('tips + vocab unit: the page beacon / unit open ticks them; bogus ids are r
   expect(row.status).toBe('completed');
 });
 
+test('task2_template catalog: Band 6+ and Band 7+ are separate items, filterable by level', async () => {
+  const { t } = await setup();
+  await Task2Template.create([
+    { typeId: 'type01', level: 'band6', label: 'Type 01', sub: 'x', name: 'Adv', orderIndex: 0, sections: [] },
+    { typeId: 'type01', level: 'band7', label: 'Type 01', sub: 'x', name: 'Adv', orderIndex: 0, sections: [] },
+  ]);
+  const all = await request(app).get('/api/classes/resources/catalog?type=task2_template').set(authH(t));
+  expect(all.body.items.map((i) => i.label).sort()).toEqual(['Type 01 – Adv (Band 6+)', 'Type 01 – Adv (Band 7+)']);
+  const b6 = await request(app).get('/api/classes/resources/catalog?type=task2_template&level=band6').set(authH(t));
+  expect(b6.body.items.map((i) => [i.label, i.resourceCode])).toEqual([['Type 01 – Adv (Band 6+)', 'type01||band6']]);
+  const b7 = await request(app).get('/api/classes/resources/catalog?type=task2_template&level=band7').set(authH(t));
+  expect(b7.body.items.map((i) => i.resourceCode)).toEqual(['type01||band7']);
+});
+
 test('task2_template (legacy modes): one old-mode run with >= 70% of ALL the items still counts', async () => {
   const { t, s, cls } = await setup();
   const items = Array.from({ length: 10 }, (_, i) => ({ en: `s${i}` }));

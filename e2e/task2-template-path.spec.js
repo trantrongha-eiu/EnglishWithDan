@@ -30,7 +30,7 @@ const FIXTURE = require('./fixtures/task2-templates.json');
 const breq = (m) => require(require.resolve(m, { paths: [BACKEND] }));
 
 let mongod, apiServer, staticServer, apiBase;
-let student, studentToken, Progress, Attempt, TemplateModel, teacherToken, classGroup;
+let student, studentToken, Progress, Attempt, TemplateModel, teacherToken, classGroup, admin, adminToken;
 
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'application/javascript', '.css': 'text/css',
@@ -87,6 +87,8 @@ test.beforeAll(async () => {
   const classes = require(path.join(BACKEND, 'tests', 'factories', 'classFactory'));
   const teacher = await users.createTeacher({ username: 'e2e_tpl_teacher' });
   teacherToken = users.signTokenFor(teacher);
+  admin = await users.createAdmin({ username: 'e2e_tpl_admin' });
+  adminToken = users.signTokenFor(admin);
   classGroup = await classes.createClassGroup({ teacher });
   await classes.enrollStudent(classGroup, student);
 });
@@ -98,7 +100,7 @@ test.afterAll(async () => {
   if (mongod) await mongod.stop();
 });
 
-async function wire(page) {
+async function wire(page, user = student, token = studentToken) {
   await page.route('**/*', async (route) => {
     const url = route.request().url();
     if (url.startsWith(PROD_API)) {
@@ -126,8 +128,8 @@ async function wire(page) {
       st.textContent = '#nav-vocab-goal-nudge{display:none!important}';
       document.head.appendChild(st);
     });
-  }, [studentToken, JSON.stringify({ _id: String(student._id), username: student.username, role: 'student',
-    email: student.email, plan: 'premium', planExpiresAt: student.planExpiresAt, createdAt: student.createdAt })]);
+  }, [token, JSON.stringify({ _id: String(user._id), username: user.username, role: user.role,
+    email: user.email, plan: user.plan || 'premium', planExpiresAt: user.planExpiresAt, createdAt: user.createdAt })]);
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('dialog', (d) => d.accept());
@@ -365,5 +367,32 @@ test('Band 7+: free-typing recall, timed whole-essay, quick review and mock test
   await page.locator('.t2-exam-exit-btn').click();
   await expect(page.locator('.pth-score')).toBeVisible();
   await expect.poll(async () => Attempt.countDocuments({ userId: student._id, isExam: true })).toBe(1);
+  expect(errors).toEqual([]);
+});
+
+test('Admin: assigns Band 6+ templates on their own (level filter + pick all)', async ({ page }) => {
+  test.setTimeout(90 * 1000);
+  const errors = await wire(page, admin, adminToken);
+  const Assignment = require(path.join(BACKEND, 'models', 'Assignment'));
+  await page.goto(`/admin/#/classes/${classGroup._id}`);
+  // The "missing tuition" reminder pops up for the seeded student — dismiss it.
+  const later = page.getByRole('button', { name: 'Để sau' });
+  await later.click({ timeout: 8000 }).catch(() => {});
+  await page.getByRole('button', { name: /📚 Bài tập/ }).click();
+  await page.getByRole('button', { name: '+ Tạo bài tập' }).click();
+  const modal = page.locator('.modal');
+  await modal.locator('input.form-input').first().fill('Template Band 6+');
+  await modal.locator('fieldset select').first().selectOption('task2_template');
+  // Both bands listed, the level is in every label.
+  await expect(modal.getByText('Type 01 – Advantages & Disadvantages (Band 6+)')).toBeVisible();
+  await expect(modal.getByText('Type 01 – Advantages & Disadvantages (Band 7+)')).toBeVisible();
+  await modal.locator('select[title="Band 6+ và Band 7+ là 2 bài riêng"]').selectOption('band6');
+  await expect(modal.getByText(/\(Band 7\+\)/)).toHaveCount(0);
+  await shot(page, '10-admin-band-filter');
+  await modal.getByRole('button', { name: /Chọn cả 2 dạng Band 6\+/ }).click();
+  await modal.getByRole('button', { name: /Giao bài tập/ }).click();
+  await expect.poll(async () => (await Assignment.findOne({ title: 'Template Band 6+' }).lean())?.resources?.length || 0).toBe(2);
+  const asg = await Assignment.findOne({ title: 'Template Band 6+' }).lean();
+  expect(asg.resources.map((r) => r.resourceCode).sort()).toEqual(['type01||band6', 'type02||band6']);
   expect(errors).toEqual([]);
 });
