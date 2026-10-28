@@ -3,7 +3,7 @@
  * student submits a Reading/Listening test (full test or bài lẻ, Practice
  * or Test Simulation). Reminds them to review every mistake, save new words
  * and study them daily, with a button straight to the review. Closes itself
- * after 5 seconds.
+ * after 10 seconds.
  *
  *   window.showPostSubmitReminder({ skill: 'reading' | 'listening', onReview })
  *
@@ -14,7 +14,7 @@
 (function () {
   'use strict';
 
-  var AUTO_CLOSE_MS = 5000;
+  var AUTO_CLOSE_MS = 10000;
   var _timer = null;
 
   function _injectStyles() {
