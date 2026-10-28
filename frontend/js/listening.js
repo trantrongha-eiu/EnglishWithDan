@@ -3281,9 +3281,19 @@ function setupHighlight() {
 // _ltPracticeMode keeps 'simulation' after a Test Simulation attempt
 // (loadLTPracticeReview never resets it), which used to leave the
 // forced review after a simulation with double-click lookup dead.
+//
+// On a graded review (state.isReview / submitted lt-practice) lookup works
+// without the Tra từ tool being on — Esc or a click on the (already
+// active) button used to switch it off and leave double-click dead. Only
+// Highlight mode suppresses it, since its mouseup handler owns the selection.
 function _ltDictGate() {
     const ltSubmitted = !!window.isLtPracticeSubmitted?.();
     const inLtPractice = ltSubmitted || window.isLtPracticeActive?.();
+    if (state.tool === 'highlight') return false;
+    // state.isReview lingers after leaving the review, so also require the
+    // review screen to be the one showing.
+    const onReview = state.isReview && !!document.getElementById('screen-review')?.classList.contains('active');
+    if (onReview || ltSubmitted) return true;
     return state.tool === 'dict' && (
         state.isReview
         || ltSubmitted

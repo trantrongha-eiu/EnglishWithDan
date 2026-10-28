@@ -3710,6 +3710,7 @@ function renderReview(attempt, answerKeyWithheld) {
   switchReviewPassage(0);
   buildReviewQNav(attempt, reviewMap);
   showScreen('review');
+  setTool('dict', true); // double-click lookup + "Lưu từ" ready right away
 
   const allQ = attempt.passages.flatMap(getAllQuestionsFromPassage);
   _mountInlineReviews('reading', attempt._id, allQ);
@@ -4160,6 +4161,7 @@ async function _doSubmitRetry() {
   // Graded — this screen is now a review, so lookups open up even after a
   // Test Simulation (see the dictionary gate's `submitted` clause).
   if (_retryState) _retryState.submitted = true;
+  setTool('dict', true); // double-click lookup + "Lưu từ" ready right away
   let elapsed = 0;
   let timeLine = '';
   if (fromPractice) {
@@ -4415,6 +4417,8 @@ async function loadPracticeReview(attemptId) {
       practiceCategory:   attempt.category || '',
       // Highlights added while viewing this review save to this attempt.
       savedAttemptId:     attempt._id,
+      // Already graded — counts as a review for the dictionary gate.
+      submitted:          true,
     };
     _practiceMode = true;
     state.passages = [cleanPassage];
@@ -4460,6 +4464,7 @@ async function loadPracticeReview(attemptId) {
     _setRetryCdSkin(true, false);
     _renderRetryCdPartHeader(cleanPassage, _retryPartNum(attempt.category));
     showScreen('retry');
+    setTool('dict', true); // double-click lookup + "Lưu từ" ready right away
 
     const inner = document.getElementById('retry-questions-inner');
     const pct    = attempt.totalQuestions ? Math.round(attempt.correctCount / attempt.totalQuestions * 100) : 0;
@@ -4555,11 +4560,25 @@ function fetchWithTimeout(url, ms = 7000) {
 // && !_retryState` makes the third clause fire only when we're genuinely
 // NOT in a "lẻ" practice/retry session, i.e. only for the real full-test
 // screen state.mode actually describes.
-setupDictionaryDouble('pageBody', 'reading', () => state.tool === 'dict' && (
-  state.isReview
-  || !!(_retryState && _retryState.submitted)
-  || ((_practiceMode || _retryState) && (!_retryState || _retryState.mode !== 'simulation'))
-  || (!_practiceMode && !_retryState && !_mockMode && state.mode === 'practice')
+//
+// On a graded review (full-test review screen, or a submitted / history-
+// loaded bài lẻ on the retry screen) lookup works without the Tra từ tool
+// being on — students kept losing it there (it was never switched on after
+// submit, and Esc / a click on the button switches it off). Only Highlight
+// mode suppresses it, since its own mouseup handler owns the selection.
+function _rdOnGradedReview() {
+  const on = id => !!document.getElementById(id)?.classList.contains('active');
+  return (state.isReview && on('screen-review'))
+    || (!!(_retryState && _retryState.submitted) && on('screen-retry'));
+}
+setupDictionaryDouble('pageBody', 'reading', () => state.tool !== 'highlight' && (
+  _rdOnGradedReview()
+  || (state.tool === 'dict' && (
+    state.isReview
+    || !!(_retryState && _retryState.submitted)
+    || ((_practiceMode || _retryState) && (!_retryState || _retryState.mode !== 'simulation'))
+    || (!_practiceMode && !_retryState && !_mockMode && state.mode === 'practice')
+  ))
 ));
 
 // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) must not
@@ -4670,8 +4689,10 @@ function _updateExamToolbarForMode() {
   if (translateBtn) translateBtn.style.display = show ? '' : 'none';
 }
 
-function setTool(tool) {
-  const next = (tool !== 'none' && state.tool === tool) ? 'none' : tool;
+// force: turn the tool ON without toggling it off if it's already on (used
+// to auto-enable Tra từ when a review screen opens).
+function setTool(tool, force) {
+  const next = (!force && tool !== 'none' && state.tool === tool) ? 'none' : tool;
   state.tool = next;
   ['tool-hl', 'tool-hl-rv', 'tool-hl-rt', 'rtp-tool-hl'].forEach(id => {
     const b = document.getElementById(id);
