@@ -339,7 +339,9 @@ async function _ltRunGlobalSearch() {
         });
     });
     _ltPracticeDoneMap = Object.assign({}, ...LT_PRACTICE_PARTS.map(part => _ltCategoryCache[part]?.doneMap || {}));
-    _ltAllSections = [...merged.values()];
+    // Results come from several tabs — re-sort A–Z like each tab's own list.
+    _ltAllSections = [...merged.values()].sort((a, b) =>
+        (a.title || '').localeCompare(b.title || '', 'en', { numeric: true, sensitivity: 'base' }));
     rerenderLtSections();
 }
 

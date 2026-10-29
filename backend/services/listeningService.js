@@ -383,14 +383,12 @@ async function getAdminAttemptsStats(testId) {
 // ── Practice sections (student-facing list + admin CRUD) ────────────────
 async function listPracticeSections(query, userId) {
   const isActualTest = query.actualTest === 'true';
-  let filter, sortBy;
+  let filter;
   if (isActualTest) {
     filter = { isActualTest: true, isActive: true };
-    sortBy = { createdAt: -1 };
   } else if (query.part === 'all') {
-    // Bài lẻ default view: every section from all 4 parts, newest first.
+    // Bài lẻ default view: every section from all 4 parts mixed.
     filter = { partNumber: { $in: [1, 2, 3, 4] }, isActive: true };
-    sortBy = { createdAt: -1 };
   } else {
     const part = parseInt(query.part);
     if (![1, 2, 3, 4].includes(part)) {
@@ -399,11 +397,13 @@ async function listPracticeSections(query, userId) {
       throw err;
     }
     filter = { partNumber: part, isActive: true };
-    sortBy = { createdAt: -1 };
   }
+  // Title A–Z, case-insensitive, numbers in numeric order ("Test 2" before
+  // "Test 10") — same collation as listStudentTests.
   const sections = await ListeningSection.find(filter)
     .select('_id partNumber title description audioDuration isActualTest questionRange questionGroups gapFillPublished warmUpPublished thumbnailUrl')
-    .sort(sortBy)
+    .sort({ title: 1 })
+    .collation({ locale: 'en', numericOrdering: true })
     .lean();
   const safe = sections.map(s => ({
     _id: s._id,
