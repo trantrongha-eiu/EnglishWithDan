@@ -4,6 +4,8 @@ import { useToast } from '../../contexts/ToastContext';
 import { STATUS, EMPTY_MANUAL, overallWritingBand } from './constants';
 import TaskPanel from './TaskPanel';
 
+const DEFAULT_ADMIN_NOTE = 'Đọc kĩ feedback, ghi lại lỗi sai và rewrite lại + học lại các cấu trúc hay từ template mẫu.';
+
 export default function GradeModal({ attemptId, onClose, onGraded }) {
   const toast = useToast();
   const [attempt, setAttempt]   = useState(null);
@@ -60,7 +62,11 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
     return apiFetch(`/admin/writing-attempt/${attemptId}`)
       .then(d => {
         setAttempt(d.attempt);
-        setAdminNote(d.attempt.grading?.adminNote || '');
+        // Not graded yet → start from the standard reminder; a confirmed grade
+        // keeps whatever note was sent (even an empty one).
+        setAdminNote(d.attempt.gradingStatus === 'confirmed'
+          ? (d.attempt.grading?.adminNote || '')
+          : (d.attempt.grading?.adminNote || DEFAULT_ADMIN_NOTE));
         setOverallBandInput(d.attempt.grading?.overallBand
           ? String(d.attempt.grading.overallBand)
           : calcBand(d.attempt));

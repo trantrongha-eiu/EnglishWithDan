@@ -60,6 +60,25 @@ const RESOURCE_CATS = [
   { type: 'task1_skill', label: 'Task 1 Practice (Kỹ năng)' },
 ];
 const RES_LABEL = Object.fromEntries(RESOURCE_CATS.map((r) => [r.type, r.label]));
+// Task 2 weekly topics: essay-type badge in the assign picker (labels match
+// pages/Task2Topics.jsx).
+const ESSAY_TYPES = {
+  advantages_disadvantages: { label: 'Adv & Disadv', color: '#2e7d32' },
+  discuss_both_views: { label: 'Discuss Both Views', color: '#1565c0' },
+  agree_disagree: { label: 'Agree/Disagree', color: '#7b1fa2' },
+  cause_effect: { label: 'Cause & Effect', color: '#e65100' },
+  cause_solution: { label: 'Cause & Solution', color: '#e65100' },
+  effect_solution: { label: 'Effect & Solution', color: '#e65100' },
+  positive_or_negative_development: { label: 'Positive/Negative', color: '#00838f' },
+};
+function EssayTypeBadge({ type }) {
+  const t = ESSAY_TYPES[type];
+  if (!t) return null;
+  return (
+    <span style={{ fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap', padding: '2px 8px', borderRadius: 999,
+      color: t.color, background: `${t.color}1a`, border: `1px solid ${t.color}40` }}>{t.label}</span>
+  );
+}
 // How each type auto-ticks as done — mirrors backend
 // services/resourceCompletionService.js (scoreGate / passPercent / pass).
 const RES_RULE = {
@@ -1341,6 +1360,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   const [speakTopics, setSpeakTopics] = useState([]);
   // Task 2 Templates: Band 6+ and Band 7+ are separate items — filter to one.
   const [tplLevel, setTplLevel] = useState('');
+  const [essayFilter, setEssayFilter] = useState('');
 
   useEffect(() => {
     // No synchronous setState here for the cat !== 'speaking' case — that's
@@ -1394,8 +1414,9 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   const keyOf = assignedKey;
   const assignedFor = (item) => assignedIndex.get(keyOf(cat, item._id));
   const assignedCount = catalog.filter((item) => assignedFor(item)).length;
-  const visibleCatalog = !assignedFilter ? catalog
-    : catalog.filter((item) => (assignedFilter === 'done' ? !!assignedFor(item) : !assignedFor(item)));
+  const visibleCatalog = catalog
+    .filter((item) => !essayFilter || cat !== 'task2' || item.essayType === essayFilter)
+    .filter((item) => !assignedFilter || (assignedFilter === 'done' ? !!assignedFor(item) : !assignedFor(item)));
   function togglePick(item) {
     const k = keyOf(cat, item._id);
     setPicked((p) => p.some((x) => keyOf(x.resourceType, x.resourceId) === k)
@@ -1474,7 +1495,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                   // the list never shows the previous type's items (wrong
                   // labels/meta) until the new fetch resolves.
                   setCatalog([]); setLoadingCat(true);
-                  setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]); setTplLevel('');
+                  setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]); setTplLevel(''); setEssayFilter('');
                 }}>
                 {RESOURCE_CATS.map((r) => <option key={r.type} value={r.type}>{r.label}</option>)}
               </select>
@@ -1484,6 +1505,12 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                   <option value="">Tất cả bài</option>
                   <option value="new">Chưa giao</option>
                   <option value="done">Đã giao</option>
+                </select>
+              )}
+              {cat === 'task2' && (
+                <select className="form-input" style={{ width: 180 }} value={essayFilter} onChange={(e) => setEssayFilter(e.target.value)} title="Lọc theo dạng bài Task 2">
+                  <option value="">Tất cả dạng bài</option>
+                  {Object.entries(ESSAY_TYPES).map(([k, t]) => <option key={k} value={k}>{t.label}</option>)}
                 </select>
               )}
               {cat === 'task2_template' && (
@@ -1554,6 +1581,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                           </span>
                         )}
                       </span>
+                      {item.essayType && <EssayTypeBadge type={item.essayType} />}
                       {item.meta && <span style={{ fontSize: 11, color: 'var(--text3)' }}>{item.meta}</span>}
                       {given
                         ? <span className="badge badge-green" title={assignedTooltip(given)} style={{ whiteSpace: 'nowrap' }}>✓ Đã giao{given.length > 1 ? ` ×${given.length}` : ''}</span>
