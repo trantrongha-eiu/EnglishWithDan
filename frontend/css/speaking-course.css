@@ -239,6 +239,17 @@
 .sc-q.cur .sc-qn { background:#f43f5e; color:#fff; }
 .sc-q.said .sc-qn { background:#dcfce7; color:#16a34a; }
 
+/* student notes */
+.sc-notes { margin-bottom:14px; background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:10px 12px; }
+[data-theme="dark"] .sc-notes { background:#2a2414; border-color:#5c4a1c; }
+.sc-notes-h { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:12px; font-weight:800; color:#b45309; margin-bottom:6px; }
+[data-theme="dark"] .sc-notes-h { color:#fbbf24; }
+.sc-notes-st { font-weight:600; color:var(--text3,#9ca3af); font-size:11px; }
+.sc-notes textarea { width:100%; box-sizing:border-box; resize:vertical; min-height:64px; border:1px solid #fde68a; border-radius:8px;
+  padding:8px 10px; font:inherit; font-size:13.5px; line-height:1.6; background:var(--surface,#fff); color:var(--text,#111827); }
+[data-theme="dark"] .sc-notes textarea { border-color:#5c4a1c; }
+.sc-notes textarea:focus { outline:none; border-color:#f59e0b; box-shadow:0 0 0 3px rgba(245,158,11,.15); }
+
 /* recorder panel */
 .sc-panel { border:1.5px solid var(--border,#e5e7eb); border-radius:16px; padding:16px; background:var(--surface,#fff);
   display:flex; flex-direction:column; align-items:center; gap:10px; }

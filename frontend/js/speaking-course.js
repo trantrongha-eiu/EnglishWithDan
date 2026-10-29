@@ -209,6 +209,42 @@
     }
   };
 
+  // ── student notes ───────────────────────────────────────────────────
+  //   A scratch pad per question (ideas, key words, phrases to use). Never
+  //   sent to the AI — only kept in this browser, per user, so it survives
+  //   a reload or coming back to the lesson later.
+  function noteKey(ex, idx) {
+    var u = null;
+    try { u = window.AuthService ? window.AuthService.getUser() : JSON.parse(localStorage.getItem('user') || 'null'); } catch (e) { /* noop */ }
+    var uid = (u && (u._id || u.id || u.username)) || 'anon';
+    return 'spkc-note:' + uid + ':' + ex.code + ':' + idx;
+  }
+  function loadNote(key) { try { return localStorage.getItem(key) || ''; } catch (e) { return ''; } }
+  function saveNote(key, val) {
+    try { if (val.trim()) localStorage.setItem(key, val); else localStorage.removeItem(key); } catch (e) { /* noop */ }
+  }
+  function renderNotes(ex, idx) {
+    var val = loadNote(noteKey(ex, idx));
+    return '<div class="sc-notes">' +
+      '<div class="sc-notes-h"><span><i class="fas fa-pen-to-square"></i> Ghi chú của bạn</span>' +
+        '<span class="sc-notes-st" id="sc-notes-st">' + (val ? 'Đã lưu' : '') + '</span></div>' +
+      '<textarea id="sc-notes-ta" rows="3" placeholder="Ghi ý tưởng, từ khoá, cụm từ muốn dùng… (tự lưu, AI không chấm phần này)">' + esc(val) + '</textarea>' +
+    '</div>';
+  }
+  function bindNotes(ex) {
+    var ta = document.getElementById('sc-notes-ta');
+    if (!ta || !ex) return;
+    var items = ex.items || [];
+    var idx = items.length > 1 ? Math.min(E.state.itemIdx || 0, items.length - 1) : 0;
+    var key = noteKey(ex, idx), st = document.getElementById('sc-notes-st'), t = null;
+    ta.addEventListener('input', function () {
+      if (st) st.textContent = 'Đang lưu…';
+      clearTimeout(t);
+      t = setTimeout(function () { saveNote(key, ta.value); if (st) st.textContent = ta.value.trim() ? 'Đã lưu' : ''; }, 400);
+    });
+    ta.addEventListener('blur', function () { clearTimeout(t); saveNote(key, ta.value); });
+  }
+
   // ── speaking_response: render / submit ────────────────────────────
   function renderSpeakingBody(ex) {
     var part = ex.speakingPart || 1;
@@ -230,6 +266,7 @@
     return '<div class="sc-partbadge"><i class="fas fa-microphone"></i> IELTS Speaking · Part ' + part + '</div>' +
       (multi ? '<div style="font-size:12px;color:var(--text3,#9ca3af);margin-bottom:6px">Câu ' + (curIdx + 1) + '/' + items.length + ' — ghi âm và nộp riêng câu này để AI chấm ngay, rồi mới qua câu tiếp theo.</div>' : '') +
       '<div class="sc-qs">' + qs + '</div>' +
+      renderNotes(ex, curIdx) +
       '<div class="sc-panel" id="sc-panel">' +
         (prep ? '<div class="sc-prep" id="sc-prep"><div class="sc-prep-n" id="sc-prep-n">' + prep + '</div>' +
           '<div class="sc-prep-t">giây chuẩn bị (ghi từ khoá ra giấy) — hết giờ sẽ tự bật ghi âm</div>' +
@@ -486,7 +523,7 @@
           };
         },
         renderBody: renderSpeakingBody,
-        bind: function () { SpeakingRec.mount(); },
+        bind: function () { SpeakingRec.mount(); bindNotes(E.curEx()); },
         submit: submitSpeaking,
       },
     },

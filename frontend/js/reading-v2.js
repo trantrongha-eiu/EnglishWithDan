@@ -2072,7 +2072,9 @@ function renderQuestionGroup(group, isReview, reviewMap = {}) {
     default: bodyHtml = renderPlainGroup(questions, isReview, reviewMap); break;
   }
 
-  return `<div class="question-group">${headerHtml}${bodyHtml}</div>`;
+  // Student's own notes for this group — js/shared/question-notes.js
+  const notesHtml = window.QuestionNotes ? window.QuestionNotes.html('reading', group) : '';
+  return `<div class="question-group">${headerHtml}${bodyHtml}${notesHtml}</div>`;
 }
 
 /* ── PLAIN ────────────────────────────────────────────────────────── */

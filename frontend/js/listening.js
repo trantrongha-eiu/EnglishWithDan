@@ -1652,7 +1652,9 @@ function renderQuestionGroup(group, gi, isReview) {
     if (window.scopeEmbeddedHtml) contentHtml = window.scopeEmbeddedHtml(contentHtml);
 
     const summary = isReview ? renderGroupReviewSummary(group) : '';
-    return `<div class="question-group" data-type="${groupType}">${titleHtml}${instruction}${wordBankHtml}${contentHtml}${summary}</div>`;
+    // Student's own notes for this group — js/shared/question-notes.js
+    const notesHtml = window.QuestionNotes ? window.QuestionNotes.html('listening', group) : '';
+    return `<div class="question-group" data-type="${groupType}">${titleHtml}${instruction}${wordBankHtml}${contentHtml}${notesHtml}${summary}</div>`;
 }
 
 function renderTableGroup(group, isReview) {
