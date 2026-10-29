@@ -1,0 +1,81 @@
+// Vol 9 - READING/TEST 5-R.docx - Passage 3 (typed docx). A different, shorter text from the bank's "Sir Francis Ronalds and
+// Telegraph" (Vol 2 - Test 3, 9% shared text, different questions) → new passage. Key = KEY TEST 5-R.docx.
+// The unlettered paragraph "Although Ronalds lived long enough…" belongs to F (the passage has seven paragraphs, A–G).
+// Text fixes: "ofelectrically" → of electrically, "smallpamphlet" → small pamphlet, "nineteenth- century" → nineteenth-century,
+// "NO" → no (×2). Q39 "Ronald" → Ronalds.
+// Key fixes: Q28 F (1843, Kew appointment – meteorology) → H (1870, knighted for "early and remarkable labours in telegraphic
+// investigations"); Q30 D (1823, pamphlet = Q31) → B (1814, de Luc "encouraged Ronalds to start work on this new discipline");
+// Q32 "a revolving disc" (that is the dial itself) → letters and numbers (as in the bank's Vol 2 version, key "letters and numbers").
+const { matching, short } = require('../../vr_build');
+module.exports = {
+  vol: 9, test: 5, part: 3, title: 'Sir Francis Ronalds 1788 – 1873', text: 't5p3.txt',
+  groups: [
+    matching(27, ['1806', '1814', '1816', '1823', '1837', '1843', '1852', '1870'], [
+      'The first electric telegraph system was submitted to the Admiralty.',
+      'Ronalds received official recognition of his contribution to telegraphy.',
+      'The first electric telegraph was patented.',
+      'Ronalds began to experiment with electricity.',
+      'Ronalds informed the public about the possible uses of his telegraph.',
+    ], { title: 'List of Dates',
+      instruction: 'Look at the following events (Questions 27–31) and the list of dates below. Match each event with the correct date, A–H. Write the correct letter, A–H, in boxes 27–31 on your answer sheet.' }),
+    short(32, [
+      'What was marked on the dials on Ronalds\'s garden telegraph?',
+      'What did Ronalds use to enclose the wires on his later version of the garden telegraph?',
+      'How far did Ronalds believe his telegraph could transmit information?',
+      'What did the communication system invented by Ralph Wedgwood use?',
+    ], { instruction: 'Answer the questions below. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 32–35 on your answer sheet.' }),
+    matching(36, ['A', 'B', 'C', 'D', 'E', 'F', 'G'], [
+      'a description of a commercial application for the electric telegraph',
+      'a rejection of Ronalds\'s invention',
+      'a drawback of Ronalds\'s invention',
+      'reference to the positive influence on Ronalds of a fellow scientist',
+      'reference to the adoption of one of Ronalds\'s procedures in preference to that of another scientist',
+    ], { instruction: 'Reading Passage 3 has seven paragraphs, A–G. Which paragraph contains the following information? Write the correct letter, A–G, in boxes 36–40 on your answer sheet.' }),
+  ],
+  key: { 27: 'A', 28: 'H', 29: 'E', 30: 'B', 31: 'D', 32: 'letters and numbers', 33: 'glass tubes', 34: 'some 800 km / 800 km',
+    35: 'frictional electricity', 36: 'G', 37: 'E', 38: 'C', 39: 'A', 40: 'F' },
+  expl: {
+    27: ['Hệ thống điện báo đầu tiên được đệ trình lên Bộ Hải quân.', 'Đoạn D',
+      '“Some ten years earlier, in 1806, the inventor Ralph Wedgwood had offered the Admiralty a similar type of telegraph based on frictional electricity”',
+      'Ronalds “not the first”; Wedgwood đã đề xuất năm 1806 → A'],
+    28: ['Ronalds được công nhận chính thức về đóng góp cho ngành điện báo.', 'Đoạn G',
+      '“In 1870, three years before he died, he was knighted by Queen Victoria, a belated honour in recognition of his \'early and remarkable labours in telegraphic investigations.\'”',
+      'Năm 1870 được phong tước hiệp sĩ để ghi nhận công trình điện báo (key đề in F 1843 – năm ông được bổ nhiệm ở đài quan sát Kew, liên quan khí tượng) → H'],
+    29: ['Hệ thống điện báo đầu tiên được cấp bằng sáng chế.', 'Đoạn G',
+      '“in 1837 they developed the Wheatstone-Cooke five-needle telegraph. The pair patented their design in the same year, the first of its kind to be officially registered”',
+      'Wheatstone và Cooke cấp bằng sáng chế năm 1837, là chiếc đầu tiên được đăng ký → E'],
+    30: ['Ronalds bắt đầu thí nghiệm với điện.', 'Đoạn A',
+      '“In 1814, de Luc encouraged Ronalds to start work on this new discipline.” … “For the next few years, Ronalds experimented enthusiastically with various kinds of electrostatic clockwork devices.”',
+      'Năm 1814 de Luc khuyến khích Ronalds bắt đầu nghiên cứu điện, những năm sau ông thí nghiệm hăng say (key đề in D 1823 – trùng với câu 31) → B'],
+    31: ['Ronalds cho công chúng biết những công dụng có thể có của máy điện báo.', 'Đoạn F',
+      '“However, in a small pamphlet published in 1823, he described his invention and listed some of its potential uses”',
+      'Cuốn sách nhỏ năm 1823 mô tả phát minh và liệt kê công dụng tiềm năng → D'],
+    32: ['Trên mặt số của máy điện báo trong vườn của Ronalds có khắc gì?', 'Đoạn C',
+      '“At either end of the wire was a revolving disc, on which letters and numbers were engraved.”',
+      'Mặt số là chiếc đĩa xoay; thứ được khắc trên đó là chữ cái và con số (key đề in “a revolving disc” – đó là chính cái mặt số) → letters and numbers'],
+    33: ['Ronalds dùng gì để bọc dây điện trong phiên bản cải tiến?', 'Đoạn C',
+      '“Ronalds soon developed a modified version of his invention in which the wire was encased in glass tubes and buried in the ground.”',
+      '“encased in glass tubes” = bọc trong ống thủy tinh → glass tubes'],
+    34: ['Ronalds tin rằng máy điện báo có thể truyền tin xa bao nhiêu?', 'Đoạn E',
+      '“Ronalds believed that his invention was capable of carrying messages some 800 km”',
+      '“capable of carrying messages some 800 km” → some 800 km'],
+    35: ['Hệ thống liên lạc do Ralph Wedgwood phát minh sử dụng gì?', 'Đoạn D',
+      '“the inventor Ralph Wedgwood had offered the Admiralty a similar type of telegraph based on frictional electricity”',
+      '“based on frictional electricity” = dùng điện ma sát → frictional electricity'],
+    36: ['mô tả một ứng dụng thương mại của điện báo', 'Đoạn G',
+      '“They saw the potential of a rapid communication system for the growing number of private railway companies”',
+      'Wheatstone và Cooke dùng điện báo cho các công ty đường sắt tư nhân và thu lợi lớn → G'],
+    37: ['việc phát minh của Ronalds bị từ chối', 'Đoạn E',
+      '“John Barrow, Secretary to the Admiralty, wrote back to Ronalds on 5 August, saying that \'telegraphs of any kind are wholly unnecessary, and no other than the one now in use will be adopted.\'”',
+      'Bộ Hải quân trả lời rằng không cần điện báo nào khác → bị từ chối → E'],
+    38: ['một nhược điểm của phát minh của Ronalds', 'Đoạn C',
+      '“The system was slow and depended on the two dials staying in step, but it worked.”',
+      'Hệ thống chậm và phụ thuộc vào việc hai mặt số chạy khớp nhau → C'],
+    39: ['nhắc đến ảnh hưởng tích cực của một nhà khoa học khác lên Ronalds', 'Đoạn A',
+      '“This brought him into contact with the elderly Swiss meteorologist Jean Andre de Luc” … “In 1814, de Luc encouraged Ronalds to start work on this new discipline.”',
+      'De Luc khuyến khích Ronalds nghiên cứu điện → A'],
+    40: ['nhắc đến việc một quy trình của Ronalds được chọn thay vì của một nhà khoa học khác', 'Đoạn F',
+      '“A similar system was developed independently by Charles Brooke, but the British Association of Meteorologists confirmed Ronalds\'s priority. His system remained in use for many decades.”',
+      'Hệ thống ghi dữ liệu khí tượng của Ronalds được công nhận ưu tiên hơn của Charles Brooke và được dùng nhiều thập kỷ → F'],
+  },
+};

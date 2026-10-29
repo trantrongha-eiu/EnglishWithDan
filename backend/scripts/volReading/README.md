@@ -332,3 +332,29 @@ Irish Elk của Vol 1), nhập + ảnh bìa + bật. Đề "Vol 1 - Test 7" tr�
 --apply` (backup `web/vol1/backup/test7_*.json`, 0 lượt làm) và bật. "Protecting turtles" và "Irish Elk" vẫn là bài lẻ đang bật.
 Kiểm: pw_mini / pw_admin 1/1, pw_grade 3/3 100%, pw_full_tests 1/1, `vr_audit.js 1` 0, `vr_incomplete.js` 0.
 Các bản update khác trong thư mục đó (Vol 1 T5/T9, Vol 2 T1/T3/T9/T10, Vol 4 T4/T5) chưa xử lý.
+
+## Vol 9 — 2026-10-29 (xong: 9 đề full, 27 bài mới)
+
+Nguồn: `READING/TEST N-R.docx` (**bản gõ sẵn**, 1 file = 1 đề, không ảnh) + `READING/KEY - EXPLAINATION/KEY TEST N-R.docx` (chỉ bảng
+key 3 cột; T1 dạng "Câu số n:"; không có giải thích). `py docx2txt.py` → `web/vol9/src/t<T>.txt`, `web/vol9/key/t<T>.txt` →
+`node web/vol9/split9.js` (tách ở dòng "PASSAGE N[:]") → `web/vol9/docx/t<T>p<P>.txt` (cho `SRC=docx dedupe2.js` / `dedupe_mini.js`);
+`web/vol9/text/` = cùng bài + "=== QUESTIONS ===" (cho compare.js). Docx không có chữ cái đoạn ở các bài có ô "14____" trên mỗi
+đoạn → đánh A–G, câu hỏi "Paragraph/Section X". Lựa chọn MC trong docx không có chữ cái → A–D theo thứ tự in.
+
+- **Đề full Vol 9 - Test 1…9** tạo + bật, đều đủ 40 câu.
+- **Không dùng lại bài nào**: T1 P3 (~ "Biology of Bitterness"), T4 P1 (~ "Traditional Farming System in Africa"), T6 P1 (~ "Health in
+  the Wild", Mocktest 47 → đặt tên "Health in the Wild (Vol 9)") là bản khác của bài ngân hàng, bộ câu hỏi khác → `SAME_TEXT_OK[9]`.
+  "Sir Francis Ronalds 1788 – 1873" khác hẳn bài Ronalds của Vol 2 (9% chữ).
+- **Mới 27 bài** (bật, ảnh bìa CC0/PD trên R2, giải thích tiếng Việt tự viết). Key Vol sai đã sửa theo bài (chi tiết đầu từng spec):
+  T2 P1 Q12–13 TRUE → FALSE; T2 P2 Q24–26: docx bỏ lựa chọn F của đề gốc (talk915.com, IELTS 25/10/2025: key B, D, F) → khôi phục F,
+  key A,B,D → B,D,F; T3 P2 Q16 ii → vi; T3 P3 file key bỏ trống Q40 → YES; T4 P3 Q37–40 B,C,F,D → F,C,A,D; T5 P1 Q4/Q5 đảo → FALSE /
+  NOT GIVEN; T5 P3 Q28 F → H (phong tước 1870), Q30 D → B (1814), Q32 "a revolving disc" → letters and numbers (như bản Vol 2);
+  T6 P3 Q31 "ix" → xi; T7 P2 Q25 "British" không điền được vào câu in → divergence. Nhận cả hai: T1 P3 Q38 taste buds / top, T2 P2
+  Q18 stylistic / stylistic features, T3 P2 Q23 A / B, T4 P1 Q4 ridges / series of ridges, T5 P2 Q21 revolution / philosophy,
+  T6 P1 Q7 alkaloid / poisons, T6 P3 Q38 Taylor / Ford, T8 P1 Q6 NOT GIVEN / FALSE.
+- **Câu hỏi thiếu / hỏng trong docx**: T5 P2 danh sách tiêu đề dừng ở viii nhưng key Q16 = ix → tự bổ sung "ix How Ray became a
+  botanist" (không tìm được bản online); T3 P2 ô Q25 đặt sai chỗ trong summary; T8 P2 câu Q25 rối → viết lại theo chữ bài; T1 P3 Q39
+  lựa chọn lệch chữ cái. Lỗi gõ trong bài (weaning → weaving, pait, livehoods, Mueh, cilemene, 250 → 25¢, câu lặp ở T6 P1…) ghi trong spec.
+  T7 P2 "was similar to historical linguists, many of whom restrict…" → "superior to that of" (tự sửa cho có nghĩa).
+- Kiểm: pw_mini 27/27, pw_admin 27/27, pw_grade 27/27 100%, pw_full_tests 9/9, `_audit_reading_warnings` 0 (461 bài),
+  `vr_audit.js 9`: 0 problem (360 câu, 428 trích dẫn), `vr_incomplete.js`: 0.

@@ -26,6 +26,9 @@ const SAME_TEXT_OK = ({
   6: { t1p1: '6abcd39d4bdca60c3b137d5b' },
   // Vol 8: renumbered copies (bank stores them as Passage 2) — Western Immigration of Canada / William Gilbert and Magnetism
   8: { t5p1: '6abcde40ee81e7573b2fe8a2', t7p1: '6abdb3f23da7a4e8d035c7e2' },
+  // Vol 9: other versions of bank texts with a different question set — Biology of Bitterness / Traditional Farming System in
+  // Africa / Health in the Wild
+  9: { t1p3: '6add66526d9bcb8db19ee321', t4p1: '6abdb3f03da7a4e8d035c79e', t6p1: '6abdee0f54216aa2da1579b5' },
 })[vol] || {};
 
 // --activate: publish (isActive:true) exactly the passages listed in imported.json, refusing any without a cover

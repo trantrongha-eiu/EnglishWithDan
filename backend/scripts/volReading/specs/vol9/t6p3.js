@@ -1,0 +1,81 @@
+// Vol 9 - READING/TEST 6-R.docx - Passage 3 (typed docx). Shares ~33% of its text with mini 1256 "Soviet’s New Working Week"
+// (not in the bank; different questions) → new passage. Key = KEY TEST 6-R.docx.
+// Nine unlettered paragraphs (a "27___" box above each; the third carries the example heading iii) → A–I, example = C.
+// Text fixes: "colour- coding" → colour-coding; run-on "…seven hours, in January 1929" → semicolon. Title in capitals → title case.
+// Key fixes: Q31 "ix" (already Q27; paragraph F lists benefits and the one objection) → xi. Q38 key Ford — the theories that
+// inspired efficiency are Taylor's ("time and motion studies … streamlining effort"); Ford is admired for assembly-line mass
+// production → accept "Taylor / Ford". Q39 "with proposed" → who proposed. Q40 accept colour/color coding (+ system).
+const { headings, mc, short } = require('../../vr_build');
+module.exports = {
+  vol: 9, test: 6, part: 3, title: 'Changes to the Soviet Union’s Working Week', text: 't6p3.txt',
+  free: ['colour coding', 'color coding', 'color coding system', 'color-coding'],
+  groups: [
+    headings(27, [
+      'A decision for factories to operate seven days a week', 'The end of two short-lived schemes',
+      'An attempt to create better working conditions?', 'Not consistently introduced everywhere', 'Success in replacing foreign goods',
+      'How the continuous working week was organised', 'Inspiration from abroad', 'A proposal by factory workers',
+      'Optimism about transforming the country', 'The failure of factories to achieve expected improvements',
+      'Pros and cons of the continuous working week',
+    ], ['Paragraph A', 'Paragraph B', 'Paragraph D', 'Paragraph E', 'Paragraph F', 'Paragraph G', 'Paragraph H', 'Paragraph I'],
+    { instruction: 'Reading Passage 3 has nine paragraphs, A–I. Choose the correct heading for paragraphs A–B and D–I from the list of headings below. Write the correct number, i–xi, in boxes 27–34 on your answer sheet. Example: Paragraph C – iii' }),
+    mc(35, [
+      ['Which aspect of American business was admired?', ['the high level of employment', 'the variety of products available',
+        'the methods of increasing productivity', 'the quality of the goods that were produced']],
+      ['The continuous working week was intended to ensure that', ['each worker\'s productivity increased.',
+        'machinery was in continuous use.', 'workers had more days off.', 'factories could afford to buy efficient machines.']],
+      ['Which of the following was thought unlikely to improve as a result of the continuous working week?', ['family life',
+        'leisure facilities', 'employment levels', 'shopping opportunities']],
+    ]),
+    short(38, [
+      'What was the name of the person whose theories inspired efforts to increase efficiency?',
+      'What was the name of the person who proposed the continuous working week?',
+      'In calendars of the continuous working week, what system was used to identify different groups of workers?',
+    ], { instruction: 'Answer the questions below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 38–40 on your answer sheet.' }),
+  ],
+  key: { 27: 'ix', 28: 'vii', 29: 'i', 30: 'vi', 31: 'xi', 32: 'iv', 33: 'x', 34: 'ii', 35: 'C', 36: 'B', 37: 'A',
+    38: 'Taylor / Ford', 39: 'Larin', 40: 'colour-coding / colour coding / color coding / color-coding / color coding system' },
+  expl: {
+    27: ['Đoạn A', 'Đoạn A',
+      '“Unlimited enthusiasm was the mood of the day, with the Communists believing that iron will and hard-working manpower alone would bring about a new world.”',
+      'Kế hoạch 5 năm nhằm biến đất nước thành cường quốc công nghiệp, tâm thế hăng hái tột độ → ix Optimism about transforming the country'],
+    28: ['Đoạn B', 'Đoạn B',
+      '“Lenin had already been intrigued by the ideas of Taylor, the American management expert” … “The Communists were also great admirers of Ford\'s assembly line mass production”',
+      'Học hỏi ý tưởng của Taylor và Ford (Mỹ) → vii Inspiration from abroad'],
+    29: ['Đoạn D', 'Đoạn D',
+      '“Why not abolish that wasted day by instituting a continuous working week so that the machines could operate to their full capacity every day of the week? Stalin approved”',
+      'Quyết định cho nhà máy chạy cả 7 ngày (ý tưởng của nhà kinh tế Larin, không phải của công nhân – viii sai) → i A decision for factories to operate seven days a week'],
+    30: ['Đoạn E', 'Đoạn E',
+      '“a new five-day week would have the workers on the job for four days, with the fifth day free.” … “Workers in each establishment were divided into five groups, each assigned a colour”',
+      'Mô tả cách tổ chức tuần làm việc liên tục: tuần 5 ngày, chia 5 nhóm, mã màu → vi How the continuous working week was organised'],
+    31: ['Đoạn F', 'Đoạn F',
+      '“Official propaganda stressed the material and cultural benefits of the new scheme.” … “The only objection concerned the family”',
+      'Lợi ích (nghỉ nhiều hơn, việc làm, mua sắm) và điều bất lợi duy nhất (gia đình) – key đề in “ix” là lỗi gõ → xi Pros and cons of the continuous working week'],
+    32: ['Đoạn G', 'Đoạn G',
+      '“the new plan was implemented haphazardly, with some factories operating five-, six- and seven-day weeks at the same time”',
+      'Áp dụng tùy tiện, mỗi nơi một kiểu, có nơi chỉ báo cáo suông → iv Not consistently introduced everywhere'],
+    33: ['Đoạn H', 'Đoạn H',
+      '“Furthermore, the new week was far from having the vaunted effect on production.”',
+      'Tuần mới không đạt hiệu quả sản xuất như kỳ vọng: máy móc bảo trì kém, công nhân mất trách nhiệm → x The failure of factories to achieve expected improvements'],
+    34: ['Đoạn I', 'Đoạn I',
+      '“Both were finally abandoned in 1940” … “The experiment had failed.”',
+      'Cả tuần làm việc liên tục và tuần 6 ngày đều bị bãi bỏ năm 1940 → ii The end of two short-lived schemes'],
+    35: ['Khía cạnh nào của kinh doanh Mỹ được ngưỡng mộ?', 'Đoạn B',
+      '“whose time and motion studies had discovered ways of streamlining effort so that every worker could produce the maximum. The Communists were also great admirers of Ford\'s assembly line mass production”',
+      'Phương pháp của Taylor và dây chuyền sản xuất hàng loạt của Ford = phương pháp tăng năng suất → C'],
+    36: ['Tuần làm việc liên tục nhằm đảm bảo rằng', 'Đoạn D',
+      '“instituting a continuous working week so that the machines could operate to their full capacity every day of the week?”',
+      'Mục đích là để máy móc chạy hết công suất mọi ngày → B. (A sai: tổng giờ làm của mỗi người không tăng) → B'],
+    37: ['Điều nào được cho là khó cải thiện nhờ tuần làm việc liên tục?', 'Đoạn F',
+      '“The only objection concerned the family, where normally more than one member was working”',
+      'Phản đối duy nhất liên quan đến gia đình (vợ chồng khác lịch nghỉ) → A'],
+    38: ['Người có lý thuyết truyền cảm hứng cho nỗ lực tăng hiệu suất tên là gì?', 'Đoạn B',
+      '“Lenin had already been intrigued by the ideas of Taylor, the American management expert whose time and motion studies had discovered ways of streamlining effort so that every worker could produce the maximum.”',
+      '“ideas … time and motion studies” = lý thuyết của Taylor; key đề in “Ford” (dây chuyền của Ford cũng được ngưỡng mộ) nên cũng được chấp nhận → Taylor'],
+    39: ['Người đề xuất tuần làm việc liên tục tên là gì?', 'Đoạn D',
+      '“the economist Larin came up with an idea for even greater efficiency.” … “Why not abolish that wasted day by instituting a continuous working week”',
+      'Nhà kinh tế Larin nêu ý tưởng, Stalin chấp thuận → Larin'],
+    40: ['Trên lịch của tuần làm việc liên tục, hệ thống nào được dùng để phân biệt các nhóm công nhân?', 'Đoạn E',
+      '“Workers in each establishment were divided into five groups, each assigned a colour which appeared on the new calendars” … “This colour-coding was a valuable device”',
+      'Mỗi nhóm được gán một màu trên lịch = mã màu → colour-coding'],
+  },
+};
