@@ -1519,6 +1519,50 @@ function updateBulkBar() {
     }
     _syncCheckAll();
 }
+/* ── Copy word list ("word: nghĩa" per line) ──
+   For sharing with a classmate who missed saving the words. The format is
+   the same one "Nhập hàng loạt" parses, so pasting it there saves the lot.
+   Scope: ticked words if any, else whatever the table shows (search and
+   status filter applied), in table order. */
+function copyWordList() {
+    if (!currentBookData?.words?.length) { toast('Sổ này chưa có từ nào', 'error'); return; }
+    const byId = new Map(currentBookData.words.map(w => [w._id, w]));
+    let ids = _visibleWordIds;
+    if (selectedWordIds.size) {
+        // Visible ticked words first (table order), then any ticked word the
+        // current filter hides — it was still ticked on purpose.
+        const visible = ids.filter(id => selectedWordIds.has(id));
+        const hidden  = [...selectedWordIds].filter(id => !visible.includes(id));
+        ids = [...visible, ...hidden];
+    }
+    const oneLine = s => String(s || '').replace(/\s*[\r\n]+\s*/g, '; ').trim();
+    const lines = ids.map(id => byId.get(id)).filter(Boolean).map(w => {
+        const word = oneLine(w.word), meaning = oneLine(w.meaning);
+        return meaning ? `${word}: ${meaning}` : word;
+    }).filter(Boolean);
+    if (!lines.length) { toast('Không có từ nào để copy', 'error'); return; }
+    const ok = () => toast(`Đã copy ${lines.length} từ ✅ Bạn nhận dán vào “Nhập hàng loạt” là lưu được.`, 'success');
+    _copyText(lines.join('\n'), ok);
+}
+
+function _copyText(text, onDone) {
+    const fallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        let done = false;
+        try { done = document.execCommand('copy'); } catch { /* unsupported */ }
+        ta.remove();
+        if (done) onDone();
+        else toast('Trình duyệt chặn copy — hãy thử lại', 'error');
+    };
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(onDone).catch(fallback);
+    else fallback();
+}
+
 function clearWordSelection() {
     selectedWordIds.clear();
     updateBulkBar();
@@ -4007,6 +4051,7 @@ window.toggleSelectAll    = toggleSelectAll;
 window.bulkChangeStatus   = bulkChangeStatus;
 window.clearWordSelection = clearWordSelection;
 window.bulkDelete         = bulkDelete;
+window.copyWordList       = copyWordList;
 window.openAddWordManual  = openAddWordManual;
 window.addWordManual      = addWordManual;
 window.selectBookForSave  = selectBookForSave;

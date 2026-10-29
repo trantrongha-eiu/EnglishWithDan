@@ -298,6 +298,9 @@
           <button class="btn btn-ghost btn-sm" onclick="openBulkImport()" title="Nhập nhiều từ một lúc từ danh sách">
             <i class="fas fa-file-import"></i> Nhập hàng loạt
           </button>
+          <button class="btn btn-ghost btn-sm" onclick="copyWordList()" title="Copy danh sách dạng “word: nghĩa” để gửi cho bạn bè — bạn ấy dán vào “Nhập hàng loạt” là lưu được. Đang tick chọn từ thì chỉ copy các từ đã chọn; đang lọc/tìm thì copy các từ đang hiện.">
+            <i class="fas fa-copy"></i> Copy danh sách
+          </button>
           <button class="btn btn-sm btn-hard-words" id="btn-hard-words" onclick="practiceHardWords()" style="display:none">
             <i class="fas fa-fire"></i> Ôn lại từ hay sai
           </button>
@@ -309,6 +312,7 @@
             <button type="button" class="bulk-status-btn chua-thuoc" onclick="bulkChangeStatus('chua-thuoc', this)">Not yet</button>
             <button type="button" class="bulk-status-btn nho-so-so" onclick="bulkChangeStatus('nho-so-so', this)">So-so</button>
             <button type="button" class="bulk-status-btn da-thuoc" onclick="bulkChangeStatus('da-thuoc', this)">Mastered</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="copyWordList()" title="Copy các từ đã chọn dạng “word: nghĩa”"><i class="fas fa-copy"></i> Copy</button>
             <button class="btn btn-danger btn-sm" onclick="bulkDelete()"><i class="fas fa-trash"></i> Delete</button>
             <button type="button" class="btn btn-ghost btn-sm" onclick="clearWordSelection()" title="Bỏ chọn tất cả">Bỏ chọn</button>
           </div>
@@ -988,6 +992,7 @@
             Hệ thống sẽ tự tra ví dụ và phát âm từ từ điển Oxford/Cambridge.
           </li>
           <li><strong>Từ bài Reading:</strong> Đọc bài Reading → double-click vào từ bất kỳ → chọn sổ để lưu.</li>
+          <li><strong>Chia sẻ cho bạn:</strong> Nhấn <code>Copy danh sách</code> → gửi cho bạn qua Zalo/Messenger. Bạn ấy chỉ cần dán vào <code>Nhập hàng loạt</code> là lưu được. Muốn gửi vài từ thôi: tick chọn các từ đó rồi nhấn <code>Copy</code>.</li>
         </ul>
       </div>
 
@@ -1207,7 +1212,7 @@
 <script src="/js/dashboard-review.js?v=4dba13dc0a"></script>
 <script src="/js/dashboard-paraphrase.js?v=f6c0320973"></script>
 <script src="/js/shared/fire-tier.js?v=9d6b07142e"></script>
-<script src="/js/dashboard.js?v=0f7e1fbd7d"></script>
+<script src="/js/dashboard.js?v=292d8e8f29"></script>
 <script src="/js/dashboard-browse.js?v=5692652b85"></script>
 </body>
 </html>
