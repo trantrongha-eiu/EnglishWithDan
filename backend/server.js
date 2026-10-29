@@ -49,6 +49,7 @@ const assignmentSweepCron = require('./cron/assignmentSweep');
 const parentNotifySweepCron = require('./cron/parentNotifySweep');
 const speakingGradeQueueCron = require('./cron/speakingGradeQueue');
 const proctorShotCleanupCron = require('./cron/proctorShotCleanup');
+const speakingRecordingCleanupCron = require('./cron/speakingRecordingCleanup');
 
 // ── Process-level safety nets (Phase 11) ────────────────────────
 // An uncaught exception leaves the process in an unknown state — log it
@@ -254,6 +255,12 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'ProctorShotCleanup cron failed to start', { errorMessage: e.message });
     }
+    // Delete Speaking practice recordings older than 3 months
+    try {
+      speakingRecordingCleanupCron.start();
+    } catch (e) {
+      logger.error('startup', 'SpeakingRecordingCleanup cron failed to start', { errorMessage: e.message });
+    }
   })
   .catch(err => logger.error('startup', 'MongoDB initial connection failed', { errorMessage: err.message }));
 
@@ -279,6 +286,7 @@ function shutdown(signal) {
   parentNotifySweepCron.stop();
   speakingGradeQueueCron.stop();
   proctorShotCleanupCron.stop();
+  speakingRecordingCleanupCron.stop();
 
   server.close(async () => {
     logger.shutdown('HTTP server closed (no longer accepting new connections)');

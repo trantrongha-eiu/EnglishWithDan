@@ -15,6 +15,7 @@ const Task1Attempt    = require('../../models/Task1Attempt');
 const Task2Attempt    = require('../../models/Task2Attempt');
 const SpeakingAttempt = require('../../models/SpeakingAttempt');
 const DictationAttempt = require('../../models/DictationAttempt');
+const speakingRecording = require('../../services/speakingRecordingService');
 
 const router = express.Router();
 
@@ -115,6 +116,7 @@ router.delete('/speaking-attempts/:id', auth, teacherOnly, async (req, res) => {
   try {
     const result = await SpeakingAttempt.findByIdAndDelete(req.params.id);
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài Speaking' });
+    if (result.audioUrl) await speakingRecording.remove(result.audioUrl);
     res.json({ success: true, message: 'Đã xóa bài Speaking' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

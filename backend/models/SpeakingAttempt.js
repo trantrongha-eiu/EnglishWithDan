@@ -56,6 +56,10 @@ const SpeakingAttemptSchema = new mongoose.Schema({
     analyzedAt:       { type: Date },
   },
   duration:     { type: Number, default: 0 }, // seconds
+  // The student's recording on R2 (speaking-recordings/), replayable from
+  // History on any device. '' = no recording saved. Deleted after 3 months
+  // with the attempt — see services/speakingRecordingService.js.
+  audioUrl:     { type: String, default: '' },
   status:       { type: String, enum: ['pending', 'analyzed', 'error'], default: 'pending' },
   // true while a 'pending' attempt waits in the AI re-grade queue
   // (SpeakingGradeJob — AI was overloaded at submit time). Keeps

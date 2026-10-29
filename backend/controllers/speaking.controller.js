@@ -1,5 +1,6 @@
 const speakingService = require('../services/speakingService');
 const speakingGradeQueue = require('../services/speakingGradeQueueService');
+const speakingRecording = require('../services/speakingRecordingService');
 const catchAsync = require('../middleware/catchAsync');
 
 // ── GET /api/speaking/topics ─────────────────────────────────
@@ -69,6 +70,12 @@ exports.analyze = catchAsync(async (req, res) => {
     questionId, topic, part: partNum, questionText, transcript: clientTranscript, duration
   });
 
+  // Save the recording to the student's history (R2, kept 3 months) while
+  // the AI grades — runs in parallel so it adds no wait. Never throws.
+  const recordingSaved = pendingId && req.file
+    ? speakingRecording.save(pendingId, req.file)
+    : Promise.resolve('');
+
   const durationSec = Number(duration) || 0;
   let feedback;
   try {
@@ -99,13 +106,15 @@ exports.analyze = catchAsync(async (req, res) => {
           part: partNum, durationSec, audio: req.file || null,
         });
         if (queued) {
+          const audioUrl = await recordingSaved;
           return res.status(202).json({
-            success: true, queued: true, attemptId: pendingId,
+            success: true, queued: true, attemptId: pendingId, audioUrl,
             message: 'AI đang bận nên chưa chấm ngay được — bài nói của bạn đã được lưu. AI sẽ chấm và gửi điểm cho bạn sau (trong mục Lịch sử và hộp thư). Bạn cứ luyện câu khác nhé!',
           });
         }
       }
       if (pendingId) await speakingService.markAttemptError(pendingId);
+      await recordingSaved; // the error'd attempt keeps its recording
       if (aiErr.isOverloaded) {
         return res.status(503).json({ success: false, message: aiErr.message });
       }
@@ -129,6 +138,10 @@ exports.analyze = catchAsync(async (req, res) => {
   // recording attempt.
   if (feedback.noGenuineAnswer) {
     if (pendingId) await speakingService.discardPendingAttempt(pendingId);
+    // Nothing worth keeping — drop the recording too (save() also cleans up
+    // itself if it finishes after the attempt is gone).
+    const discardedUrl = await recordingSaved;
+    if (discardedUrl) await speakingRecording.remove(discardedUrl);
     return res.json({
       success: true, noGenuineAnswer: true, feedback,
       message: 'Không phát hiện được nội dung trả lời trong bản ghi — hãy kiểm tra micro và thử ghi âm lại.',
@@ -139,9 +152,12 @@ exports.analyze = catchAsync(async (req, res) => {
     ? await speakingService.finalizeAttempt(pendingId, feedback, req.user, resolvedTranscript)
     : await speakingService.saveAttempt(req.user, { questionId, topic, part: partNum, questionText, transcript: resolvedTranscript, duration, feedback });
 
+  const audioUrl = await recordingSaved;
+
   // `transcript` lets a client that had no local speech-to-text show what
-  // was actually said; `attemptId` keys the locally-stored audio recording.
-  res.json({ success: true, feedback, attemptId, newlyUnlocked, transcript: resolvedTranscript });
+  // was actually said; `audioUrl` is the recording saved to History ('' when
+  // none — the client then keeps its local IndexedDB copy, keyed by attemptId).
+  res.json({ success: true, feedback, attemptId, newlyUnlocked, transcript: resolvedTranscript, audioUrl });
 });
 
 // ── POST /api/speaking/mock-submit ───────────────────────────
@@ -164,6 +180,8 @@ exports.mockSubmit = catchAsync(async (req, res) => {
     questionId, topic, part: partNum, questionText,
     transcript: cleanTranscript, duration
   });
+  // Optional recording (multipart 'audio') — saved to History like /analyze's.
+  const audioUrl = attemptId && req.file ? await speakingRecording.save(attemptId, req.file) : '';
 
   // Best-effort async grade — don't await, don't let a failure touch the
   // response. mockTestService picks the band up on the next history read.
@@ -176,7 +194,7 @@ exports.mockSubmit = catchAsync(async (req, res) => {
       });
   }
 
-  res.json({ success: true, attemptId, graded: !!(attemptId && cleanTranscript) });
+  res.json({ success: true, attemptId, audioUrl, graded: !!(attemptId && cleanTranscript) });
 });
 
 // ── POST /api/speaking/sample-answer ─────────────────────────
