@@ -138,9 +138,12 @@ function tipCatalog(model) {
 //   2. since the assignment, one whole-template recall run — step ④ "Ghép cả
 //      bài" or the mock test, both saved with mode 'path' — got >= PASS_PERCENT
 //      of ALL the template's sentences memorised.
-// Attempts are keyed by (templateType, level), not the template's _id. A
-// run's totalItems may be smaller than the template (a mock test submitted
-// early), so the denominator is the larger of the two.
+// Attempts are keyed by (templateType, level), not the template's _id.
+// Since 2026-10-29 the practice path drills the full template from the
+// Template Bank book (frontend/js/task2-generic-templates.js), which has
+// fewer lines than this DB row — so a path run is scored against its own
+// totalItems (the page always sends every sentence, an unanswered one counts
+// as wrong). Legacy runs keep the larger of totalItems and the DB count.
 // Runs saved by the old separate modes (cloze/translation/…, before the
 // 2026-10-28 practice-path redesign) keep the old rule — one run >= 70% —
 // so homework already ticked that way stays ticked.
@@ -173,7 +176,7 @@ async function checkTask2Templates(studentId, ids, since) {
       if (r.templateType !== t.typeId || (r.level || 'band7') !== level) continue;
       const legacy = !r.mode || T2_LEGACY_MODES.has(r.mode);
       if (!legacy && !T2_RECALL_MODES.has(r.mode)) continue; // e.g. 'review' — only a few sentences
-      const denom = Math.max(Number(r.totalItems) || 0, itemCount, 1);
+      const denom = legacy ? Math.max(Number(r.totalItems) || 0, itemCount, 1) : Math.max(Number(r.totalItems) || 0, 1);
       const pct = ((Number(r.correctItems) || 0) / denom) * 100;
       const passes = pct >= PASS_PERCENT && (legacy || pathDone);
       if (!best || (passes && !best.passes) || (passes === best.passes && pct > best.pct)) best = { r, pct, passes, legacy };

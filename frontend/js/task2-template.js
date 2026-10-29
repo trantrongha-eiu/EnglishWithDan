@@ -1,15 +1,21 @@
 // task2-template.html — Task 2 Templates: one short practice path per essay type.
 //
-// Replaces the five separate modes (Cloze / Dịch câu / Chunks / Build /
-// Dictation) with one path the student walks in order. The template
-// sentences are used exactly as stored (Task2Template, fetched from
-// /api/task2/templates) — nothing is reworded.
+// Content: the full template of each type and level — exactly the lines the
+// "Xem đầy đủ" pop-up shows (js/task2-generic-templates.js, copied from the
+// Template Bank book, Band 6+ and Band 7+ boxes). Nothing is reworded; every
+// exercise drills those lines.
 //
-//   ① Khung bài   — paragraph structure + put each paragraph's sentences in order
-//   ② Đọc & nghe  — read every sentence with its meaning, key words, audio
+//   ① Khung bài   — paragraph structure + put each paragraph's lines in order
+//   ② Đọc & nghe  — read every line with its meaning, key words, audio
 //   ③ Luyện đoạn  — per paragraph: build from chunks → fill fading blanks → recall from Vietnamese
 //   ④ Ghép cả bài — write each paragraph (band 7+: the whole essay, timed) from memory
-//   ⑤ Áp dụng     — write a real essay, then compare with the model essay
+//   ⑤ Áp dụng     — write a real essay with the frames (live checklist), then compare with the model essay
+//
+// "Hỏi Lulu" hints (js/shared/playful.js AskLulu) in every exercise except the
+// mock test. A line answered with Lulu's help still counts as done, but comes
+// back once at the end of the round to be recalled without help.
+// "Luyện câu yếu" drills the lines the student keeps forgetting (mastery < 3),
+// also offered right after a ④ run below the pass mark.
 //
 // Band 6+ gets more help (two fade levels, letter-by-letter recall, one
 // paragraph at a time in ④); Band 7+ gets less (one fade level, free typing,
@@ -24,44 +30,46 @@ const API = (window.AuthService && window.AuthService.API && window.AuthService.
 function _safeParse(json, fallback) { if (json == null) return fallback; try { return JSON.parse(json); } catch { return fallback; } }
 function loadXPFromStorage() {
   const stored = _safeParse(localStorage.getItem('t2_progress'), { xp: 0, streak: 0 });
-  document.getElementById('header-xp').textContent     = stored.xp     || 0;
-  document.getElementById('header-streak').textContent = stored.streak || 0;
+  const xp = document.getElementById('header-xp'), st = document.getElementById('header-streak');
+  if (xp) xp.textContent = stored.xp || 0;
+  if (st) st.textContent = stored.streak || 0;
 }
 function updateXPStorage(earned) {
   const stored = _safeParse(localStorage.getItem('t2_progress'), { xp: 0, streak: 0 });
   stored.xp = (stored.xp || 0) + earned;
   try { localStorage.setItem('t2_progress', JSON.stringify(stored)); } catch {}
-  document.getElementById('header-xp').textContent     = stored.xp;
-  document.getElementById('header-streak').textContent = stored.streak || 0;
+  loadXPFromStorage();
 }
 
 // ── Template data ───────────────────────────────────────────────
+// Colours from the playful palette (css/playful.css) — the hero and the
+// active tab take the colour of the open essay type.
 const TYPE_META = {
-  type01: { icon: 'fa-scale-balanced',     color: '#2563eb', desc: 'Phân tích ưu điểm và nhược điểm của một xu hướng hiện đại.' },
-  type02: { icon: 'fa-comments',           color: '#7c3aed', desc: 'Thảo luận hai quan điểm đối lập và đưa ra ý kiến cá nhân.' },
-  type03: { icon: 'fa-lightbulb',          color: '#0891b2', desc: 'Phân tích nguyên nhân của một vấn đề và đề xuất giải pháp.' },
-  type04: { icon: 'fa-gears',              color: '#dc2626', desc: 'Phân tích tác động của vấn đề và đề xuất giải pháp khắc phục.' },
-  type05: { icon: 'fa-arrow-trend-up',     color: '#d97706', desc: 'Phân tích nguyên nhân và hậu quả của một hiện tượng xã hội.' },
-  type06: { icon: 'fa-check-double',       color: '#16a34a', desc: 'Bày tỏ quan điểm đồng ý hoặc không đồng ý và bảo vệ lập trường.' },
-  type07: { icon: 'fa-circle-half-stroke', color: '#db2777', desc: 'Đánh giá xem một xu hướng là phát triển tích cực hay tiêu cực.' },
+  type01: { label: 'Type 01', sub: 'Adv & Disadv',    icon: 'fa-scale-balanced',     color: '#4d63d8', desc: 'Phân tích ưu điểm và nhược điểm của một xu hướng hiện đại.' },
+  type02: { label: 'Type 02', sub: 'Discuss Both',    icon: 'fa-comments',           color: '#7d62c9', desc: 'Thảo luận hai quan điểm đối lập và đưa ra ý kiến cá nhân.' },
+  type03: { label: 'Type 03', sub: 'Cause–Solution',  icon: 'fa-lightbulb',          color: '#2a9d8f', desc: 'Phân tích nguyên nhân của một vấn đề và đề xuất giải pháp.' },
+  type04: { label: 'Type 04', sub: 'Effect–Solution', icon: 'fa-gears',              color: '#cf5f57', desc: 'Phân tích tác động của vấn đề và đề xuất giải pháp khắc phục.' },
+  type05: { label: 'Type 05', sub: 'Cause–Effect',    icon: 'fa-arrow-trend-up',     color: '#e07a3a', desc: 'Phân tích nguyên nhân và hậu quả của một hiện tượng xã hội.' },
+  type06: { label: 'Type 06', sub: 'Agree/Disagree',  icon: 'fa-check-double',       color: '#2f9e5b', desc: 'Bày tỏ quan điểm đồng ý hoặc không đồng ý và bảo vệ lập trường.' },
+  type07: { label: 'Type 07', sub: 'Pos/Neg Dev',     icon: 'fa-circle-half-stroke', color: '#d4689a', desc: 'Đánh giá xem một xu hướng là phát triển tích cực hay tiêu cực.' },
 };
 let TPL_TYPES = [];  // [{id, label, sub, name}]
-let TPL_DATA  = {};  // typeId -> { name, sections: [{title, items:[{en, answer|answers, vi}]}] }
+let TPL_DATA  = {};  // typeId -> { name, paras: [{si, title, sentences:[…]}] }
 
 let _type  = 'type01';
 let _level = 'band6';
 let _progress = {};  // typeId -> progress row for _level (see backend Task2TemplateProgress)
-let _view = 'overview'; // overview | warmup | read | drill | assemble | apply | review | exam
+let _view = 'overview'; // overview | warmup | read | drill | assemble | apply | review | fix | exam
 let _run = null;        // state of the open activity
 let _showVi = true;
 let _homework = []; // class homework of type task2_template: [{title, className, deadline, typeId, level, completed}]
 
 const STEPS = [
-  { key: 'warmup',   num: '①', icon: 'fa-sitemap',     title: 'Khung bài',      desc: 'Mỗi đoạn có mấy câu, bao nhiêu chữ — rồi tự sắp xếp các câu theo đúng thứ tự.' },
-  { key: 'read',     num: '②', icon: 'fa-headphones',  title: 'Đọc & nghe',     desc: 'Đọc từng câu kèm nghĩa tiếng Việt, nghe phát âm, chú ý các từ khoá.' },
+  { key: 'warmup',   num: '①', icon: 'fa-sitemap',     title: 'Khung bài',      desc: 'Mỗi đoạn có mấy câu, câu nào làm nhiệm vụ gì — rồi tự sắp xếp các câu theo đúng thứ tự.' },
+  { key: 'read',     num: '②', icon: 'fa-headphones',  title: 'Đọc & nghe',     desc: 'Đọc từng câu của bản đầy đủ kèm nghĩa tiếng Việt, nghe phát âm, chú ý các từ khoá.' },
   { key: 'drill',    num: '③', icon: 'fa-layer-group', title: 'Luyện từng đoạn', desc: 'Mỗi đoạn 3 vòng: ghép cụm → điền chữ bị ẩn dần → nhớ lại cả câu từ tiếng Việt.' },
-  { key: 'assemble', num: '④', icon: 'fa-pen-nib',     title: 'Ghép cả bài',    desc: 'Chỉ nhìn khung, viết lại cả đoạn từ trí nhớ. Máy so từng chữ với template.' },
-  { key: 'apply',    num: '⑤', icon: 'fa-flag-checkered', title: 'Áp dụng đề thật', desc: 'Viết bài cho một đề thật bằng template, rồi so với bài mẫu.' },
+  { key: 'assemble', num: '④', icon: 'fa-pen-nib',     title: 'Ghép cả bài',    desc: 'Chỉ nhìn khung, viết lại cả đoạn từ trí nhớ. Máy so từng chữ với bản đầy đủ.' },
+  { key: 'apply',    num: '⑤', icon: 'fa-flag-checkered', title: 'Áp dụng đề thật', desc: 'Viết bài cho một đề thật bằng các khung câu — Lulu đánh dấu khung nào bạn đã dùng.' },
 ];
 const STEP_KEYS = STEPS.map(s => s.key);
 const DRILL_STAGES = ['Ghép cụm', 'Điền dần', 'Nhớ lại'];
@@ -72,6 +80,9 @@ const DRILL_STAGES = ['Ghép cụm', 'Điền dần', 'Nhớ lại'];
 const SENT_KNOWN = 80;
 const ASSEMBLE_PASS = 70;
 const RECALL_PASS_B7 = 90; // % words right for a free-typed sentence to count in ③ (Band 7+)
+const ASM_HINTS = { band6: 6, band7: 3 }; // "Hỏi Lulu" per paragraph in ④
+const RUN_HINTS = 3;                       // per sentence in Ôn nhanh / Luyện câu yếu
+const FIX_MAX = 8;                         // sentences per "Luyện câu yếu" run
 
 // ── Small helpers ──────────────────────────────────────────────
 const esc  = s => (window.escHtml ? window.escHtml(s) : String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]));
@@ -93,16 +104,8 @@ function shuffleNew(arr, same = (x, y) => x === y) {
 }
 function fmtMMSS(secs) { secs = Math.max(0, Math.floor(secs)); return String(Math.floor(secs / 60)).padStart(2, '0') + ':' + String(secs % 60).padStart(2, '0'); }
 
-function fullSentence(item) {
-  const answers = Array.isArray(item.answers) ? item.answers : [item.answer];
-  const parts = String(item.en || '').split('___');
-  let out = parts[0];
-  answers.forEach((a, i) => { out += (a || '') + (parts[i + 1] || ''); });
-  return out.replace(/\s+/g, ' ').trim();
-}
-
 // Sentence tokens: "(placeholder)," counts as one fixed token the student
-// never has to type; everything else is a word.
+// never has to type; everything else is a word ("/" between two options too).
 function tokenize(sentence) {
   return (String(sentence).match(/\([^()]*\)\S*|\S+/g) || []).map(text => {
     if (text.startsWith('(')) return { text, ph: true, lead: '', core: text, trail: '' };
@@ -116,15 +119,13 @@ function normWord(w) {
     .replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '');
 }
 const stripPh = s => String(s || '').replace(/\([^()]*\)/g, ' ');
-function wordsOf(s) { return stripPh(s).split(/\s+/).map(normWord).filter(Boolean); }
 function countWords(s) { return String(s || '').trim().split(/\s+/).filter(Boolean).length; }
-function viText(item) { return String(item.vi || '').replace(/^→\s*/, ''); }
+function firstWords(s, n) { return stripPh(s.en).trim().split(/\s+/).filter(w => w !== '/').slice(0, n).join(' ').replace(/[,;:.]+$/, ''); }
 
-const STOPWORDS = new Set('a an the of in on at to for with by from and or but so as is are was were be been being it its this that these those they them their there which who can could may might will would should has have had do does did not than more most very also such into over'.split(' '));
+const STOPWORDS = new Set('a an the of in on at to for with by from and or but so as is are was were be been being it its this that these those they them their there which who can could may might will would should has have had do does did not than more most very also such into over some many much one two'.split(' '));
 
-// Sentence role inside its paragraph — shown in ① and used to grade the
-// ordering (sentences with the same role, e.g. two alternative openers,
-// may swap places).
+// Sentence role inside its paragraph — shown in ①/④/⑤ as the cue for each
+// line. The book's own labels (Mở đề / Paraphrase đề / Nêu luận điểm) win.
 function roleOf(text, si, secCount) {
   const s = String(text).trim();
   const intro = si === 0, concl = si === secCount - 1;
@@ -133,11 +134,11 @@ function roleOf(text, si, secCount) {
   if (concl) return 'Chốt ý';
   if (intro) {
     if (/\b(I (completely |strongly |firmly |partly |fully )?(agree|disagree|believe)|In my (view|opinion)|I contend|I would argue|I firmly)\b/i.test(s)) return 'Nêu quan điểm';
-    if (/^(In recent years|Recently|Nowadays|In today|In (the )?contemporary|In some|The issue of|With the|As society|It is (undeniable|widely)|There (has been|is) (an ongoing|a growing|considerable))/i.test(s)) return 'Mở đề';
+    if (/^(In recent years|In recent decades|Recently|Nowadays|In today|In (the )?contemporary|In some|The issue of|With the|As society|It is (undeniable|widely)|There (has been|is) (an ongoing|a growing|considerable))/i.test(s)) return 'Mở đề';
     return 'Bối cảnh';
   }
-  if (/^(This is (mainly |primarily |largely |partly |largely )?(because|due)|This can be attributed|This stems|The reason)/i.test(s)) return 'Giải thích';
-  if (/^(As a result|Consequently|Therefore|Thus|Hence|This (leads|means))\b/i.test(s)) return 'Kết quả';
+  if (/^(This is (mainly |primarily |largely |partly )?(because|due)|This can be attributed|This stems|The reason)/i.test(s)) return 'Giải thích';
+  if (/^(As a result|Consequently|Therefore|Thus|Hence|This (leads|means|can lead))\b/i.test(s)) return 'Kết quả';
   if (/^(For (example|instance)|To illustrate|A (clear|good|prime) (illustration|example)|Research|Recent studies|Studies)\b/i.test(s)) return 'Ví dụ / dẫn chứng';
   if (/^(However|On the other hand|Despite|Admittedly|While some|Nevertheless|Although|Conversely|That said|Critics)\b/i.test(s)) return 'Chuyển ý / nhượng bộ';
   if (/^(Furthermore|Moreover|In addition|Additionally|Another|Besides|Secondly|Finally|Also|Ultimately|When considered)\b/i.test(s)) return 'Ý bổ sung';
@@ -151,47 +152,107 @@ function paraTarget(si, secCount) {
   return { sent: '4–6 câu', words: '80–110 chữ', lo: 80, hi: 110 };
 }
 
-// The active type as paragraphs of sentences.
-function paragraphs(typeId = _type) {
-  const t = TPL_DATA[typeId];
-  if (!t) return [];
-  const n = t.sections.length;
-  return t.sections.map((sec, si) => ({
-    si, title: sec.title,
-    sentences: (sec.items || []).map((item, ii) => {
-      const en = fullSentence(item);
-      const answers = (Array.isArray(item.answers) ? item.answers : [item.answer]).filter(Boolean);
-      return { si, ii, key: `${si}-${ii}`, en, vi: viText(item), role: roleOf(en, si, n),
-        anchors: new Set(answers.join(' ').split(/\s+/).map(normWord).filter(Boolean)) };
-    }),
-  }));
+// ── Full template → paragraphs of sentences ────────────────────
+// Book labels: role names (kept as the role), or options the student picks
+// one of when writing ("Đồng ý một phần", "Nếu bài của bạn là NEGATIVE", …).
+// Options of the same slot share an `alt` group: they may swap places in ①
+// and count as one frame in ⑤.
+const ROLE_LABELS = new Set(['Mở đề', 'Paraphrase đề', 'Nêu luận điểm']);
+function _optName(label) {
+  if (/NEGATIVE/i.test(label)) return 'Bài NEGATIVE';
+  if (/một phần/i.test(label)) return 'Đồng ý một phần';
+  if (/hoàn toàn/i.test(label)) return 'Đồng ý / không đồng ý hoàn toàn';
+  if (/7\.5/.test(label)) return 'Band 7.5+ · tuỳ chọn';
+  return label;
 }
+function _anchorsOf(en) {
+  // Key words: the (up to 3) longest content words — underlined in ② and
+  // hidden first in ③.
+  const words = tokenize(en).filter(t => !t.ph).map(t => normWord(t.core)).filter(w => w.length >= 5 && !STOPWORDS.has(w));
+  const uniq = [...new Set(words)];
+  return new Set(uniq.map((w, i) => [w, i]).sort((a, b) => b[0].length - a[0].length || a[1] - b[1]).slice(0, 3).map(x => x[0]));
+}
+function buildType(type) {
+  const n = type.sections.length;
+  let altSeq = 0;
+  const paras = type.sections.map((sec, si) => {
+    const sentences = [];
+    (sec.lines || []).forEach((ln, ii) => {
+      let en = String(ln.en || '').replace(/\s+/g, ' ').trim();
+      let vi = String(ln.vi || '').replace(/^→\s*/, '').trim();
+      let label = String(ln.label || '').trim();
+      // "Partially agree: In conclusion, …" — the option name is written into the line.
+      const pre = en.match(/^Partially agree:\s*/i);
+      if (pre) { en = en.slice(pre[0].length); vi = vi.replace(/^[^:]{0,30}:\s*/, ''); label = label || 'Đồng ý một phần'; }
+      const prev = sentences[sentences.length - 1];
+      let role = ROLE_LABELS.has(label) ? label : roleOf(en, si, n);
+      const isOpt = !!label && !ROLE_LABELS.has(label);
+      const s = { si, ii, key: `${si}-${ii}`, en, vi, role, opt: isOpt ? _optName(label) : '', optional: /7\.5/.test(label), alt: null, anchors: _anchorsOf(en) };
+      const joinsPrev = prev && isOpt && (/NEGATIVE/i.test(label) || pre || (/^(Đồng ý|Lập trường)/.test(label) && /^(Đồng ý|Lập trường)/.test(prev.rawLabel || '')));
+      if (joinsPrev) {
+        if (prev.alt == null) prev.alt = ++altSeq;
+        if (!prev.opt) prev.opt = /NEGATIVE/i.test(label) ? 'Bài POSITIVE' : 'Đồng ý / không đồng ý hoàn toàn';
+        s.alt = prev.alt;
+        s.role = prev.role;
+      }
+      s.rawLabel = label;
+      sentences.push(s);
+    });
+    return { si, title: sec.title, sentences };
+  });
+  return { name: type.name, paras };
+}
+
+function paragraphs(typeId = _type) { return (TPL_DATA[typeId] && TPL_DATA[typeId].paras) || []; }
 function allSentences(typeId = _type) { return paragraphs(typeId).flatMap(p => p.sentences); }
 function shortTitle(title) { return String(title || '').replace(/^[①②③④⑤⑥⑦⑧]\s*/, ''); }
+function roleTag(s) { return `<span class="pth-role">${esc(s.role)}</span>${s.opt ? `<span class="pth-opt">${esc(s.opt)}</span>` : ''}`; }
 
 // English sentence as HTML: placeholders as chips, key words underlined.
 function enHtml(s, { anchors = true } = {}) {
   return tokenize(s.en).map(t => {
     if (t.ph) return `<span class="pth-ph">${esc(t.text)}</span>`;
+    if (t.text === '/') return '<span class="pth-or">/</span>';
     if (anchors && s.anchors && s.anchors.has(normWord(t.core))) return `${esc(t.lead)}<span class="pth-anchor">${esc(t.core)}</span>${esc(t.trail)}`;
     return esc(t.text);
   }).join(' ');
 }
 
-// ── Word-level diff (placeholders ignored) ─────────────────────
-// target: [{w, sid}], typed: string → { ops, matched[] } where matched[i]
-// tells whether target word i was written correctly.
+// ── Word-level diff (placeholders ignored, "a / b" = either) ────
+// target: [{w, alts, sid}], typed: string → { ops, matched[] } where
+// matched[i] tells whether target word i was written correctly.
+function targetWords(sentences) {
+  const out = [];
+  sentences.forEach(s => {
+    const raw = stripPh(s.en).split(/\s+/).filter(Boolean);
+    for (let i = 0; i < raw.length; i++) {
+      const n = normWord(raw[i]);
+      if (!n) continue;
+      if (raw[i + 1] === '/' && raw[i + 2] && normWord(raw[i + 2])) {
+        out.push({ w: `${raw[i]} / ${raw[i + 2]}`, alts: [n, normWord(raw[i + 2])], sid: s.key });
+        i += 2;
+        continue;
+      }
+      out.push({ w: raw[i], alts: [n], sid: s.key });
+    }
+  });
+  return out;
+}
+function typedWords(text) {
+  return stripPh(text).split(/\s+/).filter(Boolean).map(w => ({ w, n: normWord(w) })).filter(x => x.n);
+}
 function alignWords(target, typedText) {
-  const typed = stripPh(typedText).split(/\s+/).filter(Boolean).map(w => ({ w, n: normWord(w) })).filter(x => x.n);
-  const a = target.map(t => normWord(t.w)), b = typed.map(t => t.n);
+  const typed = typedWords(typedText);
+  const a = target.map(t => t.alts), b = typed.map(t => t.n);
   const n = a.length, m = b.length;
+  const eq = (i, j) => a[i].includes(b[j]);
   const dp = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
   for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--)
-    dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    dp[i][j] = eq(i, j) ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
   const raw = [], matched = new Array(n).fill(false);
   let i = 0, j = 0;
   while (i < n && j < m) {
-    if (a[i] === b[j]) { raw.push({ type: 'ok', word: typed[j].w }); matched[i] = true; i++; j++; }
+    if (eq(i, j)) { raw.push({ type: 'ok', word: typed[j].w }); matched[i] = true; i++; j++; }
     else if (dp[i + 1][j] >= dp[i][j + 1]) { raw.push({ type: 'miss', word: target[i].w }); i++; }
     else { raw.push({ type: 'extra', word: typed[j].w }); j++; }
   }
@@ -215,10 +276,58 @@ function diffHtml(ops) {
     return `<span class="pth-d-wrong" title="Đúng là: ${escA(o.expected)}">${esc(o.word)}</span><span class="pth-d-fix">${esc(o.expected)}</span>`;
   }).join(' ');
 }
-function targetWords(sentences) {
+
+// What the letter-by-letter drill (Band 6+ recall) asks the student to type:
+// placeholders are not typed — they show as "…" glued to the word before;
+// "agree / disagree" becomes one "agree/disagree" word.
+function wbwAnswer(en) {
   const out = [];
-  sentences.forEach(s => stripPh(s.en).split(/\s+/).filter(w => normWord(w)).forEach(w => out.push({ w, sid: s.key })));
-  return out;
+  let pending = '';
+  tokenize(en).forEach(t => {
+    if (t.ph) {
+      if (pending === '\u0000') pending = '';
+      const trail = t.text.replace(/^\([^()]*\)/, '');
+      if (out.length) out[out.length - 1] += '…' + trail; else pending = '…';
+      return;
+    }
+    if (t.text === '/' && out.length) { out[out.length - 1] += '/'; pending = '\u0000'; return; }
+    if (pending === '\u0000') { out[out.length - 1] += t.text; pending = ''; return; }
+    out.push(pending + t.text);
+    pending = '';
+  });
+  return out.join(' ');
+}
+
+// ── Lulu ───────────────────────────────────────────────────────
+// Lulu says `text` in a bubble over the element (a selector is looked up
+// after the screen re-rendered).
+function lulu(anchor, text, mood = 'wink') {
+  const el = typeof anchor === 'string' ? document.querySelector(anchor) : anchor;
+  if (window.AskLulu) window.AskLulu.say(el, text, mood);
+  else showToast(text, 'info', 3500);
+}
+function askBtn(id, onclick, label = 'Hỏi Lulu', extra = '') {
+  return `<button class="pth-btn ask-lulu" id="${id}" onclick="${onclick}" ${extra}><span class="ask-lulu-ic"></span> ${label}</button>`;
+}
+// Lulu with a speech bubble (results, coach).
+function luluSays(text, { pct = 70, mood, solo = true, stacked = false } = {}) {
+  if (window.Mascot && window.Mascot.reactHtml) return window.Mascot.reactHtml({ pct, text, mood, solo, stacked, compact: !stacked });
+  return `<div class="pth-fb pth-fb--good">🍊 ${esc(text)}</div>`;
+}
+const HINTED_NOTE = 'Có Lulu giúp nên câu này sẽ quay lại cuối vòng — lần sau tự làm không gợi ý nha!';
+
+// Next missing word for a typed answer — Lulu reveals one more letter each ask.
+// shown: per target-word letter counts (kept by the caller).
+function wordHint(target, typedText, shown) {
+  const d = alignWords(target, typedText);
+  const idx = d.matched.findIndex(x => !x);
+  if (idx < 0) return { done: true };
+  const word = target[idx].w.split(' / ')[0].replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9']+$/g, '');
+  shown[idx] = Math.min(word.length, Math.max(1, shown[idx] || 0) + 1);
+  const full = shown[idx] >= word.length;
+  const before = idx > 0 ? target[idx - 1].w.split(' / ')[0].replace(/[,.;:]+$/, '') : '';
+  const where = before ? `Sau “${before}”` : 'Từ đầu tiên';
+  return { done: false, text: full ? `${where} là chữ “${word}” nè 💪` : `${where} là một chữ bắt đầu bằng “${word.slice(0, shown[idx])}…” nè 🍊` };
 }
 
 // ── Audio (browser text-to-speech) ─────────────────────────────
@@ -233,7 +342,8 @@ function speak(text, rate = 0.95) {
   if (!('speechSynthesis' in window)) { showToast('Trình duyệt không hỗ trợ đọc to.', 'warn', 2500); return; }
   speechSynthesis.cancel();
   if (!_voice) _voice = _pickVoice();
-  const u = new SpeechSynthesisUtterance(String(text).replace(/[()]/g, ''));
+  // Placeholders are read as "something"; "a / b" as "a or b".
+  const u = new SpeechSynthesisUtterance(String(text).replace(/\([^()]*\)/g, 'something').replace(/\s\/\s/g, ' or '));
   u.lang = _voice ? _voice.lang : 'en-GB';
   if (_voice) u.voice = _voice;
   u.rate = rate;
@@ -251,18 +361,16 @@ function authHeaders(json) {
   return h;
 }
 
-let _loadTplSeq = 0;
+// The full templates (same file as the "Xem đầy đủ" pop-up).
 async function loadTemplates(level) {
-  const req = ++_loadTplSeq;
   try {
-    const res = await fetch(`${API}/api/task2/templates?level=${level}`, { headers: authHeaders() });
-    if (req !== _loadTplSeq || !res.ok) return false;
-    const data = await res.json();
-    if (req !== _loadTplSeq || !data.success || !Array.isArray(data.templates) || !data.templates.length) return false;
-    TPL_TYPES = data.templates.map(t => ({ id: t.typeId, label: t.label, sub: t.sub, name: t.name }));
+    const data = window.Task2GenericTpl ? await window.Task2GenericTpl.load() : window.TASK2_GENERIC_TEMPLATES;
+    const lv = data && data[level];
+    if (!lv) return false;
+    TPL_TYPES = Object.keys(TYPE_META).filter(id => lv[id]).map(id => ({ id, label: TYPE_META[id].label, sub: TYPE_META[id].sub, name: lv[id].name }));
     TPL_DATA = {};
-    data.templates.forEach(t => { TPL_DATA[t.typeId] = { name: t.name, sections: t.sections || [] }; });
-    return true;
+    TPL_TYPES.forEach(t => { TPL_DATA[t.id] = buildType(lv[t.id]); });
+    return TPL_TYPES.length > 0;
   } catch { return false; }
 }
 
@@ -326,7 +434,7 @@ async function saveAttempt({ mode, total, correct, isExam = false, timeTakenSec 
   try {
     const res = await fetch(`${API}/api/task2template/save`, {
       method: 'POST', headers: authHeaders(true),
-      body: JSON.stringify({ templateType: _type, templateName: (meta && meta.label) || _type, totalItems: total, correctItems: correct, mode, isExam, timeTakenSec, level: _level }),
+      body: JSON.stringify({ templateType: _type, templateName: meta ? `${meta.label} – ${meta.name}` : _type, totalItems: total, correctItems: correct, mode, isExam, timeTakenSec, level: _level }),
     });
     if (window.ApiClient) await window.ApiClient.handleResponse(res);
   } catch {}
@@ -408,7 +516,7 @@ function stepDone(key, typeId = _type) { return !!prog(typeId).steps[key]; }
 function stepUnlocked(i, typeId = _type) { return i === 0 || stepDone(STEP_KEYS[i - 1], typeId); }
 function typePct(typeId) {
   const p = prog(typeId);
-  const nPara = (TPL_DATA[typeId]?.sections || []).length || 1;
+  const nPara = paragraphs(typeId).length || 1;
   let done = STEP_KEYS.filter(k => p.steps[k]).length;
   if (!p.steps.drill) done += Math.min(1, (p.drillRounds || []).reduce((s, r) => s + Math.min(3, r || 0), 0) / (nPara * 3));
   return Math.round(done / STEP_KEYS.length * 100);
@@ -421,33 +529,41 @@ function knownCount(typeId) {
   const m = prog(typeId).mastery || {};
   return allSentences(typeId).filter(s => (m[s.key] || 0) >= 3).length;
 }
+// Lines already practised but not memorised yet, weakest first.
+function weakSentences(typeId = _type) {
+  const m = prog(typeId).mastery || {};
+  return allSentences(typeId).filter(s => m[s.key] != null && m[s.key] < 3).sort((a, b) => (m[a.key] || 0) - (m[b.key] || 0));
+}
 
 // ══════════════════════════════════════════════════════════════════
-//  Page chrome: sidebar, badges, status, URL
+//  Page chrome: hero, type tabs, badges, status, URL
 // ══════════════════════════════════════════════════════════════════
 function renderChrome() {
   renderTabs();
+  const meta = TYPE_META[_type] || {};
+  const hero = document.getElementById('tpl-hero');
+  if (hero) hero.style.setProperty('--tpl-c', meta.color || '#4d63d8');
+  document.documentElement.style.setProperty('--tpl-type-c', meta.color || '#4d63d8');
   const done = TPL_TYPES.filter(t => STEP_KEYS.every(k => stepDone(k, t.id))).length;
   const main = document.getElementById('tpl-main-badge');
-  if (main) main.textContent = `${done} / ${TPL_TYPES.length} dạng hoàn thành`;
+  if (main) main.innerHTML = `<i class="fas fa-flag-checkered"></i> ${done}/${TPL_TYPES.length} dạng hoàn thành`;
   const known = TPL_TYPES.reduce((s, t) => s + knownCount(t.id), 0);
   const total = TPL_TYPES.reduce((s, t) => s + allSentences(t.id).length, 0);
   const due = TPL_TYPES.filter(t => reviewDue(t.id)).length;
   const sub = document.getElementById('tpl-mode-badge');
-  if (sub) sub.textContent = `🧠 Đã thuộc ${known}/${total} câu` + (due ? ` · 🔔 ${due} dạng cần ôn` : '');
+  if (sub) sub.innerHTML = `🧠 Đã thuộc ${known}/${total} câu` + (due ? ` · 🔔 ${due} dạng cần ôn` : '');
   const fill = document.getElementById('tpl-progress-fill');
   if (fill) fill.style.width = typePct(_type) + '%';
   const st = document.getElementById('tpl-type-status');
   if (st) {
     const p = prog();
-    let h = '';
-    if (STEP_KEYS.every(k => p.steps[k])) h += '<span class="wp-status-badge wp-status-done"><i class="fas fa-check-circle"></i> Đã hoàn thành lộ trình</span>';
-    if (p.assembleBest) h += `<span class="wp-status-badge wp-status-best"><i class="fas fa-star"></i> Ghép bài tốt nhất: ${p.assembleBest}%</span>`;
-    h += `<span class="wp-status-badge"><i class="fas fa-chart-line"></i> Hoàn thành: ${done}/${TPL_TYPES.length} dạng bài</span>`;
+    let h = `<span class="tpl-stat"><i class="fas fa-route"></i> ${esc(meta.label || '')}: ${typePct(_type)}%</span>`;
+    if (STEP_KEYS.every(k => p.steps[k])) h += '<span class="tpl-stat is-ok"><i class="fas fa-check-circle"></i> Xong lộ trình</span>';
+    if (p.assembleBest) h += `<span class="tpl-stat"><i class="fas fa-star"></i> Ghép bài tốt nhất: ${p.assembleBest}%</span>`;
     st.innerHTML = h;
   }
   const subEl = document.getElementById('tpl-page-sub');
-  if (subEl) subEl.textContent = `Lộ trình 5 bước để thuộc ${total} mẫu câu theo 7 dạng bài IELTS Task 2 — ${isB7() ? 'Band 7+' : 'Band 6+'}`;
+  if (subEl) subEl.textContent = `Lộ trình 5 bước để thuộc ${total} câu của bản template đầy đủ — 7 dạng bài IELTS Task 2, ${isB7() ? 'Band 7+' : 'Band 6+'}. Bí quá thì bấm “Hỏi Lulu” nha!`;
 }
 
 function renderTabs() {
@@ -455,25 +571,24 @@ function renderTabs() {
   if (!wrap) return;
   wrap.innerHTML = TPL_TYPES.map(t => {
     const meta = TYPE_META[t.id] || {};
-    const color = meta.color || '#6366f1';
+    const color = meta.color || '#4d63d8';
     const pct = typePct(t.id);
     const allDone = STEP_KEYS.every(k => stepDone(k, t.id));
     const due = reviewDue(t.id);
     const hw = pendingHomework(t.id).length > 0;
     const badge = due ? '<span class="t2-tab-pct-badge pth-due-badge" title="Đến hạn ôn">🔔</span>'
       : hw ? '<span class="t2-tab-pct-badge pth-due-badge" title="Bài tập về nhà">📌</span>'
-      : allDone ? '<span class="t2-tab-done-badge">✓</span>'
+      : allDone ? '<span class="t2-tab-done-badge" title="Đã xong lộ trình">✓</span>'
       : pct > 0 ? `<span class="t2-tab-pct-badge">${pct}%</span>` : '';
-    const dots = STEP_KEYS.map(k => `<span class="t2-tab-mode-dot" style="${stepDone(k, t.id) ? `background:${color}` : ''}"></span>`).join('');
+    const dots = STEP_KEYS.map(k => `<span class="t2-tab-mode-dot${stepDone(k, t.id) ? ' on' : ''}"></span>`).join('');
     return `
-    <button class="t2-type-tab-btn ${_type === t.id ? 'active' : ''}" onclick="switchTplType('${t.id}')" data-tpl-type="${t.id}" style="--tab-color:${color}">
-      <div class="t2-tab-icon-wrap" style="background:${color}">${meta.icon ? `<i class="fas ${meta.icon}"></i>` : ''}</div>
-      <div class="t2-tab-text">
-        <div class="t2-tab-label">${esc(t.label)}</div>
-        <div class="t2-tab-sub">${esc(t.sub)}</div>
-        <div class="t2-tab-prog"><div class="t2-tab-prog-fill" style="width:${pct}%;background:${color}"></div></div>
-        <div class="t2-tab-mode-dots" title="5 bước của lộ trình">${dots}</div>
-      </div>
+    <button class="t2-type-tab-btn ${_type === t.id ? 'active' : ''}" onclick="switchTplType('${t.id}')" data-tpl-type="${t.id}" style="--tab-color:${color}" title="${escA(t.name)}">
+      <span class="t2-tab-icon-wrap"><i class="fas ${meta.icon || 'fa-file'}"></i></span>
+      <span class="t2-tab-text">
+        <span class="t2-tab-label">${esc(t.label)}</span>
+        <span class="t2-tab-sub">${esc(t.sub)}</span>
+        <span class="t2-tab-mode-dots" title="5 bước của lộ trình">${dots}</span>
+      </span>
       ${badge}
     </button>`;
   }).join('');
@@ -522,6 +637,7 @@ function _leaveActivity() {
   _stopTimers();
   stopSpeak();
   _unmountDrill();
+  if (_run && _run.saveT) { clearTimeout(_run.saveT); if (_view === 'apply' && _run.dirty) saveProg({ applyText: _run.texts }); }
   _run = null;
   _view = 'overview';
 }
@@ -577,6 +693,8 @@ window.addEventListener('popstate', async () => {
 // ── Init ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   loadXPFromStorage();
+  const heroMascot = document.getElementById('tpl-hero-mascot');
+  if (heroMascot && window.Mascot) heroMascot.innerHTML = window.Mascot.duo('happy');
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
     if (window.openUpgradeModal) window.openUpgradeModal();
     return;
@@ -607,7 +725,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   render();
   loadHomework();
   document.getElementById('tpl-switch-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) cancelTypeSwitch(); });
-  window.addEventListener('beforeunload', e => { if (_view === 'exam') { e.preventDefault(); e.returnValue = ''; } });
+  window.addEventListener('beforeunload', e => {
+    if (_view === 'apply' && _run && _run.dirty) saveProg({ applyText: _run.texts });
+    if (_view === 'exam') { e.preventDefault(); e.returnValue = ''; }
+  });
 });
 
 // ══════════════════════════════════════════════════════════════════
@@ -628,6 +749,7 @@ function render() {
     case 'assemble': return renderAssemble();
     case 'apply':    return renderApply();
     case 'review':
+    case 'fix':
     case 'exam':     return renderRecallRun();
     default:         return renderOverview();
   }
@@ -644,12 +766,26 @@ function activityHeader(stepIdx, right = '') {
   const s = STEPS[stepIdx];
   return `<div class="pth-act-hdr">
     <button class="pth-back" onclick="backToPath()"><i class="fas fa-arrow-left"></i> Lộ trình</button>
-    <div class="pth-act-title">${s.num} ${esc(s.title)}</div>
+    <div class="pth-act-title"><span class="pth-act-num">${s.num}</span> ${esc(s.title)}</div>
     <div class="pth-act-right">${right}</div>
   </div>`;
 }
 
 // ── Overview: the path ─────────────────────────────────────────
+// What Lulu suggests next on the overview.
+function coachLine() {
+  const p = prog();
+  const firstOpen = STEP_KEYS.findIndex(k => !p.steps[k]);
+  const weak = weakSentences();
+  const known = knownCount(_type), total = allSentences().length;
+  if (reviewDue(_type)) return { mood: 'think', text: 'Đến hạn ôn rồi nè! Ôn nhanh 3 phút bây giờ thì mấy câu template sẽ nằm trong đầu lâu hơn nhiều đó 🔔' };
+  if (pendingHomework(_type).length && firstOpen >= 0) return { mood: 'wink', text: `Cô/thầy giao dạng này làm bài về nhà đó. Mình làm tiếp bước ${STEPS[firstOpen].num} ${STEPS[firstOpen].title} nha 📌` };
+  if (firstOpen === 0 && !(p.drillRounds || []).some(Boolean)) return { mood: 'excited', text: `Chào cậu! Tớ là Lulu 🍊 Dạng này có ${total} câu mẫu. Bắt đầu với ① Khung bài nha — chỉ 3 phút thôi!` };
+  if (weak.length >= 3 && firstOpen !== 0) return { mood: 'think', text: `Có ${weak.length} câu cậu hay quên. Luyện câu yếu 3–5 phút rồi đi tiếp sẽ nhớ chắc hơn đó!` };
+  if (firstOpen >= 0) return { mood: 'happy', text: `Cậu thuộc ${known}/${total} câu rồi! Bước tiếp theo: ${STEPS[firstOpen].num} ${STEPS[firstOpen].title}. Bí chỗ nào cứ bấm “Hỏi Lulu” nha.` };
+  return { mood: 'cheer', text: 'Cậu xong cả lộ trình rồi, giỏi quá! Thử Thi thử để xem còn nhớ bao nhiêu, hoặc viết thêm một bài ở bước ⑤ nha 🏆' };
+}
+
 function renderOverview() {
   const t = TPL_DATA[_type];
   const meta = TYPE_META[_type] || {};
@@ -670,6 +806,16 @@ function renderOverview() {
       </div>
       <button class="pth-btn ${due ? 'pth-btn--primary' : ''}" onclick="startReview()"><i class="fas fa-bolt"></i> ${due ? 'Ôn ngay' : 'Ôn sớm'}</button>
     </div>` : '';
+  const weak = weakSentences();
+  const weakCard = weak.length ? `
+    <div class="pth-review pth-weak">
+      <div class="pth-review-ic">🎯</div>
+      <div class="pth-review-txt">
+        <b>Luyện câu yếu · ${weak.length} câu</b>
+        <span>Những câu bạn đã học nhưng chưa thuộc chắc — nhớ lại từ tiếng Việt, có Lulu gợi ý.</span>
+      </div>
+      <button class="pth-btn" onclick="startFix()"><i class="fas fa-crosshairs"></i> Luyện ${Math.min(FIX_MAX, weak.length)} câu</button>
+    </div>` : '';
 
   const cards = STEPS.map((s, i) => {
     const done = !!p.steps[s.key];
@@ -684,7 +830,7 @@ function renderOverview() {
     if (s.key === 'assemble' && p.assembleBest) meta2 = `Tốt nhất: thuộc ${p.assembleBest}% số câu · cần ≥ ${ASSEMBLE_PASS}%`;
     if (s.key === 'assemble' && !p.assembleBest) meta2 = `Cần thuộc ≥ ${ASSEMBLE_PASS}% số câu để hoàn thành`;
     const state = done ? 'is-done' : current ? 'is-current' : open ? '' : 'is-locked';
-    const btn = !open ? '<span class="pth-lock"><i class="fas fa-lock"></i></span>'
+    const btn = !open ? '<span class="pth-lock" title="Làm xong bước trước để mở"><i class="fas fa-lock"></i></span>'
       : `<button class="pth-btn ${current ? 'pth-btn--primary' : ''}" onclick="startStep('${s.key}')">${done ? '<i class="fas fa-rotate-right"></i> Luyện lại' : current ? '<i class="fas fa-play"></i> Bắt đầu' : '<i class="fas fa-play"></i> Mở'}</button>`;
     return `<div class="pth-step ${state}">
       <div class="pth-step-num">${done ? '<i class="fas fa-check"></i>' : s.num}</div>
@@ -697,20 +843,23 @@ function renderOverview() {
     </div>`;
   }).join('');
 
+  const c = coachLine();
   area().innerHTML = `
     <div class="pth-wrap">
-      <div class="t2-type-info-card">
+      <div class="t2-type-info-card" style="--tab-color:${meta.color || '#4d63d8'}">
         <div class="t2-type-info-left">
-          <div class="t2-type-info-icon" style="background:${meta.color || '#6366f1'}"><i class="fas ${meta.icon || 'fa-file'}"></i></div>
+          <div class="t2-type-info-icon"><i class="fas ${meta.icon || 'fa-file'}"></i></div>
           <div>
-            <div class="t2-type-info-name">${esc(t.name)} · ${isB7() ? '🏆 Band 7+' : '🌱 Band 6+'}</div>
+            <div class="t2-type-info-name">${esc(meta.label || '')} · ${esc(t.name)} <span class="t2-type-lvl">${isB7() ? '🏆 Band 7+' : '🌱 Band 6+'}</span></div>
             ${meta.desc ? `<div class="t2-type-info-desc">${esc(meta.desc)}</div>` : ''}
           </div>
         </div>
-        <div class="t2-type-structure"><i class="fas fa-route" style="margin-right:4px;font-size:10px;opacity:.7"></i>${paras.length} đoạn · ${total} câu mẫu</div>
+        <div class="t2-type-structure"><i class="fas fa-route"></i> ${paras.length} đoạn · ${total} câu · thuộc ${known}</div>
       </div>
+      <div class="pth-coach">${luluSays(c.text, { mood: c.mood })}</div>
       ${homeworkHtml()}
       ${reviewCard}
+      ${weakCard}
       <div class="pth-steps">${cards}</div>
       <div class="pth-foot">
         <span>🧠 Đã thuộc <b>${known}/${total}</b> câu</span>
@@ -762,27 +911,36 @@ function startWarmup() {
   render();
 }
 
+// The line `idx` may sit at position `pos` when it is that line, or an
+// option of the same slot (book labels) — nothing else is interchangeable.
+function _wuOkAt(p, idx, pos) {
+  if (idx === pos) return true;
+  const a = p.sentences[idx], b = p.sentences[pos];
+  return a.alt != null && a.alt === b.alt;
+}
+
 function renderWarmup() {
   const paras = paragraphs();
   if (_run.part === 'intro') {
     const rows = paras.map(p => {
       const tgt = paraTarget(p.si, paras.length);
-      const words = p.sentences.reduce((s, x) => s + countWords(x.en), 0);
-      const flow = p.sentences.map(s => `<span class="pth-role">${esc(s.role)}</span>`).join('<i class="fas fa-angle-right pth-flow-arr"></i>');
+      const words = p.sentences.reduce((s, x) => s + countWords(stripPh(x.en)), 0);
+      const flow = p.sentences.map(s => `<span class="pth-flow-item">${roleTag(s)}</span>`).join('<i class="fas fa-angle-right pth-flow-arr"></i>');
       return `<div class="pth-struct-row">
         <div class="pth-struct-name">${esc(shortTitle(p.title))}</div>
         <div class="pth-struct-nums">
-          <span><b>${p.sentences.length}</b> câu mẫu · <b>${words}</b> chữ</span>
+          <span><b>${p.sentences.length}</b> câu mẫu · <b>${words}</b> chữ cố định</span>
           <span class="pth-struct-tgt">Bài thật: ${tgt.sent} · ${tgt.words}</span>
         </div>
         <div class="pth-flow">${flow}</div>
       </div>`;
     }).join('');
+    const hasOpt = allSentences().some(s => s.opt);
     area().innerHTML = `${activityHeader(0)}
       <div class="pth-wrap">
         <div class="pth-card">
           <div class="pth-card-title">🗺️ Bộ khung của dạng bài này</div>
-          <p class="pth-muted">Đọc qua: mỗi đoạn có mấy câu, câu nào làm nhiệm vụ gì. Cả bài thật nên dài <b>250–300 chữ</b>.${isB7() ? ' Template Band 7+ có vài câu <b>thay thế nhau</b> (cùng vai trò) — khi viết bài thật chỉ cần chọn một.' : ''}</p>
+          <p class="pth-muted">Đọc qua: mỗi đoạn có mấy câu, câu nào làm nhiệm vụ gì. Cả bài thật nên dài <b>250–300 chữ</b>.${hasOpt ? ' Các câu có nhãn <span class="pth-opt">phương án</span> là lựa chọn thay nhau — khi viết bài thật chỉ chọn một.' : ''}</p>
           <div class="pth-struct">${rows}</div>
           <div class="pth-actions"><button class="pth-btn pth-btn--primary" onclick="wuStartOrder()">Bắt đầu sắp xếp câu <i class="fas fa-arrow-right"></i></button></div>
         </div>
@@ -794,9 +952,8 @@ function renderWarmup() {
     const score = _run.score;
     area().innerHTML = `${activityHeader(0)}
       <div class="pth-wrap"><div class="pth-card pth-done">
-        <div class="pth-done-ic">🧩</div>
-        <div class="pth-card-title">Xong phần khung bài!</div>
-        <p class="pth-muted">Xếp đúng ngay lần đầu: <b>${score}%</b> số đoạn.</p>
+        <div class="pth-card-title">🧩 Xong phần khung bài!</div>
+        ${luluSays(score >= 75 ? `Xếp đúng ngay lần đầu ${score}% số đoạn — cậu nắm khung bài chắc rồi đó! 🧩` : `Xong khung bài! Xếp đúng ngay lần đầu ${score}% số đoạn. Bước ② đọc kỹ vai trò từng câu sẽ giúp nhớ thứ tự hơn nha.`, { pct: score, stacked: true, solo: false })}
         <div class="pth-actions"><button class="pth-btn" onclick="startWarmup()"><i class="fas fa-rotate-right"></i> Làm lại</button>${nextStepButton('warmup')}</div>
       </div></div>`;
     return;
@@ -808,22 +965,22 @@ function renderWarmup() {
   const picked = r.picked.map((idx, pos) => {
     const s = p.sentences[idx];
     const st = r.checked ? (r.checked.wrong.has(pos) ? 'is-wrong' : 'is-ok') : '';
-    const role = r.checked && r.checked.ok ? `<span class="pth-role">${esc(p.sentences[pos].role)}</span>` : '';
-    return `<button class="pth-sent ${st}" ${r.checked && r.checked.ok ? 'disabled' : `onclick="wuUnpick(${pos})"`}><span class="pth-sent-n">${pos + 1}</span><span>${enHtml(s, { anchors: false })}</span>${role}</button>`;
+    const role = r.checked && r.checked.ok ? `<span class="pth-sent-role">${roleTag(p.sentences[idx])}</span>` : '';
+    return `<button class="pth-sent ${st}" ${r.checked && r.checked.ok ? 'disabled' : `onclick="wuUnpick(${pos})"`}><span class="pth-sent-n">${pos + 1}</span><span class="pth-sent-txt">${enHtml(s, { anchors: false })}</span>${role}</button>`;
   }).join('');
   const pool = r.pool.filter(idx => !r.picked.includes(idx)).map(idx =>
-    `<button class="pth-sent" onclick="wuPick(${idx})"><span>${enHtml(p.sentences[idx], { anchors: false })}</span></button>`).join('');
+    `<button class="pth-sent${r.hl === idx ? ' is-hint' : ''}" onclick="wuPick(${idx})"><span class="pth-sent-txt">${enHtml(p.sentences[idx], { anchors: false })}</span></button>`).join('');
   const full = r.picked.length === p.sentences.length;
   let actions = '';
   if (r.checked && r.checked.ok) actions = `<button class="pth-btn pth-btn--primary" onclick="wuNext()">${r.p + 1 < paras.length ? 'Đoạn tiếp theo' : 'Hoàn thành'} <i class="fas fa-arrow-right"></i></button>`;
   else if (r.checked) actions = `<button class="pth-btn" onclick="wuShowAnswer()"><i class="fas fa-eye"></i> Xem đáp án</button><button class="pth-btn pth-btn--primary" onclick="wuRetry()"><i class="fas fa-rotate-right"></i> Sửa lại</button>`;
-  else actions = `<button class="pth-btn pth-btn--primary" onclick="wuCheck()" ${full ? '' : 'disabled'}><i class="fas fa-check"></i> Kiểm tra</button>`;
+  else actions = `${askBtn('pth-hint', 'wuHint()')}<button class="pth-btn pth-btn--primary" onclick="wuCheck()" ${full ? '' : 'disabled'}><i class="fas fa-check"></i> Kiểm tra</button>`;
 
   area().innerHTML = `${activityHeader(0, `Đoạn ${r.p + 1}/${paras.length}`)}
     <div class="pth-wrap">
       <div class="pth-card">
         <div class="pth-card-title">${esc(shortTitle(p.title))} <span class="pth-chip">${p.sentences.length} câu</span></div>
-        <p class="pth-muted">Bấm các câu bên dưới theo đúng thứ tự xuất hiện trong đoạn. Bấm lại một câu đã chọn để bỏ ra.</p>
+        <p class="pth-muted">Bấm các câu bên dưới theo đúng thứ tự trong bản đầy đủ. Bấm lại một câu đã chọn để bỏ ra.</p>
         <div class="pth-order-slots">${picked || '<div class="pth-empty-slot">Chưa chọn câu nào</div>'}</div>
         ${pool ? `<div class="pth-pool-label">Các câu cần xếp</div><div class="pth-pool">${pool}</div>` : ''}
         ${r.checked && !r.checked.ok ? '<div class="pth-fb pth-fb--bad">Chưa đúng thứ tự — các câu viền đỏ đang ở sai vị trí.</div>' : ''}
@@ -841,20 +998,41 @@ function _wuSetupPara() {
   _run.picked = p.sentences.length === 1 ? [0] : [];
   _run.checked = null;
   _run.tried = false;
+  _run.hl = null;
   if (p.sentences.length === 1) { _run.checked = { ok: true, wrong: new Set() }; _run.firstTry[_run.p] = true; }
 }
-function wuPick(idx) { if (_run.checked) return; if (!_run.picked.includes(idx)) _run.picked.push(idx); renderWarmup(); }
+function wuPick(idx) { if (_run.checked) return; if (!_run.picked.includes(idx)) _run.picked.push(idx); _run.hl = null; renderWarmup(); }
 function wuUnpick(pos) { if (_run.checked) return; _run.picked.splice(pos, 1); renderWarmup(); }
 function wuCheck() {
   const p = paragraphs()[_run.p];
   const wrong = new Set();
-  _run.picked.forEach((idx, pos) => { if (p.sentences[idx].role !== p.sentences[pos].role) wrong.add(pos); });
+  _run.picked.forEach((idx, pos) => { if (!_wuOkAt(p, idx, pos)) wrong.add(pos); });
   const ok = wrong.size === 0;
   if (!_run.tried) _run.firstTry[_run.p] = ok;
   _run.tried = true;
   _run.checked = { ok, wrong };
   if (ok) playOk(); else playWrong();
   renderWarmup();
+}
+// Hỏi Lulu: removes a wrong pick, or points at the next line (role + opener).
+function wuHint() {
+  const p = paragraphs()[_run.p];
+  if (_run.checked) return;
+  _run.tried = true;
+  _run.firstTry[_run.p] = false;
+  let k = 0;
+  while (k < _run.picked.length && _wuOkAt(p, _run.picked[k], k)) k++;
+  let text;
+  if (k < _run.picked.length) {
+    _run.picked = _run.picked.slice(0, k);
+    text = `Câu thứ ${k + 1} chưa đúng chỗ — tớ gỡ từ câu đó trở đi ra rồi, xếp lại nha 🍊`;
+  } else if (k < p.sentences.length) {
+    const s = p.sentences[k];
+    _run.hl = k;
+    text = `Câu thứ ${k + 1} là câu “${s.role}”${s.opt ? ` (${s.opt})` : ''}, mở đầu bằng “${firstWords(s, 3)}…” nè — tớ tô vàng nó rồi đó!`;
+  } else text = 'Xếp đủ rồi, bấm Kiểm tra thôi! 🎉';
+  renderWarmup();
+  lulu('#pth-hint', text, 'think');
 }
 function wuRetry() {
   // Keep the sentences that were in the right place, return the rest to the pool.
@@ -892,16 +1070,17 @@ function renderRead() {
         <div class="pth-read-sent">
           <button class="pth-icon-btn pth-icon-btn--sm" onclick="speakKey('${s.key}')" title="Nghe câu này"><i class="fas fa-volume-high"></i></button>
           <div>
+            <div class="pth-read-role">${roleTag(s)}</div>
             <div class="pth-read-en">${enHtml(s)}</div>
             <div class="pth-read-vi"${_showVi ? '' : ' style="display:none"'}>${esc(s.vi)}</div>
-            <div class="pth-read-role">${esc(s.role)}</div>
           </div>
         </div>`).join('')}
     </div>`).join('');
   area().innerHTML = `${activityHeader(1, `<button class="pth-icon-btn" onclick="toggleReadVi()">🇻🇳 ${_showVi ? 'Ẩn tiếng Việt' : 'Hiện tiếng Việt'}</button>`)}
     <div class="pth-wrap">
       <div class="pth-card">
-        <p class="pth-muted"><span class="pth-anchor">Gạch chân</span> = từ khoá sẽ bị ẩn ở bước sau. <span class="pth-ph">(…)</span> = chỗ bạn tự điền nội dung theo đề, không cần học thuộc.</p>
+        ${luluSays('Mẹo của tớ: đọc to từng câu 2 lần, rồi che tiếng Anh đi và thử nói lại từ câu tiếng Việt. Phần trong ngoặc là chỗ cậu tự điền theo đề, không cần học thuộc đâu!', { mood: 'wink' })}
+        <p class="pth-muted"><span class="pth-anchor">Gạch chân</span> = từ khoá sẽ bị ẩn trước ở bước sau. <span class="pth-ph">(…)</span> = chỗ bạn tự điền nội dung theo đề. <span class="pth-or">/</span> = chọn một trong hai.</p>
         ${body}
         <div class="pth-actions">${_run.finished ? nextStepButton('read') : '<button class="pth-btn pth-btn--primary" onclick="readDone()"><i class="fas fa-check"></i> Tôi đã đọc xong</button>'}</div>
       </div>
@@ -913,7 +1092,8 @@ function readDone() { stopSpeak(); _run.finished = true; completeStep('read'); r
 // ── ③ Drill per paragraph ─────────────────────────────────────
 // Stage 1 build (chunks) → 2 fade (band 6+: 30% then 60% blanks; band 7+:
 // 60%) → 3 recall (band 6+: letter-by-letter drill; band 7+: free typing).
-// A sentence answered wrong comes back at the end of the round (twice at most).
+// A sentence answered wrong — or right with Lulu's help — comes back at the
+// end of the round (twice at most).
 function startDrill(pIdx) {
   const paras = paragraphs();
   const rounds = prog().drillRounds || [];
@@ -942,6 +1122,7 @@ function _drillSetupStage() {
   _run.pos = 0;
   _run.item = null;
   _run.stageFirstOk = 0;
+  _run.stageHints = 0;
 }
 function _sentence(key) { return allSentences().find(s => s.key === key); }
 
@@ -965,7 +1146,7 @@ function renderDrill() {
     const s = _sentence(it.key);
     const left = _run.queue.length - _run.pos;
     inner = `
-      <div class="pth-drill-meta"><span>Còn ${left} lượt trong vòng này</span>${it.tries ? '<span class="pth-chip pth-chip--warn">Làm lại câu sai</span>' : ''}</div>
+      <div class="pth-drill-meta"><span>Còn ${left} lượt trong vòng này</span><span class="pth-drill-tags">${roleTag(s)}${it.tries ? '<span class="pth-chip pth-chip--warn">Làm lại — lần này tự làm nha</span>' : ''}</span></div>
       <div class="pth-vi-prompt"><i class="fas fa-quote-left"></i> ${esc(s.vi)}</div>
       <div id="pth-item"></div>`;
   }
@@ -991,19 +1172,19 @@ function _drillBetweenHtml() {
   const paras = paragraphs();
   const st = _run.stage;
   if (st <= 3) {
+    const next = st === 2 ? (isB7() ? ' — 60% số chữ bị ẩn.' : ' — ẩn 30% rồi 60% số chữ.') : st === 3 ? (isB7() ? ' — nhìn tiếng Việt, tự gõ cả câu.' : ' — nhìn tiếng Việt, gõ từng chữ (có chữ cái đầu).') : '';
     return `<div class="pth-between">
-      <div class="pth-done-ic">✅</div>
-      <div class="pth-card-title">Xong vòng ${st - 1}: ${DRILL_STAGES[st - 2]}</div>
-      <p class="pth-muted">Tiếp theo: <b>${DRILL_STAGES[st - 1]}</b>${st === 2 ? (isB7() ? ' — 60% số chữ bị ẩn.' : ' — ẩn 30% rồi 60% số chữ.') : st === 3 ? (isB7() ? ' — nhìn tiếng Việt, tự gõ cả câu, không gợi ý.' : ' — nhìn tiếng Việt, gõ từng chữ (có chữ cái đầu).') : ''}</p>
+      ${luluSays(`Xong vòng ${st - 1}: ${DRILL_STAGES[st - 2]}! Tiếp theo: ${DRILL_STAGES[st - 1]}${next}`, { mood: 'happy', stacked: true })}
       <div class="pth-actions"><button class="pth-btn pth-btn--primary" onclick="drillContinue()">Tiếp tục <i class="fas fa-arrow-right"></i></button></div>
     </div>`;
   }
   const allDone = paras.every((_, i) => (prog().drillRounds[i] || 0) >= 3);
   const nextP = _run.p + 1 < paras.length ? _run.p + 1 : -1;
+  const n = paras[_run.p].sentences.length;
+  const pct = Math.round(_run.stageFirstOk / n * 100);
   return `<div class="pth-between">
-    <div class="pth-done-ic">🏁</div>
-    <div class="pth-card-title">Xong đoạn ${esc(shortTitle(paras[_run.p].title))}!</div>
-    <p class="pth-muted">Nhớ lại đúng ngay lần đầu: <b>${_run.stageFirstOk}/${paras[_run.p].sentences.length}</b> câu.</p>
+    <div class="pth-card-title">🏁 Xong đoạn ${esc(shortTitle(paras[_run.p].title))}!</div>
+    ${luluSays(`Nhớ lại đúng ngay lần đầu, không cần tớ gợi ý: ${_run.stageFirstOk}/${n} câu. ${pct >= 80 ? 'Đỉnh quá! 🎉' : 'Luyện lại đoạn này một lần nữa sẽ nhớ chắc hơn đó!'}`, { pct, stacked: true, solo: false })}
     <div class="pth-actions">
       <button class="pth-btn" onclick="startDrill(${_run.p})"><i class="fas fa-rotate-right"></i> Luyện lại đoạn này</button>
       ${nextP >= 0 && !allDone ? `<button class="pth-btn pth-btn--primary" onclick="startDrill(${nextP})">Đoạn tiếp theo <i class="fas fa-arrow-right"></i></button>` : ''}
@@ -1018,23 +1199,26 @@ function _drillRenderItem() {
   const s = _sentence(it.key);
   const host = document.getElementById('pth-item');
   if (!host) return;
-  if (it.kind === 'build') renderBuild(host, s, ok => _drillAnswered(ok));
-  else if (it.kind === 'fade') renderFade(host, s, it.lvl, ok => _drillAnswered(ok));
-  else renderRecall(host, s, { free: isB7(), onDone: ok => _drillAnswered(ok) });
+  if (it.kind === 'build') renderBuild(host, s, (ok, hinted) => _drillAnswered(ok, hinted));
+  else if (it.kind === 'fade') renderFade(host, s, it.lvl, (ok, hinted) => _drillAnswered(ok, hinted));
+  else renderRecall(host, s, { free: isB7(), hints: 99, onDone: (ok, _d, hinted) => _drillAnswered(ok, hinted) });
 }
 
 // Called once the student has answered the current item (the item's own UI
 // then shows feedback and a "Tiếp" button that calls drillNext()).
-function _drillAnswered(ok) {
+function _drillAnswered(ok, hinted = false) {
   const it = _run.queue[_run.pos];
+  const clean = ok && !hinted;
+  if (hinted) _run.stageHints++;
   if (it.kind === 'recall') {
-    if (ok && !it.tries) { _run.stageFirstOk++; bumpMastery(_run.pending, it.key, 1, 3); updateXPStorage(2); }
-    else if (ok) bumpMastery(_run.pending, it.key, 0, 2);
+    if (clean && !it.tries) { _run.stageFirstOk++; bumpMastery(_run.pending, it.key, 1, 3); updateXPStorage(2); }
+    else if (clean) bumpMastery(_run.pending, it.key, 0, 2);
+    else if (ok) bumpMastery(_run.pending, it.key, 0, 1);
     else bumpMastery(_run.pending, it.key, -1);
   } else if (ok) {
     bumpMastery(_run.pending, it.key, 0, 1);
   }
-  if (!ok && it.tries < 2) _run.queue.push({ key: it.key, kind: it.kind, lvl: it.lvl, tries: it.tries + 1 });
+  if (!clean && it.tries < 2) _run.queue.push({ key: it.key, kind: it.kind, lvl: it.lvl, tries: it.tries + 1 });
 }
 function drillNext() {
   _unmountDrill();
@@ -1064,7 +1248,7 @@ function chunkSentence(sentence) {
   toks.forEach((w, i) => {
     const bare = normWord(w);
     if (i > 0 && !w.startsWith('(') && BOUND.has(bare) && cur.length >= 2) { chunks.push(cur.join(' ')); cur = [w]; }
-    else { cur.push(w); if (/,$/.test(w) && cur.length >= 3) { chunks.push(cur.join(' ')); cur = []; } }
+    else { cur.push(w); if (/[,.;]$/.test(w) && cur.length >= 3) { chunks.push(cur.join(' ')); cur = []; } }
   });
   if (cur.length) chunks.push(cur.join(' '));
   const merged = [];
@@ -1078,7 +1262,7 @@ function chunkSentence(sentence) {
 let _build = null;
 function renderBuild(host, s, onDone) {
   const pieces = chunkSentence(s.en).map((text, i) => ({ id: i, text }));
-  _build = { host, s, onDone, target: pieces.map(p => p.text), bank: shuffleNew(pieces, (a, b) => a.text === b.text), picked: [], state: null, wrongs: 0 };
+  _build = { host, s, onDone, target: pieces.map(p => p.text), bank: shuffleNew(pieces, (a, b) => a.text === b.text), picked: [], state: null, wrongs: 0, hints: 0 };
   _buildDraw();
 }
 function _buildDraw() {
@@ -1090,32 +1274,55 @@ function _buildDraw() {
       return `<button class="pth-chunk is-picked" ${done ? 'disabled' : `onclick="buildUnpick(${pos})"`}>${esc(pc.text)}</button>`;
     }).join('') || '<span class="pth-empty-slot">Bấm các cụm bên dưới theo đúng thứ tự</span>'}</div>
     <div class="pth-build-bank">${b.bank.filter(x => !b.picked.includes(x.id)).map(x => `<button class="pth-chunk" onclick="buildPick(${x.id})">${esc(x.text)}</button>`).join('')}</div>
-    ${b.state === 'bad' ? '<div class="pth-fb pth-fb--bad">Chưa đúng thứ tự — bấm vào cụm để gỡ ra và sửa lại.</div>' : ''}
-    ${done ? `<div class="pth-fb pth-fb--good">✅ ${enHtml(b.s)}</div>` : ''}
+    ${b.state === 'bad' ? '<div class="pth-fb pth-fb--bad">Chưa đúng thứ tự — bấm vào cụm để gỡ ra và sửa lại, hoặc hỏi Lulu.</div>' : ''}
+    ${done ? `<div class="pth-fb pth-fb--good">✅ ${enHtml(b.s)}${b.hints ? `<div class="pth-muted pth-fb-note">${HINTED_NOTE}</div>` : ''}</div>` : ''}
     <div class="pth-actions">
       ${done ? '<button class="pth-btn pth-btn--primary" id="pth-next" onclick="drillNext()">Tiếp <i class="fas fa-arrow-right"></i></button>'
-        : `${b.wrongs >= 2 ? '<button class="pth-btn" onclick="buildReveal()"><i class="fas fa-eye"></i> Xem đáp án</button>' : ''}`}
+        : `${askBtn('pth-hint', 'buildHint()')}${b.wrongs >= 2 ? '<button class="pth-btn" onclick="buildReveal()"><i class="fas fa-eye"></i> Xem đáp án</button>' : ''}`}
     </div>`;
   if (done) document.getElementById('pth-next')?.focus();
+}
+function _buildFinishIfFull() {
+  const b = _build;
+  if (b.picked.length !== b.bank.length) return;
+  const typed = b.picked.map(i => b.bank.find(x => x.id === i).text).join(' ');
+  if (typed === b.target.join(' ')) { b.state = 'ok'; playOk(); b.onDone(b.wrongs === 0, b.hints > 0); }
+  else { b.state = 'bad'; b.wrongs++; playWrong(); }
 }
 function buildPick(id) {
   const b = _build; if (!b || b.state === 'ok') return;
   b.picked.push(id); b.state = null;
-  if (b.picked.length === b.bank.length) {
-    const typed = b.picked.map(i => b.bank.find(x => x.id === i).text).join(' ');
-    if (typed === b.target.join(' ')) { b.state = 'ok'; playOk(); b.onDone(b.wrongs === 0); }
-    else { b.state = 'bad'; b.wrongs++; playWrong(); }
-  }
+  _buildFinishIfFull();
   _buildDraw();
 }
 function buildUnpick(pos) { const b = _build; if (!b || b.state === 'ok') return; b.picked.splice(pos, 1); b.state = null; _buildDraw(); }
+// Hỏi Lulu: takes back the wrong chunks, or places the next right one.
+function buildHint() {
+  const b = _build; if (!b || b.state === 'ok') return;
+  b.hints++;
+  const texts = b.picked.map(id => b.bank.find(x => x.id === id).text);
+  let k = 0;
+  while (k < texts.length && texts[k] === b.target[k]) k++;
+  let text;
+  if (k < texts.length) {
+    b.picked = b.picked.slice(0, k);
+    b.state = null;
+    text = `Từ cụm thứ ${k + 1} là lạc chỗ rồi — tớ gỡ ra giúp cậu nè. Cụm đúng tiếp theo mở đầu bằng “${b.target[k].split(' ')[0]}…”`;
+  } else {
+    const pc = b.bank.find(x => x.text === b.target[k] && !b.picked.includes(x.id));
+    if (pc) { b.picked.push(pc.id); b.state = null; _buildFinishIfFull(); }
+    text = `Cụm tiếp theo là “${b.target[k]}” nè 🍊`;
+  }
+  _buildDraw();
+  if (b.state !== 'ok') lulu('#pth-hint', text, 'think');
+}
 function buildReveal() {
   const b = _build; if (!b) return;
   // Order the bank by the target text (duplicate chunks map to any equal piece).
   const used = new Set();
   b.picked = b.target.map(t => { const pc = b.bank.find(x => x.text === t && !used.has(x.id)); used.add(pc.id); return pc.id; });
   b.state = 'ok';
-  b.onDone(false);
+  b.onDone(false, false);
   _buildDraw();
 }
 
@@ -1128,20 +1335,21 @@ function renderFade(host, s, lvl, onDone) {
   const anchors = cand.filter(i => s.anchors.has(normWord(toks[i].core)));
   const rest = shuffle(cand.filter(i => !anchors.includes(i)));
   if (lvl === 1) rest.sort((a, b) => (STOPWORDS.has(normWord(toks[a].core)) ? 1 : 0) - (STOPWORDS.has(normWord(toks[b].core)) ? 1 : 0));
-  const blanks = new Set(anchors.concat(rest).slice(0, Math.max(need, anchors.length)));
-  _fade = { host, s, toks, blanks, onDone, checked: false };
+  const blanks = new Set(anchors.concat(rest).slice(0, Math.max(need, Math.min(anchors.length, need + 1))));
+  _fade = { host, s, toks, blanks, onDone, checked: false, hints: 0, shown: {} };
   let n = 0;
   const html = toks.map((t, i) => {
     if (t.ph) return `<span class="pth-ph">${esc(t.text)}</span>`;
+    if (t.text === '/') return '<span class="pth-or">/</span>';
     if (!blanks.has(i)) return esc(t.text);
     const w = Math.max(3, t.core.length) + 1;
-    return `${esc(t.lead)}<input class="pth-blank" data-i="${i}" data-n="${n++}" style="width:${w}ch" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="fadeKey(event,this)">${esc(t.trail)}`;
+    return `${esc(t.lead)}<input class="pth-blank" data-i="${i}" data-n="${n++}" style="width:${w}ch" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="fadeKey(event,this)" onfocus="_fade && (_fade.last=this)">${esc(t.trail)}`;
   }).join(' ');
   host.innerHTML = `
     <div class="pth-fade">${html}</div>
     <div class="pth-hint-line">Gõ các chữ bị ẩn · <b>Enter</b> để sang ô tiếp theo / kiểm tra</div>
     <div id="pth-fade-fb"></div>
-    <div class="pth-actions" id="pth-fade-actions"><button class="pth-btn pth-btn--primary" onclick="fadeCheck()"><i class="fas fa-check"></i> Kiểm tra</button></div>`;
+    <div class="pth-actions" id="pth-fade-actions">${askBtn('pth-hint', 'fadeHint()')}<button class="pth-btn pth-btn--primary" onclick="fadeCheck()"><i class="fas fa-check"></i> Kiểm tra</button></div>`;
   setTimeout(() => host.querySelector('.pth-blank')?.focus(), 30);
 }
 function fadeKey(e, el) {
@@ -1153,10 +1361,29 @@ function fadeKey(e, el) {
   const nextEmpty = all.slice(i + 1).find(x => !x.value.trim());
   if (nextEmpty) nextEmpty.focus(); else fadeCheck();
 }
+// Hỏi Lulu: one more letter in the box being typed (or the first wrong one).
+function fadeHint() {
+  const f = _fade; if (!f || f.checked) return;
+  const inputs = [...f.host.querySelectorAll('.pth-blank')];
+  const wrong = x => normWord(x.value) !== normWord(f.toks[+x.dataset.i].core);
+  const inp = (f.last && inputs.includes(f.last) && wrong(f.last)) ? f.last : inputs.find(wrong);
+  if (!inp) { lulu('#pth-hint', 'Các ô đều đúng hết rồi, bấm Kiểm tra thôi! 🎉', 'excited'); return; }
+  const i = +inp.dataset.i;
+  const core = f.toks[i].core;
+  const v = inp.value;
+  let p = 0;
+  while (p < v.length && p < core.length && v[p].toLowerCase() === core[p].toLowerCase()) p++;
+  const n = Math.min(core.length, Math.max(p + 1, (f.shown[i] || 0) + 1));
+  f.shown[i] = n;
+  f.hints++;
+  inp.value = core.slice(0, n);
+  inp.focus();
+  lulu('#pth-hint', n >= core.length ? `Chữ này là “${core}” nè 💪` : `Chữ này bắt đầu bằng “${core.slice(0, n)}…” nè 🍊`, 'think');
+}
 function fadeCheck() {
   const f = _fade; if (!f || f.checked) return;
   const inputs = [...f.host.querySelectorAll('.pth-blank')];
-  if (inputs.some(x => !x.value.trim())) { showToast('Hãy điền hết các ô trống.', 'warn', 1800); inputs.find(x => !x.value.trim()).focus(); return; }
+  if (inputs.some(x => !x.value.trim())) { showToast('Hãy điền hết các ô trống (bí thì hỏi Lulu nha).', 'warn', 1800); inputs.find(x => !x.value.trim()).focus(); return; }
   f.checked = true;
   let allOk = true;
   inputs.forEach(inp => {
@@ -1168,33 +1395,35 @@ function fadeCheck() {
   });
   if (allOk) playOk(); else playWrong();
   document.getElementById('pth-fade-fb').innerHTML = allOk
-    ? '<div class="pth-fb pth-fb--good">✅ Chính xác!</div>'
-    : `<div class="pth-fb pth-fb--bad">Câu đúng: ${enHtml(f.s)}<div class="pth-muted" style="margin-top:4px">Câu này sẽ quay lại cuối vòng.</div></div>`;
+    ? `<div class="pth-fb pth-fb--good">✅ Chính xác!${f.hints ? `<div class="pth-muted pth-fb-note">${HINTED_NOTE}</div>` : ''}</div>`
+    : `<div class="pth-fb pth-fb--bad">Câu đúng: ${enHtml(f.s)}<div class="pth-muted pth-fb-note">Câu này sẽ quay lại cuối vòng.</div></div>`;
   document.getElementById('pth-fade-actions').innerHTML = '<button class="pth-btn pth-btn--primary" id="pth-next" onclick="drillNext()">Tiếp <i class="fas fa-arrow-right"></i></button>';
-  f.onDone(allOk);
+  f.onDone(allOk, f.hints > 0);
   document.getElementById('pth-next')?.focus();
 }
 
 // Recall one sentence from its Vietnamese meaning.
 //   free=false → WbwDrill (word masks with first letter, wrong letters rejected)
-//   free=true  → plain textarea, graded by word diff (≥ RECALL_PASS_B7 %)
+//   free=true  → plain textarea, graded by word diff (≥ passPct %)
+//   hints      → how many times the student may ask Lulu (0 = mock test)
 let _recall = null;
-function renderRecall(host, s, { free, onDone, nextLabel = 'Tiếp', nextFn = 'drillNext()', passPct = RECALL_PASS_B7 }) {
-  _recall = { host, s, onDone, free, done: false, nextLabel, nextFn, passPct };
+function renderRecall(host, s, { free, onDone, nextLabel = 'Tiếp', nextFn = 'drillNext()', passPct = RECALL_PASS_B7, hints = 0 }) {
+  _recall = { host, s, onDone, free, done: false, nextLabel, nextFn, passPct, hintsLeft: hints, hints: 0, shown: [], answer: wbwAnswer(s.en), target: targetWords([s]) };
   host.innerHTML = `
     <div id="pth-wbw"></div>
     <textarea class="pth-textarea" id="pth-recall-in" rows="3" placeholder="Gõ lại cả câu tiếng Anh... (không cần gõ phần trong ngoặc)"
       onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();recallCheck()}"></textarea>
     <div id="pth-recall-fb"></div>
     <div class="pth-actions" id="pth-recall-actions">
-      <button class="pth-btn" onclick="recallGiveUp()"><i class="fas fa-eye"></i> Không nhớ</button>
+      <button class="pth-btn" id="pth-giveup" onclick="recallGiveUp()"><i class="fas fa-eye"></i> Không nhớ</button>
+      ${hints ? askBtn('pth-hint', 'recallHint()') : ''}
       <button class="pth-btn pth-btn--primary" id="pth-recall-check" onclick="recallCheck()"><i class="fas fa-check"></i> Kiểm tra</button>
     </div>`;
   const input = document.getElementById('pth-recall-in');
   if (!free && window.WbwDrill) {
-    const words = countWords(s.en);
+    const words = countWords(_recall.answer);
     const ok = window.WbwDrill.mount(document.getElementById('pth-wbw'), {
-      answer: s.en, bridgeInput: input, maxErrors: Math.max(4, Math.ceil(words / 3)),
+      answer: _recall.answer, bridgeInput: input, maxErrors: Math.max(4, Math.ceil(words / 3)),
       onComplete: () => _recallFinish(true, null),
       onFail: () => _recallFinish(false, null),
     });
@@ -1207,11 +1436,32 @@ function renderRecall(host, s, { free, onDone, nextLabel = 'Tiếp', nextFn = 'd
   document.getElementById('pth-wbw').style.display = 'none';
   setTimeout(() => input.focus(), 30);
 }
+// Hỏi Lulu: one more letter of the next word the student hasn't got yet.
+function recallHint() {
+  const r = _recall; if (!r || r.done) return;
+  if (r.hintsLeft <= 0) { lulu('#pth-hint', 'Hết lượt gợi ý cho câu này rồi — cố nhớ thêm chút, hoặc bấm “Không nhớ” để xem đáp án nha 🤗', 'sad'); return; }
+  const input = document.getElementById('pth-recall-in');
+  let text;
+  if (!r.free && window.AskLulu) {
+    const res = window.AskLulu.letterHint(r.answer, input ? input.value : '', r.shown);
+    if (res.done) { lulu('#pth-hint', window.AskLulu.line(res), 'excited'); return; }
+    text = window.AskLulu.line(res);
+  } else {
+    const res = wordHint(r.target, input ? input.value : '', r.shown);
+    if (res.done) { lulu('#pth-hint', 'Cậu gõ đủ chữ rồi đó, bấm Kiểm tra thôi! 🎉', 'excited'); return; }
+    text = res.text;
+  }
+  r.hints++;
+  r.hintsLeft--;
+  lulu('#pth-hint', text, 'think');
+  const wbwIn = document.querySelector('#pth-wbw .wbwd-input');
+  (wbwIn || input)?.focus();
+}
 function recallCheck() {
   const r = _recall; if (!r || r.done) return;
   const input = document.getElementById('pth-recall-in');
   if (!input.value.trim()) { showToast('Hãy gõ câu trả lời.', 'warn', 1800); return; }
-  const d = alignWords(targetWords([r.s]), input.value);
+  const d = alignWords(r.target, input.value);
   _recallFinish(d.pct >= r.passPct, d);
 }
 function recallGiveUp() {
@@ -1226,13 +1476,14 @@ function _recallFinish(ok, diff) {
   if (input) input.readOnly = true;
   if (ok) playOk(); else playWrong();
   const diffPart = diff ? `<div class="pth-diff">${diffHtml(diff.ops)}</div><div class="pth-muted">Đúng ${diff.pct}% số chữ${r.free ? ` (cần ≥ ${r.passPct}%)` : ''}</div>` : '';
+  const note = r.hints && ok && r.nextFn === 'drillNext()' ? `<div class="pth-muted pth-fb-note">${HINTED_NOTE}</div>` : r.hints && ok ? '<div class="pth-muted pth-fb-note">Có Lulu gợi ý — lần ôn sau thử tự nhớ nha!</div>' : '';
   const fb = document.getElementById('pth-recall-fb');
   if (fb) fb.innerHTML = ok
-    ? `<div class="pth-fb pth-fb--good">✅ Nhớ đúng!${diffPart}</div>`
+    ? `<div class="pth-fb pth-fb--good">✅ Nhớ đúng!${diffPart}${note}</div>`
     : `<div class="pth-fb pth-fb--bad">${diffPart}<div><b>Câu đúng:</b> ${enHtml(r.s)}</div></div>`;
   const acts = document.getElementById('pth-recall-actions');
   if (acts) acts.innerHTML = `<button class="pth-btn pth-btn--primary" id="pth-next" onclick="${r.nextFn}">${esc(r.nextLabel)} <i class="fas fa-arrow-right"></i></button>`;
-  r.onDone(ok, diff);
+  r.onDone(ok, diff, r.hints > 0);
   setTimeout(() => document.getElementById('pth-next')?.focus(), 30);
 }
 function _unmountDrill() {
@@ -1246,7 +1497,7 @@ function _unmountDrill() {
 function startAssemble() {
   _view = 'assemble';
   const n = paragraphs().length;
-  _run = { p: 0, texts: new Array(n).fill(''), results: new Array(n).fill(null), start: Date.now(), submitted: false };
+  _run = { p: 0, texts: new Array(n).fill(''), results: new Array(n).fill(null), hints: new Array(n).fill(0), shown: Array.from({ length: n }, () => []), start: Date.now(), submitted: false };
   if (isB7()) _run.timer = setInterval(_asmTick, 1000);
   render();
 }
@@ -1257,18 +1508,35 @@ function _asmTick() {
 }
 function _asmCueHtml(p) {
   return `<ol class="pth-cues">${p.sentences.map(s => {
-    const first = isB7() ? '' : ` — <i>${esc(stripPh(s.en).trim().split(/\s+/).slice(0, 2).join(' '))}…</i>`;
-    return `<li><span class="pth-role">${esc(s.role)}</span>${first}</li>`;
+    const first = isB7() ? '' : ` — <i>${esc(firstWords(s, 2))}…</i>`;
+    return `<li>${roleTag(s)}${first}</li>`;
   }).join('')}</ol>`;
 }
+function _asmHintsLeft(i) { return ASM_HINTS[_level] - (_run.hints[i] || 0); }
 function _asmBoxHtml(p, i) {
   const res = _run.results[i];
+  const usedHints = _run.hints[i] ? ` · ${_run.hints[i]} gợi ý` : '';
   return `<div class="pth-asm-para">
-    <div class="pth-read-hdr"><span>${esc(shortTitle(p.title))} <span class="pth-chip">${p.sentences.length} câu</span></span>${res ? `<span class="pth-chip ${res.knownPct >= ASSEMBLE_PASS ? 'pth-chip--ok' : 'pth-chip--warn'}">Thuộc ${res.known}/${res.sent} câu · ${res.knownPct}%</span>` : ''}</div>
+    <div class="pth-read-hdr"><span>${esc(shortTitle(p.title))} <span class="pth-chip">${p.sentences.length} câu</span></span>${res ? `<span class="pth-chip ${res.knownPct >= ASSEMBLE_PASS ? 'pth-chip--ok' : 'pth-chip--warn'}">Thuộc ${res.known}/${res.sent} câu · ${res.knownPct}%${usedHints}</span>` : askBtn(`pth-asm-hint-${i}`, `asmHint(${i})`, `Hỏi Lulu (${_asmHintsLeft(i)})`, _asmHintsLeft(i) <= 0 ? 'disabled' : '')}</div>
     ${_asmCueHtml(p)}
     ${res ? `<div class="pth-diff pth-diff--box">${diffHtml(res.ops)}</div>`
       : `<textarea class="pth-textarea pth-asm-in" id="pth-asm-${i}" rows="${Math.max(4, p.sentences.length + 1)}" placeholder="Viết lại cả đoạn từ trí nhớ... (bỏ qua phần trong ngoặc)" oninput="_run.texts[${i}]=this.value">${esc(_run.texts[i])}</textarea>`}
   </div>`;
+}
+// Hỏi Lulu in ④: the next word of the paragraph that's missing (limited).
+function asmHint(i) {
+  if (!_run || _run.results[i]) return;
+  const btn = document.getElementById(`pth-asm-hint-${i}`);
+  if (_asmHintsLeft(i) <= 0) { lulu(btn, 'Hết lượt gợi ý cho đoạn này rồi — viết tiếp những gì cậu nhớ nha!', 'sad'); return; }
+  const res = wordHint(targetWords(paragraphs()[i].sentences), _run.texts[i] || '', _run.shown[i]);
+  if (res.done) { lulu(btn, 'Đoạn này cậu viết đủ chữ rồi đó, kiểm tra thôi! 🎉', 'excited'); return; }
+  _run.hints[i]++;
+  if (btn) {
+    btn.innerHTML = `<span class="ask-lulu-ic"></span> Hỏi Lulu (${_asmHintsLeft(i)})`;
+    if (_asmHintsLeft(i) <= 0) btn.disabled = true;
+  }
+  lulu(btn, res.text, 'think');
+  document.getElementById(`pth-asm-${i}`)?.focus();
 }
 function renderAssemble() {
   const paras = paragraphs();
@@ -1278,17 +1546,22 @@ function renderAssemble() {
   if (r.submitted) {
     const tot = _asmTotal();
     const pass = tot.knownPct >= ASSEMBLE_PASS;
-    body = `<div class="pth-card">
+    const weak = _asmWeakKeys();
+    const hintTotal = r.hints.reduce((a, b) => a + b, 0);
+    body = `<div class="pth-card pth-done">
+        ${luluSays(pass ? `Thuộc ${tot.knownPct}% số câu — cậu viết lại được cả bài từ trí nhớ rồi! 🎉` : `Thuộc ${tot.knownPct}% số câu, cần ≥ ${ASSEMBLE_PASS}%. Mình luyện riêng ${weak.length} câu chưa thuộc rồi ghép lại nha — sẽ lên nhanh lắm!`, { pct: tot.knownPct, stacked: true, solo: false })}
         <div class="pth-score ${pass ? 'is-ok' : 'is-bad'}">${tot.knownPct}%</div>
-        <p class="pth-muted" style="text-align:center">Thuộc <b>${tot.goodSent}/${tot.sent}</b> câu (một câu được tính là thuộc khi đúng ≥ ${SENT_KNOWN}% số chữ) · nhớ đúng ${tot.right}/${tot.total} chữ${r.secs ? ` · ⏱ ${fmtMMSS(r.secs)}` : ''}</p>
-        ${pass ? '' : `<div class="pth-fb pth-fb--bad">Cần thuộc ≥ ${ASSEMBLE_PASS}% số câu để hoàn thành bước này. Xem lại các chữ đỏ/xám rồi thử lại nhé — câu sai đã được đánh dấu để ôn nhiều hơn.</div>`}
+        <p class="pth-muted" style="text-align:center">Thuộc <b>${tot.goodSent}/${tot.sent}</b> câu (một câu được tính là thuộc khi đúng ≥ ${SENT_KNOWN}% số chữ) · nhớ đúng ${tot.right}/${tot.total} chữ${r.secs ? ` · ⏱ ${fmtMMSS(r.secs)}` : ''}${hintTotal ? ` · 🍊 ${hintTotal} gợi ý` : ''}</p>
         <div class="pth-legend"><span class="pth-d-ok">đúng</span> <span class="pth-d-wrong">sai</span><span class="pth-d-fix">đáp án</span> <span class="pth-d-miss">thiếu</span> <span class="pth-d-extra">thừa</span></div>
         ${paras.map((p, i) => _asmBoxHtml(p, i)).join('')}
-        <div class="pth-actions"><button class="pth-btn" onclick="startAssemble()"><i class="fas fa-rotate-right"></i> Làm lại</button>${pass ? nextStepButton('assemble') : ''}</div>
+        <div class="pth-actions">
+          ${weak.length ? `<button class="pth-btn ${pass ? '' : 'pth-btn--primary'}" onclick="startFix(_asmWeakKeys(), 'assemble')"><i class="fas fa-crosshairs"></i> Luyện lại ${Math.min(FIX_MAX, weak.length)} câu chưa thuộc</button>` : ''}
+          <button class="pth-btn" onclick="startAssemble()"><i class="fas fa-rotate-right"></i> Làm lại</button>${pass ? nextStepButton('assemble') : ''}
+        </div>
       </div>`;
   } else if (isB7()) {
     body = `<div class="pth-card">
-        <p class="pth-muted">Viết lại toàn bộ template từ trí nhớ, mỗi ô một đoạn. Chỉ có vai trò của từng câu làm gợi ý. Không cần gõ phần trong ngoặc.</p>
+        <p class="pth-muted">Viết lại toàn bộ template từ trí nhớ, mỗi ô một đoạn. Chỉ có vai trò của từng câu làm gợi ý. Không cần gõ phần trong ngoặc. Mỗi đoạn được hỏi Lulu ${ASM_HINTS.band7} lần.</p>
         ${paras.map((p, i) => _asmBoxHtml(p, i)).join('')}
         <div class="pth-actions"><button class="pth-btn pth-btn--primary" onclick="asmSubmitAll()"><i class="fas fa-paper-plane"></i> Nộp bài</button></div>
       </div>`;
@@ -1296,7 +1569,7 @@ function renderAssemble() {
     const p = paras[r.p];
     const res = r.results[r.p];
     body = `<div class="pth-card">
-        <p class="pth-muted">Viết lại cả đoạn từ trí nhớ. Gợi ý: vai trò và 2 chữ đầu của mỗi câu. Không cần gõ phần trong ngoặc.</p>
+        <p class="pth-muted">Viết lại cả đoạn từ trí nhớ. Gợi ý: vai trò và 2 chữ đầu của mỗi câu. Không cần gõ phần trong ngoặc. Bí từ nào thì hỏi Lulu (${ASM_HINTS.band6} lần mỗi đoạn).</p>
         ${_asmBoxHtml(p, r.p)}
         <div class="pth-actions">${res
           ? `<button class="pth-btn pth-btn--primary" onclick="asmNextPara()">${r.p + 1 < paras.length ? 'Đoạn tiếp theo' : 'Xem kết quả'} <i class="fas fa-arrow-right"></i></button>`
@@ -1345,6 +1618,13 @@ function _asmTotal() {
   return { right, total, sent, goodSent, pct: total ? Math.round(right / total * 100) : 0,
     knownPct: sent ? Math.round(goodSent / sent * 100) : 0 };
 }
+// Sentences under the "thuộc" bar in the last ④ run, weakest first.
+function _asmWeakKeys() {
+  if (!_run || !_run.results) return [];
+  const rows = [];
+  _run.results.forEach(r => r && Object.entries(r.per).forEach(([key, [a, b]]) => { if (!b || a / b * 100 < SENT_KNOWN) rows.push([key, b ? a / b : 0]); }));
+  return rows.sort((x, y) => x[1] - y[1]).map(x => x[0]);
+}
 function _asmFinish() {
   _stopTimers();
   _run.secs = Math.round((Date.now() - _run.start) / 1000);
@@ -1366,13 +1646,42 @@ function _asmFinish() {
 }
 
 // ── ⑤ Apply: write a real essay, compare with the model essay ──
+// While typing, a checklist under each paragraph ticks the template frames
+// already used (options of one slot count once; "tuỳ chọn" lines are a bonus).
 function startApply() {
   _view = 'apply';
   const n = paragraphs().length;
   const saved = prog().applyText || [];
-  _run = { texts: Array.from({ length: n }, (_, i) => saved[i] || ''), result: null };
+  _run = { texts: Array.from({ length: n }, (_, i) => saved[i] || ''), result: null, hintLvl: {}, dirty: false };
   render();
   if (!_typeGuides) _loadTypeGuides().then(() => { if (_view === 'apply' && !_run.result) renderApply(); });
+}
+// How much of one template sentence's fixed wording (placeholders removed)
+// appears, in order, in the student's paragraph — 0..1.
+function _frameCoverage(sentence, paraWords) {
+  const a = targetWords([sentence]).map(t => t.alts);
+  if (!a.length) return 0;
+  const b = paraWords, n = a.length, m = b.length;
+  let prev = new Uint16Array(m + 1), cur = new Uint16Array(m + 1);
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) cur[j] = a[i - 1].includes(b[j - 1]) ? prev[j - 1] + 1 : Math.max(prev[j], cur[j - 1]);
+    [prev, cur] = [cur, prev];
+  }
+  return prev[m] / n;
+}
+// Frames of paragraph i with their state for the current text.
+function _applyFrames(i) {
+  const p = paragraphs()[i];
+  const pw = typedWords(_run.texts[i] || '').map(x => x.n);
+  const groups = [];
+  p.sentences.forEach(s => {
+    const cov = pw.length ? _frameCoverage(s, pw) : 0;
+    const g = s.alt != null ? groups.find(x => x.alt === s.alt) : null;
+    if (g) { g.options.push(s); if (cov > g.cov) { g.best = s; g.cov = cov; } }
+    else groups.push({ id: s.key, alt: s.alt, role: s.role, optional: s.optional, best: s, options: [s], cov });
+  });
+  groups.forEach(g => { g.state = g.cov >= 0.7 ? 'is-ok' : g.cov >= 0.4 ? 'is-part' : 'is-miss'; });
+  return groups;
 }
 function _applyWordsHtml(i) {
   const paras = paragraphs();
@@ -1381,12 +1690,42 @@ function _applyWordsHtml(i) {
   const cls = n >= tgt.lo && n <= tgt.hi + 20 ? 'is-ok' : n ? 'is-warn' : '';
   return `<span class="pth-wc ${cls}">${n} chữ · nên ${tgt.words}</span>`;
 }
+function _applyFramesHtml(i) {
+  const icon = st => st === 'is-ok' ? '✓' : st === 'is-part' ? '~' : '○';
+  return _applyFrames(i).map(g => {
+    const cue = isB7() ? '' : ` <span class="pth-frame-cue">${esc(firstWords(g.best, 3))}…</span>`;
+    const opts = g.options.length > 1 ? ` <span class="pth-opt">${g.options.length} phương án</span>` : g.optional ? ' <span class="pth-opt">tuỳ chọn</span>' : '';
+    return `<li class="${g.state}"><span class="pth-check-ic">${icon(g.state)}</span><span class="pth-role">${esc(g.role)}</span>${opts}${cue}</li>`;
+  }).join('');
+}
 function applyInput(i, el) {
   _run.texts[i] = el.value;
+  _run.dirty = true;
   const wc = document.getElementById('pth-wc-' + i);
   if (wc) wc.innerHTML = _applyWordsHtml(i);
   const tot = document.getElementById('pth-wc-total');
   if (tot) tot.textContent = _run.texts.reduce((s, t) => s + countWords(t), 0);
+  clearTimeout(_run.frameT);
+  _run.frameT = setTimeout(() => { const ul = document.getElementById('pth-frames-' + i); if (ul && _view === 'apply') ul.innerHTML = _applyFramesHtml(i); }, 250);
+  // Draft autosave to the account a few seconds after the student stops typing.
+  clearTimeout(_run.saveT);
+  _run.saveT = setTimeout(() => { if (_view === 'apply' && _run && _run.dirty && !_run.result) { _run.dirty = false; saveProg({ applyText: _run.texts }); const s = document.getElementById('pth-autosave'); if (s) s.textContent = '☁️ Đã tự lưu nháp'; } }, 4000);
+}
+// Hỏi Lulu in ⑤: the next frame this paragraph hasn't used yet.
+function applyHint(i) {
+  const btn = document.getElementById(`pth-apply-hint-${i}`);
+  const g = _applyFrames(i).find(x => x.state !== 'is-ok' && !x.optional);
+  if (!g) { lulu(btn, 'Đoạn này cậu dùng đủ các khung rồi đó! Giờ chú ý nội dung cho sát đề nha 💯', 'excited'); return; }
+  const lvl = (_run.hintLvl[g.id] || 0) + 1;
+  _run.hintLvl[g.id] = lvl;
+  const s = g.best;
+  const frame = s.en.replace(/\([^()]*\)/g, '(…)');
+  const pick = g.options.length > 1 ? ` (chọn 1 trong ${g.options.length} phương án: ${g.options.map(o => o.opt).join(' / ')})` : '';
+  const text = !isB7() || lvl >= 2
+    ? `Đoạn này còn thiếu câu “${g.role}”${pick}. Thử khung này: “${frame}” rồi điền ý của cậu vào chỗ (…) nha 🍊`
+    : `Đoạn này còn thiếu câu “${g.role}”${pick} — mở đầu bằng “${firstWords(s, 3)}…”. Hỏi lần nữa tớ đọc cả khung cho!`;
+  lulu(btn, text, 'think');
+  document.getElementById(`pth-apply-in-${i}`)?.focus();
 }
 function renderApply() {
   const paras = paragraphs();
@@ -1398,28 +1737,29 @@ function renderApply() {
   let body;
   if (r.result) {
     body = `<div class="pth-card">
+      ${luluSays(r.result.usedPct >= 70 ? `Cậu dùng ${r.result.used}/${r.result.total} khung câu — áp dụng template ngon lành rồi! Giờ so với bài mẫu để học cách triển khai ý nha 📖` : `Cậu mới dùng ${r.result.used}/${r.result.total} khung câu. Bấm “Sửa bài” rồi hỏi tớ khung còn thiếu nha — dùng đủ khung là bài mạch lạc hơn hẳn!`, { pct: r.result.usedPct, stacked: true, solo: false })}
       ${prompt}
       <div class="pth-score ${r.result.usedPct >= 50 ? 'is-ok' : 'is-bad'}">${r.result.words} chữ</div>
-      <p class="pth-muted" style="text-align:center">Đã dùng khung template cho <b>${r.result.used}/${r.result.total}</b> vai trò câu${r.result.words < 250 ? ' · bài thật cần ít nhất <b>250 chữ</b>' : ''}</p>
+      <p class="pth-muted" style="text-align:center">Đã dùng <b>${r.result.used}/${r.result.total}</b> khung câu của bản đầy đủ${r.result.words < 250 ? ' · bài thật cần ít nhất <b>250 chữ</b>' : ''}</p>
       ${r.result.paras.map(pr => `<div class="pth-asm-para">
         <div class="pth-read-hdr"><span>${esc(pr.title)}</span><span class="pth-wc ${pr.wcOk ? 'is-ok' : 'is-warn'}">${pr.words} chữ · nên ${esc(pr.target)}</span></div>
         <div class="pth-mine">${esc(pr.text) || '<i class="pth-muted">(trống)</i>'}</div>
-        <ul class="pth-check">${pr.roles.map(x => `<li class="${x.state}"><span class="pth-check-ic">${x.state === 'is-ok' ? '✓' : x.state === 'is-part' ? '~' : '✗'}</span><span class="pth-role">${esc(x.role)}</span> <span class="pth-check-en">${enHtml(x.best, { anchors: false })}</span></li>`).join('')}</ul>
+        <ul class="pth-check">${pr.frames.map(x => `<li class="${x.state}"><span class="pth-check-ic">${x.state === 'is-ok' ? '✓' : x.state === 'is-part' ? '~' : x.optional ? '·' : '✗'}</span><span class="pth-role">${esc(x.role)}</span>${x.optional ? '<span class="pth-opt">tuỳ chọn</span>' : ''} <span class="pth-check-en">${enHtml(x.best, { anchors: false })}</span></li>`).join('')}</ul>
       </div>`).join('')}
-      ${isB7() ? '<p class="pth-muted">Mỗi vai trò chỉ cần dùng một trong các câu thay thế nhau của template.</p>' : ''}
       ${me ? _modelEssayHtml(me) : ''}
       <div class="pth-actions"><button class="pth-btn" onclick="applyEdit()"><i class="fas fa-pen"></i> Sửa bài</button><button class="pth-btn pth-btn--primary" onclick="backToPath()">Về lộ trình <i class="fas fa-arrow-right"></i></button></div>
     </div>`;
   } else {
     body = `<div class="pth-card">
       ${prompt}
-      <p class="pth-muted">Viết bài hoàn chỉnh bằng các câu template vừa học, điền nội dung của đề vào chỗ <span class="pth-ph">(…)</span>. Bài thật cần <b>250–300 chữ</b>. Nộp xong sẽ so với bài mẫu.</p>
+      <p class="pth-muted">Viết bài hoàn chỉnh bằng các khung câu vừa học, điền nội dung của đề vào chỗ <span class="pth-ph">(…)</span>. Bài thật cần <b>250–300 chữ</b>. Danh sách dưới mỗi ô tự đánh dấu <b>✓</b> khi bạn đã dùng một khung. Nộp xong sẽ so với bài mẫu.</p>
       ${paras.map((p, i) => `<div class="pth-asm-para">
-        <div class="pth-read-hdr"><span>${esc(shortTitle(p.title))}</span><span id="pth-wc-${i}">${_applyWordsHtml(i)}</span></div>
-        <textarea class="pth-textarea" rows="${i === 0 || i === paras.length - 1 ? 4 : 7}" oninput="applyInput(${i},this)" placeholder="${escA(shortTitle(p.title))}...">${esc(r.texts[i])}</textarea>
+        <div class="pth-read-hdr"><span>${esc(shortTitle(p.title))}</span><span class="pth-apply-tools"><span id="pth-wc-${i}">${_applyWordsHtml(i)}</span>${askBtn(`pth-apply-hint-${i}`, `applyHint(${i})`)}</span></div>
+        <textarea class="pth-textarea" id="pth-apply-in-${i}" rows="${i === 0 || i === paras.length - 1 ? 4 : 7}" oninput="applyInput(${i},this)" placeholder="${escA(shortTitle(p.title))}...">${esc(r.texts[i])}</textarea>
+        <ul class="pth-check pth-frames" id="pth-frames-${i}">${_applyFramesHtml(i)}</ul>
       </div>`).join('')}
       <div class="pth-actions">
-        <span class="pth-muted">Tổng: <b id="pth-wc-total">${r.texts.reduce((s, t) => s + countWords(t), 0)}</b> chữ</span>
+        <span class="pth-muted pth-total">Tổng: <b id="pth-wc-total">${r.texts.reduce((s, t) => s + countWords(t), 0)}</b> chữ <span id="pth-autosave"></span></span>
         <button class="pth-btn" onclick="applySaveDraft()"><i class="fas fa-floppy-disk"></i> Lưu nháp</button>
         <button class="pth-btn pth-btn--primary" onclick="applySubmit()"><i class="fas fa-paper-plane"></i> Nộp & so với bài mẫu</button>
       </div>
@@ -1436,42 +1776,26 @@ function _modelEssayHtml(me) {
       ${(me.sections || []).map(s => `<h5>${esc(s.title)}</h5><div>${hl ? T2H.html(s.text, s.highlights) : esc(s.text)}</div>`).join('')}
     </div></details>`;
 }
-function applySaveDraft() { saveProg({ applyText: _run.texts }); showToast('Đã lưu nháp vào tài khoản.', 'info', 2000); }
+function applySaveDraft() { _run.dirty = false; clearTimeout(_run.saveT); saveProg({ applyText: _run.texts }); showToast('Đã lưu nháp vào tài khoản.', 'info', 2000); }
 function applyEdit() { _run.result = null; _run.finished = false; renderApply(); }
 
-// How much of one template sentence's fixed wording (placeholders removed)
-// appears, in order, in the student's paragraph — 0..1.
-function _frameCoverage(sentence, paraWords) {
-  const a = wordsOf(sentence.en);
-  if (!a.length) return 0;
-  const b = paraWords, n = a.length, m = b.length;
-  let prev = new Uint16Array(m + 1), cur = new Uint16Array(m + 1);
-  for (let i = 1; i <= n; i++) {
-    for (let j = 1; j <= m; j++) cur[j] = a[i - 1] === b[j - 1] ? prev[j - 1] + 1 : Math.max(prev[j], cur[j - 1]);
-    [prev, cur] = [cur, prev];
-  }
-  return prev[m] / n;
-}
 function applySubmit() {
   const paras = paragraphs();
   const words = _run.texts.reduce((s, t) => s + countWords(t), 0);
   if (words < 120) { showToast('Bài còn quá ngắn — hãy viết ít nhất 120 chữ trước khi nộp.', 'warn', 3000); return; }
+  clearTimeout(_run.saveT);
+  _run.dirty = false;
   let used = 0, total = 0;
   const resParas = paras.map((p, i) => {
-    const pw = wordsOf(_run.texts[i]);
-    // Group sentences by role: alternatives share a role, the best one counts.
-    const byRole = [];
-    p.sentences.forEach(s => {
-      const cov = _frameCoverage(s, pw);
-      const g = byRole.find(x => x.role === s.role);
-      if (!g) byRole.push({ role: s.role, best: s, cov });
-      else if (cov > g.cov) { g.best = s; g.cov = cov; }
+    const frames = _applyFrames(i);
+    frames.forEach(f => {
+      if (f.optional && f.state !== 'is-ok') return; // bonus line — not counted when unused
+      total++;
+      if (f.state === 'is-ok') used++;
     });
-    const roles = byRole.map(x => ({ role: x.role, best: x.best, state: x.cov >= 0.7 ? 'is-ok' : x.cov >= 0.4 ? 'is-part' : 'is-miss' }));
-    total += roles.length; used += roles.filter(x => x.state === 'is-ok').length;
     const tgt = paraTarget(i, paras.length);
     const n = countWords(_run.texts[i]);
-    return { title: shortTitle(p.title), text: _run.texts[i].trim(), words: n, target: tgt.words, wcOk: n >= tgt.lo && n <= tgt.hi + 20, roles };
+    return { title: shortTitle(p.title), text: _run.texts[i].trim(), words: n, target: tgt.words, wcOk: n >= tgt.lo && n <= tgt.hi + 20, frames };
   });
   _run.result = { words, used, total, usedPct: total ? Math.round(used / total * 100) : 0, paras: resParas };
   _run.finished = true;
@@ -1480,8 +1804,9 @@ function applySubmit() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── Recall runs: spaced review + mock test ─────────────────────
+// ── Recall runs: spaced review, weak lines, mock test ──────────
 // review: up to 6 weakest sentences, band rules, one pass, schedules the next review.
+// fix:    the given (or weakest practised) sentences, band rules, mastery only.
 // exam:   every sentence, plain typing, no hints, one pass, 30-minute timer.
 const EXAM_SECONDS = 30 * 60;
 function startReview() {
@@ -1490,6 +1815,15 @@ function startReview() {
   const items = shuffle(pool).sort((a, b) => (m[a.key] || 0) - (m[b.key] || 0)).slice(0, Math.min(6, pool.length));
   _view = 'review';
   _run = { mode: 'review', items, pos: 0, results: [], pending: {}, start: Date.now() };
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function startFix(keys, from = '') {
+  const items = (keys && keys.length ? keys.map(_sentence).filter(Boolean) : weakSentences()).slice(0, FIX_MAX);
+  if (!items.length) { showToast('Chưa có câu yếu nào — luyện bước ③ trước nha!', 'info', 2500); return; }
+  _leaveActivity();
+  _view = 'fix';
+  _run = { mode: 'fix', from, items, pos: 0, results: [], pending: {}, start: Date.now() };
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1522,49 +1856,58 @@ function _stopTimers() { if (_run && _run.timer) { clearInterval(_run.timer); _r
 function renderRecallRun() {
   const r = _run;
   const isExam = r.mode === 'exam';
+  const title = r.mode === 'fix' ? '🎯 Luyện câu yếu' : '⚡ Ôn nhanh';
   const bar = isExam ? `<div class="t2-exam-bar">
       <span class="t2-exam-timer" id="pth-exam-time">${fmtMMSS(r.left)}</span>
-      <span class="t2-exam-label"><i class="fas fa-clock" style="margin-right:4px;opacity:.7"></i>${esc(TPL_DATA[_type].name)} · Thi thử</span>
+      <span class="t2-exam-label"><i class="fas fa-clock"></i> ${esc((TYPE_META[_type] || {}).label || '')} · ${esc(TPL_DATA[_type].name)} · Thi thử</span>
       <button class="t2-exam-exit-btn" onclick="examExit()"><i class="fas fa-times"></i> Nộp bài</button>
     </div>` : `<div class="pth-act-hdr">
       <button class="pth-back" onclick="backToPath()"><i class="fas fa-arrow-left"></i> Lộ trình</button>
-      <div class="pth-act-title">⚡ Ôn nhanh</div><div class="pth-act-right"></div>
+      <div class="pth-act-title">${title}</div><div class="pth-act-right">Câu ${Math.min(r.pos + 1, r.items.length)}/${r.items.length}</div>
     </div>`;
   if (r.finished) {
     const correct = r.results.filter(Boolean).length, total = r.results.length;
     const pct = total ? Math.round(correct / total * 100) : 0;
     const next = prog().nextReviewAt;
+    const line = isExam
+      ? (pct >= ASSEMBLE_PASS ? `Nhớ đúng ${correct}/${total} câu không cần gợi ý — trí nhớ của cậu xịn ghê! 🏆` : `Nhớ đúng ${correct}/${total} câu. Luyện câu yếu vài lượt rồi thi lại nha, Lulu tin cậu!`)
+      : r.mode === 'fix' ? `Xong ${total} câu yếu, nhớ đúng ${correct}! ${r.from === 'assemble' ? 'Giờ ghép lại cả bài thử xem nha 💪' : 'Mấy câu này sẽ lên dần mức “thuộc” đó.'}`
+      : `Ôn xong rồi! Nhớ đúng ${correct}/${total} câu. Hẹn cậu lần ôn tiếp theo nha 🗓️`;
     area().innerHTML = `${isExam ? '' : bar}<div class="pth-wrap"><div class="pth-card pth-done">
-      ${isExam ? `<img src="${_examTierImageSrc(pct)}" alt="" loading="lazy" class="pth-tier-img">` : '<div class="pth-done-ic">⚡</div>'}
+      ${isExam ? `<img src="${_examTierImageSrc(pct)}" alt="" loading="lazy" class="pth-tier-img">` : ''}
+      ${luluSays(line, { pct, stacked: true, solo: false })}
       <div class="pth-score ${pct >= 60 ? 'is-ok' : 'is-bad'}">${pct}%</div>
       <p class="pth-muted">${correct}/${total} câu nhớ đúng${isExam ? ` · ⏱ ${fmtMMSS(r.secs)}` : ''}</p>
       ${isExam && pendingHomework(_type).length ? `<p class="pth-muted">${pct >= ASSEMBLE_PASS ? '✅ Đủ ≥ 70% số câu cho bài tập về nhà' + (STEP_KEYS.every(k => stepDone(k)) ? '.' : ' — còn cần học xong cả 5 bước.') : `Bài tập về nhà cần thuộc ≥ ${ASSEMBLE_PASS}% số câu.`}</p>` : ''}
-      ${!isExam && next ? `<p class="pth-muted">Lần ôn tiếp theo: <b>${new Date(next).toLocaleDateString('vi-VN')}</b></p>` : ''}
+      ${r.mode === 'review' && next ? `<p class="pth-muted">Lần ôn tiếp theo: <b>${new Date(next).toLocaleDateString('vi-VN')}</b></p>` : ''}
       <div class="pth-actions">
         ${isExam ? '<button class="pth-btn" onclick="toggleExamMode()"><i class="fas fa-redo"></i> Thi lại</button>' : ''}
-        <button class="pth-btn pth-btn--primary" onclick="backToPath()">Về lộ trình <i class="fas fa-arrow-right"></i></button>
+        ${(isExam || r.mode === 'review') && weakSentences().length ? '<button class="pth-btn" onclick="startFix()"><i class="fas fa-crosshairs"></i> Luyện câu yếu</button>' : ''}
+        ${r.mode === 'fix' && r.from === 'assemble' ? '<button class="pth-btn pth-btn--primary" onclick="_leaveActivity();startAssemble()"><i class="fas fa-pen-nib"></i> Ghép lại cả bài</button>' : ''}
+        <button class="pth-btn ${r.mode === 'fix' && r.from === 'assemble' ? '' : 'pth-btn--primary'}" onclick="backToPath()">Về lộ trình <i class="fas fa-arrow-right"></i></button>
       </div>
     </div></div>`;
     return;
   }
   const s = r.items[r.pos];
   area().innerHTML = `${bar}<div class="pth-wrap"><div class="pth-card">
-      <div class="pth-drill-meta"><span>Câu ${r.pos + 1} / ${r.items.length}</span><span class="pth-chip">${esc(shortTitle(paragraphs()[s.si].title))}</span></div>
+      <div class="pth-drill-meta"><span>Câu ${r.pos + 1} / ${r.items.length}</span><span class="pth-drill-tags"><span class="pth-chip">${esc(shortTitle(paragraphs()[s.si].title))}</span>${roleTag(s)}</span></div>
       <div class="pth-vi-prompt"><i class="fas fa-quote-left"></i> ${esc(s.vi)}</div>
       <div id="pth-item"></div>
     </div></div>`;
   const last = r.pos + 1 >= r.items.length;
   renderRecall(document.getElementById('pth-item'), s, {
     free: isExam || isB7(),
+    hints: isExam ? 0 : RUN_HINTS,
     nextLabel: last ? 'Xem kết quả' : 'Câu tiếp',
     nextFn: 'recallRunNext()',
     passPct: isExam ? SENT_KNOWN : RECALL_PASS_B7,
-    onDone: ok => {
+    onDone: (ok, _d, hinted) => {
       r.results[r.pos] = ok;
-      if (!isExam) bumpMastery(r.pending, s.key, ok ? 1 : -1);
+      if (!isExam) bumpMastery(r.pending, s.key, ok && !hinted ? 1 : ok ? 0 : -1);
     },
   });
-  if (isExam) { const g = document.getElementById('pth-recall-actions')?.querySelector('.pth-btn:not(.pth-btn--primary)'); if (g) g.innerHTML = '<i class="fas fa-forward"></i> Bỏ qua'; }
+  if (isExam) { const g = document.getElementById('pth-giveup'); if (g) g.innerHTML = '<i class="fas fa-forward"></i> Bỏ qua'; }
 }
 function recallRunNext() {
   _unmountDrill();
@@ -1593,6 +1936,10 @@ function _recallRunFinish() {
     saveProg({ reviewDone: true, reviewScore: Math.round(correct / total * 100), mastery: r.pending });
     saveAttempt({ mode: 'review', total, correct, timeTakenSec: r.secs });
     updateXPStorage(5);
+  }
+  if (r.mode === 'fix' && total) {
+    saveProg({ mastery: r.pending });
+    updateXPStorage(3);
   }
   if (r.mode === 'exam' && answered.length) saveAttempt({ mode: 'path', total, correct, isExam: true, timeTakenSec: r.secs });
   updateExamBtn();
@@ -1664,7 +2011,7 @@ function _copyGuideEssay(btn) {
   });
 }
 
-// "Xem đầy đủ" — the generic fill-in template of this type (Task2GenericTpl).
+// "Xem đầy đủ" — the full template of this type (the same lines the path drills).
 let _tplFullLevel = 'band6';
 let _tplFullShowVi = false;
 function _renderTplFullLevelBtns() {

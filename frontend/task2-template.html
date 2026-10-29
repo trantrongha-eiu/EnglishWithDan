@@ -20,7 +20,7 @@
   <script src="/js/theme.js?v=81e03964c4"></script>
   <script src="/js/shared/site-guard.js?v=c04e9f321f" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
-  <link rel="stylesheet" href="/css/task2-template.css?v=4264472b60">
+  <link rel="stylesheet" href="/css/task2-template.css?v=fc58a1c9b7">
   <link rel="stylesheet" href="/css/playful.css?v=ffb392e664"/>
 </head>
 <body>
@@ -38,7 +38,7 @@
 <div class="t2-quit-overlay hidden" id="tpl-switch-overlay">
   <div class="t2-quit-box">
     <div class="t2-quit-top">
-      <div class="t2-quit-mascot">🔀</div>
+      <div class="t2-quit-mascot" data-dan="think">🔀</div>
       <div class="t2-quit-title">Rời bài đang luyện?</div>
       <div class="t2-quit-sub" id="tpl-switch-sub"></div>
     </div>
@@ -53,88 +53,63 @@
   </div>
 </div>
 
-<!-- ── Mini stats widget (XP/streak/sound) — floats top-right, shared
-     global nav (js/nav.js) now handles page navigation for this page ── -->
-<div class="wp-mini-stats">
-  <div class="wp-xp-badge"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</div>
-  <div class="wp-streak-badge">🔥 <span id="header-streak">0</span></div>
-</div>
+<!-- ══ PAGE: hero + type tabs + toolbar + path (Listening/Reading playful look) ══ -->
+<div class="tpl-page">
 
-<!-- ══ LAYOUT: SIDEBAR + MAIN ══ -->
-<div class="tpl-layout">
-
-  <!-- ── SIDEBAR ── -->
-  <aside class="tpl-sidebar">
-    <div class="tpl-sidebar-top">
-      <div class="tpl-sidebar-brand"><i class="fas fa-book-open"></i> Task 2 Writing</div>
-      <div class="tpl-sidebar-subtitle">7 dạng bài IELTS Task 2</div>
-      <div style="display:flex;flex-direction:column;align-items:flex-start;gap:5px">
-        <span class="tpl-sidebar-badge" id="tpl-main-badge">0 / 7 dạng hoàn thành</span>
-        <span class="tpl-sidebar-badge" id="tpl-mode-badge">🧠 Đã thuộc 0/0 câu</span>
+  <section class="tpl-hero" id="tpl-hero">
+    <div class="tpl-hero-text">
+      <h1 class="tpl-hero-title">Luyện viết <span class="tpl-hero-tag">Task 2 Template</span></h1>
+      <p class="tpl-hero-sub" id="tpl-page-sub">Lộ trình 5 bước để thuộc bản template đầy đủ của 7 dạng bài IELTS Task 2.</p>
+      <div class="tpl-hero-badges">
+        <span class="tpl-hero-badge" id="tpl-main-badge">0 / 7 dạng hoàn thành</span>
+        <span class="tpl-hero-badge" id="tpl-mode-badge">🧠 Đã thuộc 0/0 câu</span>
       </div>
     </div>
-    <nav id="tpl-type-tabs" class="tpl-type-nav"></nav>
-    <div class="tpl-sidebar-footer">
-      <button onclick="copyTplShareUrl()" class="tpl-sb-btn" title="Sao chép link chia sẻ trang này">
-        <i class="fas fa-link"></i> Sao chép link
-      </button>
-      <div class="tpl-sb-nav-links">
-        <a href="/writing-practice.html" class="tpl-sb-nav-link"><i class="fas fa-house"></i> Giao tiếp</a>
-        <a href="/task1-practice.html"   class="tpl-sb-nav-link"><i class="fas fa-chart-bar"></i> Task 1</a>
-        <a href="/task2-practice.html"   class="tpl-sb-nav-link"><i class="fas fa-edit"></i> Task 2</a>
-        <a href="/essential-grammar.html" class="tpl-sb-nav-link"><i class="fas fa-graduation-cap"></i> Ngữ pháp</a>
+    <div class="tpl-hero-side">
+      <!-- Band 6+ / Band 7+ — same 7 essay types; Band 7+ gets fewer hints. -->
+      <div class="t2-level-toggle" id="tpl-level-toggle" role="tablist" aria-label="Trình độ">
+        <button class="t2-level-btn active" data-level="band6" onclick="switchTplLevel('band6')" role="tab" aria-selected="true">🌱 Band 6+</button>
+        <button class="t2-level-btn" data-level="band7" onclick="switchTplLevel('band7')" role="tab" aria-selected="false">🏆 Band 7+</button>
+      </div>
+      <div class="tpl-hero-tools">
+        <button class="tpl-glass-btn" id="tpl-full-btn" onclick="openTplFullView()" title="Xem toàn bộ template của dạng bài này — đúng các câu bạn luyện trong lộ trình">
+          <i class="fas fa-file-lines"></i> Xem đầy đủ
+        </button>
+        <button class="tpl-glass-btn" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
+          <i class="fas fa-history"></i> Lịch sử
+        </button>
+        <button class="tpl-glass-btn tpl-glass-btn--icon" onclick="copyTplShareUrl()" title="Sao chép link chia sẻ trang này" aria-label="Sao chép link">
+          <i class="fas fa-link"></i>
+        </button>
       </div>
     </div>
-  </aside>
+    <div class="lh-mascot" id="tpl-hero-mascot" aria-hidden="true"></div>
+  </section>
 
-  <!-- ── MAIN CONTENT ── -->
-  <div class="tpl-main">
+  <!-- 7 essay types -->
+  <nav id="tpl-type-tabs" class="tpl-type-nav" aria-label="Dạng bài"></nav>
 
-    <!-- Hero -->
-    <div class="tpl-page-hero">
-      <div class="tpl-page-hero-inner">
-        <div>
-          <h1 class="tpl-page-title">📚 Template Task 2 Writing – Lộ trình ghi nhớ</h1>
-          <p class="tpl-page-sub" id="tpl-page-sub">Lộ trình 5 bước để thuộc mẫu câu theo 7 dạng bài IELTS Task 2</p>
-          <p class="tpl-cache-warning tpl-cache-ok"><i class="fas fa-cloud"></i> Tiến độ được lưu vào tài khoản — học tiếp được trên mọi thiết bị.</p>
-          <div class="wp-status-row" id="tpl-type-status"></div>
-        </div>
-        <!-- Band 6+ / Band 7+ — same 7 essay types; Band 7+ gets fewer hints. -->
-        <div class="t2-level-toggle" id="tpl-level-toggle" role="tablist" aria-label="Trình độ">
-          <button class="t2-level-btn active" data-level="band6" onclick="switchTplLevel('band6')" role="tab" aria-selected="true">🌱 Band 6+</button>
-          <button class="t2-level-btn" data-level="band7" onclick="switchTplLevel('band7')" role="tab" aria-selected="false">🏆 Band 7+</button>
-        </div>
-      </div>
+  <!-- Toolbar — the practice itself is the 5-step path in #tpl-content-area -->
+  <div class="tpl-toolbar" id="tpl-toolbar">
+    <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn" onclick="toggleExamMode()" title="Thi thử: nhớ lại mọi câu từ tiếng Việt, không gợi ý, 30 phút">
+      <i class="fas fa-clock"></i> <span id="tpl-exam-label">Thi thử</span>
+    </button>
+    <div class="tpl-stats" id="tpl-type-status"></div>
+    <div class="tpl-xp">
+      <span class="tpl-stat tpl-stat--xp"><i class="fas fa-star"></i> <span id="header-xp">0</span> XP</span>
+      <span class="tpl-stat tpl-stat--fire">🔥 <span id="header-streak">0</span></span>
     </div>
+  </div>
 
-    <!-- Toolbar — the practice itself is the 5-step path in #tpl-content-area -->
-    <div class="tpl-toolbar" id="tpl-toolbar">
-      <button class="t2-tpl-exam-btn-tab" id="tpl-exam-btn" onclick="toggleExamMode()" title="Thi thử: nhớ lại mọi câu từ tiếng Việt, không gợi ý, 30 phút">
-        <i class="fas fa-clock"></i> <span id="tpl-exam-label">Thi thử</span>
-      </button>
-      <button class="t2-tpl-vi-btn-tab" onclick="openTplHistory()" title="Xem lịch sử luyện tập">
-        <i class="fas fa-history"></i> Lịch sử
-      </button>
-      <button class="t2-tpl-vi-btn-tab" id="tpl-full-btn" onclick="openTplFullView()" title="Xem toàn bộ mẫu câu của dạng bài này (Band 6+ và Band 7+) để tham khảo khi viết bài">
-        <i class="fas fa-file-lines"></i> Xem đầy đủ
-      </button>
-    </div>
+  <!-- Per-type reference guide (recognise / outline / 6+→7+ / useful language / model essay / mistakes) -->
+  <div id="tpl-guide-area"></div>
 
-    <!-- Progress bar -->
-    <div class="t2-type-progress-wrap">
-      <div class="t2-type-progress-fill" id="tpl-progress-fill" style="width:0%"></div>
-    </div>
+  <!-- Content area -->
+  <main class="tpl-content-outer">
+    <div id="tpl-content-area"></div>
+  </main>
 
-    <!-- Per-type reference guide (recognise / outline / 6+→7+ / useful language / model essay / mistakes) -->
-    <div id="tpl-guide-area"></div>
-
-    <!-- Content area -->
-    <div class="tpl-content-outer">
-      <div id="tpl-content-area"></div>
-    </div>
-
-  </div><!-- end .tpl-main -->
-</div><!-- end .tpl-layout -->
+</div><!-- end .tpl-page -->
 
 <!-- Dictionary lookup (double-click a word) -->
 <div id="dict-popup" class="dict-popup hidden">
@@ -168,6 +143,7 @@
   </div>
 </div>
 
-<script src="/js/task2-template.js?v=0397d7797c"></script>
+<script src="/js/task2-generic-templates.js?v=a07e561334"></script>
+<script src="/js/task2-template.js?v=82efc85a8d"></script>
 </body>
 </html>

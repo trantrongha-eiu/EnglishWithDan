@@ -7,8 +7,9 @@
  * Self-contained like entrance-test.spec.js: in-memory MongoDB, the real
  * backend on a random port, a static server for frontend/ on :3000, and
  * every request to the production API rerouted to the local backend.
- * Content comes from e2e/fixtures/task2-templates.json (a copy of the
- * Type 01 / Type 02 templates and the Type 01 guide).
+ * The sentences come from the full template (frontend/js/task2-generic-
+ * templates.js, the "Xem đầy đủ" pop-up); e2e/fixtures/task2-templates.json
+ * seeds the DB rows homework is assigned from and the Type 01 guide.
  *
  * The test reads the page's own state (_build / _fade / _run) to know the
  * right answer for each exercise, so it follows whatever the page asks.
@@ -197,7 +198,8 @@ async function doDrill(page) {
       await expect(page.locator('#pth-fade-fb .pth-fb--good')).toBeVisible();
     } else {
       // Band 6+ recall: the letter-by-letter drill — type only letters/digits.
-      const en = await page.evaluate(() => _recall.s.en);
+      // Placeholders are not typed ("…" in the drill); "agree/disagree" is one word.
+      const en = await page.evaluate(() => _recall.answer);
       await page.locator('.wbwd-input').click();
       await page.keyboard.type(en.replace(/[^\p{L}\p{N}]/gu, ''), { delay: 0 });
       await expect(page.locator('#pth-recall-fb .pth-fb--good')).toBeVisible();
