@@ -8,12 +8,11 @@
    again later — but only on the exact browser/device that made it;
    IndexedDB never syncs across devices.
 
-   Architecture note: if cloud sync is ever wanted (e.g. so a recording is
-   reachable from a different device), the natural extension point is a
-   background upload from here to Cloudinary/GCS that PATCHes the
-   resulting URL onto the SpeakingAttempt doc — not implemented now, this
-   module just makes local storage/retrieval a clean, swappable interface
-   so that later addition doesn't have to touch every call site.
+   Now only a fallback: /api/speaking/analyze and /mock-submit save the
+   recording to R2 (SpeakingAttempt.audioUrl, kept 3 months) and History
+   plays that on any device. This local copy is written only when the
+   server returned no audioUrl (upload failed / no R2 in dev), and is still
+   read for older attempts made before cloud saving.
 ═══════════════════════════════════════════════════════ */
 
 (function () {

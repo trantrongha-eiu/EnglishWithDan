@@ -741,23 +741,26 @@ async function _finishMockSpeaking() {
     let attemptId = state._mockSpeakingAttemptId;
     if (!attemptId) {
       const q = state.currentQuestion || {};
-      const data = await apiFetch('/api/speaking/mock-submit', {
-        method: 'POST',
-        body: JSON.stringify({
-          transcript,
-          question: q.question || q.cueCard || '',
-          questionId: q._id,
-          topic: q.topic,
-          part: q.part || 2,
-          duration: state._frozenDurationSeconds || 0,
-        }),
-      });
-      attemptId = data.attemptId || null;
-      // Key the local recording (if any) to this attempt for same-device
-      // playback in History later.
-      if (attemptId && _lastRecordingBlob && window.SpeakingAudioStore) {
-        window.SpeakingAudioStore.saveAudioRecording(attemptId, _lastRecordingBlob);
+      const fields = {
+        transcript,
+        question: q.question || q.cueCard || '',
+        questionId: q._id,
+        topic: q.topic,
+        part: q.part || 2,
+        duration: state._frozenDurationSeconds || 0,
+      };
+      // With a recording: multipart, so the server saves it to History.
+      let body;
+      if (_lastRecordingBlob && _lastRecordingBlob.size > 0) {
+        body = new FormData();
+        Object.entries(fields).forEach(([k, v]) => { if (v != null && v !== '') body.append(k, v); });
+        body.append('audio', _lastRecordingBlob, `answer.${_recordingExt(_lastRecordingBlob)}`);
+      } else {
+        body = JSON.stringify(fields);
       }
+      const data = await apiFetch('/api/speaking/mock-submit', { method: 'POST', body });
+      attemptId = data.attemptId || null;
+      _keepLocalRecordingIfNotSaved(attemptId, data.audioUrl);
     }
     await window.MockTest.advance('speaking', attemptId);
   } catch (e) {
@@ -1430,6 +1433,19 @@ function _stopAudioCapture() {
   });
 }
 
+function _recordingExt(blob) {
+  const t = (blob && blob.type) || '';
+  return t.includes('ogg') ? 'ogg' : t.includes('mp4') ? 'm4a' : 'webm';
+}
+
+// The server saves the recording to History (R2, kept 3 months) and returns
+// its audioUrl. Only when it couldn't (upload failed / no cloud storage) keep
+// a same-device copy in IndexedDB, keyed by the attempt, as before.
+function _keepLocalRecordingIfNotSaved(attemptId, audioUrl) {
+  if (audioUrl || !attemptId || !_lastRecordingBlob || !window.SpeakingAudioStore) return;
+  window.SpeakingAudioStore.saveAudioRecording(attemptId, _lastRecordingBlob);
+}
+
 let _playbackAudio = null;
 
 function _setPlaybackBtnState(playing) {
@@ -1752,9 +1768,7 @@ async function analyzeTranscript() {
     if (state.currentQuestion?.topic) fd.append('topic', state.currentQuestion.topic);
     if (state.currentQuestion?.part != null) fd.append('part', state.currentQuestion.part);
     fd.append('duration', duration || 0);
-    const _t = _lastRecordingBlob.type || '';
-    const _ext = _t.includes('ogg') ? 'ogg' : _t.includes('mp4') ? 'm4a' : 'webm';
-    fd.append('audio', _lastRecordingBlob, `answer.${_ext}`);
+    fd.append('audio', _lastRecordingBlob, `answer.${_recordingExt(_lastRecordingBlob)}`);
     _reqBody = fd;
   } else {
     _reqBody = JSON.stringify({
@@ -1805,9 +1819,7 @@ async function analyzeTranscript() {
         state._mockSpeakingAttemptId = data.attemptId || null;
         _ensureSpeakingMockFinish();
       }
-      if (data.attemptId && _lastRecordingBlob && window.SpeakingAudioStore) {
-        window.SpeakingAudioStore.saveAudioRecording(data.attemptId, _lastRecordingBlob);
-      }
+      _keepLocalRecordingIfNotSaved(data.attemptId, data.audioUrl);
       return;
     }
 
@@ -1859,11 +1871,7 @@ async function analyzeTranscript() {
       _ensureSpeakingMockFinish();
     }
 
-    // Best-effort: key the locally-captured recording (if any) to this
-    // exact attempt so History can offer same-device playback later.
-    if (data.attemptId && _lastRecordingBlob && window.SpeakingAudioStore) {
-      window.SpeakingAudioStore.saveAudioRecording(data.attemptId, _lastRecordingBlob);
-    }
+    _keepLocalRecordingIfNotSaved(data.attemptId, data.audioUrl);
   } catch (e) {
     clearTimeout(_killer);
     if (loading) loading.style.display = 'none';
@@ -3002,6 +3010,7 @@ async function loadHistory({ resetLimit = true } = {}) {
             <span class="history-part-badge ${badgeClass}">${badgeLabel}</span>
             ${a.topic && !isFullMock ? `<span class="history-topic-badge">${escHtml(a.topic)}</span>` : ''}
             <span class="history-date">${formatDate(a.createdAt)}</span>
+            ${a.audioUrl ? '<span class="history-audio-badge" title="Có bản ghi âm"><i class="fas fa-microphone"></i></span>' : ''}
           </div>
           ${band ? `<div class="history-band-badge">${band}</div>` : ''}
         </div>
@@ -3189,7 +3198,20 @@ async function openHistoryModal(attempt) {
 
   if (modal) modal.classList.add('open');
 
-  // Best-effort, async, non-blocking — only present if this exact browser/
+  // Recording saved to History on the server — plays on any device.
+  if (attempt.audioUrl) {
+    const slot = document.getElementById('history-audio-slot');
+    if (slot) {
+      slot.innerHTML = `
+        <div class="modal-audio-playback">
+          <div class="modal-transcript-label">🔊 Bản ghi âm của bạn <span class="modal-audio-note">(lưu 3 tháng)</span></div>
+          <audio controls preload="metadata" src="${escHtml(attempt.audioUrl)}"></audio>
+        </div>`;
+    }
+    return;
+  }
+
+  // Older attempts: best-effort, async — only present if this exact browser/
   // device made the recording (IndexedDB is local-only, never syncs).
   if (window.SpeakingAudioStore && attempt._id) {
     const blob = await window.SpeakingAudioStore.getAudioRecording(attempt._id);

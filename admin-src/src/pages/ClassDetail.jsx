@@ -1010,6 +1010,38 @@ function VocabGoalCell({ item }) {
   return <>{Math.min(v.practiced, v.target)}/{v.target} từ · đúng {v.correct}/{v.needCorrect}{book}</>;
 }
 
+// Short name of one assignment item — same wording as AssignmentResourceLine.
+function resourceShortName(r) {
+  if (!r) return 'Phần không rõ';
+  if (r.kind === 'internal' && r.resourceType === 'mock_test') return 'Thi thử';
+  if (r.kind === 'internal') return r.label || RES_LABEL[r.resourceType] || r.resourceType;
+  if (r.kind === 'external') return r.title || r.url || 'Link ngoài';
+  if (r.kind === 'image') return r.title || 'Bài tập ảnh';
+  if (r.kind === 'vocab_goal') return r.bookSlot ? `Sổ từ vựng (Sổ ${r.bookSlot})` : 'Sổ từ vựng';
+  return r.label || r.title || 'Phần bài tập';
+}
+
+// "Thiếu" column — which items this student has not finished, numbered like
+// the "Nội dung bài tập" list above the table.
+function MissingItemsCell({ row, resources }) {
+  const byId = new Map(resources.map((res, i) => [String(res._id), { res, n: i + 1 }]));
+  const missing = (row.items || []).filter((it) => !it.completed);
+  if (!missing.length) return <span style={{ color: 'var(--text3)' }}>—</span>;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      {missing.map((it) => {
+        const hit = byId.get(String(it.itemId));
+        return (
+          <div key={it.itemId} style={{ lineHeight: 1.35 }}>
+            <span style={{ color: 'var(--text3)' }}>{hit ? `${hit.n}. ` : '• '}</span>
+            {hit ? resourceShortName(hit.res) : (it.label || 'Phần bài tập')}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function AssignmentProgressPanel({ cls, assignmentId }) {
   const toast = useToast();
   const [data, setData] = useState(null);
@@ -1046,7 +1078,7 @@ function AssignmentProgressPanel({ cls, assignmentId }) {
                   <MockRunCell item={r.items.find((it) => String(it.itemId) === String(mockItem._id))} />
                 </td>
               )}
-              <td style={{ fontSize: 13 }}>{r.missing}</td>
+              <td style={{ fontSize: 13 }}><MissingItemsCell row={r} resources={data.assignment?.resources || []} /></td>
               <td style={{ fontSize: 13 }}>{r.allCompletedAt ? formatDate(r.allCompletedAt) : '—'}</td>
               <td><span className={`badge ${ASG_STATUS[r.status] || 'badge-gray'}`}><span className="dot" />{ASG_LABEL[r.status] || r.status}</span></td>
             </tr>

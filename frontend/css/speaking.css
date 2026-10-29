@@ -1754,6 +1754,8 @@ button:focus-visible {
   margin-bottom: 20px;
 }
 .modal-audio-playback audio { width: 100%; height: 34px; }
+.modal-audio-note { font-weight: 400; opacity: .7; }
+.history-audio-badge { color: #2563eb; font-size: 12px; }
 .modal-score-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -2062,6 +2064,7 @@ button:focus-visible {
 [data-theme="dark"] .btn-playback-recording.playing { background: #1d4ed8; color: #fff; }
 [data-theme="dark"] .btn-playback-recording.playing:hover { background: #2563eb; }
 [data-theme="dark"] .modal-audio-playback { background: #1e3a5f; border-color: #1d4ed8; }
+[data-theme="dark"] .history-audio-badge { color: #93c5fd; }
 
 [data-theme="dark"] .btn-secondary        { background: #1f2937; color: #e5e7eb; border-color: #374151; }
 [data-theme="dark"] .btn-secondary:hover  { background: #374151; }
