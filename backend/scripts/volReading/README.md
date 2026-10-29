@@ -358,3 +358,8 @@ key 3 cột; T1 dạng "Câu số n:"; không có giải thích). `py docx2txt.p
   T7 P2 "was similar to historical linguists, many of whom restrict…" → "superior to that of" (tự sửa cho có nghĩa).
 - Kiểm: pw_mini 27/27, pw_admin 27/27, pw_grade 27/27 100%, pw_full_tests 9/9, `_audit_reading_warnings` 0 (461 bài),
   `vr_audit.js 9`: 0 problem (360 câu, 428 trích dẫn), `vr_incomplete.js`: 0.
+- **Debug lại (thầy bảo, cùng ngày)**: `vr_update.js 9 <27 bài>` dry run: DB trùng spec, 0 lượt làm. `web/vol9/debug_text.js` (dấu câu,
+  từ lặp, gạch nối gãy, nháy, từ không có ở bài nào khác): chỉ còn tên riêng / thuật ngữ / dấu lược sở hữu. `web/vol9/debug_q.js` so
+  từng câu hỏi / lựa chọn / tiêu đề / ending / ô bảng với chữ docx (bigram ≥ 85%): chỉ lệch ở chỗ số ô trống nằm giữa câu và chỗ sửa
+  có chủ ý (lựa chọn F của T2 P2, tiêu đề ix của T5 P2). So key spec với file key docx: chỉ khác ở các câu đã sửa ghi ở trên (T9 P3
+  key in chữ cái, spec lưu từ trong word bank — cùng đáp án). Pushed fc5a672b.
