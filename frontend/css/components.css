@@ -145,6 +145,25 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .badge-warning { background: var(--warning-light); color: var(--warning); }
 .badge-danger  { background: var(--danger-light);  color: var(--danger); }
 
+/* Review-screen "⏱ 12:34" total-time chip (js/shared/time-badge.js) */
+.exam-time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text2);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .exam-time-badge { font-size: 12px; padding: 3px 8px; gap: 4px; }
+}
+
 /* ── Tables ─────────────────────────────────────────────────────────── */
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 table.responsive-table { min-width: 600px; width: 100%; border-collapse: collapse; }

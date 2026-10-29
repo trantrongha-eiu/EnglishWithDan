@@ -2199,6 +2199,7 @@ function goToReview() {
 
     document.getElementById('review-title').textContent = r.testName;
     document.getElementById('review-band-badge').textContent = `Band Score: ${r.bandScore.toFixed(1)}`;
+    window.setTimeBadge?.('review-time-badge', r.timeTaken);
     const reviewImgEl = document.getElementById('review-result-img');
     if (reviewImgEl) { reviewImgEl.src = resultImgSrcForBand(r.bandScore || 0); reviewImgEl.style.display = ''; }
     state.audioPartIdx = null;

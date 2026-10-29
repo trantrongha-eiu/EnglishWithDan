@@ -814,6 +814,7 @@ function _enterLTPracticeScreen(section, partNum, sectionId, mode = 'practice', 
     _ltSetCdSkin(true, true);
     _renderLtCdPartHeader(_ltCleanSection, partNum);
     _mountLtCdFooter(_ltCleanSection, partNum);
+    window.setTimeBadge?.('lt-practice-time-badge', 0);
     showScreen('practice');
 }
 
@@ -878,6 +879,7 @@ function _enterEntranceEmbedLT(host) {
     audio.removeAttribute('src');
     document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> ${escHtml(section.title || 'Listening')}`;
     document.getElementById('lt-practice-footer-btns').innerHTML = '';
+    window.setTimeBadge?.('lt-practice-time-badge', 0);
     showScreen('practice');
 
     // Every answer change (click/type/drag/select) → the parent's autosave.
@@ -1510,6 +1512,7 @@ async function _doSubmitLTPractice() {
             <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
             <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
     _ltSetCdSkin(true, false); // review look for questions + footer
+    window.setTimeBadge?.('lt-practice-time-badge', elapsed);
 
     // This screen already is the review — the button jumps to the first
     // question answered wrong (or skipped).
@@ -1804,6 +1807,7 @@ async function loadLTPracticeReview(attemptId) {
 
         // Show practice screen
         showScreen('practice');
+        window.setTimeBadge?.('lt-practice-time-badge', attempt.timeTaken);
         _ltSetCdSkin(true, false);
         _renderLtCdPartHeader(section, attempt.partNumber);
         document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> Xem lại – ${escHtml(section.title || `Section ${attempt.partNumber}`)}`;

@@ -7,11 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reading – EnglishWithDan</title>
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb" />
-  <link rel="stylesheet" href="/css/components.css?v=d2125349c7" />
+  <link rel="stylesheet" href="/css/components.css?v=b9f5f216c1" />
   <link rel="stylesheet" href="/css/style.css?v=ac1149d095" />
   <link rel="stylesheet" href="/css/reading.css?v=3754a94313" />
   <link rel="stylesheet" href="/css/mobile.css?v=1319d3b9c8" />
-  <link rel="stylesheet" href="/css/exam-embed.css?v=aa8796238f" />
+  <link rel="stylesheet" href="/css/exam-embed.css?v=7c616e2d54" />
   <script>/* Entrance Test iframe — see css/exam-embed.css */if (/[?&]embed=entrance(&|$)/.test(location.search) && window.parent !== window) document.documentElement.classList.add('ews-embed');</script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -39,6 +39,7 @@
 <script src="/js/shared/post-submit-reminder.js?v=714e2716d6"></script>
 <script src="/js/shared/attempt-history.js?v=1bdfa8c2e4"></script>
 <script src="/js/shared/review-inline.js?v=3d0ad7ef05"></script>
+<script src="/js/shared/time-badge.js?v=3cba59d656"></script>
 <script src="/js/shared/badge-popup.js?v=66bb1e6846"></script>
 <script src="/js/shared/proctor-capture.js?v=55bb6a6515"></script>
 <script src="/js/shared/proctor-engine.js?v=38ff4d4f34"></script>
@@ -339,6 +340,7 @@
       <div class="exam-band-mid">
         <img id="review-result-img" class="exam-band-thumb" src="" alt="" style="display:none">
         <div class="exam-band-badge" id="review-band-badge">Band Score: –</div>
+        <div class="exam-time-badge" id="review-time-badge" style="display:none"></div>
       </div>
       <div class="exam-bar-right">
         <button class="btn-icon-sm" onclick="copyReadingUrl()" title="Sao chép link chia sẻ" aria-label="Sao chép link chia sẻ"><i class="fas fa-link"></i></button>
@@ -399,7 +401,10 @@
           <div id="practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
         </div>
       </div>
-      <div class="exam-band-badge" id="retry-score-badge" style="display:none"></div>
+      <div class="exam-band-mid">
+        <div class="exam-band-badge" id="retry-score-badge" style="display:none"></div>
+        <div class="exam-time-badge" id="retry-time-badge" style="display:none"></div>
+      </div>
       <div class="exam-bar-right" id="retry-bar-right" style="display:flex;align-items:center;gap:8px;">
         <span id="practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
         <button class="cd-submit-top cd-live-only" onclick="submitRetry()">Kiểm tra đáp án</button>
@@ -563,7 +568,7 @@
 
   <script src="/js/shared/cd-footer.js?v=f2f465f188"></script>
   <script src="/js/shared/exam-fullscreen.js?v=4aae1fbd2b"></script>
-  <script src="/js/reading-v2.js?v=9cb7b1f94e"></script>
+  <script src="/js/reading-v2.js?v=d75eee7611"></script>
   <script src="/js/reading-tips.js?v=b7038f964d"></script>
   <script src="/js/shared/tips-practice-shell.js?v=3a472d16e0"></script>
   <script src="/js/reading-tips-practice.js?v=c43488e3ed"></script>

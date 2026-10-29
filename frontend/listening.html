@@ -12,10 +12,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb" />
-    <link rel="stylesheet" href="/css/components.css?v=d2125349c7" />
+    <link rel="stylesheet" href="/css/components.css?v=b9f5f216c1" />
     <link rel="stylesheet" href="/css/listening.css?v=d2993031cf" />
     <link rel="stylesheet" href="/css/mobile.css?v=1319d3b9c8" />
-    <link rel="stylesheet" href="/css/exam-embed.css?v=aa8796238f" />
+    <link rel="stylesheet" href="/css/exam-embed.css?v=7c616e2d54" />
     <script>/* Entrance Test iframe — see css/exam-embed.css */if (/[?&]embed=entrance(&|$)/.test(location.search) && window.parent !== window) document.documentElement.classList.add('ews-embed');</script>
     <script src="/js/theme.js?v=81e03964c4"></script>
     <script src="/js/shared/site-guard.js?v=c04e9f321f" defer></script>
@@ -38,6 +38,7 @@
 <script src="/js/shared/post-submit-reminder.js?v=714e2716d6"></script>
 <script src="/js/shared/attempt-history.js?v=1bdfa8c2e4"></script>
 <script src="/js/shared/review-inline.js?v=3d0ad7ef05"></script>
+<script src="/js/shared/time-badge.js?v=3cba59d656"></script>
 <script src="/js/shared/badge-popup.js?v=66bb1e6846"></script>
 <script src="/js/shared/proctor-capture.js?v=55bb6a6515"></script>
 <script src="/js/shared/proctor-engine.js?v=38ff4d4f34"></script>
@@ -312,6 +313,7 @@
             <span class="exam-band-mid" style="display:inline-flex;align-items:center;gap:8px">
                 <img id="review-result-img" class="exam-band-thumb" src="" alt="" style="display:none;width:34px;height:34px;border-radius:8px;object-fit:cover">
                 <span class="review-band-badge" id="review-band-badge">Band –</span>
+                <span class="exam-time-badge" id="review-time-badge" style="display:none"></span>
             </span>
             <button class="tool-btn-rv" id="tool-hl-rv" onclick="setTool('highlight')"><i class="fas fa-highlighter"></i> Bôi màu</button>
             <button class="tool-btn-rv" id="tool-dict-rv" onclick="setTool('dict')"><i class="fas fa-book"></i> Tra từ</button>
@@ -378,6 +380,7 @@
                 <span class="exam-title" id="lt-practice-title">Luyện tập Listening</span>
                 <div id="lt-practice-stopwatch" class="practice-stopwatch" style="display:none">00:00</div>
             </div>
+            <span class="exam-time-badge" id="lt-practice-time-badge" style="display:none"></span>
             <span id="lt-practice-progress-txt" class="practice-progress-txt" style="display:none"></span>
             <button class="cd-submit-top cd-live-only" onclick="submitLTPractice()">Kiểm tra đáp án</button>
             <button id="btn-fullscreen-pr" class="btn-icon-sm" onclick="toggleFullscreen()" title="Toàn màn hình"><i class="fas fa-expand" id="fs-icon-pr"></i></button>
@@ -662,10 +665,10 @@
 
     <script src="/js/shared/exam-fullscreen.js?v=4aae1fbd2b"></script>
 
-    <script src="/js/listening.js?v=b49ff8be3f"></script>
+    <script src="/js/listening.js?v=99ee791a2e"></script>
 
     <!-- ══ Bài lẻ Listening – mode switch + practice flow ══════════════════ -->
-    <script src="/js/listening-practice.js?v=2e4de1cd6a"></script>
+    <script src="/js/listening-practice.js?v=dc6472be27"></script>
     <script src="/js/listening-warmup.js?v=3f279b60bd"></script>
     <script src="/js/listening-tips.js?v=377cc8fbe0"></script>
     <script src="/js/shared/tips-practice-shell.js?v=3a472d16e0"></script>

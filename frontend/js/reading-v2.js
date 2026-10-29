@@ -1748,6 +1748,7 @@ function _enterPracticeScreen(passage, category, passageId, mode = 'practice', s
 
   const badge = document.getElementById('retry-score-badge');
   if (badge) badge.style.display = 'none';
+  window.setTimeBadge?.('retry-time-badge', 0);
 
   document.getElementById('retry-footer-btns').innerHTML = `
     <button class="btn-ghost" onclick="confirmCloseRetry()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
@@ -3699,6 +3700,7 @@ function renderReview(attempt, answerKeyWithheld) {
   document.getElementById('review-title').textContent = attempt.testName || 'Xem lại';
   const badge = document.getElementById('review-band-badge');
   if (badge) badge.textContent = `Band: ${attempt.bandScore?.toFixed(1)}`;
+  window.setTimeBadge?.('review-time-badge', attempt.duration);
   const reviewImgEl = document.getElementById('review-result-img');
   if (reviewImgEl) { reviewImgEl.src = resultImgSrcForBand(attempt.bandScore || 0); reviewImgEl.style.display = ''; }
 
@@ -3871,6 +3873,7 @@ function retryCurrentPassage() {
 
   const badge = document.getElementById('retry-score-badge');
   if (badge) badge.style.display = 'none';
+  window.setTimeBadge?.('retry-time-badge', 0);
 
   document.getElementById('retry-footer-btns').innerHTML = `
     <button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Về review</button>
@@ -4273,6 +4276,8 @@ async function _doSubmitRetry() {
 
   const badge = document.getElementById('retry-score-badge');
   if (badge) { badge.textContent = `${correct}/${total} câu đúng`; badge.style.display = ''; }
+  // Bài lẻ only — "Làm lại" from a full-test review has no stopwatch (elapsed 0 → hidden).
+  window.setTimeBadge?.('retry-time-badge', fromPractice ? elapsed : 0);
 
   // Rebuild q-nav with correct/wrong/skipped colours
   const nav = document.getElementById('retry-q-nav');
@@ -4438,6 +4443,7 @@ async function loadPracticeReview(attemptId) {
 
     document.getElementById('retry-title').textContent = passage.title || 'Xem lại bài lẻ';
     document.getElementById('retry-score-badge').style.display = 'none';
+    window.setTimeBadge?.('retry-time-badge', 0);
 
     // Highlights of this attempt (see _saveRetryHighlightsToStorage): the
     // server copy or this browser's, whichever is newer. An attempt saved
@@ -4510,6 +4516,7 @@ async function loadPracticeReview(attemptId) {
        <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
     document.getElementById('retry-score-badge').textContent = `${attempt.correctCount}/${attempt.totalQuestions} câu đúng`;
     document.getElementById('retry-score-badge').style.display = '';
+    window.setTimeBadge?.('retry-time-badge', attempt.timeTaken);
     inner.scrollTop = 0;
     showVocabToast('Đã tải bài xem lại', 'success');
 
