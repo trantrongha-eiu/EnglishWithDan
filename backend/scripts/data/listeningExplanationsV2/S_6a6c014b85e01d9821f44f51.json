@@ -1,0 +1,65 @@
+{
+  "title": "Cam 21 - Test 1 – Part 3",
+  "q": {
+    "21": {
+      "d": "HAI đặc điểm nào của bài giảng về đa dạng sinh học đại dương gây ấn tượng nhất với sinh viên? (đáp án thứ nhất) A. đề cập vấn đề địa phương / B. ví dụ có phạm vi rộng / C. gợi ý giải pháp thực tế / D. loại vấn đề được bàn / E. tác động tới chính sách của chính phủ.",
+      "v": "Cuối đoạn bàn về bài giảng.",
+      "t": "The examples she gave were at a more global level, and they really made it clear to me just how wide-ranging the threats to ocean biodiversity are.",
+      "p": "Ví dụ ở cấp độ toàn cầu, cho thấy các mối đe dọa rộng lớn thế nào = the broad focus of the examples. Bẫy E: chính sách “just at a national level” bị Phil xem nhẹ; C: khó thấy giải pháp thật sự → B"
+    },
+    "22": {
+      "d": "HAI đặc điểm nào của bài giảng gây ấn tượng nhất với sinh viên? (đáp án thứ hai)",
+      "v": "Đầu bài, khi Lucy nói điều cô đặc biệt thích.",
+      "t": ["I especially liked the way her lecture focused on more long-term issues", "That impressed me too."],
+      "p": "Bài giảng tập trung vào vấn đề dài hạn, chưa được chú ý nhưng sẽ quan trọng trong tương lai – cả hai đều ấn tượng (“That impressed me too”) = the type of issues discussed → D"
+    },
+    "23": {
+      "d": "HAI chi tiết nào về dự án nghiên cứu đặc biệt gây ấn tượng với sinh viên? (đáp án thứ nhất) A. thành công trước đây của nhóm / B. phạm vi địa lý rộng / C. dùng công nghệ mới / D. bằng chứng thống kê phong phú / E. nhiều chuyên gia đa dạng tham gia.",
+      "v": "Cuối đoạn về dự án nghiên cứu.",
+      "t": ["And the description of improvements in systems used for tracking marine animals and things like robots were really interesting.", "Yes, and her description of how robotics can be used to investigate threats to biodiversity."],
+      "p": "Hệ thống theo dõi sinh vật biển cải tiến và robot = the use of new technology, cả hai thấy “really interesting”. Bẫy: B – làm việc từ khắp thế giới “not unusual nowadays”; D – không dồn số liệu; A – nghiên cứu năm 2009 giờ ai cũng biết → C"
+    },
+    "24": {
+      "d": "HAI chi tiết nào về dự án nghiên cứu đặc biệt gây ấn tượng với sinh viên? (đáp án thứ hai)",
+      "v": "Đầu đoạn về dự án nghiên cứu.",
+      "t": ["I'd have thought it was quite unusual to have so many experts working together.", "Yeah, and from such different backgrounds."],
+      "p": "Rất nhiều chuyên gia cùng làm việc, lại từ nhiều lĩnh vực khác nhau (“different backgrounds”) = the large range of specialists involved → E"
+    },
+    "25": {
+      "d": "Bài báo về cá sư tử xâm lấn.",
+      "v": "Tài liệu đầu tiên trong danh sách.",
+      "t": "the writer went on about how dangerous they were in environmental terms, which is probably true, but he didn't really provide much information to explain why",
+      "p": "Tác giả nói cá nguy hiểm nhưng “didn't really provide much information to explain why” (không đưa đủ thông tin giải thích) = gives insufficient evidence for its claims → G"
+    },
+    "26": {
+      "d": "Phim tài liệu về vi nhựa.",
+      "v": "Tài liệu thứ hai.",
+      "t": ["I found it was made ten years ago so I gave up", "it was showing its age"],
+      "p": "Làm từ mười năm trước, “showing its age” (đã cũ) – khi đó ít ai biết về vi nhựa = now rather outdated. Bẫy C: “new danger” chỉ đúng vào thời điểm đó → B"
+    },
+    "27": {
+      "d": "Podcast về ô nhiễm đại dương.",
+      "v": "Tài liệu thứ ba.",
+      "t": ["Most of it was stating the obvious.", "but everybody knows that anyway"],
+      "p": "“Stating the obvious” (nói những điều hiển nhiên), “everybody knows that anyway” → quá dễ đoán nên không hữu ích = too predictable to be useful → F"
+    },
+    "28": {
+      "d": "Sách về hệ sinh thái ven biển.",
+      "v": "Tài liệu thứ tư, sách của John Harper.",
+      "t": ["actually I ended up with a much better understanding of the issues", "I thought it was a well-written summary of those"],
+      "p": "Lúc đầu khó đọc nhưng cuối cùng hiểu vấn đề rõ hơn nhiều, “well-written summary” + sơ đồ hữu ích = gives a clear explanation of the problems. Bẫy A: “hard going at first” không có nghĩa là dành cho chuyên gia → H"
+    },
+    "29": {
+      "d": "Bài báo về độc tính kim loại.",
+      "v": "Tài liệu thứ năm.",
+      "t": ["The article on metal toxicity was way above my head", "I just couldn't follow it."],
+      "p": "“Way above my head” (quá sức hiểu của tôi), Phil cũng “couldn't follow it” → nội dung dành cho người đọc rất chuyên sâu = aimed at a very specialist audience → A"
+    },
+    "30": {
+      "d": "Podcast về thành phố nổi trên biển.",
+      "v": "Tài liệu cuối cùng.",
+      "t": ["though it presented a rather one-sided picture, I thought", "it focused on how this would benefit people and ignored the effects on the environment"],
+      "p": "“One-sided picture” (một chiều) – chỉ nói lợi ích cho con người, bỏ qua tác động môi trường = does not give a balanced account → E"
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 2 Part 2",
+  "q": {
+    "11": {
+      "d": "Đi bộ quanh trung tâm thị trấn – vai trò của tình nguyện viên là gì?",
+      "v": "Hoạt động đầu tiên Steve giới thiệu.",
+      "t": "Tourists often ask how to get to a particular shop, and they might also be grateful for recommendations about what to visit.",
+      "p": "Du khách hỏi đường tới cửa hàng và cần gợi ý nên tham quan đâu → tình nguyện viên tư vấn cho khách = giving advice to visitors → D"
+    },
+    "12": {
+      "d": "Hỗ trợ tại các buổi hòa nhạc – vai trò của tình nguyện viên là gì?",
+      "v": "Hoạt động thứ hai.",
+      "t": ["part of the volunteers’ role is to get everyone in the audience to the right place as smoothly as possible", "head for the wrong section of the hall"],
+      "p": "Đưa khán giả tới đúng chỗ, vì nhiều người không xem vé và đi nhầm khu = helping people find their seats. Bẫy F: khán giả đã mua vé rồi, tình nguyện viên không bán vé → I"
+    },
+    "13": {
+      "d": "Tham gia các nhóm cộng đồng – vai trò của tình nguyện viên là gì?",
+      "v": "Hoạt động thứ ba.",
+      "t": "Here, the volunteers talk about how groups can help each other.",
+      "p": "Tình nguyện viên nói về cách các nhóm giúp đỡ nhau (ví dụ nhóm viết mượn xe của câu lạc bộ khác) = encouraging cooperation between local organisations → H"
+    },
+    "14": {
+      "d": "Hỗ trợ một tạp chí – vai trò của tình nguyện viên là gì?",
+      "v": "Hoạt động thứ tư, về tạp chí hằng tháng.",
+      "t": ["That’s the responsibility of the council’s advertising department", "we depend on volunteers though to find out what people think of events they’ve attended"],
+      "p": "Bẫy C: liên hệ doanh nghiệp (quảng cáo) là việc của phòng quảng cáo. Tình nguyện viên tìm hiểu mọi người nghĩ gì về sự kiện đã tham dự = collecting feedback on events → E"
+    },
+    "15": {
+      "d": "Tham gia bữa trưa cho người về hưu – vai trò của tình nguyện viên là gì?",
+      "v": "Hoạt động thứ năm.",
+      "t": "some volunteers put on a show. Usually around half an hour of songs and short plays",
+      "p": "Sau bữa ăn, tình nguyện viên biểu diễn hát và kịch ngắn = providing entertainment → A"
+    },
+    "16": {
+      "d": "Hỗ trợ trang web – vai trò của tình nguyện viên là gì?",
+      "v": "Hoạt động cuối cùng.",
+      "t": "volunteers are asked to help by making sure residents know about it",
+      "p": "Đảm bảo người dân biết tới trang web của hội đồng thị trấn = providing publicity about a council service → B"
+    },
+    "17": {
+      "d": "Sự kiện nào cần nhiều tình nguyện viên nhất? A. lễ hội âm nhạc / B. lễ hội khoa học / C. lễ hội sách.",
+      "v": "Khi nói về ba lễ hội lớn hằng năm.",
+      "t": ["More are needed for the music festival because that lasts a whole week, and even more help is required for the science festival, even though it’s only two days long."],
+      "p": "Lễ hội âm nhạc cần nhiều hơn lễ hội sách, nhưng lễ hội khoa học cần “even more” (còn nhiều hơn nữa) dù chỉ kéo dài hai ngày → B"
+    },
+    "18": {
+      "d": "Yêu cầu quan trọng nhất với tình nguyện viên tại các lễ hội là gì? A. kỹ năng giao tiếp / B. quan tâm cá nhân tới sự kiện / C. sự linh hoạt.",
+      "v": "Khi nói về yêu cầu với tình nguyện viên lễ hội.",
+      "t": "What essential though is being able to get on well with other people and also to deal with someone who’s behaving badly",
+      "p": "Bẫy B: chọn lễ hội mình thích chỉ là “a good idea”; C: linh hoạt là điều họ “try to use”. Điều “essential” (thiết yếu) là hòa hợp với người khác, xử lý người cư xử tệ = interpersonal skills → A"
+    },
+    "19": {
+      "d": "Tình nguyện viên mới bắt đầu làm việc vào tuần bắt đầu từ ngày A. 2/9 / B. 9/9 / C. 23/9.",
+      "v": "Khi nói về lịch làm việc.",
+      "t": "after a week’s training starting on the 2nd, so we’ll be timetabling you for duties the following week from the 9th onward",
+      "p": "Bẫy A: ngày 2 là bắt đầu tuần đào tạo. Bẫy C: tuần 23 là buổi trò chuyện. Bắt đầu làm nhiệm vụ từ ngày 9 → B"
+    },
+    "20": {
+      "d": "Sự kiện thường niên sắp tới dành cho tình nguyện viên là gì? A. đi thuyền / B. tiệc nướng / C. tiệc.",
+      "v": "Cuối bài, khi nói về sự kiện cảm ơn tình nguyện viên.",
+      "t": ["In recent years we’ve had a party in the Town Hall and last year a barbecue in Chamber Park.", "Our forthcoming event is a trip along the canal from here to Dewhurst and back."],
+      "p": "Tiệc và tiệc nướng là những năm trước. “Forthcoming” (sắp tới) là chuyến đi dọc kênh đào = a boat trip → A"
+    }
+  }
+}

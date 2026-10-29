@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 3 Part 4",
+  "q": {
+    "31": {
+      "d": "Thiết kế sản phẩm mà nhiều kiểu người khác nhau đều sử dụng được mà không cần bất kỳ sự ___ nào.",
+      "v": "Phần mở đầu, định nghĩa thiết kế toàn diện (inclusive design).",
+      "t": "without any type of adaptation having to be made to the original design",
+      "p": "“Without the need for any ___” = “without any type of ___ having to be made” → không cần điều chỉnh thiết kế gốc → adaptation"
+    },
+    "32": {
+      "d": "Không giống thiết kế phổ quát: đó là thiết kế cho mọi người, kể cả người có vấn đề về ___.",
+      "v": "Khi phân biệt với universal design.",
+      "t": "includes considering the needs of people who have cognitive difficulties",
+      "p": "“Catering for people with ___ problems” = “considering the needs of people who have ___ difficulties” → nhận thức → cognitive"
+    },
+    "33": {
+      "d": "Những ___ điều chỉnh được, giúp tránh đau lưng, đau cổ.",
+      "v": "Ví dụ thiết kế toàn diện ở nơi làm việc.",
+      "t": "In workplaces it is common to see desks which can be adjusted to suit people of different heights",
+      "p": "“Adjustable” = “can be adjusted”; thứ điều chỉnh được là “desks” (bàn làm việc), thiếu nó khiến dân văn phòng đau lưng, cổ → desks"
+    },
+    "34": {
+      "d": "___ trong nhà vệ sinh công cộng dễ sử dụng hơn.",
+      "v": "Ví dụ ở nhà vệ sinh công cộng.",
+      "t": "Taps that you activate by sensor require no pressing or twisting movements.",
+      "p": "Vòi nước cảm ứng không cần ấn hay vặn, dễ dùng hơn cho người khó cử động → taps"
+    },
+    "35": {
+      "d": "Nhà thiết kế tránh dùng màu ___ trong giao diện.",
+      "v": "Khi nói về sản phẩm công nghệ cho người cao tuổi.",
+      "t": "in particular shades of blue, which is why software designers rarely create interfaces with this colour",
+      "p": "Người già khó phân biệt các sắc xanh dương nên nhà thiết kế “rarely” (hiếm khi) dùng màu này = avoid → blue"
+    },
+    "36": {
+      "d": "Mọi người có thể ra lệnh bằng chuột, bàn phím hoặc ___ của mình.",
+      "v": "Khi nói về kỹ năng vận động suy giảm theo tuổi.",
+      "t": "So voice access is now a routine way of making commands.",
+      "p": "“Make commands” = “making commands”; ngoài chuột và bàn phím là “voice” (giọng nói) → voice"
+    },
+    "37": {
+      "d": "Dây an toàn đặc biệt có vấn đề với phụ nữ ___.",
+      "v": "Khi nói về an toàn trong thử nghiệm va chạm xe hơi.",
+      "t": "This has safety implications for all women, particularly those who are pregnant",
+      "p": "“Especially” = “particularly”; nhóm phụ nữ bị ảnh hưởng nhất là “those who are pregnant” (đang mang thai) → pregnant"
+    },
+    "38": {
+      "d": "Áo khoác bảo hộ (PPE) thường không vừa vì kích cỡ ___ của phụ nữ.",
+      "v": "Khi nói về trang bị bảo hộ cá nhân.",
+      "t": "women can be tall and still have much smaller shoulders than the average man",
+      "p": "Phụ nữ có thể cao nhưng vai nhỏ hơn nhiều so với nam giới trung bình → áo không vừa → shoulders"
+    },
+    "39": {
+      "d": "Đồ bảo hộ cho nữ ___ xử lý tình huống khẩn cấp là tệ nhất.",
+      "v": "Khi nêu kết quả báo cáo về PPE.",
+      "t": "this problem was worst in the emergency services. particularly the police",
+      "p": "“The worst” = “was worst”; “dealing with emergencies” = “emergency services”, đặc biệt là cảnh sát → police"
+    },
+    "40": {
+      "d": "___ trong văn phòng thường quá thấp đối với phụ nữ.",
+      "v": "Khi nói về sự thoải mái tại nơi làm việc.",
+      "t": "There is a standard setting for air conditioning to be at a temperature of 21 degrees designed to suit men",
+      "p": "Điều hòa đặt chuẩn 21 độ cho phù hợp nam giới nên phụ nữ phải quấn chăn → nhiệt độ quá thấp với phụ nữ → temperature"
+    }
+  }
+}

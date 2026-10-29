@@ -1,0 +1,65 @@
+{
+  "title": "Working as a lifeboat volunteer",
+  "q": {
+    "11": {
+      "d": "Điều gì khiến David rời London để chuyển đến Northsea? A. Anh muốn phát triển một sở thích / B. Anh muốn làm việc ít giờ hơn / C. Anh thấy công việc thiết kế web không thỏa mãn.",
+      "v": "Phần mở đầu, khi David kể lý do chuyển nhà.",
+      "t": ["although that was interesting, I didn’t like city life", "I’d been really keen on boats as a teenager, and I thought if I went to live by the sea, I might be able to pursue that interest a bit more in my free time"],
+      "p": "C sai: anh nói công việc thiết kế web “interesting” (thú vị). B không được nhắc tới. Anh thích thuyền từ nhỏ và muốn sống gần biển để theo đuổi sở thích đó = eager to develop a hobby → A"
+    },
+    "12": {
+      "d": "Trạm cứu hộ Lifeboat Institution ở Northsea được xây bằng tiền do ai cung cấp? A. một tổ chức địa phương / B. một cư dân địa phương / C. hội đồng địa phương.",
+      "v": "Khi nói về tòa nhà của trạm cứu hộ.",
+      "t": "It was built 15 years ago with funds provided by a generous member of the public, who’d lived here all her life.",
+      "p": "“A member of the public, who’d lived here all her life” = một người dân sống ở đây cả đời = a local resident. C sai vì trạm không dùng tiền chính phủ (“rather than funding provided by the government”) → B"
+    },
+    "13": {
+      "d": "Trong buổi khám sức khỏe, bác sĩ lo ngại rằng David A. có thể bị mù màu / B. khá cận thị / C. đã từng phẫu thuật mắt.",
+      "v": "Khi kể về buổi kiểm tra sức khỏe.",
+      "t": ["I’d had laser eye surgery two years earlier so that was OK", "They gave me tests for colour blindness and they thought I might have a problem there"],
+      "p": "Cận thị và phẫu thuật mắt đều được nói là ổn (“that was OK”). Điều bác sĩ lo là kiểm tra mù màu: “they thought I might have a problem there” (dù cuối cùng không sao) → A"
+    },
+    "14": {
+      "d": "Sau khi tới trạm cứu hộ, họ đặt mục tiêu hạ thủy thuyền trong vòng A. 5 phút / B. 6–8 phút / C. 8 phút rưỡi.",
+      "v": "Khi nói về quy trình khi có báo động.",
+      "t": "Our target’s to get there in five minutes, then we try to get the boat off the dock and out to sea in another six to eight minutes.",
+      "p": "Bẫy A: 5 phút là thời gian để tới trạm. Bẫy C: 8 phút rưỡi là trung bình cả nước. Sau khi tới trạm, đưa thuyền ra biển trong 6–8 phút nữa → B"
+    },
+    "15": {
+      "d": "Là “người cầm lái” (helmsman), David có trách nhiệm quyết định A. ai sẽ là thành viên đội / B. cần mang theo thiết bị gì / C. có nên hạ thủy thuyền hay không.",
+      "v": "Khi nói về trách nhiệm của helmsman.",
+      "t": ["I have to check that the equipment we use is in working order", "And it’s ultimately my decision whether it’s safe to launch the boat."],
+      "p": "Với thiết bị, anh chỉ kiểm tra xem có hoạt động tốt không, không quyết định mang gì (B sai). Điều anh quyết định là “whether it’s safe to launch the boat” → C"
+    },
+    "16": {
+      "d": "Ngoài việc ra khơi trên thuyền cứu hộ, David còn A. nói chuyện về an toàn trên biển / B. giúp gây quỹ / C. tuyển tình nguyện viên mới.",
+      "v": "Khi nói về các công việc khác ngoài cứu hộ.",
+      "t": ["so I speak to youth groups and sailing clubs in the area about the sorts of problems that sailors and swimmers can have if the weather suddenly gets bad", "We also have a lot of volunteers who organise activities to raise money for us"],
+      "p": "Anh nói chuyện với các nhóm thanh niên, câu lạc bộ thuyền buồm về nguy hiểm khi thời tiết xấu = gives talks on safety at sea. Gây quỹ là việc của những tình nguyện viên khác (B sai) → A"
+    },
+    "17": {
+      "d": "David nói HAI điều gì về khóa huấn luyện tình nguyện viên cứu hộ? (đáp án thứ nhất) A. khóa nội trú phát triển kỹ năng lãnh đạo / B. phần dây thừng và nút thắt khá ngắn / C. các bài tập giúp anh vững vàng tinh thần / D. phần chăm sóc người bị nạn đặc biệt khó với anh / E. bể tạo sóng giúp thực hành kỹ năng sinh tồn.",
+      "v": "Đoạn nói về huấn luyện (training).",
+      "t": "it’s given me the confidence to deal with extreme situations without panicking",
+      "p": "Huấn luyện cho anh sự tự tin để xử lý tình huống cực đoan mà không hoảng loạn = built up his mental strength. Bẫy: D – anh đã học sơ cứu trước nên phần này dễ hơn; B – dây thừng được làm “a lot” (rất nhiều), không ngắn; A – không nhắc tới lãnh đạo → C"
+    },
+    "18": {
+      "d": "David nói HAI điều gì về khóa huấn luyện tình nguyện viên cứu hộ? (đáp án thứ hai)",
+      "v": "Cuối đoạn huấn luyện, về khóa nội trú một tuần.",
+      "t": "They had a wave-tank where they could create extreme weather conditions – so we could get experience at what to do if the boat turned over in a storm at night",
+      "p": "Bể tạo sóng mô phỏng thời tiết khắc nghiệt để họ có kinh nghiệm xử lý khi thuyền bị lật trong bão = practice in survival techniques → E"
+    },
+    "19": {
+      "d": "HAI điều gì khiến David thấy có động lực nhất trong công việc? (đáp án thứ nhất) A. làm việc theo nhóm / B. trải nghiệm khi làm việc vào mùa đông / C. được người mình giúp cảm ơn / D. giữ cho anh khỏe mạnh / E. cơ hội phát triển thiết bị mới.",
+      "v": "Đoạn cuối, “the work’s hugely motivating”.",
+      "t": "They’re a great group – we’re like a family really, which helps when you’re dragging yourself out of bed on a cold stormy night.",
+      "p": "Đồng đội tuyệt vời, “like a family”, giúp anh có động lực dậy giữa đêm bão = working as part of a team. E sai: anh dùng kiến thức IT để giúp tình nguyện viên khác, không phải phát triển thiết bị → A"
+    },
+    "20": {
+      "d": "HAI điều gì khiến David thấy có động lực nhất trong công việc? (đáp án thứ hai)",
+      "v": "Câu cuối đoạn, nói về những tháng lạnh.",
+      "t": "But actually, it’s the colder months that can be the most rewarding time.",
+      "p": "“The colder months” = winter; “the most rewarding” (đáng giá nhất) = most motivating, vì sự cố nghiêm trọng hơn và anh tạo ra khác biệt lớn → B"
+    }
+  }
+}

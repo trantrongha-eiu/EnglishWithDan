@@ -1,0 +1,65 @@
+{
+  "title": "Cam 21 - Test 2 – Part 2",
+  "q": {
+    "11": {
+      "d": "HAI lời khuyên nào được đưa ra về tuyến đi bộ ven biển Marsden? (đáp án thứ nhất) A. Dừng ăn trưa ở một thị trấn cổ / B. Đừng bỏ lỡ tàn tích của một công trình / C. Bắt thuyền tới điểm xuất phát / D. Cẩn thận đường dốc và nhiều đá / E. Đừng lo bị lạc.",
+      "v": "Khi mô tả tuyến Marsden Coastal Walk.",
+      "t": ["passes a castle built in the 1400s near to a now-vanished market town", "The castle's now just a pile of stones but it's a great place to take photos"],
+      "p": "Lâu đài giờ chỉ còn đống đá (= ruins) nhưng là nơi chụp ảnh tuyệt vời, có bảng thông tin hấp dẫn → nên ghé xem. Bẫy A: thị trấn chợ đã biến mất (“now-vanished”); C: phà là đi ra đảo Hooker, không phải tới điểm xuất phát; D: “no strenuous climbs” → B"
+    },
+    "12": {
+      "d": "HAI lời khuyên nào được đưa ra về tuyến Marsden? (đáp án thứ hai)",
+      "v": "Cùng đoạn về Marsden Coastal Walk.",
+      "t": "As there are clear signposts all along the way, you don't even need to take a map.",
+      "p": "Có biển chỉ dẫn rõ ràng suốt tuyến, thậm chí không cần mang bản đồ → không cần lo bị lạc → E"
+    },
+    "13": {
+      "d": "HAI điều nào được nói về tuyến di sản Melby? (đáp án thứ nhất) A. Phần lớn là đường xuống dốc / B. Đường có thể đông người vào ban ngày / C. Đây là tuyến vòng tròn / D. Một tòa tháp đứng trên nền một công trình cũ hơn / E. Có tầm nhìn xa suốt chặng.",
+      "v": "Cuối đoạn về Melby Heritage Walk.",
+      "t": "The route continues along the tops of the hills and brings you back down to the starting point – the car park at Melby Coal Mine.",
+      "p": "Tuyến đưa bạn quay về đúng điểm xuất phát (bãi đỗ xe mỏ than Melby) = a circular walk. Bẫy B: ban ngày chỉ nghe tiếng bước chân mình (rất vắng); E: tầm nhìn chỉ ở điểm cao nhất, không phải suốt chặng → C"
+    },
+    "14": {
+      "d": "HAI điều nào được nói về tuyến di sản Melby? (đáp án thứ hai)",
+      "v": "Khi nói về điểm cao nhất của tuyến Melby.",
+      "t": "climb the tower that's situated where there was once a seventeenth century hunting lodge",
+      "p": "Tòa tháp nằm ở chỗ từng có một nhà nghỉ săn bắn thế kỷ 17 = stands on the site of an older structure → D"
+    },
+    "15": {
+      "d": "Khu triển lãm (Exhibition).",
+      "v": "Phần bản đồ mỏ than Melby, mục đầu tiên.",
+      "t": ["you go from the car park, via a covered walkway to the Main Visitor Centre", "Go through the ticket office to an area where there are lockers", "Beyond that room is the exhibition."],
+      "p": "Từ bãi đỗ xe đi theo lối có mái che tới Trung tâm du khách chính → qua phòng bán vé → qua phòng có tủ đồ → triển lãm nằm phía sau phòng đó → F"
+    },
+    "16": {
+      "d": "Nhà tắm (Baths).",
+      "v": "Mục thứ hai trên bản đồ.",
+      "t": "You can see that in the building directly to the north of the engine house.",
+      "p": "Nhà tắm của thợ mỏ nằm ở tòa nhà ngay phía bắc nhà máy (engine house) → B"
+    },
+    "17": {
+      "d": "Dụng cụ (Tools).",
+      "v": "Mục thứ ba – trưng bày dụng cụ khai mỏ thời xưa.",
+      "t": "You can find that in a small L-shaped building in the middle of the northern boundary of the site.",
+      "p": "Hai manh mối: tòa nhà nhỏ hình chữ L và ở giữa ranh giới phía bắc của khu → D"
+    },
+    "18": {
+      "d": "Xe cộ (Vehicles).",
+      "v": "Mục thứ tư – nhà để xe goòng và máy cắt.",
+      "t": "is in the southwest corner of the site, and can be accessed via a covered walkway",
+      "p": "Nhà để xe ở góc tây nam của khu và đi tới bằng lối có mái che → A"
+    },
+    "19": {
+      "d": "Ngựa nhỏ (Ponies).",
+      "v": "Mục thứ năm.",
+      "t": "There is a field with ponies, which are always popular with children, on the north-eastern boundary of the site, not approached via a covered walkway.",
+      "p": "Bãi cỏ có ngựa nằm ở ranh giới phía đông bắc và không có lối mái che dẫn tới → H"
+    },
+    "20": {
+      "d": "Trung tâm giáo dục (Education centre).",
+      "v": "Mục cuối cùng.",
+      "t": "The centre is connected to the ticket office via a short section of covered walkway.",
+      "p": "Trung tâm giáo dục nối với phòng bán vé bằng một đoạn lối có mái che ngắn → E"
+    }
+  }
+}

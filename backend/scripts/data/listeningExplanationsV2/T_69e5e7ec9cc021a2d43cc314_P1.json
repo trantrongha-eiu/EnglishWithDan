@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 4 Part 1",
+  "q": {
+    "1": {
+      "d": "Khách sạn ___ trên phố George.",
+      "v": "Khi người đàn ông hỏi gợi ý khách sạn.",
+      "t": ["I always recommend people stay at the King’s Hotel.", "It’s actually on George Street."],
+      "p": "Sandra luôn giới thiệu “the King’s Hotel”, nằm trên phố George → King’s (Kings)"
+    },
+    "2": {
+      "d": "Giá phòng gia đình mỗi đêm: khoảng £___.",
+      "v": "Khi hỏi giá khách sạn.",
+      "t": ["If you book a family room, it’s about £125 per night.", "I think that was around £95 for each room."],
+      "p": "Phòng gia đình khoảng £125/đêm. Bẫy: £95 là giá mỗi phòng đôi anh trai cô đã đặt → 125"
+    },
+    "3": {
+      "d": "Một tour ___ quanh trung tâm thành phố (xuất phát từ quảng trường Carlton).",
+      "v": "Khi người đàn ông định đặt tour xe buýt.",
+      "t": ["Those bus tours are quite expensive. I think it’s better to do a walking tour.", "There’s one that starts from Colton Square."],
+      "p": "Bẫy: tour xe buýt (bus) bị chê đắt. Sandra khuyên đi tour đi bộ (walking tour) xuất phát từ quảng trường → walking"
+    },
+    "4": {
+      "d": "Một chuyến đi bằng ___ tới pháo đài cổ.",
+      "v": "Khi Sandra gợi ý chuyến đi nếu trời đẹp.",
+      "t": "If the weather’s nice, one thing you could do is visit the old fort. You could get there by boat.",
+      "p": "Tới pháo đài cổ bằng thuyền (“by boat”) → boat"
+    },
+    "5": {
+      "d": "Ngày tốt nhất để tham quan (bảo tàng khoa học): ___.",
+      "v": "Khi bàn về bảo tàng khoa học.",
+      "t": ["Yeah don forget it closed on Mondays", "They here from Saturday for four nights so Tuesday would be best I think", "Saturdays are terrible."],
+      "p": "Bảo tàng đóng cửa thứ Hai, thứ Bảy quá đông → ngày tốt nhất là thứ Ba (“Tuesday would be best”) → Tuesday"
+    },
+    "6": {
+      "d": "Xem triển lãm về ___ sắp khai mạc.",
+      "v": "Khi nói về các triển lãm ở bảo tàng.",
+      "t": ["I took my kids to the exhibition on old computers there", "but it’s finished now", "There’s another one starting soon on space, which looks really good too."],
+      "p": "Bẫy: triển lãm máy tính cũ đã kết thúc. “Opens soon” = “starting soon”; triển lãm sắp mở là về vũ trụ (space) → space"
+    },
+    "7": {
+      "d": "(Chợ Clacton) phù hợp với đồ ăn ___.",
+      "v": "Đầu phần 2, khi bàn chỗ ăn uống.",
+      "t": "My cousin’s vegetarian. I know it’s one of the best places for that kind of food.",
+      "p": "Người họ ăn chay và chợ là một trong những nơi tốt nhất cho loại đồ ăn đó → vegetarian"
+    },
+    "8": {
+      "d": "Cần ăn trưa trước ___ chiều.",
+      "v": "Ngay sau đó, khi Sandra dặn nên đến sớm.",
+      "t": "At the weekend, most of the stores stop serving lunch at 2.30.",
+      "p": "Cuối tuần phần lớn quầy ngừng phục vụ bữa trưa lúc 2.30 → phải ăn trước giờ đó → 2.30"
+    },
+    "9": {
+      "d": "Tiết kiệm tới ___% giá vé tại bargaintickets.com.",
+      "v": "Khi bàn về vé xem kịch.",
+      "t": "On some seats there's a 75% discount.",
+      "p": "“Save up to” ↔ “on some seats” (một số ghế) được giảm 75% → 75"
+    },
+    "10": {
+      "d": "Leo đồi Telegraph để ngắm toàn cảnh ___.",
+      "v": "Cuối bài, khi nói về vườn Blakewell.",
+      "t": "And if you’re in Blakewell Gardens, climb Telegraph Hill. You’ll be able to look right down on the port.",
+      "p": "Từ đồi Telegraph có thể nhìn xuống toàn bộ bến cảng (“the port”) rất lớn → port"
+    }
+  }
+}

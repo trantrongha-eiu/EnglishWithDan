@@ -1,0 +1,65 @@
+{
+  "title": "Challenges facing the cruise ship industry",
+  "q": {
+    "31": {
+      "d": "___ là một trong những vấn đề tồi tệ nhất.",
+      "v": "Phần mở đầu, khi nói về tình trạng du lịch quá tải (overtourism).",
+      "t": "Pollution, for example, is among the greatest threats to many popular tourist destinations.",
+      "p": "“One of the worst problems” = “among the greatest threats” → ô nhiễm → Pollution"
+    },
+    "32": {
+      "d": "Một loại ___ du lịch đang được áp dụng ở một số thành phố để giảm lượng khách, ví dụ Barcelona.",
+      "v": "Khi nói về cách các thành phố đối phó, ví dụ Barcelona.",
+      "t": "Several cities, such as Barcelona, have responded by imposing a tax which all visitors to the city from cruise ships have to pay.",
+      "p": "“Being introduced” = “imposing” (áp đặt); thứ được áp dụng là “a tax” (thuế) mà khách tàu du lịch phải trả → tax"
+    },
+    "33": {
+      "d": "Bruges: hạn chế chuyến đi trong ngày vì thành phố đang thành “công viên giải trí” (nhiều cửa hàng chỉ bán ___ và đồ lưu niệm).",
+      "v": "Ví dụ về thành phố Bruges.",
+      "t": "with shops only catering for tourists, selling chocolate, which Belgium is famous for, and other souvenirs",
+      "p": "Các cửa hàng chỉ phục vụ du khách, bán sô-cô-la (đặc sản Bỉ) và đồ lưu niệm khác → chocolate"
+    },
+    "34": {
+      "d": "Dubrovnik: hạn chế lượng khách bằng cách quản lý ___ tàu du lịch cập cảng.",
+      "v": "Ví dụ về Dubrovnik.",
+      "t": "What it does now is control the timing of all cruise ship entries to the city's port.",
+      "p": "“Managing” = “control”; “arrivals” = “entries to the city's port”; thứ được kiểm soát là “the timing” (thời điểm) → timing"
+    },
+    "35": {
+      "d": "Có một giả định (định kiến) về ___ của các chuyến du lịch tàu biển.",
+      "v": "Khi nói về vấn đề hình ảnh của ngành tàu du lịch.",
+      "t": ["A recent survey showed that cost is also a major factor in putting younger groups off going on a cruise.", "But what they don't realise is that compared to other types of package holidays, cruises can actually be good value"],
+      "p": "Người trẻ nghĩ du lịch tàu biển đắt (chi phí khiến họ ngại), nhưng thực ra lại khá đáng tiền → đó là một giả định sai về chi phí → cost"
+    },
+    "36": {
+      "d": "Mọi người nghĩ có thể có quá nhiều ___.",
+      "v": "Ngay sau phần chi phí, “another perception”.",
+      "t": "And another perception is that cruises have lots of rules about what to wear and how to behave.",
+      "p": "“People think” = “perception”; “too many” = “lots of”; thứ đó là “rules” (quy định về trang phục, cách cư xử) → rules"
+    },
+    "37": {
+      "d": "Có nhiều hoạt động, ví dụ quyền anh, ___ và chương trình chăm sóc sức khỏe.",
+      "v": "Khi nói về tàu thiết kế cho khách 21–45 tuổi.",
+      "t": "There's even a boxing ring on one ship, and most offer diving expeditions.",
+      "p": "Nghe đúng thứ tự: boxing → “diving expeditions” (lặn biển) → well-being → diving"
+    },
+    "38": {
+      "d": "Cung cấp nhiều lựa chọn đồ ăn, bao gồm món ___.",
+      "v": "Khi nói về thực đơn trên tàu.",
+      "t": "Vegan dishes are standard, for example.",
+      "p": "Thực đơn được cập nhật cho khách trẻ, món thuần chay (vegan) giờ là tiêu chuẩn → vegan"
+    },
+    "39": {
+      "d": "Cung cấp ___ ổn định, đáng tin cậy.",
+      "v": "Khi nói người trẻ muốn giữ liên lạc và làm việc trên tàu.",
+      "t": "so companies have to guarantee wifi that can be relied upon at all times",
+      "p": "“Reliable” = “can be relied upon”; thứ phải được đảm bảo là “wifi” → wifi"
+    },
+    "40": {
+      "d": "Cải thiện tiếp thị trên mạng xã hội bằng ___ chất lượng cao.",
+      "v": "Cuối bài, khi nói về mạng xã hội.",
+      "t": "Leading cruise lines now employ top agencies to produce first rate videos for social media channels.",
+      "p": "“High quality” = “first rate” (hạng nhất); sản phẩm là “videos” cho các kênh mạng xã hội → videos"
+    }
+  }
+}

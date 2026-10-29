@@ -1,0 +1,65 @@
+{
+  "title": "Cam 19 - Test 1 – Part 1",
+  "q": {
+    "1": {
+      "d": "Diện tích: ___ héc-ta.",
+      "v": "Khi Sally giới thiệu chung về công viên.",
+      "t": "Altogether the park covers 170 acres, that’s 69 hectares.",
+      "p": "Bẫy: 170 là đơn vị acres (mẫu Anh). Đề hỏi đơn vị hectares → con số đi ngay trước “hectares” là 69 → 69"
+    },
+    "2": {
+      "d": "Vùng đất ngập nước: hồ lớn, ao và một ___.",
+      "v": "Khi Sally mô tả vùng đất ngập nước (wetland).",
+      "t": "There are also several smaller ones, ponds and a stream that flows through the park.",
+      "p": "Nghe đúng thứ tự trong đề: lakes → ponds → “a stream” (con suối chảy qua công viên) → stream"
+    },
+    "3": {
+      "d": "Khoa học: trẻ em xem xét ___ về thực vật, v.v.",
+      "v": "Hoạt động đầu tiên – môn khoa học (science).",
+      "t": "They also collect and analyse data about the things they see.",
+      "p": "“Look at” được paraphrase thành “collect and analyse” (thu thập và phân tích); thứ được phân tích là “data” (dữ liệu) → data"
+    },
+    "4": {
+      "d": "Địa lý: bao gồm học cách sử dụng ___ và la bàn.",
+      "v": "Khi nói về môn địa lý (geography).",
+      "t": "The park is a great environment to learn and practice reading a map and using a compass",
+      "p": "Đi cùng “compass” (la bàn) là “a map” (bản đồ): học đọc bản đồ và dùng la bàn → map"
+    },
+    "5": {
+      "d": "Giải trí và du lịch: chủ yếu tập trung vào ___ của công viên.",
+      "v": "Khi chuyển sang chủ đề leisure and tourism.",
+      "t": ["That focuses on your visitors, I would imagine.", "Yes, mostly."],
+      "p": "John đoán chủ đề này tập trung vào khách tham quan và Sally xác nhận “Yes, mostly” (= mostly concentrates on) → visitors"
+    },
+    "6": {
+      "d": "Âm nhạc: trẻ em tạo ra ___ bằng vật liệu tự nhiên và thử nghiệm với nhịp điệu và tốc độ.",
+      "v": "Khi nói về môn âm nhạc (music).",
+      "t": "here the children experiment with natural materials to create sounds and explore rhythm and tempo",
+      "p": "“Make” = “create”; thứ tạo ra từ vật liệu tự nhiên là “sounds” (âm thanh). “Speed” = “tempo” → sounds"
+    },
+    "7": {
+      "d": "Chúng (hoạt động ngoài trời) mang lại cho trẻ cảm giác ___ mà có thể các em không có ở nơi khác.",
+      "v": "Khi bàn về lợi ích của việc học ngoài lớp học.",
+      "t": "I would imagine they get a sense of freedom that might not be a normal part of their lives.",
+      "p": "“A feeling of” = “a sense of”; “they may not have elsewhere” = “might not be a normal part of their lives” → freedom (sự tự do)"
+    },
+    "8": {
+      "d": "Trẻ em học được những ___ mới và có thêm sự tự tin.",
+      "v": "Ngay sau câu về “sense of freedom”.",
+      "t": ["they develop new skills", "This gives them greater self-confidence."],
+      "p": "“Learn new ___” = “develop new skills” (phát triển kỹ năng mới), sau đó mới nhắc tới tự tin → skills"
+    },
+    "9": {
+      "d": "Chi phí cho mỗi trẻ: ___ bảng Anh.",
+      "v": "Khi John hỏi về giá cho chuyến tham quan cả ngày.",
+      "t": "If there are over 30, it costs £4.95 for each child who attends on the day.",
+      "p": "“Cost per child” = “for each child”. Đoàn trên 30 em nên giá là £4.95/em → 4.95"
+    },
+    "10": {
+      "d": "Người lớn, chẳng hạn như ___, được miễn phí.",
+      "v": "Câu cuối phần giá cả.",
+      "t": "There’s no charge for leaders and other adults",
+      "p": "“Free” = “no charge” (không tính phí). Ví dụ về người lớn được nêu là “leaders” (người dẫn đoàn) → leaders"
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "title": "Tree planting",
+  "q": {
+    "31": {
+      "d": "Không đưa vào các loài xâm lấn vì có thể xảy ra ___ với các loài bản địa.",
+      "v": "Khi nói về việc chọn đúng loại cây.",
+      "t": "Invasive species are a significant contributor to the current global biodiversity crisis and are often in competition with native species",
+      "p": "Loài xâm lấn thường “in competition with native species” (cạnh tranh với loài bản địa) → competition"
+    },
+    "32": {
+      "d": "Mục tiêu: hấp thụ carbon, bảo vệ môi trường và cung cấp nguồn ___ bền vững cho người dân địa phương.",
+      "v": "Khi nói một dự án trồng rừng nên có nhiều mục tiêu.",
+      "t": "improve the availability of food for the local community",
+      "p": "“Provide sources of ___ for local people” = “improve the availability of ___ for the local community” → food"
+    },
+    "33": {
+      "d": "Dùng hạt giống có độ đa dạng di truyền cao để tăng khả năng chống chịu ___ và biến đổi khí hậu.",
+      "v": "Khi nói về đa dạng di truyền của hạt giống.",
+      "t": "Using seeds with low genetic diversity generally lowers the resilience of restored forests, which can make them vulnerable to disease and unable to adapt to climate change.",
+      "p": "Nói ngược lại: đa dạng di truyền thấp → dễ bị bệnh (“vulnerable to disease”). Vậy đa dạng cao → tăng sức đề kháng với bệnh tật → disease"
+    },
+    "34": {
+      "d": "Trồng cây trên đất từng có rừng nhưng đang xuống cấp, không chọn đất đang được dùng cho ___.",
+      "v": "Khi nói về chọn địa điểm trồng rừng.",
+      "t": "Reforesting areas which are currently exploited for agriculture should be avoided as this often leads to other areas being deforested.",
+      "p": "“Not select” = “should be avoided”; “being used for” = “currently exploited for” → nông nghiệp → agriculture"
+    },
+    "35": {
+      "d": "Đưa ra quyết định quy hoạch dựa trên thông tin từ ___ chính xác.",
+      "v": "Đầu phần 2, về lập kế hoạch.",
+      "t": "Having detailed and up-to-date maps identifying high-prioritv areas for intervention is essential.",
+      "p": "“Accurate” ≈ “detailed and up-to-date”; nguồn thông tin là “maps” (bản đồ) → maps"
+    },
+    "36": {
+      "d": "Drone hữu ích để xác định các khu vực ở Brazil bị đe dọa bởi việc nuôi ___ và khai thác gỗ trái phép.",
+      "v": "Khi nói về công nghệ drone ở Brazil.",
+      "t": "parts of the Amazon are being devastated by human activities such as rearing cattle and illegal logging",
+      "p": "“Keeping” = “rearing” (chăn nuôi); vật nuôi là “cattle” (gia súc) → cattle"
+    },
+    "37": {
+      "d": "Tăng ___ phục hồi bằng cách thu hút động vật và chim.",
+      "v": "Ví dụ ở Thái Lan, khi nói về cây sung/vả (figs).",
+      "t": "they accelerate the speed of the recovery process by attracting animals and birds which act as natural seed dispersers",
+      "p": "“Increasing” = “accelerate”; “the ___ of recovery” = “the speed of the recovery process” → speed"
+    },
+    "38": {
+      "d": "Ví dụ: ___ nhanh chóng bị thu hút tới khu vực.",
+      "v": "Cuối ví dụ Thái Lan.",
+      "t": "after only three rainy seasons, monkeys started visiting to eat the fig fruits",
+      "p": "“Soon” = “after only three rainy seasons”; loài bị thu hút tới ăn quả là “monkeys” (khỉ) → monkeys"
+    },
+    "39": {
+      "d": "Việc phá rừng ngập mặn ở Madagascar khiến người dân khó kiếm sống bằng ___.",
+      "v": "Ví dụ về rừng ngập mặn ở Madagascar.",
+      "t": "also badly affected the fishing industry, which was a major source of employment for local people living in coastal areas",
+      "p": "“Make a living” = “source of employment” (nguồn việc làm); ngành bị ảnh hưởng là “fishing” (đánh bắt cá) → fishing"
+    },
+    "40": {
+      "d": "(Rừng ngập mặn) bảo vệ trước nguy cơ ___ ngày càng cao.",
+      "v": "Cuối ví dụ Madagascar.",
+      "t": "The mangroves also act as a defence against the increased threat of flooding caused by climate change.",
+      "p": "“Protects against” = “act as a defence against”; “the higher risk” = “the increased threat” → lũ lụt → flooding"
+    }
+  }
+}

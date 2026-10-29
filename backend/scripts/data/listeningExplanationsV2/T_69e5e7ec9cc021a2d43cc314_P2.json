@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 4 Part 2",
+  "q": {
+    "11": {
+      "d": "Người nói nói HAI điều gì về việc đưa trẻ em tham quan sân vận động? (đáp án thứ nhất) A. Trẻ được chụp ảnh với cầu thủ / B. Hôm nay có cuộc thi cho trẻ em / C. Phụ huynh phải luôn ở cạnh con / D. Trẻ cần mũ che nắng và đồ uống / E. Quán cà phê có ưu đãi suất ăn trẻ em.",
+      "v": "Khi nói về quán cà phê.",
+      "t": ["Also in the cafe children are invited to do a football drawing We pick the best one at the end of the afternoon", "we’ll send your prize"],
+      "p": "Trẻ vẽ tranh bóng đá, cuối chiều chọn bức đẹp nhất và gửi giải thưởng → một cuộc thi hôm nay. Bẫy A: chụp ảnh con sút phạt đền, không có cầu thủ; E: chỉ “recommend” hộp cơm, không có ưu đãi → B"
+    },
+    "12": {
+      "d": "Người nói nói HAI điều gì về việc đưa trẻ em tham quan sân vận động? (đáp án thứ hai)",
+      "v": "Đầu bài, lời dặn phụ huynh.",
+      "t": "Please don’t let your children wander off on their own, even for a minute.",
+      "p": "Không để trẻ tự đi lung tung dù chỉ một phút = parents must stay with their children at all times. Bẫy D: trời nắng nóng được nhắc nhưng không bảo mang mũ, nước → C"
+    },
+    "13": {
+      "d": "HAI đặc điểm nào của tour sân vận động là mới năm nay? (đáp án thứ nhất) A. tour VIP / B. trải nghiệm rạp chiếu 360 / C. thuyết minh âm thanh / D. tour phòng thay đồ / E. tour bằng ngôn ngữ khác.",
+      "v": "Cuối phần giới thiệu tour.",
+      "t": "you might like to book one of our VIP tours. We’ve only just started offering these",
+      "p": "“Only just started offering” (vừa mới bắt đầu) → tour VIP là mới. Bẫy B: rạp 360 “popular over the years” (có từ lâu) → A"
+    },
+    "14": {
+      "d": "HAI đặc điểm nào của tour sân vận động là mới năm nay? (đáp án thứ hai)",
+      "v": "Khi nói về tham quan tự túc.",
+      "t": ["please collect headphones from the reception, and then you can listen to the pre-recorded information at your own speed", "We’ve only just introduced this feature"],
+      "p": "Nghe thông tin thu sẵn qua tai nghe = audio guide; “only just introduced” → mới. Bẫy E: tour ngôn ngữ khác mới chỉ là dự định “in future” → C"
+    },
+    "15": {
+      "d": "Năm 1870.",
+      "v": "Khi bắt đầu kể lịch sử bóng đá Anh.",
+      "t": "1870 was also the year that football teams started to include a player whose role it was to guard the goal",
+      "p": "Cầu thủ có nhiệm vụ bảo vệ khung thành = thủ môn → the introduction of goalkeepers → D"
+    },
+    "16": {
+      "d": "Năm 1874.",
+      "v": "Mốc tiếp theo.",
+      "t": ["in 1874, referees were allowed to send players off if they committed certain offences", "and also in that year teams started having to swap ends at half-time"],
+      "p": "Hai thay đổi: trọng tài được đuổi cầu thủ và các đội đổi sân sau hiệp một = two changes to the rules of the game → F"
+    },
+    "17": {
+      "d": "Năm 1875.",
+      "v": "Khi nói về khung thành thời xưa.",
+      "t": "In 1875, that tape was replaced with the solid crossbar that we’re familiar with today.",
+      "p": "Dải băng nối hai cột được thay bằng xà ngang cứng = a change to the design of the goal → B"
+    },
+    "18": {
+      "d": "Năm 1877.",
+      "v": "Mốc năm 1877.",
+      "t": "all the clubs decided to set a limit of 90 minutes for each match",
+      "p": "Các câu lạc bộ thống nhất giới hạn 90 phút mỗi trận = an agreement on the length of a game → H"
+    },
+    "19": {
+      "d": "Năm 1878.",
+      "v": "Mốc năm 1878.",
+      "t": "referees started using whistles and electric lamps were installed on certain pitches",
+      "p": "Đèn điện được lắp trên sân, giúp thi đấu buổi tối = the first use of lights for matches → C"
+    },
+    "20": {
+      "d": "Năm 1880.",
+      "v": "Mốc cuối cùng.",
+      "t": "In 1880, clubs began to charge fans for admission to games, even though players were still amateurs",
+      "p": "Các câu lạc bộ bắt đầu thu tiền vào cửa của cổ động viên = the introduction of fee for spectators. Bẫy A: cầu thủ vẫn nghiệp dư, chưa được trả lương → G"
+    }
+  }
+}

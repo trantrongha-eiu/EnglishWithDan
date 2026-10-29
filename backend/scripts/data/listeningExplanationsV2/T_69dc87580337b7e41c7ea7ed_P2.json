@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 3 Part 2",
+  "q": {
+    "11": {
+      "d": "Ai khởi xướng dự án cộng đồng này? A. chủ lâu đài / B. một tổ chức từ thiện quốc gia / C. hội đồng địa phương.",
+      "v": "Phần mở đầu, khi Hayden giới thiệu bản thân.",
+      "t": "I was asked to join the project by NHA, a charity which sets up projects like this up and down the country",
+      "p": "NHA là tổ chức từ thiện “sets up projects like this up and down the country” (lập dự án kiểu này khắp cả nước) = a national charity. Bẫy C: Hayden làm cho hội đồng thị trấn nhưng chỉ được mời tham gia; A: chủ lâu đài chỉ cho dùng tiện nghi → B"
+    },
+    "12": {
+      "d": "Đồng xu vàng được tìm thấy thế nào? A. Mưa lớn cuốn trôi một phần đất / B. Thỏ hoang đào xới đất / C. Một người dùng máy dò kim loại tìm kiếm.",
+      "v": "Khi kể về đồng xu vàng.",
+      "t": "Here, a walker found it on the ground after a rainstorm washed away some of the earth and sand.",
+      "p": "B, C là những cách thường gặp nói chung (“often found”). Ở đây (“Here”): một người đi bộ thấy đồng xu sau khi mưa bão cuốn trôi đất cát = heavy rain had removed some of the soil → A"
+    },
+    "13": {
+      "d": "Điều gì khiến các nhà khảo cổ tin rằng từng có một ngôi làng cổ ở đây? A. tình cờ phát hiện tài liệu cũ / B. nền móng vài công trình lộ ra trên cỏ / C. những hòn đá lạ gần lâu đài.",
+      "v": "Khi kể về sau khi tin đồng xu lên báo.",
+      "t": ["Just by chance, the team found some old maps and documents in our library, which showed 500-year-old drawings of ruined buildings", "We knew then we were onto something."],
+      "p": "“Just by chance” = lucky discovery; “old maps and documents” = old records. Nhờ đó họ biết “we were onto something” (đã tìm đúng hướng) → A"
+    },
+    "14": {
+      "d": "Nhóm vẫn đang hy vọng tìm thấy gì? A. đồ gốm thường ngày / B. xương động vật / C. đồ trang sức.",
+      "v": "Khi kể những gì đã tìm được qua ba mùa hè.",
+      "t": "Normally you’d expect to find brooches and other jewellery, but we’re still waiting to uncover any such items.",
+      "p": "“Still hoping to find” = “still waiting to uncover”; thứ đó là trâm cài và trang sức. Bẫy A: gốm vỡ đã tìm thấy rất nhiều; B: dụng cụ từ xương đã có trong triển lãm → C"
+    },
+    "15": {
+      "d": "Ở bờ sông bên kia so với lâu đài đã tìm thấy gì? A. phế tích một cung điện lớn / B. đường viền các cánh đồng / C. nhiều túp lều nhỏ.",
+      "v": "Khi nói về dấu vết con người ở bên kia sông.",
+      "t": ["No other houses or huts so far, but we can see the borders of an ancient field system.", "it turned out to be a modern wall"],
+      "p": "“The outline of fields” = “the borders of an ancient field system”. Bẫy C: “No other houses or huts”; A: tưởng là cung điện nhưng hóa ra chỉ là bức tường hiện đại → B"
+    },
+    "16": {
+      "d": "Nhóm định làm gì sau khi công việc mùa hè này kết thúc? A. chuẩn bị trưng bày cho bảo tàng / B. tham gia chương trình truyền hình / C. bắt đầu tổ chức cho trường học tham quan.",
+      "v": "Cuối phần 1.",
+      "t": ["In the meantime, we’re putting on a series of guided tours for school groups this autumn.", "but we don’t know that for sure yet"],
+      "p": "Mùa thu này tổ chức các chuyến tham quan có hướng dẫn cho nhóm học sinh = school visits. Bẫy B: phim tài liệu đã phát rồi; A: việc đưa hiện vật vào bảo tàng “don't know that for sure yet” → C"
+    },
+    "17": {
+      "d": "Nền móng cây cầu (bridge foundations).",
+      "v": "Phần chỉ đường trên bản đồ, điểm đầu tiên. Vị trí hiện tại ở cuối bản đồ.",
+      "t": ["take the main path ahead of you, go straight on, and keep going till the path bends to the left", "You’ll see a smaller track leading off to the right. Follow that to take you to the river"],
+      "p": "Đi thẳng đường chính tới chỗ đường cong sang trái → rẽ vào lối nhỏ bên phải → đi tới bờ sông, nơi thợ lặn đang làm việc → B"
+    },
+    "18": {
+      "d": "Hố rác (rubbish pit).",
+      "v": "Điểm thứ hai trên bản đồ.",
+      "t": "This is very near the castle walls in the north-west corner of the site.",
+      "p": "Hố rác ở rất gần tường lâu đài, góc tây bắc của khu khai quật → A"
+    },
+    "19": {
+      "d": "Hội trường (meeting hall).",
+      "v": "Điểm thứ ba trên bản đồ.",
+      "t": "It is the largest structure in the central area of the site next to the current excavation area.",
+      "p": "Công trình lớn nhất ở khu trung tâm, ngay cạnh khu đang khai quật hiện nay → G"
+    },
+    "20": {
+      "d": "Ao cá (fish pond).",
+      "v": "Điểm cuối cùng trên bản đồ.",
+      "t": ["you turn right at the first information board you come to and follow the path into the trees", "Before you come out of the trees, you’ll see it on your right."],
+      "p": "Rẽ phải ở bảng thông tin đầu tiên → đi theo đường vào rừng cây → ao nằm bên phải, trước khi ra khỏi rừng (nếu tới sông là đi quá) → E"
+    }
+  }
+}

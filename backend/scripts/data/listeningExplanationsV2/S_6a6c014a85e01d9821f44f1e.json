@@ -1,0 +1,65 @@
+{
+  "title": "Cam 19 - Test 4 – Part 3",
+  "q": {
+    "21": {
+      "d": "Kieran nghĩ lời khuyên đóng gói sách của ông Jane là A. lẽ thường / B. khó làm theo / C. bảo vệ quá mức.",
+      "v": "Đầu bài, khi Jane kể ông dặn cách đóng sách.",
+      "t": ["He says you have to support the spine otherwise the paper can come away from the cover.", "Yeah – that’s obvious."],
+      "p": "Kieran đáp “that’s obvious” (hiển nhiên) và sau đó “it’s pretty clear” = common sense (điều ai cũng biết) → A"
+    },
+    "22": {
+      "d": "Jane cảm thấy thế nào về những cuốn sách ông tặng? A. Không đáng giữ / B. Nên đưa cho người sưu tầm / C. Có giá trị tình cảm với cô.",
+      "v": "Khi nói về sách cũ bị ngả vàng.",
+      "t": ["I should dump them really if they’re going to deteriorate further, but I’d feel bad. They’ll always remind me of him.", "I’d regret just throwing them away."],
+      "p": "Dù sách đang hỏng dần, cô không nỡ vứt vì “They’ll always remind me of him” (luôn gợi nhớ về ông) = sentimental value. Bẫy B: “collector” là nói về ông, không phải đem sách cho người sưu tầm → C"
+    },
+    "23": {
+      "d": "Jane và Kieran đồng ý rằng sách bìa cứng nên được A. trưng bày / B. làm quà cho khách / C. thiết kế đẹp hơn.",
+      "v": "Khi bàn về sách bìa cứng (hardbacks).",
+      "t": ["people don’t keep them out on shelves as much as they used to", "That’s such a pity.", "I agree"],
+      "p": "Ngày nay người ta ít để sách bìa cứng ra kệ, Kieran thấy “such a pity” (đáng tiếc), thích nhìn sách để trên bàn khi đến nhà ai đó, Jane đồng ý → nên được bày ra = put out on display → A"
+    },
+    "24": {
+      "d": "Khi nói về việc lấy sách khỏi kệ, Jane A. mô tả lỗi người khác hay mắc / B. nhớ lại một trải nghiệm thời thơ ấu đáng nhớ / C. giải thích vì sao có sách dễ lấy hơn.",
+      "v": "Khi Kieran hỏi Jane học những điều này từ khi nào.",
+      "t": "He watched me pull a heavy book off the shelf when I was small, and it fell on the floor and broke apart.",
+      "p": "Jane kể lúc nhỏ kéo một cuốn sách nặng khỏi kệ, sách rơi và bung ra – trải nghiệm thời thơ ấu (“when I was small”). Bẫy A: người “usually do it wrong” là lời Kieran, không phải Jane → B"
+    },
+    "25": {
+      "d": "Jane và Kieran gợi ý điều gì về sách mới? A. Cha mẹ họ thích mua làm quà / B. Họ muốn mua thêm / C. Không phải ai cũng mua được.",
+      "v": "Khi nói về mùi sách mới.",
+      "t": ["New books aren’t cheap, though, are they?", "I guess we’re lucky we can buy them."],
+      "p": "Sách mới không rẻ và họ “lucky” (may mắn) khi mua được → ngụ ý không phải ai cũng có đủ tiền mua = not everyone can afford them. A sai: cha mẹ chỉ cười việc Jane ngửi sách → C"
+    },
+    "26": {
+      "d": "Sách hiếm.",
+      "v": "Đầu phần mô tả hiệu sách của ông.",
+      "t": ["you might think he’d keep those in the attic or somewhere", "So, he puts them out in the shop but makes sure you need a ladder to get them."],
+      "p": "Bẫy B: người ta tưởng để trên gác mái nhưng không phải. Phải dùng thang mới lấy được → ở trên kệ cao = on a high shelf → D"
+    },
+    "27": {
+      "d": "Sách thiếu nhi.",
+      "v": "Khi Kieran hỏi ông có bán sách thiếu nhi không.",
+      "t": ["Is that where he keeps them, then?", "Not exactly – he’s got a dedicated area on the ground floor with cushions"],
+      "p": "Bẫy E: “under the stairs” là chỗ ông ngồi đọc hồi nhỏ, Jane nói “Not exactly”. Sách thiếu nhi ở khu vực riêng có đệm = a dedicated area = in a specially designed space → F"
+    },
+    "28": {
+      "d": "Sách không ai cần nữa.",
+      "v": "Khi nói về kho phía sau cửa hàng.",
+      "t": ["Books he wants to throw away?", "he just leaves unwanted books by the front door for customers to take"],
+      "p": "Bẫy C: Kieran đoán sách bỏ đi để ở kho phía sau. Thực tế ông để sách không cần ở cạnh cửa trước = near the entrance → A"
+    },
+    "29": {
+      "d": "Sách được đặt trước.",
+      "v": "Ngay sau phần sách không cần.",
+      "t": ["and books people or institutions have requested, they all go at the far end", "He thinks it’s best to keep these out of the main shopping area as they’re boxed and new."],
+      "p": "“At the far end” (ở cuối cùng), tách khỏi khu mua sắm chính = at the back of the shop → C"
+    },
+    "30": {
+      "d": "Sách giáo trình.",
+      "v": "Cuối bài, khi Kieran hỏi về sách học của Jane.",
+      "t": ["He used to keep these books on the first floor", "They’re actually part of the coffee shop, on low shelves all around it."],
+      "p": "Bẫy: trước đây để ở tầng một (“used to”). Bây giờ chuyển xuống dưới và nằm trong quán cà phê = within the café → G"
+    }
+  }
+}

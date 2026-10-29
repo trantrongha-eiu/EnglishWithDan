@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 3 Part 1",
+  "q": {
+    "1": {
+      "d": "Peak Rentals – giá từ $105 đến $___ mỗi phòng mỗi tháng.",
+      "v": "Khi người đàn ông đọc giá trong tờ quảng cáo.",
+      "t": "It says the monthly price per room starts at $105 and goes up to $239.",
+      "p": "“Range from … to” = “starts at … and goes up to” → mức cao nhất là $239 → 239"
+    },
+    "2": {
+      "d": "Đồ nội thất rất ___.",
+      "v": "Khi nói về phản hồi tích cực của khách.",
+      "t": "People have mentioned that the furniture from Peak Rentals is more modern than any of the other companies.",
+      "p": "Đồ nội thất của Peak Rentals hiện đại hơn mọi công ty khác → modern"
+    },
+    "3": {
+      "d": "Ưu đãi đặc biệt: tặng miễn phí một ___ với mỗi bộ đồ phòng khách.",
+      "v": "Khi nói về chương trình khuyến mãi.",
+      "t": "If you rent living room furniture, I believe that’s a set of chairs and a TV table, you’ll also get a lamp at no extra cost.",
+      "p": "“Free” = “at no extra cost”; thuê bộ đồ phòng khách sẽ được tặng “a lamp” (đèn) → lamp"
+    },
+    "4": {
+      "d": "Công ty ___ and Oliver.",
+      "v": "Khi người phụ nữ thấy Peak Rentals quá đắt.",
+      "t": ["Sorry, what and Oliver?", "Aaron, double A-R-O-N"],
+      "p": "Tên được đánh vần “double A-R-O-N” – hai chữ A ở đầu → Aaron"
+    },
+    "5": {
+      "d": "Giá tầm trung. Phí hằng tháng 12% cho ___.",
+      "v": "Khi nói về chi phí của Aaron and Oliver.",
+      "t": "they charge an extra 12 every month in case of damage",
+      "p": "Phụ phí 12% mỗi tháng “in case of damage” (phòng trường hợp hư hỏng) → damage"
+    },
+    "6": {
+      "d": "Larch Furniture – giá rẻ nhất cho thuê nội thất và đồ ___.",
+      "v": "Đầu phần 2, công ty Larch Furniture.",
+      "t": "it has the lowest prices in town. That’s for both furniture and also electronic equipment",
+      "p": "“Cheapest prices” = “the lowest prices”; ngoài đồ nội thất còn có “electronic equipment” (thiết bị điện tử) → electronic"
+    },
+    "7": {
+      "d": "Phải tự có ___.",
+      "v": "Khi nói hai điều cần biết về Larch.",
+      "t": "First of all you have to take out insurance on the furniture and you need to organize that yourself",
+      "p": "“Must have own” = “have to take out … organize that yourself” (tự mua) → bảo hiểm → insurance"
+    },
+    "8": {
+      "d": "Công ty ___ Rentals.",
+      "v": "Khi người đàn ông nhớ thêm một công ty nữa.",
+      "t": "It’s called Space Rentals, and it’s located very near to the house.",
+      "p": "Tên công ty là “Space Rentals”, ở rất gần ngôi nhà → Space"
+    },
+    "9": {
+      "d": "Xem ___ để biết giá mới nhất.",
+      "v": "Khi nói về chi phí của Space Rentals.",
+      "t": "I don’t have any information about their charges, so it’s best to use their app to find out what it would cost you to use them.",
+      "p": "Không có thông tin giá nên tốt nhất dùng “their app” (ứng dụng của họ) để xem chi phí → app"
+    },
+    "10": {
+      "d": "Được phép ___ trong vòng 7 ngày kể từ khi giao hàng.",
+      "v": "Cuối bài, điểm tốt của Space Rentals.",
+      "t": "you can request exchanges, as long as you do that within a week of receiving it",
+      "p": "“Within 7 days of delivery” = “within a week of receiving it”; thứ được phép là “exchanges” (đổi hàng) → exchanges"
+    }
+  }
+}

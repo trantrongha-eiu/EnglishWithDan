@@ -1,0 +1,65 @@
+{
+  "title": "Cam 21 - Test 4 – Part 1",
+  "q": {
+    "1": {
+      "d": "Tên: Martyn ___.",
+      "v": "Đầu bài, khi người phụ nữ hỏi tên.",
+      "t": ["And is your family name spelt L-double-E?", "It's L-E-I-G-H."],
+      "p": "Bẫy: người phụ nữ đoán “L-double-E” (Lee). Martyn sửa lại và đánh vần L-E-I-G-H → Leigh"
+    },
+    "2": {
+      "d": "Phương tiện đến trung tâm Broadbeach hôm nay: dùng ___ của anh.",
+      "v": "Khi hỏi hôm nay anh đến bằng gì.",
+      "t": "Well, normally I catch the bus, but I'm on my motorbike today because I'm going to work later.",
+      "p": "Bẫy: xe buýt là bình thường (“normally”). Hôm nay (“today”) anh đi xe máy → motorbike"
+    },
+    "3": {
+      "d": "Đã ghé ___.",
+      "v": "Khi hỏi lý do vào thị trấn.",
+      "t": "I've just been to the hairdresser.",
+      "p": "“Has visited” = “I've just been to”; nơi đó là “the hairdresser” (tiệm cắt tóc) → hairdresser"
+    },
+    "4": {
+      "d": "Đang tìm một bộ ___ mới.",
+      "v": "Ngay sau phần tiệm cắt tóc, khi nói về buổi phỏng vấn.",
+      "t": "And now I'm on my way to buy a suit that I can wear to the interview.",
+      "p": "“Looking for a new ___” = “on my way to buy a ___”; thứ cần mua là “a suit” (bộ com-lê) để đi phỏng vấn → suit"
+    },
+    "5": {
+      "d": "Lấy ___ (sau khi sửa).",
+      "v": "Khi hỏi anh còn định làm gì nữa.",
+      "t": "I've got to go and pick up my laptop. It broke a couple of days ago so I took it to the shop to get it fixed.",
+      "p": "“Collecting” = “pick up”; “after repair” = “get it fixed” → laptop"
+    },
+    "6": {
+      "d": "Ngày thích đi mua sắm: ___.",
+      "v": "Khi người phụ nữ hỏi anh có thích mua sắm vào thứ Bảy không.",
+      "t": "If I'm free on a Monday, that's when I choose to come into town. The shops are less busy then, which I always prefer.",
+      "p": "Bẫy: thứ Bảy (Saturday) chỉ là hôm nay. Anh chọn thứ Hai vì cửa hàng vắng hơn → Monday"
+    },
+    "7": {
+      "d": "Cho rằng có quá nhiều nơi bán ___.",
+      "v": "Khi hỏi về những thay đổi gần đây.",
+      "t": ["there are a lot of new coffee shops now, are you enjoying them?", "No, there are too many of them."],
+      "p": "Người phụ nữ hỏi về các quán cà phê mới, Martyn nói “too many of them” (quá nhiều) → coffee"
+    },
+    "8": {
+      "d": "Muốn có thêm nơi để mua ___.",
+      "v": "Khi hỏi anh muốn có loại cửa hàng nào thay thế.",
+      "t": ["Well, I think we have enough clothing shops. But there's only one place that sells books at the moment. It'd be nice to have a choice"],
+      "p": "Bẫy: cửa hàng quần áo thì “enough” (đủ rồi). Chỉ có một chỗ bán sách nên muốn có thêm lựa chọn → books"
+    },
+    "9": {
+      "d": "Thích ___ nhất (ở trung tâm mua sắm mới).",
+      "v": "Khi nói về trung tâm mua sắm mới ngoài Broadbeach.",
+      "t": ["The glass roof is certainly impressive. But my favourite thing is the plants they've put around the building."],
+      "p": "Bẫy: mái kính “impressive” nhưng chưa phải nhất. “My favourite thing” (thứ tôi thích nhất) là cây xanh quanh tòa nhà → plants"
+    },
+    "10": {
+      "d": "Cho rằng ___ là không cần thiết.",
+      "v": "Cuối bài, khi hỏi về khu giải trí.",
+      "t": ["Like the new cinema?", "I can't see any advantage in having it there because the one in town is actually bigger."],
+      "p": "“Unnecessary” = “can't see any advantage in having it” (không thấy lợi ích gì) – vì rạp chiếu phim trong thị trấn còn lớn hơn → cinema"
+    }
+  }
+}

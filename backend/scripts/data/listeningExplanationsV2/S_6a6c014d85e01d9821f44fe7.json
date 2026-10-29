@@ -1,0 +1,65 @@
+{
+  "title": "Cam 21 - Test 4 – Part 2",
+  "q": {
+    "11": {
+      "d": "Năm ngoái, James Craig quảng bá công ty ở HAI khu nào của triển lãm? (đáp án thứ nhất) A. Trung tâm Tiếp thị số / B. Khu TalkCon / C. Khu nghỉ giải lao (Breakout) / D. Làng Doanh nghiệp / E. Khu Kết nối Doanh nghiệp.",
+      "v": "Khi đọc nhận xét của James Craig.",
+      "t": "We also used the Breakout area where people could sit down and relax, and try out our products, and due to popular request we used that again last year.",
+      "p": "Khu Breakout được dùng năm đầu và “used that again last year” (năm ngoái dùng lại). Bẫy D: Business Village chỉ là năm đầu tiên (“The first year”) → C"
+    },
+    "12": {
+      "d": "Năm ngoái, James Craig quảng bá công ty ở HAI khu nào? (đáp án thứ hai)",
+      "v": "Cùng đoạn nhận xét của James Craig.",
+      "t": "Last year we also sponsored the innovative Business Connections Zone",
+      "p": "“Last year” + “sponsored” (tài trợ) khu Business Connections Zone, giúp nâng tầm hình ảnh công ty. Bẫy A, B: Digital Marketing Centre và TalkCon Zone chỉ là mong muốn cho triển lãm sắp tới → E"
+    },
+    "13": {
+      "d": "HAI thông tin nào được nêu về ưu đãi giảm giá các thương hiệu cho đơn vị triển lãm? (đáp án thứ nhất) A. Áp dụng cho mọi thành viên của công ty triển lãm / B. Dùng được cho cả đồ ăn và quần áo / C. Chỉ áp dụng khi chi ít nhất £400 / D. Người nhà dùng được / E. Mức giảm luôn như nhau.",
+      "v": "Cuối đoạn về ưu đãi giảm giá.",
+      "t": "The scheme is available to every member of your organisation",
+      "p": "“Available to every member of your organisation” = available to all members of exhibiting companies. D sai: không nhắc tới gia đình → A"
+    },
+    "14": {
+      "d": "HAI thông tin nào được nêu về ưu đãi giảm giá? (đáp án thứ hai)",
+      "v": "Đầu đoạn về ưu đãi giảm giá.",
+      "t": ["including major high street fashion and jewellery outlets, as well as grocery chains", "Discounts available range from 3.5% up to an amazing 15%", "the average saving made by each exhibitor came to over £400"],
+      "p": "Áp dụng ở cửa hàng thời trang (= clothing) và chuỗi tạp hóa (= food) → B. Bẫy E: mức giảm từ 3,5% tới 15%, không cố định; C: £400 là số tiền tiết kiệm trung bình, không phải điều kiện chi tiêu → B"
+    },
+    "15": {
+      "d": "Jim Clowrie sẽ tập trung nói về chủ đề nào?",
+      "v": "Diễn giả đầu tiên.",
+      "t": "Rather to his surprise this became a bit of a sensation, and in a remarkably short time he had opened an amazing 76 restaurants worldwide.",
+      "p": "“To his surprise” = unexpectedly; mở 76 nhà hàng trong thời gian ngắn đáng kinh ngạc = rapid expansion; ông kể nó thay đổi cuộc đời ra sao = effects → C"
+    },
+    "16": {
+      "d": "David France sẽ tập trung nói về chủ đề nào?",
+      "v": "Diễn giả thứ hai.",
+      "t": "he isn't just interested in making money – he also makes regular donations to organisations helping those in need",
+      "p": "Vừa kinh doanh thành công vừa thường xuyên quyên góp cho tổ chức từ thiện = combining business success with contributions to charities → G"
+    },
+    "17": {
+      "d": "Oliver Stanton sẽ tập trung nói về chủ đề nào?",
+      "v": "Diễn giả thứ ba.",
+      "t": "He'll be telling you about what he discovered during his travels around the world about business practices in different cultures.",
+      "p": "Kinh doanh ở Malaysia, Nhật Bản, Hồng Kông, Anh; nói về cách làm kinh doanh ở các nền văn hóa khác nhau = a global range of business experiences → D"
+    },
+    "18": {
+      "d": "Francesca Heptonstall sẽ tập trung nói về chủ đề nào?",
+      "v": "Diễn giả thứ tư.",
+      "t": "she's also passionate about helping people gain employment and organises an annual jobs fair, so she'll be concentrating on this in her talk",
+      "p": "“Concentrating on this” = giúp mọi người tìm việc, tổ chức hội chợ việc làm = supporting job seekers. Bẫy: công nghệ là mối quan tâm kinh doanh chính nhưng không phải chủ đề bài nói → A"
+    },
+    "19": {
+      "d": "Salman Khan sẽ tập trung nói về chủ đề nào?",
+      "v": "Diễn giả thứ năm.",
+      "t": ["has turned around this business from a major publishing business to one of the UK's largest digital marketing service providers", "He'll be talking about the need for flexibility to cope with new directions in today's business world."],
+      "p": "Chuyển công ty từ xuất bản sang tiếp thị số, nói về sự linh hoạt để ứng phó hướng đi mới = developing a company in response to changing markets → F"
+    },
+    "20": {
+      "d": "Annie Craven sẽ tập trung nói về chủ đề nào?",
+      "v": "Diễn giả cuối cùng.",
+      "t": "Her session will offer an interactive look at different obstacles in people's own lives, not just in business.",
+      "p": "Bàn về những trở ngại trong cuộc sống riêng của mỗi người, không chỉ trong kinh doanh, và cách vượt qua = dealing with personal problems → B"
+    }
+  }
+}

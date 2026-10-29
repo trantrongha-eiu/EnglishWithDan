@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 1 Part 1",
+  "q": {
+    "1": {
+      "d": "The Junction – phù hợp với người đặc biệt thích ___.",
+      "v": "Khi người đàn ông giải thích vì sao giới thiệu The Junction.",
+      "t": "If you like fish, it’s probably the best restaurant in town for that.",
+      "p": "“Especially keen on” = “like”; nếu thích cá thì đây có lẽ là nhà hàng tốt nhất thị trấn → fish"
+    },
+    "2": {
+      "d": "Khá đắt. ___ là nơi tốt để uống gì đó.",
+      "v": "Khi người phụ nữ hỏi nhà hàng có đắt không.",
+      "t": "before dinner you can go up on the roof and have a drink",
+      "p": "“A good place for a drink” = “go up on the roof and have a drink” → sân thượng → roof"
+    },
+    "3": {
+      "d": "Paloma – đồ ăn ___, phù hợp để ăn chung.",
+      "v": "Khi nói về nhà hàng Paloma ở Bow Street.",
+      "t": ["So is all the food they serve Spanish, then?", "Yeah. You can get lots of small dishes to share"],
+      "p": "Người phụ nữ hỏi đồ ăn có phải món Tây Ban Nha không, người đàn ông xác nhận “Yeah”, có nhiều món nhỏ để ăn chung (“to share”) → Spanish"
+    },
+    "4": {
+      "d": "Thực đơn có ít lựa chọn món ___.",
+      "v": "Cuối phần Paloma, khi người phụ nữ hỏi về thực đơn.",
+      "t": ["I should have a look at the menu to check if there is a good choice of vegetarian dishes.", "the selection of those would be quite limited"],
+      "p": "“A limited selection” = “the selection … would be quite limited”; “those” chỉ món chay (vegetarian dishes) → vegetarian"
+    },
+    "5": {
+      "d": "Nhà hàng The ___.",
+      "v": "Đầu phần 2, ý tưởng nhà hàng thứ ba.",
+      "t": ["Have you been to the Audley?", "A-U-D-L-E-Y."],
+      "p": "Tên nhà hàng được đánh vần A-U-D-L-E-Y → Audley"
+    },
+    "6": {
+      "d": "Ở trên tầng cao nhất của một ___.",
+      "v": "Khi người phụ nữ hỏi nhà hàng ở đâu.",
+      "t": "It’s in that hotel near Baxter Bridge, on the top floor.",
+      "p": "“At the top of” = “on the top floor”; nhà hàng nằm trong một khách sạn gần cầu Baxter → hotel"
+    },
+    "7": {
+      "d": "Đầu bếp nổi tiếng. Tất cả các ___ đều rất tốt.",
+      "v": "Khi nói về đầu bếp Angela Frayne.",
+      "t": "Anyway, it had excellent reviews from all the newspapers.",
+      "p": "“All the ___ are very good” = “excellent reviews from all the newspapers” → bài đánh giá → reviews"
+    },
+    "8": {
+      "d": "Chỉ dùng nguyên liệu ___.",
+      "v": "Khi người phụ nữ hỏi về cách nấu của đầu bếp.",
+      "t": ["She only likes cooking with local products, doesn't she?", "Everything at the restaurant has to be sourced within a short distance, and absolutely nothing flown in from abroad."],
+      "p": "“Only uses” = “only likes cooking with”; nguyên liệu lấy trong phạm vi gần, không nhập từ nước ngoài → local"
+    },
+    "9": {
+      "d": "Bữa trưa trọn gói giá £___ một người.",
+      "v": "Khi người phụ nữ lo nhà hàng đắt.",
+      "t": ["Well, you could go for the set lunch.", "Thirty pounds a head.", "In the evening, I think it'd be more like fifty pounds."],
+      "p": "“Per person” = “a head”; bữa trưa trọn gói £30. Bẫy: £50 là giá buổi tối → 30"
+    },
+    "10": {
+      "d": "Khẩu phần có lẽ có kích cỡ ___.",
+      "v": "Cuối bài, khi người phụ nữ hỏi khẩu phần có nhỏ không.",
+      "t": ["No, the reviews I've read didn't mention that.", "I imagine they'd be average."],
+      "p": "Người phụ nữ lo khẩu phần “tiny” (rất nhỏ) nhưng người đàn ông nói các bài đánh giá không nhắc vậy, chắc là “average” (vừa phải) → average"
+    }
+  }
+}

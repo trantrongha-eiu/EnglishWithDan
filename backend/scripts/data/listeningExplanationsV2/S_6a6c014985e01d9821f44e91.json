@@ -1,0 +1,65 @@
+{
+  "title": "Cam 19 - Test 2 – Part 1",
+  "q": {
+    "1": {
+      "d": "Người điều phối: Gary ___ (họ).",
+      "v": "Khi người phụ nữ hỏi ai phụ trách lớp.",
+      "t": ["his name’s Gary Mathieson", "It’s M-A-T-H-I-E-S-O-N."],
+      "p": "Họ được đánh vần từng chữ: M-A-T-H-I-E-S-O-N. Chú ý nghe kỹ “T-H-I-E” → Mathieson"
+    },
+    "2": {
+      "d": "Trình độ: ___.",
+      "v": "Khi người phụ nữ lo mọi người giỏi hơn mình.",
+      "t": "he said it was a class for beginners",
+      "p": "Gary nói đây là lớp dành cho người mới bắt đầu (beginners). “Equally hopeless” chỉ là câu đùa, không phải đáp án → beginners"
+    },
+    "3": {
+      "d": "Địa điểm: ___ (nơi học).",
+      "v": "Khi hỏi nhóm gặp nhau ở đâu.",
+      "t": "he decided to book a room at the college in town. I prefer going there.",
+      "p": "Bẫy: trước đây nhóm học ở nhà Gary (“Gary’s home”), nhưng giờ đã chuyển sang một phòng ở “the college” → college"
+    },
+    "4": {
+      "d": "Đường ___.",
+      "v": "Ngay sau đó, khi người phụ nữ hỏi trường nằm ở đường nào.",
+      "t": "It’s just beyond there at the bottom of New Street near the city roundabout.",
+      "p": "Bẫy: “Lock Street” là người phụ nữ đoán sai; Coleman sửa lại là ngay qua đó, ở cuối “New Street” → New"
+    },
+    "5": {
+      "d": "Thời gian: sáng thứ Năm lúc ___.",
+      "v": "Khi hỏi giờ học.",
+      "t": "It used to be 10.30 and that suited me well, but now we meet at 11.",
+      "p": "Bẫy: 10.30 là giờ cũ (“used to be”). Hiện tại (“now”) là 11 giờ vì lớp trước xin thêm 30 phút → 11"
+    },
+    "6": {
+      "d": "Trang web được giới thiệu: “The perfect ___”.",
+      "v": "Khi người phụ nữ nói mình không có đàn.",
+      "t": "There’s a website called ‘The perfect instrument’ that sells all kinds of guitars, violins and so on.",
+      "p": "Tên trang web bán đàn cũ là “The perfect instrument” (nhạc cụ hoàn hảo) → instrument"
+    },
+    "7": {
+      "d": "5 phút – lên dây đàn – dùng ứng dụng hoặc bằng ___.",
+      "v": "Phần đầu buổi học điển hình.",
+      "t": "Some people have an app they use, but others do it by ear.",
+      "p": "Hai cách lên dây: dùng app hoặc “by ear” (nghe bằng tai) → ear"
+    },
+    "8": {
+      "d": "10 phút – gảy hợp âm bằng ngón cái – giữ nhịp trong khi giáo viên đang ___.",
+      "v": "Khi nói về phần gảy đàn (strumming).",
+      "t": "we’re so bad at keeping time, so Gary starts clapping to help us",
+      "p": "“Keeping time” = giữ nhịp; Gary vỗ tay (clapping) để giúp cả lớp giữ nhịp → clapping"
+    },
+    "9": {
+      "d": "15 phút – chơi bài hát – thường nghe một ___ của bài hát.",
+      "v": "Khi nói về phần học bài hát.",
+      "t": "He often brings a recording of the song and plays it to us first.",
+      "p": "“Often” xuất hiện y như đề; Gary thường mang tới “a recording” (bản thu âm) của bài và mở cho cả lớp nghe → recording"
+    },
+    "10": {
+      "d": "10 phút – chơi từng nốt và giai điệu đơn giản – chơi cùng nhau, sau đó ___.",
+      "v": "Phần cuối buổi học (finger picking).",
+      "t": "he sometimes gets us to play one at a time – you know, alone",
+      "p": "Sau khi chơi chung, đôi khi Gary bắt từng người chơi một mình (“one at a time … alone”) → alone"
+    }
+  }
+}

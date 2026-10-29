@@ -1,0 +1,65 @@
+{
+  "title": "Cam 19 - Test 4 – Part 2",
+  "q": {
+    "11": {
+      "d": "Liz nhắc tới HAI vấn đề nào của một số chương trình tập chạy cho người mới? (đáp án thứ nhất) A. nguy cơ chấn thương nghiêm trọng / B. không phù hợp với một số độ tuổi / C. không phù hợp với người có vấn đề sức khỏe / D. khó duy trì động lực / E. thiếu hỗ trợ cá nhân.",
+      "v": "Đoạn đầu, khi Liz nói về các chương trình tập chạy online.",
+      "t": "they don’t work for everyone – especially if you suffer from something like a heart condition or asthma",
+      "p": "“Don’t work for” = unsuitable; “heart condition or asthma” (bệnh tim, hen suyễn) = health issues. Bẫy B: “people of all ages” tham gia, nên không phải vấn đề độ tuổi; D sai: mọi người thích vì dễ theo, không quá sức → C"
+    },
+    "12": {
+      "d": "Liz nhắc tới HAI vấn đề nào của một số chương trình tập chạy cho người mới? (đáp án thứ hai)",
+      "v": "Ngay sau ý về sức khỏe, “Another thing is …”.",
+      "t": "if you have any specific questions related to your needs, there’s no one to provide any answers",
+      "p": "Mỗi người khác nhau nhưng không có ai trả lời câu hỏi riêng theo nhu cầu của bạn = a lack of individual support → E"
+    },
+    "13": {
+      "d": "Liz khuyên người mới chạy HAI mẹo nào? (đáp án thứ nhất) A. chạy hai lần một tuần / B. chạy buổi tối / C. chạy cùng bạn / D. nghe nhạc khi chạy / E. chạy thật chậm.",
+      "v": "Cuối đoạn mẹo cho người mới.",
+      "t": "aim to train regularly -twice a week is enough to begin with",
+      "p": "“Twice a week” = two runs a week, đủ để bắt đầu. Bẫy B: giờ trong ngày “not especially important”; bẫy E: chạy rất chậm “can prevent progress” → A"
+    },
+    "14": {
+      "d": "Liz khuyên người mới chạy HAI mẹo nào? (đáp án thứ hai)",
+      "v": "Giữa đoạn mẹo cho người mới.",
+      "t": ["Listening to music can be very helpful", "I’d say that is better than running with a friend"],
+      "p": "Nghe nhạc “very helpful” – giúp quên mọi thứ và vào nhịp. Chạy cùng bạn bị đánh giá kém hơn vì dễ ganh đua (C sai) → D"
+    },
+    "15": {
+      "d": "Ceri – lý do khiến cô chưa tham gia câu lạc bộ cho đến gần đây.",
+      "v": "Ví dụ đầu tiên về các thành viên mới.",
+      "t": ["She’d always enjoyed running at school but wasn’t sure if she’d be able to do it.", "She was worried about being left behind and being the slowest runner."],
+      "p": "Cô vốn thích chạy (không phải B); điều cản trở là không chắc mình làm được, sợ bị bỏ lại phía sau = a lack of confidence → A"
+    },
+    "16": {
+      "d": "James – lý do khiến anh chưa tham gia cho đến gần đây.",
+      "v": "Ví dụ thứ hai.",
+      "t": ["James had always hated the idea of running", "He never misses a training session despite having a really demanding job."],
+      "p": "“Always hated the idea of running” = a dislike of running. Bẫy C: công việc bận rộn được nhắc nhưng anh vẫn không bỏ buổi tập nào → B"
+    },
+    "17": {
+      "d": "Leo – lý do khiến anh chưa tham gia cho đến gần đây.",
+      "v": "Ví dụ thứ ba.",
+      "t": "wasn’t sure he’d be able to fit training into his busy schedule",
+      "p": "Lo không sắp xếp được buổi tập vào lịch bận rộn = a lack of time → C"
+    },
+    "18": {
+      "d": "Mark – lý do khiến ông chưa tham gia cho đến gần đây.",
+      "v": "Ví dụ thứ tư.",
+      "t": ["It took him months to find the courage to contact us", "felt reassured immediately as there were other people his age"],
+      "p": "Mất nhiều tháng mới đủ can đảm (courage) liên lạc, sau đó mới thấy yên tâm → a lack of confidence. Ông đã nghỉ hưu nên không thiếu thời gian → A"
+    },
+    "19": {
+      "d": "Liz nói gì về lần chạy marathon đầu tiên? A. Đó luôn là tham vọng của cô / B. Chồng thuyết phục cô chạy / C. Cô suýt bỏ cuộc trước khi về đích.",
+      "v": "Khi Liz kể hành trình của bản thân.",
+      "t": ["My husband had been running marathons for years, but I never dreamed I ’d be doing one with him.", "I felt like giving up halfway through"],
+      "p": "A sai: “never dreamed” (chưa từng mơ tới). B: chồng chạy marathon nhiều năm nhưng không nói anh thuyết phục cô. “Felt like giving up halfway through” = nearly gave up → C"
+    },
+    "20": {
+      "d": "Liz nói người mới chạy nên đăng ký một cuộc đua A. mỗi sáu tháng / B. trong vòng vài tuần sau khi bắt đầu chạy / C. sau khi hoàn thành vài buổi chạy thử.",
+      "v": "Đoạn cuối, về việc đăng ký giải chạy.",
+      "t": ["I did my first 10K after only six months", "not something I ’d necessarily recommend", "But after you’ve been training for a few weeks, it’s worth putting your name down for a 5K"],
+      "p": "Bẫy A: sáu tháng là trải nghiệm riêng của cô, không khuyên làm theo. Bẫy C: “a few practice runs” là ý của người khác. Lời khuyên: tập vài tuần rồi đăng ký (“putting your name down”) giải 5K → B"
+    }
+  }
+}

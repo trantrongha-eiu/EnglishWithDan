@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 2 Part 3",
+  "q": {
+    "21": {
+      "d": "Dân số – ý kiến của Rosie và Colin.",
+      "v": "Khía cạnh đầu tiên được bàn.",
+      "t": ["Lots of facts and statistics. Maybe a bit boring?", "Yeah, but quite straightforward to find on the internet."],
+      "p": "Colin nói dữ liệu dân số “quite straightforward to find” (khá dễ tìm) trên mạng = it will be easy to find facts about this. Bẫy C: có “lots of” số liệu, không phải ít → D"
+    },
+    "22": {
+      "d": "Sức khỏe – ý kiến của Rosie và Colin.",
+      "v": "Khía cạnh thứ hai, bài giảng về dịch tả.",
+      "t": "Yes, fascinating, wasn’t it?",
+      "p": "Bài giảng của giáo sư Lee về cách dùng bản đồ tìm nguồn dịch tả được khen “fascinating” (rất cuốn hút) = the information provided about this was interesting → G"
+    },
+    "23": {
+      "d": "Kinh tế – ý kiến của Rosie và Colin.",
+      "v": "Khía cạnh thứ ba.",
+      "t": ["I thought that had been taken off the syllabus for this year", "but it might be best to avoid it"],
+      "p": "Rosie nghĩ chủ đề này đã bị bỏ khỏi chương trình năm nay nên tốt nhất tránh nó = this may not be relevant to their course → B"
+    },
+    "24": {
+      "d": "Văn hóa – ý kiến của Rosie và Colin.",
+      "v": "Khía cạnh thứ tư, bài giảng tuần trước.",
+      "t": "It was all so general and the lecturer didn’t give any useful examples.",
+      "p": "Bài giảng “so general” (quá chung chung), không có ví dụ hữu ích = the information given about this was too vague → A"
+    },
+    "25": {
+      "d": "Nghèo đói – ý kiến của Rosie và Colin.",
+      "v": "Khía cạnh cuối cùng.",
+      "t": ["you have to be careful with some of the figures relating to poverty. They’re sometimes deliberately manipulated.", "You mean the information gets changed for political reasons?"],
+      "p": "Số liệu về nghèo đói đôi khi bị cố tình chỉnh sửa vì lý do chính trị → có thể không đáng tin = the facts about this may not be reliable → E"
+    },
+    "26": {
+      "d": "Rosie nói ở thành phố của cô, vấn đề chính là A. tội phạm / B. nhà ở / C. thất nghiệp.",
+      "v": "Khi bàn về vấn đề của thành phố lớn.",
+      "t": ["Things like theft and robbery?", "Yes, but where I come from, that’s linked to another more serious issue, which is that a lot of people don’t have jobs."],
+      "p": "Trộm cướp liên quan tới một vấn đề “more serious” (nghiêm trọng hơn): nhiều người không có việc làm = unemployment. Bẫy B: vô gia cư “not quite so bad as it was” → C"
+    },
+    "27": {
+      "d": "Cả hai sinh viên đều vui về những công trình mới nào ở ngoại ô? A. trung tâm hội nghị / B. trung tâm thể thao / C. trung tâm mua sắm.",
+      "v": "Khi bàn về các phát triển mới ở ngoại ô.",
+      "t": ["But the outskirts are ideal for buildings that need a lot of space, like for conferences. They’ve opened a couple of big ones.", "Yes, we’ve got some too."],
+      "p": "Colin nói ngoại ô lý tưởng cho trung tâm hội nghị, Rosie cũng có ở thành phố mình. Bẫy C: trung tâm mua sắm khiến cửa hàng trong phố đóng cửa; B: sân bóng thì “not happening” → A"
+    },
+    "28": {
+      "d": "Hai sinh viên đồng ý rằng phát triển các khu công nghiệp bỏ hoang có thể A. phát sinh chi phí ngoài dự kiến / B. gây hại môi trường đô thị / C. phá hủy công trình lịch sử giá trị.",
+      "v": "Khi bàn về khu công nghiệp bỏ hoang.",
+      "t": ["so the whole site has to be made safe", "Hmm, that can’t be cheap. And I bet it’s often not budgeted for.", "You’re right."],
+      "p": "Phải xử lý hóa chất nguy hiểm còn sót lại, tốn kém và “not budgeted for” (không có trong ngân sách) = unexpected costs; Rosie đồng ý. Bẫy C: công trình “Not really” có giá trị kiến trúc → A"
+    },
+    "29": {
+      "d": "Họ sẽ nhắc tới Masdar City như ví dụ về nỗ lực đạt được A. thu gom rác tái chế hằng ngày / B. sử dụng năng lượng bền vững / C. giao thông miễn phí cho mọi người.",
+      "v": "Khi bàn về Masdar City ở Abu Dhabi.",
+      "t": ["That might be a good example of a city which set out to depend entirely on renewable energy.", "But let’s stick to talking about power sources."],
+      "p": "Thành phố muốn hoàn toàn dựa vào năng lượng tái tạo; Rosie chốt “stick to talking about power sources” (chỉ nói về nguồn năng lượng). Tái chế và giao thông ngầm được nhắc nhưng bị gạt sang bên → B"
+    },
+    "30": {
+      "d": "Khi bàn về thị trấn sinh thái Greenhill Abbots, Colin không chắc về A. mục tiêu của nó / B. vì sao bị phản đối / C. bao nhiêu phần đã thực sự được xây.",
+      "v": "Cuối bài.",
+      "t": "I’m not sure how far they’ve got with it. I’ll check.",
+      "p": "“Not sure how far they’ve got with it” (không rõ họ đã làm được tới đâu) = how much of it has actually been built. Mục tiêu (bền vững) và lý do phản đối (kế hoạch phi thực tế) đều được nói rõ → C"
+    }
+  }
+}

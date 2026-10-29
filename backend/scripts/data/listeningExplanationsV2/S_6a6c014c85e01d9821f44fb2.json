@@ -1,0 +1,65 @@
+{
+  "title": "Cam 21 - Test 3 – Part 2",
+  "q": {
+    "11": {
+      "d": "HAI lời giải thích nào cho sự phổ biến của đồ ăn đường phố được đưa ra? (đáp án thứ nhất) A. giá rẻ / B. nguyên liệu địa phương / C. làm tươi tại chỗ / D. tiện lợi / E. món ăn lạ.",
+      "v": "Khi Jon giải thích vì sao đồ ăn đường phố ngày càng được ưa chuộng.",
+      "t": "They also like seeing food prepared and which hasn't come straight out of a freezer.",
+      "p": "Khách thích nhìn món ăn được chế biến, không phải lấy thẳng từ tủ đông = freshly made. Bẫy A, D: “cheap and easy to find” là nói về đồ ăn nhanh (fast food), không phải đồ ăn đường phố → C"
+    },
+    "12": {
+      "d": "HAI lời giải thích nào cho sự phổ biến của đồ ăn đường phố? (đáp án thứ hai)",
+      "v": "Cùng đoạn, khi so sánh với đồ ăn nhanh.",
+      "t": ["What you get with street food on the other hand is something different.", "People like the idea of trying something they can't get anywhere else."],
+      "p": "Đồ ăn đường phố là “something different”, món không thể tìm thấy ở nơi khác = unusual food → E"
+    },
+    "13": {
+      "d": "HAI nơi nào được khuyên dành cho cơ sở kinh doanh đồ ăn đường phố mới? (đáp án thứ nhất) A. lễ hội âm nhạc / B. chợ ẩm thực / C. đám cưới / D. tiệc / E. công viên.",
+      "v": "Khi Jon nói về địa điểm bán hàng.",
+      "t": "Food markets, on the other hand, are great because customers are always really interested in food and give great feedback.",
+      "p": "Chợ ẩm thực “great” vì khách quan tâm đồ ăn và góp ý tốt. Bẫy A: lễ hội âm nhạc thuê chỗ rất đắt và cạnh tranh nhiều → B"
+    },
+    "14": {
+      "d": "HAI nơi nào được khuyên dành cho cơ sở kinh doanh mới? (đáp án thứ hai)",
+      "v": "Ngay sau phần chợ ẩm thực.",
+      "t": ["And if you can get a spot in your local park – fantastic.", "Once you get established you'll start getting asked to do parties"],
+      "p": "Được chỗ trong công viên là “fantastic” – thoải mái mà đông khách qua lại. Bẫy D, C: tiệc là khi đã có tiếng (“once you get established”), đám cưới đòi hỏi phải thật thạo nghề → không dành cho người mới → E"
+    },
+    "15": {
+      "d": "Người nói nói gì về việc sắm thiết bị? A. Thiết bị chất lượng cao là khoản đầu tư tốt / B. Tốt nhất nên mua đồ cũ / C. Thuê thiết bị có thể rẻ.",
+      "v": "Khi nói về thiết bị cơ bản.",
+      "t": ["I'd try to get things like hobs and fridges second hand if you can.", "Renting is another option but you'll end up spending more money rather than saving it."],
+      "p": "Nên mua bếp, tủ lạnh đồ cũ (“second hand”); đồ tốt hơn chỉ thay khi kinh doanh phát đạt (A sai); thuê thì rốt cuộc tốn tiền hơn (C sai) → B"
+    },
+    "16": {
+      "d": "Lời khuyên nào về việc tạo sản phẩm? A. Cung cấp thông tin về nguyên liệu / B. Quan trọng là phải có sản phẩm độc đáo / C. Cách trình bày là yếu tố quan trọng.",
+      "v": "Khi nói về món ăn định bán.",
+      "t": ["But there's one thing people don't always think about and that's how you're going to serve it.", "It's got to be easy to eat and look attractive or customers won't come back."],
+      "p": "Điều người ta hay quên là cách phục vụ món: đĩa, túi, dĩa… phải dễ ăn và “look attractive” (trông hấp dẫn) = presentation. A và B là những điều Jon cho rằng bạn đã làm rồi → C"
+    },
+    "17": {
+      "d": "Thai Basil – gặp vấn đề gì?",
+      "v": "Ví dụ đầu tiên về các cơ sở kinh doanh.",
+      "t": "Their work-life balance was non-existent as they were working til midnight in the restaurant all week and then took their food truck to markets on their days off.",
+      "p": "Làm nhà hàng tới nửa đêm cả tuần rồi ngày nghỉ lại chạy xe bán đồ ăn → không có cân bằng cuộc sống = worked very long hours → F"
+    },
+    "18": {
+      "d": "Basque – gặp vấn đề gì?",
+      "v": "Ví dụ thứ hai.",
+      "t": "The owners of Basque found it was hard to make a profit because the price of fish – essential for some of their dishes – was so high.",
+      "p": "Giá cá – nguyên liệu thiết yếu – quá cao nên khó có lãi = some ingredients were too expensive → A"
+    },
+    "19": {
+      "d": "Lou's kitchen – gặp vấn đề gì?",
+      "v": "Ví dụ thứ ba.",
+      "t": ["some of their dishes were quite complicated", "they ended up with people standing in a long queue for more than 15 minutes"],
+      "p": "Món salad làm theo yêu cầu khá phức tạp, khách phải xếp hàng hơn 15 phút = the meals took a long time to prepare → B"
+    },
+    "20": {
+      "d": "Chip Chop – gặp vấn đề gì?",
+      "v": "Ví dụ cuối cùng.",
+      "t": ["But what they hadn't realised was that they'd need a special licence", "It was a complicated process and in the end they gave up."],
+      "p": "Cần giấy phép đặc biệt (“licence” = permit), thủ tục phức tạp nên bỏ cuộc = difficult to get a permit to sell food. Bẫy E: ở đó “weren't any other street food trucks” (không có đối thủ) → D"
+    }
+  }
+}

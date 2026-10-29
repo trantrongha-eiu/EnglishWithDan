@@ -1,0 +1,65 @@
+{
+  "title": "Presentation on houses of the future",
+  "q": {
+    "21": {
+      "d": "Mia và Leo đều lo lắng về khía cạnh nào của bài thuyết trình? A. kịp hạn nộp / B. tìm ví dụ phù hợp / C. đưa vào ý tưởng mới.",
+      "v": "Đầu bài, khi bàn yêu cầu của bài thuyết trình.",
+      "t": ["we've got to support our points by referring to specific cases. So that'll need a lot of work.", "I'm afraid so."],
+      "p": "Phải dẫn chứng bằng trường hợp cụ thể (= suitable examples), Leo nói “need a lot of work” và Mia đồng tình lo ngại “I'm afraid so” → B. Bẫy C: Leo nói không cần đưa ý tưởng mới; A: 6 tuần “not too much of a rush” → B"
+    },
+    "22": {
+      "d": "Các sinh viên quyết định tập trung bài vào nhà ở cho A. nhóm gia đình / B. người già / C. người độc thân.",
+      "v": "Khi chọn loại nhà ở để tập trung.",
+      "t": ["How about housing for different generations living together?", "But I think your suggestion about intergenerational living might be more interesting – let's go with that."],
+      "p": "Chọn nhà cho nhiều thế hệ sống chung (“intergenerational living”) = family groups. Bẫy C: có người khác làm rồi; B: nhà cho người già được cân nhắc nhưng bị thay → A"
+    },
+    "23": {
+      "d": "Các sinh viên đồng ý rằng nhu cầu nhà ở đô thị nên được đáp ứng bằng A. cải tạo văn phòng, nhà máy / B. xây nhà cao tầng / C. ý tưởng sáng tạo cho nhà nhỏ hơn.",
+      "v": "Khi bàn cách đáp ứng nhu cầu nhà ở đô thị.",
+      "t": ["But I think the solution is to design multi-storey apartment blocks.", "Building up rather than out, yes."],
+      "p": "A và C chỉ được nêu ra. Giải pháp Mia chốt là chung cư nhiều tầng (“multi-storey”), Leo đồng ý “Building up rather than out” = constructing tall buildings → B"
+    },
+    "24": {
+      "d": "Dùng không gian mái nhà làm vườn.",
+      "v": "Phát triển đầu tiên được bàn.",
+      "t": "but it would greatly improve how you feel if you live in an urban high-rise",
+      "p": "Có thể làm cả ở nhà một tầng ngoại ô, nhưng sẽ cải thiện tâm trạng rất nhiều nếu sống trong nhà cao tầng ở thành phố = especially beneficial for city residents → B"
+    },
+    "25": {
+      "d": "Không gian làm việc chung.",
+      "v": "Phát triển thứ hai.",
+      "t": "That's often how new ideas get generated – by chatting to someone from a different profession.",
+      "p": "Ý tưởng mới thường nảy sinh khi trò chuyện với người làm nghề khác = could encourage creativity → E"
+    },
+    "26": {
+      "d": "Tường bên trong di chuyển được.",
+      "v": "Phát triển thứ ba.",
+      "t": ["Like when children leave school and start working but still continue to live with their parents for many years?", "Or when an elderly relative moves in with the family"],
+      "p": "Phù hợp cả con cái đã lớn vẫn ở với cha mẹ (thành viên hiện có) và người thân lớn tuổi mới chuyển tới (thành viên mới) = suit both existing and new members of a household → I"
+    },
+    "27": {
+      "d": "Gương thông minh trong phòng tắm.",
+      "v": "Phát triển thứ tư.",
+      "t": "People might worry about conditions which aren't serious at all.",
+      "p": "Gương theo dõi sức khỏe có thể khiến người ta lo lắng về bệnh hoàn toàn không nghiêm trọng = could cause unnecessary anxiety → A"
+    },
+    "28": {
+      "d": "Nhà để xe đạp có điểm sạc.",
+      "v": "Khi bàn về giao thông.",
+      "t": "That would encourage more people to cycle, instead of using their car. Much better for the planet.",
+      "p": "Khuyến khích đi xe đạp thay vì ô tô, “much better for the planet” = would have environmental benefits → D"
+    },
+    "29": {
+      "d": "Hạn chế ô tô ở một số khu vực.",
+      "v": "Ví dụ khu nhà để xe bên ngoài, trung tâm chỉ cho đi bộ.",
+      "t": ["Great for families with children.", "But what if you're disabled or elderly, and can't walk far? It wouldn't be so good for people like that."],
+      "p": "Tốt cho gia đình có trẻ em nhưng bất lợi cho người khuyết tật, người già không đi bộ xa được = help some people but cause problems for others → H"
+    },
+    "30": {
+      "d": "Mảnh vườn rau chung.",
+      "v": "Phát triển cuối cùng.",
+      "t": "That'd be a great way for older people to get to know one another, especially if they're no longer going out to work.",
+      "p": "Hàng xóm cùng quyết định trồng gì; người lớn tuổi không còn đi làm (= retired) có dịp quen nhau và làm việc chung = enable retired people to share a project → G"
+    }
+  }
+}

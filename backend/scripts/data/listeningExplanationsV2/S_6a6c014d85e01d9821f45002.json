@@ -1,0 +1,65 @@
+{
+  "title": "Music therapy for surgical patients",
+  "q": {
+    "31": {
+      "d": "Phẫu thuật ảnh hưởng tới bệnh nhân vì họ có thể thấy khó chịu hoặc gặp những thay đổi không mong muốn về ___ của mình.",
+      "v": "Phần mở đầu, khi nói bệnh nhân gặp khó khăn gì sau phẫu thuật.",
+      "t": "They may also be negatively affected by having their routine disturbed",
+      "p": "“Unwelcome changes to” = “having … disturbed” (bị xáo trộn); thứ bị xáo trộn là “their routine” (nếp sinh hoạt thường ngày) → routine"
+    },
+    "32": {
+      "d": "Một nghiên cứu đã xem xét dữ liệu từ khoảng 100 ___.",
+      "v": "Khi giới thiệu nghiên cứu đầu năm nay.",
+      "t": "They identified nearly a hundred trials involving a total of seven thousand patients",
+      "p": "“About 100” = “nearly a hundred”; thứ được xem xét là “trials” (thử nghiệm). Bẫy: 7.000 là số bệnh nhân → trials"
+    },
+    "33": {
+      "d": "Bệnh nhân trong nghiên cứu đều nghe nhạc có tác dụng ___.",
+      "v": "Khi nói về loại nhạc bệnh nhân chọn.",
+      "t": "However, a common factor was that the chosen music had a calming quality.",
+      "p": "Dù thể loại đa dạng, điểm chung (“all” trong đề = “a common factor”) là nhạc có tính chất làm dịu (“calming”) → calming"
+    },
+    "34": {
+      "d": "Nhạc chủ yếu được phát qua ___ nhạc.",
+      "v": "Khi nói về cách phát nhạc cho bệnh nhân.",
+      "t": "More often though, the mode of delivery was by what are known as music pillows.",
+      "p": "Bẫy: tai nghe (headphones) chỉ là “some of the patients”. “Mostly” = “more often” → “music pillows” (gối phát nhạc) → pillows"
+    },
+    "35": {
+      "d": "Bệnh nhân cho biết không có hoặc chỉ có mức độ ___ thấp.",
+      "v": "Khi bệnh nhân kể lại trải nghiệm nghe nhạc.",
+      "t": "surgical patients said that either they had no feelings of anxiety at any point, or those feelings were only slight",
+      "p": "“An absence or low levels” = “no feelings … or only slight”; cảm giác đó là “anxiety” (lo âu) → anxiety"
+    },
+    "36": {
+      "d": "Hồ sơ y tế xác nhận bệnh nhân được nghe nhạc cần ít ___ hơn những người không nghe.",
+      "v": "Khi đối chiếu phản hồi với hồ sơ bệnh án.",
+      "t": "those who were given music to listen to didn't need as much medication to ease their pain as those patients who weren't played music",
+      "p": "“Medical records confirmed” = “cross-checked against their medical notes”; “needed less” = “didn't need as much” → medication (thuốc)"
+    },
+    "37": {
+      "d": "Kết quả tốt nhất đạt được khi bệnh nhân được nghe nhạc trong lúc họ ___.",
+      "v": "Cuối đoạn kết quả.",
+      "t": "although the positive effects were greater when patients were awake",
+      "p": "Nhạc có tác dụng cả khi gây mê toàn thân, nhưng “greater” (lớn hơn) khi bệnh nhân tỉnh táo → awake"
+    },
+    "38": {
+      "d": "Nghiên cứu kết luận việc phát nhạc hiệu quả vì nó đóng vai trò như một sự ___.",
+      "v": "Khi bàn vì sao âm nhạc có tác dụng.",
+      "t": "but the researchers came to the conclusion that it worked on patients by distraction",
+      "p": "“Concluded” = “came to the conclusion”; “served as” ≈ “worked … by” → làm phân tán sự chú ý. Bẫy: “relax” là lý do người ta nghe nhạc hằng ngày, không phải kết luận nghiên cứu → distraction"
+    },
+    "39": {
+      "d": "Các nhà nghiên cứu khuyến nghị phát nhạc hoặc âm thanh từ ___ cho mọi bệnh nhân phẫu thuật.",
+      "v": "Khi nêu khuyến nghị của nhóm nghiên cứu.",
+      "t": "if they prefer, recordings taken from nature can be just as good as music",
+      "p": "“Sounds from ___” = “recordings taken from nature” (bản ghi âm thiên nhiên) → nature"
+    },
+    "40": {
+      "d": "Một nghiên cứu tương lai sẽ tìm hiểu ___ tốt nhất cho âm nhạc.",
+      "v": "Câu cuối bài.",
+      "t": "the team now plan to focus their next research on the most appropriate volume to play the music at",
+      "p": "“A future study” = “their next research”; “the best” = “the most appropriate”; thứ cần tìm là “volume” (âm lượng) → volume"
+    }
+  }
+}

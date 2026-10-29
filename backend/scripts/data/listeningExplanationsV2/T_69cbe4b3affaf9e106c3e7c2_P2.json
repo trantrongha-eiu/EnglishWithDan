@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 1 Part 2",
+  "q": {
+    "11": {
+      "d": "Heather nói gốm khác với các loại hình nghệ thuật khác vì A. nó tồn tại lâu hơn trong lòng đất / B. nhiều người làm hơn / C. dễ sửa chữa hơn.",
+      "v": "Đầu bài, khi Heather nói về lịch sử nghề gốm.",
+      "t": ["And we know this because it stands the test of time.", "Things like baskets and pictures don’t survive on the earth in the same way that pots do."],
+      "p": "“Stands the test of time” (bền theo thời gian); giỏ, tranh không tồn tại trên mặt đất lâu như đồ gốm = it lasts longer in the ground → A"
+    },
+    "12": {
+      "d": "Đôi khi các nhà khảo cổ xác định công dụng của đồ gốm cổ từ A. loại đất sét làm ra nó / B. những dấu vết trên nó / C. hình dạng cơ bản của nó.",
+      "v": "Khi nói gốm giúp nhà khảo cổ hiểu về quá khứ.",
+      "t": ["The shape of an artefact may have been lost but archaeologists can tell whether the pots were for, say, storage or cooking by examining the impressions on the clay, the scratches from tools", "the clay itself can reveal where the pots came from"],
+      "p": "Công dụng (đựng đồ hay nấu ăn) được biết qua “impressions” và “scratches” (vết in, vết xước) = the marks. Bẫy A: đất sét cho biết nguồn gốc, không phải công dụng; C: hình dạng có thể đã mất → B"
+    },
+    "13": {
+      "d": "Một số người tham gia lớp gốm của Heather vì họ muốn A. tạo ra đồ vật trông rất cổ / B. tìm ra điều mình giỏi / C. làm ra thứ tồn tại lâu hơn cả cuộc đời mình.",
+      "v": "Khi Heather kể lý do học viên muốn học gốm.",
+      "t": "they hope that something they create will also last longer than they do",
+      "p": "“Will outlive them” = “last longer than they do” (tồn tại lâu hơn họ) → C"
+    },
+    "14": {
+      "d": "Heather trân trọng điều gì nhất ở nghề làm gốm? A. tác dụng làm dịu / B. sự bừa bộn / C. lợi ích thể chất.",
+      "v": "Khi Heather nói về lý do riêng của mình.",
+      "t": ["what I love most is the concentration you need to make a good pot. That focus takes you away from the stresses of everyday life."],
+      "p": "“What I love most” = value most; sự tập trung giúp thoát khỏi căng thẳng thường ngày = calming effect. Bẫy C: tập tay tốt cho người già; B: bừa bộn vui cho trẻ em – không phải điều cô thích nhất → A"
+    },
+    "15": {
+      "d": "Phần lớn khách đến Edelman Pottery A. rủ bạn cùng học / B. chưa từng làm gốm bao giờ / C. cố học kỹ thuật quá nhanh.",
+      "v": "Khi nói về những gì học viên làm hôm nay.",
+      "t": "Like nearly everyone who comes here, I’m sure this is the first time you will have tried the art",
+      "p": "“Most of the visitors” = “nearly everyone who comes here”; “the first time you will have tried” = chưa từng làm trước đây → B"
+    },
+    "16": {
+      "d": "Heather nhắc khách phải A. đeo tạp dề / B. thay quần áo / C. tháo trang sức.",
+      "v": "Khi Heather nói về trang phục của khách.",
+      "t": ["please remove any watches, necklaces etc and put them somewhere safe", "We provide aprons later"],
+      "p": "“Remove any watches, necklaces” (tháo đồng hồ, vòng cổ) = take off their jewellery. Bẫy A: tạp dề sẽ được phát sau; B: chỉ mong khách mặc đồ cũ, không bắt thay → C"
+    },
+    "17": {
+      "d": "Heather giải thích HAI điều gì về lò nung? (đáp án thứ nhất) A. chức năng của lò / B. lò được phát minh khi nào / C. cách giữ an toàn / D. đặt lò ở đâu trong nhà / E. thứ một số người dùng thay lò.",
+      "v": "Khi Heather giới thiệu lò nung (kiln) trong xưởng.",
+      "t": ["Basically, a kiln removes the water from clay at temperatures of around 1000 degrees Celsius.", "This allows anything you’ve made to set permanently in shape."],
+      "p": "Lò làm bay hơi nước khỏi đất sét ở khoảng 1000°C để sản phẩm cố định hình dạng → giải thích chức năng của lò. Bẫy B: chỉ nói “since their invention” mà không nói khi nào; D: lò khó để trong nhà nên đa số không có → A"
+    },
+    "18": {
+      "d": "Heather giải thích HAI điều gì về lò nung? (đáp án thứ hai)",
+      "v": "Ngay sau phần chức năng lò nung.",
+      "t": ["You may think, can’t I use my oven?", "Some people fire pottery in a fire pit outside but bear in mind… that can be dangerous."],
+      "p": "Heather nói về những thứ dùng thay lò: lò nướng gia đình (không đủ nóng) và hố lửa ngoài trời (nguy hiểm) = what some people use instead. C sai: chỉ nói cần biết quy trình an toàn chứ không giải thích cách → E"
+    },
+    "19": {
+      "d": "Heather nói HAI điều gì về dụng cụ của thợ gốm? (đáp án thứ nhất) A. Một số khó cầm / B. Một số đáng mua / C. Một số là vật dụng thiết yếu / D. Một số có tên dễ nhớ / E. Một số có sẵn cho học viên dùng.",
+      "v": "Cuối bài, khi nói về dụng cụ.",
+      "t": "However, there are some basic tools that you will need to handle the clay on the wheel.",
+      "p": "“Some basic tools that you will need” (một số dụng cụ cơ bản bạn sẽ cần) = some are essential items. Bẫy D: tên “odder names that you may find hard to remember” – khó nhớ, không phải dễ nhớ → C"
+    },
+    "20": {
+      "d": "Heather nói HAI điều gì về dụng cụ của thợ gốm? (đáp án thứ hai)",
+      "v": "Câu gần cuối bài.",
+      "t": "We can provide these and I wouldn’t recommend spending money on them yet.",
+      "p": "“We can provide these” (xưởng cung cấp) = available for use by participants. Bẫy B: cô khuyên chưa nên bỏ tiền mua → E"
+    }
+  }
+}

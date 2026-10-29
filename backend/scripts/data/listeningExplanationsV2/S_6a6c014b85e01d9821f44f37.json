@@ -1,0 +1,65 @@
+{
+  "title": "Cam 21 - Test 1 – Part 1",
+  "q": {
+    "1": {
+      "d": "Ngày học thử: nhóm nhỏ (tối đa ___ người).",
+      "v": "Khi người phụ nữ giới thiệu Taster Days.",
+      "t": "You'd be in a small group, usually about eight people but no more than ten",
+      "p": "Bẫy: 8 là số người thường có. Đề hỏi tối đa (max) = “no more than” → 10"
+    },
+    "2": {
+      "d": "Khóa Level 1: lý thuyết cơ bản, ví dụ hiểu về ___ và thủy triều.",
+      "v": "Khi người đàn ông hỏi khóa Level 1 học gì.",
+      "t": "So you learn about things like the weather, which is obviously really important, and also the tides",
+      "p": "Hai nội dung lý thuyết: “the weather” (thời tiết) và “the tides” (thủy triều – đã có trong đề) → weather"
+    },
+    "3": {
+      "d": "Kỹ năng đi thuyền cơ bản, bao gồm thông tin về ___.",
+      "v": "Cùng đoạn, khi nói về thực hành trên thuyền.",
+      "t": "He or she will make sure you understand everything you need to know about safety.",
+      "p": "Người hướng dẫn đảm bảo bạn hiểu mọi điều cần biết về an toàn → safety"
+    },
+    "4": {
+      "d": "£200 – có ___ cho thành viên câu lạc bộ.",
+      "v": "Khi hỏi giá khóa Level 1.",
+      "t": "But it's a bit cheaper if you decide to join the club. There's a discount for members.",
+      "p": "“Club members” = “members”; thứ dành cho thành viên là “a discount” (giảm giá) → discount"
+    },
+    "5": {
+      "d": "Trọn gói (cộng thêm một ___ hữu ích).",
+      "v": "Khi hỏi giá có bao gồm mọi thứ không.",
+      "t": "everything's included and you also get a really good dictionary explaining all the sailing terminology",
+      "p": "“All inclusive” = “everything’s included”; “useful” = “really good”; thứ được tặng thêm là “a dictionary” (từ điển thuật ngữ đi thuyền) → dictionary"
+    },
+    "6": {
+      "d": "Một ___ khi kết thúc khóa học cho tất cả học viên.",
+      "v": "Ngay sau phần từ điển.",
+      "t": "And on completion of the course you get a certificate.",
+      "p": "“At the end of the course” = “on completion of the course”; thứ nhận được là “a certificate” (chứng chỉ) → certificate"
+    },
+    "7": {
+      "d": "Mang theo quần áo phù hợp, một ___ và đồ vệ sinh cá nhân (ví dụ dầu gội).",
+      "v": "Phần thông tin chung, khi nói cần mang gì.",
+      "t": ["And a towel?", "Yes definitely. And you might want to bring your own toiletries, things like shampoo."],
+      "p": "Người đàn ông hỏi “a towel” (khăn tắm), người phụ nữ xác nhận “Yes definitely”, sau đó mới tới đồ vệ sinh cá nhân → towel"
+    },
+    "8": {
+      "d": "Có một ___ tại câu lạc bộ.",
+      "v": "Khi hỏi về đồ ăn uống.",
+      "t": ["is there a café at the club?", "Yes, you can get sandwiches, cakes and snacks there."],
+      "p": "Người đàn ông hỏi có quán cà phê không, người phụ nữ xác nhận “Yes” → café (cafe)"
+    },
+    "9": {
+      "d": "Khuyến khích xem các ___ hướng dẫn trực tuyến.",
+      "v": "Khi người đàn ông hỏi cách chuẩn bị trước.",
+      "t": "I recommend you watch some videos we use for training. They're available online.",
+      "p": "“Recommended” = “I recommend”; “online training” = “we use for training … available online” → videos"
+    },
+    "10": {
+      "d": "Có ___ cho học viên sử dụng.",
+      "v": "Cuối bài, khi hỏi chỗ cất đồ có giá trị.",
+      "t": ["I'm just wondering if there are lockers for people to use?", "Yes, there are plenty in the changing rooms."],
+      "p": "Người đàn ông hỏi có tủ khóa không, người phụ nữ xác nhận có nhiều trong phòng thay đồ → Lockers"
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "title": "Sources of rubber",
+  "q": {
+    "31": {
+      "d": "(Một trong ba loại tài nguyên thiết yếu cho công nghiệp, cùng với nhiên liệu hóa thạch và cao su): ___.",
+      "v": "Phần mở đầu, khi kể ba loại tài nguyên mà công nghiệp không thể thiếu.",
+      "t": "One of these is metal – without that we'd have no machines and no transportation.",
+      "p": "Ba tài nguyên: “metal” (kim loại), “fossil fuels” (nhiên liệu hóa thạch) và “rubber” (cao su). Hai cái sau đã có trong ghi chú, chỗ trống là cái đầu tiên → metal"
+    },
+    "32": {
+      "d": "(Nguồn cung cao su tự nhiên bị hạn chế vì) cây phát triển ___.",
+      "v": "Khi bắt đầu giải thích điều gì hạn chế nguồn cung cao su tự nhiên.",
+      "t": "It can take eight to ten years for a tree to start producing rubber, so cultivating them's a slow process.",
+      "p": "Cây mất 8–10 năm mới cho mủ, việc trồng là “a slow process” (một quá trình chậm) → slow"
+    },
+    "33": {
+      "d": "Sản lượng không dễ điều chỉnh theo việc ___ tăng hay giảm.",
+      "v": "Ngay sau đó – “this leads to another problem”.",
+      "t": "if they find the demand for that crop is rising or falling. But if you have to plant eight or ten years ahead, that's much harder.",
+      "p": "“Increasing or decreasing” = “rising or falling”; thứ tăng giảm là “demand” (nhu cầu). Phải trồng trước 8–10 năm nên khó thay đổi theo nhu cầu → demand"
+    },
+    "34": {
+      "d": "Cây chỉ mọc gần ___.",
+      "v": "Khi nói cây cao su rất kén nơi mọc.",
+      "t": "it can't be grown in the northern or southern parts of the globe, only around the equator",
+      "p": "“Only grows near” = “only around”; cây chỉ trồng được quanh “the equator” (đường xích đạo) → equator"
+    },
+    "35": {
+      "d": "Rất khó ___ cao su sau khi sản xuất.",
+      "v": "Cuối đoạn về những hạn chế nguồn cung.",
+      "t": "when we've finished using them we can recycle them, but although this is also possible with rubber, it's very difficult",
+      "p": "Nước, thủy tinh tái chế được; cao su cũng tái chế được nhưng “very difficult” → recycle"
+    },
+    "36": {
+      "d": "Thiếu đa dạng di truyền, dẫn tới nguy cơ dịch bệnh do một loại ___ gây ra.",
+      "v": "Khi nói về các mối đe dọa mới với cao su tự nhiên.",
+      "t": "The most dangerous threat is a fungus, which destroyed large numbers of rubber trees in Brazil",
+      "p": "Ít đa dạng di truyền → dễ mắc bệnh; mối đe dọa nguy hiểm nhất là “a fungus” (một loại nấm) → fungus"
+    },
+    "37": {
+      "d": "Các hiện tượng ___ cực đoan.",
+      "v": "Mối đe dọa cuối cùng trong đoạn này.",
+      "t": "South-East Asia, like other parts of the world, has been repeatedly hit by extreme types of weather",
+      "p": "“Extreme ___ events” = “extreme types of weather” → thời tiết cực đoan → weather"
+    },
+    "38": {
+      "d": "(Cao su tổng hợp) kém ___ hơn cao su tự nhiên.",
+      "v": "Khi so sánh cao su tổng hợp với cao su tự nhiên.",
+      "t": "But compared with natural rubber, it's not anything like as strong",
+      "p": "“Less ___ than” = “not anything like as ___” (kém xa về …) → không bền chắc bằng → strong"
+    },
+    "39": {
+      "d": "Một loài hoa dại (một loại bồ công anh) có cao su trong ___ của nó.",
+      "v": "Khi nói về nguồn cao su tự nhiên thay thế.",
+      "t": "But when it's pulled up and its roots cut open, they're found to contain rubber.",
+      "p": "Nhổ cây lên và cắt rễ ra thì thấy có cao su → bộ phận chứa cao su là “roots” (rễ) → roots"
+    },
+    "40": {
+      "d": "Nó có thể trồng ở nhiều nơi và không cần ___ tốt.",
+      "v": "Khi so sánh bồ công anh với cây cao su.",
+      "t": "They'll grow in all sorts of places, and they don't need rich soil.",
+      "p": "“Grown in many locations” = “grow in all sorts of places”; “good” = “rich” (màu mỡ) → không cần đất màu mỡ → soil"
+    }
+  }
+}

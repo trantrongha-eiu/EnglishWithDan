@@ -1,0 +1,65 @@
+{
+  "title": "Cam 21 - Test 2 – Part 3",
+  "q": {
+    "21": {
+      "d": "HAI thông tin nào trong các buổi học về an toàn thực phẩm là mới với Nadia và Fergus? (đáp án thứ nhất) A. lượng nhựa trong đại dương / B. số bệnh do thực phẩm nhiễm bẩn gây ra / C. lượng thực phẩm bị lãng phí / D. số người béo phì / E. hậu quả của việc dùng kháng sinh cho động vật.",
+      "v": "Đầu bài, khi hai sinh viên nói về các buổi học an toàn thực phẩm.",
+      "t": ["But I hadn't realised that unsafe food causes more than 200 different diseases.", "No, I'd no idea it was that many."],
+      "p": "Cả hai đều không biết thực phẩm không an toàn gây ra hơn 200 loại bệnh (“hadn't realised”, “had no idea”) → B. Bẫy D: béo phì là điều Nadia “knew already”; A: “already aware of that” → B"
+    },
+    "22": {
+      "d": "HAI thông tin nào là mới với Nadia và Fergus? (đáp án thứ hai)",
+      "v": "Ngay sau thông tin về 200 loại bệnh.",
+      "t": ["I knew resistance to antibiotics is on the increase, but I didn't know why", "the antibiotics get into the food chain. I had no idea about that either."],
+      "p": "Cả hai đều không biết nguyên nhân: động vật được dùng kháng sinh rồi bị con người ăn, khiến kháng sinh vào chuỗi thức ăn = the result of treating animals with antibiotics. C sai: lãng phí thực phẩm chỉ được “mentioned in passing” → E"
+    },
+    "23": {
+      "d": "HAI đặc điểm nào của dự án chống gian lận thực phẩm gây ấn tượng với Fergus? (đáp án thứ nhất) A. công nghệ mới / B. sự quảng bá rộng rãi / C. thực hiện nhiều lần kiểm tra trên thực phẩm / D. bao gồm nhiều nhu cầu ăn uống khác nhau / E. cách làm thông tin dễ tiếp cận.",
+      "v": "Khi Fergus nói về phân tích DNA.",
+      "t": ["we've had effective ways of analysing DNA for some time now", "But what the researchers succeeded in doing was to ensure that these tests were carried out at different stages in the food's journey from the producer to the consumer."],
+      "p": "Bẫy A: phân tích DNA đã có từ lâu, không mới. Điều đáng khen là kiểm tra ở nhiều giai đoạn khác nhau từ nhà sản xuất tới người tiêu dùng = multiple tests on food items → C"
+    },
+    "24": {
+      "d": "HAI đặc điểm nào của dự án chống gian lận thực phẩm gây ấn tượng với Fergus? (đáp án thứ hai)",
+      "v": "Khi Fergus mới nhắc tới dự án.",
+      "t": "I thought it was really good to address a problem that's faced by so many different groups – people with special religious rules, as well as vegetarians and vegans.",
+      "p": "Giải quyết vấn đề của nhiều nhóm: người theo quy định tôn giáo, người ăn chay, thuần chay (và người dị ứng) = the variety of dietary requirements included. Bẫy B: việc công bố kết quả Fergus lại thấy “some problems” → D"
+    },
+    "25": {
+      "d": "Cả hai sinh viên đều đề xuất đưa HAI chủ đề nào vào khóa học? (đáp án thứ nhất) A. đánh bắt hải sản bền vững / B. dinh dưỡng cá nhân hóa / C. khác biệt tiêu dùng trên thế giới / D. nông nghiệp bền vững / E. công nghệ số và thực phẩm.",
+      "v": "Khi giáo viên hỏi đề xuất chủ đề mới.",
+      "t": ["but not so much on the seafood industry, where stocks are in danger of being overexploited", "Yes, that'd be a good topic."],
+      "p": "Fergus đề xuất ngành hải sản (giữ trữ lượng, tránh khai thác quá mức), Nadia đồng ý → sustainable fishing. Bẫy D: tăng năng suất cây trồng thì Fergus nói “already done quite a bit” → A"
+    },
+    "26": {
+      "d": "Cả hai sinh viên đều đề xuất đưa HAI chủ đề nào vào khóa học? (đáp án thứ hai)",
+      "v": "Giữa phần đề xuất chủ đề.",
+      "t": ["What about sessions on the variety of food and eating habits around the world?", "Yes, I think the whole class would be interested in that."],
+      "p": "Nadia đề xuất sự đa dạng thực phẩm và thói quen ăn uống khắp thế giới, Fergus đồng ý = global differences in consumption. Bẫy B: Fergus cho là chủ đề y học; E: “too specialist” → C"
+    },
+    "27": {
+      "d": "Mục tiêu ban đầu – ___.",
+      "v": "Khi giáo viên hỏi về các bước làm dự án, bước đầu tiên.",
+      "t": "We made up our minds about that pretty quickly. I know some students found it a lot harder to choose",
+      "p": "“Made up our minds … pretty quickly” (quyết định khá nhanh), trong khi nhóm khác thấy khó chọn → dễ quyết định → C (This was easy to decide on.)"
+    },
+    "28": {
+      "d": "Tổng quan tài liệu – ___.",
+      "v": "Bước thứ hai.",
+      "t": "We hadn't done one of these before so the handout with advice for the project was very useful here.",
+      "p": "“The handout with advice” (tài liệu phát tay có lời khuyên) = the guidelines provided; “very useful” = helped → D (This was helped by the guidelines provided.)"
+    },
+    "29": {
+      "d": "Phát triển sản phẩm – ___.",
+      "v": "Bước thứ ba, chọn nguyên liệu làm falafel.",
+      "t": "We really made the right choice when we finally decided to use jackfruit, even though it wasn't something that either of us had ever tasted before.",
+      "p": "Họ chọn dùng mít (jackfruit) – thứ cả hai chưa từng ăn – để món falafel khác thường → chọn một nguyên liệu mới → F (This involved selecting a new ingredient.)"
+    },
+    "30": {
+      "d": "Sản xuất sản phẩm – ___.",
+      "v": "Bước cuối cùng.",
+      "t": ["was harder than I expected because I'd never made them before", "in the end it turned out fine and we had a lot of fun"],
+      "p": "“Harder than I expected” = challenging; “had a lot of fun” = enjoyable → A (This was challenging but enjoyable.)"
+    }
+  }
+}

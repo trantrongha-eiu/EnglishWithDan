@@ -1,0 +1,65 @@
+{
+  "title": "Tardigrades",
+  "q": {
+    "31": {
+      "d": "Còn được gọi là “gấu nước” (do cách chúng ___) và “heo con rêu”.",
+      "v": "Phần giới thiệu, khi giải thích tên gọi “water bears”.",
+      "t": "‘water’ because that’s where they thrive best, and ‘bear’ because of the way they move",
+      "p": "“Due to how they ___” = “because of the way they ___”. Chữ “bear” (gấu) là do cách chúng di chuyển → move"
+    },
+    "32": {
+      "d": "Một cơ thể ___, tròn và bốn cặp chân.",
+      "v": "Khi mô tả đặc điểm cơ thể chung của các loài.",
+      "t": "They have a body which is short,, and also rounded",
+      "p": "Hai tính từ mô tả thân: “short” (ngắn) và “rounded” (tròn – đã có trong đề) → short"
+    },
+    "33": {
+      "d": "Móng vuốt hoặc ___ để bám.",
+      "v": "Khi nói về phần cuối của chân.",
+      "t": ["some species don’t have any claws: what they have are discs", "They enable the tardigrade to cling to surfaces or to grip its prey."],
+      "p": "Loài không có móng vuốt thì có “discs” (đĩa hút) hoạt động bằng lực hút, giúp bám (“cling to”, “grip”) → discs"
+    },
+    "34": {
+      "d": "Cơ thể chứa đầy một chất lỏng vận chuyển cả ___ và máu.",
+      "v": "Khi nói về bên trong cơ thể (không có phổi).",
+      "t": "Instead, oxygen and also blood are transported in a fluid that fills the cavity of the body.",
+      "p": "“A liquid that carries” = “transported in a fluid”; hai thứ được vận chuyển là “oxygen” và “blood” → oxygen"
+    },
+    "35": {
+      "d": "Miệng có hình dạng như một cái ___ với răng gọi là stylet.",
+      "v": "Khi mô tả phần đầu và miệng.",
+      "t": "The tardigrade’s mouth is a kind of tube that can open outwards to reveal teeth-like structures known as ‘stylets’.",
+      "p": "Miệng là “a kind of tube” (một dạng ống) → tube"
+    },
+    "36": {
+      "d": "Rất bền bỉ và có thể tồn tại ở ___ rất thấp hoặc rất cao.",
+      "v": "Khi nói về khả năng sống sót trong điều kiện khắc nghiệt.",
+      "t": "they’re also able to withstand temperatures as low as minus –200 degrees centigrade, or highs of more than 148 degrees centigrade",
+      "p": "Từ -200°C tới hơn 148°C → nhiệt độ rất thấp hoặc rất cao. Đề có “very low or high” nên dùng số nhiều → temperatures"
+    },
+    "37": {
+      "d": "Một loại ___ đảm bảo DNA của chúng không bị tổn hại.",
+      "v": "Khi nói về trạng thái cryptobiosis (tiềm sinh).",
+      "t": "tardigrades produce a protein that protects their DNA",
+      "p": "“Ensures their DNA is not damaged” = “protects their DNA”; thứ được sinh ra là “a protein” → protein"
+    },
+    "38": {
+      "d": "Nghiên cứu đang được tiến hành để tìm ra chúng có thể sống bao nhiêu ngày trong ___.",
+      "v": "Ngay sau các thí nghiệm hồi sinh tun.",
+      "t": "There are currently several tests taking place in space, to determine how long tardigrades might be able to survive there.",
+      "p": "“Research is underway” = “tests taking place currently”; nơi thử nghiệm là “in space” (ngoài không gian), kỷ lục hiện tại 10 ngày → space"
+    },
+    "39": {
+      "d": "Tiêu thụ chất lỏng, ví dụ như chất lỏng có trong rêu hoặc ___.",
+      "v": "Khi nói về chế độ ăn.",
+      "t": "They suck the juices from moss, or extract fluid from seaweed",
+      "p": "Hai nguồn chất lỏng: “moss” (rêu – có trong đề) và “seaweed” (rong biển) → seaweed"
+    },
+    "40": {
+      "d": "Chúng không được xem là ___.",
+      "v": "Phần cuối, về tình trạng bảo tồn.",
+      "t": "tardigrades have not been evaluated by the International Union for Conservation of Nature and are not on any endangered list",
+      "p": "“Not considered to be” = “are not on any … list”; danh sách đó là danh sách loài nguy cấp → endangered"
+    }
+  }
+}

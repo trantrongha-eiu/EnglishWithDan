@@ -1,0 +1,65 @@
+{
+  "title": "Invasive species",
+  "q": {
+    "31": {
+      "d": "(Loài xâm lấn có thể gây hại vì nó) mang tới một ___ mới.",
+      "v": "Khi nói về những cách loài xâm lấn gây hại.",
+      "t": "or sometimes they may bring a disease with them, which native species have never faced before",
+      "p": "“Introduces” = “bring … with them”; thứ mang tới là “a disease” (dịch bệnh) mà loài bản địa chưa từng gặp → disease"
+    },
+    "32": {
+      "d": "Đe dọa toàn bộ một ___.",
+      "v": "Cuối đoạn về tác hại.",
+      "t": "Species invasions are one of the biggest causes of damage in an ecosystem, actually putting its survival at risk.",
+      "p": "“Threatens” = “putting its survival at risk”; “its” chỉ “an ecosystem” (hệ sinh thái) → ecosystem"
+    },
+    "33": {
+      "d": "Một cách vô tình, ví dụ qua những người trở về sau ___ hoặc trên tàu chở hàng.",
+      "v": "Khi nói loài xâm lấn lan rộng thế nào.",
+      "t": "such as when people who've been on holiday in another country come back with, say, the seeds of plants on their clothes or shoes",
+      "p": "“Accidentally” = “accidental”; “people returning from their ___” = “people who've been on holiday … come back” → holiday"
+    },
+    "34": {
+      "d": "Một cách cố ý, ví dụ để kiểm soát sâu bệnh hoặc làm ___.",
+      "v": "Ngay sau ví dụ về tàu chở hàng.",
+      "t": "But sometimes humans deliberately move animals and plants around the world, for example to use them to control pests on farms, or to be pets.",
+      "p": "“Intentionally” = “deliberately”; hai mục đích: kiểm soát sâu bệnh và “to be pets” (làm thú cưng) → pets"
+    },
+    "35": {
+      "d": "(Cóc mía) được đưa vào Úc từ Hawaii năm 1935 để ăn một loại côn trùng đang phá hoại các đồn điền ___.",
+      "v": "Ví dụ về loài cóc Rhinella marina ở Úc.",
+      "t": "It was hoped that the toads would eat the grey-backed beetles responsible for destroying crops of sugar on many of the plantations.",
+      "p": "“A type of insect” = “grey-backed beetles”; “damaging” = “destroying”; cây trồng bị hại là “sugar” (mía đường) → sugar"
+    },
+    "36": {
+      "d": "Cây đỗ quyên ngăn ___ chiếu tới các cây bản địa.",
+      "v": "Ví dụ ở Anh, về cây đỗ quyên (rhododendrons).",
+      "t": "they block out so much light that native wild flowers can't grow beneath them",
+      "p": "“Prevent … from reaching” = “block out”; thứ bị chặn là “light” (ánh sáng) → light"
+    },
+    "37": {
+      "d": "Sóc xám từ Bắc Mỹ làm giảm nguồn thức ăn của sóc đỏ bản địa ở Anh và lây lan một loại ___ giết chết sóc đỏ.",
+      "v": "Ví dụ về sóc xám.",
+      "t": "the grey squirrels carry a type of virus that is deadly to the red squirrels",
+      "p": "“Spread” ≈ “carry”; “kills” = “is deadly to”; thứ đó là “a type of virus” → virus"
+    },
+    "38": {
+      "d": "Việc giám sát giúp ta hiểu ___ của loài xâm lấn và tác động của chúng.",
+      "v": "Khi nói về cách đối phó với loài xâm lấn.",
+      "t": "The first step in controlling invasive species is learning about the behaviour of new species coming into the country. Monitoring is an important part of this",
+      "p": "“Understand” = “learning about”; thứ cần tìm hiểu là “the behaviour” (hành vi) của loài mới, và giám sát là một phần của việc này → behaviour (behavior cũng đúng)"
+    },
+    "39": {
+      "d": "Lập một ___ quốc gia giúp theo dõi chúng dễ hơn.",
+      "v": "Ngay sau phần giám sát.",
+      "t": "One effective way to keep track of invasive species is to create a database for the whole country.",
+      "p": "“Setting up” = “create”; “national” = “for the whole country”; “track” = “keep track of” → database"
+    },
+    "40": {
+      "d": "Đề nghị công chúng ___ và báo cáo chúng giúp ích cho việc giám sát.",
+      "v": "Cuối bài, về vai trò của công chúng.",
+      "t": "They should be encouraged to photograph harmful species – because this helps with identification – and then to report when and where these were observed.",
+      "p": "Công chúng được khuyến khích chụp ảnh (photograph) loài gây hại rồi báo cáo. Bẫy: không được “destroy or even touch” → photograph"
+    }
+  }
+}

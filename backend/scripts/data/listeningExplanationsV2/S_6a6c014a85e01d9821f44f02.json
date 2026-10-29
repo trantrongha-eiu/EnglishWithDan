@@ -1,0 +1,65 @@
+{
+  "title": "Cam 19 - Test 4 – Part 1",
+  "q": {
+    "1": {
+      "d": "Tên người giám sát: ___.",
+      "v": "Đầu bài, khi người giám sát tự giới thiệu.",
+      "t": ["It’s Kaeden.", "It’s K-A-E-D-E-N, in case you ever need to write it."],
+      "p": "Bẫy: Charlotte gọi nhầm là “Aiden”. Anh sửa lại và đánh vần K-A-E-D-E-N → Kaeden"
+    },
+    "2": {
+      "d": "Nơi để áo khoác và túi: dùng ___ trong phòng nhân viên.",
+      "v": "Khi nói về việc sau khi lấy thẻ ở quầy lễ tân.",
+      "t": "Put your coat and rucksack in one of the lockers there.",
+      "p": "“Bag” = “rucksack” (ba lô); để vào một trong các tủ có khóa (lockers) trong phòng nhân viên → locker"
+    },
+    "3": {
+      "d": "Gặp Tiffany ở phòng nhân sự: để cung cấp số ___.",
+      "v": "Khi nói về việc lên phòng nhân sự (HR).",
+      "t": ["I was told to bring my passport with me. HR need to take a note of the number in it.", "Or you can show your ID card.", "I don’t have one of those."],
+      "p": "HR cần ghi lại số hộ chiếu. Bẫy: thẻ căn cước (ID card) là lựa chọn khác nhưng Charlotte không có → passport"
+    },
+    "4": {
+      "d": "Gặp Tiffany ở phòng nhân sự: để nhận ___.",
+      "v": "Ngay sau phần hộ chiếu.",
+      "t": "Tiffany will give you a uniform.",
+      "p": "“Collect” (nhận) ↔ “will give you” (sẽ đưa cho bạn); thứ Tiffany đưa là “a uniform” (đồng phục) → uniform"
+    },
+    "5": {
+      "d": "Vị trí phòng nhân sự: ở tầng ___.",
+      "v": "Khi Charlotte hỏi phòng HR có gần phòng nhân viên không.",
+      "t": "The staffroom’s on the first floor, and HR are a couple of floors above that, on the third floor.",
+      "p": "Bẫy: tầng 1 (first floor) là phòng nhân viên. HR cao hơn vài tầng, ở tầng 3 → third"
+    },
+    "6": {
+      "d": "Số điện thoại di động của người giám sát: ___.",
+      "v": "Cuối phần 1, khi Kaeden cho số điện thoại.",
+      "t": "It’s oh-four-one-two double-six-five nine-oh-three.",
+      "p": "“Oh” = 0; “double-six” = 66 → 0412 665 903"
+    },
+    "7": {
+      "d": "Khu bánh mì: kiểm tra hạn bán – thay nhãn giá – dùng nhãn màu ___.",
+      "v": "Nhiệm vụ đầu tiên ở khu bánh mì.",
+      "t": "When something needs a new price label, put a yellow one on the package, next to the original price.",
+      "p": "Khi cần nhãn giá mới thì dán nhãn màu vàng cạnh giá cũ → yellow"
+    },
+    "8": {
+      "d": "Quầy sushi mang đi: bổ sung hộp ___ nếu cần.",
+      "v": "Khi nói về quầy sushi.",
+      "t": "Beneath those is where we keep the plastic boxes -we run out of those really quickly, so you should bring more from the storeroom.",
+      "p": "Bẫy: hộp các-tông (cardboard) đặt ở đầu quầy, không cần bổ sung. Hộp nhựa hết rất nhanh nên phải mang thêm từ kho (= re-stock) → plastic"
+    },
+    "9": {
+      "d": "Quầy thịt và cá: lấy ___ cho cá từ phòng lạnh.",
+      "v": "Khi nói về quầy thịt và cá.",
+      "t": "The fish is laid on ice, but when that starts to melt, you’ll need to get more from the cold-room.",
+      "p": "“Collect” = “get more”; cá được đặt trên đá, khi đá tan thì lấy thêm từ phòng lạnh → ice"
+    },
+    "10": {
+      "d": "Bắt buộc phải đeo ___ đặc biệt.",
+      "v": "Cuối bài, khi Charlotte hỏi có phải đội mũ không.",
+      "t": ["You won’t be serving customers directly, so no.", "But make sure you put on thermal gloves when you take anything out of the cold-room."],
+      "p": "Bẫy: “hat” (mũ) – Charlotte không cần đội vì không phục vụ khách. Phải đeo găng tay giữ nhiệt (thermal gloves) khi lấy đồ trong phòng lạnh → gloves"
+    }
+  }
+}

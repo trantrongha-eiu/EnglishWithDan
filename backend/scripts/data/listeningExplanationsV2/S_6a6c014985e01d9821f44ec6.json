@@ -1,0 +1,65 @@
+{
+  "title": "Cam 19 - Test 3 – Part 1",
+  "q": {
+    "1": {
+      "d": "Kite Place – gần ___.",
+      "v": "Đầu bài, khi Leon gợi ý chỗ mua đồ ăn.",
+      "t": "there are plenty of places to buy food in Kite Place – it’s the area by the harbour",
+      "p": "“Near” = “by” (cạnh); Kite Place là khu cạnh bến cảng → harbour (harbor cũng đúng)"
+    },
+    "2": {
+      "d": "Đi qua ___ rồi rẽ phải.",
+      "v": "Khi Shannon hỏi chợ cá ở đâu.",
+      "t": "you have to go over the bridge and then it’s on the right",
+      "p": "“Cross” = “go over”; thứ phải đi qua là “the bridge” (cây cầu), sau đó chợ nằm bên phải → bridge"
+    },
+    "3": {
+      "d": "Tốt nhất nên đến trước ___ chiều, sớm hơn giờ đóng cửa.",
+      "v": "Khi hỏi giờ mở cửa của chợ cá.",
+      "t": ["It doesn’t close until four", "As long as you get there by 3.30. you should be fine."],
+      "p": "Bẫy: 4 giờ là giờ đóng cửa; đề yêu cầu giờ sớm hơn thế. Nên đến trước 3.30 vì chợ hay hết hàng. 11 giờ là giờ hiện tại → 3.30"
+    },
+    "4": {
+      "d": "Tên cửa hàng là “___”.",
+      "v": "Khi Leon giới thiệu cửa hàng hữu cơ.",
+      "t": "it’s the name of a flower. I know, it’s ‘Rose’.",
+      "p": "Cửa hàng hữu cơ mang tên một loài hoa: “Rose” → Rose"
+    },
+    "5": {
+      "d": "Hãy tìm tấm ___ lớn ở bên ngoài.",
+      "v": "Khi chỉ đường tới cửa hàng Rose.",
+      "t": "there’s also a big sign on the pavement so you can look for that",
+      "p": "“Large” = “big”; “outside” = “on the pavement” (trên vỉa hè) → tấm biển hiệu → sign"
+    },
+    "6": {
+      "d": "Đi xe buýt nhỏ màu ___, số 289.",
+      "v": "Khi nói về cách đến siêu thị.",
+      "t": "there’s a minibus that goes to the supermarket if you need it. It’s purple and the number is 289.",
+      "p": "Chỗ trống đứng trước “minibus” nên cần tính từ mô tả xe: màu “purple” (tím), số 289 đã có sẵn → purple"
+    },
+    "7": {
+      "d": "Chợ cá: một tá tôm – một nắm ___ (một loại rong biển).",
+      "v": "Khi bàn những gì mua ở chợ cá.",
+      "t": ["Have you ever tried samphire?", "It’s a type of seaweed. I just ask for a handful"],
+      "p": "“A dozen prawns” = “about 12 prawns”. Loại rong biển (type of seaweed), mua “a handful” (một nắm) là samphire, được đánh vần S-A-M-P-H-I-R-E → samphire"
+    },
+    "8": {
+      "d": "Cửa hàng hữu cơ: đậu và một quả ___ để tráng miệng.",
+      "v": "Khi Shannon nói sẽ mua đồ tráng miệng ở cửa hàng hữu cơ.",
+      "t": ["How about a mango?", "I’m not sure – they’re not always ripe. I’d prefer a melon – it’s bigger too."],
+      "p": "Bẫy: “mango” là Leon gợi ý nhưng Shannon từ chối vì xoài không phải lúc nào cũng chín. Cô chọn “a melon” (dưa) → melon"
+    },
+    "9": {
+      "d": "Ý tưởng khác: gia vị và ___.",
+      "v": "Ngay sau phần đồ tráng miệng.",
+      "t": "The owner also sells a lot of spices there that you can put in a curry, and things like coconut.",
+      "p": "Đi cùng “spices” (gia vị) là “coconut” (dừa) – những thứ có thể cho vào món cà ri → coconut"
+    },
+    "10": {
+      "d": "Tiệm bánh: một ổ bánh mì nâu – một chiếc bánh tart ___.",
+      "v": "Cuối bài, khi nói về tiệm bánh.",
+      "t": ["Like cakes? I love chocolate cake.", "Well – not that, but they have a whole range of tarts and the best are the strawberry ones."],
+      "p": "Bẫy: “chocolate” là bánh kem Shannon thích nhưng Leon nói “not that”. Bánh tart ngon nhất là vị dâu → strawberry"
+    }
+  }
+}

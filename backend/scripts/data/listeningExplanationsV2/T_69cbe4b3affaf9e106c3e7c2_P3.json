@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 1 Part 3",
+  "q": {
+    "21": {
+      "d": "Cả hai sinh viên đều cho rằng HAI điều nào gây ra sự gia tăng cô đơn? (đáp án thứ nhất) A. mạng xã hội / B. gia đình hạt nhân nhỏ hơn / C. thiết kế đô thị / D. tuổi thọ dài hơn / E. lực lượng lao động phải di chuyển nhiều.",
+      "v": "Khi bàn nguyên nhân gia tăng cô đơn.",
+      "t": ["I’d say loneliness has a lot to do with the way cities are designed.", "I think you right"],
+      "p": "Tamara cho rằng cô đơn liên quan nhiều tới cách thiết kế thành phố (sống trong căn hộ cao tầng, ít nói chuyện với hàng xóm), Dev đồng ý. Bẫy A: mạng xã hội “more good than harm”; D: ảnh hưởng cả người trẻ nên không do tuổi thọ → C"
+    },
+    "22": {
+      "d": "Cả hai sinh viên đều cho rằng HAI điều nào gây ra sự gia tăng cô đơn? (đáp án thứ hai)",
+      "v": "Cuối phần bàn nguyên nhân.",
+      "t": ["people are having to move around for work and often end up living miles away from their family and friends", "That’s true."],
+      "p": "Phải di chuyển theo công việc, sống xa gia đình bạn bè = a mobile workforce; Dev đồng ý “That's true”. Bẫy B: ít con, không sống đại gia đình đã thay đổi từ nhiều thập kỷ trước, trong khi cô đơn là vấn đề mới → E"
+    },
+    "23": {
+      "d": "Hai sinh viên đồng ý HAI nguy cơ sức khỏe nào liên quan tới cô đơn có bằng chứng vững chắc? (đáp án thứ nhất) A. hệ miễn dịch suy yếu / B. sa sút trí tuệ / C. ung thư / D. béo phì / E. bệnh tim mạch.",
+      "v": "Cuối phần bàn về nguy cơ sức khỏe.",
+      "t": ["But there’s no doubt that loneliness contributes to a weakened immune system.", "Unquestionably. The data on that is sound."],
+      "p": "“No doubt” + “Unquestionably. The data on that is sound” (dữ liệu vững chắc) = solid evidence. Bẫy E: tim mạch “hard to reach a judgment”; B: kết quả trái ngược nhau; D: Dev nghi ngờ đủ bằng chứng → A"
+    },
+    "24": {
+      "d": "Hai sinh viên đồng ý HAI nguy cơ sức khỏe nào có bằng chứng vững chắc? (đáp án thứ hai)",
+      "v": "Giữa phần bàn về nguy cơ sức khỏe, nghiên cứu ở Phần Lan.",
+      "t": ["loneliness increased the risk of cancer by about 10%? And those findings have been supported by other studies too.", "You’re right about that one."],
+      "p": "Nghiên cứu ở Phần Lan về ung thư được các nghiên cứu khác ủng hộ, Dev đồng ý “You're right about that one” → C"
+    },
+    "25": {
+      "d": "Cả hai sinh viên bày tỏ HAI ý kiến nào về thuyết tiến hóa của sự cô đơn? (đáp án thứ nhất) A. ít liên quan thực tế / B. cần nghiên cứu thêm / C. gây hiểu lầm / D. nên được chấp nhận rộng rãi hơn / E. khó hiểu.",
+      "v": "Cuối phần bàn về thuyết tiến hóa.",
+      "t": ["And anyway, this theory’s not really useful when it comes to solving the problem of loneliness today.", "True."],
+      "p": "Dev: thuyết này không thực sự hữu ích để giải quyết cô đơn ngày nay = little practical relevance; Tamara đồng ý “True” → A"
+    },
+    "26": {
+      "d": "Cả hai sinh viên bày tỏ HAI ý kiến nào về thuyết tiến hóa của sự cô đơn? (đáp án thứ hai)",
+      "v": "Giữa phần bàn về thuyết tiến hóa.",
+      "t": ["But I don think there is enough evidence to claim", "There are a few studies which support the theory, but not conclusively enough. More evidence is needed."],
+      "p": "Dev cho rằng chưa đủ bằng chứng, Tamara nói “More evidence is needed” = it needs further investigation. Bẫy C: Tamara thấy ý tưởng chính khá thuyết phục, không phải gây hiểu lầm → B"
+    },
+    "27": {
+      "d": "Khi so sánh cô đơn với trầm cảm, hai sinh viên A. nghi ngờ sẽ không bao giờ có cách chữa y học cho cô đơn / B. cho rằng mối liên hệ cô đơn – sức khỏe tâm thần bị phóng đại / C. bực bội vì cô đơn không được coi trọng hơn.",
+      "v": "Đầu phần cô đơn và sức khỏe tâm thần.",
+      "t": ["There’s no available diagnosis or effective treatment and that’s not likely to change.", "I don’t think so either"],
+      "p": "Không có chẩn đoán hay cách điều trị hiệu quả và “not likely to change” (khó thay đổi), Tamara đồng tình → nghi ngờ sẽ có cách chữa. B sai: họ nói cô đơn và trầm cảm “clearly related” → A"
+    },
+    "28": {
+      "d": "Vì sao hai sinh viên quyết định mở đầu bài thuyết trình bằng ví dụ từ trải nghiệm của chính mình? A. để giải thích cô đơn khó khăn thế nào / B. để nêu một tình huống hầu hết sinh viên đều nhận ra / C. để nhấn mạnh nam giới cô đơn nhiều hơn nữ.",
+      "v": "Khi Tamara đề xuất kể chuyện mới vào đại học.",
+      "t": "Good idea. Everyone will be able to relate to that",
+      "p": "Cảm giác cô đơn khi mới xa nhà vào đại học – “Everyone will be able to relate to that” (ai cũng đồng cảm được) = a situation that most students will recognise → B"
+    },
+    "29": {
+      "d": "Hai sinh viên đồng ý nói chuyện với người lạ là cách tốt để đối phó cô đơn vì A. nó tạo cảm giác thuộc về / B. nó xây dựng sự tự tin / C. nó khiến người ta tích cực hơn.",
+      "v": "Khi bàn cách đối phó với cô đơn.",
+      "t": ["I don’t know about that, but it must make people feel more connected with their community.", "True"],
+      "p": "Bẫy C: Dev nói nghiên cứu cho thấy người ta lạc quan hơn nhưng Tamara “I don't know about that”. Cả hai đồng ý: cảm thấy gắn kết hơn với cộng đồng = a sense of belonging → A"
+    },
+    "30": {
+      "d": "Hai sinh viên thấy khó hiểu vì sao sự ở một mình (solitude) được xem là A. giống với cô đơn / B. cần thiết cho sức khỏe tâm thần / C. một trải nghiệm thú vị.",
+      "v": "Cuối bài, khi bàn về solitude.",
+      "t": ["It’s strange the way some people can’t stand being by themselves while others love it.", "but being alone isn’t something I actually like", "Me neither."],
+      "p": "Tamara thấy “strange” (lạ) khi có người thích ở một mình; Dev cũng không thích, Tamara “Me neither” → khó hiểu vì sao đó là trải nghiệm thú vị. Bẫy B: lợi ích cho sức khỏe thì Dev “appreciate” (hiểu và công nhận) → C"
+    }
+  }
+}

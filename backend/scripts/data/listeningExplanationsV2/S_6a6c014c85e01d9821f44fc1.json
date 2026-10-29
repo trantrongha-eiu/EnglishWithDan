@@ -1,0 +1,65 @@
+{
+  "title": "Cam 21 - Test 3 – Part 3",
+  "q": {
+    "21": {
+      "d": "Hai người nói đưa ra HAI nhận định nào về thuật ngữ thời trang “có đạo đức” và “bền vững”? (đáp án thứ nhất) A. Định nghĩa liên tục thay đổi / B. Mọi người nghĩ chúng cùng nghĩa / C. Từ “eco-friendly” nên dùng hơn / D. Chúng thường được dùng thiếu chính xác / E. Công ty nên tránh dùng trên nhãn quần áo.",
+      "v": "Đầu bài, khi phân biệt ethical và sustainable.",
+      "t": "most people use these terms interchangeably – but in fact the difference is quite distinct",
+      "p": "“Use these terms interchangeably” (dùng thay thế cho nhau) = people think they mean the same thing. Bẫy C: “eco-friendly” bị chê “quite meaningless” → B"
+    },
+    "22": {
+      "d": "HAI nhận định nào về thuật ngữ “có đạo đức” và “bền vững”? (đáp án thứ hai)",
+      "v": "Khi Maddy nói về cách các công ty dùng thuật ngữ.",
+      "t": "They're often deliberately vague, and don't provide enough information about how their products are made.",
+      "p": "Các công ty dùng thuật ngữ “deliberately vague” (cố tình mơ hồ) = often used imprecisely. E sai: họ không nói công ty nên tránh dùng → D"
+    },
+    "23": {
+      "d": "Hai người KHÔNG đồng ý với HAI nhận định nào về sản xuất len? (đáp án thứ nhất) A. Cừu nhìn chung được đối xử tốt / B. Len dễ tái chế / C. Len là loại vải bền / D. Sản xuất len dùng ít hóa chất / E. Cừu ít gây hại môi trường hơn gia súc khác.",
+      "v": "Khi bàn về sản xuất len.",
+      "t": "But I wasn't convinced by the argument that wool production is sustainable because it doesn't use many chemicals – what about all the fungicides and insecticides used in sheep farming?",
+      "p": "“Wasn't convinced” (không bị thuyết phục) bởi lập luận len dùng ít hóa chất, vì nuôi cừu dùng nhiều thuốc diệt nấm, diệt côn trùng. Bẫy B, C: len bền và tái chế được là “very positive” (đồng ý) → D"
+    },
+    "24": {
+      "d": "Hai người KHÔNG đồng ý với HAI nhận định nào về sản xuất len? (đáp án thứ hai)",
+      "v": "Ngay sau ý về hóa chất.",
+      "t": ["I couldn't find any evidence for the claim about sheep farming being better for the environment than cattle farming.", "No – they're both really bad."],
+      "p": "Không có bằng chứng cho việc nuôi cừu tốt cho môi trường hơn nuôi bò, “they're both really bad”. Bẫy A: việc xén lông, họ thấy không sao nếu cừu được chăm tốt → E"
+    },
+    "25": {
+      "d": "Lyocell.",
+      "v": "Loại vải bán tổng hợp đầu tiên.",
+      "t": "Over 99% of dissolving agents used in the manufacturing process are used again.",
+      "p": "Hơn 99% chất hòa tan dùng trong sản xuất được dùng lại = chemicals required for production can be reused → G"
+    },
+    "26": {
+      "d": "Cupro.",
+      "v": "Loại vải thứ hai.",
+      "t": ["there are so many reports of pollution caused by the manufacturing process", "It doesn't compare favourably with all the other sustainable fabrics we've looked at, no."],
+      "p": "Nhiều báo cáo về ô nhiễm khi sản xuất, kém hơn tất cả các loại vải bền vững khác đã xem xét = the least sustainable of alternative fabrics → B"
+    },
+    "27": {
+      "d": "Tre (Bamboo).",
+      "v": "Loại vải thứ ba.",
+      "t": "But I didn't know that it was only organic bamboo that's truly sustainable.",
+      "p": "Chỉ tre hữu cơ mới thật sự bền vững, phần lớn quy trình còn lại dùng nhiều hóa chất → phải sản xuất theo một cách nhất định mới bền vững → F"
+    },
+    "28": {
+      "d": "EcoVero.",
+      "v": "Loại vải thứ tư.",
+      "t": "Probably because manufacturing causes 50 percent fewer emissions and takes up half as much energy as conventional fabrics.",
+      "p": "Sản xuất chỉ tốn một nửa năng lượng so với vải thường = the production process is fuel efficient. Bẫy C: chi phí sản xuất được tiết kiệm, không phải cao → A"
+    },
+    "29": {
+      "d": "Bần (Cork).",
+      "v": "Loại vải thứ năm.",
+      "t": "it's the only fabric that's fundamentally sustainable",
+      "p": "Loại duy nhất bền vững hoàn toàn: cây tái tạo được, sản phẩm tái chế và phân hủy được, “no downsides” = from a wholly sustainable source → H"
+    },
+    "30": {
+      "d": "Gai dầu (Hemp).",
+      "v": "Loại vải cuối cùng.",
+      "t": "Did you know that clothes made from hemp protect the wearer from the sun and it's also antibacterial?",
+      "p": "Quần áo từ gai dầu chống nắng và kháng khuẩn = provides additional health benefits. Việc khó trồng không có trong các lựa chọn → D"
+    }
+  }
+}

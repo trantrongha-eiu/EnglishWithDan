@@ -1,0 +1,65 @@
+{
+  "title": "Science experiment for Year 12 students",
+  "q": {
+    "21": {
+      "d": "Clare cảm thấy thế nào về học sinh lớp 12 môn khoa học của cô? A. lo rằng các em không tiến bộ / B. bị thử thách bởi hành vi kém trong lớp / C. bực bội vì các em không hứng thú với môn học.",
+      "v": "Đầu bài, khi Clare than phiền về lớp 12.",
+      "t": ["I don’t have discipline problems as such. It’s just that they don’t seem to think that science has anything to do with their lives. It’s depressing.", "the results weren’t too bad, but there’s no real engagement"],
+      "p": "B sai: “don’t have discipline problems”. A sai: kết quả kiểm tra “weren’t too bad”. Vấn đề là học sinh thấy khoa học không liên quan tới cuộc sống, “no real engagement” = lack of interest; “It’s depressing” = frustrated → C"
+    },
+    "22": {
+      "d": "Jake phản ứng thế nào với gợi ý thí nghiệm về chế độ ăn của trẻ? A. lo kết quả không có ý nghĩa / B. thấy một số dữ liệu có thể khó lấy / C. ngờ rằng kết luận có thể gây buồn lòng.",
+      "v": "Khi Jake nhận xét ý tưởng ghi lại chế độ ăn.",
+      "t": ["you’d also need to have access to the children’s medical records and I don’t think people would be happy about that", "If you could get the right data, the conclusions might be significant, but I suspect it’s just not going to be easy."],
+      "p": "Cần hồ sơ y tế của trẻ nhưng vấn đề bảo mật khiến việc lấy dữ liệu “not going to be easy” = difficult to obtain. A sai: kết luận “might be significant” (có ý nghĩa) → B"
+    },
+    "23": {
+      "d": "Họ đồng ý rằng thí nghiệm dùng động vật có thể gặp vấn đề gì? A. kết quả có thể không áp dụng cho người / B. có thể khó xin phép / C. học sinh có thể không thích thí nghiệm trên động vật.",
+      "v": "Khi bàn về việc dùng động vật.",
+      "t": ["the same thing wouldn’t necessarily be true for people, would it?", "No that’s true"],
+      "p": "Clare nói kết quả trên động vật chưa chắc đúng với người, Jake đồng ý “that’s true” → A. Bẫy B: xin phép “quite straightforward” (khá đơn giản); bẫy C: Jake trấn an động vật không bị hại → A"
+    },
+    "24": {
+      "d": "Họ quyết định thí nghiệm sẽ trả lời câu hỏi nào? A. Chuột có tự kiểm soát lượng thức ăn không? / B. Tăng đường có gây bệnh không? / C. Các loại thực phẩm bổ sung ảnh hưởng sức khỏe ra sao?",
+      "v": "Khi chốt trọng tâm thí nghiệm.",
+      "t": ["In fact, maybe the focus could be on whether mice can control their own diet.", "Do they eat it or do they decide to leave it?", "Great."],
+      "p": "C bị Jake chê “rather broad” (quá rộng). Trọng tâm cuối cùng: chuột có tự kiểm soát chế độ ăn – ăn thêm đường hay bỏ qua – Jake đồng ý “Great” → A"
+    },
+    "25": {
+      "d": "Clare có thể cân nhắc làm thêm thí nghiệm liên quan tới A. các loại thực phẩm bổ sung khác / B. chuột có gen khác nhau / C. mức độ vận động khác nhau.",
+      "v": "Cuối phần 1, khi Jake gợi ý thí nghiệm tiếp theo.",
+      "t": ["you could give some of the mice the chance to be more active, running on a wheel or something", "But I think your idea would be more interesting, I might think about that some more."],
+      "p": "Clare có nghĩ tới đổi loại thức ăn hoặc chuột khác gen (A, B) nhưng nói ý của Jake – cho chuột chạy bánh xe, vận động nhiều/ít – thú vị hơn và sẽ cân nhắc → varying amounts of exercise → C"
+    },
+    "26": {
+      "d": "Chọn những con chuột có cùng ___.",
+      "v": "Đầu phần quy trình, khi hỏi cần bao nhiêu chuột.",
+      "t": "And all young ones, not a mixture of old and young.",
+      "p": "Tất cả đều là chuột non, không trộn già và non → cùng độ tuổi → C (age) → age"
+    },
+    "27": {
+      "d": "Chia chuột thành hai nhóm, mỗi nhóm có một ___ khác nhau.",
+      "v": "Khi Clare hỏi cách phân biệt hai nhóm.",
+      "t": "You could use food colouring, that wouldn’t hurt them.",
+      "p": "Đánh dấu hai nhóm bằng phẩm màu thực phẩm → mỗi nhóm một màu khác nhau → H (colour) → colour"
+    },
+    "28": {
+      "d": "Cho nhóm B ăn giống nhóm A, nhưng thêm đường có trong ___.",
+      "v": "Khi bàn cách cho nhóm B ăn thêm đường.",
+      "t": ["Would you just give them straight sugar?", "I might be better to give them something like cereal with it."],
+      "p": "Không cho đường nguyên chất mà trộn với ngũ cốc (cereal) → E (cereal) → cereal"
+    },
+    "29": {
+      "d": "Đặt chuột vào buồng cân để ngăn chúng ___.",
+      "v": "Khi bàn cách cân chuột.",
+      "t": "So you need something called a weighing chamber to stop the mice from running away.",
+      "p": "“Prevent” = “stop … from”; “running away” (chạy trốn) = escape → B (escape) → escape"
+    },
+    "30": {
+      "d": "Thực hiện mọi ___ cần thiết.",
+      "v": "Bước cuối của quy trình.",
+      "t": "So once we’ve measured the weight gain of each mouse we can work out the average for each group, as well as the standard deviation.",
+      "p": "“Work out the average … standard deviation” (tính trung bình, độ lệch chuẩn) là các phép tính → F (calculations) → calculations"
+    }
+  }
+}

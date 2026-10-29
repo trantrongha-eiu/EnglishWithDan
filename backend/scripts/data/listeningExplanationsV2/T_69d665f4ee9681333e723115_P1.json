@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 2 Part 1",
+  "q": {
+    "1": {
+      "d": "(Hội đồng địa phương hiểu rằng người chăm sóc đôi khi cần) một ___.",
+      "v": "Khi Tom nói về hỗ trợ của hội đồng địa phương.",
+      "t": "and also that they sometimes need a break",
+      "p": "Người chăm sóc cần thời gian cho trách nhiệm khác và đôi khi cần “a break” (được nghỉ ngơi) → break"
+    },
+    "2": {
+      "d": "(Khi đánh giá, họ muốn biết) việc chăm sóc mất bao nhiêu ___.",
+      "v": "Khi Tom giải thích buổi đánh giá nhu cầu.",
+      "t": "So, for a start, they’d want to know the amount of time you spend looking after your mother every day.",
+      "p": "“How much ___ the caring involves” = “the amount of time you spend looking after your mother” → time"
+    },
+    "3": {
+      "d": "Giúp bà ___.",
+      "v": "Khi hỏi những việc chị làm cho mẹ trong ngày.",
+      "t": "And also I help her get into the shower in the morning.",
+      "p": "Ngoài mặc quần áo, chị còn giúp mẹ vào tắm vòi sen buổi sáng → shower"
+    },
+    "4": {
+      "d": "Xử lý chuyện ___.",
+      "v": "Khi Tom liệt kê các câu hỏi họ có thể đặt ra.",
+      "t": "whether she can cope using money",
+      "p": "“Dealing with” = “cope using” (xoay xở khi dùng); thứ đó là “money” (tiền bạc) → money"
+    },
+    "5": {
+      "d": "(Khó khăn đặc biệt) mất ___.",
+      "v": "Khi Tom hỏi điều gì đặc biệt khó khăn khi chăm mẹ.",
+      "t": "So, recently I’ve noticed she’s started to have quite bad problems with her memory.",
+      "p": "Mẹ có vấn đề nghiêm trọng về trí nhớ (quên ăn, không biết hôm nay thứ mấy) = loss of memory → memory"
+    },
+    "6": {
+      "d": "___ bà (một khó khăn về thể chất).",
+      "v": "Khi Tom hỏi về khó khăn thể chất.",
+      "t": ["Lifting her, for example?", "Yes, she’s quite heavy and I’m afraid of hurting my back."],
+      "p": "Tom hỏi việc nâng (lifting) mẹ, chị xác nhận vì mẹ khá nặng, sợ đau lưng → lifting"
+    },
+    "7": {
+      "d": "Phòng tránh một lần ___.",
+      "v": "Ngay sau phần nâng đỡ.",
+      "t": "They can give you advice about that and also about how to avoid the possibility of your mum having a fall.",
+      "p": "“Preventing” = “avoid the possibility of”; điều cần tránh là “a fall” (bị ngã) → fall"
+    },
+    "8": {
+      "d": "Chi phí đi lại, ví dụ tiền ___.",
+      "v": "Khi Tom nói về hỗ trợ tài chính.",
+      "t": "So they might help you with transport costs, like if you have to get a taxi to take your mother for an appointment",
+      "p": "“Transport costs” y như đề; ví dụ là “a taxi” đưa mẹ đi khám → taxi"
+    },
+    "9": {
+      "d": "Chi phí liên quan đến xe hơi, ví dụ xăng và ___.",
+      "v": "Khi chị hỏi có được thanh toán tiền xăng không.",
+      "t": ["So, could I claim the petrol?", "You could. And you can claim for the insurance too."],
+      "p": "“Fuel” = “petrol”; ngoài xăng còn có thể xin thanh toán “insurance” (bảo hiểm) → insurance"
+    },
+    "10": {
+      "d": "Giúp giảm ___.",
+      "v": "Cuối bài, khi Tom khuyên chị chăm sóc bản thân.",
+      "t": ["it seems to me you under quite a bit of stress", "Well tell the council because they may be able to give you some advice on how to minimise it"],
+      "p": "“Reduce” = “minimise”; “it” chỉ căng thẳng (stress) mà chị đang gặp → stress"
+    }
+  }
+}

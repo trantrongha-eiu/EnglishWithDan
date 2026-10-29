@@ -1,0 +1,65 @@
+{
+  "title": "Victor Hugo",
+  "q": {
+    "31": {
+      "d": "Chúng ta biết về ___ tổng thể của nó (tiểu thuyết Les Misérables) nhiều hơn là về tác giả.",
+      "v": "Phần mở đầu, khi nói về tiểu thuyết Les Misérables.",
+      "t": "some of us, I’m sure, have a pretty general idea of the plot, but we know much less about the author",
+      "p": "“Have a pretty general idea of the plot” = biết khái quát về cốt truyện, còn “know much less about the author” = biết ít về tác giả. Câu đề “overall ___” chính là “general idea of the plot” → plot"
+    },
+    "32": {
+      "d": "Ông phát biểu trước công chúng về các vấn đề xã hội, như ___ và giáo dục.",
+      "v": "Khi nói về sự nghiệp ban đầu của ông ở Paris.",
+      "t": ["he also gave many speeches about issues like the level of poverty in his society", "like education"],
+      "p": "“Gave many speeches” = spoke publicly (phát biểu công khai); vấn đề được nêu là “poverty” (sự nghèo đói), sau đó mới tới “education” → poverty"
+    },
+    "33": {
+      "d": "Victor Hugo buộc phải sống ở nơi khác tại ___.",
+      "v": "Ngay sau khi ông bị Napoleon III trục xuất.",
+      "t": "So Victor Hugo was forced to reside in other parts of Europe.",
+      "p": "“Had to live elsewhere” được paraphrase thành “was forced to reside in other parts of” → nơi đó là châu Âu → Europe"
+    },
+    "34": {
+      "d": "Ông dùng thu nhập từ việc bán một số ___ ông đã viết để mua một ngôi nhà trên đảo Guernsey.",
+      "v": "Khi nói về ngôi nhà ông mua ở Guernsey.",
+      "t": "a property that he bought using the money he’d made in France from the publication of a collection of his poetry",
+      "p": "“Income from the sale” = “money he’d made … from the publication”; thứ được xuất bản là “a collection of his poetry” (tuyển tập thơ) → poetry"
+    },
+    "35": {
+      "d": "Tầng trệt có các bức chân dung, ___ và thảm treo tường mà ông trân trọng.",
+      "v": "Khi mô tả tầng trệt (ground floor) của ngôi nhà.",
+      "t": "portraits of its members still hang in rooms on the ground floor, along with drawings that he did during his travels that he felt were important to him",
+      "p": "Liệt kê đúng thứ tự: chân dung (portraits) → “drawings” (các bức vẽ ông vẽ khi đi du lịch) → tapestries (thảm). “Felt were important to him” = “that he valued” → drawings"
+    },
+    "36": {
+      "d": "Ông mua ___ bằng gỗ giá rẻ và biến chúng thành những tấm chạm khắc tường tuyệt đẹp.",
+      "v": "Khi nói về lớp ốp gỗ trên tường tầng trệt.",
+      "t": ["using wooden furniture that he bought in the market", "The items were relatively inexpensive, and he used them to create intricate carvings."],
+      "p": "“Cheap” = “relatively inexpensive”; “made of wood” = “wooden”. Thứ ông mua ở chợ là “furniture” (đồ nội thất) rồi dùng làm đồ chạm khắc → furniture"
+    },
+    "37": {
+      "d": "Tầng một gồm các khu vực có nội thất, với giấy dán tường và ___ mang phong cách Trung Hoa.",
+      "v": "Khi mô tả tầng tiếp theo (hai phòng khách đỏ và xanh).",
+      "t": "There’s a strong Chinese influence in these areas in things like the wallpaper pattern and the lamps",
+      "p": "“Chinese design” = “a strong Chinese influence”; hai thứ được nêu là “wallpaper pattern” (đã có trong đề) và “the lamps” (đèn) → lamps"
+    },
+    "38": {
+      "d": "Ông viết trong một căn phòng trên tầng cao nhất, có tầm nhìn ra ___.",
+      "v": "Khi nói về căn phòng “the Lookout” ở trên cùng ngôi nhà.",
+      "t": "at the very top of the house, there’s a room called the Lookout – called that because it looks out over the harbour",
+      "p": "“At the top of the house” = “at the very top of the house”; “had a view of” = “looks out over” → nhìn ra bến cảng → harbour (viết harbor cũng đúng)"
+    },
+    "39": {
+      "d": "Ông tiếp đãi những nhà văn khác cũng như những ___ nghèo trong nhà mình.",
+      "v": "Phần gần cuối, khi nói về giá trị sống của ông.",
+      "t": ["he entertained many other famous writers", "he also invited a large group of local children from the deprived areas of the island to dinner once a week"],
+      "p": "“Poor” = “from the deprived areas” (vùng nghèo khó). Ngoài nhà văn, ông mời trẻ em địa phương đến ăn tối → children"
+    },
+    "40": {
+      "d": "___ của Victor Hugo đã trao quyền sở hữu ngôi nhà cho thành phố Paris vào năm 1927.",
+      "v": "Câu kết bài, mốc năm 1927.",
+      "t": "In 1927, the house was owned by his relatives, and they decided to donate it to the city of Paris.",
+      "p": "“Gave ownership … to the city of Paris” = “decided to donate it”. Người hiến tặng là “his relatives” (họ hàng của ông) → relatives"
+    }
+  }
+}

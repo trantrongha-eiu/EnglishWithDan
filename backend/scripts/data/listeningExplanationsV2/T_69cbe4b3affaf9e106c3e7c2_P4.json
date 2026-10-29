@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 1 Part 4",
+  "q": {
+    "31": {
+      "d": "(Sông trong thành phố bị ảnh hưởng vì) ô nhiễm từ các ___ bên bờ sông.",
+      "v": "Khi nói sông bị ảnh hưởng thế nào khi công nghiệp phát triển.",
+      "t": "other types of pollution increased, as factories were built beside the river and discharged their waste materials into the water",
+      "p": "“On the river bank” = “beside the river”; nguồn ô nhiễm là “factories” (nhà máy) xả chất thải xuống nước → factories"
+    },
+    "32": {
+      "d": "Năm 1957, sông Thames ở London bị tuyên bố là ___ về mặt sinh học.",
+      "v": "Khi nhắc tới năm 1957.",
+      "t": "scientists at London’s Natural History Museum declared that the River Thames was dead in biological terms",
+      "p": "“Biologically ___” = “___ in biological terms”; sông được tuyên bố là đã chết → dead"
+    },
+    "33": {
+      "d": "Người ta đã thấy hải cẩu và thậm chí một con ___ ở sông Thames.",
+      "v": "Khi nói sông Thames giờ sạch hơn.",
+      "t": "These days you can see seals swimming in the water, and recently people had to try to rescue a whale",
+      "p": "Ngoài hải cẩu (seals), gần đây còn có một con cá voi (whale) lạc vào sông → whale"
+    },
+    "34": {
+      "d": "Các nhà kho ven sông được chuyển thành nhà hàng và ___.",
+      "v": "Khi nói về phát triển khu vực ven sông.",
+      "t": "Warehouses that were once used for storing goods are now being converted into expensive restaurants and also into apartments with river views",
+      "p": "“Converted to” = “converted into”; ngoài nhà hàng là “apartments” (căn hộ) nhìn ra sông → apartments"
+    },
+    "35": {
+      "d": "(Ở Los Angeles) xây một ___ ven sông.",
+      "v": "Ví dụ Los Angeles.",
+      "t": "an architect has plans to revitalise the banks of the river and to make a park there",
+      "p": "Kiến trúc sư có kế hoạch làm “a park” (công viên) ở bờ sông, có chỗ chơi thể thao và thư giãn → park"
+    },
+    "36": {
+      "d": "Trưng bày các dự án ___.",
+      "v": "Cùng ví dụ Los Angeles, mục đích khác của bờ sông.",
+      "t": "facilities could be provided for displaying projects related to various kinds of art that have been produced by local people",
+      "p": "“Display” = “displaying”; các dự án liên quan đến nghệ thuật (art) do người dân địa phương làm → art"
+    },
+    "37": {
+      "d": "Ở Paris, mỗi mùa hè người ta tạo ra những ___ ở hai bên bờ sông.",
+      "v": "Ví dụ Paris.",
+      "t": "the banks are transformed into beaches, where people can relax in deck chairs under potted palm trees",
+      "p": "“Created on the sides of the river” = “the banks are transformed into”; mỗi tháng 7–8 bờ sông được biến thành bãi biển → beaches"
+    },
+    "38": {
+      "d": "Hơn 2 tỷ hành khách đã di chuyển bằng ___ ở các thành phố trên thế giới.",
+      "v": "Khi nói về việc dùng sông làm đường giao thông.",
+      "t": "Already, more than two billion passengers use the ferry to travel in cities around the world",
+      "p": "“Over 2 billion” = “more than two billion”; “travel by” = “use … to travel” → phà → ferry"
+    },
+    "39": {
+      "d": "Thay vì vận tải đường bộ, hàng hóa có thể được chở bằng sà lan lớn và ___ điện.",
+      "v": "Khi nói về giao hàng từ sà lan tới nơi nhận.",
+      "t": "the parcels could be taken the last few kilometres to their final destination on cargo bikes, electric ones of course",
+      "p": "Chặng cuối dùng “cargo bikes, electric ones” (xe đạp chở hàng chạy điện) → bikes"
+    },
+    "40": {
+      "d": "… hoặc trong tương lai bằng ___.",
+      "v": "Ngay sau ví dụ Amsterdam.",
+      "t": "in future the final stage could even be carried out by drone, although at present this isn’t allowed",
+      "p": "“In future” xuất hiện y như đề; chặng cuối có thể do “drone” (máy bay không người lái) đảm nhận → drone"
+    }
+  }
+}

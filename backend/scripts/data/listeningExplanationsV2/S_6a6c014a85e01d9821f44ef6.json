@@ -1,0 +1,65 @@
+{
+  "title": "Microplastics",
+  "q": {
+    "31": {
+      "d": "Sợi từ một số ___ (rụng ra) trong khi giặt.",
+      "v": "Khi nói về các nguồn sinh ra vi nhựa.",
+      "t": "Threads and microfibres detach from synthetic clothing",
+      "p": "“Fibres” = “threads and microfibres”; “during washing” = “every time they’re put in a washing machine”. Nguồn là quần áo sợi tổng hợp → clothing"
+    },
+    "32": {
+      "d": "Chúng gây tổn thương ___ của động vật hoang dã và ảnh hưởng đến hệ tiêu hóa.",
+      "v": "Khi nói về tác hại lên cá và động vật nhỏ.",
+      "t": "such as by damaging their mouths",
+      "p": "“Cause injuries to” = “damaging”; bộ phận bị tổn thương là “their mouths” (miệng). Hệ tiêu hóa là ý đã có trong đề → mouths"
+    },
+    "33": {
+      "d": "Chúng đi vào chuỗi thức ăn, ví dụ trong nước đóng chai, nước máy, ___ và hải sản.",
+      "v": "Khi nói con người có thể ăn phải vi nhựa.",
+      "t": "What’s more, salt and many kinds of seafood have also been found to contain microplastics.",
+      "p": "Sau nước đóng chai và nước máy, người nói liệt kê “salt” (muối) và hải sản → salt"
+    },
+    "34": {
+      "d": "Chúng có thể không ảnh hưởng tới sức khỏe con người, nhưng đã bị cấm trong sản phẩm làm sạch da và ___ ở một số nước.",
+      "v": "Khi nói về luật cấm hạt vi nhựa.",
+      "t": "there is legislation which prevents manufacturers from adding plastic microbeads to shower gels, facial cleansers and toothpaste",
+      "p": "“Banned” = “legislation which prevents”; “skin cleaning products” = “shower gels, facial cleansers”; sản phẩm còn lại là “toothpaste” (kem đánh răng) → toothpaste"
+    },
+    "35": {
+      "d": "Vi nhựa đi vào đất qua không khí, mưa và ___.",
+      "v": "Cuối phần 1, về vi nhựa trong đất.",
+      "t": ["they are carried in the air and deposited in the soil by rain", "many of the fertilisers used by both farmers and gardeners contain microplastics"],
+      "p": "Ba con đường: không khí, mưa và “fertilisers” (phân bón) mà nông dân, người làm vườn dùng → fertilisers (fertilizers cũng đúng)"
+    },
+    "36": {
+      "d": "Giun đất quan trọng vì chúng bổ sung ___ cho đất.",
+      "v": "Khi giới thiệu nghiên cứu về giun đất.",
+      "t": "By feeding on soil, they mix nutrients into it, thereby making it more fertile.",
+      "p": "“Add … to the soil” = “mix … into it”; thứ được trộn vào là “nutrients” (chất dinh dưỡng) → nutrients"
+    },
+    "37": {
+      "d": "Nghiên cứu nhằm tìm hiểu vi nhựa trong giun đất có ảnh hưởng tới ___ của cây không.",
+      "v": "Khi nêu mục tiêu của nhóm nghiên cứu.",
+      "t": "would impact soil quality and ultimately inhibit plant growth",
+      "p": "“Aimed to find whether” = “set out to discover whether”; “affect” = “inhibit” (kìm hãm); thứ bị ảnh hưởng là “plant growth” (sự phát triển của cây) → growth"
+    },
+    "38": {
+      "d": "Sự sụt giảm ___ ở giun đất (một kết quả của nghiên cứu).",
+      "v": "Khi nêu kết quả nghiên cứu.",
+      "t": "The result was that the worms lost weight rapidly.",
+      "p": "“Loss” = “lost”; giun bị sụt cân nhanh → weight"
+    },
+    "39": {
+      "d": "Sự gia tăng mức ___ trong đất.",
+      "v": "Kết quả tiếp theo của nghiên cứu.",
+      "t": "there was an increase in the amount of acid found in the soil",
+      "p": "“A rise in the level of” = “an increase in the amount of”; thứ tăng lên là “acid” (axit) → acid"
+    },
+    "40": {
+      "d": "Những thay đổi của đất gây hại cho cả hệ sinh thái và ___.",
+      "v": "Phần kết luận cuối bài.",
+      "t": "not only ecosystems but also the whole of society are negatively impacted",
+      "p": "“Both … and” = “not only … but also”; “damage” = “negatively impacted”; ngoài hệ sinh thái là “the whole of society” (toàn xã hội) → society"
+    }
+  }
+}

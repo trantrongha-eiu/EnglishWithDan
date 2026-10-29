@@ -1,0 +1,65 @@
+{
+  "title": "Cam 21 - Test 3 – Part 1",
+  "q": {
+    "1": {
+      "d": "Tên công ty phà: ___ Ferries.",
+      "v": "Khi Tammy hỏi Paul đi phà của hãng nào.",
+      "t": "There's only one – it's called Northern Ferries.",
+      "p": "Chỉ có một hãng duy nhất là “Northern Ferries” → Northern"
+    },
+    "2": {
+      "d": "Phà khởi hành bảy lần mỗi ___ vào mùa hè.",
+      "v": "Khi hỏi phà chạy thường xuyên thế nào.",
+      "t": "there's only one ferry leaving every evening in summer anyway, seven days a week",
+      "p": "Mỗi tối một chuyến, bảy ngày một tuần → bảy chuyến mỗi tuần. Bẫy: “four or five days” là mùa đông → week"
+    },
+    "3": {
+      "d": "Chi phí cho bốn người kèm xe hơi: ít hơn £___ một chút.",
+      "v": "Khi Tammy hỏi giá vé.",
+      "t": ["four people and a car worked out at just under £250", "I was expecting it to be more like £400 during the peak season."],
+      "p": "“A little less than” = “just under”. Bẫy: £400 chỉ là mức Tammy tưởng tượng → 250"
+    },
+    "4": {
+      "d": "Chính sách hủy vé: nhận một ___ (nếu hủy trước một tháng).",
+      "v": "Khi Tammy hỏi nếu phải hủy thì sao.",
+      "t": "I don't think it's their policy to give refunds – just a voucher – which you can use at a later date. But you have to cancel a month in advance to get that.",
+      "p": "Không được hoàn tiền (refund) mà chỉ nhận “a voucher” (phiếu dùng sau), với điều kiện hủy trước một tháng → voucher"
+    },
+    "5": {
+      "d": "(Phòng ngủ trên phà) đặt phòng có ___.",
+      "v": "Khi Paul khuyên nên đặt cabin.",
+      "t": "We booked too late to get a cabin with a window. They're more expensive but much nicer than the inner cabins.",
+      "p": "Paul đặt trễ nên không có cabin có cửa sổ, loại này đắt hơn nhưng đẹp hơn hẳn cabin bên trong → nên đặt loại có cửa sổ. Bẫy: cabin sang có TV thì “I wouldn't bother” → window"
+    },
+    "6": {
+      "d": "Mang đồ ăn vặt và ___ cho trẻ em.",
+      "v": "Khi Paul dặn mang gì cho bọn trẻ.",
+      "t": ["What about wifi on board? Is that any good?", "Not really. So it's best to bring some books for them."],
+      "p": "Wifi trên phà không tốt nên tốt nhất mang theo sách cho các con → books"
+    },
+    "7": {
+      "d": "Cần một ___ cho chuồng chó.",
+      "v": "Khi Tammy nói có thể mang theo chó.",
+      "t": "The kennels on board are OK – they're quite big – you just need to provide a blanket.",
+      "p": "“Is required” = “you just need to provide”; thứ cần mang là “a blanket” (chăn) → blanket"
+    },
+    "8": {
+      "d": "Cố gắng ngắm ___ vào buổi sáng.",
+      "v": "Khi Paul kể bọn trẻ thích gì trên chuyến đi.",
+      "t": "in the morning keeping a lookout for dolphins – we saw loads",
+      "p": "“Try to see” = “keeping a lookout for” (để ý tìm); buổi sáng họ ngắm cá heo → dolphins"
+    },
+    "9": {
+      "d": "Nếu có thời gian, ghé thăm lâu đài ___.",
+      "v": "Khi Paul kể đến Aberdeen sớm nhiều giờ trước giờ phà chạy.",
+      "t": ["Drum Castle.", "Is that spelt like the instrument?", "Yeah."],
+      "p": "“If time” = có nhiều giờ chờ phà. Lâu đài tên “Drum”, viết giống nhạc cụ “drum” (cái trống) → Drum"
+    },
+    "10": {
+      "d": "Nhà hàng ___ ở một ngôi làng gần đó được giới thiệu.",
+      "v": "Cuối bài, khi Tammy hỏi lâu đài có nhà hàng không.",
+      "t": ["It's only got a coffee shop – no restaurant.", "We looked up restaurants in the area and found an Italian one in a village nearby."],
+      "p": "Lâu đài chỉ có quán cà phê; nhà hàng ở làng gần đó là nhà hàng Ý → Italian"
+    }
+  }
+}

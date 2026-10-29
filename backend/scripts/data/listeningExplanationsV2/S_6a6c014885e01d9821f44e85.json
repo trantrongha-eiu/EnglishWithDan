@@ -1,0 +1,65 @@
+{
+  "title": "Céide Fields",
+  "q": {
+    "31": {
+      "d": "Vào những năm 1930, một giáo viên địa phương nhận ra rằng những hòn đá bên dưới bề mặt đầm lầy từng là ___.",
+      "v": "Khi kể chuyện Patrick Caulfield phát hiện ra khu di chỉ.",
+      "t": "He realised that these must be walls and that they must be thousands of years old",
+      "p": "“Realised” xuất hiện y như trong đề; những hàng đá đó hẳn phải là “walls” (tường) → walls"
+    },
+    "32": {
+      "d": "___ của ông trở thành nhà khảo cổ học và tiến hành điều tra khu di chỉ.",
+      "v": "Đoạn 40 năm sau, khi có người tiếp tục khám phá.",
+      "t": "Patrick Caulfield’s son Seamus, who had become an archaeologist by then, began to explore further",
+      "p": "Người trở thành nhà khảo cổ là Seamus – “Patrick Caulfield’s son” (con trai ông) → son"
+    },
+    "33": {
+      "d": "Một phương pháp truyền thống người dân địa phương dùng để đào tìm ___ đã được sử dụng để xác định vị trí của các hòn đá.",
+      "v": "Khi mô tả cách Seamus cắm que sắt xuống đầm lầy.",
+      "t": "a traditional method which local people had always used for finding fuel buried in the bog",
+      "p": "“Dig for” = “finding … buried in the bog” (tìm thứ bị chôn trong đầm lầy); thứ đó là “fuel” (nhiên liệu – than bùn) → fuel"
+    },
+    "34": {
+      "d": "Các đồ vật được bảo quản tốt trong đầm lầy vì thiếu ___.",
+      "v": "Khi giải thích vì sao di chỉ được bảo tồn tốt.",
+      "t": "Objects remain so well preserved in these conditions because of the acidity of the peat and the deficiency of oxygen",
+      "p": "“A lack of” = “the deficiency of” (sự thiếu hụt) → thiếu oxy. Lưu ý độ axit (acidity) là nguyên nhân khác, không đi với “lack of” → oxygen"
+    },
+    "35": {
+      "d": "Những ngôi nhà có hình ___ và có một lỗ trên mái.",
+      "v": "Khi nói về nhà của nông dân thời đồ đá mới.",
+      "t": "These weren’t round as people often assume, but rectangular with a small hole in the roof that allowed smoke to escape.",
+      "p": "Bẫy: “round” (tròn) là điều người ta thường nghĩ nhưng bị phủ định “weren’t round”. Hình dạng thật là “rectangular” (hình chữ nhật) → rectangular"
+    },
+    "36": {
+      "d": "Những chiếc bình dùng để chứa đồ và để làm ___.",
+      "v": "Khi nói về đồ gốm (pottery).",
+      "t": "as well as for storing food, pots were filled with a small amount of fat and when this was set alight, they served as lamps",
+      "p": "Ngoài chứa thức ăn, bình được đổ mỡ vào rồi đốt, dùng làm đèn (“served as lamps”) → lamps"
+    },
+    "37": {
+      "d": "Mỗi cánh đồng ở Céide đủ lớn để nuôi sống một ___ đông người.",
+      "v": "Khi nói về cách sử dụng các cánh đồng.",
+      "t": "each plot of land was of a suitable size to sustain an extended family",
+      "p": "“Large enough to support” = “of a suitable size to sustain”; “a big ___” = “an extended family” (đại gia đình) → family"
+    },
+    "38": {
+      "d": "Các cánh đồng có lẽ được dùng để giới hạn khu vực chăn thả – không có bằng chứng về công trình để nhốt gia súc vào ___.",
+      "v": "Cuối đoạn về chăn thả luân phiên.",
+      "t": "no structures have been found which would have been used to shelter animals in the winter",
+      "p": "“No evidence of structures” = “no structures have been found”; “house them” = “shelter animals”; thời điểm là “in the winter” → winter"
+    },
+    "39": {
+      "d": "Sự suy giảm chất lượng ___ (một lý do khiến lối sống ở Céide chấm dứt).",
+      "v": "Khi lý giải vì sao cuộc sống ở Céide kết thúc đột ngột.",
+      "t": "The soil would have become less productive and led to the abandonment of farming.",
+      "p": "“A decline in quality” = “would have become less productive” (kém màu mỡ hơn); thứ bị suy giảm là “soil” (đất) → soil"
+    },
+    "40": {
+      "d": "Sự gia tăng ___ (một lý do khác).",
+      "v": "Khi nói về áp lực khí hậu (climatic pressures).",
+      "t": "the conditions became wetter as there was a lot more rain",
+      "p": "“An increase in” = “a lot more”; khí hậu ẩm hơn vì mưa nhiều hơn → rain"
+    }
+  }
+}

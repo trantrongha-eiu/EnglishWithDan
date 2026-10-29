@@ -1,0 +1,65 @@
+{
+  "title": "Cam 21 - Test 2 – Part 1",
+  "q": {
+    "1": {
+      "d": "Lớp nấu món Việt Nam – Ngày: ___.",
+      "v": "Lớp đầu tiên người phụ nữ nhắc tới.",
+      "t": ["I think that was on the 13th of January. It cost about 60 pounds.", "Yes, you're right about the date, but it's 59 pounds actually."],
+      "p": "Người phụ nữ nói ngày 13/1, người đàn ông xác nhận “you're right about the date” (chỉ sửa giá thành £59) → 13 January"
+    },
+    "2": {
+      "d": "Lớp làm bánh mì – Giá: £___ (ngoài ra còn phụ phí nguyên liệu).",
+      "v": "Khi hỏi giá lớp làm bánh mì.",
+      "t": "The actual cost is £48 but then there's an extra charge as well as that for the ingredients",
+      "p": "Giá chính là £48. Bẫy: “no more than twenty pounds” là phụ phí nguyên liệu, không phải học phí → 48"
+    },
+    "3": {
+      "d": "Học viên làm bánh mì trắng, bánh mì men tự nhiên và ___.",
+      "v": "Khi hỏi lớp làm những loại bánh gì.",
+      "t": "I think they make white bread and then they make sourdough, that seems to be very fashionable at present, and they learn how to make pizza",
+      "p": "Nghe đúng thứ tự: white bread → sourdough → “pizza” → pizza"
+    },
+    "4": {
+      "d": "Lớp mát-xa mặt – Giáo viên được đào tạo ở ___.",
+      "v": "Khi nói về giáo viên lớp mát-xa mặt.",
+      "t": "the type of massage done is a traditional technique used in India and she actually did her training there",
+      "p": "“Trained in” = “did her training there”; “there” chỉ India (Ấn Độ) ở vế trước → India"
+    },
+    "5": {
+      "d": "Mang theo một ___.",
+      "v": "Cùng đoạn về lớp mát-xa mặt.",
+      "t": "You practise it on yourself so you have to take a mirror to the class, so you can see what you're doing.",
+      "p": "“Bring” = “take … to the class”; học viên tự mát-xa cho mình nên cần “a mirror” (gương) → mirror"
+    },
+    "6": {
+      "d": "Lớp làm nến – Ngày: ___.",
+      "v": "Khi người phụ nữ hỏi về lớp làm nến.",
+      "t": ["it's on the 6th. It was on the 23rd of January but they had to change the date"],
+      "p": "Bẫy: 23/1 là ngày cũ đã bị đổi. Ngày mới là mùng 6 tháng Tư (“sometime in April … on the 6th”) → 6 April"
+    },
+    "7": {
+      "d": "Chỉ dùng nguyên liệu ___.",
+      "v": "Cùng đoạn về lớp làm nến.",
+      "t": "the candles are all made out of natural products",
+      "p": "“Only … ingredients are used” = “all made out of … products” → nguyên liệu tự nhiên → natural"
+    },
+    "8": {
+      "d": "Lớp vẽ tranh lụa – Giá: £___.",
+      "v": "Khi người đàn ông giới thiệu lớp vẽ lụa.",
+      "t": "It's £67.50, which is really good value I think – there's a similar class I've seen that was £110.",
+      "p": "Bẫy: £110 là giá một lớp tương tự ở nơi khác. Lớp này giá £67.50 → 67.50"
+    },
+    "9": {
+      "d": "Mang theo tạp dề hoặc ___ cũ.",
+      "v": "Khi hỏi có cần mang lụa không.",
+      "t": "like an apron if you've got one, or a shirt that you don't use any more",
+      "p": "“Old” = “that you don't use any more” (không dùng nữa); thứ đó là “a shirt” (áo sơ mi) → shirt"
+    },
+    "10": {
+      "d": "Lớp DIY cho người mới – Học cách dùng máy khoan, cưa và ___.",
+      "v": "Lớp cuối cùng, về sửa chữa trong nhà.",
+      "t": ["You learn how to use an electric drill and a saw.", "and I even need to learn how to use a hammer", "Yes, you'll do that too."],
+      "p": "Ngoài máy khoan và cưa, người phụ nữ hỏi về búa (hammer) và người đàn ông xác nhận “you'll do that too” → hammer"
+    }
+  }
+}

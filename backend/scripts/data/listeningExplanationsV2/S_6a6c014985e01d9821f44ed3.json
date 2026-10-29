@@ -1,0 +1,71 @@
+{
+  "title": "Cam 19 - Test 3 – Part 2",
+  "q": {
+    "11": {
+      "d": "Superheroes (Siêu anh hùng).",
+      "v": "Workshop đầu tiên Jenny giới thiệu.",
+      "t": "This is a chance for deaf children to share their reading experiences with author Madeleine Gordon, who is herself hearing impaired.",
+      "p": "“Deaf children” (trẻ khiếm thính) = children with a disability → workshop dành cho trẻ khuyết tật → C"
+    },
+    "12": {
+      "d": "Just do it (Cứ làm đi).",
+      "v": "Workshop thứ hai, do họa sĩ Mark Keane dẫn.",
+      "t": "with an opportunity for aspiring actors to do some role play",
+      "p": "“Aspiring actors” (người muốn làm diễn viên) và “role play” (nhập vai) = a drama activity. Bẫy A: Mark Keane là họa sĩ minh họa nhưng workshop không vẽ tranh → D"
+    },
+    "13": {
+      "d": "Count on me (Hãy tin ở tôi).",
+      "v": "Workshop thứ ba, về tình bạn.",
+      "t": "is an inspiring and entertaining look at the issues of friendship for 13–14-year-olds",
+      "p": "Đối tượng là học sinh 13–14 tuổi = aimed at a specific age group. Bẫy E: chủ đề tình bạn nói chung, không phải “new relationships” (mối quan hệ mới) → G",
+      "key": "G",
+      "why": "Count on me dành cho học sinh 13–14 tuổi = aimed at a specific age group (G); key cũ bị đảo với Q14"
+    },
+    "14": {
+      "d": "Speak up (Hãy lên tiếng).",
+      "v": "Workshop thứ tư, thuộc chuỗi về sức khỏe tâm thần.",
+      "t": "encouraging children to describe situations where young people experience loneliness",
+      "p": "“Loneliness” (sự cô đơn) = an unhappy feeling → workshop khám phá một cảm xúc không vui → F",
+      "key": "F",
+      "why": "Speak up nói về loneliness = explores an unhappy feeling (F); key cũ bị đảo với Q13"
+    },
+    "15": {
+      "d": "Jump for joy (Nhảy lên vì vui).",
+      "v": "Workshop thứ năm, về sách của Nina Karan.",
+      "t": "It recently received the gold medal at the Waterford Awards. Nina will get children to celebrate the word ‘joy’ by writing a poem.",
+      "p": "Cuốn sách vừa đoạt huy chương vàng giải Waterford và chính tác giả Nina dẫn workshop = led by a prize-winning author. Bẫy H: sách có nói tới chuyến đi Ấn Độ nhưng không nhằm giới thiệu văn hóa → B"
+    },
+    "16": {
+      "d": "Sticks and stones (Gậy và đá).",
+      "v": "Workshop cuối cùng.",
+      "t": "a community who organise an African-Caribbean festival to help local children learn about their Jamaican roots",
+      "p": "Giúp trẻ tìm hiểu nguồn gốc Jamaica của mình = raises awareness of a particular culture. Bẫy A: sách “beautifully illustrated” nhưng hoạt động là chơi trống, không vẽ → H"
+    },
+    "17": {
+      "d": "Người nói đưa ra HAI lý do nào để giới thiệu cuốn Alive and Kicking? (đáp án thứ nhất) A. hợp với cả bé trai và bé gái / B. tác giả nổi tiếng / C. có tranh minh họa nhiều màu / D. hài hước / E. đề cập một chủ đề quan trọng.",
+      "v": "Khi Jenny giới thiệu cuốn sách yêu thích.",
+      "t": "Usually, books like this are quite sad, but this one actually made me cry with laughter.",
+      "p": "“Made me cry with laughter” (cười chảy nước mắt) = it is funny. Bẫy: B – “You won’t have heard of the writer” (tác giả chưa nổi tiếng); C – tranh là “black and white” (đen trắng) → D"
+    },
+    "18": {
+      "d": "Người nói đưa ra HAI lý do nào để giới thiệu cuốn Alive and Kicking? (đáp án thứ hai)",
+      "v": "Cùng đoạn, khi tóm tắt nội dung sách.",
+      "t": "It deals with the serious issue of immigration",
+      "p": "“Deals with the serious issue of immigration” (đề cập vấn đề nghiêm túc là nhập cư) = deals with an important topic → E"
+    },
+    "19": {
+      "d": "Người nói đưa ra HAI lời khuyên nào cho phụ huynh về việc đọc? (đáp án thứ nhất) A. khuyến khích trẻ ghi từ mới / B. cho trẻ nghe sách nói / C. xin gợi ý từ thủ thư / D. cho trẻ tự chọn sách / E. chỉ đọc to cho trẻ đến khi trẻ tự đọc được.",
+      "v": "Khi người dẫn hỏi lời khuyên cho phụ huynh.",
+      "t": "If you don’t have time for this, then let them listen to audio books.",
+      "p": "“Let them listen to audio books” = allow children to listen to audio books. Bẫy E: Jenny nói ngừng đọc to khi trẻ biết đọc là “a mistake” → B"
+    },
+    "20": {
+      "d": "Người nói đưa ra HAI lời khuyên nào cho phụ huynh về việc đọc? (đáp án thứ hai)",
+      "v": "Cuối đoạn lời khuyên, về giới thiệu tác giả và thể loại mới.",
+      "t": [
+        "You can introduce new authors and genres to them. Librarians should be able to help you with this."
+      ],
+      "p": "Phụ huynh nên giới thiệu tác giả, thể loại mới và thủ thư có thể giúp việc này = get recommendations from librarians. D sai: lời khuyên là cha mẹ giới thiệu sách mới, không phải để trẻ tự chọn → C"
+    }
+  }
+}

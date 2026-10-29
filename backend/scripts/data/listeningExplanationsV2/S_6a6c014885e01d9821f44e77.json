@@ -1,0 +1,65 @@
+{
+  "title": "Cam 19 - Test 1 – Part 3",
+  "q": {
+    "21": {
+      "d": "Colin thấy hài lòng nhất về HAI điều nào trong dự án tái sử dụng bánh mì? (đáp án thứ nhất) A. được nhà hàng địa phương ủng hộ / B. tìm ra cách hay để chống lãng phí / C. vượt qua khó khăn trong quy trình cơ bản / D. thử nghiệm mẫu mã và màu sắc / E. học cách dùng in 3-D.",
+      "v": "Khi Marie hỏi về dự án tái sử dụng đồ ăn thừa của Colin.",
+      "t": ["It must’ve been a great feeling to make something appetising out of bits of old bread that would’ve been thrown away otherwise.", "It was."],
+      "p": "Marie nói chắc hẳn rất vui khi biến bánh mì cũ lẽ ra bị vứt đi thành món ngon, Colin xác nhận “It was” → cách hay để tránh lãng phí. Bẫy: A – nhà hàng mới chỉ là dự định gửi mẫu; C – quy trình cơ bản “quite straightforward” (khá đơn giản), không có khó khăn; E – Colin đã dùng in 3-D từ trước → B"
+    },
+    "22": {
+      "d": "Colin thấy hài lòng nhất về HAI điều nào trong dự án tái sử dụng bánh mì? (đáp án thứ hai)",
+      "v": "Khi Colin nói về việc dùng máy in 3-D để làm bánh quy.",
+      "t": "I had time to play around with different patterns for the biscuits and finding how I could add fruit and vegetables to make them a more appetising colour, and I was really pleased with what I managed to produce",
+      "p": "“Play around with different patterns” = thử nghiệm mẫu mã; thêm rau củ để có “a more appetising colour” = màu sắc; “really pleased” = satisfying. In 3-D thì “I’d used that before” nên không phải điều mới học (E sai) → D"
+    },
+    "23": {
+      "d": "Hai sinh viên đồng ý cảm biến cảm ứng trên nhãn thực phẩm có thể được phát triển theo HAI hướng nào? (đáp án thứ nhất) A. dùng cho sản phẩm y tế / B. cho biết thực phẩm đã hỏng / C. dùng cho cả đồ uống / D. ứng dụng cho người khiếm thị / E. cho biết trọng lượng thực phẩm.",
+      "v": "Khi bàn về nhãn cảm biến (touch-sensitive labels).",
+      "t": "But actually, I thought it might be really good for drug storage in hospitals and pharmacies.",
+      "p": "Câu hỏi về hướng phát triển “in future”. B, C, D là những gì nhãn ĐÃ làm được (báo hỏng, dùng cho sữa/nước ép, ban đầu dành cho người khiếm thị). Ý tưởng mới: bảo quản thuốc ở bệnh viện, nhà thuốc = medical products → A"
+    },
+    "24": {
+      "d": "Hai sinh viên đồng ý cảm biến cảm ứng trên nhãn thực phẩm có thể được phát triển theo HAI hướng nào? (đáp án thứ hai)",
+      "v": "Ngay sau ý tưởng dùng cho thuốc, Colin quay lại chủ đề thực phẩm.",
+      "t": ["maybe it’d be possible to use it for other things besides freshness. Like how many kilograms a joint of meat is.", "Yes, there’s all sorts of possibilities."],
+      "p": "Colin gợi ý dùng nhãn để biết miếng thịt nặng bao nhiêu kilogram = indicate the weight of certain foods, Marie đồng ý → E"
+    },
+    "25": {
+      "d": "Sử dụng sản phẩm địa phương.",
+      "v": "Đầu phần bàn về xu hướng ăn uống.",
+      "t": ["That seems so obvious, but the shops are still full of imported foods.", "Yes, they need to be more proactive to address that."],
+      "p": "Cửa hàng vẫn đầy hàng nhập khẩu và “they (the shops) need to be more proactive” = nhà bán lẻ cần làm nhiều hơn để khuyến khích việc này → D"
+    },
+    "26": {
+      "d": "Giảm bao bì không cần thiết.",
+      "v": "Khi Colin nhắc tới bao bì nhựa trong siêu thị.",
+      "t": "just about everything you buy in supermarkets is still covered in plastic. The government needs to do something about it.",
+      "p": "“The government needs to do something” = chính phủ cần ra tay → cần quy định chặt chẽ hơn (stricter regulations). Không phải lỗi của nhà bán lẻ như câu trước → G"
+    },
+    "27": {
+      "d": "Thực phẩm không chứa gluten và lactose.",
+      "v": "Khi Colin hỏi liệu có thêm người quan tâm tới loại thực phẩm này không.",
+      "t": "Lots of people I know have been buying that type of food for years now.",
+      "p": "Nhiều người đã mua loại thực phẩm này từ nhiều năm nay → xu hướng này vốn đã phổ biến (already seems to be widespread) → C"
+    },
+    "28": {
+      "d": "Dùng sản phẩm mang thương hiệu gắn với đầu bếp nổi tiếng.",
+      "v": "Khi Marie nói về sản phẩm của đầu bếp trên TV.",
+      "t": ["I bought something like that once, but I won’t again.", "it didn’t actually taste of anything"],
+      "p": "Cả hai từng mua và đều thất vọng (sẽ không mua lại, gói gia vị chẳng có vị gì) → có thể cho kết quả đáng thất vọng → B"
+    },
+    "29": {
+      "d": "Sự phát triển của “bếp ma” (ghost kitchens) cho đồ ăn mang đi.",
+      "v": "Khi Marie giải thích ghost kitchens là gì.",
+      "t": "But people aren’t aware of that – it’s all kept very quiet.",
+      "p": "“People aren’t aware” và “kept very quiet” (được giữ kín) = hầu hết mọi người biết rất ít về điều này → F"
+    },
+    "30": {
+      "d": "Dùng nấm để chữa các vấn đề sức khỏe thường gặp.",
+      "v": "Cuối bài, khi Colin nói nhiều người dùng nấm để chữa bệnh.",
+      "t": ["They might be taking a big risk there.", "it’s hard to know which varieties are safe to eat"],
+      "p": "“Taking a big risk” và khó biết loại nào “safe to eat” → việc này có thể nguy hiểm → H"
+    }
+  }
+}

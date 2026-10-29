@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 3 Part 3",
+  "q": {
+    "21": {
+      "d": "Finn vui khi biết rằng chủ đề của họ A. không quen thuộc với trưởng học phần / B. không bị sinh viên khác chọn / C. không khó nghiên cứu.",
+      "v": "Đầu bài, khi Finn nói về việc nghiên cứu.",
+      "t": ["I’m glad we picked this subject. No one else on the course is doing the same as us", "although it is one of the research areas of the module convener"],
+      "p": "“Glad” = pleased; “No one else on the course is doing the same” = không ai khác chọn. Bẫy A: đây chính là lĩnh vực nghiên cứu của trưởng học phần; C: Finn “struggled to find many useful websites” → B"
+    },
+    "22": {
+      "d": "Maya nói một hiểu lầm về chương trình kịch (theatre programmes) là A. nhà hát trả tiền cho công ty làm chúng / B. ngày nay ít khán giả mua / C. có nhiều quảng cáo hơn trước.",
+      "v": "Khi nói về các công ty chuyên làm chương trình kịch.",
+      "t": ["Contrary to what many people think, theatres don’t hire people to do the programmes.", "companies buy the rights to publish programmes on the theatre’s behalf and then make their money selling advertising space"],
+      "p": "“Contrary to what many people think” = mistaken belief. Người ta tưởng nhà hát thuê (trả tiền) người làm chương trình, nhưng thực ra công ty mua quyền xuất bản và kiếm tiền từ quảng cáo → A"
+    },
+    "23": {
+      "d": "Finn ngạc nhiên rằng thời kịch Anh xưa, chương trình kịch A. khó mua / B. được phát miễn phí / C. được xem như một loại hợp đồng.",
+      "v": "Khi Finn nói về chương trình kịch thời xưa.",
+      "t": ["But I hadn’t realised that if the programme named a famous actor, that’s who the public expected to perform.", "people accused the theatre of breaking their agreement with the audience"],
+      "p": "“Hadn’t realised” = surprised. Nếu diễn viên ghi trong chương trình không diễn, khán giả cho là nhà hát “breaking their agreement” (phá vỡ thỏa thuận) → chương trình như một bản hợp đồng → C"
+    },
+    "24": {
+      "d": "Maya cho rằng dự án nên giải thích vì sao các đoàn diễn viên A. tự quảng bá vở diễn / B. diễn ngoài trời / C. phải đi lưu diễn.",
+      "v": "Khi Maya nói điều nên đưa vào dự án.",
+      "t": ["lots of ordinary people at that time were illiterate, so theatre programmes were of limited value in advertising plays", "they’d parade around the streets in their costumes, beating drums and announcing their upcoming performances"],
+      "p": "Nhiều người không biết chữ nên chương trình ít tác dụng quảng cáo → đoàn diễn mặc trang phục diễu hành, đánh trống, thông báo vở diễn sắp tới = promoted their own plays → A"
+    },
+    "25": {
+      "d": "Finn và Maya đều cho rằng so với chương trình thế kỷ 19, chương trình thế kỷ 18 A. độc đáo hơn / B. nhiều màu sắc hơn / C. nhiều thông tin hơn.",
+      "v": "Khi so sánh chương trình thế kỷ 18 và 19.",
+      "t": ["But personally I think 18th century programmes were superior because they told the theatregoers so many things, including about the actors.", "And about the writer, the plot and sometimes the history of the play."],
+      "p": "Chương trình thế kỷ 18 cho khán giả biết rất nhiều điều (diễn viên, tác giả, cốt truyện, lịch sử vở) = more informative; Maya bổ sung thêm → đồng ý. Bẫy B: thế kỷ 19 mới luôn có màu → C"
+    },
+    "26": {
+      "d": "Maya không hiểu rõ vì sao, ở thế kỷ 20, A. Mỹ in rất ít chương trình kịch / B. chương trình kịch ở Anh lâu không phát triển / C. chương trình ở Anh bắt chước Mỹ.",
+      "v": "Khi bàn về chương trình kịch thế kỷ 20.",
+      "t": "What I don’t really get is that after the war they didn’t go back to being more than one sheet or change in any way for over 25 years.",
+      "p": "“What I don’t really get” = doesn’t fully understand; sau chiến tranh chương trình ở Anh không thay đổi gì suốt hơn 25 năm = failed to develop for so long. Bẫy A: Mỹ vẫn in như cũ → B"
+    },
+    "27": {
+      "d": "Ruy Blas.",
+      "v": "Chương trình đầu tiên Maya đưa ra.",
+      "t": ["But the programme looks very decorative.", "Good enough to put in a frame on the wall. The images are just beautiful."],
+      "p": "Đẹp tới mức có thể đóng khung treo tường, hình ảnh tuyệt đẹp = it resembles an artwork → F"
+    },
+    "28": {
+      "d": "Man of La Mancha.",
+      "v": "Chương trình Finn tìm được.",
+      "t": "it contains articles written by members of the theatre company, so we can learn how the production was created and the thoughts and feelings of the cast",
+      "p": "Có bài viết của thành viên đoàn kịch, cho biết vở được dàn dựng thế nào và suy nghĩ của diễn viên = it contains insights into the show → E"
+    },
+    "29": {
+      "d": "The Tragedy of Jane Shore.",
+      "v": "Chương trình Maya có bản sao từ bảo tàng.",
+      "t": "it’s said to be the earliest surviving document to have been printed on Australia’s first printing press",
+      "p": "Tài liệu sớm nhất còn lại được in trên máy in đầu tiên của Úc = historically significant for a country → B"
+    },
+    "30": {
+      "d": "The Sailors’ Festival.",
+      "v": "Chương trình cuối cùng.",
+      "t": "It comes from the British Library’s digitised collection of programmes that was started a few years ago.",
+      "p": "Nằm trong bộ sưu tập số hóa của Thư viện Anh bắt đầu vài năm trước = included in a recent project → D"
+    }
+  }
+}

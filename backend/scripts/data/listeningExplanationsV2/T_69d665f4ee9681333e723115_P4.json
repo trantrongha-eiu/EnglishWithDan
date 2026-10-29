@@ -1,0 +1,65 @@
+{
+  "title": "Cam 20 - Test 2 Part 4",
+  "q": {
+    "31": {
+      "d": "Sự quan tâm tới các xu hướng ẩm thực bắt đầu tăng từ khi có ___ đồ ăn được chia sẻ trên mạng xã hội.",
+      "v": "Câu mở đầu bài nói.",
+      "t": "Interest in food fashions has risen rapidly since the birth of the smartphone when people first began taking photos of their food and instantly sharing them with their friends",
+      "p": "“Started with” = “since … first began”; thứ được chia sẻ là “photos of their food” (ảnh chụp đồ ăn) → photos"
+    },
+    "32": {
+      "d": "Doanh số các thương hiệu thực phẩm ___ đã tăng nhanh nhờ cách này (người có ảnh hưởng trên mạng).",
+      "v": "Khi nói về người có ảnh hưởng (influencers) làm đại sứ thương hiệu.",
+      "t": "Companies which sell vegan produce were pioneers in being able to increase sales really quickly in this way.",
+      "p": "“Grown rapidly” = “increase sales really quickly”; “this way” = qua influencer; các công ty đó bán đồ thuần chay → vegan"
+    },
+    "33": {
+      "d": "Những ___ nổi tiếng có sức ảnh hưởng.",
+      "v": "Khi nói siêu thị theo dõi xu hướng.",
+      "t": "are particularly interested in what well-known chefs are putting on their menus",
+      "p": "“Famous” = “well-known”; siêu thị đặc biệt chú ý món mà các đầu bếp nổi tiếng đưa vào thực đơn → chefs (cooks cũng đúng)"
+    },
+    "34": {
+      "d": "___ được mời tới thăm người trồng (bơ) ở Nam Phi.",
+      "v": "Ví dụ chiến dịch quảng bá quả bơ những năm 1990.",
+      "t": "They paid for a group of journalists to travel out to South Africa to meet avocado farmers.",
+      "p": "“Visit growers” = “meet avocado farmers”; người được trả tiền đi là “a group of journalists” (nhà báo) → journalists"
+    },
+    "35": {
+      "d": "Quảng cáo tập trung vào lợi ích ___ của nó.",
+      "v": "Cùng ví dụ quả bơ.",
+      "t": "Advertisements were designed to promote the avocado as a superfood, rich in nutrients and therefore beneficial for health.",
+      "p": "Quảng cáo giới thiệu bơ là siêu thực phẩm giàu dinh dưỡng, “beneficial for health” → lợi ích sức khỏe → health"
+    },
+    "36": {
+      "d": "Quảng bá ở Mỹ thông qua các cửa hàng ___ giúp giảm nhu cầu quảng cáo.",
+      "v": "Ví dụ sữa yến mạch Oatly.",
+      "t": "In the USA, the brand decided against a big retail launch in favour of getting the product into coffee chains, which removed the need for a big advertising budget.",
+      "p": "Đưa sản phẩm vào các chuỗi cà phê (coffee chains), nhờ đó không cần ngân sách quảng cáo lớn. Bẫy: siêu thị kém hiệu quả hơn → coffee"
+    },
+    "37": {
+      "d": "Nó thu hút người tiêu dùng quan tâm tới ___.",
+      "v": "Khi so sánh sữa yến mạch với sữa hạnh nhân.",
+      "t": "Many consumers prefer it because it has less of an impact on the environment.",
+      "p": "Người tiêu dùng ưa chuộng vì ít tác động tới môi trường (tốn ít nước, lượng carbon thấp) → environment"
+    },
+    "38": {
+      "d": "(Cá skrei) đã giúp củng cố ___ của hải sản Na Uy.",
+      "v": "Ví dụ cá tuyết Bắc Cực của Na Uy.",
+      "t": "The demand for Skre has been used by a food marketing agency to build the reputation of Norway’s fisheries in general.",
+      "p": "“Strengthen” ≈ “build”; thứ được xây dựng là “the reputation” (danh tiếng) của ngành thủy sản Na Uy → reputation"
+    },
+    "39": {
+      "d": "Thành công của nó dẫn tới việc tăng ___ của nó.",
+      "v": "Ví dụ hạt diêm mạch (quinoa) ở Peru.",
+      "t": "when demand peaked some years ago the price soared making it unaffordable for local people",
+      "p": "“An increase in” = “soared” (tăng vọt); thứ tăng là “the price” (giá) khiến người dân địa phương không mua nổi → price"
+    },
+    "40": {
+      "d": "Khai thác tài nguyên quá mức dẫn tới ___ kém chất lượng.",
+      "v": "Câu gần cuối, hậu quả của việc trồng quinoa quanh năm.",
+      "t": "One issue has been that the fertility of the soil decreased dramatically.",
+      "p": "“Overuse of resources” = canh tác quanh năm; “poor quality” = “fertility … decreased dramatically” → đất bạc màu → soil"
+    }
+  }
+}
