@@ -323,6 +323,7 @@
 
         /* ── Actual Tests colour overrides ───────────────────────────────── */
         .plele-badge.at { background: #e11d48; }
+        .plele-badge.all { background: #475569; font-size: 10px; }
         .plele-tab[data-part="actual"].plele-active { border-color: #e11d48; color: #9f1239; background: #fff1f2; }
 
         /* ── Practice section cards ──────────────────────────────────────── */

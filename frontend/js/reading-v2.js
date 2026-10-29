@@ -65,6 +65,9 @@ const RD_PRACTICE_PAGE_SIZE = 15;
 let _allPracticePassages = [];
 let _currentPracticeCategory = '';
 const RD_PRACTICE_CATEGORIES = ['passage1', 'passage2', 'passage3', 'actual-test'];
+// Bài lẻ list tab: 'all' (default, every passage mixed) | one of the above.
+function _rdParseCategory(raw) { return RD_PRACTICE_CATEGORIES.includes(raw) ? raw : 'all'; }
+function _rdListUrl(cat) { return cat === 'all' ? '?mode=single' : `?mode=single&category=${cat}`; }
 let _rdCategoryCache = {};      // category → { passages, doneMap }
 let _testsCache = null;         // { tests, userPlan, planExpiresAt } — avoids refetching /api/reading/tests on every list-screen return
 let _testsCacheAt = 0;
@@ -367,7 +370,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.addEventListener('popstate', async (e) => {
     const s        = e.state?.screen;
     const mode     = e.state?.mode ?? e.state?.tab; // support both new {mode} and old {tab} state keys
-    const category = e.state?.category || 'passage1';
+    const category = e.state?.category || 'all';
     const isSingle = mode === 'single' || mode === 'lele';
 
     // If an active practice session is running, clean it up before navigating.
@@ -531,10 +534,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (examParam === 'practice') await startPractice(passageIdParam, categoryParam, false, 'practice');
     else await startPractice(passageIdParam, categoryParam, false, null, examParam);
   } else if (modeParam === 'single' || modeParam === 'lele') {
-    const catStr = categoryParam !== 'passage1' ? `&category=${categoryParam}` : '';
-    history.replaceState({ screen: 'list', mode: 'single', category: categoryParam }, '', `?mode=single${catStr}`);
+    // No ?category= on the Bài lẻ list = the 'all' tab (every passage mixed).
+    const listCat = _rdParseCategory(params.get('category'));
+    history.replaceState({ screen: 'list', mode: 'single', category: listCat }, '', _rdListUrl(listCat));
     document.querySelectorAll('.plele-tab').forEach(t =>
-      t.classList.toggle('plele-active', t.dataset.category === categoryParam)
+      t.classList.toggle('plele-active', t.dataset.category === listCat)
     );
     setReadingMode('lele', false);
   } else if (modeParam === 'tips' || modeParam === 'reading-tips') {
@@ -1256,9 +1260,9 @@ function setReadingMode(mode, pushHistory = true) {
   const isLele = mode === 'lele';
   const isTips = mode === 'tips';
   if (pushHistory) {
-    const cat = document.querySelector('.plele-tab.plele-active')?.dataset.category || 'passage1';
+    const cat = document.querySelector('.plele-tab.plele-active')?.dataset.category || 'all';
     if (isLele) {
-      history.pushState({ screen: 'list', mode: 'single', category: cat }, '', `?mode=single&category=${cat}`);
+      history.pushState({ screen: 'list', mode: 'single', category: cat }, '', _rdListUrl(cat));
     } else if (isTips) {
       history.pushState({ screen: 'list', mode: 'tips' }, '', '?mode=tips');
     } else {
@@ -1300,7 +1304,7 @@ function setReadingMode(mode, pushHistory = true) {
     const listEl = document.getElementById('practice-passage-list');
     if (listEl && !listEl.children.length) {
       const activeTab = document.querySelector('.plele-tab.plele-active');
-      const cat = activeTab?.dataset.category || 'passage1';
+      const cat = activeTab?.dataset.category || 'all';
       loadPracticePassages(cat);
     }
     checkResumePractice();
@@ -1432,7 +1436,10 @@ function goToRdPracticePage(p) {
 }
 
 function _rdRenderPassageCard(p) {
-  const category  = _rdGlobalSearchActive ? (p.__isActual ? 'actual-test' : p.category) : _currentPracticeCategory;
+  // Mixed lists (search, 'all' tab) label each card with its own passage.
+  const category  = (_rdGlobalSearchActive || _currentPracticeCategory === 'all')
+    ? ((p.__isActual || p.isActualTest) ? 'actual-test' : p.category)
+    : _currentPracticeCategory;
   const isActual  = category === 'actual-test';
   const cls       = isActual ? 'at' : ({ passage1:'p1', passage2:'p2', passage3:'p3' }[category] || 'p1');
   const pNum      = isActual ? null : ({ passage1:'1', passage2:'2', passage3:'3' }[category] || '1');
@@ -1490,7 +1497,7 @@ function _rdRenderPassageCard(p) {
 
 async function loadPracticePassages(category, tabEl) {
   // Update URL to reflect active category tab
-  history.replaceState({ screen: 'list', mode: 'single', category }, '', `?mode=single&category=${category}`);
+  history.replaceState({ screen: 'list', mode: 'single', category }, '', _rdListUrl(category));
 
   // Update active tab
   document.querySelectorAll('.plele-tab').forEach(b => b.classList.remove('plele-active'));
@@ -1530,6 +1537,7 @@ async function loadPracticePassages(category, tabEl) {
   try {
     const res = await apiFetch(`/api/reading/practice/list?category=${category}`);
     if (token !== _rdListToken) return;
+    _currentPracticeCategory = category;
     const passages = res.passages || [];
     _practiceDoneMap = res.doneMap || {};
 
@@ -4010,8 +4018,8 @@ function closeRetry() {
     // Clear list so setReadingMode reloads it fresh
     const listEl = document.getElementById('practice-passage-list');
     if (listEl) listEl.innerHTML = '';
-    const cat = document.querySelector('.plele-tab.plele-active')?.dataset.category || 'passage1';
-    history.replaceState({ screen: 'list', mode: 'single', category: cat }, '', `?mode=single&category=${cat}`);
+    const cat = document.querySelector('.plele-tab.plele-active')?.dataset.category || 'all';
+    history.replaceState({ screen: 'list', mode: 'single', category: cat }, '', _rdListUrl(cat));
     loadTests(false).then(() => setReadingMode('lele', false)).catch(() => setReadingMode('lele', false));
   } else {
     showScreen('review');

@@ -88,7 +88,7 @@ exports.getCombinedHistory = guard('[Reading combined history]', async (req, res
 
 exports.listPracticePassages = guard(null, async (req, res) => {
   const { category } = req.query;
-  if (!['passage1', 'passage2', 'passage3', 'actual-test'].includes(category)) {
+  if (!['all', 'passage1', 'passage2', 'passage3', 'actual-test'].includes(category)) {
     return res.status(400).json({ success: false, message: 'Category không hợp lệ' });
   }
   const { passages, doneMap } = await readingService.listPracticePassages(category, req.user._id);

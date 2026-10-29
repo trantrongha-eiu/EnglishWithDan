@@ -450,7 +450,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         // Support both new {mode} and old {tab} history state keys for backward compat
         const mode = e.state?.mode ?? e.state?.tab;
-        const part = e.state?.part ?? 1;
+        const part = e.state?.part ?? 'all';
         const isSingle = mode === 'single' || mode === 'lele';
         // Delegate to block-3 handler (which can access block-3 let vars)
         if (typeof window.handleLtPracticePopstate === 'function' &&
@@ -482,7 +482,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sectionIdParam = params.get('sectionId');
     const modeParam      = params.get('mode') ?? params.get('tab');
     const partRaw        = params.get('part');
-    const partParam      = partRaw === 'actual' ? 'actual' : (parseInt(partRaw) || 1);
+    // No ?part= on the Bài lẻ list = the 'all' tab (every section mixed).
+    const partParam      = _ltParsePart(partRaw);
     // ?exam=practice|simulation — mode-specific start link (see
     // RouteParams.examMode / reading-v2.js). Always via the
     // ExamModeSelect popup here: the click is also the user gesture
@@ -505,7 +506,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (_cleanLtTid) {
         showScreen('list');
     } else if (gapfillParam) {
-        history.replaceState({ screen: 'list', mode: 'single', part: 1 }, '', '?mode=single');
+        history.replaceState({ screen: 'list', mode: 'single', part: 'all' }, '', '?mode=single');
         setListeningMode('lele', false);
         showScreen('list');
         await startGapFillSection(gapfillParam);
@@ -520,8 +521,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // startPracticeSection() corrects it from the fetched section.
         await startPracticeSection(sectionIdParam, partForSection, false, null, examParam);
     } else if (modeParam === 'single' || modeParam === 'lele') {
-        const partStr = partParam !== 1 ? `&part=${partParam}` : '';
-        history.replaceState({ screen: 'list', mode: 'single', part: partParam }, '', `?mode=single${partStr}`);
+        history.replaceState({ screen: 'list', mode: 'single', part: partParam }, '', _ltListUrl(partParam));
         document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
             t.classList.toggle('plele-active', String(t.dataset.part) === String(partParam))
         );

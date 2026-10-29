@@ -387,6 +387,10 @@ async function listPracticeSections(query, userId) {
   if (isActualTest) {
     filter = { isActualTest: true, isActive: true };
     sortBy = { createdAt: -1 };
+  } else if (query.part === 'all') {
+    // Bài lẻ default view: every section from all 4 parts, newest first.
+    filter = { partNumber: { $in: [1, 2, 3, 4] }, isActive: true };
+    sortBy = { createdAt: -1 };
   } else {
     const part = parseInt(query.part);
     if (![1, 2, 3, 4].includes(part)) {
@@ -404,6 +408,7 @@ async function listPracticeSections(query, userId) {
   const safe = sections.map(s => ({
     _id: s._id,
     partNumber: s.partNumber,
+    isActualTest: s.isActualTest === true,
     title: s.title,
     description: s.description,
     audioDuration: s.audioDuration,

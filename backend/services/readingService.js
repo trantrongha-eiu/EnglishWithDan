@@ -481,7 +481,10 @@ async function getHistory(userId, limit = 50) {
 }
 
 async function listPracticePassages(category, userId) {
-  const filter = category === 'actual-test' ? { isActualTest: true, isActive: true } : { category, isActive: true };
+  // 'all' = Bài lẻ default view: every passage from Passage 1–3, newest first.
+  const filter = category === 'actual-test' ? { isActualTest: true, isActive: true }
+    : category === 'all' ? { category: { $in: ['passage1', 'passage2', 'passage3'] }, isActive: true }
+    : { category, isActive: true };
   // The first <img> in the passage content becomes the card's cover image.
   // Extracted inside MongoDB so the full passage text never leaves the DB.
   const passages = await Passage.aggregate([
@@ -490,9 +493,11 @@ async function listPracticePassages(category, userId) {
       title: 1, category: 1, isActualTest: 1, questionRange: 1, questionGroups: 1, questions: 1, thumbnailUrl: 1,
       firstImg: { $regexFind: { input: { $ifNull: ['$content', ''] }, regex: '<img[^>]*\\ssrc="([^"]+)"' } },
     } },
+    ...(category === 'all' ? [{ $sort: { _id: -1 } }] : []),
   ]);
   const safePassages = passages.map(p => ({
     _id: p._id, title: p.title, category: p.category, questionRange: p.questionRange,
+    isActualTest: p.isActualTest === true,
     // an explicit cover image wins; otherwise the first image inside the passage
     thumbnail: toCardThumbnail(p.thumbnailUrl || p.firstImg?.captures?.[0] || ''),
     questionCount: (p.questionGroups || []).reduce((s, g) => s + (g.questions?.length || 0), 0) || (p.questions?.length || 0),

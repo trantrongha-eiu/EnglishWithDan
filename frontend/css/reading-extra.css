@@ -277,6 +277,7 @@
     .plele-badge.p2 { background: #10b981; }
     .plele-badge.p3 { background: #f59e0b; }
     .plele-badge.at { background: #e11d48; }
+    .plele-badge.all { background: #475569; font-size: 10px; }
     .plele-tab[data-category="actual-test"].plele-active { border-color: #e11d48; color: #9f1239; background: #fff1f2; }
     .plele-range {
       font-size: 11px;

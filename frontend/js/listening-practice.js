@@ -215,15 +215,25 @@ function _updateLTPracticeProgress() {
     if (window.CDFooter && window.CDFooter.isMounted()) window.CDFooter.refresh();
 }
 
+/* ── Bài lẻ list part: 'all' (default, every section) | 1–4 | 'actual' ── */
+function _ltParsePart(raw) {
+    if (raw === 'actual') return 'actual';
+    const n = parseInt(raw);
+    return [1, 2, 3, 4].includes(n) ? n : 'all';
+}
+function _ltListUrl(part) {
+    return part === 'all' ? '?mode=single' : `?mode=single&part=${part}`;
+}
+
 /* ── Mode switch (Full đề ↔ Bài lẻ) ─────────────────────────────────── */
 function setListeningMode(mode, pushHistory = true) {
     const isLele = mode === 'lele';
     const isTips = mode === 'tips';
     if (pushHistory) {
         const activeTab = document.querySelector('#lele-picker-lt .plele-tab.plele-active');
-        const part = activeTab?.dataset.part ?? 1;
+        const part = activeTab?.dataset.part ?? 'all';
         if (isLele) {
-            history.pushState({ screen: 'list', mode: 'single', part }, '', `?mode=single&part=${part}`);
+            history.pushState({ screen: 'list', mode: 'single', part }, '', _ltListUrl(part));
         } else if (isTips) {
             history.pushState({ screen: 'list', mode: 'tips' }, '', '?mode=tips');
         } else {
@@ -264,9 +274,7 @@ function setListeningMode(mode, pushHistory = true) {
         const listEl = document.getElementById('lt-section-list');
         if (listEl && !listEl.children.length) {
             const activeTab = document.querySelector('#lele-picker-lt .plele-tab.plele-active');
-            const rawPart = activeTab?.dataset.part;
-            const part = rawPart === 'actual' ? 'actual' : (parseInt(rawPart) || 1);
-            loadPracticeSections(part);
+            loadPracticeSections(_ltParsePart(activeTab?.dataset.part));
         }
     } else if (isTips) {
         if (typeof initListeningTips === 'function') initListeningTips();
@@ -361,7 +369,10 @@ function getLtFilteredSections() {
 }
 
 function _ltRenderSectionCard(s) {
-    const partNum   = _ltGlobalSearchActive ? (s.__isActual ? 'actual' : s.partNumber) : _ltCurrentPart;
+    // Mixed lists (search, 'all' tab) label each card with its own section.
+    const partNum   = (_ltGlobalSearchActive || _ltCurrentPart === 'all')
+        ? ((s.__isActual || s.isActualTest) ? 'actual' : s.partNumber)
+        : _ltCurrentPart;
     const isActual  = partNum === 'actual';
     const clsMap    = { 1:'p1', 2:'p2', 3:'p3', 4:'p4' };
     const cls       = isActual ? 'at' : (clsMap[partNum] || 'p1');
@@ -474,7 +485,7 @@ let _ltLoadingPart = 0; // race-condition lock
 let _ltPage = 1;
 const LT_PRACTICE_PAGE_SIZE = 15;
 let _ltAllSections = [];
-let _ltCurrentPart = 1;
+let _ltCurrentPart = 'all';
 let _ltListToken = 0;
 
 /* ── Load section list for a part ───────────────────────────────────── */
@@ -483,7 +494,7 @@ async function loadPracticeSections(partNum, tabEl) {
     _ltLoadingPart = partNum;
 
     // Update URL to reflect active section tab
-    history.replaceState({ screen: 'list', mode: 'single', part: partNum }, '', `?mode=single&part=${partNum}`);
+    history.replaceState({ screen: 'list', mode: 'single', part: partNum }, '', _ltListUrl(partNum));
 
     document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(b => b.classList.remove('plele-active'));
     const tab = tabEl || document.querySelector(`#lele-picker-lt .plele-tab[data-part="${partNum}"]`);
@@ -527,13 +538,14 @@ async function loadPracticeSections(partNum, tabEl) {
         const res = await fetch(url, { headers: authH() });
         const data = await safeJson(res);
         if (_token !== _ltListToken) return;
+        _ltCurrentPart = partNum;
         if (!data.success) throw new Error(data.message);
         const sections = data.sections || [];
         _ltPracticeDoneMap = data.doneMap || {};
 
         if (!sections.length) {
             _ltAllSections = [];
-            const emptyLabel = isActual ? 'Actual Tests' : `Section ${partNum}`;
+            const emptyLabel = isActual ? 'Actual Tests' : partNum === 'all' ? 'Mục này' : `Section ${partNum}`;
             listEl.innerHTML = `<div style="text-align:center;padding:56px 24px;color:#9ca3af;max-width:420px;margin:0 auto">
                     <div style="font-size:48px;margin-bottom:16px"><i class="fas fa-music" style="color:#9ca3af"></i></div>
                     <div style="font-size:16px;font-weight:700;color:#374151;margin-bottom:8px">Chưa có bài lẻ nào</div>
@@ -1572,8 +1584,9 @@ function closeLTPractice() {
     _ltOrigSection = _ltCleanSection = null;
 
     // Clear list so it reloads fresh; replaceState keeps correct URL without adding history entry
-    const partNum = _ltPracticePartNum || 1;
-    history.replaceState({ screen: 'list', mode: 'single', part: partNum }, '', `?mode=single&part=${partNum}`);
+    // Back to the list tab the student came from ('all' or one section).
+    const partNum = _ltParsePart(document.querySelector('#lele-picker-lt .plele-tab.plele-active')?.dataset.part);
+    history.replaceState({ screen: 'list', mode: 'single', part: partNum }, '', _ltListUrl(partNum));
     const listEl = document.getElementById('lt-section-list');
     if (listEl) listEl.innerHTML = '';
     showScreen('list');
