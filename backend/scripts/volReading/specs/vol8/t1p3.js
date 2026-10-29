@@ -1,0 +1,81 @@
+// Vol 8 - READING/Test 1.pdf - Reading Passage 3 (PDF p8–11, text layer). Not in the bank / mini-ielts.
+// Key = READING/Key.pdf (Test 1). Word list A–H of Q32–36 is an image in the PDF (typed here). "come along way" → "come a
+// long way". Q27–31 options are printed without letters (A–D in printed order, as the key uses).
+const { mc, summary, ynng } = require('../../vr_build');
+module.exports = {
+  vol: 8, test: 1, part: 3, title: 'Practical Learning in the Classroom', text: 't1p3.txt',
+  groups: [
+    mc(27, [
+      ['What education initiative does the American Institute of Architects currently promote?', [
+        'multimedia presentation of information in classrooms', 'the study of monumental buildings throughout history',
+        'the practice of designing architectural structures', 'processes to add more art classes in schools']],
+      ['In the third paragraph, what problem with teaching architecture on art courses does the writer note?', [
+        'Technology-based courses are unavailable.', 'Students cannot always construct their designs.',
+        'The curriculum is too traditional.', 'Students lack motivation.']],
+      ['What is the greatest benefit for students that the writer sees in a traditional architecture project?', [
+        'personal connection to the end result', 'participation in a cooperative project',
+        'building of problem-solving skills', 'conservation of a traditional building']],
+      ['What is the purpose of the eighth paragraph?', [
+        'to explain why it is important that projects be small', 'to outline the multiple skills involved in one project',
+        'to discuss strategies for connecting content areas', 'to propose suggestions for traditional earth projects']],
+      ['What does the writer say about traditional building and the general population?', [
+        'Earthen architecture is becoming a profitable business.', 'Earthen architecture is less feasible in some areas of the country.',
+        'Interest in earthen architecture varies from region to region.', 'People are attracted to earthen architecture for different reasons.']],
+    ]),
+    summary(32, 36, 'The students in Zuni chose to renovate an old building which was being used for __Q32__. They came to an agreement that the building was worthy of rehabilitation based on its functional __Q33__. At the beginning of the project, students were given the task to discover the history of the building through interviews with local residents. Through the course of the project, they learned where to locate __Q34__ for the project. They also worked closely with a number of __Q35__ on each step of the project. During the project, students were also given __Q36__ to build useful skills.',
+      ['experts', 'location', 'design', 'storage', 'students', 'resources', 'training', 'businesses'],
+      { title: 'The Zuni earthen architecture project' }),
+    ynng(37, [
+      'The price of materials is one drawback to using traditional architecture.',
+      'Earthen structures can easily be built in all regions of the U.S.',
+      'Working with a traditional earthen structure can have physical benefits.',
+      'A traditional architecture curriculum is best suited to middle school level students.',
+    ]),
+  ],
+  key: { 27: 'C', 28: 'B', 29: 'A', 30: 'B', 31: 'D', 32: 'storage', 33: 'design', 34: 'resources', 35: 'experts',
+    36: 'training', 37: 'NO', 38: 'NOT GIVEN', 39: 'YES', 40: 'NOT GIVEN' },
+  expl: {
+    27: ['Viện Kiến trúc sư Hoa Kỳ hiện đang thúc đẩy sáng kiến giáo dục nào?', 'Đoạn A',
+      '“In recent years, though, the American Institute of Architects has fostered the idea that the process of architectural design, not just the appreciation of architecture, is a beneficial aspect of the art curriculum”',
+      '“fostered the idea that the process of architectural design … is a beneficial aspect” = khuyến khích việc thực hành thiết kế công trình (the practice of designing architectural structures) → C'],
+    28: ['Ở đoạn thứ ba, tác giả nêu vấn đề gì khi dạy kiến trúc trong môn mỹ thuật?', 'Đoạn C',
+      '“Although the technology and expertise required of modern architecture can prohibit students from actually realizing their designs”',
+      '“prohibit students from actually realizing their designs” = học sinh không phải lúc nào cũng xây được thiết kế của mình → B'],
+    29: ['Tác giả thấy lợi ích lớn nhất của dự án kiến trúc truyền thống đối với học sinh là gì?', 'Đoạn E',
+      '“But most significantly, this type of project-based activity motivates students to invest intellectually and emotionally in the outcome.”',
+      '“most significantly” = greatest benefit; “invest intellectually and emotionally in the outcome” = gắn bó cá nhân với kết quả cuối cùng (B, C chỉ là các lợi ích được liệt kê trước đó) → A'],
+    30: ['Mục đích của đoạn thứ tám là gì?', 'Đoạn H',
+      '“A simple landscape feature such as a wall, entryway, or arch can draw students into important aspects of design … The same project may provide an opportunity to focus on the chemistry of soil or the structural dynamics of construction. Design goals might guide students to … integrate math skills of measuring and estimating.”',
+      'Đoạn H liệt kê nhiều kỹ năng (thiết kế, hóa học đất, kết cấu, đo đạc toán học) có thể học trong cùng một dự án (“The same project”) → B'],
+    31: ['Tác giả nói gì về xây dựng truyền thống và công chúng nói chung?', 'Đoạn I',
+      '“It is the connection to a cultural heritage that interests some; the quality of living within massive, natural walls that attracts others; or for others, the sustainability of the process and the minimal energy spent in construction.”',
+      'some… others… others… = mỗi nhóm người bị thu hút bởi một lý do khác nhau → D'],
+    32: ['Học sinh ở Zuni chọn cải tạo một tòa nhà cũ đang được dùng để ______.', 'Đoạn F',
+      '“there was a one-room adobe structure which was once used for teaching. Now it served as a place where old furniture could be kept.”',
+      '“a place where old furniture could be kept” = nơi chứa đồ (D) → storage'],
+    33: ['Các em thống nhất rằng tòa nhà đáng được phục hồi nhờ ______ hữu dụng của nó.', 'Đoạn G',
+      '“The building’s design kept it relatively warm in the winter, even without heating … Because of this, my students agreed it was worth preserving”',
+      'Thiết kế giúp tòa nhà ấm về mùa đông, mát về mùa hè (công năng) → các em đồng ý nó đáng giữ lại = functional design (C) → design'],
+    34: ['Trong dự án, các em học được nơi tìm ______ cho dự án.', 'Đoạn G',
+      '“She showed us where to find local supplies of sand and clay soil for the plaster mix.”',
+      '“where to find local supplies of sand and clay soil” = where to locate resources (F) → resources'],
+    35: ['Các em cũng làm việc chặt chẽ với một số ______ ở từng bước của dự án.', 'Đoạn G',
+      '“To teach the traditional skills, Gasper and other local specialists joined us.”',
+      '“Gasper and other local specialists” = các chuyên gia (A) → experts'],
+    36: ['Trong dự án, học sinh cũng được ______ để xây dựng những kỹ năng hữu ích.', 'Đoạn G',
+      '“They gave my class three full mornings of intensive workshops on history and preservation as well as mud-plastering technique”',
+      '“intensive workshops … mud-plastering technique” = các buổi đào tạo kỹ năng (G) → training'],
+    37: ['Giá vật liệu là một nhược điểm của việc dùng kiến trúc truyền thống.', 'Đoạn C',
+      '“Traditional architectural materials, such as earth, clay and straw, are cheap, easy to work with and readily available.”',
+      'Vật liệu truyền thống “cheap” (rẻ) → giá là ưu điểm chứ không phải nhược điểm → NO'],
+    38: ['Công trình bằng đất có thể dễ dàng xây ở mọi vùng của nước Mỹ.', 'Đoạn D',
+      '“In New Mexico, examples of hand-built earthen structures still abound. … Traditional building materials and the land that supplies them are so accessible that handcrafting a house still remains feasible.”',
+      'Tác giả chỉ nói về New Mexico (vật liệu dễ kiếm nên vẫn tự xây nhà được); không nói gì về việc xây được dễ dàng ở mọi vùng → NOT GIVEN'],
+    39: ['Làm việc với một công trình bằng đất truyền thống có thể mang lại lợi ích về thể chất.', 'Đoạn E',
+      '“During the project, a student will get to know the materials, understand the chemistry, solve problems, work with classmates, and exercise muscles.”',
+      '“exercise muscles” = vận động cơ bắp = physical benefits → YES'],
+    40: ['Chương trình kiến trúc truyền thống phù hợp nhất với học sinh trung học cơ sở.', 'Đoạn I',
+      '“This experiment in adobe conservation with middle school students convinced me that traditional architecture deserves a place in the regular curriculum.”',
+      'Tác giả chỉ nói kiến trúc truyền thống xứng đáng có chỗ trong chương trình chính khóa; thí nghiệm làm với học sinh THCS nhưng không nói đây là cấp phù hợp NHẤT → NOT GIVEN'],
+  },
+};

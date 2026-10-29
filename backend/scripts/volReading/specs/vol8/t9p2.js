@@ -1,0 +1,80 @@
+// Vol 8 - READING/Test 9.pdf - Reading Passage 2 (PDF p4–7, text layer). Not in the bank / mini-ielts.
+// Key = READING/Key.pdf (Test 9). The PDF puts "(14) ____" … "(19) ____" above six unlettered sections; here they are
+// lettered A–F and Q14–19 ask for "Section A–F". List of headings is an image, printed out of order (ix after iv) → i–ix.
+// Title "REMOVING UNWANTED NOISE" → sentence case.
+const { headings, notes, mc } = require('../../vr_build');
+module.exports = {
+  vol: 8, test: 9, part: 2, title: 'Removing unwanted noise', text: 't9p2.txt',
+  groups: [
+    headings(14, [
+      'How hearing loss may be caused by certain types of sounds',
+      'Uses for Turner’s research in media and communications',
+      'Creating a model for the classification of sounds',
+      'Potential developments that still require further research',
+      'A drawback in the help currently available to those with hearing problems',
+      'Providing the hearing-impaired with training in new technology',
+      'A more effective way to take attention away from a hearing problem',
+      'Analysing the sounds produced in the process of speaking',
+      'The possibility of a hearing aid that can adjust itself to different environments',
+    ], ['Section A', 'Section B', 'Section C', 'Section D', 'Section E', 'Section F'],
+    { instruction: 'Reading Passage 2 has six sections, A–F. Choose the correct heading for each section from the list of headings below. Write the correct number, i–ix, in boxes 14–19 on your answer sheet.' }),
+    notes(20, 23, [
+      'At present, many people find their hearing aids do not work well when there is background noise. This also applies to people without hearing aids who have had implants fitted to help with hearing loss. Dr Richard Turner is looking for a solution to this problem. Although sounds are never __Q20__, he believes they do share some similarities. He and his colleagues have worked on a mathematical system using __Q21__ which replicate how we hear sounds. To allow this system to be ‘trained’, they have applied procedures used in machine learning and found that many different sounds can be described using a limited number of __Q22__. They have now developed a system that can distinguish __Q23__ from other sounds.',
+    ], { title: 'Improving the performance of hearing aids',
+      instruction: 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 20–23 on your answer sheet.' }),
+    mc(24, [
+      ['Turner’s team are now planning a new development involving a device which could', [
+        'allow sound to be heard at a greater distance.', 'adapt itself to different kinds of background noise.',
+        'allow a user to remove all types of sound completely.', 'adapt itself to disorders involving other senses.']],
+      ['In the fifth section, a stream, waves and leaves are examples of the sounds that tinnitus sufferers', [
+        'can currently use to help their condition.', 'might choose to use if they were available.',
+        'hear in their ears as a result of their condition.', 'find to be the most natural solutions to their problem.']],
+      ['The writer refers to ‘a busy roadside on a windy day’ in the sixth section to illustrate that', [
+        'unwanted noise could be erased from video recordings.', 'some environments are difficult for the hearing-impaired.',
+        'when noises are combined in a video they are difficult to erase.', 'people must cooperate in order to learn how to apply the technology.']],
+    ]),
+  ],
+  key: { 14: 'v', 15: 'iii', 16: 'ix', 17: 'iv', 18: 'vii', 19: 'ii', 20: 'identical', 21: 'algorithms', 22: 'statistics',
+    23: 'speech', 24: 'B', 25: 'A', 26: 'A' },
+  expl: {
+    14: ['Section A', 'Section A',
+      '“those who wear them often complain that background noise continues to interfere with their understanding. ” … “The poor performance in noise of current hearing devices is a major reason why six million people in the UK who would benefit from hearing aids do not use them”',
+      'Máy trợ thính hiện nay hoạt động kém khi có tiếng ồn = nhược điểm của sự hỗ trợ hiện có → v A drawback in the help currently available to those with hearing problems'],
+    15: ['Section B', 'Section B',
+      '“the brain may be able to group similar types of sounds together based on their specific characteristics. Turner and his colleagues have analysed this process mathematically and then developed algorithms that mimic what the brain is doing.”',
+      'Xây dựng hệ thống toán học nhóm các âm thanh theo đặc điểm thống kê = mô hình phân loại âm thanh → iii Creating a model for the classification of sounds'],
+    16: ['Section C', 'Section C',
+      '“The idea is that future devices will have several different modes in which they can operate. … The device might intelligently select an appropriate mode based on the characteristics of the incoming sound.”',
+      'Thiết bị tự chọn chế độ (trên xe, ở tiệc, ngoài trời có gió…) = máy trợ thính tự điều chỉnh theo môi trường → ix The possibility of a hearing aid that can adjust itself to different environments'],
+    17: ['Section D', 'Section D',
+      '“Turner anticipates that his team will need two more years of simulating the effect of modifications that clean up sound before they start to work with device specialists.”',
+      'Các khả năng mới (tự chọn chế độ, điều khiển qua điện thoại) nhưng còn cần hai năm mô phỏng nữa → iv Potential developments that still require further research'],
+    18: ['Section E', 'Section E',
+      '“such generators offer only a limited selection of sounds … With the new technology, individual patients could select the best sound to distract them from their tinnitus.”',
+      'Chọn được âm thanh tốt nhất để đánh lạc hướng khỏi chứng ù tai = cách hiệu quả hơn để lái sự chú ý khỏi vấn đề thính giác → vii A more effective way to take attention away from a hearing problem'],
+    19: ['Section F', 'Section F',
+      '“it also has the potential to improve phone calls … would also be welcomed by the increasing numbers of people using video-sharing websites.”',
+      'Cuộc gọi điện thoại và trang chia sẻ video = ứng dụng trong truyền thông → ii Uses for Turner’s research in media and communications'],
+    20: ['Dù âm thanh không bao giờ ______, ông tin chúng có những điểm tương đồng.', 'Section B',
+      '“No two rain sounds are identical because the precise arrangement of falling water droplets is never repeated. Nonetheless, there must be statistical similarities”',
+      '“No two rain sounds are identical” = âm thanh không bao giờ giống hệt nhau → identical'],
+    21: ['Ông và đồng nghiệp làm một hệ thống toán học dùng ______ mô phỏng cách ta nghe âm thanh.', 'Section B',
+      '“Turner and his colleagues have analysed this process mathematically and then developed algorithms that mimic what the brain is doing.”',
+      '“algorithms that mimic what the brain is doing” = replicate how we hear sounds → algorithms'],
+    22: ['… nhiều âm thanh khác nhau có thể được mô tả bằng một số lượng hạn chế ______.', 'Section B',
+      '“Rather surprisingly, it seems that a relatively small set of statistics is sufficient to describe a large number of sounds”',
+      '“a relatively small set of statistics” = a limited number of statistics → statistics'],
+    23: ['Họ đã phát triển một hệ thống phân biệt được ______ với các âm thanh khác.', 'Section B',
+      '“the system that Turner and his team have come up with is capable of telling the difference between speech and other types of sound.”',
+      '“telling the difference between speech and other types of sound” → speech'],
+    24: ['Nhóm của Turner đang lên kế hoạch phát triển một thiết bị có thể', 'Section C',
+      '“future devices will have several different modes … The device might intelligently select an appropriate mode based on the characteristics of the incoming sound.”',
+      'Chọn chế độ phù hợp theo đặc điểm âm thanh đầu vào = tự thích nghi với các loại tiếng ồn nền khác nhau → B'],
+    25: ['Ở phần thứ năm, dòng suối, sóng và lá cây là ví dụ về những âm thanh mà người ù tai', 'Section E',
+      '“At present, people with tinnitus sometimes use environmental sound generators as a distraction from the ringing in their ears. But such generators offer only a limited selection of sounds – a gently flowing stream, waves lapping on the seashore, or leaves rustling.”',
+      '“At present … use” = hiện đang dùng để hỗ trợ tình trạng của họ → A'],
+    26: ['Tác giả nhắc tới “con đường đông xe trong ngày gió” ở phần thứ sáu để minh họa rằng', 'Section F',
+      '“a video containing a conversation that takes place by a busy roadside on a windy day could be made more intelligible by isolating the speech from the noises – users could even be offered the chance to de-noise their video”',
+      'Tách lời nói khỏi tiếng ồn, “de-noise their video” = tiếng ồn không mong muốn có thể bị xóa khỏi video → A'],
+  },
+};

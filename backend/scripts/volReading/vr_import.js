@@ -24,6 +24,8 @@ const SAME_TEXT_OK = ({
   5: { t7p2: '6abd01aa1b50c9b87212e55e', t9p3: '6abd01a41b50c9b87212e52a' }, // Art in Iron and Steel / The Power of Nothing
   // Vol 6: "Mungo Lady and Mungo Man" (P1, 13 q) shares ~21% text with the bank's "Mungo Man" (P3, Mocktest 48) — other article
   6: { t1p1: '6abcd39d4bdca60c3b137d5b' },
+  // Vol 8: renumbered copies (bank stores them as Passage 2) — Western Immigration of Canada / William Gilbert and Magnetism
+  8: { t5p1: '6abcde40ee81e7573b2fe8a2', t7p1: '6abdb3f23da7a4e8d035c7e2' },
 })[vol] || {};
 
 // --activate: publish (isActive:true) exactly the passages listed in imported.json, refusing any without a cover

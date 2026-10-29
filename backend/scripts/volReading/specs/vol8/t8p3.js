@@ -1,0 +1,83 @@
+// Vol 8 - READING/Test 8.pdf - Reading Passage 3 (PDF p7–10, text layer). Not in the bank / mini-ielts.
+// Key = READING/Key.pdf (Test 8). Endings A–H of Q32–37 are an image (typed here).
+const { mc, endings, multi } = require('../../vr_build');
+module.exports = {
+  vol: 8, test: 8, part: 3, title: 'The origin of language', text: 't8p3.txt',
+  groups: [
+    mc(27, [
+      ['In the first paragraph, what does the writer suggest about the origin of language?', [
+        'Too many branches of science have been involved in its study.', 'The Société de Linguistique de Paris instigated research in this area.',
+        'The lack of progress is surprising given the amount of work being done.', 'Most progress in the study of language was made between 1859 and 1866.']],
+      ['What is ‘the problem’ referred to in the second paragraph?', [
+        'Some current theories are based on conflicting evidence.', 'There is insufficient fossil evidence to reach a conclusion.',
+        'Fossil evidence suggests that Homo sapiens had larger brains than Neanderthals.', 'Archaeological evidence shows that Neanderthals were able to talk.']],
+      ['What does the writer suggest about Jean-Jacques Rousseau’s work in 1781?', [
+        'Modern theorists should pay more attention to his approach.', 'His ideas supported those of the Société de Linguistique de Paris.',
+        'His ideas were mirrored in a later book called Language Evolution.', 'His ideas are too outdated to be of any relevance today.']],
+      ['What is the writer’s current view of Derek Bickerton’s ideas?', [
+        'They have had little impact on the study of language.', 'They have helped the study of linguistics to progress.',
+        'They are not accepted by the majority of linguists.', 'The assumption behind them is wrong.']],
+      ['In the final paragraph, the writer concludes that Alison Wray’s ideas will help establish a link between', [
+        'grammar and meaning.', 'messages and proto-language.', 'language, music and emotions.', 'proto-language and modern semantics.']],
+    ]),
+    endings(32, [
+      'suggested music was an essential part of every individual.',
+      'made no link between music and language in a comprehensive study.',
+      'believes that early language was very musical.',
+      'felt that the origin of language should not be debated.',
+      'states that early language was made up of basic words used in an unsystematic way.',
+      'devoted 17 chapters of a book to music.',
+      'believes that proto-language had no individual words.',
+      'referred to music in part of a book about the development of human beings.',
+    ], ['The Société de Linguistique de Paris', 'Charles Darwin', 'John Blacking', 'Christiansen and Kirby', 'Derek Bickerton', 'Alison Wray']),
+    multi(38, 3, 'According to the writer, which THREE of the following areas have not been studied enough in order to understand the origin of language?', [
+      'Evidence from prehistoric times', 'Intelligence', 'Individual sounds', 'Music', 'Emotions', 'Human intellect', 'Children’s language',
+    ]),
+  ],
+  key: { 27: 'C', 28: 'A', 29: 'A', 30: 'D', 31: 'C', 32: 'D', 33: 'H', 34: 'A', 35: 'B', 36: 'E', 37: 'G', 38: 'A',
+    39: 'D', 40: 'E' },
+  expl: {
+    27: ['Ở đoạn đầu, tác giả gợi ý gì về nguồn gốc ngôn ngữ?', 'Đoạn 1',
+      '“Linguists, psychologists, anthropologists, and archaeologists now frequently debate the origin of language and have published many articles and books on this topic. And yet, despite almost frenzied activity, limited progress has been made.”',
+      '“despite almost frenzied activity, limited progress” = tiến bộ ít ỏi dù rất nhiều nghiên cứu → điều đáng ngạc nhiên → C'],
+    28: ['“The problem” ở đoạn hai là gì?', 'Đoạn 2',
+      '“fossil evidence indicates that the Neanderthals had larger brains than modern humans, Homo sapiens, but archaeological evidence indicates that the Neanderthals lacked a capacity for language.”',
+      'Các lý thuyết dựa trên giả định não to = ngôn ngữ tốt, nhưng bằng chứng hóa thạch và khảo cổ mâu thuẫn nhau → C sai (người Neanderthal não to hơn), D sai (họ không nói được) → A'],
+    29: ['Tác giả gợi ý gì về tác phẩm năm 1781 của Jean-Jacques Rousseau?', 'Đoạn 4',
+      '“Those authors have an important lesson to learn from Rousseau and other writers of his time who addressed the origin of language.”',
+      'Các tác giả hiện đại (Christiansen và Kirby) “have an important lesson to learn from Rousseau” = nên chú ý hơn tới cách tiếp cận của ông → A'],
+    30: ['Quan điểm hiện tại của tác giả về ý tưởng của Derek Bickerton là gì?', 'Đoạn 7',
+      '“But Bickerton’s idea that the precursor of modern language consisted of words strung together with limited, if any, grammar is, I believe, fundamentally mistaken.”',
+      '“fundamentally mistaken” = giả định nền tảng của ý tưởng là sai (B sai: tác giả nói nó cản trở tiến bộ) → D'],
+    31: ['Ở đoạn cuối, tác giả kết luận ý tưởng của Alison Wray giúp thiết lập mối liên hệ giữa', 'Đoạn 8',
+      '“I believe this insight enables us to understand the origin of music as well as language, and to relate both to the emotional lives of our human ancestors.”',
+      'Hiểu nguồn gốc âm nhạc và ngôn ngữ, gắn cả hai với đời sống cảm xúc = liên hệ giữa ngôn ngữ, âm nhạc và cảm xúc → C'],
+    32: ['Hội Ngôn ngữ học Paris', 'Đoạn 1',
+      '“in 1866 the influential Société de Linguistique de Paris banned all discussions about the origin of language.”',
+      '“banned all discussions” = cho rằng không nên tranh luận về nguồn gốc ngôn ngữ → D'],
+    33: ['Charles Darwin', 'Đoạn 3',
+      '“Charles Darwin who, in his 1871 book on human evolution, The Descent of Man, devoted several pages to the development of music.”',
+      '“book on human evolution” = sách về sự phát triển của loài người; “several pages” = một phần của cuốn sách nói về âm nhạc → H'],
+    34: ['John Blacking', 'Đoạn 3',
+      '“John Blacking, whose 1973 book, How Musical is Man?, broached the idea that music is an inherent and universal human quality.”',
+      '“inherent and universal human quality” = âm nhạc là phần thiết yếu của mỗi người → A'],
+    35: ['Christiansen và Kirby', 'Đoạn 4',
+      '“Language Evolution (2000), which they conceived as ‘a definitive book on the subject,’ failed to mention music in any of its 17 chapters.”',
+      '“a definitive book” = nghiên cứu toàn diện; không nhắc tới âm nhạc trong 17 chương (F sai) → B'],
+    36: ['Derek Bickerton', 'Đoạn 7',
+      '“Bickerton’s idea that the precursor of modern language consisted of words strung together with limited, if any, grammar”',
+      '“words strung together with limited, if any, grammar” = các từ đơn giản ghép với nhau không theo hệ thống → E'],
+    37: ['Alison Wray', 'Đoạn 8',
+      '“the precursor to language was a communication system composed of ‘messages’ rather than words”',
+      '“messages rather than words” = ngôn ngữ nguyên thủy không có từ riêng lẻ → G'],
+    38: ['Ba lĩnh vực chưa được nghiên cứu đủ (1)', 'Đoạn 2',
+      '“The first is an insufficient concern with the archaeological and fossil proof of the brains and behaviour of our human ancestors.”',
+      'Lý do 1: chưa quan tâm đủ tới bằng chứng khảo cổ, hóa thạch = bằng chứng thời tiền sử → A'],
+    39: ['Ba lĩnh vực chưa được nghiên cứu đủ (2)', 'Đoạn 3',
+      '“the second reason for limited progress: insufficient concern with the other major aural and vocal communication system of modern humans: music.”',
+      'Lý do 2: chưa quan tâm đủ tới âm nhạc → D'],
+    40: ['Ba lĩnh vực chưa được nghiên cứu đủ (3)', 'Đoạn 6',
+      '“a third reason for our lack of progress … an insufficient concern with emotion. … while archaeologists have put significant effort into examining the intellectual capacities of our ancestors, their emotional lives have been sorely neglected.”',
+      'Lý do 3: cảm xúc bị bỏ quên (trí tuệ thì đã được nghiên cứu nhiều — B, F sai) → E'],
+  },
+};

@@ -1,0 +1,82 @@
+// Vol 8 - READING/Test 4.pdf - Reading Passage 3 (PDF p8–11, text layer). Not in the bank / mini-ielts.
+// Key = READING/Key.pdf (Test 4). Word list A–J of Q36–40 is an image in the PDF (typed here). "regrading" → regarding;
+// summary "EI Ceibo" → El Ceibo.
+const { mc, ynng, summary } = require('../../vr_build');
+module.exports = {
+  vol: 8, test: 4, part: 3, title: 'The peopling of Patagonia', text: 't4p3.txt',
+  groups: [
+    mc(27, [
+      ['In the first paragraph, what is the writer\'s main point about migration to Patagonia?', [
+        'It started earlier than previously thought.', 'Historians have overlooked its importance.',
+        'It impacts on research into the wider region.', 'Researchers have calculated its effects on the environment.']],
+      ['In the second paragraph, what is the writer\'s purpose?', [
+        'to challenge previous research', 'to propose new areas to investigate', 'to summarise a scholarly debate',
+        'to suggest reasons for human migration']],
+      ['The writer refers to the \'late\' model in order to', [
+        'compare it with another theory of migration.', 'evaluate the success of American migration.',
+        'criticise the speed of research into migration.', 'compare migration in different parts of the world.']],
+      ['What is the writer\'s main point about the \'early\' model?', [
+        'Scholars support the idea of fast migrations.', 'It is too random to be a convincing theory.',
+        'South America was more habitable at an earlier time.', 'It is more consistent with the physical conditions of the land.']],
+      ['What does the writer suggest about the Monte Verde site?', [
+        'It is much younger than researchers once estimated.', 'It provides supporting evidence for relatively early settlement.',
+        'Archaeologists believe the site is of questionable value.', 'Streams exposed the site, making new research possible.']],
+    ]),
+    ynng(32, [
+      'The conditions encountered by the first migrants to Patagonia were unique.',
+      'In the high country the first migrants hunted wild animals for food.',
+      'Archaeologists have failed to draw conclusions from the evidence found at rock shelters in Argentina and Chile.',
+      'Archaeological evidence can be moved from place to place in a variety of ways.',
+    ]),
+    summary(36, 40, 'Building remains and other evidence have been found in __Q36__ at the Chinchihuapi Creek site, and because of this it has been possible to date them to around 12,500 years ago. However, the __Q37__ of the sample taken from Los Toldos means that this site is of doubtful value. El Ceibo is a more promising dig, where the examination of artefacts would be beneficial in order to confirm the usefulness of discoveries there. The remains found at the Arroyo Feo site show __Q38__ and date from around 9,000 years ago. Unfortunately, no __Q39__ can be made between the samples taken from Las Buitreras and human presence. The findings of the work carried out at Cueva Fell cannot provide useful information beyond the __Q40__. In conclusion, though the evidence is mixed, it is believed that human population of Patagonia began about 11,000 years ago.',
+      ['fixed date', 'random collection', 'similar properties', 'good condition', 'scientific evaluation', 'huge quantities',
+        'new samples', 'reliable connection', 'skilled preservation', 'immediate surroundings'],
+      { title: 'The archaeological evidence from Patagonia' }),
+  ],
+  key: { 27: 'C', 28: 'C', 29: 'A', 30: 'D', 31: 'B', 32: 'NO', 33: 'NOT GIVEN', 34: 'NO', 35: 'YES', 36: 'good condition',
+    37: 'random collection', 38: 'similar properties', 39: 'reliable connection', 40: 'immediate surroundings' },
+  expl: {
+    27: ['Ở đoạn đầu, ý chính của tác giả về cuộc di cư tới Patagonia là gì?', 'Đoạn A',
+      '“The earliest occupation of Patagonia carries obvious implications for understanding when the North and South American continents were peopled, because it gives a baseline that all calculations regarding the rate of dispersion of humans throughout both continents must take into account.”',
+      'Thời điểm con người tới Patagonia là mốc cho mọi tính toán về cả Bắc và Nam Mỹ = ảnh hưởng tới nghiên cứu cả khu vực rộng hơn → C'],
+    28: ['Mục đích của tác giả ở đoạn hai là gì?', 'Đoạn B',
+      '“However, fundamental disagreements developed concerning the length of time involved. Some scholars accepted a human presence in the Americas as early as 20,000 years ago, while others proposed that it could date no earlier than 8,000 years ago, and the debate is still with us today.”',
+      'Tóm tắt các quan điểm trái ngược của giới học giả (“disagreements”, “the debate”) → C'],
+    29: ['Tác giả nhắc tới mô hình “late” nhằm', 'Đoạn C',
+      '“The ‘late’ model demands a hypothetical migration conceived of as a single continually advancing wave of settlement. This has always been difficult to take seriously and many scholars now support the idea of an ‘early’ model”',
+      'Tác giả đặt mô hình “late” cạnh mô hình “early” để so sánh hai giả thuyết di cư → A'],
+    30: ['Ý chính của tác giả về mô hình “early” là gì?', 'Đoạn C',
+      '“this is surely the most realistic scenario as migrants slowly adapted to the diverse natural habitats they would have met while travelling through the continent.”',
+      'Hợp lý nhất vì người di cư thích nghi dần với các môi trường tự nhiên đa dạng = phù hợp hơn với điều kiện tự nhiên của vùng đất → D'],
+    31: ['Tác giả gợi ý gì về khu di chỉ Monte Verde?', 'Đoạn D',
+      '“evidence for human occupation of the centre of South America is now securely dated to around 12,500 years ago at the Monte Verde site, which casts doubt on the ‘late’ model.”',
+      'Niên đại 12.500 năm, làm lung lay mô hình “late” = ủng hộ giả thuyết định cư tương đối sớm → B'],
+    32: ['Điều kiện mà những người di cư đầu tiên tới Patagonia gặp phải là có một không hai.', 'Đoạn E',
+      '“allowed the initial human intrusion into a pristine environment, which was similar to that of early post-glacial Europe.”',
+      'Môi trường “similar to that of early post-glacial Europe” = giống châu Âu thời hậu băng hà → không phải độc nhất → NO'],
+    33: ['Ở vùng cao nguyên, những người di cư đầu tiên săn thú hoang để ăn.', 'Đoạn E',
+      '“Human settlement of the vast horizontal expanse of treeless high country must have been tenuous at best, and the evidence for this occupation remains relatively scant”',
+      'Bài chỉ nói việc định cư ở vùng cao rất mong manh, bằng chứng ít; không nói họ săn thú hoang → NOT GIVEN'],
+    34: ['Các nhà khảo cổ không rút ra được kết luận từ bằng chứng ở các mái đá tại Argentina và Chile.', 'Đoạn E',
+      '“There is, however, reliable evidence from these sites to confirm the presence of humans by around 11,000 years ago in different habitats”',
+      'Bằng chứng đáng tin cậy từ các địa điểm này đã xác nhận con người có mặt khoảng 11.000 năm trước = đã có kết luận → NO'],
+    35: ['Bằng chứng khảo cổ có thể bị di chuyển từ nơi này sang nơi khác bằng nhiều cách.', 'Đoạn E',
+      '“bones or other evidence may be deposited in caves by natural agency, in other words by other forces such as floods or predators, and not necessarily by humans.”',
+      'Lũ lụt, thú săn mồi, con người — nhiều cách đưa xương/hiện vật vào hang → YES'],
+    36: ['Tàn tích công trình và bằng chứng khác được tìm thấy trong ______ ở Chinchihuapi Creek, nhờ đó định được niên đại.', 'Đoạn F',
+      '“They were buried in layers of peat, which has the property of preserving wood remarkably well, and as a result radiocarbon dating tests have shown these artefacts to date from around 12,500 years ago.”',
+      'Than bùn bảo quản gỗ rất tốt → hiện vật ở tình trạng tốt (D) → good condition'],
+    37: ['Tuy nhiên, ______ của mẫu lấy ở Los Toldos khiến địa điểm này có giá trị đáng ngờ.', 'Đoạn F',
+      '“the evidence from this site has recently been called into question, because dispersed flecks of carbon used in the test process were taken unsystematically from many different places in the site.”',
+      '“taken unsystematically from many different places” = thu thập ngẫu nhiên (B) → random collection'],
+    38: ['Di vật ở Arroyo Feo cho thấy ______ và có niên đại khoảng 9.000 năm.', 'Đoạn G',
+      '“The artefacts from the earliest occupations were found at the same depth and have the same origins as those from Los Toldos”',
+      '“same depth … same origins as those from Los Toldos” = có đặc điểm tương tự (C) → similar properties'],
+    39: ['Đáng tiếc không thể xác lập ______ nào giữa các mẫu ở Las Buitreras và sự hiện diện của con người.', 'Đoạn G',
+      '“despite detailed testing there is no way of securely relating any of these remains with human occupation.”',
+      '“no way of securely relating” = không có mối liên hệ đáng tin cậy (H) → reliable connection'],
+    40: ['Kết quả nghiên cứu ở Cueva Fell không cung cấp thông tin hữu ích ngoài ______.', 'Đoạn G',
+      '“the utility of this site must be restricted to its direct vicinity, given changes to the nearby area caused by flooding, and findings cannot be freely extrapolated further afield.”',
+      '“restricted to its direct vicinity” = chỉ trong khu vực ngay xung quanh (J) → immediate surroundings'],
+  },
+};

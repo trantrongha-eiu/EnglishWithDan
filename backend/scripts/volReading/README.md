@@ -180,7 +180,7 @@ chạy cả ngân hàng).
 Đề Random" (không gắn bài) bỏ qua. Thầy: "đề nào sửa được thì sửa, không sửa được mới ẩn" → tìm câu thiếu trong bản gốc trước.
 - **Vol 1 - Test 9: đã sửa, bật lại** — Cane Toad (mọi bản online cũng 13 câu, đoạn A là ví dụ) → ví dụ thành câu 27 (Paragraph A →
   v, đáp án có sẵn), tiêu đề 27–33 cho A–G, đề đủ 40 câu (`vr_update.js 1 t9p3 --apply`, 0 lượt làm).
-- **Còn ẩn (không sửa được):** Vol 1 - Test 7 — bản gốc "Bestcom—Considerate Computing" có 13 câu (14–26), "Extinct: the Giant
+- **Vol 1 - Test 7: đã bật lại 2026-10-29** (xem mục Vol 8 / bản update). Trước đó: bản gốc "Bestcom—Considerate Computing" có 13 câu (14–26), "Extinct: the Giant
   Deer" (engnovate) đánh số 28–40: đề nguồn có Passage 2 dài 14 câu nhưng không còn bản nào, không có ví dụ để chuyển thành câu.
   Vol 4 - Test 9 + bài **Temperament** (chỉ Q30–40) — không tìm thấy bản nào của bài này trên mạng. Backend chỉ trả đề/bài isActive:true cho học sinh. Khi tìm được câu bị thiếu: bổ sung spec →
 `vr_update.js` → bật lại trong admin (Đề thi → bật / Bài đọc → bật). Chạy `vr_incomplete.js` sau mỗi vol mới.
@@ -290,3 +290,45 @@ liền một khối → tách đoạn bằng txtfix. Docx giải thích → ch�
   So từng câu hỏi / lựa chọn / tiêu đề / ending / ô bảng với chữ PDF (bigram ≥ 85%): chỉ lệch ở chỗ đã sửa có chủ ý.
   `explkeys.js 7`: key khớp file giải thích ở mọi câu (trừ các câu đã ghi "nhận cả hai"). Chạy lại: pw_grade 48/48 100%,
   pw_full_tests 16/16, pw_admin 46/46, `_audit_reading_warnings` 0, `vr_audit.js 7` 0 problem, `vr_incomplete.js` 0.
+
+## Vol 8 — 2026-10-29 (xong: 12 đề full, 33 bài mới)
+
+Nguồn: `READING/Test N.pdf` (`Tets 11.pdf` = Test 11) — **PDF có chữ** nhưng là bản gõ lại có lỗi OCR in sẵn (dấu phẩy thành
+dấu chấm, "1Q", "visuo-10 tests set ou spatial", ngoặc kép lệch…); `Full Reading vol 8.pdf` = 12 đề gộp (bỏ qua). Các danh sách
+tiêu đề / word bank / endings / sơ đồ là **ảnh** trong PDF → xem ảnh trang (`web/vol8/pages/t<T>_p<k>.png`, 100 dpi) rồi gõ.
+`Key.pdf` = 47 trang ảnh chụp Google Docs "ĐÁP ÁN READING VOL 8" (key + trích dẫn, mỗi đề một kiểu; T1–8 rồi T9–12): render
+300 dpi `web/vol8/keyhi/` → OCR → `web/vol8/keytext.txt`; chỗ OCR hỏng thì cắt ảnh xem.
+Công cụ: `py web/vol8/extract.py` (pymupdf `get_text('dict')`, dòng trống khi khoảng cách dòng > 0.6 × cao dòng = ngắt đoạn;
+thay cho get_text thường vì PDF không có dòng trống giữa đoạn) → `pdfparas.js 8` → `cutparas.js` → `web/vol8/fix_t<T>.js` (txtfix).
+Dò trùng: chép txt vào `web/vol8/docx/` rồi `SRC=docx node dedupe2.js 8` / `dedupe_mini.js 8`.
+
+- **Đề full Vol 8 - Test 1…12** tạo + bật, đều đủ 40 câu.
+- **Dùng lại**: T9 P1 "Ahead of its time" (Mocktest 58, cùng ô P1). T5 P1 / T7 P1 = bản sao đánh số lại 1–13 của "Western
+  Immigration of Canada" / "William Gilbert and Magnetism" (ngân hàng lưu là P2; key khớp) → `SAME_TEXT_OK[8]`, giữ ảnh bìa gốc.
+- **Sửa ngân hàng** (`bank_fix.js 8 --apply`): Ahead of its time Q10 key "296" (ghi chú "Age – ___ – Gender" bị gộp dòng) → race;
+  William Gilbert Q24 (và bản sao Q11) giải thích có chữ sau "→ C".
+- **Mới 33 bài** (bật, ảnh bìa CC0/PD trên R2, giải thích tiếng Việt). Các bài có ô "(14) ____" trên mỗi đoạn không đánh chữ
+  (T3 P2, T7 P2, T9 P2) → đánh chữ đoạn A–G, câu hỏi "Paragraph/Section A…". T8 P1 Q1–4 dán nhãn sơ đồ → dòng ghi chú.
+  Key Vol sửa theo bài: T7 P3 Q27–30 key ghi YES/NO nhưng đề hỏi TRUE/FALSE → FALSE/TRUE; T8 P2 Q23–24 C, D → B, C (D là
+  "critical days" của thuyết biorhythms mà bài nói đã bị bác bỏ; không tìm được key online); T12 P3 Q32 YES → "NOT GIVEN / YES"
+  (nhận cả hai). Chữ hỏng đã khôi phục (ghi đầu từng spec): T1 P2 nhiều lỗi OCR in sẵn, T2 P1 sapo bị cắt, T6 P1 câu Freud mất
+  động từ ("equated"), T12 P1 câu sáp ong bị lặp/rối + dòng ghi chú biên tập "Additional passage…" (bỏ).
+- Kiểm: pw_mini 35/35, pw_admin 35/35, pw_grade 36/36 100% (+ Ahead of its time) và Gilbert 2/2, pw_full_tests 12/12,
+  `_audit_reading_warnings` 0 (433 bài), `vr_audit.js 8`: 0 problem (480 câu, 550 trích dẫn), `vr_incomplete.js`: 0.
+- **Debug lại (thầy bảo, cùng ngày)**: `vr_update.js 8 <33 bài>` dry run: DB trùng spec, 0 lượt làm. `web/vol8/debug_text.js` (dấu câu,
+  từ lặp, gạch nối gãy, nháy mở/đóng, từ không có ở bài nào khác trong ngân hàng): chỉ còn tên riêng / thuật ngữ; sửa 1 dấu ” thừa
+  ở "Western Immigration of Canada" (bản gốc + bản sao, `bank_fixes.js`). `web/vol8/debug_q.js` so từng câu hỏi / lựa chọn / tiêu
+  đề / ending / word bank / dòng ghi chú với chữ PDF + OCR ảnh trang (`web/vol8/ocrp/`, 200 dpi; các danh sách in dạng ảnh):
+  chỉ lệch ở chỗ sửa có chủ ý. `vr_audit.js 8` 0, `_audit_reading_warnings` 0.
+
+## Vol 1 - Test 7 bật lại từ bản update — 2026-10-29
+
+Nguồn: `VOL 7…/Reading/các đề update web khác trên bản pdf/Reading khác bản pdf update/VOL 1 TEST 7.pdf` (có chữ; P1 Pepper,
+P2 bản viết lại của Thoughtful Computing, P3 "Thinking Small: Globalization and the Choice of Technology" 27–40) + key
+`giải thích reading/vol 1 test 7.docx key.docx`. Key P1–P2 trùng hẳn bộ câu hỏi của 2 bài ngân hàng (P2 key theo bản ngân hàng
+"office competitors"/"65%", không theo chữ PDF update) → dùng lại **A Brief Introduction to Pepper** (Vol 4 - Test 9 P1) và
+**Thoughtful Computing system** nguyên trạng; P3 mới: `specs/vol1u/t7p3` (`vol: '1u'` → `web/vol1u/`, không đụng draft t7p3
+Irish Elk của Vol 1), nhập + ảnh bìa + bật. Đề "Vol 1 - Test 7" trỏ sang 3 bài mới bằng `vr_retest.js 1 7 <id1> <id2> <id3>
+--apply` (backup `web/vol1/backup/test7_*.json`, 0 lượt làm) và bật. "Protecting turtles" và "Irish Elk" vẫn là bài lẻ đang bật.
+Kiểm: pw_mini / pw_admin 1/1, pw_grade 3/3 100%, pw_full_tests 1/1, `vr_audit.js 1` 0, `vr_incomplete.js` 0.
+Các bản update khác trong thư mục đó (Vol 1 T5/T9, Vol 2 T1/T3/T9/T10, Vol 4 T4/T5) chưa xử lý.

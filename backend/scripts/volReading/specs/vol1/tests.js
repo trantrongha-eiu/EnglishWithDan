@@ -8,7 +8,9 @@ module.exports = {
   4: ['6a6f2325a37de57067377841', '6a6f2325a37de57067377851', '6a6f2325a37de57067377862'], // good ideas fail / water away / Megafauna
   5: ['t5p1', '6abdee0454216aa2da1578d1', '6abcd3994bdca60c3b137d0a'],                         // Blue line 2 / Multitasks / Grimm
   6: ['6abcd3974bdca60c3b137cfa', 't6p2', 't6p3'],                                             // history of tea / Biodiversity (Vol 1) / NatureWorks
-  7: ['t7p1', 't7p2', 't7p3'],                                                                 // turtles / Thoughtful Computing / Irish Elk (Q28–40)
+  // T7 rebuilt 2026-10-29 from the updated PDF (Vol 7 folder 'các đề update web khác trên bản pdf') with vr_retest.js — was
+  // turtles / Thoughtful Computing / Irish Elk (Q28–40, no Q27 anywhere). Pepper = bank (Vol 4 - Test 9 P1), P3 = specs/vol1u.
+  7: ['6adc40e55cf66bdff87cfc55', 't7p2', '6ae3573aa25cc04eacf81f63'],                         // Pepper / Thoughtful Computing / Thinking Small
   8: ['t8p1', 't8p2', 't8p3'],                                                                 // Brief History of Tea / New filter / Linguistic Change
   9: ['6abd18a7766cfd5ee7885d0c', '6a6f4d6c9767a2b2f3332bee', 't9p3'],                         // Tuatara / Tasmanian Tiger / Cane Toad (Q28–40)
   10: ['6abcc4439bd9acaeb9541f59', '6a551a827451993d82bcf0f4', 't10p3'],                       // pesticide-free village / Skyscraper Farming / Marketing

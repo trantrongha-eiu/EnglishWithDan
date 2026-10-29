@@ -1,0 +1,80 @@
+// Vol 8 - READING/Test 9.pdf - Reading Passage 3 (PDF p7–10, text layer). Not in the bank / mini-ielts.
+// Key = READING/Key.pdf (Test 9). Word list A–K of Q27–32 is an image (typed). Text fixes: "(HKIED)" → (HKIEd), "team spint" →
+// spirit + closing quote, "systematic way.\"" → way.', "provide participant with" → participants. Summary punctuation
+// ("institute local business people and schools The teams…", "instructors Before meeting the teams. the instructors"),
+// "entrepreneunal" → entrepreneurial; Q36 / Q37 "participants" → participants'.
+const { summary, ynng, mc } = require('../../vr_build');
+module.exports = {
+  vol: 8, test: 9, part: 3, title: 'An enterprise education programme in Hong Kong', text: 't9p3.txt',
+  groups: [
+    summary(27, 32, 'The Teen Entrepreneurs Competition (TEC) is an enterprise education initiative developed by the Hong Kong Institute of Education (HKIEd). The executive committee that organises the event is made up of pre-service teachers who receive __Q27__ from HKIEd staff.<br>The __Q28__ of the programme include giving secondary school students the opportunity to get involved in authentic business tasks and developing a __Q29__ consisting of the institute, local business people and schools. The teams that take part receive practical support from a group of instructors. Before meeting the teams, the instructors go to __Q30__ where they develop practical skills and are taught a range of entrepreneurial __Q31__.<br>The competition requires teams to come up with a new business __Q32__ for the Chinese New Year. The teams also write business plans and purchase or make their products. The judges, who include business people and education professionals, consider their business performance and sales.',
+      ['management', 'venture', 'resources', 'workshops', 'companies', 'guidance', 'finance', 'theories', 'outcomes', 'aims', 'network'],
+      { title: 'The Teen Entrepreneurs Competition – an outline' }),
+    ynng(33, [
+      'The questionnaire results indicated that relatively few participants were satisfied with their performance in TEC.',
+      'One participant was initially tempted to withdraw from the competition.',
+      'School teachers believed that some of their students were better suited to taking part in the competition than others.',
+      'School teachers thought that participants\' sustained interest in the programme confirmed their positive opinion of it.',
+    ]),
+    mc(37, [
+      ['In the sixth paragraph, what point does the writer make about the TEC programme?', [
+        'The programme enabled participants to put theory into practice.', 'There is little agreement on how sustainable the programme is.',
+        'The participants\' evaluations of the programme were inconsistent.', 'The programme showed how little participants knew about business.']],
+      ['What does the writer say about the objective of promoting a collaborative approach?', [
+        'Different participants adopted different strategies.', 'The results of the research studies were inconclusive.',
+        'The nature of the situations ensured that participants co-operated.', 'Some participants were unable to develop the relevant skills.']],
+      ['What does the writer say about TEC\'s connections with the business world?', [
+        'Entrepreneurs offered valuable professional advice.', 'There were a few communication problems with the entrepreneurs.',
+        'Some entrepreneurs were unwilling to provide a suitable venue.', 'Entrepreneurs helped to make the programme workable in terms of costs.']],
+      ['According to the final paragraph, the Hong Kong Institute of Education', [
+        'has voted to continue offering the programme.', 'was central in securing support from community groups.',
+        'has improved its reputation as a result of the programme.', 'was a useful link between the other contributors.']],
+    ]),
+  ],
+  key: { 27: 'guidance', 28: 'aims', 29: 'network', 30: 'workshops', 31: 'theories', 32: 'venture', 33: 'NO', 34: 'YES',
+    35: 'NOT GIVEN', 36: 'YES', 37: 'A', 38: 'C', 39: 'D', 40: 'D' },
+  expl: {
+    27: ['Ban điều hành gồm các giáo sinh nhận ______ từ cán bộ HKIEd.', 'Đoạn 2',
+      '“At the beginning of the academic year, these pre-service teachers form an executive committee. They are advised by tutors in the Business Studies Division”',
+      '“are advised by tutors” = nhận sự hướng dẫn (F) → guidance'],
+    28: ['______ của chương trình gồm tạo cơ hội cho học sinh tham gia công việc kinh doanh thực tế …', 'Đoạn 1',
+      '“It has the following key objectives: to enable secondary school business students to integrate their conceptual learning with real business practices”',
+      '“key objectives” = mục tiêu (J) → aims'],
+    29: ['… và xây dựng một ______ gồm học viện, giới doanh nhân địa phương và các trường.', 'Đoạn 1',
+      '“and to build up formal links between HKIEd, schools and entrepreneurs.”',
+      '“formal links between HKIEd, schools and entrepreneurs” = mạng lưới liên kết (K) → network'],
+    30: ['Trước khi gặp các đội, người hướng dẫn tham gia ______ để phát triển kỹ năng thực hành …', 'Đoạn 2',
+      '“These instructors attend a series of training sessions that cover the concepts of entrepreneurship and practical skills for business start-ups.”',
+      '“a series of training sessions” = các buổi tập huấn, hội thảo (D) → workshops'],
+    31: ['… và được dạy nhiều ______ về khởi nghiệp.', 'Đoạn 2',
+      '“training sessions that cover the concepts of entrepreneurship and practical skills”',
+      '“the concepts of entrepreneurship” = lý thuyết khởi nghiệp (H) → theories'],
+    32: ['Cuộc thi yêu cầu các đội nghĩ ra một ______ kinh doanh mới cho Tết Nguyên đán.', 'Đoạn 3',
+      '“the teams are required to brainstorm an innovative business start-up that is suitable for the Chinese New Year.”',
+      '“an innovative business start-up” = một dự án kinh doanh mới (B) → venture'],
+    33: ['Kết quả khảo sát cho thấy tương đối ít người tham gia hài lòng với thành tích của mình.', 'Đoạn 4',
+      '“In a recent evaluation survey, most participants ranked themselves in the satisfactory performance category”',
+      '“most participants … satisfactory” = đa số hài lòng, trái với “relatively few” → NO'],
+    34: ['Một người tham gia lúc đầu đã muốn rút khỏi cuộc thi.', 'Đoạn 4',
+      '“one participant reflected: ‘I initially received a lot of criticism and even thought about giving up.”',
+      '“initially … thought about giving up” = lúc đầu muốn bỏ cuộc → YES'],
+    35: ['Giáo viên cho rằng một số học sinh phù hợp tham gia cuộc thi hơn những em khác.', 'Đoạn 5',
+      '“the school teachers stated that TEC was a good platform in that it enabled their students to engage in business.”',
+      'Giáo viên chỉ khen TEC giúp học sinh làm kinh doanh; không so sánh học sinh nào phù hợp hơn → NOT GIVEN'],
+    36: ['Giáo viên cho rằng việc học sinh duy trì hứng thú với chương trình khẳng định ý kiến tích cực của họ về nó.', 'Đoạn 5',
+      '“They felt the zero drop-out rate strongly supported their views on the promising future of TEC.”',
+      '“zero drop-out rate” = không ai bỏ cuộc (duy trì hứng thú); “strongly supported their views” = khẳng định ý kiến tích cực → YES'],
+    37: ['Ở đoạn thứ sáu, tác giả nói gì về chương trình TEC?', 'Đoạn 6',
+      '“the school students taking part in TEC were able to apply entrepreneurial knowledge gained in their studies to the authentic business situations created by the programme.”',
+      '“apply … knowledge gained in their studies to the authentic business situations” = áp dụng lý thuyết vào thực tế → A'],
+    38: ['Tác giả nói gì về mục tiêu thúc đẩy cách tiếp cận hợp tác?', 'Đoạn 8',
+      '“The participants had to cope in a learning environment which was full of ever-changing challenges, and this meant they had to find ways to deal with events as they occurred. This involved participants … working closely with other team members.”',
+      'Môi trường đầy thử thách thay đổi liên tục buộc người tham gia phải hợp tác = bản chất tình huống đảm bảo sự hợp tác → C'],
+    39: ['Tác giả nói gì về mối liên hệ của TEC với giới kinh doanh?', 'Đoạn 9',
+      '“Local entrepreneurs acted as sponsors and had an important role in ensuring the programme was financially viable.”',
+      '“sponsors … financially viable” = doanh nhân giúp chương trình khả thi về chi phí → D'],
+    40: ['Theo đoạn cuối, Học viện Giáo dục Hồng Kông', 'Đoạn 9',
+      '“The contribution of the teacher training institute was to provide logistical support for implementing the programme, including the provision of a venue and a credible point of contact between the schools and the committee.”',
+      '“a credible point of contact between the schools and the committee” = cầu nối hữu ích giữa các bên đóng góp khác → D'],
+  },
+};

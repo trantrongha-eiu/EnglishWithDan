@@ -1,0 +1,82 @@
+// Vol 8 - READING/Test 2.pdf - Reading Passage 3 (PDF p8–11, text layer). Not in the bank / mini-ielts.
+// Key = READING/Key.pdf (Test 2). Q27–32 instruction in the PDF says "boxes 27-33" → 27–32. Q34 "19h century" → 19th.
+// Quotes put back around the spoken words in E ("Mars lost its magnetic field…") and F (Coradini).
+const { matching, mc, ynng } = require('../../vr_build');
+module.exports = {
+  vol: 8, test: 2, part: 3, title: 'Life on Mars?', text: 't2p3.txt',
+  groups: [
+    matching(27, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'], [
+      'evidence that a rock found on Earth originated on Mars',
+      'a plan to analyse material on Mars',
+      'the reason Mars is no longer similar to Earth',
+      'an observation suggesting that there is currently water on Mars',
+      'a claim that construction had taken place on Mars',
+      'a possibility that humans and Martians could share the same origins',
+    ], { instruction: 'Reading Passage 3 has eight paragraphs, A–H. Which paragraph contains the following information? Write the correct letter, A–H, in boxes 27–32 on your answer sheet.' }),
+    mc(33, [
+      ['The 18th-century astronomer William Herschel believed that', [
+        'the Martians were physically similar to humans.', 'the Martian environment resembled that of Earth.',
+        'members of the Martian race were extremely primitive.', 'the climatic conditions on Mars were very dry.']],
+      ['At the end of the 19th century, the public\'s ideas about Martians changed because of', [
+        'scientific discussion.', 'media reports.', 'a work of literature.', 'a magazine illustration.']],
+      ['What does the writer say happened in the 1960s?', [
+        'The appearance of some regions of Mars changed.', 'Evidence of organisms was found on Mars.',
+        'The Martian atmosphere was tested scientifically.', 'Earlier beliefs about Mars were disproven.']],
+      ['The study of extremophiles suggests that', [
+        'organisms can survive on Mars.', 'organisms on Earth are like those found on Mars.',
+        'Martian conditions resemble those in Earth\'s volcanoes.', 'Martian crystals can survive acid conditions.']],
+    ]),
+    ynng(37, [
+      'Lowell believed that Martian technology was more developed than human technology.',
+      'Information gained from Viking probes remains unchallenged.',
+      'There is evidence that there has been significant climate change on Mars.',
+      'Spanish scientists plan to launch space probes if DNA is found on Mars.',
+    ]),
+  ],
+  key: { 27: 'D', 28: 'G', 29: 'E', 30: 'F', 31: 'A', 32: 'H', 33: 'B', 34: 'C', 35: 'D', 36: 'A', 37: 'YES', 38: 'NO',
+    39: 'YES', 40: 'NOT GIVEN' },
+  expl: {
+    27: ['Bằng chứng cho thấy một tảng đá tìm thấy trên Trái Đất có nguồn gốc từ sao Hỏa.', 'Đoạn D',
+      '“The first is known as ALH84001, a meteorite that was blasted into space when a large body struck Mars 15 million years ago and which spiralled across the solar system to crash into the Antarctic. Analysis … showed that the meteorite contained elements identical to those found on Mars by the Viking probes”',
+      'Thiên thạch ALH84001 rơi xuống Nam Cực có thành phần giống hệt các nguyên tố trên sao Hỏa → có nguồn gốc từ sao Hỏa → D'],
+    28: ['Một kế hoạch phân tích vật chất trên sao Hỏa.', 'Đoạn G',
+      '“These are aimed at conducting experiments to detect the presence of a substance called carbon 13 in soil and rock samples on Mars”',
+      '“Current projects … conducting experiments … in soil and rock samples on Mars” = kế hoạch phân tích vật chất → G'],
+    29: ['Lý do sao Hỏa không còn giống Trái Đất.', 'Đoạn E',
+      '“Mars lost its magnetic field several billion years ago … Without that protection, Mars’s gases and water boiled off.’ That is why they are so different today.”',
+      'Mất từ trường → khí và nước bốc hơi hết; “That is why they are so different today” = lý do → E'],
+    30: ['Một quan sát cho thấy hiện nay có nước trên sao Hỏa.', 'Đoạn F',
+      '“discovered that much of the ground in the southern hemisphere of Mars is mixed with large quantities of ice. And where there is ice, there is likely to be liquid water, probably underneath.”',
+      'Tàu Mars Odyssey phát hiện băng trong đất → có thể có nước lỏng bên dưới (hiện tại) → F'],
+    31: ['Một khẳng định rằng đã có công trình được xây dựng trên sao Hỏa.', 'Đoạn A',
+      '“These canals, argued US scientist Percival Lowell, had been built by technologically advanced Martians to transport water”',
+      '“had been built by … Martians” = construction had taken place → A'],
+    32: ['Khả năng con người và người sao Hỏa có chung nguồn gốc.', 'Đoạn H',
+      '“If DNA is located, it would mean that life on Mars and on Earth may spring from the same source.”',
+      '“may spring from the same source” = could share the same origins → H'],
+    33: ['Nhà thiên văn thế kỷ 18 William Herschel tin rằng', 'Đoạn A',
+      '“The 18th-century astronomer William Herschel, noting the seasons and atmosphere of Mars, declared that ‘its inhabitants enjoy a situation similar to our own’.”',
+      '“a situation similar to our own” (dựa trên mùa và khí quyển) = môi trường sao Hỏa giống Trái Đất; không nói về ngoại hình cư dân → B'],
+    34: ['Cuối thế kỷ 19, ý nghĩ của công chúng về người sao Hỏa thay đổi vì', 'Đoạn B',
+      '“taken up by the British writer H.G. Wells in 1898 in his masterpiece The War of the Worlds … Martians became synonymous with grotesque, threatening aliens, at least as far as the public was concerned.”',
+      'Tiểu thuyết “The War of the Worlds” (1898) = a work of literature → C'],
+    35: ['Tác giả nói gì đã xảy ra vào thập niên 1960?', 'Đoạn C',
+      '“Then, in the late 1960s, rocket science changed our image of Mars forever. The US Mariner probes … sent back pictures, not of a world covered in vegetation, as many scientists still expected, but of vistas of cratered, arid deserts.”',
+      'Nhiều nhà khoa học vẫn nghĩ sao Hỏa có thực vật, nhưng ảnh cho thấy sa mạc khô cằn → niềm tin trước đó bị bác bỏ → D'],
+    36: ['Nghiên cứu về sinh vật ưa cực đoan cho thấy', 'Đoạn D',
+      '“A second area of support for the idea that living organisms could survive Mars’s harshness has been provided by the study of extremophiles”',
+      'Nghiên cứu extremophiles ủng hộ ý tưởng sinh vật có thể sống sót trong điều kiện khắc nghiệt của sao Hỏa → A'],
+    37: ['Lowell tin rằng công nghệ của người sao Hỏa phát triển hơn công nghệ của con người.', 'Đoạn A',
+      '“had been built by technologically advanced Martians … ‘Martian folk are possessed of inventions of which we have not dreamed,’ he argued.”',
+      '“inventions of which we have not dreamed” = những phát minh con người chưa từng mơ tới → công nghệ phát triển hơn → YES'],
+    38: ['Thông tin thu được từ tàu Viking vẫn chưa bị thách thức.', 'Đoạn C–D',
+      '“Mars was declared officially dead – for a while.” … “Since that time, two critical pieces of evidence have been found on Earth which support the idea that Mars has life.”',
+      'Tàu Viking không tìm thấy sự sống, sao Hỏa bị coi là “chết” chỉ “for a while”; sau đó có hai bằng chứng ủng hộ sự sống → kết luận của Viking đã bị thách thức → NO'],
+    39: ['Có bằng chứng cho thấy khí hậu sao Hỏa đã thay đổi đáng kể.', 'Đoạn E',
+      '“the Martian surface, although hostile and arid today, was once lush and welcoming. Images sent back by recent probes … have revealed dried-up riverbeds and old estuaries. Rivers poured into ancient seas, it appears, and rain swept the sodden terrain.”',
+      'Từng có mưa, sông, biển — nay khô cằn; ảnh tàu thăm dò là bằng chứng → khí hậu thay đổi lớn → YES'],
+    40: ['Các nhà khoa học Tây Ban Nha dự định phóng tàu thăm dò nếu tìm thấy DNA trên sao Hỏa.', 'Đoạn H',
+      '“If DNA is located, it would mean that life on Mars and on Earth may spring from the same source. … The discovery of any evidence of living organisms on Mars would also mean renewed purpose for manned space flight projects.”',
+      'Bài chỉ nói ý nghĩa nếu tìm thấy DNA và mục đích mới cho các chuyến bay có người lái; không nói các nhà khoa học Tây Ban Nha có kế hoạch phóng tàu → NOT GIVEN'],
+  },
+};
