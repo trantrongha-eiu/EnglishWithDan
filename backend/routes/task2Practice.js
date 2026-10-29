@@ -100,5 +100,7 @@ router.get('/drafts', auth, task2PracticeController.listDrafts);
 router.get('/lessons/progress', auth, task2PracticeController.listLessonProgress);
 router.get('/lesson/:topicId', auth, premiumOnly, task2PracticeController.getLessonWork);
 router.put('/lesson/:topicId', auth, premiumOnly, task2PracticeController.saveLessonWork);
+// Step ① (saved vocab + quiz best) — merge this device's progress, get all of it back.
+router.post('/vocab-progress/sync', auth, task2PracticeController.syncVocabProgress);
 
 module.exports = router;

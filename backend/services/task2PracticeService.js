@@ -13,6 +13,7 @@ const Task2Template = require('../models/Task2Template');
 const Task2TypeGuide = require('../models/Task2TypeGuide');
 const Task2Draft = require('../models/Task2Draft');
 const Task2LessonWork = require('../models/Task2LessonWork');
+const Task2VocabProgress = require('../models/Task2VocabProgress');
 const WritingTask2 = require('../models/WritingTask2');
 const { gradeT2Question } = require('./geminiService');
 const { levenshtein, buildAnswerHint } = require('../utils/textMatch');
@@ -741,9 +742,73 @@ async function listLessonProgress(userId) {
   });
 }
 
+// ── Step ① progress (saved vocab terms + best vocab-quiz score) ──────────
+// The page sends whatever it knows (one topic after a save/quiz, or every
+// topic in this browser's old localStorage on load) and gets back the merged
+// record for ALL topics. Merging only ever adds terms / raises the score, so
+// two devices can sync in any order without undoing each other.
+const VOCAB_SYNC_MAX_ITEMS = 300;
+const VOCAB_SYNC_MAX_TERMS = 200;
+const VOCAB_TERM_MAX = 200;
+
+async function syncVocabProgress(userId, items) {
+  const clean = new Map();
+  for (const it of (Array.isArray(items) ? items : []).slice(0, VOCAB_SYNC_MAX_ITEMS)) {
+    if (!it || !mongoose.isValidObjectId(it.topicId)) continue;
+    const id = String(it.topicId);
+    const terms = Array.isArray(it.savedTerms)
+      ? it.savedTerms.filter(t => typeof t === 'string' && t.trim()).slice(0, VOCAB_SYNC_MAX_TERMS).map(t => t.slice(0, VOCAB_TERM_MAX))
+      : [];
+    const quizBest = typeof it.quizBest === 'number' && Number.isFinite(it.quizBest)
+      ? Math.max(0, Math.min(100, Math.round(it.quizBest)))
+      : null;
+    if (!terms.length && quizBest == null) continue;
+    const prev = clean.get(id) || { terms: new Set(), quizBest: null };
+    terms.forEach(t => prev.terms.add(t));
+    if (quizBest != null && (prev.quizBest == null || quizBest > prev.quizBest)) prev.quizBest = quizBest;
+    clean.set(id, prev);
+  }
+
+  if (clean.size) {
+    const real = await Task2Topic.find({ _id: { $in: [...clean.keys()] } }).select('_id').lean();
+    const ops = real.map(t => {
+      const c = clean.get(String(t._id));
+      const update = {};
+      if (c.terms.size) update.$addToSet = { savedTerms: { $each: [...c.terms] } };
+      if (c.quizBest != null) update.$max = { quizBest: c.quizBest };
+      return { updateOne: { filter: { userId, topicId: t._id }, update, upsert: true } };
+    });
+    if (ops.length) {
+      try {
+        await Task2VocabProgress.bulkWrite(ops, { ordered: false });
+      } catch (err) {
+        // Two first-time upserts for the same topic racing on the unique
+        // index — the loser just needs to run again as a plain update.
+        if (err && err.code === 11000) await Task2VocabProgress.bulkWrite(ops, { ordered: false });
+        else throw err;
+      }
+    }
+  }
+
+  const rows = await Task2VocabProgress.find({ userId }).select('topicId savedTerms quizBest').lean();
+  // vocabTotal = distinct terms in the topic's list, same count the page
+  // caches after opening a topic — lets the topic list show step ① as done
+  // on a device that has never opened that topic.
+  const topics = rows.length
+    ? await Task2Topic.find({ _id: { $in: rows.map(r => r.topicId) } }).select('vocabularyList.term').lean()
+    : [];
+  const totals = new Map(topics.map(t => [String(t._id), new Set((t.vocabularyList || []).map(v => v.term)).size]));
+  return rows.map(r => ({
+    topicId: String(r.topicId),
+    savedTerms: r.savedTerms || [],
+    quizBest: r.quizBest ?? null,
+    vocabTotal: totals.has(String(r.topicId)) ? totals.get(String(r.topicId)) : null
+  }));
+}
+
 module.exports = {
   listTemplates, listTypeGuides, listWeeks, listTopicsForWeek, getTopicQuestions, getVocabulary,
   checkAnswer, getExam, submitExam, saveAttempt, getHistory, getAttemptDetail, getProgress, getWrongQuestions,
   getTopicPracticeStats, saveDraft, getDraft, deleteDraft, listDrafts,
-  listSessions, getLessonWork, saveLessonWork, listLessonProgress,
+  listSessions, getLessonWork, saveLessonWork, listLessonProgress, syncVocabProgress,
 };

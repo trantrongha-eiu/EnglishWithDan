@@ -311,9 +311,8 @@ function writeGateMessage(gate) {
 
 // ── Vocab-learned gate — Luyện tập requires the topic's vocab to have been
 // opened (Từ vựng tab, which caches its total word count below) AND every
-// one of those terms saved into a VocabBook first. Same localStorage-keyed-
-// by-topicId convention as _topicScores above; there is no server-side field
-// for "has this student learned this topic's vocab" to check instead. ──
+// one of those terms saved into a VocabBook first. Keyed by topicId; the
+// saved terms are synced to the server (see loadVocabProgress below). ──
 const VOCAB_TOTAL_KEY = 't2_vocab_total';
 const VOCAB_SAVED_KEY = 't2_vocab_saved';
 let _vocabTotalMap = _safeParse(localStorage.getItem(VOCAB_TOTAL_KEY), {});
@@ -328,6 +327,82 @@ function _markVocabTermsSaved(topicId, terms) {
   terms.forEach(t => set.add(t));
   _vocabSavedMap[topicId] = Array.from(set);
   localStorage.setItem(VOCAB_SAVED_KEY, JSON.stringify(_vocabSavedMap));
+}
+
+// ── Step ① on the server — POST /api/task2/vocab-progress/sync. The maps
+// above (and _vquizBest) are only a cache: on load a logged-in student's
+// progress is replaced with the server copy, so step ① done on a phone also
+// counts on a laptop (and a shared classroom computer never shows one
+// student's progress to the next). Every save / finished quiz is sent right
+// away; a send that fails is queued per user and retried on the next one.
+const VOCAB_SYNCED_KEY  = 't2_vocab_synced';   // set once this browser's pre-sync progress was uploaded
+const VOCAB_PENDING_KEY = 't2_vocab_pending';  // { [userId]: items[] } not yet on the server
+
+function _vpUserKey() {
+  const u = window.AuthService.getUser && window.AuthService.getUser();
+  return String((u && (u._id || u.id)) || 'me');
+}
+function _vpPending() { return _safeParse(localStorage.getItem(VOCAB_PENDING_KEY), {}); }
+function _vpSavePending(p) { try { localStorage.setItem(VOCAB_PENDING_KEY, JSON.stringify(p)); } catch {} }
+
+// rows from the server. replace: drop the cache first (page load); otherwise
+// only add terms / raise scores, so a slow reply can't undo a newer local save.
+function _applyVocabProgress(rows, replace) {
+  if (replace) { _vocabSavedMap = {}; _vquizBest = {}; }
+  (rows || []).forEach(r => {
+    if (!r || !r.topicId) return;
+    if (r.savedTerms && r.savedTerms.length) {
+      const set = new Set(_vocabSavedMap[r.topicId] || []);
+      r.savedTerms.forEach(t => set.add(t));
+      _vocabSavedMap[r.topicId] = Array.from(set);
+    }
+    if (r.quizBest != null && (_vquizBest[r.topicId] == null || r.quizBest > _vquizBest[r.topicId])) {
+      _vquizBest[r.topicId] = r.quizBest;
+    }
+    if (r.vocabTotal != null && _vocabTotalMap[r.topicId] === undefined) _vocabTotalMap[r.topicId] = r.vocabTotal;
+  });
+  try {
+    localStorage.setItem(VOCAB_SAVED_KEY, JSON.stringify(_vocabSavedMap));
+    localStorage.setItem(VOCAB_TOTAL_KEY, JSON.stringify(_vocabTotalMap));
+    localStorage.setItem(VQUIZ_BEST_KEY, JSON.stringify(_vquizBest));
+  } catch {}
+}
+
+// Sends items (plus anything queued for this user). Resolves to the server's
+// rows for every topic, or null on failure — never rejects.
+async function _sendVocabProgress(items, queueOnFail) {
+  const uk = _vpUserKey();
+  const pend = _vpPending();
+  const queued = Array.isArray(pend[uk]) ? pend[uk] : [];
+  const all = queued.concat(items);
+  try {
+    const d = await apiFetch('/api/task2/vocab-progress/sync', { method: 'POST', body: JSON.stringify({ items: all }) });
+    if (queued.length) { const p = _vpPending(); delete p[uk]; _vpSavePending(p); }
+    return d.progress || [];
+  } catch {
+    if (queueOnFail && items.length) { const p = _vpPending(); p[uk] = all.slice(-300); _vpSavePending(p); }
+    return null;
+  }
+}
+
+// Page load. The first time a browser runs this, whatever it had saved before
+// progress lived on the server goes up to the account now logged in.
+async function loadVocabProgress() {
+  if (!(window.AuthService && window.AuthService.isLoggedIn())) return;
+  let legacy = [];
+  if (!localStorage.getItem(VOCAB_SYNCED_KEY)) {
+    const ids = new Set([...Object.keys(_vocabSavedMap), ...Object.keys(_vquizBest)]);
+    legacy = [...ids].map(id => ({ topicId: id, savedTerms: _vocabSavedMap[id] || [], quizBest: _vquizBest[id] ?? null }));
+  }
+  const rows = await _sendVocabProgress(legacy, false);
+  if (!rows) return; // offline / server down — keep the local cache
+  try { localStorage.setItem(VOCAB_SYNCED_KEY, '1'); } catch {}
+  _applyVocabProgress(rows, true);
+}
+
+function pushVocabProgress(item) {
+  if (!(window.AuthService && window.AuthService.isLoggedIn())) return;
+  _sendVocabProgress([item], true).then(rows => { if (rows) _applyVocabProgress(rows, false); });
 }
 
 function isVocabLearned(topicId) {
@@ -472,7 +547,8 @@ async function loadWeeks() {
       apiFetch('/api/task2/weeks'),
       hasToken ? apiFetch('/api/task2/drafts').catch(() => ({ drafts: [] })) : Promise.resolve({ drafts: [] }),
       apiFetch('/api/task2/sessions').catch(() => ({ sessions: [] })),
-      hasToken ? apiFetch('/api/task2/lessons/progress').catch(() => ({ progress: [] })) : Promise.resolve({ progress: [] })
+      hasToken ? apiFetch('/api/task2/lessons/progress').catch(() => ({ progress: [] })) : Promise.resolve({ progress: [] }),
+      loadVocabProgress()
     ]);
     state.weeks = data.weeks || [];
     state.allDrafts = allDraftsData.drafts || [];
@@ -3352,6 +3428,7 @@ function _vocabItem(v) { return { word: v.term, meaning: v.definitionVi || '', e
 function _onVocabSaved(topicId, terms) {
   const wasSaved = isVocabLearned(topicId);
   _markVocabTermsSaved(topicId, terms);
+  pushVocabProgress({ topicId, savedTerms: terms });
   if (state.view !== 'select' || state.selectedTopic?._id !== topicId) return;
   if (!wasSaved && isVocabLearned(topicId)) {
     state.vocabOpen = null; // auto → list collapses now that every term is saved
@@ -3400,7 +3477,7 @@ function speakVocab(idx) {
 // blanked out of its own example sentence. The quiz is fixed per topic —
 // every pick is drawn from an RNG seeded by the topic id, so every student
 // (and every retry) gets the same questions in the same order. Best score
-// per topic is remembered in this browser only.
+// per topic is synced to the server (pushVocabProgress).
 const VQUIZ_LEN = 25;
 const VQUIZ_PASS = 70;
 function _vquizPossible(list) { return (list || []).filter(v => v.term && v.definitionVi).length >= 4; }
@@ -3497,6 +3574,7 @@ function nextVocabQuiz() {
       _vquizBest[id] = pct;
       try { localStorage.setItem(VQUIZ_BEST_KEY, JSON.stringify(_vquizBest)); } catch {}
     }
+    pushVocabProgress({ topicId: id, quizBest: pct });
     // This quiz unlocked steps 2–6: the whole hub changes, not just this card.
     if (!wasDone && isVocabStepDone(id)) {
       render();

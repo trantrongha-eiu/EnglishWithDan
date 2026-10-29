@@ -501,3 +501,59 @@ describe('Lessons — /api/task2/sessions + /api/task2/lesson/:topicId', () => {
     expect((await request(app).get('/api/task2/lesson/507f1f77bcf86cd799439011').set('Authorization', auth)).status).toBe(404);
   });
 });
+
+describe('POST /api/task2/vocab-progress/sync (step ① across devices)', () => {
+  const url = '/api/task2/vocab-progress/sync';
+  const vocab = [
+    { term: 'wearable', definitionVi: 'thiết bị đeo' },
+    { term: 'track', definitionVi: 'theo dõi' },
+    { term: 'track', definitionVi: 'theo dõi (trùng)' },
+  ];
+
+  test('requires login and rejects a non-array items field', async () => {
+    expect((await request(app).post(url).send({ items: [] })).status).toBe(401);
+    const s = await createStudent();
+    const r = await request(app).post(url).set('Authorization', `Bearer ${signTokenFor(s)}`).send({ items: 'x' });
+    expect(r.status).toBe(400);
+  });
+
+  test('a quiz passed on one device shows up on another; merges only add terms / raise the score', async () => {
+    const topic = await createTask2Topic({ extra: { vocabularyList: vocab } });
+    const id = String(topic._id);
+    const s = await createPremiumStudent();
+    const auth = `Bearer ${signTokenFor(s)}`;
+
+    // "Phone": saves a term, then finishes the quiz at 80%.
+    await request(app).post(url).set('Authorization', auth).send({ items: [{ topicId: id, savedTerms: ['wearable'] }] });
+    await request(app).post(url).set('Authorization', auth).send({ items: [{ topicId: id, savedTerms: ['track'], quizBest: 80 }] });
+
+    // "Laptop": loads with nothing local, then a lower retry must not lower the best.
+    const load = await request(app).post(url).set('Authorization', auth).send({ items: [] });
+    expect(load.status).toBe(200);
+    const row = load.body.progress.find(p => p.topicId === id);
+    expect(row.savedTerms.sort()).toEqual(['track', 'wearable']);
+    expect(row.quizBest).toBe(80);
+    expect(row.vocabTotal).toBe(2);
+
+    const retry = await request(app).post(url).set('Authorization', auth).send({ items: [{ topicId: id, quizBest: 40 }] });
+    expect(retry.body.progress.find(p => p.topicId === id).quizBest).toBe(80);
+  });
+
+  test('progress is per student; junk items (bad ids, unknown topics, wrong types) are ignored', async () => {
+    const topic = await createTask2Topic({ extra: { vocabularyList: vocab } });
+    const a = await createPremiumStudent();
+    const b = await createPremiumStudent();
+    await request(app).post(url).set('Authorization', `Bearer ${signTokenFor(a)}`).send({ items: [
+      { topicId: String(topic._id), quizBest: 150, savedTerms: ['wearable', 5, ''] },
+      { topicId: 'nope', quizBest: 90 },
+      { topicId: '507f1f77bcf86cd799439011', quizBest: 90 },
+      { topicId: String(topic._id), quizBest: '99' },
+    ] });
+    const ra = await request(app).post(url).set('Authorization', `Bearer ${signTokenFor(a)}`).send({});
+    expect(ra.body.progress).toHaveLength(1);
+    expect(ra.body.progress[0].quizBest).toBe(100);
+    expect(ra.body.progress[0].savedTerms).toEqual(['wearable']);
+    const rb = await request(app).post(url).set('Authorization', `Bearer ${signTokenFor(b)}`).send({});
+    expect(rb.body.progress).toEqual([]);
+  });
+});

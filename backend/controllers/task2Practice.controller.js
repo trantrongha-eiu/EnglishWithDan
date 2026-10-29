@@ -254,6 +254,19 @@ exports.saveLessonWork = async (req, res) => {
   }
 };
 
+exports.syncVocabProgress = async (req, res) => {
+  try {
+    const items = (req.body || {}).items;
+    if (items !== undefined && !Array.isArray(items)) {
+      return res.status(400).json({ success: false, message: 'items phải là một mảng' });
+    }
+    const progress = await task2PracticeService.syncVocabProgress(req.user._id, items || []);
+    res.json({ success: true, progress });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 exports.listLessonProgress = async (req, res) => {
   try {
     const progress = await task2PracticeService.listLessonProgress(req.user._id);
