@@ -239,19 +239,19 @@
     'task2-practice.html': [
       {
         icon: '📝',
-        title: 'Chọn tuần luyện tập',
-        body: 'Mỗi tuần gồm các câu hỏi Task 2 theo một chủ đề + dạng bài cụ thể (Advantages/Disadvantages, Cause & Effect, Discuss Both...). Bấm vào một tuần để bắt đầu — tiến độ được tự động lưu lại.',
+        title: 'Chọn buổi học',
+        body: 'Mỗi buổi là một đề Task 2, xếp theo chủ đề + dạng bài (Advantages/Disadvantages, Discuss Both, Cause & Solution...). Bấm vào một buổi để bắt đầu — Lulu đánh dấu buổi nên học tiếp, tiến độ được tự động lưu lại.',
         resolve() {
-          const el = document.querySelector('.t2-week-grid');
+          const el = document.getElementById('t2w-grid');
           return isVisible(el) ? el : null;
         }
       },
       {
         icon: '📊',
         title: 'Lịch sử làm bài',
-        body: 'Xem lại các tuần đã hoàn thành và tiến độ của từng tuần ở đây.',
+        body: 'Xem lại các buổi đã làm và kết quả luyện tập ở đây.',
         resolve() {
-          const el = document.querySelector('.t2-back-btn');
+          const el = document.getElementById('t2w-hist-btn');
           return isVisible(el) ? el : null;
         },
         isLast: true

@@ -395,7 +395,9 @@ function render() {
     case 'compose':  app.innerHTML = renderCompose();  bindCompose();  break;
   }
   // The split-screen writer needs the room; every other view stays narrow.
-  app.style.maxWidth = state.view === 'compose' ? '1320px' : '900px';
+  app.style.maxWidth = state.view === 'compose' ? '1320px' : state.view === 'weeks' ? '1160px' : '900px';
+  // The weeks hero carries XP/streak itself — no floating badge over it.
+  document.body.classList.toggle('t2-on-weeks', state.view === 'weeks');
   // Session stats (BÀI LÀM/XP/ĐÚNG) only mean something once a practice
   // session is actually running — outside 'practice'/'done' they'd just be
   // stale zeros floating over the weeks/topics picker, which is the bug this
@@ -557,19 +559,66 @@ function _pendingDrafts() {
     .filter(d => d._rem > 0);
 }
 
-// One row per lesson on the list: "Buổi N · topic" + where the student is.
-function _sessionRowHtml(s, draftTopicIds) {
+// ── Weeks screen (Lulu playful look, same as task2-template.html) ────────
+// Group colours = the essay-type colours on the Template page.
+const ESSAY_COLORS = { advantages_disadvantages:'#4d63d8', discuss_both_views:'#7d62c9', cause_solution:'#2a9d8f', effect_solution:'#cf5f57', cause_effect:'#e07a3a', agree_disagree:'#2f9e5b', positive_or_negative_development:'#d4689a' };
+const T2W_STEPS = [
+  { phase: 'Chuẩn bị', time: '~60′', cls: 'prep',  steps: [['1', 'fa-book-open', 'Từ vựng'], ['2', 'fa-lightbulb', 'Brainstorm'], ['3', 'fa-language', 'Dịch câu'], ['4', 'fa-compass', 'Hướng dẫn viết']] },
+  { phase: 'Trên lớp', time: '~30′', cls: 'class', steps: [['5', 'fa-pen', 'Mở bài + Thân bài 1']] },
+  { phase: 'Về nhà',   time: '',     cls: 'home',  steps: [['6', 'fa-house', 'Thân bài 2 + Kết bài']] }
+];
+
+function _sessState(s, draftTopicIds) {
   const p = state.lessonProgress[s._id];
-  const hasDraft = draftTopicIds.has(String(s._id));
+  if (p && p.submitted) return 'done';
+  if ((p && p.written) || draftTopicIds.has(String(s._id))) return 'doing';
+  return 'todo';
+}
+// Where Lulu points: a half-written lesson first, else the first one not submitted.
+function _nextSession(list, draftTopicIds) {
+  return list.find(s => _sessState(s, draftTopicIds) === 'doing')
+      || list.find(s => _sessState(s, draftTopicIds) === 'todo') || null;
+}
+
+// One row per lesson: "Buổi N" bubble + topic + where the student is.
+function _sessionRowHtml(s, draftTopicIds, isNext) {
+  const p = state.lessonProgress[s._id];
+  const st = _sessState(s, draftTopicIds);
   let chip = '';
-  if (p && p.submitted) chip = '<span class="t2-step-chip ok"><i class="fas fa-check"></i> Đã nộp</span>';
-  else if (p && p.written) chip = `<span class="t2-step-chip mid">✍️ ${p.written}/4 phần</span>`;
-  else if (hasDraft) chip = '<span class="t2-week-draft-pill" style="margin-top:0"><i class="fas fa-bookmark" style="font-size:9px"></i> Đang dở</span>';
-  return `<button type="button" class="t2-sess${hasDraft ? ' has-draft' : ''}${p && p.submitted ? ' is-submitted' : ''}" data-week="${Number(s.week)}" data-topic="${_escHtml(String(s._id))}">
-    <span class="t2-sess-num">Buổi ${s.n}</span>
-    <span class="t2-sess-name" title="${_escHtml(s.topicName)}">${_escHtml(s.topicEmoji || '📝')} ${_escHtml(s.topicName)}</span>
-    ${chip}
+  if (st === 'done') chip = '<span class="t2w-chip is-ok"><i class="fas fa-check"></i> Đã nộp</span>';
+  else if (p && p.written) chip = `<span class="t2w-chip is-mid">✍️ Đã viết ${p.written}/4 phần</span>`;
+  else if (st === 'doing') chip = '<span class="t2w-chip is-mid"><i class="fas fa-bookmark"></i> Đang làm dở</span>';
+  if (isNext) chip += '<span class="t2w-chip is-next">👉 Học tiếp</span>';
+  return `<button type="button" class="t2-sess t2w-sess is-${st}${isNext ? ' is-next' : ''}" data-week="${Number(s.week)}" data-topic="${_escHtml(String(s._id))}" title="${_escHtml(s.topicName)}">
+    <span class="t2w-sess-num"><small>Buổi</small>${s.n}</span>
+    <span class="t2w-sess-body">
+      <span class="t2w-sess-name">${_escHtml(s.topicEmoji || '📝')} ${_escHtml(s.topicName)}</span>
+      ${chip ? `<span class="t2w-sess-chips">${chip}</span>` : ''}
+    </span>
+    <span class="t2w-sess-go" aria-hidden="true">${st === 'done' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-chevron-right"></i>'}</span>
   </button>`;
+}
+
+// Lulu's bubble on top of the list + one button straight into the next lesson.
+function _weeksCoachHtml(next, nDone, total) {
+  const loggedIn = !!(window.AuthService && window.AuthService.isLoggedIn());
+  let text, mood = 'happy';
+  if (!next) { text = `Cậu đã nộp đủ ${total} buổi rồi! Lulu tự hào về cậu quá 🥳`; mood = 'cheer'; }
+  else {
+    const p = state.lessonProgress[next._id];
+    if (p && p.written) text = `Cậu đang viết dở Buổi ${next.n} (${p.written}/4 phần) — viết nốt nha, sắp xong rồi! ✍️`;
+    else if (nDone) { text = `Giỏi lắm, đã xong ${nDone} buổi! Tiếp theo là Buổi ${next.n}: “${next.topicName}” 💪`; mood = 'excited'; }
+    else text = loggedIn
+      ? `Chào cậu! Tớ là Lulu 🍊 Bắt đầu với Buổi ${next.n}: “${next.topicName}” nha — đi từng bước một thôi!`
+      : 'Chào cậu! Tớ là Lulu 🍊 Đăng nhập để Lulu lưu tiến độ từng buổi cho cậu nha!';
+  }
+  const bubble = (window.Mascot && window.Mascot.reactHtml)
+    ? window.Mascot.reactHtml({ text, mood, solo: true, compact: true })
+    : `<div class="t2w-coach-txt">🍊 ${_escHtml(text)}</div>`;
+  const p = next && state.lessonProgress[next._id];
+  const go = next ? `<button type="button" class="t2w-go t2-sess-go" data-week="${Number(next.week)}" data-topic="${_escHtml(String(next._id))}">
+      <i class="fas fa-play"></i> ${p && p.written ? 'Viết tiếp' : nDone ? 'Học' : 'Bắt đầu'} Buổi ${next.n}</button>` : '';
+  return `<div class="t2w-coach">${bubble}${go}</div>`;
 }
 
 function renderWeeks() {
@@ -580,76 +629,108 @@ function renderWeeks() {
   const draftTopicIds = new Set(drafts.map(d => String(d.topicId)));
   // Lessons grouped by week, numbered across the whole course. Falls back to
   // the old per-week buttons if /sessions failed.
+  const all = state.sessions.map((s, i) => ({ ...s, n: i + 1 }));
   const byWeek = {};
-  state.sessions.forEach((s, i) => { (byWeek[s.week] = byWeek[s.week] || []).push({ ...s, n: i + 1 }); });
-  const useSessions = state.sessions.length > 0;
+  all.forEach(s => { (byWeek[s.week] = byWeek[s.week] || []).push(s); });
+  const useSessions = all.length > 0;
+  const nDone = all.filter(s => _sessState(s, draftTopicIds) === 'done').length;
+  const nDoing = all.filter(s => _sessState(s, draftTopicIds) === 'doing').length;
+  const next = _nextSession(all, draftTopicIds);
+  const xp = _safeParse(localStorage.getItem('t2_progress'), { xp: 0, streak: 0 });
+  const showPromo = !!(window.AuthService && !window.AuthService.hasPremiumAccess());
   return `
-    <div class="t2-page-head">
-      <div>
-        <h2 class="t2-page-h2" style="font-size:22px">📝 IELTS Writing Task 2 · Lộ trình theo buổi</h2>
-        <p class="t2-page-sub" style="font-size:14px">Mỗi đề là một buổi học trọn vẹn: chuẩn bị từ vựng &amp; ý tưởng → viết nửa bài trên lớp → hoàn thành ở nhà.</p>
+  <div class="t2w">
+    <section class="t2w-hero">
+      <div class="t2w-hero-text">
+        <h1 class="t2w-hero-title">Luyện đề <span class="t2w-hero-tag">Task 2 theo buổi</span></h1>
+        <p class="t2w-hero-sub">Mỗi đề là một buổi học trọn vẹn: chuẩn bị từ vựng &amp; ý tưởng → viết nửa bài trên lớp → hoàn thành ở nhà.</p>
+        <div class="t2w-hero-badges">
+          ${useSessions ? `<span class="t2w-hero-badge"><i class="fas fa-flag-checkered"></i> ${nDone}/${all.length} buổi đã nộp</span>` : ''}
+          ${nDoing ? `<span class="t2w-hero-badge">✍️ ${nDoing} buổi đang làm</span>` : ''}
+          <span class="t2w-hero-badge"><i class="fas fa-star"></i> ${Number(xp.xp) || 0} XP</span>
+          <span class="t2w-hero-badge">🔥 ${Number(xp.streak) || 0}</span>
+        </div>
       </div>
-      <button onclick="openT2History()" class="t2-back-btn" style="white-space:nowrap">
-        <i class="fas fa-history"></i> Lịch sử
-      </button>
-    </div>
-    <div class="t2-flow-hint">
-      <span>Mỗi buổi:</span>
-      <b>① Từ vựng</b><i class="fas fa-chevron-right"></i><b>② Brainstorm</b><i class="fas fa-chevron-right"></i><b>③ Dịch câu</b><i class="fas fa-chevron-right"></i><b>④ Hướng dẫn viết</b><i class="fas fa-chevron-right"></i><b>⑤ Viết trên lớp</b><i class="fas fa-chevron-right"></i><b>⑥ Bài về nhà</b>
-    </div>
-    ${(window.AuthService && !window.AuthService.hasPremiumAccess()) ? `<div id="premium-promo-banner" style="margin:8px 20px 4px;display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(229,57,53,.08),rgba(198,40,40,.06));border:1px solid rgba(229,57,53,.2);border-radius:14px;padding:14px 18px;flex-wrap:wrap">
-      <div style="font-size:22px">⭐</div>
-      <div style="flex:1;min-width:200px">
-        <div style="font-size:13px;font-weight:700;color:var(--brand,#e53935);margin-bottom:2px">Nâng cấp Premium để luyện tập không giới hạn</div>
-        <div style="font-size:12px;color:var(--text2,#555)">Toàn bộ ${state.sessions.length || ''} buổi học Task 2 Writing theo chủ đề</div>
+      <div class="t2w-hero-side">
+        <button type="button" class="t2w-glass-btn" id="t2w-hist-btn" onclick="openT2History()" title="Xem lịch sử luyện tập">
+          <i class="fas fa-history"></i> Lịch sử
+        </button>
       </div>
-      <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
+      <div class="lh-mascot" aria-hidden="true">${window.Mascot ? window.Mascot.duo('happy') : ''}</div>
+    </section>
+
+    <div class="t2w-flow" aria-label="Các bước trong mỗi buổi">
+      <span class="t2w-flow-lbl">Mỗi buổi gồm 6 bước</span>
+      ${T2W_STEPS.map(g => `
+        <div class="t2w-phase is-${g.cls}">
+          <span class="t2w-phase-name">${g.phase}${g.time ? ` <em>${g.time}</em>` : ''}</span>
+          <span class="t2w-phase-steps">${g.steps.map(([n, ic, label]) => `<span class="t2w-step"><b>${n}</b><i class="fas ${ic}"></i> ${label}</span>`).join('')}</span>
+        </div>`).join('')}
+    </div>
+
+    ${useSessions ? _weeksCoachHtml(next, nDone, all.length) : ''}
+
+    ${showPromo ? `<div class="t2w-promo" id="premium-promo-banner">
+      <span class="t2w-promo-ic">⭐</span>
+      <div class="t2w-promo-txt">
+        <b>Nâng cấp Premium để luyện tập không giới hạn</b>
+        <span>Toàn bộ ${all.length || ''} buổi học Task 2 Writing theo chủ đề</span>
+      </div>
+      <button type="button" class="t2w-go" onclick="openUpgradeModal()">Upgrade Premium</button>
     </div>` : ''}
+
     ${drafts.length ? `
-    <div class="t2-continue">
-      <div class="t2-continue-title"><i class="fas fa-bookmark"></i> Đang làm dở</div>
+    <div class="t2w-continue">
+      <div class="t2w-continue-title"><i class="fas fa-bookmark"></i> Bài luyện câu đang làm dở</div>
       ${drafts.slice(0, 3).map(d => `
-        <div class="t2-continue-row">
-          <span class="t2-continue-name">${_escHtml(d.topicName || 'Chủ đề')} <span class="t2-continue-meta">· ${sessionLabel(String(d.topicId)) || `Tuần ${Number(d.week)}`} · còn ${d._rem} câu</span></span>
-          <button class="t2-primary is-sm t2-continue-go" data-week="${Number(d.week)}" data-topic="${_escHtml(String(d.topicId))}"><i class="fas fa-play"></i> Tiếp tục</button>
+        <div class="t2w-continue-row">
+          <span class="t2w-continue-name">${_escHtml(d.topicName || 'Chủ đề')} <span class="t2w-continue-meta">· ${sessionLabel(String(d.topicId)) || `Tuần ${Number(d.week)}`} · còn ${d._rem} câu</span></span>
+          <button type="button" class="t2w-go is-sm t2-continue-go" data-week="${Number(d.week)}" data-topic="${_escHtml(String(d.topicId))}"><i class="fas fa-play"></i> Tiếp tục</button>
         </div>`).join('')}
     </div>` : ''}
-    <div class="t2-group-grid">
-      ${WEEK_GROUPS.map(g => `
-        <div class="t2-group${g.essayType ? '' : ' is-review'}">
-          <div class="t2-group-head">
-            <span class="t2-group-emoji">${g.emoji}</span>
-            <div style="min-width:0">
-              <div class="t2-group-theme">${_escHtml(g.theme)}</div>
-              ${g.essayType
-                ? `<span class="${ESSAY_BADGE_CLASS[g.essayType]}">${ESSAY_LABELS[g.essayType]}</span>`
-                : `<span class="et-badge t2-badge-mixed">Tổng hợp các dạng</span>`}
+
+    <div class="t2w-grid" id="t2w-grid">
+      ${WEEK_GROUPS.map((g, gi) => {
+        const list = g.weeks.flatMap(w => byWeek[w] || []);
+        const done = list.filter(s => _sessState(s, draftTopicIds) === 'done').length;
+        const color = ESSAY_COLORS[g.essayType] || '#8a7f6e';
+        return `
+        <div class="t2w-group${g.essayType ? '' : ' is-review'}" style="--g-c:${color};--i:${gi}">
+          <div class="t2w-group-head">
+            <span class="t2w-group-emoji">${g.emoji}</span>
+            <div class="t2w-group-title">
+              <div class="t2w-group-theme">${_escHtml(g.theme)}</div>
+              <span class="t2w-group-type">${g.essayType ? ESSAY_LABELS[g.essayType] : 'Tổng hợp các dạng'}</span>
             </div>
+            ${useSessions && list.length ? `<span class="t2w-group-count${done === list.length ? ' is-full' : ''}" title="Đã nộp ${done}/${list.length} buổi">${done}/${list.length}</span>` : ''}
           </div>
+          ${useSessions && list.length ? `<div class="t2w-group-bar"><i style="width:${Math.round(done / list.length * 100)}%"></i></div>` : ''}
           ${useSessions ? `
-          <div class="t2-group-sessions">
-            ${g.weeks.flatMap(w => byWeek[w] || []).map(s => _sessionRowHtml(s, draftTopicIds)).join('')
-              || '<span class="t2-page-sub" style="font-size:12.5px">Sắp ra</span>'}
+          <div class="t2w-group-sessions">
+            ${list.map(s => _sessionRowHtml(s, draftTopicIds, !!next && next._id === s._id)).join('')
+              || '<span class="t2w-soon">🌱 Sắp ra</span>'}
           </div>` : `
-          <div class="t2-group-weeks">
+          <div class="t2w-group-weeks">
             ${g.weeks.map(w => {
               const d = weekData[w];
               const hasDraft = draftWeeks.has(w);
-              return `<button type="button" class="t2-wk${d ? '' : ' locked'}${hasDraft ? ' has-draft' : ''}" data-week="${w}" ${d ? '' : 'disabled'}>
-                <span class="t2-wk-num">Tuần ${w}</span>
-                <span class="t2-wk-sub">${d ? d.topicCount + ' chủ đề' : 'Sắp ra'}</span>
-                ${hasDraft ? `<span class="t2-week-draft-pill"><i class="fas fa-bookmark" style="font-size:9px"></i> Đang dở</span>` : ''}
+              return `<button type="button" class="t2-wk t2w-wk${d ? '' : ' locked'}${hasDraft ? ' has-draft' : ''}" data-week="${w}" ${d ? '' : 'disabled'}>
+                <span class="t2w-wk-num">Tuần ${w}</span>
+                <span class="t2w-wk-sub">${d ? d.topicCount + ' chủ đề' : 'Sắp ra'}</span>
+                ${hasDraft ? '<span class="t2w-chip is-mid"><i class="fas fa-bookmark"></i> Đang dở</span>' : ''}
               </button>`;
             }).join('')}
           </div>`}
-        </div>`).join('')}
-    </div>`;
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
 }
 function bindWeeks() {
   document.querySelectorAll('.t2-wk:not(.locked)').forEach(el => {
     el.addEventListener('click', () => selectWeek(parseInt(el.dataset.week)));
   });
-  document.querySelectorAll('.t2-sess').forEach(el => {
+  document.querySelectorAll('.t2-sess, .t2-sess-go').forEach(el => {
     el.addEventListener('click', () => _withBusy(el, () => openTopicDirect(parseInt(el.dataset.week), el.dataset.topic, false)));
   });
   document.querySelectorAll('.t2-continue-go').forEach(el => {
