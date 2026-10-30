@@ -146,3 +146,39 @@
   .pt-svg.pt-vi10, .pt-svg .pt-aura-shell { animation: none !important; }
   .pt-svg .pt-bolt { animation: none !important; opacity: .7; }
 }
+
+/* ── Thập Vĩ entrance (pets.js storm()): each page its owner opens gets
+   ~2.6s of full-screen purple lightning — edge glow, a flash, and bolts
+   striking in from the edges. Click-through, above the page. */
+.ews-storm {
+  position: fixed; inset: 0; z-index: 9990; pointer-events: none; overflow: hidden;
+  opacity: 0; transition: opacity .3s;
+}
+.ews-storm.is-in { opacity: 1; }
+.ews-storm-glow {
+  position: absolute; inset: 0;
+  box-shadow: inset 0 0 90px 22px rgba(147, 51, 234, .55), inset 0 0 22px 5px rgba(216, 180, 254, .75);
+  animation: ews-storm-pulse .35s ease-in-out infinite alternate;
+}
+.ews-storm-flash {
+  position: absolute; inset: 0; opacity: 0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(233, 213, 255, 0) 35%, rgba(192, 132, 252, .35) 100%);
+  animation: ews-storm-flash 2.4s linear forwards;
+}
+.ews-storm-svg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  filter: drop-shadow(0 0 6px rgba(192, 132, 252, .9));
+}
+.ews-storm-bolt { opacity: 0; animation: ews-storm-bolt .55s linear forwards; }
+@keyframes ews-storm-pulse { from { opacity: .65; } to { opacity: 1; } }
+@keyframes ews-storm-flash {
+  0%, 4% { opacity: 0; } 7% { opacity: 1; } 12% { opacity: .2; } 15% { opacity: .8; } 26% { opacity: 0; }
+  52% { opacity: 0; } 55% { opacity: .7; } 64%, 100% { opacity: 0; }
+}
+@keyframes ews-storm-bolt {
+  0% { opacity: 0; } 8% { opacity: 1; } 22% { opacity: .15; } 34% { opacity: 1; } 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ews-storm-glow { animation: none; }
+}
+@media print { .ews-storm { display: none !important; } }

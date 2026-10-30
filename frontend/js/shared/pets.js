@@ -444,7 +444,7 @@
   function ensureCss() {
     if (document.getElementById('ews-pets-css')) return;
     var l = document.createElement('link');
-    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=8f61377ebf';
+    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=6180b2b97c';
     document.head.appendChild(l);
   }
   try { ensureCss(); } catch (e) {}
@@ -644,11 +644,81 @@
 
   window.addEventListener('resize', function () { if (walker) walker.place(); });
 
+  /* ══════════════════════════════════════════════════════════════════
+     STORM — Thập Vĩ's entrance: every time its owner opens a page, a
+     ~2.6s full-screen purple lightning aura (edge glow, a flash and
+     jagged bolts striking in from the screen edges). Click-through.
+     Reduced motion: just the glow fading in and out.
+     ══════════════════════════════════════════════════════════════════ */
+  var STORM_MS = 2600;
+  var STORM_PETS = { vi10: true };
+
+  // Jagged line from a to b by midpoint displacement → array of [x, y].
+  function zigzag(a, b, rough, depth) {
+    if (depth <= 0) return [a, b];
+    var dx = b[0] - a[0], dy = b[1] - a[1], len = Math.sqrt(dx * dx + dy * dy) || 1;
+    var off = (Math.random() - 0.5) * rough;
+    var m = [(a[0] + b[0]) / 2 - dy / len * off, (a[1] + b[1]) / 2 + dx / len * off];
+    return zigzag(a, m, rough / 2, depth - 1).concat(zigzag(m, b, rough / 2, depth - 1).slice(1));
+  }
+  function ptsStr(pts) { return pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '); }
+
+  // One bolt (plus a side branch or two) striking in from a screen edge.
+  function stormBolt(w, h, i, n) {
+    var side = i % 4, f = (i + 0.3 + Math.random() * 0.4) / n;
+    var start = side === 0 ? [w * f, -10] : side === 1 ? [w + 10, h * f]
+      : side === 2 ? [w * (1 - f), h + 10] : [-10, h * (1 - f)];
+    var reach = 0.22 + Math.random() * 0.18;
+    var end = [start[0] + (w / 2 - start[0]) * reach * 2, start[1] + (h / 2 - start[1]) * reach * 2];
+    var len = Math.sqrt(Math.pow(end[0] - start[0], 2) + Math.pow(end[1] - start[1], 2));
+    var main = zigzag(start, end, len * 0.35, 6);
+    var lines = [main];
+    for (var k = 0; k < 2; k++) {
+      var from = main[Math.floor(main.length * (0.3 + Math.random() * 0.4))];
+      var ang = Math.atan2(end[1] - start[1], end[0] - start[0]) + (Math.random() < 0.5 ? -1 : 1) * (0.5 + Math.random() * 0.5);
+      var bl = len * (0.25 + Math.random() * 0.25);
+      lines.push(zigzag(from, [from[0] + Math.cos(ang) * bl, from[1] + Math.sin(ang) * bl], bl * 0.4, 4));
+    }
+    var delay = (0.15 + (i / n) * 1.5 + Math.random() * 0.2).toFixed(2);
+    return '<g class="ews-storm-bolt" style="animation-delay:' + delay + 's">' + lines.map(function (pts, j) {
+      var p = ptsStr(pts), s = j ? 0.55 : 1;
+      return '<polyline points="' + p + '" stroke="#7e22ce" stroke-width="' + (10 * s) + '" stroke-opacity=".45"/>'
+        + '<polyline points="' + p + '" stroke="#a855f7" stroke-width="' + (4.5 * s) + '"/>'
+        + '<polyline points="' + p + '" stroke="#faf5ff" stroke-width="' + (1.6 * s) + '"/>';
+    }).join('') + '</g>';
+  }
+
+  function storm() {
+    try {
+      if (examActive() || !document.body) return;
+      var old = document.querySelector('.ews-storm');
+      if (old) old.remove();
+      var w = window.innerWidth || 800, h = window.innerHeight || 600;
+      var fx = document.createElement('div');
+      fx.className = 'ews-storm';
+      fx.setAttribute('aria-hidden', 'true');
+      var html = '<div class="ews-storm-glow"></div>';
+      if (!REDUCED) {
+        var n = w < 600 ? 6 : 9, bolts = '';
+        for (var i = 0; i < n; i++) bolts += stormBolt(w, h, i, n);
+        html += '<div class="ews-storm-flash"></div>'
+          + '<svg class="ews-storm-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" fill="none"'
+          + ' stroke-linecap="round" stroke-linejoin="round">' + bolts + '</svg>';
+      }
+      fx.innerHTML = html;
+      document.body.appendChild(fx);
+      requestAnimationFrame(function () { fx.classList.add('is-in'); });
+      setTimeout(function () { fx.classList.remove('is-in'); }, STORM_MS);
+      setTimeout(function () { fx.remove(); }, STORM_MS + 600);
+    } catch (e) {}
+  }
+
   function show(id) {
     if (walker) { walker.destroy(); walker = null; }
     if (!id || !ART[id]) return;
     if (lsGet(REST_KEY) === todayStr()) return;
     walker = new Walker(id);
+    if (STORM_PETS[id]) storm();
   }
 
   function boot() {
