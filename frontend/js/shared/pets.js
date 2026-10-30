@@ -10,6 +10,9 @@
  *                       hideTopNav drops body.has-global-nav; Reading/
  *                       Writing/Speaking also set window.__ewsExamActive)
  *                       and on the test pages themselves.
+ *   • Entrances       — each page the owner opens starts with a ~3s
+ *                       full-screen arrival themed to the pet (Thập Vĩ:
+ *                       storm(); the rest: entrance() + FX table).
  *   • Pets.setActive(id) — the shop page calls this right after the
  *                       student picks a pet so it appears without a reload.
  *
@@ -444,7 +447,7 @@
   function ensureCss() {
     if (document.getElementById('ews-pets-css')) return;
     var l = document.createElement('link');
-    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=6180b2b97c';
+    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=5a3797acfb';
     document.head.appendChild(l);
   }
   try { ensureCss(); } catch (e) {}
@@ -691,8 +694,8 @@
   function storm() {
     try {
       if (examActive() || !document.body) return;
-      var old = document.querySelector('.ews-storm');
-      if (old) old.remove();
+      var olds = document.querySelectorAll('.ews-storm, .ews-fx');
+      for (var o = 0; o < olds.length; o++) olds[o].remove();
       var w = window.innerWidth || 800, h = window.innerHeight || 600;
       var fx = document.createElement('div');
       fx.className = 'ews-storm';
@@ -713,12 +716,112 @@
     } catch (e) {}
   }
 
+  /* ══════════════════════════════════════════════════════════════════
+     ENTRANCES — every other pet gets its own ~3s full-screen arrival on
+     each page its owner opens: a tinted edge glow + themed particles
+     (Mèo Quýt rains tangerines, Shiba showers lì xì…). Same rules as the
+     storm: click-through, skipped on exam pages, reduced motion = glow.
+     Each group: t = emoji / c = CSS shape (pets.css .ews-fx-<c>),
+     m = motion (pets.css .ews-fx-<m>), n = count, s = size px range,
+     col = shape colour, f = CSS filter, y = vertical band for sweeps,
+     r = max spin in degrees (default 320).
+     ══════════════════════════════════════════════════════════════════ */
+  var FX = {
+    meo: { glow: '249,160,77', p: [
+      { t: '🍊', m: 'land', n: 18, s: [24, 40] }, { t: '🍃', m: 'fall', n: 5, s: [14, 20] }] },
+    shiba: { glow: '232,67,59', p: [
+      { t: '🧧', m: 'fall', n: 13, s: [26, 38] }, { t: '🪙', m: 'fall', n: 10, s: [18, 26] },
+      { t: '✨', m: 'twinkle', n: 7, s: [16, 26] }] },
+    cut: { glow: '147,197,253', p: [
+      { t: '❄️', m: 'drift', n: 24, s: [14, 30] }, { c: 'ember', m: 'drift', n: 16, s: [4, 8], col: '#bfdbfe' }] },
+    cao: { glow: '242,102,42', p: [
+      { t: '🔥', m: 'rise', n: 16, s: [18, 34] }, { c: 'ember', m: 'rise', n: 16, s: [4, 8], col: '#fb923c' }] },
+    rong: { glow: '53,194,151', p: [
+      { t: '🔥', m: 'sweep', n: 12, s: [26, 46], y: [55, 92], r: 12 }, { c: 'ember', m: 'sweep', n: 14, s: [4, 8], col: '#fbbf24', y: [50, 95] },
+      { t: '✨', m: 'twinkle', n: 6, s: [16, 24] }] },
+    vi1: { glow: '216,176,122', p: [
+      { t: '🍃', m: 'sweep', n: 16, s: [18, 30] }, { c: 'ember', m: 'sweep', n: 22, s: [3, 6], col: '#d8b07a' }] },
+    vi2: { glow: '90,169,255', p: [
+      { t: '🔥', m: 'rise', n: 16, s: [18, 32], f: 'hue-rotate(190deg) saturate(1.4)' },
+      { c: 'ember', m: 'rise', n: 14, s: [4, 8], col: '#7dd3fc' }] },
+    vi3: { glow: '94,190,210', p: [
+      { c: 'bubble', m: 'rise', n: 22, s: [10, 34] }] },
+    vi4: { glow: '199,90,58', p: [
+      { t: '🍌', m: 'fall', n: 16, s: [22, 36] }, { t: '🍃', m: 'fall', n: 4, s: [14, 20] }] },
+    vi5: { glow: '255,143,184', p: [
+      { c: 'rainbow', m: 'rainbow', n: 1, s: [0, 0] }, { t: '🌸', m: 'drift', n: 16, s: [16, 28] },
+      { t: '✨', m: 'twinkle', n: 10, s: [14, 24] }] },
+    vi6: { glow: '134,190,230', p: [
+      { c: 'drop', m: 'rain', n: 50, s: [22, 40] }, { t: '💧', m: 'land', n: 6, s: [16, 22], r: 0 }] },
+    vi7: { glow: '123,214,100', p: [
+      { c: 'ember', m: 'firefly', n: 26, s: [6, 10], col: '#a3e635' }, { t: '✨', m: 'twinkle', n: 6, s: [14, 22] }] },
+    vi8: { glow: '154,134,196', p: [
+      { c: 'splat', m: 'splat', n: 10, s: [44, 110], col: '#5b4a86' }, { c: 'bubble', m: 'rise', n: 10, s: [8, 20] }] },
+    vi9: { glow: '247,197,72', p: [
+      { c: 'orb', m: 'rise', n: 14, s: [10, 22], col: '#fbbf24' }, { t: '✨', m: 'twinkle', n: 14, s: [14, 26] }] },
+  };
+  // Seconds each motion lasts [min, max]; particles start within 0–1.3s.
+  var FX_DUR = { land: [1.6, 2.2], fall: [1.3, 2], drift: [2.2, 3], rain: [0.55, 0.85], rise: [1.6, 2.4],
+    sweep: [1.4, 2.2], twinkle: [0.9, 1.4], firefly: [2, 2.8], splat: [1.6, 2.2], rainbow: [3.2, 3.2] };
+  var FX_TOP = { land: 1, fall: 1, drift: 1, rain: 1, rise: 1 }; // only x is random
+
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  // A spot near the screen edges, so the page's middle stays readable.
+  function edgeSpot() {
+    var x = rnd(2, 95), y = rnd(10, 92);
+    if (Math.random() < 0.5) x = Math.random() < 0.5 ? rnd(2, 16) : rnd(84, 95);
+    else y = Math.random() < 0.5 ? rnd(10, 24) : rnd(78, 92);
+    return [x, y];
+  }
+
+  function entrance(id) {
+    try {
+      var cfg = FX[id];
+      if (!cfg || examActive() || !document.body) return;
+      var olds = document.querySelectorAll('.ews-storm, .ews-fx');
+      for (var o = 0; o < olds.length; o++) olds[o].remove();
+      var small = (window.innerWidth || 800) < 600, end = 1.8;
+      var html = '<div class="ews-fx-glow"></div>';
+      if (!REDUCED) cfg.p.forEach(function (g) {
+        var n = Math.max(1, Math.round(g.n * (small ? 0.6 : 1)));
+        var dr = FX_DUR[g.m], spin = g.r == null ? 320 : g.r;
+        for (var i = 0; i < n; i++) {
+          var dur = rnd(dr[0], dr[1]);
+          var delay = g.m === 'rainbow' ? 0 : g.m === 'rain' ? rnd(0, 2.2) : rnd(0, 1.3);
+          end = Math.max(end, delay + dur);
+          var st = '--s:' + rnd(g.s[0], g.s[1]).toFixed(0) + 'px;--dx:' + rnd(-60, 60).toFixed(0) + 'px;--dy:'
+            + rnd(-50, 50).toFixed(0) + 'px;--r:' + rnd(-spin, spin).toFixed(0) + 'deg;animation-duration:'
+            + dur.toFixed(2) + 's;animation-delay:' + delay.toFixed(2) + 's;';
+          if (FX_TOP[g.m]) st += 'left:' + rnd(0, 97).toFixed(1) + '%;';
+          else if (g.m === 'sweep') { var y = g.y || [8, 92]; st += 'top:' + rnd(y[0], y[1]).toFixed(1) + '%;'; }
+          else if (g.m === 'firefly') st += 'left:' + rnd(3, 95).toFixed(1) + '%;top:' + rnd(10, 92).toFixed(1) + '%;';
+          else if (g.m !== 'rainbow') { var e = edgeSpot(); st += 'left:' + e[0].toFixed(1) + '%;top:' + e[1].toFixed(1) + '%;'; }
+          if (g.col) st += '--c:' + g.col + ';';
+          if (g.f) st += 'filter:' + g.f + ';';
+          html += '<span class="ews-fx-p ews-fx-' + g.m + (g.c ? ' ews-fx-' + g.c : '') + '" style="' + st + '">'
+            + (g.t || '') + '</span>';
+        }
+      });
+      var fx = document.createElement('div');
+      fx.className = 'ews-fx ews-fx-' + id;
+      fx.setAttribute('aria-hidden', 'true');
+      fx.style.setProperty('--g', cfg.glow);
+      fx.innerHTML = html;
+      document.body.appendChild(fx);
+      var ms = Math.min(4000, end * 1000);
+      requestAnimationFrame(function () { fx.classList.add('is-in'); });
+      setTimeout(function () { fx.classList.remove('is-in'); }, ms - 300);
+      setTimeout(function () { fx.remove(); }, ms + 400);
+    } catch (e) {}
+  }
+
   function show(id) {
     if (walker) { walker.destroy(); walker = null; }
     if (!id || !ART[id]) return;
     if (lsGet(REST_KEY) === todayStr()) return;
     walker = new Walker(id);
     if (STORM_PETS[id]) storm();
+    else entrance(id);
   }
 
   function boot() {

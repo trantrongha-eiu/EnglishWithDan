@@ -182,3 +182,139 @@
   .ews-storm-glow { animation: none; }
 }
 @media print { .ews-storm { display: none !important; } }
+
+/* ── Other pets' entrances (pets.js entrance() + FX): a glow tinted with
+   the pet's colour (--g = "r,g,b") + themed particles. Each particle gets
+   --s size, --dx/--dy drift, --r spin, --c colour inline. */
+.ews-fx {
+  position: fixed; inset: 0; z-index: 9990; pointer-events: none; overflow: hidden;
+  opacity: 0; transition: opacity .3s;
+}
+.ews-fx.is-in { opacity: 1; }
+.ews-fx-glow {
+  position: absolute; inset: 0;
+  box-shadow: inset 0 0 80px 16px rgba(var(--g), .42), inset 0 0 18px 4px rgba(var(--g), .55);
+  animation: ews-fx-pulse .7s ease-in-out infinite alternate;
+}
+.ews-fx-p {
+  position: absolute; display: block;
+  width: var(--s); height: var(--s); font-size: var(--s); line-height: 1; text-align: center;
+  animation-fill-mode: both; will-change: transform, opacity;
+}
+
+/* Motions */
+.ews-fx-land, .ews-fx-fall, .ews-fx-drift, .ews-fx-rain { top: 0; }
+.ews-fx-rise { top: 100%; }
+.ews-fx-sweep { left: 0; }
+.ews-fx-land { animation-name: ews-fx-land; animation-timing-function: ease-in; }
+.ews-fx-fall { animation-name: ews-fx-fall; animation-timing-function: cubic-bezier(.45, 0, .8, .6); }
+.ews-fx-drift { animation-name: ews-fx-drift; animation-timing-function: linear; }
+.ews-fx-rain { animation-name: ews-fx-rain; animation-timing-function: linear; }
+.ews-fx-rise { animation-name: ews-fx-rise; animation-timing-function: ease-out; }
+.ews-fx-sweep { animation-name: ews-fx-sweep; animation-timing-function: cubic-bezier(.3, .1, .6, 1); }
+.ews-fx-twinkle { animation-name: ews-fx-twinkle; animation-timing-function: ease-in-out; }
+.ews-fx-firefly { animation-name: ews-fx-firefly; animation-timing-function: ease-in-out; }
+.ews-fx-splat { animation-name: ews-fx-splat; animation-timing-function: ease-out; }
+.ews-fx-rainbow { animation-name: ews-fx-rainbow; animation-timing-function: ease-in-out; }
+
+/* Shapes */
+.ews-fx-ember { border-radius: 50%; background: var(--c, #fff); box-shadow: 0 0 6px 2px var(--c, #fff); }
+.ews-fx-firefly.ews-fx-ember { background: #ecfccb; box-shadow: 0 0 4px 2px var(--c), 0 0 14px 6px rgba(132, 204, 22, .55); }
+.ews-fx-bubble {
+  border-radius: 50%; border: 1.5px solid rgba(14, 165, 233, .55);
+  background: radial-gradient(circle at 32% 30%, rgba(255, 255, 255, .95) 0 10%, rgba(255, 255, 255, 0) 24%),
+    radial-gradient(circle, rgba(125, 211, 252, .12) 50%, rgba(56, 189, 248, .5) 100%);
+  box-shadow: 0 0 6px rgba(56, 189, 248, .35);
+}
+.ews-fx-orb {
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffbea 0 22%, var(--c) 70%);
+  box-shadow: 0 0 14px 5px var(--c), 0 0 30px 8px rgba(251, 191, 36, .35);
+}
+.ews-fx-drop {
+  width: 3px; border-radius: 3px;
+  background: linear-gradient(rgba(59, 130, 246, 0), rgba(59, 130, 246, .75));
+}
+.ews-fx-splat {
+  background: var(--c); opacity: .9;
+  border-radius: 46% 54% 62% 38% / 42% 48% 52% 58%;
+  box-shadow: inset -4px -6px 0 rgba(0, 0, 0, .14);
+}
+.ews-fx-splat::before, .ews-fx-splat::after {
+  content: ''; position: absolute; border-radius: 50%; background: var(--c);
+}
+.ews-fx-splat::before { width: 22%; height: 22%; right: -26%; top: 8%; }
+.ews-fx-splat::after { width: 14%; height: 14%; left: -18%; bottom: 4%; }
+.ews-fx-rainbow {
+  width: 140vmin; height: 140vmin; left: 50%; top: calc(100% - 70vmin); border-radius: 50%;
+  background: radial-gradient(closest-side, transparent 78%,
+    rgba(239, 68, 68, .85) 78.5% 81%, rgba(249, 115, 22, .85) 81% 84%, rgba(250, 204, 21, .85) 84% 87%,
+    rgba(34, 197, 94, .85) 87% 90%, rgba(59, 130, 246, .85) 90% 93%, rgba(168, 85, 247, .85) 93% 96%, transparent 96.5%);
+  filter: blur(2px);
+}
+
+@keyframes ews-fx-pulse { from { opacity: .6; } to { opacity: 1; } }
+/* Falls to the bottom edge, bounces once, then fades. */
+@keyframes ews-fx-land {
+  0% { transform: translate(0, -120%) rotate(0); opacity: 1; }
+  60% { transform: translate(calc(var(--dx) * .7), calc(100vh - 100%)) rotate(calc(var(--r) * .7)); animation-timing-function: ease-out; }
+  72% { transform: translate(calc(var(--dx) * .85), calc(100vh - 100% - 7vh)) rotate(calc(var(--r) * .85)); animation-timing-function: ease-in; }
+  84% { transform: translate(var(--dx), calc(100vh - 100%)) rotate(var(--r)); opacity: 1; }
+  100% { transform: translate(var(--dx), calc(100vh - 100%)) rotate(var(--r)); opacity: 0; }
+}
+@keyframes ews-fx-fall {
+  from { transform: translate(0, -120%) rotate(0); }
+  to { transform: translate(var(--dx), calc(100vh + 20%)) rotate(var(--r)); }
+}
+@keyframes ews-fx-drift {
+  0% { transform: translate(0, -120%) rotate(0); }
+  25% { transform: translate(var(--dx), 25vh) rotate(calc(var(--r) * .25)); }
+  50% { transform: translate(calc(var(--dx) * -.6), 52vh) rotate(calc(var(--r) * .5)); }
+  75% { transform: translate(var(--dx), 78vh) rotate(calc(var(--r) * .75)); }
+  100% { transform: translate(0, calc(100vh + 20%)) rotate(var(--r)); }
+}
+@keyframes ews-fx-rain {
+  from { transform: translate(0, -120%); opacity: .9; }
+  to { transform: translate(calc(var(--dx) * .3), 104vh); opacity: .9; }
+}
+@keyframes ews-fx-rise {
+  0% { transform: translate(0, 10%) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translate(var(--dx), -45vh) scale(.9); }
+  100% { transform: translate(calc(var(--dx) * -.5), -90vh) scale(.6); opacity: 0; }
+}
+@keyframes ews-fx-sweep {
+  from { transform: translate(-120%, 0) rotate(0); }
+  50% { transform: translate(50vw, var(--dy)) rotate(calc(var(--r) * .5)); }
+  to { transform: translate(calc(100vw + 20%), 0) rotate(var(--r)); }
+}
+@keyframes ews-fx-twinkle {
+  0% { transform: scale(0) rotate(0); opacity: 0; }
+  40% { transform: scale(1.15) rotate(calc(var(--r) * .3)); opacity: 1; }
+  100% { transform: scale(0) rotate(calc(var(--r) * .6)); opacity: 0; }
+}
+@keyframes ews-fx-firefly {
+  0% { transform: translate(0, 0); opacity: 0; }
+  20% { opacity: 1; }
+  35% { transform: translate(calc(var(--dx) * .4), calc(var(--dy) * .6)); opacity: .3; }
+  50% { opacity: 1; }
+  70% { transform: translate(calc(var(--dx) * .8), calc(var(--dy) * .2)); opacity: .4; }
+  85% { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+}
+@keyframes ews-fx-splat {
+  0% { transform: scale(0) rotate(var(--r)); opacity: 0; }
+  12% { transform: scale(1.15) rotate(var(--r)); opacity: .9; }
+  22% { transform: scale(1) rotate(var(--r)); }
+  70% { opacity: .85; }
+  100% { transform: scale(1.04) rotate(var(--r)); opacity: 0; }
+}
+@keyframes ews-fx-rainbow {
+  0% { transform: translateX(-50%) scale(.92); opacity: 0; }
+  25%, 75% { transform: translateX(-50%) scale(1); opacity: .32; }
+  100% { transform: translateX(-50%) scale(1); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ews-fx-glow { animation: none; }
+}
+@media print { .ews-fx { display: none !important; } }
