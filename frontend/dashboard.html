@@ -20,12 +20,12 @@
   <script src="/js/shared/scroll-reveal.js?v=7010de29cd"></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <script src="/js/shared/pwa-register.js?v=713d4c39e1" defer></script>
-  <link rel="stylesheet" href="/css/dashboard.css?v=abfd06e9d9">
+  <link rel="stylesheet" href="/css/dashboard.css?v=0a3bbcf52c">
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3">
   <link rel="stylesheet" href="/css/playful.css?v=ffb392e664"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=1a9f0e19e6"></script>
+<script src="/js/bundles/app-shell.js?v=b3ddbc007e"></script>
 <script src="/js/shared/onboarding-tour.js?v=63967a156b"></script>
 <script src="/js/learning-popups.js?v=d05aa08d9c"></script>
 <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
@@ -131,6 +131,9 @@
                     <div class="dan-streak-msg" id="dan-streak-msg">Đang tải...</div>
                   </div>
                 </div>
+                <button type="button" class="dan-flame-rules-btn" onclick="openFeatInfo('streak')">
+                  <i class="fas fa-fire"></i> Cách tính lửa <span class="dan-flame-rules-new">Mới</span>
+                </button>
                 <button class="btn-use-hammer" id="btn-use-hammer" onclick="useHammer()" style="display:none">
                   <img src="img/buaDaniel.jpg" alt="" class="dan-hammer-icon">
                   Dùng búa Daniel — khôi phục streak vừa mất
@@ -191,7 +194,7 @@
                the shared #modal-feat-info popup on click. -->
           <div class="feat-chip-row">
             <button type="button" class="feat-chip" onclick="openFeatInfo('bulk-import')"><i class="fas fa-file-import"></i> Nhập hàng loạt</button>
-            <button type="button" class="feat-chip" onclick="openFeatInfo('streak')"><i class="fas fa-fire-alt"></i> Streak hàng ngày</button>
+            <button type="button" class="feat-chip" onclick="openFeatInfo('streak')"><i class="fas fa-fire-alt"></i> Cách tính lửa</button>
             <button type="button" class="feat-chip" onclick="openFeatInfo('paraphrase')"><i class="fas fa-book-open"></i> Paraphrase Cambridge</button>
             <button type="button" class="feat-chip" onclick="openFeatInfo('hammer')"><i class="fas fa-hammer"></i> Búa Daniel</button>
           </div>
@@ -1062,7 +1065,7 @@
 <!-- Shared popup for the homepage's compact feature/rules chips
      (openFeatInfo() in js/dashboard.js fills title/body per chip). -->
 <div class="modal-overlay hidden" id="modal-feat-info">
-  <div class="modal-box" style="max-width:440px">
+  <div class="modal-box" id="featInfoBox" style="max-width:440px">
     <div class="modal-header">
       <h3><i class="fas fa-circle-info"></i> <span id="featInfoTitleText"></span></h3>
       <button class="modal-close" aria-label="Đóng" onclick="closeModal('modal-feat-info')">×</button>
@@ -1210,7 +1213,7 @@
 <script src="/js/dashboard-classinfo.js?v=4762424353"></script>
 <script src="/js/dashboard-review.js?v=4dba13dc0a"></script>
 <script src="/js/dashboard-paraphrase.js?v=f6c0320973"></script>
-<script src="/js/dashboard.js?v=9d2ba23e0c"></script>
+<script src="/js/dashboard.js?v=02699d31b6"></script>
 <script src="/js/dashboard-browse.js?v=5692652b85"></script>
 </body>
 </html>

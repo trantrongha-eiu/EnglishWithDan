@@ -8,39 +8,45 @@
 // compare-and-swap that retries against fresh data instead of trusting a
 // stale read.
 const {
-  reserveDailyStreakBonus, todayVNDate,
+  reserveDailyStreakBonus, todayVNDate, awardPracticeFlames, DAILY_STREAK_BONUS_CAP,
+  vocabBonusForAccuracy, testBonusForAccuracy, drillBonusForAccuracy,
   dailyWordTargetForBand, dailyWordTarget, vocabStudiedToday, reachedDailyWordThreshold,
 } = require('../../../services/streakBonusService');
 const VocabActivity = require('../../../models/VocabActivity');
 const { createStudent } = require('../../factories/userFactory');
 
 describe('reserveDailyStreakBonus', () => {
-  test('never exceeds the +5/day cap under concurrent requests from the same user', async () => {
+  test('the daily cap is 10', () => {
+    expect(DAILY_STREAK_BONUS_CAP).toBe(10);
+  });
+
+  test('never exceeds the 10/day cap under concurrent requests from the same user', async () => {
     const student = await createStudent();
 
-    // 5 concurrent requests each asking for +2 — sequentially this would be
-    // capped at 5 total; the bug allowed concurrent calls to overshoot it.
+    // 6 concurrent requests each asking for +3 — sequentially this would be
+    // capped at 10 total; the bug allowed concurrent calls to overshoot it.
     const results = await Promise.all(
-      Array.from({ length: 5 }, () => reserveDailyStreakBonus(student._id, 2))
+      Array.from({ length: 6 }, () => reserveDailyStreakBonus(student._id, 3))
     );
 
     const totalApplied = results.reduce((sum, n) => sum + n, 0);
-    expect(totalApplied).toBe(5);
+    expect(totalApplied).toBe(10);
 
     const doc = await VocabActivity.findOne({ userId: student._id, date: todayVNDate() });
-    expect(doc.streakBonusEarned).toBe(5);
+    expect(doc.streakBonusEarned).toBe(10);
   });
 
   test('sequential calls stop granting once the cap is reached', async () => {
     const student = await createStudent();
 
-    expect(await reserveDailyStreakBonus(student._id, 2)).toBe(2);
-    expect(await reserveDailyStreakBonus(student._id, 2)).toBe(2);
-    expect(await reserveDailyStreakBonus(student._id, 2)).toBe(1); // only 1 left of 5
-    expect(await reserveDailyStreakBonus(student._id, 2)).toBe(0); // cap exhausted
+    expect(await reserveDailyStreakBonus(student._id, 3)).toBe(3);
+    expect(await reserveDailyStreakBonus(student._id, 3)).toBe(3);
+    expect(await reserveDailyStreakBonus(student._id, 3)).toBe(3);
+    expect(await reserveDailyStreakBonus(student._id, 3)).toBe(1); // only 1 left of 10
+    expect(await reserveDailyStreakBonus(student._id, 3)).toBe(0); // cap exhausted
 
     const doc = await VocabActivity.findOne({ userId: student._id, date: todayVNDate() });
-    expect(doc.streakBonusEarned).toBe(5);
+    expect(doc.streakBonusEarned).toBe(10);
   });
 
   test('rawBonus of 0 grants nothing and does not create a document', async () => {
@@ -98,5 +104,78 @@ describe('daily vocab word target (scales with IELTS target band)', () => {
     // Only real studying moves it.
     expect(await reachedDailyWordThreshold(student._id, { wordsStudied: 35 })).toBe(true);
     expect(await vocabStudiedToday(student._id)).toBe(35);
+  });
+});
+
+describe('🔥 tiers', () => {
+  test('vocab: >=70% → 1, >=80% → 2, >=90% → 3', () => {
+    expect(vocabBonusForAccuracy(0.69)).toBe(0);
+    expect(vocabBonusForAccuracy(0.7)).toBe(1);
+    expect(vocabBonusForAccuracy(0.8)).toBe(2);
+    expect(vocabBonusForAccuracy(0.9)).toBe(3);
+    expect(vocabBonusForAccuracy(1)).toBe(3);
+  });
+  test('reading/listening: >=50% → 1, >=70% → 2, >=90% → 3', () => {
+    expect(testBonusForAccuracy(0.49)).toBe(0);
+    expect(testBonusForAccuracy(0.5)).toBe(1);
+    expect(testBonusForAccuracy(0.7)).toBe(2);
+    expect(testBonusForAccuracy(0.89)).toBe(2);
+    expect(testBonusForAccuracy(0.9)).toBe(3);
+  });
+  test('other drills: >=70% → 1, >=90% → 2', () => {
+    expect(drillBonusForAccuracy(0.69)).toBe(0);
+    expect(drillBonusForAccuracy(0.7)).toBe(1);
+    expect(drillBonusForAccuracy(0.9)).toBe(2);
+  });
+});
+
+describe('awardPracticeFlames', () => {
+  const User = require('../../../models/User');
+
+  test('credits streak + wallet, and the same item only tops up within a day', async () => {
+    const student = await createStudent();
+    expect((await awardPracticeFlames(student._id, 'reading-practice:p1', 2)).bonusApplied).toBe(2);
+    // Same passage again at the same tier → nothing new.
+    expect((await awardPracticeFlames(student._id, 'reading-practice:p1', 2)).bonusApplied).toBe(0);
+    // Better redo → only the difference.
+    expect((await awardPracticeFlames(student._id, 'reading-practice:p1', 3)).bonusApplied).toBe(1);
+    // A different passage earns on its own.
+    expect((await awardPracticeFlames(student._id, 'reading-practice:p2', 3)).bonusApplied).toBe(3);
+    const u = await User.findById(student._id).lean();
+    expect(u.learningStreak).toBe(6);
+    expect(u.flameWallet).toBe(6);
+  });
+
+  test('concurrent submits of the same item claim it once', async () => {
+    const student = await createStudent();
+    const res = await Promise.all(Array.from({ length: 4 }, () => awardPracticeFlames(student._id, 'gapfill:s1', 2)));
+    expect(res.reduce((n, r) => n + r.bonusApplied, 0)).toBe(2);
+  });
+
+  test('stops at the daily cap; a 0 award still keeps the day alive', async () => {
+    const student = await createStudent();
+    let total = 0;
+    for (let i = 0; i < 5; i++) total += (await awardPracticeFlames(student._id, `listening-test:${i}`, 3)).bonusApplied;
+    expect(total).toBe(10);
+    const r = await awardPracticeFlames(student._id, 'grammar:x', 0);
+    expect(r.bonusApplied).toBe(0);
+    const u = await User.findById(student._id).lean();
+    expect(u.learningStreak).toBe(10);
+    expect(u.lastActivityDate).toBeTruthy();
+  });
+
+  test('a capped-out item claim is handed back, so it can earn later', async () => {
+    const student = await createStudent();
+    await reserveDailyStreakBonus(student._id, 9);
+    expect((await awardPracticeFlames(student._id, 'dictation:s1', 2)).bonusApplied).toBe(1);
+    const doc = await VocabActivity.findOne({ userId: student._id, date: todayVNDate() }).lean();
+    expect(doc.flameItems['dictation:s1']).toBe(1);
+  });
+
+  test('non-students earn nothing', async () => {
+    const { createTeacher } = require('../../factories/userFactory');
+    if (!createTeacher) return;
+    const teacher = await createTeacher();
+    expect((await awardPracticeFlames(teacher._id, 'x', 3)).bonusApplied).toBe(0);
   });
 });

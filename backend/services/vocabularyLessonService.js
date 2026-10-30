@@ -6,9 +6,8 @@ const VocabularyLessonAttempt = require('../models/VocabularyLessonAttempt');
 const VocabularyLessonAttemptLog = require('../models/VocabularyLessonAttemptLog');
 const VocabularyLessonImportLog = require('../models/VocabularyLessonImportLog');
 const parser = require('./vocabularyLessonParser');
-const { reachedDailyWordThreshold } = require('./streakBonusService');
+const { reachedDailyWordThreshold, awardPracticeFlames, vocabBonusForAccuracy } = require('./streakBonusService');
 const User = require('../models/User');
-const { applyStreakActivity } = require('../utils/streak');
 const shopService = require('./shopService');
 const { toCardThumbnail, isValidCoverUrl } = require('../utils/cardThumbnail');
 
@@ -105,10 +104,11 @@ async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeS
     try {
       user.lastVocabStudyDate = new Date();
       const qualifiesToday = await reachedDailyWordThreshold(user._id, { wordsStudied: total });
-      // Atomic (see applyStreakActivity's comment) — kept separate from the
-      // .save() below so a concurrent activity's own streak update can
-      // never be clobbered by this one (or vice versa).
-      if (qualifiesToday) await applyStreakActivity(User, user._id).catch(() => {});
+      // Same 🔥 tiers as a book-quiz session (>=70/80/90% → 1/2/3), once
+      // per lesson per day. Atomic (see applyStreakActivity's comment) —
+      // kept separate from the .save() below so a concurrent activity's own
+      // streak update can never be clobbered by this one (or vice versa).
+      if (qualifiesToday) await awardPracticeFlames(user._id, `vocab-lesson:${lessonId}`, vocabBonusForAccuracy(correct / total));
       await user.save();
     } catch (err) {
       console.error('[VocabularyLesson] submitAttempt: streak bookkeeping failed after a saved attempt:', err.message);

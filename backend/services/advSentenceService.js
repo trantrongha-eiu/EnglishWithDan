@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const SentenceStructureGroup = require('../models/SentenceStructureGroup');
 const AdvSentenceAttempt = require('../models/AdvSentenceAttempt');
 const { keepStreakAlive } = require('../utils/streak');
+const { awardPracticeFlames, drillBonusForAccuracy } = require('./streakBonusService');
 const AdvSentenceDraft = require('../models/AdvSentenceDraft');
 const { levenshtein, buildAnswerHint } = require('../utils/textMatch');
 
@@ -248,7 +249,12 @@ async function saveAttempt(userId, body) {
     scorePercentage: score,
   });
   await attempt.save();
-  await keepStreakAlive(userId);
+  // 🔥 only for a server-graded group of >= 5 sentences (>=70% +1, >=90% +2).
+  if (group && verifiedTotal >= 5) {
+    await awardPracticeFlames(userId, `adv-sentence:${attempt.sessionType}:${group._id}`, drillBonusForAccuracy(verifiedCorrect / verifiedTotal));
+  } else {
+    await keepStreakAlive(userId);
+  }
   return attempt;
 }
 

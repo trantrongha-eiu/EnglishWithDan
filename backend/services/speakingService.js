@@ -11,8 +11,7 @@ const {
 const { checkSpeakingMistral, _voxtralFormat } = require('./mistralService');
 const { isV2, normalizeSpeakingV2, candidateText } = require('./speakingScoringV2');
 const badgeService = require('./badgeService');
-const User = require('../models/User');
-const { applyStreakActivity } = require('../utils/streak');
+const { awardPracticeFlames } = require('./streakBonusService');
 
 // Daniel's Speaking textbook's 7 Part 2 cue-card groups — same taxonomy
 // speaking-course.html's Part 2 module (SPK-P2-M2, "Buổi 4-11") already
@@ -586,7 +585,7 @@ async function saveAttempt(user, { questionId, topic, part, questionText, transc
       aiFeedback: mapFeedbackToAiFeedback(feedback)
     });
     await attempt.save();
-    const newlyUnlocked = await _creditStreakForAnalyzedAttempt(user);
+    const newlyUnlocked = await _creditStreakForAnalyzedAttempt(user, attempt);
     return { attemptId: attempt._id, newlyUnlocked };
   } catch (saveErr) {
     console.error('[Speaking] Save attempt error:', saveErr.message);
@@ -595,20 +594,14 @@ async function saveAttempt(user, { questionId, topic, part, questionText, transc
 }
 
 // Speaking (like Writing) is graded by AI, not right-vs-wrong, so there's
-// no accuracy to tier a bonus off — a flat +1 just keeps today's link in
-// the streak chain alive (matches vocabBookService's flat-bonus
-// activities); same-day repeats are a no-op since updateStreak() defaults
-// allowSameDayStack to false. This was previously missing entirely: the
+// no accuracy to tier 🔥 off — each analyzed answer earns a flat 1 🔥, once
+// per question per day, inside the shared daily cap. This was previously missing entirely: the
 // activity heatmap already counts SpeakingAttempt docs (userService.
 // getActivityHeatmap), so a student who only practiced Speaking that day
 // saw the day marked "done" there yet had their streak quietly die anyway.
-async function _creditStreakForAnalyzedAttempt(user) {
+async function _creditStreakForAnalyzedAttempt(user, attempt) {
   if (!user || user.role !== 'student') return [];
-  // Atomic (see applyStreakActivity's comment) — a plain updateStreak()+
-  // save() here used to race a concurrent activity's own save and lose
-  // lastActivityDate's advance, causing a spurious "missed a day" reset
-  // days later even though the student studied every day.
-  await applyStreakActivity(User, user._id).catch(() => {});
+  await awardPracticeFlames(user._id, `speaking:${(attempt && (attempt.questionId || attempt._id)) || ''}`, 1);
   const { newlyUnlocked } = await badgeService.checkAndAwardNewBadges(user._id);
   return newlyUnlocked;
 }
@@ -659,7 +652,7 @@ async function finalizeAttempt(attemptId, feedback, user, resolvedTranscript) {
       update,
       { new: true, runValidators: true }
     );
-    const newlyUnlocked = updated ? await _creditStreakForAnalyzedAttempt(user) : [];
+    const newlyUnlocked = updated ? await _creditStreakForAnalyzedAttempt(user, updated) : [];
     return { attemptId: updated ? updated._id : null, newlyUnlocked };
   } catch (err) {
     console.error('[Speaking] Finalize attempt error:', err.message);

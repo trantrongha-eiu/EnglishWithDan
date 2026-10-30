@@ -145,13 +145,13 @@ describe('Búa Hi Vọng', () => {
   test('is refused (and kept) once the daily 🔥 cap leaves less than the quota', async () => {
     const VocabActivity = require('../../../models/VocabActivity');
     const user = await createStudent({ extra: { shopItems: { hopeHammer: 1 } } });
-    await VocabActivity.create({ userId: user._id, date: todayVN(), streakBonusEarned: 3 });
+    await VocabActivity.create({ userId: user._id, date: todayVN(), streakBonusEarned: 8 });
     expect(await shopService.useItem(user._id, 'hopeHammer')).toMatchObject({ status: 'hope_too_late', left: 2 });
     const u = await User.findById(user._id).lean();
     expect(u.shopItems.hopeHammer).toBe(1);
     expect(u.hopeHammerDay).toBeNull();
 
-    await VocabActivity.updateOne({ userId: user._id, date: todayVN() }, { $set: { streakBonusEarned: 2 } });
+    await VocabActivity.updateOne({ userId: user._id, date: todayVN() }, { $set: { streakBonusEarned: 7 } });
     expect((await shopService.useItem(user._id, 'hopeHammer')).status).toBe('ok');
   });
 

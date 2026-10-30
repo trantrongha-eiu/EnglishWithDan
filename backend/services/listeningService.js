@@ -19,10 +19,9 @@ const DictationAttempt = require('../models/DictationAttempt');
 const GapFillAttempt = require('../models/GapFillAttempt');
 const geminiService = require('./geminiService');
 const logger = require('../utils/logger');
-const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
+const { awardPracticeFlames, testBonusForAccuracy, drillBonusForAccuracy } = require('./streakBonusService');
 const { bandScoreTable } = require('../utils/bandScore');
-const User = require('../models/User');
-const { applyStreakActivity, keepStreakAlive, MIN_STREAK_SENTENCES } = require('../utils/streak');
+const { MIN_STREAK_SENTENCES } = require('../utils/streak');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
@@ -598,7 +597,9 @@ async function saveDictationAttempt({ sectionId, sectionTitle, partNumber, answe
     correctCount,
     submittedAt: new Date()
   });
-  if (safeAnswers.length >= MIN_STREAK_SENTENCES) await keepStreakAlive(userId);
+  if (safeAnswers.length >= MIN_STREAK_SENTENCES) {
+    await awardPracticeFlames(userId, `dictation:${section._id}`, drillBonusForAccuracy(correctCount / safeAnswers.length));
+  }
 
   return { attemptId: attempt._id, correctCount, totalSentences: safeAnswers.length };
 }
@@ -722,7 +723,8 @@ async function saveGapFillAttempt({ sectionId, sectionTitle, partNumber, answers
     correctCount,
     submittedAt: new Date()
   });
-  await keepStreakAlive(userId);
+  await awardPracticeFlames(userId, `gapfill:${section._id}`,
+    correctAnswers.length ? drillBonusForAccuracy(correctCount / correctAnswers.length) : 0);
 
   return {
     attemptId: attempt._id,
@@ -1175,17 +1177,12 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
   let newlyUnlocked = [];
   let streak = user.learningStreak;
   if (user.role === 'student') {
-    // Accuracy → streak bonus, same tiering as vocab practice: <80% = 0,
-    // 80-90% = +1, >=90% = +2, capped at +5/day shared across all activities.
+    // Accuracy → 🔥 (>=50% +1, >=70% +2, >=90% +3), within the shared
+    // daily cap — see streakBonusService.awardPracticeFlames.
     const accuracy = total > 0 ? correct / total : 0;
-    const rawBonus = bonusForAccuracy(accuracy);
-    bonusApplied = await reserveDailyStreakBonus(user._id, rawBonus);
-    // Atomic (see applyStreakActivity's comment) — a plain updateStreak()+
-    // save() here used to race a concurrent activity's own save and lose
-    // lastActivityDate's advance, causing a spurious "missed a day" reset
-    // days later even though the student studied every day.
-    const streakDoc = await applyStreakActivity(User, user._id, bonusApplied, { allowSameDayStack: true }).catch(() => null);
-    if (streakDoc) streak = streakDoc.learningStreak;
+    const award = await awardPracticeFlames(user._id, `listening-test:${attempt._id}`, testBonusForAccuracy(accuracy));
+    bonusApplied = award.bonusApplied;
+    if (award.streak != null) streak = award.streak;
     newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
   }
 
@@ -1408,7 +1405,10 @@ async function savePractice({ sectionId, sectionTitle, partNumber, answers, time
     userId, attemptType: 'listening-practice', attemptId: attempt._id,
     gradedAnswers, questionTypeMap,
   });
-  await keepStreakAlive(userId);
+  // Bài lẻ earns 🔥 on the same tiers as a full test (once per section per
+  // day, topped up on a better redo).
+  await awardPracticeFlames(userId, `listening-practice:${section._id}`,
+    gradedAnswers.length ? testBonusForAccuracy(correct / gradedAnswers.length) : 0);
 
   return { attemptId: attempt._id, correctCount: correct, totalQuestions: gradedAnswers.length };
 }

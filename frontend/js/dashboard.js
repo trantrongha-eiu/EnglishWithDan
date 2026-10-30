@@ -2538,7 +2538,7 @@ function _applyStreakResult(d) {
     applyFireTier(document.getElementById('dan-fire'), danNumEl, d.streak);
     if (d.streak > 0) {
         // Only a real streak (bonus>0 this call, or restored) ends the
-        // "just lost a streak" mascot state — a 0-bonus (<80%) session
+        // "just lost a streak" mascot state — a 0-bonus (low-accuracy) session
         // right after a gap can legitimately still land at streak 0.
         const danCardEl = document.getElementById('dan-streak-card');
         if (danCardEl) danCardEl.classList.remove('is-angry', 'is-sad');
@@ -4357,8 +4357,26 @@ const FEAT_INFO = {
   },
   streak: {
     icon: 'fa-fire-alt',
-    title: 'Streak hàng ngày',
-    body: 'Luyện từ vựng, làm đề Reading hoặc Listening đúng <strong>≥ 80%</strong> được <strong>+1 🔥</strong>, đúng <strong>≥ 90%</strong> được <strong>+2 🔥</strong>. Tối đa <strong>+5 🔥/ngày</strong> (cộng chung cho cả 3 kỹ năng), cộng dồn nhiều lượt học trong ngày. Bỏ học 1 ngày trọn vẹn sẽ mất hết streak, phải học lại từ đầu.',
+    title: 'Cách tính lửa 🔥',
+    wide: true,
+    body:
+      '<div class="flame-rules">'
+      + '<p>Mỗi <b>phiên luyện tập</b> được cộng 🔥 theo tỉ lệ làm đúng. Tối đa <b>10 🔥/ngày</b>, tính chung cho mọi kỹ năng.</p>'
+      + '<table class="flame-rules-table">'
+      + '<thead><tr><th>Bài luyện</th><th>+1 🔥</th><th>+2 🔥</th><th>+3 🔥</th></tr></thead><tbody>'
+      + '<tr><td><b>Từ vựng</b><small>Sổ từ, Paraphrase, Vocab Topics</small></td><td>≥ 70%</td><td>≥ 80%</td><td>≥ 90%</td></tr>'
+      + '<tr><td><b>Reading / Listening</b><small>Đề full và bài lẻ</small></td><td>≥ 50%</td><td>≥ 70%</td><td>≥ 90%</td></tr>'
+      + '<tr><td><b>Bài luyện khác</b><small>Gap-fill, Dictation, Shadowing, Essential Grammar, Advanced Sentences, luyện Writing Task 1/2</small></td><td>≥ 70%</td><td>≥ 90%</td><td>—</td></tr>'
+      + '<tr><td><b>Writing (bài luận)</b><small>Task 1 từ 100 từ, Task 2 từ 150 từ</small></td><td>—</td><td>1 task</td><td>2 task</td></tr>'
+      + '<tr><td><b>Speaking</b><small>Mỗi câu trả lời được AI chấm</small></td><td>✔</td><td>—</td><td>—</td></tr>'
+      + '</tbody></table>'
+      + '<ul>'
+      + '<li>Từ vựng chỉ bắt đầu tính 🔥 khi hôm nay bạn đã học đủ <b>số từ mục tiêu</b> (35–80 từ, theo band mục tiêu).</li>'
+      + '<li>Làm lại <b>cùng một bài</b> trong ngày chỉ được cộng thêm phần chênh lệch nếu đạt mốc cao hơn.</li>'
+      + '<li>Làm dưới mốc vẫn được tính là <b>có học hôm nay</b> — chuỗi không bị mất.</li>'
+      + '<li>Đã đập <b>Búa Hi Vọng</b>: mọi 🔥 kiếm được trong ngày ×2.</li>'
+      + '<li>Bỏ học trọn 1 ngày sẽ mất streak (trừ khi có <b>Khiên Băng</b>).</li>'
+      + '</ul></div>',
   },
   paraphrase: {
     icon: 'fa-book-open',
@@ -4376,6 +4394,8 @@ function openFeatInfo(key) {
   if (!info) return;
   document.getElementById('featInfoTitleText').textContent = info.title;
   document.getElementById('featInfoBody').innerHTML = info.body;
+  const box = document.getElementById('featInfoBox');
+  if (box) box.style.maxWidth = info.wide ? '600px' : '440px';
   openModal('modal-feat-info');
 }
 window.openFeatInfo = openFeatInfo;

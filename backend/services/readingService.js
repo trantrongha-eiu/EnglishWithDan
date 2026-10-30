@@ -11,10 +11,8 @@ const Passage = require('../models/Passage');
 const ReadingTest = require('../models/ReadingTest');
 const TestAttempt = require('../models/TestAttempt');
 const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
-const { bonusForAccuracy, reserveDailyStreakBonus } = require('./streakBonusService');
+const { awardPracticeFlames, testBonusForAccuracy } = require('./streakBonusService');
 const { bandScoreTable } = require('../utils/bandScore');
-const User = require('../models/User');
-const { applyStreakActivity, keepStreakAlive } = require('../utils/streak');
 const reviewService = require('./reviewService');
 const badgeService = require('./badgeService');
 const examSimulationService = require('./examSimulationService');
@@ -391,17 +389,12 @@ async function submitTest(attemptId, answers, user, { disqualified = false } = {
   let newlyUnlocked = [];
   let streak = user.learningStreak;
   if (user.role === 'student') {
-    // Accuracy → streak bonus, same tiering as vocab practice: <80% = 0,
-    // 80-90% = +1, >=90% = +2, capped at +5/day shared across all activities.
+    // Accuracy → 🔥 (>=50% +1, >=70% +2, >=90% +3), within the shared
+    // daily cap — see streakBonusService.awardPracticeFlames.
     const accuracy = totalQuestions > 0 ? correctCount / totalQuestions : 0;
-    const rawBonus = bonusForAccuracy(accuracy);
-    bonusApplied = await reserveDailyStreakBonus(user._id, rawBonus);
-    // Atomic (see applyStreakActivity's comment) — a plain updateStreak()+
-    // save() here used to race a concurrent activity's own save and lose
-    // lastActivityDate's advance, causing a spurious "missed a day" reset
-    // days later even though the student studied every day.
-    const streakDoc = await applyStreakActivity(User, user._id, bonusApplied, { allowSameDayStack: true }).catch(() => null);
-    if (streakDoc) streak = streakDoc.learningStreak;
+    const award = await awardPracticeFlames(user._id, `reading-test:${attempt._id}`, testBonusForAccuracy(accuracy));
+    bonusApplied = award.bonusApplied;
+    if (award.streak != null) streak = award.streak;
     newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
   }
 
@@ -686,7 +679,12 @@ async function savePractice(body, userId) {
     });
   }
 
-  await keepStreakAlive(userId);
+  // Bài lẻ earns 🔥 on the same tiers as a full test (once per passage per
+  // day, topped up on a better redo). Only server-graded answers count —
+  // without the passage the score is the client's own claim.
+  const graded = passage && finalAnswers.length;
+  await awardPracticeFlames(userId, `reading-practice:${passageId}`,
+    graded ? testBonusForAccuracy(correctCount / finalAnswers.length) : 0);
   return attempt._id;
 }
 

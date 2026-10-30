@@ -248,9 +248,9 @@ function getVNDay(date) {
 // activity — defaults to 1 (flat, e.g. adding a word). Same-day repeat calls
 // are a no-op by default (unchanged from before), UNLESS `allowSameDayStack`
 // is set — vocab practice, reading tests, and listening tests all pass an
-// accuracy-derived amount (0/1/2, see services/streakBonusService.js) WITH
+// accuracy-derived amount (0..3, see services/streakBonusService.js) WITH
 // allowSameDayStack:true, so several sessions in one day can each add their
-// own bonus, up to the shared +5/day cap the caller (reserveDailyStreakBonus)
+// own bonus, up to the shared daily cap the caller (reserveDailyStreakBonus)
 // already enforced before calling this. `lastActivityDate` always advances on
 // a qualifying activity call even when bonus is 0, so a low-accuracy session
 // still keeps the day-chain alive without growing it.

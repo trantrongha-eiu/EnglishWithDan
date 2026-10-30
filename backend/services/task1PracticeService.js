@@ -4,6 +4,7 @@
 const Task1Exercise = require('../models/Task1Exercise');
 const Task1Attempt = require('../models/Task1Attempt');
 const { keepStreakAlive } = require('../utils/streak');
+const { awardPracticeFlames, drillBonusForAccuracy } = require('./streakBonusService');
 const { levenshtein, NUM_WORDS, buildAnswerHint } = require('../utils/textMatch');
 
 // Practice-mode types that show a visible "word count + first-letter" hint
@@ -308,7 +309,14 @@ async function saveBatch(userId, attempts, sessionId) {
     };
   });
   await Task1Attempt.insertMany(docs);
-  if (docs.length) await keepStreakAlive(userId);
+  // >=70% +1 🔥, >=90% +2 🔥 for a batch of at least 5 graded exercises.
+  const graded = docs.filter(d => exMap[String(d.exerciseId)]);
+  if (graded.length >= 5) {
+    const right = graded.filter(d => d.isCorrect).length;
+    await awardPracticeFlames(userId, `task1:${sessionId || graded[0].exerciseId}`, drillBonusForAccuracy(right / graded.length));
+  } else if (docs.length) {
+    await keepStreakAlive(userId);
+  }
   return docs.length;
 }
 

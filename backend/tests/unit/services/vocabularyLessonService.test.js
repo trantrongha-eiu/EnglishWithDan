@@ -285,7 +285,8 @@ describe('submitAttempt / getAttempt', () => {
     await svc.submitAttempt(student._id, lesson._id, { correctCount: 30, totalCount: 35, timeSpent: 200 }, student);
     expect(await vocabStudiedToday(student._id)).toBe(35);
     const fresh = await User.findById(student._id);
-    expect(fresh.learningStreak).toBe(1);
+    // 30/35 = 86% → vocab tier +2 🔥.
+    expect(fresh.learningStreak).toBe(2);
     expect(fresh.lastVocabStudyDate).not.toBeNull();
   });
 

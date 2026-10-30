@@ -1,7 +1,7 @@
 'use strict';
 
 const Task2TemplateAttempt = require('../models/Task2TemplateAttempt');
-const { keepStreakAlive } = require('../utils/streak');
+const { awardPracticeFlames, drillBonusForAccuracy } = require('./streakBonusService');
 
 async function saveAttempt({ userId, templateType, templateName, totalItems, correctItems, mode, isExam, timeTakenSec, level }) {
   await Task2TemplateAttempt.create({
@@ -13,7 +13,11 @@ async function saveAttempt({ userId, templateType, templateName, totalItems, cor
     timeTakenSec: timeTakenSec != null ? Number(timeTakenSec) : undefined,
     level: level === 'band6' ? 'band6' : 'band7',
   });
-  await keepStreakAlive(userId);
+  // >=70% +1 🔥, >=90% +2 🔥 for a run of at least 5 items.
+  const total = Number(totalItems) || 0;
+  const correct = Math.min(total, Math.max(0, Number(correctItems) || 0));
+  await awardPracticeFlames(userId, `task2-template:${templateType}:${templateName}:${mode || 'cloze'}`,
+    total >= 5 ? drillBonusForAccuracy(correct / total) : 0);
 }
 
 async function getHistory(userId, limit) {

@@ -163,11 +163,11 @@ async function applyStreakActivity(User, userId, bonus = 1, { allowSameDayStack 
   );
 }
 
-// Practice that earns no 🔥 of its own — Bài lẻ Reading/Listening, Gap-fill,
-// Dictation, Shadowing, Essential Grammar, Writing Task 1/2 lessons, Adv
-// Sentence… — still means the student studied today, so it keeps the
-// day-chain alive (bonus 0: lastActivityDate moves to today, the count
-// doesn't grow — same as a sub-80% vocab/test session). Before this, a day
+// Practice that earns no 🔥 of its own (most practice now earns some via
+// streakBonusService.awardPracticeFlames; this covers the leftovers, e.g. a
+// drill too short to score) still means the student studied today, so it
+// keeps the day-chain alive (bonus 0: lastActivityDate moves to today, the
+// count doesn't grow — same as a low-accuracy vocab/test session). Before this, a day
 // spent only on these (often the class homework) didn't count at all, and
 // the next day the streak was gone: the "có học mà vẫn mất chuỗi" reports.
 // Students only; best-effort — never fails the save that called it.

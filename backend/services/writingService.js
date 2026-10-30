@@ -16,8 +16,12 @@ const WritingAttempt = require('../models/WritingAttempt');
 const WritingSample = require('../models/WritingSample');
 const WritingDraft = require('../models/WritingDraft');
 const badgeService = require('./badgeService');
-const User = require('../models/User');
-const { applyStreakActivity } = require('../utils/streak');
+const { awardPracticeFlames } = require('./streakBonusService');
+
+// An essay counts for 🔥 once it's a real attempt (well under the exam's
+// 150/250-word floor, so a slow writer still earns): 2 🔥 per task,
+// 3 🔥 for a full Task 1 + Task 2 exam. Once per prompt/exam per day.
+const FLAME_MIN_WORDS = { 1: 100, 2: 150 };
 const examSimulationService = require('./examSimulationService');
 const { disqualifiedAnswerFilter } = require('./proctorPolicy');
 const { toCardThumbnail } = require('../utils/cardThumbnail');
@@ -151,21 +155,13 @@ async function submitExam(user, body) {
   }
   if (disqualified) return { attemptId: attempt._id, newlyUnlocked: [], disqualified: true };
 
-  // Writing (unlike Reading/Listening) isn't auto-graded at submission time
-  // — a teacher may not score it for days — so there's no accuracy to tier
-  // a bonus off yet. A flat +1 just keeps today's link in the streak chain
-  // alive (matches vocabBookService's flat-bonus activities); same-day
-  // resubmits are a no-op since updateStreak() defaults allowSameDayStack
-  // to false. This was previously missing entirely, so a student who only
-  // wrote an essay (no Reading/Listening/Vocab that day) saw the day marked
-  // "done" in the activity heatmap yet had their streak quietly die anyway.
+  // Writing isn't auto-graded at submission time (a teacher may score it
+  // days later), so 🔥 go by effort: see FLAME_MIN_WORDS. Below that the
+  // day-chain is still kept alive, with no 🔥.
   let newlyUnlocked = [];
   if (user.role === 'student') {
-    // Atomic (see applyStreakActivity's comment) — a plain updateStreak()+
-    // save() here used to race a concurrent activity's own save and lose
-    // lastActivityDate's advance, causing a spurious "missed a day" reset
-    // days later even though the student studied every day.
-    await applyStreakActivity(User, user._id).catch(() => {});
+    const done = [countWords(task1Answer) >= FLAME_MIN_WORDS[1], countWords(task2Answer) >= FLAME_MIN_WORDS[2]].filter(Boolean).length;
+    await awardPracticeFlames(user._id, `writing-exam:${examId || attempt._id}`, done === 2 ? 3 : done === 1 ? 2 : 0);
     newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
   }
 
@@ -299,14 +295,10 @@ async function submitPractice(user, { taskType, taskId, answer, attemptId: simul
     await attempt.save();
   }
 
-  // See submitExam()'s comment above — same flat, once-a-day streak credit.
+  // See submitExam()'s comment above — 2 🔥 for a real single-task essay.
   let newlyUnlocked = [];
   if (user.role === 'student') {
-    // Atomic (see applyStreakActivity's comment) — a plain updateStreak()+
-    // save() here used to race a concurrent activity's own save and lose
-    // lastActivityDate's advance, causing a spurious "missed a day" reset
-    // days later even though the student studied every day.
-    await applyStreakActivity(User, user._id).catch(() => {});
+    await awardPracticeFlames(user._id, `writing:t${tNum}:${taskId || attempt._id}`, wc >= FLAME_MIN_WORDS[tNum] ? 2 : 0);
     newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
   }
 

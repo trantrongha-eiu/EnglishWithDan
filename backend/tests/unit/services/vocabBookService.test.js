@@ -863,7 +863,7 @@ describe('vocabBookService', () => {
 
     it('a single sub-threshold session (< 35 words that day) earns no streak at all', async () => {
       const student = await createStudent();
-      // 100% accuracy would normally be +2, but only 10 words this day — no streak yet.
+      // 100% accuracy would normally be +3, but only 10 words this day — no streak yet.
       const result = await vocabBookService.completePractice(student, { wordsAnswered: 10, correctAnswered: 10 });
       expect(result.status).toBe('ok');
       expect(result.bonusApplied).toBe(0);
@@ -893,27 +893,35 @@ describe('vocabBookService', () => {
 
       // +15 more this call brings the day's total to 35 — now it counts.
       const second = await vocabBookService.completePractice(student, { wordsAnswered: 15, correctAnswered: 15 });
-      expect(second.bonusApplied).toBe(2);
-      expect(second.streak).toBe(2);
+      expect(second.bonusApplied).toBe(3);
+      expect(second.streak).toBe(3);
     });
 
-    it('applies +1 streak for 80-90% accuracy once the day\'s 35-word threshold is met', async () => {
+    it('applies +1 streak for 70-80% accuracy once the day\'s 35-word threshold is met', async () => {
       const student = await createStudent();
-      // 28/35 = 80%
-      const result = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 28 });
+      // 25/35 = 71%
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 25 });
       expect(result.status).toBe('ok');
       expect(result.bonusApplied).toBe(1);
       expect(result.streak).toBe(1);
     });
 
-    it('applies +2 streak for >=90% accuracy once the day\'s 35-word threshold is met', async () => {
+    it('applies +2 streak for 80-90% accuracy once the day\'s 35-word threshold is met', async () => {
       const student = await createStudent();
-      const result = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
+      // 28/35 = 80%
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 28 });
       expect(result.bonusApplied).toBe(2);
       expect(result.streak).toBe(2);
     });
 
-    it('applies +0 streak for <80% accuracy, but still keeps the day-chain alive once past the word threshold', async () => {
+    it('applies +3 streak for >=90% accuracy once the day\'s 35-word threshold is met', async () => {
+      const student = await createStudent();
+      const result = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
+      expect(result.bonusApplied).toBe(3);
+      expect(result.streak).toBe(3);
+    });
+
+    it('applies +0 streak for <70% accuracy, but still keeps the day-chain alive once past the word threshold', async () => {
       const student = await createStudent();
       // 21/35 = 60%
       const result = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 21 });
@@ -924,20 +932,21 @@ describe('vocabBookService', () => {
       expect(fresh.lastActivityDate).not.toBeNull(); // studied today, chain alive
     });
 
-    it('caps total streak bonus at +5 per day across multiple sessions', async () => {
+    it('caps total streak bonus at 10 per day across multiple sessions', async () => {
       const student = await createStudent();
       // Each session alone is >= 35 words, so every one independently clears
-      // the word threshold; 3 sessions at 100% (+2 each) would be +6 uncapped.
+      // the word threshold; 4 sessions at 100% (+3 each) would be +12 uncapped.
       await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
       await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
-      const third = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
-      // 2 + 2 = 4 already earned today, only 1 of the requested 2 remains under the cap
-      expect(third.bonusApplied).toBe(1);
-      expect(third.streak).toBe(5);
-
+      await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
       const fourth = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
-      expect(fourth.bonusApplied).toBe(0); // cap fully spent
-      expect(fourth.streak).toBe(5);
+      // 3 + 3 + 3 = 9 already earned today, only 1 of the requested 3 remains under the cap
+      expect(fourth.bonusApplied).toBe(1);
+      expect(fourth.streak).toBe(10);
+
+      const fifth = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
+      expect(fifth.bonusApplied).toBe(0); // cap fully spent
+      expect(fifth.streak).toBe(10);
     });
 
     describe('sessionId scoping (regression: "học xong ngay lập tức được 5 lửa")', () => {
@@ -949,53 +958,58 @@ describe('vocabBookService', () => {
       // the entire shared +5/day cap by itself the moment it crossed the
       // 35-word threshold and kept going for a couple more batches.
 
-      it('a single session reported across multiple batches is capped at +2 total, even at 100% accuracy throughout', async () => {
+      it('a single session reported across multiple batches is capped at +3 total, even at 100% accuracy throughout', async () => {
         const student = await createStudent();
         const sessionId = 'sess-1';
         // Batch 1: 35/35 — crosses the 35-word threshold on this exact call.
         const b1 = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35, sessionId });
-        expect(b1.bonusApplied).toBe(2);
-        expect(b1.streak).toBe(2);
+        expect(b1.bonusApplied).toBe(3);
+        expect(b1.streak).toBe(3);
 
         // Batch 2 of the SAME session: still 100% accuracy — must NOT grant
         // another +2 on top just because the day's word threshold is still
         // crossed; the session already claimed its own +2.
         const b2 = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5, sessionId });
         expect(b2.bonusApplied).toBe(0);
-        expect(b2.streak).toBe(2);
+        expect(b2.streak).toBe(3);
 
         // Batch 3, same session, same story — repeated batches never add more.
         const b3 = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5, sessionId });
         expect(b3.bonusApplied).toBe(0);
-        expect(b3.streak).toBe(2);
+        expect(b3.streak).toBe(3);
       });
 
-      it('two DIFFERENT sessions the same day can each still contribute toward the shared +5 cap', async () => {
+      it('two DIFFERENT sessions the same day can each still contribute toward the shared daily cap', async () => {
         const student = await createStudent();
         const first = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35, sessionId: 'sess-A' });
-        expect(first.bonusApplied).toBe(2);
+        expect(first.bonusApplied).toBe(3);
 
         // A second, genuinely separate session (new sessionId) still gets
         // its own independent shot at the remaining cap.
         const second = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5, sessionId: 'sess-B' });
-        expect(second.bonusApplied).toBe(2);
-        expect(second.streak).toBe(4);
+        expect(second.bonusApplied).toBe(3);
+        expect(second.streak).toBe(6);
       });
 
       it('a session that starts below 90% but improves over later batches can still top up to the higher tier once', async () => {
         const student = await createStudent();
         const sessionId = 'sess-improving';
-        // First batch of the session: 28/35 = 80% → tier 1. Also crosses the
+        // First batch of the session: 25/35 = 71% → tier 1. Also crosses the
         // word threshold in this same call.
-        const b1 = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 28, sessionId });
+        const b1 = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 25, sessionId });
         expect(b1.bonusApplied).toBe(1);
         expect(b1.streak).toBe(1);
 
         // Second batch, perfect score: session-wide accuracy is now
-        // (28+5)/(35+5) = 33/40 = 82.5% — still only tier 1, so no top-up.
+        // (25+5)/(35+5) = 30/40 = 75% — still only tier 1, so no top-up.
         const b2 = await vocabBookService.completePractice(student, { wordsAnswered: 5, correctAnswered: 5, sessionId });
         expect(b2.bonusApplied).toBe(0);
         expect(b2.streak).toBe(1);
+
+        // Another perfect batch: 40/50 = 80% → tier 2, tops up by exactly 1.
+        const b3 = await vocabBookService.completePractice(student, { wordsAnswered: 10, correctAnswered: 10, sessionId });
+        expect(b3.bonusApplied).toBe(1);
+        expect(b3.streak).toBe(2);
       });
     });
 
@@ -1007,10 +1021,10 @@ describe('vocabBookService', () => {
       const todayVN = new Date(Date.UTC(vnNow.getUTCFullYear(), vnNow.getUTCMonth(), vnNow.getUTCDate()));
       const yesterdayVN = new Date(todayVN.getTime() - 24 * 60 * 60 * 1000);
       // Yesterday's cap was already fully spent — should have zero bearing on today.
-      await VocabActivity.create({ userId: student._id, date: yesterdayVN, streakBonusEarned: 5 });
+      await VocabActivity.create({ userId: student._id, date: yesterdayVN, streakBonusEarned: 10 });
 
       const result = await vocabBookService.completePractice(student, { wordsAnswered: 35, correctAnswered: 35 });
-      expect(result.bonusApplied).toBe(2); // full tier available today, unaffected by yesterday
+      expect(result.bonusApplied).toBe(3); // full tier available today, unaffected by yesterday
     });
 
     it('returns too_few for fewer than 5 words answered', async () => {
@@ -1035,7 +1049,7 @@ describe('vocabBookService', () => {
       const docs = await VocabActivity.find({ userId: student._id });
       expect(docs).toHaveLength(1);
       expect(docs[0].wordsStudied).toBe(35);
-      expect(docs[0].streakBonusEarned).toBe(2);
+      expect(docs[0].streakBonusEarned).toBe(3);
 
       const now = new Date();
       const vnNow = new Date(now.getTime() + 7 * 60 * 60 * 1000);

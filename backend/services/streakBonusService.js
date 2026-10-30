@@ -1,11 +1,13 @@
 'use strict';
 
-// Shared accuracy→streak-bonus tiering and daily cap, used by vocab
-// practice, reading tests, and listening tests alike — all three feed the
-// same per-user daily allowance so a student can't rack up more than +5
+// Shared accuracy→🔥 tiering and the daily cap. Every practice that earns
+// 🔥 (vocab, Reading/Listening tests and bài lẻ, gap-fill, dictation,
+// shadowing, grammar, writing, speaking…) feeds the same per-user daily
+// allowance, so a student can't rack up more than DAILY_STREAK_BONUS_CAP
 // "lửa" a day no matter which combination of activities they do.
 const VocabActivity = require('../models/VocabActivity');
 const User = require('../models/User');
+const { applyStreakActivity } = require('../utils/streak');
 
 // Vietnam local day (UTC+7), stored as UTC midnight — same convention as
 // User.js's own getVNDay/effectiveStreak.
@@ -15,9 +17,19 @@ function todayVNDate() {
   return new Date(Date.UTC(vn.getUTCFullYear(), vn.getUTCMonth(), vn.getUTCDate()));
 }
 
-// Accuracy → streak bonus tier: <80% = 0, 80-90% = 1, >=90% = 2.
-function bonusForAccuracy(accuracy) {
-  return accuracy >= 0.9 ? 2 : accuracy >= 0.8 ? 1 : 0;
+// 🔥 per practice session, by accuracy (0..1):
+//   Vocab:              >=70% → 1, >=80% → 2, >=90% → 3
+//   Reading/Listening:  >=50% → 1, >=70% → 2, >=90% → 3 (full tests + bài lẻ)
+//   Other short drills: >=70% → 1, >=90% → 2 (gap-fill, dictation, shadowing,
+//                       grammar, Adv Sentence, Writing Task 1/2 drills…)
+function vocabBonusForAccuracy(accuracy) {
+  return accuracy >= 0.9 ? 3 : accuracy >= 0.8 ? 2 : accuracy >= 0.7 ? 1 : 0;
+}
+function testBonusForAccuracy(accuracy) {
+  return accuracy >= 0.9 ? 3 : accuracy >= 0.7 ? 2 : accuracy >= 0.5 ? 1 : 0;
+}
+function drillBonusForAccuracy(accuracy) {
+  return accuracy >= 0.9 ? 2 : accuracy >= 0.7 ? 1 : 0;
 }
 
 // Minimum words a student must actually STUDY (answered in a book-quiz run,
@@ -85,7 +97,7 @@ async function reachedDailyWordThreshold(userId, wordsInc) {
   return (doc.wordsStudied || 0) >= target;
 }
 
-const DAILY_STREAK_BONUS_CAP = 5;
+const DAILY_STREAK_BONUS_CAP = 10;
 
 // How much of today's cap is already used — read-only. The Búa Hi Vọng
 // (shopService.useItem) checks it so a student can't place a bet that the
@@ -95,7 +107,7 @@ async function streakBonusEarnedToday(userId) {
   return (doc && doc.streakBonusEarned) || 0;
 }
 
-// Daily streak-bonus cap (max 5/day, shared across vocab/reading/listening):
+// Daily streak-bonus cap (DAILY_STREAK_BONUS_CAP/day, shared by every activity):
 // reads how much bonus has already been granted today, then reserves
 // `rawBonus` more via an optimistic compare-and-swap — the increment only
 // commits if streakBonusEarned still matches the value we just read, so two
@@ -135,8 +147,64 @@ async function reserveDailyStreakBonus(userId, rawBonus, _retries = 5) {
   return 0;
 }
 
+// The one entry point for "a practice just finished, credit its 🔥".
+// `key` names the thing practised (e.g. 'reading-practice:<passageId>');
+// within one VN day the same key only ever earns up to `target` in total —
+// redoing the same passage/lesson/test can top up to a better tier, but
+// can't farm the same 🔥 again. Then the daily cap applies. Always advances
+// the day-chain (bonus 0 still keeps the streak alive). Students only;
+// best-effort — never throws into the save that called it.
+// Returns { bonusApplied, streak } (streak null when nothing was written).
+async function awardPracticeFlames(userId, key, target) {
+  try {
+    const u = await User.findById(userId).select('role').lean();
+    if (!u || u.role !== 'student') return { bonusApplied: 0, streak: null };
+    const applied = await reserveItemFlames(userId, String(key || ''), Math.max(0, Math.floor(target) || 0));
+    const doc = await applyStreakActivity(User, userId, applied, { allowSameDayStack: true });
+    return { bonusApplied: applied, streak: doc ? doc.learningStreak : null };
+  } catch (err) {
+    console.error('[streak] awardPracticeFlames failed:', err.message);
+    return { bonusApplied: 0, streak: null };
+  }
+}
+
+// Claims (target - already granted today for `key`) on the per-item tally
+// with a compare-and-swap, then reserves that from the daily cap and hands
+// back whatever the cap didn't allow — so two concurrent submits of the
+// same item can't both claim the same top-up.
+async function reserveItemFlames(userId, key, target, _retries = 5) {
+  if (target <= 0) return 0;
+  if (!key) return reserveDailyStreakBonus(userId, target);
+  const date = todayVNDate();
+  const safeKey = key.replace(/[.$]/g, '_');
+  const path = `flameItems.${safeKey}`;
+  try {
+    await VocabActivity.updateOne({ userId, date }, { $setOnInsert: { userId, date } }, { upsert: true });
+  } catch (err) {
+    if (err.code !== 11000) throw err;
+  }
+  for (let i = 0; i < _retries; i++) {
+    const doc = await VocabActivity.findOne({ userId, date }).select('flameItems').lean();
+    const granted = (doc && doc.flameItems && doc.flameItems[safeKey]) || 0;
+    const raw = target - granted;
+    if (raw <= 0) return 0;
+    const claimed = await VocabActivity.updateOne(
+      { userId, date, [path]: granted ? granted : { $in: [null, 0] } },
+      { $set: { [path]: target } }
+    );
+    if (claimed.modifiedCount !== 1) continue;
+    const applied = await reserveDailyStreakBonus(userId, raw);
+    if (applied < raw) {
+      await VocabActivity.updateOne({ userId, date }, { $inc: { [path]: applied - raw } });
+    }
+    return applied;
+  }
+  return 0;
+}
+
 module.exports = {
-  todayVNDate, bonusForAccuracy, reserveDailyStreakBonus,
+  todayVNDate, reserveDailyStreakBonus, awardPracticeFlames,
+  vocabBonusForAccuracy, testBonusForAccuracy, drillBonusForAccuracy,
   DAILY_STREAK_BONUS_CAP, streakBonusEarnedToday,
   reachedDailyWordThreshold, VOCAB_STREAK_WORD_THRESHOLD,
   dailyWordTargetForBand, dailyWordTarget, vocabStudiedToday,

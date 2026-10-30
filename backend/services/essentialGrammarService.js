@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const EssentialGrammarLesson = require('../models/EssentialGrammarLesson');
 const EssentialGrammarAttempt = require('../models/EssentialGrammarAttempt');
 const EssentialGrammarAttemptLog = require('../models/EssentialGrammarAttemptLog');
-const { keepStreakAlive } = require('../utils/streak');
+const { awardPracticeFlames, drillBonusForAccuracy } = require('./streakBonusService');
 
 const MAX_WRONG_QUESTIONS_LOGGED = 50; // a lesson realistically has far fewer than this many gradeable items
 
@@ -75,7 +75,8 @@ async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeS
       userId, lessonId, score, correct, wrong, total, timeSpent: spent, wrongQuestions: safeWrongQuestions,
     }),
   ]);
-  await keepStreakAlive(userId);
+  // >=70% +1 🔥, >=90% +2 🔥 for a quiz of at least 5 questions.
+  await awardPracticeFlames(userId, `grammar:${lessonId}`, total >= 5 ? drillBonusForAccuracy(correct / total) : 0);
   return attempt;
 }
 

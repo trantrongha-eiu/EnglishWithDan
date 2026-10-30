@@ -22,10 +22,14 @@ const VocabActivitySchema = new mongoose.Schema({
   wordsAdded:   { type: Number, default: 0 },
   // Số lần cập nhật trạng thái học 1 từ (PATCH …/words/:wordId với status)
   wordsStudied: { type: Number, default: 0 },
-  // Tổng điểm streak (lửa) đã cộng trong ngày — dùng chung cho luyện từ vựng,
-  // reading và listening để giới hạn tối đa 5 lửa/ngày trên MỌI hoạt động
+  // Tổng điểm streak (lửa) đã cộng trong ngày — dùng chung cho MỌI hoạt động
+  // để giới hạn tối đa DAILY_STREAK_BONUS_CAP lửa/ngày
   // (xem services/streakBonusService.js: reserveDailyStreakBonus()).
   streakBonusEarned: { type: Number, default: 0 },
+  // Lửa đã cộng hôm nay theo từng bài (key → số lửa), để làm lại cùng một
+  // bài trong ngày chỉ được nâng lên mốc cao hơn, không cày lại từ đầu
+  // (xem awardPracticeFlames()).
+  flameItems: { type: Map, of: Number, default: undefined },
 }, { timestamps: true });
 
 // Đảm bảo (userId, date) là unique → upsert an toàn

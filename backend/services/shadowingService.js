@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const ShadowingLesson = require('../models/ShadowingLesson');
 const ShadowingAttempt = require('../models/ShadowingAttempt');
 const { NotFoundError, ValidationError } = require('../errors/AppError');
-const { keepStreakAlive, MIN_STREAK_SENTENCES } = require('../utils/streak');
+const { MIN_STREAK_SENTENCES } = require('../utils/streak');
+const { awardPracticeFlames, drillBonusForAccuracy } = require('./streakBonusService');
 
 const MODES = ['dictation', 'shadowing'];
 
@@ -73,7 +74,11 @@ async function saveAttempt(slug, { mode, answers }, userId) {
     avgScore,
     submittedAt: new Date(),
   });
-  if (safeAnswers.length >= MIN_STREAK_SENTENCES) await keepStreakAlive(userId);
+  // >=70% +1 🔥, >=90% +2 🔥 once at least 5 câu are scored (once per
+  // lesson + mode per day; a later save of the same lesson only tops up).
+  if (safeAnswers.length >= MIN_STREAK_SENTENCES) {
+    await awardPracticeFlames(userId, `shadowing:${lesson._id}:${mode}`, drillBonusForAccuracy(avgScore / 100));
+  }
   return { attemptId: attempt._id, avgScore, answered: safeAnswers.length };
 }
 

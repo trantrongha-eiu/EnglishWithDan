@@ -23,7 +23,7 @@ const WT1Module = require('../models/WT1Module');
 const WT1Lesson = require('../models/WT1Lesson');
 const WT1Exercise = require('../models/WT1Exercise');
 const WT1Submission = require('../models/WT1Submission');
-const { keepStreakAlive } = require('../utils/streak');
+const { awardPracticeFlames, drillBonusForAccuracy } = require('./streakBonusService');
 const WT1Progress = require('../models/WT1Progress');
 const ReviewBypassCode = require('../models/ReviewBypassCode');
 const { NotFoundError, AuthorizationError } = require('../errors/AppError');
@@ -456,7 +456,11 @@ async function recordSubmission(userId, exercise, payload) {
   };
   const saved = await WT1Submission.create(doc);
   await _recompute(userId, exercise.lessonCode);
-  await keepStreakAlive(userId);
+  // Scored exercises: >=70% +1 🔥, >=90% +2 🔥. Writing (AI feedback, no
+  // score) earns a flat 1 🔥. Once per exercise per day.
+  const max = Number(payload && payload.maxScore);
+  const target = max > 0 ? drillBonusForAccuracy((Number(payload.score) || 0) / max) : 1;
+  await awardPracticeFlames(userId, `wt1:${exercise.code}`, target);
   return saved;
 }
 
@@ -537,7 +541,8 @@ async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, tota
   doc.aiFeedback = { model: 'gemini', scores, bandEstimate, feedbackVi, corrections, strengths, improvements };
   await doc.save();
   await _recompute(userId, exercise.lessonCode);
-  await keepStreakAlive(userId);
+  // A fully graded speaking exercise: flat 1 🔥, once per exercise per day.
+  await awardPracticeFlames(userId, `wt1:${exercise.code}`, 1);
 
   return {
     fluency: scores.fluency, vocabulary: scores.vocabulary, grammar: scores.grammar, pronunciation: scores.pronunciation,

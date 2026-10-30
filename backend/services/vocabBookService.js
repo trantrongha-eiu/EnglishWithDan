@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const VocabBook = require('../models/VocabBook');
 const VocabUnit = require('../models/VocabUnit');
 const VocabActivity = require('../models/VocabActivity');
-const { todayVNDate, bonusForAccuracy, reserveDailyStreakBonus, reachedDailyWordThreshold } = require('./streakBonusService');
+const { todayVNDate, vocabBonusForAccuracy, reserveDailyStreakBonus, reachedDailyWordThreshold } = require('./streakBonusService');
 const VocabPracticeSession = require('../models/VocabPracticeSession');
 const { escapeRegex } = require('../utils/strings');
 const badgeService = require('./badgeService');
@@ -24,7 +24,7 @@ const { DEFAULT_BOOKS, canonicalName, slotFromName, assignDefaultSlots } = requi
 // scoping the bonus tier to the SESSION's own running accuracy (tracked in
 // VocabPracticeSession, keyed by the sessionId the frontend generates once
 // per startPractice() call and sends with every batch) — a session's total
-// contribution is capped at bonusForAccuracy's max (2), same as one
+// contribution is capped at vocabBonusForAccuracy's max (3), same as one
 // Reading/Listening submission, no matter how many batches it's reported
 // in. Distinct sessions (or callers that don't pass a sessionId at all —
 // dashboard-lesson.js's finishLessonQuiz() reports a whole quiz in one
@@ -33,7 +33,7 @@ const { DEFAULT_BOOKS, canonicalName, slotFromName, assignDefaultSlots } = requi
 async function reserveStreakBonusForSession(userId, sessionId, wordsAnswered, correctAnswered, batchAccuracy) {
   if (!sessionId) {
     // No session to scope against — same behavior as before this fix.
-    return reserveDailyStreakBonus(userId, bonusForAccuracy(batchAccuracy));
+    return reserveDailyStreakBonus(userId, vocabBonusForAccuracy(batchAccuracy));
   }
   const session = await VocabPracticeSession.findOneAndUpdate(
     { userId, sessionId },
@@ -41,7 +41,7 @@ async function reserveStreakBonusForSession(userId, sessionId, wordsAnswered, co
     { upsert: true, new: true }
   );
   const sessionAccuracy = session.wordsAnswered > 0 ? session.wordsCorrect / session.wordsAnswered : 0;
-  const targetBonus = bonusForAccuracy(sessionAccuracy);
+  const targetBonus = vocabBonusForAccuracy(sessionAccuracy);
   const rawBonus = Math.max(0, targetBonus - session.bonusGranted);
   if (rawBonus <= 0) return 0;
 
@@ -605,7 +605,9 @@ async function updateWord(bookId, wordId, userId, user, { status, note, word, me
     if (await reachedDailyWordThreshold(user._id, { wordsStudied: 1 })) {
       // Atomic (see applyStreakActivity's comment) — avoids the same
       // read-modify-write race a plain updateStreak()+save() had here.
-      await applyStreakActivity(User, user._id).catch(() => {});
+      // Keeps the day alive but earns no 🔥 itself: 🔥 come from practice
+      // sessions, inside the daily cap.
+      await applyStreakActivity(User, user._id, 0, { allowSameDayStack: true }).catch(() => {});
     }
   }
 

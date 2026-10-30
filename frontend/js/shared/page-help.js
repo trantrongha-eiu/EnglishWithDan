@@ -94,7 +94,7 @@
           'Học trọn 1 Paraphrase Unit đúng ≥ 90% để nhận <b>Búa Daniel</b> — dùng trong 3 ngày để khôi phục streak lỡ mất.',
         ] },
         { icon: '🔥', title: 'Streak', items: [
-          'Luyện từ vựng, làm Reading hoặc Listening đúng ≥ 80% được +1 🔥, ≥ 90% được +2 🔥 (tối đa +5 🔥/ngày). Bỏ học trọn 1 ngày sẽ mất streak.',
+          'Mỗi phiên luyện tập: Từ vựng đúng ≥ 70% / 80% / 90% được +1 / +2 / +3 🔥; Reading, Listening đúng ≥ 50% / 70% / 90% được +1 / +2 / +3 🔥; các bài khác (Gap-fill, Dictation, Shadowing, Grammar, Writing, Speaking…) +1–2 🔥. Tối đa 10 🔥/ngày. Bỏ học trọn 1 ngày sẽ mất streak.',
         ] },
       ],
       actions: [{ label: 'Hướng dẫn chi tiết Sổ từ vựng', icon: 'fa-book-open', run: function () { if (typeof window.openGuideModal === 'function') window.openGuideModal(); }, when: function () { return typeof window.openGuideModal === 'function'; } }],

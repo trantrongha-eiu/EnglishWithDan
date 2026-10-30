@@ -11,7 +11,7 @@ const User = require('../../models/User');
 const { getVNDay } = require('../../utils/streak');
 
 describe('POST /api/listening/dictation/save-attempt', () => {
-  test('keeps the streak alive only when at least 5 sentences are saved', async () => {
+  test('counts for the streak (and 🔥) only when at least 5 sentences are saved', async () => {
     const yesterday = getVNDay(new Date(Date.now() - 864e5));
     const student = await createStudent({ extra: { learningStreak: 20, lastActivityDate: yesterday } });
     const section = await createListeningSection({ title: 'Part 1' });
@@ -29,7 +29,12 @@ describe('POST /api/listening/dictation/save-attempt', () => {
     expect((await save(5)).status).toBe(200);
     const u = await User.findById(student._id).lean();
     expect(u.lastActivityDate.getTime()).toBe(getVNDay(new Date()).getTime());
-    expect(u.learningStreak).toBe(20);
+    // 5/5 correct = 100% → drill tier +2 🔥.
+    expect(u.learningStreak).toBe(22);
+
+    // Saving the same section again the same day earns nothing new.
+    expect((await save(6)).status).toBe(200);
+    expect((await User.findById(student._id).lean()).learningStreak).toBe(22);
   });
 
   test('saves the session and never creates a mandatory-review record', async () => {
