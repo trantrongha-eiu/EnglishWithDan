@@ -30,7 +30,7 @@ gom thành nhóm "Vol V").
    thật, phải N/N → `node vr_import.js <V> [--apply]` (thêm ẩn; chặn trùng tên / trùng chữ ≥15% trừ `SAME_TEXT_OK`).
 6. Ảnh bìa (cwd `../miniIelts`): thêm từ khoá vào `cover_queries.json` → `node dump_passages.js` → `node cover_candidates.js "<regex tên>"`
    → `node cover_sheet.js 0 5` … (xem bằng mắt) → `node cover_pick.js 0=c …` → lọc `../data/passageCovers.json` theo id vừa nhập
-   thành `web/vol<V>/covers.json` → `node ../setPassageThumbnail.js --batch ../volReading/web/vol<V>/covers.json --apply` (R2).
+   thành `web/vol<V>/covers.json` → `node ../setThumbnail.js reading --batch ../volReading/web/vol<V>/covers.json --apply` (R2).
 7. Kiểm trước khi bật: `node ../_audit_reading_warnings.js out.json` (**tham số là file ĐẦU RA** — đừng truyền passages.json) →
    `node dump_passages.js` → `node pw_admin.js "<regex>"` → `node vr_import.js <V> --activate [--apply]` → `node pw_grade.js "<regex>"`
    (100% mỗi bài, không lưu gì).
@@ -396,3 +396,31 @@ Bài mới dùng vol `1u` / `2u` / `4u` (`specs/vol<V>u/`, `web/vol<V>u/`) để
 - 6 bài mới: ảnh bìa CC0/PD trên R2, giải thích tiếng Việt, bật. Kiểm: pw_mini 6/6, pw_admin 6/6, pw_grade 6/6 100% (+ 4 bài vừa
   sửa 4/4), `_audit_reading_warnings` 0 (467 bài), pw_full_tests 7/7 (Vol 1 T9, Vol 2 T1/T8/T10/T11, Vol 4 T4/T5), `vr_audit.js` 1: 0,
   2: 0 (11 đề), 4: chỉ Vol 4 - Test 9 đang ẩn có chủ ý; `vr_incomplete.js` 0.
+
+## Debug toàn ngân hàng Reading (thầy bảo "debug lại … thiếu key, sai đáp án, giải thích, lỗi format") — 2026-10-30
+Công cụ mới (chỉ đọc): `rd_deep_audit.js [out.json]` — soi CẢ 467 bài (không chỉ Vol): key điền từ chấm không được (ngoặc,
+" or ", dấu câu cuối, dấu nháy cong), key không có trong bài / vượt giới hạn từ (chỉ báo khi KHÔNG phương án nào vừa), kết luận
+giải thích ("→ X", "Đáp án: X", "Chọn X") ≠ key, trích dẫn "Trích/Transcript" không có nguyên văn trong bài (bịa/diễn ý), giải thích
+chép trùng giữa hai câu khác key, HTML bị escape (hiện thẻ thô), ô trống dính chữ, câu hỏi lặp số thứ tự, khung `<html><head>`.
+Còn lại sau khi sửa = 12 dòng đã duyệt (cặp "chọn 2" dùng chung giải thích, huarango Q7 "leaves (and) bark" theo key gốc…).
+`cam_keys.txt` + `cam_keycmp.js`: Actual Mocktest 1–16 = Cambridge 15 (AM1–4), 16 (AM5–8), 17 (AM9–12), 20 (AM13–16); Cam 19 T1
+nằm ở AM23 P1 / AM24 P2 / AM27 P3; AM17–20 = Cam 21 (chưa có key công khai). So 657 câu: 0 lệch sau khi sửa.
+Sửa (`../fixReadingDebug.js` + `../data/readingDebugFixes.js`, dry run mặc định, backup `../backups/reading-debug-fix-*.json`, 75 bài):
+- **Key sai**: The future of work Q31–34 Pressure/Information/Satisfaction/Promotion → information/reliance/intuition/confidence
+  (giải thích cũ bịa câu trích để hợp key sai); Robots and us Q30 C → A (câu "Moral questions…" là của Rees); Building the Skyline
+  Q40 deep excavations (trùng Q39) → associated risks, tóm tắt "their 4 __Q40__" bỏ số 4, từ bank "great distanc" → distances.
+- **YES/NO lưu thành TRUE/FALSE** (đề gốc "claims of the writer"): How stress affects our judgement 36–40, Having a laugh 37–40,
+  Changes in reading habits 23–26 → yes-no-ng + instruction chuẩn.
+- **Giải thích**: Timur Gareyev viết lại cả 14 câu (Transcript bịa/tiếng Việt); fairy tales Q39 + history Q1 + Having a laugh Q36
+  (chép của câu khác) viết lại; Whale Culture 35–37 bỏ câu thừa của chatbot; extinct species Q16 bỏ dòng "Câu 17: Đáp án A";
+  Clipper Q13 (câu cụt), space Q22; ~55 trích dẫn diễn ý → câu nguyên văn trong bài (Henry Moore, Stadiums, Palm oil, Djoser…);
+  "Transcript:" → "Trích:" ở mọi giải thích Reading.
+- **Chữ bài sai so với bản Cambridge**: Nutmeg "flesh husk" → fleshy; urban engineers "access points divide" → "to divide";
+  driverless "mileage double" → "would double"; To catch a king "with Scots" → "with the Scots"; education "guide ordinance" → guild.
+- **Format**: ô trống dính chữ (18 bài: "a__Q1__", "__Q3__is"), số in sẵn dính ô ("covered with 6__Q6__", "called 13__Q13__",
+  bảng "7. __Q7__(and)"), "__Q2__. surrounds", 119 câu hỏi lặp số ("31   At times…"), dòng note "24 Corals…"; khung
+  `<!DOCTYPE><html><head>` trong 6 bài; instruction có `<strong>…<br>` (3 bảng Vol 5/7) → tiêu đề chuyển sang groupTitle;
+  "ONE WORD ONL Y"; từ bank/matching có dấu cách thừa; tên "Manatees(kon bòa bỉn á)" → Manatees.
+- Kiểm: `_audit_reading_warnings` 0, `vr_audit.js` 1–9 0 (trừ Vol 4 T9 ẩn có chủ ý), `vr_incomplete.js` 0, `cam_keycmp.js` 0,
+  pw_grade 14/14 100% (các bài đổi key), pw_full_tests Actual Mocktest 1–39 39/39.
+- Lưu ý khi viết script thay chuỗi: `String.replace(x, chuỗi)` hiểu "$2" trong chuỗi thay ("$232") là nhóm bắt → luôn dùng hàm `() => to`.

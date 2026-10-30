@@ -175,6 +175,24 @@ N-L.docx` (key `Câu số N:` — T3/T4 là danh sách 40 dòng trần — rồi
   `TH=35 WL=999 WARM=0`). T1 (sơ đồ đơn giản) vẽ lại SVG `maps_src/t1p2.svg` + `render.js`. Spec trỏ `img/t<T>/map_redraw.png`.
 - T1 Q18–20 là sơ đồ đánh số + hộp từ (không phải chữ cái trên map) → group `map` + `dragDropConfig.words`, key = chữ.
 
+## Debug toàn bộ Listening (thầy: "debug lại … thiếu key, sai đáp án, giải thích, lỗi format") — 2026-10-30
+- Công cụ mới (chỉ đọc): `ls_deep_audit.js [out.json]` — soi cả 440 đề lẻ + mọi part của 119 đề full: thiếu key / giải thích /
+  transcript / audio, key điền từ chấm không được (ngoặc, "/", dấu câu, nháy cong), key không có trong transcript (bỏ qua số,
+  tên đánh vần), vượt giới hạn từ, chữ cái ngoài số lựa chọn, MC có "/" (màn xem lại không tô), kết luận "→ X" ≠ key, trích
+  "Transcript:" không có trong transcript, giải thích chép trùng, HTML bị escape, ô trống dính chữ, câu hỏi lặp số, bản trong đề
+  full lệch key với đề lẻ cùng tên. Kết quả: không có lỗi cấu trúc / bản sao lệch; còn ~70 trích dẫn "lệch" là lời thoại hai
+  người gộp bằng "—" (giữ nguyên).
+- Key Cambridge: so 440 câu (Cam 10 T1, 15 T1, 16 T2–4, 17 T1, 18 T1, 19 T1 — babarenglish.com) → 0 sai (Cam 16 T2 Q19 nguồn ghi
+  lặp "C", DB đúng B+C).
+- Sửa (`../fixListeningDebug.js`, backup `../backups/listening-debug-fix-*.json`, 40 đề lẻ + 33 đề full, sửa đồng thời cả hai bên):
+  **Water Heater Q11** (cả Cam 9 - Test 4 P2) từ kéo-thả + key "On/off switch" → "On-off switch" — bộ chấm tách key theo "/" nên
+  trước đây học sinh kéo đúng vẫn bị chấm sai; Post Office Package Delivery Q8 key "photographs/(some) photographs" →
+  "photographs / some photographs" (Vol 4 - Test 8 P1, bản nháp web/vol4 + specs/vol4_t8.js cập nhật theo); Walking Holiday
+  Q19/Q20 (Vol 1 - Test 1 P2) giải thích ghi lệch chữ cái ("→ E" cho vegetation = F, "→ F" cho wildlife = G); 272 câu hỏi lặp số
+  thứ tự ("11   The park…"); ô trống dính chữ ("good__Q3__skills", "Wear a__Q6__to").
+- Kiểm: `vol_audit.js 1–9` (NOHEAD=1) 0 problem, `ls_deep_audit.js` chỉ còn báo nhầm đã duyệt.
+- Lưu ý: từ trong hộp kéo-thả / word bank KHÔNG được chứa "/" (grader hiểu là phương án thay thế).
+
 ## Vol 1 - Test 5 bản update — 2026-10-30
 
 Nguồn: `VOL 7…/Reading/các đề update web khác trên bản pdf/` (cùng thư mục với các đề Reading update, xem

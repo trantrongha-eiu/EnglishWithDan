@@ -1,0 +1,109 @@
+# Official Cambridge Reading keys (babarenglish.com, Cam 15–17, 20, 19 T1), by passage title. Lines where that source
+# was wrong were corrected after checking the passage: exploration 38, extinct species 18–22, Having a laugh 27,
+# Roman tunnels 4, tomato 17, Skyline 27, education 22. Compare with: node cam_keycmp.js
+# Cam 20 T1
+@The kākāpō
+1 FALSE|2 FALSE|3 FALSE|4 NOT GIVEN|5 TRUE|6 TRUE|7 bulbs|8 soil|9 feathers|10 deer|11 1980|12 funding|13 stakeholders
+@To Britain
+14 C|15 G|16 B|17 E|18 C|19 B|20 A|21 B|22 C|23 A|24 oak|25 flooring|26 keel
+@How stress affects our judgement
+27 C|28 A|29 D|30 C|31 B|32 G|33 F|34 E|35 D|36 YES|37 NOT GIVEN|38 NO|39 YES|40 YES
+@Manatees
+1 tail|2 flippers|3 hairs/hair|4 seagrasses|5 lips|6 buoyancy|7 TRUE|8 NOT GIVEN|9 FALSE|10 NOT GIVEN|11 TRUE|12 NOT GIVEN|13 TRUE
+@Procrastination
+14 B|15 F|16 B|17 laziness|18 anxious|19 threats|20 exams|21 perfectionists|22 guilt|23 A|24 C|25 A|26 E
+@Invasion of the Robot Umpires
+27 NO|28 YES|29 NOT GIVEN|30 NO|31 NOT GIVEN|32 YES|33 F|34 D|35 H|36 B|37 G|38 B|39 D|40 C
+@Frozen Food
+1 potatoes|2 butter|3 meat|4 crystals|5 cellophane|6 tin|7 refrigerator|8 NOT GIVEN|9 TRUE|10 FALSE|11 TRUE|12 FALSE|13 NOT GIVEN
+@Can the planet’s coral reefs be saved?
+14 v|15 ii|16 iv|17 vii|18 iii|19 vi|20 C|21 E|22 B|23 D|24 tentacles|25 protection|26 colour
+@Robots and us
+27 A|28 C|29 B|30 A|31 B|32 A|33 C|34 C|35 B|36 D|37 B|38 C|39 B|40 C
+@Georgia O’Keeffe
+1 teacher|2 charcoal|3 skyscrapers|4 flowers|5 bones|6 landscape|7 rivers|8 FALSE|9 TRUE|10 FALSE|11 TRUE|12 NOT GIVEN|13 NOT GIVEN
+@Adapting to the effects of climate change
+14 C|15 A|16 D|17 F|18 pumps|19 dams|20 float|21 crops|22 trees|23 B|24 E|25 A|26 C
+@A new role for livestock guard dogs
+27 D|28 G|29 B|30 C|31 B|32 D|33 E|34 B|35 C|36 A|37 jackals|38 diseases|39 food|40 foxes
+# Cam 19 T1
+@How tennis rackets have changed
+1 FALSE|2 FALSE|3 NOT GIVEN|4 FALSE|5 NOT GIVEN|6 TRUE|7 TRUE|8 paint|9 topspin|10 training|11 intestines/gut|12 weights|13 grips
+@The pirates of the ancient Mediterranean
+14 D|15 G|16 C|17 A|18 G|19 B|20 B|21 D|22 C|23 E|24 grain|25 punishment|26 ransom
+@The persistence and peril of misinformation
+27 D|28 A|29 C|30 D|31 G|32 J|33 H|34 B|35 E|36 C|37 YES|38 NOT GIVEN|39 NO|40 NOT GIVEN
+# Cam 15
+@Nutmeg – a valuable spice
+1 oval|2 husk|3 seed|4 mace|5 FALSE|6 NOT GIVEN|7 TRUE|8 Arabs|9 plague|10 lime|11 Run|12 Mauritius|13 tsunami
+@Driverless cars
+14 C|15 B|16 E|17 G|18 D|19 human error|20 car-sharing|21 ownership|22 mileage|23 C|24 D|25 A|26 E
+@What is exploration?
+27 A|28 C|29 C|30 D|31 A|32 B|33 E|34 A|35 D|36 E|37 B|38 expeditions|39 uncontacted/isolated|40 surface
+@Could urban engineers learn from dance ?
+1 B|2 C|3 F|4 D|5 E|6 A|7 safety|8 traffic|9 carriageway|10 mobile|11 dangerous|12 communities|13 healthy
+@Should we try to bring extinct species back to life?
+14 F|15 A|16 D|17 A|18 genetic traits|19 heat loss|20 ears|21 fat/insulating fat|22 emissions|23 B|24 C|25 A|26 C
+@Having a laugh
+27 C|28 A|29 B|30 B|31 D|32 F|33 H|34 C|35 D|36 E|37 NOT GIVEN|38 YES|39 NO|40 NO
+@Henry Moore (1898-1986)
+1 TRUE|2 FALSE|3 NOT GIVEN|4 TRUE|5 NOT GIVEN|6 FALSE|7 TRUE|8 resignation|9 materials|10 miners|11 family|12 collectors|13 income
+@The Desolenator: producing clean water
+14 iii|15 vi|16 v|17 x|18 iv|19 viii|20 i|21 wheels|22 film|23 filter|24 waste|25 performance|26 servicing
+@Why fairy tales are really scary tales
+27 C|28 B|29 F|30 A|31 E|32 D|33 F|34 B|35 C|36 G|37 B|38 D|39 A|40 A
+@The return of the huarango
+1 water|2 diet|3 drought|4 erosion|5 desert|6 branches|7 leaves and bark|8 trunk|9 NOT GIVEN|10 FALSE|11 TRUE|12 FALSE|13 NOT GIVEN
+@Silbo Gomero – the whistle ‘language’ of the Canary Islands
+14 NOT GIVEN|15 FALSE|16 TRUE|17 FALSE|18 FALSE|19 TRUE|20 words|21 finger|22 direction|23 commands|24 fires|25 technology|26 award
+@Environmental practices of big businesses
+27 D|28 E|29 F|30 H|31 B|32 C|33 D|34 B|35 YES|36 NOT GIVEN|37 NO|38 YES|39 NOT GIVEN|40 D
+# Cam 16
+@The White Horse of Uffington
+1 TRUE|2 NOT GIVEN|3 TRUE|4 FALSE|5 FALSE|6 TRUE|7 TRUE|8 NOT GIVEN|9 Ridgeway|10 documents|11 soil|12 fertility|13 Rhiannon
+@I contain multitudes
+14 D|15 C|16 A|17 G|18 B|19 H|20 E|21 YES|22 NO|23 NOT GIVEN|24 YES|25 NOT GIVEN|26 NO
+@How to make wise decisions
+27 B|28 C|29 B|30 D|31 D|32 A|33 C|34 F|35 G|36 FALSE|37 NOT GIVEN|38 NOT GIVEN|39 TRUE|40 TRUE
+@Roman shipbuilding and navigation
+1 FALSE|2 NOT GIVEN|3 FALSE|4 TRUE|5 TRUE|6 lightweight|7 bronze|8 levels|9 hull|10 triangular|11 music|12 grain|13 towboats
+@Climate change reveals ancient artefacts in Norway’s glaciers
+14 D|15 C|16 F|17 H|18 G|19 B|20 micro-organisms/microorganisms|21 reindeer|22 insects|23 B|24 C|25 A|26 C
+@Plant ‘thermometer’ triggers springtime growth by measuring night-time heat
+27 NOT GIVEN|28 TRUE|29 TRUE|30 NOT GIVEN|31 FALSE|32 FALSE|33 H|34 D|35 G|36 C|37 A|38 warm|39 summer|40 mustard
+@Roman tunnels
+1 posts|2 canal|3 ventilation|4 lid/stone lid|5 weight|6 climbing|7 FALSE|8 NOT GIVEN|9 FALSE|10 TRUE|11 gold|12 architect's name|13 harbour
+@Changes in reading habits
+14 A|15 B|16 D|17 B|18 D|19 H|20 F|21 B|22 C|23 YES|24 NO|25 NOT GIVEN|26 YES
+@Attitudes towards Artificial Intelligence
+27 iii|28 vi|29 ii|30 i|31 vii|32 v|33 C|34 B|35 A|36 NO|37 NOT GIVEN|38 YES|39 NO|40 YES
+# Cam 17
+@The development of the London underground railway
+1 population|2 suburbs|3 businessmen|4 funding|5 press|6 soil|7 FALSE|8 NOT GIVEN|9 TRUE|10 TRUE|11 FALSE|12 FALSE|13 NOT GIVEN
+@Stadiums: past, present and future
+14 A|15 F|16 E|17 D|23 C|24 D|25 B|26 E
+@To catch a king
+27 H|28 J|29 F|30 B|31 D|32 NOT GIVEN|33 NO|34 NO|35 YES|36 B|37 C|38 A|39 B|40 D
+@The Dead Sea Scrolls
+1 rock|2 cave|3 clay|4 Essenes|5 Hebrew|6 NOT GIVEN|7 FALSE|8 TRUE|9 TRUE|10 FALSE|11 FALSE|12 TRUE|13 NOT GIVEN
+@A second attempt at domesticating the tomato
+14 C|15 B|16 E|17 A|18 C|19 B|20 D|21 A|22 C|23 A|24 flavour/flavor|25 size|26 salt
+@Insight or evolution?
+27 D|28 A|29 A|30 C|31 A|32 NO|33 NOT GIVEN|34 YES|35 NO|36 NOT GIVEN|37 F|38 D|39 E|40 B
+@The thylacine
+1 carnivorous|2 scent|3 pouch|4 fossil|5 habitat|6 TRUE|7 FALSE|8 NOT GIVEN|9 FALSE|10 NOT GIVEN|11 FALSE|12 TRUE|13 NOT GIVEN
+@Building the Skyline: The Birth and Growth of Manhattan's Skyscrapers
+27 D|28 B|29 C|30 D|31 C|32 NO|33 YES|34 NOT GIVEN|35 NO|36 H|37 D|38 I|39 B|40 F
+@Bats to the rescue
+1 FALSE|2 FALSE|3 NOT GIVEN|4 TRUE|5 NOT GIVEN|6 TRUE|7 droppings|8 coffee|9 mosquitoes|10 protein|11 unclean|12 culture|13 houses
+@Does education fuel economic growth?
+19 descendants|20 sermon|21 fine|22 innovation|23 B|24 E|25 B|26 D
+@Timur Gareyev – blindfold chess champion
+27 D|28 E|29 F|30 B|31 H|32 E|33 FALSE|34 NOT GIVEN|35 NOT GIVEN|36 TRUE|37 memory|38 numbers|39 communication|40 visual
+# Cam 16 T1
+@Why we need to protect polar bears
+1 FALSE|2 FALSE|3 NOT GIVEN|4 TRUE|5 TRUE|6 FALSE|7 TRUE|8 violent|9 tool|10 meat|11 photographer|12 game|13 frustration
+@The Step Pyramid of Djoser (Cambridge 16)
+14 iv|15 vii|16 ii|17 v|18 i|19 viii|20 vi|21 city|22 priests|23 trench|24 location|25 B|26 D
+@The future of work
+27 B|28 D|29 C|30 D|31 G|32 E|33 C|34 F|35 B|36 A|37 C|38 A|39 B|40 C
