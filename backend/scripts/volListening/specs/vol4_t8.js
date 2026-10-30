@@ -114,7 +114,7 @@ And thanks for your help.`,
           'New York',
           'Contents: __Q7__',
           '__Q8__',
-        ], { 1: 'Friday', 2: 'International', 3: '14 Mountain Road', 4: 'Hillman', 5: 'North Building', 6: 'Park Avenue', 7: '6 books/six books/books', 8: 'photographs/(some) photographs' }, 'Questions 1-8'),
+        ], { 1: 'Friday', 2: 'International', 3: '14 Mountain Road', 4: 'Hillman', 5: 'North Building', 6: 'Park Avenue', 7: '6 books/six books/books', 8: 'photographs / some photographs' }, 'Questions 1-8'),
         short('Answer the questions below.\nWrite NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.', [
           [9, 'What is the total cost of sending the package? $______', '98'],
           [10, 'What is required in order to find a lost package?', 'ID code/an ID code/the ID code'],
