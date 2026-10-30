@@ -13,7 +13,7 @@ exports.cooldown = catchAsync(async (req, res) => {
 
 // POST /api/exam-simulation/violation
 // body: { skill: 'reading'|'listening'|'writing', attemptType: 'full'|'practice', attemptId, type }
-// A skill page's exam-proctor.js reported the student leaving the exam
+// A skill page's ExamProctor (shared/proctor-engine.js) reported the student leaving the exam
 // tab during a live Simulation attempt.
 exports.violation = catchAsync(async (req, res) => {
   const { skill, attemptType, attemptId, type, capture } = req.body || {};
@@ -22,7 +22,7 @@ exports.violation = catchAsync(async (req, res) => {
 });
 
 // GET /api/exam-simulation/attempt-state?skill=&attemptType=&attemptId=
-// Read by exam-proctor.js when it (re)arms — real strike count + whether
+// Read by ExamProctor when it (re)arms — real strike count + whether
 // the attempt is still open.
 exports.attemptState = catchAsync(async (req, res) => {
   const { skill, attemptType, attemptId } = req.query || {};

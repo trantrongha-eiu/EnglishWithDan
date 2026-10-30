@@ -145,7 +145,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .badge-warning { background: var(--warning-light); color: var(--warning); }
 .badge-danger  { background: var(--danger-light);  color: var(--danger); }
 
-/* Review-screen "⏱ 12:34" total-time chip (js/shared/time-badge.js) */
+/* Review-screen "⏱ 12:34" total-time chip (setTimeBadge in js/shared/review-inline.js) */
 .exam-time-badge {
   display: inline-flex;
   align-items: center;

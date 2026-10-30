@@ -1,8 +1,7 @@
 /* "Phân tích đề" formatter (writing.html left panel, Task 1 + Task 2).
  *
  * analysisSections[].content is plain text written by teachers in a loose
- * but consistent shape (see backend/scripts/seedWritingTask1.js /
- * seedWritingTask2.js):
+ * but consistent shape (mostly entered in the admin panel):
  *
  *   Overview nên nói gì? …:          ← heading line (ends with ":")
  *   - London: CAO NHẤT (550→1650)     ← bullet, CAPS = emphasis

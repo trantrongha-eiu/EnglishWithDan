@@ -8,7 +8,7 @@
  *   • nav.js — streak-rule announcement + "long time no vocab" nudge
  *   • badge-popup.js — "🎉 Huy hiệu mới!" (#bp-backdrop)
  *   • onboarding-tour.js — first-visit guided tour (#ews-tour-tip)
- *   • writing-rewrite-reminder.js — "you have essays to rewrite" (#wrr-modal-overlay)
+ *   • review-required-popup.js (Writing rewrite reminder) — "you have essays to rewrite" (#wrr-modal-overlay)
  *
  * Each of those used to render the instant its own async data came back, so
  * a fresh login showed several stacked on top of each other with dismiss

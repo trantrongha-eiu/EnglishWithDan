@@ -8,8 +8,6 @@
 //
 // Consumed by:
 //   • seedTask2Exercises.js  — attaches q.promptVi when building `topics`
-//   • addTask2RearrangeVi.js — one-off $set onto existing prod docs (no
-//                              destructive full re-seed needed)
 'use strict';
 
 module.exports = {

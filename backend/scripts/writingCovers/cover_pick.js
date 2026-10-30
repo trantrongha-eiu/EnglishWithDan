@@ -1,5 +1,5 @@
 // Record cover choices made on a contact sheet into ../data/writingTask2Covers.json
-// (the input of setWritingTask2Thumbnail.js --batch, and the provenance record).
+// (the input of setThumbnail.js writing --batch, and the provenance record).
 //   node cover_pick.js 12=acf 13=b 14=- …   (row number from cover_sheet.js; one letter per
 //   prompt of that row, in its listed order — a letter may repeat; "-" = keep the logo)
 const fs = require('fs');

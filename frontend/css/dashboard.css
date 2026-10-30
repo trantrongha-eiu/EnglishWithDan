@@ -797,7 +797,7 @@ table.lesson-history-table{width:100%;border-collapse:collapse}
 .dan-streak-msg{font-size:13px;color:var(--text2);line-height:1.5}
 .dan-streak-card.is-angry .dan-streak-msg{color:var(--danger);font-weight:600}
 
-/* Fire tier ladder (see getFireTier()/applyFireTier() in js/shared/fire-tier.js) —
+/* Fire tier ladder (see getFireTier()/applyFireTier() in js/shared/utils.js) —
    30/60/100/150/200/300/400 each recolor the fire icon + streak number;
    500+ ("legendary") gets an animated rainbow shimmer a flat color can't
    express. Used on the homepage mascot card, the book-content mascot

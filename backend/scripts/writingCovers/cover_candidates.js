@@ -3,7 +3,7 @@
 // Each prompt of a topic gets its own picture, so a topic gets ~2 candidates per prompt.
 // Only CC0 / Public-domain files are kept (the card has no room for a credit line);
 // landscape only (the card crops ~3:1). Prompts that already have a cover are skipped
-// unless --force (to replace one; then setWritingTask2Thumbnail.js --force).
+// unless --force (to replace one; then setThumbnail.js writing --force).
 //   node cover_candidates.js [topicRegex] [--force]        → web/candidates.json
 // Re-running keeps topics whose query and prompts did not change.
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '.env'), quiet: true });

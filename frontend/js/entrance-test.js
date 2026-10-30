@@ -1300,7 +1300,7 @@
       }
     }
     // Landed here via the proctor's disqualify redirect (a real navigation,
-    // not a JS screen swap — see shared/entrance-test-proctor.js) — surface
+    // not a JS screen swap — see EntranceTestProctor in shared/proctor-engine.js) — surface
     // what happened, then drop the param so a refresh doesn't re-toast.
     try {
       if (new URLSearchParams(location.search).get('voided') === '1') {

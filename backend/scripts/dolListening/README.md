@@ -52,7 +52,7 @@ SHORT_ANSWER → plain fill-blank. Hậu tố `_V2` xử lý như bản thườn
 
 Giống Reading: chỉ ảnh Wikimedia **CC0/Public domain**, chọn bằng mắt. `cover_queries.json` (key = 6 ký tự cuối _id) →
 `node lcover_candidates.js [titleRegex]` → `node lcover_sheet.js <from> [10]` (hoặc `a,b,c`) → xem `shots/covers_<from>.png` →
-`node lcover_pick.js 12=a 13=- …` (ghi `../data/listeningCovers.json`) → `node ../setListeningThumbnail.js --batch ../data/listeningCovers.json --apply`.
+`node lcover_pick.js 12=a 13=- …` (ghi `../data/listeningCovers.json`) → `node ../setThumbnail.js listening --batch ../data/listeningCovers.json --apply`.
 Bài mới nhập cũng phải có ảnh bìa trước khi bật. `pw_covers.js` xem trước card (local listening.html + API thật).
 2026-10-07: mọi bài lẻ đang bật đều có ảnh bìa (197 trong `listeningCovers.json`). 4 bài cũ thiếu ảnh được gắn ảnh tượng
 trưng: Cam 18 T2 P2 (nhà ở ngoại ô), Cam 21 T4 P2 (trung tâm triển lãm), Holly's Work Placement (sân vận động), Job Centre

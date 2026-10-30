@@ -477,7 +477,7 @@ function setMascotEl(el, streak, mood) {
     else el.textContent = getMascotEmoji(streak);
 }
 
-// FIRE_TIERS / getFireTier() / applyFireTier() live in js/shared/fire-tier.js
+// FIRE_TIERS / getFireTier() / applyFireTier() live in js/shared/utils.js
 // (shared with the BXH vocab page's streak leaderboard).
 
 // Sarcastic "Lulu" (our panda mascot, named after thầy Daniel) reacting to a

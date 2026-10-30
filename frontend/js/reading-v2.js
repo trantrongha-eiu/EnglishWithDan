@@ -4751,7 +4751,7 @@ document.addEventListener('mouseup', e => {
   else _saveReadingHighlightsToStorage();
 });
 
-// Fired by js/shared/highlight-remove.js after the student re-colors or
+// Fired by js/shared/highlight-store.js after the student re-colors or
 // deletes an EXISTING highlight (the click handler there is self-contained
 // and doesn't know about this page's save functions) — same routing as the
 // mouseup handler right above, so a recolor/removal persists exactly like

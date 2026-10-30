@@ -68,8 +68,7 @@ window.addEventListener('scroll', () => {
 
 /* ── Courses — admin-editable via /api/courses (Courses.jsx), same
      data source and pattern as courses.html's loadCoursesFromAPI().
-     STATIC_COURSES is only the offline/API-failure fallback — keep it
-     in sync with backend/scripts/seedCourses.js's seed content. ── */
+     STATIC_COURSES is only the offline/API-failure fallback. ── */
 const STATIC_COURSES = [
   { title: 'IELTS Mất Gốc → 6.0+', subtitle: 'Học viên chưa có nền tảng', description: 'Bắt đầu từ phát âm, ngữ pháp cơ bản đến 4 kỹ năng IELTS. Lộ trình 6–8 tháng để đạt band 6.0 từ con số 0.', placeholder: '🌱', level: 'Mất gốc', levelColor: 'red', duration: '6–8 tháng', classSize: 'Nhóm nhỏ ≤ 8 người', price: '7.200.000đ / giai đoạn 3 tháng · ưu đãi ĐK sớm 6.480.000đ' },
   { title: 'IELTS 3.0 → 6.0+', subtitle: 'Band 3.0–4.5', description: 'Củng cố ngữ pháp, mở rộng từ vựng học thuật, luyện kỹ năng thi theo chuẩn IDP/BC. Mục tiêu band 6.0–6.5.', placeholder: '📈', level: 'Cơ bản → Nâng cao', levelColor: 'blue', duration: '4–5 tháng', classSize: 'Nhóm nhỏ ≤ 8 người', price: '7.200.000đ / giai đoạn 3 tháng · ưu đãi ĐK sớm 6.480.000đ' },

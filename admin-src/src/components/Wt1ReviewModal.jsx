@@ -6,7 +6,7 @@ import { formatDate } from '../utils/api';
 // One student's saved attempt at a WT1-stack course exercise (Khoá học
 // Task 1 / Task 2 / Speaking) — GET /admin/wt1/submissions/:id, the same
 // `review` shape the student's own "Lịch sử" view renders
-// (frontend/js/shared/wt1-history.js; built by wt1Service.buildReview).
+// (WT1History in frontend/js/shared/course-engine.js; built by wt1Service.buildReview).
 // Opened from the WT1 rows of StudentHistory / StudentDetail's history tab.
 
 const SCORE_LABELS = {

@@ -657,7 +657,7 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] .hl:hover { background: #92400e; }
 
 /* Alternate highlight colors — pick one by clicking an existing highlight
-   (see js/shared/highlight-remove.js). Default (no modifier class) stays
+   (see js/shared/highlight-store.js). Default (no modifier class) stays
    the original yellow above, unchanged for every highlight saved before
    this palette existed. */
 .hl-green { background: #4ade80; }

@@ -97,7 +97,7 @@
     submitBtn.addEventListener('click', submit);
     // Result-card buttons are created per lookup — one delegated listener.
     listEl.addEventListener('click', onListClick);
-    // The exam screen can go fullscreen (exam-fullscreen.js targets
+    // The exam screen can go fullscreen (ExamFullscreen in exam-mode-select.js targets
     // #screen-exam), and only the fullscreen element's subtree is painted —
     // follow it so the panel stays usable there.
     document.addEventListener('fullscreenchange', function () {

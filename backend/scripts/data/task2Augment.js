@@ -534,7 +534,7 @@ const AUG = {
   },
 
   // ═══ EXTRA topics added via the admin panel (not in seedTask2Exercises.js's
-  //     `topics` array) — augmented separately by scripts/augmentExtraTask2Topics.js ═══
+  //     `topics` array) — augmented once by a one-off script (2026-09) ═══
   'Decline in Reading Habits': {
     a: ['Vốn từ, kiến thức nền và khả năng tập trung của giới trẻ giảm', 'Kỹ năng viết và tư duy phản biện yếu đi', 'Ít đồng cảm và hiểu biết văn hóa hơn khi thiếu tiếp xúc văn học'],
     b: ['Trường học và thư viện tổ chức câu lạc bộ đọc, giờ đọc tự do', 'Quảng bá sách qua mạng xã hội, người có ảnh hưởng, ứng dụng đọc', 'Cha mẹ làm gương và đọc cùng con từ nhỏ'],

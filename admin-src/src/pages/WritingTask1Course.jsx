@@ -9,9 +9,9 @@ import { useAuth } from '../contexts/AuthContext';
 // Content is authored in backend/scripts/data/writingTask1/*.json and
 // seeded; edits here write straight to the DB and a re-seed overwrites them.
 const SEED_NOTE = {
-  'IELTS-W-T1': 'Nội dung gốc nằm ở backend/scripts/data/writingTask1/ — sửa ở đây ghi thẳng vào DB; chạy lại seedWritingTask1Course.js sẽ ghi đè.',
-  'IELTS-W-T2': 'Nội dung gốc nằm ở backend/scripts/data/writingTask2/ — sửa ở đây ghi thẳng vào DB; chạy lại seedWritingTask2Course.js sẽ ghi đè.',
-  'IELTS-SPEAKING': 'Nội dung gốc nằm ở backend/scripts/data/speakingCourse/ — sửa ở đây ghi thẳng vào DB; chạy lại seedSpeakingCourse.js sẽ ghi đè.',
+  'IELTS-W-T1': 'Nội dung gốc nằm ở backend/scripts/data/writingTask1/ — sửa ở đây ghi thẳng vào DB; chạy lại `seedCourse.js t1` sẽ ghi đè.',
+  'IELTS-W-T2': 'Nội dung gốc nằm ở backend/scripts/data/writingTask2/ — sửa ở đây ghi thẳng vào DB; chạy lại `seedCourse.js t2` sẽ ghi đè.',
+  'IELTS-SPEAKING': 'Nội dung gốc nằm ở backend/scripts/data/speakingCourse/ — sửa ở đây ghi thẳng vào DB; chạy lại `seedCourse.js speaking` sẽ ghi đè.',
 };
 const EX_TYPES = [
   'mcq', 'gap_fill', 'error_correction', 'sentence_transform', 'word_form',

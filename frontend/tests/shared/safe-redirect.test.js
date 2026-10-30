@@ -3,7 +3,7 @@
 const { loadScript } = require('../helpers/loadScript');
 
 beforeAll(() => {
-  loadScript('safe-redirect.js');
+  loadScript('auth-service.js'); // SafeRedirect lives in auth-service.js
 });
 
 describe('SafeRedirect.getSafeNext — open-redirect guard', () => {

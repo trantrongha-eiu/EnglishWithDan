@@ -546,7 +546,7 @@ describe('Bôi màu (highlight)', () => {
       expect(hlTexts('.rtp-passage-scroll')).toEqual(['flavor of the meat']);
       expect(hlTexts('.q-text')).toEqual(['adapted trains']);
 
-      // removed from the color panel (js/shared/highlight-remove.js)
+      // removed from the color panel (js/shared/highlight-store.js)
       const span = $('.rtp-passage-scroll .hl');
       span.replaceWith(...span.childNodes);
       document.dispatchEvent(new CustomEvent('hl:changed'));

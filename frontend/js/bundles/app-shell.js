@@ -37,9 +37,8 @@
  * unifying that part isn't duplication, it's several valid variations of
  * "build a headers object".
  *
- * Depends on js/shared/safe-redirect.js being loaded first (for
- * getSafeNext()/buildLoginUrl() — both degrade to "no next" if it's
- * missing rather than throwing, so load order mistakes fail soft).
+ * SafeRedirect (the ?next= validator used by getSafeNext()/buildLoginUrl())
+ * lives at the bottom of this file.
  */
 (function () {
   'use strict';
@@ -371,6 +370,45 @@
   }
 
   window.ActivityGate = { poll: poll, isActive: isActive, IDLE_MS: IDLE_MS };
+})();
+
+// ════════════════════════════════════════════════════════════════════════
+//  ?next= validation — window.SafeRedirect
+// ════════════════════════════════════════════════════════════════════════
+/**
+ * SafeRedirect
+ *
+ * Single source of truth for validating a `?next=` redirect target before
+ * it's ever used as a navigation destination (login.html after JWT/Google
+ * login, auth-callback.html after the OAuth round trip). Routing audit
+ * finding: this exact regex pair used to be hand-duplicated in both of
+ * those files; a future fix to one copy (e.g. closing a new open-redirect
+ * bypass) could silently miss the other. Centralized here instead.
+ *
+ * Accepts only same-site relative destinations:
+ *   - a bare "*.html" filename (student pages), optionally with a query
+ *     string and/or hash — the legacy form, kept for any existing shared
+ *     link/bookmark that already encodes one
+ *   - an absolute clean path (student pages reached via a Phase 4 _redirects
+ *     rewrite, e.g. "/tuition" or "/reading/test/abc123" — these have no
+ *     ".html" in the pathname at all)
+ *   - an admin HashRouter route of the form "/admin/#/..."
+ * Anything containing "://" or starting with "//" is rejected outright —
+ * both are how a same-looking string can actually point off-site.
+ */
+(function () {
+  'use strict';
+
+  function getSafeNext(raw) {
+    if (!raw) return null;
+    if (raw.includes('://') || raw.startsWith('//')) return null;
+    if (/^\/admin\/(#\/[\w./-]*)?$/.test(raw)) return { url: raw, admin: true };
+    if (/^[a-zA-Z0-9][\w-]*\.html([?#].*)?$/.test(raw)) return { url: raw, admin: false };
+    if (/^\/[a-zA-Z][\w./-]*([?#].*)?$/.test(raw)) return { url: raw, admin: false };
+    return null;
+  }
+
+  window.SafeRedirect = { getSafeNext: getSafeNext };
 })();
 ;
 
@@ -723,7 +761,7 @@
  *   • nav.js — streak-rule announcement + "long time no vocab" nudge
  *   • badge-popup.js — "🎉 Huy hiệu mới!" (#bp-backdrop)
  *   • onboarding-tour.js — first-visit guided tour (#ews-tour-tip)
- *   • writing-rewrite-reminder.js — "you have essays to rewrite" (#wrr-modal-overlay)
+ *   • review-required-popup.js (Writing rewrite reminder) — "you have essays to rewrite" (#wrr-modal-overlay)
  *
  * Each of those used to render the instant its own async data came back, so
  * a fresh login showed several stacked on top of each other with dismiss
@@ -3613,6 +3651,11 @@
  *
  * Back-compat aliases (escHtml, esc, escAttr, escHtmlNl) are kept under
  * their original names so no call site needed to change.
+ *
+ * Also here (small display helpers several pages share): getScoreMessage()
+ * for result screens and the streak fire-color ladder (getFireTier /
+ * applyFireTier). Part of the app-shell bundle, so every logged-in page
+ * has them.
  */
 (function () {
   'use strict';
@@ -3709,6 +3752,64 @@
       .replace(/<\/?(html|head|body|meta)[^>]*>/gi, '');
     return '<div class="' + scope + '">' + (styles.length ? '<style>' + styles.join('\n') + '</style>' : '') + body + '</div>';
   };
+})();
+
+// ── Score-tiered reaction message for quiz/test result screens (0-100) ──
+// Same tone on Task 1 Grammar, Task 2 quiz, Vocab practice and the course
+// result screen (originally writing-practice.html's 4-tier scheme).
+(function () {
+  'use strict';
+
+  function getScoreMessage(score) {
+    if (score >= 80) return { emoji: '😎', message: 'Ôi học giỏi vậy? Đi dạy lại đi chứ 🔥' };
+    if (score >= 60) return { emoji: '🤔', message: 'Tạm ổn đó... nhưng mà Daniel biết bạn làm được hơn 👀' };
+    if (score >= 40) return { emoji: '🥲', message: 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha — cày thêm đi!' };
+    return { emoji: '😤', message: 'Học cho đàng hoàng zô coiii!' };
+  }
+
+  window.getScoreMessage = getScoreMessage;
+})();
+
+// ── Streak fire-color ladder ──
+// Shared by the dashboard (mascot card, book-content banner) and the BXH
+// streak leaderboard (js/vocab-leaderboard.js) so a streak has the same color
+// everywhere. 500+ ("legendary") has no flat color: the .fire-legendary class
+// (css/dashboard.css) draws a gradient instead.
+(function () {
+  'use strict';
+
+  var FIRE_TIERS = [
+    { min: 500, color: null,      cls: 'fire-legendary' }, // gradient
+    { min: 400, color: '#eab308', cls: '' },  // gold
+    { min: 300, color: '#10b981', cls: '' },  // emerald
+    { min: 200, color: '#06b6d4', cls: '' },  // cyan
+    { min: 150, color: '#3b82f6', cls: '' },  // blue
+    { min: 100, color: '#a855f7', cls: '' },  // purple
+    { min: 60,  color: '#dc2626', cls: '' },  // crimson
+    { min: 30,  color: '#ef4444', cls: '' },  // red
+  ];
+
+  function getFireTier(streak) {
+    for (var i = 0; i < FIRE_TIERS.length; i++) {
+      if (streak >= FIRE_TIERS[i].min) return FIRE_TIERS[i];
+    }
+    return { min: 0, color: null, cls: '' }; // default orange, from CSS
+  }
+
+  // Applies the tier color/class to a fire icon + its adjoining streak number.
+  function applyFireTier(fireEl, numEl, streak) {
+    var tier = getFireTier(streak);
+    [fireEl, numEl].forEach(function (el) {
+      if (!el) return;
+      el.classList.remove('fire-legendary');
+      if (tier.cls) el.classList.add(tier.cls);
+      el.style.color = tier.cls ? '' : (tier.color || '');
+    });
+  }
+
+  window.FIRE_TIERS = FIRE_TIERS;
+  window.getFireTier = getFireTier;
+  window.applyFireTier = applyFireTier;
 })();
 ;
 

@@ -103,13 +103,13 @@ const ListeningSectionSchema = new mongoose.Schema({
   // doesn't re-attempt the same doomed section every single time, unlike a
   // content-validation rejection which a transcript-cleaning fix might fix.
   dictationSkipPermanent: { type: Boolean, default: false },
-  // Set by scripts/splitLongDictationSentences.js when it re-sliced one or
+  // Set by a one-off 2026-09 migration when it re-sliced one or
   // more over-long (> ~4s) clips in this section into shorter sub-clips.
   dictationSplitLongAt: { type: Date, default: null },
-  // Set by scripts/dropNameHeavyDictation.js when it removed sentence(s)
+  // Set by a one-off 2026-09 cleanup when it removed sentence(s)
   // built around an unspellable proper name / spelled-out name.
   dictationNamesFilteredAt: { type: Date, default: null },
-  // Set by scripts/rebuildDictationSentences.js when it rejoined clips an
+  // Set by a one-off 2026-09 migration when it rejoined clips an
   // earlier ~4s split had cut mid-sentence and re-normalised the section.
   dictationRebuiltAt: { type: Date, default: null },
 

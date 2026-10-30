@@ -12,8 +12,8 @@
  * and strikes are reported with capture:'unsupported' so the teacher knows
  * why there's no screenshot.
  *
- * The three proctor engines (exam-proctor.js, mock-test.js,
- * entrance-test-proctor.js) call:
+ * The three proctor engines (ExamProctor and EntranceTestProctor in
+ * proctor-engine.js, MockTest in mock-test.js) call:
  *   ProctorCapture.ensureShare({ cancelable }) → Promise<boolean>  (gate overlay)
  *   ProctorCapture.isPicking()   — ignore blur while the browser's picker is open
  *   ProctorCapture.mode()        — 'screen' | 'unsupported' | 'none', sent with each strike

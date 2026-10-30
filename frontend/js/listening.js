@@ -3246,7 +3246,7 @@ function setupHighlight() {
         else _saveListeningHighlightsToStorage();
     });
 
-    // Fired by js/shared/highlight-remove.js after the student re-colors
+    // Fired by js/shared/highlight-store.js after the student re-colors
     // or deletes an EXISTING highlight (that module is self-contained and
     // doesn't know about this page's two separate highlight-storage
     // systems). 'hl:willChange' fires first, span still attached, so the

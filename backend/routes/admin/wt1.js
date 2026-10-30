@@ -2,7 +2,7 @@
 
 // Admin CRUD for the WT1 course (WT1Module / WT1Lesson / WT1Exercise).
 // Content is authored in backend/scripts/data/writingTask1/*.json and seeded
-// via seedWritingTask1Course.js; edits here write straight to the DB and a
+// via scripts/seedCourse.js; edits here write straight to the DB and a
 // re-seed would overwrite them (surfaced in the admin UI).
 // teacherOnly for reads + create/update; adminOnly for delete.
 const express = require('express');
@@ -23,7 +23,7 @@ const COURSE = 'IELTS-W-T1';
 const COURSES = new Set(['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING']);
 function resolveCourse(code) { return COURSES.has(code) ? code : COURSE; }
 
-// ── validation (mirrors seedWritingTask1Course.js's validate()) ───────
+// ── validation (mirrors scripts/seedCourse.js's validate()) ───────
 function validateExercise(ex) {
   const errs = [];
   if (!ex.code || !String(ex.code).trim()) errs.push('Thiếu code');

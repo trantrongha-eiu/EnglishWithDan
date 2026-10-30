@@ -6,8 +6,8 @@
  * shown in a tile above the boards and, when they rank below the top 10,
  * as a pinned row under the list.
  *
- * Needs: AuthService, ApiClient, escHtml (shared/utils.js), getFireTier
- * (shared/fire-tier.js), openPeerProfile (shared/peer-profile.js).
+ * Needs: AuthService, ApiClient, escHtml + getFireTier (shared/utils.js),
+ * openPeerProfile (shared/peer-profile.js).
  */
 (function () {
     'use strict';

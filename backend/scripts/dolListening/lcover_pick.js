@@ -1,5 +1,5 @@
 // Record cover choices made on a contact sheet into ../data/passageCovers.json
-// (the input of setPassageThumbnail.js --batch, and the provenance record).
+// (the input of setThumbnail.js listening --batch, and the provenance record).
 //   node cover_pick.js 12=a 13=c 14=- …     (row number from cover_sheet.js; "-" = keep the logo)
 const fs = require('fs');
 const path = require('path');

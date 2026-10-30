@@ -6,7 +6,7 @@
 // them into the Vietnamese "Phân tích đề" sections.
 //
 // augmentTopics() uses these for brainstormHints when a topic has an entry
-// here; scripts/applyTask2BrainstormEn.js writes them to existing topics.
+// here (existing topics got them from a one-off script, 2026-10).
 
 const SIDE_LABELS_EN = {
   advantages_disadvantages: ['Advantages', 'Disadvantages'],

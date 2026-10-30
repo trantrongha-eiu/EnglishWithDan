@@ -439,7 +439,7 @@
     persistSoon();
   });
 
-  // Re-colored / removed by js/shared/highlight-remove.js.
+  // Re-colored / removed by js/shared/highlight-store.js.
   document.addEventListener('hl:changed', () => {
     if (!st) return;
     captureHl();

@@ -6,7 +6,7 @@ beforeAll(() => {
   // mock-test.js reads window.AuthService (authHeader/isLoggedIn/clearSession/
   // buildLoginUrl) and window.ApiClient.handleResponse — same dependency
   // chain auth-service.js itself documents (safe-redirect -> auth-service).
-  loadScript('safe-redirect.js', 'auth-service.js', 'api-client.js', 'proctor-engine.js', 'mock-test.js');
+  loadScript('auth-service.js', 'api-client.js', 'proctor-engine.js', 'mock-test.js');
 });
 
 afterEach(() => {

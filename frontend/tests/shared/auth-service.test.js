@@ -3,10 +3,7 @@
 const { loadScript } = require('../helpers/loadScript');
 
 beforeAll(() => {
-  // auth-service.js's own header comment says it depends on safe-redirect.js
-  // being loaded first (for getSafeNext()/buildLoginUrl() to work; it
-  // degrades to "no next" rather than throwing if missing).
-  loadScript('safe-redirect.js', 'auth-service.js');
+  loadScript('auth-service.js'); // includes SafeRedirect
 });
 
 beforeEach(() => {

@@ -30,8 +30,7 @@ const advSentenceDraftSchema = new Schema({
 });
 
 advSentenceDraftSchema.index({ userId: 1, groupId: 1 }, { unique: true });
-// See Task2Draft.js — changing this does NOT retro-update the live index;
-// run scripts/bumpDraftTtl.js.
+// See Task2Draft.js — changing this does NOT retro-update the live index.
 advSentenceDraftSchema.index({ savedAt: 1 }, { expireAfterSeconds: 30 * 24 * 60 * 60 });
 
 module.exports = mongoose.model('AdvSentenceDraft', advSentenceDraftSchema);

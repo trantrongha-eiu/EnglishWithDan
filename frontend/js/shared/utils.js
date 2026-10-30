@@ -11,6 +11,11 @@
  *
  * Back-compat aliases (escHtml, esc, escAttr, escHtmlNl) are kept under
  * their original names so no call site needed to change.
+ *
+ * Also here (small display helpers several pages share): getScoreMessage()
+ * for result screens and the streak fire-color ladder (getFireTier /
+ * applyFireTier). Part of the app-shell bundle, so every logged-in page
+ * has them.
  */
 (function () {
   'use strict';
@@ -107,4 +112,62 @@
       .replace(/<\/?(html|head|body|meta)[^>]*>/gi, '');
     return '<div class="' + scope + '">' + (styles.length ? '<style>' + styles.join('\n') + '</style>' : '') + body + '</div>';
   };
+})();
+
+// ── Score-tiered reaction message for quiz/test result screens (0-100) ──
+// Same tone on Task 1 Grammar, Task 2 quiz, Vocab practice and the course
+// result screen (originally writing-practice.html's 4-tier scheme).
+(function () {
+  'use strict';
+
+  function getScoreMessage(score) {
+    if (score >= 80) return { emoji: '😎', message: 'Ôi học giỏi vậy? Đi dạy lại đi chứ 🔥' };
+    if (score >= 60) return { emoji: '🤔', message: 'Tạm ổn đó... nhưng mà Daniel biết bạn làm được hơn 👀' };
+    if (score >= 40) return { emoji: '🥲', message: 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha — cày thêm đi!' };
+    return { emoji: '😤', message: 'Học cho đàng hoàng zô coiii!' };
+  }
+
+  window.getScoreMessage = getScoreMessage;
+})();
+
+// ── Streak fire-color ladder ──
+// Shared by the dashboard (mascot card, book-content banner) and the BXH
+// streak leaderboard (js/vocab-leaderboard.js) so a streak has the same color
+// everywhere. 500+ ("legendary") has no flat color: the .fire-legendary class
+// (css/dashboard.css) draws a gradient instead.
+(function () {
+  'use strict';
+
+  var FIRE_TIERS = [
+    { min: 500, color: null,      cls: 'fire-legendary' }, // gradient
+    { min: 400, color: '#eab308', cls: '' },  // gold
+    { min: 300, color: '#10b981', cls: '' },  // emerald
+    { min: 200, color: '#06b6d4', cls: '' },  // cyan
+    { min: 150, color: '#3b82f6', cls: '' },  // blue
+    { min: 100, color: '#a855f7', cls: '' },  // purple
+    { min: 60,  color: '#dc2626', cls: '' },  // crimson
+    { min: 30,  color: '#ef4444', cls: '' },  // red
+  ];
+
+  function getFireTier(streak) {
+    for (var i = 0; i < FIRE_TIERS.length; i++) {
+      if (streak >= FIRE_TIERS[i].min) return FIRE_TIERS[i];
+    }
+    return { min: 0, color: null, cls: '' }; // default orange, from CSS
+  }
+
+  // Applies the tier color/class to a fire icon + its adjoining streak number.
+  function applyFireTier(fireEl, numEl, streak) {
+    var tier = getFireTier(streak);
+    [fireEl, numEl].forEach(function (el) {
+      if (!el) return;
+      el.classList.remove('fire-legendary');
+      if (tier.cls) el.classList.add(tier.cls);
+      el.style.color = tier.cls ? '' : (tier.color || '');
+    });
+  }
+
+  window.FIRE_TIERS = FIRE_TIERS;
+  window.getFireTier = getFireTier;
+  window.applyFireTier = applyFireTier;
 })();

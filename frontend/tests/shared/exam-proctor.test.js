@@ -1,12 +1,12 @@
 'use strict';
 
-// Unit tests for shared/exam-proctor.js — the Test Simulation proctor
+// Unit tests for ExamProctor — the Test Simulation proctor
 // (shared/proctor-engine.js wired to /exam-simulation/*).
 const { loadScript } = require('../helpers/loadScript');
 
 beforeAll(() => {
   window.AuthService = { API: 'http://x/api', authHeader: () => ({ Authorization: 'Bearer t' }) };
-  loadScript('proctor-engine.js', 'exam-proctor.js');
+  loadScript('proctor-engine.js');
 });
 
 afterEach(() => {

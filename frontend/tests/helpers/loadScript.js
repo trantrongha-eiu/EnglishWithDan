@@ -31,7 +31,7 @@ const SHARED_DIR = path.join(__dirname, '..', '..', 'js', 'shared');
 /**
  * Loads one or more shared/*.js files (by bare filename, e.g. 'utils.js')
  * into the current test's jsdom `window`, in the order given (matters for
- * files like auth-service.js that expect safe-redirect.js loaded first).
+ * files that read another file's globals at load time).
  *
  * @param {...string} filenames
  */

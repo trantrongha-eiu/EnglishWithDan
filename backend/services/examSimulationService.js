@@ -9,7 +9,7 @@
  * The violation-counting/disqualify logic here is a direct copy of
  * mockTestService.recordViolation's shape and behavior (same response
  * contract: {violationCount, violated, disqualified, cooldownSeconds}) so
- * the frontend's exam-proctor.js can reuse mock-test.js's proven
+ * the frontend's ExamProctor (shared/proctor-engine.js) can reuse mock-test.js's proven
  * response-handling logic verbatim. See backend/models/shared/
  * proctorSchema.js for the embedded sub-doc every attempt model below
  * shares.

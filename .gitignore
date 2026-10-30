@@ -52,7 +52,7 @@ backend/scripts/vocabCovers/shots/
 backend/scripts/writingCovers/web/
 backend/scripts/writingCovers/shots/
 
-# Listening audio → R2 migration (scripts/migrateListeningAudioToR2.js): encode scratch space
+# Listening audio → R2 migration (done 2026-10): encode scratch space
 backend/scripts/data/audioR2Backup/work/
 
 # Transcript highlight timing (alignTranscriptTiming.js): local whisper word timestamps, ~30MB, rebuildable
