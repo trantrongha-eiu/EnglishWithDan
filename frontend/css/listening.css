@@ -2417,3 +2417,14 @@ body.eye-protection .review-questions-panel { background: #faf8f3 !important; }
 [data-theme="dark"] .pg-btn:hover:not(:disabled):not(.pg-active) { background: var(--border2, #333333); border-color: #4b5563; }
 [data-theme="dark"] .pg-btn.pg-active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
 #lt-practice-pagination { padding: 8px 0 32px; }
+
+/* ── Transcript follows the audio (js/shared/transcript-sync.js) ── */
+::highlight(ts-line) { background-color: rgba(14, 165, 233, .16); }
+::highlight(ts-word) { background-color: rgba(14, 165, 233, .42); }
+[data-theme="dark"] ::highlight(ts-line) { background-color: rgba(56, 189, 248, .18); }
+[data-theme="dark"] ::highlight(ts-word) { background-color: rgba(56, 189, 248, .4); color: #fff; }
+/* Browsers without the Highlight API: tint the paragraph being spoken. */
+.ts-active-block { background: rgba(14, 165, 233, .1); border-radius: 6px; box-shadow: 0 0 0 4px rgba(14, 165, 233, .1); }
+.gf-blank.ts-active { box-shadow: 0 0 0 3px rgba(14, 165, 233, .45); }
+[data-theme="dark"] .ts-active-block { background: rgba(56, 189, 248, .12); box-shadow: 0 0 0 4px rgba(56, 189, 248, .12); }
+.gf-blank.ts-active.ts-now { box-shadow: 0 0 0 3px rgba(14, 165, 233, .9); }

@@ -1028,6 +1028,15 @@ function _enterGapFillScreen(section) {
     document.getElementById('gf-speed-btn').textContent = '1x';
 
     showScreen('gapfill');
+    // Highlight the sentence being spoken; never yank the page while the
+    // student is typing in a blank.
+    window.TranscriptSync?.attach({
+        container: tArea, audio: gfAudio,
+        text: section.gapFillTemplate, timing: section.gapFillTiming,
+        blankSelector: '.gf-blank', skipSelector: '.gf-speaker, .gf-answer-hint',
+        autoScroll: () => !document.activeElement?.classList?.contains('gf-blank'),
+        topInset: () => document.querySelector('#screen-gapfill .gf-sticky-head')?.offsetHeight || 0,
+    });
     // The word bank sticks just under the sticky head — measure it, since
     // the topbar wraps to two lines for long titles / on narrow screens.
     const head = document.querySelector('#screen-gapfill .gf-sticky-head');
@@ -1292,6 +1301,7 @@ function gfRetry() {
 
 function closeGapFillScreen() {
     const gfAudio = _gfAudioEl();
+    window.TranscriptSync?.detach(document.getElementById('gf-transcript'));
     gfAudio.pause();
     gfAudio.removeAttribute('src');
     gfAudio.load();
@@ -1468,6 +1478,7 @@ async function _doSubmitLTPractice() {
             ).join('');
             tp.style.display = '';
             setupDictionaryDouble('lt-practice-transcript-body', 'listening', _ltDictGate);
+            _ltSyncTranscript(tb, _ltOrigSection);
         } else {
             tp.style.display = 'none';
         }
@@ -1556,6 +1567,15 @@ async function _ltSavePracticeResult(payload) {
     }
 }
 
+// Review transcript follows the audio: the sentence being spoken is
+// highlighted (js/shared/transcript-sync.js; timing from the section fetch).
+function _ltSyncTranscript(tb, section) {
+    window.TranscriptSync?.attach({
+        container: tb, audio,
+        text: section?.transcript || '', timing: section?.transcriptTiming || '',
+    });
+}
+
 /* ── Close practice → back to section list ───────────────────────────── */
 function closeLTPractice() {
     // Leaving without submitting must disarm proctoring too — only the
@@ -1572,6 +1592,7 @@ function closeLTPractice() {
     _ltSetCdSkin(false, false);
     const tpClose = document.getElementById('lt-practice-transcript-panel');
     if (tpClose) tpClose.style.display = 'none';
+    window.TranscriptSync?.detach(document.getElementById('lt-practice-transcript-body'));
     setTool('none');
     audio.onended = null;
     audio.pause();
@@ -1861,6 +1882,7 @@ async function loadLTPracticeReview(attemptId) {
                 if (savedLtPart?.p?.length) HS.apply(tb, savedLtPart.p);
                 tp.style.display = '';
                 setupDictionaryDouble('lt-practice-transcript-body', 'listening', _ltDictGate);
+                _ltSyncTranscript(tb, section);
             } else {
                 tp.style.display = 'none';
             }

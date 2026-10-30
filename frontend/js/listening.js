@@ -1558,6 +1558,7 @@ function switchPart(idx, isReview) {
         _runInlineReviewMountPass();
         _updatePartTabBadges();
         if (_hasPartAudio(true)) _loadPartAudio(idx, true);
+        _syncReviewTranscript(idx);
         // Scroll về đầu sau khi switch part
         const rvInner = document.getElementById('review-questions-inner');
         if (rvInner) rvInner.scrollTop = 0;
@@ -2220,6 +2221,7 @@ function goToReview() {
     renderQNav('q-nav-grid-rv', true);
     setupDictionaryDouble('transcript-body', 'listening', _ltDictGate);
     setupDictionaryDouble('review-questions-inner', 'listening', _ltDictGate);
+    _syncReviewTranscript(0);
     // Auto-enable Dict lookup on entering review — the transcript's
     // own hint text ("Double-click để tra từ") promises this works
     // immediately, and leaving Highlight mode's crosshair cursor
@@ -2271,6 +2273,18 @@ function renderReviewPartQuestions(partIdx) {
     });
 
     document.getElementById('review-questions-inner').innerHTML = html;
+}
+
+// Review transcript follows the audio — the sentence being spoken is
+// highlighted (js/shared/transcript-sync.js). Timing is per part, in the
+// timeline of whatever audio that part plays (the test's, or its own đề lẻ
+// audio on a partial attempt); the server sends '' when it has none.
+function _syncReviewTranscript(idx) {
+    const section = getSortedSections(true)[idx];
+    window.TranscriptSync?.attach({
+        container: document.getElementById('transcript-body'), audio,
+        text: section?.transcript || '', timing: section?.transcriptTiming || '',
+    });
 }
 
 function renderTranscript(transcript) {

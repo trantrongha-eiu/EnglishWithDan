@@ -106,6 +106,9 @@ const ListeningSectionSchema = new mongoose.Schema({
   title:       { type: String, required: true },
   description: { type: String, default: '' },
   transcript:  { type: String, default: '' },   // Transcript riêng cho từng Part
+  // Word timing of this part's transcript inside the test's shared audio —
+  // see services/transcriptTimingService.js / scripts/alignTranscriptTiming.js.
+  transcriptTiming: { type: String, default: '' },
   questionRange: {
     start: { type: Number, required: true },
     end:   { type: Number, required: true }
@@ -122,6 +125,7 @@ const ListeningTestSchema = new mongoose.Schema({
   audioFileName: { type: String, default: '' },
   audioDuration: { type: Number, default: 0 },
   sections: [ListeningSectionSchema],
+  transcriptTimingAt: { type: Date, default: null },
   isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 

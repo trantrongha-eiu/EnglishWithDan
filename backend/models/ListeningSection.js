@@ -113,6 +113,15 @@ const ListeningSectionSchema = new mongoose.Schema({
   // earlier ~4s split had cut mid-sentence and re-normalised the section.
   dictationRebuiltAt: { type: Date, default: null },
 
+  // Word-level timing of `transcript` (one entry per whitespace token) for
+  // the "highlight what the speaker is saying" sync — encoded string, see
+  // services/transcriptTimingService.js. Filled by
+  // scripts/alignTranscriptTiming.js; '' = not timed (no highlight shown).
+  // Not selected by default: only the screens that play the audio with the
+  // transcript ask for it.
+  transcriptTiming:   { type: String, default: '', select: false },
+  transcriptTimingAt: { type: Date, default: null },
+
   // Full-transcript gap-fill drill ("nghe và điền từ vào chỗ trống, giữ
   // nguyên mạch transcript"). `gapFillTemplate` is a copy of `transcript`
   // with the blanked words/phrases replaced by sequential [[1]], [[2]], ...

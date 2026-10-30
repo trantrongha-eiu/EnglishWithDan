@@ -32,6 +32,7 @@ const { disqualifiedAnswerFilter } = require('./proctorPolicy');
 const { toCardThumbnail } = require('../utils/cardThumbnail');
 const { normalizeParts, partsFilter, scaledCorrect } = require('../utils/partSelection');
 const warmUpUtil = require('../utils/listeningWarmUp');
+const transcriptTiming = require('./transcriptTimingService');
 const { toStudentWarmUp } = warmUpUtil;
 
 // Mongoose `.select()` string that strips a section's answer key
@@ -189,6 +190,31 @@ function buildReviewSections(sections, reviewMap) {
     // Partial attempt ("Chọn phần làm"): each section plays its own audio.
     ...(s.audioUrl ? { audioUrl: s.audioUrl } : {}),
   }));
+}
+
+// Word timing for the review transcript's "highlight what is being said"
+// sync. Looked up live (not from the attempt snapshot): a part playing its
+// own đề lẻ audio takes that section's timing, otherwise the test's own
+// part timing when the review plays the same test audio. Only attached
+// when the transcript text still matches the one that was timed.
+async function attachTranscriptTiming(reviewSections, testId, audioUrl) {
+  const { tokenize, timingFits } = transcriptTiming;
+  const same = (a, b) => tokenize(a).join(' ') === tokenize(b).join(' ');
+  const usable = (src, s) => src && timingFits(src.transcript, src.transcriptTiming) && same(src.transcript, s.transcript);
+  const own = reviewSections.filter(s => s.audioUrl && s.transcript);
+  const lone = own.length
+    ? await ListeningSection.find({ audioUrl: { $in: own.map(s => s.audioUrl) } }).select('audioUrl transcript +transcriptTiming').lean()
+    : [];
+  const test = audioUrl && testId && reviewSections.some(s => !s.audioUrl && s.transcript)
+    ? await ListeningTest.findById(testId).select('audioUrl sections.partNumber sections.transcript sections.transcriptTiming').lean()
+    : null;
+  for (const s of reviewSections) {
+    let src = null;
+    if (s.audioUrl) src = lone.find(l => l.audioUrl === s.audioUrl && usable(l, s));
+    else if (test && test.audioUrl === audioUrl) src = (test.sections || []).find(p => p.partNumber === s.partNumber && usable(p, s));
+    s.transcriptTiming = src ? src.transcriptTiming : '';
+  }
+  return reviewSections;
 }
 
 // A full test's sections → each part's own đề lẻ audio ({ partNumber:
@@ -446,9 +472,17 @@ async function getPracticeSectionById(id) {
   // re-fetching, so stripping it here would break that display.
   // warmUp stays out (select:false — its answers are a teacher-only key);
   // the warm-up is its own optional mode, see getWarmUpSectionById.
-  return ListeningSection.findOne({ _id: id, isActive: true })
-    .select(PRACTICE_SECTION_SAFE_FIELDS)
+  const section = await ListeningSection.findOne({ _id: id, isActive: true })
+    .select(PRACTICE_SECTION_SAFE_FIELDS + ' +transcriptTiming')
     .lean();
+  return dropStaleTiming(section);
+}
+
+// Timing that no longer fits the transcript (edited since it was timed)
+// would highlight the wrong words — send none instead.
+function dropStaleTiming(section) {
+  if (section && !transcriptTiming.timingFits(section.transcript, section.transcriptTiming)) section.transcriptTiming = '';
+  return section;
 }
 
 // ── Warm-up mode (pre-listening synonyms / paraphrases) ─────────────────
@@ -595,11 +629,14 @@ async function listGapFillSections() {
 
 async function getGapFillSectionById(id) {
   const section = await ListeningSection.findOne({ _id: id, isActive: true, gapFillPublished: true })
-    .select('_id title partNumber audioUrl audioDuration gapFillTemplate gapFillAnswers gapFillGlossary')
+    .select('_id title partNumber audioUrl audioDuration gapFillTemplate gapFillAnswers gapFillGlossary transcript +transcriptTiming')
     .lean();
   if (!section) return null;
-  const { gapFillAnswers, gapFillGlossary, ...rest } = section;
-  return { ...rest, wordBank: buildGapFillWordBank(gapFillAnswers, gapFillGlossary) };
+  const { gapFillAnswers, gapFillGlossary, transcript, transcriptTiming: timing, ...rest } = section;
+  // Timing per TEMPLATE token (a blank's entry spans its answer's words) —
+  // times only, so it gives away nothing about the hidden answers.
+  const gapFillTiming = transcriptTiming.gapFillTiming(section.gapFillTemplate, gapFillAnswers, transcript, timing);
+  return { ...rest, gapFillTiming, wordBank: buildGapFillWordBank(gapFillAnswers, gapFillGlossary) };
 }
 
 // Word bank shown beside the drill: every answer once (with a count when it
@@ -1086,7 +1123,8 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
     userId: user._id || user.id,
     testId: test._id,
     testName: test.name,
-    sectionsSnapshot: sectionsUsed.length ? sectionsUsed : undefined,
+    // transcriptTiming stays out — the review looks it up live (attachTranscriptTiming).
+    sectionsSnapshot: sectionsUsed.length ? sectionsUsed.map(({ transcriptTiming: _t, ...rest }) => rest) : undefined,
     audioUrlSnapshot: parts ? '' : (test.audioUrl || ''),
     answers: reviewed.map(r => ({ questionNumber: r.questionNumber, userAnswer: r.userAnswer, correctAnswer: r.correctAnswer, isCorrect: r.isCorrect })),
     totalQuestions: total,
@@ -1154,6 +1192,7 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
   const reviewMap = {};
   reviewed.forEach(r => { reviewMap[r.questionNumber] = r; });
   const reviewSections = buildReviewSections(sectionsUsed, reviewMap);
+  await attachTranscriptTiming(reviewSections, test._id, parts ? '' : test.audioUrl).catch(e => logger.warn('[listening] transcript timing', e.message));
 
   // Mandatory Review System — must be awaited, not fire-and-forget: the
   // gate must be active the instant the score is returned. `reviewed`
@@ -1230,6 +1269,7 @@ async function getHistoryDetail(attemptId, userId) {
   const reviewMap2 = {};
   reviewed.forEach(r => { reviewMap2[r.questionNumber] = r; });
   const reviewSections = buildReviewSections(sections, reviewMap2);
+  await attachTranscriptTiming(reviewSections, attempt.testId, audioUrl).catch(e => logger.warn('[listening] transcript timing', e.message));
 
   return {
     status: 'ok',
@@ -1387,7 +1427,7 @@ async function getPracticeHistory(userId) {
 async function getPracticeHistoryDetail(attemptId, userId) {
   const attempt = await ListeningPracticeAttempt.findOne({ _id: attemptId, userId }).lean();
   if (!attempt) return null;
-  const section = await ListeningSection.findById(attempt.sectionId).select(PRACTICE_SECTION_SAFE_FIELDS).lean();
+  const section = dropStaleTiming(await ListeningSection.findById(attempt.sectionId).select(PRACTICE_SECTION_SAFE_FIELDS + ' +transcriptTiming').lean());
   // No content snapshot for Bài lẻ practice attempts (unlike ListeningAttempt's
   // sectionsSnapshot) — if the section was permanently deleted since this
   // attempt, the review can never render again. Auto-resolve any pending
