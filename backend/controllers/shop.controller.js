@@ -38,13 +38,16 @@ exports.getState = catchAsync(async (req, res) => {
 });
 
 // ── GET /api/shop/feed?since=ISO — "X vừa mua Y" ticker (shop-feed.js) ──
-// Also carries `caked` — the cake on the viewer's own avatar, if any.
+// Also carries `caked` — the cake on the viewer's own avatar, if any — and
+// `announce`, the huyền thoại announcements newer than ?asince=ISO
+// (Thập Vĩ bought / its owner logged in).
 exports.getFeed = catchAsync(async (req, res) => {
-  const [feed, caked] = await Promise.all([
+  const [feed, caked, announce] = await Promise.all([
     shopService.getFeed(req.user._id, req.query.since),
     shopService.getCakeNotice(req.user._id),
+    shopService.getAnnouncements(req.user._id, req.query.asince),
   ]);
-  res.json({ success: true, feed, caked });
+  res.json({ success: true, feed, caked, announce });
 });
 
 // ── GET /api/shop/pet — the walking linh thú, for js/shared/pets.js ──

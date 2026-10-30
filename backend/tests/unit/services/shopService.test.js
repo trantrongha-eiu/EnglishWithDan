@@ -260,7 +260,7 @@ describe('BXH decorations', () => {
   test('vĩ thú are priced 50 → 210 in steps of 20; the old pets all cost 30', async () => {
     const { PETS } = require('../../../constants/shop');
     expect(PETS.filter(p => !p.tier).map(p => p.price)).toEqual([30, 30, 30, 30, 30]);
-    expect(PETS.filter(p => p.tier === 'vi').map(p => p.price)).toEqual([50, 70, 90, 110, 130, 150, 170, 190, 210]);
+    expect(PETS.filter(p => p.tier === 'vi' && !p.legendary).map(p => p.price)).toEqual([50, 70, 90, 110, 130, 150, 170, 190, 210]);
     const user = await createStudent({ extra: { flameWallet: 60, flameWalletGranted: true } });
     expect((await shopService.buyPet(user._id, 'vi2')).status).toBe('not_enough');
     expect(await shopService.buyPet(user._id, 'vi1')).toMatchObject({ status: 'ok', wallet: 10, activePet: 'vi1' });
@@ -272,5 +272,50 @@ describe('BXH decorations', () => {
     const second = await shopService.useItem(user._id, 'crown');
     const days = (new Date(second.until) - new Date(first.until)) / 86400000;
     expect(Math.round(days)).toBe(7);
+  });
+});
+
+describe('Thập Vĩ — huyền thoại announcements', () => {
+  const ShopAnnouncement = require('../../../models/ShopAnnouncement');
+
+  test('costs 300 🔥 and has ten tails', () => {
+    const { PETS, LEGEND_PETS } = require('../../../constants/shop');
+    expect(PETS.find(p => p.id === 'vi10')).toMatchObject({ name: 'Thập Vĩ', price: 300, tails: 10, legendary: true });
+    expect(LEGEND_PETS).toEqual(['vi10']);
+  });
+
+  test('buying it is announced to everyone but the buyer, and kept out of the small ticker', async () => {
+    const buyer = await createStudent({ extra: { flameWallet: 300, flameWalletGranted: true, firstName: 'Lan' } });
+    const other = await createStudent();
+    expect(await shopService.buyPet(buyer._id, 'vi10')).toMatchObject({ status: 'ok', wallet: 0 });
+
+    const seen = await shopService.getAnnouncements(other._id);
+    expect(seen).toHaveLength(1);
+    expect(seen[0]).toMatchObject({ type: 'buy', petId: 'vi10', self: false });
+    expect(seen[0].name).toContain('Lan');
+    expect(await shopService.getAnnouncements(buyer._id)).toEqual([]);
+    expect(await shopService.getFeed(other._id)).toEqual([]);
+    // Already shown → nothing newer.
+    expect(await shopService.getAnnouncements(other._id, seen[0].at)).toEqual([]);
+  });
+
+  test('an owner logging in is announced (to themselves too), at most once per 30 min', async () => {
+    const owner = await createStudent({ extra: { pets: ['vi10'], activePet: 'vi10' } });
+    const other = await createStudent();
+    expect(await shopService.announceLogin(owner._id)).toBeTruthy();
+    expect(await shopService.announceLogin(owner._id)).toBeNull();
+    expect(await ShopAnnouncement.countDocuments({ userId: owner._id, type: 'login' })).toBe(1);
+    expect((await shopService.getAnnouncements(other._id))[0]).toMatchObject({ type: 'login', self: false });
+    expect((await shopService.getAnnouncements(owner._id))[0]).toMatchObject({ type: 'login', self: true });
+  });
+
+  test('no announcement for students without it, and stale logins are not replayed', async () => {
+    const plain = await createStudent({ extra: { pets: ['vi9'] } });
+    expect(await shopService.announceLogin(plain._id)).toBeNull();
+    const owner = await createStudent({ extra: { pets: ['vi10'] } });
+    const viewer = await createStudent();
+    const row = await shopService.announceLogin(owner._id);
+    await ShopAnnouncement.collection.updateOne({ _id: row._id }, { $set: { createdAt: new Date(Date.now() - 20 * 60 * 1000) } });
+    expect(await shopService.getAnnouncements(viewer._id)).toEqual([]);
   });
 });

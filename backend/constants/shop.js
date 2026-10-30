@@ -71,7 +71,16 @@ const PETS = [
     ['vi8', 'Bò Bát Vĩ',        'Bò tím sừng cong với tám xúc tu — khỏe nhất bầy.'],
     ['vi9', 'Hồ Ly Cửu Vĩ',     'Hồ ly vàng chín đuôi — linh thú huyền thoại mạnh nhất.'],
   ].map(([id, name, description], i) => ({ id, name, description, price: 50 + 20 * i, tier: 'vi', tails: i + 1 })),
+  // Huyền thoại — buying one, or an owner logging in, is announced to the
+  // whole site with a fire-and-tails sweep (ShopAnnouncement → shop-feed.js).
+  {
+    id: 'vi10', name: 'Thập Vĩ', price: 300, tier: 'vi', tails: 10, legendary: true,
+    description: 'Quái thú mười đuôi khổng lồ, tuy to lớn nhưng lại rất ham chơi và thích kết bạn.',
+  },
 ];
+
+// Ids of the legendary linh thú (see ShopAnnouncement).
+const LEGEND_PETS = PETS.filter(p => p.legendary).map(p => p.id);
 
 // Búa Hi Vọng tuning.
 const HOPE_MULTIPLIER = 2;
@@ -86,6 +95,6 @@ const CROWN_DAYS = 7;
 const MAX_BUY_QTY = 99;
 
 module.exports = {
-  ITEMS, PETS, HOPE_MULTIPLIER, HOPE_QUOTA, HOPE_PENALTY,
+  ITEMS, PETS, LEGEND_PETS, HOPE_MULTIPLIER, HOPE_QUOTA, HOPE_PENALTY,
   CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS, MAX_BUY_QTY,
 };

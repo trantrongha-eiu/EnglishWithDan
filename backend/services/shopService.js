@@ -7,11 +7,12 @@
 const User = require('../models/User');
 const Message = require('../models/Message');
 const ShopPurchase = require('../models/ShopPurchase');
+const ShopAnnouncement = require('../models/ShopAnnouncement');
 const mongoose = require('mongoose');
 const { getVNDay, effectiveStreak, coverMissedDaysWithShields } = require('../utils/streak');
 const { DAILY_STREAK_BONUS_CAP, streakBonusEarnedToday } = require('./streakBonusService');
 const {
-  ITEMS, PETS, HOPE_QUOTA, HOPE_PENALTY,
+  ITEMS, PETS, LEGEND_PETS, HOPE_QUOTA, HOPE_PENALTY,
   CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS, MAX_BUY_QTY,
 } = require('../constants/shop');
 
@@ -155,6 +156,7 @@ async function recordPurchase(userId, kind, entry, qty = 1) {
     const what = kind === 'pet' ? `linh thú ${itemName}` : itemName;
     const price = entry.price * qty;
     await ShopPurchase.create({ userId, name, kind, key: entry.key || entry.id, itemName, emoji, price });
+    if (kind === 'pet' && entry.legendary) await ShopAnnouncement.create({ userId, name, type: 'buy', petId: entry.id });
     const admins = await User.find({ role: 'admin' }, '_id').lean();
     if (!admins.length) return;
     await Message.insertMany(admins.map(admin => ({
@@ -179,19 +181,72 @@ async function getCakeNotice(userId) {
   return { by: u.cakedBy || 'Ai đó', until: u.cakedUntil, towels: (u.shopItems || {}).towel || 0 };
 }
 
+function sinceDate(since, floorMs) {
+  const t = since ? new Date(since).getTime() : NaN;
+  return new Date(Number.isFinite(t) ? Math.max(t, floorMs) : floorMs);
+}
+
 // Recent purchases for the ticker, newest last, never the viewer's own
 // (they already got their own toast). `since` is clamped to the last hour
-// so a student back after a week isn't shown a flood.
+// so a student back after a week isn't shown a flood. Legendary linh thú
+// are left out — they get the big announcement (getAnnouncements) instead.
 async function getFeed(viewerId, since) {
-  const floor = Date.now() - HOUR;
-  const t = since ? new Date(since).getTime() : NaN;
-  const from = new Date(Number.isFinite(t) ? Math.max(t, floor) : floor);
-  const rows = await ShopPurchase.find({ createdAt: { $gt: from }, userId: { $ne: viewerId } })
+  const from = sinceDate(since, Date.now() - HOUR);
+  const rows = await ShopPurchase.find({
+    createdAt: { $gt: from }, userId: { $ne: viewerId },
+    $nor: [{ kind: 'pet', key: { $in: LEGEND_PETS } }],
+  })
     .sort({ createdAt: -1 }).limit(5)
     .select('name kind key itemName emoji createdAt').lean();
   return rows.reverse().map(r => ({
     id: String(r._id), name: r.name, kind: r.kind, key: r.key, itemName: r.itemName, emoji: r.emoji, at: r.createdAt,
   }));
+}
+
+// Huyền thoại announcements (ShopAnnouncement) newer than `since`, newest
+// last, at most 3. A purchase stays news for an hour; "chủ nhân vừa đăng
+// nhập" only for LOGIN_FRESH_MS. The viewer's own login is included (the
+// owner gets the entrance too); their own purchase is not — shop.js
+// already played it on the spot.
+const LOGIN_FRESH_MS = 10 * 60 * 1000;
+const LOGIN_REPEAT_MS = 30 * 60 * 1000;   // one login announcement per owner per 30 min
+
+async function getAnnouncements(viewerId, since) {
+  const now = Date.now();
+  const viewer = new mongoose.Types.ObjectId(String(viewerId));
+  const rows = await ShopAnnouncement.find({
+    $or: [
+      { type: 'buy', userId: { $ne: viewer }, createdAt: { $gt: sinceDate(since, now - HOUR) } },
+      { type: 'login', createdAt: { $gt: sinceDate(since, now - LOGIN_FRESH_MS) } },
+    ],
+  }).sort({ createdAt: -1 }).limit(3).select('userId name type petId createdAt').lean();
+  return rows.reverse().map(r => ({
+    id: String(r._id), name: r.name, type: r.type, petId: r.petId, at: r.createdAt,
+    self: String(r.userId) === String(viewerId),
+  }));
+}
+
+// Called on every successful login (auth.controller). A student who owns a
+// legendary linh thú gets a site-wide "chủ nhân X vừa đăng nhập" — at most
+// once per LOGIN_REPEAT_MS, so logging in and out can't spam everyone.
+// Best-effort: never fails the login.
+async function announceLogin(userId) {
+  try {
+    if (!LEGEND_PETS.length) return null;
+    const u = await User.findById(userId).select('role pets activePet firstName lastName username').lean();
+    if (!u || u.role !== 'student') return null;
+    const owned = LEGEND_PETS.filter(id => (u.pets || []).includes(id));
+    if (!owned.length) return null;
+    const recent = await ShopAnnouncement.exists({
+      userId, type: 'login', createdAt: { $gt: new Date(Date.now() - LOGIN_REPEAT_MS) },
+    });
+    if (recent) return null;
+    const petId = owned.includes(u.activePet) ? u.activePet : owned[owned.length - 1];
+    return await ShopAnnouncement.create({ userId, name: displayName(u), type: 'login', petId });
+  } catch (err) {
+    console.error('[shop] announceLogin failed:', err.message);
+    return null;
+  }
 }
 
 // A Khiên Băng only protects gaps that happen while it is held. If the
@@ -416,6 +471,6 @@ function boardDecor(u) {
 }
 
 module.exports = {
-  getState, getFeed, getCakeNotice, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake, sellItem, sellPet,
+  getState, getFeed, getAnnouncements, announceLogin, getCakeNotice, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake, sellItem, sellPet,
   settleHopeHammer, settleAllHopeHammers, seedWallet, boardDecor,
 };

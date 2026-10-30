@@ -326,11 +326,42 @@
         + '</g>'
         + legs('pt-leg-a', [25, 40], 50, 9, c);
     },
+    vi10: function () { // Thập Vĩ — huge brown beast, one ringed eye, ten spiky tails fanned behind
+      var c = '#7a5f5a', d = '#4e3a37', belly = '#a8908b', eye = '#e4dbe9';
+      var out = '';
+      // One spiky tail, root at 0,0, pointing right and curling to -y.
+      var TAIL = 'M0 -3.4 C8 -5 15 -6 20 -9 L21.5 -13.5 L23.2 -9.6 L28 -12.4 L24.6 -6.6 L27.4 -4.4 L21.6 -3.4 C15 -1 8 2.6 0 3.4 Z';
+      for (var i = 0; i < 10; i++) {
+        // Fanned round the hips from low-right over the top to low-left;
+        // the left half is mirrored so every tail curls upward.
+        var a = 15 - i * 23.33, k = 0.86 + (i % 2) * 0.16;
+        out += '<path d="' + TAIL + '" transform="translate(32 38) rotate(' + a.toFixed(1) + ') scale(' + k.toFixed(2) + ' ' + ((i < 5 ? 1.45 : -1.45) * k).toFixed(2) + ')"'
+          + ' fill="' + (i % 2 ? c : '#6c524d') + '" stroke="' + d + '" stroke-width=".8" stroke-linejoin="round"/>';
+      }
+      var ring = function (r, sw) { return '<circle cx="32" cy="30" r="' + r + '" fill="none" stroke="#3a2a2c" stroke-width="' + sw + '"/>'; };
+      var tomoe = [90, 210, 330].map(function (deg) {
+        var rad = deg * Math.PI / 180;
+        return '<circle cx="' + (32 + 2.75 * Math.cos(rad)).toFixed(2) + '" cy="' + (30 + 2.75 * Math.sin(rad)).toFixed(2) + '" r=".62" fill="#3a2a2c"/>';
+      }).join('');
+      return '<g class="pt-tail pt-tail-fan">' + out + '</g>'
+        + legs('pt-leg-b', [25.5], 51, 8.5, d)
+        + legs('pt-leg-a', [33.5], 51, 8.5, d)
+        + '<g class="pt-body">'
+        + '<path d="M21.5 22 L22.5 12.5 L28 18.5 Z M42.5 22 L41.5 12.5 L36 18.5 Z" fill="' + c + '" stroke="' + d + '" stroke-width=".8" stroke-linejoin="round"/>'
+        + '<path d="M23 20 L23.4 15.6 L26 18.6 Z M41 20 L40.6 15.6 L38 18.6 Z" fill="#c39a9a"/>'
+        + '<path d="M20.5 40 C17.5 41 16.8 46 19 47 C21 47.6 22.6 45 22.6 42 Z M43.5 40 C46.5 41 47.2 46 45 47 C43 47.6 41.4 45 41.4 42 Z" fill="' + c + '" stroke="' + d + '" stroke-width=".8"/>'
+        + '<path d="M32 16.5 C42 16.5 45 27 44.6 37 C44.3 47 40 53 32 53 C24 53 19.7 47 19.4 37 C19 27 22 16.5 32 16.5 Z" fill="' + c + '" stroke="' + d + '" stroke-width=".9"/>'
+        + '<ellipse cx="32" cy="43.5" rx="8" ry="8.2" fill="' + belly + '"/>'
+        + '<g class="pt-eye"><circle cx="32" cy="30" r="5.6" fill="' + eye + '" stroke="#3a2a2c" stroke-width=".9"/>'
+        + ring(3.9, .55) + ring(2.1, .5) + '<circle cx="32" cy="30" r=".85" fill="#3a2a2c"/>' + tomoe + '</g>'
+        + '<path d="M30 37.2 q2 1.6 4 0" stroke="#3a2a2c" stroke-width=".9" fill="none" stroke-linecap="round"/>'
+        + '</g>';
+    },
   };
 
   var NAMES = { meo: 'Mèo Quýt', shiba: 'Shiba Lì Xì', cut: 'Cánh Cụt Bông', cao: 'Cáo Lửa', rong: 'Rồng Con',
     vi1: 'Lửng Cát Nhất Vĩ', vi2: 'Mèo Lửa Nhị Vĩ', vi3: 'Rùa Tam Vĩ', vi4: 'Khỉ Tứ Vĩ', vi5: 'Ngựa Ngũ Vĩ',
-    vi6: 'Sên Lục Vĩ', vi7: 'Bọ Thất Vĩ', vi8: 'Bò Bát Vĩ', vi9: 'Hồ Ly Cửu Vĩ' };
+    vi6: 'Sên Lục Vĩ', vi7: 'Bọ Thất Vĩ', vi8: 'Bò Bát Vĩ', vi9: 'Hồ Ly Cửu Vĩ', vi10: 'Thập Vĩ' };
   var LINES = {
     meo: ['Meo~ học xong bài này rồi ngủ trưa nha 😽', 'Sổ từ vựng ấm ghê, cho mèo nằm xíu…', 'Meo! Hôm nay giữ chuỗi chưa đó?'],
     shiba: ['Gâu! Cậu học giỏi quá trời 🐕', 'Vẫy đuôi cổ vũ nè! Thêm 1 bài nữa nha!', 'Gâu gâu — đi dạo xong là học tiếp nhé!'],
@@ -346,6 +377,7 @@
     vi7: ['Vù vù~ bay quanh nhắc cậu học bài 🪲', 'Bảy dải đuôi lấp lánh như chuỗi lửa!', 'Cánh trong suốt, đầu óc trong veo!'],
     vi8: ['Mooo~ tám tua chép bài giúp cậu 🐙', 'Sừng cong cong, quyết tâm thẳng tắp!', 'Bát vĩ đây — vào top chưa?'],
     vi9: ['Chín đuôi vàng óng — linh thú mạnh nhất đây ✨', 'Hồ ly chín đuôi phù hộ cậu đạt band cao!', 'Đuôi nhiều như số 🔥 của cậu vậy!'],
+    vi10: ['Mười đuôi mà vẫn thích chơi đuổi bắt nè 🔥', 'Thập Vĩ đây! Kết bạn với tớ nha~', 'To con vậy thôi chứ tớ hiền lắm, học tiếp đi!'],
   };
 
   function svg(id, cls) {
@@ -363,7 +395,7 @@
   function ensureCss() {
     if (document.getElementById('ews-pets-css')) return;
     var l = document.createElement('link');
-    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=2cd25f63bc';
+    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=035e6fec24';
     document.head.appendChild(l);
   }
   try { ensureCss(); } catch (e) {}
@@ -381,7 +413,7 @@
   // count too.
   var NO_PET_PATHS = /(^|\/)(reading|listening|dictation)(\.html)?(\/|$)/;
   var SPEED = { meo: 42, shiba: 55, cut: 28, cao: 62, rong: 50,
-    vi1: 40, vi2: 48, vi3: 24, vi4: 58, vi5: 64, vi6: 18, vi7: 52, vi8: 44, vi9: 66 };
+    vi1: 40, vi2: 48, vi3: 24, vi4: 58, vi5: 64, vi6: 18, vi7: 52, vi8: 44, vi9: 66, vi10: 38 };
 
   function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }

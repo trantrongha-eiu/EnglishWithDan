@@ -343,7 +343,7 @@
   if (!document.getElementById('ews-pets-js')) {
     var petScript = document.createElement('script');
     petScript.id = 'ews-pets-js';
-    petScript.src = '/js/shared/pets.js?v=c6d8001f16';
+    petScript.src = '/js/shared/pets.js?v=81526bb2f7';
     document.body.appendChild(petScript);
   }
 
@@ -351,7 +351,7 @@
   if (!document.getElementById('ews-shopfeed-js')) {
     var feedScript = document.createElement('script');
     feedScript.id = 'ews-shopfeed-js';
-    feedScript.src = '/js/shared/shop-feed.js?v=3224574df4';
+    feedScript.src = '/js/shared/shop-feed.js?v=7deb8bb104';
     document.body.appendChild(feedScript);
   }
 

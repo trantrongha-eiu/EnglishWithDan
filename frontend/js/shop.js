@@ -133,10 +133,10 @@
                 action = (active ? '<span class="shop-walking">✓ Đang đi dạo</span>' : '')
                     + '<a class="btn btn-ghost btn-sm" href="' + KHO + '">🎒 Trong kho</a>';
             }
-            return '<article class="shop-card shop-pet' + (p.tier === 'vi' ? ' shop-pet--vi' : '') + (active ? ' is-active' : '') + (p.owned ? ' is-owned' : '') + '">'
+            return '<article class="shop-card shop-pet' + (p.tier === 'vi' ? ' shop-pet--vi' : '') + (p.legendary ? ' shop-pet--legend' : '') + (active ? ' is-active' : '') + (p.owned ? ' is-owned' : '') + '">'
                 + (p.tails ? '<span class="shop-tails" title="' + p.tails + ' đuôi">' + p.tails + ' đuôi</span>' : '')
                 + '<div class="shop-pet-stage"><div class="ews-pet is-walking shop-pet-preview">' + (window.Pets ? window.Pets.svg(p.id) : '') + '</div></div>'
-                + '<h3>' + escHtml(p.name) + (p.owned ? ' <span class="shop-tag">Của bạn</span>' : '') + '</h3>'
+                + '<h3>' + escHtml(p.name) + (p.legendary ? ' <span class="shop-legend-tag">Huyền thoại</span>' : '') + (p.owned ? ' <span class="shop-tag">Của bạn</span>' : '') + '</h3>'
                 + '<p>' + escHtml(p.description) + '</p>'
                 + '<div class="shop-card-actions">' + action + '</div>'
                 + '</article>';
@@ -238,10 +238,13 @@
     }
     function buyPet(id) {
         var p = petById(id);
-        confirmThen('Rước ' + p.name + ' về?', 'Trừ ' + p.price + ' 🔥 trong ví lửa (chuỗi không bị trừ).', 'Mua', function () {
+        var note = p.legendary ? ' Cả hệ thống sẽ được thông báo khi bạn rước linh thú huyền thoại này 🔥' : '';
+        confirmThen('Rước ' + p.name + ' về?', 'Trừ ' + p.price + ' 🔥 trong ví lửa (chuỗi không bị trừ).' + note, 'Mua', function () {
             busy = true;
             api('POST', '/shop/buy', { kind: 'pet', key: id }).then(function (d) {
                 if (d && d.success && window.Pets) window.Pets.setActive(d.activePet);
+                // Everyone else gets it from the feed poll; the buyer sees it now.
+                if (d && d.success && p.legendary && window.ShopFeed) window.ShopFeed.legend({ type: 'buy', self: true, petId: p.id });
                 after(d, '🐾 ' + p.name + ' đã về nhà với bạn!');
             });
         });

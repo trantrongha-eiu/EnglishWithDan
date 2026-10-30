@@ -9,6 +9,7 @@
 .pt-svg .pt-wing { transform-origin: 80% 10%; }
 .pt-svg .pt-body { transform-origin: 50% 100%; }
 .pt-svg .pt-eye { transform-origin: 50% 50%; }
+.pt-svg .pt-tail-fan { transform-origin: 50% 100%; } /* Thập Vĩ: the fan sways round the hips */
 .pt-svg .pt-fire { opacity: 0; transform-box: fill-box; transform-origin: 0 50%; }
 
 /* Static copy (BXH, peer profile): only a slow tail wag + blink. */

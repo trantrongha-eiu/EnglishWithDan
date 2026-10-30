@@ -60,3 +60,68 @@
   .ews-cake-emoji { animation: none; }
 }
 @media print { .ews-cake-notice { display: none !important; } }
+
+/* 🔥 Huyền thoại (Thập Vĩ) — shop-feed.js legend(): edge glow, ten tails
+   lapping the screen with a fire trail (3s), and a banner under the nav. */
+.ews-legend {
+  position: fixed; inset: 0; z-index: 10000; pointer-events: none; overflow: hidden;
+  opacity: 0; transition: opacity .35s;
+}
+.ews-legend.is-in { opacity: 1; }
+.ews-legend-glow {
+  position: absolute; inset: 0;
+  box-shadow: inset 0 0 70px 18px rgba(249, 115, 22, .55), inset 0 0 18px 4px rgba(254, 215, 170, .7);
+  animation: ews-legend-pulse .5s ease-in-out infinite alternate;
+}
+.ews-legend-tail { position: absolute; left: 0; top: 0; width: 0; height: 0; will-change: transform; }
+.ews-legend-tail-in {
+  position: absolute; left: -66px; top: -18px; width: 72px; height: 36px;
+  transform-origin: 92% 50%; animation: ews-legend-swish .32s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 6px rgba(249, 115, 22, .8));
+}
+.ews-legend-tail-in svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.ews-legend-flame {
+  position: absolute; transform: translate(-50%, -50%); border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+  background: radial-gradient(circle at 50% 65%, #fff7c2 0 18%, #fbbf24 34%, #f97316 58%, rgba(220, 38, 38, 0) 72%);
+  animation: ews-legend-flame .8s ease-out forwards;
+}
+.ews-legend-flame.is-emoji { background: none; line-height: 1; text-align: center; }
+.ews-legend-banner {
+  position: fixed; left: 50%; top: calc(var(--nav-height, 64px) + 14px); z-index: 10001;
+  display: flex; align-items: center; gap: 12px;
+  width: max-content; max-width: calc(100vw - 32px); padding: 8px 20px 8px 8px;
+  border-radius: 999px; pointer-events: none;
+  background: linear-gradient(90deg, #7c2d12, #c2410c 50%, #7c2d12);
+  border: 2px solid #fdba74; color: #fff;
+  box-shadow: 0 10px 34px rgba(234, 88, 12, .45), 0 0 0 4px rgba(251, 146, 60, .2);
+  transform: translate(-50%, -160%) scale(.9); opacity: 0;
+  transition: transform .5s cubic-bezier(.3, 1.5, .5, 1), opacity .3s;
+}
+.ews-legend-banner.is-in { transform: translate(-50%, 0) scale(1); opacity: 1; }
+.ews-legend-pet {
+  flex-shrink: 0; width: 54px; height: 54px; border-radius: 50%; padding: 3px;
+  background: radial-gradient(circle at 50% 60%, #fff1de, #fed7aa); box-shadow: 0 0 14px rgba(254, 215, 170, .9);
+}
+.ews-legend-pet .pt-tail { animation: pt-wag .6s ease-in-out infinite; }
+.ews-legend-pet .pt-eye { animation: pt-blink 3s infinite; }
+.ews-legend-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ews-legend-title { font-size: 15px; font-weight: 700; line-height: 1.3; text-shadow: 0 1px 2px rgba(0, 0, 0, .35); }
+.ews-legend-title b { color: #fde68a; font-weight: 800; }
+.ews-legend-text small { font-size: 12px; opacity: .9; }
+@keyframes ews-legend-pulse { from { opacity: .7; } to { opacity: 1; } }
+@keyframes ews-legend-swish { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+@keyframes ews-legend-flame {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(.5); }
+  to { opacity: 0; transform: translate(-50%, -140%) scale(1.25); }
+}
+@media (max-width: 480px) {
+  .ews-legend-banner { padding-right: 14px; gap: 10px; }
+  .ews-legend-pet { width: 44px; height: 44px; }
+  .ews-legend-title { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ews-legend-glow { animation: none; }
+  .ews-legend-banner { transition: opacity .2s; transform: translate(-50%, 0); }
+  .ews-legend-pet * { animation: none !important; }
+}
+@media print { .ews-legend, .ews-legend-banner { display: none !important; } }

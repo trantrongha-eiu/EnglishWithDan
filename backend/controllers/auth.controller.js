@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const authService = require('../services/authService');
+const shopService = require('../services/shopService');
 
 // ── OAuth login-CSRF protection ──────────────────────────────
 // passport.authenticate('google', {session:false, ...}) can't use
@@ -162,6 +163,9 @@ exports.login = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Tài khoản của bạn đã bị cấm. Vui lòng liên hệ giáo viên để mở khóa.' });
     }
 
+    // Owner of a legendary linh thú → site-wide "chủ nhân vừa đăng nhập".
+    // Awaited so the row exists before the first feed poll; never throws.
+    await shopService.announceLogin(result.user.id);
     res.json({ success: true, token: result.token, user: result.user });
   } catch (err) {
     console.error('[Auth] login error:', err);
@@ -291,6 +295,7 @@ exports.googleCallback = (req, res) => {
       return res.redirect(`${frontendUrl}/login.html?registered=google${nextParam}`);
     }
     const { token, user } = authService.completeGoogleLogin(req.user);
+    shopService.announceLogin(req.user._id).catch(() => {});
     const payload = encodeURIComponent(JSON.stringify(user));
     res.redirect(`${frontendUrl}/auth-callback.html?token=${token}&user=${payload}${nextParam}`);
   } catch (err) {
