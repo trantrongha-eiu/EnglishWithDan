@@ -109,13 +109,21 @@
         return toks;
     }
 
+    // Nobody pauses this long inside a sentence: a bigger jump between two
+    // timed words means the audio went elsewhere (question-reading time, an
+    // example played twice), so the sentence is split there — otherwise its
+    // highlight would sit frozen through the whole gap.
+    var MAX_GAP = 3;
+
     function groupsOf(toks) {
-        var groups = [], cur = null;
+        var groups = [], cur = null, lastTime = null;
         toks.forEach(function (t, i) {
             var prev = toks[i - 1];
-            var brk = !cur || t.block !== cur.block || (prev && prev.word && endsSentence(prev.word) && t.ri !== prev.ri);
+            var brk = !cur || t.block !== cur.block || (prev && prev.word && endsSentence(prev.word) && t.ri !== prev.ri) ||
+                (t.time && lastTime && (t.time[0] - lastTime[1] > MAX_GAP || t.time[0] < lastTime[0] - MAX_GAP));
             if (brk) { cur = { block: t.block, toks: [] }; groups.push(cur); }
             cur.toks.push(t);
+            if (t.time) lastTime = t.time;
         });
         return groups.map(function (g) {
             var timed = g.toks.filter(function (t) { return t.time; });
@@ -129,7 +137,7 @@
                 words: timed,
                 blanks: g.toks.filter(function (t) { return t.el; }).map(function (t) { return t.el; }),
             };
-        }).filter(Boolean);
+        }).filter(Boolean).sort(function (x, y) { return x.t0 - y.t0; }); // update() binary-searches by t0
     }
 
     function visible(el) { return el.isConnected && el.getClientRects().length > 0; }
