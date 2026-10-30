@@ -343,7 +343,7 @@
   if (!document.getElementById('ews-pets-js')) {
     var petScript = document.createElement('script');
     petScript.id = 'ews-pets-js';
-    petScript.src = '/js/shared/pets.js?v=81526bb2f7';
+    petScript.src = '/js/shared/pets.js?v=852da170a5';
     document.body.appendChild(petScript);
   }
 

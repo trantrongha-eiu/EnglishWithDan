@@ -74,6 +74,7 @@
 .vlb-grid .dan-lb-name { flex: 0 1 auto; }
 .vlb-spacer { flex: 1 1 0; min-width: 4px; }
 .vlb-grid .pet-badge { margin-left: -4px; }
+.vlb-grid .pet-badge.pet-legend { margin-left: 10px; }
 
 .vlb-av { position: relative; display: inline-flex; flex-shrink: 0; }
 .vlb-crown {
@@ -137,5 +138,6 @@
   .vlb-grid .dan-lb-row { gap: 6px; padding: 8px 6px; }
   .vlb-grid .vlb-top-lulu { display: none; }
   .vlb-grid .pet-badge { width: 26px; height: 26px; flex-basis: 26px; }
+  .vlb-grid .pet-badge.pet-legend { width: 44px; height: 44px; flex-basis: 44px; margin: -10px 2px -10px 8px; }
   .vlb-cake-btn { width: 26px; height: 26px; font-size: 13px; }
 }

@@ -68,6 +68,51 @@
     return '<path d="M' + (x - 1.6) + ' ' + y + 'q1.6 1.8 3.2 0" stroke="#3b2412" stroke-width="1" fill="none" stroke-linecap="round"/>';
   }
 
+  // Thập Vĩ's Susanoo-style aura, drawn behind it: two flickering purple
+  // flame shells wrapping the beast + lightning bolts that flash in turn
+  // (pets.css .pt-aura-*, .pt-bolt).
+  function vi10Aura() {
+    var cx = 32, cy = 37;
+    function pt(deg, r, up) {
+      var rad = deg * Math.PI / 180;
+      return (cx + r * Math.cos(rad)).toFixed(1) + ' ' + (cy - r * Math.sin(rad) - (up || 0)).toFixed(1);
+    }
+    // Flame tongues from lower-left, over the top, to lower-right; each tip
+    // leans upward so the flames rise. Closed under the feet.
+    function shell(cls, rOut, rIn, n, lean, fill, alpha) {
+      var a0 = 235, step = -290 / n, rMid = (rIn + rOut) / 2;
+      var d = 'M' + pt(a0, rIn);
+      for (var i = 0; i < n; i++) {
+        var a = a0 + step * i;
+        d += ' Q' + pt(a + step * 0.2, rMid, lean * 0.3) + ' ' + pt(a + step * 0.5, rOut, lean)
+          + ' Q' + pt(a + step * 0.8, rMid, lean * 0.3) + ' ' + pt(a + step, rIn);
+      }
+      d += ' Q' + cx + ' ' + (cy + rIn * 1.05).toFixed(1) + ' ' + pt(a0, rIn) + ' Z';
+      return '<path class="pt-aura-shell ' + cls + '" d="' + d + '" fill="' + fill + '" fill-opacity="' + alpha
+        + '" stroke="#d8b4fe" stroke-opacity=".75" stroke-width=".7" stroke-linejoin="round"/>';
+    }
+    // A zigzag bolt shooting outward at `deg` from radius r0 to r1.
+    function bolt(deg, r0, r1, delay, dur) {
+      var rad = deg * Math.PI / 180, px = -Math.sin(rad), py = -Math.cos(rad), pts = [];
+      for (var j = 0; j <= 4; j++) {
+        var r = r0 + (r1 - r0) * j / 4, off = (j === 0 || j === 4) ? 0 : (j % 2 ? 2.6 : -2.2);
+        pts.push((cx + r * Math.cos(rad) + px * off).toFixed(1) + ',' + (cy - r * Math.sin(rad) + py * off).toFixed(1));
+      }
+      pts = pts.join(' ');
+      return '<g class="pt-bolt" style="animation-delay:' + delay + 's;animation-duration:' + dur + 's">'
+        + '<polyline points="' + pts + '" fill="none" stroke="#a855f7" stroke-width="3.2" stroke-opacity=".75" stroke-linecap="round" stroke-linejoin="round"/>'
+        + '<polyline points="' + pts + '" fill="none" stroke="#faf5ff" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>'
+        + '</g>';
+    }
+    return '<g class="pt-aura">'
+      + '<ellipse cx="32" cy="38" rx="25" ry="24" fill="#c084fc" fill-opacity=".22"/>'
+      + shell('pt-aura-a', 38, 29, 9, 6, '#a855f7', '.26')
+      + shell('pt-aura-b', 31, 24.5, 11, 4, '#7e22ce', '.3')
+      + bolt(150, 24, 45, 0, 1.5) + bolt(62, 26, 46, .5, 1.8) + bolt(105, 28, 47, 1.1, 1.6)
+      + bolt(18, 24, 44, .8, 1.4) + bolt(205, 22, 40, 1.3, 1.9) + bolt(-28, 22, 40, .25, 1.7)
+      + '</g>';
+  }
+
   var ART = {
     meo: function () {
       var c = '#f6a04d', d = '#dc7f2e', cream = '#ffe7c9';
@@ -343,7 +388,8 @@
         var rad = deg * Math.PI / 180;
         return '<circle cx="' + (32 + 2.75 * Math.cos(rad)).toFixed(2) + '" cy="' + (30 + 2.75 * Math.sin(rad)).toFixed(2) + '" r=".62" fill="#3a2a2c"/>';
       }).join('');
-      return '<g class="pt-tail pt-tail-fan">' + out + '</g>'
+      return vi10Aura()
+        + '<g class="pt-tail pt-tail-fan">' + out + '</g>'
         + legs('pt-leg-b', [25.5], 51, 8.5, d)
         + legs('pt-leg-a', [33.5], 51, 8.5, d)
         + '<g class="pt-body">'
@@ -380,13 +426,16 @@
     vi10: ['Mười đuôi mà vẫn thích chơi đuổi bắt nè 🔥', 'Thập Vĩ đây! Kết bạn với tớ nha~', 'To con vậy thôi chứ tớ hiền lắm, học tiếp đi!'],
   };
 
+  // Huyền thoại pets are drawn bigger (badge: pets.css .pet-legend; walker: px).
+  var BIG = { vi10: 80 };
+
   function svg(id, cls) {
     if (!ART[id]) return '';
     return '<svg class="pt-svg pt-' + id + (cls ? ' ' + cls : '') + '" viewBox="-2 0 70 64" aria-hidden="true" focusable="false">' + ART[id]() + '</svg>';
   }
   function badge(id) {
     if (!ART[id]) return '';
-    return '<span class="pet-badge" title="Linh thú: ' + NAMES[id] + '">' + svg(id, 'pt-static') + '</span>';
+    return '<span class="pet-badge' + (BIG[id] ? ' pet-legend' : '') + '" title="Linh thú: ' + NAMES[id] + '">' + svg(id, 'pt-static') + '</span>';
   }
 
   /* ══════════════════════════════════════════════════════════════════
@@ -395,7 +444,7 @@
   function ensureCss() {
     if (document.getElementById('ews-pets-css')) return;
     var l = document.createElement('link');
-    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=035e6fec24';
+    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=8f61377ebf';
     document.head.appendChild(l);
   }
   try { ensureCss(); } catch (e) {}
@@ -435,10 +484,9 @@
   // down the left wall — sometimes turning back, sitting, or dozing off.
   // Position on the loop is one number, `t` (px from the bottom-left
   // corner, clockwise on screen); geometry() maps it to x/y + rotation.
-  var SIZE = 58;
-
   function Walker(id) {
     this.id = id;
+    this.size = BIG[id] || 58;
     this.t = 0; this.target = 0; this.dir = 1; this.rot = 0;
     this.state = 'idle'; this.until = 0; this.last = 0; this.idleCount = 0;
     this.build();
@@ -446,7 +494,7 @@
   Walker.prototype.rect = function () {
     var w = window.innerWidth || 800, h = window.innerHeight || 600;
     var nav = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 64;
-    var r = { left: 4, right: Math.max(60, w - SIZE - 4), top: nav + 4, bottom: Math.max(nav + 60, h - SIZE - 2) };
+    var r = { left: 4, right: Math.max(60, w - this.size - 4), top: nav + 4, bottom: Math.max(nav + 60, h - this.size - 2) };
     r.lb = r.right - r.left; r.lr = r.bottom - r.top;
     r.perim = 2 * (r.lb + r.lr);
     return r;
@@ -476,6 +524,7 @@
     document.body.appendChild(layer);
     this.layer = layer;
     this.el = layer.querySelector('.ews-pet');
+    if (this.size !== 58) { this.el.style.width = this.el.style.height = this.size + 'px'; }
     this.rotEl = layer.querySelector('.ews-pet-rot');
     this.flip = layer.querySelector('.ews-pet-flip');
     this.bubble = layer.querySelector('.ews-pet-bubble');
@@ -508,11 +557,11 @@
     var g = this.g || this.geometry(this.t);
     var w = window.innerWidth || 800;
     var bw = Math.min(220, w - 16);
-    var x = Math.max(8, Math.min(w - bw - 8, g.x + SIZE / 2 - bw / 2));
+    var x = Math.max(8, Math.min(w - bw - 8, g.x + this.size / 2 - bw / 2));
     var below = g.y < 200;
     this.bubble.style.width = bw + 'px';
     this.bubble.style.left = x + 'px';
-    this.bubble.style.top = below ? (g.y + SIZE + 10) + 'px' : '';
+    this.bubble.style.top = below ? (g.y + this.size + 10) + 'px' : '';
     this.bubble.style.bottom = below ? '' : ((window.innerHeight || 600) - g.y + 8) + 'px';
     this.bubble.classList.toggle('is-below', below);
   };
