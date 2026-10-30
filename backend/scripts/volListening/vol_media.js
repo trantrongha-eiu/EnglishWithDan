@@ -7,6 +7,11 @@ const ffmpeg = () => ffPath || (ffPath = execFileSync('py', ['-c', 'import image
 
 function volDir(vol) {
   const root = path.join(__dirname, '..', '..', '..');
+  // "<V>u" = an updated old-vol test from Vol 7's folder "Reading/các đề update web khác trên bản pdf" (2026-10-30: Vol 1 Test 5)
+  if (/u$/.test(String(vol))) {
+    const r = path.join(volDir(7), 'Reading');
+    return path.join(r, fs.readdirSync(r).find(d => /update/i.test(d)));
+  }
   const outer = fs.readdirSync(root).find(d => new RegExp(`^VOL ${vol}\\b.*ORIGINAL EXAMS`, 'i').test(d) && fs.statSync(path.join(root, d)).isDirectory());
   const o = path.join(root, outer);
   return path.join(o, fs.readdirSync(o).find(d => fs.statSync(path.join(o, d)).isDirectory()));

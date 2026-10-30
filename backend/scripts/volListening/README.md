@@ -175,6 +175,26 @@ N-L.docx` (key `Câu số N:` — T3/T4 là danh sách 40 dòng trần — rồi
   `TH=35 WL=999 WARM=0`). T1 (sơ đồ đơn giản) vẽ lại SVG `maps_src/t1p2.svg` + `render.js`. Spec trỏ `img/t<T>/map_redraw.png`.
 - T1 Q18–20 là sơ đồ đánh số + hộp từ (không phải chữ cái trên map) → group `map` + `dragDropConfig.words`, key = chữ.
 
+## Vol 1 - Test 5 bản update — 2026-10-30
+
+Nguồn: `VOL 7…/Reading/các đề update web khác trên bản pdf/` (cùng thư mục với các đề Reading update, xem
+`../volReading/README.md` mục "Đề update"): `VOL 1 TEST 5.pdf` (câu hỏi, có chữ), `KEY + TRANSCRIPT.pdf` (key + transcript có mốc
+"mm:ss Tên: …", kèm chú nghĩa tiếng Việt trong ngoặc), `Test 5 vol 1 audio.mp3` (cả đề, 29:13). Cả 4 phần khác hẳn Vol 1 - Test 5 cũ
+(New Guinea / Red Squirrels / Water Hyacinth / Nanotechnology) → thầy chọn: seed 4 phần mới, **trỏ "Vol 1 - Test 5" sang** (phần cũ
+giữ làm bài lẻ). Vol `1u`: `vol_media.volDir('1u')` = thư mục update đó; `wb.js` nhận `1u`.
+- Transcript: `web/vol1u/tx.js` (bỏ Narrator + chú nghĩa "(…)", ghép mảnh theo câu, "Jeff" → Geoff như đề in, "Surface Paradise" →
+  Surfers Paradise; PDF thiếu dòng "Part Three." → Part 3 bắt đầu ở "Following instructions…") → `web/vol1u/gen.js` chép vào
+  `specs/vol1u_t5.js` (`transcript:` từng phần; khung spec ở `web/vol1u/spec.tpl.js`). Câu cuối Part 2 "…more details about the
+  festival," cụt ngay trong băng.
+- Audio: mỗi phần = `clip` của file cả đề, mốc theo khoảng lặng (silencedetect) từ "Part N" đến hết giờ kiểm tra: [41, 399.5],
+  [399.5, 783], [783, 1179.8], [1179.8, 1566]; kiểm đầu mỗi clip bằng `wb.js 1u 5 <P> 0 5`.
+- Key = trang KEY của PDF, khớp transcript ở mọi câu. vol_build 4/4, vol_pw 4/4 (nháp + LIVE), import (R2) + ảnh bìa CC0/PD + bật.
+- **`vol_retest.js`** (mới): trỏ đề full có sẵn sang 4 section của spec (ghép audio như vol_full_tests, giữ _id/tên/isActive,
+  backup `web/vol<V>/backup/test_<id>_*.json`, xoá transcriptTiming) → `node vol_retest.js 1u 5 "Vol 1 - Test 5" --apply` (0 lượt
+  làm; audio đề 1525 s). pw_fulltest "Vol 1 - Test 5" 40/40, `vol_audit.js 1` / `1u`: 0 problem.
+- Transcript timing: ASR cache `t_<id>.json` của đề cũ (cùng _id, audio cũ) chuyển sang `web/vol1u/backup/` rồi `--export-jobs` →
+  `asr_words.py` (chỉ 5 job của đề này; 38 đề full khác vẫn chưa có cache từ trước) → `alignTranscriptTiming.js`: 4 bài lẻ + đề full đã có timing.
+
 ## Vol 9 — 2026-10-23 (xong cả 9 test)
 
 - Chống trùng (`vol_keys_dedupe.js 9` + `tdedupe.js` + so chữ câu hỏi): dùng lại 6 phần — T2 P4 = Health on the Night Shift (Actual
