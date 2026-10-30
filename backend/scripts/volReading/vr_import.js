@@ -29,6 +29,10 @@ const SAME_TEXT_OK = ({
   // Vol 9: other versions of bank texts with a different question set — Biology of Bitterness / Traditional Farming System in
   // Africa / Health in the Wild
   9: { t1p3: '6add66526d9bcb8db19ee321', t4p1: '6abdb3f03da7a4e8d035c79e', t6p1: '6abdee0f54216aa2da1579b5' },
+  // "đề update" (Vol 7 folder): other versions of bank texts with a different question set — Becoming an Expert (Vol 2 update
+  // Test 9 P1) / Classifying societies (Vol 4 update Test 5 P1 "Categorizing societies")
+  '2u': { t9p1: '6abdad023bcd15105e99fc00' },
+  '4u': { t5p1: '6adc40e45cf66bdff87cfba1' },
 })[vol] || {};
 
 // --activate: publish (isActive:true) exactly the passages listed in imported.json, refusing any without a cover

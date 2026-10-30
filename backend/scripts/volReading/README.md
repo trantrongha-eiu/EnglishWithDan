@@ -262,7 +262,7 @@ Nguồn: `Reading/Test 1-10/Test N.pdf`, `Reading/Test 11-16/Test N.pdf` — **P
 (trang kết quả làm bài: dòng đầu dưới mỗi "Câu số" là đáp án đúng), trang "Key"/"Keys"/"Đáp án" ở cuối Test 12–16.pdf,
 `Explaination Read VOL 7/Key VOL 7 TEST 13 và 14.pdf` (key + giải thích 13–14) và `giải vol 7.1–7.12.docx` (giải thích T1–T12).
 Thư mục `các đề update web khác trên bản pdf/` là **bản cập nhật của đề vol cũ** (Vol 1 T5/T7/T9, Vol 2 T1/T3/T9/T10, Vol 4
-T4/T5) — chưa xử lý; Vol 1 T7 ở đó là đề đủ 40 câu (P3 khác bản cũ) → có thể dùng để bật lại Vol 1 - Test 7.
+T4/T5) — đã xử lý hết (Vol 1 T7: 2026-10-29; còn lại 2026-10-30, xem mục "Đề update" cuối file).
 
 Công cụ mới (cho PDF có chữ): `py` + pymupdf `get_text()` từng trang → `web/vol7/txt/t<T>.txt`; `node pdfparas.js 7` → nối dòng
 thành đoạn `web/vol7/paras/t<T>.txt` (`[n|p<trang>]` mỗi đoạn); `node cutparas.js 7 <T> specs/vol7/t<T>p<P>.txt <từ-đến>` cắt
@@ -331,7 +331,7 @@ P2 bản viết lại của Thoughtful Computing, P3 "Thinking Small: Globalizat
 Irish Elk của Vol 1), nhập + ảnh bìa + bật. Đề "Vol 1 - Test 7" trỏ sang 3 bài mới bằng `vr_retest.js 1 7 <id1> <id2> <id3>
 --apply` (backup `web/vol1/backup/test7_*.json`, 0 lượt làm) và bật. "Protecting turtles" và "Irish Elk" vẫn là bài lẻ đang bật.
 Kiểm: pw_mini / pw_admin 1/1, pw_grade 3/3 100%, pw_full_tests 1/1, `vr_audit.js 1` 0, `vr_incomplete.js` 0.
-Các bản update khác trong thư mục đó (Vol 1 T5/T9, Vol 2 T1/T3/T9/T10, Vol 4 T4/T5) chưa xử lý.
+Các bản update khác trong thư mục đó: xử lý 2026-10-30, xem mục "Đề update" cuối file.
 
 ## Vol 9 — 2026-10-29 (xong: 9 đề full, 27 bài mới)
 
@@ -363,3 +363,36 @@ key 3 cột; T1 dạng "Câu số n:"; không có giải thích). `py docx2txt.p
   từng câu hỏi / lựa chọn / tiêu đề / ending / ô bảng với chữ docx (bigram ≥ 85%): chỉ lệch ở chỗ số ô trống nằm giữa câu và chỗ sửa
   có chủ ý (lựa chọn F của T2 P2, tiêu đề ix của T5 P2). So key spec với file key docx: chỉ khác ở các câu đã sửa ghi ở trên (T9 P3
   key in chữ cái, spec lưu từ trong word bank — cùng đáp án). Pushed fc5a672b.
+
+## Đề update (thư mục `VOL 7…/Reading/các đề update web khác trên bản pdf/`) — 2026-10-30
+
+Thầy: "fix các đề update Vol 1 T5/T9, Vol 2 T1/T3/T9/T10, Vol 4 T4/T5". Nguồn có chữ sẵn (PDF text layer / docx), không OCR:
+`web/volupd/extract.py` (pymupdf, như vol1u) + `docx2txt.py` → `web/volupd/txt/`; `web/volupd/split.js` cắt ở "PASSAGE N" →
+`web/volupd/docx/<v2t9>p<N>.txt` (cho `SRC=docx dedupe2.js upd` / `dedupe_mini.js upd`), `web/volupd/text/` (+ "=== QUESTIONS ===",
+cho `qcheck.js upd <code> <P> <id>`; key gõ vào `web/volupd/keys.json`). Thầy chọn (hỏi trước khi làm): đề có sẵn → **trỏ sang bài
+của bản update** (`vr_retest.js`, như Vol 1 - Test 7; bài cũ vẫn bật làm bài lẻ); Vol 2 **giữ Test 1…9**, thêm Test 10, 11.
+Bài mới dùng vol `1u` / `2u` / `4u` (`specs/vol<V>u/`, `web/vol<V>u/`) để tên draft không đụng nhau.
+
+- **Vol 1 T5 = đề Listening** (audio + key + transcript) → xem `../volListening/README.md` mục "Vol 1 - Test 5 bản update".
+- **Vol 1 - Test 9** → Tuatara / Tasmanian Tiger (ngân hàng, câu hỏi + key khớp) / **Graffiti in New York City** (mới, `specs/vol1u/t9p3`,
+  14 câu 27–40). Danh sách 36–40 in A, B, C, E, F, G, H (thiếu D, không có bản online) → đánh lại A–G. "The Cane Toad in Australia"
+  còn là bài lẻ. 0 lượt làm.
+- **Vol 2 T1** = Vol 2 - Test 1 (cùng bài, cùng câu, cùng key) → không đổi. **Vol 2 T3** = Vol 2 - Test 8 → không đổi đề.
+- **Vol 2 - Test 10** (mới) = bản update T10: Book review: Triumph of the City / Australian parrots… / Whale Culture (cả ba có sẵn,
+  câu + key khớp; Whale Culture bản update in TRUE/FALSE, ngân hàng YES/NO — cùng câu, cùng đáp án).
+- **Vol 2 - Test 11** (mới) = bản update T9: **Becoming an expert (Vol 2)** (bản viết lại ngắn của "Becoming an Expert", ~41% chữ,
+  câu hỏi khác → `SAME_TEXT_OK['2u']`) / **The fascinating world of attine ants** / **Decisions, decisions!** (mini 1362 cùng bài, bản
+  PDF sạch hơn). Q37 key Vol YES, mini NOT GIVEN → nhận cả hai.
+- **Vol 4 - Test 4** → **Sydney Opera House** (mới) / A unique golden textile / The power of persuasion (bài cũ, khớp). "Multiple
+  intelligences" (bài có chữ tự bổ sung) còn là bài lẻ.
+- **Vol 4 - Test 5** → **Categorizing societies** (mới; bản khác của "Classifying societies": bands thay clans, Q13 khác →
+  `SAME_TEXT_OK['4u']`) / Undoing Our Emotions / The Voynich Manuscript (ngân hàng, khớp; Voynich cũng ở Vol 5 - Test 1).
+- **Sửa ngân hàng** (`specs/volupd/bank_fixes.js`, `bank_fix.js upd --apply`, backup `web/volupd/backup/`; `sub()` sửa luôn trích dẫn
+  trong giải thích): The art of deception Q31 C → B (chính giải thích ghi B; lựa chọn D chép trùng C → "They can be used by a limited
+  range of occupations."), Q39 NO → NOT GIVEN (key update + ece.edu.vn + izone), lỗi gõ ("sold him", "sound since", "has was
+  skeptical"…); "Good Nuggets of Australia" → **Gold** Nuggets (21 lượt làm cũ — chỉ đổi tên + thêm "3 cm" Q8), câu cụt ở mọi bản
+  "due to the fact that found on the surface" → tự bổ sung tối thiểu "that much of it was found"; Nature's Useful Designs ("month
+  eyes", "in a which"…) và Whale Culture (incooperate, accross, Barrett-Lennard…) sửa lỗi gõ theo PDF update.
+- 6 bài mới: ảnh bìa CC0/PD trên R2, giải thích tiếng Việt, bật. Kiểm: pw_mini 6/6, pw_admin 6/6, pw_grade 6/6 100% (+ 4 bài vừa
+  sửa 4/4), `_audit_reading_warnings` 0 (467 bài), pw_full_tests 7/7 (Vol 1 T9, Vol 2 T1/T8/T10/T11, Vol 4 T4/T5), `vr_audit.js` 1: 0,
+  2: 0 (11 đề), 4: chỉ Vol 4 - Test 9 đang ẩn có chủ ý; `vr_incomplete.js` 0.

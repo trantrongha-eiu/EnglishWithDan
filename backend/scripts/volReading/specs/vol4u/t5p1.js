@@ -1,0 +1,72 @@
+// Vol 4 - Test 5 UPDATE — Reading Passage 1 (Vol 7 folder "Reading/các đề update web khác trên bản pdf/Reading khác bản pdf
+// update/VOL 4 TEST 5.docx", typed). Another version of "Classifying societies" (Vol 4 - Test 5 P1 before the update: clans
+// instead of bands, other wording, Q13 asks for a different class) → new passage (SAME_TEXT_OK['4u']).
+// Key = "giải thích reading/VOl4 test5 giải thích.docx" (its quotes are from the old "Classifying societies" text, the answers
+// fit this text too): checked against the passage, all correct. Q10 key "grouped (together)" → "grouped together / grouped".
+// Q13 key "Agricultural workers" (the question asks for the group besides "poorer urban dwellers").
+const { tfng, short } = require('../../vr_build');
+module.exports = {
+  vol: '4u', test: 5, part: 1, title: 'Categorizing societies', text: 't5p1.txt', lettered: false,
+  groups: [
+    tfng(1, [
+      'There is usually little difference in wealth between the various members of a band.',
+      'In tribes, farmers typically grow a wide range of food plants.',
+      'A typical tribe has one settlement which is more important than others.',
+      'In a chiefdom, social status usually depends on the amount of land a person owns.',
+      'A chiefdom typically contains some workers who are engaged in making goods.',
+      'An early state may depend on military power to maintain law and order.',
+      'Bureaucratic officers receive higher salaries than other members.',
+    ]),
+    short(8, [
+      'What items do bands produce at work sites?',
+      'Which way of life, apart from settled farming, may be followed by people in tribes?',
+      'How were houses arranged in the village of Catalhoyuk?',
+      'Which items, apart from craft goods, may be given by a chief to members of his chiefdom?',
+      'What is usually the maximum number of people living in a society which has a chief?',
+      'Apart from less wealthy inhabitants of cities, which group forms the lowest class in an early state?',
+    ], { instruction: 'Answer the questions below. Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer. Write your answers in boxes 8–13 on your answer sheet.' }),
+  ],
+  key: { 1: 'TRUE', 2: 'NOT GIVEN', 3: 'FALSE', 4: 'FALSE', 5: 'TRUE', 6: 'TRUE', 7: 'NOT GIVEN', 8: 'tools', 9: 'nomadic',
+    10: 'grouped together / grouped', 11: 'foodstuffs', 12: '20,000 / 20,000 persons', 13: 'agricultural workers' },
+  expl: {
+    1: ['Thường có rất ít khác biệt về của cải giữa các thành viên của một band (nhóm săn bắt hái lượm).', 'Mục Bands',
+      '“Bands lack formal leaders, so that there are no clear economic differences or other differences in status among the members.”',
+      '“no clear economic differences” = ít khác biệt về của cải (little difference in wealth) → TRUE'],
+    2: ['Ở các bộ lạc, nông dân thường trồng rất nhiều loại cây lương thực.', 'Mục Tribes',
+      '“whose diet is mainly based on plants or domestic animals. Typically, these people are settled farmers”',
+      'Bài chỉ nói chế độ ăn dựa chủ yếu vào cây trồng hoặc vật nuôi, không nói họ trồng nhiều hay ít loại cây → NOT GIVEN'],
+    3: ['Một bộ lạc điển hình có một khu định cư quan trọng hơn các khu khác.', 'Mục Tribes',
+      '“Characteristically, no one settlement dominates any of the others in the region.”',
+      'Bài nói không có khu định cư nào lấn át các khu khác, trái với câu hỏi → FALSE'],
+    4: ['Trong một chiefdom (xã hội thủ lĩnh), địa vị xã hội thường phụ thuộc vào lượng đất một người sở hữu.', 'Mục Chiefdoms',
+      '“Prestige and rank are determined by how closely related one is to the chief”',
+      'Địa vị do quan hệ huyết thống gần hay xa với thủ lĩnh quyết định, không phải do đất đai → FALSE'],
+    5: ['Một chiefdom thường có những người lao động làm ra hàng hóa.', 'Mục Chiefdoms',
+      '“Often, there is local specialization in craft products such as pottery, cloth and leatherware”',
+      'Có sự chuyên môn hóa sản xuất hàng thủ công (gốm, vải, đồ da) → có người làm ra hàng hóa → TRUE'],
+    6: ['Một nhà nước sơ khai có thể dựa vào sức mạnh quân sự để giữ luật pháp và trật tự.', 'Mục Early states',
+      '“the ruler, perhaps a king or queen, has explicit authority to establish laws and to enforce them by the use of a standing army.”',
+      '“enforce them by the use of a standing army” = dùng quân đội thường trực để thi hành luật → TRUE'],
+    7: ['Các quan chức bộ máy hành chính nhận lương cao hơn các thành viên khác.', 'Mục Early states',
+      '“The central capital houses the officials of a bureaucratic administration. One of their main functions is to collect revenue”',
+      'Bài chỉ nói nhiệm vụ của quan chức (thu thuế, phân phối), không nhắc đến lương của họ → NOT GIVEN'],
+    8: ['Các band làm ra thứ gì ở các địa điểm làm việc (work sites)?', 'Mục Bands',
+      '“and some other sites, such as work sites, where tools are made or other specific activities are carried out.”',
+      'Ở work sites người ta làm công cụ → tools'],
+    9: ['Ngoài làm nông định cư, người trong bộ lạc có thể theo lối sống nào?', 'Mục Tribes',
+      '“Typically, these people are settled farmers, but for some groups life is nomadic, with a mobile economy based on herds of animals.”',
+      'Ngoài làm nông định cư, một số nhóm sống du mục → nomadic'],
+    10: ['Nhà ở trong làng Catalhoyuk được sắp xếp như thế nào?', 'Mục Tribes',
+      '“or their houses may be grouped together, as in the pueblos of the American southwest, or the early farming village of Catalhoyuk in what is now Turkey.”',
+      'Catalhoyuk là ví dụ cho kiểu nhà được xếp sát nhau thành cụm → grouped together'],
+    11: ['Ngoài hàng thủ công, thủ lĩnh có thể trao thứ gì cho các thành viên của chiefdom?', 'Mục Chiefdoms',
+      '“any surplus of these and of foodstuffs is periodically paid to the chief. He uses these to pay his retainers, and may also redistribute them to his subjects as rewards.”',
+      'Thủ lĩnh phân phối lại phần dư thừa hàng thủ công và lương thực cho thần dân làm phần thưởng → foodstuffs'],
+    12: ['Số người tối đa thường sống trong một xã hội có thủ lĩnh là bao nhiêu?', 'Mục Chiefdoms',
+      '“Chiefdoms vary greatly in size, but the range is generally between 5,000 and 20,000 persons.”',
+      'Quy mô thường từ 5.000 đến 20.000 người, tức tối đa khoảng 20.000 người → 20,000'],
+    13: ['Ngoài những cư dân thành thị nghèo hơn, nhóm nào tạo thành tầng lớp thấp nhất trong một nhà nước sơ khai?', 'Mục Early states',
+      '“Agricultural workers and the poorer urban dwellers make up the base of the pyramid”',
+      '“the poorer urban dwellers” = less wealthy inhabitants of cities; nhóm còn lại ở đáy kim tự tháp là người làm nông → agricultural workers'],
+  },
+};

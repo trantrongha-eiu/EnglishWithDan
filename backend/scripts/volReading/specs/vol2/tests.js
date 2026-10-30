@@ -14,4 +14,8 @@ module.exports = {
   7: ['6a6f4f104b80c822c59a645e', '6a6f4f104b80c822c59a646e', '6a6f4f104b80c822c59a647f'],     // AC7: Lucy / gender gap NZ / strange world of sight
   8: ['6a5509187451993d82bcc7cc', '6a550c3e7451993d82bcd14b', '6a5510407451993d82bcdb0d'],     // AC3: Gold Nuggets / Nature's Useful Designs / art of deception
   9: ['6a54d90a7451993d82bc7544', '6a54e0977451993d82bc7ce9', '6a54e9de7451993d82bc8d16'],     // AC_: Sweet Trouble / 2003 Heatwave / Patient Safety
+  // 2026-10-30, from the "đề update" folder of Vol 7 (Reading/các đề update web khác trên bản pdf). Its "VOL 2 TEST 1" = Test 1
+  // above and "VOL 2 TEST 3" = Test 8 above (no change); thầy kept Test 1…9 and added the other two:
+  10: ['6a5516a07451993d82bce986', '6a6f4c8db5dfd424fb88d8eb', '6a5522af7451993d82bd046e'],    // update T10: Triumph of the City / Australian parrots / Whale Culture
+  11: ['6ae4084d5d64e36c52327fa2', '6ae4084e5d64e36c52327fb3', '6ae4084e5d64e36c52327fc4'],    // update T9 (specs/vol2u): Becoming an expert (Vol 2) / attine ants / Decisions, decisions!
 };
