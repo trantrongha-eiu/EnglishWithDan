@@ -32,6 +32,15 @@ describe('Sidebar', () => {
     expect(screen.getByText('Người dùng')).toBeInTheDocument();
   });
 
+  it('has a button to the student practice UI for teachers and admins', () => {
+    for (const role of ['teacher', 'admin']) {
+      mockUseAuth.mockReturnValue({ user: { username: 'x', role }, isAdmin: role === 'admin', logout: vi.fn() });
+      const { unmount } = renderSidebar();
+      expect(screen.getByRole('link', { name: /Giao diện học sinh/ })).toHaveAttribute('href', '/dashboard.html');
+      unmount();
+    }
+  });
+
   it('shows admin-only entries to admins', () => {
     mockUseAuth.mockReturnValue({ user: { username: 'dan', role: 'admin' }, isAdmin: true, logout: vi.fn() });
     renderSidebar();

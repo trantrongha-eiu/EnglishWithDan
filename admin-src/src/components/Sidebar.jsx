@@ -149,6 +149,15 @@ export default function Sidebar({ mobileOpen, onClose, compact, onToggleCompact 
         </div>
 
         <div className="sidebar-bottom">
+          {/* Full page load (not a router Link): the student site lives outside /admin/. */}
+          <a
+            href="/dashboard.html"
+            className="sidebar-student-btn"
+            title="Mở giao diện học sinh để luyện tập"
+          >
+            <span className="nav-icon" aria-hidden="true">🎓</span>
+            <span className="nav-label">Giao diện học sinh</span>
+          </a>
           <div className="user-chip">
             <div className="user-avatar" aria-hidden="true">{(user?.username || 'A')[0].toUpperCase()}</div>
             <div className="user-chip-text">

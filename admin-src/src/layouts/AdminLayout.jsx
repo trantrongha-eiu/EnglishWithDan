@@ -63,7 +63,7 @@ export default function AdminLayout() {
                 aria-label={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
                 title={theme === 'dark' ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối'}
               >{theme === 'dark' ? '☀️' : '🌙'}</button>
-              <a href="/" className="btn btn-ghost btn-sm topbar-home">← Trang học sinh</a>
+              <a href="/dashboard.html" className="btn btn-ghost btn-sm topbar-home" title="Mở giao diện học sinh để luyện tập">🎓 Giao diện học sinh</a>
               {user && (
                 <div className="topbar-user" title={user.username}>
                   <div className="topbar-user-dot" aria-hidden="true">{(user.username || 'A')[0].toUpperCase()}</div>

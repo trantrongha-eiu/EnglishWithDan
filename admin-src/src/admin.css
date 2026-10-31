@@ -309,6 +309,22 @@
       border-top: 1px solid var(--border);
     }
 
+    .sidebar-student-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      padding: 9px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background .15s, color .15s;
+    }
+    .sidebar-student-btn:hover { background: var(--accent); color: #fff; }
+
     .user-chip {
       display: flex;
       align-items: center;
@@ -372,6 +388,7 @@
       padding: 0 4px;
     }
     .sidebar--compact .user-chip { justify-content: center; padding: 6px; background: none; }
+    .sidebar--compact .sidebar-student-btn { justify-content: center; padding: 9px 0; }
     .admin-shell.is-compact .main { margin-left: 72px; }
     }
 

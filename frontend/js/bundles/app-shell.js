@@ -1115,6 +1115,19 @@
     }).join('');
   }
 
+  // Admin/teacher practising on the student site: a way back to /admin/.
+  var _isStaffUser = false;
+  try {
+    var _su = window.AuthService ? window.AuthService.getUser() : JSON.parse(localStorage.getItem('user') || 'null');
+    _isStaffUser = !!(_su && (_su.role === 'admin' || _su.role === 'teacher'));
+  } catch (e) {}
+  var STAFF_ADMIN_ICON = _isStaffUser
+    ? '<a class="btn-dark-mode nav-action-hide-mobile" id="navAdminBtn" href="/admin/" title="Về trang quản trị" aria-label="Về trang quản trị"><i class="fas fa-user-shield"></i></a>'
+    : '';
+  var STAFF_ADMIN_MOBILE = _isStaffUser
+    ? '<a href="/admin/" class="mobile-nav-link"><i class="fas fa-user-shield" style="width:20px;text-align:center"></i> Về trang quản trị</a>'
+    : '';
+
   // ── Inject top nav ────────────────────────────────────────
   var nav = document.createElement('nav');
   nav.className = 'top-nav';
@@ -1158,6 +1171,7 @@
       // count, and every bell item just deep-linked to inbox.html anyway.
       // One mailbox now: the fa-envelope utility icon below.
       mkUtilityIcons() +
+      STAFF_ADMIN_ICON +
       '<a href="/profile.html" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;cursor:pointer;text-decoration:none;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.25);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform=\'scale(1.1)\';this.style.boxShadow=\'0 0 0 3px rgba(99,102,241,.35)\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' +
         '<span id="navAvatar" style="line-height:1;pointer-events:none">?</span>' +
       '</a>' +
@@ -1197,6 +1211,7 @@
     '<div class="mobile-nav-inner">' +
     mkMobileLinks() +
     mkUtilityMobileLinks() +
+    STAFF_ADMIN_MOBILE +
     '<div class="mobile-nav-divider"></div>' +
     '<button id="mobileLangBtn" class="mobile-nav-link ews-lang-mobile" data-i18n-skip style="width:100%;border:none;background:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:500;text-align:left;color:var(--text-light);">' +
     '<i class="fas fa-language" style="width:20px;text-align:center"></i> English</button>' +
