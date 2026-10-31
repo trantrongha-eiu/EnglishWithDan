@@ -34,7 +34,7 @@ module.exports = {
           '<strong>Other information</strong>',
           '• There is no central air conditioning, but there is a __Q9__ conditioning unit.',
           '• Name of landlord: Sam __Q10__',
-        ], { 1: '5th May/5 May/May 5th/May 5/5th of May', 2: '1700/1,700', 3: 'credit check', 4: 'kitchen', 5: 'dishwasher', 6: 'garage', 7: 'water', 8: 'recycling', 9: 'window', 10: 'Dressler' }, 'Questions 1-10'),
+        ], { 1: '5th May/5 May/May 5th/May 5/5th of May', 2: '1700/1,700', 3: 'credit check / credit', 4: 'kitchen', 5: 'dishwasher', 6: 'garage', 7: 'water', 8: 'recycling', 9: 'window', 10: 'Dressler' }, 'Questions 1-10'),
       ],
       expl: {
         1: { v: 'Đầu bài, khi hỏi ngày dọn vào.', t: 'So I think the house will be ready on the 5th of May.', p: 'Hợp đồng cũ hết hạn ngày 3/5 (bẫy), chủ nhà cần một ngày dọn dẹp nên nhà sẵn sàng ngày 5/5 → 5th May' },

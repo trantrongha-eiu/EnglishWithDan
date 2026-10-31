@@ -213,6 +213,23 @@ giữ làm bài lẻ). Vol `1u`: `vol_media.volDir('1u')` = thư mục update đ
 - Transcript timing: ASR cache `t_<id>.json` của đề cũ (cùng _id, audio cũ) chuyển sang `web/vol1u/backup/` rồi `--export-jobs` →
   `asr_words.py` (chỉ 5 job của đề này; 38 đề full khác vẫn chưa có cache từ trước) → `alignTranscriptTiming.js`: 4 bài lẻ + đề full đã có timing.
 
+## Debug Listening lượt 2 (thầy: "câu hỏi, hiển thị, đáp án và giải thích đã đầy đủ chưa") — 2026-10-31
+- Công cụ mới (chỉ đọc): `ls_display_audit.js [out.json]` — cái học sinh NHÌN thấy: mỗi câu của nhóm bảng/ghi chú/bullet/
+  summary/drag-drop có đúng một `__Qn__`, không có `__Qn__` thừa (hiện chữ thô), số câu liên tục + đúng "Questions X-Y" + đúng
+  Part (P1 = 1–10…), đề full đủ 4 part đúng thứ tự, mỗi đề lẻ 10 câu, MC ≥ 3 lựa chọn, lựa chọn bị renderer cắt chữ, lựa chọn
+  trùng, cụm "chọn 2/3" lẫn options / lặp key, map có ảnh, media trên R2 (`media.ieltsthayha.com`). Kết quả sau sửa: 0.
+- **Lỗi hiển thị (code)**: `listening.js` renderRadioOpts / renderMultiAnswerCluster / checkbox và `reading-v2.js` (cụm chọn
+  nhiều) cắt "A "/"a " đầu lựa chọn như thể là nhãn chữ cái → "a games room" hiện "games room", Study Options Q22 "C plus /
+  A plus / B plus" hiện ba lần "plus" (~88 câu MC + 50 lựa chọn "chọn 2" Listening, 30 lựa chọn Reading). Không có lựa chọn
+  nào trong DB thật sự gắn nhãn chữ cái → giờ chỉ cắt "A. " / "A) ".
+- Đủ: 4.400 câu đề lẻ đều có key + giải thích Vị trí/Transcript/Phân tích/"→" (330 câu có thêm "Dịch:"); 612 link audio/ảnh
+  HEAD đều 200; `ls_deep_audit.js` chỉ còn báo nhầm (quote gộp lời hai người, mốc "(Q3)"/"(32)" trong transcript, post.com).
+- Sửa (`../fixListeningDebug2.js`, backup `../backups/listening-debug-fix2-*.json`): Renting a House Q3 (Vol 1 - Test 7 P1, cả
+  `specs/vol1_t7.js`) đề in "ONE WORD AND/OR A NUMBER" mà key "credit check" → "credit check / credit"; Presentation about
+  refrigeration (Cam 15 T4 P3) transcript "I'm no terribly keen" / "you own me" → not / owe.
+- Lưu ý: 31/10 ~16:51 toàn bộ đề full Reading (168) + Listening (118) bị ẩn hàng loạt trên admin, chỉ "Vol 2 - Test 1" mỗi bên
+  còn bật — không phải do debug; không đụng vào.
+
 ## Vol 9 — 2026-10-23 (xong cả 9 test)
 
 - Chống trùng (`vol_keys_dedupe.js 9` + `tdedupe.js` + so chữ câu hỏi): dùng lại 6 phần — T2 P4 = Health on the Night Shift (Actual

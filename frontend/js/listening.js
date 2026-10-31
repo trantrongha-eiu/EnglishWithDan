@@ -2083,7 +2083,8 @@ function renderMultiAnswerCluster(cluster, isReview) {
             if (uaArr.includes(letter)) cls = 'selected';
         }
         const onclick = isReview ? '' : `onclick="toggleMultiAnswer(${firstNum}, '${letter}', ${count}, ${lastNum})"`;
-        const label = opt.replace(/^[A-Ja-j]\s+/, '');
+        // Only strip a typed letter label ("A. " / "A) ") — never the article in "a summary…" / "A large sample…"
+        const label = opt.replace(/^[A-J][.)]\s+/, '');
         return `<div class="checkbox-opt ${cls}" data-cluster="${firstNum}" data-value="${letter}" ${onclick}>
                     <span class="check-box"></span>
                     <label><strong>${letter}</strong>&nbsp;&nbsp;${label}</label>
@@ -2353,8 +2354,9 @@ function renderRadioOpts(num, opts, ua, ca, isReview) {
     const caNorm = (ca || '').trim().toUpperCase();
     return `<div class="q-options">${opts.map((opt, idx) => {
         const letter = LETTERS[idx] || String.fromCharCode(65 + idx);
-        // Strip letter prefix nếu admin nhập "A text..." hoặc "A. text..."
-        const displayText = opt.replace(/^[A-Ea-e][\.\)]\s*|^[A-Ea-e]\s+/, '').trim() || opt;
+        // Strip a typed letter label ("A. text" / "A) text") — not a bare "A "/"a ", which is the article
+        // ("a games room", "A plus" grade) and was being cut off
+        const displayText = opt.replace(/^[A-E][.)]\s+/, '').trim() || opt;
         let cls = '';
         if (isReview) {
             if (letter === caNorm) cls = 'correct-ans';
@@ -2388,7 +2390,7 @@ function renderCheckboxOpts(num, opts, ua, ca, isReview, count) {
             if (uaLetters.includes(letter)) cls = 'selected';
         }
         return `<div class="checkbox-opt ${cls}" data-qnum="${num}" data-value="${letter}" data-count="${count}" ${isReview ? '' : `onclick="toggleCheckbox(${num}, '${letter}', ${count})"`}>
-                        <span class="check-box"></span><label><strong>${letter}</strong> ${escHtml(opt.replace(/^[A-Ga-g]\s+/, ''))}</label>
+                        <span class="check-box"></span><label><strong>${letter}</strong> ${escHtml(opt.replace(/^[A-G][.)]\s+/, ''))}</label>
                     </div>`;
     }).join('')}</div>`;
 }

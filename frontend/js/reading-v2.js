@@ -2143,7 +2143,7 @@ function renderMultiAnswerCluster(cluster, isReview, reviewMap) {
     const onclick = isReview ? '' : `onclick="toggleMultiAnswer(${firstNum},'${letter}',${count},${lastNum})"`;
     return `<div class="checkbox-opt ${cls}" data-cluster="${firstNum}" data-value="${letter}" ${onclick}>
       <span class="check-box"></span>
-      <label><strong class="cb-letter">${letter}</strong>&nbsp;&nbsp;${escHtml(opt.replace(/^[A-Ja-j]\s+/, ''))}</label>
+      <label><strong class="cb-letter">${letter}</strong>&nbsp;&nbsp;${escHtml(opt.replace(/^[A-J][.)]\s+/, ''))}</label>
     </div>`;
   }).join('');
 
