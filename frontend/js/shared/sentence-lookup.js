@@ -90,9 +90,12 @@
   // returning true while that screen is live; read lazily (not at load
   // time) so it works regardless of script-load order between nav.js's
   // dynamically-injected <script> tag and each page's own inline script.
+  // A page that exposes its own flag knows best — practice and review
+  // screens hide the nav too, so the nav check below is only for pages
+  // without one.
   function isExamActive() {
     try {
-      if (window.__ewsExamActive && window.__ewsExamActive()) return true;
+      if (typeof window.__ewsExamActive === 'function') return !!window.__ewsExamActive();
       // Belt-and-suspenders: every test / full-mock exam screen hides the
       // global nav (nav.js hideTopNav()). Treat that as "exam active" too,
       // so the owl stays suppressed even on a page whose own
@@ -125,8 +128,18 @@
     el.style.top = Math.max(6, Math.min(y, window.innerHeight - h - 6)) + 'px';
   }
 
+  // nav.js hideTopNav() sets display:none on the owl whenever the nav hides
+  // (exam AND practice/review screens) — clear it once we know it's allowed.
+  // Fullscreen screens only show what's inside the fullscreen element.
+  function _surface(el) {
+    el.style.display = '';
+    var host = document.fullscreenElement || document.body;
+    if (el.parentNode !== host) host.appendChild(el);
+  }
+
   function showIcon(x, y) {
     ensureDom();
+    _surface(icon);
     positionEl(icon, x, y, 38, 38);
     icon.classList.remove('hidden');
   }
@@ -173,6 +186,7 @@
     if (!text) return;
     var rect = icon.getBoundingClientRect();
     hideIcon();
+    _surface(popup);
     positionEl(popup, rect.left, rect.bottom + 6, 300, 220);
     popup.classList.remove('hidden');
     renderOriginal(text);

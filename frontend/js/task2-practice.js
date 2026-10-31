@@ -216,15 +216,15 @@ document.addEventListener('DOMContentLoaded', () => {
   loadWeeks();
   // #app is a stable container that render() only ever innerHTML's into —
   // one registration here covers every view (weeks/topics/practice/exam/...).
-  // Gate: dict lookup must be off during an active "thi thử" run — only
-  // active for ordinary practice, or once exam results are being shown
-  // (state.view === 'examDone').
-  setupDictionaryDouble('app', 'task2-practice',
-    () => state.currentMode !== 'exam' || state.view === 'examDone');
+  // Gate: dict lookup must be off only while a "thi thử" run is on screen
+  // (view 'exam'). It used to key off state.currentMode, which stays 'exam'
+  // after the student leaves the results for the week/topic lists — so
+  // both lookups stayed dead there until a normal practice reset it.
+  setupDictionaryDouble('app', 'task2-practice', () => state.view !== 'exam');
 
   // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) — same
   // exam condition as the dict-lookup gate above, just inverted.
-  window.__ewsExamActive = () => state.currentMode === 'exam' && state.view !== 'examDone';
+  window.__ewsExamActive = () => state.view === 'exam';
 });
 
 function initUser() {

@@ -3339,6 +3339,10 @@ function _ltDictGate() {
     );
 }
 
+// Own Tra từ toggle + Highlight tool decide lookups here — keep the page-wide
+// double-click fallback in js/shared/dictionary-lookup.js out of it.
+window.__ewsDictFallbackOff = true;
+
 // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) must not
 // help during a live timed attempt — same condition as _ltDictGate
 // above, minus its own "Dict tool toggled on" requirement.

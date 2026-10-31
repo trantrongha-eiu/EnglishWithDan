@@ -320,9 +320,27 @@
   if (!document.getElementById('ews-sentence-lookup-js')) {
     var slScript = document.createElement('script');
     slScript.id = 'ews-sentence-lookup-js';
-    slScript.src = '/js/shared/sentence-lookup.js?v=93284f9f4e';
+    slScript.src = '/js/shared/sentence-lookup.js?v=bc3a6ae329';
     document.body.appendChild(slScript);
   }
+
+  // ── Double-click word lookup (js/shared/dictionary-lookup.js) ──
+  // Pages that don't load it themselves get it here, so double-click → look
+  // up / save a word works on every student page. Its page-wide fallback
+  // stays off while a test runs; the test-only pages never load it. Waits
+  // for DOMContentLoaded: this runs at the top of <body>, before a page's
+  // own <script src=".../dictionary-lookup.js"> tag has been parsed.
+  function _injectDictLookup() {
+    if (window.setupDictionaryDouble || document.getElementById('ews-dict-lookup-js')) return;
+    if (document.querySelector('script[src*="dictionary-lookup.js"]')) return;
+    if (/^(mock-test|entrance-test|test-dau-vao)(\.html)?$/.test(page)) return;
+    var dlScript = document.createElement('script');
+    dlScript.id = 'ews-dict-lookup-js';
+    dlScript.src = '/js/shared/dictionary-lookup.js?v=76b22cb3a9';
+    document.body.appendChild(dlScript);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _injectDictLookup);
+  else _injectDictLookup();
 
   // ── Site-wide VI ⇄ EN toggle (js/shared/i18n.js) ──────────
   // Injected here so every page with the global nav gets the language

@@ -4629,6 +4629,10 @@ setupDictionaryDouble('pageBody', 'reading', () => state.tool !== 'highlight' &&
   ))
 ));
 
+// Own Tra từ toggle + Highlight tool decide lookups here — keep the page-wide
+// double-click fallback in js/shared/dictionary-lookup.js out of it.
+window.__ewsDictFallbackOff = true;
+
 // "tra câu" sentence-lookup icon (js/shared/sentence-lookup.js) must not
 // help during a live timed attempt — same condition as the dictionary-
 // lookup gate above, just without that feature's own "Dict tool toggled

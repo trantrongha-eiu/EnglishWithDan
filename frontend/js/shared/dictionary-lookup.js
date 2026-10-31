@@ -30,12 +30,71 @@
  */
 (function () {
   'use strict';
+  // A page's own <script> tag and nav.js's loader can both bring this in.
+  if (window.__ewsDictLookupLoaded) return;
+  window.__ewsDictLookupLoaded = true;
 
   // Reuse the same base URL AuthService already exposes (avoids yet another
   // hardcoded copy of it — writing.js and dashboard.js each already define
   // their own `API` constant with two different conventions, one with the
   // /api suffix and one without).
   var VOCAB_API_BASE = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
+
+  // nav.js also loads this module on pages that never asked for it (see the
+  // page-wide fallback at the bottom), where utils.js / toast.js may be
+  // missing — so don't assume those globals.
+  function escHtml(s) {
+    if (window.escHtml) return window.escHtml(s);
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function showVocabToast(msg, type) {
+    if (window.showVocabToast) return window.showVocabToast(msg, type);
+    if (window.showToast) return window.showToast(msg, type);
+  }
+
+  // Popup + "save to vocab book" markup and CSS, added on first use when the
+  // page doesn't ship its own copy.
+  var POPUP_HTML =
+    '<div id="dict-popup" class="dict-popup hidden">' +
+      '<div class="dict-header">' +
+        '<span class="dict-word" id="dict-word"></span>' +
+        '<span class="dict-phonetic" id="dict-phonetic"></span>' +
+        '<button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm"><i class="fas fa-volume-up"></i></button>' +
+        '<button class="dict-close" onclick="closeDictPopup()"><i class="fas fa-times"></i></button>' +
+      '</div>' +
+      '<div id="dict-body" class="dict-body"></div>' +
+    '</div>';
+  var MODAL_HTML =
+    '<div id="dict-vocab-modal" class="dict-vocab-modal hidden">' +
+      '<div class="dict-vocab-box">' +
+        '<div class="dict-vocab-header">' +
+          '<h3>📚 Lưu vào sổ từ vựng</h3>' +
+          '<button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button>' +
+        '</div>' +
+        '<div class="dict-vocab-body">' +
+          '<div id="dict-vocab-book-list"></div>' +
+          '<div class="rd-vocab-new-section">' +
+            '<div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>' +
+            '<div style="display:flex;gap:8px">' +
+              '<input id="dict-new-book-name" type="text" placeholder="Tên sổ mới..." maxlength="40" class="rd-vocab-input" onkeydown="if(event.key===\'Enter\') createDictBookAndSave()" />' +
+              '<button onclick="createDictBookAndSave()" class="rd-vocab-create-btn">+ Tạo &amp; lưu</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  function _ensureMarkup() {
+    if (!document.querySelector('link[href*="dictionary-popup.css"]')) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/css/dictionary-popup.css?v=dd9cf65aa3';
+      document.head.appendChild(link);
+    }
+    if (!document.getElementById('dict-popup')) document.body.insertAdjacentHTML('beforeend', POPUP_HTML);
+    if (!document.getElementById('dict-vocab-modal')) document.body.insertAdjacentHTML('beforeend', MODAL_HTML);
+  }
 
   var _word = '';
   var _source = 'other';
@@ -259,7 +318,11 @@
     if (el._dictTouchHandler) el.removeEventListener('touchend', el._dictTouchHandler);
     el._dictSource = source || 'other';
     el._dictGate = gate || null;
+    // Nested containers: the innermost one owns the event (its gate decides),
+    // so an outer container can't open the same word a second time.
     el._dictHandler = function (e) {
+      if (e.__ewsDictOwned) return;
+      e.__ewsDictOwned = true;
       if (el._dictGate && !el._dictGate(e)) return;
       var word = _extractDoubleClickedWord(e);
       if (!word) return;
@@ -273,6 +336,8 @@
     // _extractDragSelectedPhrase reads. A 400ms debounce stops a synthesized
     // mouseup right after a real touchend from opening the popup twice.
     function runDragSelect(e) {
+      if (e.__ewsDictOwned) return;
+      e.__ewsDictOwned = true;
       if (el._dictGate && !el._dictGate(e)) return;
       var now = Date.now();
       if (now - (el._dictLastLookup || 0) < 400) return;
@@ -358,6 +423,7 @@
   var _lookupSeq = 0;
 
   function lookupWord(word, x, y) {
+    _ensureMarkup();
     var key = word.toLowerCase();
     _word = word;
     if (window.WordAudio) window.WordAudio.prefetch(word);
@@ -609,6 +675,7 @@
   // "list my books into the modal, let the user pick one" before the actual
   // save (single word vs bulk) happens in saveDictWordToBook.
   async function _loadBooksIntoPicker() {
+    _ensureMarkup();
     var modal = document.getElementById('dict-vocab-modal');
     var listEl = document.getElementById('dict-vocab-book-list');
     if (!modal || !listEl) return;
@@ -733,6 +800,70 @@
       _handleVocabSaveError(e, 'Lỗi lưu từ');
     }
   }
+
+  // ── Page-wide fallback ────────────────────────────────────────────────
+  // Pages register their own containers via setupDictionaryDouble(), but
+  // anything outside them (history/preview overlays, side panels, pages that
+  // never registered a container) used to get no lookup at all. This catches
+  // those spots. Inside a registered container the page's own handler + gate
+  // stay in charge (quizzes, timed tests, Listening's "Tra từ" toggle), so the
+  // fallback never overrides a page's rule. Off while a test is running:
+  // the page's window.__ewsExamActive() when it has one, else "global nav
+  // hidden" (every exam screen hides it). A page can opt out entirely with
+  // window.__ewsDictFallbackOff = true.
+  var TEST_PAGE_RE = /^(mock-test|entrance-test|test-dau-vao)(\.html)?$/;
+  var FALLBACK_SKIP_SELECTOR = '#dict-popup, #dict-vocab-modal, #ews-sl-popup, #ews-sl-icon, ' +
+    'input, textarea, select, [contenteditable=""], [contenteditable="true"], [data-no-dict]';
+
+  function _pageExamActive() {
+    try {
+      if (typeof window.__ewsExamActive === 'function') return !!window.__ewsExamActive();
+      var nav = document.getElementById('globalTopNav');
+      if (nav && nav.style.display === 'none') return true;
+    } catch (e) {}
+    return false;
+  }
+
+  function _fallbackAllowed(e) {
+    if (window.__ewsDictFallbackOff) return false;
+    if (TEST_PAGE_RE.test(location.pathname.split('/').pop())) return false;
+    var t = e.target;
+    if (t && t.nodeType !== 1) t = t.parentElement;
+    if (!t || !t.closest) return false;
+    for (var n = t; n && n !== document; n = n.parentNode) {
+      if (n._dictHandler) return false; // the page's own handler owns this spot
+    }
+    if (t.closest(FALLBACK_SKIP_SELECTOR)) return false;
+    return !_pageExamActive();
+  }
+
+  // Saved words remember where they came from — the page name here.
+  function _fallbackSource() {
+    return (location.pathname.split('/').pop() || 'home').replace(/\.html$/, '') || 'other';
+  }
+
+  var _fallbackLastLookup = 0;
+  document.addEventListener('dblclick', function (e) {
+    if (!_fallbackAllowed(e)) return;
+    var word = _extractDoubleClickedWord(e);
+    if (!word) return;
+    _source = _fallbackSource();
+    var p = _evtXY(e);
+    lookupWord(word, p.x, p.y);
+  });
+  function _fallbackDragSelect(e) {
+    if (!_fallbackAllowed(e)) return;
+    var now = Date.now();
+    if (now - _fallbackLastLookup < 400) return;
+    var word = _extractDragSelectedPhrase(e);
+    if (!word) return;
+    _fallbackLastLookup = now;
+    _source = _fallbackSource();
+    var p = _evtXY(e);
+    lookupWord(word, p.x, p.y);
+  }
+  document.addEventListener('mouseup', _fallbackDragSelect);
+  document.addEventListener('touchend', _fallbackDragSelect);
 
   window.setupDictionaryDouble    = setupDictionaryDouble;
   window.selectDictMeaning        = selectDictMeaning;

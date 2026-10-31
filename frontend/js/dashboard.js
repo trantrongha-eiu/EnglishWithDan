@@ -2601,6 +2601,11 @@ async function _reportSessionStreak() {
 function startPractice(mode) {
     _flushPracticeEvidence(); // previous session left half-way (mode switch / restart)
     _vocabQuizActive = true;
+    // The other quiz panels register their own question areas; these four
+    // (or the parts around their inner areas) don't, and dictionary-lookup.js's
+    // page-wide fallback would otherwise give away answers mid-quiz.
+    ['fillBlankMode', 'clozeMode', 'translationMode', 'mixedMode'].forEach(id =>
+        setupDictionaryDouble(id, 'vocab-quiz', () => !_vocabQuizActive));
     wrongWordSet.clear();
     requeuedWords.clear();
     _vocabWordsSeen.clear();
