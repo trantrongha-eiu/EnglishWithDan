@@ -2,6 +2,7 @@
 
 const reviewService = require('../services/reviewService');
 const { TAXONOMY, CATEGORIES_BY_TYPE } = require('../constants/errorTaxonomy');
+const { isStaff } = require('../utils/roles');
 
 function guard(logTag, handler) {
   return async (req, res) => {
@@ -44,7 +45,8 @@ exports.getPending = guard(null, async (req, res) => {
     pending: items[0] || null,
     count,
     items: await reviewService.describePendingReviews(items),
-    blocked: count >= reviewService.MAX_PENDING_REVIEWS,
+    // Admin/teacher are never gated (see middleware/requireReviewComplete).
+    blocked: !isStaff(req.user) && count >= reviewService.MAX_PENDING_REVIEWS,
   });
 });
 

@@ -7,7 +7,7 @@
 // "bypass via direct request" proof the feature depends on.
 const request = require('supertest');
 const app = require('../../app');
-const { createStudent, signTokenFor } = require('../factories/userFactory');
+const { createStudent, createTeacher, signTokenFor } = require('../factories/userFactory');
 const { createPassage, createReadingTest, createListeningTest, createListeningSection } = require('../factories/contentFactory');
 const AttemptReview = require('../../models/AttemptReview');
 const MockTestAttempt = require('../../models/MockTestAttempt');
@@ -367,6 +367,26 @@ describe('Mock-test review-gate exemption is server-verified (BUG-A01)', () => {
     const res = await api.post('/api/reading/start', { testId: String(test._id) });
     expect(res.status).toBe(403);
     expect(res.body.code).toBe('REVIEW_REQUIRED');
+  });
+
+  test('1b. a teacher account with 3 pending reviews is never blocked', async () => {
+    const user = await createTeacher();
+    const api = authed(user);
+    for (let i = 0; i < 3; i++) {
+      const { test } = await makeThreePassageReadingTest();
+      const start = await api.post('/api/reading/start', { testId: String(test._id) });
+      await api.post('/api/reading/submit', {
+        attemptId: start.body.attemptId,
+        answers: { 1: 'apple', 2: 'WRONG', 3: 'cherry' },
+      });
+    }
+    const pending = await api.get('/api/review/pending?skill=reading');
+    expect(pending.body.count).toBe(3);
+    expect(pending.body.blocked).toBe(false);
+
+    const { test } = await makeThreePassageReadingTest();
+    const res = await api.post('/api/reading/start', { testId: String(test._id) });
+    expect(res.status).toBe(200);
   });
 
   test('2. ?purpose=mocktest but NO MockTestAttempt → still blocked', async () => {

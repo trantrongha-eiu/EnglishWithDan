@@ -2,6 +2,8 @@
 
 const catchAsync = require('../middleware/catchAsync');
 const entranceTestService = require('../services/entranceTestService');
+const { STAFF_NO_STRIKE } = require('../services/proctorPolicy');
+const { isStaff } = require('../utils/roles');
 const entranceGuestService = require('../services/entranceGuestService');
 const { isHoneypotTripped } = require('../utils/honeypot');
 
@@ -76,6 +78,7 @@ exports.submitSection = catchAsync(async (req, res) => {
 
 // POST /api/entrance-test/:attemptId/violation   body: { type }
 exports.recordViolation = catchAsync(async (req, res) => {
+  if (isStaff(req.user)) return res.json({ success: true, ...STAFF_NO_STRIKE });
   const { type, capture } = req.body || {};
   const result = await entranceTestService.recordViolation(req.user._id, req.params.attemptId, { type, capture });
   res.json({ success: true, maxViolations: entranceTestService.MAX_VIOLATIONS, ...result });

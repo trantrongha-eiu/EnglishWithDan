@@ -50,6 +50,14 @@
     return document.fullscreenElement || document.webkitFullscreenElement || document.body;
   }
 
+  function _isStaff() {
+    try {
+      if (window.AuthService && window.AuthService.isStaff) return window.AuthService.isStaff();
+      var u = JSON.parse(localStorage.getItem('user') || 'null');
+      return !!(u && (u.role === 'admin' || u.role === 'teacher'));
+    } catch (_) { return false; }
+  }
+
   // The full "Gậy: n/5 — quay lại bài thi!" pill used to sit permanently in
   // the bottom-left corner and covered Reading/Listening questions and the
   // Writing Task 1 ⇄ Task 2 switcher. Now it shows the full text only for a
@@ -254,7 +262,7 @@
 
     // A tab switch fires blur AND visibilitychange — collapse to one "leave".
     function _onLeave(type) {
-      if (!_proctor || _proctor.navigatingAway) return;
+      if (!_proctor || _proctor.navigatingAway || _proctor.staff) return;
       // The browser's own screen-share picker takes focus — not a leave.
       if (window.ProctorCapture && window.ProctorCapture.isPicking()) return;
       _alarmOn();          // start (or keep) the continuous alarm every time
@@ -349,6 +357,11 @@
         badge: null, actx: null, alarm: null, alarmSafety: null,
         flashTimer: null, titleTimer: null, origTitle: null, navHideTimer: null
       }, fields);
+      // Admin/teacher accounts are never proctored: no badge, alarm, strikes,
+      // nav lock or screen share. The record still exists so callers'
+      // isActive()/stop() flow works the same (the server also ignores
+      // staff violation reports).
+      if (_isStaff()) { _proctor.staff = true; return _proctor; }
       var mount = function () {
         if (!_proctor) return;
         _proctor.badge = _makeBadge();

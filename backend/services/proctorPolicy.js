@@ -52,6 +52,14 @@ function disqualifiedAnswerFilter(now = Date.now()) {
   };
 }
 
+// Admin/teacher accounts (utils/roles.isStaff) are never proctored: the
+// violation endpoints answer with this instead of recording a strike — no
+// voided attempt, no cooldown. The page doesn't report them in the first
+// place (shared/proctor-engine.js); this is the backstop.
+const STAFF_NO_STRIKE = Object.freeze({
+  violationCount: 0, violated: false, disqualified: false, cooldownSeconds: 0, staff: true,
+});
+
 // Screenshots taken (via the student's shared screen) right after a strike.
 const SHOT_CAP = 30;
 // A screenshot is only accepted shortly after a recorded strike — the
@@ -72,6 +80,7 @@ module.exports = {
   isDuplicateEvent,
   DQ_ANSWER_WINDOW_MS,
   disqualifiedAnswerFilter,
+  STAFF_NO_STRIKE,
   SHOT_CAP,
   SHOT_WINDOW_MS,
   SHOT_MAX_BYTES,

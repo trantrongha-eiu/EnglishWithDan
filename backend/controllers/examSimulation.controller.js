@@ -2,11 +2,14 @@
 
 const catchAsync = require('../middleware/catchAsync');
 const examSimulationService = require('../services/examSimulationService');
+const { STAFF_NO_STRIKE } = require('../services/proctorPolicy');
+const { isStaff } = require('../utils/roles');
 
 // GET /api/exam-simulation/cooldown
 // Used by the mode-select popup to grey out / show a live countdown on the
 // Simulation option before the student even tries to start one.
 exports.cooldown = catchAsync(async (req, res) => {
+  if (isStaff(req.user)) return res.json({ success: true, active: false, remainingSeconds: 0 });
   const result = await examSimulationService.checkCooldown(req.user._id);
   res.json({ success: true, ...result });
 });
@@ -16,6 +19,7 @@ exports.cooldown = catchAsync(async (req, res) => {
 // A skill page's ExamProctor (shared/proctor-engine.js) reported the student leaving the exam
 // tab during a live Simulation attempt.
 exports.violation = catchAsync(async (req, res) => {
+  if (isStaff(req.user)) return res.json({ success: true, ...STAFF_NO_STRIKE });
   const { skill, attemptType, attemptId, type, capture } = req.body || {};
   const result = await examSimulationService.recordViolation(req.user._id, { skill, attemptType, attemptId, type, capture });
   res.json({ success: true, maxViolations: examSimulationService.MAX_VIOLATIONS, ...result });

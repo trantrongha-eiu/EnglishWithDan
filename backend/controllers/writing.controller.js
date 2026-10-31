@@ -11,6 +11,7 @@
 // getUnreadFeedbackCount/markFeedbackRead below still return a shape
 // that omits `message` entirely on error — unrelated, left as-is.
 const writingService = require('../services/writingService');
+const { isStaff } = require('../utils/roles');
 
 function guard(handler) {
   return async (req, res) => {
@@ -183,7 +184,11 @@ exports.getAttempt = guard(async (req, res) => {
 
 exports.getPendingRewrites = guard(async (req, res) => {
   const data = await writingService.getPendingRewrites(req.user._id);
-  res.json({ success: true, ...data, max: writingService.MAX_PENDING_REWRITES });
+  res.json({
+    success: true, ...data, max: writingService.MAX_PENDING_REWRITES,
+    // Admin/teacher are never gated (middleware/requireRewriteComplete).
+    blocked: !isStaff(req.user) && data.count >= writingService.MAX_PENDING_REWRITES,
+  });
 });
 
 exports.submitRewrite = guard(async (req, res) => {

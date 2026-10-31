@@ -31,6 +31,25 @@ test('admin / teacher accounts are not restricted', () => {
   loadScript('site-guard.js');
   expect(fire('contextmenu').defaultPrevented).toBe(false);
   expect(key('F12').defaultPrevented).toBe(false);
+
+  // Anti-paste guards (PasteGuard, dictation, drills…) sit on the field
+  // itself — for staff they must never run, so the paste goes through.
+  const ta = document.createElement('textarea');
+  document.body.appendChild(ta);
+  const guard = jest.fn((e) => e.preventDefault());
+  ta.addEventListener('paste', guard);
+  ta.addEventListener('drop', guard);
+  expect(fire('paste', ta).defaultPrevented).toBe(false);
+  expect(fire('drop', ta).defaultPrevented).toBe(false);
+  expect(guard).not.toHaveBeenCalled();
+
+  // Drag-and-drop answers (drop onto a non-text zone) still work.
+  const zone = document.createElement('div');
+  document.body.appendChild(zone);
+  const onDrop = jest.fn();
+  zone.addEventListener('drop', onDrop);
+  fire('drop', zone);
+  expect(onDrop).toHaveBeenCalled();
 });
 
 describe('for a student', () => {

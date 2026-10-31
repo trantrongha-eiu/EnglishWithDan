@@ -11,7 +11,7 @@
 //   - Practice mode is completely unaffected by an active cooldown
 const request = require('supertest');
 const app = require('../../app');
-const { createPremiumStudent, signTokenFor } = require('../factories/userFactory');
+const { createPremiumStudent, createTeacher, signTokenFor } = require('../factories/userFactory');
 const { createReadingTest, createPassage, createListeningTest } = require('../factories/contentFactory');
 const User = require('../../models/User');
 const TestAttempt = require('../../models/TestAttempt');
@@ -111,6 +111,30 @@ describe('Test Simulation — start, 3 strikes, disqualify, global cooldown', ()
     const reopenedRes = await api.post('/api/reading/start', { testId: String(test._id), mode: 'simulation' });
     expect(reopenedRes.status).toBe(200);
     expect(reopenedRes.body.mode).toBe('simulation');
+  });
+
+  test('a teacher account is never proctored: violations record no strike, never void the attempt, no cooldown', async () => {
+    const test = await seedReadingTest();
+    const teacher = await createTeacher();
+    const api = authed(teacher);
+
+    const startRes = await api.post('/api/reading/start', { testId: String(test._id), mode: 'simulation' });
+    expect(startRes.status).toBe(200);
+    const attemptId = startRes.body.attemptId;
+
+    for (let i = 0; i < examSimulationService.MAX_VIOLATIONS + 1; i++) {
+      const res = await api.post('/api/exam-simulation/violation', {
+        skill: 'reading', attemptType: 'full', attemptId, type: 'blur',
+      });
+      expect(res.status).toBe(200);
+      expect(res.body.disqualified).toBe(false);
+      expect(res.body.violationCount).toBe(0);
+    }
+    const doc = await TestAttempt.findById(attemptId).lean();
+    expect(doc.status).toBe('in-progress');
+    expect((doc.proctor && doc.proctor.violationCount) || 0).toBe(0);
+    const cd = await api.get('/api/exam-simulation/cooldown');
+    expect(cd.body.active).toBe(false);
   });
 
   test('a late violation report after the attempt is already completed is a no-op (idempotent, no error)', async () => {

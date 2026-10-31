@@ -53,6 +53,16 @@
   function mode() { return !supported() ? 'unsupported' : (isLive() ? 'screen' : 'none'); }
   function isPicking() { return _picking; }
 
+  // Admin/teacher accounts aren't proctored (see proctor-engine.js), so they
+  // never have to share their screen either.
+  function _isStaff() {
+    try {
+      if (window.AuthService && window.AuthService.isStaff) return window.AuthService.isStaff();
+      var u = JSON.parse(localStorage.getItem('user') || 'null');
+      return !!(u && (u.role === 'admin' || u.role === 'teacher'));
+    } catch (_) { return false; }
+  }
+
   function _fsRoot() {
     return document.fullscreenElement || document.webkitFullscreenElement || document.body;
   }
@@ -141,7 +151,7 @@
   // false if they pressed "Huỷ" (only offered when opts.cancelable).
   function ensureShare(opts) {
     opts = opts || {};
-    if (!supported() || isLive()) return Promise.resolve(true);
+    if (!supported() || isLive() || _isStaff()) return Promise.resolve(true);
     if (_gate) return _gate.promise;
     _ensureStyle();
 
@@ -254,6 +264,6 @@
   window.ProctorCapture = {
     supported: supported, isLive: isLive, mode: mode, isPicking: isPicking,
     ensureShare: ensureShare, capture: capture, shoot: shoot,
-    onStopped: onStopped, release: release
+    onStopped: onStopped, release: release, isStaff: _isStaff
   };
 })();

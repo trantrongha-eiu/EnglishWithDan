@@ -6,10 +6,14 @@ const WT1Exercise = require('../models/WT1Exercise');
 const svc = require('../services/wt1Service');
 const grading = require('../services/wt1GradingService');
 const speakingService = require('../services/speakingService');
+const { isStaff } = require('../utils/roles');
+
+// Admin/teacher accounts see every lesson unlocked (no score / code gate).
+const gateOpts = (req) => ({ staff: isStaff(req.user) });
 
 exports.getOverview = async (req, res) => {
   try {
-    res.json({ success: true, ...(await svc.getOverview(req.user._id, req.query.course)) });
+    res.json({ success: true, ...(await svc.getOverview(req.user._id, req.query.course, gateOpts(req))) });
   } catch (err) {
     console.error('[WT1] overview:', err.message);
     res.status(500).json({ success: false, message: 'Lỗi server' });
@@ -18,7 +22,7 @@ exports.getOverview = async (req, res) => {
 
 exports.getLesson = async (req, res) => {
   try {
-    const data = await svc.getLesson(req.params.code, req.user._id);
+    const data = await svc.getLesson(req.params.code, req.user._id, gateOpts(req));
     if (!data) return res.status(404).json({ success: false, message: 'Không tìm thấy buổi học' });
     res.json({ success: true, ...data });
   } catch (err) {
@@ -42,7 +46,7 @@ exports.check = async (req, res) => {
     if (!grading.OBJECTIVE_TYPES.has(ex.type)) {
       return res.status(400).json({ success: false, message: 'Bài này không chấm tự động — dùng /submit-writing.' });
     }
-    await svc.assertLessonUnlocked(req.user._id, ex.lessonCode);
+    await svc.assertLessonUnlocked(req.user._id, ex.lessonCode, gateOpts(req));
     // req.skipAIGrading: set by the /check route's rate limiter once a
     // student hits it — go straight to the local fallback instead of
     // calling Gemini at all (same pattern as task2Practice's checkLimiter).
@@ -79,7 +83,7 @@ exports.submitWriting = async (req, res) => {
     if (!WRITING.has(ex.type)) {
       return res.status(400).json({ success: false, message: 'Bài này chấm tự động — dùng /check.' });
     }
-    await svc.assertLessonUnlocked(req.user._id, ex.lessonCode);
+    await svc.assertLessonUnlocked(req.user._id, ex.lessonCode, gateOpts(req));
 
     // The model answer is safe to return now (student has submitted) — the
     // pre-submit payload from wt1Service.sanitizeExercise strips it. Shown
@@ -181,7 +185,7 @@ exports.submitSpeaking = async (req, res) => {
     if (ex.type !== 'speaking_response') {
       return res.status(400).json({ success: false, message: 'Bài này không phải bài nói.' });
     }
-    await svc.assertLessonUnlocked(req.user._id, ex.lessonCode);
+    await svc.assertLessonUnlocked(req.user._id, ex.lessonCode, gateOpts(req));
 
     const items = ex.items || [];
     const part = ex.speakingPart || 1;

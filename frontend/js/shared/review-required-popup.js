@@ -379,7 +379,7 @@
         if (!d || !d.success) return;
         var count = d.count || 0;
         var max = d.max || 3;
-        var blocked = count >= max;
+        var blocked = typeof d.blocked === 'boolean' ? d.blocked : count >= max;
         var firstId = _firstId(d.items);
         _renderBanner(count, blocked, firstId);
         if (blocked) _showModal(count, firstId);

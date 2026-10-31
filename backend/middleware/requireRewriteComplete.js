@@ -18,8 +18,10 @@
  */
 const writingService = require('../services/writingService');
 const mockTestService = require('../services/mockTestService');
+const { isStaff } = require('../utils/roles');
 
 async function requireRewriteComplete(req, res, next) {
+  if (isStaff(req.user)) return next(); // admin/teacher are never gated
   if (await mockTestService.hasActiveMockStep(req.user._id, 'writing')) return next();
 
   const { count, items } = await writingService.getPendingRewrites(req.user._id);

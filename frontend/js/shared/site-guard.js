@@ -93,12 +93,31 @@
   var COPY_LIMIT = 120;
   var GAP_THRESHOLD = 160; // px the viewport must shrink by to count as DevTools
 
-  var host = location.hostname;
-  if (host === 'localhost' || host === '127.0.0.1' || host === '') return;
+  var staff = false;
   try {
     var u = JSON.parse(localStorage.getItem('user') || 'null');
-    if (u && (u.role === 'admin' || u.role === 'teacher')) return;
+    staff = !!(u && (u.role === 'admin' || u.role === 'teacher'));
   } catch (e) { /* malformed — treat as a normal visitor */ }
+
+  // ── Staff can always paste / drop text (incl. localhost) ──
+  // Every anti-paste guard on the site (PasteGuard on Writing/Speaking,
+  // dictation, drills, gap-fill blanks…) listens on the field itself. A
+  // window capture listener runs before all of them, so stopping the event
+  // here skips those guards while the browser still does the paste.
+  // Drop is only stopped on text fields so drag-and-drop answers still work.
+  if (staff) {
+    window.addEventListener('paste', function (e) { e.stopImmediatePropagation(); }, true);
+    window.addEventListener('drop', function (e) {
+      var t = e.target;
+      if (t && t.nodeType === 1 && (t.isContentEditable || t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+        e.stopImmediatePropagation();
+      }
+    }, true);
+  }
+
+  var host = location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1' || host === '') return;
+  if (staff) return;
 
   // ── Console warning (Self-XSS) ─────────────────────────────
   try {

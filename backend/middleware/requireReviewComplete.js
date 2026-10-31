@@ -24,9 +24,11 @@
  */
 const reviewService = require('../services/reviewService');
 const mockTestService = require('../services/mockTestService');
+const { isStaff } = require('../utils/roles');
 
 function requireReviewComplete(skill) {
   return async (req, res, next) => {
+    if (isStaff(req.user)) return next(); // admin/teacher are never gated
     if (req.query.purpose === 'mocktest'
         && await mockTestService.hasActiveMockStep(req.user._id, skill)) {
       return next();

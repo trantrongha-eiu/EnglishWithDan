@@ -217,7 +217,11 @@ async function loadDoneSubs(userId) {
 //  - allLessonsCourses: course codes whose ordinary lessons are all open
 //    via a 'wt1-all-lessons' code ('*' = a code with no targetCourseCode,
 //    i.e. every course).
-async function getCodeUnlocks(userId) {
+// Admin/teacher accounts (opts.staff) get everything open: every course's
+// ordinary lessons and every test lesson, no code or score gate.
+const ALL_LESSONS = { has: () => true };
+async function getCodeUnlocks(userId, opts = {}) {
+  if (opts.staff) return { testLessons: ALL_LESSONS, allLessonsCourses: new Set(['*']) };
   const rows = await ReviewBypassCode.find({
     kind: { $in: ['wt1-test-unlock', 'wt1-all-lessons'] },
     'redemptions.userId': userId,
@@ -273,7 +277,7 @@ function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons,
   });
 }
 
-async function getOverview(userId, courseCode) {
+async function getOverview(userId, courseCode, opts = {}) {
   const cc = resolveCourse(courseCode);
   const [course, modules, lessons, counts] = await Promise.all([
     WT1Course.findOne({ code: cc }).lean(),
@@ -305,7 +309,7 @@ async function getOverview(userId, courseCode) {
     (lessonsByModule[l.moduleCode] = lessonsByModule[l.moduleCode] || []).push(l);
   }
 
-  const unlocks = await getCodeUnlocks(userId);
+  const unlocks = await getCodeUnlocks(userId, opts);
   const openAll = allLessonsOpen(unlocks, cc);
 
   const outModules = modules.map((m) => {
@@ -330,9 +334,10 @@ async function getOverview(userId, courseCode) {
 // dimmed card in the UI. `err.code` lets the frontend tell "finish the
 // previous lesson" apart from "needs an admin code" without string-matching
 // the Vietnamese message.
-async function assertLessonUnlocked(userId, lessonCode) {
+async function assertLessonUnlocked(userId, lessonCode, opts = {}) {
   const lesson = await WT1Lesson.findOne({ code: lessonCode, published: true }).lean();
   if (!lesson) throw new NotFoundError('Không tìm thấy buổi học');
+  if (opts.staff) return; // admin/teacher: never locked
 
   const mod = await WT1Module.findOne({ code: lesson.moduleCode }).select('freePractice courseCode').lean();
   const mlessons = await WT1Lesson.find({ moduleCode: lesson.moduleCode, published: true }).sort({ order: 1 }).lean();
@@ -362,10 +367,10 @@ async function assertLessonUnlocked(userId, lessonCode) {
   throw err;
 }
 
-async function getLesson(code, userId) {
+async function getLesson(code, userId, opts = {}) {
   const lesson = await WT1Lesson.findOne({ code, published: true }).lean();
   if (!lesson) return null;
-  await assertLessonUnlocked(userId, code);
+  await assertLessonUnlocked(userId, code, opts);
   const exercises = await WT1Exercise.find({ lessonCode: code, published: true }).sort({ order: 1 }).lean();
   const subs = await WT1Submission.find({ userId, exerciseCode: { $in: exercises.map((e) => e.code) }, status: { $ne: 'draft' } })
     .select('exerciseCode score maxScore aiFeedback status createdAt').sort({ createdAt: -1 }).lean();

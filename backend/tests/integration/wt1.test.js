@@ -4,7 +4,7 @@ jest.mock('../../services/geminiService');
 const request = require('supertest');
 const app = require('../../app');
 const geminiService = require('../../services/geminiService');
-const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
+const { createStudent, createPremiumStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
 const WT1Course = require('../../models/WT1Course');
 const WT1Module = require('../../models/WT1Module');
 const WT1Lesson = require('../../models/WT1Lesson');
@@ -251,6 +251,18 @@ describe('gate unlock + ownership', () => {
 // now all call wt1Service.assertLessonUnlocked first, so a locked lesson is
 // genuinely unreachable — not just hidden behind CSS.
 describe('hard lock enforcement', () => {
+  test.each([['teacher', createTeacher], ['admin', createAdmin]])('a %s account is never locked — every lesson incl. the test lesson is open', async (_role, make) => {
+    const u = await make();
+    const overview = await request(app).get('/api/wt1/overview').set(bearer(u));
+    const lessons = overview.body.modules.find((m) => m.code === 'T1-M1').lessons;
+    for (const l of lessons) expect(l.unlocked).toBe(true);
+
+    expect((await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u))).status).toBe(200);
+    expect((await request(app).get('/api/wt1/lesson/T1-L04').set(bearer(u))).status).toBe(200);
+    const checkRes = await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MCQ2', answers: { q1: 'B' } });
+    expect(checkRes.status).toBe(200);
+  });
+
   test('T1-L03 (locked — T1-L02 gate not yet met) 403s on GET /lesson and POST /check', async () => {
     const u = await createPremiumStudent();
     const lessonRes = await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u));

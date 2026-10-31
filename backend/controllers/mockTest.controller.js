@@ -2,6 +2,8 @@
 
 const catchAsync = require('../middleware/catchAsync');
 const mockTestService = require('../services/mockTestService');
+const { STAFF_NO_STRIKE } = require('../services/proctorPolicy');
+const { isStaff } = require('../utils/roles');
 const assignmentService = require('../services/assignmentService');
 
 // POST /api/mock-test/start   body (optional): { assignmentId, itemId }
@@ -49,6 +51,7 @@ exports.abandon = catchAsync(async (req, res) => {
 // POST /api/mock-test/:id/violation   body: { type, skill }
 // The exam tab reported a tab-switch / focus-loss / close attempt.
 exports.violation = catchAsync(async (req, res) => {
+  if (isStaff(req.user)) return res.json({ success: true, ...STAFF_NO_STRIKE });
   const { type, skill, capture } = req.body || {};
   const result = await mockTestService.recordViolation(req.user._id, req.params.id, { type, skill, capture });
   res.json({ success: true, maxViolations: mockTestService.MAX_VIOLATIONS, ...result });
