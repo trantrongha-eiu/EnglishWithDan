@@ -24,6 +24,7 @@
 .inv-info b { font-size: 14px; color: var(--text); }
 .inv-qty { font-size: 12px; font-weight: 700; color: #ea580c; }
 .inv-walking, .inv-passive { font-size: 12px; font-weight: 700; color: var(--success, #16a34a); }
+.inv-resting { font-size: 12px; font-weight: 700; color: #6366f1; }
 .inv-actions { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .inv-actions .btn[disabled] { opacity: .5; pointer-events: none; }
 .inv-empty { text-align: center; color: var(--text2); padding: 26px 8px; }

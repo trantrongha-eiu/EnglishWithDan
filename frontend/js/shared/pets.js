@@ -637,7 +637,7 @@
   Walker.prototype.rest = function () {
     lsSet(REST_KEY, todayStr());
     this.destroy();
-    if (window.showToast) try { window.showToast('Linh thú đi ngủ rồi — mai gặp lại nhé 💤', 'info'); } catch (e) {}
+    if (window.showToast) try { window.showToast('Linh thú đi ngủ rồi — mai gặp lại nhé 💤 (gọi dậy ở Kho đồ trang cá nhân)', 'info'); } catch (e) {}
   };
   Walker.prototype.destroy = function () {
     cancelAnimationFrame(this.raf);
@@ -853,6 +853,10 @@
       try { localStorage.removeItem(REST_KEY); } catch (e) {}
       show(id);
     },
+    // True after "💤 Cho nghỉ hôm nay" until midnight — the pet (and its
+    // entrance) is hidden on this browser. Kho đồ / shop show it with a
+    // "Gọi dậy" button, which calls setActive(activePet) to bring it back.
+    isResting: function () { return lsGet(REST_KEY) === todayStr(); },
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

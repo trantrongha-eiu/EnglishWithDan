@@ -130,7 +130,9 @@
             if (!p.owned) {
                 action = '<button type="button" class="btn btn-primary btn-sm" data-buy-pet="' + p.id + '"' + (state.wallet >= p.price ? '' : ' disabled') + '>Mua · 🔥 ' + p.price + '</button>';
             } else {
-                action = (active ? '<span class="shop-walking">✓ Đang đi dạo</span>' : '')
+                var resting = active && window.Pets && window.Pets.isResting && window.Pets.isResting();
+                action = (resting ? '<span class="shop-resting">💤 Đang nghỉ hôm nay</span>'
+                        : active ? '<span class="shop-walking">✓ Đang đi dạo</span>' : '')
                     + '<a class="btn btn-ghost btn-sm" href="' + KHO + '">🎒 Trong kho</a>';
             }
             return '<article class="shop-card shop-pet' + (p.tier === 'vi' ? ' shop-pet--vi' : '') + (p.legendary ? ' shop-pet--legend' : '') + (active ? ' is-active' : '') + (p.owned ? ' is-owned' : '') + '">'

@@ -73,12 +73,18 @@
 
     function petCard(p) {
         var active = state.activePet === p.id;
+        // "💤 Cho nghỉ hôm nay" (clicked on the walking pet) hides it on this
+        // browser until midnight — say so instead of "Đang đi dạo".
+        var resting = active && window.Pets && window.Pets.isResting && window.Pets.isResting();
         var art = window.Pets ? window.Pets.svg(p.id) : '';
         return '<div class="inv-card inv-pet' + (active ? ' is-active' : '') + '">'
             + '<span class="inv-pet-art" aria-hidden="true">' + art + '</span>'
             + '<div class="inv-info"><b>' + escHtml(p.name) + '</b>'
-            + (active ? '<span class="inv-walking">✓ Đang đi dạo</span>' : (p.tails ? '<span class="inv-qty">' + p.tails + ' đuôi</span>' : '')) + '</div>'
+            + (resting ? '<span class="inv-resting">💤 Đang nghỉ hôm nay</span>'
+                : active ? '<span class="inv-walking">✓ Đang đi dạo</span>'
+                : (p.tails ? '<span class="inv-qty">' + p.tails + ' đuôi</span>' : '')) + '</div>'
             + '<div class="inv-actions">'
+            + (resting ? '<button type="button" class="btn btn-primary btn-sm" data-inv-wake>Gọi dậy</button>' : '')
             + (active
                 ? '<button type="button" class="btn btn-ghost btn-sm" data-inv-pet="">Cất về</button>'
                 : '<button type="button" class="btn btn-primary btn-sm" data-inv-pet="' + p.id + '">Dắt đi dạo</button>')
@@ -168,9 +174,15 @@
     }
 
     document.addEventListener('click', function (e) {
-        var b = e.target.closest && e.target.closest('[data-inv-use],[data-inv-sell-item],[data-inv-sell-pet],[data-inv-pet],[data-inv-daniel]');
+        var b = e.target.closest && e.target.closest('[data-inv-use],[data-inv-sell-item],[data-inv-sell-pet],[data-inv-pet],[data-inv-daniel],[data-inv-wake]');
         if (!b || b.disabled || busy || !state) return;
-        if (b.hasAttribute('data-inv-daniel')) useDaniel();
+        if (b.hasAttribute('data-inv-wake')) {
+            // Local only: the server still has it as the active pet.
+            if (window.Pets) window.Pets.setActive(state.activePet);
+            toast('🐾 Linh thú dậy rồi, đi dạo tiếp nè!', 'success');
+            render();
+        }
+        else if (b.hasAttribute('data-inv-daniel')) useDaniel();
         else if (b.hasAttribute('data-inv-use')) useItem(b.getAttribute('data-inv-use'));
         else if (b.hasAttribute('data-inv-sell-item')) sellItem(b.getAttribute('data-inv-sell-item'));
         else if (b.hasAttribute('data-inv-sell-pet')) sellPet(b.getAttribute('data-inv-sell-pet'));
