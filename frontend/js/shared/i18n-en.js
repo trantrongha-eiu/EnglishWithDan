@@ -130,6 +130,7 @@
     '3–4 bạn': '3–4 students',
     '3–4 tháng': '3–4 months',
     '30 giây': '30 seconds',
+    '10 giây': '10 seconds',
     '30 phút': '30 minutes',
     '300.000đ / giờ (lớp 1–1)': '300,000đ / hour (1–1 class)',
     '④ Hướng dẫn viết': '④ Writing guide',

@@ -1438,7 +1438,7 @@ function jumpToTime(start) { audio.currentTime = start; if (audio.paused) audio.
 
 let _asoTimer = null;
 
-// Student clicks "Understood" on overlay → close overlay, start 30s countdown in audio bar
+// Student clicks "Understood" on overlay → close overlay, start 10s countdown in audio bar
 function startReadingTime() {
     document.getElementById('audio-start-overlay').classList.add('hidden');
     const playNowBtn = document.getElementById('aso-play-now-btn');
@@ -1447,7 +1447,7 @@ function startReadingTime() {
 }
 
 function startAudioCountdown(seconds) {
-    let count = seconds || 30;
+    let count = seconds || 10;
     updateExamAudioStatus(false, count);
     clearInterval(_asoTimer);
     _asoTimer = setInterval(() => {
@@ -1470,7 +1470,7 @@ function startAudioPlay() {
     // start, unlike the unconditional updateExamAudioStatus(true) this
     // used to call immediately regardless of outcome. That's what let
     // audio.play()'s rejection get silently swallowed: this is called
-    // from unattended setInterval countdowns (the 30s reading-time
+    // from unattended setInterval countdowns (the 10s reading-time
     // auto-start, or resumeExam()'s 5s auto-countdown) with no user
     // gesture in the call stack, exactly when a browser's autoplay
     // policy is most likely to block it — the student would see a
