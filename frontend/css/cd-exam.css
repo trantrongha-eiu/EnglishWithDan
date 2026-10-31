@@ -313,6 +313,11 @@
 :is(#screen-exam, .cd-live) .rq-inline-wrap:has(.rq-inline-input:not(:placeholder-shown)) .rq-q-badge,
 :is(#screen-exam, .cd-live) .inline-input-wrap:has(.fill-input-inline:focus) .q-badge-inline,
 :is(#screen-exam, .cd-live) .rq-inline-wrap:has(.rq-inline-input:focus) .rq-q-badge { opacity: 0; }
+/* Drag-and-drop blanks (summary with word bank): the number badge sits on
+   top of the zone, so hide the "Thả vào" text while empty and hide the
+   number once an answer is dropped in — otherwise the two overlap. */
+:is(#screen-exam, .cd-live) .rq-inline-wrap .sc-drop:not(.filled) { color: transparent; min-width: 120px; min-height: 26px; }
+:is(#screen-exam, .cd-live) .rq-inline-wrap:has(.sc-drop.filled) .rq-q-badge { opacity: 0; }
 
 /* Notes / tables / summaries keep their structure, just in the exam's
    ink-on-white style. */
