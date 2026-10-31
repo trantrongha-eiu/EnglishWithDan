@@ -3039,7 +3039,12 @@ function _renderExamResult(r, answerKeyWithheld) {
     } else {
         resultMsgEl.hidden = false;
     }
-    showScreen('result');
+    // Practice mode (full test or chosen sections): skip the result screen
+    // and open the review straight away — the review header carries the
+    // band + result image.
+    // Test Simulation keeps the exam-like result screen first.
+    const directReview = !_mockMode && state.mode === 'practice';
+    if (!directReview) showScreen('result');
 
     // Full mock test: don't auto-navigate to Reading — record this
     // sub-attempt in the background (advanceWithoutNav still runs
@@ -3054,7 +3059,9 @@ function _renderExamResult(r, answerKeyWithheld) {
         return;
     }
 
-    if (window.showPostSubmitReminder) window.showPostSubmitReminder({ skill: 'listening', onReview: () => goToReview() });
+    if (directReview) goToReview();
+
+    if (window.showPostSubmitReminder) window.showPostSubmitReminder({ skill: 'listening', onReview: _ltOpenReviewOrJump });
 
     // Priority 2C — only fires for a session launched via the
     // Today's Learning popup's "Start" button; normal practice is
@@ -3065,9 +3072,22 @@ function _renderExamResult(r, answerKeyWithheld) {
             scoreLabel: `${r.correctCount}/${r.totalQuestions || 40} câu đúng`,
             subLabel: r.bandScore != null ? `Band ${r.bandScore.toFixed(1)}` : '',
             nextAction: r.wrongCount > 0 ? 'Nghe lại các câu sai và xem transcript.' : 'Kết quả tốt — giữ vững nhé!',
-            onReview: () => goToReview(),
+            onReview: _ltOpenReviewOrJump,
         });
     }
+}
+
+// "Xem lại" buttons on the post-submit popups: open the review, or — when
+// it is already showing (Practice mode lands there directly) — jump to
+// the first question answered wrong or skipped.
+function _ltOpenReviewOrJump() {
+    const r = state.reviewResult;
+    const onReview = state.isReview && !!document.getElementById('screen-review')?.classList.contains('active');
+    if (!onReview || !r) { goToReview(); return; }
+    const firstWrong = (r.sections || []).flatMap(_ltGetAllQs)
+        .filter(q => !q.isCorrect)
+        .sort((a, b) => a.questionNumber - b.questionNumber)[0];
+    if (firstWrong) scrollToQ(firstWrong.questionNumber);
 }
 
 async function submitExam() {

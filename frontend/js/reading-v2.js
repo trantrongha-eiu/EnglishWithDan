@@ -3468,11 +3468,27 @@ function showResult(r) {
     msgEl.hidden = true;
   }
 
+  // Practice mode (full test or chosen passages): skip the result screen
+  // and open the review straight away — the review header carries the
+  // band + result image, and its ✕ still returns to this result screen.
+  // Test Simulation keeps the exam-like result screen first.
+  const directReview = !_mockMode && state.mode === 'practice' && !!r.attemptId;
+  const openFirstScreen = () => {
+    if (!directReview) { showScreen('result'); return; }
+    // Keep the "Đang nộp bài…" overlay up while the review loads, so the
+    // finished exam doesn't sit there looking editable.
+    const ov = document.getElementById('submit-loading-overlay');
+    if (ov) { document.body.appendChild(ov); ov.style.display = 'flex'; }
+    loadReview(r.attemptId).then(ok => {
+      if (ov) ov.style.display = 'none';
+      if (!ok) showScreen('result');
+    });
+  };
   // screen-result is outside the fullscreen container (screen-exam), so exit fullscreen first
   if (document.fullscreenElement) {
-    document.exitFullscreen().then(() => showScreen('result')).catch(() => showScreen('result'));
+    document.exitFullscreen().then(openFirstScreen).catch(openFirstScreen);
   } else {
-    showScreen('result');
+    openFirstScreen();
   }
 
   // Full mock test: sitting 1 is Listening → Reading → Writing. Record
@@ -3493,7 +3509,7 @@ function showResult(r) {
     return;
   }
 
-  if (window.showPostSubmitReminder) window.showPostSubmitReminder({ skill: 'reading', onReview: goToReview });
+  if (window.showPostSubmitReminder) window.showPostSubmitReminder({ skill: 'reading', onReview: _rdOpenReviewOrJump });
 
   // Priority 2C — only fires for a session actually launched via the
   // Today's Learning popup's "Start" button (see learning-popups.js's
@@ -3505,7 +3521,7 @@ function showResult(r) {
       scoreLabel: `${r.correctCount}/${r.totalQuestions} câu đúng`,
       subLabel: r.bandScore != null ? `Band ${r.bandScore.toFixed(1)}` : '',
       nextAction: r.wrongCount > 0 ? 'Xem lại các câu sai và lưu từ vựng hữu ích.' : 'Kết quả tốt — giữ vững nhé!',
-      onReview: attemptId ? () => loadReview(attemptId) : null,
+      onReview: attemptId ? _rdOpenReviewOrJump : null,
     });
   }
 }
@@ -3515,19 +3531,34 @@ function goToReview() {
   if (aid) loadReview(aid);
 }
 
+// "Xem lại" buttons on the post-submit popups: open the review, or — when
+// it is already showing (Practice mode lands there directly) — jump to the
+// first question answered wrong or skipped.
+function _rdOpenReviewOrJump() {
+  const aid = document.getElementById('result-band').dataset.attemptId;
+  const data = state.reviewData;
+  const onReview = state.isReview && !!document.getElementById('screen-review')?.classList.contains('active');
+  if (!onReview || !data || String(data.attempt?._id) !== String(aid)) { goToReview(); return; }
+  const firstWrong = Object.keys(data.reviewMap).map(Number).sort((a, b) => a - b)
+    .find(n => !data.reviewMap[n].isCorrect);
+  if (firstWrong != null) jumpToReviewQuestion(firstWrong);
+}
+
 /* ══════════════════════════════════════════════════════════════════════
    SCREEN 5 – REVIEW
 ══════════════════════════════════════════════════════════════════════ */
+// Resolves true once the review is on screen, false if it failed to load.
 async function loadReview(attemptId) {
   try {
     const res = await apiFetch(`/api/reading/attempt/${attemptId}/review`);
-    if (!res.success) { showVocabToast('Không tải được bài review'); return; }
+    if (!res.success) { showVocabToast('Không tải được bài review'); return false; }
     // Push URL để có thể bookmark/share link review
     if (!location.search.includes(`review=${attemptId}`)) {
       history.pushState({ screen: 'review', reviewId: attemptId }, '', `?review=${attemptId}`);
     }
     renderReview(res.attempt, res.answerKeyWithheld);
-  } catch (e) { showVocabToast('Lỗi tải bài review. Thử lại sau.'); }
+    return true;
+  } catch (e) { showVocabToast('Lỗi tải bài review. Thử lại sau.'); return false; }
 }
 
 // Shown at the top of the review question list when the server withheld
