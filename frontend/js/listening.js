@@ -1278,6 +1278,8 @@ function setupAudioEvents() {
         });
         if (!state.isReview) updateExamAudioStatus(true);
         if (!state.isReview) _syncPartPlayBtn();
+        // Playing again (e.g. after "Phát tiếp") — hide the resume button.
+        if (_isOneShotExamAudio()) _hidePlayNowBtn();
     });
     audio.addEventListener('pause', () => {
         ['play-btn', 'play-btn-rv', 'play-btn-pr'].forEach(id => {
@@ -1286,7 +1288,27 @@ function setupAudioEvents() {
         });
         if (!state.isReview) updateExamAudioStatus(false);
         if (!state.isReview) _syncPartPlayBtn();
+        // Stopped mid-test without the student asking (the full-test screen
+        // has no pause button): earbuds taken out, a Bluetooth glitch, a
+        // media key… Before, the bar just said "Chờ audio..." with no way
+        // to carry on short of reloading the page. Offer a button instead.
+        // (The end of the audio also fires 'pause' — audio.ended skips it.)
+        if (_isOneShotExamAudio() && !audio.ended && audio.currentTime > 0) {
+            _showPlayNowBtn('<i class="fas fa-pause-circle"></i> Audio bị dừng — bấm "Phát tiếp"', 'Phát tiếp');
+        }
     });
+    // Keyboard Play/Pause keys, headset buttons and earbuds' in-ear
+    // detection reach the page through the Media Session. With no handler,
+    // Chrome pauses whatever played last — the test audio, even when the
+    // student meant the Spotify tab (reported 2026-10-31: "audio bị tự
+    // ngắt"). During a full test there is no pausing, so ignore them there.
+    if ('mediaSession' in navigator) {
+        const guard = () => { if (!_isOneShotExamAudio()) audio.pause(); };
+        for (const action of ['pause', 'stop']) {
+            try { navigator.mediaSession.setActionHandler(action, guard); } catch (_) {}
+        }
+        try { navigator.mediaSession.setActionHandler('play', () => { audio.play().catch(() => {}); }); } catch (_) {}
+    }
     audio.addEventListener('ended', () => {
         if (!state.isReview) updateExamAudioStatus(false);
         if (!state.isReview) _syncPartPlayBtn();
@@ -1455,15 +1477,40 @@ function startAudioPlay() {
     // confident green "Playing" pill while hearing nothing, with no
     // way to recover on a one-time-only, no-rewind audio.
     if (playNowBtn) playNowBtn.classList.add('hidden');
+    _playExamAudio(true);
+}
+
+// AbortError = this play() got cut off (a pause/media key arriving while
+// it was still starting) rather than refused — just try again once.
+function _playExamAudio(retry) {
     audio.play().catch(err => {
-        console.error('[startAudioPlay] play() failed:', err);
-        if (playNowBtn) playNowBtn.classList.remove('hidden');
-        const el = document.getElementById('exam-audio-status');
-        if (el) {
-            el.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Không tự phát được — bấm "Phát ngay"';
-            el.style.color = '#dc2626';
+        console.error('[startAudioPlay] play() failed:', err && err.name, err);
+        if (retry && err && err.name === 'AbortError' && _isOneShotExamAudio()) {
+            setTimeout(() => { if (audio.paused) _playExamAudio(false); }, 400);
+            return;
         }
+        if (audio.currentTime > 0) _showPlayNowBtn('<i class="fas fa-exclamation-triangle"></i> Audio bị dừng — bấm "Phát tiếp"', 'Phát tiếp');
+        else _showPlayNowBtn('<i class="fas fa-exclamation-triangle"></i> Không tự phát được — bấm "Phát ngay"', 'Phát ngay');
     });
+}
+
+// The full test's single run-through audio is on screen (not review, a
+// partial Practice with its own play/pause button, or "lẻ" practice).
+function _isOneShotExamAudio() {
+    return !state.isReview && !state.submitted && !_isPartPractice()
+        && !window.isLtPracticeActive?.()
+        && !!audio.getAttribute('src')
+        && !!document.getElementById('screen-exam')?.classList.contains('active');
+}
+function _showPlayNowBtn(statusHtml, label) {
+    const btn = document.getElementById('aso-play-now-btn');
+    if (btn) { btn.innerHTML = `<i class="fas fa-play"></i> ${label}`; btn.classList.remove('hidden'); }
+    const el = document.getElementById('exam-audio-status');
+    if (el) { el.innerHTML = statusHtml; el.style.color = '#dc2626'; }
+}
+function _hidePlayNowBtn() {
+    const btn = document.getElementById('aso-play-now-btn');
+    if (btn) { btn.classList.add('hidden'); btn.innerHTML = '<i class="fas fa-play"></i> Phát ngay'; }
 }
 
 function updateExamAudioStatus(playing, countdown) {
