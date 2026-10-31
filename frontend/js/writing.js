@@ -1080,7 +1080,7 @@ async function viewAttempt(id) {
             </div>`;
       } else if (_rewriteRequired(a)) {
         rewriteCtaHtml = `<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#92400e;display:flex;align-items:center;justify-content:space-between;gap:10px">
-              <span><i class="fas fa-pen-fancy"></i> Hãy viết lại bài này dựa trên feedback để tiến bộ.</span>
+              <span><i class="fas fa-pen-fancy"></i> Đọc kĩ các lỗi, ghi vào vở, rồi viết lại bài này dựa trên feedback để không lặp lại lỗi.</span>
               <button class="btn-primary" style="flex-shrink:0" onclick="openRewrite('${a._id}')"><i class="fas fa-pen-fancy"></i> Viết lại bài</button>
             </div>`;
       } else {
@@ -1248,7 +1248,15 @@ async function openRewrite(attemptId) {
     }).join('');
 
     const leftCol = `
-      <div class="rw-note"><i class="fas fa-lightbulb"></i> Dựa vào feedback bên dưới, viết lại bài cho tốt hơn. Bài viết lại <b>không chấm điểm</b> — giáo viên chỉ theo dõi bạn đã làm chưa.</div>
+      <div class="rw-note rw-note-warn">
+        <div class="rw-note-title"><i class="fas fa-book-open"></i> Viết lại không phải là chép lại!</div>
+        <ol>
+          <li><b>Đọc kĩ từng lỗi</b> giáo viên chỉ ra bên dưới — hiểu vì sao sai và sửa thế nào.</li>
+          <li><b>Ghi các lỗi vào vở</b> (lỗi sai → cách sửa đúng) để xem lại trước mỗi bài viết sau.</li>
+          <li>Rồi mới <b>tự viết lại</b> bài cho tốt hơn, chú ý không lặp lại các lỗi đó.</li>
+        </ol>
+        <div class="rw-note-foot">Bài viết lại <b>không chấm điểm</b> — nhưng chỉ chép lại mà không hiểu lỗi thì bài sau bạn vẫn sẽ sai y như cũ.</div>
+      </div>
       ${_buildStudentFeedback(g)}
       ${_buildAiFeedbackBlock(a.aiGrading)}
       ${gradedTasks.map(n => {
