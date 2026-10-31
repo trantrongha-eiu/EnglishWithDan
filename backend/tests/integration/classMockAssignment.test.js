@@ -93,6 +93,56 @@ describe('assigning a class mock test', () => {
   });
 });
 
+describe('each new class mock draws tests the class has not had yet', () => {
+  const lrw = (b) => [b.listeningTestId, b.readingTestId, b.writingExamId].map(String);
+
+  test('successive random mocks never repeat a Listening / Reading / Writing test', async () => {
+    await seedPools(3);
+    const { teacher, cls } = await setup(0);
+    const seen = { l: new Set(), r: new Set(), w: new Set() };
+    for (let i = 0; i < 3; i++) {
+      const res = await assignMock(teacher, cls);
+      expect(res.status).toBe(201);
+      const [l, r, w] = lrw(res.body.assignment.resources[0].mockBundle);
+      expect(seen.l.has(l) || seen.r.has(r) || seen.w.has(w)).toBe(false);
+      seen.l.add(l); seen.r.add(r); seen.w.add(w);
+    }
+    // pool used up → a 4th random mock is refused with a clear message
+    const out = await assignMock(teacher, cls);
+    expect(out.status).toBe(400);
+    expect(out.body.message).toMatch(/giao hết/);
+  });
+
+  test('a stand-alone test homework counts as given; another class is unaffected; a hand pick is allowed', async () => {
+    const pools = await seedPools(2);
+    const { teacher, cls } = await setup(0);
+    await request(app).post(`/api/classes/${cls._id}/assignments`).set(authH(teacher))
+      .send({ title: 'Listening 1', resources: [{ kind: 'internal', resourceType: 'listening_test', resourceId: String(pools.lt[0]._id) }] });
+    const b = (await assignMock(teacher, cls)).body.assignment.resources[0].mockBundle;
+    expect(String(b.listeningTestId)).toBe(String(pools.lt[1]._id));
+
+    const other = await createClassGroup({ teacher });
+    expect((await assignMock(teacher, other)).status).toBe(201);
+
+    const picked = await assignMock(teacher, cls, { listeningTestId: String(pools.lt[0]._id) });
+    expect(picked.status).toBe(201);
+    expect(String(picked.body.assignment.resources[0].mockBundle.listeningTestId)).toBe(String(pools.lt[0]._id));
+  });
+
+  test("re-drawing while editing an assignment may reuse its own old tests but not those of other assignments", async () => {
+    const pools = await seedPools(2);
+    const { teacher, cls } = await setup(0);
+    const first = (await assignMock(teacher, cls)).body.assignment;
+    const second = (await assignMock(teacher, cls)).body.assignment;
+    const firstL = String(first.resources[0].mockBundle.listeningTestId);
+    // change only Speaking on the 2nd → the rest is re-drawn, still avoiding the 1st mock's tests
+    const res = await request(app).put(`/api/classes/${cls._id}/assignments/${second._id}`).set(authH(teacher))
+      .send({ resources: [{ kind: 'internal', resourceType: 'mock_test', resourceId: null, mockBundle: { speakingQuestionId: String(pools.sq[1]._id) } }] });
+    expect(res.status).toBe(200);
+    expect(String(res.body.assignment.resources[0].mockBundle.listeningTestId)).not.toBe(firstL);
+  });
+});
+
 describe('students taking the class mock test', () => {
   test('every student gets exactly the assigned bundle', async () => {
     await seedPools(5);

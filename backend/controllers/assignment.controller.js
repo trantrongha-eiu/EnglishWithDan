@@ -85,7 +85,39 @@ function resourceIdentityKey(r) {
 // every student's run uses the identical Listening/Reading/Writing/Speaking.
 // On an edit, an unchanged bundle (or a legacy bundle-less item) is kept
 // exactly as stored — never re-drawn.
-async function buildMockResource(r, existing, builtSoFar) {
+// Listening / Reading / Writing tests this class was already given — inside
+// an earlier mock bundle or as a stand-alone test item — so a random draw
+// for a new mock never repeats one. Archived assignments count; the one
+// being edited doesn't. `input` = this save's own resources[] (a stand-alone
+// test given in the same assignment counts too). Speaking is not excluded.
+const MOCK_EXCLUDE_TYPES = { listening_test: 'listeningTestId', reading_test: 'readingTestId', writing_exam: 'writingExamId' };
+async function usedMockTestsForClass(classId, skipAssignmentId, input = []) {
+  const sets = { listeningTestId: new Set(), readingTestId: new Set(), writingExamId: new Set() };
+  const take = (resources) => {
+    for (const r of resources || []) {
+      if (!r || r.kind !== 'internal') continue;
+      if (r.resourceType === 'mock_test' && r.mockBundle) {
+        for (const k of Object.keys(sets)) if (r.mockBundle[k]) sets[k].add(String(r.mockBundle[k]));
+      } else if (MOCK_EXCLUDE_TYPES[r.resourceType] && r.resourceId) {
+        sets[MOCK_EXCLUDE_TYPES[r.resourceType]].add(String(r.resourceId));
+      }
+    }
+  };
+  if (classId) {
+    const filter = { classId };
+    if (skipAssignmentId) filter._id = { $ne: skipAssignmentId };
+    const prior = await Assignment.find(filter).select('resources.kind resources.resourceType resources.resourceId resources.mockBundle').lean();
+    for (const a of prior) take(a.resources);
+  }
+  take(input);
+  const out = {};
+  for (const [k, set] of Object.entries(sets)) {
+    out[k] = [...set].filter((id) => mongoose.isValidObjectId(id)).map((id) => new mongoose.Types.ObjectId(id));
+  }
+  return out;
+}
+
+async function buildMockResource(r, existing, builtSoFar, ctx = {}, input = []) {
   if (builtSoFar.some((x) => x.resourceType === 'mock_test')) {
     return { error: 'Mỗi bài tập chỉ giao 1 bài thi thử full' };
   }
@@ -104,7 +136,8 @@ async function buildMockResource(r, existing, builtSoFar) {
   try {
     const clean = {};
     for (const k of MOCK_BUNDLE_KEYS) if (picks && picks[k]) clean[k] = String(picks[k]);
-    const mockBundle = await mockTestService.resolveMockBundle(clean);
+    const exclude = await usedMockTestsForClass(ctx.classId, ctx.assignmentId, input);
+    const mockBundle = await mockTestService.resolveMockBundle(clean, { exclude });
     return { built: { kind: 'internal', resourceType: 'mock_test', resourceId: null, label, resourceCode: '', mockBundle } };
   } catch (err) {
     return { error: err.message };
@@ -116,7 +149,9 @@ async function buildMockResource(r, existing, builtSoFar) {
 // resources[] before this save — matched ones keep their _id (see
 // resourceIdentityKey above); genuinely new resources get a fresh one as
 // Mongoose normally would.
-async function buildResources(input, existing = []) {
+// `ctx` (optional): { classId, assignmentId } — lets a random mock draw skip
+// the tests this class was already given (see usedMockTestsForClass).
+async function buildResources(input, existing = [], ctx = {}) {
   if (!Array.isArray(input) || !input.length) {
     return { error: 'Bài tập cần ít nhất một tài nguyên' };
   }
@@ -130,7 +165,7 @@ async function buildResources(input, existing = []) {
   for (const r of input) {
     let built;
     if (r.kind === 'internal' && r.resourceType === 'mock_test') {
-      const m = await buildMockResource(r, existing, out);
+      const m = await buildMockResource(r, existing, out, ctx, input);
       if (m.error) return { error: m.error };
       built = m.built;
     } else if (r.kind === 'internal') {
@@ -255,7 +290,7 @@ exports.createAssignment = async (req, res) => {
   try {
     const { title, instruction = '', deadline = null, resources } = req.body;
     if (!title || !String(title).trim()) return res.status(400).json({ success: false, message: 'Tên bài tập là bắt buộc' });
-    const built = await buildResources(resources);
+    const built = await buildResources(resources, [], { classId: req.classGroup._id });
     if (built.error) return res.status(400).json({ success: false, message: built.error });
 
     const assignment = await Assignment.create({
@@ -319,7 +354,7 @@ exports.updateAssignment = async (req, res) => {
       // buildResources'/resourceIdentityKey's comment for why (otherwise a
       // student's existing manual ticks on external/image items would
       // silently un-tick themselves on every edit).
-      const built = await buildResources(resources, assignment.resources);
+      const built = await buildResources(resources, assignment.resources, { classId: assignment.classId, assignmentId: assignment._id });
       if (built.error) return res.status(400).json({ success: false, message: built.error });
       assignment.resources = built.resources;
     }

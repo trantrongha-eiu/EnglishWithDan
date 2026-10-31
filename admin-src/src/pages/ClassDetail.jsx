@@ -1249,7 +1249,8 @@ function MockBundlePicker({ current, onPick, assignedIndex }) {
     <div style={{ border: '1px solid var(--border)', borderRadius: 6, padding: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
       <div style={{ fontSize: 12, color: 'var(--text3)', lineHeight: 1.5 }}>
         Cả lớp làm <b>chung 1 bộ đề</b>. Kỹ năng để "🎲 Ngẫu nhiên" sẽ được hệ thống bốc <b>1 lần</b> lúc giao bài
-        rồi cố định cho mọi học sinh. Tính hoàn thành khi học sinh nộp xong Listening → Reading → Writing (Speaking làm sau, không bắt buộc).
+        rồi cố định cho mọi học sinh — Listening / Reading / Writing ngẫu nhiên <b>không trùng đề lớp đã được giao</b> trước đó
+        (đề đánh dấu "✓ đã giao" vẫn chọn tay được). Tính hoàn thành khi học sinh nộp xong Listening → Reading → Writing (Speaking làm sau, không bắt buộc).
       </div>
       {MOCK_SKILLS.map((s) => (
         <label key={s.key} style={{ display: 'grid', gridTemplateColumns: '130px 1fr', alignItems: 'center', gap: 8, fontSize: 13 }}>

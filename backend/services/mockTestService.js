@@ -187,7 +187,11 @@ const BUNDLE_SKILLS = [
   { key: 'writingExamId', label: 'Writing', model: WritingExam, filter: {} },
   { key: 'speakingQuestionId', label: 'Speaking', model: SpeakingQuestion, filter: { part: 2 } },
 ];
-async function resolveMockBundle(picks = {}) {
+// `exclude` (optional): { listeningTestId: [ids], readingTestId: [...], ... }
+// — tests this class was already given; a random draw never lands on one.
+// A test the teacher picks by hand is still allowed (the picker labels it
+// "đã giao").
+async function resolveMockBundle(picks = {}, { exclude = {} } = {}) {
   const docs = await Promise.all(BUNDLE_SKILLS.map(async ({ key, label, model, filter }) => {
     const id = picks && picks[key];
     if (id) {
@@ -196,8 +200,13 @@ async function resolveMockBundle(picks = {}) {
       if (!doc) throw new ValidationError(`Đề ${label} không tồn tại hoặc đã bị ẩn`);
       return doc;
     }
-    const doc = await randomActive(model, filter);
-    if (!doc) throw new ValidationError(`Chưa có đề ${label} nào để ghép bài thi thử`);
+    const used = (exclude && exclude[key]) || [];
+    const doc = await randomActive(model, used.length ? { ...filter, _id: { $nin: used } } : filter);
+    if (!doc) {
+      throw new ValidationError(used.length
+        ? `Lớp đã được giao hết các đề ${label} hiện có — không còn đề mới để bốc ngẫu nhiên. Hãy chọn tay 1 đề ${label}.`
+        : `Chưa có đề ${label} nào để ghép bài thi thử`);
+    }
     return doc;
   }));
   return bundleFrom(...docs);
