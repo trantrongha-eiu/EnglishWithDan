@@ -535,28 +535,33 @@ describe('completion tracking', () => {
     expect(detail.body.assignment.resources[0].label).toBe('New Name');
   });
 
-  test('task2 (weekly topic): 70% AND covered most of the topic — a cherry-picked subset does not count', async () => {
+  test('task2 (weekly topic): passing the sentence quiz alone never ticks it — only the handed-in essay (>= 250 words) does', async () => {
     const t = await createTeacher();
     const s = await createStudent();
     const { cls } = await makeClassWith(t, [s]);
+    const prompt = 'Working from home will become the norm. Do you agree or disagree?';
+    const wt2 = await createWritingTask2({ prompt });
     const topic = await Task2Topic.create({
       week: 4, block: 'agree_disagree', topicName: 'Remote Work', essayType: 'agree_disagree',
-      prompt: 'Working from home will become the norm.', isActive: true,
+      prompt, isActive: true, writingTask2Id: wt2._id,
       questions: Array.from({ length: 10 }, (_, i) => ({
         level: 'beginner', type: 'fill_blank', questionText: `Q${i}`, correctAnswer: `a${i}`,
       })),
     });
     const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'task2', resourceId: topic._id }] });
+    const itemOf = async () => (await request(app).get('/api/assignments/mine').set(authH(s)))
+      .body.assignments.find((a) => a._id === String(asg._id));
 
-    // 2 of 10 questions, 100% — clears the score bar but not the coverage bar.
-    await Task2Attempt.create({ userId: s._id, sessionType: 'practice', week: 4, topicId: topic._id, correctCount: 2, totalQuestions: 2, scorePercentage: 100 });
-    let mine = await request(app).get('/api/assignments/mine').set(authH(s));
-    expect(mine.body.assignments.find((a) => a._id === String(asg._id)).done).toBe(0);
+    // A full quiz run at 100% — clears both the score and coverage bars, but
+    // the essay hasn't been written yet.
+    await Task2Attempt.create({ userId: s._id, sessionType: 'practice', week: 4, topicId: topic._id, correctCount: 10, totalQuestions: 10, scorePercentage: 100 });
+    let a = await itemOf();
+    expect(a.done).toBe(0);
+    expect(a.status).not.toBe('completed');
 
-    // A full run at 80% — both bars cleared.
-    await Task2Attempt.create({ userId: s._id, sessionType: 'practice', week: 4, topicId: topic._id, correctCount: 8, totalQuestions: 10, scorePercentage: 80 });
-    mine = await request(app).get('/api/assignments/mine').set(authH(s));
-    expect(mine.body.assignments.find((a) => a._id === String(asg._id)).status).toBe('completed');
+    await WritingAttempt.create({ userId: s._id, submissionType: 'practice', task2Id: wt2._id, task2Answer: 'y', wordCount2: 260 });
+    a = await itemOf();
+    expect(a.status).toBe('completed');
   });
 
   test('task2 (weekly topic): submitting the topic essay (>= 250 words) completes it, even with the topic link wiped', async () => {

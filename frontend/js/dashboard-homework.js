@@ -27,7 +27,7 @@ const HW_STATUS = {
 // Types with neither (speaking, task1_lesson / task2_course_lesson /
 // speaking_course_lesson, mock_test, external/image) get no tag —
 // "submitted/ticked = done" needs no extra explanation.
-const HW_QUIZ_TYPES = new Set(['reading_test', 'listening_test', 'dictation', 'grammar', 'vocabulary_lesson', 'task2', 'advanced_sentences']);
+const HW_QUIZ_TYPES = new Set(['reading_test', 'listening_test', 'dictation', 'grammar', 'vocabulary_lesson', 'advanced_sentences']);
 // Bài đọc/nghe lẻ: lower bar — backend's PRACTICE_PASS_PERCENT.
 const HW_PRACTICE_TYPES = new Set(['reading_practice', 'listening_practice']);
 const PRACTICE_PASS = 50;
@@ -40,6 +40,8 @@ function hwRuleTag(resourceType) {
   if (HW_QUIZ_TYPES.has(resourceType)) return '<span class="hw-res-tag hw-res-tag--quiz" title="Cần đạt từ 70% số điểm trở lên mới tính hoàn thành">≥70%</span>';
   if (HW_PRACTICE_TYPES.has(resourceType)) return `<span class="hw-res-tag hw-res-tag--quiz" title="Cần đạt từ ${PRACTICE_PASS}% số điểm trở lên mới tính hoàn thành">≥${PRACTICE_PASS}%</span>`;
   if (resourceType === 'listening_gapfill') return `<span class="hw-res-tag hw-res-tag--quiz" title="Cần điền đúng ít nhất ${GAPFILL_MIN_CORRECT} chỗ trống (bài ít hơn ${GAPFILL_MIN_CORRECT} chỗ thì phải đúng hết) mới tính hoàn thành">≥${GAPFILL_MIN_CORRECT} câu đúng</span>`;
+  // Weekly Task 2 topic: only the handed-in essay counts, not the sentence quiz.
+  if (resourceType === 'task2') return `<span class="hw-res-tag hw-res-tag--writing" title="Phải viết xong bài luận và nộp đủ ít nhất ${MIN_WORDS_T2} từ mới tính hoàn thành (làm xong phần luyện câu thôi thì chưa tính)">Nộp bài ≥${MIN_WORDS_T2} từ</span>`;
   if (resourceType === 'writing_exam') return `<span class="hw-res-tag hw-res-tag--writing" title="Cần nộp đủ Task 1 ≥${MIN_WORDS_T1} từ và Task 2 ≥${MIN_WORDS_T2} từ">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span>`;
   if (HW_VIEW_TYPES.has(resourceType)) return '<span class="hw-res-tag" title="Chỉ cần bấm vào mở xem là tự động tính hoàn thành">Mở xem là xong</span>';
   if (resourceType === 'task2_template') return '<span class="hw-res-tag hw-res-tag--quiz" title="Cần học xong cả 5 bước của lộ trình và thuộc từ 70% số câu (bước ④ Ghép cả bài hoặc Thi thử)">≥70%</span>';

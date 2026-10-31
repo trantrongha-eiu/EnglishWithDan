@@ -385,6 +385,11 @@ const REGISTRY = {
     // chunks, so no single sitting reaches the coverage bar (prod 2026-10-21:
     // 8 students had submitted the essay and the homework stayed unticked).
     essay: true,
+    // Admin rule (2026-10-31): a weekly Task 2 homework is only "hoàn thành"
+    // once the essay is written and handed in at ≥ MIN_WORDS.task2 — passing
+    // the sentence quiz alone no longer ticks it. The quiz score is still
+    // reported (scorePercent) for display.
+    essayOnly: true,
   },
   speaking: {
     label: 'Speaking (Câu hỏi)',
@@ -1048,7 +1053,7 @@ async function checkCompleted(studentId, internalItems, since = null) {
       const pct = gate.percent(r);
       // gate.pass (gap-fill's absolute count) > gate.passPercent (bài lẻ 50%) > PASS_PERCENT
       const cleared = gate.pass ? gate.pass(r) : pct >= (gate.passPercent ?? PASS_PERCENT);
-      const passes = cleared && coverageOk(r);
+      const passes = !entry.essayOnly && cleared && coverageOk(r);
       const prev = bestByKey.get(k);
       // A qualifying attempt always beats a non-qualifying one; between two of
       // the same kind, the higher score wins (keeps the old best-scoring pick).
