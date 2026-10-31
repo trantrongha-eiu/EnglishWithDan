@@ -420,6 +420,7 @@ function _ltRenderSectionCard(s) {
                 ${cardLabel}
                 ${doneRibbon}
                 <button class="pc-share-btn" onclick="event.stopPropagation();copyLtPracticeLink('${s._id}',${partArg})" title="Sao chép link bài này"><i class="fas fa-link"></i></button>
+                ${window.SynonymPrompt ? window.SynonymPrompt.btnHtml('ls-section', s._id, 'cover') : ''}
             </div>
             <div class="practice-card-body">
                 <div class="practice-card-title">${escHtml(s.title)}</div>

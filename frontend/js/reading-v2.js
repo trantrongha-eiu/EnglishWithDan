@@ -695,6 +695,7 @@ function testCard(t) {
   return `<div class="test-card tid-card tid-c${(t.testNumber || 1) % 4}" id="tcard-${t._id}" data-done="${done}" data-name="${escHtml((t.name || '').toLowerCase())}" title="${escH(t.name || '')}">
     <div class="tid-card-top">
       <span class="tid-brand">english | with | dan</span>
+      ${window.SynonymPrompt ? window.SynonymPrompt.btnHtml('rd-test', t._id) : ''}
       <i class="fas fa-book-open tid-skill-ic"></i>
     </div>
     ${done ? `<div class="test-done-tick">✓</div>` : ''}
@@ -1486,6 +1487,7 @@ function _rdRenderPassageCard(p) {
       ${badgeLabel}
       ${doneRibbon}
       <button class="pc-share-btn" onclick="event.stopPropagation();copyRdPracticeLink('${p._id}','${category}')" title="Sao chép link bài này"><i class="fas fa-link"></i></button>
+      ${window.SynonymPrompt ? window.SynonymPrompt.btnHtml('rd-passage', p._id, 'cover') : ''}
     </div>
     <div class="practice-card-body">
       <div class="practice-card-title">${escHtml(p.title)}</div>

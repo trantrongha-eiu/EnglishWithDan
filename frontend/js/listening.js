@@ -943,6 +943,7 @@ function renderTestCard(t) {
                     <div class="tid-card-top">
                         <span class="tid-brand">english | with | dan</span>
                         <button class="pc-share-btn" onclick="copyTestLink('${t._id}',event)" title="Sao chép link bài thi"><i class="fas fa-link"></i></button>
+                        ${window.SynonymPrompt ? window.SynonymPrompt.btnHtml('ls-test', t._id) : ''}
                         <i class="fas fa-headphones tid-skill-ic"></i>
                     </div>
                     ${done ? '<div class="test-done-tick">✓</div>' : ''}
