@@ -133,6 +133,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .vgoal--warn .vgoal-status{color:#b45309;font-weight:600}
 [data-theme="dark"] .vgoal--warn .vgoal-status{color:#fcd34d}
 .vgoal-hint{margin-top:2px;font-size:11.5px;opacity:.8}
+/* Wide practice view: the homework card sits in a sticky column on the right
+   of the question instead of above it. The bar is empty whenever it's hidden
+   (_renderVocabGoalBar clears it), so :not(:empty) = "card is showing". It has
+   zero height, so the practice column below starts at the top as usual.
+   1280px screen ≈ 1000px practice area after the 260px notebook sidebar. */
+@media (min-width:1280px){
+  .mode-body:has(> .vgoal-wrap--session:not(:empty)){padding-right:304px}
+  .vgoal-wrap--session{position:sticky;top:0;z-index:2;height:0;overflow:visible;width:260px;margin:0 -280px 0 auto}
+}
 .smart-session-bar .ssb-all{
   margin-left:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface2);
   padding:4px 10px;font:inherit;font-weight:600;color:var(--text);cursor:pointer;white-space:nowrap;
