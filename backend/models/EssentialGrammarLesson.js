@@ -9,7 +9,9 @@ const blockSchema = new mongoose.Schema({
     required: true,
     enum: [
       'overview', 'formula', 'usage', 'signal_words', 'examples', 'image',
-      'common_mistakes', 'ielts_tips', 'comparison', 'practice_exercises', 'quiz', 'summary'
+      'common_mistakes', 'ielts_tips', 'comparison', 'practice_exercises', 'quiz', 'summary',
+      // Tenses extras (see scripts/essentialGrammarData/tenseExtras.js)
+      'video', 'verb_forms', 'conjugation_drill', 'translation_drill'
     ]
   },
   data: { type: mongoose.Schema.Types.Mixed, required: true }

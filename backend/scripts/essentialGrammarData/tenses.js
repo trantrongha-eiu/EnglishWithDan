@@ -1,11 +1,19 @@
 "use strict";
 
 const { lesson } = require("./builder");
+const EXTRAS = require("./tenseExtras");
 
 const CATEGORY = "Tenses";
 
+// Every tense lesson also gets its video + drills from tenseExtras.js.
+function tense(def) {
+  const extras = EXTRAS[def.lessonKey];
+  if (!extras) throw new Error("tenseExtras.js has no entry for " + def.lessonKey);
+  return lesson({ ...def, ...extras });
+}
+
 module.exports = [
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "present-simple", title: "Present Simple", icon: "🔵", orderIndex: 1,
     overview: "Present Simple diễn tả thói quen, sự thật hiển nhiên, lịch trình cố định và cảm xúc/trạng thái. Đây là thì cơ bản nhất nhưng vẫn xuất hiện thường xuyên trong Task 1 (mô tả biểu đồ tĩnh) và Speaking Part 1.",
     formula: [
@@ -80,7 +88,7 @@ module.exports = [
     summary: "Present Simple = thói quen + sự thật + lịch trình cố định. Nhớ thêm -s/-es với he/she/it."
   }),
 
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "present-continuous", title: "Present Continuous", icon: "🔄", orderIndex: 2,
     overview: "Present Continuous diễn tả hành động đang xảy ra tại thời điểm nói, xu hướng đang thay đổi (dùng nhiều trong Task 1 khi mô tả xu hướng đang tăng/giảm), hoặc kế hoạch đã sắp xếp trong tương lai gần.",
     formula: [
@@ -155,7 +163,7 @@ module.exports = [
     summary: "Present Continuous = đang diễn ra / xu hướng đang đổi / kế hoạch gần. Không dùng với động từ trạng thái."
   }),
 
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "present-perfect", title: "Present Perfect", icon: "✅", orderIndex: 3,
     overview: "Present Perfect nối kết quá khứ với hiện tại: hành động đã xảy ra nhưng còn ảnh hưởng/liên quan đến hiện tại, hoặc kinh nghiệm/trải nghiệm chưa xác định rõ thời gian. Rất hay dùng trong Writing Task 2 khi nói về xu hướng xã hội.",
     formula: [
@@ -229,7 +237,7 @@ module.exports = [
     summary: "Present Perfect nối quá khứ-hiện tại: kinh nghiệm, kết quả còn ảnh hưởng, xu hướng dùng for/since. Không đi cùng mốc thời gian xác định."
   }),
 
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "present-perfect-continuous", title: "Present Perfect Continuous", icon: "⏳", orderIndex: 4,
     overview: "Present Perfect Continuous nhấn mạnh tính liên tục, kéo dài của một hành động bắt đầu trong quá khứ và vẫn đang tiếp diễn (hoặc vừa mới kết thúc nhưng để lại kết quả rõ ràng ở hiện tại).",
     formula: [
@@ -301,7 +309,7 @@ module.exports = [
     summary: "Present Perfect Continuous nhấn mạnh QUÁ TRÌNH kéo dài liên tục từ quá khứ đến hiện tại, thường đi với for/since."
   }),
 
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "past-simple", title: "Past Simple", icon: "🟣", orderIndex: 5,
     overview: "Past Simple diễn tả hành động đã xảy ra và kết thúc hoàn toàn trong quá khứ, tại một thời điểm xác định. Đây là thì QUAN TRỌNG NHẤT cho Task 1 khi mô tả số liệu lịch sử.",
     formula: [
@@ -375,7 +383,7 @@ module.exports = [
     summary: "Past Simple = hành động đã kết thúc tại một thời điểm xác định trong quá khứ. Thì chủ lực để mô tả số liệu lịch sử trong Task 1."
   }),
 
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "past-continuous", title: "Past Continuous", icon: "🌀", orderIndex: 6,
     overview: "Past Continuous diễn tả một hành động đang diễn ra tại một thời điểm xác định trong quá khứ, thường bị một hành động khác (ở Past Simple) xen vào, hoặc hai hành động song song cùng diễn ra.",
     formula: [
@@ -448,7 +456,7 @@ module.exports = [
     summary: "Past Continuous = hành động đang diễn ra tại một thời điểm quá khứ xác định, thường làm nền cho một hành động khác xen vào."
   }),
 
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "past-perfect", title: "Past Perfect", icon: "⏮️", orderIndex: 7,
     overview: "Past Perfect diễn tả một hành động xảy ra TRƯỚC một hành động/thời điểm khác trong quá khứ — giúp sắp xếp trình tự thời gian rõ ràng khi có hai mốc quá khứ.",
     formula: [
@@ -519,7 +527,7 @@ module.exports = [
     summary: "Past Perfect diễn tả hành động xảy ra TRƯỚC một mốc/hành động khác trong quá khứ — rất hữu ích để so sánh hai giai đoạn số liệu."
   }),
 
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "past-perfect-continuous", title: "Past Perfect Continuous", icon: "⏱️", orderIndex: 8,
     overview: "Past Perfect Continuous nhấn mạnh khoảng thời gian một hành động đã diễn ra liên tục TRƯỚC một mốc/hành động khác trong quá khứ.",
     formula: [
@@ -590,7 +598,7 @@ module.exports = [
     summary: "Past Perfect Continuous nhấn mạnh QUÁ TRÌNH kéo dài trước một mốc/hành động khác trong quá khứ."
   }),
 
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "future-simple", title: "Future Simple", icon: "🔮", orderIndex: 9,
     overview: "Future Simple (will) dùng để dự đoán, quyết định tức thời tại thời điểm nói, hứa hẹn, hoặc đề xuất/tình nguyện. Rất phổ biến trong Task 1 dự đoán xu hướng và Task 2 khi đưa ra dự báo/khuyến nghị.",
     formula: [
@@ -664,7 +672,7 @@ module.exports = [
     summary: "Future Simple (will) dùng cho dự đoán chủ quan, quyết định tức thời, lời hứa. Sau \"will\" luôn là động từ nguyên mẫu."
   }),
 
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "future-continuous", title: "Future Continuous", icon: "🌤️", orderIndex: 10,
     overview: "Future Continuous diễn tả một hành động sẽ đang diễn ra tại một thời điểm xác định trong tương lai, hoặc một sự việc đã được lên lịch chắc chắn sẽ diễn ra theo tiến trình bình thường.",
     formula: [
@@ -735,7 +743,7 @@ module.exports = [
     summary: "Future Continuous = hành động sẽ đang diễn ra tại một thời điểm xác định trong tương lai."
   }),
 
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "future-perfect", title: "Future Perfect", icon: "🏁", orderIndex: 11,
     overview: "Future Perfect diễn tả một hành động sẽ HOÀN THÀNH trước một thời điểm/mốc cụ thể trong tương lai.",
     formula: [
@@ -806,7 +814,7 @@ module.exports = [
     summary: "Future Perfect = hành động sẽ HOÀN THÀNH trước một mốc/thời điểm cụ thể trong tương lai (will have + V3)."
   }),
 
-  lesson({
+  tense({
     category: CATEGORY, lessonKey: "be-going-to", title: "Be Going To", icon: "🎯", orderIndex: 12,
     overview: "\"Be going to\" diễn tả kế hoạch/dự định đã quyết định từ trước, hoặc dự đoán dựa trên bằng chứng/dấu hiệu rõ ràng ở hiện tại.",
     formula: [

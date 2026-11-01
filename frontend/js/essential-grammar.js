@@ -333,6 +333,7 @@ function renderLessonContent(lesson) {
     + '<h1 class="eg-hero-title">' + (lesson.icon || '📘') + ' ' + escHtml(lesson.title) + '</h1>'
     + '<div class="wp-status-row" id="eg-hero-status">' + heroStatusHtml() + '</div>'
     + '</div>';
+  _egDrills = {}; _egDrillSeq = 0;
   html += '<div class="eg-content">' + lesson.blocks.map(renderBlock).join('') + '</div>';
   // Lesson-level "grade now" affordance — so a student who answered most
   // (but not every) gradeable item isn't stuck with no score, and there's
@@ -400,6 +401,10 @@ function renderBlock(block) {
     case 'practice_exercises': return renderPracticeExercisesBlock(block.data);
     case 'quiz': return renderQuizBlock(block.data);
     case 'summary': return renderSummaryBlock(block.data);
+    case 'video': return renderVideoBlock(block.data);
+    case 'verb_forms': return renderVerbFormsBlock(block.data);
+    case 'conjugation_drill': return renderConjugationBlock(block.data);
+    case 'translation_drill': return renderTranslationBlock(block.data);
     default: return '';
   }
 }
@@ -652,6 +657,323 @@ function renderSummaryBlock(data) {
     + '<div class="eg-summary-box">' + escHtml(data.text) + '</div></div>';
 }
 
+// ══════════════════════════════════════════════════════
+// Tenses extras — teaching video, V0→V2/V3 drill, "chia động từ" drill and
+// "luyện dịch câu". Data: backend/scripts/essentialGrammarData/tenseExtras.js.
+// These drills show their own score inside the block; they do not change
+// the lesson's completion score (quiz + multiple-choice exercises).
+// Buttons carry data-eg-act and are handled by one delegated listener
+// (_egBindDrillEvents) instead of inline onclick strings.
+// ══════════════════════════════════════════════════════
+
+const YT_ID_RE = /^[\w-]{11}$/;
+let _egDrills = {};   // drill id → { kind, data, items, status } — rebuilt on every lesson render
+let _egDrillSeq = 0;
+
+function _egNewDrill(kind, data, items) {
+  const id = 'egd' + (++_egDrillSeq);
+  _egDrills[id] = { kind, data, items, status: items.map(() => null) };
+  return id;
+}
+
+function _egMatch(user, answers) {
+  if (window.AnswerMatch) return window.AnswerMatch.isMatch(user, answers);
+  const u = String(user).trim().toLowerCase();
+  return answers.some(a => a.trim().toLowerCase() === u);
+}
+
+// Click-to-play: only the thumbnail loads until the student presses play.
+function renderVideoBlock(data) {
+  const videos = (data.videos || []).filter(v => YT_ID_RE.test(v.youtubeId || ''));
+  if (!videos.length) return '';
+  const items = videos.map(v => {
+    const id = v.youtubeId;
+    return '<div class="eg-video-item">'
+      + (v.label ? '<div class="eg-video-label">' + escHtml(v.label) + '</div>' : '')
+      + '<div class="eg-video-frame">'
+      + '<button type="button" class="eg-video-poster" data-eg-act="play-video" data-yt="' + id + '" aria-label="' + escAttr('Phát video: ' + (v.title || '')) + '">'
+      + '<img src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="" loading="lazy">'
+      + '<span class="eg-video-play"><i class="fas fa-play"></i></span>'
+      + (v.duration ? '<span class="eg-video-dur">' + escHtml(v.duration) + '</span>' : '')
+      + '</button></div>'
+      + '<div class="eg-video-meta"><div class="eg-video-title">' + escHtml(v.title || '') + '</div>'
+      + '<a class="eg-video-src" href="https://www.youtube.com/watch?v=' + id + '" target="_blank" rel="noopener noreferrer">'
+      + '<i class="fab fa-youtube"></i> ' + escHtml(v.channel || 'YouTube') + '</a></div>'
+      + '</div>';
+  }).join('');
+  return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-play-circle"></i> Video bài giảng</div>' + items + '</div>';
+}
+
+function _egPlayVideo(btn) {
+  const id = btn.dataset.yt;
+  const frame = btn.closest('.eg-video-frame');
+  if (!frame || !YT_ID_RE.test(id || '')) return;
+  frame.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0" title="YouTube video" '
+    + 'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" '
+    + 'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+}
+
+// ── Auto-checked drills: verb_forms + conjugation_drill ──
+
+function _egShuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+function _egVerbTriple(v) {
+  return escHtml(v.base) + ' – ' + escHtml(v.past.join(' / ')) + ' – ' + escHtml(v.pastParticiple.join(' / '));
+}
+
+function renderVerbFormsBlock(data) {
+  const isPast = data.target === 'past';
+  const items = (data.items || []).map(v => ({ verb: v, answers: isPast ? v.past : v.pastParticiple }));
+  if (!items.length) return '';
+  const id = _egNewDrill('verb', data, items);
+  const title = isPast ? 'Luyện chuyển động từ V0 → V2 (quá khứ)' : 'Luyện chuyển động từ V0 → V3 (quá khứ phân từ)';
+  const intro = isPast
+    ? 'Viết dạng quá khứ V2 của ' + items.length + ' động từ. Động từ có quy tắc thêm -ed (chú ý quy tắc chính tả); động từ bất quy tắc phải học thuộc. Nhấn Enter để sang ô tiếp theo.'
+    : 'Viết dạng quá khứ phân từ V3 (dùng sau have/has) của ' + items.length + ' động từ. Nhiều động từ có V3 khác V2 (go – went – gone). Nhấn Enter để sang ô tiếp theo.';
+  return '<div class="eg-block" id="' + id + '"><div class="eg-block-label"><i class="fas fa-exchange-alt"></i> ' + title + '</div>'
+    + '<div class="eg-drill-intro">' + escHtml(intro) + '</div>'
+    + '<div class="eg-vf-grid" id="' + id + '-rows">' + _egVerbRowsHtml(id) + '</div>'
+    + _egDrillActionsHtml(id, true)
+    + '</div>';
+}
+
+function _egVerbRowsHtml(id) {
+  const d = _egDrills[id];
+  const tag = d.data.target === 'past' ? 'V2' : 'V3';
+  return d.items.map((it, i) =>
+    '<div class="eg-drill-row eg-vf-row" data-i="' + i + '">'
+    + '<span class="eg-vf-num">' + (i + 1) + '.</span>'
+    + '<span class="eg-vf-word"><span class="eg-vf-base">' + escHtml(it.verb.base) + '</span>'
+    + '<span class="eg-vf-mean">' + escHtml(it.verb.meaning) + '</span></span>'
+    + '<input class="eg-drill-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="' + tag + '" '
+    + 'data-eg-drill="' + id + '" aria-label="' + escAttr(tag + ' của ' + it.verb.base) + '">'
+    + '<div class="eg-drill-fb"></div>'
+    + '</div>'
+  ).join('');
+}
+
+function renderConjugationBlock(data) {
+  const items = (data.items || []).map(it => ({ sentence: it.sentence, answers: it.answers || [], explanation: it.explanation || '' }));
+  if (!items.length) return '';
+  const id = _egNewDrill('conj', data, items);
+  const rows = items.map((it, i) => {
+    const parts = String(it.sentence).split('___');
+    const longest = Math.max(0, ...it.answers.map(a => a.length));
+    const input = '<input class="eg-drill-input eg-conj-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" '
+      + 'size="' + Math.max(8, longest + 2) + '" data-eg-drill="' + id + '" aria-label="' + escAttr('Câu ' + (i + 1)) + '">';
+    return '<div class="eg-drill-row eg-conj-row" data-i="' + i + '">'
+      + '<div class="eg-conj-sentence"><span class="eg-vf-num">' + (i + 1) + '.</span> '
+      + escHtml(parts[0]) + input + escHtml(parts.slice(1).join('___')) + '</div>'
+      + '<div class="eg-drill-fb"></div>'
+      + '</div>';
+  }).join('');
+  return '<div class="eg-block" id="' + id + '"><div class="eg-block-label"><i class="fas fa-pen"></i> Luyện tập thêm: Chia động từ (' + items.length + ' câu)</div>'
+    + '<div class="eg-drill-intro">Chia động từ trong ngoặc cho đúng thì. Viết cả trợ động từ (ví dụ: <b>has been working</b>, <b>doesn\'t open</b>). Nhấn Enter để sang câu tiếp theo.</div>'
+    + '<div id="' + id + '-rows">' + rows + '</div>'
+    + _egDrillActionsHtml(id, false)
+    + '</div>';
+}
+
+function _egDrillActionsHtml(id, shuffle) {
+  return '<div class="eg-drill-actions">'
+    + '<button type="button" class="eg-ex-reveal-btn" data-eg-act="check-drill" data-eg-drill="' + id + '"><i class="fas fa-check"></i> Kiểm tra</button>'
+    + '<button type="button" class="eg-drill-btn-ghost" data-eg-act="reset-drill" data-eg-drill="' + id + '"><i class="fas fa-redo"></i> Làm lại' + (shuffle ? ' (xáo trộn)' : '') + '</button>'
+    + '<span class="eg-drill-score" id="' + id + '-score"></span>'
+    + '</div>';
+}
+
+function checkEgDrill(id) {
+  const d = _egDrills[id];
+  const block = document.getElementById(id);
+  if (!d || !block) return;
+  let correct = 0;
+  block.querySelectorAll('.eg-drill-row').forEach(row => {
+    const i = Number(row.dataset.i);
+    const it = d.items[i];
+    const val = row.querySelector('.eg-drill-input').value.trim();
+    const fb = row.querySelector('.eg-drill-fb');
+    const ok = !!val && _egMatch(val, it.answers);
+    d.status[i] = ok;
+    if (ok) correct++;
+    row.classList.toggle('eg-drill-ok', ok);
+    row.classList.toggle('eg-drill-bad', !ok);
+    const wrongLead = '<i class="fas fa-times"></i> ' + (val ? '' : 'Bỏ trống. ') + 'Đáp án: <b>';
+    if (d.kind === 'verb') {
+      fb.innerHTML = (ok ? '<i class="fas fa-check"></i> ' : wrongLead + escHtml(it.answers.join(' / ')) + '</b> · ')
+        + '<span class="eg-vf-triple">' + _egVerbTriple(it.verb) + '</span>'
+        + (!ok && it.verb.note ? '<div class="eg-drill-note">' + escHtml(it.verb.note) + '</div>' : '');
+    } else {
+      fb.innerHTML = (ok ? '<i class="fas fa-check"></i> Đúng. ' : wrongLead + escHtml(it.answers[0]) + '</b>. ')
+        + escHtml(it.explanation);
+    }
+    fb.classList.add('vis');
+  });
+  const total = d.items.length;
+  const score = document.getElementById(id + '-score');
+  if (score) {
+    score.textContent = 'Đúng ' + correct + '/' + total + (correct === total ? ' 🎉' : '');
+    score.className = 'eg-drill-score ' + (correct / total >= 0.8 ? 'eg-drill-score-good' : 'eg-drill-score-bad');
+  }
+  if (correct === total) playOk(); else playWrong();
+}
+
+function resetEgDrill(id) {
+  const d = _egDrills[id];
+  const block = document.getElementById(id);
+  if (!d || !block) return;
+  d.status = d.items.map(() => null);
+  if (d.kind === 'verb') {
+    d.items = _egShuffle(d.items);
+    document.getElementById(id + '-rows').innerHTML = _egVerbRowsHtml(id);
+  } else {
+    block.querySelectorAll('.eg-drill-row').forEach(row => {
+      row.classList.remove('eg-drill-ok', 'eg-drill-bad');
+      row.querySelector('.eg-drill-input').value = '';
+      const fb = row.querySelector('.eg-drill-fb');
+      fb.innerHTML = '';
+      fb.classList.remove('vis');
+    });
+  }
+  const score = document.getElementById(id + '-score');
+  if (score) { score.textContent = ''; score.className = 'eg-drill-score'; }
+  const first = block.querySelector('.eg-drill-input');
+  if (first) first.focus();
+}
+
+// ── Translation drill (Việt → Anh) ──
+
+function renderTranslationBlock(data) {
+  const items = (data.items || []).map(it => ({ vi: it.vi, answers: it.answers || [], hint: it.hint || '' }));
+  if (!items.length) return '';
+  const id = _egNewDrill('tr', data, items);
+  const btnAttrs = i => ' data-eg-drill="' + id + '" data-i="' + i + '"';
+  const rows = items.map((it, i) =>
+    '<div class="eg-tr-item" data-i="' + i + '">'
+    + '<div class="eg-tr-vi"><span class="eg-vf-num">' + (i + 1) + '.</span> ' + escHtml(it.vi) + '</div>'
+    + '<textarea class="eg-ex-input eg-tr-input" rows="2" placeholder="Viết câu tiếng Anh... (Ctrl+Enter để kiểm tra)"' + btnAttrs(i) + '></textarea>'
+    + '<div class="eg-tr-actions">'
+    + '<button type="button" class="eg-ex-reveal-btn" data-eg-act="check-tr"' + btnAttrs(i) + '>Kiểm tra</button>'
+    + (it.hint ? '<button type="button" class="eg-drill-btn-ghost" data-eg-act="hint"><i class="far fa-lightbulb"></i> Gợi ý</button>' : '')
+    + '</div>'
+    + (it.hint ? '<div class="eg-tr-hint"><i class="far fa-lightbulb"></i> ' + escHtml(it.hint) + '</div>' : '')
+    + '<div class="eg-tr-result"></div>'
+    + '</div>'
+  ).join('');
+  return '<div class="eg-block" id="' + id + '"><div class="eg-block-label"><i class="fas fa-language"></i> Luyện dịch câu Việt → Anh (' + items.length + ' câu)</div>'
+    + '<div class="eg-drill-intro">Dịch sang tiếng Anh, dùng đúng thì của bài. Máy so với các đáp án gợi ý (không phân biệt viết tắt, chữ hoa/thường, dấu câu). Nếu câu của bạn khác đáp án nhưng vẫn đúng, bấm <b>"Câu của tôi cũng đúng"</b>.</div>'
+    + rows
+    + '<div class="eg-drill-actions"><span class="eg-drill-score" id="' + id + '-score"></span></div>'
+    + '</div>';
+}
+
+function _egDiffHtml(parts, missClass) {
+  return parts.map(p => p.ok ? escHtml(p.w) : '<span class="' + missClass + '">' + escHtml(p.w) + '</span>').join(' ');
+}
+
+function _egAnswerList(list) {
+  return list.map(a => '<div class="eg-tr-answer">• ' + escHtml(a) + '</div>').join('');
+}
+
+function checkEgTranslation(id, i) {
+  const d = _egDrills[id];
+  const block = document.getElementById(id);
+  if (!d || !block) return;
+  const row = block.querySelector('.eg-tr-item[data-i="' + i + '"]');
+  const it = d.items[i];
+  if (!row || !it) return;
+  const val = row.querySelector('textarea').value.trim();
+  const result = row.querySelector('.eg-tr-result');
+  const AM = window.AnswerMatch;
+  let html;
+  if (!val) {
+    d.status[i] = false;
+    html = '<div class="eg-tr-head eg-tr-head-skip"><i class="fas fa-eye"></i> Đáp án gợi ý:</div>' + _egAnswerList(it.answers);
+  } else if (_egMatch(val, it.answers)) {
+    d.status[i] = true;
+    const others = AM ? it.answers.filter(a => !AM.isMatch(a, [val])) : [];
+    html = '<div class="eg-tr-head eg-tr-head-ok"><i class="fas fa-check-circle"></i> Chính xác!</div>'
+      + (others.length ? '<div class="eg-tr-sub">Cách dịch khác:</div>' + _egAnswerList(others) : '');
+    playOk();
+  } else {
+    d.status[i] = false;
+    const best = AM ? AM.closest(val, it.answers) : it.answers[0];
+    const diff = AM ? AM.diff(val, best) : null;
+    const others = it.answers.filter(a => a !== best);
+    html = '<div class="eg-tr-head eg-tr-head-bad"><i class="fas fa-exclamation-circle"></i> Chưa khớp với đáp án gợi ý</div>'
+      + '<div class="eg-tr-line"><b>Bạn viết:</b> ' + (diff ? _egDiffHtml(diff.user, 'eg-tr-extra') : escHtml(val)) + '</div>'
+      + '<div class="eg-tr-line"><b>Đáp án gần nhất:</b> ' + (diff ? _egDiffHtml(diff.answer, 'eg-tr-miss') : escHtml(best)) + '</div>'
+      + (diff ? '<div class="eg-tr-legend"><span class="eg-tr-extra">chữ đỏ</span> = khác đáp án · <span class="eg-tr-miss">chữ xanh</span> = phần bạn thiếu hoặc viết khác</div>' : '')
+      + (others.length ? '<div class="eg-tr-sub">Cách dịch khác:</div>' + _egAnswerList(others) : '')
+      + '<button type="button" class="eg-drill-btn-ghost eg-tr-self" data-eg-act="self-ok" data-eg-drill="' + id + '" data-i="' + i + '"><i class="fas fa-user-check"></i> Câu của tôi cũng đúng</button>';
+    playWrong();
+  }
+  result.innerHTML = html;
+  result.classList.add('vis');
+  _egUpdateTranslationScore(id);
+}
+
+function _egMarkTranslationOk(btn) {
+  const d = _egDrills[btn.dataset.egDrill];
+  if (!d) return;
+  d.status[Number(btn.dataset.i)] = true;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-check"></i> Đã tính là đúng';
+  _egUpdateTranslationScore(btn.dataset.egDrill);
+}
+
+function _egUpdateTranslationScore(id) {
+  const d = _egDrills[id];
+  const el = document.getElementById(id + '-score');
+  if (!d || !el) return;
+  const done = d.status.filter(s => s !== null).length;
+  const correct = d.status.filter(s => s === true).length;
+  el.textContent = 'Đã làm ' + done + '/' + d.items.length + ' câu · Đúng ' + correct;
+  el.className = 'eg-drill-score' + (done === d.items.length ? (correct / done >= 0.8 ? ' eg-drill-score-good' : ' eg-drill-score-bad') : '');
+}
+
+// One listener for every drill/video button and input on the page —
+// #eg-main-content itself persists across lesson renders.
+function _egBindDrillEvents() {
+  const root = document.getElementById('eg-main-content');
+  if (!root || root.dataset.egDrillBound) return;
+  root.dataset.egDrillBound = '1';
+  root.addEventListener('click', ev => {
+    const btn = ev.target.closest('[data-eg-act]');
+    if (!btn || !root.contains(btn)) return;
+    switch (btn.dataset.egAct) {
+      case 'play-video': _egPlayVideo(btn); break;
+      case 'check-drill': checkEgDrill(btn.dataset.egDrill); break;
+      case 'reset-drill': resetEgDrill(btn.dataset.egDrill); break;
+      case 'check-tr': checkEgTranslation(btn.dataset.egDrill, Number(btn.dataset.i)); break;
+      case 'self-ok': _egMarkTranslationOk(btn); break;
+      case 'hint': {
+        const hint = btn.closest('.eg-tr-item').querySelector('.eg-tr-hint');
+        if (hint) hint.classList.toggle('vis');
+        break;
+      }
+    }
+  });
+  root.addEventListener('keydown', ev => {
+    if (ev.key !== 'Enter') return;
+    const el = ev.target;
+    if (el.classList.contains('eg-tr-input')) {
+      // Ctrl/Cmd+Enter checks; plain Enter still makes a new line.
+      if (ev.ctrlKey || ev.metaKey) { ev.preventDefault(); checkEgTranslation(el.dataset.egDrill, Number(el.dataset.i)); }
+      return;
+    }
+    if (!el.classList.contains('eg-drill-input')) return;
+    ev.preventDefault();
+    const id = el.dataset.egDrill;
+    const inputs = Array.from(document.querySelectorAll('#' + id + ' .eg-drill-input'));
+    const next = inputs[inputs.indexOf(el) + 1];
+    if (next) next.focus(); else checkEgDrill(id);
+  });
+}
+
 function openEgSheet() {
   document.getElementById('eg-mob-sheet').classList.add('open');
   document.getElementById('eg-mob-backdrop').classList.add('visible');
@@ -663,4 +985,5 @@ function closeEgSheet() {
   document.getElementById('eg-mob-fab').classList.remove('open');
 }
 
+_egBindDrillEvents();
 initEssentialGrammar();
