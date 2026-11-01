@@ -264,6 +264,27 @@
     }
     function goOverview() { state.view = 'overview'; history.pushState({ view: 'overview' }, '', cfg.pagePath); loadOverview(); }
 
+    // Theory cards (lesson.theory): one collapsible card per grammar
+    // structure — formula / usage / examples / notes. **x** → <b>x</b>.
+    function renderTheory(list) {
+      if (!list || !list.length) return '';
+      function fmt(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'); }
+      function sec(icon, label, body) { return body ? '<div class="t1-th-sec"><div class="t1-th-lbl">' + icon + ' ' + label + '</div>' + body + '</div>' : ''; }
+      function ul(arr) { return (arr && arr.length) ? '<ul>' + arr.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ul>' : ''; }
+      var cards = list.map(function (t, i) {
+        var formula = (t.formula && t.formula.length) ? '<div class="t1-th-formula">' + t.formula.map(function (f) { return '<div>' + fmt(f) + '</div>'; }).join('') + '</div>' : '';
+        var ex = (t.examples && t.examples.length) ? '<ul class="t1-th-ex">' + t.examples.map(function (e) {
+          return '<li><div class="en">' + fmt(e.en || '') + '</div>' + (e.vi ? '<div class="vi">' + fmt(e.vi) + '</div>' : '') + '</li>';
+        }).join('') + '</ul>' : '';
+        var notes = (t.notes && t.notes.length) ? '<ul class="t1-th-notes">' + t.notes.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ul>' : '';
+        return '<details class="t1-th"' + (i === 0 ? ' open' : '') + '><summary><span class="n">' + (i + 1) + '</span>' + esc(t.title || '') +
+          (t.titleEn ? ' <span class="en">' + esc(t.titleEn) + '</span>' : '') + '</summary><div class="t1-th-body">' +
+          sec('🧮', 'Công thức', formula) + sec('🎯', 'Cách dùng', ul(t.usage)) + sec('✍️', 'Ví dụ', ex) + sec('⚠️', 'Lưu ý khi dùng', notes) +
+          '</div></details>';
+      }).join('');
+      return '<div class="t1-theory"><div class="t1-theory-t">📘 Lý thuyết</div>' + cards + '</div>';
+    }
+
     function renderLesson() {
       var l = state.lesson || {};
       var exs = state.exercises.map(function (ex) {
@@ -280,6 +301,7 @@
       return '<div class="t1-crumb"><span id="t1-back-ov">Khoá học</span> › <b>' + esc(l.title || '') + '</b></div>' +
         '<div class="t1-head" style="padding-top:2px"><h2 class="t1-h2" style="font-size:17px">' + esc(l.title || '') + '</h2></div>' +
         ((l.objectives && l.objectives.length) ? '<div class="t1-objs"><div class="t1-objs-t">🎯 Mục tiêu buổi học</div><ul>' + l.objectives.map(function (o) { return '<li>' + esc(o) + '</li>'; }).join('') + '</ul></div>' : '') +
+        renderTheory(l.theory) +
         ((l.keyLanguage && l.keyLanguage.length) ? '<details class="t1-key"><summary>🧩 Ngữ pháp / Cấu trúc cần nhớ</summary><ul>' + l.keyLanguage.map(function (k) { return '<li>' + esc(k) + '</li>'; }).join('') + '</ul></details>' : '') +
         (cfg.lessonExtra ? cfg.lessonExtra(l) : '') +
         '<div class="t1-ex-list">' + exs + '</div>';

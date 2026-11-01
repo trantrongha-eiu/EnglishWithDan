@@ -390,6 +390,7 @@ async function getLesson(code, userId, opts = {}) {
       code: lesson.code, moduleCode: lesson.moduleCode, title: lesson.title, titleEn: lesson.titleEn,
       order: lesson.order, isTest: !!lesson.isTest, durationMinutes: lesson.durationMinutes,
       objectives: lesson.objectives || [], keyLanguage: lesson.keyLanguage || [],
+      theory: lesson.theory || [],
       totalPoints: lesson.totalPoints,
     },
     exercises: exercises.map((ex) => {

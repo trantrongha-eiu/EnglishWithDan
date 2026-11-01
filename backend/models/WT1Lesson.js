@@ -15,6 +15,18 @@ const WT1LessonSchema = new Schema(
     durationMinutes: Number,
     objectives: [String],
     keyLanguage: [String],
+    // Theory cards shown above the exercises, one per grammar structure
+    // (e.g. Task 2 Module 3's 12 band-raising structures). Text may use
+    // **bold** to highlight the target structure.
+    theory: [{
+      _id: false,
+      title: String,
+      titleEn: String,
+      formula: [String],
+      usage: [String],
+      examples: [{ _id: false, en: String, vi: String }],
+      notes: [String],
+    }],
     isTest: { type: Boolean, default: false },
     totalPoints: Number,
     exerciseCount: Number,

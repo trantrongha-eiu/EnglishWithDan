@@ -32,7 +32,91 @@
         "Câu ghép: mệnh đề độc lập + , + and/but/or/so/yet + mệnh đề độc lập — hoặc …; however/therefore/nevertheless, …",
         "Lỗi comma splice: SAI \"Technology is convenient, it saves people time.\" → ĐÚNG \"…, and it saves people time.\" hoặc \"…; it saves people time.\""
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 0
+      },
+      "theory": [
+        {
+          "title": "Câu phức",
+          "titleEn": "Complex Sentences",
+          "formula": [
+            "**Liên từ phụ thuộc** + S + V, S + V   (mệnh đề phụ đứng trước → CÓ dấu phẩy)",
+            "S + V + **liên từ phụ thuộc** + S + V   (mệnh đề phụ đứng sau → thường KHÔNG phẩy)",
+            "Nhượng bộ: **Although / Even though / While / Whereas**",
+            "Nguyên nhân: **Because / Since / As** · Điều kiện: **If / Unless / Provided that** · Mục đích: **so that**"
+          ],
+          "usage": [
+            "Nối một ý chính với một ý phụ (lý do, điều kiện, nhượng bộ, thời gian) trong cùng một câu — giám khảo chấm \"a mix of simple and complex sentence forms\" cho Band 6, \"a wide range of structures\" cho Band 7.",
+            "Introduction: paraphrase đề bằng câu nhượng bộ \"Although/While some people believe…, others argue…\".",
+            "Body: nêu luận điểm kèm lý do (\"…because/since…\"); câu nhượng bộ ở đoạn phản biện.",
+            "Conclusion: tóm hai phía trong một câu \"Although X has certain benefits, I believe Y…\"."
+          ],
+          "examples": [
+            {
+              "en": "**Although** many people advocate stricter environmental regulations, others argue that economic growth should take precedence.",
+              "vi": "Mặc dù nhiều người ủng hộ luật môi trường chặt chẽ hơn, những người khác cho rằng tăng trưởng kinh tế nên được ưu tiên."
+            },
+            {
+              "en": "**Since** most jobs now require digital skills, schools should teach basic coding from an early age.",
+              "vi": "Vì hầu hết công việc hiện nay đòi hỏi kỹ năng số, trường học nên dạy lập trình cơ bản từ sớm."
+            },
+            {
+              "en": "Young people often move to cities **because** rural areas offer few career opportunities.",
+              "vi": "Người trẻ thường chuyển lên thành phố vì nông thôn có ít cơ hội nghề nghiệp."
+            },
+            {
+              "en": "**While** online learning is flexible, it requires a high level of self-discipline.",
+              "vi": "Dù học trực tuyến linh hoạt, nó đòi hỏi tính tự giác cao."
+            }
+          ],
+          "notes": [
+            "**Although + mệnh đề** vs **Despite / In spite of + danh từ / V-ing**: \"Although it is expensive…\" = \"Despite its high cost…\" — KHÔNG viết \"Despite it is expensive\".",
+            "Không dùng cả **Although … but** trong một câu (lỗi dịch từ \"Mặc dù… nhưng…\"). Chỉ giữ một: \"Although it is cheap, it is unreliable.\"",
+            "Tương tự, không viết **Because … so** trong một câu.",
+            "Mệnh đề phụ đứng một mình là câu cụt (fragment): SAI \"Because people are busy.\" — phải có mệnh đề chính đi kèm.",
+            "Không phải câu nào cũng cần phức: xen kẽ câu đơn ngắn để bài dễ đọc, tránh câu dài hơn 35–40 từ."
+          ]
+        },
+        {
+          "title": "Câu ghép",
+          "titleEn": "Compound Sentences",
+          "formula": [
+            "Mệnh đề độc lập **, and / but / or / so / yet** mệnh đề độc lập",
+            "Mệnh đề độc lập **; however, / therefore, / moreover, / nevertheless,** mệnh đề độc lập",
+            "Mệnh đề độc lập **;** mệnh đề độc lập   (hai ý liên quan chặt)"
+          ],
+          "usage": [
+            "Nối hai ý ngang hàng (bổ sung, đối lập, kết quả) để câu văn trôi chảy hơn hai câu đơn rời rạc.",
+            "\"but / yet\" để đối lập, \"so\" để nêu kết quả, \"and\" để bổ sung — cách đơn giản nhất để có liên kết (Coherence & Cohesion).",
+            "Trạng từ nối (however, therefore…) nghe học thuật hơn and/but/so — dùng sau dấu chấm phẩy hoặc mở câu mới."
+          ],
+          "examples": [
+            {
+              "en": "Public transport is cheap and convenient**, yet** many commuters still prefer private cars.",
+              "vi": "Phương tiện công cộng rẻ và tiện lợi, vậy mà nhiều người đi làm vẫn thích xe riêng."
+            },
+            {
+              "en": "Housing prices in cities have soared**, so** many young families are moving to the suburbs.",
+              "vi": "Giá nhà ở thành phố tăng vọt, vì vậy nhiều gia đình trẻ chuyển ra ngoại ô."
+            },
+            {
+              "en": "Online courses are affordable**; however,** their completion rates remain low.",
+              "vi": "Các khoá học trực tuyến có giá phải chăng; tuy nhiên, tỉ lệ hoàn thành vẫn thấp."
+            },
+            {
+              "en": "Technology saves time**; it** also reduces the cost of many services.",
+              "vi": "Công nghệ tiết kiệm thời gian; nó cũng giảm chi phí nhiều dịch vụ."
+            }
+          ],
+          "notes": [
+            "**Comma splice** — lỗi phổ biến nhất: SAI \"Technology is convenient, it saves time.\" Hai mệnh đề độc lập KHÔNG được nối bằng dấu phẩy trơn → thêm liên từ \", and it…\" hoặc đổi thành \";\".",
+            "**However** không phải liên từ: SAI \"It is cheap, however it is slow.\" → ĐÚNG \"It is cheap; however, it is slow.\" hoặc \"It is cheap. However, it is slow.\"",
+            "Có dấu phẩy trước and/but/so khi nối hai mệnh đề đầy đủ; không cần phẩy khi chỉ nối hai động từ cùng chủ ngữ (\"It saves time and reduces costs.\").",
+            "Không mở đầu câu bằng \"And / But / So\" trong văn học thuật — dùng \"Moreover / However / Therefore\"."
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L13",
@@ -52,7 +136,95 @@
         "Bị động: be + V3 (+ by + tác nhân). Mẫu học thuật: It is widely believed/acknowledged/argued that + mệnh đề.",
         "\"Stricter regulations should be introduced to limit emissions.\" — bị động + modal nghe khách quan hơn \"the government should do…\""
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 0
+      },
+      "theory": [
+        {
+          "title": "Câu điều kiện",
+          "titleEn": "Conditional Sentences",
+          "formula": [
+            "Loại 1 (có thật, tương lai): **If + S + V(hiện tại), S + will / may / could + V**",
+            "Loại 2 (giả định hiện tại): **If + S + V(quá khứ), S + would / could / might + V**",
+            "Loại 3 (giả định quá khứ): **If + S + had + V3, S + would have + V3**",
+            "**Unless** = if … not · **Provided that / As long as** = miễn là · Rút gọn: **If implemented / If left unchecked, …**"
+          ],
+          "usage": [
+            "Cảnh báo hệ quả cuối đoạn Body: \"If this trend continues, …\" — biến lập luận thành hậu quả cụ thể.",
+            "Đề xuất giải pháp có điều kiện (dạng Problem–Solution): \"If governments invested more in…, …\".",
+            "Loại 2 để đưa ra giả định thuyết phục mà không khẳng định tuyệt đối — rất hợp giọng học thuật.",
+            "Loại 3 hiếm khi cần trong Task 2; chỉ dùng khi bàn về một sự kiện đã xảy ra."
+          ],
+          "examples": [
+            {
+              "en": "**If** this trend **continues**, traffic congestion **could** become unmanageable within a decade.",
+              "vi": "Nếu xu hướng này tiếp diễn, ùn tắc giao thông có thể trở nên không kiểm soát được trong vòng một thập kỷ."
+            },
+            {
+              "en": "**If** governments **invested** more in public transport, fewer people **would** rely on private cars.",
+              "vi": "Nếu chính phủ đầu tư nhiều hơn vào giao thông công cộng, ít người phải phụ thuộc vào xe riêng hơn."
+            },
+            {
+              "en": "**If implemented** on a large scale, this measure **could** cut emissions significantly.",
+              "vi": "Nếu được áp dụng trên quy mô lớn, biện pháp này có thể cắt giảm khí thải đáng kể."
+            },
+            {
+              "en": "**Unless** action **is** taken now, many species **will** face extinction.",
+              "vi": "Trừ khi hành động ngay bây giờ, nhiều loài sẽ đối mặt với nguy cơ tuyệt chủng."
+            }
+          ],
+          "notes": [
+            "KHÔNG dùng **will** trong mệnh đề If: SAI \"If people will use public transport…\" → ĐÚNG \"If people use…\".",
+            "**Unless** đã mang nghĩa phủ định: SAI \"Unless governments don't act…\" → ĐÚNG \"Unless governments act…\".",
+            "Dấu phẩy chỉ cần khi mệnh đề If đứng đầu câu.",
+            "Loại 2 với \"be\": dùng **were** cho mọi ngôi trong văn trang trọng (\"If it were cheaper…\").",
+            "Mỗi bài 1–2 câu điều kiện là đủ — đừng biến mọi luận điểm thành \"If…\"."
+          ]
+        },
+        {
+          "title": "Câu bị động",
+          "titleEn": "Passive Voice",
+          "formula": [
+            "**S + be (chia thì) + V3 (+ by + tác nhân)**",
+            "Với modal: **S + should / must / can + be + V3**",
+            "Hoàn thành: **S + have / has been + V3**",
+            "Mẫu khách quan: **It is widely believed / argued / acknowledged that + mệnh đề**",
+            "Hoặc: **S + is believed / thought + to V / to have V3**"
+          ],
+          "usage": [
+            "Khi hành động/đối tượng quan trọng hơn người làm, hoặc người làm hiển nhiên/không rõ.",
+            "Làm giọng văn khách quan, học thuật — đặc biệt ở câu giải pháp: \"Stricter laws should be introduced…\".",
+            "Mở bài khách quan: \"It is often argued that…\" thay cho \"Many people think that…\".",
+            "Giúp thay đổi chủ ngữ, tránh lặp \"the government… the government…\"."
+          ],
+          "examples": [
+            {
+              "en": "Stricter regulations **should be introduced** to limit industrial emissions.",
+              "vi": "Cần ban hành các quy định chặt chẽ hơn để hạn chế khí thải công nghiệp."
+            },
+            {
+              "en": "**It is widely acknowledged that** regular exercise improves mental health.",
+              "vi": "Người ta thừa nhận rộng rãi rằng tập thể dục đều đặn cải thiện sức khoẻ tinh thần."
+            },
+            {
+              "en": "Millions of tonnes of plastic **are dumped** into the oceans every year.",
+              "vi": "Hàng triệu tấn nhựa bị đổ ra đại dương mỗi năm."
+            },
+            {
+              "en": "Remote working **is thought to have reduced** traffic in many major cities.",
+              "vi": "Làm việc từ xa được cho là đã làm giảm giao thông ở nhiều thành phố lớn."
+            }
+          ],
+          "notes": [
+            "Chỉ động từ có tân ngữ (ngoại động từ) mới chuyển bị động: SAI \"The accident was happened.\" → ĐÚNG \"The accident happened.\"",
+            "Không quên \"be\": SAI \"More schools should built.\" → ĐÚNG \"should be built\".",
+            "Bỏ \"by + tác nhân\" khi tác nhân chung chung: viết \"Laws should be enforced\", không viết \"…by people\".",
+            "Đừng lạm dụng — cả bài toàn bị động sẽ nặng nề, khó đọc. Xen kẽ với chủ động.",
+            "Chia \"be\" đúng với chủ ngữ thật: \"Many measures **have** been taken\", \"Funding **has** been cut\"."
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L14",
@@ -72,7 +244,94 @@
         "Đảo ngữ: \"Not only does this approach reduce costs, but it also improves efficiency.\" · \"Never before have so many people had access to higher education.\" · \"Only by investing in public transport can cities reduce congestion in the long term.\"",
         "Cảnh báo: sau \"Not only\" đầu câu bắt buộc phải đảo — không phải \"Not only it reduces…\""
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 0
+      },
+      "theory": [
+        {
+          "title": "Mệnh đề quan hệ",
+          "titleEn": "Relative Clauses",
+          "formula": [
+            "Người: **who** · Vật: **which / that** · Sở hữu: **whose** · Nơi chốn: **where** · Thời gian: **when**",
+            "Xác định (không phẩy): **N + who/which/that + V…**",
+            "Không xác định (có phẩy): **N, who/which + V…,**",
+            "Mở rộng ý cả câu: **Mệnh đề, which + V…**   ← mẹo nâng band nhanh nhất"
+          ],
+          "usage": [
+            "Gộp hai câu đơn về cùng một danh từ thành một câu, giúp bài gọn và liên kết hơn.",
+            "Định nghĩa/giới hạn danh từ: \"Students who work part-time…\" (chỉ nhóm sinh viên đó).",
+            "\", which + động từ\" để đẩy ý đi thêm một bước — từ nguyên nhân sang kết quả — ngay trong câu.",
+            "Dùng ở câu giải thích (explanation) và câu kết quả trong đoạn Body."
+          ],
+          "examples": [
+            {
+              "en": "Remote work reduces daily commuting**, which** lowers both transport costs and carbon emissions.",
+              "vi": "Làm việc từ xa giảm việc đi lại hằng ngày, điều này làm giảm cả chi phí đi lại lẫn khí thải carbon."
+            },
+            {
+              "en": "Children **who** spend hours on screens are more likely to develop sleep problems.",
+              "vi": "Trẻ em dành hàng giờ trước màn hình dễ mắc các vấn đề về giấc ngủ hơn."
+            },
+            {
+              "en": "Employees **whose** working hours are flexible tend to be more productive.",
+              "vi": "Nhân viên có giờ làm linh hoạt thường làm việc hiệu quả hơn."
+            },
+            {
+              "en": "Rural areas**, where** job opportunities are limited, are losing their young population.",
+              "vi": "Các vùng nông thôn, nơi cơ hội việc làm hạn chế, đang mất dần dân số trẻ."
+            }
+          ],
+          "notes": [
+            "Sau dấu phẩy KHÔNG dùng **that**: SAI \"…commuting, that lowers costs.\" → ĐÚNG \", which lowers costs.\"",
+            "Động từ trong mệnh đề quan hệ chia theo danh từ đứng trước: \"a **policy** which **helps**…\", \"**policies** which **help**…\".",
+            "Không lặp lại chủ ngữ/tân ngữ: SAI \"The students who they study abroad…\" → ĐÚNG \"The students who study abroad…\".",
+            "Mệnh đề quan hệ có phẩy = thông tin thêm; không phẩy = thông tin xác định — đổi dấu phẩy là đổi nghĩa.",
+            "Có thể rút gọn: \"people who live in cities\" → \"people **living** in cities\"; \"products which are made in China\" → \"products **made** in China\"."
+          ]
+        },
+        {
+          "title": "Đảo ngữ",
+          "titleEn": "Inversion for Emphasis",
+          "formula": [
+            "**Not only + trợ động từ + S + V, but + S + also + V**",
+            "**Never before + have/has + S + V3**",
+            "**Only by + V-ing / N + trợ động từ + S + V**",
+            "**Rarely / Seldom / Under no circumstances + trợ động từ + S + V**"
+          ],
+          "usage": [
+            "Nhấn mạnh một ý quan trọng, tạo câu \"đắt giá\" chứng tỏ độ đa dạng ngữ pháp (Band 7+).",
+            "\"Not only…but also\" — nêu hai lợi ích/tác hại cùng lúc trong Body.",
+            "\"Only by…\" — nhấn mạnh giải pháp duy nhất, rất hợp đoạn giải pháp hoặc Conclusion.",
+            "\"Never before…\" — mở bài hoặc câu chủ đề nhấn mạnh một xu hướng chưa từng có."
+          ],
+          "examples": [
+            {
+              "en": "**Not only does** this approach **reduce** costs, **but it also improves** efficiency.",
+              "vi": "Cách tiếp cận này không chỉ giảm chi phí mà còn nâng cao hiệu quả."
+            },
+            {
+              "en": "**Never before have** so many people **had** access to higher education.",
+              "vi": "Chưa bao giờ có nhiều người được tiếp cận giáo dục đại học như hiện nay."
+            },
+            {
+              "en": "**Only by investing** in public transport **can cities reduce** congestion in the long term.",
+              "vi": "Chỉ bằng cách đầu tư vào giao thông công cộng, các thành phố mới giảm được ùn tắc về lâu dài."
+            },
+            {
+              "en": "**Rarely do** governments **consider** the long-term environmental cost of rapid growth.",
+              "vi": "Hiếm khi các chính phủ cân nhắc cái giá môi trường lâu dài của tăng trưởng nhanh."
+            }
+          ],
+          "notes": [
+            "Sau \"Not only\" đứng đầu câu BẮT BUỘC đảo: SAI \"Not only it reduces costs…\" → ĐÚNG \"Not only **does it reduce** costs…\".",
+            "Trợ động từ mang thì và ngôi, động từ chính trở về nguyên mẫu: \"does it reduce\" (không phải \"does it reduces\").",
+            "Nếu \"Not only\" đứng giữa câu thì KHÔNG đảo: \"This approach not only reduces costs but also improves efficiency.\"",
+            "Chỉ dùng **MỘT** câu đảo ngữ trong cả bài — dùng nhiều sẽ gượng ép, phản tác dụng.",
+            "Chỉ đảo khi chắc chắn đúng 100%; một câu đảo ngữ sai trừ điểm nhiều hơn một câu đơn đúng."
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L15",
@@ -91,7 +350,90 @@
         "Song song đúng: \"…to reduce costs, improve productivity and enhance customer service.\"",
         "Lỗi song song: SAI \"…to reduce costs, improving productivity, and better customer service.\" — ba dạng khác nhau trong một phép liệt kê"
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 0
+      },
+      "theory": [
+        {
+          "title": "Câu chẻ",
+          "titleEn": "Cleft Sentences",
+          "formula": [
+            "**It is / was + thành phần cần nhấn mạnh + that / who + phần còn lại**",
+            "**What + S + V + is / was + thành phần cần nhấn mạnh**",
+            "Biến thể: **The main reason why … is that …** · **The reason … is not X but Y**"
+          ],
+          "usage": [
+            "Tách một yếu tố (nguyên nhân, đối tượng, giải pháp) ra để nhấn mạnh — \"chính là…\".",
+            "Câu chủ đề (topic sentence) của đoạn Body: nêu thẳng nguyên nhân/giải pháp quan trọng nhất.",
+            "Câu cuối Conclusion: chốt lại quan điểm một cách mạnh mẽ.",
+            "Sửa một quan niệm sai: \"What matters is not X but Y.\""
+          ],
+          "examples": [
+            {
+              "en": "**It is** the lack of resources **that** hampers progress in developing countries.",
+              "vi": "Chính sự thiếu hụt nguồn lực đã cản trở sự phát triển ở các nước đang phát triển."
+            },
+            {
+              "en": "**What** many students lack **is** not intelligence but consistent practice.",
+              "vi": "Điều nhiều học sinh thiếu không phải là trí thông minh mà là sự luyện tập đều đặn."
+            },
+            {
+              "en": "**It is** parents, rather than teachers, **who** should take primary responsibility for children's behaviour.",
+              "vi": "Chính cha mẹ, chứ không phải giáo viên, mới là người chịu trách nhiệm chính về hành vi của trẻ."
+            },
+            {
+              "en": "**What** cities need most **is** an efficient and affordable public transport system.",
+              "vi": "Điều các thành phố cần nhất là một hệ thống giao thông công cộng hiệu quả và giá phải chăng."
+            }
+          ],
+          "notes": [
+            "Dùng **who** khi nhấn mạnh người, **that** cho mọi trường hợp còn lại.",
+            "Động từ sau \"What…\" chia số ít: \"What students need **is**…\" (kể cả khi phía sau là danh từ số nhiều).",
+            "Không thêm chủ ngữ thừa: SAI \"It is technology that it changes our lives.\" → ĐÚNG \"It is technology that changes our lives.\"",
+            "Phân biệt với \"It is + adj + that\" (\"It is important that…\") — đó KHÔNG phải câu chẻ.",
+            "Một bài 1 câu chẻ là đủ; đặt ở vị trí cần nhấn mạnh nhất."
+          ]
+        },
+        {
+          "title": "Cấu trúc song song",
+          "titleEn": "Parallel Structures",
+          "formula": [
+            "**A, B and C** — cả ba cùng dạng: N, N and N · V, V and V · V-ing, V-ing and V-ing",
+            "**not only A but also B** · **both A and B** · **either A or B** · **neither A nor B**",
+            "**rather than / as well as / instead of** — hai vế cùng dạng"
+          ],
+          "usage": [
+            "Liệt kê nhiều lợi ích, tác hại, giải pháp trong một câu mà vẫn rõ ràng, nhịp nhàng.",
+            "Câu chủ đề, câu tóm tắt Conclusion — nơi thường liệt kê 2–3 ý.",
+            "Là dấu hiệu \"kiểm soát ngữ pháp tốt\" mà giám khảo nhận ra ngay."
+          ],
+          "examples": [
+            {
+              "en": "Companies use automation **to reduce** costs, **improve** productivity and **enhance** customer service.",
+              "vi": "Các công ty dùng tự động hoá để giảm chi phí, tăng năng suất và nâng cao dịch vụ khách hàng."
+            },
+            {
+              "en": "Living abroad helps students **become** independent, **develop** language skills and **broaden** their perspectives.",
+              "vi": "Sống ở nước ngoài giúp sinh viên tự lập, phát triển ngôn ngữ và mở rộng tầm nhìn."
+            },
+            {
+              "en": "The policy is **not only costly but also ineffective**.",
+              "vi": "Chính sách này không chỉ tốn kém mà còn kém hiệu quả."
+            },
+            {
+              "en": "Success depends on **hard work, persistence and adaptability** rather than **luck**.",
+              "vi": "Thành công phụ thuộc vào sự chăm chỉ, kiên trì và khả năng thích nghi hơn là may mắn."
+            }
+          ],
+          "notes": [
+            "Lỗi song song: SAI \"…to reduce costs, **improving** productivity, and **better** customer service.\" — ba dạng khác nhau trong một phép liệt kê.",
+            "Hai vế của \"not only…but also / both…and / either…or\" phải cùng loại từ: SAI \"not only **cheap** but also **saves** time\" → ĐÚNG \"not only **cheap** but also **time-saving**\".",
+            "Khi đã có \"to\" ở vế đầu, có thể lược ở các vế sau (\"to reduce, improve and enhance\") — nhưng nếu lặp thì lặp ở tất cả.",
+            "Với \"neither…nor / either…or\", động từ chia theo danh từ gần nhất: \"Neither the government nor **individuals are**…\"."
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L16",
@@ -110,7 +452,94 @@
         "Tránh: \"This will definitely destroy society.\" → Dùng may/might/could/is likely to để thận trọng hơn.",
         "\"Urban areas are significantly more densely populated than rural regions.\" · \"The more time children spend on screens, the less they engage in physical play.\" · \"Public transport in many cities is not nearly as reliable as it needs to be.\""
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 0
+      },
+      "theory": [
+        {
+          "title": "Động từ khuyết thiếu",
+          "titleEn": "Modal Verbs",
+          "formula": [
+            "**S + modal + V (nguyên mẫu)** · Bị động: **S + modal + be + V3**",
+            "Đề xuất / nghĩa vụ: **should, must, ought to, need to**",
+            "Khả năng / dự đoán thận trọng: **may, might, could, can** · **be likely to + V**",
+            "Kết quả giả định: **would** · Quá khứ: **could have / should have + V3**"
+          ],
+          "usage": [
+            "Chọn đúng sắc thái: should (khuyên nên) < must (bắt buộc) — dùng ở câu giải pháp, đề xuất.",
+            "may / might / could để rào đón (hedging) khi nêu hậu quả, dự đoán — giọng học thuật luôn thận trọng.",
+            "would trong câu nêu kết quả của giải pháp/giả định: \"This would allow…\".",
+            "Tránh khẳng định tuyệt đối khiến lập luận bị coi là phiến diện."
+          ],
+          "examples": [
+            {
+              "en": "Governments **should invest** more heavily in renewable energy to combat climate change.",
+              "vi": "Chính phủ nên đầu tư mạnh hơn vào năng lượng tái tạo để chống biến đổi khí hậu."
+            },
+            {
+              "en": "Prolonged screen exposure **may impair** children's concentration.",
+              "vi": "Tiếp xúc màn hình kéo dài có thể làm suy giảm khả năng tập trung của trẻ."
+            },
+            {
+              "en": "A tax on sugary drinks **would encourage** people to make healthier choices.",
+              "vi": "Thuế đánh vào đồ uống có đường sẽ khuyến khích mọi người lựa chọn lành mạnh hơn."
+            },
+            {
+              "en": "Without proper regulation, artificial intelligence **is likely to widen** the gap between rich and poor.",
+              "vi": "Nếu không có quy định phù hợp, trí tuệ nhân tạo có khả năng nới rộng khoảng cách giàu nghèo."
+            }
+          ],
+          "notes": [
+            "Sau modal luôn là động từ nguyên mẫu KHÔNG \"to\" và không chia: SAI \"should **to** invest\", \"can **helps**\".",
+            "Tránh tuyệt đối hoá: \"This **will definitely destroy** society.\" → \"This **could seriously harm** society.\"",
+            "\"must\" rất mạnh — chỉ dùng khi thật sự là bắt buộc; còn lại ưu tiên \"should\".",
+            "Không dùng hai modal liền nhau: SAI \"will can\" → ĐÚNG \"will be able to\".",
+            "\"could\" (khả năng) vs \"can\" (năng lực chung): dự đoán tương lai nên dùng \"could\" để thận trọng hơn."
+          ]
+        },
+        {
+          "title": "Cấu trúc so sánh",
+          "titleEn": "Comparatives and Superlatives",
+          "formula": [
+            "Nhấn mạnh so sánh hơn: **far / much / significantly / considerably + adj-er / more adj + than**",
+            "Càng… càng…: **The + so sánh hơn + S + V, the + so sánh hơn + S + V**",
+            "So sánh bằng phủ định: **not nearly as / not as … as** · **twice / three times as … as**",
+            "So sánh nhất: **the most + adj / the adj-est (+ N)** · **one of the + so sánh nhất + N số nhiều**"
+          ],
+          "usage": [
+            "So sánh hai lựa chọn trong dạng Discuss Both Views, Advantages > Disadvantages, Agree/Disagree.",
+            "Trạng từ chỉ mức độ (far, significantly) làm câu so sánh chính xác và học thuật hơn \"more\".",
+            "\"The more…, the more…\" — diễn đạt mối quan hệ nhân quả tăng dần trong một câu ngắn gọn.",
+            "Kết luận dạng \"outweigh\": \"The benefits are far more significant than the drawbacks.\""
+          ],
+          "examples": [
+            {
+              "en": "Urban areas are **significantly more densely populated than** rural regions.",
+              "vi": "Khu vực đô thị có mật độ dân số cao hơn đáng kể so với nông thôn."
+            },
+            {
+              "en": "**The more** time children spend on screens, **the less** they engage in physical play.",
+              "vi": "Trẻ càng dành nhiều thời gian trước màn hình thì càng ít vận động vui chơi."
+            },
+            {
+              "en": "Public transport in many cities is **not nearly as reliable as** it needs to be.",
+              "vi": "Giao thông công cộng ở nhiều thành phố còn lâu mới đáng tin cậy như mức cần thiết."
+            },
+            {
+              "en": "Climate change is arguably **one of the most pressing issues** facing humanity today.",
+              "vi": "Biến đổi khí hậu có lẽ là một trong những vấn đề cấp bách nhất mà nhân loại đang đối mặt."
+            }
+          ],
+          "notes": [
+            "Không dùng kép: SAI \"more cheaper\", \"the most easiest\" → ĐÚNG \"cheaper\", \"the easiest\".",
+            "Không dùng **very** trước so sánh hơn: SAI \"very more expensive\" → ĐÚNG \"much / far more expensive\".",
+            "So sánh đúng đối tượng: SAI \"The cost of living in cities is higher than rural areas.\" → ĐÚNG \"…higher than **that in** rural areas\".",
+            "\"one of the + so sánh nhất\" phải đi với danh từ số nhiều: \"one of the biggest **problems**\".",
+            "Trong \"The more…, the more…\" nhớ đủ hai mệnh đề và dấu phẩy ở giữa."
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L17",
@@ -130,7 +559,93 @@
         "Present Simple = sự thật chung, ý kiến, phần lớn lập luận. Present Perfect = nối quá khứ với hiện tại, hoàn hảo cho câu mở đề. Past Simple = ví dụ đã kết thúc. Future/will = dự đoán và hệ quả.",
         "Đừng đổi thì giữa chừng trong một đoạn mà không có lý do."
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 0 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 0
+      },
+      "theory": [
+        {
+          "title": "Cụm phân từ",
+          "titleEn": "Participle Clauses",
+          "formula": [
+            "Hệ quả trực tiếp: **Mệnh đề, thereby + V-ing …**",
+            "Kết quả cho phép: **Mệnh đề, allowing / enabling + O + to V …**",
+            "Hành động xảy ra trước: **Having + V3, S + V …**",
+            "Chủ động: **V-ing …, S + V** · Bị động: **V3 …, S + V**"
+          ],
+          "usage": [
+            "Gộp hai câu ngắn (hành động + hệ quả) thành một câu gọn — dấu hiệu rõ của Band 7.",
+            "\", thereby + V-ing\" là cụm hiệu quả nhất, dùng được ở mọi dạng đề để nêu kết quả.",
+            "\", enabling/allowing + O + to V\" để nói giải pháp mở ra khả năng gì cho ai.",
+            "\"Having + V3\" nhấn mạnh trình tự: việc A hoàn tất rồi mới đến việc B."
+          ],
+          "examples": [
+            {
+              "en": "Remote work eliminates the daily commute**, thereby reducing** both stress and carbon emissions.",
+              "vi": "Làm việc từ xa loại bỏ việc đi lại hằng ngày, nhờ đó giảm cả căng thẳng lẫn khí thải carbon."
+            },
+            {
+              "en": "Online platforms deliver lectures to remote areas**, enabling students to study** without relocating.",
+              "vi": "Các nền tảng trực tuyến đưa bài giảng đến vùng xa, giúp học sinh học tập mà không cần chuyển chỗ ở."
+            },
+            {
+              "en": "**Having completed** their degrees, many graduates struggle to find relevant jobs.",
+              "vi": "Sau khi tốt nghiệp, nhiều sinh viên gặp khó khăn trong việc tìm công việc phù hợp."
+            },
+            {
+              "en": "**Faced** with rising living costs, many young people postpone buying a home.",
+              "vi": "Đối mặt với chi phí sinh hoạt tăng cao, nhiều người trẻ hoãn việc mua nhà."
+            }
+          ],
+          "notes": [
+            "**Lỗi chủ ngữ treo (dangling participle)**: chủ ngữ ngầm của cụm phân từ phải trùng chủ ngữ mệnh đề chính. SAI \"Having finished university, jobs are hard to find.\" → ĐÚNG \"Having finished university, **many graduates** find it hard to get a job.\"",
+            "\"thereby\" + V-ing, KHÔNG phải mệnh đề: SAI \", thereby it reduces…\" → ĐÚNG \", thereby reducing…\".",
+            "Phân biệt **V-ing** (chủ động: \"Using technology, students…\") và **V3** (bị động: \"Used properly, technology…\").",
+            "Cụm \", which + V\" và \", V-ing\" đều nêu kết quả — xen kẽ hai cách để tránh lặp."
+          ]
+        },
+        {
+          "title": "Cách dùng thì",
+          "titleEn": "Tense Usage",
+          "formula": [
+            "**Present Simple** — sự thật chung, ý kiến, lập luận: S + V(s/es)",
+            "**Present Perfect** — xu hướng từ quá khứ đến nay (mở bài): S + have/has + V3",
+            "**Past Simple** — ví dụ, sự kiện đã kết thúc: S + V2/ed",
+            "**Future / will / be going to** — dự đoán, hệ quả: S + will + V"
+          ],
+          "usage": [
+            "Present Simple chiếm phần lớn bài: luận điểm, giải thích, ý kiến cá nhân.",
+            "Present Perfect hoàn hảo cho câu mở đề: \"In recent years, … has become…\".",
+            "Past Simple cho ví dụ cụ thể có mốc thời gian: \"In 2020, Singapore introduced…\".",
+            "will / may / could cho hệ quả và dự đoán ở cuối đoạn Body hoặc Conclusion."
+          ],
+          "examples": [
+            {
+              "en": "In recent years, online shopping **has become** increasingly popular.",
+              "vi": "Trong những năm gần đây, mua sắm trực tuyến ngày càng trở nên phổ biến."
+            },
+            {
+              "en": "Regular exercise **reduces** the risk of heart disease.",
+              "vi": "Tập thể dục đều đặn làm giảm nguy cơ mắc bệnh tim."
+            },
+            {
+              "en": "When Singapore **introduced** congestion charges, traffic in the city centre **fell** sharply.",
+              "vi": "Khi Singapore áp dụng phí chống ùn tắc, lưu lượng giao thông ở trung tâm giảm mạnh."
+            },
+            {
+              "en": "If nothing is done, sea levels **will continue** to rise.",
+              "vi": "Nếu không làm gì, mực nước biển sẽ tiếp tục dâng."
+            }
+          ],
+          "notes": [
+            "Đừng đổi thì giữa chừng trong một đoạn mà không có lý do (ví dụ đang Present Simple lại nhảy sang Past Simple khi nói sự thật chung).",
+            "Có mốc quá khứ cụ thể (in 2010, last year, ago) → Past Simple, KHÔNG dùng Present Perfect: SAI \"has introduced in 2020\".",
+            "Chủ ngữ số ít ở Present Simple cần -s/-es: \"Technology **makes**…\", \"Everyone **needs**…\" — lỗi mất điểm nhiều nhất.",
+            "\"In recent years / Over the past decade / Since…\" là tín hiệu dùng Present Perfect.",
+            "Tránh Present Continuous cho sự thật chung: SAI \"Exercise is reducing stress.\" → ĐÚNG \"Exercise reduces stress.\""
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L18",
@@ -149,7 +664,10 @@
         "Ba phút cuối là ba phút có giá trị nhất — đừng viết thêm câu, hãy sửa lỗi",
         "Template là giàn giáo, không phải ngôi nhà. Viết đủ ba mươi bài, bạn sẽ tự nhiên viết bằng giọng của chính mình — đó là lúc bạn thật sự đạt Band 7"
       ],
-      "gate": { "minObjectiveScorePercent": 0, "minWritingSubmissions": 0 }
+      "gate": {
+        "minObjectiveScorePercent": 0,
+        "minWritingSubmissions": 0
+      }
     }
   ]
 }

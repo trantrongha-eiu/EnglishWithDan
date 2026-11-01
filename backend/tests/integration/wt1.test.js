@@ -22,6 +22,7 @@ async function seedCourse() {
   await WT1Module.findOneAndUpdate({ code: 'T1-M1' }, { code: 'T1-M1', courseCode: cc, order: 1, title: 'M1' }, { upsert: true });
   await WT1Lesson.findOneAndUpdate({ code: 'T1-L02' }, {
     code: 'T1-L02', moduleCode: 'T1-M1', order: 2, title: 'Buổi 2', published: true,
+    theory: [{ title: 'Câu phức', formula: ['Although + S + V, S + V'], usage: ['u'], examples: [{ en: 'Although it rains, we go.', vi: 'v' }], notes: ['n'] }],
     gate: { minObjectiveScorePercent: 70, minWritingSubmissions: 1 },
   }, { upsert: true });
   await WT1Lesson.findOneAndUpdate({ code: 'T1-L03' }, {
@@ -126,6 +127,7 @@ describe('GET /lesson/:code', () => {
     const u = await createPremiumStudent();
     const res = await request(app).get('/api/wt1/lesson/T1-L02').set(bearer(u));
     expect(res.status).toBe(200);
+    expect(res.body.lesson.theory[0]).toMatchObject({ title: 'Câu phức', examples: [{ en: 'Although it rains, we go.', vi: 'v' }] });
     const mcq = res.body.exercises.find((e) => e.code === 'MCQ1');
     expect(mcq.items[0].answer).toBeUndefined();
     expect(mcq.items[0].options).toHaveLength(2);
