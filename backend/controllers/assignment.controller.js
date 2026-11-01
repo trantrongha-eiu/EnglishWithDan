@@ -13,6 +13,7 @@ const Message = require('../models/Message');
 const rcs = require('../services/resourceCompletionService');
 const svc = require('../services/assignmentService');
 const mockTestService = require('../services/mockTestService');
+const listeningService = require('../services/listeningService');
 const classAttendanceService = require('../services/classAttendanceService');
 const vgs = require('../services/vocabGoalService');
 const { SLOTS: DEFAULT_BOOK_SLOTS, canonicalName: canonicalBookName } = require('../utils/defaultVocabBooks');
@@ -162,6 +163,7 @@ async function buildResources(input, existing = [], ctx = {}) {
   }
 
   const out = [];
+  const fresh = new Set(); // built items with no matching existing resource
   for (const r of input) {
     let built;
     if (r.kind === 'internal' && r.resourceType === 'mock_test') {
@@ -226,9 +228,36 @@ async function buildResources(input, existing = [], ctx = {}) {
     }
     const reuseId = existingIdByKey.get(resourceIdentityKey(built));
     if (reuseId) built._id = reuseId;
+    else fresh.add(built);
     out.push(built);
   }
-  return { resources: out };
+  return { resources: await attachGapFillCompanions(out, fresh, existingIdByKey) };
+}
+
+// Giving a Listening section or a full test also gives its gap-fill drill(s)
+// (one per part that has a published gap-fill), placed right after it. Only
+// for listening items NEW in this save, so on an edit a gap-fill the teacher
+// deleted stays deleted. A gap-fill already in the list is never duplicated.
+const GAPFILL_SOURCE_TYPES = ['listening_practice', 'listening_test'];
+async function attachGapFillCompanions(out, fresh, existingIdByKey) {
+  const have = new Set(out.filter((r) => r.resourceType === 'listening_gapfill').map((r) => String(r.resourceId)));
+  const res = [];
+  for (const r of out) {
+    res.push(r);
+    if (!fresh.has(r) || r.kind !== 'internal' || !GAPFILL_SOURCE_TYPES.includes(r.resourceType)) continue;
+    for (const id of await listeningService.gapFillSectionIdsFor(r.resourceType, r.resourceId)) {
+      if (have.has(id)) continue;
+      have.add(id);
+      const gf = {
+        kind: 'internal', resourceType: 'listening_gapfill', resourceId: new mongoose.Types.ObjectId(id),
+        label: await rcs.labelFor('listening_gapfill', id), resourceCode: '',
+      };
+      const reuseId = existingIdByKey.get(resourceIdentityKey(gf));
+      if (reuseId) gf._id = reuseId;
+      res.push(gf);
+    }
+  }
+  return res;
 }
 
 // ════════════════════ TEACHER ════════════════════

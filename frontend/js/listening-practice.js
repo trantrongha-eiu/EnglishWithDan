@@ -1695,7 +1695,7 @@ function _renderLtCdPartHeader(section, partNum) {
     const sub = document.getElementById('cd-part-sub-pr');
     if (!t || !sub || !section) return;
     const nums = _ltGetAllQs(section).map(q => q.questionNumber);
-    t.textContent = `Part ${partNum || section.partNumber || 1}`;
+    t.textContent = lsPartBarTitle(section, partNum || section.partNumber || 1);
     sub.textContent = nums.length
         ? `Listen and answer questions ${Math.min(...nums)}–${Math.max(...nums)}`
         : 'Listen and answer the questions';

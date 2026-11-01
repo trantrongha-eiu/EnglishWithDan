@@ -2826,12 +2826,23 @@ function _markCurrentQuestionLs(n) {
     const el = document.getElementById(`qi-${n}`) || document.getElementById(`q${n}`);
     if (el) el.classList.add('cd-current');
 }
+// Part bar text, with the section's name: "Part 2: Oceanic Island Travelling".
+// The bar is the only place it shows in the exam layout, and Part 2/3 sheets
+// (multiple choice, matching) have no heading of their own. Placeholder
+// titles like "Cam 20 - Test 1 – Part 2" are left off. Also used by
+// listening-practice.js.
+function lsPartBarTitle(section, partNum) {
+    const name = String((section && section.title) || '').trim();
+    const placeholder = !name || /(^|\s)part\s*\d+\s*$/i.test(name);
+    return `Part ${partNum}` + (placeholder ? '' : `: ${name}`);
+}
+
 function _renderCdPartHeaderLs(idx) {
     const s = getSortedSections(false)[idx];
     const t = document.getElementById('cd-part-title-ls');
     const sub = document.getElementById('cd-part-sub-ls');
     if (!s || !t || !sub) return;
-    t.textContent = `Part ${s.partNumber}`;
+    t.textContent = lsPartBarTitle(s, s.partNumber);
     const r = s.questionRange || {};
     sub.textContent = (r.start && r.end)
         ? `Listen and answer questions ${r.start}–${r.end}`

@@ -6,7 +6,7 @@
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
-const { createReadingTest, createListeningSection, createWritingTask1, createWritingTask2, createWritingExam, createSpeakingQuestion, createSpeakingAttempt } = require('../factories/contentFactory');
+const { createReadingTest, createListeningSection, createListeningTest, createWritingTask1, createWritingTask2, createWritingExam, createSpeakingQuestion, createSpeakingAttempt } = require('../factories/contentFactory');
 const { createClassGroup, enrollStudent, createAssignment, seedInternalCompletion } = require('../factories/classFactory');
 const Assignment = require('../../models/Assignment');
 const AssignmentProgress = require('../../models/AssignmentProgress');
@@ -129,6 +129,77 @@ describe('create assignment', () => {
     });
     const inbox = await request(app).get('/api/user/messages').set(authH(s1));
     expect(inbox.body.messages.some((m) => m.subject.includes('Bài tập mới'))).toBe(true);
+  });
+});
+
+describe('listening items bring their gap-fill along', () => {
+  const gf = (extra = {}) => ({ gapFillPublished: true, gapFillTemplate: 'x [[1]]', gapFillAnswers: ['y'], ...extra });
+  const types = (a) => a.resources.map((r) => `${r.resourceType}:${r.resourceId}`);
+  const post = (t, cls, resources) => request(app).post(`/api/classes/${cls._id}/assignments`).set(authH(t)).send({ title: 'HW', resources });
+  const part = (partNumber, title, transcript = '') => ({
+    partNumber, title, transcript, questionRange: { start: partNumber, end: partNumber },
+    questionGroups: [{ groupType: 'plain', questions: [{ questionNumber: partNumber, type: 'fill-blank', questionText: 'q', correctAnswer: 'a' }] }],
+  });
+
+  test('a single section with a published gap-fill gets it right after; no gap-fill / unpublished → nothing added', async () => {
+    const t = await createTeacher();
+    const { cls } = await makeClassWith(t);
+    const withGf = await createListeningSection({ extra: gf() });
+    const draft = await createListeningSection({ extra: gf({ gapFillPublished: false }) });
+    const res = await post(t, cls, [
+      { kind: 'internal', resourceType: 'listening_practice', resourceId: String(withGf._id) },
+      { kind: 'internal', resourceType: 'listening_practice', resourceId: String(draft._id) },
+    ]);
+    expect(res.status).toBe(201);
+    expect(types(res.body.assignment)).toEqual([
+      `listening_practice:${withGf._id}`, `listening_gapfill:${withGf._id}`, `listening_practice:${draft._id}`,
+    ]);
+  });
+
+  test('a full test gets one gap-fill per matched part, in part order (title match, else transcript match)', async () => {
+    const t = await createTeacher();
+    const { cls } = await makeClassWith(t);
+    const tx = 'Good morning, welcome to the city museum tour. Today we will look at the old harbour.';
+    const p1 = await createListeningSection({ partNumber: 1, title: 'Hotel Booking – Form', extra: gf() });
+    const p2 = await createListeningSection({ partNumber: 2, title: 'Totally different title', extra: gf({ transcript: tx }) });
+    await createListeningSection({ partNumber: 3, title: 'Unpublished part', extra: gf({ gapFillPublished: false }) });
+    const test = await createListeningTest({ sections: [
+      part(2, 'Museum Tour', tx), part(1, 'Hotel booking - form'), part(3, 'Unpublished part'), part(4, 'No match anywhere'),
+    ] });
+    const res = await post(t, cls, [{ kind: 'internal', resourceType: 'listening_test', resourceId: String(test._id) }]);
+    expect(res.status).toBe(201);
+    expect(types(res.body.assignment)).toEqual([
+      `listening_test:${test._id}`, `listening_gapfill:${p1._id}`, `listening_gapfill:${p2._id}`,
+    ]);
+  });
+
+  test('a gap-fill the teacher already picked is not duplicated', async () => {
+    const t = await createTeacher();
+    const { cls } = await makeClassWith(t);
+    const sec = await createListeningSection({ extra: gf() });
+    const res = await post(t, cls, [
+      { kind: 'internal', resourceType: 'listening_gapfill', resourceId: String(sec._id) },
+      { kind: 'internal', resourceType: 'listening_practice', resourceId: String(sec._id) },
+    ]);
+    expect(types(res.body.assignment)).toEqual([`listening_gapfill:${sec._id}`, `listening_practice:${sec._id}`]);
+  });
+
+  test('on an edit, a gap-fill the teacher removed is not re-added; a newly added section still brings its own', async () => {
+    const t = await createTeacher();
+    const { cls } = await makeClassWith(t);
+    const a = await createListeningSection({ extra: gf() });
+    const b = await createListeningSection({ extra: gf() });
+    const created = await post(t, cls, [{ kind: 'internal', resourceType: 'listening_practice', resourceId: String(a._id) }]);
+    expect(created.body.assignment.resources).toHaveLength(2);
+    const res = await request(app).put(`/api/classes/${cls._id}/assignments/${created.body.assignment._id}`).set(authH(t)).send({ resources: [
+      { kind: 'internal', resourceType: 'listening_practice', resourceId: String(a._id) },
+      { kind: 'internal', resourceType: 'listening_practice', resourceId: String(b._id) },
+    ] });
+    expect(res.status).toBe(200);
+    expect(types(res.body.assignment)).toEqual([
+      `listening_practice:${a._id}`, `listening_practice:${b._id}`, `listening_gapfill:${b._id}`,
+    ]);
+    expect(String(res.body.assignment.resources[0]._id)).toBe(String(created.body.assignment.resources[0]._id));
   });
 });
 
@@ -1041,6 +1112,31 @@ describe('resource catalog', () => {
     // A non-speaking type must ignore part/topic rather than erroring.
     const ignored = await request(app).get('/api/classes/resources/catalog?type=reading_test&part=1&topic=x').set(authH(t));
     expect(ignored.status).toBe(200);
+  });
+
+  test('listening-section search: words in any order, question-sheet heading, or the full test name', async () => {
+    const t = await createTeacher();
+    const gf = { gapFillPublished: true, gapFillTemplate: 'x [[1]]', gapFillAnswers: ['y'] };
+    const fossil = await createListeningSection({ partNumber: 4, title: 'Green Mountain Fossil Park', extra: { ...gf,
+      questionGroups: [{ groupType: 'note-form', noteConfig: { title: 'Study of Fossil Park', lines: [] },
+        questions: [{ questionNumber: 31, type: 'fill-blank', questionText: 'q', correctAnswer: 'a' }] }] } });
+    const ocean = await createListeningSection({ partNumber: 2, title: 'Oceanic Island Travelling', extra: gf });
+    const other = await createListeningSection({ partNumber: 2, title: 'Fossil Fuel Debate', extra: gf });
+    const q = (type, search) => request(app).get(`/api/classes/resources/catalog?type=${type}&search=${encodeURIComponent(search)}`).set(authH(t))
+      .then((r) => r.body.items.map((i) => String(i._id)));
+
+    expect(await q('listening_gapfill', 'fossil park')).toEqual([String(fossil._id)]);
+    expect(await q('listening_gapfill', 'Park Mountain')).toEqual([String(fossil._id)]);
+    expect(await q('listening_gapfill', 'Study of Fossil Park')).toEqual([String(fossil._id)]);
+
+    const part = (partNumber, title) => ({ partNumber, title, questionRange: { start: partNumber, end: partNumber },
+      questionGroups: [{ groupType: 'plain', questions: [{ questionNumber: partNumber, type: 'fill-blank', questionText: 'q', correctAnswer: 'a' }] }] });
+    await createListeningTest({ name: 'Vol 2 - Test 1', sections: [part(2, 'Oceanic Island Travelling'), part(4, 'Green Mountain Fossil Park')] });
+    await createListeningTest({ name: 'Vol 2 - Test 10', sections: [part(2, 'Fossil Fuel Debate')] });
+    const byTest = await q('listening_gapfill', 'vol 2 test 1');
+    expect(byTest.sort()).toEqual([String(fossil._id), String(ocean._id)].sort());
+    expect(byTest).not.toContain(String(other._id));
+    expect((await q('listening_practice', 'Vol2-Test1')).sort()).toEqual([String(fossil._id), String(ocean._id)].sort());
   });
 });
 

@@ -628,6 +628,44 @@ async function listGapFillSections() {
   }));
 }
 
+// Published gap-fill section ids that go with one assigned Listening item —
+// class homework attaches them automatically (assignment.controller
+// buildResources). A section (bài lẻ) carries its own gap-fill. A full test's
+// parts are embedded copies with no link to the stand-alone ListeningSection
+// docs that hold gap-fill, so each part is matched by part number + title,
+// falling back to the opening of its transcript. Returned in part order.
+const gfNorm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const gfTranscriptKey = (s) => gfNorm(s).slice(0, 300);
+async function gapFillSectionIdsFor(resourceType, resourceId) {
+  if (!mongoose.isValidObjectId(resourceId)) return [];
+  if (resourceType === 'listening_practice') {
+    const ok = await ListeningSection.exists({ _id: resourceId, isActive: true, gapFillPublished: true });
+    return ok ? [String(resourceId)] : [];
+  }
+  if (resourceType !== 'listening_test') return [];
+  const test = await ListeningTest.findById(resourceId).select('sections.partNumber sections.title sections.transcript').lean();
+  const parts = [...((test && test.sections) || [])].sort((a, b) => a.partNumber - b.partNumber);
+  if (!parts.length) return [];
+  const base = { isActive: true, gapFillPublished: true };
+  const cands = await ListeningSection.find({ ...base, partNumber: { $in: parts.map((p) => p.partNumber) } })
+    .select('title partNumber').lean();
+  const found = parts.map((p) => {
+    const hit = cands.find((c) => c.partNumber === p.partNumber && gfNorm(c.title) === gfNorm(p.title));
+    return hit ? String(hit._id) : null;
+  });
+  const fallback = parts.filter((p, i) => !found[i] && gfTranscriptKey(p.transcript));
+  if (fallback.length) {
+    const byTx = await ListeningSection.find({ ...base, partNumber: { $in: fallback.map((p) => p.partNumber) } })
+      .select('partNumber transcript').lean();
+    parts.forEach((p, i) => {
+      if (found[i] || !gfTranscriptKey(p.transcript)) return;
+      const hit = byTx.find((c) => c.partNumber === p.partNumber && gfTranscriptKey(c.transcript) === gfTranscriptKey(p.transcript));
+      if (hit) found[i] = String(hit._id);
+    });
+  }
+  return [...new Set(found.filter(Boolean))];
+}
+
 async function getGapFillSectionById(id) {
   const section = await ListeningSection.findOne({ _id: id, isActive: true, gapFillPublished: true })
     .select('_id title partNumber audioUrl audioDuration gapFillTemplate gapFillAnswers gapFillGlossary transcript +transcriptTiming')
@@ -1444,7 +1482,7 @@ module.exports = {
   updateTranscript,
   listAdminAttempts, getAdminAttemptsStats,
   listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, getDictationTranslations, saveDictationAttempt,
-  listGapFillSections, getGapFillSectionById, getGapFillGlossary, saveGapFillAttempt, generateSectionGapFill, updateSectionGapFill,
+  listGapFillSections, gapFillSectionIdsFor, getGapFillSectionById, getGapFillGlossary, saveGapFillAttempt, generateSectionGapFill, updateSectionGapFill,
   getWarmUpSectionById, buildSectionWarmUp, generateSectionWarmUp, getSectionWarmUp, updateSectionWarmUp,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent, bulkSetSectionsActive,
   assembleTest,

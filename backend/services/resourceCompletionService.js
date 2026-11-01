@@ -293,7 +293,7 @@ const REGISTRY = {
   },
   listening_practice: {
     label: 'Bài nghe lẻ (Section)',
-    catalog: { model: ListeningSection, filter: { isActive: true }, sort: { createdAt: -1 },
+    catalog: { model: ListeningSection, filter: { isActive: true }, sort: { createdAt: -1 }, sectionSearch: true,
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.partNumber ? `Part ${d.partNumber}` : '' }) },
     attempt: { model: ListeningPracticeAttempt, userField: 'userId', idField: 'sectionId', filter: COUNTABLE_ATTEMPT },
     scoreGate: { fields: 'correctCount totalQuestions', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
@@ -303,7 +303,7 @@ const REGISTRY = {
   // the same set students see (listeningService.listGapFillSections).
   listening_gapfill: {
     label: 'Bài nghe lẻ (Gap-fill)',
-    catalog: { model: ListeningSection, filter: { isActive: true, gapFillPublished: true }, sort: { createdAt: -1 },
+    catalog: { model: ListeningSection, filter: { isActive: true, gapFillPublished: true }, sort: { createdAt: -1 }, sectionSearch: true,
       shape: (d) => ({ _id: d._id, label: d.title,
         meta: [d.partNumber ? `Part ${d.partNumber}` : '', `${(d.gapFillAnswers || []).length} chỗ trống`].filter(Boolean).join(' · ') }) },
     attempt: { model: GapFillAttempt, userField: 'userId', idField: 'sectionId', filter: {} },
@@ -315,7 +315,7 @@ const REGISTRY = {
   },
   dictation: {
     label: 'Dictation (Section)',
-    catalog: { model: ListeningSection, filter: { isActive: true }, sort: { createdAt: -1 },
+    catalog: { model: ListeningSection, filter: { isActive: true }, sort: { createdAt: -1 }, sectionSearch: true,
       shape: (d) => ({ _id: d._id, label: d.title, meta: 'Dictation' }) },
     attempt: { model: DictationAttempt, userField: 'userId', idField: 'sectionId', filter: {} },
     scoreGate: { fields: 'correctCount totalSentences', percent: (d) => (d.totalSentences ? (d.correctCount / d.totalSentences) * 100 : 0) },
@@ -590,31 +590,53 @@ async function wt1ModuleCodesForCourse(courseCode) {
 // category instead of silently stopping at the first 100.
 const CATALOG_MAX = 2000;
 
+// Search "Vol 2 Test 1" / "cam 18 test 3" in a listening-section picker →
+// that full test's parts. Full tests embed copies of their parts, so the
+// stand-alone sections are found by part number + title. Spaces and
+// punctuation are ignored ("vol2 - test1" works too). null = no test by that name.
+const squash = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+async function sectionsOfTestNamed(search) {
+  const key = squash(search);
+  if (key.length < 4) return null;
+  const tests = await ListeningTest.find({}).select('name sections.partNumber sections.title').lean();
+  const parts = tests.filter((t) => squash(t.name) === key).flatMap((t) => t.sections || []);
+  if (!parts.length) return null;
+  return { $or: parts.map((p) => ({ partNumber: p.partNumber, title: p.title })) };
+}
+
 async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
   const entry = REGISTRY[type];
   if (!entry) return [];
   if (!entry.catalog) {
     return [{ _id: null, label: entry.label, meta: entry.syntheticMeta || 'Cả lớp làm chung 1 bộ đề' }];
   }
+  // Every word must appear somewhere, in any order: "fossil park" finds
+  // "Green Mountain Fossil Park".
+  const words = String(search || '').trim().split(/\s+/).filter(Boolean).slice(0, 8)
+    .map((w) => new RegExp(escapeRegex(w), 'i'));
   if (entry.catalog.static) {
     const { shape, deepLinkKey } = entry.catalog;
-    const re = search && search.trim() ? new RegExp(escapeRegex(search.trim()), 'i') : null;
     return entry.catalog.static
       .map((d) => ({ ...shape(d), resourceCode: deepLinkKey ? deepLinkKey(d) : '' }))
-      .filter((row) => !re || re.test(row.label));
+      .filter((row) => words.every((re) => re.test(row.label)));
   }
   const q = { ...entry.catalog.filter, ...extraFilters };
   if (entry.catalog.courseScope) {
     q.moduleCode = { $in: await wt1ModuleCodesForCourse(entry.catalog.courseScope) };
   }
-  if (search && search.trim()) {
-    const re = new RegExp(escapeRegex(search.trim()), 'i');
+  if (words.length) {
     // every catalog model has one of these text fields — `prompt` for
     // WritingTask1/2 (task1_practice/task2_practice), which have no name/
     // title/question field at all.
-    q.$or = [{ name: re }, { title: re }, { topicName: re }, { question: re }, { prompt: re },
-      { nameVi: re }, { nameEn: re }, // nameVi/En: SentenceStructureGroup (advanced_sentences)
-      { label: re }, { titleVi: re }, { category: re }]; // Task2Template / WPTopic / Tips
+    const fields = ['name', 'title', 'topicName', 'question', 'prompt',
+      'nameVi', 'nameEn', // SentenceStructureGroup (advanced_sentences)
+      'label', 'titleVi', 'category']; // Task2Template / WPTopic / Tips
+    // Listening sections: also the heading on the question sheet ("Study of
+    // Fossil Park" — what a teacher holding the book sees).
+    if (entry.catalog.sectionSearch) fields.push('questionGroups.noteConfig.title');
+    const byWords = { $and: words.map((re) => ({ $or: fields.map((f) => ({ [f]: re })) })) };
+    const byTest = entry.catalog.sectionSearch ? await sectionsOfTestNamed(search) : null;
+    q.$or = byTest ? [byWords, byTest] : [byWords];
   }
   const docs = await entry.catalog.model.find(q)
     .sort(entry.catalog.sort)
