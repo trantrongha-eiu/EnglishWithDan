@@ -306,7 +306,9 @@ describe('tuitionService', () => {
   it('getMySummary: a course fee is due from day 8 of the month it was entered', async () => {
     const student = await createStudent();
     const fee = await createTuitionFee({ studentId: student._id, feeType: 'course', courseName: 'X', amount: 800, isPaid: false });
-    await TuitionFee.updateOne({ _id: fee._id }, { $set: { createdAt: new Date('2026-10-02T05:00:00Z') } }, { timestamps: false });
+    // Raw driver update: Mongoose treats createdAt as immutable and silently
+    // drops a $set on it, which left the fee dated "today" (only passed in Oct 2026).
+    await TuitionFee.collection.updateOne({ _id: fee._id }, { $set: { createdAt: new Date('2026-10-02T05:00:00Z') } });
     expect((await tuitionService.getMySummary(student._id, new Date('2026-10-05T05:00:00Z'))).dueCount).toBe(0);
     expect((await tuitionService.getMySummary(student._id, new Date('2026-10-08T05:00:00Z'))).dueCount).toBe(1);
   });
