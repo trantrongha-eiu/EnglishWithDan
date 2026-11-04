@@ -130,8 +130,10 @@ describe('seedShadowingLessons', () => {
       expect(ShadowingLesson.CATEGORIES).toContain(l.category);
       expect(['A2', 'B1', 'B2', 'C1', 'C2']).toContain(l.level);
       expect(l.segments.length).toBeGreaterThanOrEqual(8);
-      // 6 Minute English lessons are whole episodes (~6.5 min); the rest are clips.
-      expect(l.clipEnd - l.clipStart).toBeLessThanOrEqual(l.category === '6-minute-english' ? 450 : 360);
+      // Whole-video categories: 6 Minute English / Grammar (~6.5 min) and
+      // Past Tense animations (up to ~8.5 min); the rest are clips.
+      const maxClip = { '6-minute-english': 450, '6-minute-grammar': 450, animated: 540 }[l.category] || 360;
+      expect(l.clipEnd - l.clipStart).toBeLessThanOrEqual(maxClip);
       l.segments.forEach((s, i) => {
         expect(s.end).toBeGreaterThan(s.start);
         expect(s.end - s.start).toBeLessThanOrEqual(30); // one practisable sentence

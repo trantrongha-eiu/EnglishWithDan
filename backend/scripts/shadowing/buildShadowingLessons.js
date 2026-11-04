@@ -88,6 +88,9 @@ const TEWS_PHRASE = {
 // Hand-timed BBC Storytellers segments, { slug: [[start, end, text], …] }.
 const STORYTELLERS = require('./storytellersSegments.json');
 
+// 6 Minute Grammar: hand-punctuated whisper text, { slug: transcript }.
+const G6_TRANSCRIPTS = require('./sixMinuteGrammarTranscripts.json');
+
 const KEITH = 'English Speaking Success (Keith)';
 const EPT = 'English Pro Tips';
 const JIMMY = 'Jimmy English Home';
@@ -96,6 +99,96 @@ const CS_ADVANCED = new Set([
   'cs-intrusive-r', 'cs-elision-d', 'cs-twinning-t', 'cs-assim-d-b', 'cs-assim-n-m', 'cs-assim-t-k',
   'cs-assim-d-g', 'cs-would-you', 'cs-unreleased-stops', 'cs-weak-have',
 ]);
+
+// Past Tense video titles as on YouTube.
+const PT_TITLES = {
+  "CXxaK7aMl3M": "Why Asians are Smarter, or are they?",
+  "dlHdGtWKSBs": "The Worst Parasites to Have",
+  "ejWPZcEV2x0": "Why Orcas are such Intelligent Predators",
+  "hTxdZGmDhnw": "Why is Asia so Populated?",
+  "1pNd0MzfP5I": "Why Are Small Animals So Strong? Relatively.",
+  "-mEtI4sezTc": "Do Animals Understand Anger?",
+  "rXIaWhhuD-U": "Why Zoos should be illegal: Zoochosis",
+  "KXv-LNRpWNk": "Does Human Food Taste Good to Animals?",
+  "8q0xXlEk4wE": "Why Humans Feel Sleepy After Eating",
+  "aL4thmDBM6s": "What's the Worst Diseases to have?",
+  "YrFwkAIQ9ZU": "How Humans will Speedrun Extinction",
+  "tPyERsCN7RU": "Why Humans Prefer Their Food Hot?",
+  "JhiukeA5sfg": "Why Asians Eat Bugs and the West Doesn't",
+  "etM0sm23fpg": "The Rarest Animal Traits",
+  "jX_F0DVYDCM": "The Mutated Life of Chernobyl",
+  "i9754w3udlA": "The Real Life Superhumans",
+  "TZ-FAqCf02A": "What if you have the Rarest Diseases?",
+  "7f_VhPY-2dE": "Rarest Human Traits",
+  "8yGHt4kZZAo": "What Made Vikings So Terrifying",
+  "XdDaS8WKDak": "Why Humans are Scared of the Ocean",
+  "1dVWGWm632c": "The Perfect Urban Animal",
+  "E8CmhB5WYRQ": "The Most Terrifying Disease",
+  "KTw7tXzxoNM": "The Rarest Human Possible",
+  "svxL5pysqX0": "Did Ancient Humans get Cancer?",
+  "OEWQ5wYgbos": "Why are Humans Scared of Spiders",
+  "N2Y4-_dkKe0": "Why Humans Eat 3 Meals a Day",
+  "7tVH1hVBXW8": "Why you watch YOUTUBE while EATING",
+  "EUdt4rDunKQ": "How Ancient Humans reacted to Eclipses (Lunar and Solar Eclipses)",
+  "zqlAHDLQe2U": "Why Humans Love Cheese",
+  "Mom-7JehnaQ": "How our Ancestors Knew What to Eat (And What Could Kill Them)",
+  "_13c3RArZ04": "What the Appendix used to be",
+};
+
+// BBC 6 Minute Grammar video titles as on YouTube.
+const G6_TITLES = {
+  "-8660VeIj4U": "Present continuous and going to - 6 Minute Grammar",
+  "1N1MpESNE6o": "Adjectives and adverbs - 6 Minute Grammar",
+  "1iC_rULeuZc": "Defining relative clauses - 6 Minute Grammar",
+  "38QqDrckyxM": "How to use the active and passive voice - 6 Minute Grammar",
+  "3OuqzHxlrHc": "The second conditional - 6 Minute Grammar",
+  "3aQOLTfnAOc": "State verbs - 6 Minute Grammar",
+  "3dA7P5arkyc": "Used to - 6 Minute Grammar",
+  "3mi5OI23A6w": "6 Minute Grammar: How to use narrative tenses",
+  "4I1WWLPQypo": "Putting adverbs in the right place - 6 Minute Grammar",
+  "5UxMyCxQThE": "'Too', 'very' and 'enough' - 6 Minute Grammar",
+  "6QG6jci1Hbw": "Subject Questions - 6 Minute Grammar",
+  "70w98yeKj74": "How to use the present perfect continuous tense - 6 Minute Grammar",
+  "8VETylIxyhw": "The first conditional - 6 Minute Grammar",
+  "8_nhtAwI0dA": "The present perfect with 'just', 'already' and 'yet' - 6 Minute Grammar",
+  "B5hDy53iGNA": "Using the future continuous and 'be' with the infinitive - 6 Minute Grammar",
+  "CzoxIVPtPgI": "Indirect Questions - 6 Minute Grammar",
+  "FAhpT7BH7GE": "Comparatives and superlatives - 6 Minute Grammar",
+  "FBmjH6nh5-k": "How to use phrasal verbs type 1, 2, 3 & 4 - 6 Minute Grammar",
+  "FGQPFqqduec": "Take a 'tenses tour' - 6 Minute Grammar",
+  "Gqu-bgwML00": "How to use phrasals - 6 Minute Grammar",
+  "HUXXgVElADg": "'Have To' and 'must' - 6 Minute Grammar",
+  "K-MKAjvvcsw": "How to use the zero and first conditional - 6 Minute Grammar",
+  "L-wTVCByxzk": "How to use reported speech - 6 Minute Grammar",
+  "P4_kqBsj2sE": "How to use the third conditional - 6 Minute Grammar",
+  "PgsG98vByiw": "The past simple tense - 6 Minute Grammar",
+  "Ry9Pg4CbIBc": "GRAMMAR: Putting adverbs in the correct place",
+  "TWw8We_ElLo": "How to use modals of deduction and speculation - 6 Minute Grammar",
+  "TkYO-uprqQQ": "How to talk about cause and effect - 6 Minute English",
+  "U2DxNgQqDgQ": "How to use comparatives and superlatives - 6 Minute Grammar",
+  "V2quIYo41Ig": "Used To & Would - 6 Minute Grammar",
+  "X6LuWwb9whM": "How to use present tenses - 6 Minute Grammar",
+  "YXXtNR7JCzY": "The past perfect continuous tense - 6 Minute Grammar",
+  "ZXN3wROCpfs": "'May', 'might' and 'could' - 6 Minute Grammar",
+  "elPHkXNxi2g": "How to talk about the future - 6 Minute Grammar",
+  "foyWhOHhTT0": "Question tags - 6 Minute Grammar",
+  "j9b1CNN_rFU": "Asking Questions - 6 Minute Grammar",
+  "jcAX1RtKq3U": "Talking about the future - 6 Minute Grammar",
+  "jwmKjgwlMk8": "Present perfect and past simple - 6 Minute Grammar",
+  "nI5zaB6QL-o": "Present and past passives - 6 Minute Grammar",
+  "o-GWYDA4IQY": "Present perfect with 'ever' and 'never' - 6 Minute Grammar",
+  "ohR163PgEK4": "Verb patterns - 6 Minute Grammar",
+  "q-Jkx670rT8": "GRAMMAR: How to use the definite article with abstract uncountable nouns",
+  "r6XpFWmA7Gk": "How to use quantifiers - 6 Minute Grammar",
+  "ryRu8zFCKZE": "Articles - 6 Minute Grammar",
+  "sSZcAh42qtI": "Present perfect with 'for' and 'since' - 6 Minute Grammar",
+  "tbru3bW2kVE": "Using 'can', 'could', 'be able to' and 'manage to' - 6 Minute Grammar",
+  "tzEt4iwsIdo": "How to use LIKE for preference and description - 6 Minute Grammar",
+  "uTB5I8V9Eog": "Past simple and past continuous - 6 Minute Grammar",
+  "voQLMgJE-QE": "Adverbs of Frequency - 6 Minute Grammar",
+  "vyvGJrB7WNM": "The past perfect tense - 6 Minute Grammar",
+  "xFsYrTIndhI": "Present Simple and Present Continuous - 6 Minute Grammar",
+};
 
 const LESSONS = [
   {
@@ -1906,6 +1999,110 @@ const LESSONS = [
       [65.7, 68.2, 'Never open up this envelope again.'],
     ],
   },
+  // ── Past Tense (2026-11-01): 5–8 minute animated explainers on animals,
+  // the human body, food and history — one scripted narrator, punctuated
+  // en-orig captions, whole video = the lesson. Optional 5th item = end
+  // time (cuts a "subscribe" outro), 6th = builder opts.
+  ...[
+    ['CXxaK7aMl3M', 'pt-asians-smarter', 'Why Asians are smarter, or are they?', 'Kỳ thi Suneung khiến cả Hàn Quốc dừng lại — vậy người châu Á có thật sự thông minh hơn? Nhập cư chọn lọc, hagwon, growth mindset và "stereotype threat". Từ vựng: hyperselectivity, outscore, burnout.', 9999, { join: [46] }], // "10:00 p.m." | "Curfew"
+    ['dlHdGtWKSBs', 'pt-worst-parasites', 'The worst parasites to have', 'Amip ăn não, sán dây trong não, bọ chét cát chui vào da… 8 loài ký sinh đáng sợ nhất. Từ vựng y khoa: infection, cyst, larvae, inflammation, fatal.'],
+    ['ejWPZcEV2x0', 'pt-orcas-predators', 'Why orcas are such intelligent predators', 'Cá voi sát thủ tạo sóng hất hải cẩu khỏi tảng băng, săn trong im lặng và dạy con non săn mồi. Từ vựng: echolocation, coordinate, pod, culture, prey.'],
+    ['hTxdZGmDhnw', 'pt-asia-populated', 'Why is Asia so populated?', 'Vì sao một nửa dân số thế giới sống trong một vòng tròn ở châu Á? Lúa nước, nhiều vụ mỗi năm và "population momentum". Từ vựng: fertile, irrigation, delta, birth rate.'],
+    ['1pNd0MzfP5I', 'pt-small-animals-strong', 'Why are small animals so strong? Relatively.', 'Kiến nâng gấp 50 lần trọng lượng, bọ chét nhảy 100 lần thân mình — bí mật nằm ở "square-cube law". Từ vựng: cross-section, volume, proportion, scale up.'],
+    ['-mEtI4sezTc', 'pt-animals-anger', 'Do animals understand anger?', 'Tinh tinh trừng phạt kẻ trộm, ngựa sợ khuôn mặt giận dữ, quạ thù dai nhiều năm. Động vật có biết giận không? Từ vựng: frustration, grudge, reconciliation.'],
+    ['rXIaWhhuD-U', 'pt-zoochosis', 'Why zoos should be illegal: zoochosis', 'Gấu Bắc Cực bơi hình số 8 suốt 12 tiếng mỗi ngày — chứng "zoochosis" ở thú nuôi nhốt. Hợp với IELTS Writing Task 2 về sở thú. Từ vựng: captivity, enclosure, enrichment.', 9999, { join: [45] }], // "Dr." | "Ros Clubb"
+    ['KXv-LNRpWNk', 'pt-human-food-animals', 'Does human food taste good to animals?', 'Mèo không nếm được vị ngọt, gấu trúc mất vị umami, cá da trơn nếm bằng cả cơ thể. Đồ ăn của người có ngon với động vật? Từ vựng: receptor, evolve, scavenge.'],
+    ['8q0xXlEk4wE', 'pt-sleepy-after-eating', 'Why humans feel sleepy after eating', 'Vì sao ăn trưa xong lại buồn ngủ? Không phải do máu dồn xuống dạ dày mà là nhịp sinh học và hormone. Từ vựng: circadian rhythm, alertness, satiety, slump.'],
+    ['aL4thmDBM6s', 'pt-worst-diseases', 'What are the worst diseases to have?', 'Những căn bệnh khiến cuộc sống thành địa ngục: đau dây thần kinh sinh ba, đau đầu từng cụm, uốn ván… Từ vựng: chronic pain, attack, trigger, unbearable.', 313.3],
+    ['YrFwkAIQ9ZU', 'pt-speedrun-extinction', 'How humans will speedrun extinction', 'Nếu nhân loại là trò chơi điện tử: chiến tranh hạt nhân, sụp đổ môi trường, AI và vũ khí sinh học. Hợp với IELTS Speaking Part 3. Từ vựng: catastrophic, famine, pandemic.'],
+    ['tPyERsCN7RU', 'pt-hot-food', 'Why humans prefer their food hot', 'Vì sao pizza nguội kém ngon? Mùi thơm, kết cấu và hàng trăm nghìn năm nấu bằng lửa. Từ vựng: aroma, texture, flavour, contrast, pathogen.'],
+    ['JhiukeA5sfg', 'pt-eating-bugs', 'Why Asians eat bugs and the West doesn\'t', '2 tỷ người ăn côn trùng — bọ cạp xiên que ở Thái Lan, nhộng tằm ở Hàn Quốc. Vì sao phương Tây thì không? Từ vựng: edible, protein, sustainable, livestock.', 9999, { join: [8] }], // "Mr." | "Beast"
+    ['etM0sm23fpg', 'pt-rarest-animal-traits', 'The rarest animal traits', 'Báo đen, bướm nửa đực nửa cái, rắn hai đầu — những đặc điểm hiếm nhất ở động vật. Từ vựng: albinism, mutation, embryo, rare variant.'],
+    ['jX_F0DVYDCM', 'pt-chernobyl', 'The mutated life of Chernobyl', 'Gần 40 năm sau thảm hoạ, ếch đen, nấm "ăn" phóng xạ và sói kháng ung thư. Từ vựng: radiation, contaminated, natural selection, adapt.'],
+    ['i9754w3udlA', 'pt-superhumans', 'The real-life superhumans', 'Người Bajau lặn 5 phút, người Sherpa leo Everest, người Kalenjin chạy marathon — siêu năng lực có thật trong gen. Từ vựng: adaptation, endurance, altitude, inherited.'],
+    ['TZ-FAqCf02A', 'pt-rarest-diseases', 'What if you had the rarest diseases?', 'Đổi 1 tỷ đô lấy 1 năm mắc những bệnh hiếm nhất: dị ứng nước, cơ biến thành xương, mất ngủ đến chết. Bạn có đồng ý? Từ vựng: allergy, genetic disorder, symptom.', 469.1],
+    ['7f_VhPY-2dE', 'pt-rarest-human-traits', 'The rarest human traits', 'Từ tóc đỏ, mắt hai màu đến nhóm máu "vàng" Rh-null — những đặc điểm hiếm nhất ở con người, từ đầu đến chân. Từ vựng: congenital, pigment, inherit.'],
+    ['8yGHt4kZZAo', 'pt-vikings', 'What made Vikings so terrifying', 'Vì sao người Viking đáng sợ? Chế độ ăn, chèo thuyền, đánh úp lúc rạng sáng, thuyền dài và các chiến binh berserker. Từ vựng: raid, monastery, element of surprise.'],
+    ['XdDaS8WKDak', 'pt-scared-of-ocean', 'Why humans are scared of the ocean', 'Ta biết về sao Hoả nhiều hơn đáy biển. Bóng tối, áp suất, Kraken và những con tàu biến mất. Từ vựng: thalassophobia, pressure, shipwreck, myth.'],
+    ['1dVWGWm632c', 'pt-urban-animal', 'The perfect urban animal', 'Ghép trí thông minh của quạ, dạ dày của chuột và khả năng leo trèo của cầy để tạo ra loài vật đô thị hoàn hảo. Từ vựng: adapt, forage, resilient, habitat.'],
+    ['E8CmhB5WYRQ', 'pt-terrifying-disease', 'The most terrifying disease', 'Bệnh dại qua 4.000 năm: từ Bộ luật Eshnunna, truyền thuyết người sói đến vắc-xin của Pasteur. Từ vựng: rabies, incubation, saliva, vaccine.'],
+    ['KTw7tXzxoNM', 'pt-rarest-human', 'The rarest human possible', 'Bạch tạng, mắt hai màu, thuận tay trái, thị giác bốn sắc và siêu trí nhớ — xác suất tồn tại của người hiếm nhất. Từ vựng: probability, trait, population.', 9999, { join: [13] }], // "…actually exist?" | "Statistically?" Yes.
+    ['svxL5pysqX0', 'pt-ancient-cancer', 'Did ancient humans get cancer?', 'Ung thư có từ 1,7 triệu năm trước: hoá thạch, xác ướp và vì sao ngày nay có vẻ nhiều ca hơn. Từ vựng: tumour, mutation, life expectancy, detection.'],
+    ['OEWQ5wYgbos', 'pt-scared-of-spiders', 'Why are humans scared of spiders?', 'Vì sao ta sợ nhện dù hầu hết vô hại? Hạch hạnh nhân, em bé 6 tháng tuổi và bản năng tiến hoá. Từ vựng: phobia, instinct, disgust, evolutionary.'],
+    ['N2Y4-_dkKe0', 'pt-three-meals', 'Why humans eat 3 meals a day', 'Ba bữa một ngày không phải quy luật tự nhiên: người La Mã ăn một bữa, Hải quân Anh, Cách mạng Công nghiệp và Kellogg. Từ vựng: routine, schedule, industrial.'],
+    ['7tVH1hVBXW8', 'pt-youtube-while-eating', 'Why you watch YouTube while eating', 'Vì sao ta vừa ăn vừa xem YouTube? Dopamine, nỗi cô đơn, mukbang và thuật toán. Hợp với IELTS Speaking về công nghệ. Từ vựng: distraction, parasocial, habit.', 469.6],
+    ['EUdt4rDunKQ', 'pt-ancient-eclipses', 'How ancient humans reacted to eclipses', 'Người xưa sợ nhật thực, nguyệt thực: vua thế thân ở Babylon, trăng máu trước khi Constantinople thất thủ, mẹo của Columbus. Từ vựng: omen, prophecy, siege.'],
+    ['zqlAHDLQe2U', 'pt-love-cheese', 'Why humans love cheese', 'Phô mai là sữa thối rữa — vậy sao ta mê nó? Casomorphin, umami, chất béo và hàng nghìn năm lịch sử. Từ vựng: ferment, aged, craving, acquired taste.', 466],
+    ['Mom-7JehnaQ', 'pt-ancestors-food', 'How our ancestors knew what to eat', 'Tổ tiên ta biết ăn gì bằng cách nào? Vị đắng, quan sát và kiến thức truyền đời — như cách chế biến sắn và đậu đỏ. Từ vựng: toxic, forage, trial and error.'],
+    ['_13c3RArZ04', 'pt-appendix', 'What the appendix used to be', 'Ruột thừa không vô dụng: nó từng là bể lên men, rồi thành "kho dự phòng" vi khuẩn có lợi. Từ vựng: appendicitis, bacteria, gut, reservoir.'],
+  ].map(([youtubeId, slug, title, description, clipEnd = 9999, opts]) => ({
+    slug, youtubeId, title, sourceTitle: PT_TITLES[youtubeId], channel: 'Past Tense',
+    category: 'animated', level: 'B2', clipStart: 0, clipEnd, useAutoText: true, description, ...opts,
+  })),
+  // ── BBC 6 Minute Grammar (2026-11-01): whole episodes, like 6 Minute
+  // English. These videos have NO YouTube captions at all, so the timed text
+  // is local faster-whisper (small.en) output saved as <id>.en-orig.json3
+  // (one event per word) — punctuated, read with useAutoText. Where whisper
+  // left a stretch unpunctuated (quiz options), sixMinuteGrammarTranscripts.json
+  // holds the hand-fixed text, aligned back onto the same word timings.
+  // [youtubeId, slug, title, description, level, clipEnd = 9999, opts]
+  ...[
+    ['xFsYrTIndhI', 'g6-present-simple-continuous', 'Present simple and present continuous', '', 'A2'],
+    ['X6LuWwb9whM', 'g6-present-tenses', 'How to use present tenses', '', 'B1'],
+    ['FGQPFqqduec', 'g6-tenses-tour', 'Take a tenses tour', '', 'B1'],
+    ['3aQOLTfnAOc', 'g6-state-verbs', 'State verbs', '', 'B1'],
+    ['voQLMgJE-QE', 'g6-adverbs-of-frequency', 'Adverbs of frequency', '', 'A2'],
+    ['PgsG98vByiw', 'g6-past-simple', 'The past simple tense', '', 'A2'],
+    ['uTB5I8V9Eog', 'g6-past-simple-continuous', 'Past simple and past continuous', '', 'A2'],
+    ['3mi5OI23A6w', 'g6-narrative-tenses', 'How to use narrative tenses', '', 'B1'],
+    ['vyvGJrB7WNM', 'g6-past-perfect', 'The past perfect tense', '', 'B1'],
+    ['YXXtNR7JCzY', 'g6-past-perfect-continuous', 'The past perfect continuous tense', '', 'B2'],
+    ['jwmKjgwlMk8', 'g6-present-perfect-past-simple', 'Present perfect and past simple', '', 'B1'],
+    ['o-GWYDA4IQY', 'g6-present-perfect-ever-never', 'Present perfect with "ever" and "never"', '', 'A2'],
+    ['sSZcAh42qtI', 'g6-present-perfect-for-since', 'Present perfect with "for" and "since"', '', 'B1'],
+    ['8_nhtAwI0dA', 'g6-just-already-yet', 'Present perfect with "just", "already" and "yet"', '', 'B1'],
+    ['70w98yeKj74', 'g6-present-perfect-continuous', 'The present perfect continuous tense', '', 'B1'],
+    ['3dA7P5arkyc', 'g6-used-to', 'Used to', '', 'A2'],
+    ['V2quIYo41Ig', 'g6-used-to-would', 'Used to and would', '', 'B1'],
+    ['-8660VeIj4U', 'g6-present-continuous-going-to', 'Present continuous and "going to" for the future', '', 'A2'],
+    ['elPHkXNxi2g', 'g6-talk-about-future', 'How to talk about the future', '', 'B1'],
+    ['jcAX1RtKq3U', 'g6-talking-about-future', 'Talking about the future: will, going to, present continuous', '', 'B1'],
+    ['B5hDy53iGNA', 'g6-future-continuous', 'Future continuous and "be" + infinitive', '', 'B2'],
+    ['K-MKAjvvcsw', 'g6-zero-first-conditional', 'The zero and first conditional', '', 'B1'],
+    ['8VETylIxyhw', 'g6-first-conditional', 'The first conditional', '', 'B1'],
+    ['3OuqzHxlrHc', 'g6-second-conditional', 'The second conditional', '', 'B1'],
+    ['P4_kqBsj2sE', 'g6-third-conditional', 'The third conditional', '', 'B2'],
+    ['TkYO-uprqQQ', 'g6-cause-and-effect', 'How to talk about cause and effect', '', 'B2'],
+    ['nI5zaB6QL-o', 'g6-present-past-passives', 'Present and past passives', '', 'B1'],
+    ['38QqDrckyxM', 'g6-active-passive', 'Active and passive voice', '', 'B1'],
+    ['HUXXgVElADg', 'g6-have-to-must', '"Have to" and "must"', '', 'A2'],
+    ['ZXN3wROCpfs', 'g6-may-might-could', '"May", "might" and "could"', '', 'B1'],
+    ['tbru3bW2kVE', 'g6-can-could-be-able-to', 'Can, could, be able to and manage to', '', 'B1'],
+    ['TWw8We_ElLo', 'g6-modals-of-deduction', 'Modals of deduction and speculation', '', 'B2'],
+    ['j9b1CNN_rFU', 'g6-asking-questions', 'Asking questions', '', 'A2'],
+    ['6QG6jci1Hbw', 'g6-subject-questions', 'Subject questions', '', 'B1'],
+    ['CzoxIVPtPgI', 'g6-indirect-questions', 'Indirect questions', '', 'B1'],
+    ['foyWhOHhTT0', 'g6-question-tags', 'Question tags', '', 'B1'],
+    ['L-wTVCByxzk', 'g6-reported-speech', 'Reported speech', '', 'B1'],
+    ['1iC_rULeuZc', 'g6-defining-relative-clauses', 'Defining relative clauses', '', 'B1'],
+    ['ohR163PgEK4', 'g6-verb-patterns', 'Verb patterns: -ing or to + infinitive', '', 'B1'],
+    ['tzEt4iwsIdo', 'g6-like', 'How to use "like" for preference and description', '', 'A2'],
+    ['FBmjH6nh5-k', 'g6-phrasal-verbs-types', 'Phrasal verbs: types 1, 2, 3 and 4', '', 'B2'],
+    ['Gqu-bgwML00', 'g6-phrasals', 'How to use phrasal verbs', '', 'B1'],
+    ['ryRu8zFCKZE', 'g6-articles', 'Articles: a, an, the', '', 'A2'],
+    ['q-Jkx670rT8', 'g6-the-abstract-nouns', '"The" with abstract uncountable nouns', '', 'B2'],
+    ['r6XpFWmA7Gk', 'g6-quantifiers', 'Quantifiers', '', 'B1'],
+    ['FAhpT7BH7GE', 'g6-comparatives-superlatives', 'Comparatives and superlatives', '', 'A2'],
+    ['U2DxNgQqDgQ', 'g6-comparatives-superlatives-2', 'Comparatives and superlatives: more ways to compare', '', 'B1'],
+    ['1N1MpESNE6o', 'g6-adjectives-adverbs', 'Adjectives and adverbs', '', 'A2'],
+    ['4I1WWLPQypo', 'g6-adverb-position', 'Putting adverbs in the right place', '', 'B1'],
+    ['Ry9Pg4CbIBc', 'g6-adverb-position-2', 'Putting adverbs in the correct place', '', 'B1'],
+    ['5UxMyCxQThE', 'g6-too-very-enough', '"Too", "very" and "enough"', '', 'A2'],
+  ].map(([youtubeId, slug, title, description, level, clipEnd = 9999, opts]) => ({
+    slug, youtubeId, title, sourceTitle: G6_TITLES[youtubeId], channel: 'BBC Learning English',
+    category: '6-minute-grammar', level, clipStart: 0, clipEnd, useAutoText: true, description,
+    ...(G6_TRANSCRIPTS[slug] && { transcript: G6_TRANSCRIPTS[slug] }), ...opts,
+  })),
 ];
 
 // Caption-file typos / artefacts, fixed before segmentation.
@@ -2094,6 +2291,110 @@ const SEGMENT_FIXES = [
   [/^Daryl O'Connor: /, ''], // 6 Minute English: a two-word speaker label stripSpeakers misses
   [/here at 6 Minute\. English\./, 'here at 6 Minute English.'], // caption line broke the show's name
   [/\beyes change color\./, 'eyes change colour.'],
+  // Past Tense (en-orig): sentence splits at abbreviations, misheard names
+  [/10:00 p\.m\. Curfew/, '10:00 p.m. curfew'],
+  [/\ba Mr\. Beast challenge\b/, 'a MrBeast challenge'],
+  [/\bDr\. Ross Club\b/, 'Dr. Ros Clubb'],
+  [/\bPablo Berrako and German Orisaola\b/, 'Pablo Burraco and Germán Orizaola'],
+  [/as well as the You can acquire it/, 'as well as the… You can acquire it'], // an edit cut in the video
+  [/\bKaylee Hardick\b/, 'Kali Hardig'],
+  [/\btwo fields of the the size\b/, 'two fields of the same size'],
+  [/\bfalls far short of the ants ratio\b/, "falls far short of the ant's ratio"],
+  [/\bcompare each animal strength\b/, "compare each animal's strength"],
+  [/\bcalled the crosssection\b/, 'called the cross-section'],
+  [/^At 10 times, the length muscle area\b/, 'At 10 times the length, muscle area'],
+  [/\b1\/10enth\b/, '1/10th'],
+  [/\bbecause the heavy weights are\b/, 'because the heavyweights are'],
+  [/\bThe giant planteing dinosaurs\b/, 'The giant plant-eating dinosaurs'],
+  [/\bthe elephant crossing a plane\b/, 'the elephant crossing a plain'],
+  [/\b([Zz])oocosis\b/g, '$1oochosis'],
+  [/\bGus, Arturo, and Molly\b/g, 'Gus, Arturo, and Mali'],
+  [/\bahead of public display, funding habitat\b/, 'ahead of public display. Funding habitat'],
+  [/\bincluding their barbells and skin\b/, 'including their barbels and skin'],
+  [/^Notice it's white fur\b/, 'Notice its white fur'],
+  [/\bappear entirely on on own\b/, 'appear entirely on its own'],
+  [/\babout four times is in water\b/, 'about four times faster in water'],
+  [/\bJill Price described to stop remembering\b/, 'Jill Price described being unable to stop remembering'],
+  [/\b910,000 Earths to to to that number\b/, '910,000 Earths to get to that number'],
+  [/\bTamson German\b/, 'Tamsin German'],
+  [/\bsomething Romans did it banquets\b/, 'something Romans did at banquets'],
+  [/^Leaves, bark, roots, Tough, fibrous\b/, 'Leaves, bark, roots. Tough, fibrous'],
+  // 6 Minute Grammar (whisper text)
+  [/\bbbclearningenglish \.com\b/gi, 'bbclearningenglish.com'],
+  [/(\w) -(?=\w)/g, '$1-'], // "Bye -bye", "i -e -r": whisper splits a hyphenated word
+  [/\bKate Blanchett\b/g, 'Cate Blanchett'],
+  [/^Rob was mum cooking dinner\?/, 'Rob, was Mum cooking dinner?'],
+  [/(\d) \.(\d)/g, '$1.$2'], // "8 .15"
+  [/\b(?:[Ss]ix|6)[ -][Mm]inute [Gg]rammar\b/g, '6 Minute Grammar'],
+  [/\ba subject with hard plus\b/, 'a subject with had plus'],
+  [/\bthat's hard with the past participle\b/, "that's had with the past participle"],
+  [/^Did he catch that\? First, Mrs Brown/, 'Did you catch that? First, Mrs Brown'],
+  [/^One more time, please hurry\.$/, 'One more time, please, Harry.'],
+  [/\bo 'clock\b/g, "o'clock"],
+  [/^6 Minute Grammar from bbclearningenglish\.com Hello again\./, '6 Minute Grammar from bbclearningenglish.com. Hello again.'],
+  // "gonna" episode: whisper hears "gunner", or writes the full "going to"
+  [/\bgunner\b/g, 'gonna'],
+  [/\bGunner\b/g, 'Gonna'],
+  [/^Ooh, very good\. What are you going to see\?$/, 'Ooh, very good. What are you gonna see?'],
+  [/^What are you going to see\?$/, 'What are you gonna see?'],
+  [/^And the informal short form is what are you going to see\?$/, 'And the informal short form is what are you gonna see?'],
+  [/^Right\. Well, the question starts with does\.$/, 'Right. Well, the question starts with do.'],
+  [/^Hello\. Welcome to 6 Minute Grammar with me Rob and me Catherine\.$/, 'Hello. Welcome to 6 Minute Grammar with me, Rob. And me, Catherine.'],
+  [/\bjust a duh sound\b/, 'just a d sound'],
+  [/\bthe short duh sound\b/, 'the short d sound'],
+  [/\bOK, Catherine confined the past continuous\b/, 'OK, Catherine combined the past continuous'],
+  [/\bat the time of speaking\. – it's his intention\b/, "at the time of speaking – it's his intention"],
+  [/^followed by two and the base form of a verb\b/, 'followed by to and the base form of a verb'],
+  [/^Goodness already!/, 'Goodness, already!'],
+  [/\bthe second part of Indirect Questions\b/, 'the second part of indirect questions'],
+  [/^6 Minute Grump from bbclearningenglish\.com And we're talking/, "And we're talking"],
+  [/\bwhat is the time is\?$/, 'what is the time?'],
+  [/\bthe question Tag Finn used\b/, 'the question tag Finn used'],
+  [/\buse the auxiliary verb DO in\b/, 'use the auxiliary verb do in'],
+  [/\bmy missing chocolate Finn\.$/, 'my missing chocolate, Finn.'],
+  [/^You bet that has\. I promise\.$/, "You'd better. I promise."],
+  [/ Bye! You$/, ' Bye!'],
+  [/^Hello\. Welcome to 6 Minute Grammar with me Katherine\.$/, 'Hello. Welcome to 6 Minute Grammar with me, Catherine.'],
+  [/^And me Neil\. Neil, I have a sandwich\.$/, 'And me, Neil. Neil, I have a sandwich.'],
+  [/\blet's look at that more closely\. – we need\b/, "let's look at that more closely – we need"],
+  [/^2nd change – in reported speech\b/, 'Second change – in reported speech'],
+  [/\btime for a top tip With the reporting verb tell,/, 'time for a top tip. With the reporting verb tell,'],
+  [/\bWe could also use the words And therefore,/, 'We could also use the words therefore,'],
+  [/\bto say, I miss the bus and therefore\b/, 'to say, I missed the bus and therefore'],
+  [/^Exactly\. And as a result of owing to or because of due to\.$/, 'Exactly. And as a result of, owing to or because of, due to.'],
+  [/^Due to the Arctic, ice is melting\.$/, 'Due to the Arctic ice is melting.'],
+  [/^Well done, everyone\. Who got those right\?$/, 'Well done, everyone who got those right.'],
+  [/^Join Join us again\b/, 'Join us again'],
+  [/\b[Tt]he song,? happy\b/g, (m) => m.replace('happy', 'Happy')],
+  [/\bFehrel Williams\b/g, 'Pharrell Williams'],
+  [/\bchanges place with the doer, And because\b/, 'changes place with the doer. And because'],
+  [/\bPoor Mike\. 6 Minute Granite from bbclearningenglish\.com And we're talking\b/, "Poor Mike. And we're talking"],
+  [/^or one we don't know who did it\b/, "or when we don't know who did it"],
+  [/\bat some time\. – whenever that was! – but\b/, 'at some time – whenever that was! – but'],
+  [/\bthe definition article the\b/, 'the definite article the'],
+  [/\bHe heard the confidence that is needed\b/, 'He had the confidence that is needed'],
+  [/\bhow to use the words to and very with adjectives\b/, 'how to use the words too and very with adjectives'],
+  [/^We use two before an adjective\.$/, 'We use too before an adjective.'],
+  [/^So this is two with much and many\b/, 'So this is too with much and many'],
+  [/^I can't hear you\. There's two noise\.$/, "I can't hear you. There's... noise."],
+  [/^He's not old to drive yet\.$/, "He's not old... to drive yet."],
+  [/^They are small\. Those shoes don't fit me\.$/, "They are... small. Those shoes don't fit me."],
+  [/\bbbclearningenglish\.com Join us again\b/, 'bbclearningenglish.com. Join us again'],
+  [/^That's spelt ee ar\. So tall becomes taller\.$/, "That's spelt E-R. So tall becomes taller."],
+  [/^Add eer, spelt i-e-r\.$/, 'Add -ier, spelt I-E-R.'],
+  [/\bbut don't end in e, spelt y, use more\b/, "but don't end in ee, spelt y, use more"],
+  [/\badd, est, that's spelled E-S-T\./, "add -est, that's spelled E-S-T."],
+  [/\bthat end in e, spelt y, like funny and happy, we add eest, that's i-e-s-t\./, "that end in ee, spelt y, like funny and happy, we add -iest, that's I-E-S-T."],
+  [/\bthe most famous actor in the world\.$/, 'the most famous actor in the world?'],
+  [/^So Simon is… then Jenny\.$/, 'So Simon is… than Jenny.'],
+  [/^So Catherine, how was your journey to work this morning\.$/, 'So Catherine, how was your journey to work this morning?'],
+  [/\bwe just add the letter r\. – late, later\./, 'we just add the letter r – late, later.'],
+  [/^Now for the quiz which is correct\.$/, 'Now for the quiz. Which is correct?'],
+  // Articles episode: weak vs strong forms are spelt the same — show the IPA
+  [/^But in spoken English it's a, not a\.$/, "But in spoken English it's /ə/, not /eɪ/."],
+  [/^But in spoken English an sounds like an, Finn\.$/, 'But in spoken English an sounds like /ən/, Finn.'],
+  [/^Now let's look at the and the\.$/, "Now let's look at /ðə/ and /ðiː/."],
+  [/^And it's the, not the, with elephant\b/, "And it's /ðiː/, not /ðə/, with elephant"],
 ];
 
 const MAX_WORDS = 24;      // longer sentences are split at a comma
@@ -2393,7 +2694,12 @@ function buildLesson(spec, subsDir) {
     // Auto captions with no punctuation: a hand-punctuated transcript gives
     // the text, the en-orig word timings still place every word (LCS below).
     if (!find(['en-orig'])) return null;
-    words = spec.transcript.split(/\s+/).filter((w) => norm(w)).map((text) => ({ text, start: 0, end: 0 }));
+    words = [];
+    for (const w of spec.transcript.split(/\s+/)) {
+      if (norm(w)) words.push({ text: w, start: 0, end: 0 });
+      // A bare "–" / "…" stays on the word before, as in manualWords().
+      else if (/^[–—-]+$|^…$|^\.\.\.$/.test(w) && words.length) words[words.length - 1].text += ' ' + w;
+    }
   } else {
     const manualFile = find(spec.useAutoText ? ['en-orig'] : ['en-GB', 'en-US', 'en']);
     if (!manualFile) return null;
