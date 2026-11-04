@@ -17,6 +17,7 @@ const catchAsync = require('../middleware/catchAsync');
 const userService = require('../services/userService');
 const userMessageService = require('../services/userMessageService');
 const peerService = require('../services/peerService');
+const task2CoWriteService = require('../services/task2CoWriteService');
 
 function displayName(user) {
   return (`${user.firstName || ''} ${user.lastName || ''}`.trim()) || user.username;
@@ -198,8 +199,13 @@ exports.getPeerProfile = messageGuard(async (req, res) => {
 
 // ── GET /api/user/peer/conversations ─────────────────────────
 exports.listPeerConversations = messageGuard(async (req, res) => {
-  const conversations = await peerService.listConversations(req.user._id);
-  res.json({ success: true, conversations });
+  // "Mời bạn viết cùng" invites ride along on this 20s every-page poll so
+  // js/shared/cowrite-invites.js can pop them up without its own request.
+  const [conversations, cowriteInvites] = await Promise.all([
+    peerService.listConversations(req.user._id),
+    task2CoWriteService.pendingInvites(req.user._id).catch(() => []),
+  ]);
+  res.json({ success: true, conversations, cowriteInvites });
 });
 
 // ── GET /api/user/peer/students ───────────────────────────────

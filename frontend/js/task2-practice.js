@@ -499,6 +499,8 @@ function render() {
   document.body.classList.toggle('t2-no-session-stats', !inSession);
   // The writer's top bar sits where the floating XP badge is.
   document.body.classList.toggle('t2-composing', state.view === 'compose');
+  // "Mời bạn viết cùng" live poll runs only while the writer is on screen.
+  if (state.view === 'compose') _cwStart(); else _cwStop();
 }
 
 // ════════════════════════════════════════════════════════
@@ -1934,9 +1936,10 @@ function renderCompose() {
             <summary class="t2-prompt-box-label">📋 Đề bài <span class="t2-prompt-peek">— ${_escHtml((t.prompt || '').slice(0, 70))}${(t.prompt || '').length > 70 ? '…' : ''}</span></summary>
             <p>${_escHtml(t.prompt)}</p>
           </details>
+          <div class="t2cw" id="t2c-cw">${_cwHtml()}</div>
           ${_composeTplHtml()}
           ${C.phase === 'class'
-            ? `<div class="t2c-tip"><b>🏫 Trên lớp:</b> viết <b>Mở bài</b> (cá nhân) rồi <b>Thân bài 1</b> (thảo luận nhóm → tự viết). Dùng câu đã dịch ở cột trái làm điểm tựa — bấm <b>＋</b> để chèn vào chỗ con trỏ rồi sửa cho liền mạch.</div>`
+            ? `<div class="t2c-tip"><b>🏫 Trên lớp:</b> viết <b>Mở bài</b> (cá nhân) rồi <b>Thân bài 1</b> (thảo luận nhóm → tự viết). Dùng câu đã dịch ở cột trái làm điểm tựa — ${_isStaffUser() ? 'bấm <b>＋</b> để chèn vào chỗ con trỏ rồi sửa cho liền mạch' : '<b>tự gõ lại</b> từng câu (không dán) để nhớ lâu hơn, rồi sửa cho liền mạch'}.</div>`
             : `<div class="t2c-tip is-home"><b>🏠 Về nhà:</b> viết <b>Thân bài 2</b> + <b>Kết bài</b> theo template trong sách (tab <b>Template</b>). Dùng ý tưởng và câu đã dịch, nhưng <b>viết bằng lời của bạn</b> — đừng chép nguyên bài mẫu.</div>`}
           ${LESSON_SECTIONS.map(renderComposeSection).join('')}
           <div class="t2c-foot">
@@ -1969,9 +1972,11 @@ function renderComposeSection(s) {
 }
 
 function bindCompose() {
+  const guard = !_isStaffUser() && window.PasteGuard;
   document.querySelectorAll('.t2c-ta').forEach(ta => {
     ta.addEventListener('input', () => _onComposeInput(ta));
     ta.addEventListener('focus', () => { state.compose.lastFocus = ta.dataset.key; });
+    if (guard) window.PasteGuard.attach(ta, { hint: 'tự gõ lại câu để nhớ lâu hơn nha!' });
   });
   if (state.compose.tplOpen) renderComposeTplBody();
 }
@@ -2073,12 +2078,16 @@ function _onComposeInput(ta) {
   const note = document.querySelector('.t2c-foot-note');
   if (note) note.textContent = `Bài tự lưu khi bạn gõ. Đủ 4 phần (${filled}/4) và ≥ ${LESSON_MIN_WORDS} từ thì nộp để AI chấm.`;
   _markLessonDirty('sections');
+  _cwSchedulePush();
 }
 
 // ── Left column ─────────────────────────────────────────
 // Insertable snippets for the current render; the ＋ buttons index into it.
 let _refItems = [];
+// Staff only — students type the sentence themselves (retyping is what makes
+// it stick), so for them there is no ＋ and pasting into the essay is blocked.
 function _insBtn(text) {
+  if (!_isStaffUser()) return '';
   _refItems.push(text);
   return `<button type="button" class="t2c-ins" title="Chèn vào chỗ con trỏ" aria-label="Chèn vào bài" onclick="insertRef(${_refItems.length - 1})">＋</button>`;
 }
@@ -2153,7 +2162,7 @@ function _refSentences() {
     </div>`;
   };
   return `
-    <p class="t2c-note">Câu bạn đã dịch ở bước ③. Bấm <b>＋</b> để chèn vào ô đang viết (chỗ con trỏ), rồi chỉnh lại cho hợp đoạn văn.</p>
+    <p class="t2c-note">Câu bạn đã dịch ở bước ③. ${_isStaffUser() ? 'Bấm <b>＋</b> để chèn vào ô đang viết (chỗ con trỏ)' : '<b>Tự gõ lại</b> câu vào ô đang viết — gõ tay giúp bạn nhớ lâu hơn'}, rồi chỉnh lại cho hợp đoạn văn.</p>
     ${_SENT_GROUPS.map(g => {
       const list = L.sentences.filter(s => s.type === g.type);
       return list.length ? `<div class="t2c-group">${g.title}</div>${list.map(item).join('')}` : '';
@@ -2176,7 +2185,7 @@ function _refVocab() {
   const list = state.vocabFor === id ? state.vocab : [];
   if (!list.length) return '<p class="t2c-note">Chưa tải được từ vựng của buổi này.</p>';
   return `
-    <p class="t2c-note">Từ vựng & collocations của buổi — bấm <b>＋</b> để chèn.</p>
+    <p class="t2c-note">Từ vựng & collocations của buổi${_isStaffUser() ? ' — bấm <b>＋</b> để chèn' : ' — tự gõ vào bài để nhớ lâu hơn'}.</p>
     ${list.map(v => `<div class="t2c-sent" style="border-left-color:#6366f1">
       <div class="t2c-sent-en">${_escHtml(v.term)}</div>
       ${v.definitionVi ? `<div class="t2c-sent-vi">${_escHtml(v.definitionVi)}</div>` : ''}
@@ -2233,6 +2242,297 @@ function insertRef(i) {
 function translateFromCompose(btn) {
   flushLessonSave();
   return startTranslate(btn);
+}
+
+// ════════════════════════════════════════════════════════
+//  "MỜI BẠN VIẾT CÙNG" — live co-writing group (writer screen)
+//  backend: services/task2CoWriteService.js · invites: js/shared/cowrite-invites.js
+//  Each member still writes their OWN essay; the group sees everyone's
+//  text live (poll every CW_POLL_MS) so they can check each other's work.
+// ════════════════════════════════════════════════════════
+const CW_POLL_MS = 2500;
+const CW_INVITE_POLL_MS = 6000;
+const CW_PUSH_DEBOUNCE_MS = 600;
+let _cw = { topicId: null, room: null, rev: 0, viewing: null, collapsed: false, poll: null, pushTimer: null, pushedFor: null, ticking: false, online: null, picked: new Set() };
+// Invites from classmates pop up within seconds anywhere on this page
+// (on other pages they ride the 20s peer-chat poll).
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.CowriteInvites && window.AuthService?.isLoggedIn() && window.AuthService.getRole() === 'student') {
+    _cwPollEvery(() => window.CowriteInvites.check(), CW_INVITE_POLL_MS);
+  }
+});
+
+function _cwPollEvery(fn, ms) {
+  if (window.ActivityGate) return window.ActivityGate.poll(fn, ms);
+  const id = setInterval(fn, ms);
+  return { stop: () => clearInterval(id) };
+}
+function _cwOthers() {
+  return (_cw.room?.members || []).filter(m => !m.isMe && m.status === 'joined');
+}
+function _cwAvatar(m) {
+  return m.avatar
+    ? `<img class="t2cw-av" src="${_escHtml(m.avatar)}" alt="">`
+    : `<span class="t2cw-av">${_escHtml((m.name || '?').trim().charAt(0).toUpperCase())}</span>`;
+}
+
+function _cwStart() {
+  if (!(window.AuthService && window.AuthService.isLoggedIn())) return;
+  const id = state.selectedTopic?._id;
+  if (!id) return;
+  if (_cw.topicId !== id) {
+    _cwStop();
+    Object.assign(_cw, { topicId: id, room: null, rev: 0, viewing: null, pushedFor: null });
+  }
+  if (!_cw.poll) {
+    _cwTick();
+    _cw.poll = _cwPollEvery(_cwTick, CW_POLL_MS);
+  }
+}
+function _cwStop() {
+  if (_cw.poll) { _cw.poll.stop(); _cw.poll = null; }
+  if (_cw.pushTimer) { clearTimeout(_cw.pushTimer); _cw.pushTimer = null; _cwPushNow(); }
+}
+
+async function _cwTick() {
+  const id = _cw.topicId;
+  if (!id || _cw.ticking || state.view !== 'compose') return;
+  _cw.ticking = true;
+  try {
+    const d = await apiFetch(`/api/task2/cowrite/topic/${id}${_cw.room ? `?rev=${_cw.rev}` : ''}`);
+    if (_cw.topicId !== id) return;
+    if (d.unchanged) { _cwApplyPresence(d.presence || []); return; }
+    _cw.room = d.room || null;
+    _cw.rev = d.room ? d.room.rev : 0;
+    // Just joined (or reopened the writer while in a group): share my text now.
+    if (_cw.room && _cw.pushedFor !== _cw.room.roomId) {
+      _cw.pushedFor = _cw.room.roomId;
+      _cwPushNow();
+    }
+    _cwRender();
+  } catch { /* retry next tick */ } finally {
+    _cw.ticking = false;
+  }
+}
+
+function _cwSchedulePush() {
+  if (!_cw.room) return;
+  clearTimeout(_cw.pushTimer);
+  _cw.pushTimer = setTimeout(() => { _cw.pushTimer = null; _cwPushNow(); }, CW_PUSH_DEBOUNCE_MS);
+}
+function _cwPushNow() {
+  const id = _cw.topicId;
+  if (!_cw.room || !id || state.lesson.topicId !== id || state.lesson.status !== 'ready') return;
+  apiFetch(`/api/task2/cowrite/topic/${id}/text`, { method: 'PUT', body: JSON.stringify({ sections: { ...state.lesson.sections } }) })
+    .then(d => { if (d && d.inRoom === false && _cw.topicId === id) { _cw.room = null; _cw.rev = 0; _cwRender(); } })
+    .catch(() => {});
+}
+
+// Called by cowrite-invites.js after accepting — join in place if this
+// lesson's writer is already open (otherwise it navigates here).
+window.T2CoWriteJoined = function (topicId) {
+  if (state.view !== 'compose' || state.selectedTopic?._id !== topicId) return false;
+  _cw.rev = 0;
+  _cw.pushedFor = null;
+  _cw.room = null;
+  _cwTick();
+  showToast('Đã vào nhóm viết cùng 👥', 'success');
+  return true;
+};
+
+function _cwApplyPresence(list) {
+  list.forEach(p => {
+    const m = (_cw.room?.members || []).find(x => String(x.userId) === String(p.userId));
+    if (m) { m.online = p.online; m.typing = p.typing; }
+    document.querySelectorAll(`[data-cw-uid="${p.userId}"]`).forEach(el => {
+      el.classList.toggle('is-online', !!p.online);
+      el.classList.toggle('is-typing', !!p.typing);
+    });
+  });
+}
+
+function _cwHtml() {
+  const room = _cw.topicId === state.selectedTopic?._id ? _cw.room : null;
+  const others = room ? _cwOthers() : [];
+  const pending = room ? room.members.filter(m => m.status === 'invited') : [];
+  const people = room ? room.members.filter(m => m.status === 'joined' || m.status === 'invited') : [];
+  const bar = `
+    <div class="t2cw-bar">
+      <button type="button" class="t2cw-invite" onclick="openCowriteInvite()"><i class="fas fa-user-plus"></i> Mời bạn viết cùng</button>
+      ${room ? `<div class="t2cw-people">${people.map(m => `
+        <span class="t2cw-person${m.status === 'invited' ? ' is-pending' : ''}${m.online ? ' is-online' : ''}${m.typing ? ' is-typing' : ''}" data-cw-uid="${_escHtml(m.userId)}" title="${_escHtml(m.name)}${m.status === 'invited' ? ' — đang chờ trả lời' : m.isMe ? ' (bạn)' : ''}">
+          ${_cwAvatar(m)}<span class="t2cw-pname">${m.isMe ? 'Bạn' : _escHtml(m.name)}</span>${m.status === 'invited' ? '<i class="fas fa-hourglass-half"></i>' : '<span class="t2cw-dot"></span>'}
+        </span>`).join('')}</div>
+        <button type="button" class="t2-link t2cw-leave" onclick="leaveCowrite()">Rời nhóm</button>`
+      : '<span class="t2cw-hint">Mời bạn đang online vào nhóm — cả nhóm thấy bài của nhau theo thời gian thực để kiểm tra chéo.</span>'}
+    </div>`;
+  if (!room) return bar;
+  if (!others.length) {
+    return bar + `<p class="t2cw-wait">${pending.length ? '⏳ Đang chờ bạn nhận lời mời… ' : ''}Khi có bạn vào nhóm, bài của bạn ấy sẽ hiện ở đây và cập nhật ngay khi bạn ấy gõ.</p>`;
+  }
+  if (!others.some(m => String(m.userId) === String(_cw.viewing))) _cw.viewing = String(others[0].userId);
+  return bar + `<div class="t2cw-live${_cw.collapsed ? ' is-collapsed' : ''}">${_cwLiveHtml(others)}</div>`;
+}
+
+function _cwLiveHtml(others) {
+  const m = others.find(x => String(x.userId) === String(_cw.viewing)) || others[0];
+  const s = m.sections || {};
+  const words = (o) => LESSON_SECTIONS.reduce((a, x) => a + _wc((o.sections || {})[x.key]), 0);
+  const phase = state.compose.phase;
+  return `
+    <div class="t2cw-live-head">
+      <span class="t2cw-live-title"><span class="t2cw-live-pulse"></span> Bài của bạn cùng nhóm</span>
+      <div class="t2cw-tabs" role="tablist">${others.map(o => `
+        <button type="button" role="tab" aria-selected="${o === m}" class="t2cw-tab${o === m ? ' active' : ''}${o.online ? ' is-online' : ''}${o.typing ? ' is-typing' : ''}" data-cw-uid="${_escHtml(o.userId)}" onclick="viewCowriteMember('${_escHtml(o.userId)}')">
+          <span class="t2cw-dot"></span>${_escHtml(o.name)}<span class="t2cw-tab-wc">${words(o)} từ</span>
+        </button>`).join('')}</div>
+      <button type="button" class="t2cw-collapse" onclick="toggleCowriteLive()" aria-label="${_cw.collapsed ? 'Mở' : 'Thu gọn'}"><i class="fas fa-chevron-${_cw.collapsed ? 'down' : 'up'}"></i></button>
+    </div>
+    <div class="t2cw-view" id="t2cw-view">
+      <div class="t2cw-meta${m.typing ? ' is-typing' : ''}" data-cw-uid="${_escHtml(m.userId)}">${_escHtml(m.name)} · ${words(m)} từ <span class="t2cw-typing-note">đang gõ…</span></div>
+      ${LESSON_SECTIONS.map(x => `
+        <div class="t2cw-sec${x.phase === phase ? '' : ' is-other'}">
+          <div class="t2cw-sec-head"><b>${x.label}</b> <span>${_wc(s[x.key])} từ</span></div>
+          ${(s[x.key] || '').trim() ? `<div class="t2cw-text">${_escHtml(s[x.key])}</div>` : '<div class="t2cw-text is-empty">(chưa viết)</div>'}
+        </div>`).join('')}
+    </div>`;
+}
+
+// Re-render only the group block — the student's own textareas are never
+// touched, and the friend's text keeps its scroll position.
+function _cwRender() {
+  const el = document.getElementById('t2c-cw');
+  if (!el || state.view !== 'compose') return;
+  const view = document.getElementById('t2cw-view');
+  const top = view ? view.scrollTop : 0;
+  el.innerHTML = _cwHtml();
+  const nv = document.getElementById('t2cw-view');
+  if (nv) nv.scrollTop = top;
+}
+function viewCowriteMember(uid) {
+  _cw.viewing = String(uid);
+  _cwRender();
+}
+function toggleCowriteLive() {
+  _cw.collapsed = !_cw.collapsed;
+  _cwRender();
+}
+
+function leaveCowrite() {
+  const id = _cw.topicId;
+  askT2Quit(async () => {
+    try {
+      await apiFetch(`/api/task2/cowrite/topic/${id}/leave`, { method: 'POST' });
+      if (_cw.topicId === id) { _cw.room = null; _cw.rev = 0; _cw.pushedFor = null; _cwRender(); }
+    } catch { showToast('Chưa rời nhóm được — thử lại nhé', 'error'); }
+  }, {
+    mascot: '👥', title: 'Rời nhóm viết cùng?',
+    sub: 'Bài của bạn vẫn được lưu bình thường — chỉ là cả nhóm sẽ không thấy bài của nhau nữa.',
+    confirmText: 'Rời nhóm', continueText: 'Ở lại'
+  });
+}
+
+// ── Invite picker (online students, classmates first) ───────
+async function openCowriteInvite() {
+  const t = state.selectedTopic;
+  if (!t) return;
+  let ov = document.getElementById('t2cw-overlay');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.id = 't2cw-overlay';
+    ov.className = 't2-tg-overlay';
+    ov.addEventListener('click', e => { if (e.target === ov) closeCowriteInvite(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && ov.classList.contains('is-open')) closeCowriteInvite(); });
+    document.body.appendChild(ov);
+  }
+  _cw.picked = new Set();
+  _cw.online = null;
+  ov.innerHTML = `
+    <div class="t2-tg-modal t2cw-modal" role="dialog" aria-modal="true" aria-labelledby="t2cw-title">
+      <div class="t2cw-mhead">
+        <div style="min-width:0">
+          <h3 id="t2cw-title">👥 Mời bạn viết cùng</h3>
+          <div class="t2cw-msub">${_escHtml(t.topicEmoji || '📝')} ${_escHtml(t.topicName)} — các bạn đang online</div>
+        </div>
+        <button class="t2-hist-close" onclick="closeCowriteInvite()" aria-label="Đóng"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="t2cw-mbody">
+        <input type="search" class="t2cw-search" id="t2cw-search" placeholder="Tìm tên bạn..." oninput="_cwRenderOnline()" autocomplete="off">
+        <div class="t2cw-list" id="t2cw-list"><div class="t2cw-empty"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div></div>
+      </div>
+      <div class="t2cw-mfoot">
+        <span class="t2cw-mnote">Mỗi bạn vẫn viết bài của riêng mình — cả nhóm thấy bài nhau theo thời gian thực.</span>
+        <button type="button" class="t2-primary" id="t2cw-send" onclick="sendCowriteInvites(this)" disabled><i class="fas fa-paper-plane"></i> Gửi lời mời</button>
+      </div>
+    </div>`;
+  ov.classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+  try {
+    const d = await apiFetch(`/api/task2/cowrite/online/${t._id}`);
+    _cw.online = d.students || [];
+  } catch {
+    _cw.online = null;
+    const list = document.getElementById('t2cw-list');
+    if (list) list.innerHTML = '<div class="t2cw-empty">Không tải được danh sách — thử lại nhé.</div>';
+    return;
+  }
+  _cwRenderOnline();
+  document.getElementById('t2cw-search')?.focus();
+}
+function closeCowriteInvite() {
+  const ov = document.getElementById('t2cw-overlay');
+  if (ov) ov.classList.remove('is-open');
+  document.body.style.overflow = '';
+}
+function _cwRenderOnline() {
+  const list = document.getElementById('t2cw-list');
+  if (!list || !_cw.online) return;
+  const q = (document.getElementById('t2cw-search')?.value || '').trim().toLowerCase();
+  const rows = _cw.online.filter(u => !q || u.name.toLowerCase().includes(q));
+  if (!_cw.online.length) { list.innerHTML = '<div class="t2cw-empty">😴 Chưa có bạn nào online lúc này.</div>'; return; }
+  if (!rows.length) { list.innerHTML = '<div class="t2cw-empty">Không tìm thấy bạn nào.</div>'; return; }
+  list.innerHTML = rows.map(u => {
+    const id = String(u._id);
+    const done = u.inRoom === 'joined';
+    const waiting = u.inRoom === 'invited';
+    return `<label class="t2cw-row${done ? ' is-done' : ''}">
+      <input type="checkbox" ${done ? 'disabled checked' : ''} ${_cw.picked.has(id) ? 'checked' : ''} onchange="_cwPick('${_escHtml(id)}', this.checked)">
+      ${_cwAvatar(u)}
+      <span class="t2cw-row-name">${_escHtml(u.name)}${u.classmate ? '<span class="t2cw-badge">Cùng lớp</span>' : ''}</span>
+      <span class="t2cw-row-state">${done ? 'Đã trong nhóm' : waiting ? 'Đã mời' : '<span class="t2cw-dot"></span> Online'}</span>
+    </label>`;
+  }).join('');
+}
+function _cwPick(id, on) {
+  if (on) _cw.picked.add(id); else _cw.picked.delete(id);
+  const btn = document.getElementById('t2cw-send');
+  if (btn) {
+    btn.disabled = !_cw.picked.size;
+    btn.innerHTML = `<i class="fas fa-paper-plane"></i> Gửi lời mời${_cw.picked.size ? ` (${_cw.picked.size})` : ''}`;
+  }
+}
+function sendCowriteInvites(btn) {
+  const t = state.selectedTopic;
+  if (!t || !_cw.picked.size) return;
+  return _withBusy(btn, async () => {
+    try {
+      const d = await apiFetch('/api/task2/cowrite/invite', { method: 'POST', body: JSON.stringify({ topicId: t._id, userIds: [..._cw.picked] }) });
+      const n = (d.invited || []).length;
+      const full = (d.skipped || []).filter(x => x.reason === 'full').length;
+      if (n) showToast(`Đã gửi lời mời cho ${n} bạn — chờ các bạn nhận lời nhé`, 'success', 4000);
+      if (full) showToast(`Nhóm tối đa ${d.room?.maxMembers || 8} người — ${full} bạn chưa được mời`, 'warn', 5000);
+      if (!n && !full) showToast('Các bạn này đã được mời rồi', 'info');
+      if (d.room && _cw.topicId === t._id) {
+        _cw.room = d.room;
+        _cw.rev = d.room.rev;
+        if (_cw.pushedFor !== d.room.roomId) { _cw.pushedFor = d.room.roomId; _cwPushNow(); }
+        _cwRender();
+      }
+      closeCowriteInvite();
+    } catch (e) {
+      showToast(e.message || 'Chưa gửi được lời mời', 'error');
+    }
+  });
 }
 
 // Hand the finished essay to writing.html's Task 2 flow for AI grading: seed

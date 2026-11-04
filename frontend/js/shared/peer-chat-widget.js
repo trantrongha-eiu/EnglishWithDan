@@ -686,6 +686,7 @@
       if (!d.success) return;
       _conversations = d.conversations || [];
       _updateBadge();
+      if (window.CowriteInvites) window.CowriteInvites.handle(d.cowriteInvites || []);
 
       if (_seeded) {
         _conversations.forEach(function (c) {

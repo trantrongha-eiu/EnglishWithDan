@@ -36,6 +36,7 @@ const BUNDLES = {
     'js/shared/sound-effects.js',
     'js/shared/utils.js',
     'js/shared/toast.js',
+    'js/shared/cowrite-invites.js',
     'js/shared/peer-chat-widget.js',
     'js/shared/api-client.js',
   ],

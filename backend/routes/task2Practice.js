@@ -5,6 +5,7 @@ const { ipKeyGenerator } = require('express-rate-limit');
 const auth    = require('../middleware/auth');
 const requirePremium = require('../middleware/requirePremium');
 const task2PracticeController = require('../controllers/task2Practice.controller');
+const task2CoWriteController = require('../controllers/task2CoWrite.controller');
 const logger  = require('../utils/logger');
 
 const premiumOnly = requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.');
@@ -102,5 +103,19 @@ router.get('/lesson/:topicId', auth, premiumOnly, task2PracticeController.getLes
 router.put('/lesson/:topicId', auth, premiumOnly, task2PracticeController.saveLessonWork);
 // Step ① (saved vocab + quiz best) — merge this device's progress, get all of it back.
 router.post('/vocab-progress/sync', auth, task2PracticeController.syncVocabProgress);
+
+// ══════════════════════════════════════════════════════════════════════
+//  "MỜI BẠN VIẾT CÙNG" — live co-writing groups on the writer screen
+//  (services/task2CoWriteService.js). /invites stays ungated: it's polled
+//  from every page by js/shared/cowrite-invites.js.
+// ══════════════════════════════════════════════════════════════════════
+router.get('/cowrite/invites', auth, task2CoWriteController.pendingInvites);
+router.get('/cowrite/online/:topicId', auth, premiumOnly, task2CoWriteController.listOnline);
+router.post('/cowrite/invite', auth, premiumOnly, task2CoWriteController.invite);
+router.post('/cowrite/room/:roomId/accept', auth, premiumOnly, task2CoWriteController.accept);
+router.post('/cowrite/room/:roomId/decline', auth, task2CoWriteController.decline);
+router.get('/cowrite/topic/:topicId', auth, premiumOnly, task2CoWriteController.getRoom);
+router.put('/cowrite/topic/:topicId/text', auth, premiumOnly, task2CoWriteController.pushText);
+router.post('/cowrite/topic/:topicId/leave', auth, task2CoWriteController.leave);
 
 module.exports = router;
