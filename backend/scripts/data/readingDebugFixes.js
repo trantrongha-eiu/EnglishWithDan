@@ -5,7 +5,8 @@
 //   content: [[from, to], …]  exact substring replacements in the passage text (each must match exactly once)
 //   expl:    { qNum: 'new explanation' | [[from, to], …] }
 //   keys:    { qNum: [from, to] }   · types: { qNum: [from, to] }
-//   groups:  [{ q: qNumInGroup, set: { field: value } }]  (instruction / groupTitle …)
+//   groups:  [{ q: qNumInGroup, replace: { field: [[from, to], …] } }]  (instruction / groupTitle …)
+//   options: { qNum: [currentList, newList] }   matching-option list of that question's group, swapped whole
 // Quotes are copied verbatim from the passage; "Trích" lines must pass volReading/rd_deep_audit.js.
 
 const E = (...parts) => parts.join('\n\n');
@@ -143,7 +144,13 @@ module.exports = {
   '6a2b05ba18f3aea4f062d91e': { title: 'Changes in reading habits', yesNo: [23, 24, 25, 26] },
 
   // Alternatives the official key also accepts
-  '6a29084485253ef89ef3c6e3': { title: 'What is exploration?', keys: { 40: ['land surface', 'land surface / surface'] } },
+  // Q33–37 explorer list (fixed 2026-11-05): Peter Fleming (A in the book) had slipped to the end as "EPeter Fleming",
+  // so every name sat one letter off the (correct, official) keys — e.g. Thesiger showed as D while key E pointed to Fleming.
+  '6a29084485253ef89ef3c6e3': {
+    title: 'What is exploration?', keys: { 40: ['land surface', 'land surface / surface'] },
+    options: { 33: [['Ran Fiennes', 'Chris Bonington', 'Robin Hanbury-Tenison', 'Wilfred Thesiger', 'EPeter Fleming'],
+      ['Peter Fleming', 'Ran Fiennes', 'Chris Bonington', 'Robin Hanbury-Tenison', 'Wilfred Thesiger']] },
+  },
 
   // ════════ WRONG / COPIED EXPLANATIONS ════════
   '6a29126885253ef89ef3d1e4': {

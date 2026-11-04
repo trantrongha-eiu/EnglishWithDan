@@ -148,6 +148,14 @@ function handFixes(p, spec, log) {
     const { g } = Q(gspec.q);
     for (const [field, pairs] of Object.entries(gspec.replace || {})) for (const [from, to] of pairs) g[field] = replaceOnce(String(g[field] || ''), from, to, `group ${field}`, log);
   }
+  // matching-option lists: { qNum: [currentList, newList] } — the whole list is swapped only when it is exactly currentList
+  for (const [n, [from, to]] of Object.entries(spec.options || {})) {
+    const { g } = Q(n);
+    const cur = JSON.stringify((g.matchingOptions || []).map(String));
+    if (cur === JSON.stringify(to)) continue;
+    if (cur !== JSON.stringify(from)) throw new Error(`${p.title} Q${n}: options are ${cur}, expected ${JSON.stringify(from)}`);
+    g.matchingOptions = to; log(`Q${n} group options ${JSON.stringify(from)} → ${JSON.stringify(to)}`);
+  }
   for (const [from, to] of spec.summaryText || []) for (const g of p.questionGroups) if (g.summaryConfig?.text?.includes(from)) g.summaryConfig.text = replaceOnce(g.summaryConfig.text, from, to, 'summary', log);
   for (const [from, to] of spec.bankWords || []) for (const g of p.questionGroups) (g.summaryConfig?.wordBank || []).forEach(w => { if (String(w.word).trim() === from) { log(`bank word "${from}" → "${to}"`); w.word = to; } });
 }

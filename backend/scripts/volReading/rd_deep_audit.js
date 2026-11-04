@@ -79,6 +79,8 @@ function conclusion(e) {
         if (/â€|Ã[\x80-\xbf]|�/.test(JSON.stringify(g))) add('FORMAT', `${L} mojibake`);
         // letters doubled by the renderer
         (g.matchingOptions || []).forEach((o, i) => { if (/^\s*\(?[A-Z]\s*[.):]\s+\S/.test(o) && String(o).trim().length > 3) add('FORMAT', `${L} matchingOption ${i + 1} has its own letter: "${o.slice(0, 50)}"`); });
+        // a letter stuck to the text ("EPeter Fleming") — usually means the list was shifted when it was pasted in
+        (g.matchingOptions || []).forEach((o, i) => { if (/^\s*[A-L](?=[A-Z][a-z])/.test(o)) add('FORMAT', `${L} matchingOption ${i + 1} starts with a stuck letter: "${o.slice(0, 50)}" — check the list order against the book`); });
         (g.endingsConfig?.endings || []).forEach(e => { if (/^\s*\(?[A-Z]\s*[.):]\s+\S/.test(e.text || '')) add('FORMAT', `${L} ending ${e.letter} has its own letter: "${e.text.slice(0, 50)}"`); });
         (g.headingsConfig?.headings || []).forEach(h => { if (/^\s*\(?[ivx]+\s*[.):]\s+\S/i.test(h.text || '')) add('FORMAT', `${L} heading ${h.numeral} has its own numeral: "${h.text.slice(0, 50)}"`); });
         (g.summaryConfig?.wordBank || []).forEach(w => { if (/^\s*[A-Z]\s*[.):]\s+\S/.test(w.word || '')) add('FORMAT', `${L} bank word has its own letter: "${w.word}"`); });

@@ -424,3 +424,13 @@ Sửa (`../fixReadingDebug.js` + `../data/readingDebugFixes.js`, dry run mặc �
 - Kiểm: `_audit_reading_warnings` 0, `vr_audit.js` 1–9 0 (trừ Vol 4 T9 ẩn có chủ ý), `vr_incomplete.js` 0, `cam_keycmp.js` 0,
   pw_grade 14/14 100% (các bài đổi key), pw_full_tests Actual Mocktest 1–39 39/39.
 - Lưu ý khi viết script thay chuỗi: `String.replace(x, chuỗi)` hiểu "$2" trong chuỗi thay ("$232") là nhóm bắt → luôn dùng hàm `() => to`.
+
+## Sửa danh sách lựa chọn bị lệch — 2026-11-05
+Thầy báo: Actual Mocktest 1 P3 "What is exploration?" Q33 — Wilfred Thesiger hiện là D nhưng đáp án/giải thích là E.
+Nguyên nhân: key 33–37 đúng (khớp key Cambridge 15 trong cam_keys.txt), nhưng danh sách explorer bị lệch: Peter Fleming
+(A trong sách) bị dồn xuống cuối thành "EPeter Fleming" → mọi tên lệch 1 chữ cái. Sửa bằng `fixReadingDebug.js`
+(kiểu fix mới `options: { qNum: [list cũ, list mới] }` trong data/readingDebugFixes.js), backup trong scripts/backups.
+Dò toàn ngân hàng (479 bài): (1) chữ cái dính vào lựa chọn, (2) giải thích nhắc tên/ý của lựa chọn khác với key,
+(3) câu "Trích" nằm cạnh tên người/địa điểm khác với key, (4) kết luận "→ X" khác key → ~80 cờ, xem tay từng cái:
+chỉ bài này sai thật; còn lại là câu chọn 2 đáp án hoặc giải thích có nhắc phương án sai để loại. rd_deep_audit.js giờ
+báo thêm FORMAT "starts with a stuck letter".
