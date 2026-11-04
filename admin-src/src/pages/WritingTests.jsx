@@ -54,10 +54,11 @@ function Task1Modal({ task, onClose, onSaved }) {
   const [form, setForm] = useState(() => task ? {
     prompt: task.prompt || '',
     imageUrl: task.imageUrl || '',
+    chartData: task.chartData || '',
     instructions: task.instructions || DEFAULT_T1,
     sampleSections: task.sampleSections?.length ? task.sampleSections : DEFAULT_T1_SECTIONS,
     isActive: task.isActive !== false,
-  } : { prompt: '', imageUrl: '', instructions: DEFAULT_T1, sampleSections: DEFAULT_T1_SECTIONS, isActive: true });
+  } : { prompt: '', imageUrl: '', chartData: '', instructions: DEFAULT_T1, sampleSections: DEFAULT_T1_SECTIONS, isActive: true });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -145,6 +146,14 @@ function Task1Modal({ task, onClose, onSaved }) {
                 <img src={form.imageUrl} alt="preview" style={{ maxWidth: '100%', maxHeight: 200, borderRadius: 6, border: '1px solid var(--border)' }} />
               </div>
             )}
+          </div>
+          <div className="form-group">
+            <label className="form-label">Số liệu chuẩn cho AI chấm <span style={{ fontWeight: 400, color: 'var(--text3)' }}>(không bắt buộc, học sinh không thấy)</span></label>
+            <textarea className="form-input" rows={4} value={form.chartData} onChange={set('chartData')}
+              placeholder={'London (°C): Jan 8, Feb 9, ... Jul 23, ... Dec 9\nNew York (°C): Jan 4, ... Jul 29, ... Dec 5\nSunshine (hours/year): London 1,180; New York 2,535; Sydney 2,473'} />
+            <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>
+              AI đọc biểu đồ nhỏ có thể sai số. Nhập số liệu ở đây thì AI sẽ dùng số này để kiểm tra số liệu trong bài, không tự đọc từ ảnh.
+            </div>
           </div>
           <div className="form-group">
             <label className="form-label">Hướng dẫn</label>

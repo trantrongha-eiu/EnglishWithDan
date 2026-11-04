@@ -126,3 +126,44 @@ describe('writingGradingService.gradeTaskWithAI — under-length penalty is task
     expect(result.ta.score).toBe(3);
   });
 });
+
+// Task 1 data checking: the model misread a small line graph (London Jan
+// ~8°C read as 5°C) and capped a correct essay at TA Band 5. The prompt now
+// carries teacher-entered figures as the authority plus a reading tolerance.
+describe('writingGradingService.gradeTaskWithAI — Task 1 chart data', () => {
+  const essay = 'a '.repeat(170) + 'end.';
+  const ok = () => ({ chartReading: 'London Jan ~8', ta: { score: 6 }, cc: { score: 6 }, lr: { score: 6 }, gra: { score: 6 } });
+
+  test('teacher figures are sent as authoritative reference data, with the tolerance rule', async () => {
+    checkEssay.mockResolvedValue(ok());
+    await gradeTaskWithAI(1, 'The graph shows...', essay, 171, 'https://img/c.png', 'London: Jan 8, Jul 23');
+    const [prompt, , imageUrl] = checkEssay.mock.calls[0];
+    expect(prompt).toContain('REFERENCE DATA');
+    expect(prompt).toContain('London: Jan 8, Jul 23');
+    expect(prompt).toContain('READING TOLERANCE');
+    expect(prompt).toContain('"chartReading"');
+    expect(imageUrl).toBe('https://img/c.png');
+  });
+
+  test('image only: tolerance rule applies, no reference-data block', async () => {
+    checkEssay.mockResolvedValue(ok());
+    await gradeTaskWithAI(1, 'The graph shows...', essay, 171, 'https://img/c.png');
+    const [prompt] = checkEssay.mock.calls[0];
+    expect(prompt).not.toContain('REFERENCE DATA');
+    expect(prompt).toContain('READING TOLERANCE');
+  });
+
+  test('the model\'s chartReading scratch work is stripped from the saved result', async () => {
+    checkEssay.mockResolvedValue(ok());
+    const result = await gradeTaskWithAI(1, 'The graph shows...', essay, 171, 'https://img/c.png');
+    expect(result.chartReading).toBeUndefined();
+  });
+
+  test('Task 2 ignores chart data entirely', async () => {
+    checkEssay.mockResolvedValue(ok());
+    await gradeTaskWithAI(2, 'Discuss...', 'b '.repeat(260) + 'end.', 261, '', 'London: Jan 8');
+    const [prompt] = checkEssay.mock.calls[0];
+    expect(prompt).not.toContain('REFERENCE DATA');
+    expect(prompt).not.toContain('DATA ACCURACY');
+  });
+});

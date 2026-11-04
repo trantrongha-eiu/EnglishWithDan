@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const WritingAttempt = require('../models/WritingAttempt');
-const { gradeTaskWithAI } = require('../services/writingGradingService');
+const { gradeTaskWithAI, findTask1ChartData } = require('../services/writingGradingService');
 const logger = require('../utils/logger');
 
 // Teachers previously had to click "Chấm bài bằng AI" by hand for every
@@ -50,7 +50,7 @@ async function runAutoGrade() {
     // never touched again. 'pending' and 'ai_done' are the only states
     // where an ungraded task could still be sitting there.
     const attempts = await WritingAttempt.find({ gradingStatus: { $in: ['pending', 'ai_done'] } })
-      .select('task1Answer task2Answer wordCount1 wordCount2 task1Snapshot task2Snapshot aiGrading examName')
+      .select('task1Answer task2Answer wordCount1 wordCount2 task1Id task1Snapshot task2Snapshot aiGrading examName')
       .lean();
 
     const jobs = [];
@@ -76,7 +76,8 @@ async function runAutoGrade() {
         const wordCount = isTask1 ? (attempt.wordCount1 || 0) : (attempt.wordCount2 || 0);
         const imageUrl = isTask1 ? (attempt.task1Snapshot?.imageUrl || '') : '';
 
-        const gradeResult = await gradeTaskWithAI(taskNum, prompt, answer, wordCount, imageUrl);
+        const chartData = isTask1 ? await findTask1ChartData(attempt) : '';
+        const gradeResult = await gradeTaskWithAI(taskNum, prompt, answer, wordCount, imageUrl, chartData);
 
         const field = isTask1 ? 'aiGrading.task1' : 'aiGrading.task2';
         await WritingAttempt.findByIdAndUpdate(attempt._id, {

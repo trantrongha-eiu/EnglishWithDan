@@ -141,7 +141,10 @@ async function _checkEssayCore(question, essay, imagePart, _attempt) {
           systemInstruction: SYSTEM_INSTRUCTION,
           responseMimeType: 'application/json',
           temperature: 0.4,
-          maxOutputTokens: 8192
+          maxOutputTokens: 8192,
+          // Task 1 charts have small axis labels and thin lines; at the
+          // default resolution the model misread line-graph values.
+          ...(imagePart ? { mediaResolution: 'MEDIA_RESOLUTION_HIGH' } : {})
         }
       }),
       45000,

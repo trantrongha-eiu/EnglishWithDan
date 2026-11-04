@@ -9,7 +9,7 @@ const rateLimit = require('express-rate-limit');
 const { ipKeyGenerator } = require('express-rate-limit');
 const auth    = require('../../middleware/auth');
 const { teacherOnly } = require('./_shared');
-const { gradeTaskWithAI } = require('../../services/writingGradingService');
+const { gradeTaskWithAI, findTask1ChartData } = require('../../services/writingGradingService');
 
 const WritingAttempt = require('../../models/WritingAttempt');
 const User           = require('../../models/User');
@@ -56,7 +56,8 @@ router.post('/writing-attempts/:id/ai-grade', auth, teacherOnly, aiGradeLimiter,
     const wordCount  = isTask1 ? (attempt.wordCount1 || 0) : (attempt.wordCount2 || 0);
     const imageUrl   = isTask1 ? (attempt.task1Snapshot?.imageUrl || '') : '';
 
-    const gradeResult = await gradeTaskWithAI(taskNum, taskPrompt, taskAnswer, wordCount, imageUrl);
+    const chartData  = isTask1 ? await findTask1ChartData(attempt) : '';
+    const gradeResult = await gradeTaskWithAI(taskNum, taskPrompt, taskAnswer, wordCount, imageUrl, chartData);
 
     const field = isTask1 ? 'aiGrading.task1' : 'aiGrading.task2';
     await WritingAttempt.findByIdAndUpdate(req.params.id, {

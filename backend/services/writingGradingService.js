@@ -6,13 +6,36 @@
 // text is grading-rubric content, not logic.
 
 const { checkEssay } = require('./geminiService');
+const WritingTask1 = require('../models/WritingTask1');
 
-async function gradeTaskWithAI(taskType, prompt, answer, wordCount, imageUrl = '') {
+// Teacher-entered exact figures for a Task 1 chart (WritingTask1.chartData).
+// Read live from the task, not from the attempt snapshot, so adding or
+// correcting the figures also fixes re-grades of older submissions. Falls
+// back to matching by image URL for attempts with no task1Id.
+async function findTask1ChartData(attempt) {
+  try {
+    const snap = (attempt && attempt.task1Snapshot) || {};
+    let t = attempt && attempt.task1Id
+      ? await WritingTask1.findById(attempt.task1Id).select('+chartData').lean()
+      : null;
+    if ((!t || !t.chartData) && snap.imageUrl) {
+      t = await WritingTask1.findOne({ imageUrl: snap.imageUrl, chartData: { $nin: ['', null] } })
+        .select('+chartData').lean();
+    }
+    return (t && t.chartData ? String(t.chartData) : '').trim();
+  } catch {
+    return ''; // missing figures only make grading less precise, never block it
+  }
+}
+
+async function gradeTaskWithAI(taskType, prompt, answer, wordCount, imageUrl = '', chartData = '') {
   const minWords      = taskType === 1 ? 150 : 250;
   const isUnderLength = wordCount < minWords;
   const isIncomplete  = answer.trim().length > 0 && !answer.trim().match(/[.!?]["']?\s*$/);
   const taLabel       = taskType === 1 ? 'Task Achievement' : 'Task Response';
   const hasImage       = taskType === 1 && !!imageUrl;
+  const refData        = taskType === 1 ? String(chartData || '').trim() : '';
+  const canCheckData   = hasImage || !!refData;
 
   // ─── TASK 1: Task Achievement (IDP Academic Band Descriptors) ──────────────
   const task1TA = `TASK ACHIEVEMENT (TA) – Task 1 Academic (IDP Band Descriptors):
@@ -27,8 +50,9 @@ Band 3: Does not address the task or completely misunderstood. Presents limited 
 MANDATORY PENALTIES (enforce strictly — these override the content score):
 • Under 150 words (this essay: ${wordCount} words): TA score MUST be capped at Band 5 maximum. State in Vietnamese comment: "Em chỉ viết ${wordCount} từ, dưới mức tối thiểu 150 từ — bài bị giới hạn tối đa Band 5 cho tiêu chí này."
 • No overview anywhere in the essay: TA score MUST be capped at Band 5 maximum. Mention absence of overview in comment.
-• Essay cut off mid-sentence (no ending .!?): TA score MUST be capped at Band 4 maximum. Mention in comment.${hasImage ? `
-• DATA ACCURACY (checked against the attached chart/graph/table image — this is now verifiable, not a guess): any number, trend, comparison, or ranking the student states that CONTRADICTS what the image actually shows is a factual error, not a style issue. Two or more such contradictions cap TA at Band 5 maximum; even one significant contradiction (e.g. claiming a value rose when the image shows it fell) should visibly lower the TA score. Cite the real figure from the image in the Vietnamese comment when this penalty applies.` : ''}`;
+• Essay cut off mid-sentence (no ending .!?): TA score MUST be capped at Band 4 maximum. Mention in comment.${canCheckData ? `
+• DATA ACCURACY: any number, trend, comparison, or ranking the student states that CLEARLY contradicts the data is a factual error, not a style issue. Two or more CLEAR contradictions cap TA at Band 5 maximum; one significant contradiction (e.g. claiming a value rose when it fell, or naming the wrong highest/lowest item) should lower the TA score. Cite the correct figure in the Vietnamese comment when this penalty applies.
+• READING TOLERANCE (mandatory): values read off a chart are approximate. A student's figure is ACCEPTABLE, not an error, if it is within about one gridline interval (roughly 10% of the axis range) of the real value, or is hedged ("around", "about", "approximately", "just under/over"). Only flag a figure that is clearly wrong beyond that tolerance, or a wrong trend direction, ranking, peak/lowest point, or category. If you are not certain the student is wrong, do NOT flag it and do NOT count it toward the Band 5 cap.` : ''}`;
 
   // ─── TASK 2: Task Response (IDP Band Descriptors) ─────────────────────────
   const task2TR = `TASK RESPONSE (TR) – Task 2 (IDP Band Descriptors):
@@ -104,24 +128,24 @@ ${sharedDescriptors}
 
 ═══════════════════════════════════════════
 TASK PROMPT: ${prompt}
-${hasImage ? `\nThe actual chart/graph/table image for this task is attached below as an image input — this is the real, ground-truth data source, not just a description of it. Read every axis, label, legend, and value in it before scoring.\n` : ''}
+${refData ? `\nREFERENCE DATA (exact figures entered by the teacher; AUTHORITATIVE: wherever your own reading of the image differs, these figures win):\n${refData}\n` : ''}${hasImage ? `\nThe chart/graph/table image for this task is attached below as an image input. Read it carefully before checking any figure: match each line/bar to its legend colour, then read each value against the axis labels and gridlines (note where 0 is and the gap between gridlines). Write what you read into "chartReading" FIRST, then check the essay against it.\n` : ''}
 ═══════════════════════════════════════════
 INSTRUCTIONS:
 
 STEP 1 – SCORES (4–9 per criterion):
 • Pick the band whose FULL descriptor BEST fits the writing evidence. When the essay sits between two bands, award the LOWER band unless the higher band is clearly and consistently demonstrated throughout the full essay.
-• For ${taLabel}: if any mandatory penalty above applies, apply it NOW before writing the score.${hasImage ? ' This includes the DATA ACCURACY penalty — check the essay against the attached image before scoring TA.' : ''}
+• For ${taLabel}: if any mandatory penalty above applies, apply it NOW before writing the score.${canCheckData ? ' This includes the DATA ACCURACY penalty (with the READING TOLERANCE rule): check the essay against the data before scoring TA.' : ''}
 • For each criterion write 1–2 sentences in Vietnamese using IDP descriptor language, addressing the student as "em". If a mandatory penalty was applied, the comment MUST state the reason (word count, no overview, incomplete essay, no position, or data inaccuracy) in plain Vietnamese.
 
 STEP 2 – SENTENCE-BY-SENTENCE FEEDBACK (MANDATORY):
 Go through EVERY single sentence in the essay in order. Do NOT skip any sentence.
-• Mark as "issue" ONLY for CLEAR, OBJECTIVE problems: grammatical error, wrong word choice that impedes or distorts meaning, incoherent/illogical connection, or missing key task requirement.${hasImage ? ' For Task 1, a sentence stating a number, trend, or comparison that does NOT match the attached image is also an "issue" (criterion: TA) — quote the correct figure from the image in the "issue" field.' : ''} The criterion badge must directly match the problem.
+• Mark as "issue" ONLY for CLEAR, OBJECTIVE problems: grammatical error, wrong word choice that impedes or distorts meaning, incoherent/illogical connection, or missing key task requirement.${canCheckData ? ' For Task 1, a sentence stating a number, trend, or comparison that CLEARLY does not match the data (beyond the READING TOLERANCE) is also an "issue" (criterion: TA): quote the correct figure in the "issue" field. A figure within tolerance is NOT an issue.' : ''} The criterion badge must directly match the problem.
 • Mark as "ok" if the sentence is grammatically correct and fulfils its purpose — even if simple. Do NOT mark "issue" just because a fancier version exists.
 • NEVER flag a sentence as CC "issue" for lacking cohesive devices if it ALREADY opens with: Furthermore, Moreover, In addition, Additionally, However, Nevertheless, Nonetheless, Therefore, Thus, As a result, Consequently, On the other hand, In contrast, In conclusion, To summarise, For example, For instance, Firstly, Secondly, Finally, Similarly, Likewise, Although, Despite, etc.
 • When marking "issue": the "better" field must fix ONLY the identified problem, preserving the student's original idea and structure.
 
 Return ONLY valid JSON (no markdown, no text outside JSON):
-{"bandScore":<number>,"ta":{"score":<4-9>,"comment":"<Vietnamese>"},"cc":{"score":<4-9>,"comment":"<Vietnamese>"},"lr":{"score":<4-9>,"comment":"<Vietnamese>"},"gra":{"score":<4-9>,"comment":"<Vietnamese>"},"overallFeedback":"<Vietnamese 2-3 sentences: strengths, main weaknesses, specific advice — address student as 'em'>","sentenceFeedback":[{"type":"issue","original":"<exact sentence from essay>","criterion":"<TA|CC|LR|GRA>","issue":"<Vietnamese explanation>","better":"<corrected English sentence>"},{"type":"ok","original":"<exact sentence from essay>"}]}
+{${hasImage ? '"chartReading":"<English: the key values you read for each series/category, e.g. London Jan ~8, Jul ~23, Dec ~9>",' : ''}"bandScore":<number>,"ta":{"score":<4-9>,"comment":"<Vietnamese>"},"cc":{"score":<4-9>,"comment":"<Vietnamese>"},"lr":{"score":<4-9>,"comment":"<Vietnamese>"},"gra":{"score":<4-9>,"comment":"<Vietnamese>"},"overallFeedback":"<Vietnamese 2-3 sentences: strengths, main weaknesses, specific advice — address student as 'em'>","sentenceFeedback":[{"type":"issue","original":"<exact sentence from essay>","criterion":"<TA|CC|LR|GRA>","issue":"<Vietnamese explanation>","better":"<corrected English sentence>"},{"type":"ok","original":"<exact sentence from essay>"}]}
 
 CRITICAL RULES:
 • bandScore in JSON is ignored — server recalculates from (ta+cc+lr+gra)/4 rounded DOWN to the nearest 0.5
@@ -130,6 +154,7 @@ CRITICAL RULES:
 • Use encouraging teacher tone in Vietnamese; address student as "em"`;
 
   const result = await checkEssay(questionContext, answer, hasImage ? imageUrl : '');
+  delete result.chartReading; // the model's scratch work, not shown to anyone
 
   // Server-side enforcement of IDP mandatory penalties (safety net — overrides AI if ignored).
   // result.ta carries Task 1's TA score AND Task 2's TR score under the
@@ -170,4 +195,4 @@ CRITICAL RULES:
   return result;
 }
 
-module.exports = { gradeTaskWithAI };
+module.exports = { gradeTaskWithAI, findTask1ChartData };

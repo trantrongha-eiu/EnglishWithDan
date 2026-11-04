@@ -192,7 +192,7 @@ router.get('/writing-attempt/:id', auth, teacherOnly, async (req, res) => {
 // GET /api/admin/writing-task1
 router.get('/writing-task1', auth, teacherOnly, async (req, res) => {
   try {
-    const tasks = await WritingTask1.find().sort({ createdAt: -1 });
+    const tasks = await WritingTask1.find().select('+chartData').sort({ createdAt: -1 });
     res.json({ success: true, tasks });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -202,7 +202,7 @@ router.get('/writing-task1', auth, teacherOnly, async (req, res) => {
 // GET /api/admin/writing-task1/:id
 router.get('/writing-task1/:id', auth, teacherOnly, async (req, res) => {
   try {
-    const task = await WritingTask1.findById(req.params.id);
+    const task = await WritingTask1.findById(req.params.id).select('+chartData');
     if (!task) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
     res.json({ success: true, task });
   } catch (err) {

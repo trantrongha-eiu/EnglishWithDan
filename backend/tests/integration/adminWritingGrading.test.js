@@ -67,6 +67,7 @@ describe('POST /api/admin/writing-attempts/:id/ai-grade (teacherOnly)', () => {
     });
     const mockResult = { bandScore: 6.5, ta: { score: 6 }, cc: { score: 7 }, lr: { score: 6 }, gra: { score: 7 } };
     writingGradingService.gradeTaskWithAI.mockResolvedValue(mockResult);
+    writingGradingService.findTask1ChartData.mockResolvedValue('London: Jan 8, Jul 23');
 
     const res = await request(app)
       .post(`/api/admin/writing-attempts/${attempt._id}/ai-grade`)
@@ -78,7 +79,7 @@ describe('POST /api/admin/writing-attempts/:id/ai-grade (teacherOnly)', () => {
     expect(res.body.taskNum).toBe(1);
     expect(res.body.result).toEqual(mockResult);
     expect(writingGradingService.gradeTaskWithAI).toHaveBeenCalledWith(
-      1, 'Describe the chart', 'The chart shows...', 160, 'https://img/chart.png'
+      1, 'Describe the chart', 'The chart shows...', 160, 'https://img/chart.png', 'London: Jan 8, Jul 23'
     );
 
     const saved = await WritingAttempt.findById(attempt._id).lean();
@@ -106,7 +107,7 @@ describe('POST /api/admin/writing-attempts/:id/ai-grade (teacherOnly)', () => {
 
     expect(res.status).toBe(200);
     expect(writingGradingService.gradeTaskWithAI).toHaveBeenCalledWith(
-      2, 'Discuss both views', 'In today\'s society...', 280, ''
+      2, 'Discuss both views', 'In today\'s society...', 280, '', ''
     );
     const saved = await WritingAttempt.findById(attempt._id).lean();
     expect(saved.aiGrading.task2.bandScore).toBe(7);

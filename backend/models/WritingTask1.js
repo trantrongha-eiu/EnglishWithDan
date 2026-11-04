@@ -23,6 +23,12 @@ const WritingTask1Schema = new mongoose.Schema({
     default: 'You should spend about 20 minutes on this task. Write at least 150 words.'
   },
   prompt:         { type: String, required: true },
+  // Exact figures for the chart, typed by the teacher (plain text, e.g.
+  // "London (°C): Jan 8, Jul 23, Dec 9"). Given to the AI essay grader as
+  // the authoritative data — reading a small chart image alone, the model
+  // has misread values and wrongly marked correct student figures as errors.
+  // select:false keeps it out of every student-facing task payload.
+  chartData:      { type: String, default: '', select: false },
   sampleSections: { type: [SampleSectionSchema], default: [] },
   // "Phân tích đề" guide — how to pick overview highlights and structure
   // Body 1/Body 2 for THIS specific chart, band-6.5-appropriate. Same
