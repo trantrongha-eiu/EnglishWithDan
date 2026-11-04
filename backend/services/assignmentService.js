@@ -304,6 +304,12 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
         wordCount: r.wordCount || null, bookSlot: r.bookSlot || null, vocabGoal,
         // fixed class bundle — the test names stay teacher-side only
         fixedMock: rcs.isFixedMock(r), mock,
+        // assigned passages/sections of a full test ([1, 3]) — null = whole test
+        parts: rcs.assignedParts(r),
+        mockParts: rcs.isFixedMock(r) && (r.mockBundle.listeningParts?.length || r.mockBundle.readingParts?.length)
+          ? { listening: r.mockBundle.listeningParts?.length ? [...r.mockBundle.listeningParts] : null,
+            reading: r.mockBundle.readingParts?.length ? [...r.mockBundle.readingParts] : null }
+          : null,
       };
     });
 

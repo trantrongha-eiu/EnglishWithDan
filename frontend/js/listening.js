@@ -407,7 +407,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (window.MockTest.setDisqualifySaver) window.MockTest.setDisqualifySaver(_saveDisqualifiedListening);
             // Mandatory screen share first — no exam clock runs behind its prompt.
             if (window.MockTest.ready) await window.MockTest.ready();
-            await startTest(tid);
+            // Class homework may give only some sections (bundle.listeningParts).
+            const mtParts = mt.bundle.listeningParts && mt.bundle.listeningParts.length ? mt.bundle.listeningParts : null;
+            await startTest(tid, 'practice', mtParts);
         } catch (e) {
             toast('Lỗi mở bài thi thử', 'error');
             location.href = 'dashboard.html';
@@ -1320,10 +1322,11 @@ function setupAudioEvents() {
         // "Lẻ" practice shares this audio element but runs its own
         // countdown from audio.onended (_enterLTPracticeScreen).
         if (state.isReview || state.submitted || window.isLtPracticeActive?.()) return;
-        // Partial Simulation: one section's audio is over — go straight
-        // on to the next picked section (questions + its audio), like the
-        // real exam running through the parts.
-        if (state.mode === 'simulation' && _hasPartAudio(false)) {
+        // Partial Simulation (or a mock test given section by section):
+        // one section's audio is over — go straight on to the next picked
+        // section (questions + its audio), like the real exam running
+        // through the parts.
+        if ((state.mode === 'simulation' || _mockMode) && _hasPartAudio(false)) {
             const next = (state.audioPartIdx ?? 0) + 1;
             if (next < getSortedSections(false).length) {
                 switchPart(next, false);

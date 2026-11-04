@@ -50,13 +50,26 @@ function hwRuleTag(resourceType) {
   return '';
 }
 
+// "&parts=1,3" when the teacher gave only some passages/sections of a full
+// test — the test page opens its "Chọn phần làm" with exactly those picked.
+function hwPartsQs(r) {
+  return Array.isArray(r.parts) && r.parts.length ? `&parts=${r.parts.join(',')}` : '';
+}
+
+// " · Section 1, 2, 4" next to the test name
+function hwPartsLabel(r) {
+  if (!Array.isArray(r.parts) || !r.parts.length) return '';
+  const unit = r.resourceType === 'listening_test' ? 'Section' : 'Passage';
+  return `<span class="hw-res-parts" title="Giáo viên giao ${unit} ${r.parts.join(', ')} — chỉ cần làm các phần này">${unit} ${r.parts.join(', ')}</span>`;
+}
+
 // internal resourceType → best-effort deep link on the student site
 function hwResourceHref(r) {
   const id = r.resourceId;
   switch (r.resourceType) {
-    case 'reading_test':       return `reading.html?testId=${id}`;
+    case 'reading_test':       return `reading.html?testId=${id}${hwPartsQs(r)}`;
     case 'reading_practice':   return `reading.html?passageId=${id}`;
-    case 'listening_test':     return `listening.html?testId=${id}`;
+    case 'listening_test':     return `listening.html?testId=${id}${hwPartsQs(r)}`;
     case 'listening_practice': return `listening.html?sectionId=${id}`;
     case 'listening_gapfill':  return `listening.html?gapfillId=${id}`;
     case 'dictation':          return `dictation.html?sectionId=${id}`;
@@ -167,10 +180,14 @@ function hwResourceRow(assignmentId, r, locked) {
     const bookId = r.vocabGoal && r.vocabGoal.bookId;
     action = `<a class="hw-res-btn" href="${bookId ? `dashboard.html?view=book&bookId=${encodeURIComponent(bookId)}` : 'dashboard.html'}">${r.completed ? 'Xem sổ' : 'Mở sổ'}</a>`;
   } else if (r.kind === 'internal' && r.fixedMock) {
-    name = escHtml(r.label || 'Thi thử full 4 kỹ năng') + hwMockProgress(r);
+    const mp = r.mockParts;
+    const mpText = mp ? [mp.listening ? `Listening: Section ${mp.listening.join(', ')}` : '', mp.reading ? `Reading: Passage ${mp.reading.join(', ')}` : ''].filter(Boolean).join(' · ') : '';
+    name = escHtml(r.label || 'Thi thử full 4 kỹ năng')
+      + (mpText ? `<span class="hw-res-parts" title="Giáo viên chỉ giao các phần này">${escHtml(mpText)}</span>` : '')
+      + hwMockProgress(r);
     action = hwMockAction(assignmentId, r);
   } else if (r.kind === 'internal') {
-    name = escHtml(r.label || r.resourceType);
+    name = escHtml(r.label || r.resourceType) + hwPartsLabel(r);
     const href = hwResourceHref(r);
     action = href
       ? `<a class="hw-res-btn" href="${href}" target="_blank" rel="noopener">${r.completed ? 'Xem lại' : 'Bắt đầu'}</a>`

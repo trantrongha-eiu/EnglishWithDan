@@ -16,6 +16,11 @@ describe('studentPathFor', () => {
     expect(studentPathFor({ resourceType: 'speaking', _id: 'q1' })).toBe('/speaking.html?questionId=q1');
   });
 
+  it('adds the assigned passages/sections of a full test', () => {
+    expect(studentPathFor({ resourceType: 'listening_test', resourceId: 't', parts: [1, 2, 4] })).toBe('/listening.html?testId=t&parts=1,2,4');
+    expect(studentPathFor({ resourceType: 'reading_test', resourceId: 't', parts: [] })).toBe('/reading.html?testId=t');
+  });
+
   it('returns null for unknown types', () => {
     expect(studentPathFor({ resourceType: 'nope', resourceId: 'x' })).toBeNull();
   });
@@ -27,5 +32,11 @@ describe('mockBundleUrls', () => {
     expect(u.listeningTestId).toMatch(/\/listening\.html\?testId=l$/);
     expect(u.writingExamId).toMatch(/\/writing\.html\?examId=w$/);
     expect(u.speakingQuestionId).toMatch(/\/speaking\.html\?questionId=s$/);
+  });
+
+  it('carries the picked Listening sections / Reading passages', () => {
+    const u = mockBundleUrls({ listeningTestId: 'l', readingTestId: 'r', listeningParts: [2, 3], readingParts: [1] });
+    expect(u.listeningTestId).toMatch(/\?testId=l&parts=2,3$/);
+    expect(u.readingTestId).toMatch(/\?testId=r&parts=1$/);
   });
 });

@@ -1070,6 +1070,7 @@ function renderBookContent(book) {
    after every answer, before the end-of-session sync reaches the server. */
 const _goalAnswers = new Map();  // word _id -> right? (outcome of its latest session)
 const _goalDoneToasted = new Set();
+let _skipQuitAsk = false; // goalReachedStop → closeUnitView without the quit prompt
 
 // Goals the open book counts for: a fixed slot ("Sổ 2") or any of Sổ 1–5.
 function _goalsForCurrentBook() {
@@ -1138,11 +1139,37 @@ function _renderGoalCards(el, inSession) {
         const p = _goalProgress(g, words);
         if (inSession && p.done && !g.completed && !_goalDoneToasted.has(g.key)) {
             _goalDoneToasted.add(g.key);
-            toast(`🎉 Đã đủ chỉ tiêu bài tập: học ${g.target} từ!`, 'success');
+            _showGoalReachedModal(g, p);
         }
         return _goalCardHtml(g, p, inSession);
     }).join('');
     el.style.display = '';
+}
+
+// The homework quota for this book was just reached mid-session — tell the
+// student and let them choose: keep practising, or stop here (answers so far
+// are saved on stop, same as quitting).
+function _showGoalReachedModal(g, p) {
+    const sub = document.getElementById('goal-reached-sub');
+    if (sub) {
+        sub.innerHTML = `Chỉ tiêu: học <b>${g.target} từ</b> trong ${g.requiredSlot ? `Sổ ${g.requiredSlot}` : 'sổ này'}`
+            + ` — bạn đã luyện <b>${Math.min(p.practiced, g.target)}/${g.target}</b> từ, đúng <b>${p.correct}</b> (cần ≥${g.needCorrect}).`
+            + '<br>Bạn muốn tiếp tục học hay dừng lại?';
+    }
+    _clearAutoNext(); // don't let a flashcard auto-advance run behind the popup
+    openModal('modal-goal-reached');
+}
+
+function goalReachedContinue() {
+    closeModal('modal-goal-reached');
+}
+
+function goalReachedStop() {
+    closeModal('modal-goal-reached');
+    _reportSessionStreak();
+    _flushPracticeEvidence(); // the words answered so far count for the homework
+    _skipQuitAsk = true;      // already chosen — no second "quit?" prompt
+    closeUnitView();
 }
 
 // Book view (above the word table).
@@ -2250,6 +2277,7 @@ function closeUnitView(push = true) {
         syncViewUrl(push ? 'push' : 'replace',
             currentBookId ? { view: 'book', bookId: currentBookId } : { view: 'home' });
     };
+    if (_skipQuitAsk) { _skipQuitAsk = false; doClose(); return; }
     askQuitPractice(doClose);
 }
 
@@ -4084,6 +4112,8 @@ window.copyParaphraseTable     = copyParaphraseTable;
 window.stopPractice       = stopPractice;
 window.confirmQuit        = confirmQuit;
 window.cancelQuit         = cancelQuit;
+window.goalReachedContinue = goalReachedContinue;
+window.goalReachedStop    = goalReachedStop;
 window.retryWrongWords    = retryWrongWords;
 window.advanceMixed       = advanceMixed;
 window.checkMixedMC       = checkMixedMC;

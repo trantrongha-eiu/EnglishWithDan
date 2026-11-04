@@ -20,7 +20,7 @@
   <script src="/js/shared/scroll-reveal.js?v=7010de29cd"></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <script src="/js/shared/pwa-register.js?v=713d4c39e1" defer></script>
-  <link rel="stylesheet" href="/css/dashboard.css?v=a6755d87c1">
+  <link rel="stylesheet" href="/css/dashboard.css?v=e674509005">
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3">
   <link rel="stylesheet" href="/css/playful.css?v=ffb392e664"/>
 </head>
@@ -1127,6 +1127,23 @@
   </div>
 </div>
 
+<!-- ══ Homework vocab quota reached mid-practice (dashboard.js _showGoalReachedModal) ══ -->
+<div class="modal-overlay hidden" id="modal-goal-reached">
+  <div class="modal-box modal-sm" style="overflow:hidden;padding:0">
+    <div class="quit-mascot-wrap">
+      <div class="quit-mascot">🎉</div>
+      <p class="quit-title">Bạn đã học đạt số từ yêu cầu trong ngày hôm nay!</p>
+      <p class="quit-sub" id="goal-reached-sub"></p>
+    </div>
+    <div class="quit-actions">
+      <button class="quit-btn-continue" onclick="goalReachedContinue()">
+        <i class="fas fa-play-circle"></i> Tiếp tục học
+      </button>
+      <button class="quit-btn-leave" onclick="goalReachedStop()">Dừng lại</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ Dictionary lookup (double-click a word while studying/browsing) ══ -->
 <div id="dict-popup" class="dict-popup hidden">
   <div class="dict-header">
@@ -1209,11 +1226,11 @@
 <script src="/js/dashboard-audio.js?v=4d62f2efe9"></script>
 <script src="/js/shared/wbw-drill.js?v=9de4d9a281"></script>
 <script src="/js/dashboard-lesson.js?v=59928da8e4"></script>
-<script src="/js/dashboard-homework.js?v=3cd104fc5a"></script>
+<script src="/js/dashboard-homework.js?v=6b50bc3caf"></script>
 <script src="/js/dashboard-classinfo.js?v=4762424353"></script>
 <script src="/js/dashboard-review.js?v=4dba13dc0a"></script>
 <script src="/js/dashboard-paraphrase.js?v=f6c0320973"></script>
-<script src="/js/dashboard.js?v=6e5b190116"></script>
+<script src="/js/dashboard.js?v=94bb6ba888"></script>
 <script src="/js/dashboard-browse.js?v=5692652b85"></script>
 </body>
 </html>

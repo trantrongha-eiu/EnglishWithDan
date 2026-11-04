@@ -236,6 +236,20 @@ async function findPartAudios(sections) {
   return out;
 }
 
+// "partNumber|title" of every stand-alone section that has its own audio —
+// what a full test's part is matched against (findPartAudios' rule).
+async function sectionAudioKeys() {
+  return new Set((await ListeningSection.find({ audioUrl: { $nin: ['', null] } }).select('title partNumber').lean())
+    .map(l => `${l.partNumber}|${l.title}`));
+}
+
+// Can a full test be done section by section ("Chọn phần làm")? Every one of
+// its 4 parts needs its own audio. `test` needs sections.partNumber/title.
+function testPartsPickable(test, audioKeys) {
+  const secs = (test && test.sections) || [];
+  return secs.length === 4 && secs.every(s => audioKeys.has(`${s.partNumber}|${s.title}`));
+}
+
 // sections (plain objects) narrowed to the picked part numbers, each
 // carrying its own audio — null when some picked part has no audio.
 async function pickSectionsWithAudio(sections, parts) {
@@ -636,7 +650,9 @@ async function listGapFillSections() {
 // falling back to the opening of its transcript. Returned in part order.
 const gfNorm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const gfTranscriptKey = (s) => gfNorm(s).slice(0, 300);
-async function gapFillSectionIdsFor(resourceType, resourceId) {
+// onlyParts (optional, full tests): just these section numbers — homework
+// that assigned Section 1, 2, 4 gets those sections' gap-fills only.
+async function gapFillSectionIdsFor(resourceType, resourceId, onlyParts = null) {
   if (!mongoose.isValidObjectId(resourceId)) return [];
   if (resourceType === 'listening_practice') {
     const ok = await ListeningSection.exists({ _id: resourceId, isActive: true, gapFillPublished: true });
@@ -644,7 +660,9 @@ async function gapFillSectionIdsFor(resourceType, resourceId) {
   }
   if (resourceType !== 'listening_test') return [];
   const test = await ListeningTest.findById(resourceId).select('sections.partNumber sections.title sections.transcript').lean();
-  const parts = [...((test && test.sections) || [])].sort((a, b) => a.partNumber - b.partNumber);
+  const parts = [...((test && test.sections) || [])]
+    .filter((p) => !onlyParts || !onlyParts.length || onlyParts.includes(p.partNumber))
+    .sort((a, b) => a.partNumber - b.partNumber);
   if (!parts.length) return [];
   const base = { isActive: true, gapFillPublished: true };
   const cands = await ListeningSection.find({ ...base, partNumber: { $in: parts.map((p) => p.partNumber) } })
@@ -1026,8 +1044,7 @@ async function listStudentTests(userId) {
   });
   // partsPickable: every part has its own đề lẻ audio (findPartAudios), so
   // the student may pick just some sections. One query for all tests.
-  const withAudio = new Set((await ListeningSection.find({ audioUrl: { $nin: ['', null] } }).select('title partNumber').lean())
-    .map(l => `${l.partNumber}|${l.title}`));
+  const withAudio = await sectionAudioKeys();
   // Per-test review-status badge — see readingService.listTestsForUser's
   // identical use of this same shared helper.
   const reviewMap = await reviewService.getReviewStatusMap(userId, 'listening', Object.values(attemptMap).map(a => a._id));
@@ -1040,7 +1057,7 @@ async function listStudentTests(userId) {
   return tests.map(t => ({
     _id: t._id, name: t.name, testNumber: t.testNumber, seriesName: t.seriesName,
     audioDuration: t.audioDuration, totalParts: t.totalParts, totalQuestions: t.totalQuestions,
-    partsPickable: (t.sections || []).length === 4 && t.sections.every(s => withAudio.has(`${s.partNumber}|${s.title}`)),
+    partsPickable: testPartsPickable(t, withAudio),
     lastAttempt: attemptMap[t._id.toString()] || null
   }));
 }
@@ -1486,7 +1503,7 @@ module.exports = {
   getWarmUpSectionById, buildSectionWarmUp, generateSectionWarmUp, getSectionWarmUp, updateSectionWarmUp,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent, bulkSetSectionsActive,
   assembleTest,
-  listStudentTests, startTest, submitTest,
+  listStudentTests, startTest, submitTest, sectionAudioKeys, testPartsPickable,
   getHistory, getHistoryDetail,
   savePractice, startPracticeSimulation, getPracticeHistory, getPracticeHistoryDetail,
   // Exported for entranceTestService.js, which grades a single

@@ -63,6 +63,7 @@ const Task1Exercise = require('../models/Task1Exercise');
 const Task1Attempt = require('../models/Task1Attempt');
 
 const { escapeRegex } = require('../utils/strings');
+const { normalizeParts } = require('../utils/partSelection');
 
 // A homework item is "hoàn thành" only once the student clears this % — for
 // resource types that HAVE a clean score/total (quiz-style: reading/listening
@@ -280,7 +281,15 @@ const REGISTRY = {
   listening_test: {
     label: 'Đề Listening',
     catalog: { model: ListeningTest, filter: { isActive: true }, sort: { testNumber: -1 },
-      shape: (d) => ({ _id: d._id, label: d.name, meta: `Test ${d.testNumber}` }) },
+      shape: (d) => ({ _id: d._id, label: d.name, meta: `Test ${d.testNumber}` }),
+      // partsPickable: every section has its own audio, so the teacher can
+      // assign just some sections (same rule as the student's "Chọn phần làm").
+      decorate: async (rows, docs) => {
+        const listeningService = require('./listeningService'); // lazy — heavy module
+        const keys = await listeningService.sectionAudioKeys();
+        const ok = new Set(docs.filter((d) => listeningService.testPartsPickable(d, keys)).map((d) => String(d._id)));
+        for (const row of rows) row.partsPickable = ok.has(String(row._id));
+      } },
     attempt: { model: ListeningAttempt, userField: 'userId', idField: 'testId', filter: { status: 'completed' } },
     scoreGate: { fields: 'correctCount totalQuestions', percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
@@ -644,8 +653,10 @@ async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
     .lean();
   // resourceCode lets the admin picker preview-link a row whose student page
   // isn't keyed by _id (lesson code / week) — same value buildResources stores.
-  const { shape, deepLinkKey } = entry.catalog;
-  return docs.map((d) => (deepLinkKey ? { ...shape(d), resourceCode: deepLinkKey(d) || '' } : shape(d)));
+  const { shape, deepLinkKey, decorate } = entry.catalog;
+  const rows = docs.map((d) => (deepLinkKey ? { ...shape(d), resourceCode: deepLinkKey(d) || '' } : shape(d)));
+  if (decorate) await decorate(rows, docs);
+  return rows;
 }
 
 // Verify an internal resource id really exists for its type — called before
@@ -725,14 +736,40 @@ function isFixedMock(r) {
   return r.resourceType === 'mock_test' && !!(r.mockBundle && r.mockBundle.listeningTestId);
 }
 
+// Full Reading/Listening tests can be assigned part by part ("Section 1, 2,
+// 4" — Assignment resources[].parts). PART_COUNTS = how many parts each has.
+const PART_COUNTS = { reading_test: 3, listening_test: 4 };
+
+// The assigned parts of an item, normalised (sorted, de-duplicated) — null =
+// the whole test (also when every part is listed).
+function assignedParts(r) {
+  const count = PART_COUNTS[r && r.resourceType];
+  if (!count || !Array.isArray(r.parts) || !r.parts.length) return null;
+  return normalizeParts([...r.parts], count);
+}
+
+// key suffix that keeps "Test 5" and "Test 5, Section 1+2" apart
+function partsSuffix(parts) {
+  return parts && parts.length ? `:p${parts.join(',')}` : '';
+}
+
+// Does an attempt (its own `parts`, absent = whole test) count for an item
+// assigned with `wanted` parts? Whole-test items need a whole-test attempt; a
+// part item takes any attempt that included every assigned part.
+function attemptCoversParts(attemptParts, wanted) {
+  const done = Array.isArray(attemptParts) && attemptParts.length ? attemptParts.map(Number) : null;
+  if (!wanted) return !done;
+  return !done || wanted.every((n) => done.includes(n));
+}
+
 // Assignment resource -> the item checkCompleted() takes. Callers build their
 // internal-item lists through this and look results up with completionKey().
 function completionItem(r) {
-  return { resourceType: r.resourceType, resourceId: r.resourceId, mockItemId: isFixedMock(r) ? r._id : null };
+  return { resourceType: r.resourceType, resourceId: r.resourceId, mockItemId: isFixedMock(r) ? r._id : null, parts: assignedParts(r) };
 }
 
 function completionKey(r) {
-  return isFixedMock(r) ? `mock_test:item:${r._id}` : resourceKey(r.resourceType, r.resourceId);
+  return isFixedMock(r) ? `mock_test:item:${r._id}` : resourceKey(r.resourceType, r.resourceId) + partsSuffix(assignedParts(r));
 }
 
 // An assigned full mock counts as done once sitting 1 (Listening → Reading →
@@ -917,12 +954,22 @@ async function checkCompleted(studentId, internalItems, since = null) {
 
   // group ids by type
   const byType = new Map();
+  // part-assignable tests: type -> id -> Map<suffix, wanted parts|null>
+  const scopesByType = new Map();
   for (const it of internalItems) {
     if (it.mockItemId) continue;
     if (!isValidType(it.resourceType)) continue;
     if (!byType.has(it.resourceType)) byType.set(it.resourceType, new Set());
     if (it.resourceId) byType.get(it.resourceType).add(String(it.resourceId));
     else byType.get(it.resourceType).add('*'); // mock_test
+    if (PART_COUNTS[it.resourceType] && it.resourceId) {
+      if (!scopesByType.has(it.resourceType)) scopesByType.set(it.resourceType, new Map());
+      const byId = scopesByType.get(it.resourceType);
+      const id = String(it.resourceId);
+      if (!byId.has(id)) byId.set(id, new Map());
+      const wanted = it.parts && it.parts.length ? it.parts : null;
+      byId.get(id).set(partsSuffix(wanted), wanted);
+    }
   }
 
   await Promise.all([...byType.entries()].map(async ([type, idSet]) => {
@@ -994,9 +1041,21 @@ async function checkCompleted(studentId, internalItems, since = null) {
     const boolGate = wcGate || bandGate; // same "ok(r) -> pass/fail" shape as wordCountGate
     const cov = entry.coverage;
     const extraFields = gate ? gate.fields : (boolGate ? boolGate.fields : '');
+    const scopes = scopesByType.get(type) || null;
     const select = `_id createdAt ${A.idField}`
       + (extraFields ? ` ${extraFields}` : '')
-      + (cov && !(extraFields || '').includes(cov.field) ? ` ${cov.field}` : '');
+      + (cov && !(extraFields || '').includes(cov.field) ? ` ${cov.field}` : '')
+      + (scopes ? ' parts' : '');
+    // Result keys one attempt row counts for — for part-assignable tests,
+    // every assigned scope of that test the attempt covers (see
+    // attemptCoversParts); otherwise just the resource's own key.
+    const keysFor = (r) => {
+      const id = String(r[A.idField]);
+      if (!scopes) return [resourceKey(type, id)];
+      return [...(scopes.get(id) || new Map())]
+        .filter(([, wanted]) => attemptCoversParts(r.parts, wanted))
+        .map(([suffix]) => resourceKey(type, id) + suffix);
+    };
     const rows = await A.model.find({ ...base, [A.idField]: { $in: ids } })
       .sort({ createdAt: -1 })
       .select(select)
@@ -1071,18 +1130,19 @@ async function checkCompleted(studentId, internalItems, since = null) {
     const bestByKey = new Map();
     const latestPassAtByKey = new Map();
     for (const r of rows) {
-      const k = resourceKey(type, r[A.idField]);
       const pct = gate.percent(r);
       // gate.pass (gap-fill's absolute count) > gate.passPercent (bài lẻ 50%) > PASS_PERCENT
       const cleared = gate.pass ? gate.pass(r) : pct >= (gate.passPercent ?? PASS_PERCENT);
       const passes = !entry.essayOnly && cleared && coverageOk(r);
-      const prev = bestByKey.get(k);
-      // A qualifying attempt always beats a non-qualifying one; between two of
-      // the same kind, the higher score wins (keeps the old best-scoring pick).
-      if (!prev || (passes && !prev.passes) || (passes === prev.passes && pct > prev.pct)) {
-        bestByKey.set(k, { pct, r, passes });
+      for (const k of keysFor(r)) {
+        const prev = bestByKey.get(k);
+        // A qualifying attempt always beats a non-qualifying one; between two of
+        // the same kind, the higher score wins (keeps the old best-scoring pick).
+        if (!prev || (passes && !prev.passes) || (passes === prev.passes && pct > prev.pct)) {
+          bestByKey.set(k, { pct, r, passes });
+        }
+        if (passes && !latestPassAtByKey.has(k)) latestPassAtByKey.set(k, r.createdAt);
       }
-      if (passes && !latestPassAtByKey.has(k)) latestPassAtByKey.set(k, r.createdAt);
     }
     for (const [k, { pct, r, passes }] of bestByKey) {
       out.set(k, {
@@ -1114,5 +1174,5 @@ module.exports = {
   GAPFILL_MIN_CORRECT, MIN_SPEAKING_WORDS,
   groupEquivalentDocs, normalizePrompt,
   listCatalog, resourceExists, labelFor, deepLinkKeyFor, refreshResourceSnapshots, resourceKey, checkCompleted,
-  isFixedMock, completionItem, completionKey,
+  isFixedMock, completionItem, completionKey, assignedParts, attemptCoversParts, PART_COUNTS,
 };

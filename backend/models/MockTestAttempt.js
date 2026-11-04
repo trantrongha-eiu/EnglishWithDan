@@ -62,7 +62,12 @@ const MockTestAttemptSchema = new mongoose.Schema({
     speakingCueCard:    { type: String, default: '' },   // snapshot
     listeningTestName:  { type: String, default: '' },   // snapshot
     readingTestName:    { type: String, default: '' },   // snapshot
-    writingExamName:    { type: String, default: '' }     // snapshot
+    writingExamName:    { type: String, default: '' },    // snapshot
+    // Homework bundle only: the teacher assigned just these Listening
+    // sections / Reading passages (absent = whole test) — the skill pages
+    // start their test with this "Chọn phần làm" pick.
+    listeningParts:     { type: [Number], default: undefined },
+    readingParts:       { type: [Number], default: undefined }
   },
 
   // Set when the run was started from a class homework item (a mock_test

@@ -10,9 +10,9 @@ export function studentPathFor(r) {
   const id = r.resourceId || r._id;
   const code = r.resourceCode ? encodeURIComponent(r.resourceCode) : '';
   switch (r.resourceType) {
-    case 'reading_test':           return `/reading.html?testId=${id}`;
+    case 'reading_test':           return `/reading.html?testId=${id}${partsQs(r.parts)}`;
     case 'reading_practice':       return `/reading.html?passageId=${id}`;
-    case 'listening_test':         return `/listening.html?testId=${id}`;
+    case 'listening_test':         return `/listening.html?testId=${id}${partsQs(r.parts)}`;
     case 'listening_practice':     return `/listening.html?sectionId=${id}`;
     case 'listening_gapfill':      return `/listening.html?gapfillId=${id}`;
     case 'dictation':              return `/dictation.html?sectionId=${id}`;
@@ -47,6 +47,12 @@ export function studentPathFor(r) {
   }
 }
 
+// Only some passages/sections given — the test page opens its "Chọn phần
+// làm" with these picked (?parts=1,3), same as the student's homework link.
+function partsQs(parts) {
+  return Array.isArray(parts) && parts.length ? `&parts=${parts.join(',')}` : '';
+}
+
 function tipQs(resourceCode) {
   const [tip, cat] = String(resourceCode || '').split('||');
   return tip ? `&tip=${encodeURIComponent(tip)}${cat ? `&tcat=${encodeURIComponent(cat)}` : ''}` : '';
@@ -59,8 +65,8 @@ export function studentUrlFor(r) {
 
 // One fixed class mock bundle → a link per skill's test.
 const MOCK_PARTS = [
-  { key: 'listeningTestId', type: 'listening_test' },
-  { key: 'readingTestId', type: 'reading_test' },
+  { key: 'listeningTestId', type: 'listening_test', partsKey: 'listeningParts' },
+  { key: 'readingTestId', type: 'reading_test', partsKey: 'readingParts' },
   { key: 'writingExamId', type: 'writing_exam' },
   { key: 'speakingQuestionId', type: 'speaking' },
 ];
@@ -68,7 +74,7 @@ export function mockBundleUrls(bundle) {
   const out = {};
   if (!bundle) return out;
   for (const p of MOCK_PARTS) {
-    if (bundle[p.key]) out[p.key] = studentUrlFor({ resourceType: p.type, resourceId: bundle[p.key] });
+    if (bundle[p.key]) out[p.key] = studentUrlFor({ resourceType: p.type, resourceId: bundle[p.key], parts: p.partsKey ? bundle[p.partsKey] : null });
   }
   return out;
 }

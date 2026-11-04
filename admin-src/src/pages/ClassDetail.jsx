@@ -60,6 +60,82 @@ const RESOURCE_CATS = [
   { type: 'task1_skill', label: 'Task 1 Practice (Kỹ năng)' },
 ];
 const RES_LABEL = Object.fromEntries(RESOURCE_CATS.map((r) => [r.type, r.label]));
+// The type dropdown, grouped by skill — each group has its own colour (and
+// emoji) so a long list is quick to scan. Every RESOURCE_CATS type is in
+// exactly one group.
+const RES_GROUPS = [
+  { key: 'reading', label: '📖 READING', icon: '📖', color: '#1d4ed8', bg: '#eff6ff',
+    types: ['reading_test', 'reading_practice', 'reading_tip'] },
+  { key: 'listening', label: '🎧 LISTENING', icon: '🎧', color: '#047857', bg: '#ecfdf5',
+    types: ['listening_test', 'listening_practice', 'listening_gapfill', 'dictation', 'shadowing', 'listening_tip'] },
+  { key: 'writing', label: '✍️ WRITING', icon: '✍️', color: '#c2410c', bg: '#fff7ed',
+    types: ['writing_exam', 'task1_lesson', 'task2_course_lesson', 'task1_practice', 'task2_practice', 'task2',
+      'task1_skill', 'task2_template', 'advanced_sentences', 'writing_practice', 'writing_tip'] },
+  { key: 'speaking', label: '🗣️ SPEAKING', icon: '🗣️', color: '#7c3aed', bg: '#f5f3ff',
+    types: ['speaking_course_lesson', 'speaking', 'speaking_full_mock', 'speaking_tip'] },
+  { key: 'vocab', label: '📚 TỪ VỰNG & NGỮ PHÁP', icon: '📚', color: '#be185d', bg: '#fdf2f8',
+    types: ['vocabulary_lesson', 'vocab_unit', 'grammar'] },
+  { key: 'mock', label: '🧪 THI THỬ', icon: '🧪', color: '#b91c1c', bg: '#fef2f2',
+    types: ['mock_test'] },
+];
+const RES_GROUP_OF = Object.fromEntries(RES_GROUPS.flatMap((g) => g.types.map((t) => [t, g])));
+
+// Full tests can be given part by part (backend Assignment resources[].parts).
+const TEST_PARTS = {
+  reading_test: { count: 3, unit: 'Passage' },
+  listening_test: { count: 4, unit: 'Section' },
+};
+function partsText(type, parts) {
+  const cfg = TEST_PARTS[type];
+  return cfg && parts && parts.length ? `${cfg.unit} ${parts.join(', ')}` : '';
+}
+// Toggle part n in a pick (undefined = whole test). Never empties it; every
+// part picked = the whole test again (undefined).
+function toggledParts(parts, n, count) {
+  const cur = parts && parts.length ? parts : Array.from({ length: count }, (_, i) => i + 1);
+  const next = cur.includes(n) ? cur.filter((k) => k !== n) : [...cur, n].sort((a, b) => a - b);
+  if (!next.length) return parts;
+  return next.length === count ? undefined : next;
+}
+
+// Chips "Section 1 · 2 · 3 · 4" — filled = assigned. `disabled` greys them out.
+function PartChips({ type, parts, onToggle, disabled, color = '#c2410c' }) {
+  const cfg = TEST_PARTS[type];
+  if (!cfg) return null;
+  const on = (n) => !parts || !parts.length || parts.includes(n);
+  return (
+    <span style={{ display: 'inline-flex', gap: 4, flexWrap: 'wrap', alignItems: 'center' }}>
+      {Array.from({ length: cfg.count }, (_, i) => i + 1).map((n) => (
+        <button key={n} type="button" disabled={disabled} onClick={() => onToggle(n)}
+          title={disabled ? '' : (on(n) ? `Bỏ ${cfg.unit} ${n}` : `Giao thêm ${cfg.unit} ${n}`)}
+          style={{
+            fontSize: 12, fontWeight: 700, padding: '3px 9px', borderRadius: 999, cursor: disabled ? 'not-allowed' : 'pointer',
+            border: `1.5px solid ${disabled ? 'var(--border)' : color}`,
+            background: disabled ? 'transparent' : (on(n) ? color : 'transparent'),
+            color: disabled ? 'var(--text3)' : (on(n) ? '#fff' : color), opacity: disabled ? 0.6 : 1,
+          }}>
+          {cfg.unit} {n}
+        </button>
+      ))}
+    </span>
+  );
+}
+
+// Vocab-book rotation for new homework: 50 words in Sổ 1 + Sổ 2, next time
+// Sổ 3 + 4 + 5, then back to Sổ 1 + 2, and so on — decided from the newest
+// earlier assignment of the class that had per-book vocab goals.
+const VOCAB_ROTATION = [[1, 2], [3, 4, 5]];
+const VOCAB_ROTATION_WORDS = 50;
+function nextVocabRotation(assignments) {
+  const sorted = [...(assignments || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  for (const a of sorted) {
+    const slots = (a.resources || []).filter((r) => r.kind === 'vocab_goal' && r.bookSlot).map((r) => Number(r.bookSlot));
+    if (!slots.length) continue;
+    const round = slots.some((n) => n >= 3) ? 0 : 1;
+    return { round, lastSlots: [...new Set(slots)].sort((x, y) => x - y) };
+  }
+  return { round: 0, lastSlots: null };
+}
 // Task 2 weekly topics: essay-type badge in the assign picker (labels match
 // pages/Task2Topics.jsx).
 const ESSAY_TYPES = {
@@ -1034,7 +1110,11 @@ function VocabGoalCell({ item }) {
 function resourceShortName(r) {
   if (!r) return 'Phần không rõ';
   if (r.kind === 'internal' && r.resourceType === 'mock_test') return 'Thi thử';
-  if (r.kind === 'internal') return r.label || RES_LABEL[r.resourceType] || r.resourceType;
+  if (r.kind === 'internal') {
+    const name = r.label || RES_LABEL[r.resourceType] || r.resourceType;
+    const parts = partsText(r.resourceType, r.parts);
+    return parts ? `${name} (${parts})` : name;
+  }
   if (r.kind === 'external') return r.title || r.url || 'Link ngoài';
   if (r.kind === 'image') return r.title || 'Bài tập ảnh';
   if (r.kind === 'vocab_goal') return r.bookSlot ? `Sổ từ vựng (Sổ ${r.bookSlot})` : 'Sổ từ vựng';
@@ -1133,6 +1213,14 @@ function AssignmentResourceList({ resources }) {
   );
 }
 
+// "Section 1, 2, 4" — only some parts of a full test were given.
+function PartsTag({ text }) {
+  return (
+    <span style={{ marginLeft: 6, fontSize: 11, fontWeight: 700, padding: '1px 7px', borderRadius: 6,
+      color: '#c2410c', background: 'rgba(234,88,12,.12)', border: '1px solid rgba(234,88,12,.35)', whiteSpace: 'nowrap' }}>{text}</span>
+  );
+}
+
 function AssignmentResourceLine({ r }) {
   const tag = (t) => <span className="badge badge-gray" style={{ marginRight: 6 }}>{t}</span>;
   if (r.kind === 'internal' && r.resourceType === 'mock_test') {
@@ -1147,13 +1235,15 @@ function AssignmentResourceLine({ r }) {
         {MOCK_SKILLS.map((s) => (
           <span key={s.key} style={{ marginLeft: 10 }}>
             {s.short}: <NewTabLink href={urls[s.key]}>{b[s.nameKey] || s.label}</NewTabLink>
+            {s.partsKey && b[s.partsKey]?.length ? <PartsTag text={partsText(s.type, b[s.partsKey])} /> : null}
           </span>
         ))}
       </>
     );
   }
   if (r.kind === 'internal') {
-    return <>{tag(RES_LABEL[r.resourceType] || r.resourceType)}<NewTabLink href={studentUrlFor(r)}>{r.label || r.resourceType}</NewTabLink></>;
+    const parts = partsText(r.resourceType, r.parts);
+    return <>{tag(RES_LABEL[r.resourceType] || r.resourceType)}<NewTabLink href={studentUrlFor(r)}>{r.label || r.resourceType}</NewTabLink>{parts && <PartsTag text={parts} />}</>;
   }
   if (r.kind === 'external') {
     return <>{tag('Link ngoài')}<NewTabLink href={r.url}>{r.title || r.url}</NewTabLink></>;
@@ -1179,8 +1269,8 @@ function AssignmentResourceLine({ r }) {
 // buildMockResource): any skill left on "Ngẫu nhiên" is drawn once, then
 // stored on the item, so every student gets identical L/R/W/S tests.
 const MOCK_SKILLS = [
-  { key: 'listeningTestId', nameKey: 'listeningTestName', type: 'listening_test', label: 'Listening', short: 'L' },
-  { key: 'readingTestId', nameKey: 'readingTestName', type: 'reading_test', label: 'Reading', short: 'R' },
+  { key: 'listeningTestId', nameKey: 'listeningTestName', type: 'listening_test', label: 'Listening', short: 'L', partsKey: 'listeningParts' },
+  { key: 'readingTestId', nameKey: 'readingTestName', type: 'reading_test', label: 'Reading', short: 'R', partsKey: 'readingParts' },
   { key: 'writingExamId', nameKey: 'writingExamName', type: 'writing_exam', label: 'Writing', short: 'W' },
   { key: 'speakingQuestionId', nameKey: 'speakingTopic', type: 'speaking', label: 'Speaking (Part 2)', short: 'S' },
 ];
@@ -1216,12 +1306,21 @@ function assignedTooltip(list) {
 function mockBundleSummary(p) {
   const b = p?.mockBundle;
   if (!b) return 'đề ngẫu nhiên cho từng học sinh (kiểu cũ)';
-  return MOCK_SKILLS.map((s) => `${s.short}: ${b[s.key] ? (b[s.nameKey] || 'đã chọn') : '🎲 ngẫu nhiên'}`).join(' · ');
+  return MOCK_SKILLS.map((s) => {
+    const parts = s.partsKey && b[s.partsKey]?.length ? ` (${partsText(s.type, b[s.partsKey])})` : '';
+    return `${s.short}: ${b[s.key] ? (b[s.nameKey] || 'đã chọn') : '🎲 ngẫu nhiên'}${parts}`;
+  }).join(' · ');
 }
 
 function MockBundlePicker({ current, onPick, assignedIndex }) {
+  const toast = useToast();
   const [lists, setLists] = useState({});
   const [sel, setSel] = useState(() => Object.fromEntries(MOCK_SKILLS.map((s) => [s.key, current?.mockBundle?.[s.key] ? String(current.mockBundle[s.key]) : ''])));
+  // Listening sections / Reading passages to give (undefined = whole test)
+  const [partSel, setPartSel] = useState(() => ({
+    listeningParts: current?.mockBundle?.listeningParts?.length ? [...current.mockBundle.listeningParts] : undefined,
+    readingParts: current?.mockBundle?.readingParts?.length ? [...current.mockBundle.readingParts] : undefined,
+  }));
 
   useEffect(() => {
     let alive = true;
@@ -1241,6 +1340,13 @@ function MockBundlePicker({ current, onPick, assignedIndex }) {
       const prevName = current?.mockBundle && String(current.mockBundle[s.key] || '') === id ? current.mockBundle[s.nameKey] : '';
       const fromList = (lists[s.key] || []).find((x) => String(x._id) === id);
       mockBundle[s.nameKey] = id ? (prevName || (fromList ? (s.type === 'speaking' ? (fromList.meta || fromList.label) : fromList.label) : '')) : '';
+      if (s.partsKey && partSel[s.partsKey]?.length) {
+        if (s.type === 'listening_test' && fromList && fromList.partsPickable === false) {
+          toast(`Đề Listening "${fromList.label}" chưa có audio riêng từng Section — chỉ giao được cả đề.`, 'error');
+          return;
+        }
+        mockBundle[s.partsKey] = partSel[s.partsKey];
+      }
     }
     onPick({ kind: 'internal', resourceType: 'mock_test', resourceId: null, label: 'Thi thử full 4 kỹ năng', mockBundle });
   }
@@ -1252,8 +1358,12 @@ function MockBundlePicker({ current, onPick, assignedIndex }) {
         rồi cố định cho mọi học sinh — Listening / Reading / Writing ngẫu nhiên <b>không trùng đề lớp đã được giao</b> trước đó
         (đề đánh dấu "✓ đã giao" vẫn chọn tay được). Tính hoàn thành khi học sinh nộp xong Listening → Reading → Writing (Speaking làm sau, không bắt buộc).
       </div>
-      {MOCK_SKILLS.map((s) => (
-        <label key={s.key} style={{ display: 'grid', gridTemplateColumns: '130px 1fr', alignItems: 'center', gap: 8, fontSize: 13 }}>
+      {MOCK_SKILLS.map((s) => {
+        const chosen = (lists[s.key] || []).find((x) => String(x._id) === sel[s.key]);
+        const cantSplit = s.type === 'listening_test' && chosen && chosen.partsPickable === false;
+        return (
+        <div key={s.key} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <label style={{ display: 'grid', gridTemplateColumns: '130px 1fr', alignItems: 'center', gap: 8, fontSize: 13 }}>
           <span style={{ fontWeight: 600 }}>{s.label}</span>
           <select className="form-input" value={sel[s.key]} onChange={(e) => setSel((x) => ({ ...x, [s.key]: e.target.value }))}>
             <option value="">🎲 Ngẫu nhiên (chốt 1 đề chung khi giao)</option>
@@ -1268,7 +1378,24 @@ function MockBundlePicker({ current, onPick, assignedIndex }) {
             })}
           </select>
         </label>
-      ))}
+        {s.partsKey && (
+          <div style={{ display: 'grid', gridTemplateColumns: '130px 1fr', alignItems: 'center', gap: 8, fontSize: 12 }}>
+            <span style={{ color: 'var(--text3)' }}>Phần cần làm</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <PartChips type={s.type} parts={cantSplit ? undefined : partSel[s.partsKey]} disabled={cantSplit}
+                color={RES_GROUP_OF[s.type]?.color}
+                onToggle={(n) => setPartSel((x) => ({ ...x, [s.partsKey]: toggledParts(x[s.partsKey], n, TEST_PARTS[s.type].count) }))} />
+              <span style={{ color: 'var(--text3)' }}>
+                {cantSplit ? 'Đề này chưa có audio riêng từng Section — chỉ giao được cả đề'
+                  : partSel[s.partsKey]?.length ? `Giao ${partsText(s.type, partSel[s.partsKey])}` : 'Cả đề'}
+                {!cantSplit && s.type === 'listening_test' && !sel[s.key] && partSel[s.partsKey]?.length ? ' — bốc ngẫu nhiên trong các đề có audio riêng từng Section' : ''}
+              </span>
+            </span>
+          </div>
+        )}
+        </div>
+        );
+      })}
       <div>
         <button type="button" className="btn btn-ghost btn-sm" onClick={use}>
           {current ? '✓ Cập nhật bộ đề thi thử' : '+ Thêm bài thi thử full vào bài tập'}
@@ -1335,7 +1462,8 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   const [deadline, setDeadline] = useState(() => toDatetimeLocalValue(isEdit ? assignment.deadline : new Date(Date.now() + DEFAULT_DEADLINE_DAYS * 864e5)));
   const [picked, setPicked] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'internal')
-    .map((r) => ({ kind: 'internal', resourceType: r.resourceType, resourceId: r.resourceId, resourceCode: r.resourceCode, label: r.label, mockBundle: r.mockBundle })));
+    .map((r) => ({ kind: 'internal', resourceType: r.resourceType, resourceId: r.resourceId, resourceCode: r.resourceCode, label: r.label, mockBundle: r.mockBundle,
+      ...(r.parts?.length ? { parts: [...r.parts] } : {}) })));
   const [externals, setExternals] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'external')
     .map((r) => ({ url: r.url, title: r.title, description: r.description || '' })));
@@ -1344,9 +1472,14 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
     .map((r) => ({ kind: 'image', images: r.images, title: r.title || '', instruction: r.instruction || '' })));
   // "Học N từ trong Sổ X" quotas, one per book (e.g. 50 từ Sổ 1 + 50 từ Sổ 2).
   // slot '' = any of Sổ 1–5 (only allowed as the single goal), else '1'..'5'.
-  const [vocabGoals, setVocabGoals] = useState(() => (assignment?.resources || [])
-    .filter((r) => r.kind === 'vocab_goal')
-    .map((r) => ({ count: String(r.wordCount), slot: r.bookSlot ? String(r.bookSlot) : '' })));
+  // A NEW assignment starts with the class's next vocab round already in
+  // (nextVocabRotation) — 50 từ Sổ 1 + Sổ 2, then Sổ 3 + 4 + 5, alternating.
+  const rotation = useMemo(() => (isEdit ? null : nextVocabRotation(allAssignments)), []); // eslint-disable-line react-hooks/exhaustive-deps
+  const [vocabGoals, setVocabGoals] = useState(() => (isEdit
+    ? (assignment?.resources || [])
+      .filter((r) => r.kind === 'vocab_goal')
+      .map((r) => ({ count: String(r.wordCount), slot: r.bookSlot ? String(r.bookSlot) : '' }))
+    : VOCAB_ROTATION[rotation.round].map((n) => ({ count: String(VOCAB_ROTATION_WORDS), slot: String(n) }))));
   const [saving, setSaving] = useState(false);
 
   const [cat, setCat] = useState('reading_test');
@@ -1423,8 +1556,17 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
     const k = keyOf(cat, item._id);
     setPicked((p) => p.some((x) => keyOf(x.resourceType, x.resourceId) === k)
       ? p.filter((x) => keyOf(x.resourceType, x.resourceId) !== k)
-      : [...p, { kind: 'internal', resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode, label: item.label }]);
+      : [...p, { kind: 'internal', resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode, label: item.label,
+        ...(item.partsPickable !== undefined ? { partsPickable: item.partsPickable } : {}) }]);
   }
+  // Passage/Section chips on a picked full test (undefined = whole test).
+  function togglePickedPart(p, n) {
+    const k = keyOf(p.resourceType, p.resourceId);
+    setPicked((list) => list.map((x) => (keyOf(x.resourceType, x.resourceId) === k
+      ? { ...x, parts: toggledParts(x.parts, n, TEST_PARTS[x.resourceType].count) }
+      : x)));
+  }
+  const pickedTests = picked.filter((p) => TEST_PARTS[p.resourceType]);
   const isPicked = (item) => picked.some((x) => keyOf(x.resourceType, x.resourceId) === keyOf(cat, item._id));
 
   async function uploadImages(e) {
@@ -1444,7 +1586,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
 
   async function save() {
     const resources = [
-      ...picked,
+      ...picked.map(({ partsPickable, ...x }) => x), // eslint-disable-line no-unused-vars
       ...externals.filter((x) => x.url.trim()).map((x) => ({ kind: 'external', ...x })),
       ...images,
       ...vocabGoals.map((g) => ({ kind: 'vocab_goal', wordCount: Number(g.count), bookSlot: g.slot ? Number(g.slot) : null })),
@@ -1491,7 +1633,9 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
           <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
             <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Tài nguyên trên hệ thống</legend>
             <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
-              <select className="form-input" style={{ width: 200 }} value={cat}
+              <select className="form-input" value={cat}
+                title="Loại bài tập — nhóm theo kỹ năng"
+                style={{ width: 280, fontWeight: 700, borderLeft: `5px solid ${RES_GROUP_OF[cat]?.color || 'var(--border)'}` }}
                 onChange={(e) => {
                   // Clear the old category's rows + show loading immediately so
                   // the list never shows the previous type's items (wrong
@@ -1499,7 +1643,15 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                   setCatalog([]); setLoadingCat(true);
                   setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]); setTplLevel(''); setEssayFilter('');
                 }}>
-                {RESOURCE_CATS.map((r) => <option key={r.type} value={r.type}>{r.label}</option>)}
+                {RES_GROUPS.map((g) => (
+                  <optgroup key={g.key} label={g.label} style={{ color: g.color, backgroundColor: '#fff', fontWeight: 800, fontStyle: 'normal' }}>
+                    {g.types.map((t) => (
+                      <option key={t} value={t} style={{ color: g.color, backgroundColor: g.bg, fontWeight: 600 }}>
+                        {g.icon} {RES_LABEL[t]}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
               </select>
               <input className="form-input" style={{ flex: 1, minWidth: 140 }} placeholder="Tìm..." value={search} onChange={(e) => setSearch(e.target.value)} />
               {cat !== 'mock_test' && (
@@ -1602,6 +1754,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                     {p.resourceType === 'mock_test'
                       ? mockBundleSummary(p)
                       : <a href={studentUrlFor(p) || undefined} target="_blank" rel="noopener noreferrer" title="Mở bài này ở tab mới" style={{ color: 'inherit' }}>{p.label}</a>}
+                    {p.parts?.length ? <b style={{ marginLeft: 4 }}>({partsText(p.resourceType, p.parts)})</b> : null}
                     {p.resourceType !== 'mock_test' && assignedIndex.has(keyOf(p.resourceType, p.resourceId)) && (
                       <span title={assignedTooltip(assignedIndex.get(keyOf(p.resourceType, p.resourceId)))} style={{ marginLeft: 4, fontWeight: 700 }}>· đã giao trước</span>
                     )}
@@ -1611,10 +1764,39 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                 ))}
               </div>
             )}
+            {pickedTests.length > 0 && (
+              <div style={{ marginTop: 10, padding: '10px 12px', border: '1px dashed var(--border)', borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)' }}>
+                  Chọn Passage / Section cần giao <span style={{ fontWeight: 400, color: 'var(--text3)' }}>— mặc định cả đề; bấm để bỏ phần không giao</span>
+                </div>
+                {pickedTests.map((p) => {
+                  const cantSplit = p.resourceType === 'listening_test' && p.partsPickable === false;
+                  const g = RES_GROUP_OF[p.resourceType];
+                  return (
+                    <div key={keyOf(p.resourceType, p.resourceId)} style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', fontSize: 13 }}>
+                      <span style={{ minWidth: 180, fontWeight: 600, color: g?.color }}>{g?.icon} {p.label}</span>
+                      <PartChips type={p.resourceType} parts={cantSplit ? undefined : p.parts} disabled={cantSplit}
+                        color={g?.color} onToggle={(n) => togglePickedPart(p, n)} />
+                      <span style={{ fontSize: 12, color: 'var(--text3)' }}>
+                        {cantSplit ? 'Đề này chưa có audio riêng từng Section — chỉ giao được cả đề'
+                          : p.parts?.length ? `Giao ${partsText(p.resourceType, p.parts)} · học sinh mở đúng các phần này` : 'Cả đề'}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </fieldset>
 
           <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
             <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Sổ từ vựng cá nhân</legend>
+            {rotation && (
+              <div style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 8, lineHeight: 1.5 }}>
+                🔁 Tự động giao theo vòng: lần này <b>{VOCAB_ROTATION_WORDS} từ mỗi sổ — Sổ {VOCAB_ROTATION[rotation.round].join(', ')}</b>
+                {rotation.lastSlots ? <> (bài trước của lớp: Sổ {rotation.lastSlots.join(', ')})</> : <> (lần đầu)</>}.
+                {' '}Lần sau sẽ là Sổ {VOCAB_ROTATION[1 - rotation.round].join(', ')}. Có thể sửa hoặc bỏ trước khi giao.
+              </div>
+            )}
             {vocabGoals.map((g, i) => {
               const usedSlots = vocabGoals.filter((_, j) => j !== i).map((x) => x.slot);
               const setGoal = (patch) => setVocabGoals((a) => a.map((x, j) => (j === i ? { ...x, ...patch } : x)));

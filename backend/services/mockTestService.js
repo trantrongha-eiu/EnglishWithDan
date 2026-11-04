@@ -32,6 +32,7 @@ const NEXT = { listening: 'reading', reading: 'writing', writing: 'speaking', sp
 // see proctorPolicy.js. Teachers/admins are exempt (see recordViolation /
 // startMockTest callers).
 const proctorPolicy = require('./proctorPolicy');
+const { normalizeParts } = require('../utils/partSelection');
 const { MAX_VIOLATIONS, PROCTOR_TYPES, PROCTOR_EVENT_CAP } = proctorPolicy;
 const DQ_COOLDOWN_SECONDS = 300; // 5 minutes
 
@@ -191,17 +192,43 @@ const BUNDLE_SKILLS = [
 // — tests this class was already given; a random draw never lands on one.
 // A test the teacher picks by hand is still allowed (the picker labels it
 // "đã giao").
+// `picks.listeningParts` / `picks.readingParts` (optional): only these
+// sections (1–4) / passages (1–3) — normalised, kept on the bundle. A
+// Listening subset needs a test whose parts each have their own audio, so a
+// hand-picked test without it is refused and a random draw only lands on one
+// that has it.
 async function resolveMockBundle(picks = {}, { exclude = {} } = {}) {
+  const listeningParts = normalizeParts(picks && picks.listeningParts, 4);
+  const readingParts = normalizeParts(picks && picks.readingParts, 3);
+  // lazy: listeningService pulls in a lot, and nothing else here needs it
+  const listeningService = listeningParts ? require('./listeningService') : null;
+  const audioKeys = listeningParts ? await listeningService.sectionAudioKeys() : null;
   const docs = await Promise.all(BUNDLE_SKILLS.map(async ({ key, label, model, filter }) => {
     const id = picks && picks[key];
+    const splitListening = key === 'listeningTestId' && listeningParts;
     if (id) {
       if (!mongoose.isValidObjectId(id)) throw new ValidationError(`Đề ${label} không hợp lệ`);
       const doc = await model.findOne({ _id: id, isActive: true, ...filter }).lean();
       if (!doc) throw new ValidationError(`Đề ${label} không tồn tại hoặc đã bị ẩn`);
+      if (splitListening && !listeningService.testPartsPickable(doc, audioKeys)) {
+        throw new ValidationError(`Đề ${label} "${doc.name}" chưa có audio riêng cho từng Section — không giao lẻ Section được. Hãy giao cả đề hoặc chọn đề khác.`);
+      }
       return doc;
     }
     const used = (exclude && exclude[key]) || [];
-    const doc = await randomActive(model, used.length ? { ...filter, _id: { $nin: used } } : filter);
+    let doc;
+    if (splitListening) {
+      const usedSet = new Set(used.map(String));
+      const pool = (await model.find({ isActive: true, ...filter }).select('_id sections.partNumber sections.title').lean())
+        .filter((t) => !usedSet.has(String(t._id)) && listeningService.testPartsPickable(t, audioKeys));
+      const pick = pool.length ? pool[Math.floor(Math.random() * pool.length)] : null;
+      doc = pick ? await model.findById(pick._id).lean() : null;
+      if (!doc) {
+        throw new ValidationError('Không còn đề Listening nào (chưa giao cho lớp) có audio riêng từng Section để bốc ngẫu nhiên. Hãy chọn tay 1 đề hoặc giao cả 4 Section.');
+      }
+      return doc;
+    }
+    doc = await randomActive(model, used.length ? { ...filter, _id: { $nin: used } } : filter);
     if (!doc) {
       throw new ValidationError(used.length
         ? `Lớp đã được giao hết các đề ${label} hiện có — không còn đề mới để bốc ngẫu nhiên. Hãy chọn tay 1 đề ${label}.`
@@ -209,7 +236,10 @@ async function resolveMockBundle(picks = {}, { exclude = {} } = {}) {
     }
     return doc;
   }));
-  return bundleFrom(...docs);
+  const bundle = bundleFrom(...docs);
+  if (listeningParts) bundle.listeningParts = listeningParts;
+  if (readingParts) bundle.readingParts = readingParts;
+  return bundle;
 }
 
 // `assigned` (optional): { assignmentId, itemId, bundle } — the run is the
@@ -270,7 +300,9 @@ async function startMockTest(userId, { assigned = null } = {}) {
         speakingCueCard: b.speakingCueCard || '',
         listeningTestName: b.listeningTestName || '',
         readingTestName: b.readingTestName || '',
-        writingExamName: b.writingExamName || ''
+        writingExamName: b.writingExamName || '',
+        ...(b.listeningParts && b.listeningParts.length ? { listeningParts: [...b.listeningParts] } : {}),
+        ...(b.readingParts && b.readingParts.length ? { readingParts: [...b.readingParts] } : {})
       },
       progress: 'listening'
     });
@@ -551,7 +583,10 @@ function publicShape(doc) {
       speakingCueCard: doc.bundle.speakingCueCard || '',
       listeningTestName: doc.bundle.listeningTestName || '',
       readingTestName: doc.bundle.readingTestName || '',
-      writingExamName: doc.bundle.writingExamName || ''
+      writingExamName: doc.bundle.writingExamName || '',
+      // homework subset ("Section 1, 2, 4") — null = the whole test
+      listeningParts: doc.bundle.listeningParts && doc.bundle.listeningParts.length ? [...doc.bundle.listeningParts] : null,
+      readingParts: doc.bundle.readingParts && doc.bundle.readingParts.length ? [...doc.bundle.readingParts] : null
     },
     steps: {
       listening: step('listening'),

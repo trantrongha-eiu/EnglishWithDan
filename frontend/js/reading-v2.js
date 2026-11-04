@@ -441,7 +441,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       state.testId = tid;
       // Mandatory screen share first — no exam clock runs behind its prompt.
       if (window.MockTest.ready) await window.MockTest.ready();
-      await _doStartExam(tid);
+      // Class homework may give only some passages (bundle.readingParts).
+      const mtParts = mt.bundle.readingParts && mt.bundle.readingParts.length ? mt.bundle.readingParts : null;
+      await _doStartExam(tid, 'practice', mtParts);
     } catch (e) {
       showVocabToast('Lỗi mở bài thi thử', 'error');
       location.href = 'dashboard.html';

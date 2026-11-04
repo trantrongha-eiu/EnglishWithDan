@@ -21,6 +21,8 @@ const mediaStore = require('../services/mediaStore');
 const contentViewService = require('../services/contentViewService');
 const { findActiveEnrollment } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
+const { normalizeParts } = require('../utils/partSelection');
+const ListeningTest = require('../models/ListeningTest');
 
 // Deadline / archive / resource edits change how many assignments each
 // student is behind on, which feeds the enrollment's warning/failed status —
@@ -63,15 +65,25 @@ function parseVnDeadline(input) {
 // by resourceType+resourceId, not _id), but keeping their _id stable too
 // avoids needlessly resetting anything else keyed off it.
 const MOCK_BUNDLE_KEYS = ['listeningTestId', 'readingTestId', 'writingExamId', 'speakingQuestionId'];
+// Picked Listening sections / Reading passages are part of the exam too.
+function partsSig(parts, count) {
+  return (normalizeParts(parts && parts.length ? [...parts] : null, count) || []).join('.');
+}
 function mockBundleSig(b) {
-  return b && b.listeningTestId ? MOCK_BUNDLE_KEYS.map((k) => String(b[k] || '')).join(',') : 'legacy';
+  if (!b || !b.listeningTestId) return 'legacy';
+  return MOCK_BUNDLE_KEYS.map((k) => String(b[k] || '')).join(',')
+    + `|L${partsSig(b.listeningParts, 4)}|R${partsSig(b.readingParts, 3)}`;
 }
 
 function resourceIdentityKey(r) {
   // A different bundle is a different exam — fresh _id, so runs of the old
   // bundle (keyed by item _id) don't tick the new one.
   if (r.kind === 'internal' && r.resourceType === 'mock_test') return `internal:mock_test:${mockBundleSig(r.mockBundle)}`;
-  if (r.kind === 'internal') return `internal:${r.resourceType}:${r.resourceId || ''}`;
+  // "Test 5" and "Test 5, Section 1+2" are different homework items.
+  if (r.kind === 'internal') {
+    const parts = rcs.assignedParts(r);
+    return `internal:${r.resourceType}:${r.resourceId || ''}${parts ? `:p${parts.join(',')}` : ''}`;
+  }
   if (r.kind === 'external') return `external:${r.url}`;
   if (r.kind === 'image') return `image:${(r.images || []).map((im) => im.url).sort().join(',')}`;
   // Changing N makes it a different goal (fresh _id) — a sticky "reached"
@@ -137,12 +149,24 @@ async function buildMockResource(r, existing, builtSoFar, ctx = {}, input = []) 
   try {
     const clean = {};
     for (const k of MOCK_BUNDLE_KEYS) if (picks && picks[k]) clean[k] = String(picks[k]);
+    if (picks && Array.isArray(picks.listeningParts)) clean.listeningParts = picks.listeningParts;
+    if (picks && Array.isArray(picks.readingParts)) clean.readingParts = picks.readingParts;
     const exclude = await usedMockTestsForClass(ctx.classId, ctx.assignmentId, input);
     const mockBundle = await mockTestService.resolveMockBundle(clean, { exclude });
     return { built: { kind: 'internal', resourceType: 'mock_test', resourceId: null, label, resourceCode: '', mockBundle } };
   } catch (err) {
     return { error: err.message };
   }
+}
+
+// A full Listening test given section by section plays each picked section's
+// own audio (listeningService.startTest) — refuse a test that doesn't have it
+// rather than hand students a link that can't start.
+async function checkTestParts(r) {
+  if (r.resourceType !== 'listening_test' || !rcs.assignedParts(r)) return null;
+  const test = await ListeningTest.findById(r.resourceId).select('name sections.partNumber sections.title').lean();
+  if (test && listeningService.testPartsPickable(test, await listeningService.sectionAudioKeys())) return null;
+  return `Đề Listening "${(test && test.name) || ''}" chưa có audio riêng cho từng Section — chỉ giao được cả đề.`;
 }
 
 // ── validation of the resources[] payload ─────────────────────────────
@@ -174,12 +198,16 @@ async function buildResources(input, existing = [], ctx = {}) {
       if (!rcs.isValidType(r.resourceType)) return { error: `Loại tài nguyên không hợp lệ: ${r.resourceType}` };
       const ok = await rcs.resourceExists(r.resourceType, r.resourceId || null);
       if (!ok) return { error: `Tài nguyên "${r.resourceType}" không tồn tại` };
+      const partsErr = await checkTestParts(r);
+      if (partsErr) return { error: partsErr };
+      const parts = rcs.assignedParts(r);
       built = {
         kind: 'internal',
         resourceType: r.resourceType,
         resourceId: r.resourceId || null,
         label: (r.label && String(r.label).slice(0, 200)) || await rcs.labelFor(r.resourceType, r.resourceId),
         resourceCode: await rcs.deepLinkKeyFor(r.resourceType, r.resourceId),
+        ...(parts ? { parts } : {}),
       };
     } else if (r.kind === 'external') {
       if (!r.url || !/^https?:\/\//i.test(r.url)) return { error: 'Link ngoài phải bắt đầu bằng http(s)://' };
@@ -245,7 +273,7 @@ async function attachGapFillCompanions(out, fresh, existingIdByKey) {
   for (const r of out) {
     res.push(r);
     if (!fresh.has(r) || r.kind !== 'internal' || !GAPFILL_SOURCE_TYPES.includes(r.resourceType)) continue;
-    for (const id of await listeningService.gapFillSectionIdsFor(r.resourceType, r.resourceId)) {
+    for (const id of await listeningService.gapFillSectionIdsFor(r.resourceType, r.resourceId, rcs.assignedParts(r))) {
       if (have.has(id)) continue;
       have.add(id);
       const gf = {

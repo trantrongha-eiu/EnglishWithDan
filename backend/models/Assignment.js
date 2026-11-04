@@ -47,6 +47,11 @@ const assignmentResourceSchema = new mongoose.Schema({
   // not the Mongo _id stored above. '' for every other type (see
   // resourceCompletionService.deepLinkKeyFor).
   resourceCode: { type: String, default: '' },
+  // reading_test / listening_test only: the passages (1–3) or sections (1–4)
+  // the teacher assigned, e.g. [1, 2, 4]. Absent = the whole test. The
+  // student link opens the test with exactly these parts (?parts=1,2,4) and
+  // only an attempt covering all of them counts (resourceCompletionService).
+  parts: { type: [Number], default: undefined },
 
   // mock_test only — the ONE bundle the whole class takes, fixed when the
   // teacher assigns it (a "random" skill is drawn once, server-side, at that
@@ -66,6 +71,9 @@ const assignmentResourceSchema = new mongoose.Schema({
       writingExamName:    { type: String, default: '' },
       speakingTopic:      { type: String, default: '' },
       speakingCueCard:    { type: String, default: '' },
+      // Only these Listening sections / Reading passages (absent = whole test).
+      listeningParts:     { type: [Number], default: undefined },
+      readingParts:       { type: [Number], default: undefined },
     }, { _id: false }),
     default: undefined,
   },
