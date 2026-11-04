@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb" />
   <link rel="stylesheet" href="/css/components.css?v=bb5d514434" />
-  <link rel="stylesheet" href="/css/writing.css?v=b2630e0f66" />
+  <link rel="stylesheet" href="/css/writing.css?v=e4c8450fff" />
   <link rel="stylesheet" href="/css/pdf-viewer.css?v=7d99d6420a" />
   <link rel="stylesheet" href="/css/mobile.css?v=1319d3b9c8" />
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3" />
@@ -558,6 +558,21 @@
   .rw-ai-fb>summary::before{content:"▸ "}
   .rw-ai-fb[open]>summary::before{content:"▾ "}
   .rw-ai-fb-inner{padding:0 12px 12px;display:flex;flex-direction:column;gap:12px}
+  /* Draft 2: old errors to avoid + live "you repeated it" warning */
+  .rw-chk{border:1px solid #fecaca;background:#fff7f7;border-radius:8px;margin-bottom:8px;font-size:12.5px}
+  .rw-chk>summary{cursor:pointer;padding:7px 10px;font-weight:700;color:#b91c1c}
+  .rw-chk ul{margin:0;padding:0 10px 8px 28px;max-height:170px;overflow-y:auto;line-height:1.7}
+  .rw-chk li s{color:#dc2626}.rw-chk li b{color:#15803d}
+  .rw-chk li.hit{background:#fee2e2;border-radius:4px;font-weight:600}
+  .rw-chk li.hit::after{content:" ⚠️ còn lặp lại";color:#b91c1c;font-size:11px}
+  .rw-chk-cat{font-size:10.5px;color:#6d28d9;background:#ede9fe;border-radius:5px;padding:0 5px}
+  .rw-repeat{margin-top:6px;font-size:12.5px;color:#991b1b;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:7px 10px;line-height:1.55}
+  [data-theme="dark"] .rw-chk{background:#1f0a0a;border-color:#7f1d1d}
+  [data-theme="dark"] .rw-chk>summary{color:#fca5a5}
+  [data-theme="dark"] .rw-chk li s{color:#f87171}[data-theme="dark"] .rw-chk li b{color:#4ade80}
+  [data-theme="dark"] .rw-chk li.hit{background:#450a0a}
+  [data-theme="dark"] .rw-chk-cat{background:#2e1065;color:#c4b5fd}
+  [data-theme="dark"] .rw-repeat{background:#1f0a0a;border-color:#7f1d1d;color:#fca5a5}
   @media(max-width:900px){.rw-split{flex-direction:column}.rw-col-left,.rw-col-right{max-height:none;overflow:visible}.rw-col-left{border-right:none;border-bottom:1px solid var(--border,#e5e7eb);padding-right:0;padding-bottom:14px}}
 </style>
 <div class="modal-overlay" id="rewrite-modal-overlay" onclick="if(event.target===this)closeRewriteModal()">
@@ -657,6 +672,6 @@
 <script src="/js/shared/task2-highlight.js?v=2991d441a8"></script>
 <script src="/js/shared/task2-generic-tpl.js?v=6c26dac6da"></script>
 <script src="/js/shared/analysis-format.js?v=c2558b7744"></script>
-<script src="/js/writing.js?v=cfa3024335"></script>
+<script src="/js/writing.js?v=7098d8765e"></script>
 </body>
 </html>

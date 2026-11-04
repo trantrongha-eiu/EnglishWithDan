@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { EMPTY_MANUAL, taskBandFromCriteria } from './constants';
+import FeedbackDetail from './FeedbackDetail';
 
 function ScoreRow({ label, score, comment }) {
   if (score == null) return null;
@@ -94,7 +95,7 @@ export function ManualGradeForm({ value, onChange, disabled }) {
 }
 
 export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, minWords, aiResult, confirmedResult,
-  isGrading, busy, isConfirmed, onGrade, aiDisabled, mode, onModeChange, manualData, onManualChange }) {
+  isGrading, busy, isConfirmed, onGrade, aiDisabled, mode, onModeChange, manualData, onManualChange, detail, onDetailChange }) {
   const [expanded, setExpanded] = useState(false);
   const hasAnswer = !!(answer && answer.trim());
   const displayBand = isConfirmed
@@ -156,6 +157,7 @@ export default function TaskPanel({ title, prompt, imageUrl, answer, wordCount, 
       {!isConfirmed && mode === 'manual' && (
         <ManualGradeForm value={manualData || EMPTY_MANUAL()} onChange={onManualChange} disabled={false} />
       )}
+      <FeedbackDetail detail={detail} editable={!isConfirmed} onChange={onDetailChange} />
 
       {isConfirmed ? (
         <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface2)', borderTop: '1px solid var(--border)' }}>

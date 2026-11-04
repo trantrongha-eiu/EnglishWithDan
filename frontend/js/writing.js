@@ -1178,9 +1178,74 @@ function _rwUpdateCounts() {
     if (!ok) allOk = false;
     wcEl.textContent = `${wc} / ${RW_MIN[n]} từ tối thiểu` + (ok ? ' ✓' : '');
     wcEl.className = 'rw-wc ' + (ok ? 'ok' : 'short');
+    _rwCheckRepeats(n, ta.value);
   });
   const btn = document.getElementById('rw-submit-btn');
   if (btn) btn.disabled = !allOk;
+}
+
+// Draft 2 checklist: the graded errors of this task, and a live warning when
+// the rewrite still contains one of them. Only errors that can be spotted
+// reliably are watched: a phrase of 2+ words, or a misspelt word. A single
+// common word ("thinks", "the") is too often correct somewhere else, so it
+// is watched together with its neighbours in the original sentence
+// ("people thinks that").
+function _rwWithNeighbours(sentence, word) {
+  const clean = w => w.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '');
+  const toks = String(sentence || '').split(/\s+/).map(clean).filter(Boolean);
+  const i = toks.findIndex(t => t.toLowerCase() === word.toLowerCase());
+  return i === -1 ? '' : toks.slice(Math.max(0, i - 1), i + 2).join(' ');
+}
+
+function _rwBuildChecks(td) {
+  const out = [];
+  ((td && td.sentenceFeedback) || []).forEach(s => {
+    _fbErrors(s).forEach(e => {
+      const wrong = String(e.wrong || '').trim();
+      if (!wrong) return;
+      const item = { wrong, fix: String(e.fix || '').trim(), cat: e.category, re: null };
+      const words = wrong.split(/\s+/).length;
+      const lw = wrong.toLowerCase(), lf = item.fix.toLowerCase();
+      let phrase = (words >= 2 || e.category === 'spelling') ? wrong : _rwWithNeighbours(s.original, wrong);
+      if (phrase.split(/\s+/).length < 2 && e.category !== 'spelling') phrase = '';
+      if (phrase) {
+        try {
+          const pat = phrase.split(/\s+/).map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+');
+          item.re = new RegExp('(?<![\\p{L}\\p{N}])' + pat + '(?![\\p{L}\\p{N}])', 'iu');
+        } catch (_) { item.re = null; }
+        // Never warn about text the correction itself contains.
+        if (item.re && (item.re.test(item.fix) || item.re.test(String(s.better || '')))) item.re = null;
+      }
+      if (!out.some(o => o.wrong.toLowerCase() === lw && o.fix.toLowerCase() === lf)) out.push(item);
+    });
+  });
+  return out;
+}
+
+function _rwChecklistHtml(n) {
+  const items = (_rwState && _rwState.checks[n]) || [];
+  if (!items.length) return '';
+  return `<details class="rw-chk" open>
+    <summary><i class="fas fa-clipboard-check"></i> Lỗi cũ cần tránh khi viết lại (${items.length})</summary>
+    <ul>${items.map((it, i) => `<li id="rw-chk-${n}-${i}"><s>${escHtml(it.wrong)}</s> → <b>${escHtml(it.fix || '(bỏ đi)')}</b>${it.cat && FB_ERR_CAT[it.cat] ? ` <span class="rw-chk-cat">${escHtml(FB_ERR_CAT[it.cat])}</span>` : ''}</li>`).join('')}</ul>
+  </details>`;
+}
+
+function _rwCheckRepeats(n, text) {
+  const box = document.getElementById('rw-rep-' + n);
+  const items = (_rwState && _rwState.checks[n]) || [];
+  if (!box) return;
+  const hits = [];
+  items.forEach((it, i) => {
+    const hit = !!(it.re && text && it.re.test(text));
+    document.getElementById(`rw-chk-${n}-${i}`)?.classList.toggle('hit', hit);
+    if (hit) hits.push(it);
+  });
+  box.style.display = hits.length ? '' : 'none';
+  box.innerHTML = hits.length
+    ? `<i class="fas fa-exclamation-triangle"></i> Em đang lặp lại lỗi cũ: ` +
+      hits.map(h => `<b>“${escHtml(h.wrong)}”</b> → nên viết <b>“${escHtml(h.fix)}”</b>`).join('; ')
+    : '';
 }
 
 async function openRewrite(attemptId) {
@@ -1227,7 +1292,8 @@ async function openRewrite(attemptId) {
       (g.task1 && g.task1.bandScore != null) && 1,
       (g.task2 && g.task2.bandScore != null) && 2,
     ].filter(Boolean);
-    _rwState = { attemptId, gradedTasks };
+    _rwState = { attemptId, gradedTasks, checks: {} };
+    gradedTasks.forEach(n => { _rwState.checks[n] = _rwBuildChecks(g['task' + n]); });
 
     const t1 = a.task1Snapshot || {}, t2 = a.task2Snapshot || {};
     const prev = a.rewrite || {};
@@ -1242,8 +1308,10 @@ async function openRewrite(attemptId) {
         <h4>Task ${n} — viết lại (tối thiểu ${RW_MIN[n]} từ)</h4>
         ${prompt ? `<div class="rw-prompt">${escHtml(prompt)}</div>` : ''}
         ${img ? `<img class="rw-chart-img" src="${escHtml(img)}" alt="Biểu đồ / hình Task ${n}" loading="lazy">` : ''}
+        ${_rwChecklistHtml(n)}
         <textarea class="rw-ta" id="rw-ta-${n}" placeholder="Gõ bài viết lại của bạn ở đây... (không dán được)">${escHtml(pre)}</textarea>
         <div class="rw-wc short" id="rw-wc-${n}">0 / ${RW_MIN[n]} từ tối thiểu</div>
+        <div class="rw-repeat" id="rw-rep-${n}" style="display:none"></div>
       </div>`;
     }).join('');
 
@@ -1253,7 +1321,7 @@ async function openRewrite(attemptId) {
         <ol>
           <li><b>Đọc kĩ từng lỗi</b> giáo viên chỉ ra bên dưới — hiểu vì sao sai và sửa thế nào.</li>
           <li><b>Ghi các lỗi vào vở</b> (lỗi sai → cách sửa đúng) để xem lại trước mỗi bài viết sau.</li>
-          <li>Rồi mới <b>tự viết lại</b> bài cho tốt hơn, chú ý không lặp lại các lỗi đó.</li>
+          <li>Rồi mới <b>tự viết lại</b> bài cho tốt hơn, chú ý không lặp lại các lỗi đó. Danh sách <b>"Lỗi cũ cần tránh"</b> bên phải sẽ báo đỏ nếu em viết lại đúng lỗi cũ.</li>
         </ol>
         <div class="rw-note-foot">Bài viết lại <b>không chấm điểm</b> — nhưng chỉ chép lại mà không hiểu lỗi thì bài sau bạn vẫn sẽ sai y như cũ.</div>
       </div>
@@ -1360,6 +1428,165 @@ window.openRewrite = openRewrite;
 window.closeRewriteModal = closeRewriteModal;
 window.submitRewrite = submitRewrite;
 
+// ── Detailed error feedback (errors[] / upgrades[] / logicFeedback / draft2Plan,
+// see backend writingGradingService.normalizeFeedback). Older gradings only
+// have one `issue` + `better` per sentence and still render as before.
+// Keep the labels in sync with ERROR_CATEGORIES in writingGradingService.js.
+const FB_ERR_CAT = {
+  tense: 'Thì động từ', sva: 'Hòa hợp chủ ngữ – động từ', article: 'Mạo từ (a/an/the)',
+  noun_number: 'Số ít / số nhiều', preposition: 'Giới từ', word_form: 'Từ loại (word form)',
+  verb_form: 'Dạng động từ', sentence_structure: 'Cấu trúc câu', relative_clause: 'Mệnh đề quan hệ',
+  pronoun: 'Đại từ / từ hạn định', comparison: 'So sánh', punctuation: 'Dấu câu', spelling: 'Chính tả',
+  word_choice: 'Dùng từ sai nghĩa', collocation: 'Kết hợp từ (collocation)', register: 'Văn phong không trang trọng',
+  linking: 'Từ nối / liên kết', data: 'Sai số liệu', other: 'Lỗi khác',
+};
+const FB_CRIT_COLOR = { GRA: '#7c3aed', LR: '#0369a1', CC: '#b45309', TA: '#dc2626', TR: '#dc2626' };
+
+function _fbErrors(s) { return Array.isArray(s && s.errors) ? s.errors : []; }
+function _fbUpgrades(s) { return Array.isArray(s && s.upgrades) ? s.upgrades : []; }
+function _fbCritChip(c) {
+  return c ? `<span class="fb-crit-chip" style="background:${FB_CRIT_COLOR[c] || '#6b7280'}">${escHtml(c)}</span>` : '';
+}
+
+// The sentence with each error / upgrade span highlighted. Spans the model
+// quoted that aren't in the sentence (or overlap an earlier one) are just
+// not highlighted — they still appear in the list under the sentence.
+function _fbMarkSentence(original, errors, upgrades) {
+  const text = String(original || '');
+  const lower = text.toLowerCase();
+  const ranges = [];
+  const add = (needle, cls, label) => {
+    const n = String(needle || '').toLowerCase();
+    if (!n) return;
+    let from = 0, at;
+    while ((at = lower.indexOf(n, from)) !== -1) {
+      const end = at + n.length;
+      if (!ranges.some(r => at < r.end && end > r.start)) { ranges.push({ start: at, end, cls, label }); return; }
+      from = at + 1;
+    }
+  };
+  errors.forEach((e, i) => add(e.wrong, 'fb-mk-err', i + 1));
+  upgrades.forEach(u => add(u.from, 'fb-mk-up', '💡'));
+  ranges.sort((a, b) => a.start - b.start);
+  let html = '', pos = 0;
+  ranges.forEach(r => {
+    html += escHtml(text.slice(pos, r.start))
+      + `<mark class="${r.cls}">${escHtml(text.slice(r.start, r.end))}<sup>${r.label}</sup></mark>`;
+    pos = r.end;
+  });
+  return html + escHtml(text.slice(pos));
+}
+
+function _fbUpgradeRows(ups) {
+  return ups.map(u => `<div class="fb-up-row">
+      <span class="fb-up-ico">💡</span>
+      <div><span class="fb-up-from">${escHtml(u.from)}</span> <span class="fb-arrow">→</span> <b class="fb-up-to">${escHtml(u.to)}</b>
+      ${u.why ? `<div class="fb-why">${escHtml(u.why)}</div>` : ''}</div>
+    </div>`).join('');
+}
+
+// "Lỗi của em" — counts by error type so the student sees which mistakes
+// they repeat (the thing to note down before Draft 2).
+function _fbErrorSummary(td) {
+  const sf = td.sentenceFeedback || [];
+  const counts = {};
+  let nErr = 0, nUp = 0;
+  sf.forEach(s => {
+    _fbErrors(s).forEach(e => {
+      nErr++;
+      const k = FB_ERR_CAT[e.category] ? e.category : 'other';
+      counts[k] = (counts[k] || 0) + 1;
+    });
+    nUp += _fbUpgrades(s).length;
+  });
+  const nLogic = (td.logicFeedback || []).length;
+  if (!nErr && !nUp && !nLogic) return '';
+  const nIssueSent = sf.filter(s => s.type !== 'ok').length;
+  const chips = Object.entries(counts).sort((a, b) => b[1] - a[1])
+    .map(([k, n]) => `<span class="fb-cat-chip${n >= 2 ? ' rep' : ''}">${escHtml(FB_ERR_CAT[k])} <b>×${n}</b></span>`).join('');
+  return `<div class="fb-section fb-sum">
+    <div class="fb-sum-stats">
+      <span><b>${nIssueSent}</b>/${sf.length} câu có lỗi</span>
+      ${nErr ? `<span class="fb-sum-err"><b>${nErr}</b> lỗi</span>` : ''}
+      ${nLogic ? `<span class="fb-sum-logic"><b>${nLogic}</b> vấn đề lập luận</span>` : ''}
+      ${nUp ? `<span class="fb-sum-up"><b>${nUp}</b> gợi ý nâng cấp từ vựng</span>` : ''}
+    </div>
+    ${chips ? `<div class="fb-sum-lbl">Loại lỗi em mắc (màu đỏ = lặp lại từ 2 lần trở lên, ưu tiên ghi vào vở):</div><div class="fb-cat-chips">${chips}</div>` : ''}
+  </div>`;
+}
+
+function _fbLogicSection(td) {
+  const items = td.logicFeedback || [];
+  if (!items.length) return '';
+  const rows = items.map(l => `<div class="fb-logic-row">
+      <div class="fb-logic-head">
+        <span class="fb-logic-para">${l.paragraph ? 'Đoạn ' + escHtml(l.paragraph) : 'Toàn bài'}</span>
+        ${_fbCritChip(l.criterion)}
+      </div>
+      ${l.quote ? `<div class="fb-logic-quote">“${escHtml(l.quote)}”</div>` : ''}
+      <div class="fb-logic-problem"><i class="fas fa-exclamation-triangle"></i> ${escHtml(l.problem)}</div>
+      ${l.suggestion ? `<div class="fb-logic-fix"><i class="fas fa-wrench"></i> ${escHtml(l.suggestion)}</div>` : ''}
+    </div>`).join('');
+  return `<div class="fb-section">
+    <div class="fb-section-lbl fb-lbl-logic"><i class="fas fa-project-diagram"></i> Lập luận & bám đề</div>
+    <div class="fb-logic-list">${rows}</div>
+  </div>`;
+}
+
+function _fbSentenceSection(td) {
+  const sf = td.sentenceFeedback || [];
+  const rows = sf.map(s => {
+    const errs = _fbErrors(s), ups = _fbUpgrades(s);
+    if (s.type === 'ok') {
+      return `<div class="fb-sent ok">
+        <div class="fb-sent-text"><span class="fb-sent-ico ok"><i class="fas fa-check-circle"></i></span><span>${_fbMarkSentence(s.original, [], ups)}</span></div>
+        ${ups.length ? `<div class="fb-sent-body">${_fbUpgradeRows(ups)}</div>` : ''}
+      </div>`;
+    }
+    // Older gradings: a single issue/better per sentence.
+    const errRows = errs.length
+      ? errs.map((e, i) => `<div class="fb-err-row">
+          <span class="fb-err-num">${i + 1}</span>
+          <div class="fb-err-main">
+            <div class="fb-err-line">
+              <span class="fb-cat-tag">${escHtml(FB_ERR_CAT[e.category] || FB_ERR_CAT.other)}</span>
+              ${_fbCritChip(e.criterion)}
+              ${e.wrong ? `<s class="fb-wrong">${escHtml(e.wrong)}</s>` : ''}<span class="fb-arrow">→</span><b class="fb-fix">${escHtml(e.fix || '(bỏ đi)')}</b>
+            </div>
+            ${e.why ? `<div class="fb-why">${escHtml(e.why)}</div>` : ''}
+          </div>
+        </div>`).join('')
+      : `${_fbCritChip(s.criterion)}${s.issue ? `<div class="fb-why"><i class="fas fa-search"></i> ${escHtml(s.issue)}</div>` : ''}`;
+    return `<div class="fb-sent issue">
+      <div class="fb-sent-text"><span class="fb-sent-ico bad"><i class="fas fa-times-circle"></i></span><span>${_fbMarkSentence(s.original, errs, ups)}</span></div>
+      <div class="fb-sent-body">
+        ${errRows}
+        ${s.better ? `<div class="fb-better"><span class="fb-better-lbl">Câu đúng</span> ${escHtml(s.better)}</div>` : ''}
+        ${_fbUpgradeRows(ups)}
+      </div>
+    </div>`;
+  }).join('');
+  const nOk = sf.filter(s => s.type === 'ok').length;
+  const hasMarks = sf.some(s => _fbErrors(s).length || _fbUpgrades(s).length);
+  return `<div class="fb-section fb-sents">
+    <div class="fb-sents-head">
+      <div class="fb-section-lbl fb-lbl-sent"><i class="fas fa-list-ul"></i> Phân tích từng câu</div>
+      ${nOk && nOk < sf.length ? `<label class="fb-only-err"><input type="checkbox" onchange="this.closest('.fb-sents').classList.toggle('only-err', this.checked)"> Chỉ xem câu có lỗi</label>` : ''}
+    </div>
+    ${hasMarks ? `<div class="fb-legend"><mark class="fb-mk-err">chỗ sai</mark> <mark class="fb-mk-up">có thể nâng cấp</mark></div>` : ''}
+    <div class="fb-sent-list">${rows}</div>
+  </div>`;
+}
+
+function _fbDraft2Plan(td) {
+  const plan = (td && td.draft2Plan) || [];
+  if (!plan.length) return '';
+  return `<div class="fb-section fb-plan">
+    <div class="fb-section-lbl fb-lbl-plan"><i class="fas fa-pen-fancy"></i> Khi viết lại (Draft 2), em cần:</div>
+    <ol>${plan.map(p => `<li>${escHtml(p)}</li>`).join('')}</ol>
+  </div>`;
+}
+
 // One task's score bars + written feedback. Shared by the teacher-confirmed
 // grading (_buildStudentFeedback) and the AI's original grading
 // (_buildAiFeedbackBlock) — both use the same taskGrade shape.
@@ -1389,37 +1616,9 @@ function _fbTaskCard(label, td) {
       </div>`;
     }).join('');
 
-    // Sentence-by-sentence feedback (new format)
+    // Sentence-by-sentence feedback, error summary, logic notes, Draft 2 plan
     const sfItems = (td.sentenceFeedback || []);
-    let sfHtml = '';
-    if (sfItems.length > 0) {
-      const rows = sfItems.map(s => {
-        if (s.type === 'ok') {
-          return `<div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:#f0fdf4;border-radius:8px;border-left:3px solid #22c55e">
-            <span style="color:#22c55e;flex-shrink:0"><i class="fas fa-check-circle"></i></span>
-            <span style="font-size:13px;color:#166534;line-height:1.6">${escHtml(s.original)}</span>
-          </div>`;
-        }
-        // type === 'issue'
-        const critColor = s.criterion === 'GRA' ? '#7c3aed' : s.criterion === 'LR' ? '#0369a1' : s.criterion === 'CC' ? '#b45309' : '#dc2626';
-        return `<div style="background:#fff7f7;border-radius:8px;border-left:3px solid #ef4444;padding:10px 12px">
-          ${s.original ? `<div style="font-size:13px;color:#374151;line-height:1.6;margin-bottom:8px;padding:5px 8px;background:#fee2e2;border-radius:5px">${escHtml(s.original)}</div>` : ''}
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:5px">
-            <span style="color:#ef4444;flex-shrink:0"><i class="fas fa-times-circle"></i></span>
-            ${s.criterion ? `<span style="display:inline-block;background:${critColor};color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:9px">${escHtml(s.criterion)}</span>` : ''}
-          </div>
-          ${s.issue ? `<div style="font-size:12px;color:#6b7280;margin-bottom:6px;padding-left:4px"><i class="fas fa-search"></i> ${escHtml(s.issue)}</div>` : ''}
-          ${s.better ? `<div style="display:flex;gap:8px;align-items:flex-start">
-            <span style="color:#16a34a;flex-shrink:0"><i class="fas fa-check-circle"></i></span>
-            <span style="font-size:13px;color:#14532d;font-weight:500;line-height:1.6">${escHtml(s.better)}</span>
-          </div>` : ''}
-        </div>`;
-      }).join('');
-      sfHtml = `<div class="fb-section">
-        <div class="fb-section-lbl" style="color:#1e40af;border:1px solid #bfdbfe;background:#eff6ff;border-radius:6px;padding:3px 8px;display:inline-block"><i class="fas fa-list-ul"></i> Phân tích từng câu</div>
-        <div style="display:flex;flex-direction:column;gap:8px">${rows}</div>
-      </div>`;
-    }
+    const sfHtml = sfItems.length ? _fbErrorSummary(td) + _fbLogicSection(td) + _fbSentenceSection(td) : '';
 
     // Legacy: corrections (for older graded attempts)
     const corrections = (td.corrections || []).map(c =>
@@ -1440,6 +1639,7 @@ function _fbTaskCard(label, td) {
       ${bars}
       ${td.overallFeedback ? `<div class="fb-overall-txt">${escHtml(td.overallFeedback)}</div>` : ''}
       ${sfHtml}
+      ${_fbDraft2Plan(td)}
       ${!sfItems.length && corrections ? `<div class="fb-section"><div class="fb-section-lbl fb-section-corr">Lỗi cần sửa</div>${corrections}</div>` : ''}
       ${!sfItems.length && suggestions ? `<div class="fb-section"><div class="fb-section-lbl fb-section-sugg">Gợi ý cải thiện</div><ul class="fb-sugg-list">${suggestions}</ul></div>` : ''}
     </div>`;
@@ -1583,9 +1783,29 @@ function _fbTaskText(label, td) {
         return;
       }
       out.push(`${n}[✗${s.criterion ? ' ' + s.criterion : ''}] ${s.original || ''}`);
-      if (s.issue)  out.push(`       Vấn đề: ${s.issue}`);
-      if (s.better) out.push(`       Gợi ý sửa: ${s.better}`);
+      const errs = _fbErrors(s);
+      if (errs.length) {
+        errs.forEach((e, k) => {
+          out.push(`       (${k + 1}) [${FB_ERR_CAT[e.category] || FB_ERR_CAT.other}] ${e.wrong || ''} → ${e.fix || '(bỏ đi)'}`);
+          if (e.why) out.push(`           ${e.why}`);
+        });
+      } else if (s.issue) out.push(`       Vấn đề: ${s.issue}`);
+      if (s.better) out.push(`       Câu đúng: ${s.better}`);
     });
+    sf.forEach(s => _fbUpgrades(s).forEach(u => {
+      if (!out.includes('  Gợi ý nâng cấp từ vựng:')) out.push('', '  Gợi ý nâng cấp từ vựng:');
+      out.push(`  - ${u.from} → ${u.to}${u.why ? ' — ' + u.why : ''}`);
+    }));
+    const logic = td.logicFeedback || [];
+    if (logic.length) {
+      out.push('', '  Lập luận & bám đề:');
+      logic.forEach(l => {
+        out.push(`  - [${l.paragraph ? 'Đoạn ' + l.paragraph : 'Toàn bài'}] ${l.problem}`);
+        if (l.suggestion) out.push(`      Cách sửa: ${l.suggestion}`);
+      });
+    }
+    const plan = td.draft2Plan || [];
+    if (plan.length) out.push('', '  Khi viết lại (Draft 2):', ...plan.map((p, k) => `  ${k + 1}. ${p}`));
   } else {
     // Legacy format (older graded attempts)
     const corr = td.corrections || [];
@@ -1751,6 +1971,7 @@ async function downloadAttemptImage() {
         ${hasT1 ? taskHtml(1, t1, a.task1Answer, a.wordCount1, t1Img) : ''}
         ${hasT2 ? taskHtml(2, t2, a.task2Answer, a.wordCount2, '') : ''}
       </div>`;
+    box.querySelectorAll('.fb-only-err').forEach(el => el.remove()); // on-screen filter, not part of the export
     document.body.appendChild(box);
 
     // Let images (band picture, Task 1 chart) and web fonts settle first.

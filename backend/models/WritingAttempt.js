@@ -8,7 +8,15 @@ const taskGradeSubSchema = {
   lr:  { score: { type: Number }, comment: { type: String, default: '' } },
   gra: { score: { type: Number }, comment: { type: String, default: '' } },
   overallFeedback: { type: String, default: '' },
+  // Each entry: { type:'ok'|'issue', original, errors:[{wrong,fix,criterion,
+  // category,why}], better, upgrades:[{from,to,why}] } — see
+  // services/writingGradingService.normalizeFeedback.
   sentenceFeedback: [{ type: mongoose.Schema.Types.Mixed }],
+  // Paragraph-level logic / relevance / overview problems:
+  // [{ paragraph, criterion, quote, problem, suggestion }]
+  logicFeedback: [{ type: mongoose.Schema.Types.Mixed }],
+  // What to change in the rewrite ("Viết lại" = Draft 2), most important first.
+  draft2Plan: [{ type: String }],
   // legacy fields kept for backward compat
   corrections: [{
     original:    { type: String, default: '' },

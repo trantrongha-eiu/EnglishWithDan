@@ -167,3 +167,76 @@ describe('writingGradingService.gradeTaskWithAI — Task 1 chart data', () => {
     expect(prompt).not.toContain('DATA ACCURACY');
   });
 });
+
+describe('writingGradingService.normalizeFeedback — detailed error feedback', () => {
+  const { normalizeFeedback } = require('../../../services/writingGradingService');
+
+  test('a sentence with listed errors becomes an issue with legacy criterion/issue filled in', () => {
+    const r = normalizeFeedback({ sentenceFeedback: [{
+      type: 'ok', original: 'The number of students have increased.',
+      errors: [{ wrong: 'have increased', fix: 'has increased', criterion: 'gra', category: 'sva', why: 'Chủ ngữ số ít.' }],
+      better: 'The number of students has increased.',
+    }] }, 2);
+    const s = r.sentenceFeedback[0];
+    expect(s.type).toBe('issue');
+    expect(s.criterion).toBe('GRA');
+    expect(s.issue).toBe('Chủ ngữ số ít.');
+    expect(s.errors).toHaveLength(1);
+    expect(s.better).toBe('The number of students has increased.');
+  });
+
+  test('no-op errors are dropped and an "issue" with nothing left falls back to ok', () => {
+    const r = normalizeFeedback({ sentenceFeedback: [{
+      type: 'issue', original: 'This is fine.', errors: [{ wrong: 'fine', fix: 'fine' }], better: 'This is fine.',
+    }] }, 2);
+    expect(r.sentenceFeedback[0]).toEqual({ type: 'ok', original: 'This is fine.' });
+  });
+
+  test('unknown category becomes "other"; TA/TR criterion follows the task', () => {
+    const t1 = normalizeFeedback({ sentenceFeedback: [{ original: 'A rose to 50%.',
+      errors: [{ wrong: '50%', fix: '30%', criterion: 'TR', category: 'made_up' }] }] }, 1);
+    expect(t1.sentenceFeedback[0].errors[0]).toMatchObject({ criterion: 'TA', category: 'other' });
+    const t2 = normalizeFeedback({ sentenceFeedback: [{ original: 'X.',
+      errors: [{ wrong: 'X', fix: 'Y', criterion: 'TA', category: 'spelling' }] }] }, 2);
+    expect(t2.sentenceFeedback[0].errors[0]).toMatchObject({ criterion: 'TR', category: 'spelling' });
+  });
+
+  test('upgrades must quote the sentence; at most one per sentence and 8 per essay', () => {
+    const sentences = Array.from({ length: 12 }, (_, i) => ({
+      type: 'ok', original: `Sentence ${i} is very good.`,
+      upgrades: [{ from: 'very good', to: 'excellent', why: '' }, { from: 'is', to: 'remains' }],
+    }));
+    sentences.push({ type: 'ok', original: 'Nothing here.', upgrades: [{ from: 'not in sentence', to: 'x' }] });
+    const r = normalizeFeedback({ sentenceFeedback: sentences }, 2);
+    const ups = r.sentenceFeedback.map(s => (s.upgrades || []).length);
+    expect(Math.max(...ups)).toBe(1);
+    expect(ups.reduce((a, b) => a + b, 0)).toBe(8);
+    expect(r.sentenceFeedback[12].upgrades).toBeUndefined();
+  });
+
+  test('old one-issue-per-sentence answers are kept as they were', () => {
+    const r = normalizeFeedback({ sentenceFeedback: [{
+      type: 'issue', original: 'He go to school.', criterion: 'GRA', issue: 'Sai chia động từ.', better: 'He goes to school.',
+    }] }, 2);
+    expect(r.sentenceFeedback[0]).toMatchObject({ type: 'issue', criterion: 'GRA', issue: 'Sai chia động từ.', better: 'He goes to school.' });
+  });
+
+  test('logicFeedback and draft2Plan are cleaned and capped; missing ones become empty arrays', () => {
+    const r = normalizeFeedback({
+      logicFeedback: [{ paragraph: '2', criterion: 'cc', problem: 'Lặp ý.', suggestion: 'Gộp lại.' }, { paragraph: 3 }],
+      draft2Plan: ['Thêm overview.', '', 'a', 'b', 'c', 'd', 'e'],
+    }, 2);
+    expect(r.logicFeedback).toEqual([{ paragraph: 2, criterion: 'CC', quote: '', problem: 'Lặp ý.', suggestion: 'Gộp lại.' }]);
+    expect(r.draft2Plan).toEqual(['Thêm overview.', 'a', 'b', 'c', 'd']);
+    expect(normalizeFeedback({}, 1)).toMatchObject({ sentenceFeedback: [], logicFeedback: [], draft2Plan: [] });
+  });
+
+  test('gradeTaskWithAI asks for the larger token/time budget and normalizes the answer', async () => {
+    checkEssay.mockResolvedValue({ ta: { score: 6 }, cc: { score: 6 }, lr: { score: 6 }, gra: { score: 6 },
+      sentenceFeedback: [{ type: 'issue', original: 'Ok.', errors: [] }] });
+    const result = await gradeTaskWithAI(2, 'prompt', 'a'.repeat(260) + '.', 260);
+    expect(checkEssay.mock.calls[0][3]).toMatchObject({ maxOutputTokens: expect.any(Number), timeoutMs: expect.any(Number) });
+    expect(result.sentenceFeedback[0].type).toBe('ok');
+    expect(result.logicFeedback).toEqual([]);
+  });
+});

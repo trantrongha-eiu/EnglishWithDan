@@ -28,6 +28,104 @@ async function findTask1ChartData(attempt) {
   }
 }
 
+// Error types the grader may use. Keys go in the prompt; the Vietnamese
+// labels are what students see (frontend/js/writing.js keeps the same map
+// for display). Anything else the model invents is filed under 'other'.
+const ERROR_CATEGORIES = {
+  tense:              'Thì động từ',
+  sva:                'Hòa hợp chủ ngữ – động từ',
+  article:            'Mạo từ (a/an/the)',
+  noun_number:        'Số ít / số nhiều, danh từ đếm được',
+  preposition:        'Giới từ',
+  word_form:          'Từ loại (word form)',
+  verb_form:          'Dạng động từ (to V / V-ing / bị động)',
+  sentence_structure: 'Cấu trúc câu (thiếu thành phần, câu chạy, câu cụt)',
+  relative_clause:    'Mệnh đề quan hệ',
+  pronoun:            'Đại từ / từ hạn định',
+  comparison:         'So sánh',
+  punctuation:        'Dấu câu',
+  spelling:           'Chính tả',
+  word_choice:        'Dùng từ sai nghĩa',
+  collocation:        'Kết hợp từ (collocation)',
+  register:           'Văn phong không trang trọng',
+  linking:            'Từ nối / liên kết câu',
+  data:               'Sai số liệu',
+  other:              'Lỗi khác',
+};
+const ERROR_CATEGORY_KEYS = Object.keys(ERROR_CATEGORIES);
+
+const str = v => (v == null ? '' : String(v)).trim();
+
+// Clean up the model's feedback so the frontend can trust its shape:
+// every sentence has errors[]/upgrades[] arrays, empty or no-op entries are
+// dropped, a sentence is 'issue' only if it really lists an error, and the
+// old single-issue fields (criterion/issue) are filled in for older
+// screens and the .txt export. Mutates and returns `result`.
+function normalizeFeedback(result, taskType) {
+  if (!result || typeof result !== 'object') return result;
+  const taCode = taskType === 1 ? 'TA' : 'TR';
+  const normCrit = c => {
+    const u = str(c).toUpperCase();
+    if (u === 'TA' || u === 'TR') return taCode;
+    return ['GRA', 'LR', 'CC'].includes(u) ? u : '';
+  };
+  let upgradesLeft = 8;
+
+  const sf = Array.isArray(result.sentenceFeedback) ? result.sentenceFeedback : [];
+  result.sentenceFeedback = sf.filter(s => s && typeof s === 'object' && str(s.original)).map(s => {
+    const original = str(s.original);
+    const errors = (Array.isArray(s.errors) ? s.errors : []).map(e => ({
+      wrong:     str(e && e.wrong),
+      fix:       str(e && e.fix),
+      criterion: normCrit(e && e.criterion),
+      category:  ERROR_CATEGORIES[str(e && e.category)] ? str(e.category) : 'other',
+      why:       str(e && e.why),
+    })).filter(e => (e.wrong || e.fix) && e.wrong !== e.fix);
+
+    const upgrades = (Array.isArray(s.upgrades) ? s.upgrades : []).map(u => ({
+      from: str(u && u.from), to: str(u && u.to), why: str(u && u.why),
+    })).filter(u => u.from && u.to && u.from.toLowerCase() !== u.to.toLowerCase()
+      && original.toLowerCase().includes(u.from.toLowerCase()))
+      .slice(0, 1);
+    const keptUpgrades = upgradesLeft > 0 ? upgrades : [];
+    upgradesLeft -= keptUpgrades.length;
+
+    const better = str(s.better);
+    const out = { type: 'ok', original };
+    if (errors.length) {
+      out.type = 'issue';
+      out.errors = errors;
+      if (better && better !== original) out.better = better;
+      out.criterion = errors[0].criterion || normCrit(s.criterion);
+      out.issue = errors.map(e => e.why).filter(Boolean).join(' ');
+    } else if (s.type === 'issue' && (str(s.issue) || (better && better !== original))) {
+      // Model answered in the old one-issue-per-sentence shape — keep it.
+      out.type = 'issue';
+      out.criterion = normCrit(s.criterion);
+      out.issue = str(s.issue);
+      if (better && better !== original) out.better = better;
+    }
+    if (keptUpgrades.length) out.upgrades = keptUpgrades;
+    return out;
+  });
+
+  result.logicFeedback = (Array.isArray(result.logicFeedback) ? result.logicFeedback : [])
+    .map(l => ({
+      paragraph:  Math.max(0, parseInt(l && l.paragraph, 10) || 0),
+      criterion:  normCrit(l && l.criterion) || taCode,
+      quote:      str(l && l.quote),
+      problem:    str(l && l.problem),
+      suggestion: str(l && l.suggestion),
+    }))
+    .filter(l => l.problem)
+    .slice(0, 8);
+
+  result.draft2Plan = (Array.isArray(result.draft2Plan) ? result.draft2Plan : [])
+    .map(str).filter(Boolean).slice(0, 5);
+
+  return result;
+}
+
 async function gradeTaskWithAI(taskType, prompt, answer, wordCount, imageUrl = '', chartData = '') {
   const minWords      = taskType === 1 ? 150 : 250;
   const isUnderLength = wordCount < minWords;
@@ -137,24 +235,46 @@ STEP 1 – SCORES (4–9 per criterion):
 • For ${taLabel}: if any mandatory penalty above applies, apply it NOW before writing the score.${canCheckData ? ' This includes the DATA ACCURACY penalty (with the READING TOLERANCE rule): check the essay against the data before scoring TA.' : ''}
 • For each criterion write 1–2 sentences in Vietnamese using IDP descriptor language, addressing the student as "em". If a mandatory penalty was applied, the comment MUST state the reason (word count, no overview, incomplete essay, no position, or data inaccuracy) in plain Vietnamese.
 
-STEP 2 – SENTENCE-BY-SENTENCE FEEDBACK (MANDATORY):
-Go through EVERY single sentence in the essay in order. Do NOT skip any sentence.
-• Mark as "issue" ONLY for CLEAR, OBJECTIVE problems: grammatical error, wrong word choice that impedes or distorts meaning, incoherent/illogical connection, or missing key task requirement.${canCheckData ? ' For Task 1, a sentence stating a number, trend, or comparison that CLEARLY does not match the data (beyond the READING TOLERANCE) is also an "issue" (criterion: TA): quote the correct figure in the "issue" field. A figure within tolerance is NOT an issue.' : ''} The criterion badge must directly match the problem.
-• Mark as "ok" if the sentence is grammatically correct and fulfils its purpose — even if simple. Do NOT mark "issue" just because a fancier version exists.
-• NEVER flag a sentence as CC "issue" for lacking cohesive devices if it ALREADY opens with: Furthermore, Moreover, In addition, Additionally, However, Nevertheless, Nonetheless, Therefore, Thus, As a result, Consequently, On the other hand, In contrast, In conclusion, To summarise, For example, For instance, Firstly, Secondly, Finally, Similarly, Likewise, Although, Despite, etc.
-• When marking "issue": the "better" field must fix ONLY the identified problem, preserving the student's original idea and structure.
+STEP 2 – SENTENCE-BY-SENTENCE ERROR DIAGNOSIS (MANDATORY):
+Go through EVERY single sentence in the essay in order. Do NOT skip any sentence. Paragraphs are separated by line breaks; number them from 1.
+• List EVERY objective error in the sentence SEPARATELY in "errors" (a sentence with 3 mistakes gets 3 entries). Each entry:
+  – "wrong": the SHORTEST exact span copied character-for-character from the sentence that contains the error (a word or short phrase, not the whole sentence). For a missing word, quote the words around the gap (e.g. missing article: wrong "has huge impact", fix "has a huge impact").
+  – "fix": the corrected replacement for exactly that span.
+  – "criterion": GRA | LR | CC | ${taskType === 1 ? 'TA' : 'TR'}.
+  – "category": exactly one of: ${ERROR_CATEGORY_KEYS.join(', ')}.
+  – "why": Vietnamese, 1–2 sentences: name the rule and explain WHY the original is wrong (e.g. "Chủ ngữ 'the number of students' là số ít nên động từ phải là 'has', không phải 'have'."), not just "sai ngữ pháp".
+• Only CLEAR, OBJECTIVE errors go in "errors": grammar, wrong word/collocation that a native examiner would mark wrong, spelling, punctuation that breaks the sentence, informal register, a faulty linking word.${canCheckData ? ' For Task 1, a number, trend or comparison that CLEARLY contradicts the data (beyond the READING TOLERANCE) is an error with category "data" and criterion TA: give the correct figure in "fix"/"why". A figure within tolerance is NOT an error.' : ''} Do NOT list something as an error just because a fancier version exists.
+• "type" is "issue" if the sentence has at least one error, otherwise "ok".
+• "better": for an "issue" sentence, the full sentence with ONLY those errors fixed (keep the student's idea, words and structure). Omit for "ok" sentences.
+• "upgrades" (optional, any sentence, including "ok" ones): vocabulary/phrase upgrades that are NOT errors but would raise Lexical Resource — a more precise, natural, topic-specific word or collocation an IELTS Band 7–8 writer would use. Each: {"from":"<exact span from the sentence>","to":"<upgrade>","why":"<Vietnamese: why it is better / when to use it>"}. Natural academic English only — no rare, pretentious or wrongly-formal words. At most 1 per sentence and about 6 for the whole essay; only where the gain is clear.
+• NEVER flag a sentence as CC error for lacking cohesive devices if it ALREADY opens with: Furthermore, Moreover, In addition, Additionally, However, Nevertheless, Nonetheless, Therefore, Thus, As a result, Consequently, On the other hand, In contrast, In conclusion, To summarise, For example, For instance, Firstly, Secondly, Finally, Similarly, Likewise, Although, Despite, etc.
+
+STEP 3 – ${taskType === 1 ? 'TASK & COHERENCE CHECK' : 'LOGIC, ARGUMENT & RELEVANCE CHECK'} (paragraph level, in "logicFeedback"):
+${taskType === 1
+  ? `Look at the response as a whole: missing or unclear overview, key features left out, irrelevant detail or opinion, wrong grouping/comparison, data listed mechanically without comparison, poor paragraph organisation, a misleading summary of the main trend.`
+  : `Look at the argument as a whole: going off topic or answering a different question, a part of the question left unanswered, an unclear or changing position, claims with no explanation or example, an example that does not support the point, illogical cause–effect, over-generalisation ("everyone", "always"), repeated ideas, a conclusion that adds new ideas or contradicts the body, a paragraph with no clear central idea.`}
+${taskType === 1 ? 'Check the overview and each body paragraph in turn.' : 'Check EACH body paragraph in turn: is there a clear topic sentence → an explanation of WHY/HOW → a relevant, specific example? Flag every missing or weak link (e.g. a personal anecdote used as the only evidence, a claim stated with no reason, an example that proves something else, a sentence that drifts away from the paragraph point).'} Do NOT report word count here (already handled in the ${taLabel} comment) and do NOT repeat sentence-level grammar/vocabulary errors.
+Report EVERY such problem you find, even small ones — but only real ones (empty array if the essay has none). Each: {"paragraph":<number or 0 for the whole essay>,"criterion":"${taskType === 1 ? 'TA' : 'TR'}|CC","quote":"<short exact quote from the essay, or empty>","problem":"<Vietnamese: what is wrong and why it costs marks>","suggestion":"<Vietnamese: exactly how to fix it in the rewrite, with a short English example if useful>"}. At most 8 items.
+
+STEP 4 – DRAFT 2 PLAN ("draft2Plan"): 3–5 short Vietnamese action items, most important first, telling the student what to change when they rewrite this essay (e.g. "Thêm câu overview nêu xu hướng chính ngay sau mở bài.", "Ôn lại hòa hợp chủ ngữ – động từ: em sai 3 lần với 'the number of …'."). Be specific to THIS essay.
 
 Return ONLY valid JSON (no markdown, no text outside JSON):
-{${hasImage ? '"chartReading":"<English: the key values you read for each series/category, e.g. London Jan ~8, Jul ~23, Dec ~9>",' : ''}"bandScore":<number>,"ta":{"score":<4-9>,"comment":"<Vietnamese>"},"cc":{"score":<4-9>,"comment":"<Vietnamese>"},"lr":{"score":<4-9>,"comment":"<Vietnamese>"},"gra":{"score":<4-9>,"comment":"<Vietnamese>"},"overallFeedback":"<Vietnamese 2-3 sentences: strengths, main weaknesses, specific advice — address student as 'em'>","sentenceFeedback":[{"type":"issue","original":"<exact sentence from essay>","criterion":"<TA|CC|LR|GRA>","issue":"<Vietnamese explanation>","better":"<corrected English sentence>"},{"type":"ok","original":"<exact sentence from essay>"}]}
+{${hasImage ? '"chartReading":"<English: the key values you read for each series/category, e.g. London Jan ~8, Jul ~23, Dec ~9>",' : ''}"bandScore":<number>,"ta":{"score":<4-9>,"comment":"<Vietnamese>"},"cc":{"score":<4-9>,"comment":"<Vietnamese>"},"lr":{"score":<4-9>,"comment":"<Vietnamese>"},"gra":{"score":<4-9>,"comment":"<Vietnamese>"},"overallFeedback":"<Vietnamese 2-3 sentences: strengths, main weaknesses, specific advice — address student as 'em'>","sentenceFeedback":[{"type":"issue","original":"<exact sentence from essay>","errors":[{"wrong":"<exact span>","fix":"<replacement>","criterion":"<GRA|LR|CC|${taskType === 1 ? 'TA' : 'TR'}>","category":"<category key>","why":"<Vietnamese>"}],"better":"<corrected English sentence>","upgrades":[{"from":"<exact span>","to":"<upgrade>","why":"<Vietnamese>"}]},{"type":"ok","original":"<exact sentence from essay>","upgrades":[]}],"logicFeedback":[{"paragraph":<n>,"criterion":"<${taskType === 1 ? 'TA' : 'TR'}|CC>","quote":"<exact quote or empty>","problem":"<Vietnamese>","suggestion":"<Vietnamese>"}],"draft2Plan":["<Vietnamese>"]}
 
 CRITICAL RULES:
 • bandScore in JSON is ignored — server recalculates from (ta+cc+lr+gra)/4 rounded DOWN to the nearest 0.5
-• sentenceFeedback MUST include EVERY sentence of the essay in original order
-• All comment/issue/overallFeedback MUST be in Vietnamese; "better" MUST be in English
+• sentenceFeedback MUST include EVERY sentence of the essay in original order; "original" and every "wrong"/"from"/"quote" must be copied exactly from the essay
+• The criterion scores must agree with the errors you listed (many GRA errors → GRA cannot be high)
+• All comment/why/problem/suggestion/overallFeedback/draft2Plan MUST be in Vietnamese; "fix", "better", "to" MUST be in English
 • Use encouraging teacher tone in Vietnamese; address student as "em"`;
 
-  const result = await checkEssay(questionContext, answer, hasImage ? imageUrl : '');
+  // Listing every error with an explanation is a long answer (and 2.5-flash
+  // spends part of the budget thinking) — more tokens and time than the
+  // 8192 / 45s defaults.
+  const result = await checkEssay(questionContext, answer, hasImage ? imageUrl : '',
+    { maxOutputTokens: 24576, timeoutMs: 100000 });
   delete result.chartReading; // the model's scratch work, not shown to anyone
+  normalizeFeedback(result, taskType);
 
   // Server-side enforcement of IDP mandatory penalties (safety net — overrides AI if ignored).
   // result.ta carries Task 1's TA score AND Task 2's TR score under the
@@ -195,4 +315,4 @@ CRITICAL RULES:
   return result;
 }
 
-module.exports = { gradeTaskWithAI, findTask1ChartData };
+module.exports = { gradeTaskWithAI, findTask1ChartData, normalizeFeedback, ERROR_CATEGORIES };

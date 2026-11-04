@@ -4,6 +4,14 @@ import { useToast } from '../../contexts/ToastContext';
 import { STATUS, EMPTY_MANUAL, overallWritingBand } from './constants';
 import TaskPanel from './TaskPanel';
 
+// The detailed feedback parts of a task grade (what FeedbackDetail shows
+// and the teacher can trim before confirming).
+const pickDetail = t => t ? {
+  sentenceFeedback: t.sentenceFeedback || [],
+  logicFeedback:    t.logicFeedback || [],
+  draft2Plan:       t.draft2Plan || [],
+} : null;
+
 const DEFAULT_ADMIN_NOTE = 'Đọc kĩ feedback, ghi lại lỗi sai và rewrite lại + học lại các cấu trúc hay từ template mẫu.';
 
 export default function GradeModal({ attemptId, onClose, onGraded }) {
@@ -18,6 +26,10 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
   const [modes, setModes]   = useState({ task1: 'ai', task2: 'ai' });
   const [manuals, setManuals] = useState({ task1: EMPTY_MANUAL(), task2: EMPTY_MANUAL() });
   const [reEditing, setReEditing] = useState(false);
+  // Per-task detailed feedback, kept apart from aiGrading so the teacher's
+  // removals survive switching to manual mode and re-editing a confirmed
+  // grade (starts from the confirmed copy when there is one).
+  const [details, setDetails] = useState({ task1: null, task2: null });
 
   const isConfirmed          = attempt?.gradingStatus === 'confirmed';
   const isEffectivelyConfirmed = isConfirmed && !reEditing;
@@ -62,6 +74,9 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
     return apiFetch(`/admin/writing-attempt/${attemptId}`)
       .then(d => {
         setAttempt(d.attempt);
+        const g = d.attempt.grading || {}, ai0 = d.attempt.aiGrading || {};
+        const from = k => (d.attempt.gradingStatus === 'confirmed' && g[k]?.sentenceFeedback?.length) ? g[k] : ai0[k];
+        setDetails({ task1: pickDetail(from('task1')), task2: pickDetail(from('task2')) });
         // Not graded yet → start from the standard reminder; a confirmed grade
         // keeps whatever note was sent (even an empty one).
         setAdminNote(d.attempt.gradingStatus === 'confirmed'
@@ -132,10 +147,12 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
     setGradingTask(taskNum);
     setAiOverloaded(false);
     try {
+      // Grading lists and explains every error, which can take over a minute.
       const d = await apiFetch(`/admin/writing-attempts/${attemptId}/ai-grade`, {
-        method: 'POST', body: JSON.stringify({ taskNum })
+        method: 'POST', body: JSON.stringify({ taskNum }), timeout: 150000
       });
       const taskKey = taskNum === 1 ? 'task1' : 'task2';
+      setDetails(prev => ({ ...prev, [taskKey]: pickDetail(d.result) }));
       setAttempt(prev => {
         if (!prev) return prev;
         const updated = {
@@ -161,7 +178,7 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
   // per-sentence analysis for any task confirmed in manual mode even
   // though the other task (still on 'ai' mode) kept its own — exactly the
   // "Task 1 has no sentence-by-sentence, Task 2 does" report.
-  function buildManualTask(manual, aiSentenceFeedback) {
+  function buildManualTask(manual, detail) {
     const num = v => { const n = parseFloat(v); return isNaN(n) ? null : n; };
     return {
       bandScore:       num(manual.bandScore),
@@ -170,9 +187,13 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
       lr:  { score: num(manual.lr?.score),  comment: manual.lr?.comment  || '' },
       gra: { score: num(manual.gra?.score), comment: manual.gra?.comment || '' },
       overallFeedback: manual.overallFeedback || '',
-      sentenceFeedback: aiSentenceFeedback || []
+      sentenceFeedback: [], logicFeedback: [], draft2Plan: [],
+      ...(detail || {})
     };
   }
+  const taskData = k => modes[k] === 'manual'
+    ? buildManualTask(manuals[k], details[k])
+    : (ai[k] ? { ...ai[k], ...(details[k] || {}) } : null);
 
   // Per-task readiness — the confirm SECTION's own visibility gate below is
   // deliberately an OR across both tasks (so it shows as soon as either one
@@ -191,8 +212,8 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
     if (hasTask2 && !taskReady('task2')) return toast('Task 2 chưa có điểm — chấm AI hoặc nhập thủ công trước khi xác nhận', 'error');
     setConfirming(true);
     try {
-      const task1Data = hasTask1 ? (modes.task1 === 'manual' ? buildManualTask(manuals.task1, ai.task1?.sentenceFeedback) : (ai.task1 || null)) : null;
-      const task2Data = hasTask2 ? (modes.task2 === 'manual' ? buildManualTask(manuals.task2, ai.task2?.sentenceFeedback) : (ai.task2 || null)) : null;
+      const task1Data = hasTask1 ? taskData('task1') : null;
+      const task2Data = hasTask2 ? taskData('task2') : null;
       await apiFetch(`/admin/writing-attempts/${attemptId}/confirm-grade`, {
         method: 'PUT',
         body: JSON.stringify({ task1: task1Data, task2: task2Data, overallBand: parseFloat(overallBand), adminNote })
@@ -264,7 +285,8 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
                   isGrading={gradingTask === 1} busy={gradingTask !== 0} isConfirmed={isEffectivelyConfirmed}
                   onGrade={() => gradeTask(1)} aiDisabled={aiOverloaded}
                   mode={modes.task1} onModeChange={m => setMode('task1', m)}
-                  manualData={manuals.task1} onManualChange={d => updateManual('task1', d)} />
+                  manualData={manuals.task1} onManualChange={d => updateManual('task1', d)}
+                  detail={details.task1} onDetailChange={d => setDetails(prev => ({ ...prev, task1: d }))} />
               )}
               {hasTask2 && (
                 <TaskPanel title="Task 2"
@@ -275,7 +297,8 @@ export default function GradeModal({ attemptId, onClose, onGraded }) {
                   isGrading={gradingTask === 2} busy={gradingTask !== 0} isConfirmed={isEffectivelyConfirmed}
                   onGrade={() => gradeTask(2)} aiDisabled={aiOverloaded}
                   mode={modes.task2} onModeChange={m => setMode('task2', m)}
-                  manualData={manuals.task2} onManualChange={d => updateManual('task2', d)} />
+                  manualData={manuals.task2} onManualChange={d => updateManual('task2', d)}
+                  detail={details.task2} onDetailChange={d => setDetails(prev => ({ ...prev, task2: d }))} />
               )}
 
               {(hasAiResult || hasManualResult || isConfirmed) && (
