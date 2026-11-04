@@ -1063,6 +1063,12 @@ table.words-table{width:100%;border-collapse:collapse;margin-top:14px}
   padding:16px 18px;transition:box-shadow .15s;
 }
 .vocab-card:hover{box-shadow:var(--shadow-md)}
+/* Word illustration (Vocab Topics `image=`): full-bleed on top of the Learn card,
+   centred above the Quiz question. */
+.vocab-card-img{display:block;width:calc(100% + 36px);margin:-16px -18px 12px;aspect-ratio:8/5;object-fit:cover;
+  border-radius:var(--radius) var(--radius) 0 0;background:var(--surface2,#f1f5f9)}
+.quiz-word-img{display:block;width:100%;max-width:340px;aspect-ratio:8/5;object-fit:cover;margin:0 auto 16px;
+  border-radius:12px;background:var(--surface2,#f1f5f9)}
 .vocab-card-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .vocab-num{background:var(--brand);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:12px}
 .vocab-word-big{font-size:16px;font-weight:800;flex:1;color:var(--text)}

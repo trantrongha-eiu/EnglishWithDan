@@ -20,6 +20,10 @@ const LessonWordSchema = new mongoose.Schema({
   // Đáp án nhiễu cho câu hỏi Multiple Choice — admin tự cung cấp trong lúc
   // paste lesson, server không tự sinh (không gọi AI API).
   distractors:  [{ type: String }],
+  // Illustration shown on the Learn card and in every Quiz question
+  // (format key `image=`). Free-to-use images only (CC0 / Public domain):
+  // the card has no room for a credit line. '' = no image.
+  imageUrl:     { type: String, default: '' },
 }, { _id: false });
 
 const DIFFICULTY_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];

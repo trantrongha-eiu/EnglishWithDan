@@ -18,6 +18,7 @@
 //   definition=Able to continue without harming the environment.
 //   collocations=sustainable development|sustainable energy
 //   distractors=renewable|temporary|harmful
+//   image=https://<r2 public url>/idioms/xyz.webp   (optional illustration)
 //
 // Deliberately not JSON/YAML — flat key=value lines an admin can paste
 // straight from ChatGPT/Gemini output with zero markup discipline. This
@@ -33,6 +34,7 @@
 // Raw format key → schema field name, only where they differ.
 const FIELD_KEY_MAP = {
   pos: 'partOfSpeech',
+  image: 'imageUrl',
 };
 
 // Keys whose value is a `|`-separated list rather than a plain string.
@@ -154,6 +156,11 @@ function parseLessonText(raw) {
       warnings.push(`Word ${n}${f.word ? ` ("${f.word}")` : ''}: chỉ có ${collocationCount}/2 collocations`);
     }
 
+    // image= is rendered as <img src> on the student pages — only plain http(s) URLs.
+    if (f.imageUrl && !/^https?:\/\/\S+$/i.test(String(f.imageUrl).trim())) {
+      errors.push(`Word ${n}: "image" phải là link http(s), nhận được "${String(f.imageUrl).slice(0, 80)}"`);
+    }
+
     if (f.word) {
       const key = String(f.word).trim().toLowerCase();
       if (seenWords.has(key)) {
@@ -177,6 +184,7 @@ function parseLessonText(raw) {
       definition:   String(f.definition || '').trim(),
       collocations: Array.isArray(f.collocations) ? f.collocations : [],
       distractors:  Array.isArray(f.distractors) ? f.distractors : [],
+      imageUrl:     String(f.imageUrl || '').trim(),
     };
   });
 
@@ -221,6 +229,7 @@ function lessonToText(lesson) {
     lines.push(`definition=${w.definition}`);
     if (w.collocations?.length) lines.push(`collocations=${w.collocations.join('|')}`);
     if (w.distractors?.length) lines.push(`distractors=${w.distractors.join('|')}`);
+    if (w.imageUrl) lines.push(`image=${w.imageUrl}`);
     lines.push('');
   });
 

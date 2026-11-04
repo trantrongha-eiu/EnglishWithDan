@@ -278,12 +278,8 @@ async function renderTodaysLessonCard(lessonIdOverride) {
     if (fill) fill.style.width = bestScore + '%';
     const text = document.getElementById('todays-lesson-progress-text');
     if (text) text.textContent = bestScore + '%';
-
-    const btn = document.getElementById('todays-lesson-btn');
-    if (btn) {
-        btn.textContent = !attempt ? 'Start' : (bestScore >= 90 ? 'Review' : 'Continue');
-        btn.onclick = () => openLesson(today._id);
-    }
+    // #todays-lesson-btn is a static "Xem các topic" button (opens the full
+    // Vocab Topics list via openPracticeBrowse) — wired in dashboard.html.
 }
 
 /* ──────────────────────────────────────────────
@@ -424,6 +420,15 @@ function saveAllLessonVocabToBook() {
     });
 }
 
+// Word illustration (`imageUrl`, format key image=) — shown on the Learn card
+// and above every Quiz question. Only http(s) URLs; alt stays empty in the
+// quiz so the image never spells out the answer to a screen reader.
+function _lessonWordImgHtml(w, cls, alt = '') {
+    const url = String(w?.imageUrl || '').trim();
+    if (!/^https?:\/\//i.test(url)) return '';
+    return `<img class="${cls}" src="${escHtml(url)}" alt="${escHtml(alt)}" loading="lazy" decoding="async" onerror="this.remove()">`;
+}
+
 function renderLearnTab() {
     const grid = document.getElementById('lesson-learn-grid');
     const saveAllBtn = document.getElementById('lesson-saveall-btn');
@@ -451,6 +456,7 @@ function renderLearnTab() {
     // see the security audit finding this replaced.
     grid.innerHTML = words.map((w, i) => `
         <div class="vocab-card">
+            ${_lessonWordImgHtml(w, 'vocab-card-img', w.word)}
             <div class="vocab-card-top">
                 <span class="vocab-num">${i + 1}</span>
                 <span class="vocab-word-big">${escHtml(w.word)}</span>
@@ -626,7 +632,7 @@ function renderQuizQuestion() {
                     <span class="progress-text">${index + 1}/${queue.length}</span>
                 </div>
             </div>
-            <div class="question-card">${bodyHtml}</div>
+            <div class="question-card">${_lessonWordImgHtml(q.word, 'quiz-word-img')}${bodyHtml}</div>
         </div>`;
 
     if (q.type === 'mcq' || q.type === 'translateViEn') {

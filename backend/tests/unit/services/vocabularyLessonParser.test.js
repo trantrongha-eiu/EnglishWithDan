@@ -54,6 +54,26 @@ describe('parseLessonText — valid input', () => {
     expect(result.words[0].partOfSpeech).toBe('adjective');
   });
 
+  test('maps image= to imageUrl (defaults to "") and round-trips it', () => {
+    const withImage = GOOD_LESSON.replace('distractors=renewable|temporary|harmful',
+      'distractors=renewable|temporary|harmful\nimage=https://cdn.example.com/idioms/a.webp');
+    const result = parseLessonText(withImage);
+    expect(result.valid).toBe(true);
+    expect(result.words[0].imageUrl).toBe('https://cdn.example.com/idioms/a.webp');
+    expect(result.words[1].imageUrl).toBe('');
+    const text = lessonToText({ ...result.lesson, words: result.words });
+    expect(text).toContain('image=https://cdn.example.com/idioms/a.webp');
+    expect(parseLessonText(text).words).toEqual(result.words);
+  });
+
+  test('rejects an image= that is not an http(s) URL', () => {
+    const bad = GOOD_LESSON.replace('distractors=renewable|temporary|harmful',
+      'distractors=renewable|temporary|harmful\nimage=javascript:alert(1)');
+    const result = parseLessonText(bad);
+    expect(result.valid).toBe(false);
+    expect(result.errors.join('\n')).toMatch(/Word 1: "image" phải là link http\(s\)/);
+  });
+
   test('defaults difficulty to B1 and order to 0 when omitted', () => {
     const minimal = `@lesson
 title=Minimal Lesson

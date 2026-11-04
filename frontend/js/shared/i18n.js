@@ -581,7 +581,8 @@
     'Đề ngẫu nhiên · Listening → Reading → Writing → Speaking':
       'Random test · Listening → Reading → Writing → Speaking',
     'Bài học hôm nay': "Today's lesson",
-    'Học vocab theo topic': 'Vocab by topic'
+    'Học vocab theo topic': 'Vocab by topic',
+    'Xem các topic': 'See all topics'
   };
 
   // ── Templated strings ────────────────────────────────────────────────
