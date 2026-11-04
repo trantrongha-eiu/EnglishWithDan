@@ -136,10 +136,11 @@ function _sstSyncFromUrl() {
 }
 
 function sstRenderLessonContent(lesson) {
-  let html = '<div class="sst-hero">'
-    + '<div class="sst-hero-cat">' + escHtml(lesson.category) + '</div>'
+  // .pf-hero = the coloured banner from css/playful.css (Lulu & Lumi added by playful.js).
+  let html = '<div class="sst-hero pf-hero pf-hero-tip pf-hero-orange" data-mascot="think"><div class="pf-hero-body">'
+    + '<div class="sst-hero-cat"><span class="pf-tag">' + escHtml(lesson.category) + '</span></div>'
     + '<h1 class="sst-hero-title">' + (lesson.icon || '🎙️') + ' ' + escHtml(lesson.title) + '</h1>'
-    + '</div>';
+    + '</div></div>';
   html += '<div class="sst-content">' + lesson.blocks.map(sstRenderBlock).join('') + '</div>';
   document.getElementById('sst-main-content').innerHTML = html;
 }

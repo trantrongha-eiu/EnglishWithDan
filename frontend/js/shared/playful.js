@@ -901,16 +901,22 @@
     }
   }
 
-  // Lulu & Lumi peeking in the coloured list headers (Reading / Listening …).
+  // Lulu & Lumi peeking in the coloured list headers (Reading / Listening …)
+  // and in every .pf-hero page banner (css/playful.css) — also banners a page
+  // renders later from a template (watchDom below). data-mascot="none" opts
+  // out; data-mascot="wink" etc. picks the mood.
+  function addHeaderMascot(h, mood) {
+    if (!h || h.querySelector('.lh-mascot')) return;
+    var m = document.createElement('div');
+    m.className = 'lh-mascot';
+    m.setAttribute('aria-hidden', 'true');
+    m.innerHTML = duoHtml(mood || 'happy');
+    h.appendChild(m);
+  }
   function decorateHeaders() {
-    var h = document.querySelector('#screen-list .list-header');
-    if (h && !h.querySelector('.lh-mascot')) {
-      var m = document.createElement('div');
-      m.className = 'lh-mascot';
-      m.setAttribute('aria-hidden', 'true');
-      m.innerHTML = duoHtml('happy');
-      h.appendChild(m);
-    }
+    addHeaderMascot(document.querySelector('#screen-list .list-header'));
+    var heroes = document.querySelectorAll('.pf-hero:not([data-mascot="none"])');
+    for (var i = 0; i < heroes.length; i++) addHeaderMascot(heroes[i], heroes[i].getAttribute('data-mascot'));
   }
 
   // <div data-lulu-peek="wink"> … </div> → Lulu & Lumi sitting in that
@@ -960,7 +966,10 @@
   function watchAskIcons() {
     fillAskIcons();
     if (!window.MutationObserver || !document.body) return;
-    new MutationObserver(fillAskIcons).observe(document.body, { childList: true, subtree: true });
+    new MutationObserver(function () {
+      fillAskIcons();
+      try { decorateHeaders(); } catch (e) {}
+    }).observe(document.body, { childList: true, subtree: true });
   }
 
   var askBubble = null, askTimer = 0, askScrollY = 0;

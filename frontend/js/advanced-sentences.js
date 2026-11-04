@@ -189,10 +189,10 @@ function luluOr(score, fallbackHtml) {
         '</div>';
     }).join('');
     return '' +
-      '<div class="as-head">' +
-        '<div><h2 class="as-h2">✍️ Viết câu nâng cao</h2>' +
-        '<p class="as-sub">Luyện dịch Việt → Anh theo 12 nhóm cấu trúc ngữ pháp nâng band</p></div>' +
-        '<button class="as-btn" id="as-hist-btn"><i class="fas fa-history"></i> Lịch sử</button>' +
+      '<div class="as-head pf-hero pf-hero-pink">' +
+        '<div class="pf-hero-body"><h2 class="as-h2">Viết câu <span class="pf-tag">nâng cao</span></h2>' +
+        '<p class="as-sub pf-hero-sub">Luyện dịch Việt → Anh theo 12 nhóm cấu trúc ngữ pháp nâng band</p></div>' +
+        '<div class="pf-hero-actions"><button class="as-btn pf-hbtn" id="as-hist-btn"><i class="fas fa-history"></i> Lịch sử</button></div>' +
       '</div>' +
       (!isPremium() ? (
         '<div class="as-premium-banner">' +

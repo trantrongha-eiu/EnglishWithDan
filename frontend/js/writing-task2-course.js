@@ -27,6 +27,8 @@
     cleanPath: /^\/writing\/task2-course\/([^/?#]+)$/,
     dictionaryKey: 'writing-task2-course',
     title: '✍️ IELTS Task 2 Writing',
+    heroTitle: 'IELTS <span class="pf-tag">Task 2 Writing</span>',
+    heroColor: 'pf-hero-pink',
     paywallTitle: 'Khoá học Task 2 chỉ dành cho Premium',
     paywallBlurb: '3 module · 18 buổi học · nền tảng Task 2, 7 dạng đề (Adv/Disadv, Discuss Both Views, Cause–Solution…) và 12 cấu trúc câu nâng band',
     premiumBlurb: 'Toàn bộ 3 module · 18 buổi học Task 2',

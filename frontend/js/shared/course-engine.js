@@ -14,6 +14,8 @@
 //    title            hero / paywall heading
 //    paywallTitle, paywallBlurb, premiumBlurb, heroFallback
 //    heroClass        default 't1-hero'
+//    heroTitle        banner heading HTML (default: title)
+//    heroColor        .pf-hero colour class (default 'pf-hero-sky')
 //    heroStatsExtra   extra <span>s after the module/lesson/exercise counts
 //    moduleClass(m, mi)  default 'acc1'…'acc5'
 //    moduleProgress   false hides the "x/y buổi hoàn thành" line
@@ -209,11 +211,13 @@
       }).join('');
       var nMod = (d.modules || []).length, nLes = 0, nEx = 0;
       (d.modules || []).forEach(function (m) { (m.lessons || []).forEach(function (l) { nLes++; nEx += (l.exerciseCount || 0); }); });
-      return '<div class="' + (cfg.heroClass || 't1-hero') + '"><h2>' + cfg.title + '</h2>' +
-        '<p>' + esc((d.course && d.course.description) || cfg.heroFallback) + '</p>' +
+      // .pf-hero = the coloured Reading/Listening-style banner (css/playful.css).
+      return '<div class="' + (cfg.heroClass || 't1-hero') + ' pf-hero ' + (cfg.heroColor || 'pf-hero-sky') + '"><div class="pf-hero-body">' +
+        '<h2>' + (cfg.heroTitle || cfg.title) + '</h2>' +
+        '<p class="pf-hero-sub">' + esc((d.course && d.course.description) || cfg.heroFallback) + '</p>' +
         (nLes ? '<div class="stats"><span>' + nMod + ' module</span><span>' + nLes + ' buổi</span><span>' + nEx + ' bài</span>' + (cfg.heroStatsExtra || '') + '</div>' : '') +
-        '<button class="t1-btn" id="t1-course-hist" style="margin-top:12px"><i class="fas fa-history"></i> Lịch sử luyện tập</button>' +
-        '</div>' +
+        '<button class="t1-btn pf-hbtn is-solid" id="t1-course-hist" style="margin-top:12px"><i class="fas fa-history"></i> Lịch sử luyện tập</button>' +
+        '</div></div>' +
         (!isPremium() ? '<div class="t1-premium"><div style="font-size:22px">⭐</div><div class="t"><b>Nâng cấp Premium để luyện tập không giới hạn</b><span>' + cfg.premiumBlurb + '</span></div><button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Upgrade Premium</button></div>' : '') +
         mods;
     }

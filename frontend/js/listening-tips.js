@@ -136,10 +136,11 @@ function _lstSyncFromUrl() {
 }
 
 function lstRenderLessonContent(lesson) {
-  let html = '<div class="lst-hero">'
-    + '<div class="lst-hero-cat">' + escHtml(lesson.category) + '</div>'
+  // .pf-hero = the coloured banner from css/playful.css (Lulu & Lumi added by playful.js).
+  let html = '<div class="lst-hero pf-hero pf-hero-tip pf-hero-blue" data-mascot="think"><div class="pf-hero-body">'
+    + '<div class="lst-hero-cat"><span class="pf-tag">' + escHtml(lesson.category) + '</span></div>'
     + '<h1 class="lst-hero-title">' + (lesson.icon || '🎧') + ' ' + escHtml(lesson.title) + '</h1>'
-    + '</div>';
+    + '</div></div>';
   html += '<div class="lst-content">' + lesson.blocks.map(lstRenderBlock).join('') + '</div>';
   // "🎧 Luyện tập" at the bottom (js/listening-tips-practice.js) — loads
   // nothing until the student clicks start.

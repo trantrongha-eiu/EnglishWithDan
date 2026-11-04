@@ -154,10 +154,11 @@ function _wstSyncFromUrl() {
 }
 
 function wstRenderLessonContent(lesson) {
-  let html = '<div class="wst-hero">'
-    + '<div class="wst-hero-cat">' + escHtml(lesson.category) + '</div>'
+  // .pf-hero = the coloured banner from css/playful.css (Lulu & Lumi added by playful.js).
+  let html = '<div class="wst-hero pf-hero pf-hero-tip pf-hero-pink" data-mascot="think"><div class="pf-hero-body">'
+    + '<div class="wst-hero-cat"><span class="pf-tag">' + escHtml(lesson.category) + '</span></div>'
     + '<h1 class="wst-hero-title">' + (lesson.icon || '✏️') + ' ' + escHtml(lesson.title) + '</h1>'
-    + '</div>';
+    + '</div></div>';
   html += '<div class="wst-content">' + lesson.blocks.map(wstRenderBlock).join('') + '</div>';
   document.getElementById('wst-main-content').innerHTML = html;
 }

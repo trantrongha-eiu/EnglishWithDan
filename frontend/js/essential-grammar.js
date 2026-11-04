@@ -328,11 +328,12 @@ function renderLessonContent(lesson) {
     ? { total: gradeableTotal, answered: 0, correct: 0, wrongTexts: [], lessonId: lesson._id, lessonKey: currentKey, startTime: Date.now() }
     : null;
 
-  let html = '<div class="eg-hero">'
-    + '<div class="eg-hero-cat">' + escHtml(lesson.category) + '</div>'
+  // .pf-hero = the coloured Reading/Listening-style banner (css/playful.css).
+  let html = '<div class="eg-hero pf-hero pf-hero-purple" data-mascot="think"><div class="pf-hero-body">'
+    + '<div class="eg-hero-cat"><span class="pf-tag">' + escHtml(lesson.category) + '</span></div>'
     + '<h1 class="eg-hero-title">' + (lesson.icon || '📘') + ' ' + escHtml(lesson.title) + '</h1>'
     + '<div class="wp-status-row" id="eg-hero-status">' + heroStatusHtml() + '</div>'
-    + '</div>';
+    + '</div></div>';
   _egDrills = {}; _egDrillSeq = 0;
   html += '<div class="eg-content">' + lesson.blocks.map(renderBlock).join('') + '</div>';
   // Lesson-level "grade now" affordance — so a student who answered most

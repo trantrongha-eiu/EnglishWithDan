@@ -133,6 +133,116 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
+   PAGE KIT — the Reading / Listening header look for any page
+     <div class="pf-hero pf-hero-blue">              (colour: see below)
+       <div class="pf-hero-body">
+         <h1>Luyện <span class="pf-tag">Dictation</span></h1>
+         <p class="pf-hero-sub">…</p>
+       </div>
+       <div class="pf-hero-actions"><button class="pf-hbtn">…</button></div>
+     </div>
+   Lulu & Lumi are added by js/shared/playful.js (data-mascot="none" to
+   skip, data-mascot="wink" for a mood). .pf-card = chunky outlined card,
+   .pf-pill(.is-active) = chunky pill tab. Page skins: css/pf-pages.css.
+   ══════════════════════════════════════════════════════════════════════ */
+.pf-hero {
+  --hero: var(--pf-olive);
+  position: relative; overflow: visible; box-sizing: border-box;
+  display: flex; align-items: center; flex-wrap: wrap; gap: 14px 20px;
+  padding: 22px 196px 22px 26px; min-height: 112px; margin: 0 0 22px;
+  background-color: var(--hero);
+  background-image:
+    linear-gradient(rgba(255,255,255,.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.09) 1px, transparent 1px);
+  background-size: 26px 26px;
+  border: 3px solid var(--pf-ink); border-radius: 22px;
+  box-shadow: var(--pf-shadow-lg);
+  color: #fff; text-align: left;
+  animation: pf-rise .5s ease both;
+}
+.pf-hero[data-mascot="none"] { padding-right: 26px; }
+.pf-hero-blue   { --hero: #4d63d8; }
+.pf-hero-green  { --hero: #2f9e5b; }
+.pf-hero-olive  { --hero: #5f7f3f; }
+.pf-hero-pink   { --hero: #d4627a; }
+.pf-hero-orange { --hero: #e07a3a; }
+.pf-hero-purple { --hero: #6b45c4; }
+.pf-hero-teal   { --hero: #2a9d8f; }
+.pf-hero-coral  { --hero: #cf5f57; }
+.pf-hero-sky    { --hero: #2f86c9; }
+.pf-hero-body { flex: 1 1 320px; min-width: 0; }
+:root .pf-hero h1,
+:root .pf-hero h2,
+:root .pf-hero .pf-hero-title {
+  font-family: var(--pf-head); font-weight: 900; letter-spacing: -.01em;
+  font-size: 26px; line-height: 1.25; color: #fff; margin: 0 0 6px;
+  display: block; background: none; -webkit-text-fill-color: currentColor;
+}
+.pf-tag {
+  display: inline-block; color: var(--pf-ink); background: var(--pf-sun);
+  padding: 0 10px; border-radius: 10px; transform: rotate(-1.5deg);
+  box-shadow: 2px 2px 0 var(--pf-ink); -webkit-text-fill-color: currentColor;
+}
+:root .pf-hero .pf-hero-sub { color: rgba(255,255,255,.9); font-size: 14px; line-height: 1.55; margin: 0; max-width: 720px; }
+:root .pf-hero .pf-hero-sub b,
+:root .pf-hero .pf-hero-sub strong { color: #fff; }
+:root .pf-hero a:not([class]) { color: #fff; text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
+.pf-hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pf-hero-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+:root .pf-hbtn,
+:root .pf-hero-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.14); color: #fff;
+  border: 2px solid rgba(255,255,255,.4); border-radius: 999px;
+  padding: 7px 14px; font: inherit; font-size: 13px; font-weight: 800;
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+  transition: transform .18s var(--pf-spring), box-shadow .18s, background .15s;
+}
+:root .pf-hero-chip { cursor: default; padding: 4px 11px; font-size: 12px; }
+:root .pf-hbtn:hover { transform: translateY(-2px); background: rgba(255,255,255,.24); color: #fff; }
+:root .pf-hbtn.is-solid,
+:root .pf-hbtn.is-active {
+  background: #fff; color: var(--pf-ink); border-color: var(--pf-ink);
+  box-shadow: 2px 2px 0 var(--pf-ink);
+}
+:root .pf-hbtn.is-sun { background: var(--pf-sun); color: var(--pf-ink); border-color: var(--pf-ink); box-shadow: 2px 2px 0 var(--pf-ink); }
+:root .pf-hero .test-search-input,
+:root .pf-hero input[type="search"],
+:root .pf-hero input[type="text"] {
+  border: 2px solid var(--pf-ink); border-radius: 999px; background: #fff; color: #222;
+}
+
+.pf-card,
+:root .pf-card {
+  background: var(--surface, #fff);
+  border: 2.5px solid var(--pf-ink); border-radius: 20px;
+  box-shadow: var(--pf-shadow);
+}
+:root .pf-pill {
+  border: 2px solid var(--pf-ink); border-radius: 999px;
+  background: var(--surface, #fff); color: var(--text);
+  font-weight: 800; box-shadow: 2px 2px 0 var(--pf-ink);
+  transition: transform .18s var(--pf-spring), box-shadow .18s, background .15s;
+}
+:root .pf-pill:hover:not(.is-active):not(.active) { transform: translateY(-2px); box-shadow: 3px 4px 0 var(--pf-ink); }
+:root .pf-pill.is-active,
+:root .pf-pill.active { background: var(--pf-sun); color: var(--pf-ink); border-color: var(--pf-ink); }
+[data-theme="dark"] .pf-hero { border-color: #000; }
+/* Tips lessons (reading/listening/speaking/writing-tips.js) — their own
+   sheets load after this one and set a gradient, so win by specificity. */
+:root .pf-hero.pf-hero-tip {
+  background-color: var(--hero);
+  background-image:
+    linear-gradient(rgba(255,255,255,.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.09) 1px, transparent 1px);
+  background-size: 26px 26px;
+  border-radius: 22px; padding: 22px 196px 22px 26px; margin: 14px 14px 18px; color: #fff;
+}
+:root .pf-hero-tip [class$="-hero-cat"] { opacity: 1; text-transform: none; letter-spacing: 0; font-size: 12px; margin-bottom: 8px; }
+:root .pf-hero-tip h1 { display: flex; align-items: center; gap: 10px; }
+@media (max-width: 640px) { :root .pf-hero.pf-hero-tip { padding: 18px 118px 18px 18px; } }
+
+/* ══════════════════════════════════════════════════════════════════════
    TEST CARDS — "TEST 1" covers
    ══════════════════════════════════════════════════════════════════════ */
 :root .test-group-title {
@@ -430,6 +540,9 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
   .ews-mascot-dock { display: none; }
   .lh-mascot { width: 104px; right: 8px; }
   :root .list-header { padding-right: 118px; }
+  .pf-hero { padding: 18px 118px 18px 18px; }
+  .pf-hero[data-mascot="none"] { padding-right: 18px; }
+  :root .pf-hero h1, :root .pf-hero h2, :root .pf-hero .pf-hero-title { font-size: 22px; }
 }
 @media print { .ews-mascot-dock, .lh-mascot { display: none !important; } }
 
@@ -549,7 +662,7 @@ body:has(#ls-mode-title) .list-header { background-color: #4d63d8; }
 /* ── Respect reduced motion ─────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .dan-svg *, .sk-spark, .lh-mascot, .lulu-peek, .lulu-react .lr-mascot, .lulu-react .lr-bubble,
-  .pf-duo-heart, .lulu-react .pf-duo-lumi, .ask-lulu-ic,
+  .pf-duo-heart, .lulu-react .pf-duo-lumi, .ask-lulu-ic, .pf-hero,
   :root #screen-list.active .list-container > *,
   :root #book-welcome > div > * { animation: none !important; }
   .ews-mascot-dock, .skill-card, .test-card.tid-card, .tid-card-title, .ask-lulu-bubble { transition: none !important; }

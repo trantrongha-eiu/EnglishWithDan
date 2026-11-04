@@ -487,6 +487,8 @@
     cleanPath: /^\/speaking\/course\/([^/?#]+)$/,
     dictionaryKey: 'speaking-course',
     title: '🎤 IELTS Speaking — Khóa học',
+    heroTitle: 'IELTS Speaking <span class="pf-tag">Khóa học</span>',
+    heroColor: 'pf-hero-orange',
     paywallTitle: 'Khoá học Speaking chỉ dành cho Premium',
     paywallBlurb: 'Trọn bộ 3 phần · 45 buổi: PHẦN I Part 1 Foundation (14 buổi), PHẦN II Part 2 Long Turn (15 buổi), PHẦN III Part 3 Discussion (16 buổi). Mỗi buổi có bài tập chấm tự động và một bài NÓI được AI chấm theo 4 tiêu chí.',
     premiumBlurb: 'Trọn bộ 45 buổi Part 1 · Part 2 · Part 3, mỗi buổi có bài NÓI được AI chấm',

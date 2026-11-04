@@ -138,10 +138,11 @@ function _rtSyncFromUrl() {
 }
 
 function rtRenderLessonContent(lesson) {
-  let html = '<div class="rt-hero">'
-    + '<div class="rt-hero-cat">' + escHtml(lesson.category) + '</div>'
+  // .pf-hero = the coloured banner from css/playful.css (Lulu & Lumi added by playful.js).
+  let html = '<div class="rt-hero pf-hero pf-hero-tip pf-hero-green" data-mascot="think"><div class="pf-hero-body">'
+    + '<div class="rt-hero-cat"><span class="pf-tag">' + escHtml(lesson.category) + '</span></div>'
     + '<h1 class="rt-hero-title">' + (lesson.icon || '📖') + ' ' + escHtml(lesson.title) + '</h1>'
-    + '</div>';
+    + '</div></div>';
   html += '<div class="rt-content">' + lesson.blocks.map(rtRenderBlock).join('') + '</div>';
   // "🎯 Luyện tập" at the end of the tip (js/reading-tips-practice.js) —
   // only an entry card here; nothing is fetched until the student clicks.

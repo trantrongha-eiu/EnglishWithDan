@@ -10,6 +10,8 @@ window.CourseEngine.start({
   cleanPath: /^\/writing\/task1-course\/([^/?#]+)$/,
   dictionaryKey: 'writing-task1-course',
   title: '📊 IELTS Task 1 Writing',
+  heroTitle: 'IELTS <span class="pf-tag">Task 1 Writing</span>',
+  heroColor: 'pf-hero-sky',
   paywallTitle: 'Khoá học Task 1 chỉ dành cho Premium',
   paywallBlurb: '5 module · 22 buổi học + 5 bài kiểm tra · nền tảng, biểu đồ động, biểu đồ tĩnh & kết hợp, bản đồ (Maps), sơ đồ quy trình (Process)',
   premiumBlurb: 'Toàn bộ 5 module · 22 buổi học + 5 bài kiểm tra Task 1',
