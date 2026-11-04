@@ -145,6 +145,99 @@ function roleOf(text, si, secCount) {
   return 'Câu chủ đề';
 }
 
+// ── Essay outline in Vietnamese ("Sườn bài") ──────────────────
+// What each paragraph of a real essay should say, per essay type — shown in
+// ① and ④ so the student sees why the template is built the way it is.
+// Keys: intro / body1 / body2 / bodies (Band 7+ Agree/Disagree has one
+// "Body 1 & 2" section) / concl. Missing keys fall back to OUTLINE_COMMON.
+const OUTLINE_COMMON = {
+  intro: 'Giới thiệu chủ đề, viết lại đề bằng từ của mình (paraphrase), rồi nói bài sẽ bàn về điều gì.',
+  concl: 'Tóm lại các ý chính của 2 đoạn thân bài. Không đưa thêm ý mới.',
+};
+const OUTLINE = {
+  type01: {
+    gist: 'Đề hỏi <b>ưu điểm và nhược điểm</b> của một xu hướng / hiện tượng. Thân bài chia đôi: một đoạn ưu, một đoạn nhược. Nếu đề hỏi thêm “ưu có lớn hơn nhược không?” thì phải nêu ý kiến ở mở bài và kết bài.',
+    intro: 'Giới thiệu xu hướng, paraphrase đề, rồi nói bài sẽ phân tích cả ưu điểm lẫn nhược điểm.',
+    body1: 'Viết <b>1–2 ưu điểm</b> của xu hướng: nêu ưu điểm → giải thích vì sao → kết quả tốt → ví dụ cụ thể.',
+    body2: 'Viết <b>1–2 nhược điểm</b>: nêu nhược điểm → giải thích vì sao → hậu quả xấu → ví dụ cụ thể.',
+    concl: 'Nhắc lại ưu điểm chính và nhược điểm chính. Nếu đề hỏi “outweigh” thì nói rõ bên nào lớn hơn.',
+  },
+  type02: {
+    gist: 'Đề đưa ra <b>2 quan điểm trái ngược</b> (“Some people think… Others believe…”). Bài phải bàn <b>cả hai</b> một cách công bằng, rồi nói mình nghiêng về bên nào.',
+    intro: 'Giới thiệu chủ đề, paraphrase 2 quan điểm, nói bài sẽ bàn cả hai và cho biết mình ủng hộ bên nào.',
+    body1: 'Viết <b>2 lý do tại sao nhóm 1 ủng hộ quan điểm 1</b>: lý do → giải thích → kết quả → ví dụ. Viết khách quan (“Some people believe…”), chưa đưa ý kiến của mình vào.',
+    body2: 'Viết <b>2 lý do tại sao nhóm 2 ủng hộ quan điểm 2</b>: lý do → giải thích → kết quả → ví dụ. Mở đoạn bằng từ chuyển ý (“On the other hand…”).',
+    concl: 'Nhắc lại rằng cả hai bên đều có lý, rồi nói rõ <b>ý kiến của mình</b> và lý do chính.',
+  },
+  type03: {
+    gist: 'Đề hỏi <b>nguyên nhân</b> của một vấn đề và <b>giải pháp</b> cho nó. Body 1 = nguyên nhân, Body 2 = giải pháp. Giải pháp tốt nhất là giải pháp “chữa” đúng nguyên nhân đã nêu.',
+    intro: 'Giới thiệu vấn đề, nói bài sẽ phân tích nguyên nhân và đề xuất giải pháp.',
+    body1: 'Viết <b>2 nguyên nhân</b> gây ra vấn đề: nguyên nhân 1 → giải thích → hậu quả → ví dụ; rồi nguyên nhân 2.',
+    body2: 'Viết <b>2 giải pháp</b>, mỗi giải pháp nhắm vào một nguyên nhân ở Body 1: cần làm gì → giúp được gì → kết quả tốt.',
+    concl: 'Tóm lại 2 nguyên nhân chính và 2 giải pháp.',
+  },
+  type04: {
+    gist: 'Đề hỏi vấn đề <b>gây ra hậu quả gì</b> và <b>giải pháp</b>. Body 1 = hậu quả, Body 2 = giải pháp để giảm những hậu quả đó.',
+    intro: 'Giới thiệu vấn đề và nó ảnh hưởng tới ai (con người / xã hội / môi trường), nói bài sẽ bàn hậu quả và giải pháp.',
+    body1: 'Viết <b>2 hậu quả</b> của vấn đề: hậu quả 1 → giải thích → hệ quả tiếp theo → ví dụ; rồi hậu quả 2.',
+    body2: 'Viết <b>2 giải pháp</b> giúp giảm các hậu quả ở Body 1: cần làm gì → giúp được gì → kết quả tốt.',
+    concl: 'Nhắc lại vấn đề gây hậu quả nghiêm trọng nhưng có thể giảm bớt bằng 2 giải pháp đã nêu.',
+  },
+  type05: {
+    gist: 'Đề hỏi <b>nguyên nhân</b> và <b>hậu quả</b> của một hiện tượng. Body 1 = vì sao nó xảy ra, Body 2 = nó gây ra điều gì.',
+    intro: 'Giới thiệu hiện tượng, nói bài sẽ phân tích nguyên nhân và hậu quả của nó.',
+    body1: 'Viết <b>2 nguyên nhân</b> khiến hiện tượng xảy ra: nguyên nhân 1 → giải thích → ví dụ; rồi nguyên nhân 2.',
+    body2: 'Viết <b>2 hậu quả</b>: ảnh hưởng tới ai, ngắn hạn và lâu dài ra sao, kèm ví dụ hoặc dẫn chứng.',
+    concl: 'Tóm lại nguyên nhân chính và hậu quả chính, nhấn mạnh đây là vấn đề cần quan tâm.',
+  },
+  type06: {
+    gist: 'Đề đưa ra <b>một ý kiến</b> và hỏi bạn đồng ý tới mức nào. Chọn <b>một lập trường rõ ràng</b> (đồng ý / không đồng ý / đồng ý một phần), nói ngay ở mở bài và giữ nguyên tới hết bài — cả 2 đoạn thân bài đều để bảo vệ lập trường đó.',
+    intro: 'Giới thiệu chủ đề, paraphrase ý kiến trong đề, nêu rõ <b>lập trường của mình</b> (chọn một trong các câu phương án).',
+    body1: 'Viết <b>lý do 1</b> vì sao mình đồng ý (hoặc không đồng ý): lý do → giải thích → kết quả → ví dụ.',
+    body2: 'Viết <b>lý do 2</b> — một lý do khác cũng ủng hộ lập trường của mình: lý do → giải thích → kết quả → ví dụ.',
+    bodies: 'Viết <b>2 đoạn, mỗi đoạn là 1 lý do</b> ủng hộ lập trường của mình: nêu lý do → vì sao quan trọng → giải thích + ví dụ → dẫn chứng. Nhắm Band 7.5+ thì thêm câu phản biện: nêu ý kiến ngược lại rồi bác bỏ nó.',
+    concl: 'Nhắc lại lập trường và 2 lý do chính. Không đổi lập trường so với mở bài.',
+  },
+  type07: {
+    gist: 'Đề hỏi một xu hướng là phát triển <b>tích cực hay tiêu cực</b>. Chọn một bên, nói ngay ở mở bài. Body 1 bảo vệ lựa chọn của mình, Body 2 thừa nhận mặt ngược lại rồi khẳng định lại.',
+    intro: 'Giới thiệu xu hướng và ảnh hưởng của nó, nói rõ đây là <b>positive hay negative</b> và vì 2 lý do nào.',
+    body1: 'Viết <b>2 lý do</b> vì sao mình thấy xu hướng này tích cực (hoặc tiêu cực): lý do 1 → giải thích → kết quả → ví dụ; rồi lý do 2.',
+    body2: '<b>Thừa nhận mặt ngược lại</b> (bài positive thì nêu một nhược điểm, bài negative thì nêu một lợi ích) và giải thích ngắn, rồi <b>khẳng định lại</b> rằng mặt đó không lớn bằng → lập trường vẫn đúng.',
+    concl: 'Nhắc lại tích cực / tiêu cực và lý do; có thể nói xu hướng này sẽ ra sao trong tương lai.',
+  },
+};
+function _outlineKind(title) {
+  const t = String(title || '');
+  if (/Introduction/i.test(t)) return 'intro';
+  if (/Conclusion/i.test(t)) return 'concl';
+  if (/Body 1\s*&\s*2/i.test(t)) return 'bodies';
+  if (/Body 1/i.test(t)) return 'body1';
+  if (/Body 2/i.test(t)) return 'body2';
+  return '';
+}
+// Vietnamese "what to write here" for a paragraph (HTML, trusted text).
+function outlineFor(p, typeId = _type) {
+  const kind = _outlineKind(p.title);
+  const o = OUTLINE[typeId] || {};
+  return o[kind] || OUTLINE_COMMON[kind] || '';
+}
+// Full outline card: the type's gist + one line per paragraph.
+// `current` = index of the paragraph being written (highlighted).
+function outlineCardHtml({ current = -1, open = true } = {}) {
+  const o = OUTLINE[_type];
+  if (!o) return '';
+  const meta = TYPE_META[_type] || {};
+  const rows = paragraphs().map((p, i) => {
+    const what = outlineFor(p);
+    return what ? `<li class="${i === current ? 'is-cur' : ''}"><b>${esc(shortTitle(p.title))}:</b> ${what}</li>` : '';
+  }).join('');
+  return `<details class="pth-outline"${open ? ' open' : ''}>
+    <summary>🗺️ Sườn bài dạng ${esc(meta.sub || '')} — đoạn nào viết gì?</summary>
+    <p class="pth-outline-gist">${o.gist}</p>
+    <ul class="pth-outline-list">${rows}</ul>
+  </details>`;
+}
+
 // Recommended size of each paragraph in a real essay (not the template).
 function paraTarget(si, secCount) {
   if (si === 0) return { sent: '2–3 câu', words: '40–60 chữ', lo: 40, hi: 60 };
@@ -932,6 +1025,7 @@ function renderWarmup() {
           <span><b>${p.sentences.length}</b> câu mẫu · <b>${words}</b> chữ cố định</span>
           <span class="pth-struct-tgt">Bài thật: ${tgt.sent} · ${tgt.words}</span>
         </div>
+        ${outlineFor(p) ? `<div class="pth-struct-what">✍️ ${outlineFor(p)}</div>` : ''}
         <div class="pth-flow">${flow}</div>
       </div>`;
     }).join('');
@@ -941,6 +1035,7 @@ function renderWarmup() {
         <div class="pth-card">
           <div class="pth-card-title">🗺️ Bộ khung của dạng bài này</div>
           <p class="pth-muted">Đọc qua: mỗi đoạn có mấy câu, câu nào làm nhiệm vụ gì. Cả bài thật nên dài <b>250–300 chữ</b>.${hasOpt ? ' Các câu có nhãn <span class="pth-opt">phương án</span> là lựa chọn thay nhau — khi viết bài thật chỉ chọn một.' : ''}</p>
+          ${OUTLINE[_type] ? `<p class="pth-outline-gist">${OUTLINE[_type].gist}</p>` : ''}
           <div class="pth-struct">${rows}</div>
           <div class="pth-actions"><button class="pth-btn pth-btn--primary" onclick="wuStartOrder()">Bắt đầu sắp xếp câu <i class="fas fa-arrow-right"></i></button></div>
         </div>
@@ -1518,6 +1613,7 @@ function _asmBoxHtml(p, i) {
   const usedHints = _run.hints[i] ? ` · ${_run.hints[i]} gợi ý` : '';
   return `<div class="pth-asm-para">
     <div class="pth-read-hdr"><span>${esc(shortTitle(p.title))} <span class="pth-chip">${p.sentences.length} câu</span></span>${res ? `<span class="pth-chip ${res.knownPct >= ASSEMBLE_PASS ? 'pth-chip--ok' : 'pth-chip--warn'}">Thuộc ${res.known}/${res.sent} câu · ${res.knownPct}%${usedHints}</span>` : askBtn(`pth-asm-hint-${i}`, `asmHint(${i})`, `Hỏi Lulu (${_asmHintsLeft(i)})`, _asmHintsLeft(i) <= 0 ? 'disabled' : '')}</div>
+    ${isB7() && !res && outlineFor(p) ? `<div class="pth-struct-what">✍️ ${outlineFor(p)}</div>` : ''}
     ${_asmCueHtml(p)}
     ${res ? `<div class="pth-diff pth-diff--box">${diffHtml(res.ops)}</div>`
       : `<textarea class="pth-textarea pth-asm-in" id="pth-asm-${i}" rows="${Math.max(4, p.sentences.length + 1)}" placeholder="Viết lại cả đoạn từ trí nhớ... (bỏ qua phần trong ngoặc)" oninput="_run.texts[${i}]=this.value">${esc(_run.texts[i])}</textarea>`}
@@ -1562,6 +1658,7 @@ function renderAssemble() {
   } else if (isB7()) {
     body = `<div class="pth-card">
         <p class="pth-muted">Viết lại toàn bộ template từ trí nhớ, mỗi ô một đoạn. Chỉ có vai trò của từng câu làm gợi ý. Không cần gõ phần trong ngoặc. Mỗi đoạn được hỏi Lulu ${ASM_HINTS.band7} lần.</p>
+        ${outlineCardHtml()}
         ${paras.map((p, i) => _asmBoxHtml(p, i)).join('')}
         <div class="pth-actions"><button class="pth-btn pth-btn--primary" onclick="asmSubmitAll()"><i class="fas fa-paper-plane"></i> Nộp bài</button></div>
       </div>`;
@@ -1570,6 +1667,7 @@ function renderAssemble() {
     const res = r.results[r.p];
     body = `<div class="pth-card">
         <p class="pth-muted">Viết lại cả đoạn từ trí nhớ. Gợi ý: vai trò và 2 chữ đầu của mỗi câu. Không cần gõ phần trong ngoặc. Bí từ nào thì hỏi Lulu (${ASM_HINTS.band6} lần mỗi đoạn).</p>
+        ${outlineCardHtml({ current: r.p })}
         ${_asmBoxHtml(p, r.p)}
         <div class="pth-actions">${res
           ? `<button class="pth-btn pth-btn--primary" onclick="asmNextPara()">${r.p + 1 < paras.length ? 'Đoạn tiếp theo' : 'Xem kết quả'} <i class="fas fa-arrow-right"></i></button>`

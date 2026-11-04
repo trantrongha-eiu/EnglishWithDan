@@ -293,6 +293,7 @@ function _bestPracticeScore(topicId) {
 
 // Returns { ok, code, best }. code: 'ok' | 'not_practiced' | 'low_accuracy'.
 function canWriteFullEssay(topicId) {
+  if (_isStaffUser()) return { ok: true, code: 'ok', best: _bestPracticeScore(topicId) || 0 };
   const best = _bestPracticeScore(topicId);
   if (best == null) return { ok: false, code: 'not_practiced', best: 0 };
   if (best < T2_WRITE_MIN_ACCURACY) return { ok: false, code: 'low_accuracy', best };
@@ -424,6 +425,16 @@ function isVocabQuizPassed(topicId) {
 }
 function isVocabStepDone(topicId) {
   return isVocabLearned(topicId) && isVocabQuizPassed(topicId);
+}
+
+// The step locks are for students only — teachers/admins open every step
+// straight away (to preview or demo the lesson). Progress shown as "done"
+// still uses isVocabStepDone, so it stays truthful for staff too.
+function _isStaffUser() {
+  return !!(window.AuthService && window.AuthService.isStaff && window.AuthService.isStaff());
+}
+function isStepUnlocked(topicId) {
+  return _isStaffUser() || isVocabStepDone(topicId);
 }
 
 function topicStatusRowHtml(topicId) {
@@ -1163,7 +1174,7 @@ function renderSelect() {
 // Notes are saved with the lesson (shown again beside the essay).
 function renderIdeaStep(isCurrent) {
   const t = state.selectedTopic;
-  if (!isVocabStepDone(t._id)) return _lockedStep('ideas', 2, 'Brainstorm ý tưởng');
+  if (!isStepUnlocked(t._id)) return _lockedStep('ideas', 2, 'Brainstorm ý tưởng');
   const sides = _ideaSides(t);
   const bs = state.brainstorm;
   const hasHints = sides.some(s => (s.points || []).length);
@@ -1197,7 +1208,7 @@ function onIdeaInput(i, v) {
 function renderTranslateStep(isCurrent) {
   const t = state.selectedTopic;
   const id = t._id;
-  if (!isVocabStepDone(id)) return _lockedStep('translate', 3, 'Dịch câu Việt → Anh');
+  if (!isStepUnlocked(id)) return _lockedStep('translate', 3, 'Dịch câu Việt → Anh');
   const L = _lessonFor(id);
   const sent = L ? L.sentences : [];
   const done = sent.filter(s => s.en).length;
@@ -1255,7 +1266,7 @@ function _chainsHtml(chains) {
 }
 function renderGuideStep(isCurrent) {
   const t = state.selectedTopic;
-  if (!isVocabStepDone(t._id)) return _lockedStep('guide', 4, 'Hướng dẫn viết (Guided writing)');
+  if (!isStepUnlocked(t._id)) return _lockedStep('guide', 4, 'Hướng dẫn viết (Guided writing)');
   const g = _guideFor(t);
   const done = _lessonSteps(t)[3].done;
   const flow = g?.outline?.flow ? g.outline.flow.split('→').map(s => s.trim()).filter(Boolean) : ['INTRODUCTION', 'BODY 1', 'BODY 2', 'CONCLUSION'];
@@ -1282,7 +1293,7 @@ function renderGuideStep(isCurrent) {
 // ⑤ In class — Introduction + Body 1 on the split-screen writer.
 function renderClassStep(isCurrent) {
   const t = state.selectedTopic;
-  if (!isVocabStepDone(t._id)) return _lockedStep('class', 5, 'Viết Mở bài + Thân bài 1');
+  if (!isStepUnlocked(t._id)) return _lockedStep('class', 5, 'Viết Mở bài + Thân bài 1');
   const L = _lessonFor(t._id);
   const sec = L ? L.sections : _emptySections();
   const done = !!(_wc(sec.intro) && _wc(sec.body1));
@@ -1305,7 +1316,7 @@ function renderClassStep(isCurrent) {
 // ⑥ Homework — Body 2 + Conclusion from the book's template, then AI grading.
 function renderHomeStep(isCurrent) {
   const t = state.selectedTopic;
-  if (!isVocabStepDone(t._id)) return _lockedStep('home', 6, 'Viết Thân bài 2 + Kết bài');
+  if (!isStepUnlocked(t._id)) return _lockedStep('home', 6, 'Viết Thân bài 2 + Kết bài');
   const L = _lessonFor(t._id);
   const sec = L ? L.sections : _emptySections();
   const filled = LESSON_SECTIONS.filter(s => (sec[s.key] || '').trim()).length;
@@ -1834,7 +1845,7 @@ async function openCompose(phase, opts = {}) {
   const t = state.selectedTopic;
   if (!t) return;
   if (!(window.AuthService && window.AuthService.isLoggedIn())) { showToast('Đăng nhập để viết và lưu bài', 'warn'); return; }
-  if (!isVocabStepDone(t._id)) {
+  if (!isStepUnlocked(t._id)) {
     showToast(`Hoàn thành bước Từ vựng (lưu từ + quiz ≥ ${VQUIZ_PASS}%) để mở màn hình viết`, 'warn', 4000);
     if (state.view === 'select') scrollToHubStep('vocab');
     return;
@@ -1923,6 +1934,7 @@ function renderCompose() {
             <summary class="t2-prompt-box-label">📋 Đề bài <span class="t2-prompt-peek">— ${_escHtml((t.prompt || '').slice(0, 70))}${(t.prompt || '').length > 70 ? '…' : ''}</span></summary>
             <p>${_escHtml(t.prompt)}</p>
           </details>
+          ${_composeTplHtml()}
           ${C.phase === 'class'
             ? `<div class="t2c-tip"><b>🏫 Trên lớp:</b> viết <b>Mở bài</b> (cá nhân) rồi <b>Thân bài 1</b> (thảo luận nhóm → tự viết). Dùng câu đã dịch ở cột trái làm điểm tựa — bấm <b>＋</b> để chèn vào chỗ con trỏ rồi sửa cho liền mạch.</div>`
             : `<div class="t2c-tip is-home"><b>🏠 Về nhà:</b> viết <b>Thân bài 2</b> + <b>Kết bài</b> theo template trong sách (tab <b>Template</b>). Dùng ý tưởng và câu đã dịch, nhưng <b>viết bằng lời của bạn</b> — đừng chép nguyên bài mẫu.</div>`}
@@ -1961,6 +1973,91 @@ function bindCompose() {
     ta.addEventListener('input', () => _onComposeInput(ta));
     ta.addEventListener('focus', () => { state.compose.lastFocus = ta.dataset.key; });
   });
+  if (state.compose.tplOpen) renderComposeTplBody();
+}
+
+// ── "Xem template" — same panel as Task 2 practice on writing.html
+// (js/writing.js renderPracticeTemplatePanel): any of the 7 essay types,
+// Band 6+ / 7+, Vietnamese on/off. Opens on this topic's essay type.
+// Shared module: js/shared/task2-generic-tpl.js (+ css/task2-generic-tpl.css).
+function _composeTplHtml() {
+  if (!window.Task2GenericTpl) return '';
+  const C = state.compose;
+  const t = state.selectedTopic;
+  if (C.tplFor !== t._id) {
+    C.tplFor = t._id;
+    C.tplType = ESSAY_TYPE_ID[t.essayType] || Task2GenericTpl.guessType(t.prompt || '') || null;
+  }
+  if (!C.tplLevel) C.tplLevel = 'band6';
+  const types = Task2GenericTpl.TYPES.map((x, i) => `
+      <button type="button" class="pw-tpl-type" data-type="${x.id}" onclick="pickComposeTpl('${x.id}')">
+        <span class="pw-tpl-type-no">${String(i + 1).padStart(2, '0')}</span> ${_escHtml(x.label)}
+      </button>`).join('');
+  return `
+    <button type="button" class="t2-secondary t2c-tpl-btn${C.tplOpen ? ' is-open' : ''}" id="t2c-tpl-btn" onclick="toggleComposeTpl()">${_composeTplBtnLabel()}</button>
+    <div id="pw-tpl-inline" class="pw-tpl t2c-tpl" ${C.tplOpen ? '' : 'style="display:none"'}>
+      <div class="pw-tpl-ask">Chọn dạng bài bạn muốn xem template:</div>
+      <div class="pw-tpl-types">${types}</div>
+      <div class="pw-tpl-bar">
+        <div class="pw-tpl-levels">
+          <button type="button" class="pw-tpl-level" data-level="band6" onclick="setComposeTplLevel('band6')">🌱 Band 6+</button>
+          <button type="button" class="pw-tpl-level" data-level="band7" onclick="setComposeTplLevel('band7')">🏆 Band 7+</button>
+        </div>
+        <button type="button" class="pw-tpl-vi-btn" id="pw-tpl-vi-btn" onclick="toggleComposeTplVi()"></button>
+      </div>
+      <div id="pw-tpl-body" class="pw-tpl-body"></div>
+    </div>`;
+}
+function _composeTplBtnLabel() {
+  return state.compose.tplOpen
+    ? '<i class="fas fa-chevron-up"></i> Ẩn template'
+    : '<i class="fas fa-file-lines"></i> Xem template';
+}
+function toggleComposeTpl() {
+  const C = state.compose;
+  C.tplOpen = !C.tplOpen;
+  const panel = document.getElementById('pw-tpl-inline');
+  const btn = document.getElementById('t2c-tpl-btn');
+  if (panel) panel.style.display = C.tplOpen ? '' : 'none';
+  if (btn) { btn.classList.toggle('is-open', C.tplOpen); btn.innerHTML = _composeTplBtnLabel(); }
+  if (C.tplOpen) renderComposeTplBody();
+}
+function pickComposeTpl(typeId) {
+  state.compose.tplType = typeId;
+  renderComposeTplBody();
+}
+function setComposeTplLevel(level) {
+  if (state.compose.tplLevel === level) return;
+  state.compose.tplLevel = level;
+  renderComposeTplBody();
+}
+function toggleComposeTplVi() {
+  state.compose.tplVi = !state.compose.tplVi;
+  _syncComposeTpl();
+  Task2GenericTpl.setVi(document.getElementById('pw-tpl-body'), state.compose.tplVi);
+}
+function _syncComposeTpl() {
+  const C = state.compose;
+  document.querySelectorAll('#pw-tpl-inline .pw-tpl-type').forEach(b => b.classList.toggle('active', b.dataset.type === C.tplType));
+  document.querySelectorAll('#pw-tpl-inline .pw-tpl-level').forEach(b => b.classList.toggle('active', b.dataset.level === C.tplLevel));
+  const vi = document.getElementById('pw-tpl-vi-btn');
+  if (vi) vi.textContent = C.tplVi ? '🇻🇳 Ẩn tiếng Việt' : '🇻🇳 Hiện tiếng Việt';
+}
+async function renderComposeTplBody() {
+  const body = document.getElementById('pw-tpl-body');
+  if (!body || !window.Task2GenericTpl) return;
+  const C = state.compose;
+  _syncComposeTpl();
+  if (!C.tplType) { body.innerHTML = ''; return; }
+  if (!window.TASK2_GENERIC_TEMPLATES) body.innerHTML = '<div class="gtpl-empty">⏳ Đang tải...</div>';
+  let data = null;
+  try { data = await Task2GenericTpl.load(); } catch (e) {}
+  // The screen may have been re-rendered (or left) while loading.
+  const cur = document.getElementById('pw-tpl-body');
+  if (!cur) return;
+  cur.innerHTML = data
+    ? Task2GenericTpl.html(data, C.tplLevel, C.tplType, !!C.tplVi)
+    : '<div class="gtpl-empty">Không tải được nội dung. Vui lòng thử lại.</div>';
 }
 function _onComposeInput(ta) {
   const key = ta.dataset.key;
@@ -2335,7 +2432,7 @@ function startPractice(btn) { return _withBusy(btn, () => _startPractice()); }
 // ones still untranslated.
 function startTranslate(btn) { return _withBusy(btn, () => _startPractice({ translateOnly: true })); }
 async function _startPractice(opts = {}) {
-  if (!isVocabStepDone(state.selectedTopic?._id)) {
+  if (!isStepUnlocked(state.selectedTopic?._id)) {
     showToast(`Bạn cần lưu hết từ vựng và đạt quiz từ vựng ≥ ${VQUIZ_PASS}% trước khi luyện câu`, 'warn', 4000);
     if (state.view === 'select') scrollToHubStep('vocab');
     return;

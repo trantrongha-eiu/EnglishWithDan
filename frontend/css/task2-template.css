@@ -236,6 +236,16 @@ body { background: var(--bg, var(--pf-paper, #fff8ee)); }
 .pth-struct-name { font-weight: 900; font-size: 14px; color: var(--text, #1d1a16); }
 .pth-struct-nums { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12.5px; color: var(--text2, #374151); margin: 4px 0 8px; }
 .pth-struct-tgt { color: #0f766e; font-weight: 800; }
+.pth-struct-what { font-size: 13px; line-height: 1.55; color: var(--text, #1d1a16); margin: 0 0 8px; }
+/* Sườn bài (Vietnamese outline: what each paragraph says) — ① and ④ */
+.pth-outline-gist { font-size: 13px; line-height: 1.6; color: var(--text, #1d1a16); background: color-mix(in srgb, var(--tpl-type-c, #7d62c9) 8%, #fff); border-left: 4px solid var(--tpl-type-c, #7d62c9); border-radius: 8px; padding: 8px 12px; margin: 0 0 12px; }
+.pth-outline { border: 2px solid var(--pf-line, #efe3cf); border-radius: 14px; background: var(--pf-paper, #fff8ee); padding: 10px 14px; margin: 0 0 14px; }
+.pth-outline > summary { cursor: pointer; font-weight: 900; font-size: 14px; color: var(--text, #1d1a16); }
+.pth-outline[open] > summary { margin-bottom: 10px; }
+.pth-outline .pth-outline-gist { margin-bottom: 8px; }
+.pth-outline-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 1.55; color: var(--text, #1d1a16); }
+.pth-outline-list li { padding: 6px 10px; border-radius: 10px; border: 1.5px solid transparent; }
+.pth-outline-list li.is-cur { background: #fff1d6; border-color: #fcd38a; }
 .pth-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
 .pth-flow-item { display: inline-flex; gap: 3px; align-items: center; }
 .pth-flow-arr { font-size: 10px; color: #b8ab95; }
@@ -501,6 +511,10 @@ body { background: var(--bg, var(--pf-paper, #fff8ee)); }
 [data-theme="dark"] .pth-review.pth-weak { background: #2a0f17; border-color: #6b2a3a; }
 [data-theme="dark"] .pth-frames li.is-ok { background: #0f2508; border-color: #3f7a1c; }
 [data-theme="dark"] .pth-frames li.is-part { background: #2a2208; border-color: #6b5410; }
+[data-theme="dark"] .pth-outline { background: #141414; border-color: #3a3a3a; }
+[data-theme="dark"] .pth-outline-gist { background: color-mix(in srgb, var(--tpl-type-c, #7d62c9) 18%, #000); color: #eee; }
+[data-theme="dark"] .pth-outline-list, [data-theme="dark"] .pth-outline > summary, [data-theme="dark"] .pth-struct-what { color: #ddd; }
+[data-theme="dark"] .pth-outline-list li.is-cur { background: #2a2208; border-color: #6b5410; }
 [data-theme="dark"] .pth-role { background: color-mix(in srgb, var(--tpl-type-c) 30%, #000); color: #eef; }
 [data-theme="dark"] .pth-opt, [data-theme="dark"] .pth-ph { background: #2a1a05; color: #fdba74; border-color: #7c4a10; }
 [data-theme="dark"] .pth-blank { background: #1f1f1f; color: #eee; }

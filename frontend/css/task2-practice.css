@@ -1050,3 +1050,10 @@ body.t2-on-weeks .wp-mini-stats { display: none !important; }
   .t2w-hero, .t2w-flow, .t2w-coach, .t2w-group { animation: none !important; }
   .t2w-sess, .t2w-go, .t2w-glass-btn, .t2w-sess-go { transition: none; }
 }
+
+/* "Xem template" on the writing screen (js/task2-practice.js _composeTplHtml) —
+   panel styles shared with writing.html in css/task2-generic-tpl.css. */
+.t2c-tpl-btn{width:100%;justify-content:center;margin:10px 0 0}
+.t2c-tpl-btn.is-open{border-color:#a5b4fc;color:#4338ca;background:#eef2ff}
+.t2c-tpl{margin:10px 0 0}
+[data-theme="dark"] .t2c-tpl-btn.is-open{background:#1e1b4b;color:#c7d2fe;border-color:#4338ca}
