@@ -994,6 +994,7 @@ async function showHints() {
       body: JSON.stringify({ questionId: q._id, question: q.question, part: q.part, cueCard: q.cueCard || '' }),
     });
     renderHints(data.hints);
+    if (window.AskLulu) window.AskLulu.say(btn, 'Thử dùng mấy từ này khi trả lời xem sao nè 🍊');
   } catch (e) {
     console.error('showHints:', e);
     showToast('Không thể tạo gợi ý. Vui lòng thử lại.', 'error');

@@ -857,9 +857,9 @@ function renderTranslationBlock(data) {
     + '<textarea class="eg-ex-input eg-tr-input" rows="2" placeholder="Viết câu tiếng Anh... (Ctrl+Enter để kiểm tra)"' + btnAttrs(i) + '></textarea>'
     + '<div class="eg-tr-actions">'
     + '<button type="button" class="eg-ex-reveal-btn" data-eg-act="check-tr"' + btnAttrs(i) + '>Kiểm tra</button>'
-    + (it.hint ? '<button type="button" class="eg-drill-btn-ghost" data-eg-act="hint"><i class="far fa-lightbulb"></i> Gợi ý</button>' : '')
+    + (it.hint ? '<button type="button" class="eg-drill-btn-ghost ask-lulu" data-eg-act="hint" title="Hỏi Lulu gợi ý"><span class="ask-lulu-ic"></span> Hỏi Lulu</button>' : '')
     + '</div>'
-    + (it.hint ? '<div class="eg-tr-hint"><i class="far fa-lightbulb"></i> ' + escHtml(it.hint) + '</div>' : '')
+    + (it.hint ? '<div class="eg-tr-hint">🍊 Lulu gợi ý: <span class="eg-tr-hint-txt">' + escHtml(it.hint) + '</span></div>' : '')
     + '<div class="eg-tr-result"></div>'
     + '</div>'
   ).join('');
@@ -951,8 +951,13 @@ function _egBindDrillEvents() {
       case 'check-tr': checkEgTranslation(btn.dataset.egDrill, Number(btn.dataset.i)); break;
       case 'self-ok': _egMarkTranslationOk(btn); break;
       case 'hint': {
-        const hint = btn.closest('.eg-tr-item').querySelector('.eg-tr-hint');
-        if (hint) hint.classList.toggle('vis');
+        // Lulu says the hint in a bubble; it also stays written under the
+        // buttons so the student can keep reading it while typing.
+        const item = btn.closest('.eg-tr-item');
+        const hint = item.querySelector('.eg-tr-hint');
+        if (hint) hint.classList.add('vis');
+        const txt = item.querySelector('.eg-tr-hint-txt');
+        if (window.AskLulu && txt) window.AskLulu.say(btn, txt.textContent + ' 🍊');
         break;
       }
     }

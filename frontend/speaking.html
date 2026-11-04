@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/pf-speaking.css?v=866ba04e0c"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=1284f2385e"></script>
+<script src="/js/bundles/app-shell.js?v=c58b60cd77"></script>
 <script src="/js/shared/onboarding-tour.js?v=63967a156b"></script>
 <script src="/js/learning-popups.js?v=d05aa08d9c"></script>
 <script src="/js/shared/paste-guard.js?v=574d1d5eb9"></script>
@@ -262,8 +262,8 @@
             <button class="q-read-btn" onclick="readQuestion()" title="Nghe câu hỏi">
               <i class="fas fa-volume-up"></i>
             </button>
-            <button class="q-hints-btn" id="q-hints-btn" onclick="showHints()" title="Gợi ý từ vựng — không lộ hết câu trả lời mẫu">
-              <i class="fas fa-tags"></i> Hints
+            <button class="q-hints-btn ask-lulu" id="q-hints-btn" onclick="showHints()" title="Hỏi Lulu gợi ý từ vựng — không lộ hết câu trả lời mẫu">
+              <span class="ask-lulu-ic"></span> Hỏi Lulu
             </button>
             <button class="q-sample-btn" id="q-sample-btn" onclick="showSampleAnswer()" title="Xem câu trả lời mẫu">
               <i class="fas fa-lightbulb"></i> Sample Answer
@@ -272,7 +272,7 @@
           <div class="q-text" id="q-text"></div>
           <div class="q-cue" id="q-cue" style="display:none"></div>
           <div class="hints-box" id="hints-box" style="display:none">
-            <div class="hints-header"><i class="fas fa-tags"></i>&nbsp;Gợi ý từ vựng</div>
+            <div class="hints-header">🍊&nbsp;Lulu gợi ý từ vựng</div>
             <div class="hint-chips" id="hints-vocab"></div>
           </div>
           <div class="sample-answer-box" id="sample-answer-box" style="display:none">
@@ -794,6 +794,6 @@
 <script src="/js/speaking-criteria.js?v=f7a3742640"></script>
 <script src="/js/shared/route-params.js?v=9269bcbbb4"></script>
 <script src="/js/speaking-tips.js?v=e6b8ab2851"></script>
-<script src="/js/speaking.js?v=84ca80f5c9"></script>
+<script src="/js/speaking.js?v=8581196837"></script>
 </body>
 </html>
