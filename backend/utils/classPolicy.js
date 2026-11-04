@@ -20,7 +20,7 @@ function withPolicyDefaults(policy = {}) {
     lateToAbsenceRatio:     policy.lateToAbsenceRatio && policy.lateToAbsenceRatio >= 1 ? policy.lateToAbsenceRatio : 2,
     lateThresholdMinutes:   policy.lateThresholdMinutes ?? 15,
     failOnExceed:           policy.failOnExceed ?? true,
-    homeworkMissThreshold:  policy.homeworkMissThreshold && policy.homeworkMissThreshold >= 1 ? policy.homeworkMissThreshold : 3,
+    homeworkMissThreshold:  policy.homeworkMissThreshold && policy.homeworkMissThreshold >= 1 ? policy.homeworkMissThreshold : 4,
     // Enrollment-status thresholds (distinct from homeworkMissThreshold above,
     // which only gates the dashboard/nag-message nudge) — counted against the
     // SAME "assignments currently overdue & incomplete in this class" number,
@@ -29,8 +29,8 @@ function withPolicyDefaults(policy = {}) {
     // can pull a student back out of warning/failed, same as fixing an
     // attendance record. Archiving an incomplete assignment does NOT — it keeps
     // counting (assignmentService.archivedIsMissed).
-    homeworkWarnThreshold:  policy.homeworkWarnThreshold && policy.homeworkWarnThreshold >= 1 ? policy.homeworkWarnThreshold : 3,
-    homeworkFailThreshold:  policy.homeworkFailThreshold && policy.homeworkFailThreshold >= 1 ? policy.homeworkFailThreshold : 6,
+    homeworkWarnThreshold:  policy.homeworkWarnThreshold && policy.homeworkWarnThreshold >= 1 ? policy.homeworkWarnThreshold : 4,
+    homeworkFailThreshold:  policy.homeworkFailThreshold && policy.homeworkFailThreshold >= 1 ? policy.homeworkFailThreshold : 8,
     // More than this many OLDER assignments still incomplete (overdue ones
     // included) locks every newer assignment in the class — see
     // assignmentService.applyHomeworkLocks. 0 = finish everything first.

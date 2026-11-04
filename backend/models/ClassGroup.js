@@ -25,8 +25,8 @@ const attendancePolicySchema = new mongoose.Schema({
   failOnExceed:           { type: Boolean, default: true },
   // Homework: số "buổi" (assignment) đã quá deadline mà học viên hoàn thành
   // < 100% — vượt con số này thì hiện cảnh báo homework + gửi 1 tin nhắn.
-  // "3" chỉ là mặc định, không hard-code (xem assignmentService).
-  homeworkMissThreshold: { type: Number, default: 3, min: 1 },
+  // "4" chỉ là mặc định, không hard-code (xem assignmentService).
+  homeworkMissThreshold: { type: Number, default: 4, min: 1 },
   // Ngưỡng đổi enrollment.status: cùng con số "bài tập đang quá hạn & chưa
   // đạt" ở trên, nhưng đây là ngưỡng làm đổi TRẠNG THÁI học viên (cảnh báo /
   // rớt khóa), tách khỏi homeworkMissThreshold (chỉ để nhắc nhở). Recomputed
@@ -34,8 +34,8 @@ const attendancePolicySchema = new mongoose.Schema({
   // refreshEnrollment) — y hệt cách điểm danh tự "gỡ" rớt khóa khi sửa lại
   // bản ghi, nên giáo viên gia hạn/ẩn một bài tập cũng tự kéo học viên ra
   // khỏi cảnh báo/rớt khóa.
-  homeworkWarnThreshold: { type: Number, default: 3, min: 1 },
-  homeworkFailThreshold: { type: Number, default: 6, min: 1 },
+  homeworkWarnThreshold: { type: Number, default: 4, min: 1 },
+  homeworkFailThreshold: { type: Number, default: 8, min: 1 },
   // Khoá bài mới: còn HƠN số này bài tập cũ (giao trước) chưa hoàn thành —
   // kể cả đã quá hạn — thì mọi bài mới hơn bị khoá cho tới khi học viên làm
   // bù bài cũ (xem assignmentService.applyHomeworkLocks).

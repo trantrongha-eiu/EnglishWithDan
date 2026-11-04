@@ -416,7 +416,7 @@ AttendanceRecord.findOne({ sessionId, studentId })                  // upsert ta
 
 **Purpose:** Homework — a teacher assigns work to a `ClassGroup`, a student
 completes it. Built on top of the attendance models above; adds
-`ClassGroup.policy.homeworkMissThreshold` (default 3).
+`ClassGroup.policy.homeworkMissThreshold` (default 4).
 
 - **`Assignment`** — `classId`(ref ClassGroup), `teacherId`, `title`,
   `instruction`, `deadline` (nullable), `status` (`active`/`archived` —

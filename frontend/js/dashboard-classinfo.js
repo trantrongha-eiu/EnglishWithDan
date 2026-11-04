@@ -467,7 +467,7 @@ function ciMaybeShowWarningPopup(classes) {
     <div class="ci-warn-body">
       ${rows}
       <p class="ci-warn-foot">${foot}</p>
-      ${sticky ? `<p class="ci-warn-foot">🔔 Thông báo này sẽ hiện lại mỗi lần bạn vào trang cho tới khi số bài thiếu giảm xuống dưới <b>${Math.min(...flagged.filter(ciPopupHomework).map((c) => c.homeworkWarnThreshold || 3))}</b> bài.</p>` : ''}
+      ${sticky ? `<p class="ci-warn-foot">🔔 Thông báo này sẽ hiện lại mỗi lần bạn vào trang cho tới khi số bài thiếu giảm xuống dưới <b>${Math.min(...flagged.filter(ciPopupHomework).map((c) => c.homeworkWarnThreshold || 4))}</b> bài.</p>` : ''}
     </div>
     <div class="ci-warn-actions">
       ${anyHomework ? '<a class="ci-warn-btn ci-warn-btn--ghost" href="#homework-card" data-close>Xem bài tập</a>' : ''}

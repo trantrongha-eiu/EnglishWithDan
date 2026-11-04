@@ -1278,7 +1278,7 @@ image items have a manual checkbox. Controller
 | `GET /api/assignments/:assignmentId` | One assignment, shaped for the student. **403 unless the caller has an active enrollment in its class.** |
 | `POST /api/assignments/:assignmentId/items/:itemId/complete` | `{ done }` → tick an external/image item. **400 for an internal item** (its status only ever comes from attempt history). |
 
-**Completion:** internal item = the student has ≥1 attempt for that resource, dated at/after the assignment's `createdAt` (`resourceCompletionService.checkCompleted`, batched one query per type). Assignment status: `completed` (all items) → `overdue` (deadline passed, not all) → `in_progress` (≥1) → `not_started`. `homeworkWarning` fires when a class's count of past-deadline-incomplete assignments reaches `policy.homeworkMissThreshold` (default 3).
+**Completion:** internal item = the student has ≥1 attempt for that resource, dated at/after the assignment's `createdAt` (`resourceCompletionService.checkCompleted`, batched one query per type). Assignment status: `completed` (all items) → `overdue` (deadline passed, not all) → `in_progress` (≥1) → `not_started`. `homeworkWarning` fires when a class's count of past-deadline-incomplete assignments reaches `policy.homeworkMissThreshold` (default 4).
 
 ---
 
