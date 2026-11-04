@@ -93,14 +93,23 @@
   let isPlaying = false;
   let continuous = false; // "Phát liên tục": play on to the end of the clip
 
+  // A fresh player for every lesson: reusing one (cueVideoById) left the
+  // previous video's YouTube caption box frozen over the new video.
   function ensurePlayer(videoId, start) {
-    if (playerReady) {
-      // Second lesson on the same page: reuse the player once it's ready.
-      playerReady = playerReady.then((p) => { p.cueVideoById({ videoId, startSeconds: start }); return p; });
-      return playerReady;
-    }
     playerReady = ytApiReady.then(() => new Promise((resolve) => {
-      player = new YT.Player('yt-player', {
+      if (player) {
+        try { player.destroy(); } catch (_) { /* ignore */ }
+        player = null;
+        stopPoll();
+        isPlaying = false;
+        setPlayIcon(false);
+      }
+      if (!$('yt-player')) {
+        const host = document.createElement('div');
+        host.id = 'yt-player';
+        document.querySelector('.sh-video').prepend(host);
+      }
+      const p = new YT.Player('yt-player', {
         videoId,
         width: '100%',
         height: '100%',
@@ -109,14 +118,15 @@
           iv_load_policy: 3, cc_load_policy: 0, origin: location.origin,
         },
         events: {
-          onReady: () => resolve(player),
-          onStateChange: onPlayerState,
+          onReady: () => resolve(p),
+          onStateChange: (e) => { if (p === player) onPlayerState(e); },
           onError: (e) => {
             console.error('[shadowing] YouTube error', e && e.data);
             toast('Không phát được video này — vui lòng thử lại sau.', 'error');
           },
         },
       });
+      player = p;
     }));
     return playerReady;
   }
@@ -125,7 +135,9 @@
     isPlaying = e.data === YT.PlayerState.PLAYING;
     setPlayIcon(isPlaying);
     if (isPlaying) startPoll(); else stopPoll();
-    if (mode === 'dictation' || (mode === 'watch' && $('opt-sub').checked)) hideCaptions();
+    // Watch mode has its own subtitles (or none, when switched off), so
+    // YouTube's CC never shows there.
+    if (mode === 'dictation' || mode === 'watch') hideCaptions();
     // Paused: YouTube's controls come up, so the subtitles move above them.
     document.querySelector('.sh-video').classList.toggle('paused', !isPlaying);
   }
@@ -249,8 +261,8 @@
     btn.classList.toggle('off', !subOn);
     btn.querySelector('span').textContent = subOn ? 'Phụ đề: bật' : 'Phụ đề: tắt';
     el.hidden = !on;
-    // Ours replaces YouTube's own CC, which would otherwise show twice.
-    if (on) hideCaptions();
+    // Ours replaces YouTube's own CC; "Phụ đề: tắt" means no subtitles at all.
+    if (watching) hideCaptions();
     if (!on) return;
     el.classList.toggle('top', burned);
     el.innerHTML = (burned ? '' : `<span>${escHtml(seg.text)}</span>`) +
