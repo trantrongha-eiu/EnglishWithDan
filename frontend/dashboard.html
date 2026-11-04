@@ -20,7 +20,7 @@
   <script src="/js/shared/scroll-reveal.js?v=7010de29cd"></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <script src="/js/shared/pwa-register.js?v=713d4c39e1" defer></script>
-  <link rel="stylesheet" href="/css/dashboard.css?v=e674509005">
+  <link rel="stylesheet" href="/css/dashboard.css?v=9f3ccf48de">
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3">
   <link rel="stylesheet" href="/css/playful.css?v=ffb392e664"/>
 </head>
@@ -387,9 +387,6 @@
         <button class="btn btn-ghost btn-sm" id="btn-fullscreen-dash" onclick="toggleDashFullscreen()" title="Toàn màn hình">
           <i class="fas fa-expand" id="fs-icon-dash"></i>
         </button>
-        <button class="btn btn-danger btn-sm" id="btnStopPractice" onclick="stopPractice()" style="display:none">
-          <i class="fas fa-stop-circle"></i> Stop
-        </button>
       </div>
       <div class="mode-tabs-wrap">
         <div class="mode-tabs" id="mode-tabs">
@@ -412,7 +409,7 @@
         <div id="multipleChoiceMode" style="display:none">
           <div class="practice-container">
             <div class="practice-header"><h3><i class="fas fa-check-circle"></i> Quiz</h3><p>Chọn đáp án đúng</p></div>
-            <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="mcProgressFill"></div></div><div class="progress-text" id="mcProgressText">0/0</div></div>
+            <div class="practice-progress vp-progress"><div class="vp-progress-track"><div class="progress-bar"><div class="progress-fill" id="mcProgressFill"></div></div><div class="progress-text" id="mcProgressText">0/0</div></div><button class="vp-stop-btn" onclick="stopPractice()" title="Dừng và xem kết quả (Esc)"><i class="fas fa-stop-circle"></i> Dừng lại</button></div>
             <div class="question-card">
               <div class="question-number" id="mcQuestionNumber"></div>
               <div class="question-text" id="mcQuestionText"></div>
@@ -425,7 +422,7 @@
         <div id="fillBlankMode" style="display:none">
           <div class="practice-container">
             <div class="practice-header"><h3><i class="fas fa-sync-alt"></i> Flashcard</h3><p>Xem nghĩa → Nhớ lại từ → Lật thẻ</p></div>
-            <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="fbProgressFill"></div></div><div class="progress-text" id="fbProgressText">0/0</div></div>
+            <div class="practice-progress vp-progress"><div class="vp-progress-track"><div class="progress-bar"><div class="progress-fill" id="fbProgressFill"></div></div><div class="progress-text" id="fbProgressText">0/0</div></div><button class="vp-stop-btn" onclick="stopPractice()" title="Dừng và xem kết quả (Esc)"><i class="fas fa-stop-circle"></i> Dừng lại</button></div>
             <div class="question-card">
               <div class="question-number" id="fbQuestionNumber"></div>
               <div class="flashcard-wrap">
@@ -464,7 +461,7 @@
         <div id="clozeMode" style="display:none">
           <div class="practice-container">
             <div class="practice-header"><h3><i class="fas fa-pen"></i> Điền từ</h3><p>Đọc câu ví dụ, gõ từ còn thiếu vào chỗ trống</p></div>
-            <div class="practice-progress" id="clozeProgress"><div class="progress-bar"><div class="progress-fill" id="clozeProgressFill"></div></div><div class="progress-text" id="clozeProgressText">0/0</div></div>
+            <div class="practice-progress vp-progress" id="clozeProgress"><div class="vp-progress-track"><div class="progress-bar"><div class="progress-fill" id="clozeProgressFill"></div></div><div class="progress-text" id="clozeProgressText">0/0</div></div><button class="vp-stop-btn" onclick="stopPractice()" title="Dừng và xem kết quả (Esc)"><i class="fas fa-stop-circle"></i> Dừng lại</button></div>
             <div class="question-card" id="clozeCard">
               <div class="question-number" id="clozeQuestionNumber"></div>
               <div class="cloze-sentence" id="clozeSentence"></div>
@@ -494,7 +491,7 @@
         <div id="listeningMode" style="display:none">
           <div class="practice-container">
             <div class="practice-header"><h3><i class="fas fa-headphones"></i> Luyện Nghe</h3><p>Nghe và viết lại từ</p></div>
-            <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="listenProgressFill"></div></div><div class="progress-text" id="listenProgressText">0/0</div></div>
+            <div class="practice-progress vp-progress"><div class="vp-progress-track"><div class="progress-bar"><div class="progress-fill" id="listenProgressFill"></div></div><div class="progress-text" id="listenProgressText">0/0</div></div><button class="vp-stop-btn" onclick="stopPractice()" title="Dừng và xem kết quả (Esc)"><i class="fas fa-stop-circle"></i> Dừng lại</button></div>
             <div class="question-card">
               <div class="question-number" id="listenQuestionNumber"></div>
               <button class="btn-play-audio" onclick="playAudio()"><i class="fas fa-volume-up" style="font-size:24px"></i> Play Audio</button>
@@ -520,7 +517,7 @@
         <div id="translationMode" style="display:none">
           <div class="practice-container">
             <div class="practice-header"><h3><i class="fas fa-language"></i> Dịch</h3><p>Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh</p></div>
-            <div class="practice-progress"><div class="progress-bar"><div class="progress-fill" id="transProgressFill"></div></div><div class="progress-text" id="transProgressText">0/0</div></div>
+            <div class="practice-progress vp-progress"><div class="vp-progress-track"><div class="progress-bar"><div class="progress-fill" id="transProgressFill"></div></div><div class="progress-text" id="transProgressText">0/0</div></div><button class="vp-stop-btn" onclick="stopPractice()" title="Dừng và xem kết quả (Esc)"><i class="fas fa-stop-circle"></i> Dừng lại</button></div>
             <div class="question-card">
               <div class="question-number" id="transQuestionNumber"></div>
               <div class="trans-word-highlight" id="transWordHighlight"></div>
@@ -544,10 +541,7 @@
               <h3><i class="fas fa-random"></i> Mixed</h3>
               <p>Trộn ngẫu nhiên 4 dạng: Quiz · Điền từ · Nghe · Dịch</p>
             </div>
-            <div class="practice-progress">
-              <div class="progress-bar"><div class="progress-fill" id="mixProgressFill"></div></div>
-              <div class="progress-text" id="mixProgressText">0/0</div>
-            </div>
+            <div class="practice-progress vp-progress"><div class="vp-progress-track"><div class="progress-bar"><div class="progress-fill" id="mixProgressFill"></div></div><div class="progress-text" id="mixProgressText">0/0</div></div><button class="vp-stop-btn" onclick="stopPractice()" title="Dừng và xem kết quả (Esc)"><i class="fas fa-stop-circle"></i> Dừng lại</button></div>
             <div id="mixQuestionWrap"></div>
           </div>
         </div>
@@ -1230,7 +1224,7 @@
 <script src="/js/dashboard-classinfo.js?v=f542351566"></script>
 <script src="/js/dashboard-review.js?v=4dba13dc0a"></script>
 <script src="/js/dashboard-paraphrase.js?v=f6c0320973"></script>
-<script src="/js/dashboard.js?v=94bb6ba888"></script>
+<script src="/js/dashboard.js?v=195a88d12c"></script>
 <script src="/js/dashboard-browse.js?v=5692652b85"></script>
 </body>
 </html>

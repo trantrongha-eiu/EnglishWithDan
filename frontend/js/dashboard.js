@@ -2376,8 +2376,6 @@ function _activateModeNow(mode) {
     currentMode = mode;
     document.querySelectorAll('#mode-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
 
-    const stopBtn = document.getElementById('btnStopPractice');
-    if (stopBtn) stopBtn.style.display = mode === 'study' ? 'none' : 'inline-flex';
 
     if (mode === 'study') { document.getElementById('studyMode').style.display = 'block'; renderStudyGrid(); }
     else startPractice(mode);
@@ -3609,8 +3607,6 @@ function showResults(mode) {
 
     _reportSessionStreak(); // tính streak nếu đã trả lời >= 5 từ
 
-    const stopBtn = document.getElementById('btnStopPractice');
-    if (stopBtn) stopBtn.style.display = 'none';
     updateKbdHint(); // hide shortcut panel on results screen
 
     const total     = mode === 'mixed' ? mixedQueue.length : practiceWords.length;
