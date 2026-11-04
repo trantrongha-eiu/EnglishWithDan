@@ -594,3 +594,82 @@ describe('auto attendance at class time', () => {
     expect(await AttendanceRecord.countDocuments({ classId: cls._id, autoMarked: true })).toBe(1);
   });
 });
+
+describe('classroom debug pass (2026-11-04)', () => {
+  const ClassSession = require('../../models/ClassSession');
+  const { autoMarkDueSessions } = require('../../services/classAutoAttendanceService');
+  const vnDay = (offset = 0) => new Date(Date.now() + 7 * 3600e3 + offset * 864e5).toISOString().slice(0, 10);
+
+  test('generate continues numbering after a makeup session instead of failing on a duplicate number', async () => {
+    const t = await createTeacher();
+    const cls = await makeClass(t);
+    const orig = await addSession(t, cls._id, { date: '2026-09-07' });                                   // #1
+    await addSession(t, cls._id, { date: '2026-09-08', type: 'makeup', makeupForSessionId: orig._id });  // #2 (makeup)
+    const res = await request(app).post(`/api/classes/${cls._id}/sessions/generate`).set(auth(t)).send({
+      weekdays: [1, 3], startDate: '2026-09-07', endDate: '2026-09-16',
+    });
+    expect(res.status).toBe(201);
+    expect(res.body.created).toBe(3); // 9, 14, 16 — the 7th already exists
+    expect(res.body.sessions.map((s) => s.sessionNumber)).toEqual([3, 4, 5]);
+  });
+
+  test('a manually created future session cannot start out as "held"', async () => {
+    const t = await createTeacher();
+    const cls = await makeClass(t);
+    const s = await addSession(t, cls._id, { date: future(5), status: 'held' });
+    expect(s.status).toBe('scheduled');
+    const p = await addSession(t, cls._id, { date: past(3), status: 'held' });
+    expect(p.status).toBe('held');
+  });
+
+  test('auto attendance skips makeup sessions (would forgive every absence)', async () => {
+    const t = await createTeacher();
+    const st = await createStudent();
+    const cls = await makeClass(t, { startTime: '00:00' });
+    const e = await addStudent(t, cls._id, st);
+    const orig = await addSession(t, cls._id, { date: vnDay(-1) });
+    await mark(t, cls._id, orig._id, [{ enrollmentId: e.enrollmentId, status: 'absent' }]);
+    const makeup = await addSession(t, cls._id, { date: vnDay(0), type: 'makeup', makeupForSessionId: orig._id });
+
+    const r = await autoMarkDueSessions({ classIds: [cls._id] });
+    expect(r.sessions).toBe(0);
+    expect(await AttendanceRecord.countDocuments({ sessionId: makeup._id })).toBe(0);
+    const enr = await ClassEnrollment.findById(e.enrollmentId).lean();
+    expect(enr.stats.absenceEquivalent).toBe(1);
+  });
+
+  test('"Đánh dấu đã học" on a makeup session does not mark the whole class present', async () => {
+    const t = await createTeacher();
+    const st = await createStudent();
+    const cls = await makeClass(t);
+    const e = await addStudent(t, cls._id, st);
+    const orig = await addSession(t, cls._id, { date: past(5) });
+    await mark(t, cls._id, orig._id, [{ enrollmentId: e.enrollmentId, status: 'absent' }]);
+    const makeup = await addSession(t, cls._id, { date: past(1), type: 'makeup', makeupForSessionId: orig._id });
+
+    const upd = await request(app).put(`/api/classes/${cls._id}/sessions/${makeup._id}`).set(auth(t)).send({ status: 'held' });
+    expect(upd.status).toBe(200);
+    expect(await AttendanceRecord.countDocuments({ sessionId: makeup._id })).toBe(0);
+    const enr = await ClassEnrollment.findById(e.enrollmentId).lean();
+    expect(enr.stats.absenceEquivalent).toBe(1);
+  });
+
+  test('attendance roster shows a removed-then-re-added student once, with their mark', async () => {
+    const t = await createTeacher();
+    const st = await createStudent();
+    const cls = await makeClass(t);
+    const first = await addStudent(t, cls._id, st);
+    const s = await addSession(t, cls._id, { date: past(1) });
+    await mark(t, cls._id, s._id, [{ enrollmentId: first.enrollmentId, status: 'late', lateMinutes: 10 }]);
+    await request(app).delete(`/api/classes/${cls._id}/students/${first.enrollmentId}`).set(auth(t));
+    const again = await addStudent(t, cls._id, st);
+
+    const res = await request(app).get(`/api/classes/${cls._id}/sessions/${s._id}/attendance`).set(auth(t));
+    expect(res.status).toBe(200);
+    const rows = res.body.roster.filter((r) => String(r.studentId) === String(st._id));
+    expect(rows).toHaveLength(1);
+    expect(String(rows[0].enrollmentId)).toBe(String(again.enrollmentId));
+    expect(rows[0].status).toBe('late');
+    expect(rows[0].removed).toBe(false);
+  });
+});

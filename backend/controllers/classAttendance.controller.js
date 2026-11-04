@@ -485,6 +485,10 @@ exports.createSession = async (req, res) => {
       sessionNumber = (last?.sessionNumber || 0) + 1;
     }
 
+    // A session that hasn't happened yet can't already be "Đã học".
+    let status = ['scheduled', 'held', 'cancelled'].includes(req.body.status) ? req.body.status : 'scheduled';
+    if (status === 'held' && new Date(req.body.date) > endOfToday()) status = 'scheduled';
+
     const session = await ClassSession.create({
       classId: cls._id,
       sessionNumber,
@@ -494,7 +498,7 @@ exports.createSession = async (req, res) => {
       startTime: cleanTime(req.body.startTime),
       type,
       makeupForSessionId,
-      status: ['scheduled', 'held', 'cancelled'].includes(req.body.status) ? req.body.status : 'scheduled',
+      status,
       createdBy: req.user._id,
     });
     res.status(201).json({ success: true, session });
@@ -533,8 +537,11 @@ exports.generateSessions = async (req, res) => {
     if ((end - start) / 864e5 > MAX_GENERATE_DAYS) return res.status(400).json({ success: false, message: 'Khoảng thời gian quá dài (tối đa 2 năm)' });
 
     const weekdaySet = new Set(weekdays);
-    const existing = await ClassSession.find({ classId: cls._id, type: 'regular' }).select('date sessionNumber').lean();
-    const existingDateKeys = new Set(existing.map((s) => new Date(s.date).toISOString().slice(0, 10)));
+    // Number after EVERY session (makeup ones too) — sessionNumber is unique
+    // per class, so counting only regular ones collided with a makeup session
+    // and the whole insert failed with a duplicate-key error.
+    const existing = await ClassSession.find({ classId: cls._id }).select('date sessionNumber type').lean();
+    const existingDateKeys = new Set(existing.filter((s) => s.type !== 'makeup').map((s) => new Date(s.date).toISOString().slice(0, 10)));
     let nextNumber = existing.reduce((max, s) => Math.max(max, s.sessionNumber), 0) + 1;
 
     const topic = (req.body.topic || '').trim();
@@ -625,7 +632,10 @@ exports.updateSession = async (req, res) => {
     // points behave the same; the teacher can still correct individual
     // students afterwards on Điểm danh (editing an existing record there
     // works exactly as if it had been marked normally).
-    if (before.status !== 'held' && s.status === 'held') {
+    // Not for a makeup session: only the students who actually came to it
+    // should be marked, and "present" there cancels their absence on the
+    // original session — defaulting the whole class would forgive everyone.
+    if (before.status !== 'held' && s.status === 'held' && s.type !== 'makeup') {
       const enrollments = await ClassEnrollment.find({ classId: s.classId, removedAt: null }).select('_id studentId').lean();
       const existing = await AttendanceRecord.find({ sessionId: s._id }).select('studentId').lean();
       const already = new Set(existing.map((r) => String(r.studentId)));
@@ -636,7 +646,9 @@ exports.updateSession = async (req, res) => {
           status: 'present', markedBy: req.user._id, markedAt: new Date(),
         }));
       if (toCreate.length) await AttendanceRecord.insertMany(toCreate);
-      if (!s.attendanceTakenAt) { s.attendanceTakenAt = new Date(); s.attendanceTakenBy = req.user._id; await s.save(); }
+    }
+    if (before.status !== 'held' && s.status === 'held' && !s.attendanceTakenAt) {
+      s.attendanceTakenAt = new Date(); s.attendanceTakenBy = req.user._id; await s.save();
     }
 
     const changed = before.status !== s.status || before.date !== +new Date(s.date) || before.type !== s.type;
@@ -655,20 +667,32 @@ async function buildRoster(classId, sessionId) {
     AttendanceRecord.find({ sessionId }).lean(),
     AttendanceCheckIn.find({ sessionId }).lean(),
   ]);
+  // Records are unique per (session, student) and saveSessionAttendance
+  // matches them by student, so key them that way too — keyed by enrollment,
+  // a removed-then-re-added student showed up twice (old row with the mark,
+  // new row blank) and the two rows overwrote each other on save.
   const recMap = {};
-  records.forEach((r) => { recMap[String(r.enrollmentId)] = r; });
+  records.forEach((r) => { recMap[String(r.studentId)] = r; });
   const checkinMap = {};
   checkins.forEach((c) => { checkinMap[String(c.studentId)] = c; });
-  const students = await User.find({ _id: { $in: enrollments.map((e) => e.studentId) } })
+
+  // One row per student: the live enrollment, else the latest removed one.
+  const byStudent = new Map();
+  for (const e of enrollments) {
+    const k = String(e.studentId);
+    const prev = byStudent.get(k);
+    if (!prev || (prev.removedAt && (!e.removedAt || e.createdAt > prev.createdAt))) byStudent.set(k, e);
+  }
+  const students = await User.find({ _id: { $in: [...byStudent.values()].map((e) => e.studentId) } })
     .select('username firstName lastName avatar').lean();
   const sMap = {};
   students.forEach((s) => { sMap[String(s._id)] = s; });
 
   // Active roster + anyone already marked for this session (even if since removed).
-  return enrollments
-    .filter((e) => !e.removedAt || recMap[String(e._id)])
+  return [...byStudent.values()]
+    .filter((e) => !e.removedAt || recMap[String(e.studentId)])
     .map((e) => {
-      const r = recMap[String(e._id)];
+      const r = recMap[String(e.studentId)];
       const ci = checkinMap[String(e.studentId)];
       return {
         enrollmentId: e._id,

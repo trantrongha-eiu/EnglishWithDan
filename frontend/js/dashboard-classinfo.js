@@ -69,19 +69,23 @@ function ciFmtTime(d) {
 // Only informational + a tick button: the teacher still reviews it on Điểm
 // danh (backend/controllers/classAttendance.controller.js's
 // saveSessionAttendance resolves it to confirmed/rejected).
-function ciCheckinBlock(ck) {
+function ciCheckinBlock(ck, todaySession) {
   if (!ck || !ck.session) return '';
   const sid = ck.session._id;
+  // Same "Buổi N" as the progress chip / week strip (ordinal among regular
+  // sessions) — the raw sessionNumber also counts cancelled + makeup rows.
+  const name = todaySession && String(todaySession._id) === String(sid)
+    ? ciSessionName(todaySession) : `Buổi ${ck.session.sessionNumber}`;
   // A real mark already exists for today (teacher's, or the automatic
   // "có mặt" once class time passed with no attendance taken) — show it.
   if (ck.record) {
     const ok = ck.record.status === 'present' || ck.record.status === 'late';
     const label = { present: 'Có mặt', late: 'Đi trễ', excused: 'Vắng có phép', absent: 'Vắng' }[ck.record.status] || ck.record.status;
-    return `<div class="ci-checkin ${ok ? 'ci-checkin--ok' : 'ci-checkin--rejected'}"><span class="ci-checkin-text">${ok ? '✅' : '⚠️'} Buổi ${ck.session.sessionNumber} hôm nay: <b>${label}</b>${ck.record.autoMarked ? ' <span class="ci-auto-tag">tự động</span> — hệ thống điểm danh khi tới giờ học, giáo viên có thể điều chỉnh.' : '.'}</span></div>`;
+    return `<div class="ci-checkin ${ok ? 'ci-checkin--ok' : 'ci-checkin--rejected'}"><span class="ci-checkin-text">${ok ? '✅' : '⚠️'} ${name} hôm nay: <b>${label}</b>${ck.record.autoMarked ? ' <span class="ci-auto-tag">tự động</span> — hệ thống điểm danh khi tới giờ học, giáo viên có thể điều chỉnh.' : '.'}</span></div>`;
   }
   if (!ck.checkin) {
     return `<div class="ci-checkin">
-      <span class="ci-checkin-text">📍 Buổi ${ck.session.sessionNumber} hôm nay — bạn đã có mặt chưa?</span>
+      <span class="ci-checkin-text">📍 ${name} hôm nay — bạn đã có mặt chưa?</span>
       <button type="button" class="ci-checkin-btn" onclick="ciSubmitCheckin('${sid}', this)">🙋 Điểm danh</button>
     </div>`;
   }
@@ -256,7 +260,7 @@ function ciClassCard(c, ck, idx) {
     </div>
     ${reason}
     ${ciProgressBlock(c)}
-    ${ciCheckinBlock(ck)}
+    ${ciCheckinBlock(ck, c.progress && c.progress.todaySession)}
     <div class="ci-tiles">
       ${ciTile('👥', `<span data-count="${c.classSize}">${c.classSize}</span>`, 'Sĩ số lớp', 'ci-tile--indigo')}
       ${ciTile('✅', rate, `Chuyên cần · ${c.heldSessions} buổi`, 'ci-tile--blue')}
@@ -518,9 +522,15 @@ async function loadClassInfo() {
     : '';
 
   const firstRender = card.style.display !== 'block';
+  // Keep the Buổi nghỉ / BT thiếu panels the student had opened.
+  const openTiles = [...card.querySelectorAll('.ci-tile--toggle[aria-expanded="true"]')].map((b) => b.getAttribute('aria-controls'));
   card.style.display = 'block';
   card.innerHTML = `<div class="ci-head"><h3>🏫 Lớp học của tôi</h3>${headPill}</div>
     <div class="ci-list">${data.classes.map((c, i) => ciClassCard(c, checkinByClass.get(String(c.classId)), i)).join('')}</div>`;
+  openTiles.forEach((id) => {
+    const btn = card.querySelector(`.ci-tile--toggle[aria-controls="${id}"]`);
+    if (btn) ciToggleLimit(btn);
+  });
   if (firstRender) ciAnimateCounts(card);
   else card.classList.add('ci-no-anim'); // re-render after a check-in: no replay
   ciMaybeShowWarningPopup(data.classes);

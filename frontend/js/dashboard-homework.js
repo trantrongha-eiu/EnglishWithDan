@@ -349,6 +349,9 @@ async function loadHomework() {
   if (!data || !data.hasClasses) { card.style.display = 'none'; return; }
 
   card.style.display = 'block';
+  // A re-render (tab-return refresh, manual tick) keeps the rules panel open
+  // if the student had opened it.
+  const rulesWasOpen = !!card.querySelector('.hw-rules[open]');
   const warn = data.homeworkWarning
     ? `<div class="hw-warn">⚠️ Bạn đang có <b>${data.homeworkWarning.missedCount} buổi</b> chưa hoàn thành đầy đủ bài tập${data.homeworkWarning.className ? ` ở lớp <b>${escHtml(data.homeworkWarning.className)}</b>` : ''}. Vui lòng hoàn thành homework đúng hạn để không bị tụt lại.</div>`
     : '';
@@ -358,7 +361,7 @@ async function loadHomework() {
         Hãy hoàn thành các bài cũ dưới đây (kể cả bài đã quá hạn) để được làm tiếp bài mới:
         <ul>${lk.pendingOld.map((o) => `<li><a href="#" onclick="hwScrollTo('${o._id}');return false">${escHtml(o.title)}</a> · ${o.done}/${o.total}${o.status === 'overdue' ? ' <span class="hw-due hw-due--over">Quá hạn</span>' : ''}</li>`).join('')}</ul></div>`
     : '';
-  const rules = `<details class="hw-rules">
+  const rules = `<details class="hw-rules"${rulesWasOpen ? ' open' : ''}>
     <summary>ℹ️ Cách tính bài tập đã hoàn thành</summary>
     <ul>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥70%</span> Bài trắc nghiệm/quiz (đề full, dictation, grammar…): cần đạt <b>từ 70% số điểm trở lên</b> mới tính hoàn thành.</li>
@@ -443,3 +446,17 @@ async function hwToggleItem(assignmentId, itemId, done, el) {
 }
 window.hwToggleItem = hwToggleItem;
 window.loadHomework = loadHomework;
+
+// "Bắt đầu" opens each exercise in a new tab, so the student comes back here
+// after finishing it — re-fetch then, or the item still reads "chưa xong"
+// until a full reload. Throttled so quick tab switches don't hammer the API;
+// skipped while the card is hidden (student in no class).
+let hwLastRefresh = Date.now();
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  const card = document.getElementById('homework-card');
+  if (!card || card.style.display !== 'block') return;
+  if (Date.now() - hwLastRefresh < 15000) return;
+  hwLastRefresh = Date.now();
+  loadHomework();
+});

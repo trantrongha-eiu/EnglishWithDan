@@ -375,7 +375,7 @@ function OverviewTab({ cls, onSaved }) {
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Ngưỡng nhắc nhở / cảnh báo (buổi) — mặc định ½ số buổi được phép</label>
-            <input className="form-input" type="number" min={0} step={0.5} value={form.policy.warnThreshold} onChange={setP('warnThreshold')} />
+            <input className="form-input" type="number" min={0} step={0.5} value={form.policy.warnThreshold ?? ''} onChange={setP('warnThreshold')} />
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Số lần trễ = 1 buổi vắng</label>
@@ -583,7 +583,7 @@ function SessionsTab({ cls, onChange }) {
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
   const [wiping, setWiping] = useState(false);
-  const [form, setForm] = useState({ date: '', topic: '', type: 'regular', makeupForSessionId: '', status: 'held', startTime: '' });
+  const [form, setForm] = useState({ date: '', topic: '', type: 'regular', makeupForSessionId: '', status: 'scheduled', startTime: '' });
   const [gen, setGen] = useState({
     weekdays: [], startDate: cls.startDate ? cls.startDate.slice(0, 10) : '', endDate: cls.endDate ? cls.endDate.slice(0, 10) : '',
   });
@@ -602,7 +602,7 @@ function SessionsTab({ cls, onChange }) {
     try {
       await apiFetch(`/classes/${cls._id}/sessions`, { method: 'POST', body: JSON.stringify(form) });
       toast('Đã tạo buổi học');
-      setForm({ date: '', topic: '', type: 'regular', makeupForSessionId: '', status: 'held', startTime: '' });
+      setForm({ date: '', topic: '', type: 'regular', makeupForSessionId: '', status: 'scheduled', startTime: '' });
       load();
       onChange?.();
     } catch (err) { toast(err.message, 'error'); }
@@ -630,6 +630,7 @@ function SessionsTab({ cls, onChange }) {
       const d = await apiFetch(`/classes/${cls._id}/sessions/generate`, { method: 'POST', body: JSON.stringify(gen) });
       toast(d.created ? `Đã tạo ${d.created} buổi học` : 'Không có buổi mới nào được tạo (đã có sẵn hết trong khoảng ngày này)');
       load();
+      if (d.created) onChange?.(); // header progress (Tuần / Buổi) reads the new schedule
     } catch (err) { toast(err.message, 'error'); }
     finally { setGenerating(false); }
   }
@@ -648,6 +649,7 @@ function SessionsTab({ cls, onChange }) {
         const d = await apiFetch(`/classes/${cls._id}/sessions`, { method: 'DELETE', body: JSON.stringify({ scope: 'scheduled' }) });
         toast(`Đã xoá ${d.deleted} buổi Dự kiến`);
         load();
+        if (d.deleted) onChange?.();
       } catch (err) { toast(err.message, 'error'); }
       finally { setWiping(false); }
     });
@@ -785,10 +787,15 @@ function AttendanceTab({ cls, initialSessionId = '', onSaved }) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
+  const fetchSessions = () => apiFetch(`/classes/${cls._id}/sessions`).then((d) => {
+    const list = (d.sessions || []).filter((s) => s.status !== 'cancelled');
+    setSessions(list);
+    return d;
+  });
+
   useEffect(() => {
-    apiFetch(`/classes/${cls._id}/sessions`).then((d) => {
+    fetchSessions().then((d) => {
       const list = (d.sessions || []).filter((s) => s.status !== 'cancelled');
-      setSessions(list);
       // Deep link from the header ("Điểm danh ngay" / week strip), else
       // today's session if there is one.
       const today = d.progress?.today;
@@ -798,23 +805,27 @@ function AttendanceTab({ cls, initialSessionId = '', onSaved }) {
     }).catch(() => {});
   }, [cls._id]);
 
+  // Switching sessions quickly: only the latest pick may fill the grid.
+  const latestPick = React.useRef('');
   function loadSession(sid) {
     setSessionId(sid);
-    if (!sid) { setRoster([]); return; }
+    latestPick.current = sid;
+    if (!sid) { setRoster([]); setCurrent(null); return; }
     setLoading(true);
     apiFetch(`/classes/${cls._id}/sessions/${sid}/attendance`)
       .then((d) => {
+        if (latestPick.current !== sid) return;
         setCurrent(d.session || null);
         setRoster(d.roster || []);
         const m = {};
         (d.roster || []).forEach((r) => { m[r.enrollmentId] = { status: r.status || 'present', lateMinutes: r.lateMinutes || '', note: r.note || '' }; });
         setMarks(m);
       })
-      .catch((e) => toast(e.message, 'error'))
-      .finally(() => setLoading(false));
+      .catch((e) => { if (latestPick.current === sid) toast(e.message, 'error'); })
+      .finally(() => { if (latestPick.current === sid) setLoading(false); });
   }
 
-  const setMark = (eid, patch) => setMarks((m) => ({ ...m, [eid]: { ...m[eid], ...patch } }));
+  const setMark =(eid, patch) => setMarks((m) => ({ ...m, [eid]: { ...m[eid], ...patch } }));
   const bulkSet = (status) => setMarks((m) => {
     const next = { ...m };
     roster.forEach((r) => { next[r.enrollmentId] = { ...next[r.enrollmentId], status }; });
@@ -834,6 +845,7 @@ function AttendanceTab({ cls, initialSessionId = '', onSaved }) {
       setRoster(d.roster || []);
       setCurrent(d.session || null);
       toast('Đã lưu điểm danh');
+      fetchSessions().catch(() => {}); // the ✓ next to this session in the picker
       onSaved?.();
     } catch (err) { toast(err.message, 'error'); }
     finally { setSaving(false); }
@@ -943,7 +955,7 @@ function DashboardTab({ cls }) {
   };
   useEffect(() => { load(); }, [cls._id, filters]);
 
-  const setF = (k) => (e) => setFilters((f) => ({ ...f, [k]: e.target.value }));
+  const setF = (k) => (e) => { setLoading(true); setFilters((f) => ({ ...f, [k]: e.target.value })); };
 
   return (
     <>

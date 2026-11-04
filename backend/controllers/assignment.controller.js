@@ -376,6 +376,9 @@ exports.createAssignment = async (req, res) => {
         type: 'reminder',
       })));
     }
+    // Given with a deadline that has already passed: it counts as missed right
+    // away, so the warning/failed statuses must move now, not at the nightly sweep.
+    if (assignment.deadline && assignment.deadline < new Date()) await refreshClassStatus(assignment.classId);
     logger.security('Assignment created', { actorId: String(req.user._id), classId: String(req.classGroup._id), assignmentId: String(assignment._id) });
     res.status(201).json({ success: true, assignment });
   } catch (err) {
@@ -450,7 +453,10 @@ exports.deleteAssignment = async (req, res) => {
     const assignment = await Assignment.findOneAndDelete({ _id: req.params.assignmentId, classId: req.classGroup._id });
     if (!assignment) return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
     const { deletedCount } = await AssignmentProgress.deleteMany({ assignmentId: assignment._id });
-    const images = (assignment.images || []).filter((im) => im.publicId || im.url);
+    // Uploaded images live on the image resources, not on the assignment itself.
+    const images = (assignment.resources || [])
+      .flatMap((r) => (r.kind === 'image' ? r.images || [] : []))
+      .filter((im) => im.publicId || im.url);
     if (images.length) mediaStore.destroy(images).catch(() => {});
     await refreshClassStatus(assignment.classId);
     res.json({ success: true, deletedProgress: deletedCount || 0 });

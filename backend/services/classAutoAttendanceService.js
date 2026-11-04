@@ -15,6 +15,8 @@
 // class read endpoints (Render's instance may be asleep at class time), so
 // the claim on the session is atomic — two concurrent runs can't both mark.
 //
+// Makeup sessions are skipped (see the filter in autoMarkDueSessions).
+//
 // Only looks back LOOKBACK_DAYS: older sessions that were never marked
 // (e.g. from before this feature) are left for the teacher instead of being
 // silently filled in as "everyone was there".
@@ -90,9 +92,13 @@ async function autoMarkDueSessions({ classIds, now = new Date() } = {}) {
   // early-morning classes until 07:00. Cap at the Vietnam clock instead; the
   // exact start-time check below still decides what is actually due.
   const vnNow = new Date(now.getTime() + VN_OFFSET_MS);
+  // Makeup sessions (học bù) are left to the teacher: only the students who
+  // came should be marked, and "present" there cancels their absence on the
+  // original session — auto-marking the whole class would forgive everyone.
   const filter = {
     attendanceTakenAt: null,
     status: { $ne: 'cancelled' },
+    type: { $ne: 'makeup' },
     date: { $gte: from, $lte: vnNow },
   };
   if (classIds) {
