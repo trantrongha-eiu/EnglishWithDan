@@ -131,8 +131,9 @@ describe('seedShadowingLessons', () => {
       expect(['A2', 'B1', 'B2', 'C1', 'C2']).toContain(l.level);
       expect(l.segments.length).toBeGreaterThanOrEqual(8);
       // Whole-video categories: 6 Minute English / Grammar (~6.5 min) and
-      // Past Tense animations (up to ~8.5 min); the rest are clips.
-      const maxClip = { '6-minute-english': 450, '6-minute-grammar': 450, animated: 540 }[l.category] || 360;
+      // Past Tense animations (up to ~8.5 min), full Speaking mock tests
+      // (Part 1 → 3, up to ~14 min); the rest are clips.
+      const maxClip = { '6-minute-english': 450, '6-minute-grammar': 450, animated: 540, 'ielts-mock-test': 900 }[l.category] || 360;
       expect(l.clipEnd - l.clipStart).toBeLessThanOrEqual(maxClip);
       l.segments.forEach((s, i) => {
         expect(s.end).toBeGreaterThan(s.start);

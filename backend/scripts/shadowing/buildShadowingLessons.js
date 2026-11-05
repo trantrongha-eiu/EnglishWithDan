@@ -2103,6 +2103,57 @@ const LESSONS = [
     category: '6-minute-grammar', level, clipStart: 0, clipEnd, useAutoText: true, description,
     ...(G6_TRANSCRIPTS[slug] && { transcript: G6_TRANSCRIPTS[slug] }), ...opts,
   })),
+  // ── Speaking mock tests, Band 5 → 9 (2026-11-04) ─────────────────────
+  // Whole tests (Part 1 → 3) from the examiner's first question to "that's
+  // the end of the test" — channel intros, the candidate's ID check and the
+  // feedback afterwards are left out. Punctuated en-orig (or manual en-GB);
+  // where the auto captions have no punctuation, local whisper text.
+  // [youtubeId, slug, band, title, level, clipStart, clipEnd, channel, sourceTitle, description, opts]
+  ...[
+    ['IwF2k0g1gkE', 'mock-band5-accommodation', '5', 'Accommodation ·', 'B1', 48, 589, 'Ross IELTS Academy',
+      'IELTS Speaking Test band 5.0 with feedback', '', { breaks: ['house|and what do you', 'efficiency?|I like to watch', 'everything|and why do'], join: [37, 70, 89] }],
+    ['ZDv9njERj0s', 'mock-band8-clothes', '8', 'Studies, free time, travel · Clothes', 'C1', 19, 593.9, 'IELTS Advantage',
+      'IELTS Speaking Mock Test - Band 8', '', { useAutoText: false, dashTurns: true, pauseBreaks: false, join: [77] }],
+    ['qNnLcEm9xq8', 'mock-band7-keith-kristen', '7', 'Home ·', 'C1', 43, 754.4, KEITH,
+      'IELTS Speaking Mock Test: Band 7 (with feedback)', '', { useAutoText: false, dashTurns: true, pauseBreaks: false, join: [47] }],
+    ['BFS1z24aZaM', 'mock-band6-5-nepal', '6.5', 'Tourist attractions ·', 'B2', 0, 684, 'IELTS Advantage',
+      'IELTS Speaking Test - Band 6.5', '', { breaks: ["my country|now let's talk about cooking", 'one of the|what was your favorite food', "so yeah|now let's talk about the holiday"] }],
+    ['OicvdCp5wrM', 'mock-band6-5-real-estate', '6.5', 'Work ·', 'B2', 0, 611.8, 'IELTS Advantage',
+      'IELTS Speaking Test Band Score 6.5 With Feedback', '', { breaks: ['anywhere I want|like I can see people', 'on the internet|also people want', 'proper rest|lots of the thing', 'time for herself|whenever I met her each', 'than my mom|and then I would say her personal', 'would have three|yeah so this', "finish|yeah so we've been talking", 'country today|I was a celebrity', 'so it depends|do you think that famous', 'enjoy being famous?|50/50 depends', 'the fame|some people get accidentally'] }],
+    ['666eP6xBhzI', 'mock-band6-5-cabin-crew', '6.5', 'Job ·', 'B2', 0, 562.7, 'IELTS Advantage',
+      'IELTS Speaking Test - Band 6.5', '', { breaks: ['their country|yes have you always', 'when you were a child?|when I was child', 'sorry repeated?|so digital communication', "which one is hard|since I'm working", 'worth|also I have tried a dish', 'those two things|why are there some'] }],
+    ['o5B80AZZClw', 'mock-band6-5-mobile-phones', '6.5', 'Mobile phones ·', 'B2', 21, 566, 'IELTS with Charles',
+      'IELTS Speaking Band 6.5+ Mock test', ''],
+    ['3i0pwRniKr0', 'mock-band6-studying', '6', 'Studying ·', 'B2', 53, 741, 'Ross IELTS Academy',
+      'IELTS Speaking Test band score 6 with feedback', '', { breaks: ['how to|what kinds of major', "kind of|now let's move on to talk about tea", "why not?|now let's move on to talk about walking", 'why and why not?|waste management', 'good thing I|all right', 'infection disease I believe|we must care about these'] }],
+    ['3jDj7u-OWNU', 'mock-band7-5-accommodation', '7.5', 'Accommodation ·', 'C1', 0, 620, 'IELTS with Charles',
+      'IELTS Speaking Band 7.5 Mock Test with Feedback', '', { breaks: ['but you know|okay good'] }],
+    ['vy0cP4G0wIo', 'mock-band8-5-daily-routine', '8.5', 'Daily routine ·', 'C2', 40, 708, 'Ross IELTS Academy',
+      'IELTS Speaking Test Band Score 8.5 | Full Feedback & Tips (2025)', '', { breaks: ['and trends and|do you think social media', 'opening for him|and do you think that people', 'belonging I think|and do you think people nowadays', 'compared to the past?|well less willing', 'I think|all right and should schools', 'helping others?|the importance of helping others in'] }],
+    ['1WifdEajCeg', 'mock-band6-hometown', '6', 'Hometown ·', 'B2', 39, 735, 'Ross IELTS Academy',
+      'IELTS Speaking Test band score 6 with feedback 2025', '', { breaks: ['your hometown?|my hometown is', "parents aren't|right good now", 'influence of opinions|who do you think has', 'or their teachers?|I believe at a young age', 'studying architecture|right and do you think', "influence on students?|yes I think that's the case"] }],
+    ['LjbWK08LANE', 'mock-band5-free-time', '5', 'Free time ·', 'B1', 7.5, 768, 'IELTS English Academy',
+      'IELTS Speaking Band 5.0 Mock Test with Feedback', '', { breaks: ['my English name|and are you working', 'are you a student?|oh I was worked', 'study so I can say now I\'m a student|and what do you like', 'or the sky at night?|and I prefer', 'properly and|is there any difference', 'go anywhere|okay and do you like to visit', 'visit the countryside?|no I don\'t', 'annoying to my mom|yes because', 'kind of yes|okay and what should people', 'choosing their job?|of course there are many', 'for the career yeah|do you think salary', 'about a job?|yes because without salary'] }],
+    ['BUunhCIz1Go', 'mock-band5-5-texting', '5.5', 'Texting ·', 'B1', 0, 547.5, 'IELTS English Academy',
+      'IELTS Speaking Band 5.5 Mock Test with Feedback', '', { breaks: ['do you like texting?|texting you mean', 'talk about me so yeah|okay great have you ever', 'confusing text message?|confusing text message'] }],
+    ['62KYznhM0k4', 'mock-band7-colors', '7', 'Colours ·', 'C1', 7.5, 728.5, 'IELTS English Academy',
+      'IELTS Speaking Band 7.0 Mock Test with Feedback', '', { breaks: ['okay Minjung|and are you working', "are you a student?|I'm a student currently", 'student currently|what are you studying', "what are you studying?|I'm studying tourism", 'that\'s why I like|okay and are there any colors', 'suitable for my room yeah|okay now we\'re gonna talk', 'new activities|okay so do you like', 'try new activities?|I love trying new things', 'about myself|she always cheers me up', 'hit off|I think that\'s the most important', 'like personality and|are there any personality', 'make that happen|like I want to figure out', 'that\'s what I think|and in your country is it common', 'friendly situations?|I think it totally depends', 'for advices yeah|what is a piece of advice', 'really helped me|all right then'] }],
+    ['c0Z35_F0QWY', 'mock-band5-5-engineer', '5.5', 'Work ·', 'B1', 46.5, 717, 'Ross IELTS Academy',
+      'IELTS Speaking Test Band 5.5 | Real Mock Test with Expert Feedback', '', { breaks: ['with my manager|and because of one mistakes', 'in this journey|so due to this reason', 'a lot of time in fact|thank you very much this is', 'speaking test|you can now sit back', 'kinds of transportation|but some scientists told'], skip: [40] }],
+    ['xnaOzlC2RXg', 'mock-band7-leisure', '7', 'Leisure time ·', 'C1', 40.5, 687, 'Ross IELTS Academy',
+      'IELTS Speaking Test band score 7 with feedback', '', { breaks: ['great thank you|we can now get started', 'balance in our relationship|okay thank you now', 'talk about pets|do you have a pet', 'do you have a pet?|no I don\'t but', 'pink chicks|what is a popular pet', 'just tell me what happened|and she gave me', 'related to this topic|why do people always forget', 'forget things?|well I think'] }],
+    ['k4715CJ0Ii8', 'mock-band9-music', '9', 'Music ·', 'C2', 0, 531.5, 'IELTS Advantage',
+      'IELTS Speaking Test- Perfect Band 9 [+ Free Speaking PDF]', '', { breaks: ['unfortunate|and I really like that about her', 'freely to the people|yeah let me give you'], join: [28], skip: [68, 69, 70, 71, 72, 73] }], // 68–73: the channel's ad, cut into the test
+    ['MUj-UaHrHS8', 'mock-band8-tourism', '8', 'Studies ·', 'C1', 9.8, 693, 'IELTS English Academy',
+      'IELTS Speaking Band 8.0 Mock Test with Feedback', '', { breaks: ['lie in bed|so as a kid', 'enjoy morning|yeah okay and do you spend', 'weekends and weekdays?|I try to do that', 'so into routines|I always like to do', 'over and over again|which some', 'eat breakfast|I would just drink coffee', 'so much easier|and I feel like', 'feel that way|hmm indeed all right now', 'sports programs|okay so do you like', 'programs on TV?|hmm yes and no', 'Korean woman volleyball|so I would definitely watch', 'not really|so it depends on the programs', 'on the programs yeah|and do you like to watch live', 'live sports games?|if it\'s like Olympic', 'I wouldn\'t watch|okay and who do you', 'sports games with?|oh my friends', 'great place for visiting|yes all right perfect', 'is ended|you can always open', 'should do that|yes and are there any', 'taking a lot of photos?|hmm yes actually'] }],
+    ['nJJyilEPwpk', 'mock-band9-art', '9', 'Art & photography ·', 'C2', 0, 788, 'IELTS Advantage',
+      'What a Band 9 IELTS Speaking Test Actually Sounds Like [+ Free Speaking PDF]', '', { breaks: ['do you like animals?|I love animals', 'next to each other|and she had this long hair', 'life events together|that that kind of bond'], skip: [92, 93, 94, 95, 96] }], // 92–96: the channel's ad, cut into the test
+    ['Xa_ryrMlNa8', 'mock-band9-studies', '9', 'Studies ·', 'C2', 0, 761.5, 'IELTS English Academy',
+      'IELTS Speaking Band 9.0 Mock Test with Feedback', '', { breaks: ['medical student|and do you like your major', 'growing up|so I lived in one house', 'for 10 years|and during that time', 'basically a family|but I would describe', 'very extravagant|I would see this parent', 'best dressed like suit|but one day actually', 'same age as me|and we didn\'t do anything', 'walking past|and then sometimes I would go', 'play with them|and once they built', 'you know greeting|and then once you move', 'pass around like cookies|or give them some gifts', 'noise pollution|but a lot of sound', 'loud music|that would definitely be like', 'dislike each other|or sometimes things are placed'] }],
+  ].sort((a, b) => a[2] - b[2]).map(([youtubeId, slug, band, title, level, clipStart, clipEnd, channel, sourceTitle, description, opts]) => ({
+    slug, youtubeId, title: `Band ${band} · ${title}`, sourceTitle, channel, category: 'ielts-mock-test', level,
+    clipStart, clipEnd, description, useAutoText: true, dropFillers: true, pauseBreaks: true, ...opts,
+  })),
 ];
 
 // Caption-file typos / artefacts, fixed before segmentation.
@@ -2395,6 +2446,166 @@ const SEGMENT_FIXES = [
   [/^But in spoken English an sounds like an, Finn\.$/, 'But in spoken English an sounds like /ən/, Finn.'],
   [/^Now let's look at the and the\.$/, "Now let's look at /ðə/ and /ðiː/."],
   [/^And it's the, not the, with elephant\b/, "And it's /ðiː/, not /ðə/, with elephant"],
+  // Speaking mock tests: a sentence the other speaker cut into
+  [/^Oh, I hope to work as a data scientist-$/, 'Oh, I hope to work as a data scientist…'],
+  [/^Hm-hmm\. in the future, yeah\.$/, 'Hm-hmm. …in the future, yeah.'],
+  [/^It makes me happier now--$/, 'It makes me happier now…'],
+  [/\b([ap]) \.m\./g, '$1.m.'], // whisper: "8 a .m."
+  // mock-band5-accommodation (whisper)
+  [/^And why do some Some people find it difficult to focus in the morning\.$/, 'And why do some people find it difficult to focus in the morning?'],
+  [/^(In the second part I will give you a card .*) but before you do so (you'll have one minute)/, '$1, but before you do so, $2'],
+  [/^but do not for you if I stop you\.$/, 'but do not worry if I stop you.'],
+  [/^you can see my My child's grow up\.$/, "you can see my child's grow up."],
+  [/^I Like play with the child in the jar then with the kids running for everywhere and And later$/, 'I like play with the child in the yard then with the kids running for everywhere and later'],
+  [/\bwith two songs, like you said\./, 'with two sons, like you said.'],
+  [/^Now So, what kind of place do people in your country like to live in\?$/, 'So, what kind of place do people in your country like to live in?'],
+  [/^Because the younger people need to have clothes\. [Tt]heir jobs,/, 'Because the younger people need to have close their jobs,'],
+  [/^And what are the differences between the homes in the city and those in the suburbs\.$/, 'And what are the differences between the homes in the city and those in the suburbs?'],
+  // Other mock tests: ASR mishearings only — the candidates' own grammar stays
+  [/^It was a war two\.$/, 'It was War 2.'], // the Hrithik Roshan film
+  [/\bI use checkp\b/, 'I use ChatGPT'],
+  [/\bmy current saturation\b/, 'my current situation'],
+  [/^It's so same saturation like me\.$/, "It's so same situation like me."],
+  [/\bborn in Myammar\b/, 'born in Myanmar'],
+  [/^Yeah so this that's the end of part two well done finish\.$/, "Yeah, so this, that's the end of part two. Well done, finish."],
+  [/^(So that thing will influence the people and change the) war\.$/, '$1 world.'],
+  [/\blike turn 18h\b/, 'like turned 18'],
+  [/^Yes have you always wanted/, 'Yes. Have you always wanted'],
+  [/ I'm sorry repeated\?$/, " I'm sorry, repeat it?"],
+  [/\bMarati\b/, 'Marathi'],
+  [/\bpicturesized\b/, 'picturized'],
+  [/\ba dish in V\.$/, 'a dish in Vietnam.'],
+  [/\bI serve it a lot\b/, 'I surf it a lot'],
+  [/^Thank you\. Come, has the way/, 'Thank you. Khan, has the way'],
+  [/^Okay, K, that's the end of your minute now\.$/, "Okay, Khan, that's the end of your minute now."],
+  [/^Thank you so much\. Well done, K\.$/, 'Thank you so much. Well done, Khan.'],
+  [/\bclub names origin\./, 'club named Origin.'],
+  [/\btrip to Mandiffs\b/, 'trip to the Maldives'],
+  [/^What skills are important for young people today\.$/, 'What skills are important for young people today?'],
+  [/(and it's not good thing) I\.$/, '$1…'],
+  [/(fast food item, one of the|processing of the how to|There is lots of kind of)\.$/, '$1…'], // cut off by the examiner
+  [/^Yeah so (we've been talking about a famous business person .* in part three)$/, 'Yeah, so $1.'],
+  [/^so what kinds of people are most famous in your country today\.$/, 'So what kinds of people are most famous in your country today?'],
+  [/(they want to have their own personal)$/, '$1…'],
+  [/^Do you think it is better for children to grow up in the city$/, 'Do you think it is better for children to grow up in the city or in the countryside?'], // whisper dropped the end
+  [/\bHVEC\b/, 'HVAC'],
+  [/\badd a pencil, this is your pen\b/, 'and a pencil, this is your pen'],
+  [/\bwith a star sheets\b/, 'with a starship'],
+  [/^well describe your describe an important journey that was delayed$/, 'Well, describe your… describe an important journey that was delayed.'],
+  [/^Yes, they do\. because Fridays/, 'Yes, they do, because Fridays'],
+  [/^And our neighbors usually close to each other in your country\?$/, 'And are neighbors usually close to each other in your country?'],
+  [/^What is a popular pet to have in your country\.$/, 'What is a popular pet to have in your country?'],
+  [/\bto avoid long lists\b/, 'to avoid loneliness'],
+  [/\bgot dressed in hairy\b/, 'got dressed in a hurry'],
+  [/\bshe says Annie's guess what\b/, 'she says, "Anis, guess what"'],
+  [/\btalking about on occasion when\b/, 'talking about an occasion when'],
+  [/\bgo to a policy station\b/, 'go to a police station'],
+  [/(to make your own life and)\.$/, '$1…'],
+  [/^Okay thank you now let's move on to talk about pets\.$/, "Okay, thank you. Now let's move on to talk about pets."],
+  [/\bR &B\b/, 'R&B'],
+  [/(that's where you get to know) Oh,$/, '$1, oh,'],
+  [/\bthis Decoration is called that\b/, 'this decoration is called that'],
+  [/\bvery good on Information\./, 'very good on information.'],
+  [/(what's in a book) So I definitely/, '$1. So I definitely'],
+  [/\bor Mystery films\b/, 'or mystery films'],
+  [/^Theories or mystery books and stuff like that So I always watch movies as such and their acting is on point It's/, "theories or mystery books and stuff like that. So I always watch movies as such and their acting is on point. It's"],
+  [/\bAngelina Julie\b/, 'Angelina Jolie'],
+  [/(in your country to go) Go to the theater\.$/, '$1… Go to the theater.'],
+  [/^Do you think that you will continue to read\? [Pp]aper-based magazines in the future\?$/, 'Do you think that you will continue to read paper-based magazines in the future?'],
+  [/^Why do you think those\?$/, 'Why do you think so?'],
+  [/\bor new Homeowner\b/, 'or new homeowner'],
+  [/(the most interesting neighbor I had was the neighbor)\.$/, '$1…'],
+  [/^I actually had while I was growing up\.$/, '…I actually had while I was growing up.'],
+  [/(I'll always be there to help you and stuff like that)$/, '$1.'],
+  [/\bthe cue card and the hand\.$/, 'the cue card and the pen.'],
+  [/^Thank you very much this is the end of this speaking test\.$/, 'Thank you very much. This is the end of this speaking test.'],
+  // mock-band8-tourism (whisper)
+  [/\bI am 100 for sure morning person\b/, 'I am 100% for sure morning person'],
+  [/^-hmm,? [Ii]ndeed,? all right,? now we're gonna/, "Mm-hmm, indeed. All right, now we're gonna"],
+  [/^-hmm,? yes and no\b/, 'Mm-hmm, yes and no'],
+  [/^Yeah okay and do you spend your mornings/, 'Yeah. Okay, and do you spend your mornings'],
+  [/^Yes all right perfect okay so we'll go on to part three/, "Yes. All right, perfect. Okay, so we'll go on to part three"],
+  [/^Which some For some people,/, 'Which some… for some people,'],
+  // mock-band7-colors (whisper)
+  [/\bstudying graphic design site\./, 'studying graphic design side.'],
+  [/\bI get sweaty and then And the humidity\b/, 'I get sweaty and then the humidity'],
+  [/^I Don't like color yellow\./, "I don't like color yellow."],
+  [/^It's not because Like there's\b/, "It's not because like there's"],
+  [/^Let's pan or pencil whichever one you want\./, "There's a pen or pencil, whichever one you want."],
+  [/\bKorean food such as and all kinds of stuff\b/, 'Korean food such as doenjang jjigae and all kinds of stuff'],
+  [/\bI failed making ten down to gay\b/, 'I failed making doenjang jjigae'],
+  [/\bthat's about 150 there now\b/, "that's about 1:50 there now"],
+  [/^All right, then I'll do us\.$/, "All right, that'll do us."],
+  [/(I think like personality and)\.$/, '$1…'],
+  // mock-band5-5-texting (whisper): the candidate's "text" heard as "test"
+  [/\bI really like to test with friends\b/, 'I really like to text with friends'],
+  [/^[Aa]nd I'm testing like\b/, "And I'm texting like"],
+  [/^Okay great have you ever received a confusing text message\?$/, 'Okay, great. Have you ever received a confusing text message?'],
+  [/^Okay great so that is everything for today\.$/, 'Okay, great, so that is everything for today.'],
+  [/\bto message change our message\b/, 'to message, exchange our message'],
+  [/^(So and talk about me so yeah|And talk about me so yeah)\.$/, '$1.'],
+  [/\bI met Rina in the \.S\./, 'I met Rina in the U.S.'],
+  [/\bany Kakato\b/, 'any KakaoTalk'],
+  [/\bwe didn't test a lot\b/, "we didn't text a lot"],
+  [/\bshe test me like\b/g, 'she text me like'],
+  [/\bcontact them or test them\b/, 'contact them or text them'],
+  [/^So sometimes testing them\b/, 'So sometimes texting them'],
+  [/\bforget about to test them$/, 'forget about to text them'],
+  [/^(So what's the influence of social media on friendship)\.$/, '$1?'],
+  [/^I see okay great so that is it for part one\.$/, 'I see. Okay, great, so that is it for part one.'],
+  [/\ba lot of way to miss some new people\b/, 'a lot of way to meet some new people'],
+  // mock-band5-free-time (whisper)
+  [/\bdecided to pick the job\b/, 'decided to quit the job'],
+  [/\bconcentrate ILG study\b/, 'concentrate IELTS study'],
+  [/^Well, sorrow is so too much late\b/, 'Well, Seoul is so too much late'],
+  [/\blot of people live in sorrow and Also\b/, 'lot of people live in Seoul and also'],
+  [/\bI would like to talk about the shape\./, 'I would like to talk about the chef.'],
+  [/\bSHAP\b/g, 'chef'],
+  [/\bbut I have a car 6,/, 'but I have a car sick,'],
+  [/\bbecome a shepherd man, or they explode\./, 'become a superman, or an explorer.'],
+  [/\bthere are many leads in considering\b/, 'there are many reasons in considering'],
+  [/\bwe cannot go to our plane\b/, 'we cannot go to our plan'],
+  [/(I can't see cloud like properly and)\.$/, '$1…'],
+  [/^(Is there any difference between the sky in cities and the sky in the countryside)\.$/, '$1?'],
+  [/\bso it's Make me like make noisy sounds$/, "so it's make me like make noisy sounds."],
+  [/(nearby my house the yes)$/, '$1.'],
+  [/^how far is really important i think\b/, 'How far is really important, I think,'],
+  [/\bI was working at The call center is$/, 'I was working at the call center is'],
+  // mock-band9-art (whisper)
+  [/\bnon-domasticated\b/, 'non-domesticated'],
+  [/^Now let's talk about bags, what type/, "Now let's talk about bags. What type"],
+  [/(whatever you wanted) So it was a big deal\./, '$1. So it was a big deal.'],
+  [/(my outfit like two months in advance)$/, '$1.'],
+  [/\bAmandpreet Kaur\b/, 'Amanpreet Kaur'],
+  [/\bhow can she know, want to be my friend\?/, 'how can she not want to be my friend?'],
+  [/(they were too naive or too) I$/, '$1…'],
+  [/^mean I guess they were just too naive to see that$/, 'I mean, I guess they were just too naive to see that'],
+  [/\bbut there's There's also\b/, "but there's also"],
+  [/\bTender Swindler\b/, 'Tinder Swindler'],
+  [/\b(Heunde|Hyundae|Hyundai)\b/g, 'Haeundae'],
+  [/\bthe train to Bhutan the movie\b/, 'Train to Busan, the movie,'],
+  [/\bdecorated coffees around, So\b/, 'decorated coffees around. So'],
+  [/\bat geographic So I\b/, 'at geographic. So I'],
+  [/\bsomewhere in Busan You can\b/, 'somewhere in Busan. You can'],
+  [/\bthis place since It's\b/, "this place since it's"],
+  [/\bI troubled a lot of place\b/, 'I traveled a lot of place'],
+  [/\bself-troubling\b/, 'self-traveling'],
+  [/\bbut if If it's\b/, "but if it's"],
+  [/\bwho I'm watching it's Actually, it depends\./, "who I'm watching it's… actually, it depends."],
+  [/^Would you please hand me back Yes, of course\.$/, 'Would you please hand me back… Yes, of course.'],
+  [/^[Tt]he piece of paper and the pen\.$/, '…the piece of paper and the pen.'],
+  [/(keeps me up with you know news and trends and)\.$/, '$1…'],
+  [/^[Ii]t is covered by a blue,? [Yy]eah, (and also there is some people on the book, but you know)[.,]?$/, 'It is covered by a blue… yeah, $1…'],
+  [/\bborn in Terran, akatan town\b/, 'born in Tehran, a capital town'],
+  [/^This person is Duing Su\.$/, 'This person is Do Kyungsoo.'], // D.O. — K-pop singer and actor
+  [/\bI started Ed acting like him\b/, 'I started acting like him'],
+  [/^H and you asked me about what was$/, 'And you asked me about what was…'],
+  [/^Right good now let's consider the influence of opinions\.$/, "Right. Good. Now let's consider the influence of opinions."],
+  [/^Who do you think has more influence on children's ideas their parents/, "Who do you think has more influence on children's ideas, their parents"],
+  [/^Right and do you think private tutors have any role in this matter do you think/, 'Right. And do you think private tutors have any role in this matter? Do you think'],
+  [/\bor like planning on the mistakes\b/, 'or like dwelling on the mistakes'],
+  [/\btry to slip in a bit\b/, 'try to sleep in a bit'],
+  [/\bgrateful of others health\?$/, "grateful of others' help?"],
 ];
 
 const MAX_WORDS = 24;      // longer sentences are split at a comma
@@ -2408,15 +2619,17 @@ const TAIL = 0.3;
 
 const norm = (w) => w.toLowerCase().replace(/[^a-z0-9']/g, '');
 const CONJUNCTIONS = new Set(['because', 'but', 'and', 'so', 'which', 'whereas', 'while', 'since', 'although', 'or']);
-const FILLERS = new Set(['um', 'uh', 'erm', 'er', 'ah']);
+const FILLERS = new Set(['um', 'uh', 'erm', 'er', 'ah', 'u', 'mm']);
 
 // "Um, there's…" → "There's…": drop the filler, keep any sentence-final
 // punctuation it carried, and re-capitalise a sentence it used to start.
+// A hesitation the ASR wrote as a doubled article ("a a huge…") loses one.
 function dropFillers(words) {
   const out = [];
   let capNext = false;
   for (const w of words) {
-    if (FILLERS.has(norm(w.text))) {
+    const prev = out[out.length - 1];
+    if (FILLERS.has(norm(w.text)) || (norm(w.text) === 'a' && prev && prev.text === 'a')) {
       const end = (w.text.match(/[.?!]$/) || [''])[0];
       if (end && out.length && !endsSentence(out[out.length - 1].text)) out[out.length - 1].text = out[out.length - 1].text.replace(/,$/, '') + end;
       if (/^[A-Z]/.test(w.text) || end) capNext = true;
@@ -2438,10 +2651,13 @@ function readJson3(file) {
 const SPEAKER_LABEL = /(^|\s)[A-Z][a-z]*(?: and [A-Z][a-z]+)?\s?:(?=\s)/g;
 const TURN = '¶';
 
-function cleanText(t, { stripSpeakers } = {}) {
+function cleanText(t, { stripSpeakers, dashTurns } = {}) {
   let s = t.replace(/\n/g, ' ');
   for (const [re, rep] of TEXT_FIXES) s = s.replace(re, rep);
   if (stripSpeakers) s = s.replace(SPEAKER_LABEL, `$1${TURN}`);
+  // Interview captions ("- Yes. - [Interviewer] Why?"): a dash or a
+  // bracketed role label marks the other speaker taking over.
+  if (dashTurns) s = s.replace(/\[(?:Interviewer|Examiner)\]/g, ` ${TURN} `).replace(/(^|\s)-\s+/g, `$1${TURN} `);
   return s
     .replace(/\([^)]*\)|\[[^\]]*\]/g, ' ') // (upbeat pop music), [Laughs]
     .replace(/^\s*-\s+/, '')               // speaker-change dash
@@ -2553,7 +2769,7 @@ const endsSentence = (w) => /[.?!]["'”’]?$/.test(w);
 // Dialogue (stripSpeakers): each speaker turn is split on its own, so a
 // practice sentence never mixes two voices. A turn too short to stand
 // alone ("What?", "Bye.") still joins the next turn.
-function toSentences(words, { minWords = MIN_WORDS, pauseSplit = PAUSE_SPLIT } = {}) {
+function toSentences(words, { minWords = MIN_WORDS, pauseSplit = PAUSE_SPLIT, pauseBreaks = false } = {}) {
   // A long pause (music, a cut) also ends a turn, so a short line before it
   // ("So stick around.") isn't glued onto what comes after.
   const turns = [];
@@ -2563,11 +2779,11 @@ function toSentences(words, { minWords = MIN_WORDS, pauseSplit = PAUSE_SPLIT } =
     turns[turns.length - 1].push(w);
     prev = w;
   }
-  if (turns.length < 2) return turnSentences(words, minWords);
+  if (turns.length < 2) return turnSentences(words, minWords, pauseBreaks);
   const out = [];
   let carry = [];
   for (const t of turns) {
-    const sents = turnSentences(t, minWords);
+    const sents = turnSentences(t, minWords, pauseBreaks);
     if (carry.length) sents[0] = carry.concat(sents[0]);
     carry = [];
     if (sents.length === 1 && sents[0].length < MIN_TURN_WORDS) { carry = sents[0]; continue; }
@@ -2580,7 +2796,7 @@ function toSentences(words, { minWords = MIN_WORDS, pauseSplit = PAUSE_SPLIT } =
   return out;
 }
 
-function turnSentences(words, minWords) {
+function turnSentences(words, minWords, pauseBreaks) {
   const out = [];
   let cur = [];
   for (const w of words) {
@@ -2599,10 +2815,22 @@ function turnSentences(words, minWords) {
     }
     return best;
   };
+  // pauseBreaks (unscripted interviews): cut at the longest silence first —
+  // where an unpunctuated run hides a change of speaker, that's usually it.
+  const longestPause = (rest) => {
+    let best = -1;
+    let gap = 0.5;
+    for (let k = MIN_SPLIT_WORDS - 1; k < rest.length - MIN_SPLIT_WORDS; k++) {
+      const g = rest[k + 1].start - rest[k].end;
+      if (g > gap) { gap = g; best = k; }
+    }
+    return best;
+  };
   for (const s of out) {
     let rest = s;
     while (rest.length > MAX_WORDS) {
-      let best = nearestMiddle(rest, (k) => /[,;:]$/.test(rest[k].text));
+      let best = pauseBreaks ? longestPause(rest) : -1;
+      if (best < 0) best = nearestMiddle(rest, (k) => /[,;:]$/.test(rest[k].text));
       if (best < 0) best = nearestMiddle(rest, (k) => CONJUNCTIONS.has(norm(rest[k + 1].text)));
       if (best < 0) break;
       split.push(rest.slice(0, best + 1));
@@ -2703,7 +2931,7 @@ function buildLesson(spec, subsDir) {
   } else {
     const manualFile = find(spec.useAutoText ? ['en-orig'] : ['en-GB', 'en-US', 'en']);
     if (!manualFile) return null;
-    words = manualWords(readJson3(manualFile), { stripSpeakers: spec.stripSpeakers });
+    words = manualWords(readJson3(manualFile), { stripSpeakers: spec.stripSpeakers, dashTurns: spec.dashTurns });
   }
 
   const autoFile = find(['en-orig']);
@@ -2714,9 +2942,24 @@ function buildLesson(spec, subsDir) {
   }
 
   if (spec.dropFillers) words = dropFillers(words);
+  // breaks: ['efficiency?|I like to', …] — the ASR ran two speakers'
+  // sentences together; end the left side with its punctuation (default
+  // "."), and start a new turn with a capital on the right.
+  for (const b of spec.breaks || []) {
+    const [l, r] = b.split('|').map((x) => x.trim().split(/\s+/));
+    const end = (l[l.length - 1].match(/[.?!]$/) || ['.'])[0];
+    const pat = [...l, ...r].map(norm);
+    const i = words.findIndex((_, k) => pat.every((p, d) => words[k + d] && norm(words[k + d].text) === p));
+    if (i < 0) throw new Error(`${spec.slug}: break "${b}" not found`);
+    const last = words[i + l.length - 1];
+    last.text = last.text.replace(/[,.?!]*$/, end);
+    const first = words[i + l.length];
+    first.text = first.text[0].toUpperCase() + first.text.slice(1);
+    first.turn = true;
+  }
 
   // Keep only whole sentences inside the clip window.
-  const sentences = toSentences(words, { minWords: spec.minWords, pauseSplit: spec.pauseSplit }).filter((s) =>
+  const sentences = toSentences(words, { minWords: spec.minWords, pauseSplit: spec.pauseSplit, pauseBreaks: spec.pauseBreaks }).filter((s) =>
     s[0].start >= spec.clipStart - 0.5 && s[s.length - 1].end <= spec.clipEnd + 0.5);
   let segments = sentences.map((s, i) => {
     const next = sentences[i + 1];
@@ -2758,7 +3001,7 @@ function buildLesson(spec, subsDir) {
       segments[i].text = segments[i].text[0].toUpperCase() + segments[i].text.slice(1);
     }
   }
-  const { clipStart, clipEnd, stripSpeakers, useAutoText, transcript: _tr, endAt: _ea, minWords, dropFillers: _df, pauseSplit, fixCaps: _fc, skip: _sk, join: _jn, ...meta } = spec;
+  const { clipStart, clipEnd, stripSpeakers, dashTurns: _dt, pauseBreaks: _pb, breaks: _bk, useAutoText, transcript: _tr, endAt: _ea, minWords, dropFillers: _df, pauseSplit, fixCaps: _fc, skip: _sk, join: _jn, ...meta } = spec;
   return {
     ...meta,
     clipStart: segments.length ? segments[0].start : clipStart,
@@ -2783,7 +3026,7 @@ if (require.main === module) {
       if (!prev) throw new Error(`${spec.slug}: no manual caption file in ${subsDir} and not in ${path.basename(out)} yet`);
       console.log(`\n== ${spec.slug} — no captions in ${subsDir}, kept from ${path.basename(out)}`);
       // Metadata (title, level, description…) still follows LESSONS.
-      const { clipStart, clipEnd, stripSpeakers, useAutoText, transcript: _tr, endAt: _ea, minWords, dropFillers: _df, pauseSplit, fixCaps: _fc, skip: _sk, join: _jn, ...meta } = spec;
+      const { clipStart, clipEnd, stripSpeakers, dashTurns: _dt, pauseBreaks: _pb, breaks: _bk, useAutoText, transcript: _tr, endAt: _ea, minWords, dropFillers: _df, pauseSplit, fixCaps: _fc, skip: _sk, join: _jn, ...meta } = spec;
       return { ...prev, ...meta, order };
     }
     console.log(`\n== ${l.slug} — ${l.segments.length} segments, ${(l.clipEnd - l.clipStart).toFixed(0)}s, ${l._timing}`);

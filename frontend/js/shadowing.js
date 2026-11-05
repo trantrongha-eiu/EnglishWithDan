@@ -34,7 +34,7 @@
     'comedy': 'Hài Stand-up', 'ted-shorts': 'TED ngắn', 'everyday-english': 'Everyday English',
     'spelling-numbers': 'Đánh vần & số', 'grammar': 'Ngữ pháp', 'kids-stories': 'Truyện kể BBC',
     'connected-speech': 'Nối âm cơ bản', 'connected-speech-advanced': 'Nối âm nâng cao',
-    'animated': 'Hoạt hình kiến thức', '6-minute-grammar': '6 Minute Grammar',
+    'animated': 'Hoạt hình kiến thức', '6-minute-grammar': '6 Minute Grammar', 'ielts-mock-test': 'Mock test Speaking',
   };
   const MODES = ['watch', 'shadowing', 'dictation'];
   const SPEEDS = [1, 0.75, 0.5, 1.25];

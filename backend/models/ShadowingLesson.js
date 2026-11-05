@@ -10,7 +10,7 @@
  */
 const mongoose = require('mongoose');
 
-const CATEGORIES = ['ielts-part1', 'ielts-part2', 'ielts-part3', '6-minute-english', 'kids-stories', 'fun-shorts', 'comedy', 'ted-shorts', 'everyday-english', 'spelling-numbers', 'grammar', 'connected-speech', 'connected-speech-advanced', 'animated', '6-minute-grammar'];
+const CATEGORIES = ['ielts-part1', 'ielts-part2', 'ielts-part3', '6-minute-english', 'kids-stories', 'fun-shorts', 'comedy', 'ted-shorts', 'everyday-english', 'spelling-numbers', 'grammar', 'connected-speech', 'connected-speech-advanced', 'animated', '6-minute-grammar', 'ielts-mock-test'];
 
 const SegmentSchema = new mongoose.Schema({
   start: { type: Number, required: true }, // seconds into the video
