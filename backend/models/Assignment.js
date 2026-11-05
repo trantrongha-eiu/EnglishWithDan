@@ -52,6 +52,12 @@ const assignmentResourceSchema = new mongoose.Schema({
   // student link opens the test with exactly these parts (?parts=1,2,4) and
   // only an attempt covering all of them counts (resourceCompletionService).
   parts: { type: [Number], default: undefined },
+  // reading_test / listening_test / reading_practice / listening_practice
+  // only: the mode the teacher requires — 'practice' (Luyện tập) or
+  // 'simulation' (Test Simulation / thi thật). Absent = the student picks.
+  // The student link opens straight in that mode (?exam=<mode>&lock=1) and
+  // only an attempt made in that mode counts (resourceCompletionService).
+  examMode: { type: String, enum: ['practice', 'simulation'], default: undefined },
 
   // mock_test only — the ONE bundle the whole class takes, fixed when the
   // teacher assigns it (a "random" skill is drawn once, server-side, at that

@@ -66,6 +66,16 @@
     return EXAM_MODES[m] ? m : null;
   }
 
+  /**
+   * ?exam=<mode>&lock=1 — a homework link whose teacher required that mode
+   * (Assignment resources[].examMode): ExamModeSelect then hides "Chọn chế
+   * độ khác". Only an attempt in that mode counts for the homework anyway.
+   * @returns {boolean}
+   */
+  function examLocked() {
+    return !!examMode() && new URLSearchParams(window.location.search).get('lock') === '1';
+  }
+
   /** "&exam=<mode>" for a valid mode, '' otherwise — for URL-building. */
   function examSuffix(mode) {
     return EXAM_MODES[mode] ? '&exam=' + mode : '';
@@ -136,6 +146,7 @@
   window.RouteParams = {
     match: match,
     examMode: examMode,
+    examLocked: examLocked,
     examSuffix: examSuffix,
     examParts: examParts,
     partsSuffix: partsSuffix,

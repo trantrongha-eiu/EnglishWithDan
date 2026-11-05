@@ -10,10 +10,10 @@ export function studentPathFor(r) {
   const id = r.resourceId || r._id;
   const code = r.resourceCode ? encodeURIComponent(r.resourceCode) : '';
   switch (r.resourceType) {
-    case 'reading_test':           return `/reading.html?testId=${id}${partsQs(r.parts)}`;
-    case 'reading_practice':       return `/reading.html?passageId=${id}`;
-    case 'listening_test':         return `/listening.html?testId=${id}${partsQs(r.parts)}`;
-    case 'listening_practice':     return `/listening.html?sectionId=${id}`;
+    case 'reading_test':           return `/reading.html?testId=${id}${partsQs(r.parts)}${examQs(r.examMode)}`;
+    case 'reading_practice':       return `/reading.html?passageId=${id}${examQs(r.examMode)}`;
+    case 'listening_test':         return `/listening.html?testId=${id}${partsQs(r.parts)}${examQs(r.examMode)}`;
+    case 'listening_practice':     return `/listening.html?sectionId=${id}${examQs(r.examMode)}`;
     case 'listening_gapfill':      return `/listening.html?gapfillId=${id}`;
     case 'dictation':              return `/dictation.html?sectionId=${id}`;
     case 'writing_exam':           return `/writing.html?examId=${id}`;
@@ -51,6 +51,12 @@ export function studentPathFor(r) {
 // làm" with these picked (?parts=1,3), same as the student's homework link.
 function partsQs(parts) {
   return Array.isArray(parts) && parts.length ? `&parts=${parts.join(',')}` : '';
+}
+
+// Required mode (Assignment resources[].examMode) — the page opens straight
+// in it with no "Chọn chế độ khác", same as the student's homework link.
+function examQs(mode) {
+  return mode === 'practice' || mode === 'simulation' ? `&exam=${mode}&lock=1` : '';
 }
 
 function tipQs(resourceCode) {

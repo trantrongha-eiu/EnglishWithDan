@@ -80,9 +80,11 @@ function resourceIdentityKey(r) {
   // bundle (keyed by item _id) don't tick the new one.
   if (r.kind === 'internal' && r.resourceType === 'mock_test') return `internal:mock_test:${mockBundleSig(r.mockBundle)}`;
   // "Test 5" and "Test 5, Section 1+2" are different homework items.
+  // So are "Test 5" in Luyện tập and "Test 5" in thi thật (examMode).
   if (r.kind === 'internal') {
     const parts = rcs.assignedParts(r);
-    return `internal:${r.resourceType}:${r.resourceId || ''}${parts ? `:p${parts.join(',')}` : ''}`;
+    const mode = rcs.assignedMode(r);
+    return `internal:${r.resourceType}:${r.resourceId || ''}${parts ? `:p${parts.join(',')}` : ''}${mode ? `:m${mode}` : ''}`;
   }
   if (r.kind === 'external') return `external:${r.url}`;
   if (r.kind === 'image') return `image:${(r.images || []).map((im) => im.url).sort().join(',')}`;
@@ -200,7 +202,11 @@ async function buildResources(input, existing = [], ctx = {}) {
       if (!ok) return { error: `Tài nguyên "${r.resourceType}" không tồn tại` };
       const partsErr = await checkTestParts(r);
       if (partsErr) return { error: partsErr };
+      // examMode: '' / null = student picks; anything else must be a real
+      // mode. Silently dropped on types that have no Practice/Simulation.
+      if (r.examMode && !rcs.EXAM_MODES.includes(r.examMode)) return { error: `Chế độ làm bài không hợp lệ: ${r.examMode}` };
       const parts = rcs.assignedParts(r);
+      const examMode = rcs.assignedMode(r);
       built = {
         kind: 'internal',
         resourceType: r.resourceType,
@@ -208,6 +214,7 @@ async function buildResources(input, existing = [], ctx = {}) {
         label: (r.label && String(r.label).slice(0, 200)) || await rcs.labelFor(r.resourceType, r.resourceId),
         resourceCode: await rcs.deepLinkKeyFor(r.resourceType, r.resourceId),
         ...(parts ? { parts } : {}),
+        ...(examMode ? { examMode } : {}),
       };
     } else if (r.kind === 'external') {
       if (!r.url || !/^https?:\/\//i.test(r.url)) return { error: 'Link ngoài phải bắt đầu bằng http(s)://' };

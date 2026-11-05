@@ -614,7 +614,8 @@ function _ltSectionPart(section, hinted) {
     return section.partNumber || hinted || 1;
 }
 
-async function startPracticeSection(sectionId, partNum, _silent = false, mode = null, preferred = null) {
+// locked: homework given in `preferred` mode only (?lock=1) — see ExamModeSelect.
+async function startPracticeSection(sectionId, partNum, _silent = false, mode = null, preferred = null, locked = false) {
     if (!window.AuthService.hasPremiumAccess()) {
         openUpgradeModal(); return;
     }
@@ -624,7 +625,7 @@ async function startPracticeSection(sectionId, partNum, _silent = false, mode = 
     // popup's own callbacks make with `mode` already decided.
     if (!_silent && !mode && window.ExamModeSelect) {
         window.ExamModeSelect.open({
-            skill: 'listening', preferred,
+            skill: 'listening', preferred, locked,
             onPractice: () => startPracticeSection(sectionId, partNum, _silent, 'practice'),
             onSimulation: () => startPracticeSection(sectionId, partNum, _silent, 'simulation'),
         });

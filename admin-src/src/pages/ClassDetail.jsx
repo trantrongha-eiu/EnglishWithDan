@@ -121,6 +121,38 @@ function PartChips({ type, parts, onToggle, disabled, color = '#c2410c' }) {
   );
 }
 
+// Reading / Listening items can be pinned to one mode (backend Assignment
+// resources[].examMode): '' = student picks, else only that mode counts.
+const EXAM_MODE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice']);
+const EXAM_MODES = [
+  { value: '', label: 'HS tự chọn', color: '#6b7280' },
+  { value: 'practice', label: '✏️ Luyện tập', color: '#0284c7' },
+  { value: 'simulation', label: '🎯 Thi thật', color: '#dc2626' },
+];
+function examModeText(mode) {
+  return mode === 'practice' ? '✏️ Luyện tập' : mode === 'simulation' ? '🎯 Thi thật' : '';
+}
+
+// "HS tự chọn · Luyện tập · Thi thật" — one pick (value null = none lit).
+function ExamModeChips({ value, onChange }) {
+  return (
+    <span style={{ display: 'inline-flex', gap: 4, flexWrap: 'wrap', alignItems: 'center' }}>
+      {EXAM_MODES.map((m) => {
+        const on = value === m.value;
+        return (
+          <button key={m.value || 'any'} type="button" onClick={() => onChange(m.value)}
+            style={{
+              fontSize: 12, fontWeight: 700, padding: '3px 9px', borderRadius: 999, cursor: 'pointer',
+              border: `1.5px solid ${m.color}`, background: on ? m.color : 'transparent', color: on ? '#fff' : m.color,
+            }}>
+            {m.label}
+          </button>
+        );
+      })}
+    </span>
+  );
+}
+
 // Vocab-book rotation for new homework: 50 words in Sổ 1 + Sổ 2, next time
 // Sổ 3 + 4 + 5, then back to Sổ 1 + 2, and so on — decided from the newest
 // earlier assignment of the class that had per-book vocab goals.
@@ -1124,8 +1156,8 @@ function resourceShortName(r) {
   if (r.kind === 'internal' && r.resourceType === 'mock_test') return 'Thi thử';
   if (r.kind === 'internal') {
     const name = r.label || RES_LABEL[r.resourceType] || r.resourceType;
-    const parts = partsText(r.resourceType, r.parts);
-    return parts ? `${name} (${parts})` : name;
+    const extra = [partsText(r.resourceType, r.parts), examModeText(r.examMode)].filter(Boolean).join(' · ');
+    return extra ? `${name} (${extra})` : name;
   }
   if (r.kind === 'external') return r.title || r.url || 'Link ngoài';
   if (r.kind === 'image') return r.title || 'Bài tập ảnh';
@@ -1255,7 +1287,8 @@ function AssignmentResourceLine({ r }) {
   }
   if (r.kind === 'internal') {
     const parts = partsText(r.resourceType, r.parts);
-    return <>{tag(RES_LABEL[r.resourceType] || r.resourceType)}<NewTabLink href={studentUrlFor(r)}>{r.label || r.resourceType}</NewTabLink>{parts && <PartsTag text={parts} />}</>;
+    const mode = examModeText(r.examMode);
+    return <>{tag(RES_LABEL[r.resourceType] || r.resourceType)}<NewTabLink href={studentUrlFor(r)}>{r.label || r.resourceType}</NewTabLink>{parts && <PartsTag text={parts} />}{mode && <PartsTag text={mode} />}</>;
   }
   if (r.kind === 'external') {
     return <>{tag('Link ngoài')}<NewTabLink href={r.url}>{r.title || r.url}</NewTabLink></>;
@@ -1475,7 +1508,8 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   const [picked, setPicked] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'internal')
     .map((r) => ({ kind: 'internal', resourceType: r.resourceType, resourceId: r.resourceId, resourceCode: r.resourceCode, label: r.label, mockBundle: r.mockBundle,
-      ...(r.parts?.length ? { parts: [...r.parts] } : {}) })));
+      ...(r.parts?.length ? { parts: [...r.parts] } : {}),
+      ...(r.examMode ? { examMode: r.examMode } : {}) })));
   const [externals, setExternals] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'external')
     .map((r) => ({ url: r.url, title: r.title, description: r.description || '' })));
@@ -1578,7 +1612,18 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
       ? { ...x, parts: toggledParts(x.parts, n, TEST_PARTS[x.resourceType].count) }
       : x)));
   }
-  const pickedTests = picked.filter((p) => TEST_PARTS[p.resourceType]);
+  // Luyện tập / Thi thật on picked Reading/Listening items ('' = HS tự chọn).
+  // onlyKey: just that item; null = every mode-capable item.
+  function setPickedMode(mode, onlyKey = null) {
+    setPicked((list) => list.map((x) => {
+      if (!EXAM_MODE_TYPES.has(x.resourceType)) return x;
+      if (onlyKey && keyOf(x.resourceType, x.resourceId) !== onlyKey) return x;
+      const { examMode, ...rest } = x; // eslint-disable-line no-unused-vars
+      return mode ? { ...rest, examMode: mode } : rest;
+    }));
+  }
+  const pickedTests = picked.filter((p) => EXAM_MODE_TYPES.has(p.resourceType));
+  const sameMode = pickedTests.every((p) => (p.examMode || '') === (pickedTests[0]?.examMode || ''));
   const isPicked = (item) => picked.some((x) => keyOf(x.resourceType, x.resourceId) === keyOf(cat, item._id));
 
   async function uploadImages(e) {
@@ -1767,6 +1812,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                       ? mockBundleSummary(p)
                       : <a href={studentUrlFor(p) || undefined} target="_blank" rel="noopener noreferrer" title="Mở bài này ở tab mới" style={{ color: 'inherit' }}>{p.label}</a>}
                     {p.parts?.length ? <b style={{ marginLeft: 4 }}>({partsText(p.resourceType, p.parts)})</b> : null}
+                    {p.examMode ? <b style={{ marginLeft: 4 }}>· {examModeText(p.examMode)}</b> : null}
                     {p.resourceType !== 'mock_test' && assignedIndex.has(keyOf(p.resourceType, p.resourceId)) && (
                       <span title={assignedTooltip(assignedIndex.get(keyOf(p.resourceType, p.resourceId)))} style={{ marginLeft: 4, fontWeight: 700 }}>· đã giao trước</span>
                     )}
@@ -1779,20 +1825,33 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
             {pickedTests.length > 0 && (
               <div style={{ marginTop: 10, padding: '10px 12px', border: '1px dashed var(--border)', borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)' }}>
-                  Chọn Passage / Section cần giao <span style={{ fontWeight: 400, color: 'var(--text3)' }}>— mặc định cả đề; bấm để bỏ phần không giao</span>
+                  Phần &amp; chế độ làm bài <span style={{ fontWeight: 400, color: 'var(--text3)' }}>— đề full mặc định cả đề, bấm để bỏ phần không giao · chọn Luyện tập / Thi thật thì chỉ bài làm đúng chế độ đó mới tính hoàn thành</span>
                 </div>
+                {pickedTests.length > 1 && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', fontSize: 12, color: 'var(--text2)' }}>
+                    <span>Đặt chế độ cho tất cả:</span>
+                    <ExamModeChips value={sameMode ? (pickedTests[0].examMode || '') : null} onChange={(m) => setPickedMode(m)} />
+                  </div>
+                )}
                 {pickedTests.map((p) => {
                   const cantSplit = p.resourceType === 'listening_test' && p.partsPickable === false;
                   const g = RES_GROUP_OF[p.resourceType];
+                  const isFull = !!TEST_PARTS[p.resourceType];
+                  const k = keyOf(p.resourceType, p.resourceId);
+                  const partsNote = !isFull ? (p.resourceType === 'reading_practice' ? 'Bài đọc lẻ' : 'Bài nghe lẻ')
+                    : cantSplit ? 'Đề này chưa có audio riêng từng Section — chỉ giao được cả đề'
+                      : p.parts?.length ? `Giao ${partsText(p.resourceType, p.parts)} · học sinh mở đúng các phần này` : 'Cả đề';
+                  const modeNote = p.examMode === 'simulation' ? 'bắt buộc Thi thật (có giám sát)'
+                    : p.examMode === 'practice' ? 'bắt buộc Luyện tập' : 'HS tự chọn chế độ';
                   return (
-                    <div key={keyOf(p.resourceType, p.resourceId)} style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', fontSize: 13 }}>
+                    <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', fontSize: 13 }}>
                       <span style={{ minWidth: 180, fontWeight: 600, color: g?.color }}>{g?.icon} {p.label}</span>
-                      <PartChips type={p.resourceType} parts={cantSplit ? undefined : p.parts} disabled={cantSplit}
-                        color={g?.color} onToggle={(n) => togglePickedPart(p, n)} />
-                      <span style={{ fontSize: 12, color: 'var(--text3)' }}>
-                        {cantSplit ? 'Đề này chưa có audio riêng từng Section — chỉ giao được cả đề'
-                          : p.parts?.length ? `Giao ${partsText(p.resourceType, p.parts)} · học sinh mở đúng các phần này` : 'Cả đề'}
-                      </span>
+                      {isFull && (
+                        <PartChips type={p.resourceType} parts={cantSplit ? undefined : p.parts} disabled={cantSplit}
+                          color={g?.color} onToggle={(n) => togglePickedPart(p, n)} />
+                      )}
+                      <ExamModeChips value={p.examMode || ''} onChange={(m) => setPickedMode(m, k)} />
+                      <span style={{ fontSize: 12, color: 'var(--text3)' }}>{partsNote} · {modeNote}</span>
                     </div>
                   );
                 })}

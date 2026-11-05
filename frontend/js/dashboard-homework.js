@@ -56,6 +56,19 @@ function hwPartsQs(r) {
   return Array.isArray(r.parts) && r.parts.length ? `&parts=${r.parts.join(',')}` : '';
 }
 
+// "&exam=<mode>&lock=1" when the teacher required Luyện tập or Test
+// Simulation — the page opens straight in that mode, no "Chọn chế độ khác".
+const HW_EXAM_MODE_LABEL = { practice: '✏️ Luyện tập', simulation: '🎯 Thi thật' };
+function hwExamQs(r) {
+  return HW_EXAM_MODE_LABEL[r.examMode] ? `&exam=${r.examMode}&lock=1` : '';
+}
+function hwExamLabel(r) {
+  const label = HW_EXAM_MODE_LABEL[r.examMode];
+  if (!label) return '';
+  const name = r.examMode === 'simulation' ? 'Test Simulation (thi thật)' : 'Luyện tập';
+  return `<span class="hw-res-parts hw-res-mode hw-res-mode--${r.examMode}" title="Giáo viên giao ở chế độ ${name} — chỉ bài làm ở chế độ này được tính">${label}</span>`;
+}
+
 // " · Section 1, 2, 4" next to the test name
 function hwPartsLabel(r) {
   if (!Array.isArray(r.parts) || !r.parts.length) return '';
@@ -67,10 +80,10 @@ function hwPartsLabel(r) {
 function hwResourceHref(r) {
   const id = r.resourceId;
   switch (r.resourceType) {
-    case 'reading_test':       return `reading.html?testId=${id}${hwPartsQs(r)}`;
-    case 'reading_practice':   return `reading.html?passageId=${id}`;
-    case 'listening_test':     return `listening.html?testId=${id}${hwPartsQs(r)}`;
-    case 'listening_practice': return `listening.html?sectionId=${id}`;
+    case 'reading_test':       return `reading.html?testId=${id}${hwPartsQs(r)}${hwExamQs(r)}`;
+    case 'reading_practice':   return `reading.html?passageId=${id}${hwExamQs(r)}`;
+    case 'listening_test':     return `listening.html?testId=${id}${hwPartsQs(r)}${hwExamQs(r)}`;
+    case 'listening_practice': return `listening.html?sectionId=${id}${hwExamQs(r)}`;
     case 'listening_gapfill':  return `listening.html?gapfillId=${id}`;
     case 'dictation':          return `dictation.html?sectionId=${id}`;
     // writing.js reads ?examId= and forwards it to POST /api/writing/start so
@@ -187,7 +200,7 @@ function hwResourceRow(assignmentId, r, locked) {
       + hwMockProgress(r);
     action = hwMockAction(assignmentId, r);
   } else if (r.kind === 'internal') {
-    name = escHtml(r.label || r.resourceType) + hwPartsLabel(r);
+    name = escHtml(r.label || r.resourceType) + hwPartsLabel(r) + hwExamLabel(r);
     const href = hwResourceHref(r);
     action = href
       ? `<a class="hw-res-btn" href="${href}" target="_blank" rel="noopener">${r.completed ? 'Xem lại' : 'Bắt đầu'}</a>`

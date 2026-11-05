@@ -13,6 +13,9 @@
  *     onSimulation: function () { ... },    // new Test Simulation flow
  *     preferred: 'practice' | 'simulation', // optional — from a ?exam= link:
  *                                           // only that card is shown
+ *     locked: true,                         // optional, with preferred — the
+ *                                           // teacher required that mode
+ *                                           // (homework): no "Chọn chế độ khác"
  *     parts: { count: 3, unit: 'Passage',   // optional — full Reading/Listening
  *              minutesEach: 20,             // test: "Chọn phần làm" chips. The
  *              available: true,             // callbacks then get the picked part
@@ -228,8 +231,15 @@
     var grid = document.getElementById('ews-ms-grid');
     var otherBtn = document.getElementById('ews-ms-other-btn');
     var preferred = opts.preferred === 'practice' || opts.preferred === 'simulation' ? opts.preferred : null;
+    // opts.locked — homework given in that mode only: no way to the other card.
+    var locked = !!(preferred && opts.locked);
+    if (locked) {
+      document.getElementById('ews-ms-sub').textContent = 'Giáo viên giao bài này ở chế độ '
+        + (preferred === 'simulation' ? 'Test Simulation (thi thật)' : 'Luyện tập')
+        + ' — chỉ bài làm ở chế độ này được tính hoàn thành.';
+    }
     grid.className = 'ews-ms-grid' + (preferred ? ' ews-ms-only ews-ms-only-' + preferred : '');
-    otherBtn.classList.toggle('hidden', !preferred);
+    otherBtn.classList.toggle('hidden', !preferred || locked);
     otherBtn.onclick = function () {
       grid.className = 'ews-ms-grid';
       otherBtn.classList.add('hidden');

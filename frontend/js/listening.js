@@ -491,6 +491,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ExamModeSelect popup here: the click is also the user gesture
     // listening audio needs.
     const examParam      = window.RouteParams ? window.RouteParams.examMode() : null;
+    const examLocked     = window.RouteParams ? window.RouteParams.examLocked() : false;
     // Clean path-based deep link (/listening/test/:id — see Phase 4
     // routing notes). Routing audit finding: this block used to run
     // unconditionally and always appended ?mode=full to whatever
@@ -521,7 +522,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setListeningMode('lele', false);
         // No ?part= (homework links, /listening/practice/:id) is fine —
         // startPracticeSection() corrects it from the fetched section.
-        await startPracticeSection(sectionIdParam, partForSection, false, null, examParam);
+        await startPracticeSection(sectionIdParam, partForSection, false, null, examParam, examLocked);
     } else if (modeParam === 'single' || modeParam === 'lele') {
         history.replaceState({ screen: 'list', mode: 'single', part: partParam }, '', _ltListUrl(partParam));
         document.querySelectorAll('#lele-picker-lt .plele-tab').forEach(t =>
@@ -901,6 +902,12 @@ function renderTestList(groups) {
         // search/category) previously never matched and silently did
         // nothing.
         const _t = (state.tests || []).find(t => String(t._id) === _tid);
+        // Read ?exam= / ?parts= / ?lock= now: the page's own routing
+        // rewrites the URL (?mode=full) before the timeout below fires.
+        const _rp = window.RouteParams;
+        const _exam = _rp ? _rp.examMode() : null;
+        const _parts = _rp ? _rp.examParts(4) : null;
+        const _locked = _rp ? _rp.examLocked() : false;
         if (_t) setTimeout(() => {
             // Reloading a running exam's URL: its "Tiếp tục" banner is
             // the way back in — starting a new attempt here would
@@ -910,8 +917,7 @@ function renderTestList(groups) {
                 document.getElementById('resume-banner').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return;
             }
-            goToStartTest(_tid, window.RouteParams ? window.RouteParams.examMode() : null,
-                window.RouteParams ? window.RouteParams.examParts(4) : null);
+            goToStartTest(_tid, _exam, _parts, _locked);
         }, 80);
     }
 }
@@ -1045,7 +1051,8 @@ function goToLsPage(p) {
 // PLAN-GATED START
 // ══════════════════════════════════════════════
 // pickedParts: sections to pre-pick in "Chọn phần làm" (a ?parts= link).
-function goToStartTest(testId, preferred = null, pickedParts = null) {
+// locked: homework given in `preferred` mode only (?lock=1).
+function goToStartTest(testId, preferred = null, pickedParts = null, locked = false) {
     // Was `_userPlan !== 'premium'` — see reading-v2.js's identical
     // fix (Phase 5 audit finding): staff accounts were incorrectly
     // blocked here even though startPracticeSection() already
@@ -1059,7 +1066,7 @@ function goToStartTest(testId, preferred = null, pickedParts = null) {
     if (window.ExamModeSelect) {
         const _t = (state.tests || []).find(t => String(t._id) === String(testId));
         window.ExamModeSelect.open({
-            skill: 'listening', preferred,
+            skill: 'listening', preferred, locked,
             parts: { count: 4, unit: 'Section', available: !!(_t && _t.partsPickable), picked: pickedParts },
             onPractice: parts => startTest(testId, 'practice', parts),
             onSimulation: parts => startTest(testId, 'simulation', parts),

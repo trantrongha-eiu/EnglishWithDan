@@ -753,6 +753,26 @@ function partsSuffix(parts) {
   return parts && parts.length ? `:p${parts.join(',')}` : '';
 }
 
+// Reading / Listening items the teacher can pin to one mode (Assignment
+// resources[].examMode): only an attempt made in that mode counts.
+const MODE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice']);
+const EXAM_MODES = ['practice', 'simulation'];
+
+// The required mode of an item — null = any mode counts (student picks).
+function assignedMode(r) {
+  return r && MODE_TYPES.has(r.resourceType) && EXAM_MODES.includes(r.examMode) ? r.examMode : null;
+}
+
+// key suffix that keeps "Test 5" and "Test 5, thi thật" apart
+function modeSuffix(mode) {
+  return mode ? `:m${mode}` : '';
+}
+
+// Does an attempt's mode (absent on old rows = practice) count for an item?
+function attemptMatchesMode(attemptMode, wanted) {
+  return !wanted || (attemptMode || 'practice') === wanted;
+}
+
 // Does an attempt (its own `parts`, absent = whole test) count for an item
 // assigned with `wanted` parts? Whole-test items need a whole-test attempt; a
 // part item takes any attempt that included every assigned part.
@@ -765,11 +785,15 @@ function attemptCoversParts(attemptParts, wanted) {
 // Assignment resource -> the item checkCompleted() takes. Callers build their
 // internal-item lists through this and look results up with completionKey().
 function completionItem(r) {
-  return { resourceType: r.resourceType, resourceId: r.resourceId, mockItemId: isFixedMock(r) ? r._id : null, parts: assignedParts(r) };
+  return {
+    resourceType: r.resourceType, resourceId: r.resourceId, mockItemId: isFixedMock(r) ? r._id : null,
+    parts: assignedParts(r), examMode: assignedMode(r),
+  };
 }
 
 function completionKey(r) {
-  return isFixedMock(r) ? `mock_test:item:${r._id}` : resourceKey(r.resourceType, r.resourceId) + partsSuffix(assignedParts(r));
+  return isFixedMock(r) ? `mock_test:item:${r._id}`
+    : resourceKey(r.resourceType, r.resourceId) + partsSuffix(assignedParts(r)) + modeSuffix(assignedMode(r));
 }
 
 // An assigned full mock counts as done once sitting 1 (Listening → Reading →
@@ -954,7 +978,7 @@ async function checkCompleted(studentId, internalItems, since = null) {
 
   // group ids by type
   const byType = new Map();
-  // part-assignable tests: type -> id -> Map<suffix, wanted parts|null>
+  // part- / mode-assignable items: type -> id -> Map<suffix, { parts, mode }>
   const scopesByType = new Map();
   for (const it of internalItems) {
     if (it.mockItemId) continue;
@@ -962,13 +986,14 @@ async function checkCompleted(studentId, internalItems, since = null) {
     if (!byType.has(it.resourceType)) byType.set(it.resourceType, new Set());
     if (it.resourceId) byType.get(it.resourceType).add(String(it.resourceId));
     else byType.get(it.resourceType).add('*'); // mock_test
-    if (PART_COUNTS[it.resourceType] && it.resourceId) {
+    if ((PART_COUNTS[it.resourceType] || MODE_TYPES.has(it.resourceType)) && it.resourceId) {
       if (!scopesByType.has(it.resourceType)) scopesByType.set(it.resourceType, new Map());
       const byId = scopesByType.get(it.resourceType);
       const id = String(it.resourceId);
       if (!byId.has(id)) byId.set(id, new Map());
-      const wanted = it.parts && it.parts.length ? it.parts : null;
-      byId.get(id).set(partsSuffix(wanted), wanted);
+      const parts = it.parts && it.parts.length ? it.parts : null;
+      const mode = EXAM_MODES.includes(it.examMode) ? it.examMode : null;
+      byId.get(id).set(partsSuffix(parts) + modeSuffix(mode), { parts, mode });
     }
   }
 
@@ -1045,15 +1070,15 @@ async function checkCompleted(studentId, internalItems, since = null) {
     const select = `_id createdAt ${A.idField}`
       + (extraFields ? ` ${extraFields}` : '')
       + (cov && !(extraFields || '').includes(cov.field) ? ` ${cov.field}` : '')
-      + (scopes ? ' parts' : '');
-    // Result keys one attempt row counts for — for part-assignable tests,
-    // every assigned scope of that test the attempt covers (see
-    // attemptCoversParts); otherwise just the resource's own key.
+      + (scopes ? ' parts mode' : '');
+    // Result keys one attempt row counts for — for part/mode-assignable
+    // items, every assigned scope of that resource the attempt satisfies
+    // (attemptCoversParts + attemptMatchesMode); otherwise just its own key.
     const keysFor = (r) => {
       const id = String(r[A.idField]);
       if (!scopes) return [resourceKey(type, id)];
       return [...(scopes.get(id) || new Map())]
-        .filter(([, wanted]) => attemptCoversParts(r.parts, wanted))
+        .filter(([, s]) => attemptCoversParts(r.parts, s.parts) && attemptMatchesMode(r.mode, s.mode))
         .map(([suffix]) => resourceKey(type, id) + suffix);
     };
     const rows = await A.model.find({ ...base, [A.idField]: { $in: ids } })
@@ -1175,4 +1200,5 @@ module.exports = {
   groupEquivalentDocs, normalizePrompt,
   listCatalog, resourceExists, labelFor, deepLinkKeyFor, refreshResourceSnapshots, resourceKey, checkCompleted,
   isFixedMock, completionItem, completionKey, assignedParts, attemptCoversParts, PART_COUNTS,
+  assignedMode, attemptMatchesMode, MODE_TYPES, EXAM_MODES,
 };

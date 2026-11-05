@@ -306,6 +306,8 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
         fixedMock: rcs.isFixedMock(r), mock,
         // assigned passages/sections of a full test ([1, 3]) — null = whole test
         parts: rcs.assignedParts(r),
+        // 'practice' | 'simulation' the teacher requires — null = student picks
+        examMode: rcs.assignedMode(r),
         mockParts: rcs.isFixedMock(r) && (r.mockBundle.listeningParts?.length || r.mockBundle.readingParts?.length)
           ? { listening: r.mockBundle.listeningParts?.length ? [...r.mockBundle.listeningParts] : null,
             reading: r.mockBundle.readingParts?.length ? [...r.mockBundle.readingParts] : null }

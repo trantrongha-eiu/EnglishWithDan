@@ -483,6 +483,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // goes through ExamModeSelect (pre-selected) so a link never starts a
   // proctored attempt without the student's click.
   const examParam      = window.RouteParams ? window.RouteParams.examMode() : null;
+  // ?lock=1 — homework given in that mode only (no "Chọn chế độ khác").
+  const examLocked     = window.RouteParams ? window.RouteParams.examLocked() : false;
   // ?parts=1,3 — a "Chọn phần làm" link: those passages only.
   const partsParam     = window.RouteParams ? window.RouteParams.examParts(READING_PARTS.count) : null;
 
@@ -512,12 +514,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       // hasPremiumAccess() applies, wrongly paywalling a legitimate
       // trial/staff user who opens a direct/shared test link.
       if (window.AuthService.hasPremiumAccess()) {
-        if (!fromCleanPath) history.replaceState({ screen: 'starting', testId: test._id, testName: test.name }, '', `?testId=${test._id}${window.RouteParams ? window.RouteParams.examSuffix(examParam) + window.RouteParams.partsSuffix(partsParam) : ''}`);
+        if (!fromCleanPath) history.replaceState({ screen: 'starting', testId: test._id, testName: test.name }, '', `?testId=${test._id}${window.RouteParams ? window.RouteParams.examSuffix(examParam) + window.RouteParams.partsSuffix(partsParam) + (examLocked ? '&lock=1' : '') : ''}`);
         state.testId = test._id;
         state.testName = test.name;
         if (examParam === 'simulation' && window.ExamModeSelect) {
           window.ExamModeSelect.open({
-            skill: 'reading', preferred: 'simulation', parts: { ...READING_PARTS, picked: partsParam },
+            skill: 'reading', preferred: 'simulation', locked: examLocked, parts: { ...READING_PARTS, picked: partsParam },
             onPractice: parts => _doStartExam(test._id, 'practice', parts),
             onSimulation: parts => _doStartExam(test._id, 'simulation', parts),
           });
@@ -543,7 +545,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // No ?category= (homework links, /reading/practice/:id) is fine —
     // startPractice() corrects the tab/URL from the fetched passage itself.
     if (examParam === 'practice') await startPractice(passageIdParam, categoryParam, false, 'practice');
-    else await startPractice(passageIdParam, categoryParam, false, null, examParam);
+    else await startPractice(passageIdParam, categoryParam, false, null, examParam, examLocked);
   } else if (modeParam === 'single' || modeParam === 'lele') {
     // No ?category= on the Bài lẻ list = the 'all' tab (every passage mixed).
     const listCat = _rdParseCategory(params.get('category'));
@@ -1611,7 +1613,8 @@ function _rdPassageCategory(passage, hinted) {
   return passage.category || hinted || 'passage1';
 }
 
-async function startPractice(passageId, category, _silent = false, mode = null, preferred = null) {
+// locked: homework given in `preferred` mode only (?lock=1) — see ExamModeSelect.
+async function startPractice(passageId, category, _silent = false, mode = null, preferred = null, locked = false) {
   if (!window.AuthService.hasPremiumAccess()) {
     openUpgradeModal(); return;
   }
@@ -1621,7 +1624,7 @@ async function startPractice(passageId, category, _silent = false, mode = null, 
   // own callbacks make with `mode` already decided.
   if (!_silent && !mode && window.ExamModeSelect) {
     window.ExamModeSelect.open({
-      skill: 'reading', preferred,
+      skill: 'reading', preferred, locked,
       onPractice: () => startPractice(passageId, category, _silent, 'practice'),
       onSimulation: () => startPractice(passageId, category, _silent, 'simulation'),
     });
