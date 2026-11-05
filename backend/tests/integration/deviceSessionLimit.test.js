@@ -3,7 +3,7 @@
 const request = require('supertest');
 const app = require('../../app');
 const User = require('../../models/User');
-const { createUser, createAdmin, signTokenFor, unique } = require('../factories/userFactory');
+const { createUser, createAdmin, createTeacher, signTokenFor, unique } = require('../factories/userFactory');
 const { deviceTypeFromUA } = require('../../utils/deviceSession');
 
 const PC_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
@@ -101,5 +101,25 @@ describe('student device limit', () => {
     expect((await me(pc2)).status).toBe(200);
     const saved = await User.findById(admin._id).lean();
     expect(saved.activeSessions && saved.activeSessions.desktop && saved.activeSessions.desktop.sid).toBeFalsy();
+  });
+
+  test('a teacher can use many tabs, browsers and phones at once', async () => {
+    const teacher = await createTeacher({ email: `${unique('devtch')}@test.local`, rawPassword: PASS });
+    const tokens = [];
+    for (const ua of [PC_UA, PC2_UA, PC_UA, PHONE_UA, PHONE2_UA]) tokens.push(await login(teacher, ua));
+    for (const t of tokens) expect((await me(t)).status).toBe(200);
+  });
+
+  test('staff logout ends only that session, other devices stay signed in', async () => {
+    const admin = await createAdmin({ email: `${unique('devadm2')}@test.local`, rawPassword: PASS });
+    const pc = await login(admin, PC_UA);
+    const phone = await login(admin, PHONE_UA);
+    expect((await request(app).post('/api/auth/logout').set('Authorization', `Bearer ${pc}`)).status).toBe(200);
+    const res = await me(pc);
+    expect(res.status).toBe(401);
+    expect(res.body.code).toBeUndefined();
+    expect((await me(phone)).status).toBe(200);
+    // A fresh login after logout works too.
+    expect((await me(await login(admin, PC_UA))).status).toBe(200);
   });
 });

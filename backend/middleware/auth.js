@@ -57,7 +57,11 @@ module.exports = async (req, res, next) => {
 
     // ── 1 PC + 1 mobile per student: this token's device slot was taken
     // over by a newer login on another device (utils/deviceSession.js) ──
-    if (deviceSession.checkSession(user, decoded) === 'replaced') {
+    const sessionState = deviceSession.checkSession(user, decoded);
+    if (sessionState === 'revoked') {
+      return res.status(401).json({ success: false, message: 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại' });
+    }
+    if (sessionState === 'replaced') {
       const where = decoded.dt ? ` (${deviceSession.deviceLabel(decoded.dt)})` : '';
       return res.status(401).json({
         success: false, code: 'SESSION_REPLACED',
@@ -109,7 +113,7 @@ module.exports = async (req, res, next) => {
     }
 
     req.user = user;
-    req.authSession = decoded.sid ? { sid: decoded.sid, dt: decoded.dt } : null;
+    req.authSession = decoded.sid ? { sid: decoded.sid, dt: decoded.dt || null } : null;
     // Cập nhật lastSeen — fire-and-forget, không chặn request. Throttled to
     // once a minute: a page load fires ~15 authed calls, and every reader
     // ("online" = lastSeen within 5 min — admin online-users, peer chat)
@@ -122,4 +126,4 @@ module.exports = async (req, res, next) => {
   } catch (err) {
     return res.status(401).json({ success: false, message: 'Token không hợp lệ hoặc đã hết hạn' });
   }
-};
+};

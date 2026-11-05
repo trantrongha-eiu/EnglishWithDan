@@ -10,12 +10,18 @@
 // code SESSION_REPLACED ("newest login wins" — never refusing the new
 // login, so a student who cleared their browser can't get locked out).
 //
-// Staff, parents and guests are not limited.
+// Staff, parents and guests are not limited: they can be signed in on any
+// number of tabs, browsers and devices. Their tokens still carry a sid (no
+// device type) so logging out ends only that one session — the sid goes
+// into User.revokedSessions until the token would have expired anyway.
 
 const crypto = require('crypto');
 const User = require('../models/User');
 
 const DEVICE_TYPES = ['desktop', 'mobile'];
+// Matches the JWT lifetime in services/authService.js signToken().
+const TOKEN_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000;
+const MAX_REVOKED = 200;
 
 // Tablets count as mobile. iPadOS Safari reports a desktop (Mac) UA, so an
 // iPad lands in the PC slot — still only 2 devices at once either way.
@@ -33,12 +39,18 @@ function deviceLabel(type) {
   return type === 'mobile' ? 'điện thoại' : 'máy tính';
 }
 
+function newSid() {
+  return crypto.randomBytes(16).toString('hex');
+}
+
 // Claims a login slot for this request's device and returns the JWT claims
-// to embed ({ sid, dt }), or null when the user isn't limited.
+// to embed ({ sid, dt }). Users without the limit get just { sid }: no slot,
+// nobody is kicked.
 async function claimSlot(user, ctx) {
-  if (!isLimited(user)) return null;
+  if (!user) return null;
+  const sid = newSid();
+  if (!isLimited(user)) return { sid };
   const dt = deviceTypeFromUA(ctx && ctx.ua);
-  const sid = crypto.randomBytes(16).toString('hex');
   await User.updateOne(
     { _id: user._id },
     { $set: { [`activeSessions.${dt}`]: {
@@ -61,9 +73,28 @@ async function releaseSlot(userId, session) {
   );
 }
 
-// 'ok' | 'replaced' for a verified token's claims against the user doc.
+// Logout for an unlimited user's session: only this sid stops working, the
+// user's other tabs/devices stay signed in. Expired entries are pruned.
+async function revokeSession(userId, sid) {
+  if (!sid) return;
+  const now = new Date();
+  await User.updateOne({ _id: userId }, { $pull: { revokedSessions: { exp: { $lte: now } } } });
+  await User.updateOne(
+    { _id: userId },
+    { $push: { revokedSessions: {
+      $each: [{ sid: String(sid), exp: new Date(now.getTime() + TOKEN_LIFETIME_MS) }],
+      $slice: -MAX_REVOKED,
+    } } }
+  );
+}
+
+// 'ok' | 'replaced' | 'revoked' for a verified token's claims against the
+// user doc.
 function checkSession(user, decoded) {
-  if (!isLimited(user)) return 'ok';
+  if (!isLimited(user)) {
+    const revoked = decoded.sid && (user.revokedSessions || []).some((r) => r && r.sid === decoded.sid);
+    return revoked ? 'revoked' : 'ok';
+  }
   const slots = user.activeSessions || {};
   if (!decoded.sid) {
     // Token issued before this feature: allowed only until the student's
@@ -80,4 +111,4 @@ function requestContext(req) {
   return { ua: req.get ? req.get('user-agent') : '', ip: req.ip || '' };
 }
 
-module.exports = { deviceTypeFromUA, isLimited, deviceLabel, claimSlot, releaseSlot, checkSession, requestContext, DEVICE_TYPES };
+module.exports = { deviceTypeFromUA, isLimited, deviceLabel, claimSlot, releaseSlot, revokeSession, checkSession, requestContext, DEVICE_TYPES };

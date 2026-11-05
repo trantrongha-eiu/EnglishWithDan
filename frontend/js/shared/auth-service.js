@@ -154,8 +154,14 @@
   // logout() on the same 401 afterwards still lands on the right message.
   var _forcedLogoutReason = null;
 
+  // While the "signed in on another device" popup is up, page code that
+  // reacts to the same 401 by calling logout() must not navigate away
+  // underneath it — the popup's button does the logout.
+  var _replacedPopupOpen = false;
+
   function logout(reason) {
     reason = reason || _forcedLogoutReason;
+    if (_replacedPopupOpen && reason === 'replaced') return;
     // BUG-023: tell the server to invalidate this user's tokens (all
     // devices — see backend/models/User.js's tokenValidAfter) before the
     // page navigates away. Best-effort: `keepalive` asks the browser to
@@ -258,10 +264,68 @@
   // reason the login page can display. auth.js installs this on every page
   // it guards; kept here so the logic itself isn't duplicated if another
   // entry point ever needs it.
+  // Students only (1 PC + 1 phone): the device that got pushed out sees this
+  // popup over the page it's on, then goes to the login page. Staff have no
+  // limit, so the server never sends them SESSION_REPLACED.
+  function tr(vi) {
+    return window.EWSI18n && typeof window.EWSI18n.t === 'function' ? window.EWSI18n.t(vi) : vi;
+  }
+  function showReplacedPopup() {
+    if (_replacedPopupOpen) return;
+    if (!document.body) { logout('replaced'); return; }
+    _replacedPopupOpen = true;
+    var overlay = document.createElement('div');
+    overlay.setAttribute('role', 'alertdialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:rgba(15,23,42,.6);' +
+      'display:flex;align-items:center;justify-content:center;padding:16px;';
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#fff;color:#1e293b;max-width:420px;width:100%;border-radius:16px;' +
+      'padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.3);text-align:center;font-family:inherit;';
+    var icon = document.createElement('div');
+    icon.textContent = '🔒';
+    icon.style.cssText = 'font-size:40px;line-height:1;margin-bottom:12px;';
+    var title = document.createElement('h3');
+    title.textContent = tr('Bạn đã đăng nhập trên thiết bị khác');
+    title.style.cssText = 'margin:0 0 10px;font-size:18px;font-weight:700;';
+    var msg = document.createElement('p');
+    msg.textContent = tr('Tài khoản của bạn vừa được đăng nhập ở nơi khác nên phiên ở đây đã bị đăng xuất. Mỗi tài khoản chỉ dùng được trên 1 máy tính và 1 điện thoại cùng lúc.');
+    msg.style.cssText = 'margin:0 0 20px;font-size:14px;line-height:1.55;color:#475569;';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = tr('Đăng nhập lại');
+    btn.style.cssText = 'background:#4f46e5;color:#fff;border:0;border-radius:10px;padding:10px 22px;' +
+      'font-size:15px;font-weight:600;cursor:pointer;';
+    btn.addEventListener('click', function () {
+      _replacedPopupOpen = false;
+      logout('replaced');
+    });
+    box.appendChild(icon); box.appendChild(title); box.appendChild(msg); box.appendChild(btn);
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+    try { btn.focus(); } catch (e) { /* ignore */ }
+  }
+
+  // A student coming back to a tab left open on the pushed-out device would
+  // otherwise only find out on their next click — check right away.
+  var _lastSessionCheck = 0;
+  function checkSessionOnReturn() {
+    if (_forcedLogoutReason || document.visibilityState === 'hidden') return;
+    if (!getToken() || getRole() !== 'student') return;
+    if (Date.now() - _lastSessionCheck < 15000) return;
+    _lastSessionCheck = Date.now();
+    window.fetch(AuthService.API + '/auth/me', { headers: { Authorization: 'Bearer ' + getToken() } })
+      .catch(function () {});
+  }
+
   var _bannedInstalled = false;
   function installBannedInterceptor(isPublicPage) {
     if (_bannedInstalled) return;
     _bannedInstalled = true;
+    if (!isPublicPage) {
+      document.addEventListener('visibilitychange', checkSessionOnReturn);
+      window.addEventListener('focus', checkSessionOnReturn);
+    }
     var origFetch = window.fetch;
     window.fetch = async function () {
       var res = await origFetch.apply(window, arguments);
@@ -282,7 +346,7 @@
           var d401 = await res.clone().json();
           if (d401 && d401.code === 'SESSION_REPLACED') {
             _forcedLogoutReason = 'replaced';
-            logout('replaced');
+            showReplacedPopup();
           }
         } catch (e) { /* ignore parse errors */ }
       }

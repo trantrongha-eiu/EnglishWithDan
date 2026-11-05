@@ -53,6 +53,10 @@ const UserSchema = new mongoose.Schema({
     desktop: { sid: String, at: Date, ua: String, ip: String },
     mobile:  { sid: String, at: Date, ua: String, ip: String },
   },
+  // Staff/parent logins that were logged out (sid + when the token would have
+  // expired anyway) — they have no device limit, so logout ends just that
+  // one session instead of every device (utils/deviceSession.js).
+  revokedSessions: [{ _id: false, sid: String, exp: Date }],
   // Set when staff hand out a temporary password (parent accounts — see
   // routes/admin/parents.js); cleared by the account's own password change.
   // parent.html blocks everything else behind a change-password form while

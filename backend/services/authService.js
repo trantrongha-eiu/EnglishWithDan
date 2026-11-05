@@ -67,11 +67,14 @@ async function sendVerificationEmail(user, rawToken) {
 // even after the response message/status was unified (security audit finding).
 const DUMMY_PASSWORD_HASH = bcrypt.hashSync('timing-attack-mitigation', 10);
 
-// `session` ({ sid, dt }) ties the token to a student's device slot — see
-// utils/deviceSession.js. Omitted for users without the device limit.
+// `session` ({ sid, dt }) ties the token to one login — a student's device
+// slot, or just { sid } for staff — see utils/deviceSession.js.
 function signToken(userId, session) {
   const claims = { id: userId };
-  if (session && session.sid) { claims.sid = session.sid; claims.dt = session.dt; }
+  if (session && session.sid) {
+    claims.sid = session.sid;
+    if (session.dt) claims.dt = session.dt;
+  }
   return jwt.sign(claims, config.jwtSecret, { expiresIn: '7d' });
 }
 
@@ -391,11 +394,13 @@ async function logoutAllSessions(userId) {
   await User.updateOne({ _id: userId }, { tokenValidAfter: new Date() });
 }
 
-// Logout from one device. A token tied to a device slot only frees that
-// slot (the student's other device stays signed in); an old token without
-// a slot falls back to logging out everywhere, as before.
+// Logout from one device. A student's slot token only frees that slot (the
+// other device stays signed in); a staff token ({ sid } without a device
+// type) only revokes that one session; an old token without a sid falls
+// back to logging out everywhere, as before.
 async function logoutSession(userId, session) {
-  if (session && session.sid) return deviceSession.releaseSlot(userId, session);
+  if (session && session.sid && session.dt) return deviceSession.releaseSlot(userId, session);
+  if (session && session.sid) return deviceSession.revokeSession(userId, session.sid);
   return logoutAllSessions(userId);
 }
 
