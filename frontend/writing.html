@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb" />
   <link rel="stylesheet" href="/css/components.css?v=bb5d514434" />
-  <link rel="stylesheet" href="/css/writing.css?v=e4c8450fff" />
+  <link rel="stylesheet" href="/css/writing.css?v=a3c353b39d" />
   <link rel="stylesheet" href="/css/pdf-viewer.css?v=7d99d6420a" />
   <link rel="stylesheet" href="/css/mobile.css?v=1319d3b9c8" />
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3" />
@@ -24,7 +24,7 @@
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
-  <link rel="stylesheet" href="/css/pf-writing.css?v=e68614cb3e"/>
+  <link rel="stylesheet" href="/css/pf-writing.css?v=76ccd7847d"/>
 </head>
 <body>
 <script src="/js/bundles/app-shell.js?v=6d0d2b8ebc"></script>
@@ -366,10 +366,17 @@
       <div id="practice-task-items"><div class="spinner"></div></div>
     </div>
 
-    <!-- Practice history (sidebar in split mode, full-width in home mode) -->
-    <div id="practice-hist-section">
-      <h3 id="practice-hist-title" style="font-size:15px;font-weight:700;margin-bottom:12px"><i class="fas fa-history"></i> Lịch sử luyện tập</h3>
-      <div id="practice-history-list"><div class="spinner"></div></div>
+    <!-- Sidebar in split mode (history + Task 2 essay groups), full-width history in home mode -->
+    <div id="practice-side">
+      <div id="practice-hist-section">
+        <h3 id="practice-hist-title" style="font-size:15px;font-weight:700;margin-bottom:12px"><i class="fas fa-history"></i> Lịch sử luyện tập</h3>
+        <div id="practice-history-list"><div class="spinner"></div></div>
+      </div>
+      <!-- Task 2 only: the 7 essay types of the Task 2 Templates page -->
+      <div id="practice-cat-section" style="display:none">
+        <h3 class="practice-cat-title"><i class="fas fa-layer-group"></i> Dạng đề Task 2</h3>
+        <div id="practice-cat-list" class="practice-cat-list"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -672,6 +679,6 @@
 <script src="/js/shared/task2-highlight.js?v=2991d441a8"></script>
 <script src="/js/shared/task2-generic-tpl.js?v=6c26dac6da"></script>
 <script src="/js/shared/analysis-format.js?v=c2558b7744"></script>
-<script src="/js/writing.js?v=7098d8765e"></script>
+<script src="/js/writing.js?v=74977b2767"></script>
 </body>
 </html>

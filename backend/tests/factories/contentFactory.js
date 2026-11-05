@@ -137,6 +137,7 @@ async function createWritingTask1(overrides = {}) {
     prompt: overrides.prompt || unique('Task1 prompt'),
     isActive: overrides.isActive ?? true,
     duplicateOf: overrides.duplicateOf ?? null,
+    chartType: overrides.chartType ?? '',
   });
 }
 

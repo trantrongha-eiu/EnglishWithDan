@@ -191,11 +191,16 @@
 :root .wt-task-card-band { border-width: 2px; font-weight: 900; border-radius: 999px; background: var(--surface); }
 
 :root #practice-hist-section,
-:root .history-body.practice-split-mode #practice-hist-section {
+:root .history-body.practice-split-mode #practice-hist-section,
+:root .history-body.practice-split-mode #practice-cat-section {
   border: 2.5px solid var(--pf-ink); border-radius: 18px; box-shadow: var(--pf-shadow);
   background: var(--surface); padding: 16px 18px;
 }
-:root #practice-hist-title { font-family: var(--pf-head); font-weight: 900; }
+:root #practice-hist-title,
+:root .practice-cat-title { font-family: var(--pf-head); font-weight: 900; }
+:root .practice-cat-btn { border: 2px solid var(--pf-ink); border-radius: 12px; background: var(--surface); }
+:root .practice-cat-btn.active { background: var(--cat); color: #fff; box-shadow: 2px 2px 0 var(--pf-ink); border-color: var(--pf-ink); }
+:root .practice-cat-ico { border: 2px solid var(--pf-ink); }
 
 /* Samples / tips top bars */
 :root .wsampl-topbar { border-bottom: 2.5px solid var(--pf-ink); background: var(--surface); }

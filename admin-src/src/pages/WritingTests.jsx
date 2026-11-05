@@ -44,6 +44,15 @@ const DEFAULT_T2_SECTIONS = [
   { title: 'Conclusion', content: '' },
 ];
 const TASK_TYPE_LABEL = { task1: 'Task 1', task2: 'Task 2', both: 'Task 1 + 2' };
+// WritingTask1.chartType — the filter groups on the student Task 1 list.
+const T1_CHART_TYPES = [
+  ['static', 'Static chart (1 mốc thời gian)'],
+  ['dynamic', 'Dynamic chart (thay đổi theo thời gian)'],
+  ['mixed', 'Mixed charts (2 loại biểu đồ)'],
+  ['process', 'Process / diagram'],
+  ['map', 'Map / plan'],
+];
+const T1_CHART_SHORT = { static: 'Static', dynamic: 'Dynamic', mixed: 'Mixed', process: 'Process', map: 'Map' };
 
 function Task1Modal({ task, onClose, onSaved }) {
   const toast = useToast();
@@ -55,10 +64,11 @@ function Task1Modal({ task, onClose, onSaved }) {
     prompt: task.prompt || '',
     imageUrl: task.imageUrl || '',
     chartData: task.chartData || '',
+    chartType: task.chartType || '',
     instructions: task.instructions || DEFAULT_T1,
     sampleSections: task.sampleSections?.length ? task.sampleSections : DEFAULT_T1_SECTIONS,
     isActive: task.isActive !== false,
-  } : { prompt: '', imageUrl: '', chartData: '', instructions: DEFAULT_T1, sampleSections: DEFAULT_T1_SECTIONS, isActive: true });
+  } : { prompt: '', imageUrl: '', chartData: '', chartType: '', instructions: DEFAULT_T1, sampleSections: DEFAULT_T1_SECTIONS, isActive: true });
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -148,6 +158,13 @@ function Task1Modal({ task, onClose, onSaved }) {
             )}
           </div>
           <div className="form-group">
+            <label className="form-label">Dạng đề <span style={{ fontWeight: 400, color: 'var(--text3)' }}>(học sinh lọc đề theo dạng này)</span></label>
+            <select className="form-input" value={form.chartType} onChange={set('chartType')}>
+              <option value="">— Chưa phân loại —</option>
+              {T1_CHART_TYPES.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+            </select>
+          </div>
+          <div className="form-group">
             <label className="form-label">Số liệu chuẩn cho AI chấm <span style={{ fontWeight: 400, color: 'var(--text3)' }}>(không bắt buộc, học sinh không thấy)</span></label>
             <textarea className="form-input" rows={4} value={form.chartData} onChange={set('chartData')}
               placeholder={'London (°C): Jan 8, Feb 9, ... Jul 23, ... Dec 9\nNew York (°C): Jan 4, ... Jul 29, ... Dec 5\nSunshine (hours/year): London 1,180; New York 2,535; Sydney 2,473'} />
@@ -187,6 +204,18 @@ function Task1Modal({ task, onClose, onSaved }) {
   );
 }
 
+// The 7 essay groups students filter Task 2 prompts by on writing.html —
+// same ids as the Task 2 Templates page (Task2Template.typeId).
+const T2_ESSAY_TYPES = [
+  ['type01', '01 · Advantages & Disadvantages'],
+  ['type02', '02 · Discuss Both Views'],
+  ['type03', '03 · Cause – Solution'],
+  ['type04', '04 · Effect – Solution'],
+  ['type05', '05 · Cause – Effect'],
+  ['type06', '06 · Agree / Disagree'],
+  ['type07', '07 · Positive / Negative Development'],
+];
+
 function Task2Modal({ task, onClose, onSaved }) {
   const toast = useToast();
   // Initialized once from `task` — the parent remounts this modal (via a
@@ -197,8 +226,9 @@ function Task2Modal({ task, onClose, onSaved }) {
     instructions: task.instructions || DEFAULT_T2,
     sampleSections: task.sampleSections?.length ? task.sampleSections : DEFAULT_T2_SECTIONS,
     thumbnailUrl: task.thumbnailUrl || '',
+    essayType: task.essayType || '',
     isActive: task.isActive !== false,
-  } : { prompt: '', instructions: DEFAULT_T2, sampleSections: DEFAULT_T2_SECTIONS, thumbnailUrl: '', isActive: true });
+  } : { prompt: '', instructions: DEFAULT_T2, sampleSections: DEFAULT_T2_SECTIONS, thumbnailUrl: '', essayType: '', isActive: true });
   const [saving, setSaving] = useState(false);
 
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
@@ -212,8 +242,9 @@ function Task2Modal({ task, onClose, onSaved }) {
     e.preventDefault();
     setSaving(true);
     try {
-      if (task?._id) await apiFetch(`/admin/writing-task2/${task._id}`, { method: 'PUT', body: JSON.stringify(form) });
-      else await apiFetch('/admin/writing-task2', { method: 'POST', body: JSON.stringify(form) });
+      const body = JSON.stringify({ ...form, essayType: form.essayType || null });
+      if (task?._id) await apiFetch(`/admin/writing-task2/${task._id}`, { method: 'PUT', body });
+      else await apiFetch('/admin/writing-task2', { method: 'POST', body });
       toast(task?._id ? 'Đã cập nhật' : 'Đã thêm prompt Task 2');
       onSaved(); onClose();
     } catch (err) { toast(err.message, 'error'); }
@@ -243,6 +274,14 @@ function Task2Modal({ task, onClose, onSaved }) {
             <label className="form-label">Đề bài (prompt) *</label>
             <textarea className="form-input" rows={5} value={form.prompt} onChange={set('prompt')} required
               placeholder="Some people think that... To what extent do you agree or disagree?&#10;&#10;Give reasons for your answer and include any relevant examples from your own knowledge or experience. Write at least 250 words." />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Dạng đề</label>
+            <select className="form-input" value={form.essayType} onChange={set('essayType')}>
+              <option value="">— Tự đoán theo câu hỏi —</option>
+              {T2_ESSAY_TYPES.map(([id, label]) => <option key={id} value={id}>{label}</option>)}
+            </select>
+            <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 4 }}>Học sinh lọc đề Task 2 theo 7 nhóm này trên trang Writing.</div>
           </div>
           <div className="form-group">
             <label className="form-label">Hướng dẫn</label>
@@ -703,15 +742,16 @@ export default function WritingTests() {
           <ListFilterBar list={task1List} searchPlaceholder="Tìm prompt..." />
           <div className="table-wrap">
             <table className="table">
-              <thead><tr><th>PROMPT</th><th>HÌNH ẢNH</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>LINK</th><th></th></tr></thead>
+              <thead><tr><th>PROMPT</th><th>DẠNG</th><th>HÌNH ẢNH</th><th>BÀI MẪU</th><th>TRẠNG THÁI</th><th>NGÀY TẠO</th><th>LINK</th><th></th></tr></thead>
               <tbody>
                 {task1List.paged.length === 0
-                  ? <tr><td colSpan={6} className="table-empty">{task1.length === 0 ? 'Chưa có prompt Task 1 nào' : 'Không tìm thấy prompt phù hợp'}</td></tr>
+                  ? <tr><td colSpan={8} className="table-empty">{task1.length === 0 ? 'Chưa có prompt Task 1 nào' : 'Không tìm thấy prompt phù hợp'}</td></tr>
                   : task1List.paged.map(p => {
                     const hasSample = Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim());
                     return (
                       <tr key={p._id}>
                         <td style={{ maxWidth: 300 }}>{(p.prompt || '').slice(0, 100)}{(p.prompt || '').length > 100 ? '…' : ''}</td>
+                        <td style={{ fontSize: 12 }}>{T1_CHART_SHORT[p.chartType] || <span style={{ color: 'var(--text3)' }}>–</span>}</td>
                         <td>{/^https?:\/\//i.test(p.imageUrl || '') ? <a href={p.imageUrl} target="_blank" rel="noreferrer" style={{ color: 'var(--blue)', fontSize: 12 }}>🖼 Xem</a> : '–'}</td>
                         <td>
                           {hasSample

@@ -170,7 +170,8 @@ async function submitExam(user, body) {
 
 async function listPracticeTasks(taskType) {
   const Model = taskType === 1 ? WritingTask1 : WritingTask2;
-  const tasks = await Model.find({ isActive: true }).sort({ createdAt: 1 }).lean();
+  // Newest upload first.
+  const tasks = await Model.find({ isActive: true }).sort({ createdAt: -1 }).lean();
   if (taskType === 2) await attachTask2Vocab(tasks);
   // Task 2 card cover: a small 2:1 crop (Task 1 cards show the chart itself, imageUrl).
   return tasks.map(({ thumbnailUrl, ...t }) => ({ ...t, thumbnail: toCardThumbnail(thumbnailUrl) }));

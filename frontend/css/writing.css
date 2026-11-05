@@ -970,7 +970,8 @@ mark.fb-mk-err sup { color: #dc2626; }
 [data-theme="dark"] .btn-hist-filter.active        { background: #2563eb; border-color: #2563eb; color: #fff; }
 
 /* Practice split sidebar panel */
-[data-theme="dark"] .history-body.practice-split-mode #practice-hist-section {
+[data-theme="dark"] .history-body.practice-split-mode #practice-hist-section,
+[data-theme="dark"] .history-body.practice-split-mode #practice-cat-section {
   background: var(--surface, #0d0d0d);
   border-color: var(--border2, #333333);
 }
@@ -1611,18 +1612,54 @@ mark.fb-mk-err sup { color: #dc2626; }
   /* shared styles used in both modes */
 }
 
-.history-body.practice-split-mode #practice-hist-section {
+.history-body.practice-split-mode #practice-side {
   flex: 0 0 280px;
   order: 0;
   position: sticky;
   top: calc(var(--nav-height, 56px) + 16px);
   max-height: calc(100vh - var(--nav-height, 56px) - 48px);
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.history-body.practice-split-mode #practice-hist-section,
+.history-body.practice-split-mode #practice-cat-section {
   background: var(--card-bg, #fff);
   border-radius: 12px;
   border: 1px solid var(--border, #e5e7eb);
   padding: 16px;
 }
+/* Task 2: keep the essay groups in view under a long history. */
+.history-body.practice-split-mode #practice-side.has-cats #practice-history-list {
+  max-height: 34vh;
+  overflow-y: auto;
+}
+
+/* ── Task 2 essay groups (under the history box) ── */
+.practice-cat-title { font-size: 15px; font-weight: 700; margin: 0 0 12px; }
+.practice-cat-list { display: flex; flex-direction: column; gap: 6px; }
+.practice-cat-btn {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 8px 10px; border-radius: 10px; cursor: pointer; text-align: left;
+  border: 1.5px solid var(--border, #e5e7eb); background: var(--card-bg, #fff);
+  color: var(--text, #1f2937); font: inherit; font-size: 13.5px; font-weight: 600;
+  transition: background .14s, border-color .14s, transform .14s;
+}
+.practice-cat-btn:hover { border-color: var(--cat, #6b7280); transform: translateX(2px); }
+.practice-cat-ico {
+  flex: 0 0 28px; height: 28px; border-radius: 8px; display: grid; place-items: center;
+  background: var(--cat, #6b7280); color: #fff; font-size: 13px;
+}
+.practice-cat-name { flex: 1; min-width: 0; line-height: 1.25; }
+.practice-cat-num { font-size: 11px; font-weight: 800; opacity: .6; margin-right: 2px; }
+.practice-cat-count {
+  min-width: 26px; padding: 1px 7px; border-radius: 999px; text-align: center;
+  font-size: 12px; font-weight: 800; background: var(--bg, #f3f4f6); color: var(--text2, #4b5563);
+}
+.practice-cat-btn.active { background: var(--cat, #6b7280); border-color: var(--cat, #6b7280); color: #fff; }
+.practice-cat-btn.active .practice-cat-ico { background: rgba(255,255,255,.22); }
+.practice-cat-btn.active .practice-cat-count { background: rgba(255,255,255,.25); color: #fff; }
 
 .history-body.practice-split-mode #practice-task-list {
   flex: 1;
@@ -1678,15 +1715,26 @@ mark.fb-mk-err sup { color: #dc2626; }
   .history-body.practice-split-mode {
     flex-direction: column;
   }
-  .history-body.practice-split-mode #practice-hist-section {
+  /* The sidebar wrapper dissolves so the essay groups can sit above the
+     task list and the history below it. */
+  .history-body.practice-split-mode #practice-side { display: contents; }
+  .history-body.practice-split-mode #practice-hist-section,
+  .history-body.practice-split-mode #practice-cat-section {
     flex: none;
     width: 100%;
-    position: static;
-    max-height: none;
-    order: 1;
   }
+  .history-body.practice-split-mode #practice-hist-section { order: 2; }
+  .history-body.practice-split-mode #practice-cat-section { order: 0; }
+  .history-body.practice-split-mode #practice-side.has-cats #practice-history-list { max-height: none; }
+  .practice-cat-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .practice-cat-btn { padding: 5px 7px 5px 5px; gap: 6px; font-size: 12px; }
+  .practice-cat-btn:hover { transform: none; }
+  .practice-cat-ico { flex-basis: 22px; height: 22px; font-size: 10.5px; border-radius: 6px; }
+  .practice-cat-num { display: none; }
+  .practice-cat-count { min-width: 22px; padding: 0 6px; font-size: 11px; }
+  .practice-cat-title { font-size: 14px; margin-bottom: 10px; }
   .history-body.practice-split-mode #practice-task-list {
-    order: 0;
+    order: 1;
   }
   .history-body.practice-split-mode #practice-restore-banner {
     /* flex-basis:100% maps to HEIGHT once the container switches to
@@ -1855,6 +1903,22 @@ mark.fb-mk-err sup { color: #dc2626; }
   padding: 5px 14px !important;
   white-space: nowrap;
 }
+
+/* Task 2 essay group chip (colour from T2_ESSAY_CATS in writing.js) */
+.wt-task-card-type {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  color: var(--cat, #6b7280);
+  background: color-mix(in srgb, var(--cat, #6b7280) 12%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--cat, #6b7280) 45%, transparent);
+}
+.wt-task-card-type i { font-size: 10.5px; margin-right: 2px; }
 
 .wt-task-card-band {
   flex-shrink: 0;

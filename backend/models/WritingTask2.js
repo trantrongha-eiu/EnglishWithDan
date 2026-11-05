@@ -40,6 +40,11 @@ const WritingTask2Schema = new mongoose.Schema({
   // Cover image of the practice-list card (Cloudinary URL, '' = Daniel logo).
   // Free-to-use images only: the card has no room for a credit line.
   thumbnailUrl:   { type: String, default: '' },
+  // Essay group students filter by on writing.html (Task 2 list) — the 7
+  // types of the Task 2 Templates page (Task2Template.typeId). null = not
+  // set yet; the page then guesses from the prompt wording.
+  // Set by scripts/setWritingTask2EssayTypes.js and the admin form.
+  essayType:      { type: String, enum: ['type01', 'type02', 'type03', 'type04', 'type05', 'type06', 'type07', null], default: null },
   isActive:       { type: Boolean, default: true },
   // Same prompt entered twice (e.g. the "time spent on websites" chart
   // under two wordings). Points at the copy to keep; homework completion

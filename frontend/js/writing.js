@@ -2215,6 +2215,7 @@ const practiceState = {
   task: null,
   tasks: [],
   filteredTasks: [],
+  essayType: null,  // category filter: Task 1 chartType / Task 2 essay group (type01..type07), null = all
   taskScores: {},   // taskId -> { band, attemptId } for confirmed/graded attempts
   page: 1,
   wordCount: 0,
@@ -2229,6 +2230,91 @@ const practiceState = {
 
 // ── Practice task list – pagination ─────────────────────
 const PRACTICE_PAGE_SIZE = 8;
+
+// Task 2 essay groups — the 7 types of the Task 2 Templates page, same ids
+// and colours as js/task2-template.js (TYPE_META). A prompt's group is
+// WritingTask2.essayType (set by scripts/setWritingTask2EssayTypes.js or in
+// admin); prompts without one fall back to the wording guess.
+const T2_ESSAY_CATS = [
+  { id: 'type01', label: 'Advantages & Disadvantages', short: 'Adv & Disadv',    icon: 'fa-scale-balanced',     color: '#4d63d8' },
+  { id: 'type02', label: 'Discuss Both Views',         short: 'Discuss Both',    icon: 'fa-comments',           color: '#7d62c9' },
+  { id: 'type03', label: 'Cause – Solution',           short: 'Cause–Solution',  icon: 'fa-lightbulb',          color: '#2a9d8f' },
+  { id: 'type04', label: 'Effect – Solution',          short: 'Effect–Solution', icon: 'fa-gears',              color: '#cf5f57' },
+  { id: 'type05', label: 'Cause – Effect',             short: 'Cause–Effect',    icon: 'fa-arrow-trend-up',     color: '#e07a3a' },
+  { id: 'type06', label: 'Agree / Disagree',           short: 'Agree/Disagree',  icon: 'fa-check-double',       color: '#2f9e5b' },
+  { id: 'type07', label: 'Positive / Negative',        short: 'Pos/Neg Dev',     icon: 'fa-circle-half-stroke', color: '#d4689a' },
+];
+const T2_ESSAY_CAT = Object.fromEntries(T2_ESSAY_CATS.map(c => [c.id, c]));
+
+// Task 1 chart types — WritingTask1.chartType (set by
+// scripts/seedWritingTask1Nov2026.js or in admin).
+const T1_CHART_CATS = [
+  { id: 'static',  label: 'Static charts',  short: 'Static',  icon: 'fa-chart-pie',       color: '#4d63d8' },
+  { id: 'dynamic', label: 'Dynamic charts', short: 'Dynamic', icon: 'fa-chart-line',      color: '#e07a3a' },
+  { id: 'mixed',   label: 'Mixed charts',   short: 'Mixed',   icon: 'fa-table-columns',   color: '#7d62c9' },
+  { id: 'process', label: 'Process',        short: 'Process', icon: 'fa-diagram-project', color: '#2a9d8f' },
+  { id: 'map',     label: 'Maps',           short: 'Maps',    icon: 'fa-map-location-dot', color: '#2f9e5b' },
+];
+const T1_CHART_CAT = Object.fromEntries(T1_CHART_CATS.map(c => [c.id, c]));
+
+function _taskEssayType(t) {
+  if (t.essayType && T2_ESSAY_CAT[t.essayType]) return t.essayType;
+  return (window.Task2GenericTpl && Task2GenericTpl.guessType(t.prompt || '')) || null;
+}
+
+// Category of a task in the current list: Task 1 chart type or Task 2 essay group.
+function _taskCat(t) {
+  if (practiceState.taskType === 1) return T1_CHART_CAT[t.chartType] ? t.chartType : null;
+  return _taskEssayType(t);
+}
+function _catList() { return practiceState.taskType === 1 ? T1_CHART_CATS : T2_ESSAY_CATS; }
+
+// Category buttons under the history box — Task 1 chart types / Task 2 essay groups.
+function _renderEssayCats() {
+  const section = document.getElementById('practice-cat-section');
+  const side    = document.getElementById('practice-side');
+  const listEl  = document.getElementById('practice-cat-list');
+  const show = (practiceState.taskType === 1 || practiceState.taskType === 2) && (practiceState.tasks || []).length > 0;
+  if (section) section.style.display = show ? '' : 'none';
+  if (side) side.classList.toggle('has-cats', show);
+  if (!show || !listEl) return;
+  const titleEl = section && section.querySelector('.practice-cat-title');
+  if (titleEl) titleEl.innerHTML = `<i class="fas fa-layer-group"></i> Dạng đề Task ${practiceState.taskType}`;
+  const counts = {};
+  practiceState.tasks.forEach(t => { const k = _taskCat(t); if (k) counts[k] = (counts[k] || 0) + 1; });
+  const cur = practiceState.essayType;
+  const btn = (id, label, icon, color, n, num) => `
+    <button type="button" class="practice-cat-btn${cur === id ? ' active' : ''}" style="--cat:${color}"
+      onclick="filterByEssayType(${id ? `'${id}'` : 'null'})" aria-pressed="${cur === id}">
+      <span class="practice-cat-ico"><i class="fas ${icon}"></i></span>
+      <span class="practice-cat-name">${num ? `<span class="practice-cat-num">${num}</span> ` : ''}${escHtml(label)}</span>
+      <span class="practice-cat-count">${n}</span>
+    </button>`;
+  listEl.innerHTML = btn(null, 'Tất cả dạng đề', 'fa-border-all', '#475569', practiceState.tasks.length, '')
+    + _catList().map((c, i) => btn(c.id, c.label, c.icon, c.color, counts[c.id] || 0, String(i + 1).padStart(2, '0'))).join('');
+}
+
+function filterByEssayType(typeId) {
+  practiceState.essayType = typeId && practiceState.essayType !== typeId ? typeId : null;
+  _applyTaskFilters();
+  _renderEssayCats();
+  // On phones the groups sit above the list — bring the list into view.
+  const list = document.getElementById('practice-task-items');
+  if (list && window.innerWidth <= 768) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Search box + essay group, combined.
+function _applyTaskFilters() {
+  const q = (document.getElementById('writing-task-search')?.value || '').trim().toLowerCase();
+  const cat = _catList().find(c => c.id === practiceState.essayType) || null;
+  const type = cat ? cat.id : null;
+  practiceState.filteredTasks = (practiceState.tasks || []).filter(t =>
+    (!q || (t.prompt || '').toLowerCase().includes(q)) && (!type || _taskCat(t) === type));
+  practiceState.page = 1;
+  const titleEl = document.getElementById('practice-list-title');
+  if (titleEl) titleEl.textContent = `Chọn đề Task ${practiceState.taskType}` + (cat ? ` · ${cat.label}` : '');
+  _renderTaskPage();
+}
 
 function _renderTaskPage() {
   const itemsEl = document.getElementById('practice-task-items');
@@ -2256,6 +2342,8 @@ function _renderTaskPage() {
       ? `<div class="wt-task-card-cover"><span class="wt-task-card-cover-logo"><span>D</span>aniel</span>${t.thumbnail ? `<img src="${escHtml(t.thumbnail)}" alt="" loading="lazy" onerror="this.remove()">` : ''}</div>`
       : '';
     const promptPreview = (t.prompt || '').slice(0, 200) + ((t.prompt || '').length > 200 ? '…' : '');
+    const cat = (taskType === 2 ? T2_ESSAY_CAT : T1_CHART_CAT)[_taskCat(t)] || null;
+    const catHtml = cat ? `<span class="wt-task-card-type" style="--cat:${cat.color}"><i class="fas ${cat.icon}"></i> ${escHtml(cat.short)}</span>` : '';
     const done = (practiceState.taskScores || {})[String(t._id)];
     const bandColor = done ? (done.band >= 7 ? '#16a34a' : done.band >= 5.5 ? '#2563eb' : '#d97706') : '';
     const bandHtml = done
@@ -2265,6 +2353,7 @@ function _renderTaskPage() {
       ${coverHtml}
       <div class="wt-task-card-header">
         <span class="wt-task-card-num">${idx}</span>
+        ${catHtml}
         ${bandHtml}
         <button class="btn-primary wt-task-card-btn" onclick="event.stopPropagation();startPracticeTask(${taskType},'${t._id}')">${done ? 'Làm lại' : 'Làm bài'}</button>
       </div>
@@ -2632,6 +2721,7 @@ function showPracticeMode(pushHistory = true) {
   if (cards) cards.style.display = '';
   if (histBody)  histBody.classList.remove('practice-split-mode');
   if (histTitle) histTitle.innerHTML = '<i class="fas fa-history"></i> Lịch sử luyện tập';
+  _hideEssayCats();
   if (pushHistory) history.pushState({ screen: 'practice' }, '', 'writing.html');
   checkPracticeRestoreBanner();
   showScreen('screen-practice');
@@ -2739,6 +2829,9 @@ async function showPracticeTaskList(taskType, pushHistory = true) {
   itemsEl.innerHTML = '<div class="spinner"></div>';
   const searchEl = document.getElementById('writing-task-search');
   if (searchEl) searchEl.value = '';
+  practiceState.tasks = [];
+  practiceState.essayType = null;
+  _renderEssayCats();
 
   try {
     const [d, attempts] = await Promise.all([
@@ -2753,6 +2846,7 @@ async function showPracticeTaskList(taskType, pushHistory = true) {
     practiceState.filteredTasks = d.tasks;
     practiceState.page = 1;
     practiceState.taskScores = buildTaskScoreMap(taskType, attempts);
+    _renderEssayCats();
     _renderTaskPage();
   } catch (e) {
     itemsEl.innerHTML = `<p style="color:#ef4444;text-align:center;padding:20px">Lỗi tải đề: ${escHtml(e.message)}</p>`;
@@ -2776,6 +2870,13 @@ function buildTaskScoreMap(taskType, attempts) {
   return map;
 }
 
+function _hideEssayCats() {
+  practiceState.essayType = null;
+  const section = document.getElementById('practice-cat-section');
+  if (section) section.style.display = 'none';
+  document.getElementById('practice-side')?.classList.remove('has-cats');
+}
+
 function hidePracticeTaskList() {
   const histBody  = document.querySelector('#screen-practice .history-body');
   const histTitle = document.getElementById('practice-hist-title');
@@ -2783,19 +2884,15 @@ function hidePracticeTaskList() {
   document.getElementById('practice-task-select').style.display = '';
   if (histBody)  histBody.classList.remove('practice-split-mode');
   if (histTitle) histTitle.innerHTML = '<i class="fas fa-history"></i> Lịch sử luyện tập';
+  _hideEssayCats();
   const s = document.getElementById('writing-task-search');
   if (s) s.value = '';
   history.pushState({ screen: 'practice' }, '', 'writing.html');
   loadPracticeHistory();
 }
 
-function filterWritingTasks(query) {
-  const q = (query || '').trim().toLowerCase();
-  practiceState.filteredTasks = q
-    ? practiceState.tasks.filter(t => (t.prompt || '').toLowerCase().includes(q))
-    : practiceState.tasks;
-  practiceState.page = 1;
-  _renderTaskPage();
+function filterWritingTasks() {
+  _applyTaskFilters();
 }
 
 function startPracticeTask(taskType, taskId, pushHistory = true, mode = null) {
@@ -2951,7 +3048,7 @@ function renderPracticeWriteScreen(taskType, task) {
   // inline under "Phân tích đề" so the prompt stays in view. Hidden in Test
   // Simulation like the analysis.
   if (taskType === 2 && !isSimulation && window.Task2GenericTpl) {
-    practiceState.tplType = Task2GenericTpl.guessType(task.prompt);
+    practiceState.tplType = _taskEssayType(task);
     html += `<button class="btn-secondary pw-analysis-btn" id="pw-tpl-toggle-btn" style="margin-top:12px;width:100%" onclick="togglePracticeTemplate()"><i class="fas fa-file-lines"></i> Xem template</button>`;
     html += renderPracticeTemplatePanel();
   }

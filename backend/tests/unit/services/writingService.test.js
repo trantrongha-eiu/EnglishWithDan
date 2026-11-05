@@ -43,6 +43,17 @@ describe('writingService.startExam', () => {
 });
 
 describe('writingService.listPracticeTasks', () => {
+  test('lists the newest upload first', async () => {
+    const WritingTask1 = require('../../../models/WritingTask1');
+    const older = await createWritingTask1({ prompt: 'Older chart.', chartType: 'static' });
+    const newer = await createWritingTask1({ prompt: 'Newer map.', chartType: 'map' });
+    await WritingTask1.collection.updateOne({ _id: older._id }, { $set: { createdAt: new Date('2026-01-01') } });
+    await WritingTask1.collection.updateOne({ _id: newer._id }, { $set: { createdAt: new Date('2026-06-01') } });
+    const tasks = await writingService.listPracticeTasks(1);
+    expect(tasks.map(t => String(t._id))).toEqual([String(newer._id), String(older._id)]);
+    expect(tasks.map(t => t.chartType)).toEqual(['map', 'static']);
+  });
+
   test('Task 2 cards get a cropped cover thumbnail ("" without one), never the raw thumbnailUrl', async () => {
     const withCover = await createWritingTask2({ thumbnailUrl: 'https://res.cloudinary.com/demo/image/upload/v1/writing/covers/x.jpg' });
     await createWritingTask2();

@@ -35,6 +35,10 @@ const WritingTask1Schema = new mongoose.Schema({
   // {title, content} shape as sampleSections so the frontend can reuse the
   // exact same rendering/copy-button markup for both panels.
   analysisSections: { type: [SampleSectionSchema], default: [] },
+  // Task 1 type, used for the filter tabs on the student task list:
+  // static (one point in time) · dynamic (change over time) · mixed (two
+  // different chart kinds) · process · map. '' = not yet classified.
+  chartType: { type: String, enum: ['', 'static', 'dynamic', 'mixed', 'process', 'map'], default: '' },
   isActive:       { type: Boolean, default: true },
   // Same prompt entered twice (e.g. the "time spent on websites" chart
   // under two wordings). Points at the copy to keep; homework completion
