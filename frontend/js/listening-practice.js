@@ -1888,6 +1888,10 @@ async function loadLTPracticeReview(attemptId) {
         inner.innerHTML = html;
         inner.scrollTop = 0;
         if (savedLtPart?.q?.length) window.HighlightStore.applyTexts(inner, savedLtPart.q);
+        // Opened straight from history, this panel never went through
+        // _enterLTPracticeScreen() — bind lookup here too, or double-click
+        // on a question / explanation does nothing.
+        setupDictionaryDouble('lt-practice-questions', 'listening', _ltDictGate);
 
         // Show transcript if available
         const tp = document.getElementById('lt-practice-transcript-panel');
