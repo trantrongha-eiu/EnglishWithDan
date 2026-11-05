@@ -201,11 +201,13 @@ exports.getPeerProfile = messageGuard(async (req, res) => {
 exports.listPeerConversations = messageGuard(async (req, res) => {
   // "Mời bạn viết cùng" invites ride along on this 20s every-page poll so
   // js/shared/cowrite-invites.js can pop them up without its own request.
-  const [conversations, cowriteInvites] = await Promise.all([
+  // cowriteActive = the room they're already in ("Quay lại phòng viết").
+  const [conversations, cowriteInvites, cowriteActive] = await Promise.all([
     peerService.listConversations(req.user._id),
     task2CoWriteService.pendingInvites(req.user._id).catch(() => []),
+    task2CoWriteService.activeRoom(req.user._id).catch(() => null),
   ]);
-  res.json({ success: true, conversations, cowriteInvites });
+  res.json({ success: true, conversations, cowriteInvites, cowriteActive });
 });
 
 // ── GET /api/user/peer/students ───────────────────────────────

@@ -15,8 +15,10 @@ const PASS = 'CorrectPass1!';
 async function makeStudent() {
   return createUser({ email: `${unique('dev')}@test.local`, rawPassword: PASS });
 }
-async function login(user, ua) {
-  const res = await request(app).post('/api/auth/login').set('User-Agent', ua).send({ email: user.email, password: PASS });
+async function login(user, ua, { ip, deviceId } = {}) {
+  let req = request(app).post('/api/auth/login').set('User-Agent', ua);
+  if (ip) req = req.set('X-Forwarded-For', ip);
+  const res = await req.send({ email: user.email, password: PASS, ...(deviceId ? { deviceId } : {}) });
   expect(res.status).toBe(200);
   return res.body.token;
 }
@@ -52,6 +54,41 @@ describe('student device limit', () => {
     expect(res.body.code).toBe('SESSION_REPLACED');
     expect((await me(pc2)).status).toBe(200);
     expect((await me(phone)).status).toBe(200);
+  });
+
+  test('logging in again from the same browser keeps its other tabs signed in', async () => {
+    const user = await makeStudent();
+    const tab1 = await login(user, PC_UA, { ip: '1.1.1.1', deviceId: 'browserAAAA1111' });
+    const tab2 = await login(user, PC_UA, { ip: '2.2.2.2', deviceId: 'browserAAAA1111' });
+    expect((await me(tab1)).status).toBe(200);
+    expect((await me(tab2)).status).toBe(200);
+  });
+
+  test('a second browser on the same PC (same IP + OS) is the same device', async () => {
+    const user = await makeStudent();
+    const chrome = await login(user, PC_UA, { ip: '3.3.3.3', deviceId: 'chromeBBBB2222' });
+    const edge = await login(user, PC_UA.replace('Safari/537.36', 'Safari/537.36 Edg/130.0'), { ip: '3.3.3.3', deviceId: 'edgeCCCC3333' });
+    expect((await me(chrome)).status).toBe(200);
+    expect((await me(edge)).status).toBe(200);
+  });
+
+  test('another PC (different browser id and IP) still signs the first PC out', async () => {
+    const user = await makeStudent();
+    const home = await login(user, PC_UA, { ip: '4.4.4.4', deviceId: 'homeDDDD4444' });
+    const tab2 = await login(user, PC_UA, { ip: '4.4.4.4', deviceId: 'homeDDDD4444' });
+    const other = await login(user, PC_UA, { ip: '5.5.5.5', deviceId: 'otherEEEE5555' });
+    expect((await me(home)).body.code).toBe('SESSION_REPLACED');
+    expect((await me(tab2)).body.code).toBe('SESSION_REPLACED');
+    expect((await me(other)).status).toBe(200);
+  });
+
+  test("logging out one browser keeps the same device's other browser signed in", async () => {
+    const user = await makeStudent();
+    const a = await login(user, PC_UA, { ip: '6.6.6.6', deviceId: 'devFFFF6666a' });
+    const b = await login(user, PC_UA, { ip: '6.6.6.6', deviceId: 'devGGGG6666b' });
+    expect((await request(app).post('/api/auth/logout').set('Authorization', `Bearer ${b}`)).status).toBe(200);
+    expect((await me(b)).status).toBe(401);
+    expect((await me(a)).status).toBe(200);
   });
 
   test('a second phone login signs the first phone out', async () => {

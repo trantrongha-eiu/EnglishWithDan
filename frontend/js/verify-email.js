@@ -68,7 +68,10 @@
       var res = await fetch(API + '/auth/verify-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: token })
+        body: JSON.stringify({
+          token: token,
+          deviceId: window.AuthService && window.AuthService.getDeviceId ? window.AuthService.getDeviceId() : ''
+        })
       });
       var data = await res.json().catch(function () { return {}; });
 

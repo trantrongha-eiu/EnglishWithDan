@@ -501,6 +501,8 @@ function render() {
   document.body.classList.toggle('t2-composing', state.view === 'compose');
   // "Mời bạn viết cùng" live poll runs only while the writer is on screen.
   if (state.view === 'compose') _cwStart(); else _cwStop();
+  // "Quay lại phòng viết" hides while that room's writer is on screen.
+  if (window.CowriteInvites && window.CowriteInvites.refresh) window.CowriteInvites.refresh();
 }
 
 // ════════════════════════════════════════════════════════
@@ -2327,6 +2329,11 @@ function _cwPushNow() {
     .then(d => { if (d && d.inRoom === false && _cw.topicId === id) { _cw.room = null; _cw.rev = 0; _cwRender(); } })
     .catch(() => {});
 }
+
+// cowrite-invites.js: is this lesson's writer on screen right now?
+window.T2CoWriteIsOpen = function (topicId) {
+  return state.view === 'compose' && String(state.selectedTopic?._id) === String(topicId);
+};
 
 // Called by cowrite-invites.js after accepting — join in place if this
 // lesson's writer is already open (otherwise it navigates here).

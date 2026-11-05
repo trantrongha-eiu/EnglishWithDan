@@ -122,6 +122,27 @@ describe('Task 2 co-writing', () => {
     expect(roomB.members.find(m => String(m.userId) === String(c._id)).status).toBe('joined');
   });
 
+  test('a joined member is offered "Quay lại phòng viết" on every page until the room is gone', async () => {
+    const { a, b, topic } = await trio();
+    const inv = await request(app).post('/api/task2/cowrite/invite').set(auth(a)).send({ topicId: String(topic._id), userIds: [String(b._id)] });
+    expect(inv.status).toBe(200);
+    // Host with a pending invite already has a room to return to.
+    expect((await request(app).get('/api/task2/cowrite/invites').set(auth(a))).body.active.topicId).toBe(String(topic._id));
+    // The invitee isn't in it yet.
+    const before = await request(app).get('/api/task2/cowrite/invites').set(auth(b));
+    expect(before.body.active).toBeNull();
+    await request(app).post(`/api/task2/cowrite/room/${before.body.invites[0].roomId}/accept`).set(auth(b));
+
+    // Back after a logout/login: a fresh token still sees the room.
+    const peer = await request(app).get('/api/user/peer/conversations').set(auth(b));
+    expect(peer.body.cowriteActive).toMatchObject({ topicId: String(topic._id), week: topic.week });
+    expect(peer.body.cowriteActive.members.length).toBe(1);
+
+    // Once the other member leaves, there's no group to go back to.
+    await request(app).post(`/api/task2/cowrite/topic/${topic._id}/leave`).set(auth(a));
+    expect((await request(app).get('/api/task2/cowrite/invites').set(auth(b))).body.active).toBeNull();
+  });
+
   test('premium gate + auth on the writer endpoints', async () => {
     const topic = await createTask2Topic({ week: 2 });
     expect((await request(app).get(`/api/task2/cowrite/topic/${topic._id}`)).status).toBe(401);

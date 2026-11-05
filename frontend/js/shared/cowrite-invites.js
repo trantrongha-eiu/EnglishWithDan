@@ -11,6 +11,11 @@
  * Accept → POST /task2/cowrite/room/:id/accept, then open the writer for
  * that lesson (or, if the page registered window.T2CoWriteJoined and is
  * already on it, let the page join in place).
+ *
+ * "Quay lại phòng viết": the same polls also carry the room this student
+ * already joined (cowriteActive / active). While it's open and they're not
+ * on its writer, a small button on every page takes them back — e.g. after
+ * closing the tab or logging out and back in.
  */
 (function () {
   'use strict';
@@ -58,8 +63,13 @@
       '[data-theme="dark"] #cwi-card .cwi-title{color:#e0e7ff}' +
       '[data-theme="dark"] #cwi-card .cwi-sub{color:#cbd5e1}' +
       '[data-theme="dark"] #cwi-card .cwi-no{background:#2b3144;color:#e5e7eb;border-color:#3b4256!important}' +
+      '#cwi-back{position:fixed;right:20px;bottom:96px;z-index:2147481990;max-width:calc(100vw - 32px);display:flex;align-items:center;gap:8px;' +
+      'background:#4f46e5;color:#fff;border-radius:999px;box-shadow:0 12px 32px rgba(30,27,75,.3);padding:6px 6px 6px 14px;font-family:inherit;animation:cwiIn .3s ease}' +
+      '#cwi-back .cwi-back-go{background:none;border:0;color:#fff;font-weight:700;font-size:13px;cursor:pointer;text-align:left;line-height:1.3;padding:4px 0;' +
+      'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px}' +
+      '#cwi-back .cwi-back-x{background:rgba(255,255,255,.18);border:0;color:#fff;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;line-height:1;flex:none}' +
       '@keyframes cwiIn{from{transform:translateY(16px) scale(.96);opacity:0}to{transform:none;opacity:1}}' +
-      '@media (max-width:600px){#cwi-card{right:16px;left:16px;width:auto;bottom:84px}}';
+      '@media (max-width:600px){#cwi-card{right:16px;left:16px;width:auto;bottom:84px}#cwi-back{right:16px;bottom:84px}}';
     document.head.appendChild(s);
   }
 
@@ -70,6 +80,53 @@
     if (el) el.remove();
     _showing = null;
     _next();
+    _renderBack();
+  }
+
+  // ── "Quay lại phòng viết" ──────────────────────────────────
+  var _active = null;
+  function _dismissedKey(room) { return 'cwiBackHidden:' + room.roomId; }
+
+  function _writerUrl(room) {
+    var q = new URLSearchParams({ topicId: String(room.topicId), write: '1' });
+    if (room.week) q.set('week', String(room.week));
+    return '/task2-practice.html?' + q.toString();
+  }
+
+  function _renderBack() {
+    var el = document.getElementById('cwi-back');
+    var room = _active;
+    var hide = !room || _showing ||
+      (typeof window.T2CoWriteIsOpen === 'function' && window.T2CoWriteIsOpen(String(room.topicId)));
+    try { if (room && sessionStorage.getItem(_dismissedKey(room))) hide = true; } catch (e) { /* ignore */ }
+    if (hide) { if (el) el.remove(); return; }
+    if (el && el.getAttribute('data-room') === String(room.roomId)) return;
+    if (el) el.remove();
+    _style();
+    el = document.createElement('div');
+    el.id = 'cwi-back';
+    el.setAttribute('data-room', String(room.roomId));
+    var who = (room.members || []).filter(Boolean);
+    el.innerHTML =
+      '<button type="button" class="cwi-back-go" title="' + _esc(room.topicName) + '">👥 Quay lại phòng viết · ' +
+        _esc(room.topicEmoji || '📝') + ' ' + _esc(room.topicName) +
+        (who.length ? ' (' + _esc(who.slice(0, 2).join(', ')) + (who.length > 2 ? '…' : '') + ')' : '') +
+      '</button><button type="button" class="cwi-back-x" aria-label="Ẩn">×</button>';
+    document.body.appendChild(el);
+    el.querySelector('.cwi-back-go').onclick = function () {
+      var id = String(room.topicId);
+      if (typeof window.T2CoWriteOpen === 'function' && window.T2CoWriteOpen(id)) { _renderBack(); return; }
+      window.location.href = _writerUrl(room);
+    };
+    el.querySelector('.cwi-back-x').onclick = function () {
+      try { sessionStorage.setItem(_dismissedKey(room), '1'); } catch (e) { /* ignore */ }
+      el.remove();
+    };
+  }
+
+  function active(room) {
+    _active = room && room.roomId && room.topicId ? room : null;
+    if (document.body) _renderBack();
   }
 
   function _next() {
@@ -132,9 +189,13 @@
   async function check() {
     if (_checking || !window.AuthService || !window.AuthService.isLoggedIn()) return;
     _checking = true;
-    try { handle((await _api('/task2/cowrite/invites')).invites); } catch (e) { /* retry next tick */ }
+    try {
+      var d = await _api('/task2/cowrite/invites');
+      handle(d.invites);
+      active(d.active);
+    } catch (e) { /* retry next tick */ }
     _checking = false;
   }
 
-  window.CowriteInvites = { handle: handle, check: check };
+  window.CowriteInvites = { handle: handle, check: check, active: active, refresh: _renderBack };
 })();

@@ -34,8 +34,11 @@ exports.invite = guard(async (req, res) => {
 
 // GET /api/task2/cowrite/invites
 exports.pendingInvites = guard(async (req, res) => {
-  const invites = await svc.pendingInvites(req.user._id);
-  res.json({ success: true, invites });
+  const [invites, active] = await Promise.all([
+    svc.pendingInvites(req.user._id),
+    svc.activeRoom(req.user._id).catch(() => null),
+  ]);
+  res.json({ success: true, invites, active });
 });
 
 // POST /api/task2/cowrite/room/:roomId/accept | /decline

@@ -38,6 +38,20 @@
   // ── Storage primitives ──────────────────────────────────────
   function getToken() { return localStorage.getItem('token'); }
   function setToken(t) { localStorage.setItem('token', t); }
+  // Random id for this browser, sent with logins so the server's student
+  // device limit (backend/utils/deviceSession.js) treats every tab of this
+  // browser as one device. Kept across logouts (not part of clearSession).
+  function getDeviceId() {
+    try {
+      var id = localStorage.getItem('ewsDeviceId');
+      if (!id || !/^[A-Za-z0-9_-]{8,64}$/.test(id)) {
+        id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID().replace(/-/g, '')
+          : (Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2));
+        localStorage.setItem('ewsDeviceId', id);
+      }
+      return id;
+    } catch (e) { return ''; }
+  }
   function getUser() {
     try { return JSON.parse(localStorage.getItem('user')); }
     catch (e) { return null; }
@@ -411,7 +425,7 @@
 
   var AuthService = {
     API: 'https://englishwithdan.onrender.com/api',
-    getToken: getToken, setToken: setToken,
+    getToken: getToken, setToken: setToken, getDeviceId: getDeviceId,
     getUser: getUser, setUser: setUser,
     getLastLoginAt: getLastLoginAt, touchLastLoginAt: touchLastLoginAt,
     clearSession: clearSession,

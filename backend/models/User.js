@@ -50,8 +50,10 @@ const UserSchema = new mongoose.Schema({
   // Students may be signed in on at most one PC and one mobile at a time —
   // one slot per device type, newest login wins (utils/deviceSession.js).
   activeSessions: {
-    desktop: { sid: String, at: Date, ua: String, ip: String },
-    mobile:  { sid: String, at: Date, ua: String, ip: String },
+    // sids = every tab/browser signed in on that one device; deviceId = the
+    // browser id the login page sends (see utils/deviceSession.js).
+    desktop: { sid: String, sids: [String], deviceId: String, at: Date, ua: String, ip: String },
+    mobile:  { sid: String, sids: [String], deviceId: String, at: Date, ua: String, ip: String },
   },
   // Staff/parent logins that were logged out (sid + when the token would have
   // expired anyway) — they have no device limit, so logout ends just that

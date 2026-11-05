@@ -178,6 +178,31 @@ async function invite(inviter, topicId, userIds) {
   return { status: 'ok', invited, skipped, room: roomView(room, inviter._id) };
 }
 
+// The room this student is writing in (still open, with someone else in it
+// or invited), so every page can offer "Quay lại phòng viết" after they
+// closed the writer or logged out and back in (js/shared/cowrite-invites.js).
+async function activeRoom(uid) {
+  const room = await Task2CoWriteRoom.findOne({
+    expiresAt: { $gt: new Date() },
+    members: { $elemMatch: { userId: oid(uid), status: 'joined' } }
+  }).sort({ updatedAt: -1 }).select('topicId members').lean();
+  if (!room) return null;
+  const now = Date.now();
+  const others = room.members.filter(m => String(m.userId) !== String(uid) && (m.status === 'joined' ||
+    (m.status === 'invited' && m.invitedAt && now - new Date(m.invitedAt).getTime() < INVITE_TTL_MS)));
+  if (!others.length) return null;
+  const t = await Task2Topic.findById(room.topicId).select('topicName topicEmoji week').lean();
+  if (!t) return null;
+  return {
+    roomId: room._id,
+    topicId: room.topicId,
+    topicName: t.topicName || '',
+    topicEmoji: t.topicEmoji || '',
+    week: t.week || null,
+    members: others.filter(m => m.status === 'joined').map(m => m.name)
+  };
+}
+
 // Unanswered invites for the global popup (js/shared/cowrite-invites.js).
 async function pendingInvites(uid) {
   const since = new Date(Date.now() - INVITE_TTL_MS);
@@ -288,6 +313,6 @@ async function getRoom(uid, topicId, sinceRev) {
 }
 
 module.exports = {
-  listOnline, invite, pendingInvites, respond, leave, pushText, getRoom,
+  listOnline, invite, pendingInvites, activeRoom, respond, leave, pushText, getRoom,
   MAX_MEMBERS, INVITE_TTL_MS
 };

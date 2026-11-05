@@ -116,7 +116,10 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         const res = await fetch(API + '/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: emailOrUsername, password })
+            body: JSON.stringify({
+                email: emailOrUsername, password,
+                deviceId: window.AuthService && window.AuthService.getDeviceId ? window.AuthService.getDeviceId() : ''
+            })
         });
         // skipAuthRedirect: a wrong-password login attempt returns
         // 401 too (see backend/controllers/auth.controller.js) — that
