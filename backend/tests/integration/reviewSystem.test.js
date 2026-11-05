@@ -369,7 +369,7 @@ describe('Mock-test review-gate exemption is server-verified (BUG-A01)', () => {
     expect(res.body.code).toBe('REVIEW_REQUIRED');
   });
 
-  test('1b. a teacher account with 3 pending reviews is never blocked', async () => {
+  test('1b. a teacher account never gets reviews and is never blocked', async () => {
     const user = await createTeacher();
     const api = authed(user);
     for (let i = 0; i < 3; i++) {
@@ -380,8 +380,11 @@ describe('Mock-test review-gate exemption is server-verified (BUG-A01)', () => {
         answers: { 1: 'apple', 2: 'WRONG', 3: 'cherry' },
       });
     }
+    // Staff never owe a review: none created, nothing listed.
+    expect(await AttemptReview.countDocuments({ userId: user._id })).toBe(0);
     const pending = await api.get('/api/review/pending?skill=reading');
-    expect(pending.body.count).toBe(3);
+    expect(pending.body.count).toBe(0);
+    expect(pending.body.items).toEqual([]);
     expect(pending.body.blocked).toBe(false);
 
     const { test } = await makeThreePassageReadingTest();

@@ -47,7 +47,7 @@ exports.changePassword = catchAsync(async (req, res) => {
     return res.status(400).json({ success: false, message: 'Mật khẩu mới phải có ít nhất 8 ký tự' });
   }
 
-  const result = await userService.changePassword(req.user._id, currentPassword, newPassword);
+  const result = await userService.changePassword(req.user._id, currentPassword, newPassword, req.authSession);
   if (result.status === 'invalid') {
     return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không đúng' });
   }

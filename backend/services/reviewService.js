@@ -18,6 +18,7 @@ const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 require('../models/ReadingTest');
 require('../models/ListeningTest');
 const { skillFor, resolveErrorCode } = require('../constants/errorTaxonomy');
+const { isStaffId } = require('../utils/roles');
 
 // A mistake counts as "reviewed" once the core guided-review steps are
 // done — error classification, confidence, and "what to remember" learning
@@ -48,6 +49,8 @@ function pickMistakes(gradedAnswers, questionTypeMap) {
 async function createReviewIfNeeded({ userId, attemptType, attemptId, gradedAnswers, questionTypeMap }) {
   const mistakes = pickMistakes(gradedAnswers, questionTypeMap);
   if (!mistakes.length) return null; // perfect score (or nothing answered wrong) — nothing to gate
+  // Admin/teacher never owe a review.
+  if (await isStaffId(userId)) return null;
 
   // Upsert on the unique (userId, attemptType, attemptId) key — idempotent
   // against a retried/duplicate submit call ever reaching this twice.
@@ -216,6 +219,8 @@ const MAX_PENDING_REVIEWS = 3;
 // each duplicating the AttemptReview query itself.
 async function getReviewStatusMap(userId, attemptType, attemptIds) {
   if (!attemptIds.length) return {};
+  // Admin/teacher: no "Chờ review" badges (they never owe a review).
+  if (await isStaffId(userId)) return {};
   const reviews = await AttemptReview.find({ userId, attemptType, attemptId: { $in: attemptIds } })
     .select('attemptId status mistakes').lean();
   const map = {};

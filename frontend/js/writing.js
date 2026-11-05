@@ -945,7 +945,7 @@ function _renderHistory() {
       scoreBadge = `<span style="color:#9ca3af;font-size:12px">Chờ chấm</span>`;
     }
     let rwCell;
-    if (a.gradingStatus !== 'confirmed') {
+    if (a.gradingStatus !== 'confirmed' || _isStaffUser()) {
       rwCell = '<span style="color:#d1d5db">–</span>';
     } else if (a.rewrite?.done) {
       rwCell = '<span style="color:#15803d;font-size:12px;font-weight:700">✅ Đã viết lại</span>';
@@ -1072,7 +1072,7 @@ async function viewAttempt(id) {
     // "Viết lại" CTA — only for a graded essay.
     const rw = a.rewrite || {};
     let rewriteCtaHtml = '';
-    if (a.gradingStatus === 'confirmed') {
+    if (a.gradingStatus === 'confirmed' && !_isStaffUser()) {
       if (rw.done) {
         rewriteCtaHtml = `<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px;color:#166534;display:flex;align-items:center;justify-content:space-between;gap:10px">
               <span><i class="fas fa-check-circle"></i> Bạn đã viết lại bài này${rw.submittedAt ? ' · ' + new Date(rw.submittedAt).toLocaleDateString('vi-VN') : ''}.</span>
@@ -1137,6 +1137,10 @@ let _rwState = null; // { attemptId, gradedTasks:[1,2] }
 // not counted toward the gate. Keep in sync with REWRITE_CUTOFF in
 // backend/services/writingService.js.
 const REWRITE_CUTOFF = new Date('2026-08-29T00:00:00+07:00');
+// Admin/teacher never owe a rewrite — no "Viết lại" buttons/CTAs for them.
+function _isStaffUser() {
+  return !!(window.AuthService && window.AuthService.isStaff && window.AuthService.isStaff());
+}
 function _rewriteRequired(a) {
   return a && a.gradingStatus === 'confirmed'
     && a.grading && a.grading.confirmedAt

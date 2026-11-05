@@ -32,6 +32,8 @@ exports.getTaxonomy = guard(null, async (req, res) => {
 exports.getPending = guard(null, async (req, res) => {
   const { skill } = req.query;
   if (!validSkill(skill)) return res.status(400).json({ success: false, message: 'Thiếu hoặc sai tham số skill' });
+  // Admin/teacher never owe a review — nothing to list or nag about.
+  if (isStaff(req.user)) return res.json({ success: true, pending: null, count: 0, items: [], blocked: false });
   const { items, count } = await reviewService.getPendingReviews(req.user._id, skill);
   // `pending` (the oldest doc, or null) is kept for back-compat with
   // existing callers that only ever cared about "is there anything to
@@ -58,6 +60,7 @@ exports.getDetail = guard(null, async (req, res) => {
 
 exports.getByAttempt = guard(null, async (req, res) => {
   const { attemptType, attemptId } = req.params;
+  if (isStaff(req.user)) return res.json({ success: true, review: null }); // staff never owe a review
   const review = await reviewService.getReviewByAttempt(attemptType, attemptId, req.user._id);
   res.json({ success: true, review: review || null });
 });

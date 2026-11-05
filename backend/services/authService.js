@@ -13,6 +13,7 @@ const logger = require('../utils/logger');
 const { sendEmail } = require('./emailService');
 const { applyStreakActivity } = require('../utils/streak');
 const { checkEmail } = require('../utils/emailCheck');
+const deviceSession = require('../utils/deviceSession');
 
 const MAX_OTP_ATTEMPTS = 5;
 const EMAIL_VERIFY_TTL_MS = 24 * 60 * 60 * 1000; // link valid 24h
@@ -66,8 +67,19 @@ async function sendVerificationEmail(user, rawToken) {
 // even after the response message/status was unified (security audit finding).
 const DUMMY_PASSWORD_HASH = bcrypt.hashSync('timing-attack-mitigation', 10);
 
-function signToken(userId) {
-  return jwt.sign({ id: userId }, config.jwtSecret, { expiresIn: '7d' });
+// `session` ({ sid, dt }) ties the token to a student's device slot — see
+// utils/deviceSession.js. Omitted for users without the device limit.
+function signToken(userId, session) {
+  const claims = { id: userId };
+  if (session && session.sid) { claims.sid = session.sid; claims.dt = session.dt; }
+  return jwt.sign(claims, config.jwtSecret, { expiresIn: '7d' });
+}
+
+// A fresh login: claims this device's slot (kicking the previous device of
+// the same type for students), then signs the token.
+async function issueLoginToken(user, ctx) {
+  const session = await deviceSession.claimSlot(user, ctx);
+  return signToken(user._id, session);
 }
 
 function userPayload(user) {
@@ -176,7 +188,7 @@ async function registerUser({ firstName, lastName, username, email, password }) 
 // (the hash is cleared on success), time-limited (emailVerifyExpires),
 // and it's what starts the 24h trial clock (trialStartedAt). Returns a
 // fresh session on success so the client can go straight into the app.
-async function verifyEmailToken(rawToken) {
+async function verifyEmailToken(rawToken, ctx) {
   if (!rawToken || typeof rawToken !== 'string') return { status: 'invalid' };
   const user = await User.findOne({
     emailVerifyTokenHash: hashVerifyToken(rawToken),
@@ -194,7 +206,7 @@ async function verifyEmailToken(rawToken) {
   await user.save();
 
   logger.auth('Email verified', { userId: String(user._id) });
-  return { status: 'ok', token: signToken(user._id), user: userPayload(user) };
+  return { status: 'ok', token: await issueLoginToken(user, ctx), user: userPayload(user) };
 }
 
 // Re-sends the verification link. Always reports the same generic
@@ -213,7 +225,7 @@ async function resendVerification(email) {
   return { status: 'sent' };
 }
 
-async function loginUser({ email, password }) {
+async function loginUser({ email, password }, ctx) {
   // bcrypt.compare() requires a string and throws on anything else — a
   // password value that survives mongoSanitize as a non-string (e.g. an
   // object whose operator keys were stripped, leaving {}) reached
@@ -249,7 +261,7 @@ async function loginUser({ email, password }) {
     return { status: 'banned' };
   }
 
-  return { status: 'ok', token: signToken(user._id), user: userPayload(user) };
+  return { status: 'ok', token: await issueLoginToken(user, ctx), user: userPayload(user) };
 }
 
 async function requestPasswordReset(email) {
@@ -362,13 +374,13 @@ async function resetPassword(resetToken, newPassword) {
   return { status: 'ok' };
 }
 
-// Synchronous (not async) — matches the original googleCallback, which
-// fire-and-forgets the streak update, never awaited. Atomic (see
-// applyStreakActivity's comment) instead of the old updateStreak()+save()
-// pattern, which could race a concurrent activity's own save.
-function completeGoogleLogin(user) {
+// The streak update is fire-and-forget (never awaited), as in the original
+// googleCallback. Atomic (see applyStreakActivity's comment) instead of the
+// old updateStreak()+save() pattern, which could race a concurrent
+// activity's own save.
+async function completeGoogleLogin(user, ctx) {
   applyStreakActivity(User, user._id).catch(console.error);
-  return { token: signToken(user._id), user: userPayload(user) };
+  return { token: await issueLoginToken(user, ctx), user: userPayload(user) };
 }
 
 // BUG-023 — called on explicit logout. Invalidates every token issued for
@@ -379,9 +391,17 @@ async function logoutAllSessions(userId) {
   await User.updateOne({ _id: userId }, { tokenValidAfter: new Date() });
 }
 
+// Logout from one device. A token tied to a device slot only frees that
+// slot (the student's other device stays signed in); an old token without
+// a slot falls back to logging out everywhere, as before.
+async function logoutSession(userId, session) {
+  if (session && session.sid) return deviceSession.releaseSlot(userId, session);
+  return logoutAllSessions(userId);
+}
+
 module.exports = {
   signToken, userPayload, findOrCreateGoogleUser,
   registerUser, verifyEmailToken, resendVerification,
   loginUser, requestPasswordReset, verifyOTP, resetPassword, completeGoogleLogin,
-  logoutAllSessions,
+  logoutAllSessions, logoutSession, issueLoginToken,
 };

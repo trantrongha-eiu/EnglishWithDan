@@ -166,7 +166,13 @@
     touchLastLoginAt();
   }
 
+  // Set by the fetch interceptor below when the server says this device
+  // was signed out by a newer login elsewhere — so any page code that calls
+  // logout() on the same 401 afterwards still lands on the right message.
+  var _forcedLogoutReason = null;
+
   function logout(reason) {
+    reason = reason || _forcedLogoutReason;
     // BUG-023: tell the server to invalidate this user's tokens (all
     // devices — see backend/models/User.js's tokenValidAfter) before the
     // page navigates away. Best-effort: `keepalive` asks the browser to
@@ -176,7 +182,9 @@
     // old token still valid until natural expiry — never a hard failure
     // that blocks logout itself.
     var token = getToken();
-    if (token) {
+    // A replaced session's token is already dead server-side — and the
+    // logout call must never free the slot the other device now holds.
+    if (token && reason !== 'replaced') {
       try {
         fetch(AuthService.API + '/auth/logout', {
           method: 'POST',
@@ -281,6 +289,17 @@
               typeof data.message === 'string' && data.message.includes('bị cấm')) {
             logout('banned');
             return res;
+          }
+        } catch (e) { /* ignore parse errors */ }
+      }
+      // 1 PC + 1 mobile limit: a newer login on another device took this
+      // device's slot (backend/utils/deviceSession.js).
+      if (res.status === 401 && !isPublicPage && !_forcedLogoutReason) {
+        try {
+          var d401 = await res.clone().json();
+          if (d401 && d401.code === 'SESSION_REPLACED') {
+            _forcedLogoutReason = 'replaced';
+            logout('replaced');
           }
         } catch (e) { /* ignore parse errors */ }
       }

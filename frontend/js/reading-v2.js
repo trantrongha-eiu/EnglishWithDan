@@ -596,7 +596,7 @@ async function loadTests(fromNav = false) {
     allTests = _testsCache.tests;
     _userPlan = _testsCache.userPlan;
     const promoBanner = document.getElementById('premium-promo-banner');
-    if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
+    if (promoBanner) promoBanner.style.display = !window.AuthService.hasPremiumAccess() ? 'flex' : 'none';
     _rdPage = 1;
     rerenderFilteredTests();
     checkResumeExam();
@@ -630,7 +630,7 @@ async function loadTests(fromNav = false) {
       window.AuthService.setUser(_ru);
     } catch(e) {}
     const promoBanner = document.getElementById('premium-promo-banner');
-    if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
+    if (promoBanner) promoBanner.style.display = !window.AuthService.hasPremiumAccess() ? 'flex' : 'none';
     _rdPage = 1;
     rerenderFilteredTests();
     checkResumeExam();
@@ -700,7 +700,7 @@ function testCard(t) {
   const tot = t.lastAttempt?.totalQuestions ?? '';
   // Colourful "TEST n" card (css/playful.css .tid-card) — two entry points
   // straight into ExamModeSelect, pre-picked.
-  const locked = _userPlan !== 'premium';
+  const locked = !window.AuthService.hasPremiumAccess();
   const testNo = window.TestCardArt ? window.TestCardArt.label(t) : escHtml(t.name);
   const lastDate = t.lastAttempt?.endTime ? new Date(t.lastAttempt.endTime).toLocaleDateString('vi-VN') : '';
   return `<div class="test-card tid-card tid-c${(t.testNumber || 1) % 4}" id="tcard-${t._id}" data-done="${done}" data-name="${escHtml((t.name || '').toLowerCase())}" title="${escH(t.name || '')}">
@@ -1489,7 +1489,7 @@ function _rdRenderPassageCard(p) {
   const doneAttr  = doneInfo ? ' data-done="1"' : '';
   const donePct   = doneInfo?.lastTotal ? Math.round(doneInfo.lastScore / doneInfo.lastTotal * 100) : 0;
   const doneRibbon= doneInfo ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>` : '';
-  const isPremium = _userPlan === 'premium';
+  const isPremium = window.AuthService.hasPremiumAccess();
   const btnText   = !isPremium
     ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói'
     : (doneInfo ? `↺ Làm lại · ${qCount} câu` : `▶ Làm bài · ${qCount} câu`);

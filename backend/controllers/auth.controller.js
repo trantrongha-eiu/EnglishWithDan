@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const authService = require('../services/authService');
 const shopService = require('../services/shopService');
+const { requestContext } = require('../utils/deviceSession');
 
 // ── OAuth login-CSRF protection ──────────────────────────────
 // passport.authenticate('google', {session:false, ...}) can't use
@@ -122,7 +123,7 @@ exports.register = async (req, res) => {
 exports.verifyEmail = async (req, res) => {
   try {
     const { token } = req.body;
-    const result = await authService.verifyEmailToken(token);
+    const result = await authService.verifyEmailToken(token, requestContext(req));
     if (result.status === 'invalid') {
       return res.status(400).json({ success: false, message: 'Liên kết xác minh không hợp lệ hoặc đã hết hạn.' });
     }
@@ -149,7 +150,7 @@ exports.resendVerification = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const result = await authService.loginUser({ email, password });
+    const result = await authService.loginUser({ email, password }, requestContext(req));
 
     // not_found and wrong_password deliberately return the identical
     // status+message (user-enumeration fix, security audit) — an attacker
@@ -242,9 +243,11 @@ exports.me = (req, res) => {
 // so a token stayed valid against the API for its full remaining 7-day
 // life regardless of "logout". This invalidates every token issued for
 // this user up to now, on every device — see authService.logoutAllSessions.
+// A student's device-slot token only signs out that one device
+// (authService.logoutSession / utils/deviceSession.js).
 exports.logout = async (req, res) => {
   try {
-    await authService.logoutAllSessions(req.user._id);
+    await authService.logoutSession(req.user._id, req.authSession);
     res.json({ success: true });
   } catch (err) {
     console.error('[Auth] logout error:', err);
@@ -276,7 +279,7 @@ exports.startGoogleAuth = (req, res, next) => {
 };
 
 // ── GET /api/auth/google/callback (called by passport) ──────
-exports.googleCallback = (req, res) => {
+exports.googleCallback = async (req, res) => {
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
   try {
     if (req.user.isBanned) {
@@ -294,7 +297,7 @@ exports.googleCallback = (req, res) => {
       // verify callback created it) — send them to log in with Google.
       return res.redirect(`${frontendUrl}/login.html?registered=google${nextParam}`);
     }
-    const { token, user } = authService.completeGoogleLogin(req.user);
+    const { token, user } = await authService.completeGoogleLogin(req.user, requestContext(req));
     shopService.announceLogin(req.user._id).catch(() => {});
     const payload = encodeURIComponent(JSON.stringify(user));
     res.redirect(`${frontendUrl}/auth-callback.html?token=${token}&user=${payload}${nextParam}`);

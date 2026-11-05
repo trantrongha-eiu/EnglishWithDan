@@ -183,7 +183,8 @@ exports.getAttempt = guard(async (req, res) => {
 });
 
 exports.getPendingRewrites = guard(async (req, res) => {
-  const data = await writingService.getPendingRewrites(req.user._id);
+  // Admin/teacher never owe a rewrite — nothing to list or nag about.
+  const data = isStaff(req.user) ? { count: 0, items: [] } : await writingService.getPendingRewrites(req.user._id);
   res.json({
     success: true, ...data, max: writingService.MAX_PENDING_REWRITES,
     // Admin/teacher are never gated (middleware/requireRewriteComplete).

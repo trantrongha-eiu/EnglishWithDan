@@ -600,7 +600,7 @@ async function loadTestList() {
         state.tests = _testListCache.tests;
         _userPlan = _testListCache.userPlan;
         const promoBanner = document.getElementById('premium-promo-banner');
-        if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
+        if (promoBanner) promoBanner.style.display = !window.AuthService.hasPremiumAccess() ? 'flex' : 'none';
         _lsPage = 1;
         rerenderLsFilteredTests();
         _checkPendingReviewBanner();
@@ -622,7 +622,7 @@ async function loadTestList() {
             window.AuthService.setUser(_lu);
         } catch(e) {}
         const promoBanner = document.getElementById('premium-promo-banner');
-        if (promoBanner) promoBanner.style.display = _userPlan !== 'premium' ? 'flex' : 'none';
+        if (promoBanner) promoBanner.style.display = !window.AuthService.hasPremiumAccess() ? 'flex' : 'none';
         _lsPage = 1;
         rerenderLsFilteredTests();
         _checkPendingReviewBanner();
@@ -938,7 +938,7 @@ function renderTestCard(t) {
         : '';
     // Colourful "TEST n" card (css/playful.css .tid-card) — two
     // entry points straight into ExamModeSelect, pre-picked.
-    const locked = _userPlan !== 'premium';
+    const locked = !window.AuthService.hasPremiumAccess();
     const testNo = window.TestCardArt ? window.TestCardArt.label(t) : escHtml(t.name);
     return `
                 <div class="test-card tid-card tid-c${(t.testNumber || 1) % 4}" id="tcard-${t._id}" data-done="${done}" data-name="${escHtml((t.name || '').toLowerCase())}" title="${escAttr(t.name || '')}">

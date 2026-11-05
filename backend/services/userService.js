@@ -10,6 +10,7 @@ const SpeakingAttempt = require('../models/SpeakingAttempt');
 const VocabActivity = require('../models/VocabActivity');
 const bcrypt = require('bcryptjs');
 const { signToken } = require('./authService');
+const { DEVICE_TYPES } = require('../utils/deviceSession');
 const mediaStore = require('./mediaStore');
 const { COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 const { effectiveStreak, coverMissedDaysWithShields } = require('../utils/streak');
@@ -81,8 +82,17 @@ async function updateProfile(userId, { firstName, lastName, bio, studyMotto, tar
   return { status: 'ok', user };
 }
 
-async function changePassword(userId, currentPassword, newPassword) {
+// `session` = the caller's device slot (req.authSession), carried into the
+// fresh token so this device stays signed in while every other one is cut.
+async function changePassword(userId, currentPassword, newPassword, session) {
   const user = await User.findById(userId).select('+password');
+  // Free every other device slot too, so the cut doesn't hinge on
+  // tokenValidAfter's whole-second precision.
+  const keepOnlyThisDevice = () => {
+    for (const t of DEVICE_TYPES) {
+      if (!session || t !== session.dt) user.set(`activeSessions.${t}`, undefined);
+    }
+  };
   // If social account with no password
   if (!user.password && !currentPassword) {
     user.password = await bcrypt.hash(newPassword, 10);
@@ -92,8 +102,9 @@ async function changePassword(userId, currentPassword, newPassword) {
     // middleware/auth.js's same-second truncation for why signing the
     // fresh token right after this is safe.
     user.tokenValidAfter = new Date();
+    keepOnlyThisDevice();
     await user.save();
-    return { status: 'set', token: signToken(user._id) };
+    return { status: 'set', token: signToken(user._id, session) };
   }
 
   const valid = await bcrypt.compare(currentPassword, user.password);
@@ -102,8 +113,9 @@ async function changePassword(userId, currentPassword, newPassword) {
   user.password = await bcrypt.hash(newPassword, 10);
   user.tokenValidAfter = new Date();
   user.mustChangePassword = false;
+  keepOnlyThisDevice();
   await user.save();
-  return { status: 'changed', token: signToken(user._id) };
+  return { status: 'changed', token: signToken(user._id, session) };
 }
 
 async function uploadAvatar(userId, imageBase64) {

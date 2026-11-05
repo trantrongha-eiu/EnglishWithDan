@@ -391,7 +391,7 @@ describe('authService.completeGoogleLogin', () => {
   test('returns a token and user payload, and credits the streak (atomically, fire-and-forget)', async () => {
     const user = await createStudent({ extra: { learningStreak: 0, lastActivityDate: null } });
 
-    const result = authService.completeGoogleLogin(user);
+    const result = await authService.completeGoogleLogin(user);
     expect(typeof result.token).toBe('string');
     expect(result.user.id.toString()).toBe(user._id.toString());
 

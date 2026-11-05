@@ -47,6 +47,9 @@ function getSafeNextUrl() {
     if (reason === 'inactive') {
         showToastWithTitle('error', 'Phiên đăng nhập hết hạn',
             'Bạn đã không đăng nhập trong 10 ngày. Vui lòng đăng nhập lại.');
+    } else if (reason === 'replaced') {
+        showToastWithTitle('error', 'Đã đăng nhập trên thiết bị khác',
+            'Tài khoản của bạn vừa được đăng nhập trên một thiết bị khác nên phiên ở đây đã kết thúc. Mỗi tài khoản chỉ dùng được trên 1 máy tính và 1 điện thoại cùng lúc.', 0);
     } else if (reason === 'banned') {
         showToastWithTitle('banned', 'Tài khoản bị khóa',
             'Tài khoản của bạn đã bị cấm. Vui lòng liên hệ giáo viên để mở khóa.', 0);

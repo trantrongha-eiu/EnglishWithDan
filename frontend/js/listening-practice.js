@@ -415,10 +415,10 @@ function _ltRenderSectionCard(s) {
     const doneAttr   = doneInfo ? ' data-done="1"' : '';
     const donePct    = doneInfo?.lastTotal ? Math.round(doneInfo.lastScore / doneInfo.lastTotal * 100) : 0;
     const doneRibbon = doneInfo ? `<span class="practice-done-ribbon">✓ ${doneInfo.count}x · ${donePct}%</span>` : '';
-    const btnText    = _userPlan !== 'premium'
+    const btnText    = !window.AuthService.hasPremiumAccess()
         ? '<i class="fas fa-lock" style="font-size:11px;margin-right:4px"></i> Upgrade gói'
         : (doneInfo ? `<i class="fas fa-redo"></i> Làm lại · ${s.questionCount} câu` : `<i class="fas fa-play"></i> Làm bài · ${s.questionCount} câu`);
-    const btnCls     = `practice-card-btn ${cardCls}${_userPlan !== 'premium' ? ' btn-upgrade-lock' : (doneInfo ? ' redo' : '')}`;
+    const btnCls     = `practice-card-btn ${cardCls}${!window.AuthService.hasPremiumAccess() ? ' btn-upgrade-lock' : (doneInfo ? ' redo' : '')}`;
     const partArg    = isActual ? s.partNumber : partNum;
     // Cover: the section's own image when it has one, otherwise the Daniel logo
     const cover = s.thumbnail

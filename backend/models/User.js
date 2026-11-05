@@ -47,6 +47,12 @@ const UserSchema = new mongoose.Schema({
   // this app), matching how a password change already invalidates
   // sessions everywhere in most real-world apps.
   tokenValidAfter: { type: Date, default: null },
+  // Students may be signed in on at most one PC and one mobile at a time —
+  // one slot per device type, newest login wins (utils/deviceSession.js).
+  activeSessions: {
+    desktop: { sid: String, at: Date, ua: String, ip: String },
+    mobile:  { sid: String, at: Date, ua: String, ip: String },
+  },
   // Set when staff hand out a temporary password (parent accounts — see
   // routes/admin/parents.js); cleared by the account's own password change.
   // parent.html blocks everything else behind a change-password form while
