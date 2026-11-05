@@ -2,10 +2,9 @@
    SynonymPrompt — staff-only "Copy prompt" button on Listening/Reading
    test cards (full tests + single parts / passages).
 
-   One click copies a ready-to-paste AI prompt: instructions to list every
-   synonym / paraphrase pair between the questions and the passage /
-   transcript (format "word : paraphrase/synonyms"), followed by the full
-   passage/transcript and all questions with their correct answers.
+   One click copies a ready-to-paste AI prompt: make 2 class warm-up
+   activities (Vocabulary in Context + Synonym & Paraphrase Hunt), followed
+   by the full passage/transcript and all questions with their answers.
 
    Data comes from the existing admin endpoints (auth + teacherOnly on the
    server), so the button is only rendered for admin/teacher accounts and
@@ -168,27 +167,19 @@
   // ── prompt ────────────────────────────────────────────────────────────
   function buildPrompt(skill, title) {
     var src = skill === 'listening' ? 'transcript' : 'passage';
+    var name = skill === 'listening' ? 'Listening' : 'Reading';
     return [
-      'Bạn là giáo viên IELTS ' + (skill === 'listening' ? 'Listening' : 'Reading') + ' giàu kinh nghiệm. Bên dưới là đề "' + title + '" gồm ' + src + ' và các câu hỏi (kèm đáp án đúng).',
+      'Create **2 IELTS ' + name + ' warm-up activities** based on the ' + src + ' and its questions.',
       '',
-      'NHIỆM VỤ: Tạo list các SYNONYMS và PARAPHRASE giữa các câu hỏi trong bài và ' + src + '.',
+      '**Activity 1: Vocabulary in Context**',
+      '- Select approximately 15 useful IELTS-level words related to the ' + src + ' and questions.',
+      '- Provide only their English definitions, without showing the target words.',
+      '- Leave blank spaces for students to guess and fill in the words through group work.',
       '',
-      'YÊU CẦU:',
-      '1. Đi lần lượt theo từng câu hỏi (Question 1, Question 2, ...), mỗi câu là một mục.',
-      '2. Mỗi dòng là một cặp, đúng format:',
-      '   word : paraphrase/synonyms',
-      '   - Bên trái: từ/cụm từ trong câu hỏi (gồm cả các lựa chọn A, B, C..., headings, bảng/note/summary).',
-      '   - Bên phải: từ/cụm từ tương ứng trong ' + src + ', chép đúng nguyên văn.',
-      '   - Nhiều paraphrase cho cùng một từ thì ngăn cách bằng " / ".',
-      '3. Ưu tiên các cặp giúp tìm ra đáp án đúng. Nếu một lựa chọn sai (distractor) cũng được nhắc tới/paraphrase trong ' + src + ', thêm "(distractor)" ở cuối dòng.',
-      '4. Nếu đáp án xuất hiện nguyên văn, không có paraphrase, ghi: word : (giữ nguyên)',
-      '5. Chỉ liệt kê, không giải thích, không dịch nghĩa.',
-      '',
-      'VÍ DỤ:',
-      'Question 5',
-      '- decline : drop / fall',
-      '- a large number of : a great many',
-      '- children : youngsters (distractor)',
+      '**Activity 2: Synonym & Paraphrase Hunt**',
+      '- Create a table with approximately 8 key words or phrases taken from the questions or ' + src + '.',
+      '- Students work in groups to identify synonyms or suggest alternative paraphrases for each item.',
+      '- Leave space for students to write their answers.',
       '',
     ].join('\n');
   }
@@ -315,7 +306,7 @@
     if (btn) btn.classList.add('is-loading');
     var textPromise = build(kind, id);
     writeClipboard(textPromise).then(function (ok) {
-      if (ok) { notify('Đã copy prompt + nội dung đề — dán vào AI để tạo list synonyms/paraphrase', 'success'); return; }
+      if (ok) { notify('Đã copy prompt + nội dung đề — dán vào AI để tạo 2 warm-up activities', 'success'); return; }
       return textPromise.then(showManualCopy);
     }).catch(function (e) {
       notify('Không lấy được nội dung đề: ' + ((e && e.message) || 'lỗi'), 'error');
@@ -328,7 +319,7 @@
     if (!isStaff() || !id) return '';
     return '<button type="button" class="syn-prompt-btn' + (variant ? ' syn-prompt-btn--' + variant : '') + '"' +
       ' onclick="event.stopPropagation();SynonymPrompt.copy(\'' + kind + '\',\'' + String(id).replace(/[^\w-]/g, '') + '\',this)"' +
-      ' title="Copy prompt AI: list synonyms/paraphrase giữa câu hỏi và ' + (kind.indexOf('ls-') === 0 ? 'transcript' : 'passage') + ' (kèm nội dung đề). Chỉ admin/teacher thấy nút này.">' +
+      ' title="Copy prompt AI: 2 warm-up activities (Vocabulary in Context + Synonym &amp; Paraphrase Hunt) từ ' + (kind.indexOf('ls-') === 0 ? 'transcript' : 'passage') + ' (kèm nội dung đề). Chỉ admin/teacher thấy nút này.">' +
       '<i class="fas fa-wand-magic-sparkles"></i><span>Prompt</span></button>';
   }
 
