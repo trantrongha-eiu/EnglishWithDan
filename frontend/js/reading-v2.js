@@ -80,6 +80,15 @@ let _mockMode = false;       // true khi mở trang này là bước 2/4 của b
 let _practiceCategory = '';  // 'passage1' | 'passage2' | 'passage3'
 let _practiceDoneMap = {};   // passageId → { count, lastScore, lastTotal }
 let _practiceStatusFilter = 'all'; // 'all' | 'done' | 'new'
+// "Dạng câu hỏi" checkboxes (js/shared/qtype-filter.js). Kept across tab
+// switches so e.g. "Passage 3 + Matching Headings" works.
+let _rdQTypeFilter = null;
+function _rdQTypes() {
+  if (!_rdQTypeFilter && window.QTypeFilter) {
+    _rdQTypeFilter = window.QTypeFilter.create({ mount: 'rd-qtype-filter', module: 'reading', onChange: _applyPracticeFilters });
+  }
+  return _rdQTypeFilter;
+}
 
 /* ── Practice stopwatch ─────────────────────────────────────────────── */
 let _practiceTimer     = null;
@@ -1378,26 +1387,31 @@ function _applyPracticeFilters() {
   rerenderPracticePassages();
 }
 
-function getRdFilteredPassages() {
+function getRdFilteredPassages(skipTypeFilter = false) {
   const q = (document.getElementById('practice-search-input')?.value || '').trim().toLowerCase();
+  const qtf = skipTypeFilter ? null : _rdQTypes();
   return _allPracticePassages.filter(p => {
     const isDone = !!_practiceDoneMap[p._id?.toString()];
     const passTitle  = !q || (p.title || '').toLowerCase().includes(q);
     const passStatus = _practiceStatusFilter === 'all'
       || (_practiceStatusFilter === 'done' && isDone)
       || (_practiceStatusFilter === 'new'  && !isDone);
-    return passTitle && passStatus;
+    return passTitle && passStatus && (!qtf || qtf.matches(p));
   });
 }
 
 function rerenderPracticePassages() {
   const listEl = document.getElementById('practice-passage-list');
   if (!listEl) return;
+  const qtf = _rdQTypes();
+  if (qtf) qtf.setCounts(getRdFilteredPassages(true));
   const filtered = getRdFilteredPassages();
   if (filtered.length === 0 && _allPracticePassages.length > 0) {
     const q = (document.getElementById('practice-search-input')?.value || '').trim();
-    const icon = q ? '🔍' : (_practiceStatusFilter === 'done' ? '✅' : '🆕');
+    const byType = !q && qtf?.hasSelection();
+    const icon = q ? '🔍' : byType ? '🗂️' : (_practiceStatusFilter === 'done' ? '✅' : '🆕');
     const msg  = q ? `Không tìm thấy bài nào khớp với "<strong>${escHtml(q)}</strong>"`
+                   : byType ? 'Không có bài nào thuộc dạng câu hỏi đã chọn trong mục này'
                    : _practiceStatusFilter === 'done' ? 'Chưa làm bài nào trong mục này'
                    : 'Đã làm tất cả bài trong mục này rồi!';
     listEl.innerHTML = `<div style="text-align:center;padding:40px 16px;color:#9ca3af"><div style="font-size:32px;margin-bottom:10px">${icon}</div><div style="font-size:14px">${msg}</div></div>`;
@@ -1455,11 +1469,13 @@ function _rdRenderPassageCard(p) {
     'bullet-list':'Bullet List', 'summary-completion':'Summary Completion',
     'sentence-endings':'Sentence Endings',
   };
-  const qtypes    = [...new Set(
-    (p.questionGroups || []).flatMap(g =>
-      g.questions?.map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType) || []
-    )
-  )].slice(0, 3);
+  const qtypes    = (p.qtypes?.length && window.QTypeFilter
+    ? window.QTypeFilter.labelsOf(p)
+    : [...new Set(
+      (p.questionGroups || []).flatMap(g =>
+        g.questions?.map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType) || []
+      )
+    )]).slice(0, 3);
   const qCount    = p.questionCount || 0;
   const catCls    = { passage1:'p1', passage2:'p2', passage3:'p3' }[p.category] || 'p1';
   const catName   = { passage1:'P1', passage2:'P2', passage3:'P3' }[p.category] || '';

@@ -32,6 +32,7 @@ const { toCardThumbnail } = require('../utils/cardThumbnail');
 const { normalizeParts, partsFilter, scaledCorrect } = require('../utils/partSelection');
 const warmUpUtil = require('../utils/listeningWarmUp');
 const transcriptTiming = require('./transcriptTimingService');
+const { questionTypesOf } = require('../utils/questionTypes');
 const { toStudentWarmUp } = warmUpUtil;
 
 // Mongoose `.select()` string that strips a section's answer key
@@ -453,6 +454,8 @@ async function listPracticeSections(query, userId) {
     audioDuration: s.audioDuration,
     questionRange: s.questionRange,
     questionCount: (s.questionGroups || []).reduce((sum, g) => sum + (g.questions?.length || 0), 0),
+    // IELTS question types for the list's "Dạng câu hỏi" filter + card labels
+    qtypes: questionTypesOf(s.questionGroups, 'listening'),
     questionGroups: (s.questionGroups || []).map(g => ({
       groupType: g.groupType,
       questions: (g.questions || []).map(q => ({ questionNumber: q.questionNumber, type: q.type }))

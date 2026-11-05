@@ -15,6 +15,14 @@ let _ltPracticeTimer    = null;
 let _ltPracticeStartTime= 0;
 let _ltPracticeDoneMap  = {};    // sectionId → { count, lastScore, lastTotal }
 let _ltStatusFilter     = 'all'; // 'all' | 'done' | 'new'
+// "Dạng câu hỏi" checkboxes (js/shared/qtype-filter.js), kept across tab switches
+let _ltQTypeFilter = null;
+function _ltQTypes() {
+    if (!_ltQTypeFilter && window.QTypeFilter) {
+        _ltQTypeFilter = window.QTypeFilter.create({ mount: 'lt-qtype-filter', module: 'listening', onChange: _applyLtFilters });
+    }
+    return _ltQTypeFilter;
+}
 let _ltSearchVal        = '';    // current text search value
 const LT_PRACTICE_PARTS = [1, 2, 3, 4, 'actual'];
 let _ltCategoryCache      = {}; // partNum -> { sections, doneMap }
@@ -358,7 +366,8 @@ function _applyLtFilters() {
     rerenderLtSections();
 }
 
-function getLtFilteredSections() {
+function getLtFilteredSections(skipTypeFilter = false) {
+    const qtf = skipTypeFilter ? null : _ltQTypes();
     return _ltAllSections.filter(s => {
         const title  = (s.title || '').toLowerCase();
         const isDone = !!_ltPracticeDoneMap[s._id?.toString()];
@@ -366,7 +375,7 @@ function getLtFilteredSections() {
         const passStatus = _ltStatusFilter === 'all'
             || (_ltStatusFilter === 'done' && isDone)
             || (_ltStatusFilter === 'new'  && !isDone);
-        return passTitle && passStatus;
+        return passTitle && passStatus && (!qtf || qtf.matches(s));
     });
 }
 
@@ -388,9 +397,11 @@ function _ltRenderSectionCard(s) {
         'matching-options':'Matching', 'summary-completion':'Summary',
         'sentence-endings':'Sentence Endings'
     };
-    const qtypes   = [...new Set((s.questionGroups || []).flatMap(g =>
-        (g.questions || []).map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType)
-    ))].slice(0, 3);
+    const qtypes   = (s.qtypes?.length && window.QTypeFilter
+        ? window.QTypeFilter.labelsOf(s)
+        : [...new Set((s.questionGroups || []).flatMap(g =>
+            (g.questions || []).map(q => typeLabel[q.type] || typeLabel[g.groupType] || g.groupType)
+        ))]).slice(0, 3);
     const dur       = s.audioDuration ? `${Math.floor(s.audioDuration/60)}:${pad(s.audioDuration%60)} phút` : '';
     const partCls   = clsMap[s.partNumber] || 'p1';
     const cardCls   = isActual ? partCls : cls;
@@ -435,15 +446,20 @@ function _ltRenderSectionCard(s) {
 function rerenderLtSections() {
     const listEl = document.getElementById('lt-section-list');
     if (!listEl) return;
+    const qtf = _ltQTypes();
+    if (qtf) qtf.setCounts(getLtFilteredSections(true));
     const filtered = getLtFilteredSections();
     if (filtered.length === 0 && _ltAllSections.length > 0) {
+        const byType = !_ltSearchVal && qtf?.hasSelection();
         const icon = _ltSearchVal
             ? '<i class="fas fa-search" style="font-size:32px;color:#9ca3af"></i>'
+            : byType ? '<i class="fas fa-filter" style="font-size:32px;color:#9ca3af"></i>'
             : (_ltStatusFilter === 'done'
                 ? '<i class="fas fa-clipboard-list" style="font-size:32px;color:#9ca3af"></i>'
                 : '<i class="fas fa-check-circle" style="font-size:32px;color:#9ca3af"></i>');
         const msg = _ltSearchVal
             ? `Không tìm thấy bài nào khớp với "<strong>${escHtml(_ltSearchVal)}</strong>"`
+            : byType ? 'Không có bài nào thuộc dạng câu hỏi đã chọn trong mục này'
             : _ltStatusFilter === 'done' ? 'Chưa làm bài nào trong mục này'
             : 'Đã làm tất cả bài trong mục này rồi!';
         listEl.innerHTML = `<div style="text-align:center;padding:40px 16px;color:#9ca3af"><div style="margin-bottom:10px">${icon}</div><div style="font-size:14px">${msg}</div></div>`;

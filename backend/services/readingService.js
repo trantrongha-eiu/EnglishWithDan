@@ -21,6 +21,7 @@ const { REAL_ATTEMPT, COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 const { disqualifiedAnswerFilter } = require('./proctorPolicy');
 const { toCardThumbnail } = require('../utils/cardThumbnail');
 const { normalizeParts, partsFilter, scaledCorrect } = require('../utils/partSelection');
+const { questionTypesOf } = require('../utils/questionTypes');
 
 // Mongoose `.select()` string that strips a passage's answer key
 // (correctAnswer + explanation, on both the modern questionGroups shape
@@ -494,6 +495,8 @@ async function listPracticePassages(category, userId) {
     // an explicit cover image wins; otherwise the first image inside the passage
     thumbnail: toCardThumbnail(p.thumbnailUrl || p.firstImg?.captures?.[0] || ''),
     questionCount: (p.questionGroups || []).reduce((s, g) => s + (g.questions?.length || 0), 0) || (p.questions?.length || 0),
+    // IELTS question types for the list's "Dạng câu hỏi" filter + card labels
+    qtypes: questionTypesOf(p.questionGroups, 'reading'),
     questionGroups: (p.questionGroups || []).map(g => ({
       groupType: g.groupType,
       questions: (g.questions || []).map(q => ({ questionNumber: q.questionNumber, type: q.type }))
