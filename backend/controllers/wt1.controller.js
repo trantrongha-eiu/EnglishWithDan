@@ -141,8 +141,7 @@ async function _gradeOneAnswer(questionText, text, part, audio, durationSec) {
     // Transcript-only retry is only possible when we actually have a
     // transcript — an audio-only submission has nothing to fall back to.
     if (audio && text && !aiErr.isOverloaded) {
-      try { return await speakingService.gradeSpeaking(questionText, text, part, null, durationSec); }
-      catch (retryErr) { throw retryErr; }
+      return await speakingService.gradeSpeaking(questionText, text, part, null, durationSec);
     }
     throw aiErr;
   }

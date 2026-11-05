@@ -23,7 +23,8 @@ const ShadowingAttemptSchema = new mongoose.Schema({
 
   answers:       [ShadowingAnswerSchema],
   totalSegments: { type: Number, default: 0 }, // segments in the lesson
-  avgScore:      { type: Number, default: 0 }, // over the answered segments
+  avgScore:      { type: Number, default: 0 }, // over ALL the lesson's segments (unanswered = 0)
+  accuracy:      { type: Number, default: 0 }, // over the segments answered in this session
 
   submittedAt: { type: Date, default: Date.now }
 }, { timestamps: true });

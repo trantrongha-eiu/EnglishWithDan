@@ -80,7 +80,8 @@ exports.analyze = catchAsync(async (req, res) => {
   let feedback;
   try {
     feedback = await speakingService.gradeSpeaking(questionText, clientTranscript, partNum, audio, durationSec);
-  } catch (aiErr) {
+  } catch (firstErr) {
+    let aiErr = firstErr; // the retry's error replaces it when that fails too
     // If the audio part is what tripped grading up (unsupported container,
     // corrupt blob, size), don't lose the whole grade — retry once
     // transcript-only. Only possible when we actually HAVE a transcript;

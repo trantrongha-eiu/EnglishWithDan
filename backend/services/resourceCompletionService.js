@@ -522,7 +522,7 @@ const REGISTRY = {
   shadowing: {
     label: 'Shadowing (Video)',
     catalog: { model: ShadowingLesson, filter: { isPublished: true }, sort: { order: 1, createdAt: 1 },
-      shape: (d) => ({ _id: d._id, label: d.title, meta: [d.category, d.level].filter(Boolean).join(' · ') }),
+      shape: (d) => ({ _id: d._id, label: d.title, meta: [ShadowingLesson.CATEGORY_LABELS[d.category] || d.category, d.level].filter(Boolean).join(' · ') }),
       deepLinkKey: (d) => d.slug },
     attempt: viewAttempt('shadowing'),
   },

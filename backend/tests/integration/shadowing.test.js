@@ -35,7 +35,35 @@ describe('GET /api/shadowing/lessons', () => {
     expect(res.body.lessons.map((l) => l.title)).toEqual(['Visible']);
     expect(res.body.lessons[0].segments).toBeUndefined();
     expect(res.body.lessons[0].segmentCount).toBe(3);
-    expect(res.body.lessons[0].duration).toBe(140);
+    expect(res.body.lessons[0].duration).toBe(14); // first sentence → last, not the whole clip
+  });
+
+  test('duration leaves out the parts the player jumps (a silence of 6 s or more)', async () => {
+    await createLesson({ segments: [
+      { start: 10, end: 14, text: 'Describe a journey that was delayed.' },
+      { start: 14.5, end: 18, text: 'You have one minute to prepare.' },   // 0.5 s pause: kept
+      { start: 78, end: 82, text: 'Your preparation time is over.' },      // 60 s prep: cut to 1 + 0.4
+    ] });
+    const res = await request(app).get('/api/shadowing/lessons').set(bearer(await pastTrial()));
+    expect(res.body.lessons[0].duration).toBe(Math.round(4 + 0.5 + 3.5 + 1.4 + 4));
+  });
+
+  test('progress is over the WHOLE lesson, best score per sentence across sessions', async () => {
+    const segments = Array.from({ length: 20 }, (_, i) => ({ start: i * 5, end: i * 5 + 4, text: `Sentence number ${i}.` }));
+    const lesson = await createLesson({ segments });
+    const me = await createPremiumStudent();
+    const post = (rows) => request(app).post(`/api/shadowing/lessons/${lesson.slug}/attempt`).set(bearer(me))
+      .send({ mode: 'dictation', answers: rows.map(([i, m]) => ({ segmentIndex: i, matchedWords: m, totalWords: 4 })) });
+
+    // 5 easy sentences of 20, all perfect: 25% of the lesson, not 100%.
+    const first = await post([[0, 4], [1, 4], [2, 4], [3, 4], [4, 4]]);
+    expect(first.body).toMatchObject({ avgScore: 25, accuracy: 100, answered: 5, totalSegments: 20 });
+    // A later session adds 5 more (and a worse try at sentence 0 doesn't lower it).
+    await post([[0, 0], [5, 4], [6, 4], [7, 4], [8, 4], [9, 2]]);
+
+    const res = await request(app).get('/api/shadowing/lessons').set(bearer(me));
+    expect(res.body.lessons[0].progress).toEqual({ dictation: Math.round((9 * 100 + 50) / 20) });
+    expect(res.body.lessons[0].answered).toEqual({ dictation: 10 });
   });
 
   test('includes this student\'s best score per mode — and only theirs', async () => {
@@ -49,7 +77,7 @@ describe('GET /api/shadowing/lessons', () => {
     await post(other, 'dictation', 7);
 
     const res = await request(app).get('/api/shadowing/lessons').set(bearer(me));
-    expect(res.body.lessons[0].progress).toEqual({ shadowing: 100 });
+    expect(res.body.lessons[0].progress).toEqual({ shadowing: 33 }); // 1 sentence of 3 at 100%
   });
 
   test('requires login', async () => {
@@ -98,7 +126,7 @@ describe('POST /api/shadowing/lessons/:slug/attempt', () => {
     });
 
     expect(res.status).toBe(200);
-    expect(res.body).toMatchObject({ success: true, avgScore: 100, answered: 2 });
+    expect(res.body).toMatchObject({ success: true, avgScore: 67, accuracy: 100, answered: 2 }); // 2 of 3 sentences
     const saved = await ShadowingAttempt.findOne({ userId: u._id }).lean();
     expect(saved.mode).toBe('dictation');
     expect(saved.totalSegments).toBe(3);
@@ -149,5 +177,8 @@ describe('seedShadowingLessons', () => {
     const withAnswer = seedLessons.find((l) => l.segments.some((s) => s.answer));
     const seeded = await ShadowingLesson.findOne({ slug: withAnswer.slug }).lean();
     expect(seeded.segments.find((s) => s.answer).answer).toBe(withAnswer.segments.find((s) => s.answer).answer);
+    // The picker reads these instead of loading every lesson's segments.
+    expect(seeded.segmentCount).toBe(withAnswer.segments.length);
+    expect(seeded.playDuration).toBeGreaterThan(0);
   });
 });

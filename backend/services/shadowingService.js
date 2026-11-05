@@ -9,30 +9,60 @@ const { awardPracticeFlames, drillBonusForAccuracy } = require('./streakBonusSer
 
 const MODES = ['dictation', 'shadowing'];
 
-// Picker list — no segments (that's the whole lesson), plus this student's
-// best score per mode so the cards can show progress.
+// Picker list — no segments (that's the whole lesson; segmentCount /
+// playDuration are stored on the lesson for this), plus this student's
+// progress per mode for the cards.
 async function listLessons(userId) {
   const lessons = await ShadowingLesson.find({ isPublished: true })
-    .select('slug title description youtubeId channel category level clipStart clipEnd segments order')
+    .select('slug title description youtubeId channel category level segmentCount playDuration order')
     .sort({ order: 1, createdAt: 1 })
     .lean();
 
-  const best = await ShadowingAttempt.aggregate([
-    { $match: { userId: new mongoose.Types.ObjectId(String(userId)), lessonId: { $in: lessons.map(l => l._id) } } },
-    { $group: { _id: { lessonId: '$lessonId', mode: '$mode' }, best: { $max: '$avgScore' } } },
-  ]);
-  const progress = {};
-  for (const b of best) {
-    const key = String(b._id.lessonId);
-    (progress[key] = progress[key] || {})[b._id.mode] = b.best;
+  // A lesson saved before the stats existed: fill them in once.
+  const stale = lessons.filter((l) => !l.segmentCount);
+  if (stale.length) {
+    const full = await ShadowingLesson.find({ _id: { $in: stale.map((l) => l._id) } }).select('segments').lean();
+    for (const f of full) {
+      const { segmentCount, playDuration } = ShadowingLesson.withStats(f);
+      Object.assign(lessons.find((l) => String(l._id) === String(f._id)), { segmentCount, playDuration });
+      await ShadowingLesson.updateOne({ _id: f._id }, { $set: { segmentCount, playDuration } });
+    }
   }
 
-  return lessons.map(({ segments, ...l }) => ({
+  const { score, answered } = await lessonProgress(userId, lessons);
+  return lessons.map(({ playDuration, ...l }) => ({
     ...l,
-    segmentCount: segments.length,
-    duration: Math.round(l.clipEnd - l.clipStart),
-    progress: progress[String(l._id)] || {},
+    duration: playDuration,
+    progress: score[String(l._id)] || {},   // { mode: % of the whole lesson }
+    answered: answered[String(l._id)] || {}, // { mode: sentences tried }
   }));
+}
+
+// Progress per lesson + mode = the best score each sentence has ever got
+// (across every saved session), averaged over ALL the lesson's sentences —
+// a sentence never tried counts 0. So 5 easy sentences of a 144-sentence
+// lesson show 3%, not 100%.
+async function lessonProgress(userId, lessons) {
+  const total = new Map(lessons.map((l) => [String(l._id), l.segmentCount]));
+  const rows = await ShadowingAttempt.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(String(userId)), lessonId: { $in: lessons.map((l) => l._id) } } },
+    { $unwind: '$answers' },
+    { $group: { _id: { lessonId: '$lessonId', mode: '$mode', seg: '$answers.segmentIndex' }, best: { $max: '$answers.score' } } },
+  ]);
+  const score = {};
+  const answered = {};
+  for (const r of rows) {
+    const key = String(r._id.lessonId);
+    const n = total.get(key);
+    if (!n || r._id.seg >= n) continue; // lesson re-cut since: drop stale indexes
+    const { mode } = r._id;
+    (score[key] = score[key] || {})[mode] = (score[key][mode] || 0) + r.best / n;
+    (answered[key] = answered[key] || {})[mode] = (answered[key][mode] || 0) + 1;
+  }
+  for (const modes of Object.values(score)) {
+    for (const mode of Object.keys(modes)) modes[mode] = Math.round(modes[mode]);
+  }
+  return { score, answered };
 }
 
 async function getLesson(slug) {
@@ -63,7 +93,11 @@ async function saveAttempt(slug, { mode, answers }, userId) {
       !seen.has(a.segmentIndex) && seen.add(a.segmentIndex));
   if (!safeAnswers.length) throw new ValidationError('Chưa có câu nào được chấm');
 
-  const avgScore = Math.round(safeAnswers.reduce((n, a) => n + a.score, 0) / safeAnswers.length);
+  // avgScore covers the whole lesson (unanswered sentences count 0);
+  // accuracy is over the sentences done in this session.
+  const scoreSum = safeAnswers.reduce((n, a) => n + a.score, 0);
+  const avgScore = Math.round(scoreSum / lesson.segments.length);
+  const accuracy = Math.round(scoreSum / safeAnswers.length);
   const attempt = await ShadowingAttempt.create({
     userId,
     lessonId: lesson._id,
@@ -72,14 +106,15 @@ async function saveAttempt(slug, { mode, answers }, userId) {
     answers: safeAnswers,
     totalSegments: lesson.segments.length,
     avgScore,
+    accuracy,
     submittedAt: new Date(),
   });
-  // >=70% +1 🔥, >=90% +2 🔥 once at least 5 câu are scored (once per
-  // lesson + mode per day; a later save of the same lesson only tops up).
+  // Accuracy >=70% +1 🔥, >=90% +2 🔥 once at least 5 câu are scored (once
+  // per lesson + mode per day; a later save of the same lesson only tops up).
   if (safeAnswers.length >= MIN_STREAK_SENTENCES) {
-    await awardPracticeFlames(userId, `shadowing:${lesson._id}:${mode}`, drillBonusForAccuracy(avgScore / 100));
+    await awardPracticeFlames(userId, `shadowing:${lesson._id}:${mode}`, drillBonusForAccuracy(accuracy / 100));
   }
-  return { attemptId: attempt._id, avgScore, answered: safeAnswers.length };
+  return { attemptId: attempt._id, avgScore, accuracy, answered: safeAnswers.length, totalSegments: lesson.segments.length };
 }
 
 module.exports = { listLessons, getLesson, saveAttempt };

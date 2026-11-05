@@ -9,8 +9,18 @@
  * scripts/seedShadowingLessons.js (upsert key: slug).
  */
 const mongoose = require('mongoose');
+const { playDuration } = require('../utils/shadowingClip');
 
-const CATEGORIES = ['ielts-part1', 'ielts-part2', 'ielts-part3', '6-minute-english', 'kids-stories', 'fun-shorts', 'comedy', 'ted-shorts', 'everyday-english', 'spelling-numbers', 'grammar', 'connected-speech', 'connected-speech-advanced', 'animated', '6-minute-grammar', 'ielts-mock-test'];
+// Display names — same as CATEGORY_LABEL in frontend/js/shadowing.js.
+const CATEGORY_LABELS = {
+  'ielts-part1': 'Speaking Part 1', 'ielts-part2': 'Speaking Part 2', 'ielts-part3': 'Speaking Part 3',
+  '6-minute-english': '6 Minute English', 'kids-stories': 'Truyện kể BBC', 'fun-shorts': 'Video ngắn vui',
+  'comedy': 'Hài Stand-up', 'ted-shorts': 'TED ngắn', 'everyday-english': 'Everyday English',
+  'spelling-numbers': 'Đánh vần & số', 'grammar': 'Ngữ pháp', 'connected-speech': 'Nối âm cơ bản',
+  'connected-speech-advanced': 'Nối âm nâng cao', 'animated': 'Hoạt hình kiến thức',
+  '6-minute-grammar': '6 Minute Grammar', 'ielts-mock-test': 'Mock test Speaking',
+};
+const CATEGORIES = Object.keys(CATEGORY_LABELS);
 
 const SegmentSchema = new mongoose.Schema({
   start: { type: Number, required: true }, // seconds into the video
@@ -35,11 +45,26 @@ const ShadowingLessonSchema = new mongoose.Schema({
   // player's "Xem video" overlay then adds only the Vietnamese, at the top.
   burnedInCaptions: { type: Boolean, default: false },
   segments:    { type: [SegmentSchema], default: [] },
+  // Derived from segments (withStats) so the picker list needn't load them.
+  segmentCount: { type: Number, default: 0 },
+  playDuration: { type: Number, default: 0 }, // seconds, cut parts excluded (utils/shadowingClip)
   order:       { type: Number, default: 0 },
   isPublished: { type: Boolean, default: true },
 }, { timestamps: true });
 
 ShadowingLessonSchema.index({ isPublished: 1, category: 1, order: 1 });
 
+// The seed writes with bulkWrite (no save hooks), so it calls this too.
+function withStats(lesson) {
+  const segs = lesson.segments || [];
+  return { ...lesson, segmentCount: segs.length, playDuration: playDuration(segs) };
+}
+ShadowingLessonSchema.pre('save', function () {
+  this.segmentCount = this.segments.length;
+  this.playDuration = playDuration(this.segments);
+});
+
 module.exports = mongoose.model('ShadowingLesson', ShadowingLessonSchema);
 module.exports.CATEGORIES = CATEGORIES;
+module.exports.CATEGORY_LABELS = CATEGORY_LABELS;
+module.exports.withStats = withStats;

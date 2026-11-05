@@ -35,7 +35,7 @@ function summarise() {
 async function runSeed() {
   const ShadowingLesson = require('../models/ShadowingLesson');
   const ops = lessons.map((l) => ({
-    replaceOne: { filter: { slug: l.slug }, replacement: { isPublished: true, ...l }, upsert: true },
+    replaceOne: { filter: { slug: l.slug }, replacement: ShadowingLesson.withStats({ isPublished: true, ...l }), upsert: true },
   }));
   const result = await ShadowingLesson.bulkWrite(ops);
   console.log(`[ShadowingSeed] upserted ${result.upsertedCount}, modified ${result.modifiedCount} lessons`);

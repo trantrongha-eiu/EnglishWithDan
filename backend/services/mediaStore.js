@@ -42,7 +42,7 @@ async function uploadListeningAudio(file, folder, name) {
   const r = useR2()
     ? await r2Service.uploadAudio(file.buffer, {
       folder, public_id: name,
-      ext: (/\.([a-z0-9]{2,4})$/i.exec(file.originalname || '') || [, 'mp3'])[1].toLowerCase(),
+      ext: (/\.([a-z0-9]{2,4})$/i.exec(file.originalname || '') || [null, 'mp3'])[1].toLowerCase(),
       contentType: file.mimetype || 'audio/mpeg',
     })
     : await cloudinaryService.uploadBufferStream(file.buffer, { resource_type: 'video', folder, public_id: name, overwrite: true });

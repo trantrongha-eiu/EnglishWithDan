@@ -354,7 +354,7 @@ async function _gradeOnce(questionText, transcript, partNum, audio, durationSec)
     try {
       console.warn(`[Speaking] Gemini failed (${primaryErr.message}) — trying Gemini Flash-Lite`);
       const raw = await checkSpeakingLite(questionText, transcript, partNum, audio, durationSec);
-      if (!raw || typeof raw !== 'object') throw new Error('Flash-Lite returned no result');
+      if (!raw || typeof raw !== 'object') throw new Error('Flash-Lite returned no result', { cause: primaryErr });
       // Finalized here (not after the chain) so an unusable v2 analysis from
       // Flash-Lite falls through to the next engine like an API failure.
       return _finalizeGrade(raw, ctx);

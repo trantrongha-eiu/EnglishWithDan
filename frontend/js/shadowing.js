@@ -20,6 +20,9 @@
  *    Shadowing / Dictation, and each sentence pauses at its end.
  *  - "Phát liên tục" (or the YouTube player's own play button) plays on
  *    past the sentence end, with the transcript following the video.
+ *  - Playing straight through jumps the parts cut out of a lesson (a long
+ *    silence between two sentences — an ad, Part 2 preparation time), and
+ *    the subtitle goes off once its sentence has been said.
  */
 (function () {
   'use strict';
@@ -92,6 +95,20 @@
   let pollTimer = null;
   let isPlaying = false;
   let continuous = false; // "Phát liên tục": play on to the end of the clip
+  let lastPollT = null;   // video time at the previous poll tick (null after a pause / jump)
+  let subGap = false;     // watch mode: a sentence has ended and the next hasn't started
+
+  // Same numbers as backend/utils/shadowingClip.js: a silence of SKIP_GAP s
+  // or more between two sentences is a part cut out of the lesson (a channel
+  // ad, the 1-minute Part 2 preparation in a mock test) — straight-through
+  // play jumps it, keeping GAP_TAIL s after the sentence and GAP_LEAD s
+  // before the next one.
+  const SKIP_GAP = 6;
+  const GAP_TAIL = 1;
+  const GAP_LEAD = 0.4;
+  // Subtitles go off between two sentences at least this far apart.
+  const SUB_GAP = 2;
+  const SUB_HOLD = 0.6;
 
   // A fresh player for every lesson: reusing one (cueVideoById) left the
   // previous video's YouTube caption box frozen over the new video.
@@ -147,7 +164,11 @@
     pollTimer = setInterval(() => {
       if (!player || !lesson) return;
       const t = player.getCurrentTime();
-      if (stopAt == null || continuous) followVideo(t);
+      if (stopAt == null || continuous) {
+        if (skipCut(t)) return;
+        followVideo(t);
+        if (mode === 'watch') syncSubtitleGap(t);
+      }
       if (stopAt != null && t >= stopAt) {
         player.pauseVideo();
         stopAt = null;
@@ -158,6 +179,34 @@
         } else onSegmentEnded();
       }
     }, 50);
+  }
+
+  // Playing straight through and just past the end of a sentence followed
+  // by a cut part: jump to just before the next sentence. Only when the
+  // video got here by playing — a student who drags the YouTube seek bar
+  // into the cut part is left there.
+  function skipCut(t) {
+    const prev = lastPollT;
+    lastPollT = t;
+    if (prev == null || t < prev || t - prev > 2) return false;
+    const segs = lesson.segments;
+    for (let k = 0; k + 1 < segs.length; k++) {
+      const from = segs[k].end + GAP_TAIL;
+      const to = segs[k + 1].start - GAP_LEAD;
+      if (segs[k + 1].start - segs[k].end >= SKIP_GAP && prev < from && t >= from && t < to) {
+        player.seekTo(to, true);
+        lastPollT = null;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function syncSubtitleGap(t) {
+    const seg = lesson.segments[idx];
+    const next = lesson.segments[idx + 1];
+    const gap = t > seg.end + SUB_HOLD && (!next || (next.start - seg.end >= SUB_GAP && t < next.start));
+    if (gap !== subGap) { subGap = gap; renderSubtitle(); }
   }
 
   // Free play (YouTube's own controls, or "Phát liên tục"): move the current
@@ -189,7 +238,7 @@
     p.setPlaybackRate(SPEEDS[speedIdx]);
     p.playVideo();
   }
-  function stopPoll() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } }
+  function stopPoll() { if (pollTimer) { clearInterval(pollTimer); pollTimer = null; } lastPollT = null; }
 
   function hideCaptions() {
     // Not part of the documented API, but long-standing and harmless if it
@@ -254,7 +303,7 @@
     const vi = seg ? viOf(seg) : '';
     const watching = !!seg && mode === 'watch';
     const subOn = $('opt-sub').checked;
-    const on = watching && subOn && (!burned || !!vi);
+    const on = watching && subOn && !subGap && (!burned || !!vi);
     // On/off button in the corner of the video (watch mode only)
     const btn = $('sh-cc-btn');
     btn.hidden = !watching;
@@ -627,6 +676,7 @@
       if (continuous) setContinuous(false);
     }
     idx = i;
+    subGap = false;
     const seg = lesson.segments[i];
     $('sh-cur').textContent = i + 1;
     $('sh-prev').disabled = i === 0;
@@ -821,8 +871,10 @@
     renderPagination(pages, list.length);
     $('sh-grid').innerHTML = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map((l) => {
       const p = l.progress || {};
-      const pill = (m, icon) => p[m] != null
-        ? `<span class="sh-pill ${p[m] >= 85 ? 'good' : ''}"><i class="fas ${icon}"></i> ${p[m]}%</span>` : '';
+      // % of the whole lesson (a sentence never tried counts 0).
+      const done = l.answered || {};
+      const pill = (m, icon, name) => p[m] != null
+        ? `<span class="sh-pill ${p[m] >= 85 ? 'good' : ''}" title="${name}: đã làm ${done[m] || 0}/${l.segmentCount} câu — điểm tính trên cả bài"><i class="fas ${icon}"></i> ${p[m]}%</span>` : '';
       return `<div class="sh-card" data-slug="${escHtml(l.slug)}">
         <div class="sh-thumb">
           <img src="https://i.ytimg.com/vi/${encodeURIComponent(l.youtubeId)}/hqdefault.jpg" alt="" loading="lazy">
@@ -833,7 +885,7 @@
           <div class="sh-card-title">${escHtml(l.title)}</div>
           ${l.description ? `<div class="sh-card-desc">${escHtml(l.description)}</div>` : ''}
           <div class="sh-card-meta"><span>${escHtml(l.channel)}</span><span>${l.segmentCount} câu</span></div>
-          <div class="sh-card-progress"><span class="sh-pill sh-level lv-${escHtml(l.level)}">${escHtml(l.level)}</span>${pill('shadowing', 'fa-microphone')}${pill('dictation', 'fa-keyboard')}</div>
+          <div class="sh-card-progress"><span class="sh-pill sh-level lv-${escHtml(l.level)}">${escHtml(l.level)}</span>${pill('shadowing', 'fa-microphone', 'Shadowing')}${pill('dictation', 'fa-keyboard', 'Dictation')}</div>
         </div>
       </div>`;
     }).join('');
