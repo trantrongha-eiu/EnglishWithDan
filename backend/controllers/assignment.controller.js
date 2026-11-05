@@ -23,6 +23,7 @@ const { findActiveEnrollment } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
 const { normalizeParts } = require('../utils/partSelection');
 const ListeningTest = require('../models/ListeningTest');
+const ListeningSection = require('../models/ListeningSection');
 
 // Deadline / archive / resource edits change how many assignments each
 // student is behind on, which feeds the enrollment's warning/failed status —
@@ -266,6 +267,9 @@ async function buildResources(input, existing = [], ctx = {}) {
     else fresh.add(built);
     out.push(built);
   }
+  // gapFillHandled: the admin editor already put each gap-fill in the list
+  // (or the teacher removed it there on purpose) — don't add them again.
+  if (ctx.gapFillHandled) return { resources: out };
   return { resources: await attachGapFillCompanions(out, fresh, existingIdByKey) };
 }
 
@@ -296,6 +300,33 @@ async function attachGapFillCompanions(out, fresh, existingIdByKey) {
 }
 
 // ════════════════════ TEACHER ════════════════════
+
+// POST /api/classes/resources/gapfill-companions
+// body: { items: [{ resourceType, resourceId, parts? }] }
+// → { results: [[{ _id, label }], ...] } — same order as items. The gap-fill
+// drills each picked Listening section/test brings along, so the admin editor
+// can show them as soon as the item is ticked (same matching as on save).
+const GAPFILL_LOOKUP_MAX = 500;
+exports.getGapFillCompanions = async (req, res) => {
+  try {
+    const items = Array.isArray(req.body && req.body.items) ? req.body.items.slice(0, GAPFILL_LOOKUP_MAX) : [];
+    const idLists = await Promise.all(items.map((it) => (
+      it && GAPFILL_SOURCE_TYPES.includes(it.resourceType)
+        ? listeningService.gapFillSectionIdsFor(it.resourceType, it.resourceId, rcs.assignedParts(it))
+        : []
+    )));
+    const allIds = [...new Set(idLists.flat())];
+    const labels = new Map();
+    if (allIds.length) {
+      const docs = await ListeningSection.find({ _id: { $in: allIds } }).select('title').lean();
+      for (const d of docs) labels.set(String(d._id), d.title || '');
+    }
+    const results = idLists.map((ids) => ids.map((id) => ({ _id: id, label: labels.get(id) || '' })));
+    res.json({ success: true, results });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
 
 // GET /api/classes/resources/catalog?type=&search=&limit=&part=&topic=&level=
 // part/topic: 'speaking' only, for the admin's "assign a whole topic group"
@@ -352,9 +383,9 @@ exports.listAssignments = async (req, res) => {
 // POST /api/classes/:classId/assignments
 exports.createAssignment = async (req, res) => {
   try {
-    const { title, instruction = '', deadline = null, resources } = req.body;
+    const { title, instruction = '', deadline = null, resources, gapFillHandled = false } = req.body;
     if (!title || !String(title).trim()) return res.status(400).json({ success: false, message: 'Tên bài tập là bắt buộc' });
-    const built = await buildResources(resources, [], { classId: req.classGroup._id });
+    const built = await buildResources(resources, [], { classId: req.classGroup._id, gapFillHandled: gapFillHandled === true });
     if (built.error) return res.status(400).json({ success: false, message: built.error });
 
     const assignment = await Assignment.create({
@@ -411,7 +442,7 @@ exports.updateAssignment = async (req, res) => {
   try {
     const assignment = await Assignment.findOne({ _id: req.params.assignmentId, classId: req.classGroup._id });
     if (!assignment) return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
-    const { title, instruction, deadline, resources, status } = req.body;
+    const { title, instruction, deadline, resources, status, gapFillHandled = false } = req.body;
     if (title !== undefined) assignment.title = String(title).trim();
     if (instruction !== undefined) assignment.instruction = String(instruction).trim();
     if (deadline !== undefined) assignment.deadline = parseVnDeadline(deadline);
@@ -421,7 +452,7 @@ exports.updateAssignment = async (req, res) => {
       // buildResources'/resourceIdentityKey's comment for why (otherwise a
       // student's existing manual ticks on external/image items would
       // silently un-tick themselves on every edit).
-      const built = await buildResources(resources, assignment.resources, { classId: assignment.classId, assignmentId: assignment._id });
+      const built = await buildResources(resources, assignment.resources, { classId: assignment.classId, assignmentId: assignment._id, gapFillHandled: gapFillHandled === true });
       if (built.error) return res.status(400).json({ success: false, message: built.error });
       assignment.resources = built.resources;
     }

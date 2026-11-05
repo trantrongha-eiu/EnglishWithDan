@@ -201,6 +201,42 @@ describe('listening items bring their gap-fill along', () => {
     ]);
     expect(String(res.body.assignment.resources[0]._id)).toBe(String(created.body.assignment.resources[0]._id));
   });
+
+  test('gapfill-companions lists each picked item\'s gap-fills (honouring test parts), so the editor can show them on pick', async () => {
+    const t = await createTeacher();
+    const withGf = await createListeningSection({ title: 'Linwood', extra: gf() });
+    const none = await createListeningSection({});
+    const p1 = await createListeningSection({ partNumber: 1, title: 'Hotel Booking', extra: gf() });
+    const p2 = await createListeningSection({ partNumber: 2, title: 'Museum Tour', extra: gf() });
+    const test = await createListeningTest({ sections: [part(1, 'Hotel Booking'), part(2, 'Museum Tour')] });
+    const res = await request(app).post('/api/classes/resources/gapfill-companions').set(authH(t)).send({ items: [
+      { resourceType: 'listening_practice', resourceId: String(withGf._id) },
+      { resourceType: 'listening_practice', resourceId: String(none._id) },
+      { resourceType: 'listening_test', resourceId: String(test._id) },
+      { resourceType: 'listening_test', resourceId: String(test._id), parts: [2] },
+      { resourceType: 'reading_practice', resourceId: String(withGf._id) },
+    ] });
+    expect(res.status).toBe(200);
+    expect(res.body.results).toEqual([
+      [{ _id: String(withGf._id), label: 'Linwood' }],
+      [],
+      [{ _id: String(p1._id), label: 'Hotel Booking' }, { _id: String(p2._id), label: 'Museum Tour' }],
+      [{ _id: String(p2._id), label: 'Museum Tour' }],
+      [],
+    ]);
+  });
+
+  test('gapFillHandled: the editor already chose the gap-fills — a removed one is not re-added on save', async () => {
+    const t = await createTeacher();
+    const { cls } = await makeClassWith(t);
+    const sec = await createListeningSection({ extra: gf() });
+    const res = await request(app).post(`/api/classes/${cls._id}/assignments`).set(authH(t)).send({
+      title: 'HW', gapFillHandled: true,
+      resources: [{ kind: 'internal', resourceType: 'listening_practice', resourceId: String(sec._id) }],
+    });
+    expect(res.status).toBe(201);
+    expect(types(res.body.assignment)).toEqual([`listening_practice:${sec._id}`]);
+  });
 });
 
 describe('cross-assignment completion (shared resource, different createdAt cutoffs)', () => {

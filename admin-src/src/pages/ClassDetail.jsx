@@ -124,6 +124,8 @@ function PartChips({ type, parts, onToggle, disabled, color = '#c2410c' }) {
 // Reading / Listening items can be pinned to one mode (backend Assignment
 // resources[].examMode): '' = student picks, else only that mode counts.
 const EXAM_MODE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice']);
+// Picking one of these also picks its published gap-fill drill(s) — see addGapFillsFor.
+const GAPFILL_SOURCE_TYPES = new Set(['listening_practice', 'listening_test']);
 const EXAM_MODES = [
   { value: '', label: 'HS tự chọn', color: '#6b7280' },
   { value: 'practice', label: '✏️ Luyện tập', color: '#0284c7' },
@@ -1583,13 +1585,58 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   // topic above) that isn't picked yet — the "assign this whole topic group"
   // action. Plain single-item toggling stays available for a mixed pick.
   function pickAllListed() {
+    const already = new Set(picked.map((x) => keyOf(x.resourceType, x.resourceId)));
+    const additions = visibleCatalog
+      .filter((item) => !already.has(keyOf(cat, item._id)))
+      .map((item) => ({ kind: 'internal', resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode, label: item.label,
+        ...(item.partsPickable !== undefined ? { partsPickable: item.partsPickable } : {}) }));
     setPicked((p) => {
-      const already = new Set(p.map((x) => keyOf(x.resourceType, x.resourceId)));
-      const additions = visibleCatalog
-        .filter((item) => !already.has(keyOf(cat, item._id)))
-        .map((item) => ({ kind: 'internal', resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode, label: item.label }));
-      return [...p, ...additions];
+      const have = new Set(p.map((x) => keyOf(x.resourceType, x.resourceId)));
+      return [...p, ...additions.filter((x) => !have.has(keyOf(x.resourceType, x.resourceId)))];
     });
+    addGapFillsFor(additions);
+  }
+
+  // A picked Listening section/test brings its published gap-fill drill(s)
+  // along, shown right after it as soon as it's ticked. They carry
+  // `gapFillOf` (the source's key) so un-ticking the source — or changing a
+  // full test's sections — takes them away again. The teacher can still ✕ a
+  // gap-fill on its own; save sends gapFillHandled so the server doesn't
+  // re-add it.
+  async function addGapFillsFor(sources) {
+    const items = sources.filter((x) => GAPFILL_SOURCE_TYPES.has(x.resourceType));
+    if (!items.length) return;
+    let results;
+    try {
+      const d = await apiFetch('/classes/resources/gapfill-companions', {
+        method: 'POST',
+        body: JSON.stringify({ items: items.map((x) => ({ resourceType: x.resourceType, resourceId: x.resourceId, ...(x.parts?.length ? { parts: x.parts } : {}) })) }),
+      });
+      results = d.results || [];
+    } catch (err) { toast(`Không tải được Gap-fill kèm theo: ${err.message}`, 'error'); return; }
+    setPicked((list) => {
+      let out = list;
+      items.forEach((src, i) => {
+        const srcKey = keyOf(src.resourceType, src.resourceId);
+        // Source un-ticked (or its parts changed again) while we waited.
+        const cur = out.find((x) => keyOf(x.resourceType, x.resourceId) === srcKey);
+        if (!cur || (cur.parts || []).join(',') !== (src.parts || []).join(',')) return;
+        out = out.filter((x) => x.gapFillOf !== srcKey);
+        const have = new Set(out.map((x) => keyOf(x.resourceType, x.resourceId)));
+        const gfs = (results[i] || [])
+          .filter((g) => !have.has(keyOf('listening_gapfill', g._id)))
+          .map((g) => ({ kind: 'internal', resourceType: 'listening_gapfill', resourceId: g._id, resourceCode: '', label: g.label, gapFillOf: srcKey }));
+        if (!gfs.length) return;
+        const at = out.findIndex((x) => keyOf(x.resourceType, x.resourceId) === srcKey) + 1;
+        out = [...out.slice(0, at), ...gfs, ...out.slice(at)];
+      });
+      return out;
+    });
+  }
+  // Un-pick an item; its auto-added gap-fills go with it.
+  function removePicked(p) {
+    const k = keyOf(p.resourceType, p.resourceId);
+    setPicked((list) => list.filter((x) => keyOf(x.resourceType, x.resourceId) !== k && x.gapFillOf !== k));
   }
 
   const keyOf = assignedKey;
@@ -1600,17 +1647,24 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
     .filter((item) => !assignedFilter || (assignedFilter === 'done' ? !!assignedFor(item) : !assignedFor(item)));
   function togglePick(item) {
     const k = keyOf(cat, item._id);
-    setPicked((p) => p.some((x) => keyOf(x.resourceType, x.resourceId) === k)
-      ? p.filter((x) => keyOf(x.resourceType, x.resourceId) !== k)
-      : [...p, { kind: 'internal', resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode, label: item.label,
-        ...(item.partsPickable !== undefined ? { partsPickable: item.partsPickable } : {}) }]);
+    const existing = picked.find((x) => keyOf(x.resourceType, x.resourceId) === k);
+    if (existing) return removePicked(existing);
+    const added = { kind: 'internal', resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode, label: item.label,
+      ...(item.partsPickable !== undefined ? { partsPickable: item.partsPickable } : {}) };
+    setPicked((p) => (p.some((x) => keyOf(x.resourceType, x.resourceId) === k) ? p : [...p, added]));
+    addGapFillsFor([added]);
   }
   // Passage/Section chips on a picked full test (undefined = whole test).
   function togglePickedPart(p, n) {
     const k = keyOf(p.resourceType, p.resourceId);
-    setPicked((list) => list.map((x) => (keyOf(x.resourceType, x.resourceId) === k
-      ? { ...x, parts: toggledParts(x.parts, n, TEST_PARTS[x.resourceType].count) }
-      : x)));
+    const parts = toggledParts(p.parts, n, TEST_PARTS[p.resourceType].count);
+    setPicked((list) => list.map((x) => {
+      if (keyOf(x.resourceType, x.resourceId) !== k) return x;
+      const { parts: _old, ...rest } = x; // eslint-disable-line no-unused-vars
+      return parts ? { ...rest, parts } : rest;
+    }));
+    // Only the chosen sections' gap-fills should come along.
+    addGapFillsFor([{ ...p, parts }]);
   }
   // Luyện tập / Thi thật on picked Reading/Listening items ('' = HS tự chọn).
   // onlyKey: just that item; null = every mode-capable item.
@@ -1643,7 +1697,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
 
   async function save() {
     const resources = [
-      ...picked.map(({ partsPickable, ...x }) => x), // eslint-disable-line no-unused-vars
+      ...picked.map(({ partsPickable, gapFillOf, ...x }) => x), // eslint-disable-line no-unused-vars
       ...externals.filter((x) => x.url.trim()).map((x) => ({ kind: 'external', ...x })),
       ...images,
       ...vocabGoals.map((g) => ({ kind: 'vocab_goal', wordCount: Number(g.count), bookSlot: g.slot ? Number(g.slot) : null })),
@@ -1655,7 +1709,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
       const url = isEdit ? `/classes/${cls._id}/assignments/${assignment._id}` : `/classes/${cls._id}/assignments`;
       await apiFetch(url, {
         method: isEdit ? 'PUT' : 'POST',
-        body: JSON.stringify({ title: title.trim(), instruction: instruction.trim(), deadline: deadline || null, resources }),
+        body: JSON.stringify({ title: title.trim(), instruction: instruction.trim(), deadline: deadline || null, resources, gapFillHandled: true }),
       });
       toast(isEdit ? 'Đã lưu thay đổi' : 'Đã giao bài tập');
       onSaved();
@@ -1816,7 +1870,8 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                     {p.resourceType !== 'mock_test' && assignedIndex.has(keyOf(p.resourceType, p.resourceId)) && (
                       <span title={assignedTooltip(assignedIndex.get(keyOf(p.resourceType, p.resourceId)))} style={{ marginLeft: 4, fontWeight: 700 }}>· đã giao trước</span>
                     )}
-                    <button type="button" onClick={() => setPicked((x) => x.filter((y) => y !== p))} title="Bỏ bài này"
+                    {p.gapFillOf && <span style={{ marginLeft: 4, fontWeight: 400 }} title="Tự thêm theo bài nghe đã chọn — bấm ✕ nếu không muốn giao">· tự thêm</span>}
+                    <button type="button" onClick={() => removePicked(p)} title="Bỏ bài này"
                       style={{ marginLeft: 6, background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0 }}>✕</button>
                   </span>
                 ))}
