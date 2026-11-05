@@ -9,13 +9,20 @@ const conditionals = require("./essentialGrammarData/conditionals");
 const linkingSequencing = require("./essentialGrammarData/linkingSequencing");
 const directions = require("./essentialGrammarData/directions");
 const grammarEssentials = require("./essentialGrammarData/grammarEssentials");
+// Writing Foundation (A2+): sentence building from S + V to paragraphs
+const writingFoundation = [
+  ...require("./essentialGrammarData/writingFoundationBasics"),
+  ...require("./essentialGrammarData/writingFoundationConnecting"),
+  ...require("./essentialGrammarData/writingFoundationPractice")
+];
 
 const lessons = [
   ...tenses,
   ...conditionals,
   ...linkingSequencing,
   ...directions,
-  ...grammarEssentials
+  ...grammarEssentials,
+  ...writingFoundation
 ];
 
 async function runSeed() {

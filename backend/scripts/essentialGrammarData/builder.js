@@ -56,13 +56,33 @@ function validateExtras(label, { videos, verbForms, conjugationDrill, translatio
   });
 }
 
+// conjugationDrills / translationDrills: several named drills in one lesson,
+// each { title, intro, items } — title/intro replace the default heading and
+// instructions on the student page. Same item shape as conjugationDrill /
+// translationDrill.
+function validateDrillGroups(label, kind, groups) {
+  (groups || []).forEach((g, i) => {
+    const where = label + ": " + kind + " group #" + (i + 1);
+    if (!g || !Array.isArray(g.items) || !g.items.length) throw new Error(where + " has no items");
+    if (g.title != null && (typeof g.title !== "string" || !g.title.trim())) throw new Error(where + " has an empty title");
+    if (g.intro != null && (typeof g.intro !== "string" || !g.intro.trim())) throw new Error(where + " has an empty intro");
+    validateExtras(where, kind === "conjugation" ? { conjugationDrill: g.items } : { translationDrill: g.items });
+  });
+}
+
+function drillData(g) {
+  return { ...(g.title ? { title: g.title } : {}), ...(g.intro ? { intro: g.intro } : {}), items: g.items };
+}
+
 function lesson({
   category, lessonKey, title, icon, orderIndex,
   overview, formula, usage, signalWords, examples, image, mistakes, tips, comparison, exercises, quiz, summary,
-  videos, verbForms, conjugationDrill, translationDrill
+  videos, verbForms, conjugationDrill, translationDrill, conjugationDrills, translationDrills
 }) {
   const label = category + " / " + title;
   validateExtras(label, { videos, verbForms, conjugationDrill, translationDrill });
+  validateDrillGroups(label, "conjugation", conjugationDrills);
+  validateDrillGroups(label, "translation", translationDrills);
 
   if (!examples || examples.length < MIN_EXAMPLES) {
     throw new Error(label + ": needs >=" + MIN_EXAMPLES + " examples, has " + (examples ? examples.length : 0));
@@ -101,11 +121,14 @@ function lesson({
   blocks.push({ type: "examples", data: { items: examples } });
   blocks.push({ type: "common_mistakes", data: { items: mistakes } });
   if (tips) blocks.push({ type: "ielts_tips", data: { tips } });
-  if (comparison) blocks.push({ type: "comparison", data: comparison });
+  // comparison: one table, or an array of tables (each its own block)
+  [].concat(comparison || []).forEach(t => blocks.push({ type: "comparison", data: t }));
   blocks.push({ type: "practice_exercises", data: { exercises } });
   if (verbForms) blocks.push({ type: "verb_forms", data: verbForms });
   if (conjugationDrill && conjugationDrill.length) blocks.push({ type: "conjugation_drill", data: { items: conjugationDrill } });
+  (conjugationDrills || []).forEach(g => blocks.push({ type: "conjugation_drill", data: drillData(g) }));
   if (translationDrill && translationDrill.length) blocks.push({ type: "translation_drill", data: { items: translationDrill } });
+  (translationDrills || []).forEach(g => blocks.push({ type: "translation_drill", data: drillData(g) }));
   blocks.push({ type: "quiz", data: { questions: quiz } });
   if (summary) blocks.push({ type: "summary", data: { text: summary } });
 

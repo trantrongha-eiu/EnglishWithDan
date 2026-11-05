@@ -772,8 +772,13 @@ function renderConjugationBlock(data) {
       + '<div class="eg-drill-fb"></div>'
       + '</div>';
   }).join('');
-  return '<div class="eg-block" id="' + id + '"><div class="eg-block-label"><i class="fas fa-pen"></i> Luyện tập thêm: Chia động từ (' + items.length + ' câu)</div>'
-    + '<div class="eg-drill-intro">Chia động từ trong ngoặc cho đúng thì. Viết cả trợ động từ (ví dụ: <b>has been working</b>, <b>doesn\'t open</b>). Nhấn Enter để sang câu tiếp theo.</div>'
+  // data.title / data.intro: optional per-drill heading + instructions (Writing Foundation lessons)
+  const title = data.title || 'Luyện tập thêm: Chia động từ';
+  const intro = data.intro
+    ? escHtml(data.intro)
+    : 'Chia động từ trong ngoặc cho đúng thì. Viết cả trợ động từ (ví dụ: <b>has been working</b>, <b>doesn\'t open</b>). Nhấn Enter để sang câu tiếp theo.';
+  return '<div class="eg-block" id="' + id + '"><div class="eg-block-label"><i class="fas fa-pen"></i> ' + escHtml(title) + ' (' + items.length + ' câu)</div>'
+    + '<div class="eg-drill-intro">' + intro + '</div>'
     + '<div id="' + id + '-rows">' + rows + '</div>'
     + _egDrillActionsHtml(id, false)
     + '</div>';
@@ -864,8 +869,10 @@ function renderTranslationBlock(data) {
     + '<div class="eg-tr-result"></div>'
     + '</div>'
   ).join('');
-  return '<div class="eg-block" id="' + id + '"><div class="eg-block-label"><i class="fas fa-language"></i> Luyện dịch câu Việt → Anh (' + items.length + ' câu)</div>'
-    + '<div class="eg-drill-intro">Dịch sang tiếng Anh, dùng đúng thì của bài. Máy so với các đáp án gợi ý (không phân biệt viết tắt, chữ hoa/thường, dấu câu). Nếu câu của bạn khác đáp án nhưng vẫn đúng, bấm <b>"Câu của tôi cũng đúng"</b>.</div>'
+  const title = data.title || 'Luyện dịch câu Việt → Anh';
+  const intro = data.intro ? escHtml(data.intro) + ' ' : 'Dịch sang tiếng Anh, dùng đúng thì của bài. ';
+  return '<div class="eg-block" id="' + id + '"><div class="eg-block-label"><i class="fas fa-language"></i> ' + escHtml(title) + ' (' + items.length + ' câu)</div>'
+    + '<div class="eg-drill-intro">' + intro + 'Máy so với các đáp án gợi ý (không phân biệt viết tắt, chữ hoa/thường, dấu câu). Nếu câu của bạn khác đáp án nhưng vẫn đúng, bấm <b>"Câu của tôi cũng đúng"</b>.</div>'
     + rows
     + '<div class="eg-drill-actions"><span class="eg-drill-score" id="' + id + '-score"></span></div>'
     + '</div>';
