@@ -179,6 +179,9 @@
   function logout(reason) {
     reason = reason || _forcedLogoutReason;
     if (_replacedPopupOpen && reason === 'replaced') return;
+    // After the user chose to stay (banner up), background 401s must not
+    // ask "Leave page?" again; a click on a logout button still works.
+    if (_stayedAfterLogout && !isUserGesture()) return;
     // BUG-023: tell the server to invalidate this user's tokens (all
     // devices — see backend/models/User.js's tokenValidAfter) before the
     // page navigates away. Best-effort: `keepalive` asks the browser to
@@ -205,8 +208,60 @@
     // current path has an extra segment; a bare "login.html" would then
     // resolve to "/writing/login.html" (404) instead of "/login.html".
     var url = reason ? '/login.html?reason=' + encodeURIComponent(reason) : '/login.html';
+    var here = window.location.href;
     window.location.href = url;
+    // Still on the same page after a moment → a page with unsaved work
+    // (Writing, exams) showed the browser's "Leave page?" and the user chose
+    // to stay. Don't navigate again on every background poll's 401 (that
+    // re-asked every 20s) — show a banner and let them sign in in a new tab.
+    setTimeout(function () {
+      if (window.location.href !== here) return;
+      _stayedAfterLogout = true;
+      showSessionExpiredBanner(url);
+    }, 2500);
   }
+
+  // True once the user stayed on the page after a logout redirect.
+  // Cleared when a new token shows up (signed in again in another tab).
+  var _stayedAfterLogout = false;
+
+  function isUserGesture() {
+    var ua = navigator.userActivation;
+    return !!(ua && ua.isActive);
+  }
+
+  function showSessionExpiredBanner(url) {
+    if (!document.body || document.getElementById('ews-session-expired')) return;
+    var bar = document.createElement('div');
+    bar.id = 'ews-session-expired';
+    bar.setAttribute('role', 'alert');
+    bar.style.cssText = 'position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:2147483646;' +
+      'max-width:calc(100% - 24px);width:560px;background:#fef3c7;color:#78350f;border:1px solid #f59e0b;' +
+      'border-radius:12px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:14px;' +
+      'line-height:1.5;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-family:inherit;';
+    var text = document.createElement('div');
+    text.style.cssText = 'flex:1 1 260px;';
+    text.textContent = tr('Phiên đăng nhập đã hết hạn. Phần đang làm vẫn còn trên trang này — hãy đăng nhập lại ở tab mới rồi quay lại lưu/nộp bài.');
+    var btn = document.createElement('a');
+    btn.href = url;
+    btn.target = '_blank';
+    btn.rel = 'noopener';
+    btn.textContent = tr('Đăng nhập ở tab mới');
+    btn.style.cssText = 'background:#d97706;color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;' +
+      'text-decoration:none;white-space:nowrap;';
+    bar.appendChild(text); bar.appendChild(btn);
+    document.body.appendChild(bar);
+  }
+
+  // Signed in again in another tab (shared localStorage) → this tab works
+  // again: drop the banner and allow a future logout to navigate.
+  window.addEventListener('storage', function (e) {
+    if (e.key !== 'token' || !e.newValue) return;
+    _stayedAfterLogout = false;
+    _forcedLogoutReason = null;
+    var bar = document.getElementById('ews-session-expired');
+    if (bar) bar.remove();
+  });
 
   // ── Redirect-after-login / redirect-after-OAuth ─────────────
   // Wraps SafeRedirect (open-redirect-safe validation) around the current
@@ -1362,7 +1417,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=9ad8f4e69d';
+    i18nScript.src = '/js/shared/i18n.js?v=bf4555f00d';
     document.body.appendChild(i18nScript);
   }
 

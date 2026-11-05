@@ -17,6 +17,54 @@ export function authHeaders() {
   };
 }
 
+// Session died (401): go to login once. An editor with unsaved changes makes
+// the browser ask "Leave page?"; if the admin stays, the 60s polls used to
+// redirect — and re-ask — every minute. Instead show a banner and let them
+// sign in from a new tab; a new token in localStorage resets this.
+let loginRedirectPending = false;
+
+function redirectToLoginOnce() {
+  if (loginRedirectPending) return;
+  loginRedirectPending = true;
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  localStorage.removeItem('lastLoginAt');
+  const url = '/login.html?next=' + encodeURIComponent('/admin/' + (window.location.hash || ''));
+  window.location.href = url;
+  setTimeout(() => showSessionExpiredBanner(url), 2500);
+}
+
+function showSessionExpiredBanner(url) {
+  if (!document.body || document.getElementById('ews-session-expired')) return;
+  const bar = document.createElement('div');
+  bar.id = 'ews-session-expired';
+  bar.setAttribute('role', 'alert');
+  bar.style.cssText = 'position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:2147483646;'
+    + 'max-width:calc(100% - 24px);width:560px;background:#fef3c7;color:#78350f;border:1px solid #f59e0b;'
+    + 'border-radius:12px;padding:12px 16px;box-shadow:0 10px 30px rgba(0,0,0,.18);font-size:14px;'
+    + 'line-height:1.5;display:flex;gap:12px;align-items:center;flex-wrap:wrap;';
+  const text = document.createElement('div');
+  text.style.cssText = 'flex:1 1 260px;';
+  text.textContent = 'Phiên đăng nhập đã hết hạn. Phần chưa lưu vẫn còn trên trang này — hãy đăng nhập lại ở tab mới rồi quay lại bấm Lưu.';
+  const btn = document.createElement('a');
+  btn.href = url;
+  btn.target = '_blank';
+  btn.rel = 'noopener';
+  btn.textContent = 'Đăng nhập ở tab mới';
+  btn.style.cssText = 'background:#d97706;color:#fff;border-radius:8px;padding:8px 14px;font-weight:600;'
+    + 'text-decoration:none;white-space:nowrap;';
+  bar.append(text, btn);
+  document.body.appendChild(bar);
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (e.key !== 'token' || !e.newValue) return;
+    loginRedirectPending = false;
+    document.getElementById('ews-session-expired')?.remove();
+  });
+}
+
 export async function apiFetch(path, opts = {}) {
   // Abort a hung request (Render cold start, dropped connection) after 30s so
   // a page awaiting it can't spin forever with no error. Caller can override
@@ -50,11 +98,7 @@ export async function apiFetch(path, opts = {}) {
   // session and bounce to login, remembering the current admin route the
   // same way ProtectedRoute.jsx's redirect-back does.
   if (res.status === 401) {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('lastLoginAt');
-    const next = encodeURIComponent('/admin/' + (window.location.hash || ''));
-    window.location.href = '/login.html?next=' + next;
+    redirectToLoginOnce();
     throw new Error('Unauthorized');
   }
 

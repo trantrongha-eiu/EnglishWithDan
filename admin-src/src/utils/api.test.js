@@ -67,6 +67,20 @@ describe('apiFetch', () => {
     );
   });
 
+  it('does not redirect again on later 401s (no repeated "Leave page?"), until a new token appears', async () => {
+    // The previous test already sent this module to login once.
+    window.location.href = '/admin/#/listening/edit';
+    global.fetch = vi.fn().mockResolvedValue({ status: 401, ok: false, text: async () => '' });
+
+    await expect(apiFetch('/poll')).rejects.toThrow('Unauthorized');
+    expect(window.location.href).toBe('/admin/#/listening/edit');
+
+    // Signed in again in another tab → the next dead session redirects again.
+    window.dispatchEvent(new StorageEvent('storage', { key: 'token', newValue: 'fresh' }));
+    await expect(apiFetch('/poll')).rejects.toThrow('Unauthorized');
+    expect(window.location.href).toBe('/login.html?next=' + encodeURIComponent('/admin/'));
+  });
+
   it('normalizes an HTML 502/503 response into a "server-cold-start" error', async () => {
     global.fetch = vi.fn().mockResolvedValue({
       status: 503,

@@ -320,3 +320,36 @@ describe('buildLoginUrl', () => {
     );
   });
 });
+
+// A page with unsaved work answers the logout redirect with "Leave page?";
+// if the user stays, later background 401s must not ask again every poll.
+describe('logout after the user chose to stay on the page', () => {
+  test('shows a banner, ignores background logouts, resets on a new token', () => {
+    jest.useFakeTimers();
+    const original = Object.getOwnPropertyDescriptor(window, 'location');
+    let assigned = 0;
+    const stayLocation = {
+      get href() { return 'https://ieltsthayha.com/writing.html'; },
+      set href(_v) { assigned += 1; }, // navigation cancelled → still here
+    };
+    Object.defineProperty(window, 'location', { value: stayLocation, writable: true, configurable: true });
+    try {
+      window.AuthService.setToken('dead');
+      window.AuthService.logout();
+      expect(assigned).toBe(1);
+      jest.advanceTimersByTime(3000);
+      expect(document.getElementById('ews-session-expired')).not.toBeNull();
+
+      window.AuthService.logout(); // next poll's 401
+      expect(assigned).toBe(1);
+
+      window.dispatchEvent(new StorageEvent('storage', { key: 'token', newValue: 'fresh' }));
+      expect(document.getElementById('ews-session-expired')).toBeNull();
+      window.AuthService.logout();
+      expect(assigned).toBe(2);
+    } finally {
+      Object.defineProperty(window, 'location', original);
+      jest.useRealTimers();
+    }
+  });
+});

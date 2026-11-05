@@ -1491,6 +1491,8 @@
     'Hoàn thành phiên ôn Chunks!': 'Chunks review session complete!',
     'Hoàn thành Quiz trước khi xem tab khác!': 'Finish the Quiz before opening another tab!',
     'Bạn đã đăng nhập trên thiết bị khác': 'You signed in on another device',
+    'Phiên đăng nhập đã hết hạn. Phần đang làm vẫn còn trên trang này — hãy đăng nhập lại ở tab mới rồi quay lại lưu/nộp bài.': 'Your session has expired. Your work is still on this page — sign in again in a new tab, then come back to save/submit.',
+    'Đăng nhập ở tab mới': 'Sign in in a new tab',
     'Tài khoản của bạn vừa được đăng nhập ở nơi khác nên phiên ở đây đã bị đăng xuất. Mỗi tài khoản chỉ dùng được trên 1 máy tính và 1 điện thoại cùng lúc.': 'Your account was just signed in somewhere else, so this session has been signed out. Each account can be used on 1 computer and 1 phone at a time.',
     'hoặc': 'or',
     'HOẶC': 'OR',
