@@ -560,3 +560,27 @@ Kết quả:
 - Sau sửa: `vol_audit.js 1` sạch, Playwright live 18 bài lẻ 10/10, 9 đề full 40/40.
 - Lỗi đề gốc đã sửa (ghi ở đầu mỗi spec): T7 thiếu key Q34 (insects, theo băng), lựa chọn trùng chữ cái (T7 Q23-24, T9 Q27-30,
   T5 Q21-22), instruction sai ("NO WORD ONLY", "ONE MORE THAN TWO WORDS"); T7 "$500 deposit" (băng: $1,500).
+
+## Vol 10 — đang làm (2026-11-04): mới chống trùng, CHƯA seed
+Nguồn izone.edu.vn (xem `../volReading/README.md` mục Vol 10): Listening T1–4 có đề + transcript + key, **không có audio**. Đã tải về
+`web/vol10/izone/`. Chống trùng (transcript 6-gram + key, kể cả biến thể đáp án): **T2 P1 = Reorganising an Electronics Shop** (Actual Test 4,
+key 10/10), **T2 P3 = Assignment Notes & Presentation Guidance** (Actual Test 4 / Vol 1 - Test 6, 10/10) → dùng lại. 14 phần còn lại mới
+(T1 Barrington tours / Dinosaur Museum / Lesson plans / Maori Middens; T2 P2 Bay Life sea trips, P4 Construction Materials; T3 cả 4 — coffee
+processing, Tim's dissertation, time tracking; T4 Costwise Car Hire / job requirements / problems of access / The Argus System). Không đề full
+nào trùng. Chờ thầy: nguồn audio.
+
+## Vol 10 — 2026-11-05 (T3, T4 xong + T1 P2 bài lẻ; T1 P1/P3/P4, T2 P2/P4 chưa có audio)
+Thầy: "chỉ seed các bài mới thôi, bài trùng thì dùng lại". Nguồn đề/key/transcript = izone (mục "Vol 10 — đang làm" ở trên). **Audio**: izone
+không có → **terratern.com/live-learning/ielts/listening/practice-test-N/** (mp3 công khai mỗi section, kèm lời dẫn): Test 80 = Vol 10 T3, Test 74
+(= IELTS Trainer Test 5) = T4, Test 43 Section 2 = T1 P2 Dinosaur Museum. Quét 130 trang terratern (`web/vol10/terra/`) không thấy T1 P1/P3/P4
+(Barrington tours / Lesson plans Andrew & Molly / Maori Middens) và T2 P2/P4 (Bay Life / Construction Materials) → chưa seed, chưa có đề full T1/T2
+(T2 P1/P3 = bài ngân hàng Reorganising an Electronics Shop / Assignment Notes & Presentation Guidance, dùng lại khi có đủ). File để ở
+`VOL 10 - ORIGINAL EXAMS-izone/VOL 10/LISTENING/test N/part N.mp3` (gốc repo, git-ignored) cho `vol_media.volDir(10)`.
+- Transcript: `web/vol10/tx.js <T> <P> [Woman=Agent …]` (izone PDF/bài viết → mỗi câu một dòng, bỏ lời dẫn) → `label.js` (gán người nói theo dải
+  dòng cho T3 không nhãn) → `web/vol10/lab/` → so từng từ với Whisper `web/vol10/wdiff.js <id> <từ> <đến>` → sửa → **commit ở `specs/vol10_tx/`**
+  (spec đọc file bằng `TX()`; `web/vol10/extract.json` = `{"files":{}}` cho vol_build). Whisper hay bịa "Thank you" ở chỗ nó bỏ sót → izone đúng.
+- Clip: từ "Section N" đến ~2 s sau "check your answers" (T3P1 23.6 s — 23.0 còn dính chữ "one."; `reclip_section_audio.js`).
+- Key izone sai: T4 Q25 H → **F** (tường thấp bên phải; H = dây điện Q26). Bản đồ T4 P3 = ảnh terratern `web/vol10/img/t4p3_diagram.png`;
+  flow chart Q37–40 gõ thành notes. T4 P2 Q16–20 làm matching với dòng mô tả bước.
+- vol_pw chạy nhiều bài một lượt bị timeout từ bài thứ 2 → chạy từng bài. Kết quả: vol_pw nháp + LIVE 9/9, pw_fulltest Vol 10 - Test 3/4 40/40
+  (bật), `vol_audit.js 10` 0 problem (237 trích dẫn), ảnh bìa CC0/PD trên R2, transcript timing chạy lại (alignTranscriptTiming).

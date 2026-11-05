@@ -85,6 +85,9 @@
     [/^\/phu-huynh$/, function () { return '/parent.html'; }],
     [new RegExp('^/(?:test-dau-vao|entrance-test)/ket-qua/' + SEG + '$'), function (m) { return '/entrance-test.html?result=' + m[1]; }],
     [/^\/noun-phrase-writing(?:\.html)?$/, function () { return '/writing-task1.html'; }],
+    // Public SEO / legal aliases (/ban-quyen and /de-thi-ielts resolve on their own).
+    [/^\/dmca$/, function () { return '/ban-quyen.html'; }],
+    [/^\/(?:de-thi-ielts-vol|recent-actual-tests)$/, function () { return '/de-thi-ielts.html'; }],
   ];
 
   /**

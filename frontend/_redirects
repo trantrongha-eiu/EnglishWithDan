@@ -110,6 +110,11 @@
 /register        /register.html         200
 /terms           /terms.html            200
 /privacy         /privacy.html          200
+/ban-quyen       /ban-quyen.html        200
+/dmca            /ban-quyen.html        200
+/de-thi-ielts    /de-thi-ielts.html     200
+/de-thi-ielts-vol /de-thi-ielts.html    200
+/recent-actual-tests /de-thi-ielts.html 200
 /dashboard       /dashboard.html        200
 /vocabulary      /dashboard.html        200
 /profile         /profile.html          200

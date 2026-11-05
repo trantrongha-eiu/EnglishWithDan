@@ -425,6 +425,40 @@ Sửa (`../fixReadingDebug.js` + `../data/readingDebugFixes.js`, dry run mặc �
   pw_grade 14/14 100% (các bài đổi key), pw_full_tests Actual Mocktest 1–39 39/39.
 - Lưu ý khi viết script thay chuỗi: `String.replace(x, chuỗi)` hiểu "$2" trong chuỗi thay ("$232") là nhóm bắt → luôn dùng hàm `() => to`.
 
+## Vol 10 — đang làm (2026-11-04): mới chống trùng, CHƯA seed
+Không có thư mục gốc local. ieltsmate.vn có đủ Vol 10 (8 Reading + 8 Listening) nhưng nội dung nằm sau API riêng của app → Claude Code
+chặn (vượt kiểm soát truy cập / chống bot), không dùng. Nguồn dùng: **izone.edu.vn** (`/luyen-thi-ielts/giai-de-vol-ielts/giai-de-vol-10/`,
+bài "Giải chi tiết đề VOL 10 – Test N Reading/Listening"): mỗi bài có link Google Drive công khai tới PDF đề (có text layer; Listening kèm
+transcript, riêng Listening T3 transcript nằm trong bài viết có mốc [m:ss]) + bảng đáp án + giải thích tiếng Việt. Đến 04/11 izone mới có
+**Reading T1–5, Listening T1–4**; **không có audio**. Đã tải về `web/vol10/izone/` (Reading) và `../volListening/web/vol10/izone/`
+(pdf, pdftxt = chữ PDF, article = chữ bài viết). Công cụ (git-ignored, đường dẫn còn trỏ scratchpad): `web/vol10/dedupe10.js` (6-gram bài/
+transcript + chữ câu hỏi + key với ngân hàng), `kd.js`/`lkd.js` (so key từng câu), kết quả `web/vol10/dedupe10.txt`.
+Chống trùng Reading (15 bài):
+- Dùng lại nguyên trạng: T1 P1 The history of glass (Mocktest 62, key 13/13), T1 P3 Save Endangered Language (Mocktest 38, 14/14).
+- Cần bản sao đánh số lại: T4 P1 Formation of continents = "Origin of Species and Continent Formation" (Mocktest 50, ngân hàng 14–26).
+- Cùng bài đọc, bộ câu khác → bài riêng: T2 P2 Yawning (ngân hàng 27–40, 14 câu; Vol 10 14–26 bỏ câu "nose yawn experiment… test whether",
+  còn lại cùng key); T5 P3 Tuatara (Q27–35 trùng, summary 36–40 khác word list: imagination/possibility…); T5 P1 "Australia's cane toad
+  problem" trùng TÊN bài Vol 8 - T2 nhưng chữ chỉ 35–47 %, câu hỏi khác hẳn → bài mới, cần tên "(Vol 10)".
+- Mới hẳn: T1 P2 black-footed ferret, T2 P1 Sleep study hunter-gatherer, T2 P3 Rights for Apes, T3 P1–P3 (Thames tunnel, waste disposal,
+  Antikythera — khác "Computer Provides More Questions…"), T4 P2 plants talk, T4 P3 Termite Mounds, T5 P2 Learning from the Romans.
+Không đề full nào trùng nguyên đề cũ.
+
+## Vol 10 — 2026-11-05 (Reading T1–5 xong: 5 đề full, 12 bài mới)
+Thầy: "chỉ seed các bài mới thôi, bài trùng thì dùng lại". Nguồn izone (mục trên). Chữ PDF: `py web/vol10/extract.py` → `pdfparas.js 10`
+→ cắt tay sang `specs/vol10/t<T>p<P>.txt`. PDF T3 có câu gài "Mate is a thief." trong bài (dấu vết chống chép) → xoá.
+- **Đề full Vol 10 - Test 1…5** tạo + bật (40 câu mỗi đề). Dùng lại nguyên trạng: The history of glass, Save Endangered Language,
+  The tuatara – past and future (Vol 10 in bộ từ Q36–40 khác → giữ bộ của ngân hàng như "A New Voyage" Vol 1).
+- **Mới 12 bài** (bật, ảnh bìa CC0/PD trên R2): 10 bài mới hẳn + 2 bản sao: "Origin of Species and Continent Formation (Vol 10)" (copy_renum
+  1–13) và "Yawning (Vol 10)" (copy_renum 14–26, bỏ câu "nose yawn experiment" mà Vol 10 không có). "Australia's cane toad problem (Vol 10)"
+  = bản khác của bài Vol 8 - T2 (SAME_TEXT_OK[10]).
+- Key izone sai / tranh chấp (ghi đầu spec): T1 Q17–19 bảng đáp án A,B,H ≠ giải thích của chính izone → B,H,A; T3 Q1 "NOT GIVEN / FALSE";
+  T3 P2 danh sách ý kiến in thiếu E → đánh lại A–F (key F,G → E,F); T4 P3 Q40 "YES / NOT GIVEN"; T5 Q3 "NOT GIVEN / FALSE".
+- Chữ hỏng: T4 P3 Termite Mounds sửa theo ece.edu.vn (`web/vol10/online/`), câu Soar "perceive to be life… warm up" tự bổ sung tối thiểu;
+  T5 P2 "endured the harsh saltwater environment" tự bổ sung. T4 P2 tiêu đề ii "Potential advantages for trees" giữ như in.
+- Kiểm: pw_mini 12/12, pw_admin 12/12, pw_grade 12/12 100%, pw_full_tests 5/5, `_audit_reading_warnings` 0 (479 bài), `vr_audit.js 10` 0
+  problem (200 câu, 207 trích dẫn), `vr_incomplete.js` chỉ Vol 4 - T9 (ẩn có chủ ý). Còn: Reading T6–8 khi izone đăng.
+- SEO: trang công khai `frontend/de-thi-ielts.html` sinh từ DB bằng `../seo/buildTestCatalog.js` → chạy lại + `stamp-asset-versions.js` sau mỗi vol.
+
 ## Sửa danh sách lựa chọn bị lệch — 2026-11-05
 Thầy báo: Actual Mocktest 1 P3 "What is exploration?" Q33 — Wilfred Thesiger hiện là D nhưng đáp án/giải thích là E.
 Nguyên nhân: key 33–37 đúng (khớp key Cambridge 15 trong cam_keys.txt), nhưng danh sách explorer bị lệch: Peter Fleming

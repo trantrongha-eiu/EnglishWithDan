@@ -29,6 +29,9 @@ const SAME_TEXT_OK = ({
   // Vol 9: other versions of bank texts with a different question set — Biology of Bitterness / Traditional Farming System in
   // Africa / Health in the Wild
   9: { t1p3: '6add66526d9bcb8db19ee321', t4p1: '6abdb3f03da7a4e8d035c79e', t6p1: '6abdee0f54216aa2da1579b5' },
+  // Vol 10 (izone): renumbered copies — Origin of Species and Continent Formation (bank P2) / Yawning (bank 27–40, Vol 10 drops one
+  // question) — and another version of "Australia's cane toad problem" (Vol 8 - T2) with a different question set
+  10: { t4p1: '6abdee1454216aa2da157a28', t2p2: '6a6f4d6c9767a2b2f3332bff', t5p1: '6ae34bfbdab75921860127d1' },
   // "đề update" (Vol 7 folder): other versions of bank texts with a different question set — Becoming an Expert (Vol 2 update
   // Test 9 P1) / Classifying societies (Vol 4 update Test 5 P1 "Categorizing societies")
   '2u': { t9p1: '6abdad023bcd15105e99fc00' },

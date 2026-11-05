@@ -44,6 +44,9 @@ describe('CleanUrlRouter.resolve', () => {
     ['/entrance-test', '/entrance-test.html'],
     ['/test-dau-vao/ket-qua/abc123', '/entrance-test.html?result=abc123'],
     ['/admin/users', '/admin/#/users'],
+    ['/dmca', '/ban-quyen.html'],
+    ['/de-thi-ielts-vol', '/de-thi-ielts.html'],
+    ['/recent-actual-tests/', '/de-thi-ielts.html'],
   ])('%s → %s', (path, expected) => {
     expect(r(path)).toBe(expected);
   });

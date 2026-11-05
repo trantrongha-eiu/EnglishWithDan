@@ -1,0 +1,44 @@
+Lecturer:
+Hello.
+Today, I’m going to be talking about the history of the measurement of time, something we all take for granted now.
+These days, we’re able to measure time extremely accurately, and there’s global agreement on what the time is anywhere in the world.
+But of course, this has not always been the case.
+So, when and how did it all begin?
+Well, we can tell that prehistoric people from 30,000 years ago were aware of the changes of the moon as time went by.
+But 25,000 years passed before humans began to actually track time.
+There is credible evidence for this from around 5,000 years ago.
+And they did this by observing not just the movement of the sun, moon and stars, but by measuring where these were in relation to the Earth and in particular where these were in relation to the horizon.
+This was known as horizon tracking.
+For example, they noted the position on the horizon of the sun at sunrise and sunset, and how these positions changed throughout the year.
+From this, they were able to predict when the longest and the shortest days of the year were.
+Initially, this measurement was quite inaccurate and relied on suitable natural markers being on the horizon such as hilltops, trees, etc.
+But measurement became more accurate and detailed when certain communities built markers specifically to view how the positions of the sun and moon related to them.
+One of the best remaining examples of these is Stonehenge in England which consists of a number of very large stones arranged in a circle.
+Okay, so let’s have a look at the first clocks.
+It wasn’t until around 1400 BC that the first primitive clocks were used to measure length of time.
+These were water clocks and time was measured by filling a bucket with water which had a small hole in the bottom of it.
+As the water dripped out, the water level went down, marking the passage of time.
+Early civilizations also used the sun to measure time.
+Sundials were used to cast a shadow from the sun onto a horizontal surface marked with lines indicating the hours of the day.
+As the sun moved across the sky, the direction of the shadow moved across the dial and the time could be read.
+Early time measurement in China and Japan also involved the burning of incense sticks.
+The longer the stick, the longer it burnt, and so standard lengths were used to measure lengths of time.
+Sometimes, a stick with a different smell was burnt at a certain point in the day, and workers would know when to move on to the next task because of the change in incense.
+Let’s now look at mechanical clocks.
+The first evidence of these is in the late 13th century in northern Europe.
+They were made of iron, rather large and heavy, and the wheels of the clock were driven by a weight which slowly descended.
+Initially, mechanical clocks didn’t have a clock face and just struck a bell every hour.
+They were also only accurate to the nearest quarter of an hour.
+But it didn’t matter if the time wasn’t quite right because there was only one clock in each community.
+However, when people traveled to other communities, they discovered the time there was different.
+This first became a real problem with the introduction of the railways in the 1840s.
+Up until then, sundials had been the most accurate way of telling the time.
+But these were dependent on shadows made by the sun, and this was too inaccurate for producing timetables.
+This meant that there was a need for a nationally agreed time system, and in 1847, the time at Greenwich in London was taken to be the point on which the national time was based.
+There was inevitably a lot of resistance to this in the middle decades of the 19th century.
+People in other places like Bristol, for example, wanted their own time and didn’t want to be dictated to by London.
+An even bigger problem came a few years later with the need for a globally recognized time system.
+International shipping at that time used maps on which Greenwich was the main reference point.
+As zero longitude passed through Greenwich, it was decided at a conference in Washington that all longitude would be calculated east and west from there.
+So then it made sense to use Greenwich to also measure time for the whole world, starting at the observatory at midnight.
+People could therefore be confident that when it was 8am in California, it was 5pm in Paris every day.
