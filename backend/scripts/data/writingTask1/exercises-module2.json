@@ -695,7 +695,7 @@
           "Không dùng lại cùng một động từ xu hướng",
           "Có số liệu cụ thể trong mỗi câu"
         ],
-        "sampleAnswer": "The figure rose steadily by 15 points to 65 over the first stage. There was a sharp increase in the following years, with the number climbing from 20 to 90. It then remained largely stable, hovering around 88 for a long period. Afterwards, the figure fluctuated moderately between 70 and 95. It subsequently dipped slightly, edging down by 5 to 83, before falling markedly to just 40. Later, the number witnessed a strong recovery, peaking at 110 at the end of the period. Finally, the figure plunged to a low of 12, its lowest point on the graph.",
+        "sampleAnswer": "The figure rose steadily by 15 points to 65 over the first stage.\nThere was a sharp increase in the following years, with the number climbing from 20 to 90.\nIt then remained largely stable, hovering around 88 for a long period.\nAfterwards, the figure fluctuated moderately between 70 and 95.\nIt subsequently dipped slightly, edging down by 5 to 83, before falling markedly to just 40.\nLater, the number witnessed a strong recovery, peaking at 110 at the end of the period.\nFinally, the figure plunged to a low of 12, its lowest point on the graph.",
         "commonErrors": [
           "increased strongly (không tự nhiên)",
           "dùng “dramatically” cho mức tăng 2%"
@@ -1282,7 +1282,7 @@
           "Dùng đúng BY cho mức thay đổi và TO cho giá trị đích",
           "Dùng AMOUNT cho giấy tái chế, PERCENTAGE cho tỷ lệ thất nghiệp"
         ],
-        "sampleAnswer": "The number of rail passengers in Japan increased dramatically by 12 million to 20 million between 2005 and 2015. There was a dramatic increase of 12 million to 20 million in the number of Japanese rail passengers. Japan witnessed a dramatic increase of 12 million to 20 million in the number of rail passengers.",
+        "sampleAnswer": "The number of rail passengers in Japan increased dramatically by 12 million to 20 million between 2005 and 2015.\nThere was a dramatic increase of 12 million to 20 million in the number of Japanese rail passengers.\nJapan witnessed a dramatic increase of 12 million to 20 million in the number of rail passengers.",
         "commonErrors": [
           "increased by to 20 million",
           "There was a dramatically increase"
@@ -1538,7 +1538,7 @@
           "Dùng ít nhất 3 cấu trúc khác nhau",
           "Có dùng “by” và “to” đúng chỗ"
         ],
-        "sampleAnswer": "In 2000, the percentage of Internet users in the UK remained stable at 55%. There was a slight increase of 10% to 80% in the proportion of Internet users in the US. Vietnam experienced a dramatic rise of 40 percentage points to 50%. Meanwhile, the figure for Japan dipped slightly by 5% to 20%. Australia saw the sharpest decline, plummeting from 40% to only 10%.",
+        "sampleAnswer": "1. In 2000, the percentage of Internet users in the UK remained stable at 55%.\n2. There was a slight increase of 10% to 80% in the proportion of Internet users in the US.\n3. Vietnam experienced a dramatic rise of 40 percentage points to 50%.\n4. Meanwhile, the figure for Japan dipped slightly by 5% to 20%.\n5. Australia saw the sharpest decline, plummeting from 40% to only 10%.",
         "commonErrors": [
           "dùng “dramatically” cho mức giảm 5%",
           "There were 55% of British people"
@@ -1608,7 +1608,7 @@
           "Dùng ít nhất 3 cụm dự đoán khác nhau",
           "Có 1 câu tổng kết so sánh tăng mạnh nhất và giảm mạnh nhất"
         ],
-        "sampleAnswer": "The amount of clean water consumed in Paris is expected to increase significantly from 1,200 m³ in 2030 to 3,000 m³ in 2050. London's clean water consumption will likely decline from 2,400 m³ to 2,000 m³. New York is projected to experience a dramatic drop, from 2,100 m³ to only 800 m³. The figure for Berlin is forecasted to rise slightly to 2,900 m³. Among the four megacities, Paris is expected to see the most significant growth, while New York will face the sharpest decline.",
+        "sampleAnswer": "1. The amount of clean water consumed in Paris is expected to increase significantly from 1,200 m³ in 2030 to 3,000 m³ in 2050.\n2. London's clean water consumption will likely decline from 2,400 m³ to 2,000 m³.\n3. New York is projected to experience a dramatic drop, from 2,100 m³ to only 800 m³.\n4. The figure for Berlin is forecasted to rise slightly to 2,900 m³.\n5. Among the four megacities, Paris is expected to see the most significant growth, while New York will face the sharpest decline.",
         "commonErrors": [
           "is expected to increased",
           "In 2050, the figure was 800 m³"
@@ -1680,7 +1680,7 @@
           "Đoạn 2 CHỈ mô tả xu hướng 2005→2010",
           "Có phân biệt mức độ: US tăng mạnh, China và UK tăng nhẹ, Australia giảm đáng kể"
         ],
-        "sampleAnswer": "In 2005, 5,500 grams of pizza were made in China, which topped the list among the four given countries, compared to 3,100 grams in Australia. The figures for the US and the UK were 2,500 and 1,000 grams, respectively, the latter being the lowest of all. In the next 5 years, the amount of pizza produced in the US increased dramatically by 5,000 grams to 7,500 grams and became the highest figure in the table. Chinese and British output rose only slightly, to 6,000 and 1,100 grams. By contrast, Australia experienced a considerable fall of over a third, to just 2,000 grams.",
+        "sampleAnswer": "In 2005, 5,500 grams of pizza were made in China, which topped the list among the four given countries, compared to 3,100 grams in Australia. The figures for the US and the UK were 2,500 and 1,000 grams, respectively, the latter being the lowest of all.\n\nIn the next 5 years, the amount of pizza produced in the US increased dramatically by 5,000 grams to 7,500 grams and became the highest figure in the table. Chinese and British output rose only slightly, to 6,000 and 1,100 grams. By contrast, Australia experienced a considerable fall of over a third, to just 2,000 grams.",
         "commonErrors": [
           "trộn lẫn dữ liệu và xu hướng trong cùng một đoạn"
         ]
@@ -2018,7 +2018,7 @@
           "Không lặp lại một cấu trúc nối quá 2 lần",
           "Có ít nhất một câu nối 3 xu hướng"
         ],
-        "sampleAnswer": "In Figure A, starting at 10%, the figure rose gradually to 25%, before levelling off for the rest of the period. In Figure B, there was a steep climb until the value reached a high of 80 million; however, it then began to fall back. The figure in C increased slowly to 40, and then continued its upward trend, reaching a peak of 75. In D, the number dropped from 60 to 30, followed by a modest recovery to 45. Beginning at 5 units, the figure in E surged to 50, before dipping to 35 and finally stabilising at that level. Figure F showed a period of fluctuation around 20, followed by a sharp and sustained decline to almost zero.",
+        "sampleAnswer": "1. In Figure A, starting at 10%, the figure rose gradually to 25%, before levelling off for the rest of the period.\n2. In Figure B, there was a steep climb until the value reached a high of 80 million; however, it then began to fall back.\n3. The figure in C increased slowly to 40, and then continued its upward trend, reaching a peak of 75.\n4. In D, the number dropped from 60 to 30, followed by a modest recovery to 45.\n5. Beginning at 5 units, the figure in E surged to 50, before dipping to 35 and finally stabilising at that level.\n6. Figure F showed a period of fluctuation around 20, followed by a sharp and sustained decline to almost zero.",
         "commonErrors": [
           "dùng “and then” cho xu hướng trái ngược",
           "dùng “however” cho hai xu hướng cùng chiều"
@@ -2417,7 +2417,7 @@
           "Nêu rõ loại biểu đồ (line chart / bar chart / pie chart / table)",
           "Mỗi đề có 2 phiên bản khác nhau"
         ],
-        "sampleAnswer": "The bar chart illustrates how three areas, namely Agriculture, Manufacturing, and Business and Financial Services, contributed to the economy of the UK from 1901 to 2000. / The bar chart compares three different sectors in terms of their contribution to the UK economy over the twentieth century.",
+        "sampleAnswer": "The bar chart illustrates how three areas, namely Agriculture, Manufacturing, and Business and Financial Services, contributed to the economy of the UK from 1901 to 2000.\nThe bar chart compares three different sectors in terms of their contribution to the UK economy over the twentieth century.",
         "commonErrors": [
           "chép nguyên “The graph below shows”",
           "đảo ngược thứ tự năm (from 2000 to 1970)"
@@ -2482,7 +2482,7 @@
           "Nêu rõ loại biểu đồ và mốc thời gian",
           "Không chép đề"
         ],
-        "sampleAnswer": "The line graph illustrates how the population of Asian elephants changed over a period of five decades. The bar chart compares the number of university graduates in Canada in terms of gender between 1992 and 2012. The line graph gives information about how much the US government spent on scientific research each year from 1980 to 2010. The chart provides data on water usage in three areas, namely San Diego, the state of California and the world as a whole, in 2020. Finally, the pie charts illustrate the changes in how people travelled in the UK, namely by car, bus, rail and bicycle, between 1985 and 2000.",
+        "sampleAnswer": "1. The line graph illustrates how the population of Asian elephants changed over a period of five decades.\n2. The bar chart compares the number of university graduates in Canada in terms of gender between 1992 and 2012.\n3. The line graph gives information about how much the US government spent on scientific research each year from 1980 to 2010.\n4. The chart provides data on water usage in three areas, namely San Diego, the state of California and the world as a whole, in 2020.\n5. Finally, the pie charts illustrate the changes in how people travelled in the UK, namely by car, bus, rail and bicycle, between 1985 and 2000.",
         "commonErrors": [
           "The graph shows…",
           "thiếu mốc thời gian"
@@ -2728,7 +2728,7 @@
           "Nêu đúng loại biểu đồ",
           "Có mốc thời gian đầy đủ"
         ],
-        "sampleAnswer": "The line graph illustrates how much fish and various types of meat were eaten in a European country between 1979 and 2004. The line graph compares the percentage of people aged 65 and above in three countries over the hundred years from 1940 to 2040. The pie charts illustrate how a particular UK school divided its annual spending, namely in 1981 and 1991. The line graph compares fitness club membership in Thailand in terms of gender between 1985 and 2015.",
+        "sampleAnswer": "1. The line graph illustrates how much fish and various types of meat were eaten in a European country between 1979 and 2004.\n2. The line graph compares the percentage of people aged 65 and above in three countries over the hundred years from 1940 to 2040.\n3. The pie charts illustrate how a particular UK school divided its annual spending, namely in 1981 and 1991.\n4. The line graph compares fitness club membership in Thailand in terms of gender between 1985 and 2015.",
         "commonErrors": [
           "The graph below shows…"
         ]

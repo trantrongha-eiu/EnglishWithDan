@@ -565,7 +565,7 @@
           "Không lặp một cấu trúc quá 2 lần",
           "Động từ chia đúng số ít/số nhiều"
         ],
-        "sampleAnswer": "The amount of fast food consumed in China was 10,000 tonnes, the highest of the four countries. 5,000 tonnes of fast food were eaten in the US. The consumption of fast food in the UK stood at 2,000 tonnes. The figure for Vietnam was the lowest, at only 400 tonnes.",
+        "sampleAnswer": "1. The amount of fast food consumed in China was 10,000 tonnes, the highest of the four countries.\n2. 5,000 tonnes of fast food were eaten in the US.\n3. The consumption of fast food in the UK stood at 2,000 tonnes.\n4. The figure for Vietnam was the lowest, at only 400 tonnes.",
         "commonErrors": [
           "The number of fast food",
           "The amount of countries"
@@ -985,7 +985,7 @@
           "Câu 3 đổi word form hoặc synonym hợp nghĩa (used/generated)",
           "Giữ nguyên meaning và mốc thời gian 2000–2010"
         ],
-        "sampleAnswer": "The amount of electricity consumed in the UK increased between 2000 and 2010. The consumption of electricity in the UK rose over the same period. The amount of electricity used in the UK went up from 2000 to 2010.",
+        "sampleAnswer": "1. The amount of electricity consumed in the UK increased between 2000 and 2010.\n2. The consumption of electricity in the UK rose over the same period.\n3. The amount of electricity used in the UK went up from 2000 to 2010.",
         "commonErrors": [
           "The number of electricity",
           "The consumption electricity"
@@ -1401,7 +1401,7 @@
           "Có ít nhất một participle (V-ing/V3) bổ nghĩa cho noun",
           "Số liệu chính xác so với bảng"
         ],
-        "sampleAnswer": "The number of bus users in the city was 1.2 million in 2020. The amount of fuel consumed reached 800 million litres. The sale of motorbikes stood at 250,000 units. There were 400,000 people walking to work.",
+        "sampleAnswer": "1. The number of bus users in the city was 1.2 million in 2020.\n2. The amount of fuel consumed reached 800 million litres.\n3. The sale of motorbikes stood at 250,000 units.\n4. There were 400,000 people walking to work.",
         "commonErrors": [
           "the amount of bus users",
           "the number of fuel"
