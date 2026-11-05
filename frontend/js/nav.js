@@ -31,48 +31,59 @@
     } catch (e) { /* never let tracking break the page */ }
   };
 
+  // Every skill dropdown follows the same order: exam items + tips on top
+  // (no header), then labeled groups — "Khóa học" (module courses),
+  // "Luyện tập" (drills / practice tools), "Ngữ pháp" (grammar & sentences).
+  // "Chiến lược luyện đề" is a Reading + Listening guide, so it sits under
+  // both of those (it used to be misfiled under Vocab).
   var LINKS = [
     { href: 'reading.html',          icon: 'fa-book-open',   label: 'Reading',
       children: [
         { href: 'reading.html?mode=full',   icon: 'fa-file-alt',   label: 'Full đề' },
         { href: 'reading.html?mode=single', icon: 'fa-book-open',  label: 'Bài lẻ' },
         { href: 'reading.html?mode=tips',   icon: 'fa-lightbulb',  label: 'Reading Tips' },
+        { href: 'reading-listening-strategy.html', icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
       ]
     },
     { href: 'listening.html',        icon: 'fa-headphones',  label: 'Listening',
       children: [
         { href: 'listening.html?mode=full',   icon: 'fa-headphones', label: 'Full đề' },
         { href: 'listening.html?mode=single', icon: 'fa-music',      label: 'Bài lẻ' },
-        { href: 'dictation.html',             icon: 'fa-keyboard',   label: 'Dictation' },
         { href: 'listening.html?mode=tips',   icon: 'fa-lightbulb',  label: 'Listening Tips' },
+        { href: 'reading-listening-strategy.html', icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
+        { divider: true, label: 'Luyện tập' },
+        { href: 'dictation.html',             icon: 'fa-keyboard',   label: 'Dictation' },
       ]
     },
     // "Luyện viết" used to be its own top-level nav item — folded into
-    // Writing's dropdown (below the divider) since it's really the same
-    // skill (practice vs. the timed "thi thật" flows above), and 8 top-level
-    // items crowded into one bar was the main source of nav clutter.
+    // Writing's dropdown (the groups below the exam items) since it's the
+    // same skill, and 8 top-level items crowded the bar.
     { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing', badgeId: 'navWritingBadge',
       children: [
         { href: 'writing.html',             icon: 'fa-file-alt',  label: 'Full đề' },
         { href: 'writing.html?taskType=1',  icon: 'fa-chart-bar', label: 'Task 1', badgeId: 'navWritingTask1Badge' },
         { href: 'writing.html?taskType=2',  icon: 'fa-edit',      label: 'Task 2', badgeId: 'navWritingTask2Badge' },
         { href: 'writing.html?view=writing-tips', icon: 'fa-lightbulb', label: 'Writing Tips' },
+        { divider: true, label: 'Khóa học' },
+        { href: 'writing-task1.html',        icon: 'fa-chart-line', label: 'Task 1 Writing' },
+        { href: 'writing-task2-course.html', icon: 'fa-edit',       label: 'Task 2 Writing' },
         { divider: true, label: 'Luyện tập' },
-        { href: 'writing-practice.html', icon: 'fa-house',      label: 'Viết câu giao tiếp' },
-        { href: 'writing-task1.html',    icon: 'fa-chart-line', label: 'Task 1 Writing (Khóa học)' },
-        { href: 'writing-task2-course.html', icon: 'fa-edit',  label: 'Task 2 Writing (Khóa học)' },
         { href: 'task2-practice.html',   icon: 'fa-calendar-week', label: 'Task 2 Luyện đề tuần', badgeId: 'navTask2Badge' },
-        { href: 'task2-template.html',  icon: 'fa-book-open',  label: 'Task 2 Templates' },
+        { href: 'task2-template.html',   icon: 'fa-book-open',     label: 'Task 2 Templates' },
+        { divider: true, label: 'Ngữ pháp' },
         { href: 'essential-grammar.html', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
+        { href: 'writing-practice.html',  icon: 'fa-comment',        label: 'Viết câu giao tiếp' },
       ]
     },
     { href: 'speaking.html',          icon: 'fa-microphone',  label: 'Speaking',
       children: [
-        { href: 'speaking-course.html',             icon: 'fa-graduation-cap', label: 'Khóa học Speaking' },
         { href: 'speaking.html',                    icon: 'fa-microphone', label: 'Speaking forecast' },
-        { href: 'shadowing.html',                   icon: 'fa-comment-dots', label: 'Shadowing (Video)' },
         { href: 'speaking.html?tab=materials',      icon: 'fa-book-open',  label: 'Tài liệu' },
         { href: 'speaking.html?tab=speaking-tips',  icon: 'fa-lightbulb',  label: 'Speaking Tips' },
+        { divider: true, label: 'Khóa học' },
+        { href: 'speaking-course.html',             icon: 'fa-graduation-cap', label: 'Khóa học Speaking' },
+        { divider: true, label: 'Luyện tập' },
+        { href: 'shadowing.html',                   icon: 'fa-comment-dots', label: 'Shadowing (Video)' },
       ]
     },
     { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab',
@@ -80,7 +91,6 @@
         { href: 'dashboard.html',                    icon: 'fa-layer-group', label: 'Sổ từ vựng' },
         { href: 'dashboard.html?view=paraphrase',    icon: 'fa-graduation-cap', label: 'Học Paraphrase' },
         { href: 'dashboard.html?view=topics',        icon: 'fa-shapes',      label: 'Học Vocab Topics' },
-        { href: 'reading-listening-strategy.html',    icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
       ]
     },
     // Both thi-thử ("mock test") features live under one dropdown: the new
@@ -366,7 +376,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=73dd0ea603';
+    i18nScript.src = '/js/shared/i18n.js?v=655f01f0cd';
     document.body.appendChild(i18nScript);
   }
 

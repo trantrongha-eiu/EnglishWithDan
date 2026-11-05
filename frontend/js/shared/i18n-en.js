@@ -2162,7 +2162,7 @@
     'Mua ở Cửa hàng lửa, hoặc nhận búa khi hoàn thành 1 Unit Paraphrase đạt ≥ 90%.': 'Buy it in the Fire Shop, or get a hammer for finishing a Paraphrase Unit with ≥ 90%.',
     'Mua sắm chỉ trừ': 'Shopping only spends',
     'Mua sắm chỉ trừ ví — chuỗi và hạng trên BXH vẫn giữ nguyên.': 'Shopping only spends from your wallet — your streak and leaderboard rank stay the same.',
-    'Mục "Writing" gồm cả đề thi thật lẫn phần Luyện tập ở dưới menu (kéo xuống): Task 1 Grammar, Task 2 Writing theo tuần (tự động lưu tiến độ), Task 2 Templates và Essential Grammar. Bấm vào để mở danh sách.': '"Writing" covers both real exam tests and the Practice section lower in the menu (scroll down): Task 1 Grammar, weekly Task 2 Writing (progress saved automatically), Task 2 Templates and Essential Grammar. Click to open the list.',
+    'Mục "Writing" gồm đề thi thật ở trên cùng, rồi các nhóm bên dưới (kéo xuống): Khóa học Task 1 / Task 2, Luyện tập (Task 2 Luyện đề tuần, Task 2 Templates) và Ngữ pháp (Essential Grammar, Viết câu giao tiếp). Bấm vào để mở danh sách.': '"Writing" has the real exam tests at the top, then groups lower in the menu (scroll down): the Task 1 / Task 2 Courses, Practice (Task 2 Weekly practice, Task 2 Templates) and Grammar (Essential Grammar, Everyday sentences). Click to open the list.',
     'Mục lục': 'Contents',
     'mục tiêu': 'target',
     'Mục tiêu & Kế hoạch': 'Goals & Plan',

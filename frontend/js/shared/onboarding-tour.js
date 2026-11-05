@@ -48,7 +48,7 @@
       {
         icon: '✍️',
         title: 'Writing & Luyện tập',
-        body: 'Mục "Writing" gồm cả đề thi thật lẫn phần Luyện tập ở dưới menu (kéo xuống): Task 1 Grammar, Task 2 Writing theo tuần (tự động lưu tiến độ), Task 2 Templates và Essential Grammar. Bấm vào để mở danh sách.',
+        body: 'Mục "Writing" gồm đề thi thật ở trên cùng, rồi các nhóm bên dưới (kéo xuống): Khóa học Task 1 / Task 2, Luyện tập (Task 2 Luyện đề tuần, Task 2 Templates) và Ngữ pháp (Essential Grammar, Viết câu giao tiếp). Bấm vào để mở danh sách.',
         resolve() {
           const link = document.querySelector('.top-nav a[href="writing-practice.html"]');
           const dropdown = link && link.closest('.nav-dropdown');
