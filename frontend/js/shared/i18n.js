@@ -582,7 +582,13 @@
       'Random test · Listening → Reading → Writing → Speaking',
     'Bài học hôm nay': "Today's lesson",
     'Học vocab theo topic': 'Vocab by topic',
-    'Xem các topic': 'See all topics'
+    'Xem các topic': 'See all topics',
+    'Vào đây cày vocab nè ní!': 'Come grind some vocab here, buddy!',
+    'Lưu hết từ vựng vào sổ trước rồi mới được làm Quiz nha ní!': 'Save all the words to your notebook first, then the Quiz unlocks!',
+    'Xem lại từ vựng': 'Review the words',
+    'Lưu từ vựng vào sổ để mở Quiz': 'Save the words to your notebook to unlock the Quiz',
+    'Lưu từ vựng vào sổ trước để mở Quiz nha!': 'Save the words to your notebook first to unlock the Quiz!',
+    '🔓 Đã mở khoá Quiz — vào làm thôi!': "🔓 Quiz unlocked — let's go!"
   };
 
   // ── Templated strings ────────────────────────────────────────────────

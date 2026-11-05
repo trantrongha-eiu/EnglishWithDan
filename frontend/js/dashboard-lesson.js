@@ -410,13 +410,44 @@ function _markLessonVocabTermsSaved(lessonId, terms) {
     localStorage.setItem(LESSON_VOCAB_SAVED_KEY, JSON.stringify(_lessonVocabSavedMap));
 }
 
+// Quiz gate: a student must save the lesson's words into a notebook (Sổ)
+// before the Quiz opens. Uses the same saved-terms set as the "Lưu tất cả"
+// button. Saving again on another device is harmless — words already in the
+// book come back as skippedDup and still count as saved.
+function _lessonSavedCount(lesson) {
+    const words = lesson?.words || [];
+    if (!words.length) return 0;
+    const savedSet = _savedTermsForLesson(lesson._id);
+    return words.filter(w => savedSet.has(w.word)).length;
+}
+function isLessonQuizUnlocked(lesson = lessonState.currentLesson) {
+    const words = lesson?.words || [];
+    return words.length > 0 && _lessonSavedCount(lesson) === words.length;
+}
+// Lock icon on the Quiz tab while the words are not saved yet.
+function _syncLessonQuizTabLock() {
+    const tab = document.querySelector('#lesson-tabs .tab-btn[data-tab="quiz"]');
+    if (!tab) return;
+    const locked = !isLessonQuizUnlocked();
+    tab.classList.toggle('is-locked', locked);
+    tab.title = locked ? 'Lưu từ vựng vào sổ để mở Quiz' : '';
+    const icon = tab.querySelector('i');
+    if (icon) icon.className = locked ? 'fas fa-lock' : 'fas fa-check-circle';
+}
+
 function saveAllLessonVocabToBook() {
     const words = lessonState.currentLesson?.words || [];
     if (!words.length || !window.openVocabBookPickerBulk) return;
     const items = words.map(w => ({ word: w.word, meaning: w.meaning || '', example: w.example || '', collocations: w.collocations || [] }));
+    const wasUnlocked = isLessonQuizUnlocked();
     window.openVocabBookPickerBulk(items, terms => {
         _markLessonVocabTermsSaved(lessonState.currentLesson._id, terms);
         renderLearnTab();
+        const quizTab = document.getElementById('lesson-tab-quiz');
+        if (quizTab && quizTab.style.display !== 'none' && !isQuizInProgress()) renderQuizIntro();
+        if (!wasUnlocked && isLessonQuizUnlocked() && typeof toast === 'function') {
+            toast('🔓 Đã mở khoá Quiz — vào làm thôi!', 'success');
+        }
     });
 }
 
@@ -447,6 +478,7 @@ function renderLearnTab() {
             saveAllBtn.innerHTML = `<i class="fas fa-${allSaved ? 'check-circle' : 'save'}"></i> ${allSaved ? 'Đã lưu tất cả' : `Lưu tất cả (${words.length})`}`;
         }
     }
+    _syncLessonQuizTabLock();
     if (!words.length) { grid.innerHTML = '<div class="classroom-empty">Bài học chưa có từ vựng</div>'; return; }
 
     // data-word-idx is a plain array index (never lesson text) — the actual
@@ -584,6 +616,21 @@ function renderQuizTab() {
 
 function renderQuizIntro() {
     const words = lessonState.currentLesson?.words || [];
+    _syncLessonQuizTabLock();
+    if (!isLessonQuizUnlocked()) {
+        const saved = _lessonSavedCount(lessonState.currentLesson);
+        const lulu = window.Mascot && window.Mascot.reactHtml
+            ? window.Mascot.reactHtml({ solo: true, stacked: true, mood: 'think', text: 'Lưu hết từ vựng vào sổ trước rồi mới được làm Quiz nha ní!' })
+            : '<p style="font-weight:700">Lưu hết từ vựng vào sổ trước rồi mới được làm Quiz nha ní!</p>';
+        document.getElementById('lesson-tab-quiz').innerHTML = `
+        <div class="practice-container lesson-quiz-locked">
+            ${lulu}
+            <div class="lesson-quiz-locked-count"><i class="fas fa-lock"></i> Đã lưu <b>${saved}/${words.length}</b> từ</div>
+            <button class="btn-next" onclick="saveAllLessonVocabToBook()"><i class="fas fa-save"></i> Lưu tất cả vào sổ (${words.length})</button>
+            <button class="btn btn-ghost btn-sm lesson-quiz-locked-learn" onclick="switchLessonTab('learn')"><i class="fas fa-book-open"></i> Xem lại từ vựng</button>
+        </div>`;
+        return;
+    }
     document.getElementById('lesson-tab-quiz').innerHTML = `
         <div class="practice-container">
             <div class="practice-header">
@@ -596,6 +643,11 @@ function renderQuizIntro() {
 
 function startLessonQuiz() {
     const words = lessonState.currentLesson?.words || [];
+    if (!isLessonQuizUnlocked()) {
+        if (typeof toast === 'function') toast('Lưu từ vựng vào sổ trước để mở Quiz nha!', 'error');
+        renderQuizIntro();
+        return;
+    }
     lessonState.quiz.queue = buildQuizQueue(words);
     lessonState.quiz.index = 0;
     lessonState.quiz.correct = 0;

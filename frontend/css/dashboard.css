@@ -333,6 +333,25 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .todays-lesson-meta{font-size:12px;color:var(--text2);margin-bottom:8px}
 .todays-lesson-progress-row{display:flex;align-items:center;gap:10px}
 .todays-lesson-progress-text{font-size:12px;font-weight:700;color:var(--text2);flex-shrink:0}
+/* Lulu replaces the old chalkboard icon and "says" the speech bubble that
+   sits at the top of the info column (tail points left, at Lulu). */
+.todays-lesson-lulu.dan-host{width:84px;filter:drop-shadow(0 6px 8px rgba(120,60,0,.2));animation:tl-lulu-pop .7s cubic-bezier(.34,1.56,.64,1) both}
+.todays-lesson-lulu.dan-host .dan-svg{width:100%;height:auto;display:block}
+.todays-lesson-bubble{
+  position:relative;display:inline-block;margin:0 0 10px 10px;
+  background:#fff;color:#222;border:2.5px solid #1f1f1f;border-radius:16px 16px 16px 4px;
+  box-shadow:3px 3px 0 #1f1f1f;padding:6px 12px;font-size:14px;font-weight:800;line-height:1.35;
+  transform-origin:0 100%;animation:tl-bubble-in .45s cubic-bezier(.34,1.56,.64,1) .3s both,tl-bubble-nudge 3.6s ease-in-out 1.2s infinite;
+}
+.todays-lesson-bubble::before{content:'';position:absolute;left:-12px;bottom:6px;border:7px solid transparent;border-right:9px solid #1f1f1f}
+.todays-lesson-bubble::after{content:'';position:absolute;left:-7px;bottom:8px;border:5px solid transparent;border-right:7px solid #fff}
+[data-theme="dark"] .todays-lesson-bubble{background:#1a1a1a;color:#eee;border-color:#555;box-shadow:3px 3px 0 #555}
+[data-theme="dark"] .todays-lesson-bubble::before{border-right-color:#555}
+[data-theme="dark"] .todays-lesson-bubble::after{border-right-color:#1a1a1a}
+@keyframes tl-lulu-pop{0%{transform:translateY(16px) scale(.6);opacity:0}100%{transform:none;opacity:1}}
+@keyframes tl-bubble-in{0%{transform:translateX(-6px) scale(.8);opacity:0}100%{transform:none;opacity:1}}
+@keyframes tl-bubble-nudge{0%,88%,100%{transform:none}92%{transform:rotate(-3deg) scale(1.04)}96%{transform:rotate(2deg) scale(1.02)}}
+@media (prefers-reduced-motion:reduce){.todays-lesson-lulu.dan-host,.todays-lesson-bubble{animation:none}}
 /* Icon + Start button eat most of a narrow screen's width, leaving the
    info column only ~155-160px — barely enough for "TODAY'S LESSON" +
    "Đổi bài" side by side, so both wrapped onto two lines each. Shrink the
@@ -340,6 +359,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 @media(max-width:640px){
   .todays-lesson-card{gap:12px;padding:14px 16px}
   .todays-lesson-icon{font-size:24px}
+  .todays-lesson-lulu.dan-host{width:60px}
+  .todays-lesson-bubble{font-size:13px;padding:5px 10px;margin-bottom:8px}
   .todays-lesson-card>.btn{padding:8px 14px;font-size:13px;white-space:nowrap}
   .todays-lesson-label-row{gap:2px 6px;flex-wrap:wrap}
   .todays-lesson-switch-btn{font-size:10px;gap:3px}
@@ -377,6 +398,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .dash-vocab-hero .dan-week-day{font-size:12px}
 .dash-vocab-hero .todays-lesson-card{padding:28px 30px;gap:24px}
 .dash-vocab-hero .todays-lesson-icon{font-size:52px}
+.dash-vocab-hero .todays-lesson-lulu.dan-host{width:104px}
+.dash-vocab-hero .todays-lesson-bubble{font-size:16px;padding:7px 14px}
 .dash-vocab-hero .todays-lesson-label,
 .dash-vocab-hero .todays-lesson-switch-btn{font-size:13px}
 .dash-vocab-hero .todays-lesson-title{font-size:22px;margin:6px 0 4px}
@@ -393,6 +416,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   .dash-vocab-hero .dan-streak-num{font-size:26px}
   .dash-vocab-hero .todays-lesson-card{padding:18px;gap:14px}
   .dash-vocab-hero .todays-lesson-icon{font-size:28px}
+  .dash-vocab-hero .todays-lesson-lulu.dan-host{width:64px}
+  .dash-vocab-hero .todays-lesson-bubble{font-size:13px;padding:5px 10px}
   .dash-vocab-hero .todays-lesson-label,
   .dash-vocab-hero .todays-lesson-switch-btn{font-size:11px;white-space:nowrap}
   .dash-vocab-hero .todays-lesson-title{font-size:18px}
@@ -2465,3 +2490,12 @@ button.hw-res-btn{border:none;cursor:pointer;font-family:inherit}
 [data-theme="dark"] .hw-due--late,[data-theme="dark"] .hw-pill--late{color:#fbbf24}
 [data-theme="dark"] .hw-due--soon{color:#fcd34d}
 [data-theme="dark"] .hw-res:hover{border-color:#4f46e5}
+
+/* Lesson Quiz locked until the lesson's words are saved to a notebook
+   (js/dashboard-lesson.js → renderQuizIntro / isLessonQuizUnlocked). */
+.lesson-quiz-locked{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding-top:8px}
+.lesson-quiz-locked .btn-next{max-width:320px}
+.lesson-quiz-locked-count{font-size:14px;color:var(--text2);font-weight:600}
+.lesson-quiz-locked-count i{color:var(--text3);margin-right:4px}
+.lesson-quiz-locked-learn{margin-top:-2px}
+#lesson-tabs .tab-btn.is-locked{opacity:.75}

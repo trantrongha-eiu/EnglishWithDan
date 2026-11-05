@@ -20,12 +20,12 @@
   <script src="/js/shared/scroll-reveal.js?v=7010de29cd"></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <script src="/js/shared/pwa-register.js?v=713d4c39e1" defer></script>
-  <link rel="stylesheet" href="/css/dashboard.css?v=9f3ccf48de">
+  <link rel="stylesheet" href="/css/dashboard.css?v=2d126c89ba">
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3">
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=7e9b826d6f"></script>
+<script src="/js/bundles/app-shell.js?v=f3ddee13b0"></script>
 <script src="/js/shared/onboarding-tour.js?v=6f0b184c2f"></script>
 <script src="/js/learning-popups.js?v=d05aa08d9c"></script>
 <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
@@ -146,8 +146,10 @@
 
               <!-- Today's Lesson (Vocabulary Lessons giáo viên giao) -->
               <div class="todays-lesson-card" id="todays-lesson-card" style="display:none">
-                <div class="todays-lesson-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                <!-- Lulu (js/shared/playful.js fills data-dan; the icon is the no-JS fallback) -->
+                <div class="todays-lesson-icon todays-lesson-lulu" data-dan="excited" aria-hidden="true"><i class="fas fa-chalkboard-teacher"></i></div>
                 <div class="todays-lesson-info">
+                  <div class="todays-lesson-bubble" role="note">Vào đây cày vocab nè ní!</div>
                   <div class="todays-lesson-label-row">
                     <div class="todays-lesson-label">Học vocab theo topic</div>
                     <button class="todays-lesson-switch-btn" id="todays-lesson-switch-btn" title="Chọn bài Quiz khác">
@@ -1219,7 +1221,7 @@
 <script src="/js/shared/peer-profile.js?v=a13eda43b1"></script>
 <script src="/js/dashboard-audio.js?v=4d62f2efe9"></script>
 <script src="/js/shared/wbw-drill.js?v=9de4d9a281"></script>
-<script src="/js/dashboard-lesson.js?v=59928da8e4"></script>
+<script src="/js/dashboard-lesson.js?v=00d040e381"></script>
 <script src="/js/dashboard-homework.js?v=16f0b39347"></script>
 <script src="/js/dashboard-classinfo.js?v=0da0c76398"></script>
 <script src="/js/dashboard-review.js?v=4dba13dc0a"></script>
