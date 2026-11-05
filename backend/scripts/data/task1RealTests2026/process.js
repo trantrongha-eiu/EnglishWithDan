@@ -1,0 +1,242 @@
+'use strict';
+// Task 1 "Process" group for seedWritingTask1RealTests2026.js.
+// Sample answers live in samples.js.
+const L = (...lines) => lines.join('\n');
+const ASK = 'Provide an overview of the information by identifying and describing the key details, and include comparisons where appropriate.';
+
+module.exports = [
+  {
+    slug: 'wire-production',
+    prompt: `The diagram below shows the process by which wire is made. ${ASK}`,
+    chartData: L(
+      'Process, 9 numbered steps:',
+      '1. coking coal + iron ore → 2. blast furnace (1,300°C) → pipe →',
+      '3. combining: arc furnace (1,800°C), reduced coal added → pipe →',
+      '4. removing gas: furnace (1,800°C), lime added → liquid metal →',
+      '5. vat → 6. moulds → 7. pressing and shaping (rollers) → 8. cooling (150°C) → more rollers →',
+      '9. cooling / coiling onto spools → coils of wire.',
+    ),
+    analysis: [
+      ['1. Phân tích nhanh đề này', L(
+        'Dạng: quy trình nhân tạo (man-made process) — sản xuất dây kim loại. Thì: hiện tại đơn, chủ yếu BỊ ĐỘNG.',
+        'Không có số liệu thống kê, chỉ có nhiệt độ: 1,300°C (blast furnace), 1,800°C (arc furnace và furnace), 150°C (cooling).',
+        '',
+        'Overview nên nói gì?',
+        '- Quy trình tuyến tính, 3 giai đoạn lớn: nấu chảy & tinh luyện → đúc khuôn → tạo hình dây & hoàn thiện.',
+        '- Bắt đầu từ quặng sắt + than cốc, kết thúc là cuộn dây.',
+        '',
+        'Câu Overview mẫu:',
+        'Overall, this is a linear, man-made process that can be divided into three main stages: melting and refining the metal in a series of furnaces, casting the purified liquid into solid pieces, and then shaping these into wire.',
+      )],
+      ['2. Cách chia thân bài – 3 giai đoạn', L(
+        '- Body 1 – Nấu chảy & tinh luyện: quặng sắt + than cốc vào blast furnace (1,300°C) → qua ống sang arc furnace (1,800°C), thêm reduced coal → sang furnace, thêm vôi (lime), loại bỏ khí → kim loại lỏng tinh khiết.',
+        '- Body 2 – Đúc: kim loại lỏng → vat → rót vào khuôn (moulds) → nguội thành khối rắn.',
+        '- Body 3 – Tạo hình: ép & tạo hình thành thanh dài → làm nguội ở 150°C → cuộn thành cuộn dây.',
+        '',
+        'Đừng bỏ sót: reduced coal, lime, pipes, nhiệt độ ở từng lò.',
+      )],
+      ['3. Ngôn ngữ cho dạng process', L(
+        'Từ nối trình tự:',
+        '- At the first stage, ... / The molten metal is then ... / Next, ... / The second stage begins with ... / It is subsequently ... / In the final stage, ...',
+        '',
+        'Mệnh đề quan hệ để nối bước + nơi xảy ra:',
+        '- ... placed in a blast furnace, where the materials are heated to 1,300°C and melted',
+        '- ... an arc furnace operating at 1,800°C, at which point reduced coal is added',
+        '- ... another furnace, in which lime is introduced and unwanted gases are removed, resulting in purified liquid metal',
+        '',
+        'Phân từ chỉ kết quả:',
+        '- producing solid metal pieces ready for further processing',
+        '- forming coils of finished metal wire',
+      )],
+      ['4. Checklist để đạt 6.5+', L(
+        '① Overview có số giai đoạn + nguyên liệu đầu + sản phẩm cuối.',
+        '② Bị động đúng: is heated / is transferred / is added / are wound.',
+        '③ Mỗi lò có nhiệt độ.',
+        '④ Không dùng “Firstly, Secondly, Thirdly” cho mọi bước — đa dạng từ nối.',
+      )],
+    ],
+    source: 'Bài mẫu lấy từ ZIM Academy — “Phân tích đề IELTS Writing Tháng 12/2025 - Đề số 4”, zim.vn. Đề thi thật tháng 12/2025.',
+  },
+
+  {
+    slug: 'chipboard-furniture',
+    prompt: `The diagram below shows how chipboard* is created from wood and then used to make furniture. (*chipboard: a product made from wood chips and glue, then pressed into shape) ${ASK}`,
+    chartData: L(
+      'Process, 2 stages, 9 steps.',
+      'Stage 1 Preparation: 1 cutting (trees cut down) → 2 trimming (logs) → 3 making wood chips → 4 drying with hot air, steam released (24 hours) → 5 storing (1–4 weeks).',
+      'Stage 2 Production: 6 mixing with glue and wax → 7 shaping in a mould → 8 pressing → chipboard → 9 making furniture (a table and chairs).',
+    ),
+    analysis: [
+      ['1. Phân tích nhanh đề này', L(
+        'Dạng: quy trình nhân tạo, 9 bước, sơ đồ chia sẵn 2 giai đoạn (Preparation và Production). Thì: hiện tại đơn, bị động.',
+        'Có 2 mốc thời gian: sấy 24 giờ, lưu kho 1–4 tuần.',
+        '',
+        'Overview nên nói gì?',
+        '- Quy trình chủ yếu dùng máy móc, gồm 2 giai đoạn: chuẩn bị gỗ, rồi sản xuất ván dăm và làm đồ nội thất.',
+        '- Bắt đầu: chặt cây. Kết thúc: bàn ghế.',
+        '',
+        'Câu Overview mẫu:',
+        'Overall, the process is primarily mechanical and consists of two distinct stages: preparation, which involves cutting and treating the wood, and production, where the material is turned into chipboard before being manufactured into furniture.',
+      )],
+      ['2. Cách chia thân bài – theo 2 giai đoạn của sơ đồ', L(
+        '- Body 1 – Preparation (bước 1–5): chặt cây → cắt tỉa thành khúc gỗ (logs) → nghiền thành dăm gỗ (wood chips) → sấy bằng khí nóng trong 24 giờ (hơi nước thoát ra) → lưu kho 1–4 tuần.',
+        '- Body 2 – Production (bước 6–9): trộn dăm gỗ với keo (glue) và sáp (wax) → đổ khuôn tạo hình → ép thành ván dăm → làm bàn ghế.',
+        '',
+        'Sơ đồ đã chia sẵn 2 stage → dùng đúng 2 stage này cho 2 đoạn thân bài là cách rõ ràng nhất.',
+      )],
+      ['3. Ngôn ngữ hay', L(
+        '- The process starts with trees being cut down and then trimmed into logs. (start with + N + being + V3)',
+        '- These logs are subsequently converted into wood chips',
+        '- which are dried using steam and hot air for 24 hours',
+        '- Once dried, the wood chips are stored for a period ranging from one to four weeks',
+        '- after which the mixture is shaped in a mould',
+        '- completing the cycle from raw wood to finished products',
+      )],
+      ['4. Checklist để đạt 6.5+', L(
+        '① Đủ 9 bước, đúng thứ tự.',
+        '② Có 2 mốc thời gian (24 hours, 1–4 weeks).',
+        '③ Có nhắc glue và wax ở bước trộn.',
+        '④ Bài mẫu chỉ khoảng 165 từ — khi tự viết, thêm chi tiết (hơi nước thoát ra khi sấy, ví dụ bàn ghế) để chắc chắn vượt 150 từ.',
+      )],
+    ],
+    source: 'Bài mẫu lấy từ ZIM Academy — “Phân tích đề IELTS Writing Tháng 8/2025 - Đề số 3”, zim.vn. Đề thi thật tháng 8/2025.',
+  },
+
+  {
+    slug: 'igloo-construction',
+    prompt: `The diagram below presents how an igloo is made out of snow. ${ASK}`,
+    chartData: L(
+      'Process, 8 steps:',
+      '1 hard-packed snow is cut into blocks with a snow saw →',
+      '2 large blocks (L) laid in a ring about 4 metres across; one dark block marks the doorway →',
+      '3 more rows: large blocks low down, small blocks (S) higher up, the wall curving inwards →',
+      '4 a final round block placed in the hole at the top →',
+      '5 exterior: loose snow fills the gaps; the igloo is about 2 metres high →',
+      '6 entrance tunnel built →',
+      '7 interior: air holes drilled →',
+      '8 finished igloo.',
+    ),
+    analysis: [
+      ['1. Phân tích nhanh đề này', L(
+        'Dạng: quy trình nhân tạo (xây nhà tuyết igloo), 8 bước. Thì: hiện tại đơn, bị động.',
+        'Số liệu: đường kính khoảng 4 mét, chiều cao 2 mét; 2 loại khối tuyết: lớn (L) và nhỏ (S).',
+        '',
+        'Overview nên nói gì?',
+        '- Quy trình tuyến tính, 3 giai đoạn: cắt khối tuyết & xây nền → hoàn thiện mái vòm → làm lối vào & hoàn thiện bên trong.',
+        '',
+        'Câu Overview mẫu:',
+        'Overall, this linear, man-made process can be divided into three main stages: preparing snow blocks and building the base, completing and reinforcing the dome, and finally creating the entrance and finishing the interior.',
+      )],
+      ['2. Cách chia thân bài – 3 giai đoạn', L(
+        '- Body 1 (bước 1–2, đầu bước 3): cắt tuyết nén cứng thành khối lớn bằng cưa tuyết → xếp thành vòng tròn rộng ~4 m, chừa chỗ làm lối vào → tường cao dần và cong vào trong.',
+        '- Body 2 (bước 3–5): khối nhỏ xếp ở phần trên → đặt khối cuối cùng bịt lỗ trên đỉnh → igloo cao 2 m → lấp khe hở bằng tuyết rời.',
+        '- Body 3 (bước 6–8): làm đường hầm lối vào → khoan lỗ thông khí bên trong → igloo sẵn sàng sử dụng.',
+        '',
+        'Đừng bỏ sót: snow saw, large / small blocks, loose snow, air holes, 4 m và 2 m.',
+      )],
+      ['3. Ngôn ngữ hay', L(
+        '- hard-packed snow is cut into large blocks using a snow saw',
+        '- These are arranged in a circle on the ground to form the base',
+        '- As more blocks are added, the wall rises and begins to curve',
+        '- They are fitted on top of the base layers until only a small gap remains, which is subsequently closed with ...',
+        '- giving the igloo a height of two metres',
+        '- ensuring adequate ventilation',
+        '- Once this step has been completed, the igloo is finally ready for use',
+      )],
+      ['4. Checklist để đạt 6.5+', L(
+        '① Phân biệt rõ khối lớn ở dưới, khối nhỏ ở trên.',
+        '② Có 2 kích thước (rộng 4 m, cao 2 m).',
+        '③ Bị động xuyên suốt; câu cuối nêu kết quả (ready for use as a shelter).',
+        '④ Chỉ tả những gì sơ đồ thể hiện — không thêm chi tiết tự suy đoán.',
+      )],
+    ],
+    source: 'Bài mẫu lấy từ ZIM Academy — “Phân tích đề IELTS Writing Tháng 12/2025 - Đề số 3”, zim.vn. Đề thi thật tháng 12/2025. Đã sửa 1 câu ở Body 3: sơ đồ cho thấy lối vào được XÂY thêm bằng khối tuyết (bước 6), không phải “đào xuyên tường” như bản gốc.',
+  },
+
+  {
+    slug: 'paper-production-recycling',
+    prompt: `The diagram below shows the process for producing and recycling paper. ${ASK}`,
+    chartData: L(
+      'Process, 10 steps.',
+      'Production: 1 felling (trees cut down) → 2 removing bark in a drum → 3 chipping (a chipper turns wood into wood chippings) → 4 pulping (refiner → pulp) → 5 pulp pressing → 6 rolling paper.',
+      'Use and recycling: 7 printing newspapers → 8 collecting used newspapers → 9 removing ink → 10 pulping → back to step 5 (pulp pressing).',
+    ),
+    analysis: [
+      ['1. Phân tích nhanh đề này', L(
+        'Dạng: quy trình nhân tạo có vòng lặp (sản xuất + tái chế giấy), 10 bước. Thì: hiện tại đơn, bị động.',
+        '',
+        'Overview nên nói gì?',
+        '- 2 giai đoạn chính: sản xuất giấy từ cây và tái chế báo cũ.',
+        '- Điểm quan trọng: giấy tái chế được nghiền lại thành bột và QUAY LẠI bước ép bột → đây là một chu trình (cycle).',
+        '',
+        'Câu Overview mẫu:',
+        'Overall, these largely mechanical processes can be divided into two main stages: the initial production of paper from trees and the subsequent recycling of used newspapers.',
+      )],
+      ['2. Cách chia thân bài', L(
+        '- Body 1 – Sản xuất (bước 1–6): chặt cây → bóc vỏ bằng trống quay (drum) → nghiền thành dăm gỗ (chipper) → nghiền thành bột giấy (refiner, pulp) → ép bột → cuộn giấy.',
+        '- Body 2 – Sử dụng & tái chế (bước 7–10): in báo → thu gom báo cũ → tẩy mực → nghiền lại thành bột → đưa về bước ép bột.',
+        '',
+        'Mẹo: câu cuối Body 2 phải nói được giấy tái chế quay lại quy trình sản xuất — đây là chi tiết giám khảo tìm.',
+      )],
+      ['3. Ngôn ngữ hay', L(
+        '- trees are cut down, and their bark is stripped off using a rotating drum',
+        '- The debarked logs are then fed into a chipping machine, which reduces them into small wood chips',
+        '- This step results in flat sheets that are rolled into finished paper',
+        '- The recycling stage begins after the paper has been used to print newspapers',
+        '- Once read and discarded, the newspapers are collected and go through a de-inking process',
+        '- this material can be reintroduced into the original paper-making process',
+      )],
+      ['4. Checklist để đạt 6.5+', L(
+        '① Nhận ra đây là chu trình (bước 10 nối về bước 5).',
+        '② Có đủ thiết bị chính: drum, chipper, refiner.',
+        '③ Bài mẫu chỉ khoảng 155 từ, sát giới hạn — khi tự viết nên thêm 1–2 chi tiết (tên thiết bị) để chắc chắn đủ 150 từ.',
+        '④ Bị động + từ nối trình tự (then, thereafter, following this, finally).',
+      )],
+    ],
+    source: 'Bài mẫu lấy từ ZIM Academy — “Bài mẫu IELTS Writing Task 1 và Task 2 ngày 07/04/2025”, zim.vn. Đề thi thật ngày 07/04/2025.',
+  },
+
+  {
+    slug: 'solar-drinking-water',
+    prompt: `The diagram below illustrates the process of producing drinking water using a solar-powered water pump and water filter. ${ASK}`,
+    chartData: L(
+      'System diagram, how drinking water is produced:',
+      'sunlight → solar panel → converter → electricity (cables) → pump in an underground well → water pumped up a pipe → water tank on a wooden platform → water filter inside the tank → drinking water flows out through a pipe with a tap → moveable container.',
+    ),
+    analysis: [
+      ['1. Phân tích nhanh đề này', L(
+        'Dạng: quy trình nhân tạo / sơ đồ hệ thống (máy bơm nước chạy năng lượng mặt trời). Thì: hiện tại đơn, bị động.',
+        'Không có số liệu; nhiệm vụ là tả dòng năng lượng và dòng nước.',
+        '',
+        'Overview nên nói gì?',
+        '- Hệ thống chạy hoàn toàn bằng năng lượng mặt trời.',
+        '- 3 giai đoạn: biến ánh sáng thành điện → dùng điện bơm và chứa nước → lọc nước thành nước uống.',
+        '',
+        'Câu Overview mẫu:',
+        'Overall, the system is designed to function entirely on renewable solar power and involves three main stages: converting sunlight into electricity, using that energy to extract and store water, and finally filtering the water to make it potable.',
+      )],
+      ['2. Cách chia thân bài', L(
+        '- Body 1 – Năng lượng: ánh sáng mặt trời → tấm pin mặt trời (solar panel) → bộ chuyển đổi (converter) → điện chạy máy bơm.',
+        '- Body 2 – Nước: máy bơm hút nước từ giếng ngầm (underground well) → nước theo ống lên bể chứa (water tank) đặt trên bệ gỗ.',
+        '- Body 3 – Lọc: nước qua bộ lọc (water filter) trong bể → ra vòi (tap) → hứng vào thùng di động (moveable container).',
+        '',
+        'Có thể gộp Body 1 và Body 2 thành một đoạn nếu muốn bài có 2 đoạn thân bài.',
+      )],
+      ['3. Ngôn ngữ hay', L(
+        '- The process begins when sunlight is captured by a solar panel and turned into electricity through a converter.',
+        '- Once the electricity has been generated, it is used to power a pump.',
+        '- water is drawn from an underground well',
+        '- is subsequently transported through a pipe and stored in a water tank placed on a raised wooden platform',
+        '- it enters a filtration unit where impurities are removed',
+        '- potable (= drinkable) / purified water',
+      )],
+      ['4. Checklist để đạt 6.5+', L(
+        '① Đủ các bộ phận có nhãn: solar panel, converter, pump, underground well, water tank, wooden platform, water filter, tap, moveable container.',
+        '② Bài mẫu chỉ khoảng 157 từ — khi tự viết nên tả kỹ hơn (ví dụ: dây điện nối converter với máy bơm dưới giếng) để vượt 150 từ an toàn.',
+        '③ Dùng mệnh đề thời gian: once / after / when + mệnh đề hoàn thành.',
+        '④ Không cần bị động 100% — câu chủ động cho máy móc vẫn tự nhiên (the pump draws water from ...).',
+      )],
+    ],
+    source: 'Bài mẫu lấy từ ZIM Academy — “Bài mẫu IELTS Writing Task 1 và Task 2 ngày 17/05/2025”, zim.vn. Đề thi thật ngày 17/05/2025.',
+  },
+];
