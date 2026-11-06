@@ -974,7 +974,7 @@ function renderTestCard(t) {
 let _activeFilter = 'all';
 
 function filterTests(mode, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#ls-filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
     _activeFilter = mode;
     _lsPage = 1;

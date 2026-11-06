@@ -354,8 +354,8 @@ async function _ltRunGlobalSearch() {
 }
 
 function filterLtByStatus(filter, btn) {
-    document.querySelectorAll('#lt-practice-filter-bar .pf-btn').forEach(b => b.classList.remove('pf-active'));
-    if (btn) btn.classList.add('pf-active');
+    document.querySelectorAll('#lt-practice-filter-bar .lele-status-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
     _ltStatusFilter = filter;
     _ltPage = 1;
     rerenderLtSections();
@@ -586,7 +586,7 @@ async function loadPracticeSections(partNum, tabEl) {
         _ltSearchVal    = '';
         const inp = document.getElementById('lt-practice-search-input');
         if (inp) inp.value = '';
-        document.querySelectorAll('#lt-practice-filter-bar .pf-btn').forEach((b, i) => b.classList.toggle('pf-active', i === 0));
+        document.querySelectorAll('#lt-practice-filter-bar .lele-status-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
 
         // Done count label (based on all sections, not filtered)
         const doneCount = sections.filter(s => _ltPracticeDoneMap[s._id?.toString()]).length;

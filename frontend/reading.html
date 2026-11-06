@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb" />
   <link rel="stylesheet" href="/css/components.css?v=bb5d514434" />
   <link rel="stylesheet" href="/css/style.css?v=ac1149d095" />
-  <link rel="stylesheet" href="/css/reading.css?v=36b1949254" />
+  <link rel="stylesheet" href="/css/reading.css?v=2fbfa17bc0" />
   <link rel="stylesheet" href="/css/mobile.css?v=1319d3b9c8" />
   <link rel="stylesheet" href="/css/exam-embed.css?v=7c616e2d54" />
   <script>/* Entrance Test iframe — see css/exam-embed.css */if (/[?&]embed=entrance(&|$)/.test(location.search) && window.parent !== window) document.documentElement.classList.add('ews-embed');</script>
@@ -55,8 +55,14 @@
           <h2 id="list-mode-title">Luyện tập <span class="tag-red">Reading Full đề</span></h2>
           <p class="list-subtitle" id="list-mode-subtitle">Làm bài Reading IELTS đầy đủ 3 passages, có đếm giờ 60 phút và tính band score như khi thi thật.</p>
         </div>
-        <div id="lele-header-btns" style="display:none;align-items:center;gap:8px;margin-left:auto">
+        <div id="lele-header-btns" style="display:none;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap">
           <input type="search" id="practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterPracticeCards()" style="width:180px" autocomplete="off">
+          <span id="practice-filter-bar" class="lele-status-filter">
+            <button class="filter-btn lele-status-btn active" onclick="filterPracticeByStatus('all', this)">Tất cả</button>
+            <button class="filter-btn lele-status-btn" onclick="filterPracticeByStatus('done', this)"><i class="fas fa-check"></i> Đã làm</button>
+            <button class="filter-btn lele-status-btn" onclick="filterPracticeByStatus('new', this)">Chưa làm</button>
+            <span id="practice-done-count" class="lele-done-count"></span>
+          </span>
           <button onclick="showHistoryModal()" class="rd-hist-btn">
             <i class="fas fa-history"></i> Lịch sử
           </button>
@@ -119,12 +125,6 @@
               <button class="plele-tab" data-category="actual-test" onclick="loadPracticePassages('actual-test', this)">
                 <span class="plele-badge at">AT</span> Đề thật
               </button>
-            </div>
-            <div class="plele-filter-bar" id="practice-filter-bar">
-              <button class="pf-btn pf-active" onclick="filterPracticeByStatus('all', this)">Tất cả</button>
-              <button class="pf-btn" onclick="filterPracticeByStatus('done', this)"><i class="fas fa-check"></i> Đã làm</button>
-              <button class="pf-btn" onclick="filterPracticeByStatus('new', this)">Chưa làm</button>
-              <span id="practice-done-count" class="rd-done-count"></span>
             </div>
             <div id="rd-qtype-filter"></div>
           </aside>
@@ -559,7 +559,7 @@
   <div id="vocab-toast" class="vocab-toast"></div>
 
   <link rel="stylesheet" href="/css/qtype-filter.css?v=a122912ba7">
-  <link rel="stylesheet" href="/css/reading-extra.css?v=555cd2c886">
+  <link rel="stylesheet" href="/css/reading-extra.css?v=fa464f7a4c">
   <link rel="stylesheet" href="/css/reading-tips-practice.css?v=5f9dab360c">
   <link rel="stylesheet" href="/css/cd-exam.css?v=f84347dca2">
 
@@ -567,7 +567,7 @@
 
   <script src="/js/shared/cd-footer.js?v=f2f465f188"></script>
   <script src="/js/shared/qtype-filter.js?v=a8ce27cba2"></script>
-  <script src="/js/reading-v2.js?v=5316d8ee4a"></script>
+  <script src="/js/reading-v2.js?v=1fae31c35e"></script>
   <script src="/js/reading-tips.js?v=130efd0b99"></script>
   <script src="/js/shared/tips-practice-shell.js?v=3b88607984"></script>
   <script src="/js/reading-tips-practice.js?v=030bcf048e"></script>

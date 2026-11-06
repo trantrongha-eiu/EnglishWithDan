@@ -2876,6 +2876,11 @@ body.tool-hl .check-box { user-select: none; }
 .rd-done-count { margin-left:auto; font-size:12px; color:#6b7280; font-weight:500; }
 [data-theme="dark"] .rd-done-count { color:#9ca3af; }
 
+/* Bài lẻ: Tất cả / Đã làm / Chưa làm in the green/blue list header */
+.lele-status-filter { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.lele-done-count { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.9); white-space: nowrap; }
+.lele-done-count:empty { display: none; }
+
 /* Exam progress pill + state variants */
 .rd-progress-pill { font-size:12px; font-weight:600; color:#6b7280; background:#f3f4f6; padding:4px 10px; border-radius:50px; border:1px solid #e5e7eb; }
 .rd-progress-pill--done { background:#ecfdf5; color:#065f46; border-color:#6ee7b7; }

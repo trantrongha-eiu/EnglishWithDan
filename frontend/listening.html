@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb" />
     <link rel="stylesheet" href="/css/components.css?v=bb5d514434" />
-    <link rel="stylesheet" href="/css/listening.css?v=13526f8dc0" />
+    <link rel="stylesheet" href="/css/listening.css?v=97337a7570" />
     <link rel="stylesheet" href="/css/mobile.css?v=1319d3b9c8" />
     <link rel="stylesheet" href="/css/exam-embed.css?v=7c616e2d54" />
     <script>/* Entrance Test iframe — see css/exam-embed.css */if (/[?&]embed=entrance(&|$)/.test(location.search) && window.parent !== window) document.documentElement.classList.add('ews-embed');</script>
@@ -56,8 +56,14 @@
                     <h2 id="ls-mode-title">Luyện tập <span class="tag-red">Listening Full đề</span></h2>
                     <p class="list-subtitle" id="ls-mode-subtitle">Làm bài Listening IELTS đầy đủ 4 parts, có audio player và transcript sau khi nộp bài.</p>
                 </div>
-                <div id="lele-header-btns" style="display:none;align-items:center;gap:8px;margin-left:auto">
+                <div id="lele-header-btns" style="display:none;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap">
                     <input type="search" id="lt-practice-search-input" class="test-search-input" placeholder="🔍 Tìm tên bài..." oninput="filterLtPracticeCards(this.value)" style="width:180px" autocomplete="off">
+                    <span id="lt-practice-filter-bar" class="lele-status-filter">
+                        <button class="filter-btn lele-status-btn active" onclick="filterLtByStatus('all', this)">Tất cả</button>
+                        <button class="filter-btn lele-status-btn" onclick="filterLtByStatus('done', this)"><i class="fas fa-check"></i> Đã làm</button>
+                        <button class="filter-btn lele-status-btn" onclick="filterLtByStatus('new', this)">Chưa làm</button>
+                        <span id="lt-practice-done-count" class="lele-done-count"></span>
+                    </span>
                     <button onclick="showHistoryModal()" class="ls-hist-btn">
                         <i class="fas fa-history"></i> Lịch sử
                     </button>
@@ -127,13 +133,6 @@
                             <button class="plele-tab" data-part="actual" onclick="loadPracticeSections('actual', this)">
                                 <span class="plele-badge at">AT</span> Actual Tests
                             </button>
-                        </div>
-                        <!-- Filter bar: đã làm / chưa làm -->
-                        <div class="plele-filter-bar" id="lt-practice-filter-bar">
-                            <button class="pf-btn pf-active" onclick="filterLtByStatus('all', this)">Tất cả</button>
-                            <button class="pf-btn" onclick="filterLtByStatus('done', this)">✓ Đã làm</button>
-                            <button class="pf-btn" onclick="filterLtByStatus('new', this)">Chưa làm</button>
-                            <span id="lt-practice-done-count" class="ls-done-count"></span>
                         </div>
                         <div id="lt-qtype-filter"></div>
                     </aside>
@@ -666,17 +665,17 @@
     </div>
 
     <link rel="stylesheet" href="/css/qtype-filter.css?v=a122912ba7">
-    <link rel="stylesheet" href="/css/listening-extra.css?v=cf12371b95">
+    <link rel="stylesheet" href="/css/listening-extra.css?v=495cc6841a">
     <link rel="stylesheet" href="/css/listening-tips-practice.css?v=67532d532a">
     <link rel="stylesheet" href="/css/cd-exam.css?v=f84347dca2">
     <link rel="stylesheet" href="/css/listening-warmup.css?v=cd419383e2">
 
 
-    <script src="/js/listening.js?v=282346b99c"></script>
+    <script src="/js/listening.js?v=47b1fe3f12"></script>
 
     <!-- ══ Bài lẻ Listening – mode switch + practice flow ══════════════════ -->
     <script src="/js/shared/qtype-filter.js?v=a8ce27cba2"></script>
-    <script src="/js/listening-practice.js?v=1a5027f786"></script>
+    <script src="/js/listening-practice.js?v=950849596b"></script>
     <script src="/js/listening-warmup.js?v=3f279b60bd"></script>
     <script src="/js/listening-tips.js?v=ac65e3e36b"></script>
     <script src="/js/shared/tips-practice-shell.js?v=3b88607984"></script>

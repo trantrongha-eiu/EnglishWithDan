@@ -729,7 +729,7 @@ function testCard(t) {
 }
 
 function filterTests(filter, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#list-filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
   _activeFilter = filter;
   _rdPage = 1;
@@ -1377,8 +1377,8 @@ async function _rdRunGlobalSearch() {
 }
 
 function filterPracticeByStatus(filter, btn) {
-  document.querySelectorAll('.pf-btn').forEach(b => b.classList.remove('pf-active'));
-  if (btn) btn.classList.add('pf-active');
+  document.querySelectorAll('#practice-filter-bar .lele-status-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
   _practiceStatusFilter = filter;
   _rdPracticePage = 1;
   rerenderPracticePassages();
@@ -1530,7 +1530,7 @@ async function loadPracticePassages(category, tabEl) {
   const searchInp = document.getElementById('practice-search-input');
   if (searchInp) searchInp.value = '';
   _practiceStatusFilter = 'all';
-  document.querySelectorAll('.pf-btn').forEach(b => b.classList.toggle('pf-active', (b.getAttribute('onclick') || '').indexOf("'all'") !== -1));
+  document.querySelectorAll('#practice-filter-bar .lele-status-btn').forEach(b => b.classList.toggle('active', (b.getAttribute('onclick') || '').indexOf("'all'") !== -1));
 
   const listEl = document.getElementById('practice-passage-list');
   if (!listEl) return;
@@ -1583,7 +1583,7 @@ async function loadPracticePassages(category, tabEl) {
     _allPracticePassages    = passages;
     _currentPracticeCategory = category;
     _practiceStatusFilter   = 'all';
-    document.querySelectorAll('.pf-btn').forEach((b, i) => b.classList.toggle('pf-active', i === 0));
+    document.querySelectorAll('#practice-filter-bar .lele-status-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
     const searchInpReset = document.getElementById('practice-search-input');
     if (searchInpReset) searchInpReset.value = '';
 

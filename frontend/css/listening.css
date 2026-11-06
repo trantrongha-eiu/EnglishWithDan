@@ -2278,6 +2278,11 @@ body.eye-protection .review-questions-panel { background: #faf8f3 !important; }
 .ls-done-count { margin-left:auto; font-size:12px; color:#6b7280; font-weight:500; }
 [data-theme="dark"] .ls-done-count { color:#9ca3af; }
 
+/* Bài lẻ: Tất cả / Đã làm / Chưa làm in the green/blue list header */
+.lele-status-filter { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.lele-done-count { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.9); white-space: nowrap; }
+.lele-done-count:empty { display: none; }
+
 /* Exam progress pill */
 .ls-progress-pill { font-size:12px; font-weight:600; color:#6b7280; background:#f3f4f6; padding:4px 10px; border-radius:50px; border:1px solid #e5e7eb; flex-shrink:0; }
 [data-theme="dark"] .ls-progress-pill { background:var(--surface, #0d0d0d); border-color:var(--border2, #333333); color:#9ca3af; }

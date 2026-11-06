@@ -433,34 +433,6 @@
     [data-theme="dark"] .practice-card-btn.redo { background: #1e293b !important; color: #94a3b8; border-color: #334155; }
     [data-theme="dark"] .practice-card-btn.redo:hover { background: #293548 !important; border-color: #475569; }
 
-    /* ── Practice filter bar (Tất cả / Đã làm / Chưa làm) ─────────── */
-    .plele-filter-bar {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 6px;
-      margin: 0;
-      padding-top: 12px;
-      border-top: 1px solid #f3f4f6;
-    }
-    .pf-btn {
-      font-size: 12px;
-      font-weight: 600;
-      color: #6b7280;
-      background: none;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 6px 12px;
-      text-align: left;
-      cursor: pointer;
-      transition: all .15s;
-      font-family: inherit;
-      white-space: nowrap;
-    }
-    .pf-btn:hover { border-color: #d1d5db; color: #374151; }
-    .pf-btn.pf-active { background: #eff6ff; border-color: #3d8bff; color: #1d4ed8; }
-    .plele-filter-bar .rd-done-count { margin-left: 0; margin-top: 2px; }
-
     /* ── Done ribbon on practice cards ──────────────────────────────── */
     .practice-done-ribbon {
       position: absolute;
@@ -575,11 +547,6 @@
     [data-theme="dark"] .plele-tab.plele-active .plele-range { color: #60a5fa; }
     [data-theme="dark"] .plele-range { color: #6b7280; }
     [data-theme="dark"] .plele-cat-tabs { border-bottom-color: var(--border2, #333333); }
-    [data-theme="dark"] .plele-filter-bar { border-top-color: var(--border2, #333333); }
-
-    [data-theme="dark"] .pf-btn { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); color: #9ca3af; }
-    [data-theme="dark"] .pf-btn:hover { border-color: #4b5563; color: #d1d5db; }
-    [data-theme="dark"] .pf-btn.pf-active { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; }
 
     /* ── Bài lẻ sidebar → stacked horizontal bar on narrow screens ─ */
     @media (max-width: 900px) {
@@ -599,14 +566,6 @@
         flex: 1;
       }
       .plele-tab { width: auto; }
-      .plele-filter-bar {
-        flex-direction: row;
-        align-items: center;
-        border-top: none;
-        padding-top: 0;
-        flex-wrap: wrap;
-      }
-      .pf-btn { text-align: center; }
     }
 
     [data-theme="dark"] .practice-card { background: var(--surface, #0d0d0d); border-color: var(--border2, #333333); }
