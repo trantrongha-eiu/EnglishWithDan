@@ -16,7 +16,11 @@ const MESSAGES = {
   invalid_target: [400, 'Không ném bánh vào chính mình được 😆'],
   already_caked: [400, 'Bạn này đang dính kem rồi — để mai ném tiếp nhé!'],
   not_caked: [400, 'Ảnh đại diện của bạn đang sạch, chưa cần lau đâu ✨'],
-  target_not_found: [404, 'Không tìm thấy bạn này trên BXH.'],
+  target_not_found: [404, 'Không tìm thấy bạn này.'],
+  gift_self: [400, 'Không tự tặng quà cho chính mình được 😆'],
+  gift_blocked: [403, 'Không tặng được cho bạn này (một trong hai đã chặn người kia).'],
+  target_full: [400, 'Bạn ấy đã giữ đủ số lượng tối đa của vật phẩm này rồi.'],
+  target_has_pet: [400, 'Bạn ấy đã có linh thú này rồi — chọn bé khác nhé!'],
   hope_too_late: [400, 'Hôm nay bạn đã kiếm gần hết 🔥 tối đa (5/ngày) — không còn đủ chỗ để kiếm thêm 3 🔥 cho Búa Hi Vọng. Hãy đập búa vào đầu ngày mai, trước khi học nhé!'],
 };
 
@@ -87,4 +91,18 @@ exports.throwCake = catchAsync(async (req, res) => {
 // ── PUT /api/shop/pet { petId } ('' = cất linh thú) ───────────
 exports.setPet = catchAsync(async (req, res) => {
   send(res, await shopService.setActivePet(req.user._id, String((req.body || {}).petId || '')));
+});
+
+// ── GET /api/shop/gift-recipients?q= — who the 🎁 Tặng dialog can pick ──
+exports.giftRecipients = catchAsync(async (req, res) => {
+  res.json({ success: true, users: await shopService.searchGiftRecipients(req.user._id, req.query.q) });
+});
+
+// ── POST /api/shop/gift { kind: 'item'|'pet', key, toId, qty? } ──
+exports.gift = catchAsync(async (req, res) => {
+  const { kind, key, toId, qty } = req.body || {};
+  const result = kind === 'pet'
+    ? await shopService.giftPet(req.user._id, String(key || ''), String(toId || ''))
+    : await shopService.giftItem(req.user._id, String(key || ''), String(toId || ''), qty === undefined ? 1 : qty);
+  send(res, result);
 });

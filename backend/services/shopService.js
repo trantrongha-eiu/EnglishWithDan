@@ -8,6 +8,8 @@ const User = require('../models/User');
 const Message = require('../models/Message');
 const ShopPurchase = require('../models/ShopPurchase');
 const ShopAnnouncement = require('../models/ShopAnnouncement');
+const Block = require('../models/Block');
+const { escapeRegex } = require('../utils/strings');
 const mongoose = require('mongoose');
 const { getVNDay, effectiveStreak, coverMissedDaysWithShields } = require('../utils/streak');
 const { DAILY_STREAK_BONUS_CAP, streakBonusEarnedToday } = require('./streakBonusService');
@@ -460,6 +462,143 @@ async function sellPet(userId, petId) {
   return { status: 'ok', wallet: u.flameWallet, activePet: u.activePet || '', refund };
 }
 
+// ── Tặng quà (Kho đồ → 🎁 Tặng) ─────────────────────────────────
+// Moves owned items / a linh thú from one player (student or teacher) to
+// another. Taken from the giver first with a conditional update (so a
+// double-click can't give away more than they hold), then landed on the
+// recipient under the same caps buying has (maxOwned, one of each pet) —
+// if that fails in between, the giver gets it back.
+
+const GIFT_SEARCH_LIMIT = 20;
+
+async function blockedEitherWay(a, b) {
+  return !!(await Block.exists({ $or: [{ blockerId: a, blockedId: b }, { blockerId: b, blockedId: a }] }));
+}
+
+async function giftTarget(userId, toId) {
+  if (!toId || String(toId) === String(userId)) return { status: 'gift_self' };
+  if (!mongoose.isValidObjectId(toId)) return { status: 'target_not_found' };
+  const target = await User.findById(toId).select('role isBanned firstName lastName username').lean();
+  if (!target || !isFlameRole(target.role) || target.isBanned) return { status: 'target_not_found' };
+  if (await blockedEitherWay(userId, toId)) return { status: 'gift_blocked' };
+  return { target };
+}
+
+// Who can receive a gift: other students/teachers, not banned, not blocked
+// either way. `q` matches first/last name or username; with no `q`, the
+// longest streaks come first (the people the giver sees on the BXH).
+async function searchGiftRecipients(userId, q) {
+  const filter = { role: { $in: FLAME_ROLES }, isBanned: { $ne: true }, _id: { $ne: userId } };
+  const term = String(q || '').trim().slice(0, 50);
+  if (term) {
+    const words = term.split(/\s+/).map(w => new RegExp(escapeRegex(w), 'i'));
+    filter.$and = words.map(rx => ({ $or: [{ firstName: rx }, { lastName: rx }, { username: rx }] }));
+  }
+  const [users, blocks] = await Promise.all([
+    User.find(filter).select('firstName lastName username avatar role')
+      .sort({ learningStreak: -1, firstName: 1 }).limit(GIFT_SEARCH_LIMIT * 2).lean(),
+    Block.find({ $or: [{ blockerId: userId }, { blockedId: userId }] }).select('blockerId blockedId').lean(),
+  ]);
+  const blocked = new Set(blocks.map(b => String(String(b.blockerId) === String(userId) ? b.blockedId : b.blockerId)));
+  return users
+    .filter(u => !blocked.has(String(u._id)))
+    .slice(0, GIFT_SEARCH_LIMIT)
+    .map(u => ({ _id: u._id, name: displayName(u), username: u.username, avatar: u.avatar || '', teacher: u.role === 'teacher' }));
+}
+
+// Inbox note for the recipient (and bell notification). Best-effort.
+async function notifyGift(giver, toId, what) {
+  try {
+    const name = displayName(giver);
+    await Message.create({
+      fromId: giver._id, fromName: name, toId,
+      subject: `🎁 ${name} đã tặng bạn ${what}`,
+      body: `${name} vừa tặng bạn ${what} từ Cửa hàng lửa. Quà đã nằm sẵn trong Kho đồ (trang cá nhân) — vào xem ngay nhé!`,
+      type: 'gift',
+    });
+  } catch (err) {
+    console.error('[shop] notifyGift failed:', err.message);
+  }
+}
+
+async function giftItem(userId, key, toId, qty = 1) {
+  const item = ITEM_BY_KEY[key];
+  if (!item) return { status: 'not_found' };
+  const n = Number(qty);
+  if (!Number.isInteger(n) || n < 1 || n > MAX_BUY_QTY) return { status: 'invalid_qty', max: MAX_BUY_QTY };
+  const giver = await User.findById(userId).select('role firstName lastName username').lean();
+  if (!giver || !isFlameRole(giver.role)) return { status: 'forbidden' };
+  const t = await giftTarget(userId, toId);
+  if (t.status) return t;
+  const field = itemField(item);
+
+  if (item.maxOwned) {
+    const cur = await User.findById(toId).select(field).lean();
+    const left = Math.max(0, item.maxOwned - ownedOf(cur, item));
+    if (n > left) return { status: 'target_full', max: item.maxOwned, left };
+  }
+
+  const taken = await User.findOneAndUpdate(
+    { _id: userId, [field]: { $gte: n } },
+    { $inc: { [field]: -n } },
+    { new: true }
+  ).select(field).lean();
+  if (!taken) return { status: 'none_left' };
+
+  const landFilter = { _id: toId, role: { $in: FLAME_ROLES } };
+  if (item.maxOwned) landFilter[field] = { $not: { $gt: item.maxOwned - n } };
+  const landed = await User.updateOne(landFilter, { $inc: { [field]: n } });
+  if (landed.modifiedCount !== 1) {
+    await User.updateOne({ _id: userId }, { $inc: { [field]: n } });
+    return item.maxOwned ? { status: 'target_full', max: item.maxOwned, left: 0 } : { status: 'target_not_found' };
+  }
+
+  await notifyGift(giver, toId, `${n > 1 ? n + ' × ' : ''}${item.emoji} ${item.name}`);
+  return { status: 'ok', owned: ownedOf(taken, item), qty: n, targetName: displayName(t.target) };
+}
+
+async function giftPet(userId, petId, toId) {
+  const pet = PET_BY_ID[petId];
+  if (!pet) return { status: 'not_found' };
+  const giver = await User.findById(userId).select('role firstName lastName username').lean();
+  if (!giver || !isFlameRole(giver.role)) return { status: 'forbidden' };
+  const t = await giftTarget(userId, toId);
+  if (t.status) return t;
+  if (await User.exists({ _id: toId, pets: petId })) return { status: 'target_has_pet' };
+
+  // Out of the giver's kho; if it was out walking, it comes home first.
+  const taken = await User.findOneAndUpdate(
+    { _id: userId, pets: petId },
+    [{
+      $set: {
+        pets: { $filter: { input: '$pets', cond: { $ne: ['$$this', petId] } } },
+        activePet: { $cond: [{ $eq: ['$activePet', petId] }, '', '$activePet'] },
+      },
+    }],
+    { new: true, updatePipeline: true }
+  ).select('activePet').lean();
+  if (!taken) return { status: 'not_owned' };
+
+  // Into the recipient's — straight out for a walk if they had none out.
+  const landed = await User.updateOne(
+    { _id: toId, role: { $in: FLAME_ROLES }, pets: { $ne: petId } },
+    [{
+      $set: {
+        pets: { $concatArrays: [{ $ifNull: ['$pets', []] }, [petId]] },
+        activePet: { $cond: [{ $gt: [{ $strLenCP: { $ifNull: ['$activePet', ''] } }, 0] }, '$activePet', petId] },
+      },
+    }],
+    { updatePipeline: true }
+  );
+  if (landed.modifiedCount !== 1) {
+    await User.updateOne({ _id: userId, pets: { $ne: petId } }, { $push: { pets: petId } });
+    return { status: 'target_has_pet' };
+  }
+
+  await notifyGift(giver, toId, `linh thú 🐾 ${pet.name}`);
+  return { status: 'ok', activePet: taken.activePet || '', targetName: displayName(t.target) };
+}
+
 // Decorations for the BXH rows (userService.rankedStreaks): which linh
 // thú sits next to the name, crown, cloak, cake.
 function boardDecor(u) {
@@ -474,4 +613,5 @@ function boardDecor(u) {
 module.exports = {
   getState, getFeed, getAnnouncements, announceLogin, getCakeNotice, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake, sellItem, sellPet,
   settleHopeHammer, settleAllHopeHammers, seedWallet, boardDecor,
+  giftItem, giftPet, searchGiftRecipients,
 };

@@ -13,5 +13,7 @@ router.post('/buy',  auth, shopCtrl.buy);
 router.post('/use',  auth, shopCtrl.use);
 router.post('/sell', auth, shopCtrl.sell);
 router.post('/cake', auth, shopCtrl.throwCake);
+router.get('/gift-recipients', auth, shopCtrl.giftRecipients);
+router.post('/gift', auth, shopCtrl.gift);
 
 module.exports = router;

@@ -157,3 +157,78 @@ describe('/api/shop', () => {
     expect((await User.findById(s._id).lean()).shopItems.cake).toBe(1);
   });
 });
+
+describe('/api/shop gifts (Kho đồ → 🎁 Tặng)', () => {
+  const Message = require('../../models/Message');
+  const Block = require('../../models/Block');
+  const { createAdmin } = require('../factories/userFactory');
+  const gift = (from, body) => request(app).post('/api/shop/gift').set(auth(from)).send(body);
+
+  test('moves items to the recipient and leaves them an inbox note', async () => {
+    const s = await createStudent({ firstName: 'An', lastName: 'Lê', extra: { shopItems: { cake: 3 }, streakHammers: 1 } });
+    const t = await createTeacher();
+    let res = await gift(s, { kind: 'item', key: 'cake', toId: String(t._id), qty: 2 });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ success: true, owned: 1, qty: 2 });
+    expect((await User.findById(t._id).lean()).shopItems.cake).toBe(2);
+    const note = await Message.findOne({ toId: t._id }).lean();
+    expect(note.subject).toMatch(/An Lê đã tặng bạn 2 × 🎂/);
+
+    // Búa Daniel lives on streakHammers, not shopItems.
+    res = await gift(s, { kind: 'item', key: 'danielHammer', toId: String(t._id) });
+    expect(res.status).toBe(200);
+    expect((await User.findById(s._id).lean()).streakHammers).toBe(0);
+    expect((await User.findById(t._id).lean()).streakHammers).toBe(1);
+  });
+
+  test('cannot give more than owned, to yourself, to an admin, or past maxOwned', async () => {
+    const s = await createStudent({ extra: { shopItems: { cake: 1, iceShield: 2 } } });
+    const other = await createStudent({ extra: { shopItems: { iceShield: 1 } } });
+    const admin = await createAdmin();
+    expect((await gift(s, { kind: 'item', key: 'cake', toId: String(other._id), qty: 2 })).body.code).toBe('none_left');
+    expect((await gift(s, { kind: 'item', key: 'cake', toId: String(s._id) })).body.code).toBe('gift_self');
+    expect((await gift(s, { kind: 'item', key: 'cake', toId: String(admin._id) })).body.code).toBe('target_not_found');
+    const full = await gift(s, { kind: 'item', key: 'iceShield', toId: String(other._id), qty: 2 });
+    expect(full.body).toMatchObject({ code: 'target_full', left: 1 });
+    // Nothing was taken on any of the failures.
+    expect((await User.findById(s._id).lean()).shopItems).toMatchObject({ cake: 1, iceShield: 2 });
+  });
+
+  test('blocked either way → no gift', async () => {
+    const s = await createStudent({ extra: { shopItems: { cake: 1 } } });
+    const other = await createStudent();
+    await Block.create({ blockerId: other._id, blockedId: s._id });
+    expect((await gift(s, { kind: 'item', key: 'cake', toId: String(other._id) })).body.code).toBe('gift_blocked');
+    expect((await User.findById(s._id).lean()).shopItems.cake).toBe(1);
+  });
+
+  test('a linh thú moves over; the walking one comes home; no duplicates', async () => {
+    const s = await createStudent({ extra: { pets: ['meo', 'shiba'], activePet: 'meo' } });
+    const other = await createStudent({ extra: { pets: ['shiba'] } });
+    expect((await gift(s, { kind: 'pet', key: 'shiba', toId: String(other._id) })).body.code).toBe('target_has_pet');
+    const res = await gift(s, { kind: 'pet', key: 'meo', toId: String(other._id) });
+    expect(res.status).toBe(200);
+    expect(res.body.activePet).toBe('');
+    const [giver, recv] = await Promise.all([User.findById(s._id).lean(), User.findById(other._id).lean()]);
+    expect(giver.pets).toEqual(['shiba']);
+    expect(recv.pets).toEqual(['shiba', 'meo']);
+    expect(recv.activePet).toBe('meo'); // had none out walking
+  });
+
+  test('recipient search: students + teachers, not self/admins/blocked/banned', async () => {
+    const s = await createStudent({ firstName: 'Zed' });
+    const mate = await createStudent({ firstName: 'Zoe', lastName: 'Trần' });
+    const t = await createTeacher({ firstName: 'Zara' });
+    await createAdmin({ firstName: 'Zack' });
+    await createStudent({ firstName: 'Zoro', extra: { isBanned: true } });
+    const blocked = await createStudent({ firstName: 'Zuri' });
+    await Block.create({ blockerId: s._id, blockedId: blocked._id });
+    const res = await request(app).get('/api/shop/gift-recipients?q=z').set(auth(s));
+    expect(res.status).toBe(200);
+    const ids = res.body.users.map(u => String(u._id)).sort();
+    expect(ids).toEqual([String(mate._id), String(t._id)].sort());
+    expect(res.body.users.find(u => String(u._id) === String(t._id)).teacher).toBe(true);
+    const two = await request(app).get('/api/shop/gift-recipients?q=' + encodeURIComponent('zoe trần')).set(auth(s));
+    expect(two.body.users.map(u => String(u._id))).toEqual([String(mate._id)]);
+  });
+});
