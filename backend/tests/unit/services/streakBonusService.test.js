@@ -172,10 +172,11 @@ describe('awardPracticeFlames', () => {
     expect(doc.flameItems['dictation:s1']).toBe(1);
   });
 
-  test('non-students earn nothing', async () => {
-    const { createTeacher } = require('../../factories/userFactory');
-    if (!createTeacher) return;
+  test('teachers earn 🔥 like students; admins earn nothing', async () => {
+    const { createTeacher, createAdmin } = require('../../factories/userFactory');
     const teacher = await createTeacher();
-    expect((await awardPracticeFlames(teacher._id, 'x', 3)).bonusApplied).toBe(0);
+    expect((await awardPracticeFlames(teacher._id, 'x', 3)).bonusApplied).toBe(3);
+    const admin = await createAdmin();
+    expect((await awardPracticeFlames(admin._id, 'x', 3)).bonusApplied).toBe(0);
   });
 });

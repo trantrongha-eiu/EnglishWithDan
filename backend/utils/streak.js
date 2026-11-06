@@ -3,7 +3,7 @@
 // the same Vietnam-timezone "is this streak still alive" logic without
 // touching/saving a document for every user they look at.
 
-const { HOPE_MULTIPLIER } = require('../constants/shop');
+const { HOPE_MULTIPLIER, isFlameRole } = require('../constants/shop');
 
 // Trả về ngày theo giờ Việt Nam (UTC+7), lưu dưới dạng UTC midnight —
 // same convention as User.js's own getVNDay.
@@ -170,7 +170,7 @@ async function applyStreakActivity(User, userId, bonus = 1, { allowSameDayStack 
 // count doesn't grow — same as a low-accuracy vocab/test session). Before this, a day
 // spent only on these (often the class homework) didn't count at all, and
 // the next day the streak was gone: the "có học mà vẫn mất chuỗi" reports.
-// Students only; best-effort — never fails the save that called it.
+// Students and teachers only (isFlameRole); best-effort — never fails the save that called it.
 // Dictation / Shadowing save per sentence count, so they only keep the
 // chain alive once a save covers at least this many sentences.
 const MIN_STREAK_SENTENCES = 5;
@@ -179,7 +179,7 @@ async function keepStreakAlive(userId) {
   try {
     const User = require('../models/User'); // lazy: models/User ↔ utils
     const u = await User.findById(userId).select('role').lean();
-    if (!u || u.role !== 'student') return null;
+    if (!u || !isFlameRole(u.role)) return null;
     return await applyStreakActivity(User, userId, 0, { allowSameDayStack: true });
   } catch (err) {
     console.error('[streak] keepStreakAlive failed:', err.message);

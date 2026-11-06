@@ -8,6 +8,7 @@
 const VocabActivity = require('../models/VocabActivity');
 const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
+const { isFlameRole } = require('../constants/shop');
 
 // Vietnam local day (UTC+7), stored as UTC midnight — same convention as
 // User.js's own getVNDay/effectiveStreak.
@@ -152,13 +153,13 @@ async function reserveDailyStreakBonus(userId, rawBonus, _retries = 5) {
 // within one VN day the same key only ever earns up to `target` in total —
 // redoing the same passage/lesson/test can top up to a better tier, but
 // can't farm the same 🔥 again. Then the daily cap applies. Always advances
-// the day-chain (bonus 0 still keeps the streak alive). Students only;
+// the day-chain (bonus 0 still keeps the streak alive). Students and teachers only;
 // best-effort — never throws into the save that called it.
 // Returns { bonusApplied, streak } (streak null when nothing was written).
 async function awardPracticeFlames(userId, key, target) {
   try {
     const u = await User.findById(userId).select('role').lean();
-    if (!u || u.role !== 'student') return { bonusApplied: 0, streak: null };
+    if (!u || !isFlameRole(u.role)) return { bonusApplied: 0, streak: null };
     const applied = await reserveItemFlames(userId, String(key || ''), Math.max(0, Math.floor(target) || 0));
     const doc = await applyStreakActivity(User, userId, applied, { allowSameDayStack: true });
     return { bonusApplied: applied, streak: doc ? doc.learningStreak : null };

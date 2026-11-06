@@ -9,6 +9,7 @@ const parser = require('./vocabularyLessonParser');
 const { reachedDailyWordThreshold, awardPracticeFlames, vocabBonusForAccuracy } = require('./streakBonusService');
 const User = require('../models/User');
 const shopService = require('./shopService');
+const { FLAME_ROLES, isFlameRole } = require('../constants/shop');
 const { toCardThumbnail, isValidCoverUrl } = require('../utils/cardThumbnail');
 
 // A quiz run under this many questions doesn't count toward the daily vocab
@@ -100,7 +101,7 @@ async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeS
   // already saved above, so a hiccup here must not turn a successful submit
   // into a 500. Needs the full user doc (updateStreak lives on the model) —
   // callers that don't pass it (e.g. some tests) just skip this.
-  if (user && user.role === 'student' && total >= MIN_STUDIED_QUESTIONS) {
+  if (user && isFlameRole(user.role) && total >= MIN_STUDIED_QUESTIONS) {
     try {
       user.lastVocabStudyDate = new Date();
       const qualifiesToday = await reachedDailyWordThreshold(user._id, { wordsStudied: total });
@@ -160,7 +161,7 @@ async function rankedQuizAverages(limit) {
       },
     },
     { $unwind: '$_user' },
-    { $match: { '_user.role': 'student' } }, // exclude teacher/admin test attempts from a student-facing board
+    { $match: { '_user.role': { $in: FLAME_ROLES } } }, // students + teachers race; admin test attempts stay out
     { $sort: { avgScore: -1, avgTimeSpent: 1 } },
     ...(limit ? [{ $limit: limit }] : []),
     {
@@ -190,12 +191,12 @@ async function getQuizLeaderboard(limit = 10) {
 
 // Top `limit` plus the caller's own standing (BXH vocab page). Ranks the
 // whole board (one row per student who ever did a qualifying quiz — small)
-// to find the caller's place. `me` is null for staff.
+// to find the caller's place. `me` is null for admins.
 async function getQuizStanding(userId, limit = 10) {
   const all = await rankedQuizAverages(0);
   const leaderboard = all.slice(0, limit);
   const user = await User.findById(userId).select('role activePet crownUntil invisibleUntil cakedUntil cakedBy').lean();
-  if (!user || user.role !== 'student') return { leaderboard, me: null };
+  if (!user || !isFlameRole(user.role)) return { leaderboard, me: null };
   const { pet, crown, cakedBy } = shopService.boardDecor(user);
   const idx = all.findIndex(r => String(r.userId) === String(userId));
   if (idx === -1) return { leaderboard, me: { rank: null, total: all.length, pet, crown, cakedBy } };
@@ -226,7 +227,7 @@ async function getLessonAttemptLeaderboard(lessonId, limit = 50) {
     .limit(limit)
     .lean();
   return rows
-    .filter(r => r.userId && r.userId.role === 'student') // dropped user, or a teacher/admin test attempt
+    .filter(r => r.userId && isFlameRole(r.userId.role)) // dropped user, or an admin test attempt
     .map(r => ({
       userId: r.userId._id,
       name: `${r.userId.firstName || ''} ${r.userId.lastName || ''}`.trim() || r.userId.username,

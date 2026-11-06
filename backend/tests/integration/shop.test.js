@@ -131,10 +131,23 @@ describe('/api/shop', () => {
     expect(res.body.danielHammer).toEqual({ count: 1, canUse: true, previousStreak: 30 });
   });
 
-  test('staff cannot buy', async () => {
-    const t = await createTeacher({ extra: { flameWallet: 100 } });
-    const res = await request(app).post('/api/shop/buy').set(auth(t)).send({ kind: 'item', key: 'cake' });
+  test('teachers can buy; admins cannot', async () => {
+    const t = await createTeacher({ extra: { flameWallet: 100, flameWalletGranted: true } });
+    const ok = await request(app).post('/api/shop/buy').set(auth(t)).send({ kind: 'item', key: 'cake' });
+    expect(ok.status).toBe(200);
+    expect((await User.findById(t._id).lean()).shopItems.cake).toBe(1);
+    const { createAdmin } = require('../factories/userFactory');
+    const a = await createAdmin({ extra: { flameWallet: 100 } });
+    const res = await request(app).post('/api/shop/buy').set(auth(a)).send({ kind: 'item', key: 'cake' });
     expect(res.status).toBe(403);
+  });
+
+  test('a teacher on the BXH can be hit by a cake', async () => {
+    const s = await createStudent({ extra: { shopItems: { cake: 1 } } });
+    const t = await createTeacher();
+    const res = await request(app).post('/api/shop/cake').set(auth(s)).send({ targetId: String(t._id) });
+    expect(res.status).toBe(200);
+    expect((await User.findById(t._id).lean()).cakedUntil).toBeTruthy();
   });
 
   test('cake on a bad id is refunded, not lost', async () => {

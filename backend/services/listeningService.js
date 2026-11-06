@@ -33,6 +33,7 @@ const { normalizeParts, partsFilter, scaledCorrect } = require('../utils/partSel
 const warmUpUtil = require('../utils/listeningWarmUp');
 const transcriptTiming = require('./transcriptTimingService');
 const { questionTypesOf } = require('../utils/questionTypes');
+const { isFlameRole } = require('../constants/shop');
 const { toStudentWarmUp } = warmUpUtil;
 
 // Mongoose `.select()` string that strips a section's answer key
@@ -1234,7 +1235,7 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
   let bonusApplied = 0;
   let newlyUnlocked = [];
   let streak = user.learningStreak;
-  if (user.role === 'student') {
+  if (isFlameRole(user.role)) {
     // Accuracy → 🔥 (>=50% +1, >=70% +2, >=90% +3), within the shared
     // daily cap — see streakBonusService.awardPracticeFlames.
     const accuracy = total > 0 ? correct / total : 0;

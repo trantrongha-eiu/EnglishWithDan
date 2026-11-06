@@ -1033,11 +1033,12 @@ describe('vocabBookService', () => {
       expect(result.status).toBe('too_few');
     });
 
-    it('returns not_student for a non-student role', async () => {
-      const { createTeacher } = require('../../factories/userFactory');
+    it('returns not_student for an admin; a teacher practises like a student', async () => {
+      const { createTeacher, createAdmin } = require('../../factories/userFactory');
+      const admin = await createAdmin();
+      expect((await vocabBookService.completePractice(admin, { wordsAnswered: 10, correctAnswered: 10 })).status).toBe('not_student');
       const teacher = await createTeacher();
-      const result = await vocabBookService.completePractice(teacher, { wordsAnswered: 10, correctAnswered: 10 });
-      expect(result.status).toBe('not_student');
+      expect((await vocabBookService.completePractice(teacher, { wordsAnswered: 10, correctAnswered: 10 })).status).toBe('ok');
     });
 
     it('logs the vocab activity under the Vietnam-local calendar day, not raw UTC', async () => {

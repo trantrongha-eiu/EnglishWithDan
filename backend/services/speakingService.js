@@ -12,6 +12,7 @@ const { checkSpeakingMistral, _voxtralFormat } = require('./mistralService');
 const { isV2, normalizeSpeakingV2, candidateText } = require('./speakingScoringV2');
 const badgeService = require('./badgeService');
 const { awardPracticeFlames } = require('./streakBonusService');
+const { isFlameRole } = require('../constants/shop');
 
 // Daniel's Speaking textbook's 7 Part 2 cue-card groups — same taxonomy
 // speaking-course.html's Part 2 module (SPK-P2-M2, "Buổi 4-11") already
@@ -600,7 +601,7 @@ async function saveAttempt(user, { questionId, topic, part, questionText, transc
 // getActivityHeatmap), so a student who only practiced Speaking that day
 // saw the day marked "done" there yet had their streak quietly die anyway.
 async function _creditStreakForAnalyzedAttempt(user, attempt) {
-  if (!user || user.role !== 'student') return [];
+  if (!user || !isFlameRole(user.role)) return [];
   await awardPracticeFlames(user._id, `speaking:${(attempt && (attempt.questionId || attempt._id)) || ''}`, 1);
   const { newlyUnlocked } = await badgeService.checkAndAwardNewBadges(user._id);
   return newlyUnlocked;

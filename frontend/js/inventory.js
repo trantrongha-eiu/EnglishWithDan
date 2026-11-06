@@ -208,7 +208,8 @@
         if (!window.AuthService || !window.AuthService.isLoggedIn()) return;
         var u = window.AuthService.getUser && window.AuthService.getUser();
         var tabBtn = document.querySelector('.tab-btn[data-tab="inventory"]');
-        if (u && u.role && u.role !== 'student') { if (tabBtn) tabBtn.style.display = 'none'; return; }
+        // Students and teachers play the 🔥 game (backend constants/shop.js FLAME_ROLES).
+        if (u && u.role && u.role !== 'student' && u.role !== 'teacher') { if (tabBtn) tabBtn.style.display = 'none'; return; }
         load();
         // pets.js is injected by nav.js and may land after the first render —
         // repaint once it's there so the pet cards get their art.

@@ -23,12 +23,13 @@ describe('peerService.getPeerProfile', () => {
     expect(result.profile).not.toHaveProperty('banReason');
   });
 
-  test('rejects viewing a non-student (teacher/admin) profile through this endpoint', async () => {
+  test("a teacher's profile opens (they are on the BXH); an admin's does not", async () => {
+    const { createAdmin } = require('../../factories/userFactory');
     const viewer = await createStudent();
     const teacher = await createTeacher();
-
-    const result = await peerService.getPeerProfile(viewer._id, teacher._id);
-    expect(result.status).toBe('not_found');
+    expect((await peerService.getPeerProfile(viewer._id, teacher._id)).status).toBe('ok');
+    const admin = await createAdmin();
+    expect((await peerService.getPeerProfile(viewer._id, admin._id)).status).toBe('not_found');
   });
 
   test('reports not_found for a nonexistent or malformed id', async () => {

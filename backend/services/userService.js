@@ -16,6 +16,7 @@ const { COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 const { effectiveStreak, coverMissedDaysWithShields } = require('../utils/streak');
 const shopService = require('./shopService');
 const { todayVNDate } = require('./streakBonusService');
+const { FLAME_ROLES, isFlameRole } = require('../constants/shop');
 
 // targetBand/targetExamDate are the SAME underlying User fields
 // goalService.js's /api/goals validates (see that file's own comment) —
@@ -317,7 +318,7 @@ async function getActivityHeatmap(userId, days = 365) {
 // resetIfStale() whenever a student happens to load /user/stats, so a
 // student who lost their streak days ago but hasn't opened the app since
 // would otherwise still show their old count here.
-// Every student with a live streak, longest first.
+// Every student/teacher with a live streak, longest first.
 //
 // Each row also carries its Cửa hàng lửa decorations (shopService.boardDecor:
 // linh thú, crown, Áo Tàng Hình, cake). A cloaked student's number is
@@ -325,7 +326,7 @@ async function getActivityHeatmap(userId, days = 365) {
 // — so it can't be read back out of the response either.
 async function rankedStreaks(viewerId) {
   await shopService.settleAllHopeHammers().catch(() => 0);
-  const candidates = await User.find({ role: 'student', learningStreak: { $gt: 0 } })
+  const candidates = await User.find({ role: { $in: FLAME_ROLES }, learningStreak: { $gt: 0 } })
     .select('firstName lastName username avatar learningStreak lastActivityDate shopItems activePet crownUntil invisibleUntil cakedUntil cakedBy')
     .lean();
 
@@ -348,12 +349,13 @@ async function getStreakLeaderboard(limit = 10, viewerId = null) {
 
 // Top `limit` plus the caller's own standing (BXH vocab page), so a
 // student outside the top 10 still sees their rank and the gap to the
-// next place. `me` is null for staff — they never appear on the board.
+// next place. `me` is null for admins — they never appear on the board
+// (teachers do: isFlameRole).
 async function getStreakStanding(userId, limit = 10) {
   const all = await rankedStreaks(userId);
   const leaderboard = all.slice(0, limit);
   const user = await User.findById(userId).select('role activePet crownUntil invisibleUntil cakedUntil cakedBy').lean();
-  if (!user || user.role !== 'student') return { leaderboard, me: null };
+  if (!user || !isFlameRole(user.role)) return { leaderboard, me: null };
   const decor = shopService.boardDecor(user);
   const idx = all.findIndex(u => String(u._id) === String(userId));
   if (idx === -1) return { leaderboard, me: { rank: null, streak: 0, total: all.length, ...decor } };

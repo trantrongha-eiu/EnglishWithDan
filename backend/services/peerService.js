@@ -11,6 +11,7 @@ const Message = require('../models/Message');
 const Block = require('../models/Block');
 const Report = require('../models/Report');
 const { getStats } = require('./userService');
+const { isFlameRole } = require('../constants/shop');
 
 async function isBlockedEitherWay(idA, idB) {
   const block = await Block.findOne({
@@ -32,7 +33,7 @@ async function isBlockedEitherWay(idA, idB) {
 async function getPeerProfile(viewerId, targetId) {
   if (!mongoose.isValidObjectId(targetId)) return { status: 'not_found' };
   const target = await User.findById(targetId).select('firstName lastName username avatar role invisibleUntil activePet').lean();
-  if (!target || target.role !== 'student') return { status: 'not_found' };
+  if (!target || !isFlameRole(target.role)) return { status: 'not_found' };  // teachers are on the BXH too
 
   const stats = await getStats(targetId);
 

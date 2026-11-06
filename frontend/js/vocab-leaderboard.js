@@ -185,7 +185,7 @@
     // ── Cửa hàng lửa strip: wallet, active effects, 🎂 count ─────
     function loadShop() {
         var strip = document.getElementById('vlb-shop');
-        if (!strip || (me().role && me().role !== 'student')) return Promise.resolve();
+        if (!strip || (me().role && me().role !== 'student' && me().role !== 'teacher')) return Promise.resolve();
         return fetchBoard('/shop').then(function (d) {
             if (!d || !d.success) return;
             var owned = {};

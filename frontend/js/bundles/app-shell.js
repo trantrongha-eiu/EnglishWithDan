@@ -1441,7 +1441,7 @@
   if (!document.getElementById('ews-pets-js')) {
     var petScript = document.createElement('script');
     petScript.id = 'ews-pets-js';
-    petScript.src = '/js/shared/pets.js?v=07c89bd20f';
+    petScript.src = '/js/shared/pets.js?v=60da44a158';
     document.body.appendChild(petScript);
   }
 

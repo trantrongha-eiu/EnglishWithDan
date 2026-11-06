@@ -3,7 +3,7 @@ const shopService = require('../services/shopService');
 
 const MESSAGES = {
   not_found: [404, 'Không tìm thấy vật phẩm.'],
-  forbidden: [403, 'Chỉ học viên mới mua được vật phẩm.'],
+  forbidden: [403, 'Chỉ học viên và giáo viên mới mua được vật phẩm.'],
   not_enough: [400, 'Ví lửa chưa đủ — học thêm để kiếm 🔥 nhé!'],
   max_owned: [400, 'Vượt quá số lượng tối đa được giữ của vật phẩm này.'],
   invalid_qty: [400, 'Số lượng không hợp lệ.'],

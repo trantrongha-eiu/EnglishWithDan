@@ -13,7 +13,7 @@ const { getVNDay, effectiveStreak, coverMissedDaysWithShields } = require('../ut
 const { DAILY_STREAK_BONUS_CAP, streakBonusEarnedToday } = require('./streakBonusService');
 const {
   ITEMS, PETS, LEGEND_PETS, HOPE_QUOTA, HOPE_PENALTY,
-  CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS, MAX_BUY_QTY,
+  CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS, MAX_BUY_QTY, FLAME_ROLES, isFlameRole,
 } = require('../constants/shop');
 
 const HOUR = 60 * 60 * 1000;
@@ -137,10 +137,11 @@ async function getState(userId) {
   };
 }
 
-// Only students shop — staff never appear on the BXH and have no streak.
-async function assertStudent(userId) {
+// Students and teachers shop (isFlameRole) — admins never appear on the
+// BXH and have no streak.
+async function assertPlayer(userId) {
   const u = await User.findById(userId).select('role').lean();
-  return !!(u && u.role === 'student');
+  return !!(u && isFlameRole(u.role));
 }
 
 // After a successful purchase: log it for the "X vừa mua Y" ticker and drop
@@ -234,7 +235,7 @@ async function announceLogin(userId) {
   try {
     if (!LEGEND_PETS.length) return null;
     const u = await User.findById(userId).select('role pets activePet firstName lastName username').lean();
-    if (!u || u.role !== 'student') return null;
+    if (!u || !isFlameRole(u.role)) return null;
     const owned = LEGEND_PETS.filter(id => (u.pets || []).includes(id));
     if (!owned.length) return null;
     const recent = await ShopAnnouncement.exists({
@@ -275,7 +276,7 @@ async function buyItem(userId, key, qty = 1) {
   if (!item) return { status: 'not_found' };
   const n = Number(qty);
   if (!Number.isInteger(n) || n < 1 || n > MAX_BUY_QTY) return { status: 'invalid_qty', max: MAX_BUY_QTY };
-  if (!(await assertStudent(userId))) return { status: 'forbidden' };
+  if (!(await assertPlayer(userId))) return { status: 'forbidden' };
   await seedWallet(userId);
   if (key === 'iceShield') await finalizeLostStreak(userId);
   const field = itemField(item);
@@ -297,7 +298,7 @@ async function buyItem(userId, key, qty = 1) {
 async function buyPet(userId, petId) {
   const pet = PET_BY_ID[petId];
   if (!pet) return { status: 'not_found' };
-  if (!(await assertStudent(userId))) return { status: 'forbidden' };
+  if (!(await assertPlayer(userId))) return { status: 'forbidden' };
   await seedWallet(userId);
   // A first pet goes straight out for a walk.
   const u = await User.findOneAndUpdate(
@@ -395,11 +396,11 @@ async function useItem(userId, key) {
 async function throwCake(userId, targetId) {
   if (!targetId || String(targetId) === String(userId)) return { status: 'invalid_target' };
   const thrower = await User.findById(userId).select('firstName lastName username role').lean();
-  if (!thrower || thrower.role !== 'student') return { status: 'forbidden' };
+  if (!thrower || !isFlameRole(thrower.role)) return { status: 'forbidden' };
   const target = mongoose.isValidObjectId(targetId)
     ? await User.findById(targetId).select('role cakedUntil').lean()
     : null;
-  if (!target || target.role !== 'student') return { status: 'target_not_found' };
+  if (!target || !isFlameRole(target.role)) return { status: 'target_not_found' };
   if (isActive(target.cakedUntil)) return { status: 'already_caked' };
 
   const spent = await spendOne(userId, 'cake', {}, {});
@@ -407,7 +408,7 @@ async function throwCake(userId, targetId) {
 
   const hit = await User.findOneAndUpdate(
     {
-      _id: targetId, role: 'student',
+      _id: targetId, role: { $in: FLAME_ROLES },
       $or: [{ cakedUntil: null }, { cakedUntil: { $lte: new Date() } }],
     },
     { $set: { cakedUntil: new Date(Date.now() + CAKE_HOURS * HOUR), cakedBy: displayName(thrower) } },

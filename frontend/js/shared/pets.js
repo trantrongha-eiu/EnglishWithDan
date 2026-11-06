@@ -828,7 +828,7 @@
     try {
       if (!window.AuthService || !window.AuthService.isLoggedIn || !window.AuthService.isLoggedIn()) return;
       var u = window.AuthService.getUser && window.AuthService.getUser();
-      if (u && u.role && u.role !== 'student') return;
+      if (u && u.role && u.role !== 'student' && u.role !== 'teacher') return;
       if (EXAM_PAGES.test(location.pathname.split('/').pop()) || NO_PET_PATHS.test(location.pathname)) return;
       var cached = lsGet(CACHE_KEY);
       if (cached && Date.now() - cached.t < CACHE_MS) { show(cached.id); return; }

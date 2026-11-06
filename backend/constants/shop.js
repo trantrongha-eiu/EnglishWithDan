@@ -94,7 +94,13 @@ const CROWN_DAYS = 7;
 // Most of one item a student can buy in a single purchase.
 const MAX_BUY_QTY = 99;
 
+// Who plays the 🔥 game: earns 🔥/streak from practice, shops in the Cửa
+// hàng lửa and races on the BXH. Teachers join the students; admins,
+// guests and parents stay out.
+const FLAME_ROLES = ['student', 'teacher'];
+function isFlameRole(role) { return FLAME_ROLES.includes(role); }
+
 module.exports = {
   ITEMS, PETS, LEGEND_PETS, HOPE_MULTIPLIER, HOPE_QUOTA, HOPE_PENALTY,
-  CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS, MAX_BUY_QTY,
+  CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS, MAX_BUY_QTY, FLAME_ROLES, isFlameRole,
 };

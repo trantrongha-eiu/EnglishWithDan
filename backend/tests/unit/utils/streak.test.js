@@ -110,9 +110,16 @@ describe('keepStreakAlive', () => {
     expect(updated.lastActivityDate.getTime()).toBe(getVNDay(new Date()).getTime());
   });
 
-  test('ignores staff accounts', async () => {
+  test("keeps a teacher's streak alive too", async () => {
     const teacher = await createStudent({ extra: { role: 'teacher', learningStreak: 5, lastActivityDate: getVNDay(daysAgo(1)) } });
-    expect(await keepStreakAlive(teacher._id)).toBeNull();
-    expect((await User.findById(teacher._id).lean()).lastActivityDate.getTime()).toBe(getVNDay(daysAgo(1)).getTime());
+    const updated = await keepStreakAlive(teacher._id);
+    expect(updated.learningStreak).toBe(5);
+    expect(updated.lastActivityDate.getTime()).toBe(getVNDay(new Date()).getTime());
+  });
+
+  test('ignores admin accounts', async () => {
+    const admin = await createStudent({ extra: { role: 'admin', learningStreak: 5, lastActivityDate: getVNDay(daysAgo(1)) } });
+    expect(await keepStreakAlive(admin._id)).toBeNull();
+    expect((await User.findById(admin._id).lean()).lastActivityDate.getTime()).toBe(getVNDay(daysAgo(1)).getTime());
   });
 });

@@ -290,12 +290,15 @@ describe('submitAttempt / getAttempt', () => {
     expect(fresh.lastVocabStudyDate).not.toBeNull();
   });
 
-  test('a teacher/admin test submission never touches the streak', async () => {
+  test('a teacher submission counts toward the streak; an admin one never does', async () => {
     const teacher = await createTeacher();
+    const admin = await createAdmin();
     const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
     const { vocabStudiedToday } = require('../../../services/streakBonusService');
     await svc.submitAttempt(teacher._id, lesson._id, { correctCount: 30, totalCount: 35, timeSpent: 200 }, teacher);
-    expect(await vocabStudiedToday(teacher._id)).toBe(0);
+    expect(await vocabStudiedToday(teacher._id)).toBeGreaterThan(0);
+    await svc.submitAttempt(admin._id, lesson._id, { correctCount: 30, totalCount: 35, timeSpent: 200 }, admin);
+    expect(await vocabStudiedToday(admin._id)).toBe(0);
   });
 
   test('bestScore only ever increases; attemptCount and timeSpent accumulate', async () => {
@@ -685,7 +688,7 @@ describe('getQuizLeaderboard', () => {
     expect(board[0].attempts).toBe(3);
   });
 
-  test('excludes teacher/admin attempts from the student-facing board', async () => {
+  test('teachers race on the board; admin attempts stay out', async () => {
     const teacher = await createTeacher();
     const admin = await createAdmin();
     const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
@@ -693,7 +696,8 @@ describe('getQuizLeaderboard', () => {
     await svc.submitAttempt(teacher._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 1 });
     await svc.submitAttempt(admin._id, lesson._id, { correctCount: 5, totalCount: 5, timeSpent: 1 });
 
-    expect(await svc.getQuizLeaderboard(10)).toEqual([]);
+    const board = await svc.getQuizLeaderboard(10);
+    expect(board.map(r => String(r.userId))).toEqual([String(teacher._id)]);
   });
 
   test('falls back to username when the student has no first/last name set', async () => {
@@ -762,7 +766,7 @@ describe('getLessonAttemptLeaderboard', () => {
     expect(await svc.getLessonAttemptLeaderboard(lessonB._id)).toHaveLength(0);
   });
 
-  test('excludes teacher/admin attempts from the student-facing board', async () => {
+  test('teachers race on the lesson board; admin attempts stay out', async () => {
     const teacher = await createTeacher();
     const admin = await createAdmin();
     const lesson = await svc.importLesson(teacher._id, GOOD_LESSON);
@@ -770,7 +774,8 @@ describe('getLessonAttemptLeaderboard', () => {
     await svc.submitAttempt(teacher._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 1 });
     await svc.submitAttempt(admin._id, lesson._id, { correctCount: 2, totalCount: 2, timeSpent: 1 });
 
-    expect(await svc.getLessonAttemptLeaderboard(lesson._id)).toEqual([]);
+    const board = await svc.getLessonAttemptLeaderboard(lesson._id);
+    expect(board.map(r => String(r.userId))).toEqual([String(teacher._id)]);
   });
 
   test('falls back to username when the student has no first/last name set', async () => {

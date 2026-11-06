@@ -25,6 +25,7 @@ const FLAME_MIN_WORDS = { 1: 100, 2: 150 };
 const examSimulationService = require('./examSimulationService');
 const { disqualifiedAnswerFilter } = require('./proctorPolicy');
 const { toCardThumbnail } = require('../utils/cardThumbnail');
+const { isFlameRole } = require('../constants/shop');
 
 async function randomDoc(Model) {
   const count = await Model.countDocuments({ isActive: true });
@@ -159,7 +160,7 @@ async function submitExam(user, body) {
   // days later), so 🔥 go by effort: see FLAME_MIN_WORDS. Below that the
   // day-chain is still kept alive, with no 🔥.
   let newlyUnlocked = [];
-  if (user.role === 'student') {
+  if (isFlameRole(user.role)) {
     const done = [countWords(task1Answer) >= FLAME_MIN_WORDS[1], countWords(task2Answer) >= FLAME_MIN_WORDS[2]].filter(Boolean).length;
     await awardPracticeFlames(user._id, `writing-exam:${examId || attempt._id}`, done === 2 ? 3 : done === 1 ? 2 : 0);
     newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
@@ -298,7 +299,7 @@ async function submitPractice(user, { taskType, taskId, answer, attemptId: simul
 
   // See submitExam()'s comment above — 2 🔥 for a real single-task essay.
   let newlyUnlocked = [];
-  if (user.role === 'student') {
+  if (isFlameRole(user.role)) {
     await awardPracticeFlames(user._id, `writing:t${tNum}:${taskId || attempt._id}`, wc >= FLAME_MIN_WORDS[tNum] ? 2 : 0);
     newlyUnlocked = (await badgeService.checkAndAwardNewBadges(user._id)).newlyUnlocked;
   }

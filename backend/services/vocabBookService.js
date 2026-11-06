@@ -11,6 +11,7 @@ const { escapeRegex } = require('../utils/strings');
 const badgeService = require('./badgeService');
 const User = require('../models/User');
 const { applyStreakActivity } = require('../utils/streak');
+const { isFlameRole } = require('../constants/shop');
 const { DEFAULT_BOOKS, canonicalName, slotFromName, assignDefaultSlots } = require('../utils/defaultVocabBooks');
 
 // A dashboard.js practice session reports in batches of 5 answers (see
@@ -164,7 +165,7 @@ async function reorderBooks(userId, order) {
 }
 
 async function completePractice(user, { wordsAnswered, correctAnswered = 0, unitId = null, unitType = null, sessionId = null }) {
-  if (user.role !== 'student') return { status: 'not_student' };
+  if (!isFlameRole(user.role)) return { status: 'not_student' };
   if (wordsAnswered < 5) return { status: 'too_few' };
 
   // Stamped on every real batch, independent of the streak-threshold gating
@@ -601,7 +602,7 @@ async function updateWord(bookId, wordId, userId, user, { status, note, word, me
 
   await book.save();
 
-  if (hadStatusChange && user.role === 'student') {
+  if (hadStatusChange && isFlameRole(user.role)) {
     if (await reachedDailyWordThreshold(user._id, { wordsStudied: 1 })) {
       // Atomic (see applyStreakActivity's comment) — avoids the same
       // read-modify-write race a plain updateStreak()+save() had here.

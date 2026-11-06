@@ -454,8 +454,10 @@ describe('GET /leaderboard', () => {
     const res2 = await request(app).get('/api/vocabulary-lessons/leaderboard').set('Authorization', `Bearer ${signTokenFor(other)}`);
     expect(res2.body.me).toMatchObject({ rank: null, total: 1 });
 
-    // Staff never get a standing.
+    // Teachers race too (unranked here — no quiz yet); admins never get a standing.
     const res3 = await request(app).get('/api/vocabulary-lessons/leaderboard').set('Authorization', `Bearer ${teacherToken}`);
-    expect(res3.body.me).toBeNull();
+    expect(res3.body.me).toMatchObject({ rank: null, total: 1 });
+    const res4 = await request(app).get('/api/vocabulary-lessons/leaderboard').set('Authorization', `Bearer ${signTokenFor(await createAdmin())}`);
+    expect(res4.body.me).toBeNull();
   });
 });

@@ -24,14 +24,14 @@ describe('userService.getStreakLeaderboard', () => {
     expect(board.map(b => b.name)).toEqual(['Fresh']);
   });
 
-  test('excludes teachers and admins even if they somehow have a streak', async () => {
+  test('teachers race on the board; admins are excluded even with a streak', async () => {
     await createStudent({ firstName: 'StudentOne', lastName: '', extra: { learningStreak: 5, lastActivityDate: daysAgo(0) } });
     await createTeacher({ firstName: 'TeacherOne', lastName: '', extra: { learningStreak: 99, lastActivityDate: daysAgo(0) } });
     await createAdmin({ firstName: 'AdminOne', lastName: '', extra: { learningStreak: 99, lastActivityDate: daysAgo(0) } });
 
     const board = await userService.getStreakLeaderboard(10);
 
-    expect(board.map(b => b.name)).toEqual(['StudentOne']);
+    expect(board.map(b => b.name)).toEqual(['TeacherOne', 'StudentOne']);
   });
 
   test('respects the limit parameter', async () => {
@@ -81,10 +81,12 @@ describe('userService.getStreakStanding', () => {
     expect(top.me).toMatchObject({ rank: 1, nextStreak: null });
   });
 
-  test('unranked student gets rank null; staff get no standing', async () => {
+  test('unranked student gets rank null; teachers are ranked; admins get no standing', async () => {
     const s = await createStudent({ extra: { learningStreak: 0 } });
     expect((await userService.getStreakStanding(s._id)).me).toMatchObject({ rank: null, streak: 0, total: 0 });
     const t = await createTeacher({ extra: { learningStreak: 9, lastActivityDate: daysAgo(0) } });
-    expect((await userService.getStreakStanding(t._id)).me).toBeNull();
+    expect((await userService.getStreakStanding(t._id)).me).toMatchObject({ rank: 1, streak: 9, total: 1 });
+    const a = await createAdmin({ extra: { learningStreak: 9, lastActivityDate: daysAgo(0) } });
+    expect((await userService.getStreakStanding(a._id)).me).toBeNull();
   });
 });
