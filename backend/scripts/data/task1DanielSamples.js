@@ -398,6 +398,30 @@ const SAMPLES = [
       ['C', 'As a result, by 2004 chicken consumption was more than double that of beef and around seven times that of fish.'],
     ],
   },
+
+  // ── Cement + concrete production (2 linked process diagrams) ───────────
+  {
+    id: '6ad0bdf8cec639c8a30b1c49',
+    intro: [
+      ['Q', 'The two diagrams illustrate how cement is manufactured from limestone and clay, and how this cement is subsequently combined with other materials to make concrete for the construction industry.'],
+    ],
+    overview: [
+      ['O', 'Overall, cement production is a linear, machine-based process consisting of five main stages, beginning with the crushing of raw materials and ending with the bagging of the finished product.'],
+      ['O', 'Concrete production, by contrast, is a far simpler procedure in which cement is mixed with three other ingredients, with gravel making up by far the largest share.'],
+    ],
+    body1: [
+      ['T', 'In the first stage of cement production, limestone and clay are fed into a crusher, where they are ground into a fine powder.'],
+      ['D', 'This powder is then passed through a mixer before entering a large rotating heater, in which it is subjected to intense heat.'],
+      ['D', 'After being heated, the resulting material is transferred to a grinder and ground once again, producing cement.'],
+      ['D', 'Finally, the cement is packed into bags, ready to be transported to building sites.'],
+    ],
+    body2: [
+      ['T', 'Turning to the second diagram, concrete is produced by combining cement with water, sand and gravel, which consists of small stones.'],
+      ['C', 'Gravel accounts for half of the mixture, while sand constitutes a quarter, meaning that these two ingredients together make up three-quarters of the total.'],
+      ['C', 'Cement and water, by comparison, represent considerably smaller proportions, at 15% and 10% respectively.'],
+      ['D', 'All four ingredients are then poured into a revolving concrete mixer, which blends them together to form concrete for building purposes.'],
+    ],
+  },
 ];
 
 const ANALYSES = [
@@ -475,7 +499,30 @@ const ANALYSES = [
 
   { id: '6a8e5b9dbc78d7b28ea1d9df', replaceGeneric: true, sections: ENERGY_ANALYSIS },
   { id: '6ac0d4f573c776372979d7ec', sections: ENERGY_ANALYSIS },
+
+  {
+    id: '6ad0bdf8cec639c8a30b1c49',
+    sections: [
+      { title: '1. Phân tích nhanh đề này', content: 'Dạng: quy trình nhân tạo (man-made process), gồm 2 sơ đồ NỐI TIẾP nhau: (1) sản xuất XI MĂNG từ limestone + clay, (2) dùng xi măng đó để làm BÊ TÔNG. Thì: hiện tại đơn, chủ yếu bị động.\nĐiểm đặc biệt: sơ đồ 2 có số liệu % (cement 15%, water 10%, sand 25%, gravel 50%) → phải SO SÁNH tỉ lệ, không chỉ liệt kê.\n\nOverview nên nói gì?\n- Sơ đồ 1: quy trình tuyến tính, dùng máy móc, 5 giai đoạn chính (nghiền → trộn → nung → nghiền lần 2 → đóng bao) — bắt đầu bằng nghiền nguyên liệu, kết thúc bằng đóng bao.\n- Sơ đồ 2: đơn giản hơn nhiều, chỉ là trộn 4 nguyên liệu — GRAVEL chiếm nhiều nhất.\n\nCâu Overview mẫu:\nOverall, cement production is a linear, machine-based process consisting of five main stages, beginning with the crushing of raw materials and ending with the bagging of the finished product.' },
+      { title: '2. Body 1 – Sản xuất xi măng (theo thứ tự bước)', content: 'Nên viết: limestone + clay → crusher (nghiền thành powder) → mixer → rotating heater (có heat) → grinder (nghiền lần 2) → bags → cement.\n\nTopic sentence:\nIn the first stage of cement production, limestone and clay are fed into a crusher, where they are ground into a fine powder.\n\nCấu trúc hay (an toàn cho band 6.5):\n- be fed into\n  Limestone and clay are fed into a crusher.\n- be subjected to + N\n  The powder is subjected to intense heat in a rotating heater.\n- After being + V3, ...\n  After being heated, the resulting material is transferred to a grinder.' },
+      { title: '3. Body 2 – Sản xuất bê tông (so sánh tỉ lệ %)', content: 'Nên viết: xếp tỉ lệ từ lớn đến nhỏ — gravel 50% (một nửa) → sand 25% (một phần tư) → cement 15% → water 10%; rồi bước cuối: cho tất cả vào concrete mixer quay tròn.\n\nTopic sentence:\nTurning to the second diagram, concrete is produced by combining cement with water, sand and gravel.\n\nCấu trúc hay:\n- account for half of / constitute a quarter of\n  Gravel accounts for half of the mixture, while sand constitutes a quarter.\n- X and Y respectively\n  Cement and water represent 15% and 10% respectively.\nLưu ý: dùng phân số (half, a quarter, three-quarters) để tránh lặp con số %.' },
+      { title: '4. Công thức áp dụng cho dạng "2 quy trình nối tiếp"', content: 'Mỗi đề dạng này chỉ cần làm:\nOVERVIEW: 1 câu cho mỗi sơ đồ — số giai đoạn + điểm bắt đầu/kết thúc; điểm khác biệt lớn nhất giữa 2 sơ đồ.\nBODY 1: sơ đồ 1, đi đúng thứ tự từng bước, mỗi câu 1–2 bước.\nBODY 2: sơ đồ 2, nếu có số liệu thì so sánh số liệu trước rồi mới tả bước cuối.\n\nChecklist để đạt 6.5+:\n① Đủ cả 5 thiết bị: crusher, mixer, rotating heater, grinder, concrete mixer?\n② Có nêu đủ 4 tỉ lệ 15% / 10% / 25% / 50% và có SO SÁNH không?\n③ Từ nối trình tự đa dạng (first, then, after being heated, finally) — không lặp "then" quá 2 lần?' },
+    ],
+  },
 ];
+
+// "Vì sao bài mẫu đạt Band 7.5+?" — shown under the model answer on
+// writing.html (WritingTask1.bandExplanation). One {title, content} per
+// IELTS marking criterion; written only when the doc has none yet.
+const BAND_NOTES = {
+  '6ad0bdf8cec639c8a30b1c49': [
+    { title: 'Ước tính band', content: 'Điểm từng tiêu chí: Task Achievement 8 · Coherence & Cohesion 8 · Lexical Resource 7 · Grammar 7\nĐiểm tổng: 7.5 (mỗi tiêu chí chấm theo band nguyên; điểm tổng = trung bình 4 tiêu chí, làm tròn đến 0.5)' },
+    { title: 'Task Achievement — Band 8', content: '- Mở bài viết lại đề bằng từ của mình và nhắc đủ CẢ HAI sơ đồ (cement + concrete).\n- Có Overview riêng, nêu đúng 2 ý quan trọng nhất: quy trình xi măng gồm 5 giai đoạn dùng máy móc; làm bê tông đơn giản hơn và gravel chiếm nhiều nhất.\n- Không bỏ sót bước nào (crusher, mixer, rotating heater, grinder, bags, concrete mixer) và nêu đủ 4 tỉ lệ 15% / 10% / 25% / 50%.\n- Số liệu được SO SÁNH chứ không chỉ liệt kê: "make up three-quarters of the total", "considerably smaller proportions".\n- Không thêm thông tin ngoài sơ đồ (không đoán nhiệt độ, thời gian, không nêu ý kiến).' },
+    { title: 'Coherence & Cohesion — Band 8', content: '- Mỗi sơ đồ một đoạn thân bài, đi đúng thứ tự quy trình → người đọc theo dõi dễ dàng.\n- Từ nối trình tự đa dạng, không lặp: "In the first stage", "then", "After being heated", "Finally", "Turning to the second diagram".\n- Dùng từ thay thế để nối câu trước với câu sau: "This powder", "the resulting material", "these two ingredients", "All four ingredients".\n- Mệnh đề quan hệ giúp câu liền mạch: "where they are ground into a fine powder", "in which it is subjected to intense heat".' },
+    { title: 'Lexical Resource — Band 7', content: '- Động từ quy trình chính xác: "fed into", "ground into a fine powder", "subjected to intense heat", "packed into bags", "blends them together".\n- Diễn đạt tỉ lệ linh hoạt, tránh lặp con số: "accounts for half of", "constitutes a quarter", "make up three-quarters", "represent considerably smaller proportions".\n- Không có lỗi chính tả hay dùng từ sai.\nVì sao chưa 8: phần lớn là từ vựng quen thuộc của dạng process; band 8 cần thêm vài cụm ít phổ biến hơn dùng thật tự nhiên.' },
+    { title: 'Grammatical Range & Accuracy — Band 7', content: '- Câu bị động dùng đúng và nhất quán (are fed into, is transferred to, are poured into).\n- Có nhiều loại câu phức: mệnh đề quan hệ (where / in which / which), cụm phân từ (After being heated, producing cement, ready to be transported, meaning that...).\n- Toàn bài không có lỗi ngữ pháp.\nVì sao chưa 8: Task 1 chỉ ~240 từ nên độ đa dạng cấu trúc vẫn ở mức "tốt", chưa thật rộng — Grammar band 8 thường cần thêm vài cấu trúc linh hoạt hơn (vd: once + V3, having been + V3).' },
+  ],
+};
 
 // Exact-string corrections; `field` is sampleSections | analysisSections.
 const TEXT_FIXES = [
@@ -588,10 +635,10 @@ const SPECS = {
   '6a848738c4d5b5ac38bce886': ['Q0', 'O0', 'T0 D1 C2', 'T0 D1 C2'],
   '6a848738c4d5b5ac38bce887': ['Q0', 'O0', 'D0-3', 'D0-1'],
   '6a848738c4d5b5ac38bce889': ['Q0', 'O0', 'C0 D1', 'C0 D1'],
-  '6a848738c4d5b5ac38bce88a': ['Q0', 'O0', 'D0-2', 'T0 D1'],
+  '6a848738c4d5b5ac38bce88a': ['Q0', 'O0-1', 'T0 D1-2 C3', 'T0 D1-3'],
   '6a848738c4d5b5ac38bce888': ['Q0', 'O0', 'D0-2', 'D0-2'],
   '6a857531282c853ce33a8f25': ['Q0', 'O0-1', 'T0 D1 C2-3', 'D0-1 T2 D3 C4'],
   '6a8e5b9dbc78d7b28ea1d9df': ['Q0', 'O0-1', 'D0-1 C2-3', 'T0 D1 C2-5'],
 };
 
-module.exports = { SAMPLES, ANALYSES, TEXT_FIXES, SPECS };
+module.exports = { SAMPLES, ANALYSES, TEXT_FIXES, SPECS, BAND_NOTES };

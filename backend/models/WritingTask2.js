@@ -32,6 +32,11 @@ const WritingTask2Schema = new mongoose.Schema({
   // how to split Body 1/Body 2, band-6.5-appropriate. Same {title, content}
   // shape as WritingTask1's analysisSections/sampleSections.
   analysisSections: { type: [SampleSectionSchema], default: [] },
+  // "Vì sao bài mẫu đạt Band 7.5+?" — shown under the model answer on
+  // writing.html: one {title, content} per IELTS marking criterion (plus an
+  // optional "Ước tính band" summary first). Plain text in the same loose
+  // format as analysisSections (rendered by js/shared/analysis-format.js).
+  bandExplanation: { type: [SampleSectionSchema], default: [] },
   // "Từ vựng chủ đề" shown under "Phân tích đề" on writing.html. Same
   // {term, definitionVi, example} shape as Task2Topic.vocabularyList; when
   // empty, writingService.attachTask2Vocab borrows the matching weekly-course

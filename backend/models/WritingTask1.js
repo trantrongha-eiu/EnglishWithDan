@@ -35,6 +35,11 @@ const WritingTask1Schema = new mongoose.Schema({
   // {title, content} shape as sampleSections so the frontend can reuse the
   // exact same rendering/copy-button markup for both panels.
   analysisSections: { type: [SampleSectionSchema], default: [] },
+  // "Vì sao bài mẫu đạt Band 7.5+?" — shown under the model answer on
+  // writing.html: one {title, content} per IELTS marking criterion (plus an
+  // optional "Ước tính band" summary first). Plain text in the same loose
+  // format as analysisSections (rendered by js/shared/analysis-format.js).
+  bandExplanation: { type: [SampleSectionSchema], default: [] },
   // Task 1 type, used for the filter tabs on the student task list:
   // static (one point in time) · dynamic (change over time) · mixed (two
   // different chart kinds) · process · map. '' = not yet classified.

@@ -13,6 +13,8 @@
  *  4. Highlights — colour-coded sentence roles for every essay: from the
  *     coded sentences of SAMPLES, or from SPECS for the existing essays.
  *     Only `highlights` is set for those — content is never touched.
+ *  5. BAND_NOTES — "Vì sao bài mẫu đạt Band 7.5+?" (bandExplanation) for
+ *     docs with a complete sample and no explanation yet.
  *
  * Every write is a scoped updateOne({ _id }). Dry run by default.
  *
@@ -23,7 +25,7 @@
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const mongoose = require('mongoose');
 const WritingTask1 = require('../models/WritingTask1');
-const { SAMPLES, ANALYSES, TEXT_FIXES, SPECS } = require('./data/task1DanielSamples');
+const { SAMPLES, ANALYSES, TEXT_FIXES, SPECS, BAND_NOTES = {} } = require('./data/task1DanielSamples');
 const { buildParagraph, highlightsFromSpec, splitSentences, TASK1_ROLES } = require('./data/task2SampleHighlights');
 
 const APPLY = process.argv.includes('--apply');
@@ -61,11 +63,11 @@ async function run() {
   const sampleIds = new Set(SAMPLES.map(s => s.id));
   for (const id of Object.keys(SPECS)) if (sampleIds.has(id)) throw new Error(`${id} is in both SAMPLES and SPECS`);
 
-  const ids = [...new Set([...SAMPLES.map(s => s.id), ...ANALYSES.map(a => a.id), ...TEXT_FIXES.map(f => f.id), ...Object.keys(SPECS)])];
-  const n = { fixes: 0, samples: 0, analyses: 0, highlighted: 0, skipped: 0 };
+  const ids = [...new Set([...SAMPLES.map(s => s.id), ...ANALYSES.map(a => a.id), ...TEXT_FIXES.map(f => f.id), ...Object.keys(SPECS), ...Object.keys(BAND_NOTES)])];
+  const n = { fixes: 0, samples: 0, analyses: 0, bandNotes: 0, highlighted: 0, skipped: 0 };
 
   for (const id of ids) {
-    const doc = await WritingTask1.findById(id).select('prompt sampleSections analysisSections').lean();
+    const doc = await WritingTask1.findById(id).select('prompt sampleSections analysisSections bandExplanation').lean();
     if (!doc) { console.log(`MISS  ${id} — no such WritingTask1`); n.skipped++; continue; }
     const sample = (doc.sampleSections || []).map(s => ({ ...s }));
     const analysis = (doc.analysisSections || []).map(s => ({ ...s }));
@@ -135,6 +137,13 @@ async function run() {
       } else notes.push('analysis already present — kept');
     }
 
+    // 5. "Vì sao bài mẫu đạt Band 7.5+?" — only where there is none yet
+    if (BAND_NOTES[id]) {
+      if (hasText(doc.bandExplanation)) notes.push('band explanation already present — kept');
+      else if (!complete(sample) && !$set.sampleSections) notes.push('band explanation skipped (no complete sample)');
+      else { $set.bandExplanation = BAND_NOTES[id]; notes.push('band explanation added'); n.bandNotes++; }
+    }
+
     console.log(`${APPLY ? 'WRITE' : 'PLAN '} ${id} · ${label}…\n      ${notes.join(' · ') || 'highlights'}`);
     if (APPLY && Object.keys($set).length) await WritingTask1.updateOne({ _id: doc._id }, { $set });
   }
@@ -142,7 +151,7 @@ async function run() {
   // Active prompts that would still show a sample with no colours / no analysis.
   const active = await WritingTask1.find({ isActive: true }).select('prompt sampleSections analysisSections').lean();
   const gaps = active.filter(d => !sampleIds.has(String(d._id)) && !SPECS[String(d._id)]);
-  console.log(`\nfixes ${n.fixes} · samples ${n.samples} · analyses ${n.analyses} · highlighted ${n.highlighted} · skipped ${n.skipped}`);
+  console.log(`\nfixes ${n.fixes} · samples ${n.samples} · analyses ${n.analyses} · band notes ${n.bandNotes} · highlighted ${n.highlighted} · skipped ${n.skipped}`);
   if (gaps.length) {
     console.log(`Active Task 1 prompts not covered by the data file (${gaps.length}):`);
     gaps.forEach(d => console.log(`   ${d._id} · sample:${hasText(d.sampleSections) ? 'y' : 'NO'} analysis:${hasText(d.analysisSections) ? 'y' : 'NO'} · ${d.prompt.replace(/\s+/g, ' ').slice(0, 60)}`));
