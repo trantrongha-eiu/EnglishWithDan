@@ -281,10 +281,13 @@
 :root .eg-summary-box,
 :root .eg-quiz-q,
 :root .eg-ex-item { border: 2.5px solid var(--pf-ink) !important; border-radius: 18px !important; box-shadow: var(--pf-shadow); }
+:root .eg-quiz-q { padding: 14px 16px 16px; background: #fff; }
+:root .eg-quiz-q .eg-quiz-question { margin-bottom: 10px; }
 :root .eg-quiz-option { border: 2px solid var(--pf-ink); border-radius: 12px; box-shadow: 2px 2px 0 var(--pf-ink); font-weight: 700; }
 :root .eg-nav-btn { border: 2.5px solid var(--pf-ink); border-radius: 16px; box-shadow: var(--pf-shadow); font-weight: 800; }
 :root .eg-nav-btn:hover:not(:disabled) { border-color: var(--pf-ink); color: var(--pf-ink); transform: translate(-1px, -2px); box-shadow: 5px 6px 0 var(--pf-ink); }
 [data-theme="dark"] .eg-sidebar { background: #0d0d0d; }
+[data-theme="dark"] .eg-quiz-q { background: var(--surface); }
 [data-theme="dark"] .eg-lesson-item:hover { background: var(--surface); color: var(--text); }
 @media (max-width: 640px) { :root .eg-hero.pf-hero { margin: 14px 12px 4px; padding: 18px 118px 18px 18px; } }
 

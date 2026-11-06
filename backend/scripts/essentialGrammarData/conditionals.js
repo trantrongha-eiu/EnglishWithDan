@@ -1,11 +1,19 @@
 "use strict";
 
 const { lesson } = require("./builder");
+const VIDEOS = require("./conditionalVideos");
 
 const CATEGORY = "Conditionals";
 
+// Every conditional lesson also gets its BBC Learning English videos.
+function conditional(def) {
+  const extras = VIDEOS[def.lessonKey];
+  if (!extras) throw new Error("conditionalVideos.js has no entry for " + def.lessonKey);
+  return lesson({ ...def, ...extras });
+}
+
 module.exports = [
-  lesson({
+  conditional({
     category: CATEGORY, lessonKey: "zero-conditional", title: "Zero Conditional", icon: "0️⃣", orderIndex: 13,
     overview: "Zero Conditional diễn tả sự thật hiển nhiên, quy luật khoa học, hoặc thói quen luôn đúng — kết quả luôn xảy ra khi điều kiện được đáp ứng.",
     formula: [
@@ -75,7 +83,7 @@ module.exports = [
     summary: "Zero Conditional: If + hiện tại đơn, hiện tại đơn — diễn tả sự thật/quy luật luôn đúng."
   }),
 
-  lesson({
+  conditional({
     category: CATEGORY, lessonKey: "first-conditional", title: "First Conditional", icon: "1️⃣", orderIndex: 14,
     overview: "First Conditional diễn tả một tình huống có khả năng xảy ra trong tương lai và kết quả tương ứng nếu điều kiện đó xảy ra.",
     formula: [
@@ -146,7 +154,7 @@ module.exports = [
     summary: "First Conditional: If + hiện tại đơn, will + V — diễn tả tình huống có khả năng xảy ra và kết quả tương lai."
   }),
 
-  lesson({
+  conditional({
     category: CATEGORY, lessonKey: "second-conditional", title: "Second Conditional", icon: "2️⃣", orderIndex: 15,
     overview: "Second Conditional diễn tả một tình huống giả định không có thật hoặc khó xảy ra ở hiện tại/tương lai, cùng kết quả giả định tương ứng.",
     formula: [
@@ -217,7 +225,7 @@ module.exports = [
     summary: "Second Conditional: If + quá khứ đơn (were), would + V — diễn tả giả định không có thật ở hiện tại."
   }),
 
-  lesson({
+  conditional({
     category: CATEGORY, lessonKey: "third-conditional", title: "Third Conditional", icon: "3️⃣", orderIndex: 16,
     overview: "Third Conditional diễn tả một tình huống giả định KHÔNG CÓ THẬT trong quá khứ và kết quả giả định tương ứng cũng đã không xảy ra — thường dùng để bày tỏ sự tiếc nuối hoặc phân tích nguyên nhân đã qua.",
     formula: [
@@ -288,7 +296,7 @@ module.exports = [
     summary: "Third Conditional: If + had + V3, would have + V3 — diễn tả giả định trái với quá khứ, thường thể hiện tiếc nuối hoặc phân tích nguyên nhân-kết quả đã qua."
   }),
 
-  lesson({
+  conditional({
     category: CATEGORY, lessonKey: "mixed-conditional", title: "Mixed Conditional", icon: "🔀", orderIndex: 17,
     overview: "Mixed Conditional kết hợp hai mốc thời gian khác nhau: điều kiện ở quá khứ nhưng kết quả ảnh hưởng đến hiện tại (hoặc ngược lại) — giúp diễn đạt mối liên hệ phức tạp giữa quá khứ và hiện tại.",
     formula: [
