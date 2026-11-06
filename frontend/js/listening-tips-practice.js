@@ -121,56 +121,15 @@
     name: 'thường được đánh vần: J-A-M-I-E-S-O-N — viết hoa chữ cái đầu',
     place: 'tên đường / toà nhà / thành phố — hay được đánh vần, nhớ viết hoa',
   };
-  // "Trước khi làm" mini tutorial per question type (and collapsible on
-  // every question) — from the spec and the tips themselves.
-  const QTYPE_GUIDE = {
-    form: {
-      steps: ['Đọc câu hỏi và nhãn của ô trống (Name, Date, Cost…).', 'Dự đoán loại đáp án: số? tên? ngày? danh từ?',
-        'Gạch chân keyword.', 'Nghe keyword hoặc cách nói khác (paraphrase).', 'Chép đúng từ nghe được.',
-        'Kiểm tra: chính tả · số ít / số nhiều · giới hạn từ.'],
-      warning: 'Golden rule: đáp án có thể bị sửa lại ngay sau đó — “The course starts on Monday… actually, it’s been moved to Tuesday” → Tuesday. Nghe hết câu rồi mới chốt.',
-    },
-    mcq: {
-      steps: ['Đọc câu hỏi (chưa vội đọc kỹ các option).', 'Xác định câu hỏi đang hỏi gì.', 'Gạch chân điểm KHÁC nhau giữa A / B / C.',
-        'Dự đoán nếu có thể.', 'Nghe theo ý nghĩa, không chờ đúng từng chữ.', 'Loại các option gây nhiễu.', 'Chọn theo đúng điều audio nói.'],
-      warning: 'Đừng chọn chỉ vì audio có đúng từ giống option. Bẫy: “At first I thought it was too expensive, but actually the main problem was…”.',
-    },
-    matching: {
-      steps: ['Đọc danh sách lựa chọn (A, B, C…).', 'Xác định điểm khác nhau giữa các lựa chọn.', 'Gạch chân tên người / mục cần ghép.',
-        'Dự đoán mối liên hệ có thể có.', 'Nghe theo từng người / mục.', 'Ghép theo ý nghĩa, không theo từ giống nhau.'],
-      warning: 'Một lựa chọn có thể được nhắc tới chỉ để bị loại bỏ.',
-    },
-    map: {
-      steps: ['Nhìn bản đồ / sơ đồ trước.', 'Tìm điểm bắt đầu (entrance, you are here…).', 'Xác định các mốc (landmarks).',
-        'Nắm phương hướng: north, left / right, above / below.',
-        'Nghe: next to · opposite · behind · on the left · at the end of · across from · between.', 'Đi theo đúng lộ trình người nói mô tả.'],
-      warning: 'Sai lầm hay gặp: chỉ nghe keyword mà không theo chỉ dẫn phương hướng.',
-    },
-    sentence: {
-      steps: ['Đọc cả câu.', 'Dự đoán ngữ pháp của từ cần điền.', 'Dự đoán loại đáp án.', 'Gạch chân keyword.', 'Nghe.',
-        'Kiểm tra câu sau khi điền có đúng ngữ pháp.', 'Kiểm tra giới hạn từ.'],
-      warning: 'Listening đòi hỏi đúng chính tả (accommodation), số ít / số nhiều (student ≠ students) và số liệu chính xác (15 ≠ 50).',
-    },
-    multi: {
-      steps: ['Đọc TOÀN BỘ các option.', 'Gạch chân điểm khác nhau.', 'Xác định cần tìm mấy ý (TWO / THREE) và về điều gì.',
-        'Nghe: một option có thể được nhắc tới rồi bị bác bỏ.', 'Chọn đủ số chữ cái đề yêu cầu.'],
-      warning: 'Không chọn ngay option đầu tiên nghe thấy.',
-    },
-  };
-  const QTYPE_NAME = {
-    form: 'Form / Note / Table', mcq: 'Multiple Choice', matching: 'Matching', map: 'Map / Plan / Diagram',
-    sentence: 'Sentence Completion', multi: 'Multiple Answers',
-  };
+  // The "Trước khi làm" guide, the step names of the worked example / the
+  // done-together question and the workflow checklist come with the
+  // practice (practice.guide — one copy on the server, also printed in the
+  // teacher's handout).
+  const guideOf = () => (st && st.practice && st.practice.guide) || { steps: [] };
+  const qtypeName = () => guideOf().name || (COPY[st.lesson.lessonKey] || {}).name || '';
   const CHOICE_SETS = { wordclass: WORD_CLASSES, infotype: INFO_TYPES, form: FORMS };
   const PREDICT_KINDS = new Set(['wordclass', 'infotype', 'form']);
   const RUN_KINDS = new Set(['preview', 'workflow']);       // several gaps, one stretch of audio
-  const CHECKLIST = [
-    ['grammar', 'Ngữ pháp: đáp án ghép vào câu có đúng không?'],
-    ['spelling', 'Chính tả: đã viết đúng từng chữ cái?'],
-    ['plural', 'Số ít / số nhiều: có cần -s không?'],
-    ['limit', 'Giới hạn từ: không viết quá số từ đề cho'],
-  ];
-
   let st = null;          // current practice state (null = entry card only)
   let timerHandle = null;
   // Bumped whenever the panel changes hands (another tip, a new load, close)
@@ -367,7 +326,7 @@
   // ── Entry card + lifecycle, persistence, scrolling — js/shared/tips-practice-shell.js ──
 
   const {
-    esc, escNl, KEY_ATTRS, errorMessage, announce, revealPanel, revealEl,
+    esc, escNl, KEY_ATTRS, errorMessage, announce, revealPanel, revealEl, explanationBlock,
     persist, persistSoon, recordScore,
     supports, mount, renderEntry, panelEl, showPanelState, start, confirmNewPractice, resume, headerHtml,
   } = window.TipsPracticeShell.create({
@@ -629,7 +588,7 @@
       <div class="ltp-typeline">Đáp án trong đề: <strong>${esc(answer)}</strong></div>
       ${r.evidence ? `<div class="ltp-evidence"><div class="ltp-evidence-label">📄 Câu trong transcript${r.evidence.speaker ? ` · ${esc(r.evidence.speaker)}` : ''}</div>
         <div class="ltp-evidence-text">“${markTerms(r.evidence.text, answer.split(' / '), 'ltp-hit')}”</div></div>` : ''}
-      ${r.explanation ? `<details class="ltp-expl"><summary>Lời giải của đề</summary>${escNl(r.explanation)}</details>` : ''}
+      ${r.explanation ? explanationBlock(r.explanation, { dropQuote: !!r.evidence }) : ''}
     </div>`;
   }
 
@@ -638,9 +597,10 @@
   const qNumbers = (q) => (q.numbers && q.numbers.length > 1 ? `${q.numbers[0]}–${q.numbers[q.numbers.length - 1]}` : String(q.questionNumber));
 
   function qtypeGuideHtml(open) {
-    const g = QTYPE_GUIDE[st.practice.qtype] || { steps: [] };
+    const g = guideOf();
+    if (!g.steps.length) return '';
     return `<details class="ltp-guide" ${open ? 'open' : ''}>
-      <summary>📋 Cách làm dạng ${esc(QTYPE_NAME[st.practice.qtype] || '')}</summary>
+      <summary>📋 ${esc(g.title || 'Cách làm')}</summary>
       <ol>${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
       ${g.warning ? `<div class="ltp-warning">⚠️ ${esc(g.warning)}</div>` : ''}
     </details>`;
@@ -649,14 +609,14 @@
   // Mini tutorial before the first question.
   function renderQtypeIntro() {
     const pr = st.practice;
-    const g = QTYPE_GUIDE[pr.qtype] || { steps: [] };
+    const g = guideOf();
     const n = st.items.reduce((s, q) => s + (q.pick || 1), 0);
     // "choose TWO": one screen per prompt, each worth its number of answers
     const size = n > st.items.length ? `${st.items.length} câu (${n} đáp án cần chọn)` : `${n} câu`;
     const borrowed = st.items.find(q => q.sourceName && q.sourceName !== pr.sourceName);
     const guided = st.items[0] && st.items[0].mode === 'example';
-    showPanelState(headerHtml(esc(pr.sourceName)) + `<div class="ltp-card ltp-intro">
-      <div class="ltp-intro-title">📋 Trước khi làm: cách làm dạng ${esc(QTYPE_NAME[pr.qtype] || '')}</div>
+    showPanelState(headerHtml(esc(pr.sourceName), { dots: false }) + `<div class="ltp-card ltp-intro">
+      <div class="ltp-intro-title">📋 Trước khi làm: ${esc(g.title || `cách làm dạng ${qtypeName()}`)}</div>
       <ol class="ltp-intro-steps">${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
       ${g.warning ? `<div class="ltp-warning">⚠️ ${esc(g.warning)}</div>` : ''}
       ${guided ? `<div class="ltp-flow">
@@ -664,8 +624,10 @@
         <span class="ltp-mode we"><b>🤝 Câu 2</b> làm cùng, có gợi ý</span>
         <span class="ltp-mode you"><b>✍️ Từ câu 3</b> tự làm</span>
       </div>` : ''}
-      <div class="ltp-muted">Bài gồm ${size} ${esc(QTYPE_NAME[pr.qtype] || '')} lấy nguyên từ đề thật (${esc(pr.sourceName)})${borrowed ? `; câu mẫu lấy từ ${esc(borrowed.sourceName)}` : ''}, đúng thứ tự như trong đề. Mỗi câu có đoạn audio riêng — nghe lại thoải mái.</div>
-      <button type="button" class="ltp-btn ltp-btn-primary" data-act="intro-done">Bắt đầu làm bài →</button>
+      <div class="ltp-intro-foot">
+        <span class="ltp-muted">${size} ${esc(qtypeName())} từ đề thật${borrowed ? ` (câu mẫu lấy từ ${esc(borrowed.sourceName)})` : ''} · mỗi câu có đoạn audio riêng, nghe lại thoải mái.</span>
+        <button type="button" class="ltp-btn ltp-btn-primary" data-act="intro-done">Bắt đầu làm bài →</button>
+      </div>
     </div>`);
   }
 
@@ -704,7 +666,13 @@
   // an answer doesn't make the map flash / the page jump
   const qtypeMapHtml = (q) => (q.imageUrl ? `<div class="ltp-map"><div class="ltp-map-slot"></div>
       <a class="ltp-link" href="${esc(q.imageUrl)}" target="_blank" rel="noopener">🔍 Phóng to</a></div>` : '');
-  const qtypeHeadHtml = (q) => `<div class="ltp-qhead"><span class="ltp-qnum">${esc(qNumbers(q))}</span>${q.instruction ? `<span class="ltp-instruction">${esc(q.instruction)}</span>` : ''}</div>`;
+  // the instruction is shown where it starts (same group → said once)
+  const qtypeHeadHtml = (q) => {
+    const i = st.items.indexOf(q);
+    const prev = i > 0 ? st.items[i - 1] : null;
+    const instruction = q.instruction && (!prev || prev.instruction !== q.instruction) ? q.instruction : '';
+    return `<div class="ltp-qhead"><span class="ltp-qnum">${esc(qNumbers(q))}</span>${instruction ? `<span class="ltp-instruction">${esc(instruction)}</span>` : ''}</div>`;
+  };
   function qtypeListHtml(q) {
     if (st.practice.qtype !== 'matching') return '';
     return `<div class="ltp-matchlist">
@@ -725,7 +693,6 @@
   const MODE_BANNER = {
     example: ['ex', '📘 Câu mẫu (I DO)', 'Xem cách làm từng bước — câu này không tính điểm.'],
     guided: ['we', '🤝 Làm cùng (WE DO)', 'Làm theo từng bước có gợi ý; đáp án chỉ hiện sau khi bạn kiểm tra.'],
-    solo: ['you', '✍️ Tự làm (YOU DO)', 'Tự làm trọn vẹn: đọc → dự đoán → nghe → trả lời → kiểm tra.'],
   };
   function modeBannerHtml(q) {
     const m = MODE_BANNER[q.mode];
@@ -765,23 +732,7 @@
 
   // ── Q1: worked example (I DO) — six steps revealed one at a time ──────
 
-  const EX_STEPS = 6;
-  // Why an answer type, in the words a student can reuse.
-  const TYPE_WHY = {
-    proper: 'Chỗ trống cần một tên riêng (người, địa điểm, tổ chức) → nghe kỹ phần đánh vần, viết hoa chữ cái đầu.',
-    date: 'Chỗ trống cần ngày / thứ / tháng → để ý cách đọc “the fifth of June”, “Tuesday the 3rd”.',
-    time: 'Chỗ trống cần giờ → để ý a.m. / p.m., “half past”, “quarter to”.',
-    price: 'Chỗ trống cần giá tiền → để ý £ / $, “per week”, “each”, và số bị sửa lại.',
-    number: 'Chỗ trống cần một con số → để ý số điện thoại, số phòng, số lượng; 15 ≠ 50.',
-    word: 'Chỗ trống cần một từ vựng → nhìn từ đứng trước / sau để đoán danh từ, tính từ hay động từ.',
-  };
-  // Step 2 of the example for the letter types: what to do before listening.
-  const EX_PREDICT = {
-    mcq: (q) => `Đọc ${q.choices.length} lựa chọn ${q.choices.map(c => c.key).join(' / ')} và để ý chúng khác nhau ở đâu. Audio thường nhắc tới cả những lựa chọn sai — chờ ý trả lời đúng câu hỏi.`,
-    multi: (q) => `Cần chọn đúng ${q.pick} chữ cái trong ${q.choices.length} lựa chọn. Đọc hết các lựa chọn trước; nghe xem ý nào được xác nhận, ý nào chỉ được nhắc tới rồi bị bác bỏ.`,
-    matching: (q) => `Đọc danh sách ${q.choices[0].key}–${q.choices[q.choices.length - 1].key} trước. Khi nghe tới “${q.text}”, chờ ý nghĩa khớp với một lựa chọn — không phải từ giống hệt.`,
-    map: () => 'Nhìn bản đồ trước: tìm điểm bắt đầu và các mốc. Khi nghe, đi theo từ chỉ hướng (next to, opposite, on the left…) chứ không chỉ chờ tên địa điểm.',
-  };
+  const EX_STEPS = 6; // = guide.example.length
   const choiceText = (q, keys) => String(keys).split(',').map(s => s.trim().toUpperCase()).filter(Boolean).map(k => {
     const c = (q.choices || []).find(x => x.key === k);
     return c && c.label ? `${k}. ${c.label}` : k;
@@ -792,32 +743,33 @@
     const typed = q.input === 'text';
     const answer = typed ? answerLabel(g.answer) : choiceText(q, g.answer);
     const chips = (list, cls) => list.map(x => `<span class="ltp-chip ${cls}">${esc(x)}</span>`).join(' ');
+    const name = (n, icon, fallback) => `${icon} ${(guideOf().example || [])[n - 1] || fallback}`;
     switch (k) {
-      case 1: return ['🔍 Gạch chân keyword', `${chips(g.keywords, 'kw') || '<i>—</i>'}
+      case 1: return [name(1, '🔍', 'Gạch chân keyword'), `${chips(g.keywords, 'kw') || '<i>—</i>'}
         ${g.signals && g.signals.length ? `<div>🟢 Từ sát chỗ trống: ${chips(g.signals, 'sig')}</div>` : ''}
         <div class="ltp-muted">Đây là những từ (hoặc cách nói khác của chúng) bạn sẽ chờ nghe.</div>`];
       case 2: {
-        if (!typed) return ['🎯 Trước khi nghe', esc((EX_PREDICT[st.practice.qtype] || (() => ''))(q))];
-        if (!g.type) return ['🎯 Dự đoán loại đáp án', 'Đáp án là một cụm đặc biệt (email / địa chỉ web) — chép thật chính xác từng ký tự.'];
-        return ['🎯 Dự đoán loại đáp án', `<b>${esc(typeName(g.type))}</b><div class="ltp-muted">${esc(TYPE_WHY[g.type] || '')}</div>`];
+        if (!typed) return ['🎯 Trước khi nghe', esc(g.before || '')];
+        if (!g.type) return [name(2, '🎯', 'Dự đoán loại đáp án'), 'Đáp án là một cụm đặc biệt (email / địa chỉ web) — chép thật chính xác từng ký tự.'];
+        return [name(2, '🎯', 'Dự đoán loại đáp án'), `<b>${esc(typeName(g.type))}</b><div class="ltp-muted">${esc(g.typeWhy || '')}</div>`];
       }
-      case 3: return ['🎧 Nghe đoạn audio', `${qtypePlayerHtml(q, i)}${g.where ? `<div class="ltp-muted">📍 Vị trí: ${esc(g.where)}</div>` : ''}`];
+      case 3: return [name(3, '🎧', 'Nghe đoạn audio'), `${qtypePlayerHtml(q, i)}${g.where ? `<div class="ltp-muted">📍 Vị trí: ${esc(g.where)}</div>` : ''}`];
       case 4: {
-        if (!g.evidence) return ['📝 Tìm đáp án trong transcript', '<span class="ltp-muted">Câu này chưa có transcript khớp — nghe lại đoạn audio ở bước 3.</span>'];
+        if (!g.evidence) return [name(4, '📝', 'Tìm đáp án trong transcript'), '<span class="ltp-muted">Câu này chưa có transcript khớp — nghe lại đoạn audio ở bước 3.</span>'];
         const terms = typed ? answerLabel(g.answer).split(' / ') : [...(g.directions || []), ...g.keywords];
         const traps = (g.traps || []).length ? `<div class="ltp-trap">⚠️ Bẫy: ${esc(choiceText(q, g.traps.join(',')))} cũng được nhắc tới trong đoạn này — nhưng không phải đáp án.</div>` : '';
         const dirs = (g.directions || []).length ? `<div class="ltp-muted">🧭 Từ chỉ hướng nghe được: ${chips(g.directions, 'sig')}</div>` : '';
-        return ['📝 Tìm đáp án trong transcript', `${evidenceHtml(g.evidence, terms, `ltp-ev-${i}`)}${dirs}${traps}`];
+        return [name(4, '📝', 'Tìm đáp án trong transcript'), `${evidenceHtml(g.evidence, terms, `ltp-ev-${i}`)}${dirs}${traps}`];
       }
       case 5: {
         const limit = typed && q.wordLimit ? `<div class="ltp-muted">✍️ ${wordCount(answerLabel(g.answer).split(' / ')[0])} từ — đúng yêu cầu “${esc(q.wordLimit)}”.</div>` : '';
-        return ['✅ Đáp án', `<span class="ltp-answer">${esc(answer)}</span>${limit}`];
+        return [name(5, '✅', 'Đáp án'), `<span class="ltp-answer">${esc(answer)}</span>${limit}`];
       }
       default: {
         const why = g.why || (g.evidence
           ? `${typed && g.type ? `Câu hỏi cần ${typeName(g.type)}. ` : ''}Người nói: “${g.evidence.text}” → đáp án ${answer}.`
           : `Đáp án: ${answer}.`);
-        return ['💡 Giải thích', escNl(why)];
+        return [name(6, '💡', 'Giải thích'), escNl(why)];
       }
     }
   }
@@ -856,13 +808,6 @@
   // ── Q2: done together (WE DO) — keyword → predict → listen → answer ──
 
   const WE_STEPS = ['kw', 'predict', 'listen', 'answer'];
-  const GUIDED_THINK = {
-    mcq: 'Đọc các lựa chọn và gạch chân điểm khác nhau giữa chúng. Đừng chọn chỉ vì nghe thấy một từ giống option.',
-    multi: 'Đọc hết các lựa chọn. Nhớ: có ý được nhắc tới rồi bị bác bỏ — chỉ chọn ý người nói xác nhận.',
-    matching: 'Đọc lại danh sách lựa chọn; nghĩ xem mục này có thể được nói lại bằng từ khác (paraphrase) thế nào.',
-    map: 'Tìm điểm bắt đầu và các mốc trên bản đồ; chuẩn bị nghe từ chỉ hướng.',
-  };
-
   function renderQtypeGuided() {
     const q = st.items[st.idx];
     const a = st.answers[st.idx];
@@ -872,11 +817,12 @@
     const typed = q.input === 'text';
     const predicts = typed && c.predict;
     const li = (k, title, body) => `<li class="ltp-gstep${k === step && !r ? ' current' : ''}"><div class="ltp-step-title">Bước ${k + 1} — ${title}</div><div class="ltp-step-body">${body}</div></li>`;
+    const name = (k, icon, fallback) => `${icon} ${(guideOf().guided || [])[k] || fallback}`;
     const steps = [];
     // 1 · keywords: the student's own, then the suggested ones
     // (the highlights live in `kwSel`: `sel` holds the "choose TWO" letters)
     const kwSel = a.kwSel || [];
-    steps.push(li(0, '🔍 Gạch chân keyword', a.kwDone ? kwFeedbackHtml({ text: q.text, keywords: c.keywords, signals: c.signals }, { sel: kwSel })
+    steps.push(li(0, name(0, '🔍', 'Gạch chân keyword'), a.kwDone ? kwFeedbackHtml({ text: q.text, keywords: c.keywords, signals: c.signals }, { sel: kwSel })
       : `<div class="ltp-muted">Chạm vào những từ trong câu hỏi mà bạn sẽ chờ nghe (thường 2–4 từ).</div>
         <button type="button" class="ltp-btn ltp-btn-primary" data-act="kw-done" ${kwSel.length ? '' : 'disabled'}>Xong, xem gợi ý</button>`));
     // 2 · predict (typed) / read the options
@@ -884,17 +830,17 @@
       const body = predicts
         ? `<div class="ltp-muted">Đáp án là loại gì?${(c.signals || []).length ? ` Nhìn từ sát chỗ trống: <b>${esc(c.signals.join(', '))}</b>.` : ''}</div>
           ${typeChipsHtml(a.prediction, { locked: !!r || step > 1, compact: true })}`
-        : `<div>${esc(typed ? 'Đọc cả câu: sau khi điền, câu phải đúng ngữ pháp và không vượt giới hạn từ.' : GUIDED_THINK[st.practice.qtype] || '')}</div>`;
-      steps.push(li(1, predicts ? '🎯 Dự đoán loại đáp án' : '🎯 Trước khi nghe', body
+        : `<div>${esc(c.before || '')}</div>`;
+      steps.push(li(1, predicts ? name(1, '🎯', 'Dự đoán loại đáp án') : '🎯 Trước khi nghe', body
         + (step === 1 ? `<button type="button" class="ltp-btn ltp-btn-primary" data-act="g-next" ${predicts && !a.prediction ? 'disabled' : ''}>Tiếp: nghe →</button>` : '')));
     }
     // 3 · listen
     if (step >= 2) {
-      steps.push(li(2, '🎧 Nghe đoạn audio', `${qtypePlayerHtml(q, st.idx)}<div class="ltp-muted">Chờ keyword (hoặc cách nói khác của nó); đáp án thường đến ngay sau.</div>
+      steps.push(li(2, name(2, '🎧', 'Nghe đoạn audio'), `${qtypePlayerHtml(q, st.idx)}<div class="ltp-muted">Chờ keyword (hoặc cách nói khác của nó); đáp án thường đến ngay sau.</div>
         ${step === 2 ? '<button type="button" class="ltp-btn ltp-btn-primary" data-act="g-next">Nghe xong → trả lời</button>' : ''}`));
     }
     // 4 · answer + check
-    if (step >= 3) steps.push(li(3, '✍️ Trả lời', `${pickNoteHtml(q, a)}${qtypeInputHtml(q, a)}`));
+    if (step >= 3) steps.push(li(3, name(3, '✍️', 'Trả lời'), `${pickNoteHtml(q, a)}${qtypeInputHtml(q, a)}`));
     showPanelState(headerHtml(esc(st.practice.sourceName)) + qtypeGuideHtml(false) + `<div class="ltp-card">
       ${modeBannerHtml(q)}
       ${qtypeMapHtml(q)}
@@ -904,6 +850,7 @@
         ${typed && q.context ? `<div class="ltp-context">📋 ${esc(q.context)}</div>` : ''}
         <div class="ltp-q ltp-tokens">${tokensHtml(q.text, kwSel, { locked: a.kwDone, kw: c.keywords })}</div>
         ${typed && q.wordLimit ? `<div class="ltp-limit">✍️ ${esc(q.wordLimit)}</div>` : ''}
+        ${!typed && step < 3 && st.practice.qtype !== 'matching' ? qtypeInputHtml(q, { sel: [], value: '', result: null }, { readOnly: true }) : ''}
       </div>
       <ol class="ltp-gsteps">${steps.join('')}</ol>
       ${r ? qtypeFeedbackHtml(q, r) : ''}
@@ -942,27 +889,30 @@
       ${pred}
       ${diagnosisHtml(r)}
       ${evidenceHtml(r.evidence, terms, `ltp-ev-${st.idx}`)}
-      ${r.explanation ? `<div class="ltp-explanation"><strong>Giải thích:</strong> ${escNl(r.explanation)}</div>` : ''}
+      ${r.explanation ? explanationBlock(r.explanation, { open: !r.isCorrect, dropQuote: !!r.evidence }) : ''}
     </div>`;
   }
 
   // Quy trình hoàn chỉnh: 5 steps over a run of consecutive gaps.
   const WF_STAGES = ['kw', 'predict', 'listen', 'answer', 'result'];
-  const WF_STEPS = ['Highlight keyword', 'Dự đoán', 'Nghe', 'Trả lời & tự kiểm tra', 'Kiểm tra đáp án'];
+  const WF_STEPS_FALLBACK = ['Highlight keyword', 'Dự đoán', 'Nghe', 'Trả lời & tự kiểm tra', 'Kiểm tra đáp án'];
 
   function renderWorkflow() {
     const pr = st.practice;
     if (!WF_STAGES.includes(st.stage)) st.stage = 'kw';
     if (st.stage === 'result') { renderRunResult(); return; }
     const si = WF_STAGES.indexOf(st.stage);
-    const steps = WF_STEPS.map((s, i) => `<span class="ltp-step ${i < si ? 'done' : i === si ? 'active' : ''}"><b>${i + 1}</b><span>${esc(s)}</span></span>`).join('');
+    const steps = (guideOf().steps.length ? guideOf().steps : WF_STEPS_FALLBACK).map((s, i) => `<span class="ltp-step ${i < si ? 'done' : i === si ? 'active' : ''}"><b>${i + 1}</b><span>${esc(s)}</span></span>`).join('');
     const nums = `Câu ${pr.questions[0].questionNumber}–${pr.questions[pr.questions.length - 1].questionNumber}`;
     const head = `<div class="ltp-head">
       <div class="ltp-head-top">
         <div class="ltp-title">🎧 Luyện tập: Quy trình hoàn chỉnh</div>
-        <button type="button" class="ltp-link ltp-close" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
+        <div class="ltp-head-actions">
+          <button type="button" class="ltp-link" data-act="start" title="Xoá câu trả lời, làm lại từ đầu">↻ Làm lại</button>
+          <button type="button" class="ltp-link ltp-close" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
+        </div>
       </div>
-      <div class="ltp-source">Nguồn: ${esc(pr.sourceName)} · ${nums}</div>
+      <div class="ltp-source">${esc(pr.sourceName)} · ${nums}</div>
     </div>`;
     const task = {
       kw: `<b>Bước 1/5 — BEFORE LISTENING:</b> đọc ${pr.questions.length} câu, bấm chọn keyword ở mỗi câu (tên riêng, số, từ mang nội dung).`,
@@ -996,7 +946,7 @@
     else if (st.stage === 'predict') footer = next('Tiếp: Bước 3 — Nghe →');
     else if (st.stage === 'listen') footer = next('Tiếp: Bước 4 — Trả lời & tự kiểm tra →');
     else {
-      const checks = CHECKLIST.map(([k, label]) => `<label class="ltp-check"><input type="checkbox" data-act="wf-check" data-val="${k}" ${st.checklist && st.checklist[k] ? 'checked' : ''} /> ${esc(label)}</label>`).join('');
+      const checks = (guideOf().checklist || []).map(([k, label]) => `<label class="ltp-check"><input type="checkbox" data-act="wf-check" data-val="${k}" ${st.checklist && st.checklist[k] ? 'checked' : ''} /> ${esc(label)}</label>`).join('');
       footer = `<div class="ltp-checklist"><div class="ltp-task">✅ Tự kiểm tra trước khi nộp${pr.wordLimit ? ` (giới hạn: ${esc(pr.wordLimit)})` : ''}</div>${checks}</div>
         <button type="button" class="ltp-btn ltp-btn-primary" data-act="submit-run">Nộp bài — Bước 5 →</button>`;
     }
@@ -1053,7 +1003,7 @@
       ${diagnosisHtml(r)}
       <div class="ltp-typeline">Loại đáp án: <b>${typeName(r.answerType)}</b>${pred ? ` · ${pred}` : ''}</div>
       ${evidenceHtml(r.evidence, q.keywords, `ltp-ev-${st.idx}`)}
-      ${r.explanation ? `<div class="ltp-explanation"><strong>Giải thích:</strong> ${escNl(r.explanation)}</div>` : ''}
+      ${r.explanation ? explanationBlock(r.explanation, { open: !r.isCorrect, dropQuote: !!r.evidence }) : ''}
     </div>`;
   }
 
@@ -1063,9 +1013,12 @@
     const head = `<div class="ltp-head">
       <div class="ltp-head-top">
         <div class="ltp-title">🎧 Luyện tập: Chiến thuật 30 giây</div>
-        <button type="button" class="ltp-link ltp-close" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
+        <div class="ltp-head-actions">
+          <button type="button" class="ltp-link" data-act="start" title="Xoá câu trả lời, làm lại từ đầu">↻ Làm lại</button>
+          <button type="button" class="ltp-link ltp-close" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
+        </div>
       </div>
-      <div class="ltp-source">Nguồn: ${esc(pr.sourceName)} · Câu ${pr.questions[0].questionNumber}–${pr.questions[pr.questions.length - 1].questionNumber}</div>
+      <div class="ltp-source">${esc(pr.sourceName)} · Câu ${pr.questions[0].questionNumber}–${pr.questions[pr.questions.length - 1].questionNumber}</div>
     </div>`;
     if (st.stage === 'result') { renderRunResult(); return; }
     if (st.stage === 'intro') {
@@ -1212,7 +1165,7 @@
           · Keyword gợi ý: ${q.keywords.map(k => `<span class="ltp-chip kw">${esc(k)}</span>`).join(' ')}</div>
         ${a.para ? `<div class="ltp-muted">Paraphrase bạn đoán: “${esc(a.para)}” — so với câu trong audio bên dưới.</div>` : ''}
         ${evidenceHtml(r.evidence, q.keywords, `ltp-ev-${i}`)}
-        ${r.explanation ? `<details class="ltp-expl"><summary>Giải thích</summary>${escNl(r.explanation)}</details>` : ''}
+        ${r.explanation ? explanationBlock(r.explanation, { dropQuote: !!r.evidence }) : ''}
       </div>`;
     }).join('');
     const panelHead = `<div class="ltp-result-top">

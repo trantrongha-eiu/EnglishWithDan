@@ -18,6 +18,7 @@ const SpeakingTip = require('../models/SpeakingTip');
 const ListeningSection = require('../models/ListeningSection');
 const readingPractice = require('./readingTipPracticeService');
 const listeningPractice = require('./listeningTipPracticeService');
+const { LISTENING_TYPE_LABEL } = require('./tipPracticeGuides');
 
 const SKILLS = {
   reading: { label: 'Reading', model: ReadingTip, practice: readingPractice },
@@ -133,11 +134,67 @@ const choicesMd = (choices) => (choices || []).filter(c => c && (c.label || c.ke
 
 // ── Reading practice → Markdown ─────────────────────────────────────────
 
+// A lettered passage (A, B, C…) tags only its lettered paragraphs: the
+// paragraphs after a letter belong to that section, and a bare number next
+// to them reads like a question number.
 function paragraphsMd(paragraphs) {
+  const lettered = (paragraphs || []).some(p => p.label);
   return (paragraphs || []).map((p) => {
-    const tag = p.label ? `**${p.label}** ` : p.n ? `**[${p.n}]** ` : '';
+    const tag = p.label ? `**${p.label}** ` : p.n && !lettered ? `**[${p.n}]** ` : '';
     return `${p.heading ? `**${oneLine(p.heading)}**\n\n` : ''}${tag}${oneLine(p.text)}`;
   }).join('\n\n');
+}
+
+// "đoạn C" for a paragraph inside section C — the same name the web uses.
+function sectionName(paragraphs, index) {
+  const list = paragraphs || [];
+  const at = list.findIndex(p => p.i === index);
+  if (at === -1) return 'bài đọc';
+  const p = list[at];
+  if (p.label) return `đoạn ${p.label}`;
+  if (list.some(x => x.label)) {
+    for (let k = at - 1; k >= 0; k--) if (list[k].label) return `đoạn ${list[k].label}`;
+    return 'phần mở đầu';
+  }
+  return p.n ? `đoạn ${p.n}` : 'phần mở đầu';
+}
+
+// The practice's guide (services/tipPracticeGuides.js) — the "Trước khi
+// làm" box of the web page.
+function guideMd(guide) {
+  if (!guide) return '';
+  const parts = [`**${oneLine(guide.title || 'Cách làm')}**`];
+  if (guide.defs && guide.defs.length) parts.push(table(['Đáp án', 'Khi nào'], guide.defs));
+  parts.push(guide.steps.map((s, i) => `${i + 1}. ${oneLine(s)}`).join('\n'));
+  if (guide.warning) parts.push(quote(`⚠️ ${guide.warning}`));
+  if (guide.checklist && guide.checklist.length) {
+    parts.push(`**Tự kiểm tra trước khi nộp**\n${guide.checklist.map(([, t]) => `- [ ] ${oneLine(t)}`).join('\n')}`);
+  }
+  return parts.join('\n\n');
+}
+
+const chips = (list) => (list || []).filter(Boolean).map(k => `“${oneLine(k)}”`).join(', ');
+
+// The worked example (I do) / hints (We do) of a Reading question, step by
+// step under the same names as on the web.
+function readingWalkthroughMd(pr, q) {
+  const g = q.guided;
+  const guide = pr.guide || {};
+  if (!g || !g.evidence) return [];
+  const where = sectionName(pr.paragraphs, g.evidence.paragraphIndex);
+  const headings = pr.questionType === 'headings';
+  if (g.mode === 'example') {
+    const body = headings
+      ? [`ý chính của ${where} nằm ở câu: “${oneLine(g.evidence.text)}”`, 'cả đoạn đang nói về điều gì? Bỏ qua ví dụ, số liệu, tên riêng.',
+        'heading đúng diễn đạt lại ý chính đó; loại heading chỉ khớp một chi tiết.', `đáp án ${oneLine(g.answer)}`]
+      : [g.keywords.length ? chips(g.keywords) : 'các từ nội dung chính của câu hỏi', `thông tin nằm ở ${where}`,
+        `“${oneLine(g.evidence.text)}”`, `so câu hỏi với câu trên → đáp án ${oneLine(g.answer)}`];
+    return ['- **Làm mẫu (I do) — các bước trên web:**', ...(guide.example || []).map((t, i) => `  ${i + 1}. *${t}:* ${body[i] || ''}`)];
+  }
+  const body = headings
+    ? [`ý chính của ${where} nằm ở câu: “${oneLine(g.evidence.text)}”`, 'heading đúng tóm được CẢ đoạn, thường diễn đạt khác câu then chốt.']
+    : [g.keywords.length ? chips(g.keywords) : 'các từ nội dung chính của câu hỏi', `thông tin nằm ở ${where}`, `“${oneLine(g.evidence.text)}”`];
+  return ['- **Gợi ý (We do) — học viên mở lần lượt trên web:**', ...(guide.hints || []).map((t, i) => `  ${i + 1}. *Gợi ý ${t}:* ${body[i] || ''}`)];
 }
 
 async function readingPracticeMd(lessonKey, pr) {
@@ -173,8 +230,8 @@ async function readingPracticeMd(lessonKey, pr) {
       const opts = q.choices && q.choices.some(c => c.label) ? `\n${choicesMd(q.choices)}` : q.choices ? `   (${q.choices.map(c => c.key).join(' / ')})` : '';
       qMd.push(`**${q.questionNumber}.** ${oneLine(q.text)}${limit}${opts}${q.isMain ? '  _(câu ý chính — bước skim)_' : ''}`);
       const extra = [];
-      if (q.isGuidedExample) extra.push('- _Trên web đây là câu ví dụ mẫu (I do)._');
-      if (q.locationParagraph != null) extra.push(`- **Vị trí thông tin:** đoạn ${q.locationParagraph}`);
+      extra.push(...readingWalkthroughMd(pr, q));
+      if (q.locationParagraph != null) extra.push(`- **Vị trí thông tin:** ${sectionName(pr.paragraphs, q.locationParagraph)}`);
       if (q.keywords && q.keywords.length) extra.push(`- **Keyword gợi ý:** ${q.keywords.join(', ')}`);
       if (q.anchors && q.anchors.length) extra.push(`- **Từ neo để scan:** ${q.anchors.join(', ')}`);
       keys.push(`**${q.questionNumber}.**\n${keyBlock(await revealReading(lessonKey, pr, q), extra)}`);
@@ -196,6 +253,31 @@ function gapLine(it) {
   const ctx = it.context ? `_${oneLine(it.context)}_ — ` : '';
   const limit = it.wordLimit ? ` _(${it.wordLimit})_` : '';
   return `${ctx}${oneLine(it.text)}${limit}`;
+}
+
+// The worked example (I do) / done-together question (We do) of a
+// Listening question-type practice, under the same step names as the web.
+function listeningWalkthroughMd(pr, q) {
+  const guide = pr.guide || {};
+  const typed = q.input === 'text';
+  if (q.mode === 'example' && q.guide) {
+    const g = q.guide;
+    const kw = `${chips(g.keywords) || '—'}${g.signals && g.signals.length ? ` · từ sát chỗ trống: ${chips(g.signals)}` : ''}`;
+    const predict = typed && g.type ? `${LISTENING_TYPE_LABEL[g.type] || g.type} — ${oneLine(g.typeWhy)}` : oneLine(g.before);
+    const listen = `${q.segment ? `audio ${mmss(q.segment.start)}–${mmss(q.segment.end)}` : 'cả bài'}${g.where ? ` · vị trí: ${oneLine(g.where)}` : ''}`;
+    const evidence = g.evidence ? `“${g.evidence.speaker ? `${g.evidence.speaker}: ` : ''}${oneLine(g.evidence.text)}”` : '(chưa có transcript khớp)';
+    const traps = g.traps && g.traps.length ? ` · bẫy: ${g.traps.join(', ')} cũng được nhắc tới` : '';
+    const body = [kw, predict, listen, evidence + traps, oneLine(g.answer), oneLine(g.why) || '—'];
+    return ['- **Làm mẫu (I do) — các bước trên web:**', ...(guide.example || []).map((t, i) => `  ${i + 1}. *${t}:* ${body[i] || ''}`)];
+  }
+  if (q.mode === 'guided' && q.coach) {
+    const c = q.coach;
+    const kw = `${chips(c.keywords) || '—'}${c.signals && c.signals.length ? ` · từ sát chỗ trống: ${chips(c.signals)}` : ''}`;
+    const predict = c.predict ? 'học viên tự chọn loại đáp án (tên riêng / ngày / giờ / giá / số / từ vựng)' : oneLine(c.before);
+    const body = [kw, predict, 'nghe đoạn audio của câu, chờ keyword hoặc cách nói khác', 'học viên tự trả lời rồi bấm Kiểm tra'];
+    return ['- **Làm cùng (We do) — các bước trên web:**', ...(guide.guided || []).map((t, i) => `  ${i + 1}. *${t}:* ${body[i] || ''}`)];
+  }
+  return [];
 }
 
 async function listeningPracticeMd(lessonKey, pr) {
@@ -251,8 +333,7 @@ async function listeningPracticeMd(lessonKey, pr) {
       const where = own ? ` _(câu mẫu lấy từ ${oneLine(q.sourceName)}; audio: ${q.audioUrl})_` : '';
       const opts = q.choices && q.choices.some(c => c.label) ? `\n${choicesMd(q.choices)}` : q.choices ? `   (${q.choices.map(c => c.key).join(' / ')})` : '';
       out.push(`**${num}.** ${text}${segment(q.segment)}${where}${opts}`);
-      const extra = [];
-      if (q.mode === 'example') extra.push('- _Trên web đây là câu ví dụ mẫu (I do)._');
+      const extra = listeningWalkthroughMd(pr, q);
       if (q.keywords && q.keywords.length) extra.push(`- **Keyword gợi ý:** ${q.keywords.join(', ')}`);
       keys.push(`**${num}.**\n${keyBlock(await revealListening(lessonKey, pr, q), extra)}`);
     }
@@ -362,6 +443,7 @@ async function buildPack(skill, lessonKey) {
       const transcripts = skill === 'listening' ? await transcriptsMd(pr) : '';
       practiceMd = [
         '## PHẦN C — BÀI LUYỆN TẬP (đề thật, giống bài luyện tập trên web)',
+        pr.guide ? `### C0. Cách làm (đúng hộp “Trước khi làm” trên web)\n\n${guideMd(pr.guide)}` : '',
         '### C1. Đề bài (phát cho học viên)',
         questions,
         PAGE_BREAK,

@@ -68,113 +68,15 @@
       desc: 'Trả lời câu hỏi ngắn bằng từ lấy từ một bài đọc thật, đúng giới hạn số từ.',
     },
   };
-  // "Trước khi làm" mini tutorial per question type (shown before Q1, and
-  // collapsible on every question).
-  const TYPE_GUIDE = {
-    tfng: {
-      defs: [
-        ['TRUE', 'Statement có cùng ý nghĩa với thông tin trong bài.'],
-        ['FALSE', 'Bài đọc nói NGƯỢC lại statement (mâu thuẫn).'],
-        ['NOT GIVEN', 'Bài đọc không cung cấp đủ thông tin để xác nhận hay bác bỏ statement.'],
-      ],
-      steps: [
-        'Xác định keyword trong statement (tên riêng, số liệu, từ khó thay thế).',
-        'Tìm phần liên quan trong bài bằng keyword hoặc cách diễn đạt tương đương.',
-        'Đọc kỹ câu chứa thông tin và 1–2 câu xung quanh.',
-        'So sánh Ý NGHĨA, không so từng chữ — chú ý từ hạn định: all / some, always / usually, only.',
-        'Kết luận: cùng nghĩa → TRUE · ngược nghĩa → FALSE · bài không nói tới → NOT GIVEN.',
-      ],
-      warning: 'NOT GIVEN không có nghĩa là “không tìm thấy keyword”. Keyword có thể có trong bài, nhưng bài không nói gì về đúng điều statement khẳng định. VD: bài viết “The museum attracted 2 million visitors in 2010.”, statement “The museum was the most popular attraction in 2010.” → NOT GIVEN: bài có số khách nhưng không so sánh với điểm tham quan nào khác.',
-    },
-    ynng: {
-      defs: [
-        ['YES', 'Statement khớp với quan điểm / nhận định của tác giả.'],
-        ['NO', 'Statement trái với quan điểm của tác giả.'],
-        ['NOT GIVEN', 'Không thể biết tác giả nghĩ gì về điều này.'],
-      ],
-      steps: [
-        'Xác định ý kiến / nhận định (claim) trong statement — thường có tính từ đánh giá, so sánh, “should”.',
-        'Tìm đoạn liên quan trong bài.',
-        'Đọc kỹ câu thể hiện QUAN ĐIỂM của tác giả (tín hiệu: I believe, arguably, clearly, unfortunately, it is likely…).',
-        'So sánh quan điểm tác giả với statement — ý kiến của người khác được trích dẫn chưa chắc là quan điểm tác giả.',
-        'Phân biệt NO (tác giả nói ngược lại) với NOT GIVEN (tác giả không bày tỏ quan điểm về điểm đó).',
-      ],
-      warning: 'YES / NO / NOT GIVEN hỏi về QUAN ĐIỂM của tác giả; TRUE / FALSE / NOT GIVEN hỏi về THÔNG TIN trong bài.',
-    },
-    headings: {
-      steps: [
-        'Đọc lướt đoạn cần tìm heading (có viền đỏ): câu đầu, câu cuối và câu sau từ đổi ý (However, But…) thường chứa ý chính.',
-        'Tự tóm tắt ý chính của đoạn bằng một câu ngắn.',
-        'Bỏ qua chi tiết hỗ trợ: ví dụ, số liệu, tên riêng.',
-        'So nghĩa từng heading với ý chính — heading đúng thường là cách diễn đạt khác của ý chính.',
-        'Loại heading gây nhiễu: chỉ khớp một chi tiết hoặc chỉ lặp lại một từ có trong đoạn.',
-      ],
-      warning: 'Heading phải bao quát CẢ đoạn. Heading chỉ đúng với một câu trong đoạn thường là bẫy.',
-    },
-    matching_info: {
-      steps: [
-        'Xác định loại thông tin cần tìm (a reference to / an example of / a description of / a comparison…) và keyword đặc trưng.',
-        'Dự đoán cách bài có thể diễn đạt lại keyword.',
-        'Scan từng đoạn tìm đúng chi tiết đó — đây là CHI TIẾT, không phải ý chính của đoạn.',
-        'Đọc kỹ câu tìm được để chắc đúng loại thông tin (ví dụ ≠ lý do ≠ so sánh).',
-        'Chọn chữ cái của đoạn chứa thông tin — một đoạn có thể được dùng nhiều lần.',
-      ],
-      warning: 'Thứ tự câu hỏi KHÔNG theo thứ tự đoạn văn — làm trước những câu có keyword dễ tìm (tên riêng, số liệu).',
-    },
-    matching_features: {
-      steps: [
-        'Đọc danh sách lựa chọn (người / nơi / nhóm / đặc điểm).',
-        'Scan tìm từng tên trong bài và để ý mọi lần tên đó xuất hiện.',
-        'Đọc ý kiến hoặc đặc điểm gắn với tên đó (kể cả he / she / they ngay sau).',
-        'So sánh với câu cần ghép — thường là cách diễn đạt khác.',
-        'Kiểm tra thông tin khớp đúng người / nhóm, tránh nhầm với người được nhắc ngay gần đó.',
-      ],
-      warning: 'Câu hỏi không theo thứ tự bài đọc, và một lựa chọn có thể được dùng nhiều lần.',
-    },
-    completion: {
-      steps: [
-        'Đọc câu có chỗ trống, xác định yêu cầu ngữ pháp (sau a / the → danh từ; sau very → tính từ…).',
-        'Dự đoán loại từ cần điền: danh từ, số, tính từ, động từ.',
-        'Scan keyword trong câu để tìm vị trí evidence — câu hỏi thường theo thứ tự bài.',
-        'Chép CHÍNH XÁC từ trong bài: không đổi dạng từ, không tự dùng từ đồng nghĩa.',
-        'Kiểm tra giới hạn số từ và câu sau khi điền có đúng ngữ pháp không.',
-      ],
-      warning: 'Viết quá giới hạn từ (VD: 3 từ khi đề yêu cầu NO MORE THAN TWO WORDS) là sai, dù nội dung đúng.',
-    },
-    mcq: {
-      steps: [
-        'Đọc câu hỏi (chưa vội đọc đáp án) và xác định keyword.',
-        'Tìm đoạn chứa evidence — câu hỏi thường theo thứ tự bài.',
-        'Đọc kỹ evidence rồi mới đối chiếu từng đáp án.',
-        'Loại đáp án sai: không có trong bài, sai chi tiết, hoặc đúng nhưng không trả lời câu hỏi.',
-        'Chọn đáp án dựa trên evidence, không dựa vào hiểu biết chung.',
-      ],
-      warning: 'Đáp án lặp lại nhiều từ y hệt bài đọc thường là bẫy — đáp án đúng hay được diễn đạt khác.',
-    },
-    short_answer: {
-      steps: [
-        'Xác định keyword của câu hỏi.',
-        'Dự đoán loại đáp án từ từ để hỏi: Who → người, When → thời gian, Where → nơi chốn, How many / much → số.',
-        'Scan tìm keyword hoặc cách diễn đạt tương đương — câu hỏi thường theo thứ tự bài.',
-        'Chép chính xác từ trong bài.',
-        'Kiểm tra giới hạn số từ.',
-      ],
-      warning: 'Không cần viết câu hoàn chỉnh — chỉ viết từ / cụm từ trả lời câu hỏi, đúng giới hạn từ.',
-    },
-  };
+  // The "Trước khi làm" guide, the worked-example / hint step names and the
+  // scan steps come with the practice (practice.guide — one copy on the
+  // server, also printed in the teacher's handout).
+  const guideOf = () => (st && st.practice && st.practice.guide) || { steps: [] };
   const FOCUS_LABEL = {
     main_idea: 'Main idea — Ý chính của đoạn',
     paragraph_purpose: 'Paragraph purpose — Mục đích của đoạn',
     overall_topic: 'Overall topic — Chủ đề toàn bài',
   };
-  const SCAN_STEPS = [
-    'Xác định keyword trong câu hỏi — ưu tiên tên riêng, số, năm, thuật ngữ (đã tô sẵn).',
-    'Dự đoán cách bài đọc có thể diễn đạt lại (paraphrase) nếu keyword là từ thường.',
-    'Scan bài đọc tìm keyword — lướt mắt, KHÔNG đọc từng câu.',
-    'Đọc kỹ 1–2 câu quanh vị trí vừa tìm thấy.',
-    'Chép đáp án đúng chính tả, đúng giới hạn số từ.',
-  ];
-
   let st = null;        // current practice state (null = entry card only)
   let timerHandle = null;
   // Bumped whenever the panel changes hands (another tip, a new load, close)
@@ -271,13 +173,19 @@
       const at = p.text.indexOf(opts.key.text);
       if (at !== -1) ranges.push({ start: at, end: at + opts.key.text.length, cls: 'rtp-lead' });
     }
-    (opts.hits || []).forEach(t => findTerm(p.text, t).forEach(r => ranges.push({ ...r, cls: 'rtp-hit' })));
+    if (opts.hitsIn == null || opts.hitsIn === p.i) {
+      (opts.hits || []).forEach(t => findTerm(p.text, t).forEach(r => ranges.push({ ...r, cls: 'rtp-hit' })));
+    }
     if (opts.evidence && opts.evidence.paragraphIndex === p.i) {
       const at = p.text.indexOf(opts.evidence.text);
       if (at !== -1) ranges.push({ start: at, end: at + opts.evidence.text.length, cls: 'rtp-ev' });
     }
-    const label = p.heading ? '' : `<span class="rtp-para-label">${esc(p.label || p.n)}</span>`;
-    const cls = ['rtp-para', p.heading ? 'rtp-para-heading' : '', opts.dim && !p.heading ? 'rtp-dim' : '',
+    // a lettered passage shows its letters only: the paragraphs after a
+    // letter belong to that section (a bare number reads like a question no.)
+    const lettered = opts.lettered != null ? opts.lettered : !!(st && st.practice && (st.practice.paragraphs || []).some(x => x.label));
+    const tag = p.label || (lettered ? '' : p.n);
+    const label = p.heading || !tag ? '' : `<span class="rtp-para-label">${esc(tag)}</span>`;
+    const cls = ['rtp-para', p.heading ? 'rtp-para-heading' : '', !p.heading && !tag ? 'rtp-para-cont' : '', opts.dim && !p.heading ? 'rtp-dim' : '',
       isTarget ? 'rtp-para-target' : '',
       opts.evidence && opts.evidence.paragraphIndex === p.i ? 'rtp-para-ev' : ''].filter(Boolean).join(' ');
     const act = opts.clickable && !p.heading ? ` data-act="wf-loc" ${KEY_ATTRS}` : '';
@@ -298,7 +206,7 @@
   // ── Entry card + lifecycle, persistence, scrolling — js/shared/tips-practice-shell.js ──
 
   const {
-    esc, escNl, KEY_ATTRS, errorMessage, announce, revealPanel, revealEl,
+    esc, KEY_ATTRS, errorMessage, announce, revealPanel, revealEl, explanationBlock,
     persist, persistSoon, recordScore,
     supports, mount, renderEntry, panelEl, showPanelState, start, confirmNewPractice, resume, headerHtml,
   } = window.TipsPracticeShell.create({
@@ -468,8 +376,8 @@
     return `<div class="rtp-feedback ${r.isCorrect ? 'ok' : 'bad'}">
       <div class="q-correct-ans ${r.isCorrect ? 'right' : 'wrong'}">${r.isCorrect ? '✓ Chính xác!' : '✗ Chưa đúng'}${answerLine}</div>
       ${extra.timeLine || ''}
-      ${r.evidence && !extra.noEvidence ? `<div class="rtp-evidence"><div class="rtp-evidence-label">📍 Evidence trong bài</div>“${esc(r.evidence.text)}”${JUMP_HTML}</div>` : ''}
-      ${r.explanation ? `<div class="q-explanation"><strong>Giải thích:</strong> ${escNl(r.explanation)}</div>` : ''}
+      ${r.evidence && !extra.noEvidence ? `<div class="rtp-evidence"><div class="rtp-evidence-label">📍 Evidence — đã tô xanh lá trong bài</div>“${esc(r.evidence.text)}”${JUMP_HTML}</div>` : ''}
+      ${r.explanation ? explanationBlock(r.explanation, { open: !r.isCorrect, dropQuote: !!(r.evidence && !extra.noEvidence) }) : ''}
     </div>`;
   }
 
@@ -512,8 +420,9 @@
     // topic sentences only.
     const budget = whole ? 90 : Math.min(60, Math.max(20, Math.round(words / 4)));
     if (!r && a.startedAt == null) a.startedAt = Date.now();
+    const lettered = it.paragraphs.some(x => x.label);
     const paras = it.paragraphs.map(p => paraHtml(p, {
-      lead: true, dim: whole && !st.showFull && !r, evidence: r && r.evidence,
+      lead: true, dim: whole && !st.showFull && !r, evidence: r && r.evidence, lettered,
     })).join('');
     const tip = whole
       ? 'Chỉ đọc câu đầu (tô vàng) của mỗi đoạn để nắm chủ đề chung — phần còn lại đã làm mờ.'
@@ -589,11 +498,8 @@
     const inputCls = r ? (r.isCorrect ? 'correct' : 'incorrect') : '';
 
     showPanelState(headerHtml(`${esc(pr.sourceName)} · ${esc(pr.passageTitle)}`)
-      + `<details class="rtp-guide" ${st.idx === 0 && !r ? 'open' : ''}>
-          <summary>📋 5 bước Scanning</summary>
-          <ol>${SCAN_STEPS.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
-        </details>
-        <div class="rtp-split">
+      + guideHtml(guideOf(), st.idx === 0 && !r)
+      + `<div class="rtp-split">
         <div class="rtp-passage">
           <div class="rtp-passage-head"><span class="rtp-chip">${esc(pr.passageTitle)}</span>
             ${r ? '' : `<span class="rtp-timer" id="rtp-timer">⏱ 0:00</span>`}${hlBtnHtml()}</div>
@@ -632,8 +538,9 @@
   const sameKey = (a, b) => String(a || '').trim().toLowerCase() === String(b || '').trim().toLowerCase();
 
   function guideHtml(g, open) {
+    if (!g || !g.steps || !g.steps.length) return '';
     return `<details class="rtp-guide" ${open ? 'open' : ''}>
-      <summary>📋 Cách làm dạng này</summary>
+      <summary>📋 ${esc(g.title || 'Cách làm')}</summary>
       ${g.defs ? `<div class="rtp-defs">${g.defs.map(([k, v]) => `<div class="rtp-def"><b>${esc(k)}</b><span>${esc(v)}</span></div>`).join('')}</div>` : ''}
       <ol>${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
       ${g.warning ? `<div class="rtp-warning">⚠️ ${esc(g.warning)}</div>` : ''}
@@ -643,17 +550,23 @@
   // Mini tutorial before the first question.
   function renderTypeIntro() {
     const pr = st.practice;
-    const g = TYPE_GUIDE[pr.questionType] || { steps: [] };
+    const g = guideOf();
     const name = COPY[st.lesson.lessonKey].name;
-    showPanelState(headerHtml(`${esc(pr.sourceName)} · ${esc(pr.passageTitle)}`)
+    showPanelState(headerHtml(`${esc(pr.sourceName)} · ${esc(pr.passageTitle)}`, { dots: false })
       + `<div class="rtp-intro">
-        <div class="rtp-intro-title">📋 Trước khi làm: cách làm dạng ${esc(name)}</div>
+        <div class="rtp-intro-title">📋 Trước khi làm: ${esc(g.title || `cách làm dạng ${name}`)}</div>
         ${g.defs ? `<div class="rtp-defs">${g.defs.map(([k, v]) => `<div class="rtp-def"><b>${esc(k)}</b><span>${esc(v)}</span></div>`).join('')}</div>` : ''}
         <ol class="rtp-steps">${g.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
         ${g.warning ? `<div class="rtp-warning">⚠️ ${esc(g.warning)}</div>` : ''}
-        <div class="rtp-intro-meta">Bài luyện gồm ${st.items.length} câu ${esc(name)} lấy nguyên từ đề thật, giữ đúng thứ tự như trong đề.</div>
-        ${st.items[0] && st.items[0].guided ? `<div class="rtp-intro-meta">🧑‍🏫 Câu 1 là ví dụ làm mẫu từng bước · 💡 Câu 2 có gợi ý, bạn tự trả lời · ✏️ Từ câu 3 bạn tự làm.</div>` : ''}
-        <button type="button" class="rtp-btn rtp-btn-primary" data-act="intro-done">Bắt đầu làm bài →</button>
+        ${st.items[0] && st.items[0].guided ? `<div class="rtp-flow">
+          <span class="rtp-flow-step ex"><b>Câu 1</b> xem mẫu</span>
+          <span class="rtp-flow-step we"><b>Câu 2</b> có gợi ý</span>
+          <span class="rtp-flow-step you"><b>Câu 3–${st.items.length}</b> tự làm</span>
+        </div>` : ''}
+        <div class="rtp-intro-foot">
+          <span class="rtp-muted">${st.items.length} câu ${esc(name)} lấy nguyên từ đề thật, đúng thứ tự trong đề.</span>
+          <button type="button" class="rtp-btn rtp-btn-primary" data-act="intro-done">Bắt đầu làm bài →</button>
+        </div>
       </div>`);
   }
 
@@ -693,10 +606,19 @@
     return String(key || '').split('/').map(s => s.trim()).filter(Boolean).join(' / ');
   }
 
+  // "đoạn C" for any paragraph of section C (a lettered passage names its
+  // sections, not its paragraphs — and "đoạn 12" reads like question 12).
   function paraName(pr, index) {
-    const p = pr.paragraphs.find(x => x.i === index);
-    if (!p) return 'bài đọc';
-    return p.label ? `đoạn ${p.label}` : p.n ? `đoạn ${p.n}` : 'phần mở đầu';
+    const list = pr.paragraphs;
+    const at = list.findIndex(x => x.i === index);
+    if (at === -1) return 'bài đọc';
+    const p = list[at];
+    if (p.label) return `đoạn ${p.label}`;
+    if (list.some(x => x.label)) {
+      for (let k = at - 1; k >= 0; k--) if (list[k].label) return `đoạn ${list[k].label}`;
+      return 'phần mở đầu';
+    }
+    return p.n ? `đoạn ${p.n}` : 'phần mở đầu';
   }
 
   const chipsHtml = (list) => list.map(k => `<span class="rtp-anchor-chip">${esc(k)}</span>`).join(' ');
@@ -706,13 +628,16 @@
   function exampleSteps(pr, q, g) {
     const where = paraName(pr, g.evidence.paragraphIndex);
     const answer = keyLabel(q, g.answer);
-    const analysis = g.explanation ? `<div class="q-explanation"><strong>Phân tích (lời giải của đề):</strong> ${escNl(g.explanation)}</div>` : '';
+    const analysis = g.explanation ? explanationBlock(g.explanation, { open: true, dropQuote: true }) : '';
+    const t = stepNames(guideOf().example, pr.questionType === 'headings'
+      ? ['Tìm câu then chốt của đoạn', 'Tóm tắt ý chính', 'So với danh sách heading', 'Kết luận']
+      : ['Tìm keyword', 'Scan bài đọc', 'Đọc câu chứa evidence', 'So sánh & kết luận'], 'BƯỚC');
     if (pr.questionType === 'headings') {
       return [
-        ['BƯỚC 1 — Tìm câu then chốt của đoạn', `Ý chính của ${esc(where)} (viền đỏ) nằm ở câu tô vàng: “${esc(g.evidence.text)}” <span class="rtp-muted">— câu then chốt không phải lúc nào cũng là câu đầu.</span>`],
-        ['BƯỚC 2 — Tóm tắt ý chính', 'Tự hỏi: cả đoạn đang nói về điều gì? Bỏ qua ví dụ, số liệu, tên riêng.'],
-        ['BƯỚC 3 — So với danh sách heading', 'Tìm heading diễn đạt lại đúng ý chính đó; loại heading chỉ khớp một chi tiết hoặc chỉ lặp lại một từ trong đoạn.'],
-        ['BƯỚC 4 — Kết luận', `${analysis}<div class="rtp-answer-line">→ Đáp án: <strong>${esc(answer)}</strong></div>`],
+        [t[0], `Ý chính của ${esc(where)} (viền đỏ) nằm ở câu tô vàng: “${esc(g.evidence.text)}” <span class="rtp-muted">— câu then chốt không phải lúc nào cũng là câu đầu.</span>`],
+        [t[1], 'Tự hỏi: cả đoạn đang nói về điều gì? Bỏ qua ví dụ, số liệu, tên riêng.'],
+        [t[2], 'Tìm heading diễn đạt lại đúng ý chính đó; loại heading chỉ khớp một chi tiết hoặc chỉ lặp lại một từ trong đoạn.'],
+        [t[3], `${analysis}<div class="rtp-answer-line">→ Đáp án: <strong>${esc(answer)}</strong></div>`],
       ];
     }
     const kw = g.keywords.length ? chipsHtml(g.keywords) : '<i>(không có tên riêng / số — dùng các từ nội dung chính)</i>';
@@ -720,31 +645,38 @@
       ? `→ Chép đúng từ trong bài: <strong>${esc(answer)}</strong>${q.wordLimit ? ` (giới hạn: ${esc(q.wordLimit)})` : ''}`
       : `→ Đáp án: <strong>${esc(answer)}</strong>`;
     return [
-      ['BƯỚC 1 — Tìm keyword', `Gạch chân keyword trong câu hỏi: ${kw}`],
-      ['BƯỚC 2 — Scan bài đọc', `Lướt tìm keyword (tô xanh trong bài) → thông tin nằm ở <b>${esc(where)}</b> (viền đỏ).`],
-      ['BƯỚC 3 — Đọc câu chứa evidence', `“${esc(g.evidence.text)}” <span class="rtp-muted">(tô xanh lá trong bài)</span>`],
-      ['BƯỚC 4 — So sánh & kết luận', `<div class="rtp-compare"><div><b>Câu hỏi:</b> ${esc(q.text)}</div><div><b>Bài đọc:</b> “${esc(g.evidence.text)}”</div></div>${analysis}<div class="rtp-answer-line">${verdict}</div>`],
+      [t[0], `Gạch chân keyword trong câu hỏi: ${kw}`],
+      [t[1], `Lướt tìm keyword (tô xanh trong bài) → thông tin nằm ở <b>${esc(where)}</b> (viền đỏ).`],
+      [t[2], `“${esc(g.evidence.text)}” <span class="rtp-muted">(tô xanh lá trong bài)</span>`],
+      [t[3], `So nghĩa câu hỏi với câu ở bước 3 (không cần trùng từng chữ).${analysis}<div class="rtp-answer-line">${verdict}</div>`],
     ];
+  }
+
+  // "BƯỚC 1 — Tìm keyword" from the guide's step names (fallback: the
+  // names a practice saved before guides came from the server had).
+  function stepNames(names, fallback, word) {
+    return (names && names.length ? names : fallback).map((n, i) => `${word} ${i + 1} — ${n}`);
   }
 
   function hintLines(pr, g) {
     const where = paraName(pr, g.evidence.paragraphIndex);
+    const t = stepNames(guideOf().hints, pr.questionType === 'headings' ? ['câu then chốt', 'cách chọn'] : ['keyword', 'vị trí', 'câu evidence'], 'Gợi ý');
     if (pr.questionType === 'headings') {
       return [
-        ['Gợi ý 1 — câu then chốt', `Ý chính của ${esc(where)} nằm ở câu tô vàng: “${esc(g.evidence.text)}”`],
-        ['Gợi ý 2 — cách chọn', 'Heading đúng tóm được CẢ đoạn và thường diễn đạt khác câu then chốt — loại heading chỉ khớp một chi tiết.'],
+        [t[0], `Ý chính của ${esc(where)} nằm ở câu tô vàng: “${esc(g.evidence.text)}”`],
+        [t[1], 'Heading đúng tóm được CẢ đoạn và thường diễn đạt khác câu then chốt — loại heading chỉ khớp một chi tiết.'],
       ];
     }
     return [
-      ['Gợi ý 1 — keyword', g.keywords.length ? chipsHtml(g.keywords) : 'Dùng các từ nội dung chính của câu hỏi.'],
-      ['Gợi ý 2 — vị trí', `Thông tin nằm ở <b>${esc(where)}</b> (viền đỏ) — keyword đã tô xanh trong bài.`],
-      ['Gợi ý 3 — câu evidence', `Đọc kỹ: “${esc(g.evidence.text)}”`],
+      [t[0], g.keywords.length ? chipsHtml(g.keywords) : 'Dùng các từ nội dung chính của câu hỏi.'],
+      [t[1], `Thông tin nằm ở <b>${esc(where)}</b> (viền đỏ) — keyword đã tô xanh trong bài.`],
+      [t[2], `Đọc kỹ: “${esc(g.evidence.text)}”`],
     ];
   }
 
   function guidedPanelHtml(pr, q, a) {
     const g = q.guided;
-    if (!g) return '<div class="rtp-mode self">✏️ Tự làm</div>';
+    if (!g) return '';
     // Once the guidance points into the passage (headings: from the start),
     // phones get a link up to it.
     const headings = pr.questionType === 'headings';
@@ -772,15 +704,18 @@
   // (both modes reveal in the same order: keywords → location → evidence).
   function guidedView(pr, q, a) {
     const g = q.guided;
-    const none = { stemKw: [], hits: [], target: q.targetParagraph, evidence: null, key: null };
+    const none = { stemKw: [], hits: [], hitsIn: null, target: q.targetParagraph, evidence: null, key: null };
     if (!g) return none;
     const level = g.mode === 'example' ? (a.gStep || 1) : (a.hintLevel || 0);
     // headings: the target paragraph is always outlined; its key sentence is
     // marked in the worked example and from the first hint on
     if (pr.questionType === 'headings') return { ...none, key: level >= 1 ? g.evidence : null };
+    // keywords are marked inside the paragraph the hint points to — common
+    // words ("plant", "tomato") would otherwise light up the whole passage
     return {
       stemKw: level >= 1 ? g.keywords : [],
       hits: level >= 2 ? g.keywords : [],
+      hitsIn: g.evidence.paragraphIndex,
       target: q.targetParagraph != null ? q.targetParagraph : (level >= 2 ? g.evidence.paragraphIndex : null),
       evidence: level >= 3 ? g.evidence : null,
     };
@@ -791,11 +726,14 @@
     const q = st.items[st.idx];
     const a = st.answers[st.idx];
     const r = a.result;
-    const g = TYPE_GUIDE[pr.questionType] || { steps: [] };
+    const g = guideOf();
     const view = guidedView(pr, q, a);
+    // the instruction is shown where it starts (same group → said once)
+    const prev = st.items[st.idx - 1];
+    const instruction = q.instruction && (!prev || prev.instruction !== q.instruction) ? q.instruction : '';
     const exampleDone = isExample(st.idx) && (a.gStep || 1) >= exampleSteps(pr, q, q.guided).length;
     const evidence = (r && r.evidence) || view.evidence;
-    const paras = pr.paragraphs.map(p => paraHtml(p, { evidence, target: view.target, hits: view.hits, key: view.key })).join('');
+    const paras = pr.paragraphs.map(p => paraHtml(p, { evidence, target: view.target, hits: view.hits, hitsIn: view.hitsIn, key: view.key })).join('');
     const stemRanges = view.stemKw.flatMap(k => findTerm(q.text, k).map(x => ({ ...x, cls: 'rtp-anchor' })));
 
     showPanelState(headerHtml(`${esc(pr.sourceName)} · ${esc(pr.passageTitle)}`)
@@ -806,14 +744,14 @@
           <div class="rtp-passage-scroll">${paras}</div>
         </div>
         <div class="rtp-question">
-          ${guidedPanelHtml(pr, q, a)}
           <div class="question-item">
             <div class="q-num-label"><span class="q-badge">${q.questionNumber}</span></div>
-            ${q.instruction ? `<div class="rtp-instruction">${esc(q.instruction)}</div>` : ''}
+            ${instruction ? `<div class="rtp-instruction">${esc(instruction)}</div>` : ''}
             <div class="q-text">${highlight(q.text, stemRanges)}</div>
             ${q.wordLimit ? `<div class="rtp-limit">✍️ Giới hạn: <strong>${esc(q.wordLimit)}</strong></div>` : ''}
             ${answerInputHtml(q, a, exampleDone ? q.guided.answer : null)}
           </div>
+          ${guidedPanelHtml(pr, q, a)}
           ${feedbackHtml(a, { correctLabel: r ? keyLabel(q, r.correctAnswer) : '' })}
           ${navHtml()}
         </div>
@@ -886,13 +824,14 @@
 
   // ── Quy trình làm bài (7 steps on one passage) ────────────────────────
 
-  const WF_STEPS = ['Đọc tiêu đề', 'Skim các đoạn', 'Ý chính', 'Đọc câu hỏi', 'Tìm keyword', 'Scan bài', 'Kiểm tra evidence'];
+  const WF_STEPS_FALLBACK = ['Đọc tiêu đề', 'Skim các đoạn', 'Ý chính', 'Đọc câu hỏi', 'Tìm keyword', 'Scan bài', 'Kiểm tra evidence'];
+  const wfSteps = () => (guideOf().steps.length ? guideOf().steps : WF_STEPS_FALLBACK);
   const wfStages = () => ['title', 'skim', 'main', 'read', ...st.items.map((_, i) => `q${i}`)];
   const wfStage = () => wfStages()[st.stage] || 'title';
 
   function wfHeader(stepNo) {
     const pr = st.practice;
-    const steps = WF_STEPS.map((s, i) => {
+    const steps = wfSteps().map((s, i) => {
       const cls = i + 1 < stepNo ? 'done' : i + 1 === stepNo ? 'active' : '';
       return `<div class="rtp-wf-step ${cls}"><b>${i + 1}</b><span>${esc(s)}</span></div>`;
     }).join('');
@@ -900,9 +839,12 @@
     return `<div class="rtp-head">
       <div class="rtp-head-top">
         <div class="rtp-title">🎯 Luyện tập: Quy trình làm bài${qPart}</div>
-        <button type="button" class="rtp-link" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
+        <div class="rtp-head-actions">
+          <button type="button" class="rtp-link" data-act="start" title="Xoá câu trả lời, làm lại từ bước 1">↻ Làm lại</button>
+          <button type="button" class="rtp-link" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
+        </div>
       </div>
-      <div class="rtp-source">Nguồn: ${esc(pr.sourceName)} · ${esc(pr.passageTitle)}</div>
+      <div class="rtp-source">${esc(pr.sourceName)} · ${esc(pr.passageTitle)}</div>
       <div class="rtp-wf-steps">${steps}</div>
     </div>`;
   }

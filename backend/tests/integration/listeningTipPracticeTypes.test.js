@@ -125,8 +125,12 @@ describe('filtering by question type (spec cases 1–3)', () => {
     // "You need to bring a raincoat." (60–66 s)
     expect(pr.questions[2].segment).toEqual({ start: 55, end: 67.5 });
     // only the worked example (Q1) shows its answer — see the guided cases
-    const keys = keysOf({ ...res.body.practice, questions: pr.questions.slice(1) });
+    const { guide, ...rest } = res.body.practice;
+    const keys = keysOf({ ...rest, questions: pr.questions.slice(1) });
     ['correctAnswer', 'explanation', 'answer', 'guide'].forEach(k => expect(keys.has(k)).toBe(false));
+    // the practice-level guide is the type's how-to (services/tipPracticeGuides.js) — no answers in it
+    expect(guide).toMatchObject({ title: 'Cách làm dạng Form / Note / Table', steps: expect.any(Array), example: expect.any(Array) });
+    ['correctAnswer', 'explanation', 'answer'].forEach(k => expect(keysOf(guide).has(k)).toBe(false));
   });
 
   test('CASE 2: Multiple Choice → only the MCQs, options as A/B/C', async () => {
@@ -214,7 +218,7 @@ describe('guided examples: Q1 I DO, Q2 WE DO, Q3+ YOU DO (spec cases 6–8)', ()
 
   test('CASE 7–8: Q2 gets only keywords to compare with; Q3+ nothing — no answer before the check', async () => {
     const pr = (await get('form-note-table-completion')).body.practice;
-    expect(pr.questions[1].coach).toEqual({ keywords: expect.any(Array), signals: expect.any(Array), predict: true });
+    expect(pr.questions[1].coach).toEqual({ keywords: expect.any(Array), signals: expect.any(Array), predict: true, before: expect.any(String) });
     expect(pr.questions[1].coach.keywords).toContain('Date');
     pr.questions.slice(2).forEach(q => { expect(q.guide).toBeUndefined(); expect(q.coach).toBeUndefined(); });
     const keys = keysOf(pr.questions.slice(1));

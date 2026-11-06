@@ -32,6 +32,7 @@ const Passage = require('../models/Passage');
 const ReadingTest = require('../models/ReadingTest');
 const ReadingTip = require('../models/ReadingTip');
 const { gradeGroups } = require('./readingService');
+const { readingGuide } = require('./tipPracticeGuides');
 
 // lessonKey (ReadingTip.lessonKey) → practice definition. Only tips listed
 // here get a practice section.
@@ -261,11 +262,13 @@ function passageToParagraphs(html) {
 // ── Evidence ────────────────────────────────────────────────────────────
 
 // Explanations are free-form Vietnamese written by teachers, but most quote
-// the passage: a "Transcript:/Dẫn chứng:" line, or text in “…”/"…".
+// the passage: a "Transcript:/Dẫn chứng:/Trích:" line, or text in “…”/"…".
+// ("Trích:" without quotes is how the Vị trí / Trích / Phân tích
+// explanations quote it.)
 function evidenceCandidates(explanation) {
   const ex = String(explanation || '');
   const out = [];
-  const labelled = /^[^\p{L}\n]*(?:transcript|dẫn chứng|trích dẫn|evidence|thông tin trong bài)\s*:\s*(.+)$/gimu;
+  const labelled = /^[^\p{L}\n]*(?:transcript|dẫn chứng|trích dẫn|trích|evidence|thông tin trong bài)\s*:\s*(.+)$/gimu;
   let m;
   while ((m = labelled.exec(ex))) out.push(m[1]);
   for (const re of [/“([^”]{10,}?)”/g, /"([^"\n]{10,}?)"/g, /«([^»]{10,}?)»/g]) {
@@ -1372,7 +1375,11 @@ async function getPractice(lessonKey, { rng = seededRng(lessonKey) } = {}) {
     paraphrase: buildParaphrase, workflow: buildWorkflow,
   }[cfg.kind];
   const practice = await build(cfg, rng);
-  return { status: 'ok', tip: { lessonKey: tip.lessonKey, title: tip.title }, practice: practice && { ...practice, fixed: true } };
+  return {
+    status: 'ok',
+    tip: { lessonKey: tip.lessonKey, title: tip.title },
+    practice: practice && { ...practice, fixed: true, guide: readingGuide(practice.kind, practice.questionType) },
+  };
 }
 
 // Grades ONE answer and only then reveals answer + explanation + evidence.

@@ -2201,6 +2201,28 @@ a.user-cell-name:hover { color: var(--blue); }
 .md-preview th, .md-preview td { border: 1px solid var(--border); padding: 6px 8px; text-align: left; vertical-align: top; }
 .md-preview th { background: var(--surface2); }
 
+/* Tài liệu in (Tips) — pages/TipLecturePacks.jsx */
+.tp-group-head { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.tp-group-head span { color: var(--text3); font-weight: 500; }
+.tp-list { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); overflow: hidden; }
+.tp-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-top: 1px solid var(--border); }
+.tp-row:first-child { border-top: none; }
+.tp-row:hover { background: var(--surface2); }
+.tp-icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
+.tp-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tp-title { font-weight: 600; color: var(--text); }
+.tp-tag { font-size: 11.5px; color: var(--text3); background: var(--surface2); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+.tp-tag-practice { color: #15803d; background: rgba(34, 197, 94, .12); }
+.tp-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.tp-working { color: var(--text3); font-size: 12px; }
+.tp-preview h3 { border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+.tp-preview h4 { font-size: 14px; margin: 12px 0 4px; }
+.tp-prompt { white-space: pre-wrap; font-size: 12.5px; line-height: 1.55; margin: 0; font-family: var(--mono); }
+@media (max-width: 640px) {
+  .tp-row { flex-wrap: wrap; }
+  .tp-actions { width: 100%; justify-content: flex-end; }
+}
+
 /* ══════════════════════════════════════════════════════════════════
    Class progress — "Tuần X/Y · Buổi X/Y" (pages/classes/ClassProgress.jsx,
    Classes.jsx card grid, ClassDetail header/sessions/attendance).

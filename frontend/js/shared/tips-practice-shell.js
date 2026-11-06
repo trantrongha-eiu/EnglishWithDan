@@ -23,6 +23,9 @@
 //   resumeWhere(rec, items) " (Câu i/n)" on the resume button
 //   isDone(i), closeClass, enterSel, onInput(e), onClick(e, lesson),
 //   checkCurrent(), renderQuestion(), renderResult(), afterPanelState()
+//
+// While a practice is open its panel header replaces the entry card (one
+// title, "Làm lại" next to "Đóng", a dot per question).
 (function () {
   const STALE_MS = 30 * 24 * 60 * 60 * 1000; // a month-old unfinished practice is dropped
 
@@ -45,6 +48,28 @@
       if (err && err.status >= 500) return 'Máy chủ đang gặp sự cố, vui lòng thử lại sau ít phút.';
       if (err && !err.status && (err instanceof TypeError || navigator.onLine === false)) return 'Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.';
       return fallback;
+    }
+
+    // The teacher's explanation, one labelled line per part ("Vị trí:",
+    // "Phân tích:"…). dropQuote leaves out the quoted passage / transcript
+    // line when the evidence is already shown right above it.
+    const EXPL_LABELS = 'Dịch|Vị trí|Trích dẫn|Trích|Transcript|Dẫn chứng|Phân tích|Giải thích|Lưu ý|Bẫy';
+    const QUOTE_LABELS = /^(?:Trích dẫn|Trích|Transcript|Dẫn chứng)$/i;
+    function explanationHtml(text, { dropQuote = false } = {}) {
+      const src = String(text || '').replace(/\r/g, '')
+        .replace(new RegExp(`\\s+(?=(?:${EXPL_LABELS})\\s*:)`, 'g'), '\n');
+      return src.split(/\n+/).map(l => l.trim()).filter(Boolean).map((line) => {
+        const m = line.match(new RegExp(`^[^\\p{L}]*(${EXPL_LABELS})\\s*:\\s*(.*)$`, 'iu'));
+        if (!m) return `<div class="${P}-expl-line">${esc(line)}</div>`;
+        if (dropQuote && QUOTE_LABELS.test(m[1])) return '';
+        return `<div class="${P}-expl-line"><b>${esc(m[1])}:</b> ${esc(m[2])}</div>`;
+      }).join('');
+    }
+    // Collapsible "Lời giải của đề" (open by default after a wrong answer).
+    function explanationBlock(text, { open = false, dropQuote = true, title = 'Lời giải của đề' } = {}) {
+      const body = explanationHtml(text, { dropQuote });
+      if (!body) return '';
+      return `<details class="${P}-expl"${open ? ' open' : ''}><summary>${esc(title)}</summary><div class="${P}-expl-body">${body}</div></details>`;
     }
 
     // Screen-reader announcement (the panel itself is re-rendered wholesale).
@@ -190,10 +215,11 @@
       const rec = loadRecord(lesson.lessonKey);
       const items = rec && cfg.itemsOf(rec.practice);
       const s = st();
+      // the open practice's header takes over (title, "Làm lại", "Đóng")
+      wrap.hidden = !!(s && s.lesson.lessonKey === lesson.lessonKey);
+      if (wrap.hidden) { wrap.innerHTML = ''; return; }
       let buttons;
-      if (s && s.lesson.lessonKey === lesson.lessonKey) {
-        buttons = `<button type="button" class="${P}-btn" data-act="start">↻ Làm lại từ đầu</button>`;
-      } else if (items && !rec.finished) {
+      if (items && !rec.finished) {
         buttons = `<button type="button" class="${P}-btn ${P}-btn-primary" data-act="resume">▶ Tiếp tục bài đang làm${cfg.resumeWhere(rec, items)}</button>
         <button type="button" class="${P}-btn" data-act="start">↻ Làm lại từ đầu</button>`;
       } else if (items) {
@@ -309,9 +335,38 @@
       revealPanel();
     }
 
-    // Re-opens the practice saved in this browser.
+    // A practice saved in this browser before the "how to" guide came with
+    // it (services/tipPracticeGuides.js): the fixed practice is fetched again
+    // and used instead when it still has the same questions, so the saved
+    // answers keep lining up. Otherwise the saved copy is used as it is.
+    async function withGuide(lessonKey, practice) {
+      if (practice.guide !== undefined) return practice;
+      try {
+        const data = await cfg.fetchPractice(lessonKey);
+        const fresh = data && data.practice;
+        const nums = (p) => (cfg.itemsOf(p) || []).map(x => x.questionNumber).join(',');
+        if (fresh && nums(fresh) === nums(practice)) return fresh;
+      } catch (e) { /* offline: keep the saved copy */ }
+      return practice;
+    }
+
+    // Re-opens the practice saved in this browser (right away, unless its
+    // guide has to be fetched first — see withGuide).
     function resume(lesson) {
       const rec = loadRecord(lesson.lessonKey);
+      if (rec && rec.practice && rec.practice.guide === undefined) {
+        const seq = cfg.nextSeq();
+        return withGuide(lesson.lessonKey, rec.practice).then((practice) => {
+          if (seq !== cfg.curSeq()) return; // another tip / request took over meanwhile
+          rec.practice = practice;
+          reopen(lesson, rec);
+        });
+      }
+      reopen(lesson, rec);
+      return Promise.resolve();
+    }
+
+    function reopen(lesson, rec) {
       const items = rec && cfg.itemsOf(rec.practice);
       if (!items) { renderEntry(lesson); return; }
       cfg.stopTimer();
@@ -326,26 +381,39 @@
       revealPanel();
     }
 
-    function headerHtml(sourceLine) {
+    // One dot per question: ✓ right · ✗ wrong · seen (the worked example) ·
+    // the current one ringed. Clicking a dot jumps to that question.
+    function dotsHtml() {
+      const s = st();
+      return s.items.map((it, i) => {
+        const a = s.answers[i];
+        const r = a && a.result;
+        const state = r ? (r.isCorrect ? 'ok' : 'bad') : cfg.isDone(i) ? 'seen' : '';
+        const label = `Câu ${i + 1}${state === 'ok' ? ' — đúng' : state === 'bad' ? ' — sai' : state === 'seen' ? ' — đã xem' : ''}`;
+        return `<button type="button" class="${P}-dot ${state}${i === s.idx ? ' cur' : ''}" data-act="goto" data-idx="${i}"
+          title="${label}" aria-label="${label}"${i === s.idx ? ' aria-current="step"' : ''}>${i + 1}</button>`;
+      }).join('');
+    }
+
+    function headerHtml(sourceLine, { dots = true } = {}) {
       const s = st();
       const n = s.items.length;
       const done = s.answers.filter((a, i) => cfg.isDone(i)).length;
       return `<div class="${P}-head">
       <div class="${P}-head-top">
         <div class="${P}-title">${cfg.icon} Luyện tập: ${esc(cfg.copy[s.lesson.lessonKey].name)}</div>
-        <button type="button" class="${P}-link${cfg.closeClass || ''}" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
+        <div class="${P}-head-actions">
+          <button type="button" class="${P}-link" data-act="start" title="Xoá câu trả lời, làm lại từ câu 1">↻ Làm lại</button>
+          <button type="button" class="${P}-link${cfg.closeClass || ''}" data-act="close" title="Đóng bài luyện tập">✕ Đóng</button>
+        </div>
       </div>
-      ${sourceLine ? `<div class="${P}-source">Nguồn: ${sourceLine}</div>` : ''}
-      <div class="${P}-progress">
-        <span>Câu ${s.idx + 1} / ${n}</span>
-        <div class="${P}-bar"><i style="width:${Math.round(done / n * 100)}%"></i></div>
-        <span class="${P}-done">${done}/${n} đã làm</span>
-      </div>
+      ${sourceLine ? `<div class="${P}-source">${sourceLine}</div>` : ''}
+      ${dots && n > 1 ? `<div class="${P}-dots" aria-label="Đã làm ${done}/${n} câu">${dotsHtml()}<span class="${P}-done">${done}/${n}</span></div>` : ''}
     </div>`;
     }
 
     return {
-      esc, escNl, KEY_ATTRS, errorMessage, announce, topOffset, revealPanel, revealEl,
+      esc, escNl, KEY_ATTRS, errorMessage, announce, topOffset, revealPanel, revealEl, explanationHtml, explanationBlock,
       loadRecord, persist, persistSoon, recordScore,
       supports, mount, renderEntry, panelEl, showPanelState, start, confirmNewPractice, begin, resume, headerHtml,
     };

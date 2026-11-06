@@ -19,6 +19,7 @@
 const ListeningTip = require('../models/ListeningTip');
 const ListeningSection = require('../models/ListeningSection');
 const { gradeQuestionGroups } = require('./listeningService');
+const { listeningGuide, listeningBeforeText, LISTENING_TYPE_WHY } = require('./tipPracticeGuides');
 
 // Keyed by ListeningTip.lessonKey — the 7 "Kỹ thuật nghe nền tảng" tips.
 const PRACTICE_CONFIG = {
@@ -1053,6 +1054,18 @@ function qtypePayload(it, section, mode = 'solo') {
     // `predict`: whether the answer is one of the types taught (not which)
     base.coach = { ...promptKeywords(it), predict: typed && !!answerType(q, it.gap, timelineOf(section)) };
   }
+  const out = qtypeFields(it, base);
+  // the "before listening" / "why this answer type" lines (tipPracticeGuides)
+  if (out.guide) {
+    out.guide.before = listeningBeforeText(it.qtype, out);
+    out.guide.typeWhy = out.guide.type ? LISTENING_TYPE_WHY[out.guide.type] || '' : '';
+  }
+  if (out.coach) out.coach.before = listeningBeforeText(it.qtype, out);
+  return out;
+}
+
+function qtypeFields(it, base) {
+  const { group, q } = it;
   switch (it.qtype) {
     case 'form':
     case 'sentence':
@@ -1503,7 +1516,11 @@ async function getPractice(lessonKey, { rng = seededRng(lessonKey) } = {}) {
     wordclass: buildPredict, infotype: buildPredict, form: buildPredict, qtype: buildQtype,
   }[cfg.kind];
   const practice = await build(cfg, rng);
-  return { status: 'ok', tip: { lessonKey: tip.lessonKey, title: tip.title }, practice: practice && { ...practice, fixed: true } };
+  return {
+    status: 'ok',
+    tip: { lessonKey: tip.lessonKey, title: tip.title },
+    practice: practice && { ...practice, fixed: true, guide: listeningGuide(practice.kind, practice.qtype) },
+  };
 }
 
 // Grades ONE answer and only then reveals answer + explanation + evidence.

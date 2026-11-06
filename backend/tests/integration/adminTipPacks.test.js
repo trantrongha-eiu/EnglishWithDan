@@ -72,6 +72,21 @@ test('a Reading pack: prompt + tip content + the practice with every answer key'
   expect(keys).not.toContain('không lấy được');
 });
 
+test('the pack prints what the web practice shows: the "Cách làm" guide and the I do / We do steps', async () => {
+  const { readingGuide } = require('../../services/tipPracticeGuides');
+  const guide = readingGuide('questions', 'tfng');
+  const { markdown } = (await get('/tip-packs/reading/true-false-not-given', signTokenFor(await createAdmin()))).body;
+  const c0 = markdown.slice(markdown.indexOf('### C0.'), markdown.indexOf('### C1.'));
+  expect(c0).toContain(`**${guide.title}**`);
+  guide.steps.forEach((s, i) => expect(c0).toContain(`${i + 1}. ${s}`));
+  guide.defs.forEach(([k, v]) => expect(c0).toContain(`| ${k} | ${v} |`));
+  const keys = markdown.split('### C2.')[1];
+  expect(keys).toContain('**Làm mẫu (I do) — các bước trên web:**');
+  guide.example.forEach((t, i) => expect(keys).toContain(`  ${i + 1}. *${t}:*`));
+  expect(keys).toContain('*Scan bài đọc:* thông tin nằm ở đoạn B');
+  expect(keys).toContain('**Gợi ý (We do) — học viên mở lần lượt trên web:**');
+});
+
 test('a tip without a bank practice asks the AI to write (clearly labelled) exercises; unknown tips 404', async () => {
   const token = signTokenFor(await createTeacher());
   const res = await get('/tip-packs/writing/task2-intro', token);

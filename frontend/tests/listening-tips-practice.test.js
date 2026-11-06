@@ -18,6 +18,9 @@
 const fs = require('fs');
 const path = require('path');
 const { loadScript } = require('./helpers/loadScript');
+// the "Cách làm" guides / step names the server sends with each practice
+// (one copy, also printed in the teacher's handout)
+const { listeningGuide, listeningBeforeText, LISTENING_TYPE_WHY } = require('../../backend/services/tipPracticeGuides');
 
 const SECTION = 'aaaaaaaaaaaaaaaaaaaaaaaa';
 const OTHER = 'bbbbbbbbbbbbbbbbbbbbbbbb';
@@ -27,15 +30,16 @@ const INSTRUCTION = 'Complete the form below. Write ONE WORD AND/OR A NUMBER for
 
 const formPractice = () => ({
   fixed: true, kind: 'qtype', qtype: 'form', sectionId: SECTION, sectionTitle: 'Holiday club', sourceName: 'Part 1 · Holiday club',
-  audioUrl: AUDIO, audioDuration: 240,
+  audioUrl: AUDIO, audioDuration: 240, guide: listeningGuide('qtype', 'form'),
   questions: [
     { questionNumber: 1, instruction: INSTRUCTION, segment: { start: 29, end: 47.5 }, mode: 'example', input: 'text',
       text: 'Postcode: _____', context: 'Booking form', wordLimit: 'ONE WORD AND/OR A NUMBER',
       guide: { keywords: ['Postcode'], signals: [], type: 'number', answer: 'BS4 7JN', where: 'Đầu bài.', why: 'Mã bưu điện là BS4 7JN.',
+        before: listeningBeforeText('form', {}), typeWhy: LISTENING_TYPE_WHY.number,
         evidence: { text: 'Please write your postcode, it is BS4 7JN.', speaker: '', start: 40, end: 46 }, traps: [], directions: [] } },
     { questionNumber: 2, instruction: INSTRUCTION, segment: { start: 45, end: 57.5 }, mode: 'guided', input: 'text',
       text: 'Date of trip: _____ June', context: 'Booking form', wordLimit: 'ONE WORD AND/OR A NUMBER',
-      coach: { keywords: ['Date', 'trip'], signals: [], predict: true } },
+      coach: { keywords: ['Date', 'trip'], signals: [], predict: true, before: listeningBeforeText('form', {}) } },
     { questionNumber: 3, instruction: INSTRUCTION, segment: { start: 55, end: 67.5 }, mode: 'solo', input: 'text',
       text: 'Bring a _____', context: 'Booking form', wordLimit: 'ONE WORD AND/OR A NUMBER' },
   ],
@@ -44,16 +48,17 @@ const formPractice = () => ({
 const LETTERS = ['the lake', 'the forest', 'the food', 'the beach', 'the museum'].map((label, i) => ({ key: String.fromCharCode(65 + i), label }));
 const multiPractice = () => ({
   fixed: true, kind: 'qtype', qtype: 'multi', sectionId: SECTION, sectionTitle: 'Holiday club', sourceName: 'Part 3 · Holiday club',
-  audioUrl: AUDIO, audioDuration: 240,
+  audioUrl: AUDIO, audioDuration: 240, guide: listeningGuide('qtype', 'multi'),
   questions: [
     { questionNumber: 21, numbers: [21, 22], pick: 2, input: 'multi', mode: 'example', instruction: 'Choose TWO letters, A–E.',
       text: 'Which TWO sports does Tom play?', segment: { start: 12, end: 40 }, choices: LETTERS,
       sectionId: OTHER, sourceName: 'Part 3 · Sports day', audioUrl: OTHER_AUDIO, audioDuration: 300,
       guide: { keywords: ['sports', 'Tom'], signals: [], type: null, answer: 'A, C', where: '', why: 'Tom chơi A và C.',
+        before: listeningBeforeText('multi', { pick: 2, choices: LETTERS }), typeWhy: '',
         evidence: { text: 'I play at the lake and near the food stalls.', speaker: 'TOM', start: 20, end: 26 }, traps: ['B'], directions: [] } },
     { questionNumber: 11, numbers: [11, 12], pick: 2, input: 'multi', mode: 'guided', instruction: 'Choose TWO letters, A–E.',
       text: 'Which TWO things does the speaker like best?', segment: { start: 130, end: 150 }, choices: LETTERS,
-      coach: { keywords: ['things', 'speaker'], signals: [], predict: false } },
+      coach: { keywords: ['things', 'speaker'], signals: [], predict: false, before: listeningBeforeText('multi', { pick: 2, choices: LETTERS }) } },
     { questionNumber: 13, numbers: [13, 14], pick: 2, input: 'multi', mode: 'solo', instruction: 'Choose TWO letters, A–E.',
       text: 'Which TWO places will they visit?', segment: { start: 150, end: 170 }, choices: LETTERS },
   ],
@@ -258,7 +263,8 @@ describe('question types: Q1 I DO → Q2 WE DO → Q3+ YOU DO (spec cases 6–13
     click('[data-act="ex-next"]');
     expect(text('.ltp-gstep.current')).toContain('Mã bưu điện là BS4 7JN.');
     expect($('[data-act="ex-next"]')).toBeNull();
-    expect(text('.ltp-done')).toBe('1/3 đã làm');
+    expect(text('.ltp-done')).toBe('1/3');
+    expect(text('.ltp-dot.seen')).toBe('1'); // the worked example, walked through
     expect(checkBodies()).toHaveLength(0);
     expect(text('#ltp-live')).toContain('Bước 6');
   });
@@ -307,7 +313,7 @@ describe('question types: Q1 I DO → Q2 WE DO → Q3+ YOU DO (spec cases 6–13
     await settle();
     expect(text('.ltp-predres')).toContain('thực tế là');
     click('[data-act="next"]');
-    expect($('.ltp-mode.you')).not.toBeNull();
+    expect($('.ltp-mode')).toBeNull(); // "tự làm" needs no banner
     expect($$('.ltp-gstep')).toHaveLength(0);
     type('rainkoat');
     $('#ltp-panel .ltp-input').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
@@ -326,7 +332,7 @@ describe('question types: Q1 I DO → Q2 WE DO → Q3+ YOU DO (spec cases 6–13
     expect(text('.ltp-score')).toBe('0 / 2'); // counted once
     click('[data-act="retry"]');
     expect($$('.ltp-gstep')).toHaveLength(0);
-    expect(text('.ltp-done')).toBe('0/3 đã làm');
+    expect(text('.ltp-done')).toBe('0/3');
   });
 
   test('"choose TWO" done together: highlighted words never use up the letters (regression)', async () => {
@@ -451,13 +457,15 @@ describe('browser-only persistence', () => {
     await open(LESSONS.form, formPractice());
     click('[data-act="intro-done"]');
     for (let k = 0; k < 3; k++) click('[data-act="ex-next"]');
-    expect(text('#ltp-entry-wrap [data-act="start"]')).toContain('Làm lại từ đầu');
+    // the open practice's header replaces the entry card
+    expect($('#ltp-entry-wrap').hidden).toBe(true);
+    expect(text('#ltp-panel .ltp-head [data-act="start"]')).toContain('Làm lại');
     window.confirm = jest.fn(() => false);
-    click('#ltp-entry-wrap [data-act="start"]');
+    click('#ltp-panel .ltp-head [data-act="start"]');
     expect(window.confirm).toHaveBeenCalled();
     expect(window.fetch).toHaveBeenCalledTimes(1);
     window.confirm = jest.fn(() => true);
-    click('#ltp-entry-wrap [data-act="start"]');
+    click('#ltp-panel .ltp-head [data-act="start"]');
     await settle();
     expect(calls[1].url).toMatch(/\/practice$/);
   });

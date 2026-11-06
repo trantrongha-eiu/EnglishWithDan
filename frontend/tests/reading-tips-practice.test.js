@@ -18,6 +18,9 @@
 const fs = require('fs');
 const path = require('path');
 const { loadScript } = require('./helpers/loadScript');
+// the "Cách làm" guides the server sends with each practice (one copy, also
+// printed in the teacher's handout)
+const { readingGuide } = require('../../backend/services/tipPracticeGuides');
 
 const PASSAGE_ID = 'aaaaaaaaaaaaaaaaaaaaaaaa';
 const OTHER_ID = 'bbbbbbbbbbbbbbbbbbbbbbbb';
@@ -30,6 +33,7 @@ const PARAGRAPHS = [
 
 const tfngPractice = (passageId = PASSAGE_ID) => ({
   fixed: true, kind: 'questions', questionType: 'tfng', passageId, passageTitle: 'Frozen food', sourceName: 'Cambridge 15 Test 1',
+  guide: readingGuide('questions', 'tfng'),
   paragraphs: PARAGRAPHS,
   questions: [
     { questionNumber: 1, text: 'Specially adapted trains carried butter.', input: 'choice', choices: TF, isGuidedExample: true,
@@ -215,7 +219,8 @@ describe('question-type practice: guided Q1/Q2, then alone (spec cases 6–10)',
     expect(panelText()).toContain('khớp với “insulated rail cars”');
     expect($('.tfng-opt.correct-ans').textContent).toBe('TRUE');
     expect($('[data-act="guide-next"]')).toBeNull();
-    expect($('.rtp-done').textContent).toBe('1/3 đã làm');
+    expect($('.rtp-done').textContent).toBe('1/3');
+    expect($('.rtp-dot.seen').textContent).toBe('1'); // the worked example, walked through
   });
 
   test('CASE 7–9: Q2 gives hints only; the key appears after the server grades the answer', async () => {
@@ -239,7 +244,8 @@ describe('question-type practice: guided Q1/Q2, then alone (spec cases 6–10)',
     expect(JSON.parse(opts.body)).toEqual({ passageId: PASSAGE_ID, questionNumber: 2, answer: 'FALSE' });
     expect($('.rtp-feedback .q-correct-ans').textContent).toBe('✗ Chưa đúng — Đáp án: TRUE');
     expect($('.rtp-evidence').textContent).toContain('The method spoilt the flavor of the meat.');
-    expect($('.q-explanation').textContent).toContain('spoilt the flavor');
+    expect($('.rtp-expl').textContent).toContain('spoilt the flavor');
+    expect($('.rtp-expl').open).toBe(true); // wrong answer → the explanation is open
     expect($('.tfng-opt.correct-ans').textContent).toBe('TRUE');
     expect($('.tfng-opt.wrong-ans').textContent).toBe('FALSE');
     expect($('#rtp-live').textContent).toBe('✗ Chưa đúng — Đáp án: TRUE');
@@ -254,7 +260,7 @@ describe('question-type practice: guided Q1/Q2, then alone (spec cases 6–10)',
     click('[data-act="check"]');
     await flush();
     click('[data-act="next"]');
-    expect($('.rtp-mode.self').textContent).toContain('Tự làm');
+    expect($('.rtp-mode')).toBeNull(); // "tự làm" needs no banner
     expect($('.rtp-guided')).toBeNull();
     pick('NOT GIVEN');
     nextCheck({ questionNumber: 3, isCorrect: true, correctAnswer: 'NOT GIVEN', explanation: '', evidence: null });
@@ -266,26 +272,31 @@ describe('question-type practice: guided Q1/Q2, then alone (spec cases 6–10)',
     const rows = $$('.rtp-result-row').map((r) => r.className.replace('rtp-result-row', '').trim());
     expect(rows).toEqual(['example', 'bad', 'ok']);
     expect($('#rtp-live').textContent).toBe('Hoàn thành luyện tập: đúng 1 trên 2 câu.');
-    // saved in this browser only, shown on the card
+    // saved in this browser only (shown on the card once the practice is closed — below)
     const saved = JSON.parse(localStorage.getItem('rtp_v1_student1'))['true-false-not-given'];
     expect(saved).toMatchObject({ last: { score: 1, total: 2 }, best: { score: 1, total: 2 }, attempts: 1, finished: true });
-    expect($('.rtp-entry-stats').textContent).toContain('Lần gần nhất: 1/2');
     // review → back to Q1 with every answer kept; a result row opens its question
     click('[data-act="review"]');
-    expect($('.rtp-progress span').textContent).toBe('Câu 1 / 3');
+    expect($('.rtp-dot.cur').textContent).toBe('1');
     click('[data-act="next"]');
     click('[data-act="next"]');
     click('[data-act="finish"]');
     click($$('.rtp-result-row')[1]);
-    expect($('.rtp-progress span').textContent).toBe('Câu 2 / 3');
+    expect($('.rtp-dot.cur').textContent).toBe('2');
+    const dotState = (d) => ['seen', 'bad', 'ok'].find(c => d.classList.contains(c)) || '';
+    expect($$('.rtp-dot').map(dotState)).toEqual(['seen', 'bad', 'ok']);
     expect($('.rtp-feedback .q-correct-ans').textContent).toBe('✗ Chưa đúng — Đáp án: TRUE');
     expect(JSON.parse(localStorage.getItem('rtp_v1_student1'))['true-false-not-given'].attempts).toBe(1); // counted once
     // retry → same passage, fresh answers
     click('[data-act="next"]');
     click('[data-act="finish"]');
     click('[data-act="retry"]');
-    expect($('.rtp-done').textContent).toBe('0/3 đã làm');
+    expect($('.rtp-done').textContent).toBe('0/3');
     expect($$('.rtp-gstep')).toHaveLength(1);
+    // closed → the entry card is back, with the score kept in this browser
+    click('#rtp-panel [data-act="close"]');
+    expect($('#rtp-entry-wrap').hidden).toBe(false);
+    expect($('.rtp-entry-stats').textContent).toContain('Lần gần nhất: 1/2');
   });
 
   test('a typed answer: Enter checks it; empty answers can\'t be sent', async () => {
@@ -326,6 +337,26 @@ describe('browser-only persistence', () => {
     expect(window.apiFetch).toHaveBeenCalledTimes(2); // nothing re-fetched
   });
 
+  test('a practice saved before guides came with it gets its guide on resume; the answers stay', async () => {
+    const old = tfngPractice();
+    delete old.guide;
+    await startWith(LESSONS.tfng, old);
+    click('[data-act="intro-done"]');
+    click('[data-act="next"]');
+    pick('TRUE');
+    nextCheck({ questionNumber: 2, isCorrect: true, correctAnswer: 'TRUE', explanation: '', evidence: null });
+    click('[data-act="check"]');
+    await flush();
+    window.RTPractice.mount(LESSONS.ynng, slot);
+    window.RTPractice.mount(LESSONS.tfng, slot);
+    window.apiFetch.mockResolvedValueOnce({ success: true, practice: tfngPractice() }); // same questions, with its guide
+    click('#rtp-entry-wrap [data-act="resume"]');
+    await flush();
+    expect(window.apiFetch.mock.calls[2][0]).toBe('/api/reading-tips/true-false-not-given/practice');
+    expect($('.rtp-feedback .q-correct-ans').textContent).toBe('✓ Chính xác!');
+    expect($('.rtp-guide summary').textContent).toContain('Cách làm dạng True / False / Not Given');
+  });
+
   test('storage that throws never breaks the practice', async () => {
     const spy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('QuotaExceededError'); });
     try {
@@ -361,7 +392,7 @@ describe('Phase 4 safety and polish', () => {
     click('[data-act="check"]');
     await flush();
     window.confirmDialog = jest.fn();
-    click('#rtp-entry-wrap [data-act="start"]');
+    click('#rtp-panel .rtp-head [data-act="start"]');
     expect(window.confirmDialog).toHaveBeenCalledTimes(1);
     expect(window.apiFetch).toHaveBeenCalledTimes(2); // cancelled: no new request
     expect($('.rtp-feedback')).not.toBeNull();
@@ -372,11 +403,13 @@ describe('Phase 4 safety and polish', () => {
     expect($('.rtp-intro')).not.toBeNull();
   });
 
-  test('"Làm lại từ đầu" reloads the same fixed practice (no ?exclude=); the result screen offers "Làm lại" only', async () => {
+  test('"Làm lại" reloads the same fixed practice (no ?exclude=); the result screen offers "Làm lại" only', async () => {
     await startWith(LESSONS.tfng, tfngPractice());
-    expect($('#rtp-entry-wrap [data-act="start"]').textContent).toContain('Làm lại từ đầu');
+    // the open practice's header replaces the entry card
+    expect($('#rtp-entry-wrap').hidden).toBe(true);
+    expect($('#rtp-panel .rtp-head [data-act="start"]').textContent).toContain('Làm lại');
     window.apiFetch.mockResolvedValueOnce({ success: true, practice: tfngPractice() });
-    click('#rtp-entry-wrap [data-act="start"]'); // nothing answered → no confirm
+    click('#rtp-panel .rtp-head [data-act="start"]'); // nothing answered → no confirm
     await flush();
     expect(window.apiFetch.mock.calls[1][0]).toBe('/api/reading-tips/true-false-not-given/practice');
     expect(document.body.innerHTML).not.toContain('Bài khác');
@@ -412,7 +445,7 @@ describe('Phase 4 safety and polish', () => {
 
 describe('Keyword → Paraphrase', () => {
   const practice = {
-    fixed: true, kind: 'paraphrase',
+    fixed: true, kind: 'paraphrase', guide: null,
     items: [{ passageId: PASSAGE_ID, questionNumber: 3, pairIndex: 0, passageTitle: 'Frozen food', sourceName: 'Cambridge 15 Test 1',
       question: 'The early freezing method affected the taste of meat.', keyword: 'affected the taste',
       sentence: 'The method spoilt the flavor of the meat.', paragraphLabel: 'B' }],
@@ -440,6 +473,7 @@ describe('Keyword → Paraphrase', () => {
 describe('Quy trình làm bài (7 steps)', () => {
   const practice = {
     fixed: true, kind: 'workflow', passageId: PASSAGE_ID, passageTitle: 'Frozen food', sourceName: 'Cambridge 15 Test 1', paragraphs: PARAGRAPHS,
+    guide: readingGuide('workflow'),
     main: { questionNumber: 1, kind: 'mcq', text: 'What is the main idea of paragraph B?', listTitle: null, targetParagraph: 2,
       choices: [{ key: 'A', label: 'how ice was sold' }, { key: 'B', label: 'a problem with freezing' }] },
     questions: [

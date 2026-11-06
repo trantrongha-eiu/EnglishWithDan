@@ -101,6 +101,11 @@ describe('locateQuotes / locateEvidence', () => {
     expect(ev).toEqual({ paragraphIndex: 1, text: 'Traces of such tunnels used to mine gold can still be found at the Dolaucothi mines in Wales' });
   });
 
+  test('finds an unquoted "Trích:" line (Vị trí / Trích / Phân tích explanations)', () => {
+    const ev = I.locateEvidence('Vị trí: Section B, đoạn 2.\n\nTrích: Traces of such tunnels used to mine gold can still be found at the Dolaucothi mines in Wales.\n\nPhân tích: …', paras);
+    expect(ev).toEqual({ paragraphIndex: 1, text: 'Traces of such tunnels used to mine gold can still be found at the Dolaucothi mines in Wales' });
+  });
+
   test('unwraps a [bracketed answer] inside the quote instead of cutting the quote there', () => {
     const ev = I.locateEvidence('"There may be more than 120 [tree species] per acre."', paras);
     expect(ev.text).toBe('There may be more than 120 tree species per acre');
