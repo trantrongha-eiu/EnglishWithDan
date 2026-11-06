@@ -2381,23 +2381,26 @@
         "rows": [
           [
             "Đề 1",
-            "The chart below shows sports participation by gender in Great Britain in 1999."
+            "The chart shows the participation by young people in sports by gender in Great Britain in 1999.",
+            "https://media.ieltsthayha.com/wt1/charts/sports-participation-gender-gb-1999_bmw4ozgiu.png"
           ],
           [
             "Đề 2",
-            "The bar chart below shows the changes in world population by region between 1900 and 2000."
+            "The two pie charts below show changes in world population by region between 1900 and 2000.",
+            "https://media.ieltsthayha.com/wt1/charts/world-population-region-1900-2000_bmw4ozgiu.png"
           ],
           [
             "Đề 3",
-            "The graph below shows the average number of commuters in the UK between 1970 and 2000."
+            "The chart shows the average number of commuters travelling each day by car, bus or train in the UK between 1970 and 2000."
           ],
           [
             "Đề 4",
-            "The pie charts below show the amount of electricity produced from three sources in 2010."
+            "The chart illustrates the amount of electricity produced from three sources in 2010."
           ],
           [
             "Đề 5",
-            "The bar chart below shows the contribution of three sectors — Agriculture, Manufacturing, and Business and Financial services — to the UK economy in the twentieth century."
+            "The graph below shows the contribution of three sectors – Agriculture, Manufacturing, and Business and Financial services – to the UK economy in the twentieth century.",
+            "https://media.ieltsthayha.com/wt1/charts/uk-economy-sectors-20th-century_bmw4ozgiu.png"
           ]
         ]
       },
@@ -2446,26 +2449,32 @@
         "rows": [
           [
             "Đề 1",
-            "Số lượng voi châu Á (Asian elephants) qua các năm"
+            "The graph below shows the number of Asian elephants between 1994 and 2007.",
+            "https://media.ieltsthayha.com/wt1/charts/asian-elephants-1997-2004_bmw4ozgiu.png"
           ],
           [
             "Đề 2",
-            "Số sinh viên tốt nghiệp đại học ở Canada"
+            "The graph below shows the number of university graduates in Canada from 1992 to 2007.",
+            "https://media.ieltsthayha.com/wt1/charts/canada-graduates-1992-2007_bmw4ozgiu.png"
           ],
           [
             "Đề 3",
-            "Chi tiêu của chính phủ Mỹ cho nghiên cứu"
+            "The graph below gives information about U.S. government spending on research between 1980 and 2008.",
+            "https://media.ieltsthayha.com/wt1/charts/us-research-spending-1980-2008_bmw4ozgiu.png"
           ],
           [
             "Đề 4",
-            "Mức sử dụng nước ở San Diego, California và toàn thế giới"
+            "The pie charts below compare water usage in San Diego, California and the rest of the world.",
+            "https://media.ieltsthayha.com/wt1/charts/water-usage-san-diego-california-world_bmw4ozgiu.png"
           ],
           [
             "Đề 5",
-            "Sự thay đổi các phương thức di chuyển ở Anh giai đoạn 1985–2000"
+            "The table below gives information about changes in modes of travel in England between 1985 and 2000.",
+            "https://media.ieltsthayha.com/wt1/charts/england-travel-modes-1985-2000_bmw4ozgiu.png"
           ]
         ],
-        "imageUrl": null
+        "imageUrl": null,
+        "note": "Đề 1: biểu đồ chỉ có số liệu năm 1997 và 2004 — ghi đúng hai năm này trong Introduction."
       },
       "responseSlots": 5,
       "rubric": {
@@ -2482,7 +2491,7 @@
           "Nêu rõ loại biểu đồ và mốc thời gian",
           "Không chép đề"
         ],
-        "sampleAnswer": "1. The line graph illustrates how the population of Asian elephants changed over a period of five decades.\n2. The bar chart compares the number of university graduates in Canada in terms of gender between 1992 and 2012.\n3. The line graph gives information about how much the US government spent on scientific research each year from 1980 to 2010.\n4. The chart provides data on water usage in three areas, namely San Diego, the state of California and the world as a whole, in 2020.\n5. Finally, the pie charts illustrate the changes in how people travelled in the UK, namely by car, bus, rail and bicycle, between 1985 and 2000.",
+        "sampleAnswer": "1. The bar chart compares nine Asian countries in terms of the estimated maximum number of elephants living there in 1997 and 2004.\n2. The line graph illustrates how many men and women graduated from university in Canada between 1992 and 2007.\n3. The line graph gives information about how much the US government spent on five areas of research, namely health, space, energy, general science and other fields, from 1980 to 2008.\n4. The pie charts compare San Diego County, the state of California and the world as a whole in terms of the proportions of water used for residential, industrial and agricultural purposes.\n5. The table compares eight modes of travel in England in terms of how much each one was used in 1985 and 2000.",
         "commonErrors": [
           "The graph shows…",
           "thiếu mốc thời gian"
