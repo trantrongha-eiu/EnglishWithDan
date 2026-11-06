@@ -84,10 +84,12 @@ export default function FeedbackDetail({ detail, editable, onChange }) {
         {sf.map((s, i) => {
           const errs = errorsOf(s), ups = upgradesOf(s);
           const ok = s.type === 'ok';
-          if (ok && !ups.length) return null; // correct sentences with nothing to say are just noise here
+          if (ok && !ups.length && !s.suggestion) return null; // correct sentences with nothing to say are just noise here
           return (
             <div key={i} style={{ borderLeft: `3px solid ${ok ? '#22c55e' : '#ef4444'}`, background: ok ? 'rgba(34,197,94,.06)' : 'rgba(239,68,68,.06)', borderRadius: 6, padding: '6px 10px', fontSize: 12.5 }}>
-              <div style={{ color: 'var(--text)', marginBottom: 4, lineHeight: 1.6 }}>{s.original}</div>
+              <div style={{ color: 'var(--text)', marginBottom: 4, lineHeight: 1.6 }}>
+                {!ok && !errs.length ? <s style={{ textDecorationColor: '#ef4444' }}>{s.original}</s> : s.original}
+              </div>
               {errs.map((e, k) => (
                 <div key={k} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginBottom: 3 }}>
                   <div style={{ flex: 1, lineHeight: 1.55 }}>
@@ -108,6 +110,14 @@ export default function FeedbackDetail({ detail, editable, onChange }) {
                 </div>
               )}
               {!ok && s.better && <div style={{ color: '#15803d' }}>✓ {s.better}</div>}
+              {ok && s.suggestion && (
+                <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 3 }}>
+                  <div style={{ flex: 1, color: 'var(--blue)' }}>
+                    💡 Gợi ý (không trừ điểm): {s.suggestion}{s.suggestionWhy && <span style={{ color: 'var(--text3)' }}> — {s.suggestionWhy}</span>}
+                  </div>
+                  {editable && <RemoveBtn onClick={() => { const { suggestion, suggestionWhy, ...rest } = s; setSentence(i, rest); }} />}
+                </div>
+              )}
               {ups.map((u, k) => (
                 <div key={`u${k}`} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 3 }}>
                   <div style={{ flex: 1, color: 'var(--blue)' }}>

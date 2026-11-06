@@ -201,24 +201,28 @@ describe('writingGradingService.normalizeFeedback — detailed error feedback', 
     expect(t2.sentenceFeedback[0].errors[0]).toMatchObject({ criterion: 'TR', category: 'spelling' });
   });
 
-  test('upgrades must quote the sentence; at most one per sentence and 8 per essay', () => {
+  test('upgrades must quote the sentence; at most two per sentence and 12 per essay', () => {
     const sentences = Array.from({ length: 12 }, (_, i) => ({
       type: 'ok', original: `Sentence ${i} is very good.`,
-      upgrades: [{ from: 'very good', to: 'excellent', why: '' }, { from: 'is', to: 'remains' }],
+      upgrades: [{ from: 'very good', to: 'excellent', why: '' }, { from: 'is', to: 'remains' }, { from: 'Sentence', to: 'Line' }],
     }));
     sentences.push({ type: 'ok', original: 'Nothing here.', upgrades: [{ from: 'not in sentence', to: 'x' }] });
     const r = normalizeFeedback({ sentenceFeedback: sentences }, 2);
     const ups = r.sentenceFeedback.map(s => (s.upgrades || []).length);
-    expect(Math.max(...ups)).toBe(1);
-    expect(ups.reduce((a, b) => a + b, 0)).toBe(8);
+    expect(Math.max(...ups)).toBe(2);
+    expect(ups.reduce((a, b) => a + b, 0)).toBe(12);
     expect(r.sentenceFeedback[12].upgrades).toBeUndefined();
   });
 
-  test('old one-issue-per-sentence answers are kept as they were', () => {
+  test('an "issue" with no concrete error counts as correct; the rewrite is kept only as a suggestion', () => {
     const r = normalizeFeedback({ sentenceFeedback: [{
-      type: 'issue', original: 'He go to school.', criterion: 'GRA', issue: 'Sai chia động từ.', better: 'He goes to school.',
-    }] }, 2);
-    expect(r.sentenceFeedback[0]).toMatchObject({ type: 'issue', criterion: 'GRA', issue: 'Sai chia động từ.', better: 'He goes to school.' });
+      type: 'issue', original: 'The disposal of trash in landfill fell.', criterion: 'LR',
+      issue: 'Hơi thiếu tính học thuật.', better: 'Waste disposal in landfills fell.',
+    }] }, 1);
+    expect(r.sentenceFeedback[0]).toEqual({
+      type: 'ok', original: 'The disposal of trash in landfill fell.',
+      suggestion: 'Waste disposal in landfills fell.', suggestionWhy: 'Hơi thiếu tính học thuật.',
+    });
   });
 
   test('logicFeedback and draft2Plan are cleaned and capped; missing ones become empty arrays', () => {

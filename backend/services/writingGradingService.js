@@ -69,7 +69,7 @@ function normalizeFeedback(result, taskType) {
     if (u === 'TA' || u === 'TR') return taCode;
     return ['GRA', 'LR', 'CC'].includes(u) ? u : '';
   };
-  let upgradesLeft = 8;
+  let upgradesLeft = 12;
 
   const sf = Array.isArray(result.sentenceFeedback) ? result.sentenceFeedback : [];
   result.sentenceFeedback = sf.filter(s => s && typeof s === 'object' && str(s.original)).map(s => {
@@ -86,7 +86,7 @@ function normalizeFeedback(result, taskType) {
       from: str(u && u.from), to: str(u && u.to), why: str(u && u.why),
     })).filter(u => u.from && u.to && u.from.toLowerCase() !== u.to.toLowerCase()
       && original.toLowerCase().includes(u.from.toLowerCase()))
-      .slice(0, 1);
+      .slice(0, 2);
     const keptUpgrades = upgradesLeft > 0 ? upgrades : [];
     upgradesLeft -= keptUpgrades.length;
 
@@ -98,12 +98,12 @@ function normalizeFeedback(result, taskType) {
       if (better && better !== original) out.better = better;
       out.criterion = errors[0].criterion || normCrit(s.criterion);
       out.issue = errors.map(e => e.why).filter(Boolean).join(' ');
-    } else if (s.type === 'issue' && (str(s.issue) || (better && better !== original))) {
-      // Model answered in the old one-issue-per-sentence shape — keep it.
-      out.type = 'issue';
-      out.criterion = normCrit(s.criterion);
-      out.issue = str(s.issue);
-      if (better && better !== original) out.better = better;
+    } else if (s.type === 'issue' && better && better !== original) {
+      // Marked wrong but no concrete error named — that's acceptable wording
+      // the model would phrase differently. Count it correct and keep the
+      // rewrite only as a suggestion (no marks lost).
+      out.suggestion = better;
+      if (str(s.issue)) out.suggestionWhy = str(s.issue);
     }
     if (keptUpgrades.length) out.upgrades = keptUpgrades;
     return out;
@@ -243,10 +243,12 @@ Go through EVERY single sentence in the essay in order. Do NOT skip any sentence
   – "criterion": GRA | LR | CC | ${taskType === 1 ? 'TA' : 'TR'}.
   – "category": exactly one of: ${ERROR_CATEGORY_KEYS.join(', ')}.
   – "why": Vietnamese, 1–2 sentences: name the rule and explain WHY the original is wrong (e.g. "Chủ ngữ 'the number of students' là số ít nên động từ phải là 'has', không phải 'have'."), not just "sai ngữ pháp".
-• Only CLEAR, OBJECTIVE errors go in "errors": grammar, wrong word/collocation that a native examiner would mark wrong, spelling, punctuation that breaks the sentence, informal register, a faulty linking word.${canCheckData ? ' For Task 1, a number, trend or comparison that CLEARLY contradicts the data (beyond the READING TOLERANCE) is an error with category "data" and criterion TA: give the correct figure in "fix"/"why". A figure within tolerance is NOT an error.' : ''} Do NOT list something as an error just because a fancier version exists.
-• "type" is "issue" if the sentence has at least one error, otherwise "ok".
+• Only CLEAR, OBJECTIVE errors go in "errors": grammar, wrong word/collocation that a native examiner would mark wrong, spelling, punctuation that breaks the sentence, clearly conversational register (contractions, slang such as "kids", "stuff", "a bunch of", "gonna"), a faulty linking word.${canCheckData ? ' For Task 1, a number, trend or comparison that CLEARLY contradicts the data (beyond the READING TOLERANCE) is an error with category "data" and criterion TA: give the correct figure in "fix"/"why". A figure within tolerance is NOT an error.' : ''} Do NOT list something as an error just because a fancier version exists.
+• ACCEPTABLE = CORRECT (mandatory): before listing anything as an error, ask "Would a trained IELTS examiner accept this as correct English?" If it is grammatical, its meaning is clear and it is not clearly conversational, it is ACCEPTABLE — even if it is plain, slightly less academic, less precise, a little wordy, or not how you would phrase it (e.g. "disposal of trash", "thrown into landfill", "went up", "a lot of", "in more detail", British or American spelling, an optional comma). An acceptable sentence is "ok": it gets NO entry in "errors", costs NO marks, and any better wording goes in "upgrades" as a suggestion. If you are not sure something is wrong, it is NOT an error. (The strictness rule at the top is about choosing the band, NOT about marking acceptable language wrong.)
+• IGNORE the student's own notes/labels inside the essay, such as "(câu topic)", "(topic sentence)", "(overview)", "(mở bài)", "(body 1)" — they are not part of the writing: never list them as errors, never mention them, do not let them affect any score, and leave them out of "better".
+• "type" is "issue" ONLY if the sentence has at least one entry in "errors", otherwise "ok". NEVER return an "issue" sentence with an empty "errors" list.
 • "better": for an "issue" sentence, the full sentence with ONLY those errors fixed (keep the student's idea, words and structure). Omit for "ok" sentences.
-• "upgrades" (optional, any sentence, including "ok" ones): vocabulary/phrase upgrades that are NOT errors but would raise Lexical Resource — a more precise, natural, topic-specific word or collocation an IELTS Band 7–8 writer would use. Each: {"from":"<exact span from the sentence>","to":"<upgrade>","why":"<Vietnamese: why it is better / when to use it>"}. Natural academic English only — no rare, pretentious or wrongly-formal words. At most 1 per sentence and about 6 for the whole essay; only where the gain is clear.
+• "upgrades" (optional, any sentence, including "ok" ones): SUGGESTIONS that are NOT errors and do NOT lower any score — a more precise, natural, academic or topic-specific word/collocation an IELTS Band 7–8 writer would use instead of acceptable-but-plain wording. Each: {"from":"<exact span from the sentence>","to":"<upgrade>","why":"<Vietnamese: why it is better / when to use it; make clear the original is still acceptable>"}. Natural academic English only — no rare, pretentious or wrongly-formal words. At most 2 per sentence and about 10 for the whole essay; only where the gain is clear.
 • NEVER flag a sentence as CC error for lacking cohesive devices if it ALREADY opens with: Furthermore, Moreover, In addition, Additionally, However, Nevertheless, Nonetheless, Therefore, Thus, As a result, Consequently, On the other hand, In contrast, In conclusion, To summarise, For example, For instance, Firstly, Secondly, Finally, Similarly, Likewise, Although, Despite, etc.
 
 STEP 3 – ${taskType === 1 ? 'TASK & COHERENCE CHECK' : 'LOGIC, ARGUMENT & RELEVANCE CHECK'} (paragraph level, in "logicFeedback"):
@@ -264,7 +266,7 @@ Return ONLY valid JSON (no markdown, no text outside JSON):
 CRITICAL RULES:
 • bandScore in JSON is ignored — server recalculates from (ta+cc+lr+gra)/4 rounded DOWN to the nearest 0.5
 • sentenceFeedback MUST include EVERY sentence of the essay in original order; "original" and every "wrong"/"from"/"quote" must be copied exactly from the essay
-• The criterion scores must agree with the errors you listed (many GRA errors → GRA cannot be high)
+• The criterion scores must agree with the errors you listed (many GRA errors → GRA cannot be high). Only entries in "errors" count against a score; "upgrades" (suggestions) and acceptable wording NEVER lower LR, GRA or CC
 • All comment/why/problem/suggestion/overallFeedback/draft2Plan MUST be in Vietnamese; "fix", "better", "to" MUST be in English
 • Use encouraging teacher tone in Vietnamese; address student as "em"`;
 

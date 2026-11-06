@@ -903,10 +903,13 @@ body {
 .fb-sent-body { margin: 6px 0 0 22px; display: flex; flex-direction: column; gap: 6px; }
 
 mark.fb-mk-err, mark.fb-mk-up { color: inherit; border-radius: 3px; padding: 0 2px; }
-mark.fb-mk-err { background: #fee2e2; border-bottom: 2px solid #ef4444; }
+mark.fb-mk-err { background: #fee2e2; text-decoration: line-through; text-decoration-color: #ef4444; text-decoration-thickness: 2px; }
 mark.fb-mk-up  { background: #dbeafe; border-bottom: 2px dashed #3b82f6; }
-mark.fb-mk-err sup, mark.fb-mk-up sup { font-size: 9px; font-weight: 800; margin-left: 1px; }
-mark.fb-mk-err sup { color: #dc2626; }
+sup.fb-mk-err-n, sup.fb-mk-up-n { font-size: 9px; font-weight: 800; margin-left: 1px; }
+sup.fb-mk-err-n { color: #dc2626; }
+s.fb-sent-wrong { text-decoration-color: #ef4444; text-decoration-thickness: 2px; }
+.fb-suggest { font-size: 13px; color: #1e3a8a; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 5px 9px; line-height: 1.6; }
+.fb-suggest-lbl { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: #2563eb; margin-right: 4px; }
 
 .fb-err-row { display: flex; gap: 8px; align-items: flex-start; }
 .fb-err-num { flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%; background: #ef4444; color: #fff; font-size: 10.5px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
@@ -945,6 +948,7 @@ mark.fb-mk-err sup { color: #dc2626; }
 [data-theme="dark"] .fb-sent.ok .fb-sent-text { color: #bbf7d0; }
 [data-theme="dark"] mark.fb-mk-err { background: #7f1d1d; }
 [data-theme="dark"] mark.fb-mk-up  { background: #1e3a8a; }
+[data-theme="dark"] .fb-suggest    { background: #172554; border-color: #1e3a8a; color: #bfdbfe; }
 [data-theme="dark"] .fb-cat-tag    { background: #2e1065; color: #c4b5fd; }
 [data-theme="dark"] .fb-wrong      { color: #f87171; }
 [data-theme="dark"] .fb-fix        { color: #4ade80; }
@@ -1101,6 +1105,21 @@ mark.fb-mk-err sup { color: #dc2626; }
   border-radius: 6px;
   padding: 2px 8px;
 }
+
+/* "Vì sao bài mẫu đạt Band 7.5+?" — under the model answer (writing.js
+   renderBandExplanation). Reuses the .pw-analysis-section cards below. */
+.pw-band-why { flex-shrink: 0; margin-top: 6px; }
+.pw-band-why-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #b45309;
+}
+.pw-band-why-head i { color: #f59e0b; }
+[data-theme="dark"] .pw-band-why-head { color: #fbbf24; }
 
 /* "Phân tích đề" — shown inline below the prompt/image in .exam-left
    (toggled open/closed, not a modal — a covering modal hid the prompt

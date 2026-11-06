@@ -1473,9 +1473,10 @@ function _fbMarkSentence(original, errors, upgrades) {
   upgrades.forEach(u => add(u.from, 'fb-mk-up', '💡'));
   ranges.sort((a, b) => a.start - b.start);
   let html = '', pos = 0;
+  // The number sits outside the <mark> so the error strike-through doesn't cross it.
   ranges.forEach(r => {
     html += escHtml(text.slice(pos, r.start))
-      + `<mark class="${r.cls}">${escHtml(text.slice(r.start, r.end))}<sup>${r.label}</sup></mark>`;
+      + `<mark class="${r.cls}">${escHtml(text.slice(r.start, r.end))}</mark><sup class="${r.cls}-n">${r.label}</sup>`;
     pos = r.end;
   });
   return html + escHtml(text.slice(pos));
@@ -1542,11 +1543,17 @@ function _fbSentenceSection(td) {
   const rows = sf.map(s => {
     const errs = _fbErrors(s), ups = _fbUpgrades(s);
     if (s.type === 'ok') {
+      const sugg = s.suggestion ? `<div class="fb-suggest"><span class="fb-suggest-lbl">Gợi ý (câu của em vẫn đúng, không trừ điểm)</span> ${escHtml(s.suggestion)}
+          ${s.suggestionWhy ? `<div class="fb-why">${escHtml(s.suggestionWhy)}</div>` : ''}</div>` : '';
       return `<div class="fb-sent ok">
         <div class="fb-sent-text"><span class="fb-sent-ico ok"><i class="fas fa-check-circle"></i></span><span>${_fbMarkSentence(s.original, [], ups)}</span></div>
-        ${ups.length ? `<div class="fb-sent-body">${_fbUpgradeRows(ups)}</div>` : ''}
+        ${ups.length || sugg ? `<div class="fb-sent-body">${_fbUpgradeRows(ups)}${sugg}</div>` : ''}
       </div>`;
     }
+    // No error spans to mark (older gradings) — strike the whole sentence.
+    const sentHtml = errs.length
+      ? _fbMarkSentence(s.original, errs, ups)
+      : `<s class="fb-sent-wrong">${escHtml(s.original || '')}</s>`;
     // Older gradings: a single issue/better per sentence.
     const errRows = errs.length
       ? errs.map((e, i) => `<div class="fb-err-row">
@@ -1562,7 +1569,7 @@ function _fbSentenceSection(td) {
         </div>`).join('')
       : `${_fbCritChip(s.criterion)}${s.issue ? `<div class="fb-why"><i class="fas fa-search"></i> ${escHtml(s.issue)}</div>` : ''}`;
     return `<div class="fb-sent issue">
-      <div class="fb-sent-text"><span class="fb-sent-ico bad"><i class="fas fa-times-circle"></i></span><span>${_fbMarkSentence(s.original, errs, ups)}</span></div>
+      <div class="fb-sent-text"><span class="fb-sent-ico bad"><i class="fas fa-times-circle"></i></span><span>${sentHtml}</span></div>
       <div class="fb-sent-body">
         ${errRows}
         ${s.better ? `<div class="fb-better"><span class="fb-better-lbl">Câu đúng</span> ${escHtml(s.better)}</div>` : ''}
@@ -1577,7 +1584,7 @@ function _fbSentenceSection(td) {
       <div class="fb-section-lbl fb-lbl-sent"><i class="fas fa-list-ul"></i> Phân tích từng câu</div>
       ${nOk && nOk < sf.length ? `<label class="fb-only-err"><input type="checkbox" onchange="this.closest('.fb-sents').classList.toggle('only-err', this.checked)"> Chỉ xem câu có lỗi</label>` : ''}
     </div>
-    ${hasMarks ? `<div class="fb-legend"><mark class="fb-mk-err">chỗ sai</mark> <mark class="fb-mk-up">có thể nâng cấp</mark></div>` : ''}
+    ${hasMarks ? `<div class="fb-legend"><mark class="fb-mk-err">chỗ sai</mark> <mark class="fb-mk-up">gợi ý nâng cấp (không trừ điểm)</mark></div>` : ''}
     <div class="fb-sent-list">${rows}</div>
   </div>`;
 }
@@ -1784,6 +1791,7 @@ function _fbTaskText(label, td) {
       const n = `  ${i + 1}. `;
       if (s.type === 'ok') {
         out.push(`${n}[✓ Tốt] ${s.original || ''}`);
+        if (s.suggestion) out.push(`       Gợi ý (không trừ điểm): ${s.suggestion}`);
         return;
       }
       out.push(`${n}[✗${s.criterion ? ' ' + s.criterion : ''}] ${s.original || ''}`);
@@ -3099,7 +3107,7 @@ function renderPracticeWriteScreen(taskType, task) {
           <button class="pw-copy-btn" onclick="copySampleSection(this,${i})" title="Sao chép đoạn này"><i class="fas fa-copy"></i> Copy</button>
         </div>
         <div class="pw-sample-section-body">${hl ? T2Highlight.html(s.content, s.highlights) : escHtml(s.content)}</div>
-      </div>`).join('');
+      </div>`).join('') + renderBandExplanation(task.bandExplanation);
     if (hl) T2Highlight.applyPref(panel);
     setupDictionaryDouble('pw-sample-panel', 'writing-practice-sample', _pwDictGate);
   } else if (panel) {
@@ -3111,6 +3119,26 @@ function renderPracticeWriteScreen(taskType, task) {
   const chk = document.getElementById('pw-sample-chk');
   if (chk) chk.checked = false;
   togglePracticeSample(false);
+}
+
+// "Vì sao bài mẫu đạt Band 7.5+?" — below the model answer: one block per
+// marking criterion (task.bandExplanation), formatted like "Phân tích đề".
+// Its own .t2hl-root so the colours work even when the essay above has no
+// sentence highlights. Not a .pw-sample-section, so copySampleSection's
+// indexes still line up with the essay paragraphs.
+function renderBandExplanation(notes) {
+  const items = (Array.isArray(notes) ? notes : []).filter(n => n && n.content?.trim());
+  if (!items.length) return '';
+  const fmt = window.AnalysisFormat;
+  return `
+    <div class="pw-band-why t2hl-root">
+      <div class="pw-band-why-head"><i class="fas fa-award"></i> Vì sao bài mẫu đạt Band 7.5+?</div>
+      ${items.map((n, i) => `
+      <div class="pw-analysis-section tone-${i === 0 ? 'plan' : 'intro'}" style="--i:${i}">
+        <div class="pw-analysis-section-title"><span class="an-title-txt">${escHtml(n.title || '')}</span></div>
+        <div class="pw-analysis-section-body${fmt ? ' is-rich' : ''}">${fmt ? fmt.html(n.content) : escHtml(n.content)}</div>
+      </div>`).join('')}
+    </div>`;
 }
 
 function togglePracticeSample(on) {
