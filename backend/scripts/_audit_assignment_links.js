@@ -63,7 +63,7 @@ const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
         }
         continue;
       }
-      if (entry.catalog.static) continue; // fixed list (task1_skill) — nothing to drift
+      if (!entry.catalog || entry.catalog.static) continue; // synthetic / fixed list (task1_skill) — nothing to drift
       const doc = await entry.catalog.model.findById(r.resourceId).lean();
       if (!doc) { issues.push(`${where}: ${r.resourceType} ${r.resourceId} "${r.label}" — RESOURCE DELETED`); continue; }
       const realLabel = entry.catalog.shape(doc).label;
