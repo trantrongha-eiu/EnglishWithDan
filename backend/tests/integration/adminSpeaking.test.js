@@ -507,6 +507,38 @@ describe('POST /api/admin/speaking/questions/import (teacherOnly)', () => {
     expect(res.body.matched).toBeGreaterThanOrEqual(1);
   });
 
+  test('merges into an existing topic/question despite case and wording differences', async () => {
+    const teacher = await createTeacher();
+    await createSpeakingQuestion({ topic: 'Comedy / Jokes', part: 1, question: 'What is your favourite type of joke?', sampleAnswer: 'Keep me.' });
+    const text = '@topic\ntopic=comedy/jokes\n@part1\nWhat’s your favorite type of joke?\nDo you like funny films?\n';
+    const parse = await request(app).post('/api/admin/speaking/questions/parse')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ text });
+    expect(parse.body.warnings.join(' ')).toMatch(/gần giống câu đã có/);
+    const res = await request(app).post('/api/admin/speaking/questions/import')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ text });
+    expect(res.status).toBe(201);
+    expect(res.body.created).toBe(1);
+    const docs = await SpeakingQuestion.find({}).lean();
+    expect(docs).toHaveLength(2);
+    expect(docs.every(d => d.topic === 'Comedy / Jokes')).toBe(true);
+    expect(docs.find(d => /joke\?$/.test(d.question)).sampleAnswer).toBe('Keep me.');
+  });
+
+  test('writes group on Part 2/3 and keeps an existing group when the paste has none', async () => {
+    const teacher = await createTeacher();
+    await createSpeakingQuestion({ topic: 'Old card', part: 2, question: 'Describe an old card.', group: 'objects' });
+    const text = '@topic\ntopic=New card\ngroup=people\n@part2\nDescribe a new person.\n@part3\nWhy?\nHow?\nWhen?\n\n@topic\ntopic=Old card\n@part3\nWhy keep old things?\nIs it useful?\nWho does it?\n';
+    const res = await request(app).post('/api/admin/speaking/questions/import')
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`).send({ text });
+    expect(res.status).toBe(201);
+    const fresh = await SpeakingQuestion.find({ topic: 'New card' }).lean();
+    expect(fresh).toHaveLength(4);
+    expect(fresh.every(d => d.group === 'people')).toBe(true);
+    const old = await SpeakingQuestion.find({ topic: 'Old card' }).lean();
+    expect(old).toHaveLength(4);
+    expect(old.every(d => d.group === 'objects')).toBe(true);
+  });
+
   test('400 with the error list on an invalid paste', async () => {
     const teacher = await createTeacher();
     const res = await request(app).post('/api/admin/speaking/questions/import')

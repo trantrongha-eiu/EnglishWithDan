@@ -8,6 +8,13 @@ import SpeakingCriteriaTable from '../components/SpeakingCriteriaTable';
 
 const PARTS = [1, 2, 3];
 
+// Same 7 cue-card groups as backend services/speakingService.js
+// SPEAKING_GROUPS — Part 2/3 only; ungrouped topics show under "Khác".
+const GROUPS = [
+  ['people', '1 · People'], ['places', '2 · Places'], ['objects', '3 · Objects'], ['events', '4 · Events'],
+  ['activities_skills', '5 · Activities / Skills'], ['nature_science', '6 · Nature / Science'], ['culture_media', '7 · Culture / Media'],
+];
+
 const BAND_COLOR = b => b >= 7 ? '#16a34a' : b >= 5.5 ? '#d97706' : b > 0 ? '#dc2626' : '#94a3b8';
 
 function ScorePill({ label, value }) {
@@ -156,8 +163,9 @@ function QuestionModal({ question, onClose, onSaved }) {
     part: question.part || 1,
     question: question.question || '',
     cueCard: question.cueCard || '',
+    group: question.group || '',
     isActive: question.isActive !== false,
-  } : { topic: '', part: 1, question: '', cueCard: '', isActive: true });
+  } : { topic: '', part: 1, question: '', cueCard: '', group: '', isActive: true });
   const [saving, setSaving] = useState(false);
 
   const set = k => e => setForm(f => ({
@@ -170,9 +178,11 @@ function QuestionModal({ question, onClose, onSaved }) {
   async function save(e) {
     e.preventDefault();
     setSaving(true);
+    // '' isn't in the model's group enum — send null; Part 1 is never grouped.
+    const body = { ...form, group: Number(form.part) === 1 ? null : (form.group || null) };
     try {
-      if (question?._id) await apiFetch(`/admin/speaking/questions/${question._id}`, { method: 'PUT', body: JSON.stringify(form) });
-      else await apiFetch('/admin/speaking/questions', { method: 'POST', body: JSON.stringify(form) });
+      if (question?._id) await apiFetch(`/admin/speaking/questions/${question._id}`, { method: 'PUT', body: JSON.stringify(body) });
+      else await apiFetch('/admin/speaking/questions', { method: 'POST', body: JSON.stringify(body) });
       toast(question?._id ? 'Đã cập nhật' : 'Đã thêm câu hỏi');
       onSaved(); onClose();
     } catch (err) { toast(err.message, 'error'); }
@@ -199,6 +209,15 @@ function QuestionModal({ question, onClose, onSaved }) {
               </select>
             </div>
           </div>
+          {Number(form.part) !== 1 && (
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Nhóm cue card <span style={{ color: 'var(--text3)', fontWeight: 400 }}>(Part 2/3)</span></label>
+              <select className="form-input" value={form.group} onChange={set('group')}>
+                <option value="">— Chưa phân nhóm (hiện ở "Khác") —</option>
+                {GROUPS.map(([code, label]) => <option key={code} value={code}>{label}</option>)}
+              </select>
+            </div>
+          )}
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Câu hỏi *</label>
             <textarea className="form-input" rows={3} value={form.question} onChange={set('question')} required
