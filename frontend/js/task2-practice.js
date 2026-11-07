@@ -450,6 +450,41 @@ function isStepUnlocked(topicId) {
   return _isStaffUser() || isVocabStepDone(topicId);
 }
 
+// ── Translate gate — the writing steps (⑤ Viết trên lớp, ⑥ Bài về nhà, the
+// split-screen writer) open only once at least T2_TRANSLATE_PASS % of the
+// lesson's "Dịch câu" sentences are translated correctly (best result per
+// sentence, as the server keeps it). Client-side, like the vocab gate.
+const T2_TRANSLATE_PASS = 70;
+
+// → { total, translated, correct, pct, passed, need } or null while the
+// lesson isn't loaded. need = correct sentences still missing to pass.
+function translateProgress(topicId) {
+  const L = _lessonFor(topicId);
+  if (!L || L.status !== 'ready') return null;
+  const total = L.sentences.length;
+  const translated = L.sentences.filter(x => x.en).length;
+  const correct = L.sentences.filter(x => x.en && x.isCorrect).length;
+  const pct = total ? Math.round(correct / total * 100) : 100;
+  const need = Math.max(0, Math.ceil(total * T2_TRANSLATE_PASS / 100) - correct);
+  return { total, translated, correct, pct, passed: need === 0, need };
+}
+
+function isWritingUnlocked(topicId) {
+  if (_isStaffUser()) return true;
+  if (!isStepUnlocked(topicId)) return false;
+  // Logged out: nothing to write anyway — the step shows its login note.
+  if (!(window.AuthService && window.AuthService.isLoggedIn())) return true;
+  const tp = translateProgress(topicId);
+  return !!(tp && tp.passed);
+}
+
+function translateGateMessage(topicId) {
+  const tp = translateProgress(topicId);
+  if (!tp) return 'Đang tải kết quả dịch câu…';
+  return `Cần dịch đúng ≥ ${T2_TRANSLATE_PASS}% số câu ở bước 3 (Dịch câu) mới mở khoá phần viết — ` +
+         `bạn đang đúng ${tp.correct}/${tp.total} câu (${tp.pct}%), cần đúng thêm ${tp.need} câu.`;
+}
+
 function topicStatusRowHtml(topicId) {
   const s = _topicScores[topicId];
   let html = '';
@@ -1095,7 +1130,7 @@ function _lessonSteps(t) {
   return [
     { key: 'vocab',     label: 'Từ vựng',        done: isVocabStepDone(id) },
     { key: 'ideas',     label: 'Brainstorm',     done: state.brainstorm.topicId === id && state.brainstorm.notes.some(n => (n || '').trim()) },
-    { key: 'translate', label: 'Dịch câu',       done: sent.length > 0 && sent.every(s => s.en) },
+    { key: 'translate', label: 'Dịch câu',       done: sent.length > 0 && sent.every(s => s.en) && !!(translateProgress(id) || {}).passed },
     { key: 'guide',     label: 'Hướng dẫn viết', done: has('intro') || has('body1') },
     { key: 'class',     label: 'Viết trên lớp',  done: classDone },
     { key: 'home',      label: 'Bài về nhà',     done: has('body2') && has('conclusion') }
@@ -1123,10 +1158,11 @@ function _stepHead(num, title, extra, done) {
 }
 // Steps 2–6 until step ① (all terms saved + quiz ≥ VQUIZ_PASS%) is done:
 // just the title and what unlocks it.
-function _lockedStep(key, num, title) {
+function _lockedStep(key, num, title, note) {
   return `
     <section class="t2-step is-locked" id="t2-step-${key}">
       ${_stepHead(num, title, '<span class="t2-step-tag"><i class="fas fa-lock"></i> Chưa mở</span>', false)}
+      ${note ? `<p class="t2-step-desc" style="margin:8px 0 0">🔒 ${_escHtml(note)} <button type="button" class="t2-link" onclick="scrollToHubStep('translate')">Đến bước Dịch câu</button></p>` : ''}
     </section>`;
 }
 function _wcChip(label, text) {
@@ -1230,15 +1266,20 @@ function renderTranslateStep(isCurrent) {
   const sent = L ? L.sentences : [];
   const done = sent.filter(s => s.en).length;
   const allDone = sent.length > 0 && done >= sent.length;
+  const tp = translateProgress(id);
+  const passed = !!(tp && tp.passed);
+  // Not translated yet + translated wrong — what "Dịch tiếp" serves next.
+  const todo = sent.filter(s => !(s.en && s.isCorrect)).length;
   const best = _bestPracticeScore(id);
   return `
     <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-translate">
-      ${_stepHead(3, 'Dịch câu Việt → Anh', '<span class="t2-step-tag">Có thể làm ở nhà</span>', allDone)}
-      <p class="t2-step-desc">Dịch các câu ý chính sang tiếng Anh bằng từ vựng vừa học — câu dịch sẽ hiện bên cạnh khi bạn viết bài.</p>
+      ${_stepHead(3, 'Dịch câu Việt → Anh', '<span class="t2-step-tag">Có thể làm ở nhà</span>', allDone && passed)}
+      <p class="t2-step-desc">Dịch các câu ý chính sang tiếng Anh bằng từ vựng vừa học — câu dịch sẽ hiện bên cạnh khi bạn viết bài. <b>Dịch đúng ≥ ${T2_TRANSLATE_PASS}% số câu</b> để mở khoá phần viết trên lớp.</p>
       ${sent.length ? `<div class="t2-meter${allDone ? ' ok' : ''}"><span style="width:${Math.round(done / sent.length * 100)}%"></span></div>
-      <div class="t2-wc-row"><span class="t2-step-chip${allDone ? ' ok' : ''}">Đã dịch ${done}/${sent.length} câu</span></div>` : ''}
+      <div class="t2-wc-row"><span class="t2-step-chip${allDone ? ' ok' : ''}">Đã dịch ${done}/${sent.length} câu</span>${tp && done ? `<span class="t2-step-chip${passed ? ' ok' : ''}">Đúng ${tp.correct}/${tp.total} câu · ${tp.pct}%${passed ? ' · đã mở khoá phần viết' : ` · cần ≥ ${T2_TRANSLATE_PASS}%`}</span>` : ''}</div>` : ''}
+      ${tp && done && !passed ? `<p class="t2-step-desc" style="margin:6px 0 0">🔒 Cần đúng thêm <b>${tp.need} câu</b> nữa — bấm “${allDone ? 'Làm lại' : 'Dịch tiếp'}” để dịch các câu chưa đúng.</p>` : ''}
       <div class="t2-actions">
-        <button class="t2-primary is-lg" onclick="startTranslate(this)"><i class="fas fa-language"></i> ${!done ? 'Bắt đầu dịch câu' : allDone ? 'Dịch lại' : `Dịch tiếp ${sent.length - done} câu`}</button>
+        <button class="t2-primary is-lg" onclick="startTranslate(this)"><i class="fas fa-language"></i> ${!done ? 'Bắt đầu dịch câu' : !todo ? 'Dịch lại' : allDone ? `Làm lại ${todo} câu chưa đúng` : `Dịch tiếp ${todo} câu`}</button>
         ${state.wrongQuestionIds.length ? `<button class="t2-secondary is-warn" onclick="startRetryWrong(this)"><i class="fas fa-redo-alt"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
       </div>
       <details class="t2-more"${state.translateMoreOpen ? ' open' : ''} ontoggle="state.translateMoreOpen=this.open">
@@ -1311,6 +1352,7 @@ function renderGuideStep(isCurrent) {
 function renderClassStep(isCurrent) {
   const t = state.selectedTopic;
   if (!isStepUnlocked(t._id)) return _lockedStep('class', 5, 'Viết Mở bài + Thân bài 1');
+  if (!isWritingUnlocked(t._id)) return _lockedStep('class', 5, 'Viết Mở bài + Thân bài 1', translateGateMessage(t._id));
   const L = _lessonFor(t._id);
   const sec = L ? L.sections : _emptySections();
   const done = !!(_wc(sec.intro) && _wc(sec.body1));
@@ -1334,6 +1376,7 @@ function renderClassStep(isCurrent) {
 function renderHomeStep(isCurrent) {
   const t = state.selectedTopic;
   if (!isStepUnlocked(t._id)) return _lockedStep('home', 6, 'Viết Thân bài 2 + Kết bài');
+  if (!isWritingUnlocked(t._id)) return _lockedStep('home', 6, 'Viết Thân bài 2 + Kết bài', translateGateMessage(t._id));
   const L = _lessonFor(t._id);
   const sec = L ? L.sections : _emptySections();
   const filled = LESSON_SECTIONS.filter(s => (sec[s.key] || '').trim()).length;
@@ -1392,7 +1435,7 @@ const _LULU_STEP = {
                tips: ['Bấm 🔊 để nghe phát âm, đọc to theo cho nhớ lâu nha!', 'Học cả cụm (collocation) chứ đừng học từ đơn lẻ nhé 😉', 'Quiz cần đạt từ 70% — chưa đạt thì ôn lại mấy từ sai rồi làm quiz mới nha!'] },
   ideas:     { say: 'Giờ brainstorm cùng nhóm nè! Nghĩ thật nhiều ý, ý nào hay thì ghi lại liền 💡',
                tips: ['Ý hay = rõ ràng + có ví dụ thật. Đừng ngại ghi cả ý của nhóm bạn!', 'Bí ý? Thử nghĩ theo các góc: cá nhân, xã hội, kinh tế, sức khoẻ…', 'Mỗi phần chỉ cần 2–3 ý mạnh là đủ viết rồi.'] },
-  translate: { say: 'Dịch câu nào! Dùng từ vựng vừa học nha — câu dịch sẽ giúp cậu viết nhanh hơn ✍️',
+  translate: { say: 'Dịch câu nào! Dịch đúng từ 70% số câu là mở khoá phần viết trên lớp đó ✍️',
                tips: ['Sai không sao, đọc gợi ý rồi sửa lại là nhớ lâu lắm!', 'Chưa xong trên lớp thì về nhà làm nốt nha.', 'Để ý collocation trong câu mẫu — dùng lại được trong bài đó!'] },
   guide:     { say: 'Xem cách ghép ý + câu đã dịch thành một đoạn văn hoàn chỉnh nha 🧩',
                tips: ['Công thức thần thánh: Ý chính → Giải thích → Kết quả → Ví dụ!', 'Từ nối làm đoạn văn mượt hơn: This is because, As a result, For example…', 'Đọc đoạn mẫu để học cách triển khai, đừng học thuộc nha.'] },
@@ -1590,6 +1633,7 @@ function _teacherGuideHtml(t) {
     ${_tgStep(i++, 3, 'Dịch câu Việt → Anh', '15′',
       'Chuyển ý tưởng thành câu tiếng Anh đúng, dùng từ vựng vừa học.',
       ['HS dịch các câu tiếng Việt chứa ý chính của đề; hệ thống chấm và gợi ý ngay.',
+       `<b>Bắt buộc:</b> HS phải dịch đúng <b>≥ ${T2_TRANSLATE_PASS}%</b> số câu mới mở khoá bước 5–6 (viết trên lớp, bài về nhà) trên máy — chưa đạt thì “Làm lại” các câu chưa đúng.`,
        '<b>Đối chiếu theo nhóm (~3′):</b> các bạn trong nhóm so sánh bản dịch của nhau, chọn câu hay nhất cho mỗi ý; người trình bày đọc câu của nhóm trước lớp.',
        'GV chữa nhanh 2–3 câu khó trên bảng, chỉ ra collocation / cấu trúc hay.',
        'Câu HS dịch sẽ hiện ở <b>cột trái màn hình viết</b> — dịch càng nhiều, viết càng dễ.',
@@ -1874,6 +1918,11 @@ async function openCompose(phase, opts = {}) {
   ]);
   if (state.selectedTopic?._id !== id) return;
   if (state.lesson.topicId !== id || state.lesson.status !== 'ready') { showToast('Không tải được bài viết — thử lại nhé', 'error'); return; }
+  if (!isWritingUnlocked(id)) {
+    showToast('🔒 ' + translateGateMessage(id), 'warn', 6000);
+    if (state.view === 'select') scrollToHubStep('translate');
+    return;
+  }
   const s = state.lesson.sections;
   const C = state.compose;
   C.phase = phase || ((s.intro.trim() && s.body1.trim()) ? 'home' : 'class');
@@ -2765,7 +2814,8 @@ async function _startPractice(opts = {}) {
     if (opts.translateOnly) {
       questions = questions.filter(q => WBW_TYPES.has(q.type));
       const L = _lessonFor(state.selectedTopic._id);
-      const doneIds = new Set((L ? L.sentences : []).filter(s => s.en).map(s => s.questionId));
+      // Translated right already → skip; untranslated and wrong ones come up.
+      const doneIds = new Set((L ? L.sentences : []).filter(s => s.en && s.isCorrect).map(s => s.questionId));
       const missing = questions.filter(q => !doneIds.has(q.questionId || q._id) && !doneIds.has(q._id));
       if (missing.length && missing.length < questions.length) questions = missing;
       if (!questions.length) { showToast('Buổi này chưa có câu dịch', 'warn'); return; }
@@ -4404,7 +4454,8 @@ function renderDone() {
   const wrongCount = wrongAttempts.length;
   // Next step of the lesson: the split-screen writer (translated sentences
   // on the left). Shown after a sentence-translation run.
-  const canWriteLesson = !!(topicId && state.translateOnly && window.AuthService && window.AuthService.isLoggedIn());
+  const canWriteLesson = !!(topicId && state.translateOnly && window.AuthService && window.AuthService.isLoggedIn() && isWritingUnlocked(topicId));
+  const writeLockedNote = !!(topicId && state.translateOnly && window.AuthService && window.AuthService.isLoggedIn() && !canWriteLesson);
 
   const wrongReview = wrongAttempts.map((a, i) => `
     <div class="wp-wr-item">
@@ -4434,6 +4485,7 @@ function renderDone() {
         <button class="t2-primary is-lg" onclick="openComposeBtn(this)"><i class="fas fa-columns"></i> Vào viết bài</button>
         <div class="t2-done-sub" style="font-size:12.5px;margin:6px 0 0">Các câu bạn vừa dịch sẽ hiện ở cột trái màn hình viết.</div>
       </div>` : ''}
+      ${writeLockedNote ? `<div class="t2-done-sub" style="font-size:13px;margin:0 0 14px">🔒 ${_escHtml(translateGateMessage(topicId))}</div>` : ''}
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
         ${wrongCount > 0 ? `<button class="t2-start-btn" onclick="retryWrong()" style="font-size:13px;padding:10px 20px;margin-top:0"><i class="fas fa-redo-alt"></i> Ôn lại ${wrongCount} câu sai</button>` : ''}
         <button class="wp-restart-btn" onclick="${state.translateOnly ? 'startTranslate' : 'startPractice'}(this)"><i class="fas fa-redo"></i> Làm lại từ đầu</button>
