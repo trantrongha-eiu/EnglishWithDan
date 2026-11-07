@@ -137,6 +137,7 @@ app.use('/api/badges', require('./routes/badges'));
 app.use('/api/shop',     require('./routes/shop'));
 app.use('/api/contact',  require('./routes/contact'));
 app.use('/api/track',    require('./routes/track'));
+app.use('/api/activity', require('./routes/activity'));
 app.use('/api/courses',         require('./routes/courses'));
 app.use('/api/classes',         require('./routes/classAssignments'));
 app.use('/api/classes',         require('./routes/classAttendance'));

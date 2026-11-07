@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useAdminData } from '../contexts/AdminDataContext';
 import { useApi } from '../hooks/useApi';
 import VocabDetailPanel from '../components/VocabDetailPanel';
+import OnlineTimePanel from '../components/OnlineTimePanel';
 import Wt1ReviewModal from '../components/Wt1ReviewModal';
 import { skillBadge, SKILL_META, isWt1Skill } from '../components/SkillBadge';
 import PageHeader from '../components/ui/PageHeader';
@@ -274,6 +275,7 @@ const TABS = [
   { key: 'overview', label: '📋 Tổng quan' },
   { key: 'history', label: '🕓 Lịch sử làm bài' },
   { key: 'vocab', label: '📈 Từ vựng' },
+  { key: 'online', label: '⏱️ Thời gian online' },
   { key: 'badges', label: '🏅 Huy hiệu' },
 ];
 
@@ -368,6 +370,7 @@ export default function StudentDetail() {
       {tab === 'overview' && isStudent && <ParentsPanel student={user} />}
       {tab === 'history' && <HistoryTab id={id} />}
       {tab === 'vocab' && <VocabTab id={id} />}
+      {tab === 'online' && <div className="panel" style={{ padding: 16 }}><OnlineTimePanel userId={id} /></div>}
       {tab === 'badges' && <BadgesTab id={id} />}
     </>
   );

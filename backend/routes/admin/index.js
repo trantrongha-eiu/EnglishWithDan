@@ -40,5 +40,6 @@ router.use(require('./sidebarBadges'));    // GET /sidebar-badges — one call f
 router.use(require('./studentOverview'));  // GET /users/:id/overview — per-student learning profile
 router.use(require('./parents'));          // Phụ huynh accounts linked to a student (create / reset / unlink)
 router.use(require('./tips'));             // Tips 4 kỹ năng: list / preview / show-hide
+router.use(require('./onlineTime'));       // Thời gian online: minutes per student per day + session detail
 
 module.exports = router;

@@ -12,6 +12,7 @@ const MockTests = lazy(() => import('./MockTests'));
 const ReadingStats = lazy(() => import('./ReadingStats'));
 const ListeningStats = lazy(() => import('./ListeningStats'));
 const VocabActivity = lazy(() => import('./VocabActivity'));
+const OnlineTime = lazy(() => import('./OnlineTime'));
 
 const TABS = [
   { key: 'history',   label: '🕓 Lịch sử làm bài', El: StudentHistory },
@@ -19,6 +20,7 @@ const TABS = [
   { key: 'reading',   label: '📖 Thống kê Reading', El: ReadingStats },
   { key: 'listening', label: '🎧 Thống kê Listening', El: ListeningStats },
   { key: 'vocab',     label: '📈 Hoạt động từ vựng', El: VocabActivity },
+  { key: 'online',    label: '⏱️ Thời gian online', El: OnlineTime },
 ];
 
 export default function Monitoring() {

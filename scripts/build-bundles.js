@@ -39,6 +39,7 @@ const BUNDLES = {
     'js/shared/cowrite-invites.js',
     'js/shared/peer-chat-widget.js',
     'js/shared/api-client.js',
+    'js/shared/online-tracker.js',
   ],
 };
 
