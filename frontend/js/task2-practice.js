@@ -28,6 +28,11 @@ const WBW_MAX_WORD_ERRORS = 3;
 const WBW_MAX_ASKS = 3;       // "Hỏi Lulu" asks per sentence (graded, so capped)
 const WBW_REQUEUE_GAP = 3;
 const WBW_MAX_REQUEUES = 2;
+// "Viết đoạn kết bài" (short_writing): the model is one ~35-word sentence,
+// too long to type word by word — the student rebuilds it from short
+// phrases instead (click to order). The ORD_MAX_TRIES-th wrong check fails it.
+const ORD_TYPES = new Set(['short_writing']);
+const ORD_MAX_TRIES = 3;
 const LEVEL_COLORS = { beginner:'#22c55e', elementary:'#3b82f6', intermediate:'#a855f7' };
 
 // Each essay type spans 2 consecutive weeks (1 theme each, no theme repeated
@@ -3050,6 +3055,25 @@ function renderQuestion(q) {
   // character-typing drill. Needs the exact model sentence, which the server
   // ships as q.translationAnswer for the topic-practice flow. Falls back to
   // the plain textarea below when the answer is absent (older data, exam mode).
+  if (ORD_TYPES.has(q.type) && q.translationAnswer) {
+    return `
+  <div class="wp-task-label">${typeLbl}</div>
+  <div class="t2-question-text">${_escHtml(q.questionText)}</div>
+  ${viRow}
+  ${structureHint}
+  ${keywordRow}
+  <div class="t2-ord" id="t2-ord">
+    <div class="t2-wbw-bar">
+      <span class="t2-wbw-count" id="ord-count"></span>
+      <button type="button" class="wbw-ask ask-lulu" id="ord-ask" onclick="ordAskLulu()" title="Hỏi Lulu cụm tiếp theo">
+        <span class="ask-lulu-ic"></span> <span>Hỏi Lulu</span>
+      </button>
+    </div>
+    <div class="wp-rearrange-answer t2-ord-answer" id="ord-answer"></div>
+    <div class="wp-rearrange-bank t2-ord-bank" id="ord-bank"></div>
+    <div class="t2-wbw-hint">Bấm các cụm theo đúng thứ tự để ghép thành đoạn kết bài. Bấm vào cụm đã chọn để gỡ ra. <b>Xếp sai ${ORD_MAX_TRIES} lần là câu tính sai và phải làm lại</b> (câu sẽ quay lại sau).</div>
+  </div>`;
+  }
   if (WBW_TYPES.has(q.type) && q.translationAnswer) {
     // 'translation' already has the Vietnamese source baked into
     // questionText — the gloss is only useful for paraphrase/short_writing,
@@ -3397,9 +3421,165 @@ function _requeueQuestion(idx) {
   const copies = state.questions.filter(x => (x.questionId || x._id) === id).length - 1;
   if (copies >= WBW_MAX_REQUEUES) return false;
   const insertAt = Math.min(idx + 1 + WBW_REQUEUE_GAP, state.questions.length);
-  state.questions.splice(insertAt, 0, { ...q, _isRepeat: true, _luluAsks: 0 }); // redo gets fresh Lulu asks
+  state.questions.splice(insertAt, 0, { ...q, _isRepeat: true, _luluAsks: 0, _ordTries: 0 }); // a redo starts fresh
   state.questionStatus.splice(insertAt, 0, 'pending');
   return true;
+}
+
+// ════════════════════════════════════════════════════════
+//  "Viết đoạn kết bài" — click the phrases into order
+// ════════════════════════════════════════════════════════
+let _ord = null;   // { q, chunks, bank, picked, wrongFrom, tries, asks, done }
+
+const _ORD_MAX_WORDS = 7;
+// Where a long piece is split: clause openers first, then prepositions.
+const _ORD_CONJ = new Set(['because', 'although', 'though', 'while', 'whereas', 'and', 'but', 'or', 'which', 'who', 'whose', 'where', 'as', 'since', 'so', 'if', 'when', 'unless', 'rather', 'instead', 'whether', 'that', 'than']);
+const _ORD_PREP = new Set(['by', 'through', 'with', 'without', 'to', 'in', 'for', 'of', 'on', 'from', 'into', 'at', 'about', 'over', 'such']);
+
+// Model paragraph → short phrases (mostly 3–7 words): split after commas,
+// then pieces over 7 words before a conjunction / preposition near their
+// middle (3+ words each side, never "such | as"), then pieces over 10 words
+// in halves (never ending on a/an/the); a one-word leftover joins its
+// neighbour.
+function _ordChunks(text) {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean);
+  let pieces = [];
+  let cur = [];
+  words.forEach(w => { cur.push(w); if (/[,;:]$/.test(w)) { pieces.push(cur); cur = []; } });
+  if (cur.length) pieces.push(cur);
+  const norm = w => w.toLowerCase().replace(/[^a-z']/g, '');
+  const splitAt = (p, set) => {
+    if (p.length <= _ORD_MAX_WORDS) return [p];
+    let best = -1, bestD = Infinity;
+    for (let i = 3; i <= p.length - 3; i++) {
+      if (!set.has(norm(p[i])) || (norm(p[i]) === 'as' && norm(p[i - 1]) === 'such')) continue;
+      const d = Math.abs(i - p.length / 2);
+      if (d < bestD) { best = i; bestD = d; }
+    }
+    if (best < 0) return [p];
+    return [...splitAt(p.slice(0, best), set), ...splitAt(p.slice(best), set)];
+  };
+  const halve = p => {
+    if (p.length <= _ORD_MAX_WORDS + 3) return [p];
+    let mid = Math.ceil(p.length / 2);
+    while (mid < p.length - 2 && /^(a|an|the|to|of)$/i.test(p[mid - 1])) mid++;
+    return [...halve(p.slice(0, mid)), ...halve(p.slice(mid))];
+  };
+  pieces = pieces.flatMap(p => splitAt(p, _ORD_CONJ)).flatMap(p => splitAt(p, _ORD_PREP)).flatMap(halve);
+  const out = [];
+  pieces.forEach(p => {
+    if (p.length === 1 && out.length) out[out.length - 1] = out[out.length - 1].concat(p);
+    else out.push(p);
+  });
+  if (out.length > 1 && out[0].length === 1) out.splice(0, 2, out[0].concat(out[1]));
+  return out.map(p => p.join(' '));
+}
+
+function _ordActive() {
+  const q = state.questions[state.currentIdx];
+  return !!(_ord && q && _ord.q === q);
+}
+
+function ordInit() {
+  _ord = null;
+  const q = state.questions[state.currentIdx];
+  if (!q || !ORD_TYPES.has(q.type) || !q.translationAnswer || !document.getElementById('t2-ord')) return;
+  const chunks = _ordChunks(q.translationAnswer);
+  const answered = ['correct', 'wrong'].includes(state.questionStatus[state.currentIdx]);
+  const bank = shuffle(chunks.map((_, i) => i));
+  // Don't hand over the answer already in order.
+  if (chunks.length > 1 && bank.every((v, i) => chunks[v] === chunks[i])) bank.push(bank.shift());
+  _ord = {
+    q, chunks, bank,
+    picked: answered ? chunks.map((_, i) => i) : [],
+    wrongFrom: -1,
+    // Kept on the question, so jumping away and back doesn't reset them.
+    tries: q._ordTries || 0,
+    asks: q._luluAsks || 0,
+    done: answered
+  };
+  const askBtn = document.getElementById('ord-ask');
+  if (askBtn) askBtn.disabled = answered;
+  if (window.AskLulu) window.AskLulu.left(askBtn, WBW_MAX_ASKS - _ord.asks);
+  _ordRender();
+}
+
+function _ordText() {
+  return _ord ? _ord.picked.map(i => _ord.chunks[i]).join(' ') : '';
+}
+
+// Index of the first picked phrase that isn't the right one there (-1: none).
+function _ordFirstWrong() {
+  const o = _ord;
+  for (let k = 0; k < o.picked.length; k++) if (o.chunks[o.picked[k]] !== o.chunks[k]) return k;
+  return -1;
+}
+
+function _ordRender() {
+  const o = _ord;
+  if (!o) return;
+  const ans = document.getElementById('ord-answer');
+  const bank = document.getElementById('ord-bank');
+  if (!ans || !bank) return;
+  ans.innerHTML = o.picked.length
+    ? o.picked.map((ci, k) => `<span class="wp-answer-chip${o.wrongFrom >= 0 && k >= o.wrongFrom ? ' is-wrong' : ''}${o.done ? ' is-locked' : ''}" onclick="ordUnpick(${k})">${_escHtml(o.chunks[ci])}</span>`).join('')
+    : '<span class="wp-rearrange-placeholder">Bấm các cụm bên dưới theo đúng thứ tự...</span>';
+  bank.innerHTML = o.bank.filter(ci => !o.picked.includes(ci))
+    .map(ci => `<span class="wp-word-chip" onclick="ordPick(${ci})">${_escHtml(o.chunks[ci])}</span>`).join('');
+  bank.classList.toggle('hidden', !bank.innerHTML);
+  const count = document.getElementById('ord-count');
+  if (count) {
+    count.textContent = `${o.picked.length} / ${o.chunks.length} cụm`;
+    count.classList.toggle('is-full', o.picked.length === o.chunks.length);
+  }
+  checkSubmitEnabled();
+}
+
+function ordPick(ci) {
+  const o = _ord;
+  if (!o || o.done || state._isSubmitting || o.picked.includes(ci)) return;
+  o.picked.push(ci);
+  o.wrongFrom = -1;
+  _ordRender();
+}
+
+function ordUnpick(k) {
+  const o = _ord;
+  if (!o || o.done || state._isSubmitting) return;
+  o.picked.splice(k, 1);
+  o.wrongFrom = -1;
+  _ordRender();
+}
+
+// "Hỏi Lulu": takes back the phrases from the first wrong one on, or puts
+// the next right phrase in place. At most WBW_MAX_ASKS asks per question.
+function ordAskLulu() {
+  const o = _ord;
+  if (!o || o.done || state._isSubmitting || o.asks >= WBW_MAX_ASKS) return;
+  const btn = document.getElementById('ord-ask');
+  const k = _ordFirstWrong();
+  let text;
+  if (k >= 0) {
+    o.picked = o.picked.slice(0, k);
+    text = `Từ cụm thứ ${k + 1} là lạc chỗ rồi — tớ gỡ ra giúp cậu nè. Cụm đúng tiếp theo bắt đầu bằng “${o.chunks[k].split(' ')[0]}…” 🍊`;
+  } else if (o.picked.length < o.chunks.length) {
+    const next = o.picked.length;
+    // The same text may sit in the bank twice — take any unused copy.
+    const ci = o.chunks.findIndex((c, i) => c === o.chunks[next] && !o.picked.includes(i));
+    o.picked.push(ci);
+    text = `Cụm tiếp theo là “${o.chunks[next]}” nè 🍊`;
+  } else {
+    if (window.AskLulu) window.AskLulu.say(btn, 'Xếp đúng hết rồi đó, bấm Kiểm tra thôi! 🎉');
+    return;
+  }
+  o.asks++;
+  o.q._luluAsks = o.asks;
+  o.wrongFrom = -1;
+  _ordRender();
+  if (window.AskLulu) {
+    window.AskLulu.left(btn, WBW_MAX_ASKS - o.asks);
+    window.AskLulu.say(btn, text);
+  }
 }
 
 function bindPractice() {
@@ -3410,6 +3590,7 @@ function bindPractice() {
   _vocabHintCount = 0;
   _vocabHintList  = (q?.fallbackKeywords || q?.hints || []);
   wbwInit();
+  ordInit();
   // remove previous listener before adding a new one
   if (_practiceKeyHandler) document.removeEventListener('keydown', _practiceKeyHandler);
   _practiceKeyHandler = function(e) {
@@ -3485,6 +3666,7 @@ function getUserAnswerPractice() {
   if (['essay_type_recognition','topic_sentence'].includes(q.type)) return String(document.getElementById('mc-selected')?.value ?? '');
   if (q.type === 'rearrange') return document.getElementById('rearrange-input')?.value?.trim() || '';
   if (q.type === 'fill_blank') return document.getElementById('fill-input')?.value?.trim() || '';
+  if (_ordActive()) return _ordText();
   return document.getElementById('answer-box')?.value?.trim() || '';
 }
 
@@ -3515,13 +3697,57 @@ async function submitPractice() {
     && !!q.translationAnswer && answer === q.translationAnswer;
   _wbwVerbatimPending = false;
 
+  // Phrase ordering is checked here, no AI: a wrong order below the
+  // ORD_MAX_TRIES cap just marks the slip and lets the student fix it.
+  let ordOk = false, ordFail = false;
+  if (_ordActive()) {
+    const o = _ord;
+    if (o.picked.length < o.chunks.length) { showToast('Hãy xếp hết các cụm đã nhé.', 'warn'); return; }
+    ordOk = _ordFirstWrong() < 0;
+    if (!ordOk) {
+      o.tries++;
+      q._ordTries = o.tries;
+      if (o.tries < ORD_MAX_TRIES) {
+        o.wrongFrom = _ordFirstWrong();
+        _ordRender();
+        playWrong();
+        showToast(`Chưa đúng thứ tự — từ cụm tô đỏ trở đi là sai chỗ. Còn ${ORD_MAX_TRIES - o.tries} lần thử.`, 'warn', 2800);
+        return;
+      }
+      ordFail = true;
+    }
+    o.done = true;
+    o.wrongFrom = ordOk ? -1 : _ordFirstWrong();
+    _ordRender();
+  }
+
   const AI_TYPES = new Set(['translation', 'error_correction', 'short_writing', 'paraphrase']);
   state._isSubmitting = true;
   document.getElementById('submit-btn').disabled = true;
 
   try {
     let data;
-    if (wbwFail) {
+    if (ordFail) {
+      const requeued = _requeueQuestion(state.currentIdx);
+      data = {
+        success: true, isCorrect: false, score: 0,
+        modelAnswer: q.translationAnswer,
+        feedbackVi: `Bạn xếp sai thứ tự ${ORD_MAX_TRIES} lần nên câu này tính là sai. `
+          + (requeued
+            ? 'Xem kỹ đoạn mẫu nhé — câu này sẽ quay lại ở phía sau để bạn làm lại 💪'
+            : 'Xem kỹ đoạn mẫu rồi ôn lại ở "Ôn lại câu sai" sau buổi nhé.'),
+        explanationVi: q.explanationVi || '',
+        aiGraded: false
+      };
+    } else if (ordOk) {
+      data = {
+        success: true, isCorrect: true, score: 100,
+        modelAnswer: q.translationAnswer,
+        feedbackVi: 'Chính xác! Bạn đã ghép đúng thứ tự đoạn kết bài.',
+        explanationVi: q.explanationVi || '',
+        aiGraded: false
+      };
+    } else if (wbwFail) {
       const requeued = _requeueQuestion(state.currentIdx);
       const stuckWord = wbwFail.word ? `từ “${wbwFail.word}”` : 'một từ';
       data = {
@@ -3578,7 +3804,7 @@ async function submitPractice() {
       type: q.type
     });
     // A half-typed failed sentence isn't worth showing in the writer's list.
-    if (WBW_TYPES.has(q.type) && !wbwFail) _noteMySentence(q, answer, isOk);
+    if (WBW_TYPES.has(q.type) && !wbwFail && !ordFail) _noteMySentence(q, answer, isOk);
     saveDraft(); // fire-and-forget
 
     // show feedback
@@ -4228,7 +4454,7 @@ function retryWrong() {
   const wrongQuestions = state.questions
     .filter(q => wrongIds.has(q._id) || wrongIds.has(q.questionId))
     .filter(q => { const id = q.questionId || q._id; if (seen.has(id)) return false; seen.add(id); return true; })
-    .map(q => { const { _isRepeat, _luluAsks, ...rest } = q; return rest; });
+    .map(q => { const { _isRepeat, _luluAsks, _ordTries, ...rest } = q; return rest; });
   if (!wrongQuestions.length) { showToast('Không có câu nào sai!', 'info'); return; }
   state.questions = wrongQuestions;
   state.currentIdx = 0;
@@ -4355,6 +4581,7 @@ function checkSubmitEnabled() {
   }
   if (q.type === 'rearrange') { btn.disabled = state.rearrangeAnswer.length === 0; return; }
   if (q.type === 'fill_blank') { btn.disabled = !(document.getElementById('fill-input')?.value?.trim()); return; }
+  if (_ordActive()) { btn.disabled = _ord.done || _ord.picked.length < _ord.chunks.length; return; }
   btn.disabled = !(document.getElementById('answer-box')?.value?.trim());
 }
 

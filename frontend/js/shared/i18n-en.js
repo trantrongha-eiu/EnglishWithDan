@@ -1535,6 +1535,8 @@
     'Hỏi Lulu': 'Ask Lulu',
     'Hỏi Lulu (3)': 'Ask Lulu (3)',
     'Hỏi Lulu chữ cái tiếp theo': 'Ask Lulu for the next letter',
+    'Hỏi Lulu cụm tiếp theo': 'Ask Lulu for the next phrase',
+    'Bấm các cụm bên dưới theo đúng thứ tự...': 'Click the phrases below in the right order...',
     'Hỏi Lulu gợi ý': 'Ask Lulu for a hint',
     'Hỏi Lulu gợi ý từ vựng': 'Ask Lulu for vocabulary hints',
     'Hỏi Lulu gợi ý từ vựng (tối đa 3 lần)': 'Ask Lulu for vocabulary hints (up to 3 times)',
