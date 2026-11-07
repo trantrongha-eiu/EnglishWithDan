@@ -25,6 +25,7 @@ const WBW_TYPES = new Set(['translation', 'paraphrase', 'short_writing']);
 // then comes back WBW_REQUEUE_GAP questions later for another go — at most WBW_MAX_REQUEUES times, so no endless loop.
 // Counted per word (not per sentence like vocab) since a sentence is ~30 words.
 const WBW_MAX_WORD_ERRORS = 3;
+const WBW_MAX_ASKS = 3;       // "Hỏi Lulu" asks per sentence (graded, so capped)
 const WBW_REQUEUE_GAP = 3;
 const WBW_MAX_REQUEUES = 2;
 const LEVEL_COLORS = { beginner:'#22c55e', elementary:'#3b82f6', intermediate:'#a855f7' };
@@ -3158,6 +3159,9 @@ function wbwInit() {
     typed: '',
     erroring: false,
     wordErrors: 0,     // wrong tries on the active word (reset on each new word)
+    q,
+    asks: q._luluAsks || 0, // "Hỏi Lulu" asks used on this question — kept on
+                            // the question so jumping away and back doesn't reset it
     failed: false,
     composing: false,
     done: answered,
@@ -3166,6 +3170,7 @@ function wbwInit() {
 
   const askBtn = document.getElementById('wbw-ask');
   if (askBtn) askBtn.disabled = _wbw.locked;
+  if (window.AskLulu) window.AskLulu.left(askBtn, WBW_MAX_ASKS - _wbw.asks);
   const input = document.getElementById('wbw-input');
   if (input) {
     if (_wbw.locked) {
@@ -3196,12 +3201,16 @@ function wbwFocus() {
 // "Hỏi Lulu": Lulu tells the next letter of the word being typed — one
 // letter per ask, never the whole sentence, and never typed in for the
 // student (same as Luyện viết câu / Task 1's drill, js/shared/sentence-drill.js).
+// At most WBW_MAX_ASKS asks per sentence.
 function wbwAskLulu() {
-  if (!_wbw || _wbw.done || _wbw.locked) return;
+  if (!_wbw || _wbw.done || _wbw.locked || _wbw.asks >= WBW_MAX_ASKS) return;
   const tok = _wbw.tokens[_wbw.activeIdx];
   if (!tok) return;
   const next = tok.target.charAt(_wbw.typed.length);
   if (next && window.AskLulu) {
+    _wbw.asks++;
+    _wbw.q._luluAsks = _wbw.asks;
+    window.AskLulu.left(document.getElementById('wbw-ask'), WBW_MAX_ASKS - _wbw.asks);
     const so = _wbw.typed + next;
     window.AskLulu.say(document.getElementById('wbw-ask'),
       `Chữ tiếp theo là “${next}” nè — từ này bắt đầu “${so}${so.length < tok.target.length ? '…' : ''}” 🍊`);
@@ -3388,7 +3397,7 @@ function _requeueQuestion(idx) {
   const copies = state.questions.filter(x => (x.questionId || x._id) === id).length - 1;
   if (copies >= WBW_MAX_REQUEUES) return false;
   const insertAt = Math.min(idx + 1 + WBW_REQUEUE_GAP, state.questions.length);
-  state.questions.splice(insertAt, 0, { ...q, _isRepeat: true });
+  state.questions.splice(insertAt, 0, { ...q, _isRepeat: true, _luluAsks: 0 }); // redo gets fresh Lulu asks
   state.questionStatus.splice(insertAt, 0, 'pending');
   return true;
 }
@@ -4219,7 +4228,7 @@ function retryWrong() {
   const wrongQuestions = state.questions
     .filter(q => wrongIds.has(q._id) || wrongIds.has(q.questionId))
     .filter(q => { const id = q.questionId || q._id; if (seen.has(id)) return false; seen.add(id); return true; })
-    .map(q => { const { _isRepeat, ...rest } = q; return rest; });
+    .map(q => { const { _isRepeat, _luluAsks, ...rest } = q; return rest; });
   if (!wrongQuestions.length) { showToast('Không có câu nào sai!', 'info'); return; }
   state.questions = wrongQuestions;
   state.currentIdx = 0;

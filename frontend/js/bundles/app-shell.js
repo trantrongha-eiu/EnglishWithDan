@@ -3642,6 +3642,9 @@
                                       sentence (dictation, shadowing, Task 2
                                       template).
        AskLulu.line(res)              what Lulu says for a letterHint result.
+       AskLulu.left(btn, n)           shows "(n)" asks left on btn and
+                                      disables it at 0 — graded exercises
+                                      allow AskLulu.MAX asks per question.
      ══════════════════════════════════════════════════════════════════ */
   function fillAskIcons() {
     var nodes = document.querySelectorAll('.ask-lulu-ic:empty');
@@ -3762,6 +3765,21 @@
     return 'Từ thứ ' + res.word + ' bắt đầu bằng “' + res.letters + '…” nè 🍊';
   }
 
+  // Asks left on a hint button. Only ever disables — the page re-enables
+  // the button itself when the next question starts.
+  function askLeft(btn, left) {
+    if (!btn) return;
+    left = Math.max(0, left);
+    var tag = btn.querySelector('.ask-lulu-left');
+    if (!tag) {
+      tag = document.createElement('span');
+      tag.className = 'ask-lulu-left';
+      btn.appendChild(tag);
+    }
+    tag.textContent = ' (' + left + ')';
+    if (left <= 0) btn.disabled = true;
+  }
+
   function init() {
     try { watchAskIcons(); } catch (e) {}
     try { mountHelpButton(); } catch (e) {}
@@ -3781,7 +3799,7 @@
     say: function (t, m, who) { say(t, m, who); }, hop: function (m) { hop(m); },
     lumiOutfit: lumiOutfit,
   };
-  window.AskLulu = { say: askSay, letterHint: letterHint, line: letterLine };
+  window.AskLulu = { say: askSay, letterHint: letterHint, line: letterLine, left: askLeft, MAX: 3 };
   window.TestCardArt = TestCardArt;
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

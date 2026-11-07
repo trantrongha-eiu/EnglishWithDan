@@ -96,3 +96,25 @@ describe('sentence-drill — sdRequeueExercise / sdWithoutRepeats', () => {
     expect(list.map((x) => x._id)).toEqual(['a', 'b', 'b']);
   });
 });
+
+describe('sentence-drill — "Hỏi Lulu" is capped at 3 asks per sentence', () => {
+  afterEach(() => { delete window.AskLulu; });
+
+  test('the 4th ask is ignored and the button is disabled; a new sentence resets it', () => {
+    const say = jest.fn();
+    const left = jest.fn((btn, n) => { if (n <= 0) btn.disabled = true; });
+    window.AskLulu = { say, left, MAX: 3 };
+    window.wbwInit('because');
+    const btn = document.getElementById('wbw-ask');
+    expect(left).toHaveBeenLastCalledWith(btn, 3);
+    for (let i = 0; i < 4; i++) window.wbwAskLulu();
+    expect(say).toHaveBeenCalledTimes(3);
+    expect(left).toHaveBeenLastCalledWith(btn, 0);
+    expect(btn.disabled).toBe(true);
+
+    window.wbwInit('since');
+    expect(btn.disabled).toBe(false);
+    window.wbwAskLulu();
+    expect(say).toHaveBeenCalledTimes(4);
+  });
+});

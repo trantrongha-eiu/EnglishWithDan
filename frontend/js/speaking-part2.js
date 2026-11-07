@@ -23,6 +23,7 @@
   var STORIES = [];
   var LOCKED = false;    // no Premium: story list only
   var MAX_WORD_ERRORS = 3;
+  var MAX_ASKS = 3;          // "Hỏi Lulu" asks per question (graded, so capped)
   var REQUEUE_GAP = 3;
   var MAX_REQUEUES = 2;
   var WPM = 130;                  // band 6.0–7.0 speaking speed (PDF: 120–140)
@@ -993,6 +994,8 @@
     var r = state.run, q = r.qs[r.idx];
     var host = document.getElementById('sp2-wbw');
     r.answered = false;
+    r.asks = 0;
+    if (window.AskLulu) window.AskLulu.left(document.getElementById('sp2-ask'), MAX_ASKS);
     window.WbwDrill.mount(host, {
       answer: q.en,
       maxWordErrors: MAX_WORD_ERRORS,
@@ -1000,11 +1003,15 @@
       onFail: function () { answer(false); }
     });
   }
+  // At most MAX_ASKS asks per question.
   function askLulu() {
+    var r = state.run;
     var host = document.getElementById('sp2-wbw');
     var pk = window.WbwDrill.peek(host);
     var btn = document.getElementById('sp2-ask');
-    if (pk && window.AskLulu && btn) {
+    if (pk && window.AskLulu && btn && r && (r.asks || 0) < MAX_ASKS) {
+      r.asks = (r.asks || 0) + 1;
+      window.AskLulu.left(btn, MAX_ASKS - r.asks);
       window.AskLulu.say(btn, 'Chữ tiếp theo là “' + pk.next + '” nè — từ này bắt đầu “' + pk.sofar + (pk.full ? '' : '…') + '” 🍊');
     }
     var inp = host && host.querySelector('[data-role="input"]');

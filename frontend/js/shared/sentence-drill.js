@@ -71,6 +71,7 @@ function closeWpSheet() {
 //  check and requeues it (sdRequeueExercise below) so the student redoes it.
 // ════════════════════════════════════════════════════════
 const SD_MAX_WORD_ERRORS = 3;
+const SD_MAX_ASKS = 3;  // "Hỏi Lulu" asks per sentence (graded, so capped)
 const SD_REQUEUE_GAP = 3;    // the failed sentence comes back this many exercises later
 const SD_MAX_REQUEUES = 2;   // …at most this many times, so no endless loop
 let _wbw = null;
@@ -98,6 +99,7 @@ function wbwInit(answer) {
   if (!tokens.length) { wbwTeardown(); return; }
   _wbw = { answer, tokens, activeIdx: 0, typed: '', erroring: false, done: false, locked: false,
     wordErrors: 0,     // wrong tries on the active word (reset on each new word)
+    asks: 0,           // "Hỏi Lulu" asks used on this sentence
     failed: false, composing: false };
   wrap.classList.remove('hidden');
 
@@ -123,6 +125,7 @@ function wbwInit(answer) {
   }
   const askBtn = document.getElementById('wbw-ask');
   if (askBtn) askBtn.disabled = false;
+  if (window.AskLulu) window.AskLulu.left(askBtn, SD_MAX_ASKS);
   _wbwRenderWords();
   _wbwUpdateBar();
   _wbwSyncBridge(false);
@@ -143,13 +146,16 @@ function wbwFocus() {
 
 // "Hỏi Lulu": Lulu tells the next letter of the word being typed — one
 // letter per ask, never the whole sentence, and never typed in for the
-// student (they still type it themselves — active recall).
+// student (they still type it themselves — active recall). At most
+// SD_MAX_ASKS asks per sentence.
 function wbwAskLulu() {
-  if (!_wbw || _wbw.done || _wbw.locked) return;
+  if (!_wbw || _wbw.done || _wbw.locked || _wbw.asks >= SD_MAX_ASKS) return;
   const tok = _wbw.tokens[_wbw.activeIdx];
   if (!tok) return;
   const next = tok.target.charAt(_wbw.typed.length);
   if (next && window.AskLulu) {
+    _wbw.asks++;
+    window.AskLulu.left(document.getElementById('wbw-ask'), SD_MAX_ASKS - _wbw.asks);
     const so = _wbw.typed + next;
     window.AskLulu.say(document.getElementById('wbw-ask'),
       `Chữ tiếp theo là “${next}” nè — từ này bắt đầu “${so}${so.length < tok.target.length ? '…' : ''}” 🍊`);

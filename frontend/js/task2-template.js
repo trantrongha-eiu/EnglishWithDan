@@ -80,8 +80,9 @@ const DRILL_STAGES = ['Ghép cụm', 'Điền dần', 'Nhớ lại'];
 const SENT_KNOWN = 80;
 const ASSEMBLE_PASS = 70;
 const RECALL_PASS_B7 = 90; // % words right for a free-typed sentence to count in ③ (Band 7+)
-const ASM_HINTS = { band6: 6, band7: 3 }; // "Hỏi Lulu" per paragraph in ④
-const RUN_HINTS = 3;                       // per sentence in Ôn nhanh / Luyện câu yếu
+const LULU_MAX = 3;                        // "Hỏi Lulu" per sentence / paragraph in graded drills
+const ASM_HINTS = { band6: LULU_MAX, band7: LULU_MAX }; // per paragraph in ④
+const RUN_HINTS = LULU_MAX;                // per sentence in Ôn nhanh / Luyện câu yếu
 const FIX_MAX = 8;                         // sentences per "Luyện câu yếu" run
 
 // ── Small helpers ──────────────────────────────────────────────
@@ -401,6 +402,15 @@ function lulu(anchor, text, mood = 'wink') {
 }
 function askBtn(id, onclick, label = 'Hỏi Lulu', extra = '') {
   return `<button class="pth-btn ask-lulu" id="${id}" onclick="${onclick}" ${extra}><span class="ask-lulu-ic"></span> ${label}</button>`;
+}
+// Same, with the asks left shown — "(n)" is updated in place by _askLeft.
+function askBtnLeft(id, onclick, left) {
+  return askBtn(id, onclick, `Hỏi Lulu<span class="ask-lulu-left"> (${Math.max(0, left)})</span>`, left <= 0 ? 'disabled' : '');
+}
+function _askLeft(anchor, left) {
+  const el = typeof anchor === 'string' ? document.querySelector(anchor) : anchor;
+  if (window.AskLulu) window.AskLulu.left(el, left);
+  else if (el && left <= 0) el.disabled = true;
 }
 // Lulu with a speech bubble (results, coach).
 function luluSays(text, { pct = 70, mood, solo = true, stacked = false } = {}) {
@@ -1069,7 +1079,7 @@ function renderWarmup() {
   let actions = '';
   if (r.checked && r.checked.ok) actions = `<button class="pth-btn pth-btn--primary" onclick="wuNext()">${r.p + 1 < paras.length ? 'Đoạn tiếp theo' : 'Hoàn thành'} <i class="fas fa-arrow-right"></i></button>`;
   else if (r.checked) actions = `<button class="pth-btn" onclick="wuShowAnswer()"><i class="fas fa-eye"></i> Xem đáp án</button><button class="pth-btn pth-btn--primary" onclick="wuRetry()"><i class="fas fa-rotate-right"></i> Sửa lại</button>`;
-  else actions = `${askBtn('pth-hint', 'wuHint()')}<button class="pth-btn pth-btn--primary" onclick="wuCheck()" ${full ? '' : 'disabled'}><i class="fas fa-check"></i> Kiểm tra</button>`;
+  else actions = `${askBtnLeft('pth-hint', 'wuHint()', LULU_MAX - (r.asks || 0))}<button class="pth-btn pth-btn--primary" onclick="wuCheck()" ${full ? '' : 'disabled'}><i class="fas fa-check"></i> Kiểm tra</button>`;
 
   area().innerHTML = `${activityHeader(0, `Đoạn ${r.p + 1}/${paras.length}`)}
     <div class="pth-wrap">
@@ -1093,6 +1103,7 @@ function _wuSetupPara() {
   _run.picked = p.sentences.length === 1 ? [0] : [];
   _run.checked = null;
   _run.tried = false;
+  _run.asks = 0;
   _run.hl = null;
   if (p.sentences.length === 1) { _run.checked = { ok: true, wrong: new Set() }; _run.firstTry[_run.p] = true; }
 }
@@ -1112,7 +1123,7 @@ function wuCheck() {
 // Hỏi Lulu: removes a wrong pick, or points at the next line (role + opener).
 function wuHint() {
   const p = paragraphs()[_run.p];
-  if (_run.checked) return;
+  if (_run.checked || (_run.asks || 0) >= LULU_MAX) return;
   _run.tried = true;
   _run.firstTry[_run.p] = false;
   let k = 0;
@@ -1126,6 +1137,7 @@ function wuHint() {
     _run.hl = k;
     text = `Câu thứ ${k + 1} là câu “${s.role}”${s.opt ? ` (${s.opt})` : ''}, mở đầu bằng “${firstWords(s, 3)}…” nè — tớ tô vàng nó rồi đó!`;
   } else text = 'Xếp đủ rồi, bấm Kiểm tra thôi! 🎉';
+  if (k < p.sentences.length) _run.asks = (_run.asks || 0) + 1;
   renderWarmup();
   lulu('#pth-hint', text, 'think');
 }
@@ -1296,7 +1308,7 @@ function _drillRenderItem() {
   if (!host) return;
   if (it.kind === 'build') renderBuild(host, s, (ok, hinted) => _drillAnswered(ok, hinted));
   else if (it.kind === 'fade') renderFade(host, s, it.lvl, (ok, hinted) => _drillAnswered(ok, hinted));
-  else renderRecall(host, s, { free: isB7(), hints: 99, onDone: (ok, _d, hinted) => _drillAnswered(ok, hinted) });
+  else renderRecall(host, s, { free: isB7(), hints: LULU_MAX, onDone: (ok, _d, hinted) => _drillAnswered(ok, hinted) });
 }
 
 // Called once the student has answered the current item (the item's own UI
@@ -1373,7 +1385,7 @@ function _buildDraw() {
     ${done ? `<div class="pth-fb pth-fb--good">✅ ${enHtml(b.s)}${b.hints ? `<div class="pth-muted pth-fb-note">${HINTED_NOTE}</div>` : ''}</div>` : ''}
     <div class="pth-actions">
       ${done ? '<button class="pth-btn pth-btn--primary" id="pth-next" onclick="drillNext()">Tiếp <i class="fas fa-arrow-right"></i></button>'
-        : `${askBtn('pth-hint', 'buildHint()')}${b.wrongs >= 2 ? '<button class="pth-btn" onclick="buildReveal()"><i class="fas fa-eye"></i> Xem đáp án</button>' : ''}`}
+        : `${askBtnLeft('pth-hint', 'buildHint()', LULU_MAX - b.hints)}${b.wrongs >= 2 ? '<button class="pth-btn" onclick="buildReveal()"><i class="fas fa-eye"></i> Xem đáp án</button>' : ''}`}
     </div>`;
   if (done) document.getElementById('pth-next')?.focus();
 }
@@ -1393,7 +1405,7 @@ function buildPick(id) {
 function buildUnpick(pos) { const b = _build; if (!b || b.state === 'ok') return; b.picked.splice(pos, 1); b.state = null; _buildDraw(); }
 // Hỏi Lulu: takes back the wrong chunks, or places the next right one.
 function buildHint() {
-  const b = _build; if (!b || b.state === 'ok') return;
+  const b = _build; if (!b || b.state === 'ok' || b.hints >= LULU_MAX) return;
   b.hints++;
   const texts = b.picked.map(id => b.bank.find(x => x.id === id).text);
   let k = 0;
@@ -1444,7 +1456,7 @@ function renderFade(host, s, lvl, onDone) {
     <div class="pth-fade">${html}</div>
     <div class="pth-hint-line">Gõ các chữ bị ẩn · <b>Enter</b> để sang ô tiếp theo / kiểm tra</div>
     <div id="pth-fade-fb"></div>
-    <div class="pth-actions" id="pth-fade-actions">${askBtn('pth-hint', 'fadeHint()')}<button class="pth-btn pth-btn--primary" onclick="fadeCheck()"><i class="fas fa-check"></i> Kiểm tra</button></div>`;
+    <div class="pth-actions" id="pth-fade-actions">${askBtnLeft('pth-hint', 'fadeHint()', LULU_MAX)}<button class="pth-btn pth-btn--primary" onclick="fadeCheck()"><i class="fas fa-check"></i> Kiểm tra</button></div>`;
   setTimeout(() => host.querySelector('.pth-blank')?.focus(), 30);
 }
 function fadeKey(e, el) {
@@ -1458,7 +1470,7 @@ function fadeKey(e, el) {
 }
 // Hỏi Lulu: one more letter in the box being typed (or the first wrong one).
 function fadeHint() {
-  const f = _fade; if (!f || f.checked) return;
+  const f = _fade; if (!f || f.checked || f.hints >= LULU_MAX) return;
   const inputs = [...f.host.querySelectorAll('.pth-blank')];
   const wrong = x => normWord(x.value) !== normWord(f.toks[+x.dataset.i].core);
   const inp = (f.last && inputs.includes(f.last) && wrong(f.last)) ? f.last : inputs.find(wrong);
@@ -1471,6 +1483,7 @@ function fadeHint() {
   const n = Math.min(core.length, Math.max(p + 1, (f.shown[i] || 0) + 1));
   f.shown[i] = n;
   f.hints++;
+  _askLeft('#pth-hint', LULU_MAX - f.hints);
   inp.value = core.slice(0, n);
   inp.focus();
   lulu('#pth-hint', n >= core.length ? `Chữ này là “${core}” nè 💪` : `Chữ này bắt đầu bằng “${core.slice(0, n)}…” nè 🍊`, 'think');
@@ -1511,7 +1524,7 @@ function renderRecall(host, s, { free, onDone, nextLabel = 'Tiếp', nextFn = 'd
     <div id="pth-recall-fb"></div>
     <div class="pth-actions" id="pth-recall-actions">
       <button class="pth-btn" id="pth-giveup" onclick="recallGiveUp()"><i class="fas fa-eye"></i> Không nhớ</button>
-      ${hints ? askBtn('pth-hint', 'recallHint()') : ''}
+      ${hints ? askBtnLeft('pth-hint', 'recallHint()', hints) : ''}
       <button class="pth-btn pth-btn--primary" id="pth-recall-check" onclick="recallCheck()"><i class="fas fa-check"></i> Kiểm tra</button>
     </div>`;
   const input = document.getElementById('pth-recall-in');
@@ -1548,6 +1561,7 @@ function recallHint() {
   }
   r.hints++;
   r.hintsLeft--;
+  _askLeft('#pth-hint', r.hintsLeft);
   lulu('#pth-hint', text, 'think');
   const wbwIn = document.querySelector('#pth-wbw .wbwd-input');
   (wbwIn || input)?.focus();

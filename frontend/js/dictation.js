@@ -8,6 +8,8 @@ let dictSections = [];      // picker list
 let dictSection  = null;    // currently open section (full doc incl. dictationSentences + audioUrl)
 let dictIndex    = 0;       // current sentence index
 let dictHintShown = [];     // letters Lulu has opened per word of the current sentence
+let dictAsks = 0;           // "Hỏi Lulu" asks used on the current sentence
+const DICT_MAX_ASKS = 3;    // …at most this many (graded, so capped)
 let dictDone     = new Set(); // indices answered correctly this session
 let dictTranslations = null; // Vietnamese meaning per sentence (null until loaded)
 let dictSpeeds   = [1, 1.25, 1.5, 0.75];
@@ -261,6 +263,7 @@ function dictGoTo(i) {
   document.getElementById('dict-word-count').textContent = dictWords(sentenceText).length + ' từ';
   const hint = _buildDictHint(sentenceText);
   dictHintShown = [];
+  dictAsks = 0;
   document.getElementById('dict-script-body').innerHTML =
     `<div class="dict-hint-step">Gợi ý · chữ cái đầu mỗi từ</div>` +
     `<div class="dict-hint-count">📏 ${hint.wordCount} từ</div>` +
@@ -268,6 +271,7 @@ function dictGoTo(i) {
     `<div class="dict-hint2">` +
       `<button type="button" class="dict-hint2-btn ask-lulu" id="dict-hint2-btn" onclick="dictAskLulu()"><span class="ask-lulu-ic"></span> Hỏi Lulu thêm 1 chữ</button>` +
     `</div>`;
+  if (window.AskLulu) AskLulu.left(document.getElementById('dict-hint2-btn'), DICT_MAX_ASKS);
   updateDictProgress(0);
   document.querySelectorAll('.dict-num-btn').forEach(b => b.classList.toggle('current', parseInt(b.dataset.i, 10) === i));
   // Only auto-focus on desktop — on mobile this yanks the on-screen keyboard
@@ -294,14 +298,17 @@ function _buildDictHint(text) {
 // opens ONE more letter of the first word the student hasn't typed right
 // yet (AskLulu.letterHint) — letter by letter, never the whole sentence
 // (that used to be a "Hiện cả câu" button, which let a student just read
-// the answer instead of transcribing what they heard).
+// the answer instead of transcribing what they heard). At most
+// DICT_MAX_ASKS asks per sentence.
 function dictAskLulu() {
-  if (!dictSection || !window.AskLulu) return;
+  if (!dictSection || !window.AskLulu || dictAsks >= DICT_MAX_ASKS) return;
+  const btn = document.getElementById('dict-hint2-btn');
   const text = dictWords(currentSentence().text || '').join(' ');
   const res = AskLulu.letterHint(text, document.getElementById('dict-input').value, dictHintShown);
   const el = document.getElementById('dict-hint-pattern');
   if (el) el.textContent = res.pattern;
-  AskLulu.say(document.getElementById('dict-hint2-btn'), AskLulu.line(res));
+  if (!res.done) { dictAsks++; AskLulu.left(btn, DICT_MAX_ASKS - dictAsks); }
+  AskLulu.say(btn, AskLulu.line(res));
 }
 
 /* ══════════════ AUDIO PLAYBACK (seek within the section's ONE shared

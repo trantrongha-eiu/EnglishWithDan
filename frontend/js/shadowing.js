@@ -76,6 +76,8 @@
   let lesson = null;
   let idx = 0;
   let dcHintShown = []; // letters Lulu has opened per word (Dictation pane hint)
+  let dcAsks = 0;       // letter asks used on this sentence…
+  const DC_MAX_ASKS = 3; // …at most this many (graded, so capped)
   let mode = 'shadowing';
   let lastMode = 'shadowing'; // pre-selected in the mode picker next time
   let speedIdx = 0;
@@ -636,19 +638,24 @@
   // "Hỏi Lulu": the first ask shows the first-letter pattern; every ask
   // after that opens ONE more letter of the first word the student hasn't
   // typed right yet (AskLulu.letterHint) — never the whole sentence.
+  // The pattern is free; letter asks are capped at DC_MAX_ASKS per sentence.
   function toggleHint() {
     const el = $('dc-hint');
     const btn = $('dc-hint-btn');
     if (el.style.display === 'none') {
       el.style.display = 'block';
-      if (window.AskLulu) window.AskLulu.say(btn, 'Chữ cái đầu mỗi từ đây nè! Bí nữa thì hỏi Lulu tiếp 🍊');
+      if (window.AskLulu) {
+        window.AskLulu.left(btn, DC_MAX_ASKS);
+        window.AskLulu.say(btn, 'Chữ cái đầu mỗi từ đây nè! Bí nữa thì hỏi Lulu tiếp (tối đa ' + DC_MAX_ASKS + ' lần) 🍊');
+      }
       return;
     }
-    if (!lesson || !window.AskLulu) return;
+    if (!lesson || !window.AskLulu || dcAsks >= DC_MAX_ASKS) return;
     const seg = lesson.segments[idx];
     const ref = dictRef(seg);
     const res = window.AskLulu.letterHint(ref, $('dc-input').value, dcHintShown);
     el.textContent = `${tokens(ref, !!seg.answer).length} từ · ${res.pattern}`;
+    if (!res.done) { dcAsks++; window.AskLulu.left(btn, DC_MAX_ASKS - dcAsks); }
     window.AskLulu.say(btn, window.AskLulu.line(res));
   }
 
@@ -702,6 +709,10 @@
     resetDictationPane();
     $('dc-hint').style.display = 'none';
     dcHintShown = [];
+    dcAsks = 0;
+    $('dc-hint-btn').disabled = false;
+    const askTag = $('dc-hint-btn').querySelector('.ask-lulu-left');
+    if (askTag) askTag.remove();
     $('dc-hint').textContent = `${tokens(dictRef(seg), !!seg.answer).length} từ · ${maskText(dictRef(seg))}`;
     $('dc-input').placeholder = seg.answer ? 'Chỉ cần gõ tên / con số bạn nghe được...' : 'Nhập những gì bạn nghe được...';
     if (mode === 'dictation' && !keepPlaying && window.matchMedia('(min-width: 800px)').matches) $('dc-input').focus({ preventScroll: true });
