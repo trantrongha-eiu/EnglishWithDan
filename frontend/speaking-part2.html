@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Speaking Part 2 · 7 câu chuyện gốc – EnglishWithDan</title>
+  <meta name="description" content="IELTS Speaking Part 2 Master Story Framework: 7 câu chuyện gốc xử lý phần lớn cue card — đọc bài mẫu, học từ vựng ăn điểm, dịch câu Việt → Anh để nhớ, nói thử 2 phút."/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb"/>
+  <link rel="stylesheet" href="/css/components.css?v=bb5d514434"/>
+  <link rel="stylesheet" href="/css/writing-practice.css?v=f34fe3721d"/>
+  <link rel="stylesheet" href="/css/mobile.css?v=1319d3b9c8"/>
+  <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3"/>
+  <script src="/js/theme.js?v=81e03964c4"></script>
+  <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
+  <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
+  <link rel="stylesheet" href="/css/task2-practice.css?v=104f043281">
+  <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
+  <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
+  <link rel="stylesheet" href="/css/speaking-part2.css?v=cdaa060bed"/>
+</head>
+<body>
+<script src="/js/bundles/app-shell.js?v=dc0452e162"></script>
+<script src="/js/shared/onboarding-tour.js?v=6f0b184c2f"></script>
+<script src="/js/shared/route-params.js?v=b5f9dc094b"></script>
+<script src="/js/shared/word-audio.js?v=28a7a7408e"></script>
+<script src="/js/shared/dictionary-lookup.js?v=76b22cb3a9"></script>
+<script src="/js/shared/wbw-drill.js?v=c4543d57c2"></script>
+
+<!-- ── Quit modal (same as Luyện đề Task 2) ── -->
+<div class="t2-quit-overlay hidden" id="t2-quit-overlay">
+  <div class="t2-quit-box">
+    <div class="t2-quit-top">
+      <div class="t2-quit-mascot">🎤</div>
+      <div class="t2-quit-title">Dừng luyện tập?</div>
+      <div class="t2-quit-sub" id="t2-quit-sub"></div>
+    </div>
+    <div class="t2-quit-actions">
+      <button class="t2-quit-continue" id="t2-quit-continue-btn"><i class="fas fa-arrow-left"></i> Tiếp tục học</button>
+      <button class="t2-quit-leave" id="t2-quit-leave-btn">Dừng lại</button>
+    </div>
+  </div>
+</div>
+
+<div id="app"></div>
+
+<!-- Dictionary lookup (double-click a word) -->
+<div id="dict-popup" class="dict-popup hidden">
+  <div class="dict-header">
+    <span class="dict-word" id="dict-word"></span>
+    <span class="dict-phonetic" id="dict-phonetic"></span>
+    <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
+    <button class="dict-close" onclick="closeDictPopup()"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="dict-body" class="dict-body"></div>
+</div>
+<div id="dict-vocab-modal" class="dict-vocab-modal hidden">
+  <div class="dict-vocab-box">
+    <div class="dict-vocab-header"><h3>📚 Lưu vào sổ từ vựng</h3>
+      <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button></div>
+    <div class="dict-vocab-body">
+      <div id="dict-vocab-book-list"></div>
+      <div class="rd-vocab-new-section">
+        <div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>
+        <div style="display:flex;gap:8px">
+          <input id="dict-new-book-name" type="text" placeholder="Tên sổ mới..." maxlength="40" class="rd-vocab-input"
+            onkeydown="if(event.key==='Enter') createDictBookAndSave()" />
+          <button onclick="createDictBookAndSave()" class="rd-vocab-create-btn">+ Tạo &amp; lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/speaking-part2.js?v=cd2fcf164c"></script>
+</body>
+</html>

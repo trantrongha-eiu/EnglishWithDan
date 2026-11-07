@@ -38,6 +38,8 @@ const assignmentResourceSchema = new mongoose.Schema({
       // writing practice (score-based, custom check).
       'shadowing', 'listening_tip', 'reading_tip', 'writing_tip', 'speaking_tip',
       'vocab_unit', 'task2_template', 'writing_practice', 'task1_skill',
+      // Speaking Part 2 · 7 câu chuyện gốc (services/speakingPart2Service.js).
+      'speaking_part2',
     ],
   },
   resourceId: { type: mongoose.Schema.Types.ObjectId }, // null only for mock_test / speaking_full_mock

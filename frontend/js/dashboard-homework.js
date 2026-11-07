@@ -46,6 +46,7 @@ function hwRuleTag(resourceType) {
   if (HW_VIEW_TYPES.has(resourceType)) return '<span class="hw-res-tag" title="Chỉ cần bấm vào mở xem là tự động tính hoàn thành">Mở xem là xong</span>';
   if (resourceType === 'task2_template') return '<span class="hw-res-tag hw-res-tag--quiz" title="Cần học xong cả 5 bước của lộ trình và thuộc từ 70% số câu (bước ④ Ghép cả bài hoặc Thi thử)">≥70%</span>';
   if (resourceType === 'writing_practice' || resourceType === 'task1_skill') return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm ít nhất 10 câu của chủ đề, đúng từ 70% trở lên">≥10 câu · ≥70%</span>';
+  if (resourceType === 'speaking_part2') return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm xong cả 5 bước của câu chuyện: đọc bài mẫu, từ vựng, dịch phần FIXED, dịch phần WHY (≥2 đề + kết luận) và nói thử 2 phút">Xong 5 bước</span>';
   if (HW_WORD_MIN[resourceType]) return `<span class="hw-res-tag hw-res-tag--writing" title="Cần nộp đủ ít nhất ${HW_WORD_MIN[resourceType]} từ mới tính hoàn thành">≥${HW_WORD_MIN[resourceType]} từ</span>`;
   return '';
 }
@@ -134,6 +135,7 @@ function hwResourceHref(r) {
     }
     case 'writing_practice':   return r.resourceCode ? `writing-practice.html?topic=${encodeURIComponent(r.resourceCode)}` : 'writing-practice.html';
     case 'task1_skill':        return r.resourceCode ? `task1-practice.html?skill=${encodeURIComponent(r.resourceCode)}` : 'task1-practice.html';
+    case 'speaking_part2':     return r.resourceCode ? `speaking-part2.html?story=${encodeURIComponent(r.resourceCode)}` : 'speaking-part2.html';
     default:                   return null;
   }
 }

@@ -58,6 +58,7 @@ const RESOURCE_CATS = [
   { type: 'task2_template', label: 'Task 2 Templates' },
   { type: 'writing_practice', label: 'Luyện viết câu giao tiếp (Chủ đề)' },
   { type: 'task1_skill', label: 'Task 1 Practice (Kỹ năng)' },
+  { type: 'speaking_part2', label: 'Speaking Part 2 (7 câu chuyện gốc)' },
 ];
 const RES_LABEL = Object.fromEntries(RESOURCE_CATS.map((r) => [r.type, r.label]));
 // The type dropdown, grouped by skill — each group has its own colour (and
@@ -72,7 +73,7 @@ const RES_GROUPS = [
     types: ['writing_exam', 'task1_lesson', 'task2_course_lesson', 'task1_practice', 'task2_practice', 'task2',
       'task1_skill', 'task2_template', 'advanced_sentences', 'writing_practice', 'writing_tip'] },
   { key: 'speaking', label: '🗣️ SPEAKING', icon: '🗣️', color: '#7c3aed', bg: '#f5f3ff',
-    types: ['speaking_course_lesson', 'speaking', 'speaking_full_mock', 'speaking_tip'] },
+    types: ['speaking_course_lesson', 'speaking_part2', 'speaking', 'speaking_full_mock', 'speaking_tip'] },
   { key: 'vocab', label: '📚 TỪ VỰNG & NGỮ PHÁP', icon: '📚', color: '#be185d', bg: '#fdf2f8',
     types: ['vocabulary_lesson', 'vocab_unit', 'grammar'] },
   { key: 'mock', label: '🧪 THI THỬ', icon: '🧪', color: '#b91c1c', bg: '#fef2f2',
@@ -204,6 +205,7 @@ const RES_RULE = {
   task2_template: 'Tự tick khi học viên học xong cả 5 bước của lộ trình VÀ thuộc ≥70% số câu (nhớ lại cả bài ở bước ④ hoặc Thi thử, làm sau khi giao bài).',
   writing_practice: 'Tự tick khi học viên làm ≥10 câu của chủ đề, đúng ≥70%.',
   task1_skill: 'Tự tick khi học viên làm ≥10 câu của kỹ năng này, đúng ≥70%.',
+  speaking_part2: 'Tự tick khi học viên xong cả 5 bước của câu chuyện (đọc bài mẫu, từ vựng, dịch FIXED, dịch WHY ≥2 đề + kết luận, nói thử 2 phút). Đã học xong từ trước khi giao cũng tính.',
 };
 const ASG_STATUS = { not_started: 'badge-gray', in_progress: 'badge-blue', completed: 'badge-green', overdue: 'badge-red', not_applicable: 'badge-gray' };
 const ASG_LABEL = { not_started: 'Chưa làm', in_progress: 'Đang làm', completed: 'Hoàn thành', overdue: 'Quá hạn', not_applicable: 'Vào lớp sau khi giao — không cần làm' };

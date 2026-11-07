@@ -43,6 +43,7 @@ export function studentPathFor(r) {
     }
     case 'writing_practice':       return code ? `/writing-practice.html?topic=${code}` : '/writing-practice.html';
     case 'task1_skill':            return code ? `/task1-practice.html?skill=${code}` : '/task1-practice.html';
+    case 'speaking_part2':         return code ? `/speaking-part2.html?story=${code}` : '/speaking-part2.html';
     default:                       return null;
   }
 }

@@ -115,7 +115,7 @@ export default function FeedbackDetail({ detail, editable, onChange }) {
                   <div style={{ flex: 1, color: 'var(--blue)' }}>
                     💡 Gợi ý (không trừ điểm): {s.suggestion}{s.suggestionWhy && <span style={{ color: 'var(--text3)' }}> — {s.suggestionWhy}</span>}
                   </div>
-                  {editable && <RemoveBtn onClick={() => { const { suggestion, suggestionWhy, ...rest } = s; setSentence(i, rest); }} />}
+                  {editable && <RemoveBtn onClick={() => { const rest = { ...s }; delete rest.suggestion; delete rest.suggestionWhy; setSentence(i, rest); }} />}
                 </div>
               )}
               {ups.map((u, k) => (

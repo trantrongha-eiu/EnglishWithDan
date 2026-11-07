@@ -1138,6 +1138,7 @@
         { divider: true, label: 'Khóa học' },
         { href: 'speaking-course.html',             icon: 'fa-graduation-cap', label: 'Khóa học Speaking' },
         { divider: true, label: 'Luyện tập' },
+        { href: 'speaking-part2.html',              icon: 'fa-book-reader', label: 'Part 2 · 7 câu chuyện gốc' },
         { href: 'shadowing.html',                   icon: 'fa-comment-dots', label: 'Shadowing (Video)' },
       ]
     },
@@ -1471,7 +1472,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=003128c6e1';
+      s.src = '/js/shared/page-help.js?v=79a5dfc22b';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);

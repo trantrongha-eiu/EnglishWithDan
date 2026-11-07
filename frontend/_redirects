@@ -70,6 +70,7 @@
 /writing/task1-course/*     /writing-task1.html          200
 /writing/task2-course/*     /writing-task2-course.html   200
 /speaking/course/*          /speaking-course.html        200
+/speaking/part2/:story      /speaking-part2.html?story=:story 200
 /dictation/*                /dictation.html              200
 /shadowing/*                /shadowing.html              200
 /task2-practice/*           /task2-practice.html         200
@@ -132,6 +133,7 @@
 /writing/task2-course /writing-task2-course.html 200
 /speaking        /speaking.html         200
 /speaking/course /speaking-course.html  200
+/speaking/part2  /speaking-part2.html   200
 /essential-grammar /essential-grammar.html 200
 /entrance-test   /entrance-test.html    200
 /test-dau-vao    /entrance-test.html    200

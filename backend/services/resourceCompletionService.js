@@ -61,6 +61,7 @@ const WritingPracticeAttempt = require('../models/WritingPracticeAttempt');
 const ContentView = require('../models/ContentView');
 const Task1Exercise = require('../models/Task1Exercise');
 const Task1Attempt = require('../models/Task1Attempt');
+const speakingPart2Service = require('./speakingPart2Service');
 
 const { escapeRegex } = require('../utils/strings');
 const { normalizeParts } = require('../utils/partSelection');
@@ -566,6 +567,17 @@ const REGISTRY = {
       deepLinkKey: (d) => d.code },
     attempt: { check: checkTask1Skills },
   },
+  // Speaking Part 2 · 7 câu chuyện gốc (speaking-part2.html) — one row per
+  // master story (fixed list, stable made-up ids like task1_skill). Done once
+  // all 5 steps of the story are done; like a course lesson, a story finished
+  // before the assignment counts (priorCounts).
+  speaking_part2: {
+    label: 'Speaking Part 2 (7 câu chuyện gốc)',
+    catalog: { static: speakingPart2Service.STORY_ROWS,
+      shape: (d) => ({ _id: d._id, label: `Speaking Part 2: ${d.name}`, meta: '' }),
+      deepLinkKey: (d) => d.code },
+    attempt: { check: (studentId, ids) => speakingPart2Service.checkCompletion(studentId, ids), priorCounts: true },
+  },
 };
 
 const TYPES = Object.keys(REGISTRY);
@@ -577,7 +589,7 @@ function isValidType(t) {
 // Course lessons (the WT1-stack `custom` types) count a completion from
 // before the assignment existed — see the `custom` branch of checkCompleted.
 function countsPriorCompletion(t) {
-  return !!(REGISTRY[t] && REGISTRY[t].attempt && REGISTRY[t].attempt.custom);
+  return !!(REGISTRY[t] && REGISTRY[t].attempt && (REGISTRY[t].attempt.custom || REGISTRY[t].attempt.priorCounts));
 }
 
 // Teacher resource picker. Returns [{ _id, label, meta }]. For mock_test,

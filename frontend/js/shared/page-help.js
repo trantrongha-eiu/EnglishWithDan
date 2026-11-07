@@ -27,6 +27,7 @@
     [/^\/writing\/(task2-course|task2-foundations|advanced-sentences)(\/|$)/, 'writing-task2-course.html'],
     [/^\/writing(\/|$)/, 'writing.html'],
     [/^\/speaking\/course(\/|$)/, 'speaking-course.html'],
+    [/^\/speaking\/part2(\/|$)/, 'speaking-part2.html'],
     [/^\/speaking(\/|$)/, 'speaking.html'],
     [/^\/reading(\/|$)/, 'reading.html'],
     [/^\/listening(\/|$)/, 'listening.html'],
@@ -310,6 +311,24 @@
           '<b>Bài kiểm tra</b> cần <b>mã mở khoá</b> từ giáo viên.',
         ] },
       ],
+    },
+
+    'speaking-part2.html': {
+      title: 'Speaking Part 2 · 7 câu chuyện gốc',
+      intro: 'Bộ khung Master Story: thuộc 7 câu chuyện gốc (phần FIXED), rồi thay đoạn WHY cuối bài theo cue card — trả lời được phần lớn đề Part 2.',
+      sections: [
+        { icon: '🗺️', title: 'Cách học một câu chuyện', items: [
+          '<b>① Đọc bài mẫu</b>: đọc to, bấm 🔊 để nghe từng câu; bật/tắt <b>Hiện tiếng Việt</b>.',
+          '<b>② Từ vựng ăn điểm</b>: đọc nghĩa + câu ví dụ bị che, gõ lại cụm từ.',
+          '<b>③ Dịch FIXED</b> và <b>④ Dịch WHY</b>: đọc câu tiếng Việt, gõ lại câu tiếng Anh từng chữ. Gõ sai 1 từ 3 lần là câu tính sai và phải làm lại (quay lại sau 3 câu). Bí thì bấm <b>Hỏi Lulu</b>.',
+          '<b>⑤ Nói thử</b>: chọn đề, xem bài ghép (cả bài / chữ cái đầu / chỉ khung xương), bấm <b>Bắt đầu nói</b> — đồng hồ 2 phút, có thể bật 1 phút chuẩn bị và ghi âm để nghe lại.',
+        ] },
+        { icon: '🔎', title: 'Gặp đề lạ', items: [
+          'Ở trang chính, gõ cue card vào ô <b>“Gặp cue card này thì kể chuyện nào?”</b> để biết dùng câu chuyện nào và đoạn WHY nào.',
+          'Tiến độ được lưu trên trình duyệt này.',
+        ] },
+      ],
+      keys: [['Enter', 'Câu tiếp theo (sau khi gõ xong)']],
     },
 
     'dictation.html': {

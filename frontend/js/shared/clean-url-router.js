@@ -21,6 +21,7 @@
  *   /writing/task1|task2[/:id[/practice|/simulation]]
  *   /writing/exam[/practice|/simulation]  /writing/tips[/:tip]  /writing/samples
  *   /speaking/tips[/:tip]  /speaking/practice|history|materials  /speaking/question/:id
+ *   /speaking/part2[/:story]                      Part 2 · 7 câu chuyện gốc
  *   /essential-grammar/:lesson  /dictation/:sectionId  /vocab/lesson/:id  …
  *   /test-dau-vao  /test-dau-vao/ket-qua/:attemptId   (also /entrance-test/…)
  *   /phu-huynh                                    parent view (link sent to parents)
@@ -73,6 +74,7 @@
     [/^\/speaking\/(practice|history|materials)$/, function (m) { return '/speaking.html?tab=' + m[1]; }],
     [new RegExp('^/speaking/question/' + SEG + '$'), function (m) { return '/speaking.html?questionId=' + m[1]; }],
     [new RegExp('^/speaking/course(?:/' + SEG + ')?$'), function (m) { return '/speaking-course.html' + (m[1] ? '?lesson=' + m[1] : ''); }],
+    [new RegExp('^/speaking/part2(?:/' + SEG + ')?$'), function (m) { return '/speaking-part2.html' + (m[1] ? '?story=' + m[1] : ''); }],
 
     // ── Other pages ──
     [new RegExp('^/essential-grammar/' + SEG + '$'), function (m) { return '/essential-grammar.html?lesson=' + m[1]; }],
