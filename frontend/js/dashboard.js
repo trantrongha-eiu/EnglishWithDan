@@ -3524,6 +3524,7 @@ function _mountVocabDrill(hostId, rowId, answer, onDone) {
         answer: answer,
         bridgeInput: bridge,
         maxErrors: 3,
+        silent: true, // recordAnswer / the check function plays the sound
         onComplete: function () { if (!answered) onDone(); },
         onFail: function () { if (!answered) onDone(true); }
     }));

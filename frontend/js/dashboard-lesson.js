@@ -967,6 +967,7 @@ function _mountLessonQuizDrill(inputId, onDone) {
         answer: answer,
         bridgeInput: bridge,
         maxErrors: 3,
+        silent: true, // recordAnswer / the check function plays the sound
         onComplete: function () { if (!lessonState.quiz.answered) onDone(); },
         onFail: function () { if (!lessonState.quiz.answered) onDone(true); }
     }));

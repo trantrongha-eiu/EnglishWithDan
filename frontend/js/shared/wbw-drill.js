@@ -19,6 +19,7 @@
                                     //   existing check function can read it
        onComplete:  () => {...},    // called once, after the last word
        maxErrors:   3,              // optional: fail out on the Nth wrong attempt
+       silent:      true,           // optional: no built-in correct/wrong sound
                                     //   (a rejected letter in per-letter mode, a
                                     //   committed mismatch in per-word mode) —
                                     //   counted over the whole drill; used by the
@@ -220,6 +221,10 @@
     this.bridgeInput = opts.bridgeInput || null;
     this.onComplete = typeof opts.onComplete === 'function' ? opts.onComplete : function () {};
     this.onFail = typeof opts.onFail === 'function' ? opts.onFail : null;
+    // silent: true = the drill plays no correct/wrong sound of its own — for
+    // callers whose onComplete/onFail grading already plays one (vocab
+    // quizzes), so the student doesn't hear it twice.
+    this.silent = !!opts.silent;
     // 0 = unlimited (default). Fails on the maxErrors-th wrong try.
     this.maxErrors = (typeof opts.maxErrors === 'number' && opts.maxErrors > 0) ? opts.maxErrors : 0;
     this.wrongCount = 0;
@@ -451,7 +456,7 @@
     this._renderWords();
     this._updateBar();
     this._syncBridge(true);
-    if (typeof window !== 'undefined' && typeof window.playWrong === 'function') window.playWrong();
+    if (!this.silent && typeof window !== 'undefined' && typeof window.playWrong === 'function') window.playWrong();
     var self = this;
     this._completeTimer = setTimeout(function () {
       if (self.onFail) self.onFail(info);
@@ -681,7 +686,7 @@
     // "correct" moment — students were getting zero audio feedback for it,
     // only hearing anything once every item in a multi-item exercise later
     // triggered the page's own submit()-level playOk/playWrong.
-    if (typeof window !== 'undefined' && typeof window.playOk === 'function') window.playOk();
+    if (!this.silent && typeof window !== 'undefined' && typeof window.playOk === 'function') window.playOk();
     var self = this;
     this._completeTimer = setTimeout(function () { self.onComplete(); }, 450);
   };
