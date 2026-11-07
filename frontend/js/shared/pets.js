@@ -447,7 +447,7 @@
   function ensureCss() {
     if (document.getElementById('ews-pets-css')) return;
     var l = document.createElement('link');
-    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=5a3797acfb';
+    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=7cf296ea6b';
     document.head.appendChild(l);
   }
   try { ensureCss(); } catch (e) {}
@@ -728,7 +728,8 @@
      ══════════════════════════════════════════════════════════════════ */
   var FX = {
     meo: { glow: '249,160,77', p: [
-      { t: '🍊', m: 'land', n: 18, s: [24, 40] }, { t: '🍃', m: 'fall', n: 5, s: [14, 20] }] },
+      { c: 'quyt', m: 'toss', n: 18, s: [28, 46] }, { c: 'quyt', m: 'land', n: 14, s: [24, 40] },
+      { t: '🍃', m: 'fall', n: 7, s: [14, 22] }] },
     shiba: { glow: '232,67,59', p: [
       { t: '🧧', m: 'fall', n: 13, s: [26, 38] }, { t: '🪙', m: 'fall', n: 10, s: [18, 26] },
       { t: '✨', m: 'twinkle', n: 7, s: [16, 26] }] },
@@ -761,9 +762,20 @@
       { c: 'orb', m: 'rise', n: 14, s: [10, 22], col: '#fbbf24' }, { t: '✨', m: 'twinkle', n: 14, s: [14, 26] }] },
   };
   // Seconds each motion lasts [min, max]; particles start within 0–1.3s.
-  var FX_DUR = { land: [1.6, 2.2], fall: [1.3, 2], drift: [2.2, 3], rain: [0.55, 0.85], rise: [1.6, 2.4],
+  var FX_DUR = { toss: [1.9, 2.6], land: [1.6, 2.2], fall: [1.3, 2], drift: [2.2, 3], rain: [0.55, 0.85], rise: [1.6, 2.4],
     sweep: [1.4, 2.2], twinkle: [0.9, 1.4], firefly: [2, 2.8], splat: [1.6, 2.2], rainbow: [3.2, 3.2] };
-  var FX_TOP = { land: 1, fall: 1, drift: 1, rain: 1, rise: 1 }; // only x is random
+  var FX_TOP = { toss: 1, land: 1, fall: 1, drift: 1, rain: 1, rise: 1 }; // only x is random
+
+  // Lulu's tangerine (playful.js tangerine()), drawn as a particle. The
+  // gradient lives once in the effect layer (QUYT_DEFS) and every copy uses it.
+  var QUYT_DEFS = '<svg width="0" height="0" style="position:absolute"><defs><radialGradient id="ews-quyt-g"'
+    + ' cx=".35" cy=".35" r=".7"><stop offset="0" stop-color="#ffb35c"/><stop offset="1" stop-color="#ff6a13"/>'
+    + '</radialGradient></defs></svg>';
+  var QUYT = '<svg viewBox="43 3 34 34" width="100%" height="100%">'
+    + '<circle cx="60" cy="24" r="12" fill="url(#ews-quyt-g)"/>'
+    + '<ellipse cx="55.5" cy="19.5" rx="3.6" ry="2.2" fill="#fff" opacity=".45"/>'
+    + '<path d="M60 13 L60 9" stroke="#5b8a2b" stroke-width="2.2" stroke-linecap="round"/>'
+    + '<path d="M60 11 C64 4 72 5 74 8 C70 12 64 13 60 11 Z" fill="#5fb84a"/></svg>';
 
   function rnd(a, b) { return a + Math.random() * (b - a); }
   // A spot near the screen edges, so the page's middle stays readable.
@@ -793,14 +805,17 @@
             + rnd(-50, 50).toFixed(0) + 'px;--r:' + rnd(-spin, spin).toFixed(0) + 'deg;animation-duration:'
             + dur.toFixed(2) + 's;animation-delay:' + delay.toFixed(2) + 's;';
           if (FX_TOP[g.m]) st += 'left:' + rnd(0, 97).toFixed(1) + '%;';
+          // toss: thrown up from the bottom to a peak (--h), arcing sideways (--tx).
+          if (g.m === 'toss') st += '--h:' + rnd(45, 92).toFixed(0) + 'vh;--tx:' + rnd(-28, 28).toFixed(0) + 'vw;';
           else if (g.m === 'sweep') { var y = g.y || [8, 92]; st += 'top:' + rnd(y[0], y[1]).toFixed(1) + '%;'; }
           else if (g.m === 'firefly') st += 'left:' + rnd(3, 95).toFixed(1) + '%;top:' + rnd(10, 92).toFixed(1) + '%;';
           else if (g.m !== 'rainbow') { var e = edgeSpot(); st += 'left:' + e[0].toFixed(1) + '%;top:' + e[1].toFixed(1) + '%;'; }
           if (g.col) st += '--c:' + g.col + ';';
           if (g.f) st += 'filter:' + g.f + ';';
           html += '<span class="ews-fx-p ews-fx-' + g.m + (g.c ? ' ews-fx-' + g.c : '') + '" style="' + st + '">'
-            + (g.t || '') + '</span>';
+            + (g.c === 'quyt' ? QUYT : g.t || '') + '</span>';
         }
+        if (g.c === 'quyt' && html.indexOf('ews-quyt-g"') < 0) html = QUYT_DEFS + html;
       });
       var fx = document.createElement('div');
       fx.className = 'ews-fx ews-fx-' + id;

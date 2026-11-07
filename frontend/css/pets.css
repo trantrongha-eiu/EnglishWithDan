@@ -204,8 +204,9 @@
 
 /* Motions */
 .ews-fx-land, .ews-fx-fall, .ews-fx-drift, .ews-fx-rain { top: 0; }
-.ews-fx-rise { top: 100%; }
+.ews-fx-rise, .ews-fx-toss { top: 100%; }
 .ews-fx-sweep { left: 0; }
+.ews-fx-toss { animation-name: ews-fx-toss; animation-timing-function: linear; }
 .ews-fx-land { animation-name: ews-fx-land; animation-timing-function: ease-in; }
 .ews-fx-fall { animation-name: ews-fx-fall; animation-timing-function: cubic-bezier(.45, 0, .8, .6); }
 .ews-fx-drift { animation-name: ews-fx-drift; animation-timing-function: linear; }
@@ -218,6 +219,7 @@
 .ews-fx-rainbow { animation-name: ews-fx-rainbow; animation-timing-function: ease-in-out; }
 
 /* Shapes */
+.ews-fx-quyt svg { display: block; filter: drop-shadow(0 2px 3px rgba(194, 65, 12, .35)); }
 .ews-fx-ember { border-radius: 50%; background: var(--c, #fff); box-shadow: 0 0 6px 2px var(--c, #fff); }
 .ews-fx-firefly.ews-fx-ember { background: #ecfccb; box-shadow: 0 0 4px 2px var(--c), 0 0 14px 6px rgba(132, 204, 22, .55); }
 .ews-fx-bubble {
@@ -255,6 +257,13 @@
 
 @keyframes ews-fx-pulse { from { opacity: .6; } to { opacity: 1; } }
 /* Falls to the bottom edge, bounces once, then fades. */
+/* Thrown up from below the bottom edge to its peak (--h), arcing sideways
+   (--tx), then drops back out of view — fills the whole sky with fruit. */
+@keyframes ews-fx-toss {
+  0% { transform: translate(0, 10%) rotate(0); animation-timing-function: cubic-bezier(.2, .6, .4, 1); }
+  50% { transform: translate(calc(var(--tx) * .5), calc(-1 * var(--h))) rotate(calc(var(--r) * .5)); animation-timing-function: cubic-bezier(.6, 0, .8, .4); }
+  100% { transform: translate(var(--tx), 20%) rotate(var(--r)); }
+}
 @keyframes ews-fx-land {
   0% { transform: translate(0, -120%) rotate(0); opacity: 1; }
   60% { transform: translate(calc(var(--dx) * .7), calc(100vh - 100%)) rotate(calc(var(--r) * .7)); animation-timing-function: ease-out; }
