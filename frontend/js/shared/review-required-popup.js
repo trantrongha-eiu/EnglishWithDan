@@ -327,7 +327,7 @@
                  : 'background:#f8f9fb;border:1px solid #e5e7eb;color:#374151');
     el.innerHTML =
       '<span>' + (blocked
-        ? '🔒 Bạn có <b>' + count + '</b> bài Writing đã chấm chưa viết lại — viết lại ít nhất 1 bài để nộp bài Writing mới.'
+        ? '🔒 Bạn có <b>' + count + '</b> bài Writing đã chấm chưa viết lại — viết lại ít nhất 1 bài để làm bài Writing mới.'
         : '🟡 Bạn có <b>' + count + '</b> bài Writing đã chấm chưa viết lại — viết lại dựa trên feedback để tiến bộ.') + '</span>'
       + '<span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'
       +   '<button type="button" class="wrr-go" style="padding:8px 16px;border:none;border-radius:8px;background:var(--brand,#e53935);color:#fff;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">Viết lại ngay</button>'
@@ -361,7 +361,7 @@
       '<div style="background:var(--surface,#fff);border-radius:16px;max-width:380px;width:100%;padding:26px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3)">'
       +   '<div style="font-size:38px;margin-bottom:10px">✍️</div>'
       +   '<div style="font-weight:800;font-size:16.5px;margin-bottom:8px;color:var(--text,#111827)">Bạn có ' + count + ' bài Writing chưa viết lại</div>'
-      +   '<div style="font-size:13.5px;color:var(--text2,#374151);line-height:1.6;margin-bottom:20px">Viết lại ít nhất 1 bài dựa trên feedback trước khi nộp bài Writing mới. Hãy đọc kĩ từng lỗi và ghi vào vở trước khi viết lại — chỉ chép lại thì bài sau vẫn sẽ sai y như cũ.</div>'
+      +   '<div style="font-size:13.5px;color:var(--text2,#374151);line-height:1.6;margin-bottom:20px">Viết lại ít nhất 1 bài dựa trên feedback trước khi làm bài Writing mới. Hãy đọc kĩ từng lỗi và ghi vào vở trước khi viết lại — chỉ chép lại thì bài sau vẫn sẽ sai y như cũ.</div>'
       +   '<button type="button" class="wrr-m-go" style="width:100%;padding:12px;border:none;border-radius:10px;background:var(--brand,#e53935);color:#fff;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:8px;font-family:inherit">Viết lại ngay</button>'
       +   '<button type="button" class="wrr-m-later" style="background:none;border:none;color:var(--text3,#9ca3af);font-size:12.5px;cursor:pointer;padding:6px;font-family:inherit">Để sau</button>'
       +   '<div><button type="button" class="wrr-m-code" style="background:none;border:none;color:var(--text3,#9ca3af);font-size:12px;cursor:pointer;padding:6px;text-decoration:underline;font-family:inherit">Có mã bỏ qua từ giáo viên?</button></div>'
@@ -378,7 +378,7 @@
       .then(function (d) {
         if (!d || !d.success) return;
         var count = d.count || 0;
-        var max = d.max || 3;
+        var max = d.max || 2;
         var blocked = typeof d.blocked === 'boolean' ? d.blocked : count >= max;
         var firstId = _firstId(d.items);
         _renderBanner(count, blocked, firstId);

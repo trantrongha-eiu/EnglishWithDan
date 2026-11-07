@@ -319,10 +319,10 @@ describe('rewrite gate — requireRewriteComplete + POST /attempt/:id/rewrite', 
     },
   });
 
-  test('3+ un-rewritten confirmed essays block a new /submit with 403 REWRITE_REQUIRED', async () => {
+  test('2+ un-rewritten confirmed essays block a new /submit with 403 REWRITE_REQUIRED', async () => {
     const student = await createStudent();
     const token = signTokenFor(student);
-    for (let i = 0; i < 3; i++) await confirmedAttempt(student._id);
+    for (let i = 0; i < 2; i++) await confirmedAttempt(student._id);
     const exam = await createWritingExam();
 
     const blocked = await request(app).post('/api/writing/submit')
@@ -330,15 +330,39 @@ describe('rewrite gate — requireRewriteComplete + POST /attempt/:id/rewrite', 
       .send({ examId: String(exam._id), task1Answer: 'a', task2Answer: 'b', wordCount1: 10, wordCount2: 10 });
     expect(blocked.status).toBe(403);
     expect(blocked.body.code).toBe('REWRITE_REQUIRED');
-    expect(blocked.body.count).toBe(3);
-    expect(blocked.body.items).toHaveLength(3);
+    expect(blocked.body.count).toBe(2);
+    expect(blocked.body.items).toHaveLength(2);
+  });
+
+  test('1 un-rewritten essay is not blocked; 2 block starting a new exam or practice simulation', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    await confirmedAttempt(student._id);
+    await createWritingExam();
+
+    const one = await request(app).get('/api/writing/pending-rewrites').set('Authorization', `Bearer ${token}`);
+    expect(one.body).toMatchObject({ count: 1, max: 2, blocked: false });
+
+    await confirmedAttempt(student._id);
+    const two = await request(app).get('/api/writing/pending-rewrites').set('Authorization', `Bearer ${token}`);
+    expect(two.body).toMatchObject({ count: 2, blocked: true });
+
+    const start = await request(app).post('/api/writing/start')
+      .set('Authorization', `Bearer ${token}`).send({ mode: 'practice' });
+    expect(start.status).toBe(403);
+    expect(start.body.code).toBe('REWRITE_REQUIRED');
+
+    const sim = await request(app).post('/api/writing/practice/start-simulation')
+      .set('Authorization', `Bearer ${token}`).send({ taskType: 1, taskId: '000000000000000000000000' });
+    expect(sim.status).toBe(403);
+    expect(sim.body.code).toBe('REWRITE_REQUIRED');
   });
 
   test('rewriting one essay (both tasks, min words) drops the count and re-opens submit', async () => {
     const student = await createStudent();
     const token = signTokenFor(student);
     const attempts = [];
-    for (let i = 0; i < 3; i++) attempts.push(await confirmedAttempt(student._id));
+    for (let i = 0; i < 2; i++) attempts.push(await confirmedAttempt(student._id));
 
     const short = await request(app).post(`/api/writing/attempt/${attempts[0]._id}/rewrite`)
       .set('Authorization', `Bearer ${token}`)
@@ -353,6 +377,7 @@ describe('rewrite gate — requireRewriteComplete + POST /attempt/:id/rewrite', 
     expect(ok.body.attempt.rewrite.done).toBe(true);
 
     const pending = await request(app).get('/api/writing/pending-rewrites').set('Authorization', `Bearer ${token}`);
-    expect(pending.body.count).toBe(2);
+    expect(pending.body.count).toBe(1);
+    expect(pending.body.blocked).toBe(false);
   });
 });

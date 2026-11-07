@@ -45,7 +45,10 @@ const practiceSubmitLimiter = submitLimiter(20); // 1 Gemini grade/request — m
 // POST /api/writing/start
 // Returns exam + random task1 + random task2
 // ══════════════════════════════════════════════════
-router.post('/start', auth, fullAccess, writingController.startExam);
+// requireRewriteComplete also gates /start (and practice start-simulation
+// below) so a student over the rewrite limit can't sit a 60-min essay only
+// to be refused at submit.
+router.post('/start', auth, fullAccess, requireRewriteComplete, writingController.startExam);
 
 // ══════════════════════════════════════════════════
 // POST /api/writing/submit
@@ -54,7 +57,7 @@ router.post('/start', auth, fullAccess, writingController.startExam);
 // runs / the attempt becomes visible to the auto-grade cron.
 // examSubmitLimiter runs before the controller too — a rate-limited request
 // never creates an attempt, so it never reaches Gemini grading.
-// requireRewriteComplete: once 3+ graded essays sit un-rewritten, a new
+// requireRewriteComplete: once 2+ graded essays sit un-rewritten, a new
 // submit is blocked with 403 REWRITE_REQUIRED (mock-test Writing exempt).
 // ══════════════════════════════════════════════════
 router.post('/submit', auth, fullAccess, requireRewriteComplete, examSubmitLimiter, writingController.submitExam);
@@ -69,7 +72,7 @@ router.post('/practice/submit', auth, fullAccess, requireRewriteComplete, practi
 // POST /api/writing/practice/start-simulation — Test Simulation mode only,
 // see writingService.startPracticeSimulation. Same gates as the full exam's
 // own /start.
-router.post('/practice/start-simulation', auth, fullAccess, writingController.startPracticeSimulation);
+router.post('/practice/start-simulation', auth, fullAccess, requireRewriteComplete, writingController.startPracticeSimulation);
 router.get('/practice/history', auth, writingController.getPracticeHistory);
 
 // POST /api/writing/cancel-simulation — student exited a live Simulation

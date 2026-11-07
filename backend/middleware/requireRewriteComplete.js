@@ -1,6 +1,6 @@
 /**
  * backend/middleware/requireRewriteComplete.js
- * Blocks submitting a NEW Writing essay once the student has
+ * Blocks starting or submitting a NEW Writing essay once the student has
  * MAX_PENDING_REWRITES or more graded ('confirmed') essays that still
  * haven't been rewritten by hand (see writingService.getPendingRewrites +
  * frontend screen-rewrite). Below that it's a nudge, not a hard stop.
@@ -30,7 +30,7 @@ async function requireRewriteComplete(req, res, next) {
   return res.status(403).json({
     success: false,
     code: 'REWRITE_REQUIRED',
-    message: `Bạn có ${count} bài Writing đã được chấm nhưng chưa viết lại. Hãy viết lại (rewrite) ít nhất 1 bài trước khi nộp bài mới.`,
+    message: `Bạn có ${count} bài Writing đã được chấm nhưng chưa viết lại. Hãy viết lại (rewrite) ít nhất 1 bài trước khi làm bài mới.`,
     count,
     items,
   });

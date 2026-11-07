@@ -407,6 +407,9 @@ async function startExam(mode, preferred = null) {
     if (window.openUpgradeModal) openUpgradeModal();
     return;
   }
+  // Over the rewrite limit: show the rewrite list instead of starting.
+  // Only on the first call (the mode popup re-enters with `mode` set).
+  if (!_mockMode && !mode && await _blockedByRewriteGate()) return;
   // Full Mock Test (_mockMode) never shows this popup — it always runs
   // 'practice' mode (it has its own, separate proctoring already armed by
   // mock-test.js's own auto-start; see launchExam()'s guard below). A
@@ -456,6 +459,7 @@ async function startExam(mode, preferred = null) {
       showToast(e.body.message || 'Vui lòng đợi trước khi bắt đầu Test Simulation mới', 'error');
       return;
     }
+    if (e?.status === 403 && e.body?.code === 'REWRITE_REQUIRED') { _openRewriteGate(e.body); return; }
     if (!_handleQuotaError(e)) showToast(e.message, 'error');
   } finally {
     if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-pen"></i> Bắt đầu làm bài'; }
@@ -974,7 +978,7 @@ function _renderHistory() {
   container.innerHTML = `
     <div class="rw-pending-banner" style="display:none;align-items:center;gap:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:13px;color:#92400e">
       <i class="fas fa-pen-fancy"></i>
-      <span>Bạn có <b class="rw-pending-count">0</b> bài đã chấm chưa viết lại. Có 3 bài chưa viết lại sẽ bị chặn nộp bài mới.</span>
+      <span>Bạn có <b class="rw-pending-count">0</b> bài đã chấm chưa viết lại. Có 2 bài chưa viết lại sẽ bị chặn làm bài mới.</span>
     </div>
     <table class="history-table">
       <thead>
@@ -1395,7 +1399,22 @@ async function submitRewrite() {
   }
 }
 
-// Forced-rewrite gate: /submit or /practice/submit returned 403 REWRITE_REQUIRED.
+// Pre-check before opening a new essay: over the rewrite limit (backend
+// writingService.MAX_PENDING_REWRITES) => show the gate and return true so
+// the caller doesn't start. The server enforces the same rule on /start,
+// /practice/start-simulation and both submits; this just avoids letting the
+// student write a whole essay first. Network errors fall through (server
+// still gates).
+async function _blockedByRewriteGate() {
+  try {
+    const d = await apiFetch('/api/writing/pending-rewrites');
+    if (d && d.blocked) { _openRewriteGate(d); return true; }
+  } catch (_) {}
+  return false;
+}
+
+// Forced-rewrite gate: a start/submit returned 403 REWRITE_REQUIRED, or
+// _blockedByRewriteGate() found the student over the limit.
 function _openRewriteGate(gateBody) {
   const overlay = document.getElementById('review-modal-overlay');
   const list = (gateBody.items || []).map(it => `
@@ -1410,7 +1429,7 @@ function _openRewriteGate(gateBody) {
   document.getElementById('review-modal-body').innerHTML = `
     <p style="font-size:13.5px;color:var(--text2,#374151);margin-bottom:12px">
       Bạn có <b>${gateBody.count}</b> bài Writing đã được chấm nhưng chưa viết lại.
-      Hãy viết lại (rewrite) ít nhất 1 bài thì mới nộp bài mới được.
+      Hãy viết lại (rewrite) ít nhất 1 bài thì mới làm bài mới được.
     </p>
     ${list}`;
   overlay.classList.add('open');
@@ -2907,9 +2926,15 @@ function filterWritingTasks() {
   _applyTaskFilters();
 }
 
-function startPracticeTask(taskType, taskId, pushHistory = true, mode = null) {
+async function startPracticeTask(taskType, taskId, pushHistory = true, mode = null) {
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
     if (window.openUpgradeModal) openUpgradeModal();
+    return;
+  }
+  // Over the rewrite limit: show the rewrite list before the mode popup.
+  // _startPracticeTaskWithMode() checks again (covers the shared-link path).
+  if (!mode && await _blockedByRewriteGate()) {
+    if (!pushHistory) { history.replaceState({ screen: 'practice' }, '', 'writing.html'); showPracticeMode(false); }
     return;
   }
   // Show the Practice/Test Simulation popup once per fresh start — not on
@@ -2932,6 +2957,10 @@ function startPracticeTask(taskType, taskId, pushHistory = true, mode = null) {
 }
 
 async function _startPracticeTaskWithMode(taskType, taskId, task, pushHistory, mode) {
+  if (await _blockedByRewriteGate()) {
+    if (!pushHistory) { history.replaceState({ screen: 'practice' }, '', 'writing.html'); showPracticeMode(false); }
+    return;
+  }
   // Test Simulation mode: get a server-tracked attempt row up front (so a
   // strike has something to attach to, and the ~20/40min per-task
   // exam-condition timer is server-anchored) before entering the practice
@@ -2949,6 +2978,8 @@ async function _startPracticeTaskWithMode(taskType, taskId, task, pushHistory, m
     } catch (simErr) {
       if (simErr.status === 429 && simErr.body && simErr.body.code === 'SIMULATION_COOLDOWN') {
         showToast(simErr.body.message || 'Vui lòng đợi trước khi bắt đầu Test Simulation mới', 'error');
+      } else if (simErr.status === 403 && simErr.body && simErr.body.code === 'REWRITE_REQUIRED') {
+        _openRewriteGate(simErr.body);
       } else {
         showToast('Lỗi kết nối server', 'error');
       }

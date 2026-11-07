@@ -414,7 +414,7 @@ async function getAttempt(attemptId, requestingUser) {
 }
 
 // ── "Viết lại" (rewrite) ─────────────────────────────────────────────
-const MAX_PENDING_REWRITES = 3;        // gate: 3+ un-rewritten confirmed essays => forced
+const MAX_PENDING_REWRITES = 2;        // gate: 2+ un-rewritten confirmed essays => can't start/submit a new one
 const REWRITE_MIN_WORDS = { 1: 150, 2: 250 }; // same minimums as the original task
 // The rewrite requirement only applies going forward — essays graded
 // BEFORE this date are grandfathered (not counted toward the gate).
