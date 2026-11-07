@@ -43,10 +43,22 @@ function dedupeByCode(arr) {
   return arr.filter((x) => (seen.has(x.code) ? false : seen.add(x.code)));
 }
 
-async function upsert(Model, filter, doc, label) {
+// Optional exercise fields that only some exercise types carry. When the seed
+// JSON drops one (e.g. an exercise changes type), $set alone would leave the
+// old value in the DB — stale `items` showed old prompts in the history view,
+// stale `responseSlots` / `timerMinutes` changed the textareas and timer. So
+// any of these missing from the seed doc is $unset.
+const EXERCISE_OPTIONAL_FIELDS = [
+  'items', 'rubric', 'stimulus', 'wordBank', 'categories', 'responseSlots',
+  'timerMinutes', 'speakingPart', 'speakingPrepSeconds',
+];
+
+async function upsert(Model, filter, doc, label, optionalFields = []) {
+  const $unset = {};
+  for (const f of optionalFields) if (!(f in doc)) $unset[f] = '';
   await Model.findOneAndUpdate(
     filter,
-    { $set: doc },
+    Object.keys($unset).length ? { $set: doc, $unset } : { $set: doc },
     { upsert: true, new: true, setDefaultsOnInsert: true }
   );
   console.log(`  ✓ ${label}: ${doc.code}`);
@@ -146,7 +158,7 @@ async function runSeed({ course, modules, lessons, exercises }) {
   for (const ex of exercises) {
     // Bài còn thiếu ảnh biểu đồ thì chưa publish
     const doc = { ...ex, published: !ex.needsAsset };
-    await upsert(WT1Exercise, { code: ex.code }, doc, 'exercise');
+    await upsert(WT1Exercise, { code: ex.code }, doc, 'exercise', EXERCISE_OPTIONAL_FIELDS);
   }
 
   const pending = exercises.filter((e) => e.needsAsset).map((e) => e.code);

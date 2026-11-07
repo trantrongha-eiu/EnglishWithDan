@@ -504,6 +504,7 @@
           "prompt": "line graph: compares the number of UK residents travelling abroad and overseas visitors coming to the UK / bar chart: shows the most popular countries visited by UK residents",
           "cue": "..., while ...",
           "sampleAnswers": [
+            "The line graph compares the number of UK residents travelling abroad and the number of overseas visitors coming to the UK, while the bar chart shows the most popular countries visited by UK residents.",
             "The line graph compares the number of visitors travelling to and from the UK, and the bar chart illustrates the most popular countries visited by UK residents."
           ],
           "promptVi": "Biểu đồ đường so sánh số lượng du khách đến và rời khỏi Vương quốc Anh, còn biểu đồ cột minh họa các quốc gia được người dân Anh ghé thăm nhiều nhất."

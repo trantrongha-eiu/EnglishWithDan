@@ -1928,7 +1928,7 @@
           "Dùng NUMBER không dùng AMOUNT",
           "Có so sánh chứ không chỉ liệt kê"
         ],
-        "sampleAnswer": "In 2000, people aged 30–40 formed the largest group of car users in Vietnam, at 2.5 million, followed closely by the 40–50 age group, at 2.2 million. The number of drivers who were over 50 stood at 1.2 million, compared to only 1 million among under-30s. Overall, middle-aged Vietnamese people were roughly twice as likely to use cars as the youngest group.",
+        "sampleAnswer": "In 2000, people aged 30–40 formed the largest group of car users in Vietnam, at 2.5 million, followed closely by the 40–50 age group, at 2.2 million. The number of drivers who were over 50 stood at 1.2 million, compared to only 1 million among under-30s. Overall, each of the two middle age groups had more than twice as many car users as the youngest group.",
         "commonErrors": [
           "people age 25–30",
           "25-30 years old people"

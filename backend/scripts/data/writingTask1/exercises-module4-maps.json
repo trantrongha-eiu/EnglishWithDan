@@ -392,7 +392,7 @@
       "order": 2,
       "type": "gap_fill",
       "title": "PRACTICE 1 – Fill in the blanks (thị trấn ven cảng, 2005 & 2010)",
-      "instruction": "Quan sát hai bản đồ rồi điền vào chỗ trống bằng từ / cụm từ trong khung. Dùng đúng thì quá khứ đơn bị động.",
+      "instruction": "Quan sát hai bản đồ rồi điền vào chỗ trống bằng từ / cụm từ trong khung (A. chopped down · B. constructed · C. built (x2) · D. converted into · E. reopened · F. relocated to · G. make way for · H. replaced by).",
       "source": "original",
       "skillTags": [
         "map-change-vocabulary",
@@ -412,6 +412,7 @@
         "chopped down",
         "constructed",
         "built",
+        "built",
         "converted into",
         "reopened",
         "relocated to",
@@ -425,78 +426,77 @@
           "blanks": [
             {
               "accept": [
-                "constructed",
-                "built"
+                "built",
+                "constructed"
               ]
             }
-          ],
-          "explanation": "Bị động quá khứ đơn: was constructed / was built."
+          ]
         },
         {
           "id": "q2",
-          "prompt": "The bus stop was ____ a car park.",
+          "prompt": "The bus stop was ____ a car park and ____ a new place near the church.",
           "blanks": [
             {
               "accept": [
                 "converted into",
                 "replaced by"
               ]
+            },
+            {
+              "accept": [
+                "relocated to"
+              ]
             }
-          ],
-          "explanation": "converted into = chuyển đổi thành."
+          ]
         },
         {
           "id": "q3",
-          "prompt": "The bus stop was relocated to a new place near the church, and the old site was ____ a car park.",
-          "blanks": [
-            {
-              "accept": [
-                "converted into"
-              ]
-            }
-          ],
-          "explanation": "Nơi cũ được chuyển đổi thành bãi đậu xe."
-        },
-        {
-          "id": "q4",
-          "prompt": "The pine trees opposite the hotel were ____ to make way for a hospital.",
+          "prompt": "The pine trees opposite the hotel were ____ to ____ a hospital.",
           "blanks": [
             {
               "accept": [
                 "chopped down",
                 "cut down"
               ]
+            },
+            {
+              "accept": [
+                "make way for"
+              ]
             }
-          ],
-          "explanation": "chopped down / cut down dùng cho cây."
+          ]
         },
         {
-          "id": "q5",
-          "prompt": "The disused railway was ____ and a new railway station was built.",
+          "id": "q4",
+          "prompt": "The disused railway was ____ and a new railway station was ____ .",
           "blanks": [
             {
               "accept": [
                 "reopened"
               ]
+            },
+            {
+              "accept": [
+                "built",
+                "constructed"
+              ]
             }
-          ],
-          "explanation": "Đường sắt bỏ hoang được mở lại."
+          ]
         },
         {
-          "id": "q6",
+          "id": "q5",
           "prompt": "The farm was ____ a golf course.",
           "blanks": [
             {
               "accept": [
-                "converted into",
-                "replaced by"
+                "replaced by",
+                "converted into"
               ]
             }
-          ],
-          "explanation": "Trang trại được chuyển thành sân golf."
+          ]
         },
         {
-          "id": "q7",
+          "id": "q6",
           "prompt": "A new road which leads to the golf course was ____ .",
           "blanks": [
             {
@@ -505,8 +505,7 @@
                 "built"
               ]
             }
-          ],
-          "explanation": "Con đường mới được xây."
+          ]
         }
       ]
     },
@@ -869,7 +868,7 @@
           "Overview có chữ Overall và nêu 2–3 thay đổi lớn, KHÔNG liệt kê chi tiết từng công trình",
           "Không đưa số liệu hoặc tên riêng vào Overview"
         ],
-        "sampleAnswer": "1. The two maps illustrate how the town of Youngsville developed between 1990 and 2010.\n2. Overall, a comparison of the two maps reveals that the town became far more urbanised over this period, as green space and farmland gave way to housing and transport links.\n3. Overall, the settlement was transformed from a small rural area into a much larger residential town with better road access.",
+        "sampleAnswer": "1. The maps illustrate how the coastal town of Youngsville developed over a 20-year period from 1990 to 2010.\n2. Overall, a comparison of the two maps reveals a change from a largely green residential area into a mainly urban and industrial landscape.\n3. The most noticeable changes are the removal of almost all the trees and houses south of the River Alanah to make way for skyscrapers and an industrial estate, and the addition of new leisure facilities, such as a stadium and a golf course, north of the river.",
         "commonErrors": [
           "Introduction dài 2–3 câu",
           "Overview liệt kê chi tiết như một Body"
@@ -1131,7 +1130,7 @@
           "Có ít nhất 6 câu bị động và một câu 'remained unchanged'",
           "Tối thiểu 150 từ"
         ],
-        "sampleAnswer": "The three maps illustrate the changes that have occurred at West Park Secondary School between 1950 and 2010. Overall, the school has undergone significant transformations, with the removal of houses and farmland and the addition of a car park, a science block and a sports field, although the main building and playground were largely retained. Initially, in 1950, the school building stood in the centre of the site, with a row of houses to the west and an area of farmland in the southwest, while a large playground occupied the southeastern corner. By 1980, major changes had taken place. The houses had been demolished and replaced with a car park and a science block, and the farmland had been converted into a sports field. However, the main building and the playground remained unchanged. Over the following 30 years, the car park was extended, which reduced the size of both the sports field and the playground, whereas the science block and the main building remained intact throughout the period.",
+        "sampleAnswer": "The three maps illustrate the main developments that West Park Secondary School has undergone since 1950.\n\nOverall, the school saw significant transformations, particularly with the removal of houses and farmland to make space for new facilities, such as a car park and a science block. Additionally, the expansion of the car park led to a reduction in the sports field and playground over time.\n\nFrom 1950 to 1980, the school experienced several notable changes. The most significant was the demolition of houses on the southern side of the main road to make way for a car park and a science block. Additionally, the farmland to the west was converted into a sports field, providing new recreational space for students.\n\nBetween 1980 and 2010, the car park was further expanded, reducing the size of both the sports field and the playground. However, the science block and the main school building remained unchanged throughout the period.",
         "commonErrors": [
           "thiếu Overview",
           "dùng thì hiện tại cho bản đồ quá khứ",
@@ -1179,7 +1178,7 @@
           "Dùng As a result / Consequently khi nói về hậu quả giảm cây xanh",
           "Có câu nhắc tới thứ không thay đổi"
         ],
-        "sampleAnswer": "The maps illustrate how the seaside resort of Templeton developed between 2000 and 2013, with a river dividing the town into a western and an eastern half.\n\nOverall, Templeton has undergone significant upgrades, with the introduction of a supermarket and a factory, an extension of the railway line, and a noticeable loss of green space, although the beach on the eastern side was left untouched.\n\nOn the western side of the river, a number of developments took place. The farmland that had covered much of the area was cleared and replaced by a large supermarket and a factory, and the railway line was extended westwards to a new station. As a result, the woodland that once separated the farmland from the housing disappeared.\n\nEast of the river, the changes were more modest. Several of the small houses near the coast were demolished to make way for a car park and a row of shops serving visitors to the beach, which itself remained unchanged throughout the period.",
+        "sampleAnswer": "The maps illustrate the changes that took place in the seaside resort of Templeton between 2000 and 2013.\n\nOverall, the resort has undergone significant upgrades, with the introduction of a supermarket, a factory and a ferry service, as well as an extension of the railway line. As a result, most of the trees were cut down, leaving much less green space.\n\nWest of the river, a number of developments took place. The trees to the north of the lake were cleared to make way for three blocks of flats, and a row of houses was built where trees had stood further south. In the south-west, the houses and trees near the coast were replaced by a supermarket and additional blocks of flats. The houses and the lake in the north-west, however, remained unchanged.\n\nEast of the river, the most noticeable change was the construction of a factory where trees had once stood. The railway line was extended westwards along the coast, crossing the river by a new bridge, and a ferry terminal was added in the south-east corner. Moreover, more houses were built near the hospital, whereas the school, the hospital and the two bridges remained in place.",
         "commonErrors": [
           "mô tả riêng từng bản đồ",
           "Overview có số liệu / tên riêng"
@@ -1225,7 +1224,7 @@
           "Ít nhất 6 câu bị động quá khứ",
           "Có nhắc thứ không thay đổi"
         ],
-        "sampleAnswer": "The maps illustrate the transformation of the village of Eastminster over a ten-year period from 1999 to 2009, with a river running east to west across the village.\n\nOverall, Eastminster changed from a small rural settlement into a busier village through residential, commercial and industrial development, with new housing added to the north and leisure and industrial facilities to the south, while the church was retained.\n\nNorth of the river, the farmland was built over with a residential area, and the primary school was enlarged, whereas south of the river the emphasis was on commercial and leisure use. A hotel and a number of shops were constructed near the main road, with a golf course being laid out on the site of former open fields.\n\nIndustrial development was also concentrated in the south: a factory and a warehouse were added at the eastern edge of the village. The only feature to remain unchanged was the church, which continued to stand beside the river crossing.",
+        "sampleAnswer": "The maps illustrate how the village of Eastminster was transformed between 1999 and 2009.\n\nOverall, the village became far more developed over the ten-year period, with significant residential, commercial and industrial growth. New housing, apartment blocks, a shopping complex and an industrial area were added, while the hospital, the shops and the railway station remained unchanged.\n\nNorth of the river, the woodland in the north-west was converted into an adventure park, and the large house with gardens was turned into a hotel with a golf course. The housing area at the top of the map was considerably expanded, partly at the expense of the park, which became smaller. In addition, the school was relocated to a new site just north of the river.\n\nSouth of the river, the old school site was redeveloped as a shopping complex, while the streets of houses in the east were replaced by apartment blocks, and new houses were built where the public garden once stood. Further developments included the construction of factories and warehouses along the railway line.",
         "commonErrors": [
           "liệt kê từng công trình mà không nhóm lại",
           "thiếu Overview"
@@ -1369,7 +1368,7 @@
           "So sánh từng đặc điểm giữa hiện tại và tương lai, không mô tả tách rời hai bản đồ",
           "Có nhắc thứ giữ nguyên (ngôi trường)"
         ],
-        "sampleAnswer": "The maps compare the town centre of Islip as it is now with plans for its future development.\n\nOverall, the main proposed change is the construction of a dual carriageway around the centre, after which the central shopping street will become pedestrianised and several new facilities will be built, while the school will be kept in its current form.\n\nAt present, the town centre is crossed from east to west by a main road, with shops lining both sides of it. A school lies to the north of this road and a park to the south. Under the plans, a new dual carriageway will be built in a ring around the centre, and the existing main road through the shopping area is going to be closed to traffic and turned into a pedestrian street.\n\nWithin this ring, further changes are proposed. New shops and a car park will be constructed to the east, and housing is going to be built on part of the park, which will therefore be reduced in size, whereas the school will remain unchanged.",
+        "sampleAnswer": "The maps compare the centre of Islip as it is now with the plans for its future development.\n\nOverall, the town centre will be transformed, with a dual carriageway built around it and the main shopping street becoming pedestrianised. In addition, several new facilities and more housing will be added, while the school will remain unchanged.\n\nAt present, a main road runs through the town centre from east to west, with shops on both sides and countryside to the north. Under the plans, a dual carriageway will be built in a ring around the centre, and the area where the main road currently runs will become a pedestrian-only street. The shops on its northern side will be removed, and the countryside in the north will be developed to make way for a bus station, a shopping centre, a car park and new housing.\n\nIn the southern part of the town, the existing housing will remain, but new housing will be built in the east, which will reduce the size of the park. The school in the south-west will be unchanged, although it will lie just outside the new dual carriageway.",
         "commonErrors": [
           "dùng thì quá khứ cho bản quy hoạch",
           "was built thay vì will be built"
@@ -1415,7 +1414,7 @@
           "Câu bị động quá khứ đơn",
           "Có nhắc thứ không thay đổi (tòa bệnh viện, đường chính)"
         ],
-        "sampleAnswer": "The two maps illustrate the changes in road access to a city hospital between 2007 and 2010.\n\nOverall, a number of changes were made to the roads around the hospital, mainly involving the provision of new bus stops and roundabouts and the reorganisation of parking, while the hospital building itself and the main access road stayed the same.\n\nThe most obvious changes concerned public transport and traffic flow. In 2007 there was a single bus stop on the main road to the south of the hospital; by 2010 this had been removed and replaced by two new bus stops, one to the north and one to the south of the site. In addition, two roundabouts were built where the access roads met the ring road, improving the flow of traffic.\n\nThe parking arrangements were also altered. The small staff car park to the west of the hospital was enlarged, whereas the public car park was relocated from the front of the building to a larger site on the eastern side.",
+        "sampleAnswer": "The two maps illustrate the changes made to road access to a city hospital between 2007 and 2010.\n\nOverall, there were three main changes: the bus stops were replaced by a bus station, two roundabouts were built on Hospital Road, and the parking was reorganised into separate staff and public car parks.\n\nIn 2007, the hospital was surrounded by a ring road and could be reached from City Road via Hospital Road, along which there were six bus stops. By 2010, these bus stops had been removed, and a bus station had been built to the west of Hospital Road. In addition, two roundabouts were constructed, one where Hospital Road meets the ring road and another at its junction with City Road, making access to the bus station easier.\n\nRegarding parking, in 2007 there was a single car park for both staff and the public to the east of Hospital Road. Three years later, this area was used only as a staff car park, while a new public car park was built to the east of the hospital, beside the ring road.",
         "commonErrors": [
           "trộn parking và bus access trong cùng một đoạn",
           "thiếu Overview"
@@ -1673,7 +1672,7 @@
           "Body 2 dùng ít nhất 1 cấu trúc so sánh (whereas/while/unlike) để nhấn mạnh điểm khác với Plan A",
           "Tối thiểu 150 từ"
         ],
-        "sampleAnswer": "The plans illustrate two alternative seating arrangements, labelled Plan A and Plan B, for the same seminar room.\n\nOverall, while both layouts share an identical entrance and two rows of chairs flanking the central tables, they differ mainly in the location of the morning tea area and the seating capacity of the rear table.\n\nIn Plan A, visitors enter at the top right of the room, facing a podium and a whiteboard positioned side by side at the front. Two rectangular tables stand in the middle of the room, each flanked by three chairs facing inwards. Towards the back, a single long table is set out with four chairs placed along one side, and the morning tea area occupies the whole width of the room at the very back.\n\nPlan B retains the same entrance and the two central tables with their six chairs, but several features have been rearranged. Rather than being located at the back, the morning tea area is now positioned in the top left corner, close to the entrance. The whiteboard has been moved towards the centre of the room, whereas in Plan A it was fixed at the front alongside the podium. Unlike Plan A, the rear table in Plan B is surrounded by chairs on both sides, seating six people instead of four.",
+        "sampleAnswer": "The plans illustrate two alternative seating arrangements, labelled Plan A and Plan B, for the same seminar room.\n\nOverall, the two layouts differ mainly in the position of the morning tea area and the number of seats, with Plan B accommodating considerably more people than Plan A. Both plans, however, share the same entrance in the top right-hand corner.\n\nIn Plan A, a podium and a whiteboard are positioned side by side at the front of the room. Two rectangular tables stand along the left and right walls, each with three chairs on its outer side, while a third table is placed towards the back with four chairs behind it. The morning tea area occupies most of the width of the room at the very back.\n\nUnlike Plan A, Plan B has its morning tea area in the top left-hand corner, close to the entrance. The whiteboard is moved towards the centre of the room, with the podium placed directly in front of it, whereas in Plan A the podium stands beside the whiteboard. Every table in Plan B has chairs on both sides: the two side tables seat six people each, and the rear table also seats six, giving a total of 18 seats compared with only 10 in Plan A.",
         "commonErrors": [
           "dùng was/were hoặc will be để nối 2 phương án (sai vì không có yếu tố thời gian)",
           "liệt kê hết chi tiết ở Overview thay vì chỉ nêu 1–2 khác biệt lớn nhất",
@@ -1740,7 +1739,7 @@
           "Thì đúng: dùng thì tương lai (will be + V3) xuyên suốt phần mô tả kế hoạch tương lai, không lẫn thì quá khứ",
           "Độ dài tối thiểu 150 từ"
         ],
-        "sampleAnswer": "The plans compare the current layout of an office building with its planned layout in the future.\n\nOverall, several offices will be converted into different facilities, and the grassed area to the left of the building will be replaced by a seating space for staff and visitors.\n\nAt present, the building has a kitchen, a canteen and a storeroom along the top, with a small WCs beside them, while grass borders both the left and right sides of the building. Four offices occupy the bottom row, next to the main entrance to the south.\n\nIn the future, the kitchen and the canteen will be removed and replaced by two additional offices, with the storeroom remaining unchanged. A coffee machine will be added next to the WCs. Moreover, the grass to the left will be converted into an outdoor seating area with chairs, while two of the four offices at the bottom will be replaced by a meeting area, also furnished with chairs, with the remaining offices staying in roughly the same position.",
+        "sampleAnswer": "The plans compare the current layout of an office building with its planned layout in the future.\n\nOverall, the building will be extended over both areas of grass, and several new facilities, including an outdoor seating area, a meeting area and a coffee machine, will be added. The total number of offices, however, will remain at four.\n\nAt present, the kitchen, the canteen and the storeroom stand in a row along the top of the building, with the WCs beside the storeroom. Four offices line the bottom of the building, next to the main entrance in the south-east, and there is a second entrance on the western side, facing an area of grass. Another area of grass borders the eastern side.\n\nIn the future, the kitchen and the canteen will be converted into two offices, while the storeroom will remain unchanged. The WCs will be relocated to the north-east corner, with a coffee machine being added beside them. The four offices at the bottom will be replaced by two larger offices, and the main entrance will be moved to the middle of the southern wall. Meanwhile, the grass on the left will be turned into an outdoor seating area with chairs, and the grass on the right will make way for a meeting area.",
         "commonErrors": [
           "chia thì quá khứ hoặc hiện tại cho phần mô tả kế hoạch tương lai thay vì will be + V3",
           "bỏ sót Storeroom \"remains unchanged\" — chỉ liệt kê phần thay đổi",
@@ -2371,12 +2370,127 @@
           "Ít nhất 6 câu bị động quá khứ; có câu 'remained unchanged'",
           "Tối thiểu 150 từ"
         ],
-        "sampleAnswer": "The maps illustrate how the seaside resort of Templeton changed between 2000 and 2013, with a river separating the western part of the town from the eastern part.\n\nOverall, Templeton has undergone significant upgrades, with the introduction of a supermarket and a factory and the extension of the railway on the western side, whereas on the eastern side tourist facilities were added near the coast; a considerable amount of green space was lost, though the beach remained unchanged.\n\nOn the western side of the river, the farmland was converted into a large supermarket and a factory, and the railway line was extended to a new station further west. As a result, the woodland that had stood between the farmland and the houses was cleared.\n\nOn the eastern side, several small houses close to the sea were replaced by a car park and a parade of shops for visitors, with a footbridge being built across the river to link the two halves of the resort. The beach itself was left untouched throughout the period.",
+        "sampleAnswer": "The maps illustrate the changes that took place in the seaside resort of Templeton between 2000 and 2013.\n\nOverall, the resort has undergone significant upgrades, with the introduction of a supermarket, a factory and a ferry service, as well as an extension of the railway line. As a result, most of the trees were cut down, leaving much less green space.\n\nWest of the river, a number of developments took place. The trees to the north of the lake were cleared to make way for three blocks of flats, and a row of houses was built where trees had stood further south. In the south-west, the houses and trees near the coast were replaced by a supermarket and additional blocks of flats. The houses and the lake in the north-west, however, remained unchanged.\n\nEast of the river, the most noticeable change was the construction of a factory where trees had once stood. The railway line was extended westwards along the coast, crossing the river by a new bridge, and a ferry terminal was added in the south-east corner. Moreover, more houses were built near the hospital, whereas the school, the hospital and the two bridges remained in place.",
         "commonErrors": [
           "mô tả riêng từng bản đồ",
           "Overview có số liệu/tên riêng",
           "lặp 'was built' nhiều lần"
         ]
+      }
+    },
+    {
+      "code": "T1-L13-E04",
+      "lessonCode": "T1-L13",
+      "order": 4,
+      "type": "sentence_writing",
+      "title": "HOMEWORK — 8 câu mô tả vị trí trên bản đồ Youngsville",
+      "instruction": "Nhìn vào bản đồ Youngsville và viết 8 câu mô tả vị trí của 8 công trình khác nhau. Mỗi cấu trúc trong mục 13.3 (In the … corner/area of … · To the … of … · S + was located/situated in … · There was + N + to the … of …) phải xuất hiện ít nhất hai lần.",
+      "source": "original",
+      "skillTags": [
+        "map-directions",
+        "location-structures"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 15,
+      "points": 8,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Youngsville năm 1990 và năm 2010",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image2.png"
+      },
+      "responseSlots": 8,
+      "rubric": {
+        "minWords": 70,
+        "targetStructures": [
+          "In the + direction + corner/area of + place",
+          "To the + direction + of + place",
+          "S + was located/situated in + position",
+          "There was + N + to the + direction + of + place"
+        ],
+        "checklist": [
+          "8 công trình khác nhau",
+          "Mỗi cấu trúc dùng ít nhất 2 lần",
+          "Phân biệt in the north of (bên trong) và to the north of (bên ngoài)"
+        ],
+        "sampleAnswer": "1. In the north-west area of the town, there was a hospital.\n2. In the south-west corner of the town, there was an airport.\n3. To the north of the River Alanah, there was a lake surrounded by trees.\n4. To the south of the river, on the western side of the town, there was a school.\n5. In 2010, a large stadium was located in the north-east corner of the town, next to the railway line.\n6. A golf course was situated in the top left-hand corner of the map in 2010.\n7. There was a marina to the north of the railway station, at the mouth of the river.\n8. There was a car park to the east of the airport.",
+        "commonErrors": [
+          "in the north of the town (bên trong) ≠ to the north of the town (bên ngoài)"
+        ]
+      }
+    },
+    {
+      "code": "T1-L15-E04",
+      "lessonCode": "T1-L15",
+      "order": 4,
+      "type": "sentence_writing",
+      "title": "HOMEWORK — 5 mẫu câu Overview cho một thành phố ở Việt Nam",
+      "instruction": "Chọn 5 mẫu câu Overview em thấy dễ nhớ nhất trong bảng 15.3 và viết lại mỗi mẫu câu cho một thành phố có thật ở Việt Nam mà em biết rõ.",
+      "source": "original",
+      "skillTags": [
+        "maps-overview"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "points": 5,
+      "autoGrade": false,
+      "needsAsset": false,
+      "responseSlots": 5,
+      "rubric": {
+        "minWords": 60,
+        "targetStructures": [
+          "Overall, a comparison between the two maps reveals …",
+          "Over the period, … witnessed dramatic changes.",
+          "Overall, it is clear that … has undergone a considerable transformation …"
+        ],
+        "checklist": [
+          "5 mẫu câu khác nhau",
+          "Mỗi câu gắn với một thành phố/khu vực có thật ở Việt Nam",
+          "Không đưa chi tiết nhỏ vào Overview"
+        ],
+        "sampleAnswer": "1. Overall, a comparison between the two maps of Da Nang reveals a change from a largely rural into a mainly urban landscape.\n2. Over the period, the area along the Han River witnessed dramatic changes.\n3. From 1995 to 2015, the centre of Ho Chi Minh City saw spectacular developments.\n4. During the 20-year period, the industrial area of Binh Duong was totally transformed.\n5. Overall, it is clear that Hanoi has undergone a considerable transformation over the period.",
+        "commonErrors": []
+      }
+    },
+    {
+      "code": "T1-L16-E03",
+      "lessonCode": "T1-L16",
+      "order": 3,
+      "type": "paragraph_writing",
+      "title": "HOMEWORK — Hai đoạn thân bài Youngsville (chia theo khu vực)",
+      "instruction": "Viết hai đoạn thân bài cho bản đồ Youngsville (Buổi 15) theo Cách 2 — chia theo khu vực Bắc và Nam sông Alanah. Mỗi đoạn 4–5 câu, phải dùng ít nhất một lần cấu trúc with + S + being + V3.",
+      "source": "original",
+      "skillTags": [
+        "maps-body",
+        "participle-clause"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 12,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Youngsville năm 1990 và năm 2010 — sông Alanah chia bản đồ thành hai nửa Bắc và Nam",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image2.png"
+      },
+      "responseSlots": 2,
+      "rubric": {
+        "minWords": 110,
+        "targetStructures": [
+          "On the … side of …, a number of developments took place.",
+          "with + S + being + V3",
+          "Further developments included …"
+        ],
+        "checklist": [
+          "Body 1 = phía Bắc sông, Body 2 = phía Nam sông",
+          "Mỗi đoạn 4–5 câu",
+          "Ít nhất một câu with + being + V3",
+          "Bị động quá khứ đơn cho các thay đổi"
+        ],
+        "sampleAnswer": "North of the River Alanah, a number of developments took place. The woodland around the lake was largely cleared to make way for a park, a golf course and car parking facilities, with only a few trees being kept. A large stadium was constructed near the north-east corner of the lake, and the houses along the eastern edge of the town disappeared as a new stretch of railway was built running directly north from the river. The hospital and the lake, however, remained unchanged.\n\nSouth of the river, the changes were even more dramatic. All of the trees were cut down, with the houses along the railway line being knocked down and replaced by skyscrapers. Moreover, a new industrial estate with factories and a warehouse sprang up around the airport and the school, both of which stayed in the same place. Further developments included the addition of a marina at the mouth of the river, next to the railway station.",
+        "commonErrors": []
       }
     }
   ]

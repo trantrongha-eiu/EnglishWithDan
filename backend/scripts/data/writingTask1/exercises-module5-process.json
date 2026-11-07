@@ -715,7 +715,7 @@
           "Không mô tả 'gravel' hay tỉ lệ % như một bước riêng — gộp vào bước trộn",
           "Tối thiểu 150 từ"
         ],
-        "sampleAnswer": "The diagrams illustrate the production of cement and how cement is then used to make concrete. It is clear that there are five stages in the process of making cement, whereas only two steps are required to produce concrete. At the first stage of producing cement, limestone and clay are put through a machine called a crusher and become powder. This powder is then mixed and brought into a rotating heater, where it is heated at a high temperature. The process continues with the heated material being ground, after which cement is produced. Finally, the cement is packaged into bags and is ready for the production of concrete. To make concrete, four raw materials are combined: gravel, sand, cement and water in the proportions of 50%, 25%, 15% and 10% respectively. These materials are mixed thoroughly in a concrete mixer, and the mixture is then processed until it forms concrete, which can be used for building purposes.",
+        "sampleAnswer": "The diagrams illustrate the production of cement, and how cement is used to make concrete.\n\nIt is clear from the diagrams that there are five stages in the process of making cement. Meanwhile, only two steps are required to produce concrete.\n\nAt the first stage of producing cement, limestone and clay are put through a machine called a crusher and become powder. This powder is then mixed and brought into a rotating heater, where it is heated at a high temperature. The process continues with grinding the material, and then cement is produced. At the final stage, the cement is packaged into bags and is ready for the production of concrete.\n\nThe first step of making concrete is combining different materials. Cement (15%) is mixed with water, sand and small stones in the proportions of 10%, 25% and 50% respectively. This mixture is then put into a concrete mixer, where it becomes the final concrete, which can be used for building purposes.",
         "commonErrors": [
           "dùng thì quá khứ",
           "coi 'cows grazing' / byproducts là một bước",
@@ -1154,28 +1154,27 @@
       "code": "T1-L22-E03",
       "lessonCode": "T1-L22",
       "order": 3,
-      "type": "paragraph_writing",
-      "title": "PRACTICE – Viết Introduction + Overview + Body 1 cho vòng đời ong mật",
-      "instruction": "Dựa vào sơ đồ và dàn ý cho sẵn, viết Introduction (1 câu), Overview (1 câu) và Body 1 (3 giai đoạn đầu). Dùng thể chủ động, thì hiện tại đơn.",
+      "type": "full_task1",
+      "title": "PRACTICE — The life cycle of a bee (Introduction, Overview, Body 1, Body 2)",
+      "instruction": "The diagram shows the life cycle of a bee. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. Dùng thể chủ động, thì hiện tại đơn.",
       "source": "original",
       "skillTags": [
         "natural-process",
         "life-cycle"
       ],
       "difficulty": 3,
-      "estimatedMinutes": 15,
-      "points": 12,
+      "estimatedMinutes": 20,
+      "points": 20,
       "autoGrade": false,
       "needsAsset": false,
       "stimulus": {
         "kind": "image",
         "caption": "Life cycle of a bee",
         "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image13.png",
-        "note": "Body 1 (3 giai đoạn đầu): (1) a female bee lays 1–2 eggs every three days; (2) the eggs hatch after about 9–10 days; (3) the young bee goes through the first moulting after about 5 days."
+        "note": "Body 1 (3 giai đoạn đầu): (1) a female bee lays 1–2 eggs every three days; (2) the eggs hatch after about 9–10 days; (3) the young bee goes through the first moulting after about 5 days. Body 2: (4) second moulting after around 7 days; (5) a young adult bee emerges about 9 days later; (6) around 4 days to become fully mature."
       },
-      "responseSlots": 3,
       "rubric": {
-        "minWords": 70,
+        "minWords": 150,
         "targetStructures": [
           "The diagram illustrates the stages in the lifespan of a bee.",
           "Overall, the life cycle of a bee consists of several stages and takes about 34–36 days to complete, beginning with eggs and ending with a fully mature adult bee.",
@@ -1188,7 +1187,7 @@
           "Dùng thể CHỦ ĐỘNG (Natural Process), thì hiện tại đơn",
           "Có ít nhất 2 từ nối trình tự khác nhau"
         ],
-        "sampleAnswer": "The diagram illustrates the main stages in the life cycle of a bee.\n\nOverall, the process is cyclical and consists of several stages, taking approximately 34 to 36 days to complete, beginning with an egg and ending with a fully mature adult bee.\n\nAt the first stage, a female bee lays one or two eggs every three days. After roughly nine to ten days, these eggs hatch. About five days later, the young bee goes through its first moulting.",
+        "sampleAnswer": "The diagram illustrates the main stages in the life cycle of a bee.\n\nOverall, the life cycle consists of six stages and takes about 34 to 36 days to complete, beginning with eggs being laid and ending with a fully mature adult bee.\n\nAt the first stage, a female bee lays one or two eggs every three days. After about nine to ten days, these eggs hatch. Roughly five days later, the young bee goes through its first moulting.\n\nAround seven days after this, the bee experiences its second moulting. A young adult bee then emerges about nine days later, and it takes approximately four more days for it to reach full maturity, at which point the cycle can begin again.",
         "commonErrors": [
           "dùng bị động (the eggs are hatched)",
           "thiếu Overview",
@@ -1255,7 +1254,7 @@
           "Không mô tả thông tin nền như một giai đoạn",
           "Tối thiểu 150 từ"
         ],
-        "sampleAnswer": "The diagram illustrates the stages in the life of a salmon, from egg to spawning adult.\n\nOverall, the life cycle of a salmon consists of several stages, beginning with eggs laid in fresh water and ending with adult salmon returning from the sea to spawn and then die.\n\nAt the first stage, the female salmon lays her eggs in the gravel of a slow-moving freshwater river. After about three months, the eggs hatch and become alevins, tiny fish that stay among the stones and feed on the attached yolk sac for several weeks before developing into fry.\n\nThe fry then spend around five to ten weeks swimming in the river and grow into parr, which are recognisable by the finger-like markings on their sides. Once they are one to three years old, the parr become smolt and migrate downstream to the ocean. They remain at sea as adults for a further one to six years before returning to the same freshwater river to spawn, after which they die within two weeks.",
+        "sampleAnswer": "The diagram illustrates the stages in the life cycle of the salmon, from eggs to spawning adults.\n\nOverall, the salmon goes through several main stages over a number of years, beginning as eggs in fresh water and ending as adults that return from the sea to spawn and then die.\n\nAt the first stage, salmon eggs are laid in fresh water, and they hatch after about three months. The young fish, known as alevins, feed off their yolk sacs for several weeks before developing into fry. At five to ten weeks old, the fry begin swimming.\n\nAfter several months, the fry grow into parr, which develop “finger” markings on their bodies. When they are one to three years old, they become smolts, which group together and head out to sea. The salmon then spend one to six years in the ocean as adults, before returning to fresh water, where they spawn and die within two weeks.",
         "commonErrors": [
           "dùng bị động cho quy trình tự nhiên",
           "bỏ sót giai đoạn parr / smolt",
@@ -1871,12 +1870,495 @@
           "Có nêu số liệu nhiệt độ / thời gian trong sơ đồ (24–48h, 870–1300°C, 48–72h)",
           "Tối thiểu 150 từ"
         ],
-        "sampleAnswer": "The diagram illustrates the process by which bricks are manufactured for the building industry.\n\nOverall, there are seven main stages in the process, beginning with the digging of clay from the ground and ending with the delivery of the finished bricks to customers.\n\nAt the first stage, clay is dug out of the ground using a digger and placed onto a metal grid, where it is broken up by a roller and any large stones are removed. The clay is then mixed with sand and water, after which it is shaped into bricks either by a mould or by a wire cutter.\n\nOnce the bricks have been formed, they are left to dry in an oven for 24 to 48 hours. Having been dried, they are fired in a kiln, first at a moderate temperature of 200 to 980°C and then at a high temperature of 870 to 1,300°C. The bricks are subsequently cooled in a chamber for 48 to 72 hours before being packaged and, finally, delivered to their destination.",
+        "sampleAnswer": "The diagram illustrates the process by which bricks are manufactured for the building industry.\n\nOverall, there are seven main stages in the process, beginning with the digging of clay from the ground and ending with the delivery of the finished bricks to customers.\n\nAt the first stage, clay is dug out of the ground using a digger and placed onto a metal grid and passed through a roller. The clay is then mixed with sand and water, after which it is shaped into bricks either by a mould or by a wire cutter.\n\nOnce the bricks have been formed, they are left to dry in an oven for 24 to 48 hours. Having been dried, they are fired in a kiln, first at a moderate temperature of 200 to 980°C and then at a high temperature of 870 to 1,300°C. The bricks are subsequently cooled in a chamber for 48 to 72 hours before being packaged and, finally, delivered to their destination.",
         "commonErrors": [
           "dùng chủ động (workers dig the clay)",
           "bỏ sót giai đoạn làm nguội",
           "thiếu Overview"
         ]
+      }
+    },
+    {
+      "code": "T1-L19-E03",
+      "lessonCode": "T1-L19",
+      "order": 3,
+      "type": "sentence_writing",
+      "title": "HOMEWORK — Viết lại vòng đời của con ếch (8 câu)",
+      "instruction": "Viết lại vòng đời của con ếch bằng tiếng Anh, dùng thể chủ động và thì hiện tại đơn, khoảng 8 câu. Bắt đầu bằng “The life cycle of a frog consists of…”.",
+      "source": "original",
+      "skillTags": [
+        "natural-process",
+        "active-voice"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 15,
+      "points": 8,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Life cycle of a frog — sơ đồ vòng đời của ếch",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image9.png"
+      },
+      "responseSlots": 8,
+      "rubric": {
+        "minWords": 80,
+        "targetStructures": [
+          "The life cycle of a frog consists of …",
+          "hatch into …",
+          "develop / grow into …"
+        ],
+        "checklist": [
+          "Thể chủ động, thì hiện tại đơn",
+          "Đủ các giai đoạn: eggs → embryo → tadpole → froglet → adult frog",
+          "Có từ nối chỉ trình tự"
+        ],
+        "sampleAnswer": "1. The life cycle of a frog consists of five main stages, beginning with eggs and ending with an adult frog.\n2. At the first stage, the female frog lays a large number of eggs in a pond.\n3. An embryo then develops inside each egg.\n4. After a few days, the eggs hatch into tadpoles, which live underwater and breathe through gills.\n5. Over time, the tadpoles grow back legs and then front legs, while their tails become shorter.\n6. Once the front legs break through, the young frog starts to breathe with its lungs.\n7. At this point, it becomes a froglet and begins to leave the water.\n8. Finally, the tail disappears completely, and the froglet grows into an adult frog that can live both in water and on land.",
+        "commonErrors": [
+          "The eggs are hatched (sai — quy trình tự nhiên dùng chủ động: The eggs hatch)"
+        ]
+      }
+    },
+    {
+      "code": "T1-L21-E07",
+      "lessonCode": "T1-L21",
+      "order": 2.1,
+      "type": "sentence_transform",
+      "title": "Luyện tập — Viết lại câu bằng 4 cấu trúc nối bước",
+      "instruction": "Viết lại câu sử dụng cấu trúc được yêu cầu. Giữ nguyên nghĩa.",
+      "source": "original",
+      "skillTags": [
+        "process-linking",
+        "passive-voice"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 15,
+      "points": 16,
+      "autoGrade": false,
+      "needsAsset": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Once the material is heated, it is transferred to a large container.",
+          "cue": "Once + being + V3",
+          "starter": "Once …, it is transferred to a large container.",
+          "sampleAnswers": [
+            "Once being heated, it is transferred to a large container."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Once the mixture is filtered, it is placed in a clean tray.",
+          "cue": "Once + being + V3",
+          "starter": "Once …, it is placed in a clean tray.",
+          "sampleAnswers": [
+            "Once being filtered, it is placed in a clean tray."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Once the water is purified, it is stored in a tank.",
+          "cue": "Once + being + V3",
+          "starter": "Once …, it is stored in a tank.",
+          "sampleAnswers": [
+            "Once being purified, it is stored in a tank."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Once the raw materials are collected, they are transported to the factory.",
+          "cue": "Once + being + V3",
+          "starter": "Once …, they are transported to the factory.",
+          "sampleAnswers": [
+            "Once being collected, they are transported to the factory."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "The pulp is poured into a tray. It is then mixed by hand.",
+          "cue": "Having been + V3",
+          "starter": "…, the pulp is then mixed by hand.",
+          "sampleAnswers": [
+            "Having been poured into a tray, the pulp is then mixed by hand."
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "The material is heated. It is subsequently transferred to another container.",
+          "cue": "Having been + V3",
+          "starter": "…, the material is subsequently transferred to another container.",
+          "sampleAnswers": [
+            "Having been heated, the material is subsequently transferred to another container."
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "The mixture is filtered. It is then stored in a large tank.",
+          "cue": "Having been + V3",
+          "starter": "…, the mixture is then stored in a large tank.",
+          "sampleAnswers": [
+            "Having been filtered, the mixture is then stored in a large tank."
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "The finished product is packaged. It is then delivered to supermarkets.",
+          "cue": "Having been + V3",
+          "starter": "…, the finished product is then delivered to supermarkets.",
+          "sampleAnswers": [
+            "Having been packaged, the finished product is then delivered to supermarkets."
+          ]
+        },
+        {
+          "id": "q9",
+          "prompt": "The mixture is soaked for an hour. It is then beaten to form a pulp.",
+          "cue": "After + being + V3",
+          "starter": "After …, the mixture is beaten to form a pulp.",
+          "sampleAnswers": [
+            "After being soaked for an hour, the mixture is beaten to form a pulp."
+          ]
+        },
+        {
+          "id": "q10",
+          "prompt": "The materials are cleaned. They are then sent to the factory.",
+          "cue": "After + being + V3",
+          "starter": "After …, the materials are sent to the factory.",
+          "sampleAnswers": [
+            "After being cleaned, the materials are sent to the factory."
+          ]
+        },
+        {
+          "id": "q11",
+          "prompt": "The liquid is filtered. It is then stored in a tank.",
+          "cue": "After + being + V3",
+          "starter": "After …, the liquid is stored in a tank.",
+          "sampleAnswers": [
+            "After being filtered, the liquid is stored in a tank."
+          ]
+        },
+        {
+          "id": "q12",
+          "prompt": "The bottles are labelled. They are then packed into boxes.",
+          "cue": "Before + being + V3",
+          "starter": "Before …, the bottles are labelled.",
+          "sampleAnswers": [
+            "Before being packed into boxes, the bottles are labelled."
+          ]
+        },
+        {
+          "id": "q13",
+          "prompt": "The pulp is poured into a tray. It is then mixed by hand.",
+          "cue": "followed by + N",
+          "starter": "The pulp is poured into a tray, followed by …",
+          "sampleAnswers": [
+            "The pulp is poured into a tray, followed by a hand-mixing process."
+          ]
+        },
+        {
+          "id": "q14",
+          "prompt": "The mixture is heated. It is then filtered.",
+          "cue": "followed by + N",
+          "starter": "The mixture is heated, followed by …",
+          "sampleAnswers": [
+            "The mixture is heated, followed by a filtering process.",
+            "The mixture is heated, followed by filtration."
+          ]
+        },
+        {
+          "id": "q15",
+          "prompt": "The bottles are cleaned. They are then filled with water.",
+          "cue": "followed by + N",
+          "starter": "The bottles are cleaned, followed by …",
+          "sampleAnswers": [
+            "The bottles are cleaned, followed by a water-filling process."
+          ]
+        },
+        {
+          "id": "q16",
+          "prompt": "The products are packaged. They are then transported to supermarkets.",
+          "cue": "followed by + N",
+          "starter": "The products are packaged, followed by …",
+          "sampleAnswers": [
+            "The products are packaged, followed by transportation to supermarkets."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "Once + being + V3",
+          "Having been + V3, S + V",
+          "After/Before + being + V3, S + V",
+          "S + V, followed by + N"
+        ],
+        "checklist": [
+          "Giữ nguyên nghĩa",
+          "Dùng đúng cấu trúc yêu cầu"
+        ],
+        "commonErrors": [
+          "After dried, … (thiếu being)"
+        ]
+      }
+    },
+    {
+      "code": "T1-L21-E08",
+      "lessonCode": "T1-L21",
+      "order": 2.2,
+      "type": "sentence_transform",
+      "title": "PHẦN 2 — Dịch câu (4 cấu trúc nối bước)",
+      "instruction": "Dịch các câu sau sang tiếng Anh, sử dụng cấu trúc được yêu cầu.",
+      "source": "original",
+      "skillTags": [
+        "process-linking",
+        "translation"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 15,
+      "points": 13,
+      "autoGrade": false,
+      "needsAsset": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: Once + being + V3",
+          "promptVi": "Một khi được làm nóng, hỗn hợp được chuyển sang một chiếc bồn lớn.",
+          "cue": "Once + being + V3",
+          "sampleAnswers": [
+            "Once being heated, the mixture is transferred to a large container."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: Once + being + V3",
+          "promptVi": "Một khi được lọc, chất lỏng được lưu trữ trong một bể chứa.",
+          "cue": "Once + being + V3",
+          "sampleAnswers": [
+            "Once being filtered, the liquid is stored in a tank."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: Once + being + V3",
+          "promptVi": "Một khi được thu thập, các nguyên liệu thô được vận chuyển đến nhà máy.",
+          "cue": "Once + being + V3",
+          "sampleAnswers": [
+            "Once being collected, the raw materials are transported to the factory."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: Having been + V3",
+          "promptVi": "Sau khi được đổ vào khay, bột giấy sau đó được trộn bằng tay.",
+          "cue": "Having been + V3",
+          "sampleAnswers": [
+            "Having been poured into a tray, the pulp is then mixed by hand."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: Having been + V3",
+          "promptVi": "Sau khi được làm sạch, các nguyên liệu được đưa đến giai đoạn tiếp theo.",
+          "cue": "Having been + V3",
+          "sampleAnswers": [
+            "Having been cleaned, the materials are moved to the next stage."
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: Having been + V3",
+          "promptVi": "Sau khi được lọc, chất lỏng được lưu trữ trong một bể lớn.",
+          "cue": "Having been + V3",
+          "sampleAnswers": [
+            "Having been filtered, the liquid is stored in a large tank."
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: After + being + V3",
+          "promptVi": "Sau khi được ngâm trong một giờ, hỗn hợp được nghiền để tạo thành bột giấy.",
+          "cue": "After + being + V3",
+          "sampleAnswers": [
+            "After being soaked for an hour, the mixture is beaten to form a pulp."
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: After + being + V3",
+          "promptVi": "Sau khi được làm nóng, chất lỏng được chuyển sang một chiếc bồn khác.",
+          "cue": "After + being + V3",
+          "sampleAnswers": [
+            "After being heated, the liquid is transferred to another container."
+          ]
+        },
+        {
+          "id": "q9",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: Before + being + V3",
+          "promptVi": "Trước khi được đóng gói, các sản phẩm được kiểm tra cẩn thận.",
+          "cue": "Before + being + V3",
+          "sampleAnswers": [
+            "Before being packaged, the products are carefully checked."
+          ]
+        },
+        {
+          "id": "q10",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: S + V, followed by + N",
+          "promptVi": "Bột giấy được đổ vào khay, sau đó là một quá trình trộn bằng tay.",
+          "cue": "S + V, followed by + N",
+          "sampleAnswers": [
+            "The pulp is poured into a tray, followed by a hand-mixing process."
+          ]
+        },
+        {
+          "id": "q11",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: S + V, followed by + N",
+          "promptVi": "Hỗn hợp được lọc, sau đó là một quá trình làm nóng.",
+          "cue": "S + V, followed by + N",
+          "sampleAnswers": [
+            "The mixture is filtered, followed by a heating process."
+          ]
+        },
+        {
+          "id": "q12",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: S + V, followed by + N",
+          "promptVi": "Các chai được làm sạch, sau đó là quá trình đổ đầy nước.",
+          "cue": "S + V, followed by + N",
+          "sampleAnswers": [
+            "The bottles are cleaned, followed by a water-filling process."
+          ]
+        },
+        {
+          "id": "q13",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: S + V, followed by + N",
+          "promptVi": "Sản phẩm được đóng gói, sau đó là quá trình vận chuyển đến siêu thị.",
+          "cue": "S + V, followed by + N",
+          "sampleAnswers": [
+            "The products are packaged, followed by transportation to supermarkets."
+          ]
+        }
+      ],
+      "rubric": {
+        "targetStructures": [
+          "Once + being + V3",
+          "Having been + V3",
+          "After/Before + being + V3",
+          "followed by + N"
+        ],
+        "checklist": [
+          "Bị động, thì hiện tại đơn",
+          "Dùng đúng cấu trúc yêu cầu"
+        ],
+        "commonErrors": []
+      }
+    },
+    {
+      "code": "T1-L21-E10",
+      "lessonCode": "T1-L21",
+      "order": 3.5,
+      "type": "sentence_writing",
+      "title": "HOMEWORK phần 1 — 6 câu mô tả biến đổi của vật chất",
+      "instruction": "Học thuộc bảng từ vựng ở mục 21.6. Viết 6 câu tiếng Anh mô tả biến đổi của vật chất, mỗi câu dùng một động từ khác nhau: hai câu chất rắn, hai câu chất lỏng, hai câu chất khí.",
+      "source": "original",
+      "skillTags": [
+        "process-vocabulary"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "points": 6,
+      "autoGrade": false,
+      "needsAsset": false,
+      "responseSlots": 6,
+      "rubric": {
+        "minWords": 50,
+        "targetStructures": [
+          "Chất rắn: press / grind / harden / dry in the sun …",
+          "Chất lỏng: pour into / cool down / evaporate / condense …",
+          "Chất khí: compress / heat up / ignite / release …"
+        ],
+        "checklist": [
+          "2 câu chất rắn, 2 câu chất lỏng, 2 câu chất khí",
+          "6 động từ khác nhau",
+          "Thì hiện tại đơn, bị động khi có con người tác động"
+        ],
+        "sampleAnswer": "1. (Solid) The wet clay is pressed into moulds and then hardens as it dries in the sun.\n2. (Solid) The roasted coffee beans are ground into a fine powder.\n3. (Liquid) The hot liquid is poured into large tanks, where it gradually cools down.\n4. (Liquid) As the sea water is heated, it evaporates and later condenses into small droplets.\n5. (Gas) The gas is compressed before being heated up in a chamber.\n6. (Gas) Once the fuel is ignited, it burns and releases carbon dioxide into the air.",
+        "commonErrors": []
+      }
+    },
+    {
+      "code": "T1-L21-E09",
+      "lessonCode": "T1-L21",
+      "order": 5.5,
+      "type": "full_task1",
+      "title": "HOMEWORK — Đề 1: Milk production (bài hoàn chỉnh)",
+      "instruction": "The diagram below shows the process of milk production. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "source": "original",
+      "skillTags": [
+        "process-manufacturing",
+        "full-writing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 40,
+      "autoGrade": false,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Quy trình sản xuất sữa (Milk production)",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image11.png",
+        "note": "Sáu bước: vắt sữa → làm lạnh/bảo quản → xe bồn chở về nhà máy → lưu trữ tại nhà máy → tiệt trùng (heating) & đóng gói → vận chuyển đến cửa hàng. “Cows grazing” là thông tin nền; cheese, cream, butter là sản phẩm phụ — không tính là bước."
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "There are … main stages in the process of …, beginning with … and ending with …",
+          "bị động hiện tại đơn",
+          "Once / Having been / After being / followed by"
+        ],
+        "checklist": [
+          "Introduction paraphrase",
+          "Overview nêu số bước, bước đầu và bước cuối",
+          "Không coi cows grazing hay sản phẩm phụ là một bước",
+          "Bị động, thì hiện tại đơn"
+        ],
+        "sampleAnswer": "The diagram illustrates the process by which milk is produced and delivered to retailers.\n\nOverall, there are six main stages in the process, beginning with the milking of cows and ending with the distribution of packaged milk to supermarkets and shops.\n\nAt the first stage, the cows are milked by a milking machine twice a day. The milk is then kept cold in refrigerated storage on the farm, before being collected by a milk tanker, which delivers it to the dairy every day.\n\nOnce it has arrived at the dairy, the milk is stored in large tanks. While part of it is used to make by-products such as cheese, cream and butter, the remaining milk is heated to be pasteurised and is then packaged into bottles. Finally, the packaged milk is transported to supermarkets and shops, where it is sold to consumers.",
+        "commonErrors": [
+          "Coi “cows grazing” là bước 1",
+          "Mô tả cheese, cream, butter như một bước của quy trình"
+        ]
+      }
+    },
+    {
+      "code": "T1-L22-E05",
+      "lessonCode": "T1-L22",
+      "order": 2.5,
+      "type": "sentence_writing",
+      "title": "HOMEWORK phần 1 — 8 câu mô tả vòng đời một loài vật",
+      "instruction": "Học thuộc bảng từ vựng ở mục 22.6. Viết 8 câu mô tả vòng đời của một loài vật em tự chọn (bướm, gà, muỗi…), dùng thể chủ động và thì hiện tại đơn.",
+      "source": "original",
+      "skillTags": [
+        "natural-process",
+        "life-cycle"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 15,
+      "points": 8,
+      "autoGrade": false,
+      "needsAsset": false,
+      "responseSlots": 8,
+      "rubric": {
+        "minWords": 80,
+        "targetStructures": [
+          "lay a number of eggs",
+          "hatch into …",
+          "shed their outer layer",
+          "grow to maturity",
+          "feed on …"
+        ],
+        "checklist": [
+          "Thể chủ động, thì hiện tại đơn",
+          "Dùng ít nhất 5 cụm trong bảng 22.6",
+          "Có từ nối chỉ trình tự"
+        ],
+        "sampleAnswer": "1. The life cycle of a butterfly consists of four main stages: egg, caterpillar, pupa and adult.\n2. At the first stage, a female butterfly lays a number of tiny eggs on the leaves of a plant.\n3. These eggs hatch within five to seven days.\n4. Each egg hatches into a small caterpillar, which feeds on the leaves around it.\n5. As it grows bigger, the caterpillar sheds its outer layer several times.\n6. After about two weeks, it forms a hard shell around itself and becomes a pupa.\n7. Inside the pupa, the caterpillar undergoes dramatic changes and turns into a butterfly.\n8. Finally, the fully developed butterfly emerges, and once it has mated, the cycle begins again.",
+        "commonErrors": []
       }
     }
   ]

@@ -662,10 +662,10 @@
     {
       "code": "T1-L05-E07",
       "lessonCode": "T1-L05",
-      "order": 7,
+      "order": 8,
       "type": "sentence_writing",
-      "title": "Homework — 8 câu mô tả xu hướng",
-      "instruction": "Với mỗi đoạn của đường biểu đồ, viết một câu hoàn chỉnh: tự nghĩ số liệu và bắt buộc có một trạng từ chỉ mức độ.",
+      "title": "Homework 2 — Viết 8 câu mô tả xu hướng",
+      "instruction": "Viết lại 8 đáp án của bài nối (A–C, C–D, D–E, E–G, G, G–L, J, L–N) thành 8 câu hoàn chỉnh — mỗi câu có số liệu tự nghĩ và một trạng từ chỉ mức độ.",
       "source": "original",
       "skillTags": [
         "trend-vocabulary",
@@ -678,7 +678,7 @@
       "needsAsset": false,
       "stimulus": {
         "kind": "image",
-        "caption": "Line graph — 8 đoạn với các dạng xu hướng khác nhau (tăng dần, tăng vọt, ổn định, dao động, giảm nhẹ, giảm mạnh, đạt đỉnh, chạm đáy)",
+        "caption": "Homework — đường biểu đồ A → N (8 đoạn: A–C, C–D, D–E, E–G, G, G–L, J, L–N)",
         "imageUrl": "https://media.ieltsthayha.com/wt1/charts/line-graph-AN.png"
       },
       "responseSlots": 8,
@@ -695,7 +695,7 @@
           "Không dùng lại cùng một động từ xu hướng",
           "Có số liệu cụ thể trong mỗi câu"
         ],
-        "sampleAnswer": "The figure rose steadily by 15 points to 65 over the first stage.\nThere was a sharp increase in the following years, with the number climbing from 20 to 90.\nIt then remained largely stable, hovering around 88 for a long period.\nAfterwards, the figure fluctuated moderately between 70 and 95.\nIt subsequently dipped slightly, edging down by 5 to 83, before falling markedly to just 40.\nLater, the number witnessed a strong recovery, peaking at 110 at the end of the period.\nFinally, the figure plunged to a low of 12, its lowest point on the graph.",
+        "sampleAnswer": "1. (A–C) The figure rose gradually from 50 to 60.\n2. (C–D) It then dropped significantly by 40 to just 20.\n3. (D–E) After that, the figure remained relatively stable at 20 for a short period.\n4. (E–G) This was followed by a substantial increase of 75 units.\n5. (G) The figure climbed steeply to reach a peak of 95.\n6. (G–L) Over the next stage, the number fluctuated considerably between 5 and 80.\n7. (J) In the middle of this period, it plunged dramatically to hit the lowest point of only 5.\n8. (L–N) Finally, the figure fell slowly by 10, from 50 to 40.",
         "commonErrors": [
           "increased strongly (không tự nhiên)",
           "dùng “dramatically” cho mức tăng 2%"
@@ -707,8 +707,8 @@
       "lessonCode": "T1-L06",
       "order": 1,
       "type": "gap_fill",
-      "title": "Practice 1 — Điền giới từ",
-      "instruction": "Điền giới từ thích hợp: at · to · by · of · in · with · from · between … and … · over · around",
+      "title": "Practice 1 — Complete the sentences below using prepositions",
+      "instruction": "Điền giới từ thích hợp vào chỗ trống (22 câu trong sách). Ngân hàng giới từ: at · to · by · of · in · with · from · between … and … · over · around (+ up).",
       "source": "original",
       "skillTags": [
         "prepositions"
@@ -728,118 +728,101 @@
         "between",
         "and",
         "over",
-        "around"
+        "around",
+        "up"
       ],
       "items": [
         {
           "id": "q1",
-          "prompt": "The number of visitors increased ____ 3 million in 2015.",
+          "prompt": "____ 1990 ____ 2000, there was a drop ____ 15%.",
           "blanks": [
             {
               "accept": [
-                "to"
+                "From",
+                "Between"
               ]
-            }
-          ],
-          "explanation": "TO = giá trị đích."
-        },
-        {
-          "id": "q2",
-          "prompt": "Sales rose ____ 500 units over the period.",
-          "blanks": [
+            },
             {
               "accept": [
-                "by"
+                "to",
+                "and"
               ]
-            }
-          ],
-          "explanation": "BY = mức thay đổi."
-        },
-        {
-          "id": "q3",
-          "prompt": "The figure remained stable ____ 40% for a decade.",
-          "blanks": [
-            {
-              "accept": [
-                "at"
-              ]
-            }
-          ],
-          "explanation": "remain stable AT."
-        },
-        {
-          "id": "q4",
-          "prompt": "Oil prices peaked ____ 120 USD per barrel.",
-          "blanks": [
-            {
-              "accept": [
-                "at"
-              ]
-            }
-          ],
-          "explanation": "peak AT."
-        },
-        {
-          "id": "q5",
-          "prompt": "The rate reached a peak ____ 85% in 2020.",
-          "blanks": [
+            },
             {
               "accept": [
                 "of"
               ]
             }
-          ],
-          "explanation": "a peak OF."
+          ]
         },
         {
-          "id": "q6",
-          "prompt": "There was a sharp increase ____ the number of car users.",
+          "id": "q2",
+          "prompt": "GM car sales peaked ____ 2,000 in 1999.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "The chart shows a decline ____ 35% ____ the bird population.",
+          "blanks": [
+            {
+              "accept": [
+                "of"
+              ]
+            },
+            {
+              "accept": [
+                "in"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "There has been a significant increase ____ the number of people aged over eighty.",
           "blanks": [
             {
               "accept": [
                 "in"
               ]
             }
-          ],
-          "explanation": "an increase IN + đối tượng."
+          ]
         },
         {
-          "id": "q7",
-          "prompt": "The figure fell ____ 20% ____ 12% between 2000 and 2010.",
+          "id": "q5",
+          "prompt": "There have been dramatic cuts ____ the level of spending on the elderly, reaching a low ____ 11%.",
+          "blanks": [
+            {
+              "accept": [
+                "in"
+              ]
+            },
+            {
+              "accept": [
+                "of"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "Profits rose ____ a low of 4.5 million to a high of 8 million in 2008.",
           "blanks": [
             {
               "accept": [
                 "from"
               ]
-            },
-            {
-              "accept": [
-                "to"
-              ]
             }
-          ],
-          "explanation": "from … to … = từ … xuống …"
+          ]
         },
         {
-          "id": "q8",
-          "prompt": "The number fluctuated ____ 10 ____ 15 million.",
-          "blanks": [
-            {
-              "accept": [
-                "between"
-              ]
-            },
-            {
-              "accept": [
-                "and"
-              ]
-            }
-          ],
-          "explanation": "fluctuate BETWEEN X AND Y."
-        },
-        {
-          "id": "q9",
-          "prompt": "The figure hovered ____ 30% throughout the period.",
+          "id": "q7",
+          "prompt": "Canada and Australia’s wheat exports fluctuated ____ 5 million and 6 million respectively.",
           "blanks": [
             {
               "accept": [
@@ -847,60 +830,29 @@
                 "at"
               ]
             }
-          ],
-          "explanation": "hover AROUND = dao động quanh mức."
+          ]
         },
         {
-          "id": "q10",
-          "prompt": "The amount of waste doubled ____ the ten-year period.",
-          "blanks": [
-            {
-              "accept": [
-                "over"
-              ]
-            }
-          ],
-          "explanation": "OVER + giai đoạn."
-        },
-        {
-          "id": "q11",
-          "prompt": "Coal accounted for 30% ____ total energy production.",
-          "blanks": [
-            {
-              "accept": [
-                "of"
-              ]
-            }
-          ],
-          "explanation": "…% OF + tổng thể."
-        },
-        {
-          "id": "q12",
-          "prompt": "The year 2010 witnessed a dramatic rise ____ tourist numbers.",
+          "id": "q8",
+          "prompt": "There were significant improvements ____ healthcare ____ 1980.",
           "blanks": [
             {
               "accept": [
                 "in"
               ]
-            }
-          ],
-          "explanation": "a rise IN."
-        },
-        {
-          "id": "q13",
-          "prompt": "Sales bottomed ____ 200 units in 2018.",
-          "blanks": [
+            },
             {
               "accept": [
-                "at"
+                "since",
+                "after",
+                "in"
               ]
             }
-          ],
-          "explanation": "bottom AT."
+          ]
         },
         {
-          "id": "q14",
-          "prompt": "There was a fall ____ 5 million ____ 15 million in car ownership.",
+          "id": "q9",
+          "prompt": "The statistics show a reduction ____ 20% ____ energy costs as a result ____ the measures.",
           "blanks": [
             {
               "accept": [
@@ -909,93 +861,194 @@
             },
             {
               "accept": [
-                "to"
-              ]
-            }
-          ],
-          "explanation": "a fall OF (mức giảm) … TO (giá trị đích)."
-        },
-        {
-          "id": "q15",
-          "prompt": "The figure stood ____ 8% in 2005.",
-          "blanks": [
-            {
-              "accept": [
-                "at"
-              ]
-            }
-          ],
-          "explanation": "stand AT."
-        },
-        {
-          "id": "q16",
-          "prompt": "Germany saw a slight decline ____ paper recycling.",
-          "blanks": [
-            {
-              "accept": [
                 "in"
               ]
+            },
+            {
+              "accept": [
+                "of"
+              ]
             }
-          ],
-          "explanation": "a decline IN."
+          ]
         },
         {
-          "id": "q17",
-          "prompt": "The rate climbed ____ 3 percentage points ____ 19%.",
+          "id": "q10",
+          "prompt": "Profits fell ____ 10%, from 2,000 to 1,800 in the 1970s.",
           "blanks": [
             {
               "accept": [
                 "by"
               ]
-            },
-            {
-              "accept": [
-                "to"
-              ]
             }
-          ],
-          "explanation": "BY = mức tăng, TO = giá trị đích."
+          ]
         },
         {
-          "id": "q18",
-          "prompt": "The population grew steadily ____ 1990 ____ 2020.",
+          "id": "q11",
+          "prompt": "The radio station experienced a fall ____ 36,000 listeners to a total audience ____ 2.1 million.",
           "blanks": [
             {
               "accept": [
-                "from"
+                "of"
               ]
             },
+            {
+              "accept": [
+                "of"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q12",
+          "prompt": "The number of students fell ____ a low of 1,500 in the second half of the year.",
+          "blanks": [
             {
               "accept": [
                 "to"
               ]
             }
-          ],
-          "explanation": "from 1990 to 2020."
+          ]
         },
         {
-          "id": "q19",
-          "prompt": "Renewable energy started ____ just 2% of the total.",
+          "id": "q13",
+          "prompt": "Cases of AIDS shot ____ from 2,400 in 1996 to 4,000 in 2004.",
+          "blanks": [
+            {
+              "accept": [
+                "up"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q14",
+          "prompt": "Demand reached a peak ____ 45,000 in early March.",
+          "blanks": [
+            {
+              "accept": [
+                "of"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q15",
+          "prompt": "The number of cars sold remained unchanged in 1999 ____ three million.",
           "blanks": [
             {
               "accept": [
                 "at"
               ]
             }
-          ],
-          "explanation": "start AT + điểm khởi đầu."
+          ]
         },
         {
-          "id": "q20",
-          "prompt": "The chart compares four countries ____ terms of energy use.",
+          "id": "q16",
+          "prompt": "Students do between three ____ four hours homework a night.",
+          "blanks": [
+            {
+              "accept": [
+                "and"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q17",
+          "prompt": "The number of accidents ____ 1999 was slightly higher than that of 2000.",
           "blanks": [
             {
               "accept": [
                 "in"
               ]
             }
-          ],
-          "explanation": "in terms of."
+          ]
+        },
+        {
+          "id": "q18",
+          "prompt": "The figure rose steadily ____ the four years between 1997 ____ 2001.",
+          "blanks": [
+            {
+              "accept": [
+                "over",
+                "during",
+                "for",
+                "in"
+              ]
+            },
+            {
+              "accept": [
+                "and"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q19",
+          "prompt": "Oil production rose dramatically at first but then levelled out ____ $70 a barrel.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q20",
+          "prompt": "There was an increase ____ 50,000 between 1990 and 1992.",
+          "blanks": [
+            {
+              "accept": [
+                "of"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q21",
+          "prompt": "____ 1994 ____ 1997, sales rose steadily ____ over 20,000.",
+          "blanks": [
+            {
+              "accept": [
+                "From",
+                "Between"
+              ]
+            },
+            {
+              "accept": [
+                "to",
+                "and"
+              ]
+            },
+            {
+              "accept": [
+                "to"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q22",
+          "prompt": "DVD sales peaked ____ 60,000 ____ 1992 but then decreased ____ about 10,000 over the next two years.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            },
+            {
+              "accept": [
+                "in"
+              ]
+            },
+            {
+              "accept": [
+                "by",
+                "to"
+              ]
+            }
+          ]
         }
       ]
     },
@@ -1282,7 +1335,7 @@
           "Dùng đúng BY cho mức thay đổi và TO cho giá trị đích",
           "Dùng AMOUNT cho giấy tái chế, PERCENTAGE cho tỷ lệ thất nghiệp"
         ],
-        "sampleAnswer": "The number of rail passengers in Japan increased dramatically by 12 million to 20 million between 2005 and 2015.\nThere was a dramatic increase of 12 million to 20 million in the number of Japanese rail passengers.\nJapan witnessed a dramatic increase of 12 million to 20 million in the number of rail passengers.",
+        "sampleAnswer": "Hành khách đi tàu ở Nhật (2005 → 2015)\n1. (CT1) The number of rail passengers in Japan increased dramatically by 12 million to 20 million between 2005 and 2015.\n2. (CT2) There was a dramatic increase of 12 million to 20 million in the number of Japanese rail passengers between 2005 and 2015.\n3. (CT3) Japan witnessed a dramatic increase of 12 million to 20 million in the number of rail passengers over the decade.\n\nLượng giấy tái chế ở Đức (1990 → 2000)\n4. (CT1) The amount of paper recycled in Germany decreased significantly by 3 million tonnes to 3 million tonnes between 1990 and 2000.\n5. (CT2) There was a significant decrease of 3 million tonnes to 3 million tonnes in the amount of paper recycled in Germany.\n6. (CT3) The amount of recycled paper in Germany experienced a significant decrease, halving from 6 million to 3 million tonnes.\n\nTỷ lệ thất nghiệp ở Tây Ban Nha (2008 → 2013)\n7. (CT1) The unemployment rate in Spain rose sharply by 18 percentage points to 26% between 2008 and 2013.\n8. (CT2) There was a sharp rise of 18 percentage points to 26% in the Spanish unemployment rate between 2008 and 2013.\n9. (CT3) Spain saw a sharp rise of 18 percentage points to 26% in its unemployment rate over this five-year period.",
         "commonErrors": [
           "increased by to 20 million",
           "There was a dramatically increase"
@@ -1643,12 +1696,12 @@
           [
             "China",
             "5,500",
-            "6,000"
+            "5,500"
           ],
           [
             "Australia",
             "3,100",
-            "2,000"
+            "1,000"
           ],
           [
             "US",
@@ -1658,7 +1711,7 @@
           [
             "UK",
             "1,000",
-            "1,100"
+            "2,700"
           ]
         ],
         "note": "Gợi ý mở đầu Đ1: “In 2005, 5,500 grams of pizza were made in China, which topped the list…”. Gợi ý mở đầu Đ2: “In the next 5 years, the amount of pizza produced in the US increased dramatically by 5,000 grams to 7,500 grams…”"
@@ -1680,7 +1733,7 @@
           "Đoạn 2 CHỈ mô tả xu hướng 2005→2010",
           "Có phân biệt mức độ: US tăng mạnh, China và UK tăng nhẹ, Australia giảm đáng kể"
         ],
-        "sampleAnswer": "In 2005, 5,500 grams of pizza were made in China, which topped the list among the four given countries, compared to 3,100 grams in Australia. The figures for the US and the UK were 2,500 and 1,000 grams, respectively, the latter being the lowest of all.\n\nIn the next 5 years, the amount of pizza produced in the US increased dramatically by 5,000 grams to 7,500 grams and became the highest figure in the table. Chinese and British output rose only slightly, to 6,000 and 1,100 grams. By contrast, Australia experienced a considerable fall of over a third, to just 2,000 grams.",
+        "sampleAnswer": "In 2005, 5,500 grams of pizza were made in China, which topped the list among the four given countries, compared to 3,100 grams in Australia. The figures for the US and the UK were 2,500 and 1,000 grams, respectively, the latter being the lowest of all.\n\nIn the next 5 years, the amount of pizza produced in the US increased dramatically by 5,000 grams to 7,500 grams and became the highest figure in the table. British production also rose significantly, almost trebling to 2,700 grams. By contrast, the figure for Australia fell sharply by 2,100 grams to only 1,000 grams, while Chinese output remained unchanged at 5,500 grams.",
         "commonErrors": [
           "trộn lẫn dữ liệu và xu hướng trong cùng một đoạn"
         ]
@@ -1729,7 +1782,7 @@
           "Dùng AMOUNT vì thịt/cá không đếm được",
           "Nêu rõ chicken đi ngược xu hướng chung"
         ],
-        "sampleAnswer": "In 1979, beef was the most popular food, with weekly consumption per person standing at around 220 grams, compared to roughly 150 grams for lamb and 140 grams for chicken. The amount of fish eaten was far lower, at only about 60 grams, while the figure for pork was similar to that of lamb, at close to 150 grams. Beef was therefore eaten in far greater quantities than any other food at the start of the period.\n\nOver the following 25 years, there was a marked fall in the consumption of both beef and lamb, which dropped to approximately 100 grams and 60 grams respectively by 2004. The amount of pork consumed also declined, though far more gradually, ending at around 130 grams. The opposite trend was true for chicken, which rose steadily throughout the period to become the most widely eaten food, at about 250 grams. Fish was the only item to show no clear change, with consumption remaining largely stable at roughly 60 grams from the beginning of the period to the end.",
+        "sampleAnswer": "In 1979, around 220 grams of beef were consumed per person on a weekly basis, which was considerably higher than the figures for chicken and lamb, at roughly 150 grams each. The amount of fish eaten was the lowest, at approximately 60 grams.\n\nIn the next 25 years, there was a steady rise of about 100 grams in the consumption of chicken, to around 250 grams, making it the most popular food by 2004. By contrast, the amounts of beef and lamb that were eaten saw a sharp decrease, to roughly 110 grams and 55 grams respectively. Meanwhile, fish consumption in this European nation remained relatively stable, dipping only slightly to just under 40 grams per person per week.",
         "commonErrors": [
           "The number of chicken consumed"
         ]
@@ -1776,7 +1829,7 @@
           "Đoạn 1 chỉ dữ liệu 1981",
           "Dùng “percentage points” khi nói mức chênh lệch giữa hai tỷ lệ"
         ],
-        "sampleAnswer": "In 1981, the largest share of the school budget was spent on teachers’ salaries, which accounted for 40% of total spending, compared to 28% for the salaries of other workers. Spending on resources such as books made up 15% of the budget, while furniture and equipment took up 5% and insurance the remaining 2%. Together, the two categories of salaries therefore absorbed more than two-thirds of all expenditure.\n\nBy 1991, the pattern had shifted noticeably. The proportion spent on teachers’ salaries rose by 10 percentage points to 50%, making it an even more dominant item, whereas the share going to other workers’ salaries fell sharply to just 15%. Spending on resources increased by 5 percentage points to 20%, and the proportion allocated to insurance rose from 2% to 8%. The share spent on furniture and equipment, by contrast, remained relatively small throughout, ending the period close to where it had started.",
+        "sampleAnswer": "In 1981, the largest share of the school's budget, at 40%, was spent on teachers' salaries, compared to 28% for the salaries of other workers. Resources such as books and furniture and equipment each accounted for 15% of total spending, while insurance took up only 2%.\n\nBy 1991, the proportion spent on teachers' salaries had risen by 10 percentage points to 50%, making up half of the budget. Spending on resources also increased, to 20%, and the figure for insurance rose slightly to 3%. By contrast, the share allocated to other workers' salaries fell to 22%, and spending on furniture and equipment dropped sharply, from 15% to just 5%.",
         "commonErrors": [
           "There were 40% of the budget",
           "increased by 40% (khi thực ra là 40 percentage points)"
@@ -1825,7 +1878,7 @@
           "Có nêu thời điểm hai đường giao nhau nếu có",
           "Đoạn 2 phải có ít nhất 2 cấu trúc so sánh xu hướng"
         ],
-        "sampleAnswer": "In 1985, gym membership in Thailand was dominated by men, whose numbers stood at around 900, compared to only 300 for women. There was therefore a gap of roughly 600 members between the two groups at the start of the period, with men accounting for three-quarters of the total.\n\nOver the next three decades, the number of male members rose gradually, increasing by about 600 to reach approximately 1,500 in 2015. Female membership, by contrast, grew far more rapidly. It climbed steadily from 300 to around 1,900, and the two figures were equal at approximately 2005, when each stood at about 1,100. After this point women became the larger group, and by the end of the period there was a substantial increase in the female figure, which exceeded the male total by some 400 members—the reverse of the situation in 1985.",
+        "sampleAnswer": "In 1985, there were approximately 2,200 male fitness members in Thailand, compared to only around 1,300 female members. Men therefore outnumbered women by almost 1,000 at the start of the period.\n\nOver the next 30 years, the number of male members fluctuated dramatically. It rose to about 3,800 in 1990, fell to around 1,800 in 2000 and then surged to a peak of 5,000 in 2010, before plummeting to just 1,000 in 2015. Female membership, by contrast, changed less dramatically, fluctuating between roughly 1,700 and 3,000 and reaching its highest point of about 2,950 in 2010. By 2015, the figure for women stood at 2,000, twice as high as that for men.",
         "commonErrors": [
           "The amount of members"
         ]
@@ -1836,8 +1889,8 @@
       "lessonCode": "T1-L07",
       "order": 1,
       "type": "gap_fill",
-      "title": "Exercise 1 — Điền từ vào đoạn mô tả tai nạn giao thông",
-      "instruction": "Điền từ thích hợp vào chỗ trống trong đoạn văn mô tả biểu đồ “Number of road accidents in Someland, 1983–1995”.",
+      "title": "Exercise 1 — Điền từ: Number of road accidents in Someland (1983–1995)",
+      "instruction": "Điền từ thích hợp vào chỗ trống để miêu tả biểu đồ “Number of road accidents in Someland between 1983 and 1995” (đơn vị: triệu vụ).",
       "source": "original",
       "skillTags": [
         "cloze",
@@ -1845,142 +1898,119 @@
       ],
       "difficulty": 3,
       "estimatedMinutes": 8,
-      "points": 10,
+      "points": 7,
       "autoGrade": true,
       "wordBank": [
-        "rose",
-        "peak",
-        "before",
-        "however",
-        "then",
-        "gradually",
-        "reaching",
-        "sharply",
-        "period",
-        "remained"
+        "saw",
+        "fell",
+        "it",
+        "a drop",
+        "peaked",
+        "fluctuation",
+        "plummeting"
       ],
       "items": [
         {
           "id": "q1",
-          "prompt": "The number of road accidents in Someland ____ steadily between 1983 and 1987.",
+          "prompt": "The number of road accidents began at over 4 million in 1983 and then (1) ____ rose steadily to nearly 5 million in 1985.",
           "blanks": [
             {
               "accept": [
-                "rose"
+                "it",
+                "gradually",
+                "slowly"
               ]
             }
-          ],
-          "explanation": "Động từ chính ở quá khứ."
+          ]
         },
         {
           "id": "q2",
-          "prompt": "It then climbed ____ to reach a high point in 1989.",
+          "prompt": "In the following year, the figure (2) ____ at 6.5 million",
           "blanks": [
             {
               "accept": [
-                "sharply"
+                "peaked"
               ]
             }
-          ],
-          "explanation": "Trạng từ đi với động từ."
+          ]
         },
         {
           "id": "q3",
-          "prompt": "The figure hit a ____ of just over 500 cases in that year.",
+          "prompt": "… before (3) ____ to 3.5 million in 1987.",
           "blanks": [
             {
               "accept": [
-                "peak"
+                "plummeting",
+                "plunging",
+                "dropping",
+                "falling",
+                "declining",
+                "decreasing"
               ]
             }
-          ],
-          "explanation": "hit / reach a peak of."
+          ]
         },
         {
           "id": "q4",
-          "prompt": "____, the trend reversed after 1989.",
+          "prompt": "There was a (4) ____ in the number of road accidents between 1987 and 1990,",
           "blanks": [
             {
               "accept": [
-                "However"
+                "fluctuation",
+                "slight fluctuation"
               ]
             }
-          ],
-          "explanation": "Từ nối cho xu hướng trái ngược."
+          ]
         },
         {
           "id": "q5",
-          "prompt": "Accidents fell ____ over the next four years.",
+          "prompt": "… which was followed by (5) ____ to a low of just under 3 million in 1991.",
           "blanks": [
             {
               "accept": [
-                "gradually"
+                "a drop",
+                "a fall",
+                "a decline",
+                "a decrease",
+                "a dip"
               ]
             }
-          ],
-          "explanation": "Giảm từ từ."
+          ]
         },
         {
           "id": "q6",
-          "prompt": "The figure ____ stable at around 300 cases from 1993 onwards.",
+          "prompt": "The year 1992 (6) ____ a recovery back to 4 million accidents,",
           "blanks": [
             {
               "accept": [
-                "remained"
+                "saw",
+                "witnessed",
+                "experienced"
               ]
             }
-          ],
-          "explanation": "remain stable at."
+          ]
         },
         {
           "id": "q7",
-          "prompt": "There was a slight dip in 1991 ____ the numbers climbed back.",
+          "prompt": "… but the figure then (7) ____ to 3 million cases at the end of the period.",
           "blanks": [
             {
               "accept": [
-                "before"
+                "fell",
+                "dropped",
+                "declined",
+                "decreased",
+                "dipped"
               ]
             }
-          ],
-          "explanation": "before + mệnh đề / V-ing."
-        },
-        {
-          "id": "q8",
-          "prompt": "The figure rose again, ____ a second high in 1994.",
-          "blanks": [
-            {
-              "accept": [
-                "reaching"
-              ]
-            }
-          ],
-          "explanation": "V-ing để nối xu hướng nối tiếp."
-        },
-        {
-          "id": "q9",
-          "prompt": "Overall, road accidents were higher at the end of the ____ than at the beginning.",
-          "blanks": [
-            {
-              "accept": [
-                "period"
-              ]
-            }
-          ],
-          "explanation": "the period = giai đoạn khảo sát."
-        },
-        {
-          "id": "q10",
-          "prompt": "The figure ____ levelled off until 1995.",
-          "blanks": [
-            {
-              "accept": [
-                "then"
-              ]
-            }
-          ],
-          "explanation": "and then / then để nối xu hướng cùng chiều."
+          ]
         }
-      ]
+      ],
+      "stimulus": {
+        "kind": "image",
+        "caption": "Number of road accidents in Someland between 1983 and 1995 (millions of accidents)",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/road-accidents-someland-1983-1995_1794032458134.png"
+      }
     },
     {
       "code": "T1-L07-E02",
@@ -2018,7 +2048,7 @@
           "Không lặp lại một cấu trúc nối quá 2 lần",
           "Có ít nhất một câu nối 3 xu hướng"
         ],
-        "sampleAnswer": "1. In Figure A, starting at 10%, the figure rose gradually to 25%, before levelling off for the rest of the period.\n2. In Figure B, there was a steep climb until the value reached a high of 80 million; however, it then began to fall back.\n3. The figure in C increased slowly to 40, and then continued its upward trend, reaching a peak of 75.\n4. In D, the number dropped from 60 to 30, followed by a modest recovery to 45.\n5. Beginning at 5 units, the figure in E surged to 50, before dipping to 35 and finally stabilising at that level.\n6. Figure F showed a period of fluctuation around 20, followed by a sharp and sustained decline to almost zero.",
+        "sampleAnswer": "1. (A) Starting at about 95,000 in 1960, the number of Net users fell dramatically to around 30,000 in 1980, before declining only slightly and ending at 20,000 in 2010.\n2. (B) The number of Net users rose sharply from 20 in 1960 to 95 in 1980, but later remained stable at this level until 2010.\n3. (C) The number of Net users increased steadily from just 10 in 1960 to 100 in 2000, and then it continued its upward trend, reaching a peak of 105 in 2010.\n4. (D) There was a steady decline in the bird population from 95,000 in 1960 to 60,000 in 1980, which was followed by a sharp drop to a low of 20,000 in 1990; however, the figure then recovered to 70,000 by 2010.\n5. (E) The bird population fell slightly from 95 to 80 between 1960 and 1970 before plummeting to 20 in 1980, after which it levelled off at around 15 for the rest of the period.\n6. (F) Starting at 85 in 1960, the bird population plunged to 10 in 1970, rebounded to 70 in 1980 and dropped again to 15 in 1990, before surging to a peak of 105 in 2010.",
         "commonErrors": [
           "dùng “and then” cho xu hướng trái ngược",
           "dùng “however” cho hai xu hướng cùng chiều"
@@ -2079,7 +2109,7 @@
           "Dùng ít nhất 4 cụm danh từ trong bảng gợi ý",
           "Có nêu năm chuyển giao rõ ràng"
         ],
-        "sampleAnswer": "There were mild fluctuations in the number of the XYZ radio station listeners from 1980 to 2000, ranging between 11 and 35 thousand people; however, the figure then saw a partial growth over the next ten years, reaching almost 25 thousand people by 2010.",
+        "sampleAnswer": "Looking at the line graph in more detail, it can clearly be seen that the number of listeners of the XYZ radio station stood at around 20 thousand in 1940, followed by a steep rise to 105 thousand in 1955, which was the highest point on the chart. However, this figure then plummeted to approximately 20 thousand in 1960. From 1960 to 1980, the number of people who listened to the station climbed significantly to 45 thousand and reached a plateau, before falling back and hitting its rock bottom of only about 15 thousand in 1980. Between 1980 and 2000, radio listeners experienced a period of slight volatility, ranging from about 15 to 30 thousand. In the next two decades, the number of listeners seemed to be levelling off at just over 20 thousand, before being expected to soar to just under 85 thousand by 2030. After that, the figure is anticipated to remain constant until the end of the period.",
         "commonErrors": [
           "dùng “was” cho mốc 2030",
           "dùng “will be increased”"
@@ -2135,7 +2165,7 @@
           "Thay ít nhất 3 cụm từ vựng trong mỗi đoạn",
           "Đổi ít nhất 1 cấu trúc câu trong mỗi đoạn (chủ động ↔ danh từ hoá)"
         ],
-        "sampleAnswer": "Car ownership in the US stood at 35% in 1999, after which it declined to just under 15% before recovering to 22% by 2005.",
+        "sampleAnswer": "1. Car ownership in the US accounted for 35% in 1999, after which it slowed down and fell to slightly below 15%, before recovering to 22% by 2005.\n2. During the first six months of 2006, the proportion of road accidents in New York rose eight times, before falling steeply and hitting its lowest point of 5% in 2010.\n3. The number of French internet users who shopped online rose dramatically to an unprecedented level of 85 in 2002; however, this figure then dipped slightly two years later.\n4. Between 1990 and 1995, the unemployment rate dropped sharply from 60% to 20% in just five years, and it then remained stable for the rest of the period.",
         "commonErrors": [
           "chép lại nguyên cụm gốc",
           "đổi số liệu khi paraphrase"
@@ -2420,7 +2450,7 @@
           "Nêu rõ loại biểu đồ (line chart / bar chart / pie chart / table)",
           "Mỗi đề có 2 phiên bản khác nhau"
         ],
-        "sampleAnswer": "The bar chart illustrates how three areas, namely Agriculture, Manufacturing, and Business and Financial Services, contributed to the economy of the UK from 1901 to 2000.\nThe bar chart compares three different sectors in terms of their contribution to the UK economy over the twentieth century.",
+        "sampleAnswer": "Đề 1\n- The bar chart depicts how many youngsters participated in physical activities, broken down by sex, in the UK in 1999.\n- The bar chart compares six sports in terms of the participation of young males and females in Great Britain in 1999.\n\nĐề 2\n- The two pie charts illustrate how the world population was distributed across different regions in 1900 and 2000.\n- The pie charts compare different regions of the world in terms of their share of the global population in 1900 and 2000.\n\nĐề 3\n- The chart illustrates how many people commuted daily by three different means of transport in the UK over a period of 30 years.\n- The chart compares cars, buses and trains in terms of the average number of people who used them to commute each day in the UK from 1970 to 2000.\n\nĐề 4\n- The chart illustrates how much electricity was produced from three sources in 2010.\n- The chart compares three sources of energy in terms of the amount of electricity they generated in 2010.\n\nĐề 5\n- The bar chart illustrates the percentages of three different areas, namely Agriculture, Manufacturing, and Business and Financial Services, in the economy of the UK from 1901 to 2000.\n- The bar chart illustrates how three areas, namely Manufacturing, Agriculture, and Business and Financial Services, contributed to the economy of the UK from 1901 to 2000.\n- The bar chart compares three different areas, namely Agriculture, Manufacturing, and Business and Financial Services, in terms of their contribution to the economy of the UK from 1901 to 2000.",
         "commonErrors": [
           "chép nguyên “The graph below shows”",
           "đảo ngược thứ tự năm (from 2000 to 1970)"
@@ -2737,7 +2767,7 @@
           "Nêu đúng loại biểu đồ",
           "Có mốc thời gian đầy đủ"
         ],
-        "sampleAnswer": "1. The line graph illustrates how much fish and various types of meat were eaten in a European country between 1979 and 2004.\n2. The line graph compares the percentage of people aged 65 and above in three countries over the hundred years from 1940 to 2040.\n3. The pie charts illustrate how a particular UK school divided its annual spending, namely in 1981 and 1991.\n4. The line graph compares fitness club membership in Thailand in terms of gender between 1985 and 2015.",
+        "sampleAnswer": "1. The line graph illustrates how much fish and various types of meat were eaten in a European country between 1979 and 2004.\n2. The line graph compares the percentage of people aged 65 and above in three countries over the hundred years from 1940 to 2040.\n3. The pie charts illustrate how a particular UK school allocated its annual budget in 1981 and 1991.\n4. The bar chart compares the number of men and women who were members of fitness centres in Thailand between 1985 and 2015.",
         "commonErrors": [
           "The graph below shows…"
         ]
@@ -2802,7 +2832,7 @@
           "Nêu được 2 đặc điểm khác nhau (không phải 2 cách nói của cùng 1 ý)",
           "Dùng cả 2 công thức, không lặp lại một công thức cho cả 4 bài"
         ],
-        "sampleAnswer": "Overall, while the consumption of chicken rose steadily over the period, the opposite trend was true for the other three types of meat and fish. It is also noticeable that beef, which was the most popular food at the start, had been overtaken by chicken by the end of the period.",
+        "sampleAnswer": "Graph 1 — Fish and meat\nOverall, while the consumption of chicken rose steadily over the period, the opposite trend was true for beef, lamb and fish. It is also noticeable that beef, the most popular food in 1979, had been overtaken by chicken by the end of the period.\n\nGraph 2 — Population aged 65 and over\nOverall, the proportion of people aged 65 and over increased in all three countries and is expected to continue rising until 2040. Additionally, although Japan had the lowest figure for most of the period, it is projected to have the highest by 2040.\n\nGraph 3 — UK school spending\nOverall, teachers' salaries made up by far the largest share of the school's spending in both years, and this proportion grew further by 1991. It is also clear that insurance accounted for the smallest share of the budget in both years.\n\nGraph 4 — Fitness membership in Thailand\nOverall, the numbers of both male and female members fluctuated considerably over the 30-year period. Additionally, although men outnumbered women in most years, women became the larger group in 2000, 2005 and 2015.",
         "commonErrors": [
           "Overview chứa số liệu",
           "Overview chỉ nêu 1 đặc điểm",
@@ -2996,13 +3026,13 @@
       "code": "T1-L09-E07",
       "lessonCode": "T1-L09",
       "order": 7,
-      "type": "paragraph_writing",
-      "title": "Practice — Viết hai đoạn thân bài",
-      "instruction": "Với biểu đồ tiêu thụ thịt và cá (1979–2004): viết Body 1 (dữ liệu năm đầu + xu hướng tới năm nổi bật) và Body 2 (năm nổi bật → năm cuối). Chỉ chọn 4–5 số liệu mỗi đoạn.",
+      "type": "full_task1",
+      "title": "Practice — Complete the essay for this graph (Fast food in the UK, 1970–1990)",
+      "instruction": "The given graph shows the consumption of fast food in UK (per week) from 1970 to 1990. Write a report for a university lecturer making comparisons where relevant and reporting the main features. Write at least 150 words.",
       "source": "original",
       "skillTags": [
-        "body-paragraphs",
-        "data-selection"
+        "full-writing",
+        "body-paragraphs"
       ],
       "difficulty": 3,
       "estimatedMinutes": 25,
@@ -3011,12 +3041,11 @@
       "needsAsset": false,
       "stimulus": {
         "kind": "image",
-        "caption": "The consumption of fish and different kinds of meat in a European country between 1979 and 2004",
-        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/fish-meat-1979-2004.png"
+        "caption": "Consumption of fast food in the UK (grams per week), 1970–1990",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/fast-food-uk-1970-1990_1794032459115.png"
       },
-      "responseSlots": 2,
       "rubric": {
-        "minWords": 130,
+        "minWords": 150,
         "targetStructures": [
           "the opposite trend was true for",
           "experienced an upward / downward trend",
@@ -3032,7 +3061,7 @@
           "Body 2 bắt đầu từ năm nổi bật",
           "Có nhóm các đối tượng cùng xu hướng lại với nhau"
         ],
-        "sampleAnswer": "In 1979, the consumption of beef was the highest of the five foods, at approximately 220 grams per person per week, compared to around 150 grams for both lamb and pork and 140 grams for chicken. Fish was the least eaten by a wide margin, at just 60 grams. Over the following decade, beef and lamb experienced a downward trend, falling to roughly 130 grams and 100 grams respectively by around 1989, while chicken consumption rose to overtake them.\n\nFrom the late 1980s to 2004, this pattern continued. Beef and lamb reached lows of about 100 grams and 60 grams, and the amount of pork consumed also declined gradually to around 130 grams. The opposite trend was true for chicken, which experienced a steady upward trend and reached a peak of around 250 grams, making it the most popular food by the end of the period. Fish consumption, meanwhile, stayed almost flat throughout, ending the period much as it began.",
+        "sampleAnswer": "The line graph illustrates the amount of fast food consumed in Britain on a weekly basis over a twenty-year period, starting in 1970.\n\nOverall, it is evident that while the consumption of fish and chips and hamburgers showed an upward trend, the reverse pattern was observed in pizza consumption. Additionally, fish and chips overtook pizza to become the most popular fast food by the end of the period.\n\nLooking at the diagram in more detail, from 1970 to 1980, hamburger and fish and chips consumption by British people gradually increased from around 30 grams and 75 grams to approximately 80 grams and 150 grams, respectively. Subsequently, the amount of hamburgers eaten continued to rise, reaching 120 grams in 1985, before soaring to roughly 280 grams at the end of the surveyed period. Similarly, consumption of fish and chips experienced a rapid surge, doubling to 300 grams by 1985 and peaking at 500 grams in 1990.\n\nAs for the remaining data, in 1970, the quantity of pizza consumed stood at around 310 grams, which far exceeded the figures for the other fast foods. However, this statistic then declined steadily to 200 grams in 1985, before recovering slightly by 20 grams at the end of the period.",
         "commonErrors": [
           "liệt kê hết mọi số liệu",
           "hai đoạn trùng nội dung"
@@ -3043,26 +3072,48 @@
       "code": "T1-L09-E08",
       "lessonCode": "T1-L09",
       "order": 8,
-      "type": "full_task1",
-      "title": "Bài viết hoàn chỉnh — 4 đoạn trong 20 phút",
-      "instruction": "Viết một bài Task 1 hoàn chỉnh (Introduction – Overview – Body 1 – Body 2) cho biểu đồ. Tối thiểu 150 từ, hoàn thành trong 20 phút.",
+      "type": "paragraph_writing",
+      "title": "Homework — Viết 2 đoạn thân bài cho 4 biểu đồ của Buổi 9",
+      "instruction": "Viết hai đoạn Body cho từng biểu đồ trong 4 đề của Buổi 9 (Introduction và Overview đã làm trên lớp). Mỗi biểu đồ một ô: Body 1 + Body 2, chọn 4–5 số liệu mỗi đoạn.",
       "source": "original",
       "skillTags": [
-        "full-writing"
+        "body-paragraphs",
+        "data-selection"
       ],
       "difficulty": 3,
-      "estimatedMinutes": 20,
+      "estimatedMinutes": 40,
       "points": 40,
       "autoGrade": false,
       "timerMinutes": 20,
       "needsAsset": false,
       "stimulus": {
-        "kind": "image",
-        "caption": "The chart below shows male and female fitness membership in Thailand between 1985 and 2015.",
-        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/gym-thailand-1985-2015.png"
+        "kind": "text",
+        "caption": "Bốn đề của Buổi 9",
+        "rows": [
+          [
+            "Graph 1",
+            "The consumption of fish and different kinds of meat in a European country between 1979 and 2004.",
+            "https://media.ieltsthayha.com/wt1/charts/fish-meat-1979-2004.png"
+          ],
+          [
+            "Graph 2",
+            "The proportion of the population aged 65 and over between 1940 and 2040 in three different countries.",
+            "https://media.ieltsthayha.com/wt1/charts/population-65plus.png"
+          ],
+          [
+            "Graph 3",
+            "The changes in annual spending by a particular UK school in 1981 and 1991.",
+            "https://media.ieltsthayha.com/wt1/charts/uk-school-pie-1981-1991.png"
+          ],
+          [
+            "Graph 4",
+            "Male and female fitness membership in Thailand between 1985 and 2015.",
+            "https://media.ieltsthayha.com/wt1/charts/gym-thailand-1985-2015.png"
+          ]
+        ]
       },
       "rubric": {
-        "minWords": 150,
+        "minWords": 320,
         "targetStructures": [
           "compares … in terms of",
           "It is clear that … Additionally, …",
@@ -3072,295 +3123,100 @@
           "reached a peak of"
         ],
         "mustUse": 4,
-        "scoring": [
-          {
-            "criterion": "Task Achievement — đủ 4 đoạn, có Overview, chọn lọc 8–10 số liệu",
-            "points": 10
-          },
-          {
-            "criterion": "Coherence & Cohesion — chia đoạn hợp lý, từ nối đa dạng",
-            "points": 10
-          },
-          {
-            "criterion": "Lexical Resource — từ vựng xu hướng và mức độ chính xác",
-            "points": 10
-          },
-          {
-            "criterion": "Grammatical Range & Accuracy",
-            "points": 10
-          }
-        ],
         "checklist": [
           "Introduction paraphrase, không chép đề",
           "Overview 2 câu, KHÔNG có số liệu",
           "Body 1 và Body 2 chia theo năm nổi bật",
           "Tối thiểu 150 từ"
         ],
-        "sampleAnswer": "The line graph compares the number of men and women holding fitness club memberships in Thailand in terms of gender over a thirty-year period from 1985 to 2015.\n\nIt is clear that the number of members increased for both sexes over the period. Additionally, while men made up the large majority of members at the start, women had overtaken them to become the larger group well before the end.\n\nIn 1985, there were around 900 male members, compared to just 300 female members, so men accounted for three-quarters of the total. Male membership then climbed gradually and fairly steadily, increasing by about 600 to reach roughly 1,500 by 2015.\n\nFemale membership, by contrast, grew far more steeply. From 300 in 1985 it rose year on year, and the two figures were equal at approximately 2005, when each stood at around 1,100. After this point the female figure continued upward to reach a peak of around 1,900 in 2015, some 400 more than the number of male members. The opposite trend was therefore true for the gender balance of the clubs, which shifted from mainly male to mainly female over the period.",
+        "sampleAnswer": "Graph 1 — Fish and meat consumption, 1979–2004\nBody 1: In 1979, around 220 grams of beef were eaten per person per week, compared to about 150 grams for both chicken and lamb, while fish consumption was the lowest, at roughly 60 grams. Over the following ten years, beef consumption fluctuated but stayed at around 200 grams or more, whereas chicken rose steadily and overtook beef in about 1989.\nBody 2: From 1989 onwards, the opposite trend was true for these two foods. Chicken consumption continued to climb, reaching a peak of around 250 grams in 2004, while the figure for beef fell sharply to just over 100 grams. Lamb consumption also declined, to about 55 grams, and fish consumption dipped slightly to below 40 grams by the end of the period.\n\nGraph 2 — Population aged 65 and over, 1940–2040\nBody 1: In 1940, around 9% of Americans were aged 65 and over, compared to about 7% in Sweden and 5% in Japan. Over the next four decades, the figures for the USA and Sweden rose to roughly 15% and 14% respectively, whereas the proportion in Japan dipped to around 3% and remained at this level until the mid-1980s.\nBody 2: After that, the Japanese figure rose slowly to about 10% in 2030, before it is expected to soar to approximately 27% in 2040, the highest of the three countries. The proportion of elderly people in Sweden climbed to 20% by around 2010 and is projected to reach about 25% by 2040, while the figure for the USA, having remained stable at around 14% between 1990 and 2020, is predicted to rise to approximately 23%.\n\nGraph 3 — UK school annual spending, 1981 and 1991\nBody 1: In 1981, teachers' salaries accounted for the largest proportion of the school's spending, at 40%, followed by other workers' salaries, at 28%. Resources such as books and furniture and equipment each took up 15% of the budget, while insurance made up only 2%.\nBody 2: Ten years later, the share spent on teachers' salaries had risen to half of the total budget, and spending on resources also increased, to 20%. By contrast, the proportion allocated to other workers' salaries fell to 22%, and that for furniture and equipment dropped sharply to just 5%. Insurance remained the smallest category, rising only slightly to 3%.\n\nGraph 4 — Fitness membership in Thailand, 1985–2015\nBody 1: In 1985, there were around 2,200 male fitness members in Thailand, compared to about 1,300 female members. Five years later, male membership rose sharply to around 3,800, while the female figure increased more modestly to about 1,900. In 2000, however, the number of men fell to around 1,800, and women became the larger group for the first time, at about 2,800.\nBody 2: From 2000 to 2010, male membership surged to a peak of 5,000, whereas the number of female members fluctuated before reaching about 2,950. In the final five years, both figures declined, but men's membership plummeted to just 1,000, half the figure for women, at 2,000.",
         "commonErrors": [
           "thiếu Overview",
           "Overview có số liệu",
           "viết hết mọi con số"
         ]
-      }
+      },
+      "responseSlots": 4
     },
     {
       "code": "T1-TEST2-A1",
       "lessonCode": "T1-TEST2",
       "order": 1,
-      "type": "mcq",
-      "title": "PHẦN A1 — Trắc nghiệm từ vựng xu hướng",
-      "instruction": "Chọn đáp án đúng. Mỗi câu 1 điểm.",
+      "type": "sentence_transform",
+      "title": "PHẦN A1 — Từ vựng xu hướng",
+      "instruction": "Viết một động từ và một danh từ tương ứng cho mỗi mức độ (dạng: động từ / danh từ). Mỗi câu 2 điểm.",
       "source": "added",
       "skillTags": [
-        "module2-review"
+        "trend-vocabulary"
       ],
       "difficulty": 2,
       "estimatedMinutes": 8,
       "points": 10,
-      "autoGrade": true,
+      "autoGrade": false,
       "items": [
         {
           "id": "q1",
-          "prompt": "Từ nào diễn tả GIẢM CỰC MẠNH?",
-          "options": [
-            {
-              "id": "A",
-              "text": "dip"
-            },
-            {
-              "id": "B",
-              "text": "plummet"
-            },
-            {
-              "id": "C",
-              "text": "level off"
-            },
-            {
-              "id": "D",
-              "text": "climb"
-            }
-          ],
-          "answer": "B",
-          "explanation": "plummet = giảm rất nhanh và rất mạnh."
+          "prompt": "Tăng nhẹ",
+          "cue": "động từ / danh từ",
+          "sampleAnswers": [
+            "rise slightly / a slight rise",
+            "increase slightly / a slight increase",
+            "grow slightly / a slight growth"
+          ]
         },
         {
           "id": "q2",
-          "prompt": "“The figure ____ at 40% for a decade.”",
-          "options": [
-            {
-              "id": "A",
-              "text": "remained stable"
-            },
-            {
-              "id": "B",
-              "text": "fluctuated"
-            },
-            {
-              "id": "C",
-              "text": "rocketed"
-            },
-            {
-              "id": "D",
-              "text": "plunged"
-            }
-          ],
-          "answer": "A",
-          "explanation": "Không đổi suốt 10 năm → remain stable at."
+          "prompt": "Tăng vọt",
+          "cue": "động từ / danh từ",
+          "sampleAnswers": [
+            "surge / a surge",
+            "rocket / a surge",
+            "jump / a jump"
+          ]
         },
         {
           "id": "q3",
-          "prompt": "“Sales rose ____ 500 units, reaching 3,000.”",
-          "options": [
-            {
-              "id": "A",
-              "text": "to"
-            },
-            {
-              "id": "B",
-              "text": "by"
-            },
-            {
-              "id": "C",
-              "text": "at"
-            },
-            {
-              "id": "D",
-              "text": "of"
-            }
-          ],
-          "answer": "B",
-          "explanation": "BY = mức tăng thêm."
+          "prompt": "Giảm mạnh và đột ngột",
+          "cue": "động từ / danh từ",
+          "sampleAnswers": [
+            "plunge / a plunge",
+            "plummet / a plummet",
+            "drop sharply / a sharp drop"
+          ]
         },
         {
           "id": "q4",
-          "prompt": "“The rate reached a peak ____ 85%.”",
-          "options": [
-            {
-              "id": "A",
-              "text": "at"
-            },
-            {
-              "id": "B",
-              "text": "to"
-            },
-            {
-              "id": "C",
-              "text": "of"
-            },
-            {
-              "id": "D",
-              "text": "in"
-            }
-          ],
-          "answer": "C",
-          "explanation": "peak là danh từ → a peak OF."
+          "prompt": "Ổn định trở lại sau khi tăng",
+          "cue": "động từ / danh từ",
+          "sampleAnswers": [
+            "level off / a levelling off",
+            "level out / a levelling out",
+            "stabilise / a period of stability"
+          ]
         },
         {
           "id": "q5",
-          "prompt": "Cấu trúc nào SAI?",
-          "options": [
-            {
-              "id": "A",
-              "text": "There was a sharp increase in…"
-            },
-            {
-              "id": "B",
-              "text": "There was a sharply increase in…"
-            },
-            {
-              "id": "C",
-              "text": "The figure increased sharply."
-            },
-            {
-              "id": "D",
-              "text": "2005 witnessed a sharp increase."
-            }
-          ],
-          "answer": "B",
-          "explanation": "Trước danh từ phải dùng tính từ, không dùng trạng từ."
-        },
-        {
-          "id": "q6",
-          "prompt": "Từ nối nào dùng cho hai xu hướng TRÁI NGƯỢC?",
-          "options": [
-            {
-              "id": "A",
-              "text": "and then"
-            },
-            {
-              "id": "B",
-              "text": "similarly"
-            },
-            {
-              "id": "C",
-              "text": "by contrast"
-            },
-            {
-              "id": "D",
-              "text": "likewise"
-            }
-          ],
-          "answer": "C",
-          "explanation": "By contrast dùng cho xu hướng ngược chiều."
-        },
-        {
-          "id": "q7",
-          "prompt": "Từ 10 lên 30 triệu, ta nói con số đã:",
-          "options": [
-            {
-              "id": "A",
-              "text": "doubled"
-            },
-            {
-              "id": "B",
-              "text": "trebled"
-            },
-            {
-              "id": "C",
-              "text": "quadrupled"
-            },
-            {
-              "id": "D",
-              "text": "halved"
-            }
-          ],
-          "answer": "B",
-          "explanation": "x3 → treble / triple."
-        },
-        {
-          "id": "q8",
-          "prompt": "Overview KHÔNG được chứa:",
-          "options": [
-            {
-              "id": "A",
-              "text": "xu hướng chung"
-            },
-            {
-              "id": "B",
-              "text": "số liệu cụ thể"
-            },
-            {
-              "id": "C",
-              "text": "so sánh cao nhất/thấp nhất"
-            },
-            {
-              "id": "D",
-              "text": "từ “overall”"
-            }
-          ],
-          "answer": "B",
-          "explanation": "Overview chỉ nêu đặc điểm nổi bật, số liệu để dành cho Body."
-        },
-        {
-          "id": "q9",
-          "prompt": "Introduction TỐT nhất phải:",
-          "options": [
-            {
-              "id": "A",
-              "text": "chép nguyên đề cho chính xác"
-            },
-            {
-              "id": "B",
-              "text": "paraphrase và nêu rõ loại biểu đồ, thời gian"
-            },
-            {
-              "id": "C",
-              "text": "nêu 2 đặc điểm nổi bật"
-            },
-            {
-              "id": "D",
-              "text": "chứa nhiều số liệu"
-            }
-          ],
-          "answer": "B",
-          "explanation": "Chép đề không được tính từ; nêu đặc điểm nổi bật là việc của Overview."
-        },
-        {
-          "id": "q10",
-          "prompt": "Nên dùng bao nhiêu số liệu cho mỗi đoạn thân bài?",
-          "options": [
-            {
-              "id": "A",
-              "text": "1–2"
-            },
-            {
-              "id": "B",
-              "text": "4–5"
-            },
-            {
-              "id": "C",
-              "text": "8–10"
-            },
-            {
-              "id": "D",
-              "text": "tất cả"
-            }
-          ],
-          "answer": "B",
-          "explanation": "4–5 mỗi đoạn, tổng 8–10 cho cả bài."
+          "prompt": "Dao động lên xuống",
+          "cue": "động từ / danh từ",
+          "sampleAnswers": [
+            "fluctuate / a fluctuation",
+            "oscillate / an oscillation",
+            "vary / a variation"
+          ]
         }
-      ]
+      ],
+      "rubric": {
+        "targetStructures": [
+          "verb ↔ noun of trend"
+        ],
+        "checklist": [
+          "Động từ và danh từ phải cùng nghĩa",
+          "Danh từ có mạo từ a/an + tính từ nếu cần"
+        ],
+        "commonErrors": [
+          "a rise slightly (sai — danh từ đi với tính từ: a slight rise)"
+        ]
+      }
     },
     {
       "code": "T1-TEST2-A2",
@@ -3368,7 +3224,7 @@
       "order": 2,
       "type": "gap_fill",
       "title": "PHẦN A2 — Điền giới từ",
-      "instruction": "Điền giới từ thích hợp. Mỗi chỗ trống 1 điểm.",
+      "instruction": "Điền giới từ thích hợp. Mỗi câu 1 điểm.",
       "source": "added",
       "skillTags": [
         "prepositions"
@@ -3386,37 +3242,29 @@
         "from",
         "between",
         "and",
-        "over"
+        "over",
+        "with"
       ],
       "items": [
         {
           "id": "q1",
-          "prompt": "The figure peaked ____ 12 million in 2008.",
+          "prompt": "The figure increased ____ 2,000 units in 2010.",
           "blanks": [
             {
               "accept": [
-                "at"
+                "by",
+                "to"
               ]
             }
           ]
         },
         {
           "id": "q2",
-          "prompt": "There was a dramatic rise ____ tourist numbers.",
+          "prompt": "Sales rose ____ 5% ____ 25% over the period.",
           "blanks": [
             {
               "accept": [
-                "in"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "q3",
-          "prompt": "Sales fell ____ 300 units ____ 1,200 units.",
-          "blanks": [
-            {
-              "accept": [
+                "from",
                 "by"
               ]
             },
@@ -3428,19 +3276,46 @@
           ]
         },
         {
+          "id": "q3",
+          "prompt": "The number of visitors peaked ____ 40,000 in July.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            }
+          ]
+        },
+        {
           "id": "q4",
-          "prompt": "The rate hit a low ____ 3% in 2012.",
+          "prompt": "There was a fall ____ 300 tonnes ____ rice exports.",
           "blanks": [
             {
               "accept": [
                 "of"
+              ]
+            },
+            {
+              "accept": [
+                "in"
               ]
             }
           ]
         },
         {
           "id": "q5",
-          "prompt": "The figure fluctuated ____ 20 ____ 40 million.",
+          "prompt": "The rate remained stable ____ 12%.",
+          "blanks": [
+            {
+              "accept": [
+                "at"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "Prices fluctuated ____ 10 USD ____ 15 USD.",
           "blanks": [
             {
               "accept": [
@@ -3455,27 +3330,59 @@
           ]
         },
         {
-          "id": "q6",
-          "prompt": "The amount doubled ____ the fifteen-year period.",
+          "id": "q7",
+          "prompt": "The population reached a peak ____ 9 million.",
           "blanks": [
             {
               "accept": [
-                "over"
+                "of"
               ]
             }
           ]
         },
         {
-          "id": "q7",
-          "prompt": "The population grew ____ 1990 ____ 2020.",
+          "id": "q8",
+          "prompt": "The figure hit a low ____ 2,000.",
           "blanks": [
             {
               "accept": [
+                "of"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q9",
+          "prompt": "He won the election ____ 52% of the vote.",
+          "blanks": [
+            {
+              "accept": [
+                "with"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q10",
+          "prompt": "The figure rose steadily ____ the four years ____ 1997 ____ 2001.",
+          "blanks": [
+            {
+              "accept": [
+                "over",
+                "during",
+                "for",
+                "in"
+              ]
+            },
+            {
+              "accept": [
+                "between",
                 "from"
               ]
             },
             {
               "accept": [
+                "and",
                 "to"
               ]
             }
@@ -3487,78 +3394,85 @@
       "code": "T1-TEST2-A3",
       "lessonCode": "T1-TEST2",
       "order": 3,
-      "type": "error_correction",
-      "title": "PHẦN A3 — Sửa lỗi",
-      "instruction": "Tìm và sửa lỗi trong mỗi câu. Mỗi câu 2 điểm.",
+      "type": "sentence_transform",
+      "title": "PHẦN A3 — Viết lại câu",
+      "instruction": "Viết lại câu dùng từ gợi ý trong ngoặc, giữ nguyên nghĩa. Mỗi câu 2 điểm.",
       "source": "added",
       "skillTags": [
-        "module2-review"
+        "trend-structures"
       ],
       "difficulty": 3,
       "estimatedMinutes": 8,
       "points": 10,
-      "autoGrade": true,
+      "autoGrade": false,
       "items": [
         {
           "id": "q1",
-          "prompt": "There was a sharply increase in car sales.",
-          "errorSpan": "sharply",
-          "answer": "There was a sharp increase in car sales.",
-          "accept": [
-            "sharp"
-          ],
-          "explanation": "Trước danh từ dùng tính từ."
+          "prompt": "The number of tourists rose sharply in 2012.",
+          "cue": "There was",
+          "sampleAnswers": [
+            "There was a sharp rise in the number of tourists in 2012."
+          ]
         },
         {
           "id": "q2",
-          "prompt": "The figure increased by to 20 million.",
-          "errorSpan": "by to",
-          "answer": "The figure increased to 20 million.",
-          "accept": [
-            "increased to 20 million",
-            "increased by 10 million to 20 million"
-          ],
-          "explanation": "Không dùng “by” và “to” liền nhau — mỗi giới từ cần số liệu riêng."
+          "prompt": "There was a gradual decline in coal production.",
+          "cue": "Coal production",
+          "sampleAnswers": [
+            "Coal production declined gradually.",
+            "Coal production experienced a gradual decline."
+          ]
         },
         {
           "id": "q3",
-          "prompt": "The number of users peaked of 10 million.",
-          "errorSpan": "of",
-          "answer": "The number of users peaked at 10 million.",
-          "accept": [
-            "at"
-          ],
-          "explanation": "peak (động từ) + AT."
+          "prompt": "Rice exports fell dramatically in 2008.",
+          "cue": "The year 2008 witnessed",
+          "sampleAnswers": [
+            "The year 2008 witnessed a dramatic fall in rice exports."
+          ]
         },
         {
           "id": "q4",
-          "prompt": "Overall, the figure rose from 5 million to 15 million.",
-          "errorSpan": "số liệu trong Overview",
-          "answer": "Overall, the figure showed a clear upward trend over the period.",
-          "accept": [
-            "Overall, the figure showed an upward trend"
-          ],
-          "explanation": "Overview không được chứa số liệu cụ thể."
+          "prompt": "The figure doubled between 1990 and 1995.",
+          "cue": "a two-fold",
+          "sampleAnswers": [
+            "There was a two-fold increase in the figure between 1990 and 1995.",
+            "The figure saw a two-fold increase between 1990 and 1995."
+          ]
         },
         {
           "id": "q5",
-          "prompt": "In 2040, the population was projected to reach 12 million.",
-          "errorSpan": "was",
-          "answer": "In 2040, the population is projected to reach 12 million.",
-          "accept": [
-            "is projected"
-          ],
-          "explanation": "Dự báo tương lai → is projected."
+          "prompt": "A was 60% and B was 20%.",
+          "cue": "three times higher",
+          "sampleAnswers": [
+            "The figure for A was 60%, which was three times higher than that for B, at 20%.",
+            "A, at 60%, was three times higher than B, at 20%."
+          ]
         }
-      ]
+      ],
+      "rubric": {
+        "targetStructures": [
+          "There was a/an + adj + noun + in …",
+          "S + V + adverb",
+          "The year … witnessed …",
+          "x-fold / x times higher than"
+        ],
+        "checklist": [
+          "Giữ nguyên nghĩa và số liệu",
+          "Dùng đúng từ gợi ý"
+        ],
+        "commonErrors": [
+          "There was a sharply rise (sai — dùng tính từ sharp)"
+        ]
+      }
     },
     {
       "code": "T1-TEST2-A4",
       "lessonCode": "T1-TEST2",
       "order": 4,
       "type": "sentence_transform",
-      "title": "PHẦN A4 — Viết lại câu",
-      "instruction": "Viết lại câu dùng từ gợi ý, giữ nguyên nghĩa và số liệu. Mỗi câu 2 điểm.",
+      "title": "PHẦN A4 — Nối hai xu hướng",
+      "instruction": "Nối mỗi cặp xu hướng thành một câu duy nhất bằng các cấu trúc khác nhau (followed by / before V-ing / but later + V / Starting at …). Mỗi câu 5 điểm.",
       "source": "added",
       "skillTags": [
         "trend-structures"
@@ -3570,48 +3484,19 @@
       "items": [
         {
           "id": "q1",
-          "prompt": "The number of visitors increased sharply in 2010.",
-          "cue": "There was",
+          "prompt": "Tăng từ 100 lên 400 (2000–2010), sau đó giảm về 250 (2010–2020).",
           "sampleAnswers": [
-            "There was a sharp increase in the number of visitors in 2010."
-          ],
-          "promptVi": "Đã có một sự gia tăng đột ngột về lượng du khách vào năm 2010."
+            "Starting at 100 in 2000, the figure quadrupled to 400 in 2010, before falling to 250 in 2020.",
+            "The figure rose from 100 in 2000 to 400 in 2010, but later decreased to 250 in 2020."
+          ]
         },
         {
           "id": "q2",
-          "prompt": "There was a gradual fall in car sales between 1990 and 2000.",
-          "cue": "Car sales",
+          "prompt": "Giảm từ 80% xuống 30% (1990–2000), sau đó giữ nguyên đến 2010.",
           "sampleAnswers": [
-            "Car sales fell gradually between 1990 and 2000."
-          ],
-          "promptVi": "Doanh số bán ô tô đã giảm dần trong khoảng thời gian từ năm 1990 đến năm 2000."
-        },
-        {
-          "id": "q3",
-          "prompt": "Research investment dropped significantly in 2005.",
-          "cue": "The year 2005",
-          "sampleAnswers": [
-            "The year 2005 witnessed a significant drop in research investment."
-          ],
-          "promptVi": "Năm 2005 chứng kiến một sự sụt giảm đáng kể trong đầu tư cho nghiên cứu."
-        },
-        {
-          "id": "q4",
-          "prompt": "The figure rose from 10 to 20 million.",
-          "cue": "double",
-          "sampleAnswers": [
-            "The figure doubled from 10 to 20 million."
-          ],
-          "promptVi": "Con số này đã tăng gấp đôi từ 10 lên 20 triệu."
-        },
-        {
-          "id": "q5",
-          "prompt": "A rose while B fell over the period.",
-          "cue": "the opposite trend",
-          "sampleAnswers": [
-            "A experienced an upward trend, while the opposite trend was true for B over the period."
-          ],
-          "promptVi": "A có xu hướng tăng, trong khi xu hướng ngược lại xảy ra với B trong suốt giai đoạn này."
+            "The figure fell sharply from 80% in 1990 to 30% in 2000, before remaining stable at this level until 2010.",
+            "There was a sharp fall from 80% to 30% between 1990 and 2000, which was followed by a period of stability until 2010."
+          ]
         }
       ],
       "rubric": {
@@ -3638,12 +3523,11 @@
       "order": 5,
       "type": "full_task1",
       "title": "PHẦN B — Bài viết hoàn chỉnh",
-      "instruction": "The graph below shows the proportion of the population aged 65 and over between 1940 and 2040 in three different countries. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words in about 20 minutes.",
+      "instruction": "The graph below shows the number of visitors to three museums in London between 2005 and 2020. Summarize the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "original",
       "skillTags": [
         "full-writing",
-        "future-tense",
-        "percentage"
+        "trend-vocabulary"
       ],
       "difficulty": 3,
       "estimatedMinutes": 20,
@@ -3652,10 +3536,41 @@
       "timerMinutes": 20,
       "needsAsset": false,
       "stimulus": {
-        "kind": "image",
-        "caption": "Proportion of the population aged 65 and over, 1940–2040, three countries",
-        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/population-65plus.png",
-        "note": "Biểu đồ có cả dữ liệu quá khứ và dự báo → phải chuyển thì tại năm chuyển giao."
+        "kind": "table",
+        "caption": "Number of visitors to three museums in London, 2005–2020 (millions)",
+        "headers": [
+          "YEAR",
+          "BRITISH MUSEUM",
+          "TATE MODERN",
+          "SCIENCE MUSEUM"
+        ],
+        "rows": [
+          [
+            "2005",
+            "4.5",
+            "3.9",
+            "2.0"
+          ],
+          [
+            "2010",
+            "5.8",
+            "5.1",
+            "2.8"
+          ],
+          [
+            "2015",
+            "6.8",
+            "4.7",
+            "3.4"
+          ],
+          [
+            "2020",
+            "1.3",
+            "1.0",
+            "0.9"
+          ]
+        ],
+        "note": "Introduction paraphrase (10đ) · Overview 2 đặc điểm, không số liệu (15đ) · Body chia hợp lý, 8–10 số liệu (15đ) · Từ vựng xu hướng & cấu trúc (10đ) · Ngữ pháp (10đ)"
       },
       "rubric": {
         "minWords": 150,
@@ -3693,13 +3608,77 @@
           "Không dùng “There were” với phần trăm",
           "Tối thiểu 150 từ"
         ],
-        "sampleAnswer": "The line graph compares the proportion of people aged 65 and over in Japan, Sweden and the USA in terms of country over a one-hundred-year period from 1940 to 2040, including projected figures.\n\nIt is clear that the percentage is expected to rise in all three countries over the period as a whole. Additionally, although Japan had the lowest proportion for most of the last century, it is projected to have the highest by 2040.\n\nIn 1940, around 9% of people in Sweden and the USA were aged 65 or older, compared to only 5% in Japan. The American and Swedish figures then increased gradually, with Sweden reaching about 15% by 1990 while the USA stood at roughly 12%. Japan’s proportion remained below 5% until 1990.\n\nFrom 2000 onwards, Japan is projected to age dramatically, with its figure climbing to around 27% by 2040. The Swedish percentage is forecast to increase more slowly to about 23%, whereas the opposite trend was true for the USA between 2000 and 2020, when its figure dipped slightly before recovering to roughly 21%.",
+        "sampleAnswer": "The table illustrates how many people visited three museums in London, namely the British Museum, Tate Modern and the Science Museum, between 2005 and 2020.\n\nOverall, visitor numbers at all three museums rose for most of the period before falling dramatically in 2020. It is also clear that the British Museum was the most visited of the three throughout, whereas the Science Museum attracted the fewest visitors.\n\nIn 2005, the British Museum welcomed 4.5 million visitors, compared to 3.9 million for Tate Modern and only 2.0 million for the Science Museum. Over the next ten years, the figure for the British Museum climbed steadily to a peak of 6.8 million in 2015, and the Science Museum saw a similar upward trend, reaching 3.4 million. Tate Modern, by contrast, rose to 5.1 million in 2010 before dipping slightly to 4.7 million in 2015.\n\nBetween 2015 and 2020, all three museums experienced a dramatic decline. The number of visitors to the British Museum plummeted to just 1.3 million, while the figures for Tate Modern and the Science Museum fell to 1.0 million and 0.9 million respectively, the lowest points in the period.",
         "commonErrors": [
           "thiếu Overview",
           "dùng thì quá khứ cho mốc 2040",
           "There were 20% of the population"
         ]
       }
+    },
+    {
+      "code": "T1-L05-E08",
+      "lessonCode": "T1-L05",
+      "order": 7,
+      "type": "matching",
+      "title": "Homework 1 — Nối các đoạn của đường biểu đồ với miêu tả phù hợp",
+      "instruction": "Match each section of the line with the correct description. (Nối mỗi đoạn A–N với cách miêu tả đúng.)",
+      "source": "original",
+      "skillTags": [
+        "trend-vocabulary"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 5,
+      "points": 8,
+      "autoGrade": true,
+      "needsAsset": false,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Homework — đường biểu đồ A → N",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/line-graph-AN.png"
+      },
+      "items": [
+        {
+          "id": "q1",
+          "left": "1. A–C",
+          "right": "rose gradually"
+        },
+        {
+          "id": "q2",
+          "left": "2. C–D",
+          "right": "dropped significantly"
+        },
+        {
+          "id": "q3",
+          "left": "3. D–E",
+          "right": "remained stable"
+        },
+        {
+          "id": "q4",
+          "left": "4. E–G",
+          "right": "increased substantially"
+        },
+        {
+          "id": "q5",
+          "left": "5. G",
+          "right": "reached a peak"
+        },
+        {
+          "id": "q6",
+          "left": "6. G–L",
+          "right": "fluctuated"
+        },
+        {
+          "id": "q7",
+          "left": "7. J",
+          "right": "hit the lowest point"
+        },
+        {
+          "id": "q8",
+          "left": "8. L–N",
+          "right": "fell slowly"
+        }
+      ]
     }
   ]
 }
