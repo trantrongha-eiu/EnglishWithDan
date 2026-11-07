@@ -49,7 +49,8 @@ async function listMessages(uid, page, limit) {
     isRead: m.isBroadcast
       ? (m.readBy || []).some(id => id.toString() === uid.toString())
       : m.isRead,
-    giftClaimed: (m.claimedBy || []).some(id => id.toString() === uid.toString())
+    giftClaimed: (m.claimedBy || []).some(id => id.toString() === uid.toString()),
+    ...shopService.describeGift(m), // giftItem / giftPet (Kho đồ → 🎁 Tặng)
   }));
   return { messages: result, total };
 }
@@ -104,40 +105,55 @@ async function replyToMessage(uid, uname, messageId, body) {
   return { status: 'ok', message: reply };
 }
 
-// Student claims a búa/lửa gift attached to a message they received. Idempotent
+// Student claims the gift attached to a message they received — admin
+// búa/lửa (giftHammers/giftStreakDays) or a Kho đồ item / linh thú another
+// player sent (giftItemKey/giftPetId, see shopService.giftItem). Idempotent
 // per-user via claimedBy (mirrors readBy's broadcast dedupe pattern) so a
 // broadcast gift can be claimed once by every recipient, and a personal gift
 // can't be double-claimed by re-opening the message or retrying the request.
 async function claimGift(id, uid) {
-  const msg = await Message.findById(id);
+  const msg = await Message.findById(id).lean();
   if (!msg) return { status: 'not_found' };
 
   const isRecipient = msg.isBroadcast || (msg.toId && msg.toId.toString() === uid.toString());
   if (!isRecipient) return { status: 'forbidden' };
 
-  if (!msg.giftHammers && !msg.giftStreakDays) return { status: 'no_gift' };
-  if (msg.claimedBy.some(cid => cid.toString() === uid.toString())) return { status: 'already_claimed' };
+  const shopGift = !msg.isBroadcast && (msg.giftPetId || (msg.giftItemKey && msg.giftItemQty > 0));
+  if (!msg.giftHammers && !msg.giftStreakDays && !shopGift) return { status: 'no_gift' };
 
-  // Grant the ví lửa its starting balance first (= streak before this gift),
-  // so the gift below is added on top instead of being swallowed by it.
-  if (msg.giftStreakDays) await shopService.seedWallet(uid).catch(() => {});
-  const user = await User.findById(uid).select('learningStreak previousStreak streakLostAt lastActivityDate streakHammers flameWallet');
-  if (!user) return { status: 'not_found' };
+  // Claim first with a conditional update, so two tabs / a double-click
+  // can't both pass and grant the gift twice.
+  const locked = await Message.updateOne({ _id: id, claimedBy: { $ne: uid } }, { $push: { claimedBy: uid } });
+  if (locked.modifiedCount !== 1) return { status: 'already_claimed' };
 
-  if (msg.giftHammers) user.streakHammers += msg.giftHammers;
-  if (msg.giftStreakDays) user.applyGiftStreak(msg.giftStreakDays);
-  await user.save();
+  const result = { status: 'ok', giftHammers: msg.giftHammers || 0, giftStreakDays: msg.giftStreakDays || 0 };
 
-  msg.claimedBy.push(uid);
-  await msg.save();
+  if (shopGift) {
+    const landed = await shopService.landGift(uid, msg).catch(err => ({ status: 'error', err }));
+    if (landed.status !== 'ok') {
+      // Kho đồ full / pet already owned → the gift stays in the message.
+      await Message.updateOne({ _id: id }, { $pull: { claimedBy: uid } });
+      if (landed.status === 'error') throw landed.err;
+      return landed;
+    }
+    if (landed.item) result.item = landed.item;
+    if (landed.pet) { result.pet = landed.pet; result.activePet = landed.activePet; }
+  }
 
-  return {
-    status: 'ok',
-    giftHammers: msg.giftHammers,
-    giftStreakDays: msg.giftStreakDays,
-    streakHammers: user.streakHammers,
-    streak: user.learningStreak,
-  };
+  if (msg.giftHammers || msg.giftStreakDays) {
+    // Grant the ví lửa its starting balance first (= streak before this gift),
+    // so the gift below is added on top instead of being swallowed by it.
+    if (msg.giftStreakDays) await shopService.seedWallet(uid).catch(() => {});
+    const user = await User.findById(uid).select('learningStreak previousStreak streakLostAt lastActivityDate streakHammers flameWallet');
+    if (!user) return { status: 'not_found' };
+    if (msg.giftHammers) user.streakHammers += msg.giftHammers;
+    if (msg.giftStreakDays) user.applyGiftStreak(msg.giftStreakDays);
+    await user.save();
+    result.streakHammers = user.streakHammers;
+    result.streak = user.learningStreak;
+  }
+
+  return result;
 }
 
 // "Góp ý" button above the peer chat bubble (js/shared/peer-chat-widget.js):

@@ -301,6 +301,9 @@ async function buyPet(userId, petId) {
   const pet = PET_BY_ID[petId];
   if (!pet) return { status: 'not_found' };
   if (!(await assertPlayer(userId))) return { status: 'forbidden' };
+  // Already gifted to them and waiting in the Hộp thư — buying it would
+  // leave that gift unclaimable (one of each pet).
+  if (await hasPendingPet(userId, petId)) return { status: 'gift_pending' };
   await seedWallet(userId);
   // A first pet goes straight out for a walk.
   const u = await User.findOneAndUpdate(
@@ -464,10 +467,13 @@ async function sellPet(userId, petId) {
 
 // ── Tặng quà (Kho đồ → 🎁 Tặng) ─────────────────────────────────
 // Moves owned items / a linh thú from one player (student or teacher) to
-// another. Taken from the giver first with a conditional update (so a
-// double-click can't give away more than they hold), then landed on the
-// recipient under the same caps buying has (maxOwned, one of each pet) —
-// if that fails in between, the giver gets it back.
+// another — always through the recipient's Hộp thư. Taken from the giver
+// first with a conditional update (so a double-click can't give away more
+// than they hold), then attached to a 🎁 message (Message.giftItemKey/Qty,
+// giftPetId); if that message can't be written, the giver gets it back.
+// It only lands in the recipient's Kho đồ when they press "Nhận quà"
+// (userMessageService.claimGift → landGift), under the same caps buying
+// has (maxOwned, one of each pet).
 
 const GIFT_SEARCH_LIMIT = 20;
 
@@ -506,18 +512,36 @@ async function searchGiftRecipients(userId, q) {
     .map(u => ({ _id: u._id, name: displayName(u), username: u.username, avatar: u.avatar || '', teacher: u.role === 'teacher' }));
 }
 
-// Inbox note for the recipient (and bell notification). Best-effort.
-async function notifyGift(giver, toId, what) {
+// Gifts still waiting in someone's Hộp thư (not claimed, not deleted).
+function pendingGiftFilter(toId, extra) {
+  return { toId, isBroadcast: false, claimedBy: { $ne: toId }, deletedBy: { $ne: toId }, ...extra };
+}
+
+async function pendingItemQty(toId, key) {
+  const rows = await Message.find(pendingGiftFilter(toId, { giftItemKey: key })).select('giftItemQty').lean();
+  return rows.reduce((sum, m) => sum + (m.giftItemQty || 0), 0);
+}
+
+async function hasPendingPet(toId, petId) {
+  return !!(await Message.exists(pendingGiftFilter(toId, { giftPetId: petId })));
+}
+
+// The 🎁 message that carries the gift (also the bell notification).
+// Returns false if it couldn't be written, so the caller gives it back.
+async function sendGiftMessage(giver, toId, what, attach) {
   try {
     const name = displayName(giver);
     await Message.create({
       fromId: giver._id, fromName: name, toId,
       subject: `🎁 ${name} đã tặng bạn ${what}`,
-      body: `${name} vừa tặng bạn ${what} từ Cửa hàng lửa. Quà đã nằm sẵn trong Kho đồ (trang cá nhân) — vào xem ngay nhé!`,
+      body: `${name} vừa tặng bạn ${what} từ Cửa hàng lửa. Bấm "Nhận quà" bên dưới để cất quà vào Kho đồ (trang cá nhân) nhé!`,
       type: 'gift',
+      ...attach,
     });
+    return true;
   } catch (err) {
-    console.error('[shop] notifyGift failed:', err.message);
+    console.error('[shop] sendGiftMessage failed:', err.message);
+    return false;
   }
 }
 
@@ -532,9 +556,13 @@ async function giftItem(userId, key, toId, qty = 1) {
   if (t.status) return t;
   const field = itemField(item);
 
+  // Capped items: what they hold + what's already waiting in their Hộp thư.
   if (item.maxOwned) {
-    const cur = await User.findById(toId).select(field).lean();
-    const left = Math.max(0, item.maxOwned - ownedOf(cur, item));
+    const [cur, pending] = await Promise.all([
+      User.findById(toId).select(field).lean(),
+      pendingItemQty(toId, key),
+    ]);
+    const left = Math.max(0, item.maxOwned - ownedOf(cur, item) - pending);
     if (n > left) return { status: 'target_full', max: item.maxOwned, left };
   }
 
@@ -545,15 +573,11 @@ async function giftItem(userId, key, toId, qty = 1) {
   ).select(field).lean();
   if (!taken) return { status: 'none_left' };
 
-  const landFilter = { _id: toId, role: { $in: FLAME_ROLES } };
-  if (item.maxOwned) landFilter[field] = { $not: { $gt: item.maxOwned - n } };
-  const landed = await User.updateOne(landFilter, { $inc: { [field]: n } });
-  if (landed.modifiedCount !== 1) {
+  const what = `${n > 1 ? n + ' × ' : ''}${item.emoji} ${item.name}`;
+  if (!(await sendGiftMessage(giver, toId, what, { giftItemKey: key, giftItemQty: n }))) {
     await User.updateOne({ _id: userId }, { $inc: { [field]: n } });
-    return item.maxOwned ? { status: 'target_full', max: item.maxOwned, left: 0 } : { status: 'target_not_found' };
+    return { status: 'gift_failed' };
   }
-
-  await notifyGift(giver, toId, `${n > 1 ? n + ' × ' : ''}${item.emoji} ${item.name}`);
   return { status: 'ok', owned: ownedOf(taken, item), qty: n, targetName: displayName(t.target) };
 }
 
@@ -564,7 +588,9 @@ async function giftPet(userId, petId, toId) {
   if (!giver || !isFlameRole(giver.role)) return { status: 'forbidden' };
   const t = await giftTarget(userId, toId);
   if (t.status) return t;
-  if (await User.exists({ _id: toId, pets: petId })) return { status: 'target_has_pet' };
+  if (await User.exists({ _id: toId, pets: petId }) || await hasPendingPet(toId, petId)) {
+    return { status: 'target_has_pet' };
+  }
 
   // Out of the giver's kho; if it was out walking, it comes home first.
   const taken = await User.findOneAndUpdate(
@@ -579,24 +605,57 @@ async function giftPet(userId, petId, toId) {
   ).select('activePet').lean();
   if (!taken) return { status: 'not_owned' };
 
-  // Into the recipient's — straight out for a walk if they had none out.
-  const landed = await User.updateOne(
-    { _id: toId, role: { $in: FLAME_ROLES }, pets: { $ne: petId } },
-    [{
-      $set: {
-        pets: { $concatArrays: [{ $ifNull: ['$pets', []] }, [petId]] },
-        activePet: { $cond: [{ $gt: [{ $strLenCP: { $ifNull: ['$activePet', ''] } }, 0] }, '$activePet', petId] },
-      },
-    }],
-    { updatePipeline: true }
-  );
-  if (landed.modifiedCount !== 1) {
+  if (!(await sendGiftMessage(giver, toId, `linh thú 🐾 ${pet.name}`, { giftPetId: petId }))) {
     await User.updateOne({ _id: userId, pets: { $ne: petId } }, { $push: { pets: petId } });
-    return { status: 'target_has_pet' };
+    return { status: 'gift_failed' };
   }
-
-  await notifyGift(giver, toId, `linh thú 🐾 ${pet.name}`);
   return { status: 'ok', activePet: taken.activePet || '', targetName: displayName(t.target) };
+}
+
+// "Nhận quà" on a 🎁 message: puts its item / linh thú into the
+// recipient's Kho đồ under the same caps as buying. On a cap the caller
+// leaves the gift in the message to claim later (after a shield is used,
+// the duplicate pet sold…).
+async function landGift(userId, { giftItemKey, giftItemQty, giftPetId }) {
+  if (giftPetId) {
+    const pet = PET_BY_ID[giftPetId];
+    if (!pet) return { status: 'not_found' };
+    // Straight out for a walk if they had none out.
+    const u = await User.findOneAndUpdate(
+      { _id: userId, pets: { $ne: giftPetId } },
+      [{
+        $set: {
+          pets: { $concatArrays: [{ $ifNull: ['$pets', []] }, [giftPetId]] },
+          activePet: { $cond: [{ $gt: [{ $strLenCP: { $ifNull: ['$activePet', ''] } }, 0] }, '$activePet', giftPetId] },
+        },
+      }],
+      { new: true, updatePipeline: true }
+    ).select('activePet').lean();
+    if (!u) return { status: 'already_owned' };
+    return { status: 'ok', pet: { id: pet.id, name: pet.name }, activePet: u.activePet || '' };
+  }
+  const item = ITEM_BY_KEY[giftItemKey];
+  const n = Number(giftItemQty) || 0;
+  if (!item || n < 1) return { status: 'not_found' };
+  const field = itemField(item);
+  const filter = { _id: userId };
+  if (item.maxOwned) filter[field] = { $not: { $gt: item.maxOwned - n } };
+  const u = await User.findOneAndUpdate(filter, { $inc: { [field]: n } }, { new: true }).select(field).lean();
+  if (!u) return { status: 'max_owned', max: item.maxOwned };
+  return { status: 'ok', item: giftView(item, n), owned: ownedOf(u, item) };
+}
+
+function giftView(item, qty) {
+  return { key: item.key, name: item.name, emoji: item.emoji, image: item.image || '', qty };
+}
+
+// What a 🎁 message carries (item or linh thú), for the Hộp thư gift box.
+function describeGift(m) {
+  const pet = m.giftPetId && PET_BY_ID[m.giftPetId];
+  if (pet) return { giftPet: { id: pet.id, name: pet.name } };
+  const item = m.giftItemKey && ITEM_BY_KEY[m.giftItemKey];
+  if (item && m.giftItemQty > 0) return { giftItem: giftView(item, m.giftItemQty) };
+  return null;
 }
 
 // Decorations for the BXH rows (userService.rankedStreaks): which linh
@@ -613,5 +672,5 @@ function boardDecor(u) {
 module.exports = {
   getState, getFeed, getAnnouncements, announceLogin, getCakeNotice, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake, sellItem, sellPet,
   settleHopeHammer, settleAllHopeHammers, seedWallet, boardDecor,
-  giftItem, giftPet, searchGiftRecipients,
+  giftItem, giftPet, searchGiftRecipients, landGift, describeGift, hasPendingPet,
 };

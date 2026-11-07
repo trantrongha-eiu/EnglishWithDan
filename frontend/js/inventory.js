@@ -221,8 +221,8 @@
                     + '</div><small>Bạn có ' + owned + '</small></div>'
                 : '')
             + '<small class="inv-gift-note">' + (kind === 'pet'
-                ? 'Linh thú sẽ chuyển hẳn sang kho của người nhận.'
-                : 'Vật phẩm chuyển ngay vào Kho đồ của người nhận, kèm thư báo trong hộp thư.') + '</small>'
+                ? 'Linh thú rời kho của bạn và được gửi vào Hộp thư của người nhận — bạn ấy bấm "Nhận quà" là bé về kho.'
+                : 'Vật phẩm rời Kho đồ của bạn và được gửi vào Hộp thư của người nhận — bạn ấy bấm "Nhận quà" là có.') + '</small>'
             + '</div>'
             + '<div class="modal-footer" style="justify-content:center">'
             + '<button type="button" class="btn btn-ghost" data-cancel>Hủy</button>'
@@ -277,7 +277,7 @@
             busy = true;
             api('POST', '/shop/gift', { kind: kind, key: key, toId: to._id, qty: q }).then(function (d) {
                 if (kind === 'pet' && d && d.success && window.Pets) window.Pets.setActive(d.activePet);
-                after(d, '🎁 Đã tặng ' + (q > 1 ? q + ' ' : '') + entry.name + ' cho ' + ((d && d.targetName) || to.name) + '!');
+                after(d, '🎁 Đã gửi ' + (q > 1 ? q + ' ' : '') + entry.name + ' vào Hộp thư của ' + ((d && d.targetName) || to.name) + '!');
             });
         }
 

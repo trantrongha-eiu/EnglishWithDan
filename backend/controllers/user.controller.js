@@ -170,20 +170,19 @@ exports.replyMessage = messageGuard(async (req, res) => {
   res.status(201).json({ success: true, message: result.message });
 });
 
-// ── POST /api/user/messages/:id/claim — nhận quà (búa/lửa) đính kèm ─
+// ── POST /api/user/messages/:id/claim — nhận quà đính kèm ─────────
+// (búa/lửa from admin, or a vật phẩm / linh thú from another player)
 exports.claimGift = messageGuard(async (req, res) => {
   const result = await userMessageService.claimGift(req.params.id, req.user._id);
   if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn' });
   if (result.status === 'forbidden') return res.status(403).json({ success: false, message: 'Không có quyền nhận quà từ tin nhắn này' });
   if (result.status === 'no_gift') return res.status(400).json({ success: false, message: 'Tin nhắn này không có quà đính kèm' });
   if (result.status === 'already_claimed') return res.status(409).json({ success: false, message: 'Bạn đã nhận quà này rồi' });
-  res.json({
-    success: true,
-    giftHammers: result.giftHammers,
-    giftStreakDays: result.giftStreakDays,
-    streakHammers: result.streakHammers,
-    streak: result.streak,
-  });
+  if (result.status === 'max_owned') return res.status(400).json({ success: false, code: 'max_owned', message: `Kho đồ của bạn đã đủ tối đa ${result.max} vật phẩm này — dùng bớt rồi quay lại nhận quà nhé (quà vẫn giữ trong thư).` });
+  if (result.status === 'already_owned') return res.status(400).json({ success: false, code: 'already_owned', message: 'Bạn đã có linh thú này rồi — bán bé đang có trong Kho đồ rồi quay lại nhận nhé (quà vẫn giữ trong thư).' });
+  const rest = { ...result };
+  delete rest.status;
+  res.json({ success: true, ...rest });
 });
 
 // ── PEER (student-to-student profile view + chat + block/report) ────

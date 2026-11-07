@@ -19,8 +19,10 @@ const MESSAGES = {
   target_not_found: [404, 'Không tìm thấy bạn này.'],
   gift_self: [400, 'Không tự tặng quà cho chính mình được 😆'],
   gift_blocked: [403, 'Không tặng được cho bạn này (một trong hai đã chặn người kia).'],
-  target_full: [400, 'Bạn ấy đã giữ đủ số lượng tối đa của vật phẩm này rồi.'],
-  target_has_pet: [400, 'Bạn ấy đã có linh thú này rồi — chọn bé khác nhé!'],
+  target_full: [400, 'Bạn ấy đã giữ (tính cả quà chờ nhận trong hộp thư) đủ số lượng tối đa của vật phẩm này rồi.'],
+  target_has_pet: [400, 'Bạn ấy đã có (hoặc đang có quà chờ nhận) linh thú này rồi — chọn bé khác nhé!'],
+  gift_failed: [500, 'Không gửi được quà — vật phẩm vẫn còn trong Kho đồ của bạn, thử lại sau nhé.'],
+  gift_pending: [400, 'Bạn đang có quà là linh thú này trong Hộp thư — vào Hộp thư bấm "Nhận quà" là có, khỏi mua nhé!'],
   hope_too_late: [400, 'Hôm nay bạn đã kiếm gần hết 🔥 tối đa (5/ngày) — không còn đủ chỗ để kiếm thêm 3 🔥 cho Búa Hi Vọng. Hãy đập búa vào đầu ngày mai, trước khi học nhé!'],
 };
 

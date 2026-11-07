@@ -164,24 +164,51 @@ describe('/api/shop gifts (Kho đồ → 🎁 Tặng)', () => {
   const { createAdmin } = require('../factories/userFactory');
   const gift = (from, body) => request(app).post('/api/shop/gift').set(auth(from)).send(body);
 
-  test('moves items to the recipient and leaves them an inbox note', async () => {
+  const claim = (who, msg) => request(app).post(`/api/user/messages/${msg._id}/claim`).set(auth(who));
+
+  test('items go to the recipient\'s Hộp thư and land in their Kho đồ only on "Nhận quà"', async () => {
     const s = await createStudent({ firstName: 'An', lastName: 'Lê', extra: { shopItems: { cake: 3 }, streakHammers: 1 } });
     const t = await createTeacher();
     let res = await gift(s, { kind: 'item', key: 'cake', toId: String(t._id), qty: 2 });
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ success: true, owned: 1, qty: 2 });
-    expect((await User.findById(t._id).lean()).shopItems.cake).toBe(2);
+    // Not in the Kho đồ yet — it waits in the message.
+    expect(((await User.findById(t._id).lean()).shopItems || {}).cake || 0).toBe(0);
     const note = await Message.findOne({ toId: t._id }).lean();
     expect(note.subject).toMatch(/An Lê đã tặng bạn 2 × 🎂/);
+    expect(note).toMatchObject({ type: 'gift', giftItemKey: 'cake', giftItemQty: 2 });
+
+    const inbox = await request(app).get('/api/user/messages').set(auth(t));
+    expect(inbox.body.messages[0].giftItem).toMatchObject({ key: 'cake', qty: 2 });
+
+    res = await claim(t, note);
+    expect(res.status).toBe(200);
+    expect(res.body.item).toMatchObject({ key: 'cake', qty: 2 });
+    expect((await User.findById(t._id).lean()).shopItems.cake).toBe(2);
+    // Only once.
+    expect((await claim(t, note)).status).toBe(409);
+    expect((await User.findById(t._id).lean()).shopItems.cake).toBe(2);
 
     // Búa Daniel lives on streakHammers, not shopItems.
     res = await gift(s, { kind: 'item', key: 'danielHammer', toId: String(t._id) });
     expect(res.status).toBe(200);
     expect((await User.findById(s._id).lean()).streakHammers).toBe(0);
+    const hammerMsg = await Message.findOne({ toId: t._id, giftItemKey: 'danielHammer' }).lean();
+    await claim(t, hammerMsg);
     expect((await User.findById(t._id).lean()).streakHammers).toBe(1);
   });
 
-  test('cannot give more than owned, to yourself, to an admin, or past maxOwned', async () => {
+  test('only the recipient can claim', async () => {
+    const s = await createStudent({ extra: { shopItems: { cake: 1 } } });
+    const other = await createStudent();
+    const stranger = await createStudent();
+    await gift(s, { kind: 'item', key: 'cake', toId: String(other._id) });
+    const msg = await Message.findOne({ toId: other._id }).lean();
+    expect((await claim(stranger, msg)).status).toBe(403);
+    expect(((await User.findById(stranger._id).lean()).shopItems || {}).cake || 0).toBe(0);
+  });
+
+  test('cannot give more than owned, to yourself, to an admin, or past maxOwned (pending gifts count)', async () => {
     const s = await createStudent({ extra: { shopItems: { cake: 1, iceShield: 2 } } });
     const other = await createStudent({ extra: { shopItems: { iceShield: 1 } } });
     const admin = await createAdmin();
@@ -192,6 +219,28 @@ describe('/api/shop gifts (Kho đồ → 🎁 Tặng)', () => {
     expect(full.body).toMatchObject({ code: 'target_full', left: 1 });
     // Nothing was taken on any of the failures.
     expect((await User.findById(s._id).lean()).shopItems).toMatchObject({ cake: 1, iceShield: 2 });
+
+    // 1 shield waiting in their Hộp thư fills the last slot.
+    expect((await gift(s, { kind: 'item', key: 'iceShield', toId: String(other._id) })).status).toBe(200);
+    expect((await gift(s, { kind: 'item', key: 'iceShield', toId: String(other._id) })).body).toMatchObject({ code: 'target_full', left: 0 });
+  });
+
+  test('a claim over maxOwned is refused and the gift stays in the message', async () => {
+    const s = await createStudent({ extra: { shopItems: { iceShield: 1 } } });
+    const other = await createStudent({ extra: { shopItems: { iceShield: 1 } } });
+    await gift(s, { kind: 'item', key: 'iceShield', toId: String(other._id) });
+    // They bought one more meanwhile.
+    await User.updateOne({ _id: other._id }, { $set: { 'shopItems.iceShield': 2 } });
+    const msg = await Message.findOne({ toId: other._id }).lean();
+    let res = await claim(other, msg);
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('max_owned');
+    expect((await Message.findById(msg._id).lean()).claimedBy).toHaveLength(0);
+    // Used a shield → can claim now.
+    await User.updateOne({ _id: other._id }, { $set: { 'shopItems.iceShield': 1 } });
+    res = await claim(other, msg);
+    expect(res.status).toBe(200);
+    expect((await User.findById(other._id).lean()).shopItems.iceShield).toBe(2);
   });
 
   test('blocked either way → no gift', async () => {
@@ -200,19 +249,40 @@ describe('/api/shop gifts (Kho đồ → 🎁 Tặng)', () => {
     await Block.create({ blockerId: other._id, blockedId: s._id });
     expect((await gift(s, { kind: 'item', key: 'cake', toId: String(other._id) })).body.code).toBe('gift_blocked');
     expect((await User.findById(s._id).lean()).shopItems.cake).toBe(1);
+    expect(await Message.countDocuments({ toId: other._id })).toBe(0);
   });
 
-  test('a linh thú moves over; the walking one comes home; no duplicates', async () => {
+  test('a linh thú goes via the Hộp thư; the walking one comes home; no duplicates', async () => {
     const s = await createStudent({ extra: { pets: ['meo', 'shiba'], activePet: 'meo' } });
     const other = await createStudent({ extra: { pets: ['shiba'] } });
     expect((await gift(s, { kind: 'pet', key: 'shiba', toId: String(other._id) })).body.code).toBe('target_has_pet');
     const res = await gift(s, { kind: 'pet', key: 'meo', toId: String(other._id) });
     expect(res.status).toBe(200);
     expect(res.body.activePet).toBe('');
-    const [giver, recv] = await Promise.all([User.findById(s._id).lean(), User.findById(other._id).lean()]);
+    let [giver, recv] = await Promise.all([User.findById(s._id).lean(), User.findById(other._id).lean()]);
     expect(giver.pets).toEqual(['shiba']);
+    expect(recv.pets).toEqual(['shiba']); // waiting in the Hộp thư
+
+    // Can't buy it while it waits there.
+    await User.updateOne({ _id: other._id }, { $set: { flameWallet: 500, flameWalletGranted: true } });
+    expect((await request(app).post('/api/shop/buy').set(auth(other)).send({ kind: 'pet', key: 'meo' })).body.code).toBe('gift_pending');
+
+    const msg = await Message.findOne({ toId: other._id, giftPetId: 'meo' }).lean();
+    const c = await claim(other, msg);
+    expect(c.status).toBe(200);
+    expect(c.body.pet).toMatchObject({ id: 'meo' });
+    recv = await User.findById(other._id).lean();
     expect(recv.pets).toEqual(['shiba', 'meo']);
     expect(recv.activePet).toBe('meo'); // had none out walking
+  });
+
+  test('the same linh thú can\'t be sent twice while one is still waiting', async () => {
+    const a = await createStudent({ extra: { pets: ['cao'] } });
+    const b = await createStudent({ extra: { pets: ['cao'] } });
+    const r = await createStudent();
+    expect((await gift(a, { kind: 'pet', key: 'cao', toId: String(r._id) })).status).toBe(200);
+    expect((await gift(b, { kind: 'pet', key: 'cao', toId: String(r._id) })).body.code).toBe('target_has_pet');
+    expect((await User.findById(b._id).lean()).pets).toEqual(['cao']);
   });
 
   test('recipient search: students + teachers, not self/admins/blocked/banned', async () => {

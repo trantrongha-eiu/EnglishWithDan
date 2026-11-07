@@ -35,6 +35,12 @@ const MessageSchema = new mongoose.Schema({
   // to everyone (each recipient claims independently).
   giftHammers:    { type: Number, default: 0 },
   giftStreakDays: { type: Number, default: 0 },
+  // Kho đồ → 🎁 Tặng (shopService.giftItem / giftPet): the item or linh thú
+  // is taken from the giver at once but only lands in the recipient's Kho
+  // đồ when they press "Nhận quà" on this message (userMessageService.claimGift).
+  giftItemKey:    { type: String, default: '' },
+  giftItemQty:    { type: Number, default: 0 },
+  giftPetId:      { type: String, default: '' },
   claimedBy:      [{ type: mongoose.Schema.Types.ObjectId }],
 }, { timestamps: true });
 
@@ -53,7 +59,8 @@ MessageSchema.index({ isPeer: 1, toId: 1, fromId: 1, createdAt: 1 });
 // Retention: auto-delete peer (student-to-student) chat messages 3 months
 // after they were sent — a partial TTL index so it only ever matches
 // isPeer:true rows. Teacher/admin messages, broadcasts, and gift messages
-// (giftHammers/giftStreakDays, which a student may not have claimed yet)
+// (giftHammers/giftStreakDays/giftItemKey/giftPetId, which a student may
+// not have claimed yet)
 // are untouched regardless of age.
 MessageSchema.index(
   { createdAt: 1 },

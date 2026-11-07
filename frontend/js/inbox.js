@@ -91,7 +91,7 @@ function renderList() {
     const subj = m.subject ? esc(m.subject) : '(Không có tiêu đề)';
     const sel = m._id === selectedId ? ' selected' : '';
     const unr = unread ? ' unread' : '';
-    const hasGift = (m.giftHammers || m.giftStreakDays) && !m.giftClaimed;
+    const hasGift = hasAnyGift(m) && !m.giftClaimed;
     return `<div class="msg-item${unr}${sel}" onclick="selectMsg('${m._id}')" data-id="${m._id}">
       <div class="msg-sender">
         ${unread ? '<span class="dot-unread"></span>' : ''}
@@ -179,11 +179,29 @@ function backToList() {
   document.getElementById('msgDetail').classList.remove('active');
 }
 
+// Admin búa/lửa, or a vật phẩm / linh thú another player sent from their
+// Kho đồ (giftItem / giftPet — added to the Kho đồ only on "Nhận quà").
+function hasAnyGift(m) {
+  return !!(m.giftHammers || m.giftStreakDays || m.giftItem || m.giftPet);
+}
+
+function giftItemLabel(it) {
+  const icon = it.image ? `<img src="${esc(it.image)}" alt="">` : esc(it.emoji || '🎁');
+  return `${icon} ${it.qty > 1 ? it.qty + ' × ' : ''}${esc(it.name)}`;
+}
+
+function giftPetLabel(p) {
+  const art = window.Pets && window.Pets.svg ? window.Pets.svg(p.id) : '';
+  return `${art ? `<span class="gift-pet-art" aria-hidden="true">${art}</span>` : '🐾'} Linh thú ${esc(p.name)}`;
+}
+
 function renderGiftBox(msg) {
-  if (!msg.giftHammers && !msg.giftStreakDays) return '';
+  if (!hasAnyGift(msg)) return '';
   const parts = [];
   if (msg.giftHammers) parts.push(`<span class="gift-item"><img src="img/buaDaniel.jpg" alt="Búa Daniel"> ${msg.giftHammers} búa Daniel</span>`);
   if (msg.giftStreakDays) parts.push(`<span class="gift-item">🔥 ${msg.giftStreakDays} lửa (chuỗi + ví lửa)</span>`);
+  if (msg.giftItem) parts.push(`<span class="gift-item">${giftItemLabel(msg.giftItem)}</span>`);
+  if (msg.giftPet) parts.push(`<span class="gift-item">${giftPetLabel(msg.giftPet)}</span>`);
   if (msg.giftClaimed) {
     return `<div class="gift-box gift-box-claimed">
       <div class="gift-items">${parts.join('')}</div>
@@ -203,7 +221,13 @@ async function claimGift(id) {
     const d = await apiFetch(`/user/messages/${id}/claim`, { method: 'POST' });
     const msg = messages.find(m => m._id === id);
     if (msg) msg.giftClaimed = true;
-    if (window.showToast) window.showToast(`Đã nhận quà: ${d.giftHammers ? d.giftHammers + ' búa' : ''}${d.giftHammers && d.giftStreakDays ? ', ' : ''}${d.giftStreakDays ? d.giftStreakDays + ' lửa (đã cộng vào chuỗi và ví lửa)' : ''}`, 'success');
+    const got = [];
+    if (d.giftHammers) got.push(d.giftHammers + ' búa');
+    if (d.giftStreakDays) got.push(d.giftStreakDays + ' lửa (đã cộng vào chuỗi và ví lửa)');
+    if (d.item) got.push(`${d.item.qty > 1 ? d.item.qty + ' × ' : ''}${d.item.emoji} ${d.item.name} (đã vào Kho đồ)`);
+    if (d.pet) got.push(`linh thú 🐾 ${d.pet.name} (đã vào Kho đồ)`);
+    if (d.pet && window.Pets && window.Pets.setActive) window.Pets.setActive(d.activePet || '');
+    if (window.showToast) window.showToast('🎁 Đã nhận quà: ' + got.join(', '), 'success');
     if (msg && msg._id === selectedId) selectMsg(id);
   } catch (e) {
     if (window.showToast) window.showToast('Lỗi: ' + e.message, 'error');
@@ -235,7 +259,9 @@ async function replyMsg(id) {
 // truth — Phase 3 audit).
 
 async function deleteMsg(id) {
-  showConfirm('Xóa tin nhắn này?', async () => {
+  const m = messages.find(x => x._id === id);
+  const unclaimed = m && hasAnyGift(m) && !m.giftClaimed;
+  showConfirm(unclaimed ? 'Thư này còn quà chưa nhận — xóa thư là mất quà luôn. Vẫn xóa?' : 'Xóa tin nhắn này?', async () => {
     try {
       await apiFetch(`/user/messages/${id}`, { method: 'DELETE' });
       messages = messages.filter(m => m._id !== id);
