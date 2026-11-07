@@ -302,15 +302,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Do you like cooking?"
+          "prompt": "Do you like cooking?",
+          "sampleAnswer": "Yes, definitely. I find cooking quite therapeutic — it’s one of the few times in the day when I’m not looking at a screen. Last Sunday, for instance, I spent the whole afternoon making phở from scratch, and honestly the process was more enjoyable than the meal itself.",
+          "sampleNote": "Thêm cách diễn đạt tự nhiên (“quite therapeutic”, “from scratch”) và một chi tiết cá nhân bất ngờ ở cuối. Chưa cần từ khó — cần chi tiết thật.",
+          "sampleSource": "book"
         },
         {
           "id": "s2",
-          "prompt": "Do you enjoy watching films?"
+          "prompt": "Do you enjoy watching films?",
+          "sampleAnswer": "Yes, I really do. Films are my main way to switch off after a long week, because for two hours I'm not thinking about deadlines at all. For example, last Saturday I watched an old Studio Ghibli film with my sister, and we ended up talking about it until midnight.",
+          "sampleNote": "O.R.E. đủ ba phần: trả lời thẳng (Yes, I really do) → lý do cụ thể (switch off… not thinking about deadlines) → ví dụ có thời gian + người (last Saturday… with my sister).",
+          "sampleSource": "new"
         },
         {
           "id": "s3",
-          "prompt": "Do you like weekends more than weekdays?"
+          "prompt": "Do you like weekends more than weekdays?",
+          "sampleAnswer": "Definitely, yes. Weekends give me time for the things I actually choose to do, since my weekdays are basically classes and homework. For instance, every Sunday morning I go for a long walk with my dad and then we have phở at the same little stall near our house — it's honestly the highlight of my week.",
+          "sampleNote": "Lý do dùng \"since\" thay cho \"because\"; ví dụ là một thói quen thật (Sunday morning, dad, phở) — present simple chuẩn, có đuôi -s (Weekends give, my dad).",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -332,7 +341,7 @@
           "Bắt đầu MỌI câu bằng \"I think\"",
           "Thiếu đuôi -s: \"It help me relax\""
         ],
-        "sampleAnswer": "Yes, definitely. I find cooking quite therapeutic — it's one of the few times in the day when I'm not looking at a screen. Last Sunday, for instance, I spent the whole afternoon making phở from scratch, and honestly the process was more enjoyable than the meal itself."
+        "sampleAnswer": "Câu 1 — Do you like cooking?\nYes, definitely. I find cooking quite therapeutic — it’s one of the few times in the day when I’m not looking at a screen. Last Sunday, for instance, I spent the whole afternoon making phở from scratch, and honestly the process was more enjoyable than the meal itself.\n\nCâu 2 — Do you enjoy watching films?\nYes, I really do. Films are my main way to switch off after a long week, because for two hours I'm not thinking about deadlines at all. For example, last Saturday I watched an old Studio Ghibli film with my sister, and we ended up talking about it until midnight.\n\nCâu 3 — Do you like weekends more than weekdays?\nDefinitely, yes. Weekends give me time for the things I actually choose to do, since my weekdays are basically classes and homework. For instance, every Sunday morning I go for a long walk with my dad and then we have phở at the same little stall near our house — it's honestly the highlight of my week."
       }
     },
     {
@@ -637,15 +646,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "What do you usually do to relax?"
+          "prompt": "What do you usually do to relax?",
+          "sampleAnswer": "Well, it depends on how much energy I have left. Most evenings I just put on some music and do a bit of drawing, because it stops my mind from racing. For example, last night I spent about half an hour sketching my cat while she was asleep — it's surprisingly calming.",
+          "sampleNote": "Đúng MỘT filler ở đầu (Well,…), không lặp lại câu hỏi, sau đó vào thẳng lý do + ví dụ.",
+          "sampleSource": "new"
         },
         {
           "id": "s2",
-          "prompt": "Do you prefer texting or calling?"
+          "prompt": "Do you prefer texting or calling?",
+          "sampleAnswer": "Well… let me think. Probably texting, actually — I mean, calling puts you on the spot, doesn’t it? With a message I can take my time and word things properly. Having said that, if it’s something emotional, I’d always call.",
+          "sampleNote": "Hai filler ở hai vị trí khác nhau, một câu hỏi đuôi tự nhiên, và một ý đối lập ở cuối. Nghe như đang thật sự suy nghĩ.",
+          "sampleSource": "book"
         },
         {
           "id": "s3",
-          "prompt": "Do you usually remember your dreams?"
+          "prompt": "Do you usually remember your dreams?",
+          "sampleAnswer": "Hmm, that's a good question. To be honest, not very often — I usually forget them the moment my alarm goes off. Having said that, I do remember the strange ones. Just last week I dreamt I was taking an exam in a swimming pool, which I suppose says a lot about my stress levels.",
+          "sampleNote": "Hai filler ở hai vị trí khác nhau (That's a good question / To be honest), một ý đối lập (Having said that) và một chi tiết bất ngờ ở cuối.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -667,7 +685,7 @@
           "Lặp nguyên văn câu hỏi để câu giờ",
           "Dùng \"ummm\" thay vì filler tiếng Anh"
         ],
-        "sampleAnswer": "Well… let me think. Probably texting, actually — I mean, calling puts you on the spot, doesn't it? With a message I can take my time and word things properly. Having said that, if it's something emotional, I'd always call."
+        "sampleAnswer": "Câu 1 — What do you usually do to relax?\nWell, it depends on how much energy I have left. Most evenings I just put on some music and do a bit of drawing, because it stops my mind from racing. For example, last night I spent about half an hour sketching my cat while she was asleep — it's surprisingly calming.\n\nCâu 2 — Do you prefer texting or calling?\nWell… let me think. Probably texting, actually — I mean, calling puts you on the spot, doesn’t it? With a message I can take my time and word things properly. Having said that, if it’s something emotional, I’d always call.\n\nCâu 3 — Do you usually remember your dreams?\nHmm, that's a good question. To be honest, not very often — I usually forget them the moment my alarm goes off. Having said that, I do remember the strange ones. Just last week I dreamt I was taking an exam in a swimming pool, which I suppose says a lot about my stress levels."
       }
     },
     {
@@ -1003,15 +1021,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Why do you enjoy your favourite food?"
+          "prompt": "Why do you enjoy your favourite food?",
+          "sampleAnswer": "My favourite food is bún chả, and the main reason is that it reminds me of home. My grandmother used to make it every Sunday when I was little, so the smell alone takes me straight back to her kitchen. Take last month, for example — I had it at a small stall in Hanoi and it tasted almost exactly like hers, which was a lovely surprise.",
+          "sampleNote": "Lý do không dùng \"because\" (the main reason is that…), ví dụ có thời gian + địa điểm (last month, a small stall in Hanoi) và dùng \"Take … for example\".",
+          "sampleSource": "new"
         },
         {
           "id": "s2",
-          "prompt": "Why do you like your hometown?"
+          "prompt": "Why do you like your hometown?",
+          "sampleAnswer": "I’d say it’s the pace of life more than anything. One reason is that everything is within walking distance, so you’re not spending an hour a day stuck in traffic. Take my street for example — the same five families have lived there for twenty years, and that kind of continuity is something you simply don’t get in a big city.",
+          "sampleNote": "Dùng “one reason is that” + “take … for example”, có so sánh ngầm với thành phố lớn, và một nhận xét khái quát ở cuối.",
+          "sampleSource": "book"
         },
         {
           "id": "s3",
-          "prompt": "Why do you study English?"
+          "prompt": "Why do you study English?",
+          "sampleAnswer": "Mostly for my future career. One reason is that most of the good jobs in my field ask for a strong IELTS score, so it's very practical. Another is that it opens up so much more content — for instance, I can now follow lectures from foreign universities on YouTube without waiting for subtitles, which I couldn't do two years ago.",
+          "sampleNote": "Hai lý do với hai từ nối khác nhau (One reason is that… / Another is that…), ví dụ có mốc so sánh (two years ago).",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -1033,7 +1060,7 @@
           "Lặp \"because\" 3 lần trong một câu trả lời",
           "Dùng \"Because of\" + mệnh đề"
         ],
-        "sampleAnswer": "I'd say it's the pace of life more than anything. One reason is that everything is within walking distance, so you're not spending an hour a day stuck in traffic. Take my street for example — the same five families have lived there for twenty years, and that kind of continuity is something you simply don't get in a big city."
+        "sampleAnswer": "Câu 1 — Why do you enjoy your favourite food?\nMy favourite food is bún chả, and the main reason is that it reminds me of home. My grandmother used to make it every Sunday when I was little, so the smell alone takes me straight back to her kitchen. Take last month, for example — I had it at a small stall in Hanoi and it tasted almost exactly like hers, which was a lovely surprise.\n\nCâu 2 — Why do you like your hometown?\nI’d say it’s the pace of life more than anything. One reason is that everything is within walking distance, so you’re not spending an hour a day stuck in traffic. Take my street for example — the same five families have lived there for twenty years, and that kind of continuity is something you simply don’t get in a big city.\n\nCâu 3 — Why do you study English?\nMostly for my future career. One reason is that most of the good jobs in my field ask for a strong IELTS score, so it's very practical. Another is that it opens up so much more content — for instance, I can now follow lectures from foreign universities on YouTube without waiting for subtitles, which I couldn't do two years ago."
       }
     },
     {
@@ -1327,15 +1354,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Do you enjoy the area where you live?"
+          "prompt": "Do you enjoy the area where you live?",
+          "sampleAnswer": "Yes, definitely. What I like most is the pace of life — I can walk to the market in five minutes instead of losing an hour in traffic. My grandmother still lives on the same street she was born on, which says something about the place. That said, it can get a bit too quiet in the evenings, so I'm not sure I could live there forever.",
+          "sampleNote": "Bản Band 7 của sách (câu hỏi \"Do you like your hometown?\") dùng lại cho khu bạn sống: lý do cụ thể → chi tiết cá nhân thật (bà vẫn sống ở con phố nơi bà sinh ra) → ý đối lập \"That said, …\".",
+          "sampleSource": "book-adapted"
         },
         {
           "id": "s2",
-          "prompt": "Do you like the weather here?"
+          "prompt": "Do you like the weather here?",
+          "sampleAnswer": "Mostly, yes. What I like is that it's warm all year round, so I never have to worry about packing heavy clothes. Last December, for example, my cousins from Hanoi came to visit and they couldn't believe we were swimming at Christmas. That said, the rainy season can be pretty miserable — the street outside my house floods almost every afternoon.",
+          "sampleNote": "Đủ 4 thao tác nâng band: lý do cụ thể → ví dụ có chi tiết → chi tiết chỉ mình biết (anh chị họ từ Hà Nội) → ý đối lập \"That said\".",
+          "sampleSource": "new"
         },
         {
           "id": "s3",
-          "prompt": "Do you often use public transport?"
+          "prompt": "Do you often use public transport?",
+          "sampleAnswer": "Not as often as I'd like, to be honest. The main problem is that buses in my city are quite slow, so I usually ride my motorbike instead. Having said that, since the new metro line opened I've started taking it into the city centre at weekends — it takes twenty minutes instead of forty, so it's slowly changing my habits.",
+          "sampleNote": "Câu trả lời \"Not really\" vẫn lên Band 7 được: có lý do, có chi tiết đo được (twenty minutes instead of forty) và ý đối lập ở cuối.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -1357,7 +1393,7 @@
           "Dùng \"That said\" khi không có ý đối lập nào",
           "Ba câu đơn rời rạc, không nối"
         ],
-        "sampleAnswer": "Yes, definitely. What I like most is the pace of life — I can walk to the market in five minutes instead of losing an hour in traffic. My grandmother still lives on the same street she was born on, which says something about the place. That said, it can get a bit too quiet, so I'm not sure I could live there forever."
+        "sampleAnswer": "Câu 1 — Do you enjoy the area where you live?\nYes, definitely. What I like most is the pace of life — I can walk to the market in five minutes instead of losing an hour in traffic. My grandmother still lives on the same street she was born on, which says something about the place. That said, it can get a bit too quiet in the evenings, so I'm not sure I could live there forever.\n\nCâu 2 — Do you like the weather here?\nMostly, yes. What I like is that it's warm all year round, so I never have to worry about packing heavy clothes. Last December, for example, my cousins from Hanoi came to visit and they couldn't believe we were swimming at Christmas. That said, the rainy season can be pretty miserable — the street outside my house floods almost every afternoon.\n\nCâu 3 — Do you often use public transport?\nNot as often as I'd like, to be honest. The main problem is that buses in my city are quite slow, so I usually ride my motorbike instead. Having said that, since the new metro line opened I've started taking it into the city centre at weekends — it takes twenty minutes instead of forty, so it's slowly changing my habits."
       }
     },
     {
@@ -1683,15 +1719,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Are you a student or do you work?"
+          "prompt": "Are you a student or do you work?",
+          "sampleAnswer": "I'm a student — I'm majoring in business administration at a university here in Ho Chi Minh City. I'm in my second year now, so I've been there for about eighteen months. Most of my time goes on attending lectures and handing in assignments, and honestly the academic workload can be pretty intense.",
+          "sampleNote": "MODEL 1 (sinh viên) của sách: đủ WHERE (majoring in… at a university in HCMC) + HOW LONG (about eighteen months) + WHAT (attending lectures, handing in assignments).",
+          "sampleSource": "book-adapted"
         },
         {
           "id": "s2",
-          "prompt": "Why did you choose that major / that job?"
+          "prompt": "Why did you choose that major / that job?",
+          "sampleAnswer": "Mainly because of the career prospects. Business administration is quite a flexible degree, so it keeps my options open — I could end up in marketing, finance or even start my own company one day. On top of that, my parents run a small shop, so I've grown up watching how a business works, and it has always fascinated me.",
+          "sampleNote": "Dùng cụm ★★ \"career prospects\" + một lý do cá nhân thật (bố mẹ mở cửa hàng nhỏ) — present perfect đúng (I've grown up, it has always fascinated me).",
+          "sampleSource": "new"
         },
         {
           "id": "s3",
-          "prompt": "What do you do on a typical day?"
+          "prompt": "What do you do on a typical day?",
+          "sampleAnswer": "It varies, but on most days I attend lectures from seven until about eleven, then I head to the library to work on group projects. In the evenings I tutor two high school students in English, which helps me gain some experience and earn a bit of money. It's a tight schedule, but it's challenging yet rewarding, so I'm not complaining.",
+          "sampleNote": "Ba target phrases xuất hiện tự nhiên (attend lectures, gain experience, a tight schedule / challenging yet rewarding) — không dùng từ \"boring\".",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -1713,7 +1758,7 @@
           "Nói lương quá cụ thể",
           "\"I study at English university\" — sai/thừa giới từ"
         ],
-        "sampleAnswer": "I work, actually. I'm an office worker at a local bank called Techcombank and I've been there for almost two years. I spend most of my day handling paperwork for clients and helping them with financial transactions. It's a challenging yet rewarding job — I meet people from all walks of life, so no two days are quite the same. That said, I do work long hours, and my work-life balance is far from perfect."
+        "sampleAnswer": "Câu 1 — Are you a student or do you work?\nI'm a student — I'm majoring in business administration at a university here in Ho Chi Minh City. I'm in my second year now, so I've been there for about eighteen months. Most of my time goes on attending lectures and handing in assignments, and honestly the academic workload can be pretty intense.\n\nCâu 2 — Why did you choose that major / that job?\nMainly because of the career prospects. Business administration is quite a flexible degree, so it keeps my options open — I could end up in marketing, finance or even start my own company one day. On top of that, my parents run a small shop, so I've grown up watching how a business works, and it has always fascinated me.\n\nCâu 3 — What do you do on a typical day?\nIt varies, but on most days I attend lectures from seven until about eleven, then I head to the library to work on group projects. In the evenings I tutor two high school students in English, which helps me gain some experience and earn a bit of money. It's a tight schedule, but it's challenging yet rewarding, so I'm not complaining."
       }
     },
     {
@@ -2018,15 +2063,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Can you describe your hometown?"
+          "prompt": "Can you describe your hometown?",
+          "sampleAnswer": "I was born and raised in Da Lat — a small city up in the Central Highlands, about eight hours from here. What strikes most visitors is the pace of life: people genuinely sit down for coffee for an hour, which is unthinkable in Saigon. It’s also known for its local cuisine, though I’d say the real draw is the weather — it’s the one place in Vietnam where you actually need a jacket. That said, it has become far more crowded since tourism took off.",
+          "sampleNote": "Có chi tiết chỉ người sống ở đó mới biết (“cần áo khoác”), một nhận xét so sánh, và ý đối lập ở cuối bằng present perfect.",
+          "sampleSource": "book"
         },
         {
           "id": "s2",
-          "prompt": "What's the area where you live like?"
+          "prompt": "What's the area where you live like?",
+          "sampleAnswer": "I currently live in a quiet residential area on the edge of the city. It's mostly low apartment blocks and small family-run shops, so it feels calm rather than crowded. The best thing is that almost everything is within walking distance — the market, a clinic, even my gym. The only downside is the traffic congestion on the main road at rush hour, but on the whole it suits me really well.",
+          "sampleNote": "Khung Location → Look/Feel → Highlight → Opinion; ba cụm cột HOME/AREA (residential area, within walking distance, traffic congestion); không dùng \"beautiful\" hay \"nice\".",
+          "sampleSource": "new"
         },
         {
           "id": "s3",
-          "prompt": "Has your hometown changed much in recent years?"
+          "prompt": "Has your hometown changed much in recent years?",
+          "sampleAnswer": "Quite a lot, actually. Da Lat has become far more crowded since tourism took off — there are new hotels on almost every hill, and the weekend traffic is much worse than it used to be. On the plus side, the roads and local amenities have improved a lot. Still, I feel some of that quiet charm has gone, which is a bit of a shame.",
+          "sampleNote": "Đúng yêu cầu Speaking Task 2 của sách: dùng present perfect cho thay đổi (has become, have improved) và có cả mặt tốt lẫn mặt xấu.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -2048,7 +2102,7 @@
           "Nhầm hometown với nơi đang sống → trả lời lệch câu hỏi",
           "\"I live in a house have two floors\" — thiếu which/that has"
         ],
-        "sampleAnswer": "I was born and raised in Da Lat — a small city up in the Central Highlands, about eight hours from here. What strikes most visitors is the pace of life: people genuinely sit down for coffee for an hour, which is unthinkable in Saigon. It's also known for its local cuisine, though I'd say the real draw is the weather — it's the one place in Vietnam where you actually need a jacket. That said, it has become far more crowded since tourism took off."
+        "sampleAnswer": "Câu 1 — Can you describe your hometown?\nI was born and raised in Da Lat — a small city up in the Central Highlands, about eight hours from here. What strikes most visitors is the pace of life: people genuinely sit down for coffee for an hour, which is unthinkable in Saigon. It’s also known for its local cuisine, though I’d say the real draw is the weather — it’s the one place in Vietnam where you actually need a jacket. That said, it has become far more crowded since tourism took off.\n\nCâu 2 — What's the area where you live like?\nI currently live in a quiet residential area on the edge of the city. It's mostly low apartment blocks and small family-run shops, so it feels calm rather than crowded. The best thing is that almost everything is within walking distance — the market, a clinic, even my gym. The only downside is the traffic congestion on the main road at rush hour, but on the whole it suits me really well.\n\nCâu 3 — Has your hometown changed much in recent years?\nQuite a lot, actually. Da Lat has become far more crowded since tourism took off — there are new hotels on almost every hill, and the weekend traffic is much worse than it used to be. On the plus side, the roads and local amenities have improved a lot. Still, I feel some of that quiet charm has gone, which is a bit of a shame."
       }
     },
     {
@@ -2343,15 +2397,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Are there enough public spaces in your city?"
+          "prompt": "Are there enough public spaces in your city?",
+          "sampleAnswer": "Not really, to be honest. My city is growing so fast that most new land goes to apartment blocks rather than public spaces. There's one park by the river that's well-maintained and has a decent running track, but it gets crowded at weekends — it's far more packed than the parks I saw in Singapore last year. So I'd say we need a few more, especially for families with young children.",
+          "sampleNote": "Đủ 4 lớp (Location → Atmosphere → Facilities → Opinion), một câu so sánh (far more packed than…) và ba target phrases (public spaces, well-maintained, get crowded at weekends).",
+          "sampleSource": "new"
         },
         {
           "id": "s2",
-          "prompt": "Do you often visit museums?"
+          "prompt": "Do you often visit museums?",
+          "sampleAnswer": "Not very often — maybe twice a year. The one I know best is the War Remnants Museum in the city centre; it's quite small, but it really helps you gain an insight into the country's past. That said, a lot of our museums are nowhere near as engaging as the ones abroad, because they have very few interactive displays. If they had more of those, I'd definitely go more often.",
+          "sampleNote": "Cấu trúc so sánh ★★ \"nowhere near as … as\" + cụm ★★★ \"gain an insight into\" + \"interactive displays\".",
+          "sampleSource": "new"
         },
         {
           "id": "s3",
-          "prompt": "Do you prefer quiet places or lively places?"
+          "prompt": "Do you prefer quiet places or lively places?",
+          "sampleAnswer": "It really depends on my mood, but on the whole I gravitate towards quieter places. There’s a small park about ten minutes from my house — nowhere near as impressive as the big ones downtown, but it’s well-maintained and almost empty before eight in the morning, which makes it a bit of a hidden gem. Having said that, when I’m with friends I want the opposite: noise, people, a lively atmosphere.",
+          "sampleNote": "Mở bằng “It depends on my mood”, có chi tiết cụ thể (trước 8 giờ sáng), dùng “nowhere near as … as”, kết bằng ý đối lập rõ ràng.",
+          "sampleSource": "book"
         }
       ],
       "rubric": {
@@ -2373,7 +2436,7 @@
           "\"It is more quiet than…\" → quieter than",
           "\"It is same as…\" → the same as"
         ],
-        "sampleAnswer": "It really depends on my mood, but on the whole I gravitate towards quieter places. There's a small park about ten minutes from my house — nowhere near as impressive as the big ones downtown, but it's well-maintained and almost empty before eight in the morning, which makes it a bit of a hidden gem. Having said that, when I'm with friends I want the opposite: noise, people, a lively atmosphere."
+        "sampleAnswer": "Câu 1 — Are there enough public spaces in your city?\nNot really, to be honest. My city is growing so fast that most new land goes to apartment blocks rather than public spaces. There's one park by the river that's well-maintained and has a decent running track, but it gets crowded at weekends — it's far more packed than the parks I saw in Singapore last year. So I'd say we need a few more, especially for families with young children.\n\nCâu 2 — Do you often visit museums?\nNot very often — maybe twice a year. The one I know best is the War Remnants Museum in the city centre; it's quite small, but it really helps you gain an insight into the country's past. That said, a lot of our museums are nowhere near as engaging as the ones abroad, because they have very few interactive displays. If they had more of those, I'd definitely go more often.\n\nCâu 3 — Do you prefer quiet places or lively places?\nIt really depends on my mood, but on the whole I gravitate towards quieter places. There’s a small park about ten minutes from my house — nowhere near as impressive as the big ones downtown, but it’s well-maintained and almost empty before eight in the morning, which makes it a bit of a hidden gem. Having said that, when I’m with friends I want the opposite: noise, people, a lively atmosphere."
       }
     },
     {
@@ -2677,15 +2740,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Do you prefer paying by cash or by card?"
+          "prompt": "Do you prefer paying by cash or by card?",
+          "sampleAnswer": "I prefer paying by card to carrying cash, mainly because it's faster — I just tap my phone and I'm done. It's also much easier to keep track of my spending, since every payment shows up in my banking app. That said, if I'm buying something from a street vendor or a small market stall, I always bring a bit of cash, because a lot of them still don't take cards.",
+          "sampleNote": "Cấu trúc \"prefer A to B\" (không dùng \"more than\"), hai lý do, và một điều kiện đảo chiều \"That said, if…\".",
+          "sampleSource": "new"
         },
         {
           "id": "s2",
-          "prompt": "Do you prefer comfortable shoes or stylish shoes?"
+          "prompt": "Do you prefer comfortable shoes or stylish shoes?",
+          "sampleAnswer": "For me it really comes down to comfort versus appearance, and I tend to prioritise comfort over appearance because I spend most of the day on my feet. That said, I still try to find shoes that strike a good balance — I’d rather buy one decent pair that lasts two years than three cheap pairs that wear out in a month. So I suppose it’s quality over quantity.",
+          "sampleNote": "Đủ 3 bước, ba cấu trúc preference khác nhau, một so sánh số lượng cụ thể, và câu kết rút gọn thành nguyên tắc.",
+          "sampleSource": "book"
         },
         {
           "id": "s3",
-          "prompt": "Do you prefer eating out or cooking at home?"
+          "prompt": "Do you prefer eating out or cooking at home?",
+          "sampleAnswer": "I'd rather cook at home than eat out most of the time. For one thing, it's far cheaper, and for another, I know exactly what's going into the food. Last weekend, for example, I made a whole pot of curry that lasted me three days. That said, if it's a friend's birthday or a special occasion, I'm more than happy to go to a restaurant — it's about striking a good balance.",
+          "sampleNote": "\"I'd rather + V nguyên thể + than…\", hai lý do (For one thing… for another…), điều kiện đảo chiều và cụm ★★★ \"strike a good balance\".",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -2707,7 +2779,7 @@
           "\"I prefer because…\" — thiếu tân ngữ \"it\"",
           "\"It depends\" nói trống"
         ],
-        "sampleAnswer": "For me it really comes down to comfort versus appearance, and I tend to prioritise comfort over appearance because I spend most of the day on my feet. That said, I still try to find shoes that strike a good balance — I'd rather buy one decent pair that lasts two years than three cheap pairs that wear out in a month. So I suppose it's quality over quantity."
+        "sampleAnswer": "Câu 1 — Do you prefer paying by cash or by card?\nI prefer paying by card to carrying cash, mainly because it's faster — I just tap my phone and I'm done. It's also much easier to keep track of my spending, since every payment shows up in my banking app. That said, if I'm buying something from a street vendor or a small market stall, I always bring a bit of cash, because a lot of them still don't take cards.\n\nCâu 2 — Do you prefer comfortable shoes or stylish shoes?\nFor me it really comes down to comfort versus appearance, and I tend to prioritise comfort over appearance because I spend most of the day on my feet. That said, I still try to find shoes that strike a good balance — I’d rather buy one decent pair that lasts two years than three cheap pairs that wear out in a month. So I suppose it’s quality over quantity.\n\nCâu 3 — Do you prefer eating out or cooking at home?\nI'd rather cook at home than eat out most of the time. For one thing, it's far cheaper, and for another, I know exactly what's going into the food. Last weekend, for example, I made a whole pot of curry that lasted me three days. That said, if it's a friend's birthday or a special occasion, I'm more than happy to go to a restaurant — it's about striking a good balance."
       }
     },
     {
@@ -3001,15 +3073,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "How often do you go somewhere green — a park or a garden?"
+          "prompt": "How often do you go somewhere green — a park or a garden?",
+          "sampleAnswer": "I'd say two or three times a week. I tend to go to the small park near my apartment whenever I've been studying for too long, usually in the early evening when it's cooler. Being around trees really helps me clear my head. Yesterday, for instance, I just walked a couple of laps around the lake and came back feeling much more focused.",
+          "sampleNote": "Đủ 4 bước Frequency → Context (whenever…) → Reason (clear my head) → Example (Yesterday, for instance…), không lặp trạng từ tần suất.",
+          "sampleSource": "new"
         },
         {
           "id": "s2",
-          "prompt": "How often do you take a break during the day?"
+          "prompt": "How often do you take a break during the day?",
+          "sampleAnswer": "Probably two or three times a day, though it varies. I tend to step away from my desk whenever I notice I’ve been reading the same sentence twice — that’s usually the signal. A ten-minute walk is enough to recharge my energy, and honestly it saves me time in the long run. Having said that, on busy days I hardly ever manage it, which is probably how burnout starts.",
+          "sampleNote": "Tần suất có kèm điều kiện (“though it varies”), hoàn cảnh rất cụ thể và cá nhân, hai mức tần suất khác nhau, kết bằng nhận xét khái quát.",
+          "sampleSource": "book"
         },
         {
           "id": "s3",
-          "prompt": "How often do you talk to your neighbours?"
+          "prompt": "How often do you talk to your neighbours?",
+          "sampleAnswer": "Hardly ever, to be honest. Most people in my building leave early and come home late, so there's not much chance to strike up a conversation. Every now and then I chat with the elderly lady next door while we're both waiting for the lift — last week she gave me a bag of mangoes from her hometown, which was really kind of her.",
+          "sampleNote": "Hai mức tần suất khác nhau (Hardly ever / Every now and then) + cụm ★★ \"strike up a conversation\" + ví dụ có người và thời gian.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -3031,7 +3112,7 @@
           "\"Everyday I go\" → \"Every day I go\"",
           "Lặp \"usually\" 3–4 lần"
         ],
-        "sampleAnswer": "Probably two or three times a day, though it varies. I tend to step away from my desk whenever I notice I've been reading the same sentence twice — that's usually the signal. A ten-minute walk is enough to recharge my energy, and honestly it saves me time in the long run. Having said that, on busy days I hardly ever manage it, which is probably how burnout starts."
+        "sampleAnswer": "Câu 1 — How often do you go somewhere green — a park or a garden?\nI'd say two or three times a week. I tend to go to the small park near my apartment whenever I've been studying for too long, usually in the early evening when it's cooler. Being around trees really helps me clear my head. Yesterday, for instance, I just walked a couple of laps around the lake and came back feeling much more focused.\n\nCâu 2 — How often do you take a break during the day?\nProbably two or three times a day, though it varies. I tend to step away from my desk whenever I notice I’ve been reading the same sentence twice — that’s usually the signal. A ten-minute walk is enough to recharge my energy, and honestly it saves me time in the long run. Having said that, on busy days I hardly ever manage it, which is probably how burnout starts.\n\nCâu 3 — How often do you talk to your neighbours?\nHardly ever, to be honest. Most people in my building leave early and come home late, so there's not much chance to strike up a conversation. Every now and then I chat with the elderly lady next door while we're both waiting for the lift — last week she gave me a bag of mangoes from her hometown, which was really kind of her."
       }
     },
     {
@@ -3365,15 +3446,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Tell me about something you used to do when you were younger."
+          "prompt": "Tell me about something you used to do when you were younger.",
+          "sampleAnswer": "When I was about ten, I used to spend every summer at my grandparents' house in the countryside. What I remember most is that my cousins and I would cycle to the river every afternoon and try to catch fish with our bare hands — we never caught a single one. At the time I felt completely free, with no homework and no screens. Looking back, those summers are some of my happiest childhood memories, and it has stuck with me ever since that you don't need much to have fun.",
+          "sampleNote": "Đủ 4 bước When → What → How I felt → What I learned; dùng \"used to\" và \"would\" cho thói quen trong quá khứ, kết bằng cụm ★★★ \"it has stuck with me ever since\".",
+          "sampleSource": "new"
         },
         {
           "id": "s2",
-          "prompt": "Tell me about a place you visited as a child."
+          "prompt": "Tell me about a place you visited as a child.",
+          "sampleAnswer": "One place I remember really clearly is the History Museum — my school took us there when I was about ten. I remember one room full of old maps — I spent almost the whole visit in there instead of following the group, and the teacher had to come and find me. I was completely absorbed; it was the first time history felt like something real rather than a subject I had to pass. Looking back, that's probably why I still can't walk past a secondhand map stall.",
+          "sampleNote": "Bản Band 7 của sách (câu \"Did you visit museums when you were a child?\"), chỉ đổi câu mở cho khớp đề: một chi tiết bất ngờ (cô giáo phải đi tìm), câu cảm xúc mạnh, bài học nối thẳng đến hiện tại.",
+          "sampleSource": "book-adapted"
         },
         {
           "id": "s3",
-          "prompt": "Have you ever learned something from a much older person?"
+          "prompt": "Have you ever learned something from a much older person?",
+          "sampleAnswer": "Yes, actually. When I was in secondary school, I used to visit an elderly neighbour every Sunday. She was in her eighties and she'd tell me stories about what the street looked like before any of the buildings went up. What I learned from her was patience — she would take her time to find exactly the right word, and somehow that made every story better. Looking back, I think those Sundays did more to bridge the gap between generations for me than anything I learned at school.",
+          "sampleNote": "Dựa trên mini-story mẫu của sách (người hàng xóm lớn tuổi), thêm câu \"What I learned from her was…\" để trả lời đúng ý \"learned something\"; cụm ★★★ \"bridge the gap between generations\".",
+          "sampleSource": "book-adapted"
         }
       ],
       "rubric": {
@@ -3395,7 +3485,7 @@
           "Trộn thì: bắt đầu past simple rồi chuyển sang present",
           "Chỉ kể sự việc, không có cảm xúc"
         ],
-        "sampleAnswer": "A few times, yes. My school took us to the History Museum when I was about ten. I remember one room full of old maps — I spent almost the whole visit in there instead of following the group, and the teacher had to come and find me. I was completely absorbed; it was the first time history felt like something real rather than a subject I had to pass. Looking back, that's probably why I still can't walk past a secondhand map stall."
+        "sampleAnswer": "Câu 1 — Tell me about something you used to do when you were younger.\nWhen I was about ten, I used to spend every summer at my grandparents' house in the countryside. What I remember most is that my cousins and I would cycle to the river every afternoon and try to catch fish with our bare hands — we never caught a single one. At the time I felt completely free, with no homework and no screens. Looking back, those summers are some of my happiest childhood memories, and it has stuck with me ever since that you don't need much to have fun.\n\nCâu 2 — Tell me about a place you visited as a child.\nOne place I remember really clearly is the History Museum — my school took us there when I was about ten. I remember one room full of old maps — I spent almost the whole visit in there instead of following the group, and the teacher had to come and find me. I was completely absorbed; it was the first time history felt like something real rather than a subject I had to pass. Looking back, that's probably why I still can't walk past a secondhand map stall.\n\nCâu 3 — Have you ever learned something from a much older person?\nYes, actually. When I was in secondary school, I used to visit an elderly neighbour every Sunday. She was in her eighties and she'd tell me stories about what the street looked like before any of the buildings went up. What I learned from her was patience — she would take her time to find exactly the right word, and somehow that made every story better. Looking back, I think those Sundays did more to bridge the gap between generations for me than anything I learned at school."
       }
     },
     {
@@ -3701,15 +3791,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "How has the way you study or work changed in the last few years?"
+          "prompt": "How has the way you study or work changed in the last few years?",
+          "sampleAnswer": "Quite significantly, actually. When I started university, I used to take all my notes by hand and spend hours in the library looking for books. These days almost everything is online — I record lectures, share notes with classmates in the cloud, and most of my reading is on a tablet. As a result, I can study anywhere, but I've also become noticeably more easily distracted, so it's a bit of a mixed blessing.",
+          "sampleNote": "Khung Past (used to…) → Present (These days…) → Result (As a result…); present perfect (I've become) + trạng từ mức độ (significantly, noticeably).",
+          "sampleSource": "new"
         },
         {
           "id": "s2",
-          "prompt": "How has your hometown changed in recent years?"
+          "prompt": "How has your hometown changed in recent years?",
+          "sampleAnswer": "Quite dramatically, actually. When I was at primary school the road behind my house was still unpaved, and there were maybe two shops on the whole street. These days it has become increasingly built-up — there are three convenience stores within a hundred metres. As a result, it’s far more convenient, but a lot of that close- knit feeling has gone, and I’m honestly not sure the trade-off has been worth it.",
+          "sampleNote": "Chi tiết đo được (hai cửa hàng →ba trong 100 mét), hệ quả có** hai mặt**, và một đánh giá cá nhân ở cuối.",
+          "sampleSource": "book"
         },
         {
           "id": "s3",
-          "prompt": "How has the way people communicate changed?"
+          "prompt": "How has the way people communicate changed?",
+          "sampleAnswer": "It has changed dramatically. When I was a child, my family used to call our relatives on a landline once a week, and letters were still quite common. Nowadays almost everything happens through messaging apps — my family group chat is busy from morning till night. As a result, we're in touch far more often, although I'd say the conversations have become considerably shorter and less personal.",
+          "sampleNote": "Mỗi câu dùng một trạng từ mức độ khác nhau (dramatically, considerably), có hệ quả hai mặt — đúng luật Speaking Task 1 của sách.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -3731,7 +3830,7 @@
           "Chỉ mô tả thay đổi mà không nói hệ quả",
           "\"It has very changed\" — dùng trạng từ mức độ thay cho \"very\""
         ],
-        "sampleAnswer": "Quite dramatically, actually. When I was at primary school the road behind my house was still unpaved, and there were maybe two shops on the whole street. These days it has become increasingly built-up — there are three convenience stores within a hundred metres. As a result, it's far more convenient, but a lot of that close-knit feeling has gone, and I'm honestly not sure the trade-off has been worth it."
+        "sampleAnswer": "Câu 1 — How has the way you study or work changed in the last few years?\nQuite significantly, actually. When I started university, I used to take all my notes by hand and spend hours in the library looking for books. These days almost everything is online — I record lectures, share notes with classmates in the cloud, and most of my reading is on a tablet. As a result, I can study anywhere, but I've also become noticeably more easily distracted, so it's a bit of a mixed blessing.\n\nCâu 2 — How has your hometown changed in recent years?\nQuite dramatically, actually. When I was at primary school the road behind my house was still unpaved, and there were maybe two shops on the whole street. These days it has become increasingly built-up — there are three convenience stores within a hundred metres. As a result, it’s far more convenient, but a lot of that close- knit feeling has gone, and I’m honestly not sure the trade-off has been worth it.\n\nCâu 3 — How has the way people communicate changed?\nIt has changed dramatically. When I was a child, my family used to call our relatives on a landline once a week, and letters were still quite common. Nowadays almost everything happens through messaging apps — my family group chat is busy from morning till night. As a result, we're in touch far more often, although I'd say the conversations have become considerably shorter and less personal."
       }
     },
     {
@@ -4036,15 +4135,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Are rules at school necessary?"
+          "prompt": "Are rules at school necessary?",
+          "sampleAnswer": "Yes, but only up to a point. Basic rules — like being on time or respecting teachers — are clearly necessary, because a class of forty students simply can't function without them. Having said that, some rules feel pointless; at my old school we weren't allowed to wear jackets in class, even in winter. So on balance, I'd say rules are necessary, as long as there's a clear reason behind them.",
+          "sampleNote": "Nêu đủ hai mặt (Yes, but… / Having said that…) và CHỐT lập trường bằng \"So on balance, I'd say…\" — không bỏ lửng.",
+          "sampleSource": "new"
         },
         {
           "id": "s2",
-          "prompt": "Do you like crowded places?"
+          "prompt": "Do you like crowded places?",
+          "sampleAnswer": "Honestly, it depends on why I’m there. If I’m out with friends, a crowd is half the point — the night market near my house is chaotic and I love it. But if I’m just trying to get somewhere, the same crowd is exhausting; I’ll happily walk an extra ten minutes to avoid the main road at rush hour. So on balance, I’d say I like crowds when they’re part of the experience, not when they’re an obstacle.",
+          "sampleNote": "Điều kiện cụ thể ngay từ đầu, hai tình huống trái ngược có chi tiết thật, và câu chốt cô đọng thành một nguyên tắc.",
+          "sampleSource": "book"
         },
         {
           "id": "s3",
-          "prompt": "Do you mind lending things to friends?"
+          "prompt": "Do you mind lending things to friends?",
+          "sampleAnswer": "It depends on what it is and who's asking. To be fair, I'm quite happy to lend books or a phone charger to friends, because if they get lost it's no big deal. Having said that, I'm much more careful with money or anything expensive — I once lent my camera to a classmate and it came back with a cracked screen. So overall, I'd say I lend small things freely but think twice about big ones.",
+          "sampleNote": "\"It depends on…\" có nêu rõ điều kiện, cấu trúc ★★★ \"To be fair\", một ví dụ thật và câu chốt cô đọng thành nguyên tắc.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -4066,7 +4174,7 @@
           "\"On the one hand… on the one hand…\"",
           "Cân bằng đến mức không có ý kiến nào cả"
         ],
-        "sampleAnswer": "Honestly, it depends on why I'm there. If I'm out with friends, a crowd is half the point — the night market near my house is chaotic and I love it. But if I'm just trying to get somewhere, the same crowd is exhausting; I'll happily walk an extra ten minutes to avoid the main road at rush hour. So on balance, I'd say I like crowds when they're part of the experience, not when they're an obstacle."
+        "sampleAnswer": "Câu 1 — Are rules at school necessary?\nYes, but only up to a point. Basic rules — like being on time or respecting teachers — are clearly necessary, because a class of forty students simply can't function without them. Having said that, some rules feel pointless; at my old school we weren't allowed to wear jackets in class, even in winter. So on balance, I'd say rules are necessary, as long as there's a clear reason behind them.\n\nCâu 2 — Do you like crowded places?\nHonestly, it depends on why I’m there. If I’m out with friends, a crowd is half the point — the night market near my house is chaotic and I love it. But if I’m just trying to get somewhere, the same crowd is exhausting; I’ll happily walk an extra ten minutes to avoid the main road at rush hour. So on balance, I’d say I like crowds when they’re part of the experience, not when they’re an obstacle.\n\nCâu 3 — Do you mind lending things to friends?\nIt depends on what it is and who's asking. To be fair, I'm quite happy to lend books or a phone charger to friends, because if they get lost it's no big deal. Having said that, I'm much more careful with money or anything expensive — I once lent my camera to a classmate and it came back with a cracked screen. So overall, I'd say I lend small things freely but think twice about big ones."
       }
     },
     {
@@ -4370,15 +4478,24 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Do you ever write letters by hand?"
+          "prompt": "Do you ever write letters by hand?",
+          "sampleAnswer": "Not really, to be honest — it's not something I've thought about much. These days I message people instead, like most people my age. But I can see why some people still do it: my grandmother keeps every letter my grandfather ever wrote to her, and reading them is far more personal than scrolling through old texts. If I had to write one, I suppose it would be a thank-you letter to an old teacher.",
+          "sampleNote": "Chiến lược 1 + 2 + 4: thú nhận rồi rẽ hướng, nói về người khác (bà), nhìn từ góc khác (I can see why some people…). Không nói \"I don't know\".",
+          "sampleSource": "new"
         },
         {
           "id": "s2",
-          "prompt": "Do you enjoy collecting stamps or coins?"
+          "prompt": "Do you enjoy collecting stamps or coins?",
+          "sampleAnswer": "Well… stamps specifically, no — it’s not something I’ve ever thought about much. But I can see the appeal: my uncle collects old coins, and watching him sort through them is oddly calming, a bit like gardening. If I had to pick something myself, it’d probably be books — I’ve got about three hundred at home, which I suppose technically makes me a collector already.",
+          "sampleNote": "Thừa nhận thẳng, so sánh bất ngờ (giống làm vườn), rồi tự lật lại chính mình ở cuối. Nghe hoàn toàn tự nhiên, không hề học thuộc.",
+          "sampleSource": "book"
         },
         {
           "id": "s3",
-          "prompt": "Are you interested in astronomy?"
+          "prompt": "Are you interested in astronomy?",
+          "sampleAnswer": "I've never really been into astronomy in a serious way, but I do enjoy looking at the stars when I'm out of the city. Last summer, for example, I went camping near Da Lat and you could see so many more stars than in Saigon — it was a breath of fresh air, literally. If I had to guess, I'd say I'd enjoy it even more if I actually knew the names of the constellations.",
+          "sampleNote": "Mượn từ vựng bài khác (a breath of fresh air — Lesson 7) và chiến lược \"If I had to guess, I'd say…\".",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -4400,7 +4517,7 @@
           "Bịa một câu trả lời dài dòng nhưng lạc đề",
           "\"If I would have time…\" → \"If I had time…\""
         ],
-        "sampleAnswer": "Well… stamps specifically, no — it's not something I've ever thought about much. But I can see the appeal: my uncle collects old coins, and watching him sort through them is oddly calming, a bit like gardening. If I had to pick something myself, it'd probably be books — I've got about three hundred at home, which I suppose technically makes me a collector already."
+        "sampleAnswer": "Câu 1 — Do you ever write letters by hand?\nNot really, to be honest — it's not something I've thought about much. These days I message people instead, like most people my age. But I can see why some people still do it: my grandmother keeps every letter my grandfather ever wrote to her, and reading them is far more personal than scrolling through old texts. If I had to write one, I suppose it would be a thank-you letter to an old teacher.\n\nCâu 2 — Do you enjoy collecting stamps or coins?\nWell… stamps specifically, no — it’s not something I’ve ever thought about much. But I can see the appeal: my uncle collects old coins, and watching him sort through them is oddly calming, a bit like gardening. If I had to pick something myself, it’d probably be books — I’ve got about three hundred at home, which I suppose technically makes me a collector already.\n\nCâu 3 — Are you interested in astronomy?\nI've never really been into astronomy in a serious way, but I do enjoy looking at the stars when I'm out of the city. Last summer, for example, I went camping near Da Lat and you could see so many more stars than in Saigon — it was a breath of fresh air, literally. If I had to guess, I'd say I'd enjoy it even more if I actually knew the names of the constellations."
       }
     },
     {
@@ -4567,51 +4684,75 @@
       "items": [
         {
           "id": "a1",
-          "prompt": "Work / Study — Are you a student or do you work?"
+          "prompt": "Work / Study — Are you a student or do you work?",
+          "sampleAnswer": "I'm a student. I'm in my second year at a university here in Ho Chi Minh City, majoring in business administration. Most of my time goes on attending lectures and handing in assignments, and honestly the academic workload can be pretty intense.",
+          "sampleSource": "new"
         },
         {
           "id": "a2",
-          "prompt": "Work / Study — Why did you choose that?"
+          "prompt": "Work / Study — Why did you choose that?",
+          "sampleAnswer": "Mainly because of the career prospects. Business is quite a flexible field, so it keeps my options open. My parents also run a small shop, so I grew up around that kind of thing and it always interested me.",
+          "sampleSource": "new"
         },
         {
           "id": "a3",
-          "prompt": "Work / Study — What do you do on a typical day?"
+          "prompt": "Work / Study — What do you do on a typical day?",
+          "sampleAnswer": "It varies, but usually I have lectures in the morning, then I spend the afternoon in the library working on group projects. In the evening I try to do a bit of reading for the next day, though that doesn't always happen.",
+          "sampleSource": "new"
         },
         {
           "id": "a4",
-          "prompt": "Work / Study — Would you change it if you could?"
+          "prompt": "Work / Study — Would you change it if you could?",
+          "sampleAnswer": "Not the subject, but maybe the pace. I'd love a bit more time for things outside study. That said, I know these two years matter, so I'm not complaining too much.",
+          "sampleSource": "new"
         },
         {
           "id": "a5",
-          "prompt": "Hometown — Where is your hometown?"
+          "prompt": "Hometown — Where is your hometown?",
+          "sampleAnswer": "I was born and raised in Da Lat, a small city up in the Central Highlands, about eight hours from here. It's best known for its cool weather and its flower gardens.",
+          "sampleSource": "new"
         },
         {
           "id": "a6",
-          "prompt": "Hometown — What is it known for?"
+          "prompt": "Hometown — What is it known for?",
+          "sampleAnswer": "Mostly the climate — it's the one place in Vietnam where you actually need a jacket. It's also famous for its local produce, especially strawberries and coffee, and a lot of couples go there for their wedding photos.",
+          "sampleSource": "new"
         },
         {
           "id": "a7",
-          "prompt": "Hometown — Has it changed much in recent years?"
+          "prompt": "Hometown — Has it changed much in recent years?",
+          "sampleAnswer": "Quite a lot. It has become far more crowded since tourism took off. There are new hotels everywhere and the weekend traffic is much worse than it used to be, so some of that quiet charm has gone.",
+          "sampleSource": "new"
         },
         {
           "id": "a8",
-          "prompt": "Hometown — Would you like to live there in the future?"
+          "prompt": "Hometown — Would you like to live there in the future?",
+          "sampleAnswer": "Possibly, when I'm older, because the pace of life really suits me. That said, there aren't many jobs in my field there, so realistically I'll probably stay in the city for now.",
+          "sampleSource": "new"
         },
         {
           "id": "a9",
-          "prompt": "Taking a break — How often do you take breaks during the day?"
+          "prompt": "Taking a break — How often do you take breaks during the day?",
+          "sampleAnswer": "Probably two or three times, though it varies. I tend to step away from my desk whenever I notice I've read the same sentence twice — that's usually the signal.",
+          "sampleSource": "new"
         },
         {
           "id": "a10",
-          "prompt": "Taking a break — What do you usually do to relax?"
+          "prompt": "Taking a break — What do you usually do to relax?",
+          "sampleAnswer": "Nothing dramatic. I'll make a coffee, walk around the block, or just listen to a song. A ten-minute walk is usually enough to clear my head.",
+          "sampleSource": "new"
         },
         {
           "id": "a11",
-          "prompt": "Taking a break — Do you think people take enough breaks?"
+          "prompt": "Taking a break — Do you think people take enough breaks?",
+          "sampleAnswer": "Not really. A lot of people I know feel guilty about stopping, so they push through and end up less productive. Short breaks actually save time in the long run.",
+          "sampleSource": "new"
         },
         {
           "id": "a12",
-          "prompt": "Taking a break — Did you relax differently when you were younger?"
+          "prompt": "Taking a break — Did you relax differently when you were younger?",
+          "sampleAnswer": "Definitely. As a child I'd just go outside and play with the neighbours — it was all physical. Now it's much more about switching off from a screen than being active, which I'm not sure is an improvement.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -4633,7 +4774,7 @@
           "Trộn thì giữa các câu",
           "Đọc thuộc lòng — giọng đều đều"
         ],
-        "sampleAnswer": "BÀI MẪU BAND 7 — TEST A (mỗi câu 15–25 giây, đủ Opinion → Reason → Example)\n\nWORK / STUDY\n1. Are you a student or do you work? — \"I'm a student. I'm in my second year at a university here in Ho Chi Minh City, majoring in business administration. Most of my time goes on attending lectures and handing in assignments, and honestly the academic workload can be pretty intense.\"\n2. Why did you choose that? — \"Mainly because of the career prospects. Business is quite a flexible field, so it keeps my options open. My parents also run a small shop, so I grew up around that kind of thing and it always interested me.\"\n3. What do you do on a typical day? — \"It varies, but usually I have lectures in the morning, then I spend the afternoon in the library working on group projects. In the evening I try to do a bit of reading for the next day, though that doesn't always happen.\"\n4. Would you change it if you could? — \"Not the subject, but maybe the pace. I'd love a bit more time for things outside study. That said, I know these two years matter, so I'm not complaining too much.\"\n\nHOMETOWN\n1. Where is your hometown? — \"I was born and raised in Da Lat, a small city up in the Central Highlands, about eight hours from here. It's best known for its cool weather and its flower gardens.\"\n2. What is it known for? — \"Mostly the climate — it's the one place in Vietnam where you actually need a jacket. It's also famous for its local produce, especially strawberries and coffee, and a lot of couples go there for their wedding photos.\"\n3. Has it changed much in recent years? — \"Quite a lot. It has become far more crowded since tourism took off. There are new hotels everywhere and the weekend traffic is much worse than it used to be, so some of that quiet charm has gone.\"\n4. Would you like to live there in the future? — \"Possibly, when I'm older, because the pace of life really suits me. That said, there aren't many jobs in my field there, so realistically I'll probably stay in the city for now.\"\n\nTAKING A BREAK\n1. How often do you take breaks during the day? — \"Probably two or three times, though it varies. I tend to step away from my desk whenever I notice I've read the same sentence twice — that's usually the signal.\"\n2. What do you usually do to relax? — \"Nothing dramatic. I'll make a coffee, walk around the block, or just listen to a song. A ten-minute walk is usually enough to clear my head.\"\n3. Do you think people take enough breaks? — \"Not really. A lot of people I know feel guilty about stopping, so they push through and end up less productive. Short breaks actually save time in the long run.\"\n4. Did you relax differently when you were younger? — \"Definitely. As a child I'd just go outside and play with the neighbours — it was all physical. Now it's much more about switching off from a screen than being active, which I'm not sure is an improvement.\""
+        "sampleAnswer": "Câu 1 — Work / Study — Are you a student or do you work?\nI'm a student. I'm in my second year at a university here in Ho Chi Minh City, majoring in business administration. Most of my time goes on attending lectures and handing in assignments, and honestly the academic workload can be pretty intense.\n\nCâu 2 — Work / Study — Why did you choose that?\nMainly because of the career prospects. Business is quite a flexible field, so it keeps my options open. My parents also run a small shop, so I grew up around that kind of thing and it always interested me.\n\nCâu 3 — Work / Study — What do you do on a typical day?\nIt varies, but usually I have lectures in the morning, then I spend the afternoon in the library working on group projects. In the evening I try to do a bit of reading for the next day, though that doesn't always happen.\n\nCâu 4 — Work / Study — Would you change it if you could?\nNot the subject, but maybe the pace. I'd love a bit more time for things outside study. That said, I know these two years matter, so I'm not complaining too much.\n\nCâu 5 — Hometown — Where is your hometown?\nI was born and raised in Da Lat, a small city up in the Central Highlands, about eight hours from here. It's best known for its cool weather and its flower gardens.\n\nCâu 6 — Hometown — What is it known for?\nMostly the climate — it's the one place in Vietnam where you actually need a jacket. It's also famous for its local produce, especially strawberries and coffee, and a lot of couples go there for their wedding photos.\n\nCâu 7 — Hometown — Has it changed much in recent years?\nQuite a lot. It has become far more crowded since tourism took off. There are new hotels everywhere and the weekend traffic is much worse than it used to be, so some of that quiet charm has gone.\n\nCâu 8 — Hometown — Would you like to live there in the future?\nPossibly, when I'm older, because the pace of life really suits me. That said, there aren't many jobs in my field there, so realistically I'll probably stay in the city for now.\n\nCâu 9 — Taking a break — How often do you take breaks during the day?\nProbably two or three times, though it varies. I tend to step away from my desk whenever I notice I've read the same sentence twice — that's usually the signal.\n\nCâu 10 — Taking a break — What do you usually do to relax?\nNothing dramatic. I'll make a coffee, walk around the block, or just listen to a song. A ten-minute walk is usually enough to clear my head.\n\nCâu 11 — Taking a break — Do you think people take enough breaks?\nNot really. A lot of people I know feel guilty about stopping, so they push through and end up less productive. Short breaks actually save time in the long run.\n\nCâu 12 — Taking a break — Did you relax differently when you were younger?\nDefinitely. As a child I'd just go outside and play with the neighbours — it was all physical. Now it's much more about switching off from a screen than being active, which I'm not sure is an improvement."
       }
     },
     {
@@ -4650,51 +4791,75 @@
       "items": [
         {
           "id": "b1",
-          "prompt": "Work / Study — Do you work or are you a student?"
+          "prompt": "Work / Study — Do you work or are you a student?",
+          "sampleAnswer": "I'm a student. I've been studying business administration at a university in the city since September the year before last, so about eighteen months now.",
+          "sampleSource": "new"
         },
         {
           "id": "b2",
-          "prompt": "Work / Study — What do you like best about it?"
+          "prompt": "Work / Study — What do you like best about it?",
+          "sampleAnswer": "The group work, surprisingly. I wasn't keen at first, but you learn a lot from bouncing ideas off other people, and some of my closest friends now are from my course.",
+          "sampleSource": "new"
         },
         {
           "id": "b3",
-          "prompt": "Work / Study — Is it what you expected?"
+          "prompt": "Work / Study — Is it what you expected?",
+          "sampleAnswer": "More or less. I expected the workload, but I didn't expect how much of it would be presentations and teamwork rather than exams. That's been a good kind of surprise.",
+          "sampleSource": "new"
         },
         {
           "id": "b4",
-          "prompt": "Work / Study — What are your plans afterwards?"
+          "prompt": "Work / Study — What are your plans afterwards?",
+          "sampleAnswer": "I'd like to gain some experience at a company for a couple of years before deciding anything long-term. I'm not in a rush to lock myself into one path.",
+          "sampleSource": "new"
         },
         {
           "id": "b5",
-          "prompt": "Home / Area — Can you describe the place where you live?"
+          "prompt": "Home / Area — Can you describe the place where you live?",
+          "sampleAnswer": "I currently live in a quiet residential area on the edge of the city. It's mostly low apartment blocks and small family-run shops, and everything I need is within walking distance.",
+          "sampleSource": "new"
         },
         {
           "id": "b6",
-          "prompt": "Home / Area — What do you like about your neighbourhood?"
+          "prompt": "Home / Area — What do you like about your neighbourhood?",
+          "sampleAnswer": "The convenience, mainly. There's a market two minutes away, good transport links to the centre, and the neighbours actually know each other, which you don't always get in a big city.",
+          "sampleSource": "new"
         },
         {
           "id": "b7",
-          "prompt": "Home / Area — Are there enough public spaces nearby?"
+          "prompt": "Home / Area — Are there enough public spaces nearby?",
+          "sampleAnswer": "Not really. There's one small park, but it's usually packed in the evenings. A few more green spaces would make a big difference, especially for families with young children.",
+          "sampleSource": "new"
         },
         {
           "id": "b8",
-          "prompt": "Home / Area — Would you like to move somewhere else?"
+          "prompt": "Home / Area — Would you like to move somewhere else?",
+          "sampleAnswer": "Eventually, maybe closer to the centre to cut down my commute. That said, I'd miss the quiet, so it's a bit of a trade-off.",
+          "sampleSource": "new"
         },
         {
           "id": "b9",
-          "prompt": "Shoes / Clothes — Do you prefer comfortable or stylish shoes?"
+          "prompt": "Shoes / Clothes — Do you prefer comfortable or stylish shoes?",
+          "sampleAnswer": "Comfortable, without a doubt. I'm on my feet most of the day, so I prioritise comfort over appearance. I'll wear something smarter for a formal occasion, but that's the exception.",
+          "sampleSource": "new"
         },
         {
           "id": "b10",
-          "prompt": "Shoes / Clothes — How often do you buy new clothes?"
+          "prompt": "Shoes / Clothes — How often do you buy new clothes?",
+          "sampleAnswer": "Not very often — maybe every couple of months, and usually only when something wears out. I'd rather buy one decent item that lasts than several cheap ones.",
+          "sampleSource": "new"
         },
         {
           "id": "b11",
-          "prompt": "Shoes / Clothes — Have your tastes changed over the years?"
+          "prompt": "Shoes / Clothes — Have your tastes changed over the years?",
+          "sampleAnswer": "Quite a bit. As a teenager I cared a lot about brands and trends. These days I gravitate towards plain, simple designs that go with everything — it's less effort, honestly.",
+          "sampleSource": "new"
         },
         {
           "id": "b12",
-          "prompt": "Shoes / Clothes — Do you think people spend too much on clothes?"
+          "prompt": "Shoes / Clothes — Do you think people spend too much on clothes?",
+          "sampleAnswer": "Some people do. There's a lot of pressure from social media to keep buying. Having said that, if someone genuinely enjoys fashion and can afford it, I don't see the harm — it's their money.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -4716,7 +4881,7 @@
           "\"My tastes is changed\" → have changed",
           "Nêu hai mặt rồi không chốt"
         ],
-        "sampleAnswer": "BÀI MẪU BAND 7 — TEST B (mỗi câu 15–25 giây)\n\nWORK / STUDY\n1. Do you work or are you a student? — \"I'm a student. I've been studying business administration at a university in the city since September the year before last, so about eighteen months now.\"\n2. What do you like best about it? — \"The group work, surprisingly. I wasn't keen at first, but you learn a lot from bouncing ideas off other people, and some of my closest friends now are from my course.\"\n3. Is it what you expected? — \"More or less. I expected the workload, but I didn't expect how much of it would be presentations and teamwork rather than exams. That's been a good kind of surprise.\"\n4. What are your plans afterwards? — \"I'd like to gain some experience at a company for a couple of years before deciding anything long-term. I'm not in a rush to lock myself into one path.\"\n\nHOME / AREA\n1. Can you describe the place where you live? — \"I currently live in a quiet residential area on the edge of the city. It's mostly low apartment blocks and small family-run shops, and everything I need is within walking distance.\"\n2. What do you like about your neighbourhood? — \"The convenience, mainly. There's a market two minutes away, good transport links to the centre, and the neighbours actually know each other, which you don't always get in a big city.\"\n3. Are there enough public spaces nearby? — \"Not really. There's one small park, but it's usually packed in the evenings. A few more green spaces would make a big difference, especially for families with young children.\"\n4. Would you like to move somewhere else? — \"Eventually, maybe closer to the centre to cut down my commute. That said, I'd miss the quiet, so it's a bit of a trade-off.\"\n\nSHOES / CLOTHES\n1. Do you prefer comfortable or stylish shoes? — \"Comfortable, without a doubt. I'm on my feet most of the day, so I prioritise comfort over appearance. I'll wear something smarter for a formal occasion, but that's the exception.\"\n2. How often do you buy new clothes? — \"Not very often — maybe every couple of months, and usually only when something wears out. I'd rather buy one decent item that lasts than several cheap ones.\"\n3. Have your tastes changed over the years? — \"Quite a bit. As a teenager I cared a lot about brands and trends. These days I gravitate towards plain, simple designs that go with everything — it's less effort, honestly.\"\n4. Do you think people spend too much on clothes? — \"Some people do. There's a lot of pressure from social media to keep buying. Having said that, if someone genuinely enjoys fashion and can afford it, I don't see the harm — it's their money.\""
+        "sampleAnswer": "Câu 1 — Work / Study — Do you work or are you a student?\nI'm a student. I've been studying business administration at a university in the city since September the year before last, so about eighteen months now.\n\nCâu 2 — Work / Study — What do you like best about it?\nThe group work, surprisingly. I wasn't keen at first, but you learn a lot from bouncing ideas off other people, and some of my closest friends now are from my course.\n\nCâu 3 — Work / Study — Is it what you expected?\nMore or less. I expected the workload, but I didn't expect how much of it would be presentations and teamwork rather than exams. That's been a good kind of surprise.\n\nCâu 4 — Work / Study — What are your plans afterwards?\nI'd like to gain some experience at a company for a couple of years before deciding anything long-term. I'm not in a rush to lock myself into one path.\n\nCâu 5 — Home / Area — Can you describe the place where you live?\nI currently live in a quiet residential area on the edge of the city. It's mostly low apartment blocks and small family-run shops, and everything I need is within walking distance.\n\nCâu 6 — Home / Area — What do you like about your neighbourhood?\nThe convenience, mainly. There's a market two minutes away, good transport links to the centre, and the neighbours actually know each other, which you don't always get in a big city.\n\nCâu 7 — Home / Area — Are there enough public spaces nearby?\nNot really. There's one small park, but it's usually packed in the evenings. A few more green spaces would make a big difference, especially for families with young children.\n\nCâu 8 — Home / Area — Would you like to move somewhere else?\nEventually, maybe closer to the centre to cut down my commute. That said, I'd miss the quiet, so it's a bit of a trade-off.\n\nCâu 9 — Shoes / Clothes — Do you prefer comfortable or stylish shoes?\nComfortable, without a doubt. I'm on my feet most of the day, so I prioritise comfort over appearance. I'll wear something smarter for a formal occasion, but that's the exception.\n\nCâu 10 — Shoes / Clothes — How often do you buy new clothes?\nNot very often — maybe every couple of months, and usually only when something wears out. I'd rather buy one decent item that lasts than several cheap ones.\n\nCâu 11 — Shoes / Clothes — Have your tastes changed over the years?\nQuite a bit. As a teenager I cared a lot about brands and trends. These days I gravitate towards plain, simple designs that go with everything — it's less effort, honestly.\n\nCâu 12 — Shoes / Clothes — Do you think people spend too much on clothes?\nSome people do. There's a lot of pressure from social media to keep buying. Having said that, if someone genuinely enjoys fashion and can afford it, I don't see the harm — it's their money."
       }
     },
     {
@@ -4733,51 +4898,75 @@
       "items": [
         {
           "id": "c1",
-          "prompt": "Work / Study — Are you working or studying at the moment?"
+          "prompt": "Work / Study — Are you working or studying at the moment?",
+          "sampleAnswer": "I'm studying — second year of business administration at a university here in the city.",
+          "sampleSource": "new"
         },
         {
           "id": "c2",
-          "prompt": "Work / Study — How long have you been doing that?"
+          "prompt": "Work / Study — How long have you been doing that?",
+          "sampleAnswer": "About eighteen months. I started in September the year before last, so I'm roughly halfway through the degree now.",
+          "sampleSource": "new"
         },
         {
           "id": "c3",
-          "prompt": "Work / Study — What is the most difficult part?"
+          "prompt": "Work / Study — What is the most difficult part?",
+          "sampleAnswer": "The time pressure. There are always three or four deadlines close together, so you're constantly prioritising. Learning to say no to things has been harder than the actual coursework.",
+          "sampleSource": "new"
         },
         {
           "id": "c4",
-          "prompt": "Work / Study — Do you get on well with the people there?"
+          "prompt": "Work / Study — Do you get on well with the people there?",
+          "sampleAnswer": "Yes, generally. My course group is quite close and the lecturers are approachable. There's the odd person you clash with on a project, but that's normal anywhere.",
+          "sampleSource": "new"
         },
         {
           "id": "c5",
-          "prompt": "Crowded places — Do you like crowded places?"
+          "prompt": "Crowded places — Do you like crowded places?",
+          "sampleAnswer": "It depends on why I'm there. If I'm out with friends, a crowd is half the point — the night market near my house is chaotic and I love it. But if I'm just trying to get somewhere, the same crowd is exhausting.",
+          "sampleSource": "new"
         },
         {
           "id": "c6",
-          "prompt": "Crowded places — When was the last time you were somewhere very busy?"
+          "prompt": "Crowded places — When was the last time you were somewhere very busy?",
+          "sampleAnswer": "Last weekend. I went to a food festival downtown and it was completely packed — you could barely move. It was fun for about an hour, then I'd had enough.",
+          "sampleSource": "new"
         },
         {
           "id": "c7",
-          "prompt": "Crowded places — Do you avoid certain places at certain times?"
+          "prompt": "Crowded places — Do you avoid certain places at certain times?",
+          "sampleAnswer": "Definitely. I never go near the main shopping street at rush hour, and I do my grocery shopping early on a weekday morning when it's almost empty. A bit of planning saves a lot of stress.",
+          "sampleSource": "new"
         },
         {
           "id": "c8",
-          "prompt": "Crowded places — Has your city become more crowded?"
+          "prompt": "Crowded places — Has your city become more crowded?",
+          "sampleAnswer": "Considerably. The population has grown steadily and you feel it — busier roads, longer queues. It's more convenient in some ways, but a lot of the breathing space has gone.",
+          "sampleSource": "new"
         },
         {
           "id": "c9",
-          "prompt": "Surprise topic (Art) — Do you like art?"
+          "prompt": "Surprise topic (Art) — Do you like art?",
+          "sampleAnswer": "Well, I've never really been into art in a serious way, to be honest. But I do enjoy visiting galleries when I travel — there's something calming about them, even if I don't understand half of what I'm looking at.",
+          "sampleSource": "new"
         },
         {
           "id": "c10",
-          "prompt": "Surprise topic (Art) — Did you do art at school?"
+          "prompt": "Surprise topic (Art) — Did you do art at school?",
+          "sampleAnswer": "A little, when I was younger. We did drawing and some painting, but it was dropped once the exam subjects took over. Looking back, I think that's a shame.",
+          "sampleSource": "new"
         },
         {
           "id": "c11",
-          "prompt": "Surprise topic (Art) — Are there many galleries where you live?"
+          "prompt": "Surprise topic (Art) — Are there many galleries where you live?",
+          "sampleAnswer": "A few, but they're not well publicised, so most people don't know about them. There's a small one near my university that puts on student exhibitions, which I've been to a couple of times.",
+          "sampleSource": "new"
         },
         {
           "id": "c12",
-          "prompt": "Surprise topic (Art) — Do you think art should be taught to every child?"
+          "prompt": "Surprise topic (Art) — Do you think art should be taught to every child?",
+          "sampleAnswer": "To a certain extent, yes. On one hand it develops creativity and gives children a non-academic way to express themselves. On the other hand, I'd stop short of making it compulsory right through school — by the teenage years, students should be able to choose. So on balance, I'd say it matters most in the early years.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -4799,7 +4988,7 @@
           "Trả lời hai chiều mà không chốt",
           "Im lặng dài trước khi bắt đầu"
         ],
-        "sampleAnswer": "BÀI MẪU BAND 7 — TEST C (nhóm Art là đề bất ngờ — dùng chiến lược cứu nguy, không nói \"I don't know\")\n\nWORK / STUDY\n1. Are you working or studying at the moment? — \"I'm studying — second year of business administration at a university here in the city.\"\n2. How long have you been doing that? — \"About eighteen months. I started in September the year before last, so I'm roughly halfway through the degree now.\"\n3. What is the most difficult part? — \"The time pressure. There are always three or four deadlines close together, so you're constantly prioritising. Learning to say no to things has been harder than the actual coursework.\"\n4. Do you get on well with the people there? — \"Yes, generally. My course group is quite close and the lecturers are approachable. There's the odd person you clash with on a project, but that's normal anywhere.\"\n\nCROWDED PLACES\n1. Do you like crowded places? — \"It depends on why I'm there. If I'm out with friends, a crowd is half the point — the night market near my house is chaotic and I love it. But if I'm just trying to get somewhere, the same crowd is exhausting.\"\n2. When was the last time you were somewhere very busy? — \"Last weekend. I went to a food festival downtown and it was completely packed — you could barely move. It was fun for about an hour, then I'd had enough.\"\n3. Do you avoid certain places at certain times? — \"Definitely. I never go near the main shopping street at rush hour, and I do my grocery shopping early on a weekday morning when it's almost empty. A bit of planning saves a lot of stress.\"\n4. Has your city become more crowded? — \"Considerably. The population has grown steadily and you feel it — busier roads, longer queues. It's more convenient in some ways, but a lot of the breathing space has gone.\"\n\nSURPRISE TOPIC — ART\n1. Do you like art? — \"Well, I've never really been into art in a serious way, to be honest. But I do enjoy visiting galleries when I travel — there's something calming about them, even if I don't understand half of what I'm looking at.\"\n2. Did you do art at school? — \"A little, when I was younger. We did drawing and some painting, but it was dropped once the exam subjects took over. Looking back, I think that's a shame.\"\n3. Are there many galleries where you live? — \"A few, but they're not well publicised, so most people don't know about them. There's a small one near my university that puts on student exhibitions, which I've been to a couple of times.\"\n4. Do you think art should be taught to every child? — \"To a certain extent, yes. On one hand it develops creativity and gives children a non-academic way to express themselves. On the other hand, I'd stop short of making it compulsory right through school — by the teenage years, students should be able to choose. So on balance, I'd say it matters most in the early years.\""
+        "sampleAnswer": "Câu 1 — Work / Study — Are you working or studying at the moment?\nI'm studying — second year of business administration at a university here in the city.\n\nCâu 2 — Work / Study — How long have you been doing that?\nAbout eighteen months. I started in September the year before last, so I'm roughly halfway through the degree now.\n\nCâu 3 — Work / Study — What is the most difficult part?\nThe time pressure. There are always three or four deadlines close together, so you're constantly prioritising. Learning to say no to things has been harder than the actual coursework.\n\nCâu 4 — Work / Study — Do you get on well with the people there?\nYes, generally. My course group is quite close and the lecturers are approachable. There's the odd person you clash with on a project, but that's normal anywhere.\n\nCâu 5 — Crowded places — Do you like crowded places?\nIt depends on why I'm there. If I'm out with friends, a crowd is half the point — the night market near my house is chaotic and I love it. But if I'm just trying to get somewhere, the same crowd is exhausting.\n\nCâu 6 — Crowded places — When was the last time you were somewhere very busy?\nLast weekend. I went to a food festival downtown and it was completely packed — you could barely move. It was fun for about an hour, then I'd had enough.\n\nCâu 7 — Crowded places — Do you avoid certain places at certain times?\nDefinitely. I never go near the main shopping street at rush hour, and I do my grocery shopping early on a weekday morning when it's almost empty. A bit of planning saves a lot of stress.\n\nCâu 8 — Crowded places — Has your city become more crowded?\nConsiderably. The population has grown steadily and you feel it — busier roads, longer queues. It's more convenient in some ways, but a lot of the breathing space has gone.\n\nCâu 9 — Surprise topic (Art) — Do you like art?\nWell, I've never really been into art in a serious way, to be honest. But I do enjoy visiting galleries when I travel — there's something calming about them, even if I don't understand half of what I'm looking at.\n\nCâu 10 — Surprise topic (Art) — Did you do art at school?\nA little, when I was younger. We did drawing and some painting, but it was dropped once the exam subjects took over. Looking back, I think that's a shame.\n\nCâu 11 — Surprise topic (Art) — Are there many galleries where you live?\nA few, but they're not well publicised, so most people don't know about them. There's a small one near my university that puts on student exhibitions, which I've been to a couple of times.\n\nCâu 12 — Surprise topic (Art) — Do you think art should be taught to every child?\nTo a certain extent, yes. On one hand it develops creativity and gives children a non-academic way to express themselves. On the other hand, I'd stop short of making it compulsory right through school — by the teenage years, students should be able to choose. So on balance, I'd say it matters most in the early years."
       }
     }
   ]

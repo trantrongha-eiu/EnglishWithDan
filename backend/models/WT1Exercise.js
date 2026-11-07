@@ -62,6 +62,14 @@ const ItemSchema = new Schema(
     tokens: [String],
 
     explanation: String,
+
+    // speaking_response: this question's own model answer (paragraphs split
+    // by blank lines, **bold** allowed), a Vietnamese "why it works" note,
+    // and where it came from — 'book' (Student's Book, verbatim),
+    // 'book-adapted' or 'new'.
+    sampleAnswer: String,
+    sampleNote: String,
+    sampleSource: String,
   },
   { _id: false, strict: false }
 );

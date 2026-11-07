@@ -245,6 +245,169 @@
     ta.addEventListener('blur', function () { clearTimeout(t); saveNote(key, ta.value); });
   }
 
+  // ── sample answers & the book's worked answers ─────────────────────
+  // Text format (lesson.bookModels[].lines, items[].sampleAnswer split on
+  // blank lines): **bold**; "**BAND 6**" opens a band block; "→ …" is the
+  // book's why-note; "▸ …" a Band 7 difference; "**FIXED ▸ **text" /
+  // "**[1] INTRO ▸ **text" a labelled paragraph; Vietnamese lines are the
+  // book's analysis. See backend/scripts/speakingBook/syncBookModels.js.
+  var VI_RE = /[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/gi;
+  function unbold(s) { return String(s || '').replace(/\*\*/g, ''); }
+  function isVi(s) { return (unbold(s).match(VI_RE) || []).length >= 3; }
+  function fmt(s) { return esc(s).replace(/\*\*([^*]+?)\*\*/g, '<b>$1</b>').replace(/\*\*/g, ''); }
+  function splitLines(text) { return String(text || '').split(/\n+/).map(function (x) { return x.trim(); }).filter(Boolean); }
+  var LABEL_RE = /^\*\*([^*]{1,70}?)\s*\*\*\s*(\S[\s\S]*)$/;
+  function tagClass(label) {
+    if (/FLEXIBLE/i.test(label)) return 'flex';
+    if (/FIXED/i.test(label)) return 'fixed';
+    if (/Band 5/i.test(label)) return 'b5';
+    if (/Band 6/i.test(label)) return 'b6';
+    if (/Band 7/i.test(label)) return 'b7';
+    return '';
+  }
+  function lineHtml(l) {
+    var plain = unbold(l).trim();
+    if (l.charAt(0) === '→') return '<div class="bk-why">💡 ' + fmt(l.replace(/^→\s*/, '')) + '</div>';
+    if (l.charAt(0) === '▸') return '<div class="bk-diff">' + fmt(l.replace(/^▸\s*/, '')) + '</div>';
+    if (/^Ghi chú gốc:/.test(plain)) return '<div class="bk-keys">📝 <b>Ghi chú gốc:</b> ' + esc(plain.replace(/^Ghi chú gốc:\s*/, '')) + '</div>';
+    if (plain.charAt(0) === '⚠') return '<div class="bk-warn">' + esc(plain) + '</div>';
+    if (plain.charAt(0) === '≈') return '<div class="bk-meta">' + esc(plain) + '</div>';
+    var m = l.match(LABEL_RE);
+    if (m) {
+      var label = m[1].replace(/:$/, '');
+      return '<p class="bk-en' + (isVi(m[2]) ? ' vi' : '') + '"><span class="bk-tag ' + tagClass(label) + '">' + esc(label) + '</span> ' + fmt(m[2]) + '</p>';
+    }
+    if (isVi(l)) return '<div class="bk-ana">' + fmt(l) + '</div>';
+    return '<p class="bk-en">' + fmt(l) + '</p>';
+  }
+  // What the voice reads: English lines only, labels and notes dropped.
+  function speakable(lines) {
+    return lines.map(function (l) {
+      if (/^[→▸⚠≈]/.test(unbold(l).trim()) || /^Ghi chú gốc/.test(unbold(l))) return '';
+      var m = l.match(LABEL_RE);
+      var t = m ? m[2] : l;
+      return isVi(t) ? '' : unbold(t);
+    }).filter(Boolean).join(' ');
+  }
+  function wordCount(lines) { var t = speakable(lines); return t ? t.split(/\s+/).length : 0; }
+
+  // 🔊 buttons: one delegated listener (bound in setup) reads TTS[id].
+  var TTS = [];
+  function ttsBtn(text, label) {
+    if (!text || !window.speechSynthesis) return '';
+    TTS.push(text);
+    return '<button type="button" class="bk-tts" data-tts="' + (TTS.length - 1) + '"><i class="fas fa-volume-high"></i> ' + (label || 'Nghe') + '</button>';
+  }
+  var _ttsBtn = null;
+  function stopTts() {
+    try { window.speechSynthesis.cancel(); } catch (e) { /* noop */ }
+    if (_ttsBtn) { _ttsBtn.classList.remove('on'); _ttsBtn = null; }
+  }
+  function englishVoice() {
+    var vs = (window.speechSynthesis.getVoices() || []).filter(function (v) { return /^en[-_](GB|US)/i.test(v.lang); });
+    return vs.find(function (v) { return /natural|neural|google|online/i.test(v.name); }) || vs[0] || null;
+  }
+  function onTtsClick(ev) {
+    var btn = ev.target.closest && ev.target.closest('.bk-tts');
+    if (!btn) return;
+    ev.preventDefault(); ev.stopPropagation();
+    var same = _ttsBtn === btn;
+    stopTts();
+    if (same) return;
+    var text = TTS[+btn.dataset.tts];
+    if (!text) return;
+    var u = new SpeechSynthesisUtterance(text);
+    var v = englishVoice();
+    if (v) u.voice = v;
+    u.lang = v ? v.lang : 'en-GB';
+    u.rate = 0.95;
+    u.onend = u.onerror = function () { if (_ttsBtn === btn) { btn.classList.remove('on'); _ttsBtn = null; } };
+    _ttsBtn = btn; btn.classList.add('on');
+    window.speechSynthesis.speak(u);
+  }
+
+  // A run of lines, with "**BAND n**" headings opening coloured band blocks.
+  function renderLines(lines) {
+    var html = '', band = null, buf = [];
+    function flush() {
+      if (band == null) { html += buf.map(lineHtml).join(''); }
+      else {
+        html += '<div class="bk-band b' + band + '"><div class="bk-band-h"><span>Band ' + band + '</span>' +
+          ttsBtn(speakable(buf)) + '</div>' + buf.map(lineHtml).join('') + '</div>';
+      }
+      buf = [];
+    }
+    lines.forEach(function (l) {
+      var m = unbold(l).trim().match(/^BAND (\d(?:\.\d)?)$/);
+      if (m) { flush(); band = m[1]; return; }
+      buf.push(l);
+    });
+    flush();
+    return html;
+  }
+
+  var SRC_LABEL = {
+    book: '<span class="sm-src book">📗 Bài mẫu trong sách</span>',
+    'book-adapted': '<span class="sm-src book">📗 Dựa trên bài mẫu của sách</span>',
+    new: '<span class="sm-src">✍️ Bài mẫu bổ sung</span>',
+  };
+  // One question's sample answer: source · length · 🔊, the answer, why it works.
+  function sampleCard(text, note, source) {
+    var lines = splitLines(text);
+    var words = wordCount(lines);
+    return '<div class="sm-card">' +
+      '<div class="sm-head">' + (SRC_LABEL[source] || SRC_LABEL.new) +
+        (words ? '<span class="sm-meta">≈ ' + words + ' từ · ~' + Math.max(10, Math.round(words / 2 / 5) * 5) + ' giây</span>' : '') +
+        ttsBtn(speakable(lines), 'Nghe bài mẫu') + '</div>' +
+      '<div class="sm-body">' + renderLines(lines) + '</div>' +
+      (note ? '<div class="sm-why"><div class="h">💡 Vì sao bài này đạt band cao</div>' + splitLines(note).map(function (n) { return '<div>' + fmt(n) + '</div>'; }).join('') + '</div>' : '') +
+      '<div class="sm-warn">⚠ Bài mẫu chỉ minh hoạ CÁCH nói — đừng học thuộc. Thay tên, nơi chốn, con số bằng chi tiết thật của em.</div>' +
+    '</div>';
+  }
+  function itemSample(ex, idx) {
+    var it = (ex && ex.items || [])[idx] || {};
+    if (it.sampleAnswer) return sampleCard(it.sampleAnswer, it.sampleNote, it.sampleSource);
+    return '';
+  }
+  // Collapsed "Xem bài mẫu" panel for one question.
+  function samplePanel(ex, idx, summary, open) {
+    var card = itemSample(ex, idx);
+    return card ? '<details class="scf-model"' + (open ? ' open' : '') + '><summary>' + summary + '</summary>' + card + '</details>' : '';
+  }
+  // Every question's sample, for the end-of-exercise summary.
+  function allSamples(ex) {
+    var items = (ex && ex.items) || [];
+    if (!items.some(function (it) { return it.sampleAnswer; })) {
+      return (ex && ex.rubric && ex.rubric.sampleAnswer)
+        ? '<details class="scf-model"><summary>Xem bài mẫu</summary><div class="body">' + esc(ex.rubric.sampleAnswer) + '</div></details>' : '';
+    }
+    if (items.length === 1) return samplePanel(ex, 0, 'Xem bài mẫu', false);
+    return '<div class="sm-all"><div class="sm-all-h">📚 Bài mẫu từng câu</div>' + items.map(function (it, i) {
+      return it.sampleAnswer ? '<details class="sm-q"><summary><span class="n">' + (i + 1) + '</span>' + esc(it.prompt) + '</summary>' +
+        sampleCard(it.sampleAnswer, it.sampleNote, it.sampleSource) + '</details>' : '';
+    }).join('') + '</div>';
+  }
+
+  // Lesson page: the book's MODEL ANSWER / UPGRADE boxes for this lesson.
+  function renderBookModels(l) {
+    var list = (l && l.bookModels) || [];
+    if (!list.length) return '';
+    var cards = list.map(function (m) {
+      var cut = m.title.indexOf(' — ');
+      var chip = m.kind === 'upgrade' ? 'NÂNG BAND' : (cut > 0 ? m.title.slice(0, cut) : 'BÀI MẪU');
+      var name = m.kind === 'upgrade' ? m.title.replace(/^UPGRADE:\s*/i, '').replace(/BAND/g, 'Band') : (cut > 0 ? m.title.slice(cut + 3) : m.title);
+      var listen = m.kind === 'model' ? ttsBtn(speakable(m.lines), 'Nghe cả bài') : '';
+      return '<details class="bk-card ' + m.kind + '">' +
+        '<summary><span class="bk-kind">' + esc(chip) + '</span><span class="bk-name">' + esc(name) + '</span>' +
+          (m.question ? '<span class="bk-q">' + esc(m.question) + '</span>' : '') + '</summary>' +
+        '<div class="bk-body">' + (listen ? '<div class="bk-tools">' + listen + '</div>' : '') + renderLines(m.lines) + '</div>' +
+      '</details>';
+    }).join('');
+    return '<div class="bk-wrap"><div class="bk-wrap-h">📗 Bài mẫu trong sách</div>' +
+      '<div class="bk-wrap-s">Nguyên văn Student\'s Book — đọc trước khi làm bài Nói. Mọi bài mẫu chỉ là MẪU: thay bằng chuyện thật của em.</div>' +
+      cards + '</div>';
+  }
+
   // ── speaking_response: render / submit ────────────────────────────
   function renderSpeakingBody(ex) {
     var part = ex.speakingPart || 1;
@@ -288,7 +451,10 @@
       ((ex.rubric && ex.rubric.commonErrors && ex.rubric.commonErrors.length)
         ? '<details class="t1-key" style="margin:6px 0 0"><summary>⚠️ Lỗi thường gặp cần tránh</summary><ul>' +
           ex.rubric.commonErrors.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join('') + '</ul></details>'
-        : '');
+        : '') +
+      // Already attempted once → the model answer is open for review before
+      // a re-take; first-timers only see it after submitting.
+      (ex.lastAttempt ? samplePanel(ex, curIdx, 'Xem bài mẫu câu này (bạn đã làm bài này rồi)', false) : '');
   }
 
   async function submitSpeaking(ex) {
@@ -428,9 +594,7 @@
     if (ex) E.recordResult({ code: ex.code, label: ex.title || ('Bài ' + (E.state.exIdx + 1)), kind: 'speaking', band: f.overallBand });
     E.showFeedback(speakingBody(f, 'phần nói này', 'Nhận xét chung') +
       (f.todaysFocus ? '<div class="scf-sec"><div class="h">Trọng tâm luyện tiếp</div>' + esc(f.todaysFocus) + '</div>' : '') +
-      ((ex && ex.rubric && ex.rubric.sampleAnswer)
-        ? '<details class="scf-model"><summary>Xem bài mẫu Band 7/8</summary><div class="body">' + esc(ex.rubric.sampleAnswer) + '</div></details>'
-        : ''));
+      allSamples(ex));
   }
 
   // One question of a multi-item speaking_response exercise has just been
@@ -445,6 +609,7 @@
     fb.className = 't1-fb';
     fb.innerHTML = '<div style="text-align:center;font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--text3,#9ca3af);margin-bottom:6px">CÂU ' + (idx + 1) + ' / ' + total + '</div>' +
       speakingBody(f, 'câu này', 'Nhận xét') +
+      samplePanel(E.curEx(), idx, 'Xem bài mẫu câu này — so sánh với bài của bạn', false) +
       '<div style="display:flex;gap:8px;margin-top:12px">' +
         '<button class="t1-btn" id="t1-retry-item" style="flex:none"><i class="fas fa-rotate-left"></i> Ghi âm lại câu này</button>' +
         '<button class="t1-next" id="t1-next-item" style="flex:1;margin-top:0">Câu tiếp theo <i class="fas fa-arrow-right"></i></button>' +
@@ -529,7 +694,13 @@
         submit: submitSpeaking,
       },
     },
-    setup: function (engine) { E = engine; },
-    onBeforeRender: function () { SpeakingRec.teardown(); },
+    lessonExtra: renderBookModels,
+    setup: function (engine) {
+      E = engine;
+      document.addEventListener('click', onTtsClick);
+      // Voices load async in Chrome — warm the list so the first 🔊 picks a good one.
+      if (window.speechSynthesis) try { window.speechSynthesis.getVoices(); } catch (e) { /* noop */ }
+    },
+    onBeforeRender: function () { SpeakingRec.teardown(); stopTts(); TTS = []; },
   });
 })();

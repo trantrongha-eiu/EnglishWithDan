@@ -27,6 +27,16 @@ const WT1LessonSchema = new Schema(
       examples: [{ _id: false, en: String, vi: String }],
       notes: [String],
     }],
+    // Speaking course: the Student's Book's MODEL ANSWER and UPGRADE
+    // (Band 5 → 6 → 7) boxes for this lesson, word for word — written by
+    // scripts/speakingBook/syncBookModels.js. `lines` keep the book's **bold**.
+    bookModels: [{
+      _id: false,
+      kind: { type: String, enum: ['model', 'upgrade'] },
+      title: String,
+      question: String,
+      lines: [String],
+    }],
     isTest: { type: Boolean, default: false },
     totalPoints: Number,
     exerciseCount: Number,

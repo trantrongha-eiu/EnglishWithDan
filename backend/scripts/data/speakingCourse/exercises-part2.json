@@ -88,7 +88,7 @@
           "options": [
             {
               "id": "A",
-              "text": "I'd like to talk about my cousin Linh, who…"
+              "text": "I'd like to talk about Mrs Hoa, who…"
             },
             {
               "id": "B",
@@ -180,7 +180,7 @@
       "order": 3,
       "type": "ordering",
       "title": "Xếp một long turn theo đúng khung",
-      "instruction": "Kéo để xếp các câu theo thứ tự một bài nói hoàn chỉnh (cue card: Describe a person you enjoy spending time with).",
+      "instruction": "Kéo để xếp các câu theo thứ tự một bài nói hoàn chỉnh (cue card: Describe a person who has helped you).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -188,16 +188,16 @@
           "id": "o1",
           "prompt": "Thứ tự từ mở đến kết:",
           "tokens": [
-            "First of all, Linh is incredibly easy-going, and we usually meet for coffee two or three times a month.",
-            "I'd like to talk about my cousin Linh, who is probably the person I enjoy spending time with the most.",
-            "Overall, she's more of a sister than a cousin to me, and I feel lucky to have someone like that so close by.",
-            "The reason I chose Linh is that she's one of the very few people I can be completely honest with."
+            "First of all, she's a warm, down-to-earth person with a calm and approachable personality, and she taught me for three years.",
+            "I'd like to talk about Mrs Hoa, who was my English teacher in high school and probably the person who has helped me the most.",
+            "Overall, Mrs Hoa has had a lasting influence on the way I study, and I feel lucky to have had a teacher like her.",
+            "The reason I chose her is that she gave me practical help, not just encouragement — she showed me how to keep a vocabulary notebook, which I still use today."
           ],
           "answer": [
-            "I'd like to talk about my cousin Linh, who is probably the person I enjoy spending time with the most.",
-            "First of all, Linh is incredibly easy-going, and we usually meet for coffee two or three times a month.",
-            "The reason I chose Linh is that she's one of the very few people I can be completely honest with.",
-            "Overall, she's more of a sister than a cousin to me, and I feel lucky to have someone like that so close by."
+            "I'd like to talk about Mrs Hoa, who was my English teacher in high school and probably the person who has helped me the most.",
+            "First of all, she's a warm, down-to-earth person with a calm and approachable personality, and she taught me for three years.",
+            "The reason I chose her is that she gave me practical help, not just encouragement — she showed me how to keep a vocabulary notebook, which I still use today.",
+            "Overall, Mrs Hoa has had a lasting influence on the way I study, and I feel lucky to have had a teacher like her."
           ],
           "explanation": "INTRODUCTION → DESCRIPTION → WHY IT IS SPECIAL → CONCLUSION."
         }
@@ -236,9 +236,9 @@
         },
         {
           "id": "q4",
-          "prompt": "That is my person. That's all.",
-          "answer": "Overall, she's more of a sister than a cousin to me.",
-          "explanation": "CẤM kết bằng \"That's all\" — dùng một câu tổng kết."
+          "prompt": "Overall, Mrs Hoa have had a lasting influence on the way I study. That's all.",
+          "answer": "Overall, Mrs Hoa has had a lasting influence on the way I study.",
+          "explanation": "CẤM kết bằng \"That's all\" — câu \"Overall, …\" đã là câu kết. Mrs Hoa = she → has had."
         }
       ]
     },
@@ -256,7 +256,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a friend you have known for a long time. You should say: who this person is · how you met · what you usually do together. And explain why this friendship matters to you."
+          "prompt": "Describe a friend you have known for a long time. You should say: who this person is · how you met · what you usually do together. And explain why this friendship matters to you.",
+          "sampleAnswer": "**[INTRODUCTION] **I'd like to talk about my best friend Minh, who I've known for almost fifteen years — since our very first week of primary school.\n\n**[DESCRIPTION] **First of all, he's an easy-going, funny person, and we still live only about ten minutes apart. What I remember most is the day we met. I'd forgotten my lunch, and this small boy I'd never spoken to just broke his bánh mì in half and handed it to me without saying a word. These days we usually meet for coffee every Saturday morning, or play badminton when we both have time.\n\n**[WHY IT IS SPECIAL] **The reason I chose Minh is that he's one of the very few people I can be completely honest with. When I failed my driving test last year, he didn't try to cheer me up with jokes — he just booked another test date for me and made me practise with him every evening.\n\n**[CONCLUSION] **Overall, Minh is more like a brother than a friend, and I honestly can't imagine my life without him.",
+          "sampleNote": "Đủ khung 4 phần của Lesson 1 với ít nhất 3 chi tiết cụ thể (tên, mười lăm năm, ổ bánh mì ngày đầu gặp, lần thi trượt bằng lái). Kết bằng một câu tổng kết — không \"That's all\".",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -278,7 +281,7 @@
           "Đọc lại nguyên văn câu chuẩn bị",
           "Kết bằng \"that's all\""
         ],
-        "sampleAnswer": "I'd like to talk about my cousin Linh, who is probably the person I enjoy spending time with the most. She's two years older than me and we grew up in the same neighbourhood. What I remember most is that she never checks her phone when we're talking — which sounds like a small thing, but it makes you feel genuinely listened to. Last month I was stressed about an exam and she sat with me for almost three hours, just listening. The reason I chose Linh is that she's one of the very few people I can be completely honest with; I don't have to pretend I'm doing fine. Overall, she's more of a sister than a cousin to me, and I feel lucky to have someone like that so close by."
+        "sampleAnswer": "[INTRODUCTION] I'd like to talk about my best friend Minh, who I've known for almost fifteen years — since our very first week of primary school.\n\n[DESCRIPTION] First of all, he's an easy-going, funny person, and we still live only about ten minutes apart. What I remember most is the day we met. I'd forgotten my lunch, and this small boy I'd never spoken to just broke his bánh mì in half and handed it to me without saying a word. These days we usually meet for coffee every Saturday morning, or play badminton when we both have time.\n\n[WHY IT IS SPECIAL] The reason I chose Minh is that he's one of the very few people I can be completely honest with. When I failed my driving test last year, he didn't try to cheer me up with jokes — he just booked another test date for me and made me practise with him every evening.\n\n[CONCLUSION] Overall, Minh is more like a brother than a friend, and I honestly can't imagine my life without him."
       }
     },
     {
@@ -534,11 +537,17 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a building you often see or visit. You should say: where it is · what it looks like · how it is used. And explain how you feel about it."
+          "prompt": "Describe a building you often see or visit. You should say: where it is · what it looks like · how it is used. And explain how you feel about it.",
+          "sampleAnswer": "I'd like to talk about the old Central Post Office in Ho Chi Minh City, which is just a ten-minute ride from my university. It's a grand yellow building from the French colonial period, with tall arched windows and a huge clock right above the entrance.\n\nThe moment you walk in, what strikes you first is the light — it pours in through the glass roof and makes the whole hall feel bright and calm, even at midday. There's also a faint smell of old paper from the counters where people still send letters and parcels.\n\nI usually go there two or three times a month, sometimes to post things for my mother, but more often just to sit on the wooden benches and read for half an hour. It's surprisingly quiet considering how many tourists pass through.\n\nFor me it's more than just a building — it's a reminder that some parts of the city have barely changed in a hundred years, and I find that oddly comforting.",
+          "sampleNote": "Từ khoá gốc: bưu điện TP / 10 phút · vàng, cửa vòm, đồng hồ · ánh sáng, mùi giấy · 2–3 lần/tháng · đọc sách · \"not just a building\". Mỗi từ khoá được mở rộng 3–5 lớp, có hai chi tiết cảm giác (ánh sáng, mùi giấy cũ).",
+          "sampleSource": "new"
         },
         {
           "id": "s2",
-          "prompt": "Describe a place you often go to in your free time."
+          "prompt": "Describe a place you often go to in your free time.",
+          "sampleAnswer": "I'd like to talk about a small café on Nguyen Hue Street, which is only about a five-minute walk from my house. It's quite a modest place — dark wooden furniture, maybe eight tables, and they play old jazz records rather than the usual pop music. The moment you walk in, the smell of roasted coffee hits you, and somehow the noise of the street just disappears.\n\nI usually go there on Sunday mornings and stay for about three hours studying. Honestly, I get more done in those three hours than in a whole day at home. There are no distractions, no family members asking me to do things, and the wifi is deliberately slow — which I think is a genius business decision.\n\nWhat makes it special, though, is the owner. She's an elderly woman who has run the place for over twenty years, and after a few months she started remembering my order and even my name. That small thing gives you a real sense of belonging.\n\nOverall, it's become a sort of second living room for me, and I honestly can't imagine my weekends without it.",
+          "sampleNote": "Ghi chú gốc: café Nguyễn Huệ / 5 phút · nhỏ, yên, gỗ cũ · CN sáng, 3 tiếng · tập trung · chủ nhớ tên · \"second living room\"\nĐếm cùng học sinh: 6 từ khoá →5 đoạn →khoảng 100 giây. Không có từ nào ở mức Band 8. Toàn bộ độ dài đến từ việc mở rộng danh từ.",
+          "sampleSource": "book"
         }
       ],
       "rubric": {
@@ -560,7 +569,7 @@
           "Sáu câu đơn rời rạc, mỗi câu một danh từ trần",
           "Ghi bằng tiếng Việt rồi vừa nói vừa dịch"
         ],
-        "sampleAnswer": "I'd like to talk about a small café on Nguyen Hue Street, which is only about a five-minute walk from my house. It's quite a modest place — dark wooden furniture, maybe eight tables, and they play old jazz records rather than pop music. The moment you walk in, the smell of roasted coffee hits you, and somehow the noise of the street just disappears. I usually go there on Sunday mornings and stay for about three hours studying — I get more done there than in a whole day at home. What makes it special is the owner, an elderly woman who's run the place for over twenty years and started remembering my name after a few months. Overall, it's become a sort of second living room for me, and I honestly can't imagine my weekends without it."
+        "sampleAnswer": "Câu 1 — Describe a building you often see or visit. You should say: where it is · what it looks like · how it is used. And explain how you feel about it.\nI'd like to talk about the old Central Post Office in Ho Chi Minh City, which is just a ten-minute ride from my university. It's a grand yellow building from the French colonial period, with tall arched windows and a huge clock right above the entrance.\n\nThe moment you walk in, what strikes you first is the light — it pours in through the glass roof and makes the whole hall feel bright and calm, even at midday. There's also a faint smell of old paper from the counters where people still send letters and parcels.\n\nI usually go there two or three times a month, sometimes to post things for my mother, but more often just to sit on the wooden benches and read for half an hour. It's surprisingly quiet considering how many tourists pass through.\n\nFor me it's more than just a building — it's a reminder that some parts of the city have barely changed in a hundred years, and I find that oddly comforting.\n\nCâu 2 — Describe a place you often go to in your free time.\nI'd like to talk about a small café on Nguyen Hue Street, which is only about a five-minute walk from my house. It's quite a modest place — dark wooden furniture, maybe eight tables, and they play old jazz records rather than the usual pop music. The moment you walk in, the smell of roasted coffee hits you, and somehow the noise of the street just disappears.\n\nI usually go there on Sunday mornings and stay for about three hours studying. Honestly, I get more done in those three hours than in a whole day at home. There are no distractions, no family members asking me to do things, and the wifi is deliberately slow — which I think is a genius business decision.\n\nWhat makes it special, though, is the owner. She's an elderly woman who has run the place for over twenty years, and after a few months she started remembering my order and even my name. That small thing gives you a real sense of belonging.\n\nOverall, it's become a sort of second living room for me, and I honestly can't imagine my weekends without it."
       }
     },
     {
@@ -801,12 +810,12 @@
       "items": [
         {
           "id": "q1",
-          "prompt": "I'd like to talk about my cousin Linh, which is two years older than me.",
+          "prompt": "I'd like to talk about Mrs Hoa, which taught me English for three years.",
           "explanation": "người → who, không dùng which.",
           "sampleAnswers": [
-            "I'd like to talk about my cousin Linh, who is two years older than me."
+            "I'd like to talk about Mrs Hoa, who taught me English for three years."
           ],
-          "promptVi": "Tôi muốn kể về người em họ tên là Linh, hơn tôi hai tuổi."
+          "promptVi": "Tôi muốn kể về cô Hoa, người đã dạy tôi tiếng Anh suốt ba năm."
         },
         {
           "id": "q2",
@@ -851,7 +860,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a photograph you like. You should say: what is in the photo · when and where it was taken · who took it. And explain why you like it."
+          "prompt": "Describe a photograph you like. You should say: what is in the photo · when and where it was taken · who took it. And explain why you like it.",
+          "sampleAnswer": "The photograph I'd like to describe is one that has been on my desk for years, which is a picture of my grandmother in her garden. It was taken about ten years ago, on a bright winter morning, and my uncle took it without her noticing — she's half-laughing at something off-camera. What I like most about it is that it captures her exactly as I remember her, rather than the posed way people usually appear in family photos. Overall, it's a small, ordinary picture, but it's the one possession I would genuinely be upset to lose.",
+          "sampleNote": "Câu mở paraphrase đề bằng \"The photograph I'd like to describe is…\" + mệnh đề which, không dùng \"I want to talk about\"; câu kết bắt đầu bằng \"Overall,\" và có một nhận xét khái quát.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -1074,18 +1086,18 @@
           "id": "o1",
           "prompt": "Thứ tự template PEOPLE:",
           "tokens": [
-            "One of her most outstanding qualities is her patience — I remember failing a test and expecting a lecture; instead she sat with me for an hour.",
-            "I'd like to talk about my old maths teacher, Mrs Hoa, who taught me in high school.",
-            "Overall, she left a lasting impression not because she was brilliant, but because she was unshakeably patient.",
-            "Mrs Hoa is a retired teacher now and had been teaching for over thirty years when I met her.",
-            "She made me believe I could actually do maths, and I've approached difficult subjects differently ever since."
+            "One of her most outstanding qualities is her patience — she never makes students feel embarrassed about their mistakes.",
+            "The person I'd like to talk about is Mrs Hoa, who was my English teacher in high school — a warm-hearted, down-to-earth person.",
+            "So overall, Mrs Hoa is someone I genuinely look up to.",
+            "She taught me for three years, and I first met her when I was sitting at the back of the classroom, struggling with an exercise.",
+            "She inspires me because she's genuinely passionate about teaching; she often stays after class to help weaker students, and that changed the way I study."
           ],
           "answer": [
-            "I'd like to talk about my old maths teacher, Mrs Hoa, who taught me in high school.",
-            "Mrs Hoa is a retired teacher now and had been teaching for over thirty years when I met her.",
-            "One of her most outstanding qualities is her patience — I remember failing a test and expecting a lecture; instead she sat with me for an hour.",
-            "She made me believe I could actually do maths, and I've approached difficult subjects differently ever since.",
-            "Overall, she left a lasting impression not because she was brilliant, but because she was unshakeably patient."
+            "The person I'd like to talk about is Mrs Hoa, who was my English teacher in high school — a warm-hearted, down-to-earth person.",
+            "She taught me for three years, and I first met her when I was sitting at the back of the classroom, struggling with an exercise.",
+            "One of her most outstanding qualities is her patience — she never makes students feel embarrassed about their mistakes.",
+            "She inspires me because she's genuinely passionate about teaching; she often stays after class to help weaker students, and that changed the way I study.",
+            "So overall, Mrs Hoa is someone I genuinely look up to."
           ],
           "explanation": "INTRODUCTION → WHO THEY ARE → WHAT THEY ARE LIKE (+ giai thoại) → HOW THEY INFLUENCED YOU → CONCLUSION."
         }
@@ -1144,7 +1156,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a friend who is important to you. You should say: who this person is · how long you have known them · what they are like. And explain why this person is important to you."
+          "prompt": "Describe a friend who is important to you. You should say: who this person is · how long you have known them · what they are like. And explain why this person is important to you.",
+          "sampleAnswer": "**INTRODUCTION ▸ **I'd like to talk about my close friend Lan, who I met in my first year at university. She's incredibly down-to-earth and has a really outgoing personality, which is probably why everyone in our class knows her.\n\n**WHO THEY ARE ▸ **Lan is studying medicine, and she has been volunteering at a children's hospital every weekend for about two years. What immediately impressed me was how resilient she is.\n\n**WHAT THEY ARE LIKE ▸ **For example, during our first exam season her father was seriously ill, and she was travelling back to her hometown every weekend — yet she still helped me revise for a subject I was failing, staying up with me until two in the morning the night before the exam. She's also known for her infectious enthusiasm; she can make even a dull group project feel fun.\n\n**HOW THEY INFLUENCED YOU ▸ **The reason she's so important to me is that she taught me to stop complaining and just get things done. I really look up to her for that, and it has changed the way I handle pressure.\n\n**CONCLUSION ▸ **Overall, Lan has left a lasting impression on me, and I feel lucky to have met her so early in my university life.",
+          "sampleNote": "Template PEOPLE đủ 5 phần; mỗi tính từ đều có bằng chứng (resilient → vừa chăm bố ốm vừa giúp bạn ôn thi; infectious enthusiasm → làm bài nhóm vui hơn). Dùng 6 cụm ★: down-to-earth, outgoing personality, resilient, infectious enthusiasm, look up to, leave a lasting impression.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -1166,7 +1181,7 @@
           "Nói về người nổi tiếng mà không có kết nối cá nhân",
           "Dùng \"he/she\" suốt 2 phút, không nhắc lại tên"
         ],
-        "sampleAnswer": "The person I'd like to describe is my old maths teacher, Mrs Hoa — someone whose influence I only really understood years after I left her class. What stood out was her genuine kindness: she had this habit of never showing surprise, no matter how basic your question was. I remember failing a test in Year 11 and expecting a lecture; instead she sat with me for an hour and worked through it as if we had all the time in the world. Looking back, Mrs Hoa left a lasting impression not because she was a brilliant mathematician, but because she was unshakeably patient — and that patience is genuinely the reason I stopped being afraid of subjects I found hard."
+        "sampleAnswer": "INTRODUCTION ▸ I'd like to talk about my close friend Lan, who I met in my first year at university. She's incredibly down-to-earth and has a really outgoing personality, which is probably why everyone in our class knows her.\n\nWHO THEY ARE ▸ Lan is studying medicine, and she has been volunteering at a children's hospital every weekend for about two years. What immediately impressed me was how resilient she is.\n\nWHAT THEY ARE LIKE ▸ For example, during our first exam season her father was seriously ill, and she was travelling back to her hometown every weekend — yet she still helped me revise for a subject I was failing, staying up with me until two in the morning the night before the exam. She's also known for her infectious enthusiasm; she can make even a dull group project feel fun.\n\nHOW THEY INFLUENCED YOU ▸ The reason she's so important to me is that she taught me to stop complaining and just get things done. I really look up to her for that, and it has changed the way I handle pressure.\n\nCONCLUSION ▸ Overall, Lan has left a lasting impression on me, and I feel lucky to have met her so early in my university life."
       }
     },
     {
@@ -1367,18 +1382,18 @@
           "id": "o1",
           "prompt": "Thứ tự template PLACES:",
           "tokens": [
-            "Da Nang is a medium-sized city with a perfect mix of natural beauty and modern infrastructure, and what really stands out is the contrast between beach and mountains.",
-            "I'd like to talk about Da Nang, which is located in central Vietnam.",
-            "Overall, Da Nang is a dynamic city that I'd recommend to anyone looking for an unforgettable trip.",
-            "The first time I visited was three years ago, and the moment I felt the sea breeze on My Khe Beach I was completely blown away.",
-            "I chose Da Nang because it genuinely has something for everyone, and I've been back twice since that first visit."
+            "It's a lively but laid-back city, and what really stands out is its perfect mix of nature and modern city life.",
+            "I'd like to talk about Da Nang, a coastal city in central Vietnam that is best known for its stunning beaches.",
+            "So overall, Da Nang is much more than a tourist destination to me.",
+            "I first visited about three years ago, and I still remember feeling the cool sea breeze on My Khe Beach in the late afternoon.",
+            "I chose Da Nang because the contrast is amazing — you can go hiking on the Son Tra Peninsula in the morning and wander around a night market in the evening."
           ],
           "answer": [
-            "I'd like to talk about Da Nang, which is located in central Vietnam.",
-            "The first time I visited was three years ago, and the moment I felt the sea breeze on My Khe Beach I was completely blown away.",
-            "Da Nang is a medium-sized city with a perfect mix of natural beauty and modern infrastructure, and what really stands out is the contrast between beach and mountains.",
-            "I chose Da Nang because it genuinely has something for everyone, and I've been back twice since that first visit.",
-            "Overall, Da Nang is a dynamic city that I'd recommend to anyone looking for an unforgettable trip."
+            "I'd like to talk about Da Nang, a coastal city in central Vietnam that is best known for its stunning beaches.",
+            "I first visited about three years ago, and I still remember feeling the cool sea breeze on My Khe Beach in the late afternoon.",
+            "It's a lively but laid-back city, and what really stands out is its perfect mix of nature and modern city life.",
+            "I chose Da Nang because the contrast is amazing — you can go hiking on the Son Tra Peninsula in the morning and wander around a night market in the evening.",
+            "So overall, Da Nang is much more than a tourist destination to me."
           ],
           "explanation": "INTRODUCTION → FIRST IMPRESSION → DESCRIPTION → WHY IT'S SPECIAL → CONCLUSION."
         }
@@ -1434,7 +1449,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a natural place you have visited. You should say: where it is · what it looks like · what you did there. And explain how you felt when you were there."
+          "prompt": "Describe a natural place you have visited. You should say: where it is · what it looks like · what you did there. And explain how you felt when you were there.",
+          "sampleAnswer": "**FIXED ▸ **The place I'd like to talk about is My Khe Beach in Da Nang, a coastal city in central Vietnam. It's a long stretch of pristine sand, best known for its clear water and relaxed atmosphere. I first visited about three years ago, and I still remember how impressed I was. I was walking along the beach in the late afternoon when I felt the cool sea breeze and heard the waves crashing against the shore. It felt incredibly refreshing after months of living in a big, noisy city. What really stands out is the perfect mix of nature everywhere you look — from the sand you can see the green hills of the Son Tra Peninsula rising behind the city. I've been back several times since, and I still find it relaxing.\n\n**FLEXIBLE ▸ HOW I FELT THERE **The first time, I mostly felt a huge sense of relief — as if someone had turned the volume of my life down. One morning we hiked up Son Tra and spotted a group of rare monkeys in the trees, and I remember thinking I'd never been so close to real wildlife.\n\n**KẾT ▸ **So overall, it's much more than a tourist spot to me — it's the place I picture whenever life gets too busy.",
+          "sampleNote": "Câu chuyện gốc PLACES (Đà Nẵng) của sách: giữ phần FIXED — hai chi tiết giác quan (sea breeze, waves crashing) và câu \"I've been back several times since\" — chỉ đổi đoạn FLEXIBLE cho đề \"how you felt\". Không dùng \"beautiful\" hay \"nice\".",
+          "sampleSource": "book-adapted"
         }
       ],
       "rubric": {
@@ -1456,7 +1474,7 @@
           "Lặp \"beautiful\" 5 lần",
           "Không trả lời được \"why is it special TO YOU\""
         ],
-        "sampleAnswer": "I'd like to talk about Da Nang, roughly halfway between Hanoi and Ho Chi Minh City. The moment I stepped onto My Khe Beach and felt the sea breeze, I was completely blown away — the water was crystal clear and the whole atmosphere was incredibly refreshing after months of fast-paced urban life. What really stands out, though, is the contrast: you can spend the morning on a pristine beach and be in a mountain resort thirty minutes later. I've been back twice since that first visit and I still find something new each time, which is why it's the one place I keep recommending to friends."
+        "sampleAnswer": "FIXED ▸ The place I'd like to talk about is My Khe Beach in Da Nang, a coastal city in central Vietnam. It's a long stretch of pristine sand, best known for its clear water and relaxed atmosphere. I first visited about three years ago, and I still remember how impressed I was. I was walking along the beach in the late afternoon when I felt the cool sea breeze and heard the waves crashing against the shore. It felt incredibly refreshing after months of living in a big, noisy city. What really stands out is the perfect mix of nature everywhere you look — from the sand you can see the green hills of the Son Tra Peninsula rising behind the city. I've been back several times since, and I still find it relaxing.\n\nFLEXIBLE ▸ HOW I FELT THERE The first time, I mostly felt a huge sense of relief — as if someone had turned the volume of my life down. One morning we hiked up Son Tra and spotted a group of rare monkeys in the trees, and I remember thinking I'd never been so close to real wildlife.\n\nKẾT ▸ So overall, it's much more than a tourist spot to me — it's the place I picture whenever life gets too busy."
       }
     },
     {
@@ -1657,18 +1675,18 @@
           "id": "o1",
           "prompt": "Thứ tự template OBJECTS:",
           "tokens": [
-            "My father bought it in the late eighties before he travelled to Europe, and he handed it to me when I was about ten.",
-            "I'd like to talk about an old Canon film camera that has been in my family for over thirty years.",
-            "It's silver and black, quite compact by today's standards, with a few small scratches that tell the story of all the places it's been.",
-            "Overall, it's not just a camera — it's a piece of our family story, and I hope to pass it on one day.",
-            "I still take it out on special occasions because film photography makes you think carefully about every picture."
+            "It's a silver-and-black Canon, quite compact and a little worn with age, with small scratches that tell the story of all the places it's been.",
+            "I still take it out on special occasions, such as family gatherings or trips.",
+            "I'd like to talk about an old film camera, which has been in my family for over thirty years.",
+            "So overall, it's a piece of our family story, and I hope to pass it down one day.",
+            "My father bought it in the late eighties and used it on his travels, and he handed it down to me when I was about ten."
           ],
           "answer": [
-            "I'd like to talk about an old Canon film camera that has been in my family for over thirty years.",
-            "It's silver and black, quite compact by today's standards, with a few small scratches that tell the story of all the places it's been.",
-            "My father bought it in the late eighties before he travelled to Europe, and he handed it to me when I was about ten.",
-            "I still take it out on special occasions because film photography makes you think carefully about every picture.",
-            "Overall, it's not just a camera — it's a piece of our family story, and I hope to pass it on one day."
+            "I'd like to talk about an old film camera, which has been in my family for over thirty years.",
+            "It's a silver-and-black Canon, quite compact and a little worn with age, with small scratches that tell the story of all the places it's been.",
+            "My father bought it in the late eighties and used it on his travels, and he handed it down to me when I was about ten.",
+            "I still take it out on special occasions, such as family gatherings or trips.",
+            "So overall, it's a piece of our family story, and I hope to pass it down one day."
           ],
           "explanation": "INTRODUCTION → APPEARANCE → HOW YOU GOT IT → HOW YOU USE IT → EMOTIONAL VALUE / CONCLUSION."
         }
@@ -1724,7 +1742,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe something you own that is important to you. You should say: what it is · how you got it · how long you have had it. And explain why it is important to you."
+          "prompt": "Describe something you own that is important to you. You should say: what it is · how you got it · how long you have had it. And explain why it is important to you.",
+          "sampleAnswer": "**FIXED ▸ **The object I'd like to talk about is an old film camera, which has been in my family for over thirty years. It's a silver-and-black Canon that originally belonged to my father. In terms of appearance, it's quite compact and a little worn with age, but the small scratches actually make it more interesting because they tell the story of all the places it's been. My father bought it in the late eighties and used it to take photos on his travels. When I was about ten, he handed it down to me, and I still remember him saying, \"Technology changes, but a good photograph lasts forever.\" That was the moment I became interested in photography. I still take it out on special occasions, such as family gatherings or trips. And I suppose that's why it immediately came to mind when I saw this topic.\n\n**FLEXIBLE ▸ WHY: it is important to you **It's important to me for two reasons. First of all, it has huge sentimental value — it's the one thing my father treasured himself and then chose to give to me. Another reason is that it has changed the way I take pictures: with only thirty-six shots on a roll, you think carefully before every photo, which is the opposite of how I use my phone.\n\n**KẾT ▸ **So overall, it's an irreplaceable keepsake, and I hope to pass it down one day.",
+          "sampleNote": "Câu chuyện gốc OBJECTS (máy ảnh film của bố): phần FIXED giữ nguyên chữ của sách — đã trả lời \"how you got it\" và \"how long you have had it\"; chỉ viết mới đoạn FLEXIBLE cho đề \"why it is important\".",
+          "sampleSource": "book-adapted"
         }
       ],
       "rubric": {
@@ -1746,7 +1767,7 @@
           "Chọn đồ vật không có kỷ niệm",
           "Dùng \"thing\" liên tục"
         ],
-        "sampleAnswer": "I'd like to talk about an old Canon film camera that's been in my family for over thirty years. It's compact by today's standards, with a few small scratches that tell the story of all the places it's been. My father bought it in the late eighties, and when I was about ten he handed it to me and said, 'Technology changes, but a good photograph lasts forever.' That was the moment I fell in love with photography. I still take it out on special occasions, because having a limited number of shots makes you think more carefully about every picture. Overall, it's not just a camera — it's a piece of our family story, and I hope to pass it on to my own children one day."
+        "sampleAnswer": "FIXED ▸ The object I'd like to talk about is an old film camera, which has been in my family for over thirty years. It's a silver-and-black Canon that originally belonged to my father. In terms of appearance, it's quite compact and a little worn with age, but the small scratches actually make it more interesting because they tell the story of all the places it's been. My father bought it in the late eighties and used it to take photos on his travels. When I was about ten, he handed it down to me, and I still remember him saying, \"Technology changes, but a good photograph lasts forever.\" That was the moment I became interested in photography. I still take it out on special occasions, such as family gatherings or trips. And I suppose that's why it immediately came to mind when I saw this topic.\n\nFLEXIBLE ▸ WHY: it is important to you It's important to me for two reasons. First of all, it has huge sentimental value — it's the one thing my father treasured himself and then chose to give to me. Another reason is that it has changed the way I take pictures: with only thirty-six shots on a roll, you think carefully before every photo, which is the opposite of how I use my phone.\n\nKẾT ▸ So overall, it's an irreplaceable keepsake, and I hope to pass it down one day."
       }
     },
     {
@@ -1947,20 +1968,20 @@
           "id": "o1",
           "prompt": "Thứ tự 6 bước:",
           "tokens": [
-            "We'd been wandering for about forty minutes when it dawned on me that we had passed the same yellow shopfront three times.",
-            "I'd like to tell you about a time when I got lost in Hanoi Old Quarter.",
-            "It happened about two years ago when my friend and I decided to walk back to our hotel instead of taking a taxi.",
-            "In the end, an elderly woman at a tea stall noticed us arguing over a paper map and simply walked us the whole way there.",
-            "Looking back, being lost turned out to be the only reason I have that memory at all.",
-            "Overall, it was a small disaster at the time, but it's the part of the trip I talk about most."
+            "The most important moment was when I stood up and suddenly forgot my opening lines.",
+            "I'd like to tell you about a presentation I gave at university about two years ago.",
+            "Looking back, it was a real turning point.",
+            "So overall, it was stressful at the time, but it left a lasting impression on me.",
+            "At the time, I was in my second year, working on a group project about social media.",
+            "In the end, it went much better than I'd expected."
           ],
           "answer": [
-            "I'd like to tell you about a time when I got lost in Hanoi Old Quarter.",
-            "It happened about two years ago when my friend and I decided to walk back to our hotel instead of taking a taxi.",
-            "We'd been wandering for about forty minutes when it dawned on me that we had passed the same yellow shopfront three times.",
-            "In the end, an elderly woman at a tea stall noticed us arguing over a paper map and simply walked us the whole way there.",
-            "Looking back, being lost turned out to be the only reason I have that memory at all.",
-            "Overall, it was a small disaster at the time, but it's the part of the trip I talk about most."
+            "I'd like to tell you about a presentation I gave at university about two years ago.",
+            "At the time, I was in my second year, working on a group project about social media.",
+            "The most important moment was when I stood up and suddenly forgot my opening lines.",
+            "In the end, it went much better than I'd expected.",
+            "Looking back, it was a real turning point.",
+            "So overall, it was stressful at the time, but it left a lasting impression on me."
           ],
           "explanation": "Intro → Background → Key moment → Resolution → Reflection → Conclusion."
         }
@@ -2016,7 +2037,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a time when you helped someone. You should say: when it happened · who you helped · what you did. And explain how you felt afterwards."
+          "prompt": "Describe a time when you helped someone. You should say: when it happened · who you helped · what you did. And explain how you felt afterwards.",
+          "sampleAnswer": "**[1] INTRO ▸ **I'd like to tell you about a time when I helped a classmate during a group presentation at university, about two years ago.\n\n**[2] BACKGROUND ▸ **At the time, I was in my second year, and four of us were working on a project about social media. It all started when our lecturer asked each group to give a ten-minute presentation. One of my groupmates, Thu, was very shy, and she'd been worrying about her part for days.\n\n**[3] KEY MOMENT ▸ **The most important moment was when she stood up to speak and her mind went completely blank. Her hands were shaking, and the room went silent. I could see she was close to tears, so I quietly stepped forward and asked her a simple question about her first slide, as if it were part of the plan. That gave her the first sentence she needed, and before I knew it, she was talking normally again.\n\n**[4] RESOLUTION ▸ **In the end, our group got one of the highest marks in the class.\n\n**[5] REFLECTION ▸ **Looking back, it taught me that helping someone doesn't always mean doing the work for them — sometimes it just means giving them a way to start. Afterwards I felt genuinely proud, and a little relieved myself.\n\n**[6] CONCLUSION ▸ **So overall, it was a small moment, but I'll always remember how grateful she looked when we sat down.",
+          "sampleNote": "Khung 6 bước: KEY MOMENT dài nhất (≈ 35 giây), toàn bộ ở thì quá khứ, có REFLECTION rút ra bài học. Bối cảnh mượn từ câu chuyện gốc EVENTS (buổi thuyết trình năm hai) — một câu chuyện dùng được cho nhiều đề.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -2038,7 +2062,7 @@
           "Bỏ qua phần Reflection",
           "Kể quá nhiều nhân vật, giám khảo không theo kịp"
         ],
-        "sampleAnswer": "It all started when my friend and I decided to walk back to our hotel in Hanoi instead of taking a taxi. At the time we were both quite confident we knew the way. We'd been wandering for about forty minutes when it dawned on me that we had passed the same yellow shopfront three times — and to make matters worse, my phone battery died right at that moment. The key moment came when an elderly woman at a tea stall noticed us arguing over a paper map, laughed, and simply started walking, expecting us to follow. She led us the whole way and refused to take anything. Looking back, being lost turned out to be the only reason I have that memory at all — I still think about her kindness whenever people say strangers in big cities don't help each other."
+        "sampleAnswer": "[1] INTRO ▸ I'd like to tell you about a time when I helped a classmate during a group presentation at university, about two years ago.\n\n[2] BACKGROUND ▸ At the time, I was in my second year, and four of us were working on a project about social media. It all started when our lecturer asked each group to give a ten-minute presentation. One of my groupmates, Thu, was very shy, and she'd been worrying about her part for days.\n\n[3] KEY MOMENT ▸ The most important moment was when she stood up to speak and her mind went completely blank. Her hands were shaking, and the room went silent. I could see she was close to tears, so I quietly stepped forward and asked her a simple question about her first slide, as if it were part of the plan. That gave her the first sentence she needed, and before I knew it, she was talking normally again.\n\n[4] RESOLUTION ▸ In the end, our group got one of the highest marks in the class.\n\n[5] REFLECTION ▸ Looking back, it taught me that helping someone doesn't always mean doing the work for them — sometimes it just means giving them a way to start. Afterwards I felt genuinely proud, and a little relieved myself.\n\n[6] CONCLUSION ▸ So overall, it was a small moment, but I'll always remember how grateful she looked when we sat down."
       }
     },
     {
@@ -2314,7 +2338,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a time when you received good news. You should say: what the news was · how you found out · who told you. And explain how you felt about it."
+          "prompt": "Describe a time when you received good news. You should say: what the news was · how you found out · who told you. And explain how you felt about it.",
+          "sampleAnswer": "I'd like to talk about the day I found out I'd been accepted onto an exchange programme. I'd been telling myself for weeks not to get my hopes up, because hundreds of students had applied and only a handful of places existed. The hardest part was the waiting. When the email finally arrived, I read it three times before I believed it — my hands were actually shaking. I was over the moon, but there was also a bittersweet feeling, because accepting meant leaving my family for a year. My mother just went very quiet, which was somehow harder than if she'd said anything. Looking back, I came to realise that moment was less about the programme itself and more about the first time I'd made a big decision that only I had to live with.",
+          "sampleNote": "Ba lớp cảm xúc: cảm xúc (over the moon, a bittersweet feeling) → nguyên nhân → biểu hiện cơ thể (my hands were actually shaking); có past perfect (I'd been telling myself…) và câu suy ngẫm \"Looking back, I came to realise…\".",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -2610,11 +2637,17 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a good habit you want to develop. You should say: what the habit is · when you started it · how often you do it. And explain why you want to develop it."
+          "prompt": "Describe a good habit you want to develop. You should say: what the habit is · when you started it · how often you do it. And explain why you want to develop it.",
+          "sampleAnswer": "**INTRODUCTION ▸ **The habit I'd like to develop is reading for twenty minutes every morning instead of checking my phone. It's something I got into about six months ago, after realising I hadn't finished a single book in a year.\n\n**WHAT IT IS ▸ **My routine is quite simple: I leave my phone in the kitchen overnight, make a coffee as soon as I get up, and then read on the balcony until my breakfast alarm goes off.\n\n**YOUR PROGRESS ▸ **At first, I could barely manage five minutes — my hand kept reaching for my phone out of habit. Over time, I gradually built it up by keeping the book on my pillow so it was the first thing I saw, and by choosing short, easy novels rather than heavy textbooks. Nowadays I manage it about four mornings a week, which is a big improvement, but I'd love to make it every single day.\n\n**WHY YOU WANT IT ▸ **The main reason is that it's genuinely stress-relieving — I start the day feeling calm rather than rushed. It also helps me build discipline, which carries over into my studies.\n\n**CONCLUSION ▸ **So overall, it's a small habit, but I think it could make a real difference in the long run.",
+          "sampleNote": "Template ACTIVITIES: quy trình có 3 bước cụ thể (để điện thoại ở bếp → pha cà phê → đọc ở ban công) và đủ trục at first → over time → nowadays. V-ing sau giới từ đúng (instead of checking, after realising, by keeping, by choosing).",
+          "sampleSource": "new"
         },
         {
           "id": "s2",
-          "prompt": "Describe a skill you would like to improve."
+          "prompt": "Describe a skill you would like to improve.",
+          "sampleAnswer": "**FIXED ▸ **The activity I'd like to talk about is playing the guitar. I first picked it up when I was about fifteen, and since then it has become one of my favourite ways to spend my free time. A typical practice session takes me about thirty minutes: some chord exercises first, then ten or fifteen minutes learning a song. I still remember how hard it was at the beginning — I could barely switch between two chords, and my fingertips would hurt after just a few minutes. Over time, I improved by practising every evening and breaking difficult songs into smaller sections. Nowadays, basic chord changes have become second nature. What I love most is that it's incredibly stress-relieving. And I suppose that's why it immediately came to mind when I saw this topic.\n\n**FLEXIBLE ▸ WHY I want to improve **The main reason is that I'd love to become much more confident at playing and singing at the same time. I've also been thinking about writing my own songs, so better skills would give me more freedom to do that.\n\n**KẾT ▸ **So overall, it's a skill I'll keep working on for many years to come.",
+          "sampleNote": "Phân tích: phần FIXED có QUY TRÌNH luyện tập cụ thể (30 phút, chord exercises, chia nhỏ bài) và trục thời gian at first → over time → nowadays. Đây là phần học sinh Việt hay bỏ qua nhất — và là phần dễ ăn điểm nhất.",
+          "sampleSource": "book"
         }
       ],
       "rubric": {
@@ -2636,7 +2669,7 @@
           "\"I am good at to play guitar\"",
           "Chọn hoạt động chưa từng làm mà không dùng ngôn ngữ giả định"
         ],
-        "sampleAnswer": "I'd like to talk about playing the guitar, which I've been trying to improve for about two years. I discovered I had a natural flair for it at fifteen, picking up basic chords from YouTube. The way I practise now is more structured — about thirty minutes every evening on scales, chord transitions and one new song, and I break each difficult part into eight-bar sections rather than rushing through the whole piece. At first I could barely change between two chords without stopping; over time I worked out that slow repetition beats speed; and nowadays chord transitions are more or less second nature. What I love most is that it's genuinely stress-relieving. I want to improve specifically so I can play and sing at the same time, which is much harder than it sounds."
+        "sampleAnswer": "Câu 1 — Describe a good habit you want to develop. You should say: what the habit is · when you started it · how often you do it. And explain why you want to develop it.\nINTRODUCTION ▸ The habit I'd like to develop is reading for twenty minutes every morning instead of checking my phone. It's something I got into about six months ago, after realising I hadn't finished a single book in a year.\n\nWHAT IT IS ▸ My routine is quite simple: I leave my phone in the kitchen overnight, make a coffee as soon as I get up, and then read on the balcony until my breakfast alarm goes off.\n\nYOUR PROGRESS ▸ At first, I could barely manage five minutes — my hand kept reaching for my phone out of habit. Over time, I gradually built it up by keeping the book on my pillow so it was the first thing I saw, and by choosing short, easy novels rather than heavy textbooks. Nowadays I manage it about four mornings a week, which is a big improvement, but I'd love to make it every single day.\n\nWHY YOU WANT IT ▸ The main reason is that it's genuinely stress-relieving — I start the day feeling calm rather than rushed. It also helps me build discipline, which carries over into my studies.\n\nCONCLUSION ▸ So overall, it's a small habit, but I think it could make a real difference in the long run.\n\nCâu 2 — Describe a skill you would like to improve.\nFIXED ▸ The activity I'd like to talk about is playing the guitar. I first picked it up when I was about fifteen, and since then it has become one of my favourite ways to spend my free time. A typical practice session takes me about thirty minutes: some chord exercises first, then ten or fifteen minutes learning a song. I still remember how hard it was at the beginning — I could barely switch between two chords, and my fingertips would hurt after just a few minutes. Over time, I improved by practising every evening and breaking difficult songs into smaller sections. Nowadays, basic chord changes have become second nature. What I love most is that it's incredibly stress-relieving. And I suppose that's why it immediately came to mind when I saw this topic.\n\nFLEXIBLE ▸ WHY I want to improve The main reason is that I'd love to become much more confident at playing and singing at the same time. I've also been thinking about writing my own songs, so better skills would give me more freedom to do that.\n\nKẾT ▸ So overall, it's a skill I'll keep working on for many years to come."
       }
     },
     {
@@ -2837,18 +2870,18 @@
           "id": "o1",
           "prompt": "Thứ tự template NATURE:",
           "tokens": [
-            "From what I know, snow leopards are classified as 'vulnerable', with fewer than 7,000 estimated to remain, threatened mainly by poaching and habitat loss.",
-            "I'd like to talk about the snow leopard, a wild animal I've always been fascinated by.",
-            "Overall, I think the snow leopard is a reminder that the planet still holds genuinely wild places worth protecting.",
-            "The snow leopard is a large wild cat native to the mountains of Central Asia, perfectly adapted for life at extreme altitudes.",
-            "My interest started when I was about twelve — I watched a documentary where a crew spent months trying to film one and barely succeeded."
+            "My interest started when I was about twelve, when I watched a documentary about wildlife photographers who spent months trying to film one.",
+            "So overall, it's a reminder that parts of the natural world are still mysterious and worth protecting.",
+            "The animal I'd like to talk about is the snow leopard, a wild cat I've been fascinated by for years.",
+            "From what I know, snow leopards are officially listed as vulnerable, and only a few thousand are estimated to remain in the wild.",
+            "It's a solitary and elusive creature that lives in the high mountains of Central and South Asia."
           ],
           "answer": [
-            "I'd like to talk about the snow leopard, a wild animal I've always been fascinated by.",
-            "The snow leopard is a large wild cat native to the mountains of Central Asia, perfectly adapted for life at extreme altitudes.",
-            "My interest started when I was about twelve — I watched a documentary where a crew spent months trying to film one and barely succeeded.",
-            "From what I know, snow leopards are classified as 'vulnerable', with fewer than 7,000 estimated to remain, threatened mainly by poaching and habitat loss.",
-            "Overall, I think the snow leopard is a reminder that the planet still holds genuinely wild places worth protecting."
+            "The animal I'd like to talk about is the snow leopard, a wild cat I've been fascinated by for years.",
+            "It's a solitary and elusive creature that lives in the high mountains of Central and South Asia.",
+            "My interest started when I was about twelve, when I watched a documentary about wildlife photographers who spent months trying to film one.",
+            "From what I know, snow leopards are officially listed as vulnerable, and only a few thousand are estimated to remain in the wild.",
+            "So overall, it's a reminder that parts of the natural world are still mysterious and worth protecting."
           ],
           "explanation": "INTRODUCTION → WHAT IT IS → WHY YOU'RE INTERESTED → WHAT YOU KNOW → CONCLUSION (ý kiến)."
         }
@@ -2904,7 +2937,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a natural landscape that impressed you. You should say: where it is · what it looks like · when you saw it. And explain why it impressed you."
+          "prompt": "Describe a natural landscape that impressed you. You should say: where it is · what it looks like · when you saw it. And explain why it impressed you.",
+          "sampleAnswer": "**INTRODUCTION ▸ **I'd like to talk about Ha Long Bay in northern Vietnam, which is probably the most awe-inspiring landscape I've ever seen.\n\n**WHAT IT IS ▸ **Essentially, it's a huge bay filled with limestone islands rising straight out of emerald water. I'm not entirely sure of the exact figure, but I believe there are around two thousand of them, many covered in thick forest. What makes it particularly fascinating is the caves inside some of the islands — one we visited was so big that it felt like a cathedral.\n\n**WHY IT IMPRESSED ME ▸ **I saw it for the first time on a family trip about four years ago. We spent a night on a boat, and I remember waking up at sunrise to complete silence, with mist drifting between the islands. I was completely blown away.\n\n**WHAT I KNOW ▸ **From what I know, the bay was recognised as a UNESCO World Heritage Site in the 1990s, and it's now visited by millions of tourists every year. However, it's also threatened by pollution from boats and coastal development, so conservation efforts are really important.\n\n**CONCLUSION ▸ **Overall, it impressed me because it made me feel very small, in the best possible way, and I believe places like this should be protected for future generations.",
+          "sampleNote": "Template NATURE: có câu bị động (was recognised, is visited, is threatened), hai \"câu an toàn\" (I'm not entirely sure of the exact figure… / From what I know…), nguồn gốc ấn tượng cá nhân và ý kiến ở cuối.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -2926,7 +2962,7 @@
           "Bịa số liệu chi tiết rồi tự mâu thuẫn",
           "Câu bị động sai: \"is classify\""
         ],
-        "sampleAnswer": "I'd like to talk about the snow leopard, which is a wild animal I've always been deeply fascinated by. It's a large cat native to the mountain ranges of Central and South Asia, solitary and elusive, with thick pale-grey fur that gives it excellent camouflage. My interest started when I was around twelve — I watched a documentary where a camera crew spent months in the Himalayas trying to film one, and they barely succeeded. That level of rarity made it instantly captivating. From what I know, snow leopards are classified as 'vulnerable', with fewer than seven thousand estimated to remain in the wild, threatened mainly by poaching and habitat loss. Overall, I think the snow leopard represents something precious — a reminder that our planet still holds wild, mysterious places worth protecting."
+        "sampleAnswer": "INTRODUCTION ▸ I'd like to talk about Ha Long Bay in northern Vietnam, which is probably the most awe-inspiring landscape I've ever seen.\n\nWHAT IT IS ▸ Essentially, it's a huge bay filled with limestone islands rising straight out of emerald water. I'm not entirely sure of the exact figure, but I believe there are around two thousand of them, many covered in thick forest. What makes it particularly fascinating is the caves inside some of the islands — one we visited was so big that it felt like a cathedral.\n\nWHY IT IMPRESSED ME ▸ I saw it for the first time on a family trip about four years ago. We spent a night on a boat, and I remember waking up at sunrise to complete silence, with mist drifting between the islands. I was completely blown away.\n\nWHAT I KNOW ▸ From what I know, the bay was recognised as a UNESCO World Heritage Site in the 1990s, and it's now visited by millions of tourists every year. However, it's also threatened by pollution from boats and coastal development, so conservation efforts are really important.\n\nCONCLUSION ▸ Overall, it impressed me because it made me feel very small, in the best possible way, and I believe places like this should be protected for future generations."
       }
     },
     {
@@ -3127,18 +3163,18 @@
           "id": "o1",
           "prompt": "Thứ tự template CULTURE / MEDIA:",
           "tokens": [
-            "It made me think about how much I take for granted — stable housing, education, the freedom to make plans.",
-            "I'd like to talk about a short video I came across on YouTube about three months ago, part of a series called 'Humans of New York'.",
-            "Essentially, it features an elderly Vietnamese-American man who fled Vietnam as a refugee in 1979 and spent over twenty years rebuilding his life in New York.",
-            "I'd highly recommend searching for it — it's the kind of content that reminds you what really matters.",
-            "I believe its message is that ordinary life is a gift, which feels especially relevant in a world full of complaints and comparisons."
+            "Essentially, it features an elderly Vietnamese-American man who left Vietnam when he was young and later rebuilt his life in New York.",
+            "I believe its message is that ordinary life is a gift, which is relevant because so much of what I see online is just trying to go viral.",
+            "I'd like to talk about a short interview video I came across on YouTube about three months ago, from a channel that shares real-life stories of ordinary people.",
+            "So overall, it was only a short video, but it changed the way I look at ordinary life.",
+            "What I found most captivating was the way he talked about gratitude — that line genuinely stopped me in my tracks."
           ],
           "answer": [
-            "I'd like to talk about a short video I came across on YouTube about three months ago, part of a series called 'Humans of New York'.",
-            "Essentially, it features an elderly Vietnamese-American man who fled Vietnam as a refugee in 1979 and spent over twenty years rebuilding his life in New York.",
-            "It made me think about how much I take for granted — stable housing, education, the freedom to make plans.",
-            "I believe its message is that ordinary life is a gift, which feels especially relevant in a world full of complaints and comparisons.",
-            "I'd highly recommend searching for it — it's the kind of content that reminds you what really matters."
+            "I'd like to talk about a short interview video I came across on YouTube about three months ago, from a channel that shares real-life stories of ordinary people.",
+            "Essentially, it features an elderly Vietnamese-American man who left Vietnam when he was young and later rebuilt his life in New York.",
+            "What I found most captivating was the way he talked about gratitude — that line genuinely stopped me in my tracks.",
+            "I believe its message is that ordinary life is a gift, which is relevant because so much of what I see online is just trying to go viral.",
+            "So overall, it was only a short video, but it changed the way I look at ordinary life."
           ],
           "explanation": "INTRODUCTION → WHAT IT IS ABOUT (≤25s) → WHY IT IMPRESSED YOU → WHAT IT MEANS → CONCLUSION."
         }
@@ -3206,7 +3242,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a piece of creative work you like (a film, a song or a book). You should say: what it is · what it is about · when you came across it. And explain why it means something to you."
+          "prompt": "Describe a piece of creative work you like (a film, a song or a book). You should say: what it is · what it is about · when you came across it. And explain why it means something to you.",
+          "sampleAnswer": "**FIXED ▸ **The piece of creative work I'd like to talk about is a short interview film I came across on YouTube, from a channel that shares real-life stories of ordinary people. I watched it about three months ago, and it left a lasting impression on me. Essentially, it features an elderly Vietnamese-American man who left Vietnam when he was young and later rebuilt his life in New York. He talks about his difficult journey and the kindness he received from strangers — all in a very simple, honest way. What I found most captivating was the way he talked about gratitude. He said something along the lines of, \"Every ordinary day feels like a gift because I remember when ordinary life was impossible.\" That line genuinely stopped me in my tracks. And I suppose that's why it immediately came to mind when I saw this topic.\n\n**FLEXIBLE ▸ WHY it means something to me **It means a lot to me because it changed the way I see my own family. My grandparents went through very hard times too, but they rarely talk about it. After watching the film, I actually sat down with my grandfather and asked him about his life — it was the longest conversation we'd ever had.\n\n**KẾT ▸ **So overall, it was only a short film, but it's a thought-provoking piece that I'd recommend to anyone who takes ordinary life for granted.",
+          "sampleNote": "Câu chuyện gốc MEDIA của sách: tóm tắt chỉ 2 câu, phần lớn thời lượng là phản ứng + thông điệp, có mệnh đề \"What I found most captivating was…\" và một câu trích dẫn. Đoạn FLEXIBLE viết riêng cho đề \"why it means something to you\".",
+          "sampleSource": "book-adapted"
         }
       ],
       "rubric": {
@@ -3228,7 +3267,7 @@
           "Chọn tác phẩm chưa xem/đọc thật",
           "Dùng thì quá khứ để tóm tắt nội dung phim"
         ],
-        "sampleAnswer": "I'd like to talk about a short video from the series 'Humans of New York', which I came across quite randomly about three months ago. Essentially, it features an elderly Vietnamese-American man who fled Vietnam as a refugee in 1979 and spent over twenty years rebuilding his life in New York. What I found most captivating was the way he described gratitude — he said something like, 'Every ordinary day here feels like a miracle, because I remember the days when ordinary felt impossible.' That line genuinely stopped me in my tracks. It made me think about how much I take for granted — stable housing, education, the freedom to make plans. I believe its message is that ordinary life is a gift, which feels especially relevant when social media is flooded with complaints, and I'd highly recommend searching for it."
+        "sampleAnswer": "FIXED ▸ The piece of creative work I'd like to talk about is a short interview film I came across on YouTube, from a channel that shares real-life stories of ordinary people. I watched it about three months ago, and it left a lasting impression on me. Essentially, it features an elderly Vietnamese-American man who left Vietnam when he was young and later rebuilt his life in New York. He talks about his difficult journey and the kindness he received from strangers — all in a very simple, honest way. What I found most captivating was the way he talked about gratitude. He said something along the lines of, \"Every ordinary day feels like a gift because I remember when ordinary life was impossible.\" That line genuinely stopped me in my tracks. And I suppose that's why it immediately came to mind when I saw this topic.\n\nFLEXIBLE ▸ WHY it means something to me It means a lot to me because it changed the way I see my own family. My grandparents went through very hard times too, but they rarely talk about it. After watching the film, I actually sat down with my grandfather and asked him about his life — it was the longest conversation we'd ever had.\n\nKẾT ▸ So overall, it was only a short film, but it's a thought-provoking piece that I'd recommend to anyone who takes ordinary life for granted."
       }
     },
     {
@@ -3516,7 +3555,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a person who taught you something important. You should say: who they are · what they taught you · when this happened. And explain why it was important."
+          "prompt": "Describe a person who taught you something important. You should say: who they are · what they taught you · when this happened. And explain why it was important.",
+          "sampleAnswer": "The person I'd like to talk about is my grandfather, who taught me patience without ever using the word. He was so calm that watching him repair things felt almost meditative. There was this one time, when I was about nine, when I broke a small clock he'd kept for decades. I expected him to be furious. Instead — and I still remember this clearly — he sat down, spread the pieces on the table, and quietly asked me to help him put it back together. It took the whole afternoon. I just sat there, half-terrified, handing him parts. Looking back, that afternoon taught me more about how to respond to mistakes than anything anyone ever said to me, which is exactly why I still think about it whenever something goes wrong.",
+          "sampleNote": "Micro-story đủ SETUP (There was this one time…) – BIẾN CỐ (I expected… Instead…) – PHẢN ỨNG (I just sat there…), có cấu trúc \"so … that\" (He was so calm that…).",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -3809,7 +3851,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a day out that you enjoyed. You should say: where you went · who you went with · what you did. And explain why you enjoyed it."
+          "prompt": "Describe a day out that you enjoyed. You should say: where you went · who you went with · what you did. And explain why you enjoyed it.",
+          "sampleAnswer": "I'd like to talk about a trip to Da Lat with my family last summer. To give you an idea, the weather was surprisingly cold for Vietnam — around fifteen degrees at night — and we spent the first evening at the night market, mostly eating grilled meat off a charcoal grill with plastic stools. Compared to Ho Chi Minh City, where you eat surrounded by traffic noise, sitting outdoors in that cool air felt like a completely different country. The next day we visited a flower garden and a lake, and honestly the highlight was just the slower pace. If I could go back, I'd stay in one of the small guesthouses outside town rather than a hotel in the centre, because the parts I remember most were the quiet ones. Since that trip, I've actually started planning holidays around cooler places, which is something I would never have considered before. Overall, it wasn't a dramatic trip, but it changed how I think about where I want to spend my free time.",
+          "sampleNote": "Dựa trên bản Band 7 của sách (chuyến đi Đà Lạt): dùng đủ bốn kỹ thuật kéo dài — ZOOM IN (fifteen degrees, grilled meat), COMPARE (Compared to Ho Chi Minh City…), IMAGINE (If I could go back…), IMPACT (Since that trip…).",
+          "sampleSource": "book-adapted"
         }
       ],
       "rubric": {
@@ -4106,7 +4151,10 @@
       "items": [
         {
           "id": "s1",
-          "prompt": "Describe a sound you find pleasant. You should say: what the sound is · where and when you usually hear it · how it makes you feel. And explain why you find it pleasant."
+          "prompt": "Describe a sound you find pleasant. You should say: what the sound is · where and when you usually hear it · how it makes you feel. And explain why you find it pleasant.",
+          "sampleAnswer": "That's an interesting one — the first thing that comes to mind is the sound of rain on a metal roof. I mainly associate it with my grandmother's house in the countryside, where the roof was corrugated iron, and in the rainy season the sound would build from a light tapping to something almost deafening. It's oddly calming — it makes the house feel very safe and closed off from everything outside. I've read that this kind of steady, low-frequency noise helps people sleep, and I can believe it, because I've never fallen asleep faster than during those storms. If I had the chance, I'd love to record it properly one day and play it back in the city, though I suspect it wouldn't feel the same without the actual house around it. Overall, it's a small, ordinary sound, but it's tied to a place and a person I don't get to visit often enough.",
+          "sampleNote": "Bắt đầu ngay, không phân trần; có trải nghiệm vay mượn (I've read that…) và câu điều kiện loại 2 (If I had the chance, I'd love to…).",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -4272,15 +4320,21 @@
       "items": [
         {
           "id": "a1",
-          "prompt": "CUE CARD — Describe a person who has had an important influence on your life. You should say: who this person is · how you know them · what they have done. And explain why they have influenced you."
+          "prompt": "CUE CARD — Describe a person who has had an important influence on your life. You should say: who this person is · how you know them · what they have done. And explain why they have influenced you.",
+          "sampleAnswer": "I'd like to talk about my old English teacher, Mrs Hoa, who taught me for three years in high school — and we've kept in touch ever since.\n\nWhat stood out about her was her patience. She had this habit of never showing surprise, no matter how basic your question was. I remember failing a test in Year 11 and expecting a lecture — instead, she sat with me after class for almost an hour and worked through every question as if we had all the time in the world. She also showed me how to keep a vocabulary notebook, which I still use today.\n\nThe reason she influenced me so much is that she changed how I deal with things I find difficult. Before her class I used to give up quickly and decide I just wasn't good at languages. She made me believe that struggling with something didn't mean I couldn't do it.\n\nOverall, Mrs Hoa left a lasting impression not because her English was perfect, but because she was unshakeably patient — and I still try to be that way when I'm explaining something to someone else.",
+          "sampleSource": "new"
         },
         {
           "id": "a2",
-          "prompt": "Follow-up 1 — Do you think people are influenced more by family or by friends?"
+          "prompt": "Follow-up 1 — Do you think people are influenced more by family or by friends?",
+          "sampleAnswer": "It changes with age, I think. When you're young, family shapes almost everything — your values, your habits, how you see the world. But as you move into your teens and twenties, friends and the wider environment start to matter more, because that's where you test those values against other people's. So I'd say family sets the foundation and friends do the fine-tuning.",
+          "sampleSource": "new"
         },
         {
           "id": "a3",
-          "prompt": "Follow-up 2 — Is it important to have role models when you are young?"
+          "prompt": "Follow-up 2 — Is it important to have role models when you are young?",
+          "sampleAnswer": "Yes, genuinely important. A good role model gives you a concrete picture of what's possible, and it's much easier to aim for something you've actually seen someone do. That said, they don't have to be famous — often the most useful role models are ordinary people close to you, like a teacher or an older relative, precisely because their life feels within reach.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -4302,7 +4356,7 @@
           "Nhìn giấy ghi chú liên tục",
           "Bỏ câu kết vì mệt"
         ],
-        "sampleAnswer": "BÀI MẪU BAND 7 — TEST A\n\nCUE CARD — Describe a person who has had an important influence on your life.\n\"I'd like to talk about my old maths teacher, Mrs Hoa, who taught me in my final two years of secondary school. She's retired now, but at the time she'd been teaching for over thirty years.\n\nWhat stood out about her was her patience. She had this habit of never showing surprise, no matter how basic your question was. I remember failing a test in Year 11 and expecting a lecture — instead, she sat with me after class for almost an hour and worked through every question as if we had all the time in the world.\n\nThe reason she influenced me so much is that she changed how I deal with things I find difficult. Before her class I used to give up quickly and decide I just wasn't a 'maths person'. She made me believe that struggling with something didn't mean I couldn't do it.\n\nOverall, Mrs Hoa left a lasting impression not because she was a brilliant mathematician, but because she was unshakeably calm — and I still try to be that way when I'm explaining something to someone else.\"\n\nFOLLOW-UP 1 — Do you think people are influenced more by family or by friends?\n\"It changes with age, I think. When you're young, family shapes almost everything — your values, your habits, how you see the world. But as you move into your teens and twenties, friends and the wider environment start to matter more, because that's where you test those values against other people's. So I'd say family sets the foundation and friends do the fine-tuning.\"\n\nFOLLOW-UP 2 — Is it important to have role models when you are young?\n\"Yes, genuinely important. A good role model gives you a concrete picture of what's possible, and it's much easier to aim for something you've actually seen someone do. That said, they don't have to be famous — often the most useful role models are ordinary people close to you, like a teacher or an older relative, precisely because their life feels within reach.\""
+        "sampleAnswer": "Câu 1 — CUE CARD — Describe a person who has had an important influence on your life. You should say: who this person is · how you know them · what they have done. And explain why they have influenced you.\nI'd like to talk about my old English teacher, Mrs Hoa, who taught me for three years in high school — and we've kept in touch ever since.\n\nWhat stood out about her was her patience. She had this habit of never showing surprise, no matter how basic your question was. I remember failing a test in Year 11 and expecting a lecture — instead, she sat with me after class for almost an hour and worked through every question as if we had all the time in the world. She also showed me how to keep a vocabulary notebook, which I still use today.\n\nThe reason she influenced me so much is that she changed how I deal with things I find difficult. Before her class I used to give up quickly and decide I just wasn't good at languages. She made me believe that struggling with something didn't mean I couldn't do it.\n\nOverall, Mrs Hoa left a lasting impression not because her English was perfect, but because she was unshakeably patient — and I still try to be that way when I'm explaining something to someone else.\n\nCâu 2 — Follow-up 1 — Do you think people are influenced more by family or by friends?\nIt changes with age, I think. When you're young, family shapes almost everything — your values, your habits, how you see the world. But as you move into your teens and twenties, friends and the wider environment start to matter more, because that's where you test those values against other people's. So I'd say family sets the foundation and friends do the fine-tuning.\n\nCâu 3 — Follow-up 2 — Is it important to have role models when you are young?\nYes, genuinely important. A good role model gives you a concrete picture of what's possible, and it's much easier to aim for something you've actually seen someone do. That said, they don't have to be famous — often the most useful role models are ordinary people close to you, like a teacher or an older relative, precisely because their life feels within reach."
       }
     },
     {
@@ -4319,15 +4373,21 @@
       "items": [
         {
           "id": "b1",
-          "prompt": "CUE CARD — Describe an occasion when something did not go as planned. You should say: when it happened · what you had planned · what actually happened. And explain how you dealt with the situation."
+          "prompt": "CUE CARD — Describe an occasion when something did not go as planned. You should say: when it happened · what you had planned · what actually happened. And explain how you dealt with the situation.",
+          "sampleAnswer": "I'd like to tell you about a trip that went wrong when I tried to visit a friend in another city.\n\nIt happened about a year ago. The plan was simple: take an early coach, spend the day with her, and come back the same evening. I'd booked the tickets a week in advance and even screenshotted the route.\n\nThe key moment came about an hour into the journey, when the coach broke down on the motorway. We sat on the hard shoulder for nearly two hours waiting for a replacement, and by the time it arrived my phone battery had died, so I couldn't even tell my friend what was happening.\n\nIn the end, I got there four hours late, we only had about ninety minutes together, and I had to leave almost immediately to catch the last coach back.\n\nLooking back, though, those ninety minutes were oddly memorable — we laughed about the whole disaster the entire time. It taught me that a plan falling apart isn't always a bad thing; sometimes it's the part of the trip you actually remember.",
+          "sampleSource": "new"
         },
         {
           "id": "b2",
-          "prompt": "Follow-up 1 — Do you think it is better to plan everything or to be flexible?"
+          "prompt": "Follow-up 1 — Do you think it is better to plan everything or to be flexible?",
+          "sampleAnswer": "A loose plan works best for me — enough structure to feel prepared, but enough flexibility to adapt when things change. Planning every detail just means more things can go wrong, and you spend the whole time stressed about the schedule instead of enjoying it. So on balance, I'd say plan the important parts and leave the rest open.",
+          "sampleSource": "new"
         },
         {
           "id": "b3",
-          "prompt": "Follow-up 2 — How do people in your country usually react when plans change?"
+          "prompt": "Follow-up 2 — How do people in your country usually react when plans change?",
+          "sampleAnswer": "Fairly calmly, in my experience. There's a general acceptance that traffic, weather or last-minute changes are just part of life, so people tend to shrug and improvise rather than get upset. Older generations are especially relaxed about it; younger people, who grew up with everything scheduled through apps, can find it a bit more frustrating.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -4349,7 +4409,7 @@
           "Bỏ qua phần Reflection",
           "Trả lời câu phụ chỉ một câu rồi im"
         ],
-        "sampleAnswer": "BÀI MẪU BAND 7 — TEST B\n\nCUE CARD — Describe an occasion when something did not go as planned.\n\"I'd like to tell you about a trip that went wrong when I tried to visit a friend in another city.\n\nIt happened about a year ago. The plan was simple: take an early coach, spend the day with her, and come back the same evening. I'd booked the tickets a week in advance and even screenshotted the route.\n\nThe key moment came about an hour into the journey, when the coach broke down on the motorway. We sat on the hard shoulder for nearly two hours waiting for a replacement, and by the time it arrived my phone battery had died, so I couldn't even tell my friend what was happening.\n\nIn the end, I got there four hours late, we only had about ninety minutes together, and I had to leave almost immediately to catch the last coach back.\n\nLooking back, though, those ninety minutes were oddly memorable — we laughed about the whole disaster the entire time. It taught me that a plan falling apart isn't always a bad thing; sometimes it's the part of the trip you actually remember.\"\n\nFOLLOW-UP 1 — Do you think it is better to plan everything or to be flexible?\n\"A loose plan works best for me — enough structure to feel prepared, but enough flexibility to adapt when things change. Planning every detail just means more things can go wrong, and you spend the whole time stressed about the schedule instead of enjoying it. So on balance, I'd say plan the important parts and leave the rest open.\"\n\nFOLLOW-UP 2 — How do people in your country usually react when plans change?\n\"Fairly calmly, in my experience. There's a general acceptance that traffic, weather or last-minute changes are just part of life, so people tend to shrug and improvise rather than get upset. Older generations are especially relaxed about it; younger people, who grew up with everything scheduled through apps, can find it a bit more frustrating.\""
+        "sampleAnswer": "Câu 1 — CUE CARD — Describe an occasion when something did not go as planned. You should say: when it happened · what you had planned · what actually happened. And explain how you dealt with the situation.\nI'd like to tell you about a trip that went wrong when I tried to visit a friend in another city.\n\nIt happened about a year ago. The plan was simple: take an early coach, spend the day with her, and come back the same evening. I'd booked the tickets a week in advance and even screenshotted the route.\n\nThe key moment came about an hour into the journey, when the coach broke down on the motorway. We sat on the hard shoulder for nearly two hours waiting for a replacement, and by the time it arrived my phone battery had died, so I couldn't even tell my friend what was happening.\n\nIn the end, I got there four hours late, we only had about ninety minutes together, and I had to leave almost immediately to catch the last coach back.\n\nLooking back, though, those ninety minutes were oddly memorable — we laughed about the whole disaster the entire time. It taught me that a plan falling apart isn't always a bad thing; sometimes it's the part of the trip you actually remember.\n\nCâu 2 — Follow-up 1 — Do you think it is better to plan everything or to be flexible?\nA loose plan works best for me — enough structure to feel prepared, but enough flexibility to adapt when things change. Planning every detail just means more things can go wrong, and you spend the whole time stressed about the schedule instead of enjoying it. So on balance, I'd say plan the important parts and leave the rest open.\n\nCâu 3 — Follow-up 2 — How do people in your country usually react when plans change?\nFairly calmly, in my experience. There's a general acceptance that traffic, weather or last-minute changes are just part of life, so people tend to shrug and improvise rather than get upset. Older generations are especially relaxed about it; younger people, who grew up with everything scheduled through apps, can find it a bit more frustrating."
       }
     },
     {
@@ -4366,15 +4426,21 @@
       "items": [
         {
           "id": "c1",
-          "prompt": "CUE CARD — Describe a place you would recommend to a visitor to your country. You should say: where it is · what people can do there · who you would recommend it to. And explain why you would recommend it."
+          "prompt": "CUE CARD — Describe a place you would recommend to a visitor to your country. You should say: where it is · what people can do there · who you would recommend it to. And explain why you would recommend it.",
+          "sampleAnswer": "I'd like to talk about Da Nang, a coastal city in central Vietnam, roughly halfway between Hanoi and Ho Chi Minh City.\n\nThe first time I visited was about three years ago, and the moment I stepped onto My Khe Beach and felt the sea breeze, I was completely won over — the water was clear, the sand was almost empty early in the morning, and the whole place felt refreshing after months of city life.\n\nWhat really stands out is the variety. You can spend the morning on a pristine beach and be up in a mountain resort thirty minutes later. The food is excellent too, especially the seafood, and it's noticeably cheaper than in the bigger cities.\n\nI'd recommend it to almost anyone, but especially to first-time visitors who want a bit of everything without the crowds of Hanoi or Saigon. The pace is more relaxed and the people are very easy-going.\n\nOverall, it's the place I always suggest first, and I've been back twice myself since that first visit — there's always something new to try.",
+          "sampleSource": "new"
         },
         {
           "id": "c2",
-          "prompt": "Follow-up 1 — Has tourism changed your country in recent years?"
+          "prompt": "Follow-up 1 — Has tourism changed your country in recent years?",
+          "sampleAnswer": "Quite significantly. Tourism has brought real economic benefits — jobs, investment, better infrastructure in a lot of coastal towns. But those benefits are unevenly spread: in the most popular spots, long-term residents are being priced out and the character of the place changes as shops start catering only to visitors. So it's been positive overall, but not without costs.",
+          "sampleSource": "new"
         },
         {
           "id": "c3",
-          "prompt": "Follow-up 2 — Do you think tourists should learn about local culture before travelling?"
+          "prompt": "Follow-up 2 — Do you think tourists should learn about local culture before travelling?",
+          "sampleAnswer": "I think a bit of effort goes a long way — learning a few phrases and understanding basic customs, for example around temples or removing your shoes. It shows respect and it genuinely improves the experience. I'd stop short of expecting people to study a place in depth, but arriving with zero awareness often leads to misunderstandings that could easily be avoided.",
+          "sampleSource": "new"
         }
       ],
       "rubric": {
@@ -4396,7 +4462,7 @@
           "Lặp \"beautiful\"",
           "Trả lời câu phụ về tourism một chiều, không chốt"
         ],
-        "sampleAnswer": "BÀI MẪU BAND 7 — TEST C\n\nCUE CARD — Describe a place you would recommend to a visitor to your country.\n\"I'd like to talk about Da Nang, a coastal city in central Vietnam, roughly halfway between Hanoi and Ho Chi Minh City.\n\nThe first time I visited was about three years ago, and the moment I stepped onto My Khe Beach and felt the sea breeze, I was completely won over — the water was clear, the sand was almost empty early in the morning, and the whole place felt refreshing after months of city life.\n\nWhat really stands out is the variety. You can spend the morning on a pristine beach and be up in a mountain resort thirty minutes later. The food is excellent too, especially the seafood, and it's noticeably cheaper than in the bigger cities.\n\nI'd recommend it to almost anyone, but especially to first-time visitors who want a bit of everything without the crowds of Hanoi or Saigon. The pace is more relaxed and the people are very easy-going.\n\nOverall, it's the place I always suggest first, and I've been back twice myself since that first visit — there's always something new to try.\"\n\nFOLLOW-UP 1 — Has tourism changed your country in recent years?\n\"Quite significantly. Tourism has brought real economic benefits — jobs, investment, better infrastructure in a lot of coastal towns. But those benefits are unevenly spread: in the most popular spots, long-term residents are being priced out and the character of the place changes as shops start catering only to visitors. So it's been positive overall, but not without costs.\"\n\nFOLLOW-UP 2 — Do you think tourists should learn about local culture before travelling?\n\"I think a bit of effort goes a long way — learning a few phrases and understanding basic customs, for example around temples or removing your shoes. It shows respect and it genuinely improves the experience. I'd stop short of expecting people to study a place in depth, but arriving with zero awareness often leads to misunderstandings that could easily be avoided.\""
+        "sampleAnswer": "Câu 1 — CUE CARD — Describe a place you would recommend to a visitor to your country. You should say: where it is · what people can do there · who you would recommend it to. And explain why you would recommend it.\nI'd like to talk about Da Nang, a coastal city in central Vietnam, roughly halfway between Hanoi and Ho Chi Minh City.\n\nThe first time I visited was about three years ago, and the moment I stepped onto My Khe Beach and felt the sea breeze, I was completely won over — the water was clear, the sand was almost empty early in the morning, and the whole place felt refreshing after months of city life.\n\nWhat really stands out is the variety. You can spend the morning on a pristine beach and be up in a mountain resort thirty minutes later. The food is excellent too, especially the seafood, and it's noticeably cheaper than in the bigger cities.\n\nI'd recommend it to almost anyone, but especially to first-time visitors who want a bit of everything without the crowds of Hanoi or Saigon. The pace is more relaxed and the people are very easy-going.\n\nOverall, it's the place I always suggest first, and I've been back twice myself since that first visit — there's always something new to try.\n\nCâu 2 — Follow-up 1 — Has tourism changed your country in recent years?\nQuite significantly. Tourism has brought real economic benefits — jobs, investment, better infrastructure in a lot of coastal towns. But those benefits are unevenly spread: in the most popular spots, long-term residents are being priced out and the character of the place changes as shops start catering only to visitors. So it's been positive overall, but not without costs.\n\nCâu 3 — Follow-up 2 — Do you think tourists should learn about local culture before travelling?\nI think a bit of effort goes a long way — learning a few phrases and understanding basic customs, for example around temples or removing your shoes. It shows respect and it genuinely improves the experience. I'd stop short of expecting people to study a place in depth, but arriving with zero awareness often leads to misunderstandings that could easily be avoided."
       }
     }
   ]

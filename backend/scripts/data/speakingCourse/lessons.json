@@ -64,7 +64,28 @@
         "E — Example: For example, … / Like last week, … / For instance, …",
         "Present simple cho thói quen / sở thích — nhớ đuôi -s: It helps me relax. (KHÔNG \"It help\")"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Do you like cooking?",
+          "lines": [
+            "**BAND 5**",
+            "Yes, I like cooking. It is fun.",
+            "→Có Opinion nhưng không có Reason thật sự, và “fun” quá chung chung. Khoảng 5 giây — quá ngắn.",
+            "**BAND 6**",
+            "Yes, I do. I enjoy cooking because it helps me relax after school. For example, I usually make dinner for my family at the weekend.",
+            "→Đủ O.R.E., đúng độ dài. Đây là mục tiêu tối thiểu của Lesson 1.",
+            "**BAND 7**",
+            "Yes, definitely. I find cooking quite therapeutic — it’s one of the few times in the day when I’m not looking at a screen. Last Sunday, for instance, I spent the whole afternoon making phở from scratch, and honestly the process was more enjoyable than the meal itself.",
+            "→Thêm cách diễn đạt tự nhiên (“quite therapeutic”, “from scratch”) và một chi tiết cá nhân bất ngờ ở cuối. Chưa cần từ khó — cần chi tiết thật."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P1-L02",
@@ -85,7 +106,28 @@
         "Filler đứng đầu câu, có dấu phẩy, KHÔNG thay chủ ngữ / động từ",
         "Ngắt hơi rất ngắn (~0,3 giây) sau filler rồi giọng đi tiếp"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Do you prefer texting or calling?",
+          "lines": [
+            "**BAND 5**",
+            "I prefer texting. Because calling is difficult.",
+            "→Không có filler, câu cụt, “Because” đứng riêng thành câu không hoàn chỉnh.",
+            "**BAND 6**",
+            "Well, I’d say texting. It’s more convenient because I can reply whenever I want. For example, I often text my friends while I’m on the bus.",
+            "→Có 1 filler đúng chỗ + O.R.E. đầy đủ. Đây là mục tiêu của buổi.",
+            "**BAND 7**",
+            "Well… let me think. Probably texting, actually — I mean, calling puts you on the spot, doesn’t it? With a message I can take my time and word things properly. Having said that, if it’s something emotional, I’d always call.",
+            "→Hai filler ở hai vị trí khác nhau, một câu hỏi đuôi tự nhiên, và một ý đối lập ở cuối. Nghe như đang thật sự suy nghĩ."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P1-L03",
@@ -106,7 +148,28 @@
         "Ví dụ \"thật\" trả lời được ít nhất một câu: Khi nào? Ở đâu? Với ai?",
         "\"because\" + mệnh đề; \"because of\" + danh từ — không dùng \"because\" hai lần trong một câu"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Why do you like your hometown?",
+          "lines": [
+            "**BAND 5**",
+            "I like my hometown because it is beautiful. For example, it is very nice.",
+            "→“Beautiful” quá chung, và “it is very nice” không phải ví dụ.",
+            "**BAND 6**",
+            "I like my hometown mainly because of the pace of life. It’s much slower than in the city, so people actually have time to talk to each other. For example, my neighbours still come over for tea almost every evening.",
+            "→Lý do cụ thể + ví dụ có con người và tần suất. Đạt yêu cầu buổi học.",
+            "**BAND 7**",
+            "I’d say it’s the pace of life more than anything. One reason is that everything is within walking distance, so you’re not spending an hour a day stuck in traffic. Take my street for example — the same five families have lived there for twenty years, and that kind of continuity is something you simply don’t get in a big city.",
+            "→Dùng “one reason is that” + “take … for example”, có so sánh ngầm với thành phố lớn, và một nhận xét khái quát ở cuối."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P1-L04",
@@ -127,7 +190,28 @@
         "Band 7 ở Part 1 đến từ độ tự nhiên và độ cụ thể, KHÔNG từ độ hiếm của từ",
         "Câu ghép: so · which · although — nối ý thay vì chấm câu liên tục"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Do you like your hometown?",
+          "lines": [
+            "**BAND 5**",
+            "Yes, I like my hometown. It is nice and the people are friendly.",
+            "→Hai tính từ chung chung. Không có lý do thật, không có ví dụ. Khoảng 6 giây.",
+            "**BAND 6**",
+            "Yes, I do. I like it mainly because of the pace of life — it’s much quieter than the city. For example, I can walk to the market in five minutes instead of sitting in traffic.",
+            "→**+ Thao tác 1:** lý do cụ thể (pace of life).** + Thao tác 2:** ví dụ có so sánh và thời lượng.",
+            "**BAND 7**",
+            "Yes, definitely. What I like most is the pace of life — I can walk to the market in five minutes instead of losing an hour in traffic. My grandmother still lives on the same street she was born on, which says something about the place. That said, it can get a bit too quiet, so I’m not sure I could live there forever.",
+            "→**+ Thao tác 3:** chi tiết cá nhân thật (bà vẫn sống ở con phố nơi bà sinh ra).** + Thao tác 4:** ý đối lập ở cuối (“That said, …”)."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P1-L05",
@@ -148,7 +232,28 @@
         "Khung: WHERE (học/làm ở đâu, ngành gì) → HOW LONG (bao lâu rồi) → WHAT (làm gì mỗi ngày)",
         "I've been there for two years / since 2023 — KHÔNG \"I am working here since 2 years\""
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Do you like your job?",
+          "lines": [
+            "**BAND 5**",
+            "Yes, I like my job. It is good and my colleagues are nice.",
+            "→Không có chi tiết nào chỉ riêng bạn mới nói được. “Good” và “nice” là từ trống nghĩa.",
+            "**BAND 6**",
+            "Yes, I do. What I like most is the job satisfaction — I get to see the results of my work every day. For example, last month I closed a deal I had been working on for six weeks, and that felt great.",
+            "→Có target phrase, lý do cụ thể, ví dụ có mốc thời gian.",
+            "**BAND 7**",
+            "On balance, yes. It’s a challenging yet rewarding job — I meet people from all walks of life, so no two days are quite the same. Last month I finally closed a deal I’d been chasing for six weeks, and that made the whole thing worthwhile. That said, I do work long hours, and my work-life balance is far from perfect.",
+            "→Mở đầu bằng “On balance”, có ý đối lập ở cuối, và ba target phrases xuất hiện tự nhiên chứ không bị nhồi."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P1-L06",
@@ -169,7 +274,28 @@
         "Hometown: I was born and raised in… (past + present perfect). Area: I currently live in… (present simple)",
         "My hometown has changed a lot over the past few years — KHÔNG \"My hometown change a lot\""
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Can you describe your hometown?",
+          "lines": [
+            "**BAND 5**",
+            "My hometown is Da Lat. It is very beautiful and the weather is cool. I like it.",
+            "→Có Location nhưng không có Highlight cụ thể, “beautiful” trống nghĩa, kết thúc cụt.",
+            "**BAND 6**",
+            "I was born and raised in Da Lat, which is a small city in the Central Highlands. It’s a green, quiet place, and the pace of life there is much slower than in Ho Chi Minh City. It’s best known for its local cuisine and its flower gardens. I really enjoy going back whenever I can.",
+            "→Đủ 4 bước, có 2 target phrases, có so sánh với thành phố lớn.",
+            "**BAND 7**",
+            "I was born and raised in Da Lat — a small city up in the Central Highlands, about eight hours from here. What strikes most visitors is the pace of life: people genuinely sit down for coffee for an hour, which is unthinkable in Saigon. It’s also known for its local cuisine, though I’d say the real draw is the weather — it’s the one place in Vietnam where you actually need a jacket. That said, it has become far more crowded since tourism took off.",
+            "→Có chi tiết chỉ người sống ở đó mới biết (“cần áo khoác”), một nhận xét so sánh, và ý đối lập ở cuối bằng present perfect."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P1-L07",
@@ -190,7 +316,28 @@
         "There are plenty of green spaces around here — KHÔNG \"Have many parks in my area\"",
         "quieter than (KHÔNG \"more quiet than\") · the same as (KHÔNG \"same as\")"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Do you prefer quiet places or lively places?",
+          "lines": [
+            "**BAND 5**",
+            "I prefer quiet places. Because I can relax. Lively places are very noisy.",
+            "→“Because” đứng riêng, không có ví dụ, không có so sánh thật.",
+            "**BAND 6**",
+            "I’d say quiet places, mainly because I can actually think there. For example, I often go to the library near my house at the weekend — it’s far more peaceful than any café. That said, I do enjoy a lively atmosphere sometimes.",
+            "→Có so sánh, có ví dụ, có ý đối lập ngắn.",
+            "**BAND 7**",
+            "It really depends on my mood, but on the whole I gravitate towards quieter places. There’s a small park about ten minutes from my house — nowhere near as impressive as the big ones downtown, but it’s well-maintained and almost empty before eight in the morning, which makes it a bit of a hidden gem. Having said that, when I’m with friends I want the opposite: noise, people, a lively atmosphere.",
+            "→Mở bằng “It depends on my mood”, có chi tiết cụ thể (trước 8 giờ sáng), dùng “nowhere near as … as”, kết bằng ý đối lập rõ ràng."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P1-L08",
@@ -211,7 +358,28 @@
         "I prefer X to Y (KHÔNG \"more than\") · I'd rather go (KHÔNG \"I'd rather to go\")",
         "\"It depends\" phải nói rõ phụ thuộc vào cái gì"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Do you prefer comfortable shoes or stylish shoes?",
+          "lines": [
+            "**BAND 5**",
+            "I prefer comfortable shoes more than stylish shoes. Because comfortable is good.",
+            "→Sai cấu trúc (“more than”), “because” đứng riêng, lý do trống nghĩa.",
+            "**BAND 6**",
+            "I prefer comfortable shoes to stylish ones, mainly because I walk a lot during the day. For example, I usually wear trainers to university because I have to move between buildings. That said, I do wear formal shoes for special occasions.",
+            "→Cấu trúc đúng, có lý do, có ví dụ, có điều kiện đảo chiều.",
+            "**BAND 7**",
+            "For me it really comes down to comfort versus appearance, and I tend to prioritise comfort over appearance because I spend most of the day on my feet. That said, I still try to find shoes that strike a good balance — I’d rather buy one decent pair that lasts two years than three cheap pairs that wear out in a month. So I suppose it’s quality over quantity.",
+            "→Đủ 3 bước, ba cấu trúc preference khác nhau, một so sánh số lượng cụ thể, và câu kết rút gọn thành nguyên tắc."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P1-L09",
@@ -232,7 +400,28 @@
         "Khung: Frequency → Context → Reason → Example",
         "Trạng từ tần suất TRƯỚC động từ thường, SAU \"to be\": I usually go / I am usually tired"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "How often do you take a break during the day?",
+          "lines": [
+            "**BAND 5**",
+            "I usually take a break. Usually two times. It is good for me.",
+            "→Lặp “usually”, tần suất mơ hồ, không có hoàn cảnh hay ví dụ.",
+            "**BAND 6**",
+            "I’d say two or three times a day. I tend to take a short break after lunch because it helps me clear my head. For example, yesterday I went out for a coffee for about fifteen minutes.",
+            "→Đủ 4 bước, không lặp trạng từ.",
+            "**BAND 7**",
+            "Probably two or three times a day, though it varies. I tend to step away from my desk whenever I notice I’ve been reading the same sentence twice — that’s usually the signal. A ten-minute walk is enough to recharge my energy, and honestly it saves me time in the long run. Having said that, on busy days I hardly ever manage it, which is probably how burnout starts.",
+            "→Tần suất có kèm điều kiện (“though it varies”), hoàn cảnh rất cụ thể và cá nhân, hai mức tần suất khác nhau, kết bằng nhận xét khái quát."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P1-L10",
@@ -253,7 +442,28 @@
         "used to go (KHÔNG \"use to go\") · didn't use to go (KHÔNG \"didn't used to\")",
         "Đuôi -ed: /t/ walked · /d/ lived · /ɪd/ chỉ sau /t,d/: visited, wanted, decided"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Did you visit museums when you were a child?",
+          "lines": [
+            "**BAND 5**",
+            "Yes, I visited a museum. It was interesting. I go with my school.",
+            "→Trộn thì (“I go”), không có chi tiết, “interesting” trống nghĩa.",
+            "**BAND 6**",
+            "Yes, a few times. My school took us to the History Museum when I was about ten. I remember there was a room full of old maps and I stayed there for a long time. At the time I found it really interesting, and it made me like history more.",
+            "→Đủ 4 bước ở mức cơ bản, thì quá khứ nhất quán.",
+            "**BAND 7**",
+            "A few times, yes. My school took us to the History Museum when I was about ten. I remember one room full of old maps — I spent almost the whole visit in there instead of following the group, and the teacher had to come and find me. I was completely absorbed; it was the first time history felt like something real rather than a subject I had to pass. Looking back, that’s probably why I still can’t walk past a secondhand map stall.",
+            "→Một chi tiết bất ngờ (cô giáo phải đi tìm), câu cảm xúc mạnh, và bài học nối thẳng đến hiện tại."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P1-L11",
@@ -274,7 +484,28 @@
         "Hệ quả: as a result · which means… · a marked shift towards…",
         "My hometown has changed (KHÔNG \"is changed\") · far more crowded (KHÔNG \"more crowded more\")"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "How has your hometown changed in recent years?",
+          "lines": [
+            "**BAND 5**",
+            "My hometown is changed a lot. Now have many buildings. Before is small.",
+            "→Sai thì (“is changed”), thiếu “there”, thiếu chủ ngữ. Không có hệ quả.",
+            "**BAND 6**",
+            "It has changed considerably over the past few years. It used to be a quiet area with a lot of farmland, but these days there are far more apartment blocks and shops. As a result, the traffic is much worse than it was.",
+            "→Đủ 3 bước, đúng thì, có 1 trạng từ mức độ.",
+            "**BAND 7**",
+            "Quite dramatically, actually. When I was at primary school the road behind my house was still unpaved, and there were maybe two shops on the whole street. These days it has become increasingly built-up — there are three convenience stores within a hundred metres. As a result, it’s far more convenient, but a lot of that close- knit feeling has gone, and I’m honestly not sure the trade-off has been worth it.",
+            "→Chi tiết đo được (hai cửa hàng →ba trong 100 mét), hệ quả có** hai mặt**, và một đánh giá cá nhân ở cuối."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P1-L12",
@@ -295,7 +526,28 @@
         "Cụm CHỐT: So on balance,… · All things considered,… · So overall, I'd say…",
         "although + mệnh đề (KHÔNG kèm \"but\") · despite + danh từ / V-ing (KHÔNG + mệnh đề)"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Do you like crowded places?",
+          "lines": [
+            "**BAND 5**",
+            "No, I don’t like crowded places. Because it is noisy and I feel tired.",
+            "→Một chiều hoàn toàn, không có nhượng bộ, “because” đứng riêng.",
+            "**BAND 6**",
+            "Not really, to be honest. I usually feel overwhelmed when there are too many people around. Having said that, I do enjoy a lively atmosphere sometimes — for example, I like the night market at the weekend. So overall, I’d say it depends on how long I have to stay.",
+            "→Có nhượng bộ, có ví dụ, có chốt.",
+            "**BAND 7**",
+            "Honestly, it depends on why I’m there. If I’m out with friends, a crowd is half the point — the night market near my house is chaotic and I love it. But if I’m just trying to get somewhere, the same crowd is exhausting; I’ll happily walk an extra ten minutes to avoid the main road at rush hour. So on balance, I’d say I like crowds when they’re part of the experience, not when they’re an obstacle.",
+            "→Điều kiện cụ thể ngay từ đầu, hai tình huống trái ngược có chi tiết thật, và câu chốt cô đọng thành một nguyên tắc."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P1-L13",
@@ -316,7 +568,28 @@
         "4 chiến lược: (1) thú nhận rồi rẽ hướng (2) nói về người khác (3) đoán có căn cứ (4) nhìn từ góc khác",
         "Câu điều kiện loại 2: If + past simple, would + V — If I had more free time, I would…"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Do you enjoy collecting stamps?",
+          "lines": [
+            "**BAND 5**",
+            "No. I don’t know about stamps. Sorry.",
+            "→Nói “I don’t know” và dừng. Mất điểm Fluency nặng, dù ngữ pháp không sai.",
+            "**BAND 6**",
+            "Well, I’ve never really been into collecting things, to be honest. But my uncle collects old coins, and he says it’s very relaxing. If I had to choose something to collect, I suppose it would be books.",
+            "→Dùng chiến lược 1 + 2 + 3, không im, chuyển hướng hợp lý.",
+            "**BAND 7**",
+            "Well… stamps specifically, no — it’s not something I’ve ever thought about much. But I can see the appeal: my uncle collects old coins, and watching him sort through them is oddly calming, a bit like gardening. If I had to pick something myself, it’d probably be books — I’ve got about three hundred at home, which I suppose technically makes me a collector already.",
+            "→Thừa nhận thẳng, so sánh bất ngờ (giống làm vườn), rồi tự lật lại chính mình ở cuối. Nghe hoàn toàn tự nhiên, không hề học thuộc."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P1-L14",
@@ -338,7 +611,11 @@
         "Không im quá 3 giây · ≥3 target phrases · đúng thì và đuôi -s/-ed · xuống giọng cuối câu",
         "Nếu đạt ≥4/5 tiêu chí ở phiếu chấm → sẵn sàng sang Phần II (Part 2)"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     }
   ]
 }

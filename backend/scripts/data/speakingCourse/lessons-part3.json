@@ -55,7 +55,40 @@
         "TÂM LÝ = trong đầu người ta · THỰC TẾ = trong ví và trong lịch · XÃ HỘI = giữa người với người",
         "because + MỆNH ĐỀ · stems from / attributed to / due to + DANH TỪ hoặc V-ing"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 7.5+",
+          "question": "Why do people enjoy spending time in natural places?",
+          "lines": [
+            "People are drawn to natural environments for several interconnected reasons.",
+            "Psychologically speaking, nature has a well-documented calming effect on the human mind. Research consistently shows that spending time outdoors reduces cortisol levels — the hormone most associated with stress. In our increasingly screen-dominated lives, green spaces offer a rare opportunity to simply switch off. From a practical standpoint, natural settings provide an ideal backdrop for physical activity — hiking, cycling, swimming — which in turn improves overall fitness and sleep quality.",
+            "On a social level, visiting parks or the countryside is often a shared experience. Families bond over weekend walks, friends reconnect on camping trips, and communities come together at outdoor festivals. It satisfies a deeply human need for connection — both with other people and with the natural world.",
+            "For all these reasons, I think access to natural spaces is genuinely important for well-being, not just a luxury.",
+            "Phân tích cho học sinh: đếm số lần xuất hiện từ \"because\" trong bài mẫu — KHÔNG CÓ LẦN NÀO. Mỗi lý do đều được đánh dấu bằng một cụm chuyển tầng, và mỗi lý do đều có ít nhất một câu triển khai. Câu cuối có sắc thái (\"not just a luxury\") chứ không tóm tắt lại."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "Why do people enjoy spending time in natural places?",
+          "lines": [
+            "**BAND 6**",
+            "I think people like nature because it is relaxing. When you go to the park or the mountain, you feel comfortable and you can forget about your work. Also it is good for health because you walk a lot. And it is free, you do not need to pay money. So many people like it.",
+            "→Có ba ý nhưng đều nằm ở tầng thực tế/cảm giác chung. Dùng \"because\" ba lần. Không có cụm chuyển tầng nào. Khoảng 30 giây.",
+            "**BAND 7**",
+            "People are drawn to natural places for several reasons. Psychologically speaking, being outdoors helps reduce stress — after a long week in front of a screen, a walk in the park is a real escape. From a practical standpoint, nature encourages people to be physically active, which improves both fitness and sleep. And on a social level, it is usually something people do together, so it strengthens relationships as well. For all these reasons, I think access to green space matters a lot.",
+            "→Đủ ba tầng, có cụm chuyển tầng, có câu kết. Đây là mục tiêu tối thiểu của Lesson 1. Khoảng 55 giây.",
+            "**BAND 8**",
+            "People are drawn to natural environments for several interconnected reasons. Psychologically, nature has a well-documented calming effect — research consistently links time outdoors with lower cortisol levels, and in our increasingly screen-dominated lives that kind of switching off has become genuinely rare. From a practical standpoint, natural settings are simply the most accessible setting for exercise, which feeds back into sleep quality and general health. On a social level, it satisfies a deeply human need for connection: families bond over weekend walks, communities gather at outdoor festivals. For all these reasons, I would argue access to nature is a matter of public health rather than a lifestyle preference.",
+            "→Thêm bằng chứng cụ thể (\"cortisol levels\"), thêm liên kết giữa các lý do (\"which feeds back into\"), và câu kết định khung lại vấn đề (\"public health rather than a lifestyle preference\") thay vì tóm tắt."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P3-L02",
@@ -76,7 +109,40 @@
         "Hedging: young people tend to… · this is arguably… · it seems likely that… — chỉ MỘT lớp hedging cho một khẳng định",
         "Ngữ điệu nhượng bộ xuống-lên: \"To a certain extent, ↘↗ yes — but…\""
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 7.5+",
+          "question": "Do you think it's important for children to learn a musical instrument?",
+          "lines": [
+            "To a certain extent, yes — I think learning music offers real benefits for children. But I'd stop short of saying it should be compulsory for everyone.",
+            "On one hand, the cognitive benefits are well-established. Learning an instrument requires reading notation, developing hand-eye coordination, and maintaining focus for extended periods — all of which strengthen the brain in ways that transfer to academic performance. Children who study music often show stronger memory and concentration skills.",
+            "On the other hand, forcing every child to learn an instrument could easily backfire. Children have vastly different interests and abilities, and a one-size-fits-all approach risks creating resentment towards music rather than an appreciation for it. The key, I think, is exposure — giving children the opportunity to try various instruments and then letting them pursue what genuinely excites them.",
+            "On balance, music education is valuable, but its benefits only really materialise when children engage with it willingly rather than under compulsion.",
+            "Phân tích: câu đầu ĐÃ trả lời câu hỏi (yes) nhưng có giới hạn ngay. Câu cuối vẫn chọn bên (valuable) nhưng gắn điều kiện (willingly rather than under compulsion). Đây chính là \"cân bằng nhưng vẫn có quan điểm\"."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "Do you think it is important for children to learn a musical instrument?",
+          "lines": [
+            "**BAND 6**",
+            "Yes, I think it is important. Music is good for children because it makes them happy and relaxed. Also they can play in a band with friends. So I think all children should learn a musical instrument.",
+            "→Trả lời một chiều, không có mặt giới hạn nào. Kết luận cực đoan (\"all children\"). Khoảng 25 giây.",
+            "**BAND 7**",
+            "To a certain extent, yes. On one hand, learning an instrument develops concentration and discipline, and there is quite a lot of research showing it helps with memory and even maths. On the other hand, I would stop short of saying every child must do it — children have very different interests, and forcing them can make them dislike music completely. On balance, I think schools should offer it, but let children choose.",
+            "→Đủ bốn bước, có sắc thái, kết luận có điều kiện. Đây là mục tiêu tối thiểu của Lesson 2. Khoảng 50 giây.",
+            "**BAND 8**",
+            "To a certain extent, yes — the benefits are real, but I would stop short of calling it essential. On one hand, the cognitive case is well established: reading notation, coordinating both hands and sustaining attention for long stretches all appear to transfer to academic performance. On the other hand, compulsion tends to backfire. A one-size-fits-all music policy risks producing resentment rather than appreciation, which is precisely the opposite of what it sets out to do. The key, I think, is exposure — letting children try several instruments and then pursue whichever one actually holds their attention. On balance, music education is valuable, but its benefits only really materialise when children engage with it willingly.",
+            "→Thêm chi tiết kỹ thuật cụ thể, thêm một câu nêu nghịch lý (\"precisely the opposite of what it sets out to do\"), và kết bằng một điều kiện có sức nặng thay vì một lời khuyên chung chung."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P3-L03",
@@ -97,7 +163,40 @@
         "Bất lợi thật phải trả lời được: \"Ai khổ vì điều này?\"",
         "While remote work suits experienced staff, it disadvantages new employees · Older workers value stability, whereas younger ones prioritise flexibility"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 7.5+",
+          "question": "What are the advantages and disadvantages of working from home?",
+          "lines": [
+            "Remote working is very much a double-edged sword — the benefits are real, but so are the costs, and they tend to fall on different groups of people.",
+            "The main benefit is autonomy. Employees can structure their day around when they actually work best, rather than around a fixed office schedule, and the time saved on commuting is substantial — for someone in a large city that can easily be two hours a day. There is also a financial dimension: lower transport costs for staff, and lower office costs for employers.",
+            "That said, the convenience comes at a cost. A significant drawback is the erosion of informal communication. A great deal of learning at work happens through overhearing colleagues and asking quick questions across a desk, and that simply does not translate to scheduled video calls. Junior staff are hit hardest — they lose the mentoring that used to happen almost by accident.",
+            "On balance, I think the benefits outweigh the drawbacks, provided that companies deliberately design in the contact that used to happen naturally. The trade-off is essentially between individual flexibility and collective cohesion, and it has to be managed rather than left to chance.",
+            "Phân tích: bất lợi ở đây có NGƯỜI CHỊU THIỆT cụ thể (junior staff) và CƠ CHẾ cụ thể (mất mentoring tình cờ). Câu kết không đếm số lượng mà nêu một điều kiện (\"provided that…\") và định nghĩa lại sự đánh đổi."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "What are the advantages and disadvantages of working from home?",
+          "lines": [
+            "**BAND 6**",
+            "Working from home has some advantages and disadvantages. The advantage is it is convenient and you save time because you do not go to the office. Also you can wear comfortable clothes. The disadvantage is sometimes it is boring and you feel lonely. So there are good things and bad things.",
+            "→Lợi ích có nhưng nhỏ và không triển khai. Bất lợi rỗng, không có ai chịu thiệt cụ thể. Kết luận đếm số lượng. Khoảng 30 giây.",
+            "**BAND 7**",
+            "Remote working is a double-edged sword. The main benefit is flexibility — people can organise their day around when they work best, and in a big city they save maybe two hours of commuting every day. There is also a financial benefit for both sides, since employees spend less on transport and companies need less office space. That said, it comes at a cost. A significant drawback is that new employees lose the informal learning that happens in an office, so they develop more slowly. On balance, the benefits outweigh the drawbacks, provided that companies make an effort to keep teams connected.",
+            "→Hai lợi ích có triển khai, bất lợi có người chịu thiệt, kết có điều kiện. Đây là mục tiêu tối thiểu của Lesson 3. Khoảng 65 giây.",
+            "**BAND 8**",
+            "Remote working is very much a double-edged sword, and the benefits and costs tend to fall on different groups. The main benefit is autonomy — employees structure the day around when they actually work best rather than around a fixed office schedule, and in a large city the recovered commuting time can amount to two hours daily. That flexibility is offset, though, by the erosion of informal communication. A great deal of workplace learning happens by overhearing colleagues and asking quick questions across a desk, and none of that translates to a scheduled video call. Junior staff are hit hardest: while senior employees are drawing on networks they built in person, newer ones lose the mentoring that used to happen almost by accident. On balance I would say the benefits outweigh the drawbacks, provided companies deliberately design in the contact that used to occur naturally. The trade-off is really between individual flexibility and collective cohesion.",
+            "→Nêu được rằng lợi ích và bất lợi rơi vào các nhóm khác nhau — đây là dấu hiệu Band 8. Có cấu trúc while cân bằng, có cơ chế cụ thể, và câu kết định nghĩa lại sự đánh đổi thay vì tóm tắt."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P3-L04",
@@ -118,7 +217,42 @@
         "4 khía cạnh dùng được cho mọi so sánh: tốc độ/thời gian · chi phí/khả năng tiếp cận · con người/quan hệ · quyền lực/lựa chọn",
         "much · far · considerably · significantly + so sánh hơn (KHÔNG \"very higher\", KHÔNG \"more better\")"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 7.5+",
+          "question": "How has the way people shop changed compared to the past?",
+          "lines": [
+            "Shopping has undergone a dramatic transformation over the past two decades, driven almost entirely by digital technology.",
+            "In the past, shopping was an inherently physical and social activity. People visited local markets, browsed department stores at leisure, and relied on the advice of shop assistants. The entire process was slower, more deliberate, and embedded in community life.",
+            "Today, by contrast, convenience is the overriding priority. Online platforms allow consumers to compare prices, read thousands of reviews, and receive goods within hours — all without leaving their homes. The rise of social media has also created an entirely new form of shopping impulse, where a single post from an influencer can generate thousands of sales overnight.",
+            "That said, the two approaches are not entirely opposed. Many consumers now practise what is called webrooming — researching online but purchasing in-store — which suggests people value both the efficiency of digital shopping and the tangible experience of physical retail.",
+            "Ultimately, I think the most significant shift is in the power dynamic: consumers today are far better informed and have far more choices than any previous generation.",
+            "Phân tích: hai khía cạnh rõ ràng — tính xã hội (đoạn 2 và 3) và quyền lực thông tin (đoạn cuối). Đoạn 4 là điểm chung, chống lại lối so sánh một chiều. Câu cuối KHÔNG tóm tắt mà chọn ra một khác biệt quan trọng nhất."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "How has the way people shop changed compared to the past?",
+          "lines": [
+            "**BAND 6**",
+            "In the past, people went to the market or the shop to buy things. They talked to the seller and looked at the products. Now people buy online. It is more convenient and more faster. You can buy at home and the shipper brings it to you. So shopping now is more better than before.",
+            "→Nói theo cột: hết quá khứ rồi sang hiện tại. Lỗi \"more faster\", \"more better\". Không có điểm chung, không có nhận định tổng quát. Khoảng 30 giây.",
+            "**BAND 7**",
+            "Shopping has changed considerably over the past twenty years. In terms of speed, shopping used to be a slow process — people went to the market, talked to sellers and compared products by hand — whereas now you can order something in one minute and receive it the same day. In terms of information, customers in the past relied on the shop assistant, whereas today they can read hundreds of reviews before deciding. That said, the two still share some common ground: many people research online but buy in the shop, because they want to see the product. Ultimately, the most significant shift is that customers now have far more information than sellers do.",
+            "→So sánh theo hàng, hai khía cạnh rõ, có điểm chung, có nhận định tổng quát. Đây là mục tiêu tối thiểu của Lesson",
+            "4. Khoảng 70 giây.",
+            "**BAND 8**",
+            "Shopping has undergone a dramatic transformation over the past two decades, driven almost entirely by digital technology. In the past it was an inherently physical and social activity — people browsed at leisure, relied on shop assistants, and the whole process was slower, more deliberate and embedded in community life. Today, by comparison, convenience is the overriding priority: consumers compare prices instantly, read thousands of reviews and receive goods within hours, and social media has created an entirely new form of impulse where a single influencer post can generate thousands of sales overnight. That said, the two are nowhere near as opposed as they first appear — webrooming, where people research online but purchase in store, suggests consumers want both efficiency and tangibility. Ultimately, the most significant shift is in the power dynamic: buyers today are far better informed than any previous generation, and that has changed what sellers can get away with.",
+            "→Có mốc thời gian cụ thể, có thuật ngữ chính xác (webrooming), có cụm so sánh phủ định \"nowhere near as\", và câu kết mở ra một hệ quả mới thay vì dừng lại ở khác biệt."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P3-L05",
@@ -139,7 +273,40 @@
         "Giải pháp phải trả lời AI LÀM và LÀM GÌ: \"Schools could make media literacy compulsory from age twelve\" (không \"People should be more aware\")",
         "Bị động nêu việc cần làm: Emissions should be cut far more aggressively · More could be done to support small businesses"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER 1 — BAND 8 (DẠNG CHÍNH PHỦ)",
+          "question": "Do you think the government should do more to protect the environment?",
+          "lines": [
+            "I think governments do have a critical responsibility here — but the nature of that responsibility matters enormously.",
+            "There are things only governments can realistically do: setting binding emissions targets, enforcing environmental regulations on corporations, and investing in large-scale renewable infrastructure. These require the kind of legal authority and financial resources that no individual or company can match. In that sense, stronger government action is not just desirable — it is necessary.",
+            "That said, I would be cautious about governments overreaching. Heavy-handed policies that restrict personal choices without providing viable alternatives tend to generate public backlash and are ultimately counterproductive. The most effective environmental policies I am aware of — carbon pricing schemes in Scandinavia, for example — succeed because they create economic incentives rather than simply imposing penalties.",
+            "Ultimately, I believe the most durable solutions emerge when governments lead by creating the right framework, businesses innovate within it, and individuals are educated and empowered to make better choices. It is a three-way responsibility, not one that falls entirely on any single party.",
+            "Phân tích: đoạn 2 nói rõ chỉ chính phủ mới làm được gì (authority + resources). Đoạn 3 nêu giới hạn kèm LÝ DO (backlash) và một ví dụ có thật. Câu cuối là mẫu câu kết vàng của dạng này."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "Do you think the government should do more to protect the environment?",
+          "lines": [
+            "**BAND 6**",
+            "Yes, I think the government should do more. They should ban plastic bags and ban old cars because they pollute a lot. Also they should punish the factories that make pollution. And people should be more aware about the environment. If everybody does this, the environment will be better.",
+            "→Toàn bộ giải pháp là cấm và phạt. Giải pháp cuối không có chủ thể. Không có giới hạn nào. Khoảng 30 giây.",
+            "**BAND 7**",
+            "I think the government has an important role to play, but it should not be the only actor responsible. On one hand, only governments have the authority to set emissions targets and the money to invest in things like renewable energy or public transport — no individual can do that. However, I would be cautious about policies that simply restrict what people can do without giving them viable alternatives, because that usually generates public backlash. A more effective approach might be to incentivise rather than penalise: tax breaks for clean energy, for example. Ultimately I think it is a three-way responsibility between government, business and individuals.",
+            "→Đủ năm bước của khung 5B, có giới hạn kèm lý do, có câu kết trách nhiệm ba bên. Đây là mục tiêu tối thiểu của Lesson 5. Khoảng 70 giây.",
+            "**BAND 8**",
+            "Governments do have a critical responsibility here, but the nature of that responsibility matters enormously. There are things only governments can realistically do — setting binding emissions targets, enforcing regulations on large corporations, funding renewable infrastructure at national scale. These require legal authority and financial resources no individual or company can match, so in that sense stronger action is not merely desirable, it is necessary. That said, I would be cautious about overreach. Heavy-handed policies that restrict personal choice without providing viable alternatives tend to generate backlash and end up counterproductive. The environmental policies that have actually worked — carbon pricing in Scandinavia, for instance — succeed precisely because they create economic incentives rather than imposing penalties. Ultimately the most durable solutions emerge when governments create the right framework, businesses innovate within it, and individuals are equipped to make better choices. It is a three-way responsibility, not one that falls entirely on any single party.",
+            "→Có ví dụ chính sách có thật, có cụm phân biệt sắc thái (\"not merely desirable, it is necessary\"), và giải thích CƠ CHẾ vì sao chính sách kia thành công thay vì chỉ nêu tên."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P3-L06",
@@ -160,7 +327,54 @@
         "4 lực đẩy cho mọi dự đoán: công nghệ · dân số · kinh tế · môi trường/văn hoá",
         "used to + V nguyên thể (thói quen quá khứ) ≠ be used to + V-ing (đã quen) · cities are likely to become denser · we could well see…"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER 1 — BAND 8 (DỰ ĐOÁN)",
+          "question": "How do you think cities will change in the future?",
+          "lines": [
+            "Looking at current trends, I think cities are on the cusp of some genuinely transformative changes — though the pace will vary enormously depending on geography and economic development.",
+            "The most significant shift, I suspect, will be driven by climate pressures. Many cities are already retrofitting their infrastructure to cope with rising temperatures and extreme weather. We are likely to see a dramatic expansion of green spaces, vertical gardens and permeable surfaces designed to manage urban heat and water runoff — what planners call sponge cities.",
+            "Technology will reshape the physical fabric of cities too. Autonomous vehicles could render much of the existing road infrastructure redundant, freeing up the vast tracts of land currently devoted to parking. That land could be repurposed for housing or community facilities, which would be transformative in densely packed cities.",
+            "That said, predicting the future of cities is notoriously difficult. History is full of confident urban predictions that never materialised — flying cars, fully underground cities. The real drivers of change are often social and political rather than technological.",
+            "On balance, I would say the cities of 2050 will look recognisably similar to today, but with a much stronger emphasis on sustainability and human-scale design.",
+            "Phân tích: hai dự đoán, mỗi dự đoán có lực đẩy riêng (khí hậu, công nghệ). Đoạn 4 là caveat có bằng chứng lịch sử, không phải câu \"but I am not sure\" rỗng. Câu kết dự đoán mềm, có sắc thái."
+          ]
+        },
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER 2 — BAND 8 (THẾ HỆ)",
+          "question": "Do younger and older generations have different attitudes towards work?",
+          "lines": [
+            "Yes, I think there is a fairly significant generational divide, though it is worth being careful not to overgeneralise.",
+            "Younger workers tend to prioritise purpose and flexibility over stability and salary. They are more likely to ask whether a job aligns with their values, or whether they can work remotely, than their parents would have. This is largely a product of growing up during economic instability and the rise of the gig economy — a context that made traditional employment feel less guaranteed anyway.",
+            "Older generations, shaped by different economic realities, often view work through a lens of loyalty and long- term commitment. Job security and seniority matter more to them — values instilled during a period when a career with a single employer was both achievable and aspirational.",
+            "Having said that, the distinction is not absolute. I know plenty of young people who crave stability, and older workers who have embraced remote work enthusiastically. Technology and shifting social norms have blurred generational lines considerably.",
+            "On balance, I would say the difference is less about work ethic — both generations work hard — and more about what they expect work to give them beyond a pay cheque.",
+            "Phân tích: mỗi thế hệ đều được giải thích bằng BỐI CẢNH KINH TẾ đã hình thành nên họ, không phải bằng phán xét. Đoạn 4 chống tuyệt đối hoá. Câu kết định nghĩa lại khác biệt ở một tầng sâu hơn."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "How do you think cities will change in the future?",
+          "lines": [
+            "**BAND 6**",
+            "I think cities will change a lot in the future. There will be more people and more buildings. Maybe there will be flying cars and robots. The technology will be very modern and life will be more convenient. So I think the future city will be better than now.",
+            "→Dự đoán trống, không có lực đẩy nào. Dùng \"will\" ở mọi câu. Không có mốc quá khứ, không có caveat. Khoảng 25 giây.",
+            "**BAND 7**",
+            "Looking at current trends, cities are likely to change quite significantly. In the past, cities were designed around cars — wide roads, huge car parks, everything spread out. Today that is already changing, with more bike lanes and pedestrian areas, and this shift is largely driven by concerns about pollution and public health. If this continues, it seems likely that many city centres will become almost car-free within twenty or thirty years. That said, it is difficult to predict with any certainty, because these changes depend heavily on politics and on whether people accept them. A more cautious view might be that only wealthy cities will manage it.",
+            "→Đủ ba mốc, có lực đẩy, có caveat có lý do. Đây là mục tiêu tối thiểu của Lesson 6. Khoảng 70 giây.",
+            "**BAND 8**",
+            "Looking at current trends, I think cities are on the cusp of genuinely transformative change, though the pace will vary enormously with geography and wealth. The most significant shift will probably be driven by climate pressure: cities that were built for a stable climate are already retrofitting for heat and flooding, so we are likely to see a rapid expansion of green space, vertical planting and permeable surfaces — what planners now call sponge cities. Technology will reshape the physical fabric too. If autonomous vehicles become mainstream, much of the land currently devoted to parking could be repurposed for housing, which would be transformative in dense cities. That said, predicting urban futures is notoriously unreliable. History is full of confident predictions that never materialised — flying cars, underground cities — largely because the real drivers of change turn out to be political rather than technological. On balance, I would say the cities of 2050 will look recognisably similar to today, but with far more emphasis on sustainability and human-scale design.",
+            "→Hai dự đoán với hai lực đẩy khác nhau, thuật ngữ chính xác (sponge cities), caveat có bằng chứng lịch sử, và câu kết dự đoán mềm — dấu hiệu tư duy trưởng thành."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P3-L07",
@@ -181,7 +395,51 @@
         "Ngân hàng ý: tâm lý (fear of failure, parental expectations) · thực tế (limited university places, cost of tuition) · xã hội (education as social mobility, family reputation)",
         "Mệnh đề quan hệ rút gọn: Students who are taught to question → Students taught to question · \"knowledge\" không đếm được (KHÔNG \"many knowledges\")"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER 1 — BAND 7.5+ (DẠNG PROBLEM/SOLUTION)",
+          "question": "How can education help children develop their own ideas?",
+          "lines": [
+            "Education plays a foundational role in developing independent thought, though the extent to which it succeeds depends heavily on how it is delivered.",
+            "The most effective approaches tend to be those that prioritise questioning over memorisation. When teachers encourage students to challenge assumptions, debate different perspectives and arrive at their own conclusions — rather than simply reproducing correct answers — they are cultivating genuine intellectual independence. Project-based learning and Socratic discussion methods are particularly powerful in this regard. However, it is worth acknowledging that many education systems are still heavily oriented towards standardised testing, which inevitably rewards conformity over creativity. Students who think differently from the expected answer are often penalised rather than celebrated.",
+            "On balance, I think education has enormous potential to develop original thinkers — but only when it prioritises the process of thinking over the content of the answer.",
+            "Phân tích: giải pháp có CHỦ THỂ (teachers) và có PHƯƠNG PHÁP cụ thể (project-based learning, Socratic discussion). Đoạn 3 là giới hạn có cơ chế rõ (standardised testing rewards conformity). Câu kết là điều kiện, không phải lời khuyên chung."
+          ]
+        },
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER 2 — BAND 7.5+ (DẠNG OPINION)",
+          "question": "Do children usually share the same opinions as their parents?",
+          "lines": [
+            "To a large degree, yes — but this influence tends to diminish as children mature and gain more exposure to the wider world.",
+            "Research in developmental psychology consistently shows that parents are the primary shapers of a child early values and worldview. This is simply a function of proximity and dependency — children learn by observing and imitating the adults closest to them.",
+            "However, as children enter adolescence and encounter peers, teachers, social media and broader cultural influences, their opinions begin to diverge, often quite significantly. This is a normal and, I would argue, healthy developmental process. A society in which every generation simply mirrored the values of the one before it would be a society incapable of progress.",
+            "Having said that, the degree of divergence varies enormously depending on cultural context. In more collectivist societies, intergenerational value transmission tends to be stronger and more deliberately maintained.",
+            "Phân tích: câu mở có sắc thái (\"to a large degree… but\"). Đoạn 3 có một câu lập luận trừu tượng mạnh (\"a society incapable of progress\") — đây là chi tiết đẩy bài từ Band 7 lên 7.5+. Đoạn cuối thêm chiều văn hoá."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "How can education help children develop their own ideas?",
+          "lines": [
+            "**BAND 6**",
+            "Education is very important for children. In school, children learn many knowledges and they can think better. Teachers should let students talk and give their opinion, not only listen. In my school, my teacher always asks us questions and I like it. So education helps children have their own ideas.",
+            "→Lỗi \"many knowledges\". Kể chuyện trường mình. Không có cụm học thuật nào. Không có giới hạn. Khoảng 30 giây.",
+            "**BAND 7**",
+            "Education plays an important role here, but it depends a lot on how it is delivered. The most effective approach is one that prioritises questioning over memorisation — when teachers ask students to challenge assumptions and defend their own conclusions, rather than repeat the correct answer, they are building real intellectual independence. Project work and class debates are particularly useful for this. However, many systems still rely heavily on standardised testing, which rewards conformity, so students who think differently are often penalised. On balance, education has enormous potential to develop original thinkers, but only when it values the process of thinking over the content of the answer.",
+            "→Có giải pháp với chủ thể và phương pháp, có giới hạn có cơ chế, có câu kết điều kiện. Đây là mục tiêu tối thiểu của Lesson 7. Khoảng 65 giây.",
+            "**BAND 8**",
+            "Education has a foundational role in developing independent thought, though how far it succeeds depends almost entirely on delivery rather than on curriculum content. The approaches that work tend to prioritise questioning over memorisation: when students taught to challenge assumptions are also required to defend their conclusions in front of peers, they develop something closer to genuine intellectual independence than any amount of content coverage would produce. Project-based learning and Socratic discussion are particularly effective for this reason. However, it would be dishonest not to acknowledge the structural obstacle. Most systems remain oriented towards standardised testing, which inevitably rewards conformity — and a student who reasons well but arrives at an unexpected answer is penalised rather than celebrated. On balance, education has enormous potential to produce original thinkers, but only where it is willing to value the process of thinking over the content of the answer.",
+            "→Có mệnh đề quan hệ rút gọn (\"students taught to challenge\"), có sự phân biệt sắc thái (\"delivery rather than curriculum content\"), và một ví dụ nghịch lý cụ thể về học sinh lập luận tốt nhưng bị trừ điểm."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P3-L08",
@@ -202,7 +460,39 @@
         "Kỹ thuật Band 8 tự phản bác: \"There is a reasonable argument that… However, I would push back on that idea slightly…\" (dùng MỘT lần)",
         "Danh hoá: people depend on technology → technological dependency · machines replace workers → workforce automation"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 8",
+          "question": "Does technology make people lazier?",
+          "lines": [
+            "This is a question I find genuinely interesting, because the reality is more nuanced than a simple yes or no. In some respects, technology has clearly reduced the physical and cognitive effort required for everyday tasks. Navigation apps mean we no longer memorise routes; autocorrect compensates for poor spelling; streaming services mean we never have to tolerate boredom. There is a reasonable argument that this systematic reduction in friction is gradually eroding our tolerance for difficulty.",
+            "However, I would push back on the idea that this is straightforwardly laziness. Technology has freed up cognitive bandwidth that was previously consumed by routine tasks, allowing people to direct their energy towards more complex and creative work. The question is whether people actually use that freed-up time productively — and that is more a function of personal discipline and social environment than of technology itself.",
+            "On balance, I think technology amplifies existing tendencies rather than creating new ones. A motivated person uses it to achieve more; a less motivated person uses it to avoid effort. The tool is neutral — the user is not.",
+            "Phân tích: đoạn 2 xây một lập luận mạnh, đoạn 3 tự phản bác chính lập luận đó, đoạn 4 giải quyết bằng một nguyên tắc khái quát. Ba ví dụ ở đoạn 2 đều CỤ THỂ (navigation apps, autocorrect, streaming) chứ không nói \"technology\" chung chung."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "Does technology make people lazier?",
+          "lines": [
+            "**BAND 6**",
+            "Yes, I think technology makes people lazier. Because now people do not need to do anything, they just use the phone. For example they do not walk, they use Grab. They do not cook, they order food. And they do not remember anything because they can google it. So technology makes people very lazy.",
+            "→Một chiều hoàn toàn. Dùng \"because\" mở đầu câu. Không có cụm học thuật nào. Không có phản bác. Khoảng 30 giây.",
+            "**BAND 7**",
+            "To a certain extent, yes, but I do not think it is that simple. On one hand, technology has clearly reduced the effort needed for everyday tasks — navigation apps mean we do not memorise routes, and streaming means we never have to be bored. There is a reasonable argument that this reduction in friction lowers our tolerance for difficulty. On the other hand, technology also frees up cognitive bandwidth for more complex work, so the real question is whether people use that time well, which depends on discipline rather than on the technology itself. On balance, I would say technology amplifies existing tendencies rather than creating new ones.",
+            "→Hai chiều rõ, có ví dụ cụ thể, có cụm ★★★. Đây là mục tiêu tối thiểu của Lesson 8. Khoảng 70 giây.",
+            "**BAND 8**",
+            "This is a question I find genuinely interesting, because the reality is more nuanced than a simple yes or no. In some respects technology has clearly reduced the effort required for everyday tasks: navigation apps mean we no longer memorise routes, autocorrect compensates for weak spelling, streaming services mean we never have to tolerate boredom. There is a reasonable argument that this systematic reduction in friction is gradually eroding our tolerance for difficulty. However, I would push back on describing that as laziness. Automation has freed up cognitive bandwidth that routine tasks used to consume, which allows people to direct their energy towards more demanding work — and whether they actually do so is a function of personal discipline and social environment rather than of the technology itself. On balance, I think technology amplifies existing tendencies rather than creating new ones. A motivated person uses it to achieve more; a less motivated one uses it to avoid effort. The tool is neutral — the user is not.",
+            "→Ba ví dụ cụ thể liên tiếp, một câu tự phản bác rõ ràng, và một câu kết ngắn có nhịp đối lập (\"The tool is neutral — the user is not\") thay cho tóm tắt."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P3-L09",
@@ -223,7 +513,40 @@
         "TRỤC CÁ NHÂN: consumer choices · recycling · diet · transport — TRỤC HỆ THỐNG: industrial emissions · regulation · corporate accountability",
         "Bị động vô nhân xưng: Emissions must be cut far more aggressively · It is widely believed that recycling has limited impact"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 8",
+          "question": "Do you think individuals can make a real difference to the environment?",
+          "lines": [
+            "I think individuals can make a meaningful difference, but it is important to be honest about the limits of individual action in isolation.",
+            "The most optimistic argument for individual agency is that collective behaviour drives market forces. When enough consumers refuse single-use plastics, producers adapt. When enough people choose plant-based diets, the food industry responds. History gives us examples — the dramatic decline in CFC use following public awareness campaigns about the ozone layer — where behavioural shifts have contributed to measurable environmental improvements.",
+            "However, research consistently shows that a disproportionate share of global carbon emissions comes from a small number of large industrial actors. There is a genuine risk that the emphasis on individual responsibility functions as a deflection, allowing corporations and governments to avoid accountability by placing the burden on consumers.",
+            "On balance, I would say individual action is necessary but not sufficient. It works best as part of a broader ecosystem of change that includes stringent regulation, corporate accountability and systemic investment in sustainable infrastructure.",
+            "Phân tích: đoạn 2 là trục cá nhân với một ví dụ lịch sử có thật. Đoạn 3 là trục hệ thống với một nhận định sắc bén về việc đổ trách nhiệm. Câu kết dùng \"necessary but not sufficient\" — vừa công nhận vừa giới hạn."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "Do you think individuals can make a real difference to the environment?",
+          "lines": [
+            "**BAND 6**",
+            "Yes, of course. Everybody can help the environment. We should not use plastic bags, we should recycle and we should not waste water. If everyone does a small thing, it will become a big thing. So I think individuals are very important for protecting our environment for the next generation.",
+            "→Khẩu hiệu, chỉ có trục cá nhân. Không có thuật ngữ nào. Không có giới hạn. Khoảng 30 giây.",
+            "**BAND 7**",
+            "I think individuals can make a difference, but we have to be honest about the limits. On one hand, when enough consumers change their behaviour, companies follow — if a large number of people refuse single-use plastics, producers have to adapt, because they lose sales otherwise. On the other hand, research shows that most carbon emissions come from a fairly small number of large industrial actors, so focusing only on consumers can be misleading. On balance, I would say individual action is necessary but not sufficient — it works best alongside stringent regulation and real corporate accountability.",
+            "→Có cả hai trục, có cụm ★★★, có giới hạn có bằng chứng. Đây là mục tiêu tối thiểu của Lesson 9. Khoảng 65 giây.",
+            "**BAND 8**",
+            "Individuals can make a meaningful difference, but it is worth being honest about the limits of individual action in isolation. The strongest argument for individual agency is that collective behaviour drives market forces: when enough consumers refuse single-use plastics, producers adapt, and there are historical precedents — the sharp decline in CFC use after public awareness campaigns about the ozone layer, for instance — where behavioural shifts produced measurable environmental improvement. However, the evidence consistently shows that a disproportionate share of global emissions comes from a small number of large industrial actors, and there is a genuine risk that emphasising personal responsibility functions as a deflection, allowing corporations to avoid accountability by shifting the burden onto consumers. On balance, individual action is necessary but not sufficient. It works best as part of a broader ecosystem of change that includes stringent regulation, corporate accountability and systemic investment in sustainable infrastructure.",
+            "→Có ví dụ lịch sử cụ thể, có một nhận định phê phán sắc bén (deflection), và câu kết định nghĩa lại vai trò cá nhân trong một hệ sinh thái thay đổi rộng hơn."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P3-L10",
@@ -244,7 +567,40 @@
         "3 lực làm suy yếu cộng đồng: đô thị hoá · kết nối số · lối sống di động → higher loneliness, reduced social trust",
         "What makes communities resilient is… · The fact that people move every few years means nobody invests in a place"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 8",
+          "question": "How important is it for people to help their local community?",
+          "lines": [
+            "I think community engagement is more important now than at perhaps any point in recent history — precisely because the forces pulling communities apart have never been stronger.",
+            "Urbanisation, digital connectivity and increasingly mobile lifestyles have dramatically weakened the social fabric that used to hold communities together. People are less likely to know their neighbours, shop locally or participate in community institutions than previous generations were. The consequences are very real: higher rates of loneliness, reduced social trust, and a diminished capacity to address local problems collectively. Community involvement — whether through volunteering, local politics, or simply checking in on vulnerable neighbours — functions as a kind of social infrastructure. It creates the dense networks of mutual obligation that make communities resilient when crises occur.",
+            "That said, I think we need to be careful about placing excessive moral weight on community service. People capacity to engage is heavily shaped by economic circumstances — someone working two jobs and raising children alone simply has less time and energy than someone with more resources.",
+            "On balance, community engagement is genuinely valuable, but fostering it requires creating the social and economic conditions in which it is actually possible.",
+            "Phân tích: đoạn 4 là đoạn đẩy bài lên Band 8 — nó từ chối đạo đức hoá và chỉ ra điều kiện kinh tế. Câu kết chuyển từ \"mọi người nên làm\" sang \"cần tạo điều kiện để làm được\" — một sự dịch chuyển tư duy rõ rệt."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "How important is it for people to help their local community?",
+          "lines": [
+            "**BAND 6**",
+            "I think it is very important. If people help each other, the community will be strong and everybody will be happy. For example, they can join volunteer activities or help old people. It is our duty to help other people in our community. So everyone should do it.",
+            "→Đạo đức hoá, không có cơ chế nào. Không giải thích vì sao cộng đồng suy yếu. Không có giới hạn. Khoảng 25 giây.",
+            "**BAND 7**",
+            "I think it matters more now than before, mainly because communities are much weaker than they used to be. Urbanisation and mobile lifestyles mean people often do not know their neighbours, and that leads to higher loneliness and less social trust. Things like volunteering or simply checking on elderly neighbours function as a kind of social infrastructure — they build the connections that a neighbourhood needs when something goes wrong. That said, I think we should be careful about blaming individuals. Someone working two jobs simply does not have the time, so their capacity to engage is shaped by economic circumstances. On balance, community involvement is valuable, but it needs the right conditions.",
+            "→Có cơ chế, có cụm ★★★, có đoạn điều kiện kinh tế. Đây là mục tiêu tối thiểu của Lesson 10. Khoảng 70 giây.",
+            "**BAND 8**",
+            "I would say community engagement matters more now than at almost any point in recent history, precisely because the forces pulling communities apart have never been stronger. Urbanisation, digital connectivity and increasingly mobile lifestyles have dramatically weakened the social fabric that once held neighbourhoods together, and the consequences are measurable: higher loneliness, lower social trust, and a reduced capacity to solve local problems collectively. What community involvement really does — whether that is volunteering, local politics, or simply checking on a vulnerable neighbour — is function as a kind of social infrastructure, creating the dense networks of mutual obligation that make a place resilient in a crisis. That said, I am wary of placing too much moral weight on this. The fact that someone works two jobs and raises children alone means their capacity to engage is shaped by economic circumstances far more than by willingness. On balance, community engagement is genuinely valuable, but fostering it means creating the conditions in which it is actually possible.",
+            "→Có mệnh đề What… và The fact that… đúng chỗ, có danh sách hệ quả cụ thể, và một câu kết chuyển hoàn toàn khung vấn đề từ ý chí cá nhân sang điều kiện xã hội."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P3-L11",
@@ -265,7 +621,40 @@
         "3 loại rào cản: THỜI GIAN (long hours, long commutes) · CHI PHÍ (fresh food costs more per calorie) · MÔI TRƯỜNG (no safe place to exercise, unhealthy canteen)",
         "Loại 0 (quy luật): If fresh food costs more, low-income families buy processed food · Loại 1 (giải pháp): If schools remove sugary drinks, children will consume less sugar"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 8",
+          "question": "Why do some people find it difficult to maintain a healthy lifestyle?",
+          "lines": [
+            "This is a question where it is tempting to give a simple answer — lack of willpower — but the reality is considerably more structural.",
+            "Time pressure is perhaps the most significant barrier. In societies where long working hours are normalised and commuting consumes hours each day, finding time to prepare nutritious meals and exercise regularly becomes genuinely difficult, not merely a matter of poor priorities.",
+            "Cost is another substantial factor. Fresh food tends to be considerably more expensive per calorie than processed alternatives, particularly in urban areas. The notion that healthy eating is simply a choice ignores the reality that for lower-income households, calorie density per unit of cost often has to take precedence. There is also a powerful environmental dimension. People make health decisions within contexts — if a neighbourhood lacks safe places to exercise, if a workplace canteen offers only fried food, if advertising constantly promotes high-sugar products, then choosing health means swimming against a very strong current. I think this is why purely education-based public health campaigns tend to have limited effect. Telling people what they should do, without changing the environment in which they make those decisions, rarely produces lasting change.",
+            "Phân tích: câu đầu chủ động bác bỏ câu trả lời dễ dãi trước khi đưa ra lập luận riêng — kỹ thuật mở bài rất mạnh. Ba rào cản thuộc ba loại khác nhau. Câu kết rút ra một hệ quả CHÍNH SÁCH, không tóm tắt."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "Why do some people find it difficult to maintain a healthy lifestyle?",
+          "lines": [
+            "**BAND 6**",
+            "I think because they are lazy and they do not have motivation. Nowadays people work a lot and when they come home they are tired so they just watch TV and eat fast food. Also fast food is very delicious so people cannot stop. If they want to be healthy, they must try harder.",
+            "→Mở đầu bằng đổ lỗi ý chí, kết cũng bằng ý chí. Chỉ có một rào cản mờ nhạt. Khoảng 30 giây.",
+            "**BAND 7**",
+            "It is tempting to say people simply lack willpower, but I think the reasons are more structural. Time pressure is probably the biggest one — in cities where people work long hours and commute for two hours a day, cooking properly and exercising regularly becomes genuinely hard. Cost matters too, because fresh food is considerably more expensive per calorie than processed food, so for low-income families the cheap option is often the only realistic one. And the environment plays a role: if there is nowhere safe to walk and the office canteen only sells fried food, healthy choices are much harder. That is why campaigns that only tell people what to do rarely work.",
+            "→Ba rào cản rõ ràng, bác bỏ câu trả lời dễ ngay từ đầu, có hệ quả chính sách. Đây là mục tiêu tối thiểu của Lesson",
+            "11. Khoảng 70 giây.",
+            "**BAND 8**",
+            "This is a question where it is tempting to give a simple answer — lack of willpower — but the reality is considerably more structural. Time pressure is perhaps the most significant barrier: in societies where long hours are normalised and commuting consumes two hours a day, preparing nutritious meals and exercising regularly becomes genuinely difficult rather than merely a question of priorities. Cost is another substantial factor, since fresh food tends to be markedly more expensive per calorie than processed alternatives, and for lower-income households calorie density per unit of cost has to take precedence. There is also a powerful environmental dimension — if a neighbourhood has no safe place to walk, if the workplace canteen sells only fried food, if advertising constantly promotes high-sugar products, then choosing health means swimming against a very strong current. I think this is precisely why education-based public health campaigns have such limited effect: telling people what they should do, without changing the environment in which they decide, rarely produces lasting change.",
+            "→Ba rào cản đều có cơ chế cụ thể, cụm ★★★dùng đúng chỗ, và câu kết rút ra một kết luận về chính sách công thay vì lời khuyên cá nhân."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P3-L12",
@@ -286,7 +675,41 @@
         "3 tầng động lực: CÁ NHÂN (need for recognition, autonomy) · KINH TẾ (income inequality makes the gap enormous) · XÃ HỘI (normative pressure makes ambition contagious)",
         "job / career / profession / workforce có sắc thái khác nhau · Having grown up during a recession, younger workers value security differently"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 8",
+          "question": "Why are some people very ambitious at work?",
+          "lines": [
+            "Workplace ambition is driven by a fascinating mix of psychological, economic and social factors, and it is rarely reducible to a single cause.",
+            "At the individual level, ambition often stems from a deep-seated need for achievement, recognition or autonomy. For some people, career success is the primary arena in which they measure their self-worth — and that can be a product of upbringing, since children raised in highly achievement-oriented families often internalise the belief that success is both possible and mandatory.",
+            "Economics plays a significant role too. In societies with high income inequality, the gap between professional success and mediocrity can be enormous — not just in lifestyle, but in security, healthcare, housing and opportunities for one's children. Under those conditions, ambition is less about desire and more about necessity.",
+            "There is also a social dimension. In industries where ambition is culturally celebrated — investment banking, elite consulting, tech startups — the peer environment creates strong normative pressure to compete. Ambition becomes contagious.",
+            "Of course, not all ambition is healthy. When it becomes compulsive and crowds out other values — relationships, health, integrity — it can be deeply counterproductive. The most admirable ambition, in my view, is directed towards creating genuine value rather than accumulating status.",
+            "Phân tích: ba tầng rõ rệt, mỗi tầng có cơ chế riêng. Đoạn 3 là đoạn hay nhất — nó giải thích vì sao tham vọng ở nước bất bình đẳng cao lại khác về BẢN CHẤT. Đoạn cuối thêm chiều đánh giá đạo đức có sắc thái."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "Why are some people very ambitious at work?",
+          "lines": [
+            "**BAND 6**",
+            "I think because they want to earn more money and have a good life. Some people want to be famous or be the boss. Also their family maybe wants them to be successful, so they try very hard. For example my cousin works twelve hours every day because he wants to buy a house.",
+            "→Chỉ có tầng cá nhân, và chủ yếu nói về tiền. Ví dụ cá nhân thay vì xã hội. Khoảng 30 giây.",
+            "**BAND 7**",
+            "Ambition at work comes from several different places. On a personal level, some people have a deep-seated need for recognition, and career success is where they measure their self-worth — often this comes from how they were raised. Economically, in countries with high income inequality, the difference between doing well and doing averagely is enormous, not just in salary but in housing and healthcare, so ambition becomes less about desire and more about necessity. Socially, in industries where competition is celebrated, ambition is almost contagious. That said, ambition can be unhealthy when it crowds out relationships and health.",
+            "→Đủ ba tầng, có cụm ★★★, có câu về mặt trái. Đây là mục tiêu tối thiểu của Lesson 12. Khoảng 65 giây.",
+            "**BAND 8**",
+            "Workplace ambition is driven by a mix of psychological, economic and social factors, and it is rarely reducible to a single cause. At the individual level it often stems from a deep-seated need for achievement or recognition — for some people the career is simply the arena in which self-worth gets measured, and that is frequently a product of upbringing. Economics matters just as much, though. In societies with high income inequality the gap between professional success and mediocrity is enormous, and not only in lifestyle terms: it determines security, healthcare, housing, and the opportunities available to one's children. Under those conditions ambition is less about desire and more about necessity. There is a social dimension too — in industries where ambition is culturally celebrated, normative pressure makes it almost contagious. Of course, not all ambition is healthy: when it becomes compulsive and crowds out relationships, health or integrity, it is deeply counterproductive.",
+            "→Ba tầng có cơ chế riêng, có một đoạn giải thích vì sao bất bình đẳng làm thay đổi bản chất tham vọng, và câu kết đưa ra tiêu chuẩn đánh giá thay vì tóm tắt."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P3-L13",
@@ -307,7 +730,41 @@
         "HƯỞNG LỢI: hotel owners · restaurants & transport · heritage institutions · tax revenue — CHỊU THIỆT: long-term residents priced out · seasonal workers · fragile sites",
         "Lượng từ: a significant proportion of · the vast majority of · a small minority of · a growing number of (KHÔNG \"many people\", \"a lot of\")"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 8",
+          "question": "What advantages can tourism bring to a city?",
+          "lines": [
+            "Tourism can bring substantial benefits to cities, though those benefits are distributed unevenly and come with real costs.",
+            "The most direct advantage is economic. Visitor spending generates revenue for hotels, restaurants, transport and retail, creating jobs across a wide spectrum of skill levels. In cities with significant historical assets, tourism can become a major economic pillar — think of how central it is to Venice, Kyoto or Prague.",
+            "Beyond economics, tourism plays a meaningful role in cultural preservation. Revenue generated by visitor interest often funds the conservation work that local governments could not otherwise afford. In that sense, tourism and heritage can form a virtuous cycle.",
+            "There are softer benefits too — the presence of international visitors exposes residents to different perspectives and ways of life, which enriches the cultural texture of a city over time.",
+            "That said, it would be dishonest to ignore the downsides. Over-tourism prices local residents out of their own neighbourhoods, strains infrastructure, and erodes the very authenticity that made a place attractive in the first place. The challenge for planners is harnessing the economic benefits while managing the social and environmental costs — a balance very few cities have achieved.",
+            "Phân tích: câu mở đã báo trước tính phân bổ không đồng đều. Ba lợi ích thuộc ba loại khác nhau (kinh tế, văn hoá, xã hội). Đoạn cuối nêu nghịch lý và kết bằng một nhận định thực tế, không lạc quan giả."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "What advantages can tourism bring to a city?",
+          "lines": [
+            "**BAND 6**",
+            "Tourism brings many advantages to a city. First, it brings a lot of money because tourists spend money in hotels and restaurants. Second, it creates many jobs for local people. Third, the city becomes famous around the world. For example, my city has many tourists now and it is developing very fast.",
+            "→Chỉ lợi ích kinh tế, lặp \"many\" và \"a lot of\". Không có nhóm chịu thiệt. Ví dụ cá nhân. Khoảng 30 giây.",
+            "**BAND 7**",
+            "Tourism can bring significant benefits, although they are not shared equally. The most obvious one is economic: visitor spending supports hotels, restaurants and transport, and it creates jobs at a wide range of skill levels. There is also a cultural benefit, because the revenue from visitors often pays for restoring historic buildings that the local government could not afford otherwise — so tourism and heritage can support each other. That said, there are real costs. In popular cities, short-term rentals price local residents out of their own neighbourhoods, and the infrastructure gets strained in peak season. On balance, the benefits are real, provided cities manage the numbers.",
+            "→Ba loại lợi ích, có nhóm chịu thiệt cụ thể, kết có điều kiện. Đây là mục tiêu tối thiểu của Lesson 13. Khoảng 70 giây.",
+            "**BAND 8**",
+            "Tourism can bring substantial benefits, though they are distributed unevenly and come with real costs. The most direct advantage is economic — visitor spending generates revenue across hotels, restaurants, transport and retail, and it creates jobs at a wide spectrum of skill levels, which is why tourism has become a genuine economic pillar in cities like Venice, Kyoto or Prague. Beyond that, it plays a real role in cultural preservation: the revenue generated by visitor interest often funds conservation work that municipal budgets could never cover, so tourism and heritage can form a virtuous cycle. There are softer benefits too, since a steady presence of international visitors exposes residents to other ways of life. That said, it would be dishonest to ignore the downsides. Over-tourism prices long-term residents out of their own neighbourhoods, strains infrastructure, and erodes the very authenticity that made a place attractive in the first place. The real challenge is harnessing the economic benefit while managing the social cost — a balance very few cities have actually achieved.",
+            "→Ba loại lợi ích, ví dụ thành phố có thật, cụm nghịch lý \"the very authenticity that…\", và câu kết thừa nhận thực tế là rất ít thành phố làm được — sắc thái rất trưởng thành."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P3-L14",
@@ -328,7 +785,40 @@
         "MẶT TRAO QUYỀN: lower barriers to expression · visibility for marginalised voices — MẶT GÂY HẠI: echo chambers · outrage rewarded over nuance · misinformation outruns correction",
         "misinformation (chia sẻ sai mà không biết) ≠ disinformation (cố tình bịa) · Despite the fact that news is more accessible, trust has fallen"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 8",
+          "question": "How has social media changed the way people communicate?",
+          "lines": [
+            "Social media has fundamentally restructured human communication in ways that are simultaneously empowering and deeply problematic.",
+            "On the empowering side, it has dramatically lowered the barriers to connection and self-expression. People maintain relationships across continents with minimal effort, organise social and political movements in real time, and find communities of shared interest that could not have existed before. For marginalised voices in particular — people historically excluded from mainstream media — platforms have created genuine opportunities for visibility.",
+            "However, the structural incentives of these platforms — designed to maximise engagement rather than well- being — have introduced some alarming dynamics. An algorithmically curated feed rewards outrage, simplification and tribal signalling over nuance. Echo chambers form and harden. Misinformation spreads faster than corrections. Public discourse has become simultaneously more accessible and less thoughtful. I think the most significant long-term shift is the collapse of the distinction between private and public communication. Things once said only to close friends are now broadcast to thousands, often with consequences neither party anticipated.",
+            "On balance, social media is a genuinely powerful tool that we have not yet developed the cultural norms or regulatory frameworks to use wisely.",
+            "Phân tích: đoạn 3 không chỉ liệt kê tác hại mà giải thích CƠ CHẾ sinh ra chúng (engagement-driven design). Đoạn 4 nêu một thay đổi cấu trúc mà ít người nghĩ tới. Câu kết thừa nhận vấn đề chưa được giải quyết — thành thật hơn là một kết luận lạc quan."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "How has social media changed the way people communicate?",
+          "lines": [
+            "**BAND 6**",
+            "Social media has changed communication a lot. Now people can talk to their friends anywhere in the world and it is free and very fast. But it also has bad points because people do not meet face to face anymore and there is a lot of fake news. So social media has both good and bad effects.",
+            "→Hai mặt nhưng rất nông, không có cơ chế. Không có thuật ngữ nào. Khoảng 30 giây.",
+            "**BAND 7**",
+            "Social media has changed communication in ways that are both empowering and problematic. On the positive side, it has removed almost all the barriers to connection — people maintain friendships across continents, organise protests in real time, and find communities they could never have found offline. That has been particularly important for marginalised voices who were previously excluded from mainstream media. On the other hand, these platforms are designed to maximise engagement rather than well-being, so the algorithm rewards outrage and simplification, echo chambers form, and misinformation spreads faster than corrections. On balance, it is a powerful tool that we have not yet learned to use wisely.",
+            "→Hai mặt, có cụm ★★★về cơ chế thiết kế, có thuật ngữ chính xác. Đây là mục tiêu tối thiểu của Lesson 14. Khoảng 75 giây.",
+            "**BAND 8**",
+            "Social media has fundamentally restructured communication in ways that are simultaneously empowering and deeply problematic. On the empowering side, it has dramatically lowered the barriers to connection and self- expression: people sustain relationships across continents with minimal effort, movements are organised in real time, and communities of shared interest form that simply could not have existed before. For marginalised voices in particular — people historically excluded from mainstream media — that has meant genuine visibility. However, the structural incentives matter enormously here. These platforms are designed to maximise engagement, not well-being, so an algorithmically curated feed rewards outrage, simplification and tribal signalling over nuance. Echo chambers form and harden; misinformation outruns correction. Whilst public discourse has never been more accessible, it has arguably never been less thoughtful. The deepest change, though, is the collapse of the distinction between private and public communication: things once said only to close friends are now broadcast to thousands, often with consequences nobody anticipated.",
+            "→Có cơ chế thiết kế được nêu như nguyên nhân gốc, có mệnh đề nhượng bộ Whilst dùng đúng, và một nhận định cấu trúc sâu ở cuối mà bài Band 7 không có."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P3-L15",
@@ -349,7 +839,48 @@
         "Trục chung: thiết chế đang đổi → lực đẩy kinh tế (women in workforce, market pressure) → hệ quả → bù đắp bằng gì → khác biệt văn hoá (KHÔNG đồng đều)",
         "not so much X as Y / less about X and more about Y — dùng để ĐỊNH KHUNG LẠI vấn đề (thao tác Band 8)"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER 1 — BAND 8 (FAMILY)",
+          "question": "How have family structures changed in recent decades?",
+          "lines": [
+            "Family structures have undergone a profound transformation over the past fifty years, reflecting broader shifts in economic organisation, gender roles and cultural values.",
+            "The most significant change has been the decline of the traditional nuclear family — a married couple with a male breadwinner and female homemaker — as the dominant model. Several factors drove this. The large- scale entry of women into the workforce fundamentally altered household economics. Rising divorce rates normalised single-parent families. Greater legal acceptance of same-sex partnerships expanded the definition of family itself.",
+            "At the same time, urbanisation has weakened extended family networks. Previous generations could rely on grandparents, aunts and cousins living within walking distance. In a mobile professional society that proximity is rare, which has increased individual autonomy but, for many people, intensified isolation.",
+            "It is worth noting that these changes are not uniform. In more collectivist cultures — across much of Asia, the Middle East and sub-Saharan Africa — extended family structures remain not merely culturally valued but economically essential.",
+            "I think the key challenge for modern societies is building support systems — affordable childcare, elderly care, mental health services — that compensate for the reduced capacity of the family to meet all its members needs.",
+            "Phân tích: ba lực đẩy cụ thể ở đoạn 2, một hệ quả kép ở đoạn 3 (autonomy nhưng isolation), và đoạn 4 chống lại giả định rằng mô hình phương Tây là phổ quát — chi tiết này rất đắt."
+          ]
+        },
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER 2 — BAND 8 (ARTS)",
+          "question": "Should governments fund the arts?",
+          "lines": [
+            "I think there is a strong case for government arts funding, though the debate is more nuanced than advocates on either side usually acknowledge.",
+            "The core argument rests on the idea that the arts generate social value the market consistently underprices. Literature, music, theatre and visual art contribute to cultural cohesion and the quality of civic life in ways that cannot easily be monetised. If funding were left entirely to market forces, we would end up with a cultural landscape dominated by whatever is commercially profitable — which is not the same thing as what is culturally valuable.",
+            "There is also an equity argument. Without public funding, participation in the arts, both as creator and as audience, becomes increasingly the preserve of the wealthy. Publicly funded theatres, galleries and orchestras make culture accessible to people who could never afford commercial prices.",
+            "That said, critics are right to raise questions about allocation. Too often, funding disproportionately benefits established institutions serving already privileged audiences. A genuinely democratic arts policy would prioritise grassroots and community-based work alongside elite institutions.",
+            "On balance, governments have a legitimate role in supporting the arts — but that role requires constant scrutiny to ensure it serves the broadest possible public.",
+            "Phân tích: hai lập luận ủng hộ thuộc hai loại khác nhau (giá trị và công bằng), một lập luận phản biện có tính xây dựng, và câu kết đặt điều kiện giám sát — không phải một lời ủng hộ vô điều kiện."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 6 → 7 → 8",
+          "question": "How have family structures changed in recent decades?",
+          "lines": [
+            "**BAND 6**",
+            "Family has changed a lot. In the past, families were very big, with grandparents, parents and children living together in one house. Now families are smaller, usually only parents and one or two children. Also many women work now, they do not stay at home. In my family, my grandmother lives with us but my cousins live separately.",
+            "→Mô tả đúng nhưng không nêu lực đẩy nào. Kể chuyện gia đình mình. Không có chiều văn hoá. Khoảng 30 giây."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P3-L16",
@@ -371,7 +902,11 @@
         "Câu giờ tự nhiên khi gặp câu khó (dùng tối đa MỘT lần): \"That is an interesting question — I haven't thought about it in those terms before\" · \"There are a couple of ways of looking at that\"",
         "Nhận diện sai dạng → dùng nhầm khung cho cả bài; đừng trả lời câu đầu quá dài rồi hụt hơi ở ba câu sau"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     }
   ]
 }

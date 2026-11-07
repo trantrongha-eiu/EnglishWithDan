@@ -67,7 +67,45 @@
         "Khung: INTRODUCTION 10–15s → DESCRIPTION 40–50s → WHY IT IS SPECIAL 30–40s → CONCLUSION 10–15s",
         "Không bắt đầu bằng \"I want to talk about…\"; không kết bằng \"That's all\""
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 6.5–7.0 (câu chuyện gốc PEOPLE: Mrs Hoa)",
+          "question": "Describe a person who has helped you.",
+          "lines": [
+            "**[INTRODUCTION] **I'd like to talk about Mrs Hoa, who was my English teacher in high school and probably the person who has helped me the most.",
+            "**[DESCRIPTION] **First of all, she's a warm, down-to-earth person with a calm and approachable personality. She taught me for three years, and we've kept in touch ever since. What I remember most is the first time I met her. I was sitting at the back of the classroom, struggling with an exercise, when she walked over, noticed I was lost and stopped to help me — even though she was busy checking everyone else's work. It was only a small moment, but it showed me that she genuinely cared.",
+            "**[WHY IT IS SPECIAL] **The reason I chose her is that she gave me practical help, not just encouragement. For example, she showed me how to keep a vocabulary notebook, which I still use today. More importantly, she never made me feel embarrassed about my mistakes, so I slowly became much more confident about speaking.",
+            "**[CONCLUSION] **Overall, Mrs Hoa has had a lasting influence on the way I study, and I feel lucky to have had a teacher like her.",
+            "≈ 189 từ · khoảng 100–110 giây ở tốc độ 110–120 từ/phút.",
+            "Phân tích trong lớp: từ vựng chỉ ở mức Band 5–6 (approachable, down-to-earth, confident). Điều làm bài lên Band 7 là CHI TIẾT CỤ THỂ: tên, 3 năm, câu chuyện lần đầu gặp, cuốn sổ từ vựng. Đây cũng là câu chuyện gốc nhóm PEOPLE — em sẽ dùng lại ở Lesson 4.",
+            "**⚠ Đây là bài MẪU. Thay tên, nơi chốn, con số bằng chi tiết thật của em rồi viết vào ô MY OWN VERSION cuối buổi.**"
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe a person who has helped you.",
+          "lines": [
+            "**BAND 5**",
+            "I want to talk about my teacher. Her name is Hoa. She is nice and kind. She helps me a lot. I like her because she is a good teacher. That's all.",
+            "→Đủ ý nhưng chỉ 20 giây. Mở đầu sai mẫu, toàn câu đơn, không có chi tiết nào cụ thể, kết thúc bằng \"that's all\" — mất điểm nặng.",
+            "**BAND 6**",
+            "I'd like to talk about Mrs Hoa, my English teacher in high school. She taught me for three years and we still keep in touch. She's very patient and kind. For example, she showed me how to keep a vocabulary notebook, and I still use it today. She helped me become more confident. Overall, she's very important to me.",
+            "→Đủ 4 phần, đúng độ dài tối thiểu, đã có 1 ví dụ cụ thể. Đây là mục tiêu tối thiểu của Lesson 1.",
+            "**BAND 7**",
+            "Bản đầy đủ = MODEL ANSWER ở trên. Chỉ cần học phần khác biệt so với Band 6 (in đậm):",
+            "▸ **I was sitting at the back of the classroom, struggling with an exercise, when she walked over, noticed I was lost and stopped to help me.**",
+            "▸ **It was only a small moment, but it showed me that she genuinely cared.**",
+            "▸ **More importantly, she never made me feel embarrassed about my mistakes, so I slowly became much more confident about speaking.**",
+            "→Thêm một câu chuyện nhỏ (past continuous + past simple), một nhận xét khái quát (\"only a small moment, but…\") và một hệ quả thật. Vẫn không có từ khó nào."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P2-L02",
@@ -88,7 +126,41 @@
         "which is located… · a five-minute walk from… · The moment you walk in, you… · It has become a sort of…",
         "Ghi từ khoá, KHÔNG ghi câu hoàn chỉnh — câu sẽ bị đọc lại y nguyên"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — TỪ 6 TỪ KHOÁ THÀNH 100 GIÂY",
+          "question": "Describe a place you often go to.",
+          "lines": [
+            "Ghi chú gốc: café Nguyễn Huệ / 5 phút · nhỏ, yên, gỗ cũ · CN sáng, 3 tiếng · tập trung · chủ nhớ tên · \"second living room\"",
+            "I'd like to talk about a small café on Nguyen Hue Street, which is only about a five-minute walk from my house. It's quite a modest place — dark wooden furniture, maybe eight tables, and they play old jazz records rather than the usual pop music. The moment you walk in, the smell of roasted coffee hits you, and somehow the noise of the street just disappears.",
+            "I usually go there on Sunday mornings and stay for about three hours studying. Honestly, I get more done in those three hours than in a whole day at home. There are no distractions, no family members asking me to do things, and the wifi is deliberately slow — which I think is a genius business decision.",
+            "What makes it special, though, is the owner. She's an elderly woman who has run the place for over twenty years, and after a few months she started remembering my order and even my name. That small thing gives you a real sense of belonging.",
+            "Overall, it's become a sort of second living room for me, and I honestly can't imagine my weekends without it.",
+            "Đếm cùng học sinh: 6 từ khoá →5 đoạn →khoảng 100 giây. Không có từ nào ở mức Band 8. Toàn bộ độ dài đến từ việc mở rộng danh từ."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe a place you often go to.",
+          "lines": [
+            "**BAND 5**",
+            "I often go to a café. It is near my house. It is small and quiet. I go there on Sunday. I study there. I like it because it is good for studying.",
+            "→Sáu câu đơn rời rạc, mỗi câu một danh từ trần. Khoảng 25 giây. Đây chính là hậu quả của ghi chú bằng câu.",
+            "**BAND 6**",
+            "I often go to a small, quiet café near my house, about five minutes on foot. It has dark wooden furniture and they play jazz music. I usually go on Sunday mornings and study there for about three hours because I can concentrate much better than at home.",
+            "→Đã mở rộng danh từ đến lớp 3, đã nối câu bằng because. Khoảng 45 giây — đúng mục tiêu tối thiểu.",
+            "**BAND 7**",
+            "I'd like to talk about a small café on Nguyen Hue Street that's only a five-minute walk from my house. The moment you walk in, the smell of roasted coffee hits you and the noise of the street just disappears. What makes it special, though, is the owner — an elderly woman who's run the place for over twenty years and started remembering my name after a few months. It's become a sort of second living room for me.",
+            "→Thêm chi tiết cảm giác (mùi, tiếng ồn biến mất), thêm nhân vật, thêm một hình ảnh kết (\"second living room\"). Vẫn từ vựng đơn giản."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P2-L03",
@@ -109,7 +181,42 @@
         "Câu mở Band 6.5+ thường có mệnh đề quan hệ: …my headphones, which I use every day",
         "CẤM kết bằng: That's all / Finished / I think that's it / Sorry, I don't know what else to say"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 0 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL — CÙNG MỘT BÀI, BA CÁCH MỞ VÀ KẾT",
+          "question": "Describe an object you use every day.",
+          "lines": [
+            "**Mở đầu — mức Band 5:** I want to talk about my phone. My phone is important.",
+            "**Mở đầu — mức Band 6:** I'd like to talk about my headphones, which I use pretty much every single day.",
+            "**Mở đầu — mức Band 7:** The object I'd like to describe is something I probably use more than anything else I own, and yet I almost never think about it — my headphones.",
+            "**Kết — mức Band 5:** So that is my object. That's all.",
+            "**Kết — mức Band 6:** Overall, my headphones are really useful and I use them every day.",
+            "**Kết — mức Band 7:** Overall, they're a small thing, but they've quietly reshaped how I get through my day — and I'd struggle to go back to commuting without them.",
+            "Cho học sinh nghe cả ba cặp mở–kết liền nhau. Cùng một nội dung, cảm nhận khác hẳn. Đây là bằng chứng thuyết phục nhất cho buổi học này."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe an object you use every day.",
+          "lines": [
+            "**BAND 5**",
+            "I want to talk about my phone. I use it every day for calling and social media. It is black and new. I like it because it is useful. That's all.",
+            "→Mở sai mẫu, kết bằng câu bị cấm. Toàn bộ 15 giây đầu và 15 giây cuối đều mất điểm.",
+            "**BAND 6**",
+            "I'd like to talk about my headphones, which I use pretty much every single day. I mainly use them on the bus and when I'm studying. Overall, they're really useful and I'd feel lost without them.",
+            "→Mở đúng mẫu có mệnh đề quan hệ, kết bằng \"Overall\" + một chút cảm xúc. Đây là mục tiêu tối thiểu.",
+            "**BAND 7**",
+            "The object I'd like to describe is something I probably use more than anything else I own, and yet I almost never think about it — my headphones. […] Overall, they're a small thing, but they've quietly reshaped how I get through my day, and I'd struggle to go back to commuting without them.",
+            "→Mở đầu tạo tò mò rồi mới tiết lộ đối tượng. Kết bằng một nhận xét khái quát (\"quietly reshaped how I get through my day\"). Đây là mẫu mở–kết đáng để cả lớp chép lại."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 0
+      }
     },
     {
       "code": "SPK-P2-L04",
@@ -130,7 +237,41 @@
         "One of their most outstanding qualities is… · What immediately impressed me was…",
         "Mệnh đề quan hệ: a traveller named Jack, whom I met last summer (whom = tân ngữ, Band 7)"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 7.0+ (câu chuyện gốc PEOPLE: Mrs Hoa)",
+          "question": "Describe a person you admire.",
+          "lines": [
+            "**FIXED ▸ **The person I'd like to talk about is Mrs Hoa, who was my English teacher in high school. She's a warm-hearted, down-to-earth person with a calm and approachable personality. In terms of appearance, she's of medium height, with shoulder-length black hair and a bright, infectious smile. I've known her for about five years — she taught me for three years, and we've kept in touch ever since. I still remember the first time I met her. I was sitting at the back of the classroom, struggling with an exercise, when she noticed and stopped to help me. It was only a small moment, but it showed me that she genuinely cared about her students. And I suppose that's why she immediately came to mind when I saw this topic.",
+            "**FLEXIBLE ▸ WHY you admire her **There are two main reasons why I really admire her. First of all, she's incredibly patient — she never makes students feel embarrassed about their mistakes. Another reason is that she's genuinely passionate about teaching; she often stays after class to help weaker students.",
+            "**KẾT ▸ **So overall, Mrs Hoa is someone I genuinely look up to.",
+            "≈ 186 từ · khoảng 100–110 giây ở tốc độ 110–120 từ/phút.",
+            "Phân tích: phần FIXED (≈70%) là khung cố định — học thuộc ý, không học thuộc chữ. Phần FLEXIBLE (≈30%) đổi theo đề. Mỗi tính từ đều có bằng chứng: \"approachable\" → câu chuyện lần đầu gặp; \"patient\" → không làm học sinh xấu hổ; \"passionate\" → ở lại sau giờ học.",
+            "**⚠ Đây là bài MẪU. Thay tên, nơi chốn, con số bằng chi tiết thật của em rồi viết vào ô MY OWN VERSION cuối buổi.**"
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe a person you look up to.",
+          "lines": [
+            "**BAND 5**",
+            "I want to talk about my teacher. She is very kind and nice. She helps students a lot. She is friendly and good. I look up to her because she is a good teacher.",
+            "→Bốn tính từ, không có bằng chứng nào. \"kind, nice, friendly, good\" đều là từ Band 4. Khoảng 20 giây.",
+            "**BAND 6**",
+            "I'd like to talk about my English teacher, Mrs Hoa, who taught me in high school. She's very down-to-earth — she never made students feel stupid for asking questions. For example, when I failed a test, she stayed after class for an hour to explain it again. I really look up to her because she made me believe I could actually speak English.",
+            "→Mỗi tính từ có bằng chứng. Đã có phần INFLUENCE. Đây là mục tiêu tối thiểu của Lesson 4. (Cùng nhân vật Mrs Hoa với MODEL ANSWER — chỉ khác đề.)",
+            "**BAND 7**",
+            "The person I'd like to describe is my old English teacher, Mrs Hoa — someone whose influence I only really understood years after I left her class. What stood out was her genuine kindness: she had this habit of never showing surprise, no matter how basic your question was. I remember failing a test in Year 11 and expecting a lecture; instead she sat with me for an hour and worked through it as if we had all the time in the world. Looking back, she left a lasting impression not because her English was perfect, but because she was unshakeably patient.",
+            "→Thêm góc nhìn thời gian (\"only really understood years after\"), thêm chi tiết bất ngờ (\"expecting a lecture; instead…\"), và một nhận xét đối lập ở cuối (\"not because… but because…\")."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P2-L05",
@@ -151,7 +292,44 @@
         "3 giác quan: âm thanh (the sound of waves) · mùi (sea salt in the air) · ánh sáng (the late afternoon light) — chỉ cần 2",
         "…, which is located in central Vietnam (in + vùng/quốc gia) · on the coast · at the top of the hill"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 7.0+ (câu chuyện gốc PLACES: Đà Nẵng)",
+          "question": "Describe a famous city that is interesting.",
+          "lines": [
+            "**FIXED ▸ **The place I'd like to talk about is Da Nang, a coastal city in central Vietnam. It's a lively but laid-back city, best known for its stunning beaches and relaxed atmosphere. I first visited about three years ago, and I still remember how impressed I was. I was walking along My Khe Beach in the late afternoon when I felt the cool sea breeze and heard the waves crashing against the shore. It felt incredibly refreshing after months of living in a big, noisy city. What really stands out about Da Nang is its perfect mix of nature and modern city life — pristine beaches, mountains and a lively centre, all within a short distance. I've been back several times since, and I still find it relaxing. And I suppose that's why it immediately came to mind when I saw this topic.",
+            "**FLEXIBLE ▸ WHY it is interesting **There are two main reasons why I find it so interesting. First of all, the contrast is amazing — you can go hiking on the Son Tra Peninsula in the morning and wander around a busy night market in the evening. Another reason is that there's always something new to explore.",
+            "**KẾT ▸ **So overall, Da Nang is much more than a tourist destination to me.",
+            "≈ 205 từ · khoảng 100–110 giây ở tốc độ 110–120 từ/phút.",
+            "Phân tích: hai chi tiết giác quan (sea breeze, waves crashing) nằm trong phần FIXED — dùng lại được cho mọi đề PLACES. Câu \"I've been back several times since\" biến bài giới thiệu du lịch thành trải nghiệm thật. Bắt học sinh thêm một câu tương tự vào bài của mình.",
+            "**⚠ Đây là bài MẪU. Thay tên, nơi chốn, con số bằng chi tiết thật của em rồi viết vào ô MY OWN VERSION cuối buổi.**"
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe a famous city that is interesting.",
+          "lines": [
+            "**BAND 5**",
+            "I want to talk about Da Nang. It is in Vietnam. It is very beautiful. There is a beach and a bridge. The food is good. I like it because it is beautiful and the people are nice.",
+            "→\"beautiful\" hai lần, \"nice\" một lần, không có chi tiết nào. Khoảng 20 giây. Nghe như bài đọc lớp 6.",
+            "**BAND 6**",
+            "I'd like to talk about Da Nang, which is located in central Vietnam. It's famous for its pristine beaches and relaxed atmosphere. The first time I visited was three years ago and I remember feeling really refreshed after months of city life. It's a perfect mix of nature and modern city life, and I'd definitely recommend it.",
+            "→Ba cụm ★dùng đúng, có mốc thời gian và cảm xúc. Đây là mục tiêu tối thiểu của Lesson 5.",
+            "**BAND 7**",
+            "Bản đầy đủ = MODEL ANSWER ở trên. Phần khác biệt so với Band 6 (in đậm):",
+            "▸ **I was walking along My Khe Beach in the late afternoon when I felt the cool sea breeze and heard the waves crashing against the shore.**",
+            "▸ **The contrast is amazing — you can go hiking on the Son Tra Peninsula in the morning and wander around a busy night market in the evening.**",
+            "▸ **I've been back several times since, and I still find it relaxing.**",
+            "→Thêm chi tiết giác quan (sea breeze, waves), cấu trúc đối lập buổi sáng / buổi tối, và một chi tiết cá nhân đóng bài."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P2-L06",
@@ -172,7 +350,44 @@
         "It has been in my family for over thirty years (for + khoảng thời gian) · since 1989 (since + mốc)",
         "Chèn MỘT câu trích trực tiếp: he handed it to me and said, 'Technology changes, but a good photograph lasts forever.'"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 7.0+ (câu chuyện gốc OBJECTS: máy ảnh film của bố)",
+          "question": "Describe an old thing in your family.",
+          "lines": [
+            "**FIXED ▸ **The object I'd like to talk about is an old film camera, which has been in my family for over thirty years. It's a silver-and-black Canon that originally belonged to my father. In terms of appearance, it's quite compact and a little worn with age, but the small scratches actually make it more interesting because they tell the story of all the places it's been. My father bought it in the late eighties and used it to take photos on his travels. When I was about ten, he handed it down to me, and I still remember him saying, \"Technology changes, but a good photograph lasts forever.\" That was the moment I became interested in photography. I still take it out on special occasions, such as family gatherings or trips. And I suppose that's why it immediately came to mind when I saw this topic.",
+            "**FLEXIBLE ▸ WHY: something old in your family **What makes it special is its history. My father took it with him whenever he travelled, so for me it's not just an old object — it's a keepsake that connects different generations of my family.",
+            "**KẾT ▸ **So overall, it's a piece of our family story, and I hope to pass it down one day.",
+            "≈ 200 từ · khoảng 100–110 giây ở tốc độ 110–120 từ/phút.",
+            "Phân tích: chỉ 2 câu mô tả hình dáng (≤ 20 giây), còn lại là câu chuyện. Câu trích lời người bố là điểm sáng nhất — dạy học sinh chèn MỘT câu trực tiếp vào bài nói của mình.",
+            "**⚠ Đây là bài MẪU. Thay tên, nơi chốn, con số bằng chi tiết thật của em rồi viết vào ô MY OWN VERSION cuối buổi.**"
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe an old thing in your family.",
+          "lines": [
+            "**BAND 5**",
+            "I want to talk about an old camera. It is my father's camera. It is old and black. He gave it to me. I like it because it is special for my family.",
+            "→Mô tả tối giản, không có mốc thời gian, không có câu chuyện, không có cụm ★nào. Khoảng 18 giây.",
+            "**BAND 6**",
+            "I'd like to talk about an old film camera that has been in my family for over thirty years. It's a silver and black Canon, quite small, and it has some scratches on it. My father bought it in the late eighties and used it on his travels, and he gave it to me when I was about ten. It has a lot of sentimental value for us.",
+            "→Đúng thì hiện tại hoàn thành, có mốc thời gian, dùng được 1 cụm ★. Đây là mục tiêu tối thiểu của Lesson 6.",
+            "**BAND 7**",
+            "Bản đầy đủ = MODEL ANSWER ở trên. Phần khác biệt so với Band 6 (in đậm):",
+            "▸ **The small scratches actually make it more interesting because they tell the story of all the places it's been.**",
+            "▸ **I still remember him saying, \"Technology changes, but a good photograph lasts forever.\"**",
+            "▸ **For me it's not just an old object — it's a keepsake that connects different generations of my family.**",
+            "→Câu trích trực tiếp là điểm nhấn. Câu kết dùng cấu trúc phủ định–khẳng định (\"not just… — it's…\"), rất đắt cho Band 7."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P2-L07",
@@ -193,7 +408,47 @@
         "Cấu trúc vàng bước 3: I was [V-ing] when suddenly [S + V-ed]",
         "Đuôi -ed: /t/ walked, missed · /d/ realised, arrived · /ɪd/ waited, decided"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 7.0+ (câu chuyện gốc EVENTS: buổi thuyết trình)",
+          "question": "Describe an occasion when someone praised your work.",
+          "lines": [
+            "**[1] INTRO ▸ FIXED **I'd like to tell you about a presentation I gave at university about two years ago. I'd never spoken in front of that many people before.",
+            "**[2] BACKGROUND ▸ FIXED **At the time, I was in my second year, working on a group project about social media. It all started when our lecturer asked each group to give a ten-minute presentation, and to be honest, I was nervous for days beforehand.",
+            "**[3] KEY MOMENT ▸ FIXED **The most important moment was when I stood up and suddenly forgot my opening lines. My mouth went dry and my hands were shaking slightly. For a few seconds, I just stared at my notes. Then I took a deep breath, started again, and surprisingly, everything became much easier.",
+            "**[4] RESOLUTION ▸ FIXED **In the end, it went much better than I'd expected.",
+            "**[5] REFLECTION ▸ FLEXIBLE (đề: praised) **What made it even more meaningful was the feedback from my lecturer afterwards. She specifically praised the clarity of my explanation, rather than just saying it was \"good\", and that really boosted my confidence. Looking back, it was a real turning point.",
+            "**[6] CONCLUSION ▸ **So overall, it was stressful at the time, but it left a lasting impression on me.",
+            "≈ 185 từ · khoảng 100–110 giây ở tốc độ 110–120 từ/phút.",
+            "Phân tích: đếm thời lượng từng bước cùng học sinh. Bước 3 (Key moment) dài nhất — đúng tỉ lệ. Chi tiết \"my mouth went dry\" — một biểu hiện cơ thể cụ thể đắt hơn mười tính từ. Bước 1–4 là FIXED; chỉ bước 5 đổi theo đề.",
+            "**⚠ Đây là bài MẪU. Thay tên, nơi chốn, con số bằng chi tiết thật của em rồi viết vào ô MY OWN VERSION cuối buổi.**"
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe a challenge you overcame.",
+          "lines": [
+            "**BAND 5**",
+            "I want to talk about a presentation. It is at university. I am very nervous. I forget what to say. Then I say it again. My teacher says it is good. I am happy.",
+            "→Lẫn thì hiện tại suốt bài. Không có cao trào, không có bài học. Khoảng 20 giây.",
+            "**BAND 6**",
+            "I'd like to tell you about a time when I had to give a presentation at university. It happened about two years ago. I was really nervous because I had never spoken in front of so many people. When I stood up, I forgot my opening lines, but I took a deep breath and started again. In the end, my lecturer said it was clear and well-organised. Looking back, it taught me that I just needed more practice.",
+            "→Đúng thì, có đủ các bước, có REFLECTION. Đây là mục tiêu tối thiểu của Lesson 7.",
+            "**BAND 7**",
+            "Bước 1–4 giữ nguyên như MODEL ANSWER (FIXED). Chỉ thay bước 5 cho đề \"challenge you overcame\" (FLEXIBLE, in đậm):",
+            "▸ **It was difficult because I had to deal with my nerves while everyone was looking at me.**",
+            "▸ **I was genuinely close to giving up for a few seconds, so getting through it felt like a small personal victory.**",
+            "▸ **The biggest lesson was that confidence doesn't always come before you do something difficult — sometimes it comes afterwards.**",
+            "→Đây chính là cách dùng FIXED / FLEXIBLE: 70% giữ nguyên, chỉ thay đoạn WHY. Câu kết đảo ngược ý (\"confidence comes afterwards\") — kỹ thuật Band 7 rất mạnh."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P2-L08",
@@ -214,7 +469,43 @@
         "Past perfect: By the time I arrived, the meeting had already started · I was nervous because I had never spoken in public before",
         "Ngân hàng biểu hiện cơ thể: my mouth went dry · I could feel my face going red · I just stood there without saying anything"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL — CÙNG MỘT SỰ VIỆC, HAI CHIỀU SÂU CẢM XÚC (câu chuyện gốc EVENTS: buổi thuyết trình)",
+          "question": "Describe a time when you were nervous.",
+          "lines": [
+            "**Bản khô khan (Band 6): **I'd like to talk about a time when I was nervous. I had to give a presentation at university. I was very nervous before it. When I started, I forgot what to say. Then I continued and it was fine. My lecturer said it was good and I was happy.",
+            "**Bản có cảm xúc (Band 7): **I'd like to tell you about a presentation I gave in my second year at university. I'd never spoken in front of that many people before, and I'd been nervous for days. The worst moment came when I stood up and my mind went completely blank. My mouth went dry, my hands were shaking slightly, and I could feel my face going red. For a few seconds I just stared at my notes, convinced that everyone was staring at me.",
+            "What made me so nervous was the pressure — the presentation counted for twenty percent of our final grade. Then I took a deep breath, started again, and by the end I was actually enjoying it. Looking back, I came to realise that I wasn't bad at public speaking — I'd simply never had enough practice. In hindsight, it was one of those experiences that made me a more confident person.",
+            "So sánh trực tiếp hai bản trong lớp. Bản Band 7 KHÔNG dùng từ khó hơn — nó chỉ thay câu trạng thái (\"I was very nervous\") bằng biểu hiện cụ thể (\"my mouth went dry\", \"my face going red\") và thêm past perfect (\"I'd never spoken…\", \"I'd been nervous for days\"). Đây là cùng câu chuyện với Lesson 7 — chỉ đào sâu lớp cảm xúc.",
+            "**⚠ Đây là bài MẪU. Thay bằng một sự việc thật của em ở ô MY OWN VERSION.**"
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe an important event in your life.",
+          "lines": [
+            "**BAND 5**",
+            "I want to talk about my presentation. I was nervous. I forgot my words. My teacher said good. Now I am more confident.",
+            "→Toàn câu trạng thái, không có cảm xúc thật nào. Khoảng 15 giây. Đây là bài nói phổ biến nhất của Band 5.",
+            "**BAND 6**",
+            "I'd like to talk about a presentation I gave at university two years ago. I was really nervous because I had never spoken in front of the whole class before. At the beginning I forgot my opening lines, which was very embarrassing. In the end it went well and my lecturer praised it, so now I'm much more confident.",
+            "→Đã có nguyên nhân và một câu past perfect. Nhưng cảm xúc vẫn ở lớp 2. Đây là mục tiêu tối thiểu của Lesson 8.",
+            "**BAND 7**",
+            "Bản đầy đủ = \"Bản có cảm xúc\" ở MODEL. Phần khác biệt so với Band 6 (in đậm):",
+            "▸ **My mouth went dry, my hands were shaking slightly, and I could feel my face going red.**",
+            "▸ **For a few seconds I just stared at my notes, convinced that everyone was staring at me.**",
+            "▸ **It was important mainly because it changed the way I saw myself — I wasn't bad at public speaking; I'd simply never had enough practice.**",
+            "→Ba lớp cảm xúc đầy đủ: cảm xúc → nguyên nhân → biểu hiện cơ thể. Câu cuối là phần FLEXIBLE cho đề \"important event\"."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P2-L09",
@@ -235,7 +526,41 @@
         "Trục 3 mốc: At first, I could barely… → Over time, I gradually… → Nowadays, I can…",
         "V-ing sau MỌI giới từ: good at playing · interested in learning · by practising · look forward to joining (to = giới từ)"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 7.0+ (câu chuyện gốc ACTIVITIES: chơi guitar)",
+          "question": "Describe a skill you would like to improve.",
+          "lines": [
+            "**FIXED ▸ **The activity I'd like to talk about is playing the guitar. I first picked it up when I was about fifteen, and since then it has become one of my favourite ways to spend my free time. A typical practice session takes me about thirty minutes: some chord exercises first, then ten or fifteen minutes learning a song. I still remember how hard it was at the beginning — I could barely switch between two chords, and my fingertips would hurt after just a few minutes. Over time, I improved by practising every evening and breaking difficult songs into smaller sections. Nowadays, basic chord changes have become second nature. What I love most is that it's incredibly stress-relieving. And I suppose that's why it immediately came to mind when I saw this topic.",
+            "**FLEXIBLE ▸ WHY I want to improve **The main reason is that I'd love to become much more confident at playing and singing at the same time. I've also been thinking about writing my own songs, so better skills would give me more freedom to do that.",
+            "**KẾT ▸ **So overall, it's a skill I'll keep working on for many years to come.",
+            "≈ 187 từ · khoảng 100–110 giây ở tốc độ 110–120 từ/phút.",
+            "Phân tích: phần FIXED có QUY TRÌNH luyện tập cụ thể (30 phút, chord exercises, chia nhỏ bài) và trục thời gian at first → over time → nowadays. Đây là phần học sinh Việt hay bỏ qua nhất — và là phần dễ ăn điểm nhất.",
+            "**⚠ Đây là bài MẪU. Thay tên, nơi chốn, con số bằng chi tiết thật của em rồi viết vào ô MY OWN VERSION cuối buổi.**"
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe a skill you would like to improve.",
+          "lines": [
+            "**BAND 5**",
+            "I want to talk about playing guitar. I like guitar. I play guitar sometimes at home. It is fun and I feel relaxed. I want to play better.",
+            "→Không có quy trình, không có trục thời gian, không có cụm nào. Khoảng 15 giây.",
+            "**BAND 6**",
+            "I'd like to talk about playing the guitar, which I've been trying to improve for about two years. I discovered I had a natural flair for music when I was fifteen and I picked up the basic chords from YouTube. Nowadays I practise about thirty minutes every evening. I find it very stress-relieving after a long day of studying.",
+            "→Có cụm ★, có thời lượng luyện tập, có lý do. Nhưng quy trình mới có 1 bước. Đây là mục tiêu tối thiểu của Lesson 9.",
+            "**BAND 7**",
+            "At first, I could barely change between two chords without stopping — it took me about four seconds each time, which makes any song unlistenable. Over time, I worked out that breaking a song into eight-bar sections and repeating the difficult parts slowly works far better than rushing through the whole piece. Nowadays chord transitions are more or less second nature, and I've started pushing myself towards playing and singing simultaneously, which is honestly much harder than it sounds.",
+            "→Chi tiết \"bốn giây mỗi lần đổi hợp âm\" là con số cụ thể — dấu hiệu rõ nhất của người nói thật. Trục ba mốc đầy đủ và rõ ràng."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P2-L10",
@@ -256,7 +581,44 @@
         "Câu an toàn: From what I know,… · I remember watching a documentary which said… · I'm not entirely sure of the exact figure, but…",
         "Câu bị động: The snow leopard is classified as vulnerable · They are threatened by poaching and habitat loss"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 7.0+ (câu chuyện gốc NATURE: báo tuyết)",
+          "question": "Describe a wild animal you want to know more about.",
+          "lines": [
+            "**FIXED ▸ **The animal I'd like to talk about is the snow leopard, a wild cat I've been fascinated by for years. It's a solitary and elusive creature that lives in the high mountains of Central and South Asia, and its thick, greyish fur with dark spots helps it blend perfectly into rocky, snowy surroundings. My interest started when I was about twelve, when I watched a documentary about wildlife photographers who spent months in the mountains trying to film one. They barely managed to get a few seconds of footage, and I found that incredibly intriguing. From what I know, snow leopards are officially listed as vulnerable, and only a few thousand are estimated to remain in the wild. They're threatened by habitat loss, poaching and conflict with local herders. And I suppose that's why the snow leopard immediately came to mind when I saw this topic.",
+            "**FLEXIBLE ▸ WHY I want to know more **I'd particularly like to learn more about its hunting behaviour and how it survives at such high altitudes. There are still many things about these animals that scientists don't fully understand.",
+            "**KẾT ▸ **So overall, it's a reminder that parts of the natural world are still mysterious and worth protecting.",
+            "≈ 194 từ · khoảng 100–110 giây ở tốc độ 110–120 từ/phút.",
+            "Phân tích: câu \"My interest started when I was about twelve…\" là phần CÁ NHÂN — không có nó, bài này chỉ là bài đọc bách khoa. Chú ý độ chính xác: báo tuyết được IUCN xếp hạng vulnerable (sắp nguy cấp), KHÔNG phải endangered; số lượng chỉ là ước tính nên dùng \"only a few thousand are estimated\".",
+            "**⚠ Đây là bài MẪU. Thay tên, nơi chốn, con số bằng chi tiết thật của em rồi viết vào ô MY OWN VERSION cuối buổi.**"
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe a wild animal you find interesting.",
+          "lines": [
+            "**BAND 5**",
+            "I want to talk about the snow leopard. It is a big cat. It lives in the mountain. It is white and grey. It is very beautiful and rare. I like it because it is interesting.",
+            "→Sáu câu đơn, không có cụm chuyên ngành nào, không có kết nối cá nhân. Khoảng 20 giây.",
+            "**BAND 6**",
+            "I'd like to talk about the snow leopard, which lives in the mountains of Central Asia. It's an elusive creature with thick grey fur that helps it hide in the snow. From what I know, it's classified as vulnerable, mainly because of habitat loss and poaching. I became interested in it after watching a documentary when I was a child, and I think conservation efforts are really important.",
+            "→Có 3 cụm ★/★★, có nguồn gốc quan tâm, có ý kiến. Đây là mục tiêu tối thiểu của Lesson 10.",
+            "**BAND 7**",
+            "Bản đầy đủ = MODEL ANSWER ở trên. Phần khác biệt so với Band 6 (in đậm):",
+            "▸ **They barely managed to get a few seconds of footage, and I found that incredibly intriguing.**",
+            "▸ **From what I know, snow leopards are officially listed as vulnerable, and only a few thousand are estimated to remain in the wild.**",
+            "▸ **Strictly speaking, it's classified as vulnerable rather than endangered, but it's still very much at risk.**",
+            "→Câu bị động (are listed / are estimated) cho thông tin khách quan, chuyển sang giọng cá nhân, và câu \"Strictly speaking…\" — nói đúng thông tin là điểm cộng Band 7."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P2-L11",
@@ -277,7 +639,44 @@
         "Công thức nén cốt truyện: [Ai] + [gặp chuyện gì] + [vấn đề trung tâm] — tối đa 3 câu",
         "Mệnh đề What…: What I found most captivating was the way he described gratitude (to be luôn số ít)"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL ANSWER — BAND 7.0+ (câu chuyện gốc MEDIA: video người tị nạn)",
+          "question": "Describe something interesting you saw on social media.",
+          "lines": [
+            "**FIXED ▸ **The piece of media I'd like to talk about is a short interview video I came across on YouTube, from a channel that shares real-life stories of ordinary people. I watched it about three months ago, and it left a lasting impression on me. Essentially, it features an elderly Vietnamese-American man who left Vietnam when he was young and later rebuilt his life in New York. He talks about his difficult journey and the kindness he received from strangers — all in a very simple, honest way. What I found most captivating was the way he talked about gratitude. He said something along the lines of, \"Every ordinary day feels like a gift because I remember when ordinary life was impossible.\" That line genuinely stopped me in my tracks. And I suppose that's why it immediately came to mind when I saw this topic.",
+            "**FLEXIBLE ▸ WHY it was interesting **What made it particularly interesting was that it wasn't trying to entertain people or go viral. Instead, it told a very personal story, which I found far more meaningful than most of what I see online.",
+            "**KẾT ▸ **So overall, it was only a short video, but it changed the way I look at ordinary life.",
+            "≈ 199 từ · khoảng 100–110 giây ở tốc độ 110–120 từ/phút.",
+            "Phân tích: tóm tắt nội dung chỉ 2 câu — dừng lại, không kể tiếp cốt truyện. Phần lớn thời lượng dành cho phản ứng và thông điệp. Câu trích dẫn ở giữa là điểm nhấn — chuẩn bị sẵn MỘT câu trích cho tác phẩm em chọn.",
+            "**⚠ Đây là bài MẪU. Thay tên, nơi chốn, con số bằng chi tiết thật của em rồi viết vào ô MY OWN VERSION cuối buổi.**"
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe something interesting you saw on social media.",
+          "lines": [
+            "**BAND 5**",
+            "I want to talk about a video on YouTube. It is about a man from Vietnam. He goes to America. His life is difficult but then it is better. I think the video is very good and interesting.",
+            "→Toàn bộ là tóm tắt, không có phản ứng, không có thông điệp. \"good and interesting\" là đánh giá rỗng.",
+            "**BAND 6**",
+            "I'd like to talk about a video I watched on YouTube about three months ago, from a channel that shares real-life stories of ordinary people. It was about an elderly Vietnamese man who left Vietnam when he was young and rebuilt his life in New York. I found it really thought-provoking because it made me realise how much I take for granted. I believe its message is that ordinary life is actually a gift.",
+            "→Tóm tắt gọn 1 câu, có phản ứng, có thông điệp. Đây là mục tiêu tối thiểu của Lesson 11.",
+            "**BAND 7**",
+            "Bản đầy đủ = MODEL ANSWER ở trên. Phần khác biệt so với Band 6 (in đậm):",
+            "▸ **What I found most captivating was the way he talked about gratitude.**",
+            "▸ **He said something along the lines of, \"Every ordinary day feels like a gift because I remember when ordinary life was impossible.\"**",
+            "▸ **That line genuinely stopped me in my tracks.**",
+            "→Mệnh đề What…, một câu trích dẫn và một phản ứng cụ thể. Không có tóm tắt nào ở đoạn này — đúng tỉ lệ."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P2-L12",
@@ -298,7 +697,42 @@
         "such a + tính từ + danh từ + that: It was such a small shop that you could walk past it",
         "Mẹo: có DANH TỪ → such; không có danh từ → so"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL — CÙNG MỘT BÀI PLACES, CÓ VÀ KHÔNG CÓ MICRO-STORY",
+          "question": "Describe a street you often walk along.",
+          "lines": [
+            "**Không có micro-story (Band 6):** I'd like to talk about the street where I live. It's quite narrow and there are a lot of small shops. In the evening it gets very lively because people sit outside and eat. I like it because it feels friendly and I know most of the neighbours.",
+            "**Có micro-story (Band 7):** I'd like to talk about the street where I live — narrow, a bit chaotic, lined with small shops that have been there longer than I have. In the evening it gets so lively that you can barely walk in a straight line. There was this one time, about two years ago, when the power went out across the whole district. I expected people to go inside and complain. Instead, within about ten minutes, almost every household had put a candle or a small lamp out on the pavement, and the entire street was eating dinner outdoors together. I just stood at our gate watching it. I still think about that evening whenever I hear people say Vietnamese cities are becoming impersonal.",
+            "Overall, it's not a beautiful street by any standard, but it's the only place where I've seen something like that happen.",
+            "So sánh trực tiếp trong lớp. Bản có micro-story dài hơn khoảng 30 giây — vừa đủ để chạm mốc 2 phút mà không cần cố nghĩ thêm ý mới."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe a street you often walk along.",
+          "lines": [
+            "**BAND 5**",
+            "I want to talk about my street. It is small. There are many shops. In the evening many people eat outside. I like it because it is friendly.",
+            "→Không có câu chuyện, không có cấu trúc nhấn mạnh. Khoảng 15 giây.",
+            "**BAND 6**",
+            "I'd like to talk about the street where I live. It's quite narrow and lined with small shops. In the evening it gets very lively because people sit outside and eat together. I like it because it feels friendly and I know most of my neighbours.",
+            "→Mô tả đủ nhưng phẳng. Khoảng 35 giây. Đây là trần của học sinh chưa biết chèn micro-story.",
+            "**BAND 7**",
+            "Bản đầy đủ = MODEL ở trên. Phần khác biệt so với Band 6 (in đậm):",
+            "▸ **In the evening it gets so lively that you can barely walk in a straight line.**",
+            "▸ **There was this one time, about two years ago, when the power went out across the whole district.**",
+            "▸ **I expected people to go inside and complain — instead, within about ten minutes, almost every household had put a candle out on the pavement, and the entire street was eating dinner outdoors together.**",
+            "→Micro-story đủ ba phần, có so… that, có một câu kết nối câu chuyện với một ý lớn hơn. Riêng đoạn này đã dài 30 giây."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P2-L13",
@@ -319,7 +753,29 @@
         "IMAGINE: If I could go back, I would… / Next time, I'd love to… — thêm 15–20s",
         "IMPACT: Since then, I've started to… / It changed the way I… — thêm 20–25s"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe a trip you enjoyed.",
+          "lines": [
+            "**BAND 5**",
+            "I went to Da Lat with my family last year. The weather was cold. We saw flowers and a lake. The food was good. I enjoyed it.",
+            "That's all.",
+            "→Khoảng 15 giây. Không có kỹ thuật nào. Học sinh sẽ ngồi im 100 giây còn lại.",
+            "**BAND 6**",
+            "I went to Da Lat with my family last summer. The weather was surprisingly cold for Vietnam, around fifteen degrees at night. We visited a flower garden and a lake, and the food was excellent — especially the grilled meat at the night market. Overall it was a really enjoyable trip.",
+            "→Đã dùng ZOOM IN một lần (nhiệt độ, món ăn cụ thể). Khoảng 40 giây. Vẫn thiếu 80 giây.",
+            "**BAND 7**",
+            "…the food was excellent, especially the grilled meat at the night market.** [COMPARE]** Compared to Ho Chi Minh City, where you eat surrounded by traffic noise, sitting outdoors in fifteen-degree air with a plastic stool and a charcoal grill felt like a completely different country.** [IMAGINE]** If I could go back, I'd stay in one of the small guesthouses outside town rather than a hotel in the centre.** [IMPACT]** Since that trip, I've actually started planning holidays around cooler places, which is not something I would ever have considered before.",
+            "→Ba kỹ thuật liên tiếp, mỗi kỹ thuật một đoạn, tổng cộng thêm khoảng 55 giây mà không cần một ý mới nào."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P2-L14",
@@ -340,7 +796,42 @@
         "4 nguồn vay mượn hợp lệ: phim tài liệu · câu chuyện của người quen · sách báo · trải nghiệm gần giống của bạn",
         "Câu bắt đầu ngay: \"That's an interesting one — the first thing that comes to mind is…\" (không phân trần)"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [
+        {
+          "kind": "model",
+          "title": "MODEL — CUE CARD CHƯA TỪNG TRẢI QUA",
+          "question": "Describe a water sport you would like to try.",
+          "lines": [
+            "Although I haven't tried this personally, the water sport I'd most like to have a go at is surfing. I've watched quite a few documentaries and clips about it — there's one series about surfers in Australia that I got completely absorbed in a couple of years ago. What struck me was that it looks effortless from the shore, and then you hear the surfers describe how physically brutal it actually is: apparently you spend most of the time paddling, not standing.",
+            "The closest thing I've done myself was body-boarding at My Khe beach in Da Nang, which is obviously much easier. Even that left my arms aching for two days, so I imagine real surfing would be considerably harder. If I had the chance, I imagine it would feel quite terrifying at first — being pulled around by something completely out of your control — but I think that's exactly what appeals to me. A friend of mine took a beginner course in Da Nang last year and said she didn't stand up once in three days, and still described it as the best week of her year.",
+            "Overall, it's firmly on my list. I'd probably start somewhere with small, forgiving waves rather than throwing myself into anything dramatic.",
+            "Đếm cùng học sinh: bài này KHÔNG có một trải nghiệm trực tiếp nào, nhưng dài đủ 110 giây và tự nhiên hoàn toàn. Bốn nguồn vay mượn đều xuất hiện: phim tài liệu, trải nghiệm gần giống, giả định, câu chuyện của bạn."
+          ]
+        },
+        {
+          "kind": "upgrade",
+          "title": "UPGRADE: BAND 5 → 6 → 7",
+          "question": "Describe a water sport you would like to try.",
+          "lines": [
+            "**BAND 5**",
+            "I never try water sport. Maybe surfing. I see it on TV. It looks fun and dangerous. I want to try but I cannot swim well. That's all I know.",
+            "→Mất điểm ngay ở câu đầu vì phân trần. Khoảng 18 giây. Sai thì và thiếu ngôn ngữ giả định.",
+            "**BAND 6**",
+            "Although I haven't tried it personally, the water sport I'd most like to try is surfing. I've watched several documentaries about it and it looks amazing. If I had the chance, I would probably take a beginner course somewhere with small waves. I think it would be difficult at first because I'm not a strong swimmer, but I'd really like to try.",
+            "→Đúng mẫu IMAGINE, đúng câu điều kiện loại 2. Khoảng 45 giây. Đây là mục tiêu tối thiểu của Lesson 14.",
+            "**BAND 7**",
+            "Bản đầy đủ = MODEL ở trên. Phần khác biệt so với Band 6 (in đậm):",
+            "▸ **What struck me was that surfing looks effortless from the shore, and then you hear the surfers describe how physically brutal it actually is — apparently you spend most of the time paddling, not standing.**",
+            "▸ **The closest thing I've done myself was body-boarding at My Khe beach, and even that left my arms aching for two days.**",
+            "▸ **A friend of mine took a beginner course in Da Nang last year and said she didn't stand up once in three days, and still described it as the best week of her year.**",
+            "→Không có trải nghiệm trực tiếp nào, nhưng có bốn nguồn vay mượn và ba chi tiết cụ thể. Nghe hoàn toàn thật."
+          ]
+        }
+      ],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     },
     {
       "code": "SPK-P2-L15",
@@ -362,7 +853,11 @@
         "Bắt đầu nói trong 3 giây · câu mở paraphrase đề · đủ 4 phần · ≥100 giây · ≥1 micro-story · ≥3 collocation · câu kết rõ ràng",
         "Nếu đạt ≥4/5 tiêu chí ở phiếu chấm → sẵn sàng sang Phần III"
       ],
-      "gate": { "minObjectiveScorePercent": 50, "minWritingSubmissions": 1 }
+      "bookModels": [],
+      "gate": {
+        "minObjectiveScorePercent": 50,
+        "minWritingSubmissions": 1
+      }
     }
   ]
 }

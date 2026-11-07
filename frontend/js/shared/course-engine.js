@@ -1592,7 +1592,11 @@
         return '<div class="wh-sub"><div class="wh-q">Câu ' + (i + 1) + ': ' + esc(s.prompt) + '</div>' +
           '<div class="wh-text">' + (s.transcript ? esc(s.transcript) : '<i>(không có lời thoại)</i>') + '</div>' +
           '<div class="wh-li" style="margin-top:6px"><b style="color:#0ea5e9">Band ' + num(s.band) + '</b>' + (s.feedbackVi ? ' — ' + esc(s.feedbackVi) : '') + '</div>' +
-          corrections(s.corrections) + '</div>';
+          corrections(s.corrections) +
+          (s.sampleAnswer ? '<details class="wh-det" style="margin-top:6px"><summary>Xem bài mẫu câu này</summary>' +
+            '<div class="wh-text" style="margin-top:6px">' + boldText(s.sampleAnswer) + '</div>' +
+            (s.sampleNote ? '<div class="wh-li" style="margin-top:4px;white-space:pre-wrap">💡 ' + esc(s.sampleNote) + '</div>' : '') +
+            '</details>' : '') + '</div>';
       }).join('');
     } else {
       if ((r.prompts || []).length) h += '<div class="wh-sec"><div class="wh-h">Câu hỏi</div>' + r.prompts.map(function (p) { return '<div class="wh-li">• ' + esc(p) + '</div>'; }).join('') + '</div>';
@@ -1623,11 +1627,15 @@
           return '<div class="wh-li">' + mark + ' ' + esc(c.label) + (c.detail ? ' <span style="color:var(--text3,#9ca3af)">(' + esc(c.detail) + ')</span>' : '') + '</div>';
         }).join('') + '</div>';
     }
-    if (r.sampleAnswer) {
-      h += '<div class="wh-sec"><details class="wh-det"><summary>Xem bài mẫu</summary><div class="wh-text" style="margin-top:6px">' + esc(r.sampleAnswer) + '</div></details></div>';
+    // Speaking answers already carry their sample under each question above.
+    var perItem = isSpk && (r.speakingItems || []).some(function (s) { return s.sampleAnswer; });
+    if (r.sampleAnswer && !perItem) {
+      h += '<div class="wh-sec"><details class="wh-det"><summary>Xem bài mẫu</summary><div class="wh-text" style="margin-top:6px">' + boldText(r.sampleAnswer) + '</div></details></div>';
     }
     return h;
   }
+  // Sample answers may mark key phrases as **bold**.
+  function boldText(s) { return esc(s).replace(/\*\*([^*]+?)\*\*/g, '<b>$1</b>').replace(/\*\*/g, ''); }
 
   window.WT1History = {
     init: function (o) { cfg.api = o.api; cfg.courseCode = o.courseCode || ''; },

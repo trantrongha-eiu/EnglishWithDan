@@ -112,6 +112,13 @@ function sanitizeExercise(ex, courseCode) {
     if (ex.type === 'categorize') base.text = it.text || '';
     if (ex.type === 'matching') base.left = it.left || '';
     if (ex.type === 'ordering') base.tokens = shuffle(it.tokens || []);
+    // Per-question model answer — same "learning aid, nothing to protect"
+    // reasoning as rubric.sampleAnswer above.
+    if (ex.type === 'speaking_response') {
+      base.sampleAnswer = it.sampleAnswer || '';
+      base.sampleNote = it.sampleNote || '';
+      base.sampleSource = it.sampleSource || '';
+    }
     if (ex.type === 'word_form') { /* prompt is enough */ }
     return base;
   });
@@ -391,6 +398,7 @@ async function getLesson(code, userId, opts = {}) {
       order: lesson.order, isTest: !!lesson.isTest, durationMinutes: lesson.durationMinutes,
       objectives: lesson.objectives || [], keyLanguage: lesson.keyLanguage || [],
       theory: lesson.theory || [],
+      bookModels: lesson.bookModels || [],
       totalPoints: lesson.totalPoints,
     },
     exercises: exercises.map((ex) => {
@@ -683,11 +691,16 @@ function buildReview(sub, ex, lessonTitle) {
   review.local = sub.localFeedback || null;
   review.sampleAnswer = (ex && ex.rubric && ex.rubric.sampleAnswer) || '';
   if (kind === 'speaking') {
-    review.speakingItems = (sub.itemResults || []).map((r) => ({
-      prompt: r.prompt || '', transcript: r.transcript || '',
-      band: r.feedback?.bandEstimate ?? null, scores: r.feedback?.scores || {},
-      feedbackVi: r.feedback?.feedbackVi || '', corrections: r.feedback?.corrections || [],
-    }));
+    const exItems = (ex && ex.items) || [];
+    review.speakingItems = (sub.itemResults || []).map((r, i) => {
+      const it = exItems[r.itemIndex ?? i] || {};
+      return {
+        prompt: r.prompt || '', transcript: r.transcript || '',
+        band: r.feedback?.bandEstimate ?? null, scores: r.feedback?.scores || {},
+        feedbackVi: r.feedback?.feedbackVi || '', corrections: r.feedback?.corrections || [],
+        sampleAnswer: it.sampleAnswer || '', sampleNote: it.sampleNote || '',
+      };
+    });
   }
   return review;
 }
