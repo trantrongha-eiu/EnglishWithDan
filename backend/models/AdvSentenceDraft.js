@@ -12,6 +12,8 @@ const attemptEntrySchema = new Schema({
   modelAnswer: String,
   feedbackVi:  String,
   promptVi:    String,
+  // Failed on the 3-wrong-tries typing rule — stays wrong even after the redo.
+  drillFailed: Boolean,
 }, { _id: false });
 
 const advSentenceDraftSchema = new Schema({

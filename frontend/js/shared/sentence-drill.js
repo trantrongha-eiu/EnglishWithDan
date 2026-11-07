@@ -64,7 +64,15 @@ function closeWpSheet() {
 //  existing #answer-box → submitAnswer() flow unchanged — the server still
 //  local-checks the finished sentence and returns XP / feedback / grammar
 //  point exactly as for a typed answer.
+//
+//  Site-wide typing rule: the SD_MAX_WORD_ERRORS-th wrong try on one word
+//  fails the sentence. The drill then locks and calls the page's own
+//  onWbwFail({ word, sofar }) — the page grades it wrong without a server
+//  check and requeues it (sdRequeueExercise below) so the student redoes it.
 // ════════════════════════════════════════════════════════
+const SD_MAX_WORD_ERRORS = 3;
+const SD_REQUEUE_GAP = 3;    // the failed sentence comes back this many exercises later
+const SD_MAX_REQUEUES = 2;   // …at most this many times, so no endless loop
 let _wbw = null;
 
 function _wbwTokenize(answer) {
@@ -80,13 +88,17 @@ function _wbwTokenize(answer) {
 }
 
 function _wbwPreventPaste(e) { e.preventDefault(); }
+function _wbwCompStart() { if (_wbw) _wbw.composing = true; }
+function _wbwCompEnd() { if (_wbw) { _wbw.composing = false; _wbwOnInput(); } }
 
 function wbwInit(answer) {
   const wrap = document.getElementById('wbw');
   if (!wrap || !answer) { wbwTeardown(); return; }
   const tokens = _wbwTokenize(answer);
   if (!tokens.length) { wbwTeardown(); return; }
-  _wbw = { answer, tokens, activeIdx: 0, typed: '', erroring: false, done: false, locked: false };
+  _wbw = { answer, tokens, activeIdx: 0, typed: '', erroring: false, done: false, locked: false,
+    wordErrors: 0,     // wrong tries on the active word (reset on each new word)
+    failed: false, composing: false };
   wrap.classList.remove('hidden');
 
   const input = document.getElementById('wbw-input');
@@ -98,9 +110,16 @@ function wbwInit(answer) {
     input.removeEventListener('keydown', _wbwKeydown);
     input.removeEventListener('input', _wbwOnInput);
     input.removeEventListener('paste', _wbwPreventPaste);
+    input.removeEventListener('compositionstart', _wbwCompStart);
+    input.removeEventListener('compositionend', _wbwCompEnd);
     input.addEventListener('keydown', _wbwKeydown);
     input.addEventListener('input', _wbwOnInput);
     input.addEventListener('paste', _wbwPreventPaste);
+    // Mobile keyboards with autocorrect compose plain English words too; an
+    // in-progress composition isn't a wrong keystroke, so it mustn't burn
+    // through the SD_MAX_WORD_ERRORS cap — check once it's committed.
+    input.addEventListener('compositionstart', _wbwCompStart);
+    input.addEventListener('compositionend', _wbwCompEnd);
   }
   const askBtn = document.getElementById('wbw-ask');
   if (askBtn) askBtn.disabled = false;
@@ -146,6 +165,11 @@ function _wbwRenderWords() {
     if (i < activeIdx) {
       return `<span class="wbw-word is-done" data-i="${i}">${_escHtml(t.raw)}</span>`;
     }
+    if (i === activeIdx && _wbw.failed) {
+      // The word the student got stuck on — shown in red before the
+      // feedback card (with the full sample answer) takes over.
+      return `<span class="wbw-word is-active is-error" data-i="${i}">${_escHtml(t.raw)}</span>`;
+    }
     if (i === activeIdx && !done) {
       const remaining = Math.max(0, t.target.length - typed.length);
       const tail = erroring
@@ -171,7 +195,7 @@ function _wbwUpdateBar() {
   const total = _wbw.tokens.length;
   const done = _wbw.done ? total : _wbw.activeIdx;
   el.textContent = `${done} / ${total} từ`;
-  el.classList.toggle('is-full', done === total && total > 0);
+  el.classList.toggle('is-full', done === total && total > 0 && !_wbw.failed);
 }
 
 // Mirror completed words into the hidden #answer-box so the existing
@@ -207,7 +231,7 @@ function _wbwKeydown(e) {
 // Runs on every keystroke (also IME / mobile / long-press). A rejected
 // character is simply removed and the student retypes — never auto-corrected.
 function _wbwOnInput() {
-  if (!_wbw || _wbw.locked || _wbw.done) return;
+  if (!_wbw || _wbw.locked || _wbw.done || _wbw.composing) return;
   const input = document.getElementById('wbw-input');
   if (!input) return;
   const tok = _wbw.tokens[_wbw.activeIdx];
@@ -225,12 +249,19 @@ function _wbwOnInput() {
   _wbw.typed = good;
   input.value = good;                                   // active-recall: never auto-fill
 
-  if (rejected) { _wbwFlashError(); return; }
+  if (rejected) {
+    // A second wrong key during the 260ms shake isn't a separate try.
+    if (!_wbw.erroring) _wbw.wordErrors++;
+    if (_wbw.wordErrors >= SD_MAX_WORD_ERRORS) { _wbwFail(); return; }
+    _wbwFlashError();
+    return;
+  }
   if (good.length < tok.target.length) { _wbwRenderWords(); return; }
 
   // ── active word complete ──
   _wbw.activeIdx++;
   _wbw.typed = '';
+  _wbw.wordErrors = 0;
   input.value = '';
   _wbwRenderWords();
   _wbwUpdateBar();
@@ -262,6 +293,61 @@ function _wbwComplete() {
     if (_wbw !== mine || _isSubmitting) return;
     submitAnswer();
   }, 500);
+}
+
+// A word was mistyped SD_MAX_WORD_ERRORS times: lock the drill, flag the
+// stuck word, and hand off to the page's onWbwFail() to grade the sentence
+// wrong and requeue it.
+function _wbwFail() {
+  if (!_wbw || _wbw.done) return;
+  const mine = _wbw;
+  const stuck = _wbw.tokens[_wbw.activeIdx];
+  const info = {
+    word: stuck ? stuck.target : '',
+    sofar: _wbw.tokens.slice(0, _wbw.activeIdx).map(t => t.raw).join(' ')
+  };
+  _wbw.failed = true;
+  _wbw.done = true;
+  _wbw.locked = true;
+  _wbw.erroring = false;
+  const input = document.getElementById('wbw-input');
+  if (input) { input.classList.remove('is-error'); input.value = ''; input.disabled = true; input.blur(); }
+  const askBtn = document.getElementById('wbw-ask');
+  if (askBtn) askBtn.disabled = true;
+  _wbwRenderWords();
+  _wbwUpdateBar();
+  // No playWrong() here — the page's onWbwFail() plays it with the feedback.
+  setTimeout(() => {
+    if (_wbw !== mine || _isSubmitting) return;
+    if (typeof onWbwFail === 'function') onWbwFail(info);
+  }, 450);
+}
+
+// Put another copy of exercises[idx] SD_REQUEUE_GAP exercises further on
+// (or at the end) so the student redoes a failed sentence. Returns false
+// once that sentence has already come back SD_MAX_REQUEUES times.
+function sdRequeueExercise(list, idx) {
+  const ex = list[idx];
+  if (!ex) return false;
+  const copies = list.filter(x => x._id === ex._id).length - 1;
+  if (copies >= SD_MAX_REQUEUES) return false;
+  const insertAt = Math.min(idx + 1 + SD_REQUEUE_GAP, list.length);
+  list.splice(insertAt, 0, { ...ex, _isRepeat: true });
+  return true;
+}
+
+// Drop the requeued copies (start-over / retry builds a clean list).
+function sdWithoutRepeats(list) {
+  return list.filter(ex => !ex._isRepeat);
+}
+
+// The shared "you got stuck" message for a failed drill.
+function sdFailFeedbackVi(info, requeued) {
+  const stuckWord = info && info.word ? `từ “${info.word}”` : 'một từ';
+  return `Bạn gõ sai ${stuckWord} ${SD_MAX_WORD_ERRORS} lần nên câu này tính là sai. `
+    + (requeued
+      ? 'Xem kỹ đáp án mẫu nhé — câu này sẽ quay lại ở phía sau để bạn làm lại 💪'
+      : 'Xem kỹ đáp án mẫu và ghi nhớ nhé — câu này đã quay lại đủ số lần rồi.');
 }
 
 // ════════════════════════════════════════════════════════

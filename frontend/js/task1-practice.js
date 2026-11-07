@@ -560,7 +560,7 @@ function showExercise(idx) {
   document.getElementById('progress-bar').style.width = pct + '%';
   document.getElementById('ex-counter').textContent   = `${idx + 1} / ${exercises.length}`;
   document.getElementById('grammar-badge').textContent = ex.skillType ? (SKILL_LABELS[ex.skillType] || ex.skillType) : '';
-  document.getElementById('type-tag').textContent      = TYPE_LABELS[ex.type] || ex.type;
+  document.getElementById('type-tag').textContent      = (TYPE_LABELS[ex.type] || ex.type) + (ex._isRepeat ? ' · 🔁 Làm lại' : '');
 
   // hide all views
   ['translation','rearrange','fill-blank','multiple-choice'].forEach(v =>
@@ -811,6 +811,7 @@ function getUserAnswer() {
 
 async function submitAnswer() {
   if (_isSubmitting) return;
+  if (_wbw && _wbw.failed) return; // graded by onWbwFail() instead
   const ex     = exercises[currentIdx];
   if (!ex) return;
   const answer = getUserAnswer();
@@ -880,6 +881,41 @@ async function submitAnswer() {
     document.getElementById('checking-loader').classList.add('hidden');
     _isSubmitting = false;
   }
+}
+
+// sentence-drill.js hook: a word was mistyped SD_MAX_WORD_ERRORS times.
+// Grade the sentence wrong right here (no /check call — the server would
+// only re-grade the half-typed words) and requeue it so the student redoes it.
+function onWbwFail(info) {
+  if (_isSubmitting) return;
+  const ex = exercises[currentIdx];
+  if (!ex) return;
+  const requeued = sdRequeueExercise(exercises, currentIdx);
+  const partial = (info && info.sofar) || '';
+  const earned = Math.max(1, Math.floor((ex.xpReward || 5) * 0.1)); // wrong-answer XP (task1PracticeService)
+  const feedbackVi = sdFailFeedbackVi(info, requeued);
+  document.getElementById('submit-btn').disabled = true;
+  showFeedback(partial ? partial + ' …' : '(chưa gõ xong từ nào)', {
+    isCorrect: false, score: 0, feedbackVi,
+    sampleAnswer: ex.translationAnswer || ''
+  }, ex);
+  sessionDone++;
+  sessionXP += earned;
+  comboStreak = 0; playWrong();
+  document.getElementById('combo-badge').classList.add('hidden');
+  updateXPStorage(earned);
+  floatXP(earned);
+  updateSessionStats();
+  sessionAttempts.push({
+    exerciseId: ex._id, userAnswer: partial,
+    isCorrect: false, score: 0,
+    xpEarned: earned, skillType: ex.skillType, module: ex.module,
+    questionText: ex.questionVi || ex.questionEn || '',
+    instruction: ex.instruction || '',
+    sampleAnswer: ex.translationAnswer || '',
+    feedbackVi,
+    type: ex.type
+  });
 }
 
 function showFeedback(userAnswer, data, ex) {
@@ -1015,6 +1051,7 @@ function showDoneSummary() {
 
 function restartExercises() {
   if (_originalExercises) { exercises = _originalExercises; _originalExercises = null; }
+  exercises = sdWithoutRepeats(exercises);
   _wrongAttemptCache = [];
   currentIdx = 0; sessionDone = 0; sessionXP = 0;
   sessionCorrect = 0; sessionAttempts = []; comboStreak = 0; _skippedIds = new Set();
@@ -1025,7 +1062,12 @@ function restartExercises() {
 
 function retryWrongT1() {
   const wrongIds = new Set(_wrongAttemptCache.map(a => a.exerciseId));
-  const wrongExercises = exercises.filter(ex => wrongIds.has(String(ex._id)));
+  // A requeued (failed-drill) exercise sits in the list more than once — keep one copy.
+  const seen = new Set();
+  const wrongExercises = exercises
+    .filter(ex => wrongIds.has(String(ex._id)))
+    .filter(ex => { const id = String(ex._id); if (seen.has(id)) return false; seen.add(id); return true; })
+    .map(ex => { const { _isRepeat, ...rest } = ex; return rest; });
   if (!wrongExercises.length) { showToast('Không còn câu sai!', 'info'); return; }
   // Only capture the true original set once — retrying wrong answers a
   // second time (from a subset session) must not clobber it with that

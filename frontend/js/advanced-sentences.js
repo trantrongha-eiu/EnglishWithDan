@@ -17,6 +17,12 @@ function luluOr(score, fallbackHtml) {
 
   var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
   var LS_SCORES = 'as_group_scores';
+  // Site-wide typing rule: the MAX_WORD_ERRORS-th wrong try on one word fails
+  // the sentence (WbwDrill maxWordErrors). It is graded wrong and comes back
+  // REQUEUE_GAP sentences later to redo — at most MAX_REQUEUES times.
+  var MAX_WORD_ERRORS = 3;
+  var REQUEUE_GAP = 3;
+  var MAX_REQUEUES = 2;
 
   var state = {
     view: 'weeks',            // weeks | groups | practice | exam | examResult
@@ -308,6 +314,7 @@ function luluOr(score, fallbackHtml) {
   }
 
   function startFresh() {
+    state.sentences = state.sentences.filter(function (s) { return !s._isRepeat; });
     state.idx = 0;
     state.status = state.sentences.map(function () { return 'pending'; });
     state.attempts = [];
@@ -321,7 +328,16 @@ function luluOr(score, fallbackHtml) {
     state.sentences.forEach(function (s) { byId[String(s._id)] = s; });
     // keep the sentence order as stored (in case admin reordered since)
     if (draft.sentenceIds && draft.sentenceIds.length) {
-      state.sentences = draft.sentenceIds.map(function (id) { return byId[String(id)]; }).filter(Boolean);
+      // A sentence requeued by the 3-wrong-tries rule is stored twice —
+      // flag the later copies again so totals don't count them.
+      var seenIds = {};
+      state.sentences = draft.sentenceIds.map(function (id) {
+        var s = byId[String(id)];
+        if (!s) return null;
+        if (seenIds[String(id)]) return Object.assign({}, s, { _isRepeat: true });
+        seenIds[String(id)] = true;
+        return s;
+      }).filter(Boolean);
     }
     state.idx = Math.min(draft.currentIdx || 0, state.sentences.length - 1);
     state.status = state.sentences.map(function (s, i) {
@@ -360,7 +376,8 @@ function luluOr(score, fallbackHtml) {
         var c = st === 'correct' ? 'ok' : st === 'wrong' ? 'err' : (i === state.idx ? 'cur' : '');
         return '<span class="as-dot ' + c + '" data-i="' + i + '"></span>';
       }).join('') + '</div>' +
-      '<div class="as-counter">' + (state.idx + 1) + ' / ' + state.sentences.length + ' câu</div>' +
+      '<div class="as-counter">' + (state.idx + 1) + ' / ' + state.sentences.length + ' câu' +
+        (s._isRepeat ? ' · <span style="color:#92400e;font-weight:700">🔁 Làm lại</span>' : '') + '</div>' +
       (state.showHints && hints.length
         ? '<div class="as-hint-row" id="as-hint-row"><button class="as-hint-btn ask-lulu" id="as-hint-btn" title="Hỏi Lulu gợi ý từ vựng"><span class="ask-lulu-ic"></span> Hỏi Lulu từ vựng <span id="as-hint-n">0/' + maxHint + '</span></button></div>'
         : '') +
@@ -400,7 +417,9 @@ function luluOr(score, fallbackHtml) {
       mounted = window.WbwDrill.mount(host, {
         answer: s.translationAnswer,
         bridgeInput: fallback,
+        maxWordErrors: MAX_WORD_ERRORS,
         onComplete: function () { submitAnswer(); },
+        onFail: function (info) { failSentence(info); },
       });
     }
     if (mounted) {
@@ -462,6 +481,11 @@ function luluOr(score, fallbackHtml) {
       sentenceId: s._id, userAnswer: userAnswer, isCorrect: data.isCorrect, score: data.score,
       modelAnswer: data.modelAnswer, feedbackVi: data.feedbackVi, promptVi: s.promptVi,
     };
+    // A sentence failed on the 3-wrong-tries rule stays wrong in the score —
+    // redoing it is practice, not a second chance at the mark.
+    if (existing >= 0 && state.attempts[existing].drillFailed) {
+      entry.isCorrect = false; entry.score = 0; entry.drillFailed = true;
+    }
     if (existing >= 0) state.attempts[existing] = entry; else state.attempts.push(entry);
 
     if (data.isCorrect) { if (window.playOk) window.playOk(); }
@@ -470,6 +494,45 @@ function luluOr(score, fallbackHtml) {
     if (btn) { btn.disabled = true; btn.style.display = 'none'; }
     saveDraft();
     showFeedback(data, userAnswer);
+  }
+
+  // The drill hit MAX_WORD_ERRORS on one word: grade the sentence wrong
+  // locally (no /check — the bridge now holds the revealed answer) and put
+  // another copy REQUEUE_GAP sentences later so the student redoes it.
+  function failSentence(info) {
+    if (state.answered) return;
+    var s = state.sentences[state.idx];
+    if (!s) return;
+    state.answered = true;
+    var requeued = requeueSentence(state.idx);
+    var partial = (info && info.sofar) || '';
+    var stuck = info && info.word ? 'từ “' + info.word + '”' : 'một từ';
+    var data = {
+      isCorrect: false, score: 0, modelAnswer: s.translationAnswer,
+      feedbackVi: 'Bạn gõ sai ' + stuck + ' ' + MAX_WORD_ERRORS + ' lần nên câu này tính là sai. ' +
+        (requeued ? 'Xem kỹ đáp án mẫu nhé — câu này sẽ quay lại sau ' + REQUEUE_GAP + ' câu để bạn làm lại 💪'
+                  : 'Xem kỹ đáp án mẫu và ghi nhớ nhé.'),
+    };
+    state.status[state.idx] = 'wrong';
+    var existing = state.attempts.findIndex(function (a) { return String(a.sentenceId) === String(s._id); });
+    var entry = {
+      sentenceId: s._id, userAnswer: partial, isCorrect: false, score: 0, drillFailed: true,
+      modelAnswer: data.modelAnswer, feedbackVi: data.feedbackVi, promptVi: s.promptVi,
+    };
+    if (existing >= 0) state.attempts[existing] = entry; else state.attempts.push(entry);
+    saveDraft();
+    showFeedback(data, partial ? partial + ' …' : '(chưa gõ xong từ nào)');
+  }
+
+  function requeueSentence(idx) {
+    var s = state.sentences[idx];
+    if (!s) return false;
+    var copies = state.sentences.filter(function (x) { return String(x._id) === String(s._id); }).length - 1;
+    if (copies >= MAX_REQUEUES) return false;
+    var at = Math.min(idx + 1 + REQUEUE_GAP, state.sentences.length);
+    state.sentences.splice(at, 0, Object.assign({}, s, { _isRepeat: true }));
+    state.status.splice(at, 0, 'pending');
+    return true;
   }
 
   // A failed check must not leave a drill-mode student stuck (the drill is
@@ -515,7 +578,8 @@ function luluOr(score, fallbackHtml) {
   async function finishPractice() {
     unmountDrill();
     var correct = state.attempts.filter(function (a) { return a.isCorrect; }).length;
-    var total = state.sentences.length;
+    // Requeued copies (3-wrong-tries rule) aren't extra sentences.
+    var total = state.sentences.filter(function (s) { return !s._isRepeat; }).length;
     var score = total ? Math.round((correct / total) * 100) : 0;
     saveGroupScore(state.selectedGroup._id, score);
 

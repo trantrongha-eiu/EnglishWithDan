@@ -751,7 +751,31 @@
         // Skipped if ANY item's drill failed to mount (untypable answer,
         // script not loaded) — that item fell back to a manual textarea, so
         // the student still needs to review/type it and click submit themself.
+        // Site-wide typing rule: the 3rd wrong try on one word fails that
+        // item. It is graded wrong (collectAnswers sends what was typed
+        // before the stuck word, not the revealed answer now in the bridge)
+        // and, after a moment to read the answer, its drill restarts so the
+        // student types the sentence again before the exercise submits.
         var wbwTotal = 0, wbwDone = 0, wbwMountFailed = false;
+        state._wbwFailed = {};
+        var mountItem = function (it, host, bridge, focus) {
+          return window.WbwDrill.mount(host, {
+            answer: it.translationAnswer, bridgeInput: bridge, autoFocus: focus,
+            maxWordErrors: 3,
+            onComplete: function () {
+              wbwDone++;
+              if (!wbwMountFailed && wbwDone >= wbwTotal && !state.answered && !state._submitting) submit();
+            },
+            onFail: function (info) {
+              if (!(it.id in state._wbwFailed)) state._wbwFailed[it.id] = (info && info.sofar) || '';
+              toast('Gõ sai 1 từ 3 lần — câu này tính sai. Xem đáp án rồi gõ lại nhé!', 'info');
+              setTimeout(function () {
+                if (state.answered || state._submitting || !document.body.contains(host)) return;
+                mountItem(it, host, bridge, true);
+              }, 2200);
+            }
+          });
+        };
         ex.items.forEach(function (it, idx) {
           var host = document.querySelector('[data-wbw-host="' + it.id + '"]');
           var bridge = document.querySelector('textarea[data-item="' + it.id + '"]');
@@ -759,10 +783,7 @@
           // mount focus() fires on its own timer, so without this the LAST
           // item mounted would steal focus from all the ones before it.
           var ok = !!(host && bridge && it.translationAnswer && window.WbwDrill &&
-            window.WbwDrill.mount(host, { answer: it.translationAnswer, bridgeInput: bridge, autoFocus: idx === 0, onComplete: function () {
-              wbwDone++;
-              if (!wbwMountFailed && wbwDone >= wbwTotal && !state.answered && !state._submitting) submit();
-            } }));
+            mountItem(it, host, bridge, idx === 0));
           if (ok) wbwTotal++;
           else { wbwMountFailed = true; if (bridge) bridge.style.display = ''; }
         });
@@ -832,6 +853,9 @@
       });
       else if (t === 'error_correction' || t === 'word_form' || t === 'sentence_transform') ex.items.forEach(function (it) {
         var el = document.querySelector('[data-item="' + it.id + '"]'); ans[it.id] = el ? el.value.trim() : '';
+        // Failed on the 3-wrong-tries rule: graded on what was typed before
+        // the stuck word, even if the redo finished it.
+        if (t === 'sentence_transform' && state._wbwFailed && it.id in state._wbwFailed) ans[it.id] = state._wbwFailed[it.id];
       });
       else if (t === 'categorize') ex.items.forEach(function (it) {
         var chip = document.querySelector('#t1-body .t1-chip[data-item="' + it.id + '"]');

@@ -3182,7 +3182,7 @@ function _checkMCAnswer(btn, selected, correct, optionsSelector, nextBtnId) {
     document.getElementById(nextBtnId).style.display = 'flex';
 }
 
-// forceWrong: the WbwDrill gave up on this question (maxErrors exceeded —
+// forceWrong: the WbwDrill gave up on this question (3rd wrong try —
 // see _mountVocabDrill) and already revealed the answer itself; grade it wrong
 // unconditionally instead of comparing `ua` (which, coming from the drill's
 // bridge input, only ever holds correctly-typed letters and would otherwise
@@ -3505,15 +3505,15 @@ function showListeningQuestion() {
 //    the mode's existing check function — once the whole answer has been
 //    typed. Falls back to the plain input row when the answer is
 //    missing/untypable or WbwDrill isn't loaded.
-// maxErrors: 3 — a wrong letter/word entered more than 3 times fails the
+// maxErrors: 3 — the 3rd wrong letter/word (site-wide typing rule) fails the
 // question out immediately instead of letting the student keep guessing
 // letter-by-letter until it turns green (a wrong letter always shakes and is
 // rejected, so without a cap this drill degenerates into "try every letter",
 // never real recall). onDone(true) below routes to each check function's own
 // "wrong answer" branch — see checkListening/checkTranslation/checkMixedListen/
-// checkMixedTrans's new `forceWrong` param. Vocab-only: the Task 2/Task 1/WT1/
-// WT2 "Dịch câu" drills mount WbwDrill directly (not through this helper) and
-// keep their unlimited-attempts behavior unchanged.
+// checkMixedTrans's new `forceWrong` param, which also requeue the word
+// (requeueWrongWord). The sentence drills mount WbwDrill directly with
+// maxWordErrors: 3 instead (same rule, counted per word).
 function _mountVocabDrill(hostId, rowId, answer, onDone) {
     const host = document.getElementById(hostId);
     const row  = document.getElementById(rowId);

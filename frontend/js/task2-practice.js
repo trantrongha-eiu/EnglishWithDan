@@ -20,10 +20,9 @@ const Q_LABELS = { essay_type_recognition:'Nhận diện dạng', fill_blank:'Đ
 // model sentence as q.translationAnswer for each). translation + paraphrase
 // + the conclusion / short-writing prompts.
 const WBW_TYPES = new Set(['translation', 'paraphrase', 'short_writing']);
-// Same rule as the vocab drills (dashboard.js _mountVocabDrill maxErrors 3 +
-// requeueWrongWord): a word mistyped more than WBW_MAX_WORD_ERRORS times
-// fails the sentence, which then comes back WBW_REQUEUE_GAP questions later
-// for another go — at most WBW_MAX_REQUEUES times, so no endless loop.
+// Site-wide typing rule (same as every WbwDrill caller): the
+// WBW_MAX_WORD_ERRORS-th wrong try on one word fails the sentence, which
+// then comes back WBW_REQUEUE_GAP questions later for another go — at most WBW_MAX_REQUEUES times, so no endless loop.
 // Counted per word (not per sentence like vocab) since a sentence is ~30 words.
 const WBW_MAX_WORD_ERRORS = 3;
 const WBW_REQUEUE_GAP = 3;
@@ -3072,7 +3071,7 @@ function renderQuestion(q) {
     <div class="t2-wbw-words" id="wbw-words" onclick="wbwFocus()"></div>
     <input class="t2-wbw-input" id="wbw-input" type="text" autocomplete="off"
       autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />
-    <div class="t2-wbw-hint">${para ? 'Gõ lại đoạn mẫu từng chữ — đúng thì tự mở từ tiếp theo.' : 'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá. Bí chữ nào thì hỏi Lulu nha.'} Gõ sai 1 từ quá ${WBW_MAX_WORD_ERRORS} lần thì câu tính sai và sẽ quay lại sau để làm lại.</div>
+    <div class="t2-wbw-hint">${para ? 'Gõ lại đoạn mẫu từng chữ — đúng thì tự mở từ tiếp theo.' : 'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá. Bí chữ nào thì hỏi Lulu nha.'} <b>Gõ sai 1 từ ${WBW_MAX_WORD_ERRORS} lần là câu tính sai và phải làm lại</b> (câu sẽ quay lại sau).</div>
   </div>
   <textarea class="wp-answer-box hidden" id="answer-box" rows="3" aria-hidden="true" tabindex="-1"></textarea>`;
   }
@@ -3127,7 +3126,7 @@ let _wbw = null;
 // Set for exactly one submitPractice() call: the drill finished the sentence,
 // so it's a verbatim match to the answer and needs no server grading.
 let _wbwVerbatimPending = false;
-// Set for exactly one submitPractice() call: a word was mistyped more than
+// Set for exactly one submitPractice() call: a word was mistyped
 // WBW_MAX_WORD_ERRORS times — grade the sentence wrong locally and requeue it.
 // Holds the word the student got stuck on.
 let _wbwFailPending = null;
@@ -3312,7 +3311,7 @@ function _wbwOnInput() {
     // A second wrong key during the 260ms shake isn't a separate try (same
     // as the shared drill's _flashError).
     if (!_wbw.erroring) _wbw.wordErrors++;
-    if (_wbw.wordErrors > WBW_MAX_WORD_ERRORS) { _wbwFail(); return; }
+    if (_wbw.wordErrors >= WBW_MAX_WORD_ERRORS) { _wbwFail(); return; }
     _wbwFlashError();
     return;
   }
@@ -3356,7 +3355,7 @@ function _wbwComplete() {
   }, 550);
 }
 
-// A word was mistyped more than WBW_MAX_WORD_ERRORS times: lock the drill,
+// A word was mistyped WBW_MAX_WORD_ERRORS times: lock the drill,
 // flag the stuck word, and hand off to submitPractice() to grade the
 // sentence wrong and push it back in the queue.
 function _wbwFail() {
@@ -3519,7 +3518,7 @@ async function submitPractice() {
       data = {
         success: true, isCorrect: false, score: 0,
         modelAnswer: q.translationAnswer,
-        feedbackVi: `Bạn gõ sai ${stuckWord} quá ${WBW_MAX_WORD_ERRORS} lần nên câu này tính là sai. `
+        feedbackVi: `Bạn gõ sai ${stuckWord} ${WBW_MAX_WORD_ERRORS} lần nên câu này tính là sai. `
           + (requeued
             ? 'Xem kỹ đáp án mẫu nhé — câu này sẽ quay lại ở phía sau để bạn làm lại 💪'
             : 'Xem kỹ đáp án mẫu rồi ôn lại ở "Ôn lại câu sai" sau buổi nhé.'),

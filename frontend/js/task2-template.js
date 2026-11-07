@@ -1516,11 +1516,11 @@ function renderRecall(host, s, { free, onDone, nextLabel = 'Tiếp', nextFn = 'd
     </div>`;
   const input = document.getElementById('pth-recall-in');
   if (!free && window.WbwDrill) {
-    const words = countWords(_recall.answer);
+    // Site-wide typing rule: the 3rd wrong try on one word fails the sentence.
     const ok = window.WbwDrill.mount(document.getElementById('pth-wbw'), {
-      answer: _recall.answer, bridgeInput: input, maxErrors: Math.max(4, Math.ceil(words / 3)),
+      answer: _recall.answer, bridgeInput: input, maxWordErrors: 3,
       onComplete: () => _recallFinish(true, null),
-      onFail: () => _recallFinish(false, null),
+      onFail: () => _recallFinish(false, null, true),
     });
     if (ok) {
       input.style.display = 'none';
@@ -1564,7 +1564,8 @@ function recallGiveUp() {
   _unmountDrill();
   _recallFinish(false, null);
 }
-function _recallFinish(ok, diff) {
+// drillFailed: the WbwDrill hit its 3-wrong-tries cap on one word.
+function _recallFinish(ok, diff, drillFailed) {
   const r = _recall; if (!r || r.done) return;
   r.done = true;
   const input = document.getElementById('pth-recall-in');
@@ -1575,10 +1576,10 @@ function _recallFinish(ok, diff) {
   const fb = document.getElementById('pth-recall-fb');
   if (fb) fb.innerHTML = ok
     ? `<div class="pth-fb pth-fb--good">✅ Nhớ đúng!${diffPart}${note}</div>`
-    : `<div class="pth-fb pth-fb--bad">${diffPart}<div><b>Câu đúng:</b> ${enHtml(r.s)}</div></div>`;
+    : `<div class="pth-fb pth-fb--bad">${drillFailed ? '<div>Gõ sai 1 từ 3 lần nên câu này tính sai — xem câu đúng rồi làm lại nha.</div>' : ''}${diffPart}<div><b>Câu đúng:</b> ${enHtml(r.s)}</div></div>`;
   const acts = document.getElementById('pth-recall-actions');
   if (acts) acts.innerHTML = `<button class="pth-btn pth-btn--primary" id="pth-next" onclick="${r.nextFn}">${esc(r.nextLabel)} <i class="fas fa-arrow-right"></i></button>`;
-  r.onDone(ok, diff, r.hints > 0);
+  r.onDone(ok, diff, r.hints > 0, !!drillFailed);
   setTimeout(() => document.getElementById('pth-next')?.focus(), 30);
 }
 function _unmountDrill() {
@@ -2000,9 +2001,13 @@ function renderRecallRun() {
     nextLabel: last ? 'Xem kết quả' : 'Câu tiếp',
     nextFn: 'recallRunNext()',
     passPct: isExam ? SENT_KNOWN : RECALL_PASS_B7,
-    onDone: (ok, _d, hinted) => {
+    onDone: (ok, _d, hinted, drillFailed) => {
+      // A redo copy (see below) is practice only — the first try is the mark.
+      if (s._redo) return;
       r.results[r.pos] = ok;
       if (!isExam) bumpMastery(r.pending, s.key, ok && !hinted ? 1 : ok ? 0 : -1);
+      // 3-wrong-tries rule: the sentence comes back at the end of this run.
+      if (drillFailed && !isExam) r.items.push({ ...s, _redo: true });
     },
   });
   if (isExam) { const g = document.getElementById('pth-giveup'); if (g) g.innerHTML = '<i class="fas fa-forward"></i> Bỏ qua'; }

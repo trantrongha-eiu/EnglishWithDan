@@ -234,7 +234,7 @@ describe('WbwDrill — maxErrors / onFail (vocab drills fail out after too many 
     return { host, input, onComplete, onFail, mounted };
   }
 
-  test('omitting maxErrors (Task 2/Task 1/WT1/WT2 "Dịch câu") keeps unlimited attempts — repeated wrong letters never fail the drill', async () => {
+  test('omitting maxErrors/maxWordErrors keeps unlimited attempts — repeated wrong letters never fail the drill', async () => {
     const { host, input, onComplete } = mount('cat'); // no maxErrors passed
     for (let i = 0; i < 5; i++) {
       typeChar(input, 'x');
@@ -245,18 +245,18 @@ describe('WbwDrill — maxErrors / onFail (vocab drills fail out after too many 
     expect(host.querySelector('.wbwd-word.is-wrong')).toBeNull();
   }, 10000);
 
-  test('a wrong letter entered more than 3 times (maxErrors: 3) fails the question, reveals the answer, and calls onFail instead of onComplete', async () => {
+  test('the 3rd wrong letter (maxErrors: 3) fails the question, reveals the answer, and calls onFail instead of onComplete', async () => {
     const { host, input, onComplete, onFail } = mountWithLimit('cat', 3);
-    // Attempts 1-3 stay within the limit — still an ordinary error flash, no
+    // Attempts 1-2 stay within the limit — still an ordinary error flash, no
     // fail yet. Spaced past the 260ms error-flash debounce so each keystroke
     // counts as its own distinct wrong attempt.
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
       typeChar(input, 'x');
       await sleep(300);
       expect(onFail).not.toHaveBeenCalled();
       expect(input.disabled).toBe(false);
     }
-    // 4th wrong attempt exceeds maxErrors: 3.
+    // 3rd wrong attempt hits maxErrors: 3 (site-wide "sai 3 lần là sai").
     typeChar(input, 'x');
     await sleep(800);
     expect(onFail).toHaveBeenCalledTimes(1);
@@ -266,6 +266,13 @@ describe('WbwDrill — maxErrors / onFail (vocab drills fail out after too many 
     // The green "X / X từ" pill would misread as success — must not show it.
     expect(host.querySelector('[data-role="count"]').classList.contains('is-full')).toBe(false);
   }, 10000);
+
+  test('the rule is spelled out under the drill when a cap is set, and not otherwise', () => {
+    const capped = mountWithLimit('cat', 3);
+    expect(capped.host.querySelector('.wbwd-hint').textContent).toContain('Gõ sai 3 lần là tính sai');
+    const free = mount('cat');
+    expect(free.host.querySelector('.wbwd-hint').textContent).not.toContain('Gõ sai');
+  });
 
   test('correctly finishing the word before the limit is hit still completes normally', async () => {
     const { host, input, onComplete, onFail } = mountWithLimit('cat', 3);
@@ -379,5 +386,53 @@ describe('WbwDrill — Vietnamese keyboard (Telex) left on while typing an Engli
     pressKey(input, ' ');
     expect(host.querySelectorAll('.wbwd-word.is-done').length).toBe(1);
     expect(imeBox(host).style.display).toBe('none');
+  });
+});
+
+describe('WbwDrill — maxWordErrors (Speaking Part 2 "Dịch câu": cap counted per word)', () => {
+  function mountPerWord(answer, maxWordErrors) {
+    const host = document.createElement('div');
+    document.body.appendChild(host);
+    const onComplete = jest.fn();
+    const onFail = jest.fn();
+    window.WbwDrill.mount(host, { answer, onComplete, onFail, maxWordErrors });
+    const input = host.querySelector('[data-role="input"]');
+    return { host, input, onComplete, onFail };
+  }
+
+  test('wrong tries spread over different words never add up to a fail', async () => {
+    const { input, onComplete, onFail } = mountPerWord('cat dog', 3);
+    for (let i = 0; i < 2; i++) { typeChar(input, 'x'); await sleep(300); }
+    'cat'.split('').forEach((ch) => typeChar(input, ch));
+    for (let i = 0; i < 2; i++) { typeChar(input, 'x'); await sleep(300); }
+    'dog'.split('').forEach((ch) => typeChar(input, ch));
+    await sleep(600);
+    expect(onFail).not.toHaveBeenCalled();
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  }, 15000);
+
+  test('the 3rd wrong try on the same word fails the drill and reports the stuck word', async () => {
+    const { host, input, onComplete, onFail } = mountPerWord('cat dog', 3);
+    'cat'.split('').forEach((ch) => typeChar(input, ch));
+    for (let i = 0; i < 3; i++) { typeChar(input, 'x'); await sleep(300); }
+    await sleep(600);
+    expect(onFail).toHaveBeenCalledTimes(1);
+    expect(onFail).toHaveBeenCalledWith({ word: 'dog', sofar: 'cat' });
+    expect(onComplete).not.toHaveBeenCalled();
+    expect(host.querySelector('.wbwd-word.is-wrong')).not.toBeNull();
+    expect(host.querySelector('.wbwd-hint').textContent).toContain('Gõ sai 1 từ 3 lần');
+  }, 10000);
+});
+
+describe('WbwDrill.peek ("Hỏi Lulu" next letter)', () => {
+  test('returns the next letter of the active word, then null once done', async () => {
+    const { host, input } = mount("I'm fine");
+    expect(window.WbwDrill.peek(host)).toEqual({ next: 'I', sofar: 'I', word: 1, full: false });
+    typeChar(input, 'I');
+    expect(window.WbwDrill.peek(host)).toEqual({ next: 'm', sofar: 'Im', word: 1, full: true });
+    typeChar(input, 'm');
+    expect(window.WbwDrill.peek(host)).toMatchObject({ next: 'f', word: 2 });
+    'fine'.split('').forEach((ch) => typeChar(input, ch));
+    expect(window.WbwDrill.peek(host)).toBeNull();
   });
 });

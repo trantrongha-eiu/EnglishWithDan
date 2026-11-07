@@ -18,25 +18,32 @@
        bridgeInput: <input>,        // optional: its .value is kept in sync so an
                                     //   existing check function can read it
        onComplete:  () => {...},    // called once, after the last word
-       maxErrors:   3,              // optional: fail out after this many wrong
-                                    //   attempts (a rejected letter in per-letter
-                                    //   mode, a committed mismatch in per-word
-                                    //   mode) — used by the vocab drills (VocabBook
-                                    //   + vocabulary-lesson quiz) so a student can't
-                                    //   just try every letter until it turns green;
-                                    //   omitted (default) = unlimited, unchanged
-                                    //   behavior for the Task 2/Task 1/WT1/WT2
-                                    //   "Dịch câu" drills.
-       onFail:      () => {...},    // called once instead of onComplete when
-                                    //   maxErrors is exceeded — the drill reveals
-                                    //   the correct answer and disables itself;
-                                    //   the caller is expected to grade this as
-                                    //   wrong (NOT re-check the bridge input,
-                                    //   which now holds the correct answer purely
-                                    //   for display).
+       maxErrors:   3,              // optional: fail out on the Nth wrong attempt
+                                    //   (a rejected letter in per-letter mode, a
+                                    //   committed mismatch in per-word mode) —
+                                    //   counted over the whole drill; used by the
+                                    //   single-word vocab drills (VocabBook +
+                                    //   vocabulary-lesson quiz).
+       maxWordErrors: 3,            // optional: same, but counted per word (reset
+                                    //   on each new word) — the sentence drills
+                                    //   (Dịch câu nâng cao, WT1/WT2 course,
+                                    //   Task 2 Templates, Speaking Part 2).
+                                    //   Site-wide rule: 3 wrong tries = fail.
+                                    //   Omit both = unlimited tries.
+       onFail:      (info) => {...},// called once instead of onComplete when a
+                                    //   cap is hit — the drill reveals the
+                                    //   correct answer and disables itself;
+                                    //   the caller grades this as wrong and
+                                    //   makes the student redo it (NOT by
+                                    //   re-checking the bridge input, which now
+                                    //   holds the correct answer purely for
+                                    //   display). info = { word, sofar }: the
+                                    //   word the student got stuck on and the
+                                    //   words finished before it.
      });
      WbwDrill.unmount(hostEl);
      WbwDrill.isActive(hostEl) -> bool   // mounted and not yet completed
+     WbwDrill.peek(hostEl) -> { next, sofar, word, full } | null  // "Hỏi Lulu"
    ══════════════════════════════════════════════════════════════════════ */
 (function (global) {
   'use strict';
@@ -213,10 +220,14 @@
     this.bridgeInput = opts.bridgeInput || null;
     this.onComplete = typeof opts.onComplete === 'function' ? opts.onComplete : function () {};
     this.onFail = typeof opts.onFail === 'function' ? opts.onFail : null;
-    // 0 = unlimited (default) — every non-vocab caller (Task 2/Task 1/WT1/WT2
-    // "Dịch câu") omits this and keeps its current no-cap behavior.
+    // 0 = unlimited (default). Fails on the maxErrors-th wrong try.
     this.maxErrors = (typeof opts.maxErrors === 'number' && opts.maxErrors > 0) ? opts.maxErrors : 0;
     this.wrongCount = 0;
+    // Per-WORD cap (0 = off): fail on the maxWordErrors-th wrong try on one
+    // word — for sentences, where a whole-drill cap (maxErrors) would be too
+    // harsh. Reset on each new word.
+    this.maxWordErrors = (typeof opts.maxWordErrors === 'number' && opts.maxWordErrors > 0) ? opts.maxWordErrors : 0;
+    this.wordWrong = 0;
     this.failed = false;
     this.tokens = tokenize(this.answer);
     this.activeIdx = 0;
@@ -291,7 +302,7 @@
         '<input class="wbwd-input" data-role="input" type="text" autocomplete="off" ' +
           'autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />' +
         '<div class="wbwd-ime" data-role="ime" role="status" style="display:none"></div>' +
-        '<div class="wbwd-hint">Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Không cần gõ dấu câu (-, \', .) — cứ gõ tiếp chữ sau, dấu câu tự thêm. Backspace để xoá.</div>' +
+        '<div class="wbwd-hint">Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Không cần gõ dấu câu (-, \', .) — cứ gõ tiếp chữ sau, dấu câu tự thêm. Backspace để xoá.' + this._ruleHint() + '</div>' +
       '</div>';
     this.$count = this.host.querySelector('[data-role="count"]');
     this.$words = this.host.querySelector('[data-role="words"]');
@@ -300,6 +311,13 @@
     this.$words.addEventListener('click', this._focus);
     this._renderWords();
     this._updateBar();
+  };
+
+  // The fail rule, spelled out under the drill whenever a cap is set.
+  Drill.prototype._ruleHint = function () {
+    if (this.maxWordErrors) return ' <b>Gõ sai 1 từ ' + this.maxWordErrors + ' lần là tính sai và phải làm lại.</b>';
+    if (this.maxErrors) return ' <b>Gõ sai ' + this.maxErrors + ' lần là tính sai.</b>';
+    return '';
   };
 
   Drill.prototype._bind = function () {
@@ -390,13 +408,16 @@
     if (this.erroring) return;
     this.erroring = true;
     this.wrongCount++;
+    this.wordWrong++;
     if (this.$input) this.$input.classList.add('is-error');
     this._renderWords();
     var self = this;
-    // maxErrors exceeded (vocab drills only — see the constructor comment):
-    // stop giving the student more tries to guess the next letter and fail
-    // the whole question out instead of just shaking and waiting for a retry.
-    if (this.maxErrors && this.wrongCount > this.maxErrors) {
+    // Cap reached (the Nth wrong try): stop giving the student more tries to
+    // guess the next letter and fail the question out instead of just
+    // shaking and waiting for a retry. maxWordErrors counts the current
+    // word only.
+    if ((this.maxErrors && this.wrongCount >= this.maxErrors) ||
+        (this.maxWordErrors && this.wordWrong >= this.maxWordErrors)) {
       this._errorTimer = setTimeout(function () { self._fail(); }, 260);
       return;
     }
@@ -422,13 +443,18 @@
       this.$input.disabled = true;
       this.$input.blur();
     }
+    var stuck = this.tokens[this.activeIdx];
+    var info = {
+      word: stuck ? stuck.raw.replace(NOT_TYPABLE, '') : '',
+      sofar: this.tokens.slice(0, this.activeIdx).map(function (t) { return t.raw; }).join(' ')
+    };
     this._renderWords();
     this._updateBar();
     this._syncBridge(true);
     if (typeof window !== 'undefined' && typeof window.playWrong === 'function') window.playWrong();
     var self = this;
     this._completeTimer = setTimeout(function () {
-      if (self.onFail) self.onFail();
+      if (self.onFail) self.onFail(info);
     }, 450);
   };
 
@@ -488,6 +514,7 @@
   // Advance past the just-completed active word.
   Drill.prototype._advanceWord = function () {
     this.activeIdx++;
+    this.wordWrong = 0;
     this.typed = '';
     if (this.$input) this.$input.value = '';
     this._renderWords();
@@ -683,6 +710,19 @@
     isActive: function (host) {
       var d = host && registry.get(host);
       return !!(d && !d.done);
+    },
+    // "Hỏi Lulu": the next letter of the word being typed, never typed in for
+    // the student. → { next, sofar, word, full } or null (done / not mounted).
+    peek: function (host) {
+      var d = host && registry.get(host);
+      if (!d || d.done) return null;
+      var tok = d.tokens[d.activeIdx];
+      if (!tok) return null;
+      var have = d.typed.replace(NOT_TYPABLE, '').length;
+      var next = tok.target.charAt(have);
+      if (!next) return null;
+      var sofar = tok.target.slice(0, have + 1);
+      return { next: next, sofar: sofar, word: d.activeIdx + 1, full: sofar.length >= tok.target.length };
     },
     isMounted: function (host) {
       return !!(host && registry.get(host));

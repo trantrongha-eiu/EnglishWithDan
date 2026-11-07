@@ -950,10 +950,11 @@ function showLessonQuizHint() {
 // plain #qInputRow is the value bridge and stays hidden while the drill is
 // active; returns false (→ caller keeps the plain input) if the word can't
 // be drilled or WbwDrill isn't available.
-// maxErrors: 3 — a wrong letter/word entered more than 3 times fails the
-// question out immediately (onDone(true) → checkFillQuiz/checkListenQuiz's
-// forceWrong) instead of letting the student keep guessing letter-by-letter
-// until it turns green.
+// maxErrors: 3 — the 3rd wrong letter/word fails the question out
+// immediately (onDone(true) → checkFillQuiz/checkListenQuiz's forceWrong)
+// instead of letting the student keep guessing letter-by-letter until it
+// turns green; the question then comes back later to redo
+// (_requeueLessonQuizQ).
 function _mountLessonQuizDrill(inputId, onDone) {
     const host       = document.getElementById('qWbwHost');
     const row        = document.getElementById('qInputRow');
@@ -975,7 +976,22 @@ function _mountLessonQuizDrill(inputId, onDone) {
     return ok;
 }
 
-// forceWrong: the drill already gave up (maxErrors exceeded) and revealed the
+// Site-wide typing rule: a question failed on the drill's 3-wrong-tries cap
+// comes back LESSON_REQUEUE_GAP questions later to redo (max 2 times). The
+// redo copy (_redo) is practice only — it never changes the score.
+const LESSON_REQUEUE_GAP = 3;
+const LESSON_MAX_REQUEUES = 2;
+function _requeueLessonQuizQ() {
+    const quiz = lessonState.quiz;
+    const q = quiz.queue[quiz.index];
+    if (!q || !q.word) return;
+    const copies = quiz.queue.filter(x => x._redo && x.word === q.word && x.type === q.type).length;
+    if (copies >= LESSON_MAX_REQUEUES) return;
+    const at = Math.min(quiz.index + 1 + LESSON_REQUEUE_GAP, quiz.queue.length);
+    quiz.queue.splice(at, 0, { ...q, _redo: true });
+}
+
+// forceWrong: the drill already gave up (3rd wrong try) and revealed the
 // answer itself — grade wrong unconditionally instead of reading `val` (the
 // drill's bridge input only ever holds correctly-typed letters).
 function checkFillQuiz(forceWrong) {
@@ -989,6 +1005,7 @@ function checkFillQuiz(forceWrong) {
     if (input) input.disabled = true;
     showQuizFeedback(correct, q.word, q.word.word);
     recordAnswer(correct);
+    if (forceWrong) _requeueLessonQuizQ();
     document.getElementById('qBtnNext').style.display = 'flex';
 }
 
@@ -1003,6 +1020,7 @@ function checkListenQuiz(forceWrong) {
     if (input) input.disabled = true;
     showQuizFeedback(correct, q.word, q.word.word);
     recordAnswer(correct);
+    if (forceWrong) _requeueLessonQuizQ();
     document.getElementById('qBtnNext').style.display = 'flex';
 }
 
@@ -1096,6 +1114,12 @@ function checkRearrangeQuiz() {
 
 function recordAnswer(correct) {
     const q = lessonState.quiz.queue[lessonState.quiz.index];
+    if (q && q._redo) {
+        // Redo of a failed question — sound only, the score already has it.
+        if (correct) { if (typeof playCorrectSound === 'function') playCorrectSound(); }
+        else if (typeof playWrongSound === 'function') playWrongSound();
+        return;
+    }
     if (correct) {
         lessonState.quiz.correct++;
         if (typeof playCorrectSound === 'function') playCorrectSound();
@@ -1140,7 +1164,7 @@ async function finishLessonQuiz() {
     lessonState.quiz.submitted = true;
     if (lessonState.quiz.timerInterval) { clearInterval(lessonState.quiz.timerInterval); lessonState.quiz.timerInterval = null; }
     const q = lessonState.quiz;
-    const total = q.queue.length;
+    const total = q.queue.filter(x => !x._redo).length; // redo copies aren't extra questions
     const timeSpentSec = Math.max(1, Math.round((Date.now() - q.startTime) / 1000));
 
     lessonState.lastSession = {

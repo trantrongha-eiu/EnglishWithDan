@@ -611,7 +611,7 @@ function showExercise(idx) {
   document.getElementById('progress-bar').style.width = pct + '%';
   document.getElementById('ex-counter').textContent  = `${idx + 1} / ${exercises.length}`;
   document.getElementById('grammar-badge').textContent = ex.grammarPoint || '';
-  document.getElementById('type-tag').textContent      = TYPE_LABELS[ex.type] || ex.type;
+  document.getElementById('type-tag').textContent      = (TYPE_LABELS[ex.type] || ex.type) + (ex._isRepeat ? ' · 🔁 Làm lại' : '');
 
   ['translation','rearrange','fill-blank','combine'].forEach(v =>
     document.getElementById('view-' + v).classList.add('hidden'));
@@ -782,6 +782,7 @@ function getUserAnswer() {
 
 async function submitAnswer() {
   if (_isSubmitting) return;
+  if (_wbw && _wbw.failed) return; // graded by onWbwFail() instead
   const ex     = exercises[currentIdx];
   const answer = getUserAnswer();
   if (!answer) { showToast('Vui lòng nhập câu trả lời!', 'warn'); return; }
@@ -830,6 +831,31 @@ async function submitAnswer() {
     document.getElementById('checking-loader').classList.add('hidden');
     _isSubmitting = false;
   }
+}
+
+// sentence-drill.js hook: a word was mistyped SD_MAX_WORD_ERRORS times.
+// Grade the sentence wrong right here (no /check call — the server would
+// only re-grade the half-typed words) and requeue it so the student redoes it.
+function onWbwFail(info) {
+  if (_isSubmitting) return;
+  const ex = exercises[currentIdx];
+  if (!ex) return;
+  const requeued = sdRequeueExercise(exercises, currentIdx);
+  const partial = (info && info.sofar) || '';
+  const xp = 5; // same as a wrong answer (writingPracticeService.xpFor)
+  document.getElementById('submit-btn').disabled = true;
+  showFeedback(partial ? partial + ' …' : '(chưa gõ xong từ nào)', {
+    feedback: { isCorrect: false, feedbackVi: sdFailFeedbackVi(info, requeued) },
+    sampleAnswer: ex.translationAnswer || ''
+  });
+  updateProgress(xp, false);
+  sessionAttempts.push({
+    exerciseId: ex._id, userAnswer: partial, xpEarned: xp, isCorrect: false,
+    sampleAnswer: ex.translationAnswer || '',
+    question: ex.question || '',
+    type: ex.type,
+    grammarPoint: ex.grammarPoint || ''
+  });
 }
 
 function showFeedback(userAnswer, data) {
@@ -1031,6 +1057,7 @@ function showDoneSummary() {
 
 function restartExercises() {
   _clearAutoAdvance();
+  exercises = sdWithoutRepeats(exercises);
   if (_wpShuffle) exercises = shuffle(exercises);
   currentIdx = 0; sessionDone = 0; sessionXP = 0; sessionCorrect = 0; sessionAttempts = [];
   comboStreak = 0; _skippedIds = new Set();
