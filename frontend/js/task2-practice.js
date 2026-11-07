@@ -20,6 +20,14 @@ const Q_LABELS = { essay_type_recognition:'Nhận diện dạng', fill_blank:'Đ
 // model sentence as q.translationAnswer for each). translation + paraphrase
 // + the conclusion / short-writing prompts.
 const WBW_TYPES = new Set(['translation', 'paraphrase', 'short_writing']);
+// Same rule as the vocab drills (dashboard.js _mountVocabDrill maxErrors 3 +
+// requeueWrongWord): a word mistyped more than WBW_MAX_WORD_ERRORS times
+// fails the sentence, which then comes back WBW_REQUEUE_GAP questions later
+// for another go — at most WBW_MAX_REQUEUES times, so no endless loop.
+// Counted per word (not per sentence like vocab) since a sentence is ~30 words.
+const WBW_MAX_WORD_ERRORS = 3;
+const WBW_REQUEUE_GAP = 3;
+const WBW_MAX_REQUEUES = 2;
 const LEVEL_COLORS = { beginner:'#22c55e', elementary:'#3b82f6', intermediate:'#a855f7' };
 
 // Each essay type spans 2 consecutive weeks (1 theme each, no theme repeated
@@ -2935,6 +2943,7 @@ function renderPractice() {
       <span class="wp-ex-counter">${state.currentIdx + 1} / ${state.questions.length}</span>
       <span style="color:${LEVEL_COLORS[q.level]||'#6b7280'};font-size:12px;font-weight:700;text-transform:uppercase">${q.level}</span>
       <span class="wp-type-tag">${Q_LABELS[q.type] || q.type}</span>
+      ${q._isRepeat ? '<span class="wp-type-tag" style="background:#fef3c7;color:#92400e">🔁 Làm lại</span>' : ''}
     </div>
     <div class="wp-card" style="margin:0 20px" id="qcard">
       ${renderQuestion(q)}
@@ -3063,7 +3072,7 @@ function renderQuestion(q) {
     <div class="t2-wbw-words" id="wbw-words" onclick="wbwFocus()"></div>
     <input class="t2-wbw-input" id="wbw-input" type="text" autocomplete="off"
       autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />
-    <div class="t2-wbw-hint">${para ? 'Gõ lại đoạn mẫu từng chữ — đúng thì tự mở từ tiếp theo.' : 'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá. Bí chữ nào thì hỏi Lulu nha.'}</div>
+    <div class="t2-wbw-hint">${para ? 'Gõ lại đoạn mẫu từng chữ — đúng thì tự mở từ tiếp theo.' : 'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá. Bí chữ nào thì hỏi Lulu nha.'} Gõ sai 1 từ quá ${WBW_MAX_WORD_ERRORS} lần thì câu tính sai và sẽ quay lại sau để làm lại.</div>
   </div>
   <textarea class="wp-answer-box hidden" id="answer-box" rows="3" aria-hidden="true" tabindex="-1"></textarea>`;
   }
@@ -3118,6 +3127,10 @@ let _wbw = null;
 // Set for exactly one submitPractice() call: the drill finished the sentence,
 // so it's a verbatim match to the answer and needs no server grading.
 let _wbwVerbatimPending = false;
+// Set for exactly one submitPractice() call: a word was mistyped more than
+// WBW_MAX_WORD_ERRORS times — grade the sentence wrong locally and requeue it.
+// Holds the word the student got stuck on.
+let _wbwFailPending = null;
 
 function _wbwTokenize(answer) {
   return String(answer).trim().split(/\s+/).filter(Boolean).map(raw => {
@@ -3145,6 +3158,9 @@ function wbwInit() {
     activeIdx: answered ? tokens.length : 0,
     typed: '',
     erroring: false,
+    wordErrors: 0,     // wrong tries on the active word (reset on each new word)
+    failed: false,
+    composing: false,
     done: answered,
     locked: answered
   };
@@ -3159,6 +3175,11 @@ function wbwInit() {
       input.addEventListener('keydown', _wbwKeydown);
       input.addEventListener('input', _wbwOnInput);
       input.addEventListener('paste', e => e.preventDefault());
+      // Mobile keyboards with autocorrect compose plain English words too; an
+      // in-progress composition isn't a wrong keystroke, so don't let it burn
+      // through the WBW_MAX_WORD_ERRORS cap — check once it's committed.
+      input.addEventListener('compositionstart', () => { if (_wbw) _wbw.composing = true; });
+      input.addEventListener('compositionend', () => { if (_wbw) { _wbw.composing = false; _wbwOnInput(); } });
     }
   }
   _wbwRenderWords();
@@ -3196,6 +3217,11 @@ function _wbwRenderWords() {
   host.innerHTML = tokens.map((t, i) => {
     if (i < activeIdx) {
       return `<span class="t2-wbw-word is-done" data-i="${i}">${_escHtml(t.raw)}</span>`;
+    }
+    if (i === activeIdx && _wbw.failed) {
+      // The word the student got stuck on — shown in red before the
+      // feedback card (with the full model sentence) takes over.
+      return `<span class="t2-wbw-word is-active is-error" data-i="${i}">${_escHtml(t.raw)}</span>`;
     }
     if (i === activeIdx && !done) {
       const remaining = Math.max(0, t.target.length - typed.length);
@@ -3264,7 +3290,7 @@ function _wbwKeydown(e) {
 // (also covers IME / mobile / long-press). We never rewrite a wrong character
 // into a right one — a rejected char is simply removed and the student retypes.
 function _wbwOnInput() {
-  if (!_wbw || _wbw.locked || _wbw.done) return;
+  if (!_wbw || _wbw.locked || _wbw.done || _wbw.composing) return;
   const input = document.getElementById('wbw-input');
   if (!input) return;
   const tok = _wbw.tokens[_wbw.activeIdx];
@@ -3282,12 +3308,20 @@ function _wbwOnInput() {
   _wbw.typed = good;
   input.value = good;                                   // active-recall: never auto-fill
 
-  if (rejected) { _wbwFlashError(); return; }
+  if (rejected) {
+    // A second wrong key during the 260ms shake isn't a separate try (same
+    // as the shared drill's _flashError).
+    if (!_wbw.erroring) _wbw.wordErrors++;
+    if (_wbw.wordErrors > WBW_MAX_WORD_ERRORS) { _wbwFail(); return; }
+    _wbwFlashError();
+    return;
+  }
   if (good.length < tok.target.length) { _wbwRenderWords(); return; }
 
   // ── active word complete ──
   _wbw.activeIdx++;
   _wbw.typed = '';
+  _wbw.wordErrors = 0;
   input.value = '';
   _wbwRenderWords();
   _wbwUpdateBar();
@@ -3320,6 +3354,44 @@ function _wbwComplete() {
     _wbwVerbatimPending = true;
     submitPractice();
   }, 550);
+}
+
+// A word was mistyped more than WBW_MAX_WORD_ERRORS times: lock the drill,
+// flag the stuck word, and hand off to submitPractice() to grade the
+// sentence wrong and push it back in the queue.
+function _wbwFail() {
+  if (!_wbw || _wbw.done) return;
+  const stuck = _wbw.tokens[_wbw.activeIdx];
+  _wbw.failed = true;
+  _wbw.done = true;
+  _wbw.locked = true;
+  _wbw.erroring = false;
+  const input = document.getElementById('wbw-input');
+  if (input) { input.classList.remove('is-error'); input.value = ''; input.disabled = true; input.blur(); }
+  const askBtn = document.getElementById('wbw-ask');
+  if (askBtn) askBtn.disabled = true;
+  _wbwRenderWords();
+  setTimeout(() => {
+    if (state._isSubmitting) return;
+    if (['correct', 'wrong'].includes(state.questionStatus[state.currentIdx])) return;
+    _wbwFailPending = { word: stuck ? stuck.raw.replace(/[^A-Za-z0-9'-]/g, '') : '' };
+    submitPractice();
+  }, 450);
+}
+
+// Put another copy of question `idx` WBW_REQUEUE_GAP questions further on
+// (or at the end), like the vocab drills' requeueWrongWord. Returns false
+// once the sentence has already come back WBW_MAX_REQUEUES times.
+function _requeueQuestion(idx) {
+  const q = state.questions[idx];
+  if (!q) return false;
+  const id = q.questionId || q._id;
+  const copies = state.questions.filter(x => (x.questionId || x._id) === id).length - 1;
+  if (copies >= WBW_MAX_REQUEUES) return false;
+  const insertAt = Math.min(idx + 1 + WBW_REQUEUE_GAP, state.questions.length);
+  state.questions.splice(insertAt, 0, { ...q, _isRepeat: true });
+  state.questionStatus.splice(insertAt, 0, 'pending');
+  return true;
 }
 
 function bindPractice() {
@@ -3422,7 +3494,10 @@ async function submitPractice() {
   }
   const q = state.questions[state.currentIdx];
   const answer = getUserAnswerPractice();
-  if (answer === '' || answer === undefined) { showToast('Vui lòng nhập câu trả lời!', 'warn'); return; }
+  // A drill fail may come before the first word is done — nothing typed yet.
+  const wbwFail = _wbwFailPending && WBW_TYPES.has(q.type) && !!q.translationAnswer ? _wbwFailPending : null;
+  _wbwFailPending = null;
+  if (!wbwFail && (answer === '' || answer === undefined)) { showToast('Vui lòng nhập câu trả lời!', 'warn'); return; }
 
   // The word-by-word drill validates every character against q.translationAnswer,
   // so a finished sentence is guaranteed correct — grade it locally and skip the
@@ -3438,7 +3513,20 @@ async function submitPractice() {
 
   try {
     let data;
-    if (wbwVerbatim) {
+    if (wbwFail) {
+      const requeued = _requeueQuestion(state.currentIdx);
+      const stuckWord = wbwFail.word ? `từ “${wbwFail.word}”` : 'một từ';
+      data = {
+        success: true, isCorrect: false, score: 0,
+        modelAnswer: q.translationAnswer,
+        feedbackVi: `Bạn gõ sai ${stuckWord} quá ${WBW_MAX_WORD_ERRORS} lần nên câu này tính là sai. `
+          + (requeued
+            ? 'Xem kỹ đáp án mẫu nhé — câu này sẽ quay lại ở phía sau để bạn làm lại 💪'
+            : 'Xem kỹ đáp án mẫu rồi ôn lại ở "Ôn lại câu sai" sau buổi nhé.'),
+        explanationVi: q.explanationVi || '',
+        aiGraded: false
+      };
+    } else if (wbwVerbatim) {
       data = {
         success: true, isCorrect: true, score: 100,
         modelAnswer: q.translationAnswer,
@@ -3481,7 +3569,8 @@ async function submitPractice() {
       questionText: q.questionText || '',
       type: q.type
     });
-    if (WBW_TYPES.has(q.type)) _noteMySentence(q, answer, isOk);
+    // A half-typed failed sentence isn't worth showing in the writer's list.
+    if (WBW_TYPES.has(q.type) && !wbwFail) _noteMySentence(q, answer, isOk);
     saveDraft(); // fire-and-forget
 
     // show feedback
@@ -3498,7 +3587,9 @@ async function submitPractice() {
       document.getElementById('comparison-box').style.display = 'none';
     } else {
       document.getElementById('comparison-box').style.display = '';
-      document.getElementById('student-answer-display').textContent = answer;
+      document.getElementById('student-answer-display').textContent = wbwFail
+        ? (answer ? answer + ' …' : '(chưa gõ xong từ nào)')
+        : answer;
       document.getElementById('model-answer-display').textContent   = data.modelAnswer || '';
     }
 
@@ -4124,7 +4215,12 @@ function renderDone() {
 
 function retryWrong() {
   const wrongIds = new Set(state.sessionAttempts.filter(a => !a.isCorrect).map(a => a.questionId));
-  const wrongQuestions = state.questions.filter(q => wrongIds.has(q._id) || wrongIds.has(q.questionId));
+  // A requeued sentence sits in state.questions more than once — keep one copy.
+  const seen = new Set();
+  const wrongQuestions = state.questions
+    .filter(q => wrongIds.has(q._id) || wrongIds.has(q.questionId))
+    .filter(q => { const id = q.questionId || q._id; if (seen.has(id)) return false; seen.add(id); return true; })
+    .map(q => { const { _isRepeat, ...rest } = q; return rest; });
   if (!wrongQuestions.length) { showToast('Không có câu nào sai!', 'info'); return; }
   state.questions = wrongQuestions;
   state.currentIdx = 0;
