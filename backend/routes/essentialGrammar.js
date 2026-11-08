@@ -75,6 +75,8 @@ router.get('/admin/:id/export.csv', auth, teacherOnly, essentialGrammarControlle
 // ══════════════════════════════════════════════════════
 // Học sinh — tiến độ. 2-3 segment nên không xung đột thứ tự với "/admin/*" ở trên.
 // ══════════════════════════════════════════════════════
+// Best score per lesson across ALL lessons — sidebar ticks on any device.
+router.get('/my-progress', auth, essentialGrammarController.getMyProgress);
 router.get('/:id/attempt', auth, essentialGrammarController.getAttempt);
 router.post('/:id/attempt', auth, essentialGrammarController.submitAttempt);
 router.get('/:id/attempt/history', auth, essentialGrammarController.getMyAttemptHistory);

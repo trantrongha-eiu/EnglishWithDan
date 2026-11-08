@@ -131,6 +131,33 @@ describe('Student progress: GET/POST /:id/attempt (auth required, no premium gat
   });
 });
 
+describe('GET /api/essential-grammar/my-progress — best score per lesson (cross-device ticks)', () => {
+  test('requires authentication (401)', async () => {
+    expect((await request(app).get('/api/essential-grammar/my-progress')).status).toBe(401);
+  });
+
+  test('returns only the requesting student\'s rows, with the best score kept across attempts', async () => {
+    const l1 = await createEssentialGrammarLesson({ title: 'Present Simple' });
+    const l2 = await createEssentialGrammarLesson({ title: 'Past Simple' });
+    const me = await createStudent();
+    const other = await createStudent();
+    const auth = (u) => ({ Authorization: `Bearer ${signTokenFor(u)}` });
+
+    await request(app).post(`/api/essential-grammar/${l1._id}/attempt`).set(auth(me)).send({ correctCount: 9, totalCount: 10 });
+    await request(app).post(`/api/essential-grammar/${l1._id}/attempt`).set(auth(me)).send({ correctCount: 5, totalCount: 10 });
+    await request(app).post(`/api/essential-grammar/${l2._id}/attempt`).set(auth(other)).send({ correctCount: 10, totalCount: 10 });
+
+    const res = await request(app).get('/api/essential-grammar/my-progress').set(auth(me));
+    expect(res.status).toBe(200);
+    expect(res.body.progress).toHaveLength(1);
+    const row = res.body.progress[0];
+    expect(String(row.lessonId)).toBe(String(l1._id));
+    expect(row.bestScore).toBe(90);
+    expect(row.score).toBe(50);
+    expect(row.attemptCount).toBe(2);
+  });
+});
+
 describe('Admin CRUD — teacherOnly gate', () => {
   test('a student is rejected (403) from every /admin route', async () => {
     const student = await createStudent();

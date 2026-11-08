@@ -60,6 +60,18 @@ exports.submitAttempt = async (req, res) => {
   }
 };
 
+// GET /my-progress — best score per lesson for the logged-in student.
+exports.getMyProgress = async (req, res) => {
+  try {
+    const progress = await essentialGrammarService.listMyProgress(req.user._id);
+    res.set('Cache-Control', 'private, no-store');
+    res.json({ success: true, progress });
+  } catch (err) {
+    console.error('[EssentialGrammar]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 exports.getMyAttemptHistory = async (req, res) => {
   try {
     const lesson = await essentialGrammarService.getLessonById(req.params.id);

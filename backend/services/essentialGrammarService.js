@@ -80,6 +80,18 @@ async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeS
   return attempt;
 }
 
+// Every lesson this student has submitted at least once, from the permanent
+// aggregate rows (no TTL — survives the 90-day attempt-log expiry). The
+// student page merges this into its local score cache so ticks / best
+// scores follow the student across devices instead of living only in one
+// browser's localStorage. Hidden/deleted lessons are filtered client-side
+// (they're simply absent from the lesson list).
+async function listMyProgress(userId) {
+  return EssentialGrammarAttempt.find({ userId })
+    .select('lessonId score bestScore attemptCount lastAttempt -_id')
+    .lean();
+}
+
 // Shared by the student's own "past attempts" view and the admin's
 // per-student drill-down — same shape either way, just different callers.
 async function getAttemptHistory(userId, lessonId, limit = 20) {
@@ -237,6 +249,7 @@ module.exports = {
   getLessonById,
   getAttempt,
   submitAttempt,
+  listMyProgress,
   getAttemptHistory,
   listAdminLessons,
   getAdminLesson,

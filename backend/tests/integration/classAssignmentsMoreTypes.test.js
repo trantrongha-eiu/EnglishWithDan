@@ -157,3 +157,22 @@ test('writing_practice / task1_skill: >= 10 answers since assigned, >= 70% corre
   expect(row.resources.map((r) => r.completed)).toEqual([true, true]); // 8/10 and 8/10
   expect(row.resources[1].resourceCode).toBe('overview');
 });
+
+test('grammar: a lesson homework ticks only once one attempt reaches 70% (69% does not)', async () => {
+  const { createEssentialGrammarLesson } = require('../factories/contentFactory');
+  const { t, s, cls } = await setup();
+  const lesson = await createEssentialGrammarLesson({ title: 'Present Simple' });
+  const asg = await assign(t, cls, [{ kind: 'internal', resourceType: 'grammar', resourceId: lesson._id }]);
+  const submit = (correctCount, totalCount) => request(app)
+    .post(`/api/essential-grammar/${lesson._id}/attempt`).set(authH(s)).send({ correctCount, totalCount });
+
+  expect((await submit(69, 100)).status).toBe(200);
+  expect((await itemOf(s, asg._id)).completed).toBe(false);
+
+  expect((await submit(7, 10)).status).toBe(200);
+  expect((await itemOf(s, asg._id)).completed).toBe(true);
+
+  // Both submissions are kept in the student's own history.
+  const hist = await request(app).get(`/api/essential-grammar/${lesson._id}/attempt/history`).set(authH(s));
+  expect(hist.body.history.map((h) => h.score)).toEqual([70, 69]);
+});

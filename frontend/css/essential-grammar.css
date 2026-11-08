@@ -309,3 +309,34 @@ body{background:#f9fafb}
   .eg-nav-footer{padding:12px 16px 24px}
   .eg-nav-btn{font-size:12px;padding:9px 12px}
 }
+
+/* ── Homework banner (lesson assigned as bài tập về nhà — 70% rule) ── */
+.eg-hw-banner{display:flex;gap:10px;align-items:flex-start;border-radius:12px;padding:12px 14px;margin-bottom:18px;font-size:13.5px;line-height:1.6}
+.eg-hw-banner[hidden]{display:none}
+.eg-hw-banner > i{margin-top:3px;flex-shrink:0}
+.eg-hw-todo{background:#fff7ed;color:#9a3412;border:1.5px solid #fdba74}
+.eg-hw-done{background:#dcfce7;color:#065f46;border:1.5px solid #86efac}
+[data-theme="dark"] .eg-hw-todo{background:#431407;color:#fdba74;border-color:#9a3412}
+[data-theme="dark"] .eg-hw-done{background:#052e16;color:#86efac;border-color:#166534}
+
+/* ── Lịch sử làm bài ── */
+.eg-hist-wrap{padding-top:0;padding-bottom:0}
+.eg-hist-empty{font-size:13px;color:#6b7280;padding:4px 0}
+[data-theme="dark"] .eg-hist-empty{color:#94a3b8}
+.eg-hist-list{border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;background:#fff}
+[data-theme="dark"] .eg-hist-list{border-color:var(--border2, #333333);background:var(--surface, #0d0d0d)}
+.eg-hist-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:9px 12px;font-size:13px;border-top:1px solid #f3f4f6}
+.eg-hist-row:first-child{border-top:none}
+[data-theme="dark"] .eg-hist-row{border-color:var(--border2, #333333)}
+.eg-hist-date{color:#374151;font-variant-numeric:tabular-nums;min-width:118px}
+[data-theme="dark"] .eg-hist-date{color:#cbd5e1}
+.eg-hist-score{font-weight:800;border-radius:999px;padding:1px 10px;font-size:12.5px;font-variant-numeric:tabular-nums}
+.eg-hist-good{background:#dcfce7;color:#065f46}
+.eg-hist-ok{background:#e0e7ff;color:#3730a3}
+.eg-hist-bad{background:#fef3c7;color:#92400e}
+[data-theme="dark"] .eg-hist-good{background:#052e16;color:#86efac}
+[data-theme="dark"] .eg-hist-ok{background:#1e1b4b;color:#a5b4fc}
+[data-theme="dark"] .eg-hist-bad{background:#422006;color:#fbbf24}
+.eg-hist-detail{color:#6b7280}
+[data-theme="dark"] .eg-hist-detail{color:#94a3b8}
+.eg-hist-note{font-size:11.5px;color:#9ca3af;margin-top:6px}

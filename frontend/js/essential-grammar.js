@@ -72,6 +72,143 @@ function heroStatusHtml() {
 
 function keyOf(l) { return l.category + '||' + l.lessonKey; }
 
+// ══════════════════════════════════════════════════════
+// Server-side progress, history and homework.
+//  - my-progress: best score per lesson (permanent rows) merged into the
+//    local `scores` cache, so ticks follow the student to any device.
+//  - attempt/history: the "Lịch sử làm bài" list under each lesson.
+//  - assignments/mine: when this lesson is homework, a banner states the
+//    70% rule (backend resourceCompletionService PASS_PERCENT) and whether
+//    it's already ticked.
+// ══════════════════════════════════════════════════════
+const HW_PASS_PERCENT = 70;
+let _hwByLesson = new Map(); // lessonId → [{ title, deadline, completed }]
+
+function _egAuthed() { return !!(window.AuthService && window.AuthService.getToken && window.AuthService.getToken()); }
+function _egAuthHeaders() { return (window.AuthService && window.AuthService.authHeader()) || {}; }
+
+function _refreshProgressUi() {
+  renderSidebar();
+  updateHeaderProgressBadge();
+  const hs = document.getElementById('eg-hero-status');
+  if (hs) hs.innerHTML = heroStatusHtml();
+}
+
+async function syncServerProgress() {
+  if (!_egAuthed()) return;
+  try {
+    const res = await fetch(API + '/api/essential-grammar/my-progress', { headers: _egAuthHeaders() });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.success) return;
+    const keyById = new Map(allLessons.map(l => [String(l._id), keyOf(l)]));
+    let changed = false;
+    (data.progress || []).forEach(p => {
+      const key = keyById.get(String(p.lessonId));
+      if (!key) return;
+      const prev = scores[key] || { bestScore: 0, latestScore: null, completed: false, completedAt: null };
+      const serverBest = Number(p.bestScore) || 0;
+      if (scores[key] && serverBest <= (prev.bestScore || 0)) return;
+      const completed = Math.max(serverBest, prev.bestScore || 0) >= COMPLETE_THRESHOLD;
+      scores[key] = {
+        bestScore: Math.max(serverBest, prev.bestScore || 0),
+        latestScore: prev.latestScore != null ? prev.latestScore : (Number(p.score) || 0),
+        completed,
+        completedAt: prev.completedAt || (completed ? (p.lastAttempt || null) : null),
+      };
+      changed = true;
+    });
+    if (changed) {
+      try { localStorage.setItem(SCORE_KEY, JSON.stringify(scores)); } catch { /* quota — in-memory is enough */ }
+      _refreshProgressUi();
+    }
+  } catch { /* offline — local cache still works */ }
+}
+
+async function loadHomework() {
+  if (!_egAuthed()) return;
+  try {
+    const res = await fetch(API + '/api/assignments/mine', { headers: _egAuthHeaders() });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.success) return;
+    const map = new Map();
+    (data.assignments || []).forEach(a => (a.resources || []).forEach(r => {
+      if (r.resourceType !== 'grammar' || !r.resourceId) return;
+      const id = String(r.resourceId);
+      if (!map.has(id)) map.set(id, []);
+      map.get(id).push({ title: a.title || '', deadline: a.deadline || null, completed: !!r.completed });
+    }));
+    _hwByLesson = map;
+    renderHwBanner();
+  } catch { /* banner is informational only */ }
+}
+
+function _hwItemsFor(lessonId) { return _hwByLesson.get(String(lessonId)) || []; }
+
+function _fmtDate(d, withTime) {
+  const dt = new Date(d);
+  if (isNaN(dt)) return '';
+  const p = n => String(n).padStart(2, '0');
+  return p(dt.getDate()) + '/' + p(dt.getMonth() + 1) + '/' + dt.getFullYear()
+    + (withTime ? ' ' + p(dt.getHours()) + ':' + p(dt.getMinutes()) : '');
+}
+
+function renderHwBanner() {
+  const el = document.getElementById('eg-hw-banner');
+  if (!el) return;
+  const lesson = allLessons.find(l => keyOf(l) === _renderedLessonKey);
+  const items = lesson ? _hwItemsFor(lesson._id) : [];
+  if (!items.length) { el.hidden = true; el.innerHTML = ''; return; }
+  const allDone = items.every(i => i.completed);
+  const names = items.map(i => '<b>' + escHtml(i.title) + '</b>'
+    + (i.deadline ? ' (hạn ' + _fmtDate(i.deadline, true) + ')' : '')
+    + (i.completed ? ' ✓' : '')).join(', ');
+  el.className = 'eg-hw-banner ' + (allDone ? 'eg-hw-done' : 'eg-hw-todo');
+  el.innerHTML = allDone
+    ? '<i class="fas fa-check-circle"></i><div><b>Bài tập về nhà đã hoàn thành.</b> ' + names + '</div>'
+    : '<i class="fas fa-thumbtack"></i><div><b>Đây là bài tập về nhà:</b> ' + names + '.<br>'
+      + 'Cần đạt <b>từ ' + HW_PASS_PERCENT + '% số câu đúng trở lên</b> (Mini Quiz + câu trắc nghiệm trong bài) mới được tính hoàn thành. '
+      + 'Câu bỏ trống tính sai. Làm lại bao nhiêu lần cũng được.</div>';
+  el.hidden = false;
+}
+
+function _fmtDuration(sec) {
+  const s = Math.max(0, Math.round(Number(sec) || 0));
+  if (s < 60) return s + ' giây';
+  const m = Math.floor(s / 60), r = s % 60;
+  return m + ' phút' + (r ? ' ' + r + ' giây' : '');
+}
+
+async function loadHistory(lesson) {
+  const getBody = () => (keyOf(lesson) === _renderedLessonKey ? document.getElementById('eg-history-body') : null);
+  if (!_egAuthed()) { const b = getBody(); if (b) b.textContent = 'Đăng nhập để lưu lịch sử làm bài.'; return; }
+  let rows = null;
+  try {
+    const res = await fetch(API + '/api/essential-grammar/' + lesson._id + '/attempt/history', { headers: _egAuthHeaders() });
+    const data = await res.json();
+    if (data.success) rows = data.history || [];
+  } catch { /* handled below */ }
+  const el = getBody();
+  if (!el) return; // student moved to another lesson meanwhile
+  if (!rows) { el.className = 'eg-hist-empty'; el.textContent = 'Không tải được lịch sử làm bài.'; return; }
+  if (!rows.length) {
+    el.className = 'eg-hist-empty';
+    el.textContent = 'Chưa có lần làm nào. Làm hết các câu hỏi (hoặc bấm "Chấm điểm ngay") để lưu kết quả.';
+    return;
+  }
+  el.className = '';
+  el.innerHTML = '<div class="eg-hist-list">' + rows.map(h => {
+    const tone = h.score >= COMPLETE_THRESHOLD ? 'good' : (h.score >= HW_PASS_PERCENT ? 'ok' : 'bad');
+    return '<div class="eg-hist-row">'
+      + '<span class="eg-hist-date">' + _fmtDate(h.createdAt, true) + '</span>'
+      + '<span class="eg-hist-score eg-hist-' + tone + '">' + h.score + '%</span>'
+      + '<span class="eg-hist-detail">' + h.correct + '/' + h.total + ' câu đúng · ' + _fmtDuration(h.timeSpent) + '</span>'
+      + '</div>';
+  }).join('') + '</div>'
+    + '<div class="eg-hist-note">Hiển thị tối đa 20 lần gần nhất trong 3 tháng. Điểm cao nhất được lưu vĩnh viễn.</div>';
+}
+
 // lessonKey is a unique slug (e.g. "present-simple") across every category
 // in the seed data — see backend/scripts/essentialGrammarData/*.js — so it
 // doubles as a clean, shareable URL identifier on its own without needing
@@ -159,6 +296,9 @@ async function initEssentialGrammar() {
     renderSidebarShell();
     if (currentKey) selectLesson(currentKey, true, false);
     updateHeaderProgressBadge();
+    // Non-blocking: the page is usable from the local cache meanwhile.
+    syncServerProgress();
+    loadHomework();
 
     // Browser back/forward between lessons — the URL bar has already
     // moved by the time this fires, so just sync the UI to it, no further
@@ -215,7 +355,7 @@ function renderSidebar() {
       + lessons.map(l => {
           const k = keyOf(l);
           const active = k === currentKey ? ' active' : '';
-          const done = isCompleted(k) ? '<i class="fas fa-check-circle wp-item-done-icon" title="Đã hoàn thành (≥80%)"></i>' : '';
+          const done = isCompleted(k) ? '<i class="fas fa-check-circle wp-item-done-icon" title="Đã hoàn thành (≥' + COMPLETE_THRESHOLD + '%)"></i>' : '';
           return '<button class="eg-lesson-item' + active + '" onclick="selectLesson(' + JSON.stringify(k).replace(/"/g, '&quot;') + ')">'
             + '<span class="eg-lesson-icon">' + (l.icon || '📘') + '</span>'
             + '<span class="eg-lesson-title">' + escHtml(l.title) + '</span>' + done + '</button>';
@@ -335,7 +475,8 @@ function renderLessonContent(lesson) {
     + '<div class="wp-status-row" id="eg-hero-status">' + heroStatusHtml() + '</div>'
     + '</div></div>';
   _egDrills = {}; _egDrillSeq = 0;
-  html += '<div class="eg-content">' + lesson.blocks.map(renderBlock).join('') + '</div>';
+  html += '<div class="eg-content"><div id="eg-hw-banner" class="eg-hw-banner" hidden></div>'
+    + lesson.blocks.map(renderBlock).join('') + '</div>';
   // Lesson-level "grade now" affordance — so a student who answered most
   // (but not every) gradeable item isn't stuck with no score, and there's
   // one clear place to finish regardless of whether the lesson has a <quiz>
@@ -346,6 +487,9 @@ function renderLessonContent(lesson) {
       + '<button type="button" id="eg-grade-now-btn" onclick="finalizeQuiz()" '
       + 'style="background:var(--brand,#e53935);color:#fff;border:none;border-radius:10px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">'
       + '<i class="fas fa-flag-checkered"></i> <span id="eg-grade-now-label">Chấm điểm ngay</span></button></div>';
+    html += '<div class="eg-content eg-hist-wrap"><div class="eg-block" id="eg-history">'
+      + '<div class="eg-block-label"><i class="fas fa-history"></i> Lịch sử làm bài</div>'
+      + '<div id="eg-history-body" class="eg-hist-empty">Đang tải...</div></div></div>';
   }
   html += '<div class="eg-nav-footer">'
     + navFooterBtn(prev, 'prev')
@@ -353,6 +497,8 @@ function renderLessonContent(lesson) {
     + '</div>';
 
   document.getElementById('eg-main-content').innerHTML = html;
+  renderHwBanner();
+  if (gradeableTotal > 0) loadHistory(lesson);
   // Dictionary lookup stays ON throughout — this is a learning page, and
   // blocking it on the whole lesson (teaching blocks included) until every
   // quiz item was answered was too aggressive. The tiny "translate the
@@ -613,8 +759,14 @@ function finalizeQuiz() {
   const score = quizState.total > 0 ? Math.round((quizState.correct / quizState.total) * 100) : 0;
   saveScore(quizState.lessonKey, score);
   const passed = score >= COMPLETE_THRESHOLD;
+  const isHomework = _hwItemsFor(quizState.lessonId).length > 0;
+  const hwNote = !isHomework ? ''
+    : (score >= HW_PASS_PERCENT
+      ? ' Bài tập về nhà: đạt yêu cầu ≥' + HW_PASS_PERCENT + '% ✓'
+      : ' Bài tập về nhà cần đạt từ ' + HW_PASS_PERCENT + '% mới được tính — hãy làm lại!');
   const summary = 'Bạn đạt ' + score + '% (' + quizState.correct + '/' + quizState.total + ' câu đúng).'
-    + (passed ? ' Bài học đã được đánh dấu hoàn thành!' : ' Cần đạt từ 80% để hoàn thành bài học — hãy thử lại!');
+    + (passed ? ' Bài học đã được đánh dấu hoàn thành!' : ' Cần đạt từ ' + COMPLETE_THRESHOLD + '% để đánh dấu hoàn thành bài học.')
+    + hwNote;
   const result = document.getElementById('eg-quiz-result');
   if (result) {
     result.className = 'eg-quiz-result vis ' + (passed ? 'eg-qr-good' : 'eg-qr-bad');
@@ -638,18 +790,33 @@ function finalizeQuiz() {
   // backend footprint). Intentionally does not block/replace the
   // localStorage-driven UX above: a logged-out visitor still gets the full
   // local experience, just with nothing to sync.
-  if (quizState.lessonId && window.AuthService && window.AuthService.getToken()) {
+  //
+  // The saved attempt is also what ticks a grammar homework item (≥70%), and
+  // feeds "Lịch sử làm bài" — so a failed save is surfaced, not swallowed.
+  if (quizState.lessonId && _egAuthed()) {
+    const lessonId = quizState.lessonId;
     const timeSpent = Math.max(1, Math.round((Date.now() - quizState.startTime) / 1000));
-    fetch(API + '/api/essential-grammar/' + quizState.lessonId + '/attempt', {
+    fetch(API + '/api/essential-grammar/' + lessonId + '/attempt', {
       method: 'POST',
-      headers: Object.assign({ 'Content-Type': 'application/json' }, window.AuthService.authHeader()),
+      headers: Object.assign({ 'Content-Type': 'application/json' }, _egAuthHeaders()),
       body: JSON.stringify({
         correctCount: quizState.correct,
         totalCount: quizState.total,
         timeSpent,
         wrongQuestions: quizState.wrongTexts,
       }),
-    }).catch(() => {});
+    })
+      .then(r => r.json().then(d => { if (!r.ok || !d.success) throw new Error('save failed'); }))
+      .then(() => {
+        const lesson = allLessons.find(l => String(l._id) === String(lessonId));
+        if (lesson) loadHistory(lesson);
+        if (isHomework) loadHomework();
+      })
+      .catch(() => {
+        if (typeof showToast === 'function') {
+          showToast('Chưa lưu được kết quả lên hệ thống (lỗi mạng?). Hãy làm lại bài để được lưu lịch sử và tính bài tập về nhà.', 'error', 7000);
+        }
+      });
   }
 }
 
