@@ -613,6 +613,14 @@
   function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function todayStr() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+  // The pet cache is per browser, so it records whose pet it is — logging
+  // into another account on the same browser must not show the last one's pet.
+  function uid() {
+    try {
+      var u = window.AuthService && window.AuthService.getUser && window.AuthService.getUser();
+      return u ? String(u.id || u._id || u.username || '') : '';
+    } catch (e) { return ''; }
+  }
 
   function examActive() {
     if (EXAM_PAGES.test(location.pathname.split('/').pop())) return true;
@@ -1004,12 +1012,13 @@
       if (u && u.role && u.role !== 'student' && u.role !== 'teacher') return;
       if (EXAM_PAGES.test(location.pathname.split('/').pop()) || NO_PET_PATHS.test(location.pathname)) return;
       var cached = lsGet(CACHE_KEY);
-      if (cached && Date.now() - cached.t < CACHE_MS) { show(cached.id); return; }
+      var me = uid();
+      if (cached && me && cached.u === me && Date.now() - cached.t < CACHE_MS) { show(cached.id); return; }
       fetch(API + '/shop/pet', { headers: window.AuthService.authHeader() })
         .then(function (r) { return r.ok ? r.json() : null; })
         .then(function (d) {
           if (!d || !d.success) return;
-          lsSet(CACHE_KEY, { id: d.activePet || '', t: Date.now() });
+          lsSet(CACHE_KEY, { id: d.activePet || '', u: me, t: Date.now() });
           show(d.activePet);
         })
         .catch(function () {});
@@ -1024,7 +1033,7 @@
     theme: SU,
     // Called by the shop page right after the student picks/puts away a pet.
     setActive: function (id) {
-      lsSet(CACHE_KEY, { id: id || '', t: Date.now() });
+      lsSet(CACHE_KEY, { id: id || '', u: uid(), t: Date.now() });
       try { localStorage.removeItem(REST_KEY); } catch (e) {}
       show(id);
     },
