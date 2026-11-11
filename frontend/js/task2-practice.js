@@ -1372,7 +1372,8 @@ const _ROLE_RE = [
   ['why',    /^(this is (mainly |largely |partly |primarily |simply )?(because|due to|since)|this can (largely |partly )?be (attributed|explained)|because|the (main |primary )?reason|this is due|since|it is (because|due)|after all)/i],
   ['main',   /^(firstly|first(ly)?,|secondly|second,|thirdly|finally,|furthermore|moreover|in addition|additionally|on the one hand|on the other hand|(one|another)( of the)?( most)?( \w+){0,2} (advantages?|disadvantages?|benefits?|drawbacks?|reasons?|causes?|factors?|contributors?|effects?|impacts?|consequences?|solutions?|measures?|ways?|steps?|approach(es)?|arguments?|problems?|issues?)\b|the (first|second|main|primary|most) )/i]
 ];
-// Colours a paragraph sentence by sentence: Ý chính → Giải thích → Kết quả → Ví dụ.
+// Marks a paragraph sentence by sentence (①–④ = Ý chính → Giải thích → Kết quả → Ví dụ).
+const _ROLE_NUM = { main: 1, why: 2, result: 3, ex: 4 };
 function _roleParagraphHtml(text) {
   const sents = String(text || '').match(/[^.!?]+(?:[.!?]+["”’)]?|$)\s*/g) || [];
   let prev = null;
@@ -1383,7 +1384,7 @@ function _roleParagraphHtml(text) {
     for (const [r, re] of _ROLE_RE) if (re.test(t)) { role = r; break; }
     if (!role) role = i === 0 ? 'main' : prev === 'main' ? 'why' : (prev || 'why');
     prev = role;
-    return `<span class="t2-role r-${role}">${_escHtml(t)}</span> `;
+    return `<span class="t2-role r-${role}"><sup class="t2-role-n">${_ROLE_NUM[role]}</sup>${_escHtml(t)}</span> `;
   }).join('');
 }
 function _perBodyChains(perBody) {
@@ -1416,7 +1417,7 @@ function renderGuideStep(isCurrent) {
       ${_stepHead(4, 'Hướng dẫn viết (Guided writing)', _infoBtn('guide'), done)}
       ${_infoBody('guide', `<ul class="t2-info-list">
         <li>Mỗi đoạn thân bài = <b>Ý chính → Giải thích → Kết quả → Ví dụ</b>. Lấy ý từ bước ②, câu từ bước ③.</li>
-        <li>Đoạn mẫu là <b>đề khác cùng dạng</b>: mỗi màu là một phần của công thức — xem cách triển khai, không chép.</li>
+        <li>Đoạn mẫu là <b>đề khác cùng dạng</b>: số ①–④ trước mỗi câu cho biết câu đó thuộc phần nào — xem cách triển khai, không chép.</li>
       </ul>`)}
       <div class="t2-guide-block">
         <div class="t2-guide-k"><span class="t2-guide-n">A</span> Bố cục bài ${_escHtml(ESSAY_LABELS[t.essayType] || '')}</div>
@@ -1428,8 +1429,9 @@ function renderGuideStep(isCurrent) {
       </div>
       ${body1 ? `
       <details class="t2-model t2-guide-block" open>
-        <summary><span class="t2-guide-n">C</span> Đoạn mẫu cùng dạng (đề khác) — mỗi màu một phần</summary>
-        ${g.modelEssay.prompt ? `<div class="t2-model-q" style="margin-top:6px">Đề: ${_escHtml(g.modelEssay.prompt)}</div>` : ''}
+        <summary><span class="t2-guide-n">C</span> Đoạn mẫu cùng dạng (đề khác)</summary>
+        ${g.modelEssay.prompt ? `<div class="t2-model-q is-prompt"><span>Đề bài</span><b>${_escHtml(g.modelEssay.prompt)}</b></div>` : ''}
+        <div class="t2-role-key">${_RECIPE.map((r, i) => `<span class="r-${r.role}"><sup class="t2-role-n">${i + 1}</sup>${r.k.charAt(0) + r.k.slice(1).toLowerCase()}</span>`).join('')}</div>
         <p class="t2-role-para"><b>${_escHtml(body1.title)}.</b> ${_roleParagraphHtml(body1.text)}</p>
       </details>` : (_guideCache === null ? '<p class="t2-step-desc"><i class="fas fa-spinner fa-spin"></i> Đang tải đoạn mẫu...</p>' : '')}
       ${chains.length ? `
@@ -1452,7 +1454,7 @@ function renderClassStep(isCurrent) {
       <div class="t2-sec-pills"><span class="t2-sec-c0">Mở bài</span><span class="t2-sec-c1">Thân bài 1</span></div>
       ${_infoBody('class', `<ul class="t2-info-list">
         <li><b>Mở bài:</b> paraphrase đề, nêu hướng triển khai / quan điểm.</li>
-        <li><b>Thân bài 1:</b> cùng nhóm chọn ý mạnh nhất → <span class="t2-role r-main">ý chính</span> → <span class="t2-role r-why">giải thích</span> → <span class="t2-role r-result">kết quả</span> → <span class="t2-role r-ex">ví dụ</span>, rồi viết lại bằng lời của bạn.</li>
+        <li><b>Thân bài 1:</b> cùng nhóm chọn ý mạnh nhất → <b>ý chính → giải thích → kết quả → ví dụ</b>, rồi viết lại bằng lời của bạn.</li>
         <li>Câu đã dịch, ý tưởng và từ vựng nằm ở cột trái màn hình viết.</li>
       </ul>`)}
       ${L && L.status === 'ready' ? `<div class="t2-wc-row">${_wcChip('Mở bài', sec.intro)}${_wcChip('Thân bài 1', sec.body1)}</div>` : ''}

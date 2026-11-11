@@ -601,9 +601,9 @@ body.t2-composing .wp-mini-stats{display:none!important}
 .t2-ideas .t2-brainstorm-side{margin-top:10px}
 /* Guided writing: outline flow + paragraph recipe */
 .t2-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 12px}
-.t2-flow span{font-size:11.5px;font-weight:800;background:#eef2ff;color:#4338ca;border-radius:7px;padding:4px 9px}
-.t2-flow i{font-size:9px;color:#a5b4fc}
-[data-theme="dark"] .t2-flow span{background:#1e1b4b;color:#a5b4fc}
+.t2-flow span{font-size:11.5px;font-weight:700;background:#f9fafb;color:#374151;border:1px solid #e5e7eb;border-radius:7px;padding:4px 9px}
+.t2-flow i{font-size:9px;color:#9ca3af}
+[data-theme="dark"] .t2-flow span{background:transparent;color:#cbd5e1;border-color:var(--border2,#333)}
 .t2-recipe{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:6px 0 12px}
 .t2-recipe-item{border:1.5px solid #e0e7ff;border-radius:10px;padding:8px 10px;background:#f8f9ff}
 .t2-recipe-k{font-size:11px;font-weight:900;letter-spacing:.05em;color:#6366f1}
@@ -1178,43 +1178,45 @@ body.t2-on-weeks .wp-mini-stats { display: none !important; }
 [data-theme="dark"] .t2-info-body{color:#cbd5e1}
 .t2-wbw-bar .t2-info-btn{margin-left:auto}
 
-/* Paragraph roles — Ý chính / Giải thích / Kết quả / Ví dụ */
-.r-main{--rc:#2563eb;--rb:#dbeafe;--rt:#1e40af}
-.r-why{--rc:#d97706;--rb:#fef3c7;--rt:#92400e}
-.r-result{--rc:#16a34a;--rb:#dcfce7;--rt:#166534}
-.r-ex{--rc:#db2777;--rb:#fce7f3;--rt:#9d174d}
-[data-theme="dark"] .r-main{--rc:#60a5fa;--rb:#0f2347;--rt:#bfdbfe}
-[data-theme="dark"] .r-why{--rc:#fbbf24;--rb:#3a2a06;--rt:#fde68a}
-[data-theme="dark"] .r-result{--rc:#4ade80;--rb:#0a2e17;--rt:#bbf7d0}
-[data-theme="dark"] .r-ex{--rc:#f472b6;--rb:#3a0d24;--rt:#fbcfe8}
-.t2-recipe-item[class*="r-"]{background:var(--rb);border:none;border-top:4px solid var(--rc)}
-.t2-recipe-item[class*="r-"] .t2-recipe-k{color:var(--rt);display:flex;align-items:center;gap:6px;font-size:12px}
-.t2-recipe-item[class*="r-"] .t2-recipe-k>span{width:20px;height:20px;border-radius:50%;background:var(--rc);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px}
-.t2-recipe-item[class*="r-"] .t2-recipe-v{color:var(--rt);font-weight:600}
-.t2-recipe-item[class*="r-"] .t2-recipe-ex{color:var(--rt);opacity:.8}
-.t2-role{background:var(--rb);color:var(--rt);border-bottom:2.5px solid var(--rc);border-radius:4px;padding:1px 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
-.t2-role-para{line-height:2!important;font-size:14px!important}
+/* Guided writing (step ④) — neutral cards and one accent (the step colour).
+   Paragraph roles are told apart by ①–④ markers + type: Ý chính bold, Ví dụ italic. */
+.t2-role-n{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--sc-bg,#f5f3ff);color:var(--sc,#7c3aed);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--sc,#7c3aed) 35%,transparent);font-size:10px;font-weight:800;font-style:normal;line-height:1;vertical-align:2px;margin-right:4px}
+.t2-role.r-main,.t2-role-key .r-main{font-weight:700;color:#111827}
+.t2-role.r-ex,.t2-role-key .r-ex{font-style:italic}
+.t2-role-para{line-height:1.85!important;font-size:14.5px!important;color:#374151!important}
+.t2-role-para>b{color:#111827;letter-spacing:.02em}
+.t2-role-key{display:flex;flex-wrap:wrap;gap:4px 14px;margin:10px 0 0;font-size:12px;color:#6b7280}
+[data-theme="dark"] .t2-role.r-main,[data-theme="dark"] .t2-role-key .r-main,[data-theme="dark"] .t2-role-para>b{color:#f1f5f9}
+[data-theme="dark"] .t2-role-para{color:#cbd5e1!important}
+[data-theme="dark"] .t2-role-key{color:#94a3b8}
+.t2-recipe-item{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px}
+.t2-recipe-k{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;letter-spacing:.04em;color:#111827}
+.t2-recipe-k>span{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--sc-bg,#f5f3ff);color:var(--sc,#7c3aed);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--sc,#7c3aed) 35%,transparent);font-size:11px;letter-spacing:0}
+.t2-recipe-v{font-size:13px;color:#4b5563;font-weight:500;margin-top:4px}
+.t2-recipe-ex{font-size:12.5px;color:#6b7280;margin-top:4px}
+[data-theme="dark"] .t2-recipe-item{background:transparent;border-color:var(--border2,#333)}
+[data-theme="dark"] .t2-recipe-k{color:#f1f5f9}
+[data-theme="dark"] .t2-recipe-ex{color:#94a3b8}
 
-/* Essay sections — Mở bài / Thân bài 1 / Thân bài 2 / Kết bài */
-.t2-sec-c0{--xc:#0d9488;--xb:#ccfbf1;--xt:#115e59}
-.t2-sec-c1{--xc:#4f46e5;--xb:#e0e7ff;--xt:#3730a3}
-.t2-sec-c2{--xc:#9333ea;--xb:#f3e8ff;--xt:#6b21a8}
-.t2-sec-c3{--xc:#e11d48;--xb:#ffe4e6;--xt:#9f1239}
-[data-theme="dark"] .t2-sec-c0{--xb:#06302c;--xt:#99f6e4}
-[data-theme="dark"] .t2-sec-c1{--xb:#1e1b4b;--xt:#c7d2fe}
-[data-theme="dark"] .t2-sec-c2{--xb:#2e1065;--xt:#e9d5ff}
-[data-theme="dark"] .t2-sec-c3{--xb:#4c0519;--xt:#fecdd3}
-.t2-flow.is-sections span[class*="t2-sec-c"],.t2-sec-pills span{background:var(--xb);color:var(--xt);border-left:4px solid var(--xc)}
+/* Essay sections — Mở bài / Thân bài 1 / Thân bài 2 / Kết bài (neutral chips) */
 .t2-sec-pills{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 10px}
-.t2-sec-pills span{font-size:12px;font-weight:800;border-radius:7px;padding:4px 10px}
+.t2-sec-pills span{font-size:12px;font-weight:700;border-radius:7px;padding:4px 10px;background:#f9fafb;color:#374151;border:1px solid #e5e7eb}
+[data-theme="dark"] .t2-sec-pills span{background:transparent;color:#cbd5e1;border-color:var(--border2,#333)}
 
 /* Guide blocks A / B / C */
-.t2-guide-block{margin-top:12px}
-.t2-guide-k{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:#111827;margin-bottom:4px}
+.t2-guide-block{margin-top:14px}
+.t2-guide-k{display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:800;color:#111827;margin-bottom:4px}
 [data-theme="dark"] .t2-guide-k{color:#f1f5f9}
 .t2-guide-n{width:22px;height:22px;border-radius:6px;background:var(--sc,#6366f1);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:900;flex-shrink:0}
 details.t2-guide-block>summary{display:flex;align-items:center;gap:8px}
-.t2-model.t2-guide-block{border-color:color-mix(in srgb,var(--sc,#6366f1) 30%,transparent)}
+.t2-s-guide .t2-model>summary{font-size:13.5px;font-weight:800;color:#111827}
+[data-theme="dark"] .t2-s-guide .t2-model>summary{color:#f1f5f9}
+.t2-model-q.is-prompt{margin:10px 0 2px;padding:9px 12px;border-radius:8px;background:#f9fafb;border-left:3px solid var(--sc,#7c3aed);font-style:normal}
+.t2-model-q.is-prompt>span{display:block;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#6b7280;margin-bottom:2px}
+.t2-model-q.is-prompt>b{font-size:13.5px;line-height:1.6;color:#111827}
+[data-theme="dark"] .t2-model-q.is-prompt{background:rgba(255,255,255,.04)}
+[data-theme="dark"] .t2-model-q.is-prompt>span{color:#94a3b8}
+[data-theme="dark"] .t2-model-q.is-prompt>b{color:#f1f5f9}
 
 /* Brainstorm sides */
 .t2-side-c0{--bc:#16a34a;--bb:#f0fdf4;--bt:#166534}
