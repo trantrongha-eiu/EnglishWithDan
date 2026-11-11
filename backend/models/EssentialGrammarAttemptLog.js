@@ -16,6 +16,26 @@ const EssentialGrammarAttemptLogSchema = new mongoose.Schema({
   total:          { type: Number, required: true },
   timeSpent:      { type: Number, default: 0 },   // giây — CHỈ của lần này, không cộng dồn
   wrongQuestions: [{ type: String }],              // câu hỏi trả lời sai lần này — phục vụ "câu sai nhiều"
+  // Số câu học sinh đã chọn đáp án (câu bỏ trống tính sai). null = log cũ
+  // trước khi chấm ở server — không biết, coi như đã làm đủ.
+  answered:       { type: Number, default: null },
+  // 'server' = điểm do server chấm từ `answers` bên dưới; 'client' = log cũ /
+  // trang cũ chỉ gửi số câu đúng.
+  graded:         { type: String, enum: ['server', 'client'], default: 'client' },
+  // Đáp án học sinh chọn cho từng câu chấm điểm của bài (quiz + trắc nghiệm
+  // trong Luyện tập). Hết hạn cùng log (TTL 90 ngày bên dưới).
+  answers: {
+    type: [new mongoose.Schema({
+      ref:         { type: String, required: true }, // 'q:<blockIdx>:<qi>' | 'ex:<blockIdx>:<i>'
+      question:    { type: String, default: '' },
+      chosen:      { type: Number, default: null },  // index đáp án đã chọn; null = bỏ trống
+      chosenText:  { type: String, default: '' },
+      correctIndex:{ type: Number, default: null },
+      correctText: { type: String, default: '' },
+      isCorrect:   { type: Boolean, default: false },
+    }, { _id: false })],
+    default: undefined,
+  },
 }, { timestamps: true });
 
 // Học sinh xem lịch sử của chính mình cho 1 lesson; admin xem lịch sử của

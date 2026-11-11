@@ -419,11 +419,22 @@ const REGISTRY = {
     // lesson by orderIndex, if no key is given) — without deepLinkKey here,
     // resourceCode was never populated and the student's "Bắt đầu" link opened
     // whatever lesson that fallback chain landed on instead of the one assigned.
+    // meta = the lesson's group (Tenses, Writing Foundation, …) — the admin
+    // picker filters by it to assign a whole group / every lesson at once.
     catalog: { model: EssentialGrammarLesson, filter: { isActive: true }, sort: { orderIndex: 1 },
-      shape: (d) => ({ _id: d._id, label: d.title, meta: '' }),
+      shape: (d) => ({ _id: d._id, label: d.title, meta: d.category || '' }),
       deepLinkKey: (d) => d.lessonKey },
     attempt: { model: EssentialGrammarAttemptLog, userField: 'userId', idField: 'lessonId', filter: {} },
-    scoreGate: { fields: 'correct total', percent: (d) => (d.total ? (d.correct / d.total) * 100 : 0) },
+    // Owner's rule (2026-11-11): the lesson must be finished — every graded
+    // question answered (blanks no longer just "count as wrong") — AND ≥ 70%
+    // correct. `answered` is null on logs saved before it was recorded.
+    scoreGate: {
+      fields: 'correct total answered',
+      percent: (d) => (d.total ? (d.correct / d.total) * 100 : 0),
+      pass: (d) => d.total > 0
+        && (d.answered == null || d.answered >= d.total)
+        && (d.correct / d.total) * 100 >= PASS_PERCENT,
+    },
   },
   vocabulary_lesson: {
     label: 'Vocabulary Lessons',

@@ -46,18 +46,84 @@ async function getAttempt(userId, lessonId) {
   return EssentialGrammarAttempt.findOne({ userId, lessonId }).lean();
 }
 
-async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeSpent, wrongQuestions }) {
-  const total = Math.max(0, Number(totalCount) || 0);
-  const correct = Math.max(0, Math.min(Number(correctCount) || 0, total));
+// Every auto-graded item in a lesson, in page order: each 'quiz' block's
+// questions + each multiple_choice item of a 'practice_exercises' block —
+// the same set essential-grammar.js counts as the lesson's total. `ref` is
+// positional (blocks have no _id) and is what the page sends back.
+function gradeableItems(lesson) {
+  const items = [];
+  (lesson?.blocks || []).forEach((b, bi) => {
+    if (b.type === 'quiz') {
+      (b.data?.questions || []).forEach((q, qi) => items.push({ ref: `q:${bi}:${qi}`, q }));
+    } else if (b.type === 'practice_exercises') {
+      (b.data?.exercises || []).forEach((ex, i) => {
+        if (ex.type === 'multiple_choice') items.push({ ref: `ex:${bi}:${i}`, q: ex });
+      });
+    }
+  });
+  return items;
+}
+
+// Grades the student's picks against the lesson's own answer keys. Any
+// gradeable item without a valid pick counts as wrong (left blank).
+function gradeAnswers(lesson, answers) {
+  const picks = new Map();
+  for (const a of Array.isArray(answers) ? answers : []) {
+    const ref = typeof a?.ref === 'string' ? a.ref : '';
+    if (!ref || picks.has(ref)) continue;
+    const n = Number(a.chosen);
+    if (Number.isInteger(n) && n >= 0) picks.set(ref, n);
+  }
+  const clip = (s) => String(s ?? '').slice(0, 300);
+  const rows = gradeableItems(lesson).map(({ ref, q }) => {
+    const options = Array.isArray(q.options) ? q.options : [];
+    const chosen = picks.has(ref) && picks.get(ref) < options.length ? picks.get(ref) : null;
+    const correctIndex = Number.isInteger(q.answerIndex) ? q.answerIndex : null;
+    return {
+      ref,
+      question: clip(q.question),
+      chosen,
+      chosenText: chosen != null ? clip(options[chosen]) : '',
+      correctIndex,
+      correctText: correctIndex != null ? clip(options[correctIndex]) : '',
+      isCorrect: chosen != null && chosen === correctIndex,
+    };
+  });
+  return {
+    rows,
+    total: rows.length,
+    correct: rows.filter(r => r.isCorrect).length,
+    answered: rows.filter(r => r.chosen != null).length,
+  };
+}
+
+// `answers` present → graded here from the lesson (the stored score and the
+// homework 70% bar no longer trust the browser's count). Without it (a page
+// loaded before this change), the old client-count path is kept.
+async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeSpent, wrongQuestions, answers }) {
+  let total, correct, answered = null, graded = 'client', answerRows;
+  let safeWrongQuestions;
+  if (Array.isArray(answers)) {
+    const lesson = await EssentialGrammarLesson.findById(lessonId).select('blocks').lean();
+    const g = gradeAnswers(lesson, answers);
+    if (!g.total) throw Object.assign(new Error('Bài học không có câu chấm điểm'), { status: 400 });
+    ({ total, correct, answered } = g);
+    graded = 'server';
+    answerRows = g.rows;
+    safeWrongQuestions = g.rows.filter(r => !r.isCorrect).map(r => r.question.slice(0, 200)).slice(0, MAX_WRONG_QUESTIONS_LOGGED);
+  } else {
+    total = Math.max(0, Number(totalCount) || 0);
+    correct = Math.max(0, Math.min(Number(correctCount) || 0, total));
+    // Client-supplied, so bounded + coerced to plain strings before it ever
+    // reaches an aggregation ($unwind over an attacker-controlled array of
+    // arbitrary type would be an easy DoS/garbage-in vector for getMostMissedQuestions()).
+    safeWrongQuestions = Array.isArray(wrongQuestions)
+      ? wrongQuestions.slice(0, MAX_WRONG_QUESTIONS_LOGGED).map(q => String(q).slice(0, 200))
+      : [];
+  }
   const wrong = total - correct;
   const score = total > 0 ? Math.round((correct / total) * 100) : 0;
   const spent = Math.max(0, Math.round(Number(timeSpent) || 0));
-  // Client-supplied, so bounded + coerced to plain strings before it ever
-  // reaches an aggregation ($unwind over an attacker-controlled array of
-  // arbitrary type would be an easy DoS/garbage-in vector for getMostMissedQuestions()).
-  const safeWrongQuestions = Array.isArray(wrongQuestions)
-    ? wrongQuestions.slice(0, MAX_WRONG_QUESTIONS_LOGGED).map(q => String(q).slice(0, 200))
-    : [];
 
   const existing = await EssentialGrammarAttempt.findOne({ userId, lessonId }).select('bestScore').lean();
   const bestScore = Math.max(score, existing?.bestScore || 0);
@@ -73,6 +139,7 @@ async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeS
     ),
     EssentialGrammarAttemptLog.create({
       userId, lessonId, score, correct, wrong, total, timeSpent: spent, wrongQuestions: safeWrongQuestions,
+      answered, graded, ...(answerRows ? { answers: answerRows } : {}),
     }),
   ]);
   // >=70% +1 🔥, >=90% +2 🔥 for a quiz of at least 5 questions.

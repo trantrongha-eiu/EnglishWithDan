@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { apiFetch, formatDate } from '../utils/api';
 import { downloadCsv } from '../utils/csvDownload';
 import { useToast } from '../contexts/ToastContext';
@@ -88,6 +88,7 @@ function LessonStudentsModal({ lessonId, lessonTitle, onClose }) {
   const [missedQuestions, setMissedQuestions] = useState([]);
   const [detailStudent, setDetailStudent] = useState(null);
   const [detailHistory, setDetailHistory] = useState(null);
+  const [openAttempt, setOpenAttempt] = useState(null); // history row whose answers are shown
   const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
@@ -128,7 +129,8 @@ function LessonStudentsModal({ lessonId, lessonTitle, onClose }) {
         {detailStudent ? (
           <div style={{ overflowY: 'auto', flex: 1, padding: '16px 24px' }}>
             <button className="btn btn-ghost btn-sm" style={{ marginBottom: 12 }} onClick={() => setDetailStudent(null)}>← Quay lại danh sách</button>
-            <div style={{ fontWeight: 700, marginBottom: 10 }}>{detailStudent.name} — Lịch sử làm bài</div>
+            <div style={{ fontWeight: 700, marginBottom: 4 }}>{detailStudent.name} — Lịch sử làm bài</div>
+            <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 10 }}>Bấm 1 lần làm để xem đáp án từng câu (lưu 3 tháng).</div>
             {detailHistory === null ? (
               <div style={{ color: 'var(--text2)' }}>Đang tải...</div>
             ) : detailHistory.length === 0 ? (
@@ -136,16 +138,42 @@ function LessonStudentsModal({ lessonId, lessonTitle, onClose }) {
             ) : (
               <div className="table-wrap">
                 <table className="table">
-                  <thead><tr><th>NGÀY GIỜ</th><th>ĐIỂM</th><th>ĐÚNG/SAI</th><th>THỜI GIAN</th></tr></thead>
+                  <thead><tr><th>NGÀY GIỜ</th><th>ĐIỂM</th><th>ĐÚNG/TỔNG</th><th>ĐÃ LÀM</th><th>THỜI GIAN</th></tr></thead>
                   <tbody>
-                    {detailHistory.map(h => (
-                      <tr key={h._id}>
-                        <td>{formatDate(h.createdAt)}</td>
-                        <td>{h.score}%</td>
-                        <td>{h.correct}/{h.wrong + h.correct}</td>
-                        <td>{h.timeSpent}s</td>
-                      </tr>
-                    ))}
+                    {detailHistory.map(h => {
+                      const total = h.wrong + h.correct;
+                      const hasAnswers = Array.isArray(h.answers) && h.answers.length > 0;
+                      const open = openAttempt === h._id;
+                      const passed = h.score >= 70 && (h.answered == null || h.answered >= total);
+                      return (
+                        <Fragment key={h._id}>
+                          <tr style={{ cursor: hasAnswers ? 'pointer' : 'default' }} onClick={() => hasAnswers && setOpenAttempt(open ? null : h._id)}>
+                            <td>{hasAnswers ? (open ? '▾ ' : '▸ ') : ''}{formatDate(h.createdAt)}</td>
+                            <td><span className={`badge ${passed ? 'badge-green' : 'badge-red'}`}>{h.score}%</span></td>
+                            <td>{h.correct}/{total}</td>
+                            <td>{h.answered == null ? '—' : `${h.answered}/${total}`}</td>
+                            <td>{h.timeSpent}s</td>
+                          </tr>
+                          {open && (
+                            <tr>
+                              <td colSpan={5} style={{ background: 'var(--bg2, #f8fafc)' }}>
+                                <ol style={{ margin: 0, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 8, fontSize: 13 }}>
+                                  {h.answers.map(a => (
+                                    <li key={a.ref}>
+                                      <div style={{ whiteSpace: 'pre-wrap' }}>{a.question}</div>
+                                      <div style={{ color: a.isCorrect ? 'var(--green)' : 'var(--red, #dc2626)' }}>
+                                        {a.isCorrect ? '✓' : '✗'} Chọn: <b>{a.chosen == null ? '(bỏ trống)' : a.chosenText}</b>
+                                        {!a.isCorrect && <span style={{ color: 'var(--text2)' }}> · Đáp án: <b>{a.correctText}</b></span>}
+                                      </div>
+                                    </li>
+                                  ))}
+                                </ol>
+                              </td>
+                            </tr>
+                          )}
+                        </Fragment>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

@@ -168,8 +168,8 @@ function renderHwBanner() {
   el.innerHTML = allDone
     ? '<i class="fas fa-check-circle"></i><div><b>Bài tập về nhà đã hoàn thành.</b> ' + names + '</div>'
     : '<i class="fas fa-thumbtack"></i><div><b>Đây là bài tập về nhà:</b> ' + names + '.<br>'
-      + 'Cần đạt <b>từ ' + HW_PASS_PERCENT + '% số câu đúng trở lên</b> (Mini Quiz + câu trắc nghiệm trong bài) mới được tính hoàn thành. '
-      + 'Câu bỏ trống tính sai. Làm lại bao nhiêu lần cũng được.</div>';
+      + 'Cần <b>làm hết tất cả câu</b> (Mini Quiz + câu trắc nghiệm trong bài) và <b>đúng từ ' + HW_PASS_PERCENT + '% trở lên</b> mới được tính hoàn thành. '
+      + 'Làm lại bao nhiêu lần cũng được.</div>';
   el.hidden = false;
 }
 
@@ -203,7 +203,9 @@ async function loadHistory(lesson) {
     return '<div class="eg-hist-row">'
       + '<span class="eg-hist-date">' + _fmtDate(h.createdAt, true) + '</span>'
       + '<span class="eg-hist-score eg-hist-' + tone + '">' + h.score + '%</span>'
-      + '<span class="eg-hist-detail">' + h.correct + '/' + h.total + ' câu đúng · ' + _fmtDuration(h.timeSpent) + '</span>'
+      + '<span class="eg-hist-detail">' + h.correct + '/' + h.total + ' câu đúng'
+      + (h.answered != null && h.answered < h.total ? ' · bỏ trống ' + (h.total - h.answered) + ' câu' : '')
+      + ' · ' + _fmtDuration(h.timeSpent) + '</span>'
       + '</div>';
   }).join('') + '</div>'
     + '<div class="eg-hist-note">Hiển thị tối đa 20 lần gần nhất trong 3 tháng. Điểm cao nhất được lưu vĩnh viễn.</div>';
@@ -465,7 +467,7 @@ function renderLessonContent(lesson) {
     .reduce((n, b) => n + (b.data.exercises || []).filter(ex => ex.type === 'multiple_choice').length, 0);
   const gradeableTotal = quizTotal + exerciseMcTotal;
   quizState = gradeableTotal > 0
-    ? { total: gradeableTotal, answered: 0, correct: 0, wrongTexts: [], lessonId: lesson._id, lessonKey: currentKey, startTime: Date.now() }
+    ? { total: gradeableTotal, answered: 0, correct: 0, wrongTexts: [], answers: [], lessonId: lesson._id, lessonKey: currentKey, startTime: Date.now() }
     : null;
 
   // .pf-hero = the coloured Reading/Listening-style banner (css/playful.css).
@@ -534,7 +536,9 @@ function navFooterBtn(lesson, dir) {
   return '<button class="eg-nav-btn" onclick="selectLesson(' + JSON.stringify(key).replace(/"/g, '&quot;') + ')" style="' + (isPrev ? '' : 'margin-left:auto;text-align:right;justify-content:flex-end') + '">' + order + '</button>';
 }
 
-function renderBlock(block) {
+// bi = the block's index in lesson.blocks — part of each graded question's
+// ref ('q:<bi>:<qi>' / 'ex:<bi>:<i>'), which the server grades against.
+function renderBlock(block, bi) {
   switch (block.type) {
     case 'overview': return renderOverviewBlock(block.data);
     case 'formula': return renderFormulaBlock(block.data);
@@ -545,8 +549,8 @@ function renderBlock(block) {
     case 'common_mistakes': return renderMistakesBlock(block.data);
     case 'ielts_tips': return renderTipsBlock(block.data);
     case 'comparison': return renderComparisonBlock(block.data);
-    case 'practice_exercises': return renderPracticeExercisesBlock(block.data);
-    case 'quiz': return renderQuizBlock(block.data);
+    case 'practice_exercises': return renderPracticeExercisesBlock(block.data, bi);
+    case 'quiz': return renderQuizBlock(block.data, bi);
     case 'summary': return renderSummaryBlock(block.data);
     case 'video': return renderVideoBlock(block.data);
     case 'verb_forms': return renderVerbFormsBlock(block.data);
@@ -630,14 +634,14 @@ function renderComparisonBlock(data) {
     + '<div class="eg-cmp-wrap"><table class="eg-cmp-table"><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table></div></div>';
 }
 
-function renderPracticeExercisesBlock(data) {
+function renderPracticeExercisesBlock(data, bi) {
   const exercises = data.exercises || [];
-  const items = exercises.map((ex, i) => renderExerciseItem(ex, i)).join('');
+  const items = exercises.map((ex, i) => renderExerciseItem(ex, i, bi)).join('');
   return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-dumbbell"></i> Luyện tập (' + exercises.length + ' bài)</div>'
     + '<div class="eg-ex-list">' + items + '</div></div>';
 }
 
-function renderExerciseItem(ex, i) {
+function renderExerciseItem(ex, i, bi) {
   const label = EX_TYPE_LABELS[ex.type] || ex.type;
   const questionHtml = escHtml(ex.question).replace(/\n/g, '<br>');
   let body;
@@ -656,7 +660,8 @@ function renderExerciseItem(ex, i) {
       + '<button class="eg-ex-reveal-btn" data-idx="' + i + '" data-answer="' + escAttr(ex.answer) + '" data-explanation="' + escAttr(ex.explanation) + '" onclick="revealExerciseAnswer(this)">Xem đáp án</button>'
       + '<div class="eg-ex-answer-panel" id="eg-ex-answer-' + i + '"></div>';
   }
-  return '<div class="eg-ex-item">'
+  const refAttr = ex.type === 'multiple_choice' ? ' data-ref="ex:' + bi + ':' + i + '"' : '';
+  return '<div class="eg-ex-item"' + refAttr + '>'
     + '<div class="eg-ex-badge">' + escHtml(label) + '</div>'
     + '<div class="eg-ex-question">' + (i + 1) + '. ' + questionHtml + '</div>'
     + body
@@ -679,6 +684,7 @@ function checkExerciseMC(btn, oi, answerIndex, i) {
 
   if (!quizState) return;
   quizState.answered++;
+  if (group.dataset.ref) quizState.answers.push({ ref: group.dataset.ref, chosen: oi });
   if (oi === answerIndex) quizState.correct++;
   else quizState.wrongTexts.push(btn.dataset.question || '');
   _updateEgGradeFooter();
@@ -702,13 +708,13 @@ function revealExerciseAnswer(btn) {
   if (input) input.disabled = true;
 }
 
-function renderQuizBlock(data) {
+function renderQuizBlock(data, bi) {
   const total = (data.questions || []).length;
   const questions = (data.questions || []).map((q, qi) => {
     const options = (q.options || []).map((opt, oi) =>
       '<button class="eg-quiz-option" data-question="' + escAttr(q.question) + '" onclick="checkQuizAnswer(this, ' + qi + ', ' + oi + ', ' + q.answerIndex + ')">' + escHtml(opt) + '</button>'
     ).join('');
-    return '<div class="eg-quiz-q" data-qi="' + qi + '">'
+    return '<div class="eg-quiz-q" data-qi="' + qi + '" data-ref="q:' + bi + ':' + qi + '">'
       + '<div class="eg-quiz-question">' + (qi + 1) + '. ' + escHtml(q.question) + '</div>'
       + '<div class="eg-quiz-options">' + options + '</div>'
       + '<div class="eg-quiz-explanation" id="eg-quiz-exp-' + qi + '"><i class="fas fa-info-circle"></i> ' + escHtml(q.explanation) + '</div>'
@@ -742,6 +748,7 @@ function checkQuizAnswer(btn, qi, oi, answerIndex) {
 
   if (!quizState) return;
   quizState.answered++;
+  if (group.dataset.ref) quizState.answers.push({ ref: group.dataset.ref, chosen: oi });
   if (oi === answerIndex) quizState.correct++;
   else quizState.wrongTexts.push(btn.dataset.question || '');
   const progressEl = document.getElementById('eg-quiz-progress');
@@ -760,10 +767,13 @@ function finalizeQuiz() {
   saveScore(quizState.lessonKey, score);
   const passed = score >= COMPLETE_THRESHOLD;
   const isHomework = _hwItemsFor(quizState.lessonId).length > 0;
+  const blanks = quizState.total - quizState.answered;
   const hwNote = !isHomework ? ''
-    : (score >= HW_PASS_PERCENT
-      ? ' Bài tập về nhà: đạt yêu cầu ≥' + HW_PASS_PERCENT + '% ✓'
-      : ' Bài tập về nhà cần đạt từ ' + HW_PASS_PERCENT + '% mới được tính — hãy làm lại!');
+    : (blanks > 0
+      ? ' Bài tập về nhà cần làm hết tất cả câu (còn ' + blanks + ' câu bỏ trống) — hãy làm lại!'
+      : score >= HW_PASS_PERCENT
+        ? ' Bài tập về nhà: đạt yêu cầu ≥' + HW_PASS_PERCENT + '% ✓'
+        : ' Bài tập về nhà cần đạt từ ' + HW_PASS_PERCENT + '% mới được tính — hãy làm lại!');
   const summary = 'Bạn đạt ' + score + '% (' + quizState.correct + '/' + quizState.total + ' câu đúng).'
     + (passed ? ' Bài học đã được đánh dấu hoàn thành!' : ' Cần đạt từ ' + COMPLETE_THRESHOLD + '% để đánh dấu hoàn thành bài học.')
     + hwNote;
@@ -800,6 +810,9 @@ function finalizeQuiz() {
       method: 'POST',
       headers: Object.assign({ 'Content-Type': 'application/json' }, _egAuthHeaders()),
       body: JSON.stringify({
+        // Each pick, graded on the server (which also stores the answers
+        // for the teacher — kept 3 months). The counts are only a fallback.
+        answers: quizState.answers,
         correctCount: quizState.correct,
         totalCount: quizState.total,
         timeSpent,

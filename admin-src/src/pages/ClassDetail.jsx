@@ -206,6 +206,7 @@ const RES_RULE = {
   task2_template: 'Tự tick khi học viên học xong cả 5 bước của lộ trình VÀ thuộc ≥70% số câu (nhớ lại cả bài ở bước ④ hoặc Thi thử, làm sau khi giao bài).',
   writing_practice: 'Tự tick khi học viên làm ≥10 câu của chủ đề, đúng ≥70%.',
   task1_skill: 'Tự tick khi học viên làm ≥10 câu của kỹ năng này, đúng ≥70%.',
+  grammar: 'Tự tick khi học viên làm hết mọi câu chấm điểm của bài (Mini Quiz + trắc nghiệm) và đúng ≥70%. Đáp án từng câu được lưu 3 tháng.',
   speaking_part2: 'Tự tick khi học viên xong cả 5 bước của câu chuyện (đọc bài mẫu, từ vựng, dịch FIXED, dịch WHY ≥2 đề + kết luận, nói thử 2 phút). Đã học xong từ trước khi giao cũng tính.',
 };
 const ASG_STATUS = { not_started: 'badge-gray', in_progress: 'badge-blue', completed: 'badge-green', overdue: 'badge-red', not_applicable: 'badge-gray' };
@@ -1547,6 +1548,9 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   // Task 2 Templates: Band 6+ and Band 7+ are separate items — filter to one.
   const [tplLevel, setTplLevel] = useState('');
   const [essayFilter, setEssayFilter] = useState('');
+  // Essential Grammar: lesson group (Tenses, Writing Foundation, …) — the
+  // catalog row's meta. '' = every lesson, so "Chọn tất cả" assigns them all.
+  const [grammarGroup, setGrammarGroup] = useState('');
 
   useEffect(() => {
     // No synchronous setState here for the cat !== 'speaking' case — that's
@@ -1648,6 +1652,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   const assignedCount = catalog.filter((item) => assignedFor(item)).length;
   const visibleCatalog = catalog
     .filter((item) => !essayFilter || cat !== 'task2' || item.essayType === essayFilter)
+    .filter((item) => !grammarGroup || cat !== 'grammar' || item.meta === grammarGroup)
     .filter((item) => !assignedFilter || (assignedFilter === 'done' ? !!assignedFor(item) : !assignedFor(item)));
   function togglePick(item) {
     const k = keyOf(cat, item._id);
@@ -1756,7 +1761,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                   // the list never shows the previous type's items (wrong
                   // labels/meta) until the new fetch resolves.
                   setCatalog([]); setLoadingCat(true);
-                  setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]); setTplLevel(''); setEssayFilter('');
+                  setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]); setTplLevel(''); setEssayFilter(''); setGrammarGroup('');
                 }}>
                 {RES_GROUPS.map((g) => (
                   <optgroup key={g.key} label={g.label} style={{ color: g.color, backgroundColor: '#fff', fontWeight: 800, fontStyle: 'normal' }}>
@@ -1780,6 +1785,12 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                 <select className="form-input" style={{ width: 180 }} value={essayFilter} onChange={(e) => setEssayFilter(e.target.value)} title="Lọc theo dạng bài Task 2">
                   <option value="">Tất cả dạng bài</option>
                   {Object.entries(ESSAY_TYPES).map(([k, t]) => <option key={k} value={k}>{t.label}</option>)}
+                </select>
+              )}
+              {cat === 'grammar' && (
+                <select className="form-input" style={{ width: 200 }} value={grammarGroup} onChange={(e) => setGrammarGroup(e.target.value)} title="Lọc theo nhóm bài ngữ pháp">
+                  <option value="">Tất cả nhóm</option>
+                  {[...new Set(catalog.map((i) => i.meta).filter(Boolean))].map((g) => <option key={g} value={g}>{g}</option>)}
                 </select>
               )}
               {cat === 'task2_template' && (
@@ -1817,6 +1828,13 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
               <div style={{ marginBottom: 8 }}>
                 <button type="button" className="btn btn-ghost btn-sm" onClick={pickAllListed}>
                   ✓ Chọn cả {visibleCatalog.length} dạng {tplLevel === 'band6' ? 'Band 6+' : 'Band 7+'}{assignedFilter === 'new' ? ' (chưa giao)' : assignedFilter === 'done' ? ' (đã giao)' : ''}
+                </button>
+              </div>
+            )}
+            {cat === 'grammar' && visibleCatalog.length > 0 && (
+              <div style={{ marginBottom: 8 }}>
+                <button type="button" className="btn btn-ghost btn-sm" onClick={pickAllListed}>
+                  ✓ Chọn tất cả {visibleCatalog.length} bài{grammarGroup ? ` nhóm "${grammarGroup}"` : ' ngữ pháp'}{assignedFilter === 'new' ? ' (chưa giao)' : assignedFilter === 'done' ? ' (đã giao)' : ''}
                 </button>
               </div>
             )}

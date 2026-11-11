@@ -176,3 +176,37 @@ test('grammar: a lesson homework ticks only once one attempt reaches 70% (69% do
   const hist = await request(app).get(`/api/essential-grammar/${lesson._id}/attempt/history`).set(authH(s));
   expect(hist.body.history.map((h) => h.score)).toEqual([70, 69]);
 });
+
+test('grammar: answers are graded server-side — every question must be answered AND ≥ 70%', async () => {
+  const { createEssentialGrammarLesson } = require('../factories/contentFactory');
+  const { t, s, cls } = await setup();
+  const questions = Array.from({ length: 10 }, (_, i) => ({ question: `Q${i}`, options: ['a', 'b'], answerIndex: 0, explanation: '' }));
+  const lesson = await createEssentialGrammarLesson({ blocks: [{ type: 'quiz', data: { questions } }] });
+  const asg = await assign(t, cls, [{ kind: 'internal', resourceType: 'grammar', resourceId: lesson._id }]);
+  // nRight correct picks, the rest wrong, the last `blank` left out.
+  const submit = (nRight, blank = 0) => request(app)
+    .post(`/api/essential-grammar/${lesson._id}/attempt`).set(authH(s))
+    .send({ answers: questions.slice(0, 10 - blank).map((_, i) => ({ ref: `q:0:${i}`, chosen: i < nRight ? 0 : 1 })), correctCount: 10, totalCount: 10 });
+
+  expect((await submit(8, 2)).status).toBe(200); // 80% but 2 blanks — not finished
+  let item = await itemOf(s, asg._id);
+  expect(item.completed).toBe(false);
+
+  expect((await submit(6)).status).toBe(200); // all answered, 60% (client's 10/10 claim ignored)
+  expect((await itemOf(s, asg._id)).completed).toBe(false);
+
+  expect((await submit(7)).status).toBe(200); // all answered, 70%
+  item = await itemOf(s, asg._id);
+  expect(item.completed).toBe(true);
+
+  expect((await request(app).post(`/api/essential-grammar/${lesson._id}/attempt`).set(authH(s)).send({ answers: 'x' })).status).toBe(400);
+});
+
+test('grammar: the catalog lists each lesson with its group as meta (picker filter / "Chọn tất cả")', async () => {
+  const { createEssentialGrammarLesson } = require('../factories/contentFactory');
+  const { t } = await setup();
+  await createEssentialGrammarLesson({ category: 'Writing Foundation', title: 'Structure 2' });
+  const res = await request(app).get('/api/classes/resources/catalog?type=grammar&limit=2000').set(authH(t));
+  expect(res.status).toBe(200);
+  expect(res.body.items.find((i) => i.label === 'Structure 2').meta).toBe('Writing Foundation');
+});

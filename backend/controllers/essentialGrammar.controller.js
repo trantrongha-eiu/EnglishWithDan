@@ -48,13 +48,20 @@ exports.submitAttempt = async (req, res) => {
   try {
     const lesson = await essentialGrammarService.getLessonById(req.params.id);
     if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy bài học' });
-    const { correctCount, totalCount, timeSpent, wrongQuestions } = req.body;
-    if (typeof totalCount !== 'number' || totalCount <= 0) {
+    const { correctCount, totalCount, timeSpent, wrongQuestions, answers } = req.body;
+    // `answers` = per-question picks, graded server-side. The bare
+    // correctCount/totalCount shape is still accepted from older pages.
+    if (answers !== undefined) {
+      if (!Array.isArray(answers) || answers.length > 500) {
+        return res.status(400).json({ success: false, message: 'answers không hợp lệ' });
+      }
+    } else if (typeof totalCount !== 'number' || totalCount <= 0) {
       return res.status(400).json({ success: false, message: 'Thiếu totalCount' });
     }
-    const attempt = await essentialGrammarService.submitAttempt(req.user._id, req.params.id, { correctCount, totalCount, timeSpent, wrongQuestions });
+    const attempt = await essentialGrammarService.submitAttempt(req.user._id, req.params.id, { correctCount, totalCount, timeSpent, wrongQuestions, answers });
     res.json({ success: true, attempt });
   } catch (err) {
+    if (err.status === 400) return res.status(400).json({ success: false, message: err.message });
     console.error('[EssentialGrammar]', err);
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }

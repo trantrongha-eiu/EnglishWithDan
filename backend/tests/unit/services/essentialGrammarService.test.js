@@ -225,3 +225,57 @@ describe('exportLessonStudentsCsv', () => {
     expect(lines[1]).toContain("'=cmd Evil"); // leading ' neutralizes the formula
   });
 });
+
+describe('submitAttempt with per-question answers (server-graded)', () => {
+  // quiz block (2 questions) + practice block (1 MC + 1 self-check that is not graded)
+  const blocks = [
+    { type: 'overview', data: { text: 'x' } },
+    { type: 'quiz', data: { questions: [
+      { question: 'Q1', options: ['a', 'b'], answerIndex: 1, explanation: '' },
+      { question: 'Q2', options: ['c', 'd'], answerIndex: 0, explanation: '' },
+    ] } },
+    { type: 'practice_exercises', data: { exercises: [
+      { type: 'fill_blank', question: 'F1', answer: 'x', explanation: '' },
+      { type: 'multiple_choice', question: 'M1', options: ['e', 'f', 'g'], answerIndex: 2, explanation: '' },
+    ] } },
+  ];
+
+  test('grades from the lesson, ignores the client counts, and stores every answer', async () => {
+    const student = await createStudent();
+    const lesson = await createEssentialGrammarLesson({ blocks });
+    await svc.submitAttempt(student._id, lesson._id, {
+      correctCount: 3, totalCount: 3, timeSpent: 12, // lies — must be ignored
+      answers: [{ ref: 'q:1:0', chosen: 1 }, { ref: 'q:1:1', chosen: 1 }, { ref: 'ex:2:1', chosen: 2 }],
+    });
+    const log = await EssentialGrammarAttemptLog.findOne({ userId: student._id }).lean();
+    expect(log).toMatchObject({ total: 3, correct: 2, wrong: 1, answered: 3, score: 67, graded: 'server' });
+    expect(log.answers).toEqual([
+      { ref: 'q:1:0', question: 'Q1', chosen: 1, chosenText: 'b', correctIndex: 1, correctText: 'b', isCorrect: true },
+      { ref: 'q:1:1', question: 'Q2', chosen: 1, chosenText: 'd', correctIndex: 0, correctText: 'c', isCorrect: false },
+      { ref: 'ex:2:1', question: 'M1', chosen: 2, chosenText: 'g', correctIndex: 2, correctText: 'g', isCorrect: true },
+    ]);
+    expect(log.wrongQuestions).toEqual(['Q2']);
+  });
+
+  test('a blank, unknown ref, duplicate or out-of-range pick counts as unanswered/wrong', async () => {
+    const student = await createStudent();
+    const lesson = await createEssentialGrammarLesson({ blocks });
+    await svc.submitAttempt(student._id, lesson._id, {
+      answers: [{ ref: 'q:1:0', chosen: 1 }, { ref: 'q:1:0', chosen: 0 }, { ref: 'q:9:9', chosen: 0 }, { ref: 'ex:2:1', chosen: 7 }],
+    });
+    const log = await EssentialGrammarAttemptLog.findOne({ userId: student._id }).lean();
+    expect(log).toMatchObject({ total: 3, correct: 1, answered: 1, score: 33 });
+    expect(log.answers.map(a => a.chosen)).toEqual([1, null, null]);
+    // The aggregate row (no TTL) still updates.
+    expect((await svc.getAttempt(student._id, lesson._id)).bestScore).toBe(33);
+  });
+
+  test('history returns the stored answers', async () => {
+    const student = await createStudent();
+    const lesson = await createEssentialGrammarLesson({ blocks });
+    await svc.submitAttempt(student._id, lesson._id, { answers: [{ ref: 'q:1:0', chosen: 1 }] });
+    const [h] = await svc.getAttemptHistory(student._id, lesson._id);
+    expect(h.answers).toHaveLength(3);
+    expect(h.answered).toBe(1);
+  });
+});
