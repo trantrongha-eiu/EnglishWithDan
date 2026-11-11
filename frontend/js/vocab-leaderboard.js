@@ -225,9 +225,10 @@
     document.addEventListener('ews:cake-wiped', function () { loadStreakBoard(); });
 
     // 🎂 next to a name: throw a cake (capture phase, so the row's own
-    // onclick — open the peer profile — doesn't fire too).
+    // onclick — open the peer profile — doesn't fire too). Match [data-cake]
+    // only: 🔍 / ⚔️ reuse the .vlb-cake-btn look but have their own handler.
     document.addEventListener('click', function (e) {
-        var btn = e.target.closest && e.target.closest('.vlb-cake-btn');
+        var btn = e.target.closest && e.target.closest('.vlb-cake-btn[data-cake]');
         if (!btn) return;
         e.stopPropagation();
         var name = btn.getAttribute('data-name');
