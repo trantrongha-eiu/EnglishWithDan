@@ -125,8 +125,9 @@ function PartChips({ type, parts, onToggle, disabled, color = '#c2410c' }) {
 // Reading / Listening items can be pinned to one mode (backend Assignment
 // resources[].examMode): '' = student picks, else only that mode counts.
 const EXAM_MODE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice']);
-// Picking one of these also picks its published gap-fill drill(s) — see addGapFillsFor.
-const GAPFILL_SOURCE_TYPES = new Set(['listening_practice', 'listening_test']);
+// Picking one of these also picks its companions — a Listening item's
+// published gap-fill drill(s), a Part 2 story's vocab lesson — see addGapFillsFor.
+const GAPFILL_SOURCE_TYPES = new Set(['listening_practice', 'listening_test', 'speaking_part2']);
 const EXAM_MODES = [
   { value: '', label: 'HS tự chọn', color: '#6b7280' },
   { value: 'practice', label: '✏️ Luyện tập', color: '#0284c7' },
@@ -1615,7 +1616,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
         body: JSON.stringify({ items: items.map((x) => ({ resourceType: x.resourceType, resourceId: x.resourceId, ...(x.parts?.length ? { parts: x.parts } : {}) })) }),
       });
       results = d.results || [];
-    } catch (err) { toast(`Không tải được Gap-fill kèm theo: ${err.message}`, 'error'); return; }
+    } catch (err) { toast(`Không tải được bài kèm theo: ${err.message}`, 'error'); return; }
     setPicked((list) => {
       let out = list;
       items.forEach((src, i) => {
@@ -1626,8 +1627,9 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
         out = out.filter((x) => x.gapFillOf !== srcKey);
         const have = new Set(out.map((x) => keyOf(x.resourceType, x.resourceId)));
         const gfs = (results[i] || [])
-          .filter((g) => !have.has(keyOf('listening_gapfill', g._id)))
-          .map((g) => ({ kind: 'internal', resourceType: 'listening_gapfill', resourceId: g._id, resourceCode: '', label: g.label, gapFillOf: srcKey }));
+          .map((g) => ({ ...g, resourceType: g.resourceType || 'listening_gapfill' }))
+          .filter((g) => !have.has(keyOf(g.resourceType, g._id)))
+          .map((g) => ({ kind: 'internal', resourceType: g.resourceType, resourceId: g._id, resourceCode: '', label: g.label, gapFillOf: srcKey }));
         if (!gfs.length) return;
         const at = out.findIndex((x) => keyOf(x.resourceType, x.resourceId) === srcKey) + 1;
         out = [...out.slice(0, at), ...gfs, ...out.slice(at)];
@@ -1872,7 +1874,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                     {p.resourceType !== 'mock_test' && assignedIndex.has(keyOf(p.resourceType, p.resourceId)) && (
                       <span title={assignedTooltip(assignedIndex.get(keyOf(p.resourceType, p.resourceId)))} style={{ marginLeft: 4, fontWeight: 700 }}>· đã giao trước</span>
                     )}
-                    {p.gapFillOf && <span style={{ marginLeft: 4, fontWeight: 400 }} title="Tự thêm theo bài nghe đã chọn — bấm ✕ nếu không muốn giao">· tự thêm</span>}
+                    {p.gapFillOf && <span style={{ marginLeft: 4, fontWeight: 400 }} title="Tự thêm theo bài đã chọn (gap-fill của bài nghe / từ vựng của câu chuyện Part 2) — bấm ✕ nếu không muốn giao">· tự thêm</span>}
                     <button type="button" onClick={() => removePicked(p)} title="Bỏ bài này"
                       style={{ marginLeft: 6, background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0 }}>✕</button>
                   </span>

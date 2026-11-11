@@ -24,6 +24,8 @@ const TestAttempt = require('../../models/TestAttempt');
 const GapFillAttempt = require('../../models/GapFillAttempt');
 const classAttendanceService = require('../../services/classAttendanceService');
 const assignmentService = require('../../services/assignmentService');
+const speakingPart2Service = require('../../services/speakingPart2Service');
+const VocabularyLesson = require('../../models/VocabularyLesson');
 
 // Backdate a document's createdAt. Mongoose's timestamps plugin marks
 // createdAt immutable, so every Mongoose-level write (findByIdAndUpdate,
@@ -217,11 +219,12 @@ describe('listening items bring their gap-fill along', () => {
       { resourceType: 'reading_practice', resourceId: String(withGf._id) },
     ] });
     expect(res.status).toBe(200);
+    const g = (doc, label) => ({ _id: String(doc._id), label, resourceType: 'listening_gapfill' });
     expect(res.body.results).toEqual([
-      [{ _id: String(withGf._id), label: 'Linwood' }],
+      [g(withGf, 'Linwood')],
       [],
-      [{ _id: String(p1._id), label: 'Hotel Booking' }, { _id: String(p2._id), label: 'Museum Tour' }],
-      [{ _id: String(p2._id), label: 'Museum Tour' }],
+      [g(p1, 'Hotel Booking'), g(p2, 'Museum Tour')],
+      [g(p2, 'Museum Tour')],
       [],
     ]);
   });
@@ -236,6 +239,56 @@ describe('listening items bring their gap-fill along', () => {
     });
     expect(res.status).toBe(201);
     expect(types(res.body.assignment)).toEqual([`listening_practice:${sec._id}`]);
+  });
+});
+
+describe('a Part 2 story brings its vocab lesson along', () => {
+  const types = (a) => a.resources.map((r) => `${r.resourceType}:${r.resourceId}`);
+  const story = (code) => speakingPart2Service.STORY_ROWS.find((r) => r.code === code);
+  const lesson = (code, t, extra = {}) => VocabularyLesson.create({
+    title: speakingPart2Service.STORY_VOCAB_LESSON[code], published: true, createdBy: t._id,
+    words: [{ word: 'approachable', meaning: 'dễ gần' }], ...extra,
+  });
+
+  test('Mrs Hoa (people) → Describing People, right after it; no published lesson → nothing added', async () => {
+    const t = await createTeacher();
+    const { cls } = await makeClassWith(t);
+    const people = await lesson('people', t);
+    await lesson('places', t, { published: false });
+    const res = await request(app).post(`/api/classes/${cls._id}/assignments`).set(authH(t)).send({ title: 'HW', resources: [
+      { kind: 'internal', resourceType: 'speaking_part2', resourceId: String(story('people')._id) },
+      { kind: 'internal', resourceType: 'speaking_part2', resourceId: String(story('places')._id) },
+    ] });
+    expect(res.status).toBe(201);
+    expect(types(res.body.assignment)).toEqual([
+      `speaking_part2:${story('people')._id}`, `vocabulary_lesson:${people._id}`, `speaking_part2:${story('places')._id}`,
+    ]);
+    expect(res.body.assignment.resources[1].label).toBe('IELTS Speaking – Describing People');
+  });
+
+  test('a vocab lesson already picked is not duplicated', async () => {
+    const t = await createTeacher();
+    const { cls } = await makeClassWith(t);
+    const places = await lesson('places', t);
+    const res = await request(app).post(`/api/classes/${cls._id}/assignments`).set(authH(t)).send({ title: 'HW', resources: [
+      { kind: 'internal', resourceType: 'vocabulary_lesson', resourceId: String(places._id) },
+      { kind: 'internal', resourceType: 'speaking_part2', resourceId: String(story('places')._id) },
+    ] });
+    expect(types(res.body.assignment)).toEqual([`vocabulary_lesson:${places._id}`, `speaking_part2:${story('places')._id}`]);
+  });
+
+  test('gapfill-companions returns the vocab lesson of each story so the editor shows it on pick', async () => {
+    const t = await createTeacher();
+    const media = await lesson('media', t);
+    const res = await request(app).post('/api/classes/resources/gapfill-companions').set(authH(t)).send({ items: [
+      { resourceType: 'speaking_part2', resourceId: String(story('media')._id) },
+      { resourceType: 'speaking_part2', resourceId: String(story('nature')._id) },
+    ] });
+    expect(res.status).toBe(200);
+    expect(res.body.results).toEqual([
+      [{ _id: String(media._id), label: 'IELTS Speaking – Culture, Media & Stories', resourceType: 'vocabulary_lesson' }],
+      [],
+    ]);
   });
 });
 

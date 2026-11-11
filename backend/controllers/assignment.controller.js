@@ -14,6 +14,7 @@ const rcs = require('../services/resourceCompletionService');
 const svc = require('../services/assignmentService');
 const mockTestService = require('../services/mockTestService');
 const listeningService = require('../services/listeningService');
+const speakingPart2Service = require('../services/speakingPart2Service');
 const classAttendanceService = require('../services/classAttendanceService');
 const vgs = require('../services/vocabGoalService');
 const { SLOTS: DEFAULT_BOOK_SLOTS, canonicalName: canonicalBookName } = require('../utils/defaultVocabBooks');
@@ -270,30 +271,49 @@ async function buildResources(input, existing = [], ctx = {}) {
   // gapFillHandled: the admin editor already put each gap-fill in the list
   // (or the teacher removed it there on purpose) — don't add them again.
   if (ctx.gapFillHandled) return { resources: out };
-  return { resources: await attachGapFillCompanions(out, fresh, existingIdByKey) };
+  return { resources: await attachCompanions(out, fresh, existingIdByKey) };
 }
 
-// Giving a Listening section or a full test also gives its gap-fill drill(s)
-// (one per part that has a published gap-fill), placed right after it. Only
-// for listening items NEW in this save, so on an edit a gap-fill the teacher
-// deleted stays deleted. A gap-fill already in the list is never duplicated.
+// Some items bring "companion" items along, placed right after them:
+//  - a Listening section / full test → its gap-fill drill(s) (one per part
+//    that has a published gap-fill);
+//  - a Speaking Part 2 story (e.g. Mrs Hoa) → the Vocab Topics lesson of its
+//    group (e.g. "IELTS Speaking – Describing People").
+// Only for items NEW in this save, so on an edit a companion the teacher
+// deleted stays deleted. A companion already in the list is never duplicated.
 const GAPFILL_SOURCE_TYPES = ['listening_practice', 'listening_test'];
-async function attachGapFillCompanions(out, fresh, existingIdByKey) {
-  const have = new Set(out.filter((r) => r.resourceType === 'listening_gapfill').map((r) => String(r.resourceId)));
+const COMPANION_SOURCE_TYPES = [...GAPFILL_SOURCE_TYPES, 'speaking_part2'];
+
+// One source item → [{ resourceType, _id, label? }] of its companions.
+async function companionsFor(r) {
+  if (GAPFILL_SOURCE_TYPES.includes(r.resourceType)) {
+    const ids = await listeningService.gapFillSectionIdsFor(r.resourceType, r.resourceId, rcs.assignedParts(r));
+    return ids.map((id) => ({ resourceType: 'listening_gapfill', _id: String(id) }));
+  }
+  if (r.resourceType === 'speaking_part2') {
+    const rows = await speakingPart2Service.vocabLessonsForStory(r.resourceId);
+    return rows.map((x) => ({ resourceType: 'vocabulary_lesson', _id: x._id, label: x.label }));
+  }
+  return [];
+}
+
+async function attachCompanions(out, fresh, existingIdByKey) {
+  const have = new Set(out.filter((r) => r.kind === 'internal').map((r) => `${r.resourceType}:${r.resourceId}`));
   const res = [];
   for (const r of out) {
     res.push(r);
-    if (!fresh.has(r) || r.kind !== 'internal' || !GAPFILL_SOURCE_TYPES.includes(r.resourceType)) continue;
-    for (const id of await listeningService.gapFillSectionIdsFor(r.resourceType, r.resourceId, rcs.assignedParts(r))) {
-      if (have.has(id)) continue;
-      have.add(id);
-      const gf = {
-        kind: 'internal', resourceType: 'listening_gapfill', resourceId: new mongoose.Types.ObjectId(id),
-        label: await rcs.labelFor('listening_gapfill', id), resourceCode: '',
+    if (!fresh.has(r) || r.kind !== 'internal' || !COMPANION_SOURCE_TYPES.includes(r.resourceType)) continue;
+    for (const c of await companionsFor(r)) {
+      const key = `${c.resourceType}:${c._id}`;
+      if (have.has(key)) continue;
+      have.add(key);
+      const item = {
+        kind: 'internal', resourceType: c.resourceType, resourceId: new mongoose.Types.ObjectId(c._id),
+        label: await rcs.labelFor(c.resourceType, c._id), resourceCode: '',
       };
-      const reuseId = existingIdByKey.get(resourceIdentityKey(gf));
-      if (reuseId) gf._id = reuseId;
-      res.push(gf);
+      const reuseId = existingIdByKey.get(resourceIdentityKey(item));
+      if (reuseId) item._id = reuseId;
+      res.push(item);
     }
   }
   return res;
@@ -303,25 +323,26 @@ async function attachGapFillCompanions(out, fresh, existingIdByKey) {
 
 // POST /api/classes/resources/gapfill-companions
 // body: { items: [{ resourceType, resourceId, parts? }] }
-// → { results: [[{ _id, label }], ...] } — same order as items. The gap-fill
-// drills each picked Listening section/test brings along, so the admin editor
-// can show them as soon as the item is ticked (same matching as on save).
+// → { results: [[{ _id, label, resourceType }], ...] } — same order as items.
+// The companions each picked item brings along (gap-fill drills of a
+// Listening section/test, the vocab lesson of a Part 2 story), so the admin
+// editor can show them as soon as the item is ticked (same matching as on save).
 const GAPFILL_LOOKUP_MAX = 500;
 exports.getGapFillCompanions = async (req, res) => {
   try {
     const items = Array.isArray(req.body && req.body.items) ? req.body.items.slice(0, GAPFILL_LOOKUP_MAX) : [];
-    const idLists = await Promise.all(items.map((it) => (
-      it && GAPFILL_SOURCE_TYPES.includes(it.resourceType)
-        ? listeningService.gapFillSectionIdsFor(it.resourceType, it.resourceId, rcs.assignedParts(it))
-        : []
+    const lists = await Promise.all(items.map((it) => (
+      it && COMPANION_SOURCE_TYPES.includes(it.resourceType) ? companionsFor(it) : []
     )));
-    const allIds = [...new Set(idLists.flat())];
+    const gapIds = [...new Set(lists.flat().filter((c) => c.resourceType === 'listening_gapfill').map((c) => c._id))];
     const labels = new Map();
-    if (allIds.length) {
-      const docs = await ListeningSection.find({ _id: { $in: allIds } }).select('title').lean();
+    if (gapIds.length) {
+      const docs = await ListeningSection.find({ _id: { $in: gapIds } }).select('title').lean();
       for (const d of docs) labels.set(String(d._id), d.title || '');
     }
-    const results = idLists.map((ids) => ids.map((id) => ({ _id: id, label: labels.get(id) || '' })));
+    const results = lists.map((cs) => cs.map((c) => ({
+      _id: c._id, resourceType: c.resourceType, label: c.label || labels.get(c._id) || '',
+    })));
     res.json({ success: true, results });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });

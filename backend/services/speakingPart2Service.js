@@ -15,6 +15,7 @@
 const mongoose = require('mongoose');
 const DATA = require('../data/speakingPart2');
 const SpeakingPart2Progress = require('../models/SpeakingPart2Progress');
+const VocabularyLesson = require('../models/VocabularyLesson');
 const { hasFullAccess } = require('../utils/plan');
 
 const STEP_KEYS = ['read', 'vocab', 'learn', 'speak'];
@@ -182,6 +183,31 @@ async function saveProgress(userId, storyId, body) {
   return publicShape(doc.toObject());
 }
 
+// ── homework: the story's Vocab Topics lesson comes along ───────────────
+// Assigning a story (e.g. Mrs Hoa) also assigns the "IELTS Speaking – …"
+// vocabulary lesson of its group (words seeded by
+// scripts/seedPart2StoryVocab.js). Matched by title so a re-seeded lesson
+// keeps working.
+const STORY_VOCAB_LESSON = {
+  people: 'IELTS Speaking – Describing People',
+  places: 'IELTS Speaking – Describing Places',
+  objects: 'IELTS Speaking – Describing Objects',
+  events: 'IELTS Speaking – Describing Events & Experiences',
+  activities: 'IELTS Speaking – Activities & Skills',
+  nature: 'IELTS Speaking – Nature, Animals & Science',
+  media: 'IELTS Speaking – Culture, Media & Stories',
+};
+
+// Homework row id of a story → [{ _id, label }] of its published vocab
+// lesson ([] when the id isn't a story or the lesson isn't published).
+async function vocabLessonsForStory(rowId) {
+  const row = STORY_ROWS.find((r) => String(r._id) === String(rowId));
+  const title = row && STORY_VOCAB_LESSON[row.code];
+  if (!title) return [];
+  const lesson = await VocabularyLesson.findOne({ title, published: true }).select('_id title').lean();
+  return lesson ? [{ _id: String(lesson._id), label: lesson.title }] : [];
+}
+
 // ── homework (resourceCompletionService `speaking_part2`) ───────────────
 // Passed once the story is >= PASS_PERCENT learnt (nhại + dịch over the 7
 // frames). Like the course lessons, a story learnt before the assignment counts.
@@ -206,6 +232,6 @@ async function checkCompletion(studentId, ids) {
 }
 
 module.exports = {
-  STORY_ROWS, STEP_KEYS, PASS_PERCENT, SHADOW_PASS,
+  STORY_ROWS, STEP_KEYS, PASS_PERCENT, SHADOW_PASS, STORY_VOCAB_LESSON, vocabLessonsForStory,
   getContent, getProgress, saveProgress, checkCompletion, stepsDone, masteryOf, framesOf,
 };
