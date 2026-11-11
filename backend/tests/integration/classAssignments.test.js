@@ -9,6 +9,7 @@ const { createStudent, createTeacher, createAdmin, signTokenFor } = require('../
 const { createReadingTest, createListeningSection, createListeningTest, createWritingTask1, createWritingTask2, createWritingExam, createSpeakingQuestion, createSpeakingAttempt } = require('../factories/contentFactory');
 const { createClassGroup, enrollStudent, createAssignment, seedInternalCompletion } = require('../factories/classFactory');
 const Assignment = require('../../models/Assignment');
+const rcs = require('../../services/resourceCompletionService');
 const AssignmentProgress = require('../../models/AssignmentProgress');
 const ClassEnrollment = require('../../models/ClassEnrollment');
 const WT1Lesson = require('../../models/WT1Lesson');
@@ -617,6 +618,41 @@ describe('completion tracking', () => {
     expect(await status()).not.toBe('completed');
     await WT1Progress.updateOne({ userId: s._id, lessonCode: 'BUOI-70' }, { $set: { objectiveScorePercent: 70 } });
     expect(await status()).toBe('completed');
+  });
+
+  test('course lesson given BEFORE the ≥70% rule went live keeps the old rule (every exercise done)', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const lesson = await createWT1Lesson({ code: 'BUOI-OLD', title: 'Buổi giao trước' });
+    await WT1Exercise.create({ code: 'BUOI-OLD-E1', lessonCode: 'BUOI-OLD', type: 'mcq', title: 'Quiz', published: true });
+    const oldAsg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'task1_lesson', resourceId: lesson._id }] });
+    await setCreatedAt(Assignment, oldAsg._id, new Date(rcs.COURSE_SCORE_RULE_FROM.getTime() - 864e5));
+    const newAsg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'task1_lesson', resourceId: lesson._id }] });
+    await WT1Progress.create({ userId: s._id, courseCode: 'IELTS-W-T1', lessonCode: 'BUOI-OLD', completedAt: new Date(), objectiveScorePercent: 40 });
+
+    const mine = (await request(app).get('/api/assignments/mine').set(authH(s))).body.assignments;
+    expect(mine.find((a) => a._id === String(oldAsg._id)).status).toBe('completed');
+    expect(mine.find((a) => a._id === String(newAsg._id)).status).not.toBe('completed');
+    // the teacher's table applies the same old-rule grace
+    const table = await request(app).get(`/api/classes/${cls._id}/assignments/${oldAsg._id}`).set(authH(t));
+    expect(table.body.rows[0].completed).toBe(1);
+  });
+
+  test('a ticked internal item stays ticked once seen — even if the attempt that earned it is gone', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const rt = await createReadingTest();
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'reading_test', resourceId: rt._id }] });
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id });
+    let row = (await request(app).get('/api/assignments/mine').set(authH(s))).body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.resources[0].completed).toBe(true);
+
+    await TestAttempt.deleteMany({ userId: s._id }); // e.g. aged out / a stricter rule
+    row = (await request(app).get('/api/assignments/mine').set(authH(s))).body.assignments.find((a) => a._id === String(asg._id));
+    expect(row.resources[0].completed).toBe(true);
+    expect(row.status).toBe('completed');
   });
 
   test('WT1-stack sibling courses: task2_course_lesson / speaking_course_lesson are course-scoped and never leak into task1_lesson', async () => {

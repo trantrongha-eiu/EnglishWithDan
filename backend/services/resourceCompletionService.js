@@ -654,6 +654,24 @@ function countsPriorCompletion(t) {
   return !!(REGISTRY[t] && REGISTRY[t].attempt && (REGISTRY[t].attempt.custom || REGISTRY[t].attempt.priorCounts));
 }
 
+// A stricter pass rule only binds homework given AFTER it went live (owner,
+// 2026-11-11: "đã tick thì giữ tick, luật mới chỉ áp dụng cho các lần giao
+// sau"). Course lessons gained the quiz ≥70% bar at this moment; homework
+// given before it still passes on the old rule (`legacyCompleted`: every
+// exercise done).
+const COURSE_SCORE_RULE_FROM = new Date('2026-11-11T08:23:36Z'); // 15:23:36 +07
+
+// Does checkCompleted's hit satisfy THIS assignment's item? Applies the
+// "only count attempts since the assignment" window (course lessons and other
+// priorCounts types are exempt) and the old-rule grace above.
+function hitPasses(hit, resourceType, assignmentCreatedAt) {
+  if (!hit) return false;
+  const created = new Date(assignmentCreatedAt);
+  const passes = hit.completed || (hit.legacyCompleted && created < COURSE_SCORE_RULE_FROM);
+  if (!passes) return false;
+  return countsPriorCompletion(resourceType) || new Date(hit.completedAt) >= created;
+}
+
 // Teacher resource picker. Returns [{ _id, label, meta }]. For mock_test,
 // one synthetic row with _id null. `extraFilters` (e.g. { part, topic } for
 // 'speaking') is merged straight into the Mongo query — harmless for types
@@ -1119,6 +1137,9 @@ async function checkCompleted(studentId, internalItems, since = null) {
         const scored = hasObjective.has(r.lessonCode);
         out.set(resourceKey(type, lid), {
           completed: !scored || pct >= PASS_PERCENT, completedAt: r.completedAt,
+          // the pre-2026-11-11 rule (every exercise done) — still the bar for
+          // homework given before the score rule existed, see hitPasses
+          legacyCompleted: true,
           ...(scored ? { scorePercent: Math.round(pct) } : {}),
         });
       }
@@ -1287,7 +1308,7 @@ async function checkCompleted(studentId, internalItems, since = null) {
 }
 
 module.exports = {
-  REGISTRY, TYPES, VIEW_TYPES, isValidType, countsPriorCompletion, PASS_PERCENT, PRACTICE_PASS_PERCENT,
+  REGISTRY, TYPES, VIEW_TYPES, isValidType, countsPriorCompletion, hitPasses, COURSE_SCORE_RULE_FROM, PASS_PERCENT, PRACTICE_PASS_PERCENT,
   GAPFILL_MIN_CORRECT, MIN_SPEAKING_WORDS,
   groupEquivalentDocs, normalizePrompt,
   listCatalog, resourceExists, labelFor, deepLinkKeyFor, refreshResourceSnapshots, resourceKey, checkCompleted,

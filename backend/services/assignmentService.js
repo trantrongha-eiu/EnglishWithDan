@@ -41,6 +41,14 @@ function vocabGoalKey(assignmentId, itemId) {
 // "not done". Two targeted updates instead of load+save so it can't clobber
 // a concurrent manual tick on the same AssignmentProgress doc.
 async function persistVocabGoalDone(studentId, assignment, resource, result, now) {
+  return persistAutoDone(studentId, assignment, resource, now, result.bookId ? `vocabbook:${result.bookId}` : '');
+}
+
+// Same sticky `auto` item for an internal resource: once the live check has
+// passed it for this assignment, it stays ticked even if a pass rule later
+// gets stricter or the attempt ages out of the 90-day history (owner,
+// 2026-11-11: "bài nào đã tick rồi thì cứ cho là đã tick").
+async function persistAutoDone(studentId, assignment, resource, completedAt, attemptRef = '') {
   try {
     await AssignmentProgress.updateOne(
       { assignmentId: assignment._id, studentId },
@@ -53,10 +61,19 @@ async function persistVocabGoalDone(studentId, assignment, resource, result, now
   await AssignmentProgress.updateOne(
     { assignmentId: assignment._id, studentId, 'items.resourceItemId': { $ne: resource._id } },
     { $push: { items: {
-      resourceItemId: resource._id, status: 'completed', source: 'auto', completedAt: now,
-      attemptRef: result.bookId ? `vocabbook:${result.bookId}` : '',
+      resourceItemId: resource._id, status: 'completed', source: 'auto', completedAt: completedAt || new Date(),
+      attemptRef: attemptRef || '',
     } } },
   );
+}
+
+// resourceItemId -> stored sticky auto item (completed) of one progress doc
+function stickyAutoItems(prog) {
+  const m = new Map();
+  for (const it of (prog && prog.items) || []) {
+    if (it.source === 'auto' && it.status === 'completed') m.set(String(it.resourceItemId), it);
+  }
+  return m;
 }
 
 // vocab_goal completion for a set of assignments of ONE student. Returns a
@@ -263,6 +280,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
 
   const rows = [];
   const missFlagWrites = [];
+  const stickyWrites = [];
   let incompleteCount = 0;
   let nearestDeadline = null;
 
@@ -276,6 +294,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
       (storedMap.get(String(a._id))?.items || []).filter((it) => it.source === 'manual' && it.status === 'completed').map((it) => String(it.resourceItemId))
     );
     const completedItemIds = new Set(manualCompleted);
+    const sticky = stickyAutoItems(storedMap.get(String(a._id)));
     const resourcesShaped = a.resources.map((r) => {
       let completed = false, completedAt = null, vocabGoal = null, mock = null;
       const autoTracked = itemIsAutoTracked(r);
@@ -286,11 +305,15 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
       } else if (autoTracked) {
         const hit = completionMap.get(rcs.completionKey(r));
         if (hit && hit.mock) mock = hit.mock;
+        const kept = sticky.get(String(r._id));
         // only count if completed at/after THIS assignment's createdAt —
         // except course lessons, whose one-time completion can't be redone
-        // (see resourceCompletionService.countsPriorCompletion)
-        if (hit && hit.completed && (rcs.countsPriorCompletion(r.resourceType) || new Date(hit.completedAt) >= new Date(a.createdAt))) {
+        // (see resourceCompletionService.hitPasses)
+        if (kept) {
+          completed = true; completedAt = kept.completedAt;
+        } else if (rcs.hitPasses(hit, r.resourceType, a.createdAt)) {
           completed = true; completedAt = hit.completedAt;
+          if (!readOnly) stickyWrites.push({ a, r, completedAt: hit.completedAt, attemptRef: hit.attemptId || '' });
         }
       } else {
         completed = manualCompleted.has(String(r._id));
@@ -349,6 +372,11 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
       deadline: a.deadline, createdAt: a.createdAt, archived,
       status, late, done, total, resources: resourcesShaped,
     });
+  }
+
+  if (stickyWrites.length) {
+    await Promise.all(stickyWrites.map((w) =>
+      persistAutoDone(studentId, w.a, w.r, w.completedAt, w.attemptRef).catch(() => {})));
   }
 
   if (missFlagWrites.length && !readOnly) {
@@ -538,7 +566,7 @@ async function markManualItem(studentId, assignmentId, itemId, done) {
     for (const r of assignment.resources) {
       if (r.kind !== 'internal') continue;
       const hit = completion.get(rcs.completionKey(r));
-      if (hit && hit.completed) completedIds.add(String(r._id));
+      if (rcs.hitPasses(hit, r.resourceType, assignment.createdAt)) completedIds.add(String(r._id));
     }
   }
   for (const r of assignment.resources) {
@@ -611,12 +639,19 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
     );
     const completedIds = new Set(manualCompleted);
     const mockByItem = new Map();
+    const sticky = stickyAutoItems(storedMap.get(String(e.studentId)));
+    const stickyWrites = [];
     for (const r of assignment.resources) {
       if (r.kind !== 'internal') continue;
       const hit = completion.get(rcs.completionKey(r));
-      if (hit && hit.completed) completedIds.add(String(r._id));
+      if (sticky.has(String(r._id))) completedIds.add(String(r._id));
+      else if (rcs.hitPasses(hit, r.resourceType, assignment.createdAt)) {
+        completedIds.add(String(r._id));
+        stickyWrites.push(persistAutoDone(e.studentId, assignment, r, hit.completedAt, hit.attemptId || '').catch(() => {}));
+      }
       if (hit && hit.mock) mockByItem.set(String(r._id), hit.mock);
     }
+    await Promise.all(stickyWrites);
     const vocabGoals = await resolveVocabGoals(e.studentId, [assignment],
       new Map([[String(assignment._id), storedMap.get(String(e.studentId))]]), now);
     for (const r of assignment.resources) {
