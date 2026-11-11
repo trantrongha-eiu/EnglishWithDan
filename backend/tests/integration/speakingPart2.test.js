@@ -142,6 +142,18 @@ test('homework speaking_part2: teacher assigns a story, it passes once the story
   it = await item();
   expect(it.completed).toBe(true);
 
+  // A story finished under the old 5-step rule (completedAt, no nhại yet)
+  // keeps its pass even though it is only 50% under the new rule.
+  const SpeakingPart2Progress = require('../../models/SpeakingPart2Progress');
+  const old = await createPremiumStudent();
+  await enrollStudent(cls, old);
+  await SpeakingPart2Progress.create({ userId: old._id, storyId: st.id, read: true, ok: keys, speak: 1,
+    stepsAt: { read: new Date(), vocab: new Date(), fixed: new Date(), why: new Date(), speak: new Date() },
+    completedAt: new Date('2026-11-10T14:29:59Z') });
+  const mineOld = await request(app).get('/api/assignments/mine').set(authH(old));
+  const oldIt = mineOld.body.assignments.find((a) => a._id === asgId).resources[0];
+  expect(oldIt.completed).toBe(true);
+
   // A bogus story id is refused.
   const bad = await request(app).post(`/api/classes/${cls._id}/assignments`).set(authH(t))
     .send({ title: 'x', resources: [{ kind: 'internal', resourceType: 'speaking_part2', resourceId: '000000000000000000000001' }] });

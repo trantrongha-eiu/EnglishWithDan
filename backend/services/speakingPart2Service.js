@@ -211,6 +211,9 @@ async function vocabLessonsForStory(rowId) {
 // ── homework (resourceCompletionService `speaking_part2`) ───────────────
 // Passed once the story is >= PASS_PERCENT learnt (nhại + dịch over the 7
 // frames). Like the course lessons, a story learnt before the assignment counts.
+// A story finished under the old rule (all 5 old steps, before the 70% rule
+// of 2026-11-11) keeps its pass: completedAt is only set now once the story
+// is >= 70%, so a completedAt below 70% can only come from the old rule.
 async function checkCompletion(studentId, ids) {
   const out = new Map();
   const want = STORY_ROWS.filter((r) => ids.some((id) => String(id) === String(r._id)));
@@ -221,9 +224,9 @@ async function checkCompletion(studentId, ids) {
     if (!doc) continue;
     const m = masteryOf(r.code, doc);
     const steps = stepsDone(r.code, doc);
-    const passed = m.pct >= PASS_PERCENT;
+    const passed = m.pct >= PASS_PERCENT || !!doc.completedAt;
     out.set(String(r._id), {
-      completed: passed, completedAt: (passed && doc.masteredAt) || doc.updatedAt,
+      completed: passed, completedAt: (passed && (doc.masteredAt || doc.completedAt)) || doc.updatedAt,
       scorePercent: m.pct,
       stepsDone: STEP_KEYS.filter((s) => steps[s]).length, stepsTotal: STEP_KEYS.length,
     });
