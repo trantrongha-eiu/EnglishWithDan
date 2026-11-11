@@ -519,6 +519,10 @@
 
   function _showFor(span) {
     var panel = _ensurePanel();
+    // In fullscreen only the fullscreen element's subtree is painted — the
+    // panel must live inside it or the swatches are invisible/unclickable.
+    var host = document.fullscreenElement || document.webkitFullscreenElement || document.body;
+    if (panel.parentNode !== host) host.appendChild(panel);
     _activeSpan = span;
     var activeKey = _currentColorKey(span);
     panel.querySelectorAll('.hl-edit-swatch').forEach(function (sw) {
@@ -549,4 +553,5 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') _hide(); });
   window.addEventListener('scroll', _hide, true);
   window.addEventListener('resize', _hide);
+  document.addEventListener('fullscreenchange', _hide);
 })();

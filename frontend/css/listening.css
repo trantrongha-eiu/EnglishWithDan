@@ -2044,6 +2044,12 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] #screen-practice:-webkit-full-screen {
   background: var(--bg, #000000);
 }
+/* The fullscreen element is painted in the top layer, so body's eye-protection
+   background doesn't reach it — repeat it here (light mode only). */
+:root:not([data-theme="dark"]) body.eye-protection #screen-exam:fullscreen,
+:root:not([data-theme="dark"]) body.eye-protection #screen-practice:fullscreen {
+  background: #f5f0e8;
+}
 /* ── Fullscreen: convert fixed section-nav to flex child so clicks work ── */
 #screen-exam:fullscreen .section-nav-fixed,
 #screen-exam:-webkit-full-screen .section-nav-fixed {

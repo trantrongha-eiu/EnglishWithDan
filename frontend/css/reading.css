@@ -2524,6 +2524,13 @@ body.tool-hl .check-box { user-select: none; }
 [data-theme="dark"] #screen-retry:-webkit-full-screen {
   background: var(--bg, #000000);
 }
+/* The fullscreen element is painted in the top layer, so body's eye-protection
+   background + sepia filter don't reach it — repeat them here (light mode only). */
+:root:not([data-theme="dark"]) body.eye-protection #screen-exam:fullscreen,
+:root:not([data-theme="dark"]) body.eye-protection #screen-retry:fullscreen {
+  background: #f5f0e8;
+  filter: sepia(15%);
+}
 #screen-exam:fullscreen .exam-split,
 #screen-exam:-webkit-full-screen .exam-split,
 #screen-retry:fullscreen .exam-split,
