@@ -2,6 +2,9 @@
 
 const badgeService = require('../../../services/badgeService');
 const User = require('../../../models/User');
+const TestAttempt = require('../../../models/TestAttempt');
+const OnlineSession = require('../../../models/OnlineSession');
+const BADGES = require('../../../constants/badges');
 const { createStudent } = require('../../factories/userFactory');
 const {
   createVocabBook, createCompletedTestAttempt, createListeningAttempt,
@@ -17,7 +20,7 @@ describe('badgeService.getBadges', () => {
     const student = await createStudent();
     const { badges, earnedCount, totalCount } = await badgeService.getBadges(student._id);
 
-    expect(totalCount).toBe(18);
+    expect(totalCount).toBe(BADGES.length);
     expect(earnedCount).toBe(0);
     expect(badges.every(b => b.earned === false)).toBe(true);
     expect(findBadge(badges, 'vocab_20').progress).toEqual({ current: 0, target: 20 });
@@ -128,7 +131,7 @@ describe('badgeService.checkAndAwardNewBadges', () => {
     const result = await badgeService.checkAndAwardNewBadges(student._id);
     expect(result.newlyUnlocked.map(b => b.id)).toEqual(['vocab_20']);
     // Full getBadges() shape (badges/earnedCount/totalCount) is still there too.
-    expect(result.totalCount).toBe(18);
+    expect(result.totalCount).toBe(BADGES.length);
 
     const reloaded = await User.findById(student._id).select('earnedBadgeIds').lean();
     expect(reloaded.earnedBadgeIds).toContain('vocab_20');
@@ -158,12 +161,76 @@ describe('badgeService.checkAndAwardNewBadges', () => {
     await book.save();
 
     const result = await badgeService.checkAndAwardNewBadges(student._id);
-    expect(result.newlyUnlocked.map(b => b.id)).toEqual(['vocab_100']);
+    // 100 words also crosses the "50 saved" rung.
+    expect(result.newlyUnlocked.map(b => b.id)).toEqual(['vocab_saved_50', 'vocab_100']);
   });
 
   test('no badges earned yet -> newlyUnlocked is empty, nothing persisted', async () => {
     const student = await createStudent();
     const result = await badgeService.checkAndAwardNewBadges(student._id);
     expect(result.newlyUnlocked).toEqual([]);
+  });
+});
+
+describe('badge catalog', () => {
+  test('ids are unique, categories are listed, every stat is computed', async () => {
+    const ids = BADGES.map(b => b.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    const cats = BADGES.CATEGORIES.map(c => c.id);
+    expect(BADGES.every(b => cats.includes(b.category))).toBe(true);
+    const student = await createStudent();
+    const stats = await badgeService.getUserStats(student._id);
+    BADGES.forEach(b => expect(typeof stats[b.stat]).toBe('number'));
+  });
+});
+
+describe('lifetime counts survive the 90-day attempt TTL', () => {
+  const daysAgo = n => new Date(Date.now() - n * 24 * 60 * 60 * 1000);
+
+  test('settled rows are folded into User.badgeTally and still count after deletion', async () => {
+    const student = await createStudent();
+    for (let i = 0; i < 3; i++) await createCompletedTestAttempt({ userId: student._id, bandScore: 8 });
+    await createCompletedTestAttempt({ userId: student._id, bandScore: 6 });
+    // Three of them are 40 days old (settled), one is fresh.
+    const old = (await TestAttempt.find({ userId: student._id, bandScore: 8 }).select('_id').lean()).map(r => r._id);
+    await TestAttempt.collection.updateMany({ _id: { $in: old } }, { $set: { createdAt: daysAgo(40) } });
+
+    let { badges } = await badgeService.getBadges(student._id);
+    expect(findBadge(badges, 'reading_10').progress.current).toBe(4);
+
+    const u = await User.findById(student._id).select('badgeTally').lean();
+    expect(u.badgeTally.counts.reading).toBe(3);
+    expect(u.badgeTally.bands.reading).toBe(8);
+
+    // The TTL deletes the old rows: lifetime count and best band stay.
+    await TestAttempt.deleteMany({ _id: { $in: old } });
+    ({ badges } = await badgeService.getBadges(student._id));
+    expect(findBadge(badges, 'reading_10').progress.current).toBe(4);
+    expect(findBadge(badges, 'reading_band8').earned).toBe(true);
+  });
+
+  test('a second read the same day does not fold the same rows twice', async () => {
+    const student = await createStudent();
+    await createCompletedTestAttempt({ userId: student._id });
+    await TestAttempt.collection.updateMany({ userId: student._id }, { $set: { createdAt: daysAgo(40) } });
+    await badgeService.getBadges(student._id);
+    const { badges } = await badgeService.getBadges(student._id);
+    expect(findBadge(badges, 'reading_10').progress.current).toBe(1);
+  });
+
+  test('study hours add up active seconds from OnlineSession', async () => {
+    const student = await createStudent();
+    await OnlineSession.create({ userId: student._id, sid: 'a', day: '2026-11-01', startedAt: daysAgo(45), endedAt: daysAgo(45), activeSeconds: 3000 });
+    await OnlineSession.create({ userId: student._id, sid: 'b', day: '2026-11-10', startedAt: new Date(), endedAt: new Date(), activeSeconds: 900 });
+    const { badges } = await badgeService.getBadges(student._id);
+    expect(findBadge(badges, 'study_1h').earned).toBe(true);
+    expect(findBadge(badges, 'study_10h').progress.current).toBe(1);
+  });
+
+  test('an earned badge stays earned even if its stat later drops', async () => {
+    const student = await createStudent();
+    await User.updateOne({ _id: student._id }, { $set: { earnedBadgeIds: ['reading_25'] } });
+    const { badges } = await badgeService.getBadges(student._id);
+    expect(findBadge(badges, 'reading_25')).toMatchObject({ earned: true, progress: { current: 25, target: 25 } });
   });
 });

@@ -7,6 +7,7 @@ const { ipKeyGenerator } = require('express-rate-limit');
 const auth = require('../middleware/auth');
 const deviceSession = require('../utils/deviceSession');
 const onlineTime = require('../services/onlineTimeService');
+const badgeService = require('../services/badgeService');
 
 // A tab beats every 30 s plus on hide/close. Keyed per student (a whole
 // class can share one Wi-Fi IP). Over-limit beats are dropped silently —
@@ -26,6 +27,7 @@ router.post('/beat', auth, beatLimiter, async (req, res) => {
     const device = (req.authSession && req.authSession.dt) || deviceSession.deviceTypeFromUA(req.get('user-agent'));
     const result = await onlineTime.recordBeat(req.user, req.body, device);
     if (!result.ok && result.reason === 'bad-sid') return res.status(400).json({ success: false, message: 'Invalid session id' });
+    if (result.ok) badgeService.syncIfDue(req.user); // lifetime badge counts, ≤ once a day
     res.json({ success: true, tracked: result.ok });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Không lưu được hoạt động' });

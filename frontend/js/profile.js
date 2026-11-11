@@ -519,7 +519,7 @@ function renderBadges(bd) {
   card.style.display = 'block';
   const summary = document.getElementById('badgesSummary');
   if (summary) summary.textContent = `Đã đạt ${bd.earnedCount}/${bd.totalCount} huy hiệu`;
-  grid.innerHTML = bd.badges.map(b => {
+  const item = b => {
     if (b.earned) {
       return `<div class="badge-item" title="${b.description}">
             <div class="badge-emoji">${b.icon}</div>
@@ -535,7 +535,27 @@ function renderBadges(bd) {
           <div class="badge-progress"><div class="badge-progress-fill" style="width:${pct}%"></div></div>
           <div class="badge-progress-label">${b.progress.current}/${b.progress.target}</div>
         </div>`;
+  };
+  // Grouped by category (backend constants/badges.js CATEGORIES), each a
+  // collapsible section with its own earned count. Groups the student has
+  // started are open; the rest fold away so ~90 badges stay scannable.
+  const cats = (bd.categories && bd.categories.length) ? bd.categories
+    : [...new Set(bd.badges.map(b => b.category))].map(id => ({ id, name: id, icon: '🏅' }));
+  let openedAny = false;
+  const html = cats.map(c => {
+    const list = bd.badges.filter(b => b.category === c.id);
+    if (!list.length) return '';
+    const got = list.filter(b => b.earned).length;
+    const started = got > 0 || list.some(b => b.progress.current > 0);
+    if (started) openedAny = true;
+    return `<details class="badge-group"${started ? ' open' : ''}>
+        <summary><span class="badge-group-title">${c.icon} ${c.name}</span>
+          <span class="badge-group-count${got === list.length ? ' is-full' : ''}">${got}/${list.length}</span></summary>
+        <div class="badges-grid">${list.map(item).join('')}</div>
+      </details>`;
   }).join('');
+  grid.innerHTML = html;
+  if (!openedAny) { const first = grid.querySelector('.badge-group'); if (first) first.open = true; }
 }
 
 // ── Save profile ──────────────────────────────────────────

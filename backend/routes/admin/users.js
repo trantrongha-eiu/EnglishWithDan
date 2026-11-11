@@ -61,7 +61,7 @@ router.get('/users', auth, teacherOnly, async (req, res) => {
 
     const [users, total] = await Promise.all([
       User.find(filter)
-        .select('-password -savedVocab -resetOTP -resetOTPExpires -resetOTPAttempts -hammerAwardedUnits -earnedBadgeIds')
+        .select('-password -savedVocab -resetOTP -resetOTPExpires -resetOTPAttempts -hammerAwardedUnits -earnedBadgeIds -badgeTally')
         .sort(USER_SORTS[sort] || USER_SORTS.newest)
         .skip((page - 1) * limit)
         .limit(limit)

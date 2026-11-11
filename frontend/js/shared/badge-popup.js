@@ -33,7 +33,8 @@
       '.bp-desc{font-size:13.5px;color:var(--text2,#374151);line-height:1.5;margin-bottom:22px}' +
       '.bp-btn{width:100%;padding:12px;border:none;border-radius:10px;background:var(--blue,#3d8bff);color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}' +
       '.bp-btn:hover{background:var(--blue-dark,#2c78f0)}' +
-      '.bp-progress{margin-top:10px;font-size:11.5px;color:var(--text3,#9ca3af)}';
+      '.bp-progress{margin-top:10px;font-size:11.5px;color:var(--text3,#9ca3af)}' +
+      '.bp-skip{border:0;background:none;padding:0;font:inherit;color:var(--blue,#3d8bff);text-decoration:underline;cursor:pointer}';
     document.head.appendChild(s);
   }
 
@@ -78,10 +79,14 @@
         '<div class="bp-name">' + escHtml(badge.name || '') + '</div>' +
         '<div class="bp-desc">' + escHtml(badge.description || '') + '</div>' +
         '<button class="bp-btn" id="bp-next-btn">' + (remaining > 0 ? 'Tiếp theo' : 'Tuyệt vời!') + '</button>' +
-        (remaining > 0 ? '<div class="bp-progress">Còn ' + remaining + ' huy hiệu khác</div>' : '') +
+        (remaining > 0 ? '<div class="bp-progress">Còn ' + remaining + ' huy hiệu khác'
+          + (remaining > 1 ? ' · <button type="button" class="bp-skip" id="bp-skip-btn">Xem hết ở Trang cá nhân</button>' : '') + '</div>' : '') +
       '</div>';
     backdrop.classList.add('open');
     document.getElementById('bp-next-btn').addEventListener('click', _showNext);
+    // Many unlocked at once (e.g. new badges added to the catalog): skip the rest.
+    var skip = document.getElementById('bp-skip-btn');
+    if (skip) skip.addEventListener('click', function () { _queue.length = 0; _showNext(); });
     if (window.playOk) { try { window.playOk(); } catch (e) {} }
   }
 

@@ -148,6 +148,12 @@ const UserSchema = new mongoose.Schema({
   // comment) — this is just a notification-dedup record, not a second
   // source of truth for whether a badge is earned.
   earnedBadgeIds:       [{ type: String }],
+  // Lifetime badge counts that outlive the 90-day attempt TTL:
+  // { cut: Date, counts: { reading, dictation, onlineSeconds, … },
+  //   bands: { reading, listening, writing, speaking } } — rows created
+  // before `cut` are already folded into `counts`. Written only by
+  // badgeService.syncTally.
+  badgeTally:           { type: mongoose.Schema.Types.Mixed, default: undefined },
   // Snapshot of learningStreak right before it got reset to 0 by resetIfStale()
   // — powers the "you just lost a streak" mascot state on the dashboard.
   // Cleared back to 0 as soon as the student studies again (updateStreak()).
