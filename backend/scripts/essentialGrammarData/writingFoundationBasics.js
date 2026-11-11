@@ -10,7 +10,7 @@ module.exports = [
   // 1. STRUCTURE 1 – S + V
   // ─────────────────────────────────────────────────────────────
   lesson({
-    category: CATEGORY, lessonKey: "sb-subject-verb", title: "Structure 1: S + V (câu có hành động)", icon: "🏃", orderIndex: 38,
+    category: CATEGORY, lessonKey: "sb-subject-verb", title: "Structure 1: S + V (câu có hành động)", icon: "🏃", orderIndex: 1,
     overview: "Cấu trúc 1 dùng khi ý chính của câu là một ĐỘNG TỪ THƯỜNG: một hoạt động (play, eat, study), một thói quen (get up early) hoặc một trạng thái được diễn đạt bằng động từ (like, know, have, need, want). Đây là “bộ khung” của phần lớn câu tiếng Anh. Chuyên đề Writing Foundation đi theo 5 bước: Hiểu nghĩa → Chọn cấu trúc → Viết câu → Mở rộng câu → Kết nối câu. Đừng chỉ học thuộc công thức — hãy luyện đủ cả 5 bước ở phần bài tập.",
     formula: [
       { label: "Công thức tổng quát", structure: "S + V + (O) + (thông tin bổ sung: nơi chốn, thời gian...)", example: "My father works in a hospital. / I study English every day." },
@@ -153,7 +153,7 @@ module.exports = [
   // 2. STRUCTURE 2 – S + BE + ADJ / N
   // ─────────────────────────────────────────────────────────────
   lesson({
-    category: CATEGORY, lessonKey: "sb-subject-be", title: "Structure 2: S + be + Adj/N (mô tả, trạng thái, danh tính)", icon: "🪞", orderIndex: 39,
+    category: CATEGORY, lessonKey: "sb-subject-be", title: "Structure 2: S + be + Adj/N (mô tả, trạng thái, danh tính)", icon: "🪞", orderIndex: 2,
     overview: "Cấu trúc 2 dùng khi câu KHÔNG có động từ hành động mà chỉ mô tả chủ ngữ: tính chất (beautiful), cảm xúc/trạng thái (tired), danh tính/nghề nghiệp (a student) hoặc vị trí (at home). Động từ BE (am/is/are/was/were/will be) là “chiếc cầu” nối chủ ngữ với phần mô tả. Tiếng Việt thường bỏ “là/thì” (“Cô ấy đẹp”, “Tôi mệt”) nên người Việt rất hay quên BE.",
     formula: [
       { label: "Tính chất / cảm xúc", structure: "S + be + Adj", example: "She is intelligent. / I am tired." },
@@ -300,7 +300,7 @@ module.exports = [
   // 3. SENTENCE BUILDING SKILLS
   // ─────────────────────────────────────────────────────────────
   lesson({
-    category: CATEGORY, lessonKey: "sb-building-skills", title: "Sentence Building Skills: viết câu hoàn chỉnh", icon: "🧱", orderIndex: 40,
+    category: CATEGORY, lessonKey: "sb-building-skills", title: "Sentence Building Skills: viết câu hoàn chỉnh", icon: "🧱", orderIndex: 3,
     overview: "Biết công thức chưa đủ — bài này dạy cách lắp các thành phần thành một câu hoàn chỉnh và đủ ý: câu luôn có chủ ngữ + động từ, không dịch từng chữ tiếng Việt, viết theo thứ tự S + V + O + nơi chốn + thời gian, chọn thì nhờ từ chỉ thời gian và mở rộng câu bằng How / Where / When / Why. Cuối bài có bảng từ vựng nền tảng để tự đặt câu.",
     formula: [
       { label: "Câu luôn cần", structure: "Chủ ngữ (S) + Động từ (V hoặc BE)", example: "Very beautiful. ❌ → The city is very beautiful. ✅" },

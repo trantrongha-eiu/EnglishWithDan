@@ -6,13 +6,13 @@ const wf = lessons.filter(l => l.category === 'Writing Foundation');
 const blocksOf = (l, type) => l.blocks.filter(b => b.type === type);
 
 describe('Writing Foundation lessons', () => {
-  test('8 lessons, in order, after every other category', () => {
+  test('8 lessons, in order, before every other category', () => {
     expect(wf.map(l => l.lessonKey)).toEqual([
       'sb-subject-verb', 'sb-subject-be', 'sb-building-skills', 'sb-and-but-so',
       'sb-because-although-despite', 'sb-relative-clauses', 'sb-sentences-to-paragraphs', 'sb-review'
     ]);
-    const maxOther = Math.max(...lessons.filter(l => l.category !== 'Writing Foundation').map(l => l.orderIndex));
-    wf.forEach(l => expect(l.orderIndex).toBeGreaterThan(maxOther));
+    const minOther = Math.min(...lessons.filter(l => l.category !== 'Writing Foundation').map(l => l.orderIndex));
+    wf.forEach(l => expect(l.orderIndex).toBeLessThan(minOther));
   });
 
   test('lessonKeys are unique across the whole handbook (they are the URL slug)', () => {

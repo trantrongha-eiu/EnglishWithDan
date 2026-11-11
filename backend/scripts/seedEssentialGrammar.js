@@ -16,13 +16,15 @@ const writingFoundation = [
   ...require("./essentialGrammarData/writingFoundationPractice")
 ];
 
+// Sidebar order comes from orderIndex: Writing Foundation first, then
+// Tenses → Grammar Essentials → Conditionals → Linking → Directions.
 const lessons = [
+  ...writingFoundation,
   ...tenses,
+  ...grammarEssentials,
   ...conditionals,
   ...linkingSequencing,
-  ...directions,
-  ...grammarEssentials,
-  ...writingFoundation
+  ...directions
 ];
 
 async function runSeed() {

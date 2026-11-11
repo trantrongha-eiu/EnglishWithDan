@@ -14,7 +14,7 @@ function conditional(def) {
 
 module.exports = [
   conditional({
-    category: CATEGORY, lessonKey: "zero-conditional", title: "Zero Conditional", icon: "0️⃣", orderIndex: 13,
+    category: CATEGORY, lessonKey: "zero-conditional", title: "Zero Conditional", icon: "0️⃣", orderIndex: 31,
     overview: "Zero Conditional diễn tả sự thật hiển nhiên, quy luật khoa học, hoặc thói quen luôn đúng — kết quả luôn xảy ra khi điều kiện được đáp ứng.",
     formula: [
       { label: "Cấu trúc", structure: "If + S + V (hiện tại đơn), S + V (hiện tại đơn)", example: "If you heat ice, it melts." }
@@ -84,7 +84,7 @@ module.exports = [
   }),
 
   conditional({
-    category: CATEGORY, lessonKey: "first-conditional", title: "First Conditional", icon: "1️⃣", orderIndex: 14,
+    category: CATEGORY, lessonKey: "first-conditional", title: "First Conditional", icon: "1️⃣", orderIndex: 32,
     overview: "First Conditional diễn tả một tình huống có khả năng xảy ra trong tương lai và kết quả tương ứng nếu điều kiện đó xảy ra.",
     formula: [
       { label: "Cấu trúc", structure: "If + S + V (hiện tại đơn), S + will + V (bare)", example: "If the government invests in education, unemployment will decrease." }
@@ -155,7 +155,7 @@ module.exports = [
   }),
 
   conditional({
-    category: CATEGORY, lessonKey: "second-conditional", title: "Second Conditional", icon: "2️⃣", orderIndex: 15,
+    category: CATEGORY, lessonKey: "second-conditional", title: "Second Conditional", icon: "2️⃣", orderIndex: 33,
     overview: "Second Conditional diễn tả một tình huống giả định không có thật hoặc khó xảy ra ở hiện tại/tương lai, cùng kết quả giả định tương ứng.",
     formula: [
       { label: "Cấu trúc", structure: "If + S + V-ed (quá khứ đơn), S + would + V (bare)", example: "If I were the mayor, I would ban private cars in the city centre." }
@@ -226,7 +226,7 @@ module.exports = [
   }),
 
   conditional({
-    category: CATEGORY, lessonKey: "third-conditional", title: "Third Conditional", icon: "3️⃣", orderIndex: 16,
+    category: CATEGORY, lessonKey: "third-conditional", title: "Third Conditional", icon: "3️⃣", orderIndex: 34,
     overview: "Third Conditional diễn tả một tình huống giả định KHÔNG CÓ THẬT trong quá khứ và kết quả giả định tương ứng cũng đã không xảy ra — thường dùng để bày tỏ sự tiếc nuối hoặc phân tích nguyên nhân đã qua.",
     formula: [
       { label: "Cấu trúc", structure: "If + S + had + V3 (quá khứ hoàn thành), S + would have + V3", example: "If the government had acted sooner, the crisis would have been avoided." }
@@ -297,7 +297,7 @@ module.exports = [
   }),
 
   conditional({
-    category: CATEGORY, lessonKey: "mixed-conditional", title: "Mixed Conditional", icon: "🔀", orderIndex: 17,
+    category: CATEGORY, lessonKey: "mixed-conditional", title: "Mixed Conditional", icon: "🔀", orderIndex: 35,
     overview: "Mixed Conditional kết hợp hai mốc thời gian khác nhau: điều kiện ở quá khứ nhưng kết quả ảnh hưởng đến hiện tại (hoặc ngược lại) — giúp diễn đạt mối liên hệ phức tạp giữa quá khứ và hiện tại.",
     formula: [
       { label: "Quá khứ → Hiện tại", structure: "If + S + had + V3, S + would + V (bare) (+ now)", example: "If she had taken that job, she would be living in London now." },

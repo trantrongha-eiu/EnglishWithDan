@@ -7,7 +7,7 @@ const ASKING_GIVING = "Asking & Giving Directions";
 
 module.exports = [
   lesson({
-    category: DIRECTIONS, lessonKey: "location-prepositions", title: "Location Prepositions", icon: "📍", orderIndex: 24,
+    category: DIRECTIONS, lessonKey: "location-prepositions", title: "Location Prepositions", icon: "📍", orderIndex: 42,
     overview: "Giới từ chỉ vị trí giúp mô tả chính xác nơi các địa điểm nằm trên bản đồ — kỹ năng nền tảng cho Task 1 map và Speaking Part 2 khi mô tả nơi ở.",
     formula: [
       { label: "Vị trí cạnh nhau", structure: "S + is + next to/beside/near + N", example: "The library is next to the town hall." },
@@ -81,7 +81,7 @@ module.exports = [
   }),
 
   lesson({
-    category: DIRECTIONS, lessonKey: "describing-a-route", title: "Describing a Route on a Map", icon: "🗺️", orderIndex: 25,
+    category: DIRECTIONS, lessonKey: "describing-a-route", title: "Describing a Route on a Map", icon: "🗺️", orderIndex: 43,
     overview: "Cấu trúc mô tả tuyến đường di chuyển trên bản đồ (Task 1 maps có sự thay đổi qua các mốc thời gian, hoặc Speaking khi chỉ đường) — kết hợp động từ chỉ hướng và giới từ vị trí.",
     formula: [
       { label: "Chỉ hướng di chuyển", structure: "Go/Walk/Head + straight on/along + N", example: "Walk straight along Main Street for two blocks." },
@@ -156,7 +156,7 @@ module.exports = [
   }),
 
   lesson({
-    category: ASKING_GIVING, lessonKey: "asking-for-directions", title: "Asking for Directions", icon: "🙋", orderIndex: 26,
+    category: ASKING_GIVING, lessonKey: "asking-for-directions", title: "Asking for Directions", icon: "🙋", orderIndex: 44,
     overview: "Các mẫu câu hỏi đường lịch sự, tự nhiên — quan trọng cho Speaking Part 1/2 khi giả định tình huống hỏi đường ở nơi công cộng.",
     formula: [
       { label: "Câu hỏi lịch sự (formal)", structure: "Could/Would you tell me how to get to + N?", example: "Could you tell me how to get to the nearest bank?" },
@@ -231,7 +231,7 @@ module.exports = [
   }),
 
   lesson({
-    category: ASKING_GIVING, lessonKey: "giving-directions", title: "Giving Directions", icon: "🧭", orderIndex: 27,
+    category: ASKING_GIVING, lessonKey: "giving-directions", title: "Giving Directions", icon: "🧭", orderIndex: 45,
     overview: "Cấu trúc câu mệnh lệnh (imperative) dùng để chỉ đường rõ ràng, từng bước — kỹ năng thường gặp trong Speaking Part 2 và liên quan trực tiếp đến Task 1 maps.",
     formula: [
       { label: "Câu mệnh lệnh chỉ hướng", structure: "Go/Walk/Turn + (straight on/left/right)", example: "Go straight on, then turn left at the crossroads." },

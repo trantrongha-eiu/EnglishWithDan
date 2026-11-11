@@ -14,7 +14,7 @@ function tense(def) {
 
 module.exports = [
   tense({
-    category: CATEGORY, lessonKey: "present-simple", title: "Present Simple", icon: "🔵", orderIndex: 1,
+    category: CATEGORY, lessonKey: "present-simple", title: "Present Simple", icon: "🔵", orderIndex: 9,
     overview: "Present Simple diễn tả thói quen, sự thật hiển nhiên, lịch trình cố định và cảm xúc/trạng thái. Đây là thì cơ bản nhất nhưng vẫn xuất hiện thường xuyên trong Task 1 (mô tả biểu đồ tĩnh) và Speaking Part 1.",
     formula: [
       { label: "Khẳng định (+)", structure: "S + V(s/es) [I/You/We/They + V; He/She/It + V-s/es]", example: "The company exports rice to over 20 countries." },
@@ -89,7 +89,7 @@ module.exports = [
   }),
 
   tense({
-    category: CATEGORY, lessonKey: "present-continuous", title: "Present Continuous", icon: "🔄", orderIndex: 2,
+    category: CATEGORY, lessonKey: "present-continuous", title: "Present Continuous", icon: "🔄", orderIndex: 10,
     overview: "Present Continuous diễn tả hành động đang xảy ra tại thời điểm nói, xu hướng đang thay đổi (dùng nhiều trong Task 1 khi mô tả xu hướng đang tăng/giảm), hoặc kế hoạch đã sắp xếp trong tương lai gần.",
     formula: [
       { label: "Khẳng định (+)", structure: "S + am/is/are + V-ing", example: "The number of users is increasing rapidly." },
@@ -164,7 +164,7 @@ module.exports = [
   }),
 
   tense({
-    category: CATEGORY, lessonKey: "present-perfect", title: "Present Perfect", icon: "✅", orderIndex: 3,
+    category: CATEGORY, lessonKey: "present-perfect", title: "Present Perfect", icon: "✅", orderIndex: 13,
     overview: "Present Perfect nối kết quá khứ với hiện tại: hành động đã xảy ra nhưng còn ảnh hưởng/liên quan đến hiện tại, hoặc kinh nghiệm/trải nghiệm chưa xác định rõ thời gian. Rất hay dùng trong Writing Task 2 khi nói về xu hướng xã hội.",
     formula: [
       { label: "Khẳng định (+)", structure: "S + have/has + V3/-ed", example: "The government has invested heavily in renewable energy." },
@@ -238,7 +238,7 @@ module.exports = [
   }),
 
   tense({
-    category: CATEGORY, lessonKey: "present-perfect-continuous", title: "Present Perfect Continuous", icon: "⏳", orderIndex: 4,
+    category: CATEGORY, lessonKey: "present-perfect-continuous", title: "Present Perfect Continuous", icon: "⏳", orderIndex: 14,
     overview: "Present Perfect Continuous nhấn mạnh tính liên tục, kéo dài của một hành động bắt đầu trong quá khứ và vẫn đang tiếp diễn (hoặc vừa mới kết thúc nhưng để lại kết quả rõ ràng ở hiện tại).",
     formula: [
       { label: "Khẳng định (+)", structure: "S + have/has + been + V-ing", example: "Researchers have been studying this phenomenon for years." },
@@ -310,7 +310,7 @@ module.exports = [
   }),
 
   tense({
-    category: CATEGORY, lessonKey: "past-simple", title: "Past Simple", icon: "🟣", orderIndex: 5,
+    category: CATEGORY, lessonKey: "past-simple", title: "Past Simple", icon: "🟣", orderIndex: 11,
     overview: "Past Simple diễn tả hành động đã xảy ra và kết thúc hoàn toàn trong quá khứ, tại một thời điểm xác định. Đây là thì QUAN TRỌNG NHẤT cho Task 1 khi mô tả số liệu lịch sử.",
     formula: [
       { label: "Khẳng định (+)", structure: "S + V2/-ed", example: "The number of tourists rose sharply in 2015." },
@@ -384,7 +384,7 @@ module.exports = [
   }),
 
   tense({
-    category: CATEGORY, lessonKey: "past-continuous", title: "Past Continuous", icon: "🌀", orderIndex: 6,
+    category: CATEGORY, lessonKey: "past-continuous", title: "Past Continuous", icon: "🌀", orderIndex: 12,
     overview: "Past Continuous diễn tả một hành động đang diễn ra tại một thời điểm xác định trong quá khứ, thường bị một hành động khác (ở Past Simple) xen vào, hoặc hai hành động song song cùng diễn ra.",
     formula: [
       { label: "Khẳng định (+)", structure: "S + was/were + V-ing", example: "They were discussing the report when I arrived." },
@@ -457,7 +457,7 @@ module.exports = [
   }),
 
   tense({
-    category: CATEGORY, lessonKey: "past-perfect", title: "Past Perfect", icon: "⏮️", orderIndex: 7,
+    category: CATEGORY, lessonKey: "past-perfect", title: "Past Perfect", icon: "⏮️", orderIndex: 15,
     overview: "Past Perfect diễn tả một hành động xảy ra TRƯỚC một hành động/thời điểm khác trong quá khứ — giúp sắp xếp trình tự thời gian rõ ràng khi có hai mốc quá khứ.",
     formula: [
       { label: "Khẳng định (+)", structure: "S + had + V3/-ed", example: "By 2010, the population had already doubled." },
@@ -528,7 +528,7 @@ module.exports = [
   }),
 
   tense({
-    category: CATEGORY, lessonKey: "past-perfect-continuous", title: "Past Perfect Continuous", icon: "⏱️", orderIndex: 8,
+    category: CATEGORY, lessonKey: "past-perfect-continuous", title: "Past Perfect Continuous", icon: "⏱️", orderIndex: 16,
     overview: "Past Perfect Continuous nhấn mạnh khoảng thời gian một hành động đã diễn ra liên tục TRƯỚC một mốc/hành động khác trong quá khứ.",
     formula: [
       { label: "Khẳng định (+)", structure: "S + had + been + V-ing", example: "They had been negotiating for months before the deal was signed." },
@@ -599,7 +599,7 @@ module.exports = [
   }),
 
   tense({
-    category: CATEGORY, lessonKey: "future-simple", title: "Future Simple", icon: "🔮", orderIndex: 9,
+    category: CATEGORY, lessonKey: "future-simple", title: "Future Simple", icon: "🔮", orderIndex: 17,
     overview: "Future Simple (will) dùng để dự đoán, quyết định tức thời tại thời điểm nói, hứa hẹn, hoặc đề xuất/tình nguyện. Rất phổ biến trong Task 1 dự đoán xu hướng và Task 2 khi đưa ra dự báo/khuyến nghị.",
     formula: [
       { label: "Khẳng định (+)", structure: "S + will + V(bare)", example: "The number of users will exceed one million by 2030." },
@@ -673,7 +673,7 @@ module.exports = [
   }),
 
   tense({
-    category: CATEGORY, lessonKey: "future-continuous", title: "Future Continuous", icon: "🌤️", orderIndex: 10,
+    category: CATEGORY, lessonKey: "future-continuous", title: "Future Continuous", icon: "🌤️", orderIndex: 19,
     overview: "Future Continuous diễn tả một hành động sẽ đang diễn ra tại một thời điểm xác định trong tương lai, hoặc một sự việc đã được lên lịch chắc chắn sẽ diễn ra theo tiến trình bình thường.",
     formula: [
       { label: "Khẳng định (+)", structure: "S + will + be + V-ing", example: "This time next week, I will be sitting in the exam room." },
@@ -744,7 +744,7 @@ module.exports = [
   }),
 
   tense({
-    category: CATEGORY, lessonKey: "future-perfect", title: "Future Perfect", icon: "🏁", orderIndex: 11,
+    category: CATEGORY, lessonKey: "future-perfect", title: "Future Perfect", icon: "🏁", orderIndex: 20,
     overview: "Future Perfect diễn tả một hành động sẽ HOÀN THÀNH trước một thời điểm/mốc cụ thể trong tương lai.",
     formula: [
       { label: "Khẳng định (+)", structure: "S + will have + V3/-ed", example: "By 2035, the city will have built three new metro lines." },
@@ -815,7 +815,7 @@ module.exports = [
   }),
 
   tense({
-    category: CATEGORY, lessonKey: "be-going-to", title: "Be Going To", icon: "🎯", orderIndex: 12,
+    category: CATEGORY, lessonKey: "be-going-to", title: "Be Going To", icon: "🎯", orderIndex: 18,
     overview: "\"Be going to\" diễn tả kế hoạch/dự định đã quyết định từ trước, hoặc dự đoán dựa trên bằng chứng/dấu hiệu rõ ràng ở hiện tại.",
     formula: [
       { label: "Khẳng định (+)", structure: "S + am/is/are + going to + V(bare)", example: "The government is going to raise the minimum wage next year." },

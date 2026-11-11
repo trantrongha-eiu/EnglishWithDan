@@ -7,7 +7,7 @@ const SEQUENCING = "Sequencing Words";
 
 module.exports = [
   lesson({
-    category: LINKING, lessonKey: "addition", title: "Addition", icon: "➕", orderIndex: 18,
+    category: LINKING, lessonKey: "addition", title: "Addition", icon: "➕", orderIndex: 36,
     overview: "Nhóm từ nối bổ sung dùng để thêm thông tin, ý tưởng cùng chiều với câu trước, giúp bài viết mạch lạc và tránh lặp từ \"and\" liên tục.",
     formula: [
       { label: "Đầu câu (theo sau dấu phẩy)", structure: "Moreover/Furthermore/In addition, + S + V", example: "The policy reduces emissions. Moreover, it creates thousands of jobs." },
@@ -80,7 +80,7 @@ module.exports = [
   }),
 
   lesson({
-    category: LINKING, lessonKey: "contrast", title: "Contrast", icon: "⚖️", orderIndex: 19,
+    category: LINKING, lessonKey: "contrast", title: "Contrast", icon: "⚖️", orderIndex: 37,
     overview: "Nhóm từ nối tương phản dùng để thể hiện hai ý đối lập nhau — kỹ năng bắt buộc trong Task 2 discussion essays và Task 1 khi so sánh dữ liệu ngược chiều.",
     formula: [
       { label: "Đầu câu độc lập", structure: "However, + S + V", example: "The economy grew. However, unemployment remained high." },
@@ -151,7 +151,7 @@ module.exports = [
   }),
 
   lesson({
-    category: LINKING, lessonKey: "cause-and-effect", title: "Cause & Effect", icon: "🔗", orderIndex: 20,
+    category: LINKING, lessonKey: "cause-and-effect", title: "Cause & Effect", icon: "🔗", orderIndex: 38,
     overview: "Nhóm từ nối nguyên nhân-kết quả giúp giải thích lý do và hệ quả một cách rõ ràng, mạch lạc — cực kỳ quan trọng trong Task 2 (essay dạng cause-solution/cause-effect).",
     formula: [
       { label: "Liên từ phụ thuộc (nguyên nhân)", structure: "Because/Since/As + S + V, S + V", example: "Because fuel prices rose, transport costs increased." },
@@ -223,7 +223,7 @@ module.exports = [
   }),
 
   lesson({
-    category: LINKING, lessonKey: "purpose", title: "Purpose", icon: "🎯", orderIndex: 21,
+    category: LINKING, lessonKey: "purpose", title: "Purpose", icon: "🎯", orderIndex: 39,
     overview: "Nhóm từ nối mục đích diễn tả lý do/mục tiêu của một hành động — thường dùng trong Task 2 khi đề xuất giải pháp và Task 1 process diagrams.",
     formula: [
       { label: "To-infinitive", structure: "S + V + to + V(bare)", example: "Governments raise taxes to fund public services." },
@@ -295,7 +295,7 @@ module.exports = [
   }),
 
   lesson({
-    category: SEQUENCING, lessonKey: "process-sequencing", title: "Sequencing in Processes", icon: "📋", orderIndex: 22,
+    category: SEQUENCING, lessonKey: "process-sequencing", title: "Sequencing in Processes", icon: "📋", orderIndex: 40,
     overview: "Từ nối trình tự trong mô tả quy trình (process diagram) giúp sắp xếp các bước theo đúng thứ tự logic — kỹ năng bắt buộc cho Task 1 process/flow-chart.",
     formula: [
       { label: "Mở đầu quy trình", structure: "First(ly)/To begin with, + S + is/are + V3 (bị động thường gặp)", example: "First, the raw materials are collected." },
@@ -367,7 +367,7 @@ module.exports = [
   }),
 
   lesson({
-    category: SEQUENCING, lessonKey: "narrative-essay-sequencing", title: "Sequencing in Narratives & Essays", icon: "📝", orderIndex: 23,
+    category: SEQUENCING, lessonKey: "narrative-essay-sequencing", title: "Sequencing in Narratives & Essays", icon: "📝", orderIndex: 41,
     overview: "Từ nối trình tự trong bài kể chuyện (Speaking Part 2) hoặc bài luận (Task 2) giúp sắp xếp ý tưởng/sự kiện mạch lạc, khác với sequencing trong process diagram vì thường đi cùng câu chủ động.",
     formula: [
       { label: "Mở đầu", structure: "Firstly/In the beginning/At first, + S + V", example: "Firstly, social media connects people across the globe." },

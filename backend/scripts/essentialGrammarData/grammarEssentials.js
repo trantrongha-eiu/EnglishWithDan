@@ -6,7 +6,7 @@ const CATEGORY = "Grammar Essentials";
 
 module.exports = [
   lesson({
-    category: CATEGORY, lessonKey: "articles", title: "Articles", icon: "🔤", orderIndex: 28,
+    category: CATEGORY, lessonKey: "articles", title: "Articles", icon: "🔤", orderIndex: 22,
     overview: "Mạo từ (a/an/the) xác định danh từ được nhắc đến là cụ thể hay chung chung — một trong những điểm ngữ pháp người Việt hay sai nhất vì tiếng Việt không có mạo từ.",
     formula: [
       { label: "A/An (không xác định, đếm được số ít)", structure: "a + danh từ bắt đầu phụ âm; an + danh từ bắt đầu nguyên âm", example: "a university (âm /juː/); an hour (âm câm h)." },
@@ -79,7 +79,7 @@ module.exports = [
   }),
 
   lesson({
-    category: CATEGORY, lessonKey: "countable-uncountable", title: "Countable vs Uncountable", icon: "🔢", orderIndex: 29,
+    category: CATEGORY, lessonKey: "countable-uncountable", title: "Countable vs Uncountable", icon: "🔢", orderIndex: 23,
     overview: "Phân biệt danh từ đếm được (có số nhiều) và danh từ không đếm được (chỉ chất liệu/khái niệm trừu tượng, không có số nhiều) — ảnh hưởng trực tiếp đến việc chọn much/many và số ít/số nhiều của động từ.",
     formula: [
       { label: "Đếm được", structure: "a/an + danh từ số ít; many/a few/several + danh từ số nhiều", example: "many students, a few chairs, several problems." },
@@ -151,7 +151,7 @@ module.exports = [
   }),
 
   lesson({
-    category: CATEGORY, lessonKey: "modal-verbs", title: "Modal Verbs", icon: "🧩", orderIndex: 30,
+    category: CATEGORY, lessonKey: "modal-verbs", title: "Modal Verbs", icon: "🧩", orderIndex: 25,
     overview: "Động từ khiếm khuyết (can, could, must, should, may, might, have to...) diễn tả khả năng, sự cho phép, nghĩa vụ, lời khuyên hoặc suy đoán — giúp bài viết/nói thể hiện sắc thái ý kiến tinh tế hơn.",
     formula: [
       { label: "Cấu trúc chung", structure: "S + modal verb + V(bare)", example: "Governments must invest more in healthcare." },
@@ -225,7 +225,7 @@ module.exports = [
   }),
 
   lesson({
-    category: CATEGORY, lessonKey: "passive-voice", title: "Passive Voice", icon: "🔄", orderIndex: 31,
+    category: CATEGORY, lessonKey: "passive-voice", title: "Passive Voice", icon: "🔄", orderIndex: 28,
     overview: "Thể bị động nhấn mạnh vào đối tượng chịu tác động của hành động thay vì người/vật thực hiện hành động — rất phổ biến trong Task 1 process diagrams và văn phong học thuật trang trọng.",
     formula: [
       { label: "Công thức chung", structure: "S(đối tượng) + to be + V3 + (by + tác nhân)", example: "The bridge was built in 1990 (by engineers)." },
@@ -297,7 +297,7 @@ module.exports = [
   }),
 
   lesson({
-    category: CATEGORY, lessonKey: "relative-clauses", title: "Relative Clauses", icon: "🔗", orderIndex: 32,
+    category: CATEGORY, lessonKey: "relative-clauses", title: "Relative Clauses", icon: "🔗", orderIndex: 29,
     overview: "Mệnh đề quan hệ dùng để bổ sung thông tin về danh từ đứng trước mà không cần tách thành câu riêng — giúp câu văn học thuật, súc tích và tránh lặp từ.",
     formula: [
       { label: "Chỉ người (chủ ngữ)", structure: "N (person) + who/that + V", example: "The scientist who discovered this won a Nobel Prize." },
@@ -369,7 +369,7 @@ module.exports = [
   }),
 
   lesson({
-    category: CATEGORY, lessonKey: "comparisons", title: "Comparisons", icon: "⚖️", orderIndex: 33,
+    category: CATEGORY, lessonKey: "comparisons", title: "Comparisons", icon: "⚖️", orderIndex: 24,
     overview: "Cấu trúc so sánh (hơn, kém, bằng, so sánh nhất) là công cụ bắt buộc cho Task 1 khi so sánh số liệu giữa các đối tượng/thời điểm.",
     formula: [
       { label: "So sánh hơn (ngắn)", structure: "adj-er + than", example: "The figure for the UK was higher than that for France." },
@@ -442,7 +442,7 @@ module.exports = [
   }),
 
   lesson({
-    category: CATEGORY, lessonKey: "reported-speech", title: "Reported Speech", icon: "💬", orderIndex: 34,
+    category: CATEGORY, lessonKey: "reported-speech", title: "Reported Speech", icon: "💬", orderIndex: 30,
     overview: "Câu tường thuật (reported speech) chuyển lời nói trực tiếp thành gián tiếp — thường dùng khi thuật lại ý kiến/nghiên cứu của người khác trong Task 2 hoặc kể chuyện trong Speaking.",
     formula: [
       { label: "Câu trần thuật (lùi thì)", structure: "S + said (that) + S + V (lùi một thì)", example: "\"I am tired,\" she said. → She said (that) she was tired." },
@@ -514,7 +514,7 @@ module.exports = [
   }),
 
   lesson({
-    category: CATEGORY, lessonKey: "gerunds", title: "Gerunds (V-ing as Nouns)", icon: "🌀", orderIndex: 35,
+    category: CATEGORY, lessonKey: "gerunds", title: "Gerunds (V-ing as Nouns)", icon: "🌀", orderIndex: 26,
     overview: "Danh động từ (gerund, V-ing) là dạng V-ing đóng vai trò như một danh từ trong câu — làm chủ ngữ, tân ngữ, hoặc theo sau giới từ/một số động từ nhất định.",
     formula: [
       { label: "Làm chủ ngữ", structure: "V-ing + V", example: "Smoking damages your health." },
@@ -586,7 +586,7 @@ module.exports = [
   }),
 
   lesson({
-    category: CATEGORY, lessonKey: "infinitives", title: "Infinitives (To + V)", icon: "➡️", orderIndex: 36,
+    category: CATEGORY, lessonKey: "infinitives", title: "Infinitives (To + V)", icon: "➡️", orderIndex: 27,
     overview: "Động từ nguyên mẫu có \"to\" (to-infinitive) diễn tả mục đích, hoặc theo sau một số động từ/tính từ nhất định — cần phân biệt rõ với gerund (V-ing) để tránh lỗi ngữ pháp phổ biến.",
     formula: [
       { label: "Diễn tả mục đích", structure: "S + V + to + V(bare)", example: "People exercise to stay fit." },
@@ -658,7 +658,7 @@ module.exports = [
   }),
 
   lesson({
-    category: CATEGORY, lessonKey: "sentence-patterns", title: "Sentence Patterns", icon: "🏗️", orderIndex: 37,
+    category: CATEGORY, lessonKey: "sentence-patterns", title: "Sentence Patterns", icon: "🏗️", orderIndex: 21,
     overview: "Nắm vững 3 loại câu cơ bản (đơn, ghép, phức) và cách kết hợp chúng linh hoạt là chìa khóa để đạt điểm cao ở tiêu chí Grammatical Range and Accuracy trong IELTS Writing.",
     formula: [
       { label: "Câu đơn (Simple)", structure: "S + V (+ O)", example: "The economy grew rapidly." },

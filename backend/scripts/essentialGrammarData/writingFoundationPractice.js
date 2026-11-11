@@ -23,7 +23,7 @@ module.exports = [
   // 7. FROM SENTENCES TO PARAGRAPHS
   // ─────────────────────────────────────────────────────────────
   lesson({
-    category: CATEGORY, lessonKey: "sb-sentences-to-paragraphs", title: "From Sentences to Paragraphs: viết đoạn văn", icon: "📝", orderIndex: 44,
+    category: CATEGORY, lessonKey: "sb-sentences-to-paragraphs", title: "From Sentences to Paragraphs: viết đoạn văn", icon: "📝", orderIndex: 7,
     overview: "Bài tổng hợp: dùng mọi kỹ năng đã học để đi từ một câu đơn đến một đoạn văn 80–120 từ. Không cần viết câu dài ngay từ đầu — hãy đi đúng trình tự: (1) viết câu đơn đúng, (2) chọn đúng thì, (3) thêm thời gian, địa điểm, lý do, (4) kết nối hai câu, (5) mở rộng bằng mệnh đề quan hệ, (6) sắp xếp thành đoạn văn hoàn chỉnh. Bài có 4 đề viết kèm bài mẫu: My Daily Life, My Hometown, My Favourite Subject, My Best Friend.",
     formula: [
       { label: "Mở rộng một câu", structure: "Câu gốc → + When/Where → + Why (because) → + Although / and / but / so → + who / which", example: "I study English. → Although English is difficult, I study it at home every day because I want to improve my English." },
@@ -168,7 +168,7 @@ module.exports = [
   // 8. REVIEW & PRACTICE
   // ─────────────────────────────────────────────────────────────
   lesson({
-    category: CATEGORY, lessonKey: "sb-review", title: "Review & Practice: ôn tập tổng hợp", icon: "🏆", orderIndex: 45,
+    category: CATEGORY, lessonKey: "sb-review", title: "Review & Practice: ôn tập tổng hợp", icon: "🏆", orderIndex: 8,
     overview: "Bài ôn tập cả chuyên đề Writing Foundation: S + V, S + be, kỹ năng viết câu, and/but/so, because/although/despite, mệnh đề quan hệ. Làm phần trắc nghiệm để tính điểm hoàn thành bài, sau đó làm 4 bài luyện tự chấm ở cuối: điền BE/động từ, dịch Việt → Anh, viết câu từ từ gợi ý, sửa lỗi sai. Câu nào sai, hãy quay lại bài tương ứng để ôn.",
     formula: [
       { label: "Cấu trúc 1", structure: "S + V + (O) + Place + Time", example: "I study English at home every evening." },

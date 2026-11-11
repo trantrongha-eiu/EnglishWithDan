@@ -10,7 +10,7 @@ module.exports = [
   // 4. COMPOUND SENTENCES – AND, BUT, SO
   // ─────────────────────────────────────────────────────────────
   lesson({
-    category: CATEGORY, lessonKey: "sb-and-but-so", title: "Compound Sentences: And, But, So", icon: "🔗", orderIndex: 41,
+    category: CATEGORY, lessonKey: "sb-and-but-so", title: "Compound Sentences: And, But, So", icon: "🔗", orderIndex: 4,
     overview: "Câu ghép (compound sentence) = hai câu đơn hoàn chỉnh (mỗi câu có S + V) nối bằng một liên từ: AND (bổ sung), BUT (tương phản), SO (kết quả). Trước khi nối, phải hiểu QUAN HỆ NGHĨA giữa hai ý — đây là bước học sinh hay bỏ qua nhất, dẫn đến dùng sai liên từ.",
     formula: [
       { label: "AND – và (bổ sung)", structure: "S + V ..., and S + V ...", example: "I like English, and my brother likes French." },
@@ -152,7 +152,7 @@ module.exports = [
   // 5. COMPLEX SENTENCES – BECAUSE, ALTHOUGH, DESPITE
   // ─────────────────────────────────────────────────────────────
   lesson({
-    category: CATEGORY, lessonKey: "sb-because-although-despite", title: "Complex Sentences: Because, Although, Despite", icon: "🧠", orderIndex: 42,
+    category: CATEGORY, lessonKey: "sb-because-although-despite", title: "Complex Sentences: Because, Although, Despite", icon: "🧠", orderIndex: 5,
     overview: "Câu phức (complex sentence) gồm một mệnh đề chính và một mệnh đề phụ bắt đầu bằng because (lý do) hoặc although (sự nhượng bộ: “mặc dù… vẫn…”). DESPITE có cùng nghĩa với although nhưng theo sau là danh từ hoặc V-ing, không phải một câu. Mấu chốt: nhìn xem phía SAU từ nối là S + V hay N/V-ing.",
     formula: [
       { label: "BECAUSE – bởi vì (lý do)", structure: "S + V + because + S + V  •  Because + S + V, S + V", example: "I study English because I want to get a good job. / Because I was tired, I went to bed early." },
@@ -297,7 +297,7 @@ module.exports = [
   // 6. RELATIVE CLAUSES – WHO, WHOM, WHICH, WHOSE, WHERE, WHEN
   // ─────────────────────────────────────────────────────────────
   lesson({
-    category: CATEGORY, lessonKey: "sb-relative-clauses", title: "Relative Clauses: Who, Whom, Which, Whose, Where, When", icon: "🧩", orderIndex: 43,
+    category: CATEGORY, lessonKey: "sb-relative-clauses", title: "Relative Clauses: Who, Whom, Which, Whose, Where, When", icon: "🧩", orderIndex: 6,
     overview: "Mệnh đề quan hệ bổ sung thông tin cho một danh từ ngay trong câu thay vì viết thêm một câu mới — câu dài hơn, mượt hơn và không lặp từ. Bí quyết khi nối hai câu: (1) tìm từ bị lặp lại, (2) xác định nó là người, vật, nơi chốn hay thời gian và đang làm chủ ngữ, tân ngữ hay sở hữu, (3) thay bằng đại từ quan hệ phù hợp và đặt ngay sau danh từ.",
     formula: [
       { label: "WHO – người (chủ ngữ)", structure: "N (người) + who + V", example: "I have a friend who speaks English very well." },
