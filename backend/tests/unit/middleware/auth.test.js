@@ -38,6 +38,18 @@ describe('auth middleware', () => {
     expect(res.json).not.toHaveBeenCalled();
   });
 
+  test('a password-reset token (purpose: reset) is not a login -> 401', async () => {
+    const user = await createStudent();
+    const token = jwt.sign({ id: user._id, purpose: 'reset' }, process.env.JWT_SECRET, { expiresIn: '15m' });
+    const res = makeRes();
+    const next = jest.fn();
+
+    await authMiddleware(makeReq(token), res, next);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(next).not.toHaveBeenCalled();
+  });
+
   test('missing Authorization header -> 401, next not called', async () => {
     const req = makeReq(null);
     const res = makeRes();

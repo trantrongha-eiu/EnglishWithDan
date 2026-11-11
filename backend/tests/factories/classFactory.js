@@ -113,8 +113,8 @@ async function createAssignment(classGroup, overrides = {}) {
 // Write the attempt doc that makes an internal resource count as "completed"
 // for a student. Supports the two types the integration test exercises.
 // correctCount/totalQuestions default to a comfortably-passing 8/10 (80%) —
-// reading_test and listening_practice are both score-gated (>=70%, see
-// resourceCompletionService.PASS_PERCENT) now that homework only auto-
+// reading_test and listening_practice are both score-gated (>=50%, see
+// resourceCompletionService.PRACTICE_PASS_PERCENT) now that homework only auto-
 // completes on a real passing score, not just "an attempt exists". Pass a
 // losing ratio explicitly (e.g. { correctCount: 2, totalQuestions: 10 }) to
 // exercise the "attempted but not completed" path.

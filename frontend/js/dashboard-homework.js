@@ -22,14 +22,16 @@ const HW_STATUS = {
 
 // Per-type "how this one counts as done" tag + hint, shown on each resource
 // row so a student doesn't have to remember the rule from the notice above —
-// mirrors backend/services/resourceCompletionService.js's scoreGate (≥70%)
-// vs wordCountGate (real minimum word count, not just "submitted") split.
-// Types with neither (speaking, task1_lesson / task2_course_lesson /
-// speaking_course_lesson, mock_test, external/image) get no tag —
-// "submitted/ticked = done" needs no extra explanation.
-const HW_QUIZ_TYPES = new Set(['reading_test', 'listening_test', 'dictation', 'grammar', 'vocabulary_lesson', 'advanced_sentences']);
-// Bài đọc/nghe lẻ: lower bar — backend's PRACTICE_PASS_PERCENT.
-const HW_PRACTICE_TYPES = new Set(['reading_practice', 'listening_practice']);
+// mirrors backend/services/resourceCompletionService.js's scoreGate (≥70%;
+// Reading/Listening ≥50%) vs wordCountGate (real minimum word count, not
+// just "submitted") split. Types with neither (speaking, mock_test,
+// external/image) get no tag — "submitted/ticked = done" needs no extra
+// explanation.
+const HW_QUIZ_TYPES = new Set(['grammar', 'vocabulary_lesson', 'advanced_sentences']);
+// Reading / Listening (full tests, bài lẻ, dictation): lower bar — backend's PRACTICE_PASS_PERCENT.
+const HW_PRACTICE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'dictation']);
+// Course lessons: every exercise done AND the quiz-style ones average ≥70%.
+const HW_COURSE_TYPES = new Set(['task1_lesson', 'task2_course_lesson', 'speaking_course_lesson']);
 const PRACTICE_PASS = 50;
 const GAPFILL_MIN_CORRECT = 18; // matches backend's resourceCompletionService.GAPFILL_MIN_CORRECT
 const MIN_WORDS_T1 = 150, MIN_WORDS_T2 = 250; // matches backend's resourceCompletionService.MIN_WORDS
@@ -47,7 +49,8 @@ function hwRuleTag(resourceType) {
   if (resourceType === 'task2_template') return '<span class="hw-res-tag hw-res-tag--quiz" title="Cần học xong cả 5 bước của lộ trình và thuộc từ 70% số câu (bước ④ Ghép cả bài hoặc Thi thử)">≥70%</span>';
   if (resourceType === 'writing_practice' || resourceType === 'task1_skill') return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm ít nhất 10 câu của chủ đề, đúng từ 70% trở lên">≥10 câu · ≥70%</span>';
   if (resourceType === 'speaking_topic') return '<span class="hw-res-tag hw-res-tag--quiz" title="Bấm Bắt đầu để trả lời lần lượt TẤT CẢ câu hỏi của chủ đề trong một lượt (Part 2 có kèm luôn các câu Part 3). Bỏ trống câu nào thì chưa tính hoàn thành.">Trả lời hết các câu</span>';
-  if (resourceType === 'speaking_part2') return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm xong cả 5 bước của câu chuyện: đọc bài mẫu, từ vựng, dịch phần FIXED, dịch phần WHY (≥2 đề + kết luận) và nói thử 2 phút">Xong 5 bước</span>';
+  if (resourceType === 'speaking_part2') return '<span class="hw-res-tag hw-res-tag--quiz" title="Thuộc từ 70% câu chuyện trở lên: mỗi câu của 7 khung nói cần nhại (shadowing) đạt và dịch đúng">≥70% câu chuyện</span>';
+  if (HW_COURSE_TYPES.has(resourceType)) return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm hết mọi bài trong buổi học; các bài trắc nghiệm / điền từ phải đạt trung bình từ 70% trở lên (làm lại để nâng điểm)">Làm hết · ≥70%</span>';
   if (HW_WORD_MIN[resourceType]) return `<span class="hw-res-tag hw-res-tag--writing" title="Cần nộp đủ ít nhất ${HW_WORD_MIN[resourceType]} từ mới tính hoàn thành">≥${HW_WORD_MIN[resourceType]} từ</span>`;
   return '';
 }
@@ -382,8 +385,8 @@ async function loadHomework() {
   const rules = `<details class="hw-rules"${rulesWasOpen ? ' open' : ''}>
     <summary>ℹ️ Cách tính bài tập đã hoàn thành</summary>
     <ul>
-      <li><span class="hw-res-tag hw-res-tag--quiz">≥70%</span> Bài trắc nghiệm/quiz (đề full, dictation, grammar…): cần đạt <b>từ 70% số điểm trở lên</b> mới tính hoàn thành.</li>
-      <li><span class="hw-res-tag hw-res-tag--quiz">≥${PRACTICE_PASS}%</span> Bài đọc lẻ / bài nghe lẻ: cần đạt <b>từ ${PRACTICE_PASS}% số điểm trở lên</b> là tự động tính hoàn thành.</li>
+      <li><span class="hw-res-tag hw-res-tag--quiz">≥70%</span> Bài có chấm điểm (grammar, vocabulary, viết câu, template, buổi học khóa Writing/Speaking…): cần đạt <b>từ 70% số điểm trở lên</b> mới tính hoàn thành.</li>
+      <li><span class="hw-res-tag hw-res-tag--quiz">≥${PRACTICE_PASS}%</span> Reading / Listening (đề full, bài đọc lẻ, bài nghe lẻ, dictation): cần đạt <b>từ ${PRACTICE_PASS}% số điểm trở lên</b> là tự động tính hoàn thành.</li>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥${GAPFILL_MIN_CORRECT} câu đúng</span> Bài nghe Gap-fill: cần điền <b>đúng ít nhất ${GAPFILL_MIN_CORRECT} chỗ trống</b> trên tổng số chỗ trống của bài.</li>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥70% đúng</span> Học từ trong sổ từ vựng: chỉ tính <b>Sổ 1–5</b> (sổ mặc định; nếu giáo viên chỉ định sổ thì phải học đúng sổ đó). Sổ phải có <b>đủ số từ giáo viên giao</b> (thiếu thì tự lưu thêm từ vào sổ), rồi luyện tập (quiz/flashcard) <b>đủ số từ đó</b> và trả lời đúng <b>từ 70%</b> trở lên. Đổi trạng thái "đã thuộc" bằng tay không được tính.</li>
       <li><span class="hw-res-tag hw-res-tag--writing">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span> Bài viết (Writing): chỉ cần <b>nộp bài và viết đủ số từ tối thiểu</b> (Task 1 ≥${MIN_WORDS_T1} từ, Task 2 ≥${MIN_WORDS_T2} từ) là tính hoàn thành, không yêu cầu điểm.</li>

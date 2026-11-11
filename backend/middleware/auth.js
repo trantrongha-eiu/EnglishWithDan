@@ -33,6 +33,13 @@ module.exports = async (req, res, next) => {
 
     const token   = authHeader.replace('Bearer ', '');
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // A single-purpose token (the 15-min password-reset one — authService
+    // signs it with the same secret) is not a login: without this it opened
+    // every API, and having no session id it also slipped past the 1 PC +
+    // 1 mobile device limit.
+    if (decoded.purpose) {
+      return res.status(401).json({ success: false, message: 'Token không hợp lệ hoặc đã hết hạn' });
+    }
     // savedVocab is a legacy word list (unbounded, never read via req.user —
     // vocab lives in VocabBook now); skipping it keeps this per-request
     // lookup small. Still a full document: services mutate and .save() req.user.

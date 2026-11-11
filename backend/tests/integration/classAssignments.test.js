@@ -14,6 +14,7 @@ const ClassEnrollment = require('../../models/ClassEnrollment');
 const WT1Lesson = require('../../models/WT1Lesson');
 const WT1Module = require('../../models/WT1Module');
 const WT1Progress = require('../../models/WT1Progress');
+const WT1Exercise = require('../../models/WT1Exercise');
 const SentenceStructureGroup = require('../../models/SentenceStructureGroup');
 const AdvSentenceAttempt = require('../../models/AdvSentenceAttempt');
 const Task2Topic = require('../../models/Task2Topic');
@@ -471,7 +472,21 @@ describe('completion tracking', () => {
     expect(row.resources[0].completed).toBe(true);
   });
 
-  test('bài đọc/nghe lẻ: 50% is enough (full tests stay at 70%)', async () => {
+  test('full Reading test: 50% is enough (Reading/Listening bar), 49% is not', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const rt = await createReadingTest();
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'reading_test', resourceId: rt._id }] });
+    const row = async () => (await request(app).get('/api/assignments/mine').set(authH(s))).body.assignments.find((a) => a._id === String(asg._id));
+
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id, correctCount: 49, totalQuestions: 100 });
+    expect((await row()).resources[0].completed).toBe(false);
+    await seedInternalCompletion('reading_test', { studentId: s._id, resourceId: rt._id, correctCount: 20, totalQuestions: 40 });
+    expect((await row()).resources[0].completed).toBe(true);
+  });
+
+  test('bài đọc/nghe lẻ: 50% is enough', async () => {
     const t = await createTeacher();
     const s = await createStudent();
     const { cls } = await makeClassWith(t, [s]);
@@ -587,6 +602,21 @@ describe('completion tracking', () => {
     const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'task1_lesson', resourceId: lesson._id }] });
     const mine = await request(app).get('/api/assignments/mine').set(authH(s));
     expect(mine.body.assignments.find((a) => a._id === String(asg._id)).status).toBe('completed');
+  });
+
+  test('course lesson with quiz exercises: every exercise done is not enough — they must average ≥70%', async () => {
+    const t = await createTeacher();
+    const s = await createStudent();
+    const { cls } = await makeClassWith(t, [s]);
+    const lesson = await createWT1Lesson({ code: 'BUOI-70', title: 'Buổi có quiz' });
+    await WT1Exercise.create({ code: 'BUOI-70-E1', lessonCode: 'BUOI-70', type: 'mcq', title: 'Quiz', published: true });
+    const asg = await createAssignment(cls, { resources: [{ kind: 'internal', resourceType: 'task1_lesson', resourceId: lesson._id }] });
+    const status = async () => (await request(app).get('/api/assignments/mine').set(authH(s))).body.assignments.find((a) => a._id === String(asg._id)).status;
+
+    await WT1Progress.create({ userId: s._id, courseCode: 'IELTS-W-T1', lessonCode: 'BUOI-70', completedAt: new Date(), objectiveScorePercent: 69 });
+    expect(await status()).not.toBe('completed');
+    await WT1Progress.updateOne({ userId: s._id, lessonCode: 'BUOI-70' }, { $set: { objectiveScorePercent: 70 } });
+    expect(await status()).toBe('completed');
   });
 
   test('WT1-stack sibling courses: task2_course_lesson / speaking_course_lesson are course-scoped and never leak into task1_lesson', async () => {

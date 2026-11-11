@@ -201,7 +201,11 @@ const RES_RULE = {
   reading_practice: 'Tự tick khi học viên đạt ≥50% số câu đúng.',
   listening_practice: 'Tự tick khi học viên đạt ≥50% số câu đúng.',
   listening_gapfill: 'Tự tick khi học viên điền đúng ≥18 chỗ trống (bài ít hơn 18 chỗ thì phải đúng hết).',
-  reading_test: 'Tự tick khi đạt ≥70%.', listening_test: 'Tự tick khi đạt ≥70%.', dictation: 'Tự tick khi đạt ≥70%.',
+  reading_test: 'Tự tick khi đạt ≥50%.', listening_test: 'Tự tick khi đạt ≥50%.', dictation: 'Tự tick khi đạt ≥50% số câu đúng.',
+  task1_lesson: 'Tự tick khi học viên làm hết mọi bài của buổi và các bài trắc nghiệm/điền từ đạt trung bình ≥70%. Đã học xong từ trước khi giao cũng tính.',
+  task2_course_lesson: 'Tự tick khi học viên làm hết mọi bài của buổi và các bài trắc nghiệm/điền từ đạt trung bình ≥70%. Đã học xong từ trước khi giao cũng tính.',
+  speaking_course_lesson: 'Tự tick khi học viên làm hết mọi bài của buổi và các bài trắc nghiệm/điền từ đạt trung bình ≥70%. Đã học xong từ trước khi giao cũng tính.',
+  vocabulary_lesson: 'Tự tick khi đạt ≥70%.', advanced_sentences: 'Tự tick khi học viên làm ≥80% số câu của cấu trúc trong 1 lượt và đúng ≥70%.',
   shadowing: 'Tự tick khi học viên bấm vào mở video.',
   listening_tip: 'Tự tick khi học viên mở bài giảng.', reading_tip: 'Tự tick khi học viên mở bài giảng.',
   writing_tip: 'Tự tick khi học viên mở bài giảng.', speaking_tip: 'Tự tick khi học viên mở bài giảng.',
@@ -212,7 +216,7 @@ const RES_RULE = {
   task1_skill: 'Tự tick khi học viên làm ≥10 câu của kỹ năng này, đúng ≥70%.',
   grammar: 'Tự tick khi học viên làm hết mọi câu chấm điểm của bài (Mini Quiz + trắc nghiệm) và đúng ≥70%. Đáp án từng câu được lưu 3 tháng.',
   speaking_topic: 'Mỗi dòng là cả 1 chủ đề: Part 1 = mọi câu của topic; Part 2 = cue card + tự kèm luôn các câu Part 3 cùng chủ đề. Học viên bấm Bắt đầu sẽ trả lời lần lượt hết các câu trong 1 lượt. Tự tick khi trả lời đủ tất cả các câu (bỏ trống câu nào là chưa tính).',
-  speaking_part2: 'Tự tick khi học viên xong cả 5 bước của câu chuyện (đọc bài mẫu, từ vựng, dịch FIXED, dịch WHY ≥2 đề + kết luận, nói thử 2 phút). Đã học xong từ trước khi giao cũng tính.',
+  speaking_part2: 'Tự tick khi học viên thuộc ≥70% câu chuyện (mỗi câu của 7 khung nói: nhại đạt + dịch đúng). Đã học xong từ trước khi giao cũng tính.',
 };
 const ASG_STATUS = { not_started: 'badge-gray', in_progress: 'badge-blue', completed: 'badge-green', overdue: 'badge-red', not_applicable: 'badge-gray' };
 const ASG_LABEL = { not_started: 'Chưa làm', in_progress: 'Đang làm', completed: 'Hoàn thành', overdue: 'Quá hạn', not_applicable: 'Vào lớp sau khi giao — không cần làm' };
@@ -440,7 +444,7 @@ function OverviewTab({ cls, onSaved }) {
       <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
         <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Quy định bài tập</legend>
         <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 10 }}>
-          Tính trên số bài tập ĐANG quá hạn &amp; chưa đạt (≥70% điểm; bài đọc/nghe lẻ ≥50%; Gap-fill ≥18 câu đúng) của học viên trong lớp này — số này tự cập nhật mỗi đêm và mỗi khi điểm danh/bài tập thay đổi.
+          Tính trên số bài tập ĐANG quá hạn &amp; chưa đạt (≥70% điểm; Reading/Listening ≥50%; Gap-fill ≥18 câu đúng) của học viên trong lớp này — số này tự cập nhật mỗi đêm và mỗi khi điểm danh/bài tập thay đổi.
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <div className="form-group" style={{ marginBottom: 0 }}>

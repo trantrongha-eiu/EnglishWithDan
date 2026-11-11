@@ -28,6 +28,7 @@ const EssentialGrammarLesson = require('../models/EssentialGrammarLesson');
 const VocabularyLesson = require('../models/VocabularyLesson');
 const WT1Lesson = require('../models/WT1Lesson');
 const WT1Module = require('../models/WT1Module');
+const WT1Exercise = require('../models/WT1Exercise');
 const SentenceStructureGroup = require('../models/SentenceStructureGroup');
 
 const TestAttempt = require('../models/TestAttempt');
@@ -79,9 +80,11 @@ const { normalizeParts } = require('../utils/partSelection');
 // but it must be a real spoken answer.
 const PASS_PERCENT = 70;
 
-// Single reading passages / listening sections ("bài đọc lẻ", "bài nghe lẻ")
-// are short drills, not a full test — owner lowered their bar to 50%
-// (2026-10-07). Full tests, dictation and the rest keep PASS_PERCENT.
+// Every Reading / Listening item — full tests, single passages / sections
+// ("bài đọc lẻ", "bài nghe lẻ") and dictation — passes at 50% (owner:
+// bài lẻ 2026-10-07, extended to full tests + dictation 2026-11-11).
+// Gap-fill keeps its own count rule (GAPFILL_MIN_CORRECT); everything else
+// with a score keeps PASS_PERCENT.
 const PRACTICE_PASS_PERCENT = 50;
 
 // Listening Gap-fill (full-transcript fill-in-the-blank, GapFillAttempt): a
@@ -314,7 +317,7 @@ const REGISTRY = {
     catalog: { model: ReadingTest, filter: { isActive: true }, sort: { testNumber: -1 },
       shape: (d) => ({ _id: d._id, label: d.name, meta: `Test ${d.testNumber}` }) },
     attempt: { model: TestAttempt, userField: 'userId', idField: 'testId', filter: { status: 'completed' } },
-    scoreGate: { fields: 'correctCount totalQuestions', percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
+    scoreGate: { fields: 'correctCount totalQuestions', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   listening_test: {
     label: 'Đề Listening',
@@ -329,7 +332,7 @@ const REGISTRY = {
         for (const row of rows) row.partsPickable = ok.has(String(row._id));
       } },
     attempt: { model: ListeningAttempt, userField: 'userId', idField: 'testId', filter: { status: 'completed' } },
-    scoreGate: { fields: 'correctCount totalQuestions', percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
+    scoreGate: { fields: 'correctCount totalQuestions', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   reading_practice: {
     label: 'Bài đọc lẻ (Passage)',
@@ -365,7 +368,7 @@ const REGISTRY = {
     catalog: { model: ListeningSection, filter: { isActive: true }, sort: { createdAt: -1 }, sectionSearch: true,
       shape: (d) => ({ _id: d._id, label: d.title, meta: 'Dictation' }) },
     attempt: { model: DictationAttempt, userField: 'userId', idField: 'sectionId', filter: {} },
-    scoreGate: { fields: 'correctCount totalSentences', percent: (d) => (d.totalSentences ? (d.correctCount / d.totalSentences) * 100 : 0) },
+    scoreGate: { fields: 'correctCount totalSentences', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalSentences ? (d.correctCount / d.totalSentences) * 100 : 0) },
   },
   writing_exam: {
     label: 'Đề Writing (Full Task 1+2)',
@@ -529,11 +532,10 @@ const REGISTRY = {
       sort: { moduleCode: 1, order: 1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.isTest ? 'Test' : (d.moduleCode || '') }),
       deepLinkKey: (d) => d.code },
-    // No score gate: a lesson mixes objective (quiz) AND AI-graded essay
-    // exercises, so a single % doesn't apply the way it does to a pure quiz
-    // — instead this reuses WT1Progress.completedAt, which the WT1 course's
-    // own service already only sets once EVERY exercise in the lesson has
-    // been attempted (wt1Service.js's _recompute/allDone).
+    // A lesson mixes objective (quiz) AND AI-graded essay exercises. Done =
+    // WT1Progress.completedAt (set once EVERY exercise has been attempted —
+    // wt1Service.js's _recompute/allDone) AND the objective exercises'
+    // average >= PASS_PERCENT — see checkCompleted's `custom` branch.
     attempt: { model: WT1Progress, custom: true },
   },
   // The WT2 and Speaking "khóa học" pages (writing-task2-course.html /
@@ -1098,10 +1100,27 @@ async function checkCompleted(studentId, internalItems, since = null) {
       // moves it. A student who finished the lesson before the teacher
       // assigned it could otherwise never satisfy the homework.
       const filter = { userId: studentId, lessonCode: { $in: codes }, completedAt: { $ne: null } };
-      const rows = await A.model.find(filter).select('lessonCode completedAt').lean().catch(() => []);
+      // Every exercise done is not enough on its own (owner, 2026-11-11): the
+      // lesson's quiz-style exercises must also average >= PASS_PERCENT
+      // (WT1Progress.objectiveScorePercent — best score per exercise, so a
+      // retry raises it). A lesson with only AI-graded writing/speaking
+      // exercises has no % and passes once everything is handed in.
+      const { OBJECTIVE_TYPES } = require('./wt1GradingService'); // lazy — pulls in the AI graders
+      const [rows, objective] = await Promise.all([
+        A.model.find(filter).select('lessonCode completedAt objectiveScorePercent').lean().catch(() => []),
+        WT1Exercise.find({ lessonCode: { $in: codes }, published: true, type: { $in: [...OBJECTIVE_TYPES] } })
+          .distinct('lessonCode').catch(() => []),
+      ]);
+      const hasObjective = new Set(objective);
       for (const r of rows) {
         const lid = codeToId.get(r.lessonCode);
-        if (lid) out.set(resourceKey(type, lid), { completed: true, completedAt: r.completedAt });
+        if (!lid) continue;
+        const pct = Number(r.objectiveScorePercent) || 0;
+        const scored = hasObjective.has(r.lessonCode);
+        out.set(resourceKey(type, lid), {
+          completed: !scored || pct >= PASS_PERCENT, completedAt: r.completedAt,
+          ...(scored ? { scorePercent: Math.round(pct) } : {}),
+        });
       }
       return;
     }
