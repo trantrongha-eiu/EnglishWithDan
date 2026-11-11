@@ -123,7 +123,7 @@
     const off = isOff();
     return `<div class="t2hl-legend">` +
       `<div class="t2hl-legend-head"><span class="t2hl-legend-title">🎨 Cấu trúc bài viết</span>` +
-      `<button type="button" class="t2hl-toggle" onclick="T2Highlight.toggle(this)" aria-pressed="${off ? 'false' : 'true'}">${off ? 'Bật tô màu' : 'Tắt tô màu'}</button></div>` +
+      `<button type="button" class="t2hl-toggle" onclick="T2Highlight.toggle(this)" aria-pressed="${off ? 'false' : 'true'}">${off ? 'Hiện đánh dấu' : 'Ẩn đánh dấu'}</button></div>` +
       `<div class="t2hl-chips">${chips}</div></div>`;
   }
 
@@ -137,7 +137,7 @@
     if (!root) return;
     const off = !root.classList.contains('t2hl-off');
     root.classList.toggle('t2hl-off', off);
-    btn.textContent = off ? 'Bật tô màu' : 'Tắt tô màu';
+    btn.textContent = off ? 'Hiện đánh dấu' : 'Ẩn đánh dấu';
     btn.setAttribute('aria-pressed', off ? 'false' : 'true');
     try { localStorage.setItem(PREF_KEY, off ? '1' : '0'); } catch (_) { /* private mode */ }
   }
