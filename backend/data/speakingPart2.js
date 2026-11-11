@@ -13,6 +13,11 @@
 //             `example` the student types (the cloze in the vocab drill).
 // Progress keys (v<i>, f<sec>.<j>, w<k>.<j>, c<j>) are built from array
 // positions — append new sentences/variants at the END to keep old progress.
+//
+// 7 khung nói: every story is spoken as 5 FIXED frames + WHY + Kết luận. A
+// section with `join: '<frame title>'` is merged into the frame before it
+// (the frame takes that title) — sections stay separate here so the
+// f<sec>.<j> progress keys never move.
 
 var HOW_TO = {
   goal: 'Không học thuộc một bài riêng cho từng topic. Học sinh chỉ cần thuộc khoảng 70% phần FIXED, sau đó thay 20–30 giây cuối theo cue card.',
@@ -58,7 +63,7 @@ var STORIES = [
         ["In terms of appearance, she's of medium height, with shoulder-length black hair and a bright, infectious smile.", 'Về ngoại hình, cô có chiều cao trung bình, mái tóc đen dài ngang vai và nụ cười rạng rỡ, dễ lan toả.'],
         ['She always looks neat and well-presented, but what makes her memorable is the way she makes people feel comfortable around her.', 'Cô lúc nào trông cũng gọn gàng, chỉn chu, nhưng điều khiến cô đáng nhớ là cách cô làm mọi người thấy thoải mái khi ở bên cô.']
       ] },
-      { h: 'Tính cách', s: [
+      { h: 'Tính cách', join: 'Ngoại hình & tính cách', s: [
         ["Personality-wise, she's incredibly patient and genuinely caring.", 'Về tính cách, cô cực kỳ kiên nhẫn và thật lòng quan tâm đến người khác.'],
         ["She's also quite open-minded and encouraging, which is something I've always appreciated about her.", 'Cô cũng khá cởi mở và hay động viên, đó là điều tôi luôn trân trọng ở cô.']
       ] },
@@ -345,7 +350,7 @@ var STORIES = [
         ["In the end, it went much better than I'd expected.", 'Cuối cùng, mọi chuyện diễn ra tốt hơn nhiều so với tôi mong đợi.'],
         ['My lecturer said our ideas were clear and well-organised, and she specifically praised the way I explained the main points.', 'Giảng viên nói ý tưởng của nhóm rõ ràng và mạch lạc, và cô đặc biệt khen cách tôi giải thích các ý chính.']
       ] },
-      { h: 'Suy ngẫm', s: [
+      { h: 'Suy ngẫm', join: 'Kết quả & suy ngẫm', s: [
         ['Looking back, it was a real turning point.', 'Nhìn lại, đó thực sự là một bước ngoặt.'],
         ["I came to realise that I wasn't bad at public speaking — I'd simply never had enough practice.", 'Tôi dần nhận ra rằng mình không hề kém trong việc nói trước đám đông — chỉ là tôi chưa bao giờ được luyện tập đủ.']
       ] },
@@ -622,7 +627,7 @@ var STORIES = [
         ['After watching it, I started thinking about how much I take for granted — a stable home, access to education and the freedom to plan my future.', 'Sau khi xem, tôi bắt đầu nghĩ về việc mình đã xem bao nhiêu thứ là hiển nhiên — một mái nhà ổn định, được đi học và tự do lên kế hoạch cho tương lai.'],
         ['I also shared it with a few friends, and it sparked a meaningful conversation about how lucky we are.', 'Tôi cũng chia sẻ nó với vài người bạn, và nó đã mở ra một cuộc trò chuyện ý nghĩa về việc chúng tôi may mắn đến thế nào.']
       ] },
-      { h: 'Thông điệp', s: [
+      { h: 'Thông điệp', join: 'Tác động & thông điệp', s: [
         ["For me, the message is simple: ordinary life is incredibly valuable, especially at a time when social media makes us focus on what we don't have.", 'Với tôi, thông điệp rất đơn giản: cuộc sống bình thường vô cùng quý giá, nhất là trong thời đại mạng xã hội khiến chúng ta chỉ chăm chăm vào những gì mình không có.']
       ] },
       { h: 'Quay lại cue card', s: [

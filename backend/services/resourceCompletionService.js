@@ -568,9 +568,10 @@ const REGISTRY = {
     attempt: { check: checkTask1Skills },
   },
   // Speaking Part 2 · 7 câu chuyện gốc (speaking-part2.html) — one row per
-  // master story (fixed list, stable made-up ids like task1_skill). Done once
-  // all 5 steps of the story are done; like a course lesson, a story finished
-  // before the assignment counts (priorCounts).
+  // master story (fixed list, stable made-up ids like task1_skill). Passed
+  // once the story is >= 70% learnt — nhại (shadowing) + dịch over its 7
+  // khung; like a course lesson, a story learnt before the assignment counts
+  // (priorCounts).
   speaking_part2: {
     label: 'Speaking Part 2 (7 câu chuyện gốc)',
     catalog: { static: speakingPart2Service.STORY_ROWS,

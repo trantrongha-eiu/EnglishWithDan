@@ -4,18 +4,23 @@
 //  - content: the full story text is Premium-only (served by the API, not a
 //    static file); everyone else gets the story list to see what's inside.
 //  - progress: per student per story, merged from the page (several devices
-//    may sync) — the 5 step flags are recomputed here from the raw keys so a
-//    client can't simply claim "done".
+//    may sync). Mastery and step flags are recomputed here from the raw keys
+//    so a client can't simply claim "done".
+//  - 7 khung nói: 5 FIXED frames + WHY + Kết luận (framesOf). Each sentence
+//    is worth 2 points: 🎙️ nhại (shadowing score >= SHADOW_PASS) and ⌨️ dịch
+//    (typed right once). A frame opens once the frame before it is >= 70%.
 //  - homework: `speaking_part2` (resourceCompletionService) — one pickable
-//    row per story, done once all 5 steps are done.
+//    row per story, passed once the whole story is >= 70% learnt.
 
 const mongoose = require('mongoose');
 const DATA = require('../data/speakingPart2');
 const SpeakingPart2Progress = require('../models/SpeakingPart2Progress');
 const { hasFullAccess } = require('../utils/plan');
 
-const STEP_KEYS = ['read', 'vocab', 'fixed', 'why', 'speak'];
-const MIN_WHY = 2; // ④ needs this many cue-card variants (or all, if fewer)
+const STEP_KEYS = ['read', 'vocab', 'learn', 'speak'];
+const MIN_WHY = 2;        // the WHY frame counts this many cue-card variants (or all, if fewer)
+const PASS_PERCENT = 70;  // frame unlock + homework pass
+const SHADOW_PASS = 70;   // a sentence's shadowing score that counts as "nhại đạt"
 
 const STORIES = DATA.stories;
 const byId = new Map(STORIES.map((s) => [s.id, s]));
@@ -27,32 +32,73 @@ const STORY_ROWS = STORIES.map((s, i) => ({
   code: s.id, name: `${s.no} · ${s.group} — ${s.title}`,
 }));
 
-// Every valid progress key of a story, grouped by step.
-function keysOf(st) {
-  const fixed = [];
-  st.fixed.forEach((sec, si) => sec.s.forEach((_, j) => fixed.push(`f${si}.${j}`)));
-  return {
-    vocab: st.vocab.map((_, i) => `v${i}`),
-    fixed,
-    why: st.why.map((w, k) => w.s.map((_, j) => `w${k}.${j}`)),
-    con: st.conclusion.map((_, j) => `c${j}`),
-  };
+// The 7 frames of a story (same as the page's framesOf()).
+function framesOf(st) {
+  const frames = [];
+  st.fixed.forEach((sec, si) => {
+    const keys = sec.s.map((_, j) => `f${si}.${j}`);
+    const prev = frames[frames.length - 1];
+    if (sec.join && prev) { prev.h = sec.join; prev.keys.push(...keys); } else frames.push({ kind: 'fixed', h: sec.h, keys });
+  });
+  frames.push({ kind: 'why', h: 'WHY', variants: st.why.map((w, k) => w.s.map((_, j) => `w${k}.${j}`)) });
+  frames.push({ kind: 'con', h: 'Kết luận', keys: st.conclusion.map((_, j) => `c${j}`) });
+  return frames;
 }
-const KEYS = new Map(STORIES.map((s) => [s.id, keysOf(s)]));
-const ALL_KEYS = new Map([...KEYS].map(([id, k]) => [id, new Set([...k.vocab, ...k.fixed, ...k.why.flat(), ...k.con])]));
+const FRAMES = new Map(STORIES.map((s) => [s.id, framesOf(s)]));
+const VOCAB_KEYS = new Map(STORIES.map((s) => [s.id, s.vocab.map((_, i) => `v${i}`)]));
+const SENTENCE_KEYS = new Map([...FRAMES].map(([id, fr]) => [id, new Set(fr.flatMap((f) => f.keys || f.variants.flat()))]));
+const ALL_KEYS = new Map([...SENTENCE_KEYS].map(([id, k]) => [id, new Set([...VOCAB_KEYS.get(id), ...k])]));
 
-// Same rules as the page's stepStatus().
+// Shadow scores are stored with "_" for "." ("f0.1" → "f0_1"): a dotted key
+// in a Mixed field would be saved as a nested path.
+const toDbKey = (k) => k.replace('.', '_');
+function shadowOut(doc) {
+  const out = {};
+  for (const [k, v] of Object.entries((doc && doc.shadow) || {})) out[k.replace('_', '.')] = Number(v) || 0;
+  return out;
+}
+
+// { got, of } points of a list of sentence keys.
+function pointsOf(keys, ok, shadow) {
+  let got = 0;
+  for (const k of keys) {
+    if (ok.has(k)) got++;
+    if ((Number(shadow[k]) || 0) >= SHADOW_PASS) got++;
+  }
+  return { got, of: keys.length * 2 };
+}
+// Per-frame % + the whole story's %, and which frames are open.
+function masteryOf(storyId, doc) {
+  const frames = FRAMES.get(storyId);
+  if (!frames) return null;
+  const ok = new Set((doc && doc.ok) || []);
+  const shadow = shadowOut(doc);
+  let got = 0, of = 0, open = true;
+  const out = frames.map((f) => {
+    let p;
+    if (f.kind === 'why') {
+      const best = f.variants.map((keys) => pointsOf(keys, ok, shadow))
+        .sort((a, b) => b.got / b.of - a.got / a.of)
+        .slice(0, Math.min(MIN_WHY, f.variants.length));
+      p = best.reduce((a, x) => ({ got: a.got + x.got, of: a.of + x.of }), { got: 0, of: 0 });
+    } else p = pointsOf(f.keys, ok, shadow);
+    got += p.got; of += p.of;
+    const pct = p.of ? Math.round((p.got / p.of) * 100) : 0;
+    const row = { h: f.h, pct, open };
+    open = open && pct >= PASS_PERCENT;
+    return row;
+  });
+  return { frames: out, pct: of ? Math.round((got / of) * 100) : 0 };
+}
+
 function stepsDone(storyId, doc) {
-  const k = KEYS.get(storyId);
-  if (!k || !doc) return {};
+  const vocab = VOCAB_KEYS.get(storyId);
+  if (!vocab || !doc) return {};
   const ok = new Set(doc.ok || []);
-  const all = (list) => list.every((x) => ok.has(x));
-  const whyDone = k.why.filter(all).length;
   return {
     read: !!doc.read,
-    vocab: all(k.vocab),
-    fixed: all(k.fixed),
-    why: whyDone >= Math.min(MIN_WHY, k.why.length) && all(k.con),
+    vocab: vocab.every((k) => ok.has(k)),
+    learn: masteryOf(storyId, doc).pct >= PASS_PERCENT,
     speak: (Number(doc.speak) || 0) > 0,
   };
 }
@@ -74,8 +120,9 @@ function getContent(user) {
 // ── progress ────────────────────────────────────────────────────────────
 function publicShape(doc) {
   return {
-    read: !!doc.read, ok: doc.ok || [], speak: doc.speak || 0, best: doc.best || {},
-    steps: stepsDone(doc.storyId, doc), completedAt: doc.completedAt || null,
+    read: !!doc.read, ok: doc.ok || [], shadow: shadowOut(doc), speak: doc.speak || 0, best: doc.best || {},
+    steps: stepsDone(doc.storyId, doc), mastery: masteryOf(doc.storyId, doc),
+    masteredAt: doc.masteredAt || null, completedAt: doc.completedAt || null,
   };
 }
 
@@ -87,16 +134,31 @@ async function getProgress(userId) {
 }
 
 // Merge (never lose progress made on another device): ok = union of valid
-// keys, read = OR, speak = max, best = this run's values. Step dates are
-// stamped the first time a step turns done; completedAt when all 5 are.
+// keys, shadow = best score per sentence, read = OR, speak = max, best =
+// this run's values. Step dates are stamped the first time a step turns
+// done; masteredAt when the story first reaches PASS_PERCENT, completedAt
+// when all 4 steps are done.
 async function saveProgress(userId, storyId, body) {
   if (!byId.has(storyId)) { const e = new Error('Không tìm thấy câu chuyện'); e.status = 404; throw e; }
   body = body || {};
   const valid = ALL_KEYS.get(storyId);
+  const sentences = SENTENCE_KEYS.get(storyId);
   const doc = (await SpeakingPart2Progress.findOne({ userId, storyId })) || new SpeakingPart2Progress({ userId, storyId });
   const ok = new Set(doc.ok || []);
   if (Array.isArray(body.ok)) for (const k of body.ok) if (typeof k === 'string' && valid.has(k)) ok.add(k);
   doc.ok = [...ok];
+  // Sent as [[key, score], …] — the request sanitizer drops dotted object keys.
+  if (Array.isArray(body.shadow)) {
+    const sh = { ...(doc.shadow || {}) };
+    for (const pair of body.shadow) {
+      if (!Array.isArray(pair) || typeof pair[0] !== 'string') continue;
+      const [k, v] = pair;
+      const n = Math.round(Number(v));
+      if (sentences.has(k) && Number.isFinite(n)) sh[toDbKey(k)] = Math.max(Number(sh[toDbKey(k)]) || 0, Math.max(0, Math.min(100, n)));
+    }
+    doc.shadow = sh;
+    doc.markModified('shadow');
+  }
   if (body.read) doc.read = true;
   const speak = Math.floor(Number(body.speak) || 0);
   if (speak > (doc.speak || 0)) doc.speak = Math.min(speak, 9999);
@@ -114,13 +176,15 @@ async function saveProgress(userId, storyId, body) {
   for (const s of STEP_KEYS) if (steps[s] && !at[s]) at[s] = now;
   doc.stepsAt = at;
   doc.markModified('stepsAt');
+  if (!doc.masteredAt && steps.learn) doc.masteredAt = now;
   if (!doc.completedAt && STEP_KEYS.every((s) => steps[s])) doc.completedAt = now;
   await doc.save();
   return publicShape(doc.toObject());
 }
 
 // ── homework (resourceCompletionService `speaking_part2`) ───────────────
-// Like the course lessons, a story finished before the assignment counts.
+// Passed once the story is >= PASS_PERCENT learnt (nhại + dịch over the 7
+// frames). Like the course lessons, a story learnt before the assignment counts.
 async function checkCompletion(studentId, ids) {
   const out = new Map();
   const want = STORY_ROWS.filter((r) => ids.some((id) => String(id) === String(r._id)));
@@ -129,14 +193,19 @@ async function checkCompletion(studentId, ids) {
   for (const r of want) {
     const doc = rows.find((d) => d.storyId === r.code);
     if (!doc) continue;
+    const m = masteryOf(r.code, doc);
     const steps = stepsDone(r.code, doc);
-    const n = STEP_KEYS.filter((s) => steps[s]).length;
+    const passed = m.pct >= PASS_PERCENT;
     out.set(String(r._id), {
-      completed: !!doc.completedAt, completedAt: doc.completedAt || doc.updatedAt,
-      stepsDone: n, stepsTotal: STEP_KEYS.length,
+      completed: passed, completedAt: (passed && doc.masteredAt) || doc.updatedAt,
+      scorePercent: m.pct,
+      stepsDone: STEP_KEYS.filter((s) => steps[s]).length, stepsTotal: STEP_KEYS.length,
     });
   }
   return out;
 }
 
-module.exports = { STORY_ROWS, STEP_KEYS, getContent, getProgress, saveProgress, checkCompletion, stepsDone };
+module.exports = {
+  STORY_ROWS, STEP_KEYS, PASS_PERCENT, SHADOW_PASS,
+  getContent, getProgress, saveProgress, checkCompletion, stepsDone, masteryOf, framesOf,
+};

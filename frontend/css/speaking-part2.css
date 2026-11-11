@@ -72,8 +72,6 @@
 .sp2-say:hover { border-color: #6366f1; background: #eef2ff; }
 .sp2-divider { text-align: center; margin: 16px 0 8px; border-top: 2px dashed #fcd38a; }
 .sp2-divider span { position: relative; top: -10px; background: var(--surface, #fff); padding: 0 10px; font-size: 11.5px; font-weight: 900; letter-spacing: .05em; color: #c2410c; }
-.sp2-why { border: 1px solid #fde68a; background: #fffdf5; border-radius: 10px; padding: 7px 10px; margin: 6px 0; }
-.sp2-why > summary { cursor: pointer; font-size: 13px; }
 
 .sp2-vgroup { margin-top: 10px; display: grid; gap: 6px; }
 .sp2-vgroup-h { font-size: 11.5px; color: var(--text2, #6b7280); }
@@ -86,19 +84,101 @@
 .sp2-phrases { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .sp2-phrase { background: var(--surface, #fff); border: 1px solid #c7d2fe; border-radius: 999px; padding: 3px 10px; font-size: 12.5px; }
 
-.sp2-secs { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; }
-.sp2-secbtn { display: inline-flex; align-items: center; gap: 8px; border: 1.5px solid #e5e7eb; background: var(--surface, #fff); border-radius: 10px; padding: 6px 11px; font: 700 12.5px/1.2 inherit; color: #374151; cursor: pointer; }
-.sp2-secbtn em { font-style: normal; font-size: 11px; color: #6b7280; background: #f3f4f6; border-radius: 999px; padding: 1px 7px; }
-.sp2-secbtn:hover { border-color: #6366f1; color: #4338ca; }
-.sp2-secbtn.is-mid em { background: #fef3c7; color: #92400e; }
-.sp2-secbtn.is-ok { border-color: #86efac; }
-.sp2-secbtn.is-ok em { background: #dcfce7; color: #15803d; }
+/* 7 khung at a glance (story top) */
+.sp2-fmap { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin: 0 0 14px; }
+.sp2-fmap-i { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; border: 1.5px solid #e5e7eb; background: var(--surface, #fff); border-radius: 12px; padding: 8px 4px 7px; cursor: pointer; font-family: inherit; color: inherit; }
+.sp2-fmap-i:hover { border-color: var(--g-c, #6366f1); }
+.sp2-fmap-n { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; background: #eef2ff; color: #4338ca; }
+.sp2-fmap-i.is-why .sp2-fmap-n { background: #fff7ed; color: #c2410c; }
+.sp2-fmap-h { font-size: 11px; font-weight: 700; line-height: 1.25; text-align: center; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.sp2-fmap-bar { width: 80%; height: 4px; border-radius: 4px; background: #eef0f3; overflow: hidden; }
+.sp2-fmap-bar i { display: block; height: 100%; background: #6366f1; }
+.sp2-fmap-i.is-cur { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
+.sp2-fmap-i.is-ok .sp2-fmap-n { background: #16a34a; color: #fff; }
+.sp2-fmap-i.is-ok .sp2-fmap-bar i { background: #16a34a; }
+.sp2-fmap-i.is-locked { opacity: .55; }
+.sp2-fmap-i.is-locked .sp2-fmap-n { background: #f3f4f6; color: #9ca3af; font-size: 10px; }
 
-.sp2-whys { display: grid; gap: 7px; }
+/* ① the sample answer as 7 frame cards */
+.sp2-frames { display: grid; gap: 10px; margin-top: 8px; }
+.sp2-frame { border: 1.5px solid #eef0f3; border-left: 4px solid var(--g-c, #6366f1); border-radius: 12px; padding: 10px 12px; background: var(--surface, #fff); }
+.sp2-frame.is-why { border-left-color: #f59e0b; background: #fffdf5; }
+.sp2-frame.is-con { border-left-color: #16a34a; }
+.sp2-frame-h { display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 4px; }
+.sp2-frame-n { width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #fff; background: var(--g-c, #6366f1); }
+.sp2-frame.is-why .sp2-frame-n { background: #f59e0b; }
+.sp2-frame.is-con .sp2-frame-n { background: #16a34a; }
+.sp2-frame-tag { margin-left: auto; font-size: 10px; font-weight: 800; letter-spacing: .05em; border-radius: 6px; padding: 2px 7px; background: #eef2ff; color: #4338ca; white-space: nowrap; }
+.sp2-frame.is-why .sp2-frame-tag { background: #fef3c7; color: #92400e; }
+.sp2-frame.is-con .sp2-frame-tag { background: #dcfce7; color: #15803d; }
+.sp2-frame-sub { font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--text2, #6b7280); margin: 8px 0 0; }
+.sp2-frame-lead { font-size: 12.5px; color: var(--text2, #6b7280); margin: 2px 0 6px; }
+.sp2-vchips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+.sp2-vchip { border: 1.5px solid #fde68a; background: var(--surface, #fff); border-radius: 999px; padding: 4px 11px; font: 700 12px/1.3 inherit; color: #92400e; cursor: pointer; }
+.sp2-vchip em { font-style: normal; font-size: 10.5px; background: #fef3c7; border-radius: 999px; padding: 0 6px; margin-left: 2px; }
+.sp2-vchip.is-ok em { background: #dcfce7; color: #15803d; }
+.sp2-vchip.is-on { background: #f59e0b; border-color: #f59e0b; color: #fff; }
+.sp2-vchip.is-on em { background: rgba(255,255,255,.25); color: #fff; }
+
+/* ③ Học thuộc theo 7 khung */
+.sp2-pass-meter { position: relative; height: 10px; border-radius: 10px; background: #eef0f3; margin: 6px 0 8px; }
+.sp2-pass-meter > span { display: block; height: 100%; border-radius: 10px; background: linear-gradient(90deg, #6366f1, #8b5cf6); transition: width .35s; }
+.sp2-pass-meter.is-ok > span { background: #16a34a; }
+.sp2-pass-meter > i { position: absolute; top: -3px; bottom: -3px; width: 2px; background: #f59e0b; border-radius: 2px; }
+.sp2-ladder { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+.sp2-rung { border: 1.5px solid #eef0f3; border-radius: 14px; padding: 10px 12px; background: var(--surface, #fff); }
+.sp2-rung.is-cur { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.12); }
+.sp2-rung.is-ok { border-color: #bbf7d0; background: #f7fef9; }
+.sp2-rung.is-locked { background: #f9fafb; opacity: .75; }
+.sp2-rung-head { display: flex; align-items: center; gap: 10px; }
+.sp2-rung-n { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; background: #eef2ff; color: #4338ca; }
+.sp2-rung.is-why .sp2-rung-n { background: #fff7ed; color: #c2410c; }
+.sp2-rung.is-ok .sp2-rung-n { background: #16a34a; color: #fff; }
+.sp2-rung.is-locked .sp2-rung-n { background: #e5e7eb; color: #9ca3af; font-size: 11px; }
+.sp2-rung-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; font-size: 14px; }
+.sp2-rung-sub { font-size: 11.5px; color: var(--text2, #6b7280); font-weight: 600; }
+.sp2-rung-pct { font-size: 15px; font-weight: 900; font-variant-numeric: tabular-nums; color: #4338ca; }
+.sp2-rung.is-ok .sp2-rung-pct { color: #15803d; }
+.sp2-rung.is-locked .sp2-rung-pct { color: #9ca3af; }
+.sp2-rung-bar { height: 5px; border-radius: 5px; background: #eef0f3; overflow: hidden; margin: 8px 0 0 38px; }
+.sp2-rung-bar i { display: block; height: 100%; background: #6366f1; border-radius: 5px; }
+.sp2-rung.is-ok .sp2-rung-bar i { background: #16a34a; }
+.sp2-rung-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin: 8px 0 0 38px; }
+.sp2-rung-lock { font-size: 12.5px; font-weight: 700; color: #6b7280; margin: 8px 0 0 38px; }
+.sp2-rung-btns { display: flex; gap: 6px; flex-shrink: 0; }
+.sp2-rung-btns .t2-secondary { padding: 6px 12px; font-size: 12.5px; }
+.sp2-rung-cnt { display: inline-flex; gap: 10px; font-size: 12px; font-weight: 700; color: var(--text2, #4b5563); }
+.sp2-rung-whys { display: grid; gap: 7px; margin: 10px 0 0 38px; }
 .sp2-whyrow { display: flex; align-items: center; gap: 10px; border: 1.5px solid #eef0f3; border-radius: 12px; padding: 9px 12px; background: var(--surface, #fff); }
 .sp2-whyrow.is-ok { border-color: #bbf7d0; background: #f7fef9; }
 .sp2-whyrow-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13.5px; }
 .sp2-whyrow-main span { font-size: 12px; color: var(--text2, #6b7280); }
+.sp2-whyrow-main .sp2-rung-cnt span { font-size: 11.5px; }
+
+/* 🎙️ Nhại (shadowing) screen — scored like shadowing.html */
+.sp2-sh-sent { font-size: 20px; line-height: 1.6; font-weight: 700; color: var(--text, #111827); margin: 4px 0 2px; }
+.sp2-sh-sent.is-masked { font-family: "Courier New", ui-monospace, monospace; letter-spacing: 1px; color: #6b7280; }
+.sp2-sh-sent .w-match { color: #15803d; }
+.sp2-sh-sent .w-miss { color: #dc2626; text-decoration: underline wavy rgba(220,38,38,.45); text-underline-offset: 4px; }
+.sp2-sh-vi { font-size: 13.5px; font-style: italic; color: var(--text2, #6b7280); line-height: 1.5; }
+.sp2-sh-ctrl { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; align-items: center; }
+.sp2-sh-rec.is-recording { background: #dc2626; box-shadow: 0 0 0 4px rgba(220,38,38,.18); animation: sp2-pulse 1.2s ease-in-out infinite; }
+@keyframes sp2-pulse { 50% { box-shadow: 0 0 0 9px rgba(220,38,38,.06); } }
+.sp2-sh-interim { min-height: 20px; font-size: 13px; color: var(--text2, #6b7280); font-style: italic; }
+.sp2-sh-score { display: none; margin-top: 8px; border-radius: 12px; padding: 10px 14px; font-weight: 800; font-size: 15px; }
+.sp2-sh-score small { display: block; font-weight: 600; font-size: 12.5px; margin-top: 2px; opacity: .85; }
+.sp2-sh-score.show { display: block; }
+.sp2-sh-score.good { background: #dcfce7; color: #166534; }
+.sp2-sh-score.mid { background: #fef3c7; color: #92400e; }
+.sp2-sh-score.low { background: #fee2e2; color: #991b1b; }
+.sp2-sh-nav { display: flex; justify-content: space-between; gap: 10px; margin: 14px 20px 0; }
+.t2-q-dots button.t2-q-dot { border: none; padding: 0; cursor: pointer; }
+.t2-q-dots button.t2-q-dot:hover { transform: scale(1.4); }
+.sp2-best.is-ok { background: #dcfce7 !important; color: #15803d !important; }
+.sp2-shlist { text-align: left; margin: 0 0 18px; border: 1.5px solid #eef0f3; border-radius: 12px; padding: 8px 12px; }
+.sp2-shlist-pct { flex-shrink: 0; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 2px 8px; background: #f3f4f6; color: #6b7280; }
+.sp2-shlist-pct.is-ok { background: #dcfce7; color: #15803d; }
+.sp2-shlist-pct.is-mid { background: #fee2e2; color: #b91c1c; }
 
 /* ⑤ Ghép bài & nói thử */
 .sp2-field { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; font-weight: 700; margin-bottom: 10px; }
@@ -153,19 +233,36 @@
   .sp2-q-vi { font-size: 16px; }
   .sp2-whyrow { flex-wrap: wrap; }
   .sp2-whyrow-main { flex-basis: 100%; }
+  .sp2-fmap { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .sp2-rung-bar, .sp2-rung-foot, .sp2-rung-lock, .sp2-rung-whys { margin-left: 0; }
+  .sp2-sh-sent { font-size: 17px; }
+  .sp2-sh-nav { margin: 14px 12px 0; }
   .sp2-run-tag { display: none; }
   .sp2-timer-num { font-size: 38px; }
 }
 
 /* Dark theme */
 [data-theme="dark"] .sp2-card, [data-theme="dark"] .sp2-finder-row, [data-theme="dark"] .sp2-whyrow,
-[data-theme="dark"] .sp2-secbtn, [data-theme="dark"] .sp2-say, [data-theme="dark"] .sp2-phrase { background: #141414; color: #eee; border-color: #3a3a3a; }
+[data-theme="dark"] .sp2-say, [data-theme="dark"] .sp2-phrase, [data-theme="dark"] .sp2-fmap-i, [data-theme="dark"] .sp2-frame,
+[data-theme="dark"] .sp2-rung, [data-theme="dark"] .sp2-vchip, [data-theme="dark"] .sp2-shlist { background: #141414; color: #eee; border-color: #3a3a3a; }
+[data-theme="dark"] .sp2-frame.is-why { background: #1c1a0e; border-left-color: #f59e0b; }
+[data-theme="dark"] .sp2-rung.is-ok { background: #0f2508; border-color: #166534; }
+[data-theme="dark"] .sp2-rung.is-locked { background: #0f0f0f; }
+[data-theme="dark"] .sp2-rung.is-cur, [data-theme="dark"] .sp2-fmap-i.is-cur { border-color: #6366f1; }
+[data-theme="dark"] .sp2-pass-meter, [data-theme="dark"] .sp2-rung-bar, [data-theme="dark"] .sp2-fmap-bar { background: #1f2937; }
+[data-theme="dark"] .sp2-sh-sent { color: #f1f5f9; }
+[data-theme="dark"] .sp2-sh-sent .w-match { color: #4ade80; }
+[data-theme="dark"] .sp2-sh-sent .w-miss { color: #f87171; }
+[data-theme="dark"] .sp2-sh-score.good { background: #0f2508; color: #86efac; }
+[data-theme="dark"] .sp2-sh-score.mid { background: #2a2208; color: #fde68a; }
+[data-theme="dark"] .sp2-sh-score.low { background: #2a0a0a; color: #fca5a5; }
+[data-theme="dark"] .sp2-vchip.is-on { background: #b45309; border-color: #b45309; color: #fff; }
 [data-theme="dark"] .sp2-finder-input, [data-theme="dark"] .sp2-select { background: #0d0d0d; color: #f1f5f9; border-color: #334155; }
 [data-theme="dark"] .sp2-finder-row:hover { background: color-mix(in srgb, var(--g-c) 14%, #141414); }
 [data-theme="dark"] .sp2-table th { background: #1f1f1f; }
 [data-theme="dark"] .sp2-table th, [data-theme="dark"] .sp2-table td { border-color: #333; }
 [data-theme="dark"] .sp2-table tr.is-total td, [data-theme="dark"] .sp2-finder-none, [data-theme="dark"] .sp2-skeleton,
-[data-theme="dark"] .sp2-sec-note, [data-theme="dark"] .sp2-why, [data-theme="dark"] .sp2-asm-p.is-why,
+[data-theme="dark"] .sp2-sec-note, [data-theme="dark"] .sp2-asm-p.is-why,
 [data-theme="dark"] .sp2-timer-box.is-prep, [data-theme="dark"] .sp2-budget-cell.is-over, [data-theme="dark"] .sp2-budget-cell.is-under { background: #2a2208; border-color: #6b5410; color: #fde68a; }
 [data-theme="dark"] .sp2-callout, [data-theme="dark"] .sp2-budget-cell.is-total, [data-theme="dark"] .sp2-timer-box { background: #1e1b4b; border-color: #3730a3; color: #e0e7ff; }
 [data-theme="dark"] .sp2-callout.is-warn { background: #2a1a05; border-color: #7c4a10; color: #fed7aa; }
@@ -175,12 +272,11 @@
 [data-theme="dark"] .sp2-sent.is-speaking, [data-theme="dark"] .sp2-vitem mark { background: #422006; }
 [data-theme="dark"] .sp2-divider span { background: var(--surface, #141414); }
 [data-theme="dark"] .sp2-wronglist { background: #2a0a0a; border-color: #7f1d1d; }
-[data-theme="dark"] .sp2-secbtn em { background: #1f1f1f; color: #aaa; }
 [data-theme="dark"] .sp2-run-tag { background: #1e1b4b; color: #a5b4fc; }
 
 @media (prefers-reduced-motion: reduce) {
   .sp2-timer-bar i, .sp2-sent { transition: none; }
-  .sp2-rec-dot { animation: none; }
+  .sp2-rec-dot, .sp2-sh-rec.is-recording { animation: none; }
 }
 
 /* Loading / error while GET /api/speaking-part2/content is in flight */

@@ -4,16 +4,24 @@
 //  (Premium; others get the story list + upgrade button). Same look and the same
 //  "Dịch câu" drill as Luyện đề Task 2 theo buổi (task2-practice.html):
 //    home   — hero, Lulu coach, one card per story, cue-card finder
-//    story  — the 5 steps of one story:
-//               ① Đọc bài mẫu  ② Từ vựng ăn điểm
-//               ③ Dịch phần FIXED  ④ Dịch phần WHY theo đề
-//               ⑤ Ghép bài & nói thử (2 phút)
+//    story  — the 4 steps of one story:
+//               ① Đọc bài mẫu theo 7 khung  ② Từ vựng ăn điểm
+//               ③ Học thuộc 7 khung: 🎙️ Nhại + ⌨️ Dịch, khung by khung
+//               ④ Ghép bài & nói thử (2 phút)
+//    7 khung nói = 5 FIXED frames (a section with `join` is merged into the
+//               one before) + WHY (theo cue card) + Kết luận. Each sentence
+//               is worth 2 points — nhại (shadowing score >= 70%) and dịch
+//               (typed right). A frame opens once the one before is >= 70%;
+//               the story is "đạt" (homework) at >= 70% overall.
+//    shadow   — listen (TTS) → say it → browser SpeechRecognition + the same
+//               LCS word diff as shadowing.html → % of the sentence's words.
 //    practice — Việt → Anh word-by-word typing (shared WbwDrill). The 3rd
 //               wrong try on one word = the sentence counts wrong and
 //               comes back 3 questions later (max 2 times), as in Task 2.
 //  Progress: localStorage for speed, synced to the server
 //  (PUT /api/speaking-part2/progress/:story) — that's what ticks a teacher's
 //  `speaking_part2` homework, and what follows the student to another device.
+//  The server recomputes mastery the same way (services/speakingPart2Service).
 // ══════════════════════════════════════════════════════════════════════
 (function () {
   'use strict';
@@ -35,24 +43,24 @@
     idiom: ['IDIOMS', 'tối đa 1–2 idioms / bài nói'],
     adj: ['ADJECTIVES', 'thay cho good / nice / interesting']
   };
+  var PASS = 70;          // frame unlock + "đạt" (same as the server)
+  var SHADOW_PASS = 70;   // a sentence's nhại score that counts
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   var STEPS = [
     { key: 'read',  label: 'Đọc bài mẫu' },
     { key: 'vocab', label: 'Từ vựng' },
-    { key: 'fixed', label: 'Dịch FIXED' },
-    { key: 'why',   label: 'Dịch WHY' },
+    { key: 'learn', label: 'Học thuộc 7 khung' },
     { key: 'speak', label: 'Nói thử' }
   ];
   var LULU = {
-    read:  { say: 'Bước 1: đọc to bài mẫu 1–2 lần trước nha — bấm 🔊 để nghe từng câu. Đọc xong thì bấm “Đã đọc xong”.',
-             tips: ['Đổi tên, địa điểm, con số thành chi tiết thật của cậu — câu chuyện thật nghe tự nhiên hơn nhiều!', 'Phần FIXED chiếm khoảng 1 phút 30 — học thuộc 70% là đủ rồi.'] },
+    read:  { say: 'Bước 1: đọc to bài mẫu theo 7 khung nói — bấm 🔊 để nghe từng câu. Đọc xong thì bấm “Đã đọc xong”.',
+             tips: ['Đổi tên, địa điểm, con số thành chi tiết thật của cậu — câu chuyện thật nghe tự nhiên hơn nhiều!', 'Khung 1–5 giữ nguyên với mọi đề trong nhóm, chỉ khung 6 (WHY) đổi theo cue card thôi.'] },
     vocab: { say: 'Bước 2: học các cụm ăn điểm của nhóm này. Mỗi bài nói chỉ cần chèn 3–4 collocations và tối đa 1–2 idioms thôi!',
              tips: ['Idiom dùng sai ngữ cảnh gây hại nhiều hơn là không dùng đó nha.', 'Các ví dụ đều gắn với câu chuyện gốc — chèn thẳng vào bài nói được luôn!'] },
-    fixed: { say: 'Bước 3: dịch phần FIXED từ tiếng Việt sang tiếng Anh, gõ từng chữ. Gõ nhiều lần là thuộc lúc nào không hay!',
-             tips: ['Bí chữ nào thì bấm “Hỏi Lulu”, tớ nhắc từng chữ cái một.', 'Học từng đoạn một cũng được — bấm vào tên đoạn để dịch riêng đoạn đó.'] },
-    why:   { say: 'Bước 4: chọn ít nhất 2 đề trong nhóm và dịch phần WHY + kết luận. Đây là phần trả lời đúng đề nên đừng bỏ qua nha!',
-             tips: ['Công thức WHY: Reason 1 + Example → Reason 2 + Example.', 'Thiếu thời gian thì cắt phần giữa, không bao giờ cắt phần WHY.'] },
-    speak: { say: 'Bước 5: ghép bài và nói thử trong 2 phút. Nhớ đến được phần WHY trước khi hết giờ nha!',
-             tips: ['Đến khoảng 1:30 mà chưa tới phần WHY thì bỏ bớt câu mô tả đi.', 'Thử chế độ “Chữ cái đầu” rồi “Chỉ khung xương” để tự kiểm tra trí nhớ.'] }
+    learn: { say: 'Bước 3: học thuộc từng khung — 🎙️ nhại theo từng câu để máy chấm phát âm, rồi ⌨️ dịch Việt → Anh. Khung nào đạt 70% thì mở khung tiếp theo!',
+             tips: ['Nhại: nghe câu mẫu rồi bấm “Nói theo” — từ xanh là máy nghe đúng, từ đỏ cần luyện thêm.', 'Mỗi câu có 2 điểm: nhại đạt 70% và dịch đúng. Cả bài đạt 70% là bài tập được tính đạt nha!', 'Bật “Che câu” khi nhại để tự nói từ trí nhớ — thuộc nhanh hơn nhiều!'] },
+    speak: { say: 'Bước 4: ghép bài và nói thử trong 2 phút. Nhớ đến được khung WHY trước khi hết giờ nha!',
+             tips: ['Đến khoảng 1:30 mà chưa tới khung WHY thì bỏ bớt câu mô tả đi.', 'Thử chế độ “Chữ cái đầu” rồi “Chỉ 7 khung” để tự kiểm tra trí nhớ.'] }
   };
 
   // ── tiny helpers ──────────────────────────────────────────────────────
@@ -69,8 +77,9 @@
   function luluSvg(mood) { try { return window.Mascot ? window.Mascot.svg(mood, { label: 'Lulu' }) : '🍊'; } catch (e) { return '🍊'; } }
 
   // ── progress (localStorage, per user) ────────────────────────────────
-  //   { [storyId]: { read, ok: { key: 1 }, speak, best: { runKey: pct } } }
+  //   { [storyId]: { read, ok: { key: 1 }, shadow: { key: pct }, speak, best: { runKey: pct } } }
   //   keys: v<i> vocab · f<sec>.<j> FIXED · w<k>.<j> WHY variant · c<j> kết luận
+  //   ok = typed right once (dịch) · shadow = best nhại score of a sentence
   function userKey() {
     var u = window.AuthService && window.AuthService.getUser && window.AuthService.getUser();
     return 'sp2_progress:' + String((u && (u._id || u.id)) || 'guest');
@@ -83,8 +92,9 @@
   }
   function sp(id) {
     var p = prog();
-    if (!p[id]) p[id] = { read: 0, ok: {}, speak: 0, best: {} };
+    if (!p[id]) p[id] = { read: 0, ok: {}, shadow: {}, speak: 0, best: {} };
     if (!p[id].ok) p[id].ok = {};
+    if (!p[id].shadow) p[id].shadow = {};
     if (!p[id].best) p[id].best = {};
     return p[id];
   }
@@ -100,7 +110,8 @@
   }
   function payloadOf(id) {
     var p = sp(id);
-    return { read: !!p.read, ok: Object.keys(p.ok), speak: p.speak || 0, best: p.best || {} };
+    // shadow as [key, score] pairs: the server's request sanitizer drops dotted object keys ("f0.1").
+    return { read: !!p.read, ok: Object.keys(p.ok), shadow: Object.keys(p.shadow).map(function (k) { return [k, p.shadow[k]]; }), speak: p.speak || 0, best: p.best || {} };
   }
   function flushSync(keepalive) {
     clearTimeout(_syncT);
@@ -135,9 +146,12 @@
         if (srv.read) loc.read = 1;
         loc.speak = Math.max(loc.speak || 0, srv.speak || 0);
         Object.keys(srv.best || {}).forEach(function (k) { if (loc.best[k] == null) loc.best[k] = srv.best[k]; });
+        Object.keys(srv.shadow || {}).forEach(function (k) { loc.shadow[k] = Math.max(loc.shadow[k] || 0, Number(srv.shadow[k]) || 0); });
       }
+      var srvSh = (srv && srv.shadow) || {};
       var localHasMore = Object.keys(loc.ok).length > ((srv && srv.ok) || []).length ||
-        (loc.read && !(srv && srv.read)) || (loc.speak || 0) > ((srv && srv.speak) || 0);
+        (loc.read && !(srv && srv.read)) || (loc.speak || 0) > ((srv && srv.speak) || 0) ||
+        Object.keys(loc.shadow).some(function (k) { return (loc.shadow[k] || 0) > (Number(srvSh[k]) || 0); });
       if (localHasMore) _dirty[st.id] = 1;
       if (!srv && before === JSON.stringify(payloadOf(st.id)) && !localHasMore) delete p[st.id];
     });
@@ -150,23 +164,43 @@
   if (prefs.vi == null) prefs.vi = true;
   function savePrefs() { try { localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); } catch (e) {} }
 
-  // ── question lists ────────────────────────────────────────────────────
-  function fixedItems(st, onlySec) {
-    var out = [];
+  // ── 7 khung nói ───────────────────────────────────────────────────────
+  //   [{ kind: 'fixed'|'why'|'con', h, parts: [{ h, note, items }], items }]
+  //   Same frames as the server's framesOf(). WHY has no items of its own —
+  //   they come from the chosen cue-card variant (whyItems).
+  function framesOf(st) {
+    if (st._frames) return st._frames;
+    var frames = [];
     st.fixed.forEach(function (sec, si) {
-      if (onlySec != null && si !== onlySec) return;
-      sec.s.forEach(function (x, j) {
-        out.push({ key: 'f' + si + '.' + j, en: x[0], vi: x[1], ctx: (si + 1) + '. ' + sec.h });
-      });
+      var items = sec.s.map(function (x, j) { return { key: 'f' + si + '.' + j, en: x[0], vi: x[1] }; });
+      var prev = frames[frames.length - 1];
+      var part = { h: sec.h, note: sec.note, items: items };
+      if (sec.join && prev) { prev.h = sec.join; prev.parts.push(part); }
+      else frames.push({ kind: 'fixed', h: sec.h, parts: [part] });
     });
-    return out;
+    frames.push({ kind: 'why', h: 'WHY — trả lời theo đề', parts: [] });
+    frames.push({ kind: 'con', h: 'Kết luận', parts: [{ h: 'Kết luận', items: conclusionItems(st) }] });
+    frames.forEach(function (f, i) {
+      f.i = i;
+      f.items = f.parts.reduce(function (a, p) { return a.concat(p.items); }, []);
+      f.items.forEach(function (it) { it.ctx = 'Khung ' + (i + 1) + ' · ' + f.h; });
+    });
+    st._frames = frames;
+    return frames;
+  }
+  function frameItems(st, fi, k) {
+    var f = framesOf(st)[fi];
+    return f.kind === 'why' ? whyItems(st, k != null ? k : state.variant) : f.items;
+  }
+  function fixedItems(st) {
+    return framesOf(st).filter(function (f) { return f.kind === 'fixed'; }).reduce(function (a, f) { return a.concat(f.items); }, []);
   }
   function conclusionItems(st) {
-    return st.conclusion.map(function (x, j) { return { key: 'c' + j, en: x[0], vi: x[1], ctx: 'Kết luận' }; });
+    return st.conclusion.map(function (x, j) { return { key: 'c' + j, en: x[0], vi: x[1], ctx: 'Khung 7 · Kết luận' }; });
   }
   function whyItems(st, k) {
     var w = st.why[k];
-    return w.s.map(function (x, j) { return { key: 'w' + k + '.' + j, en: x[0], vi: x[1], ctx: 'WHY · ' + w.q }; });
+    return w.s.map(function (x, j) { return { key: 'w' + k + '.' + j, en: x[0], vi: x[1], ctx: 'Khung 6 · WHY · ' + w.q }; });
   }
   function vocabItems(st) {
     return st.vocab.map(function (v, i) {
@@ -178,21 +212,62 @@
     return items.filter(function (it) { return ok[it.key]; }).length;
   }
 
-  // ── step status ───────────────────────────────────────────────────────
-  function whyDone(st, k) { var it = whyItems(st, k); return countOk(st, it) === it.length; }
+  // ── mastery (same rules as the server's masteryOf) ────────────────────
+  function shOk(p, key) { return (p.shadow[key] || 0) >= SHADOW_PASS; }
+  function pointsOf(st, items) {
+    var p = sp(st.id), sh = 0, tr = 0;
+    items.forEach(function (it) { if (shOk(p, it.key)) sh++; if (p.ok[it.key]) tr++; });
+    return { sh: sh, tr: tr, n: items.length, got: sh + tr, of: items.length * 2 };
+  }
+  function pctOf(x) { return x.of ? Math.round(x.got / x.of * 100) : 0; }
   function whyNeed(st) { return Math.min(2, st.why.length); }
+  function variantPct(st, k) { return pctOf(pointsOf(st, whyItems(st, k))); }
+  // { pct, frames: [{ pct, open }] } — a frame is open once every frame
+  // before it is >= PASS.
+  function mastery(st) {
+    var got = 0, of = 0, open = true;
+    var frames = framesOf(st).map(function (f) {
+      var x;
+      if (f.kind === 'why') {
+        x = st.why.map(function (w, k) { return pointsOf(st, whyItems(st, k)); })
+          .sort(function (a, b) { return b.got / b.of - a.got / a.of; })
+          .slice(0, whyNeed(st))
+          .reduce(function (a, y) { return { got: a.got + y.got, of: a.of + y.of }; }, { got: 0, of: 0 });
+      } else x = pointsOf(st, f.items);
+      got += x.got; of += x.of;
+      var row = { pct: pctOf(x), open: open };
+      open = open && row.pct >= PASS;
+      return row;
+    });
+    return { pct: of ? Math.round(got / of * 100) : 0, frames: frames };
+  }
+  function curFrame(m) {
+    for (var i = 0; i < m.frames.length; i++) if (m.frames[i].open && m.frames[i].pct < PASS) return i;
+    return -1;
+  }
+
+  // ── step status ───────────────────────────────────────────────────────
   function stepStatus(st) {
     if (LOCKED || !st.fixed) return STEPS.map(function (x) { return { key: x.key, label: x.label, done: false }; });
     var p = sp(st.id);
-    var voc = vocabItems(st), fix = fixedItems(st), con = conclusionItems(st);
-    var nWhy = st.why.filter(function (w, k) { return whyDone(st, k); }).length;
+    var voc = vocabItems(st), m = mastery(st);
     return [
-      { key: 'read',  label: 'Đọc bài mẫu', done: !!p.read },
-      { key: 'vocab', label: 'Từ vựng',     done: countOk(st, voc) === voc.length, n: countOk(st, voc), of: voc.length },
-      { key: 'fixed', label: 'Dịch FIXED',  done: countOk(st, fix) === fix.length, n: countOk(st, fix), of: fix.length },
-      { key: 'why',   label: 'Dịch WHY',    done: nWhy >= whyNeed(st) && countOk(st, con) === con.length, n: nWhy, of: st.why.length },
-      { key: 'speak', label: 'Nói thử',     done: (p.speak || 0) > 0 }
+      { key: 'read',  label: 'Đọc bài mẫu',       done: !!p.read },
+      { key: 'vocab', label: 'Từ vựng',           done: countOk(st, voc) === voc.length, n: countOk(st, voc), of: voc.length },
+      { key: 'learn', label: 'Học thuộc 7 khung', done: m.pct >= PASS, n: m.pct, of: 100 },
+      { key: 'speak', label: 'Nói thử',           done: (p.speak || 0) > 0 }
     ];
+  }
+  // Toast when an update opened a new frame / passed the story.
+  function noteUnlocks(st, before) {
+    var after = mastery(st), fr = framesOf(st);
+    for (var i = 1; i < after.frames.length; i++) {
+      if (after.frames[i].open && !before.frames[i].open) { toast('🔓 Đã mở khoá Khung ' + (i + 1) + ' · ' + fr[i].h, 'success'); break; }
+    }
+    if (after.pct >= PASS && before.pct < PASS) {
+      toast('🎉 Đã thuộc ' + after.pct + '% câu chuyện — đạt yêu cầu bài tập!', 'success');
+      if (window.Mascot && window.Mascot.cheer) { try { window.Mascot.cheer(); } catch (e) {} }
+    }
   }
   function currentStep(st) {
     var s = stepStatus(st);
@@ -204,7 +279,7 @@
     var n = s.filter(function (x) { return x.done; }).length;
     var p = sp(st.id);
     if (n === s.length) return 'done';
-    if (n || Object.keys(p.ok).length || p.read) return 'doing';
+    if (n || Object.keys(p.ok).length || Object.keys(p.shadow).length || p.read) return 'doing';
     return 'todo';
   }
   function nextStory() {
@@ -218,7 +293,8 @@
   // ══════════════════════════════════════════════════════════════════════
   var state = {
     view: 'home', storyId: null, variant: 0, memMode: 'full', finder: '',
-    run: null,                       // practice run
+    run: null,                       // practice run (dịch)
+    sh: null,                        // shadowing run (nhại)
     readOpen: true
   };
   var app = document.getElementById('app');
@@ -251,6 +327,7 @@
   }
   window.addEventListener('popstate', function () {
     if (state.view === 'practice' && state.run && !state.run.finished) { askQuit(function () { readUrl(); stopAll(); render(); }); return; }
+    shStop(true);
     readUrl(); stopAll(); render();
   });
 
@@ -265,9 +342,12 @@
     document.body.classList.toggle('sp2-on-home', state.view === 'home');
     if (state.view === 'practice') app.innerHTML = renderPractice();
     else if (state.view === 'done') app.innerHTML = renderDone();
+    else if (state.view === 'shadow') app.innerHTML = renderShadow();
+    else if (state.view === 'shdone') app.innerHTML = renderShadowDone();
     else if (state.view === 'story' && curStory()) app.innerHTML = renderStory();
     else { state.view = 'home'; app.innerHTML = renderHome(); }
     if (state.view === 'practice') mountQuestion();
+    if (state.view === 'shadow') mountShadow();
     if (state.view === 'story') document.title = curStory().no + ' · ' + curStory().title + ' – Speaking Part 2 – EnglishWithDan';
     else document.title = 'Speaking Part 2 · 7 câu chuyện gốc – EnglishWithDan';
   }
@@ -276,9 +356,9 @@
   //  HOME
   // ══════════════════════════════════════════════════════════════════════
   var FLOW = [
-    { phase: 'Hiểu bài', cls: 'prep', steps: [['1', 'fa-book-open', 'Đọc bài mẫu'], ['2', 'fa-star', 'Từ vựng ăn điểm']] },
-    { phase: 'Dịch câu giúp nhớ', cls: 'class', steps: [['3', 'fa-language', 'Dịch FIXED'], ['4', 'fa-random', 'Dịch WHY theo đề']] },
-    { phase: 'Nói', cls: 'home', steps: [['5', 'fa-microphone', 'Ghép bài & nói 2 phút']] }
+    { phase: 'Hiểu bài', cls: 'prep', steps: [['1', 'fa-book-open', 'Đọc bài mẫu theo 7 khung'], ['2', 'fa-star', 'Từ vựng ăn điểm']] },
+    { phase: 'Học thuộc', cls: 'class', steps: [['3', 'fa-microphone-alt', 'Nhại & dịch từng khung (≥70%)']] },
+    { phase: 'Nói', cls: 'home', steps: [['4', 'fa-stopwatch', 'Ghép bài & nói 2 phút']] }
   ];
 
   function renderHome() {
@@ -302,7 +382,7 @@
       '</section>' +
 
       '<div class="t2w-flow" aria-label="Các bước của mỗi câu chuyện">' +
-        '<span class="t2w-flow-lbl">Mỗi câu chuyện gồm 5 bước</span>' +
+        '<span class="t2w-flow-lbl">Mỗi câu chuyện gồm ' + STEPS.length + ' bước</span>' +
         FLOW.map(function (g) {
           return '<div class="t2w-phase is-' + g.cls + '"><span class="t2w-phase-name">' + g.phase + '</span>' +
             '<span class="t2w-phase-steps">' + g.steps.map(function (s) {
@@ -337,7 +417,7 @@
     return '<div class="t2w-promo sp2-promo" id="premium-promo-banner">' +
       '<span class="t2w-promo-ic">⭐</span>' +
       '<div class="t2w-promo-txt"><b>Nâng cấp Premium để học 7 câu chuyện gốc</b>' +
-        '<span>Bài mẫu đầy đủ, 112 cụm từ ăn điểm, dịch câu Việt → Anh để thuộc bài và nói thử 2 phút. Xem trước danh sách câu chuyện và đề dùng được bên dưới.</span></div>' +
+        '<span>Bài mẫu theo 7 khung nói, 112 cụm từ ăn điểm, nhại theo từng câu có chấm phát âm, dịch câu Việt → Anh để thuộc bài và nói thử 2 phút. Xem trước danh sách câu chuyện và đề dùng được bên dưới.</span></div>' +
       '<button type="button" class="t2w-go" data-act="upgrade">Upgrade Premium</button>' +
     '</div>';
   }
@@ -361,10 +441,12 @@
     var n = s.filter(function (x) { return x.done; }).length;
     var stt = storyState(st);
     var isNext = !LOCKED && nextStory() === st;
+    var pct = LOCKED ? 0 : mastery(st).pct;
     var chip = '';
     if (LOCKED) chip = '<span class="t2w-chip"><i class="fas fa-lock"></i> Premium</span>';
-    else if (stt === 'done') chip = '<span class="t2w-chip is-ok"><i class="fas fa-check"></i> Đã thuộc</span>';
-    else if (stt === 'doing') chip = '<span class="t2w-chip is-mid">✍️ ' + n + '/5 bước</span>';
+    else if (stt === 'done') chip = '<span class="t2w-chip is-ok"><i class="fas fa-check"></i> Xong ' + STEPS.length + ' bước</span>';
+    else if (stt === 'doing') chip = '<span class="t2w-chip is-mid">✍️ ' + n + '/' + STEPS.length + ' bước</span>';
+    if (!LOCKED && pct >= PASS) chip = '<span class="t2w-chip is-ok"><i class="fas fa-medal"></i> Thuộc ' + pct + '%</span>' + (stt === 'done' ? '' : chip);
     if (isNext) chip += '<span class="t2w-chip is-next">👉 Học tiếp</span>';
     var topics = st.remember.topics;
     return '' +
@@ -373,9 +455,9 @@
         '<span class="t2w-group-emoji">' + st.emoji + '</span>' +
         '<div class="t2w-group-title"><div class="t2w-group-theme">' + esc(st.group) + '</div>' +
           '<span class="t2w-group-type">' + esc(st.rootQ.split(' — ')[0]) + '</span></div>' +
-        '<span class="t2w-group-count' + (n === 5 ? ' is-full' : '') + '" title="Đã xong ' + n + '/5 bước">' + n + '/5</span>' +
+        '<span class="t2w-group-count' + (pct >= PASS ? ' is-full' : '') + '" title="Đã thuộc ' + pct + '% câu chuyện (cần ≥' + PASS + '%)">' + pct + '%</span>' +
       '</div>' +
-      '<div class="t2w-group-bar"><i style="width:' + Math.round(n / 5 * 100) + '%"></i></div>' +
+      '<div class="t2w-group-bar"><i style="width:' + pct + '%"></i></div>' +
       '<div class="t2w-group-sessions">' +
         '<button type="button" class="t2w-sess is-' + stt + (isNext ? ' is-next' : '') + '" data-act="open" data-id="' + st.id + '">' +
           '<span class="t2w-sess-num"><small>Bài</small>' + st.no + '</span>' +
@@ -472,14 +554,14 @@
           '<span class="sp2-rootq">Câu hỏi gốc: ' + esc(st.rootQ) + '</span></div>' +
       '</div>' +
       '<div class="t2-selector-prompt sp2-skeleton"><strong>🦴 Khung xương sống (FIXED):</strong> ' + esc(st.skeleton) + '</div>' +
+      frameMap(st) +
       renderCoach(st) +
       renderRail(st) +
       '<div class="t2-phase"><span class="t2-phase-k">Giai đoạn 1</span><b>Hiểu bài</b></div>' +
       renderReadStep(st, cur === 'read') +
       renderVocabStep(st, cur === 'vocab') +
-      '<div class="t2-phase is-class"><span class="t2-phase-k">Giai đoạn 2</span><b>Dịch câu giúp nhớ</b></div>' +
-      renderFixedStep(st, cur === 'fixed') +
-      renderWhyStep(st, cur === 'why') +
+      '<div class="t2-phase is-class"><span class="t2-phase-k">Giai đoạn 2</span><b>Học thuộc theo 7 khung nói</b></div>' +
+      renderLearnStep(st, cur === 'learn') +
       '<div class="t2-phase is-home"><span class="t2-phase-k">Giai đoạn 3</span><b>Nói</b></div>' +
       renderSpeakStep(st, cur === 'speak') +
       renderRemember(st) +
@@ -493,7 +575,7 @@
     var cur = currentStep(st);
     return {
       steps: s, n: n, cur: cur, all: !cur,
-      mood: !cur ? 'cheer' : n >= 3 ? 'excited' : 'happy',
+      mood: !cur ? 'cheer' : n >= 2 ? 'excited' : 'happy',
       text: !cur ? 'Cậu đã thuộc câu chuyện này rồi! Thử nói lại với một đề khác trong nhóm, hoặc sang câu chuyện tiếp theo nha 🥳' : LULU[cur].say
     };
   }
@@ -505,16 +587,16 @@
       '<button type="button" class="t2-coach-lulu' + (enter ? ' is-enter' : '') + '" data-mood="' + c.mood + '" data-act="poke" title="Bấm để nghe mẹo từ Lulu" aria-label="Lulu — bấm để nghe mẹo">' + luluSvg(c.mood) + '</button>' +
       '<div class="t2-coach-body">' +
         '<div class="t2-coach-bubble' + (enter ? ' is-say' : '') + '" id="t2-coach-say" role="status" aria-live="polite">' + esc(c.text) + '</div>' +
-        '<div class="t2-coach-prog" aria-label="Đã xong ' + c.n + '/5 bước">' + c.steps.map(function (s) {
+        '<div class="t2-coach-prog" aria-label="Đã xong ' + c.n + '/' + STEPS.length + ' bước">' + c.steps.map(function (s) {
           return '<i class="' + (s.done ? 'on' : '') + (s.key === c.cur ? ' cur' : '') + '"></i>';
-        }).join('') + '<span>' + c.n + '/5 bước</span></div>' +
+        }).join('') + '<span>' + c.n + '/' + STEPS.length + ' bước</span></div>' +
       '</div></div>';
   }
   function poke() {
     var st = curStory(); if (!st) return;
     var c = coachState(st);
     _pokes++;
-    var tips = c.all ? ['Tuyệt vời! Mai ôn lại phần FIXED một lần nữa cho nhớ lâu nha 🍊', 'Thử nói với chế độ “Chỉ khung xương” xem còn nhớ không nè!'] : LULU[c.cur].tips;
+    var tips = c.all ? ['Tuyệt vời! Mai nhại lại khung 1–5 một lần nữa cho nhớ lâu nha 🍊', 'Thử nói với chế độ “Chỉ 7 khung” xem còn nhớ không nè!'] : LULU[c.cur].tips;
     var text = _pokes % 9 === 0 ? 'Ui da, cù lét tớ hoài! 🤭' : tips[_pokes % tips.length];
     var b = document.getElementById('t2-coach-say');
     var lulu = document.querySelector('.t2-coach-lulu');
@@ -548,29 +630,59 @@
       (prefs.vi ? '<span class="sp2-vi">' + esc(x[1]) + '</span>' : '') + '</span></p>';
   }
 
-  // ① Đọc bài mẫu
+  // 7 khung at a glance (top of the story): number, title, % learnt, lock.
+  function frameKindTag(f) { return f.kind === 'fixed' ? 'FIXED' : f.kind === 'why' ? 'ĐỔI THEO ĐỀ' : 'KẾT'; }
+  function frameMap(st) {
+    var m = mastery(st), cur = curFrame(m);
+    return '<div class="sp2-fmap" aria-label="7 khung nói">' + framesOf(st).map(function (f, i) {
+      var fm = m.frames[i];
+      var cls = !fm.open ? ' is-locked' : fm.pct >= PASS ? ' is-ok' : i === cur ? ' is-cur' : '';
+      return '<button type="button" class="sp2-fmap-i is-' + f.kind + cls + '" data-act="scroll-frame" data-f="' + i + '" title="Khung ' + (i + 1) + ' · ' + esc(f.h) + ' — đã thuộc ' + fm.pct + '%">' +
+        '<span class="sp2-fmap-n">' + (!fm.open ? '<i class="fas fa-lock"></i>' : fm.pct >= PASS ? '<i class="fas fa-check"></i>' : i + 1) + '</span>' +
+        '<span class="sp2-fmap-h">' + esc(f.kind === 'why' ? 'WHY' : f.h) + '</span>' +
+        '<span class="sp2-fmap-bar"><i style="width:' + fm.pct + '%"></i></span>' +
+      '</button>';
+    }).join('') + '</div>';
+  }
+  function variantChips(st, act) {
+    return '<div class="sp2-vchips" role="tablist" aria-label="Chọn đề (cue card)">' + st.why.map(function (w, k) {
+      var pct = variantPct(st, k);
+      return '<button type="button" role="tab" aria-selected="' + (k === state.variant) + '" class="sp2-vchip' + (k === state.variant ? ' is-on' : '') + (pct >= PASS ? ' is-ok' : '') + '" data-act="' + act + '" data-k="' + k + '" title="' + esc(w.vi) + '">' +
+        esc(w.q) + (w.isNew ? ' <span class="sp2-new">mới</span>' : '') + (pct ? ' <em>' + pct + '%</em>' : '') + '</button>';
+    }).join('') + '</div>';
+  }
+
+  // ① Đọc bài mẫu — the sample answer laid out as its 7 frames
   function renderReadStep(st, isCur) {
     var p = sp(st.id);
+    var frames = framesOf(st);
     return '<section class="t2-step' + (isCur ? ' is-current' : '') + '" id="sp2-step-read">' +
-      stepHead(1, 'Đọc bài mẫu', '<button type="button" class="t2-pill-toggle' + (prefs.vi ? ' on' : '') + '" data-act="toggle-vi">Hiện tiếng Việt</button>', !!p.read) +
-      '<p class="t2-step-desc">Đọc to cả bài 1–2 lần, bấm 🔊 để nghe từng câu. Phần <b>FIXED</b> giữ nguyên với mọi đề trong nhóm; phần <b>WHY</b> thay theo cue card.</p>' +
+      stepHead(1, 'Đọc bài mẫu theo 7 khung nói', '<button type="button" class="t2-pill-toggle' + (prefs.vi ? ' on' : '') + '" data-act="toggle-vi">Hiện tiếng Việt</button>', !!p.read) +
+      '<p class="t2-step-desc">Bài nói nào cũng đi theo 7 khung: <b>khung 1–5 (FIXED)</b> giữ nguyên với mọi đề trong nhóm → <b>khung 6 (WHY)</b> đổi theo cue card → <b>khung 7</b> kết luận. Đọc to 1–2 lần, bấm 🔊 để nghe từng câu.</p>' +
       '<div class="t2-actions" style="margin-bottom:6px">' +
-        '<button type="button" class="t2-secondary" data-act="listen-fixed"><i class="fas fa-headphones"></i> <span>Nghe cả phần FIXED</span></button>' +
+        '<button type="button" class="t2-secondary" data-act="listen-all"><i class="fas fa-headphones"></i> <span>Nghe cả bài</span></button>' +
       '</div>' +
-      '<details class="sp2-read"' + (isCur || state.readOpen ? ' open' : '') + ' data-act-toggle="readOpen">' +
-        '<summary>Bài mẫu đầy đủ</summary>' +
-        '<div class="sp2-read-tag">FIXED · học thuộc</div>' +
-        st.fixed.map(function (sec, si) {
-          return '<div class="sp2-sec"><div class="sp2-sec-h">' + (si + 1) + '. ' + esc(sec.h) + '</div>' +
-            (sec.note ? '<div class="sp2-sec-note">💡 ' + esc(sec.note) + '</div>' : '') +
-            sec.s.map(sentHtml).join('') + '</div>';
-        }).join('') +
-        '<div class="sp2-divider"><span>▼ TỪ ĐÂY THAY ĐỔI THEO CUE CARD</span></div>' +
-        st.why.map(function (w, k) {
-          return '<details class="sp2-why"' + (k === state.variant ? ' open' : '') + '><summary><b>Nếu đề hỏi:</b> ' + esc(w.q) + (w.isNew ? ' <span class="sp2-new">mới</span>' : '') + ' <span class="sp2-muted">· ' + esc(w.vi) + '</span></summary>' +
-            w.s.map(sentHtml).join('') + '</details>';
-        }).join('') +
-        '<div class="sp2-sec"><div class="sp2-sec-h">' + (st.fixed.length + 1) + '. Kết luận</div>' + st.conclusion.map(sentHtml).join('') + '</div>' +
+      '<details class="sp2-read"' + (isCur || state.readOpen ? ' open' : '') + '>' +
+        '<summary>Bài mẫu · 7 khung</summary>' +
+        '<div class="sp2-frames">' + frames.map(function (f, i) {
+          var body;
+          if (f.kind === 'why') {
+            body = '<p class="sp2-frame-lead">Đề hỏi gì thì chọn đoạn WHY đó (Reason 1 + Example → Reason 2 + Example):</p>' +
+              variantChips(st, 'variant') +
+              '<div class="sp2-frame-sents">' + st.why[state.variant].s.map(sentHtml).join('') + '</div>';
+          } else {
+            body = f.parts.map(function (part) {
+              return (f.parts.length > 1 ? '<div class="sp2-frame-sub">' + esc(part.h) + '</div>' : '') +
+                (part.note ? '<div class="sp2-sec-note">💡 ' + esc(part.note) + '</div>' : '') +
+                '<div class="sp2-frame-sents">' + part.items.map(function (it) { return sentHtml([it.en, it.vi]); }).join('') + '</div>';
+            }).join('');
+          }
+          return (f.kind === 'why' ? '<div class="sp2-divider"><span>▼ TỪ ĐÂY THAY ĐỔI THEO CUE CARD</span></div>' : '') +
+            '<div class="sp2-frame is-' + f.kind + '">' +
+              '<div class="sp2-frame-h"><span class="sp2-frame-n">' + (i + 1) + '</span><b>' + esc(f.h) + '</b><span class="sp2-frame-tag">' + frameKindTag(f) + '</span></div>' +
+              body +
+            '</div>';
+        }).join('') + '</div>' +
       '</details>' +
       '<div class="t2-actions">' +
         (p.read ? '<span class="t2-step-chip ok"><i class="fas fa-check"></i> Đã đọc</span>'
@@ -620,61 +732,73 @@
     return esc(ex.slice(0, i)) + '<mark>' + esc(ans) + '</mark>' + esc(ex.slice(i + ans.length));
   }
 
-  // ③ Dịch FIXED
-  function renderFixedStep(st, isCur) {
-    var all = fixedItems(st), n = countOk(st, all), done = n === all.length;
-    var best = sp(st.id).best.fixed;
-    return '<section class="t2-step' + (isCur ? ' is-current' : '') + '" id="sp2-step-fixed">' +
-      stepHead(3, 'Dịch câu Việt → Anh · phần FIXED', '<span class="t2-step-tag">' + all.length + ' câu · ≈ ' + wordsOf(all) + ' từ</span>', done) +
-      '<p class="t2-step-desc">Đọc câu tiếng Việt, gõ lại câu tiếng Anh của bài mẫu từng chữ. Gõ sai 1 từ ' + MAX_WORD_ERRORS + ' lần là câu tính sai và phải làm lại (quay lại sau). Bấm vào tên một đoạn để học riêng đoạn đó.</p>' +
-      meter(n, all.length) +
-      '<div class="t2-wc-row"><span class="t2-step-chip' + (done ? ' ok' : '') + '">Đã thuộc ' + n + '/' + all.length + ' câu</span>' +
-        (best != null ? '<span class="t2-step-chip">Lần gần nhất: đúng ngay ' + best + '%</span>' : '') + '</div>' +
-      '<div class="sp2-secs">' + st.fixed.map(function (sec, si) {
-        var it = fixedItems(st, si), k = countOk(st, it);
-        return '<button type="button" class="sp2-secbtn' + (k === it.length ? ' is-ok' : k ? ' is-mid' : '') + '" data-act="run" data-mode="fixed" data-sec="' + si + '">' +
-          '<span>' + (si + 1) + '. ' + esc(sec.h) + '</span><em>' + k + '/' + it.length + '</em></button>';
-      }).join('') + '</div>' +
-      '<div class="t2-actions">' +
-        '<button type="button" class="t2-primary is-lg" data-act="run" data-mode="fixed"><i class="fas fa-language"></i> ' +
-          (!n ? 'Bắt đầu dịch phần FIXED' : done ? 'Dịch lại cả phần FIXED' : 'Dịch tiếp ' + (all.length - n) + ' câu') + '</button>' +
-      '</div>' +
+  // ③ Học thuộc theo 7 khung — 🎙️ Nhại + ⌨️ Dịch, one frame after another
+  function renderLearnStep(st, isCur) {
+    var m = mastery(st), pass = m.pct >= PASS, cur = curFrame(m);
+    var frames = framesOf(st);
+    return '<section class="t2-step' + (isCur ? ' is-current' : '') + '" id="sp2-step-learn">' +
+      stepHead(3, 'Học thuộc từng khung · Nhại & Dịch', '<span class="t2-step-tag' + (pass ? ' ok' : '') + '">Đã thuộc ' + m.pct + '%</span>', pass) +
+      '<p class="t2-step-desc">Mỗi câu có 2 phần: 🎙️ <b>Nhại</b> — nghe câu mẫu rồi nói theo, máy chấm phát âm (đạt khi ≥' + SHADOW_PASS + '%); ⌨️ <b>Dịch</b> — đọc tiếng Việt, gõ lại câu tiếng Anh. ' +
+        'Khung trước thuộc <b>≥' + PASS + '%</b> mới mở khung sau. Cả bài thuộc <b>≥' + PASS + '%</b> là <b>đạt</b> (bài tập giáo viên giao).</p>' +
+      '<div class="sp2-pass-meter' + (pass ? ' is-ok' : '') + '"><span style="width:' + m.pct + '%"></span><i style="left:' + PASS + '%" title="Mốc đạt ' + PASS + '%"></i></div>' +
+      '<div class="t2-wc-row"><span class="t2-step-chip' + (pass ? ' ok' : '') + '">' + (pass ? '<i class="fas fa-medal"></i> Đạt — ' : '') + 'Thuộc ' + m.pct + '% cả bài' + (pass ? '' : ' · cần ≥' + PASS + '%') + '</span></div>' +
+      (SR ? '' : '<div class="sp2-callout is-warn" style="margin:8px 0"><b>Trình duyệt này chưa chấm được phát âm.</b><p>Mở trang bằng Chrome hoặc Edge (máy tính / Android) để luyện Nhại — phần Dịch vẫn làm được ở đây.</p></div>') +
+      '<ol class="sp2-ladder">' + frames.map(function (f, i) { return frameRow(st, f, m.frames[i], i === cur); }).join('') + '</ol>' +
       practiceOpts() +
     '</section>';
   }
-  function wordsOf(items) { return items.reduce(function (a, x) { return a + wc(x.en); }, 0); }
+  function drillBtns(fi, k, locked) {
+    var dk = k != null ? ' data-k="' + k + '"' : '';
+    var dis = locked ? ' disabled aria-disabled="true"' : '';
+    return '<div class="sp2-rung-btns">' +
+      '<button type="button" class="t2-primary is-sm" data-act="shadow" data-f="' + fi + '"' + dk + dis + '><i class="fas fa-microphone"></i> Nhại</button>' +
+      '<button type="button" class="t2-secondary is-sm" data-act="run" data-mode="frame" data-f="' + fi + '"' + dk + dis + '><i class="fas fa-keyboard"></i> Dịch</button>' +
+    '</div>';
+  }
+  function countsHtml(x) {
+    return '<span class="sp2-rung-cnt"><span title="Câu nhại đạt ≥' + SHADOW_PASS + '%">🎙️ ' + x.sh + '/' + x.n + '</span>' +
+      '<span title="Câu dịch đúng">⌨️ ' + x.tr + '/' + x.n + '</span></span>';
+  }
+  function frameRow(st, f, fm, isCur) {
+    var i = f.i, locked = !fm.open, ok = fm.pct >= PASS;
+    var cls = locked ? ' is-locked' : ok ? ' is-ok' : isCur ? ' is-cur' : '';
+    var head = '<div class="sp2-rung-head">' +
+      '<span class="sp2-rung-n">' + (locked ? '<i class="fas fa-lock"></i>' : ok ? '<i class="fas fa-check"></i>' : i + 1) + '</span>' +
+      '<div class="sp2-rung-main"><b>Khung ' + (i + 1) + ' · ' + esc(f.h) + '</b>' +
+        '<span class="sp2-rung-sub">' + (f.kind === 'why' ? st.why.length + ' đề · luyện ít nhất ' + whyNeed(st) + ' đề' : f.items.length + ' câu · ' + frameKindTag(f)) + '</span></div>' +
+      '<span class="sp2-rung-pct">' + fm.pct + '%</span>' +
+    '</div>' +
+    '<div class="sp2-rung-bar"><i style="width:' + fm.pct + '%"></i></div>';
+    var body;
+    if (locked) {
+      body = '<div class="sp2-rung-lock"><i class="fas fa-lock"></i> Thuộc Khung ' + i + ' ≥' + PASS + '% để mở khung này</div>';
+    } else if (f.kind === 'why') {
+      body = '<div class="sp2-rung-whys">' + st.why.map(function (w, k) {
+        var x = pointsOf(st, whyItems(st, k)), pct = pctOf(x);
+        return '<div class="sp2-whyrow' + (pct >= PASS ? ' is-ok' : '') + '">' +
+          '<div class="sp2-whyrow-main"><b>' + esc(w.q) + '</b>' + (w.isNew ? ' <span class="sp2-new">mới</span>' : '') +
+            '<span>' + esc(w.vi) + '</span>' + countsHtml(x) + '</div>' +
+          '<span class="t2-step-chip' + (pct >= PASS ? ' ok' : pct ? ' mid' : '') + '">' + pct + '%</span>' +
+          drillBtns(i, k, false) +
+        '</div>';
+      }).join('') + '</div>';
+    } else {
+      body = '<div class="sp2-rung-foot">' + countsHtml(pointsOf(st, f.items)) + drillBtns(i, null, false) + '</div>';
+    }
+    return '<li class="sp2-rung is-' + f.kind + cls + '" id="sp2-frame-' + i + '">' + head + body + '</li>';
+  }
   function practiceOpts() {
-    return '<div class="t2-opts-row" style="margin-top:8px">' +
-      '<button type="button" class="t2-pill-toggle' + (prefs.autoNext ? ' on' : '') + '" data-act="pref" data-pref="autoNext" title="Tự chuyển câu sau khi gõ đúng">Tự chuyển câu</button>' +
-      '<button type="button" class="t2-pill-toggle' + (prefs.shuffle ? ' on' : '') + '" data-act="pref" data-pref="shuffle" title="Xáo trộn thứ tự câu">Xáo trộn câu</button>' +
+    return '<div class="t2-opts-row" style="margin-top:10px">' +
+      '<button type="button" class="t2-pill-toggle' + (prefs.shMask ? ' on' : '') + '" data-act="pref" data-pref="shMask" title="Nhại: che câu mẫu, chỉ hiện chữ cái đầu — nói từ trí nhớ">Che câu khi nhại</button>' +
+      '<button type="button" class="t2-pill-toggle' + (prefs.autoNext ? ' on' : '') + '" data-act="pref" data-pref="autoNext" title="Tự chuyển câu khi làm đúng / nhại đạt">Tự chuyển câu</button>' +
+      '<button type="button" class="t2-pill-toggle' + (prefs.shuffle ? ' on' : '') + '" data-act="pref" data-pref="shuffle" title="Dịch: xáo trộn thứ tự câu">Xáo trộn câu</button>' +
     '</div>';
   }
 
-  // ④ Dịch WHY
-  function renderWhyStep(st, isCur) {
-    var con = conclusionItems(st), cn = countOk(st, con);
-    var nDone = st.why.filter(function (w, k) { return whyDone(st, k); }).length;
-    var need = whyNeed(st);
-    var done = nDone >= need && cn === con.length;
-    return '<section class="t2-step' + (isCur ? ' is-current' : '') + '" id="sp2-step-why">' +
-      stepHead(4, 'Dịch phần WHY theo đề + Kết luận', '<span class="t2-step-tag' + (done ? ' ok' : '') + '">' + nDone + '/' + st.why.length + ' đề</span>', done) +
-      '<p class="t2-step-desc">Mỗi đề chỉ thay đoạn WHY (Reason 1 + Example → Reason 2 + Example), rồi kết luận. Luyện ít nhất <b>' + need + ' đề</b> — mỗi lần luyện gồm phần WHY của đề đó + câu kết luận.</p>' +
-      '<div class="sp2-whys">' + st.why.map(function (w, k) {
-        var it = whyItems(st, k), n = countOk(st, it), ok = n === it.length;
-        return '<div class="sp2-whyrow' + (ok ? ' is-ok' : '') + '">' +
-          '<div class="sp2-whyrow-main"><b>' + esc(w.q) + '</b>' + (w.isNew ? ' <span class="sp2-new">mới</span>' : '') + '<span>' + esc(w.vi) + ' · ' + it.length + ' câu</span></div>' +
-          '<span class="t2-step-chip' + (ok ? ' ok' : n ? ' mid' : '') + '">' + (ok ? '<i class="fas fa-check"></i> ' : '') + n + '/' + it.length + '</span>' +
-          '<button type="button" class="t2-primary is-sm" data-act="run" data-mode="why" data-k="' + k + '"><i class="fas fa-language"></i> ' + (ok ? 'Dịch lại' : 'Luyện') + '</button>' +
-        '</div>';
-      }).join('') + '</div>' +
-      '<div class="t2-wc-row" style="margin-top:8px"><span class="t2-step-chip' + (cn === con.length ? ' ok' : '') + '">Kết luận: ' + cn + '/' + con.length + ' câu</span></div>' +
-    '</section>';
-  }
-
-  // ⑤ Ghép bài & nói thử
+  // ④ Ghép bài & nói thử
   function assembled(st, k) {
     return {
-      fixed: st.fixed.map(function (sec) { return { h: sec.h, s: sec.s.map(function (x) { return x[0]; }) }; }),
+      fixed: framesOf(st).filter(function (f) { return f.kind === 'fixed'; }).map(function (f) { return { h: f.h, s: f.items.map(function (x) { return x.en; }) }; }),
       why: st.why[k].s.map(function (x) { return x[0]; }),
       con: st.conclusion.map(function (x) { return x[0]; })
     };
@@ -699,19 +823,19 @@
     if (state.memMode === 'skeleton') {
       body = '<div class="sp2-skel">' +
         '<p><b>FIXED:</b> ' + esc(st.remember.fixed) + '</p>' +
-        '<ol>' + a.fixed.map(function (sec) { return '<li>' + esc(sec.h) + '</li>'; }).join('') + '</ol>' +
-        '<p><b>WHY — ' + esc(st.why[k].q) + ':</b> ' + esc(st.remember.flexible) + '</p>' +
-        '<p><b>Kết luận:</b> So overall, …</p></div>';
+        '<ol>' + a.fixed.map(function (sec) { return '<li>' + esc(sec.h) + '</li>'; }).join('') +
+          '<li><b>WHY — ' + esc(st.why[k].q) + ':</b> ' + esc(st.remember.flexible) + '</li>' +
+          '<li><b>Kết luận:</b> So overall, …</li></ol></div>';
     } else {
-      body = a.fixed.map(function (sec) {
-        return '<p class="sp2-asm-p"><span class="sp2-asm-h">' + esc(sec.h) + '</span>' + sec.s.map(memText).join(' ') + '</p>';
+      body = a.fixed.map(function (sec, i) {
+        return '<p class="sp2-asm-p"><span class="sp2-asm-h">' + (i + 1) + ' · ' + esc(sec.h) + '</span>' + sec.s.map(memText).join(' ') + '</p>';
       }).join('') +
-        '<p class="sp2-asm-p is-why"><span class="sp2-asm-h">WHY · ' + esc(st.why[k].q) + '</span>' + a.why.map(memText).join(' ') + '</p>' +
-        '<p class="sp2-asm-p is-con"><span class="sp2-asm-h">Kết luận</span>' + a.con.map(memText).join(' ') + '</p>';
+        '<p class="sp2-asm-p is-why"><span class="sp2-asm-h">' + (a.fixed.length + 1) + ' · WHY · ' + esc(st.why[k].q) + '</span>' + a.why.map(memText).join(' ') + '</p>' +
+        '<p class="sp2-asm-p is-con"><span class="sp2-asm-h">' + (a.fixed.length + 2) + ' · Kết luận</span>' + a.con.map(memText).join(' ') + '</p>';
     }
     return '<section class="t2-step' + (isCur ? ' is-current' : '') + '" id="sp2-step-speak">' +
-      stepHead(5, 'Ghép bài & nói thử 2 phút', p.speak ? '<span class="t2-step-tag ok">Đã nói ' + p.speak + ' lần</span>' : '', (p.speak || 0) > 0) +
-      '<p class="t2-step-desc">Chọn một đề, đọc lướt bài ghép, rồi bấm <b>Bắt đầu nói</b> và nói to không nhìn bài. Đồng hồ 2 phút như phòng thi — đến khoảng 1:30 nên đang ở phần WHY.</p>' +
+      stepHead(4, 'Ghép bài & nói thử 2 phút', p.speak ? '<span class="t2-step-tag ok">Đã nói ' + p.speak + ' lần</span>' : '', (p.speak || 0) > 0) +
+      '<p class="t2-step-desc">Chọn một đề, đọc lướt bài ghép, rồi bấm <b>Bắt đầu nói</b> và nói to không nhìn bài. Đồng hồ 2 phút như phòng thi — đến khoảng 1:30 nên đang ở khung 6 (WHY).</p>' +
       '<label class="sp2-field"><span>Đề (cue card):</span><select id="sp2-variant" class="sp2-select">' +
         st.why.map(function (w, i) { return '<option value="' + i + '"' + (i === k ? ' selected' : '') + '>' + esc(w.q) + ' — ' + esc(w.vi) + '</option>'; }).join('') +
       '</select></label>' +
@@ -720,7 +844,7 @@
         '<div class="sp2-budget-cell is-total"><b>' + total + ' từ</b><span>≈ ' + fmt(secs) + ' ở ' + WPM + ' từ/phút</span></div>' +
       '</div>' +
       '<div class="t2-seg sp2-seg" role="tablist" aria-label="Chế độ xem bài">' +
-        segBtn('full', 'Cả bài') + segBtn('letters', 'Chữ cái đầu') + segBtn('skeleton', 'Chỉ khung xương') +
+        segBtn('full', 'Cả bài') + segBtn('letters', 'Chữ cái đầu') + segBtn('skeleton', 'Chỉ 7 khung') +
       '</div>' +
       '<div class="sp2-asm' + (state.memMode === 'letters' ? ' is-letters' : '') + '" id="sp2-asm">' + body + '</div>' +
       '<div class="sp2-timer" id="sp2-timer">' + timerHtml() + '</div>' +
@@ -776,7 +900,7 @@
     var good = /Google|Natural|Neural|Online|Samantha|Aria|Jenny|Ava|Allison|Sonia|Libby/i;
     return en.find(function (x) { return /GB/i.test(x.lang) && good.test(x.name); }) || en.find(function (x) { return good.test(x.name); }) || en[0] || null;
   }
-  function speak(list, onEach) {
+  function speak(list, onEach, rate) {
     stopTts();
     if (!window.speechSynthesis || typeof SpeechSynthesisUtterance === 'undefined') { toast('Trình duyệt này không hỗ trợ đọc to', 'warn'); return; }
     var q = { list: list.slice(), i: 0 };
@@ -786,7 +910,7 @@
       var text = q.list[q.i++];
       if (onEach) onEach(text);
       var u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-GB'; u.rate = 0.95;
+      u.lang = 'en-GB'; u.rate = rate || 0.95;
       var v = bestVoice(); if (v) { u.voice = v; u.lang = v.lang; }
       u.onend = u.onerror = function () { setTimeout(next, 120); };
       window.speechSynthesis.speak(u);
@@ -892,13 +1016,14 @@
       var p = sp(curStory().id);
       var was = (p.speak || 0) > 0;
       p.speak = (p.speak || 0) + 1; saveProg();
-      if (!was) { refreshStory(); celebrate('Bước 5 xong! Cậu đã nói thử trọn bài rồi đó 🎤'); return; }
+      if (!was) { refreshStory(); celebrate('Bước 4 xong! Cậu đã nói thử trọn bài rồi đó 🎤'); return; }
     }
     if (natural && window.playOk) window.playOk();
     paintTimer();
   }
   function stopAll() {
     stopTts();
+    shStop(true);
     if (timer.phase === 'prep' || timer.phase === 'talk') timerStop(false);
     if (timer.phase === 'done') timer.phase = 'idle';
     clearTimeout(_autoNext);
@@ -919,19 +1044,19 @@
     var st = curStory();
     var items, label, runKey;
     if (mode === 'vocab') { items = vocabItems(st); label = '② Từ vựng'; runKey = 'vocab'; }
-    else if (mode === 'fixed') {
-      items = fixedItems(st, opts.sec != null ? opts.sec : null);
-      label = opts.sec != null ? '③ FIXED · ' + st.fixed[opts.sec].h : '③ Dịch FIXED';
-      runKey = opts.sec != null ? null : 'fixed';
-    } else if (mode === 'why') {
-      items = whyItems(st, opts.k).concat(conclusionItems(st));
-      label = '④ WHY · ' + st.why[opts.k].q; runKey = 'why' + opts.k;
-      state.variant = opts.k;
+    else if (mode === 'frame') {
+      var fm = mastery(st).frames[opts.f];
+      if (!fm || !fm.open) { toast('Thuộc khung trước ≥' + PASS + '% để mở khung này nha', 'warn'); return; }
+      var fr = framesOf(st)[opts.f];
+      if (fr.kind === 'why') { if (opts.k != null) state.variant = opts.k; opts.k = state.variant; }
+      items = frameItems(st, opts.f, opts.k);
+      label = '⌨️ Khung ' + (opts.f + 1) + (fr.kind === 'why' ? ' · WHY · ' + st.why[opts.k].q : ' · ' + fr.h);
+      runKey = null;
     } else if (mode === 'retry') { items = opts.items; label = '🔁 Ôn câu sai'; runKey = null; }
     if (!items || !items.length) return;
-    // A run over a part the student already partly knows: only the rest, unless
-    // all of it is known (then it's a full review).
-    if (!opts.all && mode !== 'retry' && opts.sec == null && mode !== 'why') {
+    // Vocab already partly known: only the rest, unless all of it is known
+    // (then it's a full review). A frame is short — always the whole frame.
+    if (!opts.all && mode === 'vocab') {
       var ok = sp(st.id).ok;
       var todo = items.filter(function (x) { return !ok[x.key]; });
       if (todo.length && todo.length < items.length) items = todo;
@@ -939,7 +1064,7 @@
     items = items.map(function (x) { return Object.assign({}, x); });
     if (prefs.shuffle) shuffle(items);
     state.run = {
-      mode: mode, label: label, runKey: runKey, sec: opts.sec, k: opts.k,
+      mode: mode, label: label, runKey: runKey, f: opts.f, k: opts.k,
       qs: items, status: items.map(function () { return 'pending'; }),
       idx: 0, first: {}, wrong: {}, answered: false, finished: false
     };
@@ -1025,7 +1150,7 @@
     r.status[r.idx] = ok ? 'correct' : 'wrong';
     if (!(q.key in r.first)) r.first[q.key] = ok;
     var requeued = false;
-    if (ok) { sp(st.id).ok[q.key] = 1; saveProg(); delete r.wrong[q.key]; }
+    if (ok) { var before = mastery(st); sp(st.id).ok[q.key] = 1; saveProg(); delete r.wrong[q.key]; if (!q.vocab) noteUnlocks(st, before); }
     else {
       r.wrong[q.key] = q;
       var copies = r.qs.filter(function (x) { return x.key === q.key; }).length - 1;
@@ -1095,6 +1220,290 @@
       '</div></div>';
   }
 
+  // ══════════════════════════════════════════════════════════════════════
+  //  NHẠI (shadowing) — listen → say it → scored like shadowing.html:
+  //  browser SpeechRecognition, then an LCS word diff against the sentence;
+  //  score = % of the sentence's words heard. Best score per sentence is kept.
+  // ══════════════════════════════════════════════════════════════════════
+  // British spellings vs. what en-US recognition writes back — equal.
+  var SPELLING = {
+    ok: 'okay', centre: 'center', realise: 'realize', realised: 'realized', programme: 'program',
+    practise: 'practice', practises: 'practices', favourite: 'favorite', colour: 'color', neighbour: 'neighbor',
+    theatre: 'theater', behaviour: 'behavior', travelling: 'traveling', organise: 'organize', organised: 'organized',
+    recognise: 'recognize', apologise: 'apologize', grey: 'gray', mum: 'mom'
+  };
+  function normWord(w) {
+    var n = String(w).toLowerCase().replace(/[’‘]/g, "'").replace(/[^a-z0-9']/g, '').replace(/^'+|'+$/g, '');
+    return SPELLING[n] || n;
+  }
+  // Hyphenated words are scored as their parts (recognition splits them).
+  function tokens(text) { return String(text || '').replace(/[-–—]/g, ' ').split(/\s+/).filter(function (w) { return normWord(w) !== ''; }); }
+  function diffWords(refWords, saidWords) {
+    var a = refWords.map(normWord), b = saidWords.map(normWord);
+    var n = a.length, m = b.length, i, j;
+    var dp = [];
+    for (i = 0; i <= n; i++) { dp.push(new Array(m + 1).fill(0)); }
+    for (i = 1; i <= n; i++) for (j = 1; j <= m; j++) dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
+    var refHit = {};
+    i = n; j = m;
+    while (i > 0 && j > 0) {
+      if (a[i - 1] === b[j - 1]) { refHit[i - 1] = 1; i--; j--; }
+      else if (dp[i - 1][j] >= dp[i][j - 1]) i--;
+      else j--;
+    }
+    return refHit;
+  }
+  function scoreClass(pct) { return pct >= 85 ? 'good' : pct >= 60 ? 'mid' : 'low'; }
+  function maskWords(text) {
+    return esc(String(text).split(/\s+/).map(function (w) {
+      return w.replace(/([A-Za-z0-9])([A-Za-z0-9'’]*)/, function (_, f, r) { return f + r.replace(/[A-Za-z0-9]/g, '_'); });
+    }).join(' '));
+  }
+
+  function startShadow(fi, k) {
+    var st = curStory(), m = mastery(st);
+    if (!m.frames[fi] || !m.frames[fi].open) { toast('Thuộc khung trước ≥' + PASS + '% để mở khung này nha', 'warn'); return; }
+    var f = framesOf(st)[fi];
+    if (f.kind === 'why' && k != null) state.variant = k;
+    var items = frameItems(st, fi, k).map(function (x) { return Object.assign({}, x); });
+    if (!items.length) return;
+    stopAll();
+    state.sh = {
+      f: fi, k: f.kind === 'why' ? state.variant : null,
+      label: '🎙️ Khung ' + (fi + 1) + (f.kind === 'why' ? ' · WHY · ' + st.why[state.variant].q : ' · ' + f.h),
+      qs: items, idx: 0, run: {}, said: {}
+    };
+    state.view = 'shadow';
+    render();
+    window.scrollTo(0, 0);
+  }
+
+  function renderShadow() {
+    var r = state.sh, st = curStory(), q = r.qs[r.idx], p = sp(st.id);
+    var best = p.shadow[q.key];
+    var pct = Math.round((r.idx + 1) / r.qs.length * 100);
+    var last = r.idx >= r.qs.length - 1;
+    var graded = r.run[q.key] != null;
+    return '' +
+    '<div class="t2-prac-head">' +
+      '<button class="t2-back-btn" data-act="sh-quit"><i class="fas fa-times"></i> Thoát</button>' +
+      '<div class="t2-prac-ctx"><span class="t2-ctx-week">' + st.no + ' · ' + esc(st.group) + '</span>' +
+        '<span class="t2-ctx-name" title="' + esc(st.title) + '">' + st.emoji + ' ' + esc(st.title) + '</span></div>' +
+      '<span class="sp2-run-tag">' + esc(r.label) + '</span>' +
+    '</div>' +
+    '<div class="wp-progress-bar-wrap"><div class="wp-progress-bar" style="width:' + pct + '%"></div></div>' +
+    '<div class="t2-q-dots">' + r.qs.map(function (x, i) {
+      var sc = r.run[x.key] != null ? r.run[x.key] : null;
+      var c = sc == null ? (i === r.idx ? 't2-dot-current' : '') : sc >= SHADOW_PASS ? 't2-dot-ok' : 't2-dot-err';
+      return '<button type="button" class="t2-q-dot ' + c + '" data-act="sh-go" data-i="' + i + '" title="Câu ' + (i + 1) + (sc != null ? ' · ' + sc + '%' : '') + '"></button>';
+    }).join('') + '</div>' +
+    '<div class="wp-exercise-meta" style="padding:8px 20px">' +
+      '<span class="wp-ex-counter">' + (r.idx + 1) + ' / ' + r.qs.length + '</span>' +
+      '<span class="wp-type-tag">' + esc(q.ctx) + '</span>' +
+      (best != null ? '<span class="wp-type-tag sp2-best ' + (best >= SHADOW_PASS ? 'is-ok' : '') + '">Cao nhất: ' + best + '%</span>' : '') +
+    '</div>' +
+    '<div class="wp-card sp2-shcard" style="margin:0 20px">' +
+      '<div class="wp-task-label">Nghe câu mẫu rồi nói theo</div>' +
+      '<div class="sp2-sh-sent' + (prefs.shMask && !graded ? ' is-masked' : '') + '" id="sp2-sh-sent">' + (prefs.shMask && !graded ? maskWords(q.en) : esc(q.en)) + '</div>' +
+      (prefs.vi ? '<div class="sp2-sh-vi">' + esc(q.vi) + '</div>' : '') +
+      '<div class="sp2-sh-ctrl">' +
+        '<button type="button" class="t2-secondary" data-act="sh-listen"><i class="fas fa-volume-up"></i> Nghe</button>' +
+        '<button type="button" class="t2-secondary" data-act="sh-slow" title="Nghe chậm"><i class="fas fa-walking"></i> Chậm</button>' +
+        '<button type="button" class="t2-primary sp2-sh-rec" id="sp2-sh-rec" data-act="sh-rec"' + (SR ? '' : ' disabled') + '><i class="fas fa-microphone"></i> Nói theo</button>' +
+        '<button type="button" class="t2-secondary" id="sp2-sh-mine" data-act="sh-mine" disabled title="Nghe lại giọng của bạn"><i class="fas fa-play"></i> Giọng của tôi</button>' +
+      '</div>' +
+      '<div class="sp2-sh-interim" id="sp2-sh-interim" aria-live="polite">' + (SR ? '' : 'Trình duyệt này chưa chấm được phát âm — mở bằng Chrome hoặc Edge nha.') + '</div>' +
+      '<div class="sp2-sh-score" id="sp2-sh-score" aria-live="polite"></div>' +
+    '</div>' +
+    '<div class="sp2-sh-nav">' +
+      '<button type="button" class="t2-secondary" data-act="sh-prev"' + (r.idx ? '' : ' disabled') + '><i class="fas fa-arrow-left"></i> Câu trước</button>' +
+      '<button type="button" class="t2-primary" data-act="sh-next">' + (last ? 'Xem kết quả' : 'Câu tiếp') + ' <i class="fas fa-arrow-right"></i></button>' +
+    '</div>';
+  }
+  function mountShadow() {
+    var r = state.sh, q = r.qs[r.idx];
+    if (r.run[q.key] != null && r.said[q.key] != null) showShadowResult(q, r.said[q.key], r.run[q.key], true);
+    else setTimeout(function () { if (state.view === 'shadow' && state.sh === r) speak([q.en]); }, 250);
+  }
+
+  var rec = { on: false, recog: null, media: null, stream: null, text: '', silence: null, hard: null, session: 0, url: null, audio: null };
+  function shStart() {
+    var r = state.sh;
+    if (rec.on || !r || !SR) return;
+    stopTts();
+    var q = r.qs[r.idx], session = ++rec.session;
+    rec.on = true; rec.text = '';
+    setText('sp2-sh-interim', 'Đang nghe bạn nói…');
+    var sc = document.getElementById('sp2-sh-score'); if (sc) { sc.className = 'sp2-sh-score'; sc.innerHTML = ''; }
+    var btn = document.getElementById('sp2-sh-rec');
+    if (btn) { btn.classList.add('is-recording'); btn.innerHTML = '<i class="fas fa-stop"></i> Dừng'; }
+    rec.hard = setTimeout(shStop, Math.max(6000, wc(q.en) * 1000 + 3000));
+    // Recognition first, own-voice capture after (Android lets only one hold the mic).
+    var recog = new SR();
+    rec.recog = recog;
+    recog.lang = 'en-US';
+    recog.continuous = !/Android/i.test(navigator.userAgent);
+    recog.interimResults = true;
+    recog.maxAlternatives = 1;
+    recog.onresult = function (e) {
+      var interim = '', fin = '';
+      for (var k = 0; k < e.results.length; k++) {
+        if (e.results[k].isFinal) fin += e.results[k][0].transcript + ' ';
+        else interim += e.results[k][0].transcript;
+      }
+      rec.text = fin;
+      setText('sp2-sh-interim', (fin + interim).trim() || 'Đang nghe bạn nói…');
+      clearTimeout(rec.silence);
+      rec.silence = setTimeout(shStop, 1500);
+    };
+    recog.onerror = function (e) {
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') toast('Không truy cập được micro — hãy cho phép quyền micro trên trình duyệt.', 'error');
+      else if (e.error === 'network') toast('Không kết nối được dịch vụ nhận diện giọng nói — kiểm tra mạng rồi thử lại.', 'error');
+    };
+    recog.onend = function () { if (rec.on) shStop(); };
+    try { recog.start(); } catch (err) { /* already started */ }
+    captureOwnVoice(session, r.idx);
+  }
+  function captureOwnVoice(session, recIdx) {
+    if (!window.MediaRecorder || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(function (stream) {
+      if (!rec.on || session !== rec.session) { stream.getTracks().forEach(function (t) { t.stop(); }); return; }
+      rec.stream = stream;
+      var chunks = [], mr = new MediaRecorder(stream);
+      rec.media = mr;
+      mr.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+      mr.onstop = function () {
+        if (!state.sh || state.sh.idx !== recIdx) return;
+        if (rec.url) { try { URL.revokeObjectURL(rec.url); } catch (e) {} }
+        rec.url = chunks.length ? URL.createObjectURL(new Blob(chunks, { type: mr.mimeType || 'audio/webm' })) : null;
+        var b = document.getElementById('sp2-sh-mine'); if (b) b.disabled = !rec.url;
+      };
+      mr.start();
+    }).catch(function () { /* recognition still scores */ });
+  }
+  // silent: leaving the screen — stop without grading.
+  function shStop(silent) {
+    if (!rec.on) return;
+    rec.on = false;
+    clearTimeout(rec.silence); clearTimeout(rec.hard);
+    if (rec.recog) { rec.recog.onend = null; try { rec.recog.stop(); } catch (e) {} rec.recog = null; }
+    if (rec.media && rec.media.state !== 'inactive') { try { rec.media.stop(); } catch (e) {} }
+    rec.media = null;
+    if (rec.stream) { rec.stream.getTracks().forEach(function (t) { t.stop(); }); rec.stream = null; }
+    var btn = document.getElementById('sp2-sh-rec');
+    if (btn) { btn.classList.remove('is-recording'); btn.innerHTML = '<i class="fas fa-microphone"></i> Nói theo'; }
+    if (silent === true || state.view !== 'shadow') return;
+    gradeShadow(rec.text.trim());
+  }
+  function gradeShadow(said) {
+    var r = state.sh, st = curStory();
+    if (!r || !st) return;
+    var q = r.qs[r.idx];
+    if (!said) {
+      setText('sp2-sh-interim', '');
+      showScore('low', 'Chưa nghe thấy bạn nói', 'Bấm “Nói theo” và đọc to câu trên, gần micro hơn một chút.');
+      return;
+    }
+    var ref = tokens(q.en), hit = diffWords(ref, tokens(said));
+    var n = Object.keys(hit).length, pct = ref.length ? Math.round(n / ref.length * 100) : 0;
+    var before = mastery(st), p = sp(st.id);
+    r.run[q.key] = Math.max(r.run[q.key] || 0, pct);
+    r.said[q.key] = said;
+    if (pct > (p.shadow[q.key] || 0)) { p.shadow[q.key] = pct; saveProg(); }
+    showShadowResult(q, said, pct, false);
+    paintShadowDots();
+    noteUnlocks(st, before);
+    if (pct >= 85 && window.playOk) window.playOk();
+    if (pct >= SHADOW_PASS && prefs.autoNext) { clearTimeout(_autoNext); _autoNext = setTimeout(shNext, 1600); }
+  }
+  function showShadowResult(q, said, pct, restored) {
+    var ref = tokens(q.en), hit = diffWords(ref, tokens(said));
+    var el = document.getElementById('sp2-sh-sent');
+    if (el) {
+      el.classList.remove('is-masked');
+      el.innerHTML = ref.map(function (w, k) { return '<span class="' + (hit[k] ? 'w-match' : 'w-miss') + '">' + esc(w) + '</span>'; }).join(' ');
+    }
+    setText('sp2-sh-interim', 'Máy nghe được: “' + said + '”');
+    var cls = scoreClass(pct), passed = pct >= SHADOW_PASS;
+    var msg = cls === 'good' ? 'Tuyệt vời!' : passed ? 'Đạt — luyện thêm các từ màu đỏ.' : 'Chưa đạt ' + SHADOW_PASS + '% — nghe lại rồi thử thêm lần nữa nhé.';
+    showScore(cls, (restored ? 'Lần này: ' : '') + pct + '% — ' + msg, 'Đúng ' + Object.keys(hit).length + '/' + ref.length + ' từ. Bấm “Giọng của tôi” để so với câu mẫu.');
+  }
+  function showScore(cls, title, sub) {
+    var el = document.getElementById('sp2-sh-score');
+    if (!el) return;
+    el.className = 'sp2-sh-score show ' + cls;
+    el.innerHTML = esc(title) + (sub ? '<small>' + esc(sub) + '</small>' : '');
+  }
+  function paintShadowDots() {
+    var r = state.sh, dots = document.querySelectorAll('.t2-q-dot');
+    r.qs.forEach(function (x, i) {
+      var sc = r.run[x.key];
+      if (dots[i] && sc != null) dots[i].className = 't2-q-dot ' + (sc >= SHADOW_PASS ? 't2-dot-ok' : 't2-dot-err');
+    });
+  }
+  function setText(id, t) { var el = document.getElementById(id); if (el) el.textContent = t; }
+  function playMine() {
+    if (!rec.url) return;
+    stopTts();
+    if (rec.audio) rec.audio.pause();
+    rec.audio = new Audio(rec.url);
+    rec.audio.play().catch(function () { toast('Không phát được bản ghi âm.', 'error'); });
+  }
+  function shGo(i) {
+    var r = state.sh;
+    if (!r || i < 0 || i >= r.qs.length) return;
+    clearTimeout(_autoNext);
+    shStop(true); stopTts();
+    if (rec.url) { try { URL.revokeObjectURL(rec.url); } catch (e) {} rec.url = null; }
+    r.idx = i;
+    render();
+  }
+  function shNext() {
+    var r = state.sh;
+    if (!r || state.view !== 'shadow') return;
+    if (r.idx >= r.qs.length - 1) { shStop(true); stopTts(); state.view = 'shdone'; render(); window.scrollTo(0, 0); return; }
+    shGo(r.idx + 1);
+  }
+  function renderShadowDone() {
+    var r = state.sh, st = curStory(), p = sp(st.id);
+    var rows = r.qs.map(function (q) { return { q: q, run: r.run[q.key], best: p.shadow[q.key] || 0 }; });
+    var tried = rows.filter(function (x) { return x.run != null; });
+    var avg = tried.length ? Math.round(tried.reduce(function (a, x) { return a + x.run; }, 0) / tried.length) : 0;
+    var weak = rows.filter(function (x) { return x.best < SHADOW_PASS; });
+    var m = mastery(st), fm = m.frames[r.f], nextF = m.frames[r.f + 1];
+    var mood = !weak.length ? 'cheer' : avg >= 60 ? 'happy' : 'think';
+    var line = !weak.length ? 'Cả khung nhại đạt hết rồi! Giờ thử ⌨️ Dịch khung này nha 🎉' : tried.length ? 'Còn ' + weak.length + ' câu chưa đạt ' + SHADOW_PASS + '% — nhại lại mấy câu đó là xong 💪' : 'Cậu chưa nhại câu nào — bấm “Nói theo” để máy chấm nha 🍊';
+    var bubble = (window.Mascot && window.Mascot.reactHtml) ? window.Mascot.reactHtml({ text: line, mood: mood, solo: true, compact: true }) : '<p>' + esc(line) + '</p>';
+    return '<div class="t2-done sp2-done">' +
+      bubble +
+      '<div class="t2-done-score">' + avg + '%</div>' +
+      '<div class="t2-done-sub">' + esc(r.label) + ' · điểm phát âm trung bình lần này</div>' +
+      '<div class="t2-done-stats">' +
+        '<div class="t2-done-stat"><div class="t2-done-stat-num">' + (rows.length - weak.length) + '/' + rows.length + '</div><div class="t2-done-stat-lbl">Câu nhại đạt</div></div>' +
+        '<div class="t2-done-stat"><div class="t2-done-stat-num">' + fm.pct + '%</div><div class="t2-done-stat-lbl">Khung ' + (r.f + 1) + ' đã thuộc</div></div>' +
+      '</div>' +
+      '<div class="sp2-shlist">' + rows.map(function (x) {
+        var c = x.best >= SHADOW_PASS ? 'is-ok' : x.best ? 'is-mid' : '';
+        return '<p class="sp2-sent">' + sayBtn(x.q.en) + '<span class="sp2-sent-txt"><span class="sp2-en">' + esc(x.q.en) + '</span><span class="sp2-vi">' + esc(x.q.vi) + '</span></span>' +
+          '<span class="sp2-shlist-pct ' + c + '">' + (x.best ? x.best + '%' : '—') + '</span></p>';
+      }).join('') + '</div>' +
+      '<div class="t2-actions" style="justify-content:center">' +
+        (weak.length ? '<button type="button" class="t2-primary is-lg" data-act="sh-weak"><i class="fas fa-redo-alt"></i> Nhại lại câu chưa đạt (' + weak.length + ')</button>' : '') +
+        '<button type="button" class="' + (weak.length ? 't2-secondary' : 't2-primary is-lg') + '" data-act="run" data-mode="frame" data-f="' + r.f + '"' + (r.k != null ? ' data-k="' + r.k + '"' : '') + '><i class="fas fa-keyboard"></i> Dịch khung này</button>' +
+        (nextF && nextF.open ? '<button type="button" class="t2-secondary" data-act="shadow" data-f="' + (r.f + 1) + '"><i class="fas fa-microphone"></i> Nhại khung ' + (r.f + 2) + '</button>' : '') +
+        '<button type="button" class="t2-secondary" data-act="back-story"><i class="fas fa-arrow-left"></i> Về câu chuyện</button>' +
+      '</div></div>';
+  }
+  function shWeak() {
+    var r = state.sh, st = curStory(), p = sp(st.id);
+    var qs = r.qs.filter(function (q) { return (p.shadow[q.key] || 0) < SHADOW_PASS; });
+    if (!qs.length) return;
+    state.sh = { f: r.f, k: r.k, label: r.label, qs: qs, idx: 0, run: {}, said: {} };
+    state.view = 'shadow';
+    render();
+    window.scrollTo(0, 0);
+  }
+
   // ── quit modal (same as Task 2's "Dừng luyện tập?") ─────────────────
   function askQuit(onLeave) {
     var r = state.run;
@@ -1120,7 +1529,7 @@
     switch (act) {
       case 'open':
         e.preventDefault();
-        go('story', el.dataset.id, el.dataset.variant != null ? { variant: +el.dataset.variant, focusStep: 'why' } : {});
+        go('story', el.dataset.id, el.dataset.variant != null ? { variant: +el.dataset.variant, focusStep: 'learn' } : {});
         break;
       case 'home': go('home', null); break;
       case 'upgrade': upgrade(); break;
@@ -1129,18 +1538,33 @@
       case 'scroll': scrollToStep(el.dataset.step); break;
       case 'toggle-vi': prefs.vi = !prefs.vi; savePrefs(); state.readOpen = true; refreshStory(); break;
       case 'say': speak([el.dataset.text], markSpeaking); break;
-      case 'listen-fixed':
+      case 'listen-all':
         state.readOpen = true;
         var det = document.querySelector('.sp2-read'); if (det) det.open = true;
-        speak(fixedItems(st).map(function (x) { return x.en; }), markSpeaking);
+        speak(fixedItems(st).concat(whyItems(st, state.variant), conclusionItems(st)).map(function (x) { return x.en; }), markSpeaking);
+        break;
+      case 'variant': state.variant = +el.dataset.k; state.readOpen = true; stopTts(); refreshStory(); break;
+      case 'scroll-frame':
+        var fe = document.getElementById('sp2-frame-' + el.dataset.f);
+        if (fe) fe.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'center' });
         break;
       case 'mark-read': sp(st.id).read = 1; saveProg(); refreshStory(); celebrate('Bước 1 xong! Giờ học từ vựng ăn điểm nha 📚'); setTimeout(function () { scrollToStep('vocab'); }, 400); break;
       case 'run':
         startRun(el.dataset.mode, {
-          sec: el.dataset.sec != null ? +el.dataset.sec : null,
+          f: el.dataset.f != null ? +el.dataset.f : null,
           k: el.dataset.k != null ? +el.dataset.k : null
         });
         break;
+      case 'shadow': startShadow(+el.dataset.f, el.dataset.k != null ? +el.dataset.k : null); break;
+      case 'sh-listen': shStop(true); speak([state.sh.qs[state.sh.idx].en]); break;
+      case 'sh-slow': shStop(true); speak([state.sh.qs[state.sh.idx].en], null, 0.7); break;
+      case 'sh-rec': if (rec.on) shStop(); else shStart(); break;
+      case 'sh-mine': playMine(); break;
+      case 'sh-prev': shGo(state.sh.idx - 1); break;
+      case 'sh-next': shNext(); break;
+      case 'sh-go': shGo(+el.dataset.i); break;
+      case 'sh-weak': shWeak(); break;
+      case 'sh-quit': go('story', state.storyId, { noPush: true, focusStep: 'learn' }); break;
       case 'pref':
         var k = el.dataset.pref; prefs[k] = !prefs[k]; savePrefs();
         el.classList.toggle('on', !!prefs[k]);
@@ -1158,15 +1582,15 @@
         break;
       case 'again':
         var r = state.run;
-        if (r.mode === 'retry') go('story', state.storyId, { noPush: true, focusStep: 'fixed' });
-        else startRun(r.mode, { sec: r.sec, k: r.k, all: true });
+        if (r.mode === 'retry') go('story', state.storyId, { noPush: true, focusStep: 'learn' });
+        else startRun(r.mode, { f: r.f, k: r.k, all: true });
         break;
-      case 'back-story': go('story', state.storyId, { noPush: true, focusStep: stepOfRun() }); break;
+      case 'back-story': go('story', state.storyId, { noPush: true, focusStep: state.view === 'shdone' ? 'learn' : stepOfRun() }); break;
     }
   });
   function stepOfRun() {
     var r = state.run; if (!r) return null;
-    return r.mode === 'vocab' ? 'vocab' : r.mode === 'why' ? 'why' : 'fixed';
+    return r.mode === 'vocab' ? 'vocab' : 'learn';
   }
   app.addEventListener('input', function (e) {
     if (e.target.id === 'sp2-finder') {
@@ -1182,6 +1606,7 @@
     if (e.target.matches && e.target.matches('.sp2-read')) state.readOpen = e.target.open;
   }, true);
   document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && state.view === 'shadow' && !(e.target && /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName))) { e.preventDefault(); shNext(); return; }
     if (e.key !== 'Enter' || state.view !== 'practice' || !state.run || !state.run.answered) return;
     if (e.target && /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName) && !e.target.disabled && e.target.tagName !== 'BUTTON') return;
     e.preventDefault();
@@ -1216,10 +1641,10 @@
     try { history.replaceState({ v: state.view, s: state.storyId }, '', location.href); } catch (e) {}
     render();
     if (LOCKED && wanted) upgrade();
-    if (state.view === 'story' && new URLSearchParams(location.search).get('variant') != null) setTimeout(function () { scrollToStep('why'); }, 80);
+    if (state.view === 'story' && new URLSearchParams(location.search).get('variant') != null) setTimeout(function () { scrollToStep('learn'); }, 80);
   }
   boot();
 
   // Expose for tests / debugging.
-  window.SP2 = { state: state, stepStatus: stepStatus, finderResults: finderResults };
+  window.SP2 = { state: state, stepStatus: stepStatus, finderResults: finderResults, mastery: mastery, framesOf: framesOf };
 })();

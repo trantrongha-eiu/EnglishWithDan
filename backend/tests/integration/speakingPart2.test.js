@@ -10,15 +10,45 @@ const svc = require('../../services/speakingPart2Service');
 const authH = (u) => ({ Authorization: `Bearer ${signTokenFor(u)}` });
 const expiredFree = () => createStudent({ extra: { trialStartedAt: new Date(Date.now() - 3 * 24 * 3600 * 1000) } });
 
-// Every key that makes all 5 steps of a story done (2 WHY variants).
-function allKeys(st) {
+// Every sentence key of a story's 7 frames (2 WHY variants).
+function sentenceKeys(st) {
   const k = [];
-  st.vocab.forEach((_, i) => k.push(`v${i}`));
   st.fixed.forEach((sec, si) => sec.s.forEach((_, j) => k.push(`f${si}.${j}`)));
   [0, 1].forEach((w) => st.why[w].s.forEach((_, j) => k.push(`w${w}.${j}`)));
   st.conclusion.forEach((_, j) => k.push(`c${j}`));
   return k;
 }
+const shadowAll = (keys, pct) => keys.map((k) => [k, pct]);
+
+test('7 khung: every story has 5 FIXED frames + WHY + Kết luận; People merges appearance + personality', () => {
+  for (const st of DATA.stories) {
+    const fr = svc.framesOf(st);
+    expect(fr).toHaveLength(7);
+    expect(fr.slice(0, 5).every((f) => f.kind === 'fixed')).toBe(true);
+    expect(fr[5].kind).toBe('why');
+    expect(fr[6].kind).toBe('con');
+  }
+  const people = svc.framesOf(DATA.stories[0]);
+  expect(people[1].h).toBe('Ngoại hình & tính cách');
+  expect(people[1].keys).toEqual(['f1.0', 'f1.1', 'f2.0', 'f2.1']);
+});
+
+test('mastery: nhại + dịch per sentence, frames unlock in order at 70%', () => {
+  const st = DATA.stories[0];
+  const f0 = svc.framesOf(st)[0].keys;
+  // Dịch only on frame 1 = 50% → frame 2 still locked.
+  const db = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k.replace('.', '_'), v]));
+  let m = svc.masteryOf(st.id, { ok: f0, shadow: {} });
+  expect(m.frames[0].pct).toBe(50);
+  expect(m.frames[1].open).toBe(false);
+  // + nhại >= 70 on both sentences → 100%, frame 2 opens; a 69 doesn't count.
+  m = svc.masteryOf(st.id, { ok: f0, shadow: db({ [f0[0]]: 70, [f0[1]]: 90 }) });
+  expect(m.frames[0].pct).toBe(100);
+  expect(m.frames[1].open).toBe(true);
+  expect(m.frames[2].open).toBe(false);
+  m = svc.masteryOf(st.id, { ok: [], shadow: db({ [f0[0]]: 69, [f0[1]]: 69 }) });
+  expect(m.frames[0].pct).toBe(0);
+});
 
 test('content: full text for Premium, story list only for an expired free account', async () => {
   const p = await createPremiumStudent();
@@ -45,12 +75,17 @@ test('progress: merges across saves, ignores bogus keys, steps are recomputed se
   const s = await createPremiumStudent();
   const st = DATA.stories[0];
   let r = await request(app).put(`/api/speaking-part2/progress/${st.id}`).set(authH(s))
-    .send({ read: true, ok: ['v0', 'v1', 'zzz', 'f99.0'], best: { vocab: 80, hack: 1 } });
+    .send({ read: true, ok: ['v0', 'v1', 'zzz', 'f99.0'], best: { vocab: 80, hack: 1 }, shadow: [['f0.0', 82], ['f0.1', 150], ['v0', 90], ['nope', 50], 'junk'] });
   expect(r.status).toBe(200);
   expect(r.body.progress.ok.sort()).toEqual(['v0', 'v1']);
   expect(r.body.progress.steps.read).toBe(true);
   expect(r.body.progress.steps.vocab).toBe(false);
   expect(r.body.progress.best).toEqual({ vocab: 80 });
+  expect(r.body.progress.shadow).toEqual({ 'f0.0': 82, 'f0.1': 100 }); // sentences only, clamped
+
+  // Shadow scores keep the best per sentence.
+  r = await request(app).put(`/api/speaking-part2/progress/${st.id}`).set(authH(s)).send({ shadow: [['f0.0', 40], ['f0.1', 75]] });
+  expect(r.body.progress.shadow).toEqual({ 'f0.0': 82, 'f0.1': 100 });
 
   // A second device sends only what it knows — nothing is lost.
   r = await request(app).put(`/api/speaking-part2/progress/${st.id}`).set(authH(s)).send({ ok: ['v2'], read: false });
@@ -60,13 +95,14 @@ test('progress: merges across saves, ignores bogus keys, steps are recomputed se
   // Claiming "speak" without the sentences doesn't complete the story.
   r = await request(app).put(`/api/speaking-part2/progress/${st.id}`).set(authH(s)).send({ speak: 1 });
   expect(r.body.progress.completedAt).toBeNull();
+  expect(r.body.progress.masteredAt).toBeNull();
 
   expect((await request(app).put('/api/speaking-part2/progress/nope').set(authH(s)).send({})).status).toBe(404);
   const all = await request(app).get('/api/speaking-part2/progress').set(authH(s));
   expect(Object.keys(all.body.progress)).toEqual([st.id]);
 });
 
-test('homework speaking_part2: teacher assigns a story, it ticks once all 5 steps are done', async () => {
+test('homework speaking_part2: teacher assigns a story, it passes once the story is >= 70% learnt', async () => {
   const t = await createTeacher();
   const s = await createPremiumStudent();
   const cls = await createClassGroup({ teacher: t });
@@ -92,12 +128,17 @@ test('homework speaking_part2: teacher assigns a story, it ticks once all 5 step
   expect(it.completed).toBe(false);
   expect(it.resourceCode).toBe(st.id);
 
-  await request(app).put(`/api/speaking-part2/progress/${st.id}`).set(authH(s)).send({ read: true, ok: allKeys(st) });
+  const keys = sentenceKeys(st);
+  // Every sentence translated but nothing shadowed = 50% → not passed.
+  await request(app).put(`/api/speaking-part2/progress/${st.id}`).set(authH(s)).send({ read: true, ok: keys });
   it = await item();
-  expect(it.completed).toBe(false); // ⑤ Nói thử not done yet
+  expect(it.completed).toBe(false);
 
-  const r = await request(app).put(`/api/speaking-part2/progress/${st.id}`).set(authH(s)).send({ speak: 1 });
-  expect(r.body.progress.completedAt).toBeTruthy();
+  // + shadowing >= 70% on every sentence → 100% → passed (no ④ Nói thử needed).
+  const r = await request(app).put(`/api/speaking-part2/progress/${st.id}`).set(authH(s)).send({ shadow: shadowAll(keys, 80) });
+  expect(r.body.progress.mastery.pct).toBe(100);
+  expect(r.body.progress.masteredAt).toBeTruthy();
+  expect(r.body.progress.completedAt).toBeNull(); // vocab + speak not done yet
   it = await item();
   expect(it.completed).toBe(true);
 
