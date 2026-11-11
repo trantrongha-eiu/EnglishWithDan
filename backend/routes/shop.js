@@ -15,5 +15,12 @@ router.post('/sell', auth, shopCtrl.sell);
 router.post('/cake', auth, shopCtrl.throwCake);
 router.get('/gift-recipients', auth, shopCtrl.giftRecipients);
 router.post('/gift', auth, shopCtrl.gift);
+router.post('/pet-gift', auth, shopCtrl.claimPetGift);
+router.post('/lens', auth, shopCtrl.useLens);
+router.get('/duels', auth, shopCtrl.listDuels);
+router.post('/duels', auth, shopCtrl.challenge);
+router.post('/duels/:id/accept', auth, shopCtrl.acceptDuel);
+router.post('/duels/:id/decline', auth, shopCtrl.declineDuel);
+router.post('/duels/:id/cancel', auth, shopCtrl.cancelDuel);
 
 module.exports = router;

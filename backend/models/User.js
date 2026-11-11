@@ -192,6 +192,7 @@ const UserSchema = new mongoose.Schema({
     towel:      { type: Number, default: 0 },
     cloak:      { type: Number, default: 0 },
     crown:      { type: Number, default: 0 },
+    lens:       { type: Number, default: 0 },
   },
   // Búa Hi Vọng in play: the VN day it was used on (null = none pending),
   // and how many base 🔥 (before ×2) have been earned since. Settled the
@@ -199,6 +200,9 @@ const UserSchema = new mongoose.Schema({
   // hopeHammerLast so the shop can tell the student how it went.
   hopeHammerDay:        { type: Date, default: null },
   hopeHammerBase:       { type: Number, default: 0 },
+  // The quota this bet must reach — fixed when the hammer is used (Shiba's
+  // Cổ Vũ lowers it), so switching pets mid-day can't change it. 0 = HOPE_QUOTA.
+  hopeHammerQuota:      { type: Number, default: 0 },
   hopeHammerLast:       {
     day: { type: Date, default: null },
     success: { type: Boolean, default: false },
@@ -212,6 +216,11 @@ const UserSchema = new mongoose.Schema({
   // Linh thú owned (constants/shop.js PETS ids) and the one out walking.
   pets:                 [{ type: String }],
   activePet:            { type: String, default: '' },
+  // Kỹ năng linh thú (constants/shop.js PET_POWERS): the VN day the daily
+  // 🎁 Quà linh thú was last opened, and the cakes the pet blocked today.
+  petGiftDay:           { type: Date, default: null },
+  petGuardDay:          { type: Date, default: null },
+  petGuardUsed:         { type: Number, default: 0 },
   totalStudyMinutes:    { type: Number, default: 0 },
   // Password reset OTP
   resetOTP:           { type: String, default: '' },

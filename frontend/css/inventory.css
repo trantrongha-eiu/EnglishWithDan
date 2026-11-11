@@ -88,3 +88,13 @@
 .inv-gift-step button:disabled { opacity: .4; cursor: default; }
 .inv-gift-step input { width: 56px; border: 0; text-align: center; font: inherit; font-weight: 700; background: var(--surface, #fff); color: var(--text); }
 .inv-gift-note { color: var(--text2); font-size: 12px; }
+
+/* Kỹ năng linh thú line on a pet card. */
+.inv-skill {
+  grid-column: 1 / -1; font-size: 12px; line-height: 1.45; color: var(--text2);
+  padding: 6px 9px; border-radius: 10px; background: #fff7ed; border: 1px dashed #fdba74;
+}
+.inv-skill b { color: #c2410c; }
+.inv-skill em { color: var(--text3, #9ca3af); font-style: normal; }
+[data-theme="dark"] .inv-skill { background: rgba(249, 115, 22, .08); border-color: rgba(249, 115, 22, .35); }
+[data-theme="dark"] .inv-skill b { color: #fdba74; }

@@ -16,7 +16,7 @@ const { COUNTABLE_ATTEMPT } = require('./attemptVisibility');
 const { effectiveStreak, coverMissedDaysWithShields } = require('../utils/streak');
 const shopService = require('./shopService');
 const { todayVNDate } = require('./streakBonusService');
-const { FLAME_ROLES, isFlameRole } = require('../constants/shop');
+const { FLAME_ROLES, isFlameRole, petPower } = require('../constants/shop');
 
 // targetBand/targetExamDate are the SAME underlying User fields
 // goalService.js's /api/goals validates (see that file's own comment) —
@@ -326,9 +326,15 @@ async function getActivityHeatmap(userId, days = 365) {
 // — so it can't be read back out of the response either.
 async function rankedStreaks(viewerId) {
   await shopService.settleAllHopeHammers().catch(() => 0);
-  const candidates = await User.find({ role: { $in: FLAME_ROLES }, learningStreak: { $gt: 0 } })
-    .select('firstName lastName username avatar learningStreak lastActivityDate shopItems activePet crownUntil invisibleUntil cakedUntil cakedBy')
-    .lean();
+  const [candidates, viewer] = await Promise.all([
+    User.find({ role: { $in: FLAME_ROLES }, learningStreak: { $gt: 0 } })
+      .select('firstName lastName username avatar learningStreak lastActivityDate shopItems activePet crownUntil invisibleUntil cakedUntil cakedBy')
+      .lean(),
+    viewerId ? User.findById(viewerId).select('activePet').lean() : null,
+  ]);
+  // Mắt Cáo (Cáo Lửa, Hồ Ly Cửu Vĩ out walking): the viewer sees through
+  // every Áo Tàng Hình — the row keeps its number, flagged `revealed`.
+  const seeHidden = !!(viewer && (petPower(viewer.activePet) || {}).seeHidden);
 
   return candidates
     .map(u => ({
@@ -340,7 +346,10 @@ async function rankedStreaks(viewerId) {
     }))
     .filter(u => u.streak > 0)
     .sort((a, b) => b.streak - a.streak)
-    .map(u => (u.hidden && String(u._id) !== String(viewerId) ? { ...u, streak: null } : u));
+    .map(u => {
+      if (!u.hidden || String(u._id) === String(viewerId)) return u;
+      return seeHidden ? { ...u, revealed: true } : { ...u, streak: null };
+    });
 }
 
 async function getStreakLeaderboard(limit = 10, viewerId = null) {

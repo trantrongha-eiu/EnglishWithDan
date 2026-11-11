@@ -377,7 +377,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=28fb0613cd';
+    i18nScript.src = '/js/shared/i18n.js?v=23f740462c';
     document.body.appendChild(i18nScript);
   }
 
@@ -387,7 +387,7 @@
   if (!document.getElementById('ews-pets-js')) {
     var petScript = document.createElement('script');
     petScript.id = 'ews-pets-js';
-    petScript.src = '/js/shared/pets.js?v=0ce6946eea';
+    petScript.src = '/js/shared/pets.js?v=62e28dc034';
     document.body.appendChild(petScript);
   }
 
@@ -395,7 +395,7 @@
   if (!document.getElementById('ews-shopfeed-js')) {
     var feedScript = document.createElement('script');
     feedScript.id = 'ews-shopfeed-js';
-    feedScript.src = '/js/shared/shop-feed.js?v=9fe4b2937f';
+    feedScript.src = '/js/shared/shop-feed.js?v=45be474403';
     document.body.appendChild(feedScript);
   }
 

@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const ShopPurchaseSchema = new mongoose.Schema({
   userId:   { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   name:     { type: String, required: true },   // buyer's display name at purchase time
-  kind:     { type: String, enum: ['item', 'pet'], required: true },
+  kind:     { type: String, enum: ['item', 'pet', 'duel'], required: true },   // duel: name won against itemName, price = pot
   key:      { type: String, required: true },   // item key / pet id
   itemName: { type: String, required: true },
   emoji:    { type: String, default: '' },

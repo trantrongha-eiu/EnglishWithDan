@@ -1,5 +1,6 @@
 const catchAsync = require('../middleware/catchAsync');
 const shopService = require('../services/shopService');
+const duelService = require('../services/duelService');
 
 const MESSAGES = {
   not_found: [404, 'Không tìm thấy vật phẩm.'],
@@ -23,7 +24,20 @@ const MESSAGES = {
   target_has_pet: [400, 'Bạn ấy đã có (hoặc đang có quà chờ nhận) linh thú này rồi — chọn bé khác nhé!'],
   gift_failed: [500, 'Không gửi được quà — vật phẩm vẫn còn trong Kho đồ của bạn, thử lại sau nhé.'],
   gift_pending: [400, 'Bạn đang có quà là linh thú này trong Hộp thư — vào Hộp thư bấm "Nhận quà" là có, khỏi mua nhé!'],
-  hope_too_late: [400, 'Hôm nay bạn đã kiếm gần hết 🔥 tối đa (5/ngày) — không còn đủ chỗ để kiếm thêm 3 🔥 cho Búa Hi Vọng. Hãy đập búa vào đầu ngày mai, trước khi học nhé!'],
+  hope_too_late: [400, 'Hôm nay bạn đã kiếm gần hết 🔥 tối đa trong ngày — không còn đủ chỗ để đạt chỉ tiêu Búa Hi Vọng. Hãy đập búa vào đầu ngày mai, trước khi học nhé!'],
+  no_pet: [400, 'Bạn chưa dắt linh thú nào đi dạo — vào Kho đồ chọn một bé nhé.'],
+  gift_claimed: [400, 'Hôm nay bạn đã mở quà linh thú rồi — mai quay lại nhé!'],
+  gift_study: [400, 'Học 1 bài và kiếm ít nhất 1 🔥 hôm nay thì linh thú mới mang quà về nhé!'],
+  invalid_lens_target: [400, 'Không tự soi chính mình được 😆'],
+  not_hidden: [400, 'Bạn này không mặc Áo Tàng Hình (hoặc áo vừa hết hạn).'],
+  duel_stake: [400, 'Tiền cược phải là số nguyên từ 5 đến 100 🔥.'],
+  duel_self: [400, 'Không tự thách đấu chính mình được 😆'],
+  duel_blocked: [403, 'Không thách đấu được bạn này (một trong hai đã chặn người kia).'],
+  duel_limit_me: [400, 'Bạn đang có đủ 3 trận thách đấu chưa xong — chờ xong bớt rồi thách tiếp nhé.'],
+  duel_limit_target: [400, 'Bạn ấy đang bận đủ 3 trận thách đấu rồi — thử lại sau nhé.'],
+  duel_exists: [400, 'Hai bạn đang có một trận thách đấu chưa xong rồi.'],
+  duel_gone: [400, 'Trận thách đấu này không còn chờ nữa (đã được trả lời, hủy hoặc hết hạn).'],
+  duel_failed: [500, 'Không tạo được trận thách đấu — 🔥 đã được hoàn lại, thử lại sau nhé.'],
 };
 
 function send(res, result) {
@@ -48,6 +62,9 @@ exports.getState = catchAsync(async (req, res) => {
 // `announce`, the huyền thoại announcements newer than ?asince=ISO
 // (Thập Vĩ bought / its owner logged in).
 exports.getFeed = catchAsync(async (req, res) => {
+  // Duels whose time is up get settled here too, so results (and their
+  // "X thắng Y" ticker rows) arrive while people are online. Best-effort.
+  await duelService.settleDue().catch(err => console.error('[duel] settleDue failed:', err.message));
   const [feed, caked, announce] = await Promise.all([
     shopService.getFeed(req.user._id, req.query.since),
     shopService.getCakeNotice(req.user._id),
@@ -56,9 +73,37 @@ exports.getFeed = catchAsync(async (req, res) => {
   res.json({ success: true, feed, caked, announce });
 });
 
-// ── GET /api/shop/pet — the walking linh thú, for js/shared/pets.js ──
+// ── GET /api/shop/pet — the walking linh thú (+ its 🎁 status), for js/shared/pets.js ──
 exports.getPet = catchAsync(async (req, res) => {
-  res.json({ success: true, activePet: await shopService.getActivePet(req.user._id) });
+  res.json({ success: true, ...(await shopService.getPetState(req.user._id)) });
+});
+
+// ── POST /api/shop/pet-gift — open today's 🎁 Quà linh thú ──────
+exports.claimPetGift = catchAsync(async (req, res) => {
+  send(res, await shopService.claimPetGift(req.user._id));
+});
+
+// ── POST /api/shop/lens { targetId } — 🔍 Kính Soi ─────────────
+exports.useLens = catchAsync(async (req, res) => {
+  send(res, await shopService.useLens(req.user._id, String((req.body || {}).targetId || '')));
+});
+
+// ── ⚔️ Thách đấu (services/duelService.js) ─────────────────────
+exports.listDuels = catchAsync(async (req, res) => {
+  res.json({ success: true, ...(await duelService.listDuels(req.user._id)) });
+});
+exports.challenge = catchAsync(async (req, res) => {
+  const { toId, stake } = req.body || {};
+  send(res, await duelService.challenge(req.user._id, String(toId || ''), stake));
+});
+exports.acceptDuel = catchAsync(async (req, res) => {
+  send(res, await duelService.respond(req.user._id, String(req.params.id || ''), true));
+});
+exports.declineDuel = catchAsync(async (req, res) => {
+  send(res, await duelService.respond(req.user._id, String(req.params.id || ''), false));
+});
+exports.cancelDuel = catchAsync(async (req, res) => {
+  send(res, await duelService.cancel(req.user._id, String(req.params.id || '')));
 });
 
 // ── POST /api/shop/buy { kind: 'item'|'pet', key, qty? } ──────

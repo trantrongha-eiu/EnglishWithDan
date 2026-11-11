@@ -13,6 +13,10 @@
  *   • Entrances       — each page the owner opens starts with a ~3s
  *                       full-screen arrival themed to the pet (Thập Vĩ:
  *                       storm(); the rest: entrance() + FX table).
+ *   • 🎁 Quà linh thú — once a day, after the student earns a 🔥 from
+ *                       studying, the walking pet carries a gift box; a
+ *                       click opens it (POST /api/shop/pet-gift: 🔥 into the
+ *                       ví lửa, sometimes an item). Fires `ews:pet-gift`.
  *   • Pets.setActive(id) — the shop page calls this right after the
  *                       student picks a pet so it appears without a reload.
  *
@@ -590,7 +594,7 @@
   function ensureCss() {
     if (document.getElementById('ews-pets-css')) return;
     var l = document.createElement('link');
-    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=6277dc6f66';
+    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=dc35370531';
     document.head.appendChild(l);
   }
   try { ensureCss(); } catch (e) {}
@@ -602,6 +606,11 @@
   var CACHE_KEY = 'ews-pet-v1';
   var REST_KEY = 'ews-pet-rest';
   var CACHE_MS = 10 * 60 * 1000;
+  // A pet still waiting for today's first 🔥 rechecks sooner, so the 🎁
+  // shows up on the next page after a practice.
+  var STUDY_CACHE_MS = 90 * 1000;
+  // GET /api/shop/pet's gift status: none | study | ready | claimed.
+  var giftState = 'none';
   var EXAM_PAGES = /^(mock-test|entrance-test|test-dau-vao|login|register|verify-email|auth-callback)(\.html)?$/;
   // Reading / Listening (incl. Dictation) practice: no pet at all on these
   // pages — matched on the whole path so clean URLs (/reading/test/<id>)
@@ -673,7 +682,8 @@
     layer.className = 'ews-pet-layer';
     layer.innerHTML = '<div class="ews-pet-bubble" hidden></div>'
       + '<div class="ews-pet" role="button" tabindex="0" aria-label="Linh thú ' + NAMES[this.id] + ' — bấm để chơi">'
-      + '<div class="ews-pet-rot"><div class="ews-pet-flip">' + svg(this.id) + '</div>' + ZZZ + '</div>'
+      + '<div class="ews-pet-rot"><div class="ews-pet-flip">' + svg(this.id) + '</div>' + ZZZ
+      + '<span class="ews-pet-gift" aria-hidden="true">🎁</span></div>'
       + '</div>';
     document.body.appendChild(layer);
     this.layer = layer;
@@ -697,6 +707,66 @@
     else this.setState('sit');
     this.vis = setInterval(function () { self.layer.style.display = examActive() ? 'none' : ''; }, 600);
     this.layer.style.display = examActive() ? 'none' : '';
+    this.syncGift();
+  };
+  Walker.prototype.syncGift = function () {
+    var ready = giftState === 'ready';
+    this.el.classList.toggle('has-gift', ready);
+    this.el.setAttribute('aria-label', 'Linh thú ' + NAMES[this.id] + (ready ? ' mang quà — bấm để mở quà hôm nay' : ' — bấm để chơi'));
+  };
+  Walker.prototype.say = function (html, ms) {
+    var self = this;
+    this.bubble.innerHTML = html;
+    this.bubble.hidden = false;
+    this.placeBubble();
+    clearTimeout(this.bubbleT);
+    this.bubbleT = setTimeout(function () { self.bubble.hidden = true; }, ms || 4200);
+  };
+  // 🎁 click: open today's gift on the server, then show what was inside.
+  Walker.prototype.openGift = function () {
+    var self = this;
+    if (this.opening) return;
+    this.opening = true;
+    this.setState('sit');
+    this.until = performance.now() + 5000;
+    fetch(API + '/shop/pet-gift', { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, window.AuthService.authHeader()) })
+      .then(function (r) { return r.json().catch(function () { return null; }); })
+      .then(function (d) {
+        self.opening = false;
+        if (!d || !d.success) {
+          var code = d && d.code;
+          giftState = code === 'gift_study' ? 'study' : 'claimed';
+          saveCache();
+          self.syncGift();
+          self.say('<span>' + esc((d && d.message) || 'Chưa mở được quà, thử lại sau nhé!') + '</span>');
+          return;
+        }
+        giftState = 'claimed';
+        saveCache();
+        self.syncGift();
+        self.burst();
+        var loot = '+' + d.flames + ' 🔥' + (d.item ? ' & ' + esc(d.item.emoji + ' ' + d.item.name) : '');
+        self.say('<span>🎁 ' + esc(NAMES[self.id]) + ' mang về <b>' + loot + '</b>!</span><small class="ews-pet-gift-note">Ví lửa: 🔥 ' + d.wallet + ' · mai lại có quà nhé</small>', 6000);
+        if (window.showToast) try { window.showToast('🎁 Quà linh thú: ' + loot.replace(/<[^>]+>/g, '') + ' đã vào ' + (d.item ? 'ví lửa & Kho đồ' : 'ví lửa'), 'success'); } catch (e) {}
+        try { document.dispatchEvent(new CustomEvent('ews:pet-gift', { detail: d })); } catch (e) {}
+      })
+      .catch(function () { self.opening = false; });
+  };
+  // Confetti of 🔥 / ✨ popping out of the opened box.
+  Walker.prototype.burst = function () {
+    if (REDUCED) return;
+    var el = this.el;
+    var bits = ['🔥', '✨', '🔥', '⭐', '🔥', '✨'];
+    bits.forEach(function (b, i) {
+      var sp = document.createElement('span');
+      sp.className = 'ews-pet-confetti';
+      sp.textContent = b;
+      var a = (-150 + i * 24) * Math.PI / 180;
+      sp.style.setProperty('--x', Math.round(Math.cos(a) * 46) + 'px');
+      sp.style.setProperty('--y', Math.round(Math.sin(a) * 46) + 'px');
+      el.appendChild(sp);
+      setTimeout(function () { sp.remove(); }, 1000);
+    });
   };
   Walker.prototype.place = function () {
     var g = this.geometry(this.t);
@@ -768,12 +838,16 @@
   };
   Walker.prototype.poke = function () {
     var self = this;
+    this.el.classList.remove('is-hop'); void this.el.offsetWidth; this.el.classList.add('is-hop');
+    if (giftState === 'ready') { this.openGift(); return; }
     var lines = LINES[this.id] || ['♥'];
-    this.bubble.innerHTML = '<span>' + lines[Math.floor(Math.random() * lines.length)] + '</span>'
+    var line = giftState === 'study' && Math.random() < 0.5
+      ? 'Học 1 bài kiếm 🔥 là mình mang quà về cho cậu nha 🎁'
+      : lines[Math.floor(Math.random() * lines.length)];
+    this.bubble.innerHTML = '<span>' + line + '</span>'
       + '<button type="button" class="ews-pet-rest">💤 Cho nghỉ hôm nay</button>';
     this.bubble.hidden = false;
     this.placeBubble();
-    this.el.classList.remove('is-hop'); void this.el.offsetWidth; this.el.classList.add('is-hop');
     var heart = document.createElement('span');
     heart.className = 'ews-pet-heart'; heart.textContent = '❤';
     this.el.appendChild(heart);
@@ -1005,6 +1079,36 @@
     else entrance(id);
   }
 
+  function esc(t) {
+    return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  var cachedId = '';
+  function saveCache() { lsSet(CACHE_KEY, { id: cachedId, u: uid(), t: Date.now(), gift: giftState, day: todayStr() }); }
+
+  // Fresh enough to skip GET /api/shop/pet? The gift status is per day, and
+  // a "not studied yet" pet rechecks after STUDY_CACHE_MS.
+  function cacheFresh(c) {
+    var me = uid();
+    if (!c || !me || c.u !== me || c.day !== todayStr() || !c.gift) return false;
+    var age = Date.now() - c.t;
+    return age < (c.gift === 'study' ? STUDY_CACHE_MS : CACHE_MS);
+  }
+
+  function fetchPet(then) {
+    fetch(API + '/shop/pet', { headers: window.AuthService.authHeader() })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || !d.success) return;
+        cachedId = d.activePet || '';
+        giftState = d.gift || 'none';
+        saveCache();
+        then(cachedId);
+      })
+      .catch(function () {});
+  }
+
   function boot() {
     try {
       if (!window.AuthService || !window.AuthService.isLoggedIn || !window.AuthService.isLoggedIn()) return;
@@ -1012,16 +1116,8 @@
       if (u && u.role && u.role !== 'student' && u.role !== 'teacher') return;
       if (EXAM_PAGES.test(location.pathname.split('/').pop()) || NO_PET_PATHS.test(location.pathname)) return;
       var cached = lsGet(CACHE_KEY);
-      var me = uid();
-      if (cached && me && cached.u === me && Date.now() - cached.t < CACHE_MS) { show(cached.id); return; }
-      fetch(API + '/shop/pet', { headers: window.AuthService.authHeader() })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (d) {
-          if (!d || !d.success) return;
-          lsSet(CACHE_KEY, { id: d.activePet || '', u: me, t: Date.now() });
-          show(d.activePet);
-        })
-        .catch(function () {});
+      if (cacheFresh(cached)) { cachedId = cached.id; giftState = cached.gift; show(cached.id); return; }
+      fetchPet(show);
     } catch (e) {}
   }
 
@@ -1033,9 +1129,17 @@
     theme: SU,
     // Called by the shop page right after the student picks/puts away a pet.
     setActive: function (id) {
-      lsSet(CACHE_KEY, { id: id || '', u: uid(), t: Date.now() });
+      cachedId = id || '';
       try { localStorage.removeItem(REST_KEY); } catch (e) {}
       show(id);
+      // The 🎁 status comes with the pet — refresh it for the new one.
+      try { fetchPet(function () { if (walker) walker.syncGift(); }); } catch (e) {}
+    },
+    // The shop / Kho đồ opened today's gift with their own button.
+    giftOpened: function () {
+      giftState = 'claimed';
+      saveCache();
+      if (walker) walker.syncGift();
     },
     // True after "💤 Cho nghỉ hôm nay" until midnight — the pet (and its
     // entrance) is hidden on this browser. Kho đồ / shop show it with a

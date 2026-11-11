@@ -45,7 +45,7 @@
             use = '<button type="button" class="btn btn-primary btn-sm" data-inv-use="' + i.key + '"' + (hopeOn ? ' disabled' : '') + '>'
                 + (hopeOn ? 'Đang dùng hôm nay' : 'Dùng') + '</button>';
         } else if (i.usage === 'target') {
-            use = '<a class="btn btn-primary btn-sm" href="vocab-leaderboard.html">Ném ở BXH</a>';
+            use = '<a class="btn btn-primary btn-sm" href="vocab-leaderboard.html">' + (i.key === 'lens' ? '🔍 Soi ở BXH' : 'Ném ở BXH') + '</a>';
         } else {
             use = '<span class="inv-passive">🛡️ Tự động bật khi lỡ 1 ngày</span>';
         }
@@ -87,6 +87,8 @@
             + (resting ? '<span class="inv-resting">💤 Đang nghỉ hôm nay</span>'
                 : active ? '<span class="inv-walking">✓ Đang đi dạo</span>'
                 : (p.tails ? '<span class="inv-qty">' + p.tails + ' đuôi</span>' : '')) + '</div>'
+            + (p.skill ? '<div class="inv-skill"><b>' + p.skill.icon + ' ' + escHtml(p.skill.name) + '</b> ' + escHtml(p.skill.text)
+                + (active ? '' : ' <em>Chỉ dùng khi bé đi dạo.</em>') + '</div>' : '')
             + '<div class="inv-actions">'
             + (resting ? '<button type="button" class="btn btn-primary btn-sm" data-inv-wake>Gọi dậy</button>' : '')
             + (active
@@ -108,7 +110,7 @@
             + '<div class="inv-stat inv-stat--streak"><span>Lửa chuỗi hiện có</span><b>🔥 ' + state.streak + '</b></div>'
             + '</div>'
             + '<a class="btn btn-primary btn-sm" href="shop.html"><i class="fas fa-store"></i> Cửa hàng</a></div>'
-            + '<p class="inv-note">Ví lửa dùng để mua sắm; lửa chuỗi là thứ hạng trên BXH. Bán lại được một nửa giá mua (làm tròn xuống). Bấm 🎁 Tặng để gửi vật phẩm / linh thú cho bạn bè.</p>';
+            + '<p class="inv-note">Ví lửa dùng để mua sắm; lửa chuỗi là thứ hạng trên BXH. Bán lại được một nửa giá mua (làm tròn xuống). Bấm 🎁 Tặng để gửi vật phẩm / linh thú cho bạn bè. Kỹ năng linh thú chỉ có tác dụng với bé đang đi dạo.</p>';
         el.innerHTML = head
             + '<h4 class="inv-h">⚔️ Vật phẩm</h4><div class="inv-grid">' + danielCard() + items.map(itemCard).join('') + '</div>'
             + (pets.length

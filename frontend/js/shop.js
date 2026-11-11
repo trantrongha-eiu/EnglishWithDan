@@ -6,8 +6,12 @@
  * comes from the server (backend/constants/shop.js); only the pet art lives
  * here, in js/shared/pets.js.
  *
+ * Also: the "linh thú đang đi dạo" panel (its skill, a button to open
+ * today's 🎁 Quà linh thú, Hộ Thể blocks left) and the ⚔️ Thách đấu board
+ * (js/shared/duel.js).
+ *
  * Needs: AuthService, escHtml (shared/utils.js), showToast (shared/toast.js),
- * confirmDialog (shared/confirm-dialog.js), Pets (shared/pets.js).
+ * confirmDialog (shared/confirm-dialog.js), Pets (shared/pets.js), Duel.
  */
 (function () {
     'use strict';
@@ -44,8 +48,45 @@
         document.getElementById('shop-wallet-value').textContent = state.wallet;
         document.getElementById('shop-streak').textContent = state.streak;
         renderEffects();
+        renderMyPet();
         renderItems();
         renderPets();
+        duelOpts.wallet = state.wallet;
+        if (!duelMounted && window.Duel) { duelMounted = true; window.Duel.mount(document.getElementById('shop-duels'), duelOpts); }
+    }
+    var duelOpts = { wallet: 0, onChange: function () { load(); } };
+    var duelMounted = false;
+
+    function skillHtml(skill) {
+        if (!skill) return '';
+        return '<div class="shop-skill"><b>' + skill.icon + ' ' + escHtml(skill.name) + '</b><span>' + escHtml(skill.text) + '</span></div>';
+    }
+
+    // The pet out walking (state.pet): skill, today's 🎁, Hộ Thể blocks.
+    function renderMyPet() {
+        var el = document.getElementById('shop-mypet');
+        var p = state.pet;
+        var ownsAny = state.pets.some(function (x) { return x.owned; });
+        if (!p) {
+            el.innerHTML = '<div class="shop-mypet-body"><b>🐾 ' + (ownsAny ? 'Chưa có linh thú nào đi dạo' : 'Rước một linh thú về nhà nhé!') + '</b>'
+                + '<small>' + (ownsAny
+                    ? 'Dắt một bé đi dạo ở <a href="' + KHO + '">Kho đồ</a> để dùng kỹ năng của bé và nhận 🎁 quà mỗi ngày.'
+                    : 'Mỗi linh thú có một kỹ năng riêng và mang 🎁 quà 🔥 về mỗi ngày bạn học bài.') + '</small></div>';
+            el.hidden = false;
+            return;
+        }
+        var gift;
+        if (p.gift === 'ready') gift = '<button type="button" class="btn btn-primary btn-sm shop-gift-btn" data-pet-gift>🎁 Mở quà hôm nay</button>';
+        else if (p.gift === 'claimed') gift = '<span class="shop-gift-done">✓ Đã mở quà hôm nay — mai lại có nhé</span>';
+        else gift = '<span class="shop-gift-wait">🎁 Học 1 bài kiếm 🔥 đầu tiên hôm nay là bé mang quà về</span>';
+        var guard = p.guard
+            ? '<span class="shop-guard">' + (p.guard.reflect ? '⚡' : '🛡️') + ' Hộ thể hôm nay: còn <b>' + Math.max(0, p.guard.max - p.guard.used) + '/' + p.guard.max + '</b> lần chặn bánh</span>'
+            : '';
+        el.innerHTML = '<span class="shop-mypet-art" aria-hidden="true"><span class="ews-pet is-walking shop-pet-preview">' + (window.Pets ? window.Pets.svg(p.id) : '') + '</span></span>'
+            + '<div class="shop-mypet-body"><b>🐾 ' + escHtml(p.name) + ' đang đi dạo cùng bạn</b>'
+            + skillHtml(p.skill)
+            + '<div class="shop-mypet-status">' + gift + guard + '</div></div>';
+        el.hidden = false;
     }
 
     function renderEffects() {
@@ -141,6 +182,7 @@
                 + '<div class="shop-pet-stage"><div class="ews-pet is-walking shop-pet-preview">' + (window.Pets ? window.Pets.svg(p.id) : '') + '</div></div>'
                 + '<h3>' + escHtml(p.name) + (p.legendary ? ' <span class="shop-legend-tag">Huyền thoại</span>' : '') + (p.owned ? ' <span class="shop-tag">Của bạn</span>' : '') + '</h3>'
                 + '<p>' + escHtml(p.description) + '</p>'
+                + skillHtml(p.skill)
                 + '<div class="shop-card-actions">' + action + '</div>'
                 + '</article>';
         }).join('');
@@ -261,6 +303,22 @@
 
     // Wiped from the shop-feed.js cake popup — drop the 🎂 effect row.
     document.addEventListener('ews:cake-wiped', function () { if (state) load(); });
+    // Opened by clicking the walking pet (pets.js) — refresh wallet + panel.
+    document.addEventListener('ews:pet-gift', function () { if (state) load(); });
+
+    // 🎁 Mở quà hôm nay — same as clicking the walking pet.
+    document.addEventListener('click', function (e) {
+        var b = e.target.closest && e.target.closest('[data-pet-gift]');
+        if (!b || b.disabled || busy) return;
+        b.disabled = true;
+        busy = true;
+        api('POST', '/shop/pet-gift').then(function (d) {
+            if (d && d.success && window.Pets && window.Pets.giftOpened) window.Pets.giftOpened();
+            after(d, d && d.success
+                ? '🎁 ' + d.petName + ' mang về +' + d.flames + ' 🔥' + (d.item ? ' và ' + d.item.emoji + ' ' + d.item.name + ' (đã vào Kho đồ)' : '') + '!'
+                : '');
+        });
+    });
 
     function load() {
         return api('GET', '/shop').then(function (d) {
@@ -269,7 +327,7 @@
             render();
         }).catch(function (err) {
             if (window.console) console.warn('[shop] load failed', err);
-            ['shop-items', 'shop-pets', 'shop-beasts', 'shop-susano'].forEach(function (id) {
+            ['shop-items', 'shop-pets', 'shop-beasts', 'shop-susano', 'shop-duels'].forEach(function (id) {
                 var el = document.getElementById(id);
                 el.removeAttribute('aria-busy');
                 el.innerHTML = '<div class="shop-empty">Không tải được cửa hàng. <button type="button" class="btn btn-ghost btn-sm" onclick="location.reload()">Thử lại</button></div>';

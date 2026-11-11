@@ -178,3 +178,40 @@
   font-size: 11px; font-weight: 800; padding: 1px 8px; border-radius: 99px; vertical-align: 2px;
   background: linear-gradient(90deg, #fde68a, #fdba74); color: #7c2d12;
 }
+
+/* ── Kỹ năng linh thú (skill line on cards + the "đang đi dạo" panel) ── */
+.shop-skill {
+  display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 12px;
+  background: #fff7ed; border: 1px dashed #fdba74; font-size: 12px; line-height: 1.45; color: var(--text2);
+}
+.shop-skill b { font-size: 13px; color: #c2410c; }
+[data-theme="dark"] .shop-skill { background: rgba(249, 115, 22, .08); border-color: rgba(249, 115, 22, .35); }
+[data-theme="dark"] .shop-skill b { color: #fdba74; }
+.shop-pet--susano .shop-skill { background: rgba(var(--su, 239, 68, 68), .08); }
+
+.shop-mypet {
+  display: flex; align-items: center; gap: 16px; padding: 14px 18px; margin-bottom: 22px;
+  border-radius: var(--radius-lg); background: var(--surface); border: 1px solid #fdba74;
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, .1);
+}
+.shop-mypet[hidden] { display: none; }
+.shop-mypet-art {
+  flex: 0 0 auto; width: 72px; height: 72px; border-radius: 16px; overflow: hidden; display: inline-flex; align-items: flex-end; justify-content: center;
+  background: linear-gradient(180deg, #e0f2fe 0%, #f0f9ff 62%, #bbf7d0 62%, #86efac 100%);
+}
+[data-theme="dark"] .shop-mypet-art { background: linear-gradient(180deg, #1e293b 0%, #273449 62%, #14532d 62%, #166534 100%); }
+.shop-mypet-art .ews-pet { position: static; width: 64px; height: 64px; filter: none; cursor: default; }
+.shop-mypet-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.shop-mypet-body > b { font-size: 15px; color: var(--text); }
+.shop-mypet-body > small { font-size: 13px; color: var(--text2); }
+.shop-mypet-status { display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; font-size: 13px; }
+.shop-gift-btn { animation: shop-gift-wiggle 1.6s ease-in-out infinite; }
+.shop-gift-btn[disabled] { opacity: .5; animation: none; }
+.shop-gift-done { color: var(--success, #16a34a); font-weight: 700; }
+.shop-gift-wait { color: var(--text2); }
+.shop-guard { color: #7c3aed; font-weight: 600; }
+[data-theme="dark"] .shop-guard { color: #c4b5fd; }
+.shop-card--lens .shop-emoji { background: #ecfeff; }
+@keyframes shop-gift-wiggle { 0%, 80%, 100% { transform: none; } 85% { transform: rotate(-4deg); } 90% { transform: rotate(4deg); } 95% { transform: rotate(-2deg); } }
+@media (prefers-reduced-motion: reduce) { .shop-gift-btn { animation: none; } }
+@media (max-width: 520px) { .shop-mypet { align-items: flex-start; padding: 12px 14px; } .shop-mypet-art { width: 56px; height: 56px; } }

@@ -31,8 +31,11 @@
 
     function mmss(sec) { return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); }
 
-    // Cửa hàng lửa state for the shop strip + the 🎂 buttons (loadShop).
+    // Cửa hàng lửa state for the shop strip + the 🎂 / 🔍 / ⚔️ buttons (loadShop).
     var myCakes = 0;
+    var myLenses = 0;
+    var myWallet = 0;
+    var canDuel = false;
 
     // Shared row shell: rank/medal, avatar-or-initial, name, right-hand value.
     // Clicking someone else's row opens their peer profile. `decor` carries
@@ -56,6 +59,16 @@
             ? '<button type="button" class="vlb-cake-btn" title="Ném bánh kem vào ' + escHtml(name) + '" aria-label="Ném bánh kem vào ' + escHtml(name) + '"'
               + ' data-cake="' + escHtml(String(userId)) + '" data-name="' + escHtml(name) + '">🎂</button>'
             : '';
+        // 🔍 Kính Soi — only on someone wearing an Áo Tàng Hình.
+        if (!isMe && myLenses > 0 && decor.hidden) {
+            cakeBtn += '<button type="button" class="vlb-cake-btn vlb-lens-btn" title="Dùng Kính Soi lột Áo Tàng Hình của ' + escHtml(name) + '" aria-label="Dùng Kính Soi lột Áo Tàng Hình của ' + escHtml(name) + '"'
+              + ' data-lens="' + escHtml(String(userId)) + '" data-name="' + escHtml(name) + '">🔍</button>';
+        }
+        // ⚔️ Thách đấu (js/shared/duel.js).
+        if (!isMe && canDuel && window.Duel) {
+            cakeBtn += '<button type="button" class="vlb-cake-btn vlb-duel-btn" title="Thách đấu ' + escHtml(name) + ' — cược 🔥" aria-label="Thách đấu ' + escHtml(name) + '"'
+              + ' data-duel="' + escHtml(String(userId)) + '" data-name="' + escHtml(name) + '">⚔️</button>';
+        }
         return '<div class="dan-lb-row' + (isMe ? ' is-me' : ' dan-lb-clickable') + '"'
             + (isMe ? '' : ' onclick="window.openPeerProfile(\'' + escHtml(String(userId)) + '\')"') + '>'
             + '<span class="dan-lb-rank' + (medal ? ' top' + rank : '') + '">' + (medal || rank) + '</span>'
@@ -65,7 +78,7 @@
             + (rank === 1 && window.Mascot ? '<span class="vlb-top-lulu" title="Lulu cổ vũ người dẫn đầu">' + window.Mascot.svg('cheer', { label: 'Lulu' }) + '</span>' : '')
             + '<span class="vlb-spacer"></span>'
             + cakeBtn
-            + valueHtml
+            + (decor.revealed ? valueHtml.replace('dan-lb-streak', 'dan-lb-streak vlb-revealed').replace('<i class="fas fa-fire"></i>', '👁️ <i class="fas fa-fire"></i>') : valueHtml)
             + '</div>';
     }
 
@@ -191,10 +204,16 @@
             var owned = {};
             (d.items || []).forEach(function (i) { owned[i.key] = i.owned; });
             myCakes = owned.cake || 0;
+            myLenses = owned.lens || 0;
+            myWallet = d.wallet || 0;
+            canDuel = true;
             var bits = [];
             if (d.effects && d.effects.hope) bits.push('🔨 Búa Hi Vọng: ' + Math.min(d.effects.hope.base, d.effects.hope.quota) + '/' + d.effects.hope.quota + ' 🔥');
             if (owned.iceShield) bits.push('🛡️ ×' + owned.iceShield);
             if (myCakes) bits.push('Bạn có ' + myCakes + ' 🎂 — bấm 🎂 cạnh tên một bạn để ném');
+            if (myLenses) bits.push('🔍 ×' + myLenses + ' — bấm 🔍 cạnh người đang tàng hình để soi');
+            if (d.pet && d.pet.skill) bits.push(d.pet.skill.icon + ' ' + d.pet.name + ': ' + d.pet.skill.name);
+            bits.push('⚔️ cạnh tên = thách đấu cược 🔥');
             strip.innerHTML = '<span class="vlb-shop-wallet">Ví lửa <b>🔥 ' + d.wallet + '</b></span>'
                 + '<span class="vlb-shop-bits">' + (bits.length ? bits.map(escHtml).join(' · ') : 'Mua linh thú, vương miện, búa hi vọng… để đua top!') + '</span>'
                 + '<a class="btn btn-primary btn-sm" href="shop.html"><i class="fas fa-store"></i> Cửa hàng</a>';
@@ -217,12 +236,47 @@
         else if (window.confirm(msg)) throwCake(btn, name);
     }, true);
 
+    // 🔍 / ⚔️ next to a name — same capture-phase trick as the 🎂.
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest && e.target.closest('.vlb-lens-btn, .vlb-duel-btn');
+        if (!btn) return;
+        e.stopPropagation();
+        var name = btn.getAttribute('data-name');
+        if (btn.hasAttribute('data-duel')) {
+            window.Duel.challenge({ id: btn.getAttribute('data-duel'), name: name }, { wallet: myWallet, onChange: loadShop });
+            return;
+        }
+        var msg = 'Dùng 1 🔍 Kính Soi lột Áo Tàng Hình của ' + name + '? Cả BXH sẽ lại thấy số 🔥 thật của bạn ấy.';
+        var go = function () { useLens(btn, name); };
+        if (window.confirmDialog) window.confirmDialog('Soi Áo Tàng Hình?', msg, go, { confirmLabel: 'Soi! 🔍', confirmClass: 'btn-primary' });
+        else if (window.confirm(msg)) go();
+    }, true);
+
+    function useLens(btn, name) {
+        btn.disabled = true;
+        fetch(API + '/shop/lens', { method: 'POST', headers: authH(), body: JSON.stringify({ targetId: btn.getAttribute('data-lens') }) })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+                if (window.showToast) window.showToast(d.success ? '🔍 Lộ rồi nhé! Áo Tàng Hình của ' + name + ' đã rách 😎' : (d.message || 'Không soi được'), d.success ? 'success' : 'error');
+                loadShop().then(function () { loadStreakBoard(); loadQuizBoard(); });
+            })
+            .catch(function () { btn.disabled = false; });
+    }
+
+    function cakeToast(d, name) {
+        if (!d.success) return [d.message || 'Không ném được', 'error'];
+        if (d.outcome === 'reflected') return ['⚡ Bốp! ' + d.petName + ' của ' + name + ' phản đòn — bánh úp ngược vào mặt bạn 😱', 'error'];
+        if (d.outcome === 'blocked') return ['🛡️ ' + d.petName + ' của ' + name + ' đã hộ thể chặn bánh! Mất 1 🎂 rồi…', 'info'];
+        return ['🎂 Bẹp! ' + name + ' dính đầy kem rồi 😆', 'success'];
+    }
+
     function throwCake(btn, name) {
         btn.disabled = true;
         fetch(API + '/shop/cake', { method: 'POST', headers: authH(), body: JSON.stringify({ targetId: btn.getAttribute('data-cake') }) })
             .then(function (r) { return r.json(); })
             .then(function (d) {
-                if (window.showToast) window.showToast(d.success ? '🎂 Bẹp! ' + name + ' dính đầy kem rồi 😆' : (d.message || 'Không ném được'), d.success ? 'success' : 'error');
+                var t = cakeToast(d, name);
+                if (window.showToast) window.showToast(t[0], t[1]);
                 loadShop().then(function () { loadStreakBoard(); loadQuizBoard(); });
             })
             .catch(function () { btn.disabled = false; });

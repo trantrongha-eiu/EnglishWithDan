@@ -19,7 +19,7 @@ describe('/api/shop', () => {
     const res = await request(app).get('/api/shop').set(auth(s));
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ success: true, wallet: 12, activePet: '' });
-    expect(res.body.items.map(i => i.key)).toEqual(['hopeHammer', 'danielHammer', 'iceShield', 'cake', 'towel', 'cloak', 'crown']);
+    expect(res.body.items.map(i => i.key)).toEqual(['hopeHammer', 'danielHammer', 'iceShield', 'cake', 'towel', 'cloak', 'crown', 'lens']);
     expect(res.body.pets).toHaveLength(20);
   });
 
@@ -300,5 +300,29 @@ describe('/api/shop gifts (Kho đồ → 🎁 Tặng)', () => {
     expect(res.body.users.find(u => String(u._id) === String(t._id)).teacher).toBe(true);
     const two = await request(app).get('/api/shop/gift-recipients?q=' + encodeURIComponent('zoe trần')).set(auth(s));
     expect(two.body.users.map(u => String(u._id))).toEqual([String(mate._id)]);
+  });
+
+  test('pet state + 🎁 gift route, with its error codes', async () => {
+    const s = await createStudent({ extra: { flameWalletGranted: true, pets: ['meo'], activePet: 'meo' } });
+    let res = await request(app).get('/api/shop/pet').set(auth(s));
+    expect(res.body).toMatchObject({ success: true, activePet: 'meo', gift: 'study' });
+    res = await request(app).post('/api/shop/pet-gift').set(auth(s));
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('gift_study');
+    res = await request(app).get('/api/shop').set(auth(s));
+    expect(res.body.pet).toMatchObject({ id: 'meo', gift: 'study', skill: { name: 'Thần Tài' } });
+  });
+
+  test('⚔️ duel routes: challenge → list → accept', async () => {
+    const a = await createStudent({ extra: { flameWallet: 50, flameWalletGranted: true } });
+    const b = await createStudent({ extra: { flameWallet: 50, flameWalletGranted: true } });
+    let res = await request(app).post('/api/shop/duels').set(auth(a)).send({ toId: String(b._id), stake: 1 });
+    expect(res.body.code).toBe('duel_stake');
+    res = await request(app).post('/api/shop/duels').set(auth(a)).send({ toId: String(b._id), stake: 20 });
+    expect(res.body).toMatchObject({ success: true, wallet: 30 });
+    res = await request(app).get('/api/shop/duels').set(auth(b));
+    expect(res.body.open).toHaveLength(1);
+    res = await request(app).post(`/api/shop/duels/${res.body.open[0].id}/accept`).set(auth(b));
+    expect(res.body).toMatchObject({ success: true, wallet: 30 });
   });
 });

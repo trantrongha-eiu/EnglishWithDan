@@ -141,3 +141,11 @@
   .vlb-grid .pet-badge.pet-legend { width: 44px; height: 44px; flex-basis: 44px; margin: -10px 2px -10px 8px; }
   .vlb-cake-btn { width: 26px; height: 26px; font-size: 13px; }
 }
+
+/* 🔍 Kính Soi / ⚔️ Thách đấu buttons beside the 🎂, and a cloaked streak
+   seen through by Mắt Cáo (Cáo Lửa / Hồ Ly Cửu Vĩ out walking). */
+.vlb-lens-btn:hover { border-color: #22d3ee; transform: scale(1.15) rotate(8deg); }
+.vlb-duel-btn:hover { border-color: #f97316; transform: scale(1.15) rotate(-8deg); }
+.vlb-revealed { opacity: .85; font-style: italic; }
+.vlb-revealed::after { content: ' (tàng hình)'; font-size: 11px; font-weight: 500; font-style: normal; color: var(--text3, #9ca3af); }
+@media (max-width: 480px) { .vlb-revealed::after { content: ''; } }

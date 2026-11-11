@@ -16,6 +16,7 @@ const { DAILY_STREAK_BONUS_CAP, streakBonusEarnedToday } = require('./streakBonu
 const {
   ITEMS, PETS, LEGEND_PETS, HOPE_QUOTA, HOPE_PENALTY,
   CAKE_HOURS, CLOAK_HOURS, CROWN_DAYS, MAX_BUY_QTY, FLAME_ROLES, isFlameRole,
+  petPower, GIFT_DROPS,
 } = require('../constants/shop');
 
 const HOUR = 60 * 60 * 1000;
@@ -26,6 +27,18 @@ const PET_BY_ID = Object.fromEntries(PETS.map(p => [p.id, p]));
 function itemField(item) { return item.field || `shopItems.${item.key}`; }
 function ownedOf(u, item) {
   return (item.field ? u[item.field] : (u.shopItems || {})[item.key]) || 0;
+}
+
+// How many of a capped item a player may hold — the Khiên Băng cap is
+// raised while a pet with shieldMax (Cánh Cụt) is out walking. 0 = no cap.
+function capFor(item, activePet) {
+  const p = petPower(activePet);
+  if (item.key === 'iceShield' && p && p.shieldMax) return Math.max(item.maxOwned || 0, p.shieldMax);
+  return item.maxOwned || 0;
+}
+
+function sameDay(a, b) {
+  return !!(a && b && new Date(a).getTime() === new Date(b).getTime());
 }
 
 function displayName(u) {
@@ -70,13 +83,13 @@ async function seedWallet(userId) {
 async function settleHopeHammer(userId) {
   const today = getVNDay(new Date());
   const u = await User.findOne({ _id: userId, hopeHammerDay: { $ne: null, $lt: today } })
-    .select('hopeHammerDay hopeHammerBase').lean();
+    .select('hopeHammerDay hopeHammerBase hopeHammerQuota').lean();
   if (!u) return null;
   return settleOne(u);
 }
 
 async function settleOne(u) {
-  const success = (u.hopeHammerBase || 0) >= HOPE_QUOTA;
+  const success = (u.hopeHammerBase || 0) >= (u.hopeHammerQuota || HOPE_QUOTA);
   const penalty = success ? 0 : HOPE_PENALTY;
   const res = await User.updateOne(
     { _id: u._id, hopeHammerDay: u.hopeHammerDay },
@@ -86,6 +99,7 @@ async function settleOne(u) {
         hopeHammerLast: { day: u.hopeHammerDay, success, base: u.hopeHammerBase || 0, penalty },
         hopeHammerDay: null,
         hopeHammerBase: 0,
+        hopeHammerQuota: 0,
       },
     }],
     { updatePipeline: true }
@@ -98,7 +112,7 @@ async function settleOne(u) {
 async function settleAllHopeHammers() {
   const today = getVNDay(new Date());
   const due = await User.find({ hopeHammerDay: { $ne: null, $lt: today } })
-    .select('hopeHammerDay hopeHammerBase').lean();
+    .select('hopeHammerDay hopeHammerBase hopeHammerQuota').lean();
   for (const u of due) await settleOne(u);
   return due.length;
 }
@@ -108,9 +122,10 @@ async function getState(userId) {
   await settleHopeHammer(userId);
   await coverMissedDaysWithShields(User, userId).catch(() => 0);
   const u = await User.findById(userId)
-    .select('flameWallet shopItems hopeHammerDay hopeHammerBase hopeHammerLast crownUntil invisibleUntil cakedUntil cakedBy pets activePet learningStreak lastActivityDate streakHammers previousStreak streakLostAt')
+    .select('flameWallet shopItems hopeHammerDay hopeHammerBase hopeHammerQuota hopeHammerLast crownUntil invisibleUntil cakedUntil cakedBy pets activePet petGiftDay petGuardDay petGuardUsed learningStreak lastActivityDate streakHammers previousStreak streakLostAt')
     .lean();
   if (!u) return null;
+  const pet = await activePetView(u);
   const today = getVNDay(new Date());
   const items = u.shopItems || {};
   const hopeToday = !!(u.hopeHammerDay && new Date(u.hopeHammerDay).getTime() === today.getTime());
@@ -125,11 +140,13 @@ async function getState(userId) {
       canUse: User.hydrate(u).canUseHammer(),
       previousStreak: u.previousStreak || 0,
     },
-    items: ITEMS.map(i => ({ ...i, owned: ownedOf(u, i), sellPrice: sellPrice(i.price) })),
+    items: ITEMS.map(i => ({ ...i, maxOwned: capFor(i, u.activePet) || undefined, owned: ownedOf(u, i), sellPrice: sellPrice(i.price) })),
     pets: PETS.map(p => ({ ...p, owned: (u.pets || []).includes(p.id), sellPrice: sellPrice(p.price) })),
     activePet: u.activePet || '',
+    // The pet out walking: its skill, today's 🎁 and cake blocks.
+    pet,
     effects: {
-      hope: hopeToday ? { base: u.hopeHammerBase || 0, quota: HOPE_QUOTA, penalty: HOPE_PENALTY } : null,
+      hope: hopeToday ? { base: u.hopeHammerBase || 0, quota: u.hopeHammerQuota || HOPE_QUOTA, penalty: HOPE_PENALTY } : null,
       hopeLast: u.hopeHammerLast && u.hopeHammerLast.day ? u.hopeHammerLast : null,
       crownUntil: isActive(u.crownUntil) ? u.crownUntil : null,
       invisibleUntil: isActive(u.invisibleUntil) ? u.invisibleUntil : null,
@@ -278,19 +295,21 @@ async function buyItem(userId, key, qty = 1) {
   if (!item) return { status: 'not_found' };
   const n = Number(qty);
   if (!Number.isInteger(n) || n < 1 || n > MAX_BUY_QTY) return { status: 'invalid_qty', max: MAX_BUY_QTY };
-  if (!(await assertPlayer(userId))) return { status: 'forbidden' };
+  const pre = await User.findById(userId).select('role activePet').lean();
+  if (!pre || !isFlameRole(pre.role)) return { status: 'forbidden' };
   await seedWallet(userId);
   if (key === 'iceShield') await finalizeLostStreak(userId);
   const field = itemField(item);
   const total = item.price * n;
+  const cap = capFor(item, pre.activePet);
   const filter = { _id: userId, flameWallet: { $gte: total } };
-  if (item.maxOwned) filter[field] = { $not: { $gt: item.maxOwned - n } };
+  if (cap) filter[field] = { $not: { $gt: cap - n } };
   const u = await User.findOneAndUpdate(filter, { $inc: { flameWallet: -total, [field]: n } }, { new: true })
     .select(`flameWallet ${field}`).lean();
   if (!u) {
     const cur = await User.findById(userId).select(`flameWallet ${field}`).lean();
     const owned = ownedOf(cur, item);
-    if (item.maxOwned && owned + n > item.maxOwned) return { status: 'max_owned', max: item.maxOwned, left: Math.max(0, item.maxOwned - owned) };
+    if (cap && owned + n > cap) return { status: 'max_owned', max: cap, left: Math.max(0, cap - owned) };
     return { status: 'not_enough', wallet: cur.flameWallet || 0, price: total };
   }
   await recordPurchase(userId, 'item', item, n);
@@ -340,6 +359,82 @@ async function getActivePet(userId) {
   return (u && u.activePet) || '';
 }
 
+// ── 🎁 Quà linh thú ──────────────────────────────────────────────
+// Once per VN day, the pet out walking brings a gift (its PET_POWERS gift
+// range of 🔥 into the ví lửa, plus a `drop` chance of a GIFT_DROPS item) —
+// but only after the student has earned at least 1 🔥 from studying today,
+// so it rewards studying, not just logging in. pets.js shows it as a 🎁 on
+// the walking pet; the shop has a "Mở quà" button too.
+//   'none' — no pet out · 'claimed' — opened today · 'study' — no 🔥
+//   earned yet today · 'ready'
+async function petGiftStatus(u) {
+  if (!petPower(u.activePet)) return 'none';
+  if (sameDay(u.petGiftDay, getVNDay(new Date()))) return 'claimed';
+  return (await streakBonusEarnedToday(u._id)) >= 1 ? 'ready' : 'study';
+}
+
+async function activePetView(u) {
+  const power = petPower(u.activePet);
+  if (!power) return null;
+  const meta = PET_BY_ID[u.activePet];
+  const today = getVNDay(new Date());
+  return {
+    id: meta.id, name: meta.name, skill: meta.skill,
+    gift: await petGiftStatus(u),
+    guard: power.guard
+      ? { max: power.guard, used: sameDay(u.petGuardDay, today) ? (u.petGuardUsed || 0) : 0, reflect: !!power.reflect }
+      : null,
+  };
+}
+
+// GET /api/shop/pet (pets.js): which pet walks, and whether it carries a 🎁.
+async function getPetState(userId) {
+  const u = await User.findById(userId).select('activePet petGiftDay').lean();
+  if (!u) return { activePet: '', gift: 'none' };
+  return { activePet: u.activePet || '', gift: await petGiftStatus(u) };
+}
+
+function randInt([lo, hi]) { return lo + Math.floor(Math.random() * (hi - lo + 1)); }
+
+// A weighted GIFT_DROPS pick; a Khiên Băng with no room left becomes a cake.
+function pickDrop(u) {
+  const total = GIFT_DROPS.reduce((sum, [, w]) => sum + w, 0);
+  let r = Math.random() * total;
+  let key = GIFT_DROPS[GIFT_DROPS.length - 1][0];
+  for (const [k, w] of GIFT_DROPS) { r -= w; if (r < 0) { key = k; break; } }
+  if (key === 'iceShield') {
+    const item = ITEM_BY_KEY.iceShield;
+    if (ownedOf(u, item) >= capFor(item, u.activePet)) key = 'cake';
+  }
+  return key;
+}
+
+async function claimPetGift(userId) {
+  const u = await User.findById(userId).select('role activePet petGiftDay shopItems').lean();
+  if (!u || !isFlameRole(u.role)) return { status: 'forbidden' };
+  const power = petPower(u.activePet);
+  if (!power) return { status: 'no_pet' };
+  const today = getVNDay(new Date());
+  if (sameDay(u.petGiftDay, today)) return { status: 'gift_claimed' };
+  if ((await streakBonusEarnedToday(userId)) < 1) return { status: 'gift_study' };
+  const flames = randInt(power.gift);
+  const drop = Math.random() < power.drop ? pickDrop(u) : null;
+  const inc = { flameWallet: flames };
+  if (drop) inc[itemField(ITEM_BY_KEY[drop])] = 1;
+  // Guarded on the pet read above and "not opened today", so two tabs (or
+  // a pet swap mid-click) can only ever open one gift.
+  const got = await User.findOneAndUpdate(
+    { _id: userId, activePet: u.activePet, petGiftDay: { $ne: today } },
+    { $set: { petGiftDay: today }, $inc: inc },
+    { new: true }
+  ).select('flameWallet').lean();
+  if (!got) return { status: 'gift_claimed' };
+  return {
+    status: 'ok', petId: u.activePet, petName: PET_BY_ID[u.activePet].name,
+    flames, item: drop ? giftView(ITEM_BY_KEY[drop], 1) : null, wallet: got.flameWallet,
+  };
+}
+
 // Spends one of `key` atomically; returns the updated doc or null.
 function spendOne(userId, key, extraFilter, update) {
   return User.findOneAndUpdate(
@@ -357,23 +452,25 @@ async function useItem(userId, key) {
   if (key === 'hopeHammer') {
     // Settle a previous day's bet first, so the new one starts clean.
     await settleHopeHammer(userId);
-    const pre = await User.findById(userId).select('hopeHammerDay shopItems').lean();
+    const pre = await User.findById(userId).select('hopeHammerDay shopItems activePet').lean();
     if (!pre) return { status: 'not_found' };
     if (pre.hopeHammerDay) return { status: 'already_active' };
     if (!((pre.shopItems || {}).hopeHammer >= 1)) return { status: 'none_left' };
+    // Shiba's Cổ Vũ lowers the quota; it is fixed now, for the whole bet.
+    const quota = (petPower(pre.activePet) || {}).hopeQuota || HOPE_QUOTA;
     // 🔥 earned per day is capped (streakBonusService) — once less than the
     // quota is left today, the bet could only be lost, so it isn't offered.
     const left = Math.max(0, DAILY_STREAK_BONUS_CAP - await streakBonusEarnedToday(userId));
-    if (left < HOPE_QUOTA) return { status: 'hope_too_late', left, quota: HOPE_QUOTA };
+    if (left < quota) return { status: 'hope_too_late', left, quota };
     const today = getVNDay(new Date());
     const u = await spendOne(userId, 'hopeHammer', { hopeHammerDay: null },
-      { $set: { hopeHammerDay: today, hopeHammerBase: 0 } });
+      { $set: { hopeHammerDay: today, hopeHammerBase: 0, hopeHammerQuota: quota } });
     if (!u) {
       const cur = await User.findById(userId).select('hopeHammerDay shopItems').lean();
       if (cur && cur.hopeHammerDay) return { status: 'already_active' };
       return { status: 'none_left' };
     }
-    return { status: 'ok', owned: u.shopItems.hopeHammer, hope: { base: 0, quota: HOPE_QUOTA, penalty: HOPE_PENALTY } };
+    return { status: 'ok', owned: u.shopItems.hopeHammer, hope: { base: 0, quota, penalty: HOPE_PENALTY } };
   }
 
   // Khăn Lau Diệu Kì: wipes the cake off the student's own avatar now.
@@ -396,14 +493,53 @@ async function useItem(userId, key) {
   return { status: 'ok', owned: u.shopItems[key], until };
 }
 
+// How long a cake stays on someone — Rồng Con's Lửa Rồng melts it sooner.
+function cakeMsFor(activePet) {
+  return ((petPower(activePet) || {}).cakeHours || CAKE_HOURS) * HOUR;
+}
+
+// Best-effort note in someone's Hộp thư (the bell) about a shop skill or
+// item used on them. Never fails the action that caused it.
+async function notifyPlayer(from, toId, subject, body) {
+  try {
+    await Message.create({ fromId: from._id, fromName: displayName(from), toId, subject, body, type: 'personal' });
+  } catch (err) {
+    console.error('[shop] notifyPlayer failed:', err.message);
+  }
+}
+
+// Takes one of today's Hộ Thể blocks of the target's pet (PET_POWERS
+// guard); false when none are left or no guard pet is out. Atomic per block.
+async function reserveGuard(target, power) {
+  if (!power || !power.guard) return false;
+  const today = getVNDay(new Date());
+  const res = await User.updateOne(
+    {
+      _id: target._id, activePet: target.activePet,
+      $or: [{ petGuardDay: { $ne: today } }, { petGuardUsed: { $lt: power.guard } }],
+    },
+    [{
+      $set: {
+        petGuardUsed: { $cond: [{ $eq: ['$petGuardDay', today] }, { $add: [{ $ifNull: ['$petGuardUsed', 0] }, 1] }, 1] },
+        petGuardDay: today,
+      },
+    }],
+    { updatePipeline: true }
+  );
+  return res.modifiedCount === 1;
+}
+
 // Bánh Kem: check the target, spend the cake, then land it; if someone
 // else's cake landed in between (already covered in cake) refund it.
+// A target whose walking pet has Hộ Thể (Susano, Thập Vĩ) blocks it while
+// today's blocks last; a pet with reflect lands it on the thrower instead.
+// outcome: 'hit' | 'blocked' | 'reflected'.
 async function throwCake(userId, targetId) {
   if (!targetId || String(targetId) === String(userId)) return { status: 'invalid_target' };
-  const thrower = await User.findById(userId).select('firstName lastName username role').lean();
+  const thrower = await User.findById(userId).select('firstName lastName username role activePet').lean();
   if (!thrower || !isFlameRole(thrower.role)) return { status: 'forbidden' };
   const target = mongoose.isValidObjectId(targetId)
-    ? await User.findById(targetId).select('role cakedUntil').lean()
+    ? await User.findById(targetId).select('role cakedUntil activePet firstName lastName username').lean()
     : null;
   if (!target || !isFlameRole(target.role)) return { status: 'target_not_found' };
   if (isActive(target.cakedUntil)) return { status: 'already_caked' };
@@ -411,19 +547,62 @@ async function throwCake(userId, targetId) {
   const spent = await spendOne(userId, 'cake', {}, {});
   if (!spent) return { status: 'none_left' };
 
+  const power = petPower(target.activePet);
+  if (await reserveGuard(target, power)) {
+    const petName = PET_BY_ID[target.activePet].name;
+    let outcome = 'blocked';
+    if (power.reflect) {
+      const back = await User.updateOne(
+        { _id: userId, $or: [{ cakedUntil: null }, { cakedUntil: { $lte: new Date() } }] },
+        { $set: { cakedUntil: new Date(Date.now() + cakeMsFor(thrower.activePet)), cakedBy: `${petName} của ${displayName(target)} (phản đòn)` } }
+      );
+      if (back.modifiedCount === 1) outcome = 'reflected';
+    }
+    await notifyPlayer(thrower, target._id,
+      `🛡️ ${petName} đã chặn bánh kem của ${displayName(thrower)}!`,
+      `${displayName(thrower)} vừa ném 🎂 vào bạn, nhưng ${petName} đã hộ thể chặn lại`
+        + (outcome === 'reflected' ? ' và úp ngược bánh vào mặt người ném 😆' : '.') + ' Ảnh đại diện của bạn vẫn sạch bong ✨');
+    return { status: 'ok', outcome, owned: spent.shopItems.cake, targetName: displayName(target), petName };
+  }
+
   const hit = await User.findOneAndUpdate(
     {
       _id: targetId, role: { $in: FLAME_ROLES },
       $or: [{ cakedUntil: null }, { cakedUntil: { $lte: new Date() } }],
     },
-    { $set: { cakedUntil: new Date(Date.now() + CAKE_HOURS * HOUR), cakedBy: displayName(thrower) } },
+    { $set: { cakedUntil: new Date(Date.now() + cakeMsFor(target.activePet)), cakedBy: displayName(thrower) } },
     { new: true }
   ).select('firstName lastName username').lean();
   if (!hit) {
     await User.updateOne({ _id: userId }, { $inc: { 'shopItems.cake': 1 } });
     return { status: 'already_caked' };
   }
-  return { status: 'ok', owned: spent.shopItems.cake, targetName: displayName(hit) };
+  return { status: 'ok', outcome: 'hit', owned: spent.shopItems.cake, targetName: displayName(hit) };
+}
+
+// 🔍 Kính Soi: tears the Áo Tàng Hình off another player at once. Spent
+// first, refunded if the cloak was already gone by the time it landed.
+async function useLens(userId, targetId) {
+  if (!targetId || String(targetId) === String(userId)) return { status: 'invalid_lens_target' };
+  const user = await User.findById(userId).select('firstName lastName username role').lean();
+  if (!user || !isFlameRole(user.role)) return { status: 'forbidden' };
+  const target = mongoose.isValidObjectId(targetId)
+    ? await User.findById(targetId).select('role invisibleUntil firstName lastName username').lean()
+    : null;
+  if (!target || !isFlameRole(target.role)) return { status: 'target_not_found' };
+  if (!isActive(target.invisibleUntil)) return { status: 'not_hidden' };
+
+  const spent = await spendOne(userId, 'lens', {}, {});
+  if (!spent) return { status: 'none_left' };
+  const torn = await User.updateOne({ _id: targetId, invisibleUntil: { $gt: new Date() } }, { $set: { invisibleUntil: null } });
+  if (torn.modifiedCount !== 1) {
+    await User.updateOne({ _id: userId }, { $inc: { 'shopItems.lens': 1 } });
+    return { status: 'not_hidden' };
+  }
+  await notifyPlayer(user, target._id,
+    `🔍 ${displayName(user)} đã soi thủng Áo Tàng Hình của bạn!`,
+    `${displayName(user)} vừa dùng 🔍 Kính Soi — Áo Tàng Hình của bạn rách rồi, cả BXH lại thấy số 🔥 thật của bạn.`);
+  return { status: 'ok', owned: spent.shopItems.lens, targetName: displayName(target) };
 }
 
 // Kho đồ (profile.html): sell one owned item / a linh thú back for half
@@ -559,11 +738,12 @@ async function giftItem(userId, key, toId, qty = 1) {
   // Capped items: what they hold + what's already waiting in their Hộp thư.
   if (item.maxOwned) {
     const [cur, pending] = await Promise.all([
-      User.findById(toId).select(field).lean(),
+      User.findById(toId).select(`${field} activePet`).lean(),
       pendingItemQty(toId, key),
     ]);
-    const left = Math.max(0, item.maxOwned - ownedOf(cur, item) - pending);
-    if (n > left) return { status: 'target_full', max: item.maxOwned, left };
+    const cap = capFor(item, cur && cur.activePet);
+    const left = Math.max(0, cap - ownedOf(cur, item) - pending);
+    if (n > left) return { status: 'target_full', max: cap, left };
   }
 
   const taken = await User.findOneAndUpdate(
@@ -639,9 +819,14 @@ async function landGift(userId, { giftItemKey, giftItemQty, giftPetId }) {
   if (!item || n < 1) return { status: 'not_found' };
   const field = itemField(item);
   const filter = { _id: userId };
-  if (item.maxOwned) filter[field] = { $not: { $gt: item.maxOwned - n } };
+  let cap = 0;
+  if (item.maxOwned) {
+    const cur = await User.findById(userId).select('activePet').lean();
+    cap = capFor(item, cur && cur.activePet);
+    filter[field] = { $not: { $gt: cap - n } };
+  }
   const u = await User.findOneAndUpdate(filter, { $inc: { [field]: n } }, { new: true }).select(field).lean();
-  if (!u) return { status: 'max_owned', max: item.maxOwned };
+  if (!u) return { status: 'max_owned', max: cap };
   return { status: 'ok', item: giftView(item, n), owned: ownedOf(u, item) };
 }
 
@@ -671,6 +856,7 @@ function boardDecor(u) {
 
 module.exports = {
   getState, getFeed, getAnnouncements, announceLogin, getCakeNotice, buyItem, buyPet, setActivePet, getActivePet, useItem, throwCake, sellItem, sellPet,
+  getPetState, claimPetGift, useLens, displayName,
   settleHopeHammer, settleAllHopeHammers, seedWallet, boardDecor,
   giftItem, giftPet, searchGiftRecipients, landGift, describeGift, hasPendingPet,
 };

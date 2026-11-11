@@ -20,14 +20,15 @@
   <!-- .et-shell / .et-hero: the same simple page shell as vocab-leaderboard.html. -->
   <link rel="stylesheet" href="/css/entrance-test.css?v=cc30835470">
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
-  <link rel="stylesheet" href="/css/pets.css?v=6277dc6f66">
-  <link rel="stylesheet" href="/css/shop.css?v=cb3a036e4d">
+  <link rel="stylesheet" href="/css/pets.css?v=dc35370531">
+  <link rel="stylesheet" href="/css/shop.css?v=64d146a688">
+  <link rel="stylesheet" href="/css/duel.css?v=f825dbd506">
   <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
 </head>
 <body>
 <script src="/js/shared/auth-service.js?v=6608a5d107"></script>
 <script src="/js/auth.js?v=510377e0d2"></script>
-<script src="/js/nav.js?v=4f93d325ac"></script>
+<script src="/js/nav.js?v=b252b42be2"></script>
 <script src="/js/shared/playful.js?v=3207b135f4"></script>
 <script src="/js/shared/utils.js?v=87a790033c"></script>
 <script src="/js/shared/toast.js?v=08d12e7571"></script>
@@ -57,6 +58,14 @@
   <!-- Active effects (Búa Hi Vọng progress, crown, cloak, cake on you). -->
   <div class="shop-effects" id="shop-effects" hidden></div>
 
+  <!-- The pet out walking: its skill, today's 🎁, Hộ Thể blocks left. -->
+  <div class="shop-mypet" id="shop-mypet" hidden></div>
+
+  <section class="shop-section shop-section--duel">
+    <h2 class="shop-h2"><span>⚔️</span> Thách đấu 🔥</h2>
+    <div id="shop-duels" aria-busy="true"><div class="shop-card shop-skel"></div></div>
+  </section>
+
   <section class="shop-section">
     <h2 class="shop-h2"><span>⚔️</span> Vật phẩm đua top</h2>
     <div class="shop-grid" id="shop-items" aria-busy="true">
@@ -66,7 +75,7 @@
 
   <section class="shop-section">
     <h2 class="shop-h2"><span>🐾</span> Linh thú</h2>
-    <p class="shop-sub">Linh thú sẽ đi dạo quanh các trang học (tự trốn đi khi bạn làm bài thi) và ngồi cạnh tên bạn trên BXH.</p>
+    <p class="shop-sub">Linh thú sẽ đi dạo quanh các trang học (tự trốn đi khi bạn làm bài thi) và ngồi cạnh tên bạn trên BXH. Mỗi bé có một <b>kỹ năng riêng</b> — chỉ bé đang đi dạo mới dùng kỹ năng — và mỗi ngày mang 🎁 quà về ngay khi bạn kiếm được 🔥 đầu tiên: bấm vào bé để mở!</p>
     <div class="shop-grid shop-grid--pets" id="shop-pets" aria-busy="true">
       <div class="shop-card shop-skel"></div><div class="shop-card shop-skel"></div><div class="shop-card shop-skel"></div>
     </div>
@@ -82,14 +91,15 @@
 
   <section class="shop-section shop-section--su">
     <h2 class="shop-h2"><span>⚔️</span> Susano — chiến thần huyền thoại</h2>
-    <p class="shop-sub">Năm khổng lồ lửa với hào quang còn rực hơn Thập Vĩ. Mỗi lần bạn mở trang, Susano trỗi dậy giữa màn hình — và cả hệ thống được báo khi bạn rước một con về!</p>
+    <p class="shop-sub">Năm khổng lồ lửa với hào quang còn rực hơn Thập Vĩ. Susano <b>hộ thể</b>: tự chặn bánh kem ném vào bạn, từ Tử Lôi trở lên còn úp ngược bánh vào mặt người ném! Mỗi lần bạn mở trang, Susano trỗi dậy giữa màn hình — và cả hệ thống được báo khi bạn rước một con về.</p>
     <div class="shop-grid shop-grid--pets" id="shop-susano" aria-busy="true">
       <div class="shop-card shop-skel"></div><div class="shop-card shop-skel"></div><div class="shop-card shop-skel"></div>
     </div>
   </section>
 </div>
 
-<script src="/js/shared/pets.js?v=0ce6946eea" id="ews-pets-js"></script>
-<script src="/js/shop.js?v=ba8a8a962f"></script>
+<script src="/js/shared/pets.js?v=62e28dc034" id="ews-pets-js"></script>
+<script src="/js/shared/duel.js?v=68d6151bc1"></script>
+<script src="/js/shop.js?v=f74f3a2654"></script>
 </body>
 </html>

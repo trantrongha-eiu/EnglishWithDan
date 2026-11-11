@@ -1,5 +1,6 @@
 /**
- * js/shared/shop-feed.js — "X vừa mua Y" ticker for the Cửa hàng lửa.
+ * js/shared/shop-feed.js — "X vừa mua Y" ticker for the Cửa hàng lửa
+ * (and "X vừa thắng Y trong trận thách đấu" — ShopPurchase kind 'duel').
  *
  * Polls GET /api/shop/feed every minute (only while the tab is visible) and
  * slides a small pill down from under the nav for each new purchase by
@@ -83,8 +84,10 @@
     if (examActive()) { queue = []; return; }
     var p = queue.shift();
     var box = ensureEl();
-    box.innerHTML = iconFor(p)
-      + '<span class="ews-shopfeed-text"><b>' + esc(p.name) + '</b> vừa mua <b>' + esc(p.itemName) + '</b> 🔥</span>';
+    // kind 'duel' (duelService): name won a ⚔️ Thách đấu against itemName.
+    box.innerHTML = iconFor(p) + (p.kind === 'duel'
+      ? '<span class="ews-shopfeed-text"><b>' + esc(p.name) + '</b> vừa thắng <b>' + esc(p.itemName) + '</b> trong trận thách đấu ⚔️</span>'
+      : '<span class="ews-shopfeed-text"><b>' + esc(p.name) + '</b> vừa mua <b>' + esc(p.itemName) + '</b> 🔥</span>');
     showing = true;
     // Next frame, so the slide-in transition runs.
     requestAnimationFrame(function () { box.classList.add('is-in'); });
@@ -301,7 +304,7 @@
       + '<b>Bạn đã bị úp bánh kem bởi <span>' + esc(c.by) + '</span>!</b></div>'
       + '<p>' + (c.towels
         ? 'Kem đang dính trên ảnh đại diện của bạn trên BXH. Bạn có ' + c.towels + ' 🧽 Khăn Lau Diệu Kì — lau ngay cho sạch nhé!'
-        : 'Kem sẽ dính trên ảnh đại diện của bạn trên BXH suốt 24 giờ… trừ khi bạn có 🧽 Khăn Lau Diệu Kì!') + '</p>'
+        : 'Kem sẽ dính trên ảnh đại diện của bạn trên BXH thêm ' + Math.max(1, Math.ceil((new Date(c.until) - Date.now()) / 3600000)) + ' giờ… trừ khi bạn có 🧽 Khăn Lau Diệu Kì!') + '</p>'
       + '<div class="ews-cake-actions">'
       + '<button type="button" class="ews-cake-close">Để sau</button>'
       + (c.towels
