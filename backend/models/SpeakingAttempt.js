@@ -3,6 +3,12 @@ const mongoose = require('mongoose');
 const SpeakingAttemptSchema = new mongoose.Schema({
   userId:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   questionId:   { type: mongoose.Schema.Types.ObjectId, ref: 'SpeakingQuestion' },
+  // Whole-topic runs (several questions in one go, graded as ONE attempt):
+  // every question the run asked, and the ones the student really answered.
+  // Homework "Speaking (Theo topic)" ticks off these — see
+  // resourceCompletionService.checkSpeakingTopicSets. Empty on single-question attempts.
+  sessionQuestionIds:  { type: [mongoose.Schema.Types.ObjectId], default: undefined },
+  answeredQuestionIds: { type: [mongoose.Schema.Types.ObjectId], default: undefined },
   topic:        { type: String, default: '' },
   part:         { type: Number, enum: [1, 2, 3], default: 1 },
   question:     { type: String, default: '' },

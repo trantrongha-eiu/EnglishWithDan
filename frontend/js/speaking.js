@@ -125,6 +125,7 @@ const state = {
   seqRecordStartTime: null,
   seqTotalElapsed:    0,
   seqIsFullMock:      false,
+  seqFromHomework:    false,   // run opened from a homework topic set (?topicSet=)
   seqPreviewMode:     'topic', // 'topic' | 'fullmock' — which flow opened #seq-preview-modal
 };
 
@@ -247,9 +248,14 @@ function showScreen(id) {
   // ?questionId=<id> — deep link from the homework card (dashboard-homework.js's
   // hwResourceHref) straight into ONE assigned question, no `tab=` needed.
   const questionIdParam = urlParams.get('questionId');
+  // ?topicSet=<id> — homework "Speaking (Theo topic)": a whole Part 1 topic,
+  // or a Part 2 card + its Part 3, answered in one run (openTopicSetById).
+  const topicSetParam = urlParams.get('topicSet');
   history.replaceState({ tab: tabParam, part: partParam, topic: topicParam, questionId: questionIdParam }, '', location.href);
 
-  if (tabParam === 'materials') {
+  if (topicSetParam) {
+    await openTopicSetById(topicSetParam);
+  } else if (tabParam === 'materials') {
     showScreen('screen-materials');
     loadMaterialFilters();
     loadMaterials();
@@ -613,6 +619,27 @@ async function openQuestionById(qid) {
   } catch (e) {
     console.error('openQuestionById:', e);
     showToast('Không tìm thấy câu hỏi này — có thể đã bị xoá.', 'error');
+  }
+}
+
+// Homework "Speaking (Theo topic)" — the server returns the whole set (a
+// Part 1 topic's questions, or a Part 2 card + its topic's Part 3), shown in
+// the same preview as "Luyện topic này" and then run in one go. The run's
+// question ids go with the graded attempt so the homework can tick.
+async function openTopicSetById(anchorId) {
+  showScreen('screen-practice');
+  try {
+    const set = await apiFetch(`/api/speaking/topic-set/${encodeURIComponent(anchorId)}`);
+    const queue = set.questions || [];
+    if (!queue.length) throw new Error('empty set');
+    await initPractice({ part: String(set.part), topic: set.topic });
+    openTopicPreviewModalFor(set.topic, { queue, homework: true });
+  } catch (e) {
+    // 403 = not premium: apiFetch already switched to the upgrade screen.
+    if (e && e.status === 403) return;
+    console.error('openTopicSetById:', e);
+    await initPractice({});
+    showToast('Không tìm thấy chủ đề này — có thể đã bị xoá.', 'error');
   }
 }
 
@@ -2250,21 +2277,28 @@ function seqPartLabel(queue) {
 // is no longer a single global topic selection to read. Filters the FULL
 // (unfiltered) state.lastQuestionList so a session always covers every
 // question in the topic regardless of the search/hide-answered view filters.
-function openTopicPreviewModalFor(topic) {
-  const queue = state.lastQuestionList.filter(q => q.topic === topic);
-  if (queue.length < 2) return;
+// opts.queue / opts.homework: a homework set (openTopicSetById) — may mix
+// Part 2 + Part 3 and may be a single question.
+function openTopicPreviewModalFor(topic, opts = {}) {
+  const queue = opts.queue || state.lastQuestionList.filter(q => q.topic === topic);
+  if (queue.length < (opts.homework ? 1 : 2)) return;
   state.seqTopicQueue = queue;
+  state.seqFromHomework = !!opts.homework;
 
   state.seqPreviewMode = 'topic';
   const title = document.getElementById('seq-preview-title');
-  if (title) title.textContent = `Luyện PART ${seqPartLabel(queue)} — ${topic}`;
+  if (title) title.textContent = `${opts.homework ? 'Bài tập · ' : 'Luyện '}PART ${seqPartLabel(queue)} — ${topic}`;
 
+  const mixed = new Set(queue.map(q => q.part)).size > 1;
   const list = document.getElementById('seq-preview-list');
   if (list) {
-    list.innerHTML = queue.map((q, i) => `
+    const note = opts.homework
+      ? `<div class="seq-preview-note">Trả lời lần lượt <strong>tất cả ${queue.length} câu</strong> trong một lượt — bỏ trống câu nào thì bài tập chưa được tính hoàn thành.</div>`
+      : '';
+    list.innerHTML = note + queue.map((q, i) => `
       <div class="seq-preview-item">
         <span class="seq-preview-num">${i + 1}</span>
-        <span class="seq-preview-text">${escHtml(q.question)}</span>
+        <span class="seq-preview-text">${mixed ? `<strong>Part ${q.part}</strong><br>` : ''}${escHtml(q.question)}</span>
       </div>`).join('');
   }
 
@@ -2313,7 +2347,7 @@ function beginSeqRun(queue, headerTitle) {
 
 function startSequentialSession() {
   const queue = state.seqTopicQueue || [];
-  if (queue.length < 2) return;
+  if (queue.length < (state.seqFromHomework ? 1 : 2)) return;
   closeSeqPreviewModal();
   state.seqIsFullMock = false;
   const topic = queue[0]?.topic || '';
@@ -2423,6 +2457,7 @@ function startFullMockTest() {
   if (!_fullMockQueue || _fullMockQueue.length < 3) return;
   closeSeqPreviewModal();
   state.seqIsFullMock = true;
+  state.seqFromHomework = false;
   const queue = _fullMockQueue;
   _fullMockQueue = null;
   beginSeqRun(queue, 'Bài thi thử Speaking đầy đủ');
@@ -2677,7 +2712,7 @@ function confirmSeqAnswer() {
     stopSeqElapsedTimer();
 
     const q = state.seqQueue[state.seqIndex];
-    state.seqAnswers.push({ question: q.question, part: q.part, transcript });
+    state.seqAnswers.push({ questionId: q._id, question: q.question, part: q.part, transcript });
 
     state.seqIndex++;
     if (state.seqIndex < state.seqQueue.length) {
@@ -2729,6 +2764,13 @@ function exitSequentialSession() {
   state.seqIsFullMock = false;
 }
 
+// An answer counts toward a homework topic set only if something was really
+// said — a skipped (silent) question or a one-word reply doesn't.
+const SEQ_ANSWER_MIN_WORDS = 3;
+function seqAnswerCounts(transcript) {
+  return String(transcript || '').split(/\s+/).filter(Boolean).length >= SEQ_ANSWER_MIN_WORDS;
+}
+
 async function finishSequentialSession() {
   state.seqActive = false;
 
@@ -2746,6 +2788,17 @@ async function finishSequentialSession() {
   const combined = state.seqAnswers.map((a, i) =>
     `Q${i + 1} (Part ${a.part}): ${a.question}\nA${i + 1}: ${a.transcript || '(không trả lời)'}`
   ).join('\n\n');
+  // Which questions the run asked / really answered — a homework topic set
+  // only ticks when every one was answered (resourceCompletionService).
+  const sessionQuestionIds = state.seqQueue.map(q => q._id).filter(Boolean);
+  const answeredQuestionIds = state.seqAnswers
+    .filter(a => a.questionId && seqAnswerCounts(a.transcript)).map(a => a.questionId);
+  const skipped = state.seqAnswers.filter(a => !seqAnswerCounts(a.transcript)).length;
+  const homeworkNote = state.seqFromHomework
+    ? (skipped
+      ? `<div class="seq-homework-note seq-homework-note--warn" role="status"><i class="fas fa-triangle-exclamation"></i> Còn <strong>${skipped} câu</strong> chưa trả lời (hoặc quá ngắn) — bài tập về nhà <strong>chưa được tính hoàn thành</strong>. Hãy làm lại cả chủ đề và trả lời đủ tất cả các câu.</div>`
+      : '<div class="seq-homework-note" role="status"><i class="fas fa-circle-check"></i> Bạn đã trả lời đủ tất cả các câu — bài tập sẽ được tính hoàn thành khi AI chấm xong.</div>')
+    : '';
 
   const bodyEl       = document.getElementById('seq-body');
   const resultsEl    = document.getElementById('seq-results');
@@ -2779,6 +2832,8 @@ async function finishSequentialSession() {
         topic,
         part:       partForApi,
         duration:   state.seqTotalElapsed,
+        sessionQuestionIds,
+        answeredQuestionIds,
       }),
     });
     clearTimeout(_killer);
@@ -2790,7 +2845,7 @@ async function finishSequentialSession() {
       // AI overloaded — the session was saved and will be graded in the
       // background; the band arrives in History + the inbox.
       if (feedbackBody) {
-        feedbackBody.innerHTML = `<div class="feedback-queued" role="status">
+        feedbackBody.innerHTML = homeworkNote + `<div class="feedback-queued" role="status">
           <div class="feedback-queued-icon"><i class="fas fa-hourglass-half"></i></div>
           <div><div class="feedback-queued-title">AI đang xử lý — điểm sẽ được gửi sau</div>
           <div class="feedback-queued-text">${escHtml(data.message || 'Bài nói của bạn đã được lưu; khi chấm xong, điểm sẽ có trong mục Lịch sử và hộp thư.')}</div></div>
@@ -2801,6 +2856,7 @@ async function finishSequentialSession() {
       return;
     }
     renderSeqFeedback(data.feedback || {});
+    if (homeworkNote && feedbackBody) feedbackBody.insertAdjacentHTML('afterbegin', homeworkNote);
     if (window.showBadgeUnlocked && data.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
 
     // Priority 2C — only for a session launched via the Today's Learning

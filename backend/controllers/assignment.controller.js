@@ -363,6 +363,8 @@ exports.getResourceCatalog = async (req, res) => {
       if (part && ['1', '2', '3'].includes(String(part))) extraFilters.part = Number(part);
       if (topic && topic.trim()) extraFilters.topic = topic.trim();
     }
+    // speaking_topic: '1' = Part 1 topics, '2' = Part 2 cards (+ their Part 3).
+    if (type === 'speaking_topic' && ['1', '2'].includes(String(part))) extraFilters.part = Number(part);
     // level: 'task2_template' only — Band 6+ and Band 7+ are assigned separately.
     if (type === 'task2_template' && (level === 'band6' || level === 'band7')) extraFilters.level = level;
     const items = await rcs.listCatalog(type, search, limit, extraFilters);

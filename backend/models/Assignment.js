@@ -40,6 +40,8 @@ const assignmentResourceSchema = new mongoose.Schema({
       'vocab_unit', 'task2_template', 'writing_practice', 'task1_skill',
       // Speaking Part 2 · 7 câu chuyện gốc (services/speakingPart2Service.js).
       'speaking_part2',
+      // A whole Part 1 topic / Part 2 card + its Part 3, done in one run.
+      'speaking_topic',
     ],
   },
   resourceId: { type: mongoose.Schema.Types.ObjectId }, // null only for mock_test / speaking_full_mock

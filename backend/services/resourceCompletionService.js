@@ -39,6 +39,9 @@ const GapFillAttempt = require('../models/GapFillAttempt');
 const WritingAttempt = require('../models/WritingAttempt');
 const Task2Attempt = require('../models/Task2Attempt');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
+// Loaded on use — speakingService pulls in badge/streak services, which keeps
+// a top-level require here clear of any load-order cycle.
+const speakingSvc = () => require('./speakingService');
 const EssentialGrammarAttemptLog = require('../models/EssentialGrammarAttemptLog');
 const VocabularyLessonAttemptLog = require('../models/VocabularyLessonAttemptLog');
 const MockTestAttempt = require('../models/MockTestAttempt');
@@ -116,6 +119,40 @@ function speakingAttemptCounts(d) {
   if (speakingWordCount(d.transcript) < MIN_SPEAKING_WORDS) return false;
   if (d.status === 'analyzed') return Number(d?.aiFeedback?.overallBand || 0) > 0;
   return d.status === 'error';
+}
+
+// "Speaking (Theo topic)" — a Part 1 topic, or a Part 2 card + its Part 3,
+// answered in ONE whole-topic run (speaking.html saves it as one attempt
+// with sessionQuestionIds / answeredQuestionIds). Done = a run since the
+// assignment that answered every question of the set — the questions that
+// existed when the run was made (a question added to the topic later
+// doesn't undo it) — and was graded like any speaking answer
+// (speakingAttemptCounts). The full mock's random picks never count.
+// ids = anchor question ids → Map<anchorId, { completed, completedAt, attemptId }>.
+async function checkSpeakingTopicSets(studentId, ids, since) {
+  const out = new Map();
+  const anchors = await SpeakingQuestion.find({ _id: { $in: ids } }).select('topic part').lean();
+  if (!anchors.length) return out;
+  const sets = await speakingSvc().topicSetsFor(anchors, { select: '_id topic part' });
+  const q = { userId: studentId, sessionQuestionIds: { $in: anchors.map((a) => a._id) }, topic: { $ne: 'Full Mock Test' } };
+  if (since) q.createdAt = { $gte: since };
+  const rows = await SpeakingAttempt.find(q).sort({ createdAt: -1 }).limit(200)
+    .select('_id createdAt status aiFeedback.overallBand transcript sessionQuestionIds answeredQuestionIds').lean().catch(() => []);
+  for (const r of rows) {
+    const inRun = new Set((r.sessionQuestionIds || []).map(String));
+    const answered = new Set((r.answeredQuestionIds || []).map(String));
+    for (const [anchorId, set] of sets) {
+      if (!inRun.has(anchorId)) continue;
+      const due = set.questions.filter((x) => x._id.getTimestamp() <= new Date(r.createdAt));
+      const passes = speakingAttemptCounts(r) && due.length > 0 && due.every((x) => answered.has(String(x._id)));
+      const prev = out.get(anchorId);
+      // rows are newest-first: keep the latest passing run, else the latest run
+      if (!prev || (passes && !prev.completed)) {
+        out.set(anchorId, { completed: passes, completedAt: r.createdAt, attemptId: String(r._id) });
+      }
+    }
+  }
+  return out;
 }
 
 // "Mở xem là xong" types — completion is any ContentView of the resource
@@ -412,6 +449,17 @@ const REGISTRY = {
       ok: speakingAttemptCounts,
     },
   },
+  // One row per Part 1 topic (all its questions) or per Part 2 card (the
+  // card + its topic's Part 3) — resourceId is the set's anchor question,
+  // see speakingService.getTopicSet. The student answers the whole set in
+  // one run (speaking.html?topicSet=<id>); see checkSpeakingTopicSets.
+  speaking_topic: {
+    label: 'Speaking (Theo topic)',
+    catalog: { model: SpeakingQuestion, filter: { isActive: true, part: { $in: [1, 2] } },
+      shape: (d) => ({ _id: d._id, label: speakingSvc().topicSetLabel(d), meta: d.topic || '' }),
+      list: ({ words, extraFilters }) => speakingSvc().listTopicSets({ part: extraFilters.part || null, words }) },
+    attempt: { check: checkSpeakingTopicSets },
+  },
   grammar: {
     label: 'Essential Grammar',
     // essential-grammar.html picks which lesson to open from ?lesson=<lessonKey>
@@ -647,6 +695,7 @@ async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
   // "Green Mountain Fossil Park".
   const words = String(search || '').trim().split(/\s+/).filter(Boolean).slice(0, 8)
     .map((w) => new RegExp(escapeRegex(w), 'i'));
+  if (entry.catalog.list) return (await entry.catalog.list({ words, extraFilters })).slice(0, Math.min(Number(limit) || 100, CATALOG_MAX));
   if (entry.catalog.static) {
     const { shape, deepLinkKey } = entry.catalog;
     return entry.catalog.static

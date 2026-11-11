@@ -44,6 +44,9 @@ const RESOURCE_CATS = [
   { type: 'task2_practice', label: 'Task 2 Writing (Đề lẻ)' },
   { type: 'task2', label: 'Task 2 Writing (Quiz theo tuần)' },
   { type: 'advanced_sentences', label: 'Viết câu nâng cao' },
+  { type: 'speaking_topic', label: 'Speaking (Theo topic · Part 1 / Part 2+3)' },
+  // Old one-question items — no longer offered in the picker (speaking_topic
+  // replaced it), kept so assignments made before still show their label.
   { type: 'speaking', label: 'Speaking (Câu hỏi lẻ)' },
   { type: 'speaking_full_mock', label: 'Speaking thi thử full (Part 1+2+3)' },
   { type: 'grammar', label: 'Essential Grammar' },
@@ -63,7 +66,8 @@ const RESOURCE_CATS = [
 const RES_LABEL = Object.fromEntries(RESOURCE_CATS.map((r) => [r.type, r.label]));
 // The type dropdown, grouped by skill — each group has its own colour (and
 // emoji) so a long list is quick to scan. Every RESOURCE_CATS type is in
-// exactly one group.
+// exactly one group — `types` are offered in the picker, `legacy` ones only
+// keep their colour on assignments made before.
 const RES_GROUPS = [
   { key: 'reading', label: '📖 READING', icon: '📖', color: '#1d4ed8', bg: '#eff6ff',
     types: ['reading_test', 'reading_practice', 'reading_tip'] },
@@ -73,13 +77,13 @@ const RES_GROUPS = [
     types: ['writing_exam', 'task1_lesson', 'task2_course_lesson', 'task1_practice', 'task2_practice', 'task2',
       'task1_skill', 'task2_template', 'advanced_sentences', 'writing_practice', 'writing_tip'] },
   { key: 'speaking', label: '🗣️ SPEAKING', icon: '🗣️', color: '#7c3aed', bg: '#f5f3ff',
-    types: ['speaking_course_lesson', 'speaking_part2', 'speaking', 'speaking_full_mock', 'speaking_tip'] },
+    types: ['speaking_course_lesson', 'speaking_part2', 'speaking_topic', 'speaking_full_mock', 'speaking_tip'], legacy: ['speaking'] },
   { key: 'vocab', label: '📚 TỪ VỰNG & NGỮ PHÁP', icon: '📚', color: '#be185d', bg: '#fdf2f8',
     types: ['vocabulary_lesson', 'vocab_unit', 'grammar'] },
   { key: 'mock', label: '🧪 THI THỬ', icon: '🧪', color: '#b91c1c', bg: '#fef2f2',
     types: ['mock_test'] },
 ];
-const RES_GROUP_OF = Object.fromEntries(RES_GROUPS.flatMap((g) => g.types.map((t) => [t, g])));
+const RES_GROUP_OF = Object.fromEntries(RES_GROUPS.flatMap((g) => [...g.types, ...(g.legacy || [])].map((t) => [t, g])));
 
 // Full tests can be given part by part (backend Assignment resources[].parts).
 const TEST_PARTS = {
@@ -207,6 +211,7 @@ const RES_RULE = {
   writing_practice: 'Tự tick khi học viên làm ≥10 câu của chủ đề, đúng ≥70%.',
   task1_skill: 'Tự tick khi học viên làm ≥10 câu của kỹ năng này, đúng ≥70%.',
   grammar: 'Tự tick khi học viên làm hết mọi câu chấm điểm của bài (Mini Quiz + trắc nghiệm) và đúng ≥70%. Đáp án từng câu được lưu 3 tháng.',
+  speaking_topic: 'Mỗi dòng là cả 1 chủ đề: Part 1 = mọi câu của topic; Part 2 = cue card + tự kèm luôn các câu Part 3 cùng chủ đề. Học viên bấm Bắt đầu sẽ trả lời lần lượt hết các câu trong 1 lượt. Tự tick khi trả lời đủ tất cả các câu (bỏ trống câu nào là chưa tính).',
   speaking_part2: 'Tự tick khi học viên xong cả 5 bước của câu chuyện (đọc bài mẫu, từ vựng, dịch FIXED, dịch WHY ≥2 đề + kết luận, nói thử 2 phút). Đã học xong từ trước khi giao cũng tính.',
 };
 const ASG_STATUS = { not_started: 'badge-gray', in_progress: 'badge-blue', completed: 'badge-green', overdue: 'badge-red', not_applicable: 'badge-gray' };
@@ -1580,6 +1585,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
       if (speakPart) qs.set('part', speakPart);
       if (speakTopic) qs.set('topic', speakTopic);
     }
+    if (cat === 'speaking_topic' && speakPart) qs.set('part', speakPart);
     if (cat === 'task2_template' && tplLevel) qs.set('level', tplLevel);
     apiFetch(`/classes/resources/catalog?${qs}`)
       .then((d) => { if (alive) setCatalog(d.items || []); })
@@ -1596,7 +1602,8 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
     const additions = visibleCatalog
       .filter((item) => !already.has(keyOf(cat, item._id)))
       .map((item) => ({ kind: 'internal', resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode, label: item.label,
-        ...(item.partsPickable !== undefined ? { partsPickable: item.partsPickable } : {}) }));
+        ...(item.partsPickable !== undefined ? { partsPickable: item.partsPickable } : {}),
+        ...(cat === 'speaking_topic' && item.meta ? { meta: item.meta } : {}) }));
     setPicked((p) => {
       const have = new Set(p.map((x) => keyOf(x.resourceType, x.resourceId)));
       return [...p, ...additions.filter((x) => !have.has(keyOf(x.resourceType, x.resourceId)))];
@@ -1659,7 +1666,8 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
     const existing = picked.find((x) => keyOf(x.resourceType, x.resourceId) === k);
     if (existing) return removePicked(existing);
     const added = { kind: 'internal', resourceType: cat, resourceId: item._id, resourceCode: item.resourceCode, label: item.label,
-      ...(item.partsPickable !== undefined ? { partsPickable: item.partsPickable } : {}) };
+      ...(item.partsPickable !== undefined ? { partsPickable: item.partsPickable } : {}),
+      ...(cat === 'speaking_topic' && item.meta ? { meta: item.meta } : {}) };
     setPicked((p) => (p.some((x) => keyOf(x.resourceType, x.resourceId) === k) ? p : [...p, added]));
     addGapFillsFor([added]);
   }
@@ -1706,7 +1714,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
 
   async function save() {
     const resources = [
-      ...picked.map(({ partsPickable, gapFillOf, ...x }) => x), // eslint-disable-line no-unused-vars
+      ...picked.map(({ partsPickable, gapFillOf, meta, ...x }) => x), // eslint-disable-line no-unused-vars
       ...externals.filter((x) => x.url.trim()).map((x) => ({ kind: 'external', ...x })),
       ...images,
       ...vocabGoals.map((g) => ({ kind: 'vocab_goal', wordCount: Number(g.count), bookSlot: g.slot ? Number(g.slot) : null })),
@@ -1801,6 +1809,14 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                   <option value="band7">🏆 Band 7+</option>
                 </select>
               )}
+              {cat === 'speaking_topic' && (
+                <select className="form-input" style={{ width: 170 }} value={speakPart} title="Part 2 tự kèm các câu Part 3 cùng chủ đề"
+                  onChange={(e) => { setCatalog([]); setLoadingCat(true); setSpeakPart(e.target.value); }}>
+                  <option value="">Part 1 + Part 2</option>
+                  <option value="1">Part 1 (theo topic)</option>
+                  <option value="2">Part 2 + Part 3</option>
+                </select>
+              )}
               {cat === 'speaking' && (
                 <>
                   <select className="form-input" style={{ width: 90 }} value={speakPart} onChange={(e) => { setSpeakPart(e.target.value); setSpeakTopic(''); }}>
@@ -1888,6 +1904,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                       ? mockBundleSummary(p)
                       : <a href={studentUrlFor(p) || undefined} target="_blank" rel="noopener noreferrer" title="Mở bài này ở tab mới" style={{ color: 'inherit' }}>{p.label}</a>}
                     {p.parts?.length ? <b style={{ marginLeft: 4 }}>({partsText(p.resourceType, p.parts)})</b> : null}
+                    {p.resourceType === 'speaking_topic' && p.meta ? <span style={{ marginLeft: 4, fontWeight: 400 }}>({p.meta})</span> : null}
                     {p.examMode ? <b style={{ marginLeft: 4 }}>· {examModeText(p.examMode)}</b> : null}
                     {p.resourceType !== 'mock_test' && assignedIndex.has(keyOf(p.resourceType, p.resourceId)) && (
                       <span title={assignedTooltip(assignedIndex.get(keyOf(p.resourceType, p.resourceId)))} style={{ marginLeft: 4, fontWeight: 700 }}>· đã giao trước</span>

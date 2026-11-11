@@ -32,6 +32,16 @@ exports.getQuestions = catchAsync(async (req, res) => {
   res.json({ success: true, questions });
 });
 
+// ── GET /api/speaking/topic-set/:questionId ──────────────────
+// Homework "Speaking (Theo topic)": the whole set the anchor question stands
+// for — a Part 1 topic's questions, or a Part 2 card + its Part 3 — to be
+// answered in one run.
+exports.getTopicSet = catchAsync(async (req, res) => {
+  const set = await speakingService.getTopicSet(req.params.questionId).catch(() => null);
+  if (!set || !set.questions.length) return res.status(404).json({ success: false, message: 'Không tìm thấy chủ đề này' });
+  res.json({ success: true, ...set });
+});
+
 // ── POST /api/speaking/analyze ───────────────────────────────
 // The AI call and the attempt-save each have their own inner try/catch
 // with deliberately different failure behavior (AI failure must fail the
@@ -41,6 +51,8 @@ exports.getQuestions = catchAsync(async (req, res) => {
 // handles.
 exports.analyze = catchAsync(async (req, res) => {
   const { transcript, question, questionId, topic, part, duration } = req.body;
+  // Whole-topic run only (see SpeakingAttempt.sessionQuestionIds).
+  const { sessionQuestionIds, answeredQuestionIds } = req.body;
   const clientTranscript = typeof transcript === 'string' ? transcript.trim() : '';
   // A recording with NO client speech-to-text (mobile Safari/iOS, in-app
   // webviews, a blocked recognition service) is valid — Gemini transcribes
@@ -67,7 +79,8 @@ exports.analyze = catchAsync(async (req, res) => {
   // grading succeeded, so a slow/failed grade meant the attempt was
   // invisible or silently lost. May be null (never blocks grading below).
   const pendingId = await speakingService.createPendingAttempt(req.user._id, {
-    questionId, topic, part: partNum, questionText, transcript: clientTranscript, duration
+    questionId, topic, part: partNum, questionText, transcript: clientTranscript, duration,
+    sessionQuestionIds, answeredQuestionIds,
   });
 
   // Save the recording to the student's history (R2, kept 3 months) while
@@ -151,7 +164,7 @@ exports.analyze = catchAsync(async (req, res) => {
 
   const { attemptId, newlyUnlocked } = pendingId
     ? await speakingService.finalizeAttempt(pendingId, feedback, req.user, resolvedTranscript)
-    : await speakingService.saveAttempt(req.user, { questionId, topic, part: partNum, questionText, transcript: resolvedTranscript, duration, feedback });
+    : await speakingService.saveAttempt(req.user, { questionId, topic, part: partNum, questionText, transcript: resolvedTranscript, duration, feedback, sessionQuestionIds, answeredQuestionIds });
 
   const audioUrl = await recordingSaved;
 

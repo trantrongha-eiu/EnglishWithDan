@@ -1790,6 +1790,24 @@ button:focus-visible {
 
 /* Preview modal — numbered, connected question list */
 .seq-preview-list { display: flex; flex-direction: column; }
+/* Homework topic set: "answer every question" rule above the list, and the
+   done / not-done line on the results screen. */
+.seq-preview-note,
+.seq-homework-note {
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #065f46;
+  margin-bottom: 10px;
+}
+.seq-preview-note { background: #eff6ff; color: #1e3a8a; }
+.seq-homework-note--warn { background: #fff7ed; color: #9a3412; }
+.seq-homework-note i { margin-right: 6px; }
+[data-theme="dark"] .seq-preview-note { background: #1e293b; color: #bfdbfe; }
+[data-theme="dark"] .seq-homework-note { background: #052e1f; color: #a7f3d0; }
+[data-theme="dark"] .seq-homework-note--warn { background: #3b1d0a; color: #fed7aa; }
 .seq-preview-item {
   display: flex;
   align-items: flex-start;

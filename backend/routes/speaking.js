@@ -87,6 +87,7 @@ const improveLimiter = rateLimit({
 router.get('/topics',           auth, premiumOnly, speakCtrl.getTopics);
 router.get('/random',           auth, premiumOnly, speakCtrl.getRandom);
 router.get('/questions',        auth, premiumOnly, speakCtrl.getQuestions);
+router.get('/topic-set/:questionId', auth, premiumOnly, speakCtrl.getTopicSet);
 router.post('/analyze',         auth, premiumOnly, analyzeLimiter, optionalAudio('audio'), speakCtrl.analyze);
 router.post('/mock-submit',     auth, premiumOnly, analyzeLimiter, optionalAudio('audio'), speakCtrl.mockSubmit);
 router.post('/:attemptId/retry', auth, premiumOnly, analyzeLimiter, speakCtrl.retry);

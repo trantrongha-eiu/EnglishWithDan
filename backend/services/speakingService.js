@@ -1,6 +1,7 @@
 'use strict';
 
 // Extracted from controllers/speaking.controller.js, verbatim logic.
+const mongoose = require('mongoose');
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const SpeakingMaterial = require('../models/SpeakingMaterial');
 const SpeakingAttempt = require('../models/SpeakingAttempt');
@@ -92,6 +93,94 @@ async function getQuestionById(id) {
   return SpeakingQuestion.findOne({ _id: id, isActive: true }).select(LISTING_EXCLUDED_FIELDS).lean();
 }
 
+// ── Topic sets (homework "Speaking (Theo topic)") ─────────────────────────
+// One assignable set per Part 1 topic (all its questions) and per Part 2 cue
+// card (the card + every Part 3 question of the same topic). A set is
+// identified by an "anchor" question id: the topic's first Part 1 question,
+// or the Part 2 card itself — so it fits Assignment's ObjectId resourceId.
+// Questions come in bank order (_id) so a topic's follow-ups stay in order.
+function topicSetLabel(anchor) {
+  return anchor.part === 2 ? `Part 2+3 · ${anchor.topic}` : `Part ${anchor.part} · ${anchor.topic}`;
+}
+
+// The anchor's whole set: { anchorId, part, topic, label, questions }.
+// Inactive questions are left out; null when the anchor itself is gone.
+async function getTopicSet(anchorId, { select = LISTING_EXCLUDED_FIELDS } = {}) {
+  const anchor = await SpeakingQuestion.findById(anchorId).select('topic part').lean();
+  if (!anchor) return null;
+  const sets = await topicSetsFor([anchor], { select });
+  return sets.get(String(anchor._id)) || null;
+}
+
+// Many anchors at once (completion checks) — one query for every set.
+// anchors: [{ _id, topic, part }] → Map<anchorId, set>.
+async function topicSetsFor(anchors, { select = LISTING_EXCLUDED_FIELDS } = {}) {
+  const out = new Map();
+  if (!anchors.length) return out;
+  const topics = [...new Set(anchors.map((a) => a.topic))];
+  const rows = await SpeakingQuestion.find({ isActive: true, topic: { $in: topics } })
+    .select(select).sort({ _id: 1 }).lean();
+  for (const a of anchors) {
+    const sameTopic = rows.filter((q) => q.topic === a.topic);
+    let questions;
+    if (a.part === 2) {
+      const card = sameTopic.find((q) => String(q._id) === String(a._id));
+      questions = [...(card ? [card] : []), ...sameTopic.filter((q) => q.part === 3)];
+    } else {
+      questions = sameTopic.filter((q) => q.part === a.part);
+    }
+    out.set(String(a._id), { anchorId: a._id, part: a.part, topic: a.topic, label: topicSetLabel(a), questions });
+  }
+  return out;
+}
+
+// Admin picker rows: every Part 1 topic + every Part 2 card.
+// part: 1 | 2 | null (both). words: RegExps that must all match topic or wording.
+async function listTopicSets({ part = null, words = [] } = {}) {
+  const parts = part === 1 ? [1] : part === 2 ? [2, 3] : [1, 2, 3];
+  const rows = await SpeakingQuestion.find({ isActive: true, part: { $in: parts } })
+    .select('topic part question group').sort({ _id: 1 }).lean();
+  const p1 = new Map(); // topic -> questions
+  const p3Count = new Map(); // topic -> Part 3 count
+  const cards = [];
+  for (const q of rows) {
+    if (q.part === 1) { if (!p1.has(q.topic)) p1.set(q.topic, []); p1.get(q.topic).push(q); }
+    else if (q.part === 2) cards.push(q);
+    else p3Count.set(q.topic, (p3Count.get(q.topic) || 0) + 1);
+  }
+  const groupLabel = new Map(SPEAKING_GROUPS.map((g) => [g.code, g.label]));
+  const items = [];
+  for (const [topic, qs] of p1) {
+    items.push({ _id: qs[0]._id, label: topicSetLabel(qs[0]), meta: `${qs.length} câu`, part: 1, topic,
+      _text: `${topic} ${qs.map((q) => q.question).join(' ')}` });
+  }
+  for (const c of cards) {
+    const n3 = p3Count.get(c.topic) || 0;
+    items.push({ _id: c._id, label: topicSetLabel(c), part: 2, topic: c.topic,
+      meta: [n3 ? `Cue card + ${n3} câu Part 3` : 'Cue card (chưa có Part 3)', groupLabel.get(c.group)].filter(Boolean).join(' · '),
+      _text: `${c.topic} ${c.question}` });
+  }
+  return items
+    .filter((it) => words.every((re) => re.test(it._text)))
+    .sort((a, b) => a.part - b.part || a.topic.localeCompare(b.topic))
+    .map(({ _text, ...it }) => it); // eslint-disable-line no-unused-vars
+}
+
+// A whole-topic run's question ids from the client, cleaned: valid ids
+// only, no repeats, capped; answered ⊆ session. Undefined when absent.
+const MAX_SESSION_QUESTIONS = 60;
+function cleanSessionIds(sessionQuestionIds, answeredQuestionIds) {
+  if (!Array.isArray(sessionQuestionIds) || !sessionQuestionIds.length) return {};
+  const ok = (x) => mongoose.isValidObjectId(x) && String(new mongoose.Types.ObjectId(String(x))) === String(x);
+  const session = [...new Set(sessionQuestionIds.map(String).filter(ok))].slice(0, MAX_SESSION_QUESTIONS);
+  if (!session.length) return {};
+  const inSession = new Set(session);
+  const answered = Array.isArray(answeredQuestionIds)
+    ? [...new Set(answeredQuestionIds.map(String))].filter((x) => inSession.has(x))
+    : [];
+  return { sessionQuestionIds: session, answeredQuestionIds: answered };
+}
+
 // userId is optional (some callers may not have an authenticated user), in
 // which case every question is simply reported as not-yet-attempted.
 // `group` (part 2/3 only, see SPEAKING_GROUPS) narrows to one of the 7
@@ -105,11 +194,13 @@ async function listQuestions({ topic, part, group, userId }) {
 
   let attemptedIds = new Set();
   if (userId && questions.length) {
-    const ids = await SpeakingAttempt.distinct('questionId', {
-      userId,
-      questionId: { $in: questions.map(q => q._id) },
-    });
-    attemptedIds = new Set(ids.filter(Boolean).map(id => id.toString()));
+    const qIds = questions.map(q => q._id);
+    // Single-question attempts + questions answered inside a whole-topic run.
+    const [ids, inRuns] = await Promise.all([
+      SpeakingAttempt.distinct('questionId', { userId, questionId: { $in: qIds } }),
+      SpeakingAttempt.distinct('answeredQuestionIds', { userId, answeredQuestionIds: { $in: qIds } }),
+    ]);
+    attemptedIds = new Set([...ids, ...inRuns].filter(Boolean).map(id => id.toString()));
   }
   for (const q of questions) q.attempted = attemptedIds.has(q._id.toString());
   return questions;
@@ -572,11 +663,12 @@ function mapFeedbackToAiFeedback(feedback) {
 // key a locally-stored (IndexedDB) audio recording to this exact attempt.
 // `user` is the full req.user Mongoose document (not just an id) — needed
 // to advance the streak below, same convention as reading/listeningService.
-async function saveAttempt(user, { questionId, topic, part, questionText, transcript, duration, feedback }) {
+async function saveAttempt(user, { questionId, topic, part, questionText, transcript, duration, feedback, sessionQuestionIds, answeredQuestionIds }) {
   try {
     const attempt = new SpeakingAttempt({
       userId: user._id,
       questionId: questionId || null,
+      ...cleanSessionIds(sessionQuestionIds, answeredQuestionIds),
       topic: topic || '',
       part,
       question: questionText,
@@ -614,11 +706,12 @@ async function _creditStreakForAnalyzedAttempt(user, attempt) {
 // or fail outright, and previously nothing was saved until grading
 // succeeded, so a slow/failed grade meant the attempt was invisible or
 // silently lost. Same never-throw contract as saveAttempt.
-async function createPendingAttempt(userId, { questionId, topic, part, questionText, transcript, duration }) {
+async function createPendingAttempt(userId, { questionId, topic, part, questionText, transcript, duration, sessionQuestionIds, answeredQuestionIds }) {
   try {
     const attempt = new SpeakingAttempt({
       userId,
       questionId: questionId || null,
+      ...cleanSessionIds(sessionQuestionIds, answeredQuestionIds),
       topic: topic || '',
       part,
       question: questionText,
@@ -738,6 +831,7 @@ async function getMaterialFilters() {
 
 module.exports = {
   listTopics, SPEAKING_GROUPS, getRandomQuestion, getQuestionById, listQuestions, gradeSpeaking, saveAttempt,
+  getTopicSet, topicSetsFor, listTopicSets, topicSetLabel, cleanSessionIds,
   createPendingAttempt, finalizeAttempt, markAttemptError, discardPendingAttempt, retryGrading,
   getHistory, listMaterials, getMaterialFilters, getSampleAnswer, getImprovedAnswer,
   getSpeakingHints, normalizeAudioForGemini,

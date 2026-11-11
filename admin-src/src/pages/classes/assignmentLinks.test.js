@@ -15,6 +15,7 @@ describe('studentPathFor', () => {
 
   it('falls back to a catalog row _id (editor picker)', () => {
     expect(studentPathFor({ resourceType: 'speaking', _id: 'q1' })).toBe('/speaking.html?questionId=q1');
+    expect(studentPathFor({ resourceType: 'speaking_topic', _id: 'q1' })).toBe('/speaking.html?topicSet=q1');
   });
 
   it('adds the assigned passages/sections of a full test', () => {

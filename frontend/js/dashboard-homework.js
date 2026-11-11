@@ -46,6 +46,7 @@ function hwRuleTag(resourceType) {
   if (HW_VIEW_TYPES.has(resourceType)) return '<span class="hw-res-tag" title="Chỉ cần bấm vào mở xem là tự động tính hoàn thành">Mở xem là xong</span>';
   if (resourceType === 'task2_template') return '<span class="hw-res-tag hw-res-tag--quiz" title="Cần học xong cả 5 bước của lộ trình và thuộc từ 70% số câu (bước ④ Ghép cả bài hoặc Thi thử)">≥70%</span>';
   if (resourceType === 'writing_practice' || resourceType === 'task1_skill') return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm ít nhất 10 câu của chủ đề, đúng từ 70% trở lên">≥10 câu · ≥70%</span>';
+  if (resourceType === 'speaking_topic') return '<span class="hw-res-tag hw-res-tag--quiz" title="Bấm Bắt đầu để trả lời lần lượt TẤT CẢ câu hỏi của chủ đề trong một lượt (Part 2 có kèm luôn các câu Part 3). Bỏ trống câu nào thì chưa tính hoàn thành.">Trả lời hết các câu</span>';
   if (resourceType === 'speaking_part2') return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm xong cả 5 bước của câu chuyện: đọc bài mẫu, từ vựng, dịch phần FIXED, dịch phần WHY (≥2 đề + kết luận) và nói thử 2 phút">Xong 5 bước</span>';
   if (HW_WORD_MIN[resourceType]) return `<span class="hw-res-tag hw-res-tag--writing" title="Cần nộp đủ ít nhất ${HW_WORD_MIN[resourceType]} từ mới tính hoàn thành">≥${HW_WORD_MIN[resourceType]} từ</span>`;
   return '';
@@ -110,6 +111,8 @@ function hwResourceHref(r) {
     // is the week number (deepLinkKey), id is the SentenceStructureGroup _id.
     case 'advanced_sentences': return r.resourceCode ? `advanced-sentences.html?week=${encodeURIComponent(r.resourceCode)}&groupId=${id}` : 'advanced-sentences.html';
     case 'speaking':           return `speaking.html?questionId=${id}`;
+    // A whole Part 1 topic / Part 2 card + its Part 3, answered in one run.
+    case 'speaking_topic':     return `speaking.html?topicSet=${id}`;
     case 'speaking_full_mock': return 'speaking.html?tab=fullmock';
     // essential-grammar.html opens a specific lesson via ?lesson=<lessonKey>
     // (falling back to the student's last-viewed lesson, then the very first
