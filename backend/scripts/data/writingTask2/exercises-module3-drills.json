@@ -1,0 +1,3548 @@
+{
+  "exercises": [
+    {
+      "code": "T2-L12-E03",
+      "lessonCode": "T2-L12",
+      "order": 1,
+      "type": "mcq",
+      "title": "Câu phức — Trắc nghiệm",
+      "titleEn": "Complex Sentences — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "complex-sentences"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "____ online learning is flexible, it requires a high level of self-discipline.",
+          "options": [
+            {
+              "id": "A",
+              "text": "Despite"
+            },
+            {
+              "id": "B",
+              "text": "Although"
+            },
+            {
+              "id": "C",
+              "text": "Because"
+            },
+            {
+              "id": "D",
+              "text": "So"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Hai vế đối lập và sau chỗ trống là mệnh đề (S + V) → Although. \"Despite\" chỉ đi với danh từ / V-ing."
+        },
+        {
+          "id": "q2",
+          "prompt": "____ the high cost of living, many young people still move to big cities.",
+          "options": [
+            {
+              "id": "A",
+              "text": "Although"
+            },
+            {
+              "id": "B",
+              "text": "Even though"
+            },
+            {
+              "id": "C",
+              "text": "Despite"
+            },
+            {
+              "id": "D",
+              "text": "Since"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Sau chỗ trống là cụm danh từ \"the high cost of living\" → Despite. Although / Even though cần một mệnh đề."
+        },
+        {
+          "id": "q3",
+          "prompt": "Chọn câu ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Although cars are convenient, but they cause pollution."
+            },
+            {
+              "id": "B",
+              "text": "Although cars are convenient, they cause pollution."
+            },
+            {
+              "id": "C",
+              "text": "Despite cars are convenient, they cause pollution."
+            },
+            {
+              "id": "D",
+              "text": "Because cars are convenient, so they cause pollution."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Không dùng \"Although … but\" hay \"Because … so\" trong cùng một câu; \"Despite\" không đi với mệnh đề."
+        },
+        {
+          "id": "q4",
+          "prompt": "Governments should invest in public transport ____ people have an alternative to private cars.",
+          "options": [
+            {
+              "id": "A",
+              "text": "so that"
+            },
+            {
+              "id": "B",
+              "text": "although"
+            },
+            {
+              "id": "C",
+              "text": "unless"
+            },
+            {
+              "id": "D",
+              "text": "despite"
+            }
+          ],
+          "answer": "A",
+          "explanation": "\"so that\" + mệnh đề chỉ mục đích: để người dân có lựa chọn khác ngoài xe riêng."
+        },
+        {
+          "id": "q5",
+          "prompt": "Air pollution will continue to worsen ____ stricter regulations are introduced.",
+          "options": [
+            {
+              "id": "A",
+              "text": "if"
+            },
+            {
+              "id": "B",
+              "text": "unless"
+            },
+            {
+              "id": "C",
+              "text": "because"
+            },
+            {
+              "id": "D",
+              "text": "while"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"unless\" = if … not: ô nhiễm sẽ tệ hơn NẾU KHÔNG có quy định chặt hơn."
+        }
+      ]
+    },
+    {
+      "code": "T2-L12-E04",
+      "lessonCode": "T2-L12",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Câu phức — Điền chỗ trống",
+      "titleEn": "Complex Sentences — Fill in the gaps",
+      "instruction": "Điền liên từ phù hợp vào chỗ trống (dùng các từ trong khung).",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "complex-sentences"
+      ],
+      "wordBank": [
+        "although",
+        "because",
+        "unless",
+        "so that",
+        "whereas"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "____ many people prefer living in cities, rural areas offer a slower pace of life.",
+          "blanks": [
+            {
+              "accept": [
+                "although",
+                "though",
+                "even though",
+                "while",
+                "whereas"
+              ]
+            }
+          ],
+          "explanation": "Hai ý đối lập, mệnh đề phụ đứng đầu → Although (+ dấu phẩy)."
+        },
+        {
+          "id": "q2",
+          "prompt": "Many students choose to study abroad ____ foreign degrees are highly valued by employers.",
+          "blanks": [
+            {
+              "accept": [
+                "because",
+                "since",
+                "as"
+              ]
+            }
+          ],
+          "explanation": "Vế sau là lý do → because."
+        },
+        {
+          "id": "q3",
+          "prompt": "Endangered species will disappear ____ urgent action is taken.",
+          "blanks": [
+            {
+              "accept": [
+                "unless"
+              ]
+            }
+          ],
+          "explanation": "\"unless\" = if … not: sẽ biến mất nếu KHÔNG hành động."
+        },
+        {
+          "id": "q4",
+          "prompt": "Parents should limit screen time ____ children can develop better social skills.",
+          "blanks": [
+            {
+              "accept": [
+                "so that"
+              ]
+            }
+          ],
+          "explanation": "Mục đích + mệnh đề có modal (can) → so that."
+        },
+        {
+          "id": "q5",
+          "prompt": "Some people work best in the morning, ____ others are more productive at night.",
+          "blanks": [
+            {
+              "accept": [
+                "whereas",
+                "while"
+              ]
+            }
+          ],
+          "explanation": "So sánh đối lập hai nhóm người → whereas / while."
+        }
+      ]
+    },
+    {
+      "code": "T2-L12-E05",
+      "lessonCode": "T2-L12",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "Câu phức — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Complex Sentences — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "complex-sentences"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Online courses are cheap. However, they lack face-to-face interaction.",
+          "cue": "although",
+          "starter": "Although",
+          "sampleAnswers": [
+            "Although online courses are cheap, they lack face-to-face interaction."
+          ],
+          "explanation": "Gộp hai câu đối lập thành câu phức: Although + mệnh đề phụ, mệnh đề chính — bỏ \"However\"."
+        },
+        {
+          "id": "q2",
+          "prompt": "Although the tuition fees are high, many students apply to this university.",
+          "cue": "despite",
+          "starter": "Despite",
+          "sampleAnswers": [
+            "Despite the high tuition fees, many students apply to this university."
+          ],
+          "explanation": "\"Despite\" + cụm danh từ: \"the tuition fees are high\" → \"the high tuition fees\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "Rural areas offer few job opportunities, so young people move to cities.",
+          "cue": "because",
+          "starter": "Because",
+          "sampleAnswers": [
+            "Because rural areas offer few job opportunities, young people move to cities."
+          ],
+          "explanation": "Đưa lý do lên đầu với Because và bỏ \"so\" — không dùng Because … so."
+        },
+        {
+          "id": "q4",
+          "prompt": "If people do not recycle more, landfill sites will run out of space.",
+          "cue": "unless",
+          "starter": "Unless",
+          "sampleAnswers": [
+            "Unless people recycle more, landfill sites will run out of space."
+          ],
+          "explanation": "\"Unless\" đã mang nghĩa phủ định → bỏ \"do not\"."
+        },
+        {
+          "id": "q5",
+          "prompt": "Schools should teach cooking. Then children can eat more healthily.",
+          "cue": "so that",
+          "starter": "Schools should teach cooking",
+          "sampleAnswers": [
+            "Schools should teach cooking so that children can eat more healthily."
+          ],
+          "explanation": "\"so that\" nối mệnh đề chỉ mục đích, mệnh đề phụ đứng sau nên không cần dấu phẩy."
+        }
+      ]
+    },
+    {
+      "code": "T2-L12-E06",
+      "lessonCode": "T2-L12",
+      "order": 5,
+      "type": "mcq",
+      "title": "Câu ghép — Trắc nghiệm",
+      "titleEn": "Compound Sentences — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "compound-sentences"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Chọn câu ĐÚNG dấu câu:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Technology is convenient, it saves time."
+            },
+            {
+              "id": "B",
+              "text": "Technology is convenient, and it saves time."
+            },
+            {
+              "id": "C",
+              "text": "Technology is convenient and, it saves time."
+            },
+            {
+              "id": "D",
+              "text": "Technology is convenient however it saves time."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Hai mệnh đề độc lập nối bằng \", and\". Câu A là comma splice (chỉ có dấu phẩy trơn)."
+        },
+        {
+          "id": "q2",
+          "prompt": "Public transport is cheap; ____, it is often overcrowded.",
+          "options": [
+            {
+              "id": "A",
+              "text": "however"
+            },
+            {
+              "id": "B",
+              "text": "therefore"
+            },
+            {
+              "id": "C",
+              "text": "so"
+            },
+            {
+              "id": "D",
+              "text": "and"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Hai ý đối lập (rẻ ↔ đông đúc), cấu trúc \"; ___,\" → however."
+        },
+        {
+          "id": "q3",
+          "prompt": "Fast food is cheap and convenient, ____ it is often high in fat and sugar.",
+          "options": [
+            {
+              "id": "A",
+              "text": "so"
+            },
+            {
+              "id": "B",
+              "text": "or"
+            },
+            {
+              "id": "C",
+              "text": "but"
+            },
+            {
+              "id": "D",
+              "text": "for example"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Đối lập (tiện ↔ không tốt cho sức khoẻ) → \", but\"."
+        },
+        {
+          "id": "q4",
+          "prompt": "Many factories have moved overseas; ____, unemployment has risen in some regions.",
+          "options": [
+            {
+              "id": "A",
+              "text": "however"
+            },
+            {
+              "id": "B",
+              "text": "nevertheless"
+            },
+            {
+              "id": "C",
+              "text": "therefore"
+            },
+            {
+              "id": "D",
+              "text": "otherwise"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Vế sau là KẾT QUẢ của vế trước → therefore."
+        },
+        {
+          "id": "q5",
+          "prompt": "Chọn câu ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "It is cheap, however it is slow."
+            },
+            {
+              "id": "B",
+              "text": "It is cheap; however, it is slow."
+            },
+            {
+              "id": "C",
+              "text": "It is cheap; however it, is slow."
+            },
+            {
+              "id": "D",
+              "text": "It is cheap however, it is slow."
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"However\" không phải liên từ: dùng \"; however,\" hoặc tách thành hai câu."
+        }
+      ]
+    },
+    {
+      "code": "T2-L12-E07",
+      "lessonCode": "T2-L12",
+      "order": 6,
+      "type": "gap_fill",
+      "title": "Câu ghép — Điền chỗ trống",
+      "titleEn": "Compound Sentences — Fill in the gaps",
+      "instruction": "Điền từ nối phù hợp vào chỗ trống (dùng các từ trong khung).",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "compound-sentences"
+      ],
+      "wordBank": [
+        "and",
+        "but",
+        "so",
+        "however",
+        "therefore"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Cycling is good for health, ____ it also reduces air pollution.",
+          "blanks": [
+            {
+              "accept": [
+                "and"
+              ]
+            }
+          ],
+          "explanation": "Bổ sung thêm một lợi ích → and (đã có \"also\")."
+        },
+        {
+          "id": "q2",
+          "prompt": "The government lowered taxes, ____ the economy did not recover.",
+          "blanks": [
+            {
+              "accept": [
+                "but",
+                "yet"
+              ]
+            }
+          ],
+          "explanation": "Kết quả trái mong đợi → but / yet."
+        },
+        {
+          "id": "q3",
+          "prompt": "Housing in cities is expensive, ____ many young people still live with their parents.",
+          "blanks": [
+            {
+              "accept": [
+                "so"
+              ]
+            }
+          ],
+          "explanation": "Vế sau là kết quả → so."
+        },
+        {
+          "id": "q4",
+          "prompt": "Renewable energy is clean; ____, it can be expensive to install.",
+          "blanks": [
+            {
+              "accept": [
+                "however",
+                "nevertheless"
+              ]
+            }
+          ],
+          "explanation": "Đối lập, đứng sau dấu chấm phẩy và trước dấu phẩy → however."
+        },
+        {
+          "id": "q5",
+          "prompt": "Traffic congestion wastes time; ____, cities should invest in public transport.",
+          "blanks": [
+            {
+              "accept": [
+                "therefore",
+                "thus",
+                "consequently",
+                "hence"
+              ]
+            }
+          ],
+          "explanation": "Nêu kết luận / kết quả, dạng \"; ___,\" → therefore."
+        }
+      ]
+    },
+    {
+      "code": "T2-L12-E08",
+      "lessonCode": "T2-L12",
+      "order": 7,
+      "type": "sentence_transform",
+      "title": "Câu ghép — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Compound Sentences — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "compound-sentences"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Online shopping is convenient. It can lead to overspending.",
+          "cue": "but",
+          "starter": "Online shopping is convenient,",
+          "sampleAnswers": [
+            "Online shopping is convenient, but it can lead to overspending."
+          ],
+          "explanation": "Hai ý đối lập → \", but\" giữa hai mệnh đề độc lập."
+        },
+        {
+          "id": "q2",
+          "prompt": "Many people work from home. They save time on commuting.",
+          "cue": "so",
+          "starter": "Many people work from home,",
+          "sampleAnswers": [
+            "Many people work from home, so they save time on commuting."
+          ],
+          "explanation": "Vế sau là kết quả → \", so\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "Smartphones are useful. They can be addictive.",
+          "cue": "; however,",
+          "starter": "Smartphones are useful;",
+          "sampleAnswers": [
+            "Smartphones are useful; however, they can be addictive."
+          ],
+          "explanation": "Mẫu \"; however,\" — chấm phẩy trước, phẩy sau."
+        },
+        {
+          "id": "q4",
+          "prompt": "The population is ageing. Healthcare costs are rising.",
+          "cue": "; therefore,",
+          "starter": "The population is ageing;",
+          "sampleAnswers": [
+            "The population is ageing; therefore, healthcare costs are rising."
+          ],
+          "explanation": "Nguyên nhân → kết quả: \"; therefore,\"."
+        },
+        {
+          "id": "q5",
+          "prompt": "Exercise improves mood, it also reduces stress.",
+          "cue": "and",
+          "starter": "Exercise improves mood,",
+          "sampleAnswers": [
+            "Exercise improves mood, and it also reduces stress."
+          ],
+          "explanation": "Câu gốc là comma splice → thêm liên từ \"and\" sau dấu phẩy."
+        }
+      ]
+    },
+    {
+      "code": "T2-L13-E03",
+      "lessonCode": "T2-L13",
+      "order": 1,
+      "type": "mcq",
+      "title": "Câu điều kiện — Trắc nghiệm",
+      "titleEn": "Conditional Sentences — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "conditionals"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "If governments ____ more in renewable energy, carbon emissions will fall.",
+          "options": [
+            {
+              "id": "A",
+              "text": "invest"
+            },
+            {
+              "id": "B",
+              "text": "will invest"
+            },
+            {
+              "id": "C",
+              "text": "invested"
+            },
+            {
+              "id": "D",
+              "text": "had invested"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Loại 1: If + hiện tại đơn, … will + V. Không dùng \"will\" trong mệnh đề If."
+        },
+        {
+          "id": "q2",
+          "prompt": "If cities ____ more green spaces, residents would be healthier.",
+          "options": [
+            {
+              "id": "A",
+              "text": "have"
+            },
+            {
+              "id": "B",
+              "text": "had"
+            },
+            {
+              "id": "C",
+              "text": "will have"
+            },
+            {
+              "id": "D",
+              "text": "had had"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Loại 2 (giả định hiện tại): If + quá khứ đơn, … would + V."
+        },
+        {
+          "id": "q3",
+          "prompt": "If the government had acted earlier, the crisis ____.",
+          "options": [
+            {
+              "id": "A",
+              "text": "would be avoided"
+            },
+            {
+              "id": "B",
+              "text": "will have been avoided"
+            },
+            {
+              "id": "C",
+              "text": "would have been avoided"
+            },
+            {
+              "id": "D",
+              "text": "had been avoided"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Loại 3: If + had V3, … would have + V3 (ở đây bị động: would have been avoided)."
+        },
+        {
+          "id": "q4",
+          "prompt": "Chọn câu ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Unless governments don't act, pollution will worsen."
+            },
+            {
+              "id": "B",
+              "text": "Unless governments act, pollution will worsen."
+            },
+            {
+              "id": "C",
+              "text": "Unless governments will act, pollution worsens."
+            },
+            {
+              "id": "D",
+              "text": "If governments act not, pollution will worsen."
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"Unless\" đã mang nghĩa phủ định → không thêm \"don't\"; không dùng \"will\" sau Unless."
+        },
+        {
+          "id": "q5",
+          "prompt": "Students can borrow laptops ____ they return them within a week.",
+          "options": [
+            {
+              "id": "A",
+              "text": "unless"
+            },
+            {
+              "id": "B",
+              "text": "provided that"
+            },
+            {
+              "id": "C",
+              "text": "despite"
+            },
+            {
+              "id": "D",
+              "text": "although"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"provided that\" = miễn là (điều kiện)."
+        }
+      ]
+    },
+    {
+      "code": "T2-L13-E04",
+      "lessonCode": "T2-L13",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Câu điều kiện — Điền chỗ trống",
+      "titleEn": "Conditional Sentences — Fill in the gaps",
+      "instruction": "Chia động từ trong ngoặc cho đúng loại câu điều kiện.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "conditionals"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "If people ____ (use) public transport more often, traffic congestion will decrease.",
+          "blanks": [
+            {
+              "accept": [
+                "use"
+              ]
+            }
+          ],
+          "explanation": "Loại 1: mệnh đề If dùng hiện tại đơn."
+        },
+        {
+          "id": "q2",
+          "prompt": "If I ____ (be) the mayor, I would build more cycle lanes.",
+          "blanks": [
+            {
+              "accept": [
+                "were"
+              ]
+            }
+          ],
+          "explanation": "Loại 2 với \"be\": văn trang trọng dùng \"were\" cho mọi ngôi."
+        },
+        {
+          "id": "q3",
+          "prompt": "If the factory had followed safety rules, the accident ____ (not happen).",
+          "blanks": [
+            {
+              "accept": [
+                "would not have happened",
+                "wouldn't have happened"
+              ]
+            }
+          ],
+          "explanation": "Loại 3: would not have + V3."
+        },
+        {
+          "id": "q4",
+          "prompt": "Unless the government ____ (raise) taxes, it cannot fund new hospitals.",
+          "blanks": [
+            {
+              "accept": [
+                "raises"
+              ]
+            }
+          ],
+          "explanation": "Sau Unless dùng hiện tại đơn; chủ ngữ số ít → raises."
+        },
+        {
+          "id": "q5",
+          "prompt": "If young people ____ (have) more job opportunities at home, fewer of them would move abroad.",
+          "blanks": [
+            {
+              "accept": [
+                "had"
+              ]
+            }
+          ],
+          "explanation": "Loại 2: If + quá khứ đơn, … would + V."
+        }
+      ]
+    },
+    {
+      "code": "T2-L13-E05",
+      "lessonCode": "T2-L13",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "Câu điều kiện — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Conditional Sentences — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "conditionals"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "If students do not revise regularly, they will forget what they have learned.",
+          "cue": "unless",
+          "starter": "Unless",
+          "sampleAnswers": [
+            "Unless students revise regularly, they will forget what they have learned."
+          ],
+          "explanation": "Unless = if … not → bỏ \"do not\"."
+        },
+        {
+          "id": "q2",
+          "prompt": "People do not exercise enough, so they suffer from health problems.",
+          "cue": "loại 2",
+          "starter": "If people exercised",
+          "sampleAnswers": [
+            "If people exercised enough, they would not suffer from health problems."
+          ],
+          "explanation": "Giả định trái thực tế hiện tại → loại 2, đảo cả hai vế sang nghĩa ngược lại."
+        },
+        {
+          "id": "q3",
+          "prompt": "The government did not invest in flood defences, so the town was badly damaged.",
+          "cue": "loại 3",
+          "starter": "If the government had",
+          "sampleAnswers": [
+            "If the government had invested in flood defences, the town would not have been badly damaged."
+          ],
+          "explanation": "Giả định trái thực tế quá khứ → loại 3: If + had V3, … would not have + V3."
+        },
+        {
+          "id": "q4",
+          "prompt": "Working from home is effective only if employees are self-disciplined.",
+          "cue": "provided that",
+          "starter": "Working from home is effective",
+          "sampleAnswers": [
+            "Working from home is effective provided that employees are self-disciplined."
+          ],
+          "explanation": "\"only if\" ≈ \"provided that\" (miễn là)."
+        },
+        {
+          "id": "q5",
+          "prompt": "If this trend is left unchecked, it will damage the environment.",
+          "cue": "rút gọn",
+          "starter": "If left unchecked,",
+          "sampleAnswers": [
+            "If left unchecked, this trend will damage the environment."
+          ],
+          "explanation": "Rút gọn mệnh đề If bị động: If + V3. Chủ ngữ \"this trend\" chuyển sang mệnh đề chính."
+        }
+      ]
+    },
+    {
+      "code": "T2-L13-E06",
+      "lessonCode": "T2-L13",
+      "order": 5,
+      "type": "mcq",
+      "title": "Câu bị động — Trắc nghiệm",
+      "titleEn": "Passive Voice — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "passive-voice"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "More hospitals should ____ in rural areas.",
+          "options": [
+            {
+              "id": "A",
+              "text": "build"
+            },
+            {
+              "id": "B",
+              "text": "be built"
+            },
+            {
+              "id": "C",
+              "text": "built"
+            },
+            {
+              "id": "D",
+              "text": "be building"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Bị động với modal: should + be + V3."
+        },
+        {
+          "id": "q2",
+          "prompt": "It is widely ____ that education is the key to reducing poverty.",
+          "options": [
+            {
+              "id": "A",
+              "text": "believe"
+            },
+            {
+              "id": "B",
+              "text": "believing"
+            },
+            {
+              "id": "C",
+              "text": "believed"
+            },
+            {
+              "id": "D",
+              "text": "belief"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Mẫu khách quan: It is widely believed that …"
+        },
+        {
+          "id": "q3",
+          "prompt": "Chọn câu ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "The accident was happened last night."
+            },
+            {
+              "id": "B",
+              "text": "The accident happened last night."
+            },
+            {
+              "id": "C",
+              "text": "The accident was happen last night."
+            },
+            {
+              "id": "D",
+              "text": "The accident has been happened last night."
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"happen\" là nội động từ (không có tân ngữ) → không chia bị động."
+        },
+        {
+          "id": "q4",
+          "prompt": "Many measures ____ to reduce air pollution in recent years.",
+          "options": [
+            {
+              "id": "A",
+              "text": "have taken"
+            },
+            {
+              "id": "B",
+              "text": "has been taken"
+            },
+            {
+              "id": "C",
+              "text": "have been taken"
+            },
+            {
+              "id": "D",
+              "text": "were taking"
+            }
+          ],
+          "answer": "C",
+          "explanation": "\"in recent years\" → hiện tại hoàn thành; chủ ngữ số nhiều + bị động → have been taken."
+        },
+        {
+          "id": "q5",
+          "prompt": "Smoking ____ in public places in many countries.",
+          "options": [
+            {
+              "id": "A",
+              "text": "bans"
+            },
+            {
+              "id": "B",
+              "text": "is banned"
+            },
+            {
+              "id": "C",
+              "text": "is banning"
+            },
+            {
+              "id": "D",
+              "text": "banned"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Hút thuốc BỊ cấm → bị động hiện tại đơn: is banned."
+        }
+      ]
+    },
+    {
+      "code": "T2-L13-E07",
+      "lessonCode": "T2-L13",
+      "order": 6,
+      "type": "gap_fill",
+      "title": "Câu bị động — Điền chỗ trống",
+      "titleEn": "Passive Voice — Fill in the gaps",
+      "instruction": "Chia động từ trong ngoặc ở dạng bị động, đúng thì.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "passive-voice"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Millions of plastic bottles ____ (throw) away every day.",
+          "blanks": [
+            {
+              "accept": [
+                "are thrown"
+              ]
+            }
+          ],
+          "explanation": "Hiện tại đơn bị động, chủ ngữ số nhiều → are thrown."
+        },
+        {
+          "id": "q2",
+          "prompt": "New laws ____ (introduce) last year to protect wildlife.",
+          "blanks": [
+            {
+              "accept": [
+                "were introduced"
+              ]
+            }
+          ],
+          "explanation": "\"last year\" → quá khứ đơn bị động: were introduced."
+        },
+        {
+          "id": "q3",
+          "prompt": "Funding for the arts ____ (cut) significantly since 2020.",
+          "blanks": [
+            {
+              "accept": [
+                "has been cut"
+              ]
+            }
+          ],
+          "explanation": "\"since 2020\" → hiện tại hoàn thành; chủ ngữ \"funding\" số ít → has been cut."
+        },
+        {
+          "id": "q4",
+          "prompt": "Stricter rules should ____ (enforce) on social media companies.",
+          "blanks": [
+            {
+              "accept": [
+                "be enforced"
+              ]
+            }
+          ],
+          "explanation": "should + be + V3."
+        },
+        {
+          "id": "q5",
+          "prompt": "Online learning ____ (think) to be less effective for young children.",
+          "blanks": [
+            {
+              "accept": [
+                "is thought"
+              ]
+            }
+          ],
+          "explanation": "Mẫu S + is thought + to V."
+        }
+      ]
+    },
+    {
+      "code": "T2-L13-E08",
+      "lessonCode": "T2-L13",
+      "order": 7,
+      "type": "sentence_transform",
+      "title": "Câu bị động — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Passive Voice — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "passive-voice"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "People cut down millions of trees every year.",
+          "cue": "bị động",
+          "starter": "Millions of trees",
+          "sampleAnswers": [
+            "Millions of trees are cut down every year."
+          ],
+          "explanation": "Tân ngữ lên làm chủ ngữ; bỏ \"by people\" vì tác nhân chung chung."
+        },
+        {
+          "id": "q2",
+          "prompt": "Governments have built many new roads in recent years.",
+          "cue": "bị động",
+          "starter": "Many new roads",
+          "sampleAnswers": [
+            "Many new roads have been built in recent years."
+          ],
+          "explanation": "Hiện tại hoàn thành bị động: have been + V3; bỏ tác nhân hiển nhiên."
+        },
+        {
+          "id": "q3",
+          "prompt": "People widely believe that money cannot buy happiness.",
+          "cue": "It is …",
+          "starter": "It is",
+          "sampleAnswers": [
+            "It is widely believed that money cannot buy happiness."
+          ],
+          "explanation": "Mẫu khách quan: It is widely believed that + mệnh đề."
+        },
+        {
+          "id": "q4",
+          "prompt": "People think that social media is harmful to teenagers.",
+          "cue": "is thought to",
+          "starter": "Social media",
+          "sampleAnswers": [
+            "Social media is thought to be harmful to teenagers."
+          ],
+          "explanation": "S + is thought + to V: chủ ngữ của mệnh đề \"that\" lên đầu câu."
+        },
+        {
+          "id": "q5",
+          "prompt": "Companies should give employees more flexible working hours.",
+          "cue": "bị động",
+          "starter": "Employees",
+          "sampleAnswers": [
+            "Employees should be given more flexible working hours."
+          ],
+          "explanation": "should + be + V3; tân ngữ người (employees) lên làm chủ ngữ."
+        }
+      ]
+    },
+    {
+      "code": "T2-L14-E03",
+      "lessonCode": "T2-L14",
+      "order": 1,
+      "type": "mcq",
+      "title": "Mệnh đề quan hệ — Trắc nghiệm",
+      "titleEn": "Relative Clauses — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "relative-clauses"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Students ____ study abroad often become more independent.",
+          "options": [
+            {
+              "id": "A",
+              "text": "which"
+            },
+            {
+              "id": "B",
+              "text": "who"
+            },
+            {
+              "id": "C",
+              "text": "whose"
+            },
+            {
+              "id": "D",
+              "text": "where"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Thay cho người, làm chủ ngữ → who."
+        },
+        {
+          "id": "q2",
+          "prompt": "Many people work from home, ____ reduces traffic congestion.",
+          "options": [
+            {
+              "id": "A",
+              "text": "that"
+            },
+            {
+              "id": "B",
+              "text": "which"
+            },
+            {
+              "id": "C",
+              "text": "who"
+            },
+            {
+              "id": "D",
+              "text": "what"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Bổ sung ý cho cả mệnh đề trước, sau dấu phẩy → \", which\". Không dùng \"that\" sau dấu phẩy."
+        },
+        {
+          "id": "q3",
+          "prompt": "Children ____ parents read to them develop better language skills.",
+          "options": [
+            {
+              "id": "A",
+              "text": "who"
+            },
+            {
+              "id": "B",
+              "text": "whom"
+            },
+            {
+              "id": "C",
+              "text": "whose"
+            },
+            {
+              "id": "D",
+              "text": "which"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Sở hữu (cha mẹ CỦA trẻ) → whose + danh từ."
+        },
+        {
+          "id": "q4",
+          "prompt": "Rural areas are places ____ public services are often limited.",
+          "options": [
+            {
+              "id": "A",
+              "text": "which"
+            },
+            {
+              "id": "B",
+              "text": "where"
+            },
+            {
+              "id": "C",
+              "text": "when"
+            },
+            {
+              "id": "D",
+              "text": "who"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Nơi chốn, sau đó là một mệnh đề đầy đủ → where."
+        },
+        {
+          "id": "q5",
+          "prompt": "Chọn câu ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "The students who they study abroad gain confidence."
+            },
+            {
+              "id": "B",
+              "text": "Governments should support policies which helps the poor."
+            },
+            {
+              "id": "C",
+              "text": "Governments should support policies which help the poor."
+            },
+            {
+              "id": "D",
+              "text": "Many people cycle to work, that improves their health."
+            }
+          ],
+          "answer": "C",
+          "explanation": "\"policies\" số nhiều → help. A lặp chủ ngữ \"they\"; D dùng \"that\" sau dấu phẩy."
+        }
+      ]
+    },
+    {
+      "code": "T2-L14-E04",
+      "lessonCode": "T2-L14",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Mệnh đề quan hệ — Điền chỗ trống",
+      "titleEn": "Relative Clauses — Fill in the gaps",
+      "instruction": "Điền đại từ / trạng từ quan hệ phù hợp (dùng các từ trong khung).",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "relative-clauses"
+      ],
+      "wordBank": [
+        "who",
+        "which",
+        "whose",
+        "where",
+        "when"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Teachers ____ use technology effectively can make lessons more engaging.",
+          "blanks": [
+            {
+              "accept": [
+                "who",
+                "that"
+              ]
+            }
+          ],
+          "explanation": "Thay cho người, làm chủ ngữ → who."
+        },
+        {
+          "id": "q2",
+          "prompt": "Many cities have introduced congestion charges, ____ has reduced traffic.",
+          "blanks": [
+            {
+              "accept": [
+                "which"
+              ]
+            }
+          ],
+          "explanation": "Bổ sung ý cho cả mệnh đề trước, sau dấu phẩy → which."
+        },
+        {
+          "id": "q3",
+          "prompt": "Employees ____ salaries are low may look for a second job.",
+          "blanks": [
+            {
+              "accept": [
+                "whose"
+              ]
+            }
+          ],
+          "explanation": "Lương CỦA nhân viên → whose."
+        },
+        {
+          "id": "q4",
+          "prompt": "Libraries are places ____ people can study for free.",
+          "blanks": [
+            {
+              "accept": [
+                "where"
+              ]
+            }
+          ],
+          "explanation": "Nơi chốn + mệnh đề đầy đủ → where."
+        },
+        {
+          "id": "q5",
+          "prompt": "The 1990s was a decade ____ the internet changed everyday life.",
+          "blanks": [
+            {
+              "accept": [
+                "when"
+              ]
+            }
+          ],
+          "explanation": "Thời gian → when."
+        }
+      ]
+    },
+    {
+      "code": "T2-L14-E05",
+      "lessonCode": "T2-L14",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "Mệnh đề quan hệ — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Relative Clauses — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "relative-clauses"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The government raised taxes on cigarettes. This reduced smoking rates.",
+          "cue": ", which",
+          "starter": "The government raised taxes on cigarettes,",
+          "sampleAnswers": [
+            "The government raised taxes on cigarettes, which reduced smoking rates."
+          ],
+          "explanation": "\", which\" thay cho \"This\" để mở rộng ý cả mệnh đề trước — mẹo nâng band nhanh nhất."
+        },
+        {
+          "id": "q2",
+          "prompt": "Some young people use social media too much. They often sleep badly.",
+          "cue": "who",
+          "starter": "Young people who",
+          "sampleAnswers": [
+            "Young people who use social media too much often sleep badly."
+          ],
+          "explanation": "Mệnh đề xác định với who (không dấu phẩy) thay cho \"They\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "Some parents work long hours. Their children often spend time alone.",
+          "cue": "whose",
+          "starter": "Children whose",
+          "sampleAnswers": [
+            "Children whose parents work long hours often spend time alone."
+          ],
+          "explanation": "\"Their children\" → whose: sở hữu."
+        },
+        {
+          "id": "q4",
+          "prompt": "People who live in cities often suffer from stress.",
+          "cue": "rút gọn",
+          "starter": "People living",
+          "sampleAnswers": [
+            "People living in cities often suffer from stress."
+          ],
+          "explanation": "Rút gọn mệnh đề quan hệ chủ động: who live → living."
+        },
+        {
+          "id": "q5",
+          "prompt": "Products which are made in factories are usually cheaper.",
+          "cue": "rút gọn",
+          "starter": "Products made",
+          "sampleAnswers": [
+            "Products made in factories are usually cheaper."
+          ],
+          "explanation": "Rút gọn mệnh đề quan hệ bị động: which are made → made."
+        }
+      ]
+    },
+    {
+      "code": "T2-L14-E06",
+      "lessonCode": "T2-L14",
+      "order": 5,
+      "type": "mcq",
+      "title": "Đảo ngữ — Trắc nghiệm",
+      "titleEn": "Inversion for Emphasis — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "inversion"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Not only ____ costs, but it also improves efficiency.",
+          "options": [
+            {
+              "id": "A",
+              "text": "it reduces"
+            },
+            {
+              "id": "B",
+              "text": "does it reduce"
+            },
+            {
+              "id": "C",
+              "text": "does it reduces"
+            },
+            {
+              "id": "D",
+              "text": "it does reduce"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"Not only\" đầu câu → đảo trợ động từ: does it + V nguyên mẫu."
+        },
+        {
+          "id": "q2",
+          "prompt": "Never before ____ so much information available to ordinary people.",
+          "options": [
+            {
+              "id": "A",
+              "text": "there has been"
+            },
+            {
+              "id": "B",
+              "text": "has there been"
+            },
+            {
+              "id": "C",
+              "text": "there was"
+            },
+            {
+              "id": "D",
+              "text": "was there being"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Never before + have/has + S + V3."
+        },
+        {
+          "id": "q3",
+          "prompt": "Only by investing in education ____ poverty.",
+          "options": [
+            {
+              "id": "A",
+              "text": "can governments reduce"
+            },
+            {
+              "id": "B",
+              "text": "governments can reduce"
+            },
+            {
+              "id": "C",
+              "text": "can governments reduces"
+            },
+            {
+              "id": "D",
+              "text": "governments reduce"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Only by + V-ing + trợ động từ + S + V nguyên mẫu."
+        },
+        {
+          "id": "q4",
+          "prompt": "Rarely ____ politicians admit their mistakes.",
+          "options": [
+            {
+              "id": "A",
+              "text": "do"
+            },
+            {
+              "id": "B",
+              "text": "does"
+            },
+            {
+              "id": "C",
+              "text": "are"
+            },
+            {
+              "id": "D",
+              "text": "have"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Rarely + trợ động từ + S + V; chủ ngữ số nhiều, hiện tại đơn → do."
+        },
+        {
+          "id": "q5",
+          "prompt": "Chọn câu ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "This approach not only reduces costs but also improves efficiency."
+            },
+            {
+              "id": "B",
+              "text": "This approach not only does reduce costs but also improves efficiency."
+            },
+            {
+              "id": "C",
+              "text": "Not only this approach reduces costs but also improves efficiency."
+            },
+            {
+              "id": "D",
+              "text": "Not only does this approach reduces costs, but it also improves efficiency."
+            }
+          ],
+          "answer": "A",
+          "explanation": "\"not only\" giữa câu thì KHÔNG đảo (A). C thiếu đảo ngữ; D sai \"reduces\" sau \"does\"."
+        }
+      ]
+    },
+    {
+      "code": "T2-L14-E07",
+      "lessonCode": "T2-L14",
+      "order": 6,
+      "type": "gap_fill",
+      "title": "Đảo ngữ — Điền chỗ trống",
+      "titleEn": "Inversion for Emphasis — Fill in the gaps",
+      "instruction": "Điền trợ động từ phù hợp cho câu đảo ngữ (dùng các từ trong khung).",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "inversion"
+      ],
+      "wordBank": [
+        "does",
+        "have",
+        "do",
+        "can",
+        "should"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Not only ____ exercise improve physical health, but it also reduces stress.",
+          "blanks": [
+            {
+              "accept": [
+                "does"
+              ]
+            }
+          ],
+          "explanation": "Chủ ngữ số ít, hiện tại đơn → does + V nguyên mẫu (improve)."
+        },
+        {
+          "id": "q2",
+          "prompt": "Never before ____ people relied so heavily on technology.",
+          "blanks": [
+            {
+              "accept": [
+                "have"
+              ]
+            }
+          ],
+          "explanation": "Never before + have + S + V3 (relied)."
+        },
+        {
+          "id": "q3",
+          "prompt": "Seldom ____ young people read printed newspapers nowadays.",
+          "blanks": [
+            {
+              "accept": [
+                "do"
+              ]
+            }
+          ],
+          "explanation": "Chủ ngữ số nhiều, hiện tại đơn → do."
+        },
+        {
+          "id": "q4",
+          "prompt": "Only by working together ____ countries tackle climate change.",
+          "blanks": [
+            {
+              "accept": [
+                "can"
+              ]
+            }
+          ],
+          "explanation": "Only by + V-ing + can + S + V."
+        },
+        {
+          "id": "q5",
+          "prompt": "Under no circumstances ____ children be left alone near water.",
+          "blanks": [
+            {
+              "accept": [
+                "should"
+              ]
+            }
+          ],
+          "explanation": "Under no circumstances + should + S + V (khuyến nghị mạnh)."
+        }
+      ]
+    },
+    {
+      "code": "T2-L14-E08",
+      "lessonCode": "T2-L14",
+      "order": 7,
+      "type": "sentence_transform",
+      "title": "Đảo ngữ — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Inversion for Emphasis — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "inversion"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Public transport reduces traffic, and it also cuts pollution.",
+          "cue": "Not only",
+          "starter": "Not only does",
+          "sampleAnswers": [
+            "Not only does public transport reduce traffic, but it also cuts pollution."
+          ],
+          "explanation": "Not only + does + S + V nguyên mẫu, but + S + also + V."
+        },
+        {
+          "id": "q2",
+          "prompt": "People have never had so much access to information before.",
+          "cue": "Never before",
+          "starter": "Never before",
+          "sampleAnswers": [
+            "Never before have people had so much access to information."
+          ],
+          "explanation": "Never before + have + S + V3."
+        },
+        {
+          "id": "q3",
+          "prompt": "We can only solve this problem by cooperating internationally.",
+          "cue": "Only by",
+          "starter": "Only by",
+          "sampleAnswers": [
+            "Only by cooperating internationally can we solve this problem."
+          ],
+          "explanation": "Only by + V-ing + can + S + V."
+        },
+        {
+          "id": "q4",
+          "prompt": "Students rarely have time to relax before exams.",
+          "cue": "Rarely",
+          "starter": "Rarely",
+          "sampleAnswers": [
+            "Rarely do students have time to relax before exams."
+          ],
+          "explanation": "Rarely đầu câu → đảo \"do\" + S + V nguyên mẫu."
+        },
+        {
+          "id": "q5",
+          "prompt": "Employees should not share passwords under any circumstances.",
+          "cue": "Under no circumstances",
+          "starter": "Under no circumstances",
+          "sampleAnswers": [
+            "Under no circumstances should employees share passwords."
+          ],
+          "explanation": "Under no circumstances + should + S + V; bỏ \"not\" vì cụm đã mang nghĩa phủ định."
+        }
+      ]
+    },
+    {
+      "code": "T2-L15-E03",
+      "lessonCode": "T2-L15",
+      "order": 1,
+      "type": "mcq",
+      "title": "Câu chẻ — Trắc nghiệm",
+      "titleEn": "Cleft Sentences — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "cleft-sentences"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "It is technology ____ has changed the way we communicate.",
+          "options": [
+            {
+              "id": "A",
+              "text": "what"
+            },
+            {
+              "id": "B",
+              "text": "that"
+            },
+            {
+              "id": "C",
+              "text": "who"
+            },
+            {
+              "id": "D",
+              "text": "which it"
+            }
+          ],
+          "answer": "B",
+          "explanation": "It is + thành phần nhấn mạnh (vật) + that + phần còn lại."
+        },
+        {
+          "id": "q2",
+          "prompt": "What students need most ____ practical experience.",
+          "options": [
+            {
+              "id": "A",
+              "text": "are"
+            },
+            {
+              "id": "B",
+              "text": "is"
+            },
+            {
+              "id": "C",
+              "text": "being"
+            },
+            {
+              "id": "D",
+              "text": "have"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Động từ sau mệnh đề \"What …\" chia số ít → is."
+        },
+        {
+          "id": "q3",
+          "prompt": "It was my grandmother ____ taught me to cook.",
+          "options": [
+            {
+              "id": "A",
+              "text": "who"
+            },
+            {
+              "id": "B",
+              "text": "which"
+            },
+            {
+              "id": "C",
+              "text": "what"
+            },
+            {
+              "id": "D",
+              "text": "whom she"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Nhấn mạnh người → who."
+        },
+        {
+          "id": "q4",
+          "prompt": "Chọn câu ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "It is technology that it changes our lives."
+            },
+            {
+              "id": "B",
+              "text": "It is technology that changes our lives."
+            },
+            {
+              "id": "C",
+              "text": "It is technology what changes our lives."
+            },
+            {
+              "id": "D",
+              "text": "It technology is that changes our lives."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Không thêm chủ ngữ thừa \"it\" sau \"that\"; không dùng \"what\" trong mẫu It is … that."
+        },
+        {
+          "id": "q5",
+          "prompt": "Câu nào KHÔNG phải câu chẻ?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It is important that children learn to swim."
+            },
+            {
+              "id": "B",
+              "text": "It is the government that should fund research."
+            },
+            {
+              "id": "C",
+              "text": "What worries me is the rising cost of housing."
+            },
+            {
+              "id": "D",
+              "text": "It was in 2010 that the law was passed."
+            }
+          ],
+          "answer": "A",
+          "explanation": "\"It is + adj + that\" là câu bình thường, không nhấn mạnh thành phần nào."
+        }
+      ]
+    },
+    {
+      "code": "T2-L15-E04",
+      "lessonCode": "T2-L15",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Câu chẻ — Điền chỗ trống",
+      "titleEn": "Cleft Sentences — Fill in the gaps",
+      "instruction": "Điền từ còn thiếu để hoàn thành câu chẻ (dùng các từ trong khung).",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "cleft-sentences"
+      ],
+      "wordBank": [
+        "who",
+        "what",
+        "that",
+        "is",
+        "why"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "It is parents ____ have the greatest influence on children.",
+          "blanks": [
+            {
+              "accept": [
+                "who",
+                "that"
+              ]
+            }
+          ],
+          "explanation": "Nhấn mạnh người → who."
+        },
+        {
+          "id": "q2",
+          "prompt": "____ concerns many people is the rising cost of living.",
+          "blanks": [
+            {
+              "accept": [
+                "what"
+              ]
+            }
+          ],
+          "explanation": "Mẫu What + V + is + thành phần nhấn mạnh."
+        },
+        {
+          "id": "q3",
+          "prompt": "It was in 2015 ____ the new law came into force.",
+          "blanks": [
+            {
+              "accept": [
+                "that"
+              ]
+            }
+          ],
+          "explanation": "Nhấn mạnh thời gian → that."
+        },
+        {
+          "id": "q4",
+          "prompt": "What young people need ____ more job opportunities.",
+          "blanks": [
+            {
+              "accept": [
+                "is"
+              ]
+            }
+          ],
+          "explanation": "Sau mệnh đề \"What …\" động từ chia số ít."
+        },
+        {
+          "id": "q5",
+          "prompt": "The main reason ____ people move to cities is that they want better jobs.",
+          "blanks": [
+            {
+              "accept": [
+                "why",
+                "that"
+              ]
+            }
+          ],
+          "explanation": "The main reason why … is that …"
+        }
+      ]
+    },
+    {
+      "code": "T2-L15-E05",
+      "lessonCode": "T2-L15",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "Câu chẻ — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Cleft Sentences — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "cleft-sentences"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Parents play the most important role in a child's education.",
+          "cue": "It is … who",
+          "starter": "It is parents who",
+          "sampleAnswers": [
+            "It is parents who play the most important role in a child's education."
+          ],
+          "explanation": "Nhấn mạnh người (parents) → It is … who."
+        },
+        {
+          "id": "q2",
+          "prompt": "Many workers want more flexible hours.",
+          "cue": "What",
+          "starter": "What many workers want",
+          "sampleAnswers": [
+            "What many workers want is more flexible hours."
+          ],
+          "explanation": "What + S + V + is + thành phần nhấn mạnh."
+        },
+        {
+          "id": "q3",
+          "prompt": "Governments should take responsibility for protecting the environment.",
+          "cue": "It is … that",
+          "starter": "It is governments that",
+          "sampleAnswers": [
+            "It is governments that should take responsibility for protecting the environment."
+          ],
+          "explanation": "Nhấn mạnh chủ thể: It is + N + that + phần còn lại (không thêm chủ ngữ)."
+        },
+        {
+          "id": "q4",
+          "prompt": "The lack of affordable housing worries young people most.",
+          "cue": "What",
+          "starter": "What worries",
+          "sampleAnswers": [
+            "What worries young people most is the lack of affordable housing."
+          ],
+          "explanation": "Đưa thông tin cần nhấn mạnh xuống cuối sau \"is\"."
+        },
+        {
+          "id": "q5",
+          "prompt": "People move to cities mainly because they want better jobs.",
+          "cue": "The main reason why",
+          "starter": "The main reason why",
+          "sampleAnswers": [
+            "The main reason why people move to cities is that they want better jobs."
+          ],
+          "explanation": "The main reason why … is that … (không viết \"is because\")."
+        }
+      ]
+    },
+    {
+      "code": "T2-L15-E06",
+      "lessonCode": "T2-L15",
+      "order": 5,
+      "type": "mcq",
+      "title": "Cấu trúc song song — Trắc nghiệm",
+      "titleEn": "Parallel Structures — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "parallel-structures"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Regular exercise helps people to lose weight, reduce stress and ____ their sleep.",
+          "options": [
+            {
+              "id": "A",
+              "text": "improving"
+            },
+            {
+              "id": "B",
+              "text": "improve"
+            },
+            {
+              "id": "C",
+              "text": "improvement"
+            },
+            {
+              "id": "D",
+              "text": "to improving"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Liệt kê ba động từ nguyên mẫu: lose, reduce, improve."
+        },
+        {
+          "id": "q2",
+          "prompt": "The new policy is not only cheap but also ____.",
+          "options": [
+            {
+              "id": "A",
+              "text": "saves time"
+            },
+            {
+              "id": "B",
+              "text": "time-saving"
+            },
+            {
+              "id": "C",
+              "text": "it saves time"
+            },
+            {
+              "id": "D",
+              "text": "saving of time"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Hai vế của not only … but also cùng loại từ: cheap (adj) — time-saving (adj)."
+        },
+        {
+          "id": "q3",
+          "prompt": "Students can either study online ____ attend classes on campus.",
+          "options": [
+            {
+              "id": "A",
+              "text": "nor"
+            },
+            {
+              "id": "B",
+              "text": "and"
+            },
+            {
+              "id": "C",
+              "text": "or"
+            },
+            {
+              "id": "D",
+              "text": "but"
+            }
+          ],
+          "answer": "C",
+          "explanation": "either … or."
+        },
+        {
+          "id": "q4",
+          "prompt": "Neither the government nor individuals ____ doing enough to reduce waste.",
+          "options": [
+            {
+              "id": "A",
+              "text": "is"
+            },
+            {
+              "id": "B",
+              "text": "are"
+            },
+            {
+              "id": "C",
+              "text": "has"
+            },
+            {
+              "id": "D",
+              "text": "was"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Với neither … nor, động từ chia theo danh từ gần nhất (individuals → are)."
+        },
+        {
+          "id": "q5",
+          "prompt": "Chọn câu ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Technology helps to reduce costs, improving productivity, and better service."
+            },
+            {
+              "id": "B",
+              "text": "Technology helps to reduce costs, improve productivity and enhance customer service."
+            },
+            {
+              "id": "C",
+              "text": "Technology helps reducing costs, to improve productivity and better service."
+            },
+            {
+              "id": "D",
+              "text": "Technology helps to reduce costs, improves productivity and enhancing service."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Ba vế cùng dạng (to) V: reduce — improve — enhance."
+        }
+      ]
+    },
+    {
+      "code": "T2-L15-E07",
+      "lessonCode": "T2-L15",
+      "order": 6,
+      "type": "gap_fill",
+      "title": "Cấu trúc song song — Điền chỗ trống",
+      "titleEn": "Parallel Structures — Fill in the gaps",
+      "instruction": "Viết dạng đúng của từ trong ngoặc để các vế song song.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "parallel-structures"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Living in the countryside means breathing clean air, eating fresh food and ____ (enjoy) a slower pace of life.",
+          "blanks": [
+            {
+              "accept": [
+                "enjoying"
+              ]
+            }
+          ],
+          "explanation": "Ba vế V-ing: breathing — eating — enjoying."
+        },
+        {
+          "id": "q2",
+          "prompt": "Governments should invest in schools, train more teachers and ____ (raise) teachers' salaries.",
+          "blanks": [
+            {
+              "accept": [
+                "raise"
+              ]
+            }
+          ],
+          "explanation": "Ba vế V nguyên mẫu sau should: invest — train — raise."
+        },
+        {
+          "id": "q3",
+          "prompt": "Online learning is both flexible and ____ (afford).",
+          "blanks": [
+            {
+              "accept": [
+                "affordable"
+              ]
+            }
+          ],
+          "explanation": "both A and B cùng loại từ: flexible (adj) — affordable (adj)."
+        },
+        {
+          "id": "q4",
+          "prompt": "Many people prefer cycling rather than ____ (drive) to work.",
+          "blanks": [
+            {
+              "accept": [
+                "driving"
+              ]
+            }
+          ],
+          "explanation": "rather than: hai vế cùng dạng V-ing (cycling — driving)."
+        },
+        {
+          "id": "q5",
+          "prompt": "Neither the teacher nor the students ____ (be) happy with the new timetable.",
+          "blanks": [
+            {
+              "accept": [
+                "were",
+                "are"
+              ]
+            }
+          ],
+          "explanation": "Động từ chia theo danh từ gần nhất \"the students\" (số nhiều)."
+        }
+      ]
+    },
+    {
+      "code": "T2-L15-E08",
+      "lessonCode": "T2-L15",
+      "order": 7,
+      "type": "sentence_transform",
+      "title": "Cấu trúc song song — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Parallel Structures — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "parallel-structures"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Online shopping saves time. It also saves money.",
+          "cue": "both … and",
+          "starter": "Online shopping saves both",
+          "sampleAnswers": [
+            "Online shopping saves both time and money."
+          ],
+          "explanation": "both A and B: hai danh từ song song."
+        },
+        {
+          "id": "q2",
+          "prompt": "Smartphones are useful for communication. They are also useful for learning.",
+          "cue": "not only … but also",
+          "starter": "Smartphones are useful not only",
+          "sampleAnswers": [
+            "Smartphones are useful not only for communication but also for learning."
+          ],
+          "explanation": "Hai vế cùng dạng \"for + N\"."
+        },
+        {
+          "id": "q3",
+          "prompt": "The course teaches students to write, reading and speak English.",
+          "cue": "sửa lỗi song song",
+          "starter": "The course teaches students to write,",
+          "sampleAnswers": [
+            "The course teaches students to write, read and speak English."
+          ],
+          "explanation": "\"reading\" lệch dạng → đổi thành \"read\" cho cùng dạng V nguyên mẫu."
+        },
+        {
+          "id": "q4",
+          "prompt": "Governments can raise taxes on cars, or they can improve public transport.",
+          "cue": "either … or",
+          "starter": "Governments can either",
+          "sampleAnswers": [
+            "Governments can either raise taxes on cars or improve public transport."
+          ],
+          "explanation": "either + V … or + V: hai động từ song song."
+        },
+        {
+          "id": "q5",
+          "prompt": "The government is not doing enough to reduce waste, and individuals are not doing enough either.",
+          "cue": "neither … nor",
+          "starter": "Neither the government nor individuals",
+          "sampleAnswers": [
+            "Neither the government nor individuals are doing enough to reduce waste."
+          ],
+          "explanation": "Động từ chia theo danh từ gần nhất (individuals → are)."
+        }
+      ]
+    },
+    {
+      "code": "T2-L16-E03",
+      "lessonCode": "T2-L16",
+      "order": 1,
+      "type": "mcq",
+      "title": "Động từ khuyết thiếu — Trắc nghiệm",
+      "titleEn": "Modal Verbs — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "modal-verbs"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Governments should ____ more in public healthcare.",
+          "options": [
+            {
+              "id": "A",
+              "text": "to invest"
+            },
+            {
+              "id": "B",
+              "text": "invest"
+            },
+            {
+              "id": "C",
+              "text": "investing"
+            },
+            {
+              "id": "D",
+              "text": "invested"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Sau modal là V nguyên mẫu không \"to\"."
+        },
+        {
+          "id": "q2",
+          "prompt": "This technology ____ harm young people's mental health if it is overused.",
+          "options": [
+            {
+              "id": "A",
+              "text": "could"
+            },
+            {
+              "id": "B",
+              "text": "coulds"
+            },
+            {
+              "id": "C",
+              "text": "can to"
+            },
+            {
+              "id": "D",
+              "text": "will can"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Dự đoán thận trọng → could + V. Không chia modal, không dùng hai modal liền nhau."
+        },
+        {
+          "id": "q3",
+          "prompt": "Stricter laws must ____ to protect endangered animals.",
+          "options": [
+            {
+              "id": "A",
+              "text": "introduce"
+            },
+            {
+              "id": "B",
+              "text": "be introduced"
+            },
+            {
+              "id": "C",
+              "text": "introduced"
+            },
+            {
+              "id": "D",
+              "text": "introducing"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Luật ĐƯỢC ban hành → bị động: must + be + V3."
+        },
+        {
+          "id": "q4",
+          "prompt": "Chọn câu thận trọng, mang tính học thuật nhất:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Social media will definitely destroy society."
+            },
+            {
+              "id": "B",
+              "text": "Social media could seriously harm society."
+            },
+            {
+              "id": "C",
+              "text": "Social media destroys society for sure."
+            },
+            {
+              "id": "D",
+              "text": "Social media must destroy society."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Tránh tuyệt đối hoá; dùng could để dự đoán thận trọng."
+        },
+        {
+          "id": "q5",
+          "prompt": "In the future, robots ____ do many household tasks.",
+          "options": [
+            {
+              "id": "A",
+              "text": "will can"
+            },
+            {
+              "id": "B",
+              "text": "will be able to"
+            },
+            {
+              "id": "C",
+              "text": "can will"
+            },
+            {
+              "id": "D",
+              "text": "are can"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Không dùng \"will can\" → will be able to + V."
+        }
+      ]
+    },
+    {
+      "code": "T2-L16-E04",
+      "lessonCode": "T2-L16",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Động từ khuyết thiếu — Điền chỗ trống",
+      "titleEn": "Modal Verbs — Fill in the gaps",
+      "instruction": "Điền từ phù hợp vào chỗ trống (dùng các từ trong khung).",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "modal-verbs"
+      ],
+      "wordBank": [
+        "should",
+        "might",
+        "be",
+        "have",
+        "able"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Schools ____ teach students how to manage money.",
+          "blanks": [
+            {
+              "accept": [
+                "should",
+                "must",
+                "ought to",
+                "need to"
+              ]
+            }
+          ],
+          "explanation": "Đề xuất → should."
+        },
+        {
+          "id": "q2",
+          "prompt": "Working from home ____ reduce productivity for some employees.",
+          "blanks": [
+            {
+              "accept": [
+                "might",
+                "may",
+                "could"
+              ]
+            }
+          ],
+          "explanation": "Khả năng, dự đoán thận trọng → might / may / could."
+        },
+        {
+          "id": "q3",
+          "prompt": "More cycle lanes should ____ built in city centres.",
+          "blanks": [
+            {
+              "accept": [
+                "be"
+              ]
+            }
+          ],
+          "explanation": "Bị động với modal: should + be + V3."
+        },
+        {
+          "id": "q4",
+          "prompt": "The government should ____ acted earlier to prevent the crisis.",
+          "blanks": [
+            {
+              "accept": [
+                "have"
+              ]
+            }
+          ],
+          "explanation": "Tiếc nuối về quá khứ: should have + V3."
+        },
+        {
+          "id": "q5",
+          "prompt": "In the future, people will be ____ to work from anywhere.",
+          "blanks": [
+            {
+              "accept": [
+                "able"
+              ]
+            }
+          ],
+          "explanation": "will be able to + V (thay cho \"will can\")."
+        }
+      ]
+    },
+    {
+      "code": "T2-L16-E05",
+      "lessonCode": "T2-L16",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "Động từ khuyết thiếu — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Modal Verbs — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "modal-verbs"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "It is necessary for governments to invest in renewable energy.",
+          "cue": "must",
+          "starter": "Governments",
+          "sampleAnswers": [
+            "Governments must invest in renewable energy."
+          ],
+          "explanation": "\"It is necessary for … to V\" = S + must + V."
+        },
+        {
+          "id": "q2",
+          "prompt": "It is possible that online learning will replace some traditional classes.",
+          "cue": "may",
+          "starter": "Online learning",
+          "sampleAnswers": [
+            "Online learning may replace some traditional classes."
+          ],
+          "explanation": "\"It is possible that …\" = S + may + V."
+        },
+        {
+          "id": "q3",
+          "prompt": "It is a good idea for parents to limit their children's screen time.",
+          "cue": "should",
+          "starter": "Parents",
+          "sampleAnswers": [
+            "Parents should limit their children's screen time."
+          ],
+          "explanation": "Lời khuyên → should + V."
+        },
+        {
+          "id": "q4",
+          "prompt": "Supermarkets should stop giving out plastic bags.",
+          "cue": "bị động",
+          "starter": "Plastic bags should",
+          "sampleAnswers": [
+            "Plastic bags should not be given out by supermarkets."
+          ],
+          "explanation": "should + not + be + V3; tác nhân cụ thể (supermarkets) nên giữ \"by\"."
+        },
+        {
+          "id": "q5",
+          "prompt": "It was a mistake that the city did not build more schools.",
+          "cue": "should have",
+          "starter": "The city should have",
+          "sampleAnswers": [
+            "The city should have built more schools."
+          ],
+          "explanation": "Chỉ trích / tiếc nuối việc trong quá khứ → should have + V3."
+        }
+      ]
+    },
+    {
+      "code": "T2-L16-E06",
+      "lessonCode": "T2-L16",
+      "order": 5,
+      "type": "mcq",
+      "title": "Cấu trúc so sánh — Trắc nghiệm",
+      "titleEn": "Comparatives and Superlatives — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "comparatives"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Living in a big city is ____ more expensive than living in the countryside.",
+          "options": [
+            {
+              "id": "A",
+              "text": "very"
+            },
+            {
+              "id": "B",
+              "text": "far"
+            },
+            {
+              "id": "C",
+              "text": "most"
+            },
+            {
+              "id": "D",
+              "text": "more"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Nhấn mạnh so sánh hơn dùng far / much / significantly — không dùng \"very\"."
+        },
+        {
+          "id": "q2",
+          "prompt": "The more people use public transport, ____ the roads become.",
+          "options": [
+            {
+              "id": "A",
+              "text": "less crowded"
+            },
+            {
+              "id": "B",
+              "text": "the less crowded"
+            },
+            {
+              "id": "C",
+              "text": "the least crowded"
+            },
+            {
+              "id": "D",
+              "text": "more crowded"
+            }
+          ],
+          "answer": "B",
+          "explanation": "The + so sánh hơn …, the + so sánh hơn …"
+        },
+        {
+          "id": "q3",
+          "prompt": "Air pollution is one of the most serious ____ in big cities.",
+          "options": [
+            {
+              "id": "A",
+              "text": "problem"
+            },
+            {
+              "id": "B",
+              "text": "problems"
+            },
+            {
+              "id": "C",
+              "text": "problem's"
+            },
+            {
+              "id": "D",
+              "text": "of problems"
+            }
+          ],
+          "answer": "B",
+          "explanation": "one of the + so sánh nhất + danh từ SỐ NHIỀU."
+        },
+        {
+          "id": "q4",
+          "prompt": "Chọn câu ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Electric cars are more cheaper to run than petrol cars."
+            },
+            {
+              "id": "B",
+              "text": "Electric cars are much cheaper to run than petrol cars."
+            },
+            {
+              "id": "C",
+              "text": "Electric cars are very cheaper to run than petrol cars."
+            },
+            {
+              "id": "D",
+              "text": "Electric cars are the most cheapest to run."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Không dùng so sánh kép (more cheaper, most cheapest); nhấn mạnh bằng much."
+        },
+        {
+          "id": "q5",
+          "prompt": "The cost of living in cities is higher than ____ in rural areas.",
+          "options": [
+            {
+              "id": "A",
+              "text": "it"
+            },
+            {
+              "id": "B",
+              "text": "that"
+            },
+            {
+              "id": "C",
+              "text": "those"
+            },
+            {
+              "id": "D",
+              "text": "this"
+            }
+          ],
+          "answer": "B",
+          "explanation": "So sánh đúng đối tượng: \"that\" thay cho \"the cost of living\" (số ít)."
+        }
+      ]
+    },
+    {
+      "code": "T2-L16-E07",
+      "lessonCode": "T2-L16",
+      "order": 6,
+      "type": "gap_fill",
+      "title": "Cấu trúc so sánh — Điền chỗ trống",
+      "titleEn": "Comparatives and Superlatives — Fill in the gaps",
+      "instruction": "Viết dạng so sánh đúng của từ trong ngoặc (có thể cần thêm the / as).",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "comparatives"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Online courses are often ____ (cheap) than traditional courses.",
+          "blanks": [
+            {
+              "accept": [
+                "cheaper"
+              ]
+            }
+          ],
+          "explanation": "Tính từ ngắn → adj-er + than."
+        },
+        {
+          "id": "q2",
+          "prompt": "This is ____ (effective) way to reduce traffic congestion.",
+          "blanks": [
+            {
+              "accept": [
+                "the most effective"
+              ]
+            }
+          ],
+          "explanation": "So sánh nhất tính từ dài → the most + adj."
+        },
+        {
+          "id": "q3",
+          "prompt": "The ____ (old) people get, the more they value their health.",
+          "blanks": [
+            {
+              "accept": [
+                "older"
+              ]
+            }
+          ],
+          "explanation": "The + so sánh hơn …, the + so sánh hơn …"
+        },
+        {
+          "id": "q4",
+          "prompt": "Houses in the capital are three times ____ (expensive) as those in rural areas.",
+          "blanks": [
+            {
+              "accept": [
+                "as expensive"
+              ]
+            }
+          ],
+          "explanation": "Gấp nhiều lần: three times as + adj + as."
+        },
+        {
+          "id": "q5",
+          "prompt": "Prices in the capital are significantly ____ (high) than in other cities.",
+          "blanks": [
+            {
+              "accept": [
+                "higher"
+              ]
+            }
+          ],
+          "explanation": "significantly + so sánh hơn."
+        }
+      ]
+    },
+    {
+      "code": "T2-L16-E08",
+      "lessonCode": "T2-L16",
+      "order": 7,
+      "type": "sentence_transform",
+      "title": "Cấu trúc so sánh — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Comparatives and Superlatives — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "comparatives"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Cars are less safe than trains.",
+          "cue": "not as … as",
+          "starter": "Cars are not as",
+          "sampleAnswers": [
+            "Cars are not as safe as trains."
+          ],
+          "explanation": "less + adj + than = not as + adj + as."
+        },
+        {
+          "id": "q2",
+          "prompt": "When people earn more, they spend more.",
+          "cue": "The more …, the more …",
+          "starter": "The more",
+          "sampleAnswers": [
+            "The more people earn, the more they spend."
+          ],
+          "explanation": "Càng … càng …: The more + S + V, the more + S + V."
+        },
+        {
+          "id": "q3",
+          "prompt": "No problem in cities is more serious than traffic congestion.",
+          "cue": "so sánh nhất",
+          "starter": "Traffic congestion is the",
+          "sampleAnswers": [
+            "Traffic congestion is the most serious problem in cities."
+          ],
+          "explanation": "\"Không gì … hơn X\" = X là … nhất."
+        },
+        {
+          "id": "q4",
+          "prompt": "Houses in London cost twice the price of houses in Manchester.",
+          "cue": "twice as … as",
+          "starter": "Houses in London are twice",
+          "sampleAnswers": [
+            "Houses in London are twice as expensive as those in Manchester."
+          ],
+          "explanation": "twice as + adj + as; \"those\" thay cho \"houses\" để so sánh đúng đối tượng."
+        },
+        {
+          "id": "q5",
+          "prompt": "Shopping in stores is far less convenient than online shopping.",
+          "cue": "far more",
+          "starter": "Online shopping is far",
+          "sampleAnswers": [
+            "Online shopping is far more convenient than shopping in stores."
+          ],
+          "explanation": "Đảo hai vế: far less … → far more …"
+        }
+      ]
+    },
+    {
+      "code": "T2-L17-E03",
+      "lessonCode": "T2-L17",
+      "order": 1,
+      "type": "mcq",
+      "title": "Cụm phân từ — Trắc nghiệm",
+      "titleEn": "Participle Clauses — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "participle-clauses"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The government lowered taxes, ____ more businesses to open.",
+          "options": [
+            {
+              "id": "A",
+              "text": "allows"
+            },
+            {
+              "id": "B",
+              "text": "allowing"
+            },
+            {
+              "id": "C",
+              "text": "allowed"
+            },
+            {
+              "id": "D",
+              "text": "to allow"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Kết quả cho phép: …, allowing + O + to V."
+        },
+        {
+          "id": "q2",
+          "prompt": "Many people now work remotely, thereby ____ traffic congestion.",
+          "options": [
+            {
+              "id": "A",
+              "text": "reduce"
+            },
+            {
+              "id": "B",
+              "text": "reduces"
+            },
+            {
+              "id": "C",
+              "text": "reducing"
+            },
+            {
+              "id": "D",
+              "text": "reduced"
+            }
+          ],
+          "answer": "C",
+          "explanation": "\"thereby\" + V-ing."
+        },
+        {
+          "id": "q3",
+          "prompt": "____ properly, technology can improve students' learning.",
+          "options": [
+            {
+              "id": "A",
+              "text": "Using"
+            },
+            {
+              "id": "B",
+              "text": "Used"
+            },
+            {
+              "id": "C",
+              "text": "Use"
+            },
+            {
+              "id": "D",
+              "text": "Having used"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Công nghệ ĐƯỢC sử dụng → bị động: V3 (Used)."
+        },
+        {
+          "id": "q4",
+          "prompt": "____ graduated, she found a job at a bank.",
+          "options": [
+            {
+              "id": "A",
+              "text": "Having"
+            },
+            {
+              "id": "B",
+              "text": "Had"
+            },
+            {
+              "id": "C",
+              "text": "Have"
+            },
+            {
+              "id": "D",
+              "text": "Being"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Hành động xảy ra trước: Having + V3."
+        },
+        {
+          "id": "q5",
+          "prompt": "Chọn câu ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Having finished university, jobs are hard to find."
+            },
+            {
+              "id": "B",
+              "text": "Having finished university, many graduates find it hard to get a job."
+            },
+            {
+              "id": "C",
+              "text": "Finished university, many graduates find it hard to get a job."
+            },
+            {
+              "id": "D",
+              "text": "Having finish university, many graduates find it hard to get a job."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Chủ ngữ ngầm của cụm phân từ phải trùng chủ ngữ mệnh đề chính (graduates). A là lỗi chủ ngữ treo."
+        }
+      ]
+    },
+    {
+      "code": "T2-L17-E04",
+      "lessonCode": "T2-L17",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "Cụm phân từ — Điền chỗ trống",
+      "titleEn": "Participle Clauses — Fill in the gaps",
+      "instruction": "Viết dạng phân từ đúng của động từ trong ngoặc (V-ing / V3 / Having V3).",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "participle-clauses"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Cities are building more cycle lanes, thereby ____ (encourage) people to leave their cars at home.",
+          "blanks": [
+            {
+              "accept": [
+                "encouraging"
+              ]
+            }
+          ],
+          "explanation": "thereby + V-ing."
+        },
+        {
+          "id": "q2",
+          "prompt": "Online banking is available 24/7, ____ (allow) customers to manage their money at any time.",
+          "blanks": [
+            {
+              "accept": [
+                "allowing"
+              ]
+            }
+          ],
+          "explanation": "Kết quả cho phép: allowing + O + to V."
+        },
+        {
+          "id": "q3",
+          "prompt": "____ (leave) unchecked, climate change will cause serious damage.",
+          "blanks": [
+            {
+              "accept": [
+                "left"
+              ]
+            }
+          ],
+          "explanation": "Biến đổi khí hậu BỊ bỏ mặc → V3: Left."
+        },
+        {
+          "id": "q4",
+          "prompt": "____ (complete) the course, students receive a certificate.",
+          "blanks": [
+            {
+              "accept": [
+                "having completed"
+              ]
+            }
+          ],
+          "explanation": "Hoàn thành khoá học TRƯỚC khi nhận chứng chỉ → Having + V3."
+        },
+        {
+          "id": "q5",
+          "prompt": "____ (live) far from the city, many villagers rarely see a doctor.",
+          "blanks": [
+            {
+              "accept": [
+                "living"
+              ]
+            }
+          ],
+          "explanation": "Chủ động, nêu lý do → V-ing."
+        }
+      ]
+    },
+    {
+      "code": "T2-L17-E05",
+      "lessonCode": "T2-L17",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "Cụm phân từ — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Participle Clauses — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "participle-clauses"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Many companies let staff work from home, and this reduces office costs.",
+          "cue": "thereby",
+          "starter": "Many companies let staff work from home, thereby",
+          "sampleAnswers": [
+            "Many companies let staff work from home, thereby reducing office costs."
+          ],
+          "explanation": "\", and this + V\" → \", thereby + V-ing\"."
+        },
+        {
+          "id": "q2",
+          "prompt": "The government built new metro lines. This enabled commuters to travel faster.",
+          "cue": "enabling",
+          "starter": "The government built new metro lines,",
+          "sampleAnswers": [
+            "The government built new metro lines, enabling commuters to travel faster."
+          ],
+          "explanation": "Kết quả cho phép: …, enabling + O + to V."
+        },
+        {
+          "id": "q3",
+          "prompt": "After she had finished her degree, she started her own business.",
+          "cue": "Having",
+          "starter": "Having",
+          "sampleAnswers": [
+            "Having finished her degree, she started her own business."
+          ],
+          "explanation": "Hai vế cùng chủ ngữ, hành động xảy ra trước → Having + V3."
+        },
+        {
+          "id": "q4",
+          "prompt": "Because they live in remote areas, many children cannot access good schools.",
+          "cue": "V-ing",
+          "starter": "Living",
+          "sampleAnswers": [
+            "Living in remote areas, many children cannot access good schools."
+          ],
+          "explanation": "Rút gọn mệnh đề lý do chủ động → V-ing (chủ ngữ trùng: children)."
+        },
+        {
+          "id": "q5",
+          "prompt": "If it is used wisely, social media can be a powerful learning tool.",
+          "cue": "V3",
+          "starter": "Used",
+          "sampleAnswers": [
+            "Used wisely, social media can be a powerful learning tool."
+          ],
+          "explanation": "Rút gọn mệnh đề bị động → V3 (chủ ngữ trùng: social media)."
+        }
+      ]
+    },
+    {
+      "code": "T2-L17-E06",
+      "lessonCode": "T2-L17",
+      "order": 5,
+      "type": "mcq",
+      "title": "Cách dùng thì — Trắc nghiệm",
+      "titleEn": "Tense Usage — Multiple choice",
+      "instruction": "Chọn đáp án đúng.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "tense-usage"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "In recent years, the number of people working from home ____ dramatically.",
+          "options": [
+            {
+              "id": "A",
+              "text": "increases"
+            },
+            {
+              "id": "B",
+              "text": "has increased"
+            },
+            {
+              "id": "C",
+              "text": "increased"
+            },
+            {
+              "id": "D",
+              "text": "is increase"
+            }
+          ],
+          "answer": "B",
+          "explanation": "\"In recent years\" → hiện tại hoàn thành; chủ ngữ \"the number\" số ít → has increased."
+        },
+        {
+          "id": "q2",
+          "prompt": "The government ____ a new tax on sugary drinks in 2018.",
+          "options": [
+            {
+              "id": "A",
+              "text": "has introduced"
+            },
+            {
+              "id": "B",
+              "text": "introduces"
+            },
+            {
+              "id": "C",
+              "text": "introduced"
+            },
+            {
+              "id": "D",
+              "text": "had introduce"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Mốc quá khứ cụ thể (in 2018) → quá khứ đơn."
+        },
+        {
+          "id": "q3",
+          "prompt": "Regular exercise ____ stress.",
+          "options": [
+            {
+              "id": "A",
+              "text": "reduce"
+            },
+            {
+              "id": "B",
+              "text": "reduces"
+            },
+            {
+              "id": "C",
+              "text": "is reducing"
+            },
+            {
+              "id": "D",
+              "text": "reduced"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Sự thật chung → hiện tại đơn; chủ ngữ số ít thêm -s. Tránh tiếp diễn."
+        },
+        {
+          "id": "q4",
+          "prompt": "If current trends continue, more people ____ in cities by 2050.",
+          "options": [
+            {
+              "id": "A",
+              "text": "live"
+            },
+            {
+              "id": "B",
+              "text": "lived"
+            },
+            {
+              "id": "C",
+              "text": "will live"
+            },
+            {
+              "id": "D",
+              "text": "have lived"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Dự đoán tương lai → will + V."
+        },
+        {
+          "id": "q5",
+          "prompt": "Chọn câu ĐÚNG:",
+          "options": [
+            {
+              "id": "A",
+              "text": "The law has introduced in 2020."
+            },
+            {
+              "id": "B",
+              "text": "The law was introduced in 2020."
+            },
+            {
+              "id": "C",
+              "text": "The law has been introduced in 2020."
+            },
+            {
+              "id": "D",
+              "text": "The law is introduced in 2020."
+            }
+          ],
+          "answer": "B",
+          "explanation": "Có \"in 2020\" → quá khứ đơn; luật ĐƯỢC ban hành → bị động: was introduced."
+        }
+      ]
+    },
+    {
+      "code": "T2-L17-E07",
+      "lessonCode": "T2-L17",
+      "order": 6,
+      "type": "gap_fill",
+      "title": "Cách dùng thì — Điền chỗ trống",
+      "titleEn": "Tense Usage — Fill in the gaps",
+      "instruction": "Chia động từ trong ngoặc ở thì phù hợp.",
+      "autoGrade": true,
+      "points": 5,
+      "estimatedMinutes": 5,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "tense-usage"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Everyone ____ (need) access to clean water.",
+          "blanks": [
+            {
+              "accept": [
+                "needs"
+              ]
+            }
+          ],
+          "explanation": "Sự thật chung; \"everyone\" số ít → needs."
+        },
+        {
+          "id": "q2",
+          "prompt": "Over the past decade, online shopping ____ (become) extremely popular.",
+          "blanks": [
+            {
+              "accept": [
+                "has become"
+              ]
+            }
+          ],
+          "explanation": "\"Over the past decade\" → hiện tại hoàn thành."
+        },
+        {
+          "id": "q3",
+          "prompt": "Ten years ago, very few people ____ (own) a smartphone.",
+          "blanks": [
+            {
+              "accept": [
+                "owned"
+              ]
+            }
+          ],
+          "explanation": "\"ago\" → quá khứ đơn."
+        },
+        {
+          "id": "q4",
+          "prompt": "Experts predict that robots ____ (replace) many jobs in the future.",
+          "blanks": [
+            {
+              "accept": [
+                "will replace"
+              ]
+            }
+          ],
+          "explanation": "Dự đoán tương lai → will + V."
+        },
+        {
+          "id": "q5",
+          "prompt": "Since 2010, the city ____ (build) more than fifty new schools.",
+          "blanks": [
+            {
+              "accept": [
+                "has built"
+              ]
+            }
+          ],
+          "explanation": "\"Since 2010\" → hiện tại hoàn thành."
+        }
+      ]
+    },
+    {
+      "code": "T2-L17-E08",
+      "lessonCode": "T2-L17",
+      "order": 7,
+      "type": "sentence_transform",
+      "title": "Cách dùng thì — Viết lại câu giữ nguyên nghĩa",
+      "titleEn": "Tense Usage — Rewrite, same meaning",
+      "instruction": "Viết lại câu sao cho nghĩa không đổi: dùng cấu trúc gợi ý trong ngoặc và bắt đầu bằng phần cho sẵn.",
+      "autoGrade": true,
+      "points": 8,
+      "estimatedMinutes": 6,
+      "difficulty": 2,
+      "skillTags": [
+        "grammar",
+        "task2",
+        "tense-usage"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "People started using smartphones widely about fifteen years ago.",
+          "cue": "have … for",
+          "starter": "People have used",
+          "sampleAnswers": [
+            "People have used smartphones widely for about fifteen years."
+          ],
+          "explanation": "Hành động bắt đầu trong quá khứ, còn tiếp diễn → hiện tại hoàn thành + for."
+        },
+        {
+          "id": "q2",
+          "prompt": "The last time the city built a new hospital was in 2005.",
+          "cue": "since",
+          "starter": "The city has not",
+          "sampleAnswers": [
+            "The city has not built a new hospital since 2005."
+          ],
+          "explanation": "\"The last time … was in X\" = S + has not + V3 + since X."
+        },
+        {
+          "id": "q3",
+          "prompt": "It is ten years since the government raised the minimum wage.",
+          "cue": "for",
+          "starter": "The government has not",
+          "sampleAnswers": [
+            "The government has not raised the minimum wage for ten years."
+          ],
+          "explanation": "\"It is … since\" = has not + V3 + for + khoảng thời gian."
+        },
+        {
+          "id": "q4",
+          "prompt": "Last year, the government has introduced a new law.",
+          "cue": "sửa thì",
+          "starter": "Last year, the government",
+          "sampleAnswers": [
+            "Last year, the government introduced a new law."
+          ],
+          "explanation": "Mốc quá khứ cụ thể (last year) → quá khứ đơn, không dùng hiện tại hoàn thành."
+        },
+        {
+          "id": "q5",
+          "prompt": "Experts expect a rise in sea levels in the coming decades.",
+          "cue": "will",
+          "starter": "Experts predict that sea levels",
+          "sampleAnswers": [
+            "Experts predict that sea levels will rise in the coming decades."
+          ],
+          "explanation": "Dự đoán tương lai → will + V."
+        }
+      ]
+    }
+  ]
+}

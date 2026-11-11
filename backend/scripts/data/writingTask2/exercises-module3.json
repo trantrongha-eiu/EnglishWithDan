@@ -3,7 +3,7 @@
     {
       "code": "T2-L12-E01",
       "lessonCode": "T2-L12",
-      "order": 1,
+      "order": 4,
       "type": "sentence_transform",
       "title": "Câu phức — Complex Sentences",
       "titleEn": "Complex Sentences",
@@ -73,7 +73,7 @@
     {
       "code": "T2-L12-E02",
       "lessonCode": "T2-L12",
-      "order": 2,
+      "order": 8,
       "type": "sentence_transform",
       "title": "Câu ghép — Compound Sentences",
       "titleEn": "Compound Sentences",
@@ -143,7 +143,7 @@
     {
       "code": "T2-L13-E01",
       "lessonCode": "T2-L13",
-      "order": 1,
+      "order": 4,
       "type": "sentence_transform",
       "title": "Câu điều kiện — Conditional Sentences",
       "titleEn": "Conditional Sentences",
@@ -223,7 +223,7 @@
     {
       "code": "T2-L13-E02",
       "lessonCode": "T2-L13",
-      "order": 2,
+      "order": 8,
       "type": "sentence_transform",
       "title": "Câu bị động — Passive Voice",
       "titleEn": "Passive Voice",
@@ -303,7 +303,7 @@
     {
       "code": "T2-L14-E01",
       "lessonCode": "T2-L14",
-      "order": 1,
+      "order": 4,
       "type": "sentence_transform",
       "title": "Mệnh đề quan hệ — Relative Clauses",
       "titleEn": "Relative Clauses",
@@ -383,7 +383,7 @@
     {
       "code": "T2-L14-E02",
       "lessonCode": "T2-L14",
-      "order": 2,
+      "order": 8,
       "type": "sentence_transform",
       "title": "Đảo ngữ để nhấn mạnh — Inversion",
       "titleEn": "Inversion",
@@ -453,7 +453,7 @@
     {
       "code": "T2-L15-E01",
       "lessonCode": "T2-L15",
-      "order": 1,
+      "order": 4,
       "type": "sentence_transform",
       "title": "Câu chẻ — Cleft Sentences",
       "titleEn": "Cleft Sentences",
@@ -523,7 +523,7 @@
     {
       "code": "T2-L15-E02",
       "lessonCode": "T2-L15",
-      "order": 2,
+      "order": 8,
       "type": "sentence_transform",
       "title": "Cấu trúc song song — Parallel Structures",
       "titleEn": "Parallel Structures",
@@ -593,7 +593,7 @@
     {
       "code": "T2-L16-E01",
       "lessonCode": "T2-L16",
-      "order": 1,
+      "order": 4,
       "type": "sentence_transform",
       "title": "Động từ khuyết thiếu — Modal Verbs",
       "titleEn": "Modal Verbs",
@@ -673,7 +673,7 @@
     {
       "code": "T2-L16-E02",
       "lessonCode": "T2-L16",
-      "order": 2,
+      "order": 8,
       "type": "sentence_transform",
       "title": "Cấu trúc so sánh — Comparatives and Superlatives",
       "titleEn": "Comparatives and Superlatives",
@@ -753,7 +753,7 @@
     {
       "code": "T2-L17-E01",
       "lessonCode": "T2-L17",
-      "order": 1,
+      "order": 4,
       "type": "sentence_transform",
       "title": "Cụm phân từ — Participle Clauses",
       "titleEn": "Participle Clauses",
@@ -833,7 +833,7 @@
     {
       "code": "T2-L17-E02",
       "lessonCode": "T2-L17",
-      "order": 2,
+      "order": 8,
       "type": "sentence_transform",
       "title": "Cách dùng thì — Tense Usage",
       "titleEn": "Tense Usage",
