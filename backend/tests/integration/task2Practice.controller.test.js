@@ -490,6 +490,25 @@ describe('Lessons — /api/task2/sessions + /api/task2/lesson/:topicId', () => {
     expect(res.body.sentences.map(s => s.en)).toEqual(['One.', 'Two.']);
   });
 
+  test('a sentence asked twice (same model) is listed once and keeps the answer given on either copy', async () => {
+    const topic = await createTask2Topic({ questions: [
+      question({ type: 'translation', questionText: 'Dịch câu KẾT BÀI', correctAnswer: 'In conclusion, it helps.', orderIndex: 1 }),
+      question({ type: 'translation', questionText: 'Dịch 2', correctAnswer: 'Two.', orderIndex: 2 }),
+      question({ type: 'short_writing', questionText: 'Viết kết bài', correctAnswer: 'In conclusion, it helps.', orderIndex: 3 }),
+    ] });
+    const [q1, , q3] = topic.questions.map(q => String(q._id));
+    const user = await createPremiumStudent();
+    const auth = `Bearer ${signTokenFor(user)}`;
+    await request(app).post('/api/task2/save-attempt').set('Authorization', auth)
+      .send({ topicId: String(topic._id), topicName: topic.topicName, level: 'beginner',
+        questionsAttempted: [{ questionId: q3, userAnswer: 'In conclusion, it helps.', isCorrect: true, score: 100 }] });
+
+    const res = await request(app).get(`/api/task2/lesson/${topic._id}`).set('Authorization', auth);
+    expect(res.body.sentences.map(s => s.questionId)).toEqual([q1, expect.any(String)]);
+    expect(res.body.sentences).toHaveLength(2);
+    expect(res.body.sentences[0]).toMatchObject({ en: 'In conclusion, it helps.', isCorrect: true });
+  });
+
   test('malformed body / unknown topic are rejected', async () => {
     const user = await createPremiumStudent();
     const auth = `Bearer ${signTokenFor(user)}`;

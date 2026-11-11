@@ -146,7 +146,8 @@ let state = {
   // English for each translation/paraphrase/short_writing question.
   lesson: { topicId: null, status: 'idle', sentences: [], sections: _emptySections(), submittedAt: null },
   translateOnly: false, // practice run limited to the sentence-building questions (step ③)
-  compose: { phase: 'class', tab: 'sentences', lastFocus: 'intro', refOpen: false, revealed: {} }
+  infoOpen: new Set(),  // ⓘ explanations the student has opened (see _infoBtn)
+  compose:{ phase: 'class', tab: 'sentences', lastFocus: 'intro', refOpen: false, revealed: {} }
 };
 
 const T2_PREFS_KEY = 't2_prefs';
@@ -481,8 +482,7 @@ function isWritingUnlocked(topicId) {
 function translateGateMessage(topicId) {
   const tp = translateProgress(topicId);
   if (!tp) return 'Đang tải kết quả dịch câu…';
-  return `Cần dịch đúng ≥ ${T2_TRANSLATE_PASS}% số câu ở bước 3 (Dịch câu) mới mở khoá phần viết — ` +
-         `bạn đang đúng ${tp.correct}/${tp.total} câu (${tp.pct}%), cần đúng thêm ${tp.need} câu.`;
+  return `Cần đúng ≥ ${T2_TRANSLATE_PASS}% ở bước 3 · đang ${tp.correct}/${tp.total} câu, thiếu ${tp.need} câu.`;
 }
 
 function topicStatusRowHtml(topicId) {
@@ -820,7 +820,7 @@ function renderWeeks() {
 
     ${drafts.length ? `
     <div class="t2w-continue">
-      <div class="t2w-continue-title"><i class="fas fa-bookmark"></i> Bài luyện câu đang làm dở</div>
+      <div class="t2w-continue-title"><i class="fas fa-bookmark"></i> Bài dịch câu đang làm dở</div>
       ${drafts.slice(0, 3).map(d => `
         <div class="t2w-continue-row">
           <span class="t2w-continue-name">${_escHtml(d.topicName || 'Chủ đề')} <span class="t2w-continue-meta">· ${sessionLabel(String(d.topicId)) || `Tuần ${Number(d.week)}`} · còn ${d._rem} câu</span></span>
@@ -1144,9 +1144,29 @@ function _renderRail(t) {
   const steps = _lessonSteps(t);
   const cur = _currentStepKey(t);
   return `<nav class="t2-rail" id="t2-rail" aria-label="Các bước của buổi học">
-    ${steps.map((s, i) => `<button type="button" class="t2-rail-item${s.done ? ' is-done' : ''}${s.key === cur ? ' is-current' : ''}" data-key="${s.key}" onclick="scrollToHubStep('${s.key}')"><span class="t2-rail-num">${s.done ? '<i class="fas fa-check" style="font-size:9px"></i>' : i + 1}</span>${s.label}</button>`).join('')}
+    ${steps.map((s, i) => `<button type="button" class="t2-rail-item t2-s-${s.key}${s.done ? ' is-done' : ''}${s.key === cur ? ' is-current' : ''}" data-key="${s.key}" onclick="scrollToHubStep('${s.key}')"><span class="t2-rail-num">${s.done ? '<i class="fas fa-check" style="font-size:9px"></i>' : i + 1}</span>${s.label}</button>`).join('')}
   </nav>`;
 }
+// ⓘ — long explanations stay folded behind a small icon; the student opens
+// them only when needed. Open/closed is kept in state.infoOpen so a card
+// re-render doesn't fold them again.
+function _infoBtn(key) {
+  const open = state.infoOpen.has(key);
+  return `<button type="button" class="t2-info-btn${open ? ' is-open' : ''}" data-info-btn="${key}" onclick="toggleT2Info('${key}')" aria-expanded="${open}" title="Xem hướng dẫn" aria-label="Xem hướng dẫn"><i class="fas fa-circle-info"></i></button>`;
+}
+function _infoBody(key, html) {
+  return `<div class="t2-info-body" data-info="${key}"${state.infoOpen.has(key) ? '' : ' hidden'}>${html}</div>`;
+}
+function toggleT2Info(key) {
+  const open = !state.infoOpen.has(key);
+  if (open) state.infoOpen.add(key); else state.infoOpen.delete(key);
+  document.querySelectorAll(`[data-info="${key}"]`).forEach(el => { el.hidden = !open; });
+  document.querySelectorAll(`[data-info-btn="${key}"]`).forEach(b => {
+    b.classList.toggle('is-open', open);
+    b.setAttribute('aria-expanded', String(open));
+  });
+}
+
 // Timings and classroom organisation live in the teacher guideline
 // (openTeacherGuide) — the student cards only say what to do.
 function _stepHead(num, title, extra, done) {
@@ -1160,7 +1180,7 @@ function _stepHead(num, title, extra, done) {
 // just the title and what unlocks it.
 function _lockedStep(key, num, title, note) {
   return `
-    <section class="t2-step is-locked" id="t2-step-${key}">
+    <section class="t2-step t2-s-${key} is-locked" id="t2-step-${key}">
       ${_stepHead(num, title, '<span class="t2-step-tag"><i class="fas fa-lock"></i> Chưa mở</span>', false)}
       ${note ? `<p class="t2-step-desc" style="margin:8px 0 0">🔒 ${_escHtml(note)} <button type="button" class="t2-link" onclick="scrollToHubStep('translate')">Đến bước Dịch câu</button></p>` : ''}
     </section>`;
@@ -1232,27 +1252,61 @@ function renderIdeaStep(isCurrent) {
   const bs = state.brainstorm;
   const hasHints = sides.some(s => (s.points || []).length);
   const done = bs.notes.some(n => (n || '').trim());
+  const loggedIn = window.AuthService && window.AuthService.isLoggedIn();
   return `
-    <section class="t2-step t2-ideas${isCurrent ? ' is-current' : ''}" id="t2-step-ideas">
-      ${_stepHead(2, 'Brainstorm ý tưởng', '', done)}
-      <p class="t2-step-desc">Cùng nhóm nghĩ thật nhiều ý cho từng phần, rồi ghi lại những ý hay nhất — chúng sẽ hiện bên cạnh khi bạn viết bài.</p>
-      ${t.prompt ? `<div class="t2-selector-prompt"><strong>Đề bài:</strong> ${_escHtml(t.prompt)}</div>` : ''}
-      ${sides.map((h, i) => `
-        <label class="t2-brainstorm-side" for="t2-idea-${i}">${_escHtml(h.side)}</label>
-        <textarea id="t2-idea-${i}" class="t2-brainstorm-input" rows="3" placeholder="Ý của nhóm cho phần này..." oninput="onIdeaInput(${i}, this.value)">${_escHtml(bs.notes[i] || '')}</textarea>`).join('')}
+    <section class="t2-step t2-s-ideas t2-ideas${isCurrent ? ' is-current' : ''}" id="t2-step-ideas">
+      ${_stepHead(2, 'Brainstorm ý tưởng', `${loggedIn ? `<span class="t2-bs-save" aria-live="polite">${_bsSaveHtml(done)}</span>` : ''}${_infoBtn('ideas')}`, done)}
+      ${_infoBody('ideas', `<ul class="t2-info-list">
+        <li>Cùng nhóm nghĩ thật nhiều ý cho từng phần — <b>mỗi dòng một ý</b>.</li>
+        <li>Ý được <b>tự động lưu</b> vào tài khoản: lần sau vào lại buổi này (máy nào cũng được) vẫn thấy, và hiện ở cột trái khi viết bài.</li>
+        <li>Sau khi các nhóm trình bày, mở <b>Gợi ý ý chính</b> và bấm <b>＋</b> để thêm ý hay vào phần của bạn.</li>
+      </ul>`)}
+      ${!loggedIn ? '<div class="t2-lock-note"><i class="fas fa-user-lock"></i> Đăng nhập để lưu ý tưởng cho lần sau.</div>' : ''}
+      <div class="t2-bs-grid">
+        ${sides.map((h, i) => `
+        <div class="t2-bs-side t2-side-c${i % 4}">
+          <label class="t2-bs-label" for="t2-idea-${i}">${_escHtml(h.side)}</label>
+          <textarea id="t2-idea-${i}" class="t2-brainstorm-input" rows="4" placeholder="Mỗi dòng một ý…" oninput="onIdeaInput(${i}, this.value)">${_escHtml(bs.notes[i] || '')}</textarea>
+        </div>`).join('')}
+      </div>
       ${hasHints ? `
       <details class="t2-brainstorm-reveal" ${bs.hintOpen ? 'open' : ''} ontoggle="state.brainstorm.hintOpen=this.open">
-        <summary>Xem gợi ý ý chính (sau khi các nhóm đã trình bày)</summary>
-        ${sides.map(h => `
-          <div class="t2-brainstorm-hint-side">${_escHtml(h.side)}</div>
-          <ul class="t2-brainstorm-hint-list">${(h.points || []).map(p => `<li>${_escHtml(p)}</li>`).join('')}</ul>`).join('')}
+        <summary>Gợi ý ý chính <span class="t2-muted">(mở sau khi các nhóm trình bày)</span></summary>
+        <div class="t2-bs-grid">
+        ${sides.map((h, i) => `
+          <div class="t2-bs-side t2-side-c${i % 4}">
+            <div class="t2-bs-label">${_escHtml(h.side)}</div>
+            <ul class="t2-bs-hints">${(h.points || []).map((p, k) => `<li><span>${_escHtml(p)}</span><button type="button" class="t2-bs-add" onclick="addHintIdea(${i}, ${k})" title="Thêm vào ý của tôi" aria-label="Thêm vào ý của tôi"><i class="fas fa-plus"></i></button></li>`).join('')}</ul>
+          </div>`).join('')}
+        </div>
       </details>` : ''}
     </section>`;
+}
+function _bsSaveHtml(hasNotes) {
+  switch (_lessonSaveState) {
+    case 'dirty':  return '<i class="fas fa-pen"></i> Đang soạn…';
+    case 'saving': return '<i class="fas fa-spinner fa-spin"></i> Đang lưu…';
+    case 'error':  return '<span class="is-error"><i class="fas fa-exclamation-triangle"></i> Chưa lưu được</span>';
+    default:       return hasNotes ? '<span class="is-ok"><i class="fas fa-cloud"></i> Đã lưu</span>' : '';
+  }
 }
 function onIdeaInput(i, v) {
   state.brainstorm.notes[i] = v;
   _markLessonDirty('brainstorm');
   _syncAfterIdeaInput();
+}
+// "＋" on a suggested idea: copy it into the student's own notes for that side.
+function addHintIdea(i, k) {
+  const t = state.selectedTopic;
+  const p = ((_ideaSides(t)[i] || {}).points || [])[k];
+  if (!p) return;
+  const cur = String(state.brainstorm.notes[i] || '');
+  if (cur.split('\n').some(l => l.trim().replace(/^[-•]\s*/, '') === p)) { showToast('Ý này đã có trong phần của bạn rồi', 'info', 2000); return; }
+  const next = (cur.trim() ? cur.replace(/\s+$/, '') + '\n' : '') + p;
+  const ta = document.getElementById('t2-idea-' + i);
+  if (ta) ta.value = next;
+  onIdeaInput(i, next);
+  showToast('Đã thêm vào ý của bạn', 'success', 1600);
 }
 
 // ③ Sentence translation — the translation/paraphrase/short_writing drill.
@@ -1272,14 +1326,19 @@ function renderTranslateStep(isCurrent) {
   const todo = sent.filter(s => !(s.en && s.isCorrect)).length;
   const best = _bestPracticeScore(id);
   return `
-    <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-translate">
-      ${_stepHead(3, 'Dịch câu Việt → Anh', '<span class="t2-step-tag">Có thể làm ở nhà</span>', allDone && passed)}
-      <p class="t2-step-desc">Dịch các câu ý chính sang tiếng Anh bằng từ vựng vừa học — câu dịch sẽ hiện bên cạnh khi bạn viết bài. <b>Dịch đúng ≥ ${T2_TRANSLATE_PASS}% số câu</b> để mở khoá phần viết trên lớp.</p>
+    <section class="t2-step t2-s-translate${isCurrent ? ' is-current' : ''}" id="t2-step-translate">
+      ${_stepHead(3, 'Dịch câu Việt → Anh', `<span class="t2-step-tag">Có thể làm ở nhà</span>${_infoBtn('translate')}`, allDone && passed)}
+      ${_infoBody('translate', `<ul class="t2-info-list">
+        <li>Mỗi câu là một ý chính của đề, dùng từ vựng vừa học. Câu làm xong sẽ hiện ở cột trái khi bạn viết bài.</li>
+        <li>Chỉ khoảng <b>1/4 số câu phải gõ cả câu</b> — còn lại là chọn cụm đúng, điền cụm từ, nghe &amp; điền, ghép cụm.</li>
+        <li><b>Đúng ≥ ${T2_TRANSLATE_PASS}% số câu</b> là mở khoá phần viết trên lớp. Sai 3 lần thì câu tính sai và quay lại sau để làm lại.</li>
+      </ul>`)}
+      <div class="t2-mode-legend">${['mcq', 'gap', 'listen', 'type', 'order'].map(m => _modeBadge(m)).join('')}</div>
       ${sent.length ? `<div class="t2-meter${allDone ? ' ok' : ''}"><span style="width:${Math.round(done / sent.length * 100)}%"></span></div>
-      <div class="t2-wc-row"><span class="t2-step-chip${allDone ? ' ok' : ''}">Đã dịch ${done}/${sent.length} câu</span>${tp && done ? `<span class="t2-step-chip${passed ? ' ok' : ''}">Đúng ${tp.correct}/${tp.total} câu · ${tp.pct}%${passed ? ' · đã mở khoá phần viết' : ` · cần ≥ ${T2_TRANSLATE_PASS}%`}</span>` : ''}</div>` : ''}
-      ${tp && done && !passed ? `<p class="t2-step-desc" style="margin:6px 0 0">🔒 Cần đúng thêm <b>${tp.need} câu</b> nữa — bấm “${allDone ? 'Làm lại' : 'Dịch tiếp'}” để dịch các câu chưa đúng.</p>` : ''}
+      <div class="t2-wc-row"><span class="t2-step-chip${allDone ? ' ok' : ''}">Đã làm ${done}/${sent.length} câu</span>${tp && done ? `<span class="t2-step-chip${passed ? ' ok' : ''}">Đúng ${tp.correct}/${tp.total} · ${tp.pct}%${passed ? ' · đã mở khoá phần viết' : ` · cần ≥ ${T2_TRANSLATE_PASS}%`}</span>` : ''}</div>` : ''}
+      ${tp && done && !passed ? `<p class="t2-step-desc" style="margin:6px 0 0">🔒 Cần đúng thêm <b>${tp.need} câu</b>.</p>` : ''}
       <div class="t2-actions">
-        <button class="t2-primary is-lg" onclick="startTranslate(this)"><i class="fas fa-language"></i> ${!done ? 'Bắt đầu dịch câu' : !todo ? 'Dịch lại' : allDone ? `Làm lại ${todo} câu chưa đúng` : `Dịch tiếp ${todo} câu`}</button>
+        <button class="t2-primary is-lg" onclick="startTranslate(this)"><i class="fas fa-language"></i> ${!done ? 'Bắt đầu' : !todo ? 'Làm lại' : allDone ? `Làm lại ${todo} câu chưa đúng` : `Làm tiếp ${todo} câu`}</button>
         ${state.wrongQuestionIds.length ? `<button class="t2-secondary is-warn" onclick="startRetryWrong(this)"><i class="fas fa-redo-alt"></i> Ôn câu sai (${state.wrongQuestionIds.length})</button>` : ''}
       </div>
       <details class="t2-more"${state.translateMoreOpen ? ' open' : ''} ontoggle="state.translateMoreOpen=this.open">
@@ -1299,12 +1358,34 @@ function renderTranslateStep(isCurrent) {
 // ④ Guided writing — outline of this essay type + how sentences become a
 // paragraph, with a same-type model paragraph (different prompt, so it can
 // be analysed but not copied). Data: GET /api/task2/type-guides.
+// role = colour class (r-main / r-why / r-result / r-ex), shared with the
+// sentence colouring of the model paragraph below.
 const _RECIPE = [
-  { k: 'Ý CHÍNH',   v: 'Câu chủ đề — nêu 1 ý lấy từ phần brainstorm', ex: 'One major advantage of … is that …' },
-  { k: 'GIẢI THÍCH', v: 'Vì sao ý đó đúng / hợp lý',                   ex: 'This is mainly because …' },
-  { k: 'KẾT QUẢ',   v: 'Ý đó dẫn đến điều gì',                          ex: 'As a result, …' },
-  { k: 'VÍ DỤ',     v: 'Dẫn chứng cụ thể — dùng câu ví dụ đã dịch',     ex: 'For example, …' }
+  { role: 'main',   k: 'Ý CHÍNH',    v: 'Câu chủ đề — 1 ý từ brainstorm',  ex: 'One major advantage of … is that …' },
+  { role: 'why',    k: 'GIẢI THÍCH', v: 'Vì sao ý đó đúng / hợp lý',        ex: 'This is mainly because …' },
+  { role: 'result', k: 'KẾT QUẢ',    v: 'Ý đó dẫn đến điều gì',             ex: 'As a result, …' },
+  { role: 'ex',     k: 'VÍ DỤ',      v: 'Dẫn chứng cụ thể (câu ví dụ đã dịch)', ex: 'For example, …' }
 ];
+const _ROLE_RE = [
+  ['ex',     /^(for example|for instance|to illustrate|to give an example|a (good|clear|typical|notable|striking) example|an example|e\.g\.|this (is|was|can be) (clearly )?(seen|evident|illustrated|demonstrated)|according to|research (by|from|shows)|studies (show|suggest)|in (19|20)\d\d)/i],
+  ['result', /^(as a (result|consequence)|consequently|therefore|thus|hence|accordingly|in turn|this (means|meant|leads|led|results|can lead|could lead|would lead|may lead|in turn|then|allows|enables|helps|makes|suggests|shows|indicates|demonstrates)|this,|which means|so,|because of this|as such|if (this|these|such|current) )/i],
+  ['why',    /^(this is (mainly |largely |partly |primarily |simply )?(because|due to|since)|this can (largely |partly )?be (attributed|explained)|because|the (main |primary )?reason|this is due|since|it is (because|due)|after all)/i],
+  ['main',   /^(firstly|first(ly)?,|secondly|second,|thirdly|finally,|furthermore|moreover|in addition|additionally|on the one hand|on the other hand|(one|another)( of the)?( most)?( \w+){0,2} (advantages?|disadvantages?|benefits?|drawbacks?|reasons?|causes?|factors?|contributors?|effects?|impacts?|consequences?|solutions?|measures?|ways?|steps?|approach(es)?|arguments?|problems?|issues?)\b|the (first|second|main|primary|most) )/i]
+];
+// Colours a paragraph sentence by sentence: Ý chính → Giải thích → Kết quả → Ví dụ.
+function _roleParagraphHtml(text) {
+  const sents = String(text || '').match(/[^.!?]+(?:[.!?]+["”’)]?|$)\s*/g) || [];
+  let prev = null;
+  return sents.map((s, i) => {
+    const t = s.trim();
+    if (!t) return '';
+    let role = null;
+    for (const [r, re] of _ROLE_RE) if (re.test(t)) { role = r; break; }
+    if (!role) role = i === 0 ? 'main' : prev === 'main' ? 'why' : (prev || 'why');
+    prev = role;
+    return `<span class="t2-role r-${role}">${_escHtml(t)}</span> `;
+  }).join('');
+}
 function _perBodyChains(perBody) {
   return String(perBody || '').split('|').map(g => g.trim()).filter(Boolean).map(g => {
     let label = '', rest = g;
@@ -1331,20 +1412,28 @@ function renderGuideStep(isCurrent) {
   const chains = _perBodyChains(g?.outline?.perBody);
   const body1 = g?.modelEssay?.sections?.[1];
   return `
-    <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-guide">
-      ${_stepHead(4, 'Hướng dẫn viết (Guided writing)', '', done)}
-      <p class="t2-step-desc">Cách ghép <b>ý tưởng + câu đã dịch</b> thành một đoạn văn hoàn chỉnh.</p>
-      <div class="t2c-group">Bố cục bài ${_escHtml(ESSAY_LABELS[t.essayType] || '')}</div>
-      <div class="t2-flow">${flow.map(f => `<span>${_escHtml(f)}</span>`).join('<i class="fas fa-chevron-right"></i>')}</div>
-      <div class="t2c-group">Từ câu đơn → đoạn văn</div>
-      <div class="t2-recipe">${_RECIPE.map((r, i) => `<div class="t2-recipe-item"><div class="t2-recipe-k">${i + 1}. ${r.k}</div><div class="t2-recipe-v">${r.v}</div><div class="t2-recipe-ex">${_escHtml(r.ex)}</div></div>`).join('')}</div>
+    <section class="t2-step t2-s-guide${isCurrent ? ' is-current' : ''}" id="t2-step-guide">
+      ${_stepHead(4, 'Hướng dẫn viết (Guided writing)', _infoBtn('guide'), done)}
+      ${_infoBody('guide', `<ul class="t2-info-list">
+        <li>Mỗi đoạn thân bài = <b>Ý chính → Giải thích → Kết quả → Ví dụ</b>. Lấy ý từ bước ②, câu từ bước ③.</li>
+        <li>Đoạn mẫu là <b>đề khác cùng dạng</b>: mỗi màu là một phần của công thức — xem cách triển khai, không chép.</li>
+      </ul>`)}
+      <div class="t2-guide-block">
+        <div class="t2-guide-k"><span class="t2-guide-n">A</span> Bố cục bài ${_escHtml(ESSAY_LABELS[t.essayType] || '')}</div>
+        <div class="t2-flow is-sections">${flow.map((f, i) => `<span class="t2-sec-c${Math.min(i, 3)}">${_escHtml(f)}</span>`).join('<i class="fas fa-chevron-right"></i>')}</div>
+      </div>
+      <div class="t2-guide-block">
+        <div class="t2-guide-k"><span class="t2-guide-n">B</span> Một đoạn thân bài gồm 4 phần</div>
+        <div class="t2-recipe">${_RECIPE.map((r, i) => `<div class="t2-recipe-item r-${r.role}"><div class="t2-recipe-k"><span>${i + 1}</span>${r.k}</div><div class="t2-recipe-v">${r.v}</div><div class="t2-recipe-ex">${_escHtml(r.ex)}</div></div>`).join('')}</div>
+      </div>
+      ${body1 ? `
+      <details class="t2-model t2-guide-block" open>
+        <summary><span class="t2-guide-n">C</span> Đoạn mẫu cùng dạng (đề khác) — mỗi màu một phần</summary>
+        ${g.modelEssay.prompt ? `<div class="t2-model-q" style="margin-top:6px">Đề: ${_escHtml(g.modelEssay.prompt)}</div>` : ''}
+        <p class="t2-role-para"><b>${_escHtml(body1.title)}.</b> ${_roleParagraphHtml(body1.text)}</p>
+      </details>` : (_guideCache === null ? '<p class="t2-step-desc"><i class="fas fa-spinner fa-spin"></i> Đang tải đoạn mẫu...</p>' : '')}
       ${chains.length ? `
       <details class="t2-model"><summary>🧭 Triển khai mỗi đoạn thân bài</summary>${_chainsHtml(chains)}</details>` : ''}
-      ${body1 ? `
-      <details class="t2-model"><summary>📖 Đoạn mẫu cùng dạng (đề khác) — xem cách triển khai ý</summary>
-        ${g.modelEssay.prompt ? `<div class="t2-model-q" style="margin-top:6px">Đề: ${_escHtml(g.modelEssay.prompt)}</div>` : ''}
-        <p><b>${_escHtml(body1.title)}.</b> ${_escHtml(body1.text)}</p>
-      </details>` : (_guideCache === null ? '<p class="t2-step-desc"><i class="fas fa-spinner fa-spin"></i> Đang tải đoạn mẫu...</p>' : '')}
     </section>`;
 }
 
@@ -1358,13 +1447,14 @@ function renderClassStep(isCurrent) {
   const done = !!(_wc(sec.intro) && _wc(sec.body1));
   const loggedIn = window.AuthService && window.AuthService.isLoggedIn();
   return `
-    <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-class">
-      ${_stepHead(5, 'Viết Mở bài + Thân bài 1', '', done)}
-      <ol class="t2-plan">
+    <section class="t2-step t2-s-class${isCurrent ? ' is-current' : ''}" id="t2-step-class">
+      ${_stepHead(5, 'Viết Mở bài + Thân bài 1', _infoBtn('class'), done)}
+      <div class="t2-sec-pills"><span class="t2-sec-c0">Mở bài</span><span class="t2-sec-c1">Thân bài 1</span></div>
+      ${_infoBody('class', `<ul class="t2-info-list">
         <li><b>Mở bài:</b> paraphrase đề, nêu hướng triển khai / quan điểm.</li>
-        <li><b>Thân bài 1:</b> cùng nhóm chọn ý mạnh nhất → ý chính → giải thích → kết quả → ví dụ, rồi viết lại bằng lời của bạn.</li>
-      </ol>
-      <p class="t2-step-desc">💡 Câu bạn đã dịch nằm ở cột trái màn hình viết — bấm <b>＋</b> để chèn vào bài.</p>
+        <li><b>Thân bài 1:</b> cùng nhóm chọn ý mạnh nhất → <span class="t2-role r-main">ý chính</span> → <span class="t2-role r-why">giải thích</span> → <span class="t2-role r-result">kết quả</span> → <span class="t2-role r-ex">ví dụ</span>, rồi viết lại bằng lời của bạn.</li>
+        <li>Câu đã dịch, ý tưởng và từ vựng nằm ở cột trái màn hình viết.</li>
+      </ul>`)}
       ${L && L.status === 'ready' ? `<div class="t2-wc-row">${_wcChip('Mở bài', sec.intro)}${_wcChip('Thân bài 1', sec.body1)}</div>` : ''}
       ${loggedIn
         ? `<button class="t2-primary is-lg" onclick="openComposeBtn(this, 'class')"><i class="fas fa-columns"></i> ${done ? 'Xem / sửa phần viết trên lớp' : 'Mở màn hình viết'}</button>`
@@ -1386,14 +1476,15 @@ function renderHomeStep(isCurrent) {
   const untranslated = L ? L.sentences.filter(s => !s.en).length : 0;
   const loggedIn = window.AuthService && window.AuthService.isLoggedIn();
   return `
-    <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-home">
-      ${_stepHead(6, 'Viết Thân bài 2 + Kết bài', submitted ? '<span class="t2-step-tag ok"><i class="fas fa-check"></i> Đã nộp</span>' : '', done)}
-      <ol class="t2-plan">
-        <li>Viết <b>Thân bài 2</b> và <b>Kết bài</b> theo <b>template trong sách</b> (tab “Template” ở cột trái màn hình viết).</li>
-        <li>Vận dụng từ vựng, ý tưởng và các câu đã dịch — <b>tự viết bằng lời của bạn</b>, không sao chép bài mẫu.</li>
-        ${untranslated ? `<li>Còn <b>${untranslated} câu</b> chưa dịch ở bước 3 — làm nốt trước để có thêm câu tham khảo.</li>` : ''}
+    <section class="t2-step t2-s-home${isCurrent ? ' is-current' : ''}" id="t2-step-home">
+      ${_stepHead(6, 'Viết Thân bài 2 + Kết bài', `${submitted ? '<span class="t2-step-tag ok"><i class="fas fa-check"></i> Đã nộp</span>' : ''}${_infoBtn('home')}`, done)}
+      <div class="t2-sec-pills"><span class="t2-sec-c2">Thân bài 2</span><span class="t2-sec-c3">Kết bài</span></div>
+      ${_infoBody('home', `<ul class="t2-info-list">
+        <li>Viết theo <b>template trong sách</b> (tab “Template” ở cột trái màn hình viết).</li>
+        <li>Dùng từ vựng, ý tưởng và câu đã dịch — <b>tự viết bằng lời của bạn</b>, không chép bài mẫu.</li>
         <li>Đủ 4 phần (≥ ${LESSON_MIN_WORDS} từ) → bấm <b>Nộp bài chấm AI</b>.</li>
-      </ol>
+      </ul>`)}
+      ${untranslated ? `<p class="t2-step-desc" style="margin:6px 0">Còn <b>${untranslated} câu</b> ở bước 3 chưa làm.</p>` : ''}
       ${L && L.status === 'ready' ? `<div class="t2-wc-row">${_wcChip('Thân bài 2', sec.body2)}${_wcChip('Kết bài', sec.conclusion)}<span class="t2-step-chip${total >= LESSON_MIN_WORDS ? ' ok' : ''}">Cả bài: ${total} từ</span></div>` : ''}
       ${loggedIn ? `
       <div class="t2-actions">
@@ -1435,8 +1526,8 @@ const _LULU_STEP = {
                tips: ['Bấm 🔊 để nghe phát âm, đọc to theo cho nhớ lâu nha!', 'Học cả cụm (collocation) chứ đừng học từ đơn lẻ nhé 😉', 'Quiz cần đạt từ 70% — chưa đạt thì ôn lại mấy từ sai rồi làm quiz mới nha!'] },
   ideas:     { say: 'Giờ brainstorm cùng nhóm nè! Nghĩ thật nhiều ý, ý nào hay thì ghi lại liền 💡',
                tips: ['Ý hay = rõ ràng + có ví dụ thật. Đừng ngại ghi cả ý của nhóm bạn!', 'Bí ý? Thử nghĩ theo các góc: cá nhân, xã hội, kinh tế, sức khoẻ…', 'Mỗi phần chỉ cần 2–3 ý mạnh là đủ viết rồi.'] },
-  translate: { say: 'Dịch câu nào! Dịch đúng từ 70% số câu là mở khoá phần viết trên lớp đó ✍️',
-               tips: ['Sai không sao, đọc gợi ý rồi sửa lại là nhớ lâu lắm!', 'Chưa xong trên lớp thì về nhà làm nốt nha.', 'Để ý collocation trong câu mẫu — dùng lại được trong bài đó!'] },
+  translate: { say: 'Dịch câu nào! Có câu chọn, câu điền, câu nghe — đúng từ 70% là mở khoá phần viết ✍️',
+               tips: ['Sai không sao, đọc gợi ý rồi sửa lại là nhớ lâu lắm!', 'Câu nghe & điền: bấm “Nghe chậm” nếu nghe chưa rõ nha 🎧', 'Để ý cụm tô màu trong câu mẫu — dùng lại được trong bài đó!'] },
   guide:     { say: 'Xem cách ghép ý + câu đã dịch thành một đoạn văn hoàn chỉnh nha 🧩',
                tips: ['Công thức thần thánh: Ý chính → Giải thích → Kết quả → Ví dụ!', 'Từ nối làm đoạn văn mượt hơn: This is because, As a result, For example…', 'Đọc đoạn mẫu để học cách triển khai, đừng học thuộc nha.'] },
   class:     { say: 'Cùng nhóm viết Mở bài + Thân bài 1 thôi! Đi được nửa đường rồi đó 💪',
@@ -1632,7 +1723,8 @@ function _teacherGuideHtml(t) {
       </details>` : '')}
     ${_tgStep(i++, 3, 'Dịch câu Việt → Anh', '15′',
       'Chuyển ý tưởng thành câu tiếng Anh đúng, dùng từ vựng vừa học.',
-      ['HS dịch các câu tiếng Việt chứa ý chính của đề; hệ thống chấm và gợi ý ngay.',
+      ['HS làm các câu tiếng Việt chứa ý chính của đề; hệ thống chấm và gợi ý ngay.',
+       'Mỗi câu có một dạng cố định (cả lớp giống nhau): <b>chọn cụm đúng</b>, <b>điền cụm từ</b>, <b>nghe &amp; điền</b>, <b>gõ cả câu</b> (~1/4 số câu) và <b>ghép cụm</b> cho câu dài — nhanh hơn nhiều so với gõ cả ~20 câu.',
        `<b>Bắt buộc:</b> HS phải dịch đúng <b>≥ ${T2_TRANSLATE_PASS}%</b> số câu mới mở khoá bước 5–6 (viết trên lớp, bài về nhà) trên máy — chưa đạt thì “Làm lại” các câu chưa đúng.`,
        '<b>Đối chiếu theo nhóm (~3′):</b> các bạn trong nhóm so sánh bản dịch của nhau, chọn câu hay nhất cho mỗi ý; người trình bày đọc câu của nhóm trước lớp.',
        'GV chữa nhanh 2–3 câu khó trên bảng, chỉ ra collocation / cấu trúc hay.',
@@ -1853,6 +1945,8 @@ function _setSaveState(s) {
   _lessonSaveState = s;
   const el = document.getElementById('t2c-save');
   if (el) { el.innerHTML = _saveStateHtml(); el.classList.toggle('is-error', s === 'error'); }
+  const hasNotes = state.brainstorm.notes.some(n => (n || '').trim());
+  document.querySelectorAll('.t2-bs-save').forEach(b => { b.innerHTML = _bsSaveHtml(hasNotes); });
 }
 
 // Mirror an answer from the practice screen into the writer's sentence list
@@ -2156,12 +2250,12 @@ function _insBtn(text) {
   return `<button type="button" class="t2c-ins" title="Chèn vào chỗ con trỏ" aria-label="Chèn vào bài" onclick="insertRef(${_refItems.length - 1})">＋</button>`;
 }
 // questionText looks like: Dịch sang tiếng Anh (dùng từ "X"):\n\n"<câu tiếng Việt>"
-function _sentenceParts(qt) {
+function _sentenceParts(qt, full) {
   const raw = String(qt || '').trim();
   const kw = (raw.match(/dùng (?:từ|cụm từ|cấu trúc)\s*["“]([^"”]+)["”]/i) || [])[1] || '';
   const parts = raw.split(/\n\s*\n/);
   let vi = (parts.length > 1 ? parts[parts.length - 1] : raw).trim().replace(/^["“]+|["”]+$/g, '').trim();
-  if (vi.length > 260) vi = vi.slice(0, 257) + '…';
+  if (!full && vi.length > 260) vi = vi.slice(0, 257) + '…';
   return { vi, kw };
 }
 
@@ -2197,6 +2291,11 @@ const _SENT_GROUPS = [
   { type: 'translation',   title: 'Câu ý chính & dẫn chứng — dùng cho Thân bài' },
   { type: 'short_writing', title: 'Câu kết — dùng cho Kết bài' }
 ];
+// A translated conclusion ("In conclusion, …") belongs with the Kết bài group.
+function _sentGroupType(s) {
+  if (s.type === 'translation' && /^(in conclusion|to conclude|to sum up|in summary|overall,)/i.test(String(s.model || '').trim())) return 'short_writing';
+  return s.type;
+}
 function _refSentences() {
   const L = state.lesson;
   if (!L.sentences.length) return '<p class="t2c-note">Đề này chưa có câu dịch. Dùng tab Ý tưởng và Template để viết nhé.</p>';
@@ -2228,7 +2327,7 @@ function _refSentences() {
   return `
     <p class="t2c-note">Câu bạn đã dịch ở bước ③. ${_isStaffUser() ? 'Bấm <b>＋</b> để chèn vào ô đang viết (chỗ con trỏ)' : '<b>Tự gõ lại</b> câu vào ô đang viết — gõ tay giúp bạn nhớ lâu hơn'}, rồi chỉnh lại cho hợp đoạn văn.</p>
     ${_SENT_GROUPS.map(g => {
-      const list = L.sentences.filter(s => s.type === g.type);
+      const list = L.sentences.filter(s => _sentGroupType(s) === g.type);
       return list.length ? `<div class="t2c-group">${g.title}</div>${list.map(item).join('')}` : '';
     }).join('')}
     ${missing ? `<button type="button" class="t2-secondary" style="width:100%;justify-content:center;margin-top:6px" onclick="translateFromCompose(this)"><i class="fas fa-language"></i> Dịch ${missing} câu còn lại</button>` : ''}`;
@@ -2240,8 +2339,8 @@ function _refIdeas() {
   return `
     <p class="t2-note t2c-note">Ý tưởng nhóm bạn đã ghi ở bước ② — chọn ý mạnh nhất cho mỗi đoạn thân bài.</p>
     ${sides.map((h, i) => `
-      <div class="t2c-group">${_escHtml(h.side)}</div>
-      <div class="t2c-mine">${(notes[i] || '').trim() ? _escHtml(notes[i]) : '<span style="color:#9ca3af">(chưa ghi ý nào)</span>'}</div>
+      <div class="t2c-group t2-side-txt${i % 4}">${_escHtml(h.side)}</div>
+      <div class="t2c-mine t2-side-c${i % 4}">${(notes[i] || '').trim() ? _escHtml(notes[i]) : '<span style="color:#9ca3af">(chưa ghi ý nào)</span>'}</div>
       ${(h.points || []).length ? `<details class="t2c-tplsec" style="margin-top:6px"><summary>Gợi ý ý chính</summary><ul class="t2-brainstorm-hint-list">${h.points.map(p => `<li>${_escHtml(p)}</li>`).join('')}</ul></details>` : ''}`).join('')}`;
 }
 function _refVocab() {
@@ -2668,7 +2767,6 @@ function renderVocabStep(isCurrent) {
         <div class="t2-vtask${done ? ' ok' : ''}"><span class="t2-vtask-ic">${done ? '<i class="fas fa-check"></i>' : '1'}</span>Lưu tất cả từ vào sổ <b>${vs.saved}/${vs.total}</b></div>
         <div class="t2-vtask${passed ? ' ok' : ''}"><span class="t2-vtask-ic">${passed ? '<i class="fas fa-check"></i>' : '2'}</span>Làm quiz từ vựng đạt <b>≥ ${VQUIZ_PASS}%</b>${quizBest != null ? ` <span class="t2-vtask-best${passed ? ' ok' : ''}">cao nhất ${quizBest}%</span>` : ''}</div>
       </div>
-      ${done && passed ? '' : `<p class="t2-step-desc" style="margin-top:0">Hoàn thành cả 2 việc trên để mở khoá các bước tiếp theo.</p>`}
       <div class="t2-meter${done ? ' ok' : ''}"><span style="width:${vs.pct}%"></span></div>
       <div class="t2-actions">
         ${done ? '' : `<button class="t2-primary" onclick="saveAllVocabToBook()"><i class="fas fa-save"></i> Lưu tất cả vào sổ</button>`}
@@ -2683,7 +2781,7 @@ function renderVocabStep(isCurrent) {
             <div class="t2-vitem-main">
               <div class="t2-vitem-term">${_escHtml(v.term)}<button class="t2-speak" onclick="speakVocab(${i})" title="Nghe phát âm" aria-label="Nghe phát âm"><i class="fas fa-volume-up"></i></button></div>
               ${v.definitionVi ? `<div class="t2-vitem-def">${_escHtml(v.definitionVi)}</div>` : ''}
-              ${v.example ? `<div class="t2-vitem-ex">"${_escHtml(v.example)}"</div>` : ''}
+              ${v.example ? `<div class="t2-vitem-ex">${_markTermHtml(v.example, v.term)}</div>` : ''}
             </div>
             <button class="t2-vbtn${saved ? ' saved' : ''}" onclick="saveOneVocabToBook(${i})" ${saved ? 'disabled title="Đã lưu"' : 'title="Lưu vào sổ"'}><i class="fas fa-${saved ? 'check' : 'plus'}"></i></button>
           </div>`;
@@ -2691,11 +2789,32 @@ function renderVocabStep(isCurrent) {
       </div>` : ''}`;
   }
   return `
-    <section class="t2-step${isCurrent ? ' is-current' : ''}" id="t2-step-vocab">
-      ${_stepHead(1, 'Từ vựng &amp; collocations', vs.total ? `<span class="t2-step-tag${done ? ' ok' : ''}">${vs.saved}/${vs.total} đã lưu</span>` : '', isVocabStepDone(id))}
+    <section class="t2-step t2-s-vocab${isCurrent ? ' is-current' : ''}" id="t2-step-vocab">
+      ${_stepHead(1, 'Từ vựng &amp; collocations', `${vs.total ? `<span class="t2-step-tag${done ? ' ok' : ''}">${vs.saved}/${vs.total} đã lưu</span>` : ''}${_infoBtn('vocab')}`, isVocabStepDone(id))}
+      ${_infoBody('vocab', `<ol class="t2-info-list">
+        <li><b>Nghe</b> 🔊 và đọc to từng cụm.</li>
+        <li><b>Đọc câu ví dụ</b> — cụm được tô màu: để ý từ đi kèm (collocation) và cách dùng trong câu.</li>
+        <li><b>Lưu vào sổ</b> để ôn lại sau.</li>
+        <li><b>Làm quiz ≥ ${VQUIZ_PASS}%</b> (có câu điền cụm vào câu ví dụ) để mở khoá các bước sau. Sai thì xem lại câu ví dụ rồi làm lại.</li>
+      </ol>`)}
       ${body}
     </section>`;
 }
+// Escapes `text` and wraps the first match of `term` (allowing -s/-ed/-ing
+// endings on each word) in <mark class="t2-key">.
+function _termRegex(term) {
+  const words = String(term || '').trim().split(/\s+/).filter(Boolean);
+  if (!words.length) return null;
+  return new RegExp('(^|[^A-Za-z])(' + words.map(w => _reEsc(w) + '(?:s|es|d|ed|ing)?').join('\\s+') + ')(?![A-Za-z])', 'i');
+}
+function _markTermHtml(text, term) {
+  const re = _termRegex(term);
+  const m = re && re.exec(text);
+  if (!m) return _escHtml(text);
+  const s = m.index + m[1].length, e = s + m[2].length;
+  return _escHtml(text.slice(0, s)) + `<mark class="t2-key">${_escHtml(text.slice(s, e))}</mark>` + _escHtml(text.slice(e));
+}
+function _reEsc(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
 function renderExamStep() {
   return `
@@ -2703,8 +2822,9 @@ function renderExamStep() {
       <div class="t2-step-head">
         <span class="t2-step-num is-alt"><i class="fas fa-clipboard-check"></i></span>
         <div class="t2-step-title">Thi thử cả tuần <span class="t2-opt-tag">tuỳ chọn</span></div>
+        ${_infoBtn('exam')}
       </div>
-      <p class="t2-step-desc">Câu hỏi ngẫu nhiên từ các chủ đề của Tuần ${state.selectedWeek}, tính giờ 2 phút/câu.</p>
+      ${_infoBody('exam', `<p class="t2-step-desc" style="margin:0">Câu hỏi ngẫu nhiên từ các chủ đề của Tuần ${state.selectedWeek}, tính giờ 2 phút/câu, không có gợi ý.</p>`)}
       <div class="t2-actions">
         <div class="t2-seg" role="group" aria-label="Số câu">
           ${[10, 15, 20].map(n => `<button type="button" class="${state.examCount === n ? 'active' : ''}" onclick="setExamCount(${n}, this)">${n} câu</button>`).join('')}
@@ -2811,9 +2931,16 @@ async function _startPractice(opts = {}) {
     const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?${params}`);
     if (!data.questions?.length) { showToast('Chưa có câu hỏi ở level này', 'warn'); return; }
     let questions = data.questions;
+    _assignDrillModes(questions);
     if (opts.translateOnly) {
       questions = questions.filter(q => WBW_TYPES.has(q.type));
       const L = _lessonFor(state.selectedTopic._id);
+      // The lesson's own list drops sentences asked twice (same model answer).
+      if (L && L.status === 'ready' && L.sentences.length) {
+        const ids = new Set(L.sentences.map(s => s.questionId));
+        const kept = questions.filter(q => ids.has(q.questionId || q._id) || ids.has(q._id));
+        if (kept.length) questions = kept;
+      }
       // Translated right already → skip; untranslated and wrong ones come up.
       const doneIds = new Set((L ? L.sentences : []).filter(s => s.en && s.isCorrect).map(s => s.questionId));
       const missing = questions.filter(q => !doneIds.has(q.questionId || q._id) && !doneIds.has(q._id));
@@ -2844,6 +2971,7 @@ async function _startRetryWrong() {
     const params = new URLSearchParams({ level: 'all' });
     const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?${params}`);
     if (!data.questions?.length) { showToast('Chưa có câu hỏi', 'warn'); return; }
+    _assignDrillModes(data.questions);
     const wrongSet = new Set(state.wrongQuestionIds);
     const wrongQuestions = data.questions.filter(q => wrongSet.has(q._id) || wrongSet.has(q.questionId));
     if (!wrongQuestions.length) { showToast('Không có câu sai nào', 'info'); return; }
@@ -2906,6 +3034,7 @@ async function resumeSession() {
     if (!draft) return;
     const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?level=all`);
     if (!data.questions?.length) { showToast('Không thể tải câu hỏi', 'error'); return; }
+    _assignDrillModes(data.questions);
     // Map both stable questionId and MongoDB _id so old and new drafts both work
     const qMap = {};
     data.questions.forEach(q => {
@@ -2997,7 +3126,7 @@ function renderPractice() {
     <div class="wp-exercise-meta" style="padding:8px 20px">
       <span class="wp-ex-counter">${state.currentIdx + 1} / ${state.questions.length}</span>
       <span style="color:${LEVEL_COLORS[q.level]||'#6b7280'};font-size:12px;font-weight:700;text-transform:uppercase">${q.level}</span>
-      <span class="wp-type-tag">${Q_LABELS[q.type] || q.type}</span>
+      ${_drillMode(q) ? _modeBadge(_drillMode(q)) : `<span class="wp-type-tag">${Q_LABELS[q.type] || q.type}</span>`}
       ${q._isRepeat ? '<span class="wp-type-tag" style="background:#fef3c7;color:#92400e">🔁 Làm lại</span>' : ''}
     </div>
     <div class="wp-card" style="margin:0 20px" id="qcard">
@@ -3105,12 +3234,12 @@ function renderQuestion(q) {
   // character-typing drill. Needs the exact model sentence, which the server
   // ships as q.translationAnswer for the topic-practice flow. Falls back to
   // the plain textarea below when the answer is absent (older data, exam mode).
-  if (ORD_TYPES.has(q.type) && q.translationAnswer) {
+  if (_isGfQuestion(q)) return _renderGfQuestion(q);
+  if (_isOrdQuestion(q)) {
+    const tr = q.type === 'translation';
     return `
-  <div class="wp-task-label">${typeLbl}</div>
-  <div class="t2-question-text">${_escHtml(q.questionText)}</div>
-  ${viRow}
-  ${structureHint}
+  ${_drillPromptHtml(q)}
+  ${tr ? '' : viRow}
   ${keywordRow}
   <div class="t2-ord" id="t2-ord">
     <div class="t2-wbw-bar">
@@ -3118,10 +3247,11 @@ function renderQuestion(q) {
       <button type="button" class="wbw-ask ask-lulu" id="ord-ask" onclick="ordAskLulu()" title="Hỏi Lulu cụm tiếp theo">
         <span class="ask-lulu-ic"></span> <span>Hỏi Lulu</span>
       </button>
+      ${_infoBtn('drill-order')}
     </div>
+    ${_infoBody('drill-order', `Bấm các cụm theo đúng thứ tự để ghép thành ${q.type === 'short_writing' ? 'đoạn kết bài' : 'câu tiếng Anh'}. Bấm vào cụm đã chọn để gỡ ra. <b>Xếp sai ${ORD_MAX_TRIES} lần là câu tính sai</b> và quay lại sau.`)}
     <div class="wp-rearrange-answer t2-ord-answer" id="ord-answer"></div>
     <div class="wp-rearrange-bank t2-ord-bank" id="ord-bank"></div>
-    <div class="t2-wbw-hint">Bấm các cụm theo đúng thứ tự để ghép thành đoạn kết bài. Bấm vào cụm đã chọn để gỡ ra. <b>Xếp sai ${ORD_MAX_TRIES} lần là câu tính sai và phải làm lại</b> (câu sẽ quay lại sau).</div>
   </div>`;
   }
   if (WBW_TYPES.has(q.type) && q.translationAnswer) {
@@ -3130,8 +3260,7 @@ function renderQuestion(q) {
     // whose source is English (see viRow's own comment above).
     const para = q.type !== 'translation';
     return `
-  <div class="wp-task-label">${typeLbl}</div>
-  <div class="t2-question-text">${_escHtml(q.questionText)}</div>
+  ${_drillPromptHtml(q)}
   ${para ? viRow : ''}
   ${structureHint}
   ${keywordRow}
@@ -3142,11 +3271,12 @@ function renderQuestion(q) {
       <button type="button" class="wbw-ask ask-lulu" id="wbw-ask" onclick="wbwAskLulu()" title="Hỏi Lulu chữ cái tiếp theo">
         <span class="ask-lulu-ic"></span> <span>Hỏi Lulu</span>
       </button>
+      ${_infoBtn('drill-type')}
     </div>
+    ${_infoBody('drill-type', `${para ? 'Gõ lại đoạn mẫu từng chữ — đúng thì tự mở từ tiếp theo.' : 'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm, Backspace để xoá, bí chữ nào thì hỏi Lulu.'} <b>Gõ sai 1 từ ${WBW_MAX_WORD_ERRORS} lần là câu tính sai</b> và quay lại sau.`)}
     <div class="t2-wbw-words" id="wbw-words" onclick="wbwFocus()"></div>
     <input class="t2-wbw-input" id="wbw-input" type="text" autocomplete="off"
       autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Gõ từng từ" />
-    <div class="t2-wbw-hint">${para ? 'Gõ lại đoạn mẫu từng chữ — đúng thì tự mở từ tiếp theo.' : 'Gõ từng chữ cái — đúng thì tự mở từ tiếp theo. Dấu câu tự thêm. Backspace để xoá. Bí chữ nào thì hỏi Lulu nha.'} <b>Gõ sai 1 từ ${WBW_MAX_WORD_ERRORS} lần là câu tính sai và phải làm lại</b> (câu sẽ quay lại sau).</div>
   </div>
   <textarea class="wp-answer-box hidden" id="answer-box" rows="3" aria-hidden="true" tabindex="-1"></textarea>`;
   }
@@ -3471,7 +3601,11 @@ function _requeueQuestion(idx) {
   const copies = state.questions.filter(x => (x.questionId || x._id) === id).length - 1;
   if (copies >= WBW_MAX_REQUEUES) return false;
   const insertAt = Math.min(idx + 1 + WBW_REQUEUE_GAP, state.questions.length);
-  state.questions.splice(insertAt, 0, { ...q, _isRepeat: true, _luluAsks: 0, _ordTries: 0 }); // a redo starts fresh
+  // A redo starts fresh; a missed multiple-choice comes back as "điền cụm"
+  // (recall, not recognition — picking again from the same 4 teaches nothing).
+  const redo = { ...q, _isRepeat: true, _luluAsks: 0, _ordTries: 0, _gfTries: 0 };
+  if (redo._mode === 'mcq') redo._mode = 'gap';
+  state.questions.splice(insertAt, 0, redo);
   state.questionStatus.splice(insertAt, 0, 'pending');
   return true;
 }
@@ -3533,7 +3667,7 @@ function _ordActive() {
 function ordInit() {
   _ord = null;
   const q = state.questions[state.currentIdx];
-  if (!q || !ORD_TYPES.has(q.type) || !q.translationAnswer || !document.getElementById('t2-ord')) return;
+  if (!q || !_isOrdQuestion(q) || !document.getElementById('t2-ord')) return;
   const chunks = _ordChunks(q.translationAnswer);
   const answered = ['correct', 'wrong'].includes(state.questionStatus[state.currentIdx]);
   const bank = shuffle(chunks.map((_, i) => i));
@@ -3632,6 +3766,330 @@ function ordAskLulu() {
   }
 }
 
+// ════════════════════════════════════════════════════════
+//  "DỊCH CÂU" FORMATS — a lesson has ~20 sentences; typing every one word by
+//  word took too long and taught little after the first few. Each sentence
+//  now gets one format, fixed per sentence (same for every student):
+//    mcq    — key phrase blanked, pick it from 4          (recognise)
+//    gap    — key phrase blanked, type it, first letters  (recall)
+//    listen — hear the sentence, type 2–3 missing words   (listen + spell)
+//    type   — the word-by-word typing drill               (produce)
+//    order  — long sentences (examples, conclusion, paraphrase): click the
+//             phrases into order
+//  The key phrase is the sentence's "dùng từ X" collocation, else its
+//  longest keyword. mcq/gap/listen are graded here, like the typing drill.
+// ════════════════════════════════════════════════════════
+const DRILL_MODES = {
+  mcq:    { label: 'Chọn cụm đúng', icon: 'fa-list-check',   cls: 'm-mcq' },
+  gap:    { label: 'Điền cụm từ',   icon: 'fa-pen',          cls: 'm-gap' },
+  listen: { label: 'Nghe & điền',   icon: 'fa-headphones',   cls: 'm-listen' },
+  type:   { label: 'Gõ cả câu',     icon: 'fa-keyboard',     cls: 'm-type' },
+  order:  { label: 'Ghép cụm',      icon: 'fa-puzzle-piece', cls: 'm-order' }
+};
+const DRILL_CYCLE = ['mcq', 'gap', 'listen', 'type'];
+const DRILL_LONG_WORDS = 22;   // longer sentences are clicked into order instead
+const GF_MAX_TRIES = 3;        // same 3-tries rule as the typing drill
+const _GF_STOP = new Set(('about above after again against because before being below between could during every further having other their there these those through under until where which while would should people things today often their always').split(' '));
+let _drillPool = [];           // key phrases + vocab terms — the mcq distractors
+let _gf = null;                // { q, mode, blanks, options, picked, tries, asks, done }
+
+function _modeBadge(m) {
+  const d = DRILL_MODES[m];
+  return d ? `<span class="t2-mode ${d.cls}"><i class="fas ${d.icon}"></i> ${d.label}</span>` : '';
+}
+function _isGfQuestion(q) {
+  return !!(q && q.translationAnswer && ['mcq', 'gap', 'listen'].includes(q._mode) && _gfBlanks(q).length);
+}
+function _isOrdQuestion(q) {
+  return !!(q && q.translationAnswer && (ORD_TYPES.has(q.type) || q._mode === 'order'));
+}
+// The format this question is drilled in (null: not a sentence-building drill).
+function _drillMode(q) {
+  if (!q || !WBW_TYPES.has(q.type) || !q.translationAnswer) return null;
+  if (_isGfQuestion(q)) return q._mode;
+  if (_isOrdQuestion(q)) return 'order';
+  return 'type';
+}
+
+// Where the key phrase sits in the model sentence → { start, end, text } | null.
+function _keySpan(q) {
+  const ans = q.translationAnswer || '';
+  const { kw } = _sentenceParts(q.questionText);
+  const cands = [];
+  if (kw && !/\.\.\.|…/.test(kw)) cands.push(kw);
+  (q.fallbackKeywords || []).slice().sort((a, b) => b.length - a.length)
+    .filter(k => /\s/.test(k.trim()) || k.trim().length >= 7).forEach(k => cands.push(k));
+  for (const c of cands) {
+    const re = _termRegex(c);
+    const m = re && re.exec(ans);
+    if (m && m[2].length >= 4) { const start = m.index + m[1].length; return { start, end: start + m[2].length, text: m[2] }; }
+  }
+  return null;
+}
+
+// Runs on every freshly fetched question list (all of the topic's questions,
+// so a sentence's format doesn't depend on which subset is being practised).
+function _assignDrillModes(questions) {
+  const list = (questions || []).filter(q => WBW_TYPES.has(q.type) && q.translationAnswer)
+    .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
+  let k = 0, j = 0;
+  list.forEach(q => {
+    q._key = null;
+    if (q.type !== 'translation' || _wc(q.translationAnswer) > DRILL_LONG_WORDS) { q._mode = 'order'; return; }
+    q._key = _keySpan(q);
+    q._mode = q._key ? DRILL_CYCLE[k++ % DRILL_CYCLE.length] : (j++ % 2 ? 'type' : 'listen');
+  });
+  const pool = new Map();
+  list.forEach(q => { if (q._key) pool.set(q._key.text.toLowerCase(), q._key.text); });
+  if (state.selectedTopic && state.vocabFor === state.selectedTopic._id) {
+    (state.vocab || []).forEach(v => { if (v.term && !/\.\.|…|\//.test(v.term)) pool.set(v.term.toLowerCase(), v.term); });
+  }
+  _drillPool = [...pool.values()];
+  // Too few phrases to make 4 options → type it instead.
+  if (_drillPool.length < 4) list.forEach(q => { if (q._mode === 'mcq') q._mode = 'gap'; });
+}
+
+// The blanks of a gap/listen/mcq sentence (sorted). listen adds up to two
+// more long content words (not proper nouns, never next to another blank).
+function _gfBlanks(q) {
+  if (!q || !q.translationAnswer) return [];
+  const out = q._key ? [q._key] : [];
+  if (q._mode === 'listen') {
+    const ans = q.translationAnswer;
+    const words = [...ans.matchAll(/[A-Za-z][A-Za-z'-]*/g)].map(m => ({ start: m.index, end: m.index + m[0].length, text: m[0] }));
+    const free = w => !out.some(b => w.start < b.end + 2 && w.end > b.start - 2);
+    words.filter(w => w.start > 0 && w.text.length >= 5 && !_GF_STOP.has(w.text.toLowerCase()) && !/^[A-Z]/.test(w.text))
+      .sort((a, b) => b.text.length - a.text.length || a.start - b.start)
+      .forEach(w => { if (out.length < 3 && free(w)) out.push(w); });
+  }
+  return out.slice().sort((a, b) => a.start - b.start);
+}
+// text with spans[k] replaced by fn(spanText, k); everything else escaped.
+function _spansHtml(text, spans, fn) {
+  let html = '', pos = 0;
+  spans.forEach((s, k) => { html += _escHtml(text.slice(pos, s.start)) + fn(text.slice(s.start, s.end), k); pos = s.end; });
+  return html + _escHtml(text.slice(pos));
+}
+function _gfHint(text) {
+  return text.split(/(\s+|-)/).map(w => /^[A-Za-z]/.test(w) ? w[0] + '_'.repeat(w.length - 1) : w).join('');
+}
+function _gfNorm(s) {
+  return String(s || '').toLowerCase().replace(/[’‘`]/g, "'").replace(/-/g, ' ').replace(/[^a-z0-9' ]/g, '').replace(/\s+/g, ' ').trim();
+}
+function _gfOptions(q) {
+  const ans = q._key.text;
+  const low = ans.toLowerCase();
+  const n = ans.trim().split(/\s+/).length;
+  const rng = _seededRng(String(q.questionId || q._id) + ':mcq');
+  let pool = _drillPool.filter(p => { const l = p.toLowerCase(); return l !== low && !l.includes(low) && !low.includes(l); });
+  // Fragments like "keep pace with" can never fill a noun slot — easy to rule
+  // out, so they make poor distractors.
+  const whole = pool.filter(p => !/\s(to|with|of|for|on|in|at|from|into|by|about|as)$/i.test(p.trim()));
+  if (whole.length >= 3) pool = whole;
+  const cands = shuffle(pool, rng)
+    .sort((a, b) => Math.abs(a.split(/\s+/).length - n) - Math.abs(b.split(/\s+/).length - n));
+  const atStart = q._key.start === 0;
+  const fmt = s => atStart ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+  return shuffle([{ text: ans, ok: true }, ...cands.slice(0, 3).map(t => ({ text: t, ok: false }))], rng)
+    .map(o => ({ ...o, label: fmt(o.text) }));
+}
+
+// Prompt shared by the type / order formats: the instruction line + the
+// Vietnamese sentence, set apart so it's the first thing the eye lands on.
+function _drillPromptHtml(q) {
+  if (q.type !== 'translation') return `<div class="t2-question-text">${_escHtml(q.questionText)}</div>`;
+  const parts = String(q.questionText || '').trim().split(/\n\s*\n/);
+  const { vi } = _sentenceParts(q.questionText, true);
+  const head = parts.length > 1 ? parts[0].trim().replace(/[:：]\s*$/, '') : '';
+  return `<div class="t2-drill-prompt">${head ? `<div class="t2-drill-ask">${_escHtml(head)}</div>` : ''}<div class="t2-vi-main"><span class="t2-flag">VI</span><span>${_escHtml(vi)}</span></div></div>`;
+}
+
+function _renderGfQuestion(q) {
+  const mode = q._mode;
+  const { vi } = _sentenceParts(q.questionText, true);
+  const blanks = _gfBlanks(q);
+  const sentence = _spansHtml(q.translationAnswer, blanks, (text, k) => mode === 'mcq'
+    ? '<span class="t2-gf-slot" id="gf-slot">?</span>'
+    : `<input class="t2-gf-in" id="gf-in-${k}" data-k="${k}" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="width:${Math.max(5, text.length + 2)}ch" placeholder="${mode === 'gap' ? _escHtml(_gfHint(text)) : ''}" aria-label="Chỗ trống ${k + 1}">`);
+  const opts = mode === 'mcq' ? _gfOptions(q) : [];
+  const how = {
+    mcq: 'Chọn cụm từ đúng điền vào chỗ trống để câu tiếng Anh có nghĩa giống câu tiếng Việt. Chọn 1 lần — sai thì câu quay lại sau và lần đó bạn phải tự điền. Phím 1–4 để chọn nhanh.',
+    gap: `Điền cụm từ còn thiếu (ô trống có gợi ý chữ cái đầu). Enter để kiểm tra. Sai ${GF_MAX_TRIES} lần là câu tính sai và quay lại sau.`,
+    listen: `Nghe câu rồi điền các từ còn thiếu — nghe lại hoặc nghe chậm bao nhiêu lần cũng được. Sai ${GF_MAX_TRIES} lần là câu tính sai và quay lại sau.`
+  }[mode];
+  const prompt = mode === 'listen'
+    ? `<div class="t2-drill-prompt is-listen">
+        <div class="t2-listen-bar">
+          <button type="button" class="t2-listen-btn" onclick="gfSpeak(false)"><i class="fas fa-volume-up"></i> Nghe</button>
+          <button type="button" class="t2-listen-btn is-slow" onclick="gfSpeak(true)"><i class="fas fa-person-walking"></i> Nghe chậm</button>
+          <button type="button" class="t2-link" onclick="gfToggleVi(this)" aria-expanded="false"><span class="t2-flag">VI</span> Xem nghĩa</button>
+        </div>
+        <div class="t2-vi-main" id="gf-vi" hidden><span class="t2-flag">VI</span><span>${_escHtml(vi)}</span></div>
+      </div>`
+    : `<div class="t2-drill-prompt"><div class="t2-vi-main"><span class="t2-flag">VI</span><span>${_escHtml(vi)}</span></div></div>`;
+  return `
+  ${prompt}
+  <div class="t2-gf ${DRILL_MODES[mode].cls}" id="t2-gf">
+    <div class="t2-wbw-bar">
+      <span class="t2-wbw-count" id="gf-count"></span>
+      ${mode !== 'mcq' ? `<button type="button" class="wbw-ask ask-lulu" id="gf-ask" onclick="gfAskLulu()" title="Hỏi Lulu chữ cái tiếp theo"><span class="ask-lulu-ic"></span> <span>Hỏi Lulu</span></button>` : ''}
+      ${_infoBtn('drill-' + mode)}
+    </div>
+    ${_infoBody('drill-' + mode, how)}
+    <div class="t2-gf-sentence"><span class="t2-flag is-en">EN</span>${sentence}</div>
+    ${mode === 'mcq' ? `<div class="t2-mc-options t2-gf-opts">${opts.map((o, i) => `<button type="button" class="t2-mc-option" data-i="${i}" onclick="gfPick(${i})"><span class="t2-opt-letter">${i + 1}</span><span>${_escHtml(o.label)}</span></button>`).join('')}</div>` : ''}
+  </div>`;
+}
+
+function _gfActive() {
+  const q = state.questions[state.currentIdx];
+  return !!(_gf && q && _gf.q === q);
+}
+function _gfInputs() { return [...document.querySelectorAll('#t2-gf .t2-gf-in')]; }
+function _gfResults() {
+  return _gfInputs().map((inp, k) => !!_gf.blanks[k] && _gfNorm(inp.value) === _gfNorm(_gf.blanks[k].text));
+}
+// The sentence as the student completed it.
+function _gfFilledText() {
+  const g = _gf;
+  if (!g) return '';
+  const o = g.mode === 'mcq' && g.picked != null ? g.options[g.picked] : null;
+  const vals = g.mode === 'mcq' ? g.blanks.map(() => o ? o.text : '') : _gfInputs().map(i => i.value.trim());
+  const ans = g.q.translationAnswer;
+  let out = '', pos = 0;
+  g.blanks.forEach((b, k) => { out += ans.slice(pos, b.start) + (vals[k] || '___'); pos = b.end; });
+  return out + ans.slice(pos);
+}
+// Same sentence for the feedback card, the student's fills coloured right/wrong.
+function _gfStudentHtml() {
+  const g = _gf;
+  if (!g) return '';
+  if (g.mode === 'mcq') {
+    const o = g.picked != null ? g.options[g.picked] : null;
+    return _spansHtml(g.q.translationAnswer, g.blanks, () => `<mark class="t2-fill ${o && o.ok ? 'ok' : 'bad'}">${_escHtml(o ? o.text : '___')}</mark>`);
+  }
+  const vals = _gfInputs().map(i => i.value.trim());
+  const res = _gfResults();
+  return _spansHtml(g.q.translationAnswer, g.blanks, (_t, k) => `<mark class="t2-fill ${res[k] ? 'ok' : 'bad'}">${_escHtml(vals[k] || '___')}</mark>`);
+}
+function _gfUpdateBar() {
+  const el = document.getElementById('gf-count');
+  if (!el || !_gf) return;
+  if (_gf.mode === 'mcq') { el.textContent = `Chọn 1 trong ${_gf.options.length}`; return; }
+  const n = _gf.blanks.length;
+  el.textContent = `${n} chỗ trống · còn ${Math.max(0, GF_MAX_TRIES - _gf.tries)} lần thử`;
+  el.classList.toggle('is-warn', _gf.tries > 0 && !_gf.done);
+}
+function _gfLock() {
+  _gfInputs().forEach(i => { i.disabled = true; });
+  document.querySelectorAll('#t2-gf .t2-mc-option').forEach(b => { b.disabled = true; });
+  const ask = document.getElementById('gf-ask');
+  if (ask) ask.disabled = true;
+}
+
+function gfInit() {
+  _gf = null;
+  const q = state.questions[state.currentIdx];
+  if (!q || !document.getElementById('t2-gf') || !_isGfQuestion(q)) return;
+  const answered = ['correct', 'wrong'].includes(state.questionStatus[state.currentIdx]);
+  _gf = {
+    q, mode: q._mode, blanks: _gfBlanks(q),
+    options: q._mode === 'mcq' ? _gfOptions(q) : null,
+    picked: null, tries: q._gfTries || 0, asks: q._luluAsks || 0, done: answered
+  };
+  const submit = document.getElementById('submit-btn');
+  if (submit && _gf.mode === 'mcq') submit.style.display = 'none'; // a pick submits by itself
+  const inputs = _gfInputs();
+  inputs.forEach((inp, k) => {
+    inp.addEventListener('input', () => { inp.classList.remove('is-wrong', 'is-ok'); checkSubmitEnabled(); });
+    inp.addEventListener('paste', e => e.preventDefault());
+    inp.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      e.stopPropagation();
+      const empty = inputs.find(i => !i.value.trim());
+      if (empty) empty.focus(); else submitPractice();
+    });
+  });
+  if (answered) {
+    inputs.forEach((inp, k) => { inp.value = _gf.blanks[k].text; inp.classList.add('is-ok'); });
+    document.querySelectorAll('#t2-gf .t2-mc-option').forEach((b, i) => { if (_gf.options[i].ok) b.classList.add('correct'); });
+    _gfLock();
+  } else {
+    const ask = document.getElementById('gf-ask');
+    if (window.AskLulu && ask) window.AskLulu.left(ask, WBW_MAX_ASKS - _gf.asks);
+    if (inputs[0]) setTimeout(() => { if (_gfActive()) inputs[0].focus({ preventScroll: true }); }, 30);
+    if (_gf.mode === 'listen') setTimeout(() => { if (_gfActive() && !_gf.done) gfSpeak(false); }, 350);
+  }
+  _gfUpdateBar();
+  checkSubmitEnabled();
+}
+
+function gfPick(i) {
+  const g = _gf;
+  if (!_gfActive() || g.done || state._isSubmitting || !g.options[i]) return;
+  g.picked = i;
+  document.querySelectorAll('#t2-gf .t2-mc-option').forEach((b, k) => b.classList.toggle('selected', k === i));
+  const slot = document.getElementById('gf-slot');
+  if (slot) slot.textContent = g.options[i].label;
+  submitPractice();
+}
+
+function gfSpeak(slow) {
+  if (!_gf) return;
+  _speakSentence(_gf.q.translationAnswer, slow);
+}
+function gfToggleVi(btn) {
+  const el = document.getElementById('gf-vi');
+  if (!el) return;
+  el.hidden = !el.hidden;
+  if (btn) btn.setAttribute('aria-expanded', String(!el.hidden));
+}
+
+// "Hỏi Lulu" on a gap/listen sentence: the next letter of the first blank that
+// isn't right yet — never typed in for the student. WBW_MAX_ASKS per sentence.
+function gfAskLulu() {
+  const g = _gf;
+  const btn = document.getElementById('gf-ask');
+  if (!_gfActive() || g.done || g.mode === 'mcq' || g.asks >= WBW_MAX_ASKS) return;
+  const inputs = _gfInputs();
+  const k = _gfResults().findIndex(r => !r);
+  if (k < 0) { if (window.AskLulu) window.AskLulu.say(btn, 'Điền đúng hết rồi đó, bấm Kiểm tra thôi! 🎉'); return; }
+  const target = g.blanks[k].text;
+  const typed = inputs[k].value;
+  let n = 0;
+  while (n < typed.length && n < target.length && typed[n].toLowerCase() === target[n].toLowerCase()) n++;
+  const next = target.charAt(n);
+  g.asks++;
+  g.q._luluAsks = g.asks;
+  if (window.AskLulu) {
+    window.AskLulu.left(btn, WBW_MAX_ASKS - g.asks);
+    window.AskLulu.say(btn, `Ô ${k + 1}: chữ tiếp theo là “${next === ' ' ? 'dấu cách' : next}” — bắt đầu “${target.slice(0, n + 1)}${n + 1 < target.length ? '…' : ''}” 🍊`);
+  }
+  inputs[k].focus();
+}
+
+// Speaks a whole English sentence (Web Speech, best available voice).
+function _speakSentence(text, slow) {
+  const synth = window.speechSynthesis;
+  if (synth && typeof SpeechSynthesisUtterance !== 'undefined') {
+    try {
+      if (window.WordAudio && window.WordAudio.stop) window.WordAudio.stop();
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = slow ? 0.7 : 0.95;
+      const voices = synth.getVoices().filter(v => /^en[-_]/i.test(v.lang));
+      const good = /Google|Natural|Neural|Online|Samantha|Aria|Jenny|Ava|Allison/i;
+      const v = voices.find(x => /^en[-_]US/i.test(x.lang) && good.test(x.name)) || voices.find(x => good.test(x.name)) || voices.find(x => /^en[-_]US/i.test(x.lang)) || voices[0];
+      if (v) u.voice = v;
+      synth.speak(u);
+      return;
+    } catch {}
+  }
+  if (window.WordAudio) window.WordAudio.speak(text, { slow });
+}
+
 function bindPractice() {
   state.rearrangeAnswer = [];
   state.rearrangeWords  = [];
@@ -3641,9 +4099,17 @@ function bindPractice() {
   _vocabHintList  = (q?.fallbackKeywords || q?.hints || []);
   wbwInit();
   ordInit();
+  gfInit();
   // remove previous listener before adding a new one
   if (_practiceKeyHandler) document.removeEventListener('keydown', _practiceKeyHandler);
   _practiceKeyHandler = function(e) {
+    if (/^[1-4]$/.test(e.key) && _gfActive() && _gf.mode === 'mcq' && !_gf.done) {
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+      e.preventDefault();
+      gfPick(Number(e.key) - 1);
+      return;
+    }
     if (e.key !== 'Enter' || e.shiftKey) return;
     const fc = document.getElementById('feedback-card');
     if (fc && !fc.classList.contains('hidden')) { e.preventDefault(); nextPractice(); }
@@ -3716,6 +4182,7 @@ function getUserAnswerPractice() {
   if (['essay_type_recognition','topic_sentence'].includes(q.type)) return String(document.getElementById('mc-selected')?.value ?? '');
   if (q.type === 'rearrange') return document.getElementById('rearrange-input')?.value?.trim() || '';
   if (q.type === 'fill_blank') return document.getElementById('fill-input')?.value?.trim() || '';
+  if (_gfActive()) return _gfFilledText();
   if (_ordActive()) return _ordText();
   return document.getElementById('answer-box')?.value?.trim() || '';
 }
@@ -3733,7 +4200,7 @@ async function submitPractice() {
     return;
   }
   const q = state.questions[state.currentIdx];
-  const answer = getUserAnswerPractice();
+  let answer = getUserAnswerPractice();
   // A drill fail may come before the first word is done — nothing typed yet.
   const wbwFail = _wbwFailPending && WBW_TYPES.has(q.type) && !!q.translationAnswer ? _wbwFailPending : null;
   _wbwFailPending = null;
@@ -3771,13 +4238,66 @@ async function submitPractice() {
     _ordRender();
   }
 
+  // Chọn cụm / điền cụm / nghe & điền — checked here against the model, no AI.
+  // A typed blank gets GF_MAX_TRIES tries; a multiple-choice pick gets one.
+  let gfOk = false, gfFail = false;
+  if (_gfActive()) {
+    const g = _gf;
+    if (g.mode === 'mcq') {
+      if (g.picked == null) { showToast('Hãy chọn một đáp án.', 'warn'); return; }
+      gfOk = !!g.options[g.picked].ok;
+    } else {
+      const inputs = _gfInputs();
+      if (inputs.some(i => !i.value.trim())) { showToast('Hãy điền hết các chỗ trống nhé.', 'warn'); inputs.find(i => !i.value.trim())?.focus(); return; }
+      const res = _gfResults();
+      gfOk = res.every(Boolean);
+      if (!gfOk) {
+        g.tries++;
+        q._gfTries = g.tries;
+        if (g.tries < GF_MAX_TRIES) {
+          inputs.forEach((inp, k) => { inp.classList.toggle('is-wrong', !res[k]); inp.classList.toggle('is-ok', res[k]); });
+          playWrong();
+          _gfUpdateBar();
+          showToast(`Chưa đúng — ô tô đỏ cần sửa. Còn ${GF_MAX_TRIES - g.tries} lần thử.`, 'warn', 2800);
+          inputs.find((inp, k) => !res[k])?.select();
+          return;
+        }
+      }
+    }
+    gfFail = !gfOk;
+    g.done = true;
+    _gfLock();
+    answer = gfOk ? q.translationAnswer : _gfFilledText();
+  }
+
   const AI_TYPES = new Set(['translation', 'error_correction', 'short_writing', 'paraphrase']);
   state._isSubmitting = true;
   document.getElementById('submit-btn').disabled = true;
 
   try {
     let data;
-    if (ordFail) {
+    const viLine = _gfActive() && _gf.mode === 'listen' ? ` Nghĩa: “${_sentenceParts(q.questionText).vi}”` : '';
+    if (gfFail) {
+      const requeued = _requeueQuestion(state.currentIdx);
+      data = {
+        success: true, isCorrect: false, score: 0,
+        modelAnswer: q.translationAnswer,
+        feedbackVi: (_gf.mode === 'mcq' ? 'Chọn chưa đúng. ' : `Bạn điền sai ${GF_MAX_TRIES} lần nên câu này tính là sai. `)
+          + (requeued
+            ? `Xem kỹ cụm tô màu trong câu mẫu — câu này sẽ quay lại ở phía sau${_gf.mode === 'mcq' ? ' (lần này bạn tự điền)' : ''} 💪`
+            : 'Xem kỹ câu mẫu rồi ôn lại ở "Ôn lại câu sai" sau buổi nhé.') + viLine,
+        explanationVi: q.explanationVi || '',
+        aiGraded: false
+      };
+    } else if (gfOk) {
+      data = {
+        success: true, isCorrect: true, score: 100,
+        modelAnswer: q.translationAnswer,
+        feedbackVi: 'Chính xác! Đọc lại cả câu và để ý cụm tô màu nhé.' + viLine,
+        explanationVi: q.explanationVi || '',
+        aiGraded: false
+      };
+    } else if (ordFail) {
       const requeued = _requeueQuestion(state.currentIdx);
       data = {
         success: true, isCorrect: false, score: 0,
@@ -3854,7 +4374,7 @@ async function submitPractice() {
       type: q.type
     });
     // A half-typed failed sentence isn't worth showing in the writer's list.
-    if (WBW_TYPES.has(q.type) && !wbwFail && !ordFail) _noteMySentence(q, answer, isOk);
+    if (WBW_TYPES.has(q.type) && !wbwFail && !ordFail && !gfFail) _noteMySentence(q, answer, isOk);
     saveDraft(); // fire-and-forget
 
     // show feedback
@@ -3871,10 +4391,16 @@ async function submitPractice() {
       document.getElementById('comparison-box').style.display = 'none';
     } else {
       document.getElementById('comparison-box').style.display = '';
-      document.getElementById('student-answer-display').textContent = wbwFail
+      const studentEl = document.getElementById('student-answer-display');
+      if (gfOk || gfFail) studentEl.innerHTML = _gfStudentHtml();
+      else studentEl.textContent = wbwFail
         ? (answer ? answer + ' …' : '(chưa gõ xong từ nào)')
         : answer;
-      document.getElementById('model-answer-display').textContent   = data.modelAnswer || '';
+      // The key phrase (the sentence's collocation) is coloured in the model.
+      const modelEl = document.getElementById('model-answer-display');
+      const spans = data.modelAnswer === q.translationAnswer ? _gfBlanks(q) : [];
+      if (spans.length) modelEl.innerHTML = _spansHtml(data.modelAnswer, spans, s => `<mark class="t2-key">${_escHtml(s)}</mark>`);
+      else modelEl.textContent = data.modelAnswer || '';
     }
 
     const expBox = document.getElementById('explanation-box');
@@ -4288,13 +4814,15 @@ function _buildVocabQuiz(list, seed) {
   const usable = list.filter(v => v.term && v.definitionVi);
   return shuffle([...usable], rng).slice(0, VQUIZ_LEN).map(v => {
     const gap = _vquizGap(v);
-    const kinds = gap ? ['vi2en', 'en2vi', 'gap'] : ['vi2en', 'en2vi'];
+    // Using the term in a sentence (gap) is what transfers to writing, so it
+    // comes up twice as often as the two meaning-only kinds.
+    const kinds = gap ? ['vi2en', 'en2vi', 'gap', 'gap'] : ['vi2en', 'en2vi'];
     const kind = kinds[Math.floor(rng() * kinds.length)];
     const field = kind === 'en2vi' ? 'definitionVi' : 'term';
     const answer = v[field];
     const others = [...new Set(usable.map(o => o[field]).filter(x => x && x !== answer))];
     return {
-      kind, answer, term: v.term, def: v.definitionVi,
+      kind, answer, term: v.term, def: v.definitionVi, ex: v.example || '',
       prompt: kind === 'vi2en' ? v.definitionVi : kind === 'en2vi' ? v.term : gap,
       options: shuffle([answer, ...shuffle(others, rng).slice(0, 3)], rng)
     };
@@ -4381,7 +4909,7 @@ function renderVocabQuiz() {
             ? (saved ? 'Tuyệt vời! Bạn đã mở khoá các bước tiếp theo.' : 'Giỏi lắm! Lưu tất cả từ vào sổ nữa là mở khoá bước tiếp theo.')
             : 'Ôn lại các từ dưới đây rồi làm lại quiz nhé.'}</div>
         </div>
-        ${qz.missed.length ? `<div class="t2-quiz-miss">${qz.missed.map(m => `• <b>${_escHtml(m.term)}</b> — ${_escHtml(m.def)}`).join('<br>')}</div>` : ''}
+        ${qz.missed.length ? `<div class="t2-quiz-miss">${qz.missed.map(m => `<div class="t2-quiz-miss-item">• <b>${_escHtml(m.term)}</b> — ${_escHtml(m.def)}${m.ex ? `<div class="t2-vitem-ex">${_markTermHtml(m.ex, m.term)}</div>` : ''}</div>`).join('')}</div>` : ''}
         <div class="t2-actions" style="justify-content:center;margin-top:12px">
           ${pass
             ? `<button class="t2-primary" onclick="${saved ? 'continueAfterVocabQuiz()' : 'closeVocabQuiz()'}">${saved ? 'Tiếp tục <i class="fas fa-arrow-right"></i>' : 'Đóng quiz'}</button>
@@ -4412,7 +4940,8 @@ function renderVocabQuiz() {
       <div class="t2-quiz-foot">
         ${answered
           ? `<span class="t2-quiz-fb ${ok ? 'ok' : 'bad'}">${ok ? '✓ Chính xác!' : `✗ Đáp án: ${_escHtml(it.answer)}`}</span>
-             ${ok ? '' : `<button class="t2-primary is-sm" onclick="nextVocabQuiz()">Câu tiếp <i class="fas fa-arrow-right"></i></button>`}`
+             ${ok ? '' : `<button class="t2-primary is-sm" onclick="nextVocabQuiz()">Câu tiếp <i class="fas fa-arrow-right"></i></button>`}
+             ${!ok && it.ex ? `<div class="t2-quiz-ex"><b>${_escHtml(it.term)}</b> = ${_escHtml(it.def)}<br>${_markTermHtml(it.ex, it.term)}</div>` : ''}`
           : `<span class="t2-step-desc" style="margin:0;font-size:12px">Mẹo: bấm phím 1–4 để chọn nhanh</span>`}
       </div>
     </div>`;
@@ -4506,7 +5035,7 @@ function retryWrong() {
   const wrongQuestions = state.questions
     .filter(q => wrongIds.has(q._id) || wrongIds.has(q.questionId))
     .filter(q => { const id = q.questionId || q._id; if (seen.has(id)) return false; seen.add(id); return true; })
-    .map(q => { const { _isRepeat, _luluAsks, _ordTries, ...rest } = q; return rest; });
+    .map(q => { const { _isRepeat, _luluAsks, _ordTries, _gfTries, ...rest } = q; return rest; });
   if (!wrongQuestions.length) { showToast('Không có câu nào sai!', 'info'); return; }
   state.questions = wrongQuestions;
   state.currentIdx = 0;
@@ -4633,6 +5162,10 @@ function checkSubmitEnabled() {
   }
   if (q.type === 'rearrange') { btn.disabled = state.rearrangeAnswer.length === 0; return; }
   if (q.type === 'fill_blank') { btn.disabled = !(document.getElementById('fill-input')?.value?.trim()); return; }
+  if (_gfActive()) {
+    btn.disabled = _gf.done || (_gf.mode === 'mcq' ? _gf.picked == null : _gfInputs().some(i => !i.value.trim()));
+    return;
+  }
   if (_ordActive()) { btn.disabled = _ord.done || _ord.picked.length < _ord.chunks.length; return; }
   btn.disabled = !(document.getElementById('answer-box')?.value?.trim());
 }

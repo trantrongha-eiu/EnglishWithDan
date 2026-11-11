@@ -685,21 +685,40 @@ async function _lessonSentences(userId, topic, kept) {
   for (const [questionId, s] of Object.entries(kept || {})) take({ questionId, userAnswer: s.en, isCorrect: s.isCorrect });
   if (draft) (draft.sessionAttempts || []).forEach(take);
 
-  return (topic.questions || [])
+  const out = [];
+  const byModel = new Map();
+  (topic.questions || [])
     .filter(q => q.isActive !== false && WBW_TYPES.has(q.type))
     .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0))
-    .map(q => {
+    .forEach(q => {
       const id = q.questionId || String(q._id);
       const mine = best[id] || best[String(q._id)] || null;
-      return {
+      const model = q.correctAnswer || q.modelAnswer || '';
+      const row = {
         questionId: id,
         type: q.type,
         questionText: q.questionText,
-        model: q.correctAnswer || q.modelAnswer || '',
+        model,
         en: mine ? mine.en : '',
         isCorrect: mine ? mine.isCorrect : null
       };
+      // Most topics ask for the same conclusion twice (a "Dịch câu KẾT BÀI"
+      // translation and the short_writing task, same model). The lesson keeps
+      // the first one; an answer given on the copy still counts for it.
+      const key = normSentence(model);
+      const first = key ? byModel.get(key) : null;
+      if (first) {
+        if (row.en && (!first.en || (row.isCorrect && !first.isCorrect))) { first.en = row.en; first.isCorrect = row.isCorrect; }
+        return;
+      }
+      if (key) byModel.set(key, row);
+      out.push(row);
     });
+  return out;
+}
+
+function normSentence(s) {
+  return String(s || '').toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
 }
 
 async function getLessonWork(userId, topicId) {
