@@ -167,6 +167,13 @@
 /* Huyền thoại (Thập Vĩ): a glowing ember card. */
 .shop-pet--legend { border-color: #fb923c; box-shadow: 0 0 0 3px rgba(251, 146, 60, .16), 0 10px 28px rgba(234, 88, 12, .16); }
 .shop-pet--legend .shop-tails { background: linear-gradient(90deg, #c2410c, #f97316); color: #fff; }
+/* Susano: a night stage lit by the giant's own aura. */
+.shop-pet--susano { border-color: #a855f7; box-shadow: 0 0 0 3px rgba(168, 85, 247, .16), 0 10px 28px rgba(126, 34, 206, .2); }
+.shop-pet--susano .shop-pet-stage,
+[data-theme="dark"] .shop-pet--susano .shop-pet-stage {
+  background: radial-gradient(ellipse at 50% 55%, #3b1d5e 0%, #1e1035 55%, #0f0a1f 100%);
+}
+.shop-pet--susano .shop-pet-stage::after { background: repeating-linear-gradient(90deg, rgba(168, 85, 247, .25) 0 6px, transparent 6px 26px); }
 .shop-legend-tag {
   font-size: 11px; font-weight: 800; padding: 1px 8px; border-radius: 99px; vertical-align: 2px;
   background: linear-gradient(90deg, #fde68a, #fdba74); color: #7c2d12;

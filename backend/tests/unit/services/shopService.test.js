@@ -281,7 +281,14 @@ describe('Thập Vĩ — huyền thoại announcements', () => {
   test('costs 300 🔥 and has ten tails', () => {
     const { PETS, LEGEND_PETS } = require('../../../constants/shop');
     expect(PETS.find(p => p.id === 'vi10')).toMatchObject({ name: 'Thập Vĩ', price: 300, tails: 10, legendary: true });
-    expect(LEGEND_PETS).toEqual(['vi10']);
+    expect(LEGEND_PETS).toEqual(['vi10', 'su1', 'su2', 'su3', 'su4', 'su5']);
+  });
+
+  test('five huyền thoại Susano cost 310 → 360 🔥', () => {
+    const { PETS } = require('../../../constants/shop');
+    const su = PETS.filter(p => p.tier === 'susano');
+    expect(su.map(p => p.price)).toEqual([310, 320, 335, 345, 360]);
+    expect(su.every(p => p.legendary)).toBe(true);
   });
 
   test('buying it is announced to everyone but the buyer, and kept out of the small ticker', async () => {

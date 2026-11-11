@@ -59,7 +59,7 @@
     if (el) return el;
     if (!document.getElementById('ews-shopfeed-css')) {
       var l = document.createElement('link');
-      l.id = 'ews-shopfeed-css'; l.rel = 'stylesheet'; l.href = '/css/shop-feed.css?v=6c10f861bd';
+      l.id = 'ews-shopfeed-css'; l.rel = 'stylesheet'; l.href = '/css/shop-feed.css?v=ec019fc30b';
       document.head.appendChild(l);
     }
     el = document.createElement('a');
@@ -94,7 +94,7 @@
     }, SHOW_MS);
   }
 
-  /* ── 🔥 Huyền thoại: Thập Vĩ bought / its owner logged in ──────── */
+  /* ── 🔥 Huyền thoại: Thập Vĩ / a Susano bought, or its owner logged in ── */
   var REDUCED = false;
   try { REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var legendQueue = [];
@@ -106,8 +106,31 @@
     + ' fill="#7a5f5a" stroke="#4e3a37" stroke-width="1.6" stroke-linejoin="round"/>'
     + '<path d="M58 13 C45 10 32 10 22 13" stroke="#ff9a3c" stroke-width="2" fill="none" stroke-linecap="round" opacity=".75"/></svg>';
 
+  // Susano colours/names come from pets.js (Pets.theme); null for Thập Vĩ.
+  function suTheme(id) {
+    try { return (window.Pets && window.Pets.theme && window.Pets.theme[id]) || null; } catch (e) { return null; }
+  }
+  // A spectral flame blade in the Susano's colour, trailing behind as it laps.
+  function suTail(th) {
+    return '<svg viewBox="0 0 60 30" aria-hidden="true"><path d="M60 15 C46 3 30 1 13 7 C19 9 21 11.5 19 13.5 C10 12.5 4 14 0 15'
+      + ' C4 16 10 17.5 19 16.5 C21 18.5 19 21 13 23 C30 29 46 27 60 15 Z" fill="rgb(' + th.rgb + ')" fill-opacity=".72"'
+      + ' stroke="rgb(' + th.lrgb + ')" stroke-width="1.6" stroke-linejoin="round"/>'
+      + '<path d="M58 15 C44 12 30 12 20 15" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".7"/></svg>';
+  }
+
   function legendText(a) {
-    var pet = '<b>' + esc(PET_NAMES[a.petId] || 'Thập Vĩ') + '</b>';
+    var th = suTheme(a.petId);
+    var pet = '<b>' + esc(th ? th.name : (PET_NAMES[a.petId] || 'Thập Vĩ')) + '</b>';
+    if (th) {
+      if (a.type === 'login') {
+        return a.self
+          ? { title: 'Chào mừng chủ nhân ' + pet + ' trở lại!', sub: 'Susano đang hộ thể cho bạn ⚔️' }
+          : { title: 'Chủ nhân ' + pet + ' <b>' + esc(a.name) + '</b> vừa đăng nhập!', sub: 'Hào quang Susano đang bao trùm toàn hệ thống ⚔️' };
+      }
+      return a.self
+        ? { title: pet + ' đã thức tỉnh cùng bạn!', sub: 'Cả hệ thống vừa nhận được thông báo ⚔️' }
+        : { title: '<b>' + esc(a.name) + '</b> vừa thức tỉnh ' + pet + '!', sub: 'Chiến thần khổng lồ đã xuất hiện trên toàn hệ thống ⚔️' };
+    }
     if (a.type === 'login') {
       return a.self
         ? { title: 'Chào mừng chủ nhân ' + pet + ' trở lại!', sub: 'Mười đuôi lửa đang chào đón bạn 🔥' }
@@ -167,12 +190,17 @@
     legendBusy = true;
     ensureEl();
     var txt = legendText(a);
+    var th = suTheme(a.petId);
     var fx = document.createElement('div');
-    fx.className = 'ews-legend';
+    fx.className = 'ews-legend' + (th ? ' is-su' : '');
     fx.setAttribute('aria-hidden', 'true');
     fx.innerHTML = '<div class="ews-legend-glow"></div>';
     var banner = document.createElement('div');
-    banner.className = 'ews-legend-banner';
+    banner.className = 'ews-legend-banner' + (th ? ' is-su' : '');
+    if (th) {
+      fx.style.setProperty('--lg', th.rgb); fx.style.setProperty('--ll', th.lrgb);
+      banner.style.setProperty('--lg', th.rgb); banner.style.setProperty('--ll', th.lrgb);
+    }
     banner.setAttribute('role', 'status');
     banner.innerHTML = '<span class="ews-legend-pet">' + (window.Pets ? window.Pets.svg(a.petId || 'vi10') : '') + '</span>'
       + '<span class="ews-legend-text"><span class="ews-legend-title">🔥 ' + txt.title + '</span><small>' + txt.sub + '</small></span>';
@@ -185,7 +213,7 @@
       for (var i = 0; i < 10; i++) {
         var t = document.createElement('div');
         t.className = 'ews-legend-tail';
-        t.innerHTML = '<div class="ews-legend-tail-in" style="animation-delay:-' + (i * 0.07).toFixed(2) + 's">' + FX_TAIL + '</div>';
+        t.innerHTML = '<div class="ews-legend-tail-in" style="animation-delay:-' + (i * 0.07).toFixed(2) + 's">' + (th ? suTail(th) : FX_TAIL) + '</div>';
         fx.appendChild(t);
         tails.push(t);
       }

@@ -116,8 +116,9 @@
     }
 
     function renderPets() {
-        renderPetGrid('shop-pets', state.pets.filter(function (p) { return p.tier !== 'vi'; }));
+        renderPetGrid('shop-pets', state.pets.filter(function (p) { return !p.tier; }));
         renderPetGrid('shop-beasts', state.pets.filter(function (p) { return p.tier === 'vi'; }));
+        renderPetGrid('shop-susano', state.pets.filter(function (p) { return p.tier === 'susano'; }));
     }
 
     function renderPetGrid(id, pets) {
@@ -135,7 +136,7 @@
                         : active ? '<span class="shop-walking">✓ Đang đi dạo</span>' : '')
                     + '<a class="btn btn-ghost btn-sm" href="' + KHO + '">🎒 Trong kho</a>';
             }
-            return '<article class="shop-card shop-pet' + (p.tier === 'vi' ? ' shop-pet--vi' : '') + (p.legendary ? ' shop-pet--legend' : '') + (active ? ' is-active' : '') + (p.owned ? ' is-owned' : '') + '">'
+            return '<article class="shop-card shop-pet' + (p.tier ? ' shop-pet--' + p.tier : '') + (p.legendary ? ' shop-pet--legend' : '') + (active ? ' is-active' : '') + (p.owned ? ' is-owned' : '') + '">'
                 + (p.tails ? '<span class="shop-tails" title="' + p.tails + ' đuôi">' + p.tails + ' đuôi</span>' : '')
                 + '<div class="shop-pet-stage"><div class="ews-pet is-walking shop-pet-preview">' + (window.Pets ? window.Pets.svg(p.id) : '') + '</div></div>'
                 + '<h3>' + escHtml(p.name) + (p.legendary ? ' <span class="shop-legend-tag">Huyền thoại</span>' : '') + (p.owned ? ' <span class="shop-tag">Của bạn</span>' : '') + '</h3>'
@@ -268,7 +269,7 @@
             render();
         }).catch(function (err) {
             if (window.console) console.warn('[shop] load failed', err);
-            ['shop-items', 'shop-pets', 'shop-beasts'].forEach(function (id) {
+            ['shop-items', 'shop-pets', 'shop-beasts', 'shop-susano'].forEach(function (id) {
                 var el = document.getElementById(id);
                 el.removeAttribute('aria-busy');
                 el.innerHTML = '<div class="shop-empty">Không tải được cửa hàng. <button type="button" class="btn btn-ghost btn-sm" onclick="location.reload()">Thử lại</button></div>';

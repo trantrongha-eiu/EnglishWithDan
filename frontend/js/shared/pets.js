@@ -74,7 +74,20 @@
   // Thập Vĩ's Susanoo-style aura, drawn behind it: two flickering purple
   // flame shells wrapping the beast + lightning bolts that flash in turn
   // (pets.css .pt-aura-*, .pt-bolt).
+  // Shared by the Susano (aura() below) with their own colours.
   function vi10Aura() {
+    return aura({
+      glow: '<ellipse cx="32" cy="38" rx="25" ry="24" fill="#c084fc" fill-opacity=".22"/>',
+      stroke: '#d8b4fe', bolt: '#a855f7', core: '#faf5ff',
+      shells: [['pt-aura-a', 38, 29, 9, 6, '#a855f7', '.26'], ['pt-aura-b', 31, 24.5, 11, 4, '#7e22ce', '.3']],
+      bolts: [[150, 24, 45, 0, 1.5], [62, 26, 46, .5, 1.8], [105, 28, 47, 1.1, 1.6],
+        [18, 24, 44, .8, 1.4], [205, 22, 40, 1.3, 1.9], [-28, 22, 40, .25, 1.7]],
+    });
+  }
+  // p: glow (svg string), stroke, bolt, core colours; shells [cls, rOut,
+  // rIn, tongues, lean, fill, alpha]; bolts [deg, r0, r1, delay, dur];
+  // embers [x, y, r, delay] — sparks rising off the aura (pets.css .pt-ember).
+  function aura(p) {
     var cx = 32, cy = 37;
     function pt(deg, r, up) {
       var rad = deg * Math.PI / 180;
@@ -92,7 +105,7 @@
       }
       d += ' Q' + cx + ' ' + (cy + rIn * 1.05).toFixed(1) + ' ' + pt(a0, rIn) + ' Z';
       return '<path class="pt-aura-shell ' + cls + '" d="' + d + '" fill="' + fill + '" fill-opacity="' + alpha
-        + '" stroke="#d8b4fe" stroke-opacity=".75" stroke-width=".7" stroke-linejoin="round"/>';
+        + '" stroke="' + p.stroke + '" stroke-opacity=".75" stroke-width=".7" stroke-linejoin="round"/>';
     }
     // A zigzag bolt shooting outward at `deg` from radius r0 to r1.
     function bolt(deg, r0, r1, delay, dur) {
@@ -103,17 +116,139 @@
       }
       pts = pts.join(' ');
       return '<g class="pt-bolt" style="animation-delay:' + delay + 's;animation-duration:' + dur + 's">'
-        + '<polyline points="' + pts + '" fill="none" stroke="#a855f7" stroke-width="3.2" stroke-opacity=".75" stroke-linecap="round" stroke-linejoin="round"/>'
-        + '<polyline points="' + pts + '" fill="none" stroke="#faf5ff" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>'
+        + '<polyline points="' + pts + '" fill="none" stroke="' + p.bolt + '" stroke-width="3.2" stroke-opacity=".75" stroke-linecap="round" stroke-linejoin="round"/>'
+        + '<polyline points="' + pts + '" fill="none" stroke="' + p.core + '" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>'
         + '</g>';
     }
-    return '<g class="pt-aura">'
-      + '<ellipse cx="32" cy="38" rx="25" ry="24" fill="#c084fc" fill-opacity=".22"/>'
-      + shell('pt-aura-a', 38, 29, 9, 6, '#a855f7', '.26')
-      + shell('pt-aura-b', 31, 24.5, 11, 4, '#7e22ce', '.3')
-      + bolt(150, 24, 45, 0, 1.5) + bolt(62, 26, 46, .5, 1.8) + bolt(105, 28, 47, 1.1, 1.6)
-      + bolt(18, 24, 44, .8, 1.4) + bolt(205, 22, 40, 1.3, 1.9) + bolt(-28, 22, 40, .25, 1.7)
+    return '<g class="pt-aura">' + p.glow
+      + p.shells.map(function (s) { return shell.apply(null, s); }).join('')
+      + (p.bolts || []).map(function (b) { return bolt.apply(null, b); }).join('')
+      + (p.embers || []).map(function (e) {
+        return '<circle class="pt-ember" cx="' + e[0] + '" cy="' + e[1] + '" r="' + e[2] + '" fill="' + p.core
+          + '" style="animation-delay:' + e[3] + 's"/>';
+      }).join('')
       + '</g>';
+  }
+
+  /* ── Susano (huyền thoại, 310–360 🔥) ──────────────────────────────
+     A translucent flame giant — horned helmet, glowing eyes, armoured
+     ribcage, flame skirt — with its owner's dark silhouette standing
+     inside, wrapped in a three-layer aura of its colour (stronger than
+     Thập Vĩ's two). Each one: c main, l light, d dark, k bolt core,
+     rgb/lrgb (CSS glow), horn style, weapon, back piece. */
+  var SU = {
+    su1: { name: 'Susano Huyết Hỏa', c: '#ef4444', l: '#fecaca', d: '#7f1d1d', k: '#fff1f2',
+      rgb: '239,68,68', lrgb: '254,202,202', horn: 'tengu', hand: 'sword', off: 'mirror' },
+    su2: { name: 'Susano Lục Ngọc', c: '#22c55e', l: '#bbf7d0', d: '#14532d', k: '#f0fdf4',
+      rgb: '34,197,94', lrgb: '187,247,208', horn: 'crest', beads: true, ring: true },
+    su3: { name: 'Susano Tử Lôi', c: '#a855f7', l: '#e9d5ff', d: '#581c87', k: '#faf5ff',
+      rgb: '168,85,247', lrgb: '233,213,255', horn: 'horns', hand: 'bow', bolts: true },
+    su4: { name: 'Susano Thiên Dực', c: '#3b82f6', l: '#bfdbfe', d: '#1e3a8a', k: '#eff6ff',
+      rgb: '59,130,246', lrgb: '191,219,254', horn: 'perfect', hand: 'sword', back: 'wings', bolts: true },
+    su5: { name: 'Susano Huyết Nguyệt', c: '#d946ef', l: '#f5d0fe', d: '#701a75', k: '#fdf4ff',
+      rgb: '217,70,239', lrgb: '245,208,254', horn: 'flame', back: 'moon', sash: true, bolts: true, dark: true },
+  };
+
+  var SU_HORN = {
+    tengu: 'M30.5 14 C31 8 35 3.5 40.5 1.5 C37.5 5.5 35 10 33.6 14.6 Z',
+    crest: 'M26 15.5 L23.5 8.5 L28.4 13 L29.8 6 L32 11.5 L34.2 6 L35.6 13 L40.5 8.5 L38 15.5 Z',
+    horns: 'M27 15 C24 11 23 7 24.5 3.5 C26 8 28 11 30 13.5 Z M37 15 C40 11 41 7 39.5 3.5 C38 8 36 11 34 13.5 Z',
+    perfect: 'M30.6 14 L32 0.5 L33.4 14 Z M26 16 C22 13 20.5 9 21 6 C23.5 9.5 25.5 11.5 28 13 Z M38 16 C42 13 43.5 9 43 6 C40.5 9.5 38.5 11.5 36 13 Z',
+    flame: 'M29.5 14.5 C28 10 30.5 7 32.6 0.5 C33.4 5.5 36.6 9 34.6 14.5 Z M25.5 17 C23 14 23.5 10 25.5 7.5 C25.6 11 27.2 12.6 28.6 13.8 Z M38.5 17 C41 14 40.5 10 38.5 7.5 C38.4 11 36.8 12.6 35.4 13.8 Z',
+  };
+
+  function susanoArt(o) {
+    var c = o.c, l = o.l, d = o.d;
+    var edge = ' stroke="' + l + '" stroke-width=".8" stroke-linejoin="round" stroke-linecap="round"';
+    var out = '';
+    var embers = [[14, 52, .9, 0], [22, 57, .7, .6], [29, 55, 1, 1.2], [36, 58, .8, .3], [43, 54, 1, .9],
+      [50, 56, .7, 1.5], [10, 44, .8, .45], [54, 46, .9, 1.05], [18, 40, .6, 1.35], [47, 40, .6, .15]];
+    var bolts = o.bolts ? [[155, 27, 46, 0, 1.4], [60, 28, 47, .45, 1.7], [112, 30, 48, 1, 1.5],
+      [20, 26, 45, .7, 1.3], [205, 25, 42, 1.2, 1.8], [-25, 25, 42, .2, 1.6], [85, 30, 49, .9, 1.9]] : [];
+    out += aura({
+      glow: '<ellipse cx="32" cy="36" rx="28" ry="28" fill="' + c + '" fill-opacity=".2"/>',
+      stroke: l, bolt: o.dark ? '#18181b' : c, core: o.dark ? '#f87171' : o.k,
+      shells: [['pt-aura-a', 41, 31, 11, 7, c, '.24'], ['pt-aura-b', 34, 26.5, 13, 5, d, '.3'], ['pt-aura-c', 28, 22, 9, 4, l, '.16']],
+      bolts: bolts, embers: embers,
+    });
+    // Behind the giant: wings or the blood moon.
+    if (o.back === 'wings') {
+      out += '<g class="pt-su-wings">'
+        + '<path d="M18 31 C8 24 0 15 -1.5 3 C3.5 9.5 8 11.5 12.5 12.5 C8.5 15.5 6.5 19 6.5 22.5 C10.5 22.5 13.5 24.5 16.5 27 Z"'
+        + ' fill="' + l + '" fill-opacity=".55" stroke="' + o.k + '" stroke-width="1.1" stroke-linejoin="round"/>'
+        + '<path d="M46 31 C56 24 64 15 65.5 3 C60.5 9.5 56 11.5 51.5 12.5 C55.5 15.5 57.5 19 57.5 22.5 C53.5 22.5 50.5 24.5 47.5 27 Z"'
+        + ' fill="' + l + '" fill-opacity=".55" stroke="' + o.k + '" stroke-width="1.1" stroke-linejoin="round"/>'
+        + '<path d="M15 26 L4 10 M13 21 L6 15 M49 26 L60 10 M51 21 L58 15" stroke="' + c + '" stroke-width=".9" stroke-opacity=".9"/>'
+        + '</g>';
+    } else if (o.back === 'moon') {
+      var tm = [0, 120, 240].map(function (deg) {
+        var r = deg * Math.PI / 180;
+        return '<circle cx="' + (54 + 4.2 * Math.cos(r)).toFixed(2) + '" cy="' + (9 + 4.2 * Math.sin(r)).toFixed(2) + '" r=".9" fill="#450a0a"/>';
+      }).join('');
+      out += '<g class="pt-su-moon"><circle cx="54" cy="9" r="8.5" fill="#dc2626" stroke="#fca5a5" stroke-width=".6"/>'
+        + '<circle cx="54" cy="9" r="4.2" fill="none" stroke="#450a0a" stroke-width=".5"/>'
+        + '<circle cx="54" cy="9" r="6.5" fill="none" stroke="#450a0a" stroke-width=".4" stroke-opacity=".6"/>'
+        + '<circle cx="54" cy="9" r="1.2" fill="#450a0a"/>' + tm + '</g>';
+    }
+    if (o.ring) {
+      out += '<ellipse class="pt-su-ring" cx="32" cy="61" rx="24" ry="3.4" fill="' + c + '" fill-opacity=".3" stroke="' + l + '" stroke-width=".8"/>';
+    }
+    out += '<g class="pt-body pt-su-float">';
+    // Flame skirt + the owner's silhouette inside it.
+    out += '<path d="M17 44 C16 50 15 54 12.5 60 C15.5 57 17 58 18 61.5 C20 57.5 22 58 23 62.5 C25 58.5 27 59 28.5 63 C30 59 31 59.5 32 63.8'
+      + ' C33 59.5 34 59 35.5 63 C37 59 39 58.5 41 62.5 C42 58 44 57.5 46 61.5 C47 58 48.5 57 51.5 60 C49 54 48 50 47 44 Z"'
+      + ' fill="' + c + '" fill-opacity=".45"' + edge + '/>';
+    // Arms (behind the chest), shoulder plates, hands.
+    out += '<path d="M14.5 31.5 C10 35.5 8 40 8.6 45.5 M49.5 31.5 C54 35.5 56 40 55.4 45.5" stroke="' + c + '" stroke-width="5.4"'
+      + ' stroke-opacity=".7" fill="none" stroke-linecap="round"/>'
+      + '<path d="M14.5 31.5 C10 35.5 8 40 8.6 45.5 M49.5 31.5 C54 35.5 56 40 55.4 45.5" stroke="' + l + '" stroke-width=".7"'
+      + ' fill="none" stroke-linecap="round" stroke-dasharray="2.2 1.6"/>'
+      + '<circle cx="8.6" cy="46.5" r="2.9" fill="' + c + '" fill-opacity=".75"' + edge + '/>'
+      + '<circle cx="55.4" cy="46.5" r="2.9" fill="' + c + '" fill-opacity=".75"' + edge + '/>';
+    // Chest: armoured ribcage.
+    out += '<path d="M18 30 C24 26 40 26 46 30 L44.5 45 C38 48.5 26 48.5 19.5 45 Z" fill="' + c + '" fill-opacity=".55"' + edge + '/>'
+      + (o.sash
+        ? '<path d="M20 31 L44 44 M19.8 41 L44.3 34" stroke="' + l + '" stroke-width="1.4" stroke-opacity=".85" fill="none"/>'
+        : '<path d="M22 33.5 Q32 37.5 42 33.5 M21.5 37.5 Q32 41.5 42.5 37.5 M21 41.5 Q32 45 43 41.5 M32 28.5 V46.5"'
+          + ' stroke="' + l + '" stroke-width=".7" stroke-opacity=".9" fill="none"/>')
+      + '<path d="M11.5 31 C11.5 26 18 23.5 22.5 27 L20.5 33.5 C17 33.5 14 33.5 11.5 31 Z M52.5 31 C52.5 26 46 23.5 41.5 27 L43.5 33.5 C47 33.5 50 33.5 52.5 31 Z"'
+      + ' fill="' + d + '" fill-opacity=".55"' + edge + '/>';
+    if (o.beads) {
+      out += [22, 27, 32, 37, 42].map(function (x, i) {
+        var y = 31 + Math.abs(i - 2) * -0.9 + 2;
+        return '<circle cx="' + x + '" cy="' + y.toFixed(1) + '" r="1.5" fill="' + l + '" stroke="' + d + '" stroke-width=".5"/>';
+      }).join('');
+    }
+    out += '<g fill="#0f172a" fill-opacity=".82"><circle cx="32" cy="44.2" r="2.1"/>'
+      + '<path d="M29 55 C28.8 49.5 30 46.6 32 46.6 C34 46.6 35.2 49.5 35 55 Z"/></g>';
+    // Helmet head, horn, glowing eyes, fanged jaw.
+    out += '<path d="' + SU_HORN[o.horn] + '" fill="' + l + '" fill-opacity=".8" stroke="' + c + '" stroke-width=".6" stroke-linejoin="round"/>'
+      + '<path d="M25 25.5 C23.5 18 26 12.5 32 12.5 C38 12.5 40.5 18 39 25.5 C36 28.5 28 28.5 25 25.5 Z" fill="' + c + '" fill-opacity=".72"' + edge + '/>'
+      + '<path d="M25.6 18.4 L30 20 M38.4 18.4 L34 20" stroke="' + d + '" stroke-width="1.1" stroke-linecap="round"/>'
+      + '<g class="pt-eye"><circle cx="29" cy="20.8" r="2.4" fill="' + l + '" fill-opacity=".55"/><circle cx="35" cy="20.8" r="2.4" fill="' + l + '" fill-opacity=".55"/>'
+      + '<ellipse cx="29" cy="20.8" rx="1.6" ry="1.05" fill="#fff"/><ellipse cx="35" cy="20.8" rx="1.6" ry="1.05" fill="#fff"/></g>'
+      + '<path d="M27.4 24.4 Q32 26.8 36.6 24.4" stroke="' + d + '" stroke-width=".9" fill="none" stroke-linecap="round"/>'
+      + '<path d="M29 24.7v1.2M31 25.3v1.3M33 25.3v1.3M35 24.7v1.2" stroke="' + l + '" stroke-width=".7" stroke-linecap="round"/>';
+    // Weapon in the front hand (+ off-hand piece).
+    if (o.hand === 'sword') {
+      out += '<g class="pt-su-weapon"><path d="M54.3 46 L61.6 15.5 L63.2 16.2 L56.6 46.8 Z" fill="' + o.k + '" fill-opacity=".9" stroke="' + c + '" stroke-width=".6"/>'
+        + '<path d="M51.8 44.6 L59.4 47.4" stroke="' + l + '" stroke-width="1.6" stroke-linecap="round"/></g>';
+    } else if (o.hand === 'bow') {
+      out += '<g class="pt-su-weapon"><path d="M56.5 26 Q68 43 56.5 60" stroke="' + l + '" stroke-width="1.6" fill="none" stroke-linecap="round"/>'
+        + '<path d="M56.5 26 L56.5 60" stroke="' + l + '" stroke-width=".5" stroke-opacity=".8"/>'
+        + '<polyline class="pt-su-arrow" points="47,43 51,41.6 54,44.2 58,42.4 61,44.6 66.5,43" fill="none" stroke="' + o.k + '" stroke-width="1.3"'
+        + ' stroke-linejoin="round" stroke-linecap="round"/></g>';
+    }
+    if (o.off === 'mirror') {
+      out += '<g class="pt-su-weapon"><circle cx="6.5" cy="44" r="6.4" fill="' + c + '" fill-opacity=".35" stroke="' + l + '" stroke-width="1.2"/>'
+        + '<circle cx="6.5" cy="44" r="3.6" fill="none" stroke="' + l + '" stroke-width=".6" stroke-opacity=".8"/>'
+        + '<circle cx="6.5" cy="44" r="1.2" fill="' + o.k + '"/></g>';
+    }
+    if (o.dark) { // black lightning crackling round the hands
+      out += '<polyline class="pt-bolt" style="animation-duration:1.3s" points="4,41 7,44 5,47 9,50 7,53" fill="none" stroke="#18181b" stroke-width="1.4" stroke-linejoin="round"/>'
+        + '<polyline class="pt-bolt" style="animation-duration:1.6s;animation-delay:.6s" points="60,41 57,44 59,47 55,50 57,53" fill="none" stroke="#18181b" stroke-width="1.4" stroke-linejoin="round"/>';
+    }
+    return out + '</g>';
   }
 
   var ART = {
@@ -407,10 +542,12 @@
         + '</g>';
     },
   };
+  Object.keys(SU).forEach(function (id) { ART[id] = function () { return susanoArt(SU[id]); }; });
 
   var NAMES = { meo: 'Mèo Quýt', shiba: 'Shiba Lì Xì', cut: 'Cánh Cụt Bông', cao: 'Cáo Lửa', rong: 'Rồng Con',
     vi1: 'Lửng Cát Nhất Vĩ', vi2: 'Mèo Lửa Nhị Vĩ', vi3: 'Rùa Tam Vĩ', vi4: 'Khỉ Tứ Vĩ', vi5: 'Ngựa Ngũ Vĩ',
     vi6: 'Sên Lục Vĩ', vi7: 'Bọ Thất Vĩ', vi8: 'Bò Bát Vĩ', vi9: 'Hồ Ly Cửu Vĩ', vi10: 'Thập Vĩ' };
+  Object.keys(SU).forEach(function (id) { NAMES[id] = SU[id].name; });
   var LINES = {
     meo: ['Meo~ học xong bài này rồi ngủ trưa nha 😽', 'Sổ từ vựng ấm ghê, cho mèo nằm xíu…', 'Meo! Hôm nay giữ chuỗi chưa đó?'],
     shiba: ['Gâu! Cậu học giỏi quá trời 🐕', 'Vẫy đuôi cổ vũ nè! Thêm 1 bài nữa nha!', 'Gâu gâu — đi dạo xong là học tiếp nhé!'],
@@ -427,14 +564,20 @@
     vi8: ['Mooo~ tám tua chép bài giúp cậu 🐙', 'Sừng cong cong, quyết tâm thẳng tắp!', 'Bát vĩ đây — vào top chưa?'],
     vi9: ['Chín đuôi vàng óng — linh thú mạnh nhất đây ✨', 'Hồ ly chín đuôi phù hộ cậu đạt band cao!', 'Đuôi nhiều như số 🔥 của cậu vậy!'],
     vi10: ['Mười đuôi mà vẫn thích chơi đuổi bắt nè 🔥', 'Thập Vĩ đây! Kết bạn với tớ nha~', 'To con vậy thôi chứ tớ hiền lắm, học tiếp đi!'],
+    su1: ['Kiếm lửa đỏ đã rút — đề khó cứ để ta chém ⚔️', 'Khiên gương phản lại mọi lỗi sai!', 'Susano Huyết Hỏa hộ thể, cứ học tiếp đi!'],
+    su2: ['Vòng lửa lục ngọc bảo vệ chuỗi 🔥 của cậu 💚', 'Chuỗi ngọc này đếm số bài cậu đã làm đó!', 'Bình tĩnh như lửa xanh, làm bài thật chắc nha!'],
+    su3: ['Một mũi tên sét — trúng ngay đáp án ⚡', 'Sét tím đang nạp năng lượng cho band 8!', 'Ngắm kỹ câu hỏi rồi hẵng bắn nha!'],
+    su4: ['Đôi cánh này đưa cậu bay thẳng lên band cao 🪽', 'Susano hoàn thiện — học cũng phải hoàn thiện!', 'Kiếm trời đã sẵn sàng, cậu sẵn sàng chưa?'],
+    su5: ['Trăng máu đã lên — giờ học bắt đầu 🌕', 'Sét đen chỉ đánh những ai bỏ học thôi 😈', 'Susano mạnh nhất cửa hàng đứng sau lưng cậu!'],
   };
 
   // Huyền thoại pets are drawn bigger (badge: pets.css .pet-legend; walker: px).
-  var BIG = { vi10: 80 };
+  var BIG = { vi10: 80, su1: 86, su2: 86, su3: 86, su4: 88, su5: 90 };
 
   function svg(id, cls) {
     if (!ART[id]) return '';
-    return '<svg class="pt-svg pt-' + id + (cls ? ' ' + cls : '') + '" viewBox="-2 0 70 64" aria-hidden="true" focusable="false">' + ART[id]() + '</svg>';
+    var su = SU[id] ? ' pt-su" style="--su:' + SU[id].rgb + ';--sul:' + SU[id].lrgb : '';
+    return '<svg class="pt-svg pt-' + id + (cls ? ' ' + cls : '') + su + '" viewBox="-2 0 70 64" aria-hidden="true" focusable="false">' + ART[id]() + '</svg>';
   }
   function badge(id) {
     if (!ART[id]) return '';
@@ -447,7 +590,7 @@
   function ensureCss() {
     if (document.getElementById('ews-pets-css')) return;
     var l = document.createElement('link');
-    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=7cf296ea6b';
+    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=6277dc6f66';
     document.head.appendChild(l);
   }
   try { ensureCss(); } catch (e) {}
@@ -465,7 +608,7 @@
   // count too.
   var NO_PET_PATHS = /(^|\/)(reading|listening|dictation)(\.html)?(\/|$)/;
   var SPEED = { meo: 42, shiba: 55, cut: 28, cao: 62, rong: 50,
-    vi1: 40, vi2: 48, vi3: 24, vi4: 58, vi5: 64, vi6: 18, vi7: 52, vi8: 44, vi9: 66, vi10: 38 };
+    vi1: 40, vi2: 48, vi3: 24, vi4: 58, vi5: 64, vi6: 18, vi7: 52, vi8: 44, vi9: 66, vi10: 38, su1: 34, su2: 34, su3: 36, su4: 40, su5: 32 };
 
   function lsGet(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
@@ -648,13 +791,23 @@
   window.addEventListener('resize', function () { if (walker) walker.place(); });
 
   /* ══════════════════════════════════════════════════════════════════
-     STORM — Thập Vĩ's entrance: every time its owner opens a page, a
-     ~2.6s full-screen purple lightning aura (edge glow, a flash and
-     jagged bolts striking in from the screen edges). Click-through.
+     STORM — Thập Vĩ's and the Susano's entrance: every time the owner
+     opens a page, a ~2.6s full-screen lightning aura in the pet's colour
+     (edge glow, a flash and jagged bolts striking in from the screen
+     edges); a Susano also rises as a giant from the bottom (~3.4s).
+     Click-through.
      Reduced motion: just the glow fading in and out.
      ══════════════════════════════════════════════════════════════════ */
   var STORM_MS = 2600;
-  var STORM_PETS = { vi10: true };
+  // Storm palette per pet: dark / mid / core bolt colours + glow "r,g,b"
+  // (pets.css .ews-storm --sg/--sl). Susano also raise a giant copy of
+  // themselves from the bottom of the screen (.ews-storm-giant).
+  var STORM_PETS = { vi10: { dark: '#7e22ce', mid: '#a855f7', core: '#faf5ff', glow: '147,51,234', light: '216,180,254' } };
+  Object.keys(SU).forEach(function (id) {
+    var o = SU[id];
+    STORM_PETS[id] = { dark: o.dark ? '#18181b' : o.d, mid: o.c, core: o.dark ? '#fca5a5' : o.k, glow: o.rgb, light: o.lrgb, giant: true };
+  });
+  var STORM_GIANT_MS = 3400;
 
   // Jagged line from a to b by midpoint displacement → array of [x, y].
   function zigzag(a, b, rough, depth) {
@@ -667,7 +820,7 @@
   function ptsStr(pts) { return pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' '); }
 
   // One bolt (plus a side branch or two) striking in from a screen edge.
-  function stormBolt(w, h, i, n) {
+  function stormBolt(w, h, i, n, pal) {
     var side = i % 4, f = (i + 0.3 + Math.random() * 0.4) / n;
     var start = side === 0 ? [w * f, -10] : side === 1 ? [w + 10, h * f]
       : side === 2 ? [w * (1 - f), h + 10] : [-10, h * (1 - f)];
@@ -685,34 +838,39 @@
     var delay = (0.15 + (i / n) * 1.5 + Math.random() * 0.2).toFixed(2);
     return '<g class="ews-storm-bolt" style="animation-delay:' + delay + 's">' + lines.map(function (pts, j) {
       var p = ptsStr(pts), s = j ? 0.55 : 1;
-      return '<polyline points="' + p + '" stroke="#7e22ce" stroke-width="' + (10 * s) + '" stroke-opacity=".45"/>'
-        + '<polyline points="' + p + '" stroke="#a855f7" stroke-width="' + (4.5 * s) + '"/>'
-        + '<polyline points="' + p + '" stroke="#faf5ff" stroke-width="' + (1.6 * s) + '"/>';
+      return '<polyline points="' + p + '" stroke="' + pal.dark + '" stroke-width="' + (10 * s) + '" stroke-opacity=".45"/>'
+        + '<polyline points="' + p + '" stroke="' + pal.mid + '" stroke-width="' + (4.5 * s) + '"/>'
+        + '<polyline points="' + p + '" stroke="' + pal.core + '" stroke-width="' + (1.6 * s) + '"/>';
     }).join('') + '</g>';
   }
 
-  function storm() {
+  function storm(id) {
     try {
+      var pal = STORM_PETS[id] || STORM_PETS.vi10;
       if (examActive() || !document.body) return;
       var olds = document.querySelectorAll('.ews-storm, .ews-fx');
       for (var o = 0; o < olds.length; o++) olds[o].remove();
       var w = window.innerWidth || 800, h = window.innerHeight || 600;
       var fx = document.createElement('div');
-      fx.className = 'ews-storm';
+      fx.className = 'ews-storm' + (pal.giant ? ' ews-storm--su' : '');
       fx.setAttribute('aria-hidden', 'true');
+      fx.style.setProperty('--sg', pal.glow);
+      fx.style.setProperty('--sl', pal.light);
       var html = '<div class="ews-storm-glow"></div>';
       if (!REDUCED) {
-        var n = w < 600 ? 6 : 9, bolts = '';
-        for (var i = 0; i < n; i++) bolts += stormBolt(w, h, i, n);
+        var n = w < 600 ? 7 : (pal.giant ? 12 : 9), bolts = '';
+        for (var i = 0; i < n; i++) bolts += stormBolt(w, h, i, n, pal);
+        if (pal.giant) html += '<div class="ews-storm-giant">' + svg(id) + '</div>';
         html += '<div class="ews-storm-flash"></div>'
           + '<svg class="ews-storm-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" fill="none"'
           + ' stroke-linecap="round" stroke-linejoin="round">' + bolts + '</svg>';
       }
       fx.innerHTML = html;
       document.body.appendChild(fx);
+      var ms = pal.giant ? STORM_GIANT_MS : STORM_MS;
       requestAnimationFrame(function () { fx.classList.add('is-in'); });
-      setTimeout(function () { fx.classList.remove('is-in'); }, STORM_MS);
-      setTimeout(function () { fx.remove(); }, STORM_MS + 600);
+      setTimeout(function () { fx.classList.remove('is-in'); }, ms);
+      setTimeout(function () { fx.remove(); }, ms + 600);
     } catch (e) {}
   }
 
@@ -835,7 +993,7 @@
     if (!id || !ART[id]) return;
     if (lsGet(REST_KEY) === todayStr()) return;
     walker = new Walker(id);
-    if (STORM_PETS[id]) storm();
+    if (STORM_PETS[id]) storm(id);
     else entrance(id);
   }
 
@@ -862,6 +1020,8 @@
     svg: svg,
     badge: badge,
     names: NAMES,
+    // Susano colours ("r,g,b") for shop-feed.js's huyền thoại banner.
+    theme: SU,
     // Called by the shop page right after the student picks/puts away a pet.
     setActive: function (id) {
       lsSet(CACHE_KEY, { id: id || '', t: Date.now() });

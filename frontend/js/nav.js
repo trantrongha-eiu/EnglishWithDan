@@ -387,7 +387,7 @@
   if (!document.getElementById('ews-pets-js')) {
     var petScript = document.createElement('script');
     petScript.id = 'ews-pets-js';
-    petScript.src = '/js/shared/pets.js?v=e4b6a9b241';
+    petScript.src = '/js/shared/pets.js?v=9e52c40736';
     document.body.appendChild(petScript);
   }
 
@@ -395,7 +395,7 @@
   if (!document.getElementById('ews-shopfeed-js')) {
     var feedScript = document.createElement('script');
     feedScript.id = 'ews-shopfeed-js';
-    feedScript.src = '/js/shared/shop-feed.js?v=7deb8bb104';
+    feedScript.src = '/js/shared/shop-feed.js?v=9fe4b2937f';
     document.body.appendChild(feedScript);
   }
 

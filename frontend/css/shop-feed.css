@@ -114,6 +114,24 @@
   from { opacity: 1; transform: translate(-50%, -50%) scale(.5); }
   to { opacity: 0; transform: translate(-50%, -140%) scale(1.25); }
 }
+/* Susano: the same show recoloured with the giant's aura (--lg main,
+   --ll light, "r,g,b"; set inline by shop-feed.js). */
+.ews-legend.is-su .ews-legend-glow {
+  box-shadow: inset 0 0 90px 24px rgba(var(--lg), .6), inset 0 0 22px 6px rgba(var(--ll), .8);
+}
+.ews-legend.is-su .ews-legend-tail-in { filter: drop-shadow(0 0 7px rgba(var(--lg), .95)); }
+.ews-legend.is-su .ews-legend-flame:not(.is-emoji) {
+  background: radial-gradient(circle at 50% 65%, #fff 0 16%, rgba(var(--ll), 1) 32%, rgba(var(--lg), 1) 58%, rgba(var(--lg), 0) 72%);
+}
+.ews-legend-banner.is-su {
+  background: linear-gradient(90deg, #0f0a1f, rgba(var(--lg), .9) 50%, #0f0a1f);
+  border-color: rgba(var(--ll), 1);
+  box-shadow: 0 10px 34px rgba(var(--lg), .5), 0 0 0 4px rgba(var(--lg), .22);
+}
+.ews-legend-banner.is-su .ews-legend-pet {
+  background: radial-gradient(circle at 50% 60%, #2e1a47, #0f0a1f); box-shadow: 0 0 16px rgba(var(--lg), .9);
+}
+.ews-legend-banner.is-su .ews-legend-title b { color: rgba(var(--ll), 1); }
 @media (max-width: 480px) {
   .ews-legend-banner { padding-right: 14px; gap: 10px; }
   .ews-legend-pet { width: 44px; height: 44px; }

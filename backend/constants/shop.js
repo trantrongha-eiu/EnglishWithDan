@@ -77,6 +77,15 @@ const PETS = [
     id: 'vi10', name: 'Thập Vĩ', price: 300, tier: 'vi', tails: 10, legendary: true,
     description: 'Quái thú mười đuôi khổng lồ, tuy to lớn nhưng lại rất ham chơi và thích kết bạn.',
   },
+  // Susano — spectral giant warriors wrapped in flame, each with its own
+  // colour and weapon (art: pets.js SU). All huyền thoại, priced 310 → 360.
+  ...[
+    ['su1', 'Susano Huyết Hỏa',  310, 'Chiến thần lửa đỏ cầm kiếm và khiên gương — hộ thể cho chủ nhân trước mọi đề khó.'],
+    ['su2', 'Susano Lục Ngọc',   320, 'Khổng lồ lửa xanh lục đeo chuỗi ngọc, bước tới đâu vòng lửa cháy tới đó.'],
+    ['su3', 'Susano Tử Lôi',     335, 'Susano tím giương cung bắn mũi tên sét, chớp giật quanh thân không ngừng.'],
+    ['su4', 'Susano Thiên Dực',  345, 'Susano hoàn thiện xanh lam với đôi cánh và thanh kiếm trời — bay thẳng lên band cao.'],
+    ['su5', 'Susano Huyết Nguyệt', 360, 'Susano hồng tím trỗi dậy dưới trăng máu, sét đen bao quanh — mạnh nhất cửa hàng.'],
+  ].map(([id, name, price, description]) => ({ id, name, price, description, tier: 'susano', legendary: true })),
 ];
 
 // Ids of the legendary linh thú (see ShopAnnouncement).
