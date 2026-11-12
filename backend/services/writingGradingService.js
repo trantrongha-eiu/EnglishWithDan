@@ -7,11 +7,23 @@
 
 const { checkEssay } = require('./geminiService');
 const WritingTask1 = require('../models/WritingTask1');
+const WritingAttempt = require('../models/WritingAttempt');
 
 // Teacher-entered exact figures for a Task 1 chart (WritingTask1.chartData).
 // Read live from the task, not from the attempt snapshot, so adding or
 // correcting the figures also fixes re-grades of older submissions. Falls
 // back to matching by image URL for attempts with no task1Id.
+// Stores an AI grade for one task. Moves gradingStatus forward only from
+// 'pending' — never back from 'confirmed': re-running "Chấm AI" on a
+// confirmed essay (to compare), or the auto-grade cron finishing a task
+// after the teacher confirmed mid-run, used to set 'ai_done' over it and
+// hide the student's official grade again.
+async function saveAiGrade(attemptId, taskNum, gradeResult) {
+  const field = taskNum === 1 ? 'aiGrading.task1' : 'aiGrading.task2';
+  await WritingAttempt.updateOne({ _id: attemptId }, { $set: { [field]: gradeResult, 'aiGrading.generatedAt': new Date() } });
+  await WritingAttempt.updateOne({ _id: attemptId, gradingStatus: 'pending' }, { $set: { gradingStatus: 'ai_done' } });
+}
+
 async function findTask1ChartData(attempt) {
   try {
     const snap = (attempt && attempt.task1Snapshot) || {};
@@ -317,4 +329,4 @@ CRITICAL RULES:
   return result;
 }
 
-module.exports = { gradeTaskWithAI, findTask1ChartData, normalizeFeedback, ERROR_CATEGORIES };
+module.exports = { gradeTaskWithAI, findTask1ChartData, saveAiGrade, normalizeFeedback, ERROR_CATEGORIES };

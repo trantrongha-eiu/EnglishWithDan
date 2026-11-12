@@ -264,6 +264,34 @@ describe('writingService.getAttempt', () => {
     const adminResult = await writingService.getAttempt(attempt._id, admin);
     expect(adminResult.status).toBe('ok');
   });
+
+  test('the owner gets no draft grading before the teacher confirms; staff still do', async () => {
+    const owner = await createStudent();
+    const teacher = await createTeacher();
+    const attempt = await WritingAttempt.create({
+      userId: owner._id, examName: 'X', gradingStatus: 'ai_done',
+      aiGrading: { task2: { bandScore: 6 } }, grading: { overallBand: 5.5 },
+    });
+
+    const mine = (await writingService.getAttempt(attempt._id, owner)).attempt;
+    expect(mine.aiGrading).toBeUndefined();
+    expect(mine.grading).toBeUndefined();
+    expect((await writingService.getAttempt(attempt._id, teacher)).attempt.aiGrading.task2.bandScore).toBe(6);
+
+    await WritingAttempt.updateOne({ _id: attempt._id }, { gradingStatus: 'confirmed' });
+    expect((await writingService.getAttempt(attempt._id, owner)).attempt.grading.overallBand).toBe(5.5);
+  });
+});
+
+describe('writingService.submitExam — status whitelist', () => {
+  test('a client-sent status other than timeout is stored as completed', async () => {
+    const student = await createStudent();
+    const exam = await createWritingExam();
+    const a = await writingService.submitExam(student, { examId: exam._id, task2Answer: 'x', status: 'cancelled' });
+    expect((await WritingAttempt.findById(a.attemptId).lean()).status).toBe('completed');
+    const b = await writingService.submitExam(student, { examId: exam._id, task2Answer: 'x', status: 'timeout' });
+    expect((await WritingAttempt.findById(b.attemptId).lean()).status).toBe('timeout');
+  });
 });
 
 describe('writingService.getDrafts / saveDraft / deleteDraft', () => {

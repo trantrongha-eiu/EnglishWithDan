@@ -13,7 +13,11 @@ const { createWritingAttempt } = require('../factories/contentFactory');
 const WritingAttempt = require('../../models/WritingAttempt');
 const writingGradingService = require('../../services/writingGradingService');
 
-jest.mock('../../services/writingGradingService');
+// Gemini calls are mocked; saveAiGrade (a plain DB write) stays real.
+jest.mock('../../services/writingGradingService', () => ({
+  ...jest.createMockFromModule('../../services/writingGradingService'),
+  saveAiGrade: jest.requireActual('../../services/writingGradingService').saveAiGrade,
+}));
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -85,6 +89,30 @@ describe('POST /api/admin/writing-attempts/:id/ai-grade (teacherOnly)', () => {
     const saved = await WritingAttempt.findById(attempt._id).lean();
     expect(saved.aiGrading.task1.bandScore).toBe(6.5);
     expect(saved.gradingStatus).toBe('ai_done');
+  });
+
+  test('re-running AI on a teacher-confirmed essay keeps it confirmed (only aiGrading changes)', async () => {
+    const teacher = await createTeacher();
+    const student = await createStudent();
+    const attempt = await createWritingAttempt({
+      userId: student._id,
+      extra: {
+        task2Snapshot: { prompt: 'Discuss both views' }, task2Answer: 'Some people think...', wordCount2: 260,
+        gradingStatus: 'confirmed', grading: { overallBand: 6.5, task2: { bandScore: 6.5 } },
+      },
+    });
+    writingGradingService.gradeTaskWithAI.mockResolvedValue({ bandScore: 7 });
+
+    const res = await request(app)
+      .post(`/api/admin/writing-attempts/${attempt._id}/ai-grade`)
+      .set('Authorization', `Bearer ${signTokenFor(teacher)}`)
+      .send({ taskNum: 2 });
+
+    expect(res.status).toBe(200);
+    const saved = await WritingAttempt.findById(attempt._id).lean();
+    expect(saved.gradingStatus).toBe('confirmed');
+    expect(saved.grading.overallBand).toBe(6.5);
+    expect(saved.aiGrading.task2.bandScore).toBe(7);
   });
 
   test('grades task 2: calls the service with task2 fields (no imageUrl) and saves aiGrading.task2', async () => {

@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const WritingAttempt = require('../models/WritingAttempt');
-const { gradeTaskWithAI, findTask1ChartData } = require('../services/writingGradingService');
+const { gradeTaskWithAI, findTask1ChartData, saveAiGrade } = require('../services/writingGradingService');
 const logger = require('../utils/logger');
 
 // Teachers previously had to click "Chấm bài bằng AI" by hand for every
@@ -49,7 +49,10 @@ async function runAutoGrade() {
     // Anything already 'confirmed' has a teacher-finalized grade and is
     // never touched again. 'pending' and 'ai_done' are the only states
     // where an ungraded task could still be sitting there.
-    const attempts = await WritingAttempt.find({ gradingStatus: { $in: ['pending', 'ai_done'] } })
+    // Real submissions only — a voided (disqualified) or still-open
+    // Simulation row isn't worth a Gemini call from the shared daily quota;
+    // a teacher can still grade one by hand with "Chấm AI".
+    const attempts = await WritingAttempt.find({ gradingStatus: { $in: ['pending', 'ai_done'] }, status: { $in: ['completed', 'timeout'] } })
       .select('task1Answer task2Answer wordCount1 wordCount2 task1Id task1Snapshot task2Snapshot aiGrading examName')
       .lean();
 
@@ -79,10 +82,9 @@ async function runAutoGrade() {
         const chartData = isTask1 ? await findTask1ChartData(attempt) : '';
         const gradeResult = await gradeTaskWithAI(taskNum, prompt, answer, wordCount, imageUrl, chartData);
 
-        const field = isTask1 ? 'aiGrading.task1' : 'aiGrading.task2';
-        await WritingAttempt.findByIdAndUpdate(attempt._id, {
-          $set: { [field]: gradeResult, 'aiGrading.generatedAt': new Date(), gradingStatus: 'ai_done' }
-        });
+        // Never moves a teacher-confirmed grade back to 'ai_done' (the
+        // teacher may confirm while this run is mid-way) — see saveAiGrade.
+        await saveAiGrade(attempt._id, taskNum, gradeResult);
         graded++;
         // An Entrance Test essay: pull the new band into the attempt so it
         // moves into the admin's "chờ duyệt" review queue right away.

@@ -100,6 +100,10 @@ async function submitExam(user, body) {
     // this, so the branch below is unreachable for them.
     attemptId: simulationAttemptId
   } = body; // wordCount1/2 from the client are ignored — recomputed below
+  // The client only ever ends an exam as 'completed' or 'timeout'. Anything
+  // else ('cancelled', 'in-progress' …) would hide a real essay from every
+  // history view (HISTORY_VISIBLE_STATUSES) or leave it looking unsubmitted.
+  const finalStatus = status === 'timeout' ? 'timeout' : 'completed';
   // The proctor just voided this attempt: save the essay written so far for
   // the teacher, but leave it 'disqualified' with no streak/badges. One time
   // only — see proctorPolicy.disqualifiedAnswerFilter. A Full Mock Test
@@ -134,7 +138,7 @@ async function submitExam(user, body) {
         submittedAt: new Date(),
         ...(disqualified
           ? { status: 'disqualified', 'proctor.answersSavedAt': new Date() }
-          : { status }),
+          : { status: finalStatus }),
       },
       { new: true }
     );
@@ -150,7 +154,7 @@ async function submitExam(user, body) {
       submittedAt: new Date(),
       ...(disqualified
         ? { status: 'disqualified', proctor: { answersSavedAt: new Date() } }
-        : { status }),
+        : { status: finalStatus }),
     });
     await attempt.save();
   }
@@ -410,6 +414,15 @@ async function getAttempt(attemptId, requestingUser) {
   const isOwner = attempt.userId.toString() === requestingUser._id.toString();
   const isAdmin = ['teacher', 'admin'].includes(requestingUser.role);
   if (!isOwner && !isAdmin) return { status: 'forbidden' };
+  // Before the teacher confirms, the band/feedback is a draft (AI's, or the
+  // teacher's half-finished edit) — the student page only ever renders
+  // grading once gradingStatus is 'confirmed', but the raw JSON still
+  // carried it, so the "official" score could be read off the Network tab
+  // before the teacher had checked it.
+  if (!isAdmin && attempt.gradingStatus !== 'confirmed') {
+    delete attempt.grading;
+    delete attempt.aiGrading;
+  }
   return { status: 'ok', attempt };
 }
 

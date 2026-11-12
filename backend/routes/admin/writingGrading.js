@@ -9,7 +9,7 @@ const rateLimit = require('express-rate-limit');
 const { ipKeyGenerator } = require('express-rate-limit');
 const auth    = require('../../middleware/auth');
 const { teacherOnly } = require('./_shared');
-const { gradeTaskWithAI, findTask1ChartData } = require('../../services/writingGradingService');
+const { gradeTaskWithAI, findTask1ChartData, saveAiGrade } = require('../../services/writingGradingService');
 
 const WritingAttempt = require('../../models/WritingAttempt');
 const User           = require('../../models/User');
@@ -59,10 +59,7 @@ router.post('/writing-attempts/:id/ai-grade', auth, teacherOnly, aiGradeLimiter,
     const chartData  = isTask1 ? await findTask1ChartData(attempt) : '';
     const gradeResult = await gradeTaskWithAI(taskNum, taskPrompt, taskAnswer, wordCount, imageUrl, chartData);
 
-    const field = isTask1 ? 'aiGrading.task1' : 'aiGrading.task2';
-    await WritingAttempt.findByIdAndUpdate(req.params.id, {
-      $set: { [field]: gradeResult, 'aiGrading.generatedAt': new Date(), gradingStatus: 'ai_done' }
-    });
+    await saveAiGrade(req.params.id, taskNum, gradeResult);
 
     res.json({ success: true, taskNum, result: gradeResult });
   } catch (err) {

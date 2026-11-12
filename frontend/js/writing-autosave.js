@@ -56,6 +56,13 @@ function loadFromStorage() {
       localStorage.removeItem(_AUTOSAVE_KEY);
       return null;
     }
+    // The exam clock keeps running while the tab is closed — deduct the
+    // gap since the last save (same fix reading-v2.js got 2026-09-11), or a
+    // student could close the tab mid-exam and come back hours later with
+    // the same minutes left. 0 → launchExam's timer submits as 'timeout'.
+    if (Number.isFinite(saved.secondsLeft) && saved.savedAt) {
+      saved.secondsLeft = Math.max(0, saved.secondsLeft - Math.floor((Date.now() - saved.savedAt) / 1000));
+    }
     return saved;
   } catch (_) { return null; }
 }
@@ -75,7 +82,9 @@ function checkRestoreBanner() {
   const wc1  = countWords(saved.answers[1] || '');
   const wc2  = countWords(saved.answers[2] || '');
   desc.textContent =
-    `${saved.exam.name}  •  Task 1: ${wc1} từ  |  Task 2: ${wc2} từ  •  Còn ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+    `${saved.exam.name}  •  Task 1: ${wc1} từ  |  Task 2: ${wc2} từ  •  ` + (saved.secondsLeft > 0
+      ? `Còn ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`
+      : 'Đã hết giờ — bài sẽ được nộp ngay khi bạn khôi phục');
   banner.style.display = 'block';
 }
 

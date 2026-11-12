@@ -13,7 +13,10 @@ const { createStudent } = require('../../factories/userFactory');
 const { createWritingAttempt } = require('../../factories/contentFactory');
 const writingGradingService = require('../../../services/writingGradingService');
 
-jest.mock('../../../services/writingGradingService');
+jest.mock('../../../services/writingGradingService', () => ({
+  ...jest.createMockFromModule('../../../services/writingGradingService'),
+  saveAiGrade: jest.requireActual('../../../services/writingGradingService').saveAiGrade,
+}));
 
 async function waitFor(conditionFn, timeoutMs = 2000) {
   const start = Date.now();
