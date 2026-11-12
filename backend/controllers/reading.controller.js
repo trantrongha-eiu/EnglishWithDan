@@ -149,7 +149,9 @@ exports.getPracticeHistory = guard('[Reading practice history]', async (req, res
 });
 
 exports.getPracticeHistoryDetail = guard('[Reading practice history detail]', async (req, res) => {
-  const result = await readingService.getPracticeHistoryDetail(req.params.attemptId, req.user._id);
+  // Staff open a student's attempt from admin history (reading.html?practiceReview=).
+  const isStaff = ['teacher', 'admin'].includes(req.user.role);
+  const result = await readingService.getPracticeHistoryDetail(req.params.attemptId, isStaff ? null : req.user._id);
   if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
   // The passage backing this attempt was permanently deleted since — the
   // service already auto-resolved any pending review for it (it can never

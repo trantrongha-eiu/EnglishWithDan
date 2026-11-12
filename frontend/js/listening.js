@@ -429,6 +429,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         await reviewFromHistory(_ltReviewParam);
         return;
     }
+    // ?practiceReview=<ListeningPracticeAttempt id> — one past "Bài lẻ"
+    // attempt. Opened by admin "Lịch sử làm bài" (staff may view any
+    // student's — see listening.controller getPracticeHistoryDetail).
+    const _ltPracticeReviewParam = new URLSearchParams(location.search).get('practiceReview');
+    if (_ltPracticeReviewParam && typeof window.loadLTPracticeReview === 'function') {
+        await window.loadLTPracticeReview(_ltPracticeReviewParam);
+        return;
+    }
 
     await loadTestList();
     checkResumeExam();

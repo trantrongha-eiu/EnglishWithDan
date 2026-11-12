@@ -11,6 +11,7 @@ import PageHeader from '../components/ui/PageHeader';
 import { ErrorState, EmptyState, TableBody, Skeleton } from '../components/ui/States';
 import { bandBadge, simBadge } from '../components/ui/badges';
 import { formatNumber } from '../utils/format';
+import AttemptTitle from '../components/AttemptTitle';
 
 // Dashboard (redesigned 2026-09-25). Every number here comes from a real
 // endpoint — nothing is estimated or mocked:
@@ -167,11 +168,7 @@ function RecentAttempts() {
                   </td>
                   <td>{skillBadge(h.skill)}</td>
                   <td style={{ maxWidth: 260 }}>
-                    {h.skill === 'writing'
-                      ? <Link to={`/writing-grades?viewAttempt=${h._id}`}>{h.testName || '–'}</Link>
-                      : h.skill === 'speaking'
-                        ? <Link to={`/speaking?viewAttempt=${h._id}`}>{h.testName || '–'}</Link>
-                        : (h.testName || '–')}
+                    <AttemptTitle h={h} studentName={h.userId?.displayName} />
                     {simBadge(h)}
                   </td>
                   <td style={{ fontSize: 12, whiteSpace: 'nowrap' }}>{formatDate(h.date)}</td>

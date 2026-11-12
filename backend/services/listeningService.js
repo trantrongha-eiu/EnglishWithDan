@@ -1484,7 +1484,8 @@ async function getPracticeHistory(userId) {
 // /practice/answer-key/:id, which is itself requirePremium-gated.
 // (audioUrl is still proxied via protectListeningAudio in the controller.)
 async function getPracticeHistoryDetail(attemptId, userId) {
-  const attempt = await ListeningPracticeAttempt.findOne({ _id: attemptId, userId }).lean();
+  // userId null = staff (admin "Lịch sử làm bài" → Xem bài) — any student's attempt.
+  const attempt = await ListeningPracticeAttempt.findOne({ _id: attemptId, ...(userId ? { userId } : {}) }).lean();
   if (!attempt) return null;
   const section = dropStaleTiming(await ListeningSection.findById(attempt.sectionId).select(PRACTICE_SECTION_SAFE_FIELDS + ' +transcriptTiming').lean());
   // No content snapshot for Bài lẻ practice attempts (unlike ListeningAttempt's

@@ -494,6 +494,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  // ?practiceReview=<ReadingPracticeAttempt id> — one past "Bài lẻ" attempt.
+  // Opened by admin "Lịch sử làm bài" (staff may view any student's).
+  const practiceReviewId = params.get('practiceReview');
+  if (practiceReviewId) {
+    await loadPracticeReview(practiceReviewId);
+    return;
+  }
+
   await loadTests();
 
   if (testIdParam) {

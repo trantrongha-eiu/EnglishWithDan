@@ -716,7 +716,8 @@ async function getPracticeHistory(userId, limit = 50) {
 // The review UI re-fetches the key from GET /practice/answer-key/:id,
 // which is itself requirePremium-gated.
 async function getPracticeHistoryDetail(attemptId, userId) {
-  const attempt = await ReadingPracticeAttempt.findOne({ _id: attemptId, userId }).lean();
+  // userId null = staff (admin "Lịch sử làm bài" → Xem bài) — any student's attempt.
+  const attempt = await ReadingPracticeAttempt.findOne({ _id: attemptId, ...(userId ? { userId } : {}) }).lean();
   if (!attempt) return null;
   const passage = await Passage.findById(attempt.passageId).select(PRACTICE_PASSAGE_SAFE_FIELDS).lean();
   // No content snapshot for Bài lẻ practice attempts (unlike TestAttempt's

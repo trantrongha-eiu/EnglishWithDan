@@ -102,12 +102,18 @@ describe('reading — getPracticeHistoryDetail withholds the answer key', () => 
     expect(r.status).toBe(404);
   });
 
-  test('HTTP: a teacher is also scoped to their own attempts here (no staff bypass on this route)', async () => {
+  // 2026-11-12: staff open a student's "bài lẻ" from admin "Lịch sử làm bài"
+  // (reading.html?practiceReview=) — like the full-test review route. The
+  // response is still answer-key-free.
+  test('HTTP: a teacher may open a student\'s attempt (staff bypass), still without the answer key', async () => {
     const student = await createStudent();
     const teacher = await createTeacher();
     const { attempt } = await seed(student);
     const r = await request(app).get(`/api/reading/practice/history/${attempt._id}`).set('Authorization', bearer(teacher));
-    expect(r.status).toBe(404);
+    expect(r.status).toBe(200);
+    const raw = JSON.stringify(r.body);
+    expect(raw).not.toContain(CORRECT);
+    expect(raw).not.toContain(EXPLAIN);
   });
 });
 

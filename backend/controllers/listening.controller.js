@@ -492,7 +492,9 @@ exports.getPracticeHistory = async (req, res) => {
 
 exports.getPracticeHistoryDetail = async (req, res) => {
   try {
-    const result = await listeningService.getPracticeHistoryDetail(req.params.attemptId, req.user._id);
+    // Staff open a student's attempt from admin history (listening.html?practiceReview=).
+    const isStaff = ['teacher', 'admin'].includes(req.user.role);
+    const result = await listeningService.getPracticeHistoryDetail(req.params.attemptId, isStaff ? null : req.user._id);
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
     // The section backing this attempt was permanently deleted since — the
     // service already auto-resolved any pending review for it (it can never

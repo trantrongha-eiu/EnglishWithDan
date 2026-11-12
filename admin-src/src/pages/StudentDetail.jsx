@@ -6,8 +6,8 @@ import { useAdminData } from '../contexts/AdminDataContext';
 import { useApi } from '../hooks/useApi';
 import VocabDetailPanel from '../components/VocabDetailPanel';
 import OnlineTimePanel from '../components/OnlineTimePanel';
-import Wt1ReviewModal from '../components/Wt1ReviewModal';
-import { skillBadge, SKILL_META, isWt1Skill } from '../components/SkillBadge';
+import AttemptTitle from '../components/AttemptTitle';
+import { skillBadge, SKILL_META } from '../components/SkillBadge';
 import PageHeader from '../components/ui/PageHeader';
 import { ErrorState, EmptyState, TableBody, Skeleton } from '../components/ui/States';
 import { bandBadge, roleBadge, planBadge, simBadge } from '../components/ui/badges';
@@ -170,10 +170,9 @@ function OverviewTab({ id, isAdmin, onOpenTuition }) {
   );
 }
 
-function HistoryTab({ id }) {
+function HistoryTab({ id, studentName }) {
   const [skill, setSkill] = useState('');
   const [limit, setLimit] = useState(HISTORY_STEP);
-  const [wt1View, setWt1View] = useState(null); // WT1Submission id open in Wt1ReviewModal
   const path = `/admin/recent-attempts?userId=${id}&limit=${limit}${skill ? `&skill=${encodeURIComponent(skill)}` : ''}`;
   const { data, error, loading, refreshing, reload } = useApi(path);
   const rows = data?.attempts || [];
@@ -201,13 +200,7 @@ function HistoryTab({ id }) {
                 <tr key={`${h.skill}-${h._id}`}>
                   <td>{skillBadge(h.skill)}</td>
                   <td>
-                    {h.skill === 'writing'
-                      ? <Link to={`/writing-grades?viewAttempt=${h._id}`}>{h.testName || '–'}</Link>
-                      : h.skill === 'speaking'
-                        ? <Link to={`/speaking?viewAttempt=${h._id}`}>{h.testName || '–'}</Link>
-                        : isWt1Skill(h.skill)
-                          ? <button type="button" className="link-btn" onClick={() => setWt1View(h._id)} title="Xem bài làm">{h.testName || '–'}</button>
-                          : (h.testName || '–')}
+                    <AttemptTitle h={h} studentName={studentName} />
                     {h.testMeta && <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 2 }}>{h.testMeta}</div>}
                     {simBadge(h)}
                   </td>
@@ -223,7 +216,6 @@ function HistoryTab({ id }) {
           </TableBody>
         </table>
       </div>
-      {wt1View && <Wt1ReviewModal id={wt1View} onClose={() => setWt1View(null)} />}
       {!loading && rows.length < total && (
         <div style={{ textAlign: 'center', marginTop: 14 }}>
           <button type="button" className="btn btn-ghost" disabled={refreshing} onClick={() => setLimit(l => l + HISTORY_STEP)}>
@@ -368,7 +360,7 @@ export default function StudentDetail() {
 
       {tab === 'overview' && <OverviewTab key={overviewKey} id={id} isAdmin={isAdmin} onOpenTuition={() => setModal('tuition')} />}
       {tab === 'overview' && isStudent && <ParentsPanel student={user} />}
-      {tab === 'history' && <HistoryTab id={id} />}
+      {tab === 'history' && <HistoryTab id={id} studentName={displayName(user)} />}
       {tab === 'vocab' && <VocabTab id={id} />}
       {tab === 'online' && <div className="panel" style={{ padding: 16 }}><OnlineTimePanel userId={id} /></div>}
       {tab === 'badges' && <BadgesTab id={id} />}

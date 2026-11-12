@@ -16,6 +16,7 @@ const router = express.Router();
 router.use(require('./passages'));         // Passages, Reading Tests, Listening Tests dropdown
 router.use(require('./listening'));        // Listening Tests, Practice Sections (admin CRUD)
 router.use(require('./stats'));            // Stats, db-status, history, recent-attempts, listening-history
+router.use(require('./attemptDetail'));    // GET /attempt-detail/:skill/:id — one history row's answers (admin "Xem bài")
 router.use(require('./writingContent'));   // Writing Tests dropdown, Writing Exams, Writing History, Task1/Task2 pools
 router.use(require('./speaking'));         // Speaking Questions, Materials, History
 router.use(require('./writingSamples'));   // Writing Samples (PDF)

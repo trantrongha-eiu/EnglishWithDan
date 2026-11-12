@@ -5,6 +5,7 @@ import { useToast } from '../contexts/ToastContext';
 import Pagination from '../components/Pagination';
 import { bandBadge } from '../components/ui/badges';
 import { formatDur } from '../utils/format';
+import AttemptTitle from '../components/AttemptTitle';
 
 const PAGE_SIZE = 25;
 
@@ -165,7 +166,7 @@ export default function ReadingStats() {
                         : <strong>{studentName(a.userId)}</strong>}
                       {a.userId?.username && <div style={{ fontSize: 11, color: 'var(--text3)' }}>@{a.userId.username}</div>}
                     </td>
-                    <td>{a.testId?.name || '–'}</td>
+                    <td><AttemptTitle h={{ _id: a._id, skill: 'reading', testName: a.testId?.name }} /></td>
                     <td style={{ fontSize: 12 }}>{formatDate(a.endTime)}</td>
                     <td>{formatDur(a.duration)}</td>
                     <td>{a.correctCount}/{a.totalQuestions}</td>
