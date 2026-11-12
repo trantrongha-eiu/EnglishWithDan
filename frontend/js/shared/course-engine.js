@@ -134,6 +134,8 @@
       if (cfg.onBeforeRender) cfg.onBeforeRender(E);
       document.querySelectorAll('.t1-dnd-float').forEach(function (f) { f.remove(); });
       if (window.WbwDrill) document.querySelectorAll('[data-wbw-host]').forEach(function (h) { window.WbwDrill.unmount(h); });
+      // exercise view has the history column on the left → a wider page
+      app.classList.toggle('ce-wide', state.view === 'exercise');
       if (state.view === 'overview') { app.innerHTML = renderOverview(); bindOverview(); }
       else if (state.view === 'lesson') { app.innerHTML = renderLesson(); bindLesson(); }
       else if (state.view === 'exercise') { app.innerHTML = renderExercise(); bindExercise(); }
@@ -303,7 +305,8 @@
           (done ? '<span class="t1-ex-done"><i class="fas fa-check-circle"></i></span>' : '<i class="fas fa-chevron-right" style="color:#9ca3af"></i>') +
           '</div>';
       }).join('');
-      return '<div class="t1-crumb"><span id="t1-back-ov">Khoá học</span> › <b>' + esc(l.title || '') + '</b></div>' +
+      return '<div class="ce-backrow"><button class="t1-btn" id="t1-back-ov-btn" title="Về danh sách buổi học"><i class="fas fa-arrow-left"></i> Quay lại</button></div>' +
+        '<div class="t1-crumb"><span id="t1-back-ov">Khoá học</span> › <b>' + esc(l.title || '') + '</b></div>' +
         '<div class="t1-head" style="padding-top:2px"><h2 class="t1-h2" style="font-size:17px">' + esc(l.title || '') + '</h2></div>' +
         ((l.objectives && l.objectives.length) ? '<div class="t1-objs"><div class="t1-objs-t">🎯 Mục tiêu buổi học</div><ul>' + l.objectives.map(function (o) { return '<li>' + esc(o) + '</li>'; }).join('') + '</ul></div>' : '') +
         renderTheory(l.theory) +
@@ -314,6 +317,7 @@
     }
     function bindLesson() {
       document.getElementById('t1-back-ov').addEventListener('click', goOverview);
+      document.getElementById('t1-back-ov-btn').addEventListener('click', goOverview);
       document.querySelectorAll('.t1-ex-card').forEach(function (el) {
         el.addEventListener('click', function () {
           state.exIdx = state.exercises.findIndex(function (e) { return e.code === el.dataset.code; });
@@ -326,7 +330,11 @@
 
     // ── EXERCISE RUNNER ──────────────────────────────────────────────
     function curEx() { return state.exercises[state.exIdx]; }
-    function _recordResult(e) { var i = state.results.findIndex(function (x) { return x.code === e.code; }); if (i >= 0) state.results[i] = e; else state.results.push(e); }
+    function _recordResult(e) {
+      var i = state.results.findIndex(function (x) { return x.code === e.code; }); if (i >= 0) state.results[i] = e; else state.results.push(e);
+      // the attempt is saved server-side by now — show it in the history column
+      if (window.WT1History && window.WT1History.refreshSide) window.WT1History.refreshSide();
+    }
 
     // ── test-lesson unlock code ───────────────────────────────────────
     function openTestCodeModal(lessonCode, reason) {
@@ -603,7 +611,13 @@
       var pct = Math.round(((state.exIdx + 1) / state.exercises.length) * 100);
       var submitBtn = '<button class="t1-submit" id="t1-submit">' +
         ((plug && plug.submitLabel) || (isWriting ? '<i class="fas fa-paper-plane"></i> Nộp bài' : '<i class="fas fa-check"></i> Kiểm tra')) + '</button>';
-      return '<div class="t1-topbar"><button class="t1-btn" id="t1-quit"><i class="fas fa-times"></i> Thoát</button>' +
+      var backTitle = state.exIdx > 0 ? 'Quay lại bài trước' : 'Quay lại danh sách bài';
+      // Two columns: "Lịch sử làm bài" on the left (WT1History.mountSide),
+      // the exercise on the right. Below 980px the column is hidden and the
+      // topbar "Lịch sử" button (modal) takes over.
+      return '<div class="ce-ex-layout"><aside class="ce-hist-side" id="ce-hist-side" aria-label="Lịch sử làm bài"></aside><div class="ce-ex-main">' +
+        '<div class="t1-topbar"><span class="ce-topbar-l"><button class="t1-btn" id="t1-prev" title="' + backTitle + '"><i class="fas fa-arrow-left"></i><span class="ce-lbl"> Quay lại</span></button>' +
+        '<button class="t1-btn" id="t1-quit" title="Về danh sách bài"><i class="fas fa-times"></i><span class="ce-lbl"> Thoát</span></button></span>' +
         '<span style="font-size:12px;color:#9ca3af;font-weight:700">Bài ' + (state.exIdx + 1) + ' / ' + state.exercises.length +
         '<button class="t1-hist-btn" id="t1-hist-btn" title="Lịch sử luyện tập bài này"><i class="fas fa-history"></i> Lịch sử</button></span>' +
         (ex.timerMinutes ? '<span class="t1-timer" id="t1-timer">' + timerHtml(ex.timerMinutes * 60) + '</span>' : '<span></span>') + '</div>' +
@@ -615,7 +629,7 @@
         (paired
           ? '<div id="t1-body">' + renderPairedImageSlots(ex) + submitBtn + '</div>'
           : '<div class="t1-card" id="t1-body">' + renderItemBody(ex) + submitBtn + '</div>') +
-        '<div class="t1-fb hidden" id="t1-fb"></div>';
+        '<div class="t1-fb hidden" id="t1-fb"></div></div></div>';
     }
 
     function fmt(s) { s = Math.max(0, s); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
@@ -642,10 +656,12 @@
       if (!ex) return;
       state.answered = false;
       state._submitting = false;
+      document.getElementById('t1-prev').addEventListener('click', prevExercise);
       document.getElementById('t1-quit').addEventListener('click', goToLesson);
       document.getElementById('t1-back-ls').addEventListener('click', goToLesson);
       document.getElementById('t1-submit').addEventListener('click', submit);
       document.getElementById('t1-hist-btn').addEventListener('click', openHistory);
+      if (window.WT1History && window.WT1History.mountSide) window.WT1History.mountSide(document.getElementById('ce-hist-side'), ex.code, ex.title);
 
       var plug = TYPES[ex.type];
       if (plug && plug.bind) plug.bind(ex, E);
@@ -1063,6 +1079,16 @@
     // blank/answer; state.exIdx is untouched (a multi-item exercise restarts
     // at its question 1).
     function retryExercise() { state.itemIdx = 0; render(); }
+    // "Quay lại" in the exercise topbar — the previous exercise of this
+    // lesson, or the lesson's exercise list from its first exercise.
+    function prevExercise() {
+      stopTimer();
+      state.itemIdx = 0;
+      if (state.exIdx <= 0) { goToLesson(); return; }
+      state.exIdx--;
+      history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', cfg.pagePath + '?lesson=' + state.lesson.code + '&ex=' + curEx().code);
+      render();
+    }
     function goToLesson() {
       stopTimer(); state.view = 'lesson';
       history.pushState({ view: 'lesson', lesson: state.lesson.code }, '', cfg.pagePath + '?lesson=' + state.lesson.code);
@@ -1094,6 +1120,7 @@
     async function finishLesson() {
       stopTimer();
       state.view = 'done';
+      app.classList.remove('ce-wide');
       var lessonCode = state.lesson && state.lesson.code;
       if (lessonCode) _notifyIfNextLessonUnlocked(lessonCode);
       if (window.CourseResult) {
@@ -1437,6 +1464,28 @@
     '.wh-warn{background:#fef3c7;border:1px solid #fcd34d;color:#92400e;border-radius:10px;padding:8px 12px;font-size:12.5px;margin-top:10px}',
     '.wh-sub{border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:10px 12px;margin-top:8px}',
     'details.wh-det summary{cursor:pointer;font-size:12.5px;font-weight:700;color:#0ea5e9}',
+    // ── course pages: history column left of the exercise + back buttons ──
+    '#app.ce-wide{max-width:1240px}',
+    '.ce-ex-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px;align-items:start}',
+    '.ce-ex-main{min-width:0}',
+    '.ce-hist-side{position:sticky;top:calc(var(--nav-height,64px) + 16px);max-height:calc(100vh - var(--nav-height,64px) - 32px);overflow-y:auto;margin-top:8px;background:var(--surface,#fff);border:1px solid var(--border,#e5e7eb);border-radius:14px;padding:12px 12px 10px}',
+    '.ceh-h{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:800;color:var(--text,#111827)}',
+    '.ceh-h i{color:#0ea5e9}',
+    '.ceh-sub{font-size:11.5px;color:var(--text3,#9ca3af);margin:2px 0 8px;line-height:1.45;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}',
+    '.ceh-row{display:block;width:100%;text-align:left;background:var(--surface2,#f8fafc);border:1px solid var(--border,#eef2f7);border-radius:10px;padding:8px 10px;margin-top:6px;cursor:pointer;color:inherit;font:inherit;transition:border-color .15s,background .15s}',
+    '.ceh-row:hover{border-color:#0ea5e9;background:rgba(14,165,233,.06)}',
+    '.ceh-row-top{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;font-weight:700}',
+    '.ceh-row-s{color:#0ea5e9;font-weight:800;white-space:nowrap}',
+    '.ceh-row-m{font-size:11px;color:var(--text3,#9ca3af);margin-top:2px}',
+    '.ceh-gv{color:#059669;font-weight:700}',
+    '.ceh-empty{font-size:12px;color:var(--text3,#9ca3af);padding:10px 0 4px;line-height:1.5}',
+    '.ceh-all{display:block;width:100%;margin-top:10px;border:1px dashed var(--border,#d1d5db);background:none;color:#0ea5e9;border-radius:10px;padding:7px 8px;font-size:12px;font-weight:700;cursor:pointer}',
+    '.ceh-all:hover{border-color:#0ea5e9}',
+    '.ce-topbar-l{display:inline-flex;align-items:center;gap:8px}',
+    '.ce-backrow{padding:14px 20px 0}',
+    '@media (min-width:981px){.ce-ex-layout .t1-hist-btn{display:none}}',
+    '@media (max-width:980px){.ce-ex-layout{display:block}.ce-hist-side{display:none}}',
+    '@media (max-width:520px){.ce-topbar-l .ce-lbl{display:none}.ce-topbar-l{gap:6px}}',
   ].join('\n');
 
   var SCORE_LABELS = {
@@ -1463,11 +1512,17 @@
     return r.status === 'graded' ? 'Đã chấm' : 'Đã nộp';
   }
 
-  function ensureDom() {
-    if (modal) return;
+  var styled = false;
+  function ensureStyle() {
+    if (styled) return;
+    styled = true;
     var style = document.createElement('style');
     style.textContent = CSS;
     document.head.appendChild(style);
+  }
+  function ensureDom() {
+    if (modal) return;
+    ensureStyle();
     modal = document.createElement('div');
     modal.className = 'wh-modal wh-hidden';
     modal.innerHTML = '<div class="wh-box" role="dialog" aria-modal="true" aria-labelledby="wh-title">' +
@@ -1537,6 +1592,57 @@
     });
     var more = bodyEl.querySelector('#wh-more');
     if (more) more.addEventListener('click', function () { more.disabled = true; more.textContent = 'Đang tải...'; loadMore(); });
+  }
+
+  // ── history column beside the exercise (course-engine exercise view) ──
+  // Lists this exercise's attempts; a row opens that attempt in the modal
+  // (its ← goes to the exercise's list). Re-rendered on every exercise
+  // render and refreshed after each submit (refreshSide).
+  var side = { host: null, code: '', title: '', rows: [], seq: 0 };
+  function mountSide(host, code, title) {
+    ensureStyle();
+    side.host = host; side.code = code; side.title = title || ''; side.rows = [];
+    if (!host) return;
+    host.innerHTML = sideHead() + '<div class="ceh-empty"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>';
+    loadSide();
+  }
+  function refreshSide() { if (side.host && document.body.contains(side.host)) loadSide(); }
+  function sideHead() {
+    return '<div class="ceh-h"><i class="fas fa-history"></i> Lịch sử làm bài</div>' +
+      (side.title ? '<div class="ceh-sub" title="' + esc(side.title) + '">' + esc(side.title) + '</div>' : '');
+  }
+  async function loadSide() {
+    var my = ++side.seq, code = side.code;
+    var rows = null;
+    try {
+      var d = await cfg.api('/wt1/exercise/' + encodeURIComponent(code) + '/history');
+      rows = d.history || [];
+    } catch (e) { rows = null; }
+    // a newer mount (next exercise) or a re-render replaced this host
+    if (my !== side.seq || !side.host || !document.body.contains(side.host)) return;
+    side.rows = rows || [];
+    var h = sideHead();
+    if (rows === null) h += '<div class="ceh-empty">Không tải được lịch sử.</div>';
+    else if (!rows.length) h += '<div class="ceh-empty">Bạn chưa làm bài này lần nào. Làm xong, mỗi lượt sẽ hiện ở đây để xem lại.</div>';
+    else {
+      h += rows.map(function (r, i) {
+        return '<button class="ceh-row" data-i="' + i + '"><div class="ceh-row-top"><span>Lượt ' + esc(r.attempt) + '</span>' +
+          '<span class="ceh-row-s">' + esc(scoreText(r)) + '</span></div><div class="ceh-row-m">' + fmtDate(r.createdAt) +
+          (r.teacherReviewed ? ' · <span class="ceh-gv">💬 GV đã chấm</span>' : '') + '</div></button>';
+      }).join('');
+    }
+    h += '<button class="ceh-all" id="ceh-all"><i class="fas fa-list"></i> Toàn bộ lịch sử khoá học</button>';
+    side.host.innerHTML = h;
+    side.host.querySelectorAll('.ceh-row').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var r = side.rows[+b.dataset.i];
+        if (!r) return;
+        open();
+        st = { mode: 'exercise', exCode: side.code, exTitle: side.title, rows: side.rows.slice(), skip: 0, hasMore: false };
+        openAttempt(r.id);
+      });
+    });
+    side.host.querySelector('#ceh-all').addEventListener('click', openCourse);
   }
 
   // ── one attempt ────────────────────────────────────────────────────
@@ -1648,9 +1754,11 @@
   function boldText(s) { return esc(s).replace(/\*\*([^*]+?)\*\*/g, '<b>$1</b>').replace(/\*\*/g, ''); }
 
   window.WT1History = {
-    init: function (o) { cfg.api = o.api; cfg.courseCode = o.courseCode || ''; },
+    init: function (o) { cfg.api = o.api; cfg.courseCode = o.courseCode || ''; ensureStyle(); },
     openCourse: openCourse,
     openExercise: openExercise,
+    mountSide: mountSide,
+    refreshSide: refreshSide,
     close: close,
   };
 })();
