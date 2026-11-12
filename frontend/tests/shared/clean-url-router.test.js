@@ -32,6 +32,8 @@ describe('CleanUrlRouter.resolve', () => {
     ['/writing/tips/cohesion', '/writing.html?view=writing-tips&tip=cohesion'],
     ['/writing/template/opinion', '/task2-template.html?type=opinion'],
     ['/writing/task1-course/L3', '/writing-task1.html?lesson=L3'],
+    ['/writing/task1-grammar', '/task1-practice.html'],
+    ['/writing/task1-grammar/trend_language', '/task1-practice.html?skill=trend_language'],
     ['/speaking/tips', '/speaking.html?tab=speaking-tips'],
     ['/speaking/history', '/speaking.html?tab=history'],
     ['/speaking/question/q1', '/speaking.html?questionId=q1'],

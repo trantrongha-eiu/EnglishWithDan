@@ -19,6 +19,7 @@
  *   /reading/tips[/:tip]                          Reading Tips (one lesson)
  *   /listening/…                                  same shapes; single/:part is 1-4|actual
  *   /writing/task1|task2[/:id[/practice|/simulation]]
+ *   /writing/task1-grammar[/:skill]               Task 1 Grammar (task1-practice.html)
  *   /writing/exam[/practice|/simulation]  /writing/tips[/:tip]  /writing/samples
  *   /speaking/tips[/:tip]  /speaking/practice|history|materials  /speaking/question/:id
  *   /speaking/part2[/:story]                      Part 2 · 7 câu chuyện gốc
@@ -65,6 +66,7 @@
     [new RegExp('^/writing/template/' + SEG + '$'), function (m) { return '/task2-template.html?type=' + m[1]; }],
     [/^\/writing\/templates$/, function () { return '/task2-template.html'; }],
     [/^\/writing\/practice$/, function () { return '/writing-practice.html'; }],
+    [new RegExp('^/writing/task1-grammar(?:/' + SEG + ')?$'), function (m) { return '/task1-practice.html' + (m[1] ? '?skill=' + m[1] : ''); }],
     [new RegExp('^/writing/task1-course(?:/' + SEG + ')?$'), function (m) { return '/writing-task1.html' + (m[1] ? '?lesson=' + m[1] : ''); }],
     [new RegExp('^/writing/task2-course(?:/' + SEG + ')?$'), function (m) { return '/writing-task2-course.html' + (m[1] ? '?lesson=' + m[1] : ''); }],
     [/^\/writing\/(?:task2-foundations|advanced-sentences)$/, function () { return '/writing-task2-course.html'; }],

@@ -54,9 +54,16 @@
   // (streak announcement, badge unlock, "review a pending test first", the
   // rewrite reminder, the onboarding tour) should drop a backdrop over a
   // live, timed exam, so the queue simply waits until the activity ends.
+  // Same for the "Chọn chế độ làm bài" popup (exam-mode-select.js) and the
+  // screen-share gate behind it: they are the doorway into the test the
+  // student was sent to, so nothing queued may cover them.
   function _fullscreenBusy() {
     try {
-      return !!document.body && !document.body.classList.contains('has-global-nav');
+      if (!document.body) return false;
+      if (!document.body.classList.contains('has-global-nav')) return true;
+      var ms = document.getElementById('ews-mode-select-modal');
+      if (ms && !ms.classList.contains('hidden')) return true;
+      return !!document.getElementById('ews-pc-gate');
     } catch (e) { return false; }
   }
 

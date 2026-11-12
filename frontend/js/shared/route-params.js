@@ -60,6 +60,25 @@
   // (and listening audio needs the click as a user gesture anyway).
   var EXAM_MODES = { practice: true, simulation: true };
 
+  // ── Opened straight onto one test / passage / section / task ────────
+  // A homework card or a shared link (?testId= / ?sectionId= / ?passageId=
+  // / ?gapfillId= / ?taskId= / ?examId=, or a clean /reading/test/:id-style
+  // path) means the student came to START that item — not to browse the
+  // list. Read ONCE at parse time: the pages rewrite the address bar to
+  // ?mode=… during their own DOMContentLoaded init, long before anyone asks.
+  // ExamModeSelect keeps its first popup open on such a visit and the
+  // onboarding tour / attention popups stay out of its way.
+  var OPENED_ON_ITEM = (function () {
+    try {
+      var q = new URLSearchParams(window.location.search);
+      if (['testId', 'sectionId', 'passageId', 'gapfillId', 'taskId', 'examId'].some(function (k) { return q.get(k); })) return true;
+      var p = window.location.pathname.replace(/\/+$/, '');
+      return /^\/(?:reading|listening)\/(?:test|practice|passage|section)\/[^/]+(?:\/(?:practice|simulation))?$/.test(p)
+        || /^\/writing\/(?:task[12]\/[^/]+(?:\/(?:practice|simulation))?|exam(?:\/(?:practice|simulation))?)$/.test(p);
+    } catch (e) { return false; }
+  })();
+  function openedOnItem() { return OPENED_ON_ITEM; }
+
   /** @returns {'practice'|'simulation'|null} */
   function examMode() {
     var m = new URLSearchParams(window.location.search).get('exam');
@@ -145,6 +164,7 @@
 
   window.RouteParams = {
     match: match,
+    openedOnItem: openedOnItem,
     examMode: examMode,
     examLocked: examLocked,
     examSuffix: examSuffix,

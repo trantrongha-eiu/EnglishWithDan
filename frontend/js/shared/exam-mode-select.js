@@ -40,6 +40,7 @@
   function authHeader() { return window.AuthService ? window.AuthService.authHeader() : {}; }
 
   var SKILL_LABEL = { reading: 'Reading', listening: 'Listening', writing: 'Writing' };
+  var _stickyUsed = false; // only the page's first open() may be sticky
 
   function ensureStyle() {
     if (document.getElementById('ews-mode-select-style')) return;
@@ -47,6 +48,9 @@
     style.id = 'ews-mode-select-style';
     style.textContent = [
       '#ews-mode-select-modal.hidden { display: none !important; }',
+      // Above nav.js's attention overlays (z 2000) — this popup is the only
+      // way into an assigned test, so nothing may sit on top of it.
+      '#ews-mode-select-modal { z-index: 2100; }',
       '.ews-ms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }',
       '@media (max-width: 560px) { .ews-ms-grid { grid-template-columns: 1fr; } }',
       '.ews-ms-card { border: 1.5px solid var(--border, #e5e7eb); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; gap: 10px; text-align: left; background: var(--surface, #fff); }',
@@ -131,14 +135,19 @@
             '</div>' +
           '</div>' +
           '<button type="button" class="ews-ms-other hidden" id="ews-ms-other-btn">Chọn chế độ khác</button>' +
+          '<button type="button" class="ews-ms-other hidden" id="ews-ms-later-btn">Để sau — về danh sách bài</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(modal);
 
-    modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
-    modal.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    // A sticky open (see open()) ignores stray backdrop clicks / Esc — only
+    // a mode button or the explicit "Để sau" closes it.
+    modal.addEventListener('click', function (e) { if (e.target === modal && !modal._sticky) close(); });
+    modal.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal._sticky) close(); });
+    document.getElementById('ews-ms-later-btn').addEventListener('click', function () { close(); });
 
     function close() {
+      modal._sticky = false;
       modal.classList.add('hidden');
       clearInterval(modal._countdownTimer);
     }
@@ -244,6 +253,16 @@
       grid.className = 'ews-ms-grid';
       otherBtn.classList.add('hidden');
     };
+
+    // Sticky = the FIRST popup on a page opened straight onto this item
+    // (homework card / shared link — RouteParams.openedOnItem()). A stray
+    // backdrop tap or Esc used to close it and strand the student on the
+    // list page with no way back into the assigned test ("bấm link chỉ
+    // nhảy tới trang Listening"). Card clicks on the list stay dismissible.
+    var sticky = !_stickyUsed && !!(window.RouteParams && window.RouteParams.openedOnItem && window.RouteParams.openedOnItem());
+    _stickyUsed = true;
+    modal._sticky = sticky;
+    document.getElementById('ews-ms-later-btn').classList.toggle('hidden', !sticky);
 
     // Nothing picked → neither mode can start. simReady tracks the cooldown
     // check so un-picking/re-picking never enables a cooled-down Simulation.

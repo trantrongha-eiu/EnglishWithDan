@@ -488,6 +488,12 @@
     try { seen = localStorage.getItem(tourKeyFor(page)) === '1'; } catch (e) {}
     const loggedIn = window.AuthService && window.AuthService.isLoggedIn && window.AuthService.isLoggedIn();
     if (seen || !loggedIn) return;
+    // Opened straight onto one test/section (homework card, shared link):
+    // the student came to do that item — a tour of the list screen would
+    // cover its "Chọn chế độ" popup. Not marked seen: it runs on the next
+    // ordinary visit. route-params.js loads after this file but before
+    // DOMContentLoaded, so it is there by now.
+    if (window.RouteParams && window.RouteParams.openedOnItem && window.RouteParams.openedOnItem()) return;
     // The tour goes first in the shared login-popup queue (highest priority)
     // so a brand-new student walks the tour before any goal-setup / badge /
     // review modal appears. #ews-tour-tip is removed by endTour(), which is
