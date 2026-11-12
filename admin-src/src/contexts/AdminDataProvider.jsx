@@ -24,6 +24,7 @@ export function AdminDataProvider({ children }) {
         pendingMessages: d.pendingMessages || 0,
         violations: (d.mockViolations || 0) + (d.simViolations || 0),
         pendingEntranceReviews: d.pendingEntranceReviews || 0,
+        pendingReviews: d.pendingReviews || 0,
       } : null,
       reloadBadges: reload,
     };

@@ -66,6 +66,13 @@ const SpeakingAttemptSchema = new mongoose.Schema({
   // History on any device. '' = no recording saved. Deleted after 3 months
   // with the attempt — see services/speakingRecordingService.js.
   audioUrl:     { type: String, default: '' },
+  // 'course' = mirrored from a course speaking_response (wt1.controller
+  // submitSpeaking) — the WT1Submission is the copy the teacher reviews, so
+  // the admin review queue skips these. '' = standalone Speaking practice.
+  source:       { type: String, default: '' },
+  // Teacher's own grade + comment from the admin review queue — see
+  // models/shared/teacherReviewSchema.js + services/teacherReviewService.js.
+  teacherReview: require('./shared/teacherReviewSchema'),
   status:       { type: String, enum: ['pending', 'analyzed', 'error'], default: 'pending' },
   // true while a 'pending' attempt waits in the AI re-grade queue
   // (SpeakingGradeJob — AI was overloaded at submit time). Keeps

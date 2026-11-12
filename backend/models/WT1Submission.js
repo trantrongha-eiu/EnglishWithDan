@@ -58,6 +58,9 @@ const WT1SubmissionSchema = new Schema(
       itemIndex: Number,
       prompt: String,
       transcript: String,
+      // This item's recording on R2 (speaking-recordings/, purged after 90
+      // days by cron/speakingRecordingCleanup.js) — '' when none was saved.
+      audioUrl: String,
       feedback: {
         scores: Schema.Types.Mixed, // { fluency, vocabulary, grammar, pronunciation }
         bandEstimate: Number,
@@ -74,6 +77,15 @@ const WT1SubmissionSchema = new Schema(
     // recording never counts as "done" or shows up as a real attempt.
     status: { type: String, enum: ['draft', 'submitted', 'graded'], default: 'submitted' },
     timeSpentSeconds: Number,
+
+    // Single-shot speaking_response: the student's recording on R2 (same
+    // folder + 90-day purge as itemResults[].audioUrl) so a teacher can
+    // listen to it from the admin review queue. '' = none saved.
+    audioUrl: { type: String, default: '' },
+
+    // Teacher's own grade + comment from the admin review queue — see
+    // models/shared/teacherReviewSchema.js + services/teacherReviewService.js.
+    teacherReview: require('./shared/teacherReviewSchema'),
   },
   { timestamps: true }
 );

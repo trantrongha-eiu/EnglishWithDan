@@ -76,7 +76,29 @@ function ObjectiveItems({ items }) {
   ));
 }
 
-function OpenResponse({ r }) {
+function Audio({ src }) {
+  if (!src) return null;
+  return <audio controls preload="metadata" src={src} style={{ width: '100%', height: 34, marginTop: 6 }} />;
+}
+
+// Teacher's grade + comment from the review queue (wt1Service.buildReview → review.teacher).
+export function TeacherBlock({ t }) {
+  if (!t) return null;
+  const sc = t.scores || {};
+  const keys = Object.keys(sc).filter(k => sc[k] != null);
+  return (
+    <div style={{ border: '1px solid #a7f3d0', background: 'rgba(16,185,129,.08)', borderRadius: 10, padding: '10px 12px', marginTop: 12 }}>
+      <div style={{ fontWeight: 800, fontSize: 13, color: '#059669' }}>
+        💬 Giáo viên chấm{t.band != null && <> — Band {num(t.band)}</>}
+        <span className="muted" style={{ fontWeight: 400, fontSize: 12 }}> · {t.reviewerName || '–'} · {formatDate(t.reviewedAt)}</span>
+      </div>
+      {keys.length > 0 && <div style={{ fontSize: 12.5, marginTop: 4 }}>{keys.map(k => `${SCORE_LABELS[k] || k}: ${num(sc[k])}`).join(' · ')}</div>}
+      {t.note && <div style={{ fontSize: 13, marginTop: 6, whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>{t.note}</div>}
+    </div>
+  );
+}
+
+export function OpenResponse({ r }) {
   const isSpk = r.kind === 'speaking';
   const perItem = isSpk && r.speakingItems?.length > 0;
   const responses = (r.responses || []).filter(x => String(x || '').trim());
@@ -85,13 +107,15 @@ function OpenResponse({ r }) {
       {perItem ? r.speakingItems.map((s, i) => (
         <div key={i} style={{ border: '1px solid var(--border)', borderRadius: 10, padding: '10px 12px', marginTop: 8 }}>
           <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 4 }}>Câu {i + 1}: {s.prompt}</div>
-          <div style={box}>{s.transcript || <i>(không có lời thoại)</i>}</div>
+          <Audio src={s.audioUrl} />
+          <div style={{ ...box, marginTop: 6 }}>{s.transcript || <i>(không có lời thoại)</i>}</div>
           <div style={{ fontSize: 13, marginTop: 6 }}><b>Band {num(s.band)}</b>{s.feedbackVi && ` — ${s.feedbackVi}`}</div>
           <Corrections list={s.corrections} />
         </div>
       )) : (
         <>
           {r.prompts?.length > 0 && <Section title="Câu hỏi">{r.prompts.map((p, i) => <div key={i} style={{ fontSize: 13 }}>• {p}</div>)}</Section>}
+          {isSpk && r.audioUrl && <Section title="Bản ghi âm"><Audio src={r.audioUrl} /></Section>}
           <Section title={isSpk ? 'Lời thoại' : 'Bài viết'}>
             {responses.length ? responses.map((t, i) => (
               <div key={i} style={{ marginTop: i ? 8 : 0 }}>
@@ -151,6 +175,7 @@ export default function Wt1ReviewModal({ id, onClose }) {
             <span>{formatDate(r.createdAt)}</span>
           </div>
           {r.exercise.instruction && <div className="muted" style={{ fontSize: 12.5, marginTop: 10, whiteSpace: 'pre-wrap' }}>{r.exercise.instruction}</div>}
+          <TeacherBlock t={r.teacher} />
           {r.kind === 'objective' ? <ObjectiveItems items={r.items} /> : <OpenResponse r={r} />}
         </div>
       )}

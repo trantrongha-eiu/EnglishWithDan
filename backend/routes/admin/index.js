@@ -24,6 +24,7 @@ router.use(require('./users'));            // User Management, Online Users
 router.use(require('./courses'));          // Courses
 router.use(require('./attempts'));         // Delete Exam Attempts
 router.use(require('./writingGrading'));   // Writing AI Grading
+router.use(require('./submissionReviews')); // Teacher review queue: course writing + speaking (chấm tay / gửi feedback)
 router.use(require('./vocabAnalytics'));   // Vocab Student Analytics
 router.use(require('./writingPracticeWP')); // Writing Practice (WP) Topics/Exercises/Attempts
 router.use(require('./task1Exercises'));   // Task 1 Exercises CRUD

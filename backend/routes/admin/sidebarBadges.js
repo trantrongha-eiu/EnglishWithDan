@@ -24,6 +24,7 @@ const ReadingPracticeAttempt = require('../../models/ReadingPracticeAttempt');
 const ListeningPracticeAttempt = require('../../models/ListeningPracticeAttempt');
 const TuitionFee = require('../../models/TuitionFee');
 const EntranceTestAttempt = require('../../models/EntranceTestAttempt');
+const teacherReviewService = require('../../services/teacherReviewService');
 
 const router = express.Router();
 
@@ -52,6 +53,7 @@ router.get('/sidebar-badges', auth, teacherOnly, async (req, res) => {
       pendingUpgrades,
       unpaidStudentIds,
       pendingEntranceReviews,
+      reviewCounts,
     ] = await Promise.all([
       User.find({ lastSeen: { $gte: onlineSince } }).select('username role lastSeen').lean(),
       WritingAttempt.aggregate([{ $match: REAL_ATTEMPT }, { $group: { _id: '$gradingStatus', count: { $sum: 1 } } }]),
@@ -70,6 +72,8 @@ router.get('/sidebar-badges', auth, teacherOnly, async (req, res) => {
       isAdmin ? TuitionFee.distinct('studentId', { isPaid: false }) : Promise.resolve([]),
       // Entrance Test results compiled and waiting for a teacher's approval.
       EntranceTestAttempt.countDocuments({ resultStatus: 'PENDING_REVIEW' }),
+      // Course writing + Speaking waiting for a teacher's grade/comment.
+      teacherReviewService.counts().catch(() => ({ writing: 0, speaking: 0 })),
     ]);
 
     const wc = { pending: 0, ai_done: 0 };
@@ -85,6 +89,7 @@ router.get('/sidebar-badges', auth, teacherOnly, async (req, res) => {
       mockViolations,
       simViolations: simViolationCounts.reduce((a, b) => a + b, 0),
       pendingEntranceReviews,
+      pendingReviews: (reviewCounts.writing || 0) + (reviewCounts.speaking || 0),
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

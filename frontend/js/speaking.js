@@ -3068,6 +3068,7 @@ async function loadHistory({ resetLimit = true } = {}) {
             ${a.topic && !isFullMock ? `<span class="history-topic-badge">${escHtml(a.topic)}</span>` : ''}
             <span class="history-date">${formatDate(a.createdAt)}</span>
             ${a.audioUrl ? '<span class="history-audio-badge" title="Có bản ghi âm"><i class="fas fa-microphone"></i></span>' : ''}
+            ${a.teacherReview && a.teacherReview.reviewedAt ? '<span class="history-topic-badge" style="background:rgba(16,185,129,.12);color:#059669" title="Giáo viên đã chấm bài này">💬 GV đã chấm</span>' : ''}
           </div>
           ${band ? `<div class="history-band-badge">${band}</div>` : ''}
         </div>
@@ -3167,6 +3168,8 @@ async function openHistoryModal(attempt) {
     </div>
 
     <div id="history-audio-slot"></div>
+
+    ${_teacherReviewCard(attempt.teacherReview)}
 
     ${attempt.status === 'pending' ? (attempt.gradingQueued
       ? '<div class="history-status-note history-status-queued">⏳ AI đang xử lý — điểm sẽ được gửi sau (hộp thư sẽ báo khi có điểm).</div>'
@@ -3283,6 +3286,22 @@ async function openHistoryModal(attempt) {
         </div>`;
     }
   }
+}
+
+// Teacher's grade + comment from the admin review queue
+// (services/teacherReviewService.js) — shown above the AI feedback.
+function _teacherReviewCard(t) {
+  if (!t || !t.reviewedAt) return '';
+  const sc = t.scores || {};
+  const label = { fluency: 'Fluency', vocabulary: 'Vocabulary', grammar: 'Grammar', pronunciation: 'Pronunciation' };
+  const parts = Object.keys(sc).filter(k => sc[k] != null).map(k => `${label[k] || k}: <b>${Number(sc[k]).toFixed(1)}</b>`);
+  return `
+    <div class="fb-card" style="margin-bottom:14px;border:1px solid #6ee7b7;background:rgba(16,185,129,.08)">
+      <div class="fb-card-title" style="color:#059669">💬 Giáo viên chấm${t.band != null ? ` — Band ${Number(t.band).toFixed(1)}` : ''}</div>
+      ${parts.length ? `<p class="fb-card-text" style="margin-bottom:6px">${parts.join(' · ')}</p>` : ''}
+      ${t.note ? `<p class="fb-card-text" style="white-space:pre-wrap">${escHtml(t.note)}</p>` : ''}
+      <p class="fb-card-text" style="font-size:12px;opacity:.7;margin-top:6px">${escHtml(t.reviewerName || '')}${t.reviewedAt ? ' · ' + formatDate(t.reviewedAt) : ''}</p>
+    </div>`;
 }
 
 function closeHistoryModal() {

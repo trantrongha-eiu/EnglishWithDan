@@ -19,6 +19,7 @@ export const NAV_GROUPS = [
       match: ['/history', '/mock-tests', '/reading-stats', '/listening-stats', '/vocab-activity'] },
     { to: '/entrance-test', icon: '🚪', label: 'Test đầu vào', badge: 'pendingEntranceReviews', badgeTitle: 'Kết quả đang chờ duyệt' },
     { to: '/writing-grades', icon: '✍️', label: 'Chấm bài Writing', badge: 'pendingGrades', badgeTitle: 'Bài đang chờ chấm' },
+    { to: '/submission-reviews', icon: '🧑‍🏫', label: 'Chấm bài khoá học & Speaking', badge: 'pendingReviews', badgeTitle: 'Bài viết khoá học / Speaking chờ giáo viên chấm' },
     { to: '/messages', icon: '✉️', label: 'Hộp thư', badge: 'pendingMessages', badgeTitle: 'Tin nhắn chưa đọc' },
   ] },
   { id: 'exams', label: 'Đề thi IELTS', items: [

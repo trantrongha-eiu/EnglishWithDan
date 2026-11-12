@@ -6,6 +6,7 @@ const WT1Exercise = require('../models/WT1Exercise');
 const svc = require('../services/wt1Service');
 const grading = require('../services/wt1GradingService');
 const speakingService = require('../services/speakingService');
+const speakingRecording = require('../services/speakingRecordingService');
 const { isStaff } = require('../utils/roles');
 
 // Admin/teacher accounts see every lesson unlocked (no score / code gate).
@@ -230,8 +231,12 @@ exports.submitSpeaking = async (req, res) => {
         });
       }
 
+      // Keep the recording so a teacher can listen from the admin review
+      // queue (and the student can replay it from Lịch sử). Only for a real
+      // answer — a no-genuine-answer take returned above is never stored.
+      const itemAudioUrl = await speakingRecording.upload(req.file, `wt1_${req.user._id}_${ex.code}_${itemIndex}`);
       const itemPayload = {
-        itemIndex, prompt: questionText, transcript: finalText,
+        itemIndex, prompt: questionText, transcript: finalText, audioUrl: itemAudioUrl,
         feedback: {
           scores: {
             fluency: feedback.fluency || 0, vocabulary: feedback.vocabulary || 0,
@@ -253,7 +258,7 @@ exports.submitSpeaking = async (req, res) => {
           await speakingService.saveAttempt(req.user, {
             topic: ex.title || '', part,
             questionText: items.map((it) => it.prompt).filter(Boolean).join(' | '),
-            transcript: finalText, duration: durationSec, feedback: aggregate,
+            transcript: finalText, duration: durationSec, feedback: aggregate, source: 'course',
           });
         } catch (mirrorErr) {
           console.warn('[WT1] speaking attempt mirror failed:', mirrorErr.message);
@@ -296,8 +301,10 @@ exports.submitSpeaking = async (req, res) => {
       });
     }
 
+    const audioUrl = await speakingRecording.upload(req.file, `wt1_${req.user._id}_${ex.code}`);
     await svc.recordSubmission(req.user._id, ex, {
       responses: [finalText],
+      audioUrl,
       aiFeedback: {
         model: 'gemini',
         scores: {
@@ -318,7 +325,7 @@ exports.submitSpeaking = async (req, res) => {
     try {
       await speakingService.saveAttempt(req.user, {
         topic: ex.title || '', part, questionText, transcript: finalText,
-        duration: durationSec, feedback,
+        duration: durationSec, feedback, source: 'course', audioUrl,
       });
     } catch (mirrorErr) {
       console.warn('[WT1] speaking attempt mirror failed:', mirrorErr.message);

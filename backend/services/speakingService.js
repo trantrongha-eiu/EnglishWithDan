@@ -663,12 +663,14 @@ function mapFeedbackToAiFeedback(feedback) {
 // key a locally-stored (IndexedDB) audio recording to this exact attempt.
 // `user` is the full req.user Mongoose document (not just an id) — needed
 // to advance the streak below, same convention as reading/listeningService.
-async function saveAttempt(user, { questionId, topic, part, questionText, transcript, duration, feedback, sessionQuestionIds, answeredQuestionIds }) {
+async function saveAttempt(user, { questionId, topic, part, questionText, transcript, duration, feedback, sessionQuestionIds, answeredQuestionIds, source, audioUrl }) {
   try {
     const attempt = new SpeakingAttempt({
       userId: user._id,
       questionId: questionId || null,
       ...cleanSessionIds(sessionQuestionIds, answeredQuestionIds),
+      ...(source ? { source } : {}),
+      ...(audioUrl ? { audioUrl } : {}),
       topic: topic || '',
       part,
       question: questionText,

@@ -1464,6 +1464,11 @@
     '.wh-warn{background:#fef3c7;border:1px solid #fcd34d;color:#92400e;border-radius:10px;padding:8px 12px;font-size:12.5px;margin-top:10px}',
     '.wh-sub{border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:10px 12px;margin-top:8px}',
     'details.wh-det summary{cursor:pointer;font-size:12.5px;font-weight:700;color:#0ea5e9}',
+    '.wh-teacher{border:1px solid #6ee7b7;background:rgba(16,185,129,.09);border-radius:12px;padding:10px 12px;margin-top:10px}',
+    '.wh-teacher-h{font-size:13.5px;font-weight:800;color:#059669}',
+    '.wh-teacher-note{font-size:13px;line-height:1.6;white-space:pre-wrap;margin-top:6px}',
+    '.wh-teacher-m{font-size:11.5px;color:var(--text3,#9ca3af);margin-top:6px}',
+    '.wh-gv{color:#059669;font-weight:700}',
     // ── course pages: history column left of the exercise + back buttons ──
     '#app.ce-wide{max-width:1240px}',
     '.ce-ex-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px;align-items:start}',
@@ -1585,7 +1590,9 @@
         ? esc(r.lessonTitle) + ' · lượt ' + r.attempt + ' · ' + fmtDate(r.createdAt)
         : fmtDate(r.createdAt);
       return '<button class="wh-row" data-i="' + i + '"><div class="wh-row-top"><span class="wh-row-t">' + title + '</span>' +
-        '<span class="wh-row-s">' + esc(scoreText(r)) + '</span></div><div class="wh-row-m">' + meta + '</div></button>';
+        '<span class="wh-row-s">' + esc(scoreText(r)) + '</span></div><div class="wh-row-m">' + meta +
+        (r.teacherReviewed ? ' · <span class="wh-gv">💬 Giáo viên đã chấm' + (r.teacherBand != null ? ' (Band ' + num(r.teacherBand) + ')' : '') + '</span>' : '') +
+        '</div></button>';
     }).join('') + (st.hasMore ? '<button class="wh-more" id="wh-more">Tải thêm</button>' : '');
     bodyEl.querySelectorAll('.wh-row').forEach(function (b) {
       b.addEventListener('click', function () { openAttempt(st.rows[+b.dataset.i].id); });
@@ -1683,12 +1690,27 @@
     return x == null ? '' : String(x);
   }
 
+  function audioEl(src) {
+    return src ? '<audio controls preload="metadata" src="' + esc(src) + '" style="width:100%;height:34px;margin-top:6px"></audio>' : '';
+  }
+  // Teacher's grade + comment (admin review queue) — shown above the AI feedback.
+  function teacherBlock(t) {
+    if (!t) return '';
+    var sc = t.scores || {};
+    var keys = Object.keys(sc).filter(function (k) { return sc[k] != null; });
+    return '<div class="wh-teacher"><div class="wh-teacher-h">💬 Giáo viên chấm' + (t.band != null ? ' — <b>Band ' + num(t.band) + '</b>' : '') + '</div>' +
+      (keys.length ? '<div class="wh-li">' + keys.map(function (k) { return esc(SCORE_LABELS[k] || k) + ': <b>' + num(sc[k]) + '</b>'; }).join(' · ') + '</div>' : '') +
+      (t.note ? '<div class="wh-teacher-note">' + esc(t.note) + '</div>' : '') +
+      '<div class="wh-teacher-m">' + esc(t.reviewerName || '') + (t.reviewedAt ? ' · ' + fmtDate(t.reviewedAt) : '') + '</div></div>';
+  }
+
   function renderReview(r) {
     if (!r) return '<div class="wh-empty">Không có dữ liệu.</div>';
     var h = '<div class="wh-sum"><span class="wh-big">' + esc(scoreText(r)) + '</span>' +
       (r.kind === 'objective' && r.score != null && r.correctCount != null ? '<span><b>' + r.score + '%</b></span>' : '') +
       '<span>' + esc(r.lessonTitle) + '</span><span>Lượt <b>' + r.attempt + '</b></span><span>' + fmtDate(r.createdAt) + '</span></div>';
     if (r.exercise && r.exercise.instruction) h += '<div class="wh-instr">' + esc(r.exercise.instruction) + '</div>';
+    h += teacherBlock(r.teacher);
 
     if (r.kind === 'objective') {
       if (!(r.items || []).length) return h + '<div class="wh-empty">Bài tập này không còn trong khoá học.</div>';
@@ -1705,7 +1727,7 @@
     var isSpk = r.kind === 'speaking';
     if (isSpk && (r.speakingItems || []).length) {
       h += r.speakingItems.map(function (s, i) {
-        return '<div class="wh-sub"><div class="wh-q">Câu ' + (i + 1) + ': ' + esc(s.prompt) + '</div>' +
+        return '<div class="wh-sub"><div class="wh-q">Câu ' + (i + 1) + ': ' + esc(s.prompt) + '</div>' + audioEl(s.audioUrl) +
           '<div class="wh-text">' + (s.transcript ? esc(s.transcript) : '<i>(không có lời thoại)</i>') + '</div>' +
           '<div class="wh-li" style="margin-top:6px"><b style="color:#0ea5e9">Band ' + num(s.band) + '</b>' + (s.feedbackVi ? ' — ' + esc(s.feedbackVi) : '') + '</div>' +
           corrections(s.corrections) +
@@ -1717,7 +1739,7 @@
     } else {
       if ((r.prompts || []).length) h += '<div class="wh-sec"><div class="wh-h">Câu hỏi</div>' + r.prompts.map(function (p) { return '<div class="wh-li">• ' + esc(p) + '</div>'; }).join('') + '</div>';
       var resp = (r.responses || []).filter(function (x) { return String(x || '').trim(); });
-      h += '<div class="wh-sec"><div class="wh-h">' + (isSpk ? 'Lời thoại của bạn' : 'Bài viết của bạn') + '</div>' +
+      h += '<div class="wh-sec"><div class="wh-h">' + (isSpk ? 'Lời thoại của bạn' : 'Bài viết của bạn') + '</div>' + (isSpk ? audioEl(r.audioUrl) : '') +
         (resp.length ? resp.map(function (t, i) {
           return (resp.length > 1 ? '<div class="wh-li" style="font-weight:700;margin-top:6px">Phần ' + (i + 1) + '</div>' : '') + '<div class="wh-text">' + esc(t) + '</div>';
         }).join('') : '<div class="wh-empty">(trống)</div>') + '</div>';

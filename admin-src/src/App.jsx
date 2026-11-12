@@ -48,6 +48,7 @@ const VocabActivity = lazy(() => import('./pages/VocabActivity'));
 const StudentDetail = lazy(() => import('./pages/StudentDetail'));
 const Messages = lazy(() => import('./pages/Messages'));
 const WritingGrades = lazy(() => import('./pages/WritingGrades'));
+const SubmissionReviews = lazy(() => import('./pages/SubmissionReviews'));
 const Tuition = lazy(() => import('./pages/Tuition'));
 const UpgradeRequests = lazy(() => import('./pages/UpgradeRequests'));
 const ReviewBypassCodes = lazy(() => import('./pages/ReviewBypassCodes'));
@@ -108,6 +109,7 @@ export default function App() {
                 <Route path="students/:id" element={<StudentDetail />} />
                 <Route path="messages" element={<Messages />} />
                 <Route path="writing-grades" element={<WritingGrades />} />
+                <Route path="submission-reviews" element={<SubmissionReviews />} />
                 {/* Bài mẫu Writing was consolidated into WritingTests.jsx's "📄 Bài mẫu"
                     tab (was a second, drifted-UI page managing the exact same
                     WritingSample data) — redirect old bookmarks/links instead of 404ing. */}

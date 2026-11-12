@@ -573,13 +573,16 @@ async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, tota
 // band if AI-graded, date); a row's full detail (answers/responses/full
 // aiFeedback) is fetched on demand via the existing getAttemptDetail/
 // GET /wt1/attempt/:id, same as clicking into one attempt already works.
-const HISTORY_FIELDS = 'exerciseCode lessonCode attempt score maxScore correctCount status aiFeedback.bandEstimate createdAt';
+const HISTORY_FIELDS = 'exerciseCode lessonCode attempt score maxScore correctCount status aiFeedback.bandEstimate teacherReview.band teacherReview.reviewedAt createdAt';
 function clampLimit(limit) { return Math.min(Math.max(Number(limit) || 50, 1), 200); }
 function historyRow(s) {
   return {
     id: s._id, attempt: s.attempt, score: s.score ?? null, maxScore: s.maxScore ?? null,
     correctCount: s.correctCount ?? null, band: s.aiFeedback?.bandEstimate ?? null,
     status: s.status, createdAt: s.createdAt,
+    // A teacher graded/commented this attempt (admin review queue) — the
+    // list shows a "💬 GV" chip; the detail view shows the comment itself.
+    teacherReviewed: !!s.teacherReview?.reviewedAt, teacherBand: s.teacherReview?.band ?? null,
   };
 }
 
@@ -665,6 +668,13 @@ function buildReview(sub, ex, lessonTitle) {
       : { code: sub.exerciseCode, title: sub.exerciseCode, type: null, instruction: '' },
     kind, score: sub.score ?? null, maxScore: sub.maxScore ?? null, correctCount: sub.correctCount ?? null,
     band: sub.aiFeedback?.bandEstimate ?? null,
+    // Teacher's grade + comment from the admin review queue (null until one
+    // is given) — shown above the AI feedback in Lịch sử, student + admin.
+    teacher: sub.teacherReview?.reviewedAt ? {
+      band: sub.teacherReview.band ?? null, scores: sub.teacherReview.scores || null,
+      note: sub.teacherReview.note || '', reviewerName: sub.teacherReview.reviewerName || '',
+      reviewedAt: sub.teacherReview.reviewedAt,
+    } : null,
   };
 
   if (kind === 'objective') {
@@ -694,11 +704,12 @@ function buildReview(sub, ex, lessonTitle) {
   review.local = sub.localFeedback || null;
   review.sampleAnswer = (ex && ex.rubric && ex.rubric.sampleAnswer) || '';
   if (kind === 'speaking') {
+    review.audioUrl = sub.audioUrl || '';
     const exItems = (ex && ex.items) || [];
     review.speakingItems = (sub.itemResults || []).map((r, i) => {
       const it = exItems[r.itemIndex ?? i] || {};
       return {
-        prompt: r.prompt || '', transcript: r.transcript || '',
+        prompt: r.prompt || '', transcript: r.transcript || '', audioUrl: r.audioUrl || '',
         band: r.feedback?.bandEstimate ?? null, scores: r.feedback?.scores || {},
         feedbackVi: r.feedback?.feedbackVi || '', corrections: r.feedback?.corrections || [],
         sampleAnswer: it.sampleAnswer || '', sampleNote: it.sampleNote || '',
