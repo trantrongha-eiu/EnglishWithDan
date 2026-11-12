@@ -645,7 +645,7 @@
       }).join('') + '</div>' : '');
   }
 
-  window.CourseEngine.start({
+  var CONFIG = {
     courseCode: 'IELTS-SPEAKING',
     overviewPath: '/wt1/overview?course=IELTS-SPEAKING',
     pagePath: '/speaking-course.html',
@@ -702,5 +702,13 @@
       if (window.speechSynthesis) try { window.speechSynthesis.getVoices(); } catch (e) { /* noop */ }
     },
     onBeforeRender: function () { SpeakingRec.teardown(); stopTts(); TTS = []; },
-  });
+  };
+
+  // Another course page that wants this page's speaking_response exercise
+  // (recorder → AI bands) sets window.SPEAKING_COURSE_OVERRIDE = function (base)
+  // { return { …fields to replace… }; } BEFORE loading this file — the
+  // Mindset pages (js/mindset-course.js) do. `base` is CONFIG, so an override
+  // can keep its types / setup / onBeforeRender and chain its own.
+  var override = typeof window.SPEAKING_COURSE_OVERRIDE === 'function' ? window.SPEAKING_COURSE_OVERRIDE(CONFIG) : null;
+  window.CourseEngine.start(override ? Object.assign({}, CONFIG, override) : CONFIG);
 })();

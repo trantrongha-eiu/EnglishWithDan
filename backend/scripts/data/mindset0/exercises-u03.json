@@ -1,0 +1,2179 @@
+{
+ "exercises": [
+  {
+   "code": "M0-U03-L1-E01",
+   "lessonCode": "M0-U03-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Hoạt động trong tranh (Lead-in Ex. 1)",
+   "instruction": "Nối tranh 1–6 với hoạt động (bài có 9 hoạt động, 3 hoạt động không dùng: shopping, cooking, reading).",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u03-leadin.jpg",
+    "caption": "Lead-in"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "hiking",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "canoeing",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "cycling",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "sailing",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "climbing",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "white water rafting",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L1-E02",
+   "lessonCode": "M0-U03-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Môn thể thao trong tranh (G&V Ex. 1)",
+   "instruction": "Nối tranh 1–10 với tên môn thể thao.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u03-sports.jpg",
+    "caption": "G&V Ex. 1"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "tennis",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "volleyball",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "basketball",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "football",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "badminton",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "swimming",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "skiing",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Picture 8",
+     "right": "cycling",
+     "explanation": ""
+    },
+    {
+     "id": "m9",
+     "left": "Picture 9",
+     "right": "sailing",
+     "explanation": ""
+    },
+    {
+     "id": "m10",
+     "left": "Picture 10",
+     "right": "hiking",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L1-E03",
+   "lessonCode": "M0-U03-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 15,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "PLAY, DO hay GO? (G&V Ex. 2)",
+   "instruction": "Xếp mỗi môn vào cột đúng.",
+   "categories": [
+    {
+     "id": "play",
+     "label": "play"
+    },
+    {
+     "id": "do",
+     "label": "do"
+    },
+    {
+     "id": "go",
+     "label": "go"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "tennis",
+     "category": "play",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "chess",
+     "category": "play",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "volleyball",
+     "category": "play",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "hockey",
+     "category": "play",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "table tennis",
+     "category": "play",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "karate",
+     "category": "do",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "judo",
+     "category": "do",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "gymnastics",
+     "category": "do",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "taekwondo",
+     "category": "do",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "athletics",
+     "category": "do",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "horse-riding",
+     "category": "go",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "skiing",
+     "category": "go",
+     "explanation": ""
+    },
+    {
+     "id": "c13",
+     "text": "sailing",
+     "category": "go",
+     "explanation": ""
+    },
+    {
+     "id": "c14",
+     "text": "fishing",
+     "category": "go",
+     "explanation": ""
+    },
+    {
+     "id": "c15",
+     "text": "bowling",
+     "category": "go",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L1-E04",
+   "lessonCode": "M0-U03-L1",
+   "order": 4,
+   "autoGrade": true,
+   "points": 9,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Động từ thể thao (G&V Ex. 3)",
+   "instruction": "Điền dạng đúng của các động từ trong khung: score, win, kick, play, hit, throw, catch, lose, beat.",
+   "wordBank": [
+    "score",
+    "win",
+    "kick",
+    "play",
+    "hit",
+    "throw",
+    "catch",
+    "lose",
+    "beat"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I'm playing in a tennis tournament tomorrow. I hope I ____ some of my matches.",
+     "blanks": [
+      {
+       "accept": [
+        "win"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "Our school football team is not doing well this term. Every team we play against ____ us.",
+     "blanks": [
+      {
+       "accept": [
+        "beats"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "I really want to learn how to ____ baseball but it isn't a popular sport in Britain.",
+     "blanks": [
+      {
+       "accept": [
+        "play"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "It is quite difficult to learn how to ____ the ball with the racket when you start playing tennis.",
+     "blanks": [
+      {
+       "accept": [
+        "hit"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "When you ____ a sports match, it is important to learn from your mistakes.",
+     "blanks": [
+      {
+       "accept": [
+        "lose"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "In rugby, players usually pass the ball to each other by ____ it.",
+     "blanks": [
+      {
+       "accept": [
+        "throwing"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "In football, players can't hold the ball – they must move it by ____ it.",
+     "blanks": [
+      {
+       "accept": [
+        "kicking"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g8",
+     "prompt": "In baseball, players wear a special glove to help them ____ the ball.",
+     "blanks": [
+      {
+       "accept": [
+        "catch"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g9",
+     "prompt": "In football and handball, the team that ____ the most goals is the winner.",
+     "blanks": [
+      {
+       "accept": [
+        "scores"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L1-E05",
+   "lessonCode": "M0-U03-L1",
+   "order": 5,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Môn cricket (G&V Ex. 4)",
+   "instruction": "Chọn từ đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Cricket is a ____ sport in several countries around the world, including India and Britain.",
+     "options": [
+      {
+       "id": "A",
+       "text": "popular"
+      },
+      {
+       "id": "B",
+       "text": "good"
+      },
+      {
+       "id": "C",
+       "text": "favourite"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "There are 11 people in a cricket ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "team"
+      },
+      {
+       "id": "B",
+       "text": "group"
+      },
+      {
+       "id": "C",
+       "text": "set"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "You play the sport by ____ a hard red ball with a bat.",
+     "options": [
+      {
+       "id": "A",
+       "text": "throwing"
+      },
+      {
+       "id": "B",
+       "text": "hitting"
+      },
+      {
+       "id": "C",
+       "text": "kicking"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "It can take five days to complete a cricket ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "goal"
+      },
+      {
+       "id": "B",
+       "text": "match"
+      },
+      {
+       "id": "C",
+       "text": "point"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "People often ____ white clothes to play cricket.",
+     "options": [
+      {
+       "id": "A",
+       "text": "use"
+      },
+      {
+       "id": "B",
+       "text": "wear"
+      },
+      {
+       "id": "C",
+       "text": "put"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L2-E01",
+   "lessonCode": "M0-U03-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Đọc lướt: bài báo nói về gì? (Ex. 12)",
+   "instruction": "Đọc lướt bài báo và trả lời.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Aimee Fuller was born in England but now lives in the USA. She moved to the east coast of the United States at the age of 12 because she knew she wanted to be a professional snowboarder. It wasn't possible to train properly in her hometown because it hardly ever snowed. There was a dry ski slope in her town, where she learnt how to ski and snowboard, but there weren't any mountains with snow to practise the sport.\n\nAimee quickly found sponsors and a coach when she arrived in the USA, and she is now a successful and well-known snowboarding star. She has done really well in many national competitions and her dream is to win an Olympic gold medal one day.\n\nAimee spends most of her time practising on the snow, and trains in the gym four to five times a week. She also goes cycling and running. Aimee says it is very important to keep fit because that helps her stay safe when she is doing snowboarding tricks and jumps. Her advice to people who want to learn how to do jumps, is to start small and only do bigger jumps when they feel ready.\n\n**During her free time, Aimee likes to spend time at home, switch off her phone and laptop and hang out with her friends and family.**",
+    "caption": "Snowboarding star (tr. 38)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Who is Aimee Fuller?",
+     "options": [
+      {
+       "id": "A",
+       "text": "an English snowboarder who lives in the USA"
+      },
+      {
+       "id": "B",
+       "text": "an American ski coach"
+      },
+      {
+       "id": "C",
+       "text": "a famous Olympic champion"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"born in England but now lives in the USA… professional snowboarder\"."
+    },
+    {
+     "id": "q2",
+     "prompt": "What sport has Aimee become successful in?",
+     "options": [
+      {
+       "id": "A",
+       "text": "skiing"
+      },
+      {
+       "id": "B",
+       "text": "snowboarding"
+      },
+      {
+       "id": "C",
+       "text": "cycling"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "What is the reason for this article?",
+     "options": [
+      {
+       "id": "A",
+       "text": "to sell snowboards"
+      },
+      {
+       "id": "B",
+       "text": "to tell readers about Aimee's life and career"
+      },
+      {
+       "id": "C",
+       "text": "to explain the rules of snowboarding"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Bài giới thiệu cuộc đời và sự nghiệp của Aimee."
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L2-E02",
+   "lessonCode": "M0-U03-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Từ vựng trong bài (Ex. 14)",
+   "instruction": "Hoàn thành từ trong bài báo khớp với định nghĩa.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "This is someone who is paid to do a sport or other activity. → p____",
+     "blanks": [
+      {
+       "accept": [
+        "professional",
+        "rofessional"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "This means to practise your sport. → t____",
+     "blanks": [
+      {
+       "accept": [
+        "train",
+        "rain"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "This word describes someone who is doing well in his/her life. → s____",
+     "blanks": [
+      {
+       "accept": [
+        "successful",
+        "uccessful"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "When you are this, you don't get tired easily when you exercise or do sport. → f____",
+     "blanks": [
+      {
+       "accept": [
+        "fit",
+        "it"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "You ask someone for this when you want to know what to do. → a____",
+     "blanks": [
+      {
+       "accept": [
+        "advice",
+        "dvice"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L3-E01",
+   "lessonCode": "M0-U03-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 11,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Phân loại động từ trong blog (Ex. 6)",
+   "instruction": "Đọc blog từ Iceland. Mỗi cụm động từ thuộc thì nào?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "I'm having a great time here in Iceland. I don't miss home at all. I'm not staying in a hotel. I'm staying at a little guesthouse with 11 other people. Every day, we get up early and go hiking or climbing. At the moment, I'm resting in my room because I'm exhausted. At home, I usually sleep about eight hours a night but on this holiday I need at least 10 hours a night because I'm so active! Our guide is great. He looks after us really well and he always makes us laugh. I'm happy with the food, but my friend doesn't like it very much. Today, we're having reindeer burgers. The chef is cooking them now and they smell delicious.",
+    "caption": "MY BLOG — Iceland"
+   },
+   "categories": [
+    {
+     "id": "ps",
+     "label": "Present simple"
+    },
+    {
+     "id": "pc",
+     "label": "Present continuous"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "we get up",
+     "category": "ps",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "I don't miss",
+     "category": "ps",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "I usually sleep",
+     "category": "ps",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "He looks after us",
+     "category": "ps",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "he always makes us laugh",
+     "category": "ps",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "my friend doesn't like",
+     "category": "ps",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "I'm having a great time",
+     "category": "pc",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "I'm not staying",
+     "category": "pc",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "I'm resting",
+     "category": "pc",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "we're having reindeer burgers",
+     "category": "pc",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "The chef is cooking",
+     "category": "pc",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L3-E02",
+   "lessonCode": "M0-U03-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Quy tắc dùng thì (Ex. 7, 9)",
+   "instruction": "Chọn \"simple\" hoặc \"continuous\".",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "We use the present ____ with time words and phrases, such as at the moment, today and now.",
+     "options": [
+      {
+       "id": "A",
+       "text": "simple"
+      },
+      {
+       "id": "B",
+       "text": "continuous"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "We use the present ____ with adverbs, such as always, sometimes, usually and every day.",
+     "options": [
+      {
+       "id": "A",
+       "text": "simple"
+      },
+      {
+       "id": "B",
+       "text": "continuous"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "We use the present ____ to talk about habits and routines.",
+     "options": [
+      {
+       "id": "A",
+       "text": "simple"
+      },
+      {
+       "id": "B",
+       "text": "continuous"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "We use the present ____ to describe the action in photographs.",
+     "options": [
+      {
+       "id": "A",
+       "text": "simple"
+      },
+      {
+       "id": "B",
+       "text": "continuous"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "When you make a question in the present ____, use the auxiliary verb do.",
+     "options": [
+      {
+       "id": "A",
+       "text": "simple"
+      },
+      {
+       "id": "B",
+       "text": "continuous"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "When you make a question in the present ____, use the question form of the verb to be.",
+     "options": [
+      {
+       "id": "A",
+       "text": "simple"
+      },
+      {
+       "id": "B",
+       "text": "continuous"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L3-E03",
+   "lessonCode": "M0-U03-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 9,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Viết dạng -s và -ing (Ex. 8)",
+   "instruction": "Viết dạng ngôi thứ ba (-s/-es/-ies) và dạng -ing của động từ.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "live → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "lives"
+       ]
+      },
+      {
+       "accept": [
+        "living"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "get → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "gets"
+       ]
+      },
+      {
+       "accept": [
+        "getting"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "carry → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "carries"
+       ]
+      },
+      {
+       "accept": [
+        "carrying"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "hope → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "hopes"
+       ]
+      },
+      {
+       "accept": [
+        "hoping"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "run → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "runs"
+       ]
+      },
+      {
+       "accept": [
+        "running"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "lie → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "lies"
+       ]
+      },
+      {
+       "accept": [
+        "lying"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "cry → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "cries"
+       ]
+      },
+      {
+       "accept": [
+        "crying"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g8",
+     "prompt": "make → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "makes"
+       ]
+      },
+      {
+       "accept": [
+        "making"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g9",
+     "prompt": "begin → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "begins"
+       ]
+      },
+      {
+       "accept": [
+        "beginning"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L3-E04",
+   "lessonCode": "M0-U03-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Hỏi – đáp hai thì (Ex. 9)",
+   "instruction": "Nối câu hỏi 1–4 với câu trả lời A–D.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Are you enjoying your holiday?",
+     "right": "Yes, I am. / No, I'm not.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "What are you doing at the moment?",
+     "right": "I'm having a rest.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Do you usually get up early?",
+     "right": "Yes, I do. / No, I don't.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "When does your brother get up?",
+     "right": "At about 7am.",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L3-E05",
+   "lessonCode": "M0-U03-L3",
+   "order": 5,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Hội thoại: chia động từ (Ex. 10)",
+   "instruction": "Chia động từ trong ngoặc ở hiện tại đơn hoặc hiện tại tiếp diễn.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "A: Hi, Gabby. What ____ (you/do) at the moment? Do you ____ (want) to go out somewhere?",
+     "blanks": [
+      {
+       "accept": [
+        "are you doing"
+       ]
+      },
+      {
+       "accept": [
+        "want"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "B: I can't, sorry. I ____ (watch) a football match on TV. My team usually ____ (play) really well but they ____ (lose) very badly today!",
+     "blanks": [
+      {
+       "accept": [
+        "'m watching",
+        "am watching"
+       ]
+      },
+      {
+       "accept": [
+        "plays"
+       ]
+      },
+      {
+       "accept": [
+        "are losing",
+        "'re losing"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "A: Tom, I ____ (wait) for you outside the cinema. — B: I'm sorry, this bus never ____ (arrive) on time.",
+     "blanks": [
+      {
+       "accept": [
+        "'m waiting",
+        "am waiting"
+       ]
+      },
+      {
+       "accept": [
+        "arrives"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "Sam ____ (not answer) my calls today. — He's got a French exam next week, so he ____ (study) at the moment.",
+     "blanks": [
+      {
+       "accept": [
+        "isn't answering",
+        "is not answering"
+       ]
+      },
+      {
+       "accept": [
+        "'s studying",
+        "is studying"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "How do you usually ____ (get) to college? — I ____ (walk). It ____ (not take) long.",
+     "blanks": [
+      {
+       "accept": [
+        "get"
+       ]
+      },
+      {
+       "accept": [
+        "walk"
+       ]
+      },
+      {
+       "accept": [
+        "doesn't take",
+        "does not take"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "My Dad usually ____ (drive) me there but he ____ (work) today.",
+     "blanks": [
+      {
+       "accept": [
+        "drives"
+       ]
+      },
+      {
+       "accept": [
+        "'s working",
+        "is working"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L3-E06",
+   "lessonCode": "M0-U03-L3",
+   "order": 6,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "ordering",
+   "title": "Đặt câu hỏi (Ex. 11)",
+   "instruction": "Sắp xếp thành câu hỏi đúng.",
+   "items": [
+    {
+     "id": "o1",
+     "prompt": "",
+     "tokens": [
+      "Why",
+      "are",
+      "you",
+      "learning",
+      "English?"
+     ],
+     "answer": [
+      "Why",
+      "are",
+      "you",
+      "learning",
+      "English?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o2",
+     "prompt": "",
+     "tokens": [
+      "What",
+      "time",
+      "do",
+      "you",
+      "usually",
+      "get",
+      "up?"
+     ],
+     "answer": [
+      "What",
+      "time",
+      "do",
+      "you",
+      "usually",
+      "get",
+      "up?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o3",
+     "prompt": "",
+     "tokens": [
+      "What",
+      "are",
+      "you",
+      "learning",
+      "about",
+      "in",
+      "geography",
+      "at",
+      "the",
+      "moment?"
+     ],
+     "answer": [
+      "What",
+      "are",
+      "you",
+      "learning",
+      "about",
+      "in",
+      "geography",
+      "at",
+      "the",
+      "moment?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o4",
+     "prompt": "",
+     "tokens": [
+      "Do",
+      "you",
+      "play",
+      "tennis?"
+     ],
+     "answer": [
+      "Do",
+      "you",
+      "play",
+      "tennis?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o5",
+     "prompt": "",
+     "tokens": [
+      "What",
+      "is",
+      "the",
+      "teacher",
+      "doing",
+      "now?"
+     ],
+     "answer": [
+      "What",
+      "is",
+      "the",
+      "teacher",
+      "doing",
+      "now?"
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L4-E01",
+   "lessonCode": "M0-U03-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Ghi chú: liên hoan phim (Ex. 21)",
+   "instruction": "Đọc quảng cáo và email của Andrew rồi hoàn thành ghi chú của Joshua.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "FILM FESTIVAL IN SUNNYHILL PARK — Saturday 23rd and Sunday 24th June\n2:00PM Blue Rain · 4:00PM Child in Time\nTICKETS: £20 on the day or £15 from www.parkcinema.com\nAlso available – food stalls, art and other activities\n\nTo: Joshua · From: Andrew\nHi Joshua, I'm emailing you about the film festival at the weekend. I can only go on Saturday as I'm working on Sunday. I don't mind if we miss Blue Rain, but I can't wait to see Child in Time! We can get food there, but don't forget an umbrella as it looks like the weather won't be good. I'll get the tickets online tonight and you can pay me then. See you at the entrance at 1:00pm. Andrew",
+    "caption": "Ex. 21 — Place: Sunnyhill Park (ví dụ)"
+   },
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Date we will go: ____ 23rd June",
+     "blanks": [
+      {
+       "accept": [
+        "Saturday"
+       ]
+      }
+     ],
+     "explanation": "Andrew: \"I can only go on Saturday as I'm working on Sunday.\" Quảng cáo: Saturday 23rd and Sunday 24th June."
+    },
+    {
+     "id": "g2",
+     "prompt": "Cost for me: £____",
+     "blanks": [
+      {
+       "accept": [
+        "15"
+       ]
+      }
+     ],
+     "explanation": "Andrew mua vé online tối nay → giá online £15 (mua tại chỗ £20)."
+    },
+    {
+     "id": "g3",
+     "prompt": "Time to meet Andrew: ____",
+     "blanks": [
+      {
+       "accept": [
+        "1:00pm",
+        "1pm",
+        "1.00pm"
+       ]
+      }
+     ],
+     "explanation": "\"See you at the entrance at 1:00pm.\""
+    },
+    {
+     "id": "g4",
+     "prompt": "Film we will see: ____ ____ ____",
+     "blanks": [
+      {
+       "accept": [
+        "Child"
+       ]
+      },
+      {
+       "accept": [
+        "in"
+       ]
+      },
+      {
+       "accept": [
+        "Time"
+       ]
+      }
+     ],
+     "explanation": "\"I don't mind if we miss Blue Rain, but I can't wait to see Child in Time!\""
+    },
+    {
+     "id": "g5",
+     "prompt": "What to take: an ____",
+     "blanks": [
+      {
+       "accept": [
+        "umbrella"
+       ]
+      }
+     ],
+     "explanation": "\"don't forget an umbrella as it looks like the weather won't be good.\""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L4-E02",
+   "lessonCode": "M0-U03-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Richard muốn gì? (Ex. 22)",
+   "instruction": "Bạn và Andrew đang ở liên hoan phim. Richard nhắn tin cho bạn.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Hi Joshua,\nWhere are you? Are you busy? I'm watching TV at home at the moment but I'm really bored.\nDo you want to meet up? Let me know soon!\nRichard",
+    "caption": "Message from Richard"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What does Richard want to do?",
+     "options": [
+      {
+       "id": "A",
+       "text": "watch TV at home with you"
+      },
+      {
+       "id": "B",
+       "text": "meet up with you"
+      },
+      {
+       "id": "C",
+       "text": "buy tickets for the festival"
+      }
+     ],
+     "answer": "B",
+     "explanation": "\"Do you want to meet up? Let me know soon!\""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L4-E03",
+   "lessonCode": "M0-U03-L4",
+   "order": 3,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Viết tin nhắn trả lời Richard (Ex. 23)",
+   "instruction": "Dùng thông tin của unit này để viết tin nhắn trả lời Richard (khoảng 60–90 từ). Tin nhắn phải có: nơi bạn đang ở · bạn đang đi cùng ai · bạn đang làm gì · chuyện gì đang diễn ra · nơi bạn có thể gặp Richard · Richard nên mang gì theo. Dùng đúng hiện tại đơn và hiện tại tiếp diễn.",
+   "responseSlots": 1,
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 55,
+    "maxWords": 100,
+    "mustUse": 3,
+    "targetStructures": [
+     "I'm",
+     "We're",
+     "at the moment",
+     "Bring",
+     "See you"
+    ],
+    "checklist": [
+     "Nơi bạn đang ở",
+     "Đi cùng ai",
+     "Đang làm gì",
+     "Chuyện gì đang diễn ra",
+     "Hẹn gặp ở đâu",
+     "Richard nên mang gì",
+     "Dùng hiện tại tiếp diễn cho việc đang xảy ra"
+    ],
+    "sampleAnswer": "Hi Richard,\n\nYes, that would be great! I'm in Sunnyhill Park at the moment, at a film festival with Andrew. We're watching Child in Time – it's fantastic! Lots of people are sitting on the grass and some are eating at the food stalls. The next film starts at 4pm. You can meet us at the entrance near the car park. Bring some money for food and an umbrella as it may rain.\n\nSee you soon,\nJoshua",
+    "commonErrors": [
+     "Dùng hiện tại đơn cho việc đang xảy ra (We watch a film now)",
+     "Thiếu 1–2 ý trong 6 gạch đầu dòng"
+    ]
+   }
+  },
+  {
+   "code": "M0-U03-L5-E01",
+   "lessonCode": "M0-U03-L5",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Hoạt động nào được nhắc tới? (Ex. 4)",
+   "instruction": "Nghe/đọc bài: hoạt động nào sau đây Deon CÓ nhắc tới?",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "cycling",
+     "options": [
+      {
+       "id": "A",
+       "text": "được nhắc tới"
+      },
+      {
+       "id": "B",
+       "text": "không được nhắc tới"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"He went on one of their cycling holidays last year\"."
+    },
+    {
+     "id": "q2",
+     "prompt": "shopping",
+     "options": [
+      {
+       "id": "A",
+       "text": "được nhắc tới"
+      },
+      {
+       "id": "B",
+       "text": "không được nhắc tới"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "hiking and cooking",
+     "options": [
+      {
+       "id": "A",
+       "text": "được nhắc tới"
+      },
+      {
+       "id": "B",
+       "text": "không được nhắc tới"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"in the forest where you can do hiking and cooking\"."
+    },
+    {
+     "id": "q4",
+     "prompt": "canoeing",
+     "options": [
+      {
+       "id": "A",
+       "text": "được nhắc tới"
+      },
+      {
+       "id": "B",
+       "text": "không được nhắc tới"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Có nói \"water sports\" nhưng không nói canoeing."
+    },
+    {
+     "id": "q5",
+     "prompt": "climbing and white water rafting",
+     "options": [
+      {
+       "id": "A",
+       "text": "được nhắc tới"
+      },
+      {
+       "id": "B",
+       "text": "không được nhắc tới"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"in the mountains… climbing and white water rafting\"."
+    },
+    {
+     "id": "q6",
+     "prompt": "sailing",
+     "options": [
+      {
+       "id": "A",
+       "text": "được nhắc tới"
+      },
+      {
+       "id": "B",
+       "text": "không được nhắc tới"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"The sailing holidays are eight hundred pounds\"."
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L6-E01",
+   "lessonCode": "M0-U03-L6",
+   "order": 1,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: mô tả hai bức tranh công viên (Ex. 19)",
+   "instruction": "Nhìn Picture 1 và Picture 2 (ở trên). Nói khoảng 1 phút: mô tả chuyện gì đang xảy ra trong mỗi tranh, nêu 3–5 điểm giống và 3–5 điểm khác. Dùng hiện tại tiếp diễn.",
+   "speakingPart": 2,
+   "speakingPrepSeconds": 60,
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u03-park-pictures.jpg",
+    "caption": "Picture 1 & 2"
+   },
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "Describe Picture 1 and Picture 2. Say what is happening in each picture, and find things that are the same and different.",
+     "sampleAnswer": "In both pictures, I can see a big park with lots of trees and green grass, and people are doing exercise. In picture 1, a man is riding a bike at the top and a woman is lying on a bench. In the middle, some people are standing on a red mat and talking. A father is walking with his son and holding hands. In picture 2, there is no bike, but a person is running at the bottom. In the middle, a group of people are doing yoga, and on the right a man is doing push-ups. So the main difference is that people in picture 2 are more active.",
+     "sampleNote": "Mở bằng điểm chung (In both pictures), rồi lần lượt tranh 1 → tranh 2, có vị trí (at the top, in the middle, on the right), kết bằng nhận xét.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L6-E02",
+   "lessonCode": "M0-U03-L6",
+   "order": 2,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: sở thích của bạn (Ex. 3, 20)",
+   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "What activities do you like doing in your free time?",
+     "sampleAnswer": "In my free time I usually play badminton with my friends after school. I also love reading comics because it helps me relax before I go to sleep.",
+     "sampleNote": "2 hoạt động + tần suất + lý do.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "Which sports do you like doing? Which sports do you watch on TV?",
+     "sampleAnswer": "I like swimming because it's good exercise and it keeps me fit. On TV, I usually watch football with my dad, especially when Vietnam is playing.",
+     "sampleNote": "Tách 2 ý: chơi gì / xem gì.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "Is it important to spend time outdoors? Why or why not?",
+     "sampleAnswer": "Yes, I think so. We spend too much time looking at screens, so going outside helps us feel healthier and happier. For example, I feel much better after a walk in the park.",
+     "sampleNote": "Opinion → reason → example.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s4",
+     "prompt": "What activities are popular in your country?",
+     "sampleAnswer": "Football is definitely the most popular sport in Vietnam. Lots of young people also like playing badminton in the park and going out with friends for coffee at the weekend.",
+     "sampleNote": "Nêu 2–3 hoạt động phổ biến.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L7-E01",
+   "lessonCode": "M0-U03-L7",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Từ nào khác loại? (G&V Ex. 5)",
+   "instruction": "Chọn từ KHÁC nhóm với các từ còn lại.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "sailing · swimming · tennis · canoeing · windsurfing",
+     "options": [
+      {
+       "id": "A",
+       "text": "sailing"
+      },
+      {
+       "id": "B",
+       "text": "tennis"
+      },
+      {
+       "id": "C",
+       "text": "canoeing"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Các từ khác là water sports (thể thao dưới nước)."
+    },
+    {
+     "id": "q2",
+     "prompt": "football · rugby · cricket · athletics · baseball",
+     "options": [
+      {
+       "id": "A",
+       "text": "rugby"
+      },
+      {
+       "id": "B",
+       "text": "cricket"
+      },
+      {
+       "id": "C",
+       "text": "athletics"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Các từ khác là team sports."
+    },
+    {
+     "id": "q3",
+     "prompt": "catch · hit · kick · lose · run",
+     "options": [
+      {
+       "id": "A",
+       "text": "hit"
+      },
+      {
+       "id": "B",
+       "text": "lose"
+      },
+      {
+       "id": "C",
+       "text": "run"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Các từ khác là hành động trong khi chơi thể thao (actions used in sports)."
+    },
+    {
+     "id": "q4",
+     "prompt": "match · game · tournament · race · judo",
+     "options": [
+      {
+       "id": "A",
+       "text": "judo"
+      },
+      {
+       "id": "B",
+       "text": "race"
+      },
+      {
+       "id": "C",
+       "text": "game"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Các từ khác là các loại cuộc thi (types of competition)."
+    },
+    {
+     "id": "q5",
+     "prompt": "snowboarding · boxing · skiing · climbing · hiking",
+     "options": [
+      {
+       "id": "A",
+       "text": "skiing"
+      },
+      {
+       "id": "B",
+       "text": "boxing"
+      },
+      {
+       "id": "C",
+       "text": "hiking"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Các từ khác là mountain sports."
+    },
+    {
+     "id": "q6",
+     "prompt": "ball · winner · bat · racket · stick",
+     "options": [
+      {
+       "id": "A",
+       "text": "winner"
+      },
+      {
+       "id": "B",
+       "text": "bat"
+      },
+      {
+       "id": "C",
+       "text": "stick"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Các từ khác là dụng cụ thể thao (sports equipment)."
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L7-E02",
+   "lessonCode": "M0-U03-L7",
+   "order": 2,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Nối nửa câu (G&V Ex. 7)",
+   "instruction": "Nối hai nửa câu.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "My mum is working",
+     "right": "in Italy at the moment.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "I often go to the cinema",
+     "right": "on a Saturday evening.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "I can't speak to you right now",
+     "right": "because I'm studying.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "What does your brother",
+     "right": "like doing in his free time?",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "In this photo, I'm climbing",
+     "right": "a volcano with my uncle.",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "What do you usually do",
+     "right": "at the weekend?",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Why isn't Sam",
+     "right": "eating his sandwich?",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L7-E03",
+   "lessonCode": "M0-U03-L7",
+   "order": 3,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Động từ trạng thái (G&V Ex. 8)",
+   "instruction": "Chọn dạng đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "____ how to play tennis, but I would like to learn.",
+     "options": [
+      {
+       "id": "A",
+       "text": "I don't know"
+      },
+      {
+       "id": "B",
+       "text": "I'm not knowing"
+      }
+     ],
+     "answer": "A",
+     "explanation": "know là state verb → không dùng tiếp diễn."
+    },
+    {
+     "id": "q2",
+     "prompt": "I'm very sorry, ____ your name.",
+     "options": [
+      {
+       "id": "A",
+       "text": "I can't remember"
+      },
+      {
+       "id": "B",
+       "text": "I'm not remembering"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Can you help me with my homework? ____ this question.",
+     "options": [
+      {
+       "id": "A",
+       "text": "I'm not understanding"
+      },
+      {
+       "id": "B",
+       "text": "I don't understand"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "John ____ a great time on holiday. Look at these pictures on his blog!",
+     "options": [
+      {
+       "id": "A",
+       "text": "is having"
+      },
+      {
+       "id": "B",
+       "text": "has"
+      }
+     ],
+     "answer": "A",
+     "explanation": "have a great time = hành động (trải qua) → được dùng tiếp diễn."
+    },
+    {
+     "id": "q5",
+     "prompt": "It ____ to my sister and she ____ it at the moment.",
+     "options": [
+      {
+       "id": "A",
+       "text": "belongs / is reading"
+      },
+      {
+       "id": "B",
+       "text": "is belonging / reads"
+      }
+     ],
+     "answer": "A",
+     "explanation": "belong là state verb; \"at the moment\" → is reading."
+    },
+    {
+     "id": "q6",
+     "prompt": "____ go out tonight. I'm too tired!",
+     "options": [
+      {
+       "id": "A",
+       "text": "I don't want to"
+      },
+      {
+       "id": "B",
+       "text": "I'm not wanting to"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "My brother ____ so many hobbies! At the moment, he ____ photos in the garden.",
+     "options": [
+      {
+       "id": "A",
+       "text": "has / is taking"
+      },
+      {
+       "id": "B",
+       "text": "is having / takes"
+      }
+     ],
+     "answer": "A",
+     "explanation": "have (sở hữu) là state verb; at the moment → is taking."
+    },
+    {
+     "id": "q8",
+     "prompt": "Sue ____ you at the moment. She ____ a shower.",
+     "options": [
+      {
+       "id": "A",
+       "text": "isn't hearing / has"
+      },
+      {
+       "id": "B",
+       "text": "can't hear / is having"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L7-E04",
+   "lessonCode": "M0-U03-L7",
+   "order": 4,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Email của Katy ở Leeds (G&V Ex. 9)",
+   "instruction": "Chia động từ trong ngoặc (hiện tại đơn hoặc hiện tại tiếp diễn).",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I ____ (have) a great time here in Leeds. The city is really big and it ____ (have) so many interesting places to visit.",
+     "blanks": [
+      {
+       "accept": [
+        "am having",
+        "'m having"
+       ]
+      },
+      {
+       "accept": [
+        "has"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "I ____ (enjoy) my course so far and I really ____ (like) my classmates.",
+     "blanks": [
+      {
+       "accept": [
+        "am enjoying",
+        "'m enjoying"
+       ]
+      },
+      {
+       "accept": [
+        "like"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "I ____ (stay) in one of the halls of residence this year.",
+     "blanks": [
+      {
+       "accept": [
+        "am staying",
+        "'m staying"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "I ____ (have got) a job in a local restaurant. I ____ (work) there three evenings a week.",
+     "blanks": [
+      {
+       "accept": [
+        "have got",
+        "'ve got"
+       ]
+      },
+      {
+       "accept": [
+        "work"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "It's fine, but at the moment I ____ (look) for another job. I ____ (want) one that ____ (finish) a bit earlier.",
+     "blanks": [
+      {
+       "accept": [
+        "am looking",
+        "'m looking"
+       ]
+      },
+      {
+       "accept": [
+        "want"
+       ]
+      },
+      {
+       "accept": [
+        "finishes"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L7-E05",
+   "lessonCode": "M0-U03-L7",
+   "order": 5,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Câu hỏi và câu trả lời ngắn (G&V Ex. 10)",
+   "instruction": "Nối câu hỏi với câu trả lời ngắn phù hợp.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Is that your brother playing tennis over there?",
+     "right": "Yes, it is.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Do you always get up so early?",
+     "right": "Yes, I do.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Are your parents staying in a hotel?",
+     "right": "Yes, they are.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Are you making chocolate cake?",
+     "right": "No, I'm not.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Is your brother having a good time in Iceland?",
+     "right": "Yes, he is.",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Do you and your parents always eat together in the evenings?",
+     "right": "No, we don't.",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Look at this picture of me as a young child. Am I wearing your gold necklace?",
+     "right": "Yes, you are.",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Do any of your school friends do taekwondo?",
+     "right": "No, they don't.",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

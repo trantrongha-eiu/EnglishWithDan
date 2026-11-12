@@ -1,0 +1,146 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 0 · Unit 3 — Aimee Fuller: Snowboarding Star",
+   "content": "<p><em>You are going to read an article about a sportsperson.</em></p>\n\n<p>Aimee Fuller was born in England but now lives in the USA. She moved to the east coast of the United States at the age of 12 because she knew she wanted to be a professional snowboarder. It wasn't possible to train properly in her hometown because it hardly ever snowed. There was a dry ski slope in her town, where she learnt how to ski and snowboard, but there weren't any mountains with snow to practise the sport.</p>\n\n<p>Aimee quickly found sponsors and a coach when she arrived in the USA, and she is now a successful and well-known snowboarding star. She has done really well in many national competitions and her dream is to win an Olympic gold medal one day.</p>\n\n<p>Aimee spends most of her time practising on the snow, and trains in the gym four to five times a week. She also goes cycling and running. Aimee says it is very important to keep fit because that helps her stay safe when she is doing snowboarding tricks and jumps. Her advice to people who want to learn how to do jumps, is to start small and only do bigger jumps when they feel ready.</p>\n\n<p><strong>During her free time, Aimee likes to spend time at home, switch off her phone and laptop and hang out with her friends and family.</strong></p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–7",
+     "instruction": "Do the following statements agree with the information in the article? Choose TRUE, FALSE or NOT GIVEN. (Example: Aimee spent the first few years of her life in England. → TRUE)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "true-false-ng",
+       "questionText": "Aimee learnt to ski before she started snowboarding.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Bài: \"she learnt how to ski and snowboard\" — có học cả hai nhưng KHÔNG nói học môn nào trước → NOT GIVEN."
+      },
+      {
+       "questionNumber": 2,
+       "type": "true-false-ng",
+       "questionText": "It often snowed during winter in Aimee's hometown.",
+       "correctAnswer": "FALSE",
+       "explanation": "Bài: \"it hardly ever snowed\" (hầu như không bao giờ có tuyết) — ngược với \"often\" → FALSE."
+      },
+      {
+       "questionNumber": 3,
+       "type": "true-false-ng",
+       "questionText": "It took Aimee a long time to find a coach after she moved to the USA.",
+       "correctAnswer": "FALSE",
+       "explanation": "Bài: \"Aimee **quickly** found sponsors and a coach\" — ngược với \"a long time\" → FALSE."
+      },
+      {
+       "questionNumber": 4,
+       "type": "true-false-ng",
+       "questionText": "Aimee has won an Olympic medal.",
+       "correctAnswer": "FALSE",
+       "explanation": "Bẫy: bài có \"Olympic gold medal\" nhưng đó là ước mơ: \"her dream is to win an Olympic gold medal **one day**\" → chưa giành được → FALSE."
+      },
+      {
+       "questionNumber": 5,
+       "type": "true-false-ng",
+       "questionText": "Aimee practises snowboarding in the mountains at least three times a week.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Bài nói tập gym \"four to five times a week\" và \"spends most of her time practising on the snow\", nhưng không nói tập trên núi mấy lần/tuần → NOT GIVEN."
+      },
+      {
+       "questionNumber": 6,
+       "type": "true-false-ng",
+       "questionText": "Aimee thinks that snowboarding is more dangerous for her when she is not fit.",
+       "correctAnswer": "TRUE",
+       "explanation": "Bài: \"it is very important to keep fit because that helps her stay safe\" → không khoẻ thì kém an toàn hơn → TRUE."
+      },
+      {
+       "questionNumber": 7,
+       "type": "true-false-ng",
+       "questionText": "In her free time, Aimee prefers being with people to spending time on her laptop.",
+       "correctAnswer": "TRUE",
+       "explanation": "Chú thích ảnh: \"switch off her phone and laptop and hang out with her friends and family\" → TRUE."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U03-R1"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 0 · Unit 3 — An adventure holiday",
+   "description": "Deon and Mark talk about booking an adventure holiday with World Trek.",
+   "partNumber": 1,
+   "audioFile": "MindsetIELTS_Foundation_05.mp3",
+   "transcript": "Deon: Hey, Mark! Are you still interested in coming on a week's adventure holiday with me this summer?\nMark: Of course, but can we go in August? I can't do June or July because of college.\nDeon: Yeah, sure! I guess we need to book soon. There's a company called World Trek that my friend told me about. He went on one of their cycling holidays last year, and loved it. There's lots of information on their website.\nMark: Really?\nDeon: Yes – they do different kinds of adventure holidays. There's one by the sea with lots of water sports, and another in the forest where you can do hiking and cooking, and you learn how to cook outdoors. The one I like best is in the mountains. We can do things like climbing and white water rafting. What do you think?\nMark: That sounds amazing! Is it expensive?\nDeon: So so – there's a special offer on at the moment. Normally the price is six hundred and fifty pounds, but if you book before Friday, it's five hundred pounds. The sailing holidays are eight hundred pounds, so it's not bad!\nMark: What does that include?\nDeon: Transport, accommodation and our guide. We only have to pay for meals and drinks.\nMark: That's really good, isn't it? Let's book tonight! Shall I come to your place this evening around seven?\nDeon: Can you come at eight? I've got a tennis lesson until seven thirty.\nMark: Yes, sure. See you then.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Listen to two friends, Deon and Mark, talking about an adventure holiday. Choose the correct answer, A, B or C. (Example: When will Deon and Mark go on the adventure holiday? → C August)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "How did Deon first find out about World Trek holidays?",
+       "options": [
+        "He has been on one of their holidays.",
+        "He found their website online.",
+        "He heard about it from someone he knows."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Deon biết đến World Trek lần đầu bằng cách nào?\n\nVị trí: Ngay sau khi hai bạn chọn tháng 8.\n\nTranscript: “There's a company called World Trek that my friend told me about”\n\nPhân tích: \"my friend told me\" = \"someone he knows\" (MINI TIP 05.1). Bẫy A: người bạn đi rồi, không phải Deon. Bẫy B: website có nhắc nhưng không phải cách Deon biết lần đầu."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Deon would like to go on an adventure holiday",
+       "options": [
+        "in a forest.",
+        "in the mountains.",
+        "near the sea."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Deon muốn đi kỳ nghỉ phiêu lưu…\n\nVị trí: Khi Deon kể các loại tour.\n\nTranscript: “The one I like best is in the mountains”\n\nPhân tích: Cả 3 nơi đều được nhắc, nhưng \"the one I like best\" = in the mountains → B."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "How much does the holiday they want to go on cost if they book it now?",
+       "options": [
+        "£500",
+        "£650",
+        "£800"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Kỳ nghỉ họ muốn đi giá bao nhiêu nếu đặt ngay bây giờ?\n\nVị trí: Khi Mark hỏi \"Is it expensive?\"\n\nTranscript: “Normally the price is six hundred and fifty pounds, but if you book before Friday, it's five hundred pounds”\n\nPhân tích: £650 là giá thường; đặt trước thứ Sáu (= bây giờ) → £500. £800 là tour thuyền buồm."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "The price of the holiday does NOT include",
+       "options": [
+        "food.",
+        "the guide.",
+        "transport."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Giá kỳ nghỉ KHÔNG bao gồm…\n\nVị trí: Khi Mark hỏi \"What does that include?\"\n\nTranscript: “Transport, accommodation and our guide” … “We only have to pay for meals and drinks”\n\nPhân tích: Phải tự trả tiền \"meals and drinks\" = food → A."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "What time will the boys meet this evening?",
+       "options": [
+        "7pm",
+        "7:30pm",
+        "8pm"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Tối nay hai bạn gặp nhau lúc mấy giờ?\n\nVị trí: Cuối bài.\n\nTranscript: “Shall I come to your place this evening around seven?” … “Can you come at eight? I've got a tennis lesson until seven thirty” … “Yes, sure”\n\nPhân tích: 7 giờ là đề nghị đầu tiên; 7:30 là giờ học tennis kết thúc; chốt lại 8 giờ → C."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U03-L1"
+  }
+ ]
+}

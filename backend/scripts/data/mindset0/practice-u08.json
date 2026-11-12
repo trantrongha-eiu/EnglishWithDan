@@ -1,0 +1,298 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 0 · Unit 8 — Should students stop sports lessons?",
+   "content": "<p><strong>Essay question:</strong> <em>Students who are studying for important school exams should stop sports lessons. Discuss.</em></p>\n\n<p>Some parents may think that while their children are preparing for important school exams, they shouldn't have sports lessons. This could be because they want them to focus on exam subjects more, like science and maths. For a similar reason, some parents think children should also stop painting and music lessons in the final school term so they can spend more time studying. However, I disagree with these views, and believe that children should continue to have sports lessons. These lessons help students keep healthy and happy during the exam period.</p>\n\n<p>Firstly, schools need to encourage young people to follow a healthy lifestyle and get regular exercise. Many young people don't do enough exercise. They prefer to spend their free time indoors on their computers or watching TV than going to the park and playing tennis, or going cycling. Many people today are overweight and have health problems. There is a lot of information about eating healthily, but people often forget that regular exercise is equally important.</p>\n\n<p>Secondly, exercise helps us feel less stressed and tired. It also improves memory and helps us think clearly. When students are studying for exams, it's a good idea to take regular breaks and do something active for 20 minutes. Exercise also helps us to concentrate better on difficult tasks and helps us sleep better at night. Doing exercise may even help students get better results in their exams.</p>\n\n<p>In conclusion, I believe that students who are revising for important exams should continue to have sports lessons because regular exercise is good for their body and mind.</p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Read the essay and use the exam strategy to answer the multiple-choice questions. Choose the best option, A, B or C.",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "The writer believes that children who have important exams",
+       "options": [
+        "need sports lessons to keep healthy.",
+        "don't need to focus on exam subjects more.",
+        "need to spend more time studying."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Đoạn 1: \"I disagree with these views, and believe that children should continue to have sports lessons. These lessons help students keep healthy\" → A. B, C là ý của phụ huynh."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "The writer says many young people prefer to spend their free time",
+       "options": [
+        "riding their bikes.",
+        "in the park.",
+        "in front of their computers."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Đoạn 2: \"They prefer to spend their free time indoors on their computers or watching TV than going to the park… or going cycling\" → C. A, B là những việc họ KHÔNG chọn."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "The writer thinks that exercise for young people is",
+       "options": [
+        "less important than diet.",
+        "just as important as diet.",
+        "more important than diet."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Đoạn 2: \"people often forget that regular exercise is **equally important**\" = just as important → B."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "The writer believes regular exercise can make people feel",
+       "options": [
+        "more active.",
+        "less stressed.",
+        "more tired at night."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Đoạn 3: \"exercise helps us feel less stressed and tired\" → B. Exercise giúp ngủ ngon hơn, không làm mệt hơn (C sai)."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "The writer thinks that exercising",
+       "options": [
+        "benefits the body and the mind.",
+        "can affect studying in a negative way.",
+        "will help you get better exam results."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Kết luận: \"regular exercise is good for their body and mind\" → A. C: bài chỉ nói \"**may** even help\" → không chắc chắn."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U08-R1"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 0 · Unit 8 — Three friends (Part 1)",
+   "description": "Samantha, Tom and Sarah meet in the street.",
+   "partNumber": 1,
+   "audioFile": "MindsetIELTS_Foundation_14.mp3",
+   "transcript": "Samantha: Hello, Tom.\nSarah: Hi, Tom. Where are you going?\nTom: Hi, Sarah. Hi, Samantha. I'm going to the sports centre.\nSarah: Oh, great. I'm thinking of joining the gym there.\nTom: Really? Why don't you come with me and get some information about it?",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–2",
+     "instruction": "Listen to the first part of the conversation and answer the questions. Write NO MORE THAN THREE WORDS.",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Where does Tom plan to go?",
+       "correctAnswer": "to the sports centre / the sports centre / sports centre",
+       "explanation": "Dịch: Tom định đi đâu?\n\nVị trí: Câu trả lời đầu tiên của Tom.\n\nTranscript: “I'm going to the sports centre”\n\nPhân tích: the sports centre."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "What is Sarah thinking of doing?",
+       "correctAnswer": "joining the gym / join the gym",
+       "explanation": "Dịch: Sarah đang nghĩ đến việc gì?\n\nVị trí: Câu của Sarah.\n\nTranscript: “I'm thinking of joining the gym there”\n\nPhân tích: joining the gym."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U08-L1"
+  },
+  {
+   "title": "Mindset 0 · Unit 8 — Gym or park? (Part 2)",
+   "description": "The three friends discuss the gym, exercising in the park and personal trainers.",
+   "partNumber": 1,
+   "audioFile": "MindsetIELTS_Foundation_15.mp3",
+   "transcript": "Sarah: OK, thanks. Did you join the gym?\nTom: Yes, I did. It's got really great equipment – all very modern and new. However, it is a little bit expensive – almost forty pounds a month, and that's with a student discount… But I've been every day since I joined.\nSarah: £40 a month! That is expensive. However, if you think it's a good gym, maybe I'll try it.\nSamantha: Well, I think £40 a month is way too much. I don't know why people spend so much money on a gym membership, when they can exercise in the park for free.\nTom: I've tried running in the park, but it was really boring! I prefer to exercise with friends because it encourages me to work harder.\nSarah: I prefer to do exercise with friends as well – it's much more fun than exercising alone.\nSamantha: But it's not just running. They have group exercise classes there in the park in the morning. Exercising outside is better because you get lots of fresh air. And you can exercise with a personal trainer, too.\nSarah: That sounds good. I think I'd like to have a personal trainer. How much does one cost?\nSamantha: I pay £20 an hour.\nTom: £20 an hour! Doesn't that work out to be more expensive than joining the gym?\nSamantha: It is expensive, but I think that it's worth the money. You can find out which type of exercise is best for you, and you can get some really useful advice on diet, too.\nSarah: That does sound useful. I need some advice on my diet – it's not great at the moment. And I know that a healthy diet helps you get fit.\nSamantha: I can give you the email address of my personal trainer if you want.\nSarah: That's great! Thanks Samantha.\nTom: What about the gym? Do you think you'll join it?\nSarah: Yes – I think I'm going to try both.",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Who gave each opinion? Choose A Samantha, B Tom or C Sarah. (Example: Joining the gym is too expensive. → Samantha)",
+     "matchingOptions": [
+      "Samantha",
+      "Tom",
+      "Sarah"
+     ],
+     "matchingOptionsTitle": "Speakers",
+     "matchingReuseAllowed": true,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching",
+       "questionText": "Running is a boring way to exercise.",
+       "correctAnswer": "B",
+       "explanation": "Dịch: Chạy bộ là cách tập nhàm chán.\n\nVị trí: Sau phần nói về giá gym.\n\nTranscript: “I've tried running in the park, but it was really boring!”\n\nPhân tích: Tom."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching",
+       "questionText": "It is more fun to exercise with other people.",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Tập cùng người khác vui hơn.\n\nVị trí: Ngay sau Tom.\n\nTranscript: “I prefer to exercise with friends because it encourages me to work harder” … “it's much more fun than exercising alone”\n\nPhân tích: Tom nói tập với bạn giúp cố gắng hơn; Sarah mới nói \"more fun\" → Sarah."
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "It is better to exercise outdoors.",
+       "correctAnswer": "A",
+       "explanation": "Dịch: Tập ngoài trời tốt hơn.\n\nVị trí: Giữa bài.\n\nTranscript: “Exercising outside is better because you get lots of fresh air”\n\nPhân tích: Samantha."
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching",
+       "questionText": "It is a good idea to pay for a personal trainer.",
+       "correctAnswer": "A",
+       "explanation": "Dịch: Thuê huấn luyện viên cá nhân là ý hay.\n\nVị trí: Sau câu hỏi về giá.\n\nTranscript: “It is expensive, but I think that it's worth the money”\n\nPhân tích: Samantha (trả £20/giờ và cho là đáng)."
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching",
+       "questionText": "It is important to follow a healthy diet.",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Ăn uống lành mạnh là quan trọng.\n\nVị trí: Gần cuối.\n\nTranscript: “I know that a healthy diet helps you get fit”\n\nPhân tích: Sarah."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U08-L2"
+  },
+  {
+   "title": "Mindset 0 · Unit 8 — How do you relax?",
+   "description": "Five people talk about their favourite way to relax.",
+   "partNumber": 1,
+   "audioFile": "MindsetIELTS_Foundation_16.mp3",
+   "transcript": "Jim: When I need to relax, I usually read a book. I believe that reading can also change your mood. For example, a good novel can make you forget about all of your worries and a funny story can make you feel happy. If you're feeling sad, you shouldn't read a sad story though, as this will make you feel worse.\nElena: For me, doing yoga is the best way to relax. You don't even have to spend a long time doing it to feel the benefits – even five minutes of breathing exercises can make a difference. Doing yoga will help you breathe deeply, which is the fastest way to feel more relaxed. You can do yoga classes in many different places. It isn't expensive either! Many sports centres offer yoga classes at a low price. You have to find a good teacher though – that's really important.\nKate: I think that doing regular exercise is the best way to relax. It's good for the body and also for the mind. After a short run or work out we feel more relaxed and happier. Often a person's reason for not doing regular exercise is they don't have enough time. However, you can always find ways to do more exercise, like walking instead of getting the bus or driving.\nMike: When I am feeling stressed at work, I go straight outdoors for a walk in the park. Breathing fresh air and looking at nature helps me to deal with my problems. Being active for just twenty minutes outside is enough to make you feel healthier, but the longer you spend, the better. I try to spend half an hour every day exercising during my lunch break. I can't spend the whole hour outside because I don't always have time. Everyone should give it a try.\nMark: When I want to relax, the first thing I do is make myself a cup of tea. I think green tea makes me feel calmer than black tea, but all types of tea can make you feel less stressed. A recent study found that people who drink tea during stressful times are much more relaxed than those who don't. You shouldn't drink tea at night though or you may find it difficult to sleep.",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Listen and match the speakers with the activities.",
+     "matchingOptions": [
+      "read a book",
+      "do yoga",
+      "do exercise",
+      "go for a walk",
+      "drink tea"
+     ],
+     "matchingOptionsTitle": "Activities",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching",
+       "questionText": "Jim",
+       "correctAnswer": "A",
+       "explanation": "Dịch: Jim\n\nVị trí: Người nói thứ nhất.\n\nTranscript: “When I need to relax, I usually read a book”\n\nPhân tích: read a book."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching",
+       "questionText": "Elena",
+       "correctAnswer": "B",
+       "explanation": "Dịch: Elena\n\nVị trí: Người nói thứ hai.\n\nTranscript: “doing yoga is the best way to relax”\n\nPhân tích: do yoga."
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "Kate",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Kate\n\nVị trí: Người nói thứ ba.\n\nTranscript: “doing regular exercise is the best way to relax”\n\nPhân tích: do exercise."
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching",
+       "questionText": "Mike",
+       "correctAnswer": "D",
+       "explanation": "Dịch: Mike\n\nVị trí: Người nói thứ tư.\n\nTranscript: “I go straight outdoors for a walk in the park”\n\nPhân tích: go for a walk."
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching",
+       "questionText": "Mark",
+       "correctAnswer": "E",
+       "explanation": "Dịch: Mark\n\nVị trí: Người nói cuối.\n\nTranscript: “make myself a cup of tea”\n\nPhân tích: drink tea."
+      }
+     ]
+    },
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 6–10",
+     "instruction": "Listen again and choose the correct answer, A, B or C.",
+     "questions": [
+      {
+       "questionNumber": 6,
+       "type": "multiple-choice",
+       "questionText": "Jim thinks that people who feel sad shouldn't",
+       "options": [
+        "forget about their problems.",
+        "read a funny book.",
+        "read a sad book."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Jim nghĩ người đang buồn không nên…\n\nVị trí: Cuối phần Jim.\n\nTranscript: “If you're feeling sad, you shouldn't read a sad story though”\n\nPhân tích: C. Truyện vui (B) thì NÊN đọc."
+      },
+      {
+       "questionNumber": 7,
+       "type": "multiple-choice",
+       "questionText": "Elena thinks that if you want to do yoga, you should",
+       "options": [
+        "do it at your own home.",
+        "find the right teacher.",
+        "not pay lots of money."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Elena nghĩ nếu muốn tập yoga, bạn nên…\n\nVị trí: Cuối phần Elena.\n\nTranscript: “You have to find a good teacher though – that's really important”\n\nPhân tích: B. Chuyện giá rẻ chỉ là thông tin thêm."
+      },
+      {
+       "questionNumber": 8,
+       "type": "multiple-choice",
+       "questionText": "According to Kate, a common reason for not doing regular exercise is",
+       "options": [
+        "it takes too much time.",
+        "it is too expensive.",
+        "it will make a person tired."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Theo Kate, lý do phổ biến khiến người ta không tập đều là…\n\nVị trí: Giữa phần Kate.\n\nTranscript: “Often a person's reason for not doing regular exercise is they don't have enough time”\n\nPhân tích: A."
+      },
+      {
+       "questionNumber": 9,
+       "type": "multiple-choice",
+       "questionText": "How much time does Mike usually spend outside on his lunch break?",
+       "options": [
+        "20 minutes",
+        "30 minutes",
+        "60 minutes"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Mike thường dành bao lâu ngoài trời giờ nghỉ trưa?\n\nVị trí: Phần Mike.\n\nTranscript: “Being active for just twenty minutes outside is enough” … “I try to spend half an hour every day exercising during my lunch break” … “I can't spend the whole hour outside”\n\nPhân tích: 20 phút là \"đủ\" (nói chung); cả tiếng là không thể → half an hour = 30 phút → B."
+      },
+      {
+       "questionNumber": 10,
+       "type": "multiple-choice",
+       "questionText": "Which does Mark do to help him relax?",
+       "options": [
+        "He drinks some green tea.",
+        "He has a cup of tea before bed.",
+        "He tries to get enough sleep."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Mark làm gì để thư giãn?\n\nVị trí: Phần Mark.\n\nTranscript: “green tea makes me feel calmer than black tea” … “You shouldn't drink tea at night”\n\nPhân tích: A. Không nên uống trà buổi tối → B sai."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U08-L3"
+  }
+ ]
+}

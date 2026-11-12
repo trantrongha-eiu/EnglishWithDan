@@ -20,6 +20,7 @@
 //    moduleClass(m, mi)  default 'acc1'…'acc5'
 //    moduleProgress   false hides the "x/y buổi hoàn thành" line
 //    lessonExtra(l)   html appended under a lesson's key-language block
+//    lessonFooter(l)  html appended under the lesson's exercise list
 //    ui               look switches — Speaking keeps its own (older) styling,
 //                     its stylesheet has none of the newer writing classes:
 //      cueColor, imageAlt, zoom (lightbox + chart thumbnails), essayMeter,
@@ -308,7 +309,8 @@
         renderTheory(l.theory) +
         ((l.keyLanguage && l.keyLanguage.length) ? '<details class="t1-key"><summary>🧩 Ngữ pháp / Cấu trúc cần nhớ</summary><ul>' + l.keyLanguage.map(function (k) { return '<li>' + esc(k) + '</li>'; }).join('') + '</ul></details>' : '') +
         (cfg.lessonExtra ? cfg.lessonExtra(l) : '') +
-        '<div class="t1-ex-list">' + exs + '</div>';
+        '<div class="t1-ex-list">' + exs + '</div>' +
+        (cfg.lessonFooter ? cfg.lessonFooter(l) : '');
     }
     function bindLesson() {
       document.getElementById('t1-back-ov').addEventListener('click', goOverview);
@@ -391,6 +393,14 @@
               return '<div class="t1-stim-row">' + img + '<div class="t1-stim-row-text">• <b>' + esc(r[0]) + '</b> — ' + esc(r[1]) + '</div></div>';
             }).join('')
           : '<div style="font-size:12.5px;line-height:1.7">' + (st.rows || []).map(function (r) { return '<div>• ' + r.map(esc).join(' — ') + '</div>'; }).join('') + '</div>';
+      }
+      // 'passage' (Mindset): a reading text, paragraphs split by a blank
+      // line, **bold** kept; an optional picture above it.
+      if (st.kind === 'passage' && st.text) {
+        if (st.imageUrl) body += '<img src="' + esc(st.imageUrl) + '" alt="' + esc(st.caption || 'hình minh hoạ') + '"' + (zoom ? ' data-zoom title="Bấm để phóng to"' : '') + '>';
+        body += '<div class="t1-passage">' + String(st.text).split(/\n\s*\n/).map(function (p) {
+          return '<p>' + esc(p.trim()).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>') + '</p>';
+        }).join('') + '</div>';
       }
       if (st.note) body += '<div class="note">📌 ' + esc(st.note) + '</div>';
       return body ? '<div class="t1-stim">' + body + '</div>' : '';

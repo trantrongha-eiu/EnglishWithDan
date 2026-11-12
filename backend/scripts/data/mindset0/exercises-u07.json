@@ -1,0 +1,1546 @@
+{
+ "exercises": [
+  {
+   "code": "M0-U07-L1-E01",
+   "lessonCode": "M0-U07-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Họ đang làm gì? (Lead-in Ex. 1)",
+   "instruction": "Nối ảnh 1–4 với hoạt động.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u07-leadin.jpg",
+    "caption": "Lead-in"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Photo 1",
+     "right": "meeting",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Photo 2",
+     "right": "studying",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Photo 3",
+     "right": "helping the elderly",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Photo 4",
+     "right": "wearing a uniform",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L1-E02",
+   "lessonCode": "M0-U07-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Kỹ năng trong tranh (Ex. 2)",
+   "instruction": "Nối tranh 1–10 với kỹ năng.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u07-skills.jpg",
+    "caption": "Ex. 2"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "write well",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "remember a lot of information",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "work for long hours",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "play sport well",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "understand maths easily",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "talk to new people easily",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "do well in exams",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Picture 8",
+     "right": "speak many languages",
+     "explanation": ""
+    },
+    {
+     "id": "m9",
+     "left": "Picture 9",
+     "right": "cook many types of food",
+     "explanation": ""
+    },
+    {
+     "id": "m10",
+     "left": "Picture 10",
+     "right": "read a map",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L1-E03",
+   "lessonCode": "M0-U07-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Việc làm hè (Ex. 12)",
+   "instruction": "Nối ảnh 1–5 với công việc.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u07-summerjobs.jpg",
+    "caption": "Ex. 12"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Photo 1",
+     "right": "video game designer",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Photo 2",
+     "right": "helping elderly people",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Photo 3",
+     "right": "sports coach",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Photo 4",
+     "right": "lifeguard",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Photo 5",
+     "right": "sales assistant",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L1-E04",
+   "lessonCode": "M0-U07-L1",
+   "order": 4,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Nghề nghiệp (G&V Ex. 3)",
+   "instruction": "Nối tranh 1–8 với nghề.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u07-jobs.jpg",
+    "caption": "G&V Ex. 3"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "receptionist",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "doctor",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "waiter",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "teacher",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "lifeguard",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "shop assistant",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "cleaner",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Picture 8",
+     "right": "chef",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L1-E05",
+   "lessonCode": "M0-U07-L1",
+   "order": 5,
+   "autoGrade": true,
+   "points": 13,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Nhà hàng, khách sạn hay cửa hàng? (G&V Ex. 6)",
+   "instruction": "Xếp từ vào nơi làm việc phù hợp.",
+   "categories": [
+    {
+     "id": "r",
+     "label": "Restaurant"
+    },
+    {
+     "id": "h",
+     "label": "Hotel"
+    },
+    {
+     "id": "s",
+     "label": "Shop"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "waiter",
+     "category": "r",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "tables",
+     "category": "r",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "chef",
+     "category": "r",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "meal",
+     "category": "r",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "receptionist",
+     "category": "h",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "rooms",
+     "category": "h",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "guests",
+     "category": "h",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "lift",
+     "category": "h",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "cleaner",
+     "category": "h",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "cash desk",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "clothes",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "changing rooms",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c13",
+     "text": "shop assistant",
+     "category": "s",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L2-E01",
+   "lessonCode": "M0-U07-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Đọc lướt bài báo (Ex. 13–14)",
+   "instruction": "Đọc nhanh phần giới thiệu và bài báo, trả lời câu hỏi.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "A summer job will give you the chance to earn money and get some work experience, as well as learn new skills. Many teenagers think that it will be difficult to find a job because they don't have as much experience as an adult. However, that's not the case at all. Many employers like to give jobs to young people because they have lots of energy and enthusiasm. Before you apply for a job, make a list of the skills you have so you can write them on your application form. Not sure which job would be best for you? Here are some ideas to get you started.",
+    "caption": "Summer Jobs — introduction"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What does a careers advisor do?",
+     "options": [
+      {
+       "id": "A",
+       "text": "gives people advice about jobs and careers"
+      },
+      {
+       "id": "B",
+       "text": "finds jobs for teachers"
+      },
+      {
+       "id": "C",
+       "text": "teaches IT skills"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "What will Helen Green do in this article?",
+     "options": [
+      {
+       "id": "A",
+       "text": "explain how young people can use their summer holiday to get useful work experience"
+      },
+      {
+       "id": "B",
+       "text": "tell her life story"
+      },
+      {
+       "id": "C",
+       "text": "advertise her company"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Why is it good for young people to get a summer job?",
+     "options": [
+      {
+       "id": "A",
+       "text": "They earn money, get work experience and learn new skills."
+      },
+      {
+       "id": "B",
+       "text": "They don't need to go to university."
+      },
+      {
+       "id": "C",
+       "text": "They can travel abroad."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "How many different types of summer jobs does Helen Green write about?",
+     "options": [
+      {
+       "id": "A",
+       "text": "three"
+      },
+      {
+       "id": "B",
+       "text": "four"
+      },
+      {
+       "id": "C",
+       "text": "five"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Sports coach, helping elderly people, fashion, lifeguard, digital designer."
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L3-E01",
+   "lessonCode": "M0-U07-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Jack Riley: xưa và nay (Ex. 7)",
+   "instruction": "Xếp các khả năng của đầu bếp Jack vào đúng ô.",
+   "categories": [
+    {
+     "id": "can",
+     "label": "can (now)"
+    },
+    {
+     "id": "cant",
+     "label": "can't (now)"
+    },
+    {
+     "id": "could",
+     "label": "could (past)"
+    },
+    {
+     "id": "couldnt",
+     "label": "couldn't (past)"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "write books",
+     "category": "can",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "cook many types of food",
+     "category": "can",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "work long hours",
+     "category": "cant",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "cook only one type of food",
+     "category": "could",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "understand maths easily",
+     "category": "couldnt",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "write well",
+     "category": "couldnt",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "do well in exams",
+     "category": "couldnt",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L3-E02",
+   "lessonCode": "M0-U07-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Hội thoại về kỹ năng (Ex. 8)",
+   "instruction": "Điền can / can't / could / couldn't.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Well, I have a good memory. I ____ remember lots of information.",
+     "blanks": [
+      {
+       "accept": [
+        "can"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "No, not really. I ____ really play sport that well.",
+     "blanks": [
+      {
+       "accept": [
+        "can't",
+        "cannot"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "When I was younger, I ____ play badminton a little bit, but I stopped because I found it boring.",
+     "blanks": [
+      {
+       "accept": [
+        "could"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "When I was a child, I ____ talk to new people at all.",
+     "blanks": [
+      {
+       "accept": [
+        "couldn't",
+        "could not"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "In the past, I ____ cook anything very well without burning it…",
+     "blanks": [
+      {
+       "accept": [
+        "couldn't",
+        "could not"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "…but I've been taking cooking classes and I ____ cook many different types of food.",
+     "blanks": [
+      {
+       "accept": [
+        "can"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L3-E03",
+   "lessonCode": "M0-U07-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Nối nửa câu (G&V Ex. 1)",
+   "instruction": "Nối hai nửa câu.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "John works many hours, but he doesn't mind because he",
+     "right": "can finish early on Fridays.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Julia learnt Spanish very quickly this year. I think it is because she",
+     "right": "could already speak two other languages.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "I have improved a lot. I got top marks for my essay, but just a year ago, I",
+     "right": "couldn't even write very well.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Jim's results are really impressive and he didn't even study that much. He",
+     "right": "can just do very well in exams.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "In the job interview, it's important that you don't forget anything.",
+     "right": "Can you remember a lot of information?",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Matteo will become a chef one day, I think. He",
+     "right": "can cook many types of food.",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Sandra is very popular and has so many friends. It's difficult to believe that she",
+     "right": "couldn't even talk to new people easily a few months ago.",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "I know it is simple but I need to use my calculator because I",
+     "right": "can't understand maths very easily.",
+     "explanation": ""
+    },
+    {
+     "id": "m9",
+     "left": "Joseph is really good at football, tennis and basketball.",
+     "right": "Could he play sport well when he was a child, too?",
+     "explanation": ""
+    },
+    {
+     "id": "m10",
+     "left": "Lucy is late. I think she is lost. She",
+     "right": "can't read maps very well.",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L3-E04",
+   "lessonCode": "M0-U07-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Hỏi và trả lời với can (G&V Ex. 7–8)",
+   "instruction": "Chọn đáp án đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "A: ____ play sport?",
+     "options": [
+      {
+       "id": "A",
+       "text": "You can"
+      },
+      {
+       "id": "B",
+       "text": "You can't"
+      },
+      {
+       "id": "C",
+       "text": "Can you"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "B: Yes, ____ play basketball.",
+     "options": [
+      {
+       "id": "A",
+       "text": "I can"
+      },
+      {
+       "id": "B",
+       "text": "I can't"
+      },
+      {
+       "id": "C",
+       "text": "can I"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "A: Not really, ____ play many sports, but I like watching them on TV.",
+     "options": [
+      {
+       "id": "A",
+       "text": "I can"
+      },
+      {
+       "id": "B",
+       "text": "I can't"
+      },
+      {
+       "id": "C",
+       "text": "can I"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "B: How many languages ____ speak?",
+     "options": [
+      {
+       "id": "A",
+       "text": "you can"
+      },
+      {
+       "id": "B",
+       "text": "you can't"
+      },
+      {
+       "id": "C",
+       "text": "can you"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "I got top marks for my English essay. I think it's because I ____ write really well.",
+     "options": [
+      {
+       "id": "A",
+       "text": "can"
+      },
+      {
+       "id": "B",
+       "text": "can't"
+      },
+      {
+       "id": "C",
+       "text": "couldn't"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "I was so nervous last year in my science exam that I ____ remember a thing.",
+     "options": [
+      {
+       "id": "A",
+       "text": "can't"
+      },
+      {
+       "id": "B",
+       "text": "couldn't"
+      },
+      {
+       "id": "C",
+       "text": "could"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L4-E01",
+   "lessonCode": "M0-U07-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Email của Laura có gì? (Ex. 18–19)",
+   "instruction": "Đọc email của Laura (ứng tuyển lễ tân khách sạn). Đặc điểm nào CÓ (đạt) và đặc điểm nào KHÔNG?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Dear Simon,\n\nI'm interested in the hotel receptionist job. I think I have good skills to be a hotel receptionist. I could talk to new people easily and I could speak three languages – English, Spanish and Arabic. I can't work long hours but I want to learn this. I have a lot of experience. When I was younger, I worked in a restaurant.\n\nThanks,\nLaura",
+    "caption": "Laura's email"
+   },
+   "categories": [
+    {
+     "id": "y",
+     "label": "Có / đạt"
+    },
+    {
+     "id": "n",
+     "label": "Không / chưa đạt"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "She says which job she is interested in.",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "She says what skills she has.",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "She says what skills she didn't have in the past but does now.",
+     "category": "n",
+     "explanation": "Laura viết \"I can't work long hours but I want to learn this\" — không phải kỹ năng quá khứ."
+    },
+    {
+     "id": "c4",
+     "text": "She uses a good structure – greeting to start the email and ends with her name.",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "She uses correct and appropriate grammar.",
+     "category": "n",
+     "explanation": "\"I could talk… I could speak\" phải là can (hiện tại)."
+    },
+    {
+     "id": "c6",
+     "text": "She only talks about the information in the instructions.",
+     "category": "n",
+     "explanation": "Thêm chuyện làm nhà hàng — không được yêu cầu."
+    },
+    {
+     "id": "c7",
+     "text": "She uses the correct number of words.",
+     "category": "y",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L4-E02",
+   "lessonCode": "M0-U07-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Sửa email của Pablo (G&V Ex. 9)",
+   "instruction": "Email của Pablo xin làm cứu hộ. Mỗi câu dùng can/could đúng hay sai?",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "\"I could swim very well.\" (nói về hiện tại)",
+     "options": [
+      {
+       "id": "A",
+       "text": "Đúng"
+      },
+      {
+       "id": "B",
+       "text": "Sai → I can swim very well."
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "\"I couldn't swim when I was a child but I learnt when I was 12.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "Đúng"
+      },
+      {
+       "id": "B",
+       "text": "Sai"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "\"I can also remember lots of information and instructions very well.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "Đúng"
+      },
+      {
+       "id": "B",
+       "text": "Sai"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "\"They could talk to new people easily?\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "Đúng"
+      },
+      {
+       "id": "B",
+       "text": "Sai → Could they talk to new people easily?"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Câu hỏi phải đảo could lên trước chủ ngữ."
+    },
+    {
+     "id": "q5",
+     "prompt": "\"I can so I think I am a good choice for this job.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "Đúng"
+      },
+      {
+       "id": "B",
+       "text": "Sai"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L4-E03",
+   "lessonCode": "M0-U07-L4",
+   "order": 3,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Viết email xin việc làm hè (Ex. 17, 20–21)",
+   "instruction": "Bạn nhận được email về các việc làm hè. Hãy viết email cho Simon Stone (điều phối viên việc làm hè) để ứng tuyển MỘT công việc trong bài báo (sports coach, helping elderly people, fashion sales assistant, lifeguard, digital designer). Trong email: (1) nói bạn quan tâm công việc nào; (2) bạn có những kỹ năng, khả năng gì; (3) kỹ năng nào trước đây bạn chưa có nhưng bây giờ đã có. Viết 60–80 từ, có lời chào và kết thư lịch sự.",
+   "responseSlots": 1,
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 60,
+    "maxWords": 90,
+    "mustUse": 3,
+    "targetStructures": [
+     "Dear Simon",
+     "I'm interested in",
+     "I can",
+     "couldn't",
+     "now I can"
+    ],
+    "checklist": [
+     "Nói rõ công việc muốn ứng tuyển",
+     "Nêu kỹ năng hiện có (can)",
+     "Nêu kỹ năng trước đây chưa có nhưng nay đã có (couldn't… but now I can…)",
+     "Mở đầu Dear Simon, kết thư lịch sự + tên",
+     "Không thêm thông tin ngoài đề",
+     "60–80 từ"
+    ],
+    "sampleAnswer": "Dear Simon,\n\nI'm interested in the sports coach job at the summer camp.\n\nI can play football and basketball well, and I'm good at teaching younger children because I often help my little cousins with their homework. I can also work long hours outside.\n\nWhen I was younger, I couldn't talk to new people easily because I was very shy. Now I can make friends quickly, so I think I can work well in a team.\n\nBest wishes,\nMai",
+    "commonErrors": [
+     "Dùng could cho khả năng hiện tại",
+     "Quên ý 3 (kỹ năng trước chưa có)",
+     "Kể thêm thông tin không được yêu cầu"
+    ]
+   }
+  },
+  {
+   "code": "M0-U07-L5-E01",
+   "lessonCode": "M0-U07-L5",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Đoán loại thông tin (Ex. 4)",
+   "instruction": "Trước khi nghe: mỗi chỗ trống trong ghi chú cần loại thông tin gì?",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Day: ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "a day of the week"
+      },
+      {
+       "id": "B",
+       "text": "a number"
+      },
+      {
+       "id": "C",
+       "text": "a name"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Time: ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "a time"
+      },
+      {
+       "id": "B",
+       "text": "a year"
+      },
+      {
+       "id": "C",
+       "text": "an age"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "left school at the age of ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "a year"
+      },
+      {
+       "id": "B",
+       "text": "an age (number)"
+      },
+      {
+       "id": "C",
+       "text": "a place"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "trained to be a chef in ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "a place (city)"
+      },
+      {
+       "id": "B",
+       "text": "a time"
+      },
+      {
+       "id": "C",
+       "text": "a job"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "wrote his first bestselling cookbook in ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "a year"
+      },
+      {
+       "id": "B",
+       "text": "a name"
+      },
+      {
+       "id": "C",
+       "text": "a day"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L6-E01",
+   "lessonCode": "M0-U07-L6",
+   "order": 1,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: kỹ năng và khả năng của bạn (Ex. 9–11)",
+   "instruction": "Trả lời từng câu hỏi trong 20–30 giây. Dùng can / can't / could / couldn't, thêm lý do và ví dụ.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "What are your best skills and abilities?",
+     "sampleAnswer": "I think my best skill is remembering information. For example, I can learn twenty new English words in an evening and still remember them the next week. I'm also quite good at drawing, because I practise every weekend.",
+     "sampleNote": "Kỹ năng + ví dụ cụ thể + lý do.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "What skills do you want to learn?",
+     "sampleAnswer": "I'd really like to learn how to cook, because at the moment I can only make instant noodles! My mum is a great cook, so I want to learn some traditional dishes from her, like spring rolls.",
+     "sampleNote": "Mong muốn + lý do + ví dụ.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "What skills and abilities did you have when you were younger?",
+     "sampleAnswer": "When I was younger, I could swim really well – I was in the school swimming team. I could also play the piano a little, but I stopped when I started secondary school.",
+     "sampleNote": "Dùng could cho quá khứ.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s4",
+     "prompt": "What skills did you NOT have when you were younger?",
+     "sampleAnswer": "I couldn't talk to new people easily because I was very shy. For example, I never spoke in class. Now I can give presentations in front of my classmates, although I still feel a bit nervous.",
+     "sampleNote": "couldn't → now I can: cho thấy sự tiến bộ.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L7-E01",
+   "lessonCode": "M0-U07-L7",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Động từ học tập & công việc (G&V Ex. 2)",
+   "instruction": "Điền dạng đúng: get, learn (x2), teach, pass, start (x2), fail, take (x2), finish, study.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I ____ my driving test last month. Now, I drive to school every day.",
+     "blanks": [
+      {
+       "accept": [
+        "passed"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "My older sister is ____ law. When she ____ university, she wants to be a family lawyer.",
+     "blanks": [
+      {
+       "accept": [
+        "studying"
+       ]
+      },
+      {
+       "accept": [
+        "finishes"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "I think that it is difficult for young people to ____ a good job without experience.",
+     "blanks": [
+      {
+       "accept": [
+        "get"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "My father ____ me how to cook when I was a child.",
+     "blanks": [
+      {
+       "accept": [
+        "taught"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "I didn't ____ how to play a musical instrument when I was younger. I would like to ____ piano lessons, but they are very expensive.",
+     "blanks": [
+      {
+       "accept": [
+        "learn"
+       ]
+      },
+      {
+       "accept": [
+        "take"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "Many students ____ the exam. They will ____ it again next month.",
+     "blanks": [
+      {
+       "accept": [
+        "failed"
+       ]
+      },
+      {
+       "accept": [
+        "take"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "I ____ my computer course last week. I want to ____ how to design my own website.",
+     "blanks": [
+      {
+       "accept": [
+        "started"
+       ]
+      },
+      {
+       "accept": [
+        "learn"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g8",
+     "prompt": "My friend is ____ her new job tomorrow. She feels a bit nervous.",
+     "blanks": [
+      {
+       "accept": [
+        "starting"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L7-E02",
+   "lessonCode": "M0-U07-L7",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Quảng cáo việc làm hè (G&V Ex. 4)",
+   "instruction": "Điền: experience, friendly and helpful, sports, art or music, energy, long hours, speak another language, hard-working, weekend.",
+   "wordBank": [
+    "experience",
+    "friendly and helpful",
+    "sports, art or music",
+    "energy",
+    "long hours",
+    "speak another language",
+    "hard-working",
+    "weekend"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Waiter/Waitress: You do not need to have ____ of working in a restaurant, but you should be ____ and happy to work in a team.",
+     "blanks": [
+      {
+       "accept": [
+        "experience"
+       ]
+      },
+      {
+       "accept": [
+        "hard-working"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "You will work ____, especially at the weekends when we are very busy.",
+     "blanks": [
+      {
+       "accept": [
+        "long hours"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Receptionist for busy city hotel, who can ____ (French, German or Spanish). You should be ____ to guests.",
+     "blanks": [
+      {
+       "accept": [
+        "speak another language"
+       ]
+      },
+      {
+       "accept": [
+        "friendly and helpful"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "Summer Camp Leaders to teach children ____ at a summer camp. You should have a lot of ____.",
+     "blanks": [
+      {
+       "accept": [
+        "sports, art or music"
+       ]
+      },
+      {
+       "accept": [
+        "energy"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "You will need to work weekdays and at the ____, but you will have one day off each week.",
+     "blanks": [
+      {
+       "accept": [
+        "weekend"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U07-L7-E03",
+   "lessonCode": "M0-U07-L7",
+   "order": 3,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "in / on / at (G&V Ex. 5)",
+   "instruction": "Chọn giới từ đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "My brother is working as a lifeguard ____ the swimming pool.",
+     "options": [
+      {
+       "id": "A",
+       "text": "in"
+      },
+      {
+       "id": "B",
+       "text": "on"
+      },
+      {
+       "id": "C",
+       "text": "at"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "My cousin studies nursing ____ university.",
+     "options": [
+      {
+       "id": "A",
+       "text": "in"
+      },
+      {
+       "id": "B",
+       "text": "on"
+      },
+      {
+       "id": "C",
+       "text": "at"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "I wouldn't like to work ____ a restaurant. I think it would be too stressful.",
+     "options": [
+      {
+       "id": "A",
+       "text": "in"
+      },
+      {
+       "id": "B",
+       "text": "on"
+      },
+      {
+       "id": "C",
+       "text": "at"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "I'm not working ____ Monday. It is my day off.",
+     "options": [
+      {
+       "id": "A",
+       "text": "in"
+      },
+      {
+       "id": "B",
+       "text": "on"
+      },
+      {
+       "id": "C",
+       "text": "at"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "I was ____ work yesterday, so I didn't watch the football match.",
+     "options": [
+      {
+       "id": "A",
+       "text": "in"
+      },
+      {
+       "id": "B",
+       "text": "on"
+      },
+      {
+       "id": "C",
+       "text": "at"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "I usually finish work ____ five o'clock.",
+     "options": [
+      {
+       "id": "A",
+       "text": "in"
+      },
+      {
+       "id": "B",
+       "text": "on"
+      },
+      {
+       "id": "C",
+       "text": "at"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

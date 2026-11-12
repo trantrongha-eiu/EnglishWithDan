@@ -1,0 +1,630 @@
+{
+ "modules": [
+  {
+   "code": "M0-U09",
+   "order": 9,
+   "title": "Unit 9 · Ngôn ngữ",
+   "titleEn": "UNIT 09: LANGUAGE — sách tr. 103–113",
+   "outcomes": [
+    "Nói về các cách học tiếng Anh và giao tiếp (talk to, chat with, communicate by…)",
+    "Dùng be going to cho kế hoạch tương lai",
+    "Nghe thảo luận về một dự án; nghe vị trí phòng ban",
+    "Đọc bài báo: tóm tắt ý chính đoạn văn, hoàn thành câu (≤3 từ)",
+    "Nói 1–2 phút về một ngôn ngữ bạn học; viết bài luận ưu – nhược điểm"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M0-U09-L1",
+   "moduleCode": "M0-U09",
+   "order": 1,
+   "title": "🔤 Từ vựng: cách học ngôn ngữ & giao tiếp",
+   "titleEn": "Lead-in · Vocabulary and speaking",
+   "durationMinutes": 35,
+   "objectives": [
+    "Gọi tên 8 cách học tiếng Anh",
+    "Dùng đúng giới từ: talk to, communicate by/with, discuss (không giới từ), chat with/about",
+    "Hỏi – đáp về việc học ngôn ngữ"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Động từ giao tiếp + giới từ",
+     "titleEn": "Communication verbs",
+     "formula": [],
+     "usage": [
+      "**talk to / with** somebody · **talk about** something",
+      "**communicate with** somebody **by** email / phone",
+      "**discuss** something (KHÔNG có giới từ: discuss a topic) · **have a chat about** something",
+      "**chat with** somebody / **chat about** something · **hold a conversation with** somebody"
+     ],
+     "examples": [
+      {
+       "en": "I usually communicate by email with my lecturer.",
+       "vi": "Tôi thường liên lạc với giảng viên qua email."
+      },
+      {
+       "en": "Do you want to discuss a topic for the project?",
+       "vi": "Bạn muốn bàn một chủ đề cho dự án không?"
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 26,
+   "images": [
+    {
+     "url": "media:m0u09-leadin.jpg",
+     "caption": "Lead-in (tr. 103): các cách học tiếng Anh"
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 9 · Từ vựng: cách học ngôn ngữ & giao tiếp — 12 từ/cụm từ",
+    "words": [
+     {
+      "word": "use a dictionary",
+      "meaning": "dùng từ điển",
+      "example": "I use a dictionary to check new words."
+     },
+     {
+      "word": "keep a vocabulary notebook",
+      "meaning": "ghi sổ từ vựng",
+      "example": "I'm going to keep a vocabulary notebook."
+     },
+     {
+      "word": "first language",
+      "meaning": "tiếng mẹ đẻ",
+      "example": "Talk to people whose first language is English."
+     },
+     {
+      "word": "watch videos online",
+      "meaning": "xem video trực tuyến",
+      "example": "I watch videos online to learn English."
+     },
+     {
+      "word": "communicate by email",
+      "meaning": "liên lạc qua email",
+      "example": "It is best to communicate by email first."
+     },
+     {
+      "word": "talk to",
+      "meaning": "nói chuyện với",
+      "example": "I need to talk to you."
+     },
+     {
+      "word": "chat with / about",
+      "meaning": "trò chuyện với / về",
+      "example": "They always chat with me."
+     },
+     {
+      "word": "discuss",
+      "meaning": "thảo luận",
+      "example": "The weather is a popular topic to discuss."
+     },
+     {
+      "word": "hold a conversation",
+      "meaning": "duy trì một cuộc trò chuyện",
+      "example": "I can hold a conversation in English."
+     },
+     {
+      "word": "main language",
+      "meaning": "ngôn ngữ chính",
+      "example": "What is the main language in your country?"
+     },
+     {
+      "word": "language learning",
+      "meaning": "việc học ngôn ngữ",
+      "example": "Reading newspapers can help with language learning."
+     },
+     {
+      "word": "online study",
+      "meaning": "học trực tuyến",
+      "example": "Online study is popular now."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U09-L2",
+   "moduleCode": "M0-U09",
+   "order": 2,
+   "title": "📖 Reading: ý chính đoạn văn & hoàn thành câu",
+   "titleEn": "Vocabulary and reading · Reading: sentence completion",
+   "durationMinutes": 50,
+   "objectives": [
+    "Dùng đúng collocation: hold a conversation, make progress, have fun…",
+    "Tóm tắt ý chính mỗi đoạn bằng ít từ",
+    "Hoàn thành câu với KHÔNG QUÁ BA TỪ — diễn đạt lại câu gốc"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Collocation",
+     "titleEn": "Collocations",
+     "formula": [],
+     "usage": [
+      "Collocation = cụm từ đi với nhau tự nhiên: **hold** a conversation · **have** an advantage · **practise** your skills · **make** an effort · **do** some work · **have** fun · **speak** a language · **take** someone's advice · **have** time · **make** progress",
+      "Chúng ta nói **have** extra lessons (KHÔNG take), **take** care of (KHÔNG have care), **have** a cup of tea (TIP 15).",
+      "**make**: a mistake, dinner, somebody laugh, a noise, a difference, a guess · **take**: a test, an exam, a picture, a walk"
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Hoàn thành câu (≤ 3 từ)",
+     "titleEn": "Sentence completion — NO MORE THAN THREE WORDS",
+     "formula": [
+      "Đọc câu hỏi → tìm câu gốc trong đoạn được chỉ định → câu hỏi **diễn đạt lại** (paraphrase) câu gốc → lấy từ còn thiếu."
+     ],
+     "usage": [
+      "VD: \"In New York City, you can find people from a large number of ____\" ↔ \"a city where there are people from hundreds of **different countries**\" → different countries.",
+      "Viết **quá số từ cho phép** là mất điểm.",
+      "Mỗi đoạn có **một ý chính** — hãy thử tóm tắt nó bằng ít từ (TIP 17)."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 25,
+   "practiceLinks": [
+    {
+     "ref": "reading:M0-U09-R1",
+     "kind": "reading",
+     "title": "Multilingual — Richard Doner nói hơn 20 thứ tiếng (Ex. 16–20)",
+     "note": "Ý chính các đoạn + hoàn thành câu với không quá 3 từ."
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 9 · Reading: ý chính đoạn văn & hoàn thành câu — 14 từ/cụm từ",
+    "words": [
+     {
+      "word": "multilingual",
+      "meaning": "đa ngôn ngữ",
+      "example": "Richard is multilingual."
+     },
+     {
+      "word": "total population",
+      "meaning": "tổng dân số",
+      "example": "over 50% of the world's total population"
+     },
+     {
+      "word": "communicate",
+      "meaning": "giao tiếp",
+      "example": "people who can communicate in many languages"
+     },
+     {
+      "word": "unlikely",
+      "meaning": "không chắc, khó có thể",
+      "example": "It may be unlikely that you can speak more."
+     },
+     {
+      "word": "disadvantage",
+      "meaning": "bất lợi",
+      "example": "Can he see a disadvantage?"
+     },
+     {
+      "word": "continuously",
+      "meaning": "liên tục",
+      "example": "You have to continuously practise."
+     },
+     {
+      "word": "put in effort",
+      "meaning": "bỏ công sức",
+      "example": "Put in lots of effort all the time."
+     },
+     {
+      "word": "make progress",
+      "meaning": "tiến bộ",
+      "example": "If I want to make progress, I speak each language often."
+     },
+     {
+      "word": "culture",
+      "meaning": "văn hoá",
+      "example": "A language helps you learn about their culture."
+     },
+     {
+      "word": "a wide range of",
+      "meaning": "nhiều loại, đa dạng",
+      "example": "a wide range of languages"
+     },
+     {
+      "word": "common",
+      "meaning": "phổ biến",
+      "example": "Swahili is common in West Africa."
+     },
+     {
+      "word": "have fun",
+      "meaning": "vui vẻ",
+      "example": "The most important thing is to have fun."
+     },
+     {
+      "word": "take your time",
+      "meaning": "cứ từ từ",
+      "example": "Take your time."
+     },
+     {
+      "word": "at a speed that works for you",
+      "meaning": "theo tốc độ phù hợp với bạn",
+      "example": "Learn at a speed that works for you."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U09-L3",
+   "moduleCode": "M0-U09",
+   "order": 3,
+   "title": "🧩 Ngữ pháp: be going to — kế hoạch tương lai",
+   "titleEn": "Grammar: going to for future plans",
+   "durationMinutes": 40,
+   "objectives": [
+    "Nói và hỏi về kế hoạch với am/is/are (not) going to + V",
+    "Đặt câu hỏi Wh- với going to",
+    "Dùng trạng từ thời gian (tonight, next week…) ở cuối câu"
+   ],
+   "keyLanguage": [
+    "Khẳng định / phủ định: I am going to learn five new phrases. We are not going to talk about school.",
+    "Câu hỏi Yes/No: Are you going to move to Canada? Is he going to video call his cousin later?",
+    "Câu hỏi Wh-: What are you going to do at the weekend? Where is he going to go to university?",
+    "Trạng từ thời gian (tonight, this afternoon, next week, at the weekend) thường đứng CUỐI câu. \"gonna\" chỉ dùng trong văn nói thân mật — KHÔNG viết."
+   ],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 19,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Be Going To",
+     "note": "kế hoạch, dự định",
+     "url": "/essential-grammar.html?lesson=be-going-to"
+    },
+    {
+     "kind": "grammar",
+     "title": "Future Simple (will)",
+     "note": "so sánh will và be going to",
+     "url": "/essential-grammar.html?lesson=future-simple"
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L4",
+   "moduleCode": "M0-U09",
+   "order": 4,
+   "title": "✍️ Writing: bài luận ngắn ưu – nhược điểm",
+   "titleEn": "Writing: a short essay on a topic",
+   "durationMinutes": 55,
+   "objectives": [
+    "Sắp xếp bố cục 4 phần: mở bài – ưu điểm – nhược điểm – kết luận",
+    "Dùng từ nối: Firstly, Furthermore, Additionally, On the other hand, However, To sum up",
+    "Viết bài luận 220–250 từ về ưu – nhược điểm của việc học tiếng Anh cùng bạn cùng quốc tịch"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Bố cục bài luận ưu – nhược điểm",
+     "titleEn": "Advantages and disadvantages essay",
+     "formula": [
+      "**Introduction** — giới thiệu chủ đề + \"In this essay, I am going to discuss the advantages and disadvantages of…\"",
+      "**Paragraph 1 (advantages)** — **Firstly**, … **Furthermore / Additionally**, …",
+      "**Paragraph 2 (disadvantages)** — **On the other hand**, … **Additionally**, …",
+      "**Conclusion** — **To sum up**, … **However, in my opinion**, …"
+     ],
+     "usage": [
+      "**Firstly**: ý chính đầu tiên · **Furthermore / Additionally**: thêm thông tin · **On the other hand / However**: ý mới, đối lập · **To sum up**: kết luận."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 25,
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 9 · Writing: bài luận ngắn ưu – nhược điểm — 11 từ/cụm từ",
+    "words": [
+     {
+      "word": "advantage",
+      "meaning": "ưu điểm",
+      "example": "One advantage is that it is quick."
+     },
+     {
+      "word": "disadvantage",
+      "meaning": "nhược điểm",
+      "example": "The main disadvantage is…"
+     },
+     {
+      "word": "firstly",
+      "meaning": "thứ nhất",
+      "example": "Firstly, students can find words quickly."
+     },
+     {
+      "word": "furthermore",
+      "meaning": "hơn nữa",
+      "example": "Furthermore, it is free."
+     },
+     {
+      "word": "additionally",
+      "meaning": "ngoài ra",
+      "example": "Additionally, it is easy to use."
+     },
+     {
+      "word": "on the other hand",
+      "meaning": "mặt khác",
+      "example": "On the other hand, students might stop thinking."
+     },
+     {
+      "word": "to sum up",
+      "meaning": "tóm lại",
+      "example": "To sum up, online dictionaries are useful."
+     },
+     {
+      "word": "look up a word",
+      "meaning": "tra từ",
+      "example": "Look up a word in the dictionary."
+     },
+     {
+      "word": "confident",
+      "meaning": "tự tin",
+      "example": "when a student is not very confident"
+     },
+     {
+      "word": "be afraid of",
+      "meaning": "sợ",
+      "example": "They are afraid of making a mistake."
+     },
+     {
+      "word": "motivated",
+      "meaning": "có động lực",
+      "example": "You have to be very motivated."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U09-L5",
+   "moduleCode": "M0-U09",
+   "order": 5,
+   "title": "🎧 Listening: thảo luận dự án ngôn ngữ",
+   "titleEn": "Listening: discussing a language project",
+   "durationMinutes": 35,
+   "objectives": [
+    "Nghe hội thoại và quyết định True / False",
+    "Nghe ai làm ở phòng nào (điền bảng)",
+    "Nghe kế hoạch tiếp theo của người nói"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "True / False khi nghe",
+     "titleEn": "Listening for detail",
+     "formula": [],
+     "usage": [
+      "Con số: \"over two hundred students **in total**\" — KHÔNG phải 200 người nói nhiều thứ tiếng; \"only **half** of them speak just a single language\".",
+      "Suy luận: Oliver ghi \"my second language\" trên đơn đăng ký → Oliver nói được hơn một ngôn ngữ.",
+      "Bảng phòng ban: nghe \"**No**, she works in…\" — người nói hay **sửa lại** thông tin sai."
+     ],
+     "examples": [],
+     "notes": [
+      "Trong văn nói, \"going to\" thường đọc thành **gonna** — chỉ dùng khi nói thân mật, KHÔNG viết."
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 3,
+   "practiceLinks": [
+    {
+     "ref": "listening:M0-U09-L1",
+     "kind": "listening",
+     "title": "Sofia & Oliver — dự án ngôn ngữ (Ex. 11–12)",
+     "note": "3 câu True/False, bảng phòng làm việc và câu hỏi Sofia đi đâu tiếp theo."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 9 · Listening: thảo luận dự án ngôn ngữ — 12 từ/cụm từ",
+    "words": [
+     {
+      "word": "report",
+      "meaning": "bản báo cáo",
+      "example": "Write the report on two things."
+     },
+     {
+      "word": "level",
+      "meaning": "trình độ",
+      "example": "what level their English is"
+     },
+     {
+      "word": "in total",
+      "meaning": "tổng cộng",
+      "example": "over two hundred students in total"
+     },
+     {
+      "word": "single",
+      "meaning": "đơn, duy nhất",
+      "example": "only half of them speak a single language"
+     },
+     {
+      "word": "include",
+      "meaning": "đưa vào, bao gồm",
+      "example": "if we only include numbers"
+     },
+     {
+      "word": "graph / table",
+      "meaning": "biểu đồ / bảng",
+      "example": "including some graphs or tables"
+     },
+     {
+      "word": "make a suggestion",
+      "meaning": "đưa ra gợi ý",
+      "example": "Can I make a suggestion?"
+     },
+     {
+      "word": "registration form",
+      "meaning": "phiếu đăng ký",
+      "example": "I put it on the registration form."
+     },
+     {
+      "word": "save time",
+      "meaning": "tiết kiệm thời gian",
+      "example": "That'll save us some time."
+     },
+     {
+      "word": "make an appointment",
+      "meaning": "đặt lịch hẹn",
+      "example": "I'll make an appointment."
+     },
+     {
+      "word": "remind",
+      "meaning": "nhắc",
+      "example": "Can you remind me where that is?"
+     },
+     {
+      "word": "the floor above",
+      "meaning": "tầng trên",
+      "example": "You need to go to the floor above."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U09-L6",
+   "moduleCode": "M0-U09",
+   "order": 6,
+   "title": "🗣️ Speaking: nói 1–2 phút về một ngôn ngữ bạn học",
+   "titleEn": "Speaking: a longer talk about a topic",
+   "durationMinutes": 40,
+   "objectives": [
+    "Dùng 1 phút chuẩn bị, ghi chú từ khoá",
+    "Nói 1–2 phút về ngôn ngữ bạn đang học (dùng going to)",
+    "Trả lời câu hỏi tiếp theo"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Bài nói về chủ đề cá nhân",
+     "titleEn": "A longer talk about a topic",
+     "formula": [
+      "**Đề**: Describe a language that you are studying, other than your first language. You should say: what the language is · how well you know the language · how long you are going to study it for — and explain why you are learning it."
+     ],
+     "usage": [
+      "Bạn có **1 phút** chuẩn bị và được dùng ghi chú khi nói (bullet box 13).",
+      "Dùng **going to** cho kế hoạch: I'm going to take the IELTS test next year.",
+      "Dùng collocation của unit: hold a conversation, make progress, practise my skills."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": false,
+    "minObjectiveScorePercent": 0,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 20,
+   "vocabSave": {
+    "slot": 5,
+    "title": "Unit 9 · Speaking: nói 1–2 phút về một ngôn ngữ bạn học — 8 từ/cụm từ",
+    "words": [
+     {
+      "word": "other than",
+      "meaning": "ngoài",
+      "example": "a language other than your first language"
+     },
+     {
+      "word": "fluent",
+      "meaning": "trôi chảy",
+      "example": "I'm not fluent yet."
+     },
+     {
+      "word": "intermediate",
+      "meaning": "trung cấp",
+      "example": "My English is at an intermediate level."
+     },
+     {
+      "word": "practise my skills",
+      "meaning": "luyện kỹ năng",
+      "example": "I practise my skills every day."
+     },
+     {
+      "word": "make progress",
+      "meaning": "tiến bộ",
+      "example": "I'm making progress slowly."
+     },
+     {
+      "word": "study abroad",
+      "meaning": "du học",
+      "example": "I'm going to study abroad."
+     },
+     {
+      "word": "job opportunities",
+      "meaning": "cơ hội việc làm",
+      "example": "English gives you more job opportunities."
+     },
+     {
+      "word": "follow-up question",
+      "meaning": "câu hỏi tiếp theo",
+      "example": "Ask follow-up questions about the topic."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U09-L7",
+   "moduleCode": "M0-U09",
+   "order": 7,
+   "title": "📝 Ôn tập Unit 9: Grammar & Vocabulary",
+   "titleEn": "Grammar and vocabulary — Unit 9",
+   "durationMinutes": 30,
+   "objectives": [
+    "Ôn giới từ giao tiếp, make/take, going to và từ nối"
+   ],
+   "keyLanguage": [],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 17
+  }
+ ]
+}

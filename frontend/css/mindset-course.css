@@ -1,0 +1,74 @@
+/* mindset-<level>.html — Mindset for IELTS (on top of writing-task2-course.css
+   + speaking-response.css). Only the Mindset-specific lesson blocks live here:
+   book pictures, Reading/Listening task cards, grammar links, "Lưu vào Sổ N",
+   and the 'passage' exercise stimulus (shared engine — js/shared/course-engine.js). */
+
+/* reading text inside an exercise (stimulus.kind 'passage') */
+.t1-passage { font-size: 14.5px; line-height: 1.75; color: var(--text, #111827); max-height: 420px; overflow-y: auto; padding-right: 4px; }
+.t1-passage p { margin: 0 0 10px; }
+.t1-passage p:last-child { margin-bottom: 0; }
+.t1-stim .t1-passage + .note { margin-top: 10px; }
+
+/* pictures cut from the Student's Book */
+.ms-imgs { margin: 12px 20px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 10px; }
+.ms-imgs figure { margin: 0; background: var(--card, #fff); border: 1px solid var(--border, #e5e7eb); border-radius: 12px; overflow: hidden; }
+.ms-imgs img { display: block; width: 100%; height: auto; cursor: zoom-in; }
+.ms-imgs figcaption { font-size: 12px; color: var(--text2, #4b5563); padding: 6px 10px; }
+
+/* Reading / Listening — the site's real exam UI */
+.ms-tasks { margin: 12px 20px 0; display: flex; flex-direction: column; gap: 10px; }
+.ms-task { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; text-decoration: none; color: var(--text, #111827);
+  background: var(--card, #fff); border: 1.5px solid var(--border, #e5e7eb); border-left: 5px solid #0ea5e9; transition: transform .12s, box-shadow .12s, border-color .12s; }
+.ms-task:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(15, 23, 42, .08); border-color: #0ea5e9; }
+.ms-task.ms-listening { border-left-color: #8b5cf6; }
+.ms-task.ms-listening:hover { border-color: #8b5cf6; }
+.ms-task-ic { width: 42px; height: 42px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; background: #e0f2fe; color: #0284c7; }
+.ms-listening .ms-task-ic { background: #ede9fe; color: #7c3aed; }
+.ms-task-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ms-task-k { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; color: var(--text3, #9ca3af); }
+.ms-task-body b { font-size: 14.5px; }
+.ms-task-n { font-size: 12.5px; color: var(--text2, #4b5563); line-height: 1.5; }
+.ms-task-go { font-size: 12.5px; font-weight: 800; color: #0284c7; white-space: nowrap; }
+.ms-listening .ms-task-go { color: #7c3aed; }
+[data-theme="dark"] .ms-task-ic { background: #0c2a3d; color: #7dd3fc; }
+[data-theme="dark"] .ms-listening .ms-task-ic { background: #241a42; color: #c4b5fd; }
+[data-theme="dark"] .ms-task-go { color: #7dd3fc; }
+[data-theme="dark"] .ms-listening .ms-task-go { color: #c4b5fd; }
+@media (max-width: 560px) {
+  .ms-task { flex-wrap: wrap; }
+  .ms-task-go { width: 100%; text-align: right; }
+}
+
+/* grammar → Essential Grammar lessons */
+.ms-gram { margin: 12px 20px 0; padding: 12px 14px; border-radius: 12px; background: #f5f3ff; border: 1px solid #ddd6fe; }
+.ms-gram-t { font-size: 13px; font-weight: 800; color: #6d28d9; margin-bottom: 8px; }
+.ms-gram-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.ms-gram-links .t1-btn { text-decoration: none; }
+.ms-gram-notes { margin: 10px 0 0; padding-left: 18px; font-size: 12.5px; line-height: 1.6; color: var(--text2, #4b5563); }
+[data-theme="dark"] .ms-gram { background: #1e1638; border-color: #3b2d6b; }
+[data-theme="dark"] .ms-gram-t { color: #c4b5fd; }
+
+/* "Lưu vào Sổ N trên web" — same wording as the printed books */
+.ms-vocab { margin: 16px 20px 0; padding: 14px 16px; border-radius: 12px; background: #ecfdf5; border-left: 5px solid #059669; }
+.ms-vocab h3 { margin: 0 0 4px; font-size: 18px; font-weight: 800; color: #047857; }
+.ms-vocab-sub { font-size: 12.5px; color: var(--text2, #4b5563); margin-bottom: 6px; }
+.ms-vocab ol { margin: 6px 0 10px; padding-left: 20px; font-size: 13px; line-height: 1.65; }
+.ms-vocab ol a { color: #047857; font-weight: 700; }
+.ms-vocab-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
+.ms-vocab-save { background: #059669 !important; color: #fff !important; border-color: #059669 !important; }
+.ms-vocab-save:hover { background: #047857 !important; }
+.ms-vocab-save:disabled { opacity: .6; cursor: default; }
+.ms-vocab-msg { font-size: 12.5px; color: var(--text2, #4b5563); }
+.ms-vocab-msg a { color: #047857; font-weight: 700; }
+.ms-vocab-cap { font-size: 12px; font-style: italic; color: var(--text3, #6b7280); margin-bottom: 6px; }
+.ms-vocab-list { font-size: 13.5px; line-height: 1.55; column-width: 300px; column-gap: 24px; }
+.ms-vw { break-inside: avoid; padding: 2px 0; }
+.ms-vw-ex { font-size: 12px; color: var(--text3, #6b7280); font-style: italic; }
+[data-theme="dark"] .ms-vocab { background: #0f2a22; border-left-color: #10b981; }
+[data-theme="dark"] .ms-vocab h3, [data-theme="dark"] .ms-vocab ol a, [data-theme="dark"] .ms-vocab-msg a { color: #6ee7b7; }
+@media (max-width: 480px) {
+  .ms-imgs, .ms-tasks, .ms-gram, .ms-vocab { margin-left: 14px; margin-right: 14px; }
+}
+
+/* strategy steps read as prose here, not code */
+.t1-th-formula { font-family: inherit; font-size: 13.5px; line-height: 1.65; }

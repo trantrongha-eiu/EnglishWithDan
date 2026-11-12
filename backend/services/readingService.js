@@ -8,6 +8,7 @@
 // across files (see listeningService.js's own comment on this).
 const mongoose = require('mongoose');
 const Passage = require('../models/Passage');
+const { NOT_COURSE } = require('../utils/courseContent');
 const ReadingTest = require('../models/ReadingTest');
 const TestAttempt = require('../models/TestAttempt');
 const ReadingPracticeAttempt = require('../models/ReadingPracticeAttempt');
@@ -285,14 +286,14 @@ async function startTest(testId, userId, mode = 'practice', rawParts = null) {
     if (parts) passages = parts.map(n => passages[n - 1]);
   } else if (parts) {
     const picked = await Promise.all(parts.map(n =>
-      Passage.aggregate([{ $match: { category: `passage${n}`, isActive: true } }, { $sample: { size: 1 } }, safeProject])));
+      Passage.aggregate([{ $match: { category: `passage${n}`, isActive: true, ...NOT_COURSE } }, { $sample: { size: 1 } }, safeProject])));
     if (picked.some(a => !a[0])) return { status: 'insufficient_data' };
     passages = picked.map(a => a[0]);
   } else {
     const [p1arr, p2arr, p3arr] = await Promise.all([
-      Passage.aggregate([{ $match: { category: 'passage1', isActive: true } }, { $sample: { size: 1 } }, safeProject]),
-      Passage.aggregate([{ $match: { category: 'passage2', isActive: true } }, { $sample: { size: 1 } }, safeProject]),
-      Passage.aggregate([{ $match: { category: 'passage3', isActive: true } }, { $sample: { size: 1 } }, safeProject])
+      Passage.aggregate([{ $match: { category: 'passage1', isActive: true, ...NOT_COURSE } }, { $sample: { size: 1 } }, safeProject]),
+      Passage.aggregate([{ $match: { category: 'passage2', isActive: true, ...NOT_COURSE } }, { $sample: { size: 1 } }, safeProject]),
+      Passage.aggregate([{ $match: { category: 'passage3', isActive: true, ...NOT_COURSE } }, { $sample: { size: 1 } }, safeProject])
     ]);
     if (!p1arr[0] || !p2arr[0] || !p3arr[0]) return { status: 'insufficient_data' };
     passages = [p1arr[0], p2arr[0], p3arr[0]];
@@ -488,9 +489,9 @@ async function getHistory(userId, limit = 50) {
 
 async function listPracticePassages(category, userId) {
   // 'all' = Bài lẻ default view: every passage from Passage 1–3, newest first.
-  const filter = category === 'actual-test' ? { isActualTest: true, isActive: true }
-    : category === 'all' ? { category: { $in: ['passage1', 'passage2', 'passage3'] }, isActive: true }
-    : { category, isActive: true };
+  const filter = category === 'actual-test' ? { isActualTest: true, isActive: true, ...NOT_COURSE }
+    : category === 'all' ? { category: { $in: ['passage1', 'passage2', 'passage3'] }, isActive: true, ...NOT_COURSE }
+    : { category, isActive: true, ...NOT_COURSE };
   // The first <img> in the passage content becomes the card's cover image.
   // Extracted inside MongoDB so the full passage text never leaves the DB.
   const passages = await Passage.aggregate([
@@ -747,7 +748,7 @@ async function getPracticeHistoryDetail(attemptId, userId) {
 // the same four paths.
 async function getRandomPracticePassage(category) {
   const arr = await Passage.aggregate([
-    { $match: { category, isActive: true } },
+    { $match: { category, isActive: true, ...NOT_COURSE } },
     { $sample: { size: 1 } },
     { $project: {
       'questionGroups.questions.correctAnswer': 0,

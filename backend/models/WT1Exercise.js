@@ -119,7 +119,10 @@ const WT1ExerciseSchema = new Schema(
     needsAsset: { type: Boolean, default: false },
 
     stimulus: {
-      kind: { type: String, enum: ['table', 'image', 'text', null], default: null },
+      // 'passage' (Mindset): a reading text — `text`, paragraphs split by a
+      // blank line, **bold** allowed; `imageUrl` optional above it.
+      kind: { type: String, enum: ['table', 'image', 'text', 'passage', null], default: null },
+      text: String,
       caption: String,
       headers: [String],
       rows: [[String]],

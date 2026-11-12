@@ -1,0 +1,703 @@
+{
+ "modules": [
+  {
+   "code": "M0-U03",
+   "order": 3,
+   "title": "Unit 3 · Sở thích & giải trí",
+   "titleEn": "UNIT 03: HOBBIES, LEISURE AND ENTERTAINMENT — sách tr. 34–44",
+   "outcomes": [
+    "Nói về các hoạt động giải trí và thể thao (play / do / go)",
+    "Nghe thông tin cụ thể trong hội thoại (multiple choice)",
+    "Dùng hiện tại đơn và hiện tại tiếp diễn",
+    "Đọc bài báo để tìm ý chính; làm True / False / Not Given",
+    "Mô tả tranh; viết tin nhắn trả lời bạn"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M0-U03-L1",
+   "moduleCode": "M0-U03",
+   "order": 1,
+   "title": "🔤 Từ vựng: hoạt động giải trí & thể thao",
+   "titleEn": "Lead-in · Speaking and vocabulary",
+   "durationMinutes": 40,
+   "objectives": [
+    "Gọi tên các hoạt động phiêu lưu: hiking, canoeing, white water rafting…",
+    "Dùng đúng play / do / go với từng môn thể thao",
+    "Dùng các động từ thể thao: win, lose, beat, score, hit, kick, throw, catch"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "PLAY – DO – GO + môn thể thao",
+     "titleEn": "play / do / go",
+     "formula": [
+      "**play** + môn có **bóng/đối thủ**: play tennis, football, chess, badminton",
+      "**do** + môn **võ / tập luyện cá nhân**: do judo, karate, gymnastics, athletics, yoga",
+      "**go** + môn tận cùng **-ing**: go swimming, cycling, hiking, sailing, skiing, fishing"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "I play basketball twice a week.",
+       "vi": "Tôi chơi bóng rổ 2 lần/tuần."
+      },
+      {
+       "en": "My sister does taekwondo.",
+       "vi": "Em gái tôi tập taekwondo."
+      },
+      {
+       "en": "We go hiking in the mountains.",
+       "vi": "Chúng tôi đi bộ đường dài trên núi."
+      }
+     ],
+     "notes": []
+    },
+    {
+     "title": "Động từ thể thao",
+     "titleEn": "Sports verbs",
+     "formula": [],
+     "usage": [
+      "**win** a match (thắng trận) ≠ **beat** someone (đánh bại ai): We **won** the match. / We **beat** them 3–1.",
+      "**lose** a match (thua) · **score** a goal (ghi bàn)",
+      "**hit** (đánh bằng vợt/gậy) · **kick** (đá) · **throw** (ném) · **catch** (bắt)"
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 5,
+   "totalPoints": 45,
+   "images": [
+    {
+     "url": "media:m0u03-leadin.jpg",
+     "caption": "Lead-in (tr. 34): Nối hoạt động với tranh — có 3 hoạt động thừa"
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 3 · Từ vựng: hoạt động giải trí & thể thao — 16 từ/cụm từ",
+    "words": [
+     {
+      "word": "hiking",
+      "meaning": "đi bộ đường dài",
+      "example": "We go hiking in the forest."
+     },
+     {
+      "word": "canoeing",
+      "meaning": "chèo xuồng",
+      "example": "Canoeing on the river is fun."
+     },
+     {
+      "word": "cycling",
+      "meaning": "đạp xe",
+      "example": "He went on a cycling holiday."
+     },
+     {
+      "word": "sailing",
+      "meaning": "chèo thuyền buồm",
+      "example": "Sailing holidays are expensive."
+     },
+     {
+      "word": "climbing",
+      "meaning": "leo núi",
+      "example": "We can do climbing in the mountains."
+     },
+     {
+      "word": "white water rafting",
+      "meaning": "chèo bè vượt thác",
+      "example": "White water rafting is scary but exciting."
+     },
+     {
+      "word": "leisure activity",
+      "meaning": "hoạt động giải trí",
+      "example": "What leisure activities do you enjoy?"
+     },
+     {
+      "word": "scary",
+      "meaning": "đáng sợ",
+      "example": "I think climbing is scary."
+     },
+     {
+      "word": "boring",
+      "meaning": "nhàm chán",
+      "example": "Shopping is boring for me."
+     },
+     {
+      "word": "score a goal",
+      "meaning": "ghi bàn",
+      "example": "He scored two goals."
+     },
+     {
+      "word": "win / lose a match",
+      "meaning": "thắng / thua trận",
+      "example": "I hope I win some of my matches."
+     },
+     {
+      "word": "beat",
+      "meaning": "đánh bại",
+      "example": "Every team we play against beats us."
+     },
+     {
+      "word": "racket",
+      "meaning": "cái vợt",
+      "example": "You use a racket in tennis."
+     },
+     {
+      "word": "kick / throw / catch / hit",
+      "meaning": "đá / ném / bắt / đánh",
+      "example": "In football, you kick the ball."
+     },
+     {
+      "word": "get fit",
+      "meaning": "khoẻ lên, cải thiện thể lực",
+      "example": "Swimming helps you get fit."
+     },
+     {
+      "word": "play in a team",
+      "meaning": "chơi theo đội",
+      "example": "In basketball, you play in a team."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U03-L2",
+   "moduleCode": "M0-U03",
+   "order": 2,
+   "title": "📖 Reading: True / False / Not Given",
+   "titleEn": "Reading: use of distraction — Snowboarding star",
+   "durationMinutes": 45,
+   "objectives": [
+    "Đọc lướt bài báo để trả lời: ai, làm gì, vì sao viết bài",
+    "Làm dạng True / False / Not Given — phân biệt FALSE và NOT GIVEN",
+    "Nhận ra \"bẫy\" (distraction): từ giống bài nhưng nghĩa khác"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "True / False / Not Given",
+     "titleEn": "Use of distraction",
+     "formula": [
+      "**TRUE**: bài nói **đúng như vậy** (có thể bằng từ khác).",
+      "**FALSE**: bài nói **ngược lại** câu hỏi.",
+      "**NOT GIVEN**: bài **không nói đến** — không đủ thông tin để biết đúng hay sai."
+     ],
+     "usage": [
+      "Câu hỏi đi **theo thứ tự** của bài — tìm đoạn chứa keyword rồi đọc kỹ 2–3 câu xung quanh.",
+      "Bẫy thường gặp: bài có **cùng từ** với câu hỏi nhưng ý khác. VD câu 4: bài có \"Olympic gold medal\" nhưng đó là **ước mơ** (her dream is to win…), chưa giành được → FALSE.",
+      "Đừng dùng **hiểu biết bên ngoài** — chỉ dựa vào bài."
+     ],
+     "examples": [
+      {
+       "en": "Q1: Aimee learnt to ski before she started snowboarding.",
+       "vi": "Bài: \"she learnt how to ski and snowboard\" → không nói môn nào trước → NOT GIVEN."
+      },
+      {
+       "en": "Q2: It often snowed in Aimee's hometown.",
+       "vi": "Bài: \"it hardly ever snowed\" (hầu như không bao giờ) → FALSE."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 8,
+   "practiceLinks": [
+    {
+     "ref": "reading:M0-U03-R1",
+     "kind": "reading",
+     "title": "Aimee Fuller — Snowboarding Star (Ex. 12–13)",
+     "note": "7 câu True / False / Not Given. Đọc lướt trước, rồi tìm từng keyword."
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 3 · Reading: True / False / Not Given — 15 từ/cụm từ",
+    "words": [
+     {
+      "word": "professional",
+      "meaning": "chuyên nghiệp",
+      "example": "She wanted to be a professional snowboarder."
+     },
+     {
+      "word": "train",
+      "meaning": "luyện tập (thể thao)",
+      "example": "It wasn't possible to train properly in her hometown."
+     },
+     {
+      "word": "hardly ever",
+      "meaning": "hầu như không bao giờ",
+      "example": "It hardly ever snowed."
+     },
+     {
+      "word": "ski slope",
+      "meaning": "dốc trượt tuyết",
+      "example": "There was a dry ski slope in her town."
+     },
+     {
+      "word": "sponsor",
+      "meaning": "nhà tài trợ",
+      "example": "Aimee quickly found sponsors."
+     },
+     {
+      "word": "coach",
+      "meaning": "huấn luyện viên",
+      "example": "She found a coach in the USA."
+     },
+     {
+      "word": "successful",
+      "meaning": "thành công",
+      "example": "She is a successful snowboarding star."
+     },
+     {
+      "word": "well-known",
+      "meaning": "nổi tiếng",
+      "example": "She is well-known in the USA."
+     },
+     {
+      "word": "competition",
+      "meaning": "cuộc thi",
+      "example": "She has done well in many competitions."
+     },
+     {
+      "word": "gold medal",
+      "meaning": "huy chương vàng",
+      "example": "Her dream is to win a gold medal."
+     },
+     {
+      "word": "keep fit",
+      "meaning": "giữ dáng, giữ sức khoẻ",
+      "example": "It is important to keep fit."
+     },
+     {
+      "word": "stay safe",
+      "meaning": "giữ an toàn",
+      "example": "Being fit helps her stay safe."
+     },
+     {
+      "word": "trick",
+      "meaning": "động tác biểu diễn khó",
+      "example": "She does snowboarding tricks and jumps."
+     },
+     {
+      "word": "advice",
+      "meaning": "lời khuyên",
+      "example": "Her advice is to start small."
+     },
+     {
+      "word": "hang out with",
+      "meaning": "đi chơi, tụ tập với",
+      "example": "She hangs out with her friends."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U03-L3",
+   "moduleCode": "M0-U03",
+   "order": 3,
+   "title": "🧩 Ngữ pháp: Hiện tại đơn & Hiện tại tiếp diễn",
+   "titleEn": "Grammar: present simple / present continuous",
+   "durationMinutes": 45,
+   "objectives": [
+    "Phân biệt hiện tại đơn (thói quen) và hiện tại tiếp diễn (đang xảy ra)",
+    "Viết đúng dạng -s/-es/-ies và -ing",
+    "Đặt câu hỏi ở cả hai thì"
+   ],
+   "keyLanguage": [
+    "Hiện tại đơn: thói quen, việc lặp lại — với always, usually, sometimes, every day: Every day, we get up early.",
+    "Hiện tại tiếp diễn (am/is/are + V-ing): việc ĐANG xảy ra — với now, at the moment, today; mô tả hành động trong ảnh: I'm resting in my room.",
+    "Câu hỏi: hiện tại đơn dùng do/does (Do you usually get up early?) · tiếp diễn dùng be (Are you enjoying your holiday?)",
+    "Chính tả -ing: live → living · run → running · lie → lying · begin → beginning"
+   ],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 6,
+   "totalPoints": 41,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Present Simple",
+     "note": "thói quen, sự thật",
+     "url": "/essential-grammar.html?lesson=present-simple"
+    },
+    {
+     "kind": "grammar",
+     "title": "Present Continuous",
+     "note": "đang xảy ra lúc nói, mô tả tranh",
+     "url": "/essential-grammar.html?lesson=present-continuous"
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L4",
+   "moduleCode": "M0-U03",
+   "order": 4,
+   "title": "✍️ Writing: trả lời tin nhắn của bạn",
+   "titleEn": "Writing: responding to a message from a friend",
+   "durationMinutes": 40,
+   "objectives": [
+    "Ghi chú thông tin từ quảng cáo + email (ngày, giá, giờ, phim, đồ mang theo)",
+    "Hiểu mục đích tin nhắn của bạn",
+    "Viết tin nhắn trả lời đủ 6 ý, dùng đúng hiện tại đơn / tiếp diễn"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Viết tin nhắn trả lời (đủ các ý được yêu cầu)",
+     "titleEn": "Responding to a message",
+     "formula": [
+      "**Hi Richard,** → trả lời câu hỏi của bạn (Yes, that would be great!)",
+      "**Nói bạn đang ở đâu, với ai, đang làm gì, chuyện gì đang xảy ra** → dùng **hiện tại tiếp diễn**",
+      "**Hẹn gặp ở đâu + bạn nên mang gì** → See you soon, + tên"
+     ],
+     "usage": [
+      "Đề có **6 gạch đầu dòng** → viết **đủ cả 6**, mỗi ý 1 câu là đủ.",
+      "Kiểm tra chính tả, dấu câu, và thì (Ex. 24)."
+     ],
+     "examples": [
+      {
+       "en": "I'm in Sunnyhill Park at the moment, at a film festival with Andrew.",
+       "vi": "đang ở đâu + với ai"
+      },
+      {
+       "en": "We're watching Child in Time – it's fantastic!",
+       "vi": "đang làm gì"
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 16,
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 3 · Writing: trả lời tin nhắn của bạn — 10 từ/cụm từ",
+    "words": [
+     {
+      "word": "film festival",
+      "meaning": "liên hoan phim",
+      "example": "There is a film festival in the park."
+     },
+     {
+      "word": "entrance",
+      "meaning": "lối vào, cổng",
+      "example": "See you at the entrance at 1pm."
+     },
+     {
+      "word": "on the day",
+      "meaning": "mua vào ngày diễn ra",
+      "example": "Tickets are £20 on the day."
+     },
+     {
+      "word": "food stall",
+      "meaning": "quầy đồ ăn",
+      "example": "There are food stalls at the festival."
+     },
+     {
+      "word": "umbrella",
+      "meaning": "cái ô",
+      "example": "Don't forget an umbrella."
+     },
+     {
+      "word": "meet up",
+      "meaning": "gặp nhau",
+      "example": "Do you want to meet up?"
+     },
+     {
+      "word": "bored",
+      "meaning": "chán",
+      "example": "I'm really bored at home."
+     },
+     {
+      "word": "Let me know",
+      "meaning": "Cho tôi biết nhé",
+      "example": "Let me know soon!"
+     },
+     {
+      "word": "I can't wait to",
+      "meaning": "tôi rất mong được",
+      "example": "I can't wait to see Child in Time!"
+     },
+     {
+      "word": "at the moment",
+      "meaning": "lúc này",
+      "example": "I'm at the festival at the moment."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U03-L5",
+   "moduleCode": "M0-U03",
+   "order": 5,
+   "title": "🎧 Listening: trắc nghiệm (multiple choice)",
+   "titleEn": "Listening: multiple choice questions",
+   "durationMinutes": 35,
+   "objectives": [
+    "Đọc trước câu hỏi và 3 lựa chọn, gạch keyword",
+    "Nghe NGHĨA chứ không chỉ nghe từ giống (MINI TIP 05.1)",
+    "Cẩn thận với con số và thông tin bị thay đổi (giá, giờ hẹn)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Multiple choice khi nghe",
+     "titleEn": "Listening for specific information",
+     "formula": [
+      "**Trước khi nghe**: gạch keyword trong câu hỏi; để ý lựa chọn khác nhau ở đâu (tháng? giá? giờ?)",
+      "**Khi nghe**: các lựa chọn đều có thể được nhắc tới — chỉ **một** khớp hoàn toàn với câu hỏi.",
+      "**Sau khi nghe**: kiểm tra từ phủ định (NOT) trong câu hỏi."
+     ],
+     "usage": [
+      "MINI TIP 05.0: Mark nói không đi được tháng 6, 7 vì còn học → đáp án là **August**.",
+      "MINI TIP 05.1: \"a friend told me\" = \"someone he knows\" — nghe **nghĩa**, không chỉ nghe từ.",
+      "Con số: £650 là giá **bình thường**, £500 nếu đặt **trước thứ Sáu** (book now) → chú ý điều kiện.",
+      "Giờ hẹn bị **đổi**: Mark đề nghị 7 giờ, Deon xin **8 giờ** → nghe đến cuối."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 6,
+   "practiceLinks": [
+    {
+     "ref": "listening:M0-U03-L1",
+     "kind": "listening",
+     "title": "Deon & Mark — kỳ nghỉ phiêu lưu (Ex. 4–5)",
+     "note": "Nghe audio gốc: chọn đáp án A, B hoặc C cho 6 câu."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 3 · Listening: trắc nghiệm (multiple choice) — 12 từ/cụm từ",
+    "words": [
+     {
+      "word": "adventure holiday",
+      "meaning": "kỳ nghỉ phiêu lưu",
+      "example": "Are you interested in an adventure holiday?"
+     },
+     {
+      "word": "book",
+      "meaning": "đặt (vé, chỗ)",
+      "example": "We need to book soon."
+     },
+     {
+      "word": "special offer",
+      "meaning": "ưu đãi đặc biệt",
+      "example": "There's a special offer on at the moment."
+     },
+     {
+      "word": "normally",
+      "meaning": "thông thường",
+      "example": "Normally the price is £650."
+     },
+     {
+      "word": "include",
+      "meaning": "bao gồm",
+      "example": "What does that include?"
+     },
+     {
+      "word": "transport",
+      "meaning": "phương tiện đi lại",
+      "example": "Transport and accommodation are included."
+     },
+     {
+      "word": "guide",
+      "meaning": "hướng dẫn viên",
+      "example": "Our guide is great."
+     },
+     {
+      "word": "water sports",
+      "meaning": "thể thao dưới nước",
+      "example": "There are lots of water sports by the sea."
+     },
+     {
+      "word": "cook outdoors",
+      "meaning": "nấu ăn ngoài trời",
+      "example": "You learn how to cook outdoors."
+     },
+     {
+      "word": "That sounds amazing",
+      "meaning": "Nghe tuyệt quá",
+      "example": "That sounds amazing! Is it expensive?"
+     },
+     {
+      "word": "so so",
+      "meaning": "tàm tạm",
+      "example": "Is it expensive? – So so."
+     },
+     {
+      "word": "Shall I…?",
+      "meaning": "Tôi … nhé? (đề nghị)",
+      "example": "Shall I come to your place at seven?"
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U03-L6",
+   "moduleCode": "M0-U03",
+   "order": 6,
+   "title": "🗣️ Speaking: mô tả tranh & nói về sở thích",
+   "titleEn": "Speaking and vocabulary: describing pictures · hobbies and interests",
+   "durationMinutes": 40,
+   "objectives": [
+    "Mô tả tranh bằng hiện tại tiếp diễn: A man is running…",
+    "Tìm điểm giống và khác giữa hai bức tranh",
+    "Nói về sở thích, môn thể thao yêu thích, có lý do"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Mô tả tranh",
+     "titleEn": "Describing a picture",
+     "formula": [
+      "**In this picture, I can see…** / **There is / There are…**",
+      "**Người + am/is/are + V-ing**: A man **is running**. Two people **are doing** yoga.",
+      "**Vị trí**: on the left / on the right / in the middle / at the top / at the bottom"
+     ],
+     "usage": [
+      "So sánh: **In both pictures**, … (giống) · **In picture 1**, … **but in picture 2**, … (khác)"
+     ],
+     "examples": [
+      {
+       "en": "In picture 1, a father is walking with his son, but in picture 2 I can't see them.",
+       "vi": "Câu nêu điểm khác."
+      },
+      {
+       "en": "In both pictures, a person is doing push-ups on the grass.",
+       "vi": "Câu nêu điểm giống."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": false,
+    "minObjectiveScorePercent": 0,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 20,
+   "images": [
+    {
+     "url": "media:m0u03-park-pictures.jpg",
+     "caption": "Ex. 19 (tr. 40): Picture 1 & Picture 2 — mô tả và tìm 5 điểm giống, 5 điểm khác"
+    }
+   ],
+   "vocabSave": {
+    "slot": 5,
+    "title": "Unit 3 · Speaking: mô tả tranh & nói về sở thích — 10 từ/cụm từ",
+    "words": [
+     {
+      "word": "in this picture",
+      "meaning": "trong bức tranh này",
+      "example": "In this picture, I can see a park."
+     },
+     {
+      "word": "on the left / on the right",
+      "meaning": "bên trái / bên phải",
+      "example": "On the left, a man is riding a bike."
+     },
+     {
+      "word": "in the middle",
+      "meaning": "ở giữa",
+      "example": "In the middle, some people are doing yoga."
+     },
+     {
+      "word": "in both pictures",
+      "meaning": "trong cả hai tranh",
+      "example": "In both pictures, there are trees."
+     },
+     {
+      "word": "difference",
+      "meaning": "điểm khác nhau",
+      "example": "Find five differences."
+     },
+     {
+      "word": "do push-ups",
+      "meaning": "chống đẩy",
+      "example": "A man is doing push-ups."
+     },
+     {
+      "word": "do yoga",
+      "meaning": "tập yoga",
+      "example": "Some people are doing yoga."
+     },
+     {
+      "word": "hold hands",
+      "meaning": "nắm tay",
+      "example": "A father is holding hands with his son."
+     },
+     {
+      "word": "free time",
+      "meaning": "thời gian rảnh",
+      "example": "What do you do in your free time?"
+     },
+     {
+      "word": "spend time outdoors",
+      "meaning": "dành thời gian ngoài trời",
+      "example": "It is important to spend time outdoors."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U03-L7",
+   "moduleCode": "M0-U03",
+   "order": 7,
+   "title": "📝 Ôn tập Unit 3: Grammar & Vocabulary",
+   "titleEn": "Grammar and vocabulary — Unit 3",
+   "durationMinutes": 35,
+   "objectives": [
+    "Ôn từ vựng thể thao, hiện tại đơn / tiếp diễn và động từ chỉ trạng thái (know, want, belong…)"
+   ],
+   "keyLanguage": [
+    "Động từ chỉ trạng thái (state verbs) KHÔNG dùng tiếp diễn: know, understand, remember, want, like, belong, hear (can hear) → I don't know (KHÔNG: I'm not knowing)."
+   ],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 5,
+   "totalPoints": 34
+  }
+ ]
+}

@@ -1,0 +1,1706 @@
+{
+ "exercises": [
+  {
+   "code": "M0-U05-L1-E01",
+   "lessonCode": "M0-U05-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Món ăn của nước nào? (Lead-in)",
+   "instruction": "Nối tranh 1–5 với quốc gia.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u05-countries.jpg",
+    "caption": "Lead-in"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "China",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "Saudi Arabia",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "Italy",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "the United Kingdom",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "Brazil",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L1-E02",
+   "lessonCode": "M0-U05-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Món ăn & nguyên liệu (Ex. 2)",
+   "instruction": "Nối món ăn 1–5 với nhóm nguyên liệu A–E.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Beef Chow Mein",
+     "right": "meat, noodles, oil, garlic",
+     "explanation": "Mì xào bò Trung Hoa."
+    },
+    {
+     "id": "m2",
+     "left": "Al Kabsa",
+     "right": "chicken, rice, tomato, onion",
+     "explanation": "Cơm gà Ả Rập."
+    },
+    {
+     "id": "m3",
+     "left": "Pizza",
+     "right": "tomatoes, cheese, flour for bread",
+     "explanation": "Ý."
+    },
+    {
+     "id": "m4",
+     "left": "Fish and chips",
+     "right": "fish, potatoes",
+     "explanation": "Anh."
+    },
+    {
+     "id": "m5",
+     "left": "Moqueca",
+     "right": "tomatoes, fish, prawns, rice, coconut milk",
+     "explanation": "Món hải sản Brazil."
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L1-E03",
+   "lessonCode": "M0-U05-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 9,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Thực phẩm trong tranh (Ex. 10)",
+   "instruction": "Nối tranh 1–9 với tên thực phẩm.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u05-foods.jpg",
+    "caption": "Ex. 10"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "flour",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "spring onions",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "garlic",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "rice",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "pasta",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "lamb",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "salmon",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Picture 8",
+     "right": "carrot",
+     "explanation": ""
+    },
+    {
+     "id": "m9",
+     "left": "Picture 9",
+     "right": "onion",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L1-E04",
+   "lessonCode": "M0-U05-L1",
+   "order": 4,
+   "autoGrade": true,
+   "points": 14,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Phân loại thực phẩm (Ex. 11, G&V Ex. 2)",
+   "instruction": "Xếp mỗi từ vào nhóm đúng.",
+   "categories": [
+    {
+     "id": "meat",
+     "label": "Meat"
+    },
+    {
+     "id": "veg",
+     "label": "Vegetables"
+    },
+    {
+     "id": "fish",
+     "label": "Fish / Seafood"
+    },
+    {
+     "id": "carb",
+     "label": "Carbohydrates"
+    },
+    {
+     "id": "other",
+     "label": "Other ingredients"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "lamb",
+     "category": "meat",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "beef",
+     "category": "meat",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "duck",
+     "category": "meat",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "carrot",
+     "category": "veg",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "garlic",
+     "category": "veg",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "lettuce",
+     "category": "veg",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "cauliflower",
+     "category": "veg",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "salmon",
+     "category": "fish",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "lobster",
+     "category": "fish",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "rice",
+     "category": "carb",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "pasta",
+     "category": "carb",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "spaghetti",
+     "category": "carb",
+     "explanation": ""
+    },
+    {
+     "id": "c13",
+     "text": "flour",
+     "category": "other",
+     "explanation": ""
+    },
+    {
+     "id": "c14",
+     "text": "salt",
+     "category": "other",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L1-E05",
+   "lessonCode": "M0-U05-L1",
+   "order": 5,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Động từ chế biến (Ex. 13)",
+   "instruction": "Nối tranh 1–7 với động từ.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u05-verbs.jpg",
+    "caption": "Ex. 13"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "chop",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "mix",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "cut",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "roll",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "fold",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "boil",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "fry",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L1-E06",
+   "lessonCode": "M0-U05-L1",
+   "order": 6,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Định nghĩa cách nấu (G&V Ex. 3)",
+   "instruction": "Nối động từ với định nghĩa.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "bake",
+     "right": "to cook something such as bread or a cake with dry heat in the oven",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "boil",
+     "right": "to cook food in water",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "chop",
+     "right": "to cut something into small pieces",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "fry",
+     "right": "to cook something in hot oil or fat",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "mix",
+     "right": "to put two or more ingredients together",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L2-E01",
+   "lessonCode": "M0-U05-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "ordering",
+   "title": "Sắp xếp tranh: món Bulgogi (Ex. 21)",
+   "instruction": "Nhìn tranh A–F và đọc hướng dẫn. Sắp xếp các chữ cái theo đúng trình tự nấu (bắt đầu bằng B).",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u05-bulgogi.jpg",
+    "caption": "Bulgogi — pictures A–F"
+   },
+   "items": [
+    {
+     "id": "o1",
+     "prompt": "",
+     "tokens": [
+      "B",
+      "C",
+      "F",
+      "A",
+      "E",
+      "D"
+     ],
+     "answer": [
+      "B",
+      "C",
+      "F",
+      "A",
+      "E",
+      "D"
+     ],
+     "explanation": "B: thái hành → C: cho nước tương + nước vào bát và trộn → F: thái thịt bò → A: để tủ lạnh 4 tiếng → E: chiên thịt → D: bày ra đĩa."
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L2-E02",
+   "lessonCode": "M0-U05-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Hoàn thành công thức Bulgogi (Ex. 22)",
+   "instruction": "Điền a, some hoặc một động từ.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "First, take ____ large onion and ____ spring onions and ____ them into small pieces.",
+     "blanks": [
+      {
+       "accept": [
+        "a"
+       ]
+      },
+      {
+       "accept": [
+        "some"
+       ]
+      },
+      {
+       "accept": [
+        "chop",
+        "cut"
+       ]
+      }
+     ],
+     "explanation": "a + danh từ số ít; some + số nhiều; chop = thái nhỏ."
+    },
+    {
+     "id": "g2",
+     "prompt": "Then, in a large bowl put ____ soy sauce and ____ cup of cold water.",
+     "blanks": [
+      {
+       "accept": [
+        "some"
+       ]
+      },
+      {
+       "accept": [
+        "a"
+       ]
+      }
+     ],
+     "explanation": "soy sauce không đếm được → some; a cup."
+    },
+    {
+     "id": "g3",
+     "prompt": "After this, add the onions and spring onions and ____ them all together.",
+     "blanks": [
+      {
+       "accept": [
+        "mix"
+       ]
+      }
+     ],
+     "explanation": "mix together."
+    },
+    {
+     "id": "g4",
+     "prompt": "Then, you will need to take your beef and ____ it into slices.",
+     "blanks": [
+      {
+       "accept": [
+        "cut"
+       ]
+      }
+     ],
+     "explanation": "cut into slices."
+    },
+    {
+     "id": "g5",
+     "prompt": "Afterwards, remove the meat from the bowl and ____ for 5–10 minutes.",
+     "blanks": [
+      {
+       "accept": [
+        "fry",
+        "cook"
+       ]
+      }
+     ],
+     "explanation": "Tranh E: chảo trên bếp → fry."
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L2-E03",
+   "lessonCode": "M0-U05-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Hoàn thành đoạn văn: món ăn yêu thích (Ex. 24)",
+   "instruction": "Chọn đáp án đúng nhất A, B, C hoặc D.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "I don't usually like (1) ____ meals and because I live alone, I often go (2) ____ restaurants or eat fast food in the week. (3) ____ the weekend, I have more (4) ____ time, so I usually cook my favourite meal. My (5) ____ meal is chicken curry with rice and vegetables. I don't have an oven, so I (6) ____ the chicken on its own in a pan and (7) ____ the rice in water. I like this meal so much that sometimes I also order it in restaurants. I sometimes also eat it four times a week! It is very popular (8) ____ my country, too. I think a lot of people like it because it is healthy and easy to make. You can also change the recipe so it is spicy or not, so everybody can enjoy it.",
+    "caption": "Ex. 24"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "I don't usually like ____ meals…",
+     "options": [
+      {
+       "id": "A",
+       "text": "cooking"
+      },
+      {
+       "id": "B",
+       "text": "cook"
+      },
+      {
+       "id": "C",
+       "text": "do"
+      },
+      {
+       "id": "D",
+       "text": "doing"
+      }
+     ],
+     "answer": "A",
+     "explanation": "like + V-ing; cook meals."
+    },
+    {
+     "id": "q2",
+     "prompt": "…I often go ____ restaurants or eat fast food in the week.",
+     "options": [
+      {
+       "id": "A",
+       "text": "in"
+      },
+      {
+       "id": "B",
+       "text": "at"
+      },
+      {
+       "id": "C",
+       "text": "to"
+      },
+      {
+       "id": "D",
+       "text": "for"
+      }
+     ],
+     "answer": "C",
+     "explanation": "go to + nơi chốn."
+    },
+    {
+     "id": "q3",
+     "prompt": "____ the weekend, I have more free time…",
+     "options": [
+      {
+       "id": "A",
+       "text": "For"
+      },
+      {
+       "id": "B",
+       "text": "At"
+      },
+      {
+       "id": "C",
+       "text": "In"
+      },
+      {
+       "id": "D",
+       "text": "With"
+      }
+     ],
+     "answer": "B",
+     "explanation": "at the weekend (Anh-Anh)."
+    },
+    {
+     "id": "q4",
+     "prompt": "…I have more ____ time, so I usually cook my favourite meal.",
+     "options": [
+      {
+       "id": "A",
+       "text": "extra"
+      },
+      {
+       "id": "B",
+       "text": "free"
+      },
+      {
+       "id": "C",
+       "text": "off"
+      },
+      {
+       "id": "D",
+       "text": "hobby"
+      }
+     ],
+     "answer": "B",
+     "explanation": "free time = thời gian rảnh."
+    },
+    {
+     "id": "q5",
+     "prompt": "My ____ meal is chicken curry with rice and vegetables.",
+     "options": [
+      {
+       "id": "A",
+       "text": "lovely"
+      },
+      {
+       "id": "B",
+       "text": "liked"
+      },
+      {
+       "id": "C",
+       "text": "favourite"
+      },
+      {
+       "id": "D",
+       "text": "popular"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "I don't have an oven, so I ____ the chicken on its own in a pan…",
+     "options": [
+      {
+       "id": "A",
+       "text": "fold"
+      },
+      {
+       "id": "B",
+       "text": "mix"
+      },
+      {
+       "id": "C",
+       "text": "fry"
+      },
+      {
+       "id": "D",
+       "text": "chop"
+      }
+     ],
+     "answer": "C",
+     "explanation": "in a pan → fry."
+    },
+    {
+     "id": "q7",
+     "prompt": "…and ____ the rice in water.",
+     "options": [
+      {
+       "id": "A",
+       "text": "fry"
+      },
+      {
+       "id": "B",
+       "text": "cut"
+      },
+      {
+       "id": "C",
+       "text": "roll"
+      },
+      {
+       "id": "D",
+       "text": "boil"
+      }
+     ],
+     "answer": "D",
+     "explanation": "in water → boil."
+    },
+    {
+     "id": "q8",
+     "prompt": "It is very popular ____ my country, too.",
+     "options": [
+      {
+       "id": "A",
+       "text": "in"
+      },
+      {
+       "id": "B",
+       "text": "with"
+      },
+      {
+       "id": "C",
+       "text": "at"
+      },
+      {
+       "id": "D",
+       "text": "on"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L3-E01",
+   "lessonCode": "M0-U05-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 12,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Đếm được hay không? (Ex. 16)",
+   "instruction": "Xếp mỗi từ vào nhóm đúng.",
+   "categories": [
+    {
+     "id": "cs",
+     "label": "Countable (singular)"
+    },
+    {
+     "id": "cp",
+     "label": "Countable (plural)"
+    },
+    {
+     "id": "u",
+     "label": "Uncountable"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "(an) apple",
+     "category": "cs",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "(a) cabbage",
+     "category": "cs",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "onions",
+     "category": "cp",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "oranges",
+     "category": "cp",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "potatoes",
+     "category": "cp",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "shrimps",
+     "category": "cp",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "flour",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "meat",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "milk",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "rice",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "salt",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "water",
+     "category": "u",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L3-E02",
+   "lessonCode": "M0-U05-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "a, an, some hay any? (G&V Ex. 4)",
+   "instruction": "Điền a, an, some hoặc any.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I have ____ sandwich for lunch. I had ____ apple for a snack today.",
+     "blanks": [
+      {
+       "accept": [
+        "a"
+       ]
+      },
+      {
+       "accept": [
+        "an"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "I have got ____ juice in the fridge. There are ____ oranges in the cupboard.",
+     "blanks": [
+      {
+       "accept": [
+        "some"
+       ]
+      },
+      {
+       "accept": [
+        "some"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Are there ____ tomatoes? Is there ____ fish on the menu?",
+     "blanks": [
+      {
+       "accept": [
+        "any"
+       ]
+      },
+      {
+       "accept": [
+        "any"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "Can I have ____ water, please? Would you like ____ tea?",
+     "blanks": [
+      {
+       "accept": [
+        "some"
+       ]
+      },
+      {
+       "accept": [
+        "some"
+       ]
+      }
+     ],
+     "explanation": "Lời đề nghị/yêu cầu → some."
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L3-E03",
+   "lessonCode": "M0-U05-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 11,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "much, many hay a lot of? (G&V Ex. 5–6)",
+   "instruction": "Chọn đáp án đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "We have ____ oranges to eat because we have an orange tree in our garden.",
+     "options": [
+      {
+       "id": "A",
+       "text": "much"
+      },
+      {
+       "id": "B",
+       "text": "a lot of"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Khẳng định → a lot of."
+    },
+    {
+     "id": "q2",
+     "prompt": "How ____ lemons do you need for the recipe?",
+     "options": [
+      {
+       "id": "A",
+       "text": "much"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      }
+     ],
+     "answer": "B",
+     "explanation": "lemons đếm được → many."
+    },
+    {
+     "id": "q3",
+     "prompt": "How ____ coffee is there in the cupboard?",
+     "options": [
+      {
+       "id": "A",
+       "text": "many"
+      },
+      {
+       "id": "B",
+       "text": "much"
+      }
+     ],
+     "answer": "B",
+     "explanation": "coffee không đếm được → much."
+    },
+    {
+     "id": "q4",
+     "prompt": "Could you go to the shop? There isn't ____ milk in the fridge.",
+     "options": [
+      {
+       "id": "A",
+       "text": "some"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      },
+      {
+       "id": "C",
+       "text": "much"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "How ____ eggs do we need to make the cake?",
+     "options": [
+      {
+       "id": "A",
+       "text": "many"
+      },
+      {
+       "id": "B",
+       "text": "much"
+      },
+      {
+       "id": "C",
+       "text": "a lot of"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "There are ____ potatoes in the cupboard, so we could make chips.",
+     "options": [
+      {
+       "id": "A",
+       "text": "much"
+      },
+      {
+       "id": "B",
+       "text": "any"
+      },
+      {
+       "id": "C",
+       "text": "a lot of"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "Do you have ____ spaghetti?",
+     "options": [
+      {
+       "id": "A",
+       "text": "any"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      },
+      {
+       "id": "C",
+       "text": "a"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q8",
+     "prompt": "I think that we have ____ carrots in the fridge.",
+     "options": [
+      {
+       "id": "A",
+       "text": "much"
+      },
+      {
+       "id": "B",
+       "text": "some"
+      },
+      {
+       "id": "C",
+       "text": "any"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q9",
+     "prompt": "How ____ sugar would you like in your coffee?",
+     "options": [
+      {
+       "id": "A",
+       "text": "many"
+      },
+      {
+       "id": "B",
+       "text": "much"
+      },
+      {
+       "id": "C",
+       "text": "any"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q10",
+     "prompt": "There aren't ____ vegetables in the shop, just cauliflower and lettuce.",
+     "options": [
+      {
+       "id": "A",
+       "text": "any"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      },
+      {
+       "id": "C",
+       "text": "much"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q11",
+     "prompt": "We don't have ____ beef left. Everyone ate it.",
+     "options": [
+      {
+       "id": "A",
+       "text": "any"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      },
+      {
+       "id": "C",
+       "text": "much"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L3-E04",
+   "lessonCode": "M0-U05-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Đoạn văn về pizza (G&V Ex. 7)",
+   "instruction": "Chọn đáp án đúng nhất.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "My ____ food is pizza.",
+     "options": [
+      {
+       "id": "A",
+       "text": "best"
+      },
+      {
+       "id": "B",
+       "text": "lovely"
+      },
+      {
+       "id": "C",
+       "text": "favourite"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "I like ____ pizzas because they are very easy to prepare.",
+     "options": [
+      {
+       "id": "A",
+       "text": "eating"
+      },
+      {
+       "id": "B",
+       "text": "eat"
+      },
+      {
+       "id": "C",
+       "text": "ate"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "If you want to ____ your own pizza, all you need to do is make the bread for the base.",
+     "options": [
+      {
+       "id": "A",
+       "text": "get"
+      },
+      {
+       "id": "B",
+       "text": "have"
+      },
+      {
+       "id": "C",
+       "text": "make"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "You can ____ tomatoes and cheese…",
+     "options": [
+      {
+       "id": "A",
+       "text": "mix"
+      },
+      {
+       "id": "B",
+       "text": "fold"
+      },
+      {
+       "id": "C",
+       "text": "add"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "…and ____ other ingredients on top.",
+     "options": [
+      {
+       "id": "A",
+       "text": "a lot"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      },
+      {
+       "id": "C",
+       "text": "much"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "You then ____ it in the oven for 10 to 15 minutes.",
+     "options": [
+      {
+       "id": "A",
+       "text": "cook"
+      },
+      {
+       "id": "B",
+       "text": "boil"
+      },
+      {
+       "id": "C",
+       "text": "fry"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "…you can buy ____ pizza from your local supermarket.",
+     "options": [
+      {
+       "id": "A",
+       "text": "much"
+      },
+      {
+       "id": "B",
+       "text": "some"
+      },
+      {
+       "id": "C",
+       "text": "a"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q8",
+     "prompt": "Nowadays, ____ of people are so busy that they don't have time to cook.",
+     "options": [
+      {
+       "id": "A",
+       "text": "much"
+      },
+      {
+       "id": "B",
+       "text": "a lot"
+      },
+      {
+       "id": "C",
+       "text": "many"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q9",
+     "prompt": "…or they like to have a rest ____ the weekend.",
+     "options": [
+      {
+       "id": "A",
+       "text": "at"
+      },
+      {
+       "id": "B",
+       "text": "in"
+      },
+      {
+       "id": "C",
+       "text": "for"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q10",
+     "prompt": "…they go ____ a take-away restaurant and buy a pizza.",
+     "options": [
+      {
+       "id": "A",
+       "text": "in"
+      },
+      {
+       "id": "B",
+       "text": "for"
+      },
+      {
+       "id": "C",
+       "text": "to"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L4-E01",
+   "lessonCode": "M0-U05-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Món súp lơ Ả Rập: tranh ↔ bước (G&V Ex. 8)",
+   "instruction": "Đây là 7 bước làm món súp lơ kiểu Ả Rập. Nối thứ tự bước (1–7) với câu hướng dẫn đúng.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Step 1",
+     "right": "First, take a large cauliflower and cut the leaves off so that you only have the white part.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Step 2",
+     "right": "Next, take the cauliflower and place it in boiling water.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Step 3",
+     "right": "While the cauliflower is boiling, chop some garlic.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Step 4",
+     "right": "Next, add the garlic to some special mixture called tahini paste and some lemon juice.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Step 5",
+     "right": "Mix the paste, the lemon juice and the garlic together.",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Step 6",
+     "right": "Add the mixture of paste, garlic and lemon juice to the cauliflower.",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Step 7",
+     "right": "Finally, cover the dish and put it in the fridge until you are ready to eat it.",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L4-E02",
+   "lessonCode": "M0-U05-L4",
+   "order": 2,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Viết: món ăn phổ biến ở nước bạn (Ex. 23, 26)",
+   "instruction": "Dùng kiến thức của unit này, viết bài (120–150 từ) về một món ăn phổ biến ở Việt Nam hoặc món bạn thích. Bài viết cần có: (1) cần những nguyên liệu gì; (2) hướng dẫn cách làm theo từng bước (First, Then, After this, Finally…); (3) lý do món ăn này phổ biến.",
+   "responseSlots": 1,
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 110,
+    "maxWords": 170,
+    "mustUse": 4,
+    "targetStructures": [
+     "First",
+     "Then",
+     "After this",
+     "Finally",
+     "some",
+     "chop",
+     "boil",
+     "fry",
+     "because"
+    ],
+    "checklist": [
+     "Nêu nguyên liệu (dùng a/an/some đúng)",
+     "Các bước theo thứ tự với từ nối trình tự",
+     "Dùng động từ chế biến (chop, mix, fry, boil…)",
+     "Giải thích vì sao món ăn phổ biến",
+     "120–150 từ"
+    ],
+    "sampleAnswer": "Bánh mì is one of the most popular foods in Vietnam. To make it, you need a baguette, some pork, some pâté, a cucumber, a carrot, some fresh herbs and some chilli sauce.\n\nFirst, cut the carrot into thin pieces and mix it with a little sugar and vinegar. Then, cut the pork into slices and fry it in a pan for about ten minutes with some garlic and soy sauce. After this, cut the baguette in half and spread some pâté inside. Next, add the pork, the carrot, some cucumber and the herbs. Finally, put some chilli sauce on top and close the bread.\n\nBánh mì is popular because it is cheap, quick and delicious. You can buy it on almost every street, and people often eat it for breakfast on the way to school or work. You can also change the filling, so everybody can enjoy it.",
+    "commonErrors": [
+     "Thiếu từ nối trình tự",
+     "Dùng a với danh từ không đếm được (a rice)",
+     "Quên giải thích lý do món ăn phổ biến"
+    ]
+   }
+  },
+  {
+   "code": "M0-U05-L5-E01",
+   "lessonCode": "M0-U05-L5",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Từ đồng nghĩa trước khi nghe (MINI TIPS 08)",
+   "instruction": "Chọn nghĩa đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "\"sightseeing\" means…",
+     "options": [
+      {
+       "id": "A",
+       "text": "visiting famous places"
+      },
+      {
+       "id": "B",
+       "text": "eating in a restaurant"
+      },
+      {
+       "id": "C",
+       "text": "working in an office"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "If you \"can't afford\" something, you don't have…",
+     "options": [
+      {
+       "id": "A",
+       "text": "time"
+      },
+      {
+       "id": "B",
+       "text": "enough money"
+      },
+      {
+       "id": "C",
+       "text": "friends"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "A \"flatmate\" is someone who…",
+     "options": [
+      {
+       "id": "A",
+       "text": "lives in the same flat as you"
+      },
+      {
+       "id": "B",
+       "text": "works with you"
+      },
+      {
+       "id": "C",
+       "text": "studies in your class"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L6-E01",
+   "lessonCode": "M0-U05-L6",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "ordering",
+   "title": "Câu hỏi khảo sát ăn uống (Ex. 19)",
+   "instruction": "Sắp xếp thành câu hỏi đúng.",
+   "items": [
+    {
+     "id": "o1",
+     "prompt": "",
+     "tokens": [
+      "How",
+      "much",
+      "meat",
+      "do",
+      "you",
+      "eat",
+      "each",
+      "week?"
+     ],
+     "answer": [
+      "How",
+      "much",
+      "meat",
+      "do",
+      "you",
+      "eat",
+      "each",
+      "week?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o2",
+     "prompt": "",
+     "tokens": [
+      "Are",
+      "there",
+      "any",
+      "recipes",
+      "you",
+      "like",
+      "to",
+      "cook?"
+     ],
+     "answer": [
+      "Are",
+      "there",
+      "any",
+      "recipes",
+      "you",
+      "like",
+      "to",
+      "cook?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o3",
+     "prompt": "",
+     "tokens": [
+      "How",
+      "many",
+      "cups",
+      "of",
+      "tea",
+      "do",
+      "you",
+      "drink",
+      "a",
+      "day?"
+     ],
+     "answer": [
+      "How",
+      "many",
+      "cups",
+      "of",
+      "tea",
+      "do",
+      "you",
+      "drink",
+      "a",
+      "day?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o4",
+     "prompt": "",
+     "tokens": [
+      "Are",
+      "there",
+      "any",
+      "foods",
+      "you",
+      "don't",
+      "like?"
+     ],
+     "answer": [
+      "Are",
+      "there",
+      "any",
+      "foods",
+      "you",
+      "don't",
+      "like?"
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L6-E02",
+   "lessonCode": "M0-U05-L6",
+   "order": 2,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: món ăn bạn thích (Ex. 25)",
+   "instruction": "Nói 1–2 phút về một bữa ăn bạn thích. Bạn nên nói: ai chuẩn bị món đó cho bạn · khi nào bạn ăn · vì sao bạn thích nó.",
+   "speakingPart": 2,
+   "speakingPrepSeconds": 60,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "Talk about a meal that you enjoy.\nYou should say:\n• who prepares it for you\n• when you eat it\nand explain why you like it.",
+     "sampleAnswer": "The meal I enjoy most is my grandmother's fish soup with rice. She usually prepares it for the whole family when we visit her house on Sunday. First, she fries some tomatoes and onions, then she adds fresh fish, pineapple and some herbs, and boils everything for about twenty minutes. The kitchen smells delicious! We usually eat it at lunchtime, all together around a big table, so it's a very happy time. I like this meal for two reasons. Firstly, it's healthy and not too heavy, so I never feel tired after eating it. Secondly, it reminds me of my childhood, because my grandmother has cooked it for me since I was very small. I've tried fish soup in restaurants, but it's never as good as hers.",
+     "sampleNote": "Đủ 3 ý theo thứ tự (who → when → why), có mô tả cách nấu bằng động từ của unit, phần \"why\" có 2 lý do (Firstly, Secondly).",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L6-E03",
+   "lessonCode": "M0-U05-L6",
+   "order": 3,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: trả lời câu hỏi về ẩm thực (Ex. 3, 20)",
+   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "What is your favourite food from your country?",
+     "sampleAnswer": "My favourite Vietnamese food is bún chả. It's grilled pork with rice noodles and fresh herbs. I love it because the meat is sweet and smoky, and it's perfect for lunch on a hot day.",
+     "sampleNote": "Món + mô tả nguyên liệu + lý do.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "What food is popular in your country?",
+     "sampleAnswer": "Rice is the most popular food in Vietnam – we eat it almost every day. Noodle soups like phở are also very popular, especially for breakfast.",
+     "sampleNote": "Nêu 2 ví dụ.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "How much water do you drink every day?",
+     "sampleAnswer": "Not as much as I should! I probably drink about four glasses a day, but I know I need to drink more, especially when I play sport.",
+     "sampleNote": "Câu trả lời trung thực + chi tiết.",
+     "sampleSource": "new"
+    }
+   ]
+  }
+ ]
+}

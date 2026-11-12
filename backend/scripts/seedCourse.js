@@ -5,6 +5,9 @@
 //   node scripts/seedCourse.js t1         # IELTS Writing Task 1  (data/writingTask1)
 //   node scripts/seedCourse.js t2         # IELTS Writing Task 2  (data/writingTask2)
 //   node scripts/seedCourse.js speaking   # IELTS Speaking        (data/speakingCourse)
+//   node scripts/seedCourse.js mindset0   # Mindset for IELTS Foundation (data/mindset0) —
+//        run scripts/seedMindsetMedia.js mindset0 FIRST (it creates the
+//        Passage/ListeningSection docs the lessons' practiceLinks[].ref point at)
 //   add --dry to validate + tally without writing anything
 //
 // Idempotent: every doc is upsert-ed by `code`, so re-running never
@@ -24,6 +27,7 @@ const COURSES = {
   t1: { dir: 'writingTask1', tag: 'WT1Seed' },
   t2: { dir: 'writingTask2', tag: 'WT2Seed' },
   speaking: { dir: 'speakingCourse', tag: 'SpeakingSeed' },
+  mindset0: { dir: 'mindset0', tag: 'Mindset0Seed' },
 };
 const courseKey = process.argv.slice(2).find((a) => !a.startsWith('--'));
 const COURSE = COURSES[courseKey];
@@ -129,6 +133,18 @@ function load() {
   let exercises = [];
   for (const f of exerciseFiles) exercises = exercises.concat(read(f).exercises || []);
 
+  // Mindset: "media:<file>" → the R2 URL scripts/seedMindsetMedia.js cached
+  // in media.json. Left as-is when not uploaded yet (a --dry run before media).
+  const mediaFile = path.join(DATA_DIR, 'media.json');
+  if (fs.existsSync(mediaFile) || /media:/.test(JSON.stringify({ lessons, exercises }))) {
+    const media = fs.existsSync(mediaFile) ? JSON.parse(fs.readFileSync(mediaFile, 'utf8')) : {};
+    const sub = (v) => JSON.parse(JSON.stringify(v).replace(/media:([A-Za-z0-9_.-]+\.(?:jpg|png|webp))/g, (m, f) => (typeof media[f] === 'string' ? media[f] : m)));
+    lessons = sub(lessons);
+    exercises = sub(exercises);
+    const left = JSON.stringify({ lessons, exercises }).match(/media:[A-Za-z0-9_.-]+\.(?:jpg|png|webp)/g);
+    if (left) console.log(`  ⚠️  ${left.length} ảnh chưa upload (chạy seedMindsetMedia.js): ${[...new Set(left)].join(', ')}`);
+  }
+
   console.log(`  nguồn: ${lessonFiles.join(', ')} + ${exerciseFiles.join(', ') || '(chưa có exercises-*.json)'}`);
   const lessonCodes = new Set(lessons.map((l) => l.code));
   return { course, modules, lessons, exercises, lessonCodes };
@@ -143,6 +159,36 @@ function tally(exercises) {
   console.log(`  Chờ ảnh (needsAsset): ${pending.length}${pending.length ? ' — ' + pending.join(', ') : ''}`);
 }
 
+// Lesson fields only the Mindset courses carry — $unset when the seed doc
+// drops them, same reason as EXERCISE_OPTIONAL_FIELDS. (Not theory/bookModels:
+// syncBookModels.js writes bookModels outside this seed.)
+const LESSON_OPTIONAL_FIELDS = ['vocabSave', 'practiceLinks', 'images'];
+
+// practiceLinks[].ref = 'reading:<courseRef>' | 'listening:<courseRef>' →
+// the reading.html / listening.html URL of the Passage / ListeningSection
+// that scripts/seedMindsetMedia.js upserted under that courseRef.
+async function resolvePracticeLinks(lessons) {
+  const Passage = require('../models/Passage');
+  const ListeningSection = require('../models/ListeningSection');
+  const missing = [];
+  for (const l of lessons) {
+    if (!Array.isArray(l.practiceLinks)) continue;
+    for (const pl of l.practiceLinks) {
+      if (!pl.ref) continue;
+      const [kind, ref] = String(pl.ref).split(':');
+      const Model = kind === 'listening' ? ListeningSection : Passage;
+      const doc = await Model.findOne({ courseRef: ref }).select('_id category').lean();
+      if (!doc) { missing.push(pl.ref); continue; }
+      pl.url = kind === 'listening'
+        ? '/listening.html?sectionId=' + doc._id + '&exam=practice'
+        : '/reading.html?passageId=' + doc._id + '&category=' + (doc.category || 'passage1') + '&exam=practice';
+      if (!pl.kind) pl.kind = kind;
+      delete pl.ref;
+    }
+  }
+  if (missing.length) throw new Error('practiceLinks ref chưa có trong DB (chạy seedMindsetMedia.js trước): ' + missing.join(', '));
+}
+
 async function runSeed({ course, modules, lessons, exercises }) {
   console.log('\nCourse:');
   await upsert(WT1Course, { code: course.code }, course, 'course');
@@ -152,7 +198,8 @@ async function runSeed({ course, modules, lessons, exercises }) {
     await upsert(WT1Module, { code: m.code }, { ...m, courseCode: course.code }, 'module');
 
   console.log('\nLessons:');
-  for (const l of lessons) await upsert(WT1Lesson, { code: l.code }, l, 'lesson');
+  await resolvePracticeLinks(lessons);
+  for (const l of lessons) await upsert(WT1Lesson, { code: l.code }, l, 'lesson', LESSON_OPTIONAL_FIELDS);
 
   console.log('\nExercises:');
   for (const ex of exercises) {
@@ -186,6 +233,10 @@ async function main() {
   tally(data.exercises);
 
   if (dry) process.exit(0);
+  if (/media:[A-Za-z0-9_.-]+\.(?:jpg|png|webp)/.test(JSON.stringify(data))) {
+    console.error('\n❌ Còn ảnh "media:" chưa upload — chạy scripts/seedMindsetMedia.js trước.');
+    process.exit(1);
+  }
 
   require('dotenv').config();
   const mongoose = require('mongoose');

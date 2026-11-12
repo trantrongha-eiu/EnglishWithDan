@@ -29,6 +29,7 @@
 // sentence), never its key.
 
 const Passage = require('../models/Passage');
+const { NOT_COURSE } = require('../utils/courseContent');
 const ReadingTest = require('../models/ReadingTest');
 const ReadingTip = require('../models/ReadingTip');
 const { gradeGroups } = require('./readingService');
@@ -976,7 +977,7 @@ function publicParagraph(p) {
 }
 
 function loadActivePassages() {
-  return Passage.find({ isActive: true }).select('title category content questionGroups questions').lean();
+  return Passage.find({ isActive: true, ...NOT_COURSE }).select('title category content questionGroups questions').lean();
 }
 
 // ── Fixed practices ─────────────────────────────────────────────────────

@@ -1,0 +1,276 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 0 · Unit 6 — Signs, notices and messages",
+   "content": "<p><em>Read the signs and messages.</em></p>\n\n<p style=\"text-align:center\"><img src=\"media:m0u06-signs.jpg\" alt=\"Signs and messages\" style=\"max-width:100%;height:auto;border-radius:6px\"></p>\n\n<p><strong>1 — Notice</strong><br>PARKING FOR SUPERMARKET CUSTOMERS ONLY. Free for two hours – after that £2 an hour.</p>\n\n<p><strong>2 — Message</strong><br>Hi Tom, Jim and I are playing football in the park today. Do you want to join us? We'll get on the bus at the town centre at 12:30pm. Let me know, Harry</p>\n\n<p><strong>3 — Notice</strong><br>Trains travelling north out of this station are delayed because of heavy snow.</p>\n\n<p><strong>4 — Email (To: Su, From: Lee, Subject: Holiday plans)</strong><br>I just checked and there are seats available on the flight we want. Let's book them soon before the price gets too expensive!</p>\n\n<p><strong>5 — Postcard</strong><br>Hi Deon, I went sightseeing around the city today on an open top bus. We visited the museum and the castle along the way. We're going on a boat trip tomorrow and we'll be back home on Friday. George</p>\n\n<p><strong>6 — Notice (Milltown Station)</strong><br>Bicycles should be left in the bicycle stands only. For advice, please speak to a member of staff, who can give more details.</p>\n\n<p><strong>7 — Message</strong><br>Alice, how are you going to the theatre tonight? It's close enough for me to walk but Tim's going by car and he's offered to drive me. Let him know if you want him to drive you, too. Sonia</p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–7",
+     "instruction": "Read the signs and messages again. Choose the correct answer, A, B or C.",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "What does the supermarket notice say?",
+       "options": [
+        "You can pay £2 to leave your car in the supermarket car park all day.",
+        "Supermarket customers can only park here for 2 hours at a time.",
+        "You don't need to pay if you finish shopping within 2 hours."
+       ],
+       "correctAnswer": "C",
+       "explanation": "\"Free for two hours – after that £2 an hour\" → mua sắm xong trong 2 tiếng thì không mất tiền. A sai (£2 MỖI GIỜ, không phải cả ngày); B sai (có thể đỗ lâu hơn nếu trả tiền). MINI TIP 06.1."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Why did Harry write this message?",
+       "options": [
+        "To give Tom and Jim instructions on how to get to the park.",
+        "To invite Tom to play football with him and Jim.",
+        "To find out what time Tom would like to play football."
+       ],
+       "correctAnswer": "B",
+       "explanation": "\"Do you want to join us?\" = lời mời. Thông tin về xe buýt và giờ chỉ là chi tiết (MINI TIP 06.2)."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "What is the notice telling passengers?",
+       "options": [
+        "They should wait for news about the weather before travelling.",
+        "Some passengers will be late today because of the weather.",
+        "The station is closed until the weather improves."
+       ],
+       "correctAnswer": "B",
+       "explanation": "\"Trains travelling north… are delayed because of heavy snow\" → một số (đi về phía bắc) sẽ đến muộn. Ga không đóng cửa (C)."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "What does Lee suggest?",
+       "options": [
+        "To book the flights as soon as possible.",
+        "To choose a less expensive flight.",
+        "To change the date of his and Su's flight."
+       ],
+       "correctAnswer": "A",
+       "explanation": "\"Let's book them soon before the price gets too expensive!\" → đặt sớm."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "What does George say?",
+       "options": [
+        "His sightseeing trip included a visit to a museum and castle.",
+        "He visited the castle and museum after going on the boat trip.",
+        "He hopes to do a boat trip and an open bus tour before returning home."
+       ],
+       "correctAnswer": "A",
+       "explanation": "\"We visited the museum and the castle along the way\" (trong chuyến xe buýt). Boat trip là NGÀY MAI → B sai; xe buýt đã đi rồi → C sai."
+      },
+      {
+       "questionNumber": 6,
+       "type": "multiple-choice",
+       "questionText": "What are train passengers told at the station?",
+       "options": [
+        "They must not leave bikes at the station.",
+        "Cycle parking is only for members of station staff.",
+        "If they need to know more, they can ask someone who works there."
+       ],
+       "correctAnswer": "C",
+       "explanation": "\"For advice, please speak to a member of staff, who can give more details\" → hỏi nhân viên. Được để xe ở chỗ để xe (A sai)."
+      },
+      {
+       "questionNumber": 7,
+       "type": "multiple-choice",
+       "questionText": "What should Alice do?",
+       "options": [
+        "Contact Tim if she would like a lift to the theatre.",
+        "Tell Sonia what her travel plans are for this evening.",
+        "Let Tim or Sonia know if she's going to the theatre."
+       ],
+       "correctAnswer": "A",
+       "explanation": "\"Let **him** know if you want him to drive you\" → liên hệ Tim nếu muốn đi nhờ xe."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U06-R1"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 0 · Unit 6 — Northfields' Shopping Centre (Part 1)",
+   "description": "Information about a new shopping centre — Part 1.",
+   "partNumber": 1,
+   "audioFile": "MindsetIELTS_Foundation_11.mp3",
+   "transcript": "Presenter: Hello everyone and welcome to this talk about Northfields' Shopping Centre. It opens next weekend and I'm very excited to be able to tell you about it tonight. It's a beautiful building, full of light and colour and a wonderful place to spend time in. It was designed by a prize-winning architect – John Gadzen. That's G-A-D-Z-E-N. Have a look at his website – he's done some fantastic work.\nNorthfields is just outside town, on Forest Drive. If you're coming by car and want to use your sat nav, then the postcode is WT3 5BX. That's the easiest way to do it; it works better than using the address.\nWe are open seven days a week, and our opening hours are ten am until six pm every day except Thursday. That's when we have late-night shopping until 8:00 pm. We're planning to open late on Wednesdays too, but that won't happen until we see how popular the centre is.\nThere are lots of ways to get to us. We have a large car park, which at the moment is free to use. You can also come by bus from the town centre. Bus 635 brings you to the entrance. There's also bus 729, but that stops further away and it's a five-minute walk to the shopping centre. And of course, you can use the underground. A ticket from town is only £3.50. The bus costs £2.00, so the underground is a bit more expensive but much faster. From the town centre, it only takes fifteen minutes!",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Listen and complete the information. Write ONE WORD AND/OR A NUMBER for each answer.",
+     "noteConfig": {
+      "title": "Northfields' shopping centre information",
+      "lines": [
+       "Name of architect who designed Northfields': John __Q1__",
+       "Address and postcode: Forest Drive, __Q2__",
+       "Opening hours: 10am to 6pm",
+       "Late night shopping until 8pm on __Q3__",
+       "Transport — By car: free car park",
+       "By bus: there are __Q4__ buses",
+       "Underground: from the town centre it only takes __Q5__ minutes"
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "Gadzen",
+       "explanation": "Dịch: Tên kiến trúc sư: John ___\n\nVị trí: Đầu bài.\n\nTranscript: “John Gadzen. That's G-A-D-Z-E-N”\n\nPhân tích: Tên được đánh vần — nghe từng chữ cái."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "WT3 5BX / WT35BX",
+       "explanation": "Dịch: Địa chỉ và mã bưu chính: Forest Drive, ___\n\nVị trí: Khi nói về sat nav.\n\nTranscript: “the postcode is WT3 5BX”\n\nPhân tích: Mã bưu chính Anh: chữ + số."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "Thursday / Thursdays",
+       "explanation": "Dịch: Mua sắm muộn tới 8pm vào ___\n\nVị trí: Phần giờ mở cửa.\n\nTranscript: “every day except Thursday. That's when we have late-night shopping until 8:00 pm” … “We're planning to open late on Wednesdays too, but that won't happen until…”\n\nPhân tích: BẪY: thứ Tư chỉ là kế hoạch tương lai → Thursday."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "2 / two",
+       "explanation": "Dịch: Có ___ tuyến xe buýt\n\nVị trí: Phần giao thông.\n\nTranscript: “Bus 635 brings you to the entrance” … “There's also bus 729”\n\nPhân tích: Hai tuyến 635 và 729 → 2. Đừng ghi số tuyến."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "15 / fifteen",
+       "explanation": "Dịch: Tàu điện ngầm từ trung tâm chỉ mất ___ phút\n\nVị trí: Cuối Part 1.\n\nTranscript: “From the town centre, it only takes fifteen minutes!”\n\nPhân tích: £3.50 là giá vé, £2.00 là giá xe buýt → 15."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U06-L1"
+  },
+  {
+   "title": "Mindset 0 · Unit 6 — Northfields' Shopping Centre (Part 2)",
+   "description": "Information about a new shopping centre — Part 2: the map.",
+   "partNumber": 2,
+   "audioFile": "MindsetIELTS_Foundation_12.mp3",
+   "transcript": "Presenter: OK, now let me show you a map of the shopping centre. As you can see, there are two floors. On the first floor there's a cinema, where you can see some great movies. And opposite that, in a smaller area, there are lots of places to eat and drink. There are fast-food restaurants as well, if you don't have time to sit and eat.\nAll the shops are on the ground floor. The biggest shop is the supermarket. If you use the car park entrance, it's the last shop on your right. Then, all the way over on the other side of the building, is the second biggest shop – Green's department store. You can get almost anything in there, including gifts, things for the kitchen, and furniture.\nAlso on the ground floor is a pharmacy selling medicine, and health and beauty products. You'll find it between the men's and women's clothes shop and the café. Male and female toilets are also on this floor, which is on the same side as the café. There's also a great book store selling everything you might need for school. If you're coming from the car park entrance, that's the second shop on your right, next to the sports shop. Oh, and if you need a mobile phone, that's the smallest shop in the shopping centre – between the bank and the shoe shop. You can get all the latest mobile phones there. So I hope you'll all visit Northfields' soon and that you'll have a great time here!",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Look at the map of Northfields' shopping centre. Listen and choose the correct letter, A–F, for each place.",
+     "imageUrl": "media:m0u06-map.jpg",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "cinema",
+       "options": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+       ],
+       "correctAnswer": "F",
+       "explanation": "Dịch: rạp chiếu phim\n\nVị trí: Đầu Part 2.\n\nTranscript: “On the first floor there's a cinema”\n\nPhân tích: Tầng 1 có 2 khu: khu nhỏ là Cafés and Restaurants (đã ghi), khu còn lại là F."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "supermarket",
+       "options": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: siêu thị\n\nVị trí: Phần tầng trệt.\n\nTranscript: “The biggest shop is the supermarket. If you use the car park entrance, it's the last shop on your right”\n\nPhân tích: Cửa hàng lớn nhất, cuối cùng bên phải từ lối vào bãi đỗ xe → C."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Green's department store",
+       "options": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: cửa hàng bách hoá Green's\n\nVị trí: Ngay sau siêu thị.\n\nTranscript: “all the way over on the other side of the building, is the second biggest shop”\n\nPhân tích: Phía bên kia toà nhà, lớn thứ hai → A."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "pharmacy",
+       "options": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+       ],
+       "correctAnswer": "E",
+       "explanation": "Dịch: hiệu thuốc\n\nVị trí: Giữa Part 2.\n\nTranscript: “You'll find it between the men's and women's clothes shop and the café”\n\nPhân tích: Giữa cửa hàng thời trang và quán cà phê → E."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "book store",
+       "options": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: hiệu sách\n\nVị trí: Gần cuối.\n\nTranscript: “If you're coming from the car park entrance, that's the second shop on your right, next to the sports shop”\n\nPhân tích: Cạnh Sports shop → B."
+      },
+      {
+       "questionNumber": 6,
+       "type": "multiple-choice",
+       "questionText": "mobile phone shop",
+       "options": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+       ],
+       "correctAnswer": "D",
+       "explanation": "Dịch: cửa hàng điện thoại\n\nVị trí: Cuối bài.\n\nTranscript: “that's the smallest shop in the shopping centre – between the bank and the shoe shop”\n\nPhân tích: Giữa Bank và Shoes → D."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U06-L2"
+  }
+ ]
+}

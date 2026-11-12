@@ -1,0 +1,672 @@
+{
+ "modules": [
+  {
+   "code": "M0-U04",
+   "order": 4,
+   "title": "Unit 4 · Du lịch & kỳ nghỉ",
+   "titleEn": "UNIT 04: TRAVEL AND HOLIDAYS — sách tr. 45–57",
+   "outcomes": [
+    "Gọi tên các loại kỳ nghỉ và hoạt động du lịch",
+    "Đọc để tìm thông tin cụ thể và ghép người với kỳ nghỉ phù hợp",
+    "Nghe phỏng vấn trên radio, chọn đáp án đúng",
+    "Thêm chi tiết và lý do khi nói (as, so, because)",
+    "Dùng quá khứ đơn và hiện tại đơn; viết email kể về kỳ nghỉ"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M0-U04-L1",
+   "moduleCode": "M0-U04",
+   "order": 1,
+   "title": "🔤 Từ vựng: loại kỳ nghỉ & hoạt động du lịch",
+   "titleEn": "Lead-in · Vocabulary: holiday activities",
+   "durationMinutes": 35,
+   "objectives": [
+    "Phân biệt 5 loại kỳ nghỉ: adventure holiday, city break, language exchange, beach holiday, family holiday",
+    "Gọi tên 12 hoạt động du lịch (go on day trips, see local attractions…)",
+    "Ghép hoạt động với loại kỳ nghỉ phù hợp"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Loại kỳ nghỉ",
+     "titleEn": "Types of holiday",
+     "formula": [],
+     "usage": [
+      "**an adventure holiday** — kỳ nghỉ phiêu lưu: leo núi, cưỡi ngựa, đạp xe đường dài",
+      "**a city break** — chuyến đi thành phố ngắn ngày: bảo tàng, toà nhà nổi tiếng, mua sắm",
+      "**a beach holiday** — nghỉ biển · **a family holiday** — kỳ nghỉ gia đình",
+      "**a language exchange** — trao đổi ngôn ngữ: ở nhà dân bản xứ (host family)"
+     ],
+     "examples": [],
+     "notes": [
+      "go on a holiday / a trip / a day trip · go + V-ing: go shopping, go horse riding · visit / see + nơi chốn: visit water parks, see famous buildings"
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 32,
+   "images": [
+    {
+     "url": "media:m0u04-holidays.jpg",
+     "caption": "Lead-in (tr. 46): Đây là những loại kỳ nghỉ nào?"
+    },
+    {
+     "url": "media:m0u04-activities.jpg",
+     "caption": "Ex. 2 (tr. 47): các hoạt động trong kỳ nghỉ"
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 4 · Từ vựng: loại kỳ nghỉ & hoạt động du lịch — 16 từ/cụm từ",
+    "words": [
+     {
+      "word": "adventure holiday",
+      "meaning": "kỳ nghỉ phiêu lưu",
+      "example": "Tom wants to go on an adventure holiday."
+     },
+     {
+      "word": "city break",
+      "meaning": "chuyến du lịch thành phố ngắn ngày",
+      "example": "I went on a city break to Paris."
+     },
+     {
+      "word": "beach holiday",
+      "meaning": "kỳ nghỉ ở biển",
+      "example": "We usually go on a beach holiday."
+     },
+     {
+      "word": "language exchange",
+      "meaning": "chương trình trao đổi ngôn ngữ",
+      "example": "She is going on a language exchange to Italy."
+     },
+     {
+      "word": "try traditional food",
+      "meaning": "thử món ăn truyền thống",
+      "example": "I love to try traditional food on holiday."
+     },
+     {
+      "word": "go horse riding",
+      "meaning": "cưỡi ngựa",
+      "example": "We went horse riding in the countryside."
+     },
+     {
+      "word": "visit water parks",
+      "meaning": "đi công viên nước",
+      "example": "Families like to visit water parks in summer."
+     },
+     {
+      "word": "go mountain climbing",
+      "meaning": "leo núi",
+      "example": "Don't go mountain climbing alone."
+     },
+     {
+      "word": "go on a cycling tour",
+      "meaning": "đi tour xe đạp",
+      "example": "A cycling tour is a good way to see the country."
+     },
+     {
+      "word": "visit a beach resort",
+      "meaning": "đến khu nghỉ dưỡng biển",
+      "example": "We stayed at a beach resort in Phu Quoc."
+     },
+     {
+      "word": "go shopping",
+      "meaning": "đi mua sắm",
+      "example": "We often go shopping in the airport."
+     },
+     {
+      "word": "see famous buildings",
+      "meaning": "ngắm các toà nhà nổi tiếng",
+      "example": "In Paris, you can see famous buildings."
+     },
+     {
+      "word": "see local attractions",
+      "meaning": "tham quan điểm hấp dẫn địa phương",
+      "example": "You can see local attractions like the castle."
+     },
+     {
+      "word": "go on a day trip",
+      "meaning": "đi chơi trong ngày",
+      "example": "You can go on a day trip to the countryside."
+     },
+     {
+      "word": "go on a cultural visit",
+      "meaning": "tham quan văn hoá",
+      "example": "Every day includes a cultural visit."
+     },
+     {
+      "word": "stay with a host family",
+      "meaning": "ở cùng gia đình bản xứ",
+      "example": "It is cheaper to stay with a host family."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U04-L2",
+   "moduleCode": "M0-U04",
+   "order": 2,
+   "title": "📖 Reading: ghép người với kỳ nghỉ phù hợp",
+   "titleEn": "Reading: reading for specific information and detailed meaning",
+   "durationMinutes": 45,
+   "objectives": [
+    "Gạch từ khoá về NHU CẦU của từng người",
+    "Đối chiếu với 8 mô tả kỳ nghỉ — chỉ một mô tả khớp TẤT CẢ yêu cầu",
+    "Loại các lựa chọn chỉ khớp một phần"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Dạng bài: ghép người với mô tả",
+     "titleEn": "Matching people to descriptions",
+     "formula": [
+      "**Bước 1**: Với mỗi người, gạch 2–3 **yêu cầu chính** (tuổi, đi cùng ai, thích gì, KHÔNG thích gì).",
+      "**Bước 2**: Đọc 8 mô tả, tìm mô tả khớp **tất cả** yêu cầu — không chỉ một.",
+      "**Bước 3**: Kiểm tra điều kiện phủ định: Tom **không** muốn thể thao dưới nước nữa, **chán** biển."
+     ],
+     "usage": [
+      "MINI TIP 05.1: bố mẹ Julia **không cho** con ở nước ngoài **mà không có người lớn** → cần chỗ có người lớn chăm sóc: host family.",
+      "MINI TIP 05.2: điều quan trọng nhất với Charlie là **làm việc với động vật** trong tương lai → wildlife.",
+      "MINI TIP 05.4: Roger **không chỉ** muốn bảo tàng — còn cần hoạt động **vui cho trẻ em** và **mua sắm** → family holiday."
+     ],
+     "examples": [],
+     "notes": [
+      "Trong bài thi, một số thông tin khớp nhưng **không phải tất cả** — đó là bẫy (Bullet box)."
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 4,
+   "practiceLinks": [
+    {
+     "ref": "reading:M0-U04-R1",
+     "kind": "reading",
+     "title": "Eight holidays — chọn kỳ nghỉ cho 4 người (Ex. 4–5)",
+     "note": "Đọc 8 mô tả kỳ nghỉ A–H, chọn kỳ nghỉ hợp nhất cho Julia, Charlie, Joanna và Roger."
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 4 · Reading: ghép người với kỳ nghỉ phù hợp — 14 từ/cụm từ",
+    "words": [
+     {
+      "word": "wildlife",
+      "meaning": "động vật hoang dã",
+      "example": "Come and learn about wildlife."
+     },
+     {
+      "word": "natural environment",
+      "meaning": "môi trường tự nhiên",
+      "example": "See animals in their natural environment."
+     },
+     {
+      "word": "protect",
+      "meaning": "bảo vệ",
+      "example": "Learn how to protect animals."
+     },
+     {
+      "word": "local attraction",
+      "meaning": "điểm tham quan địa phương",
+      "example": "Day trips to local attractions."
+     },
+     {
+      "word": "art gallery",
+      "meaning": "phòng trưng bày nghệ thuật",
+      "example": "Roger wants to visit art galleries."
+     },
+     {
+      "word": "cookery demonstration",
+      "meaning": "buổi trình diễn nấu ăn",
+      "example": "Attend cookery demonstrations."
+     },
+     {
+      "word": "qualified instructor",
+      "meaning": "huấn luyện viên có chứng chỉ",
+      "example": "Our fully qualified instructors."
+     },
+     {
+      "word": "no previous experience is required",
+      "meaning": "không cần kinh nghiệm",
+      "example": "No previous experience is required."
+     },
+     {
+      "word": "luxury accommodation",
+      "meaning": "chỗ ở sang trọng",
+      "example": "We offer luxury accommodation."
+     },
+     {
+      "word": "watch the sunset",
+      "meaning": "ngắm hoàng hôn",
+      "example": "Relax and watch the sunset."
+     },
+     {
+      "word": "beginner",
+      "meaning": "người mới bắt đầu",
+      "example": "Whether you are a complete beginner…"
+     },
+     {
+      "word": "explore",
+      "meaning": "khám phá",
+      "example": "Make new friends and explore Europe."
+     },
+     {
+      "word": "entertain",
+      "meaning": "giải trí, làm vui",
+      "example": "Fun activities to entertain the children."
+     },
+     {
+      "word": "allow",
+      "meaning": "cho phép",
+      "example": "Their parents will not allow them to travel alone."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U04-L3",
+   "moduleCode": "M0-U04",
+   "order": 3,
+   "title": "🧩 Ngữ pháp: Quá khứ đơn & Hiện tại đơn",
+   "titleEn": "Grammar: past simple and present simple",
+   "durationMinutes": 40,
+   "objectives": [
+    "Phân biệt hiện tại đơn (trạng thái/thói quen hiện tại) và quá khứ đơn (việc đã xong)",
+    "Chia đúng động từ có quy tắc và bất quy tắc ở quá khứ",
+    "Viết câu phủ định và câu hỏi với did / was"
+   ],
+   "keyLanguage": [
+    "Hiện tại đơn: trạng thái hiện tại (I'm not good at sports) và thói quen (I go to French lessons twice a week).",
+    "Quá khứ đơn: việc đã xong trong quá khứ (I decided to go to Spain) và trạng thái quá khứ (Seville was very nice).",
+    "Phủ định: was/were + not · did not (didn't) + V nguyên mẫu — Câu hỏi: Was Seville nice? · Did you decide…?",
+    "Bất quy tắc thường gặp: go → went, buy → bought, eat → ate, take → took, have → had, see → saw, feel → felt, learn → learnt"
+   ],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 25,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Past Simple",
+     "note": "động từ có quy tắc / bất quy tắc, did / didn't",
+     "url": "/essential-grammar.html?lesson=past-simple"
+    },
+    {
+     "kind": "grammar",
+     "title": "Present Simple",
+     "note": "so sánh với hiện tại đơn",
+     "url": "/essential-grammar.html?lesson=present-simple"
+    }
+   ]
+  },
+  {
+   "code": "M0-U04-L4",
+   "moduleCode": "M0-U04",
+   "order": 4,
+   "title": "✍️ Writing: email kể về kỳ nghỉ",
+   "titleEn": "Writing: emails",
+   "durationMinutes": 50,
+   "objectives": [
+    "Đọc email mẫu và nhận ra các đặc điểm của một email tốt",
+    "Chia đúng quá khứ đơn khi kể chuyện, hiện tại đơn cho thói quen",
+    "Viết email 150–175 từ kể về kỳ nghỉ gần nhất"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Email kể về kỳ nghỉ",
+     "titleEn": "Writing an email about a holiday",
+     "formula": [
+      "**Hi + tên,**",
+      "**Đi đâu** (I went to…) → **Làm gì** theo ngày (On the first day… On my second day… That night…)",
+      "**So sánh với thói quen** (Normally, I go to… / I usually don't…) → **cảm nhận** (It was delicious / I really enjoyed it)",
+      "**Hỏi lại bạn** (What did you do on your holiday? Where did you go?) → **Tên**"
+     ],
+     "usage": [
+      "Kể chuyện đã qua → **quá khứ đơn**; nói thói quen → **hiện tại đơn**; trạng thái lúc viết (it is cold here) → hiện tại.",
+      "Chỉ viết những gì đề yêu cầu (Ex. 20): đi đâu, làm gì, hỏi bạn — đủ số từ."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 28,
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 4 · Writing: email kể về kỳ nghỉ — 10 từ/cụm từ",
+    "words": [
+     {
+      "word": "last holiday",
+      "meaning": "kỳ nghỉ vừa rồi",
+      "example": "I went to Madrid for my last holiday."
+     },
+     {
+      "word": "famous sights",
+      "meaning": "thắng cảnh nổi tiếng",
+      "example": "I visited some of the famous sights."
+     },
+     {
+      "word": "souvenir",
+      "meaning": "quà lưu niệm",
+      "example": "I bought some souvenirs."
+     },
+     {
+      "word": "normally",
+      "meaning": "thường thì",
+      "example": "Normally, I go to hot places."
+     },
+     {
+      "word": "the opposite",
+      "meaning": "điều ngược lại",
+      "example": "It's the opposite here – it is cold."
+     },
+     {
+      "word": "traditional meal",
+      "meaning": "bữa ăn truyền thống",
+      "example": "I tried a traditional meal."
+     },
+     {
+      "word": "delicious",
+      "meaning": "ngon",
+      "example": "It was delicious."
+     },
+     {
+      "word": "take photos",
+      "meaning": "chụp ảnh",
+      "example": "I took lots of photos."
+     },
+     {
+      "word": "short holiday",
+      "meaning": "kỳ nghỉ ngắn",
+      "example": "It was only a short holiday."
+     },
+     {
+      "word": "I really enjoyed it",
+      "meaning": "tôi thực sự rất thích",
+      "example": "It was short, but I really enjoyed it."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U04-L5",
+   "moduleCode": "M0-U04",
+   "order": 5,
+   "title": "🎧 Listening: phỏng vấn trên radio",
+   "titleEn": "Listening: interview task",
+   "durationMinutes": 40,
+   "objectives": [
+    "Gạch từ khoá trong câu hỏi và 3 lựa chọn",
+    "Nghe được TẤT CẢ các lựa chọn nhưng chỉ một trả lời đúng câu hỏi",
+    "Nghe điều kiện, con số, tuổi"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nghe phỏng vấn — chọn đáp án",
+     "titleEn": "Interview task",
+     "formula": [
+      "Gạch **keyword** trong câu hỏi và trong **3 lựa chọn**.",
+      "Bạn có thể nghe **tất cả** keyword, nhưng chỉ **một** trả lời đúng câu hỏi.",
+      "Đáp án thường **không lặp lại đúng chữ** trong câu hỏi."
+     ],
+     "usage": [
+      "Ví dụ (Part 1): Anna không đi Mỹ vì không giỏi thể thao; học cả tiếng Pháp và Tây Ban Nha; đã từng đến Pháp → chọn Tây Ban Nha vì muốn đi **nơi mới** (C), không phải vì \"chỉ học tiếng Tây Ban Nha\" (B sai)."
+     ],
+     "examples": [],
+     "notes": [
+      "Cẩn thận với các con số gần nhau: two weeks / three weeks / four weeks; over 14 / 16."
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 1,
+   "practiceLinks": [
+    {
+     "ref": "listening:M0-U04-L1",
+     "kind": "listening",
+     "title": "Phỏng vấn Anna — Part 1 (Ex. 7–8)",
+     "note": "Câu ví dụ: vì sao Anna chọn đi Tây Ban Nha?"
+    },
+    {
+     "ref": "listening:M0-U04-L2",
+     "kind": "listening",
+     "title": "Phỏng vấn Anna — Part 2 (Ex. 9)",
+     "note": "5 câu trắc nghiệm về chương trình trao đổi văn hoá mùa hè."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 4 · Listening: phỏng vấn trên radio — 13 từ/cụm từ",
+    "words": [
+     {
+      "word": "take part in",
+      "meaning": "tham gia",
+      "example": "Anna took part in the exchange programme."
+     },
+     {
+      "word": "programme",
+      "meaning": "chương trình",
+      "example": "The Summer Cultural Exchange Programme."
+     },
+     {
+      "word": "option",
+      "meaning": "lựa chọn",
+      "example": "I had two options."
+     },
+     {
+      "word": "instead",
+      "meaning": "thay vào đó",
+      "example": "I decided to go to Spain instead."
+     },
+     {
+      "word": "countryside",
+      "meaning": "vùng nông thôn",
+      "example": "Her grandparents live in the countryside."
+     },
+     {
+      "word": "last (v)",
+      "meaning": "kéo dài",
+      "example": "Most programmes last for two weeks."
+     },
+     {
+      "word": "unfortunately",
+      "meaning": "thật không may",
+      "example": "I could only stay for two weeks, unfortunately."
+     },
+     {
+      "word": "age requirement",
+      "meaning": "yêu cầu về độ tuổi",
+      "example": "There are some age requirements."
+     },
+     {
+      "word": "orchestra",
+      "meaning": "dàn nhạc",
+      "example": "You have to play in the school orchestra."
+     },
+     {
+      "word": "recommend",
+      "meaning": "giới thiệu, khuyên dùng",
+      "example": "Would you recommend this programme?"
+     },
+     {
+      "word": "homesick",
+      "meaning": "nhớ nhà",
+      "example": "I felt a bit homesick at first."
+     },
+     {
+      "word": "welcoming",
+      "meaning": "thân thiện, niềm nở",
+      "example": "They were so friendly and welcoming."
+     },
+     {
+      "word": "improve",
+      "meaning": "cải thiện",
+      "example": "My language skills have improved a little."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U04-L6",
+   "moduleCode": "M0-U04",
+   "order": 6,
+   "title": "🗣️ Speaking: thêm chi tiết, lý do & kể trải nghiệm",
+   "titleEn": "Speaking: adding more detail and giving reasons · experiences",
+   "durationMinutes": 45,
+   "objectives": [
+    "Nối ý bằng as / so / because để thêm lý do và kết quả",
+    "Nói 1–2 phút về một chuyến đi bạn thích (giống IELTS Part 2)",
+    "Phân biệt trip – journey – travel"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "AS – SO – BECAUSE",
+     "titleEn": "Giving reasons",
+     "formula": [
+      "**because / as** + LÝ DO: I didn't go to the USA **because** I'm not very good at sports. · **As** I love animals, it was a good experience.",
+      "**so** + KẾT QUẢ: The family had a daughter my age, **so** we had a lot of fun together."
+     ],
+     "usage": [
+      "**As** thường đứng **đầu câu** (As + lý do, kết quả). **Because** thường đứng **giữa câu**.",
+      "Thêm lý do giúp câu trả lời dài hơn và được đánh giá cao hơn."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Bài nói Part 2: kể về một chuyến đi",
+     "titleEn": "Exam speaking task — your own experiences",
+     "formula": [
+      "**Đề**: Describe a trip you really liked. You should say: where you went · what you did · why you went · why you liked it so much."
+     ],
+     "usage": [
+      "Dùng **1 phút chuẩn bị** để ghi từ khoá — KHÔNG viết lên thẻ đề.",
+      "Theo đúng thứ tự gợi ý trên thẻ; nói **gần 2 phút**; có **ví dụ và lý do**.",
+      "**trip** = chuyến đi (du lịch/công tác) · **journey** = hành trình di chuyển từ A đến B · **travel** (động từ) = đi lại, du lịch."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 29,
+   "vocabSave": {
+    "slot": 5,
+    "title": "Unit 4 · Speaking: thêm chi tiết, lý do & kể trải nghiệm — 10 từ/cụm từ",
+    "words": [
+     {
+      "word": "as",
+      "meaning": "vì (đầu câu)",
+      "example": "As I love animals, it was a good experience."
+     },
+     {
+      "word": "so",
+      "meaning": "vì vậy",
+      "example": "She spoke good English, so I was worried."
+     },
+     {
+      "word": "because",
+      "meaning": "bởi vì",
+      "example": "I didn't go because I'm not good at sports."
+     },
+     {
+      "word": "trip",
+      "meaning": "chuyến đi",
+      "example": "Describe a trip you really liked."
+     },
+     {
+      "word": "journey",
+      "meaning": "hành trình",
+      "example": "The journey to Da Lat took eight hours."
+     },
+     {
+      "word": "travel (v)",
+      "meaning": "đi lại, du lịch",
+      "example": "I love to travel with my friends."
+     },
+     {
+      "word": "experience",
+      "meaning": "trải nghiệm",
+      "example": "It was a really good experience."
+     },
+     {
+      "word": "the main reason",
+      "meaning": "lý do chính",
+      "example": "The main reason I went was…"
+     },
+     {
+      "word": "I'll never forget",
+      "meaning": "tôi sẽ không bao giờ quên",
+      "example": "I'll never forget the view from the top."
+     },
+     {
+      "word": "in the end",
+      "meaning": "cuối cùng",
+      "example": "In the end, we stayed for three days."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U04-L7",
+   "moduleCode": "M0-U04",
+   "order": 7,
+   "title": "📝 Ôn tập Unit 4: Grammar & Vocabulary",
+   "titleEn": "Grammar and vocabulary — Unit 4",
+   "durationMinutes": 30,
+   "objectives": [
+    "Ôn hoạt động du lịch, tính từ mô tả và quá khứ đơn của Unit 4"
+   ],
+   "keyLanguage": [],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 25
+  }
+ ]
+}

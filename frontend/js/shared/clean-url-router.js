@@ -76,6 +76,9 @@
     [new RegExp('^/speaking/course(?:/' + SEG + ')?$'), function (m) { return '/speaking-course.html' + (m[1] ? '?lesson=' + m[1] : ''); }],
     [new RegExp('^/speaking/part2(?:/' + SEG + ')?$'), function (m) { return '/speaking-part2.html' + (m[1] ? '?story=' + m[1] : ''); }],
 
+    // ── Mindset course ──
+    [new RegExp('^/mindset/(\\d)(?:/' + SEG + ')?$'), function (m) { return '/mindset-' + m[1] + '.html' + (m[2] ? '?lesson=' + m[2] : ''); }],
+
     // ── Other pages ──
     [new RegExp('^/essential-grammar/' + SEG + '$'), function (m) { return '/essential-grammar.html?lesson=' + m[1]; }],
     [new RegExp('^/dictation/' + SEG + '$'), function (m) { return '/dictation.html?sectionId=' + m[1]; }],

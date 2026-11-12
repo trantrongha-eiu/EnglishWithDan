@@ -560,6 +560,16 @@ const REGISTRY = {
       deepLinkKey: (d) => d.code },
     attempt: { model: WT1Progress, custom: true },
   },
+  // Mindset for IELTS (mindset-<level>.html) — every level in one type; the
+  // lesson code's M<level>- prefix picks the student page for the deep link.
+  mindset_course_lesson: {
+    label: 'Mindset (Buổi học)',
+    catalog: { model: WT1Lesson, filter: { published: true }, courseScope: ['MINDSET-0'],
+      sort: { moduleCode: 1, order: 1 },
+      shape: (d) => ({ _id: d._id, label: d.title, meta: d.moduleCode || '' }),
+      deepLinkKey: (d) => d.code },
+    attempt: { model: WT1Progress, custom: true },
+  },
   // "Viết câu nâng cao" (advanced-sentences.html) — one pickable row per
   // SentenceStructureGroup (a "cấu trúc", 2 per week). AdvSentenceAttempt
   // mirrors Task2Attempt field-for-field, so the scoreGate is the same shape
@@ -682,7 +692,7 @@ function hitPasses(hit, resourceType, assignmentCreatedAt) {
 // no courseCode — resolve a course to the set of its module codes so a
 // `moduleCode $in [...]` clause can scope a lesson query to one course.
 async function wt1ModuleCodesForCourse(courseCode) {
-  const mods = await WT1Module.find({ courseCode }).select('code').lean();
+  const mods = await WT1Module.find({ courseCode: Array.isArray(courseCode) ? { $in: courseCode } : courseCode }).select('code').lean();
   return mods.map((m) => m.code);
 }
 

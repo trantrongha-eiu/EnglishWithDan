@@ -64,6 +64,11 @@ const ListeningSectionSchema = new mongoose.Schema({
   questionGroups:  [LSGroupSchema],
   isActive:        { type: Boolean, default: true },
   isActualTest:    { type: Boolean, default: false },
+  // Set only on sections that belong to a course (Mindset —
+  // scripts/seedMindsetMedia.js upserts by it): they open in the normal
+  // practice UI from the course's lesson links, but stay out of every
+  // practice list / search / tips pool (utils/courseContent.js NOT_COURSE).
+  courseRef:       { type: String, default: undefined, index: { sparse: true } },
   // Cover image of the student practice-list card (cover only — never shown inside the test).
   thumbnailUrl:    { type: String, default: '' },
   // Sentence-level dictation practice ("chép chính tả từng câu") — one

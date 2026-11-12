@@ -1,0 +1,636 @@
+{
+ "modules": [
+  {
+   "code": "M0-U08",
+   "order": 8,
+   "title": "Unit 8 · Sức khoẻ",
+   "titleEn": "UNIT 08: HEALTH AND MEDICINE — sách tr. 92–102",
+   "outcomes": [
+    "Nói về các hoạt động giữ sức khoẻ và cách thư giãn",
+    "Nghe nhận ra ý kiến của từng người; nghe trắc nghiệm có bẫy",
+    "Đọc bài luận nêu ý kiến; làm trắc nghiệm theo chiến lược",
+    "Dùng should / shouldn't và have to / don't have to",
+    "Mô tả tranh và cho lời khuyên; viết email khuyên bạn"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M0-U08-L1",
+   "moduleCode": "M0-U08",
+   "order": 1,
+   "title": "🔤 Từ vựng: hoạt động lành mạnh & cách thư giãn",
+   "titleEn": "Lead-in · Vocabulary and speaking · Vocabulary: how to relax",
+   "durationMinutes": 35,
+   "objectives": [
+    "Gọi tên các hoạt động tốt cho sức khoẻ",
+    "Gọi tên 5 cách thư giãn",
+    "Dùng đúng động từ: play / go / do / drink / eat / get"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Cụm từ về sức khoẻ",
+     "titleEn": "Healthy activities",
+     "formula": [],
+     "usage": [
+      "**play** tennis / basketball · **go** cycling / for a walk / running · **do** yoga / exercise",
+      "**eat** fruit and vegetables · **drink** water / tea · **get** enough sleep / fresh air / advice · **join** a gym · **follow** a healthy diet",
+      "**relax**, **feel stressed / tired**, **keep fit / stay healthy**"
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 28,
+   "images": [
+    {
+     "url": "media:m0u08-activities.jpg",
+     "caption": "Ex. 4 (tr. 93): các hoạt động"
+    },
+    {
+     "url": "media:m0u08-relax.jpg",
+     "caption": "Ex. 15 (tr. 97): cách thư giãn"
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 8 · Từ vựng: hoạt động lành mạnh & cách thư giãn — 16 từ/cụm từ",
+    "words": [
+     {
+      "word": "keep healthy",
+      "meaning": "giữ sức khoẻ",
+      "example": "How do you like to keep healthy?"
+     },
+     {
+      "word": "eat fruit and vegetables",
+      "meaning": "ăn rau quả",
+      "example": "You should eat lots of fruit and vegetables."
+     },
+     {
+      "word": "get enough sleep",
+      "meaning": "ngủ đủ giấc",
+      "example": "Get enough sleep every night."
+     },
+     {
+      "word": "drink water",
+      "meaning": "uống nước",
+      "example": "Drink plenty of water when you do exercise."
+     },
+     {
+      "word": "go cycling",
+      "meaning": "đạp xe",
+      "example": "I go cycling at the weekend."
+     },
+     {
+      "word": "enjoy art and music",
+      "meaning": "thưởng thức nghệ thuật, âm nhạc",
+      "example": "Enjoying art and music helps you relax."
+     },
+     {
+      "word": "do yoga",
+      "meaning": "tập yoga",
+      "example": "Doing yoga is the best way to relax."
+     },
+     {
+      "word": "go for a walk",
+      "meaning": "đi dạo",
+      "example": "I go for a walk in the park."
+     },
+     {
+      "word": "do exercise",
+      "meaning": "tập thể dục",
+      "example": "Regular exercise is good for the mind."
+     },
+     {
+      "word": "drink tea",
+      "meaning": "uống trà",
+      "example": "Green tea makes me feel calmer."
+     },
+     {
+      "word": "stressed",
+      "meaning": "căng thẳng",
+      "example": "I feel stressed before exams."
+     },
+     {
+      "word": "relax",
+      "meaning": "thư giãn",
+      "example": "What do you do to relax?"
+     },
+     {
+      "word": "fresh air",
+      "meaning": "không khí trong lành",
+      "example": "You get lots of fresh air outside."
+     },
+     {
+      "word": "join a gym",
+      "meaning": "đăng ký phòng gym",
+      "example": "It can be expensive to join a gym."
+     },
+     {
+      "word": "personal trainer",
+      "meaning": "huấn luyện viên cá nhân",
+      "example": "Get a personal trainer for advice."
+     },
+     {
+      "word": "healthy diet",
+      "meaning": "chế độ ăn lành mạnh",
+      "example": "It is important to follow a healthy diet."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U08-L2",
+   "moduleCode": "M0-U08",
+   "order": 2,
+   "title": "📖 Reading: bài luận nêu ý kiến",
+   "titleEn": "Reading: an opinion based essay",
+   "durationMinutes": 45,
+   "objectives": [
+    "Scan nhanh bài luận tìm các hoạt động được nhắc tới",
+    "Xác định người viết đồng ý hay phản đối và lý do",
+    "Làm trắc nghiệm theo chiến lược 5 bước, loại 2 phương án gây nhiễu"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Skimming & scanning",
+     "titleEn": "Reading an essay",
+     "formula": [],
+     "usage": [
+      "**Skim**: đọc lướt để hiểu ý chính (người viết đồng ý hay phản đối?). **Scan**: đọc lại với tốc độ bình thường, tìm chi tiết cụ thể (TIP 06).",
+      "Bài luận ý kiến thường có: mở bài (ý kiến của người khác → **However, I disagree…**) → **Firstly** → **Secondly** → **In conclusion**."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Trắc nghiệm: chiến lược 5 bước",
+     "titleEn": "Answering multiple-choice questions",
+     "formula": [
+      "**1** Đọc kỹ câu hỏi. **2** Gạch keyword trong câu hỏi và 3 phương án. **3** Tìm đoạn có thông tin. **4** Gạch các chi tiết liên quan đến từng phương án. **5** Chọn phương án khớp **chính xác**."
+     ],
+     "usage": [
+      "Chỉ **một** phương án đúng — hai phương án còn lại là **distractor** (gây nhiễu).",
+      "Ví dụ: \"need sports lessons to keep healthy\" (A) khớp \"These lessons help students keep healthy\". B và C là ý của **phụ huynh**, không phải người viết."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 3,
+   "practiceLinks": [
+    {
+     "ref": "reading:M0-U08-R1",
+     "kind": "reading",
+     "title": "Should students stop sports lessons before exams? (Ex. 6–9)",
+     "note": "Bài luận nêu ý kiến — 5 câu trắc nghiệm A, B, C."
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 8 · Reading: bài luận nêu ý kiến — 12 từ/cụm từ",
+    "words": [
+     {
+      "word": "focus on",
+      "meaning": "tập trung vào",
+      "example": "Parents want them to focus on exam subjects."
+     },
+     {
+      "word": "final term",
+      "meaning": "học kỳ cuối",
+      "example": "in the final school term"
+     },
+     {
+      "word": "disagree with",
+      "meaning": "không đồng ý với",
+      "example": "I disagree with these views."
+     },
+     {
+      "word": "encourage",
+      "meaning": "khuyến khích",
+      "example": "Schools need to encourage young people."
+     },
+     {
+      "word": "healthy lifestyle",
+      "meaning": "lối sống lành mạnh",
+      "example": "Follow a healthy lifestyle."
+     },
+     {
+      "word": "regular exercise",
+      "meaning": "tập thể dục đều đặn",
+      "example": "Regular exercise is equally important."
+     },
+     {
+      "word": "overweight",
+      "meaning": "thừa cân",
+      "example": "Many people today are overweight."
+     },
+     {
+      "word": "equally important",
+      "meaning": "quan trọng như nhau",
+      "example": "Exercise is equally important."
+     },
+     {
+      "word": "improve memory",
+      "meaning": "cải thiện trí nhớ",
+      "example": "Exercise improves memory."
+     },
+     {
+      "word": "concentrate",
+      "meaning": "tập trung",
+      "example": "It helps us concentrate better."
+     },
+     {
+      "word": "revise",
+      "meaning": "ôn tập",
+      "example": "students who are revising for exams"
+     },
+     {
+      "word": "in conclusion",
+      "meaning": "tóm lại",
+      "example": "In conclusion, I believe that…"
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U08-L3",
+   "moduleCode": "M0-U08",
+   "order": 3,
+   "title": "🧩 Ngữ pháp: should / shouldn't & have to / don't have to",
+   "titleEn": "Grammar 1: should / shouldn't · Grammar 2: have to / don't have to",
+   "durationMinutes": 45,
+   "objectives": [
+    "Dùng should / shouldn't để khuyên",
+    "Dùng have to (bắt buộc, quy định) và don't have to (không bắt buộc)",
+    "Đặt câu hỏi: Should I…? Do you have to…?"
+   ],
+   "keyLanguage": [
+    "should + V: điều nên làm, lời khuyên · shouldn't (should not) + V: điều không nên. Không đổi dạng: He should go (KHÔNG: He shoulds go).",
+    "Câu hỏi xin lời khuyên: Should children have sports lessons? (KHÔNG: Children should have…?)",
+    "have to / has to + V: quy định, bắt buộc (We have to arrive on time) · don't / doesn't have to: không bắt buộc, có lựa chọn.",
+    "Câu hỏi: Do you have to wear school uniform?"
+   ],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 5,
+   "totalPoints": 27,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Modal verbs (should / have to)",
+     "note": "lời khuyên, sự bắt buộc",
+     "url": "/essential-grammar.html?lesson=modal-verbs"
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L4",
+   "moduleCode": "M0-U08",
+   "order": 4,
+   "title": "✍️ Writing: email khuyên bạn sống khoẻ",
+   "titleEn": "Writing: an email to a friend giving advice",
+   "durationMinutes": 45,
+   "objectives": [
+    "Đọc email mẫu và tìm các lời khuyên",
+    "Dùng should / shouldn't / have to / don't have to để khuyên",
+    "Viết email 80–100 từ"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Email cho lời khuyên",
+     "titleEn": "Giving advice",
+     "formula": [
+      "**Hi Alice,**",
+      "**Hoạt động nên làm**: I think it's a good idea to… / You should…",
+      "**Cách thư giãn**: You should try… because…",
+      "**Không nên**: You shouldn't… · **Không bắt buộc**: You don't have to…",
+      "**Vì sao cần sống khoẻ**: Being healthy gives you more energy…",
+      "**Kết**: Take care, + tên"
+     ],
+     "usage": [
+      "Mỗi lời khuyên nên có **lý do** (because…).",
+      "Viết **đủ 3 ý** của đề, **80–100 từ**."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 13,
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 8 · Writing: email khuyên bạn sống khoẻ — 8 từ/cụm từ",
+    "words": [
+     {
+      "word": "it's a good idea to",
+      "meaning": "là một ý hay khi",
+      "example": "It's a good idea to play tennis."
+     },
+     {
+      "word": "make sure",
+      "meaning": "đảm bảo",
+      "example": "Make sure you get enough sleep."
+     },
+     {
+      "word": "take regular breaks",
+      "meaning": "nghỉ giải lao đều đặn",
+      "example": "Take regular breaks when you study."
+     },
+     {
+      "word": "stay healthy",
+      "meaning": "giữ sức khoẻ",
+      "example": "Playing sport is a good way to stay healthy."
+     },
+     {
+      "word": "give you energy",
+      "meaning": "cho bạn năng lượng",
+      "example": "Being healthy gives you more energy."
+     },
+     {
+      "word": "make you feel good",
+      "meaning": "làm bạn thấy dễ chịu",
+      "example": "Exercise makes you feel good."
+     },
+     {
+      "word": "advice",
+      "meaning": "lời khuyên",
+      "example": "Thanks for asking for my advice."
+     },
+     {
+      "word": "Take care",
+      "meaning": "Bảo trọng (kết thư)",
+      "example": "Take care, Minh"
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U08-L5",
+   "moduleCode": "M0-U08",
+   "order": 5,
+   "title": "🎧 Listening: ý kiến & trắc nghiệm",
+   "titleEn": "Listening 1: matching opinions · Listening 2: multiple-choice questions",
+   "durationMinutes": 50,
+   "objectives": [
+    "Nghe hội thoại 3 người và nhận ra ai nói ý kiến nào",
+    "Gạch từ khoá trong từng ý kiến — các ý kiến theo thứ tự bài nghe",
+    "Nghe 5 người nói về cách thư giãn: nối người với hoạt động, rồi trắc nghiệm"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nhận ra ai nói gì",
+     "titleEn": "Matching opinions to speakers",
+     "formula": [],
+     "usage": [
+      "Gạch **từ khoá** trong mỗi ý kiến (too expensive, boring, more fun, outdoors, personal trainer, healthy diet).",
+      "Các ý kiến **theo thứ tự** của hội thoại (TIP 03).",
+      "Cẩn thận: hai người có thể nói ý giống nhau — chọn người **nói rõ ràng nhất** ý đó."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Trắc nghiệm có bẫy",
+     "titleEn": "Multiple-choice questions",
+     "formula": [],
+     "usage": [
+      "Đọc kỹ **phần đầu câu hỏi** (TIP 17): người nói có thể nhắc chi tiết giống cả 3 phương án, nhưng chỉ một khớp **chính xác**.",
+      "VD Mike: 20 phút là đủ để khoẻ hơn; 1 tiếng là giờ nghỉ trưa; thực tế anh ấy dành **nửa tiếng** (30 phút)."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 3,
+   "practiceLinks": [
+    {
+     "ref": "listening:M0-U08-L1",
+     "kind": "listening",
+     "title": "Sarah, Tom & Samantha — Part 1 (Ex. 2)",
+     "note": "Tom định đi đâu? Sarah đang nghĩ đến việc gì?"
+    },
+    {
+     "ref": "listening:M0-U08-L2",
+     "kind": "listening",
+     "title": "Gym hay tập ngoài công viên? — Part 2 (Ex. 3)",
+     "note": "Ai nói ý kiến nào: Samantha, Tom hay Sarah?"
+    },
+    {
+     "ref": "listening:M0-U08-L3",
+     "kind": "listening",
+     "title": "5 người nói về cách thư giãn (Ex. 16–17)",
+     "note": "Nối người với hoạt động, rồi trả lời 5 câu trắc nghiệm."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 8 · Listening: ý kiến & trắc nghiệm — 12 từ/cụm từ",
+    "words": [
+     {
+      "word": "equipment",
+      "meaning": "thiết bị, dụng cụ",
+      "example": "The gym has really great equipment."
+     },
+     {
+      "word": "student discount",
+      "meaning": "giảm giá cho sinh viên",
+      "example": "that's with a student discount"
+     },
+     {
+      "word": "membership",
+      "meaning": "thẻ hội viên",
+      "example": "a gym membership"
+     },
+     {
+      "word": "for free",
+      "meaning": "miễn phí",
+      "example": "You can exercise in the park for free."
+     },
+     {
+      "word": "encourage",
+      "meaning": "khuyến khích, thúc đẩy",
+      "example": "It encourages me to work harder."
+     },
+     {
+      "word": "worth the money",
+      "meaning": "đáng đồng tiền",
+      "example": "I think that it's worth the money."
+     },
+     {
+      "word": "mood",
+      "meaning": "tâm trạng",
+      "example": "Reading can change your mood."
+     },
+     {
+      "word": "worries",
+      "meaning": "nỗi lo lắng",
+      "example": "A good novel can make you forget your worries."
+     },
+     {
+      "word": "benefits",
+      "meaning": "lợi ích",
+      "example": "You don't have to spend a long time to feel the benefits."
+     },
+     {
+      "word": "breathe deeply",
+      "meaning": "hít thở sâu",
+      "example": "Yoga helps you breathe deeply."
+     },
+     {
+      "word": "deal with",
+      "meaning": "giải quyết",
+      "example": "Nature helps me deal with my problems."
+     },
+     {
+      "word": "calm / calmer",
+      "meaning": "bình tĩnh / bình tĩnh hơn",
+      "example": "Green tea makes me feel calmer."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U08-L6",
+   "moduleCode": "M0-U08",
+   "order": 6,
+   "title": "🗣️ Speaking: mô tả tranh & cho lời khuyên",
+   "titleEn": "Speaking: describing a picture",
+   "durationMinutes": 40,
+   "objectives": [
+    "Mô tả tranh theo trình tự: chung → chi tiết → ý kiến",
+    "Dùng It looks like…, I think + hiện tại tiếp diễn",
+    "Cho lời khuyên với should / shouldn't, nói 1–2 phút"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Mô tả tranh + cho lời khuyên",
+     "titleEn": "Describing a picture",
+     "formula": [
+      "**1. Nói chung**: This picture shows… / In this picture, I can see… / There is / are…",
+      "**2. Chi tiết**: It looks like… / I think + hiện tại tiếp diễn (I think the boy is playing…)",
+      "**3. Ý kiến + lý do + lời khuyên**: I think… because… He/She should / shouldn't…"
+     ],
+     "usage": [
+      "Dùng từ vựng về sức khoẻ của unit.",
+      "Nói 1–2 phút."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 21,
+   "images": [
+    {
+     "url": "media:m0u08-boy.jpg",
+     "caption": "Ex. 13 (tr. 96): cậu bé trong phòng ngủ"
+    },
+    {
+     "url": "media:m0u08-pictures.jpg",
+     "caption": "Ex. 14 (tr. 97): hai bức tranh để mô tả"
+    }
+   ],
+   "vocabSave": {
+    "slot": 5,
+    "title": "Unit 8 · Speaking: mô tả tranh & cho lời khuyên — 6 từ/cụm từ",
+    "words": [
+     {
+      "word": "This picture shows",
+      "meaning": "Bức tranh này cho thấy",
+      "example": "This picture shows a boy in his bedroom."
+     },
+     {
+      "word": "It looks like",
+      "meaning": "Có vẻ như",
+      "example": "It looks like the boy is tired."
+     },
+     {
+      "word": "bed time",
+      "meaning": "giờ đi ngủ",
+      "example": "It is bed time."
+     },
+     {
+      "word": "busy",
+      "meaning": "bận rộn",
+      "example": "The woman looks very busy."
+     },
+     {
+      "word": "take a break",
+      "meaning": "nghỉ ngơi một chút",
+      "example": "She should take a break."
+     },
+     {
+      "word": "healthy snack",
+      "meaning": "món ăn vặt lành mạnh",
+      "example": "He is eating a healthy snack."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U08-L7",
+   "moduleCode": "M0-U08",
+   "order": 7,
+   "title": "📝 Ôn tập Unit 8: Grammar & Vocabulary",
+   "titleEn": "Grammar and vocabulary — Unit 8",
+   "durationMinutes": 25,
+   "objectives": [
+    "Ôn should / have to và các cụm từ sức khoẻ"
+   ],
+   "keyLanguage": [],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 12
+  }
+ ]
+}

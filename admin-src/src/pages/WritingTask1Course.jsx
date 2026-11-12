@@ -12,6 +12,7 @@ const SEED_NOTE = {
   'IELTS-W-T1': 'Nội dung gốc nằm ở backend/scripts/data/writingTask1/ — sửa ở đây ghi thẳng vào DB; chạy lại `seedCourse.js t1` sẽ ghi đè.',
   'IELTS-W-T2': 'Nội dung gốc nằm ở backend/scripts/data/writingTask2/ — sửa ở đây ghi thẳng vào DB; chạy lại `seedCourse.js t2` sẽ ghi đè.',
   'IELTS-SPEAKING': 'Nội dung gốc nằm ở backend/scripts/data/speakingCourse/ — sửa ở đây ghi thẳng vào DB; chạy lại `seedCourse.js speaking` sẽ ghi đè.',
+  'MINDSET-0': 'Nội dung gốc nằm ở backend/scripts/data/mindset0/ — sửa ở đây ghi thẳng vào DB; chạy lại `seedCourse.js mindset0` sẽ ghi đè.',
 };
 const EX_TYPES = [
   'mcq', 'gap_fill', 'error_correction', 'sentence_transform', 'word_form',
@@ -380,12 +381,13 @@ export default function WritingTask1Course() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">{course === 'IELTS-SPEAKING' ? 'Speaking' : course === 'IELTS-W-T2' ? 'Task 2 Writing' : 'Task 1 Writing'} — khoá học (WT1/WT2/Speaking)</h2>
+        <h2 className="section-title">{course === 'MINDSET-0' ? 'Mindset Foundation' : course === 'IELTS-SPEAKING' ? 'Speaking' : course === 'IELTS-W-T2' ? 'Task 2 Writing' : 'Task 1 Writing'} — khoá học (WT1/WT2/Speaking)</h2>
       </div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
         <button className={`btn btn-sm ${course === 'IELTS-W-T1' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchCourse('IELTS-W-T1')}>Task 1 Writing</button>
         <button className={`btn btn-sm ${course === 'IELTS-W-T2' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchCourse('IELTS-W-T2')}>Task 2 Writing</button>
         <button className={`btn btn-sm ${course === 'IELTS-SPEAKING' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchCourse('IELTS-SPEAKING')}>Speaking</button>
+        <button className={`btn btn-sm ${course === 'MINDSET-0' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchCourse('MINDSET-0')}>Mindset 0</button>
       </div>
       <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 14 }}>{SEED_NOTE[course]}</div>
 

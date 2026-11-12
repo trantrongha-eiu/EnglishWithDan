@@ -133,7 +133,12 @@ const PassageSchema = new mongoose.Schema({
   isActualTest:  { type: Boolean, default: false },
   // Cover image for the practice list card. Optional: when empty, the list
   // uses the first <img> inside `content` (see readingService.listPracticePassages).
-  thumbnailUrl:  { type: String, default: '' }
+  thumbnailUrl:  { type: String, default: '' },
+  // Set only on passages that belong to a course (Mindset —
+  // scripts/seedMindsetMedia.js upserts by it): they open in the normal
+  // practice UI from the course's lesson links, but stay out of every
+  // practice list / random pick (utils/courseContent.js NOT_COURSE).
+  courseRef:     { type: String, default: undefined, index: { sparse: true } }
 }, { timestamps: true });
 
 PassageSchema.index({ category: 1, isActive: 1 });

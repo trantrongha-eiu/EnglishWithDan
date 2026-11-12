@@ -69,7 +69,9 @@
 /essential-grammar/*        /essential-grammar.html      200
 /writing/task1-course/*     /writing-task1.html          200
 /writing/task2-course/*     /writing-task2-course.html   200
+/writing/task1-grammar/:skill /task1-practice.html?skill=:skill 200
 /speaking/course/*          /speaking-course.html        200
+/mindset/0/*                /mindset-0.html              200
 /speaking/part2/:story      /speaking-part2.html?story=:story 200
 /dictation/*                /dictation.html              200
 /shadowing/*                /shadowing.html              200
@@ -85,9 +87,9 @@
 /writing/template/:type   /task2-template.html?type=:type       302
 /vocab/lesson/:id         /dashboard.html?view=lesson&lessonId=:id 302
 
-# The old flat "Task 1 Grammar" page was replaced by the WT1 course
-# (writing-task1.html). Keep old bookmarks/links working.
-/task1-practice.html      /writing-task1.html                   301
+# "Task 1 Grammar" (task1-practice.html) used to 301 to the WT1 course
+# (2026-09-04). Reopened 2026-11-12 as its own practice page — do NOT
+# redirect it again (homework task1_skill links open it directly).
 
 # "Task 2 Nền tảng" (static reference) and "Viết câu nâng cao" (73
 # translation drills) were folded into the Task 2 Writing course as
@@ -131,8 +133,10 @@
 /writing/task1-course /writing-task1.html   200
 /writing/task2-foundations /writing-task2-course.html 200
 /writing/task2-course /writing-task2-course.html 200
+/writing/task1-grammar /task1-practice.html 200
 /speaking        /speaking.html         200
 /speaking/course /speaking-course.html  200
+/mindset/0       /mindset-0.html        200
 /speaking/part2  /speaking-part2.html   200
 /essential-grammar /essential-grammar.html 200
 /entrance-test   /entrance-test.html    200

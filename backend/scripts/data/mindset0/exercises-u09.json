@@ -1,0 +1,1869 @@
+{
+ "exercises": [
+  {
+   "code": "M0-U09-L1-E01",
+   "lessonCode": "M0-U09-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Các cách học tiếng Anh (Lead-in)",
+   "instruction": "Nối tranh 1–8 với cách học.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u09-leadin.jpg",
+    "caption": "Lead-in"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "use a dictionary",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "talk to people whose first language is English",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "listen to songs in English",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "write an email to a friend",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "keep a vocabulary notebook",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "study with a teacher in a classroom",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "watch videos online",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Picture 8",
+     "right": "read newspapers and magazines",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L1-E02",
+   "lessonCode": "M0-U09-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Giới từ đi với động từ giao tiếp (Ex. 3)",
+   "instruction": "Chọn giới từ đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Can you phone me when you are free? I need to talk ____ you.",
+     "options": [
+      {
+       "id": "A",
+       "text": "for"
+      },
+      {
+       "id": "B",
+       "text": "to"
+      },
+      {
+       "id": "C",
+       "text": "by"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "When you apply for a job, I think it is best to communicate ____ email first.",
+     "options": [
+      {
+       "id": "A",
+       "text": "to"
+      },
+      {
+       "id": "B",
+       "text": "with"
+      },
+      {
+       "id": "C",
+       "text": "by"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "The weather is a popular topic to talk ____ in the UK.",
+     "options": [
+      {
+       "id": "A",
+       "text": "for"
+      },
+      {
+       "id": "B",
+       "text": "about"
+      },
+      {
+       "id": "C",
+       "text": "by"
+      }
+     ],
+     "answer": "B",
+     "explanation": "talk about + chủ đề. (Lưu ý: discuss KHÔNG cần giới từ — discuss the weather.)"
+    },
+    {
+     "id": "q4",
+     "prompt": "Whenever I visit your home, they always chat ____ me.",
+     "options": [
+      {
+       "id": "A",
+       "text": "about"
+      },
+      {
+       "id": "B",
+       "text": "with"
+      },
+      {
+       "id": "C",
+       "text": "for"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "I know enough of the language to hold a conversation ____ someone.",
+     "options": [
+      {
+       "id": "A",
+       "text": "with"
+      },
+      {
+       "id": "B",
+       "text": "for"
+      },
+      {
+       "id": "C",
+       "text": "to"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L1-E03",
+   "lessonCode": "M0-U09-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Nối nửa câu hỏi (Ex. 4)",
+   "instruction": "Nối hai nửa câu hỏi.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "What is the main language that",
+     "right": "you speak in your country?",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Do you prefer to communicate",
+     "right": "by phone or by email?",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "How often do you talk",
+     "right": "to people on the internet?",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "What do you usually chat",
+     "right": "about with your friends?",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Do you think reading newspapers",
+     "right": "can help with language learning?",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L1-E04",
+   "lessonCode": "M0-U09-L1",
+   "order": 4,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Kế hoạch học tiếng Anh (G&V Ex. 2)",
+   "instruction": "Nối hai nửa câu.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "I'm going to study",
+     "right": "with a teacher in a classroom.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "I'm going to talk",
+     "right": "to people whose first language is English.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "I'm going to use",
+     "right": "a dictionary.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "I'm going to listen",
+     "right": "to songs in English.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "I'm going to keep",
+     "right": "a vocabulary notebook.",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "I'm going to watch",
+     "right": "online videos.",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "I'm going to read",
+     "right": "newspapers and magazines.",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "I'm going to write",
+     "right": "emails to my friends.",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L2-E01",
+   "lessonCode": "M0-U09-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Collocation (Ex. 15)",
+   "instruction": "Chọn động từ đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "____ a conversation",
+     "options": [
+      {
+       "id": "A",
+       "text": "speak"
+      },
+      {
+       "id": "B",
+       "text": "do"
+      },
+      {
+       "id": "C",
+       "text": "hold"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "____ an advantage",
+     "options": [
+      {
+       "id": "A",
+       "text": "make"
+      },
+      {
+       "id": "B",
+       "text": "have"
+      },
+      {
+       "id": "C",
+       "text": "do"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "____ your skills",
+     "options": [
+      {
+       "id": "A",
+       "text": "have"
+      },
+      {
+       "id": "B",
+       "text": "get"
+      },
+      {
+       "id": "C",
+       "text": "practise"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "____ an effort",
+     "options": [
+      {
+       "id": "A",
+       "text": "make"
+      },
+      {
+       "id": "B",
+       "text": "give"
+      },
+      {
+       "id": "C",
+       "text": "take"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "____ some work",
+     "options": [
+      {
+       "id": "A",
+       "text": "practise"
+      },
+      {
+       "id": "B",
+       "text": "do"
+      },
+      {
+       "id": "C",
+       "text": "hold"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "____ fun",
+     "options": [
+      {
+       "id": "A",
+       "text": "get"
+      },
+      {
+       "id": "B",
+       "text": "begin"
+      },
+      {
+       "id": "C",
+       "text": "have"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "____ a language",
+     "options": [
+      {
+       "id": "A",
+       "text": "get"
+      },
+      {
+       "id": "B",
+       "text": "hold"
+      },
+      {
+       "id": "C",
+       "text": "speak"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q8",
+     "prompt": "____ someone's advice",
+     "options": [
+      {
+       "id": "A",
+       "text": "do"
+      },
+      {
+       "id": "B",
+       "text": "take"
+      },
+      {
+       "id": "C",
+       "text": "speak"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q9",
+     "prompt": "____ time (to do something)",
+     "options": [
+      {
+       "id": "A",
+       "text": "have"
+      },
+      {
+       "id": "B",
+       "text": "practise"
+      },
+      {
+       "id": "C",
+       "text": "do"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q10",
+     "prompt": "____ progress",
+     "options": [
+      {
+       "id": "A",
+       "text": "do"
+      },
+      {
+       "id": "B",
+       "text": "make"
+      },
+      {
+       "id": "C",
+       "text": "have"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L2-E02",
+   "lessonCode": "M0-U09-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "MAKE hay TAKE? (G&V Ex. 7)",
+   "instruction": "Xếp mỗi cụm vào MAKE hoặc TAKE.",
+   "categories": [
+    {
+     "id": "make",
+     "label": "make"
+    },
+    {
+     "id": "take",
+     "label": "take"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "a mistake",
+     "category": "make",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "dinner",
+     "category": "make",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "somebody laugh",
+     "category": "make",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "a noise",
+     "category": "make",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "a difference",
+     "category": "make",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "a guess",
+     "category": "make",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "a test",
+     "category": "take",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "an exam",
+     "category": "take",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "a picture",
+     "category": "take",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "a walk",
+     "category": "take",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L2-E03",
+   "lessonCode": "M0-U09-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Hội thoại về em trai Susan (G&V Ex. 5)",
+   "instruction": "Điền: time, advantage, skills, advice, effort, progress, fun, work.",
+   "wordBank": [
+    "time",
+    "advantage",
+    "skills",
+    "advice",
+    "effort",
+    "progress",
+    "fun",
+    "work"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "My brother says he won't be able to pass his English exam, so he's not going to make an ____. — Well, he never does any ____.",
+     "blanks": [
+      {
+       "accept": [
+        "effort"
+       ]
+      },
+      {
+       "accept": [
+        "work"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "I tried to give him some ____, but he didn't take it. He only wants to have ____.",
+     "blanks": [
+      {
+       "accept": [
+        "advice"
+       ]
+      },
+      {
+       "accept": [
+        "fun"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "I told him that it takes a long ____ to learn a language.",
+     "blanks": [
+      {
+       "accept": [
+        "time"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "He should also practise his speaking ____ as well as listening. It's more difficult to make any ____ if you don't speak.",
+     "blanks": [
+      {
+       "accept": [
+        "skills"
+       ]
+      },
+      {
+       "accept": [
+        "progress"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "He also has a big ____ because your dad is an English teacher!",
+     "blanks": [
+      {
+       "accept": [
+        "advantage"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L3-E01",
+   "lessonCode": "M0-U09-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Kế hoạch (Ex. 5)",
+   "instruction": "Điền động từ: learn, meet, send, study, video call.",
+   "wordBank": [
+    "learn",
+    "meet",
+    "send",
+    "study",
+    "video call"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I'm going to ____ my friends at the cinema tonight.",
+     "blanks": [
+      {
+       "accept": [
+        "meet"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "I'm going to ____ my cousin on the computer this afternoon. He's moving to Canada next week.",
+     "blanks": [
+      {
+       "accept": [
+        "video call"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Whenever I read a newspaper, I say to myself: 'I'm going to ____ five new phrases today'.",
+     "blanks": [
+      {
+       "accept": [
+        "learn"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "I'm going to ____ in the library this morning.",
+     "blanks": [
+      {
+       "accept": [
+        "study"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "I'm going to ____ an email to my English friend at the weekend.",
+     "blanks": [
+      {
+       "accept": [
+        "send"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L3-E02",
+   "lessonCode": "M0-U09-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Câu đúng hay sai? (Ex. 9)",
+   "instruction": "Chọn câu ĐÚNG.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Khi 18 tuổi, tôi sẽ học ở Anh:",
+     "options": [
+      {
+       "id": "A",
+       "text": "When I am 18, I going to study in the UK."
+      },
+      {
+       "id": "B",
+       "text": "When I am 18, I am going to study in the UK."
+      }
+     ],
+     "answer": "B",
+     "explanation": "Thiếu \"am\"."
+    },
+    {
+     "id": "q2",
+     "prompt": "Đi mua sắm cùng tôi nhé?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Are you going to come shopping with me later?"
+      },
+      {
+       "id": "B",
+       "text": "You going to come shopping with me later?"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Cô ấy sẽ mua điện thoại mới:",
+     "options": [
+      {
+       "id": "A",
+       "text": "She is going buy a new smartphone at the weekend."
+      },
+      {
+       "id": "B",
+       "text": "She is going to buy a new smartphone at the weekend."
+      }
+     ],
+     "answer": "B",
+     "explanation": "Thiếu \"to\"."
+    },
+    {
+     "id": "q4",
+     "prompt": "Hỏi: Bạn có định nói với bố mẹ không?",
+     "options": [
+      {
+       "id": "A",
+       "text": "You are going to tell your parents that you got bad results?"
+      },
+      {
+       "id": "B",
+       "text": "Are you going to tell your parents that you got bad results?"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Câu hỏi phải đảo are lên trước."
+    },
+    {
+     "id": "q5",
+     "prompt": "Hỏi nơi xem trận bóng:",
+     "options": [
+      {
+       "id": "A",
+       "text": "Where are you going to watch the football match?"
+      },
+      {
+       "id": "B",
+       "text": "Where you are going to watch the football match?"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L3-E03",
+   "lessonCode": "M0-U09-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Khẳng định, phủ định, câu hỏi (G&V Ex. 3)",
+   "instruction": "Viết dạng going to đúng theo ký hiệu (+ / − / ?).",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "(−/I/worry) ____ about my English test tomorrow. It is only a practice test.",
+     "blanks": [
+      {
+       "accept": [
+        "I'm not going to worry",
+        "I am not going to worry"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "(?/you/learn) ____ some French before your holiday in Paris?",
+     "blanks": [
+      {
+       "accept": [
+        "Are you going to learn"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "(+/I/try) ____ my hardest to improve my vocabulary.",
+     "blanks": [
+      {
+       "accept": [
+        "I'm going to try",
+        "I am going to try"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "(?/you/meet) ____ them outside the library?",
+     "blanks": [
+      {
+       "accept": [
+        "Are you going to meet"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "(−/she/live) ____ in campus accommodation when she goes to university.",
+     "blanks": [
+      {
+       "accept": [
+        "She isn't going to live",
+        "She is not going to live",
+        "She's not going to live"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L3-E04",
+   "lessonCode": "M0-U09-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "ordering",
+   "title": "Đặt câu hỏi với going to (G&V Ex. 4)",
+   "instruction": "Sắp xếp thành câu hỏi đúng.",
+   "items": [
+    {
+     "id": "o1",
+     "prompt": "",
+     "tokens": [
+      "Who",
+      "are",
+      "you",
+      "going",
+      "to",
+      "do",
+      "the",
+      "language",
+      "project",
+      "with?"
+     ],
+     "answer": [
+      "Who",
+      "are",
+      "you",
+      "going",
+      "to",
+      "do",
+      "the",
+      "language",
+      "project",
+      "with?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o2",
+     "prompt": "",
+     "tokens": [
+      "Where",
+      "are",
+      "you",
+      "going",
+      "to",
+      "buy",
+      "a",
+      "dictionary",
+      "from?"
+     ],
+     "answer": [
+      "Where",
+      "are",
+      "you",
+      "going",
+      "to",
+      "buy",
+      "a",
+      "dictionary",
+      "from?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o3",
+     "prompt": "",
+     "tokens": [
+      "How",
+      "are",
+      "you",
+      "going",
+      "to",
+      "improve",
+      "your",
+      "language",
+      "skills?"
+     ],
+     "answer": [
+      "How",
+      "are",
+      "you",
+      "going",
+      "to",
+      "improve",
+      "your",
+      "language",
+      "skills?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o4",
+     "prompt": "",
+     "tokens": [
+      "Why",
+      "are",
+      "you",
+      "not",
+      "going",
+      "to",
+      "go",
+      "to",
+      "university",
+      "next",
+      "year?"
+     ],
+     "answer": [
+      "Why",
+      "are",
+      "you",
+      "not",
+      "going",
+      "to",
+      "go",
+      "to",
+      "university",
+      "next",
+      "year?"
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L4-E01",
+   "lessonCode": "M0-U09-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "ordering",
+   "title": "Bố cục bài luận (Ex. 23)",
+   "instruction": "Sắp xếp các phần của bài luận theo đúng thứ tự (A: đoạn nhược điểm · B: kết luận · C: mở bài · D: đoạn ưu điểm).",
+   "items": [
+    {
+     "id": "o1",
+     "prompt": "",
+     "tokens": [
+      "C",
+      "D",
+      "A",
+      "B"
+     ],
+     "answer": [
+      "C",
+      "D",
+      "A",
+      "B"
+     ],
+     "explanation": "Introduction → Paragraph (advantages) → Paragraph (disadvantages) → Conclusion."
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L4-E02",
+   "lessonCode": "M0-U09-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Bài luận về từ điển online (Ex. 24–25)",
+   "instruction": "Đọc bài luận của học sinh và chọn đáp án đúng cho mỗi chỗ trống.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Many students use an online dictionary to help them learn a language when they study in class. In this essay, I (1) ____ discuss the advantages and disadvantages of this.\n\nFirstly, if a student doesn't (2) ____ the meaning of a word or phrase, they can find it quickly and easily with an online dictionary. The teacher can continue with the class and doesn't need to stop and answer questions all the time. Furthermore, a paper dictionary is sometimes too heavy and students don't like to carry one in their bags.\n\nOn the other hand, when a student is not very confident, or if they are afraid of (3) ____ a mistake, they might start to use their dictionary in the wrong way. If they stop to (4) ____ every word or phrase they do not know, they won't (5) ____ their language skills enough and they won't improve. Additionally, it is very difficult for a teacher to check that the students are (6) ____ their computers to look (7) ____ a word and not just playing online games. If they do not focus on the class, they won't (8) ____ any progress.\n\nTo sum up, an online dictionary is often useful for students. However, in my opinion, students should only go online when the teacher says to do so. If not, they won't learn for themselves.",
+    "caption": "What are the advantages and disadvantages of using an online dictionary in a language class?"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "(1) In this essay, I ____ discuss the advantages and disadvantages of this.",
+     "options": [
+      {
+       "id": "A",
+       "text": "am going"
+      },
+      {
+       "id": "B",
+       "text": "going to"
+      },
+      {
+       "id": "C",
+       "text": "am going to"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "(2) if a student doesn't ____ the meaning of a word",
+     "options": [
+      {
+       "id": "A",
+       "text": "see"
+      },
+      {
+       "id": "B",
+       "text": "know"
+      },
+      {
+       "id": "C",
+       "text": "think"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "(3) if they are afraid of ____ a mistake",
+     "options": [
+      {
+       "id": "A",
+       "text": "having"
+      },
+      {
+       "id": "B",
+       "text": "doing"
+      },
+      {
+       "id": "C",
+       "text": "making"
+      }
+     ],
+     "answer": "C",
+     "explanation": "make a mistake."
+    },
+    {
+     "id": "q4",
+     "prompt": "(4) If they stop to ____ every word or phrase they do not know",
+     "options": [
+      {
+       "id": "A",
+       "text": "look"
+      },
+      {
+       "id": "B",
+       "text": "see"
+      },
+      {
+       "id": "C",
+       "text": "check"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "(5) they won't ____ their language skills enough",
+     "options": [
+      {
+       "id": "A",
+       "text": "practise"
+      },
+      {
+       "id": "B",
+       "text": "try"
+      },
+      {
+       "id": "C",
+       "text": "speak"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "(6) check that the students are ____ their computers",
+     "options": [
+      {
+       "id": "A",
+       "text": "using"
+      },
+      {
+       "id": "B",
+       "text": "use"
+      },
+      {
+       "id": "C",
+       "text": "used"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "(7) to look ____ a word",
+     "options": [
+      {
+       "id": "A",
+       "text": "up"
+      },
+      {
+       "id": "B",
+       "text": "at"
+      },
+      {
+       "id": "C",
+       "text": "to"
+      }
+     ],
+     "answer": "A",
+     "explanation": "look up = tra cứu."
+    },
+    {
+     "id": "q8",
+     "prompt": "(8) they won't ____ any progress",
+     "options": [
+      {
+       "id": "A",
+       "text": "do"
+      },
+      {
+       "id": "B",
+       "text": "make"
+      },
+      {
+       "id": "C",
+       "text": "have"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L4-E03",
+   "lessonCode": "M0-U09-L4",
+   "order": 3,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Từ nối dùng để làm gì? (Ex. 26)",
+   "instruction": "Xếp từ nối theo chức năng.",
+   "categories": [
+    {
+     "id": "main",
+     "label": "Ý chính đầu tiên"
+    },
+    {
+     "id": "extra",
+     "label": "Thêm thông tin"
+    },
+    {
+     "id": "new",
+     "label": "Ý mới, đối lập"
+    },
+    {
+     "id": "end",
+     "label": "Kết luận"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "Firstly",
+     "category": "main",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "Furthermore",
+     "category": "extra",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "Additionally",
+     "category": "extra",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "On the other hand",
+     "category": "new",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "However",
+     "category": "new",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "To sum up",
+     "category": "end",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L4-E04",
+   "lessonCode": "M0-U09-L4",
+   "order": 4,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Viết bài luận: học tiếng Anh cùng bạn cùng quốc tịch (Ex. 27)",
+   "instruction": "Viết bài luận (220–250 từ): \"What are the advantages and disadvantages of taking English lessons with classmates from the same country?\" Bài viết cần có: mở bài và kết luận rõ ràng; các đoạn thân bài bàn về ưu điểm và nhược điểm; từ nối để sắp xếp ý (Firstly, Furthermore, On the other hand, However, To sum up…).",
+   "responseSlots": 1,
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 200,
+    "maxWords": 270,
+    "mustUse": 4,
+    "targetStructures": [
+     "Firstly",
+     "Furthermore",
+     "Additionally",
+     "On the other hand",
+     "However",
+     "To sum up",
+     "In this essay"
+    ],
+    "checklist": [
+     "Mở bài giới thiệu chủ đề và mục đích bài luận",
+     "Một đoạn ưu điểm (ít nhất 2 ý)",
+     "Một đoạn nhược điểm (ít nhất 2 ý)",
+     "Kết luận có ý kiến cá nhân",
+     "Dùng từ nối đúng chức năng",
+     "220–250 từ"
+    ],
+    "sampleAnswer": "Many students want to learn English, but most of them cannot travel to an English-speaking country. Instead, they study in their own country, in classes where everybody has the same first language. In this essay, I am going to discuss the advantages and disadvantages of this.\n\nFirstly, if a student does not understand a word or the teacher's instructions, a classmate can quickly explain it in their first language. This saves time and helps weaker students feel less worried. Furthermore, the teacher usually knows the typical problems that students from that country have, such as difficult sounds or grammar, so they can focus on these problems in every lesson. Additionally, it is often cheaper to study in your own country than to go abroad.\n\nOn the other hand, students may speak their own language too often, especially in group work, so they do not practise their English enough. Shy or lazy students might never try to communicate in English at all. Moreover, if everybody makes the same mistakes, nobody notices them, and the mistakes become habits. Finally, students do not learn about other cultures, which is an important part of learning a language.\n\nTo sum up, studying with classmates who share your first language can be helpful, because they can support you with difficult grammar and vocabulary. However, in my opinion, students in this kind of class must be very motivated and should try to use only English in the classroom if they want to make real progress.",
+    "commonErrors": [
+     "Thiếu mở bài hoặc kết luận",
+     "Dùng sai từ nối (However để thêm ý)",
+     "Quá ít hoặc quá nhiều từ"
+    ]
+   }
+  },
+  {
+   "code": "M0-U09-L5-E01",
+   "lessonCode": "M0-U09-L5",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Collocation trong bài nghe",
+   "instruction": "Chọn từ đúng (dựa vào hội thoại của Sofia và Oliver).",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Can I ____ a suggestion?",
+     "options": [
+      {
+       "id": "A",
+       "text": "make"
+      },
+      {
+       "id": "B",
+       "text": "do"
+      },
+      {
+       "id": "C",
+       "text": "take"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "I'll ____ an appointment to go and speak to somebody.",
+     "options": [
+      {
+       "id": "A",
+       "text": "take"
+      },
+      {
+       "id": "B",
+       "text": "make"
+      },
+      {
+       "id": "C",
+       "text": "have"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "We don't have enough time to ____ a chat with the whole college.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have"
+      },
+      {
+       "id": "B",
+       "text": "do"
+      },
+      {
+       "id": "C",
+       "text": "take"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L6-E01",
+   "lessonCode": "M0-U09-L6",
+   "order": 1,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: ngôn ngữ bạn đang học (Ex. 13–14)",
+   "instruction": "Đọc đề, chuẩn bị 1 phút, rồi nói 1–2 phút.",
+   "speakingPart": 2,
+   "speakingPrepSeconds": 60,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "Describe a language that you are studying, other than your first language.\nYou should say:\n• what the language is\n• how well you know the language\n• how long you are going to study the language for\nand explain why you are learning this language.",
+     "sampleAnswer": "The language I'm studying at the moment is English. I started learning it in primary school, so I've studied it for about eight years, but I think my level is only pre-intermediate. I can read simple articles and I can hold a short conversation about everyday topics, but I still find listening quite difficult, especially when people speak fast. I'm going to study English for at least two more years, because I'm going to take the IELTS test before I finish high school. My plan is to practise my skills every day – for example, I'm going to watch one video online and learn ten new words each evening. The main reason I'm learning English is that I want to study abroad, maybe in Australia. Also, English gives you more job opportunities, and it helps me talk to people from all over the world, so I think it's really worth the effort.",
+     "sampleNote": "Đủ 4 ý; dùng going to cho kế hoạch, collocation (hold a conversation, practise my skills, worth the effort), có lý do cụ thể.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L6-E02",
+   "lessonCode": "M0-U09-L6",
+   "order": 2,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: câu hỏi về việc học ngôn ngữ (Ex. 2, 5)",
+   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "Which ways of learning English work best for you? Why?",
+     "sampleAnswer": "Watching videos online works best for me, because I can learn real English and it's fun. I also keep a vocabulary notebook, so I can review new words before tests.",
+     "sampleNote": "Hai cách + lý do.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "Do you prefer to communicate by phone or by email?",
+     "sampleAnswer": "I prefer to communicate by phone, because it's faster and I can hear the other person's voice. I only use email for school or when I need to send documents.",
+     "sampleNote": "Lựa chọn + lý do + ngoại lệ.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "What are you going to do to improve your English next month?",
+     "sampleAnswer": "Next month, I'm going to join an English club at school, and I'm going to read one short book in English. I think speaking with other students will help me become more confident.",
+     "sampleNote": "Dùng going to.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L7-E01",
+   "lessonCode": "M0-U09-L7",
+   "order": 1,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Giới từ (G&V Ex. 1)",
+   "instruction": "Chọn giới từ đúng (hoặc \"không cần giới từ\").",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "I usually communicate ____ email with my lecturer at university.",
+     "options": [
+      {
+       "id": "A",
+       "text": "by"
+      },
+      {
+       "id": "B",
+       "text": "to"
+      },
+      {
+       "id": "C",
+       "text": "(không cần giới từ)"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "If you are having a difficult time, it is best to talk ____ someone.",
+     "options": [
+      {
+       "id": "A",
+       "text": "to"
+      },
+      {
+       "id": "B",
+       "text": "about"
+      },
+      {
+       "id": "C",
+       "text": "(không cần giới từ)"
+      }
+     ],
+     "answer": "A",
+     "explanation": "talk to / with somebody."
+    },
+    {
+     "id": "q3",
+     "prompt": "You must be able to hold a conversation ____ someone to pass the exam.",
+     "options": [
+      {
+       "id": "A",
+       "text": "with"
+      },
+      {
+       "id": "B",
+       "text": "about"
+      },
+      {
+       "id": "C",
+       "text": "(không cần giới từ)"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "You can't take the course, unless you speak ____ English really well.",
+     "options": [
+      {
+       "id": "A",
+       "text": "to"
+      },
+      {
+       "id": "B",
+       "text": "with"
+      },
+      {
+       "id": "C",
+       "text": "(không cần giới từ)"
+      }
+     ],
+     "answer": "C",
+     "explanation": "speak + tên ngôn ngữ, không giới từ."
+    },
+    {
+     "id": "q5",
+     "prompt": "Have you got any free time? I want to have a chat ____ something.",
+     "options": [
+      {
+       "id": "A",
+       "text": "about"
+      },
+      {
+       "id": "B",
+       "text": "by"
+      },
+      {
+       "id": "C",
+       "text": "(không cần giới từ)"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "You can go to the careers office to have a chat ____ someone about jobs.",
+     "options": [
+      {
+       "id": "A",
+       "text": "with"
+      },
+      {
+       "id": "B",
+       "text": "by"
+      },
+      {
+       "id": "C",
+       "text": "(không cần giới từ)"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "Do you want to discuss ____ a topic for the project?",
+     "options": [
+      {
+       "id": "A",
+       "text": "about"
+      },
+      {
+       "id": "B",
+       "text": "with"
+      },
+      {
+       "id": "C",
+       "text": "(không cần giới từ)"
+      }
+     ],
+     "answer": "C",
+     "explanation": "discuss + tân ngữ trực tiếp."
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L7-E02",
+   "lessonCode": "M0-U09-L7",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "MAKE hay TAKE? (G&V Ex. 8)",
+   "instruction": "Chọn đáp án đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "It is a beautiful day. I ____ a walk.",
+     "options": [
+      {
+       "id": "A",
+       "text": "am going to take"
+      },
+      {
+       "id": "B",
+       "text": "am taking"
+      },
+      {
+       "id": "C",
+       "text": "am going to make"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Lucinda is upset. She thinks she ____ many mistakes in the exam.",
+     "options": [
+      {
+       "id": "A",
+       "text": "took"
+      },
+      {
+       "id": "B",
+       "text": "made"
+      },
+      {
+       "id": "C",
+       "text": "makes"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Robert is so funny. He really ____ me laugh.",
+     "options": [
+      {
+       "id": "A",
+       "text": "makes"
+      },
+      {
+       "id": "B",
+       "text": "takes"
+      },
+      {
+       "id": "C",
+       "text": "is making"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "I always ____ lots of photos when I go sightseeing on holiday.",
+     "options": [
+      {
+       "id": "A",
+       "text": "make"
+      },
+      {
+       "id": "B",
+       "text": "am taking"
+      },
+      {
+       "id": "C",
+       "text": "take"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "What really ____ a difference to your language skills is if you don't worry about making mistakes.",
+     "options": [
+      {
+       "id": "A",
+       "text": "makes"
+      },
+      {
+       "id": "B",
+       "text": "is making"
+      },
+      {
+       "id": "C",
+       "text": "made"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L7-E03",
+   "lessonCode": "M0-U09-L7",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Chia động từ (G&V Ex. 10)",
+   "instruction": "Điền dạng đúng: have (x2), discuss, hold, communicate, try.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I don't know what university to apply for. My father and I ____ a chat about it tomorrow.",
+     "blanks": [
+      {
+       "accept": [
+        "are going to have",
+        "are having"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "Come in, Alison. We ____ to decide what to have for dinner.",
+     "blanks": [
+      {
+       "accept": [
+        "are trying",
+        "'re trying"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Look, we ____ this last week – I don't want to have a party for my birthday.",
+     "blanks": [
+      {
+       "accept": [
+        "discussed"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "I don't know anyone who ____ by letter anymore.",
+     "blanks": [
+      {
+       "accept": [
+        "communicates"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "Our English teacher always tells us ____ more conversations with each other after class.",
+     "blanks": [
+      {
+       "accept": [
+        "to hold"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

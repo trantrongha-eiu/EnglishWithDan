@@ -1,0 +1,2413 @@
+{
+ "exercises": [
+  {
+   "code": "M0-U01-L1-E01",
+   "lessonCode": "M0-U01-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Ping ở Anh — chọn từ đúng (Ex. 3)",
+   "instruction": "Đọc các câu về Ping, một chàng trai đang học khoá ngôn ngữ ở Anh. Chọn đáp án đúng nhất A, B hoặc C.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Ping ____ at 7:30am every morning and has breakfast with his host family.",
+     "options": [
+      {
+       "id": "A",
+       "text": "gets up"
+      },
+      {
+       "id": "B",
+       "text": "stands up"
+      },
+      {
+       "id": "C",
+       "text": "stays up"
+      }
+     ],
+     "answer": "A",
+     "explanation": "get up = thức dậy, rời giường buổi sáng. stand up = đứng lên (từ tư thế ngồi); stay up = thức khuya."
+    },
+    {
+     "id": "q2",
+     "prompt": "At 8:30am, he ____ the bus to his language school.",
+     "options": [
+      {
+       "id": "A",
+       "text": "goes"
+      },
+      {
+       "id": "B",
+       "text": "catches"
+      },
+      {
+       "id": "C",
+       "text": "travels"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Cụm cố định: catch the bus (bắt xe buýt). \"go\" và \"travel\" cần giới từ: go/travel by bus."
+    },
+    {
+     "id": "q3",
+     "prompt": "During the day, Ping studies English and ____ to his classmates.",
+     "options": [
+      {
+       "id": "A",
+       "text": "laughs"
+      },
+      {
+       "id": "B",
+       "text": "chats"
+      },
+      {
+       "id": "C",
+       "text": "tells"
+      }
+     ],
+     "answer": "B",
+     "explanation": "chat to somebody = trò chuyện với ai. \"laugh to\" sai; \"tell\" cần tân ngữ trực tiếp (tell them a story)."
+    },
+    {
+     "id": "q4",
+     "prompt": "Everyone speaks English in his class because the students all ____ from different countries around the world.",
+     "options": [
+      {
+       "id": "A",
+       "text": "arrive"
+      },
+      {
+       "id": "B",
+       "text": "live"
+      },
+      {
+       "id": "C",
+       "text": "come"
+      }
+     ],
+     "answer": "C",
+     "explanation": "come from = đến từ (quê ở đâu). arrive from = vừa tới từ (một chuyến đi), không hợp nghĩa \"quê quán\"."
+    },
+    {
+     "id": "q5",
+     "prompt": "After Ping finishes school at 3:00pm, he often ____ some sightseeing in the city with his friends.",
+     "options": [
+      {
+       "id": "A",
+       "text": "does"
+      },
+      {
+       "id": "B",
+       "text": "makes"
+      },
+      {
+       "id": "C",
+       "text": "has"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Cụm cố định: do some sightseeing (đi tham quan)."
+    },
+    {
+     "id": "q6",
+     "prompt": "In the evening, Ping relaxes with his host family, ____ TV or goes online.",
+     "options": [
+      {
+       "id": "A",
+       "text": "watches"
+      },
+      {
+       "id": "B",
+       "text": "sees"
+      },
+      {
+       "id": "C",
+       "text": "looks"
+      }
+     ],
+     "answer": "A",
+     "explanation": "watch TV = xem TV (theo dõi một thứ đang chuyển động). see = nhìn thấy; look (at) = nhìn vào."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L1-E02",
+   "lessonCode": "M0-U01-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Hoàn thành cụm từ hằng ngày (Lead-in)",
+   "instruction": "Điền MỘT động từ để hoàn thành cụm từ trong tranh Lead-in. Chia động từ theo chủ ngữ nếu cần.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Every morning I ____ breakfast at 7am.",
+     "blanks": [
+      {
+       "accept": [
+        "have"
+       ]
+      }
+     ],
+     "explanation": "have breakfast — ăn sáng (không dùng \"eat a breakfast\")."
+    },
+    {
+     "id": "g2",
+     "prompt": "I usually ____ the bus to college at 7:30.",
+     "blanks": [
+      {
+       "accept": [
+        "catch",
+        "take"
+       ]
+      }
+     ],
+     "explanation": "catch/take the bus."
+    },
+    {
+     "id": "g3",
+     "prompt": "After dinner, my sister ____ online and chats to her friends.",
+     "blanks": [
+      {
+       "accept": [
+        "goes"
+       ]
+      }
+     ],
+     "explanation": "go online — chủ ngữ số ít (my sister) → goes."
+    },
+    {
+     "id": "g4",
+     "prompt": "My dad ____ TV in the living room every evening.",
+     "blanks": [
+      {
+       "accept": [
+        "watches"
+       ]
+      }
+     ],
+     "explanation": "watch TV — he/she → thêm -es (watches)."
+    },
+    {
+     "id": "g5",
+     "prompt": "I always ____ to bed at about 10:30pm.",
+     "blanks": [
+      {
+       "accept": [
+        "go"
+       ]
+      }
+     ],
+     "explanation": "go to bed — đi ngủ."
+    },
+    {
+     "id": "g6",
+     "prompt": "At the weekend, I ____ with friends in a café.",
+     "blanks": [
+      {
+       "accept": [
+        "relax"
+       ]
+      }
+     ],
+     "explanation": "relax with friends — thư giãn cùng bạn."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L2-E01",
+   "lessonCode": "M0-U01-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Đoán nghĩa từ trong \"A Day in the Life\"",
+   "instruction": "Đọc lại câu trong bài và chọn nghĩa đúng nhất của cụm từ in đậm (đoán qua ngữ cảnh).",
+   "stimulus": {
+    "kind": "passage",
+    "text": "NINA — NORWAY\n\nI live in a village on Norway's Atlantic coast. I get up at 7:30am and walk to college. Classes begin at 8:30am and finish at 3pm. After that, I go to one of the college clubs. These are not very expensive and there are lots to choose from. I do athletics and football but you can also do things like folk dancing and cross-country skiing. When my parents come home from work, my dad makes dinner and we all eat together. After that, my mum takes me out for a driving lesson. I've got my test soon and I need to practise!\n\nAVA — AUSTRALIA\n\nI'm from a small town in Queensland. Most people in Australia live near the coast, but we live on a cattle farm in the centre of the country. I get up at around 7am and have breakfast. My mum teaches at my college, so I usually go with her in the car instead of taking the bus. College starts at 8:30am and finishes at 4pm. When I get home, I help my dad on the farm for a few hours. In the evenings, I try to watch TV but I'm usually too tired. I go to bed at about 10:00pm.\n\nMICHAEL — BRAZIL\n\nI live in Rio de Janeiro. I get up at 6am and catch a bus to college at 6:30am. Lessons start at 7:20am. We have a break at 9:50am and then study until 12:30pm. I get home at about 1:40pm. After that, I often go to the beach with my friends to swim in the ocean or play beach volleyball, but I sometimes also just stay at home to sleep or study. In the evenings, I cook dinner for my family, then we watch TV or listen to the radio before bed. I switch off my light at about 10pm.",
+    "caption": "A Day in the Life (tr. 12)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "\"You can also do things like **folk dancing** and cross-country skiing.\" — folk dancing là gì?",
+     "options": [
+      {
+       "id": "A",
+       "text": "một loại hoạt động/điệu múa truyền thống"
+      },
+      {
+       "id": "B",
+       "text": "một món ăn của Na Uy"
+      },
+      {
+       "id": "C",
+       "text": "một môn học bắt buộc"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"things like…\" giới thiệu các hoạt động ở câu lạc bộ → folk dancing = múa dân gian."
+    },
+    {
+     "id": "q2",
+     "prompt": "\"We live on a **cattle farm** in the centre of the country.\" — cattle là gì?",
+     "options": [
+      {
+       "id": "A",
+       "text": "cây lúa"
+      },
+      {
+       "id": "B",
+       "text": "bò, gia súc"
+      },
+      {
+       "id": "C",
+       "text": "xe tải"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Cattle = gia súc (bò). Ava còn \"help my dad on the farm\" — đúng ngữ cảnh trang trại."
+    },
+    {
+     "id": "q3",
+     "prompt": "\"My mum teaches at my college, so I usually go with her in the car **instead of** taking the bus.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "cùng với"
+      },
+      {
+       "id": "B",
+       "text": "thay vì"
+      },
+      {
+       "id": "C",
+       "text": "sau khi"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Ava đi ô tô với mẹ, KHÔNG đi xe buýt → instead of = thay vì."
+    },
+    {
+     "id": "q4",
+     "prompt": "\"In the evenings, I try to watch TV but I'm usually **too tired**.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "rất thích"
+      },
+      {
+       "id": "B",
+       "text": "quá mệt (nên không xem được)"
+      },
+      {
+       "id": "C",
+       "text": "quá bận học"
+      }
+     ],
+     "answer": "B",
+     "explanation": "\"try to… but…\" → muốn xem TV nhưng không làm được vì quá mệt (làm trang trại cả buổi chiều)."
+    },
+    {
+     "id": "q5",
+     "prompt": "\"I **switch off** my light at about 10pm.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "bật đèn lên"
+      },
+      {
+       "id": "B",
+       "text": "tắt đèn (đi ngủ)"
+      },
+      {
+       "id": "C",
+       "text": "thay bóng đèn"
+      }
+     ],
+     "answer": "B",
+     "explanation": "switch off = tắt; tắt đèn lúc 10pm = giờ đi ngủ."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L2-E02",
+   "lessonCode": "M0-U01-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Reading: hoàn thành đoạn văn về Dan (Ex. 10)",
+   "instruction": "Đọc thông tin về thói quen của Dan, sinh viên một trường đại học ở Anh. Chia động từ trong ngoặc ở thì hiện tại đơn (he → thêm -s/-es).",
+   "stimulus": {
+    "kind": "text",
+    "caption": "Mẹo (TIP 11)",
+    "rows": [
+     [
+      "Từ tô vàng",
+      "usually, always, sometimes, often, never — cho biết Dan làm việc đó thường xuyên đến mức nào."
+     ]
+    ]
+   },
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Dan usually ____ (get up) at 8am, ____ (have) a shower and ____ (eat) breakfast.",
+     "blanks": [
+      {
+       "accept": [
+        "gets up"
+       ]
+      },
+      {
+       "accept": [
+        "has"
+       ]
+      },
+      {
+       "accept": [
+        "eats"
+       ]
+      }
+     ],
+     "explanation": "Chủ ngữ Dan (he) → gets up, has (bất quy tắc: have → has), eats."
+    },
+    {
+     "id": "g2",
+     "prompt": "After that, he always ____ (get) his books ready and then ____ (go) to his lectures until midday.",
+     "blanks": [
+      {
+       "accept": [
+        "gets"
+       ]
+      },
+      {
+       "accept": [
+        "goes"
+       ]
+      }
+     ],
+     "explanation": "go → goes (động từ tận cùng -o thêm -es)."
+    },
+    {
+     "id": "g3",
+     "prompt": "He usually ____ (return) home and ____ (make) lunch for himself at about 12:30pm.",
+     "blanks": [
+      {
+       "accept": [
+        "returns"
+       ]
+      },
+      {
+       "accept": [
+        "makes"
+       ]
+      }
+     ],
+     "explanation": "Động từ thường → thêm -s."
+    },
+    {
+     "id": "g4",
+     "prompt": "Then, he sometimes ____ (watch) a bit of TV. At about 3pm, he often ____ (meet) a friend for coffee.",
+     "blanks": [
+      {
+       "accept": [
+        "watches"
+       ]
+      },
+      {
+       "accept": [
+        "meets"
+       ]
+      }
+     ],
+     "explanation": "watch → watches (tận cùng -ch thêm -es)."
+    },
+    {
+     "id": "g5",
+     "prompt": "At 3:30pm, they sometimes ____ (go) to the library together.",
+     "blanks": [
+      {
+       "accept": [
+        "go"
+       ]
+      }
+     ],
+     "explanation": "Chủ ngữ \"they\" (số nhiều) → giữ nguyên go."
+    },
+    {
+     "id": "g6",
+     "prompt": "Dan always ____ (study) for a few hours and then at around 6:30pm he ____ (go) home.",
+     "blanks": [
+      {
+       "accept": [
+        "studies"
+       ]
+      },
+      {
+       "accept": [
+        "goes"
+       ]
+      }
+     ],
+     "explanation": "study → studies (phụ âm + y → ies)."
+    },
+    {
+     "id": "g7",
+     "prompt": "He usually ____ (cook) dinner for himself and his flatmates. In the evening, he sometimes ____ (exercise) at the gym.",
+     "blanks": [
+      {
+       "accept": [
+        "cooks"
+       ]
+      },
+      {
+       "accept": [
+        "exercises"
+       ]
+      }
+     ],
+     "explanation": "cook → cooks; exercise → exercises."
+    },
+    {
+     "id": "g8",
+     "prompt": "After that, he relaxes in front of the TV or ____ (see) his friends. He never goes to bed early, but usually ____ (fall) asleep at around midnight.",
+     "blanks": [
+      {
+       "accept": [
+        "sees"
+       ]
+      },
+      {
+       "accept": [
+        "falls"
+       ]
+      }
+     ],
+     "explanation": "see → sees; fall → falls."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L2-E03",
+   "lessonCode": "M0-U01-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Reading: nối cụm từ đồng nghĩa — việc nhà (Ex. 12)",
+   "instruction": "Đọc đoạn văn về việc nhà và nối mỗi cụm từ (1–6) với cụm có nghĩa tương tự (A–F).",
+   "stimulus": {
+    "kind": "passage",
+    "text": "I often help a lot around the house and I usually help my mum **do the laundry**. My brother is lazy and he never washes his clothes. He always leaves them in a pile on his bedroom floor. In the evening after school, I always **tidy up** my room. I put things away and get my schoolbag ready for the next day. My dad sometimes **washes up** after dinner. We don't have a dishwasher at the moment because our old one broke down, so he has to clean the dishes by himself. My sister likes cooking, so she often helps mum **make lunch and dinner**. She prepared a delicious meal of roast chicken at the weekend. Sometimes my brother **puts the rubbish out**, but he usually just leaves it by the back door instead of taking it out to the bins. We all usually try and help and **do the cleaning**. When the housework is done, we always relax and watch TV.",
+    "caption": "Ex. 12 — Helping around the house"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "do the laundry",
+     "right": "wash the clothes",
+     "explanation": "do the laundry = giặt quần áo. Bài: \"My brother… never washes his clothes.\""
+    },
+    {
+     "id": "m2",
+     "left": "tidy up",
+     "right": "put things away",
+     "explanation": "tidy up = dọn gọn; câu sau giải thích \"I put things away\"."
+    },
+    {
+     "id": "m3",
+     "left": "wash up",
+     "right": "clean the dishes",
+     "explanation": "wash up = rửa bát; \"he has to clean the dishes by himself\"."
+    },
+    {
+     "id": "m4",
+     "left": "make lunch/dinner",
+     "right": "prepare a meal",
+     "explanation": "make dinner = prepare a meal; \"She prepared a delicious meal\"."
+    },
+    {
+     "id": "m5",
+     "left": "put the rubbish out",
+     "right": "take out the bins",
+     "explanation": "put the rubbish out = mang rác ra thùng; \"taking it out to the bins\"."
+    },
+    {
+     "id": "m6",
+     "left": "do the cleaning",
+     "right": "do the housework",
+     "explanation": "do the cleaning ≈ do the housework; \"When the housework is done…\"."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L3-E01",
+   "lessonCode": "M0-U01-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Hộp ngữ pháp: hỏi – đáp (Ex. 7)",
+   "instruction": "Đọc Grammar box (phần \"Ngữ pháp cần nhớ\" ở trên), rồi nối câu hỏi 1–3 với câu trả lời A–C.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "What do we use the present simple for?",
+     "right": "to talk about every day routines and habits",
+     "explanation": "Hiện tại đơn diễn tả thói quen, hoạt động lặp lại."
+    },
+    {
+     "id": "m2",
+     "left": "Why do we use adverbs of frequency?",
+     "right": "to say how often we do something",
+     "explanation": "always/usually/often/sometimes/never cho biết mức độ thường xuyên."
+    },
+    {
+     "id": "m3",
+     "left": "What do verbs for he/she/it end in?",
+     "right": "-s",
+     "explanation": "he/she/it + V-s/es."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L3-E02",
+   "lessonCode": "M0-U01-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 15,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Xếp động từ vào 4 nhóm chia ngôi thứ ba (Ex. 8)",
+   "instruction": "Mỗi động từ thuộc nhóm nào khi chia với he/she/it?",
+   "categories": [
+    {
+     "id": "g1",
+     "label": "Nhóm 1: thêm -s (gets up)"
+    },
+    {
+     "id": "g2",
+     "label": "Nhóm 2: -s, -ch, -sh, -x → thêm -es (watches)"
+    },
+    {
+     "id": "g3",
+     "label": "Nhóm 3: phụ âm + y → -ies (tries)"
+    },
+    {
+     "id": "g4",
+     "label": "Nhóm 4: go/do/wash… → -es (goes)"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "exercise",
+     "category": "g1",
+     "explanation": "exercises"
+    },
+    {
+     "id": "c2",
+     "text": "work",
+     "category": "g1",
+     "explanation": "works"
+    },
+    {
+     "id": "c3",
+     "text": "play",
+     "category": "g1",
+     "explanation": "plays — nguyên âm + y chỉ thêm -s"
+    },
+    {
+     "id": "c4",
+     "text": "cook",
+     "category": "g1",
+     "explanation": "cooks"
+    },
+    {
+     "id": "c5",
+     "text": "listen",
+     "category": "g1",
+     "explanation": "listens"
+    },
+    {
+     "id": "c6",
+     "text": "catch",
+     "category": "g2",
+     "explanation": "catches"
+    },
+    {
+     "id": "c7",
+     "text": "relax",
+     "category": "g2",
+     "explanation": "relaxes"
+    },
+    {
+     "id": "c8",
+     "text": "finish",
+     "category": "g2",
+     "explanation": "finishes"
+    },
+    {
+     "id": "c9",
+     "text": "switch",
+     "category": "g2",
+     "explanation": "switches"
+    },
+    {
+     "id": "c10",
+     "text": "teach",
+     "category": "g2",
+     "explanation": "teaches"
+    },
+    {
+     "id": "c11",
+     "text": "study",
+     "category": "g3",
+     "explanation": "studies"
+    },
+    {
+     "id": "c12",
+     "text": "try",
+     "category": "g3",
+     "explanation": "tries"
+    },
+    {
+     "id": "c13",
+     "text": "cry",
+     "category": "g3",
+     "explanation": "cries"
+    },
+    {
+     "id": "c14",
+     "text": "go",
+     "category": "g4",
+     "explanation": "goes"
+    },
+    {
+     "id": "c15",
+     "text": "do",
+     "category": "g4",
+     "explanation": "does"
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L3-E03",
+   "lessonCode": "M0-U01-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Chia ngôi thứ ba số ít (G&V Ex. 5)",
+   "instruction": "Hoàn thành câu bằng dạng ngôi thứ ba (he/she/it) của động từ trong ngoặc.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "My dad ____ (wash) his car every weekend.",
+     "blanks": [
+      {
+       "accept": [
+        "washes"
+       ]
+      }
+     ],
+     "explanation": "wash → washes (-sh + es)."
+    },
+    {
+     "id": "g2",
+     "prompt": "Jim ____ (watch) too much TV.",
+     "blanks": [
+      {
+       "accept": [
+        "watches"
+       ]
+      }
+     ],
+     "explanation": "-ch + es."
+    },
+    {
+     "id": "g3",
+     "prompt": "Adrian's baby ____ (cry) a lot.",
+     "blanks": [
+      {
+       "accept": [
+        "cries"
+       ]
+      }
+     ],
+     "explanation": "phụ âm + y → ies."
+    },
+    {
+     "id": "g4",
+     "prompt": "My brother is good at chess and ____ (practise) every day.",
+     "blanks": [
+      {
+       "accept": [
+        "practises",
+        "practices"
+       ]
+      }
+     ],
+     "explanation": "practise → practises."
+    },
+    {
+     "id": "g5",
+     "prompt": "Olga ____ (go) jogging most evenings after work.",
+     "blanks": [
+      {
+       "accept": [
+        "goes"
+       ]
+      }
+     ],
+     "explanation": "go → goes."
+    },
+    {
+     "id": "g6",
+     "prompt": "Tom's wife cooks and Tom ____ (do) the washing up.",
+     "blanks": [
+      {
+       "accept": [
+        "does"
+       ]
+      }
+     ],
+     "explanation": "do → does."
+    },
+    {
+     "id": "g7",
+     "prompt": "Anna ____ (catch) the 253 bus to college each morning.",
+     "blanks": [
+      {
+       "accept": [
+        "catches"
+       ]
+      }
+     ],
+     "explanation": "catch → catches."
+    },
+    {
+     "id": "g8",
+     "prompt": "Nadia ____ (relax) by doing yoga.",
+     "blanks": [
+      {
+       "accept": [
+        "relaxes"
+       ]
+      }
+     ],
+     "explanation": "-x + es."
+    },
+    {
+     "id": "g9",
+     "prompt": "I think our teacher ____ (give) us far too much homework.",
+     "blanks": [
+      {
+       "accept": [
+        "gives"
+       ]
+      }
+     ],
+     "explanation": "give → gives."
+    },
+    {
+     "id": "g10",
+     "prompt": "My brother ____ (switch off) his light at about midnight.",
+     "blanks": [
+      {
+       "accept": [
+        "switches off"
+       ]
+      }
+     ],
+     "explanation": "switch → switches; \"off\" giữ nguyên."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L3-E04",
+   "lessonCode": "M0-U01-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Chọn dạng động từ đúng (G&V Ex. 6)",
+   "instruction": "Chọn dạng đúng của động từ trong mỗi câu.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "My brother ____ for a computer company in the city.",
+     "options": [
+      {
+       "id": "A",
+       "text": "works"
+      },
+      {
+       "id": "B",
+       "text": "work"
+      }
+     ],
+     "answer": "A",
+     "explanation": "My brother = he → works."
+    },
+    {
+     "id": "q2",
+     "prompt": "My friends and I often ____ basketball together at the weekends.",
+     "options": [
+      {
+       "id": "A",
+       "text": "play"
+      },
+      {
+       "id": "B",
+       "text": "plays"
+      }
+     ],
+     "answer": "A",
+     "explanation": "My friends and I = we → play."
+    },
+    {
+     "id": "q3",
+     "prompt": "I go to a college where everyone ____ different languages.",
+     "options": [
+      {
+       "id": "A",
+       "text": "study"
+      },
+      {
+       "id": "B",
+       "text": "studies"
+      }
+     ],
+     "answer": "B",
+     "explanation": "everyone luôn đi với động từ số ít → studies."
+    },
+    {
+     "id": "q4",
+     "prompt": "My grandparents ____ from a small village in Germany.",
+     "options": [
+      {
+       "id": "A",
+       "text": "come"
+      },
+      {
+       "id": "B",
+       "text": "comes"
+      }
+     ],
+     "answer": "A",
+     "explanation": "grandparents (số nhiều) → come."
+    },
+    {
+     "id": "q5",
+     "prompt": "In Britain, most school students ____ a uniform.",
+     "options": [
+      {
+       "id": "A",
+       "text": "wear"
+      },
+      {
+       "id": "B",
+       "text": "wears"
+      }
+     ],
+     "answer": "A",
+     "explanation": "students (số nhiều) → wear."
+    },
+    {
+     "id": "q6",
+     "prompt": "In the evenings, I ____ to chat to my friends online.",
+     "options": [
+      {
+       "id": "A",
+       "text": "like"
+      },
+      {
+       "id": "B",
+       "text": "likes"
+      }
+     ],
+     "answer": "A",
+     "explanation": "I → like."
+    },
+    {
+     "id": "q7",
+     "prompt": "In my family, only my sister ____ before 6am.",
+     "options": [
+      {
+       "id": "A",
+       "text": "gets up"
+      },
+      {
+       "id": "B",
+       "text": "get up"
+      }
+     ],
+     "answer": "A",
+     "explanation": "my sister = she → gets up."
+    },
+    {
+     "id": "q8",
+     "prompt": "I ____ a dance class every Wednesday evening.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have"
+      },
+      {
+       "id": "B",
+       "text": "has"
+      }
+     ],
+     "answer": "A",
+     "explanation": "I → have."
+    },
+    {
+     "id": "q9",
+     "prompt": "My friend is good at baking and ____ amazing cakes.",
+     "options": [
+      {
+       "id": "A",
+       "text": "make"
+      },
+      {
+       "id": "B",
+       "text": "makes"
+      }
+     ],
+     "answer": "B",
+     "explanation": "My friend = he/she → makes."
+    },
+    {
+     "id": "q10",
+     "prompt": "My lunch break ____ at 12pm and finishes at 12:45pm.",
+     "options": [
+      {
+       "id": "A",
+       "text": "begin"
+      },
+      {
+       "id": "B",
+       "text": "begins"
+      }
+     ],
+     "answer": "B",
+     "explanation": "My lunch break = it → begins."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L3-E05",
+   "lessonCode": "M0-U01-L3",
+   "order": 5,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "ordering",
+   "title": "Vị trí trạng từ tần suất",
+   "instruction": "Sắp xếp các từ thành câu đúng. Nhớ: trạng từ tần suất đứng TRƯỚC động từ thường, SAU động từ \"be\".",
+   "items": [
+    {
+     "id": "o1",
+     "prompt": "",
+     "tokens": [
+      "He",
+      "always",
+      "gets",
+      "up",
+      "early."
+     ],
+     "answer": [
+      "He",
+      "always",
+      "gets",
+      "up",
+      "early."
+     ],
+     "explanation": "always đứng trước động từ thường gets up."
+    },
+    {
+     "id": "o2",
+     "prompt": "",
+     "tokens": [
+      "I",
+      "am",
+      "never",
+      "late",
+      "for",
+      "college."
+     ],
+     "answer": [
+      "I",
+      "am",
+      "never",
+      "late",
+      "for",
+      "college."
+     ],
+     "explanation": "never đứng sau \"am\"."
+    },
+    {
+     "id": "o3",
+     "prompt": "",
+     "tokens": [
+      "My",
+      "sister",
+      "often",
+      "helps",
+      "mum",
+      "make",
+      "dinner."
+     ],
+     "answer": [
+      "My",
+      "sister",
+      "often",
+      "helps",
+      "mum",
+      "make",
+      "dinner."
+     ],
+     "explanation": "often + helps."
+    },
+    {
+     "id": "o4",
+     "prompt": "",
+     "tokens": [
+      "We",
+      "sometimes",
+      "go",
+      "to",
+      "the",
+      "beach",
+      "after",
+      "college."
+     ],
+     "answer": [
+      "We",
+      "sometimes",
+      "go",
+      "to",
+      "the",
+      "beach",
+      "after",
+      "college."
+     ],
+     "explanation": "sometimes + go."
+    },
+    {
+     "id": "o5",
+     "prompt": "",
+     "tokens": [
+      "Ava",
+      "is",
+      "usually",
+      "too",
+      "tired",
+      "to",
+      "watch",
+      "TV."
+     ],
+     "answer": [
+      "Ava",
+      "is",
+      "usually",
+      "too",
+      "tired",
+      "to",
+      "watch",
+      "TV."
+     ],
+     "explanation": "usually đứng sau \"is\"."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L4-E01",
+   "lessonCode": "M0-U01-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Từ chỉ trình tự & tần suất",
+   "instruction": "Điền từ thích hợp vào chỗ trống: after that / next / then / finally / always / never.",
+   "wordBank": [
+    "After that",
+    "Next",
+    "Then",
+    "Finally",
+    "always",
+    "never"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "First, I get up at 6:30am. ____, I have a shower.",
+     "blanks": [
+      {
+       "accept": [
+        "After that",
+        "Next",
+        "Then"
+       ]
+      }
+     ],
+     "explanation": "Từ trình tự nối hai hoạt động liên tiếp."
+    },
+    {
+     "id": "g2",
+     "prompt": "I go to bed at 10pm because I ____ get up early. I am never late for class.",
+     "blanks": [
+      {
+       "accept": [
+        "always"
+       ]
+      }
+     ],
+     "explanation": "always (100%) — hợp với \"never late\"."
+    },
+    {
+     "id": "g3",
+     "prompt": "My brother is lazy. He ____ washes his clothes.",
+     "blanks": [
+      {
+       "accept": [
+        "never"
+       ]
+      }
+     ],
+     "explanation": "lazy → never (0%)."
+    },
+    {
+     "id": "g4",
+     "prompt": "I study in the library all afternoon. ____, at 10pm, I go to bed.",
+     "blanks": [
+      {
+       "accept": [
+        "Finally"
+       ]
+      }
+     ],
+     "explanation": "Finally = cuối cùng (hoạt động cuối ngày)."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L4-E02",
+   "lessonCode": "M0-U01-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "ordering",
+   "title": "Sắp xếp câu mô tả",
+   "instruction": "Sắp xếp từ thành câu hoàn chỉnh (chú ý dấu phẩy sau từ trình tự).",
+   "items": [
+    {
+     "id": "o1",
+     "prompt": "",
+     "tokens": [
+      "Every",
+      "morning,",
+      "she",
+      "gets",
+      "up",
+      "at",
+      "half",
+      "past",
+      "six."
+     ],
+     "answer": [
+      "Every",
+      "morning,",
+      "she",
+      "gets",
+      "up",
+      "at",
+      "half",
+      "past",
+      "six."
+     ],
+     "explanation": "Thời gian đứng đầu câu + dấu phẩy."
+    },
+    {
+     "id": "o2",
+     "prompt": "",
+     "tokens": [
+      "After",
+      "that,",
+      "she",
+      "usually",
+      "works",
+      "on",
+      "her",
+      "laptop."
+     ],
+     "answer": [
+      "After",
+      "that,",
+      "she",
+      "usually",
+      "works",
+      "on",
+      "her",
+      "laptop."
+     ],
+     "explanation": "usually trước động từ thường."
+    },
+    {
+     "id": "o3",
+     "prompt": "",
+     "tokens": [
+      "In",
+      "the",
+      "evening,",
+      "she",
+      "often",
+      "sits",
+      "by",
+      "the",
+      "campfire",
+      "with",
+      "her",
+      "friends."
+     ],
+     "answer": [
+      "In",
+      "the",
+      "evening,",
+      "she",
+      "often",
+      "sits",
+      "by",
+      "the",
+      "campfire",
+      "with",
+      "her",
+      "friends."
+     ],
+     "explanation": "often + sits."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L4-E03",
+   "lessonCode": "M0-U01-L4",
+   "order": 3,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Viết về thói quen hằng ngày của bạn (Ex. 11)",
+   "instruction": "Nhìn lại đoạn văn về Dan (Ex. 10). Viết một đoạn văn (70–100 từ) về thói quen hằng ngày của BẠN: bạn làm gì, lúc mấy giờ. Dùng ít nhất 4 trạng từ tần suất (always, usually, often, sometimes, never) và 2 từ chỉ trình tự (After that, Then, Next…). Ví dụ: I sometimes do the laundry. I never make dinner. My brother often takes out the bins.",
+   "responseSlots": 1,
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 70,
+    "maxWords": 130,
+    "mustUse": 4,
+    "targetStructures": [
+     "always",
+     "usually",
+     "often",
+     "sometimes",
+     "never",
+     "After that",
+     "Then"
+    ],
+    "checklist": [
+     "Nêu thời gian cho các hoạt động (at 7am, in the evening…)",
+     "Dùng ≥4 trạng từ tần suất, đặt đúng vị trí",
+     "Chia đúng hiện tại đơn",
+     "Có từ chỉ trình tự nối câu"
+    ],
+    "sampleAnswer": "I usually get up at 6:30am and have breakfast with my family. After that, I always catch the bus to school at 7am. Lessons start at 7:30am and finish at 4:30pm. I often chat to my friends during the break. When I get home, I sometimes help my mum make dinner, but I never wash up because my brother does it. Then, I usually do my homework for two hours. In the evening, I often go online or watch TV. I go to bed at about 11pm.",
+    "commonErrors": [
+     "Quên -s/-es với he/she/it",
+     "Đặt trạng từ tần suất sau động từ thường (I go always)",
+     "Viết \"at the morning\" thay vì \"in the morning\""
+    ]
+   }
+  },
+  {
+   "code": "M0-U01-L4-E04",
+   "lessonCode": "M0-U01-L4",
+   "order": 4,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Viết về một ngày của Julia Grant (Ex. 13)",
+   "instruction": "Nhìn các bức tranh về Julia Grant, tình nguyện viên trong một dự án khoa học. Viết đoạn văn (80–120 từ) mô tả một ngày của Julia. Yêu cầu: (1) mở đầu bằng \"Julia Grant is 21 years old and works as a volunteer on a science project in Fiji. Every morning, she …\"; (2) viết các hoạt động cô ấy làm và giờ làm; (3) dùng từ trình tự After that… / Next… / Then…; (4) dùng trạng từ tần suất.",
+   "responseSlots": 1,
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u01-julia.jpg",
+    "caption": "Một ngày của Julia Grant ở Fiji"
+   },
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 80,
+    "maxWords": 140,
+    "mustUse": 4,
+    "targetStructures": [
+     "Every morning, she",
+     "After that",
+     "Next",
+     "Then",
+     "usually",
+     "often",
+     "sometimes"
+    ],
+    "checklist": [
+     "Bắt đầu đúng câu mở đầu đề cho",
+     "Mô tả ít nhất 6 hoạt động trong tranh theo thứ tự",
+     "Có giờ cụ thể cho các hoạt động",
+     "Dùng After that / Next / Then",
+     "Chia động từ ngôi she: -s/-es"
+    ],
+    "sampleAnswer": "Julia Grant is 21 years old and works as a volunteer on a science project in Fiji. Every morning, she gets up at 6:30am. After that, she always checks her emails on her laptop. Next, she cooks breakfast with her friend at about 8am. Then, she works outside and washes the equipment for the project. At lunchtime, she usually hangs out the washing. In the afternoon, she sometimes reads a book on the beach. Some days, she goes snorkelling and looks at the turtles. In the evening, she often has dinner in a small restaurant by the sea. Finally, she sits by the campfire with her friends before she goes to bed.",
+    "commonErrors": [
+     "she go / she have → she goes / she has",
+     "Quên dấu phẩy sau After that, Next, Then"
+    ]
+   }
+  },
+  {
+   "code": "M0-U01-L5-E01",
+   "lessonCode": "M0-U01-L5",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Trước khi nghe: Đúng hay Sai? (Ex. 15)",
+   "instruction": "Đọc thông tin trên trang web về chương trình trao đổi học sinh. Mỗi câu sau Đúng (True) hay Sai (False)?",
+   "stimulus": {
+    "kind": "passage",
+    "imageUrl": "media:m0u01-exchange-web.jpg",
+    "caption": "Spend a term or a whole year in another country",
+    "text": "Stay with a host family and go to a local college. Learn all about the culture, and maybe learn a new language. Make new friends and have a great time. You need to pay for flights and take some pocket money, but that's all. Host families are not paid. All they ask is that you help with jobs around the house and join in with family activities.\n\nGo to student_exchange.com and explore our website to learn more!"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "All students spend at least a year abroad.",
+     "options": [
+      {
+       "id": "A",
+       "text": "True"
+      },
+      {
+       "id": "B",
+       "text": "False"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Trang web: \"Spend a **term or** a whole year\" → có thể chỉ 1 học kỳ (ít hơn 1 năm) — MINI TIP 15.1."
+    },
+    {
+     "id": "q2",
+     "prompt": "Host families give students pocket money during their stay.",
+     "options": [
+      {
+       "id": "A",
+       "text": "True"
+      },
+      {
+       "id": "B",
+       "text": "False"
+      }
+     ],
+     "answer": "B",
+     "explanation": "\"You need to pay for flights and **take some pocket money**\" → học sinh tự mang tiền, gia đình không cho — MINI TIP 15.2."
+    },
+    {
+     "id": "q3",
+     "prompt": "Students should do housework and be involved with family activities.",
+     "options": [
+      {
+       "id": "A",
+       "text": "True"
+      },
+      {
+       "id": "B",
+       "text": "False"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"help with jobs around the house and **join in with** family activities\" — join in with = tham gia (MINI TIP 15.3)."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L5-E02",
+   "lessonCode": "M0-U01-L5",
+   "order": 2,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Nghe tìm từ đồng nghĩa",
+   "instruction": "Trong bài nghe, người nói dùng từ khác với danh sách A–H. Chọn hoạt động có nghĩa giống câu nói.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "\"He's really good at building and **fixing things**.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "repairing things"
+      },
+      {
+       "id": "B",
+       "text": "shopping"
+      },
+      {
+       "id": "C",
+       "text": "going to the gym"
+      }
+     ],
+     "answer": "A",
+     "explanation": "fix = repair (sửa chữa)."
+    },
+    {
+     "id": "q2",
+     "prompt": "\"She's really good at **painting and drawing**.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "reading books"
+      },
+      {
+       "id": "B",
+       "text": "doing art"
+      },
+      {
+       "id": "C",
+       "text": "cooking"
+      }
+     ],
+     "answer": "B",
+     "explanation": "painting and drawing = doing art."
+    },
+    {
+     "id": "q3",
+     "prompt": "\"She spends a lot of time outdoors, **planting flowers and cutting the grass**.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "taking care of the garden"
+      },
+      {
+       "id": "B",
+       "text": "playing team sports"
+      },
+      {
+       "id": "C",
+       "text": "shopping"
+      }
+     ],
+     "answer": "A",
+     "explanation": "trồng hoa, cắt cỏ = chăm sóc vườn."
+    },
+    {
+     "id": "q4",
+     "prompt": "\"I love playing **volleyball and basketball**.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "going to the gym"
+      },
+      {
+       "id": "B",
+       "text": "playing team sports"
+      },
+      {
+       "id": "C",
+       "text": "doing art"
+      }
+     ],
+     "answer": "B",
+     "explanation": "bóng chuyền, bóng rổ = thể thao đồng đội."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L6-E01",
+   "lessonCode": "M0-U01-L6",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Mẹo nói 1–2 phút",
+   "instruction": "Chọn cách làm ĐÚNG khi chuẩn bị và nói.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Trong 1–2 phút chuẩn bị, bạn nên…",
+     "options": [
+      {
+       "id": "A",
+       "text": "viết cả câu hoàn chỉnh rồi đọc lên"
+      },
+      {
+       "id": "B",
+       "text": "ghi từ khoá, cụm ngắn cho từng ý"
+      },
+      {
+       "id": "C",
+       "text": "không ghi gì cả"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Sách nhấn mạnh: chỉ ghi từ/cụm ngắn; đọc câu viết sẵn sẽ mất điểm."
+    },
+    {
+     "id": "q2",
+     "prompt": "Nếu không nhớ mình đi học cùng ai, bạn nên…",
+     "options": [
+      {
+       "id": "A",
+       "text": "im lặng cho tới khi nhớ ra"
+      },
+      {
+       "id": "B",
+       "text": "bỏ qua ý đó"
+      },
+      {
+       "id": "C",
+       "text": "nghĩ ra một chi tiết hợp lý và nói tiếp"
+      }
+     ],
+     "answer": "C",
+     "explanation": "3 ý đầu là thông tin thực tế — bạn có thể bịa nếu cần (TIP 19)."
+    },
+    {
+     "id": "q3",
+     "prompt": "Câu nào giúp câu trả lời dài và hay hơn?",
+     "options": [
+      {
+       "id": "A",
+       "text": "I like evening."
+      },
+      {
+       "id": "B",
+       "text": "I like the evening because I can relax and chat to my friends, for example on Messenger."
+      },
+      {
+       "id": "C",
+       "text": "Evening. Good."
+      }
+     ],
+     "answer": "B",
+     "explanation": "Thêm lý do (because) và ví dụ (for example) — bullet box của sách."
+    },
+    {
+     "id": "q4",
+     "prompt": "Theo Ex. 20, điều nào là DẤU HIỆU XẤU?",
+     "options": [
+      {
+       "id": "A",
+       "text": "The talk is easy to understand."
+      },
+      {
+       "id": "B",
+       "text": "The speaker often pauses and hesitates."
+      },
+      {
+       "id": "C",
+       "text": "The speaker stays on the topic."
+      }
+     ],
+     "answer": "B",
+     "explanation": "Ngập ngừng, dừng lại nhiều làm giảm độ trôi chảy (fluency)."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L6-E02",
+   "lessonCode": "M0-U01-L6",
+   "order": 2,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: Một ngày bình thường của bạn (Ex. 19–21)",
+   "instruction": "Đọc đề, dành 1 phút ghi chú từ khoá, rồi nói 1–2 phút. Describe what you usually do on an average day. You should say: what you do · who you do it with · where you do it — and explain what you enjoy most about your day and why.",
+   "speakingPart": 2,
+   "speakingPrepSeconds": 60,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "Describe what you usually do on an average day.\nYou should say:\n• what you do\n• who you do it with\n• where you do it\nand explain what you enjoy most about your day and why.",
+     "sampleAnswer": "I'd like to talk about a normal weekday for me. I usually get up at about half past six, and the first thing I do is have a quick breakfast with my mum in the kitchen. After that, I catch the bus to school with my best friend, Lan, because we live on the same street. Lessons start at seven thirty and finish at about four thirty, so I spend most of the day at school with my classmates. In the break, we often chat or play badminton in the yard. When I get home, I sometimes help my mum make dinner, and then I do my homework in my bedroom for about two hours. In the evening, I usually watch TV with my family or go online. What I enjoy most about my day is the evening, because I can finally relax. For example, last night I watched a funny film with my little brother and we laughed a lot. I normally go to bed at around eleven.",
+     "sampleNote": "Đi theo thứ tự thời gian, mỗi ý có chi tiết (giờ, người, nơi chốn). Phần \"explain\" có lý do (because) và ví dụ cụ thể (last night…).",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L6-E03",
+   "lessonCode": "M0-U01-L6",
+   "order": 3,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: trả lời câu hỏi ngắn về thói quen (Ex. 4, 18)",
+   "instruction": "Trả lời từng câu hỏi trong 15–25 giây: trả lời thẳng → lý do → ví dụ.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "What time does your school, college or job start and finish?",
+     "sampleAnswer": "My school starts at seven thirty in the morning and finishes at about four thirty. It's quite a long day, so I'm usually tired when I get home, but I like the afternoon lessons because we often do group work.",
+     "sampleNote": "Trả lời thẳng giờ giấc, thêm cảm nhận + lý do.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "What do young people like to do in the evenings in your country?",
+     "sampleAnswer": "Most young people in Vietnam like to go online in the evenings. For example, they chat with friends or watch videos on their phones. Some people also go out for milk tea or play football with their friends.",
+     "sampleNote": "Nêu ý chính + ví dụ cụ thể (for example).",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "Would you like to go to another country to study? Why or why not?",
+     "sampleAnswer": "Yes, I would. I'd love to study in Australia because I want to improve my English and learn about a new culture. I think living with a host family would be a great experience.",
+     "sampleNote": "Yes/No rõ ràng → lý do (because) → thêm một chi tiết.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L7-E01",
+   "lessonCode": "M0-U01-L7",
+   "order": 1,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Đọc giờ (G&V Ex. 1)",
+   "instruction": "Nối giờ dạng số với cách đọc bằng chữ.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "05:15",
+     "right": "It's quarter past five.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "08:20",
+     "right": "It's twenty past eight.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "06:45",
+     "right": "It's quarter to seven.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "14:30",
+     "right": "It's half past two.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "20:50",
+     "right": "It's ten to nine.",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "09:10",
+     "right": "It's ten past nine.",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "15:35",
+     "right": "It's twenty-five to four.",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "10:05",
+     "right": "It's five past ten.",
+     "explanation": ""
+    },
+    {
+     "id": "m9",
+     "left": "12:00",
+     "right": "It's twelve o'clock.",
+     "explanation": ""
+    },
+    {
+     "id": "m10",
+     "left": "16:55",
+     "right": "It's five to five.",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L7-E02",
+   "lessonCode": "M0-U01-L7",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Giải mã chữ cái — một buổi sáng (G&V Ex. 2)",
+   "instruction": "Sắp xếp lại các chữ cái trong ngoặc để được từ đúng.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "When I get up in the morning, the first thing that I do is ____ (avhe) a shower.",
+     "blanks": [
+      {
+       "accept": [
+        "have"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "After breakfast, I ____ (bhusr) my teeth. Then I ____ (emte) my friends and we ____ (chact) the bus to the college.",
+     "blanks": [
+      {
+       "accept": [
+        "brush"
+       ]
+      },
+      {
+       "accept": [
+        "meet"
+       ]
+      },
+      {
+       "accept": [
+        "catch"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "At four o'clock, we ____ (vlaee) the college and ____ (og) home by bus.",
+     "blanks": [
+      {
+       "accept": [
+        "leave"
+       ]
+      },
+      {
+       "accept": [
+        "go"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "In the evenings, I usually ____ (cwaht) TV, unless I have a lot of homework. I always ____ (od) my homework in the evenings.",
+     "blanks": [
+      {
+       "accept": [
+        "watch"
+       ]
+      },
+      {
+       "accept": [
+        "do"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "At night, I always ____ (og) to bed and ____ (lafl) asleep straight away.",
+     "blanks": [
+      {
+       "accept": [
+        "go"
+       ]
+      },
+      {
+       "accept": [
+        "fall"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L7-E03",
+   "lessonCode": "M0-U01-L7",
+   "order": 3,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "MAKE hay DO? (G&V Ex. 3)",
+   "instruction": "Xếp mỗi cụm vào cột MAKE hoặc DO.",
+   "categories": [
+    {
+     "id": "make",
+     "label": "MAKE"
+    },
+    {
+     "id": "do",
+     "label": "DO"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "a mess",
+     "category": "make",
+     "explanation": "make a mess = bày bừa"
+    },
+    {
+     "id": "c2",
+     "text": "a noise",
+     "category": "make",
+     "explanation": "make a noise = gây ồn"
+    },
+    {
+     "id": "c3",
+     "text": "the beds",
+     "category": "make",
+     "explanation": "make the beds = dọn giường"
+    },
+    {
+     "id": "c4",
+     "text": "dinner",
+     "category": "make",
+     "explanation": "make dinner"
+    },
+    {
+     "id": "c5",
+     "text": "lunch",
+     "category": "make",
+     "explanation": "make lunch"
+    },
+    {
+     "id": "c6",
+     "text": "the cleaning",
+     "category": "do",
+     "explanation": "do the cleaning"
+    },
+    {
+     "id": "c7",
+     "text": "some homework",
+     "category": "do",
+     "explanation": "do homework"
+    },
+    {
+     "id": "c8",
+     "text": "the laundry",
+     "category": "do",
+     "explanation": "do the laundry"
+    },
+    {
+     "id": "c9",
+     "text": "the shopping",
+     "category": "do",
+     "explanation": "do the shopping"
+    },
+    {
+     "id": "c10",
+     "text": "the housework",
+     "category": "do",
+     "explanation": "do the housework"
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L7-E04",
+   "lessonCode": "M0-U01-L7",
+   "order": 4,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Email từ Pháp (G&V Ex. 4)",
+   "instruction": "Hoàn thành email của Harry bằng các từ trong khung.",
+   "wordBank": [
+    "walk",
+    "leave",
+    "have",
+    "finish",
+    "get up",
+    "catch",
+    "go out",
+    "work",
+    "meet",
+    "live"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "My host family are very nice. They ____ in an apartment in an area called Pantin, and they both ____ as journalists.",
+     "blanks": [
+      {
+       "accept": [
+        "live"
+       ]
+      },
+      {
+       "accept": [
+        "work"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "They ____ very early in the morning and ____ the house before me.",
+     "blanks": [
+      {
+       "accept": [
+        "get up"
+       ]
+      },
+      {
+       "accept": [
+        "leave"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "I ____ breakfast at about 8am and then go to the language school. I usually ____ there, but if I'm late I ____ the bus.",
+     "blanks": [
+      {
+       "accept": [
+        "have"
+       ]
+      },
+      {
+       "accept": [
+        "walk"
+       ]
+      },
+      {
+       "accept": [
+        "catch"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "Lessons at the school ____ at 4pm and we can go home.",
+     "blanks": [
+      {
+       "accept": [
+        "finish"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "We ____ after school in a café or ____ in the evenings to the cinema.",
+     "blanks": [
+      {
+       "accept": [
+        "meet"
+       ]
+      },
+      {
+       "accept": [
+        "go out"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L7-E05",
+   "lessonCode": "M0-U01-L7",
+   "order": 5,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "ordering",
+   "title": "Sắp xếp thành câu đúng (G&V Ex. 7)",
+   "instruction": "Sắp xếp các từ thành câu hoàn chỉnh.",
+   "items": [
+    {
+     "id": "o1",
+     "prompt": "",
+     "tokens": [
+      "My",
+      "friend",
+      "tidies",
+      "the",
+      "room."
+     ],
+     "answer": [
+      "My",
+      "friend",
+      "tidies",
+      "the",
+      "room."
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o2",
+     "prompt": "",
+     "tokens": [
+      "I",
+      "play",
+      "football",
+      "at",
+      "the",
+      "weekend."
+     ],
+     "answer": [
+      "I",
+      "play",
+      "football",
+      "at",
+      "the",
+      "weekend."
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o3",
+     "prompt": "",
+     "tokens": [
+      "I",
+      "take",
+      "a",
+      "sandwich",
+      "to",
+      "college",
+      "for",
+      "lunch."
+     ],
+     "answer": [
+      "I",
+      "take",
+      "a",
+      "sandwich",
+      "to",
+      "college",
+      "for",
+      "lunch."
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o4",
+     "prompt": "",
+     "tokens": [
+      "I",
+      "wake",
+      "up",
+      "at",
+      "half",
+      "past",
+      "six."
+     ],
+     "answer": [
+      "I",
+      "wake",
+      "up",
+      "at",
+      "half",
+      "past",
+      "six."
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o5",
+     "prompt": "",
+     "tokens": [
+      "My",
+      "brother",
+      "checks",
+      "his",
+      "phone",
+      "every",
+      "five",
+      "minutes."
+     ],
+     "answer": [
+      "My",
+      "brother",
+      "checks",
+      "his",
+      "phone",
+      "every",
+      "five",
+      "minutes."
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o6",
+     "prompt": "",
+     "tokens": [
+      "I",
+      "try",
+      "to",
+      "stop",
+      "studying",
+      "before",
+      "9pm."
+     ],
+     "answer": [
+      "I",
+      "try",
+      "to",
+      "stop",
+      "studying",
+      "before",
+      "9pm."
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o7",
+     "prompt": "",
+     "tokens": [
+      "I",
+      "go",
+      "to",
+      "the",
+      "dentist",
+      "every",
+      "six",
+      "months."
+     ],
+     "answer": [
+      "I",
+      "go",
+      "to",
+      "the",
+      "dentist",
+      "every",
+      "six",
+      "months."
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o8",
+     "prompt": "",
+     "tokens": [
+      "My",
+      "father",
+      "does",
+      "most",
+      "of",
+      "the",
+      "housework."
+     ],
+     "answer": [
+      "My",
+      "father",
+      "does",
+      "most",
+      "of",
+      "the",
+      "housework."
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L7-E06",
+   "lessonCode": "M0-U01-L7",
+   "order": 6,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Công việc mới ở siêu thị (G&V Ex. 8)",
+   "instruction": "Hoàn thành đoạn văn bằng các từ trong khung (chia động từ nếu cần).",
+   "wordBank": [
+    "shouts",
+    "work",
+    "opens",
+    "work",
+    "enjoy",
+    "start",
+    "fill",
+    "clean",
+    "take",
+    "tidy",
+    "tells",
+    "finish",
+    "gets"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I have got a new job! It's in a supermarket and I ____ there every Saturday. I ____ at 8am and the shop ____ at 9am.",
+     "blanks": [
+      {
+       "accept": [
+        "work"
+       ]
+      },
+      {
+       "accept": [
+        "start"
+       ]
+      },
+      {
+       "accept": [
+        "opens"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "I ____ the shelves with food products and ____ the shopping baskets by the entrance. I ____ the floors and ____ at the checkout.",
+     "blanks": [
+      {
+       "accept": [
+        "fill"
+       ]
+      },
+      {
+       "accept": [
+        "tidy"
+       ]
+      },
+      {
+       "accept": [
+        "clean"
+       ]
+      },
+      {
+       "accept": [
+        "work"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "My manager is very nice. She ____ me what to do and never ____.",
+     "blanks": [
+      {
+       "accept": [
+        "tells"
+       ]
+      },
+      {
+       "accept": [
+        "shouts"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "We ____ three breaks a day and ____ at 4pm. It's hard work because the shop ____ very busy, but I really ____ it.",
+     "blanks": [
+      {
+       "accept": [
+        "take"
+       ]
+      },
+      {
+       "accept": [
+        "finish"
+       ]
+      },
+      {
+       "accept": [
+        "gets"
+       ]
+      },
+      {
+       "accept": [
+        "enjoy"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

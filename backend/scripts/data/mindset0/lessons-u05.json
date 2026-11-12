@@ -1,0 +1,689 @@
+{
+ "modules": [
+  {
+   "code": "M0-U05",
+   "order": 5,
+   "title": "Unit 5 · Ẩm thực",
+   "titleEn": "UNIT 05: FOOD — sách tr. 58–69",
+   "outcomes": [
+    "Gọi tên nguyên liệu, món ăn và cách chế biến (chop, mix, fry, boil…)",
+    "Dùng danh từ đếm được / không đếm được với a, an, some, any, much, many, a lot of",
+    "Đọc bài báo và hướng dẫn nấu ăn; hoàn thành câu",
+    "Nghe nối người với lý do; nghe hướng dẫn nấu ăn",
+    "Viết mô tả cách làm một món ăn"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M0-U05-L1",
+   "moduleCode": "M0-U05",
+   "order": 1,
+   "title": "🔤 Từ vựng: món ăn, nguyên liệu & cách chế biến",
+   "titleEn": "Lead-in · Vocabulary and speaking · Vocabulary and listening",
+   "durationMinutes": 40,
+   "objectives": [
+    "Nối món ăn nổi tiếng với quốc gia và nguyên liệu",
+    "Phân loại thực phẩm: meat, vegetables, fish/seafood, carbohydrates",
+    "Gọi tên 7 động từ chế biến: boil, chop, cut, fold, fry, mix, roll"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Động từ chế biến món ăn",
+     "titleEn": "Verbs for preparing food",
+     "formula": [],
+     "usage": [
+      "**chop** thái/băm nhỏ · **cut** cắt (thành miếng/lát) · **mix** trộn · **roll** cán (bột) · **fold** gấp",
+      "**boil** luộc/đun sôi (trong nước) · **fry** chiên/rán (trong dầu) · **bake** nướng (lò, nhiệt khô)"
+     ],
+     "examples": [
+      {
+       "en": "Chop the spring onions into small pieces.",
+       "vi": "Thái nhỏ hành lá."
+      },
+      {
+       "en": "Fry the chicken in a pan.",
+       "vi": "Rán gà trong chảo."
+      },
+      {
+       "en": "Boil the rice in water.",
+       "vi": "Nấu cơm/luộc gạo trong nước."
+      }
+     ],
+     "notes": []
+    },
+    {
+     "title": "Nhóm thực phẩm",
+     "titleEn": "Food groups",
+     "formula": [],
+     "usage": [
+      "**Meat**: beef, lamb, chicken, duck · **Vegetables**: carrot, onion, garlic, cabbage, lettuce, cauliflower",
+      "**Fish/Seafood**: salmon, shrimps, prawns, lobster · **Carbohydrates**: rice, pasta, noodles, potatoes, spaghetti · **Other**: flour, salt, pepper, oil"
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 6,
+   "totalPoints": 45,
+   "images": [
+    {
+     "url": "media:m0u05-countries.jpg",
+     "caption": "Lead-in (tr. 58): món ăn của Saudi Arabia, the UK, China, Italy, Brazil"
+    },
+    {
+     "url": "media:m0u05-foods.jpg",
+     "caption": "Ex. 10 (tr. 61): onion, pasta, flour, salmon, garlic, carrot, rice, spring onion, lamb"
+    },
+    {
+     "url": "media:m0u05-verbs.jpg",
+     "caption": "Ex. 13 (tr. 61): boil, chop, cut, fold, fry, mix, roll"
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 5 · Từ vựng: món ăn, nguyên liệu & cách chế biến — 17 từ/cụm từ",
+    "words": [
+     {
+      "word": "ingredient",
+      "meaning": "nguyên liệu",
+      "example": "What are the ingredients of pizza?"
+     },
+     {
+      "word": "dish",
+      "meaning": "món ăn",
+      "example": "Fish and chips is a British dish."
+     },
+     {
+      "word": "noodles",
+      "meaning": "mì",
+      "example": "Beef chow mein has noodles."
+     },
+     {
+      "word": "flour",
+      "meaning": "bột mì",
+      "example": "You need flour to make bread."
+     },
+     {
+      "word": "garlic",
+      "meaning": "tỏi",
+      "example": "Chop some garlic."
+     },
+     {
+      "word": "spring onion",
+      "meaning": "hành lá",
+      "example": "Add some spring onions."
+     },
+     {
+      "word": "salmon",
+      "meaning": "cá hồi",
+      "example": "Salmon is my favourite fish."
+     },
+     {
+      "word": "lamb",
+      "meaning": "thịt cừu",
+      "example": "Today I'm using lamb."
+     },
+     {
+      "word": "shrimp / prawn",
+      "meaning": "tôm",
+      "example": "I'm going to add some shrimps."
+     },
+     {
+      "word": "carbohydrates",
+      "meaning": "tinh bột",
+      "example": "Rice and pasta are carbohydrates."
+     },
+     {
+      "word": "chop",
+      "meaning": "thái nhỏ, băm",
+      "example": "Chop the onion into small pieces."
+     },
+     {
+      "word": "mix",
+      "meaning": "trộn",
+      "example": "Mix the flour with water."
+     },
+     {
+      "word": "roll",
+      "meaning": "cán (bột)",
+      "example": "Roll the dough into flat circles."
+     },
+     {
+      "word": "fold",
+      "meaning": "gấp",
+      "example": "Fold them into half-moon shapes."
+     },
+     {
+      "word": "boil",
+      "meaning": "luộc, đun sôi",
+      "example": "Boil the dumplings three times."
+     },
+     {
+      "word": "fry",
+      "meaning": "chiên, rán",
+      "example": "Fry the meat for five minutes."
+     },
+     {
+      "word": "bake",
+      "meaning": "nướng (bằng lò)",
+      "example": "Bake the cake in the oven."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U05-L2",
+   "moduleCode": "M0-U05",
+   "order": 2,
+   "title": "📖 Reading: lễ hội ẩm thực & công thức nấu ăn",
+   "titleEn": "Vocabulary and reading · Reading: sentence completion 1 & 2",
+   "durationMinutes": 50,
+   "objectives": [
+    "Đọc lướt bài báo về lễ hội ẩm thực Trung Hoa ở London; làm True / False / Not Given",
+    "Sắp xếp tranh theo trình tự công thức (Bulgogi) và điền từ",
+    "Chọn từ đúng điền vào đoạn văn (sentence completion 2)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Đọc kỹ từng chữ (TIP 06)",
+     "titleEn": "Read carefully — true, false or not given",
+     "formula": [],
+     "usage": [
+      "Các câu hỏi có **từ in đậm** — đó chính là chỗ cần kiểm tra: \"**every year**\", \"**only** Chinese cooking\", \"**learn** to make\".",
+      "Từ **only** thường làm câu thành FALSE nếu bài có nhắc thêm thứ khác (\"dishes from other countries\").",
+      "Câu 6 nói về vé: bài chỉ nói vé **miễn phí khi tải trên web**, KHÔNG nói không tải thì phải trả tiền → NOT GIVEN."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Hướng dẫn nấu ăn: từ chỉ trình tự",
+     "titleEn": "Instructions — sequencing words",
+     "formula": [
+      "**First, … Then, … After this, … Afterwards, … Finally, …**",
+      "Câu mệnh lệnh: **động từ đứng đầu** — Take one large onion… Mix them all together… Fry for 5–10 minutes."
+     ],
+     "usage": [
+      "Dùng **a** + danh từ đếm được số ít (a large onion), **some** + số nhiều/không đếm được (some spring onions, some soy sauce)."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 14,
+   "images": [
+    {
+     "url": "media:m0u05-festival-photos.jpg",
+     "caption": "Ex. 4 (tr. 59): Bạn có thể thấy gì ở một lễ hội ẩm thực?"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "reading:M0-U05-R1",
+     "kind": "reading",
+     "title": "Chinese Food Festival in London (Ex. 5–6)",
+     "note": "6 câu True / False / Not Given — để ý các từ in đậm trong câu hỏi."
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 5 · Reading: lễ hội ẩm thực & công thức nấu ăn — 15 từ/cụm từ",
+    "words": [
+     {
+      "word": "food festival",
+      "meaning": "lễ hội ẩm thực",
+      "example": "The Chinese food festival is in London."
+     },
+     {
+      "word": "celebrate",
+      "meaning": "tôn vinh, kỷ niệm",
+      "example": "The festival celebrates real Chinese cooking."
+     },
+     {
+      "word": "taste",
+      "meaning": "nếm, thưởng thức",
+      "example": "You can taste wonderful food."
+     },
+     {
+      "word": "food stall",
+      "meaning": "quầy bán đồ ăn",
+      "example": "There are many food stalls."
+     },
+     {
+      "word": "famous chef",
+      "meaning": "đầu bếp nổi tiếng",
+      "example": "Watch famous chefs cooking."
+     },
+     {
+      "word": "tasty",
+      "meaning": "ngon",
+      "example": "They show you how to make tasty dishes."
+     },
+     {
+      "word": "performance",
+      "meaning": "buổi biểu diễn",
+      "example": "Enjoy traditional Chinese performances."
+     },
+     {
+      "word": "arts and crafts",
+      "meaning": "thủ công mỹ nghệ",
+      "example": "Try Chinese arts and crafts."
+     },
+     {
+      "word": "download",
+      "meaning": "tải xuống",
+      "example": "Download your free ticket."
+     },
+     {
+      "word": "slice",
+      "meaning": "lát (thịt, bánh)",
+      "example": "Cut the beef into slices."
+     },
+     {
+      "word": "soy sauce",
+      "meaning": "nước tương",
+      "example": "Put some soy sauce in a bowl."
+     },
+     {
+      "word": "serve",
+      "meaning": "dọn ra, phục vụ",
+      "example": "Serve it to your friends."
+     },
+     {
+      "word": "healthy",
+      "meaning": "tốt cho sức khoẻ",
+      "example": "It is healthy and easy to make."
+     },
+     {
+      "word": "spicy",
+      "meaning": "cay",
+      "example": "You can make it spicy or not."
+     },
+     {
+      "word": "fast food",
+      "meaning": "đồ ăn nhanh",
+      "example": "I often eat fast food in the week."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U05-L3",
+   "moduleCode": "M0-U05",
+   "order": 3,
+   "title": "🧩 Ngữ pháp: danh từ đếm được / không đếm được",
+   "titleEn": "Grammar: countable and uncountable nouns — a/an, some, any, much, many, a lot of",
+   "durationMinutes": 40,
+   "objectives": [
+    "Phân biệt danh từ đếm được (số ít, số nhiều) và không đếm được",
+    "Dùng a / an / some / any đúng chỗ",
+    "Dùng much / many / a lot of trong câu khẳng định, phủ định, câu hỏi"
+   ],
+   "keyLanguage": [
+    "Đếm được số ít: a cabbage, an apple (a trước phụ âm, an trước nguyên âm) · số nhiều: some potatoes · không đếm được: some flour, some milk.",
+    "some: câu khẳng định, lời mời/đề nghị (Would you like some tea?) · any: câu phủ định và câu hỏi (I don't have any milk. Do you have any onions?)",
+    "a lot of: khẳng định (và phủ định) với cả hai loại · many: hỏi/phủ định với danh từ ĐẾM ĐƯỢC (How many carrots?) · much: hỏi/phủ định với KHÔNG ĐẾM ĐƯỢC (How much water?)"
+   ],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 37,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Countable vs Uncountable",
+     "note": "a/an, some/any, much/many/a lot of",
+     "url": "/essential-grammar.html?lesson=countable-uncountable"
+    },
+    {
+     "kind": "grammar",
+     "title": "Articles (a / an / the)",
+     "note": "mạo từ",
+     "url": "/essential-grammar.html?lesson=articles"
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L4",
+   "moduleCode": "M0-U05",
+   "order": 4,
+   "title": "✍️ Writing: mô tả cách làm một món ăn",
+   "titleEn": "Writing: describing a process · food in your country",
+   "durationMinutes": 50,
+   "objectives": [
+    "Sắp xếp các bước của một công thức",
+    "Nối các bước bằng First, Then, After this, Next, Finally",
+    "Viết bài 120–150 từ về một món ăn phổ biến ở nước bạn: nguyên liệu, cách làm, lý do phổ biến"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Mô tả một quy trình nấu ăn",
+     "titleEn": "Describing a process",
+     "formula": [
+      "**Giới thiệu món ăn** + nguyên liệu: To make phở bò, you need some beef, rice noodles, onions…",
+      "**Các bước** theo thứ tự: **First**, … **Then**, … **After this**, … **Next**, … **Finally**, …",
+      "**Lý do phổ biến**: It is popular because it is cheap, healthy and delicious."
+     ],
+     "usage": [
+      "Mỗi bước = **động từ mệnh lệnh** hoặc **you + V**: Boil the bones for three hours. / You need to chop the onions.",
+      "Dùng đúng **a / some** với nguyên liệu; động từ chế biến của unit: chop, mix, fry, boil, cut, roll, fold."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 17,
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 5 · Writing: mô tả cách làm một món ăn — 10 từ/cụm từ",
+    "words": [
+     {
+      "word": "recipe",
+      "meaning": "công thức nấu ăn",
+      "example": "This is my mum's recipe."
+     },
+     {
+      "word": "first of all",
+      "meaning": "trước hết",
+      "example": "First of all, wash the rice."
+     },
+     {
+      "word": "after this",
+      "meaning": "sau bước này",
+      "example": "After this, add the vegetables."
+     },
+     {
+      "word": "afterwards",
+      "meaning": "sau đó",
+      "example": "Afterwards, fry the meat."
+     },
+     {
+      "word": "finally",
+      "meaning": "cuối cùng",
+      "example": "Finally, serve it with herbs."
+     },
+     {
+      "word": "pan",
+      "meaning": "chảo",
+      "example": "Fry the chicken in a pan."
+     },
+     {
+      "word": "bowl",
+      "meaning": "bát tô",
+      "example": "Put the noodles in a bowl."
+     },
+     {
+      "word": "add",
+      "meaning": "thêm vào",
+      "example": "Add some salt and pepper."
+     },
+     {
+      "word": "remove",
+      "meaning": "lấy ra",
+      "example": "Remove the meat from the bowl."
+     },
+     {
+      "word": "popular",
+      "meaning": "phổ biến",
+      "example": "It is popular in my country."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U05-L5",
+   "moduleCode": "M0-U05",
+   "order": 5,
+   "title": "🎧 Listening: nối thông tin & nghe hướng dẫn nấu ăn",
+   "titleEn": "Listening: matching · Vocabulary and listening",
+   "durationMinutes": 50,
+   "objectives": [
+    "Nghe ý chính của cuộc trò chuyện",
+    "Nối người với lý do — có nhiều lý do hơn số người",
+    "Nghe hướng dẫn và điền động từ chế biến vào sơ đồ"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nối người với lý do",
+     "titleEn": "Matching — more options than people",
+     "formula": [],
+     "usage": [
+      "Có **nhiều lý do hơn số người** (8 lý do cho 6 người) → sẽ có 2 lý do không dùng (TIP 08).",
+      "Nghe **toàn bộ** thông tin về một người: Mark đoán Pierre \"đang làm việc\" nhưng Jane nói **không** — Pierre dẫn bố mẹ đi tham quan (sightseeing).",
+      "MINI TIP: **sightseeing** = đi ngắm cảnh; **can't afford** = không đủ tiền; **flatmate** = người ở cùng căn hộ."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Nghe để điền vào sơ đồ",
+     "titleEn": "Listening to a process",
+     "formula": [],
+     "usage": [
+      "**Trước khi nghe**: nhìn hình, đoán động từ cho mỗi bước (TIP 15).",
+      "Bạn không nghe đúng y từ trong câu đề: \"the same size\" = \"equal pieces\"."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 3,
+   "images": [
+    {
+     "url": "media:m0u05-recipes.jpg",
+     "caption": "Ex. 14 (tr. 62): noodles, mooncakes hay dumplings?"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M0-U05-L1",
+     "kind": "listening",
+     "title": "Mark & Jane — ai không đi lễ hội được? (Ex. 7–9)",
+     "note": "Chọn chủ đề chính, rồi nối 6 người bạn với lý do A–H."
+    },
+    {
+     "ref": "listening:M0-U05-L2",
+     "kind": "listening",
+     "title": "Đầu bếp giới thiệu món ăn (Ex. 14)",
+     "note": "Món đầu bếp sắp làm là gì?"
+    },
+    {
+     "ref": "listening:M0-U05-L3",
+     "kind": "listening",
+     "title": "Cách làm bánh há cảo (Ex. 15)",
+     "note": "Điền 8 động từ chế biến vào sơ đồ."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 5 · Listening: nối thông tin & nghe hướng dẫn nấu ăn — 13 từ/cụm từ",
+    "words": [
+     {
+      "word": "look forward to",
+      "meaning": "mong chờ",
+      "example": "I'm really looking forward to the food festival."
+     },
+     {
+      "word": "busy",
+      "meaning": "bận",
+      "example": "Most of them are busy."
+     },
+     {
+      "word": "can't afford",
+      "meaning": "không đủ tiền",
+      "example": "Marco can't afford to go."
+     },
+     {
+      "word": "lend",
+      "meaning": "cho mượn",
+      "example": "Perhaps Pierre could lend him some money."
+     },
+     {
+      "word": "decorate",
+      "meaning": "trang trí, sơn sửa",
+      "example": "He is helping his flatmate decorate his room."
+     },
+     {
+      "word": "show someone around",
+      "meaning": "dẫn ai đi tham quan",
+      "example": "He's going to show them around London."
+     },
+     {
+      "word": "sightseeing",
+      "meaning": "đi ngắm cảnh",
+      "example": "Pierre is going sightseeing."
+     },
+     {
+      "word": "prepare for an exam",
+      "meaning": "ôn thi",
+      "example": "She needs to prepare for her exam."
+     },
+     {
+      "word": "dough",
+      "meaning": "bột nhào",
+      "example": "You need to make some dough first."
+     },
+     {
+      "word": "filling",
+      "meaning": "nhân bánh",
+      "example": "Make the filling while you wait."
+     },
+     {
+      "word": "finely",
+      "meaning": "nhỏ, mịn",
+      "example": "Chop the cabbage finely."
+     },
+     {
+      "word": "half-moon",
+      "meaning": "hình bán nguyệt",
+      "example": "Fold them into half-moon shapes."
+     },
+     {
+      "word": "equal",
+      "meaning": "bằng nhau",
+      "example": "Cut the dough into 20 equal pieces."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U05-L6",
+   "moduleCode": "M0-U05",
+   "order": 6,
+   "title": "🗣️ Speaking: thói quen ăn uống & món ăn bạn thích",
+   "titleEn": "Speaking: eating habits · a meal you enjoy",
+   "durationMinutes": 40,
+   "objectives": [
+    "Đặt câu hỏi về thói quen ăn uống với much / many / any",
+    "Nói 1–2 phút về một bữa ăn bạn thích: ai nấu, khi nào ăn, vì sao thích"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nói về món ăn bạn thích",
+     "titleEn": "Talking about a meal you enjoy",
+     "formula": [
+      "**My favourite meal is…** → **Who** prepares it: My mum usually cooks it… → **When**: We usually have it on Sundays… → **Why**: I like it because…"
+     ],
+     "usage": [
+      "Thêm chi tiết về **nguyên liệu** và **cách làm** (dùng từ của unit: fry, boil, chop).",
+      "Câu hỏi khảo sát: **How much** water do you drink? **How many** cups of coffee…? **Are there any** foods you don't like? **Have you ever eaten**…?"
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 24,
+   "vocabSave": {
+    "slot": 5,
+    "title": "Unit 5 · Speaking: thói quen ăn uống & món ăn bạn thích — 8 từ/cụm từ",
+    "words": [
+     {
+      "word": "eating habits",
+      "meaning": "thói quen ăn uống",
+      "example": "Ask your partner about their eating habits."
+     },
+     {
+      "word": "How much…?",
+      "meaning": "bao nhiêu (không đếm được)",
+      "example": "How much water do you drink each day?"
+     },
+     {
+      "word": "How many…?",
+      "meaning": "bao nhiêu (đếm được)",
+      "example": "How many eggs do you eat a week?"
+     },
+     {
+      "word": "favourite meal",
+      "meaning": "bữa ăn / món yêu thích",
+      "example": "My favourite meal is phở."
+     },
+     {
+      "word": "prepare",
+      "meaning": "chuẩn bị, nấu",
+      "example": "My grandmother prepares it for me."
+     },
+     {
+      "word": "homemade",
+      "meaning": "tự làm ở nhà",
+      "example": "Homemade food is healthier."
+     },
+     {
+      "word": "smell delicious",
+      "meaning": "thơm ngon",
+      "example": "The soup smells delicious."
+     },
+     {
+      "word": "reminds me of",
+      "meaning": "làm tôi nhớ đến",
+      "example": "It reminds me of my childhood."
+     }
+    ]
+   }
+  }
+ ]
+}

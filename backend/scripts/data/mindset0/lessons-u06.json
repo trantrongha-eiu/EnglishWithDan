@@ -1,0 +1,655 @@
+{
+ "modules": [
+  {
+   "code": "M0-U06",
+   "order": 6,
+   "title": "Unit 6 · Giao thông & địa điểm trong thành phố",
+   "titleEn": "UNIT 06: TRANSPORT AND PLACES IN TOWN — sách tr. 70–79",
+   "outcomes": [
+    "Gọi tên địa điểm trong thành phố và phương tiện giao thông",
+    "Đọc biển báo, tin nhắn ngắn để tìm ý chính",
+    "Nghe điền thông tin (tên, mã bưu chính, giờ, số xe buýt) và nghe chỉ vị trí trên bản đồ",
+    "Dùng so sánh hơn và so sánh nhất",
+    "Viết email khoảng 100 từ giới thiệu nơi nên đến và cách đi lại"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M0-U06-L1",
+   "moduleCode": "M0-U06",
+   "order": 1,
+   "title": "🔤 Từ vựng: địa điểm & phương tiện",
+   "titleEn": "Lead-in · Reading and vocabulary",
+   "durationMinutes": 35,
+   "objectives": [
+    "Gọi tên các công trình nổi tiếng: bridge, stadium, statue, castle, tower",
+    "Phân loại từ: địa điểm trong thành phố / giao thông",
+    "Ghép hoạt động với địa điểm (post office, library, station…)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Địa điểm & giao thông",
+     "titleEn": "Places in a city · Travel and transport",
+     "formula": [],
+     "usage": [
+      "**Places**: square (quảng trường), post office (bưu điện), police station (đồn cảnh sát), library (thư viện), sports centre (trung tâm thể thao), shopping centre (trung tâm mua sắm), department store (cửa hàng bách hoá), car park (bãi đỗ xe), museum, theatre, castle",
+      "**Transport**: motorway (đường cao tốc), motorbike, coach (xe khách đường dài), platform (sân ga), ticket, the underground (tàu điện ngầm), flight, boat trip"
+     ],
+     "examples": [],
+     "notes": [
+      "go **by** bus / car / train / bike — nhưng go **on foot** = walk. \"the underground\" ở London = \"the subway\" (Mỹ)."
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 38,
+   "images": [
+    {
+     "url": "media:m0u06-landmarks.jpg",
+     "caption": "Lead-in (tr. 70): statue, castle, stadium, tower, bridge"
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 6 · Từ vựng: địa điểm & phương tiện — 16 từ/cụm từ",
+    "words": [
+     {
+      "word": "bridge",
+      "meaning": "cây cầu",
+      "example": "Sydney Harbour Bridge is in Australia."
+     },
+     {
+      "word": "stadium",
+      "meaning": "sân vận động",
+      "example": "The Bird's Nest stadium is in Beijing."
+     },
+     {
+      "word": "statue",
+      "meaning": "bức tượng",
+      "example": "The Statue of Liberty is in New York."
+     },
+     {
+      "word": "castle",
+      "meaning": "lâu đài",
+      "example": "We visited the castle along the way."
+     },
+     {
+      "word": "tower",
+      "meaning": "toà tháp",
+      "example": "The Leaning Tower of Pisa is in Italy."
+     },
+     {
+      "word": "square",
+      "meaning": "quảng trường",
+      "example": "Let's meet in the main square."
+     },
+     {
+      "word": "post office",
+      "meaning": "bưu điện",
+      "example": "Go to the post office to send a parcel."
+     },
+     {
+      "word": "police station",
+      "meaning": "đồn cảnh sát",
+      "example": "You speak to a policeman at the police station."
+     },
+     {
+      "word": "library",
+      "meaning": "thư viện",
+      "example": "You borrow books from the library."
+     },
+     {
+      "word": "department store",
+      "meaning": "cửa hàng bách hoá",
+      "example": "Green's department store sells almost everything."
+     },
+     {
+      "word": "car park",
+      "meaning": "bãi đỗ xe",
+      "example": "The car park is free to use."
+     },
+     {
+      "word": "motorway",
+      "meaning": "đường cao tốc",
+      "example": "Cars drive fast on the motorway."
+     },
+     {
+      "word": "coach",
+      "meaning": "xe khách",
+      "example": "You can go by coach to the countryside."
+     },
+     {
+      "word": "platform",
+      "meaning": "sân ga",
+      "example": "The train leaves from platform 2."
+     },
+     {
+      "word": "the underground",
+      "meaning": "tàu điện ngầm",
+      "example": "The underground is fast but expensive."
+     },
+     {
+      "word": "monument",
+      "meaning": "đài tưởng niệm, di tích",
+      "example": "Are there any famous monuments in your town?"
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U06-L2",
+   "moduleCode": "M0-U06",
+   "order": 2,
+   "title": "📖 Reading: biển báo & tin nhắn ngắn",
+   "titleEn": "Reading and vocabulary: signs, notices and messages",
+   "durationMinutes": 40,
+   "objectives": [
+    "Đọc văn bản ngắn thực tế (biển báo, tin nhắn, bưu thiếp, email)",
+    "Tìm Ý CHÍNH — không bị lừa bởi lựa chọn dùng lại từ của văn bản",
+    "Xác định mục đích người viết"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Đọc văn bản ngắn thực tế",
+     "titleEn": "Signs, notices and messages",
+     "formula": [
+      "Đọc **toàn bộ** văn bản → hỏi: **ai viết? cho ai? để làm gì?**",
+      "Gạch **từ khoá** quyết định nghĩa: Free for **two hours**, **delayed**, **Let him know**…",
+      "So sánh từng lựa chọn với **ý chính** — loại lựa chọn đúng chi tiết nhưng sai mục đích."
+     ],
+     "usage": [
+      "MINI TIP 06.1: các lựa chọn đều dùng từ của biển báo — hãy chọn cái khớp **ý nghĩa**. \"Free for two hours\" = không phải trả tiền nếu mua sắm xong trong 2 tiếng.",
+      "MINI TIP 06.2: tin nhắn có nói nơi và giờ đá bóng, nhưng **lý do viết** là để **mời** Tom."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 7,
+   "images": [
+    {
+     "url": "media:m0u06-signs.jpg",
+     "caption": "Ex. 5 (tr. 71): biển báo và tin nhắn"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "reading:M0-U06-R1",
+     "kind": "reading",
+     "title": "Signs and messages — 7 văn bản ngắn (Ex. 5–6)",
+     "note": "Chọn A, B hoặc C: văn bản này nói gì / người viết muốn gì?"
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 6 · Reading: biển báo & tin nhắn ngắn — 12 từ/cụm từ",
+    "words": [
+     {
+      "word": "customer",
+      "meaning": "khách hàng",
+      "example": "Parking for supermarket customers only."
+     },
+     {
+      "word": "delayed",
+      "meaning": "bị hoãn, trễ",
+      "example": "Trains are delayed because of heavy snow."
+     },
+     {
+      "word": "heavy snow",
+      "meaning": "tuyết rơi dày",
+      "example": "Trains are late because of heavy snow."
+     },
+     {
+      "word": "available",
+      "meaning": "còn trống, có sẵn",
+      "example": "There are seats available on the flight."
+     },
+     {
+      "word": "open top bus",
+      "meaning": "xe buýt mui trần",
+      "example": "I went sightseeing on an open top bus."
+     },
+     {
+      "word": "along the way",
+      "meaning": "trên đường đi",
+      "example": "We visited the castle along the way."
+     },
+     {
+      "word": "bicycle stand",
+      "meaning": "chỗ để xe đạp",
+      "example": "Leave bicycles in the bicycle stands."
+     },
+     {
+      "word": "member of staff",
+      "meaning": "nhân viên",
+      "example": "Speak to a member of staff."
+     },
+     {
+      "word": "offer to",
+      "meaning": "đề nghị (giúp)",
+      "example": "He's offered to drive me."
+     },
+     {
+      "word": "give somebody a lift",
+      "meaning": "cho ai đi nhờ xe",
+      "example": "Tim can give you a lift."
+     },
+     {
+      "word": "join",
+      "meaning": "tham gia cùng",
+      "example": "Do you want to join us?"
+     },
+     {
+      "word": "crowded / full of",
+      "meaning": "đông đúc",
+      "example": "The centre was full of people."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U06-L3",
+   "moduleCode": "M0-U06",
+   "order": 3,
+   "title": "🧩 Ngữ pháp: So sánh hơn & so sánh nhất",
+   "titleEn": "Grammar: comparatives and superlatives",
+   "durationMinutes": 45,
+   "objectives": [
+    "Tạo so sánh hơn / nhất cho tính từ 1 âm tiết, 2+ âm tiết, tận cùng -y, bất quy tắc",
+    "Dùng than với so sánh hơn và the với so sánh nhất",
+    "Viết câu so sánh về một thành phố"
+   ],
+   "keyLanguage": [
+    "1 âm tiết: small → smaller → the smallest · phụ âm–nguyên âm–phụ âm: big → bigger → the biggest",
+    "2+ âm tiết: expensive → more expensive (than) → the most expensive",
+    "2 âm tiết tận cùng -y: easy → easier → the easiest · happy → happier → the happiest",
+    "Bất quy tắc: good → better → the best · bad → worse → the worst · far → further → the furthest · much/many → more → the most"
+   ],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 41,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Comparisons",
+     "note": "so sánh hơn, so sánh nhất, as … as",
+     "url": "/essential-grammar.html?lesson=comparisons"
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L4",
+   "moduleCode": "M0-U06",
+   "order": 4,
+   "title": "✍️ Writing: email giới thiệu đất nước bạn",
+   "titleEn": "Writing: a longer piece of continuous writing",
+   "durationMinutes": 45,
+   "objectives": [
+    "Lập dàn ý trả lời TẤT CẢ câu hỏi trong email của bạn",
+    "Dùng tính từ so sánh nhất để giới thiệu địa điểm",
+    "Viết email ~100 từ, nối ý bằng if, so, because, after that"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Trả lời email: nên đi đâu, đi bằng gì",
+     "titleEn": "A longer piece of continuous writing",
+     "formula": [
+      "**Hi Sandy,** I'm really pleased you're coming to visit my country.",
+      "**Nơi 1 + lý do**: The first place you should visit is… It's one of the most famous… because…",
+      "**Nơi 2 + lý do**: After that, you should go to… I think this is the most beautiful…",
+      "**Cách đi lại**: The best way to travel is… · **Best wishes,** + tên"
+     ],
+     "usage": [
+      "Sandy hỏi **3 câu**: nên đi đâu? vì sao thú vị? cách đi lại tốt nhất? → trả lời **đủ cả 3**.",
+      "Từ nối hữu ích: **if** (If you like shopping, …), **so**, **because**, **after that**.",
+      "Kiểm tra so sánh hơn/nhất, chính tả, dấu câu (Ex. 23)."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 20,
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 6 · Writing: email giới thiệu đất nước bạn — 10 từ/cụm từ",
+    "words": [
+     {
+      "word": "pen-friend",
+      "meaning": "bạn qua thư",
+      "example": "This is an email from my pen-friend, Sandy."
+     },
+     {
+      "word": "I'm really pleased",
+      "meaning": "tôi rất vui",
+      "example": "I'm really pleased you're coming."
+     },
+     {
+      "word": "you should visit",
+      "meaning": "bạn nên đến thăm",
+      "example": "The first place you should visit is Hanoi."
+     },
+     {
+      "word": "one of the most famous",
+      "meaning": "một trong những … nổi tiếng nhất",
+      "example": "It's one of the most famous cities in Asia."
+     },
+     {
+      "word": "perfect if you like",
+      "meaning": "hoàn hảo nếu bạn thích",
+      "example": "It's perfect if you like shopping."
+     },
+     {
+      "word": "the best way to travel",
+      "meaning": "cách đi lại tốt nhất",
+      "example": "The best way to travel is by train."
+     },
+     {
+      "word": "get around",
+      "meaning": "đi lại (trong một nơi)",
+      "example": "Use the buses to get around."
+     },
+     {
+      "word": "fantastic",
+      "meaning": "tuyệt vời",
+      "example": "It has fantastic museums and parks."
+     },
+     {
+      "word": "Best wishes",
+      "meaning": "Thân chúc (câu kết thư)",
+      "example": "Best wishes, Martin"
+     },
+     {
+      "word": "deep / deepest",
+      "meaning": "sâu / sâu nhất",
+      "example": "The largest and deepest lakes."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U06-L5",
+   "moduleCode": "M0-U06",
+   "order": 5,
+   "title": "🎧 Listening: điền thông tin & bản đồ",
+   "titleEn": "Listening: gap-fill · map",
+   "durationMinutes": 50,
+   "objectives": [
+    "Nghe điền: tên riêng (đánh vần), mã bưu chính, ngày, số, thời gian",
+    "Dùng giới từ chỉ vị trí: next to, opposite, between, on the left/right of",
+    "Nghe mô tả và xác định vị trí các cửa hàng trên bản đồ"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nghe điền thông tin cụ thể",
+     "titleEn": "Gap-fill",
+     "formula": [],
+     "usage": [
+      "Đọc câu hỏi trước để biết cần nghe **loại thông tin** gì: ngày trong tuần, giá, cách đánh vần, con số, mã bưu chính.",
+      "Luyện **bảng chữ cái** thường xuyên — tên riêng thường được đánh vần (G-A-D-Z-E-N).",
+      "Cẩn thận thông tin bị **thay đổi/phủ định**: muốn mở muộn thứ Tư \"but that won't happen until…\" → chỉ **thứ Năm** mở muộn."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Giới từ chỉ vị trí",
+     "titleEn": "Prepositions of place",
+     "formula": [],
+     "usage": [
+      "**next to** cạnh · **opposite** đối diện · **between** ở giữa (A và B) · **on the left of / on the right of** bên trái/phải của",
+      "**in front of** phía trước · **behind** phía sau · **across the road from** bên kia đường · **on your left/right** (khi bạn đi tới) bên tay trái/phải"
+     ],
+     "examples": [
+      {
+       "en": "The pharmacy is between the clothes shop and the café.",
+       "vi": "Hiệu thuốc ở giữa cửa hàng quần áo và quán cà phê."
+      },
+      {
+       "en": "It's the last shop on your right.",
+       "vi": "Đó là cửa hàng cuối cùng bên tay phải bạn."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 13,
+   "images": [
+    {
+     "url": "media:m0u06-map.jpg",
+     "caption": "Ex. 10 (tr. 73): bản đồ Northfields' shopping centre"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M0-U06-L1",
+     "kind": "listening",
+     "title": "Northfields' Shopping Centre — Part 1 (Ex. 7–8)",
+     "note": "Điền 5 thông tin: tên kiến trúc sư, mã bưu chính, ngày mở muộn, số tuyến xe buýt, thời gian đi tàu điện ngầm."
+    },
+    {
+     "ref": "listening:M0-U06-L2",
+     "kind": "listening",
+     "title": "Northfields' Shopping Centre — Part 2 (Ex. 10)",
+     "note": "Nhìn bản đồ và chọn chữ cái A–F cho 6 cửa hàng."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 6 · Listening: điền thông tin & bản đồ — 14 từ/cụm từ",
+    "words": [
+     {
+      "word": "architect",
+      "meaning": "kiến trúc sư",
+      "example": "It was designed by a prize-winning architect."
+     },
+     {
+      "word": "postcode",
+      "meaning": "mã bưu chính",
+      "example": "The postcode is WT3 5BX."
+     },
+     {
+      "word": "opening hours",
+      "meaning": "giờ mở cửa",
+      "example": "Our opening hours are 10am until 6pm."
+     },
+     {
+      "word": "late-night shopping",
+      "meaning": "mua sắm đêm (mở cửa muộn)",
+      "example": "Late-night shopping is on Thursday."
+     },
+     {
+      "word": "entrance",
+      "meaning": "lối vào",
+      "example": "Bus 635 brings you to the entrance."
+     },
+     {
+      "word": "pharmacy",
+      "meaning": "hiệu thuốc",
+      "example": "The pharmacy sells medicine."
+     },
+     {
+      "word": "ground floor",
+      "meaning": "tầng trệt",
+      "example": "All the shops are on the ground floor."
+     },
+     {
+      "word": "first floor",
+      "meaning": "tầng 1 (trên tầng trệt)",
+      "example": "The cinema is on the first floor."
+     },
+     {
+      "word": "next to",
+      "meaning": "bên cạnh",
+      "example": "The book store is next to the sports shop."
+     },
+     {
+      "word": "opposite",
+      "meaning": "đối diện",
+      "example": "The cafés are opposite the cinema."
+     },
+     {
+      "word": "between",
+      "meaning": "ở giữa",
+      "example": "It is between the bank and the shoe shop."
+     },
+     {
+      "word": "on your right",
+      "meaning": "bên tay phải bạn",
+      "example": "It's the last shop on your right."
+     },
+     {
+      "word": "behind",
+      "meaning": "phía sau",
+      "example": "The park is behind the cinema."
+     },
+     {
+      "word": "in front of",
+      "meaning": "phía trước",
+      "example": "The bus stop is in front of the park."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U06-L6",
+   "moduleCode": "M0-U06",
+   "order": 6,
+   "title": "🗣️ Speaking: giao thông & quê hương",
+   "titleEn": "Speaking: talking about transport and towns",
+   "durationMinutes": 40,
+   "objectives": [
+    "Hỏi đường và chỉ vị trí trên bản đồ",
+    "Trả lời câu hỏi về giao thông và quê hương, dùng so sánh hơn/nhất",
+    "Không trả lời quá ngắn — cho giám khảo thấy vốn từ của bạn"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nói về giao thông và quê hương",
+     "titleEn": "Transport and hometown",
+     "formula": [],
+     "usage": [
+      "Dùng **từ vựng của unit** (motorway, the underground, square, castle…) và **so sánh** (It's much faster than…, the oldest part of my town is…).",
+      "Trả lời **dài hơn** bằng lý do và ví dụ — đừng chỉ \"By bus.\"",
+      "Hỏi đường: **Where's the…?** — **It's on the ground floor, opposite the café / between the bank and the shoe shop.**"
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 13,
+   "vocabSave": {
+    "slot": 5,
+    "title": "Unit 6 · Speaking: giao thông & quê hương — 8 từ/cụm từ",
+    "words": [
+     {
+      "word": "traffic",
+      "meaning": "giao thông, xe cộ",
+      "example": "Traffic is a big problem in my city."
+     },
+     {
+      "word": "traffic jam",
+      "meaning": "kẹt xe",
+      "example": "There are traffic jams every morning."
+     },
+     {
+      "word": "hometown",
+      "meaning": "quê nhà",
+      "example": "My hometown is a small city by the sea."
+     },
+     {
+      "word": "popular with tourists",
+      "meaning": "được du khách yêu thích",
+      "example": "Hoi An is very popular with tourists."
+     },
+     {
+      "word": "the oldest part",
+      "meaning": "khu cổ nhất",
+      "example": "The oldest part of my town is the market."
+     },
+     {
+      "word": "convenient",
+      "meaning": "tiện lợi",
+      "example": "Motorbikes are the most convenient way to travel."
+     },
+     {
+      "word": "pollution",
+      "meaning": "ô nhiễm",
+      "example": "More buses would reduce pollution."
+     },
+     {
+      "word": "public transport",
+      "meaning": "phương tiện công cộng",
+      "example": "We need better public transport."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U06-L7",
+   "moduleCode": "M0-U06",
+   "order": 7,
+   "title": "📝 Ôn tập Unit 6: Grammar & Vocabulary",
+   "titleEn": "Grammar and vocabulary — Unit 6",
+   "durationMinutes": 30,
+   "objectives": [
+    "Ôn so sánh hơn và so sánh nhất của Unit 6"
+   ],
+   "keyLanguage": [],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 22
+  }
+ ]
+}

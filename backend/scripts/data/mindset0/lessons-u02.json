@@ -1,0 +1,789 @@
+{
+ "modules": [
+  {
+   "code": "M0-U02",
+   "order": 2,
+   "title": "Unit 2 · Nhà cửa",
+   "titleEn": "UNIT 02: HOUSE AND HOME — sách tr. 20–33",
+   "outcomes": [
+    "Gọi tên các phòng, khu vực và đồ vật trong nhà",
+    "Dùng động từ \"be\", hiện tại đơn ở dạng khẳng định, phủ định, câu hỏi",
+    "Dùng trạng từ tần suất đúng vị trí",
+    "Nghe mô tả để chọn tranh; trả lời ngắn TWO or THREE words",
+    "Nói về việc chọn chỗ ở; viết email trả lời bạn"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M0-U02-L1",
+   "moduleCode": "M0-U02",
+   "order": 1,
+   "title": "🔤 Từ vựng: phòng & đồ vật trong nhà",
+   "titleEn": "Lead-in · Speaking: items in a home · Speaking and vocabulary",
+   "durationMinutes": 40,
+   "objectives": [
+    "Gọi tên 4 phòng chính và 7 khu vực trong/quanh nhà (attic, basement, hallway…)",
+    "Gọi tên 12 đồ vật trong nhà qua tranh (curtains, blind, sink, pillow…)",
+    "Phân biệt các cặp dễ nhầm: curtains/blinds, fridge/freezer, bath/sink"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Phòng và khu vực trong nhà",
+     "titleEn": "Rooms and places in a home",
+     "formula": [],
+     "usage": [
+      "**bedroom** phòng ngủ · **bathroom** phòng tắm · **kitchen** bếp · **living room** phòng khách · **study** phòng làm việc/học",
+      "**attic** gác mái (trên cùng, dưới mái) ≠ **basement** tầng hầm (dưới mặt đất)",
+      "**hall** sảnh/lối vào ngay sau cửa chính · **hallway** hành lang nối các phòng",
+      "**garage** nhà để xe · **garden** vườn"
+     ],
+     "examples": [
+      {
+       "en": "I need to go down the hall if I want a shower.",
+       "vi": "Tôi phải đi dọc hành lang nếu muốn tắm."
+      },
+      {
+       "en": "We keep old toys in the attic.",
+       "vi": "Chúng tôi cất đồ chơi cũ trên gác mái."
+      }
+     ],
+     "notes": [
+      "UK: **flat** = US: **apartment** (căn hộ). **house** = nhà riêng."
+     ]
+    },
+    {
+     "title": "Cặp đồ vật dễ nhầm",
+     "titleEn": "Commonly confused items (Ex. 6)",
+     "formula": [],
+     "usage": [
+      "**curtains** rèm vải (kéo ngang) ≠ **blind** rèm sáo/cuốn (kéo lên xuống)",
+      "**fridge** tủ lạnh (giữ lạnh) ≠ **freezer** tủ đông (làm đá)",
+      "**bath** bồn tắm (nằm) ≠ **sink** bồn rửa (rửa tay, đánh răng)",
+      "**study** phòng học/làm việc ≠ **living room** phòng khách",
+      "**oven/cooker** lò nướng/bếp nấu · **drawers** ngăn kéo · **wardrobe** tủ quần áo · **cupboard** tủ chạn/tủ đồ"
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 5,
+   "totalPoints": 28,
+   "images": [
+    {
+     "url": "media:m0u02-rooms.jpg",
+     "caption": "Ex. 1 (tr. 20): 4 phòng trong nhà — b _ _ _ _ _ _, b _ _ _ _ _ _ _, k _ _ _ _ _ _, l _ _ _ _ _ r _ _ _"
+    },
+    {
+     "url": "media:m0u02-places.jpg",
+     "caption": "Ex. 2 (tr. 20): các khu vực khác trong và quanh nhà"
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 2 · Từ vựng: phòng & đồ vật trong nhà — 22 từ/cụm từ",
+    "words": [
+     {
+      "word": "bedroom",
+      "meaning": "phòng ngủ",
+      "example": "My bedroom is small but comfortable."
+     },
+     {
+      "word": "bathroom",
+      "meaning": "phòng tắm",
+      "example": "The bathroom is next to my bedroom."
+     },
+     {
+      "word": "kitchen",
+      "meaning": "nhà bếp",
+      "example": "We have breakfast in the kitchen."
+     },
+     {
+      "word": "living room",
+      "meaning": "phòng khách",
+      "example": "We watch TV in the living room."
+     },
+     {
+      "word": "study",
+      "meaning": "phòng học / làm việc",
+      "example": "My dad works in the study."
+     },
+     {
+      "word": "attic",
+      "meaning": "gác mái",
+      "example": "There are old boxes in the attic."
+     },
+     {
+      "word": "basement",
+      "meaning": "tầng hầm",
+      "example": "The washing machine is in the basement."
+     },
+     {
+      "word": "hall",
+      "meaning": "sảnh lối vào",
+      "example": "Leave your shoes in the hall."
+     },
+     {
+      "word": "hallway",
+      "meaning": "hành lang",
+      "example": "The bathroom is down the hallway."
+     },
+     {
+      "word": "garage",
+      "meaning": "nhà để xe",
+      "example": "My dad keeps his car in the garage."
+     },
+     {
+      "word": "garden",
+      "meaning": "khu vườn",
+      "example": "I can see the garden from my window."
+     },
+     {
+      "word": "flat / apartment",
+      "meaning": "căn hộ",
+      "example": "We live in a flat in the city centre."
+     },
+     {
+      "word": "curtains",
+      "meaning": "rèm cửa (vải)",
+      "example": "I close the curtains at night."
+     },
+     {
+      "word": "blind",
+      "meaning": "rèm sáo / rèm cuốn",
+      "example": "I have a blind instead of curtains."
+     },
+     {
+      "word": "table lamp",
+      "meaning": "đèn bàn",
+      "example": "I turn on the table lamp to study."
+     },
+     {
+      "word": "drawers",
+      "meaning": "ngăn kéo / tủ ngăn kéo",
+      "example": "I keep my phone in the drawers."
+     },
+     {
+      "word": "shower",
+      "meaning": "vòi sen",
+      "example": "I have a shower every morning."
+     },
+     {
+      "word": "sink",
+      "meaning": "bồn rửa",
+      "example": "I brush my teeth at the sink."
+     },
+     {
+      "word": "pillow",
+      "meaning": "cái gối",
+      "example": "My bed has four big pillows."
+     },
+     {
+      "word": "oven / cooker",
+      "meaning": "lò nướng / bếp",
+      "example": "Turn on the oven to cook the chicken."
+     },
+     {
+      "word": "fridge",
+      "meaning": "tủ lạnh",
+      "example": "Put the milk in the fridge."
+     },
+     {
+      "word": "freezer",
+      "meaning": "tủ đông",
+      "example": "The ice cream is in the freezer."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U02-L2",
+   "moduleCode": "M0-U02",
+   "order": 2,
+   "title": "📖 Reading: ghi chú & xây dựng hội thoại",
+   "titleEn": "Reading: note taking · dialogue building and matching",
+   "durationMinutes": 45,
+   "objectives": [
+    "Ghi chú thông tin (tên, công ty, địa chỉ, email) từ quảng cáo + email",
+    "So sánh hai nguồn để phát hiện thông tin bị sửa (TIP 09)",
+    "Chọn câu hỏi đúng ngữ pháp để hoàn thành hội thoại",
+    "Ghép câu trả lời hợp lý vào hội thoại (có câu thừa)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Dạng bài: ghi chú (note taking)",
+     "titleEn": "Note completion from two texts",
+     "formula": [
+      "**Bước 1**: đọc đề ghi chú, đoán loại thông tin: tên người? tên công ty? địa điểm? email?",
+      "**Bước 2**: tìm trong quảng cáo trước, rồi **đối chiếu với email** — email có thể sửa lại thông tin.",
+      "**Bước 3**: chép **đúng chính tả** (tên riêng, email) — sai một chữ là mất điểm."
+     ],
+     "usage": [
+      "TIP 09: thông tin trong email và quảng cáo có thể **khác nhau** — Gavin nói email phải là **.co.uk**, không phải .com.",
+      "Đọc kỹ các từ chỉ thời gian: \"only works in the office from Monday to Saturday, but you can contact him **any time** you want **by email**\" → Chủ nhật: liên hệ bằng email."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Câu hỏi đúng trật tự từ",
+     "titleEn": "Question word order",
+     "formula": [
+      "**(Wh-) + do/does + S + V?** → Where **do you want** to live?",
+      "**Be + S + …?** → **Are you** a sociable person?",
+      "**Can + S + V?** → **Can you give** me some advice?"
+     ],
+     "usage": [],
+     "examples": [],
+     "notes": [
+      "Sai hay gặp: \"Where you want to live?\" (thiếu do), \"What is catered mean?\" (đúng: What **does** catered mean?)."
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 14,
+   "practiceLinks": [
+    {
+     "ref": "reading:M0-U02-R1",
+     "kind": "reading",
+     "title": "Prime Location Agency — quảng cáo & email (Ex. 9)",
+     "note": "Hoàn thành 5 ô ghi chú của Giorgio. Nhớ đối chiếu email của Gavin với quảng cáo!"
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 2 · Reading: ghi chú & xây dựng hội thoại — 17 từ/cụm từ",
+    "words": [
+     {
+      "word": "accommodation",
+      "meaning": "chỗ ở",
+      "example": "He needs to organise his accommodation."
+     },
+     {
+      "word": "agency",
+      "meaning": "công ty môi giới / đại lý",
+      "example": "Prime Location Agency finds rooms for students."
+     },
+     {
+      "word": "agent",
+      "meaning": "người môi giới",
+      "example": "Mr Taylor is the best agent in the UK."
+     },
+     {
+      "word": "advert",
+      "meaning": "quảng cáo",
+      "example": "The advert has a mistake."
+     },
+     {
+      "word": "be based in",
+      "meaning": "có trụ sở ở",
+      "example": "We are based in our office in London."
+     },
+     {
+      "word": "location",
+      "meaning": "địa điểm",
+      "example": "We have flats in locations all over the country."
+     },
+     {
+      "word": "contact",
+      "meaning": "liên hệ",
+      "example": "You can contact him by email."
+     },
+     {
+      "word": "on campus",
+      "meaning": "trong khuôn viên trường",
+      "example": "Do you want a room on campus?"
+     },
+     {
+      "word": "private accommodation",
+      "meaning": "nhà ở tư nhân (ngoài trường)",
+      "example": "I live in private accommodation."
+     },
+     {
+      "word": "sociable",
+      "meaning": "thích giao du, hoà đồng",
+      "example": "I am definitely sociable."
+     },
+     {
+      "word": "preference",
+      "meaning": "sở thích, điều ưa thích hơn",
+      "example": "Tell me about your preferences."
+     },
+     {
+      "word": "housemate",
+      "meaning": "bạn ở chung nhà",
+      "example": "I live with two housemates."
+     },
+     {
+      "word": "roommate",
+      "meaning": "bạn cùng phòng",
+      "example": "I like the idea of having a roommate."
+     },
+     {
+      "word": "broadband",
+      "meaning": "mạng internet tốc độ cao",
+      "example": "The house has superfast broadband."
+     },
+     {
+      "word": "connection",
+      "meaning": "kết nối (mạng)",
+      "example": "Is the Wi-Fi connection better on campus?"
+     },
+     {
+      "word": "catered",
+      "meaning": "có bao ăn",
+      "example": "Would you prefer catered accommodation?"
+     },
+     {
+      "word": "advice",
+      "meaning": "lời khuyên",
+      "example": "Can you give me some advice?"
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U02-L3",
+   "moduleCode": "M0-U02",
+   "order": 3,
+   "title": "🧩 Ngữ pháp: be / hiện tại đơn (+ − ?) & trạng từ tần suất",
+   "titleEn": "Grammar: simple present positive, negative and questions · adverbs of frequency",
+   "durationMinutes": 40,
+   "objectives": [
+    "Viết câu khẳng định, phủ định, câu hỏi với be, động từ thường và can",
+    "Đặt câu hỏi với từ để hỏi (Where/What/Why)",
+    "Đặt trạng từ tần suất: SAU be, TRƯỚC động từ thường"
+   ],
+   "keyLanguage": [
+    "be: I am a student. / I am not a student. / Are you a student? — Where is the accommodation?",
+    "Động từ thường: I live… / I don't live… / He doesn't live… / Do you live…? / Does he live…? — What do you want to study?",
+    "can: I can speak English. / I can't speak… / Can he speak English?",
+    "Trạng từ tần suất: SAU \"be\" (I am often too tired…) · TRƯỚC động từ thường (We usually spend time…)"
+   ],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 6,
+   "totalPoints": 39,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Present Simple",
+     "note": "khẳng định, phủ định (don't/doesn't), câu hỏi (Do/Does…?)",
+     "url": "/essential-grammar.html?lesson=present-simple"
+    },
+    {
+     "kind": "grammar",
+     "title": "Câu S + be + Adj/N",
+     "note": "dùng \"be\" để mô tả: The bed is comfortable.",
+     "url": "/essential-grammar.html?lesson=sb-subject-be"
+    },
+    {
+     "kind": "grammar",
+     "title": "Modal verbs (can)",
+     "note": "can / can't + V nguyên mẫu",
+     "url": "/essential-grammar.html?lesson=modal-verbs"
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L4",
+   "moduleCode": "M0-U02",
+   "order": 4,
+   "title": "✍️ Writing: email trả lời bạn về chỗ ở",
+   "titleEn": "Writing: an email to a friend about accommodation",
+   "durationMinutes": 45,
+   "objectives": [
+    "Xác định mục đích của một email (Ex. 26)",
+    "Viết hoa và dùng dấu câu đúng (Ex. 27)",
+    "Viết email 60–80 từ trả lời đủ câu hỏi của bạn và hỏi lại 2 câu (Ex. 28)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Bố cục email thân mật",
+     "titleEn": "An informal email",
+     "formula": [
+      "**Chào**: Hi Giorgio, / Hello Gavin,",
+      "**Trả lời câu hỏi của bạn** (mỗi câu hỏi 1–2 câu): I live on campus. I'm very happy with…",
+      "**Hỏi lại**: Do you…? / Is your…?",
+      "**Kết**: Write soon, / See you soon, + tên"
+     ],
+     "usage": [
+      "**Viết hoa**: chữ đầu câu, tên riêng (Gavin, London), đại từ **I**, tên ngày/tháng.",
+      "**Dấu chấm (.)** cuối câu kể; **dấu hỏi (?)** cuối câu hỏi; **dấu phẩy (,)** sau lời chào: Hi Gavin,",
+      "Câu ngắn, rõ ràng. Nối ý bằng **and, but, because, so**."
+     ],
+     "examples": [
+      {
+       "en": "hi gavin i live in private accommodation",
+       "vi": "Hi Gavin, I live in private accommodation."
+      },
+      {
+       "en": "do you have wi-fi in your room",
+       "vi": "Do you have Wi-Fi in your room?"
+      }
+     ],
+     "notes": [
+      "Đề 60–80 từ: viết quá ngắn sẽ thiếu ý, quá dài dễ lạc đề. Phải trả lời **tất cả** câu hỏi trong email nhận được."
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 16,
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 2 · Writing: email trả lời bạn về chỗ ở — 10 từ/cụm từ",
+    "words": [
+     {
+      "word": "reply",
+      "meaning": "trả lời (thư)",
+      "example": "Reply to Giorgio and answer his questions."
+     },
+     {
+      "word": "punctuation",
+      "meaning": "dấu câu",
+      "example": "He does not use correct punctuation."
+     },
+     {
+      "word": "capital letter",
+      "meaning": "chữ in hoa",
+      "example": "Start every sentence with a capital letter."
+     },
+     {
+      "word": "full stop",
+      "meaning": "dấu chấm",
+      "example": "Put a full stop at the end of the sentence."
+     },
+     {
+      "word": "question mark",
+      "meaning": "dấu chấm hỏi",
+      "example": "Questions end with a question mark."
+     },
+     {
+      "word": "comfortable",
+      "meaning": "thoải mái, êm",
+      "example": "My bed is very comfortable."
+     },
+     {
+      "word": "I'm happy with",
+      "meaning": "tôi hài lòng với",
+      "example": "I'm very happy with my room."
+     },
+     {
+      "word": "Write soon",
+      "meaning": "Viết thư sớm nhé (câu kết)",
+      "example": "Write soon, Gavin"
+     },
+     {
+      "word": "choice",
+      "meaning": "sự lựa chọn",
+      "example": "Are you happy with your choice?"
+     },
+     {
+      "word": "online games",
+      "meaning": "trò chơi trực tuyến",
+      "example": "I can also play online games."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U02-L5",
+   "moduleCode": "M0-U02",
+   "order": 5,
+   "title": "🎧 Listening: mô tả tranh & trả lời ngắn",
+   "titleEn": "Listening 1: picture description · Listening 2: short answers",
+   "durationMinutes": 45,
+   "objectives": [
+    "Nghe hết thông tin rồi mới chọn tranh (TIP 07)",
+    "Trả lời ngắn đúng giới hạn TWO or THREE words",
+    "Nghe để biết người nói CÓ hay KHÔNG nhắc tới một chủ đề (YES/NO)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Chọn tranh đúng khi nghe mô tả",
+     "titleEn": "Picture description",
+     "formula": [
+      "**Trước khi nghe**: so sánh các tranh — chúng **khác nhau ở đâu**? (rèm vải hay rèm sáo? cửa sổ nhìn ra vườn hay thành phố?)",
+      "**Khi nghe**: đánh dấu chi tiết khớp/không khớp cho TỪNG tranh.",
+      "**TIP 07**: nghe **hết** thông tin rồi mới chọn — chi tiết quyết định thường ở cuối (\"I don't like curtains… I have a blind instead\")."
+     ],
+     "usage": [],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Trả lời ngắn có giới hạn số từ",
+     "titleEn": "Short answers — TWO or THREE words",
+     "formula": [],
+     "usage": [
+      "Đề nói \"TWO or THREE words\" → viết **2 hoặc 3 từ**, không hơn không kém.",
+      "Dùng chính từ trong bài nghe: How does Giorgio describe his bed? → **very comfortable**.",
+      "Câu \"Why…?\" → trả lời bằng **to + V**: Why does he play games on his phone? → **to relax**."
+     ],
+     "examples": [],
+     "notes": [
+      "Bài YES/NO (Listening 2): đề hỏi người nói **có bàn đến** chủ đề đó không. MINI TIP 13.1: Giorgio có nhắc **tên khoá học** cụ thể không? (\"something with engineering\" → có nói về khoá học → YES)."
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 6,
+   "images": [
+    {
+     "url": "media:m0u02-bedrooms.jpg",
+     "caption": "Ex. 7 (tr. 22): Tranh nào là phòng ngủ của Giorgio?"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M0-U02-L1",
+     "kind": "listening",
+     "title": "Phòng ngủ của Giorgio (Ex. 7–8)",
+     "note": "Chọn tranh đúng (câu 1), rồi trả lời 6 câu hỏi ngắn TWO or THREE words."
+    },
+    {
+     "ref": "listening:M0-U02-L2",
+     "kind": "listening",
+     "title": "Giorgio gọi cho công ty nhà ở (Ex. 13)",
+     "note": "Nghe cuộc gọi: chủ đề nào CÓ được bàn đến (YES/NO)?"
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 2 · Listening: mô tả tranh & trả lời ngắn — 14 từ/cụm từ",
+    "words": [
+     {
+      "word": "nervous",
+      "meaning": "lo lắng, hồi hộp",
+      "example": "I feel nervous about leaving my home."
+     },
+     {
+      "word": "look out of the window",
+      "meaning": "nhìn ra ngoài cửa sổ",
+      "example": "If I look out of the window, I can see the garden."
+     },
+     {
+      "word": "turn on the lamp",
+      "meaning": "bật đèn",
+      "example": "I turn on the lamp to see my notes."
+     },
+     {
+      "word": "course book",
+      "meaning": "sách giáo trình",
+      "example": "I can see my course books better."
+     },
+     {
+      "word": "go down the hall",
+      "meaning": "đi dọc hành lang",
+      "example": "I need to go down the hall to have a shower."
+     },
+     {
+      "word": "get used to",
+      "meaning": "quen với",
+      "example": "I'm sure I'll get used to it."
+     },
+     {
+      "word": "apologise",
+      "meaning": "xin lỗi",
+      "example": "I apologise if I make any mistakes."
+     },
+     {
+      "word": "engineering",
+      "meaning": "ngành kỹ thuật",
+      "example": "I want to study something with engineering."
+     },
+     {
+      "word": "convenient",
+      "meaning": "tiện lợi",
+      "example": "A room on campus is very convenient."
+     },
+     {
+      "word": "noisy",
+      "meaning": "ồn ào",
+      "example": "It's also noisy on campus."
+     },
+     {
+      "word": "canteen",
+      "meaning": "nhà ăn, căng tin",
+      "example": "You can go to the canteen for lunch."
+     },
+     {
+      "word": "self-catered",
+      "meaning": "tự nấu ăn (không bao ăn)",
+      "example": "In self-catered accommodation, you cook at home."
+     },
+     {
+      "word": "depend on",
+      "meaning": "tuỳ thuộc vào",
+      "example": "It depends on how I feel."
+     },
+     {
+      "word": "difficult decision",
+      "meaning": "quyết định khó khăn",
+      "example": "It's a difficult decision."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U02-L6",
+   "moduleCode": "M0-U02",
+   "order": 6,
+   "title": "🗣️ Speaking: chọn chỗ ở",
+   "titleEn": "Speaking: choosing accommodation",
+   "durationMinutes": 40,
+   "objectives": [
+    "So sánh hai lựa chọn chỗ ở theo các tiêu chí (Wi-Fi, khoảng cách, phòng tắm, bữa ăn)",
+    "Nêu ý kiến & lý do: I think… / I prefer… because…",
+    "Nói về một ngày trong tuần và cuối tuần của bạn"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nêu lựa chọn và lý do",
+     "titleEn": "Giving opinions and reasons",
+     "formula": [
+      "**I think** campus accommodation is better for Giorgio **because** he is sociable.",
+      "**I prefer** a private room **because** I like to study alone.",
+      "**The advantage** of… is… **The disadvantage** is…"
+     ],
+     "usage": [
+      "Luôn kèm **lý do** (because…) — câu trả lời chỉ \"Yes\"/\"No\" là quá ngắn.",
+      "Dùng **but / however** để nêu mặt trái: It's convenient, **but** it's noisy.",
+      "\"It doesn't matter to me.\" = Tôi không quan tâm/không sao cả."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 32,
+   "vocabSave": {
+    "slot": 5,
+    "title": "Unit 2 · Speaking: chọn chỗ ở — 12 từ/cụm từ",
+    "words": [
+     {
+      "word": "I prefer… because",
+      "meaning": "tôi thích … hơn vì",
+      "example": "I prefer private accommodation because it is quiet."
+     },
+     {
+      "word": "in my opinion",
+      "meaning": "theo ý kiến tôi",
+      "example": "In my opinion, fast Wi-Fi is more important."
+     },
+     {
+      "word": "advantage",
+      "meaning": "ưu điểm",
+      "example": "The advantage is that you can make friends."
+     },
+     {
+      "word": "disadvantage",
+      "meaning": "nhược điểm",
+      "example": "The disadvantage is the noise."
+     },
+     {
+      "word": "it doesn't matter to me",
+      "meaning": "tôi không bận tâm",
+      "example": "Sharing a bathroom doesn't matter to me."
+     },
+     {
+      "word": "share a bathroom",
+      "meaning": "dùng chung phòng tắm",
+      "example": "I don't want to share a bathroom."
+     },
+     {
+      "word": "provided",
+      "meaning": "được cung cấp sẵn",
+      "example": "Pillows and sheets are provided."
+     },
+     {
+      "word": "ground floor",
+      "meaning": "tầng trệt",
+      "example": "My bedroom is on the ground floor."
+     },
+     {
+      "word": "lecture hall",
+      "meaning": "giảng đường",
+      "example": "It is a five-minute walk to the lecture hall."
+     },
+     {
+      "word": "detached house",
+      "meaning": "nhà riêng biệt (không chung tường)",
+      "example": "It is a detached house with three bedrooms."
+     },
+     {
+      "word": "meals included",
+      "meaning": "bao gồm bữa ăn",
+      "example": "All meals are included in the price."
+     },
+     {
+      "word": "have a lie in",
+      "meaning": "ngủ nướng",
+      "example": "I have a lie in at the weekend."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U02-L7",
+   "moduleCode": "M0-U02",
+   "order": 7,
+   "title": "📝 Ôn tập Unit 2: Grammar & Vocabulary",
+   "titleEn": "Grammar and vocabulary — Unit 2",
+   "durationMinutes": 35,
+   "objectives": [
+    "Ôn từ vựng nhà cửa, câu hỏi và trật tự từ của Unit 2"
+   ],
+   "keyLanguage": [],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 5,
+   "totalPoints": 35
+  }
+ ]
+}

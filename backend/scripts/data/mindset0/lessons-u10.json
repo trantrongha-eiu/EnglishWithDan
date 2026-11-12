@@ -1,0 +1,651 @@
+{
+ "modules": [
+  {
+   "code": "M0-U10",
+   "order": 10,
+   "title": "Unit 10 · Khoa học & công nghệ",
+   "titleEn": "UNIT 10: SCIENCE AND TECHNOLOGY — sách tr. 114–123",
+   "outcomes": [
+    "Gọi tên thiết bị và từ vựng máy tính, internet (crash, backup, stream…)",
+    "Đọc và hoàn thành câu bằng cách diễn đạt lại (paraphrase)",
+    "Nghe bài giảng ngắn về điện thoại thông minh; nghe số liệu %",
+    "Dùng will / won't cho tương lai; từ vựng mô tả thay đổi (rise, fall, increase…)",
+    "Mô tả biểu đồ đường; nói về một thiết bị bạn muốn mua"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M0-U10-L1",
+   "moduleCode": "M0-U10",
+   "order": 1,
+   "title": "🔤 Từ vựng: thiết bị & máy tính",
+   "titleEn": "Lead-in · Vocabulary and reading",
+   "durationMinutes": 35,
+   "objectives": [
+    "Gọi tên 8 thiết bị công nghệ",
+    "Viết đúng chính tả từ máy tính (crashed, shut down, websites, devices, network)",
+    "Dùng attachment, download, stream, backup, store"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Từ vựng máy tính & internet",
+     "titleEn": "Computers and the internet",
+     "formula": [],
+     "usage": [
+      "**crash** (máy) bị treo/sập · **shut down** tắt máy · **back up / a backup** sao lưu / bản sao lưu",
+      "**download** tải xuống · **stream** xem/nghe trực tuyến không cần tải · **store** lưu trữ",
+      "**attachment** tệp đính kèm · **device** thiết bị · **network** mạng · **website** trang web · **app** ứng dụng"
+     ],
+     "examples": [],
+     "notes": [
+      "TIP 03: viết **đúng chính tả** — sai chính tả là mất điểm trong bài thi (crashed ≠ crushed, devices ≠ advices)."
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 24,
+   "images": [
+    {
+     "url": "media:m0u10-tech.jpg",
+     "caption": "Lead-in (tr. 114): các thiết bị công nghệ"
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 10 · Từ vựng: thiết bị & máy tính — 16 từ/cụm từ",
+    "words": [
+     {
+      "word": "smartphone",
+      "meaning": "điện thoại thông minh",
+      "example": "I use my smartphone to contact friends."
+     },
+     {
+      "word": "laptop",
+      "meaning": "máy tính xách tay",
+      "example": "I can work from anywhere with my laptop."
+     },
+     {
+      "word": "tablet",
+      "meaning": "máy tính bảng",
+      "example": "My sister reads books on her tablet."
+     },
+     {
+      "word": "desktop computer",
+      "meaning": "máy tính để bàn",
+      "example": "We have a desktop computer at home."
+     },
+     {
+      "word": "landline telephone",
+      "meaning": "điện thoại bàn",
+      "example": "My grandparents still use a landline telephone."
+     },
+     {
+      "word": "smart watch",
+      "meaning": "đồng hồ thông minh",
+      "example": "A smart watch can count your steps."
+     },
+     {
+      "word": "crash",
+      "meaning": "(máy) bị treo, sập",
+      "example": "My computer crashed and I lost my homework."
+     },
+     {
+      "word": "shut down",
+      "meaning": "tắt máy",
+      "example": "Shut down your laptop when you finish."
+     },
+     {
+      "word": "device",
+      "meaning": "thiết bị",
+      "example": "I own three devices."
+     },
+     {
+      "word": "network",
+      "meaning": "mạng",
+      "example": "The computers are connected to the same network."
+     },
+     {
+      "word": "attachment",
+      "meaning": "tệp đính kèm",
+      "example": "Don't open attachments from strangers."
+     },
+     {
+      "word": "download",
+      "meaning": "tải xuống",
+      "example": "I often download music from the internet."
+     },
+     {
+      "word": "stream",
+      "meaning": "phát trực tuyến",
+      "example": "You can stream films online."
+     },
+     {
+      "word": "backup",
+      "meaning": "bản sao lưu",
+      "example": "Create a backup of your files."
+     },
+     {
+      "word": "store",
+      "meaning": "lưu trữ",
+      "example": "The cloud is where you can store your files."
+     },
+     {
+      "word": "app",
+      "meaning": "ứng dụng",
+      "example": "There's an app for writing a study plan."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U10-L2",
+   "moduleCode": "M0-U10",
+   "order": 2,
+   "title": "📖 Reading: internet hoạt động thế nào? — paraphrasing",
+   "titleEn": "Vocabulary and reading: completing paraphrased sentences",
+   "durationMinutes": 45,
+   "objectives": [
+    "Đọc lướt chọn tiêu đề phù hợp nhất",
+    "Hiểu server, client, peer-to-peer",
+    "Hoàn thành câu diễn đạt lại (1–3 từ)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Paraphrasing",
+     "titleEn": "Completing paraphrased sentences",
+     "formula": [
+      "Paraphrase = đọc, hiểu nghĩa, rồi **nói lại bằng từ khác**.",
+      "Câu hỏi viết lại thông tin trong bài → tìm câu gốc → điền 1–3 từ sao cho **cùng nghĩa**."
+     ],
+     "usage": [
+      "Ví dụ: \"It is not a **difficult** job\" → \"Sending information… is an **easy job**\" (MINI TIP 06.0: trái nghĩa của difficult là easy).",
+      "MINI TIP 06.1: \"they don't all do the **same** thing\" → trái nghĩa của same là **different** → \"doing different things\".",
+      "Paraphrasing quan trọng trong **cả 4 kỹ năng**."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 4,
+   "practiceLinks": [
+    {
+     "ref": "reading:M0-U10-R1",
+     "kind": "reading",
+     "title": "How people communicate on the internet (Ex. 5–6)",
+     "note": "Chọn tiêu đề, rồi hoàn thành 5 câu diễn đạt lại (1–3 từ)."
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 10 · Reading: internet hoạt động thế nào? — paraphrasing — 11 từ/cụm từ",
+    "words": [
+     {
+      "word": "development",
+      "meaning": "sự phát triển, bước tiến",
+      "example": "The internet is a new development in technology."
+     },
+     {
+      "word": "connected to",
+      "meaning": "được kết nối với",
+      "example": "Millions of computers are connected to the internet."
+     },
+     {
+      "word": "server",
+      "meaning": "máy chủ",
+      "example": "Servers store information."
+     },
+     {
+      "word": "category",
+      "meaning": "loại, hạng mục",
+      "example": "There are three categories of servers."
+     },
+     {
+      "word": "ordinary",
+      "meaning": "thông thường",
+      "example": "A file server holds ordinary documents."
+     },
+     {
+      "word": "client",
+      "meaning": "máy khách",
+      "example": "Your smartphone is a client when you go online."
+     },
+     {
+      "word": "deliver",
+      "meaning": "chuyển, giao",
+      "example": "It delivers information to another computer."
+     },
+     {
+      "word": "exchange",
+      "meaning": "trao đổi",
+      "example": "Two computers exchange information."
+     },
+     {
+      "word": "peer",
+      "meaning": "máy ngang hàng",
+      "example": "They are known as peers."
+     },
+     {
+      "word": "display",
+      "meaning": "hiển thị; màn hình",
+      "example": "It displays the photo on the screen."
+     },
+     {
+      "word": "paraphrase",
+      "meaning": "diễn đạt lại",
+      "example": "Paraphrasing is important in every exam."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U10-L3",
+   "moduleCode": "M0-U10",
+   "order": 3,
+   "title": "🧩 Ngữ pháp: will / won't & từ vựng mô tả thay đổi",
+   "titleEn": "Grammar and vocabulary: will for the future · describing changes",
+   "durationMinutes": 45,
+   "objectives": [
+    "Dùng will / won't + V để dự đoán tương lai",
+    "Đặt câu hỏi Will…? / What will…?",
+    "Dùng rise, increase, go up, fall, decrease, go down (động từ & danh từ)"
+   ],
+   "keyLanguage": [
+    "Khẳng định: People will be richer than they are now. · Phủ định: They won't look the same.",
+    "Câu hỏi: Will they look the same as they do now? · What will smartphones look like?",
+    "Tăng: rise → rose → a rise · increase → increased → an increase · go up → went up",
+    "Giảm: fall → fell → a fall · decrease → decreased → a decrease · go down → went down",
+    "increase from 74% to 82% · fall by 6% · finish on 86%"
+   ],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 22,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Future Simple (will)",
+     "note": "dự đoán tương lai",
+     "url": "/essential-grammar.html?lesson=future-simple"
+    },
+    {
+     "kind": "grammar",
+     "title": "Be Going To",
+     "note": "so sánh với kế hoạch",
+     "url": "/essential-grammar.html?lesson=be-going-to"
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L4",
+   "moduleCode": "M0-U10",
+   "order": 4,
+   "title": "✍️ Writing: mô tả biểu đồ đường",
+   "titleEn": "Writing: describing a graph",
+   "durationMinutes": 50,
+   "objectives": [
+    "Đọc xu hướng chính của từng đường",
+    "Dùng từ tăng/giảm + giới từ from…to, by, on",
+    "Viết đoạn mô tả biểu đồ 100–130 từ — làm quen IELTS Writing Task 1"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Mô tả biểu đồ đường",
+     "titleEn": "Describing a line graph",
+     "formula": [
+      "**Câu mở đầu**: The graph shows the percentage of people who own… from 2010 to 2025.",
+      "**Xu hướng chính** (tóm tắt): Overall, … rose, while … fell.",
+      "**Chi tiết từng đường**: The percentage of … increased from 38% in 2010 to 62% in 2015. It will continue to rise and will finish on 86% in 2025."
+     ],
+     "usage": [
+      "Quá khứ (2010–2015) → **rose / increased / went up / fell**; tương lai (2020–2025) → **will rise / will fall**.",
+      "**from X to Y** (từ…đến), **by X%** (tăng/giảm một lượng), **finish on X%** (kết thúc ở mức).",
+      "Một bản **tóm tắt** tốt nêu xu hướng chính — KHÔNG liệt kê mọi con số (G&V Ex. 6)."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 19,
+   "images": [
+    {
+     "url": "media:m0u10-graph.jpg",
+     "caption": "Ex. 15 (tr. 119): Percentage of people who own the devices from 2010 to 2025"
+    }
+   ],
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 10 · Writing: mô tả biểu đồ đường — 10 từ/cụm từ",
+    "words": [
+     {
+      "word": "line graph",
+      "meaning": "biểu đồ đường",
+      "example": "Look at the line graph."
+     },
+     {
+      "word": "percentage",
+      "meaning": "tỷ lệ phần trăm",
+      "example": "the percentage of people who own a laptop"
+     },
+     {
+      "word": "own",
+      "meaning": "sở hữu",
+      "example": "More people will own a smart watch."
+     },
+     {
+      "word": "rise / rose",
+      "meaning": "tăng",
+      "example": "It rose from 38% to 62%."
+     },
+     {
+      "word": "fall / fell",
+      "meaning": "giảm",
+      "example": "It fell by 6%."
+     },
+     {
+      "word": "increase",
+      "meaning": "tăng; sự tăng",
+      "example": "There was an increase of 35%."
+     },
+     {
+      "word": "decrease",
+      "meaning": "giảm; sự giảm",
+      "example": "There was a decrease in his business score."
+     },
+     {
+      "word": "reach a peak",
+      "meaning": "đạt đỉnh",
+      "example": "It reached a peak in 2015."
+     },
+     {
+      "word": "overall",
+      "meaning": "nhìn chung",
+      "example": "Overall, smartphones became more popular."
+     },
+     {
+      "word": "period",
+      "meaning": "giai đoạn",
+      "example": "At the end of the period…"
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U10-L5",
+   "moduleCode": "M0-U10",
+   "order": 5,
+   "title": "🎧 Listening: bài giảng về điện thoại thông minh",
+   "titleEn": "Listening 1: a lecture · Listening 2 and grammar",
+   "durationMinutes": 50,
+   "objectives": [
+    "Hoàn thành bảng bộ phận – công dụng (2–3 từ, đúng chính tả)",
+    "Nghe số liệu phần trăm theo năm",
+    "Nghe câu trả lời của Lorenzo và nối với câu hỏi"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nghe bài giảng ngắn",
+     "titleEn": "A lecture",
+     "formula": [],
+     "usage": [
+      "Trước khi nghe: nhìn sơ đồ, biết tên các bộ phận (display, power button, input, microphone, power bar, case).",
+      "Câu 3 cần **ba từ** để nói **cả hai** công dụng (MINI TIP 08.2): charge your phone, upload files.",
+      "Viết **đúng chính tả** — sai chính tả là sai đáp án.",
+      "Con số: phân biệt **38 / 62 / 78 / 86** theo từng năm; \"Not as high as 100%, but close\"."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 11,
+   "images": [
+    {
+     "url": "media:m0u10-phone.jpg",
+     "caption": "Ex. 7 (tr. 116): các bộ phận của điện thoại thông minh"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M0-U10-L1",
+     "kind": "listening",
+     "title": "Smartphones lecture — Part 1 (Ex. 7–8)",
+     "note": "Nghe và điền công dụng của 6 bộ phận điện thoại."
+    },
+    {
+     "ref": "listening:M0-U10-L2",
+     "kind": "listening",
+     "title": "Smartphones lecture — Part 2 (Ex. 9)",
+     "note": "Điền % dân số có điện thoại thông minh năm 2010, 2015, 2020, 2025."
+    },
+    {
+     "ref": "listening:M0-U10-L3",
+     "kind": "listening",
+     "title": "Lorenzo — thiết bị muốn mua (Ex. 17–19)",
+     "note": "Nối 4 câu trả lời của Lorenzo với câu hỏi (có 2 câu hỏi thừa)."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 10 · Listening: bài giảng về điện thoại thông minh — 15 từ/cụm từ",
+    "words": [
+     {
+      "word": "lecture",
+      "meaning": "bài giảng",
+      "example": "Listen to a short lecture about smartphones."
+     },
+     {
+      "word": "touch screen",
+      "meaning": "màn hình cảm ứng",
+      "example": "the glass touch screen"
+     },
+     {
+      "word": "power button",
+      "meaning": "nút nguồn",
+      "example": "You use the power button to turn the phone on."
+     },
+     {
+      "word": "input",
+      "meaning": "cổng cắm",
+      "example": "the USB input"
+     },
+     {
+      "word": "plug in",
+      "meaning": "cắm điện",
+      "example": "Plug in and charge your phone."
+     },
+     {
+      "word": "charge",
+      "meaning": "sạc",
+      "example": "You need to charge it again soon."
+     },
+     {
+      "word": "upload",
+      "meaning": "tải lên",
+      "example": "Upload your files and photos."
+     },
+     {
+      "word": "power bar",
+      "meaning": "thanh pin",
+      "example": "Check the battery on the power bar."
+     },
+     {
+      "word": "protect",
+      "meaning": "bảo vệ",
+      "example": "A strong case protects the phone."
+     },
+     {
+      "word": "developed",
+      "meaning": "phát triển",
+      "example": "developed areas of the world"
+     },
+     {
+      "word": "latest model",
+      "meaning": "mẫu mới nhất",
+      "example": "The Plus 5 is the latest model."
+     },
+     {
+      "word": "out of date",
+      "meaning": "lỗi thời",
+      "example": "It will seem out of date soon."
+     },
+     {
+      "word": "feature",
+      "meaning": "tính năng",
+      "example": "I can try all the new features."
+     },
+     {
+      "word": "swipe",
+      "meaning": "vuốt",
+      "example": "Swipe the screen."
+     },
+     {
+      "word": "memory",
+      "meaning": "bộ nhớ",
+      "example": "It's got a lot of memory."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U10-L6",
+   "moduleCode": "M0-U10",
+   "order": 6,
+   "title": "🗣️ Speaking: mô tả một thiết bị",
+   "titleEn": "Speaking: describing a gadget",
+   "durationMinutes": 40,
+   "objectives": [
+    "Chọn 4 ý để nói về một thiết bị bạn muốn mua",
+    "Dùng will / be going to, từ vựng công nghệ của unit",
+    "Nói 1–2 phút"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nói về một thiết bị muốn mua",
+     "titleEn": "Describing a gadget",
+     "formula": [
+      "**Đề**: Describe a piece of technology that you would like to buy in the future.",
+      "Chọn 4 ý: **What does it look like? · Where do you want to buy it from? · Why do you want to buy it? · How will it make your life better?**"
+     ],
+     "usage": [
+      "Dùng **going to** cho kế hoạch (I'm going to buy it online) và **will** cho dự đoán (It will help me…).",
+      "Từ vựng: screen, case, memory, battery, features, latest model, out of date, download, stream."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 24,
+   "vocabSave": {
+    "slot": 5,
+    "title": "Unit 10 · Speaking: mô tả một thiết bị — 8 từ/cụm từ",
+    "words": [
+     {
+      "word": "gadget",
+      "meaning": "thiết bị nhỏ, đồ công nghệ",
+      "example": "Describe a gadget you would like to buy."
+     },
+     {
+      "word": "light and thin",
+      "meaning": "nhẹ và mỏng",
+      "example": "It's really light and thin."
+     },
+     {
+      "word": "the battery lasts",
+      "meaning": "pin dùng được (lâu)",
+      "example": "The battery lasts for a very long time."
+     },
+     {
+      "word": "as soon as I can",
+      "meaning": "sớm nhất có thể",
+      "example": "I'm going to get it as soon as I can."
+     },
+     {
+      "word": "make my life better",
+      "meaning": "làm cuộc sống tốt hơn",
+      "example": "It will make my life better."
+     },
+     {
+      "word": "study plan",
+      "meaning": "kế hoạch học tập",
+      "example": "an app for writing a study plan"
+     },
+     {
+      "word": "wireless earphones",
+      "meaning": "tai nghe không dây",
+      "example": "I want some wireless earphones."
+     },
+     {
+      "word": "save up",
+      "meaning": "tiết kiệm tiền",
+      "example": "I'm saving up for a new laptop."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U10-L7",
+   "moduleCode": "M0-U10",
+   "order": 7,
+   "title": "📝 Ôn tập Unit 10: Grammar & Vocabulary",
+   "titleEn": "Grammar and vocabulary — Unit 10",
+   "durationMinutes": 25,
+   "objectives": [
+    "Ôn từ vựng công nghệ và will / going to của Unit 10"
+   ],
+   "keyLanguage": [],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 13
+  }
+ ]
+}

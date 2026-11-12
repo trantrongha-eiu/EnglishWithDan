@@ -1,0 +1,2229 @@
+{
+ "exercises": [
+  {
+   "code": "M0-U02-L1-E01",
+   "lessonCode": "M0-U02-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Các phòng trong nhà (Ex. 1)",
+   "instruction": "Nhìn tranh 4 phòng và viết tên phòng (chữ cái đầu đã cho sẵn — gõ cả từ).",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u02-rooms.jpg",
+    "caption": "Ex. 1 — What rooms are they?"
+   },
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Picture 1: b _ _ _ _ _ _ → ____",
+     "blanks": [
+      {
+       "accept": [
+        "bedroom",
+        "edroom"
+       ]
+      }
+     ],
+     "explanation": "bedroom — phòng ngủ."
+    },
+    {
+     "id": "g2",
+     "prompt": "Picture 2: b _ _ _ _ _ _ _ → ____",
+     "blanks": [
+      {
+       "accept": [
+        "bathroom",
+        "athroom"
+       ]
+      }
+     ],
+     "explanation": "bathroom — phòng tắm."
+    },
+    {
+     "id": "g3",
+     "prompt": "Picture 3: k _ _ _ _ _ _ → ____",
+     "blanks": [
+      {
+       "accept": [
+        "kitchen",
+        "itchen"
+       ]
+      }
+     ],
+     "explanation": "kitchen — nhà bếp."
+    },
+    {
+     "id": "g4",
+     "prompt": "Picture 4: l _ _ _ _ _  r _ _ _ → ____ ____",
+     "blanks": [
+      {
+       "accept": [
+        "living",
+        "iving"
+       ]
+      },
+      {
+       "accept": [
+        "room",
+        "oom"
+       ]
+      }
+     ],
+     "explanation": "living room — phòng khách."
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L1-E02",
+   "lessonCode": "M0-U02-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Khu vực trong & quanh nhà (Ex. 2)",
+   "instruction": "Nhìn tranh 1–7 và nối mỗi tranh với tên khu vực: garden, hall, hallway, basement, attic, garage, study.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u02-places.jpg",
+    "caption": "Ex. 2"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "basement",
+     "explanation": "Tầng hầm — dưới mặt đất, có cầu thang đi xuống."
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "hall",
+     "explanation": "Sảnh — khoảng trống ngay khi bước vào cửa."
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "hallway",
+     "explanation": "Hành lang — có cầu thang và lối đi giữa các phòng."
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "study",
+     "explanation": "Phòng học/làm việc — có bàn và kệ sách."
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "attic",
+     "explanation": "Gác mái — phòng dưới mái nhà."
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "garage",
+     "explanation": "Nhà để xe."
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "garden",
+     "explanation": "Vườn."
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L1-E03",
+   "lessonCode": "M0-U02-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Đồ vật trong nhà — Student A (Ex. 3–4)",
+   "instruction": "Nhìn 6 tranh và nối số tranh với tên đồ vật.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u02-items-a.jpg",
+    "caption": "Student A pictures"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "curtains",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "table lamp",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "TV",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "desk",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "shower",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "drawers",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L1-E04",
+   "lessonCode": "M0-U02-L1",
+   "order": 4,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Đồ vật trong nhà — Student B (Ex. 3–4)",
+   "instruction": "Nhìn 6 tranh và nối số tranh với tên đồ vật.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u02-items-b.jpg",
+    "caption": "Student B pictures"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "window",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "poster",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "blind",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "sink",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "pillows",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "oven / cooker",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L1-E05",
+   "lessonCode": "M0-U02-L1",
+   "order": 5,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Phân biệt các cặp từ (Ex. 6)",
+   "instruction": "Chọn từ đúng cho mỗi câu.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "I keep the ice cream in the ____ — it needs to stay frozen.",
+     "options": [
+      {
+       "id": "A",
+       "text": "fridge"
+      },
+      {
+       "id": "B",
+       "text": "freezer"
+      }
+     ],
+     "answer": "B",
+     "explanation": "freezer làm đông (âm độ); fridge chỉ giữ lạnh."
+    },
+    {
+     "id": "q2",
+     "prompt": "I pull the ____ down at night. It has lots of thin pieces of plastic.",
+     "options": [
+      {
+       "id": "A",
+       "text": "curtains"
+      },
+      {
+       "id": "B",
+       "text": "blind"
+      }
+     ],
+     "answer": "B",
+     "explanation": "blind là rèm sáo/cuốn kéo lên xuống; curtains là rèm vải kéo ngang."
+    },
+    {
+     "id": "q3",
+     "prompt": "I wash my hands and brush my teeth at the ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "bath"
+      },
+      {
+       "id": "B",
+       "text": "sink"
+      }
+     ],
+     "answer": "B",
+     "explanation": "sink = bồn rửa; bath = bồn tắm để nằm."
+    },
+    {
+     "id": "q4",
+     "prompt": "My parents have a ____ with a big desk and lots of books where they work.",
+     "options": [
+      {
+       "id": "A",
+       "text": "study"
+      },
+      {
+       "id": "B",
+       "text": "living room"
+      }
+     ],
+     "answer": "A",
+     "explanation": "study = phòng làm việc/học."
+    },
+    {
+     "id": "q5",
+     "prompt": "In the UK, people say \"flat\". In the USA, people say \"____\".",
+     "options": [
+      {
+       "id": "A",
+       "text": "apartment"
+      },
+      {
+       "id": "B",
+       "text": "house"
+      }
+     ],
+     "answer": "A",
+     "explanation": "flat (Anh) = apartment (Mỹ)."
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L2-E01",
+   "lessonCode": "M0-U02-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Xây dựng hội thoại: chọn câu đúng (Ex. 14)",
+   "instruction": "Đọc các câu trong cuộc gọi giữa Giorgio và Andrew Taylor. Chọn câu đúng nhất A, B hoặc C cho mỗi chỗ trống.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Andrew: Good afternoon, Prime Location Agency, Andrew Taylor speaking. ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "Can I check your student status?"
+      },
+      {
+       "id": "B",
+       "text": "Can I give you my student status?"
+      },
+      {
+       "id": "C",
+       "text": "Have you got time to speak? Can you check my student status?"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Andrew (người môi giới) muốn kiểm tra tư cách sinh viên của khách → \"Can I check…?\""
+    },
+    {
+     "id": "q2",
+     "prompt": "Andrew: Thank you for your call, I have some questions for you. ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "I hope that you don't mind."
+      },
+      {
+       "id": "B",
+       "text": "I hope that you mind."
+      },
+      {
+       "id": "C",
+       "text": "Do you mind?"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Lịch sự: \"I hope you don't mind\" = mong bạn không phiền."
+    },
+    {
+     "id": "q3",
+     "prompt": "Andrew: First of all, ____ – in a room on campus or in private accommodation?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Where you want to live?"
+      },
+      {
+       "id": "B",
+       "text": "Where you do want to live?"
+      },
+      {
+       "id": "C",
+       "text": "Where do you want to live?"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Wh- + do + you + V."
+    },
+    {
+     "id": "q4",
+     "prompt": "Giorgio: I'm not sure. ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "You can give me some advice?"
+      },
+      {
+       "id": "B",
+       "text": "Can you give me some advice?"
+      },
+      {
+       "id": "C",
+       "text": "Can give me you some advice?"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Can + S + V?"
+    },
+    {
+     "id": "q5",
+     "prompt": "Andrew: Tell me a little about your personality. ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "Are you a sociable person?"
+      },
+      {
+       "id": "B",
+       "text": "You are a sociable person?"
+      },
+      {
+       "id": "C",
+       "text": "Do you be a sociable person?"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Câu hỏi với be: đảo \"are\" lên trước chủ ngữ."
+    },
+    {
+     "id": "q6",
+     "prompt": "Andrew: OK, that's great. ____ sometimes have a quiet room where you can study in private?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Do you also like to"
+      },
+      {
+       "id": "B",
+       "text": "You also like to"
+      },
+      {
+       "id": "C",
+       "text": "Do you also like"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"like to + V\" và cần trợ động từ do."
+    },
+    {
+     "id": "q7",
+     "prompt": "Andrew: …it takes a long time to travel to university. ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "What you think?"
+      },
+      {
+       "id": "B",
+       "text": "What you do think?"
+      },
+      {
+       "id": "C",
+       "text": "What do you think?"
+      }
+     ],
+     "answer": "C",
+     "explanation": "What + do + you + think?"
+    },
+    {
+     "id": "q8",
+     "prompt": "Giorgio: I'm not sure. ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "What is catered mean?"
+      },
+      {
+       "id": "B",
+       "text": "What does catered mean?"
+      },
+      {
+       "id": "C",
+       "text": "What means catered?"
+      }
+     ],
+     "answer": "B",
+     "explanation": "What does + từ + mean? = từ … nghĩa là gì?"
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L2-E02",
+   "lessonCode": "M0-U02-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Hoàn thành hội thoại (Ex. 16)",
+   "instruction": "Đọc phần cuối cuộc trò chuyện. Nối mỗi câu trả lời của Andrew với câu Giorgio nói NGAY TRƯỚC đó.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Andrew: \"I think the house has superfast broadband. The Wi-Fi is sometimes very busy and slow on campus.\"",
+     "right": "Yes. Is the Wi-Fi connection better on campus or in the private house?",
+     "explanation": "Andrew trả lời về Wi-Fi → Giorgio vừa hỏi về Wi-Fi (D)."
+    },
+    {
+     "id": "m2",
+     "left": "Andrew: \"You also have a TV in the private room, so you can connect your computer and play games on the TV.\"",
+     "right": "Oh, that's good to know. I really like playing online games, you see.",
+     "explanation": "Andrew nói thêm về chơi game trên TV → Giorgio vừa nói thích chơi game online (G)."
+    },
+    {
+     "id": "m3",
+     "left": "Andrew: \"No, but you or your roommate can bring one.\"",
+     "right": "Oh, great. Do the rooms on campus also have TVs?",
+     "explanation": "\"No… can bring one\" = trả lời câu hỏi Yes/No về TV (A)."
+    },
+    {
+     "id": "m4",
+     "left": "Andrew: \"Yes, it's good because you can study together.\"",
+     "right": "Really? I like the idea of having a roommate.",
+     "explanation": "Học cùng nhau → nói về bạn cùng phòng (B)."
+    },
+    {
+     "id": "m5",
+     "left": "Andrew: \"Would you like to discuss everything with your parents?\"",
+     "right": "Yes, but I prefer to study alone. Oh, I don't know what to choose.",
+     "explanation": "Giorgio phân vân → Andrew gợi ý hỏi bố mẹ (E)."
+    },
+    {
+     "id": "m6",
+     "left": "Andrew: \"OK. Let me email you some information.\"",
+     "right": "Yes, that's a good idea. They always give me good advice.",
+     "explanation": "Giorgio đồng ý hỏi bố mẹ → Andrew gửi thông tin (F)."
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L3-E01",
+   "lessonCode": "M0-U02-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Hoàn thành bảng ngữ pháp (Ex. 11)",
+   "instruction": "Hoàn thành câu khẳng định (+), phủ định (−) và câu hỏi (?).",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "(−) I ____ a student.",
+     "blanks": [
+      {
+       "accept": [
+        "am not",
+        "'m not"
+       ]
+      }
+     ],
+     "explanation": "Phủ định của be: am not."
+    },
+    {
+     "id": "g2",
+     "prompt": "(+) I ____ with my parents.",
+     "blanks": [
+      {
+       "accept": [
+        "live"
+       ]
+      }
+     ],
+     "explanation": "I + V nguyên mẫu."
+    },
+    {
+     "id": "g3",
+     "prompt": "(−) He ____ ____ with his parents.",
+     "blanks": [
+      {
+       "accept": [
+        "doesn't",
+        "does not"
+       ]
+      },
+      {
+       "accept": [
+        "live"
+       ]
+      }
+     ],
+     "explanation": "He/She + doesn't + V nguyên mẫu."
+    },
+    {
+     "id": "g4",
+     "prompt": "(?) ____ he live with his parents?",
+     "blanks": [
+      {
+       "accept": [
+        "Does"
+       ]
+      }
+     ],
+     "explanation": "Câu hỏi ngôi thứ ba: Does + he + V?"
+    },
+    {
+     "id": "g5",
+     "prompt": "(+) I ____ speak English very well.",
+     "blanks": [
+      {
+       "accept": [
+        "can"
+       ]
+      }
+     ],
+     "explanation": "can + V."
+    },
+    {
+     "id": "g6",
+     "prompt": "(?) ____ I ____ English?",
+     "blanks": [
+      {
+       "accept": [
+        "Can"
+       ]
+      },
+      {
+       "accept": [
+        "speak"
+       ]
+      }
+     ],
+     "explanation": "Can + S + V?"
+    },
+    {
+     "id": "g7",
+     "prompt": "(?) What do you ____ to study?",
+     "blanks": [
+      {
+       "accept": [
+        "want"
+       ]
+      }
+     ],
+     "explanation": "What + do + you + V?"
+    },
+    {
+     "id": "g8",
+     "prompt": "(?) Why ____ he want to live in the UK?",
+     "blanks": [
+      {
+       "accept": [
+        "does"
+       ]
+      }
+     ],
+     "explanation": "Why + does + he + V?"
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L3-E02",
+   "lessonCode": "M0-U02-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "The car / I play games (Ex. 12)",
+   "instruction": "Viết lại theo dạng trong ngoặc: (+) khẳng định, (−) phủ định, (?) câu hỏi.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "The car ____ in the garage. (−)",
+     "blanks": [
+      {
+       "accept": [
+        "isn't",
+        "is not"
+       ]
+      }
+     ],
+     "explanation": "be phủ định."
+    },
+    {
+     "id": "g2",
+     "prompt": "____ ____ ____ in the garage? (?)",
+     "blanks": [
+      {
+       "accept": [
+        "Is"
+       ]
+      },
+      {
+       "accept": [
+        "the"
+       ]
+      },
+      {
+       "accept": [
+        "car"
+       ]
+      }
+     ],
+     "explanation": "Đảo is lên đầu."
+    },
+    {
+     "id": "g3",
+     "prompt": "Where ____ the car? (?)",
+     "blanks": [
+      {
+       "accept": [
+        "is"
+       ]
+      }
+     ],
+     "explanation": "Where + is + S?"
+    },
+    {
+     "id": "g4",
+     "prompt": "I ____ ____ games on my phone in my bedroom. (−)",
+     "blanks": [
+      {
+       "accept": [
+        "don't",
+        "do not"
+       ]
+      },
+      {
+       "accept": [
+        "play"
+       ]
+      }
+     ],
+     "explanation": "I don't + V."
+    },
+    {
+     "id": "g5",
+     "prompt": "____ you ____ games on your phone in your bedroom? (?)",
+     "blanks": [
+      {
+       "accept": [
+        "Do"
+       ]
+      },
+      {
+       "accept": [
+        "play"
+       ]
+      }
+     ],
+     "explanation": "Do you + V?"
+    },
+    {
+     "id": "g6",
+     "prompt": "What games ____ you ____ on your phone? (?)",
+     "blanks": [
+      {
+       "accept": [
+        "do"
+       ]
+      },
+      {
+       "accept": [
+        "play"
+       ]
+      }
+     ],
+     "explanation": "What + do + you + V?"
+    },
+    {
+     "id": "g7",
+     "prompt": "Can ____ ____ a game on my phone later? (?)",
+     "blanks": [
+      {
+       "accept": [
+        "I"
+       ]
+      },
+      {
+       "accept": [
+        "play"
+       ]
+      }
+     ],
+     "explanation": "Can I + V?"
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L3-E03",
+   "lessonCode": "M0-U02-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Buổi sáng của Giorgio (Ex. 18)",
+   "instruction": "Đọc Giorgio kể về một ngày và chọn đáp án đúng A, B hoặc C.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Every weekday morning, my alarm goes (1) ____ at 8:30am. This gives me enough time to get ready before my lectures start at 10:00am. Then, I (2) ____ up and go downstairs. I'm often too tired to eat breakfast, so I sometimes go to the (3) ____ and just get some juice. I always talk to my housemates if they are there, in the (4) ____. After that, I head back upstairs to get ready. I go to the bathroom, (5) ____ my teeth and sometimes (6) ____ my room. When it's time to leave, I pack my bag and go to college. At the end of the day when I get back home, I sometimes help the others with the (7) ____ – if we don't do it, all the rooms we share get very messy. When the house is clean again, we usually spend some time in the living room. We sit down together on the (8) ____ and play games online for a while. We're always happy when we get the chance to do this, as it helps us relax. Before I go to sleep, I sit at my (9) ____ and do my homework. I never forget to do it. At the weekend, I can finally relax. I have a lie (10) ____ until about 11:30am.",
+    "caption": "Ex. 18 — Giorgio's day (đã che các từ cần điền)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Every weekday morning, my alarm goes ____ at 8:30am.",
+     "options": [
+      {
+       "id": "A",
+       "text": "up"
+      },
+      {
+       "id": "B",
+       "text": "on"
+      },
+      {
+       "id": "C",
+       "text": "off"
+      }
+     ],
+     "answer": "C",
+     "explanation": "alarm goes off = chuông báo thức reo."
+    },
+    {
+     "id": "q2",
+     "prompt": "Then, I ____ up and go downstairs.",
+     "options": [
+      {
+       "id": "A",
+       "text": "get"
+      },
+      {
+       "id": "B",
+       "text": "go"
+      },
+      {
+       "id": "C",
+       "text": "put"
+      }
+     ],
+     "answer": "A",
+     "explanation": "get up = thức dậy."
+    },
+    {
+     "id": "q3",
+     "prompt": "I sometimes go to the ____ and just get some juice.",
+     "options": [
+      {
+       "id": "A",
+       "text": "fridge"
+      },
+      {
+       "id": "B",
+       "text": "sink"
+      },
+      {
+       "id": "C",
+       "text": "freezer"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Nước ép để trong tủ lạnh (fridge)."
+    },
+    {
+     "id": "q4",
+     "prompt": "I always talk to my housemates if they are there, in the ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "basement"
+      },
+      {
+       "id": "B",
+       "text": "kitchen"
+      },
+      {
+       "id": "C",
+       "text": "bathroom"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Đang lấy nước ép → ở bếp."
+    },
+    {
+     "id": "q5",
+     "prompt": "I go to the bathroom, ____ my teeth…",
+     "options": [
+      {
+       "id": "A",
+       "text": "wash"
+      },
+      {
+       "id": "B",
+       "text": "tidy"
+      },
+      {
+       "id": "C",
+       "text": "brush"
+      }
+     ],
+     "answer": "C",
+     "explanation": "brush teeth = đánh răng."
+    },
+    {
+     "id": "q6",
+     "prompt": "…and sometimes ____ my room.",
+     "options": [
+      {
+       "id": "A",
+       "text": "wash"
+      },
+      {
+       "id": "B",
+       "text": "tidy"
+      },
+      {
+       "id": "C",
+       "text": "brush"
+      }
+     ],
+     "answer": "B",
+     "explanation": "tidy my room = dọn phòng."
+    },
+    {
+     "id": "q7",
+     "prompt": "I sometimes help the others with the ____ – if we don't do it, all the rooms get very messy.",
+     "options": [
+      {
+       "id": "A",
+       "text": "homework"
+      },
+      {
+       "id": "B",
+       "text": "housework"
+      },
+      {
+       "id": "C",
+       "text": "workhouse"
+      }
+     ],
+     "answer": "B",
+     "explanation": "housework = việc nhà (khác homework = bài tập về nhà)."
+    },
+    {
+     "id": "q8",
+     "prompt": "We sit down together on the ____ and play games online.",
+     "options": [
+      {
+       "id": "A",
+       "text": "chair"
+      },
+      {
+       "id": "B",
+       "text": "desk"
+      },
+      {
+       "id": "C",
+       "text": "sofa"
+      }
+     ],
+     "answer": "C",
+     "explanation": "\"sit down together\" trong phòng khách → sofa."
+    },
+    {
+     "id": "q9",
+     "prompt": "Before I go to sleep, I sit at my ____ and do my homework.",
+     "options": [
+      {
+       "id": "A",
+       "text": "desk"
+      },
+      {
+       "id": "B",
+       "text": "bed"
+      },
+      {
+       "id": "C",
+       "text": "drawers"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Ngồi vào bàn học (desk)."
+    },
+    {
+     "id": "q10",
+     "prompt": "At the weekend, I have a lie ____ until about 11:30am.",
+     "options": [
+      {
+       "id": "A",
+       "text": "on"
+      },
+      {
+       "id": "B",
+       "text": "up"
+      },
+      {
+       "id": "C",
+       "text": "in"
+      }
+     ],
+     "answer": "C",
+     "explanation": "have a lie in = ngủ nướng."
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L3-E04",
+   "lessonCode": "M0-U02-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Quy tắc vị trí trạng từ (Ex. 19–21)",
+   "instruction": "Chọn đáp án đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Khi dùng động từ \"to be\", trạng từ tần suất đứng ____ động từ.",
+     "options": [
+      {
+       "id": "A",
+       "text": "before (trước)"
+      },
+      {
+       "id": "B",
+       "text": "after (sau)"
+      }
+     ],
+     "answer": "B",
+     "explanation": "I am often too tired… → sau \"am\"."
+    },
+    {
+     "id": "q2",
+     "prompt": "Khi dùng động từ thường, trạng từ tần suất đứng ____ động từ.",
+     "options": [
+      {
+       "id": "A",
+       "text": "before (trước)"
+      },
+      {
+       "id": "B",
+       "text": "after (sau)"
+      }
+     ],
+     "answer": "A",
+     "explanation": "We usually spend time… → trước \"spend\"."
+    },
+    {
+     "id": "q3",
+     "prompt": "Câu nào đúng?",
+     "options": [
+      {
+       "id": "A",
+       "text": "I am never late for school."
+      },
+      {
+       "id": "B",
+       "text": "I never am late for school."
+      },
+      {
+       "id": "C",
+       "text": "I am late never for school."
+      }
+     ],
+     "answer": "A",
+     "explanation": "never đứng sau am."
+    },
+    {
+     "id": "q4",
+     "prompt": "Câu nào đúng?",
+     "options": [
+      {
+       "id": "A",
+       "text": "I forget never to do my homework."
+      },
+      {
+       "id": "B",
+       "text": "I never forget to do my homework."
+      },
+      {
+       "id": "C",
+       "text": "Never I forget to do my homework."
+      }
+     ],
+     "answer": "B",
+     "explanation": "never đứng trước forget."
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L3-E05",
+   "lessonCode": "M0-U02-L3",
+   "order": 5,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "error_correction",
+   "title": "Sửa lỗi vị trí trạng từ (G&V Ex. 7)",
+   "instruction": "Mỗi câu có thể sai vị trí trạng từ hoặc trật tự từ. Viết lại câu đúng (nếu câu đã đúng, chép lại nguyên câu).",
+   "items": [
+    {
+     "id": "e1",
+     "prompt": "In my country, people live usually in apartments and not houses.",
+     "answer": "In my country, people usually live in apartments and not houses.",
+     "explanation": "usually đứng trước động từ thường live."
+    },
+    {
+     "id": "e2",
+     "prompt": "My uncle keeps his car always in the garage because it is very expensive.",
+     "answer": "My uncle always keeps his car in the garage because it is very expensive.",
+     "explanation": "always trước keeps."
+    },
+    {
+     "id": "e3",
+     "prompt": "Our sink sometimes makes a very strange noise.",
+     "answer": "Our sink sometimes makes a very strange noise.",
+     "explanation": "Câu đúng."
+    },
+    {
+     "id": "e4",
+     "prompt": "I have a housemate but I don't see very often him.",
+     "answer": "I have a housemate but I don't see him very often.",
+     "explanation": "very often đứng cuối câu, sau tân ngữ him."
+    },
+    {
+     "id": "e5",
+     "prompt": "Do you prefer to do your homework in your bedroom?",
+     "answer": "Do you prefer to do your homework in your bedroom?",
+     "explanation": "Câu đúng."
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L3-E06",
+   "lessonCode": "M0-U02-L3",
+   "order": 6,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "error_correction",
+   "title": "Đổi sang câu hỏi (G&V Ex. 6)",
+   "instruction": "Viết lại mỗi câu thành câu hỏi Yes/No.",
+   "items": [
+    {
+     "id": "e1",
+     "prompt": "It is okay to come to your house this evening.",
+     "answer": "Is it okay to come to your house this evening?",
+     "explanation": "be → đảo Is lên đầu."
+    },
+    {
+     "id": "e2",
+     "prompt": "You can check that the windows are all closed before we go out.",
+     "answer": "Can you check that the windows are all closed before we go out?",
+     "explanation": "can → đảo Can lên đầu."
+    },
+    {
+     "id": "e3",
+     "prompt": "You are in the living room next to the kitchen.",
+     "answer": "Are you in the living room next to the kitchen?",
+     "explanation": "are → Are you…?"
+    },
+    {
+     "id": "e4",
+     "prompt": "You want to sit in the garden.",
+     "answer": "Do you want to sit in the garden?",
+     "explanation": "Động từ thường → thêm Do."
+    },
+    {
+     "id": "e5",
+     "prompt": "You help your parents with the housework.",
+     "answer": "Do you help your parents with the housework?",
+     "explanation": "Do + you + V?"
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L4-E01",
+   "lessonCode": "M0-U02-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Mục đích của email (Ex. 26)",
+   "instruction": "Đọc email Gavin gửi Giorgio. Lý do chính Gavin viết email là gì?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Hi Giorgio,\n\nSo, we're both university students now! I like my room on campus very much. Are you on campus or in private accommodation? Are you happy with your choice of where you're living? Please tell me about your room. What other things do you like about where you live?\n\nWrite soon,\nGavin",
+    "caption": "Email from Gavin"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "The main reason for writing is…",
+     "options": [
+      {
+       "id": "A",
+       "text": "to say thank you to Giorgio."
+      },
+      {
+       "id": "B",
+       "text": "to ask Giorgio for advice."
+      },
+      {
+       "id": "C",
+       "text": "to tell Giorgio that he likes university."
+      }
+     ],
+     "answer": "C",
+     "explanation": "Bài mẫu của sách chọn C: Gavin kể mình thích phòng ở trường và hỏi chuyện Giorgio. Không có lời cảm ơn hay xin lời khuyên."
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L4-E02",
+   "lessonCode": "M0-U02-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Sửa viết hoa & dấu câu (Ex. 27)",
+   "instruction": "Email của Giorgio không viết hoa, không có dấu câu. Với mỗi phần, chọn cách viết ĐÚNG.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "hi gavin",
+     "options": [
+      {
+       "id": "A",
+       "text": "Hi Gavin,"
+      },
+      {
+       "id": "B",
+       "text": "hi Gavin"
+      },
+      {
+       "id": "C",
+       "text": "Hi gavin."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Viết hoa chữ đầu và tên riêng; dấu phẩy sau lời chào."
+    },
+    {
+     "id": "q2",
+     "prompt": "i live in private accommodation i am very happy with my room",
+     "options": [
+      {
+       "id": "A",
+       "text": "I live in private accommodation, i am very happy with my room."
+      },
+      {
+       "id": "B",
+       "text": "I live in private accommodation. I am very happy with my room."
+      },
+      {
+       "id": "C",
+       "text": "i live in private accommodation. I am very happy with my room"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Đại từ I luôn viết hoa; hai ý → hai câu, mỗi câu kết bằng dấu chấm."
+    },
+    {
+     "id": "q3",
+     "prompt": "the Wi-Fi here is very fast i am happy about that",
+     "options": [
+      {
+       "id": "A",
+       "text": "The Wi-Fi here is very fast. I am happy about that."
+      },
+      {
+       "id": "B",
+       "text": "The Wi-Fi here is very fast I am happy about that."
+      },
+      {
+       "id": "C",
+       "text": "the Wi-Fi here is very fast. i am happy about that."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Câu mới bắt đầu bằng chữ in hoa; có dấu chấm giữa hai câu."
+    },
+    {
+     "id": "q4",
+     "prompt": "do you have Wi-Fi in your room is the food nice where you live",
+     "options": [
+      {
+       "id": "A",
+       "text": "Do you have Wi-Fi in your room. Is the food nice where you live."
+      },
+      {
+       "id": "B",
+       "text": "Do you have Wi-Fi in your room? Is the food nice where you live?"
+      },
+      {
+       "id": "C",
+       "text": "Do you have Wi-Fi in your room, is the food nice where you live?"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Hai câu hỏi → hai dấu chấm hỏi."
+    },
+    {
+     "id": "q5",
+     "prompt": "write soon giorgio",
+     "options": [
+      {
+       "id": "A",
+       "text": "write soon, giorgio"
+      },
+      {
+       "id": "B",
+       "text": "Write soon. Giorgio."
+      },
+      {
+       "id": "C",
+       "text": "Write soon,\nGiorgio"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Câu kết viết hoa, dấu phẩy, tên ở dòng dưới và viết hoa."
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L4-E03",
+   "lessonCode": "M0-U02-L4",
+   "order": 3,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Viết email trả lời Giorgio (Ex. 28)",
+   "instruction": "Hãy tưởng tượng bạn là Gavin. Viết email trả lời Giorgio (60–80 từ): trả lời 2 câu hỏi của Giorgio (\"Do you have Wi-Fi in your room?\" và \"Is the food nice where you live?\"), sau đó hỏi Giorgio 2 câu về chỗ ở của cậu ấy. Nhớ viết hoa và dùng dấu câu đúng.",
+   "responseSlots": 1,
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 60,
+    "maxWords": 95,
+    "mustUse": 2,
+    "targetStructures": [
+     "Hi Giorgio",
+     "Do you",
+     "Is your",
+     "Write soon"
+    ],
+    "checklist": [
+     "Mở đầu \"Hi Giorgio,\" và kết \"Write soon, Gavin\"",
+     "Trả lời câu hỏi về Wi-Fi",
+     "Trả lời câu hỏi về đồ ăn",
+     "Hỏi lại Giorgio 2 câu về chỗ ở",
+     "Viết hoa, dấu chấm và dấu hỏi đúng",
+     "60–80 từ"
+    ],
+    "sampleAnswer": "Hi Giorgio,\n\nThanks for your email. Yes, I have Wi-Fi in my room, but it is sometimes slow in the evening because lots of students use it. The food here is quite nice. I live in catered accommodation, so I eat breakfast and dinner in the canteen every day. My favourite meal is the pasta on Fridays!\n\nHow many people live in your house? Do you cook your own meals?\n\nWrite soon,\nGavin",
+    "commonErrors": [
+     "Không trả lời đủ 2 câu hỏi của Giorgio",
+     "Quên dấu chấm hỏi ở câu hỏi",
+     "Viết thường \"i\""
+    ]
+   }
+  },
+  {
+   "code": "M0-U02-L5-E01",
+   "lessonCode": "M0-U02-L5",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Ai có thể nói câu này? (Ex. 10)",
+   "instruction": "Giorgio gọi điện cho Andrew Taylor. Mỗi câu dưới đây nhiều khả năng do ai nói?",
+   "categories": [
+    {
+     "id": "g",
+     "label": "Giorgio"
+    },
+    {
+     "id": "a",
+     "label": "Andrew Taylor"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "Are you a student?",
+     "category": "a",
+     "explanation": "Người môi giới hỏi để kiểm tra tư cách sinh viên."
+    },
+    {
+     "id": "c2",
+     "text": "I am a student.",
+     "category": "g",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "What do you want to study?",
+     "category": "a",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "I live with my parents at the moment.",
+     "category": "g",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "Can you speak English?",
+     "category": "a",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "Where is the accommodation?",
+     "category": "g",
+     "explanation": "Người thuê hỏi chỗ ở nằm đâu."
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L6-E01",
+   "lessonCode": "M0-U02-L6",
+   "order": 1,
+   "autoGrade": true,
+   "points": 12,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Campus hay private? (Ex. 24)",
+   "instruction": "Mỗi đặc điểm thuộc chỗ ở nào mà Andrew Taylor gửi cho Giorgio?",
+   "categories": [
+    {
+     "id": "c",
+     "label": "Campus accommodation"
+    },
+    {
+     "id": "p",
+     "label": "Private accommodation"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "Five minutes' walk to the lecture hall",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "25-minute bus ride to the lecture hall",
+     "category": "p",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "Fast Wi-Fi (sometimes slow at busy times)",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "Superfast Wi-Fi (always)",
+     "category": "p",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "Shared bathroom on every floor",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "Private bathroom",
+     "category": "p",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "Live with 159 other students",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "Live with two other students and the homeowner",
+     "category": "p",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "All meals included",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "No meals included",
+     "category": "p",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "Single bed – no pillows or sheets provided",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "Double bed – pillows and sheets provided",
+     "category": "p",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L6-E02",
+   "lessonCode": "M0-U02-L6",
+   "order": 2,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: bạn chọn chỗ ở nào? (Ex. 25)",
+   "instruction": "Trả lời từng câu hỏi trong 20–30 giây. Nêu lựa chọn + lý do (because) + một chi tiết.",
+   "speakingPart": 3,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "In your opinion, what is more important, having superfast Wi-Fi or having a short walk to lectures?",
+     "sampleAnswer": "For me, a short walk to lectures is more important. I often get up late, so if I live five minutes from the lecture hall, I will never be late. Wi-Fi is useful, but I can always study in the library.",
+     "sampleNote": "Chọn rõ ràng → lý do cá nhân → nhắc lại lựa chọn kia (but…).",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "Are you unhappy about the idea of sharing a bathroom with other students? Or does it not matter to you?",
+     "sampleAnswer": "To be honest, I don't really like it. I prefer a private bathroom because I can take my time in the morning. When I share a bathroom with my brother, we often argue about it!",
+     "sampleNote": "Thêm ví dụ thật từ cuộc sống.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "What do you think about having all your meals included?",
+     "sampleAnswer": "I think it's a great idea, because I can't cook very well and it saves a lot of time. However, the food in a canteen is sometimes boring, so I would also like to cook at the weekend.",
+     "sampleNote": "Nêu cả ưu điểm và nhược điểm (However…).",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s4",
+     "prompt": "What are the advantages and disadvantages of living with lots of other students?",
+     "sampleAnswer": "The main advantage is that you can make lots of new friends and you never feel lonely. The disadvantage is that it can be very noisy, especially at night, so it is difficult to study or sleep.",
+     "sampleNote": "Dùng \"The main advantage is… The disadvantage is…\".",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L6-E03",
+   "lessonCode": "M0-U02-L6",
+   "order": 3,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: ngày thường và cuối tuần (Ex. 17, 23)",
+   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "On a weekday morning, what time does your alarm go off?",
+     "sampleAnswer": "My alarm usually goes off at six fifteen, but I always press snooze once! I get up at about six thirty because my school starts at seven fifteen.",
+     "sampleNote": "Dùng đúng cụm \"alarm goes off\" của bài.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "Do you like to have a lie in at the weekend?",
+     "sampleAnswer": "Yes, I love it. On Sundays I usually have a lie in until nine o'clock because I'm tired after a long week. Then I have a big breakfast with my family.",
+     "sampleNote": "Yes → lý do → hoạt động tiếp theo.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "Describe a typical day for you at the weekend.",
+     "sampleAnswer": "On Saturdays I usually help my mum with the housework in the morning. In the afternoon, I often meet my friends at a café, and in the evening we sometimes watch a film at home.",
+     "sampleNote": "Theo trình tự sáng – chiều – tối + trạng từ tần suất.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L7-E01",
+   "lessonCode": "M0-U02-L7",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Định nghĩa nơi chốn trong nhà (G&V Ex. 1)",
+   "instruction": "Đọc định nghĩa và viết từ đúng.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "This is the place where you usually sleep every night. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "bedroom"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "This is the place where you have a wash and brush your teeth. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "bathroom"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "This is the place where people usually sit together to talk, play games or watch TV. → ____ ____",
+     "blanks": [
+      {
+       "accept": [
+        "living"
+       ]
+      },
+      {
+       "accept": [
+        "room"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "This is the place where you keep the car. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "garage"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "This is the place that you walk through to move from one room to another. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "hallway",
+        "hall"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "This is the place where you can be outside and sit on the grass. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "garden"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L7-E02",
+   "lessonCode": "M0-U02-L7",
+   "order": 2,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Chọn từ đúng (G&V Ex. 2)",
+   "instruction": "Chọn từ phù hợp với mô tả.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "It keeps food cold but not frozen.",
+     "options": [
+      {
+       "id": "A",
+       "text": "a fridge"
+      },
+      {
+       "id": "B",
+       "text": "a freezer"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "A house that shares one wall with the house next to it.",
+     "options": [
+      {
+       "id": "A",
+       "text": "a terraced house"
+      },
+      {
+       "id": "B",
+       "text": "a semi-detached house"
+      }
+     ],
+     "answer": "B",
+     "explanation": "semi-detached = nhà song lập (chung 1 bức tường); terraced = nhà liền dãy."
+    },
+    {
+     "id": "q3",
+     "prompt": "A piece of furniture with boxes you pull out to keep clothes in.",
+     "options": [
+      {
+       "id": "A",
+       "text": "a desk"
+      },
+      {
+       "id": "B",
+       "text": "some drawers"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "The room where the family sits and watches TV.",
+     "options": [
+      {
+       "id": "A",
+       "text": "a living room"
+      },
+      {
+       "id": "B",
+       "text": "a study"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "The room at the top of the house, under the roof.",
+     "options": [
+      {
+       "id": "A",
+       "text": "an attic"
+      },
+      {
+       "id": "B",
+       "text": "a basement"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "A small piece of furniture with a door, often in the kitchen, for cups and plates.",
+     "options": [
+      {
+       "id": "A",
+       "text": "a wardrobe"
+      },
+      {
+       "id": "B",
+       "text": "a cupboard"
+      }
+     ],
+     "answer": "B",
+     "explanation": "wardrobe = tủ quần áo."
+    },
+    {
+     "id": "q7",
+     "prompt": "You sit on it alone; it has four legs and a back.",
+     "options": [
+      {
+       "id": "A",
+       "text": "a chair"
+      },
+      {
+       "id": "B",
+       "text": "a sofa"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L7-E03",
+   "lessonCode": "M0-U02-L7",
+   "order": 3,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Nối câu hỏi – câu trả lời (G&V Ex. 3)",
+   "instruction": "Nối mỗi câu hỏi với câu trả lời phù hợp.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "What do you like about your room?",
+     "right": "My comfortable bed and my posters.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Who do you live with?",
+     "right": "My parents, my sister and my grandparents.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Do you like to cook?",
+     "right": "Yes, and I think I'm quite good at it.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Where do you watch television?",
+     "right": "Usually in the living room and sometimes in my bedroom.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Is it often sunny where you live?",
+     "right": "Yes. I like it because I can spend time in the garden.",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Where do you do your homework?",
+     "right": "Usually in the study and sometimes in my bedroom.",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Can you tell me where the bathroom is, please?",
+     "right": "Yes. Go down the hall and it is next to the living room.",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Why don't you often go in the kitchen?",
+     "right": "Because I can't cook!",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L7-E04",
+   "lessonCode": "M0-U02-L7",
+   "order": 4,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Sửa lỗi chính tả (G&V Ex. 5)",
+   "instruction": "Mỗi câu có một từ sai chính tả (trong ngoặc). Viết lại từ đúng.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I really like my (certains) – they are red and black. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "curtains"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "I have a bright (tabel lamb) that I use when I do my homework. → ____ ____",
+     "blanks": [
+      {
+       "accept": [
+        "table"
+       ]
+      },
+      {
+       "accept": [
+        "lamp"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "I think (potsers) make the walls look more interesting. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "posters"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "It is good to sleep with two (bilows). → ____",
+     "blanks": [
+      {
+       "accept": [
+        "pillows"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "The only thing he can do is turn on the (uven)! → ____",
+     "blanks": [
+      {
+       "accept": [
+        "oven"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "Most of my clothes are in my (walldrobe). → ____",
+     "blanks": [
+      {
+       "accept": [
+        "wardrobe"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L7-E05",
+   "lessonCode": "M0-U02-L7",
+   "order": 5,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "ordering",
+   "title": "Sắp xếp câu (G&V Ex. 8)",
+   "instruction": "Sắp xếp các từ thành câu đúng.",
+   "items": [
+    {
+     "id": "o1",
+     "prompt": "",
+     "tokens": [
+      "He",
+      "never",
+      "does",
+      "the",
+      "washing",
+      "up."
+     ],
+     "answer": [
+      "He",
+      "never",
+      "does",
+      "the",
+      "washing",
+      "up."
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o2",
+     "prompt": "",
+     "tokens": [
+      "Can",
+      "you",
+      "give",
+      "me",
+      "some",
+      "advice?"
+     ],
+     "answer": [
+      "Can",
+      "you",
+      "give",
+      "me",
+      "some",
+      "advice?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o3",
+     "prompt": "",
+     "tokens": [
+      "I",
+      "always",
+      "leave",
+      "my",
+      "house",
+      "at",
+      "eight",
+      "o'clock",
+      "in",
+      "the",
+      "morning."
+     ],
+     "answer": [
+      "I",
+      "always",
+      "leave",
+      "my",
+      "house",
+      "at",
+      "eight",
+      "o'clock",
+      "in",
+      "the",
+      "morning."
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o4",
+     "prompt": "",
+     "tokens": [
+      "What",
+      "time",
+      "does",
+      "your",
+      "alarm",
+      "usually",
+      "go",
+      "off?"
+     ],
+     "answer": [
+      "What",
+      "time",
+      "does",
+      "your",
+      "alarm",
+      "usually",
+      "go",
+      "off?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o5",
+     "prompt": "",
+     "tokens": [
+      "My",
+      "cousin",
+      "often",
+      "comes",
+      "to",
+      "my",
+      "house",
+      "for",
+      "dinner."
+     ],
+     "answer": [
+      "My",
+      "cousin",
+      "often",
+      "comes",
+      "to",
+      "my",
+      "house",
+      "for",
+      "dinner."
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o6",
+     "prompt": "",
+     "tokens": [
+      "Where",
+      "do",
+      "you",
+      "want",
+      "to",
+      "live",
+      "in",
+      "the",
+      "future?"
+     ],
+     "answer": [
+      "Where",
+      "do",
+      "you",
+      "want",
+      "to",
+      "live",
+      "in",
+      "the",
+      "future?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o7",
+     "prompt": "",
+     "tokens": [
+      "How",
+      "many",
+      "people",
+      "do",
+      "you",
+      "live",
+      "with?"
+     ],
+     "answer": [
+      "How",
+      "many",
+      "people",
+      "do",
+      "you",
+      "live",
+      "with?"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o8",
+     "prompt": "",
+     "tokens": [
+      "Do",
+      "you",
+      "live",
+      "on",
+      "the",
+      "university",
+      "campus?"
+     ],
+     "answer": [
+      "Do",
+      "you",
+      "live",
+      "on",
+      "the",
+      "university",
+      "campus?"
+     ],
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

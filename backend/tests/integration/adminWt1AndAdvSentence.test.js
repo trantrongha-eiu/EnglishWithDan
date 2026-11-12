@@ -272,7 +272,7 @@ describe('GET /api/admin/wt1/test-lessons', () => {
     });
 
     // Course list for the 'wt1-all-lessons' code's course picker.
-    expect(res.body.courses.map((c) => c.code)).toEqual(['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING']);
+    expect(res.body.courses.map((c) => c.code)).toEqual(['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING', 'MINDSET-0']);
     expect(res.body.courses.find((c) => c.code === 'IELTS-W-T1').title).toBe('WT1');
   });
 

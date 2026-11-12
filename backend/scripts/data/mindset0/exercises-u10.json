@@ -1,0 +1,1709 @@
+{
+ "exercises": [
+  {
+   "code": "M0-U10-L1-E01",
+   "lessonCode": "M0-U10-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Thiết bị trong tranh (Lead-in)",
+   "instruction": "Nối tranh 1–8 với thiết bị.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u10-tech.jpg",
+    "caption": "Lead-in"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "smartphone",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "letter",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "laptop",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "tablet",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "landline telephone",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "smart TV",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "smart watch",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Picture 8",
+     "right": "desktop computer",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L1-E02",
+   "lessonCode": "M0-U10-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Chính tả đúng (Ex. 3)",
+   "instruction": "Chọn cách viết đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "My computer ____ and I lost my homework.",
+     "options": [
+      {
+       "id": "A",
+       "text": "crushed"
+      },
+      {
+       "id": "B",
+       "text": "crashed"
+      },
+      {
+       "id": "C",
+       "text": "crached"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "You need to ____ your laptop when you finish using it.",
+     "options": [
+      {
+       "id": "A",
+       "text": "shout down"
+      },
+      {
+       "id": "B",
+       "text": "shot down"
+      },
+      {
+       "id": "C",
+       "text": "shut down"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "There are some excellent ____ that can help you to study.",
+     "options": [
+      {
+       "id": "A",
+       "text": "wepsites"
+      },
+      {
+       "id": "B",
+       "text": "websites"
+      },
+      {
+       "id": "C",
+       "text": "websides"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "I own three ____ – a smartphone, a laptop and a tablet.",
+     "options": [
+      {
+       "id": "A",
+       "text": "devices"
+      },
+      {
+       "id": "B",
+       "text": "advices"
+      },
+      {
+       "id": "C",
+       "text": "divises"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "The computers at school are all connected to the same ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "netwalk"
+      },
+      {
+       "id": "B",
+       "text": "netwok"
+      },
+      {
+       "id": "C",
+       "text": "network"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L1-E03",
+   "lessonCode": "M0-U10-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Từ máy tính (Ex. 4)",
+   "instruction": "Điền: attachments, backup, download, store, stream.",
+   "wordBank": [
+    "attachments",
+    "backup",
+    "download",
+    "store",
+    "stream"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "If you don't know who sent you the email, then it isn't a good idea to open the ____.",
+     "blanks": [
+      {
+       "accept": [
+        "attachments"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "I often ____ music from the internet.",
+     "blanks": [
+      {
+       "accept": [
+        "download"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "You can ____ films online a few months after they are released at the cinema.",
+     "blanks": [
+      {
+       "accept": [
+        "stream"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "You should create a ____ of your files, so you don't lose them.",
+     "blanks": [
+      {
+       "accept": [
+        "backup"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "The cloud is the name for the place on the internet where you can ____ your files.",
+     "blanks": [
+      {
+       "accept": [
+        "store"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L1-E04",
+   "lessonCode": "M0-U10-L1",
+   "order": 4,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Định nghĩa (G&V Ex. 2)",
+   "instruction": "Điền: stream, website, device, crash, attachment, backup.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "A set of pages of information on the internet about a particular subject. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "website"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "A copy of the files from your computer that you keep in a different place. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "backup"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "A machine, like a smartphone, that can connect to the internet. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "device"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "A file, like an essay, that you add to an email before sending it. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "attachment"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "This happens when your computer suddenly stops working. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "crash"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "Music or video that you watch on the internet without downloading it first. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "stream"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L2-E01",
+   "lessonCode": "M0-U10-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Chọn tiêu đề (Ex. 5)",
+   "instruction": "Đọc lướt bài báo và chọn tiêu đề phù hợp nhất.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "The internet is still quite a new development in technology, however it is impossible to think about life without it. It works in a very simple way. It takes information and sends it from one computer to another. It is not a difficult job, but it is a very big one. There are hundreds of millions of computers connected to the internet at the same time. However, they don't all do the same thing. Some computers are like a digital box that store information (like videos or music files) that people see, read or listen to. These stores of information are called servers, and there are three categories.\n\nThe first type is a file server, which holds ordinary documents. The second is a mail server for sending and receiving emails. The third is a web server for web pages. We know these servers store information but how do people find this information or send it to each other? For this, you need a client.\n\nA client is a computer that gets information from a server and delivers it to another computer. When you go online on your smartphone, you are using it as a client. When two computers on the internet exchange information, they are known as peers.\n\nPeer-to-peer (P2P) communication is when you send someone a photo on your smartphone. When that person sees this photo, your smartphone is working as the server. It stores the photo and the other person's device is the client, which searches for your information. It then displays the photo on the other person's screen.",
+    "caption": "Article"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What is the best title for the article?",
+     "options": [
+      {
+       "id": "A",
+       "text": "New developments on the internet"
+      },
+      {
+       "id": "B",
+       "text": "How people communicate on the internet"
+      },
+      {
+       "id": "C",
+       "text": "Why people use the internet"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Bài giải thích thông tin đi từ máy này sang máy khác như thế nào (server, client, peer-to-peer)."
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L2-E02",
+   "lessonCode": "M0-U10-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Từ trái nghĩa / đồng nghĩa (MINI TIPS)",
+   "instruction": "Chọn từ cùng nghĩa hoặc trái nghĩa đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "The opposite of \"difficult\" is…",
+     "options": [
+      {
+       "id": "A",
+       "text": "easy"
+      },
+      {
+       "id": "B",
+       "text": "big"
+      },
+      {
+       "id": "C",
+       "text": "simple"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "The opposite of \"the same\" is…",
+     "options": [
+      {
+       "id": "A",
+       "text": "similar"
+      },
+      {
+       "id": "B",
+       "text": "different"
+      },
+      {
+       "id": "C",
+       "text": "equal"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "\"deliver information\" means…",
+     "options": [
+      {
+       "id": "A",
+       "text": "send information"
+      },
+      {
+       "id": "B",
+       "text": "delete information"
+      },
+      {
+       "id": "C",
+       "text": "store information"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L3-E01",
+   "lessonCode": "M0-U10-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Bảng will / won't (Ex. 10)",
+   "instruction": "Hoàn thành câu từ bài giảng Part 2.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "(+) People ____ ____ richer than they are now.",
+     "blanks": [
+      {
+       "accept": [
+        "will"
+       ]
+      },
+      {
+       "accept": [
+        "be"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "(−) They ____ ____ the same as the one in the picture today.",
+     "blanks": [
+      {
+       "accept": [
+        "won't",
+        "will not"
+       ]
+      },
+      {
+       "accept": [
+        "look"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "(?) ____ they ____ the same as they do now?",
+     "blanks": [
+      {
+       "accept": [
+        "Will"
+       ]
+      },
+      {
+       "accept": [
+        "look"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "(?) What ____ smartphones ____ like?",
+     "blanks": [
+      {
+       "accept": [
+        "will"
+       ]
+      },
+      {
+       "accept": [
+        "look"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L3-E02",
+   "lessonCode": "M0-U10-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Phỏng vấn về tương lai (G&V Ex. 3)",
+   "instruction": "Chia động từ với will / won't.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "No, the cars ____ (communicate) with each other and make sure they all have enough space.",
+     "blanks": [
+      {
+       "accept": [
+        "will communicate"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "There ____ (not be) any crashes ever again.",
+     "blanks": [
+      {
+       "accept": [
+        "won't be",
+        "will not be"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "____ (the cars / be able) to fly?",
+     "blanks": [
+      {
+       "accept": [
+        "Will the cars be able"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "And food – what ____ (people / eat)?",
+     "blanks": [
+      {
+       "accept": [
+        "will people eat"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "If we want to eat as much meat as we do now, we ____ (definitely need) more space for animals.",
+     "blanks": [
+      {
+       "accept": [
+        "will definitely need"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "I'm not sure that ____ (be) possible.",
+     "blanks": [
+      {
+       "accept": [
+        "will be"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "Well, how ____ (the animals / breathe) when they are on the moon?",
+     "blanks": [
+      {
+       "accept": [
+        "will the animals breathe"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L3-E03",
+   "lessonCode": "M0-U10-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Từ chỉ thay đổi (Ex. 12)",
+   "instruction": "Điền dạng đúng.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "to rise → (past) ____ → (noun) a rise",
+     "blanks": [
+      {
+       "accept": [
+        "rose"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "to increase → (past) increased → (noun) ____",
+     "blanks": [
+      {
+       "accept": [
+        "an increase"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "to go up → (past) ____",
+     "blanks": [
+      {
+       "accept": [
+        "went up"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "to fall → (past) fell → (noun) ____",
+     "blanks": [
+      {
+       "accept": [
+        "a fall"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "to decrease → (past) ____ → (noun) a decrease",
+     "blanks": [
+      {
+       "accept": [
+        "decreased"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "to go down → (past) ____",
+     "blanks": [
+      {
+       "accept": [
+        "went down"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L3-E04",
+   "lessonCode": "M0-U10-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Mô tả số liệu điện thoại thông minh (Ex. 14)",
+   "instruction": "Đọc mô tả và chọn đáp án đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "The percentage of people with smartphones increased ____ 38% in 2010…",
+     "options": [
+      {
+       "id": "A",
+       "text": "at"
+      },
+      {
+       "id": "B",
+       "text": "from"
+      },
+      {
+       "id": "C",
+       "text": "to"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "…____ 62% in 2015.",
+     "options": [
+      {
+       "id": "A",
+       "text": "to"
+      },
+      {
+       "id": "B",
+       "text": "by"
+      },
+      {
+       "id": "C",
+       "text": "at"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "In the future, this ____ will…",
+     "options": [
+      {
+       "id": "A",
+       "text": "rised"
+      },
+      {
+       "id": "B",
+       "text": "rose"
+      },
+      {
+       "id": "C",
+       "text": "rise"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Danh từ: this rise."
+    },
+    {
+     "id": "q4",
+     "prompt": "…will ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "to continue"
+      },
+      {
+       "id": "B",
+       "text": "continue"
+      },
+      {
+       "id": "C",
+       "text": "continuing"
+      }
+     ],
+     "answer": "B",
+     "explanation": "will + V nguyên mẫu."
+    },
+    {
+     "id": "q5",
+     "prompt": "At the end of the period in 2025, this percentage will ____ on 86%.",
+     "options": [
+      {
+       "id": "A",
+       "text": "finish"
+      },
+      {
+       "id": "B",
+       "text": "finishing"
+      },
+      {
+       "id": "C",
+       "text": "be finish"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L4-E01",
+   "lessonCode": "M0-U10-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Xu hướng từng đường (Ex. 15)",
+   "instruction": "Nhìn biểu đồ và chọn mô tả đúng.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u10-graph.jpg",
+    "caption": "Percentage of people who own the devices from 2010 to 2025"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Smartphone:",
+     "options": [
+      {
+       "id": "A",
+       "text": "rises steadily from 38% to 86%"
+      },
+      {
+       "id": "B",
+       "text": "falls from 86% to 38%"
+      },
+      {
+       "id": "C",
+       "text": "stays the same"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Laptop:",
+     "options": [
+      {
+       "id": "A",
+       "text": "rises a lot"
+      },
+      {
+       "id": "B",
+       "text": "goes up a little to about 71% in 2015, then falls to about 59%"
+      },
+      {
+       "id": "C",
+       "text": "falls to 0%"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Smart watch:",
+     "options": [
+      {
+       "id": "A",
+       "text": "starts very low and increases to 40%"
+      },
+      {
+       "id": "B",
+       "text": "decreases from 40%"
+      },
+      {
+       "id": "C",
+       "text": "is the most popular device"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "Tablet:",
+     "options": [
+      {
+       "id": "A",
+       "text": "rises from 22% to about 62% in 2020, then falls slightly"
+      },
+      {
+       "id": "B",
+       "text": "falls all the time"
+      },
+      {
+       "id": "C",
+       "text": "rises to 86%"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L4-E02",
+   "lessonCode": "M0-U10-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Bản tóm tắt tốt nhất (G&V Ex. 6)",
+   "instruction": "Nhìn biểu đồ Line A / Line B. Đâu là bản tóm tắt tốt nhất?",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u10-lineab.jpg",
+    "caption": "Line A & Line B"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Best summary?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Both lines went up and down a lot. Line A changed much more than Line B."
+      },
+      {
+       "id": "B",
+       "text": "The biggest changes for Line A will happen in the last ten years shown on the graph. However, Line B had its own most important changes earlier, especially between 2005 and 2015."
+      },
+      {
+       "id": "C",
+       "text": "Line A went up to 40% in 2010, then down to 20% by 2020, then up to 75% in 2025 and back down to 65%… Line B increased to 75% in 2015, then went down to 40% in 2020…"
+      }
+     ],
+     "answer": "B",
+     "explanation": "A quá chung chung và sai (\"changed much more\"); C liệt kê quá nhiều số liệu — không phải tóm tắt; B nêu đúng xu hướng chính của mỗi đường."
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L4-E03",
+   "lessonCode": "M0-U10-L4",
+   "order": 3,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Mô tả Line B (G&V Ex. 5)",
+   "instruction": "Hoàn thành mô tả Line B bằng: fall, down, rise, decrease, went, increased, 2020, 55%, 50%, 2015, 40%, 2005.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u10-lineab.jpg",
+    "caption": "Line A & Line B"
+   },
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "After it ____ from 30% in ____ to ____ in 2010,",
+     "blanks": [
+      {
+       "accept": [
+        "increased"
+       ]
+      },
+      {
+       "accept": [
+        "2005"
+       ]
+      },
+      {
+       "accept": [
+        "55%"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "line B ____ up by another 20% between 2010 and 2015. This was its highest point.",
+     "blanks": [
+      {
+       "accept": [
+        "went"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "It started to ____ in 2015, going ____ to 40% in ____.",
+     "blanks": [
+      {
+       "accept": [
+        "fall",
+        "decrease"
+       ]
+      },
+      {
+       "accept": [
+        "down"
+       ]
+      },
+      {
+       "accept": [
+        "2020"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "It will ____ to 50% in 2025, and then will ____ to 45% in 2030.",
+     "blanks": [
+      {
+       "accept": [
+        "rise"
+       ]
+      },
+      {
+       "accept": [
+        "decrease",
+        "fall"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L4-E04",
+   "lessonCode": "M0-U10-L4",
+   "order": 4,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Viết: mô tả biểu đồ sở hữu thiết bị (Ex. 15–16)",
+   "instruction": "Nhìn biểu đồ \"Percentage of people who own the devices from 2010 to 2025\" (smartphone, laptop, smart watch, tablet). Viết đoạn văn 100–130 từ mô tả các thay đổi chính: câu mở đầu giới thiệu biểu đồ, một câu nêu xu hướng chung (Overall…), rồi mô tả từng thiết bị bằng rise / increase / go up / fall / decrease / go down và from… to…, by…. Dùng quá khứ cho 2010–2015 và will cho 2020–2025.",
+   "responseSlots": 1,
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u10-graph.jpg",
+    "caption": "Percentage of people who own the devices from 2010 to 2025"
+   },
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 100,
+    "maxWords": 150,
+    "mustUse": 4,
+    "targetStructures": [
+     "The graph shows",
+     "Overall",
+     "increased",
+     "rose",
+     "fell",
+     "will",
+     "from",
+     "to"
+    ],
+    "checklist": [
+     "Câu mở đầu giới thiệu biểu đồ",
+     "Câu tổng quan (Overall…)",
+     "Mô tả cả 4 thiết bị",
+     "Có số liệu chính xác (from… to…)",
+     "Đúng thì: quá khứ cho 2010–2015, will cho tương lai",
+     "100–130 từ"
+    ],
+    "sampleAnswer": "The graph shows the percentage of people who owned four different devices between 2010 and 2015, and the expected figures up to 2025.\n\nOverall, smartphones became the most popular device, while laptops became less popular.\n\nThe percentage of people with a smartphone rose from 38% in 2010 to 62% in 2015, and it will continue to increase to 86% in 2025. Laptop ownership went up slightly from 62% to about 71% in 2015, but it will fall to around 59% by the end of the period. Tablets increased quickly from 22% to 51% in 2015 and will reach a peak of about 62% in 2020 before decreasing a little. Smart watches started at almost 0%, but they will rise sharply to 40% in 2025.",
+    "commonErrors": [
+     "Dùng hiện tại cho quá khứ (It rises from 38% in 2010)",
+     "Liệt kê mọi con số mà không có câu tổng quan",
+     "Sai giới từ (increase at / to / by)"
+    ]
+   }
+  },
+  {
+   "code": "M0-U10-L5-E01",
+   "lessonCode": "M0-U10-L5",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Tên bộ phận điện thoại (Ex. 7)",
+   "instruction": "Sắp xếp lại chữ cái để được tên bộ phận.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u10-phone.jpg",
+    "caption": "Parts of a smartphone"
+   },
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "touch screen or d____ (SLPIYA)",
+     "blanks": [
+      {
+       "accept": [
+        "display",
+        "isplay"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "p____ b____ (REWO / TOTNU)",
+     "blanks": [
+      {
+       "accept": [
+        "power",
+        "ower"
+       ]
+      },
+      {
+       "accept": [
+        "button",
+        "utton"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "USB i____ (TUPN)",
+     "blanks": [
+      {
+       "accept": [
+        "input",
+        "nput"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "m____ (RENOPICHO)",
+     "blanks": [
+      {
+       "accept": [
+        "microphone",
+        "icrophone"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "p____ b____ (WORE / RA)",
+     "blanks": [
+      {
+       "accept": [
+        "power",
+        "ower"
+       ]
+      },
+      {
+       "accept": [
+        "bar",
+        "ar"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "c____ (SAE)",
+     "blanks": [
+      {
+       "accept": [
+        "case",
+        "ase"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L5-E02",
+   "lessonCode": "M0-U10-L5",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Từ trong câu trả lời của Lorenzo (Ex. 18)",
+   "instruction": "Nối từ với định nghĩa.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "features",
+     "right": "Important and interesting parts of a device.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "latest model",
+     "right": "The newest device you can buy.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "swipe",
+     "right": "To move your finger from one side to the other on a device.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "out of date",
+     "right": "A device that is old.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "memory",
+     "right": "The part of a device that stores data.",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L6-E01",
+   "lessonCode": "M0-U10-L6",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Câu trả lời nào trả lời câu hỏi nào? (Ex. 19)",
+   "instruction": "Đọc 4 câu trả lời của Lorenzo và chọn câu hỏi tương ứng.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "1 It has a silver case, and the screen is bigger than most other smartphones. The display is also really clear. It's really light and thin, it's got a lot of memory, and the battery lasts for a very long time.\n2 It's very expensive, so before I buy it, I'm going to visit a mobile phone shop first, so I can try all the new features. But I'm definitely going to get it online in the end. I'm sure it will be cheaper.\n3 The phone I have now, the Plus 5, is the latest model – it came out last year. But I think it will start to be really slow and seem out of date soon. The Plus 6 is even faster, and it's better for playing games and streaming things online, so that's why I'm going to get it as soon as I can.\n4 I'm not sure if it will help me with everything. It won't do my homework for me if I swipe the screen, for example. But I think it will be helpful for some things. There's an app for writing a study plan, so I'm going to download that, anyway.",
+    "caption": "Lorenzo's answers"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Answer 1: \"It has a silver case, and the screen is bigger than most other smartphones…\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "What does it look like?"
+      },
+      {
+       "id": "B",
+       "text": "How much does it cost?"
+      },
+      {
+       "id": "C",
+       "text": "Why is it so popular?"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Answer 2: \"It's very expensive, so before I buy it, I'm going to visit a mobile phone shop… But I'm definitely going to get it online in the end.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "How much does it cost?"
+      },
+      {
+       "id": "B",
+       "text": "Where do you want to buy it from?"
+      },
+      {
+       "id": "C",
+       "text": "Why is it so popular?"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Có nhắc giá nhưng ý chính là mua ở đâu."
+    },
+    {
+     "id": "q3",
+     "prompt": "Answer 3: \"The phone I have now… will seem out of date soon. The Plus 6 is even faster… so that's why I'm going to get it.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "Why do you want to buy it?"
+      },
+      {
+       "id": "B",
+       "text": "What does it look like?"
+      },
+      {
+       "id": "C",
+       "text": "How will it make your life better?"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "Answer 4: \"It won't do my homework for me… But I think it will be helpful for some things.\"",
+     "options": [
+      {
+       "id": "A",
+       "text": "Why is it so popular?"
+      },
+      {
+       "id": "B",
+       "text": "How will it make your life better?"
+      },
+      {
+       "id": "C",
+       "text": "How much does it cost?"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L6-E02",
+   "lessonCode": "M0-U10-L6",
+   "order": 2,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: thiết bị bạn muốn mua (Ex. 20–22)",
+   "instruction": "Chuẩn bị 1 phút, rồi nói 1–2 phút.",
+   "speakingPart": 2,
+   "speakingPrepSeconds": 60,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "Describe a piece of technology that you would like to buy in the future.\nYou should say:\n• what it looks like\n• where you want to buy it from\n• why you want to buy it\nand explain how it will make your life better.",
+     "sampleAnswer": "The piece of technology I'd like to buy is a new laptop. I'm thinking of a light, thin one with a silver case and a big, clear screen, because I want to carry it to school every day. It should also have a lot of memory and a battery that lasts all day. I'm going to buy it online, because it's usually cheaper than in shops, but first I'm going to visit a computer shop to try the keyboard. The main reason I want it is that my family only has one old desktop computer, and it's really out of date – it crashes almost every time I open more than two websites! I think a laptop will make my life much better. I'll be able to study anywhere, for example in the library, and I'll download English lessons and stream videos to improve my listening. I'm saving up for it now, so I hope I can buy it next summer.",
+     "sampleNote": "Đủ 4 ý; dùng going to (kế hoạch), will (dự đoán); từ vựng unit: memory, battery lasts, out of date, crashes, download, stream.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L6-E03",
+   "lessonCode": "M0-U10-L6",
+   "order": 3,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: công nghệ trong đời sống (Lead-in Ex. 2)",
+   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "Which devices do you use for studying?",
+     "sampleAnswer": "I mostly use my laptop for studying because the screen is bigger and I can type my essays. I also use my smartphone to look up words in an online dictionary.",
+     "sampleNote": "Thiết bị + lý do.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "How do you usually contact your friends?",
+     "sampleAnswer": "I usually send messages on my smartphone, because it's quick and free. Sometimes we make video calls in the evening when we do homework together.",
+     "sampleNote": "Cách + lý do + ví dụ.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "Do you think smartphones will look different in the future?",
+     "sampleAnswer": "Yes, I think they will. They will probably be thinner and maybe they will fold, so the screen will be bigger. I don't think people will stop using them, though.",
+     "sampleNote": "Dùng will cho dự đoán.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L7-E01",
+   "lessonCode": "M0-U10-L7",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Chọn từ đúng (G&V Ex. 1)",
+   "instruction": "Chọn đáp án đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "My brother ____ his files on his computer but doesn't back them up.",
+     "options": [
+      {
+       "id": "A",
+       "text": "streams"
+      },
+      {
+       "id": "B",
+       "text": "stores"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "You can connect a series of computers together on a ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "website"
+      },
+      {
+       "id": "B",
+       "text": "network"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "I prefer to use a ____ as I can work from anywhere.",
+     "options": [
+      {
+       "id": "A",
+       "text": "laptop"
+      },
+      {
+       "id": "B",
+       "text": "desktop computer"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "Stop playing games! ____ your computer right now!",
+     "options": [
+      {
+       "id": "A",
+       "text": "Shut down"
+      },
+      {
+       "id": "B",
+       "text": "Crash"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "I don't like paying a lot of money for ____, but it can cause problems if you only ____ them for free.",
+     "options": [
+      {
+       "id": "A",
+       "text": "attachments / backup"
+      },
+      {
+       "id": "B",
+       "text": "apps / download"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L7-E02",
+   "lessonCode": "M0-U10-L7",
+   "order": 2,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Email của ông nội (G&V Ex. 7)",
+   "instruction": "Chọn đáp án đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "I have some news – ____ buy a smartphone.",
+     "options": [
+      {
+       "id": "A",
+       "text": "I will"
+      },
+      {
+       "id": "B",
+       "text": "I'm going to"
+      },
+      {
+       "id": "C",
+       "text": "I going to"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Kế hoạch đã quyết định → going to."
+    },
+    {
+     "id": "q2",
+     "prompt": "Your mum told me that you have the ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "latest model"
+      },
+      {
+       "id": "B",
+       "text": "later modern"
+      },
+      {
+       "id": "C",
+       "text": "late model"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "I don't mind if it's a bit ____ – I'll be happy with something a bit older.",
+     "options": [
+      {
+       "id": "A",
+       "text": "out of order"
+      },
+      {
+       "id": "B",
+       "text": "out of time"
+      },
+      {
+       "id": "C",
+       "text": "out of date"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "I see a lot of advertisements for phones with great ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "features"
+      },
+      {
+       "id": "B",
+       "text": "devices"
+      },
+      {
+       "id": "C",
+       "text": "websites"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "It will be strange to play cards by ____ a ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "swiping / screen"
+      },
+      {
+       "id": "B",
+       "text": "sweeping / charger"
+      },
+      {
+       "id": "C",
+       "text": "swapping / case"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "Your mother also said that your smartphone has a lot of ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "memory"
+      },
+      {
+       "id": "B",
+       "text": "memories"
+      },
+      {
+       "id": "C",
+       "text": "memry"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "…you have a lot of space to ____ apps and files.",
+     "options": [
+      {
+       "id": "A",
+       "text": "stand"
+      },
+      {
+       "id": "B",
+       "text": "store"
+      },
+      {
+       "id": "C",
+       "text": "shop"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q8",
+     "prompt": "I know your phone has a silver ____ but I would prefer mine in black.",
+     "options": [
+      {
+       "id": "A",
+       "text": "case"
+      },
+      {
+       "id": "B",
+       "text": "screen"
+      },
+      {
+       "id": "C",
+       "text": "battery"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

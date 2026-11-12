@@ -14,6 +14,7 @@ const { NotFoundError } = require('../errors/AppError');
 const ListeningTest = require('../models/ListeningTest');
 const ListeningAttempt = require('../models/ListeningAttempt');
 const ListeningSection = require('../models/ListeningSection');
+const { NOT_COURSE } = require('../utils/courseContent');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const DictationAttempt = require('../models/DictationAttempt');
 const GapFillAttempt = require('../models/GapFillAttempt');
@@ -432,10 +433,10 @@ async function listPracticeSections(query, userId) {
   const isActualTest = query.actualTest === 'true';
   let filter;
   if (isActualTest) {
-    filter = { isActualTest: true, isActive: true };
+    filter = { isActualTest: true, isActive: true, ...NOT_COURSE };
   } else if (query.part === 'all') {
     // Bài lẻ default view: every section from all 4 parts mixed.
-    filter = { partNumber: { $in: [1, 2, 3, 4] }, isActive: true };
+    filter = { partNumber: { $in: [1, 2, 3, 4] }, isActive: true, ...NOT_COURSE };
   } else {
     const part = parseInt(query.part);
     if (![1, 2, 3, 4].includes(part)) {
@@ -443,7 +444,7 @@ async function listPracticeSections(query, userId) {
       err.status = 400;
       throw err;
     }
-    filter = { partNumber: part, isActive: true };
+    filter = { partNumber: part, isActive: true, ...NOT_COURSE };
   }
   // Title A–Z, case-insensitive, numbers in numeric order ("Test 2" before
   // "Test 10") — same collation as listStudentTests.

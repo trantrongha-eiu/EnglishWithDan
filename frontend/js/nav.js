@@ -43,6 +43,8 @@
         { href: 'reading.html?mode=single', icon: 'fa-book-open',  label: 'Bài lẻ' },
         { href: 'reading.html?mode=tips',   icon: 'fa-lightbulb',  label: 'Reading Tips' },
         { href: 'reading-listening-strategy.html', icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
+        { divider: true, label: 'Khóa học' },
+        { href: 'mindset-0.html',           icon: 'fa-seedling',   label: 'Mindset Foundation' },
       ]
     },
     { href: 'listening.html',        icon: 'fa-headphones',  label: 'Listening',
@@ -51,6 +53,8 @@
         { href: 'listening.html?mode=single', icon: 'fa-music',      label: 'Bài lẻ' },
         { href: 'listening.html?mode=tips',   icon: 'fa-lightbulb',  label: 'Listening Tips' },
         { href: 'reading-listening-strategy.html', icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
+        { divider: true, label: 'Khóa học' },
+        { href: 'mindset-0.html',           icon: 'fa-seedling',   label: 'Mindset Foundation' },
         { divider: true, label: 'Luyện tập' },
         { href: 'dictation.html',             icon: 'fa-keyboard',   label: 'Dictation' },
       ]
@@ -72,6 +76,7 @@
         { href: 'task2-template.html',   icon: 'fa-book-open',     label: 'Task 2 Templates' },
         { divider: true, label: 'Ngữ pháp' },
         { href: 'essential-grammar.html', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
+        { href: 'task1-practice.html',    icon: 'fa-chart-pie',      label: 'Task 1 Grammar' },
         { href: 'writing-practice.html',  icon: 'fa-comment',        label: 'Viết câu giao tiếp' },
       ]
     },

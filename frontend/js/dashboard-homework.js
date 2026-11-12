@@ -31,7 +31,7 @@ const HW_QUIZ_TYPES = new Set(['grammar', 'vocabulary_lesson', 'advanced_sentenc
 // Reading / Listening (full tests, bài lẻ, dictation): lower bar — backend's PRACTICE_PASS_PERCENT.
 const HW_PRACTICE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'dictation']);
 // Course lessons: every exercise done AND the quiz-style ones average ≥70%.
-const HW_COURSE_TYPES = new Set(['task1_lesson', 'task2_course_lesson', 'speaking_course_lesson']);
+const HW_COURSE_TYPES = new Set(['task1_lesson', 'task2_course_lesson', 'speaking_course_lesson', 'mindset_course_lesson']);
 const PRACTICE_PASS = 50;
 const GAPFILL_MIN_CORRECT = 18; // matches backend's resourceCompletionService.GAPFILL_MIN_CORRECT
 const MIN_WORDS_T1 = 150, MIN_WORDS_T2 = 250; // matches backend's resourceCompletionService.MIN_WORDS
@@ -105,6 +105,11 @@ function hwResourceHref(r) {
     case 'task1_lesson':          return r.resourceCode ? `writing-task1.html?lesson=${encodeURIComponent(r.resourceCode)}` : null;
     case 'task2_course_lesson':   return r.resourceCode ? `writing-task2-course.html?lesson=${encodeURIComponent(r.resourceCode)}` : null;
     case 'speaking_course_lesson': return r.resourceCode ? `speaking-course.html?lesson=${encodeURIComponent(r.resourceCode)}` : null;
+    // Mindset: lesson codes are M<level>-U<nn>-L<n> → mindset-<level>.html
+    case 'mindset_course_lesson': {
+      const lv = /^M(\d)-/.exec(r.resourceCode || '');
+      return lv ? `mindset-${lv[1]}.html?lesson=${encodeURIComponent(r.resourceCode)}` : null;
+    }
     case 'task1_practice':     return `writing.html?taskType=1&taskId=${id}`;
     case 'task2_practice':     return `writing.html?taskType=2&taskId=${id}`;
     // task2-practice.html jumps to a topic only with BOTH ?week & ?topicId —

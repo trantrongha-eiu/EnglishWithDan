@@ -22,6 +22,10 @@ export function studentPathFor(r) {
     case 'task1_lesson':           return code ? `/writing-task1.html?lesson=${code}` : '/writing-task1.html';
     case 'task2_course_lesson':    return code ? `/writing-task2-course.html?lesson=${code}` : '/writing-task2-course.html';
     case 'speaking_course_lesson': return code ? `/speaking-course.html?lesson=${code}` : '/speaking-course.html';
+    case 'mindset_course_lesson': {
+      const lv = /^M(\d)-/.exec(code || '');
+      return lv ? `/mindset-${lv[1]}.html?lesson=${code}` : '/mindset-0.html';
+    }
     case 'task2':                  return code ? `/task2-practice.html?week=${code}&topicId=${id}` : '/task2-practice.html';
     case 'advanced_sentences':     return code ? `/advanced-sentences.html?week=${code}&groupId=${id}` : '/advanced-sentences.html';
     case 'speaking':               return `/speaking.html?questionId=${id}`;

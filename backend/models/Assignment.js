@@ -32,7 +32,7 @@ const assignmentResourceSchema = new mongoose.Schema({
       'task1_practice', 'task2_practice',
       // WT1-stack sibling courses + "Viết câu nâng cao" — see
       // services/resourceCompletionService.js REGISTRY.
-      'task2_course_lesson', 'speaking_course_lesson', 'advanced_sentences',
+      'task2_course_lesson', 'speaking_course_lesson', 'mindset_course_lesson', 'advanced_sentences',
       'speaking_full_mock',
       // "opened = done" (models/ContentView.js) + Task 2 Templates /
       // writing practice (score-based, custom check).

@@ -1,0 +1,256 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 0 · Unit 5 — Chinese Food Festival in London",
+   "content": "<p style=\"text-align:center\"><img src=\"media:m0u05-festival-photos.jpg\" alt=\"Food festival\" style=\"max-width:100%;max-height:300px;height:auto;border-radius:6px\"></p>\n\n<p>This year, the Chinese food festival is at the South Bank Riverside Walkway by the River Thames in London. The three-day food festival celebrates real Chinese cooking and dishes from other countries. You can taste wonderful food at the many food stalls, and watch famous chefs showing you how to make some tasty dishes. All the family can come and enjoy food, traditional Chinese performances and try Chinese arts and crafts.</p>\n\n<p><strong>The festival starts on 25th September and tickets are free! Just go to our website and download your free ticket.</strong></p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Read the article again. Do the statements agree with the information in the article? Choose TRUE, FALSE or NOT GIVEN. Pay attention to the words in CAPITALS.",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "true-false-ng",
+       "questionText": "The Chinese food festival is in London EVERY YEAR.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Bài chỉ nói \"**This year**, the Chinese food festival is at…\" — không nói năm nào cũng tổ chức ở London → NOT GIVEN."
+      },
+      {
+       "questionNumber": 2,
+       "type": "true-false-ng",
+       "questionText": "The festival ONLY includes Chinese cooking.",
+       "correctAnswer": "FALSE",
+       "explanation": "Bài: \"celebrates real Chinese cooking **and dishes from other countries**\" → không chỉ món Trung Hoa → FALSE."
+      },
+      {
+       "questionNumber": 3,
+       "type": "true-false-ng",
+       "questionText": "You can LEARN to make some of the Chinese food at the festival.",
+       "correctAnswer": "TRUE",
+       "explanation": "Bài: \"watch famous chefs **showing you how to make** some tasty dishes\" → có thể học cách làm → TRUE."
+      },
+      {
+       "questionNumber": 4,
+       "type": "true-false-ng",
+       "questionText": "CHILDREN can come to the festival.",
+       "correctAnswer": "TRUE",
+       "explanation": "Bài: \"**All the family** can come\" → trẻ em đi được → TRUE."
+      },
+      {
+       "questionNumber": 5,
+       "type": "true-false-ng",
+       "questionText": "The festival is ONLY about cooking.",
+       "correctAnswer": "FALSE",
+       "explanation": "Bài còn có \"traditional Chinese performances\" và \"arts and crafts\" → FALSE."
+      },
+      {
+       "questionNumber": 6,
+       "type": "true-false-ng",
+       "questionText": "If you don't download a ticket, you MUST PAY to enter on the day.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Bài chỉ nói vé miễn phí khi tải trên website; không nói gì về việc không tải vé thì có phải trả tiền không → NOT GIVEN."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U05-R1"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 0 · Unit 5 — Who can come to the food festival?",
+   "description": "Mark and Jane talk about which friends can go to the food festival.",
+   "partNumber": 1,
+   "audioFile": "MindsetIELTS_Foundation_08.mp3",
+   "transcript": "Mark: Hi, Jane.\nJane: Oh, hi Mark.\nMark: I'm really looking forward to the food festival. I love Chinese food and I hope our friends can come.\nJane: Well, I'm afraid most of them are busy.\nMark: What, even Marco? He always says he has nothing to do and that he's interested in trying new food.\nJane: Mohammed says Marco has no money. Mohammed can't go because he is helping his flatmate decorate his room.\nMark: But the festival is free!\nJane: Yes, but we have to go there on the underground and I'm sure he'll want to buy some food when he's there.\nMark: Well, I don't have much money either, perhaps Pierre could lend him some. He's got a job and he is Marco's best friend.\nJane: Oh, Pierre can't come either.\nMark: Really? Is he at work? All he thinks about is work!\nJane: No, his parents are coming from France and he's going to show them around London … you know, Big Ben, Tower Bridge …\nMark: OK, what about Hang Vie, her mother owns a Chinese restaurant, she must be interested.\nJane: She is, but she's going to help with the cooking for her family's party on the day we're going. I don't know about Lucy and Larissa though.\nMark: Well, I phoned Lucy, but her flatmate said she was on holiday in Italy and won't be back until the week after the festival.\nJane: I didn't even know she was on holiday. And Larissa?\nMark: She's got a really important exam, so she needs to prepare for it!\nJane: Well, it looks like it's just going to be you and me then. Not to worry. We'll take lots of photos to show everyone!",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Question 1",
+     "instruction": "You are going to listen to Mark and Jane discussing the food festival. What is the main topic of their conversation? Choose the best answer, A, B or C.",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "What is the main topic of their conversation?",
+       "options": [
+        "The activities they want to see there.",
+        "The friends they will invite to the festival.",
+        "The reasons their other friends can't go."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Chủ đề chính của cuộc trò chuyện là gì?\n\nVị trí: Cả bài.\n\nTranscript: “Well, I'm afraid most of them are busy” … “it looks like it's just going to be you and me then”\n\nPhân tích: Họ lần lượt nói lý do từng người bạn KHÔNG đi được → C. Không bàn hoạt động ở lễ hội (A); không phải danh sách mời (B)."
+      }
+     ]
+    },
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 2–7",
+     "instruction": "Listen again and match the people, 2–7, with the reasons, A–H. There are more reasons than people, so you won't use all the letters.",
+     "matchingOptions": [
+      "is going sightseeing",
+      "can't afford to go",
+      "is working",
+      "is going to a restaurant",
+      "is helping someone",
+      "is doing something with their flatmate",
+      "is in a different country",
+      "is studying"
+     ],
+     "matchingOptionsTitle": "Reasons",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 2,
+       "type": "matching",
+       "questionText": "Marco",
+       "correctAnswer": "B",
+       "explanation": "Dịch: Marco\n\nVị trí: Đầu bài.\n\nTranscript: “Mohammed says Marco has no money”\n\nPhân tích: no money = can't afford to go (MINI TIP 08.B) → B. Lễ hội miễn phí nhưng phải đi tàu điện ngầm và mua đồ ăn."
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "Mohammed",
+       "correctAnswer": "F",
+       "explanation": "Dịch: Mohammed\n\nVị trí: Ngay sau Marco.\n\nTranscript: “Mohammed can't go because he is helping his flatmate decorate his room”\n\nPhân tích: Làm việc cùng flatmate → F. (E \"helping someone\" cũng gần đúng nhưng F cụ thể hơn — Hang Vie mới là E.)"
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching",
+       "questionText": "Pierre",
+       "correctAnswer": "A",
+       "explanation": "Dịch: Pierre\n\nVị trí: Giữa bài.\n\nTranscript: “Is he at work?” … “No, his parents are coming from France and he's going to show them around London … you know, Big Ben, Tower Bridge”\n\nPhân tích: BẪY: Mark đoán đang làm việc (C) nhưng Jane nói \"No\". Dẫn bố mẹ đi xem Big Ben, Tower Bridge = sightseeing → A."
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching",
+       "questionText": "Hang Vie",
+       "correctAnswer": "E",
+       "explanation": "Dịch: Hang Vie\n\nVị trí: Khi nói về nhà hàng của mẹ Hang Vie.\n\nTranscript: “she's going to help with the cooking for her family's party”\n\nPhân tích: BẪY: có nhắc \"Chinese restaurant\" (D) nhưng đó là nghề của mẹ. Cô ấy giúp nấu ăn → E."
+      },
+      {
+       "questionNumber": 6,
+       "type": "matching",
+       "questionText": "Lucy",
+       "correctAnswer": "G",
+       "explanation": "Dịch: Lucy\n\nVị trí: Gần cuối.\n\nTranscript: “her flatmate said she was on holiday in Italy”\n\nPhân tích: Đang ở Ý → G. Có từ \"flatmate\" nhưng chỉ là người nghe điện thoại → không chọn F."
+      },
+      {
+       "questionNumber": 7,
+       "type": "matching",
+       "questionText": "Larissa",
+       "correctAnswer": "H",
+       "explanation": "Dịch: Larissa\n\nVị trí: Cuối bài.\n\nTranscript: “She's got a really important exam, so she needs to prepare for it”\n\nPhân tích: prepare for an exam = studying → H."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U05-L1"
+  },
+  {
+   "title": "Mindset 0 · Unit 5 — A cooking demonstration (introduction)",
+   "description": "A chef introduces the recipe he is going to cook.",
+   "partNumber": 1,
+   "audioFile": "MindsetIELTS_Foundation_09.mp3",
+   "transcript": "Chef: Today, I'm going to show you how to make one of my favourite recipes. It's a type of food that's been popular for thousands of years. The Jiaozi or dumplings are beautiful and have the shape of a half-moon. You start by making them in a similar way to noodles. You need to make some dough first, but this is quite easy.",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Question 1",
+     "instruction": "You are going to listen to a chef giving a cooking demonstration. Listen to the introduction. Which recipe is he going to cook?",
+     "imageUrl": "media:m0u05-recipes.jpg",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Which recipe is the chef going to cook?",
+       "options": [
+        "noodles",
+        "mooncakes",
+        "dumplings"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Đầu bếp sắp nấu món gì?\n\nVị trí: Cả đoạn giới thiệu.\n\nTranscript: “The Jiaozi or dumplings are beautiful and have the shape of a half-moon” … “You start by making them in a similar way to noodles”\n\nPhân tích: BẪY: có nhắc \"noodles\" nhưng chỉ để so sánh cách làm. Món chính là dumplings (há cảo, hình bán nguyệt) → C."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U05-L2"
+  },
+  {
+   "title": "Mindset 0 · Unit 5 — How to make dumplings",
+   "description": "The second part of the chef's cooking demonstration.",
+   "partNumber": 1,
+   "audioFile": "MindsetIELTS_Foundation_10.mp3",
+   "transcript": "Chef: OK, so what do you need to make the dumplings? First of all, you need to make the cases. These are the cases which you'll put the other ingredients in. To make the cases, you need to make the dough. Of course, you need flour for this. To make 20 cases, you'll need four cups of flour. Then, mix the flour with two cups of water. Don't forget to add some salt, but only a little to add some taste.\nWhen you've mixed the ingredients, leave the dough for ten minutes in the bowl to make sure it's ready. You can make the filling to go inside the dough while you wait.\nThere are two main ingredients in the filling. Firstly, you have the cabbage. You need to chop this up finely and add it to another important ingredient, the meat. You can use any meat, but today I'm using lamb. Put the meat and cabbage together and mix it by hand. When it's mixed well, you can add some other ingredients. In China, people like to add spring onions to their dumplings and I do too! I'd like some seafood today, too, so I'm going to add some shrimps. Chop the spring onions and shrimps into small pieces and mix them together with the rest of the filling. To make sure that everything sticks together, add some vegetable oil.\nNow that the mixture is ready, you need to finish the cases. First, cut the dough into twenty pieces, making sure they're all the same size, and roll them into flat little circular shapes. Put the mixture into the centre of the cases. Make sure you don't put too much filling in at this stage otherwise you won't be able to close the cases and all the filling will come out when it's cooking. Then, fold them into half-moon shapes. Finally, boil the dumplings three times, and there you have it. Delicious half-moon dumplings ready to eat.",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Questions 1–8",
+     "instruction": "Listen to the second part of the chef's demonstration. Complete the descriptions of the diagram using ONE verb from the box: boil, chop (x2), cut, fold, mix (x2), roll.",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "You need to ____ water with flour to make the cases.",
+       "correctAnswer": "mix",
+       "explanation": "Dịch: Bạn cần ____ nước với bột để làm vỏ bánh.\n\nVị trí: Đầu phần hướng dẫn.\n\nTranscript: “Then, mix the flour with two cups of water”\n\nPhân tích: mix (trộn)."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "You need to ____ the cabbage to make the filling.",
+       "correctAnswer": "chop",
+       "explanation": "Dịch: Bạn cần ____ bắp cải để làm nhân.\n\nVị trí: Phần nhân bánh.\n\nTranscript: “You need to chop this up finely”\n\nPhân tích: chop (băm/thái nhỏ)."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "You ____ the meat and cabbage by hand.",
+       "correctAnswer": "mix",
+       "explanation": "Dịch: Bạn ____ thịt và bắp cải bằng tay.\n\nVị trí: Ngay sau đó.\n\nTranscript: “Put the meat and cabbage together and mix it by hand”\n\nPhân tích: mix."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "You need to ____ the spring onions and shrimps into small pieces.",
+       "correctAnswer": "chop",
+       "explanation": "Dịch: Bạn cần ____ hành lá và tôm thành miếng nhỏ.\n\nVị trí: Phần thêm hải sản.\n\nTranscript: “Chop the spring onions and shrimps into small pieces”\n\nPhân tích: chop."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "You need to ____ the dough into 20 equal pieces to make the cases.",
+       "correctAnswer": "cut",
+       "explanation": "Dịch: Bạn cần ____ bột thành 20 phần bằng nhau.\n\nVị trí: Phần hoàn thiện vỏ.\n\nTranscript: “First, cut the dough into twenty pieces, making sure they're all the same size”\n\nPhân tích: cut (cắt). \"the same size\" = equal."
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Then you ____ the dough into flat cases.",
+       "correctAnswer": "roll",
+       "explanation": "Dịch: Sau đó bạn ____ bột thành vỏ dẹt.\n\nVị trí: Ngay sau khi cắt.\n\nTranscript: “roll them into flat little circular shapes”\n\nPhân tích: roll (cán)."
+      },
+      {
+       "questionNumber": 7,
+       "type": "fill-blank",
+       "questionText": "You ____ the dough into half-moon shapes.",
+       "correctAnswer": "fold",
+       "explanation": "Dịch: Bạn ____ bột thành hình bán nguyệt.\n\nVị trí: Sau khi cho nhân.\n\nTranscript: “Then, fold them into half-moon shapes”\n\nPhân tích: fold (gấp)."
+      },
+      {
+       "questionNumber": 8,
+       "type": "fill-blank",
+       "questionText": "You ____ the dumplings three times and they are ready to eat.",
+       "correctAnswer": "boil",
+       "explanation": "Dịch: Bạn ____ bánh ba lần là có thể ăn.\n\nVị trí: Câu cuối.\n\nTranscript: “Finally, boil the dumplings three times”\n\nPhân tích: boil (luộc)."
+      }
+     ],
+     "imageUrl": "media:m0u05-dumplings.jpg"
+    }
+   ],
+   "courseRef": "M0-U05-L3"
+  }
+ ]
+}

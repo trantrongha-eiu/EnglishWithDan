@@ -1,0 +1,199 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 0 · Unit 1 — A Day in the Life",
+   "content": "<p><em>Three college students from around the world tell us about their daily routine.</em></p>\n\n<h3>NINA — NORWAY</h3>\n\n<p>I live in a village on Norway's Atlantic coast. I get up at 7:30am and walk to college. Classes begin at 8:30am and finish at 3pm. After that, I go to one of the college clubs. These are not very expensive and there are lots to choose from. I do athletics and football but you can also do things like folk dancing and cross-country skiing. When my parents come home from work, my dad makes dinner and we all eat together. After that, my mum takes me out for a driving lesson. I've got my test soon and I need to practise!</p>\n\n<h3>AVA — AUSTRALIA</h3>\n\n<p>I'm from a small town in Queensland. Most people in Australia live near the coast, but we live on a cattle farm in the centre of the country. I get up at around 7am and have breakfast. My mum teaches at my college, so I usually go with her in the car instead of taking the bus. College starts at 8:30am and finishes at 4pm. When I get home, I help my dad on the farm for a few hours. In the evenings, I try to watch TV but I'm usually too tired. I go to bed at about 10:00pm.</p>\n\n<h3>MICHAEL — BRAZIL</h3>\n\n<p>I live in Rio de Janeiro. I get up at 6am and catch a bus to college at 6:30am. Lessons start at 7:20am. We have a break at 9:50am and then study until 12:30pm. I get home at about 1:40pm. After that, I often go to the beach with my friends to swim in the ocean or play beach volleyball, but I sometimes also just stay at home to sleep or study. In the evenings, I cook dinner for my family, then we watch TV or listen to the radio before bed. I switch off my light at about 10pm.</p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–7",
+     "instruction": "Read the article again and the sentences. Choose the best answer, A, B or C. (Example: Who finishes studying before 1pm? → B Michael)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Who works with a member of the family after college?",
+       "options": [
+        "Ava",
+        "Michael",
+        "Nina"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Ava: \"When I get home, I help my dad on the farm for a few hours.\" Nina chỉ được mẹ dạy lái xe (không phải làm việc); Michael nấu ăn cho gia đình chứ không làm việc CÙNG ai. → A"
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Who goes out in the car in the evenings?",
+       "options": [
+        "Ava",
+        "Michael",
+        "Nina"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Nina: \"After that, my mum takes me out for a driving lesson.\" Ava đi ô tô vào BUỔI SÁNG tới trường. → C"
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Who gets a lift in a car to college most mornings?",
+       "options": [
+        "Ava",
+        "Michael",
+        "Nina"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Ava: \"My mum teaches at my college, so I usually go with her in the car instead of taking the bus.\" usually = most mornings. Michael đi xe buýt, Nina đi bộ. → A"
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Who prepares the evening meal for the family?",
+       "options": [
+        "Ava",
+        "Michael",
+        "Nina"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Michael: \"In the evenings, I cook dinner for my family.\" Ở nhà Nina, bố nấu bữa tối (my dad makes dinner). → B"
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "Who pays to do extra activities in the afternoons?",
+       "options": [
+        "Ava",
+        "Michael",
+        "Nina"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Nina: \"I go to one of the college clubs. These are **not very expensive**\" → có trả tiền (dù rẻ). Michael chơi bóng chuyền bãi biển miễn phí. → C"
+      },
+      {
+       "questionNumber": 6,
+       "type": "multiple-choice",
+       "questionText": "Who finds it difficult to watch TV in the evenings?",
+       "options": [
+        "Ava",
+        "Michael",
+        "Nina"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Ava: \"I try to watch TV but I'm usually too tired.\" Michael xem TV với gia đình bình thường. → A"
+      },
+      {
+       "questionNumber": 7,
+       "type": "multiple-choice",
+       "questionText": "Who lives a long way from the sea?",
+       "options": [
+        "Ava",
+        "Michael",
+        "Nina"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Ava: \"Most people in Australia live near the coast, but we live on a cattle farm in the **centre of the country**.\" Nina sống ở bờ biển, Michael đi biển mỗi chiều. → A"
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U01-R1"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 0 · Unit 1 — A student exchange trip",
+   "description": "Carlos and Jack talk about Carlos's student exchange trip and Jack's family.",
+   "partNumber": 1,
+   "audioFile": "MindsetIELTS_Foundation_02.mp3",
+   "transcript": "Carlos: Hi Jack! I'm really excited about coming to stay with you at your house on the student exchange trip to Australia next term.\nJack: Me too, Carlos! I know you're going to have a great time at my school and with my family.\nCarlos: Tell me a bit about your family. What do you all like doing?\nJack: Well, I love playing volleyball and basketball. I do volleyball once a week and basketball twice a week.\nCarlos: I remember you have a brother. What does he do? Is he interested in sport, too?\nJack: No, not really. He prefers staying at home and reading. He's a member of our local gym but he never goes.\nCarlos: Oh, that sounds like me! You've got a sister too, haven't you?\nJack: Yes, she's really good at painting and drawing. Some of her work is hanging up on the walls at home, so you'll be able to see it when you come.\nCarlos: That would be great. I'd love to see it. What about your parents?\nJack: Well, my mum loves growing things. She spends a lot of time outdoors, planting flowers and cutting the grass.\nCarlos: That sounds interesting. And your dad? What does he like doing?\nJack: Well, he's really good at building and fixing things. If anything gets broken around the house, he fixes it. He makes new things, too, like furniture.\nCarlos: Great! And I know your grandma lives with you. What does she like doing?\nJack: Well, we're lucky – she's an amazing cook and makes us all wonderful meals every day. She already wants to know what you like eating.\nCarlos: [Laughs] Really? Well, that gives me an idea for a present for her – a recipe book from where I'm from in the USA.\nJack: Perfect!",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–2",
+     "instruction": "You are going to listen to two friends, Carlos and Jack, talking about a student exchange trip. Listen and decide which countries Carlos and Jack come from.",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Which country does Jack come from?",
+       "options": [
+        "Australia",
+        "the USA",
+        "the UK"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Jack đến từ nước nào?\n\nVị trí: Ngay câu đầu tiên của Carlos.\n\nTranscript: “I'm really excited about coming to stay with you at your house on the student exchange trip to Australia”\n\nPhân tích: Carlos sẽ tới NHÀ Jack trong chuyến trao đổi tới Úc → Jack sống ở Úc → Australia."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Which country does Carlos come from?",
+       "options": [
+        "Australia",
+        "the USA",
+        "the UK"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Carlos đến từ nước nào?\n\nVị trí: Cuối bài, khi Carlos nghĩ quà cho bà của Jack.\n\nTranscript: “a recipe book from where I'm from in the USA”\n\nPhân tích: \"where I'm from in the USA\" = quê tôi ở Mỹ → the USA."
+      }
+     ]
+    },
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 3–7",
+     "instruction": "Listen again. What activity does each member of Jack's family like doing? For questions 3–7, choose the correct letter A–H next to each person. (Example: Jack → H playing team sports)",
+     "matchingOptions": [
+      "cooking",
+      "going to the gym",
+      "taking care of the garden",
+      "doing art",
+      "repairing things",
+      "reading books",
+      "shopping",
+      "playing team sports"
+     ],
+     "matchingOptionsTitle": "Activity",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "Jack's brother",
+       "correctAnswer": "F",
+       "explanation": "Dịch: Anh trai của Jack\n\nVị trí: Sau khi Jack nói về bóng chuyền, bóng rổ.\n\nTranscript: “He prefers staying at home and reading” … “He's a member of our local gym but he never goes”\n\nPhân tích: prefers… reading = thích đọc sách → F. BẪY: có nhắc \"gym\" nhưng \"never goes\" → không chọn B (MINI TIP 17.1)."
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching",
+       "questionText": "Jack's sister",
+       "correctAnswer": "D",
+       "explanation": "Dịch: Chị/em gái của Jack\n\nVị trí: Khi Carlos hỏi \"You've got a sister too\".\n\nTranscript: “she's really good at painting and drawing”\n\nPhân tích: painting and drawing = vẽ → doing art → D."
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching",
+       "questionText": "Jack's mum",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Mẹ của Jack\n\nVị trí: Khi Carlos hỏi về bố mẹ.\n\nTranscript: “my mum loves growing things. She spends a lot of time outdoors, planting flowers and cutting the grass”\n\nPhân tích: trồng cây, trồng hoa, cắt cỏ = chăm sóc vườn → C."
+      },
+      {
+       "questionNumber": 6,
+       "type": "matching",
+       "questionText": "Jack's dad",
+       "correctAnswer": "E",
+       "explanation": "Dịch: Bố của Jack\n\nVị trí: Ngay sau phần nói về mẹ.\n\nTranscript: “he's really good at building and fixing things. If anything gets broken around the house, he fixes it”\n\nPhân tích: fixing = repairing (MINI TIP 17.4) → E. \"makes new things, like furniture\" chỉ là ý thêm."
+      },
+      {
+       "questionNumber": 7,
+       "type": "matching",
+       "questionText": "Jack's grandmother",
+       "correctAnswer": "A",
+       "explanation": "Dịch: Bà của Jack\n\nVị trí: Phần cuối hội thoại.\n\nTranscript: “she's an amazing cook and makes us all wonderful meals every day”\n\nPhân tích: amazing cook = nấu ăn giỏi → cooking → A."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U01-L1"
+  }
+ ]
+}

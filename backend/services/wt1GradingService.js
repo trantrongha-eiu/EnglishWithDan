@@ -277,6 +277,21 @@ function buildAiPrompt(exercise) {
   if (r.commonErrors && r.commonErrors.length) {
     lines.push(`\nĐối chiếu với các lỗi hay gặp: ${r.commonErrors.join('; ')}.`);
   }
+  if (r.bandFocus && r.bandFocus.length) {
+    lines.push(`\nTrình độ người học: ${r.bandFocus.join(', ')} — chấm theo band descriptors nhưng nhận xét phù hợp trình độ này.`);
+  }
+  // checkEssay's system instruction only says "respond in JSON" — without the
+  // shape spelled out the model invents its own keys and gradeWritingAI below
+  // reads nulls (no bands, no feedback, no corrections on screen).
+  lines.push(
+    '\nTrả về DUY NHẤT một object JSON đúng cấu trúc sau:\n' +
+    '{"scores":{"taskAchievement":<0-9>,"coherence":<0-9>,"lexical":<0-9>,"grammar":<0-9>},' +
+    '"overallBand":<0-9, bội số của 0.5>,' +
+    '"feedbackVi":"<nhận xét tiếng Việt 3–5 câu: làm tốt gì, cần sửa gì, theo đúng yêu cầu đề>",' +
+    '"corrections":[{"original":"<cụm sai trích nguyên văn>","corrected":"<cách sửa>","note":"<giải thích ngắn tiếng Việt>"}],' +
+    '"usedStructures":["<cấu trúc/từ mục tiêu đã dùng>"],"missingStructures":["<cấu trúc/từ mục tiêu còn thiếu>"],' +
+    '"sentenceFeedback":[{"sentence":"<câu>","comment":"<nhận xét tiếng Việt>"}]}',
+  );
   return lines.filter(Boolean).join('\n');
 }
 

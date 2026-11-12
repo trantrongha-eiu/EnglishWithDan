@@ -9,6 +9,7 @@
 const ReadingTest = require('../models/ReadingTest');
 const ListeningTest = require('../models/ListeningTest');
 const ListeningSection = require('../models/ListeningSection');
+const { NOT_COURSE } = require('../utils/courseContent');
 const WritingTask1 = require('../models/WritingTask1');
 const WritingTask2 = require('../models/WritingTask2');
 const SpeakingQuestion = require('../models/SpeakingQuestion');
@@ -40,7 +41,7 @@ async function search(query, user) {
   ] = await Promise.all([
     ReadingTest.find({ name: re, isActive: true }).select('name').limit(RESULTS_PER_CATEGORY).lean(),
     ListeningTest.find({ name: re, isActive: true }).select('name').limit(RESULTS_PER_CATEGORY).lean(),
-    ListeningSection.find({ title: re, isActive: true }).select('title partNumber').limit(RESULTS_PER_CATEGORY).lean(),
+    ListeningSection.find({ title: re, isActive: true, ...NOT_COURSE }).select('title partNumber').limit(RESULTS_PER_CATEGORY).lean(),
     WritingTask1.find({ prompt: re, isActive: true }).select('prompt').limit(RESULTS_PER_CATEGORY).lean(),
     WritingTask2.find({ prompt: re, isActive: true }).select('prompt').limit(RESULTS_PER_CATEGORY).lean(),
     // Many questions share the same topic — search returns distinct topics,

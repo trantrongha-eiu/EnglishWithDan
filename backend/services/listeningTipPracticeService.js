@@ -18,6 +18,7 @@
 
 const ListeningTip = require('../models/ListeningTip');
 const ListeningSection = require('../models/ListeningSection');
+const { NOT_COURSE } = require('../utils/courseContent');
 const { gradeQuestionGroups } = require('./listeningService');
 const { listeningGuide, listeningBeforeText, LISTENING_TYPE_WHY } = require('./tipPracticeGuides');
 
@@ -1204,8 +1205,8 @@ function shuffle(arr, rng) {
 // any active section with a transcript to show the answer's sentence.
 function loadSections({ audio = true } = {}) {
   const filter = audio
-    ? { isActive: true, audioUrl: { $ne: '' }, 'dictationSentences.0': { $exists: true } }
-    : { isActive: true, transcript: { $nin: ['', null] } };
+    ? { isActive: true, ...NOT_COURSE, audioUrl: { $ne: '' }, 'dictationSentences.0': { $exists: true } }
+    : { isActive: true, ...NOT_COURSE, transcript: { $nin: ['', null] } };
   return ListeningSection.find(filter)
     .select('title partNumber audioUrl audioDuration transcript questionGroups dictationSentences isActualTest')
     .lean();

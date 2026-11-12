@@ -1,0 +1,831 @@
+{
+ "course": {
+  "title": "Mindset for IELTS Foundation — Khóa học theo giáo trình",
+  "skill": "integrated",
+  "taskType": "foundation",
+  "language": "vi",
+  "targetBand": "A2 → 4.0–4.5",
+  "description": "Bám sát giáo trình Mindset for IELTS Foundation (Cambridge): 10 unit chủ đề đời sống — Daily life, House and home, Hobbies, Travel, Food, Transport, Jobs & study, Health, Language, Science & technology. Mỗi unit gồm Từ vựng → Reading → Ngữ pháp → Writing → Listening → Speaking → Ôn tập; bài giảng tiếng Việt, Reading/Listening làm trên giao diện thi thật (có audio gốc), Writing & Speaking được AI chấm, từ vựng mỗi phần lưu thẳng vào Sổ 1–5.",
+  "code": "MINDSET-0"
+ },
+ "modules": [
+  {
+   "code": "M0-U01",
+   "order": 1,
+   "title": "Unit 1 · Cuộc sống hằng ngày",
+   "titleEn": "UNIT 01: DAILY LIFE — sách tr. 10–19",
+   "outcomes": [
+    "Hiểu và nói về các hoạt động trong thói quen hằng ngày (daily routine)",
+    "Dùng thì hiện tại đơn và trạng từ chỉ tần suất (always, usually, often, sometimes, never)",
+    "Đọc nhiều đoạn văn ngắn để chọn đáp án đúng; đoán nghĩa từ qua ngữ cảnh",
+    "Viết đoạn văn mô tả thói quen hằng ngày",
+    "Nghe hội thoại về chuyến trao đổi học sinh và nối thông tin",
+    "Nói 1–2 phút về một ngày của bạn"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M0-U01-L1",
+   "moduleCode": "M0-U01",
+   "order": 1,
+   "title": "🔤 Từ vựng: hoạt động hằng ngày",
+   "titleEn": "Lead-in · Vocabulary and speaking",
+   "durationMinutes": 35,
+   "objectives": [
+    "Gọi tên 10 hoạt động hằng ngày trong tranh (get up, catch the bus, go online…)",
+    "Chọn đúng động từ đi kèm: catch the bus, do sightseeing, chat to friends…",
+    "Lưu 18 cụm từ vào Sổ 1 và luyện đến khi đúng ≥70%"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Cụm từ chỉ thói quen hằng ngày",
+     "titleEn": "Daily routine collocations",
+     "formula": [
+      "**động từ + danh từ** đi thành cụm cố định — học cả cụm, đừng học từng từ lẻ"
+     ],
+     "usage": [
+      "**get up** (thức dậy, ra khỏi giường) ≠ **stand up** (đứng dậy) ≠ **stay up** (thức khuya)",
+      "**catch / take the bus** (bắt xe buýt) — KHÔNG nói \"go the bus\"",
+      "**have breakfast / lunch / dinner** — KHÔNG dùng \"eat a breakfast\"",
+      "**do some sightseeing** (đi tham quan), **do exercise**, **do homework**",
+      "**go online** (lên mạng), **go to bed**, **go to school/college**",
+      "**watch TV** (xem TV) — \"see\" dùng cho phim ở rạp/nhìn thấy; \"look at\" là nhìn vào"
+     ],
+     "examples": [
+      {
+       "en": "Ping gets up at 7:30am every morning.",
+       "vi": "Ping thức dậy lúc 7:30 mỗi sáng."
+      },
+      {
+       "en": "At 8:30am, he catches the bus to his language school.",
+       "vi": "Lúc 8:30 cậu ấy bắt xe buýt đến trường ngôn ngữ."
+      },
+      {
+       "en": "He often does some sightseeing with his friends.",
+       "vi": "Cậu ấy thường đi tham quan cùng bạn bè."
+      }
+     ],
+     "notes": [
+      "**come from** + nơi chốn = đến từ (quê ở): The students all come from different countries.",
+      "**chat to/with someone** = trò chuyện; \"tell\" phải có tân ngữ (tell somebody something)."
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 12,
+   "images": [
+    {
+     "url": "media:m0u01-leadin.jpg",
+     "caption": "Lead-in (tr. 10): Bạn làm những hoạt động nào mỗi ngày?"
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 1 · Từ vựng: hoạt động hằng ngày — 18 từ/cụm từ",
+    "words": [
+     {
+      "word": "get up",
+      "meaning": "thức dậy (ra khỏi giường)",
+      "example": "I get up at 7am every day."
+     },
+     {
+      "word": "stay up",
+      "meaning": "thức khuya",
+      "example": "I sometimes stay up late to watch films."
+     },
+     {
+      "word": "have breakfast",
+      "meaning": "ăn sáng",
+      "example": "Ping has breakfast with his host family."
+     },
+     {
+      "word": "catch the bus",
+      "meaning": "bắt xe buýt",
+      "example": "He catches the bus to his language school."
+     },
+     {
+      "word": "exercise",
+      "meaning": "tập thể dục",
+      "example": "I exercise for 30 minutes every morning."
+     },
+     {
+      "word": "study",
+      "meaning": "học bài",
+      "example": "I study English in the evening."
+     },
+     {
+      "word": "work",
+      "meaning": "làm việc",
+      "example": "My parents work in the city."
+     },
+     {
+      "word": "go online",
+      "meaning": "lên mạng",
+      "example": "In the evening, he watches TV or goes online."
+     },
+     {
+      "word": "watch TV",
+      "meaning": "xem TV",
+      "example": "We watch TV after dinner."
+     },
+     {
+      "word": "relax with friends",
+      "meaning": "thư giãn cùng bạn bè",
+      "example": "At the weekend, I relax with friends."
+     },
+     {
+      "word": "go to bed",
+      "meaning": "đi ngủ",
+      "example": "I go to bed at about 11pm."
+     },
+     {
+      "word": "chat to someone",
+      "meaning": "trò chuyện với ai đó",
+      "example": "Ping chats to his classmates during the day."
+     },
+     {
+      "word": "come from",
+      "meaning": "đến từ",
+      "example": "The students come from different countries around the world."
+     },
+     {
+      "word": "do some sightseeing",
+      "meaning": "đi tham quan",
+      "example": "He often does some sightseeing in the city."
+     },
+     {
+      "word": "host family",
+      "meaning": "gia đình bản xứ (nhận học sinh ở cùng)",
+      "example": "Ping lives with a host family in the UK."
+     },
+     {
+      "word": "language course",
+      "meaning": "khoá học ngôn ngữ",
+      "example": "He is doing a language course in the UK."
+     },
+     {
+      "word": "classmate",
+      "meaning": "bạn cùng lớp",
+      "example": "My classmates are very friendly."
+     },
+     {
+      "word": "daily routine",
+      "meaning": "thói quen hằng ngày",
+      "example": "My daily routine is quite busy."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U01-L2",
+   "moduleCode": "M0-U01",
+   "order": 2,
+   "title": "📖 Reading: chọn đáp án đúng từ nhiều đoạn văn",
+   "titleEn": "Reading: choose the correct answer · sentence completion · matching",
+   "durationMinutes": 50,
+   "objectives": [
+    "Đọc lướt (skim) 3 đoạn văn ngắn để nắm ý chính trong 1–2 phút",
+    "Làm dạng câu hỏi \"Who…?\" khi thông tin nằm rải rác ở nhiều đoạn",
+    "Đoán nghĩa từ mới dựa vào ngữ cảnh xung quanh",
+    "Nhận ra các cụm từ đồng nghĩa (do the laundry = wash the clothes)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Dạng bài: chọn đáp án đúng từ nhiều đoạn văn",
+     "titleEn": "Choose the correct answer — multiple texts",
+     "formula": [
+      "**Bước 1 – Skim**: đọc lướt cả 3 đoạn (1–2 phút), gạch chân hoạt động chính của từng người.",
+      "**Bước 2 – Đọc câu hỏi**: gạch từ khoá (keyword) — ví dụ \"**works** with a **member of the family** after college\".",
+      "**Bước 3 – Scan**: tìm ý đồng nghĩa trong CẢ 3 đoạn, vì nhiều người có thông tin gần giống nhau.",
+      "**Bước 4 – Kiểm tra**: loại 2 người còn lại bằng chứng cứ, chọn người khớp 100%."
+     ],
+     "usage": [
+      "Câu hỏi hiếm khi lặp lại đúng chữ trong bài — chúng **diễn đạt lại (paraphrase)**: \"prepares the evening meal\" = \"cook dinner\".",
+      "Thông tin về một câu hỏi thường xuất hiện ở **nhiều hơn một đoạn** (TIP 06 của sách): Ava và Nina đều đi ô tô, nhưng chỉ Ava đi ô tô **tới trường**."
+     ],
+     "examples": [
+      {
+       "en": "Who finishes studying before 1pm? → Michael: \"study until 12:30pm\"",
+       "vi": "Nina học đến 3pm, Ava đến 4pm → chỉ Michael đúng."
+      },
+      {
+       "en": "Who gets a lift in a car to college? → Ava: \"I usually go with her in the car\"",
+       "vi": "get a lift = được chở đi nhờ."
+      }
+     ],
+     "notes": [
+      "MINI TIP 6.1: đoạn nào cũng nhắc tới người thân — hãy xem ai **làm việc cùng** người thân **sau giờ học** (Ava giúp bố ở trang trại).",
+      "Đừng chọn chỉ vì thấy một từ giống câu hỏi — đọc cả câu để chắc nghĩa khớp."
+     ]
+    },
+    {
+     "title": "Đoán nghĩa từ qua ngữ cảnh",
+     "titleEn": "Guessing meaning from context",
+     "formula": [],
+     "usage": [
+      "Nhìn **từ loại**: đứng sau \"a/the\" thường là danh từ; sau \"I/we\" là động từ.",
+      "Nhìn **ví dụ đi kèm**: \"things **like** folk dancing and cross-country skiing\" → đây là các hoạt động/môn thể thao.",
+      "Nhìn **câu trước/sau**: \"My mum teaches at my college, so I go with her **in the car**\" → get a lift = được chở đi."
+     ],
+     "examples": [
+      {
+       "en": "We live on a cattle farm in the centre of the country.",
+       "vi": "cattle farm = trang trại nuôi bò (đoán qua \"farm\" + \"help my dad on the farm\")."
+      },
+      {
+       "en": "I switch off my light at about 10pm.",
+       "vi": "switch off = tắt (đèn) → nghĩa là đi ngủ."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 19,
+   "practiceLinks": [
+    {
+     "ref": "reading:M0-U01-R1",
+     "kind": "reading",
+     "title": "A Day in the Life — 3 học sinh, 7 câu hỏi \"Who…?\" (Ex. 5–6)",
+     "note": "Đọc lướt 1 lần, rồi chọn Ava / Michael / Nina cho từng câu. Có giải thích chi tiết sau khi nộp."
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 1 · Reading: chọn đáp án đúng từ nhiều đoạn văn — 20 từ/cụm từ",
+    "words": [
+     {
+      "word": "coast",
+      "meaning": "bờ biển",
+      "example": "I live in a village on Norway's Atlantic coast."
+     },
+     {
+      "word": "village",
+      "meaning": "ngôi làng",
+      "example": "My grandparents live in a small village."
+     },
+     {
+      "word": "college club",
+      "meaning": "câu lạc bộ ở trường",
+      "example": "After class, I go to one of the college clubs."
+     },
+     {
+      "word": "athletics",
+      "meaning": "điền kinh",
+      "example": "I do athletics and football."
+     },
+     {
+      "word": "folk dancing",
+      "meaning": "múa dân gian",
+      "example": "You can also do folk dancing."
+     },
+     {
+      "word": "driving lesson",
+      "meaning": "buổi học lái xe",
+      "example": "My mum takes me out for a driving lesson."
+     },
+     {
+      "word": "cattle farm",
+      "meaning": "trang trại nuôi bò",
+      "example": "We live on a cattle farm."
+     },
+     {
+      "word": "get a lift",
+      "meaning": "được chở đi nhờ",
+      "example": "I usually get a lift to college with my mum."
+     },
+     {
+      "word": "instead of",
+      "meaning": "thay vì",
+      "example": "I go in the car instead of taking the bus."
+     },
+     {
+      "word": "too tired",
+      "meaning": "quá mệt",
+      "example": "I'm usually too tired to watch TV."
+     },
+     {
+      "word": "break",
+      "meaning": "giờ giải lao",
+      "example": "We have a break at 9:50am."
+     },
+     {
+      "word": "switch off",
+      "meaning": "tắt (đèn, máy)",
+      "example": "I switch off my light at about 10pm."
+     },
+     {
+      "word": "lecture",
+      "meaning": "bài giảng (đại học)",
+      "example": "He goes to his lectures until midday."
+     },
+     {
+      "word": "flatmate",
+      "meaning": "bạn ở chung căn hộ",
+      "example": "He cooks dinner for his flatmates."
+     },
+     {
+      "word": "fall asleep",
+      "meaning": "ngủ thiếp đi",
+      "example": "He usually falls asleep at around midnight."
+     },
+     {
+      "word": "do the laundry",
+      "meaning": "giặt giũ quần áo",
+      "example": "I help my mum do the laundry."
+     },
+     {
+      "word": "tidy up",
+      "meaning": "dọn dẹp cho gọn",
+      "example": "I always tidy up my room in the evening."
+     },
+     {
+      "word": "wash up",
+      "meaning": "rửa bát đĩa",
+      "example": "My dad washes up after dinner."
+     },
+     {
+      "word": "put the rubbish out",
+      "meaning": "đem rác ra ngoài",
+      "example": "My brother sometimes puts the rubbish out."
+     },
+     {
+      "word": "do the cleaning",
+      "meaning": "lau dọn nhà cửa",
+      "example": "We all help and do the cleaning."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U01-L3",
+   "moduleCode": "M0-U01",
+   "order": 3,
+   "title": "🧩 Ngữ pháp: Hiện tại đơn & trạng từ tần suất",
+   "titleEn": "Grammar: present simple · adverbs of frequency",
+   "durationMinutes": 30,
+   "objectives": [
+    "Biết khi nào dùng hiện tại đơn: thói quen, việc lặp lại hằng ngày",
+    "Thêm đúng -s / -es / -ies cho he/she/it",
+    "Đặt trạng từ tần suất (always, usually, often, sometimes, never) đúng vị trí"
+   ],
+   "keyLanguage": [
+    "Hiện tại đơn dùng để nói về thói quen & hoạt động hằng ngày: I get up at 7am.",
+    "he/she/it: Nhóm 1 thêm -s (gets up) · Nhóm 2 động từ tận cùng -s, -ch, -sh, -x thêm -es (watches) · Nhóm 3 phụ âm + y → -ies (tries, studies) · Nhóm 4 go, do, wash… thêm -es (goes, washes)",
+    "Trạng từ tần suất: never (0%) → sometimes → often → usually → always (100%)",
+    "Vị trí: ĐỨNG TRƯỚC động từ thường (He always gets up early) · ĐỨNG SAU \"be\" (I am never late)"
+   ],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 5,
+   "totalPoints": 43,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Present Simple",
+     "note": "bài giảng + bài luyện chia động từ, câu phủ định và câu hỏi",
+     "url": "/essential-grammar.html?lesson=present-simple"
+    },
+    {
+     "kind": "grammar",
+     "title": "Câu S + V cơ bản",
+     "note": "viết câu hoàn chỉnh chủ ngữ + động từ (nền tảng cho phần Writing)",
+     "url": "/essential-grammar.html?lesson=sb-subject-verb"
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L4",
+   "moduleCode": "M0-U01",
+   "order": 4,
+   "title": "✍️ Writing: mô tả thói quen hằng ngày",
+   "titleEn": "Writing: describing a daily routine · a description",
+   "durationMinutes": 50,
+   "objectives": [
+    "Viết đoạn văn 70–120 từ mô tả một ngày: hoạt động + thời gian",
+    "Nối các câu bằng từ chỉ trình tự: First, After that, Next, Then, Finally",
+    "Dùng trạng từ tần suất và chia đúng hiện tại đơn",
+    "Tự sửa lỗi chính tả, ngữ pháp, dấu câu trước khi nộp (Ex. 14)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Bố cục đoạn văn mô tả một ngày",
+     "titleEn": "Describing a daily routine",
+     "formula": [
+      "**Câu mở đầu**: giới thiệu người viết/nhân vật — Julia Grant is 21 years old and works as a volunteer…",
+      "**Thân đoạn (theo thứ tự thời gian)**: Every morning, she … at 7am. **After that**, … **Next**, … **Then**, …",
+      "**Câu kết**: hoạt động cuối ngày / cảm nhận — She usually goes to bed at 10pm because she is very tired."
+     ],
+     "usage": [
+      "Mỗi câu nên có: **thời gian + hoạt động** (at 7am / in the afternoon / after lunch).",
+      "Từ trình tự đứng đầu câu, theo sau là dấu phẩy: **After that,** she has breakfast.",
+      "Thêm **trạng từ tần suất** cho tự nhiên: she **usually** works on her laptop, she **sometimes** goes snorkelling."
+     ],
+     "examples": [
+      {
+       "en": "Every morning, she gets up at 6:30am.",
+       "vi": "Mỗi sáng cô ấy dậy lúc 6:30."
+      },
+      {
+       "en": "After that, she always checks her emails on her laptop.",
+       "vi": "Sau đó, cô ấy luôn kiểm tra email trên laptop."
+      },
+      {
+       "en": "In the evening, she often sits by a campfire with her friends.",
+       "vi": "Buổi tối cô ấy thường ngồi bên lửa trại với bạn."
+      }
+     ],
+     "notes": [
+      "Lỗi hay gặp: quên -s/-es (she **go** ✗ → she **goes** ✓), đặt trạng từ sai chỗ (she goes always ✗).",
+      "Viết **in hoa** đầu câu và tên riêng (Fiji, Julia), kết thúc câu bằng dấu chấm."
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 27,
+   "images": [
+    {
+     "url": "media:m0u01-julia.jpg",
+     "caption": "Ex. 13 (tr. 15): Một ngày của Julia Grant — tình nguyện viên dự án khoa học ở Fiji"
+    }
+   ],
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 1 · Writing: mô tả thói quen hằng ngày — 14 từ/cụm từ",
+    "words": [
+     {
+      "word": "volunteer",
+      "meaning": "tình nguyện viên",
+      "example": "Julia works as a volunteer on a science project."
+     },
+     {
+      "word": "science project",
+      "meaning": "dự án khoa học",
+      "example": "She works on a science project in Fiji."
+     },
+     {
+      "word": "after that",
+      "meaning": "sau đó",
+      "example": "After that, she has breakfast."
+     },
+     {
+      "word": "next",
+      "meaning": "tiếp theo",
+      "example": "Next, she works on her laptop."
+     },
+     {
+      "word": "then",
+      "meaning": "rồi thì, sau đó",
+      "example": "Then, she cooks lunch with her friends."
+     },
+     {
+      "word": "finally",
+      "meaning": "cuối cùng",
+      "example": "Finally, she goes to bed at 10pm."
+     },
+     {
+      "word": "every morning",
+      "meaning": "mỗi buổi sáng",
+      "example": "Every morning, she gets up at 6am."
+     },
+     {
+      "word": "check emails",
+      "meaning": "kiểm tra email",
+      "example": "She checks her emails after breakfast."
+     },
+     {
+      "word": "hang out the washing",
+      "meaning": "phơi quần áo",
+      "example": "She hangs out the washing in the garden."
+     },
+     {
+      "word": "read on the beach",
+      "meaning": "đọc sách trên bãi biển",
+      "example": "In the afternoon, she sometimes reads on the beach."
+     },
+     {
+      "word": "go snorkelling",
+      "meaning": "đi lặn ngắm san hô",
+      "example": "At the weekend, she goes snorkelling."
+     },
+     {
+      "word": "campfire",
+      "meaning": "lửa trại",
+      "example": "They sit around a campfire in the evening."
+     },
+     {
+      "word": "take out the bins",
+      "meaning": "đem thùng rác ra ngoài",
+      "example": "My brother often takes out the bins."
+     },
+     {
+      "word": "prepare a meal",
+      "meaning": "chuẩn bị bữa ăn",
+      "example": "My sister prepares a meal for the family."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U01-L5",
+   "moduleCode": "M0-U01",
+   "order": 5,
+   "title": "🎧 Listening: nối thông tin (matching)",
+   "titleEn": "Listening: matching — a student exchange trip",
+   "durationMinutes": 40,
+   "objectives": [
+    "Đọc trước câu hỏi, đoán loại thông tin sẽ nghe",
+    "Nghe hiểu hội thoại giữa hai người bạn về chuyến trao đổi học sinh",
+    "Nối người với hoạt động — nhận ra từ đồng nghĩa và bẫy (distractor)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Dạng bài Listening: Matching",
+     "titleEn": "Listening — matching people and activities",
+     "formula": [
+      "**Trước khi nghe (30 giây)**: đọc danh sách A–H, nghĩ ra từ đồng nghĩa: repairing ≈ fixing; doing art ≈ painting, drawing.",
+      "**Trong khi nghe**: thông tin đến **theo thứ tự** người 1 → 5; nghe tên người rồi tập trung vào hoạt động.",
+      "**Cẩn thận bẫy**: người nói có thể nhắc một hoạt động rồi **phủ định** nó."
+     ],
+     "usage": [
+      "Đáp án hiếm khi giống hệt từ trong danh sách — nghe **ý nghĩa** (MINI TIP 17.0): Jack \"volleyball and basketball\" → H playing team sports.",
+      "MINI TIP 17.1: anh trai Jack \"is a member of our local gym but he **never goes**\" → KHÔNG chọn B going to the gym.",
+      "MINI TIP 17.4: \"fixing\" ≈ **repairing** → bố của Jack = E."
+     ],
+     "examples": [
+      {
+       "en": "She spends a lot of time outdoors, planting flowers and cutting the grass.",
+       "vi": "→ taking care of the garden (chăm sóc vườn)."
+      },
+      {
+       "en": "She's an amazing cook and makes us all wonderful meals.",
+       "vi": "→ cooking."
+      }
+     ],
+     "notes": [
+      "Trong bài thi IELTS có nhiều lựa chọn hơn số câu hỏi (8 lựa chọn cho 5 câu) — sẽ có 3 lựa chọn KHÔNG dùng."
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 7,
+   "images": [
+    {
+     "url": "media:m0u01-exchange-web.jpg",
+     "caption": "Ex. 15 (tr. 15): trang web chương trình trao đổi học sinh"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M0-U01-L1",
+     "kind": "listening",
+     "title": "Carlos & Jack — chuyến trao đổi học sinh (Ex. 16–17)",
+     "note": "Nghe audio gốc của sách: chọn quốc gia của 2 bạn, rồi nối 5 người thân với hoạt động A–H. Có transcript & giải thích."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 1 · Listening: nối thông tin (matching) — 15 từ/cụm từ",
+    "words": [
+     {
+      "word": "student exchange",
+      "meaning": "trao đổi học sinh",
+      "example": "I'm coming on the student exchange trip to Australia."
+     },
+     {
+      "word": "abroad",
+      "meaning": "ở nước ngoài",
+      "example": "Students can spend a term abroad."
+     },
+     {
+      "word": "term",
+      "meaning": "học kỳ",
+      "example": "A term is less than a year."
+     },
+     {
+      "word": "pocket money",
+      "meaning": "tiền tiêu vặt",
+      "example": "You need to take some pocket money."
+     },
+     {
+      "word": "join in with",
+      "meaning": "tham gia cùng",
+      "example": "Join in with family activities."
+     },
+     {
+      "word": "team sports",
+      "meaning": "môn thể thao đồng đội",
+      "example": "Jack loves playing team sports like volleyball."
+     },
+     {
+      "word": "prefer",
+      "meaning": "thích (cái gì) hơn",
+      "example": "He prefers staying at home and reading."
+     },
+     {
+      "word": "member",
+      "meaning": "thành viên",
+      "example": "He's a member of our local gym."
+     },
+     {
+      "word": "painting and drawing",
+      "meaning": "vẽ tranh màu và vẽ chì",
+      "example": "She's really good at painting and drawing."
+     },
+     {
+      "word": "take care of the garden",
+      "meaning": "chăm sóc vườn",
+      "example": "My mum takes care of the garden."
+     },
+     {
+      "word": "plant flowers",
+      "meaning": "trồng hoa",
+      "example": "She spends a lot of time planting flowers."
+     },
+     {
+      "word": "cut the grass",
+      "meaning": "cắt cỏ",
+      "example": "My dad cuts the grass at the weekend."
+     },
+     {
+      "word": "fix / repair",
+      "meaning": "sửa chữa",
+      "example": "If anything gets broken, he fixes it."
+     },
+     {
+      "word": "furniture",
+      "meaning": "đồ nội thất",
+      "example": "He makes new things, like furniture."
+     },
+     {
+      "word": "recipe book",
+      "meaning": "sách dạy nấu ăn",
+      "example": "A recipe book is a good present for her."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U01-L6",
+   "moduleCode": "M0-U01",
+   "order": 6,
+   "title": "🗣️ Speaking: nói về một ngày của bạn",
+   "titleEn": "Speaking: talking about your day",
+   "durationMinutes": 40,
+   "objectives": [
+    "Ghi chú nhanh bằng từ khoá (không viết cả câu) trong 1–2 phút chuẩn bị",
+    "Nói 1–2 phút liên tục về một ngày bình thường, đủ các ý trong đề",
+    "Thêm lý do (because) và ví dụ (for example / like) để câu trả lời dài và hay hơn"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nói 1–2 phút về một chủ đề (giống IELTS Speaking Part 2)",
+     "titleEn": "Talking about your day — long turn",
+     "formula": [
+      "**Đề**: Describe what you usually do on an average day. You should say: what you do · who you do it with · where you do it — and explain what you enjoy most about your day and why.",
+      "**1–2 phút chuẩn bị**: ghi 3–4 từ khoá cho mỗi ý (6:30 get up – bus – school 7:30…).",
+      "**Khi nói**: đi theo thứ tự trong ngày → mỗi ý thêm 1 chi tiết → kết bằng phần \"explain\"."
+     ],
+     "usage": [
+      "Chỉ ghi **từ hoặc cụm ngắn** — nếu viết cả câu rồi đọc lên, bạn sẽ bị mất điểm.",
+      "3 ý đầu là **thông tin thực tế** — không nghĩ ra gì đúng sự thật thì **có thể bịa** (TIP 19).",
+      "Đừng trả lời quá ngắn: thêm lý do với **because**, ví dụ với **for example / like**."
+     ],
+     "examples": [
+      {
+       "en": "I usually get up at about 6:30, and the first thing I do is have a quick breakfast with my mum.",
+       "vi": "Mở đầu tự nhiên, có thời gian + người."
+      },
+      {
+       "en": "What I enjoy most about my day is the evening, because I can relax and chat with my friends online.",
+       "vi": "Phần \"explain\" có lý do."
+      }
+     ],
+     "notes": [
+      "Ex. 20: người nghe chấm bạn theo 6 điều — dễ hiểu? ngập ngừng nhiều không? đúng chủ đề? quá dài/quá ngắn? có thú vị không?"
+     ]
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 1
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 24,
+   "vocabSave": {
+    "slot": 5,
+    "title": "Unit 1 · Speaking: nói về một ngày của bạn — 10 từ/cụm từ",
+    "words": [
+     {
+      "word": "average day",
+      "meaning": "một ngày bình thường",
+      "example": "On an average day, I get up at 6:30."
+     },
+     {
+      "word": "the first thing I do",
+      "meaning": "việc đầu tiên tôi làm",
+      "example": "The first thing I do is have a shower."
+     },
+     {
+      "word": "spend time with",
+      "meaning": "dành thời gian với",
+      "example": "I spend time with my family in the evening."
+     },
+     {
+      "word": "what I enjoy most",
+      "meaning": "điều tôi thích nhất",
+      "example": "What I enjoy most is the evening."
+     },
+     {
+      "word": "make notes",
+      "meaning": "ghi chú",
+      "example": "Make notes before you speak."
+     },
+     {
+      "word": "pause",
+      "meaning": "ngừng lại",
+      "example": "Try not to pause too often."
+     },
+     {
+      "word": "hesitate",
+      "meaning": "ngập ngừng",
+      "example": "Don't hesitate — keep talking."
+     },
+     {
+      "word": "stay on the topic",
+      "meaning": "nói đúng chủ đề",
+      "example": "The speaker stays on the topic of the question."
+     },
+     {
+      "word": "easy to understand",
+      "meaning": "dễ hiểu",
+      "example": "The talk is easy to understand."
+     },
+     {
+      "word": "interesting",
+      "meaning": "thú vị",
+      "example": "Add details to make your talk interesting."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M0-U01-L7",
+   "moduleCode": "M0-U01",
+   "order": 7,
+   "title": "📝 Ôn tập Unit 1: Grammar & Vocabulary",
+   "titleEn": "Grammar and vocabulary — Unit 1",
+   "durationMinutes": 35,
+   "objectives": [
+    "Ôn giờ giấc, make/do, động từ thói quen và hiện tại đơn của cả Unit 1"
+   ],
+   "keyLanguage": [],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 6,
+   "totalPoints": 42
+  }
+ ]
+}

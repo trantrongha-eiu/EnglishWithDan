@@ -1,0 +1,1860 @@
+{
+ "exercises": [
+  {
+   "code": "M0-U06-L1-E01",
+   "lessonCode": "M0-U06-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Công trình nổi tiếng (Lead-in Ex. 1–2)",
+   "instruction": "Nối tranh 1–5 với từ: statue, castle, stadium, tower, bridge.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u06-landmarks.jpg",
+    "caption": "Lead-in"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1 (Sydney Harbour, Australia)",
+     "right": "bridge",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2 (Bird's Nest, China)",
+     "right": "stadium",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3 (Liberty, USA)",
+     "right": "statue",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4 (Neuschwanstein, Germany)",
+     "right": "castle",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5 (Pisa, Italy)",
+     "right": "tower",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L1-E02",
+   "lessonCode": "M0-U06-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 16,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Địa điểm hay giao thông? (Ex. 4–5)",
+   "instruction": "Xếp mỗi từ vào nhóm đúng.",
+   "categories": [
+    {
+     "id": "place",
+     "label": "Places in a city"
+    },
+    {
+     "id": "travel",
+     "label": "Travel and transport"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "square",
+     "category": "place",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "post office",
+     "category": "place",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "police station",
+     "category": "place",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "library",
+     "category": "place",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "sports centre",
+     "category": "place",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "department store",
+     "category": "place",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "museum",
+     "category": "place",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "theatre",
+     "category": "place",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "motorway",
+     "category": "travel",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "motorbike",
+     "category": "travel",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "coach",
+     "category": "travel",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "platform",
+     "category": "travel",
+     "explanation": ""
+    },
+    {
+     "id": "c13",
+     "text": "ticket",
+     "category": "travel",
+     "explanation": ""
+    },
+    {
+     "id": "c14",
+     "text": "the underground",
+     "category": "travel",
+     "explanation": ""
+    },
+    {
+     "id": "c15",
+     "text": "flight",
+     "category": "travel",
+     "explanation": ""
+    },
+    {
+     "id": "c16",
+     "text": "boat trip",
+     "category": "travel",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L1-E03",
+   "lessonCode": "M0-U06-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Bạn đến đâu để…? (G&V Ex. 1)",
+   "instruction": "Nối hoạt động với địa điểm.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "send a parcel",
+     "right": "post office",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "stay for a few days",
+     "right": "hotel",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "speak to a policeman",
+     "right": "police station",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "exercise",
+     "right": "sports centre",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "have a meal",
+     "right": "restaurant",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "do some food shopping",
+     "right": "supermarket",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "catch a bus or a train",
+     "right": "station",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "relax on the grass",
+     "right": "park",
+     "explanation": ""
+    },
+    {
+     "id": "m9",
+     "left": "borrow a book",
+     "right": "library",
+     "explanation": ""
+    },
+    {
+     "id": "m10",
+     "left": "look at things from the past",
+     "right": "museum",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L1-E04",
+   "lessonCode": "M0-U06-L1",
+   "order": 4,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Nhóm từ thuộc nơi nào? (G&V Ex. 2)",
+   "instruction": "Nối mỗi nhóm từ với địa điểm/sự vật.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "seat · ticket · platform · travel",
+     "right": "train",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "lift · floor · clothes · toys",
+     "right": "department store",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "cars · road · sign · fast",
+     "right": "motorway",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "coffee · snack · talk · table",
+     "right": "cafe",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "houses · cars · bikes · neighbours",
+     "right": "street",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "history · visitors · building · museum",
+     "right": "castle",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "flight · plane · passenger · pilot",
+     "right": "airport",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L2-E01",
+   "lessonCode": "M0-U06-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Câu chuyện mua sắm của Sally (G&V Ex. 4)",
+   "instruction": "Chọn từ đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Sally and her friend had nothing to do and they felt a bit ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "bored"
+      },
+      {
+       "id": "B",
+       "text": "sorry"
+      },
+      {
+       "id": "C",
+       "text": "heavy"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "They decided to go to the shopping centre to get some ____ clothes.",
+     "options": [
+      {
+       "id": "A",
+       "text": "latest"
+      },
+      {
+       "id": "B",
+       "text": "new"
+      },
+      {
+       "id": "C",
+       "text": "early"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "The shopping centre had all of Sally's ____ shops.",
+     "options": [
+      {
+       "id": "A",
+       "text": "popular"
+      },
+      {
+       "id": "B",
+       "text": "favourite"
+      },
+      {
+       "id": "C",
+       "text": "great"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "It was the weekend, and the centre was ____ of people.",
+     "options": [
+      {
+       "id": "A",
+       "text": "full"
+      },
+      {
+       "id": "B",
+       "text": "busy"
+      },
+      {
+       "id": "C",
+       "text": "crowded"
+      }
+     ],
+     "answer": "A",
+     "explanation": "full of = đầy; busy/crowded không đi với \"of\"."
+    },
+    {
+     "id": "q5",
+     "prompt": "Sally was ____ not to spend too much money.",
+     "options": [
+      {
+       "id": "A",
+       "text": "worried"
+      },
+      {
+       "id": "B",
+       "text": "ready"
+      },
+      {
+       "id": "C",
+       "text": "careful"
+      }
+     ],
+     "answer": "C",
+     "explanation": "be careful not to + V."
+    },
+    {
+     "id": "q6",
+     "prompt": "After a couple of hours, Sally and her friend felt ____, so they went to a café to relax.",
+     "options": [
+      {
+       "id": "A",
+       "text": "wrong"
+      },
+      {
+       "id": "B",
+       "text": "difficult"
+      },
+      {
+       "id": "C",
+       "text": "tired"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "They had a drink and a ____ snack and then went home.",
+     "options": [
+      {
+       "id": "A",
+       "text": "right"
+      },
+      {
+       "id": "B",
+       "text": "healthy"
+      },
+      {
+       "id": "C",
+       "text": "fast"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L3-E01",
+   "lessonCode": "M0-U06-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Viết dạng so sánh (Ex. 13)",
+   "instruction": "Viết dạng so sánh hơn và so sánh nhất.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "tall → ____ / the ____",
+     "blanks": [
+      {
+       "accept": [
+        "taller"
+       ]
+      },
+      {
+       "accept": [
+        "tallest"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "famous → ____ / the ____",
+     "blanks": [
+      {
+       "accept": [
+        "more famous"
+       ]
+      },
+      {
+       "accept": [
+        "most famous"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "hot → ____ / the ____",
+     "blanks": [
+      {
+       "accept": [
+        "hotter"
+       ]
+      },
+      {
+       "accept": [
+        "hottest"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "busy → ____ / the ____",
+     "blanks": [
+      {
+       "accept": [
+        "busier"
+       ]
+      },
+      {
+       "accept": [
+        "busiest"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "interesting → ____ / the ____",
+     "blanks": [
+      {
+       "accept": [
+        "more interesting"
+       ]
+      },
+      {
+       "accept": [
+        "most interesting"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "friendly → ____ / the ____",
+     "blanks": [
+      {
+       "accept": [
+        "friendlier",
+        "more friendly"
+       ]
+      },
+      {
+       "accept": [
+        "friendliest",
+        "most friendly"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "old → ____ / the ____",
+     "blanks": [
+      {
+       "accept": [
+        "older"
+       ]
+      },
+      {
+       "accept": [
+        "oldest"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g8",
+     "prompt": "thin → ____ / the ____",
+     "blanks": [
+      {
+       "accept": [
+        "thinner"
+       ]
+      },
+      {
+       "accept": [
+        "thinnest"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L3-E02",
+   "lessonCode": "M0-U06-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Sự thật về Manchester (Ex. 14)",
+   "instruction": "Chọn dạng đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Manchester is in the north of England and is the UK's fifth ____ city.",
+     "options": [
+      {
+       "id": "A",
+       "text": "largest"
+      },
+      {
+       "id": "B",
+       "text": "larger"
+      }
+     ],
+     "answer": "A",
+     "explanation": "the + fifth + so sánh nhất."
+    },
+    {
+     "id": "q2",
+     "prompt": "Manchester has ____ students than any other city in the world.",
+     "options": [
+      {
+       "id": "A",
+       "text": "most"
+      },
+      {
+       "id": "B",
+       "text": "more"
+      }
+     ],
+     "answer": "B",
+     "explanation": "than → so sánh hơn."
+    },
+    {
+     "id": "q3",
+     "prompt": "Manchester's Chetham's Library is the ____ public library in the English-speaking world.",
+     "options": [
+      {
+       "id": "A",
+       "text": "old"
+      },
+      {
+       "id": "B",
+       "text": "oldest"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "____ languages are spoken in Manchester than any other city in Western Europe.",
+     "options": [
+      {
+       "id": "A",
+       "text": "Many"
+      },
+      {
+       "id": "B",
+       "text": "More"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "The world's ____ passenger train station was built in Manchester in 1830.",
+     "options": [
+      {
+       "id": "A",
+       "text": "first"
+      },
+      {
+       "id": "B",
+       "text": "last"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "Recently, Manchester was voted the ____ UK city to live in.",
+     "options": [
+      {
+       "id": "A",
+       "text": "better"
+      },
+      {
+       "id": "B",
+       "text": "best"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "Manchester airport is ____ than Birmingham airport.",
+     "options": [
+      {
+       "id": "A",
+       "text": "larger"
+      },
+      {
+       "id": "B",
+       "text": "largest"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q8",
+     "prompt": "Manchester United is the ____ successful football club in England.",
+     "options": [
+      {
+       "id": "A",
+       "text": "more"
+      },
+      {
+       "id": "B",
+       "text": "most"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q9",
+     "prompt": "Manchester Piccadilly is one of the ____ train stations in England.",
+     "options": [
+      {
+       "id": "A",
+       "text": "busy"
+      },
+      {
+       "id": "B",
+       "text": "busiest"
+      }
+     ],
+     "answer": "B",
+     "explanation": "one of the + so sánh nhất + danh từ số nhiều."
+    },
+    {
+     "id": "q10",
+     "prompt": "____ than 20 Nobel prize winners have come from Manchester.",
+     "options": [
+      {
+       "id": "A",
+       "text": "More"
+      },
+      {
+       "id": "B",
+       "text": "Most"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L3-E03",
+   "lessonCode": "M0-U06-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 16,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Thêm -er/-est hay more/the most? (G&V Ex. 6)",
+   "instruction": "Xếp tính từ vào cột đúng.",
+   "categories": [
+    {
+     "id": "er",
+     "label": "+er / +est"
+    },
+    {
+     "id": "more",
+     "label": "more / the most"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "clean",
+     "category": "er",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "low",
+     "category": "er",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "high",
+     "category": "er",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "cheap",
+     "category": "er",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "old",
+     "category": "er",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "new",
+     "category": "er",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "fast",
+     "category": "er",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "strong",
+     "category": "er",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "expensive",
+     "category": "more",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "modern",
+     "category": "more",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "comfortable",
+     "category": "more",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "difficult",
+     "category": "more",
+     "explanation": ""
+    },
+    {
+     "id": "c13",
+     "text": "important",
+     "category": "more",
+     "explanation": ""
+    },
+    {
+     "id": "c14",
+     "text": "careful",
+     "category": "more",
+     "explanation": ""
+    },
+    {
+     "id": "c15",
+     "text": "interesting",
+     "category": "more",
+     "explanation": ""
+    },
+    {
+     "id": "c16",
+     "text": "crowded",
+     "category": "more",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L3-E04",
+   "lessonCode": "M0-U06-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Ba chiếc xe (G&V Ex. 9)",
+   "instruction": "Nhìn tranh 3 chiếc xe A (1), B (2), C (3) và hoàn thành câu bằng dạng so sánh nhất.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u06-cars.jpg",
+    "caption": "Cars A, B, C (1, 2, 3)"
+   },
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Car A is ____ (cheap).",
+     "blanks": [
+      {
+       "accept": [
+        "the cheapest"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "Car B has ____ (many) doors.",
+     "blanks": [
+      {
+       "accept": [
+        "the most"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Car C has ____ (large) engine.",
+     "blanks": [
+      {
+       "accept": [
+        "the largest"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "Car A has ____ (many) kilometres on the clock.",
+     "blanks": [
+      {
+       "accept": [
+        "the most"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "Car C is ____ (expensive).",
+     "blanks": [
+      {
+       "accept": [
+        "the most expensive"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "Car A has ____ (small) engine.",
+     "blanks": [
+      {
+       "accept": [
+        "the smallest"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "Car B is ____ (old).",
+     "blanks": [
+      {
+       "accept": [
+        "the oldest"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L4-E01",
+   "lessonCode": "M0-U06-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Tính từ mô tả (G&V Ex. 5)",
+   "instruction": "Điền tính từ: friendly, high, comfortable, old, famous, interesting, modern.",
+   "wordBank": [
+    "friendly",
+    "high",
+    "comfortable",
+    "old",
+    "famous",
+    "interesting",
+    "modern"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I didn't enjoy the flight because my seat was not at all ____.",
+     "blanks": [
+      {
+       "accept": [
+        "comfortable"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "The library looks very ____ – the building is made of glass and it is an unusual shape.",
+     "blanks": [
+      {
+       "accept": [
+        "modern"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "The staff at the hotel were always polite and ____.",
+     "blanks": [
+      {
+       "accept": [
+        "friendly"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "I'm reading a very ____ book at the moment about the future of the planet.",
+     "blanks": [
+      {
+       "accept": [
+        "interesting"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "I bought some beautiful ____ jewellery from the market. It's from the 19th century.",
+     "blanks": [
+      {
+       "accept": [
+        "old"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "The mountain isn't very ____ but the views from the top are still amazing.",
+     "blanks": [
+      {
+       "accept": [
+        "high"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "I sat next to a well-known actor on the train. I had never seen a ____ person before that.",
+     "blanks": [
+      {
+       "accept": [
+        "famous"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L4-E02",
+   "lessonCode": "M0-U06-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Phân tích email mẫu của Martin (Ex. 22)",
+   "instruction": "Đọc email mẫu và trả lời.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Hi Sandy,\n\nI'm really pleased you're coming to visit my country. The first place you should visit is London. It's one of the most famous cities in the world. It has fantastic museums and parks and is perfect if you like shopping. The buses and the underground are the best ways to travel.\n\nAfter that you should go to the Lake District. I think this is the most beautiful part of England. It has the highest mountains in the country and the largest and deepest lakes. You can get there by train and then use the buses to get around.\n\nBest wishes,\nMartin",
+    "caption": "Model answer"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Martin answers how many of Sandy's questions?",
+     "options": [
+      {
+       "id": "A",
+       "text": "1"
+      },
+      {
+       "id": "B",
+       "text": "2"
+      },
+      {
+       "id": "C",
+       "text": "all 3"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Nơi nên đến, vì sao thú vị, cách đi lại."
+    },
+    {
+     "id": "q2",
+     "prompt": "Which sentence uses a superlative to say why a place is interesting?",
+     "options": [
+      {
+       "id": "A",
+       "text": "The buses and the underground are the best ways to travel."
+      },
+      {
+       "id": "B",
+       "text": "It's one of the most famous cities in the world."
+      },
+      {
+       "id": "C",
+       "text": "You can get there by train."
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Which linker introduces the second place?",
+     "options": [
+      {
+       "id": "A",
+       "text": "After that"
+      },
+      {
+       "id": "B",
+       "text": "Because"
+      },
+      {
+       "id": "C",
+       "text": "If"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L4-E03",
+   "lessonCode": "M0-U06-L4",
+   "order": 3,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Viết email trả lời Sandy (Ex. 20–22)",
+   "instruction": "Đây là một phần email từ bạn qua thư Sandy: \"I'm coming to your country next month on holiday. Where do you think I should go and why are those places interesting? What's the best way for me to travel around?\" Viết email trả lời Sandy (khoảng 100 từ). Bắt đầu: \"Hi Sandy, I'm really pleased you're coming to visit my country. The first place you should visit is…\". Dùng so sánh hơn/nhất và các từ nối if, so, because, after that.",
+   "responseSlots": 1,
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 90,
+    "maxWords": 140,
+    "mustUse": 3,
+    "targetStructures": [
+     "the most",
+     "the best",
+     "because",
+     "After that",
+     "If you like"
+    ],
+    "checklist": [
+     "Trả lời: nên đi đâu (ít nhất 2 nơi)",
+     "Giải thích vì sao các nơi đó thú vị",
+     "Nói cách đi lại tốt nhất",
+     "Dùng ít nhất 2 tính từ so sánh nhất",
+     "Mở đầu và kết thúc email đúng",
+     "Khoảng 100 từ"
+    ],
+    "sampleAnswer": "Hi Sandy,\n\nI'm really pleased you're coming to visit my country. The first place you should visit is Hanoi. It's the capital and one of the oldest cities in Vietnam. The Old Quarter is the most interesting part because the streets are full of small shops and delicious street food. If you like history, you should also visit the Temple of Literature.\n\nAfter that, you should go to Ha Long Bay. I think it's the most beautiful place in the country. You can take a boat trip and sleep on the boat. The best way to get there is by coach because it's cheaper than a taxi.\n\nBest wishes,\nNam",
+    "commonErrors": [
+     "more beautiful than / the most beautiful dùng lẫn lộn",
+     "most famous thiếu \"the\"",
+     "Quên nói cách đi lại"
+    ]
+   }
+  },
+  {
+   "code": "M0-U06-L5-E01",
+   "lessonCode": "M0-U06-L5",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Giới từ vị trí (Ex. 9)",
+   "instruction": "Nhìn 5 hình (ngôi nhà đỏ so với toà nhà) và nối số hình với giới từ.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u06-prepositions.jpg",
+    "caption": "Ex. 9"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Diagram 1",
+     "right": "on the left of",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Diagram 2",
+     "right": "on the right of",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Diagram 3",
+     "right": "opposite",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Diagram 4",
+     "right": "next to",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Diagram 5",
+     "right": "between",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L5-E02",
+   "lessonCode": "M0-U06-L5",
+   "order": 2,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Bản đồ thị trấn (G&V Ex. 3)",
+   "instruction": "Nhìn bản đồ và điền: next, in front of, on your left, behind, on your right, across, opposite, between.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u06-town-map.jpg",
+    "caption": "Town map"
+   },
+   "wordBank": [
+    "next",
+    "in front of",
+    "on your left",
+    "behind",
+    "on your right",
+    "across",
+    "opposite",
+    "between"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "The park is ____ the cinema.",
+     "blanks": [
+      {
+       "accept": [
+        "opposite"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "The petrol station is ____ the road from the cinema.",
+     "blanks": [
+      {
+       "accept": [
+        "across"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "The post office is ____ the café and the hotel.",
+     "blanks": [
+      {
+       "accept": [
+        "between"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "The theatre is ____ the petrol station.",
+     "blanks": [
+      {
+       "accept": [
+        "behind"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "The sports centre is ____ to the hotel.",
+     "blanks": [
+      {
+       "accept": [
+        "next"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "When you come out of the hotel, the post office is ____.",
+     "blanks": [
+      {
+       "accept": [
+        "on your right"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "The bus stop is ____ the park.",
+     "blanks": [
+      {
+       "accept": [
+        "in front of"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g8",
+     "prompt": "When you come out of the museum, the library is ____.",
+     "blanks": [
+      {
+       "accept": [
+        "on your left"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L6-E01",
+   "lessonCode": "M0-U06-L6",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Hỏi đường trên bản đồ (Ex. 12)",
+   "instruction": "Dựa vào bản đồ Northfields (bài nghe Part 2), chọn câu trả lời đúng.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u06-map.jpg",
+    "caption": "Northfields' map"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Where's the mobile phone shop?",
+     "options": [
+      {
+       "id": "A",
+       "text": "It's between the bank and the shoe shop."
+      },
+      {
+       "id": "B",
+       "text": "It's next to the café."
+      },
+      {
+       "id": "C",
+       "text": "It's on the first floor."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Where can I watch a film?",
+     "options": [
+      {
+       "id": "A",
+       "text": "In the cinema on the first floor."
+      },
+      {
+       "id": "B",
+       "text": "In Green's department store."
+      },
+      {
+       "id": "C",
+       "text": "Next to the toilets."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Where is the book store?",
+     "options": [
+      {
+       "id": "A",
+       "text": "The last shop on your right."
+      },
+      {
+       "id": "B",
+       "text": "The second shop on your right from the car park entrance, next to the sports shop."
+      },
+      {
+       "id": "C",
+       "text": "Opposite the cinema."
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L6-E02",
+   "lessonCode": "M0-U06-L6",
+   "order": 2,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: giao thông & quê hương (Ex. 18)",
+   "instruction": "Trả lời từng câu hỏi trong 15–25 giây. Dùng từ vựng của unit và so sánh hơn/nhất.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "How did you travel here today?",
+     "sampleAnswer": "I came by motorbike with my older brother. It only took about fifteen minutes, which is much faster than taking the bus, because the bus stops at so many places.",
+     "sampleNote": "Phương tiện + thời gian + so sánh.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "How do people prefer to travel in your country?",
+     "sampleAnswer": "Most people in Vietnam prefer motorbikes because they are cheap and you can go almost anywhere. In big cities, more people are starting to use the metro and buses now.",
+     "sampleNote": "Ý chính + lý do + xu hướng mới.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "Is traffic a problem in your town?",
+     "sampleAnswer": "Yes, definitely. In the morning and evening there are terrible traffic jams, especially near schools. I think the government should build more bus lanes.",
+     "sampleNote": "Yes + ví dụ + gợi ý.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s4",
+     "prompt": "Tell me about the most interesting places in your town.",
+     "sampleAnswer": "The most interesting place is probably the old market in the centre. It's the oldest building in town and you can buy almost anything there. There's also a lovely park by the river, which is the best place to relax.",
+     "sampleNote": "Hai địa điểm + so sánh nhất.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s5",
+     "prompt": "How could you make your town better?",
+     "sampleAnswer": "I think we need more green spaces and better public transport. If there were more buses, there would be less traffic and less pollution.",
+     "sampleNote": "Hai đề xuất + kết quả.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L7-E01",
+   "lessonCode": "M0-U06-L7",
+   "order": 1,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "So sánh hơn (G&V Ex. 7)",
+   "instruction": "Hoàn thành câu bằng dạng so sánh hơn của tính từ trong ngoặc.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I think trains are ____ (safe) and ____ (fast) than cars.",
+     "blanks": [
+      {
+       "accept": [
+        "safer"
+       ]
+      },
+      {
+       "accept": [
+        "faster"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "The traffic is usually ____ (bad) in the city than in the countryside.",
+     "blanks": [
+      {
+       "accept": [
+        "worse"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "In London, the bus is ____ (cheap) than the trains.",
+     "blanks": [
+      {
+       "accept": [
+        "cheaper"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "The main square is ____ (old) than any other parts of the town.",
+     "blanks": [
+      {
+       "accept": [
+        "older"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "My old house was ____ (big) than the one I live in now.",
+     "blanks": [
+      {
+       "accept": [
+        "bigger"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "I live far from college so I have to get up ____ (early) than my friends.",
+     "blanks": [
+      {
+       "accept": [
+        "earlier"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "Our garden always looks ____ (pretty) in summer than in winter.",
+     "blanks": [
+      {
+       "accept": [
+        "prettier"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g8",
+     "prompt": "My friend has lost weight and is much ____ (thin) than last year.",
+     "blanks": [
+      {
+       "accept": [
+        "thinner"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g9",
+     "prompt": "It is ____ (good) for your health to cycle to work than get the bus.",
+     "blanks": [
+      {
+       "accept": [
+        "better"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g10",
+     "prompt": "Jon lives ____ (far) away from me than Pete.",
+     "blanks": [
+      {
+       "accept": [
+        "further",
+        "farther"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L7-E02",
+   "lessonCode": "M0-U06-L7",
+   "order": 2,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "…but … is even more! (G&V Ex. 8)",
+   "instruction": "Hoàn thành câu bằng dạng so sánh hơn.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "My bike was expensive but my brother's was ____.",
+     "blanks": [
+      {
+       "accept": [
+        "more expensive"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "Art galleries are interesting but museums are ____.",
+     "blanks": [
+      {
+       "accept": [
+        "more interesting"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Madrid is hot but Kuwait is ____.",
+     "blanks": [
+      {
+       "accept": [
+        "hotter"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "This garden is pretty but the one we saw yesterday was ____.",
+     "blanks": [
+      {
+       "accept": [
+        "prettier"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "This restaurant is good but the Italian one is ____.",
+     "blanks": [
+      {
+       "accept": [
+        "better"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "I was excited about the trip but my friend was ____.",
+     "blanks": [
+      {
+       "accept": [
+        "more excited"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "Cars are noisy but motorbikes are ____.",
+     "blanks": [
+      {
+       "accept": [
+        "noisier"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g8",
+     "prompt": "I'm bad at maths but my friend is ____.",
+     "blanks": [
+      {
+       "accept": [
+        "worse"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L7-E03",
+   "lessonCode": "M0-U06-L7",
+   "order": 3,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Email của William từ Munich (G&V Ex. 10)",
+   "instruction": "Chia tính từ trong ngoặc ở dạng so sánh hơn hoặc nhất.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "It isn't ____ (good) hotel in town but it is nice enough and it was ____ (cheap) than most of the others.",
+     "blanks": [
+      {
+       "accept": [
+        "the best"
+       ]
+      },
+      {
+       "accept": [
+        "cheaper"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "…the Englischer Garten, a beautiful park that is ____ (big) than Central Park in New York!",
+     "blanks": [
+      {
+       "accept": [
+        "bigger"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "…the Deutsches Museum – one of ____ (large) in Europe. ____ (interesting) part for me was the space exhibition.",
+     "blanks": [
+      {
+       "accept": [
+        "the largest"
+       ]
+      },
+      {
+       "accept": [
+        "The most interesting"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "The guidebook says it is one of ____ (fine) palaces in the whole of Germany.",
+     "blanks": [
+      {
+       "accept": [
+        "the finest"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

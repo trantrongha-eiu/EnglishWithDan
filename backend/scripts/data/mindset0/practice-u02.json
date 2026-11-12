@@ -1,0 +1,249 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 0 · Unit 2 — Prime Location Agency",
+   "content": "<p><em>In Listening 1, Giorgio spoke about going to university. Before he goes, he needs to organise his accommodation. He emails his friend Gavin for help and advice. Read the advert and the email.</em></p>\n\n<p style=\"text-align:center\"><img src=\"media:m0u02-advert.jpg\" alt=\"Prime Location Agency advert\" style=\"max-width:100%;max-height:420px;height:auto;border-radius:6px\"></p>\n\n<h3>Email</h3>\n\n<p><strong>To:</strong> Giorgio<br><strong>From:</strong> Gavin</p>\n\n<p>Hi Giorgio,</p>\n\n<p>Here is the information you need. Mr Taylor is the best agent in the UK for helping you with your future accommodation. He can definitely find you somewhere nice to live. He only works in the office from Monday to Saturday, but you can contact him any time you want by email. Oh, one more thing – the advert has a mistake. His email address finishes with .co.uk and not .com.</p>\n\n<p>Gavin</p>",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Complete Giorgio's notes. Write NO MORE THAN THREE WORDS (or the email address) for each answer.",
+     "noteConfig": {
+      "title": "Giorgio's notes",
+      "lines": [
+       "Name of person to contact: __Q1__",
+       "Name of company: __Q2__",
+       "Office location: __Q3__",
+       "Email: __Q4__",
+       "Contact: Monday to Saturday – in the office. Sunday – __Q5__"
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "Andrew Taylor",
+       "explanation": "Quảng cáo: \"Taylor – Andrew Taylor\"; email gọi là \"Mr Taylor\"."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "Prime Location Agency",
+       "explanation": "Tên công ty ở đầu quảng cáo: \"Prime Location Agency\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "London",
+       "explanation": "Quảng cáo: \"We are based in our office in London\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "andrewtaylor@uniaccom.co.uk",
+       "explanation": "Quảng cáo ghi andrewtaylor@uniaccom.com NHƯNG email của Gavin sửa: \"the advert has a mistake. His email address finishes with .co.uk and not .com\" → andrewtaylor@uniaccom.co.uk (TIP 09)."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "by email / email",
+       "explanation": "\"He only works in the office from Monday to Saturday, but you can contact him any time you want by email\" → Chủ nhật liên hệ bằng email."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U02-R1"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 0 · Unit 2 — Giorgio's bedroom",
+   "description": "Giorgio describes his bedroom before he goes to university.",
+   "partNumber": 1,
+   "audioFile": "MindsetIELTS_Foundation_03.mp3",
+   "transcript": "Giorgio: I'm excited about going to university, but I feel nervous about leaving my home, especially my bedroom. I like it a lot. My bed is very comfortable – I've got four big pillows. When I sit on my bed, if I look out of the window I can see the garden. I often do my homework at my desk and, to help me study, I sometimes turn on the lamp so I can see my notes and my course books better. When I want to relax, I usually play games on my phone, which I keep in the drawers next to my bed. I haven't got my own bathroom. I need to go down the hall if I want a shower or bath. However, I have got a sink where I brush my teeth every morning before I go to college. I have two posters: one is above my bed and the other one is next to the TV. What else? I don't like curtains very much, so I don't have them. At the window, I have a blind instead. I think it will be strange at first sleeping somewhere new but I'm sure I'll get used to it and I'll make it feel like home.",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Question 1",
+     "instruction": "You are going to listen to a student, Giorgio, describing his bedroom. Listen and decide which picture is Giorgio's bedroom.",
+     "imageUrl": "media:m0u02-bedrooms.jpg",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Which picture is Giorgio's bedroom?",
+       "options": [
+        "Picture 1",
+        "Picture 2",
+        "Picture 3"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Tranh nào là phòng ngủ của Giorgio?\n\nVị trí: Rải rác cả bài; chi tiết quyết định ở cuối.\n\nTranscript: “if I look out of the window I can see the garden” … “I don't like curtains very much, so I don't have them. At the window, I have a blind instead”\n\nPhân tích: Tranh 3 nhìn ra thành phố → loại. Tranh 1 có rèm vải (curtains) → loại. Tranh 2: cửa sổ nhìn ra vườn + rèm sáo (blind) → Picture 2. Đúng TIP 07: nghe hết mới chọn."
+      }
+     ]
+    },
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 2–7",
+     "instruction": "Listen again. Answer the questions using TWO or THREE words.",
+     "questions": [
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "How does Giorgio describe his bed?",
+       "correctAnswer": "very comfortable",
+       "explanation": "Dịch: Giorgio mô tả giường của mình thế nào?\n\nVị trí: Đầu bài.\n\nTranscript: “My bed is very comfortable – I've got four big pillows”\n\nPhân tích: very comfortable (2 từ)."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "What can he see outside of his window?",
+       "correctAnswer": "the garden / garden",
+       "explanation": "Dịch: Cậu ấy nhìn thấy gì ngoài cửa sổ?\n\nVị trí: Ngay sau phần nói về giường.\n\nTranscript: “if I look out of the window I can see the garden”\n\nPhân tích: the garden."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Why does he play games on his phone?",
+       "correctAnswer": "to relax",
+       "explanation": "Dịch: Vì sao cậu ấy chơi game trên điện thoại?\n\nVị trí: Giữa bài.\n\nTranscript: “When I want to relax, I usually play games on my phone”\n\nPhân tích: Câu hỏi Why → trả lời \"to relax\" (để thư giãn)."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Where is the bathroom?",
+       "correctAnswer": "down the hall",
+       "explanation": "Dịch: Phòng tắm ở đâu?\n\nVị trí: Khi nói không có phòng tắm riêng.\n\nTranscript: “I need to go down the hall if I want a shower or bath”\n\nPhân tích: down the hall (3 từ)."
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "What does he always do before he goes to college every morning?",
+       "correctAnswer": "brushes his teeth / brush his teeth",
+       "explanation": "Dịch: Mỗi sáng trước khi đến trường cậu ấy luôn làm gì?\n\nVị trí: Khi nói về bồn rửa.\n\nTranscript: “I have got a sink where I brush my teeth every morning before I go to college”\n\nPhân tích: brushes his teeth (3 từ)."
+      },
+      {
+       "questionNumber": 7,
+       "type": "fill-blank",
+       "questionText": "What is at the window?",
+       "correctAnswer": "a blind / blind",
+       "explanation": "Dịch: Ở cửa sổ có gì?\n\nVị trí: Cuối bài.\n\nTranscript: “At the window, I have a blind instead”\n\nPhân tích: Không có curtains → a blind."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U02-L1"
+  },
+  {
+   "title": "Mindset 0 · Unit 2 — Calling an accommodation agency",
+   "description": "Giorgio phones Andrew Taylor at Prime Location Agency.",
+   "partNumber": 1,
+   "audioFile": "MindsetIELTS_Foundation_04.mp3",
+   "transcript": "Andrew: Good afternoon, Prime Location Agency, Andrew Taylor speaking. Can I first check your student status?\nGiorgio: Hello, yes, of course. My name's Giorgio Rossi and I will soon be a student at Brickbat University. I'm calling today to discuss where to live when I come to the UK to study at the university.\nAndrew: Oh, hello, Giorgio. Thank you for your call, I have some questions for you. I hope that you don't mind. Can you speak English?\nGiorgio: Yes, but I apologise if I make any mistakes.\nAndrew: Don't worry. So, what do you want to study?\nGiorgio: I'm not sure exactly, but something with engineering.\nAndrew: First of all, where do you want to live – in a room on campus or in private accommodation?\nGiorgio: I'm not sure. Can you give me some advice?\nAndrew: Of course! Well, tell me a little about your personality and your preferences. Are you a sociable person?\nGiorgio: Oh, yes, I am definitely sociable. I live with my parents at the moment. We have a big family and there are always lots of visitors.\nAndrew: OK, that's great. Do you also like to sometimes have a quiet room to study in private?\nGiorgio: Well, it depends on how I feel. I sometimes like to be sociable and other times, I prefer to study alone. Can I ask, where exactly the accommodation is?\nAndrew: Well, if you live in a room on campus, it is very convenient for your studies, as you actually live in a building in the university. However, it's also noisy. There are hundreds of other students who also live there, and they often make lots of noise, but if you live in private accommodation you have a quiet life in a different part of the city with maybe one or two other students who are your housemates. Although, it often takes a long time to travel to university. What do you think?\nGiorgio: It's a difficult decision. I want to make lots of new friends, but I also know that I need to work hard and study.\nAndrew: OK, one final question. Meals. Would you prefer to live somewhere which is catered?\nGiorgio: I'm not sure. What does catered mean?\nAndrew: Catered means that all your food is included in the price of the accommodation. For example, if you decide to live on campus you can usually choose catered accommodation. That means that, for example, every day, you can go to the canteen for your breakfast, lunch or dinner, and it's always free. The other option is self-catered accommodation, where you can either cook at home or you can go out for all of your meals. However, you always have to pay for your food.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–8",
+     "instruction": "Listen to a conversation between Giorgio and Andrew Taylor who works at the accommodation agency. What do they discuss? Choose YES or NO.",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "The course Giorgio wants to study at university.",
+       "options": [
+        "YES",
+        "NO"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Khoá học Giorgio muốn học ở đại học.\n\nVị trí: Khi Andrew hỏi \"what do you want to study?\"\n\nTranscript: “I'm not sure exactly, but something with engineering”\n\nPhân tích: Đáp án sách: NO — Giorgio không nêu được tên một khoá học cụ thể (\"not sure… something with engineering\"). MINI TIP 13.1: có nghe tên chính xác của khoá học không? → không."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "His study habits.",
+       "options": [
+        "YES",
+        "NO"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Thói quen học tập của cậu ấy.\n\nVị trí: Giữa bài.\n\nTranscript: “Do you also like to sometimes have a quiet room to study in private?” … “other times, I prefer to study alone”\n\nPhân tích: Có bàn về cách học (học một mình, cần phòng yên tĩnh) → YES."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "The number of other students that also live there.",
+       "options": [
+        "YES",
+        "NO"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Số sinh viên khác cũng sống ở đó.\n\nVị trí: Khi Andrew so sánh hai loại chỗ ở.\n\nTranscript: “There are hundreds of other students who also live there” … “maybe one or two other students who are your housemates”\n\nPhân tích: MINI TIP 13.3: có con số → \"hundreds\", \"one or two\" → YES."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Two types of accommodation.",
+       "options": [
+        "YES",
+        "NO"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Hai loại chỗ ở.\n\nVị trí: Câu hỏi \"First of all…\".\n\nTranscript: “in a room on campus or in private accommodation?”\n\nPhân tích: MINI TIP 13.2: hai lựa chọn: campus và private → YES."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "The teachers and lecturers at the university.",
+       "options": [
+        "YES",
+        "NO"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Giáo viên và giảng viên của trường.\n\nPhân tích: Không ai nhắc tới giảng viên → NO."
+      },
+      {
+       "questionNumber": 6,
+       "type": "multiple-choice",
+       "questionText": "Where the accommodation is.",
+       "options": [
+        "YES",
+        "NO"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Chỗ ở nằm ở đâu.\n\nVị trí: Giorgio hỏi giữa bài.\n\nTranscript: “Can I ask, where exactly the accommodation is?” … “in a different part of the city”\n\nPhân tích: Có hỏi và trả lời về vị trí → YES."
+      },
+      {
+       "questionNumber": 7,
+       "type": "multiple-choice",
+       "questionText": "Giorgio's travel options from home to university.",
+       "options": [
+        "YES",
+        "NO"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Các cách Giorgio đi từ nhà tới trường.\n\nTranscript: “it often takes a long time to travel to university”\n\nPhân tích: Chỉ nói \"mất nhiều thời gian\", KHÔNG bàn các phương tiện đi lại (bus, train…) → NO."
+      },
+      {
+       "questionNumber": 8,
+       "type": "multiple-choice",
+       "questionText": "The different types of food you can eat there.",
+       "options": [
+        "YES",
+        "NO"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Các loại đồ ăn bạn có thể ăn ở đó.\n\nVị trí: Cuối bài.\n\nTranscript: “Catered means that all your food is included in the price”\n\nPhân tích: Chỉ bàn về chi phí/hình thức ăn (catered, self-catered), KHÔNG nói về các loại món ăn → NO."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M0-U02-L2"
+  }
+ ]
+}

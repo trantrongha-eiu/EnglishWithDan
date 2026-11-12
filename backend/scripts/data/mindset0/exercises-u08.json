@@ -1,0 +1,1317 @@
+{
+ "exercises": [
+  {
+   "code": "M0-U08-L1-E01",
+   "lessonCode": "M0-U08-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Hoạt động trong tranh (Ex. 4)",
+   "instruction": "Nối tranh 1–8 với hoạt động.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u08-activities.jpg",
+    "caption": "Ex. 4"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "eat fruit and vegetables",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "play basketball",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "enjoy art and music",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "go cycling",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "play tennis",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "drink water",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "watch TV",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Picture 8",
+     "right": "get enough sleep",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L1-E02",
+   "lessonCode": "M0-U08-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Cách thư giãn (Ex. 15)",
+   "instruction": "Nối tranh 1–5 với cách thư giãn.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u08-relax.jpg",
+    "caption": "Ex. 15"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "do exercise",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "drink tea",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "read a book",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "do yoga",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "go for a walk",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L1-E03",
+   "lessonCode": "M0-U08-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Hoạt động thể thao (G&V Ex. 1)",
+   "instruction": "Nối tranh 1–6 với hoạt động.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u08-gv.jpg",
+    "caption": "G&V Ex. 1"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "go cycling",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "do yoga",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "play tennis",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "play basketball",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "go for a walk",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "do exercise",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L1-E04",
+   "lessonCode": "M0-U08-L1",
+   "order": 4,
+   "autoGrade": true,
+   "points": 9,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Động từ đi kèm (G&V Ex. 2)",
+   "instruction": "Điền dạng đúng: get (x3), drink (x2), do (x2), eat, have, join, go (x2), play (x2).",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "It can be expensive to ____ a gym, but they often have a lot of modern equipment.",
+     "blanks": [
+      {
+       "accept": [
+        "join"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "It is very important to ____ plenty of water whenever you ____ exercise.",
+     "blanks": [
+      {
+       "accept": [
+        "drink"
+       ]
+      },
+      {
+       "accept": [
+        "do"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "I ____ lots of fruit and vegetables and ____ yoga twice a week.",
+     "blanks": [
+      {
+       "accept": [
+        "eat"
+       ]
+      },
+      {
+       "accept": [
+        "do"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "I like to ____ running in the park so I can ____ some fresh air when I exercise.",
+     "blanks": [
+      {
+       "accept": [
+        "go"
+       ]
+      },
+      {
+       "accept": [
+        "get"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "It is a good idea to ____ a personal trainer to ____ advice about living healthily.",
+     "blanks": [
+      {
+       "accept": [
+        "have"
+       ]
+      },
+      {
+       "accept": [
+        "get"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "I ____ tennis three times a week and ____ for walks in the park.",
+     "blanks": [
+      {
+       "accept": [
+        "play"
+       ]
+      },
+      {
+       "accept": [
+        "go"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "It is important to ____ lots of sleep every night.",
+     "blanks": [
+      {
+       "accept": [
+        "get"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g8",
+     "prompt": "When you ____ green tea, it can help you relax.",
+     "blanks": [
+      {
+       "accept": [
+        "drink"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g9",
+     "prompt": "Many young people ____ a sport or do exercise at school.",
+     "blanks": [
+      {
+       "accept": [
+        "play"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L2-E01",
+   "lessonCode": "M0-U08-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Đọc lướt bài luận (Ex. 6–7)",
+   "instruction": "Đọc nhanh bài luận và trả lời.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Some parents may think that while their children are preparing for important school exams, they shouldn't have sports lessons. This could be because they want them to focus on exam subjects more, like science and maths. For a similar reason, some parents think children should also stop painting and music lessons in the final school term so they can spend more time studying. However, I disagree with these views, and believe that children should continue to have sports lessons. These lessons help students keep healthy and happy during the exam period.\n\nFirstly, schools need to encourage young people to follow a healthy lifestyle and get regular exercise. Many young people don't do enough exercise. They prefer to spend their free time indoors on their computers or watching TV than going to the park and playing tennis, or going cycling. Many people today are overweight and have health problems. There is a lot of information about eating healthily, but people often forget that regular exercise is equally important.\n\nSecondly, exercise helps us feel less stressed and tired. It also improves memory and helps us think clearly. When students are studying for exams, it's a good idea to take regular breaks and do something active for 20 minutes. Exercise also helps us to concentrate better on difficult tasks and helps us sleep better at night. Doing exercise may even help students get better results in their exams.\n\nIn conclusion, I believe that students who are revising for important exams should continue to have sports lessons because regular exercise is good for their body and mind.",
+    "caption": "Essay question: Students who are studying for important school exams should stop sports lessons. Discuss."
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Which activities from Exercise 4 does the essay talk about?",
+     "options": [
+      {
+       "id": "A",
+       "text": "watching TV, going cycling, playing tennis, getting enough sleep"
+      },
+      {
+       "id": "B",
+       "text": "yoga, drinking tea, reading"
+      },
+      {
+       "id": "C",
+       "text": "basketball, swimming, eating fruit"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Does the writer agree or disagree with the essay question (\"Students… should stop sports lessons\")?",
+     "options": [
+      {
+       "id": "A",
+       "text": "agree"
+      },
+      {
+       "id": "B",
+       "text": "disagree"
+      }
+     ],
+     "answer": "B",
+     "explanation": "\"However, I disagree with these views\"."
+    },
+    {
+     "id": "q3",
+     "prompt": "What opinion does the writer give?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Sports lessons make students healthier and help them feel less stressed."
+      },
+      {
+       "id": "B",
+       "text": "Students should only study maths and science."
+      },
+      {
+       "id": "C",
+       "text": "Sports lessons are too expensive."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L3-E01",
+   "lessonCode": "M0-U08-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "should hay shouldn't? (Ex. 10–12)",
+   "instruction": "Chọn đáp án đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "\"Children shouldn't have sports lessons.\" — Những phụ huynh này nghĩ học thể thao là ý…",
+     "options": [
+      {
+       "id": "A",
+       "text": "good"
+      },
+      {
+       "id": "B",
+       "text": "bad"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "You ____ eat lots of fruit and vegetables. It is really good for your health.",
+     "options": [
+      {
+       "id": "A",
+       "text": "should"
+      },
+      {
+       "id": "B",
+       "text": "shouldn't"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Don't watch TV all day. You ____ only watch around three hours a day.",
+     "options": [
+      {
+       "id": "A",
+       "text": "should"
+      },
+      {
+       "id": "B",
+       "text": "shouldn't"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "We ____ sit all day without doing some type of exercise.",
+     "options": [
+      {
+       "id": "A",
+       "text": "should"
+      },
+      {
+       "id": "B",
+       "text": "shouldn't"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "I think we ____ all sleep between seven to 10 hours every night.",
+     "options": [
+      {
+       "id": "A",
+       "text": "should"
+      },
+      {
+       "id": "B",
+       "text": "shouldn't"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "My friend ____ spend all day on a computer and play more sport instead.",
+     "options": [
+      {
+       "id": "A",
+       "text": "should"
+      },
+      {
+       "id": "B",
+       "text": "shouldn't"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L3-E02",
+   "lessonCode": "M0-U08-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 9,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "have to hay don't have to? (Ex. 18, G&V Ex. 5)",
+   "instruction": "Chọn đáp án đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "We ____ arrive to school on time. It's one of the school's rules.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have to"
+      },
+      {
+       "id": "B",
+       "text": "don't have to"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "The deadline isn't until next week, so we ____ do it tonight.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have to"
+      },
+      {
+       "id": "B",
+       "text": "don't have to"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "____ play sport at school?",
+     "options": [
+      {
+       "id": "A",
+       "text": "You have to"
+      },
+      {
+       "id": "B",
+       "text": "Do you have to"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "He didn't go to school yesterday, so he ____ give the teacher a doctor's note.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have to"
+      },
+      {
+       "id": "B",
+       "text": "has to"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "We ____ study languages but my teacher recommends it.",
+     "options": [
+      {
+       "id": "A",
+       "text": "don't have to"
+      },
+      {
+       "id": "B",
+       "text": "doesn't have to"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "You ____ pass a swimming test to be a lifeguard.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have to"
+      },
+      {
+       "id": "B",
+       "text": "don't have to"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "You ____ be fit to do yoga because anyone can try it.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have to"
+      },
+      {
+       "id": "B",
+       "text": "don't have to"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q8",
+     "prompt": "You ____ spend a lot of money to stay healthy. You can go running in the park for free.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have to"
+      },
+      {
+       "id": "B",
+       "text": "don't have to"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q9",
+     "prompt": "Professional sports players ____ practise for at least three hours a day.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have to"
+      },
+      {
+       "id": "B",
+       "text": "don't have to"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L3-E03",
+   "lessonCode": "M0-U08-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Chương trình sức khoẻ trên TV (G&V Ex. 4)",
+   "instruction": "Điền should / shouldn't + động từ: eat, drink, play, ride, watch, get.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Do you know we ____ ____ five glasses of water a day?",
+     "blanks": [
+      {
+       "accept": [
+        "should"
+       ]
+      },
+      {
+       "accept": [
+        "drink"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "I always think I ____ ____ more sleep.",
+     "blanks": [
+      {
+       "accept": [
+        "should"
+       ]
+      },
+      {
+       "accept": [
+        "get"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "It said we ____ ____ more than two to three hours a day (of TV).",
+     "blanks": [
+      {
+       "accept": [
+        "shouldn't",
+        "should not"
+       ]
+      },
+      {
+       "accept": [
+        "watch"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "You ____ ____ sport at school if you like it. If not, you ____ ____ a bicycle or walk to school.",
+     "blanks": [
+      {
+       "accept": [
+        "should"
+       ]
+      },
+      {
+       "accept": [
+        "play"
+       ]
+      },
+      {
+       "accept": [
+        "should"
+       ]
+      },
+      {
+       "accept": [
+        "ride"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "We ____ ____ fast food more than once a week.",
+     "blanks": [
+      {
+       "accept": [
+        "shouldn't",
+        "should not"
+       ]
+      },
+      {
+       "accept": [
+        "eat"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L3-E04",
+   "lessonCode": "M0-U08-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Câu đúng hay sai? (G&V Ex. 3)",
+   "instruction": "Chọn câu đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Hỏi xin lời khuyên về ăn uống:",
+     "options": [
+      {
+       "id": "A",
+       "text": "What you should eat to be healthy?"
+      },
+      {
+       "id": "B",
+       "text": "What should you eat to be healthy?"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Is it a good idea to play computer games for many hours? — No, ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "you should play on your computer for so long."
+      },
+      {
+       "id": "B",
+       "text": "you shouldn't play on your computer for so long."
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "I like doing yoga. ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "I think you shouldn't try it."
+      },
+      {
+       "id": "B",
+       "text": "I think you should try it."
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L3-E05",
+   "lessonCode": "M0-U08-L3",
+   "order": 5,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Quy định ở trường (G&V Ex. 6)",
+   "instruction": "Điền has to / have to / doesn't have to / don't have to.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "The most important rule is that we ____ turn off our mobile phones before the lesson.",
+     "blanks": [
+      {
+       "accept": [
+        "have to"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "However, unlike most schools, we ____ wear school uniform every day. We can wear our own clothes.",
+     "blanks": [
+      {
+       "accept": [
+        "don't have to"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "At university, students ____ come into class every morning. It is their choice.",
+     "blanks": [
+      {
+       "accept": [
+        "don't have to"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "If they are going to be late, they ____ send an email to their teacher.",
+     "blanks": [
+      {
+       "accept": [
+        "have to"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L4-E01",
+   "lessonCode": "M0-U08-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Email của Helen (Ex. 19)",
+   "instruction": "Đọc email của Helen gửi Alice và trả lời.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Hi Alice,\n\nI think it's a good idea to play tennis or basketball. Playing sport is a good way to stay healthy. I don't think you should play computer games all day. You should make sure you get enough sleep every night, between seven and 10 hours. You don't have to study for hours and should try to take regular breaks. You should eat lots of fruit and vegetables and get lots of regular exercise. Being healthy gives you more energy and makes you feel good.\n\nFrom,\nHelen",
+    "caption": "Email from Helen"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What activities does Helen say are a good idea?",
+     "options": [
+      {
+       "id": "A",
+       "text": "tennis and basketball"
+      },
+      {
+       "id": "B",
+       "text": "yoga and swimming"
+      },
+      {
+       "id": "C",
+       "text": "computer games"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Which piece of advice uses \"don't have to\"?",
+     "options": [
+      {
+       "id": "A",
+       "text": "You don't have to study for hours and should try to take regular breaks."
+      },
+      {
+       "id": "B",
+       "text": "You should eat lots of fruit and vegetables."
+      },
+      {
+       "id": "C",
+       "text": "I don't think you should play computer games all day."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Why is it important to stay healthy, according to Helen?",
+     "options": [
+      {
+       "id": "A",
+       "text": "It gives you more energy and makes you feel good."
+      },
+      {
+       "id": "B",
+       "text": "It helps you pass exams."
+      },
+      {
+       "id": "C",
+       "text": "It is cheap."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L4-E02",
+   "lessonCode": "M0-U08-L4",
+   "order": 2,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Viết email khuyên Alice (Ex. 20)",
+   "instruction": "Bạn của bạn, Alice, hỏi lời khuyên về cách sống khoẻ. Viết email trả lời (80–100 từ). Trong email: (1) nói Alice có thể làm những hoạt động gì để giữ sức khoẻ; (2) kể các hoạt động lành mạnh và cách thư giãn; (3) nói vì sao cần sống khoẻ. Dùng should / shouldn't / have to / don't have to.",
+   "responseSlots": 1,
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 80,
+    "maxWords": 115,
+    "mustUse": 3,
+    "targetStructures": [
+     "should",
+     "shouldn't",
+     "don't have to",
+     "have to",
+     "because"
+    ],
+    "checklist": [
+     "Các hoạt động giữ sức khoẻ",
+     "Ít nhất một cách thư giãn",
+     "Vì sao cần sống khoẻ",
+     "Dùng should / shouldn't và have to / don't have to đúng",
+     "80–100 từ, có chào và kết"
+    ],
+    "sampleAnswer": "Hi Alice,\n\nThanks for your email. I think you should go cycling or play badminton after school, because doing sport is the best way to keep fit. You don't have to join an expensive gym – you can go running in the park for free. When you feel stressed, you should try yoga or go for a walk. You shouldn't stay up late on your phone, and you have to get at least eight hours of sleep. It's also important to drink lots of water. Being healthy gives you more energy and helps you study better.\n\nTake care,\nLinh",
+    "commonErrors": [
+     "should + to V (should to go)",
+     "Nhầm don't have to (không bắt buộc) với mustn't (cấm)"
+    ]
+   }
+  },
+  {
+   "code": "M0-U08-L5-E01",
+   "lessonCode": "M0-U08-L5",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Từ khoá trong ý kiến (Ex. 3)",
+   "instruction": "Chọn từ khoá quan trọng nhất trong mỗi ý kiến.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Joining the gym is too expensive.",
+     "options": [
+      {
+       "id": "A",
+       "text": "gym"
+      },
+      {
+       "id": "B",
+       "text": "too expensive"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Running is a boring way to exercise.",
+     "options": [
+      {
+       "id": "A",
+       "text": "running"
+      },
+      {
+       "id": "B",
+       "text": "boring"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "It is better to exercise outdoors.",
+     "options": [
+      {
+       "id": "A",
+       "text": "better"
+      },
+      {
+       "id": "B",
+       "text": "outdoors"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L6-E01",
+   "lessonCode": "M0-U08-L6",
+   "order": 1,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "ordering",
+   "title": "Sắp xếp phần mô tả tranh (Ex. 13)",
+   "instruction": "Sắp xếp các chữ cái theo đúng trình tự mô tả: chung → chi tiết → ý kiến. (A: lời khuyên · B: chi tiết · C: mô tả chung)",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u08-boy.jpg",
+    "caption": "Ex. 13"
+   },
+   "items": [
+    {
+     "id": "o1",
+     "prompt": "",
+     "tokens": [
+      "C",
+      "B",
+      "A"
+     ],
+     "answer": [
+      "C",
+      "B",
+      "A"
+     ],
+     "explanation": "C \"The picture shows a boy in his bedroom…\" (chung) → B \"I think the boy is playing on his computer at night…\" (chi tiết) → A \"I think the boy should go to sleep…\" (ý kiến + lời khuyên)."
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L6-E02",
+   "lessonCode": "M0-U08-L6",
+   "order": 2,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: mô tả tranh và khuyên (Ex. 14)",
+   "instruction": "Nhìn hai bức tranh (người đàn ông ăn rau quả; người phụ nữ làm việc bận rộn). Nói 1–2 phút: mô tả chung, chi tiết, ý kiến và lời khuyên với should / shouldn't.",
+   "speakingPart": 2,
+   "speakingPrepSeconds": 60,
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u08-pictures.jpg",
+    "caption": "Ex. 14"
+   },
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "Describe the two pictures. Talk generally about what you can see, give specific details, give your opinion and reasons, and give advice using should / shouldn't.",
+     "sampleAnswer": "The first picture shows a man sitting at a table with a plate of fruit and vegetables. It looks like he is thinking about what to eat. I think he is trying to eat healthily, which is a good idea because fruit and vegetables give you lots of energy. Maybe he should also drink more water. In the second picture, I can see a woman in an office. There are lots of books and papers on her desk, and it looks like she is very busy and stressed. I think she is working very long hours. In my opinion, she shouldn't work all day without a break. She should go for a short walk or do some exercise, because that helps you feel less stressed. She should also get enough sleep.",
+     "sampleNote": "Hai tranh, mỗi tranh đi đủ 3 bước; có lý do (because) và lời khuyên (should / shouldn't).",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L6-E03",
+   "lessonCode": "M0-U08-L6",
+   "order": 3,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Nói: giữ sức khoẻ (Lead-in, Ex. 5)",
+   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "How do you like to keep healthy?",
+     "sampleAnswer": "I usually go cycling with my friends twice a week, and I try to eat lots of vegetables. I also drink a lot of water, especially when the weather is hot.",
+     "sampleNote": "Hai–ba cách + tần suất.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "Imagine you have important exams and feel stressed. Which activities would help? Why?",
+     "sampleAnswer": "I think going for a walk would help, because fresh air helps you think clearly. I would also make sure I get enough sleep, because it's difficult to remember anything when you're tired.",
+     "sampleNote": "Hai hoạt động + lý do.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "What is your favourite way to relax?",
+     "sampleAnswer": "My favourite way to relax is listening to music in my room. It helps me forget about my worries, and after twenty minutes I usually feel much calmer.",
+     "sampleNote": "Cách thư giãn + tác dụng.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L7-E01",
+   "lessonCode": "M0-U08-L7",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Lời khuyên chơi tennis (G&V Ex. 7)",
+   "instruction": "Điền should / shouldn't.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I enjoy playing tennis but I want to improve. What ____ I do?",
+     "blanks": [
+      {
+       "accept": [
+        "should"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "My advice is you ____ practise as much as possible.",
+     "blanks": [
+      {
+       "accept": [
+        "should"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "I suggest you ____ train more often.",
+     "blanks": [
+      {
+       "accept": [
+        "should"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "I know I ____ have rest days when I don't practise.",
+     "blanks": [
+      {
+       "accept": [
+        "should"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "Maybe not every day, but you ____ just play twice a week – that's not enough.",
+     "blanks": [
+      {
+       "accept": [
+        "shouldn't",
+        "should not"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "I think you ____ have tennis lessons.",
+     "blanks": [
+      {
+       "accept": [
+        "should"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L7-E02",
+   "lessonCode": "M0-U08-L7",
+   "order": 2,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Nối nửa câu (G&V Ex. 8)",
+   "instruction": "Nối hai nửa câu.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "It is a good idea to pay",
+     "right": "for a personal trainer.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Joining the gym",
+     "right": "can be expensive.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "It is more fun when you go",
+     "right": "running with other people.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "It is important to follow",
+     "right": "a healthy diet.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "I think it's better to do",
+     "right": "yoga than go to the gym.",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Running is a",
+     "right": "great way to keep fit.",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}
