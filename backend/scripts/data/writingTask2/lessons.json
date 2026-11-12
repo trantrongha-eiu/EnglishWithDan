@@ -52,7 +52,137 @@
         "250 từ tối thiểu · 260–300 từ vùng an toàn · 4 đoạn chuẩn",
         "Sau mỗi ý chính hỏi \"Why?\" và \"So what?\""
       ],
-      "gate": { "minObjectiveScorePercent": 60, "minWritingSubmissions": 0 }
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 0
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "A1. Luật chơi: bốn tiêu chí chấm điểm",
+          "titleEn": "The four marking criteria",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Điểm Writing Task 2 là trung bình của bốn tiêu chí, **mỗi tiêu chí chiếm 25%**. Task 2 chiếm hai phần ba tổng điểm Writing, nên đây là phần đáng đầu tư nhất."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Tiêu chí**",
+                  "**Giám khảo tìm gì**",
+                  "**Việc bạn cần làm**"
+                ],
+                [
+                  "**Task Response**\n(Trả lời đề)",
+                  "Bài có trả lời **đủ mọi phần** của đề không? Lập trường có rõ ràng không? Ý có được phát triển hay chỉ liệt kê?",
+                  "Đọc kỹ đề, gạch chân từ khóa. Mỗi ý chính phải có giải thích và ví dụ. Viết tối thiểu 250 từ."
+                ],
+                [
+                  "**Coherence & Cohesion**\n(Mạch lạc và liên kết)",
+                  "Bài có chia đoạn hợp lý không? Ý có nối tiếp nhau tự nhiên không? Từ nối có bị lạm dụng không?",
+                  "Mỗi đoạn một ý chính. Dùng topic sentence. Đừng nhồi Firstly, Secondly, Moreover ở mọi câu."
+                ],
+                [
+                  "**Lexical Resource**\n(Từ vựng)",
+                  "Từ vựng có chính xác và đa dạng không? Có collocation tự nhiên không? Có lặp từ nhiều không?",
+                  "Dùng từ **đúng** quan trọng hơn từ **khó**. Học collocation theo chủ đề, không học từ đơn lẻ."
+                ],
+                [
+                  "**Grammatical Range & Accuracy**\n(Ngữ pháp)",
+                  "Có đủ loại câu không: đơn, ghép, phức? Có bao nhiêu câu không lỗi?",
+                  "Trộn câu ngắn và câu dài. Band 7 cần **phần lớn câu không có lỗi**."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "CON SỐ CẦN NHỚ",
+              "lines": [
+                "**40 phút** — thời gian cho Task 2. **250 từ** là tối thiểu, viết dưới sẽ bị trừ điểm.",
+                "**260 – 300 từ** là vùng an toàn. Viết quá 350 từ thường làm tăng lỗi và mất thời gian kiểm tra lại.",
+                "**4 đoạn** là cấu trúc chuẩn: Introduction – Body 1 – Body 2 – Conclusion."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A2. Khoảng cách thật giữa Band 6 và Band 7",
+          "titleEn": "What actually separates Band 6 from Band 7",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Rất nhiều học sinh nghĩ rằng lên Band 7 nghĩa là dùng từ khó hơn. Điều đó **không đúng**. Dưới đây là năm khác biệt thật sự mà giám khảo nhìn thấy."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**BAND 6 — điều đang giữ bạn lại**",
+                  "**BAND 7 — điều cần thay đổi**"
+                ],
+                [
+                  "**Ý bị liệt kê.** Nêu một ý rồi nhảy ngay sang ý khác, mỗi ý một câu.",
+                  "**Ý được phát triển.** Mỗi ý chính đi kèm: tại sao → dẫn đến gì → ví dụ cụ thể. Hai ý sâu tốt hơn bốn ý nông."
+                ],
+                [
+                  "**Từ vựng chung chung:** good, bad, big, a lot of, many problems, very important.",
+                  "**Từ vựng chính xác:** beneficial, harmful, substantial, a considerable number of, pressing challenges, crucial."
+                ],
+                [
+                  "**Câu đơn điệu.** Hầu hết là câu đơn hoặc câu ghép với and / but / so.",
+                  "**Câu đa dạng.** Có mệnh đề quan hệ, mệnh đề trạng ngữ, cụm phân từ, thỉnh thoảng có đảo ngữ hoặc câu chẻ."
+                ],
+                [
+                  "**Từ nối bị nhồi.** Firstly, Secondly, Moreover, Furthermore xuất hiện ở đầu gần như mọi câu.",
+                  "**Liên kết tự nhiên.** Dùng đại từ (this, these, such), từ đồng nghĩa và cách sắp xếp ý để nối câu, không chỉ dựa vào từ nối."
+                ],
+                [
+                  "**Lập trường mơ hồ.** Đoạn đầu nói một kiểu, kết bài nói kiểu khác.",
+                  "**Lập trường nhất quán.** Nêu quan điểm ngay ở Introduction, giữ nguyên xuyên suốt, nhắc lại ở Conclusion."
+                ]
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Nhìn thấy khác biệt trong một câu**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6",
+              "lines": [
+                "Online learning is good because students can study at home. This saves time.",
+                "→ Ý đúng, ngữ pháp đúng — nhưng từ vựng chung chung, ý dừng lại quá sớm."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7",
+              "lines": [
+                "Online learning is highly beneficial because it allows students to study from home, which eliminates the need for daily commuting. As a result, learners can devote the time they save to revision or part-time work.",
+                "→ Cùng một ý, nhưng: từ chính xác hơn (beneficial, eliminates), có mệnh đề quan hệ (which...), và ý được đẩy thêm một bước tới hệ quả."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "CÂU HỎI TỰ KIỂM TRA",
+              "lines": [
+                "Sau mỗi ý chính bạn viết, hãy tự hỏi: **\"Why?\"** và **\"So what?\"**. Nếu chưa trả lời được cả hai trong đoạn văn, ý đó chưa được phát triển đủ cho Band 7."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L02",
@@ -72,7 +202,80 @@
         "Consequently, …, thereby + V-ing …",
         "A clear illustration of this can be seen in …, where … occurred."
       ],
-      "gate": { "minObjectiveScorePercent": 60, "minWritingSubmissions": 0 }
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 0
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "A3. Bộ công cụ câu — 9 chức năng câu",
+          "titleEn": "The sentence toolkit — nine functions that build every Task 2 essay",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Mọi bài Task 2, ở bất kỳ dạng đề nào, đều được lắp từ chín loại câu sau. Nếu bạn nắm được chín chức năng này ở cả hai tầng, bạn có thể tự xây template cho bất kỳ dạng nào."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Chức năng**",
+                  "**Band 6+**",
+                  "**Band 7+**"
+                ],
+                [
+                  "**1. Mở đề**\nGeneral statement",
+                  "In recent years, (topic) has become increasingly common in many parts of the world.",
+                  "Over the past few decades, (topic) has emerged as one of the defining features of modern life."
+                ],
+                [
+                  "**2. Paraphrase đề**\nRestate the question",
+                  "While (topic) offers several benefits, it also has some potential drawbacks.",
+                  "While the merits of (topic) are widely acknowledged, its potential drawbacks deserve equal consideration."
+                ],
+                [
+                  "**3. Nêu luận điểm**\nThesis statement",
+                  "This essay will discuss the main advantages and disadvantages of (topic).",
+                  "This essay will examine both dimensions of the issue before arguing that (your position)."
+                ],
+                [
+                  "**4. Câu chủ đề**\nTopic sentence",
+                  "One of the main advantages of (topic) is that (idea).",
+                  "The most compelling argument in favour of (topic) lies in its capacity to (verb)."
+                ],
+                [
+                  "**5. Giải thích**\nExplanation",
+                  "This is because (explanation).",
+                  "This can largely be attributed to the fact that (explanation)."
+                ],
+                [
+                  "**6. Nêu kết quả**\nResult",
+                  "As a result, (result).",
+                  "Consequently, (result), thereby (verb-ing) (further outcome)."
+                ],
+                [
+                  "**7. Đưa ví dụ**\nExample",
+                  "For example, (example).",
+                  "A clear illustration of this can be seen in (example), where (outcome) occurred."
+                ],
+                [
+                  "**8. Nhượng bộ**\nConcession",
+                  "It is true that (other side). However, (your view).",
+                  "Admittedly, (other side); nevertheless, (your view) remains the more persuasive position."
+                ],
+                [
+                  "**9. Kết bài**\nConclusion",
+                  "In conclusion, (summary of your position).",
+                  "In conclusion, having weighed both perspectives, I maintain that (your position)."
+                ]
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L03",
@@ -91,7 +294,49 @@
         "Result Band 7: Consequently, …, thereby + V-ing …",
         "Example Band 7: A clear illustration of this can be seen in [nơi], where [chi tiết]."
       ],
-      "gate": { "minObjectiveScorePercent": 60, "minWritingSubmissions": 1 }
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 1
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ba chức năng quyết định band của bạn",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Trong chín chức năng trên, ba chức năng sau là nơi học sinh Band 6 thường dừng lại quá sớm. Hãy luyện riêng ba loại câu này.",
+                "**① Câu giải thích — Explanation**",
+                "This is because **people can complete daily tasks without leaving home**.",
+                "→ Band 6 — đúng nhưng ngắn.",
+                "This can largely be attributed to **the fact that digital platforms now allow people to work, shop and socialise without ever leaving home**.",
+                "→ Band 7 — cùng ý, nhưng cụ thể hơn và cấu trúc phức tạp hơn.",
+                "**② Câu kết quả — Result**",
+                "As a result, **they spend more time sitting**.",
+                "→ Band 6.",
+                "Consequently, **sedentary behaviour has become the norm rather than the exception, thereby increasing the risk of obesity and heart disease**.",
+                "→ Band 7 — đẩy hệ quả đi thêm một bước và dùng cụm **thereby + V-ing**.",
+                "**③ Câu ví dụ — Example**",
+                "For example, **people can order food online**.",
+                "→ Band 6 — ví dụ chung chung.",
+                "A clear illustration of this can be seen in **large cities such as Hanoi, where food-delivery applications have made it possible to eat three meals a day without stepping outside**.",
+                "→ Band 7 — ví dụ **cụ thể**: có địa điểm, có chi tiết. Ví dụ cụ thể là điểm khác biệt lớn nhất giữa Band 6 và Band 7 ở tiêu chí Task Response."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "MẸO VỀ VÍ DỤ",
+              "lines": [
+                "Bạn **không cần** số liệu thật. Giám khảo không kiểm tra tính chính xác của ví dụ. Nhưng ví dụ phải **cụ thể**: có tên nước, tên thành phố, một nhóm người, một tình huống rõ ràng.",
+                "Tránh mở đầu bằng \"Research has shown that 70% of people...\" nếu bạn bịa số liệu — câu này bị lạm dụng và nghe rất giả. Hãy dùng ví dụ đời thường thay vì thống kê giả."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L04",
@@ -110,9 +355,119 @@
         "\"outweigh\" / \"more advantages or more disadvantages\" → BẮT BUỘC chọn phe",
         "\"discuss both views and give your own opinion\" → nêu quan điểm ở Intro và Conclusion"
       ],
-      "gate": { "minObjectiveScorePercent": 60, "minWritingSubmissions": 0 }
+      "gate": {
+        "minObjectiveScorePercent": 60,
+        "minWritingSubmissions": 0
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "A4. Quy trình 40 phút trong phòng thi",
+          "titleEn": "The 40-minute exam routine",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Thời gian**",
+                  "**Việc cần làm**"
+                ],
+                [
+                  "**Phút 0 – 5**\nĐọc đề và lập dàn ý",
+                  "Gạch chân từ khóa. Xác định dạng đề. Quyết định lập trường. Viết nhanh ra giấy: 2 ý cho Body 1, 2 ý cho Body 2, mỗi ý một ví dụ. **Không viết câu hoàn chỉnh ở bước này.**"
+                ],
+                [
+                  "**Phút 5 – 10**\nViết Introduction",
+                  "Ba câu: mở đề → paraphrase → thesis. Không quá 45 từ."
+                ],
+                [
+                  "**Phút 10 – 22**\nViết Body 1",
+                  "Topic sentence → giải thích → kết quả → ví dụ. Khoảng 90 – 110 từ."
+                ],
+                [
+                  "**Phút 22 – 34**\nViết Body 2",
+                  "Cùng cấu trúc với Body 1. Khoảng 90 – 110 từ."
+                ],
+                [
+                  "**Phút 34 – 37**\nViết Conclusion",
+                  "Hai câu: tóm tắt → nhắc lại lập trường. Không thêm ý mới."
+                ],
+                [
+                  "**Phút 37 – 40**\nKiểm tra lại",
+                  "Soát bốn thứ: **số nhiều (s)**, **thì động từ**, **mạo từ a/an/the**, **chủ ngữ – động từ hợp nhau**. Đây là bốn lỗi phổ biến nhất và sửa được nhanh nhất."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "ĐỪNG BỎ QUA 5 PHÚT LẬP DÀN Ý",
+              "lines": [
+                "Học sinh viết ngay không lập dàn ý thường mất mạch giữa bài, phải viết lại, và cuối cùng chậm hơn. Năm phút lập dàn ý tiết kiệm mười phút viết."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phần B — Bảy dạng đề, hai tầng template",
+          "titleEn": "Part B — Seven essay types, two levels of template",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Mỗi chương trong phần này trình bày cùng một khung bài ở hai tầng. Hãy đọc theo thứ tự: nhận diện đề → dàn ý → Band 6+ → Band 7+ → bảng so sánh. Bảng so sánh là phần quan trọng nhất, vì nó cho bạn thấy chính xác **cái gì đã thay đổi** khi nâng band."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Dạng đề**",
+                  "**Câu hỏi trong đề thường có dạng**",
+                  "**Bố cục hai body**"
+                ],
+                [
+                  "**01** Advantages & Disadvantages",
+                  "What are the advantages and disadvantages...? / Do the advantages outweigh the disadvantages?",
+                  "Ưu điểm\nNhược điểm"
+                ],
+                [
+                  "**02** Discuss Both Views",
+                  "Discuss both views and give your own opinion.",
+                  "Quan điểm 1\nQuan điểm 2"
+                ],
+                [
+                  "**03** Cause – Solution",
+                  "What are the causes? What solutions can you suggest?",
+                  "Nguyên nhân\nGiải pháp"
+                ],
+                [
+                  "**04** Effect – Solution",
+                  "What problems does this cause? What can be done?",
+                  "Hậu quả\nGiải pháp"
+                ],
+                [
+                  "**05** Cause – Effect",
+                  "What are the causes and effects of this?",
+                  "Nguyên nhân\nHậu quả"
+                ],
+                [
+                  "**06** Agree / Disagree",
+                  "To what extent do you agree or disagree?",
+                  "Lý do 1\nLý do 2"
+                ],
+                [
+                  "**07** Positive or Negative",
+                  "Is this a positive or negative development?",
+                  "Lý do bảo vệ quan điểm\nThừa nhận mặt kia rồi củng cố"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
     },
-
     {
       "code": "T2-L05",
       "moduleCode": "T2-M2",
@@ -130,7 +485,345 @@
         "Despite its advantages, (topic) is not without its limitations.",
         "On balance, it can be argued that the advantages outweigh the drawbacks, provided that…"
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 1
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Nhận diện đề",
+          "titleEn": "Recognising the question",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "ĐỀ THƯỜNG CÓ DẠNG",
+              "lines": [
+                "What are the **advantages and disadvantages** of this trend?",
+                "**Discuss the advantages and disadvantages** of...",
+                "Does this development have **more advantages than disadvantages**?",
+                "Do the **benefits outweigh the drawbacks**?"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "KHÁC BIỆT NHỎ NHƯNG QUAN TRỌNG",
+              "lines": [
+                "Nếu đề chỉ nói **\"discuss the advantages and disadvantages\"** → bạn có thể trung lập, không bắt buộc nêu quan điểm.",
+                "Nếu đề hỏi **\"more advantages or more disadvantages\"** hoặc **\"outweigh\"** → bạn **bắt buộc** phải chọn một phe và nói rõ ở Introduction lẫn Conclusion. Không chọn phe là mất điểm Task Response."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Dàn ý",
+          "titleEn": "The outline",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**INTRO → BODY 1: ADVANTAGES → BODY 2: DISADVANTAGES → CONCLUSION + OPINION**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**MỖI BODY: IDEA → BECAUSE (tại sao) → RESULT (dẫn đến gì) → EXAMPLE (ví dụ cụ thể)**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 6+",
+          "titleEn": "The safe framework",
+          "blocks": [
+            {
+              "k": "h",
+              "t": "**I. INTRODUCTION**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · MỞ BÀI",
+              "lines": [
+                "**① Mở đề**",
+                "In recent years, (general topic) has become increasingly common in many parts of the world.",
+                "→ Trong những năm gần đây, (chủ đề) ngày càng trở nên phổ biến ở nhiều nơi trên thế giới.",
+                "**② Paraphrase đề**",
+                "While (topic) offers several benefits, it also has some potential drawbacks.",
+                "→ Mặc dù (chủ đề) mang lại một số lợi ích, nó cũng có một số hạn chế nhất định.",
+                "**③ Nêu luận điểm**",
+                "This essay will discuss the main advantages and disadvantages of (topic).",
+                "→ Bài viết này sẽ phân tích những ưu điểm và nhược điểm chính của (chủ đề)."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**II. BODY 1 — ADVANTAGES**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · ƯU ĐIỂM",
+              "lines": [
+                "One of the main advantages of (topic) is that (advantage).",
+                "→ Một trong những ưu điểm chính của (chủ đề) là...",
+                "This is mainly because (explanation).",
+                "→ Điều này chủ yếu là bởi vì...",
+                "As a result, (positive result).",
+                "→ Kết quả là...",
+                "For example, (specific example).",
+                "→ Ví dụ,..."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**III. BODY 2 — DISADVANTAGES**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · NHƯỢC ĐIỂM",
+              "lines": [
+                "However, (topic) also has some disadvantages. One of the main drawbacks is that (disadvantage).",
+                "→ Tuy nhiên, (chủ đề) cũng có một số hạn chế. Một trong những hạn chế chính là...",
+                "This is because (explanation).",
+                "→ Điều này là bởi vì...",
+                "As a result, (negative result).",
+                "→ Kết quả là...",
+                "For instance, (specific example).",
+                "→ Chẳng hạn,..."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**IV. CONCLUSION**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, (topic) has both advantages and disadvantages. While it can (main advantage), it may also (main disadvantage). Overall, I believe that the advantages outweigh the disadvantages.",
+                "→ Tóm lại, (chủ đề) có cả ưu điểm và nhược điểm. Mặc dù nó có thể..., nó cũng có thể... Nhìn chung, tôi cho rằng ưu điểm vượt trội hơn nhược điểm."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Đoạn văn mẫu Band 6+**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 1 — ONLINE SHOPPING",
+              "lines": [
+                "One of the main advantages of online shopping is that it is highly convenient. This is mainly because people can buy products from home without having to visit physical stores. As a result, they can save a considerable amount of time. For example, busy workers can order groceries online after work instead of going to a supermarket."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 2 — ONLINE SHOPPING",
+              "lines": [
+                "However, online shopping also has some disadvantages. One of the main drawbacks is that customers cannot see or try products before buying them. This is because they have to rely on pictures and descriptions provided on websites. As a result, they may receive products that are different from what they expected. For instance, clothes bought online may not fit properly or look the same as they do in photographs."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 7+",
+          "titleEn": "The upgraded framework",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · MỞ BÀI",
+              "lines": [
+                "In recent years, (topic) has become an increasingly prominent feature of modern life, attracting considerable public attention.",
+                "→ Trong những năm gần đây, (chủ đề) đã trở thành một phần ngày càng nổi bật của đời sống hiện đại và thu hút nhiều sự chú ý.",
+                "With its growing prevalence, questions have arisen regarding its overall impact.",
+                "→ Khi nó ngày càng phổ biến, nhiều câu hỏi đã được đặt ra về tác động tổng thể của nó.",
+                "This essay will examine both the advantages and disadvantages of (topic).",
+                "→ Bài luận này sẽ phân tích cả ưu điểm và nhược điểm của (chủ đề)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · ƯU ĐIỂM",
+              "lines": [
+                "One of the most significant advantages of (topic) is that (advantage).",
+                "→ Một trong những lợi ích quan trọng nhất của (chủ đề) là...",
+                "To begin with, it enables individuals to (verb), thereby improving (noun phrase).",
+                "→ Trước hết, nó cho phép con người..., từ đó cải thiện...",
+                "In addition, the adoption of (topic) can contribute to (noun phrase), which plays a crucial role in (verb-ing).",
+                "→ Thêm vào đó, việc áp dụng (chủ đề) có thể góp phần vào..., điều này đóng vai trò quan trọng trong việc...",
+                "A clear illustration of this can be seen in (example), where (positive outcome) occurred.",
+                "→ Một minh chứng rõ ràng có thể thấy ở..., nơi... đã xảy ra."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · NHƯỢC ĐIỂM",
+              "lines": [
+                "Despite its advantages, (topic) is not without its limitations.",
+                "→ Mặc dù có nhiều lợi ích, (chủ đề) không phải là không có hạn chế.",
+                "One major concern is that (clause), which may lead to (negative consequence).",
+                "→ Một mối lo ngại lớn là..., điều này có thể dẫn đến...",
+                "Additionally, an over-reliance on (topic) could result in (noun phrase), thereby undermining (noun phrase).",
+                "→ Thêm vào đó, sự phụ thuộc quá mức vào (chủ đề) có thể dẫn đến..., từ đó làm suy yếu...",
+                "For instance, (specific example).",
+                "→ Chẳng hạn,..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, although (topic) offers clear benefits such as (advantage 1) and (advantage 2), it also entails notable disadvantages, including (disadvantage 1) and (disadvantage 2).",
+                "→ Tóm lại, mặc dù (chủ đề) mang lại những lợi ích rõ ràng như... và..., nó cũng tồn tại những hạn chế đáng kể như... và...",
+                "On balance, it can be argued that the advantages outweigh the drawbacks, provided that (condition).",
+                "→ Xét tổng thể, có thể lập luận rằng lợi ích vượt trội hơn hạn chế, với điều kiện là..."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bảng nâng cấp câu: 6+ → 7+",
+          "titleEn": "Sentence upgrade table",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**BAND 6+**",
+                  "**BAND 7+**"
+                ],
+                [
+                  "In recent years, (topic) has become increasingly common.",
+                  "In recent years, (topic) has become an increasingly prominent feature of modern life."
+                ],
+                [
+                  "While (topic) offers several benefits, it also has some drawbacks.",
+                  "While the merits of (topic) are widely acknowledged, its potential drawbacks deserve equal consideration."
+                ],
+                [
+                  "This essay will discuss the advantages and disadvantages.",
+                  "This essay will examine both the advantages and disadvantages of (topic)."
+                ],
+                [
+                  "One of the main advantages is that...",
+                  "One of the most significant advantages lies in its capacity to..."
+                ],
+                [
+                  "This is mainly because...",
+                  "This can largely be attributed to the fact that..."
+                ],
+                [
+                  "As a result, people can save time.",
+                  "Consequently, individuals can save a considerable amount of time, **thereby freeing up** hours for family or study."
+                ],
+                [
+                  "For example, (example).",
+                  "A clear illustration of this can be seen in (example), where (outcome) occurred."
+                ],
+                [
+                  "However, (topic) also has some disadvantages.",
+                  "Despite its advantages, (topic) is not without its limitations."
+                ],
+                [
+                  "This may cause problems.",
+                  "This may give rise to a number of pressing concerns."
+                ],
+                [
+                  "Overall, I believe the advantages outweigh the disadvantages.",
+                  "On balance, it can be argued that the advantages outweigh the drawbacks, provided that (condition)."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Useful language",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Nói về ưu điểm**",
+                "• One of the main advantages is that... / A key benefit lies in its ability to...",
+                "• This makes it easier for people to... / This gives people greater access to...",
+                "• a major advantage · a significant benefit · a considerable improvement in...",
+                "• enable people to... · allow people to... · save time and money · improve quality of life",
+                "**Nói về nhược điểm**",
+                "• One of the main drawbacks is that... / One major concern is that...",
+                "• Despite its advantages, ... is not without its limitations.",
+                "• a serious drawback · a potential risk · an unintended consequence",
+                "• give rise to... · undermine... · place pressure on... · lead to an over-reliance on...",
+                "**So sánh hai mặt ở kết bài**",
+                "• the advantages outweigh the disadvantages",
+                "• the drawbacks are outweighed by the benefits",
+                "• the benefits are likely to be more significant in the long term",
+                "• provided that appropriate measures are taken"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bài mẫu Band 7+",
+          "titleEn": "Model essay",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "ĐỀ BÀI",
+              "lines": [
+                "In some countries, many people continue to live with or very near their parents even when they are married and have their own children. **Does this situation have more advantages or more disadvantages?**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BÀI MẪU · khoảng 265 từ",
+              "lines": [
+                "**INTRODUCTION**",
+                "In some societies, it is increasingly common for married adults to live with or in close proximity to their parents, even after starting families of their own. With the growing prevalence of multigenerational households, questions have arisen regarding their overall impact. This essay will examine both the advantages and disadvantages of this arrangement.",
+                "**BODY 1 — ADVANTAGES**",
+                "One of the most significant advantages of living close to one’s parents is that it provides substantial practical and emotional support. To begin with, this arrangement enables individuals to receive assistance with childcare, thereby improving work–life balance. Grandparents often help look after young children, allowing parents to maintain full-time employment or reduce financial pressure. In addition, sharing a household can contribute to stronger family bonds, which plays a crucial role in fostering emotional stability. For example, children who grow up in extended families may benefit from greater affection, guidance, and a stronger sense of cultural identity.",
+                "**BODY 2 — DISADVANTAGES**",
+                "Despite its advantages, living with or near parents is not without its limitations. One major concern is that a lack of privacy may lead to tension and conflict between generations. Differences in parenting styles, lifestyle preferences, or financial decisions can create misunderstandings within the household. Additionally, an over-reliance on parents could result in reduced independence, thereby undermining personal growth.",
+                "**CONCLUSION**",
+                "In conclusion, although living in close proximity to parents offers clear benefits such as practical support and stronger family connections, it also entails notable disadvantages, including reduced privacy and potential dependency. On balance, it can be argued that the advantages of this arrangement outweigh its drawbacks, particularly in cultures where family cohesion and mutual assistance are highly valued."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "LỖI THƯỜNG GẶP Ở DẠNG NÀY",
+              "lines": [
+                "**Viết hai body dài ngắn chênh lệch.** Nếu Body 1 có bốn câu mà Body 2 chỉ có hai, giám khảo sẽ thấy bài mất cân đối. Giữ hai đoạn xấp xỉ bằng nhau.",
+                "**Liệt kê ba, bốn ưu điểm mà không giải thích ý nào.** Hai ý được phát triển đầy đủ luôn tốt hơn bốn ý bị bỏ dở.",
+                "**Quên chọn phe khi đề hỏi \"outweigh\".** Đây là lỗi mất điểm nặng nhất ở dạng này.",
+                "**Nhầm với dạng Discuss Both Views.** Advantages/Disadvantages nói về **mặt tốt và mặt xấu của một thứ**; Discuss Both Views nói về **quan điểm của hai nhóm người**."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L06",
@@ -149,7 +842,316 @@
         "There are several convincing reasons why some people support…",
         "Personally, I believe that (stance), primarily because (reason)."
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 1
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Nhận diện đề",
+          "titleEn": "Recognising the question",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "ĐỀ THƯỜNG CÓ DẠNG",
+              "lines": [
+                "Some people think... **while others believe**... **Discuss both views and give your own opinion.**",
+                "Some people argue that... Others say that... **Discuss both these views.**",
+                "Dấu hiệu nhận biết: đề nêu **hai nhóm người** với hai ý kiến trái ngược, và gần như luôn có cụm **\"give your own opinion\"**."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BẮT BUỘC",
+              "lines": [
+                "Khi đề có **\"and give your own opinion\"**, bạn phải nêu quan điểm cá nhân **ở Introduction** và nhắc lại **ở Conclusion**. Chỉ nêu ở kết bài là chưa đủ và thường bị giữ ở Band 6.",
+                "Phải viết về **cả hai quan điểm** với độ dài tương đương, kể cả quan điểm bạn không đồng ý."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Dàn ý",
+          "titleEn": "The outline",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**INTRO + OPINION → BODY 1: VIEW 1 → BODY 2: VIEW 2 → CONCLUSION + OPINION**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**MỖI BODY: VIEW → WHY? (tại sao họ nghĩ vậy) → RESULT → EXAMPLE**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 6+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · MỞ BÀI",
+              "lines": [
+                "In recent years, (topic) has become a widely discussed issue.",
+                "→ Trong những năm gần đây, (chủ đề) đã trở thành một vấn đề được thảo luận rộng rãi.",
+                "While some people believe that (View 1), others argue that (View 2).",
+                "→ Trong khi một số người cho rằng (quan điểm 1), những người khác lại cho rằng (quan điểm 2).",
+                "This essay will discuss both views before explaining why I agree with (View 1 / View 2).",
+                "→ Bài viết này sẽ thảo luận cả hai quan điểm trước khi giải thích tại sao tôi đồng ý với (quan điểm 1/2)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 1 — VIEW 1",
+              "lines": [
+                "Some people believe that (View 1). One reason for this view is that (main reason).",
+                "→ Một số người cho rằng... Một lý do cho quan điểm này là...",
+                "This is because (explanation). As a result, (result).",
+                "→ Điều này là bởi vì... Kết quả là...",
+                "For example, (specific example).",
+                "→ Ví dụ,..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 2 — VIEW 2",
+              "lines": [
+                "On the other hand, others argue that (View 2).",
+                "→ Mặt khác, những người khác cho rằng...",
+                "This is mainly because (explanation). As a result, (result).",
+                "→ Điều này chủ yếu là bởi vì... Kết quả là...",
+                "For instance, (specific example).",
+                "→ Chẳng hạn,..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, there are valid arguments on both sides of this issue. However, I believe that (your opinion) because (main reason).",
+                "→ Tóm lại, có những lập luận hợp lý ở cả hai phía. Tuy nhiên, tôi cho rằng... bởi vì..."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Đoạn văn mẫu Band 6+**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 1 — FREE UNIVERSITY EDUCATION",
+              "lines": [
+                "Some people believe that university education should be free for everyone. One reason for this view is that it would give more students access to higher education. This is because students from low-income families would not have to worry about expensive tuition fees. As a result, more young people could gain the qualifications needed for better jobs. For example, students from disadvantaged backgrounds could attend university without taking on large amounts of debt."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 2 — FREE UNIVERSITY EDUCATION",
+              "lines": [
+                "On the other hand, others argue that university students should pay their own tuition fees. This is mainly because governments have limited budgets and need to spend money on other essential services. As a result, asking students to contribute could reduce the financial burden on the government. For instance, governments could use this money to improve public healthcare and schools."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · MỞ BÀI",
+              "lines": [
+                "In recent decades, the issue of (topic) has attracted increasing public attention.",
+                "→ Trong vài thập kỷ gần đây, vấn đề (chủ đề) đã thu hút sự quan tâm ngày càng lớn của công chúng.",
+                "While some people argue that (View 1), others believe that (View 2).",
+                "→ Trong khi một số người cho rằng..., những người khác lại tin rằng...",
+                "This essay will discuss both perspectives before explaining why I side with (View 1 / View 2).",
+                "→ Bài viết này sẽ thảo luận cả hai quan điểm trước khi giải thích vì sao tôi nghiêng về..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · BODY 1 — VIEW 1",
+              "lines": [
+                "There are several convincing reasons why some people support (noun / gerund).",
+                "→ Có nhiều lý do thuyết phục khiến một số người ủng hộ...",
+                "One major reason for this view is that (clause). This is largely because (reason). As a result, (consequence).",
+                "→ Một lý do chính cho quan điểm này là... Điều này chủ yếu là do... Kết quả là...",
+                "Unlike in the past, when (past situation), nowadays (current trend).",
+                "→ Không giống như trước đây, khi..., ngày nay...",
+                "For instance, (example). This suggests that (implication).",
+                "→ Ví dụ,... Điều này cho thấy rằng..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · BODY 2 — VIEW 2",
+              "lines": [
+                "On the other hand, critics argue that (clause).",
+                "→ Mặt khác, những người phản đối cho rằng...",
+                "One key concern is that (clause). This may lead to (negative consequence).",
+                "→ Một mối lo ngại chính là... Điều này có thể dẫn đến...",
+                "For example, in many cases (real example). This highlights the potential risks associated with (noun / gerund).",
+                "→ Ví dụ, trong nhiều trường hợp... Điều này làm nổi bật những rủi ro tiềm ẩn liên quan đến..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, both perspectives offer valid arguments regarding (noun / gerund).",
+                "→ Tóm lại, cả hai quan điểm đều đưa ra những lập luận hợp lý về...",
+                "Personally, I believe that (stance) because (main reason). Moving forward, policymakers should consider (action) to address these concerns.",
+                "→ Cá nhân tôi tin rằng... vì... Trong tương lai, các nhà hoạch định chính sách nên xem xét... để giải quyết những vấn đề này."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bảng nâng cấp câu: 6+ → 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**BAND 6+**",
+                  "**BAND 7+**"
+                ],
+                [
+                  "In recent years, (topic) has become a widely discussed issue.",
+                  "In recent decades, the issue of (topic) has attracted increasing public attention."
+                ],
+                [
+                  "Some people believe that... others argue that...",
+                  "While proponents of (view 1) maintain that..., critics contend that..."
+                ],
+                [
+                  "One reason for this view is that...",
+                  "One major reason underpinning this view is that..."
+                ],
+                [
+                  "This is because...",
+                  "This is largely because... / This stems from the fact that..."
+                ],
+                [
+                  "As a result, more people can study.",
+                  "As a result, higher education becomes accessible to a far wider section of society."
+                ],
+                [
+                  "For example, (example).",
+                  "For instance, (example). This suggests that (implication)."
+                ],
+                [
+                  "On the other hand, others argue that...",
+                  "On the other hand, critics argue that... / An opposing view holds that..."
+                ],
+                [
+                  "This is a problem.",
+                  "This may give rise to a number of serious concerns."
+                ],
+                [
+                  "In conclusion, both views have advantages.",
+                  "In conclusion, both perspectives offer valid arguments regarding (topic)."
+                ],
+                [
+                  "I think that... because...",
+                  "Personally, I believe that (stance), primarily because (reason)."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Useful language",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Giới thiệu quan điểm 1**",
+                "• Some people believe that... / Some people argue that...",
+                "• Those who support this view believe that...",
+                "• One reason for this view is that... / Proponents of this view maintain that...",
+                "**Giới thiệu quan điểm 2**",
+                "• On the other hand, others argue that...",
+                "• However, others believe that... / There is also a view that...",
+                "• Critics of this position contend that...",
+                "**Nêu quan điểm cá nhân**",
+                "• In my view,... / I believe that... / Personally, I think that...",
+                "• I agree with the view that...",
+                "• In my view, both sides have valid points, but I believe that... — dùng khi bạn muốn quan điểm cân bằng."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bài mẫu Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "ĐỀ BÀI",
+              "lines": [
+                "Some people think international car-free days are an effective way of reducing air pollution; however, others think there are some other ways. **Discuss both views and give your own opinion.**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BÀI MẪU · khoảng 280 từ",
+              "lines": [
+                "**INTRODUCTION**",
+                "In recent decades, there has been an ongoing debate about whether international car-free days are an effective way of reducing air pollution. While some people argue that such initiatives can significantly improve environmental quality, others believe alternative measures would be more impactful. This essay will discuss both perspectives before explaining why I side with the latter.",
+                "**BODY 1 — VIEW 1**",
+                "There are several convincing reasons why some people support organising international car-free days. One major reason is that removing vehicles from the road directly lowers harmful gas emissions. This is largely because road transport accounts for a substantial share of urban air pollution. As a result, cities may experience clearer skies and measurable improvements in public health, even if only for a single day. Furthermore, such initiatives often promote cycling, walking and public transport, which helps foster long-term behavioural change.",
+                "**BODY 2 — VIEW 2**",
+                "On the other hand, critics argue that car-free days alone cannot address the root causes of air pollution. One key concern is that the reduction in emissions is only temporary, meaning pollution levels quickly return to normal once the event concludes. For example, in many large cities the air quality index recovers within a day or two. A more fundamental objection is that a large share of urban emissions originates from industry, construction and power generation rather than private cars, which means that even a permanent ban would leave much of the problem untouched. This highlights the risks of relying on symbolic measures rather than comprehensive policy.",
+                "**CONCLUSION**",
+                "In conclusion, both perspectives offer valid arguments regarding car-free days. Personally, I believe that while such events are beneficial in raising public awareness, they should be combined with stricter emission regulations and sustained investment in public transport infrastructure."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "LỖI THƯỜNG GẶP Ở DẠNG NÀY",
+              "lines": [
+                "**Chỉ viết một quan điểm dài, quan điểm kia qua loa.** Giám khảo yêu cầu \"discuss both views\" — hai đoạn phải cân bằng.",
+                "**Không nêu quan điểm cá nhân, hoặc nêu mơ hồ.** \"Both sides are right\" không phải là một quan điểm.",
+                "**Quan điểm cá nhân mâu thuẫn với thân bài.** Nếu bạn nói đồng ý với View 2 ở Introduction, Body 2 phải được viết thuyết phục hơn Body 1.",
+                "**Viết như thể mình là một trong hai nhóm.** Ở Body 1 và 2 bạn đang **tường thuật** quan điểm của người khác, nên dùng \"Some people believe that...\", không dùng \"I think\" cho tới khi nêu quan điểm riêng."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L07",
@@ -168,7 +1170,319 @@
         "This can largely be attributed to…",
         "One effective way to tackle this problem is to… This would ensure that…, ultimately leading to…"
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 1
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Nhận diện đề",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "ĐỀ THƯỜNG CÓ DẠNG",
+              "lines": [
+                "**What are the causes** of this problem and **what solutions** can you suggest?",
+                "**Why is this happening** and **what measures** can be taken to tackle it?",
+                "What factors **contribute to** this trend? **How can it be addressed**?",
+                "Đề luôn có **hai câu hỏi**. Bỏ sót một câu hỏi là mất điểm Task Response ngay lập tức."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Dàn ý",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**INTRO → BODY 1: CAUSES → BODY 2: SOLUTIONS → CONCLUSION**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**CAUSES: CAUSE → WHY? → RESULT → EXAMPLE | SOLUTIONS: SOLUTION → HOW IT HELPS → RESULT**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "MẸO GHÉP CẶP",
+              "lines": [
+                "Giải pháp nên **giải quyết đúng nguyên nhân bạn đã nêu**. Nếu nguyên nhân là \"người dân không nhận thức được tác hại\", giải pháp phải liên quan đến giáo dục và truyền thông, không phải phạt tiền. Sự ăn khớp này là điểm cộng lớn cho Coherence."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 6+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · MỞ BÀI",
+              "lines": [
+                "In recent years, (problem) has become an increasingly common issue in many parts of the world.",
+                "→ Trong những năm gần đây, (vấn đề) ngày càng trở thành một vấn đề phổ biến ở nhiều nơi trên thế giới.",
+                "There are several reasons why this problem has become more widespread.",
+                "→ Có một số lý do khiến vấn đề này ngày càng trở nên phổ biến.",
+                "This essay will discuss the main causes of this problem and suggest some possible solutions.",
+                "→ Bài viết này sẽ phân tích những nguyên nhân chính và đưa ra một số giải pháp khả thi."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 1 — CAUSES",
+              "lines": [
+                "There are several reasons why (problem) has become increasingly common.",
+                "→ Có một số lý do khiến (vấn đề) ngày càng phổ biến.",
+                "One of the main causes is (cause 1). This is because (explanation). As a result, (negative result).",
+                "→ Một trong những nguyên nhân chính là... Điều này là bởi vì... Kết quả là...",
+                "For example, (specific example).",
+                "→ Ví dụ,...",
+                "Another important cause is (cause 2), which can lead to (negative result).",
+                "→ Một nguyên nhân quan trọng khác là..., điều này có thể dẫn đến..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 2 — SOLUTIONS",
+              "lines": [
+                "However, there are several ways to address this problem.",
+                "→ Tuy nhiên, có một số cách để giải quyết vấn đề này.",
+                "One effective solution is to (solution 1). This would (effect). As a result, (positive result).",
+                "→ Một giải pháp hiệu quả là... Điều này sẽ... Kết quả là...",
+                "Another possible solution is to (solution 2). This could help (positive effect).",
+                "→ Một giải pháp khả thi khác là... Điều này có thể giúp..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, (problem) is mainly caused by (cause 1) and (cause 2). However, it can be addressed by (solution 1) and (solution 2).",
+                "→ Tóm lại, (vấn đề) chủ yếu bắt nguồn từ... và... Tuy nhiên, nó có thể được giải quyết bằng... và..."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Đoạn văn mẫu Band 6+**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 1 — PHYSICAL INACTIVITY",
+              "lines": [
+                "There are several reasons why people are becoming less physically active. One of the main causes is the increasing use of technology. This is because people can now do many daily activities without leaving their homes. As a result, they spend more time sitting and less time exercising. For example, people can work, shop and even order food online. Another important cause is busy working schedules, which leave many people with little free time for exercise."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 2 — PHYSICAL INACTIVITY",
+              "lines": [
+                "However, there are several ways to address this problem. One effective solution is to encourage people to exercise regularly. This could be done by providing more public sports facilities and creating safe walking and cycling areas. As a result, people would have more opportunities to be physically active. Another possible solution is for employers to encourage a healthier work-life balance. This could give employees more free time to exercise and take care of their health."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · MỞ BÀI",
+              "lines": [
+                "In recent years, (problem) has become an increasingly serious concern in many parts of the world.",
+                "→ Trong những năm gần đây, (vấn đề) đã trở thành một mối lo ngại ngày càng nghiêm trọng ở nhiều nơi.",
+                "This essay will explore the main causes of (problem) and propose practical solutions to address it.",
+                "→ Bài viết này sẽ phân tích các nguyên nhân chính và đề xuất những giải pháp thiết thực."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · BODY 1 — CAUSES",
+              "lines": [
+                "There are several underlying factors contributing to (problem).",
+                "→ Có nhiều yếu tố cơ bản góp phần gây ra (vấn đề).",
+                "One of the primary reasons behind this problem is (cause 1). This can largely be attributed to (noun phrase). For instance, (example). This suggests that (implication).",
+                "→ Một trong những nguyên nhân chính là... Điều này phần lớn bắt nguồn từ... Ví dụ,... Điều này cho thấy rằng...",
+                "Another significant contributor is (cause 2). Unlike in the past, when (past situation), today (current trend). If this trend continues, it could lead to (negative consequence).",
+                "→ Một yếu tố quan trọng khác là... Không giống như trước đây, khi..., ngày nay... Nếu xu hướng này tiếp diễn, nó có thể dẫn đến..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · BODY 2 — SOLUTIONS",
+              "lines": [
+                "Nevertheless, several practical measures can be taken to address this issue effectively.",
+                "→ Tuy nhiên, có thể thực hiện một số biện pháp thiết thực để giải quyết vấn đề này hiệu quả.",
+                "One effective way to tackle this problem is to (verb). This would ensure that (mechanism), ultimately leading to (positive outcome). Not only would this help (effect 1), but it would also (effect 2).",
+                "→ Một cách hiệu quả là... Điều này sẽ đảm bảo rằng..., cuối cùng dẫn đến... Giải pháp này không chỉ giúp... mà còn...",
+                "Another viable approach involves (verb-ing). If widely implemented, this measure could serve as a long-term solution to (issue).",
+                "→ Một cách tiếp cận khả thi khác là... Nếu được triển khai rộng rãi, biện pháp này có thể trở thành giải pháp lâu dài cho..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, (problem) remains a complex issue that requires immediate and coordinated action.",
+                "→ Kết luận lại, (vấn đề) vẫn là một vấn đề phức tạp cần hành động khẩn cấp và đồng bộ.",
+                "Among the various measures discussed, I believe that (solution) would prove the most effective in the long term.",
+                "→ Trong các giải pháp đã nêu, tôi tin rằng... sẽ hiệu quả nhất trong dài hạn."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bảng nâng cấp câu: 6+ → 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**BAND 6+**",
+                  "**BAND 7+**"
+                ],
+                [
+                  "(problem) has become an increasingly common issue.",
+                  "(problem) has become an increasingly serious concern in many parts of the world."
+                ],
+                [
+                  "There are several reasons why...",
+                  "There are several underlying factors contributing to..."
+                ],
+                [
+                  "One of the main causes is...",
+                  "One of the primary reasons behind this problem is..."
+                ],
+                [
+                  "This is because...",
+                  "This can largely be attributed to..."
+                ],
+                [
+                  "Another important cause is...",
+                  "Another significant contributor is..."
+                ],
+                [
+                  "In the past people walked more, but now they drive.",
+                  "Unlike in the past, when walking was the norm, today most short journeys are made by car."
+                ],
+                [
+                  "This will be a problem in the future.",
+                  "If this trend continues unchecked, it could lead to (negative consequence)."
+                ],
+                [
+                  "However, there are several ways to solve this problem.",
+                  "Nevertheless, several practical measures can be taken to address this issue effectively."
+                ],
+                [
+                  "One effective solution is to...",
+                  "One effective way to tackle this problem is to... This would ensure that (mechanism), ultimately leading to (outcome)."
+                ],
+                [
+                  "This would help people and also save money.",
+                  "**Not only would** this help (effect 1), **but it would also** (effect 2)."
+                ],
+                [
+                  "In conclusion, this problem is caused by... and can be solved by...",
+                  "In conclusion, (problem) remains a complex issue that requires immediate and coordinated action."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Useful language",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Nói về nguyên nhân**",
+                "• One of the main causes is... / One of the primary reasons behind this is...",
+                "• Another important cause is... / Another significant contributor is...",
+                "• This is mainly due to... / This can largely be attributed to...",
+                "• stem from... · arise from... · be driven by... · contribute to...",
+                "**Nói về giải pháp**",
+                "• One effective solution is to... / One effective way to tackle this problem is to...",
+                "• Another possible solution is to... / Another viable approach involves...",
+                "• This would ensure that... / This could serve as a long-term solution to...",
+                "**Động từ dùng cho giải pháp**",
+                "• encourage people to... · provide more... · invest in... · subsidise...",
+                "• raise awareness of... · educate people about... · impose stricter regulations on...",
+                "• reduce... · limit... · restrict... · phase out... · promote..."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bài mẫu Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "ĐỀ BÀI",
+              "lines": [
+                "People in many countries are becoming less physically active than they used to be. **What are the causes of this, and what measures could be taken to reverse the trend?**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BÀI MẪU · khoảng 315 từ",
+              "lines": [
+                "**INTRODUCTION**",
+                "In recent years, declining levels of physical activity have become an increasingly serious concern in many parts of the world. This essay will explore the main causes of this trend and propose practical measures to reverse it.",
+                "**BODY 1 — CAUSES**",
+                "There are several underlying factors contributing to this decline. One of the primary reasons is the pervasive influence of technology on everyday routines. This can largely be attributed to the fact that people can now work, shop and socialise without leaving their homes. For instance, in cities such as Ho Chi Minh City, delivery applications allow residents to obtain meals, groceries and medicine without walking further than their front door. This suggests that convenience has quietly replaced movement in daily life. Another significant contributor is the length of the modern working day. Unlike in the past, when manual labour was common, most jobs today are sedentary and leave employees exhausted by the evening. If this pattern continues, rates of obesity and cardiovascular disease are likely to rise sharply.",
+                "**BODY 2 — SOLUTIONS**",
+                "Nevertheless, several practical measures can be taken to address this issue effectively. One effective way to tackle the problem is to redesign urban spaces so that walking and cycling become the easiest options. This would ensure that exercise is built into daily routines rather than treated as an extra task, ultimately leading to higher activity levels without any conscious effort. Not only would this improve public health, but it would also reduce traffic congestion and air pollution. Another viable approach involves requiring large employers to provide flexible hours or on-site fitness facilities. If widely implemented, such a policy could serve as a long-term solution to workplace inactivity.",
+                "**CONCLUSION**",
+                "In conclusion, falling activity levels stem largely from technological convenience and sedentary work, but the trend is far from irreversible. Among the measures discussed, I believe that redesigning cities around walking and cycling would prove the most effective in the long term."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "LỖI THƯỜNG GẶP Ở DẠNG NÀY",
+              "lines": [
+                "**Liệt kê bốn nguyên nhân, không giải thích cái nào.** Hai nguyên nhân được giải thích rõ luôn được điểm cao hơn.",
+                "**Giải pháp không ăn khớp với nguyên nhân.** Đây là lỗi Coherence rất phổ biến.",
+                "**Giải pháp quá chung chung:** \"The government should do something about it.\" Hãy nói rõ **ai làm gì** và **điều đó giúp thế nào**.",
+                "**Dùng từ học thuật chưa quen:** root causes, coordinated action, viable approaches. Nếu chưa chắc, dùng bản Band 6+ — sai từ khó trừ điểm nặng hơn dùng từ dễ đúng."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L08",
@@ -187,7 +1501,304 @@
         "Two particularly alarming effects of this issue are… and…",
         "The most practical solution is to… This approach would not only… but also…"
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 1
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Nhận diện đề",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "ĐỀ THƯỜNG CÓ DẠNG",
+              "lines": [
+                "**What problems does this cause** and **what can be done** about it?",
+                "**What are the effects** of this trend? **What solutions** can you suggest?",
+                "How does this **affect** individuals and society? **How can these effects be reduced**?",
+                "Dạng này gần như giống hệt Cause – Solution. Khác biệt duy nhất: Body 1 nói về **hậu quả** thay vì **nguyên nhân**. Đọc kỹ để không viết nhầm."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Dàn ý",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**INTRO → BODY 1: EFFECTS → BODY 2: SOLUTIONS → CONCLUSION**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**EFFECTS: EFFECT → WHY? → RESULT → EXAMPLE | SOLUTIONS: SOLUTION → HOW? → RESULT**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 6+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · MỞ BÀI",
+              "lines": [
+                "In recent years, (problem) has become an increasingly common issue in many parts of the world.",
+                "→ Trong những năm gần đây, (vấn đề) ngày càng phổ biến ở nhiều nơi trên thế giới.",
+                "This problem can have serious effects on (people / society / the environment).",
+                "→ Vấn đề này có thể gây ra những ảnh hưởng nghiêm trọng đến...",
+                "This essay will discuss the main effects of this problem and suggest some possible solutions.",
+                "→ Bài viết này sẽ phân tích những hậu quả chính và đưa ra một số giải pháp khả thi."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 1 — EFFECTS",
+              "lines": [
+                "There are several negative effects of (problem).",
+                "→ Có một số hậu quả tiêu cực của (vấn đề).",
+                "One of the main effects is (effect 1). This is because (explanation). As a result, (consequence).",
+                "→ Một trong những hậu quả chính là... Điều này là bởi vì... Kết quả là...",
+                "For example, (specific example).",
+                "→ Ví dụ,...",
+                "Another significant effect is (effect 2), which can lead to (consequence).",
+                "→ Một hậu quả đáng kể khác là..., điều này có thể dẫn đến..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 2 — SOLUTIONS",
+              "lines": [
+                "However, there are several ways to reduce the negative effects of this problem.",
+                "→ Tuy nhiên, có một số cách để giảm những ảnh hưởng tiêu cực của vấn đề này.",
+                "One effective solution is to (solution 1). This could help (positive effect). As a result, (positive result).",
+                "→ Một giải pháp hiệu quả là... Điều này có thể giúp... Kết quả là...",
+                "Another possible solution is to (solution 2). This would help (positive effect).",
+                "→ Một giải pháp khả thi khác là... Điều này sẽ giúp..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, (problem) can have serious effects on (people / society / the environment). However, these effects can be reduced by (solution 1) and (solution 2).",
+                "→ Tóm lại, (vấn đề) có thể gây ra những hậu quả nghiêm trọng đối với... Tuy nhiên, những hậu quả này có thể được giảm thiểu bằng cách..."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Đoạn văn mẫu Band 6+**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 1 — SOCIAL MEDIA",
+              "lines": [
+                "There are several negative effects of excessive use of social media. One of the main effects is that it can negatively affect people’s mental health. This is because users may constantly compare themselves with others online. As a result, they may feel stressed or dissatisfied with their own lives. For example, young people may feel under pressure when they see carefully edited images of their peers. Another significant effect is reduced face-to-face communication, which can weaken relationships with family and friends."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 2 — SOCIAL MEDIA",
+              "lines": [
+                "However, there are several ways to reduce the negative effects of this problem. One effective solution is to encourage people to limit their daily use of social media. This could help them spend more time on offline activities and communicate with others in person. As a result, they may develop healthier relationships and improve their mental well-being. Another possible solution is to educate young people about the negative effects of excessive social media use. This would help them use these platforms in a more responsible way."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · MỞ BÀI",
+              "lines": [
+                "One of the most serious challenges facing modern society today is (problem).",
+                "→ Một trong những thách thức nghiêm trọng nhất mà xã hội hiện đại đang đối mặt là...",
+                "This issue has given rise to a range of significant consequences, and if left unaddressed, it may lead to even more serious long-term implications.",
+                "→ Vấn đề này đã gây ra nhiều hậu quả đáng kể, và nếu không được giải quyết, nó có thể dẫn đến những hệ quả nghiêm trọng hơn trong dài hạn.",
+                "This essay will examine the major effects of (problem) and suggest practical solutions to mitigate its impact.",
+                "→ Bài viết này sẽ phân tích những tác động chính và đề xuất các giải pháp thực tế để giảm thiểu ảnh hưởng của nó."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · BODY 1 — EFFECTS",
+              "lines": [
+                "Two particularly alarming effects of this issue are (effect 1) and (effect 2).",
+                "→ Hai hậu quả đáng lo ngại nhất của vấn đề này là... và...",
+                "To begin with, (effect 1) is a major concern. This is largely because (explanation). If this situation continues, it may lead to (long-term consequence).",
+                "→ Trước hết,... là một mối lo ngại lớn. Điều này chủ yếu là do... Nếu tình trạng này tiếp diễn, nó có thể dẫn đến...",
+                "Another significant impact is (effect 2). As a result, (consequence). Over time, this can place considerable pressure on (group / system / society).",
+                "→ Một tác động đáng kể khác là... Do đó,... Theo thời gian, điều này có thể tạo áp lực lớn lên..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · BODY 2 — SOLUTIONS",
+              "lines": [
+                "Despite these challenges, several effective measures can be taken to address the issue.",
+                "→ Mặc dù có những thách thức này, vẫn có thể thực hiện một số biện pháp hiệu quả.",
+                "The most practical solution is to (verb). This approach would not only (benefit 1) but also (benefit 2).",
+                "→ Giải pháp thiết thực nhất là... Cách tiếp cận này không chỉ giúp... mà còn...",
+                "Another viable strategy is to (verb). If implemented on a large scale, this measure could bring about long-term improvements.",
+                "→ Một chiến lược khả thi khác là... Nếu được triển khai trên diện rộng, biện pháp này có thể mang lại cải thiện lâu dài."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, (problem) continues to pose serious challenges. While its effects are undeniable, they can be addressed through coordinated efforts.",
+                "→ Tóm lại, (vấn đề) vẫn gây ra những thách thức nghiêm trọng. Mặc dù tác động là không thể phủ nhận, chúng có thể được giải quyết thông qua sự phối hợp đồng bộ.",
+                "In my opinion, tackling this problem requires both (solution 1) and (solution 2) in order to achieve sustainable results.",
+                "→ Theo tôi, việc giải quyết vấn đề này đòi hỏi cả... và... để đạt được kết quả bền vững."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bảng nâng cấp câu: 6+ → 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**BAND 6+**",
+                  "**BAND 7+**"
+                ],
+                [
+                  "One of the major problems facing society today is...",
+                  "One of the most pressing challenges confronting modern society is..."
+                ],
+                [
+                  "This problem can have serious effects on...",
+                  "This issue has given rise to a range of significant consequences."
+                ],
+                [
+                  "There are several negative effects of (problem).",
+                  "Two particularly alarming effects of this issue are (effect 1) and (effect 2)."
+                ],
+                [
+                  "One of the main effects is...",
+                  "To begin with, (effect 1) is a major concern."
+                ],
+                [
+                  "This is because...",
+                  "This is largely because... / This stems primarily from..."
+                ],
+                [
+                  "As a result, people feel stressed.",
+                  "Consequently, chronic stress has become widespread, placing considerable pressure on healthcare systems."
+                ],
+                [
+                  "Another significant effect is...",
+                  "Another significant impact is..., which over time can place considerable pressure on (group)."
+                ],
+                [
+                  "However, there are several ways to reduce this.",
+                  "Despite these challenges, several effective measures can be taken to address the issue."
+                ],
+                [
+                  "One effective solution is to...",
+                  "The most practical solution is to... This approach would **not only** (benefit 1) **but also** (benefit 2)."
+                ],
+                [
+                  "In conclusion, these effects can be reduced by...",
+                  "In conclusion, while its effects are undeniable, they can be addressed through coordinated efforts."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Useful language",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Nói về hậu quả**",
+                "• One of the main effects is... / Another significant impact is...",
+                "• This can lead to... · This may result in... · This can have a detrimental effect on...",
+                "• place pressure on... · undermine... · erode... · weaken...",
+                "• affect people’s health · increase stress levels · reduce productivity · damage the environment · lower quality of life",
+                "**Nói về giải pháp**",
+                "• The most practical solution is to... / Another viable strategy is to...",
+                "• If implemented on a large scale, this measure could...",
+                "• mitigate the impact of... · alleviate the problem · bring about long-term improvements"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bài mẫu Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "ĐỀ BÀI",
+              "lines": [
+                "Nowadays many people complain that they have difficulties getting enough sleep. **What problems can lack of sleep cause? What can be done about lack of sleep?**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BÀI MẪU · khoảng 280 từ",
+              "lines": [
+                "**INTRODUCTION**",
+                "One of the most pressing challenges confronting modern society is sleep deprivation. In today’s fast-paced world, an increasing number of individuals struggle to maintain healthy sleeping patterns because of demanding work schedules and constant digital distraction. This essay will examine the major effects of insufficient sleep and propose practical solutions to mitigate its impact.",
+                "**BODY 1 — EFFECTS**",
+                "Two particularly alarming effects of sleep deprivation stand out. To begin with, reduced cognitive performance is a major concern. This is largely because the brain consolidates memory and restores attention during deep sleep, so when rest is cut short, concentration and decision-making decline noticeably. If this situation continues over months, it may lead to poor academic results and costly errors at work. Another significant impact is on physical health. Numerous medical studies have linked long-term sleep deprivation to obesity, cardiovascular disease and weakened immunity. Over time, this places considerable pressure on public healthcare systems.",
+                "**BODY 2 — SOLUTIONS**",
+                "Despite these challenges, several effective measures can be taken to address the issue. The most practical solution is to establish consistent sleep routines. By going to bed and waking at fixed times, individuals regulate their internal body clocks and fall asleep more easily. This approach would not only improve rest quality but also reduce reliance on caffeine and sleeping aids. Another viable strategy is to introduce workplace policies that protect employees’ personal time, such as limiting after-hours emails. If implemented on a large scale, such measures could bring about long-term improvements in public well-being.",
+                "**CONCLUSION**",
+                "In conclusion, sleep deprivation continues to pose serious challenges to both mental and physical health. In my opinion, tackling this problem requires both personal discipline in maintaining healthy habits and institutional efforts to create balanced working environments."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "LỖI THƯỜNG GẶP Ở DẠNG NÀY",
+              "lines": [
+                "**Viết nguyên nhân thay vì hậu quả.** Đọc kỹ đề: \"What problems does this cause?\" hỏi **hậu quả**, không hỏi vì sao.",
+                "**Chỉ liệt kê hậu quả mà không giải thích.** Sau mỗi hậu quả, hãy trả lời \"Why does this happen?\" hoặc \"What does this lead to?\".",
+                "**Giải pháp không nhắm vào hậu quả đã nêu.** Nếu hậu quả là sức khỏe tinh thần, giải pháp nên liên quan đến sức khỏe tinh thần."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L09",
@@ -206,7 +1817,323 @@
         "Not only does this trigger (effect), but it also creates a ripple effect across society.",
         "Over time, these effects may accumulate, placing substantial pressure on (group)."
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 1
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Nhận diện đề",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "ĐỀ THƯỜNG CÓ DẠNG",
+              "lines": [
+                "What are the **causes** of this and **what effects** does it have?",
+                "**Why is this happening** and **how does it affect** individuals and society?",
+                "What has caused this trend and **what are the consequences**?",
+                "Điểm khác biệt then chốt: đề **không hỏi giải pháp**. Nếu bạn viết giải pháp, phần đó không được tính điểm và bạn đã lãng phí thời gian."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Dàn ý",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**INTRO → BODY 1: CAUSES → BODY 2: EFFECTS → CONCLUSION**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**CAUSES: CAUSE → WHY? → EFFECT → EXAMPLE | EFFECTS: EFFECT → WHY? → RESULT → EXAMPLE**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "MẸO NỐI HAI ĐOẠN",
+              "lines": [
+                "Hậu quả ở Body 2 nên **nối tiếp** nguyên nhân ở Body 1. Câu mở đầu Body 2 có thể nhắc lại nguyên nhân: \"These developments have had a marked effect on...\" — cách này ghi điểm Coherence rất tốt."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 6+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · MỞ BÀI",
+              "lines": [
+                "In recent years, (problem) has become an increasingly common issue in many parts of the world.",
+                "→ Trong những năm gần đây, (vấn đề) ngày càng phổ biến ở nhiều nơi trên thế giới.",
+                "This issue can be caused by several factors and can have a range of effects on (people / society / the environment).",
+                "→ Vấn đề này có thể xuất phát từ nhiều yếu tố và gây ra nhiều ảnh hưởng đối với...",
+                "This essay will discuss the main causes of this problem and examine its effects.",
+                "→ Bài viết này sẽ phân tích những nguyên nhân chính và xem xét những hậu quả của nó."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 1 — CAUSES",
+              "lines": [
+                "There are several reasons why (problem) has become increasingly common.",
+                "→ Có một số lý do khiến (vấn đề) ngày càng phổ biến.",
+                "One of the main causes is (cause 1). This is because (explanation). As a result, (effect).",
+                "→ Một trong những nguyên nhân chính là... Điều này là bởi vì... Kết quả là...",
+                "For example, (specific example).",
+                "→ Ví dụ,...",
+                "Another important cause is (cause 2), which can also contribute to (effect).",
+                "→ Một nguyên nhân quan trọng khác là..., điều này cũng có thể góp phần dẫn đến..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 2 — EFFECTS",
+              "lines": [
+                "This problem can have several negative effects on (people / society / the environment).",
+                "→ Vấn đề này có thể gây ra một số ảnh hưởng tiêu cực đối với...",
+                "One of the main effects is (effect 1). This is because (explanation). As a result, (further consequence).",
+                "→ Một trong những hậu quả chính là... Điều này là bởi vì... Kết quả là...",
+                "For instance, (specific example).",
+                "→ Chẳng hạn,...",
+                "Another significant effect is (effect 2), which can lead to (further consequence).",
+                "→ Một hậu quả đáng kể khác là..., điều này có thể dẫn đến..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, (problem) is mainly caused by (cause 1) and (cause 2). It can also lead to (effect 1) and (effect 2).",
+                "→ Tóm lại, (vấn đề) chủ yếu bắt nguồn từ... và... Nó cũng có thể dẫn đến... và...",
+                "Overall, this is a serious issue that can have long-term effects on (people / society).",
+                "→ Nhìn chung, đây là một vấn đề nghiêm trọng có thể gây ảnh hưởng lâu dài đối với..."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Đoạn văn mẫu Band 6+**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 1 — DECLINING READING HABITS",
+              "lines": [
+                "There are several reasons why people are spending less time reading books. One of the main causes is the widespread use of digital entertainment. This is because people can easily access social media, videos and games on their phones. As a result, they may spend less of their free time reading. For example, many young people prefer watching short videos on their phones rather than reading books. Another important cause is busy lifestyles, which leave people with less time for reading."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 2 — DECLINING READING HABITS",
+              "lines": [
+                "This problem can have several negative effects on individuals and society. One of the main effects is lower levels of concentration. This is because people who spend too much time consuming short-form content may become used to receiving information quickly. As a result, they may find it more difficult to focus on long texts. For instance, some students may struggle to concentrate when reading academic materials. Another significant effect is a decline in reading habits, which can limit people’s vocabulary and general knowledge."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · MỞ BÀI",
+              "lines": [
+                "In today’s fast-changing world, (problem) has become an increasingly significant concern.",
+                "→ Trong thế giới thay đổi nhanh chóng ngày nay, (vấn đề) đang trở thành mối quan tâm ngày càng lớn.",
+                "This essay will examine the underlying causes of (problem) and analyse its significant effects on society.",
+                "→ Bài luận này sẽ xem xét các nguyên nhân sâu xa và phân tích những tác động đáng kể của nó đối với xã hội."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · BODY 1 — CAUSES",
+              "lines": [
+                "The causes of (problem) are both complex and multifaceted.",
+                "→ Nguyên nhân của (vấn đề) vừa phức tạp vừa đa chiều.",
+                "One primary factor is (cause 1), which contributes significantly to this issue. It is widely acknowledged that (clause), making it a central driver of this trend.",
+                "→ Một yếu tố chính là..., điều này góp phần đáng kể vào vấn đề. Nhiều người thừa nhận rằng..., khiến nó trở thành động lực chính của xu hướng này.",
+                "For example, (specific example) clearly demonstrates how this cause leads to wider consequences.",
+                "→ Ví dụ,... cho thấy rõ cách nguyên nhân này dẫn đến hậu quả rộng hơn.",
+                "Not only does (cause) trigger (effect), but it also creates a ripple effect across society.",
+                "→ (Nguyên nhân) không chỉ gây ra... mà còn tạo hiệu ứng lan tỏa trong xã hội."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · BODY 2 — EFFECTS",
+              "lines": [
+                "The effects of (problem) are both immediate and long-term.",
+                "→ Tác động của (vấn đề) vừa mang tính tức thời vừa lâu dài.",
+                "One significant consequence is (effect 1). Research has consistently shown that (clause).",
+                "→ Một hậu quả đáng kể là... Nghiên cứu đã liên tục chỉ ra rằng...",
+                "Furthermore, this phenomenon inevitably leads to (noun phrase). More alarmingly, the long-term implications may include (serious effect).",
+                "→ Hơn nữa, hiện tượng này tất yếu dẫn đến... Đáng lo ngại hơn, tác động lâu dài có thể bao gồm...",
+                "Over time, these effects may accumulate, placing substantial pressure on (group / society).",
+                "→ Theo thời gian, những tác động này có thể tích tụ và gây áp lực lớn lên..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, (problem) stems from a range of interconnected factors and results in significant consequences.",
+                "→ Tóm lại, (vấn đề) bắt nguồn từ nhiều yếu tố liên quan lẫn nhau và gây ra hậu quả đáng kể.",
+                "Overall, this remains a serious concern that warrants careful consideration from both individuals and policymakers.",
+                "→ Nhìn chung, đây vẫn là một vấn đề nghiêm trọng cần được cả cá nhân lẫn nhà hoạch định chính sách xem xét kỹ lưỡng."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bảng nâng cấp câu: 6+ → 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**BAND 6+**",
+                  "**BAND 7+**"
+                ],
+                [
+                  "In recent years, (problem) has become common.",
+                  "In today’s fast-changing world, (problem) has become an increasingly significant concern."
+                ],
+                [
+                  "There are several reasons why this happens.",
+                  "The causes of (problem) are both complex and multifaceted."
+                ],
+                [
+                  "One of the main causes is...",
+                  "One primary factor is..., which contributes significantly to this issue."
+                ],
+                [
+                  "Many people think that...",
+                  "It is widely acknowledged that..."
+                ],
+                [
+                  "This causes many problems in society.",
+                  "**Not only does** this trigger (effect), **but it also** creates a ripple effect across society."
+                ],
+                [
+                  "This problem has several effects.",
+                  "The effects of (problem) are both immediate and long-term."
+                ],
+                [
+                  "One of the main effects is...",
+                  "One significant consequence is..., and research has consistently shown that (clause)."
+                ],
+                [
+                  "It also causes other problems in the future.",
+                  "More alarmingly, the long-term implications may include (serious effect)."
+                ],
+                [
+                  "This puts pressure on society.",
+                  "Over time, these effects may accumulate, placing substantial pressure on (group)."
+                ],
+                [
+                  "In conclusion, this problem is caused by... and leads to...",
+                  "In conclusion, (problem) stems from a range of interconnected factors and results in significant consequences."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Useful language",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Nối nguyên nhân với hậu quả**",
+                "• A **leads to** B · A **results in** B · A **contributes to** B · A **triggers** B",
+                "• A **may cause** B · A **can have an impact on** B · A **gives rise to** B",
+                "• B **stems from** A · B **is largely attributable to** A · B **arises from** A",
+                "**Mẫu câu vàng của dạng này**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "CAUSE → can lead to → EFFECT",
+              "lines": [
+                "Excessive use of social media **can lead to** a marked decline in face-to-face communication.",
+                "The rapid expansion of online entertainment **has given rise to** shorter attention spans among young people."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bài mẫu Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "ĐỀ BÀI",
+              "lines": [
+                "In many countries, people are reading fewer books than in the past. **What are the causes of this trend, and what effects does it have?**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BÀI MẪU · khoảng 295 từ",
+              "lines": [
+                "**INTRODUCTION**",
+                "In today’s fast-changing world, the steady decline in book reading has become an increasingly significant concern. This essay will examine the underlying causes of this trend and analyse its effects on individuals and society.",
+                "**BODY 1 — CAUSES**",
+                "The causes of this decline are both complex and multifaceted. One primary factor is the sheer availability of digital entertainment, which competes directly for people’s limited free time. It is widely acknowledged that a smartphone offers instant access to videos, games and social media, making it a far easier choice than a three-hundred-page novel at the end of a long day. For example, a commuter in Hanoi who once carried a paperback now scrolls through short videos for the same twenty minutes. Not only does this convenience displace reading, but it also gradually reshapes what people expect from entertainment: speed, novelty and constant stimulation. A second contributing factor is the intensity of modern working and studying schedules, which leaves many adults with little mental energy for sustained concentration.",
+                "**BODY 2 — EFFECTS**",
+                "The effects of this shift are both immediate and long-term. One significant consequence is a measurable reduction in attention span. Research has consistently shown that readers accustomed to short-form content find it harder to follow extended arguments, which affects academic performance in particular. More alarmingly, the long-term implications may include a narrower vocabulary and weaker critical thinking, since books expose readers to ideas and sentence patterns that social media rarely provides. Over time, these effects may accumulate, placing substantial pressure on education systems that assume students can read closely.",
+                "**CONCLUSION**",
+                "In conclusion, falling reading rates stem from a range of interconnected factors, chiefly digital convenience and time pressure, and they result in significant consequences for concentration and language ability. Overall, this remains a serious concern that warrants careful consideration from educators and families alike."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "LỖI THƯỜNG GẶP Ở DẠNG NÀY",
+              "lines": [
+                "**Viết giải pháp dù đề không hỏi.** Lỗi phổ biến nhất ở dạng này. Đọc lại đề trước khi viết Body 2.",
+                "**Nhầm nguyên nhân với hậu quả.** Nguyên nhân trả lời \"Vì sao chuyện này xảy ra?\"; hậu quả trả lời \"Chuyện này dẫn đến điều gì?\".",
+                "**Hai đoạn không liên quan đến nhau.** Hậu quả nên là kết quả tự nhiên của nguyên nhân đã nêu."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L10",
@@ -225,7 +2152,321 @@
         "It is undeniable that (key point) plays a crucial role in (aspect).",
         "While some may argue that (opposing view), this perspective fails to take into account that…"
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 1
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Nhận diện đề",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "ĐỀ THƯỜNG CÓ DẠNG",
+              "lines": [
+                "**To what extent do you agree or disagree?**",
+                "**Do you agree or disagree?**",
+                "Some people believe that... **What is your opinion?**",
+                "Đề đưa ra **một nhận định** và hỏi bạn nghĩ gì. Đây là dạng phổ biến nhất trong đề thi thật."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BA CÁCH TRẢ LỜI — CHỌN MỘT VÀ GIỮ NGUYÊN",
+              "lines": [
+                "**Hoàn toàn đồng ý** — hai body đều bảo vệ nhận định. Dễ viết nhất, dễ giữ mạch nhất.",
+                "**Hoàn toàn không đồng ý** — hai body đều phản bác nhận định.",
+                "**Đồng ý một phần** — Body 1 thừa nhận một phần đúng, Body 2 bảo vệ quan điểm chính của bạn. Cần lập trường thật rõ, nếu không sẽ bị coi là \"không có quan điểm\".",
+                "Không có cách nào cho điểm cao hơn cách nào. **Chọn cách bạn có nhiều ý nhất**, không phải cách bạn thật sự tin."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Dàn ý",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**INTRO + LẬP TRƯỜNG → BODY 1: REASON 1 → BODY 2: REASON 2 → CONCLUSION + LẬP TRƯỜNG**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**MỖI BODY: REASON → BECAUSE → RESULT → EXAMPLE**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 6+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · MỞ BÀI",
+              "lines": [
+                "**Đồng ý / Không đồng ý hoàn toàn**",
+                "In recent years, (topic) has become a widely discussed issue. There are different views on whether (paraphrased question). I completely agree / disagree with this view because (reason 1) and (reason 2).",
+                "→ Trong những năm gần đây, (chủ đề) đã trở thành vấn đề được thảo luận rộng rãi. Có nhiều quan điểm khác nhau về việc liệu... Tôi hoàn toàn đồng ý / không đồng ý với quan điểm này vì... và...",
+                "**Đồng ý một phần**",
+                "In recent years, (topic) has become a widely discussed issue. While I agree that (one side), I believe that (your main position).",
+                "→ Trong những năm gần đây, (chủ đề) đã trở thành vấn đề được thảo luận rộng rãi. Mặc dù tôi đồng ý rằng..., tôi cho rằng..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 1 — LÝ DO 1",
+              "lines": [
+                "One of the main reasons why I agree / disagree with this view is that (reason 1).",
+                "→ Một trong những lý do chính khiến tôi đồng ý / không đồng ý là...",
+                "This is because (explanation). As a result, (result).",
+                "→ Điều này là bởi vì... Kết quả là...",
+                "For example, (specific example).",
+                "→ Ví dụ,..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 2 — LÝ DO 2",
+              "lines": [
+                "Another important reason is that (reason 2).",
+                "→ Một lý do quan trọng khác là...",
+                "This is mainly because (explanation). As a result, (result).",
+                "→ Điều này chủ yếu là bởi vì... Kết quả là...",
+                "For instance, (specific example).",
+                "→ Chẳng hạn,..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, I agree / disagree that (your position) because (reason 1) and (reason 2).",
+                "→ Tóm lại, tôi đồng ý / không đồng ý rằng... bởi vì... và...",
+                "Partially agree: In conclusion, while (one side) has some benefits, I believe that (your main position).",
+                "→ Đồng ý một phần: Tóm lại, mặc dù... có một số lợi ích, tôi cho rằng..."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cách viết Đồng ý một phần**"
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "CÁCH 1 — mỗi body một phía",
+              "lines": [
+                "BODY 1: While it is true that (opposing point), (explanation). For example, (example).",
+                "→ Body 1 thừa nhận điểm đúng của phía kia.",
+                "BODY 2: However, I believe that (your main position). This is because (reason). As a result, (result). For example, (example).",
+                "→ Body 2 bảo vệ quan điểm chính của bạn.",
+                "Phù hợp khi đề có hai mặt khá rõ ràng."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "CÁCH 2 — hai body cùng nghiêng về một phía",
+              "lines": [
+                "BODY 1: It is true that (point you agree with). This is because (explanation). For example, (example).",
+                "BODY 2: However, I believe that (your main position) is more important. One reason is that (reason). As a result, (result).",
+                "Cách này dễ kiểm soát hơn và giúp lập trường của bài rõ ràng hơn."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · MỞ BÀI",
+              "lines": [
+                "The issue of (topic) has become a subject of considerable debate in recent years.",
+                "→ Vấn đề về (chủ đề) đã trở thành một chủ đề gây tranh luận đáng kể trong những năm gần đây.",
+                "**Lập trường — hoàn toàn đồng ý / không đồng ý**",
+                "This essay will argue that (your position), owing to its significant influence on (aspect 1) and (aspect 2).",
+                "→ Bài luận này sẽ lập luận rằng... do ảnh hưởng đáng kể của nó đến... và...",
+                "**Lập trường — đồng ý một phần**",
+                "Although there are valid arguments supporting (opposing view), I contend that (your main stance) outweighs these considerations.",
+                "→ Mặc dù có những lập luận hợp lý ủng hộ..., tôi cho rằng... vượt trội hơn những cân nhắc đó."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · BODY 1 & 2",
+              "lines": [
+                "One compelling reason why (your position) is that (reason).",
+                "→ Một lý do thuyết phục khiến... là...",
+                "It is undeniable that (key point) plays a crucial role in (related aspect).",
+                "→ Không thể phủ nhận rằng... đóng vai trò quan trọng trong...",
+                "This can be attributed to the fact that (explanation). For instance, (specific example), which clearly illustrates that (analysis).",
+                "→ Điều này có thể là do... Ví dụ,..., điều này minh chứng rõ ràng rằng...",
+                "Research has consistently shown that (finding), thereby reinforcing the view that (argument).",
+                "→ Nghiên cứu đã liên tục chỉ ra rằng..., từ đó củng cố quan điểm rằng...",
+                "**Câu phản biện — dùng khi nhắm Band 7.5+**",
+                "While some may argue that (opposing view), this perspective fails to take into account that (counterargument).",
+                "→ Mặc dù một số người có thể cho rằng..., quan điểm này bỏ qua việc...",
+                "Admittedly, (concession); nevertheless, the overall impact remains predominantly positive / negative.",
+                "→ Thừa nhận rằng...; tuy nhiên, tác động tổng thể vẫn chủ yếu là tích cực / tiêu cực."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, having examined the arguments presented, I maintain that (restate position).",
+                "→ Tóm lại, sau khi xem xét các lập luận đã trình bày, tôi giữ quan điểm rằng...",
+                "Ultimately, striking a balance between (aspect 1) and (aspect 2) may represent the most pragmatic approach.",
+                "→ Cuối cùng, tìm được sự cân bằng giữa... và... có thể là cách tiếp cận thực tế nhất."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bảng nâng cấp câu: 6+ → 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**BAND 6+**",
+                  "**BAND 7+**"
+                ],
+                [
+                  "In recent years, (topic) has become a widely discussed issue.",
+                  "The issue of (topic) has become a subject of considerable debate in recent years."
+                ],
+                [
+                  "I completely agree with this view because...",
+                  "This essay will argue that (position), owing to its significant influence on (aspect 1) and (aspect 2)."
+                ],
+                [
+                  "While I agree that..., I believe that...",
+                  "Although there are valid arguments supporting (opposing view), I contend that (your stance) outweighs these considerations."
+                ],
+                [
+                  "One of the main reasons is that...",
+                  "One compelling reason why (position) is that... / It is undeniable that (key point) plays a crucial role in (aspect)."
+                ],
+                [
+                  "This is because...",
+                  "This can be attributed to the fact that..."
+                ],
+                [
+                  "For example, (example).",
+                  "For instance, (example), which clearly illustrates that (analysis)."
+                ],
+                [
+                  "Some people disagree, but I think they are wrong.",
+                  "While some may argue that (opposing view), this perspective fails to take into account that (counterargument)."
+                ],
+                [
+                  "It is true that... However,...",
+                  "Admittedly, (concession); nevertheless, the overall impact remains predominantly (positive / negative)."
+                ],
+                [
+                  "In conclusion, I agree that... because...",
+                  "In conclusion, having examined the arguments presented, I maintain that (position)."
+                ],
+                [
+                  "So both things are important.",
+                  "Ultimately, striking a balance between (aspect 1) and (aspect 2) may represent the most pragmatic approach."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Useful language",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Nêu quan điểm**",
+                "• I completely agree that... / I firmly believe that... / I would strongly contend that...",
+                "• I completely disagree with this view because... / I find this argument unconvincing because...",
+                "**Đồng ý một phần**",
+                "• While I agree that..., I believe that...",
+                "• Although ... is true to some extent, I believe that...",
+                "• It is true that... However,... / Admittedly,... Nevertheless,...",
+                "• There is some merit in this argument, yet...",
+                "**Giới thiệu lý do**",
+                "• One of the main reasons is that... / One compelling reason is that...",
+                "• Another important reason is that... / A further consideration is that...",
+                "• It is undeniable that... plays a crucial role in..."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bài mẫu Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "ĐỀ BÀI",
+              "lines": [
+                "In the future, nobody will buy printed newspapers or books because they will be able to read everything they want online without paying. **To what extent do you agree or disagree?**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BÀI MẪU · khoảng 260 từ",
+              "lines": [
+                "**INTRODUCTION**",
+                "The future of printed newspapers and books has become a subject of considerable debate in recent years. With the rapid expansion of digital media, many people assume that physical publications will disappear once all content becomes freely accessible online. This essay will argue that printed materials are unlikely to vanish, owing to the distinctive reading experience they offer and the economics of the publishing industry.",
+                "**BODY 1 — REASON 1**",
+                "One compelling reason for this position is that a large number of readers continue to value the tangible experience that physical books provide. This can be attributed to the fact that printed pages create a focused, distraction-free environment which screens rarely replicate. Research has consistently shown that readers retain information more effectively from paper, thereby reinforcing the view that print serves a purpose beyond nostalgia. For instance, many universities still require students to work from printed course readers during examinations precisely because concentration is easier to sustain.",
+                "**BODY 2 — REASON 2**",
+                "A further consideration is that not all online content will remain free. It is undeniable that professional journalism and publishing depend on revenue, and most quality outlets have already moved behind paywalls. While some may argue that digital distribution is inherently cheaper, this perspective fails to take into account the cost of research, editing and copyright. Admittedly, digital formats will continue to dominate in volume; nevertheless, a substantial market for print is likely to persist.",
+                "**CONCLUSION**",
+                "In conclusion, having examined the arguments presented, I maintain that printed newspapers and books will not disappear entirely. Ultimately, the two formats are likely to coexist, each serving readers whose needs and habits differ."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "LỖI THƯỜNG GẶP Ở DẠNG NÀY",
+              "lines": [
+                "**Lập trường thay đổi giữa bài.** Introduction nói đồng ý, Body 2 lại nghiêng sang phía kia. Đây là lỗi Task Response nghiêm trọng.",
+                "**\"I agree 50% and disagree 50%\".** Không phải là quan điểm. Đồng ý một phần vẫn phải nghiêng rõ về một phía.",
+                "**Không nêu quan điểm ở Introduction.** Giám khảo cần thấy lập trường ngay từ đoạn đầu.",
+                "**Cố viết câu phản biện phức tạp rồi sai ngữ pháp.** Nếu chưa chắc, bỏ câu phản biện — một lý do rõ ràng có ví dụ tốt vẫn đủ cho Band 7."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L11",
@@ -244,7 +2485,327 @@
         "The most compelling reason for regarding this trend as positive/negative lies in (reason).",
         "Admittedly, this trend is not without its drawbacks. … Nevertheless, such drawbacks are largely outweighed by…"
       ],
-      "gate": { "minObjectiveScorePercent": 55, "minWritingSubmissions": 1 }
+      "gate": {
+        "minObjectiveScorePercent": 55,
+        "minWritingSubmissions": 1
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Nhận diện đề",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "ĐỀ THƯỜNG CÓ DẠNG",
+              "lines": [
+                "Is this a **positive or negative development**?",
+                "Do you think this is a **positive or negative trend**?",
+                "Is this a **positive or negative** change for society?"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "ĐỪNG NHẦM VỚI ADVANTAGES & DISADVANTAGES",
+              "lines": [
+                "Đây **không phải** dạng cân bằng hai mặt. Đề hỏi **đánh giá của bạn**: xu hướng này tốt hay xấu?",
+                "Bạn phải **chọn một phía** ngay ở Introduction và dành phần lớn bài để bảo vệ đánh giá đó. Có thể thừa nhận mặt còn lại ở Body 2, nhưng phải quay về củng cố quan điểm của mình."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Dàn ý",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**INTRO + ĐÁNH GIÁ → BODY 1: HAI LÝ DO → BODY 2: THỪA NHẬN + CỦNG CỐ → CONCLUSION**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**BODY 1: REASON → WHY? → RESULT → EXAMPLE | BODY 2: ADMIT → EXPLAIN → HOWEVER → LẬP TRƯỜNG**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 6+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · MỞ BÀI",
+              "lines": [
+                "In recent years, (trend) has become increasingly common in many parts of the world.",
+                "→ Trong những năm gần đây, (xu hướng) ngày càng trở nên phổ biến ở nhiều nơi trên thế giới.",
+                "This development has had a noticeable impact on (people / society / the environment).",
+                "→ Sự phát triển này đã có ảnh hưởng đáng kể đến...",
+                "In my view, this is a positive / negative development because (reason 1) and (reason 2).",
+                "→ Theo quan điểm của tôi, đây là một sự phát triển tích cực / tiêu cực bởi vì... và..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 1 — HAI LÝ DO",
+              "lines": [
+                "There are several reasons why I believe this is a positive / negative development.",
+                "→ Có một số lý do khiến tôi cho rằng đây là một sự phát triển tích cực / tiêu cực.",
+                "One of the main reasons is that (reason 1). This is because (explanation). As a result, (result).",
+                "→ Một trong những lý do chính là... Điều này là bởi vì... Kết quả là...",
+                "For example, (specific example).",
+                "→ Ví dụ,...",
+                "Another important reason is that (reason 2). This can lead to (positive / negative result).",
+                "→ Một lý do quan trọng khác là... Điều này có thể dẫn đến..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · BODY 2 — THỪA NHẬN & CỦNG CỐ",
+              "lines": [
+                "Admittedly, (trend) can also have some disadvantages.",
+                "→ Phải thừa nhận rằng (xu hướng) cũng có một số hạn chế.",
+                "This is mainly because (explanation). As a result, (negative result).",
+                "→ Điều này chủ yếu là bởi vì... Kết quả là...",
+                "However, I believe that these disadvantages are outweighed by the benefits of (trend).",
+                "→ Tuy nhiên, tôi cho rằng những hạn chế này vẫn bị vượt qua bởi những lợi ích của...",
+                "**Nếu bài của bạn là NEGATIVE**",
+                "However, I believe that these benefits do not outweigh the negative effects of (trend).",
+                "→ Tuy nhiên, tôi cho rằng những lợi ích này không thể vượt qua những tác động tiêu cực của..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 6+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, I believe that (trend) is a positive / negative development because of its effects on (aspect 1) and (aspect 2).",
+                "→ Tóm lại, tôi cho rằng (xu hướng) là một sự phát triển tích cực / tiêu cực bởi những ảnh hưởng của nó đến... và...",
+                "Overall, the benefits / negative effects of this trend are likely to remain significant in the future.",
+                "→ Nhìn chung, những lợi ích / tác động tiêu cực của xu hướng này có khả năng vẫn đáng kể trong tương lai."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Đoạn văn mẫu Band 6+**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 1 — WORKING FROM HOME (POSITIVE)",
+              "lines": [
+                "There are several reasons why I believe this is a positive development. One of the main reasons is that working from home gives employees greater flexibility. This is because they can choose when and where to work, as long as they complete their tasks on time. As a result, they may be able to achieve a better work-life balance. For example, parents can spend more time with their children instead of commuting to and from work. Another important benefit is that remote work can reduce commuting, which may save both time and money."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BODY 2 — WORKING FROM HOME (POSITIVE)",
+              "lines": [
+                "Admittedly, working from home can also have some disadvantages. This is mainly because employees may have fewer opportunities to communicate with their colleagues face-to-face. As a result, some people may feel isolated or less connected to their teams. However, I believe that these disadvantages are outweighed by the greater flexibility and convenience that remote work provides."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Template Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · MỞ BÀI",
+              "lines": [
+                "Over the past two decades, (trend) has gained considerable momentum across much of the world.",
+                "→ Trong hai thập kỷ qua, (xu hướng) đã phát triển mạnh mẽ ở phần lớn thế giới.",
+                "This shift has had a profound influence on the way people (verb).",
+                "→ Sự thay đổi này đã ảnh hưởng sâu sắc đến cách con người...",
+                "In my view, this constitutes a largely positive / negative development, primarily because of its impact on (aspect 1) and (aspect 2).",
+                "→ Theo quan điểm của tôi, đây là một sự phát triển chủ yếu mang tính tích cực / tiêu cực, chủ yếu vì tác động của nó đến... và..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · BODY 1 — HAI LÝ DO",
+              "lines": [
+                "The most compelling reason for regarding this trend as positive / negative lies in (reason 1).",
+                "→ Lý do thuyết phục nhất để coi xu hướng này là tích cực / tiêu cực nằm ở...",
+                "This is largely because (explanation). Consequently, (result), thereby (verb-ing) (further outcome).",
+                "→ Điều này chủ yếu là do... Do đó,..., từ đó...",
+                "A clear illustration of this can be seen in (specific example).",
+                "→ Một minh chứng rõ ràng có thể thấy ở...",
+                "A further consideration is (reason 2), which has the potential to (result) in the long term.",
+                "→ Một yếu tố nữa cần cân nhắc là..., điều này có khả năng... trong dài hạn."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · BODY 2 — THỪA NHẬN & CỦNG CỐ",
+              "lines": [
+                "Admittedly, this trend is not without its drawbacks. It is often argued that (opposing point).",
+                "→ Phải thừa nhận rằng xu hướng này không phải không có hạn chế. Nhiều người cho rằng...",
+                "This concern stems from the fact that (explanation). As a result, (negative outcome).",
+                "→ Mối lo ngại này bắt nguồn từ việc... Kết quả là...",
+                "Nevertheless, such drawbacks are largely outweighed by the benefits outlined above, particularly when (condition).",
+                "→ Tuy nhiên, những hạn chế đó phần lớn bị vượt qua bởi những lợi ích đã nêu, đặc biệt khi...",
+                "**Nếu bài của bạn là NEGATIVE**",
+                "Nevertheless, these benefits do little to offset the more fundamental harm caused by (trend).",
+                "→ Tuy nhiên, những lợi ích này không bù đắp được tác hại căn bản hơn do (xu hướng) gây ra."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7+ · KẾT BÀI",
+              "lines": [
+                "In conclusion, having weighed both sides, I maintain that (trend) represents a largely positive / negative development, chiefly because of its influence on (aspect 1) and (aspect 2).",
+                "→ Tóm lại, sau khi cân nhắc cả hai mặt, tôi giữ quan điểm rằng (xu hướng) là một sự phát triển chủ yếu tích cực / tiêu cực, chủ yếu vì ảnh hưởng của nó đến...",
+                "Provided that (condition), its benefits are likely to become even more pronounced in the years ahead.",
+                "→ Với điều kiện là..., những lợi ích của nó có khả năng còn rõ rệt hơn trong những năm tới."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bảng nâng cấp câu: 6+ → 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**BAND 6+**",
+                  "**BAND 7+**"
+                ],
+                [
+                  "In recent years, (trend) has become increasingly common.",
+                  "Over the past two decades, (trend) has gained considerable momentum across much of the world."
+                ],
+                [
+                  "This has had a noticeable impact on people.",
+                  "This shift has had a profound influence on the way people (verb)."
+                ],
+                [
+                  "In my view, this is a positive development because...",
+                  "In my view, this constitutes a largely positive development, primarily because of its impact on (aspect 1) and (aspect 2)."
+                ],
+                [
+                  "One of the main reasons is that...",
+                  "The most compelling reason for regarding this trend as positive lies in (reason)."
+                ],
+                [
+                  "This is because...",
+                  "This is largely because... / This owes much to the fact that..."
+                ],
+                [
+                  "As a result, people have more free time.",
+                  "Consequently, employees regain several hours each week, **thereby improving** both productivity and family life."
+                ],
+                [
+                  "Another important reason is that...",
+                  "A further consideration is (reason 2), which has the potential to (result) in the long term."
+                ],
+                [
+                  "Admittedly, (trend) can also have some disadvantages.",
+                  "Admittedly, this trend is not without its drawbacks. It is often argued that (opposing point)."
+                ],
+                [
+                  "However, I believe the benefits are bigger.",
+                  "Nevertheless, such drawbacks are largely outweighed by the benefits outlined above, particularly when (condition)."
+                ],
+                [
+                  "In conclusion, I believe this is a positive development.",
+                  "In conclusion, having weighed both sides, I maintain that (trend) represents a largely positive development."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Useful language",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Giới thiệu xu hướng**",
+                "• In recent years,... / Nowadays,... / Over the past two decades,...",
+                "• (Trend) has become increasingly common / widespread / prevalent.",
+                "• There has been a marked rise in... / (Trend) has gained considerable momentum.",
+                "**Đánh giá là tích cực**",
+                "• a positive development · a beneficial trend · a welcome shift · a significant improvement",
+                "• provide greater opportunities for... · increase access to... · make it easier for people to...",
+                "**Đánh giá là tiêu cực**",
+                "• a negative development · a worrying trend · a troubling shift · a major drawback",
+                "• have a harmful effect on... · increase the risk of... · erode... · create problems for...",
+                "**Thừa nhận mặt còn lại**",
+                "• Admittedly,... / It is true that... / While this can be beneficial,...",
+                "• Nevertheless,... / However, I believe that...",
+                "• the benefits outweigh the drawbacks · the negative effects are more significant than the benefits"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Bài mẫu Band 7+",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "ĐỀ BÀI",
+              "lines": [
+                "An increasing number of people now work from home rather than in an office. **Is this a positive or a negative development?**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BÀI MẪU · khoảng 305 từ",
+              "lines": [
+                "**INTRODUCTION**",
+                "Over the past two decades, and especially since the pandemic, remote working has gained considerable momentum across much of the world. This shift has had a profound influence on the way people organise their working lives. In my view, this constitutes a largely positive development, primarily because of its impact on personal autonomy and urban congestion.",
+                "**BODY 1 — MAIN REASONS**",
+                "The most compelling reason for regarding this trend as positive lies in the flexibility it grants employees. This is largely because staff are judged on output rather than on hours spent at a desk, which allows them to arrange work around family commitments. Consequently, many employees regain the two hours a day once lost to commuting, thereby improving both their productivity and their relationships at home. A clear illustration of this can be seen in large Vietnamese cities, where a worker living in an outer district may spend three hours a day travelling to and from a central office. A further consideration is the environmental benefit: fewer daily journeys mean lower emissions and less strain on transport infrastructure, which has the potential to reshape city planning in the long term.",
+                "**BODY 2 — ACKNOWLEDGE & REINFORCE**",
+                "Admittedly, this trend is not without its drawbacks. It is often argued that remote employees lose the informal contact that builds trust within a team. This concern stems from the fact that spontaneous conversation is difficult to replicate online. As a result, junior staff in particular may feel isolated and learn more slowly. Nevertheless, such drawbacks are largely outweighed by the benefits outlined above, particularly when companies adopt hybrid arrangements that preserve regular face-to-face contact.",
+                "**CONCLUSION**",
+                "In conclusion, having weighed both sides, I maintain that remote working represents a largely positive development, chiefly because of its influence on personal freedom and the environment. Provided that employers manage team communication carefully, its benefits are likely to become even more pronounced in the years ahead."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "LỖI THƯỜNG GẶP Ở DẠNG NÀY",
+              "lines": [
+                "**Viết thành bài Advantages & Disadvantages.** Nếu hai body cân bằng hoàn toàn và bạn không nghiêng về phía nào, bạn đã trả lời sai đề.",
+                "**Body 2 dài bằng Body 1 và toàn nói mặt trái.** Body 2 chỉ nên dành khoảng ba câu cho mặt trái, rồi quay lại củng cố quan điểm.",
+                "**Quên nêu đánh giá ở Introduction.** Giám khảo cần biết bạn nghĩ gì ngay từ đoạn đầu."
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

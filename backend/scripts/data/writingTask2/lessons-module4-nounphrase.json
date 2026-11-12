@@ -35,7 +35,215 @@
       "gate": {
         "minObjectiveScorePercent": 60,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "KEY MINDSET",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• Don't change every word. Change the structure.",
+                "• Don't look for synonyms first. Look for a noun phrase.",
+                "• Find the HEAD NOUN first.",
+                "• Task 1 = accuracy first, variation second.",
+                "• Task 2 = structure + precision, not synonym-showing."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "1. Định nghĩa đơn giản",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Noun phrase = một nhóm từ xoay quanh một DANH TỪ chính. Danh từ quan trọng nhất gọi là HEAD NOUN."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cụm từ**",
+                  "**Head noun**"
+                ],
+                [
+                  "students",
+                  "students"
+                ],
+                [
+                  "university students",
+                  "students"
+                ],
+                [
+                  "many university students",
+                  "students"
+                ],
+                [
+                  "many university students from disadvantaged backgrounds",
+                  "students"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Công thức cơ bản:",
+                "**FORMULA:** Determiner + Adjective + NOUN + extra information",
+                "**Example:** many + university + students + from rural areas"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "2. Noun phrase có VERB không?",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Noun phrase không có một VERB CHÍNH chia thì. Tuy nhiên, nó có thể chứa V-ing hoặc V3 như một participle dùng để bổ nghĩa cho noun."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Clause**",
+                  "**Noun phrase**"
+                ],
+                [
+                  "Students drop out of university.",
+                  "students dropping out of university"
+                ],
+                [
+                  "Students are dropping out of university.",
+                  "students dropping out of university"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Quy tắc vàng: Đừng chỉ nhìn xem có V-ing/V3 hay không. Hãy tìm HEAD NOUN."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "3. V-ing có phải lúc nào cũng là verb?",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Verb:** Students are dropping out of university. → “are dropping” là verb phrase.",
+                "**Participle:** students dropping out of university → “dropping” bổ nghĩa cho “students”.",
+                "**Another example:** the rapidly growing number of university students → head noun = number."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "4. Nhận diện HEAD NOUN — bài mẫu",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**#**",
+                  "**Noun phrase**",
+                  "**Head noun**"
+                ],
+                [
+                  "1",
+                  "many young people",
+                  "people"
+                ],
+                [
+                  "2",
+                  "the increasing cost of living",
+                  "cost"
+                ],
+                [
+                  "3",
+                  "a significant rise in unemployment",
+                  "rise"
+                ],
+                [
+                  "4",
+                  "the growing number of university students",
+                  "number"
+                ],
+                [
+                  "5",
+                  "widespread use of social media",
+                  "use"
+                ],
+                [
+                  "6",
+                  "the increasing demand for skilled workers",
+                  "demand"
+                ],
+                [
+                  "7",
+                  "students from low-income families",
+                  "students"
+                ],
+                [
+                  "8",
+                  "the rapid development of technology",
+                  "development"
+                ],
+                [
+                  "9",
+                  "government investment in education",
+                  "investment"
+                ],
+                [
+                  "10",
+                  "the decision to study abroad",
+                  "decision"
+                ],
+                [
+                  "11",
+                  "young people using social media",
+                  "people"
+                ],
+                [
+                  "12",
+                  "the increasing pressure placed on students",
+                  "pressure"
+                ],
+                [
+                  "13",
+                  "the decline in traditional values",
+                  "decline"
+                ],
+                [
+                  "14",
+                  "the widespread availability of online courses",
+                  "availability"
+                ],
+                [
+                  "15",
+                  "the growing dependence on private vehicles",
+                  "dependence"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L20",
@@ -57,7 +265,138 @@
       "gate": {
         "minObjectiveScorePercent": 60,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "1. Vì sao noun phrase quan trọng?",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• Giúp câu concise và academic hơn.",
+                "• Giúp paraphrase đề mà không phụ thuộc vào synonym từng từ.",
+                "• Giúp tránh lặp subject + verb ở nhiều câu liên tiếp.",
+                "• Giúp xây câu phức và nominalisation.",
+                "• Hỗ trợ Lexical Resource và Grammatical Range khi dùng đúng, tự nhiên."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "2. Verb → Noun: bộ word form nền tảng",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Verb**",
+                  "**Noun**"
+                ],
+                [
+                  "increase",
+                  "increase"
+                ],
+                [
+                  "decrease",
+                  "decrease"
+                ],
+                [
+                  "grow",
+                  "growth"
+                ],
+                [
+                  "develop",
+                  "development"
+                ],
+                [
+                  "improve",
+                  "improvement"
+                ],
+                [
+                  "reduce",
+                  "reduction"
+                ],
+                [
+                  "rise",
+                  "rise"
+                ],
+                [
+                  "fall",
+                  "fall"
+                ],
+                [
+                  "decide",
+                  "decision"
+                ],
+                [
+                  "choose",
+                  "choice"
+                ],
+                [
+                  "educate",
+                  "education"
+                ],
+                [
+                  "employ",
+                  "employment"
+                ],
+                [
+                  "achieve",
+                  "achievement"
+                ],
+                [
+                  "fail",
+                  "failure"
+                ],
+                [
+                  "migrate",
+                  "migration"
+                ],
+                [
+                  "pollute",
+                  "pollution"
+                ],
+                [
+                  "consume",
+                  "consumption"
+                ],
+                [
+                  "behave",
+                  "behaviour"
+                ],
+                [
+                  "invest",
+                  "investment"
+                ],
+                [
+                  "communicate",
+                  "communication"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "4. Quy trình 4 bước: VERB → NOUN → NOUN PHRASE → IELTS SENTENCE",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Bước 1: Tìm verb chính: People use private cars.",
+                "Bước 2: Đổi verb thành noun: use.",
+                "Bước 3: Xây noun phrase: the increasing use of private cars.",
+                "Bước 4: Đưa vào câu: The increasing use of private cars has contributed to traffic congestion."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T2-L21",
@@ -80,7 +419,255 @@
       "gate": {
         "minObjectiveScorePercent": 60,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "3. Các pattern noun phrase ăn điểm",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Pattern**",
+                  "**Example**"
+                ],
+                [
+                  "the growing number of + N + V-ing",
+                  "the growing number of young people using social media"
+                ],
+                [
+                  "the increasing prevalence of + N",
+                  "the increasing prevalence of obesity"
+                ],
+                [
+                  "the rise in + N",
+                  "the rise in tuition fees"
+                ],
+                [
+                  "the decline in + N",
+                  "the decline in academic performance"
+                ],
+                [
+                  "the increasing pressure on + N",
+                  "the increasing pressure on university students"
+                ],
+                [
+                  "the growing dependence on + N",
+                  "the growing dependence on technology"
+                ],
+                [
+                  "the widespread use of + N",
+                  "the widespread use of social media"
+                ],
+                [
+                  "the increasing demand for + N",
+                  "the increasing demand for skilled workers"
+                ],
+                [
+                  "the decision to + V",
+                  "the decision to study abroad"
+                ],
+                [
+                  "the failure to + V",
+                  "the failure to complete a degree"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "5. Paraphrase Task 2: không word-by-word",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Basic:** More and more people are using social media.",
+                "**Weak approach:** more → increasingly; people → individuals; using → utilising…",
+                "**Better:** the increasing use of social media",
+                "**Full sentence:** The increasing use of social media has changed the way people communicate.",
+                "Mục tiêu không phải thay càng nhiều từ càng tốt; mục tiêu là giữ nguyên meaning và tạo cấu trúc tự nhiên hơn."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "6. Task 2 thực chiến — đề mẫu",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "In several countries, a growing number of university students leave higher education before completing their degree program. What are the main causes of this trend, and what effects does it have on society?"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Noun phrase**",
+                  "**Head noun**",
+                  "**Công dụng**"
+                ],
+                [
+                  "a growing number of university students",
+                  "students",
+                  "mô tả nhóm người"
+                ],
+                [
+                  "the increasing university dropout rate",
+                  "rate",
+                  "paraphrase trend"
+                ],
+                [
+                  "the growing number of university dropouts",
+                  "number",
+                  "paraphrase đối tượng"
+                ],
+                [
+                  "the failure to complete a degree",
+                  "failure",
+                  "cause/phenomenon"
+                ],
+                [
+                  "the decision to leave university prematurely",
+                  "decision",
+                  "cause"
+                ],
+                [
+                  "the financial burden of higher education",
+                  "burden",
+                  "cause"
+                ],
+                [
+                  "the pressure of university studies",
+                  "pressure",
+                  "cause"
+                ],
+                [
+                  "limited employment opportunities after graduation",
+                  "opportunities",
+                  "effect/cause"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "7. Xây Introduction bằng noun phrase",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Level**",
+                  "**Sample**"
+                ],
+                [
+                  "1 — Simple",
+                  "In recent years, more and more university students have left higher education before completing their degrees."
+                ],
+                [
+                  "2 — Noun phrase",
+                  "In recent years, the number of university students dropping out before degree completion has increased significantly."
+                ],
+                [
+                  "3 — Academic",
+                  "In recent years, the increasing rate of university dropout has become a growing concern in several countries."
+                ],
+                [
+                  "4 — Concise",
+                  "In recent years, university dropout rates have risen considerably in several countries, raising concerns about their underlying causes and broader social consequences."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Task 2 — 10 điều phải nhớ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• Tìm verb chính trước khi nghĩ synonym.",
+                "• Đổi verb → noun rồi mới xây noun phrase.",
+                "• Luôn xác định head noun.",
+                "• the growing number of + N + V-ing là pattern rất hữu ích.",
+                "• the rise/increase/decline in + noun giúp nominalise xu hướng.",
+                "• the growing dependence on / the increasing pressure on / the widespread use of là các pattern dễ tái sử dụng.",
+                "• Noun phrase giúp giảm lặp “people + verb”.",
+                "• V-ing/V3 trong noun phrase có thể là participle, không nhất thiết là main verb.",
+                "• Một noun phrase tốt phải tự nhiên, rõ meaning và đúng collocation.",
+                "• Đừng học thuộc một intro duy nhất; hãy học pattern để tự xây câu."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHẦN VII — CHECKLIST TRƯỚC KHI NỘP BÀI",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Question**",
+                  "**YES/NO**"
+                ],
+                [
+                  "Tôi đã tìm head noun chưa?",
+                  "____"
+                ],
+                [
+                  "Tôi có nhầm number và amount không?",
+                  "____"
+                ],
+                [
+                  "Danh từ sau number có ở dạng plural không?",
+                  "____"
+                ],
+                [
+                  "V3/V-ing có đang bổ nghĩa đúng noun không?",
+                  "____"
+                ],
+                [
+                  "Word form đã đúng chưa?",
+                  "____"
+                ],
+                [
+                  "Collocation có tự nhiên không?",
+                  "____"
+                ],
+                [
+                  "Meaning có giữ nguyên so với đề không?",
+                  "____"
+                ],
+                [
+                  "Tôi có đang cố thay synonym từng từ không?",
+                  "____"
+                ],
+                [
+                  "Câu có quá phức tạp chỉ để “show off” không?",
+                  "____"
+                ],
+                [
+                  "Task 1: accuracy đã được ưu tiên chưa?",
+                  "____"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

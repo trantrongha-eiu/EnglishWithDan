@@ -26,6 +26,21 @@ const WT1LessonSchema = new Schema(
       usage: [String],
       examples: [{ _id: false, en: String, vi: String }],
       notes: [String],
+      // Cards copied from the printed book (scripts/bookTheory/buildBookTheory.js)
+      // keep the book's order as blocks instead of formula/usage/examples/notes:
+      // h (sub-heading) · p (lines) · box (tone + title + lines) · table (rows)
+      // · img (url + caption). src:'book' marks them for re-runs.
+      src: String,
+      blocks: [{
+        _id: false,
+        k: { type: String, enum: ['h', 'p', 'box', 'table', 'img'] },
+        t: String,
+        tone: String,
+        lines: [String],
+        rows: [[String]],
+        url: String,
+        caption: String,
+      }],
     }],
     // Speaking course: the Student's Book's MODEL ANSWER and UPGRADE
     // (Band 5 → 6 → 7) boxes for this lesson, word for word — written by

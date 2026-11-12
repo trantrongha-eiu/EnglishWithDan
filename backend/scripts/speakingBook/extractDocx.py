@@ -49,14 +49,37 @@ def para_style(p):
     return s.get(W + 'val') if s is not None else ''
 
 
-def main(src, dst):
-    root = ET.fromstring(zipfile.ZipFile(src).read('word/document.xml'))
+R = '{http://schemas.openxmlformats.org/officeDocument/2006/relationships}'
+A = '{http://schemas.openxmlformats.org/drawingml/2006/main}'
+
+
+def image_names(zf, el):
+    """media/imageN.ext of every picture inside a paragraph (--images)."""
+    rels = getattr(image_names, 'rels', None)
+    if rels is None:
+        rx = ET.fromstring(zf.read('word/_rels/document.xml.rels'))
+        rels = image_names.rels = {r.get('Id'): r.get('Target') for r in rx}
+    return [rels.get(b.get(R + 'embed'), '') for b in el.iter(A + 'blip')]
+
+
+def main(src, dst, with_images=False):
+    zf = zipfile.ZipFile(src)
+    root = ET.fromstring(zf.read('word/document.xml'))
     items = []
     for el in root.find(W + 'body'):
         if el.tag == W + 'p':
             t = para_text(el)
             if t.strip():
-                items.append({'k': 'p', 's': para_style(el), 't': t})
+                item = {'k': 'p', 's': para_style(el), 't': t}
+                jc = el.find(W + 'pPr/' + W + 'jc')
+                if with_images and jc is not None and jc.get(W + 'val') == 'center':
+                    item['c'] = 1  # centred = the caption under a picture
+                items.append(item)
+            # Pictures only on request: syncBookModels.js reads p/tbl blocks only.
+            if with_images:
+                for name in image_names(zf, el):
+                    if name:
+                        items.append({'k': 'img', 'name': name})
         elif el.tag == W + 'tbl':
             rows = []
             for tr in el.findall(W + 'tr'):
@@ -69,6 +92,7 @@ def main(src, dst):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        sys.exit('usage: extractDocx.py <book.docx> <out.json>')
-    main(sys.argv[1], sys.argv[2])
+    args = [a for a in sys.argv[1:] if not a.startswith('--')]
+    if len(args) != 2:
+        sys.exit('usage: extractDocx.py <book.docx> <out.json> [--images]')
+    main(args[0], args[1], '--images' in sys.argv)

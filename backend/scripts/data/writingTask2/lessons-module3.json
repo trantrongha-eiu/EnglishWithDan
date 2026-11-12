@@ -38,6 +38,29 @@
       },
       "theory": [
         {
+          "src": "book",
+          "title": "Phần C — Ngữ pháp nâng band: nguyên tắc vàng",
+          "titleEn": "Part C — The grammar that moves you from 6 to 7",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Tiêu chí **Grammatical Range and Accuracy** chiếm 25% điểm bài viết và có hai vế. **Range** là sự đa dạng về loại câu. **Accuracy** là số câu không có lỗi. Band 7 yêu cầu **cả hai**: bạn phải dùng nhiều loại câu, và phần lớn câu phải đúng."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "NGUYÊN TẮC VÀNG",
+              "lines": [
+                "Một cấu trúc phức tạp **dùng sai** làm hại nhiều hơn một câu đơn **dùng đúng**.",
+                "Mục tiêu thực tế cho một bài 280 từ: khoảng **4 – 6 câu phức** rải đều, **1 – 2 mệnh đề quan hệ**, **1 câu điều kiện**, **1 câu bị động**, và **1 câu nhấn mạnh** (đảo ngữ hoặc câu chẻ). Không cần nhiều hơn.",
+                "Đừng nhồi tất cả cấu trúc hay vào một đoạn. Rải đều để giám khảo thấy bạn kiểm soát được ngôn ngữ."
+              ]
+            }
+          ]
+        },
+        {
           "title": "Câu phức",
           "titleEn": "Complex Sentences",
           "formula": [
@@ -47,6 +70,7 @@
             "Nguyên nhân: **Because / Since / As** · Điều kiện: **If / Unless / Provided that** · Mục đích: **so that**"
           ],
           "usage": [
+            "📍 Dùng ở đâu trong bài (sách): Câu paraphrase ở Introduction, câu nhượng bộ ở Body 2, và câu tóm tắt ở Conclusion (\"Although X offers..., it also entails...\").",
             "Nối một ý chính với một ý phụ (lý do, điều kiện, nhượng bộ, thời gian) trong cùng một câu — giám khảo chấm \"a mix of simple and complex sentence forms\" cho Band 6, \"a wide range of structures\" cho Band 7.",
             "Introduction: paraphrase đề bằng câu nhượng bộ \"Although/While some people believe…, others argue…\".",
             "Body: nêu luận điểm kèm lý do (\"…because/since…\"); câu nhượng bộ ở đoạn phản biện.",
@@ -68,6 +92,10 @@
             {
               "en": "**While** online learning is flexible, it requires a high level of self-discipline.",
               "vi": "Dù học trực tuyến linh hoạt, nó đòi hỏi tính tự giác cao."
+            },
+            {
+              "en": "**While** remote working suits experienced staff, it can leave junior employees without guidance.",
+              "vi": "Trong khi làm việc từ xa phù hợp với nhân viên có kinh nghiệm, nó có thể khiến nhân viên mới thiếu sự hướng dẫn."
             }
           ],
           "notes": [
@@ -107,6 +135,14 @@
             {
               "en": "Technology saves time**; it** also reduces the cost of many services.",
               "vi": "Công nghệ tiết kiệm thời gian; nó cũng giảm chi phí nhiều dịch vụ."
+            },
+            {
+              "en": "The government has introduced new policies, **but** public response has remained lukewarm.",
+              "vi": "Chính phủ đã ban hành các chính sách mới, nhưng phản ứng của công chúng vẫn khá thờ ơ."
+            },
+            {
+              "en": "Digital platforms save time; **however**, they also reduce face-to-face interaction.",
+              "vi": "Nền tảng số giúp tiết kiệm thời gian; tuy nhiên, chúng cũng làm giảm giao tiếp trực tiếp."
             }
           ],
           "notes": [
@@ -151,6 +187,7 @@
             "**Unless** = if … not · **Provided that / As long as** = miễn là · Rút gọn: **If implemented / If left unchecked, …**"
           ],
           "usage": [
+            "📍 Dùng ở đâu trong bài (sách): Cực kỳ hiệu quả ở **cuối Body 1 của dạng Cause hoặc Effect** (\"If this trend continues, it could lead to...\") và ở **Body 2 của dạng Solution** (\"If implemented on a large scale, this measure could...\").",
             "Cảnh báo hệ quả cuối đoạn Body: \"If this trend continues, …\" — biến lập luận thành hậu quả cụ thể.",
             "Đề xuất giải pháp có điều kiện (dạng Problem–Solution): \"If governments invested more in…, …\".",
             "Loại 2 để đưa ra giả định thuyết phục mà không khẳng định tuyệt đối — rất hợp giọng học thuật.",
@@ -172,6 +209,18 @@
             {
               "en": "**Unless** action **is** taken now, many species **will** face extinction.",
               "vi": "Trừ khi hành động ngay bây giờ, nhiều loài sẽ đối mặt với nguy cơ tuyệt chủng."
+            },
+            {
+              "en": "**If** the education system **is not reformed**, future generations **may lack** essential skills.",
+              "vi": "Nếu hệ thống giáo dục không được cải cách, các thế hệ tương lai có thể thiếu những kỹ năng thiết yếu."
+            },
+            {
+              "en": "**If** governments **invested** more in public transport, congestion **would fall** sharply.",
+              "vi": "Nếu chính phủ đầu tư nhiều hơn vào giao thông công cộng, ùn tắc sẽ giảm mạnh."
+            },
+            {
+              "en": "**Unless** urgent action is taken, this trend will continue to worsen.",
+              "vi": "Trừ khi có hành động khẩn cấp, xu hướng này sẽ tiếp tục xấu đi."
             }
           ],
           "notes": [
@@ -193,6 +242,7 @@
             "Hoặc: **S + is believed / thought + to V / to have V3**"
           ],
           "usage": [
+            "📍 Dùng ở đâu trong bài (sách): Ở **đoạn giải pháp**, câu bị động với modal (\"measures should be taken\", \"funding could be allocated\") nghe khách quan và học thuật hơn nhiều so với \"the government should do...\".",
             "Khi hành động/đối tượng quan trọng hơn người làm, hoặc người làm hiển nhiên/không rõ.",
             "Làm giọng văn khách quan, học thuật — đặc biệt ở câu giải pháp: \"Stricter laws should be introduced…\".",
             "Mở bài khách quan: \"It is often argued that…\" thay cho \"Many people think that…\".",
@@ -214,6 +264,18 @@
             {
               "en": "Remote working **is thought to have reduced** traffic in many major cities.",
               "vi": "Làm việc từ xa được cho là đã làm giảm giao thông ở nhiều thành phố lớn."
+            },
+            {
+              "en": "Several measures **were proposed** by the committee to address the issue.",
+              "vi": "Một số biện pháp đã được ủy ban đề xuất để giải quyết vấn đề."
+            },
+            {
+              "en": "**It is widely acknowledged that** early exposure to reading improves academic performance.",
+              "vi": "Người ta thừa nhận rộng rãi rằng việc tiếp xúc sớm với sách cải thiện kết quả học tập."
+            },
+            {
+              "en": "Stricter regulations **should be introduced** to limit emissions.",
+              "vi": "Cần ban hành các quy định nghiêm ngặt hơn để hạn chế khí thải."
             }
           ],
           "notes": [
@@ -280,6 +342,14 @@
             {
               "en": "Rural areas**, where** job opportunities are limited, are losing their young population.",
               "vi": "Các vùng nông thôn, nơi cơ hội việc làm hạn chế, đang mất dần dân số trẻ."
+            },
+            {
+              "en": "Students **who** grow up in extended families often develop stronger social skills.",
+              "vi": "Những học sinh lớn lên trong gia đình nhiều thế hệ thường phát triển kỹ năng xã hội tốt hơn."
+            },
+            {
+              "en": "This is particularly true in large cities **where** public transport is limited.",
+              "vi": "Điều này đặc biệt đúng ở các thành phố lớn nơi giao thông công cộng còn hạn chế."
             }
           ],
           "notes": [
@@ -364,6 +434,7 @@
             "Biến thể: **The main reason why … is that …** · **The reason … is not X but Y**"
           ],
           "usage": [
+            "📍 Dùng ở đâu trong bài (sách): Rất hiệu quả ở **câu chủ đề của Body** hoặc **câu cuối Conclusion**, khi bạn muốn nhấn mạnh yếu tố quan trọng nhất.",
             "Tách một yếu tố (nguyên nhân, đối tượng, giải pháp) ra để nhấn mạnh — \"chính là…\".",
             "Câu chủ đề (topic sentence) của đoạn Body: nêu thẳng nguyên nhân/giải pháp quan trọng nhất.",
             "Câu cuối Conclusion: chốt lại quan điểm một cách mạnh mẽ.",
@@ -424,6 +495,10 @@
             {
               "en": "Success depends on **hard work, persistence and adaptability** rather than **luck**.",
               "vi": "Thành công phụ thuộc vào sự chăm chỉ, kiên trì và khả năng thích nghi hơn là may mắn."
+            },
+            {
+              "en": "The proposal aims **to improve** healthcare accessibility, **to reduce** costs and **to enhance** patient satisfaction.",
+              "vi": "Đề xuất nhằm cải thiện khả năng tiếp cận y tế, giảm chi phí và nâng cao sự hài lòng của bệnh nhân."
             }
           ],
           "notes": [
@@ -667,7 +742,215 @@
       "gate": {
         "minObjectiveScorePercent": 0,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "BẢNG TRA NHANH: CẮM CẤU TRÚC VÀO ĐÂU",
+          "titleEn": "Where to place each structure in your essay",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Vị trí trong bài**",
+                  "**Cấu trúc nên dùng**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "**Introduction** — câu mở đề",
+                  "Present Perfect",
+                  "Over the past two decades, X **has gained** considerable momentum."
+                ],
+                [
+                  "**Introduction** — paraphrase",
+                  "Câu phức với While / Although",
+                  "**While** X offers clear benefits, its drawbacks deserve attention."
+                ],
+                [
+                  "**Introduction** — thesis",
+                  "Câu phức + danh động từ",
+                  "This essay will examine both dimensions **before arguing that**..."
+                ],
+                [
+                  "**Body** — câu chủ đề",
+                  "Câu chẻ hoặc danh từ hóa",
+                  "**It is** the lack of regulation **that** lies at the heart of the problem."
+                ],
+                [
+                  "**Body** — giải thích",
+                  "Bị động học thuật",
+                  "**It is widely acknowledged that**..."
+                ],
+                [
+                  "**Body** — nêu kết quả",
+                  "Cụm phân từ **thereby + V-ing**",
+                  "This reduces commuting, **thereby lowering** emissions."
+                ],
+                [
+                  "**Body** — đẩy ý sâu hơn",
+                  "Mệnh đề quan hệ **, which...**",
+                  "Students gain flexibility, **which allows** them to work part-time."
+                ],
+                [
+                  "**Body** — nhấn mạnh hai lợi ích",
+                  "Đảo ngữ Not only",
+                  "**Not only does** this cut costs, **but it also** improves access."
+                ],
+                [
+                  "**Body** — cảnh báo hệ quả",
+                  "Câu điều kiện loại 1",
+                  "**If** this trend continues, it **could lead to**..."
+                ],
+                [
+                  "**Body** — đề xuất giải pháp",
+                  "Bị động + modal",
+                  "Stricter regulations **should be introduced**."
+                ],
+                [
+                  "**Body 2** — nhượng bộ",
+                  "Although / Admittedly + nevertheless",
+                  "**Admittedly**, X has drawbacks; **nevertheless**,..."
+                ],
+                [
+                  "**Conclusion** — tóm tắt",
+                  "Câu phức với Although",
+                  "**Although** X offers..., it also entails..."
+                ],
+                [
+                  "**Conclusion** — chốt quan điểm",
+                  "Having + V3",
+                  "**Having weighed** both sides, I maintain that..."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "BA LỖI NGỮ PHÁP LÀM MẤT BAND NHIỀU NHẤT",
+          "titleEn": "The three most costly grammar errors",
+          "blocks": [
+            {
+              "k": "h",
+              "t": "**Lỗi 1 — Nối hai câu bằng dấu phẩy**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Comma splice"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "SAI → ĐÚNG",
+              "lines": [
+                "**Sai:** Many people work from home, this reduces traffic congestion.",
+                "**Đúng:** Many people work from home**, which** reduces traffic congestion.",
+                "**Đúng:** Many people work from home; this reduces traffic congestion.",
+                "**Đúng:** Many people work from home**, and** this reduces traffic congestion."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Lỗi 2 — Danh từ số nhiều và chủ ngữ – động từ**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Plurals and subject–verb agreement"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "SAI → ĐÚNG",
+              "lines": [
+                "**Sai:** Many student prefer online learning. · **Đúng:** Many **students prefer** online learning.",
+                "**Sai:** The number of people are increasing. · **Đúng:** The number of people **is** increasing.",
+                "**Sai:** Informations, advices, equipments, researches. · **Đúng:** Đây là **danh từ không đếm được** — luôn ở dạng số ít: information, advice, equipment, research.",
+                "Khi soát bài, hãy đọc riêng từng câu và chỉ tìm **s** ở danh từ và động từ. Chỉ việc này thôi đã sửa được phần lớn lỗi."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Lỗi 3 — Mạo từ**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Articles"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "QUY TẮC NHANH",
+              "lines": [
+                "Nói về **sự vật nói chung** → dùng danh từ số nhiều **không có the**: *Children need physical activity.* (không phải \"The children\")",
+                "Nói về **một thứ cụ thể đã xác định** → dùng **the**: *The government of Vietnam has introduced...*",
+                "Danh từ đếm được số ít **luôn** cần mạo từ: *a solution*, *the solution* — không bao giờ đứng trần.",
+                "**Sai:** The technology has changed the society. · **Đúng:** Technology has changed society."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "CHECKLIST BA PHÚT CUỐI GIỜ",
+          "titleEn": "The final three-minute check",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Ba phút cuối là ba phút có giá trị nhất trong bài thi. Đừng dùng để viết thêm câu — hãy dùng để sửa lỗi. Soát theo đúng thứ tự sau, mỗi lượt chỉ tìm **một** loại lỗi."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Lượt soát**",
+                  "**Chỉ tìm một thứ**"
+                ],
+                [
+                  "**Lượt 1 — Task Response**",
+                  "Bài đã trả lời **mọi** câu hỏi trong đề chưa? Lập trường có xuất hiện ở cả Introduction lẫn Conclusion không?"
+                ],
+                [
+                  "**Lượt 2 — Số nhiều**",
+                  "Mọi danh từ đếm được số nhiều có **s** chưa? Danh từ không đếm được có bị thêm **s** nhầm không?"
+                ],
+                [
+                  "**Lượt 3 — Động từ**",
+                  "Chủ ngữ số ít có động từ chia đúng chưa? Thì có nhất quán trong từng đoạn không?"
+                ],
+                [
+                  "**Lượt 4 — Mạo từ**",
+                  "Danh từ đếm được số ít có mạo từ chưa? Có dùng thừa **the** trước danh từ chung không?"
+                ],
+                [
+                  "**Lượt 5 — Dấu câu**",
+                  "Có câu nào nối hai mệnh đề độc lập chỉ bằng dấu phẩy không?"
+                ],
+                [
+                  "**Lượt 6 — Độ dài**",
+                  "Bài có đủ 250 từ chưa? Bốn đoạn có tương đối cân đối không?"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "ĐIỀU CUỐI CÙNG",
+              "lines": [
+                "Template trong sách này là **giàn giáo, không phải ngôi nhà**. Khi bạn đã viết được ba mươi bài, bạn sẽ tự nhiên bỏ dần giàn giáo và viết bằng giọng của chính mình. Đó là lúc bạn thật sự đạt Band 7."
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

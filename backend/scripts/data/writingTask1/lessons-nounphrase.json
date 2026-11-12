@@ -22,7 +22,86 @@
       "gate": {
         "minObjectiveScorePercent": 60,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "1. Tư duy cốt lõi",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Task 1 thường cung cấp một noun phrase trong tiêu đề/biểu đồ. Học sinh cần biến cụm đó thành một subject tự nhiên trong câu mô tả số liệu. Ba chiến lược trọng tâm: (1) the amount/number + V-ing/V3, (2) noun + of, (3) word form + synonym."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "2. Cách 1 — THE AMOUNT / THE NUMBER + VERB",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Dùng THE AMOUNT OF với danh từ không đếm được và THE NUMBER OF với danh từ đếm được."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Loại dữ liệu**",
+                  "**Pattern**",
+                  "**Ví dụ**"
+                ],
+                [
+                  "Countable",
+                  "the number of + plural N + V-ing/V3",
+                  "the number of people using public transport"
+                ],
+                [
+                  "Uncountable",
+                  "the amount of + uncountable N + V3",
+                  "the amount of electricity consumed in the UK"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Countable: people, students, cars, households, tourists, employees…",
+                "Uncountable: water, electricity, oil, energy, waste, fast food…",
+                "**Correct:** The amount of electricity consumed in the UK increased.",
+                "**Incorrect:** The number of electricity consumed increased."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Task 1 — 10 điều phải nhớ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• COUNTABLE → the number of; UNCOUNTABLE → the amount of.",
+                "• people/students/cars/households → number.",
+                "• water/electricity/oil/energy/waste/fast food → amount.",
+                "• The amount of + object + V3 rất hữu ích: the amount of water consumed.",
+                "• The number of + people/things + V-ing/V3: the number of people using…, the number of cars sold…",
+                "• Nếu đề có consumption/production/use/ownership, thử noun + of.",
+                "• consumption → consumed; production → produced/generated; generation → generated.",
+                "• Không dùng synonym nếu làm thay đổi meaning.",
+                "• Không cố paraphrase mọi từ trong tiêu đề.",
+                "• Accuracy > vocabulary show-off."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T1-L09C",
@@ -45,7 +124,224 @@
       "gate": {
         "minObjectiveScorePercent": 60,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "3. Cách 2 — NOUN + OF",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Giữ noun gốc và chuyển cấu trúc thành noun + of + object."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Original**",
+                  "**Noun + of**"
+                ],
+                [
+                  "fast food consumption",
+                  "the consumption of fast food"
+                ],
+                [
+                  "electricity consumption",
+                  "the consumption of electricity"
+                ],
+                [
+                  "public transport use",
+                  "the use of public transport"
+                ],
+                [
+                  "waste production",
+                  "the production of waste"
+                ],
+                [
+                  "car ownership",
+                  "the ownership of cars"
+                ],
+                [
+                  "energy consumption",
+                  "the consumption of energy"
+                ],
+                [
+                  "oil imports",
+                  "the import of oil / oil imports"
+                ],
+                [
+                  "goods exports",
+                  "the export of goods / goods exports"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "4. Cách 3 — WORD FORM + SYNONYM",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Noun**",
+                  "**Verb/Participle**",
+                  "**Possible synonym**"
+                ],
+                [
+                  "consumption",
+                  "consumed",
+                  "used / eaten (context-dependent)"
+                ],
+                [
+                  "production",
+                  "produced",
+                  "generated"
+                ],
+                [
+                  "use",
+                  "used",
+                  "consumed (context-dependent)"
+                ],
+                [
+                  "generation",
+                  "generated",
+                  "produced"
+                ],
+                [
+                  "imports",
+                  "imported",
+                  "brought into the country"
+                ],
+                [
+                  "exports",
+                  "exported",
+                  "sent abroad"
+                ],
+                [
+                  "employment",
+                  "employed",
+                  "working / in employment"
+                ],
+                [
+                  "ownership",
+                  "owned",
+                  "possessing (less natural in some Task 1 contexts)"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Lưu ý: synonym phải phù hợp meaning. Không thay từ chỉ vì nó “trông học thuật” hơn."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "5. FAST FOOD CONSUMPTION — mẫu chuẩn",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cách**",
+                  "**Sentence**"
+                ],
+                [
+                  "1. Amount + V3",
+                  "The amount of fast food consumed in Vietnam increased."
+                ],
+                [
+                  "2. Noun + of",
+                  "The consumption of fast food in Vietnam increased."
+                ],
+                [
+                  "3. Synonym",
+                  "The amount of fast food eaten in Vietnam increased."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "6. Nhiều ví dụ Task 1",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Prompt**",
+                  "**Version 1**",
+                  "**Version 2**",
+                  "**Version 3**"
+                ],
+                [
+                  "Electricity consumption in the UK",
+                  "The amount of electricity consumed in the UK increased.",
+                  "The consumption of electricity in the UK increased.",
+                  "The amount of electricity used in the UK increased."
+                ],
+                [
+                  "Water consumption by households",
+                  "The amount of water consumed by households decreased.",
+                  "The consumption of water by households decreased.",
+                  "The amount of water used by households decreased."
+                ],
+                [
+                  "Car ownership in Australia",
+                  "The number of cars owned in Australia increased.",
+                  "Car ownership in Australia increased.",
+                  "The number of people owning cars in Australia increased."
+                ],
+                [
+                  "Public transport use in London",
+                  "The number of people using public transport in London increased.",
+                  "The use of public transport in London increased.",
+                  "The number of people travelling by public transport in London increased."
+                ],
+                [
+                  "Online shopping among young people",
+                  "The number of young people shopping online increased.",
+                  "Online shopping among young people increased.",
+                  "The number of young people purchasing goods online increased."
+                ],
+                [
+                  "Waste production by factories",
+                  "The amount of waste produced by factories increased.",
+                  "The production of waste by factories increased.",
+                  "The amount of waste generated by factories increased."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "7. V3/V-ing trong noun phrase Task 1",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Trong “The amount of fast food consumed in Vietnam increased”, “consumed in Vietnam” là past-participle phrase bổ nghĩa cho “fast food”. Có thể hiểu tương đương về nghĩa với “fast food which was consumed in Vietnam”.",
+                "**Countable:** The number of people using public transport increased.",
+                "**Passive:** The number of cars sold in Japan declined.",
+                "**Uncountable + passive:** The amount of waste produced by factories increased."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T1-L09D",
@@ -67,7 +363,124 @@
       "gate": {
         "minObjectiveScorePercent": 60,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "8. Công thức vàng Task 1",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Dữ liệu**",
+                  "**Formula**",
+                  "**Example**"
+                ],
+                [
+                  "Countable",
+                  "the number of + N + V-ing/V3",
+                  "the number of cars sold in Japan"
+                ],
+                [
+                  "Uncountable",
+                  "the amount of + N + V3",
+                  "the amount of electricity consumed"
+                ],
+                [
+                  "Noun + of",
+                  "the + noun + of + object",
+                  "the consumption of electricity"
+                ],
+                [
+                  "Word form",
+                  "N → V3 / V-ing",
+                  "consumption → consumed; use → used/using"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Task 1 — 10 điều phải nhớ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• COUNTABLE → the number of; UNCOUNTABLE → the amount of.",
+                "• people/students/cars/households → number.",
+                "• water/electricity/oil/energy/waste/fast food → amount.",
+                "• The amount of + object + V3 rất hữu ích: the amount of water consumed.",
+                "• The number of + people/things + V-ing/V3: the number of people using…, the number of cars sold…",
+                "• Nếu đề có consumption/production/use/ownership, thử noun + of.",
+                "• consumption → consumed; production → produced/generated; generation → generated.",
+                "• Không dùng synonym nếu làm thay đổi meaning.",
+                "• Không cố paraphrase mọi từ trong tiêu đề.",
+                "• Accuracy > vocabulary show-off."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHẦN VII — CHECKLIST TRƯỚC KHI NỘP BÀI",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Question**",
+                  "**YES/NO**"
+                ],
+                [
+                  "Tôi đã tìm head noun chưa?",
+                  "____"
+                ],
+                [
+                  "Tôi có nhầm number và amount không?",
+                  "____"
+                ],
+                [
+                  "Danh từ sau number có ở dạng plural không?",
+                  "____"
+                ],
+                [
+                  "V3/V-ing có đang bổ nghĩa đúng noun không?",
+                  "____"
+                ],
+                [
+                  "Word form đã đúng chưa?",
+                  "____"
+                ],
+                [
+                  "Collocation có tự nhiên không?",
+                  "____"
+                ],
+                [
+                  "Meaning có giữ nguyên so với đề không?",
+                  "____"
+                ],
+                [
+                  "Tôi có đang cố thay synonym từng từ không?",
+                  "____"
+                ],
+                [
+                  "Câu có quá phức tạp chỉ để “show off” không?",
+                  "____"
+                ],
+                [
+                  "Task 1: accuracy đã được ưu tiên chưa?",
+                  "____"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

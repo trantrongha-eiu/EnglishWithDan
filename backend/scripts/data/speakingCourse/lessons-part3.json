@@ -88,7 +88,210 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "PHASE 1 · SÁU DẠNG CÂU HỎI — Lesson 1 → 6",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Mọi câu hỏi Part 3 đều rơi vào một trong sáu dạng này.",
+                "Sáu buổi đầu chỉ luyện khung lập luận trên chủ đề quen thuộc.",
+                "Chưa nạp từ vựng chuyên đề — đó là việc của Phase 2."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "for several reasons · stems from · can be attributed to · from a practical standpoint · as a result · psychologically speaking · on a social level"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời 60–75 giây có ba lý do thuộc ba tầng khác nhau, mỗi lý do có một câu triển khai, và một câu kết luận."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Ba lý do đều cùng một tầng: \"It is cheap, it saves money, and it is not expensive.\"",
+                "✘ Dùng \"because\" năm lần trong một câu trả lời — Lexical Resource bị đánh giá thấp ngay.",
+                "✘ Nêu lý do rồi dừng, không triển khai: \"Because it is good for health.\" (7 từ, hết ý)",
+                "✘ Trả lời bằng trải nghiệm cá nhân: \"Because I like it.\" — Part 3 hỏi về NGƯỜI TA, không hỏi về em."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "for several reasons",
+                  "vì một vài lý do",
+                  "People are drawn to nature for several interconnected reasons."
+                ],
+                [
+                  "★",
+                  "stems from",
+                  "bắt nguồn từ",
+                  "This trend stems from a shift in working culture."
+                ],
+                [
+                  "★",
+                  "can be attributed to",
+                  "có thể quy cho",
+                  "The rise in obesity can be attributed to sedentary lifestyles."
+                ],
+                [
+                  "★",
+                  "from a practical standpoint",
+                  "xét về mặt thực tế",
+                  "From a practical standpoint, it saves a considerable amount of time."
+                ],
+                [
+                  "★",
+                  "as a result",
+                  "kết quả là",
+                  "As a result, more families are choosing to live in the suburbs."
+                ],
+                [
+                  "★★",
+                  "psychologically speaking",
+                  "xét về mặt tâm lý",
+                  "Psychologically speaking, routine gives people a sense of control."
+                ],
+                [
+                  "★★",
+                  "on a social level",
+                  "ở tầng xã hội",
+                  "On a social level, it strengthens community ties."
+                ],
+                [
+                  "★★",
+                  "one key reason is",
+                  "một lý do chính là",
+                  "One key reason is the sheer cost of urban housing."
+                ],
+                [
+                  "★★",
+                  "a contributing factor is",
+                  "một yếu tố góp phần là",
+                  "A contributing factor is the lack of affordable childcare."
+                ],
+                [
+                  "★★",
+                  "this largely explains why",
+                  "điều này phần lớn giải thích vì sao",
+                  "This largely explains why demand has risen so sharply."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "a deeply human need for",
+                  "một nhu cầu rất người về",
+                  "It satisfies a deeply human need for connection."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "in our increasingly screen- dominated lives",
+                  "trong cuộc sống ngày càng In our increasingly screen-dominated lives, green bị màn hình chi phối",
+                  "spaces are a rare escape."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Khung REASON × 3",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Mẫu câu**",
+                  "**Chức năng**"
+                ],
+                [
+                  "1. MỞ",
+                  "People [do X] for several reasons.",
+                  "Báo trước sẽ có nhiều lý do — giám khảo biết bài nói có cấu trúc"
+                ],
+                [
+                  "2. TÂM LÝ",
+                  "Psychologically speaking, [lý do tâm lý]. + 1 câu triển khai.",
+                  "Tầng cảm xúc / nhu cầu bên trong"
+                ],
+                [
+                  "3. THỰC TẾ",
+                  "From a practical standpoint, [lý do thực tế]. + 1 câu triển khai.",
+                  "Tầng tiền bạc, thời gian, tiện lợi"
+                ],
+                [
+                  "4. XÃ HỘI",
+                  "On a social level, [lý do xã hội].\n+ 1 câu triển khai.",
+                  "Tầng cộng đồng, gia đình, xu hướng chung"
+                ],
+                [
+                  "5. KẾT",
+                  "For all these reasons, I think [kết luận ngắn].",
+                  "Chốt lại — không bao giờ dừng đột ngột"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "BA TẦNG — MẸO NHỚ CHO HỌC SINH",
+              "lines": [
+                "✔ TÂM LÝ = trong đầu người ta (stress, happiness, sense of control, escape).",
+                "✔ THỰC TẾ = trong ví và trong lịch (money, time, convenience, health).",
+                "✔ XÃ HỘI = giữa người với người (family, friends, community, status).",
+                "✔ Nếu ba lý do của em rơi vào cùng một tầng → chưa đủ chiều sâu, chỉ Band 6.",
+                "✔ Ba tầng này dùng được cho MỌI chủ đề. Đây là lý do phải học khung trước từ vựng."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L02",
@@ -142,7 +345,189 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "To a certain extent, yes · Generally speaking · It depends on · On one hand / On the other hand · On balance · I would argue that · I would stop short of saying"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời 60–80 giây có sắc thái mở đầu, hai mặt lập luận, và một kết luận cân bằng."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Trả lời \"Yes, I think so.\" rồi im — mất điểm nặng nhất ở Part 3.",
+                "✘ Nói cực đoan một chiều: \"Technology is completely bad for children.\" — Part 3 thưởng tư duy cân bằng.",
+                "✘ Dùng \"I think\" mở đầu cả năm câu liên tiếp.",
+                "✘ Nêu hai mặt nhưng không chọn bên nào ở cuối → giám khảo nghe như học sinh né câu hỏi."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "to a certain extent",
+                  "ở một mức độ nhất định",
+                  "To a certain extent, yes — but not for every child."
+                ],
+                [
+                  "★",
+                  "generally speaking",
+                  "nói chung",
+                  "Generally speaking, I would say the benefits outweigh the risks."
+                ],
+                [
+                  "★",
+                  "it depends on",
+                  "còn tuỳ vào",
+                  "It depends on how the technology is actually used."
+                ],
+                [
+                  "★",
+                  "on balance",
+                  "xét toàn cục",
+                  "On balance, I think the policy has been beneficial."
+                ],
+                [
+                  "★",
+                  "while it is true that",
+                  "tuy đúng là",
+                  "While it is true that costs have risen, wages have risen too."
+                ],
+                [
+                  "★★",
+                  "I would argue that",
+                  "tôi cho rằng",
+                  "I would argue that the problem is structural rather than personal."
+                ],
+                [
+                  "★★",
+                  "I would stop short of saying",
+                  "tôi chưa đến mức nói rằng I would stop short of saying it should be compulsory.",
+                  ""
+                ],
+                [
+                  "★★",
+                  "all things considered",
+                  "cân nhắc mọi mặt",
+                  "All things considered, the trend is positive."
+                ],
+                [
+                  "★★",
+                  "tend to",
+                  "có xu hướng",
+                  "Younger workers tend to value flexibility over salary."
+                ],
+                [
+                  "★★",
+                  "arguably",
+                  "có thể lập luận rằng",
+                  "This is arguably the most significant change of the decade."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "the key, I think, is",
+                  "mấu chốt, theo tôi, là",
+                  "The key, I think, is exposure rather than compulsion."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "its benefits only really materialise when",
+                  "lợi ích chỉ thực sự xuất hiện khi",
+                  "Its benefits only really materialise when people engage willingly."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Khung NUANCED OPINION",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Mẫu câu**",
+                  "**Chức năng**"
+                ],
+                [
+                  "1. SẮC THÁI",
+                  "Generally speaking, I would say [yes/no], but it depends on [điều kiện].\nhoặc: To a certain extent, yes — but I would stop short of saying [điều cực đoan].",
+                  "Trả lời câu hỏi nhưng không tuyệt đối"
+                ],
+                [
+                  "2. MỘT MẶT",
+                  "On one hand, [lập luận ủng hộ].\n+ ví dụ hoặc bằng chứng.",
+                  "Chứng minh có hiểu mặt mạnh"
+                ],
+                [
+                  "3. MẶT KIA",
+                  "On the other hand, / That said, [giới hạn hoặc phản bác].\n+ ví dụ.",
+                  "Chứng minh tư duy phản biện"
+                ],
+                [
+                  "4. CÂN BẰNG",
+                  "On balance, I believe [kết luận có điều kiện].",
+                  "Chọn bên — nhưng có điều kiện"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "BỐN CÂU TRẢ LỜI KHIẾN ĐIỂM TỤT NGAY",
+              "lines": [
+                "✘ Yes, I think so. → không có lập luận, giám khảo phải hỏi lại.",
+                "✘ I completely agree, one hundred percent. → cực đoan, không có tư duy hai chiều.",
+                "✘ Maybe yes, maybe no, I do not know. → né câu hỏi, mất cả Fluency lẫn Coherence.",
+                "✘ It is very good and very important for everyone in the world. → khái quát rỗng, không có nội dung."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L03",
@@ -196,7 +581,190 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "the main benefit is · a significant drawback · outweigh · at the expense of · comes at a cost · while · whereas · the trade-off is"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời 70–90 giây có hai lợi ích, một bất lợi thật sự, và một kết luận nêu điều kiện đánh đổi."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Liệt kê 5 lợi ích và 5 bất lợi kiểu danh sách, không triển khai ý nào.",
+                "✘ Bất lợi giả: \"The disadvantage is that it is not perfect.\" — không phải bất lợi, chỉ là câu rỗng.",
+                "✘ Kết luận kiểu đếm: \"There are three advantages and two disadvantages, so it is good.\"",
+                "✘ Nhầm sang dạng Opinion: câu hỏi hỏi \"What are the drawbacks…?\" nhưng học sinh trả lời \"I think it is good.\""
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "the main benefit is",
+                  "lợi ích chính là",
+                  "The main benefit is the sheer flexibility it offers."
+                ],
+                [
+                  "★",
+                  "a significant drawback",
+                  "một bất lợi đáng kể",
+                  "A significant drawback is the loss of face-to-face contact."
+                ],
+                [
+                  "★",
+                  "outweigh",
+                  "lớn hơn, vượt trội",
+                  "In most cases the advantages outweigh the risks."
+                ],
+                [
+                  "★",
+                  "at the expense of",
+                  "đánh đổi bằng",
+                  "Speed is often achieved at the expense of quality."
+                ],
+                [
+                  "★",
+                  "comes at a cost",
+                  "có cái giá của nó",
+                  "That convenience comes at a cost."
+                ],
+                [
+                  "★★",
+                  "the trade-off is",
+                  "sự đánh đổi là",
+                  "The trade-off is between privacy and convenience."
+                ],
+                [
+                  "★★",
+                  "a double-edged sword",
+                  "con dao hai lưỡi",
+                  "Social media is very much a double-edged sword."
+                ],
+                [
+                  "★★",
+                  "on the downside",
+                  "mặt trái là",
+                  "On the downside, it can isolate older employees."
+                ],
+                [
+                  "★★",
+                  "far more pronounced",
+                  "rõ rệt hơn nhiều",
+                  "The drawbacks are far more pronounced in rural areas."
+                ],
+                [
+                  "★★",
+                  "offset by",
+                  "được bù lại bởi",
+                  "The higher cost is partly offset by lower maintenance."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "the benefits are unevenly distributed",
+                  "lợi ích được phân bổ không đồng đều",
+                  "The benefits are unevenly distributed across income groups."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "counterproductive",
+                  "phản tác dụng",
+                  "Overly strict rules can be counterproductive."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Khung BENEFIT – DRAWBACK – BALANCE",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Mẫu câu**",
+                  "**Chức năng**"
+                ],
+                [
+                  "1. MỞ",
+                  "[X] brings both clear benefits and some real drawbacks. hoặc: [X] is very much a double-edged sword.",
+                  "Báo trước sẽ có hai mặt"
+                ],
+                [
+                  "2. LỢI ÍCH",
+                  "The main benefit is [danh từ].\n+ 1 câu triển khai hoặc ví dụ.\nThere is also [lợi ích thứ hai].",
+                  "Hai lợi ích, ít nhất một có ví dụ"
+                ],
+                [
+                  "3. BẤT LỢI",
+                  "That said, it comes at a cost.\nA significant drawback is [danh từ].\n+ 1 câu triển khai.",
+                  "Một bất lợi THẬT — có hệ quả cụ thể"
+                ],
+                [
+                  "4. CÂN BẰNG",
+                  "On balance, the benefits outweigh the drawbacks, **provided that** [điều kiện].\nhoặc: The trade-off is essentially between [A] and [B].",
+                  "Kết bằng điều kiện, không đếm số lượng"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "THẾ NÀO LÀ MỘT BẤT LỢI THẬT?",
+              "lines": [
+                "✔ Bất lợi thật phải có NGƯỜI CHỊU THIỆT: ai bị ảnh hưởng, ảnh hưởng thế nào.",
+                "✔ Giả: \"The disadvantage is that it is not always good.\" → không có ai, không có gì.",
+                "✔ Thật: \"The drawback is that older employees, who are less confident with the software, end up excluded from decisions.\"",
+                "✔ Mẹo kiểm tra nhanh: sau khi nêu bất lợi, hỏi \"Ai khổ vì điều này?\" Trả lời được → bất lợi thật.",
+                "✔ Một bất lợi thật có triển khai hơn ba bất lợi rỗng liệt kê nhanh."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L04",
@@ -252,7 +820,195 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "differ in several significant ways · in terms of · by comparison · nowhere near as · considerably · share some common ground · the most significant shift"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời 70–90 giây so sánh theo hai khía cạnh rõ ràng, có một điểm chung và một nhận định tổng quát."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Mô tả xong hết A rồi mới sang B — người nghe phải tự ghép, mất Coherence.",
+                "✘ Chỉ dùng \"more\" và \"better\": \"Online shopping is more better and more convenient.\"",
+                "✘ So sánh mà không nói rõ so sánh về mặt gì.",
+                "✘ Quên hoàn toàn điểm chung → bài nói nghe một chiều, thiếu tinh tế."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "differ in several significant ways",
+                  "khác nhau ở vài điểm đáng kể",
+                  "The two approaches differ in several significant ways."
+                ],
+                [
+                  "★",
+                  "in terms of",
+                  "xét về mặt",
+                  "In terms of cost, the difference is enormous."
+                ],
+                [
+                  "★",
+                  "by comparison",
+                  "so với đó",
+                  "By comparison, rural schools receive far less funding."
+                ],
+                [
+                  "★",
+                  "considerably",
+                  "đáng kể",
+                  "Prices are considerably higher than they were a decade ago."
+                ],
+                [
+                  "★",
+                  "share some common ground",
+                  "có điểm chung",
+                  "That said, the two generations do share some common ground."
+                ],
+                [
+                  "★★",
+                  "nowhere near as",
+                  "không hề bằng",
+                  "Public transport here is nowhere near as reliable as in Japan."
+                ],
+                [
+                  "★★",
+                  "whereas",
+                  "trong khi đó",
+                  "City residents value convenience, whereas rural residents value space."
+                ],
+                [
+                  "★★",
+                  "far more deliberate",
+                  "chậm rãi và có chủ đích hơn nhiều",
+                  "The whole process used to be far more deliberate."
+                ],
+                [
+                  "★★",
+                  "the overriding priority",
+                  "ưu tiên bao trùm",
+                  "Today, convenience is the overriding priority."
+                ],
+                [
+                  "★★",
+                  "embedded in",
+                  "gắn chặt vào",
+                  "Shopping was once embedded in community life."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "the most significant shift is in thay đổi lớn nhất nằm ở",
+                  "",
+                  "The most significant shift is in the balance of power."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "undergone a dramatic transformation",
+                  "đã trải qua biến đổi mạnh mẽ",
+                  "Retail has undergone a dramatic transformation."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Khung COMPARE FRAMEWORK",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Mẫu câu**",
+                  "**Chức năng**"
+                ],
+                [
+                  "1. MỞ",
+                  "[A] and [B] differ in several significant ways. hoặc: [X] has undergone a dramatic transformation over the past [thời gian].",
+                  "Báo trước sẽ so sánh có hệ thống"
+                ],
+                [
+                  "2. KHÍA CẠNH 1",
+                  "Firstly, while [A + đặc điểm], [B + đặc điểm đối lập]. + 1 câu triển khai.",
+                  "So sánh theo HÀNG, không theo cột"
+                ],
+                [
+                  "3. KHÍA CẠNH 2",
+                  "In terms of [khía cạnh 2], [A…] whereas [B…]. + 1 câu triển khai.",
+                  "Khía cạnh thứ hai, khác hẳn khía cạnh 1"
+                ],
+                [
+                  "4. ĐIỂM CHUNG",
+                  "That said, they do share some common ground — [điểm chung].",
+                  "Chống một chiều — dấu hiệu Band 7+"
+                ],
+                [
+                  "5. TỔNG QUÁT",
+                  "Ultimately, the most significant shift is in [khác biệt quan trọng nhất].",
+                  "Chọn MỘT khác biệt lớn nhất, không tóm tắt"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BỐN KHÍA CẠNH DÙNG ĐƯỢC CHO MỌI CÂU SO SÁNH",
+              "lines": [
+                "✔ TỐC ĐỘ / THỜI GIAN — faster, slower, more deliberate, instant.",
+                "✔ CHI PHÍ / KHẢ NĂNG TIẾP CẬN — affordable, exclusive, within reach of.",
+                "✔ CON NGƯỜI / QUAN HỆ — social, isolating, embedded in community life.",
+                "✔ QUYỀN LỰC / LỰA CHỌN — who decides, who has information, who has options.",
+                "✔ Học sinh chỉ cần chọn HAI trong bốn khía cạnh này là đủ dựng một câu trả lời Band 7."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L05",
@@ -306,7 +1062,230 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "the root cause is · address the underlying issue · a more effective approach might be · incentivise rather than penalise · has an important role to play · it should not be the only actor · a three-way responsibility"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời 80–90 giây có nguyên nhân gốc, một giải pháp có chủ thể, một giới hạn, và một câu về trách nhiệm chung."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Giải pháp không có chủ thể: \"People should be more aware.\" — ai làm cho họ nhận thức?",
+                "✘ Giải pháp bằng lệnh cấm: \"The government should ban it.\" — cực đoan, không phân tích hệ quả.",
+                "✘ Nhầm triệu chứng với nguyên nhân: nói kẹt xe do \"nhiều xe quá\" thay vì do quy hoạch đô thị.",
+                "✘ Nêu giải pháp rồi dừng — không nói giải pháp đó có giới hạn gì."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "the root cause is",
+                  "nguyên nhân gốc rễ là",
+                  "The root cause is decades of poor urban planning."
+                ],
+                [
+                  "★",
+                  "address the underlying issue",
+                  "giải quyết vấn đề cốt lõi",
+                  "Fines do not address the underlying issue."
+                ],
+                [
+                  "★",
+                  "a more effective approach might be",
+                  "một cách hiệu quả hơn có thể là",
+                  "A more effective approach might be to invest in public transport."
+                ],
+                [
+                  "★",
+                  "has an important role to play có vai trò quan trọng",
+                  "",
+                  "The government has an important role to play here."
+                ],
+                [
+                  "★",
+                  "it should not be the only actor",
+                  "nó không nên là bên duy nhất",
+                  "That said, it should not be the only actor responsible."
+                ],
+                [
+                  "★★",
+                  "incentivise rather than penalise",
+                  "khuyến khích thay vì phạt",
+                  "Policies work better when they incentivise rather than penalise."
+                ],
+                [
+                  "★★",
+                  "tackle the problem at source",
+                  "xử lý vấn đề từ gốc",
+                  "We need to tackle the problem at source."
+                ],
+                [
+                  "★★",
+                  "a short-term fix",
+                  "giải pháp tạm thời",
+                  "Banning cars downtown is only a short-term fix."
+                ],
+                [
+                  "★★",
+                  "generate public backlash",
+                  "gây phản ứng dữ dội từ dân",
+                  "Heavy-handed policies tend to generate public backlash."
+                ],
+                [
+                  "★★",
+                  "viable alternatives",
+                  "phương án khả thi thay thế",
+                  "Restrictions only work if viable alternatives exist."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "a three-way responsibility",
+                  "trách nhiệm ba bên",
+                  "It is a three-way responsibility, not one that falls on any single party."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "create the right framework",
+                  "tạo ra khuôn khổ phù hợp",
+                  "Governments should create the right framework and let businesses innovate within it."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Hai khung liên quan",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Khung 5A — CAUSE – EFFECT – SOLUTION (câu hỏi \"How can we…?\")**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "1. NÊU VẤN ĐỀ",
+                  "This is a genuine problem in [nơi/bối cảnh], and it is getting worse."
+                ],
+                [
+                  "2. NGUYÊN NHÂN GỐC",
+                  "The root cause, I think, is [nguyên nhân cấu trúc — không phải triệu chứng]. + 1 câu giải thích cơ chế."
+                ],
+                [
+                  "3. GIẢI PHÁP",
+                  "A more effective approach might be to [giải pháp] — and that would have to come from [CHỦ THỂ: schools / employers / city planners]."
+                ],
+                [
+                  "4. GIỚI HẠN",
+                  "Of course, that alone would not solve everything, because [giới hạn]."
+                ],
+                [
+                  "5. KẾT",
+                  "Ultimately, it requires [phối hợp nhiều bên]."
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Khung 5B — ROLE – RESPONSIBILITY – LIMIT (câu hỏi \"Should the government…?\")**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "1. VAI TRÒ",
+                  "I think the government has an important role to play, but it should not be the only actor responsible."
+                ],
+                [
+                  "2. CHỈ CHÍNH PHỦ LÀM ĐƯỢC",
+                  "On one hand, only governments have the resources and authority to [hành động cụ thể — regulate, fund, enforce]."
+                ],
+                [
+                  "3. GIỚI HẠN",
+                  "However, I would be cautious about governments [hành động cực đoan — banning, forcing, controlling]."
+                ],
+                [
+                  "4. GIẢI PHÁP CÂN BẰNG",
+                  "Instead, a more effective approach might be to [incentivise / educate / support]."
+                ],
+                [
+                  "5. KẾT",
+                  "Ultimately, the most durable solutions come from a combination of government policy, corporate responsibility and individual awareness."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "GIẢI PHÁP KHÔNG CÓ CHỦ THỂ = KHÔNG PHẢI GIẢI PHÁP",
+              "lines": [
+                "✘ People should be more aware. → ai làm cho họ nhận thức? bằng cách nào?",
+                "✘ Everyone must protect the environment. → khẩu hiệu, không phải giải pháp.",
+                "✘ The government should do something. → \"something\" là gì?",
+                "✘ Sửa lại: \"Schools could make media literacy a compulsory subject from the age of twelve.\" — có chủ thể, có hành động, có mốc.",
+                "✘ Quy tắc: mỗi giải pháp phải trả lời được AI LÀM và LÀM GÌ."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L06",
@@ -374,7 +1353,289 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "used to · it seems likely that · driven by · if this continues · it is difficult to predict with any certainty · a more cautious view might be · an oversimplification to say"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời 80–90 giây có ba mốc thời gian, một lực đẩy cụ thể, một dự đoán và một câu thận trọng."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Dự đoán trống: \"In the future, everything will be better.\" — không có lực đẩy, không có bằng chứng.",
+                "✘ Dùng \"will\" cho mọi dự đoán → nghe chắc chắn quá mức, mất sắc thái.",
+                "✘ Nói về thế hệ mà tuyệt đối hoá: \"All young people are lazy.\"",
+                "✘ Bỏ hẳn mốc quá khứ, chỉ nói hiện tại và tương lai → mất một phần ba nội dung."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "used to",
+                  "trước kia thường",
+                  "People used to rely on a single employer for life."
+                ],
+                [
+                  "★",
+                  "it seems likely that",
+                  "có vẻ khả năng cao là",
+                  "Looking at current trends, it seems likely that this will accelerate."
+                ],
+                [
+                  "★",
+                  "driven by",
+                  "được thúc đẩy bởi",
+                  "This shift is largely driven by demographic change."
+                ],
+                [
+                  "★",
+                  "if this continues",
+                  "nếu điều này tiếp diễn",
+                  "If this continues, we could well see entire industries disappear."
+                ],
+                [
+                  "★",
+                  "it is difficult to predict with any certainty",
+                  "rất khó dự đoán chắc chắn",
+                  "It is difficult to predict with any certainty how far this will go."
+                ],
+                [
+                  "★★",
+                  "a more cautious view might be",
+                  "một cách nhìn thận trọng hơn là",
+                  "A more cautious view might be that change will be slower than expected."
+                ],
+                [
+                  "★★",
+                  "an oversimplification to say",
+                  "quá đơn giản hoá khi nói rằng",
+                  "It would be an oversimplification to say all young people think alike."
+                ],
+                [
+                  "★★",
+                  "be likely to",
+                  "có khả năng sẽ",
+                  "Cities are likely to become considerably denser."
+                ],
+                [
+                  "★★",
+                  "on the cusp of",
+                  "đang ở ngưỡng của",
+                  "Many cities are on the cusp of transformative change."
+                ],
+                [
+                  "★★",
+                  "shaped by",
+                  "được định hình bởi",
+                  "Older generations were shaped by very different economic realities."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "a product of growing up during",
+                  "là sản phẩm của việc lớn lên trong",
+                  "This attitude is largely a product of growing up during economic instability."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "blurred generational lines considerably",
+                  "làm mờ ranh giới thế hệ đáng kể",
+                  "Technology and the pandemic have blurred generational lines considerably."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Hai khung liên quan",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Khung 6A — THEN – NOW – NEXT (câu hỏi \"How has/will X change?\")**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "1. TRƯỚC KIA",
+                  "[X] used to be [đặc điểm cũ].\n+ 1 câu mô tả bối cảnh thời đó."
+                ],
+                [
+                  "2. HIỆN NAY",
+                  "Today, by comparison, [đặc điểm mới].\n+ 1 ví dụ cụ thể."
+                ],
+                [
+                  "3. LỰC ĐẨY",
+                  "This shift is largely driven by [công nghệ / dân số / kinh tế / văn hoá]."
+                ],
+                [
+                  "4. DỰ ĐOÁN",
+                  "If this continues, it seems likely that [dự đoán cụ thể]."
+                ],
+                [
+                  "5. THẬN TRỌNG",
+                  "That said, it is difficult to predict with any certainty, because [yếu tố bất định]. A more cautious view might be that [dự đoán mềm hơn]."
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Khung 6B — GENERATION GAP (câu hỏi về thế hệ)**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "1. NÊU KHÁC BIỆT",
+                  "There are some noticeable differences between younger and older generations when it comes to [chủ đề]."
+                ],
+                [
+                  "2. THẾ HỆ TRẺ",
+                  "Younger people tend to [đặc điểm].\nThis is largely a product of growing up during [bối cảnh]."
+                ],
+                [
+                  "3. THẾ HỆ TRƯỚC",
+                  "Older generations, shaped by [bối cảnh khác], tend to [đặc điểm đối lập]."
+                ],
+                [
+                  "4. CHỐNG TUYỆT ĐỐI",
+                  "Having said that, it would be an oversimplification to say all young or old people think the same way."
+                ],
+                [
+                  "5. KẾT",
+                  "On balance, I think the difference is less about [X] and more about [Y]."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BỐN LỰC ĐẨY DÙNG ĐƯỢC CHO MỌI CÂU DỰ ĐOÁN",
+              "lines": [
+                "✔ CÔNG NGHỆ — automation, AI, connectivity.",
+                "✔ DÂN SỐ — ageing populations, urbanisation, migration.",
+                "✔ KINH TẾ — cost of living, job insecurity, globalisation.",
+                "✔ MÔI TRƯỜNG / VĂN HOÁ — climate pressure, changing values, social norms.",
+                "✔ Một dự đoán không có lực đẩy chỉ là phỏng đoán. Có lực đẩy mới là lập luận."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "KIỂM TRA CUỐI PHASE 1 — trước khi vào topic banks",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Trước khi bước sang Phase 2, giáo viên dành 10 phút đầu buổi 7 để kiểm tra nhanh. Học sinh nghe sáu câu hỏi và chỉ cần NÓI TÊN DẠNG trong 2 giây — chưa cần trả lời."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu hỏi**",
+                  "**Dạng**",
+                  "**Khung phải dùng**"
+                ],
+                [
+                  "Why do people spend so much time on their phones?",
+                  "1 — WHY",
+                  "REASON × 3"
+                ],
+                [
+                  "Do you think exams are a fair way to measure ability?",
+                  "2 — OPINION",
+                  "NUANCED OPINION"
+                ],
+                [
+                  "What are the drawbacks of living in a very large family?",
+                  "3 — ADV/DISADV",
+                  "BENEFIT–DRAWBACK–BALANCE"
+                ],
+                [
+                  "How is education today different from fifty years ago?",
+                  "4 — COMPARE",
+                  "COMPARE FRAMEWORK"
+                ],
+                [
+                  "What should be done about air pollution in big cities?",
+                  "5 — PROBLEM",
+                  "CAUSE–EFFECT–SOLUTION"
+                ],
+                [
+                  "Will people still read printed newspapers in the future?",
+                  "6 — FUTURE",
+                  "TREND–PREDICTION–CAVEAT"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Chuẩn qua bài: 5/6 câu nhận diện đúng trong 2 giây. Nếu lớp dưới chuẩn này, dành thêm một buổi ôn Phase 1 trước khi vào Phase 2 — vào topic banks sớm sẽ phá hỏng toàn bộ thiết kế của quyển sách."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L07",
@@ -439,7 +1700,210 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "PHASE 2 · CHÍN TOPIC BANKS — Lesson 7 → 15",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Không có dạng câu hỏi mới nào ở giai đoạn này.",
+                "Mỗi buổi nạp 12 từ vựng chuyên đề và áp lại 2–3 khung đã học ở Phase 1.",
+                "Học sinh nào chưa thuộc sáu khung sẽ lộ ra ngay từ buổi 7."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "critical thinking skills · rote learning · a well-rounded education · academic pressure · foster creativity · learning outcomes · student-centred approach"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Ba câu trả lời thuộc ba dạng khác nhau, mỗi bài dùng tối thiểu 3 cụm ★ và đúng khung của dạng đó."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Kể chuyện trường mình: \"In my school, my teacher is very strict…\" — Part 3 hỏi về hệ thống, không hỏi về em.",
+                "✘ Dùng \"study\" cho mọi thứ: \"students study a lot\" thay vì \"academic pressure is intense\".",
+                "✘ Chọn nhầm khung: nghe \"Why do parents push their children?\" nhưng trả lời theo khung Opinion.",
+                "✘ Dùng \"knowledge\" như danh từ đếm được: \"many knowledges\"."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "critical thinking skills",
+                  "kỹ năng tư duy phản biện",
+                  "Schools should foster critical thinking skills from an early age."
+                ],
+                [
+                  "★",
+                  "rote learning",
+                  "học vẹt",
+                  "Rote learning discourages creativity."
+                ],
+                [
+                  "★",
+                  "academic pressure",
+                  "áp lực học tập",
+                  "Excessive academic pressure can harm student well- being."
+                ],
+                [
+                  "★",
+                  "a well-rounded education",
+                  "giáo dục toàn diện",
+                  "Students deserve a well-rounded education, not just exam training."
+                ],
+                [
+                  "★",
+                  "foster creativity",
+                  "nuôi dưỡng sáng tạo",
+                  "Great teachers foster creativity rather than compliance."
+                ],
+                [
+                  "★★",
+                  "learning outcomes",
+                  "kết quả học tập",
+                  "Better learning outcomes require better teaching, not longer hours."
+                ],
+                [
+                  "★★",
+                  "extracurricular activities",
+                  "hoạt động ngoại khoá",
+                  "Extracurricular activities develop social skills."
+                ],
+                [
+                  "★★",
+                  "student-centred approach",
+                  "phương pháp lấy học sinh làm trung tâm",
+                  "A student-centred approach improves motivation considerably."
+                ],
+                [
+                  "★★",
+                  "standardised testing",
+                  "thi cử chuẩn hoá",
+                  "Standardised testing rewards conformity over originality."
+                ],
+                [
+                  "★★",
+                  "intellectual independence",
+                  "sự độc lập trong tư duy",
+                  "The aim of education is intellectual independence."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "prioritise questioning over memorisation",
+                  "ưu tiên đặt câu hỏi hơn ghi nhớ",
+                  "The best systems prioritise questioning over memorisation."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "the process of thinking over the content of the answer",
+                  "quá trình tư duy hơn nội dung câu trả lời",
+                  "Education should value the process of thinking over the content of the answer."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Ba dạng câu hỏi Education thường gặp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu hỏi mẫu**",
+                  "**Dạng**",
+                  "**Khung phải dùng**"
+                ],
+                [
+                  "How can education help children develop their own ideas?",
+                  "5 — PROBLEM",
+                  "CAUSE–EFFECT–SOLUTION"
+                ],
+                [
+                  "Do children usually share the same opinions as their parents?",
+                  "2 — OPINION",
+                  "NUANCED OPINION"
+                ],
+                [
+                  "Why do parents put so much pressure on their children academically?",
+                  "1 — WHY",
+                  "REASON × 3"
+                ],
+                [
+                  "What are the drawbacks of standardised testing?",
+                  "3 — ADV/DISADV",
+                  "BENEFIT–DRAWBACK–BALANCE"
+                ],
+                [
+                  "How is school today different from school fifty years ago?",
+                  "4 — COMPARE",
+                  "COMPARE FRAMEWORK"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "NGÂN HÀNG Ý TƯỞNG — EDUCATION",
+              "lines": [
+                "✔ TÂM LÝ: fear of failure · parental expectations · self-worth tied to grades.",
+                "✔ THỰC TẾ: university places are limited · qualifications determine income · cost of private tuition.",
+                "✔ XÃ HỘI: education as social mobility · family reputation · comparison between children.",
+                "✔ GIẢI PHÁP có chủ thể: schools can redesign assessment · governments can fund teacher training · parents can separate grades from love.",
+                "✔ CAVEAT: reform is slow because assessment systems are tied to university admission."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L08",
@@ -492,7 +1956,195 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "digital divide · technological dependency · privacy concerns · automation · disruptive innovation · social media algorithms · amplify existing tendencies"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Hai câu trả lời thuộc hai dạng khác nhau, mỗi bài có tối thiểu 3 cụm ★ và một câu phản bác chính mình."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Khen một chiều: \"Technology makes everything easier and better for everyone.\"",
+                "✘ Chê một chiều: \"Technology destroys communication and makes people lazy.\"",
+                "✘ Dùng \"technology\" như một khối duy nhất thay vì nói rõ loại công nghệ nào.",
+                "✘ Nhầm giữa nguyên nhân và khuếch đại: nói mạng xã hội TẠO RA sự cô đơn thay vì làm nó rõ hơn."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "digital divide",
+                  "khoảng cách số",
+                  "The digital divide widens existing inequality."
+                ],
+                [
+                  "★",
+                  "technological dependency",
+                  "sự phụ thuộc vào công nghệ",
+                  "Technological dependency is a growing concern in schools."
+                ],
+                [
+                  "★",
+                  "privacy concerns",
+                  "lo ngại quyền riêng tư",
+                  "Data collection raises serious privacy concerns."
+                ],
+                [
+                  "★",
+                  "automation",
+                  "tự động hoá",
+                  "Automation is replacing many routine jobs."
+                ],
+                [
+                  "★",
+                  "social media algorithms",
+                  "thuật toán mạng xã hội",
+                  "Social media algorithms shape what we see far more than we realise."
+                ],
+                [
+                  "★★",
+                  "artificial intelligence",
+                  "trí tuệ nhân tạo",
+                  "Artificial intelligence is transforming the job market."
+                ],
+                [
+                  "★★",
+                  "disruptive innovation",
+                  "đổi mới đột phá",
+                  "Smartphones were a genuinely disruptive innovation."
+                ],
+                [
+                  "★★",
+                  "cybersecurity threats",
+                  "mối đe doạ an ninh mạng",
+                  "Businesses face increasing cybersecurity threats."
+                ],
+                [
+                  "★★",
+                  "free up cognitive bandwidth",
+                  "giải phóng năng lực tư duy",
+                  "Automation frees up cognitive bandwidth for creative work."
+                ],
+                [
+                  "★★",
+                  "a reduction in friction",
+                  "sự giảm bớt trở ngại",
+                  "That systematic reduction in friction changes behaviour."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "amplify existing tendencies rather than create new ones",
+                  "khuếch đại xu hướng sẵn có thay vì tạo ra cái mới",
+                  "Technology amplifies existing tendencies rather than creating new ones."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "the tool is neutral, the user is công cụ trung tính, người not",
+                  "dùng thì không",
+                  "Ultimately the tool is neutral — the user is not."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Ba dạng câu hỏi Technology thường gặp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu hỏi mẫu**",
+                  "**Dạng**",
+                  "**Khung phải dùng**"
+                ],
+                [
+                  "Does technology make people lazier?",
+                  "2 — OPINION",
+                  "NUANCED OPINION"
+                ],
+                [
+                  "What are the drawbacks of children using smartphones?",
+                  "3 — ADV/DISADV",
+                  "BENEFIT–DRAWBACK–BALANCE"
+                ],
+                [
+                  "How will artificial intelligence change the way we work?",
+                  "6 — FUTURE",
+                  "TREND–PREDICTION–CAVEAT"
+                ],
+                [
+                  "Why are older people often reluctant to use new technology?",
+                  "1 — WHY",
+                  "REASON × 3"
+                ],
+                [
+                  "Should governments control what people post online?",
+                  "5 — PROBLEM",
+                  "ROLE–RESPONSIBILITY–LIMIT"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "KỸ THUẬT BAND 8 — TỰ PHẢN BÁC CHÍNH MÌNH",
+              "lines": [
+                "✔ Sau khi nêu một lập luận mạnh, thêm ngay: \"However, I would push back on that idea slightly…\"",
+                "✔ Đây không phải mâu thuẫn — đây là dấu hiệu tư duy sắc bén nhất mà giám khảo tìm kiếm.",
+                "✔ Mẫu câu: \"There is a reasonable argument that… However, I would push back on…\"",
+                "✔ Mẫu câu: \"That said, I am not convinced the causation runs in that direction.\"",
+                "✔ Chỉ dùng MỘT lần trong một câu trả lời. Dùng hai lần thành lan man."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L09",
@@ -546,7 +2198,202 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "carbon emissions · sustainable development · biodiversity loss · renewable energy",
+                "transition · greenwashing · necessary but not sufficient"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời có giải pháp cá nhân, giới hạn của nó, và một câu về trách nhiệm hệ thống."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Khẩu hiệu rỗng: \"We must protect the environment for our future generation.\"",
+                "✘ Chỉ nói về rác và túi nilon — bỏ qua năng lượng, giao thông, công nghiệp.",
+                "✘ Dùng \"pollution\" cho mọi vấn đề môi trường.",
+                "✘ Nói cá nhân giải quyết được tất cả, hoặc cá nhân hoàn toàn vô dụng — cả hai đều cực đoan."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "carbon emissions",
+                  "khí thải carbon",
+                  "Carbon emissions must be cut far more aggressively."
+                ],
+                [
+                  "★",
+                  "sustainable development",
+                  "phát triển bền vững",
+                  "Sustainable development balances growth and ecology."
+                ],
+                [
+                  "★",
+                  "biodiversity loss",
+                  "mất đa dạng sinh học",
+                  "Biodiversity loss threatens entire ecosystems."
+                ],
+                [
+                  "★",
+                  "renewable energy transition",
+                  "chuyển đổi năng lượng tái tạo",
+                  "The renewable energy transition is accelerating faster than expected."
+                ],
+                [
+                  "★",
+                  "ecological footprint",
+                  "dấu chân sinh thái",
+                  "Reducing our ecological footprint is increasingly urgent."
+                ],
+                [
+                  "★★",
+                  "greenwashing",
+                  "giả vờ thân thiện môi trường",
+                  "Many companies engage in greenwashing rather than real change."
+                ],
+                [
+                  "★★",
+                  "climate change mitigation",
+                  "giảm thiểu biến đổi khí hậu",
+                  "Mitigation strategies must be implemented urgently."
+                ],
+                [
+                  "★★",
+                  "eco-conscious consumers",
+                  "người tiêu dùng có ý thức môi trường",
+                  "Eco-conscious consumers are reshaping entire markets."
+                ],
+                [
+                  "★★",
+                  "single-use plastics",
+                  "nhựa dùng một lần",
+                  "When enough consumers refuse single-use plastics, producers adapt."
+                ],
+                [
+                  "★★",
+                  "stringent regulation",
+                  "quy định nghiêm ngặt",
+                  "Stringent regulation is what actually changes"
+                ],
+                [
+                  "",
+                  "",
+                  "",
+                  "industrial behaviour."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "necessary but not sufficient",
+                  "cần thiết nhưng chưa đủ",
+                  "Individual action is necessary but not sufficient."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "functions as a deflection",
+                  "đóng vai trò đánh lạc hướng",
+                  "The focus on personal responsibility can function as a deflection."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Hai dạng câu hỏi Environment thường gặp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu hỏi mẫu**",
+                  "**Dạng**",
+                  "**Khung phải dùng**"
+                ],
+                [
+                  "Can individuals make a real difference to the environment?",
+                  "2 — OPINION",
+                  "NUANCED OPINION"
+                ],
+                [
+                  "What can be done to reduce plastic waste in cities?",
+                  "5 — PROBLEM",
+                  "CAUSE–EFFECT–SOLUTION"
+                ],
+                [
+                  "Why are some people not interested in environmental issues?",
+                  "1 — WHY",
+                  "REASON × 3"
+                ],
+                [
+                  "Should companies be forced to pay for the pollution they cause?",
+                  "5 — PROBLEM",
+                  "ROLE–RESPONSIBILITY–LIMIT"
+                ],
+                [
+                  "How has attitude towards the environment changed in your country?",
+                  "4 — COMPARE",
+                  "COMPARE FRAMEWORK"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "HAI TRỤC BẮT BUỘC CÓ TRONG MỌI CÂU TRẢ LỜI MÔI TRƯỜNG",
+              "lines": [
+                "✔ TRỤC CÁ NHÂN: consumer choices · recycling · diet · transport habits.",
+                "✔ TRỤC HỆ THỐNG: industrial emissions · regulation · infrastructure · corporate accountability.",
+                "✔ Bài chỉ có trục cá nhân → nghe ngây thơ, Band 6.",
+                "✔ Bài chỉ có trục hệ thống → nghe bi quan và né trách nhiệm.",
+                "✔ Bài có cả hai và nêu quan hệ giữa chúng → Band 7.5+."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L10",
@@ -600,7 +2447,195 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "sense of belonging · social cohesion · urban isolation · civic responsibility · social mobility · marginalised communities · social infrastructure"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời có giá trị của cộng đồng, cơ chế cụ thể, và một giới hạn liên quan đến điều kiện kinh tế."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Đạo đức hoá: \"People must help each other, it is our duty.\" — nghe như bài giảng, không phải lập luận.",
+                "✘ Không nói được VÌ SAO cộng đồng suy yếu, chỉ nói rằng nó suy yếu.",
+                "✘ Bỏ qua yếu tố kinh tế: quên rằng người làm hai công việc không có thời gian tình nguyện.",
+                "✘ Dùng \"society\" và \"community\" lẫn lộn như đồng nghĩa."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "a sense of belonging",
+                  "cảm giác thuộc về",
+                  "A strong sense of belonging improves mental well- being."
+                ],
+                [
+                  "★",
+                  "social cohesion",
+                  "sự gắn kết xã hội",
+                  "Immigration can both challenge and enrich social cohesion."
+                ],
+                [
+                  "★",
+                  "urban isolation",
+                  "sự cô lập ở đô thị",
+                  "Urban isolation is a growing mental health issue."
+                ],
+                [
+                  "★",
+                  "civic responsibility",
+                  "trách nhiệm công dân",
+                  "Voting is the most basic form of civic responsibility."
+                ],
+                [
+                  "★",
+                  "social mobility",
+                  "dịch chuyển xã hội",
+                  "Education remains the key driver of social mobility."
+                ],
+                [
+                  "★★",
+                  "marginalised communities",
+                  "cộng đồng bị gạt ra lề",
+                  "Policies must address the needs of marginalised communities."
+                ],
+                [
+                  "★★",
+                  "generational divide",
+                  "khoảng cách thế hệ",
+                  "The generational divide in values appears to be widening."
+                ],
+                [
+                  "★★",
+                  "volunteering",
+                  "hoạt động tình nguyện",
+                  "Volunteering strengthens the ties that hold a community together."
+                ],
+                [
+                  "★★",
+                  "the social fabric",
+                  "kết cấu xã hội",
+                  "Mobile lifestyles have weakened the social fabric considerably."
+                ],
+                [
+                  "★★",
+                  "networks of mutual obligation",
+                  "mạng lưới trách nhiệm tương hỗ",
+                  "Communities depend on dense networks of mutual obligation."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "functions as a kind of social infrastructure",
+                  "đóng vai trò như hạ tầng xã hội",
+                  "Community involvement functions as a kind of social infrastructure."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "shaped by economic circumstances",
+                  "bị định hình bởi hoàn cảnh kinh tế",
+                  "Capacity to engage is heavily shaped by economic circumstances."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Ba dạng câu hỏi Society thường gặp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu hỏi mẫu**",
+                  "**Dạng**",
+                  "**Khung phải dùng**"
+                ],
+                [
+                  "How important is it for people to help their local community?",
+                  "2 — OPINION",
+                  "NUANCED OPINION"
+                ],
+                [
+                  "How are neighbourhoods today different from in the past?",
+                  "4 — COMPARE",
+                  "COMPARE FRAMEWORK"
+                ],
+                [
+                  "What can be done to reduce loneliness in large cities?",
+                  "5 — PROBLEM",
+                  "CAUSE–EFFECT–SOLUTION"
+                ],
+                [
+                  "Why do fewer people know their neighbours nowadays?",
+                  "1 — WHY",
+                  "REASON × 3"
+                ],
+                [
+                  "Should young people be required to do community service?",
+                  "5 — PROBLEM",
+                  "ROLE–RESPONSIBILITY–LIMIT"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BA LỰC LÀM SUY YẾU CỘNG ĐỒNG — DÙNG CHO MỌI CÂU HỎI SOCIETY",
+              "lines": [
+                "✔ ĐÔ THỊ HOÁ — people live where the jobs are, not where their family is.",
+                "✔ KẾT NỐI SỐ — online communities replace physical ones, but weakly.",
+                "✔ LỐI SỐNG DI ĐỘNG — people move every few years, so nobody invests in a place.",
+                "✔ Hệ quả cụ thể: higher loneliness · reduced social trust · weaker collective response to local problems.",
+                "✔ Ba lực này giải thích được gần như mọi câu hỏi về cộng đồng hiện đại."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L11",
@@ -654,7 +2689,201 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "sedentary lifestyle · preventive healthcare · work-related stress · mental health awareness · well-being · life expectancy · structural barriers"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời nêu ít nhất ba rào cản thuộc ba loại khác nhau (thời gian, chi phí, môi trường) thay vì đổ lỗi cho ý chí."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Đổ lỗi ý chí: \"People are just lazy and they do not want to exercise.\"",
+                "✘ Chỉ nói về ăn uống và tập thể dục — bỏ qua giấc ngủ, stress, sức khoẻ tinh thần.",
+                "✘ Dùng \"healthy\" cho mọi thứ thay vì các cụm chính xác.",
+                "✘ Nói về bản thân: \"I go to the gym three times a week\" — Part 3 hỏi về xu hướng chung."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "sedentary lifestyle",
+                  "lối sống ít vận động",
+                  "A sedentary lifestyle significantly increases disease risk."
+                ],
+                [
+                  "★",
+                  "preventive healthcare",
+                  "y tế dự phòng",
+                  "Preventive healthcare reduces long-term costs dramatically."
+                ],
+                [
+                  "★",
+                  "work-related stress",
+                  "căng thẳng do công việc",
+                  "Work-related stress is now a leading cause of illness."
+                ],
+                [
+                  "★",
+                  "mental health awareness",
+                  "nhận thức về sức khoẻ tinh thần",
+                  "Mental health awareness has improved considerably in recent years."
+                ],
+                [
+                  "★",
+                  "well-being",
+                  "sức khoẻ tổng thể",
+                  "Well-being encompasses both physical and mental health."
+                ],
+                [
+                  "★★",
+                  "life expectancy",
+                  "tuổi thọ trung bình",
+                  "Life expectancy has risen sharply across most of the world."
+                ],
+                [
+                  "★★",
+                  "healthcare system",
+                  "hệ thống y tế",
+                  "A well-funded healthcare system benefits everyone, not just the sick."
+                ],
+                [
+                  "★★",
+                  "structural barriers",
+                  "rào cản cấu trúc",
+                  "The real obstacles are structural barriers, not weak willpower."
+                ],
+                [
+                  "★★",
+                  "time pressure",
+                  "áp lực thời gian",
+                  "Time pressure is the single most common barrier."
+                ],
+                [
+                  "★★",
+                  "public health campaigns",
+                  "chiến dịch y tế công cộng",
+                  "Public health campaigns alone rarely change"
+                ],
+                [
+                  "",
+                  "",
+                  "",
+                  "behaviour."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "swimming against a very strong current",
+                  "bơi ngược dòng nước rất mạnh",
+                  "Choosing health in that environment means swimming against a very strong current."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "changing the environment in thay đổi môi trường ra which decisions are made",
+                  "quyết định",
+                  "Lasting change requires changing the environment in which decisions are made."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Hai dạng câu hỏi Health thường gặp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu hỏi mẫu**",
+                  "**Dạng**",
+                  "**Khung phải dùng**"
+                ],
+                [
+                  "Why do some people find it hard to maintain a healthy lifestyle?",
+                  "1 — WHY",
+                  "REASON × 3"
+                ],
+                [
+                  "What can be done to encourage people to be more active?",
+                  "5 — PROBLEM",
+                  "CAUSE–EFFECT–SOLUTION"
+                ],
+                [
+                  "Should healthcare be free for everyone?",
+                  "5 — PROBLEM",
+                  "ROLE–RESPONSIBILITY–LIMIT"
+                ],
+                [
+                  "Do you think people are healthier now than fifty years ago?",
+                  "4 — COMPARE",
+                  "COMPARE FRAMEWORK"
+                ],
+                [
+                  "Is mental health taken as seriously as physical health?",
+                  "2 — OPINION",
+                  "NUANCED OPINION"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BA LOẠI RÀO CẢN — KHUNG PHÂN TÍCH CỦA CẢ BUỔI",
+              "lines": [
+                "✔ THỜI GIAN — long working hours · long commutes · caring responsibilities.",
+                "✔ CHI PHÍ — fresh food costs more per calorie · gym membership · time off work.",
+                "✔ MÔI TRƯỜNG — no safe place to exercise · unhealthy canteen food · advertising pressure.",
+                "✔ Ba loại này thay thế hoàn toàn lối nói \"people are lazy\".",
+                "✔ Câu kết vàng: \"Telling people what they should do, without changing the environment in which they decide, rarely produces lasting change.\""
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L12",
@@ -709,7 +2938,202 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "job market · gig economy · income inequality · workforce automation · work-life balance · career",
+                "development · normative pressure (Band 7+)"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời có ba tầng động lực và một câu nêu mặt trái của tham vọng nghề nghiệp."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Nói về công việc mơ ước của bản thân thay vì về thị trường lao động.",
+                "✘ Dùng \"job\" cho mọi thứ: job, career, occupation, profession có sắc thái khác nhau.",
+                "✘ Chỉ nói tiền: bỏ qua ý nghĩa công việc, sự công nhận, quyền tự chủ.",
+                "✘ Dự đoán về automation mà không có caveat — nghe như báo lá cải."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "the job market",
+                  "thị trường lao động",
+                  "The job market has become considerably more competitive."
+                ],
+                [
+                  "★",
+                  "the gig economy",
+                  "nền kinh tế việc tự do",
+                  "The gig economy offers flexibility but very little security."
+                ],
+                [
+                  "★",
+                  "income inequality",
+                  "bất bình đẳng thu nhập",
+                  "Income inequality is widening in most developed economies."
+                ],
+                [
+                  "★",
+                  "workforce automation",
+                  "tự động hoá lực lượng lao động",
+                  "Workforce automation threatens routine jobs first."
+                ],
+                [
+                  "★",
+                  "work-life balance",
+                  "cân bằng công việc và cuộc sống",
+                  "Companies that take work-life balance seriously attract better staff."
+                ],
+                [
+                  "★★",
+                  "career development",
+                  "phát triển sự nghiệp",
+                  "Ongoing training is essential for career development."
+                ],
+                [
+                  "★★",
+                  "entrepreneurship",
+                  "tinh thần khởi nghiệp",
+                  "Entrepreneurship drives much of the innovation in an economy."
+                ],
+                [
+                  "★★",
+                  "job security",
+                  "sự ổn định công việc",
+                  "Job security matters far more to older workers."
+                ],
+                [
+                  "★★",
+                  "a deep-seated need for recognition",
+                  "nhu cầu được công nhận sâu sắc",
+                  "Ambition often stems from a deep-seated need for recognition."
+                ],
+                [
+                  "★★\n**Band 7+**",
+                  "normative pressure",
+                  "áp lực chuẩn mực nhóm",
+                  "In competitive industries, normative pressure makes"
+                ],
+                [
+                  "",
+                  "",
+                  "",
+                  "ambition contagious."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "less about desire and more about necessity",
+                  "ít vì mong muốn mà nhiều Under those conditions, ambition is less about desire vì bắt buộc",
+                  "and more about necessity."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "crowds out other values",
+                  "lấn át các giá trị khác",
+                  "Ambition becomes harmful when it crowds out other values."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Ba dạng câu hỏi Work thường gặp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu hỏi mẫu**",
+                  "**Dạng**",
+                  "**Khung phải dùng**"
+                ],
+                [
+                  "Why are some people very ambitious at work?",
+                  "1 — WHY",
+                  "REASON × 3"
+                ],
+                [
+                  "What are the advantages and disadvantages of the gig economy?",
+                  "3 — ADV/DISADV",
+                  "BENEFIT–DRAWBACK–BALANCE"
+                ],
+                [
+                  "How will automation change the kinds of jobs people do?",
+                  "6 — FUTURE",
+                  "TREND–PREDICTION–CAVEAT"
+                ],
+                [
+                  "Do you think people should stay in one job for their whole career?",
+                  "2 — OPINION",
+                  "NUANCED OPINION"
+                ],
+                [
+                  "How is work today different from work in your parents' generation?",
+                  "4 — COMPARE",
+                  "COMPARE FRAMEWORK"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BA TẦNG ĐỘNG LỰC LÀM VIỆC",
+              "lines": [
+                "✔ CÁ NHÂN — need for achievement · recognition · autonomy · upbringing.",
+                "✔ KINH TẾ — income inequality makes the gap between success and mediocrity enormous.",
+                "✔ XÃ HỘI — normative pressure in competitive industries makes ambition contagious.",
+                "✔ Bài chỉ nói tầng cá nhân → Band 6.5. Có đủ ba tầng → Band 7.5+.",
+                "✔ Luôn thêm một câu về mặt trái: ambition that crowds out health, relationships or integrity."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L13",
@@ -764,7 +3188,200 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "over-tourism · sustainable tourism · cultural exchange · heritage preservation · the local economy · a virtuous cycle · price local residents out"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời phân tích lợi ích và chi phí theo NHÓM DÂN CƯ, không theo tổng thể chung chung."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Kể chuyến đi của mình: \"Last summer I went to Da Lat…\" — Part 3 không hỏi trải nghiệm.",
+                "✘ Chỉ nói lợi ích kinh tế, bỏ qua văn hoá và môi trường.",
+                "✘ Dùng \"many people\" và \"a lot of\" cho mọi lượng.",
+                "✘ Quên nêu ai chịu thiệt — nói du lịch tốt cho \"the city\" như thể thành phố là một khối đồng nhất."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "over-tourism",
+                  "du lịch quá tải",
+                  "Over-tourism is damaging fragile heritage sites across Europe."
+                ],
+                [
+                  "★",
+                  "sustainable tourism",
+                  "du lịch bền vững",
+                  "Sustainable tourism protects the environment it depends on."
+                ],
+                [
+                  "★",
+                  "cultural exchange",
+                  "giao lưu văn hoá",
+                  "Travel can promote genuine cultural exchange."
+                ],
+                [
+                  "★",
+                  "heritage preservation",
+                  "bảo tồn di sản",
+                  "Tourism revenue often funds heritage preservation."
+                ],
+                [
+                  "★",
+                  "the local economy",
+                  "kinh tế địa phương",
+                  "Tourism can be a major pillar of the local economy."
+                ],
+                [
+                  "★★",
+                  "carbon footprint of travel",
+                  "dấu chân carbon của du lịch",
+                  "Long-haul flights have an enormous carbon footprint."
+                ],
+                [
+                  "★★",
+                  "immersive travel experience",
+                  "trải nghiệm du lịch sâu",
+                  "Homestays offer a far more immersive travel experience."
+                ],
+                [
+                  "★★",
+                  "tourist traps",
+                  "bẫy du lịch",
+                  "Many historic centres are now full of tourist traps."
+                ],
+                [
+                  "★★",
+                  "strain infrastructure",
+                  "gây quá tải hạ tầng",
+                  "Peak-season visitors strain infrastructure severely."
+                ],
+                [
+                  "★★",
+                  "price local residents out",
+                  "đẩy dân địa phương ra khỏi nơi ở",
+                  "Short-term rentals price local residents out of their own neighbourhoods."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "form a virtuous cycle",
+                  "tạo thành vòng tuần hoàn",
+                  "Tourism and heritage can form a virtuous cycle."
+                ],
+                [
+                  "",
+                  "",
+                  "tích cực",
+                  ""
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "the very authenticity that made it attractive",
+                  "chính nét chân thực đã làm nên sức hút",
+                  "Mass tourism erodes the very authenticity that made a place attractive."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Hai dạng câu hỏi Travel thường gặp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu hỏi mẫu**",
+                  "**Dạng**",
+                  "**Khung phải dùng**"
+                ],
+                [
+                  "What advantages can tourism bring to a city?",
+                  "3 — ADV/DISADV",
+                  "BENEFIT–DRAWBACK–BALANCE"
+                ],
+                [
+                  "How can cities manage the problems caused by mass tourism?",
+                  "5 — PROBLEM",
+                  "CAUSE–EFFECT–SOLUTION"
+                ],
+                [
+                  "Why do people travel abroad rather than within their own country?",
+                  "1 — WHY",
+                  "REASON × 3"
+                ],
+                [
+                  "Do you think tourism does more harm than good?",
+                  "2 — OPINION",
+                  "NUANCED OPINION"
+                ],
+                [
+                  "How has the way people travel changed in the past thirty years?",
+                  "4 — COMPARE",
+                  "COMPARE FRAMEWORK"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BẢNG AI HƯỞNG LỢI — AI CHỊU THIỆT",
+              "lines": [
+                "✔ HƯỞNG LỢI: hotel owners · restaurants and transport operators · heritage institutions · national tax revenue.",
+                "✔ CHỊU THIỆT: long-term residents priced out · workers on seasonal contracts · fragile sites and ecosystems.",
+                "✔ HAI CHIỀU: local culture — vừa được bảo tồn bằng doanh thu, vừa bị biến thành sản phẩm biểu diễn.",
+                "✔ Học sinh nêu được ít nhất một nhóm chịu thiệt CỤ THỂ là đủ chuẩn Band 7 của buổi này."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L14",
@@ -818,7 +3435,194 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "misinformation · media literacy · echo chambers · algorithmic bias · digital footprint · engagement-driven design · public discourse"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời phân tích cả mặt trao quyền và mặt gây hại, có nhắc đến cơ chế thiết kế nền tảng."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Chỉ chê mạng xã hội — bỏ qua việc nó trao tiếng nói cho nhóm yếu thế.",
+                "✘ Nói \"fake news\" cho mọi vấn đề thông tin, không phân biệt misinformation và disinformation.",
+                "✘ Mô tả hành vi mà không nói vì sao nền tảng khuyến khích hành vi đó.",
+                "✘ Dùng \"the media\" như một chủ thể có ý chí thống nhất."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "misinformation",
+                  "thông tin sai lệch",
+                  "Misinformation spreads considerably faster than corrections."
+                ],
+                [
+                  "★",
+                  "media literacy",
+                  "năng lực đọc hiểu truyền thông",
+                  "Media literacy should be taught from primary school."
+                ],
+                [
+                  "★",
+                  "echo chambers",
+                  "buồng vang",
+                  "Recommendation systems create remarkably strong echo chambers."
+                ],
+                [
+                  "★",
+                  "algorithmic bias",
+                  "thiên kiến thuật toán",
+                  "Algorithmic bias tends to reinforce existing prejudices."
+                ],
+                [
+                  "★",
+                  "public discourse",
+                  "diễn ngôn công cộng",
+                  "Public discourse has become more accessible but less thoughtful."
+                ],
+                [
+                  "★★",
+                  "digital footprint",
+                  "dấu vết số",
+                  "We all leave a permanent digital footprint."
+                ],
+                [
+                  "★★",
+                  "citizen journalism",
+                  "báo chí công dân",
+                  "Citizen journalism can hold authorities accountable."
+                ],
+                [
+                  "★★",
+                  "freedom of the press",
+                  "tự do báo chí",
+                  "Freedom of the press is a precondition for democracy."
+                ],
+                [
+                  "★★",
+                  "marginalised voices",
+                  "tiếng nói bị gạt ra lề",
+                  "Platforms gave marginalised voices genuine visibility."
+                ],
+                [
+                  "★★",
+                  "engagement-driven design",
+                  "thiết kế hướng tương tác",
+                  "Engagement-driven design rewards outrage over nuance."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "designed to maximise engagement, not well-being",
+                  "được thiết kế để tối đa tương tác, không phải phúc lợi",
+                  "These platforms are designed to maximise engagement, not well-being."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "the collapse of the distinction between private and public",
+                  "sự sụp đổ ranh giới riêng tư và công cộng",
+                  "The most significant shift is the collapse of the distinction between private and public communication."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Ba dạng câu hỏi Media thường gặp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu hỏi mẫu**",
+                  "**Dạng**",
+                  "**Khung phải dùng**"
+                ],
+                [
+                  "How has social media changed the way people communicate?",
+                  "4 — COMPARE",
+                  "COMPARE FRAMEWORK"
+                ],
+                [
+                  "Do you think people trust the news less than they used to?",
+                  "2 — OPINION",
+                  "NUANCED OPINION"
+                ],
+                [
+                  "How will people get their news in twenty years?",
+                  "6 — FUTURE",
+                  "TREND–PREDICTION–CAVEAT"
+                ],
+                [
+                  "Why does false information spread so quickly online?",
+                  "1 — WHY",
+                  "REASON × 3"
+                ],
+                [
+                  "Should social media platforms be regulated by governments?",
+                  "5 — PROBLEM",
+                  "ROLE–RESPONSIBILITY–LIMIT"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "KHUNG PHÂN TÍCH TRUYỀN THÔNG — DÙNG CHO MỌI CÂU HỎI",
+              "lines": [
+                "✔ MẶT TRAO QUYỀN: lower barriers to expression · connection across distance · visibility for marginalised voices · real-time organisation.",
+                "✔ MẶT GÂY HẠI: echo chambers · outrage rewarded over nuance · misinformation outruns correction · privacy erosion.",
+                "✔ CƠ CHẾ GIẢI THÍCH CẢ HAI: engagement-driven design — nền tảng kiếm tiền từ thời gian chú ý.",
+                "✔ Nêu được cơ chế là điểm khác biệt lớn nhất giữa Band 7 và Band 8 ở chủ đề này."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L15",
@@ -880,7 +3684,220 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "nuclear family · extended family · intergenerational relationships · social support network · cultural identity · artistic freedom · cultural homogenisation"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Hai câu trả lời, mỗi câu thuộc một chủ đề, mỗi câu có lực đẩy rõ ràng và một câu nêu khác biệt văn hoá."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Nói gia đình mình thay vì nói xu hướng gia đình nói chung.",
+                "✘ Cho rằng mô hình gia đình phương Tây là chuẩn chung cho cả thế giới.",
+                "✘ Nói nghệ thuật \"làm cuộc sống đẹp hơn\" mà không nêu giá trị cụ thể.",
+                "✘ Quên rằng thay đổi gia đình KHÔNG đồng đều giữa các nền văn hoá."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (6 Family + 6 Arts)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "nuclear family",
+                  "gia đình hạt nhân",
+                  "The nuclear family is far less dominant than it was."
+                ],
+                [
+                  "★",
+                  "extended family",
+                  "gia đình mở rộng",
+                  "Extended families provide a built-in support network."
+                ],
+                [
+                  "★",
+                  "intergenerational relationships",
+                  "quan hệ giữa các thế hệ",
+                  "Intergenerational relationships build mutual understanding."
+                ],
+                [
+                  "★",
+                  "social support network",
+                  "mạng lưới hỗ trợ xã hội",
+                  "A strong social support network promotes resilience."
+                ],
+                [
+                  "★",
+                  "cultural identity",
+                  "bản sắc văn hoá",
+                  "The arts are central to a nation's cultural identity."
+                ],
+                [
+                  "★",
+                  "artistic freedom",
+                  "tự do nghệ thuật",
+                  "Artistic freedom is a good indicator of political health."
+                ],
+                [
+                  "★★",
+                  "family dynamics",
+                  "động lực trong gia đình",
+                  "Changing work patterns reshape family dynamics."
+                ],
+                [
+                  "★★",
+                  "work-family conflict",
+                  "mâu thuẫn công việc và gia đình",
+                  "Work-family conflict is a major source of chronic stress."
+                ],
+                [
+                  "★★",
+                  "cultural homogenisation",
+                  "đồng hoá văn hoá",
+                  "Globalisation carries a real risk of cultural homogenisation."
+                ],
+                [
+                  "★★",
+                  "intangible cultural heritage",
+                  "di sản văn hoá phi vật thể",
+                  "Traditional crafts count as intangible cultural heritage."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "social value the market",
+                  "giá trị xã hội mà thị",
+                  "The arts generate social value the market"
+                ],
+                [
+                  "",
+                  "consistently underprices",
+                  "trường luôn định giá thấp",
+                  "consistently underprices."
+                ],
+                [
+                  "★★★\n**Band 7+**",
+                  "compensate for the reduced capacity of the family",
+                  "bù đắp cho khả năng suy giảm của gia đình",
+                  "Public services must compensate for the reduced capacity of the family."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Bốn câu hỏi thường gặp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu hỏi mẫu**",
+                  "**Chủ đề**",
+                  "**Khung phải dùng**"
+                ],
+                [
+                  "How have family structures changed in recent decades?",
+                  "Family",
+                  "THEN–NOW–NEXT"
+                ],
+                [
+                  "Are family relationships weaker than in the past?",
+                  "Family",
+                  "COMPARE FRAMEWORK"
+                ],
+                [
+                  "Should governments fund the arts?",
+                  "Arts",
+                  "ROLE–RESPONSIBILITY–LIMIT"
+                ],
+                [
+                  "Why is traditional culture disappearing in many countries?",
+                  "Arts",
+                  "REASON × 3"
+                ],
+                [
+                  "Do you think globalisation makes cultures more similar?",
+                  "Arts",
+                  "NUANCED OPINION"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "TRỤC CHUNG CHO CẢ HAI CHỦ ĐỀ",
+              "lines": [
+                "✔ Bước 1 — thiết chế nào đang thay đổi: the family · traditional culture · the arts.",
+                "✔ Bước 2 — lực đẩy kinh tế: women entering the workforce · urbanisation · market pressure on non-profitable culture.",
+                "✔ Bước 3 — hệ quả: reduced support capacity · loss of intangible heritage.",
+                "✔ Bước 4 — bù đắp bằng gì: childcare and elderly care services · public arts funding · heritage protection.",
+                "✔ Bước 5 — khác biệt văn hoá: những thay đổi này KHÔNG đồng đều giữa các xã hội."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "BAND 7",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "BAND 7",
+              "lines": [
+                "Family structures have changed significantly over the past fifty years. The clearest change is the decline of the traditional nuclear family with one breadwinner. Several things drove this — most importantly the entry of women into the workforce, which completely changed household economics, and rising divorce rates, which made single-parent families much more common. At the same time, urbanisation has weakened extended family networks, because people now live where the work is rather than near their relatives. That said, this is not universal — in more collectivist societies, extended families are still economically essential. I think the main challenge now is building services like childcare and elderly care that compensate for what families used to provide.",
+                "→Có lực đẩy, có chiều văn hoá, có câu kết về bù đắp. Đây là mục tiêu tối thiểu của Lesson 15. Khoảng 75 giây.",
+                "**BAND 8**",
+                "Family structures have undergone a profound transformation over the past fifty years, reflecting broader shifts in economic organisation, gender roles and cultural values. The most significant change is the decline of the traditional nuclear model. The large-scale entry of women into the workforce fundamentally altered household economics; rising divorce rates normalised single-parent families; and greater legal acceptance of same-sex partnerships expanded the definition of family itself. At the same time urbanisation has weakened extended networks — previous generations could rely on grandparents and cousins living within walking distance, and in a mobile professional society that proximity is rare, which has increased individual autonomy but for many people intensified isolation. It is worth noting that these changes are nowhere near uniform: across much of Asia and sub-Saharan Africa, extended family structures remain not merely culturally valued but economically essential. The real challenge, I think, is not so much preserving the old model as building the childcare, elderly care and mental health services that compensate for the reduced capacity of the family.",
+                "→Ba lực đẩy trong một câu ghép có nhịp, một hệ quả kép, một câu chống giả định phổ quát, và câu kết dùng \"not so much X as Y\" để định khung lại toàn bộ vấn đề."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P3-L16",
@@ -906,7 +3923,796 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "PHASE 3 · ĐÁNH GIÁ — Lesson 16",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Mock test Part 3 đầy đủ, phiếu chấm bốn tiêu chí,",
+                "phiếu tự đánh giá và kế hoạch ôn bốn tuần.",
+                "Không dạy nội dung mới trong buổi này."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "Toàn bộ 80 cụm ★ của Phần III"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một lượt thi Part 3 hoàn chỉnh 5 câu hỏi, mỗi câu 60–90 giây, có follow-up."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Nhận diện sai dạng → dùng nhầm khung cho cả bài.",
+                "✘ Trả lời câu đầu quá dài rồi hụt hơi ở ba câu sau.",
+                "✘ Bỏ câu kết ở những câu cuối vì mệt.",
+                "✘ Khi gặp câu khó thì im lặng thay vì dùng cụm câu giờ."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. WARM-UP — Nhận diện dạng trong 2 giây",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Giáo viên đọc từng câu, học sinh chỉ nói TÊN DẠNG, không trả lời. Mục tiêu 6/6."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**#**",
+                  "**Câu hỏi**",
+                  "**Dạng**",
+                  "**Khung**"
+                ],
+                [
+                  "1",
+                  "Why do people find it hard to save money?",
+                  "",
+                  "REASON × 3"
+                ],
+                [
+                  "2",
+                  "Do you think schools should teach financial skills?",
+                  "",
+                  "NUANCED OPINION"
+                ],
+                [
+                  "3",
+                  "What are the drawbacks of paying for everything by card?",
+                  "",
+                  "BENEFIT–DRAWBACK"
+                ],
+                [
+                  "4",
+                  "How is shopping today different from twenty years ago?",
+                  "",
+                  "COMPARE"
+                ],
+                [
+                  "5",
+                  "What can be done to help families in financial difficulty?",
+                  "",
+                  "CAUSE–EFFECT–SOLUTION"
+                ],
+                [
+                  "6",
+                  "Will cash still exist in thirty years?",
+                  "",
+                  "TREND–PREDICTION–CAVEAT"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "CÂU GIỜ TỰ NHIÊN KHI GẶP CÂU KHÓ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "CÂU GIỜ TỰ NHIÊN KHI GẶP CÂU KHÓ",
+              "lines": [
+                "✔ That is an interesting question — I have not thought about it in those terms before.",
+                "✔ I suppose it depends on how you define…",
+                "✔ There are a couple of ways of looking at that.",
+                "✔ Let me approach that from a slightly different angle.",
+                "✔ Dùng tối đa MỘT lần trong cả bài thi. Dùng nhiều lần thành thói quen né câu hỏi."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "C. PHIẾU CHẤM — Bốn tiêu chí IELTS",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Người nghe tick từng ô. Mỗi ô đạt tính 1 điểm. Tổng 12 điểm."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Tiêu chí**",
+                  "**Mục kiểm tra**",
+                  "**Đạt**"
+                ],
+                [
+                  "FLUENCY & COHERENCE",
+                  "Nói liên tục 60–90 giây không dừng quá 3 giây",
+                  "☐"
+                ],
+                [
+                  "",
+                  "Có câu mở và câu kết ở MỌI câu trả lời",
+                  "☐"
+                ],
+                [
+                  "",
+                  "Dùng đúng khung của dạng câu hỏi được hỏi",
+                  "☐"
+                ],
+                [
+                  "LEXICAL RESOURCE",
+                  "Dùng ít nhất 8 cụm ★ trong cả 5 câu",
+                  "☐"
+                ],
+                [
+                  "",
+                  "Không lặp một từ nội dung quá 3 lần",
+                  "☐"
+                ],
+                [
+                  "",
+                  "Dùng thuật ngữ chuyên đề chính xác, không nói chung chung",
+                  "☐"
+                ],
+                [
+                  "GRAMMATICAL RANGE",
+                  "Có ít nhất 3 câu phức khác cấu trúc",
+                  "☐"
+                ],
+                [
+                  "",
+                  "Dùng đúng hedging, không tuyệt đối hoá",
+                  "☐"
+                ],
+                [
+                  "",
+                  "Không lặp lại một lỗi ngữ pháp quá 2 lần",
+                  "☐"
+                ],
+                [
+                  "PRONUNCIATION",
+                  "Trọng âm từ dài chính xác",
+                  "☐"
+                ],
+                [
+                  "",
+                  "Có nối âm và âm yếu, không đọc rời từng từ",
+                  "☐"
+                ],
+                [
+                  "",
+                  "Ngữ điệu có lên xuống, không đều đều",
+                  "☐"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Quy đổi tham khảo**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Tổng điểm**",
+                  "**Band ước lượng**",
+                  "**Hành động tiếp theo**"
+                ],
+                [
+                  "11–12",
+                  "7.5 – 8.0",
+                  "Luyện đề khó và câu hỏi bất ngờ. Tập trung vào chiều sâu lập luận."
+                ],
+                [
+                  "9–10",
+                  "7.0",
+                  "Đã đạt mục tiêu Phần III. Củng cố bằng luyện đề đa dạng chủ đề."
+                ],
+                [
+                  "6–8",
+                  "6.0 – 6.5",
+                  "Học lại các buổi có khung mà em dùng sai. Ưu tiên Phase 1."
+                ],
+                [
+                  "dưới 6",
+                  "dưới 6.0",
+                  "Học lại toàn bộ Phase 1. Chưa nên luyện đề thật."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "D. MƯỜI LỖI PHỔ BIẾN NHẤT Ở PART 3",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**#**",
+                  "**Lỗi**",
+                  "**Vì sao mất điểm**",
+                  "**Chữa ở buổi**"
+                ],
+                [
+                  "1",
+                  "Trả lời Yes/No ngắn gọn",
+                  "Part 3 chấm lập luận, không chấm sự đồng ý",
+                  "2"
+                ],
+                [
+                  "2",
+                  "Dùng ví dụ cá nhân thay vì xã hội",
+                  "Part 3 hỏi về xu hướng chung, không hỏi về em",
+                  "7, 13"
+                ],
+                [
+                  "3",
+                  "Không có câu kết",
+                  "Dừng đột ngột phá vỡ Coherence",
+                  "1, 2"
+                ],
+                [
+                  "4",
+                  "Lặp từ vựng",
+                  "Lặp \"people\" năm lần thay vì individuals / the public",
+                  "8"
+                ],
+                [
+                  "5",
+                  "Nói cực đoan một chiều",
+                  "Giám khảo đánh giá cao tư duy cân bằng",
+                  "2, 3"
+                ],
+                [
+                  "6",
+                  "Im lặng quá lâu",
+                  "Fluency bị trừ trực tiếp",
+                  "16"
+                ],
+                [
+                  "7",
+                  "Không liên kết với chủ đề Part 2",
+                  "Bỏ lỡ nguồn ý tưởng có sẵn",
+                  "—"
+                ],
+                [
+                  "8",
+                  "Trả lời dưới 3 câu",
+                  "Không đủ dung lượng để thể hiện ngôn ngữ",
+                  "1"
+                ],
+                [
+                  "9",
+                  "Không dùng discourse markers",
+                  "Bài nghe rời rạc, thiếu mạch",
+                  "1–6"
+                ],
+                [
+                  "10",
+                  "Sợ nói sai nên im",
+                  "Giám khảo KHÔNG chấm đúng sai về nội dung",
+                  "16"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "NHẮC LẠI LẦN CUỐI",
+              "lines": [
+                "✘ Part 3 không kiểm tra kiến thức xã hội của em.",
+                "✘ Không biết số liệu? Dùng \"Research suggests…\" hoặc \"It is widely believed that…\".",
+                "✘ Không có ý kiến rõ ràng? Dùng khung hai chiều \"On one hand… on the other hand…\".",
+                "✘ Không hiểu câu hỏi? Hỏi lại: \"Do you mean in general, or in my country specifically?\"",
+                "✘ Điều tệ nhất em có thể làm là im lặng."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "E. PHIẾU TỰ ĐÁNH GIÁ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "PHIẾU TỰ ĐÁNH GIÁ — PHẦN III · trang học sinh giữ lại",
+              "lines": [
+                "Điền trung thực. Phiếu này quyết định kế hoạch bốn tuần của em.",
+                "Dạng câu hỏi tôi làm tốt nhất:",
+                "Dạng câu hỏi tôi làm kém nhất:",
+                "Hai lỗi lặp lại nhất của tôi:",
+                "1.",
+                "2.",
+                "Tiêu chí yếu nhất (khoanh tròn): Fluency · Lexical Resource · Grammar · Pronunciation",
+                "Hai mục tiêu cho bốn tuần tới:",
+                "1.",
+                "2.",
+                "**Band Part 3 ước tính sau khoá học: …… Mục tiêu band thi thật: …… Ngày thi dự kiến: ……**",
+                "**Giáo viên xác nhận:**",
+                "**Ngày:**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "QUY TRÌNH LUYỆN MỖI NGÀY (25 PHÚT)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "QUY TRÌNH LUYỆN MỖI NGÀY (25 PHÚT)",
+              "lines": [
+                "✔ Chọn một câu hỏi Part 3 ngẫu nhiên. Gọi tên dạng trong 2 giây.",
+                "✔ Nói 75 giây, ghi âm. Không dừng, không làm lại giữa chừng.",
+                "✔ Nghe lại ngay: đếm số lần im quá 3 giây và số lần lặp \"I think\" — mục tiêu giảm dần.",
+                "✔ Ghi lại 3 ý bạn muốn diễn đạt tốt hơn, tra cách nói và học trước hôm sau.",
+                "✔ Đọc một bài báo tiếng Anh về xã hội mỗi ngày để tích luỹ ý tưởng, không phải để học từ."
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Nguyên tắc cuối: học theo TOPIC chứ không học theo CÂU HỎI. Một topic có thể ra năm câu hỏi khác nhau — học Ý TƯỞNG và KHUNG, đừng học CÂU TRẢ LỜI."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHỤ LỤC 1 — Bảng tra cứu \"Nâng band\" cho Part 3",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Từ Band**",
+                  "**Thao tác**",
+                  "**Ví dụ ngắn**"
+                ],
+                [
+                  "6→7",
+                  "Bỏ Yes/No, thay bằng câu có sắc thái",
+                  "\"Yes\" → \"To a certain extent, yes — but…\""
+                ],
+                [
+                  "6→7",
+                  "Bỏ \"because\", dùng cụm nguyên nhân",
+                  "\"because it is cheap\" → \"this stems from the low cost\""
+                ],
+                [
+                  "6→7",
+                  "Thêm một câu triển khai cho mỗi lý do",
+                  "Mỗi ý phải có ít nhất hai câu"
+                ],
+                [
+                  "6→7",
+                  "Nói ba lý do thuộc BA TẦNG khác nhau",
+                  "tâm lý → thực tế → xã hội"
+                ],
+                [
+                  "6→7",
+                  "Luôn có câu kết",
+                  "\"On balance…\" · \"For all these reasons…\""
+                ],
+                [
+                  "7→8",
+                  "Nêu CƠ CHẾ, không chỉ nêu hiện tượng",
+                  "\"platforms are designed to maximise engagement\""
+                ],
+                [
+                  "7→8",
+                  "Chỉ ra ai hưởng lợi và ai chịu thiệt",
+                  "\"junior staff are hit hardest\""
+                ],
+                [
+                  "7→8",
+                  "Tự phản bác chính mình một lần",
+                  "\"However, I would push back on that idea\""
+                ],
+                [
+                  "7→8",
+                  "Thêm chiều văn hoá hoặc lịch sử",
+                  "\"in more collectivist societies, this remains essential\""
+                ],
+                [
+                  "7→8",
+                  "Định khung lại vấn đề ở câu kết",
+                  "\"not so much a question of money as of time\""
+                ],
+                [
+                  "7→8",
+                  "Thay lời khuyên bằng điều kiện",
+                  "\"provided that…\" thay cho \"everyone should…\""
+                ],
+                [
+                  "Mọi band",
+                  "Nhận diện dạng câu hỏi trong 2 giây",
+                  "Sai khung là sai cả bài, dù từ vựng có tốt đến đâu"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHỤ LỤC 2 — 80 cụm ★ MUST-USE của cả Phần III",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Lesson**",
+                  "**Cụm ★ MUST USE**"
+                ],
+                [
+                  "1. Why / Reasons",
+                  "for several reasons · stems from · can be attributed to · from a practical standpoint · as a result"
+                ],
+                [
+                  "2. Opinion",
+                  "to a certain extent · generally speaking · it depends on · on balance · while it is true that"
+                ],
+                [
+                  "3. Adv / Disadv",
+                  "the main benefit is · a significant drawback · outweigh · at the expense of · comes at a cost"
+                ],
+                [
+                  "4. Compare",
+                  "differ in several significant ways · in terms of · by comparison · considerably · share some common ground"
+                ],
+                [
+                  "5. Problem / Solution",
+                  "the root cause is · address the underlying issue · a more effective approach might be · has an important role to play · it should not be the only actor"
+                ],
+                [
+                  "6. Past–Present–Future",
+                  "used to · it seems likely that · driven by · if this continues · it is difficult to predict with any certainty"
+                ],
+                [
+                  "7. Education",
+                  "critical thinking skills · rote learning · academic pressure · a well-rounded education · foster creativity"
+                ],
+                [
+                  "8. Technology",
+                  "digital divide · technological dependency · privacy concerns · automation · social media algorithms"
+                ],
+                [
+                  "9. Environment",
+                  "carbon emissions · sustainable development · biodiversity loss · renewable energy transition · ecological footprint"
+                ],
+                [
+                  "10. Society",
+                  "a sense of belonging · social cohesion · urban isolation · civic responsibility · social mobility"
+                ],
+                [
+                  "11. Health",
+                  "sedentary lifestyle · preventive healthcare · work-related stress · mental health awareness · well- being"
+                ],
+                [
+                  "12. Work",
+                  "the job market · the gig economy · income inequality · workforce automation · work-life balance"
+                ],
+                [
+                  "13. Travel",
+                  "over-tourism · sustainable tourism · cultural exchange · heritage preservation · the local economy"
+                ],
+                [
+                  "14. Media",
+                  "misinformation · media literacy · echo chambers · algorithmic bias · public discourse"
+                ],
+                [
+                  "15. Family & Arts",
+                  "nuclear family · extended family · intergenerational relationships · social support network · cultural identity"
+                ],
+                [
+                  "15. Arts (tiếp)",
+                  "artistic freedom · cultural homogenisation · intangible cultural heritage · family dynamics · work- family conflict"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Học sinh đạt Band 7.0 Part 3 khi dùng thành thạo 40 trong số 80 cụm này. Không cần thuộc hết — cần DÙNG ĐƯỢC một nửa."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHỤ LỤC 3 — Bảng lỗi ngữ pháp lặp lại (dán ở góc học tập)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Lỗi**",
+                  "**Sai**",
+                  "**Đúng**",
+                  "**Học ở Lesson**"
+                ],
+                [
+                  "stems from + mệnh đề",
+                  "stems from people work too much",
+                  "stems from people working too much",
+                  "1"
+                ],
+                [
+                  "attributed by",
+                  "can be attributed by planning",
+                  "can be attributed to planning",
+                  "1"
+                ],
+                [
+                  "Hedging chồng chất",
+                  "maybe it can perhaps possibly be",
+                  "it tends to be",
+                  "2"
+                ],
+                [
+                  "although + but",
+                  "Although it rained, but we went",
+                  "Although it rained, we went",
+                  "3"
+                ],
+                [
+                  "more + tính từ ngắn",
+                  "more better / more easier",
+                  "better / easier",
+                  "4"
+                ],
+                [
+                  "very + so sánh",
+                  "very higher than before",
+                  "considerably higher than before",
+                  "4"
+                ],
+                [
+                  "Bị động thiếu be",
+                  "Emissions should cut",
+                  "Emissions should be cut",
+                  "5, 9"
+                ],
+                [
+                  "should of",
+                  "more could of been done",
+                  "more could have been done",
+                  "5"
+                ],
+                [
+                  "use to",
+                  "People use to write letters",
+                  "People used to write letters",
+                  "6"
+                ],
+                [
+                  "used to + V-ing",
+                  "used to writing letters",
+                  "used to write letters",
+                  "6"
+                ],
+                [
+                  "knowledge đếm được",
+                  "many knowledges",
+                  "a great deal of knowledge",
+                  "7"
+                ],
+                [
+                  "Danh hoá sai",
+                  "an increasement in prices",
+                  "an increase in prices",
+                  "8"
+                ],
+                [
+                  "What… thừa it",
+                  "What I find striking it is…",
+                  "What I find striking is…",
+                  "10"
+                ],
+                [
+                  "if + will",
+                  "If food will cost more",
+                  "If food costs more",
+                  "11"
+                ],
+                [
+                  "Mệnh đề rút gọn sai chủ ngữ",
+                  "Having grown up poor, it made him careful",
+                  "Having grown up poor, he became careful",
+                  "12"
+                ],
+                [
+                  "amount / number",
+                  "a large amount of tourists",
+                  "a large number of tourists",
+                  "13"
+                ],
+                [
+                  "despite + mệnh đề",
+                  "Despite news is accessible",
+                  "Despite the fact that news is accessible",
+                  "14"
+                ],
+                [
+                  "not so much… but",
+                  "not so much money but time",
+                  "not so much money as time",
+                  "15"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHỤ LỤC 4 — Bảng discourse markers tổng hợp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Đây là bảng tra nhanh cho học sinh trong lúc luyện. Mục tiêu Band 7: dùng được ít nhất ba nhóm chức năng khác nhau trong một câu trả lời."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Chức năng**",
+                  "**Cụm từ**"
+                ],
+                [
+                  "Mở đầu ý kiến",
+                  "In my view, · From my perspective, · I would argue that · It seems to me that · I am inclined to think that"
+                ],
+                [
+                  "Nêu lý do",
+                  "This is mainly because… · One key reason is… · This can largely be attributed to… · A contributing factor is… · This stems from…"
+                ],
+                [
+                  "Thêm ý",
+                  "What is more, · Furthermore, · On top of that, · Not only that, but · In addition to this,"
+                ],
+                [
+                  "Đưa ví dụ",
+                  "To illustrate, · A case in point is… · Take X as an example… · This is evident in… · Research suggests that…"
+                ],
+                [
+                  "Nhượng bộ / đối lập",
+                  "Having said that, · That said, · Admittedly, · While it is true that… · It would be an oversimplification to say…"
+                ],
+                [
+                  "So sánh",
+                  "By comparison, · In contrast to… · Unlike… · Whereas… · At the same time,"
+                ],
+                [
+                  "Tổng kết",
+                  "On balance, · All things considered, · Ultimately, · In the final analysis, · When all is said and done,"
+                ],
+                [
+                  "Nhấn mạnh",
+                  "What is particularly striking is… · It is worth noting that… · Above all, · Of particular importance is…"
+                ],
+                [
+                  "Diễn giải lại",
+                  "In other words, · To put it another way, · What I mean by this is… · To be more specific,"
+                ],
+                [
+                  "Tổng quát hoá",
+                  "Generally speaking, · By and large, · On the whole, · In most cases, · As a rule,"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Nâng cấp từ vựng — thay thế từ đơn giản**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Thay vì**",
+                  "**Dùng**"
+                ],
+                [
+                  "many people",
+                  "a growing number of people · a significant proportion of the population"
+                ],
+                [
+                  "because",
+                  "largely due to · can be attributed to · stems from"
+                ],
+                [
+                  "I think",
+                  "it seems to me that · I would argue that · one could make the case that"
+                ],
+                [
+                  "for example",
+                  "a case in point is… · this is evident in… · to illustrate,"
+                ],
+                [
+                  "good / bad",
+                  "beneficial / detrimental · advantageous / counterproductive"
+                ],
+                [
+                  "very important",
+                  "of paramount importance · critically significant · indispensable"
+                ],
+                [
+                  "change",
+                  "undergo a transformation · shift significantly · evolve considerably"
+                ],
+                [
+                  "show",
+                  "demonstrate · indicate · suggest · reveal"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

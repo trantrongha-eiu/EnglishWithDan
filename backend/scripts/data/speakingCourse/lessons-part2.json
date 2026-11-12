@@ -105,7 +105,225 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "PHASE 1 · CƠ CHẾ PART 2 — Lesson 1 → 3",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Học sinh học CÁCH VẬN HÀNH Part 2 trước khi học NỘI DUNG.",
+                "Chủ đề ở giai đoạn này cố tình để dễ — trọng tâm là khung bài nói,",
+                "kỹ thuật ghi chú 60 giây, và câu mở đầu / câu kết."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "I'd like to talk about… · First of all,… · What stands out is… · The reason I chose this is that… · Overall,…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 75–90 giây có đủ 4 phần, không đọc giấy quá 3 lần."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Bắt đầu bằng \"I want to talk about…\" — nghe như bài thuyết trình lớp 6.",
+                "✘ Trả lời lần lượt 4 gạch đầu dòng như trả bài, mỗi ý một câu rồi hết.",
+                "✘ Dừng ở 40–50 giây vì \"hết ý\" — không có phần WHY IT IS SPECIAL.",
+                "✘ Viết nguyên câu trong 1 phút chuẩn bị rồi đọc lại — giám khảo nghe ra ngay."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — Part 2 thật sự là gì?",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Part 2 (Individual Long Turn) kéo dài 3–4 phút. Giám khảo đưa một **cue card**, học sinh có **1 phút chuẩn bị** với giấy bút, rồi phải nói **liên tục 1–2 phút**. Sau đó giám khảo hỏi thêm 1–2 câu ngắn. Đây là phần duy nhất trong cả kỳ thi mà học sinh nói một mình, không có ai đỡ lời.",
+                "**Cấu trúc Part 2**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Giai đoạn**",
+                  "**Điều học sinh phải làm**"
+                ],
+                [
+                  "1 phút chuẩn bị",
+                  "Viết ghi chú nhanh — ĐỪNG viết nguyên câu dài"
+                ],
+                [
+                  "1–2 phút nói",
+                  "Phải nói đủ thời gian — giám khảo theo dõi đồng hồ"
+                ],
+                [
+                  "1–2 câu hỏi ngắn",
+                  "Sau khi nói xong, giám khảo có thể hỏi thêm"
+                ],
+                [
+                  "Cue card 4–5 gợi ý",
+                  "Không cần trả lời từng gợi ý theo đúng thứ tự"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Bài nói tốt và bài nói hỏng**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "",
+                  "**Bài nói tốt**",
+                  "**Bài nói hỏng**"
+                ],
+                [
+                  "Độ dài",
+                  "90–120 giây, dừng khi giám khảo dừng",
+                  "Dưới 60 giây, hoặc lan man quá 2 phút 30"
+                ],
+                [
+                  "Cấu trúc",
+                  "4 phần rõ ràng, có mở và có kết",
+                  "Trả lời 4 gạch đầu dòng rồi hết"
+                ],
+                [
+                  "Chi tiết",
+                  "Có tên, thời gian, nơi chốn, cảm xúc cụ thể",
+                  "Toàn câu chung chung: it was good, I like it"
+                ],
+                [
+                  "Giọng",
+                  "Có ngập ngừng tự nhiên, có nhấn nhá",
+                  "Đều đều như đọc bài đã học thuộc"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Khung bài nói 4 phần",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Khung này áp dụng cho mọi cue card trong 45 đề (xem Phụ lục 4). Học sinh học một lần, dùng cả khoá."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Phần**",
+                  "**Thời lượng**",
+                  "**Mẫu câu bắt đầu**"
+                ],
+                [
+                  "1. INTRODUCTION",
+                  "10–15 giây",
+                  "I'd like to talk about… · This is… · I chose this because…"
+                ],
+                [
+                  "2. DESCRIPTION",
+                  "40–50 giây",
+                  "First of all,… · What I remember most is… · For example,…"
+                ],
+                [
+                  "3. WHY IT IS SPECIAL",
+                  "30–40 giây",
+                  "The reason I chose this is that… · It means a lot to me because… · Since then,…"
+                ],
+                [
+                  "4. CONCLUSION",
+                  "10–15 giây",
+                  "Overall,… · I'll always remember… · I'd definitely recommend…"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Phân bổ 60 giây chuẩn bị**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Mốc thời gian**",
+                  "**Làm gì**"
+                ],
+                [
+                  "Giây 1–10",
+                  "Đọc cue card, xác định đối tượng chính. Chọn ngay, không đắn đo."
+                ],
+                [
+                  "Giây 10–40",
+                  "Viết 4–6 từ khoá ngắn theo 4 phần — KHÔNG viết câu đầy đủ."
+                ],
+                [
+                  "Giây 40–55",
+                  "Quyết định câu mở đầu và câu kết. Nhẩm trong đầu một lần."
+                ],
+                [
+                  "Giây 55–60",
+                  "Hít thở sâu. Nhìn giám khảo. Bắt đầu."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "BA LỖI CHẾT NGƯỜI TRONG 60 GIÂY CHUẨN BỊ",
+              "lines": [
+                "✘ Mất 30 giây để chọn đề tài \"hay nhất\" — còn 30 giây thì không đủ ghi chú.",
+                "✘ Viết câu hoàn chỉnh: \"My best friend is named Minh and I met him…\" — sẽ đọc lại y nguyên.",
+                "✘ Không chuẩn bị câu kết — bài nói tắt lịm ở giây thứ 80 thay vì kết đẹp."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L02",
@@ -160,7 +378,213 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "Mở rộng danh từ: a small café · a small café near my house · a small family-run café near my house"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một trang ghi chú 6–8 từ khoá và một long turn 90 giây phát triển từ đúng trang ghi chú đó."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Ghi thành câu: \"I often go to a small café near my house.\" — sẽ đọc lại y nguyên.",
+                "✘ Ghi quá nhiều (15–20 từ) → mất thời gian đọc trong lúc nói, mạch nói đứt.",
+                "✘ Ghi bằng tiếng Việt rồi vừa nói vừa dịch — chậm và sai ngữ pháp.",
+                "✘ Ghi xong không nhẩm thử → đến lúc nói mới phát hiện không biết diễn đạt."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — Ghi chú sai và ghi chú đúng",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Trong 60 giây, học sinh không thể viết được một bài nói. Nhưng có thể viết được **bộ khung nhắc ý**. Khác biệt giữa Band 5 và Band 7 ở Part 2 thường nằm ở đúng trang giấy nháp này.",
+                "**Cue card: Describe a place you often go to**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**✘ GHI SAI (viết câu)**",
+                  "**✔ GHI ĐÚNG (từ khoá)**"
+                ],
+                [
+                  "I often go to a café near my house.",
+                  "café Nguyễn Huệ / 5 phút đi bộ"
+                ],
+                [
+                  "It is small and quiet and has good coffee.",
+                  "nhỏ, yên, gỗ cũ, nhạc jazz"
+                ],
+                [
+                  "I usually go there on Sunday morning to study.",
+                  "CN sáng — học bài, 3 tiếng"
+                ],
+                [
+                  "I like it because I can concentrate there.",
+                  "tập trung tốt hơn ở nhà"
+                ],
+                [
+                  "The owner is very friendly and knows my name.",
+                  "chủ quán nhớ tên → cảm giác thuộc về"
+                ],
+                [
+                  "",
+                  "KẾT: \"my second living room\""
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Ba khác biệt quyết định**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Tiêu chí**",
+                  "**Ghi câu**",
+                  "**Ghi từ khoá**"
+                ],
+                [
+                  "Thời gian viết",
+                  "40–50 giây, không kịp",
+                  "20–30 giây, còn dư thời gian nhẩm"
+                ],
+                [
+                  "Khi nói",
+                  "Mắt dán vào giấy, giọng đều",
+                  "Liếc 1 giây rồi ngẩng lên nói"
+                ],
+                [
+                  "Ngữ pháp",
+                  "Đúng nhưng nghe như đọc",
+                  "Tự nhiên, có ngập ngừng thật"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Từ một từ khoá thành ba câu",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Kỹ thuật cốt lõi: **mở rộng danh từ**. Mỗi từ khoá trong giấy nháp là một hạt giống. Khi nói, học sinh thêm lớp thông tin quanh nó."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Lớp**",
+                  "**Thêm gì**",
+                  "**Ví dụ từ khoá \"café\"**"
+                ],
+                [
+                  "Lớp 1",
+                  "Danh từ trần",
+                  "a café"
+                ],
+                [
+                  "Lớp 2",
+                  "+ tính từ",
+                  "a small, quiet café"
+                ],
+                [
+                  "Lớp 3",
+                  "+ vị trí / sở hữu",
+                  "a small, quiet café near my house"
+                ],
+                [
+                  "Lớp 4",
+                  "+ mệnh đề quan hệ",
+                  "a small, quiet café near my house that has been there for years"
+                ],
+                [
+                  "Lớp 5",
+                  "+ chi tiết cảm giác",
+                  "…where the smell of roasted coffee hits you the moment you walk in"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Một từ khoá được mở rộng đủ 5 lớp cho ra **20–25 giây nói**. Sáu từ khoá là đủ cho 2 phút — đó là toàn bộ bí quyết.",
+                "**Mẫu câu mở rộng nhanh**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Mục đích**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "Thêm vị trí",
+                  "which is located… / just around the corner from… / a five-minute walk from…"
+                ],
+                [
+                  "Thêm thời gian",
+                  "I first went there when… / I have been going there since…"
+                ],
+                [
+                  "Thêm cảm giác",
+                  "What strikes you first is… / The moment you walk in, you…"
+                ],
+                [
+                  "Thêm câu chuyện",
+                  "I remember one time when… / There was this one occasion when…"
+                ],
+                [
+                  "Thêm ý nghĩa",
+                  "It has become a sort of… / For me it is more than just a…"
+                ]
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L03",
@@ -216,7 +640,188 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "I'd like to talk about… · The [person] I'd like to describe is… · Something that immediately came to mind is… · When I saw this question, I immediately thought of… · Overall,… · All in all,… · Looking back,…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 90 giây với câu mở paraphrase đề bài và câu kết tổng kết được ý nghĩa."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Đọc lại nguyên văn cue card: \"Describe a book you read. OK, a book I read is…\"",
+                "✘ Mở đầu bằng \"My topic today is…\" — nghe như thuyết trình PowerPoint.",
+                "✘ Kết bằng \"That's all\" / \"Finished\" / \"I think that's it\" — mất điểm ngay lập tức.",
+                "✘ Không có câu kết, giọng nhỏ dần rồi im — giám khảo không biết đã xong hay chưa."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 5 kiểu mở đầu",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu mở đầu**",
+                  "**Ghi chú sử dụng**"
+                ],
+                [
+                  "I'd like to talk about…",
+                  "Phổ biến nhất — an toàn cho mọi chủ đề, dùng được ngay từ Band 5."
+                ],
+                [
+                  "The [person / place / thing] I'd like to describe is…",
+                  "Nhấn mạnh đối tượng ngay từ đầu. Tốt cho nhóm PEOPLE và OBJECTS."
+                ],
+                [
+                  "I'll be talking about…",
+                  "Trang trọng hơn một chút — dùng cho nhóm NATURE / SCIENCE."
+                ],
+                [
+                  "Something that immediately came to mind is…",
+                  "Cho thấy đang nghĩ thật, không học thuộc. Band 6.5+."
+                ],
+                [
+                  "When I saw this question, I immediately thought of…",
+                  "Rất tự nhiên, như đang trò chuyện. Band 7. Tốt nhất cho nhóm EVENTS."
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Paraphrase đề bài — kỹ thuật ăn điểm ngay câu đầu**",
+                "Giám khảo nghe hàng trăm thí sinh đọc lại nguyên văn cue card. Người paraphrase được nổi bật lập tức."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cue card**",
+                  "**✘ Đọc lại**",
+                  "**✔ Paraphrase**"
+                ],
+                [
+                  "Describe a book you read",
+                  "A book I read is…",
+                  "I'd like to talk about a novel that had a real impact on me…"
+                ],
+                [
+                  "Describe a happy event",
+                  "A happy event is…",
+                  "Something that immediately came to mind"
+                ],
+                [
+                  "",
+                  "",
+                  "is the day my sister got married…"
+                ],
+                [
+                  "Describe a useful invention",
+                  "A useful invention is…",
+                  "The invention I'd like to describe is something most of us use twenty times a day without thinking…"
+                ],
+                [
+                  "Describe a person you admire",
+                  "A person I admire is…",
+                  "When I saw this question, I immediately thought of my old English teacher…"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — 4 kiểu câu kết",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Kiểu kết**",
+                  "**Mẫu câu**",
+                  "**Hợp với nhóm**"
+                ],
+                [
+                  "Tổng kết đánh giá",
+                  "Overall, it was a truly [adj] experience.",
+                  "Mọi nhóm — an toàn nhất"
+                ],
+                [
+                  "Nhìn lại / suy ngẫm",
+                  "Looking back, I think it taught me…",
+                  "EVENTS, ACTIVITIES"
+                ],
+                [
+                  "Khuyến nghị",
+                  "I'd definitely recommend it to anyone who…",
+                  "PLACES, CULTURE / MEDIA"
+                ],
+                [
+                  "Cam kết tương lai",
+                  "I'll always remember… / I hope to… one day.",
+                  "PEOPLE, OBJECTS"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "CÂU KẾT BỊ CẤM TUYỆT ĐỐI",
+              "lines": [
+                "✘ That's all. / That's it. / Finished. / I think that's enough.",
+                "✘ Yeah… so… (rồi im lặng)",
+                "✘ Sorry, I don't know what else to say.",
+                "✘ Nhắc lại y nguyên câu mở đầu — nghe như đi vòng tròn."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "KỸ THUẬT \"CÂU KẾT DỰ PHÒNG\"",
+              "lines": [
+                "✔ Học sinh chuẩn bị sẵn MỘT câu kết vạn năng trong 60 giây chuẩn bị.",
+                "✔ Ví dụ: \"Overall, it's one of those things I'd find really hard to imagine my life without.\"",
+                "✔ Câu này lắp được vào nhóm PEOPLE, PLACES, OBJECTS, ACTIVITIES.",
+                "✔ Khi giám khảo ra hiệu dừng, học sinh chèn câu kết này rồi im — chuyên nghiệp hơn hẳn việc bị cắt lời giữa câu."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L04",
@@ -271,7 +876,248 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "PHASE 2 · 7 NHÓM CHỦ ĐỀ — Lesson 4 → 11",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "45 cue cards của Part 2 (Phụ lục 4) đều thuộc 7 nhóm. Mỗi nhóm học MỘT câu chuyện gốc theo Master Story Framework là ứng phó được phần lớn đề trong nhóm. Nhóm EVENTS được tách làm hai buổi vì đây là nhóm hay ra nhất (14/45 đề)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "KHÁI NIỆM CỐT LÕI CỦA PHASE 2 — FIXED / FLEXIBLE",
+              "lines": [
+                "Không học thuộc một bài riêng cho từng đề. Mỗi nhóm chỉ cần MỘT câu chuyện gốc:",
+                "**FIXED (≈70%)** — giới thiệu → mô tả / câu chuyện → \"And I suppose that's why… came to mind when I saw this topic.\" Phần này giữ nguyên cho mọi đề trong nhóm.",
+                "**FLEXIBLE (≈30%)** — đoạn WHY cuối bài, thay theo đúng câu hỏi của cue card (admire? important? crowded? gift?…).",
+                "**Phần**",
+                "**Thời lượng**",
+                "**Số từ (ước tính)**",
+                "FIXED",
+                "≈ 70 giây",
+                "130–150 từ",
+                "FLEXIBLE (WHY theo đề)",
+                "≈ 25 giây",
+                "40–50 từ",
+                "Kết luận",
+                "≈ 10 giây",
+                "10–20 từ",
+                "**Tổng**",
+                "**100–110 giây**",
+                "**180–220 từ**",
+                "Thiếu thời gian → cắt phần giữa (mô tả), KHÔNG cắt phần WHY — đó là phần trả lời đúng đề. Muốn kéo lên đủ 2 phút: dùng 4 kỹ thuật ở Lesson 13.",
+                "**Bảy câu chuyện gốc: PEOPLE – Mrs Hoa · PLACES – Đà Nẵng · OBJECTS – máy ảnh film của bố · EVENTS – buổi thuyết trình · ACTIVITIES – chơi guitar · NATURE – báo tuyết · MEDIA – video về một người tị nạn Việt Nam.**",
+                "**⚠ Đây là chuyện MẪU. Câu chuyện thật của em sẽ nghe tự nhiên hơn, dễ trả lời Part 3 hơn và không bị giám khảo nhận ra là bài học thuộc.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "charismatic · down-to-earth · outgoing personality · look up to · genuine kindness · One of their most outstanding qualities is…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 100 giây có ít nhất 3 cụm ★, 1 giai thoại minh hoạ và 1 câu về ảnh hưởng lên bản thân."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Liệt kê tính từ mà không chứng minh: \"She is kind, friendly, helpful and nice.\"",
+                "✘ Chỉ mô tả ngoại hình (tall, thin, long hair) — không phải trọng tâm của cue card.",
+                "✘ Nói về người nổi tiếng mà không có kết nối cá nhân → không có phần ảnh hưởng.",
+                "✘ Dùng \"he/she\" liên tục 2 phút, không nhắc lại tên → giám khảo mất dấu."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "charismatic",
+                  "có sức lôi cuốn",
+                  "He is a charismatic leader who inspires everyone around him."
+                ],
+                [
+                  "★",
+                  "down-to-earth",
+                  "chân chất, không kiêu ngạo",
+                  "Despite being famous, she's very down-to-earth."
+                ],
+                [
+                  "★",
+                  "outgoing personality",
+                  "tính cách hướng ngoại",
+                  "His outgoing personality makes him easy to talk to."
+                ],
+                [
+                  "★",
+                  "look up to",
+                  "ngưỡng mộ, noi gương",
+                  "I really look up to my mentor."
+                ],
+                [
+                  "★",
+                  "genuine kindness",
+                  "sự tốt bụng thật sự",
+                  "What stood out was her genuine kindness."
+                ],
+                [
+                  "★★",
+                  "adventurous spirit",
+                  "tinh thần phiêu lưu",
+                  "Her adventurous spirit took her to 40 countries."
+                ],
+                [
+                  "★★",
+                  "infectious enthusiasm",
+                  "sự nhiệt tình lây lan",
+                  "His infectious enthusiasm motivated the whole team."
+                ],
+                [
+                  "★★",
+                  "a real eye-opener",
+                  "điều làm mở mang tầm nhìn",
+                  "Meeting her was a real eye-opener for me."
+                ],
+                [
+                  "★★",
+                  "resilient",
+                  "kiên cường",
+                  "She is incredibly resilient in the face of adversity."
+                ],
+                [
+                  "★★",
+                  "leave a lasting impression",
+                  "để lại ấn tượng lâu dài",
+                  "Her speech left a lasting impression on the audience."
+                ],
+                [
+                  "★★★",
+                  "visionary",
+                  "người có tầm nhìn xa",
+                  "Steve Jobs was a visionary entrepreneur."
+                ],
+                [
+                  "★★★",
+                  "unconventional",
+                  "không theo lối mòn",
+                  "She has an unconventional approach to problem- solving."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Template nhóm PEOPLE",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Phần**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "INTRODUCTION",
+                  "I'd like to talk about [tên], who is my [best friend / colleague / idol]. This person is [1–2 tính từ] and is well known for [nổi tiếng vì điều gì]."
+                ],
+                [
+                  "WHO THEY ARE",
+                  "[Tên] is a [nghề nghiệp] and has been [làm gì] for [bao lâu].\nI first met / heard about this person [khi nào / ở đâu].\nWhat immediately impressed me was [đặc điểm nổi bật nhất]."
+                ],
+                [
+                  "WHAT THEY ARE LIKE",
+                  "One of their most outstanding qualities is [tính từ].\nFor example, [kể 1 giai thoại cụ thể — 2–3 câu].\nThey are also known for [habit / skill / achievement]."
+                ],
+                [
+                  "HOW THEY INFLUENCED YOU",
+                  "This person inspires me because [lý do].\nI have learned [bài học] from them, which helped me [kết quả cụ thể]."
+                ],
+                [
+                  "CONCLUSION",
+                  "Overall, [tên] is [đánh giá tổng quát] and I feel lucky to have met them. If I ever get the chance, I would love to [ước muốn]."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "CÁC ĐỀ THUỘC NHÓM NÀY",
+              "lines": [
+                "✔ Describe a friend who likes to sing · a good friend who is important to you",
+                "✔ Describe a person who runs a family business · a successful sportsperson",
+                "✔ Describe a creative person · a popular person in your country",
+                "✔ Describe a person you only met once and want to know more about",
+                "✔ Một template — bảy đề. Học sinh chỉ đổi nhân vật, không đổi khung."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "GHI NHỚ — FIXED / FLEXIBLE (theo Master Story Framework)",
+              "lines": [
+                "**FIXED (≈70% — học thuộc Ý, không học thuộc CHỮ):** Mrs Hoa → English teacher → ngoại hình → tính cách → quen 5 năm → câu chuyện lần đầu gặp.",
+                "**FLEXIBLE (≈30% — đổi theo đề):** \"That's why she came to mind…\" → WHY? → Reason 1 + ví dụ → Reason 2 + ví dụ.",
+                "**Đề dùng được:** person you admire · person you look up to · important person · person who helped you · creative person · successful person · person who influenced you · person you learned something from.",
+                "**Nếu đề hỏi…**",
+                "**Phần FLEXIBLE thay bằng…**",
+                "**WHY she is important to you**",
+                "There are two main reasons why she's so important to me. First of all, she gave me confidence when I was struggling with English — for example, she encouraged me to speak even when I was afraid of making mistakes. Another reason is that she has influenced the way I approach learning.",
+                "**WHY she is creative**",
+                "There are two main reasons why I'd describe her as a creative person. First of all, she always comes up with unusual ways of explaining things — for example, she often turns difficult grammar points into simple real-life situations. Another reason is that she's not afraid to experiment with new ideas.",
+                "**WHY she is successful**",
+                "There are two main reasons why I'd call her successful. First of all, many of her former students have gone on to get high IELTS scores and study abroad. Another reason is that she's highly respected by both colleagues and parents, even though she's never been interested in fame or money."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L05",
@@ -329,7 +1175,206 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "breathtaking scenery · pristine beaches · lively and vibrant · iconic landmark · a perfect mix of… · What really stands out is…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 100 giây có ít nhất 3 cụm ★, 2 chi tiết giác quan và 1 lý do cá nhân."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Đọc như bài giới thiệu du lịch, không có trải nghiệm cá nhân nào.",
+                "✘ Chỉ nói vị trí địa lý suốt 40 giây — thừa thông tin, thiếu cảm nhận.",
+                "✘ Lặp \"beautiful\" 5 lần trong 2 phút.",
+                "✘ Không trả lời được \"why is it special TO YOU\" — chỉ nói nó đẹp."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "breathtaking scenery",
+                  "cảnh đẹp ngoạn mục",
+                  "The view from the mountain is breathtaking."
+                ],
+                [
+                  "★",
+                  "pristine beaches",
+                  "bãi biển hoang sơ, sạch đẹp Da Nang is famous for its pristine beaches.",
+                  ""
+                ],
+                [
+                  "★",
+                  "lively and vibrant",
+                  "sôi động, nhộn nhịp",
+                  "The city has a lively and vibrant nightlife."
+                ],
+                [
+                  "★",
+                  "iconic landmark",
+                  "công trình biểu tượng",
+                  "The Dragon Bridge is an iconic landmark."
+                ],
+                [
+                  "★",
+                  "a perfect mix of…",
+                  "sự kết hợp hoàn hảo của…",
+                  "It's a perfect mix of nature and city life."
+                ],
+                [
+                  "★★",
+                  "fast-paced urban life",
+                  "cuộc sống đô thị hối hả",
+                  "I needed a break from fast-paced urban life."
+                ],
+                [
+                  "★★",
+                  "serene and tranquil",
+                  "yên bình, thanh tịnh",
+                  "The temple grounds were serene and tranquil."
+                ],
+                [
+                  "★★",
+                  "steeped in history",
+                  "đậm đặc lịch sử",
+                  "Hoi An is steeped in history and culture."
+                ],
+                [
+                  "★★",
+                  "a hidden gem",
+                  "nơi tuyệt vời ít ai biết",
+                  "That village is a real hidden gem."
+                ],
+                [
+                  "★★",
+                  "well-preserved",
+                  "được bảo tồn tốt",
+                  "The ancient temples are remarkably well-preserved."
+                ],
+                [
+                  "★★★",
+                  "off the beaten track",
+                  "xa khỏi chỗ đông người",
+                  "We found a café completely off the beaten track."
+                ],
+                [
+                  "★★★",
+                  "draw visitors from all over",
+                  "thu hút khách từ khắp nơi",
+                  "The festival draws visitors from all over the country."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Template nhóm PLACES",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Phần**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "INTRODUCTION",
+                  "I'd like to talk about [tên địa điểm], which is located in [vị trí].\nIt is a [loại địa điểm] and is famous for [nổi tiếng vì điều gì]."
+                ],
+                [
+                  "FIRST IMPRESSION",
+                  "The first time I visited / set foot there was [khi nào].\nI still remember feeling [cảm xúc] because [lý do cụ thể]."
+                ],
+                [
+                  "DESCRIPTION",
+                  "This place is [size / look / atmosphere]. It features [chi tiết].\nWhat really stands out is [điểm nổi bật nhất — 2 câu].\nSome famous attractions include [2–3 điểm]."
+                ],
+                [
+                  "WHY IT'S SPECIAL",
+                  "I chose this place because [lý do cá nhân].\nWhenever I visit, I feel [cảm xúc] because [tại sao]."
+                ],
+                [
+                  "CONCLUSION",
+                  "Overall, [địa điểm] is a [tính từ] place, and I would highly recommend visiting it."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BA GIÁC QUAN LÀM NÊN BAND 7",
+              "lines": [
+                "✔ ÂM THANH: the sound of waves / the constant hum of motorbikes / a strange silence",
+                "✔ MÙI: the smell of roasted coffee / sea salt in the air / incense from the temple",
+                "✔ ÁNH SÁNG & NHIỆT: the late afternoon light / the heat rising off the pavement",
+                "✔ Chỉ cần HAI chi tiết giác quan là bài nói khác hẳn — đừng dùng cả năm."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "GHI NHỚ — FIXED / FLEXIBLE (theo Master Story Framework)",
+              "lines": [
+                "**FIXED (≈70% — học thuộc Ý, không học thuộc CHỮ):** Đà Nẵng → vị trí → lần đầu ghé thăm → câu chuyện làn gió biển → mô tả → gắn bó cá nhân.",
+                "**FLEXIBLE (≈30% — đổi theo đề):** Why does it fit this topic? → Reason 1 + ví dụ → Reason 2 + ví dụ.",
+                "**Đề dùng được:** beautiful / natural place · crowded place · interesting place · place you like · place you want to revisit · place near water · a trip you enjoyed.",
+                "**Nếu đề hỏi…**",
+                "**Phần FLEXIBLE thay bằng…**",
+                "**Một nơi BẠN THÍCH**",
+                "There are two main reasons why I really like this place. First of all, it's a great escape from fast-paced urban life — I can spend an afternoon walking along the beach without worrying about traffic or work. Another reason is the atmosphere: it's lively enough to be interesting, but still relaxed enough for me to switch off.",
+                "**Một nơi CROWDED / BUSY**",
+                "Although it usually feels relaxed, it can get extremely crowded at certain times of the year. First of all, it's one of the most popular tourist destinations in the country, especially in the summer. Another reason is that many restaurants, cafés and attractions are concentrated in the city centre.",
+                "**Một nơi GẦN BIỂN / SÔNG**",
+                "It's a perfect example because water is really at the heart of the city. First of all, My Khe Beach is just a few minutes from the centre, so you can go for a swim before breakfast. Another reason is the Han River — at night, the bridges are lit up, and walking along the riverside is one of my favourite things to do there."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L06",
@@ -387,7 +1432,199 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "sentimental value · pass down / hand down · a keepsake · worn with age · irreplaceable · It has been in my family for…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 100 giây có mô tả hình dáng (2 câu), nguồn gốc (2 câu) và giá trị tinh thần (3 câu)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Mô tả hình dáng suốt 60 giây rồi hết ý — thiếu phần câu chuyện.",
+                "✘ Trật tự tính từ sai: a wooden old small box.",
+                "✘ Chọn đồ vật không có kỷ niệm (cái bút mới mua) → không có gì để nói ở phần cảm xúc.",
+                "✘ Dùng \"thing\" liên tục thay vì gọi tên vật."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "sentimental value",
+                  "giá trị tinh thần / kỷ niệm",
+                  "It has great sentimental value for my family."
+                ],
+                [
+                  "★",
+                  "pass down / hand down",
+                  "truyền lại cho thế hệ sau",
+                  "The recipe was passed down from my grandmother."
+                ],
+                [
+                  "★",
+                  "a keepsake",
+                  "vật lưu niệm",
+                  "I kept the ticket as a keepsake."
+                ],
+                [
+                  "★",
+                  "worn with age",
+                  "cũ đi theo thời gian",
+                  "The leather bag was worn with age but still beautiful."
+                ],
+                [
+                  "★",
+                  "irreplaceable",
+                  "không thể thay thế được",
+                  "The photos are irreplaceable — we must back them up."
+                ],
+                [
+                  "★★",
+                  "heirloom",
+                  "đồ gia bảo, di vật",
+                  "This ring is a family heirloom."
+                ],
+                [
+                  "★★",
+                  "remarkably well-preserved",
+                  "được bảo quản đáng kinh ngạc",
+                  "The painting is remarkably well-preserved."
+                ],
+                [
+                  "★★",
+                  "become obsolete",
+                  "trở nên lỗi thời",
+                  "Many devices become obsolete within a few years."
+                ],
+                [
+                  "★★",
+                  "intricate design",
+                  "thiết kế tinh xảo",
+                  "The vase has an intricate design carved by hand."
+                ],
+                [
+                  "★★",
+                  "compact yet powerful",
+                  "nhỏ gọn nhưng mạnh mẽ",
+                  "The device is compact yet incredibly powerful."
+                ],
+                [
+                  "★★★",
+                  "tell the story of…",
+                  "kể lại lịch sử của…",
+                  "The scratches tell the story of all the places it's been."
+                ],
+                [
+                  "★★★",
+                  "state-of-the-art",
+                  "công nghệ tiên tiến nhất",
+                  "It was state-of-the-art technology at the time."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Template nhóm OBJECTS",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Phần**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "INTRODUCTION",
+                  "I'd like to talk about [tên đồ vật], which is [mô tả ngắn 1 câu].\nIt's important to me because [lý do cá nhân ngắn]."
+                ],
+                [
+                  "APPEARANCE",
+                  "The [object] is [size / shape / colour / material].\nIt has [đặc điểm nổi bật]. It looks [tính từ miêu tả]."
+                ],
+                [
+                  "HOW YOU GOT IT",
+                  "I got it [khi nào] — it was given to me by [ai] / I bought it because [lý do]. At the time, [bối cảnh]."
+                ],
+                [
+                  "HOW YOU USE IT",
+                  "I use this [object] mainly for [mục đích chính].\nIt's useful because [lý do cụ thể]. For example, [minh hoạ]."
+                ],
+                [
+                  "EMOTIONAL VALUE",
+                  "It's special to me because [kết nối cảm xúc / kỷ niệm].\nEvery time I use it, I feel [cảm xúc] because [lý do]."
+                ],
+                [
+                  "CONCLUSION",
+                  "Overall, it is a [tính từ] item and I'm glad I have it because [lý do tổng kết]."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "GHI NHỚ — FIXED / FLEXIBLE (theo Master Story Framework)",
+              "lines": [
+                "**FIXED (≈70% — học thuộc Ý, không học thuộc CHỮ):** film camera → hình dáng (2 câu) → bố mua cuối thập niên 80 → trao lại cho tôi năm 10 tuổi → nhiếp ảnh → dịp đặc biệt.",
+                "**FLEXIBLE (≈30% — đổi theo đề):** Why does it fit this topic? → lý do chính + chi tiết minh hoạ.",
+                "**Đề dùng được:** old object · gift you received · something important to you · something you want to keep · something old in your family · something that reminds you of someone.",
+                "**Nếu đề hỏi…**",
+                "**Phần FLEXIBLE thay bằng…**",
+                "**Describe a gift you received**",
+                "The main reason it's such a special gift is that it was given to me by my father, so it has great sentimental value. More importantly, it wasn't just an ordinary gift — it introduced me to photography, which is something I've enjoyed ever since.",
+                "**Something important to you**",
+                "There are two main reasons why it's important to me. First of all, it reminds me of my father and the time we spent together. Another reason is that it represents my interest in photography, so in a way, it's connected to an important part of who I am.",
+                "**Something you want to keep**",
+                "I'd definitely like to keep it because it's basically irreplaceable — I could buy a similar camera online, but I could never replace the memories attached to this particular one."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L07",
@@ -448,7 +1685,218 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "It all started when… · At the time, I was… · The most important moment was when… · In the end,… · Looking back,…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 110 giây có đủ 6 bước, trong đó phần Key moment chiếm ít nhất 30 giây."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Kể theo thứ tự thời gian đều đều, không có cao trào — nghe như nhật ký.",
+                "✘ Dùng present simple để kể chuyện quá khứ: \"So I go there and I see…\"",
+                "✘ Bỏ qua phần Reflection — không rút ra bài học nào.",
+                "✘ Kể quá nhiều nhân vật, giám khảo không theo kịp ai là ai."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "it all started when…",
+                  "mọi chuyện bắt đầu khi…",
+                  "It all started when I missed the last bus home."
+                ],
+                [
+                  "★",
+                  "a turning point",
+                  "bước ngoặt",
+                  "That trip was a real turning point in my life."
+                ],
+                [
+                  "★",
+                  "I was caught off guard",
+                  "tôi bị bất ngờ",
+                  "I was completely caught off guard by the question."
+                ],
+                [
+                  "★",
+                  "in the end",
+                  "cuối cùng thì",
+                  "In the end, everything worked out fine."
+                ],
+                [
+                  "★",
+                  "looking back",
+                  "nhìn lại",
+                  "Looking back, I think it was the right decision."
+                ],
+                [
+                  "★★",
+                  "plucked up the courage",
+                  "lấy hết can đảm",
+                  "I finally plucked up the courage to speak."
+                ],
+                [
+                  "★★",
+                  "it dawned on me",
+                  "tôi chợt nhận ra",
+                  "It suddenly dawned on me that I had left my wallet."
+                ],
+                [
+                  "★★",
+                  "it was well worth it",
+                  "hoàn toàn xứng đáng",
+                  "The hard work was well worth it in the end."
+                ],
+                [
+                  "★★",
+                  "a once-in-a-lifetime experience",
+                  "trải nghiệm một lần trong đời",
+                  "It was truly a once-in-a-lifetime experience."
+                ],
+                [
+                  "★★",
+                  "to make matters worse",
+                  "tệ hơn nữa là",
+                  "To make matters worse, my phone battery died."
+                ],
+                [
+                  "★★★",
+                  "before I knew it",
+                  "chưa kịp nhận ra thì",
+                  "Before I knew it, two hours had gone by."
+                ],
+                [
+                  "★★★",
+                  "in hindsight",
+                  "nhìn lại từ hiện tại",
+                  "In hindsight, it was the right decision."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Khung kể chuyện 6 bước",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Thời lượng**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "1. INTRODUCTION",
+                  "10 giây",
+                  "I'd like to tell you about a time when… · It happened [khi nào] and it was [unforgettable / surprising]."
+                ],
+                [
+                  "2. BACKGROUND",
+                  "20 giây",
+                  "At the time, I was… · The main people involved were… · It all started when…"
+                ],
+                [
+                  "3. KEY MOMENT",
+                  "30–40 giây",
+                  "The most important moment was when… · At that point, I felt… because…"
+                ],
+                [
+                  "4. RESOLUTION",
+                  "15 giây",
+                  "In the end,… · Everything turned out better than expected."
+                ],
+                [
+                  "5. REFLECTION",
+                  "20 giây",
+                  "Looking back, I think this experience… · It taught me… and since then I have…"
+                ],
+                [
+                  "6. CONCLUSION",
+                  "10 giây",
+                  "Overall, it was a [meaningful / unforgettable] experience. · I will always remember it because…"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "LỖI CẤU TRÚC LÀM HỎNG CẢ BÀI KỂ",
+              "lines": [
+                "✘ Dành 60 giây cho BACKGROUND rồi chỉ còn 20 giây cho KEY MOMENT — ngược hoàn toàn.",
+                "✘ Kể xong RESOLUTION là dừng, bỏ luôn REFLECTION — mất 20 giây và mất chiều sâu.",
+                "✘ Chuyển sang thì hiện tại giữa chừng: \"and then he says to me…\"",
+                "✘ Không có câu nào báo hiệu cao trào → giám khảo không biết đâu là điểm nhấn."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "GHI NHỚ — FIXED / FLEXIBLE (theo Master Story Framework)",
+              "lines": [
+                "**FIXED (≈70% — học thuộc Ý, không học thuộc CHỮ):** university presentation → chưa từng nói trước đám đông → hồi hộp nhiều ngày → quên câu mở đầu → miệng khô / tay run → hít thở & nói lại → được khen → turning point.",
+                "**FLEXIBLE (≈30% — đổi theo đề):** Chọn đúng MỘT góc cảm xúc của đề (important / difficult / nervous / praised / lesson) và phát triển 2–3 câu.",
+                "**Đề dùng được:** important event · difficult experience · successful experience · embarrassing moment · a time you were nervous · a time someone praised you · something you learned · a challenge you overcame · a time you did something for the first time.",
+                "Học sinh THPT: đổi \"university presentation\" thành bài thuyết trình ở trường / câu lạc bộ tiếng Anh — giữ nguyên toàn bộ diễn biến.",
+                "**Nếu đề hỏi…**",
+                "**Phần FLEXIBLE thay bằng…**",
+                "**Describe a difficult experience**",
+                "It was difficult because I had to deal with my nerves while everyone was looking at me. I was genuinely close to giving up for a few seconds, so getting through it felt like a small personal victory.",
+                "**Describe an embarrassing experience**",
+                "The most embarrassing part was standing there in complete silence because I'd forgotten my opening lines. I could feel my face going red, and I was convinced that everyone was staring at me. Fortunately, I managed to recover quite quickly.",
+                "**Something you learned from an experience**",
+                "The biggest lesson was that confidence doesn't always come before you do something difficult. Sometimes you have to do it first, make a few mistakes, and then confidence comes afterwards."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L08",
@@ -505,7 +1953,240 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "I was over the moon · it left a lasting impression · a bittersweet feeling · I came to realise · it blew me away · mixed feelings"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 110 giây có ít nhất 3 cách diễn đạt cảm xúc khác nhau và 1 câu suy ngẫm ở cuối."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Chỉ kể \"what happened\", không kể \"how I felt\" — bài nói khô như báo cáo.",
+                "✘ Dùng \"I felt happy\" ba lần trong một bài.",
+                "✘ Nói cảm xúc mà không có nguyên nhân: \"I was so happy.\" (vì sao?)",
+                "✘ Dùng past perfect sai chỗ: \"I had gone to school and then I had eaten lunch.\""
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 cách diễn đạt cảm xúc",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Sắc thái**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "I was over the moon",
+                  "rất vui",
+                  "When I heard the news, I was absolutely over the moon."
+                ],
+                [
+                  "★",
+                  "it left a lasting impression",
+                  "ấn tượng lâu dài",
+                  "The performance left a lasting impression on me."
+                ],
+                [
+                  "★",
+                  "a real eye-opener",
+                  "mở mang tầm nhìn",
+                  "Working abroad was a real eye-opener."
+                ],
+                [
+                  "★",
+                  "I came to realise",
+                  "dần nhận ra",
+                  "I came to realise how important family is."
+                ],
+                [
+                  "★",
+                  "a bittersweet feeling",
+                  "vừa vui vừa buồn",
+                  "Graduating had a bittersweet feeling."
+                ],
+                [
+                  "★★",
+                  "it blew me away",
+                  "choáng ngợp",
+                  "The view from the top completely blew me away."
+                ],
+                [
+                  "★★",
+                  "I was genuinely moved",
+                  "thực sự xúc động",
+                  "I was genuinely moved by the whole ceremony."
+                ],
+                [
+                  "★★",
+                  "I have mixed feelings about it",
+                  "cảm xúc lẫn lộn",
+                  "Looking back, I have mixed feelings about it."
+                ],
+                [
+                  "★★",
+                  "it stopped me in my tracks",
+                  "khiến tôi sững lại",
+                  "That one sentence stopped me in my tracks."
+                ],
+                [
+                  "★★",
+                  "it was a real turning point",
+                  "bước ngoặt thật sự",
+                  "I'd say it was a bit of a turning point for me."
+                ],
+                [
+                  "★★★",
+                  "it's hard to put into words",
+                  "khó diễn tả thành lời",
+                  "Honestly, it's hard to put into words."
+                ],
+                [
+                  "★★★",
+                  "it shaped who I am today",
+                  "định hình con người tôi",
+                  "In hindsight, I think it shaped who I am today."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Công thức cảm xúc ba lớp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Học sinh Band 6 nói **cảm xúc**. Học sinh Band 7 nói **cảm xúc + nguyên nhân + biểu hiện**. Ba lớp này biến một câu 3 giây thành một đoạn 12 giây."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Lớp**",
+                  "**Nội dung**",
+                  "**Ví dụ**"
+                ],
+                [
+                  "Lớp 1",
+                  "Cảm xúc",
+                  "I was really nervous."
+                ],
+                [
+                  "Lớp 2",
+                  "+ Nguyên nhân",
+                  "I was really nervous because I had never spoken in front of that many people."
+                ],
+                [
+                  "Lớp 3",
+                  "+ Biểu hiện cơ thể / hành vi",
+                  "I was really nervous — I remember my hands shaking so badly that I could barely hold the paper."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "NGÂN HÀNG BIỂU HIỆN CƠ THỂ (DÙNG CHO LỚP 3)",
+              "lines": [
+                "✔ my hands were shaking · I could feel my face going red · my mouth went completely dry",
+                "✔ I had to read the message three times · I just stood there without saying anything",
+                "✔ I remember laughing far too loudly · I couldn't stop smiling on the way home",
+                "✔ Một chi tiết cơ thể cụ thể có sức thuyết phục hơn năm tính từ cảm xúc."
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Past perfect — kể lùi bối cảnh**",
+                "Trong kể chuyện, khi cần nói về việc xảy ra TRƯỚC biến cố chính, dùng **had + V3**. Đây là dấu hiệu ngữ pháp rõ nhất phân biệt Band 6 và Band 7 trong nhóm EVENTS."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Tình huống**",
+                  "**Câu Band 6**",
+                  "**Câu Band 7 (past perfect)**"
+                ],
+                [
+                  "Việc xảy ra trước",
+                  "I studied hard. Then I got the result.",
+                  "By the time I got the result, I **had** already **spent** two weekends on it."
+                ],
+                [
+                  "Lý do có sẵn từ trước",
+                  "I was nervous because I never spoke in public.",
+                  "I was nervous because I **had** never **spoken** in public before."
+                ],
+                [
+                  "Kết quả ngoài dự kiến",
+                  "I did not expect it. She praised me.",
+                  "I **hadn't expected** anything — and then she praised me in front of everyone."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "GHI NHỚ — FIXED / FLEXIBLE (theo Master Story Framework)",
+              "lines": [
+                "**FIXED (≈70% — học thuộc Ý, không học thuộc CHỮ):** university presentation → chưa từng nói trước đám đông → hồi hộp nhiều ngày → quên câu mở đầu → miệng khô / tay run → hít thở & nói lại → được khen → turning point.",
+                "**FLEXIBLE (≈30% — đổi theo đề):** Chọn đúng MỘT góc cảm xúc của đề (important / difficult / nervous / praised / lesson) và phát triển 2–3 câu.",
+                "**Đề dùng được:** important event · difficult experience · successful experience · embarrassing moment · a time you were nervous · a time someone praised you · something you learned · a challenge you overcame · a time you did something for the first time.",
+                "**Nếu đề hỏi…**",
+                "**Phần FLEXIBLE thay bằng…**",
+                "**Describe a time when you were nervous**",
+                "What made me so nervous was the pressure. The presentation counted for twenty percent of our final grade, and I was being assessed in front of all my classmates, so I felt like I couldn't afford to mess it up.",
+                "**Describe an important event**",
+                "It was important mainly because it changed the way I saw myself. Before that, I thought I was a terrible public speaker, but the experience showed me that I could actually do it if I prepared properly.",
+                "**Describe a successful experience**",
+                "I'd say it was successful because we got really positive feedback from our lecturer. More importantly, I managed to finish the presentation confidently even though I'd almost forgotten what to say at the beginning."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L09",
@@ -560,7 +2241,227 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "pick up a new skill · natural flair for · hone one's skills · stress-relieving · build discipline · At first… Over time… Nowadays…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 100 giây có mô tả quá trình (3 câu), trục tiến bộ (3 câu) và lý do yêu thích (2 câu)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Chỉ nói \"I like it because it is fun\" — không mô tả quá trình cụ thể.",
+                "✘ Quên trục thời gian → nghe như mọi thứ luôn dễ dàng, không có tiến bộ.",
+                "✘ Dùng to + V sau giới từ: \"I am good at to play guitar.\"",
+                "✘ Chọn hoạt động chưa từng làm mà không dùng ngôn ngữ giả định."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "pick up a new skill",
+                  "học một kỹ năng mới",
+                  "I picked up cooking during lockdown."
+                ],
+                [
+                  "★",
+                  "a natural flair for",
+                  "năng khiếu tự nhiên về",
+                  "She has a natural flair for languages."
+                ],
+                [
+                  "★",
+                  "hone one's skills",
+                  "mài giũa kỹ năng",
+                  "He practises daily to hone his skills."
+                ],
+                [
+                  "★",
+                  "stress-relieving",
+                  "giải toả căng thẳng",
+                  "Painting is a wonderfully stress-relieving activity."
+                ],
+                [
+                  "★",
+                  "build discipline",
+                  "xây dựng kỷ luật",
+                  "Martial arts really helps build discipline."
+                ],
+                [
+                  "★★",
+                  "develop a talent",
+                  "phát triển tài năng",
+                  "I'm trying to develop my talent in photography."
+                ],
+                [
+                  "★★",
+                  "push oneself to the limit",
+                  "thúc đẩy bản thân đến giới hạn",
+                  "Swimming pushes you to your physical limit."
+                ],
+                [
+                  "★★",
+                  "adrenaline rush",
+                  "cảm giác hứng khởi mạnh",
+                  "Rock climbing gives me an incredible adrenaline rush."
+                ],
+                [
+                  "★★",
+                  "physical endurance",
+                  "sức bền thể chất",
+                  "Marathon running builds great physical endurance."
+                ],
+                [
+                  "★★",
+                  "go from strength to strength",
+                  "ngày càng tiến bộ",
+                  "Since joining the club, she's gone from strength to strength."
+                ],
+                [
+                  "★★★",
+                  "get the hang of it",
+                  "quen tay, nắm được",
+                  "It took a month, but I finally got the hang of it."
+                ],
+                [
+                  "★★★",
+                  "second nature",
+                  "thành phản xạ tự nhiên",
+                  "After two years, reading music became second nature."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Template nhóm ACTIVITIES",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Phần**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "INTRODUCTION",
+                  "I'd like to talk about [activity], which I [currently do / have always wanted to try]. This is something I got into when [thời điểm]."
+                ],
+                [
+                  "WHAT IT IS",
+                  "[Mô tả hoạt động — 2 câu]. You need [equipment / skills] to do it. A typical session involves [mô tả quy trình]."
+                ],
+                [
+                  "YOUR PROGRESS",
+                  "I first tried it [khi nào]. At first, it was [challenging / overwhelming]. Over time, I've improved at [kỹ năng] by [cách thức]."
+                ],
+                [
+                  "WHY YOU ENJOY IT",
+                  "What I love most about it is [lý do chính].\nIt helps me [lợi ích — physical / mental / social]."
+                ],
+                [
+                  "CONCLUSION",
+                  "Overall, [activity] is a [tính từ] pursuit and I plan to continue it because [lý do]."
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Trục thời gian tiến bộ — ba mốc bắt buộc**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Mốc**",
+                  "**Mẫu câu**",
+                  "**Nội dung**"
+                ],
+                [
+                  "AT FIRST",
+                  "At first, I could barely… / To begin with, it felt…",
+                  "Nói về sự vụng về ban đầu — càng cụ thể càng tốt"
+                ],
+                [
+                  "OVER TIME",
+                  "Over time, I gradually… / After a few months, I started to…",
+                  "Nói về cách luyện tập, không chỉ kết quả"
+                ],
+                [
+                  "NOWADAYS",
+                  "Nowadays, it's become… / These days I can…",
+                  "So sánh với mốc đầu tiên"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "GHI NHỚ — FIXED / FLEXIBLE (theo Master Story Framework)",
+              "lines": [
+                "**FIXED (≈70% — học thuộc Ý, không học thuộc CHỮ):** guitar → bắt đầu năm 15 tuổi → buổi tập 30 phút → quá trình tiến bộ → lý do yêu thích.",
+                "**FLEXIBLE (≈30% — đổi theo đề):** lý do theo đề (improve / enjoy / relax / new skill / recommend).",
+                "**Đề dùng được:** skill you want to improve · activity you enjoy · new skill you learned · skill you want to learn · activity that helps you relax · hobby you'd recommend · something you're good at.",
+                "**Nếu đề hỏi…**",
+                "**Phần FLEXIBLE thay bằng…**",
+                "**Activity you enjoy**",
+                "The main reason is that it's a great way to relax after a busy day. Another reason is that I can see myself improving over time, which keeps me motivated.",
+                "**Skill you want to learn**",
+                "The next thing I'd really like to learn is fingerstyle guitar, where you play the melody and the chords at the same time. At the moment, I mostly strum, so it would be a completely new challenge for me.",
+                "**A hobby you'd recommend**",
+                "I'd definitely recommend it because it's cheap to start and you can practise almost anywhere. More importantly, it's a great way to take a break from screens and do something creative.",
+                "**⚠ Không dùng cho: sport / physical activity / outdoor activity — guitar không phải hoạt động thể chất, giám khảo sẽ đánh giá lạc đề. Nhóm này cần một câu chuyện riêng (xem \"van thoát hiểm\" ở Lesson 14).**"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L10",
@@ -618,7 +2519,208 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "biodiversity · ecosystem · habitat loss · conservation efforts · renewable energy · From what I know,… · What makes it fascinating is…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 100 giây có 3 câu thông tin khách quan, 1 nguồn gốc quan tâm cá nhân và 1 ý kiến ở cuối."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Đọc như bài Wikipedia — không có câu nào về bản thân.",
+                "✘ Ngược lại: chỉ nói \"I like animals\" suốt 90 giây, không có thông tin nào.",
+                "✘ Bịa số liệu chi tiết rồi tự mâu thuẫn — chỉ cần nói \"from what I know\" là an toàn.",
+                "✘ Câu bị động sai: \"The snow leopard is classify as vulnerable.\""
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "biodiversity",
+                  "đa dạng sinh học",
+                  "The Amazon rainforest is home to incredible biodiversity."
+                ],
+                [
+                  "★",
+                  "ecosystem",
+                  "hệ sinh thái",
+                  "Deforestation disrupts the entire ecosystem."
+                ],
+                [
+                  "★",
+                  "habitat loss",
+                  "mất môi trường sống",
+                  "Habitat loss is the biggest threat to wildlife today."
+                ],
+                [
+                  "★",
+                  "conservation efforts",
+                  "nỗ lực bảo tồn",
+                  "Conservation efforts have helped pandas recover."
+                ],
+                [
+                  "★",
+                  "renewable energy",
+                  "năng lượng tái tạo",
+                  "Solar power is a key form of renewable energy."
+                ],
+                [
+                  "★★",
+                  "apex predator",
+                  "loài săn mồi đầu bảng",
+                  "The tiger is an apex predator in its ecosystem."
+                ],
+                [
+                  "★★",
+                  "on the verge of extinction",
+                  "trên bờ vực tuyệt chủng",
+                  "Many species are on the verge of extinction."
+                ],
+                [
+                  "★★",
+                  "carbon footprint",
+                  "lượng khí thải carbon",
+                  "We all need to reduce our carbon footprint."
+                ],
+                [
+                  "★★",
+                  "awe-inspiring",
+                  "choáng ngợp, ngoạn mục",
+                  "The view from the summit was truly awe-inspiring."
+                ],
+                [
+                  "★★",
+                  "elusive creature",
+                  "sinh vật bí ẩn, khó thấy",
+                  "The snow leopard is one of the most elusive creatures."
+                ],
+                [
+                  "★★★",
+                  "breakthrough research",
+                  "nghiên cứu đột phá",
+                  "The team made a breakthrough in cancer treatment."
+                ],
+                [
+                  "★★★",
+                  "quantum physics",
+                  "vật lý lượng tử",
+                  "Quantum physics challenges our view of reality."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Template nhóm NATURE / SCIENCE",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Phần**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "INTRODUCTION",
+                  "I'd like to talk about [animal / place / area of science].\nThis is something I've always been fascinated by because [lý do ngắn]."
+                ],
+                [
+                  "WHAT IT IS",
+                  "[Mô tả — 2–3 câu thông tin cơ bản].\nWhat makes it particularly fascinating is [điểm thú vị nhất]."
+                ],
+                [
+                  "WHY YOU'RE INTERESTED",
+                  "My interest in this started when [sách / phim / trải nghiệm].\nI find it captivating because [lý do]."
+                ],
+                [
+                  "WHAT YOU KNOW",
+                  "From what I know, [kiến thức đã có — 2–3 câu].\nHowever, there's still a lot I'd love to explore, especially [khía cạnh]."
+                ],
+                [
+                  "CONCLUSION",
+                  "Overall, [chủ đề] is a [fascinating / vital] topic and I believe [ý kiến cá nhân]."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BỐN CÂU AN TOÀN KHI KHÔNG CHẮC THÔNG TIN",
+              "lines": [
+                "✔ From what I know, … (không cam kết chính xác tuyệt đối)",
+                "✔ I read somewhere that… / I remember watching a documentary which said…",
+                "✔ I'm not entirely sure of the exact figure, but I believe it's around…",
+                "✔ Correct me if I'm wrong, but I think…",
+                "✔ Bốn câu này biến sự thiếu chắc chắn thành ngôn ngữ Band 7 thay vì thành im lặng."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "GHI NHỚ — FIXED / FLEXIBLE (theo Master Story Framework)",
+              "lines": [
+                "**FIXED (≈70% — học thuộc Ý, không học thuộc CHỮ):** snow leopard → ngoại hình & tập tính → bắt đầu quan tâm từ phim tài liệu (12 tuổi) → hiểu biết hiện tại → tình trạng bảo tồn.",
+                "**FLEXIBLE (≈30% — đổi theo đề):** lý do theo đề (interesting / want to know more / endangered / documentary / see in the wild / protect).",
+                "**Đề dùng được:** wild animal · animal you want to learn about · endangered animal · animal you saw in a documentary · animal you'd like to see · animal you want to protect · (mượn sang) a documentary you watched.",
+                "Lưu ý chính xác: báo tuyết được IUCN xếp hạng vulnerable (sắp nguy cấp), không phải endangered. Số lượng cá thể chỉ là ước tính — nói \"only a few thousand\" hoặc \"an estimated…\", đừng đọc một con số cụ thể như sự thật.",
+                "**Nếu đề hỏi…**",
+                "**Phần FLEXIBLE thay bằng…**",
+                "**Wild animal you find interesting**",
+                "What I find most fascinating is how well adapted it is to such a harsh environment. It's also incredibly difficult to observe, which makes it even more mysterious to me.",
+                "**Endangered animal**",
+                "Strictly speaking, it's classified as vulnerable rather than endangered, but it's still very much at risk. The main reason I'm concerned is habitat loss — if their natural environment keeps shrinking, it could become much harder for the population to recover.",
+                "**Animal you saw in a documentary**",
+                "The documentary made a lasting impression on me because the filmmakers had to spend months waiting for just a few seconds of footage. It made me realise how rare and elusive these animals really are."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L11",
@@ -676,7 +2778,213 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "thought-provoking · resonated with me · went viral · raise awareness · cultural significance · What I found most captivating was…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 100 giây có tóm tắt (3 câu), phản ứng cá nhân (3 câu) và thông điệp (2 câu)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Kể lại toàn bộ cốt truyện 90 giây — hết giờ mà chưa nói được vì sao mình thích.",
+                "✘ Nói \"the message is that we should be good people\" — quá chung, không có nội dung.",
+                "✘ Chọn tác phẩm chưa xem/đọc thật → không trả lời được câu hỏi phụ.",
+                "✘ Dùng thì quá khứ để tóm tắt nội dung phim (đúng ra dùng hiện tại)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "thought-provoking",
+                  "gợi suy nghĩ sâu sắc",
+                  "The film was genuinely thought-provoking."
+                ],
+                [
+                  "★",
+                  "resonated with me",
+                  "tạo cảm xúc đồng cảm",
+                  "The song's lyrics really resonated with me."
+                ],
+                [
+                  "★",
+                  "went viral",
+                  "lan truyền rộng rãi",
+                  "The video went viral overnight."
+                ],
+                [
+                  "★",
+                  "raise awareness",
+                  "nâng cao nhận thức",
+                  "The documentary aims to raise awareness of poverty."
+                ],
+                [
+                  "★",
+                  "cultural significance",
+                  "ý nghĩa văn hoá",
+                  "The festival has great cultural significance."
+                ],
+                [
+                  "★★",
+                  "passed down through generations",
+                  "truyền qua các thế hệ",
+                  "This story has been passed down for centuries."
+                ],
+                [
+                  "★★",
+                  "reflect society",
+                  "phản ánh xã hội",
+                  "Great art always reflects society."
+                ],
+                [
+                  "★★",
+                  "contemporary culture",
+                  "văn hoá đương đại",
+                  "Social media has reshaped contemporary culture."
+                ],
+                [
+                  "★★",
+                  "oral tradition",
+                  "truyền thống truyền miệng",
+                  "The story is part of a long oral tradition."
+                ],
+                [
+                  "★★",
+                  "spark a conversation",
+                  "khơi dậy cuộc trò chuyện",
+                  "The article sparked a meaningful conversation."
+                ],
+                [
+                  "★★★",
+                  "narrative arc",
+                  "cung bậc câu chuyện",
+                  "The film has a beautifully structured narrative arc."
+                ],
+                [
+                  "★★★",
+                  "stopped me in my tracks",
+                  "khiến tôi dừng lại, suy ngẫm",
+                  "That scene literally stopped me in my tracks."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Template nhóm CULTURE / MEDIA",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Phần**",
+                  "**Thời lượng**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "INTRODUCTION",
+                  "15 giây",
+                  "I'd like to talk about [tên], which is a [film / story / post]. I first came across it when…"
+                ],
+                [
+                  "WHAT IT IS ABOUT",
+                  "25 giây tối đa",
+                  "Essentially, it is about [tóm tắt 2–3 câu]. What makes it stand out is…"
+                ],
+                [
+                  "WHY IT IMPRESSED YOU",
+                  "25 giây",
+                  "When I first watched it, I felt… because… · What I found most captivating was…"
+                ],
+                [
+                  "WHAT IT MEANS",
+                  "25 giây",
+                  "This film made me think about… · I believe its message is… which is relevant because…"
+                ],
+                [
+                  "CONCLUSION",
+                  "10 giây",
+                  "Overall, I'd highly recommend it to anyone interested in… · It's a thought-provoking piece that…"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "LUẬT TÓM TẮT — VI PHẠM LÀ HỎNG BÀI",
+              "lines": [
+                "✘ Tối đa 3 câu. Tối đa 25 giây. Bấm giờ thật trong lớp.",
+                "✘ Không kể cái kết. Không kể tên hơn 2 nhân vật.",
+                "✘ Công thức nén: [Ai] + [làm gì / gặp chuyện gì] + [vấn đề trung tâm].",
+                "✘ Ví dụ: \"It follows an elderly man who fled Vietnam as a refugee and spent twenty years rebuilding his life in New York.\""
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "GHI NHỚ — FIXED / FLEXIBLE (theo Master Story Framework)",
+              "lines": [
+                "**FIXED (≈70% — học thuộc Ý, không học thuộc CHỮ):** YouTube video → người đàn ông Việt-Mỹ lớn tuổi → hành trình gian khó → lòng biết ơn → câu nói đáng nhớ → chia sẻ với bạn bè → thông điệp.",
+                "**FLEXIBLE (≈30% — đổi theo đề):** lý do theo đề (interesting / meaningful / shared / lesson / recommend).",
+                "**Đề dùng được:** interesting thing on social media · story that made you think · something meaningful you watched · something you shared · something that taught you a lesson · media you'd recommend · TV programme (khi đề chấp nhận video online).",
+                "**Nếu đề hỏi…**",
+                "**Phần FLEXIBLE thay bằng…**",
+                "**Something you shared with others**",
+                "I shared it with a few close friends because I thought they would relate to the message. It actually sparked a meaningful conversation, which made the experience even more memorable.",
+                "**Something that taught you a lesson**",
+                "The main lesson I took from it was that we often appreciate ordinary things only when we realise how easily they could be taken away. That's something I've tried to keep in mind since then.",
+                "**A piece of media you would recommend**",
+                "I'd definitely recommend it because it's short, easy to understand and genuinely thought-provoking. More importantly, it gives you something to think about rather than simply entertaining you for a few minutes.",
+                "**⚠ Không dùng cho: \"a film / movie you watched\" hoặc \"a book you read\" — video YouTube không phải phim điện ảnh hay sách; cần câu chuyện riêng (xem \"van thoát hiểm\" ở Lesson 14).**"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L12",
@@ -732,7 +3040,220 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "PHASE 3 · CHIỀU SÂU & ĐỘ DÀI — Lesson 12 → 14",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Không dạy nhóm chủ đề mới. Ba buổi này xử lý ba lỗi lớn nhất",
+                "còn lại sau Phase 2: nói khô khan, nói ngắn, và đứng hình khi gặp đề lạ."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "There was this one time when… · I remember [V-ing]… · so… that · such a… that · and then, out of nowhere,…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 110 giây thuộc nhóm PEOPLE/PLACES/OBJECTS, trong đó có một micro-story dài 20–30 giây."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Kể micro-story dài 60 giây → lệch trọng tâm cue card.",
+                "✘ Micro-story không liên quan đến ý đang nói → nghe rời rạc.",
+                "✘ Nói cả bài với một tốc độ duy nhất → cao trào không nổi bật.",
+                "✘ Dùng so… that sai: \"It was so a good film that…\""
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — Micro-story ba câu",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Một bài Part 2 hay không phải là một bài kể chuyện dài. Nó là một bài **mô tả có chèn một câu chuyện nhỏ**. Micro-story chỉ cần ba câu và chiếm 20–30 giây."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Câu**",
+                  "**Chức năng**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "Câu 1",
+                  "SETUP — dựng bối cảnh",
+                  "There was this one time when… / I remember one evening when…"
+                ],
+                [
+                  "Câu 2",
+                  "BIẾN CỐ — điều bất ngờ",
+                  "…and then, out of nowhere, … / …but what I didn't expect was…"
+                ],
+                [
+                  "Câu 3",
+                  "PHẢN ỨNG — cảm xúc hoặc hệ quả",
+                  "I just stood there… / I still think about that. / It stuck with me."
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Micro-story dùng được ở mọi nhóm**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Nhóm**",
+                  "**Chèn vào đâu**",
+                  "**Ví dụ**"
+                ],
+                [
+                  "PEOPLE",
+                  "Sau khi nêu một tính cách",
+                  "\"She never checks her phone — there was one time she sat with me for three hours after I failed an exam.\""
+                ],
+                [
+                  "PLACES",
+                  "Sau khi mô tả không khí",
+                  "\"I remember one evening when the power cut out and the whole street lit candles at the same time.\""
+                ],
+                [
+                  "OBJECTS",
+                  "Khi nói về nguồn gốc",
+                  "\"He handed it to me and said, 'Technology changes, but a good photograph lasts forever.'\""
+                ],
+                [
+                  "ACTIVITIES",
+                  "Khi nói về khó khăn",
+                  "\"There was one week where I couldn't get a single chord right — I nearly gave up.\""
+                ],
+                [
+                  "NATURE",
+                  "Khi nói nguồn gốc quan tâm",
+                  "\"I remember watching a crew spend months in the Himalayas and barely getting one shot.\""
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Cấu trúc nhấn mạnh và tốc độ kể",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấu trúc**",
+                  "**Công thức**",
+                  "**Ví dụ**"
+                ],
+                [
+                  "so… that",
+                  "so + **tính từ/trạng từ** + that",
+                  "It was **so** quiet **that** I could hear my own footsteps."
+                ],
+                [
+                  "such a… that",
+                  "such a + **tính từ + danh từ** + that",
+                  "It was **such a** small shop **that** you could easily walk past it."
+                ],
+                [
+                  "such… that (số nhiều)",
+                  "such + danh từ số nhiều + that",
+                  "They were **such** kind people **that** I still send them cards."
+                ],
+                [
+                  "Đảo ngữ (Band 7.5)",
+                  "Never / Rarely + trợ động từ + S",
+                  "**Never had I felt** so out of place."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "LỖI SO / SUCH KINH ĐIỂN",
+              "lines": [
+                "✘ It was so a good film that… → sai. Đúng: It was **such a** good film that…",
+                "✘ It was such quiet that… → sai. Đúng: It was **so** quiet that…",
+                "✘ It was so much beautiful that… → sai. Đúng: It was **so** beautiful that…",
+                "✘ Mẹo: có DANH TỪ → such. Không có danh từ → so."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BA CÔNG CỤ TỐC ĐỘ KHI KỂ",
+              "lines": [
+                "✔ CHẬM LẠI 30% ở câu biến cố — đây là câu quan trọng nhất.",
+                "✔ DỪNG nửa giây ngay trước từ then chốt: \"…and then — nothing.\"",
+                "✔ HẠ GIỌNG khi kể chi tiết riêng tư, LÊN GIỌNG khi kể chi tiết bất ngờ.",
+                "✔ Đừng dùng cả ba cùng lúc trong một bài — một lần cao trào là đủ."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "ƯU TIÊN EVENTS — nhóm hay ra nhất (14/45 cue cards) CORE",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "ƯU TIÊN EVENTS — nhóm hay ra nhất (14/45 cue cards) CORE",
+              "lines": [
+                "Chèn micro-story vào câu chuyện gốc EVENTS (buổi thuyết trình) — ví dụ khoảnh khắc quên câu mở đầu — cho các đề:",
+                "· Describe a time when you were nervous · a time someone praised you · a difficult decision you made · a time you had to apologise · a long journey you went on",
+                "Cách làm: sau Speaking Task 1, mỗi học sinh nói thêm MỘT đề EVENTS (110–120 giây). Bài về nhà Task 2: ít nhất 1 trong 2 bài ghi âm phải là đề EVENTS."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L13",
@@ -775,7 +3296,198 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "To give you an idea,… · Compared to… · If I could go back, I would… · Since then, I've started to… · which is why…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 120 giây, trong đó ít nhất 3 trong 4 kỹ thuật được dùng."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Lặp lại ý cũ bằng từ khác để câu giờ — giám khảo nhận ra ngay.",
+                "✘ Im lặng 4–5 giây rồi mới tìm ý mới → mất điểm Fluency.",
+                "✘ Nói nhanh hơn để \"lấp\" thời gian, nghe hoảng loạn.",
+                "✘ Kết bài ở giây thứ 70 rồi ngồi im chờ giám khảo."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — Bốn kỹ thuật kéo dài",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Kỹ thuật**",
+                  "**Làm gì**",
+                  "**Mẫu câu mở đầu**",
+                  "**Thêm được**"
+                ],
+                [
+                  "ZOOM IN",
+                  "Thêm chi tiết cụ thể hơn vào điểm vừa nói",
+                  "To give you an idea,… / More specifically,…",
+                  "20–30 giây"
+                ],
+                [
+                  "COMPARE",
+                  "So sánh với thứ khác hoặc với quá khứ",
+                  "Compared to… / Unlike… / It used to be…",
+                  "20–25 giây"
+                ],
+                [
+                  "IMAGINE",
+                  "Nói về điều mình ước hoặc dự định",
+                  "If I could go back, I would… / Next time, I'd love to…",
+                  "15–20 giây"
+                ],
+                [
+                  "IMPACT",
+                  "Nói về ảnh hưởng lên cuộc sống sau đó",
+                  "Since then, I've started to… / It changed the way I…",
+                  "20–25 giây"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Ví dụ thực tế — câu gốc: \"The sunset was beautiful.\"**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Kỹ thuật**",
+                  "**Kết quả**"
+                ],
+                [
+                  "ZOOM IN",
+                  "To give you an idea, the colours ranged from deep orange to pale violet, and for about five minutes the whole sky looked like it was on fire."
+                ],
+                [
+                  "COMPARE",
+                  "Compared to the sunsets I'd seen in the city, where buildings cut everything off, this was completely uninterrupted from one side to the other."
+                ],
+                [
+                  "IMAGINE",
+                  "If I could go back, I'd definitely stay another night just to see whether it happens every evening or whether we were simply lucky."
+                ],
+                [
+                  "IMPACT",
+                  "Since that trip, I've started making a point of getting up for sunrise whenever I travel, which is something I never used to bother with."
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Bốn kỹ thuật cộng lại: **một câu 3 giây trở thành một đoạn 90 giây**. Đây là lý do học sinh không bao giờ cần \"nghĩ thêm ý mới\" — chỉ cần đào sâu ý đã có."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Nối đoạn thay vì dừng",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Mục đích**",
+                  "**Cụm nối**"
+                ],
+                [
+                  "Thêm chi tiết",
+                  "On top of that,… · What's more,… · Not only that, but…"
+                ],
+                [
+                  "Chuyển ý",
+                  "Moving on to… · As for… · When it comes to…"
+                ],
+                [
+                  "Nhấn mạnh",
+                  "What really stood out was… · The most impressive thing was…"
+                ],
+                [
+                  "Nối nguyên nhân–kết quả",
+                  "…, which is why… · …, and as a result,… · …, so that…"
+                ],
+                [
+                  "Nhượng bộ",
+                  "Even though… · That said,… · Having said that,…"
+                ],
+                [
+                  "Kết luận",
+                  "All in all,… · To sum up,… · Looking back,…"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "QUY TẮC 90 GIÂY",
+              "lines": [
+                "✔ Ở giây thứ 60, học sinh tự hỏi: \"Mình đã dùng kỹ thuật nào chưa?\"",
+                "✔ Nếu chưa dùng kỹ thuật nào → bấm ZOOM IN ngay.",
+                "✔ Ở giây 90, nếu vẫn còn ý → bấm IMPACT rồi kết.",
+                "✔ Giám khảo sẽ dừng bạn ở khoảng 2 phút. Bị dừng giữa câu KHÔNG bị trừ điểm — dừng sớm mới bị trừ."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "ƯU TIÊN EVENTS — nhóm hay ra nhất (14/45 cue cards) CORE",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "ƯU TIÊN EVENTS — nhóm hay ra nhất (14/45 cue cards) CORE",
+              "lines": [
+                "Kéo câu chuyện gốc EVENTS lên đủ 2 phút bằng 4 kỹ thuật cho các đề:",
+                "· Describe a time when you were nervous · a time someone praised you · a difficult decision you made · a time you had to apologise · a long journey you went on",
+                "Cách làm: sau Speaking Task 1, mỗi học sinh nói thêm MỘT đề EVENTS (110–120 giây). Bài về nhà Task 2: ít nhất 1 trong 2 bài ghi âm phải là đề EVENTS."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L14",
@@ -831,7 +3543,184 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "Although I haven't tried this personally,… · I've watched a documentary about… · A friend of mine once told me… · If I had the chance, I imagine it would feel…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một long turn 110 giây về một cue card chưa từng trải qua, không có khoảng lặng nào quá 3 giây."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Nói \"I have never done this, sorry\" rồi dừng — mất trắng phần thi.",
+                "✘ Bịa một trải nghiệm chi tiết rồi tự mâu thuẫn ở phần hỏi thêm.",
+                "✘ Dùng câu điều kiện sai: \"If I would have the chance…\"",
+                "✘ Mất 20 giây đầu để phân trần thay vì bắt đầu nói."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — Công thức IMAGINE",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Mẫu câu**",
+                  "**Khi dùng**"
+                ],
+                [
+                  "Although I haven't tried this personally, I've always wanted to…",
+                  "Thừa nhận thật thà rồi chuyển sang mong muốn"
+                ],
+                [
+                  "I've read about it / watched a documentary about… and it seems…",
+                  "Dùng kiến thức gián tiếp — hoàn toàn hợp lệ"
+                ],
+                [
+                  "A friend of mine once told me about… and ever since then…",
+                  "Chuyển sang câu chuyện của người khác"
+                ],
+                [
+                  "If I had the chance, I imagine it would feel…",
+                  "Câu điều kiện loại 2 — rất tự nhiên"
+                ],
+                [
+                  "I can't say I've done this myself, but the closest thing was…",
+                  "Bắc cầu sang một trải nghiệm gần giống"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BỐN NGUỒN \"TRẢI NGHIỆM VAY MƯỢN\" HỢP LỆ",
+              "lines": [
+                "✔ Phim tài liệu / video YouTube đã xem",
+                "✔ Câu chuyện của bạn bè, người thân đã kể",
+                "✔ Sách, báo, bài viết đã đọc",
+                "✔ Một trải nghiệm GẦN GIỐNG của chính bạn (chưa lặn biển nhưng đã bơi ở biển)",
+                "✔ Cả bốn nguồn đều nói được 2 phút. Không nguồn nào bị coi là gian lận."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Quy đề lạ về nhóm đã học",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Không có cue card nào thật sự \"mới\". Mọi đề đều rơi vào một trong 7 nhóm đã học ở Phase 2. Việc duy nhất cần làm trong 10 giây đầu là **xác định nhóm**, rồi lấy template tương ứng ra dùng."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cue card lạ**",
+                  "**Thuộc nhóm**",
+                  "**Template dùng**"
+                ],
+                [
+                  "Describe a piece of advice you were given",
+                  "EVENTS",
+                  "Storytelling 6 bước"
+                ],
+                [
+                  "Describe a law you think is useful",
+                  "CULTURE / MEDIA",
+                  "Nội dung → phản ứng → thông điệp"
+                ],
+                [
+                  "Describe a time you saved money",
+                  "EVENTS",
+                  "Storytelling 6 bước"
+                ],
+                [
+                  "Describe a water sport you want to try",
+                  "ACTIVITIES",
+                  "Template hoạt động + IMAGINE"
+                ],
+                [
+                  "Describe an app that helps you",
+                  "OBJECTS",
+                  "Template đồ vật"
+                ],
+                [
+                  "Describe a sound you like",
+                  "PLACES hoặc OBJECTS",
+                  "Mô tả + chi tiết giác quan"
+                ],
+                [
+                  "Describe a person who solved a problem",
+                  "PEOPLE",
+                  "Template người + giai thoại"
+                ],
+                [
+                  "Describe a good decision made by your government",
+                  "CULTURE / MEDIA",
+                  "Nội dung → tác động → ý kiến"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "BA GIÂY ĐẦU TIÊN QUYẾT ĐỊNH",
+              "lines": [
+                "✘ Đừng phân trần: \"Oh, this is difficult, I have never…\" — mất 15 giây.",
+                "✘ Đừng đổi đề. Không được phép và giám khảo sẽ không đồng ý.",
+                "✘ Đừng im lặng đọc lại cue card 4 lần — hãy đọc một lần rồi ghi chú ngay.",
+                "✘ Câu an toàn để bắt đầu ngay: \"That's an interesting one — the first thing that comes to mind is…\""
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "VAN THOÁT HIỂM — các dạng đề 7 câu chuyện gốc KHÔNG phủ được",
+              "lines": [
+                "Master Story Framework xử lý phần lớn cue card, nhưng KHÔNG phủ tốt các dạng đề sau:",
+                "**· thể thao / hoạt động thể chất · toà nhà, công trình, căn phòng · món ăn · công nghệ (app, website, thiết bị) · phim điện ảnh / sách · luật lệ, quy định**",
+                "**⚠ Guitar KHÔNG dùng cho đề sport / physical activity. ⚠ Video YouTube KHÔNG dùng cho đề film / book. Ép khung sai nhóm = lạc đề.**",
+                "Cách xử lý: (1) dùng bốn nguồn \"trải nghiệm vay mượn\" của buổi này; (2) chuẩn bị thêm 2–3 câu chuyện phụ theo cùng khung FIXED + FLEXIBLE — gợi ý: SPORT, FOOD, TECHNOLOGY."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P2-L15",
@@ -857,7 +3746,488 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "PHASE 4 · ĐÁNH GIÁ — Lesson 15",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Không dạy nội dung mới. Mock test đầy đủ, tự đánh giá theo 4 tiêu chí IELTS,",
+                "và lập kế hoạch 4 tuần trước khi vào Phần III."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "— (ôn tập toàn bộ Lesson 1–14)"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một mock test đầy đủ + một phiếu tự đánh giá + 2 mục tiêu cá nhân cho 4 tuần tới."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Học sinh dừng giữa chừng để hỏi từ vựng — trong mock test không được dừng.",
+                "✘ Giáo viên sửa lỗi ngay lúc thi — chỉ ghi chú, sửa ở phần feedback.",
+                "✘ Học sinh nhìn giấy ghi chú liên tục — trong thi thật được nhìn, nhưng nhìn liên tục là mất điểm Fluency."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. PHIẾU CHẤM — 4 tiêu chí IELTS",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Tiêu chí**",
+                  "**Band 5**",
+                  "**Band 6**",
+                  "**Band 7**"
+                ],
+                [
+                  "Fluency & Coherence",
+                  "Dừng nhiều, dưới 60 giây",
+                  "Nói được 90 giây, có vài chỗ ngập ngừng",
+                  "Nói đủ 2 phút, ngập ngừng tự nhiên, có discourse markers"
+                ],
+                [
+                  "Lexical Resource",
+                  "Từ vựng cơ bản, lặp nhiều",
+                  "Có một số collocation đúng chỗ",
+                  "Dùng collocation và cách diễn đạt ít gặp một cách tự nhiên"
+                ],
+                [
+                  "Grammatical Range",
+                  "Chủ yếu câu đơn",
+                  "Mix câu đơn và câu phức, còn lỗi",
+                  "Nhiều cấu trúc phức, lỗi không cản trở hiểu"
+                ],
+                [
+                  "Pronunciation",
+                  "Nghe khó ở nhiều chỗ",
+                  "Hiểu được, còn lỗi trọng âm",
+                  "Rõ ràng, có nhấn nhá, dễ nghe suốt bài"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Phiếu tick nhanh cho người chấm (≥ 6/9 hạng mục + band ước tính ≥ 6.0 → đủ điều kiện vào Phần III)**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Hạng mục**",
+                  "☐"
+                ],
+                [
+                  "Bắt đầu nói trong 3 giây sau khi hết giờ chuẩn bị",
+                  "☐"
+                ],
+                [
+                  "Có câu mở đầu paraphrase đề bài",
+                  "☐"
+                ],
+                [
+                  "Có đủ 4 phần của khung bài nói",
+                  "☐"
+                ],
+                [
+                  "Nói được ít nhất 100 giây",
+                  "☐"
+                ],
+                [
+                  "Có ít nhất 1 micro-story hoặc ví dụ cụ thể",
+                  "☐"
+                ],
+                [
+                  "Dùng ít nhất 3 collocation đã học",
+                  "☐"
+                ],
+                [
+                  "Không im lặng quá 3 giây lần nào",
+                  "☐"
+                ],
+                [
+                  "Có câu kết rõ ràng, giọng xuống dứt khoát",
+                  "☐"
+                ],
+                [
+                  "Trả lời được 2 câu hỏi phụ",
+                  "☐"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "C. PHIẾU TỰ ĐÁNH GIÁ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "PHIẾU TỰ ĐÁNH GIÁ — PHẦN II · trang học sinh giữ lại",
+              "lines": [
+                "Điền trung thực. Phiếu này quyết định kế hoạch 4 tuần của bạn.",
+                "Hai lỗi lặp lại nhất của tôi:",
+                "1.",
+                "2.",
+                "Phần yếu nhất của tôi (khoanh tròn): Mở đầu · Mô tả · Cảm xúc · Độ dài · Câu kết · Đề lạ",
+                "Hai mục tiêu cho 4 tuần tới:",
+                "1.",
+                "2.",
+                "**Kết quả Phiếu tick nhanh (mục B): …… / 9 hạng mục · Band ước tính: …… ☐ ≥ 6/9 và band ≥ 6.0 → đủ điều kiện vào Phần III**",
+                "**Giáo viên xác nhận:**",
+                "**Ngày:**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "QUY TRÌNH LUYỆN MỖI NGÀY (25 PHÚT)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "QUY TRÌNH LUYỆN MỖI NGÀY (25 PHÚT)",
+              "lines": [
+                "✔ Chọn cue card ngẫu nhiên — 60 giây ghi chú keyword.",
+                "✔ Nói 120 giây, ghi âm. Không dừng, không làm lại giữa chừng.",
+                "✔ Nghe lại ngay: đếm số lần im quá 3 giây → mục tiêu giảm về 0.",
+                "✔ Ghi lại 3 từ/cụm bạn muốn diễn đạt tốt hơn → tra và học trước hôm sau.",
+                "✔ Mỗi tuần một lần: nói với người thật (bạn học, giáo viên, partner online)."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHỤ LỤC 1 — Bảng tra cứu \"Nâng band\" cho Part 2",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Từ Band**",
+                  "**Thao tác**",
+                  "**Ví dụ ngắn**"
+                ],
+                [
+                  "5→6",
+                  "Nói đủ 90 giây thay vì 45",
+                  "Thêm phần WHY IT IS SPECIAL vào cuối"
+                ],
+                [
+                  "5→6",
+                  "Thay tính từ rỗng bằng cụm cụ thể",
+                  "\"It was nice\" → \"The pace of life was much slower\""
+                ],
+                [
+                  "5→6",
+                  "Thêm một mốc thời gian hoặc tên riêng",
+                  "\"a café\" → \"a café on Nguyen Hue Street, since 2019\""
+                ],
+                [
+                  "6→7",
+                  "Chèn một micro-story ba câu",
+                  "\"There was this one time when the power went out…\""
+                ],
+                [
+                  "6→7",
+                  "Thêm chi tiết giác quan hoặc biểu hiện cơ thể",
+                  "\"my mouth went completely dry\""
+                ],
+                [
+                  "6→7",
+                  "Dùng mệnh đề What… để nhấn mạnh",
+                  "\"What I found most captivating was…\""
+                ],
+                [
+                  "6→7",
+                  "Thêm một ý đối lập",
+                  "\"That said, it can get a bit too quiet\""
+                ],
+                [
+                  "6→7",
+                  "Kết bằng nhận xét khái quát, không tóm tắt",
+                  "\"…which says a lot about the place\""
+                ],
+                [
+                  "Mọi band",
+                  "Kéo dài bằng 4 kỹ thuật thay vì nghĩ ý mới",
+                  "ZOOM IN · COMPARE · IMAGINE · IMPACT"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHỤ LỤC 2 — 60 cụm ★ MUST-USE của cả Phần II",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Lesson**",
+                  "**Cụm ★ MUST USE**"
+                ],
+                [
+                  "1. Fundamentals",
+                  "I'd like to talk about… · First of all,… · What stands out is… · The reason I chose this is… · Overall,…"
+                ],
+                [
+                  "2. Keyword notes",
+                  "a small, quiet [noun] near… · which has been there for… · The moment you walk in,… · What strikes you first is… · It has become a sort of…"
+                ],
+                [
+                  "3. Start & End",
+                  "The [noun] I'd like to describe is… · Something that immediately came to mind is… · When I saw this question,… · All in all,… · Looking back,…"
+                ],
+                [
+                  "4. People",
+                  "charismatic · down-to-earth · outgoing personality · look up to · genuine kindness"
+                ],
+                [
+                  "5. Places",
+                  "breathtaking scenery · pristine beaches · lively and vibrant · iconic landmark · a perfect mix of…"
+                ],
+                [
+                  "6. Objects",
+                  "sentimental value · pass down · a keepsake · worn with age · irreplaceable"
+                ],
+                [
+                  "7. Events I",
+                  "it all started when · a turning point · I was caught off guard · in the end · looking back"
+                ],
+                [
+                  "8. Events II",
+                  "I was over the moon · it left a lasting impression · a real eye-opener · I came to realise · a bittersweet feeling"
+                ],
+                [
+                  "9. Activities",
+                  "pick up a new skill · a natural flair for · hone one's skills · stress-relieving · build discipline"
+                ],
+                [
+                  "10. Nature",
+                  "biodiversity · ecosystem · habitat loss · conservation efforts · renewable energy"
+                ],
+                [
+                  "11. Culture",
+                  "thought-provoking · resonated with me · went viral · raise awareness · cultural significance"
+                ],
+                [
+                  "12. Storytelling",
+                  "There was this one time when… · and then, out of nowhere,… · so… that · such a… that · It stuck with me."
+                ],
+                [
+                  "13. Extending",
+                  "To give you an idea,… · Compared to… · If I could go back,… · Since then, I've started to… · which is why…"
+                ],
+                [
+                  "14. Unexpected",
+                  "Although I haven't tried this personally,… · I've watched a documentary about… · A friend of mine once told me… · If I had the chance,… · The closest thing was…"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHỤ LỤC 3 — Bảng lỗi ngữ pháp lặp lại (dán ở góc học tập)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Lỗi**",
+                  "**Sai**",
+                  "**Đúng**",
+                  "**Học ở Lesson**"
+                ],
+                [
+                  "would like to + V-ing",
+                  "I'd like to talking about",
+                  "I'd like to talk about",
+                  "1"
+                ],
+                [
+                  "Trật tự tính từ",
+                  "a wooden old small box",
+                  "a small old wooden box",
+                  "2, 6"
+                ],
+                [
+                  "that sau dấu phẩy",
+                  "my cousin, that is older",
+                  "my cousin, who is older",
+                  "3"
+                ],
+                [
+                  "which cho người",
+                  "my friend which I met",
+                  "my friend whom I met",
+                  "4"
+                ],
+                [
+                  "in / on đường phố",
+                  "I live in Nguyen Hue Street",
+                  "I live on Nguyen Hue Street",
+                  "5"
+                ],
+                [
+                  "since + khoảng thời gian",
+                  "since thirty years",
+                  "for thirty years",
+                  "6"
+                ],
+                [
+                  "Lẫn thì trong kể chuyện",
+                  "So I go there and I see…",
+                  "So I went there and I saw…",
+                  "7"
+                ],
+                [
+                  "Past perfect thiếu",
+                  "I studied hard. Then she praised me.",
+                  "I had studied hard before she praised me.",
+                  "8"
+                ],
+                [
+                  "to + V sau giới từ",
+                  "good at to play",
+                  "good at playing",
+                  "9"
+                ],
+                [
+                  "Bị động thiếu be",
+                  "The forest destroyed every year",
+                  "The forest is destroyed every year",
+                  "10"
+                ],
+                [
+                  "What… thừa it",
+                  "What I liked it was the ending",
+                  "What I liked was the ending",
+                  "11"
+                ],
+                [
+                  "so a + danh từ",
+                  "so a good film that",
+                  "such a good film that",
+                  "12"
+                ],
+                [
+                  "although + but",
+                  "Although it rained, but we went",
+                  "Although it rained, we went",
+                  "13"
+                ],
+                [
+                  "if + would",
+                  "If I would have the chance",
+                  "If I had the chance",
+                  "14"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHỤ LỤC 4 — 45 cue cards phân theo 7 nhóm",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Nhóm**",
+                  "**Cue cards**",
+                  "**Tần suất**"
+                ],
+                [
+                  "1. PEOPLE",
+                  "Friend who likes to sing · Good friend important to you · Person running a family business · Successful sportsperson · Creative person · Popular person · Person you met once",
+                  "★★★ Rất thường gặp"
+                ],
+                [
+                  "2. PLACES",
+                  "Place with a lot of trees · Interesting building · Natural place · Famous city · Outdoor place you like",
+                  "★★★ Thường gặp"
+                ],
+                [
+                  "4. EVENTS",
+                  "Telling the truth · Getting lost · Apology · Speaking a foreign language first time · Exciting first-time activity · Waiting for something special · Important decision · Dinner with friends · Speech you gave · Long journey · Good service · Something you broke · Unusual meal · Being praised",
+                  "★★★★ HAY RA NHẤT"
+                ],
+                [
+                  "3. OBJECTS",
+                  "Old thing in your family · Book you read · Childhood toy · Useful invention · Gift you received · Something you made by hand",
+                  "★★★ Thường gặp"
+                ],
+                [
+                  "5. ACTIVITIES",
+                  "Natural talent to improve · Good habit to develop · Water sport to try · Positive change in routine · Sport you enjoy",
+                  "★★ Ít gặp hơn"
+                ],
+                [
+                  "6. NATURE",
+                  "Wild animal · Area of science · Natural landscape · Environmental issue",
+                  "★★ Ít gặp hơn"
+                ],
+                [
+                  "7. CULTURE",
+                  "Traditional story · Something on social media · Creative work (film/song/book) · TV programme",
+                  "★★★ Thường gặp"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Ghi chú phân bổ thời gian ôn: nhóm 4 (EVENTS) chiếm 14/45 cue cards. Nếu học sinh chỉ còn 2 tuần trước ngày thi, dành ít nhất một nửa thời gian cho nhóm này.",
+                "(Bảng lộ trình và điều kiện chuyển phần đã được gộp vào mục HƯỚNG DẪN SỬ DỤNG SÁCH ở đầu sách.)"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

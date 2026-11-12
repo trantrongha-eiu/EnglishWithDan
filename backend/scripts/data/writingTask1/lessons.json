@@ -99,7 +99,181 @@
       "gate": {
         "minObjectiveScorePercent": 60,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "1.1. Luật chơi của Task 1",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "h",
+              "t": "**Thời gian làm bài: 20 phút**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Bạn nên dành khoảng **20 phút** cho Task 1, vì Task 2 chiếm điểm cao hơn (gấp đôi). Nếu Task 1 ngốn mất 30–35 phút, bạn gần như chắc chắn sẽ mất điểm ở Task 2."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Số lượng từ: Ít nhất 150 từ**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Nếu viết dưới 150 từ, bạn sẽ **bị trừ điểm trực tiếp** ở tiêu chí Task Achievement (Hoàn thành yêu cầu đề bài)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Con số vàng cho lớp học",
+              "lines": [
+                "Viết **160–190 từ** là vùng an toàn nhất: đủ để triển khai 4 đoạn, nhưng vẫn kịp thời gian cho Task 2.",
+                "Đếm nhanh: trung bình mỗi dòng viết tay khoảng 9–11 từ → 16–18 dòng là đủ."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "1.2. Bảy dạng câu hỏi trong Task 1",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• **Line graph** (Biểu đồ đường) → Thường thể hiện sự thay đổi theo thời gian (trend-based).",
+                "• **Bar chart** (Biểu đồ cột) → Có thể là dữ liệu tĩnh (static) hoặc theo thời gian (trend-based).",
+                "• **Pie chart** (Biểu đồ tròn) → Dạng so sánh tĩnh, thể hiện tỷ lệ phần trăm.",
+                "• **Table** (Bảng số liệu) → Dạng tổng hợp dữ liệu, có thể tĩnh hoặc theo thời gian.",
+                "• **Multiple chart** (Biểu đồ kết hợp) → Kết hợp 2–3 dạng biểu đồ (ví dụ: line + bar).",
+                "• **Map** (Bản đồ) → Miêu tả sự thay đổi của địa điểm qua thời gian hoặc so sánh hai địa điểm khác nhau.",
+                "• **Process** (Quy trình) → Trình bày các bước hoặc giai đoạn của một quá trình, có thể là tự nhiên (như vòng tuần hoàn nước) hoặc nhân tạo (như quy trình sản xuất)."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Phân loại các dạng biểu đồ**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Bốn loại đầu tiên (line, bar, pie, table) thực chất có **bản chất giống nhau** — chỉ khác cách hiển thị dữ liệu. Chúng được chia thành hai nhóm chính:"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**NHÓM DỮ LIỆU**",
+                  "**ĐẶC ĐIỂM VÀ VÍ DỤ**"
+                ],
+                [
+                  "**Dynamic / Trend-based (Dữ liệu có xu hướng)**",
+                  "Thể hiện sự thay đổi qua các năm hoặc giai đoạn.\nVí dụ: “From 2000 to 2020, the number of tourists increased steadily.”"
+                ],
+                [
+                  "**Static (Dữ liệu tĩnh)**",
+                  "Thể hiện dữ liệu tại một thời điểm cố định, không có thay đổi theo thời gian.\nVí dụ: “In 2020, France had the highest number of tourists.”"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Đây chính là xương sống của cả giáo trình",
+              "lines": [
+                "**Module 2** sẽ dạy toàn bộ ngôn ngữ và cấu trúc cho **dữ liệu động (dynamic)**.",
+                "**Module 3** sẽ dạy cách xử lý **dữ liệu tĩnh (static)** và biểu đồ kết hợp."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "1.3. Cách phân tích và viết",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Khi viết, điều quan trọng **không phải là loại biểu đồ**, mà là **bản chất dữ liệu**:",
+                "• **Numerical data** (Dữ liệu số học) → So sánh con số, tỷ lệ, số lượng, phần trăm, v.v.",
+                "▸ The number of male students was higher than that of females.",
+                "→ Số lượng sinh viên nam cao hơn sinh viên nữ.",
+                "• **Rising and falling trends** (Xu hướng tăng và giảm) → Mô tả sự thay đổi (tăng, giảm, ổn định, dao động, đạt đỉnh, chạm đáy…).",
+                "▸ The sales rose sharply between 2010 and 2012.",
+                "→ Doanh số tăng mạnh trong giai đoạn 2010–2012."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Hai nhiệm vụ chính khi viết Task 1",
+              "lines": [
+                "**1. Describing and comparing numerical data** → Miêu tả và so sánh các con số.",
+                "**2. Describing and comparing trends** → Miêu tả và so sánh xu hướng tăng giảm.",
+                "Mọi bài Task 1 đều chỉ là sự kết hợp của hai nhiệm vụ này."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "1.4. Bốn tiêu chí chấm điểm",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Mỗi tiêu chí chiếm **25%** tổng điểm Task 1."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**TIÊU CHÍ**",
+                  "**CÂU HỎI TỰ KIỂM TRA**"
+                ],
+                [
+                  "**Task Achievement**\n**(Hoàn thành yêu cầu đề bài)**",
+                  "Bạn có mô tả đủ, chính xác, và không bỏ sót ý chính của biểu đồ không? Có Overview chưa? Có đủ 150 từ chưa?"
+                ],
+                [
+                  "**Coherence and Cohesion**\n**(Mạch lạc và liên kết)**",
+                  "Bài viết có trình tự logic, liên kết tốt giữa các câu và đoạn không? Có chia đoạn rõ ràng chưa?"
+                ],
+                [
+                  "**Lexical Resource**\n**(Vốn từ vựng)**",
+                  "Bạn có sử dụng đa dạng từ vựng học thuật, diễn đạt tự nhiên, và dùng đúng collocation không?"
+                ],
+                [
+                  "**Grammatical Range and Accuracy**\n**(Ngữ pháp đa dạng và chính xác)**",
+                  "Cấu trúc câu có đa dạng không (simple, complex, compound)? Có lỗi ngữ pháp không?"
+                ]
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Bảng mô tả band điểm Task 1 (Band 5 → Band 8)**"
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image2_1794507505644.png",
+              "caption": "Tiêu chí 1–3: Task Achievement, Coherence and Cohesion, Lexical Resource"
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image3_1794507506374.png",
+              "caption": "Tiêu chí 4: Grammatical Range and Accuracy"
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T1-L02",
@@ -119,7 +293,160 @@
         "The percentage / proportion / rate of + N + V",
         "The figure for + [đối tượng]"
       ],
-      "exerciseCount": 8
+      "exerciseCount": 8,
+      "theory": [
+        {
+          "src": "book",
+          "title": "2.1. Ba loại dữ liệu chính",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Trong IELTS Writing Task 1 (dạng biểu đồ), có **ba loại dữ liệu chính**:",
+                "• **Dữ liệu danh từ đếm được (Countable noun data)** — ví dụ: the number of Internet users (số lượng người dùng Internet), the number of cars (số lượng ô tô).",
+                "• **Dữ liệu danh từ không đếm được (Uncountable noun data)** — ví dụ: the amount of water consumed (lượng nước tiêu thụ), the amount of fast food eaten (lượng đồ ăn nhanh được ăn).",
+                "• **Dữ liệu phần trăm (Percentage data)** — ví dụ: percentage of age groups (tỷ lệ các nhóm tuổi), percentage of energy consumption (tỷ lệ tiêu thụ năng lượng).",
+                "Ngoài ra, một số loại dữ liệu cụ thể khác như **average temperature** (nhiệt độ trung bình) hoặc **average age** (tuổi trung bình) cũng có thể được mô tả tương tự ba loại trên."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**1. Dữ liệu danh từ đếm được (Countable noun data)**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Cấu trúc",
+              "lines": [
+                "**The number / quantity of + plural countable noun + verb**"
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The number of Vietnamese Internet users in 2003 was 5 million people.",
+                "→ Số lượng người dùng Internet ở Việt Nam năm 2003 là 5 triệu người."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**2. Dữ liệu danh từ không đếm được (Uncountable noun data)**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Cấu trúc",
+              "lines": [
+                "**The amount / quantity of + uncountable noun + verb**"
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The amount of water used in the year 2010 was 5 million m³.",
+                "→ Lượng nước được sử dụng trong năm 2010 là 5 triệu mét khối."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**3. Dữ liệu phần trăm (Percentage data)**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Cấu trúc",
+              "lines": [
+                "**The percentage / proportion / rate of + uncountable noun hoặc plural countable noun + verb**"
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The percentage of Vietnamese students in this school is about 20%.",
+                "→ Tỷ lệ học sinh Việt Nam trong trường này là khoảng 20%.",
+                "▸ In 2000, 5% of the global population came from Vietnam.",
+                "→ Năm 2000, 5% dân số toàn cầu đến từ Việt Nam."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Cấu trúc đặc biệt: The figure for...",
+              "lines": [
+                "**The figure for...** nghĩa là “số liệu về...”. Cấu trúc này dùng được cho **cả ba loại dữ liệu**, giúp tránh lặp lại khi mô tả các đối tượng khác nhau.",
+                "▸ The figure for Japan was much higher than that for Korea. → Số liệu của Nhật Bản cao hơn nhiều so với Hàn Quốc."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Ba lỗi chết người phải tránh",
+              "lines": [
+                "❌ the number of water → ✅ the **amount** of water",
+                "❌ the amount of students → ✅ the **number** of students",
+                "❌ The number of cars **were** 5 million → ✅ The number of cars **was** 5 million (chủ ngữ là “the number”, số ít)"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "2.2. Ba cấu trúc dùng để mô tả dữ liệu",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Ví dụ mẫu: The number of car users in Vietnam in 2000 was 5 million."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 1: Dữ liệu ở CUỐI câu**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The number of Vietnamese car users was 5 million.",
+                "▸ The quantity of people using cars in Vietnam stood at 5 million.",
+                "→ Số lượng người sử dụng ô tô ở Việt Nam là 5 triệu người."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 2: Dữ liệu ở ĐẦU câu**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ 5 million Vietnamese people used cars.",
+                "▸ 5 million individuals in Vietnam traveled by cars.",
+                "→ 5 triệu người Việt Nam đã sử dụng ô tô."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 3: Dữ liệu ở GIỮA câu**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ There were 5 million Vietnamese people using cars.",
+                "→ Có 5 triệu người Việt Nam sử dụng ô tô."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Nguyên tắc chống lặp",
+              "lines": [
+                "Trong một đoạn văn, hãy **luân phiên** cả 3 cấu trúc trên. Nếu 4 câu liên tiếp đều bắt đầu bằng “The number of...”, giám khảo sẽ trừ điểm Coherence và Grammatical Range ngay lập tức."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T1-L03",
@@ -143,7 +470,232 @@
         "6. A was X, which was significantly higher than that of B",
         "7. A topped the list at X, followed by B, at Y"
       ],
-      "exerciseCount": 8
+      "exerciseCount": 8,
+      "theory": [
+        {
+          "src": "book",
+          "title": "3.1. LƯU Ý QUAN TRỌNG: Dữ liệu phần trăm",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Khi làm việc với dữ liệu phần trăm, cần đọc kỹ đề bài để xác định **phần trăm đó nói về cái gì**. Nếu hiểu sai, bạn sẽ mô tả sai dữ liệu và mất điểm Task Achievement."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Ví dụ kinh điển: “20% of Internet users in Vietnam”",
+              "lines": [
+                "✔ 20% **dân số Việt Nam** sử dụng Internet.",
+                "✔ 20% **người dùng Internet toàn cầu** đến từ Việt Nam.",
+                "➡️ Hai trường hợp này dẫn đến hai cấu trúc câu khác nhau, nên phải phân tích thật cẩn thận."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "3.2. Cấu trúc câu mô tả dữ liệu phần trăm",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "h",
+              "t": "**1. Phần trăm ở CUỐI câu**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The percentage of Vietnamese Internet users was 20% of the total Vietnamese population.",
+                "→ Tỷ lệ người dùng Internet ở Việt Nam chiếm 20% dân số cả nước.",
+                "▸ The percentage of Vietnamese Internet users was 20% of the total global Internet users.",
+                "→ Tỷ lệ người dùng Internet Việt Nam chiếm 20% tổng số người dùng Internet toàn cầu."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**2. Phần trăm ở ĐẦU câu**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ 20% of the Vietnamese population used the Internet.",
+                "→ 20% dân số Việt Nam sử dụng Internet.",
+                "▸ 20% of global Internet users came from Vietnam.",
+                "→ 20% người dùng Internet toàn cầu đến từ Việt Nam."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**3. Phần trăm ở GIỮA câu**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ Internet users accounted for 20% of the Vietnamese population.",
+                "→ Người dùng Internet chiếm 20% dân số Việt Nam.",
+                "▸ Vietnamese people made up 20% of the total global Internet users.",
+                "→ Người Việt Nam chiếm 20% tổng số người dùng Internet trên thế giới."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Lưu ý khi dùng với dữ liệu phần trăm",
+              "lines": [
+                "❌ **Không dùng “There were”** với phần trăm (vì phần trăm không phải là số lượng cụ thể).",
+                "✅ Thay vào đó dùng: **held / took up / accounted for / made up / stood at / occupied / constituted + …%** → (chiếm, đạt tới, tương ứng với …%)",
+                "▸ A held the first rank in 2007, at 10%. → A đứng đầu bảng năm 2007, chiếm 10%."
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Ví dụ thêm:**",
+                "▸ The proportion of Vietnamese people was 5% of the total Asian population.",
+                "→ Người Việt Nam chiếm 5% dân số châu Á.",
+                "▸ 50% of Asian people were from China.",
+                "→ 50% người châu Á là người Trung Quốc.",
+                "▸ Individuals from India made up 25% of the total population in Asia.",
+                "→ Người Ấn Độ chiếm 25% tổng dân số châu Á.",
+                "▸ People from other countries accounted for 20% of Asian individuals.",
+                "→ Người đến từ các quốc gia khác chiếm 20% dân số châu Á."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "3.3. Cách so sánh dữ liệu trong bài viết",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Khi mô tả dữ liệu, **không nên chỉ nêu riêng từng con số**, mà phải so sánh chúng một cách hợp lý bằng các từ nối và cấu trúc so sánh."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Dữ liệu dùng cho toàn bộ 7 cấu trúc dưới đây",
+              "lines": [
+                "Số lượng người sử dụng phương tiện ở Việt Nam (năm 2000):",
+                "Ô tô (Cars): 5 triệu — Xe máy (Motorbikes): 20 triệu — Xe đạp (Bicycles): 10 triệu"
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 1: “respectively” (tương ứng / lần lượt)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The numbers of Vietnamese car and motorbike users were 5 million and 20 million, respectively.",
+                "→ Số lượng người Việt Nam sử dụng ô tô và xe máy lần lượt là 5 và 20 triệu.",
+                "▸ 5 million and 20 million Vietnamese people used cars and motorbikes, respectively.",
+                "→ 5 và 20 triệu người Việt Nam lần lượt sử dụng ô tô và xe máy.",
+                "📌 **“Respectively”** luôn đặt ở **cuối câu** để chỉ rõ con số nào thuộc về đối tượng nào."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 2: “compared to” / “in comparison with” (so với)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The number of Vietnamese car users was 5 million, compared to 20 million motorbike users.",
+                "→ Số người dùng ô tô ở Việt Nam là 5 triệu, so với 20 triệu người dùng xe máy.",
+                "▸ There were 5 million Vietnamese car users, in comparison with 20 million motorbike users.",
+                "→ Có 5 triệu người dùng ô tô ở Việt Nam, so với 20 triệu người dùng xe máy.",
+                "📌 Lưu ý giới từ: **compared to** hoặc **in comparison with**."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 3: “while” / “whereas” (trong khi)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The number of Vietnamese car users was 5 million, while the number of motorbike users was 20 million.",
+                "→ Số người dùng ô tô ở Việt Nam là 5 triệu, trong khi số người dùng xe máy là 20 triệu.",
+                "▸ 5 million Vietnamese people used cars, while there were 20 million individuals travelling by motorbikes.",
+                "→ 5 triệu người Việt Nam đi ô tô, trong khi có 20 triệu người di chuyển bằng xe máy.",
+                "📌 **While** và **whereas** dùng để tạo sự tương phản và giúp câu phức tạp hơn."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 4: “By contrast / Meanwhile / At the same time” (Ngược lại / Trong khi đó)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "📌 Cấu trúc này thường gồm **hai câu tách biệt**.",
+                "▸ 5 million Vietnamese people used cars. Meanwhile, there were 20 million individuals travelling by motorbikes.",
+                "→ 5 triệu người Việt Nam dùng ô tô. Trong khi đó, có 20 triệu người di chuyển bằng xe máy."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 5: So sánh gấp đôi – “twice as many/much as”**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The number of Vietnamese bike users was 10 million, which was twice as many as that of car users.",
+                "→ Số người Việt Nam sử dụng xe đạp là 10 triệu, gấp đôi so với số người dùng ô tô.",
+                "📌 **“that of car users”** = “the number of car users” → dùng để tránh lặp từ."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 6: Mệnh đề quan hệ + “higher/lower” (so sánh mức chênh lệch)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ There were 20 million individuals travelling by motorbike, which was significantly higher than that of car users, at only 5 million.",
+                "→ Có 20 triệu người đi xe máy, cao hơn đáng kể so với số người đi ô tô (chỉ 5 triệu).",
+                "▸ The number of Vietnamese motorbike users was 20 million, which was 15 million higher than that of car users.",
+                "→ Số người dùng xe máy ở Việt Nam là 20 triệu, cao hơn 15 triệu so với người dùng ô tô.",
+                "📌 Cấu trúc này giúp người đọc hiểu rõ **khoảng cách chênh lệch** giữa hai con số."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 7: “followed by + danh từ” (theo sau bởi)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ There were 20 million individuals travelling by motorbike, which was followed by that of car users, at only 5 million.",
+                "→ Có 20 triệu người đi xe máy, theo sau là số người đi ô tô chỉ 5 triệu.",
+                "▸ 20 million individuals were travelling by motorbike, followed by that of car users, at only 5 million.",
+                "→ 20 triệu người di chuyển bằng xe máy, theo sau là ô tô với chỉ 5 triệu người.",
+                "📌 Cấu trúc này rất hữu ích khi mô tả **thứ hạng** trong biểu đồ."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Bảng tra nhanh 7 cấu trúc so sánh",
+              "lines": [
+                "1. A and B were X and Y, **respectively**.",
+                "2. A was X, **compared to** Y for B.",
+                "3. A was X, **while / whereas** B was Y.",
+                "4. A was X. **Meanwhile / By contrast,** B was Y.",
+                "5. A was X, which was **twice as many as** that of B.",
+                "6. A was X, **which was significantly higher than** that of B.",
+                "7. A topped the list at X, **followed by** B, at Y."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T1-L04",
@@ -163,7 +715,237 @@
         "around / about / approximately / roughly / just over / just under / nearly",
         "in the surveyed period · in the remainder of the period · 5 years later"
       ],
-      "exerciseCount": 7
+      "exerciseCount": 7,
+      "theory": [
+        {
+          "src": "book",
+          "title": "4.1. Cách mô tả dữ liệu ở thì tương lai",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Khi biểu đồ hoặc đề bài đề cập đến mốc thời gian trong tương lai (2030, 2050, hoặc “trong 20 năm tới”), ta vẫn dùng các cấu trúc mô tả và so sánh quen thuộc, nhưng **phải chuyển động từ sang thì tương lai**."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Các cụm thường dùng để diễn tả dự đoán**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• **is expected to** → được kỳ vọng sẽ",
+                "• **is predicted to** → được dự đoán sẽ",
+                "• **is projected to** → được dự báo sẽ (thường dùng cho dữ liệu, biểu đồ)",
+                "• **is anticipated to** → được mong đợi sẽ",
+                "• **is set to** → được dự kiến sẽ",
+                "• **is likely to** → có khả năng sẽ"
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Ví dụ chuyển đổi động từ từ quá khứ sang tương lai**"
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**QUÁ KHỨ**",
+                  "**TƯƠNG LAI**",
+                  "**NGHĨA**"
+                ],
+                [
+                  "**stood at**",
+                  "is likely to stand at",
+                  "dự kiến sẽ ở mức..."
+                ],
+                [
+                  "**was**",
+                  "is predicted to be",
+                  "được dự đoán sẽ là..."
+                ],
+                [
+                  "**made up**",
+                  "is expected to make up",
+                  "được kỳ vọng sẽ chiếm..."
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The number of Vietnamese car users is expected to be 20 million in 2030.",
+                "→ Số lượng người sử dụng ô tô tại Việt Nam được dự đoán sẽ là 20 triệu vào năm 2030. (Thay vì “was 20 million” như khi nói về quá khứ.)",
+                "▸ In 2050, gas is predicted to account for 40% of total energy production.",
+                "→ Vào năm 2050, khí đốt được dự đoán sẽ chiếm 40% tổng sản lượng năng lượng."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Ghi nhớ",
+              "lines": [
+                "Khi nói về tương lai, **tuyệt đối không dùng thì quá khứ** (was, accounted for, made up, rose, fell, v.v.).",
+                "Luôn dùng **is/are + expected / predicted / projected…** để giữ đúng ngữ pháp và giọng học thuật của IELTS Writing Task 1.",
+                "Các cụm này giúp câu nghe tự nhiên và chuyên nghiệp hơn."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "4.2. Cách mô tả nhóm tuổi",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Ví dụ cho nhóm tuổi **25–30**:",
+                "• **People aged 25–30** → Những người ở độ tuổi từ 25 đến 30. (“aged” đi trực tiếp sau “people”.)",
+                "• **People who were 25–30** → Dùng mệnh đề “who were…”, đầy đủ hơn, thường dùng trong văn phong trang trọng.",
+                "• **People in the 25–30 age group** → Rất phổ biến trong Writing Task 1 khi mô tả dữ liệu theo độ tuổi.",
+                "• **25–30-year-old people** → Dạng tính từ ghép. Lưu ý “year-old” phải có dấu gạch nối khi đứng trước danh từ.",
+                "• **25–30-year-olds** → Cách viết ngắn gọn và tự nhiên nhất (“year-olds” đã được danh từ hoá, không cần thêm “people”)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Thay “people” bằng danh từ phù hợp với biểu đồ",
+              "lines": [
+                "25–30-year-old Vietnamese people → Người Việt Nam trong độ tuổi 25–30",
+                "Car users aged 25–30 → Người sử dụng ô tô trong độ tuổi 25–30",
+                "Workers aged 25–30 → Nhân viên trong độ tuổi 25–30"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**CẤU TRÚC**",
+                  "**NGHĨA**",
+                  "**GHI CHÚ**"
+                ],
+                [
+                  "**People aged 25–30**",
+                  "Những người ở độ tuổi 25–30",
+                  "Dạng phổ biến, tự nhiên"
+                ],
+                [
+                  "**People who were 25–30**",
+                  "Những người trong độ tuổi 25–30",
+                  "Trang trọng hơn"
+                ],
+                [
+                  "**People in the 25–30 age group**",
+                  "Nhóm người 25–30 tuổi",
+                  "Dùng nhiều trong biểu đồ"
+                ],
+                [
+                  "**25–30-year-old people**",
+                  "Người 25–30 tuổi",
+                  "Dạng tính từ ghép"
+                ],
+                [
+                  "**25–30-year-olds**",
+                  "Những người 25–30 tuổi",
+                  "Dạng ngắn gọn, tự nhiên"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "4.3. Mô tả số liệu chính xác (Describing numerical data accurately)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "h",
+              "t": "**Khoảng 1.000**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• **around 1,000** → khoảng 1.000",
+                "• **about 1,000** → khoảng 1.000",
+                "• **approximately 1,000** → xấp xỉ 1.000",
+                "• **roughly 1,000** → chừng 1.000",
+                "• **somewhere in the region / vicinity of 1,000** → vào khoảng 1.000 (cách diễn đạt học thuật, Band 8.0)"
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Hơn một chút so với 1.000**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• **(slightly) more than 1,000** → hơn một chút so với 1.000",
+                "• **just over 1,000** → vừa hơn 1.000"
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Ít hơn một chút so với 1.000**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• **(slightly) less / fewer than 1,000** → ít hơn một chút so với 1.000",
+                "• **nearly 1,000** → gần 1.000",
+                "• **almost 1,000** → gần như 1.000"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "4.4. Mô tả thời gian và mốc thời gian",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• **Năm 2000:** In 2000 = in the year 2000 → vào năm 2000",
+                "• **5 năm sau:** in the following 5 years = in the next 5 years → trong 5 năm tiếp theo",
+                "• **3 năm liên tiếp:** in the 3 consecutive years → trong 3 năm liên tiếp",
+                "• **5 năm sau (đầu câu):** 5 years later, ... → Năm năm sau, ...",
+                "• **Trong giai đoạn khảo sát:** in the surveyed period = in the period given / shown → trong giai đoạn được khảo sát / thể hiện",
+                "• **Giai đoạn khảo sát 100 năm:** In the surveyed period of 100 years → trong giai đoạn khảo sát 100 năm",
+                "• **Từ 2000 đến 2005:** from 2000 to 2005 = between 2000 and 2005 = in the period of 5 years, starting from 2000",
+                "• **Thời gian còn lại:** In the remainder of the surveyed period → trong thời gian còn lại của giai đoạn khảo sát"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "4.5. Chuyển phần trăm từ số sang chữ (Converting percentages to words)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image5_1794507506731.png",
+              "caption": "Bảng quy đổi phần trăm chuẩn (80% → 5%)"
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image6_1794507507083.png",
+              "caption": "Cách diễn đạt khi phần trăm KHÔNG tròn số"
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Ghi chú",
+              "lines": [
+                "Nếu phần trăm không phải con số đẹp như trong bảng đầu tiên, bạn có thể dùng các cách diễn đạt ở bảng thứ hai (just over / just under / nearly / almost / a very large majority…) mà vẫn đảm bảo **độ chính xác** so với biểu đồ gốc."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T1-TEST1",
@@ -196,6 +978,399 @@
         "remain stable · level off · hit a plateau · fluctuate · oscillate",
         "peak at · reach a peak of · hit a low of · bottom at",
         "minimal < slight < moderate < significant < substantial < dramatic < enormous"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "5.1. Bảng 1 — Từ vựng miêu tả xu hướng",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**XU HƯỚNG**",
+                  "**ĐỘNG TỪ (VERB)**",
+                  "**DANH TỪ (NOUN)**"
+                ],
+                [
+                  "**🟢 TĂNG**",
+                  "rise – tăng, tăng lên",
+                  "a rise – sự tăng"
+                ],
+                [
+                  "",
+                  "increase – tăng",
+                  "an increase – sự gia tăng"
+                ],
+                [
+                  "",
+                  "grow – tăng trưởng",
+                  "a growth – sự tăng trưởng"
+                ],
+                [
+                  "",
+                  "climb – tăng dần",
+                  "a climb – sự tăng"
+                ],
+                [
+                  "",
+                  "go up – tăng lên",
+                  "—"
+                ],
+                [
+                  "",
+                  "jump – tăng mạnh",
+                  "a jump – sự tăng mạnh"
+                ],
+                [
+                  "",
+                  "rocket / surge – tăng vọt",
+                  "—"
+                ],
+                [
+                  "**🔴 GIẢM**",
+                  "fall – giảm, rơi xuống",
+                  "a fall – sự giảm"
+                ],
+                [
+                  "",
+                  "drop – giảm",
+                  "a drop – sự sụt giảm"
+                ],
+                [
+                  "",
+                  "decline – giảm",
+                  "a decline – sự suy giảm"
+                ],
+                [
+                  "",
+                  "decrease – giảm",
+                  "a decrease – sự giảm"
+                ],
+                [
+                  "",
+                  "go down – giảm xuống",
+                  "—"
+                ],
+                [
+                  "",
+                  "dip – giảm nhẹ / giảm tạm thời",
+                  "a dip – sự giảm nhẹ"
+                ],
+                [
+                  "",
+                  "plunge – giảm mạnh, đột ngột",
+                  "a plunge – sự sụt giảm mạnh"
+                ],
+                [
+                  "",
+                  "plummet – giảm cực mạnh, rất nhanh",
+                  "a plummet – sự giảm cực mạnh"
+                ],
+                [
+                  "**🟡 ỔN ĐỊNH**",
+                  "stay stable – duy trì ổn định",
+                  "a period of stability – một giai đoạn ổn định"
+                ],
+                [
+                  "",
+                  "remain stable – vẫn ổn định",
+                  "a levelling out / levelling off – sự ổn định lại"
+                ],
+                [
+                  "",
+                  "maintain – duy trì",
+                  "—"
+                ],
+                [
+                  "",
+                  "remain unchanged – không thay đổi",
+                  "—"
+                ],
+                [
+                  "",
+                  "level off / level out – ổn định sau khi tăng hoặc giảm",
+                  "—"
+                ],
+                [
+                  "",
+                  "hit a plateau – đạt mức ổn định",
+                  "a plateau – một giai đoạn bình ổn"
+                ],
+                [
+                  "**🔵 DAO ĐỘNG**",
+                  "fluctuate – dao động",
+                  "a fluctuation – sự dao động"
+                ],
+                [
+                  "",
+                  "vary – thay đổi, biến động",
+                  "a variation – sự biến động"
+                ],
+                [
+                  "",
+                  "oscillate – dao động lên xuống",
+                  "an oscillation – sự dao động"
+                ],
+                [
+                  "",
+                  "be volatile – biến động mạnh, khó đoán",
+                  "a period of volatility – giai đoạn biến động"
+                ]
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Phân biệt mức độ tăng / giảm**"
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**TỪ**",
+                  "**NGHĨA DỄ NHỚ**"
+                ],
+                [
+                  "**rise / fall**",
+                  "tăng / giảm nói chung"
+                ],
+                [
+                  "**climb / decline**",
+                  "tăng / giảm dần"
+                ],
+                [
+                  "**jump / dip**",
+                  "tăng mạnh / giảm nhẹ"
+                ],
+                [
+                  "**surge / plunge**",
+                  "tăng mạnh / giảm mạnh"
+                ],
+                [
+                  "**rocket / plummet**",
+                  "tăng vọt / giảm cực mạnh, rất nhanh"
+                ],
+                [
+                  "**level off**",
+                  "sau khi tăng hoặc giảm thì ổn định"
+                ],
+                [
+                  "**fluctuate**",
+                  "lên xuống liên tục"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "5.2. Mô tả đạt đỉnh và chạm đáy",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "h",
+              "t": "**🏔️ Reaching the Highest Point — Đạt đến mức cao nhất**"
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**CẤU TRÚC**",
+                  "**NGHĨA**",
+                  "**VÍ DỤ**"
+                ],
+                [
+                  "**peak at … (peak là verb)**",
+                  "đạt đỉnh tại... / đạt mức cao nhất là...",
+                  "The number of car users peaked at 10 million in 2010. → Số lượng người sử dụng ô tô đạt đỉnh 10 triệu vào năm 2010."
+                ],
+                [
+                  "**reach a peak of … (peak là noun)**",
+                  "đạt đỉnh điểm là...",
+                  "Internet usage reached a peak of 85% in 2020. → Tỷ lệ sử dụng Internet đạt đỉnh điểm 85% vào năm 2020."
+                ],
+                [
+                  "**hit the highest point of …**",
+                  "chạm mức cao nhất là...",
+                  "The figure hit the highest point of 2,000 tonnes in 2015. → Con số này chạm mức cao nhất là 2.000 tấn vào năm 2015."
+                ]
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**🌊 Reaching the Lowest Point — Đạt đến mức thấp nhất**"
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**CẤU TRÚC**",
+                  "**NGHĨA**",
+                  "**VÍ DỤ**"
+                ],
+                [
+                  "**hit a low of …**",
+                  "chạm mức thấp nhất là...",
+                  "Sales hit a low of 500 units in 2018. → Doanh số chạm mức thấp nhất là 500 sản phẩm vào năm 2018."
+                ],
+                [
+                  "**reach a bottom of …**",
+                  "giảm xuống đáy ở mức...",
+                  "The unemployment rate reached a bottom of 2% in 2005. → Tỷ lệ thất nghiệp giảm xuống đáy ở mức 2% vào năm 2005."
+                ],
+                [
+                  "**hit the lowest point of …**",
+                  "chạm điểm thấp nhất là...",
+                  "The figure hit the lowest point of 1 million in 1999. → Con số này chạm điểm thấp nhất là 1 triệu vào năm 1999."
+                ],
+                [
+                  "**bottom at …**",
+                  "chạm đáy tại mức...",
+                  "Oil prices bottomed at 30 USD per barrel in 2016. → Giá dầu chạm đáy ở mức 30 đô la một thùng vào năm 2016."
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Ghi nhớ",
+              "lines": [
+                "Các cụm này rất hay dùng để miêu tả điểm cao nhất hoặc thấp nhất của một xu hướng.",
+                "Hãy thay đổi linh hoạt để tránh lặp từ: “peaked at” ↔ “reached a peak of” ; “hit a low of” ↔ “bottomed at”."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "5.3. Bảng 2 — Mô tả tốc độ và mức độ thay đổi",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**MỨC ĐỘ**",
+                  "**ADJECTIVE**",
+                  "**ADVERB**",
+                  "**NGHĨA**"
+                ],
+                [
+                  "**🟢 Rất yếu**",
+                  "minimal",
+                  "minimally",
+                  "tối thiểu, gần như không đáng kể"
+                ],
+                [
+                  "",
+                  "slight",
+                  "slightly",
+                  "nhẹ, nhỏ"
+                ],
+                [
+                  "",
+                  "gradual",
+                  "gradually",
+                  "từ từ, dần dần"
+                ],
+                [
+                  "**🟡 Trung bình**",
+                  "moderate",
+                  "moderately",
+                  "vừa phải"
+                ],
+                [
+                  "",
+                  "significant",
+                  "significantly",
+                  "đáng kể"
+                ],
+                [
+                  "",
+                  "substantial",
+                  "substantially",
+                  "đáng kể, lớn"
+                ],
+                [
+                  "",
+                  "considerable",
+                  "considerably",
+                  "khá lớn, đáng kể"
+                ],
+                [
+                  "**🟠 Mạnh / tốc độ cao**",
+                  "rapid",
+                  "rapidly",
+                  "nhanh chóng"
+                ],
+                [
+                  "",
+                  "sharp",
+                  "sharply",
+                  "đột ngột, mạnh"
+                ],
+                [
+                  "",
+                  "steep",
+                  "steeply",
+                  "dốc, tăng hoặc giảm rất mạnh"
+                ],
+                [
+                  "**🔴 Rất mạnh**",
+                  "dramatic",
+                  "dramatically",
+                  "mạnh mẽ, đáng kể"
+                ],
+                [
+                  "",
+                  "enormous",
+                  "enormously",
+                  "cực kỳ lớn"
+                ]
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cách dùng trong Task 1**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Với danh từ (dùng Adjective):**",
+                "• a minimal increase → mức tăng rất nhỏ",
+                "• a slight increase → mức tăng nhẹ",
+                "• a moderate increase → mức tăng vừa phải",
+                "• a significant increase → mức tăng đáng kể",
+                "• a substantial increase → mức tăng lớn",
+                "• a dramatic increase → mức tăng mạnh, đột biến",
+                "**Với động từ (dùng Adverb):**",
+                "• increased slightly ; increased moderately ; increased significantly ; increased substantially ; increased dramatically"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Riêng 4 từ này nên hiểu khác",
+              "lines": [
+                "Không nên coi chúng đơn giản là “mạnh hơn”:",
+                "**gradually** – thay đổi từ từ → The figure increased gradually.",
+                "**rapidly** – thay đổi nhanh → The figure increased rapidly.",
+                "**sharply** – thay đổi đột ngột, mạnh → The figure increased sharply.",
+                "**steeply** – thay đổi với độ dốc lớn → The figure rose steeply."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Hai thang đo cần phân biệt",
+              "lines": [
+                "**Mức độ thay đổi:** minimal → slight → moderate → significant → substantial → considerable → dramatic → enormous",
+                "**Tốc độ / hình dạng thay đổi:** gradual → moderate → rapid → sharp → steep"
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -219,6 +1394,195 @@
         "by = mức thay đổi · to = giá trị đích · at = đứng yên tại · of = sau danh từ",
         "respectively · while / whereas · By contrast / Meanwhile / Similarly",
         "double · treble · quadruple · a two-fold increase · six times higher than"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "6.1. Ba cấu trúc miêu tả xu hướng",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Ví dụ: **Số lượng người sử dụng ô tô (Number of Car Users)** — Năm 2000: 5 triệu ; Năm 2010: 15 triệu.",
+                "Khi miêu tả xu hướng này, ta có **3 loại số liệu chính**:",
+                "• **Số liệu cuối cùng** (Final number – năm 2010): 15 triệu → **luôn phải đề cập đến**.",
+                "• **Số liệu ban đầu** (Initial number – năm 2000): 5 triệu → không nhất thiết phải nêu rõ.",
+                "• **Mức chênh lệch** (Difference): 10 triệu → có thể nêu hoặc lược bỏ."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 1: Subject + Verb + Adverb**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The number of Vietnamese car users rapidly increased by 10 million to 15 million.",
+                "→ Số lượng người sử dụng ô tô ở Việt Nam tăng nhanh thêm 10 triệu, lên tới 15 triệu."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Ghi chú giới từ",
+              "lines": [
+                "**by + số lượng** → diễn tả mức tăng hoặc giảm (tăng thêm bao nhiêu).",
+                "**to + số lượng** → diễn tả giá trị cuối cùng (đạt đến bao nhiêu)."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 2: There was a/an + Adjective + Noun (trend) + in ...**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ There was a rapid increase of 10 million to 15 million in the number of Vietnamese car users.",
+                "→ Có một sự gia tăng nhanh chóng từ 10 triệu lên 15 triệu trong số lượng người sử dụng ô tô ở Việt Nam.",
+                "📘 Noun (trend) có thể là: increase, rise, growth, decrease, fall, v.v. Dạng này giúp câu nghe khách quan và học thuật hơn."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc 3: saw / witnessed / experienced + increase / decrease in ...**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ Vietnam saw a rapid increase of 10 million to 15 million in the number of car users.",
+                "→ Việt Nam chứng kiến một sự gia tăng nhanh từ 10 triệu lên 15 triệu trong số người dùng ô tô.",
+                "▸ The year 2010 witnessed a rapid increase of 10 million to 15 million in the number of car users.",
+                "→ Năm 2010 chứng kiến một sự tăng nhanh từ 10 triệu lên 15 triệu người sử dụng ô tô.",
+                "▸ The number of Vietnamese car users experienced a rapid increase of 10 million to 15 million.",
+                "→ Số lượng người sử dụng ô tô ở Việt Nam đã trải qua một sự gia tăng nhanh từ 10 triệu lên 15 triệu.",
+                "✅ **Dạng bị động của cấu trúc này:**",
+                "▸ A rapid increase of 10 million to 15 million was seen in the number of Vietnamese car users.",
+                "→ Một sự gia tăng nhanh từ 10 triệu lên 15 triệu đã được ghi nhận trong số lượng người dùng ô tô tại Việt Nam."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Lưu ý giới từ khi mô tả số liệu",
+              "lines": [
+                "**by** → mức thay đổi (tăng hoặc giảm bao nhiêu)",
+                "**to** → giá trị cuối cùng (đạt tới bao nhiêu)",
+                "**in** → đối tượng được mô tả (trong cái gì)"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "6.2. Bảng tra giới từ đầy đủ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image8_1794507507494.png",
+              "caption": "Giới từ AT — dùng khi số liệu đứng cuối câu, remain stable at, peak at, bottom at"
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image9_1794507507874.png",
+              "caption": "Giới từ TO — increase / decrease TO + số liệu (giá trị đích)"
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image10_1794507508257.png",
+              "caption": "Giới từ BY (mức thay đổi) và OF (reach a peak of, hit a low of)"
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image11_1794507508592.png",
+              "caption": "Giới từ WITH (phần trăm) và AROUND / BETWEEN … AND … (dao động)"
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "6.6. Tổng quan về so sánh xu hướng",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Có hai kiểu so sánh xu hướng chính trong IELTS Writing Task 1:",
+                "• So sánh **xu hướng tương tự nhau** (similar trends) — cả hai cùng tăng hoặc cùng giảm.",
+                "• So sánh **xu hướng đối lập nhau** (opposite trends) — một tăng, một giảm.",
+                "**Ví dụ minh hoạ:** Số lượng người sử dụng các loại phương tiện giao thông khác nhau ở Việt Nam từ năm 2000 đến 2010:"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image14_1794507508957.png",
+              "caption": ""
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "6.7. So sánh xu hướng: từ nối và cấp số nhân",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Ba cấu trúc respectively, while / whereas và by contrast / meanwhile đã học kỹ ở mục 3.3 — dùng y hệt cho xu hướng, chỉ đổi động từ sang increase / decrease. Bảng dưới tóm tắt cách chọn từ nối theo từng loại xu hướng."
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image15_1794507509330.png",
+              "caption": "Tóm tắt cách dùng từ nối theo loại xu hướng"
+            },
+            {
+              "k": "h",
+              "t": "**Diễn tả sự tăng theo cấp số nhân (Multiplicative Increases)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "🔹 Dùng từ **double** (có thể đóng vai trò tính từ hoặc động từ).",
+                "▸ The rate of A was 40% in 2000. Then, A doubled in 2005.",
+                "→ Tỷ lệ của A là 40% vào năm 2000. Sau đó, A tăng gấp đôi vào năm 2005. (double là động từ)",
+                "▸ A had 40% in 2000. Then, A was double in 2005.",
+                "→ A đạt 40% vào năm 2000. Sau đó, A gấp đôi vào năm 2005. (double là tính từ)",
+                "**Các cách khác để diễn tả sự tăng theo cấp số nhân:**",
+                "• **Treble** (x3) → tăng gấp ba",
+                "• **Quadruple** (x4) → tăng gấp bốn",
+                "• **X-fold** (ví dụ: a two-fold increase / increased two-fold) → tăng gấp hai lần, gấp ba lần, v.v.",
+                "• Cụm với **times** (ví dụ: six times higher than…, four times greater than…) → cao hơn sáu lần so với…, lớn hơn bốn lần so với…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Tóm tắt cách miêu tả sự tăng theo cấp số nhân",
+              "lines": [
+                "🔹 **Dùng động từ:** double (gấp đôi), treble (gấp ba), quadruple (gấp bốn)",
+                "🔹 **Dùng tính từ / trạng từ:** x-fold — a two-fold increase = sự tăng gấp đôi ; increased two-fold = tăng gấp hai lần",
+                "🔹 **Dùng cụm so sánh:** x times higher / greater than… (cao hơn / lớn hơn ... lần so với ...)"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image16_1794507509658.png",
+              "caption": "Bảng số liệu mẫu 1992–1998"
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image17_1794507510051.png",
+              "caption": "Tám cách diễn đạt cùng một dữ liệu"
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image18_1794507510477.png",
+              "caption": "Tóm tắt nhanh các biểu thức cấp số nhân"
+            }
+          ]
+        }
       ]
     },
     {
@@ -237,6 +1601,90 @@
         "…, and then S continued its upward trend, reaching a peak of …",
         "There was a … until it reached a high of …; however, S began to …",
         "Starting at X, S + V, followed by … / before V-ing … / but later + V"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "7.1. Kết hợp trends — Similar and different trends",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image24_1794507510908.png",
+              "caption": "Figure 1 (Addition) và Figure 2 (Contrast)"
+            },
+            {
+              "k": "h",
+              "t": "**🚗 Example Figure 1: Xu hướng tăng liên tục từ đầu đến cuối giai đoạn**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ GM car sales increased gradually to 24,000 USD in 1980, and then it continued its upward trend over the next thirty years, reaching a peak of 105,000 USD in 2010.",
+                "**Phân tích:**",
+                "• Cụm **and then** được dùng để nối hai xu hướng tương tự (đều tăng).",
+                "• Câu có cấu trúc phức, thể hiện rõ sự tiếp nối xu hướng tăng.",
+                "• Từ vựng nổi bật: increased gradually (tăng dần) ; continued its upward trend (tiếp tục xu hướng tăng) ; reaching a peak of… (đạt đỉnh ở mức…)"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Cấu trúc mẫu rút ra",
+              "lines": [
+                "[S + V + gradually to + số liệu + mốc thời gian], **and then** [S + continued its upward trend + reaching a peak of + số liệu + thời gian]."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**📉 Example Figure 2: Xu hướng tăng rồi giảm**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ There was a sharp increase in GM car sales between 1960 and 1990 until it reached a high of almost 95,000 USD; however, sales began to decrease swiftly to under 65,000 USD in 2010.",
+                "**Phân tích:**",
+                "• Cụm **however** được dùng để chuyển ý, thể hiện hai xu hướng trái ngược (tăng rồi giảm).",
+                "• until it reached a high of… → diễn tả điểm cực đại trước khi đảo chiều.",
+                "• decrease swiftly (C2) → cách diễn đạt học thuật hơn của “decrease quickly”."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Cấu trúc mẫu rút ra",
+              "lines": [
+                "There was a [mức độ + noun of trend] in [subject] between [year 1] and [year 2] until it reached [peak/bottom phrase]; **however**, [subject] [verb of opposite trend] to [final figure] in [year]."
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image25_1794507511296.png",
+              "caption": "Tóm tắt: từ nối cho hai xu hướng cùng chiều và trái chiều"
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "7.2. Bốn cấu trúc câu “xịn” để nối xu hướng",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image26_1794507511709.png",
+              "caption": "Table 1 — Fancy sentence structures to connect trends and avoid subject repetition"
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Ghi chú quan trọng",
+              "lines": [
+                "Cấu trúc câu số **1, 2 và 3** dùng để nối **hai** xu hướng.",
+                "Cấu trúc số **4** dùng để nối **ba** xu hướng."
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -256,6 +1704,187 @@
         "C2: đổi dạng từ (noun ⇆ verb) + how many / how much / how",
         "C3: compare(s) … in terms of …",
         "namely + A, B and C"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "8.1. Cấu trúc bài viết Task 1",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• **Introduction (Giới thiệu):** Viết 1 câu để diễn đạt lại đề bài (paraphrase the topic).",
+                "• **Overview (Tổng quan):** Viết 1–2 câu mô tả 2 đặc điểm nổi bật nhất của biểu đồ.",
+                "• **Detail 1:** Mô tả nhóm dữ liệu nổi bật đầu tiên.",
+                "• **Detail 2:** Mô tả nhóm dữ liệu nổi bật thứ hai.",
+                "📌 Nội dung của phần Introduction chính là câu trả lời cho câu hỏi: 👉 **Biểu đồ (hoặc bảng/đồ thị) thể hiện điều gì?**",
+                "Bắt đầu bài viết bằng một câu mở đầu (opening sentence), trong đó bạn viết lại câu hỏi bằng từ ngữ của riêng mình — paraphrase lại đề bài, **tránh chép nguyên văn**."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Ví dụ",
+              "lines": [
+                "**Đề bài:** The line chart shows the number of tourists visiting three different countries between 2000 and 2020.",
+                "**Introduction (Paraphrased):** The line graph illustrates how many tourists travelled to three different countries over a 20-year period from 2000 to 2020."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "8.2. Ví dụ mẫu — Bảng nghèo đói tại Úc",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "WRITING TASK 1 — You should spend about 20 minutes on this task.",
+              "lines": [
+                "**The table below shows the proportion of different categories of families living in poverty in Australia in 1999.**",
+                "**Summarize the information by selecting and reporting the main features, and make comparisons where relevant.Write at least 150 words.**"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image32_1794507512135.png",
+              "caption": ""
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Dưới đây là **ba câu mở bài mẫu** áp dụng phương pháp paraphrasing. Lưu ý rằng đôi khi những từ được dùng trực tiếp trong bảng hoặc biểu đồ cũng có thể giúp bạn tận dụng từ vựng hiệu quả khi viết lại đề.",
+                "▸ The table compares percentages of Australians from six different family types who were classed as poor in 1999.",
+                "→ Bảng so sánh tỷ lệ phần trăm người Úc thuộc sáu loại hình gia đình khác nhau được xếp vào nhóm nghèo vào năm 1999.",
+                "▸ The table gives information about poverty rates among six types of households in Australia in the year 1999.",
+                "→ Bảng cung cấp thông tin về tỷ lệ nghèo trong sáu loại hộ gia đình ở Úc vào năm 1999.",
+                "▸ The table compares different categories of Australian families in terms of the proportion of people living below the poverty line in each one.",
+                "→ Bảng so sánh các nhóm gia đình khác nhau ở Úc dựa trên tỷ lệ người sống dưới mức nghèo khổ trong từng nhóm."
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image33_1794507512464.png",
+              "caption": "Bảng phân tích: keyword gốc và cách paraphrase"
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "8.3. Các bước viết phần Introduction",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "h",
+              "t": "**Bước 1: Gạch chân các từ khoá (keywords)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Gạch chân các từ khoá trong đề bài, bao gồm:",
+                "• **Chủ ngữ** (subject / main noun)",
+                "• **Mốc thời gian** (time frame) — có thể là khoảng thời gian hoặc một năm cụ thể",
+                "• **Địa điểm** (location) — nếu có (không phải lúc nào cũng cần)"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image34_1794507512802.png",
+              "caption": "Ví dụ: The graph below shows the amounts of waste produced by three companies over a period of 15 years"
+            },
+            {
+              "k": "h",
+              "t": "**Bước 2: Viết lại các từ khoá bằng từ ngữ của riêng bạn (paraphrasing)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Ví dụ về cách thay thế từ:",
+                "• The graph → **The line chart** (chỉ rõ loại biểu đồ)",
+                "• Shows → **Illustrates / Compares / Gives information about / Demonstrates**",
+                "• The amounts of waste produced → **Waste output**",
+                "• Over a period of 15 years → **Between the years 2000 and 2015** (👉 Ghi rõ các năm nếu có; tránh đảo ngược thứ tự thời gian.)"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Ví dụ về một đoạn mở bài hoàn chỉnh",
+              "lines": [
+                "**The line chart compares three companies in terms of their waste output between the years 2000 and 2015.**",
+                "Chủ ngữ: The line chart — Động từ: Compares — Nội dung chính: Three companies in terms of their waste output — Thời gian: Between the years 2000 and 2015"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "8.4. Ba cách khác nhau để viết Introduction",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• **Chỉ cần diễn đạt lại (paraphrase) các từ khoá** trong đề bài → cách cơ bản và an toàn nhất.",
+                "• **Chuyển đổi dạng từ (danh từ → động từ) và dùng cấu trúc với “how”.** Ví dụ: The chart shows the population growth → The chart illustrates how the population grew...",
+                "• **Bắt đầu bằng cấu trúc “compare(s) … in terms of …”** → dùng để so sánh các chủ thể dựa trên một khía cạnh cụ thể. Ví dụ: The table compares different countries in terms of energy consumption."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Áp dụng vào một đề cụ thể**"
+            },
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**The graph below shows the contribution of three sectors – Agriculture, Manufacturing, and Business and Financial services – to the UK economy in the twentieth century.**"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image35_1794507513133.png",
+              "caption": ""
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image36_1794507513703.png",
+              "caption": "Bước 1 và Bước 2 — gạch chân keyword rồi viết mở bài"
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image37_1794507514045.png",
+              "caption": "Bảng đối chiếu: từ gốc trong đề và cách diễn đạt lại"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "✅ **Cách 1: Đơn giản là diễn đạt lại (Simply paraphrase the keywords)**",
+                "▸ The bar chart illustrates the percentages of three different areas, namely Agriculture, Manufacturing, and Business and Financial, in the economy of the UK from 1901 to 2000.",
+                "📘 Câu này chỉ thay thế các từ khoá bằng từ đồng nghĩa và sắp xếp lại trật tự, không đổi cấu trúc câu.",
+                "✏ **Cách 2: Thay đổi dạng từ (Noun ⇆ Verb) + sử dụng “how”** — Từ gốc: Contribution (n) → to contribute (v)",
+                "▸ The bar chart illustrates how three areas, namely Industry, Agriculture, and Business and Financial Services, contributed to the economy of the UK from 1901 to 2000.",
+                "📘 Dùng “how” giúp câu linh hoạt và tự nhiên hơn; thay “contribution” bằng động từ “contributed”.",
+                "✏ **Cách 3: Bắt đầu bằng cấu trúc “compare(s) ... in terms of ...”**",
+                "▸ The bar chart compares three different areas, namely Agriculture, Manufacturing, and Business and Financial Services, in terms of their contribution to the economy of the UK from 1901 to 2000.",
+                "📘 Dùng khi biểu đồ so sánh các yếu tố khác nhau. “In terms of” = “về mặt / xét theo khía cạnh”."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Lưu ý vàng",
+              "lines": [
+                "Cụm **“namely + A, B, and C...”** dùng để liệt kê, rất hữu ích trong IELTS Task 1.",
+                "Nếu đề có cụm **“the number of …”** → viết lại thành **“how many + S + V”** → The chart shows how many cars were sold…",
+                "Nếu đề có cụm **“the amount of …”** → viết lại thành **“how much + S + V”** → The graph illustrates how much energy was consumed…"
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -280,6 +1909,203 @@
         "the opposite trend was true for … · the reverse pattern could be seen in …",
         "experienced an upward / downward trend",
         "Body 1: dữ liệu năm đầu + xu hướng tới năm nổi bật · Body 2: năm nổi bật → năm cuối"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "9.1. Tầm quan trọng của Overview",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Phần Overview **cực kỳ quan trọng** trong IELTS Writing Task 1. Muốn đạt **Band 7.0+**, bạn bắt buộc phải có một đoạn tổng quan rõ ràng, nêu được **2 đặc điểm nổi bật nhất** của biểu đồ."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Hai quy tắc bất di bất dịch",
+              "lines": [
+                "➡️ Viết **2 câu**, nêu ra **2 đặc điểm nổi bật nhất** trong biểu đồ.",
+                "🚫 **Không đưa số liệu cụ thể** vào phần này."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Cấu trúc mẫu**"
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Công thức 1",
+              "lines": [
+                "It is clear / noticeable that **[điểm nổi bật thứ nhất]**. Additionally, **[điểm nổi bật thứ hai]**."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Công thức 2",
+              "lines": [
+                "Overall, **[điểm nổi bật thứ nhất]**. It is also clear / noticeable / noted that **[điểm nổi bật thứ hai]**."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "9.2. Bốn cách xác định đặc điểm nổi bật (Key Features)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "h",
+              "t": "**1. Tất cả xu hướng đều tăng hoặc đều giảm?**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The numbers of A, B, and C all increased during the research period.",
+                "→ Tất cả đều tăng → đây là điểm nổi bật đầu tiên."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**2. Yếu tố nào luôn cao nhất hoặc thấp nhất?**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The number of C was by far the highest during the research period.",
+                "→ “by far” nhấn mạnh rằng C luôn là cao nhất từ đầu đến cuối."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**3. Yếu tố nào thay đổi nhiều nhất (mạnh nhất)?**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The figure for C experienced the most significant change over the period."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**4. Kết hợp cả xu hướng tăng và giảm**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ Overall, while the figures for A and B rose steadily, that for C fell significantly throughout the period."
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image49_1794507514428.png",
+              "caption": "Tóm tắt công thức áp dụng thực tế cho câu 1 và câu 2"
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "9.6. Nâng cấp câu mô tả xu hướng trái ngược",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**CẤP ĐỘ**",
+                  "**CÂU MẪU**"
+                ],
+                [
+                  "**Câu cơ bản**",
+                  "Additionally, while chicken consumption increased, the figures for beef, lamb, and fish all decreased from 1979 to 2004. → Đúng nhưng đơn giản, chỉ dùng “increase/decrease”."
+                ],
+                [
+                  "**Câu nâng cấp**",
+                  "Additionally, while chicken consumption increased, **the opposite trend was true for** the figures for beef, lamb, and fish from 1979 to 2004."
+                ],
+                [
+                  "**Câu Band 8+**",
+                  "Additionally, while chicken consumption **experienced an upward trend**, **the reverse patterns could be seen in** the figures for beef, lamb, and fish from 1979 to 2004."
+                ]
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image54_1794507514782.png",
+              "caption": "Từ vựng thay thế cho mô tả xu hướng — đơn giản so với học thuật"
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "9.7. Cấu trúc của Body Paragraph 1",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Nhiệm vụ:**",
+                "• Mô tả và so sánh dữ liệu trong **năm đầu tiên**.",
+                "• Mô tả và so sánh xu hướng từ năm đầu tiên đến **năm nổi bật nhất** (significant year)."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Xác định “năm nổi bật” (Significant year)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Là năm có điểm đặc biệt nhất trong biểu đồ. 👉 Ví dụ: năm đạt đỉnh cao nhất (peak) hoặc điểm thấp nhất (bottom)."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Ba dạng đặc biệt thường gặp**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• **Xu hướng trái ngược (Opposing Trends):** Khi một yếu tố tăng, các yếu tố còn lại giảm cùng lúc. → While A experienced an upward trend, the opposite pattern was true for B and C.",
+                "• **Đạt đỉnh hoặc chạm đáy (Peak / Bottom):** → X reached a peak of ... in 2002, whereas Y hit its lowest point at ... in the same year.",
+                "• **Năm chuyển giao giữa quá khứ và tương lai (Transition year):** → From 2025 onwards, projections indicate that ... (dùng khi biểu đồ có dữ liệu dự đoán tương lai)."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "9.8. Cấu trúc của Body Paragraph 2",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Nhiệm vụ:**",
+                "• Mô tả và so sánh xu hướng từ **năm đặc biệt** (special year) đến **năm cuối cùng** (final year).",
+                "• Nhấn mạnh sự thay đổi rõ rệt nhất ở từng nhóm."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Nguyên tắc chọn số liệu",
+              "lines": [
+                "Chỉ chọn **4–5 số liệu quan trọng nhất mỗi đoạn** → Tổng cả bài: **8–10 số liệu** là đủ.",
+                "Viết hết mọi con số là lỗi phổ biến nhất khiến bài mất điểm Task Achievement và Coherence."
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image55_1794507515074.png",
+              "caption": "Chiến lược nhóm thông tin và gợi ý mở đầu Body paragraph"
+            }
+          ]
+        }
       ]
     },
     {
@@ -319,7 +2145,145 @@
       "gate": {
         "minObjectiveScorePercent": 55,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "10.1. Biểu đồ tĩnh là gì?",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Static charts** (biểu đồ tĩnh) là dạng bài **không dựa trên xu hướng** (non-trend based task type)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Ghi chú cấu trúc",
+              "lines": [
+                "Cấu trúc bài viết vẫn gồm **4 đoạn**, tương tự như dạng biểu đồ xu hướng.",
+                "Tuy nhiên, khác biệt quan trọng là **không được mô tả sự tăng hay giảm** (vì dữ liệu chỉ thể hiện tại một thời điểm).",
+                "Thay vào đó, ta chỉ được **mô tả và so sánh số liệu** giữa các nhóm hoặc hạng mục khác nhau."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Tóm lại",
+              "lines": [
+                "**Trend-based charts:** nói về sự thay đổi theo thời gian (increase / decrease).",
+                "**Static charts:** nói về sự khác biệt tại một thời điểm duy nhất (compare and describe).",
+                "❌ Viết “increased” cho biểu đồ tĩnh là lỗi Task Achievement nghiêm trọng nhất của dạng bài này."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "10.2. Ví dụ mẫu — Bảng thể thao học sinh nam tại Anh",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image58_1794507515413.png",
+              "caption": ""
+            },
+            {
+              "k": "h",
+              "t": "**1. Mở bài (Introduction)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Viết lại đề bài bằng từ ngữ của riêng bạn (paraphrase).",
+                "▸ The table compares the proportions of 6–11 and 12–16-year-old boys taking part in five various kinds of sport in the UK in the year 2010.",
+                "→ Bảng so sánh tỷ lệ các bé trai từ 6–11 tuổi và 12–16 tuổi tham gia năm loại hình thể thao khác nhau tại Vương quốc Anh vào năm 2010."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**2. Tổng quan (Overview)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Viết hai câu tóm tắt những đặc điểm nổi bật nhất trong bảng. Khi viết tổng quan cho dạng bảng (table), ta luôn so sánh **hai chiều: theo hàng và theo cột**.",
+                "• **Hai cột:** Hai nhóm tuổi → Nhóm 6–11 tuổi thường có tỷ lệ cao hơn.",
+                "• **Năm hàng:** Năm môn thể thao → Bóng đá (football) có tỷ lệ cao nhất.",
+                "▸ It is clear from the table that boys aged 6–11 were generally more likely to play sports than the other group. Additionally, football was the most popular type of sport for both age groups.",
+                "→ Rõ ràng là các bé trai trong độ tuổi 6–11 thường chơi thể thao nhiều hơn nhóm còn lại. Bên cạnh đó, bóng đá là môn thể thao phổ biến nhất ở cả hai nhóm tuổi."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Ghi nhớ",
+              "lines": [
+                "Khi viết Overview cho dạng non-trend-based, đặc biệt là bảng số liệu, ta sẽ:",
+                "So sánh **các hàng** với nhau (các môn thể thao).",
+                "So sánh **các cột** với nhau (các nhóm tuổi).",
+                "→ Tập trung vào **giá trị cao nhất và thấp nhất**."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**3. Thân bài (Body): hai cách triển khai**"
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**CÁCH 1 — CHIA THEO CỘT (dễ viết hơn)**",
+                  "**CÁCH 2 — CHIA THEO HÀNG**"
+                ],
+                [
+                  "**Body 1: Nhóm tuổi 6–11 (5 số liệu)**\n**Body 2: Nhóm tuổi 12–16 (5 số liệu)**",
+                  "Body 1: 2 môn thể thao đầu tiên (4 số liệu)\nBody 2: 3 môn thể thao còn lại (6 số liệu)"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "🧭 **Nguyên tắc:** Luôn mô tả và so sánh các số liệu **trong cùng nhóm**, sử dụng đa dạng cấu trúc câu."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Ví dụ về hai đoạn thân bài theo Cách 1**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ Body 1: For the 6–11 age group, the rate of boys playing football was highest, at 87%, while the figure for basketball was significantly lower, at 35%. Boys who took part in playing cricket accounted for 45% of the total group. Meanwhile, the percentages of boys who participated in rugby and swimming were lowest, at 23% and 19% respectively.",
+                "→ Ở nhóm 6–11 tuổi, tỷ lệ các bé trai chơi bóng đá cao nhất, đạt 87%, trong khi bóng rổ thấp hơn đáng kể, ở mức 35%. Các bé tham gia cricket chiếm 45% tổng nhóm. Trong khi đó, tỷ lệ chơi rugby và bơi lội là thấp nhất, lần lượt là 23% và 19%.",
+                "▸ Body 2: For 12–16-year-olds, the proportion of boys who played football was also highest among the five types of sports, at 78%. Basketball and rugby players made up 25% and 21% of this group respectively, while 34% of boys aged 12–16 chose to play cricket. The figure for swimming was lowest, at only 19%.",
+                "→ Với nhóm 12–16 tuổi, tỷ lệ các bé trai chơi bóng đá cũng cao nhất trong năm môn thể thao, đạt 78%. Lần lượt 25% và 21% nhóm này chơi bóng rổ và rugby, trong khi 34% chọn cricket. Môn bơi lội có tỷ lệ thấp nhất, chỉ 19%."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Mẫu cụm từ mở đầu thân bài",
+              "lines": [
+                "**For ...** (dành cho người) — ví dụ: For boys aged 6–11, ...",
+                "**In terms of ... / Regarding ...** (dùng cho mọi trường hợp) — ví dụ: In terms of sports preferences, ..."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Cụm từ nâng cấp",
+              "lines": [
+                "“was highest” → **topped the list / took the lead**",
+                "“was lowest” → **the bottom position belonged to ..., with only ...% choosing it**"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T1-L11",
@@ -342,7 +2306,132 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 2
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "11.1. Question 1 — Consumer spending table",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**The table below gives information on consumer spending on different items in five different countries in 2002.**"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image59_1794507515763.png",
+              "caption": ""
+            },
+            {
+              "k": "h",
+              "t": "**Table Analysis**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Finding ideas for the Overview section:**",
+                "• **5 hàng:** Nothing particularly notable.",
+                "• **3 cột:** F/D/T (Food, Drinks, Tobacco) are the highest, while L/E (Leisure, Education) are the lowest.",
+                "**Planning for the two Body paragraphs:**",
+                "**Body 1 — Cột Food / Drinks / Tobacco (5 số liệu):**",
+                "• This column is important, so a separate paragraph is dedicated to it.",
+                "• Describe the highest figure, compare it with the second highest.",
+                "• The remaining three figures are almost equal.",
+                "**Body 2 — Cột C/F và L/E (10 số liệu, nhưng chỉ cần 4–5 số liệu mỗi đoạn):**",
+                "• Select the key figures, focusing on the highest and lowest in each column.",
+                "• C/F: Highest — Italy, Sweden",
+                "• L/E: Lowest — Turkey, Spain"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "11.2. Question 2 — Housing preferences in the UK",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**The following chart shows the results of a British survey taken in 2009 related to housing preferences of UK people.**"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image60_1794507516107.png",
+              "caption": ""
+            },
+            {
+              "k": "h",
+              "t": "**Bước 1: Phân tích đề (Analyzing the Task)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• **Chủ đề của biểu đồ:** Biểu đồ thể hiện điều gì?",
+                "• **Đơn vị đo:** Biểu đồ sử dụng đơn vị nào?",
+                "• **Khoảng thời gian:** Biểu đồ có đề cập đến một năm cụ thể hay một giai đoạn thời gian không? → Từ đó xác định **thì của động từ** cần dùng khi viết (hiện tại đơn, quá khứ đơn, hay tương lai)."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Bước 2: Diễn đạt lại đề bài — Viết phần Mở bài**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• **Bản gốc:** “Housing preferences of UK people” → **Cách diễn đạt lại:** “Housing preferences among people who lived in Liverpool, London, and Manchester.” (Sở thích về loại hình nhà ở của người dân sống tại Liverpool, London và Manchester.)",
+                "• **Bản gốc:** “In 2009” → **Cách diễn đạt lại:** “In the year 2009.”"
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Bước 3: Xác định các điểm nổi bật và viết phần Tổng quan**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Vì loại biểu đồ này không thể hiện xu hướng theo thời gian, nên phần Overview cần tập trung vào việc **so sánh mức độ** (lớn nhất, nhỏ nhất, và khác biệt rõ rệt nhất).",
+                "• **Cao nhất:** Căn hộ (Apartments) là lựa chọn phổ biến nhất ở Liverpool, trong khi nhà song lập (Semi-detached houses) lại được ưa chuộng hơn ở London và Manchester.",
+                "• **Thấp nhất:** Nhà liền kề (Terraced houses) là loại hình ít được chọn nhất ở cả ba thành phố."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**Bước 4: Chọn lọc và nhóm thông tin — Viết hai đoạn Thân bài**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Thân bài 1 (Body 1): Phân tích và so sánh sở thích nhà ở tại Liverpool và Manchester**",
+                "• Căn hộ: Khoảng 60% người dân Liverpool thích sống trong căn hộ, gần gấp ba lần so với Manchester.",
+                "• Nhà tách biệt (Detached houses) và nhà song lập (Semi-detached houses) ở Liverpool lần lượt chiếm khoảng 15% và 20%, thấp hơn đáng kể so với Manchester (khoảng 35%).",
+                "• Nhà liền kề (Terraced houses) là lựa chọn ít phổ biến nhất ở cả hai thành phố, chỉ khoảng 10%.",
+                "**Thân bài 2 (Body 2): Phân tích và so sánh sở thích nhà ở tại London**",
+                "• Gần 40% cư dân London thích sống trong nhà song lập (Semi-detached houses).",
+                "• Tiếp theo là khoảng 30% chọn căn hộ (Apartments) và 25% chọn nhà tách biệt (Detached houses).",
+                "• Nhà liền kề (Terraced houses) nhận được số phiếu thấp nhất, chỉ dưới 20%."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "🎯 Mục tiêu phần sau",
+              "lines": [
+                "Viết bài cho đề có nhiều biểu đồ tròn",
+                "Dùng đúng thì hiện tại đơn khi đề không có mốc thời gian",
+                "Dùng larger thay vì higher khi so sánh phần trăm"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T1-L12",
@@ -366,7 +2455,148 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 2
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "12.1. Dạng biểu đồ kết hợp là gì?",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Đôi khi trong Writing Task 1, đề bài sẽ gồm **hai biểu đồ**. Hai biểu đồ này có thể:",
+                "• **Cùng loại** (ví dụ: hai biểu đồ tròn), hoặc",
+                "• **Khác loại** (ví dụ: một biểu đồ đường line graph và một biểu đồ cột bar chart)."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "12.2. Cách tiếp cận dạng bài này",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "h",
+              "t": "**1. Introduction (Mở bài)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Viết **hai mệnh đề** mô tả hai biểu đồ riêng biệt, sau đó nối lại bằng **“and”**, **“while”** hoặc dấu phẩy.",
+                "▸ The line graph compares the number of visitors travelling to and from the UK, and the bar chart illustrates the most popular countries visited by UK residents."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**2. Overview (Tổng quan)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Viết **hai câu**, mỗi câu nêu điểm nổi bật nhất của từng biểu đồ.",
+                "• **Câu 1:** Nêu xu hướng hoặc điểm đáng chú ý nhất trong Biểu đồ 1.",
+                "• **Câu 2:** Nêu xu hướng hoặc điểm đáng chú ý nhất trong Biểu đồ 2.",
+                "▸ It is clear that the number of people travelling to and from the UK increased dramatically over the period. Additionally, France was by far the most popular destination for UK residents."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**3. Body Paragraphs (Thân bài)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• **Body 1:** Mô tả Biểu đồ 1 (chọn các con số, xu hướng nổi bật).",
+                "• **Body 2:** Mô tả Biểu đồ 2 (chọn các con số chính, không nêu quá chi tiết)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Lưu ý",
+              "lines": [
+                "Vì có hai biểu đồ, bạn **không cần** cố gắng mô tả toàn bộ số liệu. Thay vào đó, hãy tập trung vào những điểm quan trọng nhất và so sánh hợp lý."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "12.3. Ví dụ đề bài mẫu",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**The charts below give information about travel to and from the UK, and about the most popular countries for UK residents to visit.**"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image65_1794507516624.png",
+              "caption": ""
+            },
+            {
+              "k": "h",
+              "t": "**Phân tích bài (Task Analysis) — Dạng Mixed Chart**"
+            },
+            {
+              "k": "h",
+              "t": "**1. Introduction — Giới thiệu nội dung của từng biểu đồ**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• **Biểu đồ 1 (Line graph):** Information about travel to and from the UK → The number of UK residents traveling abroad and the number of overseas visitors coming to the UK.",
+                "• **Biểu đồ 2 (Bar chart):** The most popular countries for UK residents to visit → How many UK residents traveled to five of the most popular destinations.",
+                "• Cụm **“gives information about”** có thể thay bằng: illustrates / shows data on / provides information about.",
+                "▸ The line graph illustrates the number of UK residents travelling abroad and the number of overseas visitors coming to the UK, while the bar chart shows data on how many UK residents travelled to five of the most popular destinations."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**2. Overview — Nêu đặc điểm nổi bật của mỗi biểu đồ**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• **Line graph:** Both the number of UK residents travelling abroad and the number of foreign visitors coming to the UK increased. The number of UK residents going abroad was always higher than that of overseas visitors.",
+                "• **Bar chart:** France was by far the most popular destination among UK residents.",
+                "▸ It is clear that both the numbers of UK residents travelling abroad and overseas visitors coming to the UK increased over the period. Additionally, France was the most popular country among UK travellers."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**3. Body Paragraph 1 — Miêu tả biểu đồ đường (Line graph)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• Bắt đầu với số liệu ban đầu (initial figures).",
+                "• Sau đó mô tả xu hướng tăng hoặc giảm đến năm cuối cùng.",
+                "▸ In 1979, around X million UK residents travelled abroad, compared to Y million overseas visitors to the UK. Both figures increased steadily throughout the period, and by 1999, the number of UK residents travelling abroad had reached about Z million, while the number of foreign visitors rose to approximately W million."
+              ]
+            },
+            {
+              "k": "h",
+              "t": "**4. Body Paragraph 2 — Miêu tả biểu đồ cột (Bar chart)**"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "• Bắt đầu với quốc gia có số liệu cao nhất (France).",
+                "• Sau đó so sánh với các nước còn lại.",
+                "▸ As for the most popular destinations, France topped the list, attracting over 11 million UK visitors. Spain came next with around 9 million visitors, while the figures for the USA, Greece, and Turkey were considerably lower, at around 4 million, 3 million, and 2 million respectively.",
+                "✍️ **Bây giờ hãy viết bài hoàn chỉnh cho đề trên:**"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "T1-TEST3",
@@ -404,6 +2634,172 @@
         "To the + hướng + of + địa điểm",
         "S + was located / was situated in + vị trí",
         "There was + N + to the + hướng + of + địa điểm"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "13.1. Tám hướng cơ bản trên bản đồ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Trước khi mô tả bất cứ thay đổi nào, học viên phải gọi tên được **vị trí**. Đây là phần dễ ăn điểm nhất nhưng cũng là phần học viên Việt Nam hay viết sai nhất."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**TIẾNG ANH**",
+                  "**VIẾT TẮT**",
+                  "**TIẾNG VIỆT**"
+                ],
+                [
+                  "North",
+                  "N",
+                  "phía Bắc"
+                ],
+                [
+                  "South",
+                  "S",
+                  "phía Nam"
+                ],
+                [
+                  "East",
+                  "E",
+                  "phía Đông"
+                ],
+                [
+                  "West",
+                  "W",
+                  "phía Tây"
+                ],
+                [
+                  "Northeast",
+                  "NE",
+                  "Đông Bắc"
+                ],
+                [
+                  "Northwest",
+                  "NW",
+                  "Tây Bắc"
+                ],
+                [
+                  "Southeast",
+                  "SE",
+                  "Đông Nam"
+                ],
+                [
+                  "Southwest",
+                  "SW",
+                  "Tây Nam"
+                ]
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image67_1794507517121.png",
+              "caption": "Sơ đồ tám hướng — học viên nên vẽ lại vào vở"
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Ghi nhớ cách viết",
+              "lines": [
+                "Tiếng Anh viết **North-west** hoặc **northwest** đều được, nhưng phải thống nhất trong cả bài. Khi viết tắt thì dùng chữ hoa không có dấu chấm: NE, NW, SE, SW."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "13.2. Vị trí theo khung hình của bản đồ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Không phải bản đồ nào cũng có mũi tên chỉ hướng Bắc. Khi đề bài không cho hướng, hãy mô tả theo **vị trí trong khung hình**."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "Top left-hand corner",
+                  "Top",
+                  "Top right-hand corner"
+                ],
+                [
+                  "Left-hand side",
+                  "Middle / Centre",
+                  "Right-hand side"
+                ],
+                [
+                  "Bottom left-hand corner",
+                  "Bottom",
+                  "Bottom right-hand corner"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Mẹo phòng thi",
+              "lines": [
+                "Nếu bản đồ **có** mũi tên chỉ hướng Bắc, luôn ưu tiên dùng north / south / east / west vì nghe học thuật hơn. Chỉ dùng top / bottom / left-hand side khi đề bài hoàn toàn không cho hướng."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "13.3. Bốn cấu trúc mô tả vị trí",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Khi bạn muốn mô tả vị trí của một công trình hay thứ gì đó trên bản đồ, có thể viết theo các cách sau đây:"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Cấu trúc cần chép vào vở",
+              "lines": [
+                "**In the + hướng + corner / area of + địa điểm**",
+                "**To the + hướng + of + địa điểm**",
+                "**S + was located / was situated in + vị trí**",
+                "**There was + N + to the + hướng + of + địa điểm**"
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ In the northwest corner/area of the city",
+                "→ Ở góc / khu vực phía tây bắc của thành phố",
+                "▸ To the south of the river",
+                "→ Ở phía nam của con sông",
+                "▸ The school was located / situated in the northwest corner of the city.",
+                "→ Trường học nằm ở / gần góc phía tây bắc của thành phố.",
+                "▸ There was an airport to the south of the lake.",
+                "→ Có một sân bay nằm ở phía nam của hồ."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Lỗi sai kinh điển",
+              "lines": [
+                "**in the north of the city** = nằm **bên trong** thành phố, ở phần phía bắc.",
+                "**to the north of the city** = nằm **bên ngoài** thành phố, về phía bắc.",
+                "Nhìn kỹ bản đồ trước khi chọn giới từ — chọn sai là sai nội dung, mất điểm Task Achievement."
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -425,6 +2821,182 @@
         "Mở rộng: expanded / widened / extended / enlarged · Thu hẹp: narrowed / shortened",
         "Di dời: moved / relocated to · Giữ nguyên: remained unchanged / still existed",
         "Công thức thì-thể: thay đổi do người → be + V3 (quá khứ đơn bị động); tự xuất hiện → appeared/disappeared; quy hoạch → will be + V3"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "14.1. Cấu trúc miêu tả việc PHÁ DỠ — Demolition",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "▸ The school was demolished / knocked down / pulled down / removed / torn down.",
+                "→ Ngôi trường đã bị phá hủy / dỡ bỏ / kéo xuống / loại bỏ / san phẳng. (Dùng cho nhà, tòa nhà)",
+                "▸ All the trees were cut down / chopped down / cleared to make way for…",
+                "→ Tất cả cây cối đã bị chặt bỏ / dọn sạch để nhường chỗ cho… (Dùng cho cây cối)",
+                "▸ The airport disappeared.",
+                "→ Sân bay đã biến mất."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "14.2. Cấu trúc miêu tả việc XÂY MỚI, TRỒNG CÂY hoặc CẢI TẠO",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "▸ Skyscrapers were built / constructed / erected.",
+                "→ Các tòa nhà chọc trời đã được xây dựng / dựng lên / thi công.",
+                "▸ A park appeared.",
+                "→ Một công viên mới xuất hiện.",
+                "▸ There was a construction of a new hospital.",
+                "→ Đã có việc xây dựng một bệnh viện mới.",
+                "▸ More trees will be planted around the park.",
+                "→ Nhiều cây hơn sẽ được trồng xung quanh công viên.",
+                "▸ The university library was completely renovated / reconstructed / modernized.",
+                "→ Thư viện của trường đại học đã được cải tạo / xây lại / hiện đại hóa hoàn toàn. Có thể dùng **refurbished** hoặc **rebuilt**."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "14.3. Cấu trúc miêu tả việc THAY THẾ — Replacements",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "▸ This airport was demolished to make way for a new hospital.",
+                "→ Sân bay này đã bị phá dỡ để nhường chỗ cho một bệnh viện mới.",
+                "▸ All the trees were replaced by a stadium.",
+                "→ Tất cả cây cối đã bị thay thế bằng một sân vận động.",
+                "▸ A stadium was built and replaced all the trees.",
+                "→ Một sân vận động được xây lên và thay thế toàn bộ cây cối.",
+                "▸ The appearance of B was the disappearance of A.",
+                "→ Sự xuất hiện của B đồng nghĩa với sự biến mất của A.",
+                "▸ The emergence of B was at the expense of A.",
+                "→ Sự ra đời của B là đánh đổi bằng việc mất đi A.",
+                "▸ B was built / erected / constructed in the place of A.",
+                "→ B được xây dựng / dựng lên / thi công thay cho A.",
+                "▸ B was built where a school once stood.",
+                "→ B được xây ở vị trí mà trước đây từng có một ngôi trường.",
+                "▸ The playground was converted / transformed into a large car park.",
+                "→ Sân chơi được chuyển đổi / biến thành một bãi đậu xe lớn."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "14.4. Cấu trúc miêu tả việc MỞ RỘNG hoặc KÉO DÀI",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "▸ The car park near the river was expanded / widened / extended / enlarged / developed.",
+                "→ Bãi đậu xe gần con sông đã được mở rộng / nới rộng / kéo dài / phát triển.",
+                "▸ The school became bigger.",
+                "→ Ngôi trường trở nên lớn hơn.",
+                "▸ The railway was lengthened.",
+                "→ Đường sắt được kéo dài thêm."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "14.5. Cấu trúc miêu tả việc THU HẸP hoặc RÚT NGẮN",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "▸ The school was narrowed.",
+                "→ Trường học bị thu hẹp lại.",
+                "▸ The car park became smaller.",
+                "→ Bãi đậu xe trở nên nhỏ hơn.",
+                "▸ The railway was shortened.",
+                "→ Đường sắt bị rút ngắn."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "14.6. Cấu trúc miêu tả việc DI DỜI — Relocation",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "▸ The stadium was moved / relocated to the north.",
+                "→ Sân vận động được di chuyển / dời về phía bắc."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "14.7. Cấu trúc miêu tả việc KHÔNG THAY ĐỔI",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "▸ The airport still remained / existed.",
+                "→ Sân bay vẫn còn tồn tại / được giữ nguyên."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Câu này cực kỳ đáng giá",
+              "lines": [
+                "Giám khảo rất thích khi thí sinh nhắc tới **những gì không thay đổi**. Chỉ cần một câu ở cuối thân bài — ví dụ The church and the port remained unchanged throughout the period — là bài viết đã đầy đủ hơn hẳn."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "14.8. Bảng tổng hợp từ vựng mô tả sự thay đổi",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**EXPANDING**",
+                  "**REMOVING**",
+                  "**ADDITIONS**",
+                  "**CHANGE INTO SOMETHING**"
+                ],
+                [
+                  "Enlarged\nExpanded\nExtended\nMade bigger\nDeveloped",
+                  "Demolished\nKnocked down\nPulled down\nRemoved\nTorn down\nCut down (trees)",
+                  "Constructed\nBuilt\nErected\nIntroduced\nAdded\nPlanted (forests, trees)\nOpened up (facilities)",
+                  "Converted\nRedeveloped\nReplaced\nMade into\nModernised\nRenovated"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Công thức thì và thể của bài Maps",
+              "lines": [
+                "Thay đổi đã xảy ra trong quá khứ, do con người thực hiện → **be + V3 (bị động, thì quá khứ đơn)**.",
+                "Sự vật tự xuất hiện hoặc biến mất → **chủ động**: appeared, disappeared, remained.",
+                "Bản đồ quy hoạch tương lai → **will be + V3** hoặc **is going to be + V3**."
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -445,6 +3017,142 @@
         "Overall, a comparison between the two maps reveals a change from a largely rural into a mainly urban landscape.",
         "Overall, the town has undergone a considerable transformation over the period.",
         "Overall, there have been several changes, the most noticeable being …"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "15.1. Introduction — Paraphrase the task",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Phần **Introduction** chỉ cần **một câu duy nhất**. Mục tiêu là nói lại đề bằng từ khác, tuyệt đối không chép nguyên xi."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Các cụm cố định dùng cho mở bài",
+              "lines": [
+                "**The maps show / illustrate the main developments / changes that took place in … from … to …**",
+                "→ Các bản đồ minh họa những thay đổi / chuyển biến chính diễn ra ở … từ năm … đến năm …",
+                "**The maps show / illustrate how [location] developed between … and …**",
+                "→ Các bản đồ cho thấy cách mà [địa điểm] phát triển trong giai đoạn từ … đến …"
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Ví dụ mẫu**",
+                "▸ Đề bài: The maps below show the changes in a town between 1990 and 2020.",
+                "→ Đây là câu đề bài gốc.",
+                "▸ Introduction: The maps illustrate how the town developed between 1990 and 2020.",
+                "→ Các bản đồ minh họa cách mà thị trấn này phát triển trong giai đoạn 1990 đến 2020."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Đừng viết thừa",
+              "lines": [
+                "Introduction chỉ một câu. Học viên hay viết thêm In general… hoặc As can be seen… ngay ở câu thứ hai — đó là việc của Overview, không phải Introduction."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "15.2. Overview — Nêu 1–2 thay đổi nổi bật nhất",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Phần tổng quan nên viết khoảng **2 câu tổng quát**, tóm tắt điểm khác biệt lớn nhất giữa hai bản đồ.",
+                "**Để tìm ra ý chính, hãy tự hỏi**",
+                "• Dân số có tăng không, hay giữ nguyên?",
+                "• Diện tích đất nông nghiệp và cây xanh có giảm không?",
+                "• Các thay đổi này là lớn hay nhỏ?",
+                "• Có sự cải thiện lớn nào về cơ sở hạ tầng không?",
+                "• Các tòa nhà và khu vui chơi giải trí có thay đổi gì đáng kể không?",
+                "Chọn **2–3 thay đổi nổi bật nhất** rồi viết câu nhận xét tổng quát về mỗi thay đổi đó."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "15.3. Mười ba mẫu câu Overview cho bài Maps",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**CÂU MẪU TIẾNG ANH**",
+                  "**DỊCH TIẾNG VIỆT**"
+                ],
+                [
+                  "Overall, a comparison between the two maps reveals a change from a largely rural into a mainly urban landscape.",
+                  "Nhìn chung, so sánh giữa hai bản đồ cho thấy khu vực đã chuyển đổi từ vùng nông thôn sang khu đô thị là chủ yếu."
+                ],
+                [
+                  "Overall, [place] witnesses some radical changes and has a completely new look with more top-notch facilities and infrastructures.",
+                  "Tổng thể, [địa điểm] chứng kiến những thay đổi mạnh mẽ và có diện mạo hoàn toàn mới với nhiều cơ sở hạ tầng hiện đại."
+                ],
+                [
+                  "Over the period, the area witnessed dramatic changes.",
+                  "Trong giai đoạn này, khu vực đã trải qua nhiều thay đổi đáng kể."
+                ],
+                [
+                  "From 1995 to 2005, the city centre saw spectacular developments.",
+                  "Từ năm 1995 đến 2005, trung tâm thành phố chứng kiến sự phát triển vượt bậc."
+                ],
+                [
+                  "The village changed considerably over the time period.",
+                  "Ngôi làng đã thay đổi đáng kể trong suốt giai đoạn."
+                ],
+                [
+                  "During the 10-year period, the industrial area was totally transformed.",
+                  "Trong 10 năm, khu công nghiệp đã được thay đổi hoàn toàn."
+                ],
+                [
+                  "Over the past 20 years, the residential area was totally reconstructed.",
+                  "Trong 20 năm qua, khu dân cư được tái xây dựng hoàn toàn."
+                ],
+                [
+                  "Over the time period, the old docks were totally redeveloped.",
+                  "Trong suốt thời gian này, bến cảng cũ được tái quy hoạch hoàn toàn."
+                ],
+                [
+                  "Between 1995 and 2005, the old houses were rebuilt.",
+                  "Giữa năm 1995 và 2005, các ngôi nhà cũ đã được xây lại."
+                ],
+                [
+                  "The central business district was completely modernized during the time period.",
+                  "Khu trung tâm thương mại được hiện đại hóa hoàn toàn trong giai đoạn này."
+                ],
+                [
+                  "Overall, it is clear that the town has undergone a considerable transformation over the period.",
+                  "Nhìn chung, rõ ràng thị trấn đã trải qua một sự thay đổi đáng kể trong suốt giai đoạn."
+                ],
+                [
+                  "Overall, there have been several changes, the most noticeable being …",
+                  "Nhìn tổng thể, có nhiều thay đổi xảy ra, nổi bật nhất là …"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Vì sao Overview là phần quan trọng nhất",
+              "lines": [
+                "Overview cho giám khảo thấy bạn **hiểu bức tranh tổng thể** chứ không chỉ mô tả chi tiết. Không cần nêu số liệu hay tên từng công trình — chỉ nói **xu hướng tổng quát** hoặc **thay đổi rõ rệt nhất**."
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -465,6 +3173,138 @@
         "with + S + being + V3 (past participle) – bổ sung chi tiết phụ",
         "On the … side of …, a number of developments took place.",
         "The most noticeable change is that … · Moreover, … · Further developments included …"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "16.1. Hai cách tổ chức phần thân bài",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Cách 1 — Chia theo thời gian**",
+                "• **Body 1:** Miêu tả những gì có trong bản đồ đầu tiên (trước khi thay đổi).",
+                "• **Body 2:** Miêu tả những thay đổi xuất hiện trong bản đồ thứ hai (sau khi thay đổi).",
+                "Cách này **dễ viết nhất** cho người mới bắt đầu.",
+                "**Cách 2 — Chia theo khu vực (khuyến khích cho band cao hơn)**",
+                "• Chia bản đồ thành **hai khu vực** — ví dụ: Bắc – Nam hoặc Đông – Tây.",
+                "• **Body 1:** Mô tả chi tiết và thay đổi ở khu vực đầu tiên.",
+                "• **Body 2:** Mô tả chi tiết và thay đổi ở khu vực thứ hai.",
+                "Ví dụ: nếu bản đồ có **sông Alanah** nằm ở giữa, bạn có thể dùng nó làm ranh giới mô tả — Body 1 mô tả những thay đổi **phía Bắc con sông**, Body 2 mô tả những thay đổi **phía Nam con sông**."
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image68_1794507517490.png",
+              "caption": "Sông Alanah chia bản đồ thành hai nửa Bắc và Nam"
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Vì sao nên chọn Cách 2",
+              "lines": [
+                "Cách chia theo khu vực giúp bài viết có **tính logic cao hơn**, giám khảo dễ theo dõi, và thể hiện **kỹ năng tổ chức ý (Coherence and Cohesion)** tốt hơn — rất hữu ích để đạt **Band 7.0 trở lên**."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "16.2. Từ nối và cấu trúc chung cho thân bài",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**CÂU TIẾNG ANH**",
+                  "**DỊCH TIẾNG VIỆT**"
+                ],
+                [
+                  "In [first year], A was a/an … area with …, but over the next … years, A underwent several significant changes.",
+                  "Vào năm [năm đầu tiên], khu vực A là một khu vực … với …, nhưng trong … năm tiếp theo, A đã trải qua nhiều thay đổi đáng kể."
+                ],
+                [
+                  "On the … side of …, a number of developments took place.",
+                  "Ở phía … của …, đã có một số sự phát triển diễn ra."
+                ],
+                [
+                  "The most noticeable change is that …",
+                  "Sự thay đổi đáng chú ý nhất là …"
+                ],
+                [
+                  "Moreover, …",
+                  "Hơn nữa, …"
+                ],
+                [
+                  "Further developments included the construction of … in …, and the addition / removal of …",
+                  "Những thay đổi tiếp theo bao gồm việc xây dựng … ở …, và việc thêm vào / loại bỏ …"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Các cụm này giúp bạn liên kết các ý mạch lạc và tự nhiên hơn khi miêu tả sự thay đổi trên bản đồ. Chúng thường được dùng khi:",
+                "• Chuyển từ một khu vực sang khu vực khác.",
+                "• Nói về sự thay đổi nổi bật nhất.",
+                "• Bổ sung thông tin chi tiết hoặc miêu tả thêm công trình mới."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "16.3. Hai câu ví dụ mẫu cho thân bài",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**CÂU TIẾNG ANH**",
+                  "**DỊCH TIẾNG VIỆT**"
+                ],
+                [
+                  "On the west side of the river, a number of developments took place. Blocks of flats replaced the houses north and west of the lake, while additional houses were constructed in the south.",
+                  "Ở phía tây của con sông, nhiều thay đổi đã diễn ra. Các khu chung cư đã thay thế những ngôi nhà ở phía bắc và tây của hồ, trong khi nhiều ngôi nhà mới được xây dựng ở phía nam."
+                ],
+                [
+                  "The most noticeable change is that all the trees south of the River Alanah were cut down, and all the houses along the railway line were demolished and replaced by skyscrapers.",
+                  "Sự thay đổi rõ rệt nhất là toàn bộ cây cối ở phía nam sông Alanah đã bị chặt bỏ, và tất cả những ngôi nhà dọc theo đường sắt đã bị phá dỡ và thay thế bằng các tòa nhà chọc trời."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "16.4. Dùng \"with\" để bổ sung chi tiết",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Cấu trúc",
+              "lines": [
+                "**with + S + being + V3 (past participle)**",
+                "với + chủ ngữ + \"being\" + động từ ở dạng quá khứ phân từ"
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "▸ The town center was completely modernized, with many old buildings being demolished and replaced by commercial complexes.",
+                "→ Trung tâm thị trấn đã được hiện đại hóa hoàn toàn, với nhiều tòa nhà cũ bị phá bỏ và thay thế bằng các khu phức hợp thương mại.",
+                "• **With + being + V3** giúp bạn **nối hai mệnh đề** một cách tự nhiên hơn mà không phải dùng \"and\" nhiều lần.",
+                "• Cấu trúc này thường dùng để **miêu tả thêm chi tiết phụ** về thay đổi, đặc biệt là trong **IELTS Task 1 (maps, process, charts)**.",
+                "▸ The industrial zone expanded, with new factories being built along the eastern side of the town.",
+                "→ Khu công nghiệp được mở rộng, với các nhà máy mới được xây dọc theo phía đông thị trấn."
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -484,6 +3324,145 @@
         "Overall, the school has undergone significant transformations, with the removal of …, the addition of …",
         "Initially, … · By 1980, major changes had taken place … · Over the next 30 years, …",
         "had been + V3 (quá khứ hoàn thành) · remained unchanged / remained intact"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "17.1. Lập kế hoạch là bước quan trọng nhất",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Lên kế hoạch là một bước vô cùng quan trọng khi viết bài Task 1, đặc biệt là đối với dạng **bản đồ (Maps)**. Bạn cần **xác định vị trí của các công trình hoặc khu vực** và sau đó **xem xét những thay đổi đã diễn ra qua các năm**. Nếu bạn **liệt kê cẩn thận mọi chi tiết** và **áp dụng đúng cấu trúc**, bạn sẽ có một **bài viết hoàn chỉnh và mạch lạc**."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Ghi nhớ",
+              "lines": [
+                "Khi bạn hiểu bố cục bản đồ — ví dụ hướng Bắc – Nam – Đông – Tây và các khu vực chính — bạn sẽ dễ dàng mô tả thay đổi một cách **có tổ chức và rõ ràng hơn**. Dành 3 phút lập dàn ý sẽ tiết kiệm 10 phút viết lại."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "17.2. Đề luyện tập — West Park Secondary School",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**The diagram shows the changes that have taken place at West Park Secondary School since its construction in 1950.**"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image70_1794507517943.png",
+              "caption": "Sơ đồ trường West Park Secondary School các năm 1950, 1980 và 2010"
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "17.3. Bước 1 — Introduction (Paraphrase the task)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "▸ The diagrams illustrate the changes that have occurred at West Park Secondary School from 1950 to 2010.",
+                "→ Các sơ đồ minh họa những thay đổi đã diễn ra tại Trường Trung học West Park từ năm 1950 đến năm 2010.",
+                "• Dùng **illustrate the changes that have occurred** thay cho show how… changed → paraphrase tự nhiên, học thuật.",
+                "• Thì được dùng là **hiện tại hoàn thành (have occurred)** vì mô tả những thay đổi đã xảy ra đến nay."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "17.4. Bước 2 — Overview (Summarize key changes)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "▸ Overall, the school has undergone significant transformations, with the removal of houses and farmland, the addition of a car park, and the development of new facilities such as a science block and sports field.",
+                "→ Nhìn chung, ngôi trường đã trải qua nhiều thay đổi đáng kể, bao gồm việc loại bỏ các ngôi nhà và khu đất nông nghiệp, bổ sung bãi đỗ xe, và xây dựng thêm các công trình mới như khu học khoa học và sân thể thao.",
+                "• **has undergone significant transformations** = đã trải qua những thay đổi lớn — một cụm học thuật phổ biến trong IELTS.",
+                "• Dùng **with + N / V-ing** để liệt kê các thay đổi một cách gọn gàng, thay vì dùng nhiều câu nối bằng \"and\"."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "17.5. Bước 3 — Body Paragraphs (Detailed comparison)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Năm 1950**",
+                "▸ Initially, the school was located in the center, with houses to the left and a farmland area in the southwest. A large playground occupied the southeastern part of the site.",
+                "→ Ban đầu, trường học nằm ở trung tâm, các ngôi nhà nằm ở phía bên trái, và một khu đất nông nghiệp ở góc tây nam. Một sân chơi lớn chiếm phần phía đông nam của khu vực.",
+                "**Năm 1980**",
+                "▸ By 1980, major changes had taken place. The houses had been demolished and replaced with a car park and a science block. Additionally, the farmland had been transformed into a sports field. However, the school building and playground remained unchanged.",
+                "→ Đến năm 1980, đã có nhiều thay đổi lớn diễn ra. Các ngôi nhà đã bị phá bỏ và thay thế bằng một bãi đỗ xe cùng một khu học khoa học. Ngoài ra, khu đất nông nghiệp đã được chuyển đổi thành sân thể thao. Tuy nhiên, tòa nhà chính của trường và sân chơi vẫn giữ nguyên.",
+                "• Dùng **had been + V3** → thì quá khứ hoàn thành, diễn tả thay đổi xảy ra trước một mốc thời gian trong quá khứ (1980).",
+                "• **remained unchanged** = giữ nguyên, không thay đổi — cụm phổ biến trong miêu tả bản đồ.",
+                "**Năm 2010**",
+                "▸ Over the next 30 years, the school site saw further modifications. The car park expanded, reducing the size of the sports field. The science block and main building remained intact, while the playground was slightly reduced in size.",
+                "→ Trong 30 năm tiếp theo, khuôn viên trường tiếp tục có thêm những thay đổi khác. Bãi đỗ xe được mở rộng, làm giảm kích thước của sân thể thao. Khu học khoa học và tòa nhà chính vẫn giữ nguyên, trong khi sân chơi bị thu hẹp một chút.",
+                "• **saw further modifications** = chứng kiến thêm nhiều thay đổi — diễn đạt tự nhiên và học thuật.",
+                "• **remained intact** = vẫn còn nguyên vẹn."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "17.6. Điểm rút ra chính — Key Takeaways",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• Dùng **thì quá khứ** vì các thay đổi đã xảy ra.",
+                "• So sánh logic giữa các giai đoạn thời gian: 1950 → 1980 → 2010.",
+                "• Sử dụng từ nối hợp lý: **Initially** (ban đầu) — **By 1980** (đến năm 1980) — **Over the next 30 years** (trong 30 năm tiếp theo) — **However, Additionally** (tuy nhiên, ngoài ra)."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "17.7. Bài mẫu hoàn chỉnh — Sample essay",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "The three maps illustrate the main developments that West Park Secondary School has undergone since 1950.",
+                "Overall, the school saw significant transformations, particularly with the removal of houses and farmland to make space for new facilities, such as a car park and a science block. Additionally, the expansion of the car park led to a reduction in the sports field and playground over time.",
+                "From 1950 to 1980, the school experienced several notable changes. The most significant was the demolition of houses on the southern side of the main road to make way for a car park and a science block. Additionally, the farmland to the west was converted into a sports field, providing new recreational space for students.",
+                "Between 1980 and 2010, the car park was further expanded, reducing the size of both the sports field and the playground. However, the science block and the main school building remained unchanged throughout the period."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "💡 Hoạt động 10 phút trên lớp",
+              "lines": [
+                "Cho học viên **gạch chân bằng bút đỏ** mọi cấu trúc bị động và **bút xanh** mọi từ nối trong bài mẫu. Sau đó đếm số câu: bài chỉ có 4 đoạn và khoảng 11 câu — đủ để đạt Band 7.0."
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -508,6 +3487,205 @@
         "Hiện trạng → hiện tại đơn: The town centre has a main road running through it.",
         "Quy hoạch → will be + V3 / is going to be + V3: A bus station will be built to the west of …",
         "planned developments · how it looks in the future"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "18.1. Đề 1 — Templeton seaside resort",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**The maps below show the changes that took place at the seaside resort of Templeton between 2000 and 2013.**"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image71_1794507518281.png",
+              "caption": "Khu nghỉ dưỡng ven biển Templeton năm 2000 và năm 2013"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Gợi ý làm bài**",
+                "Hãy **sử dụng con sông làm điểm tham chiếu** để chia bản đồ thành hai phần: khu **phía đông** và khu **phía tây** — tương ứng với hai đoạn thân bài.",
+                "• Khi mô tả bản đồ có **một đặc điểm nổi bật ở giữa** — như con sông, đường ray, hoặc con đường lớn — ta nên **dùng nó để chia bài viết thành hai phần rõ ràng**.",
+                "• Cách chia này giúp bài viết **có bố cục logic**, dễ theo dõi, và **được đánh giá cao về Coherence and Cohesion** trong IELTS Writing.",
+                "**Đặc điểm nổi bật cần nêu trong Overview**",
+                "Khu nghỉ dưỡng này **đã trải qua nhiều nâng cấp đáng kể**, bao gồm **việc xây dựng một siêu thị và một nhà máy**, cùng với **việc mở rộng tuyến đường sắt**. Phần lớn cây xanh đã bị chặt bỏ, dẫn đến **diện tích mảng xanh bị thu hẹp**.",
+                "• **has undergone significant upgrades** → cụm diễn đạt học thuật cho \"đã được nâng cấp đáng kể\".",
+                "• **the introduction of …** → cách tự nhiên để nói \"sự xuất hiện của … / việc xây dựng thêm …\".",
+                "• Dấu mũi tên thể hiện hậu quả hoặc kết quả, nên trong bài viết thật, bạn có thể dùng các từ nối như: **As a result, there is less green space.** hoặc **Consequently, most of the green areas disappeared.**"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Tóm gọn lại",
+              "lines": [
+                "Khi viết dạng Map có sông ở giữa, hãy chia bố cục theo hai bên đông – tây, và nêu bật các thay đổi quan trọng như xây dựng cơ sở mới, mở rộng hạ tầng, giảm mảng xanh."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "18.2. Đề 2 — Eastminster village",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**The maps show the transformation of the village of Eastminster over a ten-year period.**"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image72_1794507518653.png",
+              "caption": "Làng Eastminster năm 1999 và năm 2009"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Gợi ý làm bài**",
+                "We can see a river running through the map, so we will analyze the two areas: **North of the river** and **South of the river.**",
+                "Overall, the main changes include the addition of:",
+                "• Houses and apartment blocks → **Residential development**",
+                "• Shops / shopping complex, hotel with golf course → **Commercial development**",
+                "• Factories and warehouses → **Industrial development**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "18.3. Checklist tự chấm sau khi viết",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**TIÊU CHÍ KIỂM TRA**",
+                  "**ĐẠT / CHƯA**"
+                ],
+                [
+                  "Introduction chỉ có một câu và đã paraphrase đề bài",
+                  ""
+                ],
+                [
+                  "Overview có chữ **Overall** và nêu 2–3 thay đổi lớn nhất",
+                  ""
+                ],
+                [
+                  "Thân bài chia thành hai đoạn theo khu vực hoặc theo thời gian",
+                  ""
+                ],
+                [
+                  "Có ít nhất 6 câu bị động ở thì quá khứ",
+                  ""
+                ],
+                [
+                  "Có nhắc tới ít nhất một thứ **không thay đổi**",
+                  ""
+                ],
+                [
+                  "Bài dài từ 160 đến 190 từ",
+                  ""
+                ],
+                [
+                  "Không lặp lại một động từ mô tả thay đổi quá hai lần",
+                  ""
+                ],
+                [
+                  "**🎯 Mục tiêu phần sau**\nXử lý được đề Maps **không có mốc tự nhiên** để chia khu vực\nDùng đúng thì hiện tại và tương lai cho bản đồ quy hoạch\nViết bài theo dàn ý 4 đoạn do đề bài chỉ định sẵn"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "18.4. Đề 3 — Islip town centre (hiện tại và quy hoạch)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**The maps below show the centre of a small town called Islip as it is now, and plans for its development.**"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image73_1794507518993.png",
+              "caption": "Trung tâm thị trấn Islip hiện tại và bản quy hoạch phát triển"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Gợi ý làm bài**",
+                "Đối với dạng bản đồ này, khi **không có mốc tự nhiên** như một con sông để chia khu vực, **cách tiếp cận tốt nhất** là **xác định những thay đổi nổi bật nhất trước**, rồi **trình bày các thay đổi nhỏ hơn sau đó**.",
+                "**Những thay đổi lớn**",
+                "• Thay đổi dễ thấy nhất là **đường cao tốc hai chiều** chạy vòng quanh trung tâm thị trấn.",
+                "• **Nhiều khu nhà ở và cửa hàng mới đã được xây dựng thêm.**",
+                "**Những thay đổi nhỏ hơn**",
+                "• **Dãy cửa hàng ở phía bắc** đã được **thay thế bằng nhiều cơ sở mới** — hãy liệt kê chúng ra.",
+                "• **Công viên đã bị thu hẹp diện tích**, trong khi **ngôi trường vẫn giữ nguyên**.",
+                "**Chiến lược viết**",
+                "Không nên mô tả từng bản đồ riêng biệt. Thay vào đó, hãy **tập trung vào từng đặc điểm một** và **so sánh tình trạng của nó** giữa **bản đồ hiện tại** và **bản đồ tương lai**. Hãy **sử dụng thì hiện tại và tương lai**, và **dùng câu bị động** khi thích hợp.",
+                "**Từ vựng hữu ích**",
+                "• **Planned developments** = những thay đổi đã được lên kế hoạch / những thay đổi dự kiến / những thay đổi được đề xuất.",
+                "• **How it looks in the future** = hình dạng hoặc diện mạo trong tương lai / điều mà khu vực này được kỳ vọng sẽ trở thành."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Thì dùng cho bản đồ quy hoạch",
+              "lines": [
+                "Hiện trạng → **thì hiện tại đơn**: The town centre has a main road running through it.",
+                "Quy hoạch → **will be + V3** hoặc **is going to be + V3**: A bus station will be built to the west of the shopping centre."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "18.5. Đề 4 — City Hospital road access",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**The two maps below show road access to a city hospital in 2007 and 2010.**"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image74_1794507519403.png",
+              "caption": "Đường vào bệnh viện thành phố năm 2007 và năm 2010"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Dàn ý bốn đoạn cho đề này**",
+                "• **Introduction paragraph:** paraphrase the question statement.",
+                "• **Overview paragraph:** state how many changes were made, summarise what type of changes they were — ví dụ: three changes; parking, bus stops, roundabouts.",
+                "• **Details paragraph 1:** describe changes to infrastructure for bus access, including roundabouts.",
+                "• **Details paragraph 2:** describe changes to parking areas."
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -530,6 +3708,88 @@
         "Both plans have/share ...",
         "at the front/back of the room · in the corner / in the centre / along the wall",
         "positioned in rows / in a U-shape / in a circle"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "I. Đặc điểm của dạng Layout",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Có 2 biến thể thường gặp — cần nhận diện đúng ngay từ đề bài để chọn cách viết phù hợp:"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Biến thể**",
+                  "**Dấu hiệu nhận biết trong đề**",
+                  "**Cách xử lý khi viết bài**"
+                ],
+                [
+                  "1. Hai phương án cùng lúc\n(VD: Plan A vs Plan B)",
+                  "Đề cho 2 sơ đồ ngang hàng, không có mốc thời gian (VD: \"two different seating layout options, Plan A and Plan B\").",
+                  "Không dùng thì quá khứ/tương lai để so sánh — dùng thì hiện tại đơn + từ so sánh (whereas/while/unlike) vì đây là 2 lựa chọn tồn tại song song, không phải một biến đổi theo thời gian."
+                ],
+                [
+                  "2. Hiện tại → Tương lai\n(VD: Present vs Future office)",
+                  "Đề có mốc thời gian hoặc từ \"planned/future\" (VD: \"the present layout ... and its planned layout in the future\").",
+                  "Viết như dạng \"thay đổi theo thời gian\" — dùng lại từ vựng mô tả thay đổi ở Buổi 1 (demolished, converted into, replaced by...), nhưng chia ở thì tương lai (will be + V3) cho mặt bằng tương lai."
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Cấu trúc câu riêng cho dạng so sánh hai phương án cùng lúc**",
+                "Vì không có yếu tố thời gian, KHÔNG dùng \"was/were\" để nối 2 vế — thay vào đó dùng các cấu trúc so sánh/tương phản sau:"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấu trúc**",
+                  "**Ví dụ**"
+                ],
+                [
+                  "In Plan A, ..., whereas in Plan B, ...",
+                  "In Plan A, the podium is positioned at the front of the room, whereas in Plan B, the morning tea area is located there instead."
+                ],
+                [
+                  "While Plan A has/features ..., Plan B has/features ... instead",
+                  "While Plan A features a single long table at the back, Plan B features two round tables instead."
+                ],
+                [
+                  "Unlike Plan A, Plan B ...",
+                  "Unlike Plan A, Plan B does not include a podium near the entrance."
+                ],
+                [
+                  "One/Another difference between the two plans is that ...",
+                  "Another difference between the two plans is that the whiteboard is placed closer to the entrance in Plan B."
+                ],
+                [
+                  "Both plans have/share ... (điểm giống nhau)",
+                  "Both plans have seating arranged in rows facing the whiteboard."
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "💡 Ghi nhớ: dạng \"hai phương án cùng lúc\" dùng thì hiện tại + từ tương phản (whereas/unlike/while); dạng \"hiện tại → tương lai\" dùng động từ chỉ thay đổi (Buổi 1) + thì tương lai. Không trộn lẫn hai cách viết này.",
+                "**Từ vựng vị trí trong không gian nhỏ**",
+                "• at the front/back of the room — ở phía trước/sau phòng",
+                "• in the corner / in the centre / along the wall — ở góc / ở giữa / dọc theo tường",
+                "• opposite/adjacent to / next to / facing — đối diện / liền kề / cạnh / hướng ra",
+                "• positioned in rows / in a U-shape / in a circle — được xếp theo hàng / hình chữ U / hình tròn"
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -563,6 +3823,106 @@
         "Manufacturing Process (Industrial) → bị động, hiện tại đơn — sản xuất xi măng/gạch/sữa/giấy",
         "The process begins when a female frog lays eggs in a pond.",
         "People crush limestone → Limestone is crushed."
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "19.1. Hai dạng quy trình trong Writing Task 1",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**TIÊU CHÍ**",
+                  "**NATURAL PROCESS**",
+                  "**MANUFACTURING PROCESS**"
+                ],
+                [
+                  "Bản chất",
+                  "Quá trình tự nhiên, không có con người can thiệp",
+                  "Quy trình sản xuất do con người thực hiện"
+                ],
+                [
+                  "Thể (voice)",
+                  "**Chủ động (Active)**",
+                  "**Bị động (Passive)**"
+                ],
+                [
+                  "Thì",
+                  "Hiện tại đơn",
+                  "Hiện tại đơn"
+                ],
+                [
+                  "Ví dụ đề",
+                  "Vòng đời của ếch, ong, cá hồi; vòng tuần hoàn của nước",
+                  "Sản xuất xi măng, gạch, sữa, giấy"
+                ],
+                [
+                  "Tên gọi khác",
+                  "Cyclical Process — quy trình tuần hoàn",
+                  "Industrial Process"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "19.2. Dạng Natural Process — quy trình tự nhiên",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Đối với dạng bài **Natural Process** trong IELTS Writing Task 1, phần mô tả nên được viết ở **thể chủ động**, vì quá trình này xảy ra một cách tự nhiên, không có sự can thiệp của con người.",
+                "**Ví dụ: Vòng đời của một con ếch — Life Cycle of a Frog**",
+                "• Vòng đời của một con ếch gồm nhiều giai đoạn khác nhau, bắt đầu từ trứng và kết thúc ở giai đoạn trưởng thành.",
+                "• **Giai đoạn trứng (Egg Stage)** — Quá trình bắt đầu khi ếch cái đẻ trứng trong ao hoặc các vùng nước khác.",
+                "• **Giai đoạn nòng nọc (Tadpole Stage)** — Sau vài ngày, trứng nở thành nòng nọc, chúng sống chủ yếu dưới nước và hô hấp bằng mang.",
+                "• **Giai đoạn nòng nọc phát triển (Growing Tadpole)** — Theo thời gian, nòng nọc phát triển chân sau nhỏ, sau đó là chân trước, và đuôi dần ngắn lại.",
+                "• **Giai đoạn ếch non (Young Frog / Froglet)** — Khi sự biến đổi tiếp tục, nòng nọc trở thành ếch non, hô hấp bằng phổi thay vì mang.",
+                "• **Giai đoạn ếch trưởng thành (Adult Frog)** — Cuối cùng, đuôi biến mất hoàn toàn, và ếch trưởng thành, có khả năng sống cả dưới nước lẫn trên cạn.",
+                "Trong suốt quá trình này, ếch trải qua quá trình **\"biến thái\" (metamorphosis)** — tức là sự thay đổi hình dạng và khả năng thích nghi với các môi trường khác nhau khi phát triển."
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image77_1794507519928.png",
+              "caption": "Life cycle of a frog — sơ đồ vòng đời của ếch"
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "19.3. Dạng Manufacturing Process — quy trình sản xuất",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Đối với **dạng bài mô tả quy trình sản xuất**, bạn **nên dùng thể bị động (passive voice)** vì **trọng tâm của bài là các hành động được thực hiện**, chứ không phải là ai thực hiện chúng. Nói cách khác, bạn miêu tả **\"cái gì được làm\"** chứ không phải **\"ai làm nó\"**."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 Tóm lại về thể",
+              "lines": [
+                "Dạng **Natural Process** → dùng **chủ động** vì tự nhiên diễn ra.",
+                "Dạng **Manufacturing Process** → dùng **bị động** vì con người thực hiện các bước."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Ghi nhớ thêm",
+              "lines": [
+                "Ngoài hai dạng Process phổ biến kể trên, trong Writing Task 1 Academic, bạn còn có thể bắt gặp dạng **Diagram (Sơ đồ)** thể hiện sự thay đổi hay cách thức hoạt động của một sự vật — ví dụ sơ đồ cấu tạo của một chiếc máy."
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -583,6 +3943,157 @@
         "Inside the heater, the mixture is heated at a high temperature before being ground into fine cement.",
         "Finally, the cement is packaged into bags and is ready for use.",
         "crush → is crushed → crushing → crusher (động từ → bị động → danh từ → tên máy)"
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "20.1. Đề bài mẫu — Cement and Concrete Production",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "The diagrams below show the stages and equipment used in the cement-making process, and how cement is used to produce concrete for building purposes.",
+              "lines": [
+                "Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words."
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image78_1794507520322.png",
+              "caption": "Cement Production và Concrete Production — Gravel = small stones"
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "20.2. Quy trình sản xuất xi măng — Cement Production",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Bước 1**",
+                "Trước hết, **đá vôi (limestone)** và **đất sét (clay)** được **nghiền nhỏ thành bột** bằng **máy nghiền (crusher)**.",
+                "▸ First, limestone and clay are crushed into powder using a crusher.",
+                "**Bước 2**",
+                "Sau đó, bột này được trộn đều trong **máy trộn (mixer)** trước khi được đưa vào **lò quay (rotating heater)**.",
+                "▸ Next, the powder is mixed in a mixer before being fed into a rotating heater.",
+                "**Bước 3**",
+                "Bên trong lò quay, hỗn hợp được **đun nóng ở nhiệt độ cao**, sau đó được **nghiền mịn** để tạo thành xi măng.",
+                "▸ Inside the heater, the mixture is heated at a high temperature before being ground into fine cement.",
+                "**Bước 4**",
+                "Cuối cùng, xi măng được **đóng vào bao** và sẵn sàng để sử dụng.",
+                "▸ Finally, the cement is packaged into bags and is ready for use."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "20.3. Quy trình tạo bê tông — Concrete Production",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Để tạo bê tông, **bốn nguyên liệu thô** được kết hợp theo tỷ lệ cụ thể:",
+                "• 50% sỏi (gravel)",
+                "• 25% cát (sand)",
+                "• 15% xi măng (cement)",
+                "• 10% nước (water)",
+                "▸ To produce concrete, four raw materials are combined in specific proportions: 50% gravel, 25% sand, 15% cement, and 10% water.",
+                "Các nguyên liệu này được trộn kỹ trong **máy trộn bê tông (concrete mixer)**.",
+                "▸ These materials are mixed thoroughly in a concrete mixer.",
+                "Hỗn hợp sau đó được xử lý cho đến khi tạo thành bê tông, có thể sử dụng trong xây dựng.",
+                "▸ The mixture is then processed until it forms concrete, which can be used for construction purposes."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "20.4. Ghi chú ngữ pháp — Grammar Notes",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 1. Dùng thể bị động (Passive voice)",
+              "lines": [
+                "Vì ta tập trung vào quy trình và hành động, không phải người thực hiện.",
+                "**is crushed** → được nghiền",
+                "**is heated** → được đun nóng",
+                "**is packaged** → được đóng gói"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "🧩 2. Dùng từ nối chỉ trình tự (Sequencing words)",
+              "lines": [
+                "Giúp mô tả quá trình mạch lạc và có trật tự logic: **first, next, then, after that, finally**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "20.5. Cách tiếp cận dạng bài quy trình",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Cách viết bài — How to Write the Essay**",
+                "• **Xác định số bước trong quy trình** — đếm xem có bao nhiêu giai đoạn (steps / stages) trong sơ đồ.",
+                "• **Xác định bước đầu tiên và bước cuối cùng** — giúp bạn mở bài và kết bài chính xác, đảm bảo không bị thiếu thông tin.",
+                "**Ghi chú chung khi viết về quy trình**",
+                "• Xác định số lượng bước hợp lý cho một bài khoảng 150 từ.",
+                "• **Không được bỏ sót bất kỳ bước nào** — cố gắng miêu tả tất cả.",
+                "• Dùng **thì hiện tại đơn (present simple tense)** vì quy trình là một sự thật khoa học hoặc sản xuất cố định.",
+                "• Lựa chọn giữa thể chủ động hoặc bị động tùy theo loại quy trình: Natural process → chủ động (active); Manufacturing process → bị động (passive).",
+                "• Khi mô tả, hãy chú ý các **động từ hành động (action verbs)** và gạch chân chúng để dễ chuyển đổi cấu trúc câu.",
+                "▸ People crush limestone → limestone is crushed",
+                "→ Chuyển từ chủ động sang bị động.",
+                "▸ Mix → mixing → mixture",
+                "→ Chuyển động từ thành danh từ."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "20.6. Bốn cấu trúc động từ thường gặp trong mô tả quy trình",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**(1) S + to be + V3 — thể bị động**",
+                "▸ At the beginning of the process, clay is dug from the ground.",
+                "→ Ở đầu quy trình, đất sét được đào lên từ mặt đất.",
+                "**(2) Being + V3 — mệnh đề rút gọn bị động**",
+                "▸ After being washed, the tomatoes are moved to the grilling stage.",
+                "→ Sau khi được rửa sạch, cà chua được chuyển sang giai đoạn nướng.",
+                "**(3) V-ing — khi nói về hành động tiếp theo**",
+                "▸ After that, the ground, frozen liquid is dried in a vacuum so that the water evaporates, leaving the coffee granules.",
+                "→ Sau đó, dung dịch cà phê đông lạnh được sấy khô, khiến nước bay hơi và chỉ còn lại hạt cà phê hòa tan.",
+                "**(4) V-er — dùng để chỉ máy móc**",
+                "▸ In a process where ingredients are mixed together, we use the verb \"mix\", and \"mixer\" refers to a mixing machine.",
+                "→ Trong quy trình trộn nguyên liệu, động từ là \"mix\" (trộn), còn danh từ chỉ máy móc là \"mixer\" (máy trộn)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Lưu ý quan trọng",
+              "lines": [
+                "Không phải động từ nào thêm **-er** cũng thành máy móc — hãy tra từ điển để biết tên chính xác của thiết bị."
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -611,6 +4122,347 @@
         "It is clear from the diagrams that there are five stages in the process of making cement.",
         "At the first stage of the process, … · This … is then … · The process continues with … · At the final stage, …",
         "Byproducts (cheese, cream, butter) và 'cows grazing' KHÔNG được tính là một bước."
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "21.1. Câu mẫu cho phần Introduction",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• **The diagrams illustrate / demonstrate / describe …** → Các sơ đồ minh họa / mô tả…",
+                "• **The production of …** → Quy trình sản xuất…",
+                "• **The process of producing / making / manufacturing / generating …** → Quá trình tạo ra / sản xuất…",
+                "• **How … is produced / made / manufactured / generated** → Cách … được tạo ra / sản xuất.",
+                "• **How to produce / make / manufacture / generate …** → Cách để sản xuất / tạo ra…"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "21.2. Câu mẫu cho phần Overview",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Phần này chỉ cần nói **có bao nhiêu bước**, **bắt đầu từ đâu**, và **kết thúc ở đâu**.",
+                "• **There are … main steps / stages in the process of making …, beginning with … and culminating in …** → Có … giai đoạn chính trong quy trình sản xuất …, bắt đầu bằng … và kết thúc bằng …",
+                "• **The production of … involves … main stages, beginning with … and finishing with …** → Quá trình sản xuất … gồm … bước, bắt đầu từ … và kết thúc với …",
+                "Nếu sơ đồ có **hai quy trình**, hãy giới thiệu cả hai trong một câu, dùng từ nối như **while / whereas**:",
+                "▸ There are five main steps in the process of producing milk, while only three stages are required to store it after that.",
+                "→ Có 5 bước chính trong quá trình sản xuất sữa, trong khi chỉ cần 3 giai đoạn để bảo quản nó sau đó."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "21.3. Từ vựng chỉ trình tự khi viết bài quy trình",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**(1) Bắt đầu quy trình**",
+                "• **To begin with, …** → Trước hết, …",
+                "• **First of all, …** → Đầu tiên, …",
+                "• **In the first step / stage, …** → Ở bước đầu tiên, …",
+                "• **At the first stage of the process, …** → Ở giai đoạn đầu của quy trình, …",
+                "• **The process begins when + S + V** → Quy trình bắt đầu khi…",
+                "**(2) Các bước tiếp theo**",
+                "• **Following that, …** → Sau đó, …",
+                "• **The second stage is that …** → Giai đoạn thứ hai là …",
+                "• **In the next / subsequent step, …** → Ở bước kế tiếp, …",
+                "• **S + V, followed by + Noun** → … và tiếp theo là …",
+                "• **After that, …** → Sau đó, …",
+                "**(3) Các bước diễn ra đồng thời**",
+                "• **At the same time, …** → Đồng thời, …",
+                "• **Simultaneously, …** → Diễn ra cùng lúc, …",
+                "**(4) Kết thúc quy trình**",
+                "• **Finally, …** → Cuối cùng, …",
+                "• **The last / final step is that …** → Bước cuối cùng là …"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "21.4. Tóm tắt nhanh cấu trúc một bài Process",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**PHẦN**",
+                  "**NỘI DUNG CHÍNH**"
+                ],
+                [
+                  "**Introduction**",
+                  "Paraphrase đề bài"
+                ],
+                [
+                  "**Overview**",
+                  "Nêu số bước, điểm bắt đầu và kết thúc"
+                ],
+                [
+                  "**Body**",
+                  "Mô tả chi tiết từng bước theo thứ tự logic"
+                ],
+                [
+                  "**Ngữ pháp**",
+                  "Thì hiện tại đơn, dùng bị động với quy trình sản xuất"
+                ],
+                [
+                  "**Từ nối**",
+                  "First, Next, Then, After that, Finally"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Standard Structure of a Manufacturing Process Essay**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**SECTION**",
+                  "**CONTENT**"
+                ],
+                [
+                  "**Introduction**",
+                  "The diagram illustrates the process of **V-ing**."
+                ],
+                [
+                  "**Overview**",
+                  "Overall, there are … main steps in this process, beginning with … and ending with …"
+                ],
+                [
+                  "**Body Paragraph 1**",
+                  "At the first stage of the process, … After that, … Next, …"
+                ],
+                [
+                  "**Body Paragraph 2**",
+                  "At the next stage of the process, … Following this, … Then, …"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "21.5. Bốn cấu trúc quan trọng để kết hợp các bước",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**1. Once + S + V (Once = When)**",
+                "**Dịch:** Khi… / Ngay khi…",
+                "▸ The mixture is beaten for about 45 seconds and a pulp is formed afterward. Once it is ready, the pulp is poured into a shallow tray.",
+                "→ Hỗn hợp được đánh khoảng 45 giây và tạo thành bột nhão. Khi nó sẵn sàng, bột nhão được đổ vào khay nông.",
+                "▸ Once being separated, the liquid ethanol will undergo the next phase of the process — purification — which takes another five hours to finish.",
+                "→ Ngay sau khi được tách ra, ethanol lỏng sẽ trải qua giai đoạn tiếp theo của quá trình — tinh chế — mất thêm năm giờ để hoàn thành."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Giải thích",
+              "lines": [
+                "Nếu cả hai mệnh đề có cùng chủ ngữ, có thể **bỏ chủ ngữ trong mệnh đề \"Once\"** và **chuyển động từ sang dạng V-ing**. Ví dụ: Once it is separated → Once being separated."
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**2. Having + Past Participle, S + V**",
+                "**Dịch:** Sau khi đã…",
+                "▸ Having been poured into a shallow tray with some water, the pulp is then mixed by hand.",
+                "→ Sau khi được đổ vào khay nông cùng một ít nước, bột nhão được trộn bằng tay."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Giải thích",
+              "lines": [
+                "Đây thực ra là một **mệnh đề quan hệ rút gọn ở thể bị động**, dùng thì hiện tại hoàn thành. Nó nhấn mạnh rằng hành động đã hoàn tất trước khi hành động tiếp theo xảy ra."
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**3. After / Before + V-ing, S + V**",
+                "**Dịch:** Sau khi… / Trước khi…",
+                "▸ After being soaked for an hour, the mixture is beaten for about 45 seconds until a pulp is formed.",
+                "→ Sau khi được ngâm trong một giờ, hỗn hợp được đánh khoảng 45 giây cho đến khi tạo thành bột nhão.",
+                "▸ Before being beaten for about 45 seconds to form a pulp, the mixture is left for an hour.",
+                "→ Trước khi đánh khoảng 45 giây để tạo bột nhão, hỗn hợp được để yên trong một giờ."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Giải thích",
+              "lines": [
+                "Cấu trúc này rõ ràng cho thấy **trình tự các bước** trong quá trình."
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**4. S + V, followed by + Noun**",
+                "**Dịch:** …, sau đó là…",
+                "▸ At the following stage, the pulp is poured into a shallow tray and some water is also added. This is followed by a hand-mixing process.",
+                "→ Ở giai đoạn tiếp theo, bột nhão được đổ vào khay nông và thêm một ít nước. Sau đó là quá trình trộn bằng tay.",
+                "▸ At the following stage, the pulp is poured into a shallow tray and some water is also added, followed by a hand-mixing process.",
+                "→ Bản rút gọn: Ở giai đoạn tiếp theo, bột nhão được đổ vào khay nông và thêm một ít nước, sau đó trộn bằng tay."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Giải thích",
+              "lines": [
+                "Đây là cách **miêu tả trình tự các bước một cách ngắn gọn và trang trọng**, thường dùng trong văn bản mô tả quy trình."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "21.6. Từ vựng dùng trong dạng Manufacturing",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Từ vựng mô tả sự biến đổi của các nguyên liệu, vật liệu và sản phẩm."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**CHẤT RẮN**",
+                  "**CHẤT LỎNG**",
+                  "**CHẤT KHÍ**"
+                ],
+                [
+                  "lay\nsqueeze\nshrink\ndry in the sun\nbend\nform\nrotate\nfold\nharden\nmix\npress\ngrind\nsoften\nabsorb\nseparate\ncombine",
+                  "cool down\nmelt into\ncondense\nflow\nevaporate\ncirculate\npour into …\nfilter out\nconvert … into\nbe mixed with …",
+                  "expand\ncompress\ncombine\nheat up\nignite\nburn\nrelease ~ send out"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "21.9. Bước đầu tiên khi mô tả một quy trình",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• **Count the number of steps** — Đếm số bước.",
+                "• **Identify the first and last step** — Xác định bước đầu và bước cuối.",
+                "• **Break the entire process into separate steps** to make it easier to analyze and describe — Chia toàn bộ quy trình thành các bước riêng biệt để dễ phân tích và mô tả."
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image78_1794507520322.png",
+              "caption": "Dùng bút đỏ gạch các đường chia bước ngay trên đề thi — đây là kỹ thuật nên tập cho học viên"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Introduction và Overview dùng đúng bộ câu mẫu đã học ở đầu buổi này — xem lại hai mục Câu mẫu cho phần Introduction và Câu mẫu cho phần Overview trước khi viết."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "21.10. Body 1 — Description of Diagram 1",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Step 1 — Focusing on the verb \"crush\"**",
+                "There are four possible ways to describe this step:",
+                "• At the first stage, limestone and clay are crushed and become powder.",
+                "• The process begins with limestone and clay being crushed into powder.",
+                "• The process begins with crushing limestone and clay to make powder.",
+                "• At the first stage, limestone and clay are put through a crusher and become powder.",
+                "The fourth option was chosen but needed expansion, so it was modified to:",
+                "▸ At the first stage of producing cement, limestone and clay are put through a machine called a crusher and become powder.",
+                "**Step 2 — Focusing on the verb \"mix\"**",
+                "Similarly, four ways to describe this step:",
+                "• The process continues with mixing the powder…",
+                "• The process continues with the powder being mixed…",
+                "• This powder is then put through a mixer…",
+                "• This powder is then mixed…",
+                "The fourth option was chosen, but since Step 2 was too short, it was combined with Step 3:",
+                "▸ This powder is then mixed and is brought into a rotating heater where it is heated at a high temperature.",
+                "**Step 4**",
+                "▸ The process continues with grinding the material, and then cement is produced.",
+                "**Step 5**",
+                "▸ At the final stage, cement is packaged into bags.",
+                "To make the sentence longer:",
+                "▸ At the final stage, cement is packaged into bags and is ready for the production of concrete."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "21.11. Body 2 — Concrete Production",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "The first step in making concrete is mixing the raw materials in specific proportions, then placing them in a mixer to blend.",
+                "▸ The first step of making concrete is combining different materials. Cement is mixed with water, sand, and small stones in the proportions of 10%, 25%, and 50% respectively. This mixture is then put into a concrete mixer, where it becomes the final concrete, which can be used for building purposes."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "21.12. Bài mẫu hoàn chỉnh — Full essay",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "The diagrams illustrate the production of cement, and how to use cement to make concrete.",
+                "It is clear from the diagrams that there are five stages in the process of making cement. Meanwhile, only two steps are required to produce concrete.",
+                "At the first stage of producing cement, limestone and clay are put through a machine called **crusher** and become powder. This powder **is** then **mixed** and is brought into a rotating heater where it **is heated** in high temperature. The process continues with **grinding** the material, **and then cement is produced**. **At the final stage**, cement is packaged into bags and is ready for the production of concrete.",
+                "**The first step of** making concrete **is combining** different materials. Cement **is mixed** with water, sand and small stones in the proportions of 10%, 25% and 50% respectively. This mixture **is then** put into a **concrete mixer**, where it **becomes final concrete** which can be used for building purposes. (158 words)"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "📌 Cách đọc bài mẫu",
+              "lines": [
+                "Trong bản gốc, **chữ đỏ** đánh dấu **cấu trúc động từ linh hoạt (Flexible Verb Structures)** và **chữ xanh** đánh dấu **từ nối (Linking Words)**. Ở đây các cụm đó được **in đậm** — hãy cho học viên tô hai màu khác nhau lên chúng."
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -636,6 +4488,289 @@
         "Overall, the life cycle of a bee consists of several stages and takes about 34–36 days, beginning with eggs and ending with a fully mature adult bee.",
         "Eggs are laid in fresh water. · The eggs hatch after about 3 months and become alevin.",
         "The fish becomes smolt after 1–3 years and moves to the sea."
+      ],
+      "theory": [
+        {
+          "src": "book",
+          "title": "22.1. Dạng bài Natural Process — Quy trình tự nhiên",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Đây là quy trình phát triển tự nhiên của một sự vật hoặc sự hình thành của một hiện tượng trong thiên nhiên. Ví dụ: quá trình hình thành mưa, vòng tuần hoàn của nước, vòng đời của ếch…",
+                "Một tên gọi khác của quy trình này đó là **Cyclical Process (Quy trình tuần hoàn)**. Nhìn chung, các quy trình diễn ra trong tự nhiên đều mang tính tuần hoàn, là một vòng lặp liên tục, giai đoạn cuối được tiếp tục bằng giai đoạn đầu."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "⚠️ Lưu ý",
+              "lines": [
+                "Đây là sự phát triển tự nhiên của sự vật, **không có sự tác động của con người** hay một đối tượng khác, nên bạn cần áp dụng **thể chủ động (Active Voice)** khi mô tả quy trình."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "22.2. Năm bước hoàn thiện một bài Process",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "• Xác định loại quy trình và nắm rõ các bước trong quy trình.",
+                "• Paraphrase phần miêu tả biểu đồ để viết Introduction.",
+                "• Chọn lọc thông tin cần miêu tả trong biểu đồ và lập dàn ý.",
+                "• Viết mô tả tổng quan (Overview) cho bài viết.",
+                "• Viết thân bài (Body) của bài viết."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "22.3. Bước 1 — Xác định loại quy trình",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "task",
+              "t": "",
+              "lines": [
+                "**The diagram below shows the life cycle of the honey bee.**"
+              ]
+            },
+            {
+              "k": "img",
+              "url": "https://media.ieltsthayha.com/course-theory/academicwritingfull-danielha/image81_1794507520694.png",
+              "caption": "Life cycle of the honey bee"
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Ở bước này, bạn cần tìm hiểu kỹ tổng quan và các chi tiết trong sơ đồ để xác định:",
+                "• Hình ảnh mô tả quy trình gì?",
+                "• Đây là dạng Natural Process hay Manufacturing Process?",
+                "Từ ví dụ trên, ta có nhận định sau:",
+                "• Quy trình mô tả **vòng đời của ong mật**.",
+                "• Thuộc dạng **Natural Process / Cyclical Process**, và bao gồm 5 bước chính."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "22.4. Bước 2 — Paraphrase để viết Introduction",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Tương tự như các dạng bài biểu đồ Writing Task 1 khác, ở phần Introduction, người viết cần diễn đạt lại câu giới thiệu đã cho bằng ngôn ngữ và cấu trúc của mình, sử dụng kỹ thuật paraphrase.",
+                "**Dành cho Natural Process**",
+                "• The diagram [shows / describes / illustrates / depicts] + **how** + a/an + … + **grows during its lifespan**.",
+                "• The diagram [shows / describes / illustrates / depicts] **the stages in the lifespan of** …",
+                "• The diagram [shows / describes / illustrates / depicts] **the growth of** …"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "22.5. Từ vựng trong dạng bài Process",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Một phần không thể thiếu trong việc viết bài mô tả Process chính là các từ vựng chuyên dùng cho dạng bài này. Mặc dù dạng bài Process bao gồm nhiều dạng quy trình khác nhau, với các chủ đề khác nhau, nhìn chung các bài viết đều cần sử dụng **ngôn ngữ chuyển tiếp thông tin**, cùng với đó là một số từ vựng liên quan đến việc **sản xuất** hoặc **phát triển trong tự nhiên**."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**TỪ VỰNG**",
+                  "**Ý NGHĨA**"
+                ],
+                [
+                  "to be picked",
+                  "được hái"
+                ],
+                [
+                  "to be harvested",
+                  "được thu hoạch"
+                ],
+                [
+                  "to be collected",
+                  "được thu gom"
+                ],
+                [
+                  "to be cleaned / washed",
+                  "được làm sạch / rửa"
+                ],
+                [
+                  "to be dried",
+                  "được phơi khô"
+                ],
+                [
+                  "to be sorted",
+                  "được phân loại"
+                ],
+                [
+                  "to be molded",
+                  "được đúc khuôn"
+                ],
+                [
+                  "to be crushed",
+                  "được nghiền"
+                ],
+                [
+                  "to be separated",
+                  "được tách ra"
+                ],
+                [
+                  "to be mixed with",
+                  "được trộn với"
+                ],
+                [
+                  "to be sold",
+                  "được bán"
+                ],
+                [
+                  "to work",
+                  "hoạt động"
+                ],
+                [
+                  "to operate",
+                  "vận hành"
+                ],
+                [
+                  "component",
+                  "thành phần, bộ phận"
+                ],
+                [
+                  "battery",
+                  "pin"
+                ],
+                [
+                  "to house",
+                  "chứa đựng"
+                ],
+                [
+                  "to be attached to",
+                  "được đính với"
+                ],
+                [
+                  "to have the function of",
+                  "có chức năng"
+                ],
+                [
+                  "to lay eggs",
+                  "đẻ trứng"
+                ],
+                [
+                  "to hatch",
+                  "nở ra"
+                ],
+                [
+                  "to feed on",
+                  "ăn cái gì"
+                ],
+                [
+                  "to migrate",
+                  "di cư"
+                ],
+                [
+                  "to undergo changes",
+                  "trải qua thay đổi"
+                ],
+                [
+                  "to build nests",
+                  "làm tổ"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "22.6. Từ vựng mô tả vòng đời của động vật",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Undergo three distinct stages of physical development — ba giai đoạn phát triển thể chất."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**GIAI ĐOẠN 1**",
+                  "**GIAI ĐOẠN 2**",
+                  "**GIAI ĐOẠN 3**"
+                ],
+                [
+                  "lay a number of eggs (đẻ một số lượng trứng lớn)\nbegin life as eggs (bắt đầu vòng đời từ những quả trứng)\nhatch within 5 to 7 days (nở trong khoảng từ 5 đến 7 ngày)\nhatch into… (nở thành…)\nthe hatching process (quá trình nở)",
+                  "be … centimeters in length ~ be … centimeters long (dài … xen-ti-mét)\nvary in size / colors / shapes (đa dạng về kích cỡ / màu sắc / hình dạng)\nbe termed / commonly called (được gọi là …)\nshed their old skin / shed their outer layer (thay lớp da cũ / lớp da bên ngoài)\nbreathe underwater / breathe out of water",
+                  "start to grow into… (bắt đầu phát triển thành…)\nturn into… (biến hóa thành…)\ngrow to maturity (phát triển hoàn thiện)\ngrow to adult size (phát triển đến kích cỡ trưởng thành)\ngrow bigger ~ grow in size (phát triển kích cỡ)\nbe fully developed (phát triển đầy đủ)\nfeed on… (ăn…)\nmate (giao phối)"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "22.11. Checklist tự chấm bài Process",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**TIÊU CHÍ KIỂM TRA**",
+                  "**ĐẠT / CHƯA**"
+                ],
+                [
+                  "Introduction đã paraphrase, không chép lại đề",
+                  ""
+                ],
+                [
+                  "Overview nêu rõ số bước, bước đầu và bước cuối",
+                  ""
+                ],
+                [
+                  "Mô tả đủ tất cả các bước, không bỏ sót bước nào",
+                  ""
+                ],
+                [
+                  "Không đưa thông tin nền hoặc sản phẩm phụ vào như một bước",
+                  ""
+                ],
+                [
+                  "Dùng đúng thì hiện tại đơn suốt cả bài",
+                  ""
+                ],
+                [
+                  "Dùng đúng chủ động cho Natural, bị động cho Manufacturing",
+                  ""
+                ],
+                [
+                  "Có ít nhất 5 từ nối chỉ trình tự khác nhau",
+                  ""
+                ],
+                [
+                  "Có ít nhất một trong bốn cấu trúc nối bước ở mục 10.5",
+                  ""
+                ]
+              ]
+            }
+          ]
+        }
       ]
     },
     {

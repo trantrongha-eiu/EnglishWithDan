@@ -36,6 +36,71 @@
 (function () {
   'use strict';
 
+  // esc() for the theory renderer (start() has its own copy).
+  function escT(s) {
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  // Theory cards (lesson.theory): one collapsible card per grammar
+  // structure — formula / usage / examples / notes. **x** → <b>x</b>.
+  // Book cards (t.blocks, from scripts/bookTheory/buildBookTheory.js) keep the
+  // printed book's order: sub-headings, paragraphs, coloured boxes, tables,
+  // pictures. Line markers: "• " list · "▸ " example · "→ " translation /
+  // comment · ✔ / ✘ (✅ / ❌) right / wrong.
+  var BOX_ICON = { formula: '🧩', tip: '💡', warn: '⚠️', note: '📌', goal: '🎯', task: '' };
+  function bookLine(fmt, s) {
+    var plain = String(s || '').replace(/\*\*/g, '').trim();
+    var cls = /^•/.test(plain) ? 'li' : /^▸/.test(plain) ? 'ex' : /^→/.test(plain) ? 'tr'
+      : /^(✔|✅)/.test(plain) ? 'ok' : /^(✘|❌)/.test(plain) ? 'bad' : '';
+    var body = cls === 'li' ? String(s).replace(/^(\s*\**\s*)•\s*/, '$1') : s;
+    return '<div class="bk-l' + (cls ? ' bk-' + cls : '') + '">' + fmt(body) + '</div>';
+  }
+  function renderBlocks(fmt, blocks) {
+    return blocks.map(function (b) {
+      var lines = (b.lines || []).map(function (l) { return bookLine(fmt, l); }).join('');
+      if (b.k === 'h') return '<div class="bk-h">' + fmt(b.t || '') + '</div>';
+      if (b.k === 'p') return '<div class="bk-p">' + lines + '</div>';
+      if (b.k === 'box') {
+        var tone = b.tone || 'note';
+        var icon = BOX_ICON[tone] || '';
+        var title = b.t ? (/^\p{Extended_Pictographic}/u.test(b.t) ? b.t : (icon ? icon + ' ' : '') + b.t) : '';
+        return '<div class="bk-box bk-' + tone + '">' + (title ? '<div class="bk-box-t">' + fmt(title) + '</div>' : '') + lines + '</div>';
+      }
+      if (b.k === 'table') {
+        var rows = b.rows || [];
+        var cell = function (tag, c) { return '<' + tag + '>' + String(c || '').split('\n').map(fmt).join('<br>') + '</' + tag + '>'; };
+        return '<div class="bk-tbl"><table>' + rows.map(function (r, i) {
+          return '<tr>' + r.map(function (c) { return cell(i === 0 && rows.length > 1 ? 'th' : 'td', c); }).join('') + '</tr>';
+        }).join('') + '</table></div>';
+      }
+      if (b.k === 'img' && b.url) {
+        return '<figure class="bk-img"><img src="' + escT(b.url) + '" alt="' + escT(b.caption || '') + '" loading="lazy">' +
+          (b.caption ? '<figcaption>' + fmt(b.caption) + '</figcaption>' : '') + '</figure>';
+      }
+      return '';
+    }).join('');
+  }
+  function renderTheory(list) {
+    if (!list || !list.length) return '';
+    // **bold**, then *italic* (the books' few single-star examples)
+    function fmt(s) { return escT(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/(^|[^*])\*([^*\s][^*]*?)\*(?!\*)/g, '$1<i>$2</i>'); }
+    function sec(icon, label, body) { return body ? '<div class="t1-th-sec"><div class="t1-th-lbl">' + icon + ' ' + label + '</div>' + body + '</div>' : ''; }
+    function ul(arr) { return (arr && arr.length) ? '<ul>' + arr.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ul>' : ''; }
+    var cards = list.map(function (t, i) {
+      var formula = (t.formula && t.formula.length) ? '<div class="t1-th-formula">' + t.formula.map(function (f) { return '<div>' + fmt(f) + '</div>'; }).join('') + '</div>' : '';
+      var ex = (t.examples && t.examples.length) ? '<ul class="t1-th-ex">' + t.examples.map(function (e) {
+        return '<li><div class="en">' + fmt(e.en || '') + '</div>' + (e.vi ? '<div class="vi">' + fmt(e.vi) + '</div>' : '') + '</li>';
+      }).join('') + '</ul>' : '';
+      var notes = (t.notes && t.notes.length) ? '<ul class="t1-th-notes">' + t.notes.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ul>' : '';
+      var body = (t.blocks && t.blocks.length)
+        ? '<div class="bk">' + renderBlocks(fmt, t.blocks) + '</div>'
+        : sec('🧮', 'Công thức', formula) + sec('🎯', 'Cách dùng', ul(t.usage)) + sec('✍️', 'Ví dụ', ex) + sec('⚠️', 'Lưu ý khi dùng', notes);
+      return '<details class="t1-th"' + (i === 0 ? ' open' : '') + '><summary><span class="n">' + (i + 1) + '</span>' + escT(t.title || '') +
+        (t.titleEn ? ' <span class="en">' + escT(t.titleEn) + '</span>' : '') + '</summary><div class="t1-th-body">' + body + '</div></details>';
+    }).join('');
+    var fromBook = list.some(function (t) { return t.src === 'book'; });
+    return '<div class="t1-theory"><div class="t1-theory-t">📘 Lý thuyết' + (fromBook ? ' <span class="t1-theory-src">theo giáo trình — bấm từng mục để mở</span>' : '') + '</div>' + cards + '</div>';
+  }
+
   function start(cfg) {
     var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
     var ui = cfg.ui || {};
@@ -271,26 +336,6 @@
     }
     function goOverview() { state.view = 'overview'; history.pushState({ view: 'overview' }, '', cfg.pagePath); loadOverview(); }
 
-    // Theory cards (lesson.theory): one collapsible card per grammar
-    // structure — formula / usage / examples / notes. **x** → <b>x</b>.
-    function renderTheory(list) {
-      if (!list || !list.length) return '';
-      function fmt(s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>'); }
-      function sec(icon, label, body) { return body ? '<div class="t1-th-sec"><div class="t1-th-lbl">' + icon + ' ' + label + '</div>' + body + '</div>' : ''; }
-      function ul(arr) { return (arr && arr.length) ? '<ul>' + arr.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ul>' : ''; }
-      var cards = list.map(function (t, i) {
-        var formula = (t.formula && t.formula.length) ? '<div class="t1-th-formula">' + t.formula.map(function (f) { return '<div>' + fmt(f) + '</div>'; }).join('') + '</div>' : '';
-        var ex = (t.examples && t.examples.length) ? '<ul class="t1-th-ex">' + t.examples.map(function (e) {
-          return '<li><div class="en">' + fmt(e.en || '') + '</div>' + (e.vi ? '<div class="vi">' + fmt(e.vi) + '</div>' : '') + '</li>';
-        }).join('') + '</ul>' : '';
-        var notes = (t.notes && t.notes.length) ? '<ul class="t1-th-notes">' + t.notes.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ul>' : '';
-        return '<details class="t1-th"' + (i === 0 ? ' open' : '') + '><summary><span class="n">' + (i + 1) + '</span>' + esc(t.title || '') +
-          (t.titleEn ? ' <span class="en">' + esc(t.titleEn) + '</span>' : '') + '</summary><div class="t1-th-body">' +
-          sec('🧮', 'Công thức', formula) + sec('🎯', 'Cách dùng', ul(t.usage)) + sec('✍️', 'Ví dụ', ex) + sec('⚠️', 'Lưu ý khi dùng', notes) +
-          '</div></details>';
-      }).join('');
-      return '<div class="t1-theory"><div class="t1-theory-t">📘 Lý thuyết</div>' + cards + '</div>';
-    }
 
     function renderLesson() {
       var l = state.lesson || {};
@@ -1181,7 +1226,8 @@
     return E;
   }
 
-  window.CourseEngine = { start: start };
+  // renderTheory exported for frontend/tests/course-theory.test.js
+  window.CourseEngine = { start: start, renderTheory: renderTheory };
 })();
 
 // ════════════════════════════════════════════════════════════════════════

@@ -85,7 +85,183 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "PHASE 1 · CORE SKILLS — Lesson 1 → 4",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Học sinh học CÁCH trả lời trước khi học NỘI DUNG trả lời.",
+                "Từ vựng ở giai đoạn này cố tình để dễ — trọng tâm là cấu trúc và độ dài câu trả lời."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "Yes, I do / Not really · because… · For example… · Personally, I…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời 3–4 câu, dài 15–25 giây, có đủ Opinion + Reason + Example."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Trả lời cụt: “Yes.” / “I like it.” — dừng lại luôn.",
+                "✘ Trả lời dài như Part 2 (trên 45 giây) — giám khảo sẽ cắt lời.",
+                "✘ Bắt đầu MỌI câu bằng “I think” — nghe rất nghèo vốn từ.",
+                "✘ Đọc thuộc lòng — mắt nhìn lên trần, giọng đều đều, không ngập ngừng tự nhiên."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — Part 1 thật sự là gì?",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Part 1 kéo dài **4–5 phút**. Giám khảo hỏi về những chủ đề rất quen thuộc: công việc, học tập, quê hương, sở thích. Đây là phần để thể hiện sự **tự nhiên**, không phải phần để “viết văn bằng lời”."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "",
+                  "**Câu trả lời tốt**",
+                  "**Câu trả lời hỏng**"
+                ],
+                [
+                  "Độ dài",
+                  "15–25 giây (2–4 câu)",
+                  "Dưới 5 giây, hoặc trên 45 giây"
+                ],
+                [
+                  "Nội dung",
+                  "Ý kiến + lý do + ví dụ",
+                  "Chỉ có ý kiến, hoặc lan man"
+                ],
+                [
+                  "Giọng",
+                  "Có ngập ngừng tự nhiên, có lên xuống",
+                  "Đều đều như đọc bài"
+                ],
+                [
+                  "Từ vựng",
+                  "Đơn giản nhưng chính xác",
+                  "Nhồi từ khó không đúng ngữ cảnh"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**4 chủ đề cố định** — kỳ thi nào cũng có ít nhất một trong số này: Work or Study · Hometown · Home / The Area Where You Live · một chủ đề bổ sung ngẫu nhiên."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Công thức O.R.E.",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Ký hiệu**",
+                  "**Nghĩa**",
+                  "**Mẫu câu bắt đầu**"
+                ],
+                [
+                  "**O** — Opinion",
+                  "Trả lời thẳng câu hỏi",
+                  "Yes, I do. / Not really. / Personally, I prefer…"
+                ],
+                [
+                  "**R** — Reason",
+                  "Vì sao",
+                  "…because it helps me… / …since it allows me to…"
+                ],
+                [
+                  "**E** — Example",
+                  "Ví dụ cụ thể",
+                  "For example, … / Like last week, … / For instance, …"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Câu mẫu đầy đủ:** I prefer studying alone **(O)** because it helps me concentrate better **(R)**. For example, I can finish my homework much faster when there are no distractions. **(E)**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: Present simple cho thói quen và sở thích",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Part 1 dùng **present simple** cho khoảng 70% câu trả lời. Lỗi nặng nhất của học sinh Việt Nam là **thiếu đuôi -s**.",
+                "✔ It **helps** me relax. ✘ It help me relax.",
+                "✔ My brother **works** at a bank. ✘ My brother work at a bank.",
+                "✔ I **don’t** really enjoy it. ✘ I not really enjoy it.",
+                "**Drill 60 giây:** giáo viên nói chủ ngữ (“my sister”, “my friends”, “it”), học sinh nói cả câu với “enjoy cooking”."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: Xuống giọng ở cuối câu khẳng định",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Học sinh Việt hay lên giọng cuối câu → nghe như đang hỏi, giám khảo tưởng bạn không chắc chắn. Luyện: I really enjoy cooking. ↘ It helps me relax. ↘ For example, I cook every Sunday. ↘",
+                "Chỉ lên giọng ↗ khi thật sự hỏi lại: Sorry, could you repeat that? ↗"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L02",
@@ -127,7 +303,179 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "Well,… · Actually,… · To be honest,… · Let me think… · I mean,… · I’d say…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Trả lời 3 câu hỏi liên tiếp, không có khoảng lặng nào quá 3 giây."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Nhồi “To be honest” vào mọi câu → nghe như robot.",
+                "✘ Im lặng 5–7 giây rồi mới nói (dead air) — mất điểm Fluency nặng.",
+                "✘ Lặp nguyên văn câu hỏi để câu giờ: “Do I like music? Well, do I like music…”",
+                "✘ Dùng “ummm” kéo dài thay vì filler tiếng Anh."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 6 filler cần thuộc",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Filler**",
+                  "**Dùng khi nào**",
+                  "**Ví dụ**"
+                ],
+                [
+                  "★",
+                  "**Well,…**",
+                  "Mở đầu bất kỳ câu trả lời nào — an toàn nhất",
+                  "Well, I’d say I prefer coffee."
+                ],
+                [
+                  "★",
+                  "**To be honest,…**",
+                  "Khi đưa ý kiến thẳng thắn, hơi tiêu cực",
+                  "To be honest, I’m not a big fan of pop music."
+                ],
+                [
+                  "★",
+                  "**Actually,…**",
+                  "Khi bổ sung hoặc đính chính điều vừa nói",
+                  "I thought it’d be boring. Actually, it was great."
+                ],
+                [
+                  "★",
+                  "**Let me think…**",
+                  "Khi cần 2–3 giây suy nghĩ thật sự",
+                  "Let me think… probably my grandmother."
+                ],
+                [
+                  "★",
+                  "**I’d say…**",
+                  "Đưa ý kiến nhẹ nhàng, không quá chắc chắn",
+                  "I’d say it depends on the weather."
+                ],
+                [
+                  "★★",
+                  "**I mean,…**",
+                  "Khi giải thích rõ hơn ý vừa nói",
+                  "It’s convenient. I mean, you can buy anything with one click."
+                ],
+                [
+                  "★★",
+                  "**That’s a good question.**",
+                  "Câu giờ lịch sự khi gặp câu khó",
+                  "That’s a good question, actually…"
+                ],
+                [
+                  "★★★",
+                  "**Off the top of my head,…**",
+                  "Nói ngay không cần nghĩ nhiều",
+                  "Off the top of my head, I’d say two or three times a week."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Filler KHÔNG phải để nhét vào mọi câu",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "COMMON MISTAKES",
+              "lines": [
+                "✘ **Mechanical** — học sinh nhét filler vào mọi câu:",
+                "✘ “To be honest, I like coffee. To be honest, I study at university. To be honest, I live in Bình Dương.”",
+                "✘ Người nghe hiểu ngay là học sinh đang học thuộc mẹo, không phải đang nói tự nhiên."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "TIPS",
+              "lines": [
+                "✔ **Natural** — filler xuất hiện đúng lúc bạn thật sự cần nghĩ hoặc thật sự muốn nhấn mạnh:",
+                "✔ “**Well**, I’d say I prefer coffee — mainly because I need something strong in the morning.”",
+                "✔ “**Let me think**… probably the beach near my grandmother’s house.”",
+                "✔ **Nguyên tắc:** tối đa **1 filler / câu trả lời**. Câu thứ hai dùng filler khác, không lặp lại."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: Filler đứng đâu trong câu?",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Filler đứng **đầu câu** và có dấu phẩy — nó **không** thay thế chủ ngữ hay động từ.",
+                "✔ **Well,** I usually go out with my friends. ✘ Well I usually go out with my friends.",
+                "✔ **To be honest,** I don’t enjoy it much. ✘ To be honest I not enjoy it much.",
+                "✔ **Actually,** I changed my mind last year. ✘ Actually, I change my mind last year.",
+                "“I mean” có thể đứng **giữa** câu trả lời để giải thích thêm: It’s useful — I mean, it saves a lot of time."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: Ngắt hơi ngắn sau filler",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Filler chỉ hiệu quả khi có **một khoảng ngắt rất ngắn** sau nó (khoảng 0,3 giây), rồi giọng đi tiếp.",
+                "Well ‖ I’d say I prefer the countryside.",
+                "To be honest ‖ I’ve never really thought about it.",
+                "Sai thường gặp: đọc dính liền “Welliprefer…” → filler mất tác dụng hoàn toàn.",
+                "**Drill:** giáo viên đọc, học sinh nhại theo 3 lần, vỗ tay một cái đúng chỗ ngắt."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L03",
@@ -169,7 +517,202 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "because… · since… · mainly because… · one reason is that… · For example… · For instance… · Like last week,…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Trả lời câu “Why do you like your hometown?” theo đúng Answer → Reason → Example, 20–25 giây."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ “Because” đứng thành câu riêng: “I like it. Because it is nice.”",
+                "✘ Ví dụ chung chung: “For example, it is very good.” — không phải ví dụ.",
+                "✘ Lặp “because” 3 lần trong một câu trả lời.",
+                "✘ Dùng “Because of” + mệnh đề: ✘ “Because of it is cheap.”"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — Nói lý do và nêu ví dụ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Nêu LÝ DO**",
+                  "**Ví dụ minh họa**"
+                ],
+                [
+                  "★",
+                  "**because…**",
+                  "I like it because it’s close to my house."
+                ],
+                [
+                  "★",
+                  "**since…**",
+                  "I don’t go out much since I work six days a week."
+                ],
+                [
+                  "★",
+                  "**mainly because…**",
+                  "I chose it mainly because of the career prospects."
+                ],
+                [
+                  "★★",
+                  "**one reason is that…**",
+                  "One reason is that the food there is fantastic."
+                ],
+                [
+                  "★★",
+                  "**that’s why…**",
+                  "It’s very quiet — that’s why I can concentrate."
+                ],
+                [
+                  "★★★",
+                  "**the main reason I… is that…**",
+                  "The main reason I stayed is that my family is here."
+                ]
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Nêu VÍ DỤ**",
+                  "**Ví dụ minh họa**"
+                ],
+                [
+                  "★",
+                  "**For example, …**",
+                  "For example, I went there twice last month."
+                ],
+                [
+                  "★",
+                  "**Like last week, …**",
+                  "Like last week, I stayed there until midnight."
+                ],
+                [
+                  "★★",
+                  "**For instance, …**",
+                  "For instance, my sister studies there too."
+                ],
+                [
+                  "★★",
+                  "**Take … for example**",
+                  "Take my street for example — it’s completely different now."
+                ],
+                [
+                  "★★★",
+                  "**A good case in point is…**",
+                  "A good case in point is the new metro line."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Thế nào là ví dụ “thật”?",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Một ví dụ chỉ được tính là ví dụ khi trả lời được ít nhất **một** trong ba câu: **Khi nào? Ở đâu? Với ai?**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**✘ Chung chung (không tính)**",
+                  "**✔ Cụ thể (tính)**"
+                ],
+                [
+                  "For example, it is very nice.",
+                  "For example, last Sunday I sat there for two hours with my sister."
+                ],
+                [
+                  "For example, many people like it.",
+                  "For example, my neighbour has been going there every morning for ten years."
+                ],
+                [
+                  "For example, it is useful.",
+                  "For instance, I used it last week to book a train ticket in about thirty seconds."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: Mệnh đề nguyên nhân — 3 lỗi kinh điển",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**1. “Because” không đứng một mình thành câu.**",
+                "✘ I like it. Because it is cheap. ✔ I like it **because** it’s cheap.",
+                "**2. “Because of” + danh từ; “because” + mệnh đề.**",
+                "✘ Because of it is cheap. ✔ **Because of** the low price… / ✔ **Because** it’s cheap…",
+                "**3. Không dùng “because” hai lần trong một câu.**",
+                "✘ I like it because it’s cheap because I don’t have money.",
+                "✔ I like it because it’s cheap — and **since** I’m a student, that matters a lot."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: Trọng âm rơi vào từ mang nội dung",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Trong câu nêu lý do, nhấn vào **danh từ / tính từ / động từ chính**, không nhấn vào “because”.",
+                "I like it because it’s **CHEAP** and really **CON**venient.",
+                "I go there because of the **AT**mosphere.",
+                "**Drill:** giáo viên đọc câu, học sinh vỗ tay đúng vào âm được nhấn."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L04",
@@ -211,7 +754,117 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 0
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "That said,… · Having said that,… · What I like most is… · It’s one of those things that…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Lấy một câu Band 5 bất kỳ và nâng lên Band 7 trong vòng 60 giây suy nghĩ."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Nâng band bằng cách nhét từ khó → câu nghe gượng và sai ngữ cảnh.",
+                "✘ Nâng band bằng cách nói dài hơn nhưng lặp ý.",
+                "✘ “That said” dùng khi không có ý đối lập nào."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — Công thức nâng band",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Nâng từ**",
+                  "**Thao tác 1**",
+                  "**Thao tác 2**"
+                ],
+                [
+                  "**Band 5** → **6**",
+                  "Thêm **lý do cụ thể** (không phải “it is good”)",
+                  "Thêm **ví dụ có chi tiết** (thời gian / nơi chốn / người)"
+                ],
+                [
+                  "**Band 6** → **7**",
+                  "Thêm **chi tiết cá nhân thật** — điều chỉ bạn mới nói được",
+                  "Thêm **một ý đối lập** bằng: That said,… / Having said that,…"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Chú ý quan trọng:** không có thao tác nào là “thêm từ khó”. Band 7 trong Part 1 đến từ **độ tự nhiên và độ cụ thể**, không đến từ độ hiếm của từ vựng."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: Câu ghép — nối ý thay vì chấm câu liên tục",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Band 5 hay viết ba câu đơn rời rạc. Band 6–7 nối chúng lại.",
+                "**Band 5:** It is quiet. I can study. I like it.",
+                "**Band 6:** It’s quiet, **so** I can study easily, **and** that’s why I like it.",
+                "**Band 7:** It’s quiet enough to study in, **which** is exactly why I’ve stayed here for three years.",
+                "Ba từ nối cần thuộc buổi này: **so** · **which** · **although**."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: Nối âm phụ âm → nguyên âm",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Câu dài chỉ nghe mượt khi các từ **dính vào nhau** đúng chỗ.",
+                "__pace_of life__ → “pay-sov life”",
+                "__a bit_of a problem__ → “a bi-dov a problem”",
+                "__What I like most_is…__ → “most-is”",
+                "**Drill:** đọc chậm 2 lần, rồi đọc ở tốc độ bình thường 3 lần liên tiếp."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L05",
@@ -253,7 +906,221 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "major in · academic workload · hand in assignments · work long hours · job satisfaction · career prospects · gain experience · work-life balance"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Câu giới thiệu 20–25 giây có đủ WHERE + HOW LONG + WHAT, dùng ít nhất 2 target phrases."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Chỉ nói “I study” hoặc “I work” rồi dừng.",
+                "✘ I study **at** English university → thiếu/thừa giới từ.",
+                "✘ Dùng “boring” — thay bằng monotonous / repetitive / mind-numbing.",
+                "✘ Nói lương quá cụ thể (“I earn 12 million”) — dùng “quite competitive” / “well-paid”.",
+                "✘ I am working here **since** 2 years → dùng **for** 2 years."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items (không hơn)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Câu mẫu**"
+                ],
+                [
+                  "★",
+                  "**major in** [subject]",
+                  "chuyên ngành về…",
+                  "I’m majoring in business administration."
+                ],
+                [
+                  "★",
+                  "**academic workload**",
+                  "khối lượng học tập",
+                  "The academic workload is quite intense this term."
+                ],
+                [
+                  "★",
+                  "**hand in assignments**",
+                  "nộp bài tập",
+                  "I have to hand in three assignments next week."
+                ],
+                [
+                  "★",
+                  "**work long hours**",
+                  "làm việc nhiều giờ",
+                  "I sometimes work long hours to meet deadlines."
+                ],
+                [
+                  "★",
+                  "**job satisfaction**",
+                  "sự hài lòng với công việc",
+                  "Job satisfaction matters more to me than salary."
+                ],
+                [
+                  "★★",
+                  "**attend lectures**",
+                  "dự bài giảng",
+                  "I attend lectures three times a week."
+                ],
+                [
+                  "★★",
+                  "**a tight schedule**",
+                  "lịch dày đặc",
+                  "I’ve had a really tight schedule this semester."
+                ],
+                [
+                  "★★",
+                  "**career prospects**",
+                  "triển vọng nghề nghiệp",
+                  "I chose this field because of the career prospects."
+                ],
+                [
+                  "★★",
+                  "**gain experience**",
+                  "tích lũy kinh nghiệm",
+                  "I took the job mainly to gain experience."
+                ],
+                [
+                  "★★★",
+                  "**work-life balance**",
+                  "cân bằng công việc– cuộc sống",
+                  "It’s hard to maintain a decent work-life balance."
+                ],
+                [
+                  "★★★",
+                  "**challenging yet rewarding**",
+                  "thử thách nhưng đáng làm",
+                  "It’s a challenging yet rewarding job."
+                ],
+                [
+                  "★★★",
+                  "**a mind-numbing job**",
+                  "công việc cực kỳ nhàm chán",
+                  "It’s honestly a mind-numbing job — the same thing every day."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Công thức giới thiệu",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Câu “Are you a student or do you work?” cần **ba mảnh thông tin**, không phải một:"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Mảnh**",
+                  "**Trả lời gì**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "**WHERE**",
+                  "Học/làm ở đâu, ngành gì",
+                  "I’m a second-year student at… / I work as a … for a company called…"
+                ],
+                [
+                  "**HOW LONG**",
+                  "Bao lâu rồi",
+                  "I’ve been there for almost two years. / I started last September."
+                ],
+                [
+                  "**WHAT**",
+                  "Làm gì cụ thể mỗi ngày",
+                  "Most of my time goes on… / My main responsibility is…"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Q. Are you a student or do you work?**",
+                "▸ **MODEL 1 (sinh viên):** I’m a student — I’m majoring in business administration at a university here in Ho Chi Minh City **(WHERE)**. I’m in my second year now, so I’ve been there for about eighteen months **(HOW LONG)**. Most of my time goes on attending lectures and handing in assignments, and honestly the academic workload can be pretty intense **(WHAT)**.",
+                "▸ **MODEL 2 (đi làm):** I work, actually. I’m an office worker at a local bank called Techcombank **(WHERE)** and I’ve been there for almost two years **(HOW LONG)**. I spend most of my day handling paperwork for clients and helping them with financial transactions **(WHAT)**. It’s not the most exciting job, but the job satisfaction is better than I expected."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: Present simple vs Present continuous",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Present simple** — điều luôn đúng, thói quen: *I **study** at a public university. I usually **attend** lectures in the morning.*",
+                "**Present continuous** — giai đoạn hiện tại, tạm thời: *I’m **studying** for my finals this month. I’m **working** part- time until June.*",
+                "**Present perfect + for/since** — độ dài thời gian: *I’ve **been** there **for** two years. / …**since** 2023.*",
+                "✘ I am working here since 2 years. ✔ I’ve been working here **for** two years.",
+                "**Drill:** giáo viên nói “this month / usually / for three years”, học sinh nói cả câu đúng thì."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: Trọng âm trong cụm 2 từ: career prospects",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**ca**·**REER** — trọng âm rơi vào âm tiết **thứ hai** (/kəˈrɪə/), rất nhiều học sinh nhấn sai thành “CA-reer”. **PROS**·pects — trọng âm âm tiết **đầu**.",
+                "Cả cụm: ca**REER PROS**pects.",
+                "Tương tự: as**SIGN**ment · **LEC**ture · sa**TIS**faction · ex**PE**rience",
+                "**Drill:** đọc 5 từ trên, vỗ tay vào âm được nhấn."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L06",
@@ -295,7 +1162,183 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "bustling city · pace of life · local cuisine · close-knit community · residential area · within walking distance · local amenities · good transport links"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Mô tả hometown trong 25 giây theo đúng 4 bước, dùng ≥3 target phrases."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Chỉ nói tên thành phố rồi dừng — giám khảo cần MÔ TẢ, không phải cái tên.",
+                "✘ Lặp “beautiful” 4 lần trong một câu trả lời.",
+                "✘ Nhầm hometown với nơi đang sống → trả lời lệch câu hỏi.",
+                "✘ I live in a house **have** two floors → thiếu **which/that has**.",
+                "✘ My hometown **change** a lot → thiếu present perfect: **has changed**."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**HOMETOWN (nơi bạn lớn lên)**",
+                  "**Cấp**",
+                  "**HOME / AREA (nơi bạn đang sống)**"
+                ],
+                [
+                  "★",
+                  "**bustling city** — thành phố nhộn nhịp",
+                  "★",
+                  "**residential area** — khu dân cư"
+                ],
+                [
+                  "★",
+                  "**pace of life** — nhịp sống",
+                  "★",
+                  "**within walking distance** — đi bộ tới được"
+                ],
+                [
+                  "★",
+                  "**local cuisine** — ẩm thực địa phương",
+                  "★",
+                  "**local amenities** — tiện ích quanh nhà"
+                ],
+                [
+                  "★★",
+                  "**close-knit community** — cộng đồng gắn kết",
+                  "★★",
+                  "**good transport links** — giao thông thuận tiện"
+                ],
+                [
+                  "★★",
+                  "**green spaces** — không gian xanh",
+                  "★★",
+                  "**traffic congestion** — ùn tắc giao thông"
+                ],
+                [
+                  "★★★",
+                  "**breathtaking scenery** — phong cảnh ngoạn mục",
+                  "★★★",
+                  "**a strong sense of community** — tình làng nghĩa xóm"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**B1. Hometown** ≠ **The area where you live**",
+                "Đây là hai câu hỏi **khác nhau** và giám khảo có thể hỏi cả hai trong cùng một kỳ thi."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "",
+                  "**HOMETOWN**",
+                  "**THE AREA WHERE YOU LIVE**"
+                ],
+                [
+                  "Nghĩa",
+                  "Nơi bạn **sinh ra / lớn lên**",
+                  "Nơi bạn **đang sống hiện tại**"
+                ],
+                [
+                  "Thì hay dùng",
+                  "Past simple + Present perfect",
+                  "Present simple"
+                ],
+                [
+                  "Mở đầu",
+                  "I was born and raised in…",
+                  "I currently live in… / I’ve been living in…"
+                ],
+                [
+                  "Nội dung",
+                  "Kỷ niệm, thay đổi qua năm tháng, con người",
+                  "Tiện ích, giao thông, hàng xóm, mức độ ồn"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: Present perfect cho “thay đổi”",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Khi nói về thay đổi từ quá khứ đến hiện tại, bắt buộc dùng **have/has + V3**.",
+                "✘ My hometown change a lot. ✔ My hometown **has changed** a lot over the past few years.",
+                "✔ The cost of living **has risen** sharply.",
+                "✔ They **have built** three new shopping malls since I left.",
+                "Cụm thời gian đi kèm: over the past few years · in recent years · since I was a child · lately",
+                "**Drill 60 giây:** giáo viên nói động từ (change, grow, become, build), học sinh nói cả câu về quê mình."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: comfortable /ˈkʌmftəbl/ — 3 âm tiết, không phải 4",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Học sinh hay đọc “com-FOR-ta-ble”. Người bản ngữ đọc **KUMF·tuh·bl** — nuốt hẳn chữ “or”.",
+                "Nhóm từ nuốt âm tương tự: **vegetable** /ˈvedʒtəbl/ · **restaurant** /ˈrestrɒnt/ · **interesting** /ˈɪntrəstɪŋ/ · **different** /ˈdɪfrənt/",
+                "**Drill:** đọc câu “It’s a comfortable, interesting area with different restaurants.” — 3 lần, tăng dần tốc độ."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L07",
@@ -337,7 +1380,223 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "public spaces · lively atmosphere · peaceful atmosphere · facilities · interactive displays · cultural heritage · far more … than · nowhere near as … as"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Mô tả một nơi công cộng bất kỳ trong 25 giây có đủ 4 lớp, kèm 1 câu so sánh."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Mô tả chỉ có tính từ, không có sự vật cụ thể.",
+                "✘ It has many facility → thiếu số nhiều **facilities**.",
+                "✘ It is more quiet than… → **quieter than**.",
+                "✘ It is same like my area → ✔ It is the same as my area."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 12 items dùng cho MỌI nơi chốn",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Dùng cho nơi nào**"
+                ],
+                [
+                  "★",
+                  "**public spaces**",
+                  "không gian công cộng",
+                  "công viên, quảng trường, thư viện"
+                ],
+                [
+                  "★",
+                  "**a lively atmosphere**",
+                  "không khí sôi động",
+                  "chợ, phố đi bộ, quán cà phê"
+                ],
+                [
+                  "★",
+                  "**a peaceful atmosphere**",
+                  "không khí yên bình",
+                  "công viên, chùa, thư viện"
+                ],
+                [
+                  "★",
+                  "**facilities**",
+                  "cơ sở vật chất, tiện ích",
+                  "mọi nơi"
+                ],
+                [
+                  "★",
+                  "**get crowded at weekends**",
+                  "đông vào cuối tuần",
+                  "mọi nơi"
+                ],
+                [
+                  "★★",
+                  "**interactive displays**",
+                  "trưng bày tương tác",
+                  "bảo tàng, triển lãm"
+                ],
+                [
+                  "★★",
+                  "**cultural heritage**",
+                  "di sản văn hoá",
+                  "bảo tàng, di tích"
+                ],
+                [
+                  "★★",
+                  "**well-maintained**",
+                  "được bảo trì tốt",
+                  "đường phố, công viên"
+                ],
+                [
+                  "★★",
+                  "**escape the noise**",
+                  "trốn khỏi tiếng ồn",
+                  "nơi yên tĩnh"
+                ],
+                [
+                  "★★★",
+                  "**a breath of fresh air**",
+                  "một luồng gió mới / dễ chịu",
+                  "công viên, ngoại ô"
+                ],
+                [
+                  "★★★",
+                  "**gain an insight into**",
+                  "hiểu sâu hơn về",
+                  "bảo tàng, di tích"
+                ],
+                [
+                  "★★★",
+                  "**a hidden gem**",
+                  "viên ngọc ẩn — nơi hay mà ít người biết",
+                  "quán, phố nhỏ"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**4 lớp mô tả — dùng được cho bất kỳ nơi nào:** Location (ở đâu) → Atmosphere (không khí) → Facilities (có gì) → Opinion (bạn nghĩ sao)."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — So sánh hai nơi",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cấu trúc**",
+                  "**Ví dụ**"
+                ],
+                [
+                  "★",
+                  "**far more … than**",
+                  "It’s far more crowded than the park near my house."
+                ],
+                [
+                  "★",
+                  "**not as … as**",
+                  "It’s not as peaceful as it used to be."
+                ],
+                [
+                  "★★",
+                  "**nowhere near as … as**",
+                  "The new mall is nowhere near as lively as the old market."
+                ],
+                [
+                  "★★",
+                  "**whereas**",
+                  "The park is quiet in the morning, whereas it gets packed after five."
+                ],
+                [
+                  "★★★",
+                  "**A is to B what X is to Y**",
+                  "Ben Thanh Market is to Saigon what a living room is to a house."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: There is / There are + đảo ngữ nhẹ",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "✔ **There are** plenty of green spaces around here.",
+                "✔ **There isn’t** much to do in the evening.",
+                "✔ **There used to be** an old cinema on that corner.",
+                "Nâng cấp Band 7: **What there isn’t is…** / **What you do find is…**",
+                "What you do find is a lot of small family-run cafés, which I much prefer.",
+                "Lỗi: ✘ Have many parks in my area. → ✔ **There are** many parks in my area."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: Trọng âm câu — nhấn vào từ mang thông tin mới",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Trong câu so sánh, nhấn vào **tính từ** và **nơi chốn**, không nhấn vào “than” hay “as”.",
+                "It’s far more **CROWD**ed than the **PARK** near my house.",
+                "It’s **NOT** as **PEACE**ful as it **USED** to be.",
+                "**Drill:** giáo viên đọc, học sinh nhại lại đúng nhịp; sau đó tự đọc câu Practice 2 của mình."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L08",
@@ -379,7 +1638,254 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "I prefer A to B · I tend to… · I’d rather… than… · I prioritise X over Y · It depends on… · travel light · comfortable footwear · go cashless"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một câu trả lời so sánh có: lựa chọn + 2 lý do + 1 điều kiện (“It depends on…”)."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ I prefer X **more than** Y → ✔ I prefer X **to** Y.",
+                "✘ I **very like** X → ✔ I really like X / I’m very fond of X.",
+                "✘ I prefer **because**… → thiếu tân ngữ: I prefer **it** because…",
+                "✘ I’d rather **to go** → ✔ I’d rather **go**.",
+                "✘ “It depends” nói trống, không nói phụ thuộc vào cái gì."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**A1. 5 cấu trúc nói sở thích**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cấu trúc**",
+                  "**Ví dụ**",
+                  "**Lưu ý**"
+                ],
+                [
+                  "★",
+                  "**I prefer A to B**",
+                  "I prefer trainers to formal shoes.",
+                  "Dùng **to**, KHÔNG dùng “more than”"
+                ],
+                [
+                  "★",
+                  "**I tend to…**",
+                  "I tend to carry only the essentials.",
+                  "Nghe tự nhiên hơn “I usually”"
+                ],
+                [
+                  "★",
+                  "**I’d rather … than …**",
+                  "I’d rather walk than take a taxi.",
+                  "Sau “rather” là V nguyên thể, không “to”"
+                ],
+                [
+                  "★★",
+                  "**I prioritise X over Y**",
+                  "I prioritise comfort over appearance.",
+                  "Rất mạnh, dùng 1 lần là đủ"
+                ],
+                [
+                  "★★",
+                  "**It depends on…**",
+                  "It depends on where I’m going.",
+                  "PHẢI nói rõ phụ thuộc vào cái gì"
+                ],
+                [
+                  "★★★",
+                  "**I gravitate towards…**",
+                  "I tend to gravitate towards simple designs.",
+                  "Chỉ dành cho học sinh khá"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**A2. 7 items từ vựng dùng chung cho các chủ đề lựa chọn**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Chủ đề**"
+                ],
+                [
+                  "★",
+                  "**comfortable footwear**",
+                  "giày dép thoải mái",
+                  "Shoes"
+                ],
+                [
+                  "★",
+                  "**travel light**",
+                  "mang ít đồ khi đi lại",
+                  "Carrying things"
+                ],
+                [
+                  "★",
+                  "**carry the essentials**",
+                  "chỉ mang thứ cần thiết",
+                  "Carrying things"
+                ],
+                [
+                  "★★",
+                  "**wear out quickly**",
+                  "nhanh hỏng",
+                  "Shoes / clothes"
+                ],
+                [
+                  "★★",
+                  "**go cashless**",
+                  "không dùng tiền mặt",
+                  "Cash & payment"
+                ],
+                [
+                  "★★",
+                  "**go with different outfits**",
+                  "hợp với nhiều bộ đồ",
+                  "Shoes / clothes"
+                ],
+                [
+                  "★★★",
+                  "**strike a good balance between**",
+                  "cân bằng tốt giữa…",
+                  "mọi chủ đề lựa chọn"
+                ],
+                [
+                  "★★★",
+                  "**quality over quantity**",
+                  "chất hơn lượng",
+                  "mọi chủ đề lựa chọn"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "Lưu ý phương pháp: bản cũ có tới 15 expressions cho riêng chủ đề “Shoes”. Ở đây chỉ giữ 3 — phần còn lại là cấu trúc dùng được cho MỌI chủ đề lựa chọn. Đây chính là điểm khác biệt lớn nhất."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Công thức “2 tiêu chí → chọn 1”",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Câu trả lời hay nhất cho câu hỏi lựa chọn **không** phải là chọn ngay, mà là: nêu hai tiêu chí đối lập → chọn một → nói điều kiện khi nào bạn chọn cái kia."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Nói gì**",
+                  "**Mẫu**"
+                ],
+                [
+                  "1",
+                  "Nêu hai tiêu chí",
+                  "For me it comes down to comfort versus appearance."
+                ],
+                [
+                  "2",
+                  "Chọn một + lý do",
+                  "I prioritise comfort over appearance because I’m on my feet all day."
+                ],
+                [
+                  "3",
+                  "Điều kiện đảo chiều",
+                  "That said, if I’m going somewhere formal, I’ll put style first."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: prefer · would rather · would prefer",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**prefer + N + to + N:** I prefer tea **to** coffee.",
+                "**prefer + V-ing + to + V-ing:** I prefer walking **to** driving.",
+                "**would rather + V (bare):** I’d rather **walk** than **take** a taxi. ✘ I’d rather to walk.",
+                "**would prefer + to V:** I’d prefer **to stay** at home tonight.",
+                "Bảng nhanh: prefer → **to** · would rather → **than** · would prefer → **rather than**",
+                "**Drill:** giáo viên đọc cặp từ (tea/coffee, walk/drive), học sinh nói 3 phiên bản với 3 cấu trúc."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: “I’d rather” — nối và nuốt âm",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "I’d rather đọc là **/aɪd ˈrɑːðə/** → nghe gần như “ai-DRAH-thuh”. Đừng tách “I would rather”.",
+                "Tương tự: I’d say → “ai-d SAY” · I’d prefer → “ai-d pri-FUR”",
+                "Âm **/ð/** trong “rather / other / whether”: đầu lưỡi chạm nhẹ răng trên, có rung. Không đọc thành /z/ hoặc /d/. **Drill:** “I’d rather have the other one, whether or not it’s cheaper.” × 3 lần."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L09",
@@ -421,7 +1927,248 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "tend to · occasionally · hardly ever · every now and then · whenever… · take a break · recharge my energy · low-maintenance"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Trả lời câu “How often…?” với: tần suất + hoàn cảnh + lý do + ví dụ."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ I go **usually** to school → trạng từ tần suất đứng **trước** động từ thường.",
+                "✘ I am usually go → thừa “am”.",
+                "✘ **Everyday** I go → “every day” (2 chữ) là trạng ngữ; “everyday” (1 chữ) là tính từ.",
+                "✘ Lặp “usually” 3–4 lần trong một câu trả lời.",
+                "✘ I hardly ever **don’t** go → “hardly ever” đã mang nghĩa phủ định."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**A1. Thang tần suất**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Mức**",
+                  "**Cụm**",
+                  "**Nghĩa**",
+                  "**Ví dụ**"
+                ],
+                [
+                  "≈ 100%",
+                  "★ **always / every single day**",
+                  "luôn luôn",
+                  "I water my plants every single day."
+                ],
+                [
+                  "≈ 80%",
+                  "★ **usually / tend to**",
+                  "thường",
+                  "I tend to take a short break after lunch."
+                ],
+                [
+                  "≈ 60%",
+                  "★ **often / most days**",
+                  "hay",
+                  "I chat with my colleagues most days."
+                ],
+                [
+                  "≈ 40%",
+                  "★★ **occasionally / every now**\n**and then**",
+                  "thỉnh thoảng",
+                  "I occasionally visit the park near my office."
+                ],
+                [
+                  "≈ 15%",
+                  "★★ **rarely / hardly ever**",
+                  "hiếm khi",
+                  "I hardly ever go out on weeknights."
+                ],
+                [
+                  "0%",
+                  "★★ **never / not really at all**",
+                  "không bao giờ",
+                  "I never take naps during the day."
+                ],
+                [
+                  "—",
+                  "★★★ **once in a blue moon**",
+                  "rất hiếm khi (thành",
+                  "I go clubbing once in a blue moon."
+                ],
+                [
+                  "",
+                  "",
+                  "ngữ)",
+                  ""
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**A2. 6 items từ vựng thói quen**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Chủ đề gốc**"
+                ],
+                [
+                  "★",
+                  "**take a break**",
+                  "nghỉ giải lao",
+                  "Taking a break"
+                ],
+                [
+                  "★",
+                  "**recharge my energy**",
+                  "nạp lại năng lượng",
+                  "Taking a break"
+                ],
+                [
+                  "★",
+                  "**clear my head**",
+                  "làm đầu óc thư thái",
+                  "Taking a break"
+                ],
+                [
+                  "★★",
+                  "**low-maintenance**",
+                  "ít phải chăm sóc",
+                  "Plants"
+                ],
+                [
+                  "★★",
+                  "**strike up a conversation**",
+                  "bắt chuyện",
+                  "Chatting / Public places"
+                ],
+                [
+                  "★★★",
+                  "**avoid burnout**",
+                  "tránh kiệt sức",
+                  "Taking a break"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Công thức trả lời “How often…?”",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Nói gì**",
+                  "**Mẫu**"
+                ],
+                [
+                  "1. Frequency",
+                  "Tần suất cụ thể",
+                  "I’d say two or three times a week."
+                ],
+                [
+                  "2. Context",
+                  "Khi nào / trong hoàn cảnh nào",
+                  "Usually whenever I’ve been sitting at my desk too long."
+                ],
+                [
+                  "3. Reason",
+                  "Vì sao",
+                  "It helps me clear my head before I go back to work."
+                ],
+                [
+                  "4. Example",
+                  "Ví dụ cụ thể",
+                  "Yesterday, for instance, I walked around the block for ten minutes."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: Vị trí trạng từ tần suất — quy tắc 3 dòng",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**1. TRƯỚC động từ thường:** I **usually** take a break. ✘ I take usually a break.",
+                "**2. SAU động từ “to be”:** I **am** usually tired by five. ✘ I usually am tired.",
+                "**3. GIỮA trợ động từ và động từ chính:** I have **never** been there. / I don’t **often** go out.",
+                "**Ngoại lệ:** occasionally, sometimes, usually có thể đứng **đầu câu** để nhấn mạnh: Occasionally, I take a nap at lunchtime.",
+                "**Drill 3 phút:** giáo viên đọc câu sai, học sinh sửa miệng ngay, không viết."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: Đuôi -s: /s/, /z/ hay /ɪz/?",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Nói về thói quen là dùng ngôi thứ ba số ít liên tục — đuôi **-s** phải nghe rõ.",
+                "**/s/** sau âm vô thanh: wor**ks** · ta**kes** · hel**ps**",
+                "**/z/** sau âm hữu thanh và nguyên âm: go**es** · pla**ys** · liv**es** · rememb**ers**",
+                "**/ɪz/** sau /s, z, ʃ, tʃ, dʒ/: watch**es** · relax**es** · chang**es** · finish**es**",
+                "**Drill:** “She works, goes, watches, relaxes and finishes.” × 3 lần."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L10",
@@ -463,7 +2210,207 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "used to… · I remember… · At the time, I felt… · Looking back,… · broaden my knowledge · childhood memories · bridge the gap between generations"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Một mini-story 25 giây có đủ: When → What happened → How I felt → What I learned."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Trả lời “Have you ever…?” bằng “Yes, I have.” rồi dừng.",
+                "✘ I **use to** go → ✔ I **used to** go (khẳng định) / I **didn’t use to** go (phủ định).",
+                "✘ Trộn thì: bắt đầu past simple rồi chuyển sang present giữa chừng.",
+                "✘ Chỉ kể sự việc, không có cảm xúc → câu chuyện nghe khô.",
+                "✘ When I was young, I **am** very shy."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**A1. Khung mini-story — 4 bước**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Nói gì**",
+                  "**Mẫu câu bắt đầu**",
+                  "**Thời lượng**"
+                ],
+                [
+                  "1. **WHEN**",
+                  "Bối cảnh: khi nào, ở đâu",
+                  "A couple of years ago… / When I was about ten…",
+                  "≈5 giây"
+                ],
+                [
+                  "2. **WHAT HAPPENED**",
+                  "Sự việc chính — chỉ MỘT sự việc",
+                  "I remember we… / What happened was…",
+                  "≈10 giây"
+                ],
+                [
+                  "3. **HOW I FELT**",
+                  "Cảm xúc lúc đó",
+                  "At the time, I felt… / I was absolutely…",
+                  "≈5 giây"
+                ],
+                [
+                  "4. **WHAT I LEARNED**",
+                  "Nhận xét hoặc bài học",
+                  "Looking back, I think… / It taught me that…",
+                  "≈5 giây"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**A2. 7 items**"
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm từ**",
+                  "**Nghĩa**",
+                  "**Chủ đề gốc**"
+                ],
+                [
+                  "★",
+                  "**used to** + V",
+                  "từng (nhưng giờ không còn)",
+                  "Childhood"
+                ],
+                [
+                  "★",
+                  "**childhood memories**",
+                  "ký ức tuổi thơ",
+                  "Childhood"
+                ],
+                [
+                  "★",
+                  "**Looking back, …**",
+                  "Nhìn lại thì…",
+                  "mọi chủ đề quá khứ"
+                ],
+                [
+                  "★★",
+                  "**broaden my knowledge**",
+                  "mở mang hiểu biết",
+                  "Museums"
+                ],
+                [
+                  "★★",
+                  "**a wealth of experience**",
+                  "kho kinh nghiệm phong phú",
+                  "Old people"
+                ],
+                [
+                  "★★★",
+                  "**bridge the gap between generations**",
+                  "thu hẹp khoảng cách thế hệ",
+                  "Old people"
+                ],
+                [
+                  "★★★",
+                  "**it has stuck with me ever since**",
+                  "điều đó theo tôi mãi từ đó",
+                  "mọi chủ đề quá khứ"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Hai mini-story mẫu",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**Q. Have you ever spent time with an older person outside your family?**",
+                "▸ **MODEL:** Yes, actually. When I was in secondary school, I used to visit an elderly neighbour every Sunday **(WHEN)**. She was in her eighties and she’d tell me stories about what the street looked like before any of the buildings went up **(WHAT HAPPENED)**. At the time I found it fascinating — she had a wealth of experience I couldn’t get from any textbook **(HOW I FELT)**. Looking back, I think those Sundays did more to bridge the gap between generations for me than anything I learned at school **(WHAT I LEARNED)**.",
+                "**Q. Did you visit museums when you were a child?**",
+                "▸ **MODEL:** A few times, yes. My school took us to the History Museum when I was about ten **(WHEN)**. I remember one room full of old maps, and I spent almost the whole visit in there instead of following the group **(WHAT HAPPENED)**. I was completely absorbed — it was the first time history felt like something real rather than a subject **(HOW I FELT)**. Looking back, that visit is probably why I still enjoy anything to do with old maps **(WHAT I LEARNED)**."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: Past simple vs used to",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**used to** — thói quen hoặc trạng thái **trong quá khứ, nay không còn**: *I **used to** walk to school every day.* **past simple** — một sự việc xảy ra **một lần**: *I **walked** to school last Monday.*",
+                "✘ I use to go. ✔ I **used to** go. ✘ I didn’t used to go. ✔ I **didn’t use to** go.",
+                "**would** cũng dùng cho thói quen quá khứ nhưng KHÔNG dùng cho trạng thái: ✔ *She **would** tell me stories. ✘I would be shy.*",
+                "**Drill:** giáo viên nói “every day / once / for three years”, học sinh chọn đúng cấu trúc."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: Đuôi -ed: /t/, /d/ hay /ɪd/?",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Kể chuyện là dùng past simple liên tục — đuôi **-ed** phải đúng, nếu không cả câu chuyện nghe như hiện tại. **/t/** sau âm vô thanh: wal**ked** · fini**shed** · as**ked** · watch**ed**",
+                "**/d/** sau âm hữu thanh và nguyên âm: liv**ed** · learn**ed** · call**ed** · enjoy**ed**",
+                "**/ɪd/** chỉ sau /t/ hoặc /d/: visi**ted** · want**ed** · decid**ed** · need**ed**",
+                "**Lỗi phổ biến:** đọc “walk-ed” thành hai âm tiết. Chỉ **visited / wanted / decided** mới thêm âm tiết. **Drill:** “I walked, visited and enjoyed it.” — /t/ /ɪd/ /d/ × 3 lần."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L11",
@@ -505,7 +2452,213 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "used to · nowadays / these days · has become increasingly… · there are far",
+                "more/fewer… · considerably · dramatically · as a result"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Trả lời “How has your hometown changed?” trong 25 giây, đủ Past → Present → Result."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ My hometown **is changed** → ✔ **has changed**.",
+                "✘ In the past, there **is** more trees → sai thì.",
+                "✘ Chỉ mô tả thay đổi mà không nói hệ quả → câu trả lời cụt ý.",
+                "✘ It becomes more crowded **more and more** → thừa.",
+                "✘ Dùng “very” với động từ: ✘ It has very changed."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — Khung Past → Present → Result",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Nói gì**",
+                  "**Ngữ pháp bắt buộc**",
+                  "**Mẫu câu**"
+                ],
+                [
+                  "1. **PAST**",
+                  "Trước đây thế nào",
+                  "used to / past simple",
+                  "Ten years ago, this area used to be mostly farmland."
+                ],
+                [
+                  "2. **PRESENT**",
+                  "Bây giờ thế nào",
+                  "present perfect / present simple",
+                  "These days it has become a proper residential area."
+                ],
+                [
+                  "3. **RESULT**",
+                  "Hệ quả của thay đổi",
+                  "as a result / which means…",
+                  "As a result, the traffic is far worse than it used to be."
+                ]
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm chỉ thay đổi**",
+                  "**Ví dụ**"
+                ],
+                [
+                  "★",
+                  "**used to be**",
+                  "It used to be a very quiet street."
+                ],
+                [
+                  "★",
+                  "**nowadays / these days**",
+                  "These days you can hardly cross the road."
+                ],
+                [
+                  "★",
+                  "**there are far more / far fewer**",
+                  "There are far more coffee shops than before."
+                ],
+                [
+                  "★★",
+                  "**has become increasingly…**",
+                  "It has become increasingly expensive to live here."
+                ],
+                [
+                  "★★",
+                  "**as a result**",
+                  "As a result, a lot of young people have moved away."
+                ],
+                [
+                  "★★★",
+                  "**a marked shift towards…**",
+                  "There’s been a marked shift towards online shopping."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Trạng từ mức độ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Đây là bộ trạng từ dùng chung với **Writing Task 1** — học một lần, dùng cho cả hai kỹ năng."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Mức độ**",
+                  "**Trạng từ**",
+                  "**Ví dụ**"
+                ],
+                [
+                  "Rất mạnh",
+                  "**dramatically · drastically**",
+                  "House prices have risen dramatically."
+                ],
+                [
+                  "Mạnh",
+                  "**considerably · significantly**",
+                  "The area has changed considerably over the past few years."
+                ],
+                [
+                  "Trung bình",
+                  "**noticeably · steadily**",
+                  "The population has grown steadily since 2015."
+                ],
+                [
+                  "Nhẹ",
+                  "**slightly · marginally**",
+                  "Traffic has improved slightly since the new road opened."
+                ],
+                [
+                  "Không đổi",
+                  "**has stayed much the same**",
+                  "The old market has stayed much the same."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: Present perfect + so sánh hơn",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Câu nói về thay đổi thường ghép **present perfect** với **so sánh hơn**:",
+                "*It **has become much more** crowded than it used to be.*",
+                "*There **are far fewer** small shops **than there were** ten years ago.*",
+                "Cụm nhấn mức độ đứng trước so sánh: **much / far / considerably / a great deal** more…",
+                "✘ It has become **more crowded more** → ✔ **far more** crowded.",
+                "✘ It is changed → ✔ It **has changed**. (không dùng bị động ở đây)",
+                "**Drill:** giáo viên nói tính từ (crowded, expensive, quiet), học sinh nói cả câu present perfect + so sánh."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: Âm yếu của has / have",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Trong câu nói tự nhiên, **has** và **have** thường được nói ở dạng yếu hoặc rút gọn.",
+                "*It **has** changed* → **it’s** changed /ɪts/ · *They **have** built* → **they’ve** built /ðeɪv/",
+                "*My hometown **has** become* → “hometown-**z** become”",
+                "Đọc đầy đủ “HAS changed” chỉ khi muốn nhấn mạnh: It HAS changed — a lot.",
+                "**Drill:** “It’s changed, they’ve built, prices have risen.” × 3 lần, tăng tốc."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L12",
@@ -547,7 +2700,182 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "Yes, but… · No, although… · It depends on… · On the one hand… on the other… · Having said that… · to be fair…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Câu trả lời hai chiều 25 giây: mặt A → mặt B → lập trường cuối cùng."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Nêu hai mặt rồi không chốt lập trường → giám khảo không biết bạn nghĩ gì.",
+                "✘ It depends. (nói trống, không nói phụ thuộc vào cái gì)",
+                "✘ Although it is noisy, **but** I like it. → chỉ dùng MỘT trong hai.",
+                "✘ On the one hand… on the one hand… → lần hai phải là “on the other hand”.",
+                "✘ Nói cân bằng đến mức không có ý kiến nào cả."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 6 cấu trúc hai chiều",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cấu trúc**",
+                  "**Ví dụ**",
+                  "**Sắc thái**"
+                ],
+                [
+                  "★",
+                  "**Yes, but…**",
+                  "Yes, but it’s getting overcrowded these days.",
+                  "Đồng ý có điều kiện"
+                ],
+                [
+                  "★",
+                  "**No, although…**",
+                  "No, although I can see why some people enjoy it.",
+                  "Không đồng ý nhưng công bằng"
+                ],
+                [
+                  "★",
+                  "**It depends on…**",
+                  "It depends on what time of day you go.",
+                  "Trung lập — PHẢI nêu điều kiện"
+                ],
+                [
+                  "★★",
+                  "**On the one hand… on the other hand…**",
+                  "On the one hand it’s convenient; on the other, it’s exhausting.",
+                  "Cân bằng rõ ràng"
+                ],
+                [
+                  "★★",
+                  "**Having said that, …**",
+                  "Having said that, I wouldn’t want to live there.",
+                  "Đảo chiều ở cuối"
+                ],
+                [
+                  "★★★",
+                  "**To be fair, …**",
+                  "To be fair, the rules are there for a reason.",
+                  "Thừa nhận ý đối lập"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Nêu hai mặt nhưng vẫn phải CHỐT",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Lỗi lớn nhất của học sinh khá là nêu cả hai mặt rồi… không chốt. Giám khảo cần nghe **lập trường cuối cùng** của bạn."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Bước**",
+                  "**Nói gì**",
+                  "**Mẫu**"
+                ],
+                [
+                  "1. Mặt A",
+                  "Ý chính bạn nghiêng về",
+                  "I do enjoy crowded places to a point — there’s a real energy to them."
+                ],
+                [
+                  "2. Mặt B",
+                  "Nhượng bộ ý đối lập",
+                  "Having said that, after an hour I start to feel overwhelmed."
+                ],
+                [
+                  "3. **CHỐT**",
+                  "Lập trường cuối cùng",
+                  "So on balance, I’d say I like them in small doses."
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "**Cụm để chốt:** So on balance,… · All things considered,… · So overall, I’d say… · So it really comes down to…"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: although · whereas · while",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "**although + mệnh đề** (không đi kèm “but”): ✔ Although it’s noisy, I quite like it. ✘ Although it’s noisy, but I like it. **whereas / while** — đối lập hai vế ngang nhau: *The park is quiet in the morning, **whereas** it’s packed after five.*",
+                "**despite / in spite of + N hoặc V-ing** (KHÔNG + mệnh đề): ✔ Despite the noise… ✘ Despite it is noisy… Bảng nhanh: although + **mệnh đề** · despite + **danh từ / V-ing**",
+                "**Drill:** giáo viên đọc câu với “but”, học sinh nói lại bằng “although”."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: Lên giọng nhẹ ở vế nhượng bộ",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Trong câu hai chiều, vế đầu **lên nhẹ** ↗ báo hiệu “còn nữa”, vế sau **xuống** ↘ báo hiệu kết thúc.",
+                "I do enjoy crowded places ↗ , but after an hour I feel overwhelmed ↘",
+                "On the one hand it’s convenient ↗ ; on the other, it’s exhausting ↘",
+                "Nếu cả hai vế đều xuống giọng, người nghe tưởng bạn đã nói xong ở vế đầu.",
+                "**Drill:** đọc 3 câu Practice 2 của mình, chú ý đúng ↗ ↘."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L13",
@@ -589,7 +2917,230 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "I’ve never really been into… · It’s not something I’ve thought about much, but… · I can see why some people… · If I had to guess,… · I suppose…"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Trả lời 20 giây cho một chủ đề chưa học, không im quá 3 giây, không nói “I don’t know”."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Nói “I don’t know” hoặc “I have no idea” rồi im.",
+                "✘ Im lặng 5–8 giây trước khi nói.",
+                "✘ Bịa một câu trả lời dài dòng nhưng lạc đề.",
+                "✘ Trả lời “I have no experience about that” rồi dừng — vẫn phải nói tiếp."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "",
+              "lines": [
+                "**⚠ Mọi bài mẫu trong buổi này chỉ là MẪU — đừng học thuộc. Hãy thay bằng chuyện / ý kiến của chính em ở ô MY OWN VERSION cuối buổi.**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "A. INPUT — 4 chiến lược cứu nguy",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**#**",
+                  "**Chiến lược**",
+                  "**Cụm mở đầu**",
+                  "**Rồi nói tiếp gì**"
+                ],
+                [
+                  "1",
+                  "**Thú nhận rồi rẽ hướng**",
+                  "I’ve never really been into…, but…",
+                  "Nói về thứ liên quan mà bạn CÓ biết"
+                ],
+                [
+                  "2",
+                  "**Nói về người khác**",
+                  "I don’t, but my sister does — she…",
+                  "Kể về người quen"
+                ],
+                [
+                  "3",
+                  "**Đoán có căn cứ**",
+                  "If I had to guess, I’d say…",
+                  "Đưa một lý do hợp lý"
+                ],
+                [
+                  "4",
+                  "**Nhìn từ góc khác**",
+                  "I can see why some people…",
+                  "Giải thích vì sao người khác thích"
+                ]
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Cấp**",
+                  "**Cụm mở đầu cho chủ đề lạ**",
+                  "**Nghĩa**"
+                ],
+                [
+                  "★",
+                  "**I’ve never really been into…**",
+                  "Tôi chưa bao giờ thực sự thích…"
+                ],
+                [
+                  "★",
+                  "**It’s not something I’ve thought about much, but…**",
+                  "Tôi chưa nghĩ nhiều về nó, nhưng…"
+                ],
+                [
+                  "★",
+                  "**I suppose…**",
+                  "Tôi cho là… (giọng không chắc chắn, rất tự nhiên)"
+                ],
+                [
+                  "★★",
+                  "**I can see why some people…**",
+                  "Tôi hiểu vì sao một số người…"
+                ],
+                [
+                  "★★",
+                  "**If I had to guess, I’d say…**",
+                  "Nếu phải đoán thì tôi nghĩ…"
+                ],
+                [
+                  "★★★",
+                  "**I couldn’t tell you much about it, to be honest, but what I do know is…**",
+                  "Thật ra tôi không rành lắm, nhưng điều tôi biết là…"
+                ]
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "COMMON MISTAKES",
+              "lines": [
+                "✘ **Tuyệt đối không nói:** “I don’t know.” / “I have no idea.” / “Next question, please.”",
+                "✘ Giám khảo không chấm bạn về **kiến thức** — chỉ chấm về **ngôn ngữ**. Không biết gì về chủ đề vẫn có thể được",
+                "Band 7 nếu nói tốt."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. LANGUAGE — Mượn từ vựng chủ đề khác",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Đây là lý do cả khoá học gộp chủ đề theo **kỹ năng**: bộ từ vựng bạn đã học dùng được cho chủ đề bạn chưa học."
+              ]
+            },
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Chủ đề lạ**",
+                  "**Mượn từ vựng của bài nào**",
+                  "**Cụm dùng được ngay**"
+                ],
+                [
+                  "Collecting stamps",
+                  "Lesson 9 — Habits",
+                  "I hardly ever… / It’s not something I do regularly"
+                ],
+                [
+                  "Art / museums",
+                  "Lesson 7 — Places",
+                  "cultural heritage · interactive displays · a peaceful atmosphere"
+                ],
+                [
+                  "Advertisement",
+                  "Lesson 11 — Changes",
+                  "has become increasingly… · nowadays · as a result"
+                ],
+                [
+                  "Sharing things",
+                  "Lesson 12 — Balanced answers",
+                  "It depends on… · To be fair… · Having said that…"
+                ],
+                [
+                  "Doing things well",
+                  "Lesson 5 — Work/Study",
+                  "job satisfaction · a sense of\nachievement · rewarding"
+                ],
+                [
+                  "Handwriting / letters",
+                  "Lesson 11 — Changes",
+                  "People used to… but these days…"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Ngữ pháp: Câu điều kiện loại 2 để nói về giả định",
+          "titleEn": "Grammar focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Chủ đề lạ thường phải nói giả định: **If + past simple, would + V**.",
+                "*If I **had** more free time, I **would** probably take up gardening.*",
+                "*If I **had to** choose, I **’d** say modern art.*",
+                "*If I **were** you, I **wouldn’t** worry about it.* (“were” cho mọi ngôi — trang trọng hơn “was”)",
+                "✘ If I would have time… → ✔ If I **had** time…",
+                "**Drill:** giáo viên nói chủ đề lạ, học sinh trả lời bắt đầu bằng “If I had to…”."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "Phát âm: Giữ nhịp khi bí ý — kéo dài nguyên âm, không im",
+          "titleEn": "Pronunciation focus",
+          "blocks": [
+            {
+              "k": "p",
+              "lines": [
+                "Người bản ngữ khi nghĩ **không im** — họ kéo dài nguyên âm: “Weeeell…” · “I suppooose…” · “Hmm, that’s… interesting.”",
+                "Học sinh Việt hay im hẳn hoặc dùng “ừm” tiếng Việt — cả hai đều bị trừ điểm Fluency.",
+                "Ba âm câu giờ an toàn: **“Well…”** · **“Hmm…”** · **“Let me think…”**",
+                "**Drill:** giáo viên hỏi câu lạ, học sinh chỉ cần nói được cụm câu giờ trong 2 giây đầu — chưa cần nội dung."
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "code": "SPK-P1-L14",
@@ -615,7 +3166,344 @@
       "gate": {
         "minObjectiveScorePercent": 50,
         "minWritingSubmissions": 1
-      }
+      },
+      "theory": [
+        {
+          "src": "book",
+          "title": "Ngôn ngữ đích & lỗi cần tránh",
+          "titleEn": "Target language · Target output · Common mistakes",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "formula",
+              "t": "Target language",
+              "lines": [
+                "— (ôn tập toàn bộ Lesson 1–13)"
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "goal",
+              "t": "Target output",
+              "lines": [
+                "Hoàn thành 1 mock test đầy đủ + 1 phiếu tự đánh giá + 2 mục tiêu cá nhân cho 4 tuần tới."
+              ]
+            },
+            {
+              "k": "box",
+              "tone": "warn",
+              "t": "Lỗi thường gặp cần tránh",
+              "lines": [
+                "✘ Học sinh dừng giữa chừng để hỏi từ vựng — trong mock test **không được** dừng.",
+                "✘ Giáo viên sửa lỗi ngay lúc thi — chỉ ghi chú, sửa ở phần feedback."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "B. PHIẾU CHẤM — dùng cho bạn cùng nhóm hoặc giáo viên",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Tiêu chí**",
+                  "**Cần nghe thấy gì**",
+                  "**☐ Đạt**",
+                  "**Ghi chú lỗi cụ thể**"
+                ],
+                [
+                  "**Fluency**",
+                  "Không im quá 3 giây; có filler tự nhiên; câu trả lời 15–25 giây",
+                  "☐",
+                  ""
+                ],
+                [
+                  "**Vocabulary**",
+                  "Có ≥3 target phrases; không lặp cùng một tính từ; không dùng “very + tính từ trống”",
+                  "☐",
+                  ""
+                ],
+                [
+                  "**Grammar**",
+                  "Đúng thì; đuôi -s và -ed; trạng từ đúng vị trí; câu ghép",
+                  "☐",
+                  ""
+                ],
+                [
+                  "**Pronunciation**",
+                  "Trọng âm từ đúng; xuống giọng cuối câu; nối âm cơ bản",
+                  "☐",
+                  ""
+                ],
+                [
+                  "**Structure**",
+                  "Có Opinion + Reason + Example; có chốt lập trường khi cần",
+                  "☐",
+                  ""
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "C. PHIẾU TỰ ĐÁNH GIÁ",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "note",
+              "t": "PHIẾU TỰ ĐÁNH GIÁ — PHẦN I · trang học sinh giữ lại",
+              "lines": [
+                "**1. Câu trả lời tôi hài lòng nhất hôm nay:**",
+                "Vì sao?",
+                "**2. Câu tôi làm tệ nhất:**",
+                "Tôi thiếu gì? ☐ lý do ☐ ví dụ ☐ target phrase ☐ độ dài ☐ chốt lập trường",
+                "**3. Hai lỗi tôi mắc nhiều nhất trong cả khoá:**",
+                "Lỗi 1:",
+                "Lỗi 2:",
+                "**4. Hai mục tiêu của tôi trong 4 tuần tới:**",
+                "Mục tiêu 1:",
+                "Mục tiêu 2:",
+                "**Kết quả Phiếu chấm (mục B): …… / 5 tiêu chí ☐ ≥ 4/5 → đủ điều kiện vào Phần II ☐ < 4/5 → ôn 4 tuần rồi thi lại**",
+                "**Giáo viên xác nhận:**",
+                "**Ngày:**"
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "TIPS",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "box",
+              "tone": "tip",
+              "t": "TIPS",
+              "lines": [
+                "✔ Ghi âm **cùng một câu hỏi** ở tuần 1 và tuần 4 rồi nghe lại hai bản — đây là cách tạo động lực tốt nhất.",
+                "✔ Không học thêm từ mới trong 4 tuần này. Mục tiêu là **dùng thành thạo** những gì đã có.",
+                "✔ Điều kiện chuyển phần: đạt ≥ 4/5 tiêu chí ở Phiếu chấm (mục B) → đủ điều kiện vào Phần II."
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHỤ LỤC 1 — Bảng tra cứu “Nâng band” tổng hợp",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Từ Band**",
+                  "**Thao tác**",
+                  "**Ví dụ ngắn**"
+                ],
+                [
+                  "5 → 6",
+                  "Thêm **lý do cụ thể** (không dùng good/nice/beautiful)",
+                  "“It’s nice” → “The pace of life is much slower”"
+                ],
+                [
+                  "5 → 6",
+                  "Thêm **ví dụ có chi tiết** (thời gian / nơi / người)",
+                  "“For example, it is good” → “Last Sunday I sat there for two hours”"
+                ],
+                [
+                  "6 → 7",
+                  "Thêm **chi tiết cá nhân thật**",
+                  "“My grandmother still lives on that street”"
+                ],
+                [
+                  "6 → 7",
+                  "Thêm **ý đối lập**",
+                  "“That said, it can get a bit too quiet”"
+                ],
+                [
+                  "6 → 7",
+                  "Thêm **nhận xét khái quát** ở cuối",
+                  "“…which says a lot about the place”"
+                ],
+                [
+                  "Mọi band",
+                  "**Chốt lập trường** khi câu hỏi có tính đánh giá",
+                  "“So on balance, I’d say…”"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHỤ LỤC 2 — 60 cụm ★ MUST-USE của cả Phần I",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Lesson**",
+                  "**Cụm ★ MUST USE**"
+                ],
+                [
+                  "1. O.R.E.",
+                  "Yes, I do · Not really · Personally, I… · because… · For example,…"
+                ],
+                [
+                  "2. Fillers",
+                  "Well,… · To be honest,… · Actually,… · Let me think… · I’d say…"
+                ],
+                [
+                  "3. Reasons",
+                  "since… · mainly because… · For instance,… · Like last week,… · one reason is that…"
+                ],
+                [
+                  "4. Extending",
+                  "What I like most is… · That said,… · …, which is why… · It’s one of those things that…"
+                ],
+                [
+                  "5. Work/Study",
+                  "major in · academic workload · hand in assignments · work long hours · job satisfaction"
+                ],
+                [
+                  "6.\nHometown/Home",
+                  "bustling city · pace of life · local cuisine · residential area · within walking distance"
+                ],
+                [
+                  "7. Places",
+                  "public spaces · a lively atmosphere · a peaceful atmosphere · facilities · get crowded at weekends"
+                ],
+                [
+                  "8. Preferences",
+                  "I prefer A to B · I tend to… · I’d rather… than… · I prioritise X over Y · It depends on…"
+                ],
+                [
+                  "9. Habits",
+                  "tend to · occasionally · hardly ever · take a break · recharge my energy"
+                ],
+                [
+                  "10. Past",
+                  "used to · I remember… · At the time I felt… · Looking back,… · childhood memories"
+                ],
+                [
+                  "11. Changes",
+                  "used to be · nowadays · there are far more/fewer · considerably · as a result"
+                ],
+                [
+                  "12. Balanced",
+                  "Yes, but… · No, although… · It depends on… · Having said that,… · So on balance,…"
+                ],
+                [
+                  "13. Surprise",
+                  "I’ve never really been into… · I suppose… · If I had to guess,… · I can see why some people…"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "src": "book",
+          "title": "PHỤ LỤC 3 — Bảng lỗi ngữ pháp lặp lại (dán ở góc học tập)",
+          "titleEn": "",
+          "blocks": [
+            {
+              "k": "table",
+              "rows": [
+                [
+                  "**Lỗi**",
+                  "**Sai**",
+                  "**Đúng**",
+                  "**Học ở Lesson**"
+                ],
+                [
+                  "Thiếu -s ngôi 3",
+                  "It help me relax",
+                  "It **helps** me relax",
+                  "1"
+                ],
+                [
+                  "because đứng riêng",
+                  "I like it. Because it is cheap.",
+                  "I like it **because** it’s cheap.",
+                  "3"
+                ],
+                [
+                  "because of + mệnh đề",
+                  "Because of it is cheap",
+                  "**Because** it’s cheap / **Because of** the price",
+                  "3"
+                ],
+                [
+                  "prefer + more than",
+                  "I prefer X more than Y",
+                  "I prefer X **to** Y",
+                  "8"
+                ],
+                [
+                  "would rather + to",
+                  "I’d rather to go",
+                  "I’d rather **go**",
+                  "8"
+                ],
+                [
+                  "Vị trí trạng từ",
+                  "I go usually to school",
+                  "I **usually** go to school",
+                  "9"
+                ],
+                [
+                  "everyday / every day",
+                  "**Everyday** I go to school",
+                  "**Every day** I go to school",
+                  "9"
+                ],
+                [
+                  "use to / used to",
+                  "I use to go",
+                  "I **used to** go",
+                  "10"
+                ],
+                [
+                  "is changed",
+                  "My hometown is changed",
+                  "My hometown **has changed**",
+                  "11"
+                ],
+                [
+                  "although + but",
+                  "Although it’s noisy, but I like it",
+                  "**Although** it’s noisy, I like it",
+                  "12"
+                ],
+                [
+                  "despite + mệnh đề",
+                  "Despite it is noisy",
+                  "**Despite** the noise",
+                  "12"
+                ],
+                [
+                  "if + would",
+                  "If I would have time",
+                  "If I **had** time",
+                  "13"
+                ]
+              ]
+            },
+            {
+              "k": "p",
+              "lines": [
+                "(Bảng lộ trình và điều kiện chuyển phần đã được gộp vào mục HƯỚNG DẪN SỬ DỤNG SÁCH ở đầu sách.)"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }
