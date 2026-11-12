@@ -567,6 +567,9 @@ function showExercise(idx) {
     document.getElementById('view-' + v).classList.add('hidden'));
   wbwTeardown(); // drop any previous word-by-word drill; showTranslationView re-inits if needed
 
+  // Illustration (bar/line/pie/table/map/process) — hidden when the exercise has none
+  window.T1Chart?.render(document.getElementById('t1-chart'), ex.chart);
+
   if (['translation', 'error_correction', 'data_transform'].includes(ex.type)) {
     showTranslationView(ex);
   } else if (ex.type === 'rearrange') {
@@ -1141,6 +1144,7 @@ function showTestQuestion(idx) {
     document.getElementById('test-view-' + v).classList.add('hidden'));
 
   testRearrangeAnswer = [];
+  window.T1Chart?.render(document.getElementById('test-chart'), ex.chart);
 
   if (['translation', 'error_correction', 'data_transform'].includes(ex.type)) {
     document.getElementById('test-view-text').classList.remove('hidden');

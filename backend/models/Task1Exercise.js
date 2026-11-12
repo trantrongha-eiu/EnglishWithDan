@@ -44,7 +44,10 @@ const task1ExerciseSchema = new mongoose.Schema({
   orderIndex: { type: Number, default: 0 },
   xpReward: { type: Number, default: 5 },
   isActive: { type: Boolean, default: true },
-  tags: [{ type: String }]
+  tags: [{ type: String }],
+  // Illustration spec drawn by frontend/js/shared/t1-chart.js (bar / line /
+  // pie / table / stat / map / process). Set by scripts/setTask1ExerciseCharts.js.
+  chart: { type: mongoose.Schema.Types.Mixed, default: undefined }
 }, { timestamps: true });
 
 // Matches listExercises()/getMeta()'s hot-path query+sort shape
