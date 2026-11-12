@@ -9,6 +9,7 @@ const { teacherOnly, uploadImageDataUri, uploadCoverImageDataUri, escapeRegex } 
 const Passage      = require('../../models/Passage');
 const ReadingTest  = require('../../models/ReadingTest');
 const ListeningTest = require('../../models/ListeningTest');
+const EntranceTestConfig = require('../../models/EntranceTestConfig');
 const readingController = require('../../controllers/reading.controller');
 
 const router = express.Router();
@@ -40,14 +41,18 @@ router.get('/passages', auth, teacherOnly, async (req, res) => {
         { $limit: Number(limit) },
         { $project: {
           title: 1, category: 1, difficulty: 1, tags: 1, isActive: 1, isActualTest: 1, questionRange: 1, createdAt: 1,
+          // questionGroups when present, else the legacy flat questions[] —
+          // the same source the student page and grading use. Adding both
+          // double-counted passages that still carry a stale legacy copy.
           questionCount: {
-            $add: [
-              { $size: { $ifNull: ['$questions', []] } },
+            $cond: [
+              { $gt: [{ $size: { $ifNull: ['$questionGroups', []] } }, 0] },
               { $sum: { $map: {
                 input: { $ifNull: ['$questionGroups', []] },
                 as: 'g',
                 in: { $size: { $ifNull: ['$$g.questions', []] } }
-              }}}
+              }}},
+              { $size: { $ifNull: ['$questions', []] } },
             ]
           }
         }}
@@ -204,6 +209,17 @@ router.delete('/passages/:id', auth, teacherOnly, async (req, res) => {
 
 router.delete('/passages/:id/permanent', auth, teacherOnly, async (req, res) => {
   try {
+    // A passage pinned into a fixed Reading test or the Entrance Test can't
+    // just vanish — that test would stop starting ("thiếu bài đọc"). Name
+    // where it is used so the admin unpins it there first.
+    const [tests, entrance] = await Promise.all([
+      ReadingTest.find({ passageIds: req.params.id }).select('name').lean(),
+      EntranceTestConfig.exists({ readingPassageId: req.params.id }),
+    ]);
+    if (tests.length || entrance) {
+      const names = [...tests.map(t => `bộ đề "${t.name}"`), ...(entrance ? ['Test đầu vào'] : [])];
+      return res.status(409).json({ success: false, message: `Bài đọc đang được dùng trong ${names.join(', ')} — bỏ chọn ở đó trước khi xoá.` });
+    }
     const passage = await Passage.findByIdAndDelete(req.params.id);
     if (!passage) return res.status(404).json({ success: false, message: 'Không tìm thấy bài đọc' });
     res.json({ success: true, message: 'Đã xóa vĩnh viễn bài đọc' });

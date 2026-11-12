@@ -44,12 +44,14 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
     return () => clearTimeout(saveTimer.current);
   }, [passageId]);
 
+  // Resolves true once the server has these groups.
   async function persist(updatedGroups) {
     setSaving(true);
     try {
       await apiFetch(`/admin/passages/${passageId}`, { method: 'PUT', body: JSON.stringify({ questionGroups: updatedGroups }) });
       setIsDirty(false);
-    } catch (e) { toast(e.message, 'error'); }
+      return true;
+    } catch (e) { toast(e.message, 'error'); return false; }
     finally { setSaving(false); }
   }
 
@@ -69,7 +71,9 @@ function PassageQuestionsModal({ passageId, passageTitle, onClose }) {
   async function handleClose() {
     if (isDirty) {
       clearTimeout(saveTimer.current);
-      await persist(groups);
+      // Save failed (error toast shown) — stay open with the edits instead
+      // of closing and silently dropping them.
+      if (!(await persist(groups))) return;
     }
     onClose();
   }

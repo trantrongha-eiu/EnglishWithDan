@@ -303,6 +303,33 @@ describe('DELETE /api/admin/passages/:id/permanent (hard delete)', () => {
     const saved = await Passage.findById(passage._id);
     expect(saved).toBeNull();
   });
+
+  test('409 (kept) when the passage is pinned into a fixed Reading test', async () => {
+    const p1 = await createPassage({ category: 'passage1' });
+    const p2 = await createPassage({ category: 'passage2' });
+    const p3 = await createPassage({ category: 'passage3' });
+    await createReadingTest({ name: 'Actual Mocktest 9', passageIds: [p1._id, p2._id, p3._id] });
+    const admin = await createAdmin();
+    const res = await request(app)
+      .delete(`/api/admin/passages/${p2._id}/permanent`)
+      .set('Authorization', `Bearer ${signTokenFor(admin)}`);
+    expect(res.status).toBe(409);
+    expect(res.body.message).toContain('Actual Mocktest 9');
+    expect(await Passage.findById(p2._id)).not.toBeNull();
+  });
+});
+
+describe('GET /api/admin/passages — questionCount', () => {
+  test('counts questionGroups only when present (a stale legacy questions[] copy is not added)', async () => {
+    const q = n => ({ questionNumber: n, type: 'fill-blank', questionText: `Q${n}`, correctAnswer: 'x' });
+    await createPassage({
+      title: 'Count me', questionGroups: [{ groupType: 'plain', questions: [q(1), q(2)] }], questions: [q(1), q(2)],
+    });
+    const admin = await createAdmin();
+    const res = await request(app).get('/api/admin/passages?search=Count%20me').set('Authorization', `Bearer ${signTokenFor(admin)}`);
+    expect(res.status).toBe(200);
+    expect(res.body.passages[0].questionCount).toBe(2);
+  });
 });
 
 describe('GET /api/admin/tests (Reading Tests)', () => {

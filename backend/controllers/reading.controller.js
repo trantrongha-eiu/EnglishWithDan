@@ -33,6 +33,9 @@ exports.startTest = async (req, res) => {
     if (result.status === 'insufficient_data') {
       return res.status(400).json({ success: false, message: 'Database chưa đủ bài đọc (cần ít nhất 1 bài ở mỗi category)' });
     }
+    if (result.status === 'fixed_passage_missing') {
+      return res.status(400).json({ success: false, message: 'Bộ đề này đang thiếu bài đọc (đã bị ẩn hoặc xoá) — báo giáo viên giúp bạn nhé.' });
+    }
     res.json({
       success: true, attemptId: result.attemptId, testName: result.testName,
       passages: result.passages, duration: result.duration, mode: result.mode, parts: result.parts
@@ -50,7 +53,12 @@ exports.startTest = async (req, res) => {
 };
 
 exports.submitTest = guard(null, async (req, res) => {
-  const { attemptId, answers } = req.body;
+  const { attemptId } = req.body;
+  // A missing/garbled answers map used to throw AFTER the attempt was
+  // claimed 'completed' — leaving it completed with no score. Treat it as
+  // "nothing answered" instead.
+  const answers = req.body.answers && typeof req.body.answers === 'object' && !Array.isArray(req.body.answers)
+    ? req.body.answers : {};
   // disqualified: sent by the page right after the proctor voided the
   // attempt — saves the answers so far without un-voiding it.
   const result = await readingService.submitTest(attemptId, answers, req.user, { disqualified: req.body.disqualified === true });

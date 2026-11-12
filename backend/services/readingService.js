@@ -264,13 +264,24 @@ async function startTest(testId, userId, mode = 'practice', rawParts = null) {
     const byId = new Map(raw.map(p => [p._id.toString(), p]));
     passages = existingAttempt.passagesUsed.map(id => byId.get(id.toString())).filter(Boolean);
     if (passages.length !== existingAttempt.passagesUsed.length) return { status: 'insufficient_data' };
+    // An attempt abandoned long ago (its whole time window + 30' grace has
+    // passed) is being started over with a full clock and empty answers on
+    // the client — restart the server clock too, or it gets submitted with a
+    // multi-day duration. A recent one (reload mid mock test) keeps its real
+    // start so the recorded duration stays honest.
+    const windowMs = (1200 * passages.length + 1800) * 1000;
+    if (existingAttempt.startTime && Date.now() - new Date(existingAttempt.startTime).getTime() > windowMs) {
+      await TestAttempt.updateOne({ _id: existingAttempt._id }, { startTime: new Date() });
+    }
   } else if (test.passageIds && test.passageIds.length === 3) {
     // Fixed test: always the same 3 passages, in the passage1/2/3 order
     // they were assigned at creation time — not $sample.
     const raw = await Passage.find({ _id: { $in: test.passageIds }, isActive: true }).select(safeFields).lean();
     const byId = new Map(raw.map(p => [p._id.toString(), p]));
     passages = test.passageIds.map(id => byId.get(id.toString())).filter(Boolean);
-    if (passages.length !== 3) return { status: 'insufficient_data' };
+    // One of the pinned passages was hidden or deleted since — say so, not
+    // the generic "database chưa đủ bài đọc" (which reads as a random test).
+    if (passages.length !== 3) return { status: 'fixed_passage_missing' };
     if (parts) passages = parts.map(n => passages[n - 1]);
   } else if (parts) {
     const picked = await Promise.all(parts.map(n =>
@@ -772,7 +783,14 @@ async function listAdminAttempts({ testId, userId, page = 1, limit = 50 }) {
 }
 
 async function getAdminAttemptsStats(testId) {
-  const match = { status: 'completed', ...(testId ? { testId: new mongoose.Types.ObjectId(testId) } : {}) };
+  // Whole-test runs only: a "Chọn phần làm" run (parts) has 13–27 questions
+  // and a band scaled up from them, which dragged "Đúng TB / 40 câu" down
+  // and mixed estimated bands into the averages. Those runs still show in
+  // the attempts list below the stats (labelled with their passages).
+  const match = {
+    status: 'completed', parts: { $exists: false },
+    ...(testId && mongoose.isValidObjectId(testId) ? { testId: new mongoose.Types.ObjectId(testId) } : {}),
+  };
   const [overview, byTest, topStudents] = await Promise.all([
     TestAttempt.aggregate([
       { $match: match },

@@ -89,7 +89,7 @@ export default function ReadingStats() {
         <div className="stat-card yellow">
           <div className="stat-label">Đúng trung bình</div>
           <div className="stat-value">{overview.avgCorrect ? overview.avgCorrect.toFixed(1) : '–'}</div>
-          <div className="stat-sub">/ 40 câu</div>
+          <div className="stat-sub">/ 40 câu · chỉ tính bài làm full đề</div>
         </div>
         <div className="stat-card red">
           <div className="stat-label">Band cao nhất / thấp nhất</div>
@@ -166,7 +166,10 @@ export default function ReadingStats() {
                         : <strong>{studentName(a.userId)}</strong>}
                       {a.userId?.username && <div style={{ fontSize: 11, color: 'var(--text3)' }}>@{a.userId.username}</div>}
                     </td>
-                    <td><AttemptTitle h={{ _id: a._id, skill: 'reading', testName: a.testId?.name }} /></td>
+                    <td>
+                      <AttemptTitle h={{ _id: a._id, skill: 'reading', testName: a.testId?.name || 'Đã xóa' }} />
+                      {a.parts?.length > 0 && <div style={{ fontSize: 11, color: 'var(--text3)' }}>Passage {a.parts.join(', ')} · band quy đổi</div>}
+                    </td>
                     <td style={{ fontSize: 12 }}>{formatDate(a.endTime)}</td>
                     <td>{formatDur(a.duration)}</td>
                     <td>{a.correctCount}/{a.totalQuestions}</td>

@@ -1102,7 +1102,10 @@ function resumeExam() {
   _pendingHl = { ...(window.HighlightStore.readLocal(_readingHlStorageKey(data.attemptId))?.parts || {}) };
   state.testName = data.testName;
   state.answers = data.answers || {};
-  state.secondsLeft = data.secondsLeft || DURATION;
+  // `?? DURATION`, not `||`: checkResumeExam() already deducted the time the
+  // tab was closed, so 0 means "time's up" (startTimer() submits on the first
+  // tick) — `|| DURATION` turned it into a fresh 60 minutes.
+  state.secondsLeft = Number.isFinite(data.secondsLeft) ? data.secondsLeft : DURATION;
   state.currentPassageIdx = 0;
   state.isReview = false;
   state.submitted = false;
@@ -1155,7 +1158,10 @@ function dismissResume() {
    LOCAL-STORAGE: PRACTICE MODE AUTO-SAVE
 ══════════════════════════════════════════════════════════════════════ */
 function savePracticeToStorage() {
-  if (!_practiceMode || !_retryState) return;
+  // Not once graded: the answer listener on the questions panel stays wired
+  // after submit (and on a history review), so clicks there re-created a
+  // "Bài dở dang" draft of a bài already submitted.
+  if (!_practiceMode || !_retryState || _retryState.submitted) return;
   try {
     const passage = state.passages[0];
     if (!passage) return;
@@ -3602,6 +3608,11 @@ function _reviewLockedNotice() {
 }
 
 async function loadReviewByTest(testId) {
+  // The card's own result (band · x/40) is its lastAttempt — the latest
+  // WHOLE-test run. Open exactly that one: the newest history row for the
+  // test can be a "Chọn phần làm" run, and history stops at 50 rows.
+  const cardAttempt = allTests.find(t => String(t._id) === String(testId))?.lastAttempt;
+  if (cardAttempt?._id) { loadReview(cardAttempt._id); return; }
   try {
     const histRes = await apiFetch('/api/reading/history');
     const attempts = histRes.history || [];
@@ -4126,7 +4137,17 @@ async function _doSubmitRetry() {
         });
         _retryState.correctMap = correctMap;
       }
-    } catch (e) { console.error('[_doSubmitRetry] answer-key fetch failed', e); }
+    } catch (e) {
+      console.error('[_doSubmitRetry] answer-key fetch failed', e);
+      if (e && e.body && e.body.requiresPremium) { openUpgradeModal(); return; }
+    }
+    // No key → every answer would be marked "Sai" on screen (the server
+    // re-grades correctly, but the student only sees the local result). Keep
+    // the bài open and let them press "Kiểm tra đáp án" again.
+    if (!Object.keys(correctMap || {}).length) {
+      showVocabToast('Không tải được đáp án — kiểm tra kết nối rồi bấm "Kiểm tra đáp án" lại.', 'error', 6000);
+      return;
+    }
   }
 
   let correct = 0, wrong = 0, skipped = 0;

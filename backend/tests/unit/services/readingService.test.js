@@ -556,7 +556,7 @@ describe('readingService.startTest — fixed vs. random passage selection', () =
     const test = await createReadingTest({ passageIds: [p1._id, p2._id, p3._id] });
 
     const result = await readingService.startTest(test._id, student._id);
-    expect(result.status).toBe('insufficient_data');
+    expect(result.status).toBe('fixed_passage_missing');
   });
 
   // BUG-010: calling /start twice without submitting (a refreshed tab, a
@@ -686,5 +686,53 @@ describe('readingService.listAdminAttempts / getAdminAttemptsStats', () => {
 
     expect(stats.overview.totalAttempts).toBe(1);
     expect(stats.overview.avgBand).toBe(5);
+  });
+
+  test('getAdminAttemptsStats leaves "Chọn phần làm" (parts) runs out of the averages, the list keeps them', async () => {
+    const student = await createStudent();
+    const test = await createReadingTest();
+    await createCompletedTestAttempt({ userId: student._id, testId: test._id, bandScore: 7, correctCount: 30, totalQuestions: 40 });
+    await createCompletedTestAttempt({ userId: student._id, testId: test._id, bandScore: 4, correctCount: 6, totalQuestions: 13, extra: { parts: [1] } });
+
+    const stats = await readingService.getAdminAttemptsStats();
+    expect(stats.overview.totalAttempts).toBe(1);
+    expect(stats.overview.avgCorrect).toBe(30);
+
+    const { total } = await readingService.listAdminAttempts({ page: 1, limit: 50 });
+    expect(total).toBe(2);
+  });
+});
+
+describe('readingService.startTest — reusing an open attempt', () => {
+  async function fixedTest() {
+    const p1 = await createPassage({ category: 'passage1', isActualTest: true });
+    const p2 = await createPassage({ category: 'passage2', isActualTest: true });
+    const p3 = await createPassage({ category: 'passage3', isActualTest: true });
+    return createReadingTest({ passageIds: [p1._id, p2._id, p3._id] });
+  }
+
+  test('an attempt abandoned long ago restarts its clock (no multi-day duration on submit)', async () => {
+    const student = await createStudent();
+    const test = await fixedTest();
+    const first = await readingService.startTest(test._id, student._id);
+    const old = new Date(Date.now() - 3 * 24 * 3600 * 1000);
+    await TestAttempt.updateOne({ _id: first.attemptId }, { startTime: old });
+
+    const again = await readingService.startTest(test._id, student._id);
+    expect(again.attemptId.toString()).toBe(first.attemptId.toString());
+    const row = await TestAttempt.findById(first.attemptId).lean();
+    expect(Date.now() - row.startTime.getTime()).toBeLessThan(60 * 1000);
+  });
+
+  test('a recent attempt (reload mid-test) keeps its real start time', async () => {
+    const student = await createStudent();
+    const test = await fixedTest();
+    const first = await readingService.startTest(test._id, student._id);
+    const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000);
+    await TestAttempt.updateOne({ _id: first.attemptId }, { startTime: tenMinAgo });
+
+    await readingService.startTest(test._id, student._id);
+    const row = await TestAttempt.findById(first.attemptId).lean();
+    expect(row.startTime.getTime()).toBe(tenMinAgo.getTime());
   });
 });

@@ -37,7 +37,10 @@ export default function ReadingTestEdit() {
     // as full-test-quality content (same pool the random test already
     // draws from), not one-off practice-only passages.
     Promise.all(['passage1', 'passage2', 'passage3'].map(cat =>
-      apiFetch(`/admin/passages?category=${cat}&limit=200`).then(d => (d.passages || []).filter(p => p.isActualTest))
+      // limit high enough for the whole category — the actual-test filter
+      // runs here, after the server's newest-first page, so a 200 cap
+      // silently dropped older actual tests from the picker.
+      apiFetch(`/admin/passages?category=${cat}&limit=2000`).then(d => (d.passages || []).filter(p => p.isActualTest))
     )).then(([p1, p2, p3]) => setPassagesByCat({ passage1: p1, passage2: p2, passage3: p3 }))
       .catch(() => toast('Không tải được danh sách bài đọc', 'error'));
   }, []);
@@ -119,6 +122,12 @@ export default function ReadingTestEdit() {
                 <label className="form-label">Passage {i + 1}</label>
                 <select className="form-select" value={picks[cat]} onChange={e => setPicks(p => ({ ...p, [cat]: e.target.value }))}>
                   <option value="">— Random (mặc định) —</option>
+                  {/* The pinned passage isn't in the actual-test list (unticked
+                      Actual Test, or moved category) — still show it, or the
+                      select reads "Random" while the test stays pinned. */}
+                  {picks[cat] && !passagesByCat[cat].some(p => p._id === picks[cat]) && (
+                    <option value={picks[cat]}>⚠️ Bài đang chọn (không có trong danh sách Actual Test {cat.replace('passage', 'P')})</option>
+                  )}
                   {passagesByCat[cat].map(p => (
                     <option key={p._id} value={p._id}>{p.title}{p.tags?.length ? ` · ${p.tags.join(', ')}` : ''}</option>
                   ))}
