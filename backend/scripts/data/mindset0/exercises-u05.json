@@ -838,7 +838,7 @@
    "lessonCode": "M0-U05-L3",
    "order": 2,
    "autoGrade": true,
-   "points": 4,
+   "points": 8,
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
@@ -912,6 +912,59 @@
       }
      ],
      "explanation": "Lời đề nghị/yêu cầu → some."
+    },
+    {
+     "id": "g5",
+     "prompt": "Quy tắc: Before singular countable nouns we use ____ before a consonant and ____ before a vowel.",
+     "blanks": [
+      {
+       "accept": [
+        "a"
+       ]
+      },
+      {
+       "accept": [
+        "an"
+       ]
+      }
+     ],
+     "explanation": "a + phụ âm (a sandwich), an + nguyên âm (an apple)."
+    },
+    {
+     "id": "g6",
+     "prompt": "Quy tắc: In positive sentences, with plural and uncountable nouns we use ____.",
+     "blanks": [
+      {
+       "accept": [
+        "some"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "Quy tắc: In questions and negative sentences with countable and uncountable nouns, we use ____.",
+     "blanks": [
+      {
+       "accept": [
+        "any"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g8",
+     "prompt": "Quy tắc: In offers and requests, we use ____.",
+     "blanks": [
+      {
+       "accept": [
+        "some"
+       ]
+      }
+     ],
+     "explanation": "Would you like some…? / Can I have some…?"
     }
    ]
   },
@@ -920,7 +973,7 @@
    "lessonCode": "M0-U05-L3",
    "order": 3,
    "autoGrade": true,
-   "points": 11,
+   "points": 13,
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
@@ -1134,6 +1187,46 @@
      ],
      "answer": "A",
      "explanation": ""
+    },
+    {
+     "id": "q12",
+     "prompt": "I would like ____ fish, please.",
+     "options": [
+      {
+       "id": "A",
+       "text": "some"
+      },
+      {
+       "id": "B",
+       "text": "much"
+      },
+      {
+       "id": "C",
+       "text": "many"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Lời yêu cầu → some."
+    },
+    {
+     "id": "q13",
+     "prompt": "There are ____ different salads on the menu. I don't know which one to choose.",
+     "options": [
+      {
+       "id": "A",
+       "text": "any"
+      },
+      {
+       "id": "B",
+       "text": "much"
+      },
+      {
+       "id": "C",
+       "text": "a lot of"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Câu khẳng định, danh từ số nhiều → a lot of."
     }
    ]
   },
@@ -1348,6 +1441,119 @@
      ],
      "answer": "C",
      "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L3-E05",
+   "lessonCode": "M0-U05-L3",
+   "order": 5,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "a / an hay some? (Ex. 17)",
+   "instruction": "Hoàn thành quy tắc bằng a / an hoặc some.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "For singular countable nouns, we put ____ before the word, e.g. ____ cabbage.",
+     "blanks": [
+      {
+       "accept": [
+        "a",
+        "an",
+        "a/an"
+       ]
+      },
+      {
+       "accept": [
+        "a"
+       ]
+      }
+     ],
+     "explanation": "Danh từ đếm được số ít → a/an."
+    },
+    {
+     "id": "g2",
+     "prompt": "For plural countable nouns, we can put ____ before the word and we usually add an 's', e.g. ____ dumplings.",
+     "blanks": [
+      {
+       "accept": [
+        "some"
+       ]
+      },
+      {
+       "accept": [
+        "some"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "For uncountable nouns, we put ____ before the word, e.g. ____ milk.",
+     "blanks": [
+      {
+       "accept": [
+        "some"
+       ]
+      },
+      {
+       "accept": [
+        "some"
+       ]
+      }
+     ],
+     "explanation": "Không đếm được → không dùng a/an, không thêm -s."
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L3-E06",
+   "lessonCode": "M0-U05-L3",
+   "order": 6,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Hoàn thành tiêu đề bảng (Ex. 18)",
+   "instruction": "Đọc các câu ví dụ trong bảng của sách và chọn tiêu đề đúng cho mỗi cột.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Cột 1: I have some apples. · I don't have any cabbages. · Do you have any onions? · How many carrots do we need? → ____ nouns",
+     "options": [
+      {
+       "id": "A",
+       "text": "Countable"
+      },
+      {
+       "id": "B",
+       "text": "Uncountable"
+      }
+     ],
+     "answer": "A",
+     "explanation": "apples, cabbages, onions, carrots đều đếm được (có số nhiều)."
+    },
+    {
+     "id": "q2",
+     "prompt": "Cột 2: I have some rice. · I don't have any milk. · Do you have any meat? · How much water do I put in? → ____ nouns",
+     "options": [
+      {
+       "id": "A",
+       "text": "Countable"
+      },
+      {
+       "id": "B",
+       "text": "Uncountable"
+      }
+     ],
+     "answer": "B",
+     "explanation": "rice, milk, meat, water không đếm được → dùng much."
     }
    ]
   },
@@ -1699,6 +1905,231 @@
      "sampleAnswer": "Not as much as I should! I probably drink about four glasses a day, but I know I need to drink more, especially when I play sport.",
      "sampleNote": "Câu trả lời trung thực + chi tiết.",
      "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L7-E01",
+   "lessonCode": "M0-U05-L7",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Thực phẩm trong ảnh (G&V Ex. 1)",
+   "instruction": "Nối ảnh 1–8 với từ trong khung: beef, lettuce, duck, lobster, spaghetti, salmon, garlic, cauliflower.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u05-gv-foods.jpg",
+    "caption": "G&V Ex. 1"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Photo 1",
+     "right": "duck",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Photo 2",
+     "right": "lettuce",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Photo 3",
+     "right": "lobster",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Photo 4",
+     "right": "garlic",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Photo 5",
+     "right": "salmon",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Photo 6",
+     "right": "spaghetti",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Photo 7",
+     "right": "beef",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Photo 8",
+     "right": "cauliflower",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L7-E02",
+   "lessonCode": "M0-U05-L7",
+   "order": 2,
+   "autoGrade": true,
+   "points": 9,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Bảng quy tắc a lot of / much / many (G&V Ex. 5)",
+   "instruction": "Đọc các câu trong bảng và chọn đáp án đúng.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "We use ____ with positive and negative sentences with countable and uncountable nouns.",
+     "options": [
+      {
+       "id": "A",
+       "text": "a lot of"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "We have ____ oranges to eat because we have an orange tree in our garden.",
+     "options": [
+      {
+       "id": "A",
+       "text": "much"
+      },
+      {
+       "id": "B",
+       "text": "a lot of"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Câu khẳng định → a lot of."
+    },
+    {
+     "id": "q3",
+     "prompt": "We don't have ____ fruit to eat in winter.",
+     "options": [
+      {
+       "id": "A",
+       "text": "a lot of"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      }
+     ],
+     "answer": "A",
+     "explanation": "fruit không đếm được → không dùng many."
+    },
+    {
+     "id": "q4",
+     "prompt": "We use ____ with questions and negatives with countable nouns.",
+     "options": [
+      {
+       "id": "A",
+       "text": "much"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "How ____ lemons do you need for the recipe?",
+     "options": [
+      {
+       "id": "A",
+       "text": "much"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "There aren't ____ cauliflowers in the shop.",
+     "options": [
+      {
+       "id": "A",
+       "text": "much"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "We use ____ with questions and negatives with uncountable nouns.",
+     "options": [
+      {
+       "id": "A",
+       "text": "many"
+      },
+      {
+       "id": "B",
+       "text": "much"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q8",
+     "prompt": "How ____ coffee is there in the cupboard?",
+     "options": [
+      {
+       "id": "A",
+       "text": "many"
+      },
+      {
+       "id": "B",
+       "text": "much"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q9",
+     "prompt": "There isn't ____ sugar in the dish.",
+     "options": [
+      {
+       "id": "A",
+       "text": "many"
+      },
+      {
+       "id": "B",
+       "text": "much"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
     }
    ]
   }

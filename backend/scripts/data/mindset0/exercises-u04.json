@@ -139,7 +139,7 @@
    "lessonCode": "M0-U04-L1",
    "order": 3,
    "autoGrade": true,
-   "points": 11,
+   "points": 12,
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
@@ -184,48 +184,54 @@
     },
     {
      "id": "c4",
-     "text": "see famous buildings",
+     "text": "try traditional food",
      "category": "city",
      "explanation": ""
     },
     {
      "id": "c5",
-     "text": "go on cultural visits",
+     "text": "see famous buildings",
      "category": "city",
      "explanation": ""
     },
     {
      "id": "c6",
+     "text": "go on cultural visits",
+     "category": "city",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
      "text": "go mountain climbing",
      "category": "adv",
      "explanation": ""
     },
     {
-     "id": "c7",
+     "id": "c8",
      "text": "go horse riding",
      "category": "adv",
      "explanation": ""
     },
     {
-     "id": "c8",
+     "id": "c9",
      "text": "go on cycling tours",
      "category": "adv",
      "explanation": ""
     },
     {
-     "id": "c9",
+     "id": "c10",
      "text": "visit water parks",
      "category": "adv",
      "explanation": ""
     },
     {
-     "id": "c10",
+     "id": "c11",
      "text": "visit beach resorts",
      "category": "beach",
      "explanation": ""
     },
     {
-     "id": "c11",
+     "id": "c12",
      "text": "stay with host families",
      "category": "lang",
      "explanation": ""
@@ -601,7 +607,7 @@
    "lessonCode": "M0-U04-L3",
    "order": 3,
    "autoGrade": true,
-   "points": 9,
+   "points": 10,
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
@@ -690,7 +696,7 @@
     },
     {
      "id": "q6",
-     "prompt": "B: Because my parents ____ going to the theatre, we all went to see a play.",
+     "prompt": "B: Well, because my parents ____ going to the theatre, …",
      "options": [
       {
        "id": "A",
@@ -702,10 +708,26 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "my parents (số nhiều) → enjoy."
     },
     {
      "id": "q7",
+     "prompt": "B: … ____ to see a play by a famous British writer.",
+     "options": [
+      {
+       "id": "A",
+       "text": "we all go"
+      },
+      {
+       "id": "B",
+       "text": "we all went"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Kể chuyện mùa hè năm ngoái → quá khứ đơn."
+    },
+    {
+     "id": "q8",
      "prompt": "A: ____ good?",
      "options": [
       {
@@ -721,7 +743,7 @@
      "explanation": ""
     },
     {
-     "id": "q8",
+     "id": "q9",
      "prompt": "A: I ____ plays. I think they are boring.",
      "options": [
       {
@@ -737,7 +759,7 @@
      "explanation": ""
     },
     {
-     "id": "q9",
+     "id": "q10",
      "prompt": "B: I thought that, too, but this one ____ boring at all.",
      "options": [
       {
@@ -759,7 +781,7 @@
    "lessonCode": "M0-U04-L3",
    "order": 4,
    "autoGrade": true,
-   "points": 5,
+   "points": 7,
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
@@ -833,7 +855,7 @@
     },
     {
      "id": "g5",
-     "prompt": "I ____ (learn) about them at school last year. We ____ (feel) cold because it ____ (be) the middle of winter.",
+     "prompt": "I ____ (learn) about them at school last year. We ____ (feel) cold a lot of the time because it ____ (be) the middle of winter.",
      "blanks": [
       {
        "accept": [
@@ -849,6 +871,31 @@
       {
        "accept": [
         "was"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "Where ____ (you / like) going on holiday?",
+     "blanks": [
+      {
+       "accept": [
+        "do you like"
+       ]
+      }
+     ],
+     "explanation": "Hỏi thói quen/sở thích chung → hiện tại đơn."
+    },
+    {
+     "id": "g7",
+     "prompt": "____ (you / prefer) city breaks in winter or beach holidays in the summer?",
+     "blanks": [
+      {
+       "accept": [
+        "Do you prefer",
+        "do you prefer"
        ]
       }
      ],

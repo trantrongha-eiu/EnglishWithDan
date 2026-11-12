@@ -1128,7 +1128,7 @@
    "lessonCode": "M0-U02-L3",
    "order": 5,
    "autoGrade": true,
-   "points": 5,
+   "points": 6,
    "source": "original",
    "difficulty": 1,
    "type": "error_correction",
@@ -1155,12 +1155,18 @@
     },
     {
      "id": "e4",
-     "prompt": "I have a housemate but I don't see very often him.",
-     "answer": "I have a housemate but I don't see him very often.",
-     "explanation": "very often đứng cuối câu, sau tân ngữ him."
+     "prompt": "I have a housemate but I don't see very often him – he is always studying.",
+     "answer": "I have a housemate but I don't see him very often – he is always studying.",
+     "explanation": "very often đứng cuối câu, sau tân ngữ him (hoặc: I don't very often see him)."
     },
     {
      "id": "e5",
+     "prompt": "In your country, do people usually celebrate their 18th birthday with a party?",
+     "answer": "In your country, do people usually celebrate their 18th birthday with a party?",
+     "explanation": "Câu đúng: usually đứng sau chủ ngữ, trước động từ celebrate."
+    },
+    {
+     "id": "e6",
      "prompt": "Do you prefer to do your homework in your bedroom?",
      "answer": "Do you prefer to do your homework in your bedroom?",
      "explanation": "Câu đúng."
@@ -1172,7 +1178,7 @@
    "lessonCode": "M0-U02-L3",
    "order": 6,
    "autoGrade": true,
-   "points": 5,
+   "points": 6,
    "source": "original",
    "difficulty": 1,
    "type": "error_correction",
@@ -1207,7 +1213,13 @@
      "id": "e5",
      "prompt": "You help your parents with the housework.",
      "answer": "Do you help your parents with the housework?",
-     "explanation": "Do + you + V?"
+     "explanation": "Do + you + V? (câu ví dụ của sách)"
+    },
+    {
+     "id": "e6",
+     "prompt": "The apartments in the UK are very different from the apartments in your country.",
+     "answer": "Are the apartments in the UK very different from the apartments in your country?",
+     "explanation": "are → đảo Are lên trước chủ ngữ số nhiều."
     }
    ]
   },
@@ -2220,6 +2232,153 @@
       "the",
       "university",
       "campus?"
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L7-E06",
+   "lessonCode": "M0-U02-L7",
+   "order": 6,
+   "autoGrade": true,
+   "points": 11,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Tìm 11 từ trong ô chữ (G&V Ex. 4)",
+   "instruction": "Sách có một ô chữ giấu 11 từ về nhà cửa. Dựa vào gợi ý và chữ cái đầu, viết lại 11 từ đó.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Phòng/khoảng trống ngay dưới mái nhà: ____ (a…)",
+     "blanks": [
+      {
+       "accept": [
+        "attic"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "Khoảng đất có cỏ, hoa quanh nhà: ____ (g…)",
+     "blanks": [
+      {
+       "accept": [
+        "garden"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Phòng làm việc, đọc sách trong nhà: ____ (s…)",
+     "blanks": [
+      {
+       "accept": [
+        "study"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "Tầng hầm, dưới mặt đất: ____ (b…)",
+     "blanks": [
+      {
+       "accept": [
+        "basement"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "Nơi nấu ăn: ____ (k…)",
+     "blanks": [
+      {
+       "accept": [
+        "kitchen"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "Thiết bị để xem phim, tin tức: ____ (t…)",
+     "blanks": [
+      {
+       "accept": [
+        "television",
+        "TV"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "Bàn để học / làm việc: ____ (d…)",
+     "blanks": [
+      {
+       "accept": [
+        "desk"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g8",
+     "prompt": "Vòi sen tắm: ____ (s…)",
+     "blanks": [
+      {
+       "accept": [
+        "shower"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g9",
+     "prompt": "Cửa sổ: ____ (w…)",
+     "blanks": [
+      {
+       "accept": [
+        "window"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g10",
+     "prompt": "Bồn rửa (tay, bát): ____ (s…)",
+     "blanks": [
+      {
+       "accept": [
+        "sink"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g11",
+     "prompt": "Rèm cuốn / mành che cửa sổ: ____ (b…)",
+     "blanks": [
+      {
+       "accept": [
+        "blind"
+       ]
+      }
      ],
      "explanation": ""
     }

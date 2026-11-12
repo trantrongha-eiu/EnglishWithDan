@@ -89,7 +89,7 @@
    ],
    "vocabSave": {
     "slot": 1,
-    "title": "Unit 1 · Từ vựng: hoạt động hằng ngày — 18 từ/cụm từ",
+    "title": "Unit 1 · Từ vựng: hoạt động hằng ngày — 21 từ/cụm từ",
     "words": [
      {
       "word": "get up",
@@ -180,6 +180,21 @@
       "word": "daily routine",
       "meaning": "thói quen hằng ngày",
       "example": "My daily routine is quite busy."
+     },
+     {
+      "word": "make a mess",
+      "meaning": "bày bừa, làm bừa bộn",
+      "example": "My little brother always makes a mess in the kitchen."
+     },
+     {
+      "word": "brush my teeth",
+      "meaning": "đánh răng",
+      "example": "After breakfast, I brush my teeth."
+     },
+     {
+      "word": "make a noise",
+      "meaning": "gây ồn",
+      "example": "Please don't make a noise – the baby is asleep."
      }
     ]
    }
@@ -398,7 +413,7 @@
    },
    "published": true,
    "exerciseCount": 5,
-   "totalPoints": 43,
+   "totalPoints": 51,
    "practiceLinks": [
     {
      "kind": "grammar",

@@ -180,8 +180,8 @@
     "minWritingSubmissions": 0
    },
    "published": true,
-   "exerciseCount": 3,
-   "totalPoints": 25,
+   "exerciseCount": 5,
+   "totalPoints": 35,
    "practiceLinks": [
     {
      "ref": "reading:M0-U09-R1",
@@ -192,7 +192,7 @@
    ],
    "vocabSave": {
     "slot": 2,
-    "title": "Unit 9 · Reading: ý chính đoạn văn & hoàn thành câu — 14 từ/cụm từ",
+    "title": "Unit 9 · Reading: ý chính đoạn văn & hoàn thành câu — 20 từ/cụm từ",
     "words": [
      {
       "word": "multilingual",
@@ -263,6 +263,36 @@
       "word": "at a speed that works for you",
       "meaning": "theo tốc độ phù hợp với bạn",
       "example": "Learn at a speed that works for you."
+     },
+     {
+      "word": "make a mistake",
+      "meaning": "mắc lỗi",
+      "example": "Don't worry about making mistakes."
+     },
+     {
+      "word": "take a test",
+      "meaning": "làm bài kiểm tra",
+      "example": "I'm going to take a test on Friday."
+     },
+     {
+      "word": "make a difference",
+      "meaning": "tạo ra sự khác biệt",
+      "example": "Practising every day makes a difference."
+     },
+     {
+      "word": "make a guess",
+      "meaning": "đoán",
+      "example": "If you don't know the word, make a guess."
+     },
+     {
+      "word": "take a picture",
+      "meaning": "chụp ảnh",
+      "example": "I always take lots of pictures on holiday."
+     },
+     {
+      "word": "make somebody laugh",
+      "meaning": "làm ai đó cười",
+      "example": "Robert really makes me laugh."
      }
     ]
    }
@@ -292,8 +322,8 @@
     "minWritingSubmissions": 0
    },
    "published": true,
-   "exerciseCount": 4,
-   "totalPoints": 19,
+   "exerciseCount": 5,
+   "totalPoints": 24,
    "practiceLinks": [
     {
      "kind": "grammar",
@@ -623,8 +653,8 @@
     "minWritingSubmissions": 0
    },
    "published": true,
-   "exerciseCount": 3,
-   "totalPoints": 17
+   "exerciseCount": 4,
+   "totalPoints": 23
   }
  ]
 }

@@ -685,7 +685,7 @@
    "lessonCode": "M0-U07-L3",
    "order": 4,
    "autoGrade": true,
-   "points": 6,
+   "points": 9,
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
@@ -811,6 +811,66 @@
      ],
      "answer": "B",
      "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "A: Four. ____ speak English, Russian, Chinese and Thai.",
+     "options": [
+      {
+       "id": "A",
+       "text": "I can"
+      },
+      {
+       "id": "B",
+       "text": "I can't"
+      },
+      {
+       "id": "C",
+       "text": "can I"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Câu khẳng định trả lời câu hỏi → I can."
+    },
+    {
+     "id": "q8",
+     "prompt": "I got a bad mark in my exams. My problem is that I ____ remember facts.",
+     "options": [
+      {
+       "id": "A",
+       "text": "can"
+      },
+      {
+       "id": "B",
+       "text": "can't"
+      },
+      {
+       "id": "C",
+       "text": "could"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Vấn đề ở hiện tại → can't."
+    },
+    {
+     "id": "q9",
+     "prompt": "I did really badly in my history exam last summer. I didn't do enough homework so I ____ understand the subject very well.",
+     "options": [
+      {
+       "id": "A",
+       "text": "can"
+      },
+      {
+       "id": "B",
+       "text": "could"
+      },
+      {
+       "id": "C",
+       "text": "couldn't"
+      }
+     ],
+     "answer": "C",
+     "explanation": "last summer → quá khứ → couldn't."
     }
    ]
   },
@@ -1413,7 +1473,7 @@
    "lessonCode": "M0-U07-L7",
    "order": 3,
    "autoGrade": true,
-   "points": 6,
+   "points": 7,
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
@@ -1539,6 +1599,22 @@
      ],
      "answer": "C",
      "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "My friend wants to be a chef ____ a top restaurant.",
+     "options": [
+      {
+       "id": "A",
+       "text": "in / at"
+      },
+      {
+       "id": "B",
+       "text": "on"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Sách chấp nhận cả in và at: a chef in/at a restaurant."
     }
    ]
   }

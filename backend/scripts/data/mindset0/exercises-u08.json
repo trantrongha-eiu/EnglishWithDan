@@ -398,7 +398,7 @@
    "lessonCode": "M0-U08-L3",
    "order": 1,
    "autoGrade": true,
-   "points": 6,
+   "points": 8,
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
@@ -500,6 +500,38 @@
      ],
      "answer": "B",
      "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "\"Children should have more lessons in their exam subjects.\" — The writer ____ children to have more lessons in their exam subjects.",
+     "options": [
+      {
+       "id": "A",
+       "text": "wants"
+      },
+      {
+       "id": "B",
+       "text": "doesn't want"
+      }
+     ],
+     "answer": "A",
+     "explanation": "should = lời khuyên nên làm → người viết muốn điều đó."
+    },
+    {
+     "id": "q8",
+     "prompt": "\"Children should not attend painting and music lessons.\" — The writer's advice for children is ____ to painting and music lessons.",
+     "options": [
+      {
+       "id": "A",
+       "text": "to go"
+      },
+      {
+       "id": "B",
+       "text": "not to go"
+      }
+     ],
+     "answer": "B",
+     "explanation": "should not = khuyên không nên."
     }
    ]
   },
@@ -508,7 +540,7 @@
    "lessonCode": "M0-U08-L3",
    "order": 2,
    "autoGrade": true,
-   "points": 9,
+   "points": 13,
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
@@ -658,6 +690,70 @@
      ],
      "answer": "A",
      "explanation": ""
+    },
+    {
+     "id": "q10",
+     "prompt": "We ____ wear sports clothes during sport lessons otherwise we can't take part.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have to"
+      },
+      {
+       "id": "B",
+       "text": "don't have to"
+      }
+     ],
+     "answer": "A",
+     "explanation": "otherwise we can't take part → bắt buộc."
+    },
+    {
+     "id": "q11",
+     "prompt": "We ____ wear special shoes when we play football. Otherwise, it is difficult to run.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have to"
+      },
+      {
+       "id": "B",
+       "text": "don't have to"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q12",
+     "prompt": "You ____ join the gym to take exercise classes, but they cost less for members.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have to"
+      },
+      {
+       "id": "B",
+       "text": "don't have to"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Không bắt buộc, chỉ rẻ hơn cho hội viên."
+    },
+    {
+     "id": "q13",
+     "prompt": "You ____ be good at sports to stay fit, but regular physical activity is good for you.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have to"
+      },
+      {
+       "id": "B",
+       "text": "don't have to"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
     }
    ]
   },
@@ -777,7 +873,7 @@
    "lessonCode": "M0-U08-L3",
    "order": 4,
    "autoGrade": true,
-   "points": 3,
+   "points": 5,
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
@@ -831,6 +927,38 @@
      ],
      "answer": "B",
      "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "Is it important to exercise? — ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "Yes, you should exercise for at least 150 minutes a week."
+      },
+      {
+       "id": "B",
+       "text": "Yes, you should to exercise for at least 150 minutes a week."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Câu trong sách đã đúng: should + động từ nguyên mẫu (không có to)."
+    },
+    {
+     "id": "q5",
+     "prompt": "Do you have any other advice about being healthy? — ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "I think you should find ways to relax."
+      },
+      {
+       "id": "B",
+       "text": "I think you should finding ways to relax."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Câu trong sách đã đúng."
     }
    ]
   },

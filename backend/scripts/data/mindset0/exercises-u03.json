@@ -139,7 +139,7 @@
    "lessonCode": "M0-U03-L1",
    "order": 3,
    "autoGrade": true,
-   "points": 15,
+   "points": 23,
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
@@ -180,72 +180,120 @@
     },
     {
      "id": "c4",
-     "text": "hockey",
+     "text": "football",
      "category": "play",
      "explanation": ""
     },
     {
      "id": "c5",
-     "text": "table tennis",
+     "text": "badminton",
      "category": "play",
      "explanation": ""
     },
     {
      "id": "c6",
+     "text": "hockey",
+     "category": "play",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "table tennis",
+     "category": "play",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "basketball",
+     "category": "play",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
      "text": "karate",
      "category": "do",
      "explanation": ""
     },
     {
-     "id": "c7",
+     "id": "c10",
      "text": "judo",
      "category": "do",
      "explanation": ""
     },
     {
-     "id": "c8",
+     "id": "c11",
+     "text": "boxing",
+     "category": "do",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
      "text": "gymnastics",
      "category": "do",
      "explanation": ""
     },
     {
-     "id": "c9",
+     "id": "c13",
      "text": "taekwondo",
      "category": "do",
      "explanation": ""
     },
     {
-     "id": "c10",
+     "id": "c14",
      "text": "athletics",
      "category": "do",
      "explanation": ""
     },
     {
-     "id": "c11",
+     "id": "c15",
      "text": "horse-riding",
      "category": "go",
      "explanation": ""
     },
     {
-     "id": "c12",
+     "id": "c16",
+     "text": "swimming",
+     "category": "go",
+     "explanation": ""
+    },
+    {
+     "id": "c17",
      "text": "skiing",
      "category": "go",
      "explanation": ""
     },
     {
-     "id": "c13",
+     "id": "c18",
+     "text": "cycling",
+     "category": "go",
+     "explanation": ""
+    },
+    {
+     "id": "c19",
      "text": "sailing",
      "category": "go",
      "explanation": ""
     },
     {
-     "id": "c14",
+     "id": "c20",
+     "text": "hiking",
+     "category": "go",
+     "explanation": ""
+    },
+    {
+     "id": "c21",
+     "text": "canoeing",
+     "category": "go",
+     "explanation": ""
+    },
+    {
+     "id": "c22",
      "text": "fishing",
      "category": "go",
      "explanation": ""
     },
     {
-     "id": "c15",
+     "id": "c23",
      "text": "bowling",
      "category": "go",
      "explanation": ""
@@ -496,6 +544,220 @@
      ],
      "answer": "B",
      "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L1-E06",
+   "lessonCode": "M0-U03-L1",
+   "order": 6,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Môn nào? (Speaking and vocabulary Ex. 15)",
+   "instruction": "Tranh trong sách: basketball, football, badminton, table tennis, chess, tai chi, kite flying. Trong môn nào bạn…?",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "…catch a ball? (bắt bóng)",
+     "options": [
+      {
+       "id": "A",
+       "text": "basketball"
+      },
+      {
+       "id": "B",
+       "text": "badminton"
+      },
+      {
+       "id": "C",
+       "text": "chess"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Bóng rổ: bắt và ném bóng bằng tay."
+    },
+    {
+     "id": "q2",
+     "prompt": "…throw a ball? (ném bóng)",
+     "options": [
+      {
+       "id": "A",
+       "text": "table tennis"
+      },
+      {
+       "id": "B",
+       "text": "basketball"
+      },
+      {
+       "id": "C",
+       "text": "tai chi"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "…kick a ball? (đá bóng)",
+     "options": [
+      {
+       "id": "A",
+       "text": "football"
+      },
+      {
+       "id": "B",
+       "text": "badminton"
+      },
+      {
+       "id": "C",
+       "text": "kite flying"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "…hit a ball? (đánh bóng)",
+     "options": [
+      {
+       "id": "A",
+       "text": "football"
+      },
+      {
+       "id": "B",
+       "text": "chess"
+      },
+      {
+       "id": "C",
+       "text": "table tennis"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Sách: badminton, table tennis — đánh bằng vợt."
+    },
+    {
+     "id": "q5",
+     "prompt": "…score a goal? (ghi bàn)",
+     "options": [
+      {
+       "id": "A",
+       "text": "football"
+      },
+      {
+       "id": "B",
+       "text": "tai chi"
+      },
+      {
+       "id": "C",
+       "text": "table tennis"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "…use a racket? (dùng vợt)",
+     "options": [
+      {
+       "id": "A",
+       "text": "basketball"
+      },
+      {
+       "id": "B",
+       "text": "badminton"
+      },
+      {
+       "id": "C",
+       "text": "chess"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Sách: badminton, table tennis."
+    },
+    {
+     "id": "q7",
+     "prompt": "…move a piece? (di chuyển quân cờ)",
+     "options": [
+      {
+       "id": "A",
+       "text": "chess"
+      },
+      {
+       "id": "B",
+       "text": "football"
+      },
+      {
+       "id": "C",
+       "text": "kite flying"
+      }
+     ],
+     "answer": "A",
+     "explanation": "piece = quân cờ."
+    },
+    {
+     "id": "q8",
+     "prompt": "…relax your mind? (thư giãn đầu óc)",
+     "options": [
+      {
+       "id": "A",
+       "text": "football"
+      },
+      {
+       "id": "B",
+       "text": "tai chi"
+      },
+      {
+       "id": "C",
+       "text": "basketball"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Sách: kite flying, tai chi."
+    },
+    {
+     "id": "q9",
+     "prompt": "…play in a team? (chơi theo đội)",
+     "options": [
+      {
+       "id": "A",
+       "text": "chess"
+      },
+      {
+       "id": "B",
+       "text": "basketball"
+      },
+      {
+       "id": "C",
+       "text": "kite flying"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Sách: basketball, football."
+    },
+    {
+     "id": "q10",
+     "prompt": "…play alone? (chơi một mình)",
+     "options": [
+      {
+       "id": "A",
+       "text": "football"
+      },
+      {
+       "id": "B",
+       "text": "basketball"
+      },
+      {
+       "id": "C",
+       "text": "kite flying"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Sách: badminton, table tennis, kite flying, tai chi, chess."
     }
    ]
   },
@@ -2172,6 +2434,293 @@
      "left": "Do any of your school friends do taekwondo?",
      "right": "No, they don't.",
      "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U03-L7-E06",
+   "lessonCode": "M0-U03-L7",
+   "order": 6,
+   "autoGrade": true,
+   "points": 16,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Ngôi thứ ba & dạng -ing (G&V Ex. 6)",
+   "instruction": "Viết dạng ngôi thứ ba số ít (hiện tại đơn) và dạng -ing của mỗi động từ.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "snow → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "snows"
+       ]
+      },
+      {
+       "accept": [
+        "snowing"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "fix → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "fixes"
+       ]
+      },
+      {
+       "accept": [
+        "fixing"
+       ]
+      }
+     ],
+     "explanation": "-x → thêm -es."
+    },
+    {
+     "id": "g3",
+     "prompt": "get → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "gets"
+       ]
+      },
+      {
+       "accept": [
+        "getting"
+       ]
+      }
+     ],
+     "explanation": "Phụ âm–nguyên âm–phụ âm → gấp đôi t: getting."
+    },
+    {
+     "id": "g4",
+     "prompt": "stop → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "stops"
+       ]
+      },
+      {
+       "accept": [
+        "stopping"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "invite → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "invites"
+       ]
+      },
+      {
+       "accept": [
+        "inviting"
+       ]
+      }
+     ],
+     "explanation": "Tận cùng -e → bỏ e rồi thêm -ing."
+    },
+    {
+     "id": "g6",
+     "prompt": "marry → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "marries"
+       ]
+      },
+      {
+       "accept": [
+        "marrying"
+       ]
+      }
+     ],
+     "explanation": "Phụ âm + y → -ies; nhưng -ing giữ nguyên y."
+    },
+    {
+     "id": "g7",
+     "prompt": "wash → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "washes"
+       ]
+      },
+      {
+       "accept": [
+        "washing"
+       ]
+      }
+     ],
+     "explanation": "-sh → -es."
+    },
+    {
+     "id": "g8",
+     "prompt": "make → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "makes"
+       ]
+      },
+      {
+       "accept": [
+        "making"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g9",
+     "prompt": "offer → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "offers"
+       ]
+      },
+      {
+       "accept": [
+        "offering"
+       ]
+      }
+     ],
+     "explanation": "Trọng âm ở âm đầu (OF-fer) → không gấp đôi r."
+    },
+    {
+     "id": "g10",
+     "prompt": "buy → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "buys"
+       ]
+      },
+      {
+       "accept": [
+        "buying"
+       ]
+      }
+     ],
+     "explanation": "Nguyên âm + y → chỉ thêm -s."
+    },
+    {
+     "id": "g11",
+     "prompt": "cross → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "crosses"
+       ]
+      },
+      {
+       "accept": [
+        "crossing"
+       ]
+      }
+     ],
+     "explanation": "-ss → -es."
+    },
+    {
+     "id": "g12",
+     "prompt": "copy → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "copies"
+       ]
+      },
+      {
+       "accept": [
+        "copying"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g13",
+     "prompt": "dance → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "dances"
+       ]
+      },
+      {
+       "accept": [
+        "dancing"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g14",
+     "prompt": "swim → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "swims"
+       ]
+      },
+      {
+       "accept": [
+        "swimming"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g15",
+     "prompt": "happen → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "happens"
+       ]
+      },
+      {
+       "accept": [
+        "happening"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g16",
+     "prompt": "travel → ____ / ____",
+     "blanks": [
+      {
+       "accept": [
+        "travels"
+       ]
+      },
+      {
+       "accept": [
+        "travelling",
+        "traveling"
+       ]
+      }
+     ],
+     "explanation": "Anh-Anh gấp đôi l: travelling (Anh-Mỹ: traveling)."
     }
    ]
   }

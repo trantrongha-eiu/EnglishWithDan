@@ -73,8 +73,8 @@
     "minWritingSubmissions": 0
    },
    "published": true,
-   "exerciseCount": 5,
-   "totalPoints": 45,
+   "exerciseCount": 6,
+   "totalPoints": 63,
    "images": [
     {
      "url": "media:m0u03-leadin.jpg",
@@ -83,7 +83,7 @@
    ],
    "vocabSave": {
     "slot": 1,
-    "title": "Unit 3 · Từ vựng: hoạt động giải trí & thể thao — 16 từ/cụm từ",
+    "title": "Unit 3 · Từ vựng: hoạt động giải trí & thể thao — 27 từ/cụm từ",
     "words": [
      {
       "word": "hiking",
@@ -164,6 +164,61 @@
       "word": "play in a team",
       "meaning": "chơi theo đội",
       "example": "In basketball, you play in a team."
+     },
+     {
+      "word": "table tennis",
+      "meaning": "bóng bàn",
+      "example": "You use a small racket in table tennis."
+     },
+     {
+      "word": "tai chi",
+      "meaning": "thái cực quyền",
+      "example": "Tai chi helps you relax your mind."
+     },
+     {
+      "word": "kite flying",
+      "meaning": "thả diều",
+      "example": "Kite flying is popular on windy days."
+     },
+     {
+      "word": "move a piece",
+      "meaning": "đi một quân cờ",
+      "example": "In chess, you move a piece on the board."
+     },
+     {
+      "word": "equipment",
+      "meaning": "dụng cụ, thiết bị",
+      "example": "A bat and a racket are sports equipment."
+     },
+     {
+      "word": "tournament",
+      "meaning": "giải đấu",
+      "example": "I'm playing in a tennis tournament tomorrow."
+     },
+     {
+      "word": "boxing",
+      "meaning": "quyền anh",
+      "example": "He does boxing at the sports centre."
+     },
+     {
+      "word": "badminton",
+      "meaning": "cầu lông",
+      "example": "We play badminton after school."
+     },
+     {
+      "word": "hockey",
+      "meaning": "khúc côn cầu",
+      "example": "You use a stick in hockey."
+     },
+     {
+      "word": "bowling",
+      "meaning": "bowling",
+      "example": "We go bowling on Saturday evenings."
+     },
+     {
+      "word": "horse-riding",
+      "meaning": "cưỡi ngựa",
+      "example": "I go horse-riding in the countryside."
      }
     ]
    }
@@ -696,8 +751,8 @@
     "minWritingSubmissions": 0
    },
    "published": true,
-   "exerciseCount": 5,
-   "totalPoints": 34
+   "exerciseCount": 6,
+   "totalPoints": 50
   }
  ]
 }

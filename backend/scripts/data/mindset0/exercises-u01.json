@@ -592,7 +592,7 @@
    "lessonCode": "M0-U01-L3",
    "order": 2,
    "autoGrade": true,
-   "points": 15,
+   "points": 23,
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
@@ -706,6 +706,54 @@
      "text": "do",
      "category": "g4",
      "explanation": "does"
+    },
+    {
+     "id": "c16",
+     "text": "live",
+     "category": "g1",
+     "explanation": "lives"
+    },
+    {
+     "id": "c17",
+     "text": "come",
+     "category": "g1",
+     "explanation": "comes"
+    },
+    {
+     "id": "c18",
+     "text": "get up",
+     "category": "g1",
+     "explanation": "gets up"
+    },
+    {
+     "id": "c19",
+     "text": "help",
+     "category": "g1",
+     "explanation": "helps"
+    },
+    {
+     "id": "c20",
+     "text": "swim",
+     "category": "g1",
+     "explanation": "swims"
+    },
+    {
+     "id": "c21",
+     "text": "stay",
+     "category": "g1",
+     "explanation": "stays — nguyên âm + y chỉ thêm -s"
+    },
+    {
+     "id": "c22",
+     "text": "practise",
+     "category": "g1",
+     "explanation": "practises"
+    },
+    {
+     "id": "c23",
+     "text": "watch",
+     "category": "g2",
+     "explanation": "watches"
     }
    ]
   },

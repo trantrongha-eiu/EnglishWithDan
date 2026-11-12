@@ -131,6 +131,12 @@ module.exports = {
         ['have fun', 'vui vẻ', 'The most important thing is to have fun.'],
         ['take your time', 'cứ từ từ', 'Take your time.'],
         ['at a speed that works for you', 'theo tốc độ phù hợp với bạn', 'Learn at a speed that works for you.'],
+        ["make a mistake","mắc lỗi","Don't worry about making mistakes."],
+        ["take a test","làm bài kiểm tra","I'm going to take a test on Friday."],
+        ["make a difference","tạo ra sự khác biệt","Practising every day makes a difference."],
+        ["make a guess","đoán","If you don't know the word, make a guess."],
+        ["take a picture","chụp ảnh","I always take lots of pictures on holiday."],
+        ["make somebody laugh","làm ai đó cười","Robert really makes me laugh."],
       ],
       ex: [
         mcq('Collocation (Ex. 15)', 'Chọn động từ đúng.', [
@@ -149,6 +155,20 @@ module.exports = {
           ['He should also practise his speaking ____ as well as listening. It\'s more difficult to make any ____ if you don\'t speak.', ['skills', 'progress']],
           ['He also has a big ____ because your dad is an English teacher!', 'advantage'],
         ], { wordBank: ['time', 'advantage', 'skills', 'advice', 'effort', 'progress', 'fun', 'work'] }),
+        gap('Viết lại ý của hội thoại (G&V Ex. 6)', 'Hoàn thành các câu paraphrase của hội thoại ở bài trước. Viết MỘT đến BA từ.', [
+          ['Susan\'s brother isn\'t going to study because he believes he is going to fail ____.', 'his English exam|his exam'],
+          ['He didn\'t want to take Susan\'s ____.', 'advice'],
+          ['Susan\'s brother isn\'t interested in his studies and he would much rather ____.', 'have fun'],
+          ['George told Susan\'s brother that it takes a lot of effort to learn a language, and it happens over a ____.', 'long time'],
+          ['George thinks that without practising your speaking skills, it is more difficult to ____.', 'make any progress|make progress'],
+          ['The biggest advantage that Susan\'s brother has is that their father teaches ____.', 'English'],
+        ]),
+        mcq('Tóm ý chính đoạn văn (Ex. 17)', 'Đọc lại bài về Richard Doner và chọn từ đúng để tóm tắt ý chính.', [
+          ['Richard Doner is very special because he can speak ____ languages…', ['more', 'less', 'most'], 'A'],
+          ['…than ____ people.', ['more', 'most of', 'most'], 'C', 'most people = hầu hết mọi người (không có "of" khi không có the/my…).'],
+          ['Richard is very lucky as he has ____ opportunities to practise his language skills.', ['many', 'any', 'lots of'], 'C', 'Đáp án sách: lots of.'],
+          ['Richard practises speaking each language ____ to improve.', ['all the time', 'regularly', 'every day'], 'B', 'Đáp án sách: regularly (đều đặn).'],
+        ]),
       ],
     },
 
@@ -178,6 +198,7 @@ module.exports = {
           ['Cô ấy sẽ mua điện thoại mới:', ['She is going buy a new smartphone at the weekend.', 'She is going to buy a new smartphone at the weekend.'], 'B', 'Thiếu "to".'],
           ['Hỏi: Bạn có định nói với bố mẹ không?', ['You are going to tell your parents that you got bad results?', 'Are you going to tell your parents that you got bad results?'], 'B', 'Câu hỏi phải đảo are lên trước.'],
           ['Hỏi nơi xem trận bóng:', ['Where are you going to watch the football match?', 'Where you are going to watch the football match?'], 'A'],
+          ['Tôi sẽ không gọi món ăn:', ['I\'m not going to order any food at the restaurant – I\'m not hungry.', 'I\'m going not to order any food at the restaurant – I\'m not hungry.'], 'A', 'Câu trong sách đã đúng: not đứng ngay sau am.'],
         ]),
         gap('Khẳng định, phủ định, câu hỏi (G&V Ex. 3)', 'Viết dạng going to đúng theo ký hiệu (+ / − / ?).', [
           ['(−/I/worry) ____ about my English test tomorrow. It is only a practice test.', 'I\'m not going to worry|I am not going to worry'],
@@ -188,6 +209,12 @@ module.exports = {
         ]),
         order('Đặt câu hỏi với going to (G&V Ex. 4)', 'Sắp xếp thành câu hỏi đúng.', [
           ['Who are you going to do the language project with?'], ['Where are you going to buy a dictionary from?'], ['How are you going to improve your language skills?'], ['Why are you not going to go to university next year?'],
+          ['When are you going to tell the teacher you want to move up to a higher level class?'],
+        ]),
+        mcq('Phân tích các câu kế hoạch (Ex. 6)', 'Xem lại 5 câu ở bài "Kế hoạch (Ex. 5)" và trả lời.', [
+          ['How do we know the writer is talking about future plans?', ['The writer uses going to.', 'The writer uses the past simple.', 'The writer uses can.'], 'A', 'be going to + V = kế hoạch đã định.'],
+          ['Which of these is NOT an adverb of time used in the sentences?', ['tonight', 'this afternoon', 'yesterday'], 'C', 'Các trạng từ trong bài: tonight, this afternoon, next week, today, this morning, at the weekend.'],
+          ['Adverbs of time (next week, tomorrow, later…) usually go ____.', ['at the start of the sentence', 'at the end of the sentence', 'before going to'], 'B', 'Theo hộp gợi ý của sách: thường đứng cuối câu.'],
         ]),
       ],
     },
@@ -339,6 +366,14 @@ module.exports = {
           ['Look, we ____ this last week – I don\'t want to have a party for my birthday.', 'discussed'],
           ['I don\'t know anyone who ____ by letter anymore.', 'communicates'],
           ['Our English teacher always tells us ____ more conversations with each other after class.', 'to hold'],
+          ['I ____ a chat with my mum about what language course to take.', 'had|am having|\'m having|will have|am going to have|\'m going to have', 'Sách chấp nhận nhiều thì: had / am having / will have / am going to have.'],
+        ]),
+        gap('Sắp xếp lại từ nối (G&V Ex. 9)', 'Năm từ nối in đậm trong đoạn văn đang bị đặt sai chỗ. Viết từ nối đúng cho mỗi vị trí 1–5 (dùng: To sum up, firstly, However, Furthermore, Additionally).', [
+          ['I\'m going to talk about a project I did at college. (1) ____, it was a language project, and I worked with my friend, Peter.', 'Firstly', 'Ý đầu tiên → Firstly.'],
+          ['We had to find out how many people in college speak more than one language and, (2) ____, what their level of English is.', 'additionally|furthermore', 'Thêm một việc nữa phải tìm hiểu → additionally / furthermore.'],
+          ['I like doing this sort of project, so was happy to work hard. (3) ____, Peter is also a very good student, so we helped each other a lot.', 'Furthermore|Additionally', 'Bổ sung thêm ý tích cực → Furthermore / Additionally.'],
+          ['…and it was quite easy in the end. (4) ____, we didn\'t get any good advice from Miss Smith in the college office.', 'However', 'Chuyển sang ý trái ngược (khó khăn) → However.'],
+          ['…and then she couldn\'t find the correct information herself! (5) ____, she didn\'t help us at all.', 'To sum up', 'Câu kết luận → To sum up.'],
         ]),
       ],
     },

@@ -89,7 +89,7 @@
    ],
    "vocabSave": {
     "slot": 1,
-    "title": "Unit 5 · Từ vựng: món ăn, nguyên liệu & cách chế biến — 17 từ/cụm từ",
+    "title": "Unit 5 · Từ vựng: món ăn, nguyên liệu & cách chế biến — 25 từ/cụm từ",
     "words": [
      {
       "word": "ingredient",
@@ -175,6 +175,46 @@
       "word": "bake",
       "meaning": "nướng (bằng lò)",
       "example": "Bake the cake in the oven."
+     },
+     {
+      "word": "beef",
+      "meaning": "thịt bò",
+      "example": "Beef is popular in many countries."
+     },
+     {
+      "word": "duck",
+      "meaning": "con vịt, thịt vịt",
+      "example": "Roast duck is a famous Chinese dish."
+     },
+     {
+      "word": "lettuce",
+      "meaning": "rau xà lách",
+      "example": "I put some lettuce in my sandwich."
+     },
+     {
+      "word": "lobster",
+      "meaning": "tôm hùm",
+      "example": "Lobster is expensive seafood."
+     },
+     {
+      "word": "spaghetti",
+      "meaning": "mì Ý sợi dài",
+      "example": "Spaghetti is a kind of pasta."
+     },
+     {
+      "word": "cauliflower",
+      "meaning": "súp lơ trắng",
+      "example": "Boil the cauliflower for ten minutes."
+     },
+     {
+      "word": "countable noun",
+      "meaning": "danh từ đếm được",
+      "example": "Apple is a countable noun: an apple, two apples."
+     },
+     {
+      "word": "uncountable noun",
+      "meaning": "danh từ không đếm được",
+      "example": "Rice is an uncountable noun: some rice."
      }
     ]
    }
@@ -347,8 +387,8 @@
     "minWritingSubmissions": 0
    },
    "published": true,
-   "exerciseCount": 4,
-   "totalPoints": 37,
+   "exerciseCount": 6,
+   "totalPoints": 48,
    "practiceLinks": [
     {
      "kind": "grammar",
@@ -684,6 +724,29 @@
      }
     ]
    }
+  },
+  {
+   "code": "M0-U05-L7",
+   "moduleCode": "M0-U05",
+   "order": 7,
+   "title": "📝 Ôn tập Unit 5: Grammar & Vocabulary",
+   "titleEn": "Grammar and vocabulary — Unit 5",
+   "durationMinutes": 25,
+   "objectives": [
+    "Ôn tên thực phẩm và much / many / a lot of của Unit 5"
+   ],
+   "keyLanguage": [
+    "a lot of: khẳng định (và phủ định) với cả danh từ đếm được và không đếm được · many: hỏi/phủ định với danh từ đếm được · much: hỏi/phủ định với danh từ không đếm được."
+   ],
+   "theory": [],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 17
   }
  ]
 }

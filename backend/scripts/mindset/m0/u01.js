@@ -100,6 +100,9 @@ module.exports = {
         ['language course', 'khoá học ngôn ngữ', 'He is doing a language course in the UK.'],
         ['classmate', 'bạn cùng lớp', 'My classmates are very friendly.'],
         ['daily routine', 'thói quen hằng ngày', 'My daily routine is quite busy.'],
+        ["make a mess","bày bừa, làm bừa bộn","My little brother always makes a mess in the kitchen."],
+        ["brush my teeth","đánh răng","After breakfast, I brush my teeth."],
+        ["make a noise","gây ồn","Please don't make a noise – the baby is asleep."],
       ],
       ex: [
         mcq('Ping ở Anh — chọn từ đúng (Ex. 3)', 'Đọc các câu về Ping, một chàng trai đang học khoá ngôn ngữ ở Anh. Chọn đáp án đúng nhất A, B hoặc C.', [
@@ -252,6 +255,8 @@ module.exports = {
           ['catch', 'g2', 'catches'], ['relax', 'g2', 'relaxes'], ['finish', 'g2', 'finishes'], ['switch', 'g2', 'switches'], ['teach', 'g2', 'teaches'],
           ['study', 'g3', 'studies'], ['try', 'g3', 'tries'], ['cry', 'g3', 'cries'],
           ['go', 'g4', 'goes'], ['do', 'g4', 'does'],
+          ['live', 'g1', 'lives'], ['come', 'g1', 'comes'], ['get up', 'g1', 'gets up'], ['help', 'g1', 'helps'], ['swim', 'g1', 'swims'], ['stay', 'g1', 'stays — nguyên âm + y chỉ thêm -s'], ['practise', 'g1', 'practises'],
+          ['watch', 'g2', 'watches'],
         ]),
         gap('Chia ngôi thứ ba số ít (G&V Ex. 5)', 'Hoàn thành câu bằng dạng ngôi thứ ba (he/she/it) của động từ trong ngoặc.', [
           ['My dad ____ (wash) his car every weekend.', 'washes', 'wash → washes (-sh + es).'],

@@ -88,7 +88,7 @@
    ],
    "vocabSave": {
     "slot": 1,
-    "title": "Unit 2 · Từ vựng: phòng & đồ vật trong nhà — 22 từ/cụm từ",
+    "title": "Unit 2 · Từ vựng: phòng & đồ vật trong nhà — 23 từ/cụm từ",
     "words": [
      {
       "word": "bedroom",
@@ -199,6 +199,11 @@
       "word": "freezer",
       "meaning": "tủ đông",
       "example": "The ice cream is in the freezer."
+     },
+     {
+      "word": "wardrobe",
+      "meaning": "tủ quần áo",
+      "example": "Most of my clothes are in my wardrobe."
      }
     ]
    }
@@ -382,7 +387,7 @@
    },
    "published": true,
    "exerciseCount": 6,
-   "totalPoints": 39,
+   "totalPoints": 41,
    "practiceLinks": [
     {
      "kind": "grammar",
@@ -782,8 +787,8 @@
     "minWritingSubmissions": 0
    },
    "published": true,
-   "exerciseCount": 5,
-   "totalPoints": 35
+   "exerciseCount": 6,
+   "totalPoints": 46
   }
  ]
 }

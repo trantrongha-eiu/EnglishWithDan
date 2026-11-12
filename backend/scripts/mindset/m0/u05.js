@@ -93,6 +93,14 @@ module.exports = {
         ['boil', 'luộc, đun sôi', 'Boil the dumplings three times.'],
         ['fry', 'chiên, rán', 'Fry the meat for five minutes.'],
         ['bake', 'nướng (bằng lò)', 'Bake the cake in the oven.'],
+        ["beef","thịt bò","Beef is popular in many countries."],
+        ["duck","con vịt, thịt vịt","Roast duck is a famous Chinese dish."],
+        ["lettuce","rau xà lách","I put some lettuce in my sandwich."],
+        ["lobster","tôm hùm","Lobster is expensive seafood."],
+        ["spaghetti","mì Ý sợi dài","Spaghetti is a kind of pasta."],
+        ["cauliflower","súp lơ trắng","Boil the cauliflower for ten minutes."],
+        ["countable noun","danh từ đếm được","Apple is a countable noun: an apple, two apples."],
+        ["uncountable noun","danh từ không đếm được","Rice is an uncountable noun: some rice."],
       ],
       ex: [
         match('Món ăn của nước nào? (Lead-in)', 'Nối tranh 1–5 với quốc gia.', [
@@ -201,6 +209,10 @@ module.exports = {
           ['I have got ____ juice in the fridge. There are ____ oranges in the cupboard.', ['some', 'some']],
           ['Are there ____ tomatoes? Is there ____ fish on the menu?', ['any', 'any']],
           ['Can I have ____ water, please? Would you like ____ tea?', ['some', 'some'], 'Lời đề nghị/yêu cầu → some.'],
+          ['Quy tắc: Before singular countable nouns we use ____ before a consonant and ____ before a vowel.', ['a', 'an'], 'a + phụ âm (a sandwich), an + nguyên âm (an apple).'],
+          ['Quy tắc: In positive sentences, with plural and uncountable nouns we use ____.', ['some']],
+          ['Quy tắc: In questions and negative sentences with countable and uncountable nouns, we use ____.', ['any']],
+          ['Quy tắc: In offers and requests, we use ____.', ['some'], 'Would you like some…? / Can I have some…?'],
         ]),
         mcq('much, many hay a lot of? (G&V Ex. 5–6)', 'Chọn đáp án đúng.', [
           ['We have ____ oranges to eat because we have an orange tree in our garden.', ['much', 'a lot of'], 'B', 'Khẳng định → a lot of.'],
@@ -214,6 +226,8 @@ module.exports = {
           ['How ____ sugar would you like in your coffee?', ['many', 'much', 'any'], 'B'],
           ['There aren\'t ____ vegetables in the shop, just cauliflower and lettuce.', ['any', 'many', 'much'], 'B'],
           ['We don\'t have ____ beef left. Everyone ate it.', ['any', 'many', 'much'], 'A'],
+          ['I would like ____ fish, please.', ['some', 'much', 'many'], 'A', 'Lời yêu cầu → some.'],
+          ['There are ____ different salads on the menu. I don\'t know which one to choose.', ['any', 'much', 'a lot of'], 'C', 'Câu khẳng định, danh từ số nhiều → a lot of.'],
         ]),
         mcq('Đoạn văn về pizza (G&V Ex. 7)', 'Chọn đáp án đúng nhất.', [
           ['My ____ food is pizza.', ['best', 'lovely', 'favourite'], 'C'],
@@ -226,6 +240,15 @@ module.exports = {
           ['Nowadays, ____ of people are so busy that they don\'t have time to cook.', ['much', 'a lot', 'many'], 'B'],
           ['…or they like to have a rest ____ the weekend.', ['at', 'in', 'for'], 'A'],
           ['…they go ____ a take-away restaurant and buy a pizza.', ['in', 'for', 'to'], 'C'],
+        ]),
+        gap('a / an hay some? (Ex. 17)', 'Hoàn thành quy tắc bằng a / an hoặc some.', [
+          ['For singular countable nouns, we put ____ before the word, e.g. ____ cabbage.', ['a|an|a/an', 'a'], 'Danh từ đếm được số ít → a/an.'],
+          ['For plural countable nouns, we can put ____ before the word and we usually add an \'s\', e.g. ____ dumplings.', ['some', 'some']],
+          ['For uncountable nouns, we put ____ before the word, e.g. ____ milk.', ['some', 'some'], 'Không đếm được → không dùng a/an, không thêm -s.'],
+        ]),
+        mcq('Hoàn thành tiêu đề bảng (Ex. 18)', 'Đọc các câu ví dụ trong bảng của sách và chọn tiêu đề đúng cho mỗi cột.', [
+          ['Cột 1: I have some apples. · I don\'t have any cabbages. · Do you have any onions? · How many carrots do we need? → ____ nouns', ['Countable', 'Uncountable'], 'A', 'apples, cabbages, onions, carrots đều đếm được (có số nhiều).'],
+          ['Cột 2: I have some rice. · I don\'t have any milk. · Do you have any meat? · How much water do I put in? → ____ nouns', ['Countable', 'Uncountable'], 'B', 'rice, milk, meat, water không đếm được → dùng much.'],
         ]),
       ],
     },
@@ -352,6 +375,31 @@ module.exports = {
           ['What is your favourite food from your country?', 'My favourite Vietnamese food is bún chả. It\'s grilled pork with rice noodles and fresh herbs. I love it because the meat is sweet and smoky, and it\'s perfect for lunch on a hot day.', 'Món + mô tả nguyên liệu + lý do.'],
           ['What food is popular in your country?', 'Rice is the most popular food in Vietnam – we eat it almost every day. Noodle soups like phở are also very popular, especially for breakfast.', 'Nêu 2 ví dụ.'],
           ['How much water do you drink every day?', 'Not as much as I should! I probably drink about four glasses a day, but I know I need to drink more, especially when I play sport.', 'Câu trả lời trung thực + chi tiết.'],
+        ]),
+      ],
+    },
+
+    review: {
+      title: 'Ôn tập Unit 5: Grammar & Vocabulary',
+      titleEn: 'Grammar and vocabulary — Unit 5',
+      minutes: 25,
+      objectives: ['Ôn tên thực phẩm và much / many / a lot of của Unit 5'],
+      keyLanguage: ['a lot of: khẳng định (và phủ định) với cả danh từ đếm được và không đếm được · many: hỏi/phủ định với danh từ đếm được · much: hỏi/phủ định với danh từ không đếm được.'],
+      ex: [
+        match('Thực phẩm trong ảnh (G&V Ex. 1)', 'Nối ảnh 1–8 với từ trong khung: beef, lettuce, duck, lobster, spaghetti, salmon, garlic, cauliflower.', [
+          ['Photo 1', 'duck'], ['Photo 2', 'lettuce'], ['Photo 3', 'lobster'], ['Photo 4', 'garlic'],
+          ['Photo 5', 'salmon'], ['Photo 6', 'spaghetti'], ['Photo 7', 'beef'], ['Photo 8', 'cauliflower'],
+        ], { stimulus: picture('media:m0u05-gv-foods.jpg', 'G&V Ex. 1') }),
+        mcq('Bảng quy tắc a lot of / much / many (G&V Ex. 5)', 'Đọc các câu trong bảng và chọn đáp án đúng.', [
+          ['We use ____ with positive and negative sentences with countable and uncountable nouns.', ['a lot of', 'many'], 'A'],
+          ['We have ____ oranges to eat because we have an orange tree in our garden.', ['much', 'a lot of'], 'B', 'Câu khẳng định → a lot of.'],
+          ['We don\'t have ____ fruit to eat in winter.', ['a lot of', 'many'], 'A', 'fruit không đếm được → không dùng many.'],
+          ['We use ____ with questions and negatives with countable nouns.', ['much', 'many'], 'B'],
+          ['How ____ lemons do you need for the recipe?', ['much', 'many'], 'B'],
+          ['There aren\'t ____ cauliflowers in the shop.', ['much', 'many'], 'B'],
+          ['We use ____ with questions and negatives with uncountable nouns.', ['many', 'much'], 'B'],
+          ['How ____ coffee is there in the cupboard?', ['many', 'much'], 'B'],
+          ['There isn\'t ____ sugar in the dish.', ['many', 'much'], 'B'],
         ]),
       ],
     },

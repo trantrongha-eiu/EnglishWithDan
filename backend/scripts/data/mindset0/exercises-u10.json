@@ -1704,6 +1704,265 @@
      "explanation": ""
     }
    ]
+  },
+  {
+   "code": "M0-U10-L7-E03",
+   "lessonCode": "M0-U10-L7",
+   "order": 3,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Câu nào mô tả đoạn nào của Line A? (G&V Ex. 4)",
+   "instruction": "Nhìn Line A (đường màu xanh) trên biểu đồ. Mỗi câu mô tả đoạn nào? Có những câu thừa (không đúng với Line A).",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m0u10-lineab.jpg",
+    "caption": "G&V Ex. 4 — Line A"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "It increased from 10% to 40%.",
+     "options": [
+      {
+       "id": "A",
+       "text": "2005–2010"
+      },
+      {
+       "id": "B",
+       "text": "2010–2015"
+      },
+      {
+       "id": "C",
+       "text": "2020–2025"
+      },
+      {
+       "id": "D",
+       "text": "Câu thừa"
+      }
+     ],
+     "answer": "A",
+     "explanation": "2005: 10% → 2010: 40%."
+    },
+    {
+     "id": "q2",
+     "prompt": "This rise will continue after 2025.",
+     "options": [
+      {
+       "id": "A",
+       "text": "2015–2020"
+      },
+      {
+       "id": "B",
+       "text": "2020–2025"
+      },
+      {
+       "id": "C",
+       "text": "2025–2030"
+      },
+      {
+       "id": "D",
+       "text": "Câu thừa"
+      }
+     ],
+     "answer": "D",
+     "explanation": "Sau 2025 Line A giảm (75% → 65%), không tăng tiếp."
+    },
+    {
+     "id": "q3",
+     "prompt": "It decreased by 15%.",
+     "options": [
+      {
+       "id": "A",
+       "text": "2010–2015"
+      },
+      {
+       "id": "B",
+       "text": "2015–2020"
+      },
+      {
+       "id": "C",
+       "text": "2025–2030"
+      },
+      {
+       "id": "D",
+       "text": "Câu thừa"
+      }
+     ],
+     "answer": "A",
+     "explanation": "40% → 25% = giảm 15%."
+    },
+    {
+     "id": "q4",
+     "prompt": "It fell by 30%.",
+     "options": [
+      {
+       "id": "A",
+       "text": "2010–2015"
+      },
+      {
+       "id": "B",
+       "text": "2015–2020"
+      },
+      {
+       "id": "C",
+       "text": "2025–2030"
+      },
+      {
+       "id": "D",
+       "text": "Câu thừa"
+      }
+     ],
+     "answer": "D",
+     "explanation": "Line A không có đoạn nào giảm 30%."
+    },
+    {
+     "id": "q5",
+     "prompt": "It will finish on 65%.",
+     "options": [
+      {
+       "id": "A",
+       "text": "in 2025"
+      },
+      {
+       "id": "B",
+       "text": "in 2030"
+      },
+      {
+       "id": "C",
+       "text": "in 2020"
+      },
+      {
+       "id": "D",
+       "text": "Câu thừa"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Điểm cuối 2030: 65%."
+    },
+    {
+     "id": "q6",
+     "prompt": "It went up from 40% to 50%.",
+     "options": [
+      {
+       "id": "A",
+       "text": "2005–2010"
+      },
+      {
+       "id": "B",
+       "text": "2020–2025"
+      },
+      {
+       "id": "C",
+       "text": "2025–2030"
+      },
+      {
+       "id": "D",
+       "text": "Câu thừa"
+      }
+     ],
+     "answer": "D",
+     "explanation": "Câu này đúng với Line B (2020–2025), không phải Line A."
+    },
+    {
+     "id": "q7",
+     "prompt": "It will fall again after 2020.",
+     "options": [
+      {
+       "id": "A",
+       "text": "2015–2020"
+      },
+      {
+       "id": "B",
+       "text": "2020–2025"
+      },
+      {
+       "id": "C",
+       "text": "2025–2030"
+      },
+      {
+       "id": "D",
+       "text": "Câu thừa"
+      }
+     ],
+     "answer": "D",
+     "explanation": "Sau 2020 Line A tăng mạnh (20% → 75%)."
+    },
+    {
+     "id": "q8",
+     "prompt": "There will be a rise of 55%.",
+     "options": [
+      {
+       "id": "A",
+       "text": "2010–2015"
+      },
+      {
+       "id": "B",
+       "text": "2020–2025"
+      },
+      {
+       "id": "C",
+       "text": "2025–2030"
+      },
+      {
+       "id": "D",
+       "text": "Câu thừa"
+      }
+     ],
+     "answer": "B",
+     "explanation": "20% → 75% = tăng 55%."
+    },
+    {
+     "id": "q9",
+     "prompt": "It went down by 5%.",
+     "options": [
+      {
+       "id": "A",
+       "text": "2010–2015"
+      },
+      {
+       "id": "B",
+       "text": "2015–2020"
+      },
+      {
+       "id": "C",
+       "text": "2025–2030"
+      },
+      {
+       "id": "D",
+       "text": "Câu thừa"
+      }
+     ],
+     "answer": "B",
+     "explanation": "25% → 20%."
+    },
+    {
+     "id": "q10",
+     "prompt": "There was an increase of 35%.",
+     "options": [
+      {
+       "id": "A",
+       "text": "2005–2010"
+      },
+      {
+       "id": "B",
+       "text": "2020–2025"
+      },
+      {
+       "id": "C",
+       "text": "2010–2015"
+      },
+      {
+       "id": "D",
+       "text": "Câu thừa"
+      }
+     ],
+     "answer": "D",
+     "explanation": "Không đoạn nào của Line A tăng đúng 35% (2005–2010 tăng 30%)."
+    }
+   ]
   }
  ]
 }

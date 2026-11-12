@@ -70,7 +70,7 @@
    ],
    "vocabSave": {
     "slot": 1,
-    "title": "Unit 7 · Từ vựng: kỹ năng & công việc — 16 từ/cụm từ",
+    "title": "Unit 7 · Từ vựng: kỹ năng & công việc — 21 từ/cụm từ",
     "words": [
      {
       "word": "skill",
@@ -151,6 +151,31 @@
       "word": "work experience",
       "meaning": "kinh nghiệm làm việc",
       "example": "A summer job gives you work experience."
+     },
+     {
+      "word": "cleaner",
+      "meaning": "nhân viên dọn dẹp",
+      "example": "The cleaner cleans the hotel rooms every morning."
+     },
+     {
+      "word": "guest",
+      "meaning": "khách (khách sạn)",
+      "example": "The hotel has 200 guests this week."
+     },
+     {
+      "word": "cash desk",
+      "meaning": "quầy thu ngân",
+      "example": "Please pay at the cash desk."
+     },
+     {
+      "word": "changing room",
+      "meaning": "phòng thử đồ",
+      "example": "You can try on the clothes in the changing room."
+     },
+     {
+      "word": "lift",
+      "meaning": "thang máy",
+      "example": "Take the lift to the fifth floor."
      }
     ]
    }
@@ -311,7 +336,7 @@
    },
    "published": true,
    "exerciseCount": 4,
-   "totalPoints": 29,
+   "totalPoints": 32,
    "practiceLinks": [
     {
      "kind": "grammar",
@@ -635,7 +660,7 @@
    },
    "published": true,
    "exerciseCount": 3,
-   "totalPoints": 19
+   "totalPoints": 20
   }
  ]
 }

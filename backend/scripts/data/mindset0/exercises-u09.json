@@ -685,6 +685,188 @@
    ]
   },
   {
+   "code": "M0-U09-L2-E04",
+   "lessonCode": "M0-U09-L2",
+   "order": 4,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Viết lại ý của hội thoại (G&V Ex. 6)",
+   "instruction": "Hoàn thành các câu paraphrase của hội thoại ở bài trước. Viết MỘT đến BA từ.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Susan's brother isn't going to study because he believes he is going to fail ____.",
+     "blanks": [
+      {
+       "accept": [
+        "his English exam",
+        "his exam"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "He didn't want to take Susan's ____.",
+     "blanks": [
+      {
+       "accept": [
+        "advice"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Susan's brother isn't interested in his studies and he would much rather ____.",
+     "blanks": [
+      {
+       "accept": [
+        "have fun"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "George told Susan's brother that it takes a lot of effort to learn a language, and it happens over a ____.",
+     "blanks": [
+      {
+       "accept": [
+        "long time"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "George thinks that without practising your speaking skills, it is more difficult to ____.",
+     "blanks": [
+      {
+       "accept": [
+        "make any progress",
+        "make progress"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "The biggest advantage that Susan's brother has is that their father teaches ____.",
+     "blanks": [
+      {
+       "accept": [
+        "English"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L2-E05",
+   "lessonCode": "M0-U09-L2",
+   "order": 5,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Tóm ý chính đoạn văn (Ex. 17)",
+   "instruction": "Đọc lại bài về Richard Doner và chọn từ đúng để tóm tắt ý chính.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Richard Doner is very special because he can speak ____ languages…",
+     "options": [
+      {
+       "id": "A",
+       "text": "more"
+      },
+      {
+       "id": "B",
+       "text": "less"
+      },
+      {
+       "id": "C",
+       "text": "most"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "…than ____ people.",
+     "options": [
+      {
+       "id": "A",
+       "text": "more"
+      },
+      {
+       "id": "B",
+       "text": "most of"
+      },
+      {
+       "id": "C",
+       "text": "most"
+      }
+     ],
+     "answer": "C",
+     "explanation": "most people = hầu hết mọi người (không có \"of\" khi không có the/my…)."
+    },
+    {
+     "id": "q3",
+     "prompt": "Richard is very lucky as he has ____ opportunities to practise his language skills.",
+     "options": [
+      {
+       "id": "A",
+       "text": "many"
+      },
+      {
+       "id": "B",
+       "text": "any"
+      },
+      {
+       "id": "C",
+       "text": "lots of"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Đáp án sách: lots of."
+    },
+    {
+     "id": "q4",
+     "prompt": "Richard practises speaking each language ____ to improve.",
+     "options": [
+      {
+       "id": "A",
+       "text": "all the time"
+      },
+      {
+       "id": "B",
+       "text": "regularly"
+      },
+      {
+       "id": "C",
+       "text": "every day"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Đáp án sách: regularly (đều đặn)."
+    }
+   ]
+  },
+  {
    "code": "M0-U09-L3-E01",
    "lessonCode": "M0-U09-L3",
    "order": 1,
@@ -770,7 +952,7 @@
    "lessonCode": "M0-U09-L3",
    "order": 2,
    "autoGrade": true,
-   "points": 5,
+   "points": 6,
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
@@ -856,6 +1038,22 @@
      ],
      "answer": "A",
      "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "Tôi sẽ không gọi món ăn:",
+     "options": [
+      {
+       "id": "A",
+       "text": "I'm not going to order any food at the restaurant – I'm not hungry."
+      },
+      {
+       "id": "B",
+       "text": "I'm going not to order any food at the restaurant – I'm not hungry."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Câu trong sách đã đúng: not đứng ngay sau am."
     }
    ]
   },
@@ -942,7 +1140,7 @@
    "lessonCode": "M0-U09-L3",
    "order": 4,
    "autoGrade": true,
-   "points": 4,
+   "points": 5,
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
@@ -1062,6 +1260,125 @@
       "year?"
      ],
      "explanation": ""
+    },
+    {
+     "id": "o5",
+     "prompt": "",
+     "tokens": [
+      "When",
+      "are",
+      "you",
+      "going",
+      "to",
+      "tell",
+      "the",
+      "teacher",
+      "you",
+      "want",
+      "to",
+      "move",
+      "up",
+      "to",
+      "a",
+      "higher",
+      "level",
+      "class?"
+     ],
+     "answer": [
+      "When",
+      "are",
+      "you",
+      "going",
+      "to",
+      "tell",
+      "the",
+      "teacher",
+      "you",
+      "want",
+      "to",
+      "move",
+      "up",
+      "to",
+      "a",
+      "higher",
+      "level",
+      "class?"
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L3-E05",
+   "lessonCode": "M0-U09-L3",
+   "order": 5,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Phân tích các câu kế hoạch (Ex. 6)",
+   "instruction": "Xem lại 5 câu ở bài \"Kế hoạch (Ex. 5)\" và trả lời.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "How do we know the writer is talking about future plans?",
+     "options": [
+      {
+       "id": "A",
+       "text": "The writer uses going to."
+      },
+      {
+       "id": "B",
+       "text": "The writer uses the past simple."
+      },
+      {
+       "id": "C",
+       "text": "The writer uses can."
+      }
+     ],
+     "answer": "A",
+     "explanation": "be going to + V = kế hoạch đã định."
+    },
+    {
+     "id": "q2",
+     "prompt": "Which of these is NOT an adverb of time used in the sentences?",
+     "options": [
+      {
+       "id": "A",
+       "text": "tonight"
+      },
+      {
+       "id": "B",
+       "text": "this afternoon"
+      },
+      {
+       "id": "C",
+       "text": "yesterday"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Các trạng từ trong bài: tonight, this afternoon, next week, today, this morning, at the weekend."
+    },
+    {
+     "id": "q3",
+     "prompt": "Adverbs of time (next week, tomorrow, later…) usually go ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "at the start of the sentence"
+      },
+      {
+       "id": "B",
+       "text": "at the end of the sentence"
+      },
+      {
+       "id": "C",
+       "text": "before going to"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Theo hộp gợi ý của sách: thường đứng cuối câu."
     }
    ]
   },
@@ -1794,7 +2111,7 @@
    "lessonCode": "M0-U09-L7",
    "order": 3,
    "autoGrade": true,
-   "points": 5,
+   "points": 6,
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
@@ -1862,6 +2179,99 @@
       }
      ],
      "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "I ____ a chat with my mum about what language course to take.",
+     "blanks": [
+      {
+       "accept": [
+        "had",
+        "am having",
+        "'m having",
+        "will have",
+        "am going to have",
+        "'m going to have"
+       ]
+      }
+     ],
+     "explanation": "Sách chấp nhận nhiều thì: had / am having / will have / am going to have."
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L7-E04",
+   "lessonCode": "M0-U09-L7",
+   "order": 4,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Sắp xếp lại từ nối (G&V Ex. 9)",
+   "instruction": "Năm từ nối in đậm trong đoạn văn đang bị đặt sai chỗ. Viết từ nối đúng cho mỗi vị trí 1–5 (dùng: To sum up, firstly, However, Furthermore, Additionally).",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I'm going to talk about a project I did at college. (1) ____, it was a language project, and I worked with my friend, Peter.",
+     "blanks": [
+      {
+       "accept": [
+        "Firstly"
+       ]
+      }
+     ],
+     "explanation": "Ý đầu tiên → Firstly."
+    },
+    {
+     "id": "g2",
+     "prompt": "We had to find out how many people in college speak more than one language and, (2) ____, what their level of English is.",
+     "blanks": [
+      {
+       "accept": [
+        "additionally",
+        "furthermore"
+       ]
+      }
+     ],
+     "explanation": "Thêm một việc nữa phải tìm hiểu → additionally / furthermore."
+    },
+    {
+     "id": "g3",
+     "prompt": "I like doing this sort of project, so was happy to work hard. (3) ____, Peter is also a very good student, so we helped each other a lot.",
+     "blanks": [
+      {
+       "accept": [
+        "Furthermore",
+        "Additionally"
+       ]
+      }
+     ],
+     "explanation": "Bổ sung thêm ý tích cực → Furthermore / Additionally."
+    },
+    {
+     "id": "g4",
+     "prompt": "…and it was quite easy in the end. (4) ____, we didn't get any good advice from Miss Smith in the college office.",
+     "blanks": [
+      {
+       "accept": [
+        "However"
+       ]
+      }
+     ],
+     "explanation": "Chuyển sang ý trái ngược (khó khăn) → However."
+    },
+    {
+     "id": "g5",
+     "prompt": "…and then she couldn't find the correct information herself! (5) ____, she didn't help us at all.",
+     "blanks": [
+      {
+       "accept": [
+        "To sum up"
+       ]
+      }
+     ],
+     "explanation": "Câu kết luận → To sum up."
     }
    ]
   }

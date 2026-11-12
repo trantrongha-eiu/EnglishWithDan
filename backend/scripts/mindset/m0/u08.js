@@ -167,6 +167,8 @@ module.exports = {
           ['We ____ sit all day without doing some type of exercise.', ['should', 'shouldn\'t'], 'B'],
           ['I think we ____ all sleep between seven to 10 hours every night.', ['should', 'shouldn\'t'], 'A'],
           ['My friend ____ spend all day on a computer and play more sport instead.', ['should', 'shouldn\'t'], 'B'],
+          ['"Children should have more lessons in their exam subjects." — The writer ____ children to have more lessons in their exam subjects.', ['wants', 'doesn\'t want'], 'A', 'should = lời khuyên nên làm → người viết muốn điều đó.'],
+          ['"Children should not attend painting and music lessons." — The writer\'s advice for children is ____ to painting and music lessons.', ['to go', 'not to go'], 'B', 'should not = khuyên không nên.'],
         ]),
         mcq('have to hay don\'t have to? (Ex. 18, G&V Ex. 5)', 'Chọn đáp án đúng.', [
           ['We ____ arrive to school on time. It\'s one of the school\'s rules.', ['have to', 'don\'t have to'], 'A'],
@@ -178,6 +180,10 @@ module.exports = {
           ['You ____ be fit to do yoga because anyone can try it.', ['have to', 'don\'t have to'], 'B'],
           ['You ____ spend a lot of money to stay healthy. You can go running in the park for free.', ['have to', 'don\'t have to'], 'B'],
           ['Professional sports players ____ practise for at least three hours a day.', ['have to', 'don\'t have to'], 'A'],
+          ['We ____ wear sports clothes during sport lessons otherwise we can\'t take part.', ['have to', 'don\'t have to'], 'A', 'otherwise we can\'t take part → bắt buộc.'],
+          ['We ____ wear special shoes when we play football. Otherwise, it is difficult to run.', ['have to', 'don\'t have to'], 'A'],
+          ['You ____ join the gym to take exercise classes, but they cost less for members.', ['have to', 'don\'t have to'], 'B', 'Không bắt buộc, chỉ rẻ hơn cho hội viên.'],
+          ['You ____ be good at sports to stay fit, but regular physical activity is good for you.', ['have to', 'don\'t have to'], 'B'],
         ]),
         gap('Chương trình sức khoẻ trên TV (G&V Ex. 4)', 'Điền should / shouldn\'t + động từ: eat, drink, play, ride, watch, get.', [
           ['Do you know we ____ ____ five glasses of water a day?', ['should', 'drink']],
@@ -190,6 +196,8 @@ module.exports = {
           ['Hỏi xin lời khuyên về ăn uống:', ['What you should eat to be healthy?', 'What should you eat to be healthy?'], 'B'],
           ['Is it a good idea to play computer games for many hours? — No, ____', ['you should play on your computer for so long.', 'you shouldn\'t play on your computer for so long.'], 'B'],
           ['I like doing yoga. ____', ['I think you shouldn\'t try it.', 'I think you should try it.'], 'B'],
+          ['Is it important to exercise? — ____', ['Yes, you should exercise for at least 150 minutes a week.', 'Yes, you should to exercise for at least 150 minutes a week.'], 'A', 'Câu trong sách đã đúng: should + động từ nguyên mẫu (không có to).'],
+          ['Do you have any other advice about being healthy? — ____', ['I think you should find ways to relax.', 'I think you should finding ways to relax.'], 'A', 'Câu trong sách đã đúng.'],
         ]),
         gap('Quy định ở trường (G&V Ex. 6)', 'Điền has to / have to / doesn\'t have to / don\'t have to.', [
           ['The most important rule is that we ____ turn off our mobile phones before the lesson.', 'have to'],

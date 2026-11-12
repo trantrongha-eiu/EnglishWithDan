@@ -28,7 +28,7 @@ Giáo viên giao bài từng buổi qua loại bài tập về nhà **"Mindset (
 
 ## 2. Nội dung quyển 0 đã soạn
 
-- 10 unit, 69 buổi, 211 bài tập: 182 bài tự chấm, 11 bài viết AI chấm, 18 bài nói AI chấm.
+- 10 unit, 70 buổi, 223 bài tập: 194 bài tự chấm, 11 bài viết AI chấm, 18 bài nói AI chấm. Đã đối chiếu từng bài với sách + Answer Key ngày 12/11/2026 (xem mục 5).
 - 10 bài Reading (Passage) và 19 bài Listening (ListeningSection) dùng 19 file audio (track 01 là phần giới thiệu nên không dùng).
 - 42 ảnh cắt từ sách: tranh Lead-in, tranh mô tả, bản đồ, sơ đồ, biểu đồ.
 - 5 sổ, mỗi unit khoảng 50–80 từ/cụm từ.
@@ -58,3 +58,16 @@ Bài đọc/nghe của khóa có trường `courseRef`, nên **không hiện tro
 2. Tạo `frontend/mindset-1.html` (copy mindset-0.html, đổi `data-mindset-level`), thêm `_redirects` và link menu.
 3. Quyển 1/2 là sách **Reading & Listening** (target band 5.5 / 6.5), nên buổi Writing/Speaking sẽ ít hơn. Bài đọc dài kiểu IELTS sẽ làm hết trên reading.html; các bài trong khóa tập trung vào kỹ năng và chiến thuật của từng dạng câu hỏi.
 4. Ghép audio: tên file `Mindset_L1_NN.mp3`, `Mindset_L2_NN.mp3`, đối chiếu số track in trong sách (biểu tượng audio cạnh bài tập).
+
+## 5. Checklist đối chiếu sách (bắt buộc trước khi seed mỗi quyển)
+
+Lần soạn đầu quyển 0 bị sót: G&V 4 (U2), G&V 6 + Ex. 15 (U3), G&V 1/5 + Ex. 17–18 + cả buổi Ôn tập (U5), G&V 6/9 + Ex. 6/17 (U9), G&V 4 (U10), và nhiều bài bị cắt bớt câu (vd. U3 G&V 2 chỉ có 15/23 từ). Đã bổ sung đủ ngày 12/11/2026. Quy trình để không lặp lại:
+
+1. Trích text sách: `pdftotext -layout` (có sẵn trong Git Bash). Trang PDF = số trang in + 1 với quyển 0.
+2. Lấy **Answer Key** làm danh sách chuẩn: mỗi unit, mỗi số bài (kể cả "Grammar and Vocabulary Unit N") có đáp án cố định thì phải có trên web. Bài "Student's own answers" → bài viết/nói hoặc bỏ qua.
+3. Đếm số câu từng bài trong key và so với số item/ô trống trên web (script đếm: đọc `lessons[k].ex[].items`, gap tính theo số `blanks`). Thiếu câu = phải thêm.
+4. Ghi số bài sách trong tiêu đề bài tập: `(Ex. N)`, `(G&V Ex. N)` để lần sau đối chiếu được bằng grep.
+5. Từ vựng của các bài tập từ vựng phải có trong `vocab` của buổi có Sổ (vocab/reading/writing/listening/speaking); buổi grammar/review không có Sổ nên đưa từ vào buổi vocab.
+6. Sau khi đã seed lên production: **chỉ thêm bài vào cuối buổi, thêm câu vào cuối bài**. Mã bài = vị trí trong buổi (`M0-U05-L3-E07`), chèn giữa sẽ làm lệch bài làm cũ của học viên. Buổi mới chỉ thêm ở cuối unit (review là buổi cuối).
+7. Chạy bộ chấm thật với đáp án của chính bài (mọi bài tự chấm phải đạt 100%) và kiểm tra số `____` khớp số ô trống.
+8. Không tin chú thích "PDF không có" — mở trang PDF kiểm tra lại (G&V 6 của U3 thực ra có trong PDF).
