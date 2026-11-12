@@ -7,6 +7,32 @@ function headers() { return { 'Content-Type': 'application/json', ...window.Auth
 
 // showToastWithTitle() lives in js/shared/toast.js (single source of truth).
 
+// Every other page reads name/avatar/targetBand straight from
+// AuthService.getUser() (the login payload cached in localStorage), so a
+// change made here has to land in that cache. MERGE the display fields —
+// replacing the whole object with the /user/profile document dropped the
+// login payload's own fields (id, isGuest, ...) until the next login.
+const CACHED_PROFILE_FIELDS = ['firstName', 'lastName', 'username', 'email', 'avatar', 'role', 'targetBand',
+  'plan', 'planExpiresAt', 'planStartedAt', 'emailVerified', 'mustChangePassword', 'createdAt', 'trialStartedAt'];
+function syncCachedUser(u) {
+  if (!u || !window.AuthService || !window.AuthService.setUser) return;
+  const cached = (window.AuthService.getUser && window.AuthService.getUser()) || {};
+  CACHED_PROFILE_FIELDS.forEach(k => { if (u[k] !== undefined) cached[k] = u[k]; });
+  if (!cached.id && u._id) cached.id = u._id;
+  window.AuthService.setUser(cached);
+}
+
+// Social-only accounts (Google sign-up) have no password yet: the Security
+// tab then SETS one, without a "current password" field to fill.
+let hasPassword = true;
+function renderPasswordMode() {
+  const curGroup = document.getElementById('secCurrentPass').closest('.form-group');
+  curGroup.style.display = hasPassword ? '' : 'none';
+  document.getElementById('secTitle').textContent = hasPassword ? 'Đổi mật khẩu' : 'Đặt mật khẩu';
+  document.getElementById('secBtnLabel').textContent = hasPassword ? 'Đổi mật khẩu' : 'Đặt mật khẩu';
+  document.getElementById('secSocialNote').style.display = hasPassword ? 'none' : '';
+}
+
 // ── Tabs ──────────────────────────────────────────────────
 const VALID_TABS = ['overview', 'edit', 'security', 'history', 'inventory'];
 
@@ -245,6 +271,7 @@ function renderPlanCard(u) {
 
   // Upgrade / Renew CTA
   const upgradeBtn = document.getElementById('planUpgradeBtn');
+  upgradeBtn.style.background = '';
   const daysRemaining = (isPremium && !isExpired && expiresAt)
     ? Math.ceil((expiresAt - now) / 86400000) : null;
   if (!isPremium || isExpired) {
@@ -320,7 +347,8 @@ async function loadProfile() {
       // speaking) reads name/avatar straight from AuthService.getUser(),
       // not from a fresh fetch, so without this a name/avatar change
       // made here only ever showed up on THIS page until re-login.
-      if (window.AuthService && window.AuthService.setUser) window.AuthService.setUser(u);
+      syncCachedUser(u);
+      if (typeof u.hasPassword === 'boolean') { hasPassword = u.hasPassword; renderPasswordMode(); }
       // Sidebar
       const avatarEl = document.getElementById('avatarDisplay');
       if (u.avatar) {
@@ -391,10 +419,8 @@ async function loadProfile() {
         if (!Array.isArray(s[k].history)) s[k].history = [];
       });
       // Streak
-      if (s.streak > 0) {
-        document.getElementById('streakDisplay').style.display = 'flex';
-        document.getElementById('streakCount').textContent = s.streak + ' ngày';
-      }
+      document.getElementById('streakDisplay').style.display = s.streak > 0 ? 'flex' : 'none';
+      if (s.streak > 0) document.getElementById('streakCount').textContent = s.streak + ' ngày';
       // Mini stats
       document.getElementById('statReading').textContent  = s.reading.avgBand  || '-';
       document.getElementById('statListening').textContent = s.listening.avgBand || '-';
@@ -418,14 +444,12 @@ async function loadProfile() {
 
       // Target band markers — same 4–9 domain as the bars above.
       const targetBand = pd.user?.targetBand;
-      if (targetBand) {
-        const pct = bandToPct(targetBand) + '%';
-        ['targetReading','targetListening','targetWriting','targetSpeaking'].forEach(id => {
-          const el = document.getElementById(id);
-          el.style.display = 'block'; el.style.left = pct;
-          el.title = `Mục tiêu: Band ${targetBand}`;
-        });
-      }
+      ['targetReading','targetListening','targetWriting','targetSpeaking'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!targetBand) { el.style.display = 'none'; return; }
+        el.style.display = 'block'; el.style.left = bandToPct(targetBand) + '%';
+        el.title = `Mục tiêu: Band ${targetBand}`;
+      });
 
       // Speaking band (from server-computed avgBand, same as Reading/Listening/Writing)
       document.getElementById('barSpeaking').style.width   = toPercent(s.speaking.avgBand);
@@ -601,12 +625,12 @@ async function changePassword() {
   const confirmPass     = document.getElementById('secConfirmPass').value;
   const msgEl = document.getElementById('secMsg');
 
-  if (!currentPassword) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Vui lòng nhập mật khẩu hiện tại'; return; }
+  if (hasPassword && !currentPassword) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Vui lòng nhập mật khẩu hiện tại'; return; }
   if (newPassword.length < 8) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Mật khẩu phải có ít nhất 8 ký tự'; return; }
   if (newPassword !== confirmPass) { msgEl.style.display='block'; msgEl.style.background='#fce4e4'; msgEl.style.color='#c62828'; msgEl.style.border='1px solid #ef9a9a'; msgEl.textContent='Mật khẩu xác nhận không khớp'; return; }
 
   try {
-    const res  = await fetch(API + '/api/user/change-password', { method:'PUT', headers: headers(), body: JSON.stringify({ currentPassword, newPassword }) });
+    const res  = await fetch(API + '/api/user/change-password', { method:'PUT', headers: headers(), body: JSON.stringify(hasPassword ? { currentPassword, newPassword } : { newPassword }) });
     const data = await window.ApiClient.handleResponse(res);
     // BUG-023: changing your password revokes every token issued
     // before now, including the one this very request used — the
@@ -616,7 +640,8 @@ async function changePassword() {
     msgEl.style.display='block'; msgEl.style.background='#ecfdf5'; msgEl.style.color='#065f46'; msgEl.style.border='1px solid #6ee7b7';
     msgEl.textContent = data.message || 'Đổi mật khẩu thành công';
     setTimeout(() => { msgEl.style.display = 'none'; }, 4000);
-    showToastWithTitle('success', 'Thành công', 'Mật khẩu đã được đổi');
+    showToastWithTitle('success', 'Thành công', hasPassword ? 'Mật khẩu đã được đổi' : 'Đã đặt mật khẩu — giờ bạn đăng nhập được bằng email + mật khẩu');
+    if (!hasPassword) { hasPassword = true; renderPasswordMode(); }
     document.getElementById('secCurrentPass').value = '';
     document.getElementById('secNewPass').value = '';
     document.getElementById('secConfirmPass').value = '';
@@ -642,7 +667,12 @@ function compressImage(file, maxSize, quality) {
         }
         const canvas = document.createElement('canvas');
         canvas.width = width; canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        const ctx = canvas.getContext('2d');
+        // JPEG has no alpha channel — without a fill, a transparent PNG's
+        // background comes out solid black.
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
         resolve(canvas.toDataURL('image/jpeg', quality));
       };
       img.src = e.target.result;
@@ -687,7 +717,7 @@ async function uploadAvatar(input) {
     // the freshly-uploaded avatar only shows on this page (and only
     // until the next page load) since every other page reads
     // AuthService.getUser(), not a live fetch.
-    if (window.AuthService && window.AuthService.setUser && data.user) window.AuthService.setUser(data.user);
+    syncCachedUser(data.user || { avatar: data.avatar });
     const navAv = document.getElementById('navAvatar');
     if (navAv) {
       navAv.innerHTML = '';

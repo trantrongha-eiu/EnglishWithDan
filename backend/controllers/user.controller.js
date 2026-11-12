@@ -43,7 +43,7 @@ exports.updateProfile = catchAsync(async (req, res) => {
 // ── PUT /api/user/change-password ────────────────────────────
 exports.changePassword = catchAsync(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  if (!newPassword || newPassword.length < 8) {
+  if (typeof newPassword !== 'string' || newPassword.length < 8) {
     return res.status(400).json({ success: false, message: 'Mật khẩu mới phải có ít nhất 8 ký tự' });
   }
 

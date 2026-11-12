@@ -284,7 +284,9 @@
     var ex = (data.examples && data.examples[0]) || {};
     var item = {
       word: data.phrase,
-      meaning: data.meaning,
+      // Việt-Anh: the typed Vietnamese is the meaning if the AI left it blank
+      // (a word without a meaning never shows up in the vocab quizzes).
+      meaning: data.meaning || (data.dir === 'vi-en' ? data.query : '') || '',
       example: ex.en || '',
       collocations: data.alternatives || [],
     };

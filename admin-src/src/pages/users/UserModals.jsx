@@ -155,7 +155,7 @@ export function CreateUserModal({ onClose, onSaved }) {
         </div>
         <div className="form-group">
           <label className="form-label" htmlFor="cu-pass">Mật khẩu <span style={{ color: 'var(--danger)' }}>*</span></label>
-          <input id="cu-pass" className="form-input" type="password" value={form.password} onChange={set('password')} required placeholder="Tối thiểu 6 ký tự" minLength={6} autoComplete="new-password" />
+          <input id="cu-pass" className="form-input" type="password" value={form.password} onChange={set('password')} required placeholder="Tối thiểu 8 ký tự" minLength={8} autoComplete="new-password" />
         </div>
         <div className="form-group">
           <label className="form-label" htmlFor="cu-role">Vai trò</label>
@@ -192,7 +192,11 @@ function compressImage(file, maxSize, quality) {
         }
         const canvas = document.createElement('canvas');
         canvas.width = width; canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        const ctx = canvas.getContext('2d');
+        // JPEG has no alpha — a transparent PNG would come out on black.
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
         resolve(canvas.toDataURL('image/jpeg', quality));
       };
       img.src = e.target.result;
@@ -322,7 +326,8 @@ export function EditUserModal({ userId, onClose, onSaved }) {
           {isAdmin && (
             <div className="form-group">
               <label className="form-label" htmlFor="eu-pass">Mật khẩu mới (để trống = giữ nguyên)</label>
-              <input id="eu-pass" className="form-input" type="password" value={form.newPassword} onChange={set('newPassword')} placeholder="••••••••" autoComplete="new-password" />
+              <input id="eu-pass" className="form-input" type="password" value={form.newPassword} onChange={set('newPassword')} placeholder="Tối thiểu 8 ký tự" minLength={8} autoComplete="new-password" />
+              {!isSelf && <div className="form-hint">Đặt mật khẩu mới sẽ đăng xuất tài khoản này khỏi mọi thiết bị.</div>}
             </div>
           )}
           {isAdmin && !isSelf && (

@@ -1190,10 +1190,14 @@ function MissingItemsCell({ row, resources }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       {missing.map((it) => {
         const hit = byId.get(String(it.itemId));
+        // Resource deleted after assigning — the backend leaves it out of
+        // the count (assignmentService `gone`), so say so instead of "thiếu".
         return (
-          <div key={it.itemId} style={{ lineHeight: 1.35 }}>
+          <div key={it.itemId} style={{ lineHeight: 1.35, ...(it.removed ? { color: 'var(--text3)', textDecoration: 'line-through' } : {}) }}
+            title={it.removed ? 'Nội dung đã bị xoá — không tính vào bài tập' : undefined}>
             <span style={{ color: 'var(--text3)' }}>{hit ? `${hit.n}. ` : '• '}</span>
             {hit ? resourceShortName(hit.res) : (it.label || 'Phần bài tập')}
+            {it.removed && <span style={{ textDecoration: 'none', marginLeft: 4 }}>(đã bị xoá)</span>}
           </div>
         );
       })}

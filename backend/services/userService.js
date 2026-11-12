@@ -38,8 +38,16 @@ const MAX_TARGET_BAND = 9;
 // validates fields actually present in `input`; null/'' clear the field
 // (existing, intentional behavior — see updateProfile below) and are not
 // errors. Mirrors goalService.validateGoalInput's shape/conventions.
-function validateProfileInput({ targetBand, targetExamDate }) {
+const NAME_MAX = 50;
+
+function validateProfileInput({ firstName, lastName, bio, studyMotto, targetBand, targetExamDate }) {
   const errors = [];
+  // A non-string here (crafted request) used to reach .trim() and 500.
+  for (const [k, v] of Object.entries({ firstName, lastName, bio, studyMotto })) {
+    if (v !== undefined && v !== null && typeof v !== 'string') errors.push(`${k} must be a string`);
+  }
+  if (typeof firstName === 'string' && firstName.trim().length > NAME_MAX) errors.push(`Họ tối đa ${NAME_MAX} ký tự`);
+  if (typeof lastName === 'string' && lastName.trim().length > NAME_MAX) errors.push(`Tên tối đa ${NAME_MAX} ký tự`);
   if (targetBand !== undefined && targetBand !== null && targetBand !== '') {
     if (typeof targetBand !== 'number' || Number.isNaN(targetBand) || targetBand < MIN_TARGET_BAND || targetBand > MAX_TARGET_BAND) {
       errors.push(`targetBand must be a number between ${MIN_TARGET_BAND} and ${MAX_TARGET_BAND}`);
@@ -57,29 +65,48 @@ function validateProfileInput({ targetBand, targetExamDate }) {
   return errors;
 }
 
+// What GET/PUT /api/user/profile send back. Besides the secrets, this
+// leaves out internal bookkeeping (device-session ids + IPs, badge/hammer
+// tallies) and savedVocab — an unbounded array the profile page never
+// reads, which profile.js used to copy into localStorage on every visit.
+const PROFILE_SELECT = '-password -resetOTP -resetOTPExpires -resetOTPAttempts -emailVerifyTokenHash '
+  + '-savedVocab -activeSessions -tokenValidAfter -hammerAwardedUnits -earnedBadgeIds -badgeTally';
+
+// Social-only accounts (Google/Facebook sign-up) have an empty password —
+// profile.html then offers "Đặt mật khẩu" without asking for a current one.
+function hasPasswordSet(userId) {
+  return User.exists({ _id: userId, password: { $nin: ['', null] } }).then(Boolean);
+}
+
 async function getProfile(userId, currentPlan) {
-  const user = await User.findById(userId).select('-password -resetOTP -resetOTPExpires').lean();
+  const [user, hasPassword] = await Promise.all([
+    User.findById(userId).select(PROFILE_SELECT).lean(),
+    hasPasswordSet(userId),
+  ]);
   if (!user) return null;
   // Use plan from req.user (already auto-expired by auth middleware) to avoid race with fire-and-forget updateOne
   user.plan = currentPlan;
+  user.hasPassword = hasPassword;
   return user;
 }
 
 async function updateProfile(userId, { firstName, lastName, bio, studyMotto, targetBand, targetExamDate }) {
-  const errors = validateProfileInput({ targetBand, targetExamDate });
+  const errors = validateProfileInput({ firstName, lastName, bio, studyMotto, targetBand, targetExamDate });
   if (errors.length) return { status: 'invalid', errors };
 
   const update = {};
-  if (firstName !== undefined) update.firstName = firstName.trim();
-  if (lastName !== undefined) update.lastName = lastName.trim();
-  if (bio !== undefined) update.bio = bio.trim().slice(0, 200);
-  if (studyMotto !== undefined) update.studyMotto = studyMotto.trim().slice(0, 80);
+  if (firstName != null) update.firstName = firstName.trim();
+  if (lastName != null) update.lastName = lastName.trim();
+  if (bio != null) update.bio = bio.trim().slice(0, 200);
+  if (studyMotto != null) update.studyMotto = studyMotto.trim().slice(0, 80);
   if (targetBand !== undefined) update.targetBand = targetBand === '' || targetBand === null ? null : Number(targetBand);
   if (targetExamDate !== undefined) update.targetExamDate = targetExamDate === '' || targetExamDate === null ? null : new Date(targetExamDate);
 
-  const user = await User.findByIdAndUpdate(userId, update, { new: true })
-    .select('-password -resetOTP -resetOTPExpires')
-    .lean();
+  const [user, hasPassword] = await Promise.all([
+    User.findByIdAndUpdate(userId, update, { new: true }).select(PROFILE_SELECT).lean(),
+    hasPasswordSet(userId),
+  ]);
+  if (user) user.hasPassword = hasPassword;
   return { status: 'ok', user };
 }
 
@@ -87,6 +114,7 @@ async function updateProfile(userId, { firstName, lastName, bio, studyMotto, tar
 // fresh token so this device stays signed in while every other one is cut.
 async function changePassword(userId, currentPassword, newPassword, session) {
   const user = await User.findById(userId).select('+password');
+  if (!user) return { status: 'invalid' };
   // Free every other device slot too, so the cut doesn't hinge on
   // tokenValidAfter's whole-second precision.
   const keepOnlyThisDevice = () => {
@@ -94,8 +122,11 @@ async function changePassword(userId, currentPassword, newPassword, session) {
       if (!session || t !== session.dt) user.set(`activeSessions.${t}`, undefined);
     }
   };
-  // If social account with no password
-  if (!user.password && !currentPassword) {
+  // Social account with no password yet: this SETS one — there is no
+  // current password to check. (This used to also require an empty
+  // currentPassword, but profile.html always demanded one, so "Mật khẩu
+  // hiện tại không đúng" blocked every Google user from setting a password.)
+  if (!user.password) {
     user.password = await bcrypt.hash(newPassword, 10);
     // BUG-023: revoke every token issued before now (all devices), then
     // hand back a freshly-signed one so the session that just made this
@@ -108,6 +139,8 @@ async function changePassword(userId, currentPassword, newPassword, session) {
     return { status: 'set', token: signToken(user._id, session) };
   }
 
+  // bcrypt.compare throws on a non-string — that was a 500, not a 400.
+  if (typeof currentPassword !== 'string' || !currentPassword) return { status: 'invalid' };
   const valid = await bcrypt.compare(currentPassword, user.password);
   if (!valid) return { status: 'invalid' };
 
@@ -126,7 +159,7 @@ async function uploadAvatar(userId, imageBase64) {
     userId,
     { avatar: result.url },
     { new: true }
-  ).select('-password -resetOTP -resetOTPExpires -resetOTPAttempts');
+  ).select(PROFILE_SELECT).lean();
 
   return { avatar: result.url, user };
 }
@@ -296,7 +329,9 @@ async function getActivityHeatmap(userId, days = 365) {
   const [reading, listening, writing, speaking, vocab] = await Promise.all([
     TestAttempt.aggregate([{ $match: { userId: uid, status: 'completed', createdAt: { $gte: since } } }, byDay]),
     ListeningAttempt.aggregate([{ $match: { userId: uid, status: 'completed', createdAt: { $gte: since } } }, byDay]),
-    WritingAttempt.aggregate([{ $match: { userId: uid, createdAt: { $gte: since } } }, byDay]),
+    // COUNTABLE_ATTEMPT: Test Simulation writes a placeholder row the moment a
+    // Writing test is OPENED — merely opening one used to light up the day.
+    WritingAttempt.aggregate([{ $match: { userId: uid, ...COUNTABLE_ATTEMPT, createdAt: { $gte: since } } }, byDay]),
     SpeakingAttempt.aggregate([{ $match: { userId: uid, createdAt: { $gte: since } } }, byDay]),
     VocabActivity.aggregate([{ $match: { userId: uid, date: { $gte: since } } }, vocabByDay])
   ]);
@@ -327,7 +362,9 @@ async function getActivityHeatmap(userId, days = 365) {
 async function rankedStreaks(viewerId) {
   await shopService.settleAllHopeHammers().catch(() => 0);
   const [candidates, viewer] = await Promise.all([
-    User.find({ role: { $in: FLAME_ROLES }, learningStreak: { $gt: 0 } })
+    // Banned accounts stay off the board (and so out of 🎂 / 🔍 / ⚔️ reach),
+    // same as the gift / duel recipient search.
+    User.find({ role: { $in: FLAME_ROLES }, learningStreak: { $gt: 0 }, isBanned: { $ne: true } })
       .select('firstName lastName username avatar learningStreak lastActivityDate shopItems activePet crownUntil invisibleUntil cakedUntil cakedBy')
       .lean(),
     viewerId ? User.findById(viewerId).select('activePet').lean() : null,

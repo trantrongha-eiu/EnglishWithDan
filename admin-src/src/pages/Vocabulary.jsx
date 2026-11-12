@@ -65,7 +65,9 @@ function UnitModal({ unit, onClose, onSaved }) {
           <div className="form-group">
             <label className="form-label">Level</label>
             <select className="form-input" value={form.level} onChange={set('level')}>
-              {LEVELS.map(l => <option key={l}>{l}</option>)}
+              {/* Imported units can carry a level outside the list (e.g. "IELTS") —
+                  keep it as an option so the select shows the real value. */}
+              {(LEVELS.includes(form.level) ? LEVELS : [form.level, ...LEVELS]).map(l => <option key={l}>{l}</option>)}
             </select>
           </div>
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
@@ -135,6 +137,9 @@ function WordsModal({ unit, onClose }) {
         await apiFetch(`/vocab/admin/units/${unit._id}/words/${idx}`, { method: 'DELETE' });
         toast('Đã xóa');
         setWords(w => w.filter((_, i) => i !== idx));
+        // Words are addressed by index — a row open for editing below the
+        // deleted one would otherwise save over its new neighbour.
+        if (editingIdx !== null && editingIdx >= idx) cancelEdit();
       } catch (e) { toast(e.message, 'error'); }
     });
   }
@@ -456,18 +461,25 @@ export default function Vocabulary() {
     );
   }
 
-  async function sortByName() {
+  // Renumbers EVERY unit in one click — confirm first (it can't be undone,
+  // and students' "Unit N" / "Học tiếp" bookmarks shift with it).
+  function sortByName() {
     const sorted = [...units].sort((a, b) =>
-      a.title.localeCompare(b.title, undefined, { numeric: true, sensitivity: 'base' })
+      (a.title || '').localeCompare(b.title || '', undefined, { numeric: true, sensitivity: 'base' })
     );
-    try {
-      await apiFetch('/vocab/admin/units/reorder', {
-        method: 'PATCH',
-        body: JSON.stringify(sorted.map(u => ({ _id: u._id })))
-      });
-      toast('Đã sắp xếp và cập nhật số thứ tự');
-      load();
-    } catch (e) { toast(e.message, 'error'); }
+    confirm(
+      `Sắp xếp lại ${units.length} unit theo tên A-Z và đánh lại số Unit 1 → ${units.length}?\nThao tác này không thể hoàn tác.`,
+      async () => {
+        try {
+          await apiFetch('/vocab/admin/units/reorder', {
+            method: 'PATCH',
+            body: JSON.stringify(sorted.map(u => ({ _id: u._id })))
+          });
+          toast('Đã sắp xếp và cập nhật số thứ tự');
+          load();
+        } catch (e) { toast(e.message, 'error'); }
+      }
+    );
   }
 
   async function splitAll() {

@@ -23,8 +23,12 @@
             window.AuthService ? window.AuthService.authHeader() : {});
     }
     function api(method, url, body) {
+        // A network failure (offline, server cold start) must still resolve:
+        // every action sets busy=true and only after() clears it, so a
+        // rejected fetch used to leave every Kho đồ button dead until reload.
         return fetch(API + url, { method: method, headers: authH(), body: body ? JSON.stringify(body) : undefined })
-            .then(function (r) { return r.json().catch(function () { return { success: false }; }); });
+            .then(function (r) { return r.json().catch(function () { return { success: false }; }); })
+            .catch(function () { return { success: false, message: 'Không kết nối được máy chủ, thử lại nhé.' }; });
     }
     function toast(msg, type) { if (window.showToast) window.showToast(msg, type || 'info'); }
     function confirmThen(title, msg, label, onOk) {
@@ -351,7 +355,14 @@
         var u = window.AuthService.getUser && window.AuthService.getUser();
         var tabBtn = document.querySelector('.tab-btn[data-tab="inventory"]');
         // Students and teachers play the 🔥 game (backend constants/shop.js FLAME_ROLES).
-        if (u && u.role && u.role !== 'student' && u.role !== 'teacher') { if (tabBtn) tabBtn.style.display = 'none'; return; }
+        if (u && u.role && u.role !== 'student' && u.role !== 'teacher') {
+            if (tabBtn) tabBtn.style.display = 'none';
+            // Still reachable via profile.html#inventory — say why it's empty
+            // instead of "Đang tải kho đồ…" forever.
+            var el = host();
+            if (el) el.innerHTML = '<div class="inv-empty">Kho đồ chỉ dành cho học sinh và giáo viên.</div>';
+            return;
+        }
         load();
         // pets.js is injected by nav.js and may land after the first render —
         // repaint once it's there so the pet cards get their art.

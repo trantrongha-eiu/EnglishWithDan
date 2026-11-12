@@ -123,12 +123,19 @@ function shapeVocabGoal(v) {
 // derive one assignment's status for a student from its resources + progress items.
 // `partial`: a not-yet-completed item already has real progress (a vocab_goal
 // with words practised) — reads as in_progress even while 0 items are done.
-function deriveAssignmentStatus(assignment, completedItemIds, now = new Date(), { partial = false } = {}) {
-  const total = assignment.resources.length;
-  const done = assignment.resources.filter((r) => completedItemIds.has(String(r._id))).length;
+// gone: item ids whose resource was deleted (rcs.missingResourceItemIds) —
+// left out unless already done, since nobody can complete them any more. An
+// assignment whose every item was deleted counts as completed, never missed.
+function deriveAssignmentStatus(assignment, completedItemIds, now = new Date(), { partial = false, gone = null } = {}) {
+  const live = gone && gone.size
+    ? assignment.resources.filter((r) => !gone.has(String(r._id)) || completedItemIds.has(String(r._id)))
+    : assignment.resources;
+  const total = live.length;
+  const done = live.filter((r) => completedItemIds.has(String(r._id))).length;
   const overdue = assignment.deadline && new Date(assignment.deadline).getTime() < now.getTime();
   let status;
-  if (total > 0 && done >= total) status = 'completed';
+  if (total === 0 && assignment.resources.length > 0) status = 'completed';
+  else if (total > 0 && done >= total) status = 'completed';
   else if (overdue) status = 'overdue';
   else if (done > 0 || partial) status = 'in_progress';
   else status = 'not_started';
@@ -313,10 +320,11 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
   // EARLIEST assignment createdAt as `since`, then filter per assignment below.
   // Independent reads — run together (snapshot refresh only rewrites
   // label/resourceCode, which neither of the other two reads).
-  const [, completionMap, vocabMap] = await Promise.all([
+  const [, completionMap, vocabMap, gone] = await Promise.all([
     rcs.refreshResourceSnapshots(assignments.flatMap((a) => a.resources)),
     rcs.checkCompleted(studentId, allInternal, earliest),
     resolveVocabGoals(studentId, assignments, storedMap, now),
+    rcs.missingResourceItemIds(assignments.flatMap((a) => a.resources)),
   ]);
 
   const rows = [];
@@ -362,6 +370,8 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
       if (completed) completedItemIds.add(String(r._id));
       return {
         itemId: r._id, kind: r.kind, autoTracked, completed, completedAt,
+        // resource deleted from the admin — shown greyed out, not counted
+        removed: !completed && gone.has(String(r._id)),
         resourceType: r.resourceType || null, resourceId: r.resourceId || null, resourceCode: r.resourceCode || '',
         label: r.label || r.title || '', url: r.url || '', description: r.description || '',
         images: r.images || [], title: r.title || '', instruction: r.instruction || '',
@@ -380,7 +390,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
     });
 
     const partial = resourcesShaped.some((r) => !r.completed && r.vocabGoal && r.vocabGoal.practiced > 0);
-    const derived = deriveAssignmentStatus(a, completedItemIds, now, { partial });
+    const derived = deriveAssignmentStatus(a, completedItemIds, now, { partial, gone });
     const { done, total } = derived;
     let { status } = derived;
     const archived = a.status === 'archived';
@@ -491,7 +501,17 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
     }
   }
 
-  return { assignments: rows, homeworkWarning, homeworkLock, hasClasses: true };
+  // The thresholds the dashboard's "Cách tính bài tập" panel quotes — per
+  // class (teacher-editable), so it used to hard-code the defaults (2 / 4 / 8)
+  // and could tell a student the wrong numbers. Several classes → strictest.
+  const pols = classes.map((c) => withPolicyDefaults(c.policy));
+  const homeworkPolicy = pols.length ? {
+    lockThreshold: Math.min(...pols.map((p) => p.homeworkLockThreshold)),
+    warnThreshold: Math.min(...pols.map((p) => p.homeworkWarnThreshold)),
+    failThreshold: Math.min(...pols.map((p) => p.homeworkFailThreshold)),
+  } : null;
+
+  return { assignments: rows, homeworkWarning, homeworkLock, homeworkPolicy, hasClasses: true };
 }
 
 // ── One computation per student at a time ──────────────────────────────
@@ -695,6 +715,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
   const sMap = new Map(students.map((s) => [String(s._id), s]));
 
   const internalItems = assignment.resources.filter((r) => r.kind === 'internal').map(rcs.completionItem);
+  const gone = await rcs.missingResourceItemIds(assignment.resources);
   const stored = await AssignmentProgress.find({ assignmentId: assignment._id }).lean();
   const storedMap = new Map(stored.map((p) => [String(p.studentId), p]));
 
@@ -724,7 +745,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
       if (r.kind === 'vocab_goal' && vocabGoals.get(vocabGoalKey(assignment._id, r._id))?.completed) completedIds.add(String(r._id));
     }
     const partial = [...vocabGoals.values()].some((v) => !v.completed && v.practiced > 0);
-    const derived = deriveAssignmentStatus(assignment, completedIds, now, { partial });
+    const derived = deriveAssignmentStatus(assignment, completedIds, now, { partial, gone });
     const { done, total } = derived;
     // Joined after this assignment was given — not theirs to do
     // (getStudentAssignments skips it the same way).
@@ -738,6 +759,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
       items: assignment.resources.map((r) => ({
         itemId: r._id, kind: r.kind, label: r.label || r.title || '', bookSlot: r.bookSlot || null,
         completed: completedIds.has(String(r._id)),
+        removed: !completedIds.has(String(r._id)) && gone.has(String(r._id)),
         vocabGoal: r.kind === 'vocab_goal' ? shapeVocabGoal(vocabGoals.get(vocabGoalKey(assignment._id, r._id))) : undefined,
         fixedMock: rcs.isFixedMock(r) || undefined,
         mock: mockByItem.get(String(r._id)) || undefined,

@@ -68,7 +68,7 @@ function openCount(userId) {
 
 // ── Settling ───────────────────────────────────────────────────────
 async function expireOne(d) {
-  const upd = await Duel.findOneAndUpdate({ _id: d._id, status: 'pending' }, { $set: { status: 'expired', settledAt: new Date() } });
+  const upd = await Duel.findOneAndUpdate({ _id: d._id, status: 'pending' }, { $set: { status: 'expired', settledAt: new Date() }, $unset: { open: 1 } });
   if (!upd) return;
   await credit(d.challengerId, d.stake);
   await notify(d.opponentId, d.opponentName, d.challengerId,
@@ -83,7 +83,7 @@ async function settleOne(d) {
   const winnerId = scoreC > scoreO ? d.challengerId : scoreO > scoreC ? d.opponentId : null;
   const upd = await Duel.findOneAndUpdate(
     { _id: d._id, status: 'active' },
-    { $set: { status: 'done', scoreC, scoreO, winnerId, settledAt: new Date() } }
+    { $set: { status: 'done', scoreC, scoreO, winnerId, settledAt: new Date() }, $unset: { open: 1 } }
   );
   if (!upd) return;
   const pot = d.stake * 2;
@@ -159,10 +159,14 @@ async function challenge(userId, toId, stake) {
       challengerId: userId, challengerName: displayName(me),
       opponentId: toId, opponentName: displayName(rival),
       stake: n, expiresAt: new Date(Date.now() + DUEL_PENDING_HOURS * HOUR),
+      pairKey: [String(userId), String(toId)].sort().join(':'), open: true,
     });
   } catch (err) {
-    console.error('[duel] create failed:', err.message);
     await credit(userId, n);
+    // Lost the race to a duel created a moment ago for the same pair
+    // (double-click / two tabs) — the unique open-pair index caught it.
+    if (err.code === 11000) return { status: 'duel_exists' };
+    console.error('[duel] create failed:', err.message);
     return { status: 'duel_failed' };
   }
   await notify(userId, displayName(me), toId, `⚔️ ${displayName(me)} thách đấu bạn — cược ${n} 🔥!`,
@@ -178,7 +182,7 @@ async function respond(userId, duelId, accept) {
   if (!d) return { status: 'duel_gone' };
 
   if (!accept) {
-    const upd = await Duel.findOneAndUpdate({ _id: d._id, status: 'pending' }, { $set: { status: 'declined', settledAt: new Date() } });
+    const upd = await Duel.findOneAndUpdate({ _id: d._id, status: 'pending' }, { $set: { status: 'declined', settledAt: new Date() }, $unset: { open: 1 } });
     if (!upd) return { status: 'duel_gone' };
     await credit(d.challengerId, d.stake);
     await notify(userId, d.opponentName, d.challengerId, `🙅 ${d.opponentName} đã từ chối thách đấu`,
@@ -218,7 +222,7 @@ async function cancel(userId, duelId) {
   if (!mongoose.isValidObjectId(duelId)) return { status: 'duel_gone' };
   const upd = await Duel.findOneAndUpdate(
     { _id: duelId, challengerId: userId, status: 'pending' },
-    { $set: { status: 'cancelled', settledAt: new Date() } }
+    { $set: { status: 'cancelled', settledAt: new Date() }, $unset: { open: 1 } }
   ).lean();
   if (!upd) return { status: 'duel_gone' };
   await credit(userId, upd.stake);

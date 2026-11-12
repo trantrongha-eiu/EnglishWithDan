@@ -28,7 +28,15 @@ const DuelSchema = new mongoose.Schema({
   scoreO:         { type: Number, default: 0 },
   winnerId:       { type: mongoose.Schema.Types.ObjectId, default: null },
   settledAt:      { type: Date, default: null },
+  // The two ids sorted + joined, and `open: true` while pending/active
+  // (unset on every way out). A unique index over open rows makes "one
+  // unfinished duel per pair" atomic — the exists-check in challenge() alone
+  // let a double-click create two duels and take the stake twice.
+  pairKey:        { type: String },
+  open:           { type: Boolean },
 }, { timestamps: true });
+
+DuelSchema.index({ pairKey: 1 }, { unique: true, partialFilterExpression: { open: true } });
 
 DuelSchema.index({ challengerId: 1, status: 1 });
 DuelSchema.index({ opponentId: 1, status: 1 });

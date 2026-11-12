@@ -161,7 +161,8 @@ async function rankedQuizAverages(limit) {
       },
     },
     { $unwind: '$_user' },
-    { $match: { '_user.role': { $in: FLAME_ROLES } } }, // students + teachers race; admin test attempts stay out
+    // students + teachers race; admin test attempts and banned accounts stay out
+    { $match: { '_user.role': { $in: FLAME_ROLES }, '_user.isBanned': { $ne: true } } },
     { $sort: { avgScore: -1, avgTimeSpent: 1 } },
     ...(limit ? [{ $limit: limit }] : []),
     {
@@ -515,11 +516,20 @@ async function setPublished(id, published) {
 async function duplicateLesson(id, userId) {
   const source = await VocabularyLesson.findById(id).lean();
   if (!source) return null;
+  // Same cap as importLesson — "Duplicate" was a way around it.
+  if (await VocabularyLesson.countDocuments({}) >= MAX_LESSONS) {
+    const err = new Error(`Đã đạt giới hạn tối đa ${MAX_LESSONS} bài học, không thể nhân bản thêm. Hãy xoá bớt bài cũ.`);
+    err.status = 400;
+    throw err;
+  }
   return VocabularyLesson.create({
     title: `${source.title} (Copy)`,
     description: source.description,
     difficulty: source.difficulty,
     order: source.order,
+    // Kept, so publishing the copy doesn't silently show a class-only
+    // lesson to every student.
+    targetClass: source.targetClass || '',
     thumbnailUrl: source.thumbnailUrl || '',
     words: source.words,
     rawImport: source.rawImport,

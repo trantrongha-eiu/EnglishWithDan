@@ -196,7 +196,7 @@ exports.duplicateLesson = async (req, res) => {
     if (!lesson) return res.status(404).json({ success: false, message: 'Không tìm thấy bài học' });
     res.status(201).json({ success: true, lesson, message: `Đã nhân bản thành "${lesson.title}"` });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(err.status || 500).json({ success: false, message: err.message });
   }
 };
 

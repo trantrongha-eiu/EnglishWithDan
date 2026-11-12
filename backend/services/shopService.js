@@ -49,13 +49,6 @@ function isActive(until) {
   return !!(until && new Date(until).getTime() > Date.now());
 }
 
-// Extends a timed effect from whichever is later — now or its current end —
-// so using a second crown while one is running adds 7 more days instead of
-// wasting the first.
-function extendFrom(until, ms) {
-  const base = isActive(until) ? new Date(until).getTime() : Date.now();
-  return new Date(base + ms);
-}
 
 // One-time grant: the ví lửa is topped up to the student's current streak
 // (keeping anything above that), then grows with every 🔥 they earn from
@@ -482,15 +475,25 @@ async function useItem(userId, key) {
     return { status: cur && isActive(cur.cakedUntil) ? 'none_left' : 'not_caked' };
   }
 
-  // Timed effects: read the current end first so a renewal stacks on top.
-  const cur = await User.findById(userId).select('crownUntil invisibleUntil shopItems').lean();
-  if (!cur) return { status: 'not_found' };
+  // Timed effects: a renewal stacks on top of the current end. Spend and
+  // extend in ONE update, computed from the stored end — reading it first
+  // let two quick clicks (or two tabs) both extend from the same value, so
+  // two crowns were spent for 7 days.
   const field = key === 'crown' ? 'crownUntil' : 'invisibleUntil';
   const ms = key === 'crown' ? CROWN_DAYS * 24 * HOUR : CLOAK_HOURS * HOUR;
-  const until = extendFrom(cur[field], ms);
-  const u = await spendOne(userId, key, {}, { $set: { [field]: until } });
+  const slot = `shopItems.${key}`;
+  const u = await User.findOneAndUpdate(
+    { _id: userId, [slot]: { $gte: 1 } },
+    [{
+      $set: {
+        [slot]: { $subtract: [`$${slot}`, 1] },
+        [field]: { $add: [{ $max: ['$$NOW', { $ifNull: [`$${field}`, '$$NOW'] }] }, ms] },
+      },
+    }],
+    { new: true, updatePipeline: true }
+  ).select(`${slot} ${field}`).lean();
   if (!u) return { status: 'none_left' };
-  return { status: 'ok', owned: u.shopItems[key], until };
+  return { status: 'ok', owned: u.shopItems[key], until: u[field] };
 }
 
 // How long a cake stays on someone — Rồng Con's Lửa Rồng melts it sooner.
@@ -539,9 +542,12 @@ async function throwCake(userId, targetId) {
   const thrower = await User.findById(userId).select('firstName lastName username role activePet').lean();
   if (!thrower || !isFlameRole(thrower.role)) return { status: 'forbidden' };
   const target = mongoose.isValidObjectId(targetId)
-    ? await User.findById(targetId).select('role cakedUntil activePet firstName lastName username').lean()
+    ? await User.findById(targetId).select('role isBanned cakedUntil activePet firstName lastName username').lean()
     : null;
-  if (!target || !isFlameRole(target.role)) return { status: 'target_not_found' };
+  if (!target || !isFlameRole(target.role) || target.isBanned) return { status: 'target_not_found' };
+  // Blocking someone stops their cakes too (gifts and duels already did) —
+  // a cake puts the thrower's name on the target's avatar for a day.
+  if (await blockedEitherWay(userId, targetId)) return { status: 'cake_blocked' };
   if (isActive(target.cakedUntil)) return { status: 'already_caked' };
 
   const spent = await spendOne(userId, 'cake', {}, {});
@@ -587,9 +593,9 @@ async function useLens(userId, targetId) {
   const user = await User.findById(userId).select('firstName lastName username role').lean();
   if (!user || !isFlameRole(user.role)) return { status: 'forbidden' };
   const target = mongoose.isValidObjectId(targetId)
-    ? await User.findById(targetId).select('role invisibleUntil firstName lastName username').lean()
+    ? await User.findById(targetId).select('role isBanned invisibleUntil firstName lastName username').lean()
     : null;
-  if (!target || !isFlameRole(target.role)) return { status: 'target_not_found' };
+  if (!target || !isFlameRole(target.role) || target.isBanned) return { status: 'target_not_found' };
   if (!isActive(target.invisibleUntil)) return { status: 'not_hidden' };
 
   const spent = await spendOne(userId, 'lens', {}, {});

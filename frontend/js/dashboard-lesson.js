@@ -1178,19 +1178,26 @@ async function finishLessonQuiz() {
         wrongWords: q.wrongWords,
     };
 
+    const attemptBody = JSON.stringify({
+        correctCount: q.correct,
+        totalCount: total,
+        timeSpent: timeSpentSec,
+        wrongWords: q.wrongWords.map(w => w.word),
+    });
+    const lessonIdForSave = lessonState.currentLesson._id;
+    const saveAttempt = async () => {
+        const res = await fetch(`${API}/vocabulary-lessons/${lessonIdForSave}/attempt`, { method: 'POST', headers: authH(), body: attemptBody });
+        return window.ApiClient.handleResponse(res);
+    };
     try {
-        const res = await fetch(`${API}/vocabulary-lessons/${lessonState.currentLesson._id}/attempt`, {
-            method: 'POST',
-            headers: authH(),
-            body: JSON.stringify({
-                correctCount: q.correct,
-                totalCount: total,
-                timeSpent: timeSpentSec,
-                wrongWords: q.wrongWords.map(w => w.word),
-            }),
-        });
-        await window.ApiClient.handleResponse(res);
-    } catch (err) { console.error('finishLessonQuiz submit:', err); }
+        await saveAttempt();
+    } catch (err) {
+        // Used to be console-only: the results screen still showed, but the
+        // score was never stored — so the homework item for this lesson
+        // silently stayed "chưa xong". Say so, and offer a one-click retry.
+        console.error('finishLessonQuiz submit:', err);
+        _lessonSaveFailed(saveAttempt, err);
+    }
 
     // Report this quiz to the SAME streak/XP endpoint Notebook/Paraphrase
     // practice already uses — previously this only called
@@ -1228,6 +1235,21 @@ function getVocabResultImage(pct) {
          : pct >= 50 ? 'img/vocab50_70%25.jpg'
          : pct >= 20 ? 'img/vocabbelow50%25.jpg'
          :             'img/listening_readingbelow20%25.jpg';
+}
+
+function _lessonSaveFailed(saveAttempt, err) {
+    const msg = 'Chưa lưu được kết quả bài học' + (err && err.message ? ` (${err.message})` : '') + ' — bài tập về nhà sẽ chưa được tính.';
+    if (!window.confirmDialog) { if (typeof toast === 'function') toast(msg, 'error'); return; }
+    window.confirmDialog('Chưa lưu được kết quả', msg + ' Thử lưu lại ngay?', async () => {
+        try {
+            await saveAttempt();
+            if (typeof toast === 'function') toast('✔ Đã lưu kết quả bài học', 'success');
+            if (typeof loadHomework === 'function') loadHomework();
+            if (document.getElementById('lesson-tab-results')) renderResultsTab();
+        } catch (e2) {
+            if (typeof toast === 'function') toast('Vẫn chưa lưu được — kiểm tra mạng rồi làm lại bài nhé.', 'error');
+        }
+    }, { confirmLabel: 'Lưu lại', confirmClass: 'btn-primary' });
 }
 
 /* ──────────────────────────────────────────────

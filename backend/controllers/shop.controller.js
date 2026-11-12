@@ -16,6 +16,7 @@ const MESSAGES = {
   already_active: [400, 'Hôm nay bạn đã đập Búa Hi Vọng rồi!'],
   invalid_target: [400, 'Không ném bánh vào chính mình được 😆'],
   already_caked: [400, 'Bạn này đang dính kem rồi — để mai ném tiếp nhé!'],
+  cake_blocked: [403, 'Không ném bánh được vào bạn này (một trong hai đã chặn người kia).'],
   not_caked: [400, 'Ảnh đại diện của bạn đang sạch, chưa cần lau đâu ✨'],
   target_not_found: [404, 'Không tìm thấy bạn này.'],
   gift_self: [400, 'Không tự tặng quà cho chính mình được 😆'],

@@ -816,6 +816,31 @@ async function refreshResourceSnapshots(resources) {
   return resources;
 }
 
+// Internal homework items whose resource has since been DELETED (a lesson,
+// unit, test… removed from the admin) — Set of item _id strings. Such an
+// item can never be completed, so the homework status code leaves it out
+// instead of counting the whole assignment as missed (and toward the
+// class's warning / fail thresholds). Only deletion counts: a hidden /
+// unpublished resource may come back, so it is not "gone". Static catalogs
+// and catalog-less types (mock_test) never go missing.
+async function missingResourceItemIds(resources) {
+  const byType = new Map(); // type -> [resource]
+  for (const r of resources) {
+    const entry = r.kind === 'internal' && r.resourceId && REGISTRY[r.resourceType];
+    if (!entry || !entry.catalog || entry.catalog.static || !mongoose.isValidObjectId(r.resourceId)) continue;
+    if (!byType.has(r.resourceType)) byType.set(r.resourceType, []);
+    byType.get(r.resourceType).push(r);
+  }
+  const gone = new Set();
+  await Promise.all([...byType].map(async ([type, list]) => {
+    const ids = [...new Set(list.map((r) => String(r.resourceId)))];
+    const found = await REGISTRY[type].catalog.model.find({ _id: { $in: ids } }).select('_id').lean();
+    const have = new Set(found.map((d) => String(d._id)));
+    for (const r of list) if (!have.has(String(r.resourceId))) gone.add(String(r._id));
+  }));
+  return gone;
+}
+
 // key used to match an assignment resource against a completion result
 function resourceKey(type, resourceId) {
   return `${type}:${resourceId || '*'}`;
@@ -1311,7 +1336,7 @@ module.exports = {
   REGISTRY, TYPES, VIEW_TYPES, isValidType, countsPriorCompletion, hitPasses, COURSE_SCORE_RULE_FROM, PASS_PERCENT, PRACTICE_PASS_PERCENT,
   GAPFILL_MIN_CORRECT, MIN_SPEAKING_WORDS,
   groupEquivalentDocs, normalizePrompt,
-  listCatalog, resourceExists, labelFor, deepLinkKeyFor, refreshResourceSnapshots, resourceKey, checkCompleted,
+  listCatalog, resourceExists, labelFor, deepLinkKeyFor, refreshResourceSnapshots, missingResourceItemIds, resourceKey, checkCompleted,
   isFixedMock, completionItem, completionKey, assignedParts, attemptCoversParts, PART_COUNTS,
   assignedMode, attemptMatchesMode, MODE_TYPES, EXAM_MODES,
 };

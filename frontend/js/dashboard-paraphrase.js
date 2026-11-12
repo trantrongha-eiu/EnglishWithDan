@@ -86,10 +86,14 @@
     // Progress is a premium-only fetch (same bar as the unit content that's
     // already on screen); a lapsed user just sees cards with no pills.
     if (_mountUnit && _mountUnit._id) {
-      fetch(api() + '/vocab/paraphrase/progress/' + _mountUnit._id, { headers: authH() })
+      var unitId = _mountUnit._id;
+      fetch(api() + '/vocab/paraphrase/progress/' + unitId, { headers: authH() })
         .then(function (r) { return r.json(); })
         .then(function (d) {
           if (!d || !d.success) return;
+          // Switched to another unit before this answered — a late reply
+          // must not overwrite the new unit's progress pills.
+          if (!_mountUnit || _mountUnit._id !== unitId) return;
           _progBySig = {};
           (d.items || []).forEach(function (it) {
             _progBySig[norm(it.word) + ' ∴ ' + norm(it.paraphrase)] = it;

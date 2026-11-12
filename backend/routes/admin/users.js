@@ -21,6 +21,23 @@ const Message = require('../../models/Message');
 
 const router = express.Router();
 
+// Same minimum the student's own change-password enforces
+// (controllers/user.controller.js) — the admin forms used to accept anything.
+const MIN_PASSWORD = 8;
+function passwordError(pw) {
+  if (typeof pw !== 'string' || pw.length < MIN_PASSWORD) return `Mật khẩu phải có ít nhất ${MIN_PASSWORD} ký tự`;
+  return null;
+}
+// A lost race / edited-into-collision username or email surfaced as the raw
+// "E11000 duplicate key error collection: ..." text in the admin toast.
+function duplicateMessage(err) {
+  if (!err || err.code !== 11000) return null;
+  const field = Object.keys(err.keyPattern || err.keyValue || {})[0];
+  return field === 'email' ? 'Email này đã được dùng cho tài khoản khác.'
+    : field === 'username' ? 'Username này đã được dùng cho tài khoản khác.'
+    : 'Username hoặc email đã tồn tại.';
+}
+
 // ══════════════════════════════════════════════════
 // USER MANAGEMENT
 // ══════════════════════════════════════════════════
@@ -105,6 +122,8 @@ router.post('/users', auth, adminOnly, async (req, res) => {
     const { username, email, password, role = 'student', firstName = '', lastName = '', className = '' } = req.body;
     if (!username || !email || !password)
       return res.status(400).json({ success: false, message: 'Vui lòng điền đầy đủ username, email và mật khẩu.' });
+    const pwErr = passwordError(password);
+    if (pwErr) return res.status(400).json({ success: false, message: pwErr });
     const existing = await User.findOne({ $or: [{ email }, { username }] });
     if (existing)
       return res.status(400).json({ success: false, message: 'Username hoặc email đã tồn tại.' });
@@ -115,6 +134,8 @@ router.post('/users', auth, adminOnly, async (req, res) => {
     delete safe.password;
     res.json({ success: true, user: safe, message: 'Đã tạo tài khoản thành công.' });
   } catch (err) {
+    const dup = duplicateMessage(err);
+    if (dup) return res.status(400).json({ success: false, message: dup });
     res.status(500).json({ success: false, message: err.message });
   }
 });
@@ -132,7 +153,19 @@ router.put('/users/:id', auth, adminOnly, async (req, res) => {
     if (className !== undefined) update.className = className;
     if (isBanned !== undefined) update.isBanned = isBanned;
     if (newPassword) {
+      const pwErr = passwordError(newPassword);
+      if (pwErr) return res.status(400).json({ success: false, message: pwErr });
       update.password = await bcrypt.hash(newPassword, 10);
+      update.mustChangePassword = false;
+      // Resetting someone else's password must also sign out every device
+      // still holding a token from before (same rule as the student's own
+      // change-password) — otherwise a reset meant to lock out whoever got
+      // into the account changes nothing for them. Not for the admin's own
+      // account: that would log out the very session making the change.
+      if (req.params.id !== String(req.user._id)) {
+        update.tokenValidAfter = new Date();
+        update.$unset = { 'activeSessions.desktop': 1, 'activeSessions.mobile': 1 };
+      }
     }
     const user = await User.findByIdAndUpdate(req.params.id, update, { new: true, runValidators: true })
       .select('-password -savedVocab -resetOTP -resetOTPExpires -resetOTPAttempts');
@@ -142,9 +175,12 @@ router.put('/users/:id', auth, adminOnly, async (req, res) => {
     if (role !== undefined) {
       logger.security('Admin changed a user role', { actorId: String(req.user._id), targetId: String(user._id), newRole: role });
     }
+    if (newPassword) {
+      logger.security('Admin reset a user password', { actorId: String(req.user._id), targetId: String(user._id) });
+    }
     res.json({ success: true, user });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    res.status(400).json({ success: false, message: duplicateMessage(err) || err.message });
   }
 });
 

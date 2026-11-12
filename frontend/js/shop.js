@@ -25,8 +25,12 @@
             window.AuthService ? window.AuthService.authHeader() : {});
     }
     function api(method, url, body) {
+        // A network failure must still resolve: buy / 🎁 set busy=true and
+        // only after() clears it, so a rejected fetch left every buy button
+        // dead until reload (same fix as inventory.js).
         return fetch(API + url, { method: method, headers: authH(), body: body ? JSON.stringify(body) : undefined })
-            .then(function (r) { return r.json().catch(function () { return { success: false }; }); });
+            .then(function (r) { return r.json().catch(function () { return { success: false }; }); })
+            .catch(function () { return { success: false, message: 'Không kết nối được máy chủ, thử lại nhé.' }; });
     }
     function toast(msg, type) { if (window.showToast) window.showToast(msg, type || 'info'); }
     function confirmThen(title, msg, label, onOk) {

@@ -88,7 +88,13 @@ async function loadSession(req, res, next) {
 
 function sanitizePolicy(input = {}, base = {}) {
   const out = { ...base };
-  const num = (v) => (v === '' || v === null || v === undefined ? undefined : Number(v));
+  // A non-numeric value ("abc") used to become NaN → Math.max(…, NaN) = NaN
+  // → a CastError 500 on save; treat it as "not given" instead.
+  const num = (v) => {
+    if (v === '' || v === null || v === undefined) return undefined;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : undefined;
+  };
   if (num(input.maxAbsencesAllowed) !== undefined) out.maxAbsencesAllowed = Math.max(0, num(input.maxAbsencesAllowed));
   if (num(input.warnThreshold) !== undefined) out.warnThreshold = Math.max(0, num(input.warnThreshold));
   if (input.excusedCountsAsAbsence !== undefined) out.excusedCountsAsAbsence = !!input.excusedCountsAsAbsence;
@@ -99,6 +105,15 @@ function sanitizePolicy(input = {}, base = {}) {
   if (num(input.homeworkWarnThreshold) !== undefined) out.homeworkWarnThreshold = Math.max(1, num(input.homeworkWarnThreshold));
   if (num(input.homeworkFailThreshold) !== undefined) out.homeworkFailThreshold = Math.max(1, num(input.homeworkFailThreshold));
   if (num(input.homeworkLockThreshold) !== undefined) out.homeworkLockThreshold = Math.max(0, num(input.homeworkLockThreshold));
+  // The admin form only has "Ngưỡng cảnh báo" (homeworkWarnThreshold), but the
+  // student dashboard's warning banner + reminder message read
+  // homeworkMissThreshold — so a teacher lowering the warning to 2 still had
+  // students warned at 4. Owner's rule is one number for both (see
+  // scripts/migrateHomeworkThresholds.js): follow the warning threshold
+  // unless the reminder one was explicitly changed in this same request.
+  const missChanged = num(input.homeworkMissThreshold) !== undefined
+    && base.homeworkMissThreshold !== undefined && num(input.homeworkMissThreshold) !== base.homeworkMissThreshold;
+  if (num(input.homeworkWarnThreshold) !== undefined && !missChanged) out.homeworkMissThreshold = out.homeworkWarnThreshold;
   return out;
 }
 
@@ -763,16 +778,22 @@ exports.saveSessionAttendance = async (req, res) => {
     const eMap = {};
     enrollments.forEach((e) => { eMap[String(e._id)] = e; });
 
+    // Validate every row BEFORE writing any — a bad row half-way through used
+    // to 400 after the rows before it were already saved (and the session
+    // never flipped to "held" / stats never refreshed).
     for (const m of marks) {
-      if (!ATT_STATUSES.includes(m.status)) {
-        return res.status(400).json({ success: false, message: `Trạng thái điểm danh không hợp lệ: ${m.status}` });
+      if (!m || typeof m !== 'object' || !ATT_STATUSES.includes(m.status)) {
+        return res.status(400).json({ success: false, message: `Trạng thái điểm danh không hợp lệ: ${m && m.status}` });
       }
+      if (!eMap[String(m.enrollmentId)]) return res.status(400).json({ success: false, message: 'Học viên không thuộc lớp này' });
+    }
+
+    for (const m of marks) {
       const e = eMap[String(m.enrollmentId)];
-      if (!e) return res.status(400).json({ success: false, message: 'Học viên không thuộc lớp này' });
 
       const existing = await AttendanceRecord.findOne({ sessionId: session._id, studentId: e.studentId });
       const lateMinutes = m.status === 'late' && Number.isFinite(Number(m.lateMinutes)) ? Math.max(0, Number(m.lateMinutes)) : undefined;
-      const note = (m.note || '').trim();
+      const note = String(m.note == null ? '' : m.note).trim().slice(0, 500);
 
       if (existing) {
         if (existing.status !== m.status || (existing.note || '') !== note) {

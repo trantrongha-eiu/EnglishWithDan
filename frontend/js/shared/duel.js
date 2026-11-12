@@ -32,7 +32,10 @@
       method: method,
       headers: Object.assign({ 'Content-Type': 'application/json' }, window.AuthService ? window.AuthService.authHeader() : {}),
       body: body ? JSON.stringify(body) : undefined,
-    }).then(function (r) { return r.json().catch(function () { return { success: false }; }); });
+    }).then(function (r) { return r.json().catch(function () { return { success: false }; }); })
+      // Offline: resolve with an error so the button / dialog recovers
+      // instead of staying disabled forever.
+      .catch(function () { return { success: false, message: 'Không kết nối được máy chủ, thử lại nhé.' }; });
   }
   function toast(msg, type) { if (window.showToast) window.showToast(msg, type || 'info'); }
   function confirmThen(title, msg, label, onOk) {

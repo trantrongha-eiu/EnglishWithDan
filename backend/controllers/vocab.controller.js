@@ -204,9 +204,17 @@ exports.bulkAddWords = async (req, res) => {
   }
 };
 
+// chunkSize comes straight from the request — 0 / a string / a negative made
+// the split loop (i += chunkSize) spin forever and hang the server.
+function parseChunkSize(raw, fallback) {
+  const n = raw === undefined ? fallback : Number(raw);
+  return Number.isInteger(n) && n >= 10 && n <= 1000 ? n : null;
+}
+
 exports.splitUnit = async (req, res) => {
   try {
-    const { chunkSize = 100 } = req.body;
+    const chunkSize = parseChunkSize(req.body?.chunkSize, 100);
+    if (!chunkSize) return res.status(400).json({ success: false, message: 'chunkSize phải là số nguyên 10–1000' });
     const result = await vocabService.splitUnit(req.params.id, chunkSize);
     if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy unit' });
     if (result.status === 'too_small') {
@@ -220,7 +228,8 @@ exports.splitUnit = async (req, res) => {
 
 exports.splitAllUnits = async (req, res) => {
   try {
-    const { chunkSize = 120 } = req.body;
+    const chunkSize = parseChunkSize(req.body?.chunkSize, 120);
+    if (!chunkSize) return res.status(400).json({ success: false, message: 'chunkSize phải là số nguyên 10–1000' });
     const result = await vocabService.splitAllUnits(chunkSize);
     if (result.status === 'none') {
       return res.json({ success: true, message: `Không có unit nào vượt quá ${chunkSize} từ`, parts: 0 });

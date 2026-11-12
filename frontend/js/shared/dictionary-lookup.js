@@ -422,10 +422,14 @@
 
   var _lookupSeq = 0;
 
+  var NOT_FOUND = 'Không tìm thấy';
+  var _renderedKey = null;
+
   function lookupWord(word, x, y) {
     _ensureMarkup();
     var key = word.toLowerCase();
     _word = word;
+    _renderedKey = null; // a fresh lookup always opens on the "Nghĩa" tab
     if (window.WordAudio) window.WordAudio.prefetch(word);
     document.getElementById('dict-word').textContent = word;
     var _ph = document.getElementById('dict-phonetic');
@@ -457,7 +461,7 @@
       if (!data.primaryMeaning && !(done.trans && done.dict && done.mem)) return;
       renderDictPopup({
         phonetic: data.phonetic, partOfSpeech: data.partOfSpeech,
-        primaryMeaning: data.primaryMeaning || 'Không tìm thấy',
+        primaryMeaning: data.primaryMeaning || NOT_FOUND,
         otherMeanings: data.otherMeanings, examples: data.examples
       });
     }
@@ -469,10 +473,12 @@
         if (memValue) { try { _mergeMyMemory(data, memValue, word); } catch (e) {} }
       }
       paint();
-      if (done.trans && done.dict && done.mem && fresh()) {
+      // A lookup where every source failed (offline, 429) isn't cached —
+      // otherwise the word stayed "Không tìm thấy" for the rest of the visit.
+      if (done.trans && done.dict && done.mem && fresh() && data.primaryMeaning) {
         _cacheSet(_cache, key, {
           phonetic: data.phonetic, partOfSpeech: data.partOfSpeech,
-          primaryMeaning: data.primaryMeaning || 'Không tìm thấy',
+          primaryMeaning: data.primaryMeaning || NOT_FOUND,
           otherMeanings: data.otherMeanings, examples: data.examples
         }, 200);
       }
@@ -508,6 +514,16 @@
 
   function renderDictPopup(data) {
     _currentData = data;
+    // Progressive paints re-render the same word up to 3 times — keep what
+    // the student already did there (Collocations tab open / loading, an
+    // "other meaning" chip picked) instead of snapping back to "Nghĩa".
+    var key = (_word || '').toLowerCase();
+    var same = _renderedKey === key;
+    _renderedKey = key;
+    var oldColloc = same ? document.getElementById('dict-tab-collocations') : null;
+    var collocOpen = !!(oldColloc && oldColloc.style.display !== 'none');
+    var pickedChip = same ? document.querySelector('#dict-body .dict-meaning-chip.active') : null;
+    var picked = pickedChip ? pickedChip.getAttribute('data-meaning') : null;
     var ipa = _fmtIpa(data.phonetic);
     var meta = [ipa, data.partOfSpeech].filter(Boolean).join('  ·  ');
     var phonEl = document.getElementById('dict-phonetic');
@@ -548,6 +564,19 @@
       chipEls[ci].addEventListener('click', function () {
         selectDictMeaning(this, this.getAttribute('data-meaning') || '');
       });
+      if (picked !== null && chipEls[ci].getAttribute('data-meaning') === picked) {
+        selectDictMeaning(chipEls[ci], picked);
+      }
+    }
+    if (oldColloc) {
+      var freshColloc = document.getElementById('dict-tab-collocations');
+      if (freshColloc) freshColloc.replaceWith(oldColloc);
+      if (collocOpen) {
+        var tabs = document.querySelectorAll('.dict-tab');
+        for (var ti = 0; ti < tabs.length; ti++) tabs[ti].classList.toggle('active', tabs[ti].dataset.tab === 'collocations');
+        var mp = document.getElementById('dict-tab-meaning');
+        if (mp) mp.style.display = 'none';
+      }
     }
   }
 
@@ -649,6 +678,9 @@
     if (!_currentData || !_word) return;
     var meaningEl = document.getElementById('dict-primary-meaning');
     var meaning = (meaningEl && meaningEl.textContent.trim()) || _currentData.primaryMeaning;
+    // The "not found" placeholder is not a meaning — it used to be saved as
+    // one and then turned up as a Quiz option ("Không tìm thấy").
+    if (meaning === NOT_FOUND) meaning = '';
     // Only included if the student already opened the Collocations tab for
     // this word (session-local _collocCache, populated by
     // loadDictCollocations) — saving never triggers a fresh Gemini call on

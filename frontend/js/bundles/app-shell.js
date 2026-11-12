@@ -1402,7 +1402,7 @@
   if (!document.getElementById('ews-sentence-lookup-js')) {
     var slScript = document.createElement('script');
     slScript.id = 'ews-sentence-lookup-js';
-    slScript.src = '/js/shared/sentence-lookup.js?v=bc3a6ae329';
+    slScript.src = '/js/shared/sentence-lookup.js?v=8740f1292f';
     document.body.appendChild(slScript);
   }
 
@@ -1418,7 +1418,7 @@
     if (/^(mock-test|entrance-test|test-dau-vao)(\.html)?$/.test(page)) return;
     var dlScript = document.createElement('script');
     dlScript.id = 'ews-dict-lookup-js';
-    dlScript.src = '/js/shared/dictionary-lookup.js?v=76b22cb3a9';
+    dlScript.src = '/js/shared/dictionary-lookup.js?v=74785ced6f';
     document.body.appendChild(dlScript);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _injectDictLookup);
@@ -1443,7 +1443,7 @@
   if (!document.getElementById('ews-pets-js')) {
     var petScript = document.createElement('script');
     petScript.id = 'ews-pets-js';
-    petScript.src = '/js/shared/pets.js?v=62e28dc034';
+    petScript.src = '/js/shared/pets.js?v=4dbddf4829';
     document.body.appendChild(petScript);
   }
 

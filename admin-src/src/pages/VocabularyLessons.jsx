@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch, formatDate } from '../utils/api';
 import { downloadCsv } from '../utils/csvDownload';
@@ -230,13 +230,21 @@ function LessonStudentsModal({ lessonId, lessonTitle, onClose }) {
       .finally(() => setLoading(false));
   }, [lessonId]);
 
+  // Back → another student quickly: only the latest click may fill the
+  // table (a slower first response used to show under the second name).
+  const historyFor = React.useRef(null);
   async function openStudentHistory(student) {
+    historyFor.current = student.userId;
     setDetailStudent({ userId: student.userId, name: studentDisplayName(student) });
     setDetailHistory(null);
     try {
       const d = await apiFetch(`/vocabulary-lessons/admin/${lessonId}/students/${student.userId}/history`);
-      setDetailHistory(d.history || []);
-    } catch (e) { toast(e.message, 'error'); }
+      if (historyFor.current === student.userId) setDetailHistory(d.history || []);
+    } catch (e) {
+      if (historyFor.current !== student.userId) return;
+      setDetailHistory([]);
+      toast(e.message, 'error');
+    }
   }
 
   async function doExport() {

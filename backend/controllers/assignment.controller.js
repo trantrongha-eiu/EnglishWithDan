@@ -227,7 +227,11 @@ async function buildResources(input, existing = [], ctx = {}) {
         description: String(r.description || '').slice(0, 1000),
       };
     } else if (r.kind === 'image') {
-      const images = Array.isArray(r.images) ? r.images.filter((im) => im && im.url).slice(0, 10) : [];
+      // http(s) only, same as an external link — the dashboard puts each url
+      // straight into an <a href>/<img src>, so a "javascript:" url would run
+      // script on every student who clicks the thumbnail.
+      const images = Array.isArray(r.images)
+        ? r.images.filter((im) => im && typeof im.url === 'string' && /^https?:\/\//i.test(im.url)).slice(0, 10) : [];
       if (!images.length) return { error: 'Bài tập ảnh cần ít nhất một ảnh đã upload' };
       built = {
         kind: 'image',

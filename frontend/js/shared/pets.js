@@ -735,9 +735,11 @@
         self.opening = false;
         if (!d || !d.success) {
           var code = d && d.code;
-          giftState = code === 'gift_study' ? 'study' : 'claimed';
-          saveCache();
-          self.syncGift();
+          // Only the server's own answers change the 🎁: anything else (a
+          // 500, an error page) used to mark it "claimed" for the day, so
+          // the gift vanished without ever being opened.
+          var next = { gift_study: 'study', gift_claimed: 'claimed', no_pet: 'none' }[code];
+          if (next) { giftState = next; saveCache(); self.syncGift(); }
           self.say('<span>' + esc((d && d.message) || 'Chưa mở được quà, thử lại sau nhé!') + '</span>');
           return;
         }

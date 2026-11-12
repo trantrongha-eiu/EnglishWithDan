@@ -58,21 +58,28 @@ let _vocabWordsSeen = new Map();
 
 // ── Session streak tracking ────────────────────
 let sessionAnsweredCount = 0;
-// How much of sessionAnsweredCount/correctAnswers has already been sent to
-// /vocabbook/practice-complete — reporting is batched in groups of 5 rather
-// than once per session (see _reportSessionStreak()), so both of these
-// track "as of the last successful report", not "ever reported at all".
-let _lastReportedAnsweredCount = 0;
-let _lastReportedCorrectCount = 0;
-let _streakReportInFlight = false; // prevents two overlapping /practice-complete calls, not a "never again" gate
-// Fresh per startPractice() call — sent with every batched /practice-complete
-// report so the backend can scope the streak-bonus tier to THIS session's
-// own running accuracy instead of re-evaluating it on every 5-answer batch
-// (see backend/services/vocabBookService.js's reserveStreakBonusForSession
-// for the "học xong ngay lập tức được 5 lửa" bug this fixes).
-let _vocabSessionId = null;
+// One record per startPractice() session: what it has answered so far and
+// how much of that /vocabbook/practice-complete has already been told
+// (reporting is batched — see _reportSessionStreak()). A record outlives
+// its session, so a report still queued when the student switches mode
+// finishes against the OLD session instead of being dropped or mixed into
+// the new one. `sid` goes with every batch so the backend scopes the
+// streak-bonus tier and the Búa Daniel unit tally to this session (see
+// vocabBookService's reserveStreakBonusForSession / trackUnitProgress).
+let _streakSess = null;
 function _newVocabSessionId() {
     return 'v' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+function _newStreakSession() {
+    const isParaphrase = _isParaphraseUnitSession();
+    return {
+        sid: _newVocabSessionId(),
+        answered: 0, correct: 0,          // mirrors sessionAnsweredCount / correctAnswers
+        reported: 0, reportedCorrect: 0,  // as of the last successful report
+        unitId: isParaphrase ? currentUnit._id : null,
+        unitType: isParaphrase ? 'paraphrase' : null,
+        pending: false,                   // a regular 5-answer batch is queued/running
+    };
 }
 let _persistedThisSession = false; // prevent double-counting wrongCount on multiple showResults calls
 
@@ -178,8 +185,10 @@ function _countAnswer() {
     if (currentWord?.type === 'paraphrase' && typeof window.noteParaphraseAnswered === 'function') {
         window.noteParaphraseAnswered(currentWord, !wrongWordSet.has(currentWord.word));
     }
-    if (sessionAnsweredCount - _lastReportedAnsweredCount >= 5) {
-        _reportSessionStreak();
+    if (_streakSess) {
+        _streakSess.answered = sessionAnsweredCount;
+        _streakSess.correct  = correctAnswers; // already tallied for this answer
+        if (_streakSess.answered - _streakSess.reported >= 5) _reportSessionStreak();
     }
 }
 
@@ -637,13 +646,22 @@ async function loadWeaknessProfile() {
     emptyState.style.display = 'none';
     errorState.style.display = 'none';
 
+    // Both endpoints are Premium-only (requirePremium). A free student past
+    // the 24h trial used to get "Unable to load your insights" + a "Thử lại"
+    // that could never work — show what it is and how to unlock it instead.
+    if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+        _showWeaknessLocked(errorState);
+        return;
+    }
+
     let data, weakVocab;
     try {
         [data, weakVocab] = await Promise.all([
             fetch(`${API}/weakness`, { headers: authH() }).then(r => window.ApiClient.handleResponse(r)),
             fetch(`${API}/vocabbook/weak?limit=20`, { headers: authH() }).then(r => window.ApiClient.handleResponse(r)),
         ]);
-    } catch {
+    } catch (err) {
+        if (err && err.body && err.body.requiresPremium) { _showWeaknessLocked(errorState); return; }
         errorState.style.display = '';
         return;
     }
@@ -704,6 +722,14 @@ async function loadWeaknessProfile() {
         `;
     }).join('');
     list.style.display = '';
+}
+
+function _showWeaknessLocked(stateEl) {
+    stateEl.innerHTML = `
+        <div class="weakness-state-icon"><i class="fas fa-crown"></i></div>
+        <div class="weakness-state-title">Phân tích điểm yếu là tính năng Premium</div>
+        <button class="btn btn-primary btn-sm" onclick="openUpgradeModal()">Nâng cấp Premium</button>`;
+    stateEl.style.display = '';
 }
 
 const RANK_MEDAL = { 1: '🥇', 2: '🥈', 3: '🥉' };
@@ -1166,7 +1192,7 @@ function goalReachedContinue() {
 
 function goalReachedStop() {
     closeModal('modal-goal-reached');
-    _reportSessionStreak();
+    _reportSessionStreak(true);
     _flushPracticeEvidence(); // the words answered so far count for the homework
     _skipQuitAsk = true;      // already chosen — no second "quit?" prompt
     closeUnitView();
@@ -2591,41 +2617,84 @@ function _applyStreakResult(d) {
 // going — the exact reason "học hơn 35 chữ vẫn không cộng chuỗi lửa" reports
 // started after the 35-word threshold shipped: a single long session could
 // never report more than 5 words toward that day's total.
-async function _reportSessionStreak() {
-    if (_streakReportInFlight) return;
-    const batchAnswered = sessionAnsweredCount - _lastReportedAnsweredCount;
-    if (batchAnswered < 5) return;
-    const batchCorrect = correctAnswers - _lastReportedCorrectCount;
-    _streakReportInFlight = true;
-    // Snapshot before the await — sessionAnsweredCount/correctAnswers can
-    // keep advancing while this request is in flight (the next answer's
-    // _countAnswer() call doesn't wait for us), so what we mark "reported"
-    // must match exactly what this specific request's body claimed.
-    const reportedAnswered = sessionAnsweredCount;
-    const reportedCorrect  = correctAnswers;
-    try {
-        const isParaphrase = _isParaphraseUnitSession();
-        const res = await fetch(`${API}/vocabbook/practice-complete`, {
-            method: 'POST', headers: authH(),
-            body: JSON.stringify({
-                wordsAnswered: batchAnswered,
-                correctAnswered: batchCorrect,
-                unitId: isParaphrase ? currentUnit._id : null,
-                unitType: isParaphrase ? 'paraphrase' : null,
-                sessionId: _vocabSessionId
-            })
+// `final` (session end: results screen, quit, "dừng lại" on a reached
+// homework goal) also sends the 1–4 answers left over after the last
+// 5-answer batch — they used to be dropped, which e.g. kept a 23-word
+// Paraphrase Unit answered perfectly at 20 reported and never earned its
+// Búa Daniel. The ≥5-answers minimum still applies to the session.
+//
+// Every report goes through ONE queue (_streakChain), so two requests never
+// run at once — the server reads-then-saves the user per call, and two
+// overlapping batches of one session could both award the same unit's
+// hammer. Each queued job works out its batch when it actually runs, from
+// its own session record, so nothing is double-counted and a session that
+// ended while a batch was still in flight still gets its leftover sent
+// (it used to be dropped once the next session had started).
+let _streakChain = Promise.resolve();
+let _streakBusy = 0; // reports queued or running
+function _reportSessionStreak(final = false, sess = _streakSess) {
+    if (!sess) return;
+    if (!final) { if (sess.pending) return; sess.pending = true; }
+    let sent = false;
+    _streakBusy++;
+    _streakChain = _streakChain
+        .then(() => _sendStreakBatch(sess, final))
+        .then((ok) => { sent = ok; })
+        .catch(() => { /* silent — batch stays unreported, picked up by the next trigger */ })
+        .finally(() => {
+            _streakBusy--;
+            if (final) return;
+            sess.pending = false;
+            // Answers kept coming while that batch was out. Only after a
+            // successful send — offline, this would otherwise retry in a loop.
+            if (sent && sess.answered - sess.reported >= 5) _reportSessionStreak(false, sess);
         });
-        const d = await window.ApiClient.handleResponse(res);
-        _lastReportedAnsweredCount = reportedAnswered;
-        _lastReportedCorrectCount  = reportedCorrect;
-        _applyStreakResult(d);
-        if (window.showBadgeUnlocked && d?.newlyUnlocked?.length) window.showBadgeUnlocked(d.newlyUnlocked);
-    } catch { /* silent — batch stays unreported, picked up by the next trigger */ }
-    finally { _streakReportInFlight = false; }
 }
+async function _sendStreakBatch(sess, final) {
+    const batch = sess.answered - sess.reported;
+    if (batch < (final && sess.answered >= 5 ? 1 : 5)) return false;
+    // Snapshot: answers can keep arriving during the await, and "reported"
+    // must match exactly what this request's body claimed.
+    const upTo = sess.answered, upToCorrect = sess.correct;
+    const res = await fetch(`${API}/vocabbook/practice-complete`, {
+        method: 'POST', headers: authH(),
+        keepalive: true, // finishes even if the tab is closed right after
+        body: JSON.stringify({
+            wordsAnswered: batch,
+            correctAnswered: upToCorrect - sess.reportedCorrect,
+            unitId: sess.unitId,
+            unitType: sess.unitType,
+            sessionId: sess.sid
+        })
+    });
+    const d = await window.ApiClient.handleResponse(res);
+    sess.reported = upTo;
+    sess.reportedCorrect = upToCorrect;
+    _applyStreakResult(d);
+    if (window.showBadgeUnlocked && d?.newlyUnlocked?.length) window.showBadgeUnlocked(d.newlyUnlocked);
+    return true;
+}
+
+// Closing the tab / switching app mid-quiz: send the leftover now (the page
+// may never come back). Hiding the tab mid-session is harmless — later
+// batches simply continue from what was reported. Skipped while a report is
+// still out: its own keepalive request completes, and a second one for the
+// same session must not overlap it (see the queue above).
+function _flushStreakOnLeave() {
+    if (_streakSess && !_streakBusy) _reportSessionStreak(true);
+}
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') _flushStreakOnLeave();
+});
+window.addEventListener('pagehide', _flushStreakOnLeave);
 
 function startPractice(mode) {
     _flushPracticeEvidence(); // previous session left half-way (mode switch / restart)
+    // ...and its 1–4 answers after the last 5-answer batch (mode switch,
+    // "Làm lại", "Luyện tất cả" never pass through showResults/confirmQuit).
+    // Queued against the old session's own record, so resetting the
+    // counters below can't affect it.
+    _reportSessionStreak(true);
     _vocabQuizActive = true;
     // The other quiz panels register their own question areas; these four
     // (or the parts around their inner areas) don't, and dictionary-lookup.js's
@@ -2645,9 +2714,7 @@ function startPractice(mode) {
     wrongAnswers   = 0;
     answered = false;
     sessionAnsweredCount = 0;
-    _lastReportedAnsweredCount = 0;
-    _lastReportedCorrectCount = 0;
-    _vocabSessionId = _newVocabSessionId();
+    _streakSess = _newStreakSession();
     const wrongListEl = document.getElementById('wrong-words-list');
     if (wrongListEl) wrongListEl.style.display = 'none';
 
@@ -3024,7 +3091,7 @@ function askQuitPractice(onQuit) {
 
 function confirmQuit() {
     closeModal('modal-quit-practice');
-    _reportSessionStreak(); // tính streak nếu đã trả lời >= 5 từ trước khi thoát
+    _reportSessionStreak(true); // tính streak nếu đã trả lời >= 5 từ trước khi thoát
     // Words answered before leaving still count (SRS + homework "học N từ"),
     // not only a session played to the end. Lesson quizzes keep their own flow.
     if (!(typeof isQuizInProgress === 'function' && isQuizInProgress())) _flushPracticeEvidence();
@@ -3322,7 +3389,9 @@ function checkMultipleChoice(btn, selected, correct) {
 // a word/meaning ending in a literal backslash (e.g. `x\`) lets the quote it
 // precedes close the onclick="...('...')" JS string early, turning the rest
 // of the attribute into executable script.
-function escH(s) { return (s || '').replace(/\\/g, '\\\\').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+// Line breaks too: a meaning pasted with a newline ended the JS string early,
+// so every Quiz option of that question was dead (click and 1–4 alike).
+function escH(s) { return (s || '').replace(/\\/g, '\\\\').replace(/&/g, '&amp;').replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\r/g, '\\r').replace(/\n/g, '\\n'); }
 function escR(s) { return (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
 /* ── Flashcard ── */
@@ -3384,7 +3453,10 @@ function markAsRemembered() {
     _countAnswer();
     document.getElementById('fbFeedback').innerHTML = '<div class="feedback-correct">✅ Tuyệt vời! Bạn đã nhớ từ này! 🎉</div>';
     disableFlashcardBtns();
-    setTimeout(() => { currentQuestionIndex++; showQuestion('fillBlank'); }, 1500);
+    // Tracked like the 15s timer below, so leaving / switching mode within
+    // 1.5s can't advance (or end) the next session.
+    _clearAutoNext();
+    _autoNextTimer = setTimeout(() => { _autoNextTimer = null; currentQuestionIndex++; showQuestion('fillBlank'); }, 1500);
 }
 function markAsNotRemembered() {
     if (!isFlipped) { toast('Lật thẻ trước đã!', 'error'); return; }
@@ -3436,8 +3508,9 @@ function showHint() {
 }
 function checkFillBlank() {
     if (answered || !isFlipped) return;
-    const ua = document.getElementById('fbInput').value.trim().toLowerCase();
-    const ca = currentWord.word.toLowerCase();
+    // Same normalisation as the other typed modes (curly apostrophes, double spaces).
+    const ua = _normAnswer(document.getElementById('fbInput').value);
+    const ca = _normAnswer(currentWord.word);
     if (!ua) { toast('Nhập một từ trước đã', 'error'); return; }
     answered = true;
     document.getElementById('fbInput').disabled = true;
@@ -3606,7 +3679,7 @@ function showResults(mode) {
     if (hammerBanner) hammerBanner.style.display = _pendingHammerAnnouncement ? 'block' : 'none';
     _pendingHammerAnnouncement = false;
 
-    _reportSessionStreak(); // tính streak nếu đã trả lời >= 5 từ
+    _reportSessionStreak(true); // tính streak nếu đã trả lời >= 5 từ
 
     updateKbdHint(); // hide shortcut panel on results screen
 
@@ -3745,12 +3818,14 @@ document.addEventListener('keydown', e => {
     // Skip if any modal is open
     if (document.querySelector('.modal-overlay:not(.hidden)')) return;
 
+    // Only the ACTIVE mode's button: a mode left right after answering keeps
+    // its hidden "Tiếp" at display:flex, and clicking that one advanced the
+    // hidden session instead (and could end the visible one via showResults).
     const _nextBtn = () => {
-        const nextIds = ['mcBtnNext','fbBtnNext','clozeBtnNext','listenBtnNext','transBtnNext','mixBtnNext'];
-        for (const id of nextIds) {
-            const btn = document.getElementById(id);
-            if (btn && btn.style.display !== 'none') { btn.click(); return true; }
-        }
+        const id = { multipleChoice: 'mcBtnNext', fillBlank: 'fbBtnNext', cloze: 'clozeBtnNext',
+            listening: 'listenBtnNext', translation: 'transBtnNext', mixed: 'mixBtnNext' }[currentMode];
+        const btn = id && document.getElementById(id);
+        if (btn && btn.style.display !== 'none') { btn.click(); return true; }
         return false;
     };
 
@@ -3773,8 +3848,10 @@ document.addEventListener('keydown', e => {
     // 1–4: pick multiple-choice answer
     if (['1','2','3','4'].includes(e.key)) {
         if ((currentMode === 'multipleChoice' || currentMode === 'mixed') && !answered) {
+            // The current mode's options only — #mcAnswerOptions comes first in
+            // the DOM and keeps a stale, unanswered question after leaving Quiz.
             const opts = document.querySelectorAll(
-                '#mcAnswerOptions .answer-option:not(.opt-locked), #mixAnswerOptions .answer-option:not(.opt-locked)'
+                `${currentMode === 'mixed' ? '#mixAnswerOptions' : '#mcAnswerOptions'} .answer-option:not(.opt-locked)`
             );
             const idx = parseInt(e.key) - 1;
             if (opts[idx]) { opts[idx].click(); }

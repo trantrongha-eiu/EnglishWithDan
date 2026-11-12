@@ -35,10 +35,19 @@ async function getAdminUnit(id) {
   return VocabUnit.findById(id);
 }
 
+// A new unit goes to the END of the list. sortOrder defaulted to 0, which
+// sorted it above every unit that had been reordered (admin list + the
+// homework picker both sort by sortOrder first).
+async function nextSortOrder() {
+  const last = await VocabUnit.findOne().sort({ sortOrder: -1 }).select('sortOrder').lean();
+  return last ? (last.sortOrder || 0) + 1 : 0;
+}
+
 async function createUnit(body) {
   const existing = await VocabUnit.findOne({ unitNumber: body.unitNumber });
   if (existing) return { status: 'duplicate' };
   const unit = new VocabUnit(body);
+  if (body.sortOrder === undefined) unit.sortOrder = await nextSortOrder();
   await unit.save();
   return { status: 'ok', unit };
 }
@@ -253,6 +262,7 @@ async function importUnits(data, replace = false) {
       results.push({ unitNumber: unitData.unitNumber, status: 'updated', wordCount: existing.words.length });
     } else {
       const unit = new VocabUnit(unitData);
+      if (unitData.sortOrder === undefined) unit.sortOrder = await nextSortOrder();
       await unit.save();
       results.push({ unitNumber: unitData.unitNumber, status: 'created', wordCount: unit.words.length });
     }

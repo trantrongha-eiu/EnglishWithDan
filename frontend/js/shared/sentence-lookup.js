@@ -190,11 +190,20 @@
     positionEl(popup, rect.left, rect.bottom + 6, 300, 220);
     popup.classList.remove('hidden');
     renderOriginal(text);
+    loadTranslation(text);
+  }
+
+  // Separate from onIconClick so "Thử lại" re-fetches in place — going back
+  // through onIconClick read the (hidden) owl's rect and threw the popup to
+  // the top-left corner.
+  function loadTranslation(text) {
     var resultEl = popup.querySelector('.ews-sl-body-result');
     var key = text.toLowerCase();
+    // Bumped on a cache hit too, so a slower earlier sentence can't land on
+    // top of this one's result.
+    var requestId = ++_seq;
     if (_cache.has(key)) { renderResult(_cache.get(key)); return; }
     resultEl.innerHTML = '<div class="ews-sl-loading">Đang dịch...</div>';
-    var requestId = ++_seq;
     translateText(text).then(function (translated) {
       if (requestId !== _seq) return;
       if (_cache.has(key)) _cache.delete(key);
@@ -206,7 +215,10 @@
       resultEl.innerHTML = '<div class="ews-sl-error">Không dịch được, vui lòng thử lại.</div>' +
         '<button type="button" class="ews-sl-retry">Thử lại</button>';
       var retryBtn = resultEl.querySelector('.ews-sl-retry');
-      if (retryBtn) retryBtn.addEventListener('click', function () { onIconClick(); });
+      if (retryBtn) retryBtn.addEventListener('click', function () {
+        if (isExamActive()) { hideAll(); return; }
+        loadTranslation(text);
+      });
     });
   }
 

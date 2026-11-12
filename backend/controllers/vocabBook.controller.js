@@ -32,7 +32,15 @@ exports.completePractice = guard(async (req, res) => {
   // Must be a plain string (not e.g. a Mongo query-operator object) — it's
   // used as an exact-match filter value in vocabBookService.
   const safeSessionId = typeof sessionId === 'string' && sessionId ? sessionId.slice(0, 100) : null;
-  const result = await vocabBookService.completePractice(req.user, { wordsAnswered, correctAnswered, unitId, unitType, sessionId: safeSessionId });
+  // Counts come from the client: coerce to sane integers (a string or NaN
+  // used to slip past the "< 5" check and into the streak maths), never more
+  // correct than answered. A bad unitId used to throw a CastError → 500.
+  const toCount = (v) => { const n = Math.floor(Number(v)); return Number.isFinite(n) && n > 0 ? Math.min(n, 500) : 0; };
+  const words = toCount(wordsAnswered);
+  const correct = Math.min(toCount(correctAnswered), words);
+  const safeUnitId = unitId && mongoose.isValidObjectId(unitId) ? unitId : null;
+  const safeUnitType = unitType === 'paraphrase' ? 'paraphrase' : null;
+  const result = await vocabBookService.completePractice(req.user, { wordsAnswered: words, correctAnswered: correct, unitId: safeUnitId, unitType: safeUnitType, sessionId: safeSessionId });
   if (result.status === 'not_student') return res.json({ success: true });
   if (result.status === 'too_few') return res.json({ success: false, message: 'Cần ít nhất 5 từ để tính streak' });
   res.json({

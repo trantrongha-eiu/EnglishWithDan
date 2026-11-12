@@ -22,12 +22,23 @@
 
 // Entry point for the "Cần ôn lại" home tile — fetches the due queue
 // and launches it straight into a mixed quiz (no intermediate list screen).
+// Both launchers below hit Premium-only endpoints — a free student used to
+// get a "Không thể tải… thử lại" error toast that retrying could never fix.
+function _reviewNeedsUpgrade(err) {
+    const locked = err ? !!(err.body && err.body.requiresPremium)
+        : !!(window.AuthService && !window.AuthService.hasPremiumAccess());
+    if (locked && window.openUpgradeModal) window.openUpgradeModal();
+    return locked;
+}
+
 async function openReviewDueModal() {
+    if (_reviewNeedsUpgrade()) return;
     let data;
     try {
         data = await fetch(`${API}/vocabbook/review/due?limit=50`, { headers: authH() })
             .then(r => window.ApiClient.handleResponse(r));
-    } catch {
+    } catch (err) {
+        if (_reviewNeedsUpgrade(err)) return;
         toast('Không thể tải danh sách ôn tập. Vui lòng thử lại', 'error');
         return;
     }
@@ -72,11 +83,13 @@ window.openReviewDueModal = openReviewDueModal;
 // loadWeaknessProfile()'s cached count — that count may be stale by the
 // time the student actually clicks.
 async function practiceWeakVocab() {
+    if (_reviewNeedsUpgrade()) return;
     let data;
     try {
         data = await fetch(`${API}/vocabbook/weak?limit=20`, { headers: authH() })
             .then(r => window.ApiClient.handleResponse(r));
-    } catch {
+    } catch (err) {
+        if (_reviewNeedsUpgrade(err)) return;
         toast('Không thể tải danh sách từ yếu. Vui lòng thử lại', 'error');
         return;
     }

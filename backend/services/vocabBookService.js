@@ -166,7 +166,13 @@ async function reorderBooks(userId, order) {
 
 async function completePractice(user, { wordsAnswered, correctAnswered = 0, unitId = null, unitType = null, sessionId = null }) {
   if (!isFlameRole(user.role)) return { status: 'not_student' };
-  if (wordsAnswered < 5) return { status: 'too_few' };
+  // A practice SESSION needs >= 5 answers; dashboard.js reports it in
+  // 5-answer batches and, at the end, the 1–4 answers left over. Those
+  // leftovers used to be refused here (and never even sent) — so a 23-word
+  // Paraphrase Unit answered perfectly only ever reported 20 and could
+  // never earn its Búa Daniel (cumulative >= unit size). With a sessionId a
+  // smaller closing batch is accepted; without one the old rule stands.
+  if (wordsAnswered < (sessionId ? 1 : 5)) return { status: 'too_few' };
 
   // Stamped on every real batch, independent of the streak-threshold gating
   // below — powers nav.js's "haven't studied vocab in N days" nudge, which

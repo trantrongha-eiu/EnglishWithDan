@@ -226,9 +226,13 @@ function hwResourceRow(assignmentId, r, locked) {
   // until the old homework is made up — backend refuses ticks / the class
   // mock too (assignmentService.applyHomeworkLocks).
   if (locked && !r.completed) action = '<span class="hw-res-locked">🔒 Đang khoá</span>';
-  const ruleTag = r.kind === 'internal' ? hwRuleTag(r.resourceType) : '';
-  return `<div class="hw-res ${doneCls}">
-    <span class="hw-res-check">${check}</span>
+  // The lesson / unit / test was deleted after it was assigned — nothing to
+  // open, and the server no longer counts it (assignmentService
+  // deriveAssignmentStatus `gone`).
+  if (r.removed) action = '<span class="hw-res-na">Nội dung đã bị xoá — không tính vào bài tập</span>';
+  const ruleTag = r.kind === 'internal' && !r.removed ? hwRuleTag(r.resourceType) : '';
+  return `<div class="hw-res ${doneCls}${r.removed ? ' hw-res--removed' : ''}">
+    <span class="hw-res-check">${r.removed ? '–' : check}</span>
     <span class="hw-res-name">${name}${ruleTag}${r.description ? `<span class="hw-res-desc">${escHtml(r.description)}</span>` : ''}${r.instruction ? `<span class="hw-res-desc">${escHtml(r.instruction)}</span>` : ''}</span>
     <span class="hw-res-action">${action}</span>
   </div>`;
@@ -415,7 +419,7 @@ function hwRender(card, data, { stale = false } = {}) {
   // if the student had opened it.
   const rulesWasOpen = !!card.querySelector('.hw-rules[open]');
   const warn = data.homeworkWarning
-    ? `<div class="hw-warn">⚠️ Bạn đang có <b>${data.homeworkWarning.missedCount} buổi</b> chưa hoàn thành đầy đủ bài tập${data.homeworkWarning.className ? ` ở lớp <b>${escHtml(data.homeworkWarning.className)}</b>` : ''}. Vui lòng hoàn thành homework đúng hạn để không bị tụt lại.</div>`
+    ? `<div class="hw-warn">⚠️ Bạn đang có <b>${data.homeworkWarning.missedCount} bài tập</b> chưa hoàn thành đúng hạn${data.homeworkWarning.className ? ` ở lớp <b>${escHtml(data.homeworkWarning.className)}</b>` : ''}. Vui lòng hoàn thành homework đúng hạn để không bị tụt lại.</div>`
     : '';
   const lk = data.homeworkLock;
   const lockBanner = lk && lk.lockedCount
@@ -423,6 +427,14 @@ function hwRender(card, data, { stale = false } = {}) {
         Hãy hoàn thành các bài cũ dưới đây (kể cả bài đã quá hạn) để được làm tiếp bài mới:
         <ul>${lk.pendingOld.map((o) => `<li><a href="#" onclick="hwScrollTo('${o._id}');return false">${escHtml(o.title)}</a> · ${o.done}/${o.total}${o.status === 'overdue' ? ' <span class="hw-due hw-due--over">Quá hạn</span>' : ''}</li>`).join('')}</ul></div>`
     : '';
+  // Per-class thresholds from the server (teacher-editable); defaults if absent.
+  const pol = data.homeworkPolicy || {};
+  const lockThr = Number.isFinite(pol.lockThreshold) ? pol.lockThreshold : 2;
+  const warnThr = pol.warnThreshold || 4;
+  const failThr = pol.failThreshold || 8;
+  const lockRule = lockThr > 0
+    ? `Còn <b>hơn ${lockThr} bài tập cũ</b> chưa hoàn thành`
+    : 'Còn <b>bài tập cũ</b> nào chưa hoàn thành';
   const rules = `<details class="hw-rules"${rulesWasOpen ? ' open' : ''}>
     <summary>ℹ️ Cách tính bài tập đã hoàn thành</summary>
     <ul>
@@ -432,8 +444,8 @@ function hwRender(card, data, { stale = false } = {}) {
       <li><span class="hw-res-tag hw-res-tag--quiz">≥70% đúng</span> Học từ trong sổ từ vựng: chỉ tính <b>Sổ 1–5</b> (sổ mặc định; nếu giáo viên chỉ định sổ thì phải học đúng sổ đó). Sổ phải có <b>đủ số từ giáo viên giao</b> (thiếu thì tự lưu thêm từ vào sổ), rồi luyện tập (quiz/flashcard) <b>đủ số từ đó</b> và trả lời đúng <b>từ 70%</b> trở lên. Đổi trạng thái "đã thuộc" bằng tay không được tính.</li>
       <li><span class="hw-res-tag hw-res-tag--writing">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span> Bài viết (Writing): chỉ cần <b>nộp bài và viết đủ số từ tối thiểu</b> (Task 1 ≥${MIN_WORDS_T1} từ, Task 2 ≥${MIN_WORDS_T2} từ) là tính hoàn thành, không yêu cầu điểm.</li>
       <li><span class="hw-res-tag">Mở xem là xong</span> Video Shadowing, bài giảng Tips, Unit Vocab/Paraphrase: chỉ cần <b>bấm vào mở xem</b> là tự động tính hoàn thành.</li>
-      <li>🔒 Còn <b>hơn 2 bài tập cũ</b> chưa hoàn thành (kể cả bài đã quá hạn) thì các bài tập mới hơn sẽ bị <b>khoá</b> — làm bù bài cũ để mở khoá.</li>
-      <li>⚠️ Làm thiếu bài tập nhiều sẽ ảnh hưởng chuyên cần của lớp: bắt đầu <b>cảnh báo từ 4 bài</b> chưa hoàn thành đúng hạn, và <b>rớt khóa học</b> nếu thiếu tới <b>8 bài</b>. Bài giáo viên đã <b>đóng (lưu trữ)</b> mà bạn chưa làm xong <b>vẫn tính là thiếu</b> — làm bù đầy đủ sẽ được trừ.</li>
+      <li>🔒 ${lockRule} (kể cả bài đã quá hạn) thì các bài tập mới hơn sẽ bị <b>khoá</b> — làm bù bài cũ để mở khoá.</li>
+      <li>⚠️ Làm thiếu bài tập nhiều sẽ ảnh hưởng chuyên cần của lớp: bắt đầu <b>cảnh báo từ ${warnThr} bài</b> chưa hoàn thành đúng hạn, và <b>rớt khóa học</b> nếu thiếu tới <b>${failThr} bài</b>. Bài giáo viên đã <b>đóng (lưu trữ)</b> mà bạn chưa làm xong <b>vẫn tính là thiếu</b> — làm bù đầy đủ sẽ được trừ.</li>
     </ul>
   </details>`;
 
