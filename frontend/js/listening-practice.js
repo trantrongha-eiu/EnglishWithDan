@@ -1362,6 +1362,15 @@ async function _doSubmitLTPractice() {
                 }
             }
         } catch (e) { console.error('[_doSubmitLTPractice] answer-key fetch failed', e); }
+        // Still no key → every answer would show "Sai" (the server re-grades
+        // correctly, but the student only sees this screen). Keep the bài
+        // open — the stopwatch keeps running — and let them press again.
+        // (_ltGetAllQs returns copies — read the key back off the section.)
+        if (!_ltGetAllQs(_ltOrigSection).some(q => q.correctAnswer)) {
+            if (!window.AuthService.hasPremiumAccess()) { openUpgradeModal(); return; }
+            toast('Không tải được đáp án — kiểm tra kết nối rồi bấm nộp bài lại.', 'error');
+            return;
+        }
     }
 
     const elapsed = _stopLTPracticeTimer();
@@ -1375,7 +1384,12 @@ async function _doSubmitLTPractice() {
         const qs = group.questions || [];
         // TFNG/yes-no-ng never uses pool matching — each question has its own fixed answer
         const isTFNGLt = qs.some(q => ['true-false-ng', 'yes-no-ng'].includes(q.type));
-        if (group.interchangeableAnswers && qs.length > 0 && !isTFNGLt) {
+        // "Choose TWO/THREE letters" clusters store one JSON array per
+        // question — pool matching never finds it among single letters, so
+        // (like the server's gradeQuestionGroups) they take the per-type
+        // check below even with "Hoán đổi thứ tự" ticked.
+        const isMultiLt = qs.some(q => q.type === 'multi-answer-group');
+        if (group.interchangeableAnswers && qs.length > 0 && !isTFNGLt && !isMultiLt) {
             // Pool matching: đáp án trong nhóm có thể hoán đổi thứ tự (như backend)
             const remainingPool = qs.map(q => (q.correctAnswer || '').trim().toLowerCase());
             for (const q of qs) {

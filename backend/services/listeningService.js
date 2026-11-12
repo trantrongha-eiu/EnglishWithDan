@@ -392,7 +392,13 @@ async function listAdminAttempts({ testId, userId, page = 1, limit = 50 }) {
 }
 
 async function getAdminAttemptsStats(testId) {
-  const match = { status: 'completed', ...(testId ? { testId: new mongoose.Types.ObjectId(testId) } : {}) };
+  // Whole-test runs only — see readingService.getAdminAttemptsStats: a
+  // "Chọn phần làm" run (10–30 questions, band scaled up) skewed the
+  // averages. Those runs still appear in listAdminAttempts.
+  const match = {
+    status: 'completed', parts: { $exists: false },
+    ...(testId && mongoose.isValidObjectId(testId) ? { testId: new mongoose.Types.ObjectId(testId) } : {}),
+  };
   const [overview, byTest, topStudents] = await Promise.all([
     ListeningAttempt.aggregate([
       { $match: match },
@@ -1104,6 +1110,13 @@ async function startTest(id, userId, mode = 'practice', rawParts = null) {
   // silently resumed as a Simulation one (or vice versa). See Reading's
   // startTest() for the identical reasoning.
   let attempt = await ListeningAttempt.findOne({ userId, testId: test._id, status: 'in-progress', mode, ...partsFilter(parts) });
+  // Same as readingService.startTest: a row abandoned long ago (recording +
+  // 1h grace has passed) is restarted from scratch on the client, so its
+  // clock restarts too; a recent one (reload mid-test) keeps its real start.
+  if (attempt && attempt.startTime && Date.now() - new Date(attempt.startTime).getTime() > ((test.audioDuration || 40 * 60) + 60 * 60) * 1000) {
+    attempt.startTime = new Date();
+    await ListeningAttempt.updateOne({ _id: attempt._id }, { startTime: attempt.startTime });
+  }
   if (!attempt) {
     const totalQuestions = picked.reduce((sum, s) =>
       sum + s.questionGroups.reduce((gs, g) => gs + g.questions.length, 0), 0);
@@ -1160,7 +1173,10 @@ async function submitTest(id, { answers = {}, startTime: startTimeRaw, attemptId
     if (existing && Array.isArray(existing.parts) && existing.parts.length) parts = existing.parts;
   }
   const startTime = serverStartTime || (startTimeRaw ? new Date(startTimeRaw) : null);
-  const maxSecs = (test.audioDuration || 40) * 60;
+  // audioDuration is in SECONDS (mediaStore upload) — the old `* 60` made
+  // the cap 60× the recording. Recording + 1 hour leaves room for pauses
+  // in Practice mode (no clock) while still stopping absurd values.
+  const maxSecs = (test.audioDuration || 40 * 60) + 60 * 60;
   const timeTaken = startTime ? Math.min(Math.max(0, Math.round((now - startTime) / 1000)), maxSecs) : 0;
 
   // Snapshot the sections as-submitted so a later admin edit to the live
@@ -1293,7 +1309,12 @@ async function getHistory(userId, limit = 50) {
 // userId === null means "don't scope by owner" — the teacher/admin
 // mock-test-monitor review deep link (see the controller's comment).
 async function getHistoryDetail(attemptId, userId) {
-  const attempt = await ListeningAttempt.findOne({ _id: attemptId, ...(userId ? { userId } : {}) }).lean();
+  // Never an 'in-progress' row: it has no answers yet and no snapshot, so
+  // the live test's correctAnswer filled every question — the answer key of
+  // the exam being taken, mid-exam. It also fooled listening.js's submit
+  // recovery into showing an ungraded 0/40 as "already submitted" and
+  // dropping the student's local backup.
+  const attempt = await ListeningAttempt.findOne({ _id: attemptId, status: { $ne: 'in-progress' }, ...(userId ? { userId } : {}) }).lean();
   if (!attempt) return { status: 'attempt_not_found' };
 
   // Prefer the as-submitted snapshot; fall back to the live test for attempts

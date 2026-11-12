@@ -9,7 +9,6 @@ const { teacherOnly, uploadImageDataUri, uploadCoverImageDataUri, escapeRegex } 
 const Passage      = require('../../models/Passage');
 const ReadingTest  = require('../../models/ReadingTest');
 const ListeningTest = require('../../models/ListeningTest');
-const EntranceTestConfig = require('../../models/EntranceTestConfig');
 const readingController = require('../../controllers/reading.controller');
 
 const router = express.Router();
@@ -209,15 +208,13 @@ router.delete('/passages/:id', auth, teacherOnly, async (req, res) => {
 
 router.delete('/passages/:id/permanent', auth, teacherOnly, async (req, res) => {
   try {
-    // A passage pinned into a fixed Reading test or the Entrance Test can't
-    // just vanish — that test would stop starting ("thiếu bài đọc"). Name
-    // where it is used so the admin unpins it there first.
-    const [tests, entrance] = await Promise.all([
-      ReadingTest.find({ passageIds: req.params.id }).select('name').lean(),
-      EntranceTestConfig.exists({ readingPassageId: req.params.id }),
-    ]);
-    if (tests.length || entrance) {
-      const names = [...tests.map(t => `bộ đề "${t.name}"`), ...(entrance ? ['Test đầu vào'] : [])];
+    // A passage pinned into a fixed Reading test can't just vanish — that
+    // test would stop starting ("thiếu bài đọc"). Name the tests so the
+    // admin unpins it there first. (EntranceTestConfig.readingPassageId is
+    // a legacy field nothing reads — the Entrance Test draws at random.)
+    const tests = await ReadingTest.find({ passageIds: req.params.id }).select('name').lean();
+    if (tests.length) {
+      const names = tests.map(t => `bộ đề "${t.name}"`);
       return res.status(409).json({ success: false, message: `Bài đọc đang được dùng trong ${names.join(', ')} — bỏ chọn ở đó trước khi xoá.` });
     }
     const passage = await Passage.findByIdAndDelete(req.params.id);

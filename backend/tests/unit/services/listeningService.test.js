@@ -91,6 +91,40 @@ describe('listeningService.startTest / submitTest — attempt persistence', () =
     expect(count).toBe(1);
   });
 
+  test('getHistoryDetail never serves an in-progress attempt (no mid-exam answer key, no fake "already submitted")', async () => {
+    const student = await createStudent();
+    const test = await makeSimpleTest();
+    const started = await listeningService.startTest(test._id.toString(), student._id);
+
+    expect((await listeningService.getHistoryDetail(started.attemptId, student._id)).status).toBe('attempt_not_found');
+    expect((await listeningService.getHistoryDetail(started.attemptId, null)).status).toBe('attempt_not_found');
+
+    await listeningService.submitTest(test._id.toString(), { answers: { 1: 'yes' }, attemptId: started.attemptId }, student);
+    expect((await listeningService.getHistoryDetail(started.attemptId, student._id)).status).toBe('ok');
+  });
+
+  test('timeTaken is capped at the recording length + 1h (audioDuration is in seconds)', async () => {
+    const student = await createStudent();
+    const test = await makeSimpleTest();
+    await test.constructor.updateOne({ _id: test._id }, { audioDuration: 1800 });
+    const started = await listeningService.startTest(test._id.toString(), student._id);
+    await ListeningAttempt.updateOne({ _id: started.attemptId }, { startTime: new Date(Date.now() - 2 * 3600 * 1000) });
+
+    const r = await listeningService.submitTest(test._id.toString(), { answers: {}, attemptId: started.attemptId }, student);
+    expect(r.timeTaken).toBe(1800 + 3600);
+  });
+
+  test('an in-progress attempt abandoned long ago restarts its clock on the next start', async () => {
+    const student = await createStudent();
+    const test = await makeSimpleTest();
+    const first = await listeningService.startTest(test._id.toString(), student._id);
+    await ListeningAttempt.updateOne({ _id: first.attemptId }, { startTime: new Date(Date.now() - 3 * 24 * 3600 * 1000) });
+
+    await listeningService.startTest(test._id.toString(), student._id);
+    const row = await ListeningAttempt.findById(first.attemptId).lean();
+    expect(Date.now() - row.startTime.getTime()).toBeLessThan(60 * 1000);
+  });
+
   // The reused row must never be invalidated (status changed away from
   // 'in-progress') — submitTest()'s own findOneAndUpdate requires that
   // exact status in its filter, so doing so would silently reject a
@@ -562,5 +596,19 @@ describe('listeningService.listAdminAttempts / getAdminAttemptsStats', () => {
 
     expect(stats.overview.totalAttempts).toBe(2); // not 3 — the in-progress row is excluded
     expect(stats.overview.avgBand).toBeCloseTo(7, 5); // not dragged down by the 0-scored in-progress row
+  });
+});
+
+describe('listeningService.getAdminAttemptsStats — "Chọn phần làm" runs', () => {
+  test('averages whole-test runs only; the attempts list keeps the partial run', async () => {
+    const student = await createStudent();
+    const test = await createListeningTest({ name: 'Parts Test' });
+    await createListeningAttempt({ userId: student._id, testId: test._id, bandScore: 7, correctCount: 30 });
+    await createListeningAttempt({ userId: student._id, testId: test._id, bandScore: 4, correctCount: 5, totalQuestions: 10, extra: { parts: [1] } });
+
+    const stats = await listeningService.getAdminAttemptsStats();
+    expect(stats.overview.totalAttempts).toBe(1);
+    expect(stats.overview.avgCorrect).toBe(30);
+    expect((await listeningService.listAdminAttempts({ page: 1, limit: 50 })).total).toBe(2);
   });
 });
