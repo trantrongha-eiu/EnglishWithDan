@@ -34,8 +34,8 @@
        "questionNumber": 4,
        "type": "fill-blank",
        "questionText": "What percentage of children in South Africa live with their extended family?",
-       "correctAnswer": "almost 70% / 70% / almost 70 percent",
-       "explanation": "Đoạn B: \"In South Africa, it is **almost 70%**.\" BẪY: 25% là con số của châu Âu/Úc/Bắc Mỹ."
+       "correctAnswer": "over 40% / over 40 percent / almost 70% / 70% / almost 70 percent",
+       "explanation": "Đáp án sách: **over 40%**. Đoạn B: \"In Asia, the Middle East, South America and Sub-Saharan Africa **over 40%** of children live in families with other adults… In South Africa, it is **almost 70%**.\" South Africa thuộc Sub-Saharan Africa nên \"over 40%\" đúng; \"almost 70%\" là con số riêng của South Africa nên cũng được chấm đúng. BẪY: 25% là con số của châu Âu/Úc/Bắc Mỹ."
       },
       {
        "questionNumber": 5,

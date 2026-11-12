@@ -442,13 +442,15 @@
      "blanks": [
       {
        "accept": [
+        "over 40%",
+        "over 40 percent",
         "almost 70%",
         "70%",
         "almost 70 percent"
        ]
       }
      ],
-     "explanation": "Đoạn B: \"In South Africa, it is almost 70%.\" (Đáp án in trong sách ghi \"over 40%\" — đó là con số của châu Á, Trung Đông… nên với câu hỏi về South Africa đáp án đúng là almost 70%.)"
+     "explanation": "Đáp án sách: over 40%. Đoạn B: \"In Asia, the Middle East, South America and Sub-Saharan Africa over 40% of children live in families with other adults… In South Africa, it is almost 70%.\" South Africa thuộc Sub-Saharan Africa nên \"over 40%\" đúng; \"almost 70%\" là con số cụ thể của riêng South Africa nên cũng được chấm đúng. Lỗi của \"20%\": lấy nhầm con số của nơi khác (châu Âu, Úc, Bắc Mỹ là dưới 25%)."
     },
     {
      "id": "g2",

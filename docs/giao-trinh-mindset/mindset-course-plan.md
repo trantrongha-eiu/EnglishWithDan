@@ -41,7 +41,7 @@ Giáo viên giao bài từng buổi qua loại bài tập về nhà **"Mindset (
 - 32 buổi, 100 bài tự chấm trong khóa; 16 bài Reading (Passage) + 41 bài Listening (ListeningSection, audio Mindset_L1_NN = track NN in trong sách; track của phần Speaking/Writing không dùng). Tổng 356 câu Reading/Listening, mọi câu có giải thích tiếng Việt.
 - Sổ từ vựng theo sách của lớp (trang "Từ vựng & cụm từ hay"): Unit 1–2 → Sổ 1, Unit 3–4 → Sổ 2, Unit 5–6 → Sổ 3, Unit 7–8 → Sổ 4 (khai báo `slot` trong buổi). Danh sách từ ở `scripts/mindset/m1/vocab/*.txt`, câu ví dụ lấy tự động từ bài đọc/transcript (`m1/_vocab.js`).
 - Bản đồ Listening dùng group `map` + `dragDropConfig.words` (ảnh + kéo thả chữ cái/nhãn) — group `matching-options` trên listening.html không hiện ảnh.
-- Lưu ý đáp án sách: Unit 1 Ex. 8 Q1 (South Africa) sách in "over 40%", web dùng "almost 70%" theo bài đọc.
+- Unit 1 Ex. 8 Q1 (South Africa): theo Answer Key, đáp án chính là "over 40%" (South Africa thuộc Sub-Saharan Africa). "almost 70%" (con số cụ thể trong bài đọc) cũng được chấm đúng.
 
 **Quy tắc chung (12/11/2026):** đề bài (tiêu đề, hướng dẫn, câu hỏi, đáp án lựa chọn) giữ **tiếng Anh** như sách; chỉ giải thích và bài giảng ngữ pháp/chiến thuật dùng tiếng Việt. Quyển 0 đã được chuyển đề sang tiếng Anh.
 

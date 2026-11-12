@@ -260,7 +260,7 @@ module.exports = {
           ['Dolphins may protect humans', 'D', 'A: "Experts think they may understand that humans are similar to them and try to protect them" (recognise = understand). BẪY: E "actively decide to help" nói về việc giúp không chỉ là bản năng.'],
           ['Dolphins swam towards Hardy Jones', 'G', 'B: "a large shark swam towards him ready to attack. Four dolphins came to his rescue". BẪY: H chỉ là phỏng đoán "Perhaps…".'],
           ['The swimmer tried to leave the protective ring of dolphins', 'F', 'B: "As they had not yet seen the shark, one of them tried to swim away."'],
-          ['A dolphin nudged Joey Trevino', 'B', 'C: "gently pushed him, as if to say \'don\'t give up\'" (nudged = gently pushed).'],
+          ['A dolphin nudged Joey Trevino', 'B', 'C: "gently pushed him, as if to say \'don\'t give up\'" (nudged = gently pushed) → B "to encourage him not to lose hope" (don\'t give up = not lose hope).'],
           ['Dolphins and whales help us', 'A', 'F: "it is a good reason for us to do whatever we can to protect them".'],
         ], 'Questions 8–12'),
       ],

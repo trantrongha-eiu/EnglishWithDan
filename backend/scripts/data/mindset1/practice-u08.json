@@ -149,7 +149,7 @@
        "type": "sentence-completion",
        "questionText": "A dolphin nudged Joey Trevino",
        "correctAnswer": "B",
-       "explanation": "C: \"gently pushed him, as if to say 'don't give up'\" (nudged = gently pushed)."
+       "explanation": "C: \"gently pushed him, as if to say 'don't give up'\" (nudged = gently pushed) → B \"to encourage him not to lose hope\" (don't give up = not lose hope)."
       },
       {
        "questionNumber": 12,
