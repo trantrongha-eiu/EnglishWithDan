@@ -1,0 +1,1304 @@
+{
+ "exercises": [
+  {
+   "code": "M1-U03-L1-E01",
+   "lessonCode": "M1-U03-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 12,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Work or studies? (Ex. 1)",
+   "instruction": "Are these words about work or studies? Put them in the correct column.",
+   "categories": [
+    {
+     "id": "w",
+     "label": "Work"
+    },
+    {
+     "id": "s",
+     "label": "Studies"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "academic",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "degree",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "job",
+     "category": "w",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "office",
+     "category": "w",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "blended learning",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "employers",
+     "category": "w",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "qualification",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "lifelong learning",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "business",
+     "category": "w",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "retirement",
+     "category": "w",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "primary education",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "seminars",
+     "category": "s",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L1-E02",
+   "lessonCode": "M1-U03-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 12,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Find the words in the text (Ex. 2)",
+   "instruction": "How many of the words from exercise 1 can you find in the text in ONE minute? Which word is NOT in the text?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Globalisation of education and the workplace\n\n**A** Globalisation has affected most aspects of our lives. One area which has changed is education. More and more people move to different countries for their studies. At the same time, more people stay at home and study by distance learning. It is now easy to learn without attending a college or university, or attending less often. 'Blended learning' means studying partly in a traditional way in the classroom and partly online or via email. These changes also mean that there is now more interest in 'lifelong learning', the idea that we go on learning throughout our working lives and even into retirement. It is easy to attend 'webinars' or online seminars without being away from our offices. Many adults go back to college later in life because it is so easy to get a qualification without giving up work or disrupting family life.\n\n**B** Different countries have benefitted from the globalisation of education in different ways. Many British, Australian and American universities run their degree programmes in countries throughout Asia, and many students, parents and employers feel this is a valuable opportunity. Students can get an internationally recognised degree at a much cheaper price than going abroad and so can improve their chances of getting a good job. At the same time, those in the countries providing world-class degrees also benefit. They have greater access to ideas and knowledge from all over the world and having international students enriches their universities.\n\n**C** However, it is not good news for everyone in some developing countries. It is usually the elite – or the richest people in the large cities – who have access to international education. Many people in rural areas have not even had a primary education. Also, those areas usually do not have reliable internet connections and most people do not own a computer. It will take a bit more time for international opportunities to reach everyone in developing countries.\n\n**D** One concern people have about globalisation is that it can start to mean 'westernisation'. In other words, local knowledge can be lost and money seen as more important than culture. Education should treat every culture with respect; it should not be just learning about the West, but should include different ways of teaching and approaches from around the world. The aim is to enrich and share; the flow of ideas and information should go from East to West as well as from West to East.\n\n**E** Educational institutions have changed their focus due to globalisation. There are so many benefits of having overseas students that universities are competing for them, using strategies from the world of business. For example, they visit Education Fairs all over the world and spend time and money creating publicity material and advertisements. There is also more emphasis on the student experience. There is more focus on customer care, especially helping international students to settle in, improve their English and understand the academic culture of the host country.\n\n**F** There are many advantages to the globalisation of education and the workplace. More people get benefits that were only available to those in the developed countries before. There is more understanding between different nations as people learn about each other's cultures. However, it is important to make sure the benefits reach everyone and don't leave many citizens of the developing world behind.",
+    "caption": "Globalisation of education and the workplace (p. 45)"
+   },
+   "categories": [
+    {
+     "id": "y",
+     "label": "In the text"
+    },
+    {
+     "id": "n",
+     "label": "Not in the text"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "academic",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "degree",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "job",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "office",
+     "category": "n",
+     "explanation": "Bài chỉ có \"offices\" (số nhiều) trong cụm \"away from our offices\" — theo đáp án sách, office là từ không có trong bài."
+    },
+    {
+     "id": "c5",
+     "text": "blended learning",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "employers",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "qualification",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "lifelong learning",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "business",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "retirement",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "primary education",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "seminars",
+     "category": "y",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L1-E03",
+   "lessonCode": "M1-U03-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Positive or negative? (Ex. 3)",
+   "instruction": "Spend another ONE minute quickly reading the text and answer this question.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Globalisation of education and the workplace\n\n**A** Globalisation has affected most aspects of our lives. One area which has changed is education. More and more people move to different countries for their studies. At the same time, more people stay at home and study by distance learning. It is now easy to learn without attending a college or university, or attending less often. 'Blended learning' means studying partly in a traditional way in the classroom and partly online or via email. These changes also mean that there is now more interest in 'lifelong learning', the idea that we go on learning throughout our working lives and even into retirement. It is easy to attend 'webinars' or online seminars without being away from our offices. Many adults go back to college later in life because it is so easy to get a qualification without giving up work or disrupting family life.\n\n**B** Different countries have benefitted from the globalisation of education in different ways. Many British, Australian and American universities run their degree programmes in countries throughout Asia, and many students, parents and employers feel this is a valuable opportunity. Students can get an internationally recognised degree at a much cheaper price than going abroad and so can improve their chances of getting a good job. At the same time, those in the countries providing world-class degrees also benefit. They have greater access to ideas and knowledge from all over the world and having international students enriches their universities.\n\n**C** However, it is not good news for everyone in some developing countries. It is usually the elite – or the richest people in the large cities – who have access to international education. Many people in rural areas have not even had a primary education. Also, those areas usually do not have reliable internet connections and most people do not own a computer. It will take a bit more time for international opportunities to reach everyone in developing countries.\n\n**D** One concern people have about globalisation is that it can start to mean 'westernisation'. In other words, local knowledge can be lost and money seen as more important than culture. Education should treat every culture with respect; it should not be just learning about the West, but should include different ways of teaching and approaches from around the world. The aim is to enrich and share; the flow of ideas and information should go from East to West as well as from West to East.\n\n**E** Educational institutions have changed their focus due to globalisation. There are so many benefits of having overseas students that universities are competing for them, using strategies from the world of business. For example, they visit Education Fairs all over the world and spend time and money creating publicity material and advertisements. There is also more emphasis on the student experience. There is more focus on customer care, especially helping international students to settle in, improve their English and understand the academic culture of the host country.\n\n**F** There are many advantages to the globalisation of education and the workplace. More people get benefits that were only available to those in the developed countries before. There is more understanding between different nations as people learn about each other's cultures. However, it is important to make sure the benefits reach everyone and don't leave many citizens of the developing world behind.",
+    "caption": "Globalisation of education and the workplace"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Does the text express a positive or negative view of globalisation in education?",
+     "options": [
+      {
+       "id": "A",
+       "text": "mainly positive"
+      },
+      {
+       "id": "B",
+       "text": "mainly negative"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Bài có nêu vấn đề (đoạn C, D) nhưng nhìn chung tích cực hơn: đoạn F \"There are many advantages to the globalisation of education…\"."
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L2-E01",
+   "lessonCode": "M1-U03-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Which paragraph? (Ex. 4)",
+   "instruction": "Quickly find which paragraph (A–F) you need to read to answer these questions. Do you need to read the whole paragraph?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Globalisation of education and the workplace\n\n**A** Globalisation has affected most aspects of our lives. One area which has changed is education. More and more people move to different countries for their studies. At the same time, more people stay at home and study by distance learning. It is now easy to learn without attending a college or university, or attending less often. 'Blended learning' means studying partly in a traditional way in the classroom and partly online or via email. These changes also mean that there is now more interest in 'lifelong learning', the idea that we go on learning throughout our working lives and even into retirement. It is easy to attend 'webinars' or online seminars without being away from our offices. Many adults go back to college later in life because it is so easy to get a qualification without giving up work or disrupting family life.\n\n**B** Different countries have benefitted from the globalisation of education in different ways. Many British, Australian and American universities run their degree programmes in countries throughout Asia, and many students, parents and employers feel this is a valuable opportunity. Students can get an internationally recognised degree at a much cheaper price than going abroad and so can improve their chances of getting a good job. At the same time, those in the countries providing world-class degrees also benefit. They have greater access to ideas and knowledge from all over the world and having international students enriches their universities.\n\n**C** However, it is not good news for everyone in some developing countries. It is usually the elite – or the richest people in the large cities – who have access to international education. Many people in rural areas have not even had a primary education. Also, those areas usually do not have reliable internet connections and most people do not own a computer. It will take a bit more time for international opportunities to reach everyone in developing countries.\n\n**D** One concern people have about globalisation is that it can start to mean 'westernisation'. In other words, local knowledge can be lost and money seen as more important than culture. Education should treat every culture with respect; it should not be just learning about the West, but should include different ways of teaching and approaches from around the world. The aim is to enrich and share; the flow of ideas and information should go from East to West as well as from West to East.\n\n**E** Educational institutions have changed their focus due to globalisation. There are so many benefits of having overseas students that universities are competing for them, using strategies from the world of business. For example, they visit Education Fairs all over the world and spend time and money creating publicity material and advertisements. There is also more emphasis on the student experience. There is more focus on customer care, especially helping international students to settle in, improve their English and understand the academic culture of the host country.\n\n**F** There are many advantages to the globalisation of education and the workplace. More people get benefits that were only available to those in the developed countries before. There is more understanding between different nations as people learn about each other's cultures. However, it is important to make sure the benefits reach everyone and don't leave many citizens of the developing world behind.",
+    "caption": "Globalisation of education and the workplace"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "1 Blended learning means…",
+     "options": [
+      {
+       "id": "A",
+       "text": "Paragraph A"
+      },
+      {
+       "id": "B",
+       "text": "Paragraph C"
+      },
+      {
+       "id": "C",
+       "text": "Paragraph E"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Đoạn A định nghĩa \"Blended learning means studying partly in a traditional way… and partly online\". Chỉ cần đọc một phần đoạn A."
+    },
+    {
+     "id": "q2",
+     "prompt": "2 All of these are advantages of globalised education except…",
+     "options": [
+      {
+       "id": "A",
+       "text": "Paragraph A only"
+      },
+      {
+       "id": "B",
+       "text": "Paragraphs B and C"
+      },
+      {
+       "id": "C",
+       "text": "Paragraph F only"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Cần đọc cả đoạn B (các lợi ích) và đầu đoạn C (giới tinh hoa được hưởng hết cơ hội — không phải lợi ích)."
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L2-E02",
+   "lessonCode": "M1-U03-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Words with similar meanings (Ex. 5)",
+   "instruction": "If you see these words (1–7) in a question, what words might you expect to find in the text? Choose a word from the box.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "abroad",
+     "right": "overseas",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "benefits",
+     "right": "advantages",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "disturbing",
+     "right": "disrupting",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "going to",
+     "right": "attending",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "make better",
+     "right": "enrich",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "useful",
+     "right": "valuable",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "workplaces",
+     "right": "offices",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L2-E03",
+   "lessonCode": "M1-U03-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Main ideas (Ex. 6)",
+   "instruction": "Which FOUR sentences represent the main ideas of the passage?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Globalisation of education and the workplace\n\n**A** Globalisation has affected most aspects of our lives. One area which has changed is education. More and more people move to different countries for their studies. At the same time, more people stay at home and study by distance learning. It is now easy to learn without attending a college or university, or attending less often. 'Blended learning' means studying partly in a traditional way in the classroom and partly online or via email. These changes also mean that there is now more interest in 'lifelong learning', the idea that we go on learning throughout our working lives and even into retirement. It is easy to attend 'webinars' or online seminars without being away from our offices. Many adults go back to college later in life because it is so easy to get a qualification without giving up work or disrupting family life.\n\n**B** Different countries have benefitted from the globalisation of education in different ways. Many British, Australian and American universities run their degree programmes in countries throughout Asia, and many students, parents and employers feel this is a valuable opportunity. Students can get an internationally recognised degree at a much cheaper price than going abroad and so can improve their chances of getting a good job. At the same time, those in the countries providing world-class degrees also benefit. They have greater access to ideas and knowledge from all over the world and having international students enriches their universities.\n\n**C** However, it is not good news for everyone in some developing countries. It is usually the elite – or the richest people in the large cities – who have access to international education. Many people in rural areas have not even had a primary education. Also, those areas usually do not have reliable internet connections and most people do not own a computer. It will take a bit more time for international opportunities to reach everyone in developing countries.\n\n**D** One concern people have about globalisation is that it can start to mean 'westernisation'. In other words, local knowledge can be lost and money seen as more important than culture. Education should treat every culture with respect; it should not be just learning about the West, but should include different ways of teaching and approaches from around the world. The aim is to enrich and share; the flow of ideas and information should go from East to West as well as from West to East.\n\n**E** Educational institutions have changed their focus due to globalisation. There are so many benefits of having overseas students that universities are competing for them, using strategies from the world of business. For example, they visit Education Fairs all over the world and spend time and money creating publicity material and advertisements. There is also more emphasis on the student experience. There is more focus on customer care, especially helping international students to settle in, improve their English and understand the academic culture of the host country.\n\n**F** There are many advantages to the globalisation of education and the workplace. More people get benefits that were only available to those in the developed countries before. There is more understanding between different nations as people learn about each other's cultures. However, it is important to make sure the benefits reach everyone and don't leave many citizens of the developing world behind.",
+    "caption": "Globalisation of education and the workplace"
+   },
+   "categories": [
+    {
+     "id": "m",
+     "label": "Main idea"
+    },
+    {
+     "id": "d",
+     "label": "Not a main idea"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "There are both advantages and disadvantages to the globalisation of education.",
+     "category": "m",
+     "explanation": "Ý bao trùm cả bài (đoạn A–F)."
+    },
+    {
+     "id": "c2",
+     "text": "Many people study after retirement.",
+     "category": "d",
+     "explanation": "Chỉ là chi tiết nhỏ trong đoạn A (lifelong learning)."
+    },
+    {
+     "id": "c3",
+     "text": "It is important that globalisation should not be westernisation.",
+     "category": "m",
+     "explanation": "Câu đầu đoạn D."
+    },
+    {
+     "id": "c4",
+     "text": "Universities have had to become more business-focused.",
+     "category": "m",
+     "explanation": "Đoạn E: \"using strategies from the world of business\"."
+    },
+    {
+     "id": "c5",
+     "text": "University fees rose dramatically in the UK in 2012.",
+     "category": "d",
+     "explanation": "Bài không nói đến."
+    },
+    {
+     "id": "c6",
+     "text": "Many poorer people in developing countries do not benefit from globalisation.",
+     "category": "m",
+     "explanation": "Câu đầu đoạn C."
+    },
+    {
+     "id": "c7",
+     "text": "Most lecturers work part-time.",
+     "category": "d",
+     "explanation": "Bài không nói đến."
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L2-E04",
+   "lessonCode": "M1-U03-L2",
+   "order": 4,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Where are the main ideas? (Ex. 6)",
+   "instruction": "Answer the question.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Where in the paragraph can the main ideas usually be found?",
+     "options": [
+      {
+       "id": "A",
+       "text": "in the first sentence of the paragraph"
+      },
+      {
+       "id": "B",
+       "text": "in the last sentence of the paragraph"
+      },
+      {
+       "id": "C",
+       "text": "in the middle of the paragraph"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Đọc đoạn đầu và câu đầu của mỗi đoạn."
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L3-E01",
+   "lessonCode": "M1-U03-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Past and present (Ex. 8)",
+   "instruction": "Look at these present perfect sentences from the passage. How do they relate to both the past and the present?",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Different countries have benefitted from the globalisation of education in different ways.",
+     "options": [
+      {
+       "id": "A",
+       "text": "They benefitted in the past and they still benefit in the present."
+      },
+      {
+       "id": "B",
+       "text": "They only benefitted in the past."
+      },
+      {
+       "id": "C",
+       "text": "They will benefit in the future."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Lợi ích bắt đầu từ quá khứ và vẫn còn ở hiện tại."
+    },
+    {
+     "id": "q2",
+     "prompt": "Many people in rural areas have not even had a primary education.",
+     "options": [
+      {
+       "id": "A",
+       "text": "They were not educated in the past, which affects their present."
+      },
+      {
+       "id": "B",
+       "text": "They are at primary school now."
+      },
+      {
+       "id": "C",
+       "text": "They had a primary education a long time ago."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Không được học trong quá khứ → ảnh hưởng tới cuộc sống hiện tại."
+    },
+    {
+     "id": "q3",
+     "prompt": "Educational institutions have changed their focus due to globalisation.",
+     "options": [
+      {
+       "id": "A",
+       "text": "They changed in the past and are still different now."
+      },
+      {
+       "id": "B",
+       "text": "They are changing at this moment only."
+      },
+      {
+       "id": "C",
+       "text": "They changed but then went back to the old focus."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Thay đổi đã xảy ra và kết quả vẫn còn."
+    },
+    {
+     "id": "q4",
+     "prompt": "Which of these tenses is used most in the passage?",
+     "options": [
+      {
+       "id": "A",
+       "text": "simple past"
+      },
+      {
+       "id": "B",
+       "text": "simple present"
+      },
+      {
+       "id": "C",
+       "text": "present continuous"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Bài chủ yếu dùng hiện tại đơn (is, mean, have, get…), kèm nhiều câu hiện tại hoàn thành."
+    },
+    {
+     "id": "q5",
+     "prompt": "Choose the best reason for this choice of tense.",
+     "options": [
+      {
+       "id": "A",
+       "text": "The situation affects people now."
+      },
+      {
+       "id": "B",
+       "text": "Most of the changes happened in the past."
+      },
+      {
+       "id": "C",
+       "text": "It is a constantly changing situation."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Tình hình ảnh hưởng đến con người ở hiện tại."
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L3-E02",
+   "lessonCode": "M1-U03-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Form the present perfect (Ex. 8)",
+   "instruction": "Complete the sentences from the passage with the present perfect form of the verb in brackets.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Globalisation ____ (affect) most aspects of our lives.",
+     "blanks": [
+      {
+       "accept": [
+        "has affected"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "Different countries ____ (benefit) from the globalisation of education in different ways.",
+     "blanks": [
+      {
+       "accept": [
+        "have benefitted",
+        "have benefited"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Many people in rural areas ____ even ____ (not have) a primary education.",
+     "blanks": [
+      {
+       "accept": [
+        "have not",
+        "haven't"
+       ]
+      },
+      {
+       "accept": [
+        "had"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "Educational institutions ____ (change) their focus due to globalisation.",
+     "blanks": [
+      {
+       "accept": [
+        "have changed"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L4-E01",
+   "lessonCode": "M1-U03-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Areas of work or study (Ex. 1)",
+   "instruction": "Pictures A–G show different areas of work or study. Match the pictures with the words in the box.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m1u03-jobs.jpg",
+    "caption": "Ex. 1"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture A",
+     "right": "construction",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture B",
+     "right": "sports and leisure",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture C",
+     "right": "retail",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture D",
+     "right": "hotel and catering",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture E",
+     "right": "health",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture F",
+     "right": "art and design",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture G",
+     "right": "information technology",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L4-E02",
+   "lessonCode": "M1-U03-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 13,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Job or course? (Ex. 2)",
+   "instruction": "Do these words describe a job or a type of course? (architect = job)",
+   "categories": [
+    {
+     "id": "j",
+     "label": "Job"
+    },
+    {
+     "id": "c",
+     "label": "Course"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "computing",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "graphic designer",
+     "category": "j",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "web designer",
+     "category": "j",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "chef",
+     "category": "j",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "doctor",
+     "category": "j",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "medicine",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "textiles",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "building engineering",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "fitness training",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "shop management",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "badminton coach",
+     "category": "j",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "food technology",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c13",
+     "text": "store assistant",
+     "category": "j",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L4-E03",
+   "lessonCode": "M1-U03-L4",
+   "order": 3,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Jobs and courses (Ex. 3)",
+   "instruction": "Complete the table. Match each job with its course.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "graphic designer (art and design)",
+     "right": "textiles",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "architect (construction)",
+     "right": "building engineering",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "doctor (health)",
+     "right": "medicine",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "chef (hotel and catering)",
+     "right": "food technology",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "web designer (information technology)",
+     "right": "computing",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "store assistant (retail)",
+     "right": "shop management",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "badminton coach (sports and leisure)",
+     "right": "fitness training",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L4-E04",
+   "lessonCode": "M1-U03-L4",
+   "order": 4,
+   "autoGrade": true,
+   "points": 12,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Two correct endings (Ex. 4)",
+   "instruction": "Identify the TWO correct endings for each sentence.",
+   "categories": [
+    {
+     "id": "ok",
+     "label": "Correct ending"
+    },
+    {
+     "id": "no",
+     "label": "Wrong ending"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "1 I've done a course in … computing",
+     "category": "ok",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "1 I've done a course in … badminton coach",
+     "category": "no",
+     "explanation": "badminton coach là nghề, không phải khoá học."
+    },
+    {
+     "id": "c3",
+     "text": "1 I've done a course in … food technology",
+     "category": "ok",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "2 My sister has worked on a cruise ship as a … chef",
+     "category": "ok",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "2 My sister has worked on a cruise ship as a … medicine",
+     "category": "no",
+     "explanation": "as a + nghề; medicine là môn học."
+    },
+    {
+     "id": "c6",
+     "text": "2 My sister has worked on a cruise ship as a … doctor",
+     "category": "ok",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "3 Our son had a job as a(n) … architect",
+     "category": "ok",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "3 Our son had a job as a(n) … store assistant",
+     "category": "ok",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "3 Our son had a job as a(n) … building engineering",
+     "category": "no",
+     "explanation": "building engineering là ngành học."
+    },
+    {
+     "id": "c10",
+     "text": "4 He's very keen on … web designer",
+     "category": "no",
+     "explanation": "web designer là người/nghề; keen on + hoạt động/môn học."
+    },
+    {
+     "id": "c11",
+     "text": "4 He's very keen on … fitness training",
+     "category": "ok",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "4 He's very keen on … textiles",
+     "category": "ok",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L4-E05",
+   "lessonCode": "M1-U03-L4",
+   "order": 5,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Type of information (Ex. 6–7)",
+   "instruction": "Read the sentences. Underline the key words before and after each gap. Match each sentence with the type of information you need to listen for.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "1 Anna has got a job as a ______.",
+     "right": "a type of job",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "2 She has recently completed a course in ______.",
+     "right": "an area of study",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "3 The new name of the department which sells computers and phones is ______.",
+     "right": "a name of a place",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "4 The Food Photography course takes place on the ______ September.",
+     "right": "a date",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "5 There is a total of ______ places available on the course.",
+     "right": "a number only",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L4-E06",
+   "lessonCode": "M1-U03-L4",
+   "order": 6,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "The correct grammatical answer (Ex. 9)",
+   "instruction": "Choose the correct grammatical answer. Why are the other answers incorrect?",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Anna has got a job as a ______.",
+     "options": [
+      {
+       "id": "A",
+       "text": "assistant"
+      },
+      {
+       "id": "B",
+       "text": "store assistant"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Trước \"assistant\" phải là \"an\", câu có sẵn \"a\" → store assistant."
+    },
+    {
+     "id": "q2",
+     "prompt": "She has recently completed a course in ______.",
+     "options": [
+      {
+       "id": "A",
+       "text": "informations technology"
+      },
+      {
+       "id": "B",
+       "text": "information technology"
+      }
+     ],
+     "answer": "B",
+     "explanation": "information không đếm được → không có dạng số nhiều."
+    },
+    {
+     "id": "q3",
+     "prompt": "The new name of the department which sells computers and phones is ______.",
+     "options": [
+      {
+       "id": "A",
+       "text": "Moving Image"
+      },
+      {
+       "id": "B",
+       "text": "Moving Images"
+      },
+      {
+       "id": "C",
+       "text": "The Moving Images"
+      }
+     ],
+     "answer": "B",
+     "explanation": "\"The Moving Images\" = 3 từ (quá giới hạn 2 từ); \"Moving Image\" sai vì người nói dùng số nhiều."
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L4-E07",
+   "lessonCode": "M1-U03-L4",
+   "order": 7,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Candidates' answers (Ex. 11)",
+   "instruction": "Complete the sentence: \"The course takes place on the ______ September.\" Write NO MORE THAN ONE WORD AND/OR A NUMBER. Which answers are correct?",
+   "categories": [
+    {
+     "id": "ok",
+     "label": "Correct"
+    },
+    {
+     "id": "no",
+     "label": "Incorrect"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "19",
+     "category": "ok",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "19th",
+     "category": "ok",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "the 19",
+     "category": "no",
+     "explanation": "\"the\" đã có sẵn trong câu → thừa chữ."
+    },
+    {
+     "id": "c4",
+     "text": "nineteenth of",
+     "category": "ok",
+     "explanation": "Một từ + \"of\" vẫn đọc đúng câu: \"on the nineteenth of September\"."
+    },
+    {
+     "id": "c5",
+     "text": "19th of September",
+     "category": "no",
+     "explanation": "Lặp lại \"September\" đã có trong câu, quá số từ."
+    },
+    {
+     "id": "c6",
+     "text": "19 Sept",
+     "category": "no",
+     "explanation": "Thừa từ \"Sept\" (đã có September)."
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L4-E08",
+   "lessonCode": "M1-U03-L4",
+   "order": 8,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Order of the topics (Ex. 12)",
+   "instruction": "Read the questions in the Exam skills task carefully. Match each topic with the question (1–6) where it is mentioned.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "the name of the course",
+     "right": "Question 1",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "the starting time of the course",
+     "right": "Question 2",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "the duration of the course",
+     "right": "Question 3",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "the purpose of the course",
+     "right": "Question 4",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "the location of the course",
+     "right": "Question 5",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "the price of the course",
+     "right": "Question 6",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L4-E09",
+   "lessonCode": "M1-U03-L4",
+   "order": 9,
+   "autoGrade": true,
+   "points": 9,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Synonyms (Ex. 13)",
+   "instruction": "Match the words and phrases 1–9 with their synonyms a–i.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "price",
+     "right": "cost",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "name",
+     "right": "title",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "duration",
+     "right": "length",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "starts",
+     "right": "begins",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "takes place",
+     "right": "is held",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "purpose",
+     "right": "reason for",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "ends",
+     "right": "finishes",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "location",
+     "right": "place",
+     "explanation": ""
+    },
+    {
+     "id": "m9",
+     "left": "practical",
+     "right": "hands-on",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L4-E10",
+   "lessonCode": "M1-U03-L4",
+   "order": 10,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Words used on the recording (Ex. 14)",
+   "instruction": "Match the highlighted words in the Exam skills sentences with the words and phrases used on the recording.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "title",
+     "right": "it's called",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "starts",
+     "right": "begins",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "lasts",
+     "right": "goes on",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "teach",
+     "right": "train",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "different",
+     "right": "a range of",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "part",
+     "right": "some",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "nearby",
+     "right": "local",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "total cost",
+     "right": "full fee",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

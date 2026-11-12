@@ -105,7 +105,7 @@ module.exports = {
         ["make a noise","gây ồn","Please don't make a noise – the baby is asleep."],
       ],
       ex: [
-        mcq('Ping ở Anh — chọn từ đúng (Ex. 3)', 'Đọc các câu về Ping, một chàng trai đang học khoá ngôn ngữ ở Anh. Chọn đáp án đúng nhất A, B hoặc C.', [
+        mcq('Ping in England – choose the correct word (Ex. 3)', 'Read the sentences about Ping, a young man on a language course in England. Choose the best answer, A, B or C.', [
           ['Ping ____ at 7:30am every morning and has breakfast with his host family.', ['gets up', 'stands up', 'stays up'], 'A', 'get up = thức dậy, rời giường buổi sáng. stand up = đứng lên (từ tư thế ngồi); stay up = thức khuya.'],
           ['At 8:30am, he ____ the bus to his language school.', ['goes', 'catches', 'travels'], 'B', 'Cụm cố định: catch the bus (bắt xe buýt). "go" và "travel" cần giới từ: go/travel by bus.'],
           ['During the day, Ping studies English and ____ to his classmates.', ['laughs', 'chats', 'tells'], 'B', 'chat to somebody = trò chuyện với ai. "laugh to" sai; "tell" cần tân ngữ trực tiếp (tell them a story).'],
@@ -113,7 +113,7 @@ module.exports = {
           ['After Ping finishes school at 3:00pm, he often ____ some sightseeing in the city with his friends.', ['does', 'makes', 'has'], 'A', 'Cụm cố định: do some sightseeing (đi tham quan).'],
           ['In the evening, Ping relaxes with his host family, ____ TV or goes online.', ['watches', 'sees', 'looks'], 'A', 'watch TV = xem TV (theo dõi một thứ đang chuyển động). see = nhìn thấy; look (at) = nhìn vào.'],
         ]),
-        gap('Hoàn thành cụm từ hằng ngày (Lead-in)', 'Điền MỘT động từ để hoàn thành cụm từ trong tranh Lead-in. Chia động từ theo chủ ngữ nếu cần.', [
+        gap('Everyday phrases (Lead-in)', 'Complete the phrases from the Lead-in pictures with ONE verb. Change the form of the verb if necessary.', [
           ['Every morning I ____ breakfast at 7am.', 'have', 'have breakfast — ăn sáng (không dùng "eat a breakfast").'],
           ['I usually ____ the bus to college at 7:30.', 'catch|take', 'catch/take the bus.'],
           ['After dinner, my sister ____ online and chats to her friends.', 'goes', 'go online — chủ ngữ số ít (my sister) → goes.'],
@@ -194,14 +194,14 @@ module.exports = {
         ['do the cleaning', 'lau dọn nhà cửa', 'We all help and do the cleaning.'],
       ],
       ex: [
-        mcq('Đoán nghĩa từ trong "A Day in the Life"', 'Đọc lại câu trong bài và chọn nghĩa đúng nhất của cụm từ in đậm (đoán qua ngữ cảnh).', [
-          ['"You can also do things like **folk dancing** and cross-country skiing." — folk dancing là gì?', ['một loại hoạt động/điệu múa truyền thống', 'một món ăn của Na Uy', 'một môn học bắt buộc'], 'A', '"things like…" giới thiệu các hoạt động ở câu lạc bộ → folk dancing = múa dân gian.'],
-          ['"We live on a **cattle farm** in the centre of the country." — cattle là gì?', ['cây lúa', 'bò, gia súc', 'xe tải'], 'B', 'Cattle = gia súc (bò). Ava còn "help my dad on the farm" — đúng ngữ cảnh trang trại.'],
-          ['"My mum teaches at my college, so I usually go with her in the car **instead of** taking the bus."', ['cùng với', 'thay vì', 'sau khi'], 'B', 'Ava đi ô tô với mẹ, KHÔNG đi xe buýt → instead of = thay vì.'],
-          ['"In the evenings, I try to watch TV but I\'m usually **too tired**."', ['rất thích', 'quá mệt (nên không xem được)', 'quá bận học'], 'B', '"try to… but…" → muốn xem TV nhưng không làm được vì quá mệt (làm trang trại cả buổi chiều).'],
-          ['"I **switch off** my light at about 10pm."', ['bật đèn lên', 'tắt đèn (đi ngủ)', 'thay bóng đèn'], 'B', 'switch off = tắt; tắt đèn lúc 10pm = giờ đi ngủ.'],
+        mcq('Words in "A Day in the Life"', 'Read the sentences from the text again and choose the best meaning of the phrase in bold. Use the context to help you.', [
+          ['"You can also do things like **folk dancing** and cross-country skiing." — What is folk dancing?', ['a kind of traditional activity / dance', 'a kind of Norwegian food', 'a compulsory school subject'], 'A', '"things like…" giới thiệu các hoạt động ở câu lạc bộ → folk dancing = múa dân gian.'],
+          ['"We live on a **cattle farm** in the centre of the country." — What are cattle?', ['rice plants', 'cows (farm animals)', 'lorries'], 'B', 'Cattle = gia súc (bò). Ava còn "help my dad on the farm" — đúng ngữ cảnh trang trại.'],
+          ['"My mum teaches at my college, so I usually go with her in the car **instead of** taking the bus."', ['together with', 'in place of / rather than', 'after'], 'B', 'Ava đi ô tô với mẹ, KHÔNG đi xe buýt → instead of = thay vì.'],
+          ['"In the evenings, I try to watch TV but I\'m usually **too tired**."', ['I really enjoy it', 'so tired that I can\'t do it', 'too busy studying'], 'B', '"try to… but…" → muốn xem TV nhưng không làm được vì quá mệt (làm trang trại cả buổi chiều).'],
+          ['"I **switch off** my light at about 10pm."', ['turn the light on', 'turn the light off (go to sleep)', 'change the light bulb'], 'B', 'switch off = tắt; tắt đèn lúc 10pm = giờ đi ngủ.'],
         ], { stimulus: passage(READING_TEXT.replace(/## /g, ''), { caption: 'A Day in the Life (tr. 12)' }) }),
-        gap('Reading: hoàn thành đoạn văn về Dan (Ex. 10)', 'Đọc thông tin về thói quen của Dan, sinh viên một trường đại học ở Anh. Chia động từ trong ngoặc ở thì hiện tại đơn (he → thêm -s/-es).', [
+        gap('Dan\'s daily routine (Ex. 10)', 'Read the information about Dan, a student at a university in the UK. Put the verbs in brackets into the present simple.', [
           ['Dan usually ____ (get up) at 8am, ____ (have) a shower and ____ (eat) breakfast.', ['gets up', 'has', 'eats'], 'Chủ ngữ Dan (he) → gets up, has (bất quy tắc: have → has), eats.'],
           ['After that, he always ____ (get) his books ready and then ____ (go) to his lectures until midday.', ['gets', 'goes'], 'go → goes (động từ tận cùng -o thêm -es).'],
           ['He usually ____ (return) home and ____ (make) lunch for himself at about 12:30pm.', ['returns', 'makes'], 'Động từ thường → thêm -s.'],
@@ -210,8 +210,8 @@ module.exports = {
           ['Dan always ____ (study) for a few hours and then at around 6:30pm he ____ (go) home.', ['studies', 'goes'], 'study → studies (phụ âm + y → ies).'],
           ['He usually ____ (cook) dinner for himself and his flatmates. In the evening, he sometimes ____ (exercise) at the gym.', ['cooks', 'exercises'], 'cook → cooks; exercise → exercises.'],
           ['After that, he relaxes in front of the TV or ____ (see) his friends. He never goes to bed early, but usually ____ (fall) asleep at around midnight.', ['sees', 'falls'], 'see → sees; fall → falls.'],
-        ], { stimulus: { kind: 'text', caption: 'Mẹo (TIP 11)', rows: [['Từ tô vàng', 'usually, always, sometimes, often, never — cho biết Dan làm việc đó thường xuyên đến mức nào.']] } }),
-        match('Reading: nối cụm từ đồng nghĩa — việc nhà (Ex. 12)', 'Đọc đoạn văn về việc nhà và nối mỗi cụm từ (1–6) với cụm có nghĩa tương tự (A–F).', [
+        ], { stimulus: { kind: 'text', caption: 'TIP 11', rows: [['Highlighted words', 'usually, always, sometimes, often, never — they tell you how often Dan does something.']] } }),
+        match('Phrases with a similar meaning – housework (Ex. 12)', 'Read the text about housework and match each phrase (1–6) with a phrase with a similar meaning (A–F).', [
           ['do the laundry', 'wash the clothes', 'do the laundry = giặt quần áo. Bài: "My brother… never washes his clothes."'],
           ['tidy up', 'put things away', 'tidy up = dọn gọn; câu sau giải thích "I put things away".'],
           ['wash up', 'clean the dishes', 'wash up = rửa bát; "he has to clean the dishes by himself".'],
@@ -243,13 +243,13 @@ module.exports = {
         { grammar: 'sb-subject-verb', title: 'Câu S + V cơ bản', note: 'viết câu hoàn chỉnh chủ ngữ + động từ (nền tảng cho phần Writing)' },
       ],
       ex: [
-        match('Hộp ngữ pháp: hỏi – đáp (Ex. 7)', 'Đọc Grammar box (phần "Ngữ pháp cần nhớ" ở trên), rồi nối câu hỏi 1–3 với câu trả lời A–C.', [
+        match('Grammar box: questions and answers (Ex. 7)', 'Read the Grammar box, then match questions 1–3 with answers A–C.', [
           ['What do we use the present simple for?', 'to talk about every day routines and habits', 'Hiện tại đơn diễn tả thói quen, hoạt động lặp lại.'],
           ['Why do we use adverbs of frequency?', 'to say how often we do something', 'always/usually/often/sometimes/never cho biết mức độ thường xuyên.'],
           ['What do verbs for he/she/it end in?', '-s', 'he/she/it + V-s/es.'],
         ]),
-        cat('Xếp động từ vào 4 nhóm chia ngôi thứ ba (Ex. 8)', 'Mỗi động từ thuộc nhóm nào khi chia với he/she/it?', {
-          g1: 'Nhóm 1: thêm -s (gets up)', g2: 'Nhóm 2: -s, -ch, -sh, -x → thêm -es (watches)', g3: 'Nhóm 3: phụ âm + y → -ies (tries)', g4: 'Nhóm 4: go/do/wash… → -es (goes)',
+        cat('Third person verb endings (Ex. 8)', 'Put each verb into the correct group for he/she/it.', {
+          g1: 'Group 1: add -s (gets up)', g2: 'Group 2: -s, -ch, -sh, -x → add -es (watches)', g3: 'Group 3: consonant + y → -ies (tries)', g4: 'Group 4: go/do/wash… → -es (goes)',
         }, [
           ['exercise', 'g1', 'exercises'], ['work', 'g1', 'works'], ['play', 'g1', 'plays — nguyên âm + y chỉ thêm -s'], ['cook', 'g1', 'cooks'], ['listen', 'g1', 'listens'],
           ['catch', 'g2', 'catches'], ['relax', 'g2', 'relaxes'], ['finish', 'g2', 'finishes'], ['switch', 'g2', 'switches'], ['teach', 'g2', 'teaches'],
@@ -258,7 +258,7 @@ module.exports = {
           ['live', 'g1', 'lives'], ['come', 'g1', 'comes'], ['get up', 'g1', 'gets up'], ['help', 'g1', 'helps'], ['swim', 'g1', 'swims'], ['stay', 'g1', 'stays — nguyên âm + y chỉ thêm -s'], ['practise', 'g1', 'practises'],
           ['watch', 'g2', 'watches'],
         ]),
-        gap('Chia ngôi thứ ba số ít (G&V Ex. 5)', 'Hoàn thành câu bằng dạng ngôi thứ ba (he/she/it) của động từ trong ngoặc.', [
+        gap('Third person singular (G&V Ex. 5)', 'Complete the sentences with the he/she/it form of the verb in brackets.', [
           ['My dad ____ (wash) his car every weekend.', 'washes', 'wash → washes (-sh + es).'],
           ['Jim ____ (watch) too much TV.', 'watches', '-ch + es.'],
           ["Adrian's baby ____ (cry) a lot.", 'cries', 'phụ âm + y → ies.'],
@@ -270,7 +270,7 @@ module.exports = {
           ['I think our teacher ____ (give) us far too much homework.', 'gives', 'give → gives.'],
           ['My brother ____ (switch off) his light at about midnight.', 'switches off', 'switch → switches; "off" giữ nguyên.'],
         ]),
-        mcq('Chọn dạng động từ đúng (G&V Ex. 6)', 'Chọn dạng đúng của động từ trong mỗi câu.', [
+        mcq('Choose the correct verb form (G&V Ex. 6)', 'Choose the correct form of the verb in each sentence.', [
           ['My brother ____ for a computer company in the city.', ['works', 'work'], 'A', 'My brother = he → works.'],
           ['My friends and I often ____ basketball together at the weekends.', ['play', 'plays'], 'A', 'My friends and I = we → play.'],
           ['I go to a college where everyone ____ different languages.', ['study', 'studies'], 'B', 'everyone luôn đi với động từ số ít → studies.'],
@@ -282,7 +282,7 @@ module.exports = {
           ['My friend is good at baking and ____ amazing cakes.', ['make', 'makes'], 'B', 'My friend = he/she → makes.'],
           ['My lunch break ____ at 12pm and finishes at 12:45pm.', ['begin', 'begins'], 'B', 'My lunch break = it → begins.'],
         ]),
-        order('Vị trí trạng từ tần suất', 'Sắp xếp các từ thành câu đúng. Nhớ: trạng từ tần suất đứng TRƯỚC động từ thường, SAU động từ "be".', [
+        order('Position of frequency adverbs', 'Put the words in the correct order to make sentences. Frequency adverbs go BEFORE most verbs and AFTER the verb "be".', [
           ['He always gets up early.', 'always đứng trước động từ thường gets up.'],
           ['I am never late for college.', 'never đứng sau "am".'],
           ['My sister often helps mum make dinner.', 'often + helps.'],
@@ -344,31 +344,31 @@ module.exports = {
         ['prepare a meal', 'chuẩn bị bữa ăn', 'My sister prepares a meal for the family.'],
       ],
       ex: [
-        gap('Từ chỉ trình tự & tần suất', 'Điền từ thích hợp vào chỗ trống: after that / next / then / finally / always / never.', [
+        gap('Sequencing words and frequency adverbs', 'Complete the sentences with after that, next, then, finally, always or never.', [
           ['First, I get up at 6:30am. ____, I have a shower.', 'After that|Next|Then', 'Từ trình tự nối hai hoạt động liên tiếp.'],
           ['I go to bed at 10pm because I ____ get up early. I am never late for class.', 'always', 'always (100%) — hợp với "never late".'],
           ['My brother is lazy. He ____ washes his clothes.', 'never', 'lazy → never (0%).'],
           ['I study in the library all afternoon. ____, at 10pm, I go to bed.', 'Finally', 'Finally = cuối cùng (hoạt động cuối ngày).'],
         ], { wordBank: ['After that', 'Next', 'Then', 'Finally', 'always', 'never'] }),
-        order('Sắp xếp câu mô tả', 'Sắp xếp từ thành câu hoàn chỉnh (chú ý dấu phẩy sau từ trình tự).', [
+        order('Sentences describing a routine', 'Put the words in the correct order to make sentences. Remember the comma after a sequencing word.', [
           ['Every morning, she gets up at half past six.', 'Thời gian đứng đầu câu + dấu phẩy.'],
           ['After that, she usually works on her laptop.', 'usually trước động từ thường.'],
           ['In the evening, she often sits by the campfire with her friends.', 'often + sits.'],
         ]),
-        write('Viết về thói quen hằng ngày của bạn (Ex. 11)', 'Nhìn lại đoạn văn về Dan (Ex. 10). Viết một đoạn văn (70–100 từ) về thói quen hằng ngày của BẠN: bạn làm gì, lúc mấy giờ. Dùng ít nhất 4 trạng từ tần suất (always, usually, often, sometimes, never) và 2 từ chỉ trình tự (After that, Then, Next…). Ví dụ: I sometimes do the laundry. I never make dinner. My brother often takes out the bins.', {
+        write('Write about your daily routine (Ex. 11)', 'Look again at the paragraph about Dan (Ex. 10). Write a paragraph (70–100 words) about YOUR daily routine: what you do and when. Use at least four frequency adverbs (always, usually, often, sometimes, never) and two sequencing words (After that, Then, Next…). Example: I sometimes do the laundry. I never make dinner. My brother often takes out the bins.', {
           minWords: 70, maxWords: 130, mustUse: 4,
           targetStructures: ['always', 'usually', 'often', 'sometimes', 'never', 'After that', 'Then'],
           checklist: ['Nêu thời gian cho các hoạt động (at 7am, in the evening…)', 'Dùng ≥4 trạng từ tần suất, đặt đúng vị trí', 'Chia đúng hiện tại đơn', 'Có từ chỉ trình tự nối câu'],
           sampleAnswer: 'I usually get up at 6:30am and have breakfast with my family. After that, I always catch the bus to school at 7am. Lessons start at 7:30am and finish at 4:30pm. I often chat to my friends during the break. When I get home, I sometimes help my mum make dinner, but I never wash up because my brother does it. Then, I usually do my homework for two hours. In the evening, I often go online or watch TV. I go to bed at about 11pm.',
           commonErrors: ['Quên -s/-es với he/she/it', 'Đặt trạng từ tần suất sau động từ thường (I go always)', 'Viết "at the morning" thay vì "in the morning"'],
         }),
-        write('Viết về một ngày của Julia Grant (Ex. 13)', 'Nhìn các bức tranh về Julia Grant, tình nguyện viên trong một dự án khoa học. Viết đoạn văn (80–120 từ) mô tả một ngày của Julia. Yêu cầu: (1) mở đầu bằng "Julia Grant is 21 years old and works as a volunteer on a science project in Fiji. Every morning, she …"; (2) viết các hoạt động cô ấy làm và giờ làm; (3) dùng từ trình tự After that… / Next… / Then…; (4) dùng trạng từ tần suất.', {
+        write('A day in the life of Julia Grant (Ex. 13)', 'Look at the pictures of Julia Grant, a volunteer on a science project. Write a paragraph (80–120 words) describing a day in Julia\'s life. (1) Begin: "Julia Grant is 21 years old and works as a volunteer on a science project in Fiji. Every morning, she …" (2) Write what she does and when. (3) Use After that… / Next… / Then… (4) Use frequency adverbs.', {
           minWords: 80, maxWords: 140, mustUse: 4,
           targetStructures: ['Every morning, she', 'After that', 'Next', 'Then', 'usually', 'often', 'sometimes'],
           checklist: ['Bắt đầu đúng câu mở đầu đề cho', 'Mô tả ít nhất 6 hoạt động trong tranh theo thứ tự', 'Có giờ cụ thể cho các hoạt động', 'Dùng After that / Next / Then', 'Chia động từ ngôi she: -s/-es'],
           sampleAnswer: 'Julia Grant is 21 years old and works as a volunteer on a science project in Fiji. Every morning, she gets up at 6:30am. After that, she always checks her emails on her laptop. Next, she cooks breakfast with her friend at about 8am. Then, she works outside and washes the equipment for the project. At lunchtime, she usually hangs out the washing. In the afternoon, she sometimes reads a book on the beach. Some days, she goes snorkelling and looks at the turtles. In the evening, she often has dinner in a small restaurant by the sea. Finally, she sits by the campfire with her friends before she goes to bed.',
           commonErrors: ['she go / she have → she goes / she has', 'Quên dấu phẩy sau After that, Next, Then'],
-        }, { stimulus: picture('media:m0u01-julia.jpg', 'Một ngày của Julia Grant ở Fiji') }),
+        }, { stimulus: picture('media:m0u01-julia.jpg', 'A day in the life of Julia Grant in Fiji') }),
       ],
     },
 
@@ -425,12 +425,12 @@ module.exports = {
         ['recipe book', 'sách dạy nấu ăn', 'A recipe book is a good present for her.'],
       ],
       ex: [
-        mcq('Trước khi nghe: Đúng hay Sai? (Ex. 15)', 'Đọc thông tin trên trang web về chương trình trao đổi học sinh. Mỗi câu sau Đúng (True) hay Sai (False)?', [
+        mcq('Before you listen: true or false? (Ex. 15)', 'Read the information on the website about a student exchange programme. Are the sentences true or false?', [
           ['All students spend at least a year abroad.', ['True', 'False'], 'B', 'Trang web: "Spend a **term or** a whole year" → có thể chỉ 1 học kỳ (ít hơn 1 năm) — MINI TIP 15.1.'],
           ['Host families give students pocket money during their stay.', ['True', 'False'], 'B', '"You need to pay for flights and **take some pocket money**" → học sinh tự mang tiền, gia đình không cho — MINI TIP 15.2.'],
           ['Students should do housework and be involved with family activities.', ['True', 'False'], 'A', '"help with jobs around the house and **join in with** family activities" — join in with = tham gia (MINI TIP 15.3).'],
         ], { stimulus: { kind: 'passage', imageUrl: 'media:m0u01-exchange-web.jpg', caption: 'Spend a term or a whole year in another country', text: 'Stay with a host family and go to a local college. Learn all about the culture, and maybe learn a new language. Make new friends and have a great time. You need to pay for flights and take some pocket money, but that\'s all. Host families are not paid. All they ask is that you help with jobs around the house and join in with family activities.\n\nGo to student_exchange.com and explore our website to learn more!' } }),
-        mcq('Nghe tìm từ đồng nghĩa', 'Trong bài nghe, người nói dùng từ khác với danh sách A–H. Chọn hoạt động có nghĩa giống câu nói.', [
+        mcq('Words with a similar meaning', 'The speakers use different words from the list A–H. Choose the activity that has the same meaning as what the speaker says.', [
           ['"He\'s really good at building and **fixing things**."', ['repairing things', 'shopping', 'going to the gym'], 'A', 'fix = repair (sửa chữa).'],
           ['"She\'s really good at **painting and drawing**."', ['reading books', 'doing art', 'cooking'], 'B', 'painting and drawing = doing art.'],
           ['"She spends a lot of time outdoors, **planting flowers and cutting the grass**."', ['taking care of the garden', 'playing team sports', 'shopping'], 'A', 'trồng hoa, cắt cỏ = chăm sóc vườn.'],
@@ -483,18 +483,18 @@ module.exports = {
         ['interesting', 'thú vị', 'Add details to make your talk interesting.'],
       ],
       ex: [
-        mcq('Mẹo nói 1–2 phút', 'Chọn cách làm ĐÚNG khi chuẩn bị và nói.', [
-          ['Trong 1–2 phút chuẩn bị, bạn nên…', ['viết cả câu hoàn chỉnh rồi đọc lên', 'ghi từ khoá, cụm ngắn cho từng ý', 'không ghi gì cả'], 'B', 'Sách nhấn mạnh: chỉ ghi từ/cụm ngắn; đọc câu viết sẵn sẽ mất điểm.'],
-          ['Nếu không nhớ mình đi học cùng ai, bạn nên…', ['im lặng cho tới khi nhớ ra', 'bỏ qua ý đó', 'nghĩ ra một chi tiết hợp lý và nói tiếp'], 'C', '3 ý đầu là thông tin thực tế — bạn có thể bịa nếu cần (TIP 19).'],
-          ['Câu nào giúp câu trả lời dài và hay hơn?', ['I like evening.', 'I like the evening because I can relax and chat to my friends, for example on Messenger.', 'Evening. Good.'], 'B', 'Thêm lý do (because) và ví dụ (for example) — bullet box của sách.'],
-          ['Theo Ex. 20, điều nào là DẤU HIỆU XẤU?', ['The talk is easy to understand.', 'The speaker often pauses and hesitates.', 'The speaker stays on the topic.'], 'B', 'Ngập ngừng, dừng lại nhiều làm giảm độ trôi chảy (fluency).'],
+        mcq('Tips for a 1–2 minute talk', 'Choose the CORRECT way to prepare and speak.', [
+          ['In the one minute of preparation time, you should…', ['write full sentences and read them out', 'write key words and short phrases for each point', 'not write anything'], 'B', 'Sách nhấn mạnh: chỉ ghi từ/cụm ngắn; đọc câu viết sẵn sẽ mất điểm.'],
+          ['If you can\'t remember who you go to school with, you should…', ['stop talking until you remember', 'skip that point', 'invent a reasonable detail and keep talking'], 'C', '3 ý đầu là thông tin thực tế — bạn có thể bịa nếu cần (TIP 19).'],
+          ['Which answer is longer and better?', ['I like evening.', 'I like the evening because I can relax and chat to my friends, for example on Messenger.', 'Evening. Good.'], 'B', 'Thêm lý do (because) và ví dụ (for example) — bullet box của sách.'],
+          ['According to Ex. 20, which is a BAD sign?', ['The talk is easy to understand.', 'The speaker often pauses and hesitates.', 'The speaker stays on the topic.'], 'B', 'Ngập ngừng, dừng lại nhiều làm giảm độ trôi chảy (fluency).'],
         ]),
-        speak('Nói: Một ngày bình thường của bạn (Ex. 19–21)', 'Đọc đề, dành 1 phút ghi chú từ khoá, rồi nói 1–2 phút. Describe what you usually do on an average day. You should say: what you do · who you do it with · where you do it — and explain what you enjoy most about your day and why.', 2, [
+        speak('Speaking: an average day (Ex. 19–21)', 'Read the task, spend one minute making notes, then speak for 1–2 minutes. Describe what you usually do on an average day. You should say: what you do · who you do it with · where you do it — and explain what you enjoy most about your day and why.', 2, [
           ['Describe what you usually do on an average day.\nYou should say:\n• what you do\n• who you do it with\n• where you do it\nand explain what you enjoy most about your day and why.',
             'I\'d like to talk about a normal weekday for me. I usually get up at about half past six, and the first thing I do is have a quick breakfast with my mum in the kitchen. After that, I catch the bus to school with my best friend, Lan, because we live on the same street. Lessons start at seven thirty and finish at about four thirty, so I spend most of the day at school with my classmates. In the break, we often chat or play badminton in the yard. When I get home, I sometimes help my mum make dinner, and then I do my homework in my bedroom for about two hours. In the evening, I usually watch TV with my family or go online. What I enjoy most about my day is the evening, because I can finally relax. For example, last night I watched a funny film with my little brother and we laughed a lot. I normally go to bed at around eleven.',
             'Đi theo thứ tự thời gian, mỗi ý có chi tiết (giờ, người, nơi chốn). Phần "explain" có lý do (because) và ví dụ cụ thể (last night…).'],
         ]),
-        speak('Nói: trả lời câu hỏi ngắn về thói quen (Ex. 4, 18)', 'Trả lời từng câu hỏi trong 15–25 giây: trả lời thẳng → lý do → ví dụ.', 1, [
+        speak('Speaking: questions about your routine (Ex. 4, 18)', 'Answer each question in 15–25 seconds: a direct answer → a reason → an example.', 1, [
           ['What time does your school, college or job start and finish?', 'My school starts at seven thirty in the morning and finishes at about four thirty. It\'s quite a long day, so I\'m usually tired when I get home, but I like the afternoon lessons because we often do group work.', 'Trả lời thẳng giờ giấc, thêm cảm nhận + lý do.'],
           ['What do young people like to do in the evenings in your country?', 'Most young people in Vietnam like to go online in the evenings. For example, they chat with friends or watch videos on their phones. Some people also go out for milk tea or play football with their friends.', 'Nêu ý chính + ví dụ cụ thể (for example).'],
           ['Would you like to go to another country to study? Why or why not?', 'Yes, I would. I\'d love to study in Australia because I want to improve my English and learn about a new culture. I think living with a host family would be a great experience.', 'Yes/No rõ ràng → lý do (because) → thêm một chi tiết.'],
@@ -509,37 +509,37 @@ module.exports = {
       minutes: 35,
       objectives: ['Ôn giờ giấc, make/do, động từ thói quen và hiện tại đơn của cả Unit 1'],
       ex: [
-        match('Đọc giờ (G&V Ex. 1)', 'Nối giờ dạng số với cách đọc bằng chữ.', [
+        match('Telling the time (G&V Ex. 1)', 'Match the times in numbers with the times in words.', [
           ['05:15', "It's quarter past five."], ['08:20', "It's twenty past eight."], ['06:45', "It's quarter to seven."],
           ['14:30', "It's half past two."], ['20:50', "It's ten to nine."], ['09:10', "It's ten past nine."],
           ['15:35', "It's twenty-five to four."], ['10:05', "It's five past ten."], ['12:00', "It's twelve o'clock."], ['16:55', "It's five to five."],
         ]),
-        gap('Giải mã chữ cái — một buổi sáng (G&V Ex. 2)', 'Sắp xếp lại các chữ cái trong ngoặc để được từ đúng.', [
+        gap('A morning routine – unscramble the words (G&V Ex. 2)', 'Put the letters in brackets in the correct order to make words.', [
           ['When I get up in the morning, the first thing that I do is ____ (avhe) a shower.', 'have'],
           ['After breakfast, I ____ (bhusr) my teeth. Then I ____ (emte) my friends and we ____ (chact) the bus to the college.', ['brush', 'meet', 'catch']],
           ['At four o\'clock, we ____ (vlaee) the college and ____ (og) home by bus.', ['leave', 'go']],
           ['In the evenings, I usually ____ (cwaht) TV, unless I have a lot of homework. I always ____ (od) my homework in the evenings.', ['watch', 'do']],
           ['At night, I always ____ (og) to bed and ____ (lafl) asleep straight away.', ['go', 'fall']],
         ]),
-        cat('MAKE hay DO? (G&V Ex. 3)', 'Xếp mỗi cụm vào cột MAKE hoặc DO.', { make: 'MAKE', do: 'DO' }, [
+        cat('MAKE or DO? (G&V Ex. 3)', 'Put each phrase into the MAKE or DO column.', { make: 'MAKE', do: 'DO' }, [
           ['a mess', 'make', 'make a mess = bày bừa'], ['a noise', 'make', 'make a noise = gây ồn'], ['the beds', 'make', 'make the beds = dọn giường'],
           ['dinner', 'make', 'make dinner'], ['lunch', 'make', 'make lunch'],
           ['the cleaning', 'do', 'do the cleaning'], ['some homework', 'do', 'do homework'], ['the laundry', 'do', 'do the laundry'],
           ['the shopping', 'do', 'do the shopping'], ['the housework', 'do', 'do the housework'],
         ]),
-        gap('Email từ Pháp (G&V Ex. 4)', 'Hoàn thành email của Harry bằng các từ trong khung.', [
+        gap('An email from France (G&V Ex. 4)', 'Complete Harry\'s email with the words in the box.', [
           ['My host family are very nice. They ____ in an apartment in an area called Pantin, and they both ____ as journalists.', ['live', 'work']],
           ['They ____ very early in the morning and ____ the house before me.', ['get up', 'leave']],
           ['I ____ breakfast at about 8am and then go to the language school. I usually ____ there, but if I\'m late I ____ the bus.', ['have', 'walk', 'catch']],
           ['Lessons at the school ____ at 4pm and we can go home.', ['finish']],
           ['We ____ after school in a café or ____ in the evenings to the cinema.', ['meet', 'go out']],
         ], { wordBank: ['walk', 'leave', 'have', 'finish', 'get up', 'catch', 'go out', 'work', 'meet', 'live'] }),
-        order('Sắp xếp thành câu đúng (G&V Ex. 7)', 'Sắp xếp các từ thành câu hoàn chỉnh.', [
+        order('Make sentences (G&V Ex. 7)', 'Put the words in the correct order to make sentences.', [
           ['My friend tidies the room.'], ['I play football at the weekend.'], ['I take a sandwich to college for lunch.'],
           ['I wake up at half past six.'], ['My brother checks his phone every five minutes.'], ['I try to stop studying before 9pm.'],
           ['I go to the dentist every six months.'], ['My father does most of the housework.'],
         ]),
-        gap('Công việc mới ở siêu thị (G&V Ex. 8)', 'Hoàn thành đoạn văn bằng các từ trong khung (chia động từ nếu cần).', [
+        gap('A new job at the supermarket (G&V Ex. 8)', 'Complete the text with the words in the box. Change the form of the verbs if necessary.', [
           ['I have got a new job! It\'s in a supermarket and I ____ there every Saturday. I ____ at 8am and the shop ____ at 9am.', ['work', 'start', 'opens']],
           ['I ____ the shelves with food products and ____ the shopping baskets by the entrance. I ____ the floors and ____ at the checkout.', ['fill', 'tidy', 'clean', 'work']],
           ['My manager is very nice. She ____ me what to do and never ____.', ['tells', 'shouts']],

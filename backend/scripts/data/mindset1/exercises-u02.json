@@ -1,0 +1,948 @@
+{
+ "exercises": [
+  {
+   "code": "M1-U02-L1-E01",
+   "lessonCode": "M1-U02-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Types of homes (Ex. 3)",
+   "instruction": "Find these in the pictures A–D: igloo, treehouse, houseboat, shipping container homes.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m1u02-homes.jpg",
+    "caption": "Ex. 3"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture A",
+     "right": "treehouse",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture B",
+     "right": "shipping container homes",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture C",
+     "right": "igloo",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture D",
+     "right": "houseboat",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L1-E02",
+   "lessonCode": "M1-U02-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "What is the passage about? (Ex. 4)",
+   "instruction": "Read \"Amazing homes\" in ONE minute and choose one of the options.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Amazing homes\n\nMost people live in a house or a flat. When they go on holiday they stay in a hotel or a guest house. But some places where you can live or stay are a bit different.\n\n**1** One unusual place to live is a houseboat. Amsterdam in Holland is famous for its houseboats – there are about 2,500 of them. They have everything that a normal house has: a living room, bedroom, kitchen, bathroom and even sometimes a terrace on the roof. They are cheaper than houses and people who live on houseboats enjoy being close to nature. Some houseboats can be moved to other parts of the river, while others are permanently in one place.\n\n**2** In Tokyo, Japan, there is a see-through house. It is like a normal Japanese house but all the walls are made of glass. There is plenty of daylight but no privacy. Architect Sou Fujimoto designed it for a couple to make their home. He based his ideas on early man living in trees. It wouldn't suit everyone but the couple who live there love the feeling of being surrounded by the natural world.\n\n**3** All around the world, people live in homes made from shipping containers. Some use only one container, while others are made from several containers joined together. One house in Chile was built from 12 containers. They are cheap to buy and eco-friendly. They can also be placed in the garden or drive as guest rooms, studies or utility rooms.\n\n**4** In Germany, you can stay in a one-metre-square house, the smallest house in the world, called the House NA. Van Bo Le-Mentzel, a refugee from Laos, built it to draw attention to the world housing shortage. It is a wooden structure on wheels and weighs 40 kg. It has a locking door and a window. You can turn it onto its side when you want to lie down. Franz from Munich spent the night in one recently 'just to see what it was like'. He found it a bit uncomfortable!\n\n**5** For an unusual holiday you can stay in an igloo, a house made of ice. These can be found in several countries including Sweden, Norway and Finland. They are built new every winter. Jenny and Callum, visitors from Australia, told us, 'We slept in an igloo last night. It's so cold here – minus 5 degrees centigrade. We used reindeer skins to keep warm!'\n\n**6** Another couple, Shaun and Rachel from Manchester, enjoyed a recent holiday in a treehouse in Sussex, England. They said, 'It was right up in the trees and had everything we needed, even wifi! It had a small kitchen and we did our own cooking. It was the perfect place to get away from our busy lives.'",
+    "caption": "Amazing homes (p. 26)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What is the passage about?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Life in different cities around the world"
+      },
+      {
+       "id": "B",
+       "text": "Unusual places to live or stay around the world"
+      },
+      {
+       "id": "C",
+       "text": "The type of houses and flats most people live in"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Câu mở đầu: \"some places where you can live or stay are a bit different\" + houseboat, nhà kính, container, igloo, treehouse → nơi ở khác thường. Đây là kỹ năng skimming (lấy ý chính)."
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L1-E03",
+   "lessonCode": "M1-U02-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Skimming or scanning? (Ex. 5–6)",
+   "instruction": "Read the passage again to find the words igloo, treehouse, houseboat and shipping container homes as quickly as you can. Then answer the questions.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Amazing homes\n\nMost people live in a house or a flat. When they go on holiday they stay in a hotel or a guest house. But some places where you can live or stay are a bit different.\n\n**1** One unusual place to live is a houseboat. Amsterdam in Holland is famous for its houseboats – there are about 2,500 of them. They have everything that a normal house has: a living room, bedroom, kitchen, bathroom and even sometimes a terrace on the roof. They are cheaper than houses and people who live on houseboats enjoy being close to nature. Some houseboats can be moved to other parts of the river, while others are permanently in one place.\n\n**2** In Tokyo, Japan, there is a see-through house. It is like a normal Japanese house but all the walls are made of glass. There is plenty of daylight but no privacy. Architect Sou Fujimoto designed it for a couple to make their home. He based his ideas on early man living in trees. It wouldn't suit everyone but the couple who live there love the feeling of being surrounded by the natural world.\n\n**3** All around the world, people live in homes made from shipping containers. Some use only one container, while others are made from several containers joined together. One house in Chile was built from 12 containers. They are cheap to buy and eco-friendly. They can also be placed in the garden or drive as guest rooms, studies or utility rooms.\n\n**4** In Germany, you can stay in a one-metre-square house, the smallest house in the world, called the House NA. Van Bo Le-Mentzel, a refugee from Laos, built it to draw attention to the world housing shortage. It is a wooden structure on wheels and weighs 40 kg. It has a locking door and a window. You can turn it onto its side when you want to lie down. Franz from Munich spent the night in one recently 'just to see what it was like'. He found it a bit uncomfortable!\n\n**5** For an unusual holiday you can stay in an igloo, a house made of ice. These can be found in several countries including Sweden, Norway and Finland. They are built new every winter. Jenny and Callum, visitors from Australia, told us, 'We slept in an igloo last night. It's so cold here – minus 5 degrees centigrade. We used reindeer skins to keep warm!'\n\n**6** Another couple, Shaun and Rachel from Manchester, enjoyed a recent holiday in a treehouse in Sussex, England. They said, 'It was right up in the trees and had everything we needed, even wifi! It had a small kitchen and we did our own cooking. It was the perfect place to get away from our busy lives.'",
+    "caption": "Amazing homes"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "In which paragraph is \"igloo\"?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Paragraph 2"
+      },
+      {
+       "id": "B",
+       "text": "Paragraph 4"
+      },
+      {
+       "id": "C",
+       "text": "Paragraph 5"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Đoạn 5: \"you can stay in an igloo, a house made of ice\"."
+    },
+    {
+     "id": "q2",
+     "prompt": "In which paragraph is \"treehouse\"?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Paragraph 1"
+      },
+      {
+       "id": "B",
+       "text": "Paragraph 6"
+      },
+      {
+       "id": "C",
+       "text": "Paragraph 3"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Đoạn 6: \"a holiday in a treehouse in Sussex\"."
+    },
+    {
+     "id": "q3",
+     "prompt": "Which activity practised SCANNING?",
+     "options": [
+      {
+       "id": "A",
+       "text": "exercise 4 (What is the passage about?)"
+      },
+      {
+       "id": "B",
+       "text": "exercise 5 (finding the words quickly)"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Tìm một từ/thông tin cụ thể = scanning."
+    },
+    {
+     "id": "q4",
+     "prompt": "Which activity practised SKIMMING?",
+     "options": [
+      {
+       "id": "A",
+       "text": "exercise 4 (What is the passage about?)"
+      },
+      {
+       "id": "B",
+       "text": "exercise 5 (finding the words quickly)"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Đọc nhanh lấy ý chính = skimming."
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L2-E01",
+   "lessonCode": "M1-U02-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Paraphrases (Ex. 7)",
+   "instruction": "Match these words and phrases from the text (1–6) with their paraphrases (a–f).",
+   "items": [
+    {
+     "id": "m1",
+     "left": "houseboats",
+     "right": "homes on the water",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "permanently",
+     "right": "forever, always",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "privacy",
+     "right": "not being watched by others",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "surrounded by the natural world",
+     "right": "having nature all around",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "uncomfortable",
+     "right": "not feeling pleasant",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Sweden, Norway and Finland",
+     "right": "Nordic countries",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L2-E02",
+   "lessonCode": "M1-U02-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Choose the best paraphrase (Ex. 8)",
+   "instruction": "Choose the best paraphrase for these sentences from the text.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "The treehouse had everything we needed.",
+     "options": [
+      {
+       "id": "A",
+       "text": "We needed some more things for our stay in the treehouse."
+      },
+      {
+       "id": "B",
+       "text": "The treehouse was very well equipped."
+      },
+      {
+       "id": "C",
+       "text": "We need everything for the treehouse."
+      }
+     ],
+     "answer": "B",
+     "explanation": "had everything we needed = được trang bị đầy đủ (well equipped)."
+    },
+    {
+     "id": "q2",
+     "prompt": "Some houseboats can be moved to other parts of the river.",
+     "options": [
+      {
+       "id": "A",
+       "text": "Not all houseboats are permanently fixed in one place."
+      },
+      {
+       "id": "B",
+       "text": "Only some parts of the river have houseboats."
+      },
+      {
+       "id": "C",
+       "text": "You can move to a houseboat in another part of the river."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Một số nhà thuyền di chuyển được → không phải tất cả đều cố định."
+    },
+    {
+     "id": "q3",
+     "prompt": "One house in Chile was built from 12 containers.",
+     "options": [
+      {
+       "id": "A",
+       "text": "There are 12 houses in Chile made from containers."
+      },
+      {
+       "id": "B",
+       "text": "12 containers were used to make one house."
+      },
+      {
+       "id": "C",
+       "text": "You need 12 containers to make a house in Chile."
+      }
+     ],
+     "answer": "B",
+     "explanation": "MỘT ngôi nhà, dùng 12 container. C sai vì nói như quy định chung."
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L3-E01",
+   "lessonCode": "M1-U02-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Tenses in \"Amazing homes\" (Ex. 10)",
+   "instruction": "Answer these questions about the Amazing homes passage.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Which tenses does the passage use?",
+     "options": [
+      {
+       "id": "A",
+       "text": "present tenses"
+      },
+      {
+       "id": "B",
+       "text": "past tenses"
+      },
+      {
+       "id": "C",
+       "text": "both present and past tenses"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Which tense is used to describe the houses?",
+     "options": [
+      {
+       "id": "A",
+       "text": "present simple"
+      },
+      {
+       "id": "B",
+       "text": "past simple"
+      }
+     ],
+     "answer": "A",
+     "explanation": "They have everything that a normal house has…"
+    },
+    {
+     "id": "q3",
+     "prompt": "Which tense is used to describe habit or things that are always true?",
+     "options": [
+      {
+       "id": "A",
+       "text": "present simple"
+      },
+      {
+       "id": "B",
+       "text": "past simple"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Most people live in a house or a flat."
+    },
+    {
+     "id": "q4",
+     "prompt": "Which tense is used to describe people's experiences on holidays?",
+     "options": [
+      {
+       "id": "A",
+       "text": "present simple"
+      },
+      {
+       "id": "B",
+       "text": "past simple"
+      }
+     ],
+     "answer": "B",
+     "explanation": "We slept in an igloo last night… We used reindeer skins…"
+    },
+    {
+     "id": "q5",
+     "prompt": "Which tense is used to talk about designing or building the house?",
+     "options": [
+      {
+       "id": "A",
+       "text": "present simple"
+      },
+      {
+       "id": "B",
+       "text": "past simple"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Sou Fujimoto designed it… One house in Chile was built from 12 containers."
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L3-E02",
+   "lessonCode": "M1-U02-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Present simple or past simple? (Ex. 11)",
+   "instruction": "Choose the correct verb, present simple or past simple.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Most people in China ____ in flats.",
+     "options": [
+      {
+       "id": "A",
+       "text": "live"
+      },
+      {
+       "id": "B",
+       "text": "lived"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Sự thật hiện tại."
+    },
+    {
+     "id": "q2",
+     "prompt": "In the UK most houses ____ gardens.",
+     "options": [
+      {
+       "id": "A",
+       "text": "have"
+      },
+      {
+       "id": "B",
+       "text": "had"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "In 2010, my parents ____ to Australia.",
+     "options": [
+      {
+       "id": "A",
+       "text": "move"
+      },
+      {
+       "id": "B",
+       "text": "moved"
+      }
+     ],
+     "answer": "B",
+     "explanation": "In 2010 → quá khứ."
+    },
+    {
+     "id": "q4",
+     "prompt": "Nowadays Sarah usually ____ her holidays in cities.",
+     "options": [
+      {
+       "id": "A",
+       "text": "spends"
+      },
+      {
+       "id": "B",
+       "text": "spent"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Nowadays, usually → hiện tại đơn."
+    },
+    {
+     "id": "q5",
+     "prompt": "In the past she ____ beach holidays.",
+     "options": [
+      {
+       "id": "A",
+       "text": "prefers"
+      },
+      {
+       "id": "B",
+       "text": "preferred"
+      }
+     ],
+     "answer": "B",
+     "explanation": "In the past → quá khứ."
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L3-E03",
+   "lessonCode": "M1-U02-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Correct form of the verb (Ex. 12)",
+   "instruction": "Complete the sentences with the correct form of the verb in brackets.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Farid now ____ (share) a flat with some other students.",
+     "blanks": [
+      {
+       "accept": [
+        "shares"
+       ]
+      }
+     ],
+     "explanation": "now + chủ ngữ số ít → shares."
+    },
+    {
+     "id": "g2",
+     "prompt": "Last year he ____ (live) at home with his parents.",
+     "blanks": [
+      {
+       "accept": [
+        "lived"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Once I ____ (stay) on a campsite next to a lake in Italy.",
+     "blanks": [
+      {
+       "accept": [
+        "stayed"
+       ]
+      }
+     ],
+     "explanation": "Once (đã từng một lần) → quá khứ."
+    },
+    {
+     "id": "g4",
+     "prompt": "My flat ____ (have) two balconies.",
+     "blanks": [
+      {
+       "accept": [
+        "has"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "In 2014 we ____ (move) into our new house.",
+     "blanks": [
+      {
+       "accept": [
+        "moved"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L4-E01",
+   "lessonCode": "M1-U02-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Places in a town (Ex. 1)",
+   "instruction": "Here are some pictures of places in a town. Match pictures A–G with the words in the box: railway station, museum, bank, harbour, sports centre, restaurant, bus stop.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m1u02-places.jpg",
+    "caption": "Ex. 1"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture A",
+     "right": "sports centre",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture B",
+     "right": "museum",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture C",
+     "right": "bank",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture D",
+     "right": "railway station",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture E",
+     "right": "bus stop",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture F",
+     "right": "restaurant",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture G",
+     "right": "harbour",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L4-E02",
+   "lessonCode": "M1-U02-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Groups of places (Ex. 2)",
+   "instruction": "Put the words in exercise 1 into the correct group.",
+   "categories": [
+    {
+     "id": "t",
+     "label": "Travel and transport"
+    },
+    {
+     "id": "s",
+     "label": "Sports and leisure"
+    },
+    {
+     "id": "a",
+     "label": "Arts and culture"
+    },
+    {
+     "id": "m",
+     "label": "Money"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "harbour",
+     "category": "t",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "bus stop",
+     "category": "t",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "railway station",
+     "category": "t",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "sports centre",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "restaurant",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "museum",
+     "category": "a",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "bank",
+     "category": "m",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L4-E03",
+   "lessonCode": "M1-U02-L4",
+   "order": 3,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Which kind of answer? (Ex. 6–7)",
+   "instruction": "Read the questions. Underline the key words. Which kind of information does each question need?",
+   "items": [
+    {
+     "id": "m1",
+     "left": "1 What did the speakers order in the restaurant?",
+     "right": "a meal or a kind of food",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "2 How much did each person pay for their meal?",
+     "right": "a price",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "3 What time is the bus due?",
+     "right": "a time",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "4 Where is the bus stop?",
+     "right": "a place",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "5 How long did the course last?",
+     "right": "a period of time",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "6 Which TWO things did the speaker do on the course?",
+     "right": "the names of activities or skills",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "7 What is the date of the next course?",
+     "right": "a date",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "8 Who will lead the course?",
+     "right": "a name of a person",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L4-E04",
+   "lessonCode": "M1-U02-L4",
+   "order": 4,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Do you need a number? (Ex. 8)",
+   "instruction": "Look at the questions in exercise 7. For which questions do you need to write a number?",
+   "categories": [
+    {
+     "id": "num",
+     "label": "Needs a number"
+    },
+    {
+     "id": "no",
+     "label": "No number"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "1 What did the speakers order in the restaurant?",
+     "category": "no",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "2 How much did each person pay for their meal?",
+     "category": "num",
+     "explanation": "Giá tiền."
+    },
+    {
+     "id": "c3",
+     "text": "3 What time is the bus due?",
+     "category": "num",
+     "explanation": "Giờ (7.50)."
+    },
+    {
+     "id": "c4",
+     "text": "4 Where is the bus stop?",
+     "category": "no",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "5 How long did the course last?",
+     "category": "num",
+     "explanation": "Khoảng thời gian (2 days)."
+    },
+    {
+     "id": "c6",
+     "text": "6 Which TWO things did the speaker do on the course?",
+     "category": "no",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "7 What is the date of the next course?",
+     "category": "num",
+     "explanation": "Ngày tháng (1st September)."
+    },
+    {
+     "id": "c8",
+     "text": "8 Who will lead the course?",
+     "category": "no",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L4-E05",
+   "lessonCode": "M1-U02-L4",
+   "order": 5,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Word limits (Ex. 10)",
+   "instruction": "Answer the question. Write NO MORE THAN ONE WORD AND/OR A NUMBER for each answer. \"What did the boy buy in the shopping mall?\"",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Which answer is correct?",
+     "options": [
+      {
+       "id": "A",
+       "text": "shoes"
+      },
+      {
+       "id": "B",
+       "text": "he bought shoes"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"he bought shoes\" = 3 từ, đề chỉ cho phép ONE WORD AND/OR A NUMBER → sai."
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L4-E06",
+   "lessonCode": "M1-U02-L4",
+   "order": 6,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Check your answers (Ex. 11, 13)",
+   "instruction": "Answer the questions about the exam rules.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "\"What time is the bus due?\" The speaker says \"7.50 pm to be exact\". Which answer is correct?",
+     "options": [
+      {
+       "id": "A",
+       "text": "seven fifteen"
+      },
+      {
+       "id": "B",
+       "text": "seven fiftty"
+      },
+      {
+       "id": "C",
+       "text": "7.15"
+      },
+      {
+       "id": "D",
+       "text": "7.50"
+      }
+     ],
+     "answer": "D",
+     "explanation": "7.50 đúng; \"seven fiftty\" sai chính tả; 7.15 / seven fifteen là sai giờ."
+    },
+    {
+     "id": "q2",
+     "prompt": "\"Where is the bus stop?\" The speaker says \"There's an e at the end of Blythe.\" Which answer is correct?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Blithe Road"
+      },
+      {
+       "id": "B",
+       "text": "Blith Road"
+      },
+      {
+       "id": "C",
+       "text": "Blythe Road"
+      },
+      {
+       "id": "D",
+       "text": "Blyth Road"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "In the Exam skills task, which questions need a number ONLY?",
+     "options": [
+      {
+       "id": "A",
+       "text": "questions 3 and 5"
+      },
+      {
+       "id": "B",
+       "text": "questions 1 and 2"
+      },
+      {
+       "id": "C",
+       "text": "questions 4 and 8"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Q3 How many people (8), Q5 How much ($15). Q4 là địa chỉ — có số NHƯNG có cả tên đường."
+    }
+   ]
+  }
+ ]
+}

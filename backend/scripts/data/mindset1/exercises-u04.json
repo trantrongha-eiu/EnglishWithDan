@@ -1,0 +1,799 @@
+{
+ "exercises": [
+  {
+   "code": "M1-U04-L1-E01",
+   "lessonCode": "M1-U04-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Foods in the pictures (Ex. 1)",
+   "instruction": "Find the foods in the pictures 1–8.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m1u04-foods.jpg",
+    "caption": "Ex. 1"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "curry and rice",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "cereal",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "mashed potato",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "fish and chips",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "noodles, vegetables and chicken",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "chicken and salad",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "toast",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Picture 8",
+     "right": "burger",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U04-L1-E02",
+   "lessonCode": "M1-U04-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 12,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Countable or uncountable? (Ex. 1)",
+   "instruction": "Put the food words into the correct column: countable or uncountable.",
+   "categories": [
+    {
+     "id": "c",
+     "label": "Countable"
+    },
+    {
+     "id": "u",
+     "label": "Uncountable"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "burger",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "cereal",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "chips",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "curry",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "fish",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "mashed potato",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "chicken",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "noodle",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "rice",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "salad",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "toast",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "vegetable",
+     "category": "c",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U04-L2-E01",
+   "lessonCode": "M1-U04-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Questions and evidence (Ex. 5)",
+   "instruction": "Match questions 1–6 with the evidence a–f from the text.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Who realised that some people eat the same dishes for different meals?",
+     "right": "But when I travelled in Asia, I realised that in many places, there is no difference between breakfast and dinner",
+     "explanation": "Aileen (E): no difference between breakfast and dinner = eat the same dishes for different meals."
+    },
+    {
+     "id": "m2",
+     "left": "Who dislikes the takeaway culture?",
+     "right": "I can't believe there are people in the world who live on 'junk food'",
+     "explanation": "Alfredo (B): fast food/junk food ↔ takeaway culture."
+    },
+    {
+     "id": "m3",
+     "left": "Who discusses travelling for people on a special diet?",
+     "right": "… we forget that not everyone in the world understands vegetarianism.",
+     "explanation": "Pauline (D): vegetarian/vegan = special diet."
+    },
+    {
+     "id": "m4",
+     "left": "Who talks about what is considered polite in different cultures?",
+     "right": "In China, when we are offered something, we say 'No thanks' … In other countries, though, 'no' means 'no'",
+     "explanation": "Qiang Shi (C)."
+    },
+    {
+     "id": "m5",
+     "left": "Who found it difficult to learn a new way of eating?",
+     "right": "I thought I knew where my mouth was, but my first few attempts were a disaster.",
+     "explanation": "Charles (A): ăn bốc lần đầu thất bại."
+    },
+    {
+     "id": "m6",
+     "left": "Who talks about producing your own food?",
+     "right": "A lot of people grow their own vegetables and keep chickens.",
+     "explanation": "Alfredo (B): grow vegetables, keep chickens = producing your own food."
+    }
+   ]
+  },
+  {
+   "code": "M1-U04-L3-E01",
+   "lessonCode": "M1-U04-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "error_correction",
+   "title": "Correct the errors (Ex. 7)",
+   "instruction": "Correct the errors in these sentences.",
+   "items": [
+    {
+     "id": "e1",
+     "prompt": "Fresh fruit are healthy and we should eat them every day.",
+     "answer": "Fresh fruit is healthy and we should eat it every day.",
+     "explanation": "fruit không đếm được → is, it."
+    },
+    {
+     "id": "e2",
+     "prompt": "Chips cooked in the oven is healthier than fried chips.",
+     "answer": "Chips cooked in the oven are healthier than fried chips.",
+     "explanation": "chips số nhiều → are."
+    },
+    {
+     "id": "e3",
+     "prompt": "The burgers and the pizza are the cheapest foods you can buy.",
+     "answer": "Burgers and pizza are the cheapest foods you can buy.",
+     "explanation": "Nói chung chung → bỏ the."
+    },
+    {
+     "id": "e4",
+     "prompt": "In the India it is easy to find the vegetarian food.",
+     "answer": "In India it is easy to find vegetarian food.",
+     "explanation": "Tên nước không dùng the; vegetarian food nói chung → bỏ the."
+    },
+    {
+     "id": "e5",
+     "prompt": "My favourite food is chickens.",
+     "answer": "My favourite food is chicken.",
+     "explanation": "Thịt gà (món ăn) không đếm được."
+    }
+   ]
+  },
+  {
+   "code": "M1-U04-L3-E02",
+   "lessonCode": "M1-U04-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "some, any, much or many? (Ex. 8)",
+   "instruction": "Complete the sentences with some, any, much or many.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "There are ____ mushrooms in the fridge.",
+     "blanks": [
+      {
+       "accept": [
+        "some"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "Are ____ people vegetarian in your country?",
+     "blanks": [
+      {
+       "accept": [
+        "many"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "I don't put ____ sugar in my tea – just half a spoonful.",
+     "blanks": [
+      {
+       "accept": [
+        "much"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "Do we have ____ flour left?",
+     "blanks": [
+      {
+       "accept": [
+        "any",
+        "much"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "Can I have ____ more cake, please?",
+     "blanks": [
+      {
+       "accept": [
+        "some"
+       ]
+      }
+     ],
+     "explanation": "Lời đề nghị/yêu cầu → some."
+    },
+    {
+     "id": "g6",
+     "prompt": "How ____ rice do you eat every week?",
+     "blanks": [
+      {
+       "accept": [
+        "much"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U04-L4-E01",
+   "lessonCode": "M1-U04-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Ways of preparing food (Ex. 1)",
+   "instruction": "Label the different ways of preparing food with verbs from the box: bake, boil, fry, grill.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m1u04-cooking.jpg",
+    "caption": "Ex. 1"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture A",
+     "right": "boil",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture B",
+     "right": "fry",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture C",
+     "right": "bake",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture D",
+     "right": "grill",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U04-L4-E02",
+   "lessonCode": "M1-U04-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 16,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Types of food (Ex. 2)",
+   "instruction": "Match the words with the type of food they are.",
+   "categories": [
+    {
+     "id": "m",
+     "label": "Meat dishes"
+    },
+    {
+     "id": "v",
+     "label": "Vegetables"
+    },
+    {
+     "id": "f",
+     "label": "Fruits"
+    },
+    {
+     "id": "s",
+     "label": "Sweets"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "beef",
+     "category": "m",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "steak",
+     "category": "m",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "burger",
+     "category": "m",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "lamb",
+     "category": "m",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "potatoes",
+     "category": "v",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "carrots",
+     "category": "v",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "cucumbers",
+     "category": "v",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "peas",
+     "category": "v",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "apples",
+     "category": "f",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "strawberries",
+     "category": "f",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "pears",
+     "category": "f",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "bananas",
+     "category": "f",
+     "explanation": ""
+    },
+    {
+     "id": "c13",
+     "text": "biscuits",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c14",
+     "text": "cake",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c15",
+     "text": "chocolate",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c16",
+     "text": "pastries",
+     "category": "s",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U04-L4-E03",
+   "lessonCode": "M1-U04-L4",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Words in the script (Ex. 8)",
+   "instruction": "Find words in the Listening script of exercise 6 that mean the following.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "crowded",
+     "right": "busy",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "delicious",
+     "right": "tasty",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "cheap",
+     "right": "low-cost",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "smart",
+     "right": "fashionable",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "inexpensive",
+     "right": "reasonable",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U04-L4-E04",
+   "lessonCode": "M1-U04-L4",
+   "order": 4,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Synonym and paraphrase (Ex. 9)",
+   "instruction": "Choose the option, A, B or C, which does NOT mean the same as the first sentence.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "The price of food in the restaurant is cheap.",
+     "options": [
+      {
+       "id": "A",
+       "text": "The price of a meal in the restaurant is reasonable."
+      },
+      {
+       "id": "B",
+       "text": "The restaurant is excellent if you want a budget meal."
+      },
+      {
+       "id": "C",
+       "text": "The food in the restaurant is overpriced."
+      }
+     ],
+     "answer": "C",
+     "explanation": "overpriced = quá đắt (ngược với cheap)."
+    },
+    {
+     "id": "q2",
+     "prompt": "Marco cooked us a really tasty meal.",
+     "options": [
+      {
+       "id": "A",
+       "text": "The meal Marco prepared was delicious."
+      },
+      {
+       "id": "B",
+       "text": "Marco cooked us a really unappetising meal."
+      },
+      {
+       "id": "C",
+       "text": "The meal Marco made for us was mouth-watering."
+      }
+     ],
+     "answer": "B",
+     "explanation": "unappetising = không ngon miệng."
+    },
+    {
+     "id": "q3",
+     "prompt": "We were served food that was cooked in the old-fashioned way.",
+     "options": [
+      {
+       "id": "A",
+       "text": "The meal we had was very contemporary in style."
+      },
+      {
+       "id": "B",
+       "text": "The meal we had was very traditional."
+      },
+      {
+       "id": "C",
+       "text": "The meal was made from a historic recipe."
+      }
+     ],
+     "answer": "A",
+     "explanation": "contemporary = hiện đại (ngược với old-fashioned)."
+    },
+    {
+     "id": "q4",
+     "prompt": "When I went to Thailand, I really enjoyed trying the street food.",
+     "options": [
+      {
+       "id": "A",
+       "text": "I really liked tasting the food that was sold outdoors in Thailand."
+      },
+      {
+       "id": "B",
+       "text": "In Thailand I loved the food we bought from stalls in the streets."
+      },
+      {
+       "id": "C",
+       "text": "I enjoyed eating at restaurants when I was in Thailand."
+      }
+     ],
+     "answer": "C",
+     "explanation": "restaurants ≠ street food."
+    },
+    {
+     "id": "q5",
+     "prompt": "The chef at the Lodge Hotel is very skilful.",
+     "options": [
+      {
+       "id": "A",
+       "text": "The chef at the Lodge Hotel is bad at his job."
+      },
+      {
+       "id": "B",
+       "text": "The chef at the Lodge Hotel has a lot of expertise."
+      },
+      {
+       "id": "C",
+       "text": "The chef at the Lodge Hotel is highly trained."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "The ingredients for the recipe can be changed to ones you have available.",
+     "options": [
+      {
+       "id": "A",
+       "text": "You can use different ingredients to make this dish if you can't find everything."
+      },
+      {
+       "id": "B",
+       "text": "You can be flexible about what ingredients you add to this recipe."
+      },
+      {
+       "id": "C",
+       "text": "You should follow the recipe strictly or it won't taste good."
+      }
+     ],
+     "answer": "C",
+     "explanation": "strictly = nghiêm ngặt (ngược với can be changed)."
+    },
+    {
+     "id": "q7",
+     "prompt": "The chef at the new restaurant is famous across the country.",
+     "options": [
+      {
+       "id": "A",
+       "text": "The chef at the new restaurant is well known nationally."
+      },
+      {
+       "id": "B",
+       "text": "The chef at the new restaurant is recognised across the country."
+      },
+      {
+       "id": "C",
+       "text": "The chef at the new restaurant is unknown outside of his town."
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q8",
+     "prompt": "I didn't like the soup; it was too spicy.",
+     "options": [
+      {
+       "id": "A",
+       "text": "The soup had too much pepper."
+      },
+      {
+       "id": "B",
+       "text": "The soup wasn't tasty."
+      },
+      {
+       "id": "C",
+       "text": "The soup was a bit too hot for my taste."
+      }
+     ],
+     "answer": "B",
+     "explanation": "\"wasn't tasty\" = không ngon — không nói đến cay."
+    }
+   ]
+  },
+  {
+   "code": "M1-U04-L4-E05",
+   "lessonCode": "M1-U04-L4",
+   "order": 5,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Words that helped you (Ex. 10)",
+   "instruction": "Match the words in the first sentences of exercise 9 with the words in the options that mean the same.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "cheap",
+     "right": "reasonable, budget",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "tasty",
+     "right": "delicious, mouth-watering",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "old-fashioned",
+     "right": "traditional, historic",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "street food",
+     "right": "sold outdoors, from stalls in the streets",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "skilful",
+     "right": "expertise, highly trained",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "can be changed",
+     "right": "use different ingredients, flexible",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "famous",
+     "right": "well known, recognised",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "too spicy",
+     "right": "too much pepper, too hot",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

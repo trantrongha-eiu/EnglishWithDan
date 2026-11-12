@@ -9,8 +9,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Các cách học tiếng Anh (Lead-in)",
-   "instruction": "Nối tranh 1–8 với cách học.",
+   "title": "Ways to learn English (Lead-in)",
+   "instruction": "Match pictures 1–8 with the ways of learning.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u09-leadin.jpg",
@@ -76,8 +76,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Giới từ đi với động từ giao tiếp (Ex. 3)",
-   "instruction": "Chọn giới từ đúng.",
+   "title": "Prepositions with communication verbs (Ex. 3)",
+   "instruction": "Choose the correct preposition.",
    "items": [
     {
      "id": "q1",
@@ -190,8 +190,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Nối nửa câu hỏi (Ex. 4)",
-   "instruction": "Nối hai nửa câu hỏi.",
+   "title": "Match the question halves (Ex. 4)",
+   "instruction": "Match the two halves of the questions.",
    "items": [
     {
      "id": "m1",
@@ -234,8 +234,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Kế hoạch học tiếng Anh (G&V Ex. 2)",
-   "instruction": "Nối hai nửa câu.",
+   "title": "Plans for learning English (G&V Ex. 2)",
+   "instruction": "Match the two halves of the sentences.",
    "items": [
     {
      "id": "m1",
@@ -296,8 +296,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Collocation (Ex. 15)",
-   "instruction": "Chọn động từ đúng.",
+   "title": "Collocations (Ex. 15)",
+   "instruction": "Choose the correct verb.",
    "items": [
     {
      "id": "q1",
@@ -510,8 +510,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "MAKE hay TAKE? (G&V Ex. 7)",
-   "instruction": "Xếp mỗi cụm vào MAKE hoặc TAKE.",
+   "title": "MAKE or TAKE? (G&V Ex. 7)",
+   "instruction": "Put each phrase into the MAKE or TAKE column.",
    "categories": [
     {
      "id": "make",
@@ -594,8 +594,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Hội thoại về em trai Susan (G&V Ex. 5)",
-   "instruction": "Điền: time, advantage, skills, advice, effort, progress, fun, work.",
+   "title": "A conversation about Susan's brother (G&V Ex. 5)",
+   "instruction": "Complete the conversation with: time, advantage, skills, advice, effort, progress, fun, work.",
    "wordBank": [
     "time",
     "advantage",
@@ -693,8 +693,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Viết lại ý của hội thoại (G&V Ex. 6)",
-   "instruction": "Hoàn thành các câu paraphrase của hội thoại ở bài trước. Viết MỘT đến BA từ.",
+   "title": "Paraphrase the conversation (G&V Ex. 6)",
+   "instruction": "Complete the sentences that paraphrase the conversation in the previous exercise. Write ONE to THREE words.",
    "items": [
     {
      "id": "g1",
@@ -781,8 +781,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Tóm ý chính đoạn văn (Ex. 17)",
-   "instruction": "Đọc lại bài về Richard Doner và chọn từ đúng để tóm tắt ý chính.",
+   "title": "Summarise the main ideas (Ex. 17)",
+   "instruction": "Read the text about Richard Doner again and choose the correct word to summarise the main idea.",
    "items": [
     {
      "id": "q1",
@@ -875,8 +875,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Kế hoạch (Ex. 5)",
-   "instruction": "Điền động từ: learn, meet, send, study, video call.",
+   "title": "Plans (Ex. 5)",
+   "instruction": "Complete the sentences with the verbs: learn, meet, send, study, video call.",
    "wordBank": [
     "learn",
     "meet",
@@ -956,12 +956,12 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Câu đúng hay sai? (Ex. 9)",
-   "instruction": "Chọn câu ĐÚNG.",
+   "title": "Correct or incorrect? (Ex. 9)",
+   "instruction": "Choose the CORRECT sentence.",
    "items": [
     {
      "id": "q1",
-     "prompt": "Khi 18 tuổi, tôi sẽ học ở Anh:",
+     "prompt": "A plan to study in the UK at 18:",
      "options": [
       {
        "id": "A",
@@ -977,7 +977,7 @@
     },
     {
      "id": "q2",
-     "prompt": "Đi mua sắm cùng tôi nhé?",
+     "prompt": "An invitation to go shopping later:",
      "options": [
       {
        "id": "A",
@@ -993,7 +993,7 @@
     },
     {
      "id": "q3",
-     "prompt": "Cô ấy sẽ mua điện thoại mới:",
+     "prompt": "Her plan to buy a new phone:",
      "options": [
       {
        "id": "A",
@@ -1009,7 +1009,7 @@
     },
     {
      "id": "q4",
-     "prompt": "Hỏi: Bạn có định nói với bố mẹ không?",
+     "prompt": "A question about telling your parents:",
      "options": [
       {
        "id": "A",
@@ -1025,7 +1025,7 @@
     },
     {
      "id": "q5",
-     "prompt": "Hỏi nơi xem trận bóng:",
+     "prompt": "A question about where to watch the match:",
      "options": [
       {
        "id": "A",
@@ -1041,7 +1041,7 @@
     },
     {
      "id": "q6",
-     "prompt": "Tôi sẽ không gọi món ăn:",
+     "prompt": "Not ordering food at the restaurant:",
      "options": [
       {
        "id": "A",
@@ -1066,8 +1066,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Khẳng định, phủ định, câu hỏi (G&V Ex. 3)",
-   "instruction": "Viết dạng going to đúng theo ký hiệu (+ / − / ?).",
+   "title": "Positive, negative and questions (G&V Ex. 3)",
+   "instruction": "Write the correct form of going to (+ / − / ?).",
    "items": [
     {
      "id": "g1",
@@ -1144,8 +1144,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
-   "title": "Đặt câu hỏi với going to (G&V Ex. 4)",
-   "instruction": "Sắp xếp thành câu hỏi đúng.",
+   "title": "Questions with going to (G&V Ex. 4)",
+   "instruction": "Put the words in the correct order to make questions.",
    "items": [
     {
      "id": "o1",
@@ -1317,8 +1317,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Phân tích các câu kế hoạch (Ex. 6)",
-   "instruction": "Xem lại 5 câu ở bài \"Kế hoạch (Ex. 5)\" và trả lời.",
+   "title": "Sentences about plans (Ex. 6)",
+   "instruction": "Look again at the five sentences in \"Plans (Ex. 5)\" and answer the questions.",
    "items": [
     {
      "id": "q1",
@@ -1391,8 +1391,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
-   "title": "Bố cục bài luận (Ex. 23)",
-   "instruction": "Sắp xếp các phần của bài luận theo đúng thứ tự (A: đoạn nhược điểm · B: kết luận · C: mở bài · D: đoạn ưu điểm).",
+   "title": "Essay structure (Ex. 23)",
+   "instruction": "Put the parts of the essay in the correct order (A: disadvantages paragraph · B: conclusion · C: introduction · D: advantages paragraph).",
    "items": [
     {
      "id": "o1",
@@ -1422,8 +1422,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Bài luận về từ điển online (Ex. 24–25)",
-   "instruction": "Đọc bài luận của học sinh và chọn đáp án đúng cho mỗi chỗ trống.",
+   "title": "An essay about online dictionaries (Ex. 24–25)",
+   "instruction": "Read the student's essay and choose the correct answer for each gap.",
    "stimulus": {
     "kind": "passage",
     "text": "Many students use an online dictionary to help them learn a language when they study in class. In this essay, I (1) ____ discuss the advantages and disadvantages of this.\n\nFirstly, if a student doesn't (2) ____ the meaning of a word or phrase, they can find it quickly and easily with an online dictionary. The teacher can continue with the class and doesn't need to stop and answer questions all the time. Furthermore, a paper dictionary is sometimes too heavy and students don't like to carry one in their bags.\n\nOn the other hand, when a student is not very confident, or if they are afraid of (3) ____ a mistake, they might start to use their dictionary in the wrong way. If they stop to (4) ____ every word or phrase they do not know, they won't (5) ____ their language skills enough and they won't improve. Additionally, it is very difficult for a teacher to check that the students are (6) ____ their computers to look (7) ____ a word and not just playing online games. If they do not focus on the class, they won't (8) ____ any progress.\n\nTo sum up, an online dictionary is often useful for students. However, in my opinion, students should only go online when the teacher says to do so. If not, they won't learn for themselves.",
@@ -1601,24 +1601,24 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "Từ nối dùng để làm gì? (Ex. 26)",
-   "instruction": "Xếp từ nối theo chức năng.",
+   "title": "What are linking words used for? (Ex. 26)",
+   "instruction": "Put the linking words into groups by function.",
    "categories": [
     {
      "id": "main",
-     "label": "Ý chính đầu tiên"
+     "label": "The first main point"
     },
     {
      "id": "extra",
-     "label": "Thêm thông tin"
+     "label": "Adding information"
     },
     {
      "id": "new",
-     "label": "Ý mới, đối lập"
+     "label": "A new or contrasting point"
     },
     {
      "id": "end",
-     "label": "Kết luận"
+     "label": "Conclusion"
     }
    ],
    "items": [
@@ -1669,8 +1669,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "paragraph_writing",
-   "title": "Viết bài luận: học tiếng Anh cùng bạn cùng quốc tịch (Ex. 27)",
-   "instruction": "Viết bài luận (220–250 từ): \"What are the advantages and disadvantages of taking English lessons with classmates from the same country?\" Bài viết cần có: mở bài và kết luận rõ ràng; các đoạn thân bài bàn về ưu điểm và nhược điểm; từ nối để sắp xếp ý (Firstly, Furthermore, On the other hand, However, To sum up…).",
+   "title": "Write an essay: classmates from the same country (Ex. 27)",
+   "instruction": "Write an essay (220–250 words): \"What are the advantages and disadvantages of taking English lessons with classmates from the same country?\" Include a clear introduction and conclusion, body paragraphs about the advantages and the disadvantages, and linking words to organise your ideas (Firstly, Furthermore, On the other hand, However, To sum up…).",
    "responseSlots": 1,
    "rubric": {
     "bandFocus": [
@@ -1713,8 +1713,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Collocation trong bài nghe",
-   "instruction": "Chọn từ đúng (dựa vào hội thoại của Sofia và Oliver).",
+   "title": "Collocations in the recording",
+   "instruction": "Choose the correct word (from the conversation between Sofia and Oliver).",
    "items": [
     {
      "id": "q1",
@@ -1787,8 +1787,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: ngôn ngữ bạn đang học (Ex. 13–14)",
-   "instruction": "Đọc đề, chuẩn bị 1 phút, rồi nói 1–2 phút.",
+   "title": "Speaking: a language you are learning (Ex. 13–14)",
+   "instruction": "Read the task, prepare for one minute, then speak for 1–2 minutes.",
    "speakingPart": 2,
    "speakingPrepSeconds": 60,
    "items": [
@@ -1810,8 +1810,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: câu hỏi về việc học ngôn ngữ (Ex. 2, 5)",
-   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "title": "Speaking: questions about learning languages (Ex. 2, 5)",
+   "instruction": "Answer each question in 15–25 seconds.",
    "speakingPart": 1,
    "speakingPrepSeconds": 10,
    "items": [
@@ -1847,8 +1847,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Giới từ (G&V Ex. 1)",
-   "instruction": "Chọn giới từ đúng (hoặc \"không cần giới từ\").",
+   "title": "Prepositions (G&V Ex. 1)",
+   "instruction": "Choose the correct preposition (or \"no preposition\").",
    "items": [
     {
      "id": "q1",
@@ -1864,7 +1864,7 @@
       },
       {
        "id": "C",
-       "text": "(không cần giới từ)"
+       "text": "(no preposition)"
       }
      ],
      "answer": "A",
@@ -1884,7 +1884,7 @@
       },
       {
        "id": "C",
-       "text": "(không cần giới từ)"
+       "text": "(no preposition)"
       }
      ],
      "answer": "A",
@@ -1904,7 +1904,7 @@
       },
       {
        "id": "C",
-       "text": "(không cần giới từ)"
+       "text": "(no preposition)"
       }
      ],
      "answer": "A",
@@ -1924,7 +1924,7 @@
       },
       {
        "id": "C",
-       "text": "(không cần giới từ)"
+       "text": "(no preposition)"
       }
      ],
      "answer": "C",
@@ -1944,7 +1944,7 @@
       },
       {
        "id": "C",
-       "text": "(không cần giới từ)"
+       "text": "(no preposition)"
       }
      ],
      "answer": "A",
@@ -1964,7 +1964,7 @@
       },
       {
        "id": "C",
-       "text": "(không cần giới từ)"
+       "text": "(no preposition)"
       }
      ],
      "answer": "A",
@@ -1984,7 +1984,7 @@
       },
       {
        "id": "C",
-       "text": "(không cần giới từ)"
+       "text": "(no preposition)"
       }
      ],
      "answer": "C",
@@ -2001,8 +2001,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "MAKE hay TAKE? (G&V Ex. 8)",
-   "instruction": "Chọn đáp án đúng.",
+   "title": "MAKE or TAKE? (G&V Ex. 8)",
+   "instruction": "Choose the correct answer.",
    "items": [
     {
      "id": "q1",
@@ -2115,8 +2115,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Chia động từ (G&V Ex. 10)",
-   "instruction": "Điền dạng đúng: have (x2), discuss, hold, communicate, try.",
+   "title": "Verb forms (G&V Ex. 10)",
+   "instruction": "Complete the sentences with the correct form of: have (x2), discuss, hold, communicate, try.",
    "items": [
     {
      "id": "g1",
@@ -2208,8 +2208,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Sắp xếp lại từ nối (G&V Ex. 9)",
-   "instruction": "Năm từ nối in đậm trong đoạn văn đang bị đặt sai chỗ. Viết từ nối đúng cho mỗi vị trí 1–5 (dùng: To sum up, firstly, However, Furthermore, Additionally).",
+   "title": "Put the linking words in the right place (G&V Ex. 9)",
+   "instruction": "Five linking words in bold in the text are in the wrong places. Write the correct linking word for each position 1–5 (use: To sum up, firstly, However, Furthermore, Additionally).",
    "items": [
     {
      "id": "g1",

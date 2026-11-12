@@ -1108,6 +1108,7 @@
         { href: 'reading-listening-strategy.html', icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
         { divider: true, label: 'Khóa học' },
         { href: 'mindset-0.html',           icon: 'fa-seedling',   label: 'Mindset Foundation' },
+        { href: 'mindset-1.html',           icon: 'fa-leaf',       label: 'Mindset Level 1' },
       ]
     },
     { href: 'listening.html',        icon: 'fa-headphones',  label: 'Listening',
@@ -1118,6 +1119,7 @@
         { href: 'reading-listening-strategy.html', icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
         { divider: true, label: 'Khóa học' },
         { href: 'mindset-0.html',           icon: 'fa-seedling',   label: 'Mindset Foundation' },
+        { href: 'mindset-1.html',           icon: 'fa-leaf',       label: 'Mindset Level 1' },
         { divider: true, label: 'Luyện tập' },
         { href: 'dictation.html',             icon: 'fa-keyboard',   label: 'Dictation' },
       ]

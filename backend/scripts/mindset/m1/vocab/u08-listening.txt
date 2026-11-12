@@ -1,0 +1,38 @@
+creature: sinh vật
+ape: loài vượn lớn
+fur: bộ lông thú
+tentacle: xúc tu
+poisonous: có độc
+originate in: có nguồn gốc ở
+reflect: phản ánh
+tropical: nhiệt đới
+physical features: đặc điểm ngoại hình
+diet: chế độ ăn
+herbivore: động vật ăn cỏ
+insect: côn trùng
+climate: khí hậu
+threat: mối đe dọa
+be in serious danger of: có nguy cơ nghiêm trọng
+disappear: biến mất
+human activity: hoạt động của con người
+cut down trees: chặt cây
+suffer as a result of: chịu tổn hại do
+on purpose: cố ý
+aquatic plants: thực vật thủy sinh
+accidentally: một cách vô tình
+appearance: ngoại hình
+native species: loài bản địa
+greedy: tham ăn
+food source: nguồn thức ăn
+carry a disease: mang mầm bệnh
+financial damage: thiệt hại về tài chính
+monitor: giám sát, theo dõi
+learn a lesson: rút ra bài học
+coastal: ven biển
+come into contact with: tiếp xúc với
+sting: vết đốt
+victim: nạn nhân
+severe: nghiêm trọng
+heart attack: cơn đau tim
+go into shock: bị sốc
+ease the pain: làm dịu cơn đau

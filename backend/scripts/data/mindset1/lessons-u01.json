@@ -1,0 +1,690 @@
+{
+ "course": {
+  "title": "Mindset for IELTS 1 — Reading & Listening theo giáo trình",
+  "skill": "integrated",
+  "taskType": "foundation",
+  "language": "vi",
+  "targetBand": "4.5 → 5.5",
+  "description": "Bám sát giáo trình Mindset for IELTS Level 1 (Cambridge), phần Reading & Listening: 8 unit chủ đề — Relationships, Places and buildings, Education and employment, Food and drink, Consumerism, Leisure time, Fame and the media, Natural world. Mỗi unit gồm Lead-in & Vocabulary → Reading (chiến thuật từng dạng câu hỏi) → Grammar focus → Listening; đề bài giữ nguyên tiếng Anh như sách, bài giảng và giải thích bằng tiếng Việt. Bài đọc và bài nghe làm trên giao diện thi thật (audio gốc của sách), từ vựng lưu thẳng vào Sổ như trong sách của lớp.",
+  "code": "MINDSET-1"
+ },
+ "modules": [
+  {
+   "code": "M1-U01",
+   "order": 1,
+   "title": "Unit 1 · Các mối quan hệ",
+   "titleEn": "UNIT 01: RELATIONSHIPS — sách tr. 8–11, 16–18",
+   "outcomes": [
+    "Reading: trả lời câu hỏi ngắn (short-answer, tối đa 2–3 từ) — tìm từ khoá trong câu hỏi, scan bài đọc",
+    "Grammar: thì hiện tại đơn cho sự thật chung + vị trí trạng từ chỉ tần suất",
+    "Listening: Section 1 — nhận diện người nói, nghe số, nghe chi tiết; multiple choice 3 phương án",
+    "Từ vựng gia đình & các mối quan hệ (Sổ 1)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M1-U01-L1",
+   "moduleCode": "M1-U01",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: family and relationships",
+   "titleEn": "Lead-in · Vocabulary (Reading, pp. 8–9)",
+   "durationMinutes": 35,
+   "objectives": [
+    "Giải thích các từ chỉ thành viên gia đình (cousin, niece, father-in-law…)",
+    "Đọc lướt bài \"Blood is thicker than water\" để kiểm tra ý",
+    "Đoán nghĩa từ mới dựa vào ngữ cảnh (context)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Đoán nghĩa từ qua ngữ cảnh",
+     "titleEn": "Using the context to work out meaning",
+     "formula": [],
+     "usage": [
+      "Không cần biết hết mọi từ trong bài: đọc **câu chứa từ đó và các từ xung quanh** để đoán nghĩa (TIP của sách).",
+      "Làm **từ đã biết trước**, rồi loại trừ dần các nghĩa còn lại.",
+      "Ví dụ: \"As they are often retired, they are not always busy and **stressed**\" → đi với *busy*, nói về cha mẹ bận rộn → stressed = căng thẳng, không thư giãn được."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Từ vựng gia đình",
+     "titleEn": "Family words",
+     "formula": [],
+     "usage": [
+      "**cousin** anh chị em họ · **niece / nephew** cháu gái / cháu trai (con của anh chị em) · **aunt / uncle** cô dì / chú bác",
+      "**father-in-law** bố chồng / bố vợ · **great-aunt** bà cô / bà dì (chị em của ông bà) · **extended family** đại gia đình (nhiều thế hệ)"
+     ],
+     "examples": [
+      {
+       "en": "My cousin is my aunt or uncle's son or daughter.",
+       "vi": "Anh/chị/em họ là con của cô/dì/chú/bác."
+      },
+      {
+       "en": "My niece is my brother or sister's daughter.",
+       "vi": "Cháu gái là con gái của anh/chị/em mình."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 23,
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 1 · Lead-in & Vocabulary: family and relationships — 37 từ/cụm từ",
+    "words": [
+     {
+      "word": "blood is thicker than water",
+      "meaning": "một giọt máu đào hơn ao nước lã",
+      "example": "Blood is thicker than water: family is more important than anyone else."
+     },
+     {
+      "word": "value sb's opinion",
+      "meaning": "coi trọng ý kiến của ai",
+      "example": "They value their friends' opinions more."
+     },
+     {
+      "word": "enjoy sb's company",
+      "meaning": "thích ở bên ai",
+      "example": "They enjoy their friends' company."
+     },
+     {
+      "word": "miss out",
+      "meaning": "bỏ lỡ (điều thú vị)",
+      "example": "But are they missing out?"
+     },
+     {
+      "word": "extended family",
+      "meaning": "đại gia đình (nhiều thế hệ sống chung)",
+      "example": "Less than 25% of children live in extended families."
+     },
+     {
+      "word": "relative",
+      "meaning": "họ hàng, người thân",
+      "example": "They have little close contact with relatives."
+     },
+     {
+      "word": "at a disadvantage",
+      "meaning": "ở thế bất lợi",
+      "example": "Is this putting some children at a disadvantage?"
+     },
+     {
+      "word": "have an influence on",
+      "meaning": "có ảnh hưởng đến",
+      "example": "The people they live with have a great influence on children."
+     },
+     {
+      "word": "grow up",
+      "meaning": "lớn lên, trưởng thành",
+      "example": "It is good for children to grow up with grandparents."
+     },
+     {
+      "word": "retired",
+      "meaning": "đã nghỉ hưu",
+      "example": "Grandparents are often retired."
+     },
+     {
+      "word": "stressed",
+      "meaning": "căng thẳng",
+      "example": "Many parents are busy and stressed."
+     },
+     {
+      "word": "patient",
+      "meaning": "kiên nhẫn",
+      "example": "They have learnt to be patient."
+     },
+     {
+      "word": "handle a problem",
+      "meaning": "xử lý vấn đề",
+      "example": "They have already handled most of the problems children face."
+     },
+     {
+      "word": "the needs of older people",
+      "meaning": "nhu cầu của người lớn tuổi",
+      "example": "Children grow up to understand the needs of older people."
+     },
+     {
+      "word": "caring",
+      "meaning": "biết quan tâm, chu đáo",
+      "example": "They may become more caring."
+     },
+     {
+      "word": "selfish",
+      "meaning": "ích kỷ",
+      "example": "They may become less selfish."
+     },
+     {
+      "word": "lonely",
+      "meaning": "cô đơn",
+      "example": "Living alone can also be lonely."
+     },
+     {
+      "word": "stage of one's life",
+      "meaning": "giai đoạn trong cuộc đời",
+      "example": "Remain with the family during this stage of their lives."
+     },
+     {
+      "word": "gain",
+      "meaning": "có được, đạt được",
+      "example": "They can gain some of these advantages."
+     },
+     {
+      "word": "keep in close contact",
+      "meaning": "giữ liên lạc thường xuyên",
+      "example": "Keep in close contact by phone and email."
+     },
+     {
+      "word": "proverb",
+      "meaning": "tục ngữ",
+      "example": "As the Italian proverb says, \"call your grandmother\"."
+     },
+     {
+      "word": "come and go",
+      "meaning": "đến rồi đi, không bền lâu",
+      "example": "Friends come and go."
+     },
+     {
+      "word": "be on sb's side",
+      "meaning": "đứng về phía ai",
+      "example": "Your family is always on your side."
+     },
+     {
+      "word": "appreciate",
+      "meaning": "trân trọng, biết ơn",
+      "example": "Appreciate them while you can."
+     },
+     {
+      "word": "love and attention",
+      "meaning": "tình yêu thương và sự quan tâm",
+      "example": "They usually get lots of love and attention."
+     },
+     {
+      "word": "maintain a relationship",
+      "meaning": "duy trì mối quan hệ",
+      "example": "People could only maintain 150 relationships."
+     },
+     {
+      "word": "the explosion of social media",
+      "meaning": "sự bùng nổ của mạng xã hội",
+      "example": "With the explosion of social media, people have more friends."
+     },
+     {
+      "word": "expand",
+      "meaning": "mở rộng",
+      "example": "Social media has helped us to expand our friendships."
+     },
+     {
+      "word": "geographically mobile",
+      "meaning": "hay chuyển nơi sống",
+      "example": "People are more geographically mobile nowadays."
+     },
+     {
+      "word": "background",
+      "meaning": "xuất thân, hoàn cảnh",
+      "example": "We meet people from different backgrounds."
+     },
+     {
+      "word": "remain friends for life",
+      "meaning": "là bạn suốt đời",
+      "example": "People make friends at college who remain friends for life."
+     },
+     {
+      "word": "security at work",
+      "meaning": "sự ổn định trong công việc",
+      "example": "People now have less security at work."
+     },
+     {
+      "word": "build new relationships",
+      "meaning": "xây dựng mối quan hệ mới",
+      "example": "They find it harder to build new relationships."
+     },
+     {
+      "word": "convenience",
+      "meaning": "sự tiện lợi",
+      "example": "Young children choose their friends because of convenience."
+     },
+     {
+      "word": "similar interests",
+      "meaning": "sở thích tương đồng",
+      "example": "Friendships are connected with having similar interests."
+     },
+     {
+      "word": "mental health problems",
+      "meaning": "các vấn đề sức khỏe tinh thần",
+      "example": "People with friends have fewer mental health problems."
+     },
+     {
+      "word": "physical state of health",
+      "meaning": "tình trạng sức khỏe thể chất",
+      "example": "They are in a better physical state of health."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M1-U01-L2",
+   "moduleCode": "M1-U01",
+   "order": 2,
+   "title": "📖 Reading: short-answer questions",
+   "titleEn": "Short-answer questions · Finding information · Key words · Scanning · Exam skills",
+   "durationMinutes": 55,
+   "objectives": [
+    "Tìm nhanh thông tin trong bài (finding information)",
+    "Gạch chân từ khoá (key words) trong câu hỏi",
+    "Scan bài để trả lời câu hỏi ngắn, đúng giới hạn số từ",
+    "Tránh 4 lỗi hay gặp: quá số từ, sai thông tin, đổi từ trong bài, sai chính tả"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Dạng bài Short-answer questions",
+     "titleEn": "Short-answer questions",
+     "formula": [
+      "Trả lời bằng **tối đa 3 từ**, hoặc **tối đa 2 từ và/hoặc một số** — đề bài luôn ghi rõ (NO MORE THAN TWO WORDS AND/OR A NUMBER).",
+      "Đáp án là **từ lấy nguyên văn trong bài**, không viết thành câu hoàn chỉnh."
+     ],
+     "usage": [
+      "Dạng này kiểm tra bạn có **tìm đúng chỗ trong bài nhanh** và hiểu thông tin hay không.",
+      "Câu hỏi thường đi **theo thứ tự** của bài đọc."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Từ khoá và scanning",
+     "titleEn": "Key words and scanning",
+     "formula": [
+      "① Gạch chân **key words** — những từ quan trọng nhất của câu hỏi (tên riêng, số, danh từ chính) → ② nghĩ **từ đồng nghĩa** → ③ **scan**: lướt mắt nhanh theo chiều ngang và dọc, không đọc từng chữ → ④ thấy từ khoá thì **đọc kỹ câu quanh nó**."
+     ],
+     "usage": [
+      "Ví dụ: \"What do <u>young people</u> often <u>think</u> about <u>older family members</u>?\"",
+      "Bài có tiêu đề/đoạn có chữ cái → dùng chúng để biết nên đọc đoạn nào trước.",
+      "Có thể **bỏ mạo từ** (a, the, some) để vừa đủ số từ cho phép."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "4 lỗi làm mất điểm",
+     "titleEn": "Common mistakes",
+     "formula": [],
+     "usage": [
+      "**a** Viết quá số từ cho phép / viết cả câu → \"Living alone can be lonely.\" ✗ → **lonely** ✓",
+      "**b** Lấy nhầm thông tin (đọc sai câu) → \"20%\" ✗",
+      "**c** Đổi từ trong bài → \"your gran\" ✗ → **your grandmother** ✓",
+      "**d** Sai chính tả → \"storys\" ✗ → **stories** ✓"
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 5,
+   "totalPoints": 20,
+   "practiceLinks": [
+    {
+     "ref": "reading:M1-U01-R1",
+     "kind": "reading",
+     "title": "Blood is thicker than water (Ex. 5–8)",
+     "note": "7 câu short-answer — gạch chân từ khoá, scan, chép đúng từ trong bài."
+    },
+    {
+     "ref": "reading:M1-U01-R2",
+     "kind": "reading",
+     "title": "Exam skills: Social media and the meaning of friendship (Ex. 12)",
+     "note": "5 câu hỏi, NO MORE THAN THREE WORDS."
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L3",
+   "moduleCode": "M1-U01",
+   "order": 3,
+   "title": "🧩 Grammar focus: present simple & adverbs of frequency",
+   "titleEn": "Grammar focus: tenses · adverbs of frequency (p. 11)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Nhận ra thì hiện tại đơn dùng cho sự thật chung trong bài đọc",
+    "Nhận diện trạng từ chỉ tần suất và nắm quy tắc vị trí"
+   ],
+   "keyLanguage": [
+    "Thì hiện tại đơn: diễn tả **sự thật chung / thói quen** → bài đọc học thuật dùng rất nhiều (Young adults often **feel** that…).",
+    "Trạng từ tần suất: always > usually > often > sometimes > rarely/seldom > never.",
+    "Vị trí: **giữa chủ ngữ và động từ thường** (They **usually get** lots of love) · **sau động từ to be** (Your family **is always** on your side) · sometimes/usually có thể **đứng đầu câu** (Sometimes they feel closer…)."
+   ],
+   "theory": [
+    {
+     "title": "Trạng từ chỉ tần suất",
+     "titleEn": "Adverbs of frequency",
+     "formula": [
+      "S + **adverb** + V (thường): Grandparents **often have** more time.",
+      "S + be + **adverb**: They **are often** retired.",
+      "**Sometimes / Usually**, S + V …"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "Your family is always on your side.",
+       "vi": "Gia đình luôn đứng về phía bạn."
+      },
+      {
+       "en": "Teenagers often prefer to be left at home.",
+       "vi": "Thanh thiếu niên thường thích ở nhà hơn."
+      },
+      {
+       "en": "Sometimes they feel closer to their grandparents.",
+       "vi": "Đôi khi chúng thấy gần ông bà hơn."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 12,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Present Simple",
+     "note": "sự thật chung, thói quen, trạng từ tần suất",
+     "url": "/essential-grammar.html?lesson=present-simple"
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L4",
+   "moduleCode": "M1-U01",
+   "order": 4,
+   "title": "🎧 Listening: Section 1 — numbers & multiple choice",
+   "titleEn": "Identifying the speakers · Listening for numbers · Multiple-choice questions · Exam skills (pp. 16–18)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Biết Section 1 là hội thoại đời thường giữa 2 người",
+    "Phân biệt người nói (nam/nữ, ai hỏi – ai trả lời)",
+    "Nghe số: ngày tháng, giá tiền, số lượng — chọn đúng số giữa nhiều số được nhắc",
+    "Multiple choice: nghe từ đồng nghĩa, không nghe y nguyên từ trong đáp án"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Section 1 của bài thi Listening",
+     "titleEn": "Listening Section 1",
+     "formula": [],
+     "usage": [
+      "Hai người nói chuyện trong **tình huống đời thường** (đặt bàn, mua quà, hỏi thông tin…). Thường **một người phải hỏi thông tin** từ người kia.",
+      "Giọng hai người **khác nhau rõ** để bạn dễ phân biệt ai đang nói. Đáp án có thể đến từ bất kỳ người nào.",
+      "Section 3 có 2–3 người nói, chủ đề học tập (vd. bài tập lớn — course assignment)."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Nghe số",
+     "titleEn": "Listening for numbers",
+     "formula": [],
+     "usage": [
+      "Thường bạn sẽ nghe **tất cả** các số trong đáp án nhưng chỉ một số đúng → nghe **cụm từ then chốt**: \"No, no, it's the day after – the **17th**\", \"Did you say 380? – **No**, 318\".",
+      "Cặp dễ nhầm: **thirteen / thirty**, **fifteen / fifty**, **eighteen / eighty** (trọng âm: thir**TEEN** vs **THIR**ty).",
+      "Giá tiền: £10.50 = \"ten pounds fifty\"; ngày: the 3rd, the 27th."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Multiple-choice questions",
+     "titleEn": "Multiple choice",
+     "formula": [
+      "Hai kiểu: **câu hỏi + 3 phương án** hoặc **câu chưa hoàn chỉnh + 3 cách kết thúc**."
+     ],
+     "usage": [
+      "Từ trong đáp án **thường không giống** từ trong bài nghe → nghe **từ đồng nghĩa** (a leaving party ↔ a goodbye party, colleagues ↔ work in the same office).",
+      "Trước khi nghe, **đọc câu hỏi và đoán chủ đề** (màu sắc, đồ ăn, quà…). Câu hỏi đi **theo thứ tự** bài nghe."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 17,
+   "practiceLinks": [
+    {
+     "ref": "listening:M1-U01-L1",
+     "kind": "listening",
+     "title": "Two Section 1 conversations (Ex. 2–4)",
+     "note": "Tình huống nào? Người nói nam hay nữ? Khách muốn gì?"
+    },
+    {
+     "ref": "listening:M1-U01-L2",
+     "kind": "listening",
+     "title": "Listening for numbers (Ex. 5)",
+     "note": "Chọn số bạn nghe được trong mỗi cặp."
+    },
+    {
+     "ref": "listening:M1-U01-L3",
+     "kind": "listening",
+     "title": "Booking a table (Ex. 6–7)",
+     "note": "Bao nhiêu người? Ngày nào? Phòng chứa tối đa bao nhiêu người?"
+    },
+    {
+     "ref": "listening:M1-U01-L4",
+     "kind": "listening",
+     "title": "The total cost (Ex. 8)",
+     "note": "318 hay 380?"
+    },
+    {
+     "ref": "listening:M1-U01-L5",
+     "kind": "listening",
+     "title": "Buying earrings (Ex. 9–10)",
+     "note": "Giá đôi bông tai và tiền gói quà."
+    },
+    {
+     "ref": "listening:M1-U01-L6",
+     "kind": "listening",
+     "title": "Exam skills: a family celebration in Korea (Ex. 13)",
+     "note": "6 câu multiple choice A, B, C."
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 1 · Listening: Section 1 — numbers & multiple choice — 34 từ/cụm từ",
+    "words": [
+     {
+      "word": "make a reservation",
+      "meaning": "đặt chỗ trước",
+      "example": "I'd like to make a reservation in your restaurant."
+     },
+     {
+      "word": "celebration dinner",
+      "meaning": "bữa tối ăn mừng",
+      "example": "We're having a celebration dinner."
+     },
+     {
+      "word": "a piece of jewellery",
+      "meaning": "một món trang sức",
+      "example": "A piece of jewellery would be nice."
+     },
+     {
+      "word": "have sth in mind",
+      "meaning": "đã có ý định, ý tưởng về cái gì",
+      "example": "Do you have anything particular in mind?"
+     },
+     {
+      "word": "handmade",
+      "meaning": "làm thủ công",
+      "example": "They're handmade, so you won't find anything like them."
+     },
+     {
+      "word": "have a sale on",
+      "meaning": "đang có đợt giảm giá",
+      "example": "We've got a sale on at the moment."
+     },
+     {
+      "word": "save money",
+      "meaning": "tiết kiệm tiền",
+      "example": "So you can save £10!"
+     },
+     {
+      "word": "giftwrap",
+      "meaning": "gói quà",
+      "example": "Would you like me to giftwrap them?"
+     },
+     {
+      "word": "wrapping paper",
+      "meaning": "giấy gói quà",
+      "example": "Your own choice of wrapping paper."
+     },
+     {
+      "word": "luxury option",
+      "meaning": "lựa chọn cao cấp",
+      "example": "I'll take the luxury option."
+     },
+     {
+      "word": "personal message",
+      "meaning": "lời nhắn riêng",
+      "example": "A card to write your own personal message."
+     },
+     {
+      "word": "fully booked",
+      "meaning": "đã kín chỗ",
+      "example": "Our main restaurant is fully booked that evening."
+     },
+     {
+      "word": "available for private hire",
+      "meaning": "có thể thuê riêng",
+      "example": "We have a small room available for private hire."
+     },
+     {
+      "word": "seat up to",
+      "meaning": "có sức chứa tối đa",
+      "example": "It can seat up to 20 people."
+     },
+     {
+      "word": "plenty of space",
+      "meaning": "nhiều chỗ, rộng rãi",
+      "example": "There would be plenty of space for 12 of you."
+     },
+     {
+      "word": "a set three-course menu",
+      "meaning": "thực đơn cố định ba món",
+      "example": "We offer a set three-course menu for £23 per person."
+     },
+     {
+      "word": "at no extra charge",
+      "meaning": "không tính thêm phí",
+      "example": "A birthday cake at no extra charge."
+     },
+     {
+      "word": "come to",
+      "meaning": "tổng cộng lên tới (số tiền)",
+      "example": "That will come to £318."
+     },
+     {
+      "word": "go ahead",
+      "meaning": "tiến hành, làm luôn",
+      "example": "I'd like to go ahead and make a booking."
+     },
+     {
+      "word": "take sb's details",
+      "meaning": "ghi lại thông tin của ai",
+      "example": "I'll just take your details."
+     },
+     {
+      "word": "take a break",
+      "meaning": "nghỉ giải lao",
+      "example": "I'm taking a break."
+     },
+     {
+      "word": "assignment",
+      "meaning": "bài tập lớn",
+      "example": "Are you still working on your history assignment?"
+     },
+     {
+      "word": "niece",
+      "meaning": "cháu gái (con của anh chị em)",
+      "example": "She's my niece – my brother's daughter."
+     },
+     {
+      "word": "family celebration",
+      "meaning": "buổi tiệc mừng của gia đình",
+      "example": "I'm looking at some photos of a family celebration."
+     },
+     {
+      "word": "graduation",
+      "meaning": "lễ tốt nghiệp",
+      "example": "It's more important than a wedding or a graduation."
+     },
+     {
+      "word": "perfect location",
+      "meaning": "địa điểm lý tưởng",
+      "example": "It's a perfect location for taking photographs."
+     },
+     {
+      "word": "traditional",
+      "meaning": "truyền thống",
+      "example": "It's a traditional hat for a girl."
+     },
+     {
+      "word": "be made of silk",
+      "meaning": "được làm bằng lụa",
+      "example": "It's made of silk."
+     },
+     {
+      "word": "good luck",
+      "meaning": "sự may mắn",
+      "example": "It means good luck in our culture."
+     },
+     {
+      "word": "colourful",
+      "meaning": "nhiều màu sắc, sặc sỡ",
+      "example": "It's very colourful."
+     },
+     {
+      "word": "get on well with",
+      "meaning": "hòa thuận, hợp với",
+      "example": "We get on really well together."
+     },
+     {
+      "word": "gift bag",
+      "meaning": "túi quà",
+      "example": "All the guests get a gift bag."
+     },
+     {
+      "word": "the other way round",
+      "meaning": "ngược lại",
+      "example": "Shouldn't it be the other way round?"
+     },
+     {
+      "word": "in a way",
+      "meaning": "ở một khía cạnh nào đó",
+      "example": "So in a way you're right!"
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,712 @@
+{
+ "exercises": [
+  {
+   "code": "M1-U06-L1-E01",
+   "lessonCode": "M1-U06-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Name the sports (Ex. 1)",
+   "instruction": "Can you name these sports?",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m1u06-sports.jpg",
+    "caption": "Ex. 1"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture A",
+     "right": "baseball",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture B",
+     "right": "martial arts",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture C",
+     "right": "hockey",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture D",
+     "right": "table tennis",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture E",
+     "right": "rugby",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U06-L1-E02",
+   "lessonCode": "M1-U06-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 9,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Sports and descriptions (Ex. 2)",
+   "instruction": "Match the sports with the descriptions. Each sport matches several descriptions. Choose the correct set for each sport.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "hockey",
+     "options": [
+      {
+       "id": "A",
+       "text": "It's a team sport; you score goals; there's a goalkeeper; it's played with a ball; you tackle other players; you play on grass."
+      },
+      {
+       "id": "B",
+       "text": "You hit the ball over a net; you can play singles or doubles; you use a racket."
+      },
+      {
+       "id": "C",
+       "text": "You earn coloured belts."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "tennis",
+     "options": [
+      {
+       "id": "A",
+       "text": "You hit the ball over a net; you can play singles or doubles; it's played with a ball; you use a racket."
+      },
+      {
+       "id": "B",
+       "text": "It's a team sport; you score goals; there's a goalkeeper."
+      },
+      {
+       "id": "C",
+       "text": "You hit the ball with a bat; you play on grass."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "volleyball",
+     "options": [
+      {
+       "id": "A",
+       "text": "It's a team sport; you hit the ball over a net; you mustn't run with the ball; it's played with a ball."
+      },
+      {
+       "id": "B",
+       "text": "You use a racket; you can play singles or doubles."
+      },
+      {
+       "id": "C",
+       "text": "You score goals; there's a goalkeeper; you play on grass."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "football",
+     "options": [
+      {
+       "id": "A",
+       "text": "It's a team sport; you score goals; there's a goalkeeper; it's played with a ball; you tackle other players; you play on grass."
+      },
+      {
+       "id": "B",
+       "text": "You hit the ball with a bat."
+      },
+      {
+       "id": "C",
+       "text": "You earn coloured belts."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "rugby",
+     "options": [
+      {
+       "id": "A",
+       "text": "It's a team sport; it's played with a ball; you tackle other players; you play on grass."
+      },
+      {
+       "id": "B",
+       "text": "You hit the ball over a net; you use a racket."
+      },
+      {
+       "id": "C",
+       "text": "You mustn't run with the ball."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Rugby được chạy cầm bóng; không có thủ môn."
+    },
+    {
+     "id": "q6",
+     "prompt": "baseball",
+     "options": [
+      {
+       "id": "A",
+       "text": "It's a team sport; you hit the ball with a bat; it's played with a ball."
+      },
+      {
+       "id": "B",
+       "text": "There's a goalkeeper; you score goals."
+      },
+      {
+       "id": "C",
+       "text": "You can play singles or doubles; you use a racket."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "table tennis",
+     "options": [
+      {
+       "id": "A",
+       "text": "You hit the ball over a net; you hit the ball with a bat; you can play singles or doubles; it's played with a ball."
+      },
+      {
+       "id": "B",
+       "text": "It's a team sport; you tackle other players."
+      },
+      {
+       "id": "C",
+       "text": "You play on grass; you score goals."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Vợt bóng bàn gọi là bat (Anh-Anh)."
+    },
+    {
+     "id": "q8",
+     "prompt": "martial arts",
+     "options": [
+      {
+       "id": "A",
+       "text": "You earn coloured belts."
+      },
+      {
+       "id": "B",
+       "text": "It's played with a ball; you play on grass."
+      },
+      {
+       "id": "C",
+       "text": "You use a racket."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q9",
+     "prompt": "basketball",
+     "options": [
+      {
+       "id": "A",
+       "text": "It's a team sport; you score goals; it's played with a ball."
+      },
+      {
+       "id": "B",
+       "text": "You hit the ball with a bat."
+      },
+      {
+       "id": "C",
+       "text": "There's a goalkeeper; you play on grass."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U06-L2-E01",
+   "lessonCode": "M1-U06-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Scan for the paragraph (Ex. 5)",
+   "instruction": "Quickly scan the text to find the paragraph which contains information about these sports.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Unusual sports\n\n**A** Do you ever get bored with the same old sports? If you're tired of tennis, fed up with football or bored of basketball, don't worry. There are plenty of new and unusual sports out there for you to try. Many of these are a mix of existing sports, sometimes with a local element added. Bossaball, for example, is a mix of football and volleyball, played on an inflatable pitch with a trampoline in the middle. To make it more exciting, it also has elements of Brazilian martial arts!\n\n**B** If you are very good at horse riding, you could try the national sport of Afghanistan, buzkashi. Many versions have been played in the Central Asian region for hundreds of years. The game involves players on horseback trying to get hold of a dead goat. The Afghan Buzkashi Federation wants the game to spread throughout the world and has finally written down the rules because they hope to get Olympic status for the sport.\n\n**C** A sport that is more likely to become famous is kabaddi. It is popular in India and other parts of South Asia. It is similar in some ways to the game called 'tag' or 'it' which schoolchildren play. One person is 'it' and has to catch the others. In kabaddi, a 'raider' from one team tries to tag a player from the other team and then return to their own half of the field without getting caught. In some versions of the game, the raider must chant the word 'kabaddi' as he returns to his place. Kabaddi is good fun, good exercise and doesn't need any equipment. It is played at the Asian Games.\n\n**D** There is an unusual sport which describes itself as a 'classic mix of brains and brawn'. The game, called 'chess boxing', involves a round of chess and then a round of boxing, then another of chess, and so on. There is one minute between rounds. The first chess boxing world championship took place in 2003 in Amsterdam and was won by a Dutchman, Iepe Rubingh. Since then, it has become more popular, particularly in Germany, the UK, India and Russia. It is a difficult sport, as players need to be very good at two very different activities and be able to switch quickly between the two.\n\n**E** Finally, an unusual sport that will be familiar to most of us is roshambo, which began in China about 2000 years ago and spread gradually to the rest of the world. Played by young and old, in the UK it is known as 'rock-paper-scissors'. It is surprising that it is called a sport and taken so seriously: there's a World Rock Paper Scissors Society and a league which holds championships every year. So, whatever kinds of sport you like, there is something new and interesting for you to try.",
+    "caption": "Unusual sports (p. 107)"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "a sport which is trying to get into the Olympic games",
+     "right": "Paragraph B (buzkashi)",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "a sport which has been played for more than a thousand years and is based on an activity most of us know",
+     "right": "Paragraph E (roshambo)",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "a sport influenced by two very popular sports",
+     "right": "Paragraph A (bossaball)",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "a sport which may involve repeating a word",
+     "right": "Paragraph C (kabaddi)",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "a sport which involves two activities which are very unlike each other",
+     "right": "Paragraph D (chess boxing)",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U06-L3-E01",
+   "lessonCode": "M1-U06-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Comparative forms (Ex. 11)",
+   "instruction": "Complete these comparative sentences about the sports in the text. Use the comparative form of the adjective in brackets.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Kabaddi is ____ (fast) than roshambo.",
+     "blanks": [
+      {
+       "accept": [
+        "faster"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "Chess boxing is ____ (dangerous) than roshambo.",
+     "blanks": [
+      {
+       "accept": [
+        "more dangerous"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Bossaball is ____ (exciting) than ordinary volleyball.",
+     "blanks": [
+      {
+       "accept": [
+        "more exciting"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "Chess boxing is ____ (hard) than kabaddi because you need two different skills.",
+     "blanks": [
+      {
+       "accept": [
+        "harder"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "Roshambo is not as ____ (unusual) as buzkashi.",
+     "blanks": [
+      {
+       "accept": [
+        "unusual"
+       ]
+      }
+     ],
+     "explanation": "not as + adj (nguyên mẫu) + as."
+    },
+    {
+     "id": "g6",
+     "prompt": "Kabaddi is a sport that is ____ (likely) to become famous.",
+     "blanks": [
+      {
+       "accept": [
+        "more likely"
+       ]
+      }
+     ],
+     "explanation": "Câu trong bài."
+    },
+    {
+     "id": "g7",
+     "prompt": "Since then, chess boxing has become ____ (popular).",
+     "blanks": [
+      {
+       "accept": [
+        "more popular"
+       ]
+      }
+     ],
+     "explanation": "Câu trong bài."
+    },
+    {
+     "id": "g8",
+     "prompt": "Kabaddi is ____ (cheap) to play than buzkashi – you don't need any equipment.",
+     "blanks": [
+      {
+       "accept": [
+        "cheaper"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g9",
+     "prompt": "Is football ____ (healthy) than computer games?",
+     "blanks": [
+      {
+       "accept": [
+        "healthier"
+       ]
+      }
+     ],
+     "explanation": "healthy → healthier."
+    },
+    {
+     "id": "g10",
+     "prompt": "I think tennis is ____ (good) than badminton.",
+     "blanks": [
+      {
+       "accept": [
+        "better"
+       ]
+      }
+     ],
+     "explanation": "good → better (bất quy tắc)."
+    }
+   ]
+  },
+  {
+   "code": "M1-U06-L3-E02",
+   "lessonCode": "M1-U06-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Choose the correct comparative (Ex. 11)",
+   "instruction": "Choose the correct sentence.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Which sentence is correct?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Rugby is more dangerous than tennis."
+      },
+      {
+       "id": "B",
+       "text": "Rugby is dangerouser than tennis."
+      },
+      {
+       "id": "C",
+       "text": "Rugby is more dangerouser than tennis."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Which sentence is correct?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Table tennis is not as fast as squash."
+      },
+      {
+       "id": "B",
+       "text": "Table tennis is not as faster as squash."
+      },
+      {
+       "id": "C",
+       "text": "Table tennis is not fast than squash."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Which sentence is correct?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Basketball is more easy than hockey."
+      },
+      {
+       "id": "B",
+       "text": "Basketball is easier than hockey."
+      },
+      {
+       "id": "C",
+       "text": "Basketball is easyer than hockey."
+      }
+     ],
+     "answer": "B",
+     "explanation": "easy → easier."
+    }
+   ]
+  },
+  {
+   "code": "M1-U06-L4-E01",
+   "lessonCode": "M1-U06-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Words for giving directions (Ex. 1)",
+   "instruction": "Each picture illustrates a word or phrase used to give directions. Match the pictures with the words in the box.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m1u06-directions.jpg",
+    "caption": "Ex. 1"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "turn right",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "go straight ahead / straight on",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "turn left",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "go past",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "next to",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "opposite",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "in front of",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Picture 8",
+     "right": "behind",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U06-L4-E02",
+   "lessonCode": "M1-U06-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Places on the map (Ex. 3)",
+   "instruction": "Match the places that appear on the map (the words in the box) with the pictures.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m1u06-places.jpg",
+    "caption": "Ex. 3"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture 1",
+     "right": "roundabout",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture 2",
+     "right": "park",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture 3",
+     "right": "traffic lights",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture 4",
+     "right": "pond",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture 5",
+     "right": "zebra crossing",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Picture 6",
+     "right": "crossroads",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Picture 7",
+     "right": "river",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "Picture 8",
+     "right": "bridge",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U06-L4-E03",
+   "lessonCode": "M1-U06-L4",
+   "order": 3,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Recognising distractors (Ex. 6)",
+   "instruction": "Read the extracts from Melissa's messages. Which words or phrases may distract you from choosing the correct answer?",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "(Question 1) Then, you need to turn left at the traffic lights and then take a sharp right onto Main Street. You can also go straight on here, past the surgery, but I usually drive down Main Street.",
+     "options": [
+      {
+       "id": "A",
+       "text": "You can also go straight on here, past the surgery"
+      },
+      {
+       "id": "B",
+       "text": "take a sharp right onto Main Street"
+      },
+      {
+       "id": "C",
+       "text": "turn left at the traffic lights"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Đường thẳng qua phòng khám là một lựa chọn khác, không phải Main Street."
+    },
+    {
+     "id": "q2",
+     "prompt": "(Question 4) Again, you need to turn right onto Maple Avenue, and up to the lights. Instead of turning left here, turn right, with the park on your left.",
+     "options": [
+      {
+       "id": "A",
+       "text": "Instead of turning left here"
+      },
+      {
+       "id": "B",
+       "text": "turn right onto Maple Avenue"
+      },
+      {
+       "id": "C",
+       "text": "with the park on your left"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "(Question 5) Drive along New Road until you reach the bridge. Sarah's house is the second house after the bridge. That's on the right; there are shops on the left.",
+     "options": [
+      {
+       "id": "A",
+       "text": "there are shops on the left"
+      },
+      {
+       "id": "B",
+       "text": "the second house after the bridge"
+      },
+      {
+       "id": "C",
+       "text": "That's on the right"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

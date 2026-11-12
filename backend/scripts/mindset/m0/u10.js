@@ -68,25 +68,25 @@ module.exports = {
         ['app', 'ứng dụng', 'There\'s an app for writing a study plan.'],
       ],
       ex: [
-        match('Thiết bị trong tranh (Lead-in)', 'Nối tranh 1–8 với thiết bị.', [
+        match('Devices in the pictures (Lead-in)', 'Match pictures 1–8 with the devices.', [
           ['Picture 1', 'smartphone'], ['Picture 2', 'letter'], ['Picture 3', 'laptop'], ['Picture 4', 'tablet'],
           ['Picture 5', 'landline telephone'], ['Picture 6', 'smart TV'], ['Picture 7', 'smart watch'], ['Picture 8', 'desktop computer'],
         ], { stimulus: picture('media:m0u10-tech.jpg', 'Lead-in') }),
-        mcq('Chính tả đúng (Ex. 3)', 'Chọn cách viết đúng.', [
+        mcq('Correct spelling (Ex. 3)', 'Choose the correct spelling.', [
           ['My computer ____ and I lost my homework.', ['crushed', 'crashed', 'crached'], 'B'],
           ['You need to ____ your laptop when you finish using it.', ['shout down', 'shot down', 'shut down'], 'C'],
           ['There are some excellent ____ that can help you to study.', ['wepsites', 'websites', 'websides'], 'B'],
           ['I own three ____ – a smartphone, a laptop and a tablet.', ['devices', 'advices', 'divises'], 'A'],
           ['The computers at school are all connected to the same ____.', ['netwalk', 'netwok', 'network'], 'C'],
         ]),
-        gap('Từ máy tính (Ex. 4)', 'Điền: attachments, backup, download, store, stream.', [
+        gap('Computer words (Ex. 4)', 'Complete the sentences with: attachments, backup, download, store, stream.', [
           ['If you don\'t know who sent you the email, then it isn\'t a good idea to open the ____.', 'attachments'],
           ['I often ____ music from the internet.', 'download'],
           ['You can ____ films online a few months after they are released at the cinema.', 'stream'],
           ['You should create a ____ of your files, so you don\'t lose them.', 'backup'],
           ['The cloud is the name for the place on the internet where you can ____ your files.', 'store'],
         ], { wordBank: ['attachments', 'backup', 'download', 'store', 'stream'] }),
-        gap('Định nghĩa (G&V Ex. 2)', 'Điền: stream, website, device, crash, attachment, backup.', [
+        gap('Definitions (G&V Ex. 2)', 'Complete the definitions with: stream, website, device, crash, attachment, backup.', [
           ['A set of pages of information on the internet about a particular subject. → ____', 'website'],
           ['A copy of the files from your computer that you keep in a different place. → ____', 'backup'],
           ['A machine, like a smartphone, that can connect to the internet. → ____', 'device'],
@@ -123,10 +123,10 @@ module.exports = {
         ['paraphrase', 'diễn đạt lại', 'Paraphrasing is important in every exam.'],
       ],
       ex: [
-        mcq('Chọn tiêu đề (Ex. 5)', 'Đọc lướt bài báo và chọn tiêu đề phù hợp nhất.', [
+        mcq('Choose a title (Ex. 5)', 'Skim the article and choose the best title.', [
           ['What is the best title for the article?', ['New developments on the internet', 'How people communicate on the internet', 'Why people use the internet'], 'B', 'Bài giải thích thông tin đi từ máy này sang máy khác như thế nào (server, client, peer-to-peer).'],
         ], { stimulus: passage(INTERNET.join('\n\n'), { caption: 'Article' }) }),
-        mcq('Từ trái nghĩa / đồng nghĩa (MINI TIPS)', 'Chọn từ cùng nghĩa hoặc trái nghĩa đúng.', [
+        mcq('Synonyms and opposites (MINI TIPS)', 'Choose the word with the same or the opposite meaning.', [
           ['The opposite of "difficult" is…', ['easy', 'big', 'simple'], 'A'],
           ['The opposite of "the same" is…', ['similar', 'different', 'equal'], 'B'],
           ['"deliver information" means…', ['send information', 'delete information', 'store information'], 'A'],
@@ -148,13 +148,13 @@ module.exports = {
       ],
       links: [{ grammar: 'future-simple', title: 'Future Simple (will)', note: 'dự đoán tương lai' }, { grammar: 'be-going-to', title: 'Be Going To', note: 'so sánh với kế hoạch' }],
       ex: [
-        gap('Bảng will / won\'t (Ex. 10)', 'Hoàn thành câu từ bài giảng Part 2.', [
+        gap('will / won\'t table (Ex. 10)', 'Complete the sentences from Part 2 of the lecture.', [
           ['(+) People ____ ____ richer than they are now.', ['will', 'be']],
           ['(−) They ____ ____ the same as the one in the picture today.', ['won\'t|will not', 'look']],
           ['(?) ____ they ____ the same as they do now?', ['Will', 'look']],
           ['(?) What ____ smartphones ____ like?', ['will', 'look']],
         ]),
-        gap('Phỏng vấn về tương lai (G&V Ex. 3)', 'Chia động từ với will / won\'t.', [
+        gap('An interview about the future (G&V Ex. 3)', 'Complete the sentences with will / won\'t and the verb.', [
           ['No, the cars ____ (communicate) with each other and make sure they all have enough space.', 'will communicate'],
           ['There ____ (not be) any crashes ever again.', 'won\'t be|will not be'],
           ['____ (the cars / be able) to fly?', 'Will the cars be able'],
@@ -163,7 +163,7 @@ module.exports = {
           ['I\'m not sure that ____ (be) possible.', 'will be'],
           ['Well, how ____ (the animals / breathe) when they are on the moon?', 'will the animals breathe'],
         ]),
-        gap('Từ chỉ thay đổi (Ex. 12)', 'Điền dạng đúng.', [
+        gap('Words for describing change (Ex. 12)', 'Complete the sentences with the correct form.', [
           ['to rise → (past) ____ → (noun) a rise', 'rose'],
           ['to increase → (past) increased → (noun) ____', 'an increase'],
           ['to go up → (past) ____', 'went up'],
@@ -171,7 +171,7 @@ module.exports = {
           ['to decrease → (past) ____ → (noun) a decrease', 'decreased'],
           ['to go down → (past) ____', 'went down'],
         ]),
-        mcq('Mô tả số liệu điện thoại thông minh (Ex. 14)', 'Đọc mô tả và chọn đáp án đúng.', [
+        mcq('Describing smartphone data (Ex. 14)', 'Read the description and choose the correct answer.', [
           ['The percentage of people with smartphones increased ____ 38% in 2010…', ['at', 'from', 'to'], 'B'],
           ['…____ 62% in 2015.', ['to', 'by', 'at'], 'A'],
           ['In the future, this ____ will…', ['rised', 'rose', 'rise'], 'C', 'Danh từ: this rise.'],
@@ -206,22 +206,22 @@ module.exports = {
         ['period', 'giai đoạn', 'At the end of the period…'],
       ],
       ex: [
-        mcq('Xu hướng từng đường (Ex. 15)', 'Nhìn biểu đồ và chọn mô tả đúng.', [
+        mcq('The trend of each line (Ex. 15)', 'Look at the graph and choose the correct description.', [
           ['Smartphone:', ['rises steadily from 38% to 86%', 'falls from 86% to 38%', 'stays the same'], 'A'],
           ['Laptop:', ['rises a lot', 'goes up a little to about 71% in 2015, then falls to about 59%', 'falls to 0%'], 'B'],
           ['Smart watch:', ['starts very low and increases to 40%', 'decreases from 40%', 'is the most popular device'], 'A'],
           ['Tablet:', ['rises from 22% to about 62% in 2020, then falls slightly', 'falls all the time', 'rises to 86%'], 'A'],
         ], { stimulus: picture('media:m0u10-graph.jpg', 'Percentage of people who own the devices from 2010 to 2025') }),
-        mcq('Bản tóm tắt tốt nhất (G&V Ex. 6)', 'Nhìn biểu đồ Line A / Line B. Đâu là bản tóm tắt tốt nhất?', [
+        mcq('The best summary (G&V Ex. 6)', 'Look at the graph of Line A and Line B. Which is the best summary?', [
           ['Best summary?', ['Both lines went up and down a lot. Line A changed much more than Line B.', 'The biggest changes for Line A will happen in the last ten years shown on the graph. However, Line B had its own most important changes earlier, especially between 2005 and 2015.', 'Line A went up to 40% in 2010, then down to 20% by 2020, then up to 75% in 2025 and back down to 65%… Line B increased to 75% in 2015, then went down to 40% in 2020…'], 'B', 'A quá chung chung và sai ("changed much more"); C liệt kê quá nhiều số liệu — không phải tóm tắt; B nêu đúng xu hướng chính của mỗi đường.'],
         ], { stimulus: picture('media:m0u10-lineab.jpg', 'Line A & Line B') }),
-        gap('Mô tả Line B (G&V Ex. 5)', 'Hoàn thành mô tả Line B bằng: fall, down, rise, decrease, went, increased, 2020, 55%, 50%, 2015, 40%, 2005.', [
+        gap('Describe Line B (G&V Ex. 5)', 'Complete the description of Line B with: fall, down, rise, decrease, went, increased, 2020, 55%, 50%, 2015, 40%, 2005.', [
           ['After it ____ from 30% in ____ to ____ in 2010,', ['increased', '2005', '55%']],
           ['line B ____ up by another 20% between 2010 and 2015. This was its highest point.', 'went'],
           ['It started to ____ in 2015, going ____ to 40% in ____.', ['fall|decrease', 'down', '2020']],
           ['It will ____ to 50% in 2025, and then will ____ to 45% in 2030.', ['rise', 'decrease|fall']],
         ], { stimulus: picture('media:m0u10-lineab.jpg', 'Line A & Line B') }),
-        write('Viết: mô tả biểu đồ sở hữu thiết bị (Ex. 15–16)', 'Nhìn biểu đồ "Percentage of people who own the devices from 2010 to 2025" (smartphone, laptop, smart watch, tablet). Viết đoạn văn 100–130 từ mô tả các thay đổi chính: câu mở đầu giới thiệu biểu đồ, một câu nêu xu hướng chung (Overall…), rồi mô tả từng thiết bị bằng rise / increase / go up / fall / decrease / go down và from… to…, by…. Dùng quá khứ cho 2010–2015 và will cho 2020–2025.', {
+        write('Writing: describe the device ownership graph (Ex. 15–16)', 'Look at the graph "Percentage of people who own the devices from 2010 to 2025" (smartphone, laptop, smart watch, tablet). Write a paragraph (100–130 words) describing the main changes: an introductory sentence about the graph, one sentence with the overall trend (Overall…), then describe each device with rise / increase / go up / fall / decrease / go down and from… to…, by…. Use the past for 2010–2015 and will for 2020–2025.', {
           minWords: 100, maxWords: 150, mustUse: 4,
           targetStructures: ['The graph shows', 'Overall', 'increased', 'rose', 'fell', 'will', 'from', 'to'],
           checklist: ['Câu mở đầu giới thiệu biểu đồ', 'Câu tổng quan (Overall…)', 'Mô tả cả 4 thiết bị', 'Có số liệu chính xác (from… to…)', 'Đúng thì: quá khứ cho 2010–2015, will cho tương lai', '100–130 từ'],
@@ -265,12 +265,12 @@ module.exports = {
         ['memory', 'bộ nhớ', "It's got a lot of memory."],
       ],
       ex: [
-        gap('Tên bộ phận điện thoại (Ex. 7)', 'Sắp xếp lại chữ cái để được tên bộ phận.', [
+        gap('Parts of a phone (Ex. 7)', 'Put the letters in the correct order to make the names of the parts.', [
           ['touch screen or d____ (SLPIYA)', 'display|isplay'], ['p____ b____ (REWO / TOTNU)', ['power|ower', 'button|utton']],
           ['USB i____ (TUPN)', 'input|nput'], ['m____ (RENOPICHO)', 'microphone|icrophone'],
           ['p____ b____ (WORE / RA)', ['power|ower', 'bar|ar']], ['c____ (SAE)', 'case|ase'],
         ], { stimulus: picture('media:m0u10-phone.jpg', 'Parts of a smartphone') }),
-        match('Từ trong câu trả lời của Lorenzo (Ex. 18)', 'Nối từ với định nghĩa.', [
+        match('Words in Lorenzo\'s answers (Ex. 18)', 'Match the words with the definitions.', [
           ['features', 'Important and interesting parts of a device.'], ['latest model', 'The newest device you can buy.'],
           ['swipe', 'To move your finger from one side to the other on a device.'], ['out of date', 'A device that is old.'], ['memory', 'The part of a device that stores data.'],
         ]),
@@ -299,16 +299,16 @@ module.exports = {
         ['save up', 'tiết kiệm tiền', "I'm saving up for a new laptop."],
       ],
       ex: [
-        mcq('Câu trả lời nào trả lời câu hỏi nào? (Ex. 19)', 'Đọc 4 câu trả lời của Lorenzo và chọn câu hỏi tương ứng.', [
+        mcq('Which answer goes with which question? (Ex. 19)', 'Read Lorenzo\'s four answers and choose the question for each one.', [
           ['Answer 1: "It has a silver case, and the screen is bigger than most other smartphones…"', ['What does it look like?', 'How much does it cost?', 'Why is it so popular?'], 'A'],
           ['Answer 2: "It\'s very expensive, so before I buy it, I\'m going to visit a mobile phone shop… But I\'m definitely going to get it online in the end."', ['How much does it cost?', 'Where do you want to buy it from?', 'Why is it so popular?'], 'B', 'Có nhắc giá nhưng ý chính là mua ở đâu.'],
           ['Answer 3: "The phone I have now… will seem out of date soon. The Plus 6 is even faster… so that\'s why I\'m going to get it."', ['Why do you want to buy it?', 'What does it look like?', 'How will it make your life better?'], 'A'],
           ['Answer 4: "It won\'t do my homework for me… But I think it will be helpful for some things."', ['Why is it so popular?', 'How will it make your life better?', 'How much does it cost?'], 'B'],
         ], { stimulus: passage(LORENZO, { caption: "Lorenzo's answers" }) }),
-        speak('Nói: thiết bị bạn muốn mua (Ex. 20–22)', 'Chuẩn bị 1 phút, rồi nói 1–2 phút.', 2, [
+        speak('Speaking: a device you would like to buy (Ex. 20–22)', 'Prepare for one minute, then speak for 1–2 minutes.', 2, [
           ['Describe a piece of technology that you would like to buy in the future.\nYou should say:\n• what it looks like\n• where you want to buy it from\n• why you want to buy it\nand explain how it will make your life better.', 'The piece of technology I\'d like to buy is a new laptop. I\'m thinking of a light, thin one with a silver case and a big, clear screen, because I want to carry it to school every day. It should also have a lot of memory and a battery that lasts all day. I\'m going to buy it online, because it\'s usually cheaper than in shops, but first I\'m going to visit a computer shop to try the keyboard. The main reason I want it is that my family only has one old desktop computer, and it\'s really out of date – it crashes almost every time I open more than two websites! I think a laptop will make my life much better. I\'ll be able to study anywhere, for example in the library, and I\'ll download English lessons and stream videos to improve my listening. I\'m saving up for it now, so I hope I can buy it next summer.', 'Đủ 4 ý; dùng going to (kế hoạch), will (dự đoán); từ vựng unit: memory, battery lasts, out of date, crashes, download, stream.'],
         ]),
-        speak('Nói: công nghệ trong đời sống (Lead-in Ex. 2)', 'Trả lời từng câu hỏi trong 15–25 giây.', 1, [
+        speak('Speaking: technology in your life (Lead-in Ex. 2)', 'Answer each question in 15–25 seconds.', 1, [
           ['Which devices do you use for studying?', 'I mostly use my laptop for studying because the screen is bigger and I can type my essays. I also use my smartphone to look up words in an online dictionary.', 'Thiết bị + lý do.'],
           ['How do you usually contact your friends?', 'I usually send messages on my smartphone, because it\'s quick and free. Sometimes we make video calls in the evening when we do homework together.', 'Cách + lý do + ví dụ.'],
           ['Do you think smartphones will look different in the future?', 'Yes, I think they will. They will probably be thinner and maybe they will fold, so the screen will be bigger. I don\'t think people will stop using them, though.', 'Dùng will cho dự đoán.'],
@@ -322,14 +322,14 @@ module.exports = {
       minutes: 25,
       objectives: ['Ôn từ vựng công nghệ và will / going to của Unit 10'],
       ex: [
-        mcq('Chọn từ đúng (G&V Ex. 1)', 'Chọn đáp án đúng.', [
+        mcq('Choose the correct word (G&V Ex. 1)', 'Choose the correct answer.', [
           ['My brother ____ his files on his computer but doesn\'t back them up.', ['streams', 'stores'], 'B'],
           ['You can connect a series of computers together on a ____.', ['website', 'network'], 'B'],
           ['I prefer to use a ____ as I can work from anywhere.', ['laptop', 'desktop computer'], 'A'],
           ['Stop playing games! ____ your computer right now!', ['Shut down', 'Crash'], 'A'],
           ['I don\'t like paying a lot of money for ____, but it can cause problems if you only ____ them for free.', ['attachments / backup', 'apps / download'], 'B'],
         ]),
-        mcq('Email của ông nội (G&V Ex. 7)', 'Chọn đáp án đúng.', [
+        mcq('Grandad\'s email (G&V Ex. 7)', 'Choose the correct answer.', [
           ['I have some news – ____ buy a smartphone.', ['I will', 'I\'m going to', 'I going to'], 'B', 'Kế hoạch đã quyết định → going to.'],
           ['Your mum told me that you have the ____.', ['latest model', 'later modern', 'late model'], 'A'],
           ['I don\'t mind if it\'s a bit ____ – I\'ll be happy with something a bit older.', ['out of order', 'out of time', 'out of date'], 'C'],
@@ -339,17 +339,17 @@ module.exports = {
           ['…you have a lot of space to ____ apps and files.', ['stand', 'store', 'shop'], 'B'],
           ['I know your phone has a silver ____ but I would prefer mine in black.', ['case', 'screen', 'battery'], 'A'],
         ]),
-        mcq('Câu nào mô tả đoạn nào của Line A? (G&V Ex. 4)', 'Nhìn Line A (đường màu xanh) trên biểu đồ. Mỗi câu mô tả đoạn nào? Có những câu thừa (không đúng với Line A).', [
-          ['It increased from 10% to 40%.', ['2005–2010', '2010–2015', '2020–2025', 'Câu thừa'], 'A', '2005: 10% → 2010: 40%.'],
-          ['This rise will continue after 2025.', ['2015–2020', '2020–2025', '2025–2030', 'Câu thừa'], 'D', 'Sau 2025 Line A giảm (75% → 65%), không tăng tiếp.'],
-          ['It decreased by 15%.', ['2010–2015', '2015–2020', '2025–2030', 'Câu thừa'], 'A', '40% → 25% = giảm 15%.'],
-          ['It fell by 30%.', ['2010–2015', '2015–2020', '2025–2030', 'Câu thừa'], 'D', 'Line A không có đoạn nào giảm 30%.'],
-          ['It will finish on 65%.', ['in 2025', 'in 2030', 'in 2020', 'Câu thừa'], 'B', 'Điểm cuối 2030: 65%.'],
-          ['It went up from 40% to 50%.', ['2005–2010', '2020–2025', '2025–2030', 'Câu thừa'], 'D', 'Câu này đúng với Line B (2020–2025), không phải Line A.'],
-          ['It will fall again after 2020.', ['2015–2020', '2020–2025', '2025–2030', 'Câu thừa'], 'D', 'Sau 2020 Line A tăng mạnh (20% → 75%).'],
-          ['There will be a rise of 55%.', ['2010–2015', '2020–2025', '2025–2030', 'Câu thừa'], 'B', '20% → 75% = tăng 55%.'],
-          ['It went down by 5%.', ['2010–2015', '2015–2020', '2025–2030', 'Câu thừa'], 'B', '25% → 20%.'],
-          ['There was an increase of 35%.', ['2005–2010', '2020–2025', '2010–2015', 'Câu thừa'], 'D', 'Không đoạn nào của Line A tăng đúng 35% (2005–2010 tăng 30%).'],
+        mcq('Which part of Line A? (G&V Ex. 4)', 'Look at Line A (the blue line) on the graph. Which part of the line does each sentence describe? Some sentences are not true for Line A.', [
+          ['It increased from 10% to 40%.', ['2005–2010', '2010–2015', '2020–2025', 'Not true for Line A'], 'A', '2005: 10% → 2010: 40%.'],
+          ['This rise will continue after 2025.', ['2015–2020', '2020–2025', '2025–2030', 'Not true for Line A'], 'D', 'Sau 2025 Line A giảm (75% → 65%), không tăng tiếp.'],
+          ['It decreased by 15%.', ['2010–2015', '2015–2020', '2025–2030', 'Not true for Line A'], 'A', '40% → 25% = giảm 15%.'],
+          ['It fell by 30%.', ['2010–2015', '2015–2020', '2025–2030', 'Not true for Line A'], 'D', 'Line A không có đoạn nào giảm 30%.'],
+          ['It will finish on 65%.', ['in 2025', 'in 2030', 'in 2020', 'Not true for Line A'], 'B', 'Điểm cuối 2030: 65%.'],
+          ['It went up from 40% to 50%.', ['2005–2010', '2020–2025', '2025–2030', 'Not true for Line A'], 'D', 'Câu này đúng với Line B (2020–2025), không phải Line A.'],
+          ['It will fall again after 2020.', ['2015–2020', '2020–2025', '2025–2030', 'Not true for Line A'], 'D', 'Sau 2020 Line A tăng mạnh (20% → 75%).'],
+          ['There will be a rise of 55%.', ['2010–2015', '2020–2025', '2025–2030', 'Not true for Line A'], 'B', '20% → 75% = tăng 55%.'],
+          ['It went down by 5%.', ['2010–2015', '2015–2020', '2025–2030', 'Not true for Line A'], 'B', '25% → 20%.'],
+          ['There was an increase of 35%.', ['2005–2010', '2020–2025', '2010–2015', 'Not true for Line A'], 'D', 'Không đoạn nào của Line A tăng đúng 35% (2005–2010 tăng 30%).'],
         ], { stimulus: picture('media:m0u10-lineab.jpg', 'G&V Ex. 4 — Line A') }),
       ],
     },

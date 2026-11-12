@@ -1,0 +1,649 @@
+{
+ "exercises": [
+  {
+   "code": "M1-U07-L1-E01",
+   "lessonCode": "M1-U07-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 9,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "The internet (Ex. 1)",
+   "instruction": "How much do you know about the internet? Put each website into the correct group.",
+   "categories": [
+    {
+     "id": "s",
+     "label": "Search engine"
+    },
+    {
+     "id": "n",
+     "label": "News website"
+    },
+    {
+     "id": "m",
+     "label": "Social media site"
+    },
+    {
+     "id": "f",
+     "label": "Factual information on many topics"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "Google",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "Bing",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "BBC News",
+     "category": "n",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "The New York Times",
+     "category": "n",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "Facebook",
+     "category": "m",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "Instagram",
+     "category": "m",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "Weibo",
+     "category": "m",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "Wikipedia",
+     "category": "f",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "Britannica.com",
+     "category": "f",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L1-E02",
+   "lessonCode": "M1-U07-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Skim reading (Ex. 3)",
+   "instruction": "Skim read the passage in ONE MINUTE.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Become rich and famous through the internet\n\nIn the past, to become famous you needed a talent: singing, playing an instrument, dancing or writing books. Nowadays, it is much easier to become famous. This is because of the internet. All you need is a camera or webcam, computer, internet connection and a bit of creativity.\n\nFirst of all, you need to decide what you are going to write or speak about: hair and makeup, comedy, sport, news and current affairs, raising money for a charity or something specialist like keeping tropical fish. Then choose a site to post on. Some sites are international and some may be particular to one country, such as Weibo in China. YouTube is a good site to choose if you make your own videos. It is easy to upload your short films, and many people use it.\n\nIf you want to become famous on YouTube, you should make lots of videos and release one every day. YouTubers who become popular are often those who present tips, advice, 'how to' guides and opinions on entertainment or stories in the news. If you allow advertisements in your videos, you will make money when people view the adverts. Facebook is a good platform for those who want to make money, but not for those who want to be famous. To earn money through Facebook, you need a very original and/or funny page, with interesting photos which can get you a few hundred thousand 'likes'. If you achieve fame on Facebook, it probably won't last.\n\nTwitter is a social media site where people can communicate through short messages. It works well for those who want to be well-known but are not so interested in making money. If you want to become known on Twitter, you will need to post lots of entertaining content. Instagram is a site where people mainly put up photos and videos. It is a site which can make you well-known, particularly if you want to become a famous photographer.\n\nCreating your own blog is possibly the best way to become internet famous and make money, through advertising, especially once you have become known on one of the sites above. You need to be aware of the topics and issues that are 'trending' (that are popular right now) and post about those ideas. Learn to create 'vines' (a series of short extracts from videos put together in a creative way) and become an expert on photo editing. With these few easily learnt skills and some imagination, you can achieve the fame you've always dreamed of – online at least.",
+    "caption": "Become rich and famous through the internet (p. 126)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What is the purpose of the passage?",
+     "options": [
+      {
+       "id": "A",
+       "text": "to give the advantages and disadvantages of the internet"
+      },
+      {
+       "id": "B",
+       "text": "to advise people how to become famous on the internet"
+      },
+      {
+       "id": "C",
+       "text": "to explain how beginners can start to use the internet"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Tiêu đề \"Become rich and famous through the internet\" + các câu khuyên: you need to decide…, you should make lots of videos…"
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L2-E01",
+   "lessonCode": "M1-U07-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "The writer's view (Ex. 5)",
+   "instruction": "Look at statements A to C. All of them give information about social media. Only one of them contains the writer's personal view. Which one?",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Which statement contains the writer's personal view?",
+     "options": [
+      {
+       "id": "A",
+       "text": "'Weibo' is the Twitter of China, but actually has twice as many users as Twitter."
+      },
+      {
+       "id": "B",
+       "text": "In the United States, over 70% of the population have a social media account."
+      },
+      {
+       "id": "C",
+       "text": "Over 1.5 billion people waste their time on Facebook."
+      }
+     ],
+     "answer": "C",
+     "explanation": "Ý kiến không nói thẳng, nhưng cụm \"waste their time\" cho thấy tác giả không thích Facebook. A và B là sự thật (số liệu)."
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L2-E02",
+   "lessonCode": "M1-U07-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Is it famous to be fun? (Ex. 6)",
+   "instruction": "Read the short text. Do the following statements agree with the claims of the writer? Choose YES, NO or NOT GIVEN.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Being famous is not as much fun as it sounds. I am only a little bit famous. About two or three times a day people stop me to ask me to sign a piece of paper or to have their photo taken with me. For me, it is not at all enjoyable, as it often makes me late. However, I feel I should be polite to the person and have a chat with them. Sometimes I wonder how it would feel to be very famous. You wouldn't be able to get a quick coffee with a friend or go to a movie. I don't think life would be very easy.",
+    "caption": "Ex. 6 (p. 128)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "The writer considers herself to be very well known.",
+     "options": [
+      {
+       "id": "A",
+       "text": "YES"
+      },
+      {
+       "id": "B",
+       "text": "NO"
+      },
+      {
+       "id": "C",
+       "text": "NOT GIVEN"
+      }
+     ],
+     "answer": "B",
+     "explanation": "\"I am only a little bit famous.\""
+    },
+    {
+     "id": "q2",
+     "prompt": "It is inconvenient for her to be stopped by people she doesn't know.",
+     "options": [
+      {
+       "id": "A",
+       "text": "YES"
+      },
+      {
+       "id": "B",
+       "text": "NO"
+      },
+      {
+       "id": "C",
+       "text": "NOT GIVEN"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"it is not at all enjoyable, as it often makes me late\"."
+    },
+    {
+     "id": "q3",
+     "prompt": "She would like to drink more coffee.",
+     "options": [
+      {
+       "id": "A",
+       "text": "YES"
+      },
+      {
+       "id": "B",
+       "text": "NO"
+      },
+      {
+       "id": "C",
+       "text": "NOT GIVEN"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Bài chỉ nói người rất nổi tiếng không thể \"get a quick coffee with a friend\" — không nói cô ấy muốn uống thêm cà phê."
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L3-E01",
+   "lessonCode": "M1-U07-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "If clauses and result clauses (Ex. 10)",
+   "instruction": "Find three more sentences from the passage which begin with \"If\". Match each If clause with its result clause.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "If you want to become famous on YouTube,",
+     "right": "you should make lots of videos and release one every day.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "If you allow advertisements in your videos,",
+     "right": "you will make money when people view the adverts.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "If you achieve fame on Facebook,",
+     "right": "it probably won't last.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "If you want to become known on Twitter,",
+     "right": "you will need to post lots of entertaining content.",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L3-E02",
+   "lessonCode": "M1-U07-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Instead of will (Ex. 10)",
+   "instruction": "Answer the question.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What is used instead of will / won't in one of the result clauses?",
+     "options": [
+      {
+       "id": "A",
+       "text": "should"
+      },
+      {
+       "id": "B",
+       "text": "can"
+      },
+      {
+       "id": "C",
+       "text": "must"
+      }
+     ],
+     "answer": "A",
+     "explanation": "If you want to become famous on YouTube, you **should** make lots of videos."
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L3-E03",
+   "lessonCode": "M1-U07-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Make first conditional sentences (Ex. 10)",
+   "instruction": "Complete the sentences with the correct form of the verbs in brackets (first conditional).",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "If you ____ (post) a video every day, more people ____ (follow) you.",
+     "blanks": [
+      {
+       "accept": [
+        "post"
+       ]
+      },
+      {
+       "accept": [
+        "will follow",
+        "'ll follow"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "If she ____ (not / have) a good camera, her photos ____ (not / look) professional.",
+     "blanks": [
+      {
+       "accept": [
+        "doesn't have",
+        "does not have"
+       ]
+      },
+      {
+       "accept": [
+        "won't look",
+        "will not look"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "If you ____ (want) to become a famous photographer, you should use Instagram.",
+     "blanks": [
+      {
+       "accept": [
+        "want"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "People ____ (not / watch) your films if they ____ (be) boring.",
+     "blanks": [
+      {
+       "accept": [
+        "won't watch",
+        "will not watch"
+       ]
+      },
+      {
+       "accept": [
+        "are"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "If he ____ (create) his own blog, he ____ (make) money through advertising.",
+     "blanks": [
+      {
+       "accept": [
+        "creates"
+       ]
+      },
+      {
+       "accept": [
+        "will make",
+        "'ll make"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L4-E01",
+   "lessonCode": "M1-U07-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Think about the flow-chart (Ex. 3)",
+   "instruction": "Think about how you completed the flow-chart in exercise 2 and answer the questions.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Were the words in the recording exactly the same as the words in the flow-chart?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Yes"
+      },
+      {
+       "id": "B",
+       "text": "No"
+      }
+     ],
+     "answer": "B",
+     "explanation": "vd. \"talent competitions\" ↔ \"local competitions\", \"discovered by\" ↔ \"came across these videos\"."
+    },
+    {
+     "id": "q2",
+     "prompt": "Was there extra information in the listening which you didn't need and which might have led you to give the wrong answer?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Yes"
+      },
+      {
+       "id": "B",
+       "text": "No"
+      }
+     ],
+     "answer": "A",
+     "explanation": "guitar, drums, trumpet, violin; \"came second\"…"
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L4-E02",
+   "lessonCode": "M1-U07-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Predicting the answer (Ex. 4)",
+   "instruction": "Read the opinions on being famous. What type of word is missing from each gap?",
+   "categories": [
+    {
+     "id": "v",
+     "label": "verb"
+    },
+    {
+     "id": "n",
+     "label": "noun"
+    },
+    {
+     "id": "a",
+     "label": "adjective"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "I would hate people to (1) ___ me all the time.",
+     "category": "v",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "You would always be followed by (2) ___",
+     "category": "n",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "…wearing your best jeans, is perhaps (3) ___",
+     "category": "a",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "I would adore all the (4) ___ and the special treatment.",
+     "category": "n",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "…people would know my name and I wouldn't need to (5) ___ any more.",
+     "category": "v",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "I can imagine that would be so (6) ___",
+     "category": "a",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "They would come to my (7) ___ yacht",
+     "category": "a",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "…and I would (8) ___ their mansions.",
+     "category": "v",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L4-E03",
+   "lessonCode": "M1-U07-L4",
+   "order": 3,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Predicting the answer (Ex. 6)",
+   "instruction": "Read the flow-chart \"How to become famous\". Predict the grammatical form of the missing words.",
+   "categories": [
+    {
+     "id": "v",
+     "label": "verb"
+    },
+    {
+     "id": "n",
+     "label": "noun (or noun phrase)"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "Find something you like doing and (1) ___ at becoming the best in that particular skill.",
+     "category": "v",
+     "explanation": "and + động từ song song với \"find\"."
+    },
+    {
+     "id": "c2",
+     "text": "Study (2) ___ and try to learn as much as possible.",
+     "category": "n",
+     "explanation": "Sau \"study\" cần danh từ (hoặc trạng từ)."
+    },
+    {
+     "id": "c3",
+     "text": "Create (3) ___ and market yourself.",
+     "category": "n",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "Don't worry if sometimes you (4) ___. You can learn from the experience.",
+     "category": "v",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L4-E04",
+   "lessonCode": "M1-U07-L4",
+   "order": 4,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Technical flow-chart (Ex. 8)",
+   "instruction": "Read the flow-chart \"Getting the best from your camcorder\". What type of word is missing from each gap?",
+   "categories": [
+    {
+     "id": "a",
+     "label": "adjective"
+    },
+    {
+     "id": "n",
+     "label": "noun"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "…learn how to use the (1) ___ controls.",
+     "category": "a",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "The Focus function on the camera is very (2) ___.",
+     "category": "a",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "…whether the object you want to film is (3) ___ or further away.",
+     "category": "a",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "…controls the amount of (4) ___ coming through the lens.",
+     "category": "n",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "…more light comes in and the picture appears (5) ___.",
+     "category": "a",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "…the Zoom is a very (6) ___ manual function",
+     "category": "a",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "For (7) ___ zooms a tripod is recommended.",
+     "category": "a",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

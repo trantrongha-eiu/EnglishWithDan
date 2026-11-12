@@ -9,8 +9,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Hoạt động trong tranh (Ex. 4)",
-   "instruction": "Nối tranh 1–8 với hoạt động.",
+   "title": "Activities in the pictures (Ex. 4)",
+   "instruction": "Match pictures 1–8 with the activities.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u08-activities.jpg",
@@ -76,8 +76,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Cách thư giãn (Ex. 15)",
-   "instruction": "Nối tranh 1–5 với cách thư giãn.",
+   "title": "Ways to relax (Ex. 15)",
+   "instruction": "Match pictures 1–5 with the ways to relax.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u08-relax.jpg",
@@ -125,8 +125,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Hoạt động thể thao (G&V Ex. 1)",
-   "instruction": "Nối tranh 1–6 với hoạt động.",
+   "title": "Sports activities (G&V Ex. 1)",
+   "instruction": "Match pictures 1–6 with the activities.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u08-gv.jpg",
@@ -180,8 +180,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Động từ đi kèm (G&V Ex. 2)",
-   "instruction": "Điền dạng đúng: get (x3), drink (x2), do (x2), eat, have, join, go (x2), play (x2).",
+   "title": "Verb collocations (G&V Ex. 2)",
+   "instruction": "Complete the sentences with the correct form of: get (x3), drink (x2), do (x2), eat, have, join, go (x2), play (x2).",
    "items": [
     {
      "id": "g1",
@@ -327,8 +327,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Đọc lướt bài luận (Ex. 6–7)",
-   "instruction": "Đọc nhanh bài luận và trả lời.",
+   "title": "Skim the essay (Ex. 6–7)",
+   "instruction": "Read the essay quickly and answer the questions.",
    "stimulus": {
     "kind": "passage",
     "text": "Some parents may think that while their children are preparing for important school exams, they shouldn't have sports lessons. This could be because they want them to focus on exam subjects more, like science and maths. For a similar reason, some parents think children should also stop painting and music lessons in the final school term so they can spend more time studying. However, I disagree with these views, and believe that children should continue to have sports lessons. These lessons help students keep healthy and happy during the exam period.\n\nFirstly, schools need to encourage young people to follow a healthy lifestyle and get regular exercise. Many young people don't do enough exercise. They prefer to spend their free time indoors on their computers or watching TV than going to the park and playing tennis, or going cycling. Many people today are overweight and have health problems. There is a lot of information about eating healthily, but people often forget that regular exercise is equally important.\n\nSecondly, exercise helps us feel less stressed and tired. It also improves memory and helps us think clearly. When students are studying for exams, it's a good idea to take regular breaks and do something active for 20 minutes. Exercise also helps us to concentrate better on difficult tasks and helps us sleep better at night. Doing exercise may even help students get better results in their exams.\n\nIn conclusion, I believe that students who are revising for important exams should continue to have sports lessons because regular exercise is good for their body and mind.",
@@ -402,12 +402,12 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "should hay shouldn't? (Ex. 10–12)",
-   "instruction": "Chọn đáp án đúng.",
+   "title": "should or shouldn't? (Ex. 10–12)",
+   "instruction": "Choose the correct answer.",
    "items": [
     {
      "id": "q1",
-     "prompt": "\"Children shouldn't have sports lessons.\" — Những phụ huynh này nghĩ học thể thao là ý…",
+     "prompt": "\"Children shouldn't have sports lessons.\" — These parents think sports lessons are a … idea.",
      "options": [
       {
        "id": "A",
@@ -544,8 +544,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "have to hay don't have to? (Ex. 18, G&V Ex. 5)",
-   "instruction": "Chọn đáp án đúng.",
+   "title": "have to or don't have to? (Ex. 18, G&V Ex. 5)",
+   "instruction": "Choose the correct answer.",
    "items": [
     {
      "id": "q1",
@@ -766,8 +766,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Chương trình sức khoẻ trên TV (G&V Ex. 4)",
-   "instruction": "Điền should / shouldn't + động từ: eat, drink, play, ride, watch, get.",
+   "title": "A health programme on TV (G&V Ex. 4)",
+   "instruction": "Complete the sentences with should / shouldn't + a verb: eat, drink, play, ride, watch, get.",
    "items": [
     {
      "id": "g1",
@@ -877,12 +877,12 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Câu đúng hay sai? (G&V Ex. 3)",
-   "instruction": "Chọn câu đúng.",
+   "title": "Correct or incorrect? (G&V Ex. 3)",
+   "instruction": "Choose the correct sentence.",
    "items": [
     {
      "id": "q1",
-     "prompt": "Hỏi xin lời khuyên về ăn uống:",
+     "prompt": "Asking for advice about food:",
      "options": [
       {
        "id": "A",
@@ -971,8 +971,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Quy định ở trường (G&V Ex. 6)",
-   "instruction": "Điền has to / have to / doesn't have to / don't have to.",
+   "title": "School rules (G&V Ex. 6)",
+   "instruction": "Complete the sentences with has to / have to / doesn't have to / don't have to.",
    "items": [
     {
      "id": "g1",
@@ -1033,8 +1033,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Email của Helen (Ex. 19)",
-   "instruction": "Đọc email của Helen gửi Alice và trả lời.",
+   "title": "Helen's email (Ex. 19)",
+   "instruction": "Read Helen's email to Alice and answer the questions.",
    "stimulus": {
     "kind": "passage",
     "text": "Hi Alice,\n\nI think it's a good idea to play tennis or basketball. Playing sport is a good way to stay healthy. I don't think you should play computer games all day. You should make sure you get enough sleep every night, between seven and 10 hours. You don't have to study for hours and should try to take regular breaks. You should eat lots of fruit and vegetables and get lots of regular exercise. Being healthy gives you more energy and makes you feel good.\n\nFrom,\nHelen",
@@ -1112,8 +1112,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "paragraph_writing",
-   "title": "Viết email khuyên Alice (Ex. 20)",
-   "instruction": "Bạn của bạn, Alice, hỏi lời khuyên về cách sống khoẻ. Viết email trả lời (80–100 từ). Trong email: (1) nói Alice có thể làm những hoạt động gì để giữ sức khoẻ; (2) kể các hoạt động lành mạnh và cách thư giãn; (3) nói vì sao cần sống khoẻ. Dùng should / shouldn't / have to / don't have to.",
+   "title": "Write an email giving Alice advice (Ex. 20)",
+   "instruction": "Your friend Alice has asked for advice about living a healthy life. Write a reply (80–100 words). In your email: (1) say what activities Alice could do to stay healthy; (2) describe healthy activities and ways to relax; (3) say why it is important to live a healthy life. Use should / shouldn't / have to / don't have to.",
    "responseSlots": 1,
    "rubric": {
     "bandFocus": [
@@ -1152,8 +1152,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Từ khoá trong ý kiến (Ex. 3)",
-   "instruction": "Chọn từ khoá quan trọng nhất trong mỗi ý kiến.",
+   "title": "Key words in opinions (Ex. 3)",
+   "instruction": "Choose the most important key word in each opinion.",
    "items": [
     {
      "id": "q1",
@@ -1214,8 +1214,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
-   "title": "Sắp xếp phần mô tả tranh (Ex. 13)",
-   "instruction": "Sắp xếp các chữ cái theo đúng trình tự mô tả: chung → chi tiết → ý kiến. (A: lời khuyên · B: chi tiết · C: mô tả chung)",
+   "title": "Order of a picture description (Ex. 13)",
+   "instruction": "Put the letters in the correct order for a description: general → details → opinion. (A: advice · B: details · C: general description)",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u08-boy.jpg",
@@ -1248,8 +1248,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: mô tả tranh và khuyên (Ex. 14)",
-   "instruction": "Nhìn hai bức tranh (người đàn ông ăn rau quả; người phụ nữ làm việc bận rộn). Nói 1–2 phút: mô tả chung, chi tiết, ý kiến và lời khuyên với should / shouldn't.",
+   "title": "Speaking: describe the pictures and give advice (Ex. 14)",
+   "instruction": "Look at the two pictures (a man eating fruit and vegetables; a busy woman working). Speak for 1–2 minutes: give a general description, details, your opinion and advice with should / shouldn't.",
    "speakingPart": 2,
    "speakingPrepSeconds": 60,
    "stimulus": {
@@ -1276,8 +1276,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: giữ sức khoẻ (Lead-in, Ex. 5)",
-   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "title": "Speaking: keeping healthy (Lead-in, Ex. 5)",
+   "instruction": "Answer each question in 15–25 seconds.",
    "speakingPart": 1,
    "speakingPrepSeconds": 10,
    "items": [
@@ -1313,8 +1313,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Lời khuyên chơi tennis (G&V Ex. 7)",
-   "instruction": "Điền should / shouldn't.",
+   "title": "Tennis tips (G&V Ex. 7)",
+   "instruction": "Complete the tips with should / shouldn't.",
    "items": [
     {
      "id": "g1",
@@ -1400,8 +1400,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Nối nửa câu (G&V Ex. 8)",
-   "instruction": "Nối hai nửa câu.",
+   "title": "Match the sentence halves (G&V Ex. 8)",
+   "instruction": "Match the two halves of the sentences.",
    "items": [
     {
      "id": "m1",

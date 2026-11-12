@@ -9,8 +9,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Loại kỳ nghỉ trong tranh (Lead-in Ex. 1)",
-   "instruction": "Nối tranh 1–4 với loại kỳ nghỉ.",
+   "title": "Types of holiday (Lead-in Ex. 1)",
+   "instruction": "Match pictures 1–4 with the types of holiday.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u04-holidays.jpg",
@@ -52,8 +52,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Hoạt động du lịch (Ex. 2)",
-   "instruction": "Nối tranh 1–12 với hoạt động.",
+   "title": "Holiday activities (Ex. 2)",
+   "instruction": "Match pictures 1–12 with the activities.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u04-activities.jpg",
@@ -143,8 +143,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "Hoạt động hợp với kỳ nghỉ nào? (G&V Ex. 2)",
-   "instruction": "Xếp mỗi hoạt động vào loại kỳ nghỉ phù hợp nhất.",
+   "title": "Which holiday for each activity? (G&V Ex. 2)",
+   "instruction": "Put each activity with the type of holiday it suits best.",
    "categories": [
     {
      "id": "city",
@@ -247,8 +247,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Loại kỳ nghỉ (G&V Ex. 1)",
-   "instruction": "Hoàn thành câu bằng: a city break, a beach holiday, a family holiday, a language exchange, an adventure holiday.",
+   "title": "Types of holiday (G&V Ex. 1)",
+   "instruction": "Complete the sentences with: a city break, a beach holiday, a family holiday, a language exchange, an adventure holiday.",
    "wordBank": [
     "a city break",
     "a beach holiday",
@@ -328,8 +328,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Từ khoá của từng người",
-   "instruction": "Đọc mô tả về mỗi người và chọn YÊU CẦU QUAN TRỌNG NHẤT của họ.",
+   "title": "Each person's key words",
+   "instruction": "Read the description of each person and choose their MOST IMPORTANT requirement.",
    "items": [
     {
      "id": "q1",
@@ -337,15 +337,15 @@
      "options": [
       {
        "id": "A",
-       "text": "muốn nằm biển thư giãn"
+       "text": "relaxing on a beach"
       },
       {
        "id": "B",
-       "text": "muốn thể thao trên cạn mới lạ, năng động"
+       "text": "a new, active sport on land"
       },
       {
        "id": "C",
-       "text": "muốn học chèo thuyền buồm"
+       "text": "learning to sail"
       }
      ],
      "answer": "B",
@@ -357,15 +357,15 @@
      "options": [
       {
        "id": "A",
-       "text": "đi một mình ra nước ngoài"
+       "text": "travelling abroad alone"
       },
       {
        "id": "B",
-       "text": "có người lớn chăm sóc + luyện tiếng Tây Ban Nha"
+       "text": "adults to look after them + practising Spanish"
       },
       {
        "id": "C",
-       "text": "đi biển với bạn"
+       "text": "a beach holiday with friends"
       }
      ],
      "answer": "B",
@@ -377,15 +377,15 @@
      "options": [
       {
        "id": "A",
-       "text": "làm việc với động vật / nông thôn"
+       "text": "working with animals / the countryside"
       },
       {
        "id": "B",
-       "text": "thành phố, bảo tàng"
+       "text": "cities and museums"
       },
       {
        "id": "C",
-       "text": "ẩm thực"
+       "text": "food"
       }
      ],
      "answer": "A",
@@ -397,15 +397,15 @@
      "options": [
       {
        "id": "A",
-       "text": "nóng + biển + thư giãn"
+       "text": "somewhere hot + the sea + relaxing"
       },
       {
        "id": "B",
-       "text": "leo núi"
+       "text": "mountain climbing"
       },
       {
        "id": "C",
-       "text": "học nấu ăn"
+       "text": "learning to cook"
       }
      ],
      "answer": "A",
@@ -422,24 +422,24 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Hiện tại hay quá khứ? (Ex. 13–14)",
-   "instruction": "Đọc lại lời Anna và chọn đáp án đúng.",
+   "title": "Present or past? (Ex. 13–14)",
+   "instruction": "Read what Anna says again and choose the correct answer.",
    "items": [
     {
      "id": "q1",
-     "prompt": "\"I'm not very good at sports.\" — câu này diễn tả…",
+     "prompt": "\"I'm not very good at sports.\" — this sentence describes…",
      "options": [
       {
        "id": "A",
-       "text": "một trạng thái ở hiện tại"
+       "text": "a state in the present"
       },
       {
        "id": "B",
-       "text": "một thói quen"
+       "text": "a habit"
       },
       {
        "id": "C",
-       "text": "một việc đã xong trong quá khứ"
+       "text": "a finished action in the past"
       }
      ],
      "answer": "A",
@@ -447,19 +447,19 @@
     },
     {
      "id": "q2",
-     "prompt": "\"I study French and Spanish at school.\" — câu này diễn tả…",
+     "prompt": "\"I study French and Spanish at school.\" — this sentence describes…",
      "options": [
       {
        "id": "A",
-       "text": "một trạng thái ở hiện tại"
+       "text": "a state in the present"
       },
       {
        "id": "B",
-       "text": "một thói quen / hoạt động thường xuyên"
+       "text": "a habit / regular activity"
       },
       {
        "id": "C",
-       "text": "một việc đã xong trong quá khứ"
+       "text": "a finished action in the past"
       }
      ],
      "answer": "B",
@@ -467,15 +467,15 @@
     },
     {
      "id": "q3",
-     "prompt": "\"I decided to go to Spain instead.\" — câu này diễn tả…",
+     "prompt": "\"I decided to go to Spain instead.\" — this sentence describes…",
      "options": [
       {
        "id": "A",
-       "text": "một thói quen"
+       "text": "a habit"
       },
       {
        "id": "B",
-       "text": "một việc đã xong trong quá khứ"
+       "text": "a finished action in the past"
       }
      ],
      "answer": "B",
@@ -524,8 +524,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Sửa động từ sai trong tóm tắt (Ex. 15)",
-   "instruction": "Bản tóm tắt về Anna có 6 động từ sai thì. Viết dạng đúng (nếu đúng rồi, chép lại).",
+   "title": "Correct the verbs in the summary (Ex. 15)",
+   "instruction": "The summary about Anna has six verbs in the wrong tense. Write the correct form (if a verb is already correct, copy it).",
    "items": [
     {
      "id": "g1",
@@ -611,8 +611,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Hội thoại về kỳ nghỉ (G&V Ex. 5)",
-   "instruction": "Chọn đáp án đúng.",
+   "title": "A conversation about holidays (G&V Ex. 5)",
+   "instruction": "Choose the correct answer.",
    "items": [
     {
      "id": "q1",
@@ -785,8 +785,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Email của Sarah (G&V Ex. 6)",
-   "instruction": "Chia động từ trong ngoặc ở hiện tại đơn hoặc quá khứ đơn.",
+   "title": "Sarah's email (G&V Ex. 6)",
+   "instruction": "Put the verbs in brackets into the present simple or past simple.",
    "items": [
     {
      "id": "g1",
@@ -912,8 +912,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Đọc nhanh email của Simon (Ex. 16)",
-   "instruction": "Đọc nhanh email trong 2 phút và trả lời.",
+   "title": "Read Simon's email quickly (Ex. 16)",
+   "instruction": "Read the email quickly (two minutes) and answer the question.",
    "stimulus": {
     "kind": "passage",
     "text": "Hi Tony,\n\nI went to Madrid for my last holiday – it was great! On the first day, I visited some of the famous sights here including the Prado museum and the Royal Palace. It is different to my usual holidays. Normally, I go to hot places and relax on the beach. At the moment, it's the opposite and it is quite cold here. On my second day, I went shopping and bought some souvenirs. That night it was really interesting because I ate in a Spanish restaurant. I usually don't try new food when I go on holiday, but I am very happy that I did this time. I tried a traditional meal of soup, vegetables and meat. It was delicious. It was only a short holiday, but I really enjoyed it. I took lots of photos. What did you do on your holiday? Where did you go?\n\nSimon",
@@ -971,8 +971,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Chia động từ trong email của Simon (Ex. 17)",
-   "instruction": "Chia động từ trong ngoặc.",
+   "title": "Verbs in Simon's email (Ex. 17)",
+   "instruction": "Put the verbs in brackets into the correct form.",
    "items": [
     {
      "id": "g1",
@@ -1105,16 +1105,16 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "Email của Simon có gì? (Ex. 18)",
-   "instruction": "Đặc điểm nào CÓ trong email của Simon, đặc điểm nào KHÔNG?",
+   "title": "What is in Simon's email? (Ex. 18)",
+   "instruction": "Which features ARE in Simon's email and which are NOT?",
    "categories": [
     {
      "id": "y",
-     "label": "Có"
+     "label": "Yes – in the email"
     },
     {
      "id": "n",
-     "label": "Không"
+     "label": "No – not in the email"
     }
    ],
    "items": [
@@ -1183,8 +1183,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "paragraph_writing",
-   "title": "Viết email kể về kỳ nghỉ (Ex. 19)",
-   "instruction": "Bạn của bạn, Hannah, muốn biết về kỳ nghỉ gần nhất của bạn: bạn đã đi đâu và làm gì. Viết email cho Hannah (150–175 từ). Trong email: (1) nói bạn đã đi đâu; (2) kể bạn đã làm gì ở đó; (3) hỏi Hannah về kỳ nghỉ gần nhất của bạn ấy.",
+   "title": "Write an email about a holiday (Ex. 19)",
+   "instruction": "Your friend Hannah wants to know about your last holiday: where you went and what you did. Write an email to Hannah (150–175 words). In your email: (1) say where you went; (2) say what you did there; (3) ask Hannah about her last holiday.",
    "responseSlots": 1,
    "rubric": {
     "bandFocus": [
@@ -1227,8 +1227,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Vì sao C là đáp án đúng? (Ex. 8)",
-   "instruction": "Đọc Part 1 và trả lời.",
+   "title": "Why is C the correct answer? (Ex. 8)",
+   "instruction": "Read Part 1 and answer the question.",
    "stimulus": {
     "kind": "passage",
     "text": "Well, students can travel to France or Spain on a language exchange, or to the USA on a sports or music exchange. I didn't go to the USA because I'm not very good at sports. However, I study French and Spanish at school, so I had two options. I've been to France before, so I decided to go to Spain instead.",
@@ -1266,8 +1266,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Nối hai nửa câu (Ex. 10)",
-   "instruction": "Nối hai nửa câu trong lời Anna.",
+   "title": "Match the sentence halves (Ex. 10)",
+   "instruction": "Match the two halves of the sentences from what Anna says.",
    "items": [
     {
      "id": "m1",
@@ -1304,8 +1304,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "As, so hay because? (Ex. 11, G&V Ex. 8)",
-   "instruction": "Chọn từ nối đúng.",
+   "title": "As, so or because? (Ex. 11, G&V Ex. 8)",
+   "instruction": "Choose the correct linking word.",
    "items": [
     {
      "id": "q1",
@@ -1398,8 +1398,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: trả lời có lý do (Ex. 12)",
-   "instruction": "Trả lời từng câu hỏi trong 20–30 giây, dùng as / so / because để giải thích.",
+   "title": "Speaking: give reasons (Ex. 12)",
+   "instruction": "Answer each question in 20–30 seconds. Use as / so / because to explain.",
    "speakingPart": 1,
    "speakingPrepSeconds": 10,
    "items": [
@@ -1435,8 +1435,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: một chuyến đi bạn rất thích (Ex. 22–23)",
-   "instruction": "Đọc đề, chuẩn bị 1 phút (ghi từ khoá), rồi nói 1–2 phút.",
+   "title": "Speaking: a trip you really enjoyed (Ex. 22–23)",
+   "instruction": "Read the task, prepare for one minute (make notes), then speak for 1–2 minutes.",
    "speakingPart": 2,
    "speakingPrepSeconds": 60,
    "items": [
@@ -1458,8 +1458,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Hoạt động du lịch trong câu (G&V Ex. 3)",
-   "instruction": "Điền cụm từ đúng: visit water parks, go on day trips, go shopping, go horse-riding, go on a cycling tour, go on a cultural visit, visit a beach resort, go mountain climbing, visit local attractions, stay with a host family.",
+   "title": "Holiday activities (G&V Ex. 3)",
+   "instruction": "Complete the sentences with: visit water parks, go on day trips, go shopping, go horse-riding, go on a cycling tour, go on a cultural visit, visit a beach resort, go mountain climbing, visit local attractions, stay with a host family.",
    "items": [
     {
      "id": "g1",
@@ -1593,8 +1593,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Tính từ mô tả (G&V Ex. 4)",
-   "instruction": "Điền: boring, local, natural, traditional, famous, cultural, fun, popular, delicious, interesting.",
+   "title": "Describing adjectives (G&V Ex. 4)",
+   "instruction": "Complete the sentences with: boring, local, natural, traditional, famous, cultural, fun, popular, delicious, interesting.",
    "wordBank": [
     "boring",
     "local",
@@ -1739,8 +1739,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Nối nửa câu (G&V Ex. 7)",
-   "instruction": "Nối hai nửa câu.",
+   "title": "Match the sentence halves (G&V Ex. 7)",
+   "instruction": "Match the two halves of the sentences.",
    "items": [
     {
      "id": "m1",

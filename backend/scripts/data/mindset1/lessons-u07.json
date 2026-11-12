@@ -1,0 +1,635 @@
+{
+ "modules": [
+  {
+   "code": "M1-U07",
+   "order": 7,
+   "title": "Unit 7 · Danh tiếng và truyền thông",
+   "titleEn": "UNIT 07: FAME AND THE MEDIA — sách tr. 126–131, 137–141",
+   "outcomes": [
+    "Reading: matching features (nối câu với người/vật trong danh sách); xác định quan điểm tác giả — YES / NO / NOT GIVEN",
+    "Grammar: câu điều kiện loại 1 (If + hiện tại đơn, will / should + V)",
+    "Listening: flow-chart completion; đoán loại từ cần điền; flow-chart kỹ thuật",
+    "Từ vựng mạng xã hội, người nổi tiếng, làm phim (Sổ 4)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M1-U07-L1",
+   "moduleCode": "M1-U07",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: the internet and fame",
+   "titleEn": "Lead-in · Skim reading (p. 126)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Từ vựng về Internet: search engine, social media, upload, trending…",
+    "Skim bài đọc để tìm mục đích của bài"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Mục đích của bài đọc",
+     "titleEn": "The purpose of a passage",
+     "formula": [],
+     "usage": [
+      "Khi skim, tự hỏi: tác giả viết để **làm gì** — so sánh ưu/nhược điểm, **hướng dẫn/khuyên**, hay giải thích cho người mới?",
+      "Dấu hiệu bài **khuyên**: you need to…, you should…, If you want to…, choose…, learn to…"
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 10,
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 7 · Lead-in & Vocabulary: the internet and fame — 35 từ/cụm từ",
+    "words": [
+     {
+      "word": "search engine",
+      "meaning": "công cụ tìm kiếm",
+      "example": ""
+     },
+     {
+      "word": "talent",
+      "meaning": "tài năng",
+      "example": "Famous animals A Like people, animals each have their own personality and talents."
+     },
+     {
+      "word": "current affairs",
+      "meaning": "thời sự",
+      "example": ""
+     },
+     {
+      "word": "raise money for a charity",
+      "meaning": "quyên tiền cho tổ chức từ thiện",
+      "example": ""
+     },
+     {
+      "word": "upload",
+      "meaning": "tải lên",
+      "example": "It is easy to upload your short films, and many people use it."
+     },
+     {
+      "word": "release",
+      "meaning": "phát hành, đăng tải",
+      "example": "If you want to become famous on YouTube, you should make lots of videos and release one every day."
+     },
+     {
+      "word": "advertisement",
+      "meaning": "quảng cáo",
+      "example": "If you allow advertisements in your videos, you will make money when people view the adverts."
+     },
+     {
+      "word": "platform",
+      "meaning": "nền tảng",
+      "example": "Facebook is a good platform for those who want to make money, but not for those who want to be famous."
+     },
+     {
+      "word": "achieve fame",
+      "meaning": "đạt được danh tiếng",
+      "example": "And like some people, some animals achieve fame."
+     },
+     {
+      "word": "entertaining content",
+      "meaning": "nội dung mang tính giải trí",
+      "example": "If you want to become known on Twitter, you will need to post lots of entertaining content."
+     },
+     {
+      "word": "trending",
+      "meaning": "đang thịnh hành",
+      "example": "You need to be aware of the topics and issues that are 'trending' (that are popular right now) and post about those ideas."
+     },
+     {
+      "word": "imagination",
+      "meaning": "trí tưởng tượng",
+      "example": "With these few easily learnt skills and some imagination, you can achieve the fame you've always dreamed of – online at least."
+     },
+     {
+      "word": "inconvenient",
+      "meaning": "bất tiện",
+      "example": ""
+     },
+     {
+      "word": "waste one's time",
+      "meaning": "lãng phí thời gian",
+      "example": ""
+     },
+     {
+      "word": "personality",
+      "meaning": "tính cách",
+      "example": "Famous animals A Like people, animals each have their own personality and talents."
+     },
+     {
+      "word": "loyalty",
+      "meaning": "lòng trung thành",
+      "example": "One of them is Hachiko, a dog remembered for his loyalty to his owner."
+     },
+     {
+      "word": "faithful",
+      "meaning": "trung thành",
+      "example": "For the next nine years, nine months and 15 days, his faithful dog continued to meet the train his owner used to take every day."
+     },
+     {
+      "word": "commemorate",
+      "meaning": "tưởng niệm",
+      "example": "There have been films and books about Hachiko, and every year there is a ceremony to commemorate him at the railway station in Tokyo, where he waited so faithfully."
+     },
+     {
+      "word": "ceremony",
+      "meaning": "buổi lễ",
+      "example": "There have been films and books about Hachiko, and every year there is a ceremony to commemorate him at the railway station in Tokyo, where he waited so faithfully."
+     },
+     {
+      "word": "reject",
+      "meaning": "ruồng bỏ, từ chối",
+      "example": "Sadly, Knut was rejected by his mother, Tosca, and was raised by zookeepers."
+     },
+     {
+      "word": "be raised by",
+      "meaning": "được nuôi dưỡng bởi",
+      "example": "Sadly, Knut was rejected by his mother, Tosca, and was raised by zookeepers."
+     },
+     {
+      "word": "attendance",
+      "meaning": "lượng người đến tham quan",
+      "example": "Knut's story increased attendance at the zoo by about 30% and increased the zoo's revenue by five million euros."
+     },
+     {
+      "word": "revenue",
+      "meaning": "doanh thu",
+      "example": "Knut's story increased attendance at the zoo by about 30% and increased the zoo's revenue by five million euros."
+     },
+     {
+      "word": "substantial",
+      "meaning": "đáng kể",
+      "example": "The zoo made substantial amounts of money by selling Knut toys, candy and other products."
+     },
+     {
+      "word": "game warden",
+      "meaning": "nhân viên bảo vệ động vật hoang dã",
+      "example": "Elsa's mother was killed by a game warden, a person whose job it was to protect wild animals."
+     },
+     {
+      "word": "defend oneself",
+      "meaning": "tự vệ",
+      "example": ""
+     },
+     {
+      "word": "feel guilty",
+      "meaning": "cảm thấy có lỗi",
+      "example": ""
+     },
+     {
+      "word": "orphaned",
+      "meaning": "mồ côi",
+      "example": "The warden, George Adamson, had killed the lioness to defend himself, but he felt guilty about the orphaned cubs."
+     },
+     {
+      "word": "bring up",
+      "meaning": "nuôi nấng",
+      "example": ""
+     },
+     {
+      "word": "foster parents",
+      "meaning": "cha mẹ nuôi",
+      "example": "During her adult life in the wild, she had three cubs and took them to visit her human foster parents."
+     },
+     {
+      "word": "wildlife",
+      "meaning": "động vật hoang dã",
+      "example": "In 1984, the actors who had starred in the film started the Born Free Foundation, an organisation that protects wildlife in many ways."
+     },
+     {
+      "word": "improve conditions",
+      "meaning": "cải thiện điều kiện",
+      "example": "The Foundation's important work includes improving conditions in zoos and circuses, stopping hunting for 'sport' and working against the killing of elephants for ivory."
+     },
+     {
+      "word": "inspire",
+      "meaning": "truyền cảm hứng",
+      "example": "They can inspire us with their characters and stories, just as human celebrities can."
+     },
+     {
+      "word": "celebrity",
+      "meaning": "người nổi tiếng",
+      "example": "They can inspire us with their characters and stories, just as human celebrities can."
+     },
+     {
+      "word": "in sb's memory",
+      "meaning": "để tưởng nhớ ai",
+      "example": "Some of them are remembered for years through books, films, toys and other items created in their memory."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M1-U07-L2",
+   "moduleCode": "M1-U07",
+   "order": 2,
+   "title": "📖 Reading: matching features & the writer's views",
+   "titleEn": "Matching features · Identifying the writer's views · Exam skills (pp. 127–131)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Matching features: scan tên trong danh sách, đọc hết thông tin về từng tên",
+    "Phân biệt sự thật (fact) và quan điểm tác giả (view)",
+    "YES / NO / NOT GIVEN: đọc từng chữ ở phần liên quan"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Matching features",
+     "titleEn": "Matching features",
+     "formula": [
+      "Danh sách người/nơi/vật + danh sách câu → nối mỗi câu với một mục. Có thể dùng **một chữ cái nhiều lần**."
+     ],
+     "usage": [
+      "Câu hỏi **không theo thứ tự** bài, nhưng các mục trong danh sách (A–E) thì **theo thứ tự** bài → phải \"nhảy\" quanh bài.",
+      "Scan gạch chân **mọi lần** tên (vd. YouTube) xuất hiện, đọc hết thông tin về nó, rồi tìm câu khớp.",
+      "Chỉ dùng thông tin **trong bài**, kể cả khi bạn nghĩ bài sai."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Quan điểm của tác giả",
+     "titleEn": "Identifying the writer's views",
+     "formula": [
+      "**YES** = khớp với ý tác giả · **NO** = trái với ý tác giả · **NOT GIVEN** = không thể biết tác giả nghĩ gì."
+     ],
+     "usage": [
+      "Quan điểm **không nói thẳng**: \"Over 1.5 billion people **waste their time** on Facebook\" → cụm \"waste their time\" cho thấy tác giả không thích Facebook.",
+      "Một từ nhỏ có thể đổi nghĩa: \"**too** friendly\" biến tính từ tích cực thành tiêu cực."
+     ],
+     "examples": [
+      {
+       "en": "The writer considers herself to be very well known. → NO",
+       "vi": "\"I am only a little bit famous.\""
+      },
+      {
+       "en": "She would like to drink more coffee. → NOT GIVEN",
+       "vi": "Bài chỉ nói không thể \"get a quick coffee\" nếu rất nổi tiếng."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 4,
+   "practiceLinks": [
+    {
+     "ref": "reading:M1-U07-R1",
+     "kind": "reading",
+     "title": "Become rich and famous through the internet (Ex. 4, 7–9)",
+     "note": "Matching features A–E + YES/NO/NOT GIVEN."
+    },
+    {
+     "ref": "reading:M1-U07-R2",
+     "kind": "reading",
+     "title": "Exam skills: Famous animals (Ex. 11)",
+     "note": "7 câu matching features + 9 câu YES/NO/NOT GIVEN."
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L3",
+   "moduleCode": "M1-U07",
+   "order": 3,
+   "title": "🧩 Grammar focus: the first conditional",
+   "titleEn": "Grammar focus: first conditional (p. 129)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Nhận diện mệnh đề If và mệnh đề kết quả",
+    "Biết dùng should thay cho will để khuyên"
+   ],
+   "keyLanguage": [
+    "Câu điều kiện loại 1: **If + hiện tại đơn, will / won't + V** — If you want to become known on Twitter, you **will need** to post lots of entertaining content.",
+    "Mệnh đề kết quả có thể dùng **should** (lời khuyên) thay cho will: If you want to become famous on YouTube, you **should make** lots of videos.",
+    "Hai mệnh đề đổi chỗ được; nếu mệnh đề If đứng đầu thì có **dấu phẩy**."
+   ],
+   "theory": [
+    {
+     "title": "Câu điều kiện loại 1",
+     "titleEn": "The first conditional",
+     "formula": [
+      "If + S + V (hiện tại đơn), S + will / won't + V",
+      "If + S + V (hiện tại đơn), S + should + V (lời khuyên)"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "If you allow advertisements in your videos, you will make money.",
+       "vi": "Nếu bạn cho phép quảng cáo, bạn sẽ kiếm được tiền."
+      },
+      {
+       "en": "If you achieve fame on Facebook, it probably won't last.",
+       "vi": "Nếu nổi tiếng trên Facebook, có lẽ sẽ không lâu."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 10,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "First Conditional",
+     "note": "If + hiện tại đơn, will + V",
+     "url": "/essential-grammar.html?lesson=first-conditional"
+    }
+   ]
+  },
+  {
+   "code": "M1-U07-L4",
+   "moduleCode": "M1-U07",
+   "order": 4,
+   "title": "🎧 Listening: flow-chart completion",
+   "titleEn": "Lead-in · Flow-chart completion · Predicting the answer · Technical / scientific flow-charts · Exam skills (pp. 137–141)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Hoàn thành flow-chart (sơ đồ các bước) theo thứ tự bài nghe",
+    "Đoán loại từ cần điền (danh từ, động từ, tính từ…) từ chữ trước/sau chỗ trống",
+    "Không hoảng với từ kỹ thuật: tập trung vào từ đã biết"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Flow-chart completion",
+     "titleEn": "Flow-chart completion",
+     "formula": [],
+     "usage": [
+      "Giống các dạng điền từ khác: **chọn từ trong danh sách** hoặc **dùng từ trong bài nghe**; đề cho biết số từ tối đa.",
+      "Đáp án **theo thứ tự** bài nghe — mỗi ô là một bước.",
+      "Từ trong bài nghe **thường khác** từ trong sơ đồ (paraphrase), và có **thông tin thừa** dễ gây nhầm (guitar, drums, trumpet… nhưng đáp án là piano)."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Đoán đáp án",
+     "titleEn": "Predicting the answer",
+     "formula": [
+      "Gạch chân từ khoá → đọc **từ trước và sau** chỗ trống → ghi chú **loại từ** (noun / verb / adjective) → đoán vài từ có thể."
+     ],
+     "usage": [
+      "\"I would hate people to ___ me\" → sau \"to\" và trước \"me\" → **động từ** (recognise).",
+      "\"followed by ___\" → **danh từ** chỉ người (journalists).",
+      "Trong phòng thi khó đoán đúng y từ, nhưng biết **loại từ** giúp bạn nghe trúng hơn."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 21,
+   "practiceLinks": [
+    {
+     "ref": "listening:M1-U07-L1",
+     "kind": "listening",
+     "title": "Justin Bieber's rise to fame (Ex. 2)",
+     "note": "Flow-chart, NO MORE THAN TWO WORDS."
+    },
+    {
+     "ref": "listening:M1-U07-L2",
+     "kind": "listening",
+     "title": "Would you like to be famous? (Ex. 5)",
+     "note": "Điền 8 chỗ trống đã đoán loại từ."
+    },
+    {
+     "ref": "listening:M1-U07-L3",
+     "kind": "listening",
+     "title": "How to become famous (Ex. 7)",
+     "note": "Flow-chart 4 bước."
+    },
+    {
+     "ref": "listening:M1-U07-L4",
+     "kind": "listening",
+     "title": "Getting the best from your camcorder (Ex. 10)",
+     "note": "Chọn 7 từ A–J cho flow-chart kỹ thuật."
+    },
+    {
+     "ref": "listening:M1-U07-L5",
+     "kind": "listening",
+     "title": "Exam skills: making a short film (Ex. 11)",
+     "note": "7 bước, NO MORE THAN TWO WORDS."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 7 · Listening: flow-chart completion — 37 từ/cụm từ",
+    "words": [
+     {
+      "word": "rise to fame",
+      "meaning": "con đường đến với danh tiếng",
+      "example": "Justin Bieber's rise to fame is an interesting story."
+     },
+     {
+      "word": "put in the effort",
+      "meaning": "bỏ công sức",
+      "example": ""
+     },
+     {
+      "word": "master",
+      "meaning": "thành thạo, làm chủ (kỹ năng)",
+      "example": ""
+     },
+     {
+      "word": "gifted",
+      "meaning": "có năng khiếu",
+      "example": "He was clearly gifted, and his mother used to arrange for him to take part in local competitions."
+     },
+     {
+      "word": "post",
+      "meaning": "đăng tải",
+      "example": "He came second in one, and his mother posted his performance on YouTube."
+     },
+     {
+      "word": "big break",
+      "meaning": "cơ hội lớn, bước ngoặt",
+      "example": "His big break came when a music executive came across these videos by accident when he was looking for a performance by a different artist."
+     },
+     {
+      "word": "come across",
+      "meaning": "tình cờ thấy",
+      "example": ""
+     },
+     {
+      "word": "by accident",
+      "meaning": "một cách tình cờ",
+      "example": "His big break came when a music executive came across these videos by accident when he was looking for a performance by a different artist."
+     },
+     {
+      "word": "contract",
+      "meaning": "hợp đồng",
+      "example": "He immediately recognised Bieber's talent and gave the teenager a contract with his recording company."
+     },
+     {
+      "word": "a worldwide hit",
+      "meaning": "bản hit toàn cầu",
+      "example": "His first record was a worldwide hit."
+     },
+     {
+      "word": "shoot to fame",
+      "meaning": "nổi tiếng nhanh chóng",
+      "example": ""
+     },
+     {
+      "word": "private life",
+      "meaning": "đời tư",
+      "example": "You would always be followed by journalists and never able to have a private life."
+     },
+     {
+      "word": "special treatment",
+      "meaning": "sự đối xử đặc biệt",
+      "example": "I would adore all the attention and the special treatment."
+     },
+     {
+      "word": "mansion",
+      "meaning": "dinh thự",
+      "example": "They would come to my private yacht and I would visit their mansions."
+     },
+     {
+      "word": "decade",
+      "meaning": "thập kỷ",
+      "example": "So, you've been a famous singer for over three decades now."
+     },
+     {
+      "word": "focus on",
+      "meaning": "tập trung vào",
+      "example": "Instead focus on being good at something."
+     },
+     {
+      "word": "admire",
+      "meaning": "ngưỡng mộ",
+      "example": "Find people you admire in your area of interest."
+     },
+     {
+      "word": "observe",
+      "meaning": "quan sát",
+      "example": "Observe them carefully."
+     },
+     {
+      "word": "experiment",
+      "meaning": "thử nghiệm",
+      "example": "And don't be afraid to experiment, try something new."
+     },
+     {
+      "word": "get oneself known",
+      "meaning": "làm cho bản thân được biết đến",
+      "example": ""
+     },
+     {
+      "word": "make opportunities for oneself",
+      "meaning": "tự tạo cơ hội cho mình",
+      "example": ""
+     },
+     {
+      "word": "failure",
+      "meaning": "sự thất bại",
+      "example": "Yes, the last thing I would say is, if you want to be really successful in something, you will most likely experience a certain amount of failure."
+     },
+     {
+      "word": "on the road to success",
+      "meaning": "trên con đường đến thành công",
+      "example": "People who fail at some point often say that the experience has been a great lesson and helped them on the road to success."
+     },
+     {
+      "word": "countless times",
+      "meaning": "vô số lần",
+      "example": "In fact, some of the most successful people have often failed countless times before reaching their end goal."
+     },
+     {
+      "word": "regardless",
+      "meaning": "bất chấp, dù thế nào",
+      "example": "What makes them successful, is that they kept on trying regardless."
+     },
+     {
+      "word": "professional approach",
+      "meaning": "cách làm chuyên nghiệp",
+      "example": ""
+     },
+     {
+      "word": "in moderation",
+      "meaning": "một cách vừa phải",
+      "example": "Used in moderation, however, this very popular feature can be a really useful tool."
+     },
+     {
+      "word": "be bursting with ideas",
+      "meaning": "tràn trề ý tưởng",
+      "example": "I hope you're excited at the thought of making a film and that you're bursting with great ideas."
+     },
+     {
+      "word": "come up with",
+      "meaning": "nghĩ ra",
+      "example": ""
+     },
+     {
+      "word": "plot",
+      "meaning": "cốt truyện",
+      "example": "Is it the characters, the plot?"
+     },
+     {
+      "word": "ambitious",
+      "meaning": "tham vọng, đặt mục tiêu quá cao",
+      "example": "As regards plot, my advice is – don't be too ambitious, don't make it complicated."
+     },
+     {
+      "word": "complicated",
+      "meaning": "phức tạp",
+      "example": "As regards plot, my advice is – don't be too ambitious, don't make it complicated."
+     },
+     {
+      "word": "screenplay",
+      "meaning": "kịch bản phim",
+      "example": "The next stage is to write the screenplay – for this you need to divide the story up into a series of scenes."
+     },
+     {
+      "word": "vital",
+      "meaning": "cực kỳ quan trọng",
+      "example": ""
+     },
+     {
+      "word": "have the final say",
+      "meaning": "có quyền quyết định cuối cùng",
+      "example": "He or she will have the final say in the choice of the main actors and in directing the action of the film."
+     },
+     {
+      "word": "rely on",
+      "meaning": "dựa vào, trông cậy vào",
+      "example": "Don't just rely on your friends."
+     },
+     {
+      "word": "in charge of",
+      "meaning": "phụ trách",
+      "example": ""
+     }
+    ]
+   }
+  }
+ ]
+}

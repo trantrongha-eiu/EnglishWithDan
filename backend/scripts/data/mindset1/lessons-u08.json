@@ -1,0 +1,638 @@
+{
+ "modules": [
+  {
+   "code": "M1-U08",
+   "order": 8,
+   "title": "Unit 8 · Thế giới tự nhiên",
+   "titleEn": "UNIT 08: NATURAL WORLD — sách tr. 149–154, 156–160",
+   "outcomes": [
+    "Reading: notes completion bằng từ trong bài; matching sentence endings",
+    "Grammar: động từ khuyết thiếu chỉ khả năng xảy ra (may, might, could) và năng lực (can, could)",
+    "Listening: note completion — dùng tiêu đề (headings) và từ \"signposting\" để theo dõi bài nói",
+    "Từ vựng động vật, bảo tồn, môi trường (Sổ 4)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M1-U08-L1",
+   "moduleCode": "M1-U08",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: animals and nature",
+   "titleEn": "Lead-in · Skim reading (p. 149)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Nhận ra cặp từ đồng nghĩa / trái nghĩa trong cùng câu (predator – prey, survive – die)",
+    "Skim bài \"Our friends and protectors\" trong 1 phút"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Đồng nghĩa và trái nghĩa trong câu",
+     "titleEn": "Similar or opposite meaning",
+     "formula": [],
+     "usage": [
+      "**predator** (thú săn mồi) ↔ **prey** (con mồi): trái nghĩa · **group** = **pod** (đàn cá heo) · **conservation** ≈ **protection**",
+      "**survived** ↔ **died**: trái nghĩa · **automatic** ≈ **instinctive** (bản năng).",
+      "Nhận ra đồng nghĩa/trái nghĩa giúp hiểu câu hỏi đã paraphrase bài đọc thế nào."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 10,
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 8 · Lead-in & Vocabulary: animals and nature — 36 từ/cụm từ",
+    "words": [
+     {
+      "word": "predator",
+      "meaning": "động vật săn mồi",
+      "example": "Experts think they may understand that humans are similar to them and try to protect them from predators and other dangers."
+     },
+     {
+      "word": "prey",
+      "meaning": "con mồi",
+      "example": "For example, dolphins can tell when a woman is pregnant."
+     },
+     {
+      "word": "pod",
+      "meaning": "đàn (cá heo, cá voi)",
+      "example": "The man was unconscious, but survived 56 hours in the water, watched over by a pod of about 150 dolphins."
+     },
+     {
+      "word": "conservation",
+      "meaning": "sự bảo tồn",
+      "example": "Nowadays zoos' aims are: conservation, education, entertainment, in that order."
+     },
+     {
+      "word": "environmentalist",
+      "meaning": "nhà hoạt động môi trường",
+      "example": ""
+     },
+     {
+      "word": "instinctive",
+      "meaning": "theo bản năng",
+      "example": "Dolphins' protection of humans might not be just automatic or instinctive: they may actively decide to help in certain situations."
+     },
+     {
+      "word": "intelligent",
+      "meaning": "thông minh",
+      "example": "They are known as friendly, intelligent creatures that have a special relationship with humans."
+     },
+     {
+      "word": "pregnant",
+      "meaning": "mang thai",
+      "example": "For example, dolphins can tell when a woman is pregnant."
+     },
+     {
+      "word": "be in trouble",
+      "meaning": "gặp nguy hiểm, gặp rắc rối",
+      "example": "They can also tell when someone is in trouble."
+     },
+     {
+      "word": "come to sb's rescue",
+      "meaning": "đến cứu ai",
+      "example": ""
+     },
+     {
+      "word": "campaigner",
+      "meaning": "nhà vận động",
+      "example": "In fact, Jones was a well-known campaigner against the killing of dolphins."
+     },
+     {
+      "word": "incident",
+      "meaning": "vụ việc, sự cố",
+      "example": "In another incident, in 2004, in New Zealand, four people were saved from a great white shark by a pod of dolphins."
+     },
+     {
+      "word": "unconscious",
+      "meaning": "bất tỉnh",
+      "example": "The man was unconscious, but survived 56 hours in the water, watched over by a pod of about 150 dolphins."
+     },
+     {
+      "word": "lose hope",
+      "meaning": "mất hy vọng",
+      "example": "Joey Trevino was losing hope."
+     },
+     {
+      "word": "moral support",
+      "meaning": "sự động viên tinh thần",
+      "example": "That moral support and encouragement may have saved Trevino's life."
+     },
+     {
+      "word": "encouragement",
+      "meaning": "sự khích lệ",
+      "example": "That moral support and encouragement may have saved Trevino's life."
+     },
+     {
+      "word": "mammal",
+      "meaning": "động vật có vú",
+      "example": "E Whales have also been known to protect both humans and other mammals."
+     },
+     {
+      "word": "migrate",
+      "meaning": "di cư",
+      "example": ""
+     },
+     {
+      "word": "sense",
+      "meaning": "cảm nhận được",
+      "example": "Two beluga whales, Mila and Nicola, sensed that she was in trouble."
+     },
+     {
+      "word": "marine",
+      "meaning": "thuộc về biển",
+      "example": "F Stories of marine mammals helping humans – and each other – date back to Ancient Greece."
+     },
+     {
+      "word": "date back to",
+      "meaning": "có từ (thời)",
+      "example": "F Stories of marine mammals helping humans – and each other – date back to Ancient Greece."
+     },
+     {
+      "word": "royalty",
+      "meaning": "hoàng gia",
+      "example": "Early collections of animals on display often belonged to royalty."
+     },
+     {
+      "word": "on display",
+      "meaning": "được trưng bày",
+      "example": "Early collections of animals on display often belonged to royalty."
+     },
+     {
+      "word": "in the wild",
+      "meaning": "trong tự nhiên hoang dã",
+      "example": "In Indonesia, Borneo Orangutan Rescue teaches orangutans how to live in the wild."
+     },
+     {
+      "word": "animal welfare",
+      "meaning": "phúc lợi động vật",
+      "example": "The World Association for Zoos and Aquariums (WAZA) works to educate people about animal welfare and conservation."
+     },
+     {
+      "word": "breeding programme",
+      "meaning": "chương trình nhân giống",
+      "example": "It also helps to coordinate breeding programmes."
+     },
+     {
+      "word": "endangered species",
+      "meaning": "loài có nguy cơ tuyệt chủng",
+      "example": "Often the aim is to reintroduce endangered species into their natural habitats."
+     },
+     {
+      "word": "reintroduce",
+      "meaning": "thả trở lại (môi trường tự nhiên)",
+      "example": "Often the aim is to reintroduce endangered species into their natural habitats."
+     },
+     {
+      "word": "natural habitat",
+      "meaning": "môi trường sống tự nhiên",
+      "example": "Often the aim is to reintroduce endangered species into their natural habitats."
+     },
+     {
+      "word": "wellbeing",
+      "meaning": "sự khỏe mạnh, an lành",
+      "example": "Zoos try to provide 'enrichment' for the animals to improve their wellbeing."
+     },
+     {
+      "word": "enclosure",
+      "meaning": "khu chuồng nuôi",
+      "example": "In many zoos there are webcams in some enclosures so visitors can keep up with their favourite animals between visits to the zoo."
+     },
+     {
+      "word": "engage",
+      "meaning": "thu hút, gắn kết",
+      "example": "Likewise, technology has been used to engage the public more with the animals."
+     },
+     {
+      "word": "make people aware of",
+      "meaning": "nâng cao nhận thức của mọi người về",
+      "example": "They now play an important role in protecting animals and in making people more aware of the importance of animals."
+     },
+     {
+      "word": "over-hunt",
+      "meaning": "săn bắt quá mức",
+      "example": ""
+     },
+     {
+      "word": "ecology",
+      "meaning": "hệ sinh thái",
+      "example": ""
+     },
+     {
+      "word": "the balance of nature",
+      "meaning": "sự cân bằng tự nhiên",
+      "example": ""
+     }
+    ]
+   }
+  },
+  {
+   "code": "M1-U08-L2",
+   "moduleCode": "M1-U08",
+   "order": 2,
+   "title": "📖 Reading: notes completion & sentence endings",
+   "titleEn": "Notes completion · Matching sentence endings · Exam skills (pp. 151–154)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Notes completion: tìm đúng đoạn, đọc kỹ, chép từ trong bài đúng ngữ pháp",
+    "Matching sentence endings: tự hoàn thành câu trước rồi mới so với các đuôi câu",
+    "Không bị lừa bởi đuôi câu có từ giống trong bài"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Notes completion",
+     "titleEn": "Notes completion",
+     "formula": [
+      "Đọc kỹ đề (bao nhiêu từ? lấy từ bài hay từ khung?) → đọc ghi chú → nghĩ **từ đồng nghĩa** của từ khoá → đoán **loại từ** (giới từ in/from, mạo từ a/an/the là manh mối) → tìm đúng đoạn → điền → đọc lại."
+     ],
+     "usage": [
+      "Ghi chú thường chỉ liên quan **một phần** của bài; thứ tự có thể khác bài.",
+      "Ví dụ: \"Stories of whales and dolphins assisting people were first heard of in ___\" → marine mammals helping humans **date back to** → **Ancient Greece** (\"in\" → năm hoặc nơi chốn)."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Matching sentence endings",
+     "titleEn": "Matching sentence endings",
+     "formula": [
+      "Đọc phần đầu câu → từ khoá + từ đồng nghĩa → tìm chỗ trong bài → **tự viết đuôi câu** → chọn đuôi giống ý của bạn → kiểm tra ngữ pháp, số ít/nhiều."
+     ],
+     "usage": [
+      "Có **nhiều đuôi câu hơn** số câu.",
+      "**Đừng bị lừa** bởi đuôi câu chứa từ trong bài: \"because her first attempts had failed\" — attempts/failed có trong bài nhưng là của **con người**, không phải của Moko."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 4,
+   "practiceLinks": [
+    {
+     "ref": "reading:M1-U08-R1",
+     "kind": "reading",
+     "title": "Our friends and protectors (Ex. 5–10)",
+     "note": "Notes completion + sentence endings."
+    },
+    {
+     "ref": "reading:M1-U08-R2",
+     "kind": "reading",
+     "title": "Exam skills: The modern zoo (Ex. 13)",
+     "note": "6 câu notes completion + 5 câu sentence endings."
+    }
+   ]
+  },
+  {
+   "code": "M1-U08-L3",
+   "moduleCode": "M1-U08",
+   "order": 3,
+   "title": "🧩 Grammar focus: modals of possibility and ability",
+   "titleEn": "Grammar focus: modals of possibility and ability (p. 153)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Dùng may / might / could để nói điều có thể xảy ra (chưa chắc chắn)",
+    "Dùng can / could / couldn't để nói năng lực ở hiện tại và quá khứ"
+   ],
+   "keyLanguage": [
+    "**Khả năng xảy ra (possibility)**: may, might, could + V — Experts think dolphins **may understand** that humans are similar to them.",
+    "**Năng lực (ability)**: can (hiện tại), could / couldn't (quá khứ) — Dolphins **can tell** when a woman is pregnant. Yang Yun found she **couldn't move** her legs.",
+    "**could** có hai nghĩa — dựa vào ngữ cảnh: \"Perhaps they **could tell** he was a person who cared…\" (năng lực trong quá khứ)."
+   ],
+   "theory": [
+    {
+     "title": "Modal verbs",
+     "titleEn": "Modals of possibility and ability",
+     "formula": [
+      "may / might / could + V (có thể, chưa chắc)",
+      "can + V (có khả năng — hiện tại)",
+      "could / couldn't + V (có / không có khả năng — quá khứ)"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "Dolphins' protection of humans might not be just automatic or instinctive.",
+       "vi": "Có thể không chỉ là bản năng."
+      },
+      {
+       "en": "He couldn't get away.",
+       "vi": "Anh ta đã không thể thoát ra."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 13,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Modal Verbs",
+     "note": "may, might, could, can",
+     "url": "/essential-grammar.html?lesson=modal-verbs"
+    }
+   ]
+  },
+  {
+   "code": "M1-U08-L4",
+   "moduleCode": "M1-U08",
+   "order": 4,
+   "title": "🎧 Listening: note completion & signposting",
+   "titleEn": "Lead-in · Note completion · Using headings · Signposting words · Exam skills (pp. 156–160)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Dùng tiêu đề trong ghi chú để theo dõi bài nói",
+    "Nhận ra từ \"signposting\" báo hiệu chủ đề mới, lý do, kết luận",
+    "Đoán loại thông tin cho từng chỗ trống",
+    "Kiểm tra chính tả, chữ số, số ít/số nhiều"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Note completion",
+     "titleEn": "Note completion",
+     "formula": [],
+     "usage": [
+      "Điền **tối đa 3 từ** (hoặc 2 từ và/hoặc một số); dùng **đúng từ nghe được**.",
+      "Ghi chú thường có **tiêu đề** (Habitat, Diet, Dangers…) — giúp bạn biết người nói đang ở phần nào.",
+      "Ghi chú **không theo ngữ pháp đầy đủ** (thiếu trợ động từ, mạo từ) hoặc là gạch đầu dòng.",
+      "Có thể **đặt lại thành câu hỏi**: \"female weighs up to ___ grams\" → How much does it weigh?"
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Signposting words",
+     "titleEn": "'Signposting' words",
+     "formula": [],
+     "usage": [
+      "**So, now I'm going to talk a little about… / So, I'll move on to…** → chủ đề mới (có thể là tiêu đề mới).",
+      "**I'd like to conclude by…** → chủ đề cuối cùng.",
+      "**Let's have a look at two reasons why…** → sắp có 2 lý do · **Firstly… Secondly…** → lý do 1, lý do 2.",
+      "**In other words…** → nói lại ý vừa rồi bằng từ khác."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 6,
+   "totalPoints": 31,
+   "images": [
+    {
+     "url": "media:m1u08-animals.jpg",
+     "caption": "Ex. 1 (p. 156): animals A–D"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M1-U08-L1",
+     "kind": "listening",
+     "title": "Four animals (Ex. 2)",
+     "note": "Mỗi người nói đang mô tả con vật nào?"
+    },
+    {
+     "ref": "listening:M1-U08-L2",
+     "kind": "listening",
+     "title": "The mountain gorilla (Ex. 8–9)",
+     "note": "5 chỗ trống, NO MORE THAN TWO WORDS."
+    },
+    {
+     "ref": "listening:M1-U08-L3",
+     "kind": "listening",
+     "title": "The American bullfrog (Ex. 11)",
+     "note": "6 chỗ trống, ONE WORD AND/OR A NUMBER."
+    },
+    {
+     "ref": "listening:M1-U08-L4",
+     "kind": "listening",
+     "title": "Exam skills: the box jellyfish (Ex. 13)",
+     "note": "Note completion 6 câu."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 8 · Listening: note completion & signposting — 38 từ/cụm từ",
+    "words": [
+     {
+      "word": "creature",
+      "meaning": "sinh vật",
+      "example": "Speaker 1 This creature is found in the mountains of Central Africa."
+     },
+     {
+      "word": "ape",
+      "meaning": "loài vượn lớn",
+      "example": "There are only about 900 of these apes in the wild."
+     },
+     {
+      "word": "fur",
+      "meaning": "bộ lông thú",
+      "example": "This will help to ease the pain before you can get further medical help."
+     },
+     {
+      "word": "tentacle",
+      "meaning": "xúc tu",
+      "example": "So, let's take a look at the tentacles of the box jellyfish more closely."
+     },
+     {
+      "word": "poisonous",
+      "meaning": "có độc",
+      "example": "You need to be careful in the sea around them as they are very poisonous."
+     },
+     {
+      "word": "originate in",
+      "meaning": "có nguồn gốc ở",
+      "example": "They originate in Africa – Central Africa, in fact."
+     },
+     {
+      "word": "reflect",
+      "meaning": "phản ánh",
+      "example": "As you can probably guess, and as you can see in this first photo, their name reflects the environment they live in – tropical mountain forests."
+     },
+     {
+      "word": "tropical",
+      "meaning": "nhiệt đới",
+      "example": "As you can probably guess, and as you can see in this first photo, their name reflects the environment they live in – tropical mountain forests."
+     },
+     {
+      "word": "physical features",
+      "meaning": "đặc điểm ngoại hình",
+      "example": "So, I'll move on to talk about the physical features of the mountain gorilla."
+     },
+     {
+      "word": "diet",
+      "meaning": "chế độ ăn",
+      "example": "In other words, they survive on a diet of plants."
+     },
+     {
+      "word": "herbivore",
+      "meaning": "động vật ăn cỏ",
+      "example": "Interestingly, mountain gorillas are herbivores."
+     },
+     {
+      "word": "insect",
+      "meaning": "côn trùng",
+      "example": "They occasionally eat insects too, but only when they're very hungry!"
+     },
+     {
+      "word": "climate",
+      "meaning": "khí hậu",
+      "example": "And it might interest you to know that mountain gorillas very rarely drink water, even though they live in a very warm climate."
+     },
+     {
+      "word": "threat",
+      "meaning": "mối đe dọa",
+      "example": "Well, this is because it has threatened our own native species of frogs."
+     },
+     {
+      "word": "be in serious danger of",
+      "meaning": "có nguy cơ nghiêm trọng",
+      "example": "They are in serious danger of disappearing from our world altogether."
+     },
+     {
+      "word": "disappear",
+      "meaning": "biến mất",
+      "example": "They are in serious danger of disappearing from our world altogether."
+     },
+     {
+      "word": "human activity",
+      "meaning": "hoạt động của con người",
+      "example": "And both of these reasons are connected to human activity."
+     },
+     {
+      "word": "cut down trees",
+      "meaning": "chặt cây",
+      "example": "They're cutting down the trees to build farms and towns."
+     },
+     {
+      "word": "suffer as a result of",
+      "meaning": "chịu tổn hại do",
+      "example": "Secondly, gorillas are also suffering as a result of hunting."
+     },
+     {
+      "word": "on purpose",
+      "meaning": "cố ý",
+      "example": "It wasn't brought here on purpose – it actually arrived in a big container of aquatic plants."
+     },
+     {
+      "word": "aquatic plants",
+      "meaning": "thực vật thủy sinh",
+      "example": "It wasn't brought here on purpose – it actually arrived in a big container of aquatic plants."
+     },
+     {
+      "word": "accidentally",
+      "meaning": "một cách vô tình",
+      "example": "In other words, it was accidentally introduced into Britain."
+     },
+     {
+      "word": "appearance",
+      "meaning": "ngoại hình",
+      "example": "Now, I'll tell you a little about its appearance."
+     },
+     {
+      "word": "native species",
+      "meaning": "loài bản địa",
+      "example": "Well, this is because it has threatened our own native species of frogs."
+     },
+     {
+      "word": "greedy",
+      "meaning": "tham ăn",
+      "example": "And secondly, the American bullfrog is very greedy."
+     },
+     {
+      "word": "food source",
+      "meaning": "nguồn thức ăn",
+      "example": "So, in other words, they eat the food sources of our own native species."
+     },
+     {
+      "word": "carry a disease",
+      "meaning": "mang mầm bệnh",
+      "example": "Thirdly, they carry a disease that is dangerous to other frogs."
+     },
+     {
+      "word": "financial damage",
+      "meaning": "thiệt hại về tài chính",
+      "example": "And finally, they don't just damage our natural world, they cause financial damage too."
+     },
+     {
+      "word": "monitor",
+      "meaning": "giám sát, theo dõi",
+      "example": "Around £100,000 has been spent monitoring the American bullfrog in the wild."
+     },
+     {
+      "word": "learn a lesson",
+      "meaning": "rút ra bài học",
+      "example": "So, as scientists, we can learn a lesson from this about the dangers of introducing any living species into a new environment."
+     },
+     {
+      "word": "coastal",
+      "meaning": "ven biển",
+      "example": ""
+     },
+     {
+      "word": "come into contact with",
+      "meaning": "tiếp xúc với",
+      "example": "If the tentacles come into contact with a fish, or a person, they stick to their skin."
+     },
+     {
+      "word": "sting",
+      "meaning": "vết đốt",
+      "example": "So now let's move on to talk about the sting of a box jellyfish."
+     },
+     {
+      "word": "victim",
+      "meaning": "nạn nhân",
+      "example": "This can be dangerous to the victim."
+     },
+     {
+      "word": "severe",
+      "meaning": "nghiêm trọng",
+      "example": "Firstly, a very severe sting can cause a person to have a heart attack."
+     },
+     {
+      "word": "heart attack",
+      "meaning": "cơn đau tim",
+      "example": "Firstly, a very severe sting can cause a person to have a heart attack."
+     },
+     {
+      "word": "go into shock",
+      "meaning": "bị sốc",
+      "example": "Secondly, sometimes a swimmer goes into shock and can't make it back to the beach because they are in such extreme pain."
+     },
+     {
+      "word": "ease the pain",
+      "meaning": "làm dịu cơn đau",
+      "example": "This will help to ease the pain before you can get further medical help."
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,930 @@
+{
+ "exercises": [
+  {
+   "code": "M1-U01-L1-E01",
+   "lessonCode": "M1-U01-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Family words (Ex. 1)",
+   "instruction": "Lead-in. Match each family word with its meaning.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "brother",
+     "right": "my parents' son",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "cousin",
+     "right": "my aunt or uncle's son or daughter",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "father-in-law",
+     "right": "my husband or wife's father",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "grandfather",
+     "right": "my mother or father's father",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "uncle",
+     "right": "my mother or father's brother",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "aunt",
+     "right": "my mother or father's sister",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "nephew",
+     "right": "my brother or sister's son",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "niece",
+     "right": "my brother or sister's daughter",
+     "explanation": ""
+    },
+    {
+     "id": "m9",
+     "left": "great-aunt",
+     "right": "my grandmother or grandfather's sister",
+     "explanation": ""
+    },
+    {
+     "id": "m10",
+     "left": "grandmother",
+     "right": "my mother or father's mother",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L1-E02",
+   "lessonCode": "M1-U01-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Advantages of an extended family (Ex. 2)",
+   "instruction": "You are going to read about some advantages of living in an extended family. Read the text quickly. Which advantages are mentioned? Ignore the highlighted words.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Blood is thicker than water\n\n**A** Blood is thicker than water. This means that family is more important than anyone else. Many young people, though, spend more time with their friends than with their family. They value their friends' opinions more and enjoy their company. When it's time to visit grandma or go to a cousin's wedding, teenagers often prefer to be left at home. But are they missing out?\n\n**B** In Asia, the Middle East, South America and Sub-Saharan Africa over 40% of children live in families with other adults such as aunts, uncles and grandparents in addition to their parents. In South Africa, it is almost 70%. On the other hand, in Europe, Australia and North America, less than 25% of children live in extended families. Is the lack of close contact with relatives putting some children at a disadvantage?\n\n**C** The people they live with have a great influence on the way children grow up. Those who live with their extended family have many advantages. They usually get lots of love and attention. Grandparents often have more time to read to children and play with them. As they are often retired, they are not always busy and stressed as many parents are. They have learnt to be patient and they have already handled most of the problems children and young people face.\n\n**D** It is good for children to grow up to understand the needs of older people: they may become more caring and less selfish if they spend time helping their grandparents. Children learn about the past from grandparents' stories. Sometimes they feel closer to their grandparents than to their parents.\n\n**E** Young adults often feel that living alone will be exciting, but they forget that it can also be lonely. By remaining with the family during this stage of their lives, they can avoid this. They can also save money for their education and future.\n\n**F** Young people whose grandparents live far away can gain some of these advantages by keeping in close contact by phone, email, letters and visits. It is nice to know there is someone you can go to if you have a problem. As the Italian proverb says, 'Se non sta andando bene chiamare la nonna.' – 'If things aren't going well, call your grandmother.'\n\n**G** Friends are important to young people, but friends come and go. Your family is always on your side. Grandparents won't be there forever. Appreciate them while you can.",
+    "caption": "Blood is thicker than water (pp. 8–9)"
+   },
+   "categories": [
+    {
+     "id": "yes",
+     "label": "Mentioned in the text"
+    },
+    {
+     "id": "no",
+     "label": "Not mentioned"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "Older people are fun to live with.",
+     "category": "no",
+     "explanation": "Bài không nói người lớn tuổi \"vui\" khi sống cùng."
+    },
+    {
+     "id": "c2",
+     "text": "Older people are patient and experienced.",
+     "category": "yes",
+     "explanation": "Đoạn C: \"They have learnt to be patient and they have already handled most of the problems…\""
+    },
+    {
+     "id": "c3",
+     "text": "You can save money by living together.",
+     "category": "yes",
+     "explanation": "Đoạn E: \"They can also save money for their education and future.\""
+    },
+    {
+     "id": "c4",
+     "text": "Grandparents are not as busy as parents.",
+     "category": "yes",
+     "explanation": "Đoạn C: \"they are not always busy and stressed as many parents are.\""
+    },
+    {
+     "id": "c5",
+     "text": "Children get plenty of love and attention.",
+     "category": "yes",
+     "explanation": "Đoạn C: \"They usually get lots of love and attention.\""
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L1-E03",
+   "lessonCode": "M1-U01-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Highlighted words (Ex. 3)",
+   "instruction": "Match the highlighted words from the text with their meanings. Start with words you already know. Use the context to work out the meaning of the other words.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "value",
+     "right": "believe something is important",
+     "explanation": "Đoạn A: \"They value their friends' opinions more\" → coi trọng."
+    },
+    {
+     "id": "m2",
+     "left": "(have an) influence",
+     "right": "(have an) effect (on)",
+     "explanation": "Đoạn C: \"have a great influence on the way children grow up\"."
+    },
+    {
+     "id": "m3",
+     "left": "stressed",
+     "right": "worried; not able to relax",
+     "explanation": "Đi cùng \"busy\" → căng thẳng."
+    },
+    {
+     "id": "m4",
+     "left": "handled",
+     "right": "dealt with, had experience of",
+     "explanation": "\"handled most of the problems\" → đã xử lý/trải qua."
+    },
+    {
+     "id": "m5",
+     "left": "selfish",
+     "right": "caring only about yourself and not other people",
+     "explanation": "Đối lập với \"caring\" trong cùng câu."
+    },
+    {
+     "id": "m6",
+     "left": "gain",
+     "right": "get (something positive)",
+     "explanation": "\"gain some of these advantages\" → có được."
+    },
+    {
+     "id": "m7",
+     "left": "proverb",
+     "right": "a well-known phrase giving advice",
+     "explanation": "\"As the Italian proverb says…\" → câu tục ngữ."
+    },
+    {
+     "id": "m8",
+     "left": "appreciate",
+     "right": "be grateful for",
+     "explanation": "\"Appreciate them while you can\" → trân trọng."
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L2-E01",
+   "lessonCode": "M1-U01-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Finding information (Ex. 4)",
+   "instruction": "To practise finding information quickly, find the following phrases in the text. Which paragraph (A–G) is each phrase in?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Blood is thicker than water\n\n**A** Blood is thicker than water. This means that family is more important than anyone else. Many young people, though, spend more time with their friends than with their family. They value their friends' opinions more and enjoy their company. When it's time to visit grandma or go to a cousin's wedding, teenagers often prefer to be left at home. But are they missing out?\n\n**B** In Asia, the Middle East, South America and Sub-Saharan Africa over 40% of children live in families with other adults such as aunts, uncles and grandparents in addition to their parents. In South Africa, it is almost 70%. On the other hand, in Europe, Australia and North America, less than 25% of children live in extended families. Is the lack of close contact with relatives putting some children at a disadvantage?\n\n**C** The people they live with have a great influence on the way children grow up. Those who live with their extended family have many advantages. They usually get lots of love and attention. Grandparents often have more time to read to children and play with them. As they are often retired, they are not always busy and stressed as many parents are. They have learnt to be patient and they have already handled most of the problems children and young people face.\n\n**D** It is good for children to grow up to understand the needs of older people: they may become more caring and less selfish if they spend time helping their grandparents. Children learn about the past from grandparents' stories. Sometimes they feel closer to their grandparents than to their parents.\n\n**E** Young adults often feel that living alone will be exciting, but they forget that it can also be lonely. By remaining with the family during this stage of their lives, they can avoid this. They can also save money for their education and future.\n\n**F** Young people whose grandparents live far away can gain some of these advantages by keeping in close contact by phone, email, letters and visits. It is nice to know there is someone you can go to if you have a problem. As the Italian proverb says, 'Se non sta andando bene chiamare la nonna.' – 'If things aren't going well, call your grandmother.'\n\n**G** Friends are important to young people, but friends come and go. Your family is always on your side. Grandparents won't be there forever. Appreciate them while you can.",
+    "caption": "Blood is thicker than water"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "grandparents' stories",
+     "right": "Paragraph D",
+     "explanation": "D: \"Children learn about the past from grandparents' stories.\""
+    },
+    {
+     "id": "m2",
+     "left": "cousin's wedding",
+     "right": "Paragraph A",
+     "explanation": "A: \"…or go to a cousin's wedding…\""
+    },
+    {
+     "id": "m3",
+     "left": "young adults",
+     "right": "Paragraph E",
+     "explanation": "E: \"Young adults often feel that living alone will be exciting…\""
+    },
+    {
+     "id": "m4",
+     "left": "extended families",
+     "right": "Paragraph B",
+     "explanation": "B: \"…less than 25% of children live in extended families.\""
+    },
+    {
+     "id": "m5",
+     "left": "come and go",
+     "right": "Paragraph G",
+     "explanation": "G: \"…but friends come and go.\""
+    },
+    {
+     "id": "m6",
+     "left": "Italian proverb",
+     "right": "Paragraph F",
+     "explanation": "F: \"As the Italian proverb says…\""
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L2-E02",
+   "lessonCode": "M1-U01-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Identifying the key words (Ex. 5)",
+   "instruction": "Choose the best set of key words for each question.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What percentage of children live in extended families in Asia, the Middle East, South America and Sub-Saharan Africa?",
+     "options": [
+      {
+       "id": "A",
+       "text": "percentage / children / extended families / Asia, the Middle East, South America, Sub-Saharan Africa"
+      },
+      {
+       "id": "B",
+       "text": "What / of / live / in"
+      },
+      {
+       "id": "C",
+       "text": "children / live / families"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Key words = từ mang thông tin: loại thông tin cần tìm (percentage) + chủ thể + các tên riêng (dễ scan nhất)."
+    },
+    {
+     "id": "q2",
+     "prompt": "Why are grandparents often less busy and stressed than parents?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Why / are / often"
+      },
+      {
+       "id": "B",
+       "text": "grandparents / less busy / stressed / parents"
+      },
+      {
+       "id": "C",
+       "text": "grandparents / parents"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Cần cả \"less busy / stressed\" để biết đang hỏi về lý do nào."
+    },
+    {
+     "id": "q3",
+     "prompt": "What do young adults often think living alone will be like?",
+     "options": [
+      {
+       "id": "A",
+       "text": "young adults / think / living alone"
+      },
+      {
+       "id": "B",
+       "text": "What / do / will be"
+      },
+      {
+       "id": "C",
+       "text": "young / alone"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"young adults\" và \"living alone\" là cụm từ có thể scan được trong đoạn E."
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L2-E03",
+   "lessonCode": "M1-U01-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Scanning a text (Ex. 6)",
+   "instruction": "Answer the questions in exercise 5. Use words from the text.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Blood is thicker than water\n\n**A** Blood is thicker than water. This means that family is more important than anyone else. Many young people, though, spend more time with their friends than with their family. They value their friends' opinions more and enjoy their company. When it's time to visit grandma or go to a cousin's wedding, teenagers often prefer to be left at home. But are they missing out?\n\n**B** In Asia, the Middle East, South America and Sub-Saharan Africa over 40% of children live in families with other adults such as aunts, uncles and grandparents in addition to their parents. In South Africa, it is almost 70%. On the other hand, in Europe, Australia and North America, less than 25% of children live in extended families. Is the lack of close contact with relatives putting some children at a disadvantage?\n\n**C** The people they live with have a great influence on the way children grow up. Those who live with their extended family have many advantages. They usually get lots of love and attention. Grandparents often have more time to read to children and play with them. As they are often retired, they are not always busy and stressed as many parents are. They have learnt to be patient and they have already handled most of the problems children and young people face.\n\n**D** It is good for children to grow up to understand the needs of older people: they may become more caring and less selfish if they spend time helping their grandparents. Children learn about the past from grandparents' stories. Sometimes they feel closer to their grandparents than to their parents.\n\n**E** Young adults often feel that living alone will be exciting, but they forget that it can also be lonely. By remaining with the family during this stage of their lives, they can avoid this. They can also save money for their education and future.\n\n**F** Young people whose grandparents live far away can gain some of these advantages by keeping in close contact by phone, email, letters and visits. It is nice to know there is someone you can go to if you have a problem. As the Italian proverb says, 'Se non sta andando bene chiamare la nonna.' – 'If things aren't going well, call your grandmother.'\n\n**G** Friends are important to young people, but friends come and go. Your family is always on your side. Grandparents won't be there forever. Appreciate them while you can.",
+    "caption": "Blood is thicker than water"
+   },
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "What percentage of children live in extended families in Asia, the Middle East, South America and Sub-Saharan Africa? → ____",
+     "blanks": [
+      {
+       "accept": [
+        "over 40%",
+        "over 40 percent",
+        "40%"
+       ]
+      }
+     ],
+     "explanation": "Đoạn B: \"over 40% of children live in families with other adults\"."
+    },
+    {
+     "id": "g2",
+     "prompt": "Why are grandparents often less busy and stressed than parents? → They are often ____.",
+     "blanks": [
+      {
+       "accept": [
+        "retired"
+       ]
+      }
+     ],
+     "explanation": "Đoạn C: \"As they are often retired, they are not always busy and stressed\"."
+    },
+    {
+     "id": "g3",
+     "prompt": "What do young adults often think living alone will be like? → ____",
+     "blanks": [
+      {
+       "accept": [
+        "exciting"
+       ]
+      }
+     ],
+     "explanation": "Đoạn E: \"Young adults often feel that living alone will be exciting\"."
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L2-E04",
+   "lessonCode": "M1-U01-L2",
+   "order": 4,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "What is wrong with the answers? (Ex. 7)",
+   "instruction": "Read this exam task (NO MORE THAN TWO WORDS AND/OR A NUMBER) and the answers. What is wrong with each answer? Match the answers 1–4 with the advice a–d.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Q1 What percentage of children in South Africa live with their extended family? — Answer: 20%",
+     "right": "b Make sure that you use the correct information when you answer a question.",
+     "explanation": "Bài nói ở South Africa là \"almost 70%\"; 20%/25% là con số của châu Âu, Úc, Bắc Mỹ → lấy sai thông tin."
+    },
+    {
+     "id": "m2",
+     "left": "Q2 What helps children in extended families learn about the past? — Answer: grandparents storys",
+     "right": "d Be careful with spelling. You can lose marks if your spelling is wrong.",
+     "explanation": "Sai chính tả: stories (và thiếu dấu sở hữu grandparents')."
+    },
+    {
+     "id": "m3",
+     "left": "Q3 What negative word can describe how it sometimes feels to live alone? — Answer: Living alone can be lonely.",
+     "right": "a Don't write more than the number of words you are given. You mustn't write full sentences.",
+     "explanation": "Viết cả câu → quá số từ. Chỉ cần \"lonely\"."
+    },
+    {
+     "id": "m4",
+     "left": "Q4 According to the Italian proverb, who should you phone when you have a problem? — Answer: your gran",
+     "right": "c Don't change words in the text. Remember, the instructions tell you to choose words from the text.",
+     "explanation": "Bài viết \"your grandmother\" → không được đổi thành \"gran\"."
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L2-E05",
+   "lessonCode": "M1-U01-L2",
+   "order": 5,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Correct the answers (Ex. 8)",
+   "instruction": "Now correct the answers in exercise 7. Write NO MORE THAN TWO WORDS AND/OR A NUMBER.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Blood is thicker than water\n\n**A** Blood is thicker than water. This means that family is more important than anyone else. Many young people, though, spend more time with their friends than with their family. They value their friends' opinions more and enjoy their company. When it's time to visit grandma or go to a cousin's wedding, teenagers often prefer to be left at home. But are they missing out?\n\n**B** In Asia, the Middle East, South America and Sub-Saharan Africa over 40% of children live in families with other adults such as aunts, uncles and grandparents in addition to their parents. In South Africa, it is almost 70%. On the other hand, in Europe, Australia and North America, less than 25% of children live in extended families. Is the lack of close contact with relatives putting some children at a disadvantage?\n\n**C** The people they live with have a great influence on the way children grow up. Those who live with their extended family have many advantages. They usually get lots of love and attention. Grandparents often have more time to read to children and play with them. As they are often retired, they are not always busy and stressed as many parents are. They have learnt to be patient and they have already handled most of the problems children and young people face.\n\n**D** It is good for children to grow up to understand the needs of older people: they may become more caring and less selfish if they spend time helping their grandparents. Children learn about the past from grandparents' stories. Sometimes they feel closer to their grandparents than to their parents.\n\n**E** Young adults often feel that living alone will be exciting, but they forget that it can also be lonely. By remaining with the family during this stage of their lives, they can avoid this. They can also save money for their education and future.\n\n**F** Young people whose grandparents live far away can gain some of these advantages by keeping in close contact by phone, email, letters and visits. It is nice to know there is someone you can go to if you have a problem. As the Italian proverb says, 'Se non sta andando bene chiamare la nonna.' – 'If things aren't going well, call your grandmother.'\n\n**G** Friends are important to young people, but friends come and go. Your family is always on your side. Grandparents won't be there forever. Appreciate them while you can.",
+    "caption": "Blood is thicker than water"
+   },
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Q1 What percentage of children in South Africa live with their extended family? → ____",
+     "blanks": [
+      {
+       "accept": [
+        "almost 70%",
+        "70%",
+        "almost 70 percent"
+       ]
+      }
+     ],
+     "explanation": "Đoạn B: \"In South Africa, it is almost 70%.\" (Đáp án in trong sách ghi \"over 40%\" — đó là con số của châu Á, Trung Đông… nên với câu hỏi về South Africa đáp án đúng là almost 70%.)"
+    },
+    {
+     "id": "g2",
+     "prompt": "Q2 What helps children in extended families learn about the past? → ____",
+     "blanks": [
+      {
+       "accept": [
+        "grandparents' stories",
+        "grandparents stories"
+       ]
+      }
+     ],
+     "explanation": "Đoạn D: \"Children learn about the past from grandparents' stories.\""
+    },
+    {
+     "id": "g3",
+     "prompt": "Q3 What negative word can describe how it sometimes feels to live alone? → ____",
+     "blanks": [
+      {
+       "accept": [
+        "lonely"
+       ]
+      }
+     ],
+     "explanation": "Đoạn E: \"it can also be lonely\"."
+    },
+    {
+     "id": "g4",
+     "prompt": "Q4 According to the Italian proverb, who should you phone when you have a problem? → ____",
+     "blanks": [
+      {
+       "accept": [
+        "your grandmother",
+        "grandmother"
+       ]
+      }
+     ],
+     "explanation": "Đoạn F: \"If things aren't going well, call your grandmother.\""
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L3-E01",
+   "lessonCode": "M1-U01-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Grammar focus: tenses (Ex. 9)",
+   "instruction": "Answer these questions about the text \"Blood is thicker than water\".",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What tense are most of the verbs in the text?",
+     "options": [
+      {
+       "id": "A",
+       "text": "present simple"
+      },
+      {
+       "id": "B",
+       "text": "present continuous"
+      },
+      {
+       "id": "C",
+       "text": "past simple"
+      }
+     ],
+     "answer": "A",
+     "explanation": "value, enjoy, prefer, live, have, feel… → hiện tại đơn."
+    },
+    {
+     "id": "q2",
+     "prompt": "Choose the correct reason for the choice of tense.",
+     "options": [
+      {
+       "id": "A",
+       "text": "The verbs describe events which are happening now."
+      },
+      {
+       "id": "B",
+       "text": "The verbs describe things that are generally true."
+      },
+      {
+       "id": "C",
+       "text": "The verbs give the writer's opinion."
+      }
+     ],
+     "answer": "B",
+     "explanation": "Hiện tại đơn dùng cho sự thật chung / điều thường xảy ra."
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L3-E02",
+   "lessonCode": "M1-U01-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Adverbs of frequency (Ex. 10)",
+   "instruction": "Identify the frequency adverb(s) in these sentences from the text.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Your family is always on your side. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "always"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "Teenagers often prefer to be left at home. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "often"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "As they are often retired, they are not always busy … → ____ and ____",
+     "blanks": [
+      {
+       "accept": [
+        "often"
+       ]
+      },
+      {
+       "accept": [
+        "always"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "They usually get lots of love and attention. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "usually"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "Sometimes they feel closer to their grandparents than to their parents. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "sometimes",
+        "Sometimes"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L3-E03",
+   "lessonCode": "M1-U01-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Position of frequency adverbs (Ex. 11)",
+   "instruction": "Study the position of the frequency adverbs in exercise 10. Choose the correct rule.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "With most verbs (e.g. get, prefer, feel), the frequency adverb usually goes…",
+     "options": [
+      {
+       "id": "A",
+       "text": "between the subject and the verb"
+      },
+      {
+       "id": "B",
+       "text": "at the end of the sentence"
+      },
+      {
+       "id": "C",
+       "text": "after the verb"
+      }
+     ],
+     "answer": "A",
+     "explanation": "They usually get… / Teenagers often prefer…"
+    },
+    {
+     "id": "q2",
+     "prompt": "When the verb is \"to be\", the frequency adverb goes…",
+     "options": [
+      {
+       "id": "A",
+       "text": "before the verb"
+      },
+      {
+       "id": "B",
+       "text": "after the verb"
+      },
+      {
+       "id": "C",
+       "text": "at the start of the sentence"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Your family is always on your side. / they are often retired."
+    },
+    {
+     "id": "q3",
+     "prompt": "Which frequency adverb from the text can also start a sentence?",
+     "options": [
+      {
+       "id": "A",
+       "text": "always"
+      },
+      {
+       "id": "B",
+       "text": "sometimes"
+      },
+      {
+       "id": "C",
+       "text": "often"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Sometimes they feel closer… (usually cũng có thể đứng đầu câu)."
+    },
+    {
+     "id": "q4",
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      {
+       "id": "A",
+       "text": "I cook often at the weekend."
+      },
+      {
+       "id": "B",
+       "text": "I often cook at the weekend."
+      },
+      {
+       "id": "C",
+       "text": "Often I am cook at the weekend."
+      }
+     ],
+     "answer": "B",
+     "explanation": "S + adverb + V."
+    },
+    {
+     "id": "q5",
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      {
+       "id": "A",
+       "text": "It always is cold in winter."
+      },
+      {
+       "id": "B",
+       "text": "It is always cold in winter."
+      },
+      {
+       "id": "C",
+       "text": "Always it cold in winter."
+      }
+     ],
+     "answer": "B",
+     "explanation": "be + adverb."
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L4-E01",
+   "lessonCode": "M1-U01-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Section 1 situations (Ex. 1)",
+   "instruction": "In Section 1 of the Listening test you will hear two people talking in everyday situations. Which TWO situations could be in Section 1?",
+   "categories": [
+    {
+     "id": "s1",
+     "label": "Could be in Section 1"
+    },
+    {
+     "id": "no",
+     "label": "Not Section 1"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "Discussing a course assignment",
+     "category": "no",
+     "explanation": "Bài tập của khoá học → học thuật → Section 3."
+    },
+    {
+     "id": "c2",
+     "text": "Describing changes in family life over time",
+     "category": "no",
+     "explanation": "Độc thoại/bài giảng mang tính học thuật → Section 4."
+    },
+    {
+     "id": "c3",
+     "text": "Choosing a gift",
+     "category": "s1",
+     "explanation": "Tình huống đời thường giữa khách và người bán."
+    },
+    {
+     "id": "c4",
+     "text": "Arranging a birthday celebration",
+     "category": "s1",
+     "explanation": "Đặt bàn cho tiệc sinh nhật — tình huống đời thường."
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L4-E02",
+   "lessonCode": "M1-U01-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Phrases with numbers (Ex. 7)",
+   "instruction": "Look at the following phrases taken from the recording (track 04). Which number is missing? Then check on the listening task.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "No, no, it's the day after – the ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "16th"
+      },
+      {
+       "id": "B",
+       "text": "17th"
+      }
+     ],
+     "answer": "B",
+     "explanation": "\"the day after\" (ngày hôm sau) của 16th → 17th. Người khách đang sửa lại thông tin sai của quản lý."
+    },
+    {
+     "id": "q2",
+     "prompt": "The private room can seat up to ____ people.",
+     "options": [
+      {
+       "id": "A",
+       "text": "12"
+      },
+      {
+       "id": "B",
+       "text": "20"
+      }
+     ],
+     "answer": "B",
+     "explanation": "12 là số người đặt; phòng chứa tối đa (\"seat up to\") 20 người → \"plenty of space for 12 of you\"."
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L4-E03",
+   "lessonCode": "M1-U01-L4",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Words with a similar meaning (Ex. 11)",
+   "instruction": "Match the words and phrases 1–5 to words and phrases a–e, which have a similar meaning.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "a goodbye party",
+     "right": "a leaving party",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "a soccer game",
+     "right": "a football match",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "a celebration",
+     "right": "a birthday party",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "brother and sister",
+     "right": "members of the same family",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "work in the same office",
+     "right": "colleagues",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U01-L4-E04",
+   "lessonCode": "M1-U01-L4",
+   "order": 4,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Topic areas of the questions (Ex. 12)",
+   "instruction": "Read questions 1–6 in the Exam skills task and match them with the topic areas.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "1 Who are the two speakers?",
+     "right": "The relationship between the people",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "2 What celebration are they talking about?",
+     "right": "The type of event",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "3 What colour hat do baby girls wear at the event in Korea?",
+     "right": "Colour",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "4 The purse represents …",
+     "right": "The meaning of something",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "5 What food do guests have at the event?",
+     "right": "Food",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "6 What does the baby receive from the guests?",
+     "right": "Presents",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

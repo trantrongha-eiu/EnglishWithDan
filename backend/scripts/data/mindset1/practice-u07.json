@@ -1,0 +1,634 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 1 · Unit 7 — Become rich and famous through the internet",
+   "content": "<h3>Become rich and famous through the internet</h3>\n\n<p>In the past, to become famous you needed a talent: singing, playing an instrument, dancing or writing books. Nowadays, it is much easier to become famous. This is because of the internet. All you need is a camera or webcam, computer, internet connection and a bit of creativity.</p>\n\n<p>First of all, you need to decide what you are going to write or speak about: hair and makeup, comedy, sport, news and current affairs, raising money for a charity or something specialist like keeping tropical fish. Then choose a site to post on. Some sites are international and some may be particular to one country, such as Weibo in China. YouTube is a good site to choose if you make your own videos. It is easy to upload your short films, and many people use it.</p>\n\n<p>If you want to become famous on YouTube, you should make lots of videos and release one every day. YouTubers who become popular are often those who present tips, advice, 'how to' guides and opinions on entertainment or stories in the news. If you allow advertisements in your videos, you will make money when people view the adverts. Facebook is a good platform for those who want to make money, but not for those who want to be famous. To earn money through Facebook, you need a very original and/or funny page, with interesting photos which can get you a few hundred thousand 'likes'. If you achieve fame on Facebook, it probably won't last.</p>\n\n<p>Twitter is a social media site where people can communicate through short messages. It works well for those who want to be well-known but are not so interested in making money. If you want to become known on Twitter, you will need to post lots of entertaining content. Instagram is a site where people mainly put up photos and videos. It is a site which can make you well-known, particularly if you want to become a famous photographer.</p>\n\n<p>Creating your own blog is possibly the best way to become internet famous and make money, through advertising, especially once you have become known on one of the sites above. You need to be aware of the topics and issues that are 'trending' (that are popular right now) and post about those ideas. Learn to create 'vines' (a series of short extracts from videos put together in a creative way) and become an expert on photo editing. With these few easily learnt skills and some imagination, you can achieve the fame you've always dreamed of – online at least.</p>",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Choose the correct website (A–E) for each statement. You may choose any website more than once. (Ex. 4)",
+     "matchingOptions": [
+      "YouTube",
+      "Facebook",
+      "Twitter",
+      "Instagram",
+      "your own blog"
+     ],
+     "matchingOptionsTitle": "Websites",
+     "matchingReuseAllowed": true,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching-info",
+       "questionText": "You want to be rich and become famous.",
+       "correctAnswer": "E",
+       "explanation": "Đoạn cuối: blog \"is possibly the best way to **become internet famous and make money**\"."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching-info",
+       "questionText": "You want to take photographs as a career.",
+       "correctAnswer": "D",
+       "explanation": "Instagram: \"particularly if you want to become a **famous photographer**\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching-info",
+       "questionText": "You want people to know you but don't care about money.",
+       "correctAnswer": "C",
+       "explanation": "Twitter: \"for those who want to be **well-known** but are **not so interested in making money**\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching-info",
+       "questionText": "You want to make money but not be famous.",
+       "correctAnswer": "B",
+       "explanation": "Facebook: \"a good platform for those who want to **make money, but not** for those who want to be famous\"."
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching-info",
+       "questionText": "You can post a new film daily.",
+       "correctAnswer": "A",
+       "explanation": "YouTube: \"make lots of videos and **release one every day**\"."
+      },
+      {
+       "questionNumber": 6,
+       "type": "matching-info",
+       "questionText": "You want to show people how to do something.",
+       "correctAnswer": "A",
+       "explanation": "YouTube: \"those who present tips, advice, **'how to' guides**\"."
+      }
+     ]
+    },
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 7–12",
+     "instruction": "Do the following statements agree with the claims of the writer? Write YES if the statement agrees with the claims of the writer, NO if the statement contradicts the claims of the writer, NOT GIVEN if it is impossible to say what the writer thinks about this. (Ex. 7–9)",
+     "questions": [
+      {
+       "questionNumber": 7,
+       "type": "yes-no-ng",
+       "questionText": "Before the internet, you didn't need any special skills to become famous.",
+       "correctAnswer": "NO",
+       "explanation": "Đoạn 1: \"In the past, to become famous you **needed a talent**\" (talent = special skills)."
+      },
+      {
+       "questionNumber": 8,
+       "type": "yes-no-ng",
+       "questionText": "If you choose a specialist subject, you are more likely to get known.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Đoạn 2 chỉ liệt kê chủ đề chuyên môn cùng với comedy, sport…; không nói chủ đề nào dễ nổi tiếng hơn."
+      },
+      {
+       "questionNumber": 9,
+       "type": "yes-no-ng",
+       "questionText": "Having your own blog is an excellent way to find fame.",
+       "correctAnswer": "YES",
+       "explanation": "Đoạn cuối: blog \"is possibly **the best way** to become internet famous\"."
+      },
+      {
+       "questionNumber": 10,
+       "type": "yes-no-ng",
+       "questionText": "You can get famous easily through Facebook.",
+       "correctAnswer": "NO",
+       "explanation": "Facebook \"not for those who want to be famous… If you achieve fame on Facebook, it probably **won't last**\"."
+      },
+      {
+       "questionNumber": 11,
+       "type": "yes-no-ng",
+       "questionText": "It is not worth the effort needed to get famous through Twitter.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Bài nói cần đăng nhiều nội dung giải trí, nhưng không đánh giá có đáng công hay không."
+      },
+      {
+       "questionNumber": 12,
+       "type": "yes-no-ng",
+       "questionText": "Learning to make 'vines' could help you, if you are aiming to become famous.",
+       "correctAnswer": "YES",
+       "explanation": "Đoạn cuối: \"Learn to create 'vines'… With these few easily learnt skills… you can achieve the fame\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U07-R1"
+  },
+  {
+   "title": "Mindset 1 · Unit 7 — Famous animals",
+   "content": "<h3>Famous animals</h3>\n\n<p><strong>A</strong> Like people, animals each have their own personality and talents. And like some people, some animals achieve fame. Some of them become famous through films, TV or advertisements, and others through their work, for example rescuing people or playing a role in a war. Still others have done something special or been the first to do something.</p>\n\n<p><strong>B</strong> There have been many famous dogs in history. One of them is Hachiko, a dog remembered for his loyalty to his owner. Hachiko was born in Japan in 1923 and was owned by Hidesaburo Ueno, a professor at Tokyo University. Every day, Hachiko waited for Ueno at Shibuya station and the pair walked home together. One day in May 1925, Ueno died suddenly while he was at work. For the next nine years, nine months and 15 days, his faithful dog continued to meet the train his owner used to take every day. At first the station staff did not welcome him, but gradually people understood his loyalty and began giving him food and treats. Hachiko did not stop waiting for Ueno until his own death in 1935. There have been films and books about Hachiko, and every year there is a ceremony to commemorate him at the railway station in Tokyo, where he waited so faithfully.</p>\n\n<p><strong>C</strong> One animal that achieved fame in the twenty-first century is Knut the polar bear. Knut was born in Berlin Zoo in December 2006. Sadly, Knut was rejected by his mother, Tosca, and was raised by zookeepers. Knut was extremely popular with the public, not only in Germany, but across the world. Knut's story increased attendance at the zoo by about 30% and increased the zoo's revenue by five million euros. The zoo made substantial amounts of money by selling Knut toys, candy and other products. There were even songs written about him. By the time he was a year old, Knut weighed almost 100 kg and it was too dangerous for him to be handled by humans. Poor Knut missed his favourite keeper. Knut suffered in his short life without his mother, and later without human contact. He died of a virus at the age of four.</p>\n\n<p><strong>D</strong> Even some wild animals have become famous. One of them is Elsa the lioness, born in 1956. Elsa's mother was killed by a game warden, a person whose job it was to protect wild animals. The warden, George Adamson, had killed the lioness to defend himself, but he felt guilty about the orphaned cubs. He and his wife, Joy, took them home and brought them up. They trained Elsa, one of the cubs, to live in the wild. During her adult life in the wild, she had three cubs and took them to visit her human foster parents. Joy Adamson told Elsa's story in a book called Born Free. Born Free was made into a film, which was popular with both adults and children. In 1984, the actors who had starred in the film started the Born Free Foundation, an organisation that protects wildlife in many ways. The Foundation's important work includes improving conditions in zoos and circuses, stopping hunting for 'sport' and working against the killing of elephants for ivory.</p>\n\n<p><strong>E</strong> Many of us enjoy learning about famous animals. They can inspire us with their characters and stories, just as human celebrities can. Some of them are remembered for years through books, films, toys and other items created in their memory. But in the end, it is humans and not the animals themselves who benefit from that fame.</p>",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–7",
+     "instruction": "Choose the correct animal (A–C) for each question. You may choose any animal more than once. Which animal…",
+     "matchingOptions": [
+      "Hachiko",
+      "Knut",
+      "Elsa"
+     ],
+     "matchingOptionsTitle": "Animals",
+     "matchingReuseAllowed": true,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching-info",
+       "questionText": "never forgot their human friend?",
+       "correctAnswer": "A",
+       "explanation": "B: Hachiko chờ chủ suốt \"nine years, nine months and 15 days\"."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching-info",
+       "questionText": "lived part of their life in the wild?",
+       "correctAnswer": "C",
+       "explanation": "D: \"They trained Elsa… to live in the wild. During her adult life in the wild…\""
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching-info",
+       "questionText": "made large profits for the humans who cared for them?",
+       "correctAnswer": "B",
+       "explanation": "C: \"increased the zoo's revenue by five million euros\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching-info",
+       "questionText": "was not wanted by their parent?",
+       "correctAnswer": "B",
+       "explanation": "C: \"Knut was **rejected by his mother**\"."
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching-info",
+       "questionText": "has had valuable work done in their memory?",
+       "correctAnswer": "C",
+       "explanation": "D: the Born Free Foundation's \"important work\"."
+      },
+      {
+       "questionNumber": 6,
+       "type": "matching-info",
+       "questionText": "is formally remembered at regular times?",
+       "correctAnswer": "A",
+       "explanation": "B: \"every year there is a **ceremony** to commemorate him\"."
+      },
+      {
+       "questionNumber": 7,
+       "type": "matching-info",
+       "questionText": "had souvenirs of them made?",
+       "correctAnswer": "B",
+       "explanation": "C: \"selling Knut toys, candy and other products\"."
+      }
+     ]
+    },
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 8–16",
+     "instruction": "Do the following statements agree with the claims of the writer in the reading passage? Write YES, NO or NOT GIVEN.",
+     "questions": [
+      {
+       "questionNumber": 8,
+       "type": "yes-no-ng",
+       "questionText": "All animals are very much the same.",
+       "correctAnswer": "NO",
+       "explanation": "A: \"animals **each have their own personality** and talents\"."
+      },
+      {
+       "questionNumber": 9,
+       "type": "yes-no-ng",
+       "questionText": "There are many different reasons why animals might be remembered.",
+       "correctAnswer": "YES",
+       "explanation": "A: films, TV, advertisements, work, rescuing people, war, being the first…"
+      },
+      {
+       "questionNumber": 10,
+       "type": "yes-no-ng",
+       "questionText": "Ueno died after a long illness.",
+       "correctAnswer": "NO",
+       "explanation": "B: \"Ueno **died suddenly** while he was at work\"."
+      },
+      {
+       "questionNumber": 11,
+       "type": "yes-no-ng",
+       "questionText": "After some time, the people who worked at the railway station were kind to Hachiko.",
+       "correctAnswer": "YES",
+       "explanation": "B: \"At first the station staff did not welcome him, but **gradually**… began giving him food and treats\"."
+      },
+      {
+       "questionNumber": 12,
+       "type": "yes-no-ng",
+       "questionText": "The songs written about Knut were very popular.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "C chỉ nói \"There were even songs written about him\"."
+      },
+      {
+       "questionNumber": 13,
+       "type": "yes-no-ng",
+       "questionText": "Knut had a happy life because of his fame.",
+       "correctAnswer": "NO",
+       "explanation": "C: \"Knut **suffered** in his short life\"."
+      },
+      {
+       "questionNumber": 14,
+       "type": "yes-no-ng",
+       "questionText": "The Adamsons made money from Elsa.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "D: có sách và phim, nhưng không nói gia đình Adamson kiếm được tiền."
+      },
+      {
+       "questionNumber": 15,
+       "type": "yes-no-ng",
+       "questionText": "The Born Free Foundation does useful work.",
+       "correctAnswer": "YES",
+       "explanation": "D: \"The Foundation's **important work** includes…\"."
+      },
+      {
+       "questionNumber": 16,
+       "type": "yes-no-ng",
+       "questionText": "Famous animals get many advantages from their fame.",
+       "correctAnswer": "NO",
+       "explanation": "E: \"it is humans and **not the animals themselves** who benefit from that fame\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U07-R2"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 1 · Unit 7 — Justin Bieber's rise to fame",
+   "description": "A journalist talks about how this artist became famous.",
+   "partNumber": 2,
+   "audioFile": "Mindset_L1_59.mp3",
+   "transcript": "Justin Bieber's rise to fame is an interesting story. He was interested in music from a very early age and he taught himself how to play a whole selection of musical instruments, which I think is rare in youngsters these days. Like a lot of teenagers who want to be pop stars, he learnt the guitar. But, whereas very few of those teenagers put in the effort needed to be successful, Bieber, on the other hand, not only learnt how to play the piano as well, but also mastered the drums and even the trumpet! One day he hopes to learn the violin.\nHe was clearly gifted, and his mother used to arrange for him to take part in local competitions. He came second in one, and his mother posted his performance on YouTube. She kept posting other clips of him singing, and soon these attracted a number of fans who started following him, though at this point he still hadn't found fame.\nHis big break came when a music executive came across these videos by accident when he was looking for a performance by a different artist. He immediately recognised Bieber's talent and gave the teenager a contract with his recording company. His first record was a worldwide hit. He shot to fame in just two years and is now a global superstar, one of the most well-known performers the world has ever seen.",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Complete the flow-chart below. Write NO MORE THAN TWO WORDS for each answer. (Ex. 2)",
+     "noteConfig": {
+      "title": "How Justin Bieber became famous",
+      "lines": [
+       "He learnt how to play a variety of instruments: __Q1__, guitar, drums and trumpet.",
+       "↓",
+       "He entered talent __Q2__ in his home town and his mother posted some videos on YouTube.",
+       "↓",
+       "The YouTube clips brought him a lot of __Q3__.",
+       "↓",
+       "He was discovered by a __Q4__.",
+       "↓",
+       "He signed a recording __Q5__ and became a __Q6__."
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "piano",
+       "explanation": "Dịch: Anh ấy học chơi nhiều nhạc cụ: ___, guitar, trống và kèn trumpet.\n\nVị trí: Đầu bài.\n\nTranscript: “not only learnt how to play the piano as well, but also mastered the drums and even the trumpet”\n\nPhân tích: BẪY: violin là nhạc cụ anh ấy MUỐN học."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "competitions",
+       "explanation": "Dịch: Anh ấy tham gia các ___ tài năng ở quê nhà.\n\nTranscript: “his mother used to arrange for him to take part in local competitions”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "fans",
+       "explanation": "Dịch: Các video trên YouTube mang lại cho anh ấy nhiều ___\n\nTranscript: “these attracted a number of fans who started following him”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "music executive",
+       "explanation": "Dịch: Anh ấy được phát hiện bởi một ___\n\nTranscript: “a music executive came across these videos by accident”\n\nPhân tích: discovered ↔ came across."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "contract",
+       "explanation": "Dịch: Anh ấy ký một ___ thu âm\n\nTranscript: “gave the teenager a contract with his recording company”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "global superstar / superstar",
+       "explanation": "Dịch: …và trở thành một ___\n\nVị trí: Câu cuối.\n\nTranscript: “is now a global superstar”\n\nPhân tích: Tối đa 2 từ."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U07-L1"
+  },
+  {
+   "title": "Mindset 1 · Unit 7 — Would you like to be famous?",
+   "description": "Two opinions on being famous.",
+   "partNumber": 2,
+   "audioFile": "Mindset_L1_60.mp3",
+   "transcript": "A: I wouldn't like to be famous. I would hate people to recognise me all the time. You would always be followed by journalists and never able to have a private life. Being followed on a good day, when you've been to the hairdresser and are wearing your best jeans, is perhaps acceptable, but can you imagine how it would make you feel on a bad day?\nB: I would love to be famous. I would adore all the attention and the special treatment. Everywhere I went, people would know my name and I wouldn't need to queue any more. The best part, though, would be meeting other famous people. I can imagine that would be so interesting. They would come to my private yacht and I would visit their mansions.",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–8",
+     "instruction": "Listen and fill the gaps. Write ONE WORD for each answer. (Ex. 5)",
+     "noteConfig": {
+      "title": "Opinions on being famous",
+      "lines": [
+       "A: I wouldn't like to be famous. I would hate people to __Q1__ me all the time. You would always be followed by __Q2__ and never able to have a private life. Being followed on a good day, when you've been to the hairdresser and are wearing your best jeans, is perhaps __Q3__, but can you imagine how it would make you feel on a bad day?",
+       "B: I would love to be famous. I would adore all the __Q4__ and the special treatment. Everywhere I went, people would know my name and I wouldn't need to __Q5__ any more. The best part, though, would be meeting other famous people. I can imagine that would be so __Q6__. They would come to my __Q7__ yacht and I would __Q8__ their mansions."
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "recognise / recognize",
+       "explanation": "Dịch: Tôi ghét bị người ta ___ mọi lúc.\n\nTranscript: “I would hate people to recognise me all the time”\n\nPhân tích: Động từ."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "journalists",
+       "explanation": "Dịch: bị ___ theo dõi\n\nTranscript: “You would always be followed by journalists”\n\nPhân tích: Danh từ số nhiều."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "acceptable",
+       "explanation": "Dịch: có lẽ cũng ___\n\nTranscript: “is perhaps acceptable”\n\nPhân tích: Tính từ."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "attention",
+       "explanation": "Dịch: Tôi thích mọi sự ___\n\nTranscript: “I would adore all the attention”\n\nPhân tích: Danh từ."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "queue",
+       "explanation": "Dịch: tôi sẽ không cần ___ nữa\n\nTranscript: “I wouldn't need to queue any more”\n\nPhân tích: Động từ."
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "interesting",
+       "explanation": "Dịch: sẽ rất ___\n\nTranscript: “that would be so interesting”\n\nPhân tích: Tính từ."
+      },
+      {
+       "questionNumber": 7,
+       "type": "fill-blank",
+       "questionText": "Question 7",
+       "correctAnswer": "private",
+       "explanation": "Dịch: du thuyền ___ của tôi\n\nTranscript: “my private yacht”\n\nPhân tích: Tính từ."
+      },
+      {
+       "questionNumber": 8,
+       "type": "fill-blank",
+       "questionText": "Question 8",
+       "correctAnswer": "visit",
+       "explanation": "Dịch: tôi sẽ ___ biệt thự của họ\n\nTranscript: “I would visit their mansions”\n\nPhân tích: Động từ."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U07-L2"
+  },
+  {
+   "title": "Mindset 1 · Unit 7 — How to become famous",
+   "description": "A famous singer gives advice.",
+   "partNumber": 2,
+   "audioFile": "Mindset_L1_61.mp3",
+   "transcript": "Interviewer: So, you've been a famous singer for over three decades now. What advice would you give to someone wanting to become famous?\nCelebrity: Well, my first piece of advice is – don't try and become famous. Instead focus on being good at something. Choose something you enjoy and then work hard at doing well in that area.\nInterviewer: What did you do to become such a successful singer?\nCelebrity: Well, a good way to be the best is to learn from the experts. Find people you admire in your area of interest. Try to get as close to them as possible. Observe them carefully. If possible, talk to them. Ask lots of questions. Don't copy them, but try to learn from them. And don't be afraid to experiment, try something new.\nInterviewer: Being the best is one thing, but how did you get yourself known?\nCelebrity: Getting yourself known is indeed another skill you must work on. One thing is for sure, nobody is going to come to you. You have to make opportunities for yourself. You have a product to sell and the product is you. It's much easier to do that these days, especially with the internet around. Many people use social media for this.\nInterviewer: Any other piece of advice?\nCelebrity: Yes, the last thing I would say is, if you want to be really successful in something, you will most likely experience a certain amount of failure. People who fail at some point often say that the experience has been a great lesson and helped them on the road to success. Try to learn from these moments instead of being frightened of them. In fact, some of the most successful people have often failed countless times before reaching their end goal. What makes them successful, is that they kept on trying regardless.",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Complete the flow-chart below. Write NO MORE THAN TWO WORDS for each answer. (Ex. 7)",
+     "noteConfig": {
+      "title": "How to become famous",
+      "lines": [
+       "Find something you like doing and __Q1__ at becoming the best in that particular skill.",
+       "↓",
+       "Study __Q2__ and try to learn as much as possible.",
+       "↓",
+       "Create __Q3__ and market yourself. You need to be able to sell yourself. Social media is a great way to do this these days.",
+       "↓",
+       "Don't worry if sometimes you __Q4__. You can learn from the experience."
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "work hard / work",
+       "explanation": "Dịch: …và ___ để trở thành giỏi nhất\n\nVị trí: Câu trả lời đầu.\n\nTranscript: “Choose something you enjoy and then work hard at doing well in that area”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "the experts / experts",
+       "explanation": "Dịch: Học ___\n\nTranscript: “a good way to be the best is to learn from the experts”\n\nPhân tích: study ↔ learn from."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "opportunities",
+       "explanation": "Dịch: Tạo ra ___\n\nTranscript: “You have to make opportunities for yourself”\n\nPhân tích: create ↔ make."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "fail",
+       "explanation": "Dịch: Đừng lo nếu đôi khi bạn ___\n\nVị trí: Cuối bài.\n\nTranscript: “you will most likely experience a certain amount of failure” … “People who fail at some point”\n\nPhân tích: Cần động từ → fail (không phải failure)."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U07-L3"
+  },
+  {
+   "title": "Mindset 1 · Unit 7 — Getting the best from your camcorder",
+   "description": "A talk on the focus, iris and zoom functions.",
+   "partNumber": 2,
+   "audioFile": "Mindset_L1_62.mp3",
+   "transcript": "If you're going to take film-making seriously, you need to learn how to get the best from your camcorder. Many people use camcorders these days, to make short videos of their friends and family, and often people just use the automatic functions. These work well enough for those types of occasion, but if you want to take a more professional approach for the production of your short film, you should have some knowledge of the camcorder's manual functions too.\nIn this tutorial I will start by discussing three of the most basic functions: the focus, the iris and the zoom. The focus control is usually the manual focus ring at the front of the lens, well certainly with professional cameras. It's a particularly useful function if used correctly. The ring turns anti-clockwise for a more distant focus and clockwise for a closer focus.\nNext, I will talk about the iris ring. This is also located on the lens. It manages how much light appears through the lens, through the adjustable opening called the aperture. As you let more light into the shot, it naturally becomes brighter.\nFinally, I will talk about the zoom function. Many people use this function and it's often over-used! Used in moderation, however, this very popular feature can be a really useful tool. It moves your perspective closer or further away from your chosen subject. I would advise, however, that whilst shooting a long zoom, you use a tripod.",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–7",
+     "instruction": "You will hear a talk on how to get the best from your camcorder. Choose SEVEN answers from the list and write the correct letter, A–J, next to questions 1–7. (Ex. 10) — 1 learn how to use the ___ controls · 2 The Focus function is very ___ · 3 the object is ___ or further away · 4 controls the amount of ___ coming through the lens · 5 the picture appears ___ · 6 the Zoom is a very ___ manual function · 7 For ___ zooms a tripod is recommended.",
+     "matchingOptions": [
+      "bigger",
+      "brighter",
+      "closer",
+      "important",
+      "light",
+      "long",
+      "manual",
+      "popular",
+      "short",
+      "useful"
+     ],
+     "matchingOptionsTitle": "Words",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching",
+       "questionText": "(1) …you must also learn how to use the ___ controls.",
+       "correctAnswer": "G",
+       "explanation": "Dịch: …học cách dùng các nút điều khiển ___\n\nVị trí: Đầu bài.\n\nTranscript: “you should have some knowledge of the camcorder's manual functions too”\n\nPhân tích: manual ≠ automatic."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching",
+       "questionText": "(2) The Focus function on the camera is very ___.",
+       "correctAnswer": "J",
+       "explanation": "Dịch: Chức năng lấy nét rất ___\n\nTranscript: “It's a particularly useful function if used correctly”\n\nPhân tích: BẪY: important không được nói."
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "(3) …whether the object you want to film is ___ or further away.",
+       "correctAnswer": "C",
+       "explanation": "Dịch: …vật ở ___ hay xa hơn\n\nTranscript: “anti-clockwise for a more distant focus and clockwise for a closer focus”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching",
+       "questionText": "(4) …controls the amount of ___ coming through the lens.",
+       "correctAnswer": "E",
+       "explanation": "Dịch: …điều chỉnh lượng ___ qua ống kính\n\nTranscript: “It manages how much light appears through the lens”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching",
+       "questionText": "(5) …more light comes in and the picture appears ___.",
+       "correctAnswer": "B",
+       "explanation": "Dịch: …hình ảnh trở nên ___\n\nTranscript: “As you let more light into the shot, it naturally becomes brighter”\n\nPhân tích: BẪY: bigger."
+      },
+      {
+       "questionNumber": 6,
+       "type": "matching",
+       "questionText": "(6) …the Zoom is a very ___ manual function and therefore often over-used.",
+       "correctAnswer": "H",
+       "explanation": "Dịch: …zoom là chức năng rất ___\n\nTranscript: “this very popular feature can be a really useful tool”\n\nPhân tích: BẪY: \"useful\" cũng xuất hiện, nhưng \"very popular feature… often over-used\" khớp chỗ trống 6 (useful đã dùng cho câu 2)."
+      },
+      {
+       "questionNumber": 7,
+       "type": "matching",
+       "questionText": "(7) For ___ zooms a tripod is recommended.",
+       "correctAnswer": "F",
+       "explanation": "Dịch: Với những cú zoom ___ nên dùng chân máy\n\nVị trí: Câu cuối.\n\nTranscript: “whilst shooting a long zoom, you use a tripod”\n\nPhân tích: BẪY: short."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U07-L4"
+  },
+  {
+   "title": "Mindset 1 · Unit 7 — Exam skills: making a short film",
+   "description": "A lecture at the Film-makers' Club.",
+   "partNumber": 2,
+   "audioFile": "Mindset_L1_63.mp3",
+   "transcript": "So welcome to Film-makers' Club. I hope you're excited at the thought of making a film and that you're bursting with great ideas. I've put you all into groups, so here's what you're going to do. Now you might think the first thing that you need to do is to come up with an idea for a story, but even before that you need to think about what type of film you want to make.\nRemember that a film is really a story in pictures. There are lots of ways of telling a story. So choose a style of film that suits the talents of the group. If you have talented artists, but no good writers, or actors, you might want to make your film in the style of a cartoon or some other kind of animation. Last year a group made an excellent film using Lego bricks.\nSo having decided that, you can start to think of your idea for the story. Think about the movies you like to watch. What is it that makes them interesting? Is it the characters, the plot? As regards plot, my advice is – don't be too ambitious, don't make it complicated. Keep it simple – the simplest ideas are often the ones that work the best. Initially you just need to find the basic concept. You can fill in the details later. It's a good idea to keep a notebook in your pocket and carry it everywhere. You never know when a great idea will suddenly come to you! And the more ideas, the better, in my opinion.\nThe next stage is to write the screenplay – for this you need to divide the story up into a series of scenes. For each scene, the screenplay should begin with a short description of where it takes place and the time of day, that is day or night. Then the rest consists of the script – the lines the actors will speak, and it should also describe the camera movements, and give directions to the actors about how they should move.\nBefore you can start filming, you need to prepare a storyboard of your film to help everyone involved to imagine the scenes clearly and to understand what you are trying to achieve. This is similar to a comic-book version of your film, but without speech balloons.\nAnd at this point you need to appoint a director. This is a major role and it's vital that he or she is a good communicator, as they are the key link between the actors and the rest of the team. This person will have responsibility for the creative side of the project. He or she will have the final say in the choice of the main actors and in directing the action of the film.\nThat brings me to the next stage – casting your film – finding the actors. Don't just rely on your friends. Be creative! Perhaps you could advertise on social media. Or if your film needs a doctor, perhaps you could ask one from the local hospital if they could spare a couple of hours for you?\nAnd then before filming finally starts, you will need to assign other jobs, such as director of photography – in your case this will be the person who operates the camera; someone in charge of sound and music, and someone in charge of costumes and props (including furniture and any other objects needed) and also someone to look after hair and make-up. But we'll look at these roles in more detail in our next session.",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–7",
+     "instruction": "You will hear a lecture on how to make a short film. Complete the flow-chart below. Write NO MORE THAN TWO WORDS for each answer. (Ex. 11)",
+     "noteConfig": {
+      "title": "Making a short film",
+      "lines": [
+       "When deciding which type of film to make, use the __Q1__ you have among you.",
+       "↓",
+       "Make the plot of your film __Q2__.",
+       "↓",
+       "Have a __Q3__ with you at all times.",
+       "↓",
+       "Write the screenplay: a description of the scene, the location, the actors' words, the __Q4__ and directions for the actors about what they should do.",
+       "↓",
+       "Prepare a storyboard. This is a bit like a __Q5__.",
+       "↓",
+       "Choose a director. He or she is in control of the __Q6__ elements of the film.",
+       "↓",
+       "Cast your film. One way to find actors might be to __Q7__."
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "talents",
+       "explanation": "Dịch: …tận dụng ___ mà nhóm có\n\nVị trí: Đoạn 2.\n\nTranscript: “choose a style of film that suits the talents of the group”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "simple",
+       "explanation": "Dịch: Làm cốt truyện ___\n\nVị trí: Đoạn 3.\n\nTranscript: “don't make it complicated. Keep it simple”\n\nPhân tích: Tính từ."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "notebook",
+       "explanation": "Dịch: Luôn mang theo một ___\n\nVị trí: Đoạn 3.\n\nTranscript: “It's a good idea to keep a notebook in your pocket and carry it everywhere”\n\nPhân tích: at all times ↔ everywhere."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "camera movements",
+       "explanation": "Dịch: …lời thoại của diễn viên, ___ và hướng dẫn cho diễn viên\n\nVị trí: Đoạn 4.\n\nTranscript: “it should also describe the camera movements, and give directions to the actors”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "comic book / comic-book",
+       "explanation": "Dịch: Storyboard giống như một ___\n\nVị trí: Đoạn 5.\n\nTranscript: “This is similar to a comic-book version of your film”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "creative",
+       "explanation": "Dịch: Đạo diễn phụ trách các yếu tố ___\n\nVị trí: Đoạn 6.\n\nTranscript: “This person will have responsibility for the creative side of the project”\n\nPhân tích: in control of ↔ have responsibility for."
+      },
+      {
+       "questionNumber": 7,
+       "type": "fill-blank",
+       "questionText": "Question 7",
+       "correctAnswer": "advertise",
+       "explanation": "Dịch: Một cách tìm diễn viên là ___\n\nVị trí: Đoạn 7.\n\nTranscript: “Don't just rely on your friends” … “Perhaps you could advertise on social media”\n\nPhân tích: Cần động từ."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U07-L5"
+  }
+ ]
+}

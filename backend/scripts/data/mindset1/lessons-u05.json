@@ -1,0 +1,654 @@
+{
+ "modules": [
+  {
+   "code": "M1-U05",
+   "order": 5,
+   "title": "Unit 5 · Tiêu dùng và mua sắm",
+   "titleEn": "UNIT 05: CONSUMERISM — sách tr. 86–91, 98–101",
+   "outcomes": [
+    "Reading: câu chủ đề (topic sentence), ý chính và ý phụ; matching headings; matching information",
+    "Grammar: will và going to để nói về tương lai",
+    "Listening: Section 2 (một người nói); nhận diện distractors; multiple choice 3 phương án; paraphrase",
+    "Từ vựng mua sắm, trung tâm thương mại, chợ (Sổ 3)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M1-U05-L1",
+   "moduleCode": "M1-U05",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: shopping malls",
+   "titleEn": "Lead-in · Skim reading (pp. 86–87)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Kể tên các hoạt động có thể làm ở trung tâm thương mại",
+    "Skim bài \"The future of malls\" trong 1 phút và nhớ lại nội dung"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Skim reading",
+     "titleEn": "Skim reading",
+     "formula": [],
+     "usage": [
+      "Đọc thật nhanh trong 1 phút, **không quay lại bài**, rồi tự hỏi: bài nhắc đến những hoạt động/nơi nào? Bài chủ yếu nói về **quá khứ, hiện tại hay tương lai**?",
+      "Đọc lướt giúp bạn biết **bố cục** bài trước khi làm câu hỏi."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 13,
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 5 · Lead-in & Vocabulary: shopping malls — 37 từ/cụm từ",
+    "words": [
+     {
+      "word": "shopping mall",
+      "meaning": "trung tâm thương mại",
+      "example": "The future of malls A Shopping malls have never been just about shopping."
+     },
+     {
+      "word": "hang out",
+      "meaning": "đi chơi, tụ tập",
+      "example": "They began in the United States after the Second World War and, for the young, they were always a place to 'hang out' and be seen."
+     },
+     {
+      "word": "food court",
+      "meaning": "khu ẩm thực",
+      "example": "However, the world has moved on, and just providing shops and a food court is no longer enough to keep malls alive."
+     },
+     {
+      "word": "online shopping",
+      "meaning": "mua sắm trực tuyến",
+      "example": "Malls became less popular at the start of the 21st century, mainly because of online shopping."
+     },
+     {
+      "word": "survive",
+      "meaning": "tồn tại, sống sót",
+      "example": "Malls need to change to survive."
+     },
+     {
+      "word": "electrical items",
+      "meaning": "đồ điện",
+      "example": "Some malls will only sell electrical items, for example, or only fashion for young people."
+     },
+     {
+      "word": "downtown",
+      "meaning": "khu trung tâm thành phố",
+      "example": "C Malls are becoming 'the new downtown', with cinemas, bowling alleys, climbing walls and even concert halls."
+     },
+     {
+      "word": "bowling alley",
+      "meaning": "sân chơi bowling",
+      "example": "C Malls are becoming 'the new downtown', with cinemas, bowling alleys, climbing walls and even concert halls."
+     },
+     {
+      "word": "recreation centre",
+      "meaning": "trung tâm vui chơi giải trí",
+      "example": ""
+     },
+     {
+      "word": "a family day out",
+      "meaning": "chuyến đi chơi trong ngày của cả gia đình",
+      "example": ""
+     },
+     {
+      "word": "fine dining",
+      "meaning": "ẩm thực cao cấp",
+      "example": ""
+     },
+     {
+      "word": "remain in business",
+      "meaning": "tiếp tục kinh doanh",
+      "example": "D Mall owners are going to need to think of new ideas to remain in business."
+     },
+     {
+      "word": "growing trend",
+      "meaning": "xu hướng ngày càng phổ biến",
+      "example": "One growing trend is the seasonal changes in the mall."
+     },
+     {
+      "word": "temporary",
+      "meaning": "tạm thời",
+      "example": "It began with having Santa Claus in December, but now there are 'pop-ups' – temporary shops, stalls and kiosks – for other seasons and events."
+     },
+     {
+      "word": "stall",
+      "meaning": "quầy hàng, sạp",
+      "example": "In some parts of the world there may not even be stalls; rather, vendors lay out their goods on a sheet on the ground."
+     },
+     {
+      "word": "promotion",
+      "meaning": "chương trình khuyến mãi",
+      "example": ""
+     },
+     {
+      "word": "go from strength to strength",
+      "meaning": "ngày càng phát triển mạnh",
+      "example": "With all these creative innovations, the mall will go from strength to strength."
+     },
+     {
+      "word": "innovation",
+      "meaning": "sự đổi mới",
+      "example": "With all these creative innovations, the mall will go from strength to strength."
+     },
+     {
+      "word": "chain store",
+      "meaning": "chuỗi cửa hàng",
+      "example": ""
+     },
+     {
+      "word": "reveal",
+      "meaning": "cho thấy, bộc lộ",
+      "example": "Markets are found in every country in the world, but wherever you go they are different and reveal the local culture – and agriculture."
+     },
+     {
+      "word": "fresh produce",
+      "meaning": "nông sản tươi",
+      "example": "From farmers' markets selling fresh produce to craft and antique markets, they are the best place to find something unique at a great price."
+     },
+     {
+      "word": "unique",
+      "meaning": "độc nhất vô nhị",
+      "example": "The markets of London are some of the best in the world for those who want to create a unique look for themselves."
+     },
+     {
+      "word": "consumer",
+      "meaning": "người tiêu dùng",
+      "example": "Farmers often sell direct to the consumer, without all the packaging, shipping and advertising that increases costs in shops and supermarkets."
+     },
+     {
+      "word": "packaging",
+      "meaning": "bao bì",
+      "example": "Farmers often sell direct to the consumer, without all the packaging, shipping and advertising that increases costs in shops and supermarkets."
+     },
+     {
+      "word": "mass-produced",
+      "meaning": "được sản xuất hàng loạt",
+      "example": "You can often find unusual products and those that are not mass-produced."
+     },
+     {
+      "word": "locally produced",
+      "meaning": "được sản xuất tại địa phương",
+      "example": "Wherever you are, food will be locally produced and reasonably priced."
+     },
+     {
+      "word": "reasonably priced",
+      "meaning": "có giá cả phải chăng",
+      "example": "Wherever you are, food will be locally produced and reasonably priced."
+     },
+     {
+      "word": "second-hand",
+      "meaning": "đồ đã qua sử dụng",
+      "example": "This is a much more informal type of market, where second-hand products can be sold by anyone."
+     },
+     {
+      "word": "vintage",
+      "meaning": "cổ điển (đồ cũ có giá trị)",
+      "example": "Some sell cheap new and second-hand clothes, while others specialise in vintage or ethically made clothes and original items."
+     },
+     {
+      "word": "at a bargain price",
+      "meaning": "với giá hời",
+      "example": ""
+     },
+     {
+      "word": "flea market",
+      "meaning": "chợ trời, chợ đồ cũ",
+      "example": "D Another type of market is a flea market."
+     },
+     {
+      "word": "unwanted items",
+      "meaning": "đồ không dùng đến",
+      "example": "If you have unwanted items at home, you could take them to a flea market and sell them yourself."
+     },
+     {
+      "word": "vendor",
+      "meaning": "người bán hàng",
+      "example": "In some parts of the world there may not even be stalls; rather, vendors lay out their goods on a sheet on the ground."
+     },
+     {
+      "word": "handicraft",
+      "meaning": "đồ thủ công mỹ nghệ",
+      "example": "E In some places, markets are directed at visitors and tend to sell handicrafts typical of the region."
+     },
+     {
+      "word": "souvenir",
+      "meaning": "quà lưu niệm",
+      "example": "For many tourists, a visit to a nearby market to buy souvenirs is an important part of their holiday."
+     },
+     {
+      "word": "affordable",
+      "meaning": "phải chăng, vừa túi tiền",
+      "example": ""
+     },
+     {
+      "word": "festive season",
+      "meaning": "mùa lễ hội",
+      "example": "F In Europe, Christmas is the time when seasonal markets are held to sell decorations and gifts for the festive season."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M1-U05-L2",
+   "moduleCode": "M1-U05",
+   "order": 2,
+   "title": "📖 Reading: topic sentences & matching headings",
+   "titleEn": "Matching headings · Topic sentences and main and supporting ideas · Paraphrase · Exam skills (pp. 88–91)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Tìm câu chủ đề của đoạn (thường — không phải luôn — là câu đầu)",
+    "Phân biệt ý chính và ý phụ (bằng chứng)",
+    "Nhận ra tiêu đề là paraphrase của ý chính (synonyms, antonyms)",
+    "Làm matching headings và matching information"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Câu chủ đề và ý hỗ trợ",
+     "titleEn": "Topic sentences, main and supporting ideas",
+     "formula": [],
+     "usage": [
+      "**Topic sentence** tóm tắt ý chính của đoạn — vd. đoạn A: \"**Malls need to change to survive.**\"",
+      "Các câu còn lại là **supporting ideas** (bằng chứng): the world has moved on; malls became less popular because of online shopping; the website deadmalls.com.",
+      "Câu chủ đề **thường** là câu đầu đoạn, nhưng **không phải luôn** (đoạn A nằm ở gần cuối)."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Matching headings",
+     "titleEn": "Matching headings",
+     "formula": [
+      "Có **nhiều tiêu đề hơn số đoạn** → có tiêu đề không dùng.",
+      "Tiêu đề = **paraphrase** ý chính: \"Adapt or die\" ↔ \"Malls need to change to survive\" (change ↔ adapt: đồng nghĩa; survive ↔ die: trái nghĩa)."
+     ],
+     "usage": [
+      "Tìm câu chủ đề → so với từng tiêu đề → để ý synonym/antonym.",
+      "Cẩn thận tiêu đề \"bẫy\" chỉ khớp một chi tiết (Fast food paradise ↔ chỉ nhắc \"grab a burger\").",
+      "Ghi danh sách từ đồng nghĩa vào sổ — kỹ năng then chốt của IELTS."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 16,
+   "practiceLinks": [
+    {
+     "ref": "reading:M1-U05-R1",
+     "kind": "reading",
+     "title": "The future of malls — matching headings (Ex. 8)",
+     "note": "Chọn tiêu đề i–v cho đoạn B–E."
+    },
+    {
+     "ref": "reading:M1-U05-R2",
+     "kind": "reading",
+     "title": "Exam skills: Markets around the world (Ex. 11–12)",
+     "note": "Matching information A–G + matching headings i–vii."
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L3",
+   "moduleCode": "M1-U05",
+   "order": 3,
+   "title": "🧩 Grammar focus: will and going to",
+   "titleEn": "Grammar focus: future forms (p. 90)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Tìm hai cách nói về tương lai trong bài",
+    "Phân biệt will (dự đoán, niềm tin) và going to (có liên hệ với hiện tại: kế hoạch, dấu hiệu)"
+   ],
+   "keyLanguage": [
+    "**going to + V**: có **liên hệ với hiện tại** — kế hoạch đã có, thay đổi đã bắt đầu: Mall owners **are going to need** to think of new ideas (nhiều mall đã bắt đầu đổi mới).",
+    "**will + V**: **dự đoán / niềm tin** của người viết, không cần bằng chứng hiện tại: …the mall **will go** from strength to strength.",
+    "Thấy kế hoạch, bản vẽ, bài báo đưa tin → going to · I think / I expect / I'm afraid → will."
+   ],
+   "theory": [
+    {
+     "title": "will vs going to",
+     "titleEn": "Future forms",
+     "formula": [
+      "S + will + V (nguyên mẫu)",
+      "S + am/is/are + going to + V"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "Look at these plans for the new mall! There is going to be a climbing wall!",
+       "vi": "Có kế hoạch/bản vẽ → going to."
+      },
+      {
+       "en": "I think it will be great when it is finished!",
+       "vi": "Ý kiến, dự đoán → will."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 14,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Future Simple (will)",
+     "note": "dự đoán, niềm tin",
+     "url": "/essential-grammar.html?lesson=future-simple"
+    },
+    {
+     "kind": "grammar",
+     "title": "Be Going To",
+     "note": "kế hoạch, dấu hiệu ở hiện tại",
+     "url": "/essential-grammar.html?lesson=be-going-to"
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L4",
+   "moduleCode": "M1-U05",
+   "order": 4,
+   "title": "🎧 Listening: Section 2 — distractors & multiple choice",
+   "titleEn": "Lead-in · Section 2 · Identifying distractors · Paraphrase and synonyms · Multiple-choice questions · Exam skills (pp. 98–101)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Biết đặc điểm Section 2: một người nói, chủ đề đời sống, chia làm 2 phần",
+    "Nhận diện distractors — từ/cụm từ được nhắc nhưng không phải đáp án",
+    "Nhận ra paraphrase của từng phương án A, B, C",
+    "Làm multiple choice: chỉ chọn MỘT đáp án"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Section 2 của bài thi Listening",
+     "titleEn": "Section 2",
+     "formula": [],
+     "usage": [
+      "Khó hơn Section 1 một chút: **một người nói** (hoặc chủ yếu một người) về chủ đề chung (giới thiệu tour, thông báo, bài nói…).",
+      "Không có người thứ hai đặt câu hỏi để \"dẫn đường\" → phải tự bám câu hỏi.",
+      "Bài nghe chia **hai phần**, mỗi phần có câu hỏi riêng."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Distractors",
+     "titleEn": "Identifying distractors",
+     "formula": [],
+     "usage": [
+      "**Distractor** = từ ngữ trong bài nghe là đáp án SAI: \"Most of you will be familiar with the branch in the **south**… talk of… the **north**… but they have finally decided to open in the **east**\".",
+      "Đừng chọn một phương án chỉ vì **nghe thấy từ của nó** — hãy nghĩ về **nghĩa của cả câu**.",
+      "Thứ tự câu hỏi theo bài nghe, nhưng thứ tự phương án A, B, C thì **không**."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 15,
+   "images": [
+    {
+     "url": "media:m1u05-shops.jpg",
+     "caption": "Ex. 1 (p. 98): places to shop A–E"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M1-U05-L1",
+     "kind": "listening",
+     "title": "Three short recordings: which place? (Ex. 2)",
+     "note": "Mỗi người nói đang nói về địa điểm nào?"
+    },
+    {
+     "ref": "listening:M1-U05-L2",
+     "kind": "listening",
+     "title": "Four recordings: answers and distractors (Ex. 3–4)",
+     "note": "Ghi đáp án đúng rồi ghi cả các distractor."
+    },
+    {
+     "ref": "listening:M1-U05-L3",
+     "kind": "listening",
+     "title": "Which T-shirts sell best? (Ex. 6)",
+     "note": "plain = nothing on them."
+    },
+    {
+     "ref": "listening:M1-U05-L4",
+     "kind": "listening",
+     "title": "A book signing (Ex. 7)",
+     "note": "noon, quarter past two, half past three…"
+    },
+    {
+     "ref": "listening:M1-U05-L5",
+     "kind": "listening",
+     "title": "A complaint (Ex. 8)",
+     "note": "staff, litter hay food?"
+    },
+    {
+     "ref": "listening:M1-U05-L6",
+     "kind": "listening",
+     "title": "Exam skills: a shopping tour (Ex. 9)",
+     "note": "6 câu multiple choice A, B, C — cẩn thận distractor."
+    }
+   ],
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 5 · Listening: Section 2 — distractors & multiple choice — 37 từ/cụm từ",
+    "words": [
+     {
+      "word": "reduce prices",
+      "meaning": "giảm giá",
+      "example": "This weekend, and this weekend only, we're reducing all our prices right across our store."
+     },
+     {
+      "word": "special offer",
+      "meaning": "ưu đãi đặc biệt",
+      "example": "And, just in time for the holiday season, our T-shirts and swimwear are on special offer too."
+     },
+     {
+      "word": "footwear",
+      "meaning": "giày dép",
+      "example": "There is a whole hall devoted just to footwear – every kind of shoes and boots you can imagine."
+     },
+     {
+      "word": "half price",
+      "meaning": "nửa giá",
+      "example": "This weekend, they're all half price and that includes a wide choice of sports shoes in most sizes!"
+     },
+     {
+      "word": "under one roof",
+      "meaning": "dưới cùng một mái nhà",
+      "example": "But I really liked it – it's very convenient because there were at least 50 different shops all under one roof and there's a car park too."
+     },
+     {
+      "word": "car park",
+      "meaning": "bãi đỗ xe",
+      "example": "But I really liked it – it's very convenient because there were at least 50 different shops all under one roof and there's a car park too."
+     },
+     {
+      "word": "branch",
+      "meaning": "chi nhánh",
+      "example": "Recording 1 And now for the local news … A new branch of Sports World, the Danish sporting goods company, is opening on Saturday."
+     },
+     {
+      "word": "sporting goods",
+      "meaning": "đồ thể thao",
+      "example": "Recording 1 And now for the local news … A new branch of Sports World, the Danish sporting goods company, is opening on Saturday."
+     },
+     {
+      "word": "enjoy a lot of success",
+      "meaning": "gặt hái nhiều thành công",
+      "example": "Most of you will be familiar with the branch in the south of Grinstead that opened two years ago and which has enjoyed a lot of success."
+     },
+     {
+      "word": "ahead of",
+      "meaning": "trước (sự kiện)",
+      "example": "As a special treat for fans, Grinstead Town's Danish striker Jesper Nielsen will be opening the store ahead of their home match at the weekend."
+     },
+     {
+      "word": "explore",
+      "meaning": "khám phá",
+      "example": "Recording 2 That's the end of our tour of the city, so you now have a couple of hours to spend exploring the city centre."
+     },
+     {
+      "word": "good quality",
+      "meaning": "chất lượng tốt",
+      "example": "They might seem good quality, but we've had a lot of complaints from tourists who have bought them, only to find they break after about a week."
+     },
+     {
+      "word": "complaint",
+      "meaning": "lời phàn nàn",
+      "example": "They might seem good quality, but we've had a lot of complaints from tourists who have bought them, only to find they break after about a week."
+     },
+     {
+      "word": "prove popular",
+      "meaning": "tỏ ra được ưa chuộng",
+      "example": "Recording 4 When I first opened the shop three years ago, we mainly sold shirts and jackets that I had designed, and these proved very popular."
+     },
+     {
+      "word": "invest money in",
+      "meaning": "đầu tư tiền vào",
+      "example": ""
+     },
+     {
+      "word": "sign copies",
+      "meaning": "ký tặng sách",
+      "example": "He will be signing copies of his latest book, Timed Out."
+     },
+     {
+      "word": "queue",
+      "meaning": "hàng người xếp hàng",
+      "example": "Get there as soon as you can because queues will start to form as early as noon."
+     },
+     {
+      "word": "rubbish bin",
+      "meaning": "thùng rác",
+      "example": "I think it was because there weren't enough rubbish bins for people to put their empty cans and sweet wrappers in."
+     },
+     {
+      "word": "well worth a visit",
+      "meaning": "rất đáng ghé thăm",
+      "example": "But, apart from that, I would say that it's well worth a visit."
+     },
+     {
+      "word": "tour leader",
+      "meaning": "trưởng đoàn du lịch",
+      "example": "OK, my name's David Edwards and I'm your tour leader for your shopping tour today."
+     },
+     {
+      "word": "arrange",
+      "meaning": "sắp xếp",
+      "example": "If any of you would like tickets for tonight's performance, we can arrange that for you."
+     },
+     {
+      "word": "performance",
+      "meaning": "buổi biểu diễn",
+      "example": "If any of you would like tickets for tonight's performance, we can arrange that for you."
+     },
+     {
+      "word": "coach",
+      "meaning": "xe khách",
+      "example": "If you want to come on our Historic Buildings tour tomorrow, the coach will leave from just outside the station."
+     },
+     {
+      "word": "rebuild",
+      "meaning": "xây lại",
+      "example": ""
+     },
+     {
+      "word": "striking",
+      "meaning": "nổi bật, ấn tượng",
+      "example": "Some people love the striking modern design, others hate it."
+     },
+     {
+      "word": "well-known performer",
+      "meaning": "nghệ sĩ nổi tiếng",
+      "example": "These days, its popularity is mainly due to the fact that it attracts a lot of well-known performers."
+     },
+     {
+      "word": "at the latest",
+      "meaning": "muộn nhất là",
+      "example": "There's not too much traffic on the roads, so we should get there at quarter to ten at the latest."
+     },
+     {
+      "word": "countryside",
+      "meaning": "vùng nông thôn",
+      "example": "People used to come in from the countryside to sell their fresh fruit and vegetables."
+     },
+     {
+      "word": "craft market",
+      "meaning": "chợ đồ thủ công",
+      "example": "It's now a craft market and I think you'll find lots to interest you – especially if you want to take presents home."
+     },
+     {
+      "word": "pottery",
+      "meaning": "đồ gốm",
+      "example": "You'll see all kinds of things like hand-painted local pottery and leather goods."
+     },
+     {
+      "word": "leather goods",
+      "meaning": "đồ da",
+      "example": "You'll see all kinds of things like hand-painted local pottery and leather goods."
+     },
+     {
+      "word": "be disappointed",
+      "meaning": "thất vọng",
+      "example": "But if you're looking for clothes, I'm afraid you'll be disappointed."
+     },
+     {
+      "word": "open-air",
+      "meaning": "ngoài trời",
+      "example": "The idea is that you buy food and drink from the stalls and take it to eat in the lovely open-air dining area."
+     },
+     {
+      "word": "on the outskirts of",
+      "meaning": "ở vùng ngoại ô của",
+      "example": "And finally, in the afternoon we will be visiting the Fashion Fair in the exhibition centre on the outskirts of the city."
+     },
+     {
+      "word": "be devoted to",
+      "meaning": "được dành riêng cho",
+      "example": "There is a whole hall devoted just to footwear – every kind of shoes and boots you can imagine."
+     },
+     {
+      "word": "exhaust",
+      "meaning": "làm kiệt sức",
+      "example": "And if all that shopping has exhausted you, there's a cafe where you can rest your weary feet!"
+     },
+     {
+      "word": "weary",
+      "meaning": "mỏi mệt",
+      "example": "And if all that shopping has exhausted you, there's a cafe where you can rest your weary feet!"
+     }
+    ]
+   }
+  }
+ ]
+}

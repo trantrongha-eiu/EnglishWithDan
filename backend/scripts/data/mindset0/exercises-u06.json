@@ -9,8 +9,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Công trình nổi tiếng (Lead-in Ex. 1–2)",
-   "instruction": "Nối tranh 1–5 với từ: statue, castle, stadium, tower, bridge.",
+   "title": "Famous places (Lead-in Ex. 1–2)",
+   "instruction": "Match pictures 1–5 with the words: statue, castle, stadium, tower, bridge.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u06-landmarks.jpg",
@@ -58,8 +58,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "Địa điểm hay giao thông? (Ex. 4–5)",
-   "instruction": "Xếp mỗi từ vào nhóm đúng.",
+   "title": "Places or transport? (Ex. 4–5)",
+   "instruction": "Put each word into the correct group.",
    "categories": [
     {
      "id": "place",
@@ -178,8 +178,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Bạn đến đâu để…? (G&V Ex. 1)",
-   "instruction": "Nối hoạt động với địa điểm.",
+   "title": "Where do you go to…? (G&V Ex. 1)",
+   "instruction": "Match the activities with the places.",
    "items": [
     {
      "id": "m1",
@@ -252,8 +252,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Nhóm từ thuộc nơi nào? (G&V Ex. 2)",
-   "instruction": "Nối mỗi nhóm từ với địa điểm/sự vật.",
+   "title": "Which place is it? (G&V Ex. 2)",
+   "instruction": "Match each group of words with a place or thing.",
    "items": [
     {
      "id": "m1",
@@ -308,8 +308,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Câu chuyện mua sắm của Sally (G&V Ex. 4)",
-   "instruction": "Chọn từ đúng.",
+   "title": "Sally's shopping story (G&V Ex. 4)",
+   "instruction": "Choose the correct word.",
    "items": [
     {
      "id": "q1",
@@ -462,8 +462,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Viết dạng so sánh (Ex. 13)",
-   "instruction": "Viết dạng so sánh hơn và so sánh nhất.",
+   "title": "Comparative and superlative forms (Ex. 13)",
+   "instruction": "Write the comparative and superlative forms.",
    "items": [
     {
      "id": "g1",
@@ -614,8 +614,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Sự thật về Manchester (Ex. 14)",
-   "instruction": "Chọn dạng đúng.",
+   "title": "Facts about Manchester (Ex. 14)",
+   "instruction": "Choose the correct form.",
    "items": [
     {
      "id": "q1",
@@ -788,8 +788,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "Thêm -er/-est hay more/the most? (G&V Ex. 6)",
-   "instruction": "Xếp tính từ vào cột đúng.",
+   "title": "-er/-est or more/the most? (G&V Ex. 6)",
+   "instruction": "Put the adjectives into the correct column.",
    "categories": [
     {
      "id": "er",
@@ -908,8 +908,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Ba chiếc xe (G&V Ex. 9)",
-   "instruction": "Nhìn tranh 3 chiếc xe A (1), B (2), C (3) và hoàn thành câu bằng dạng so sánh nhất.",
+   "title": "Three cars (G&V Ex. 9)",
+   "instruction": "Look at the pictures of three cars, A (1), B (2) and C (3), and complete the sentences with the superlative form.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u06-cars.jpg",
@@ -1011,8 +1011,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Tính từ mô tả (G&V Ex. 5)",
-   "instruction": "Điền tính từ: friendly, high, comfortable, old, famous, interesting, modern.",
+   "title": "Describing adjectives (G&V Ex. 5)",
+   "instruction": "Complete the sentences with the adjectives: friendly, high, comfortable, old, famous, interesting, modern.",
    "wordBank": [
     "friendly",
     "high",
@@ -1118,8 +1118,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Phân tích email mẫu của Martin (Ex. 22)",
-   "instruction": "Đọc email mẫu và trả lời.",
+   "title": "Martin's model email (Ex. 22)",
+   "instruction": "Read the model email and answer the questions.",
    "stimulus": {
     "kind": "passage",
     "text": "Hi Sandy,\n\nI'm really pleased you're coming to visit my country. The first place you should visit is London. It's one of the most famous cities in the world. It has fantastic museums and parks and is perfect if you like shopping. The buses and the underground are the best ways to travel.\n\nAfter that you should go to the Lake District. I think this is the most beautiful part of England. It has the highest mountains in the country and the largest and deepest lakes. You can get there by train and then use the buses to get around.\n\nBest wishes,\nMartin",
@@ -1197,8 +1197,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "paragraph_writing",
-   "title": "Viết email trả lời Sandy (Ex. 20–22)",
-   "instruction": "Đây là một phần email từ bạn qua thư Sandy: \"I'm coming to your country next month on holiday. Where do you think I should go and why are those places interesting? What's the best way for me to travel around?\" Viết email trả lời Sandy (khoảng 100 từ). Bắt đầu: \"Hi Sandy, I'm really pleased you're coming to visit my country. The first place you should visit is…\". Dùng so sánh hơn/nhất và các từ nối if, so, because, after that.",
+   "title": "Write a reply to Sandy (Ex. 20–22)",
+   "instruction": "This is part of an email from your penfriend Sandy: \"I'm coming to your country next month on holiday. Where do you think I should go and why are those places interesting? What's the best way for me to travel around?\" Write a reply to Sandy (about 100 words). Begin: \"Hi Sandy, I'm really pleased you're coming to visit my country. The first place you should visit is…\". Use comparatives and superlatives and the linking words if, so, because, after that.",
    "responseSlots": 1,
    "rubric": {
     "bandFocus": [
@@ -1239,8 +1239,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Giới từ vị trí (Ex. 9)",
-   "instruction": "Nhìn 5 hình (ngôi nhà đỏ so với toà nhà) và nối số hình với giới từ.",
+   "title": "Prepositions of place (Ex. 9)",
+   "instruction": "Look at the five pictures (the red house and the building) and match each picture with a preposition.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u06-prepositions.jpg",
@@ -1288,8 +1288,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Bản đồ thị trấn (G&V Ex. 3)",
-   "instruction": "Nhìn bản đồ và điền: next, in front of, on your left, behind, on your right, across, opposite, between.",
+   "title": "A town map (G&V Ex. 3)",
+   "instruction": "Look at the map and complete the sentences with: next, in front of, on your left, behind, on your right, across, opposite, between.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u06-town-map.jpg",
@@ -1413,8 +1413,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Hỏi đường trên bản đồ (Ex. 12)",
-   "instruction": "Dựa vào bản đồ Northfields (bài nghe Part 2), chọn câu trả lời đúng.",
+   "title": "Asking for directions on a map (Ex. 12)",
+   "instruction": "Use the map of Northfields (Part 2 of the recording) and choose the correct answer.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u06-map.jpg",
@@ -1492,8 +1492,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: giao thông & quê hương (Ex. 18)",
-   "instruction": "Trả lời từng câu hỏi trong 15–25 giây. Dùng từ vựng của unit và so sánh hơn/nhất.",
+   "title": "Speaking: transport and your home town (Ex. 18)",
+   "instruction": "Answer each question in 15–25 seconds. Use the vocabulary of this unit and comparatives/superlatives.",
    "speakingPart": 1,
    "speakingPrepSeconds": 10,
    "items": [
@@ -1543,8 +1543,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "So sánh hơn (G&V Ex. 7)",
-   "instruction": "Hoàn thành câu bằng dạng so sánh hơn của tính từ trong ngoặc.",
+   "title": "Comparatives (G&V Ex. 7)",
+   "instruction": "Complete the sentences with the comparative form of the adjective in brackets.",
    "items": [
     {
      "id": "g1",
@@ -1684,7 +1684,7 @@
    "difficulty": 1,
    "type": "gap_fill",
    "title": "…but … is even more! (G&V Ex. 8)",
-   "instruction": "Hoàn thành câu bằng dạng so sánh hơn.",
+   "instruction": "Complete the sentences with the comparative form.",
    "items": [
     {
      "id": "g1",
@@ -1793,8 +1793,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Email của William từ Munich (G&V Ex. 10)",
-   "instruction": "Chia tính từ trong ngoặc ở dạng so sánh hơn hoặc nhất.",
+   "title": "William's email from Munich (G&V Ex. 10)",
+   "instruction": "Put the adjectives in brackets into the comparative or superlative form.",
    "items": [
     {
      "id": "g1",

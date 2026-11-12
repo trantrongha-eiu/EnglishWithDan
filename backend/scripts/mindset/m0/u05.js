@@ -103,28 +103,28 @@ module.exports = {
         ["uncountable noun","danh từ không đếm được","Rice is an uncountable noun: some rice."],
       ],
       ex: [
-        match('Món ăn của nước nào? (Lead-in)', 'Nối tranh 1–5 với quốc gia.', [
+        match('Which country? (Lead-in)', 'Match pictures 1–5 with the countries.', [
           ['Picture 1', 'China'], ['Picture 2', 'Saudi Arabia'], ['Picture 3', 'Italy'], ['Picture 4', 'the United Kingdom'], ['Picture 5', 'Brazil'],
         ], { stimulus: picture('media:m0u05-countries.jpg', 'Lead-in') }),
-        match('Món ăn & nguyên liệu (Ex. 2)', 'Nối món ăn 1–5 với nhóm nguyên liệu A–E.', [
+        match('Dishes and ingredients (Ex. 2)', 'Match dishes 1–5 with the groups of ingredients A–E.', [
           ['Beef Chow Mein', 'meat, noodles, oil, garlic', 'Mì xào bò Trung Hoa.'],
           ['Al Kabsa', 'chicken, rice, tomato, onion', 'Cơm gà Ả Rập.'],
           ['Pizza', 'tomatoes, cheese, flour for bread', 'Ý.'],
           ['Fish and chips', 'fish, potatoes', 'Anh.'],
           ['Moqueca', 'tomatoes, fish, prawns, rice, coconut milk', 'Món hải sản Brazil.'],
         ]),
-        match('Thực phẩm trong tranh (Ex. 10)', 'Nối tranh 1–9 với tên thực phẩm.', [
+        match('Food in the pictures (Ex. 10)', 'Match pictures 1–9 with the names of the food.', [
           ['Picture 1', 'flour'], ['Picture 2', 'spring onions'], ['Picture 3', 'garlic'], ['Picture 4', 'rice'], ['Picture 5', 'pasta'],
           ['Picture 6', 'lamb'], ['Picture 7', 'salmon'], ['Picture 8', 'carrot'], ['Picture 9', 'onion'],
         ], { stimulus: picture('media:m0u05-foods.jpg', 'Ex. 10') }),
-        cat('Phân loại thực phẩm (Ex. 11, G&V Ex. 2)', 'Xếp mỗi từ vào nhóm đúng.', { meat: 'Meat', veg: 'Vegetables', fish: 'Fish / Seafood', carb: 'Carbohydrates', other: 'Other ingredients' }, [
+        cat('Food groups (Ex. 11, G&V Ex. 2)', 'Put each word into the correct group.', { meat: 'Meat', veg: 'Vegetables', fish: 'Fish / Seafood', carb: 'Carbohydrates', other: 'Other ingredients' }, [
           ['lamb', 'meat'], ['beef', 'meat'], ['duck', 'meat'], ['carrot', 'veg'], ['garlic', 'veg'], ['lettuce', 'veg'], ['cauliflower', 'veg'],
           ['salmon', 'fish'], ['lobster', 'fish'], ['rice', 'carb'], ['pasta', 'carb'], ['spaghetti', 'carb'], ['flour', 'other'], ['salt', 'other'],
         ]),
-        match('Động từ chế biến (Ex. 13)', 'Nối tranh 1–7 với động từ.', [
+        match('Cooking verbs (Ex. 13)', 'Match pictures 1–7 with the verbs.', [
           ['Picture 1', 'chop'], ['Picture 2', 'mix'], ['Picture 3', 'cut'], ['Picture 4', 'roll'], ['Picture 5', 'fold'], ['Picture 6', 'boil'], ['Picture 7', 'fry'],
         ], { stimulus: picture('media:m0u05-verbs.jpg', 'Ex. 13') }),
-        match('Định nghĩa cách nấu (G&V Ex. 3)', 'Nối động từ với định nghĩa.', [
+        match('Ways of cooking – definitions (G&V Ex. 3)', 'Match the verbs with the definitions.', [
           ['bake', 'to cook something such as bread or a cake with dry heat in the oven'], ['boil', 'to cook food in water'],
           ['chop', 'to cut something into small pieces'], ['fry', 'to cook something in hot oil or fat'], ['mix', 'to put two or more ingredients together'],
         ]),
@@ -165,17 +165,17 @@ module.exports = {
         ['fast food', 'đồ ăn nhanh', 'I often eat fast food in the week.'],
       ],
       ex: [
-        order('Sắp xếp tranh: món Bulgogi (Ex. 21)', 'Nhìn tranh A–F và đọc hướng dẫn. Sắp xếp các chữ cái theo đúng trình tự nấu (bắt đầu bằng B).', [
+        order('Put the pictures in order: Bulgogi (Ex. 21)', 'Look at pictures A–F and read the instructions. Put the letters in the correct order for the recipe (start with B).', [
           ['B C F A E D', 'B: thái hành → C: cho nước tương + nước vào bát và trộn → F: thái thịt bò → A: để tủ lạnh 4 tiếng → E: chiên thịt → D: bày ra đĩa.'],
         ], { stimulus: picture('media:m0u05-bulgogi.jpg', 'Bulgogi — pictures A–F') }),
-        gap('Hoàn thành công thức Bulgogi (Ex. 22)', 'Điền a, some hoặc một động từ.', [
+        gap('Complete the Bulgogi recipe (Ex. 22)', 'Complete the recipe with a, some or a verb.', [
           ['First, take ____ large onion and ____ spring onions and ____ them into small pieces.', ['a', 'some', 'chop|cut'], 'a + danh từ số ít; some + số nhiều; chop = thái nhỏ.'],
           ['Then, in a large bowl put ____ soy sauce and ____ cup of cold water.', ['some', 'a'], 'soy sauce không đếm được → some; a cup.'],
           ['After this, add the onions and spring onions and ____ them all together.', 'mix', 'mix together.'],
           ['Then, you will need to take your beef and ____ it into slices.', 'cut', 'cut into slices.'],
           ['Afterwards, remove the meat from the bowl and ____ for 5–10 minutes.', 'fry|cook', 'Tranh E: chảo trên bếp → fry.'],
         ]),
-        mcq('Hoàn thành đoạn văn: món ăn yêu thích (Ex. 24)', 'Chọn đáp án đúng nhất A, B, C hoặc D.', [
+        mcq('My favourite meal (Ex. 24)', 'Choose the best answer, A, B, C or D.', [
           ['I don\'t usually like ____ meals…', ['cooking', 'cook', 'do', 'doing'], 'A', 'like + V-ing; cook meals.'],
           ['…I often go ____ restaurants or eat fast food in the week.', ['in', 'at', 'to', 'for'], 'C', 'go to + nơi chốn.'],
           ['____ the weekend, I have more free time…', ['For', 'At', 'In', 'With'], 'B', 'at the weekend (Anh-Anh).'],
@@ -200,21 +200,21 @@ module.exports = {
       ],
       links: [{ grammar: 'countable-uncountable', title: 'Countable vs Uncountable', note: 'a/an, some/any, much/many/a lot of' }, { grammar: 'articles', title: 'Articles (a / an / the)', note: 'mạo từ' }],
       ex: [
-        cat('Đếm được hay không? (Ex. 16)', 'Xếp mỗi từ vào nhóm đúng.', { cs: 'Countable (singular)', cp: 'Countable (plural)', u: 'Uncountable' }, [
+        cat('Countable or uncountable? (Ex. 16)', 'Put each word into the correct group.', { cs: 'Countable (singular)', cp: 'Countable (plural)', u: 'Uncountable' }, [
           ['(an) apple', 'cs'], ['(a) cabbage', 'cs'], ['onions', 'cp'], ['oranges', 'cp'], ['potatoes', 'cp'], ['shrimps', 'cp'],
           ['flour', 'u'], ['meat', 'u'], ['milk', 'u'], ['rice', 'u'], ['salt', 'u'], ['water', 'u'],
         ]),
-        gap('a, an, some hay any? (G&V Ex. 4)', 'Điền a, an, some hoặc any.', [
+        gap('a, an, some or any? (G&V Ex. 4)', 'Complete the sentences with a, an, some or any.', [
           ['I have ____ sandwich for lunch. I had ____ apple for a snack today.', ['a', 'an']],
           ['I have got ____ juice in the fridge. There are ____ oranges in the cupboard.', ['some', 'some']],
           ['Are there ____ tomatoes? Is there ____ fish on the menu?', ['any', 'any']],
           ['Can I have ____ water, please? Would you like ____ tea?', ['some', 'some'], 'Lời đề nghị/yêu cầu → some.'],
-          ['Quy tắc: Before singular countable nouns we use ____ before a consonant and ____ before a vowel.', ['a', 'an'], 'a + phụ âm (a sandwich), an + nguyên âm (an apple).'],
-          ['Quy tắc: In positive sentences, with plural and uncountable nouns we use ____.', ['some']],
-          ['Quy tắc: In questions and negative sentences with countable and uncountable nouns, we use ____.', ['any']],
-          ['Quy tắc: In offers and requests, we use ____.', ['some'], 'Would you like some…? / Can I have some…?'],
+          ['Rule: Before singular countable nouns we use ____ before a consonant and ____ before a vowel.', ['a', 'an'], 'a + phụ âm (a sandwich), an + nguyên âm (an apple).'],
+          ['Rule: In positive sentences, with plural and uncountable nouns we use ____.', ['some']],
+          ['Rule: In questions and negative sentences with countable and uncountable nouns, we use ____.', ['any']],
+          ['Rule: In offers and requests, we use ____.', ['some'], 'Would you like some…? / Can I have some…?'],
         ]),
-        mcq('much, many hay a lot of? (G&V Ex. 5–6)', 'Chọn đáp án đúng.', [
+        mcq('much, many or a lot of? (G&V Ex. 5–6)', 'Choose the correct answer.', [
           ['We have ____ oranges to eat because we have an orange tree in our garden.', ['much', 'a lot of'], 'B', 'Khẳng định → a lot of.'],
           ['How ____ lemons do you need for the recipe?', ['much', 'many'], 'B', 'lemons đếm được → many.'],
           ['How ____ coffee is there in the cupboard?', ['many', 'much'], 'B', 'coffee không đếm được → much.'],
@@ -229,7 +229,7 @@ module.exports = {
           ['I would like ____ fish, please.', ['some', 'much', 'many'], 'A', 'Lời yêu cầu → some.'],
           ['There are ____ different salads on the menu. I don\'t know which one to choose.', ['any', 'much', 'a lot of'], 'C', 'Câu khẳng định, danh từ số nhiều → a lot of.'],
         ]),
-        mcq('Đoạn văn về pizza (G&V Ex. 7)', 'Chọn đáp án đúng nhất.', [
+        mcq('A text about pizza (G&V Ex. 7)', 'Choose the best answer.', [
           ['My ____ food is pizza.', ['best', 'lovely', 'favourite'], 'C'],
           ['I like ____ pizzas because they are very easy to prepare.', ['eating', 'eat', 'ate'], 'A'],
           ['If you want to ____ your own pizza, all you need to do is make the bread for the base.', ['get', 'have', 'make'], 'C'],
@@ -241,14 +241,14 @@ module.exports = {
           ['…or they like to have a rest ____ the weekend.', ['at', 'in', 'for'], 'A'],
           ['…they go ____ a take-away restaurant and buy a pizza.', ['in', 'for', 'to'], 'C'],
         ]),
-        gap('a / an hay some? (Ex. 17)', 'Hoàn thành quy tắc bằng a / an hoặc some.', [
+        gap('a / an or some? (Ex. 17)', 'Complete the rules with a / an or some.', [
           ['For singular countable nouns, we put ____ before the word, e.g. ____ cabbage.', ['a|an|a/an', 'a'], 'Danh từ đếm được số ít → a/an.'],
           ['For plural countable nouns, we can put ____ before the word and we usually add an \'s\', e.g. ____ dumplings.', ['some', 'some']],
           ['For uncountable nouns, we put ____ before the word, e.g. ____ milk.', ['some', 'some'], 'Không đếm được → không dùng a/an, không thêm -s.'],
         ]),
-        mcq('Hoàn thành tiêu đề bảng (Ex. 18)', 'Đọc các câu ví dụ trong bảng của sách và chọn tiêu đề đúng cho mỗi cột.', [
-          ['Cột 1: I have some apples. · I don\'t have any cabbages. · Do you have any onions? · How many carrots do we need? → ____ nouns', ['Countable', 'Uncountable'], 'A', 'apples, cabbages, onions, carrots đều đếm được (có số nhiều).'],
-          ['Cột 2: I have some rice. · I don\'t have any milk. · Do you have any meat? · How much water do I put in? → ____ nouns', ['Countable', 'Uncountable'], 'B', 'rice, milk, meat, water không đếm được → dùng much.'],
+        mcq('Complete the table headings (Ex. 18)', 'Read the example sentences in the book\'s table and choose the correct heading for each column.', [
+          ['Column 1: I have some apples. · I don\'t have any cabbages. · Do you have any onions? · How many carrots do we need? → ____ nouns', ['Countable', 'Uncountable'], 'A', 'apples, cabbages, onions, carrots đều đếm được (có số nhiều).'],
+          ['Column 2: I have some rice. · I don\'t have any milk. · Do you have any meat? · How much water do I put in? → ____ nouns', ['Countable', 'Uncountable'], 'B', 'rice, milk, meat, water không đếm được → dùng much.'],
         ]),
       ],
     },
@@ -277,7 +277,7 @@ module.exports = {
         ['popular', 'phổ biến', 'It is popular in my country.'],
       ],
       ex: [
-        match('Món súp lơ Ả Rập: tranh ↔ bước (G&V Ex. 8)', 'Đây là 7 bước làm món súp lơ kiểu Ả Rập. Nối thứ tự bước (1–7) với câu hướng dẫn đúng.', [
+        match('Arabic cauliflower: the steps (G&V Ex. 8)', 'Here are seven steps for making an Arabic cauliflower dish. Match the step numbers (1–7) with the correct instructions.', [
           ['Step 1', 'First, take a large cauliflower and cut the leaves off so that you only have the white part.'],
           ['Step 2', 'Next, take the cauliflower and place it in boiling water.'],
           ['Step 3', 'While the cauliflower is boiling, chop some garlic.'],
@@ -286,7 +286,7 @@ module.exports = {
           ['Step 6', 'Add the mixture of paste, garlic and lemon juice to the cauliflower.'],
           ['Step 7', 'Finally, cover the dish and put it in the fridge until you are ready to eat it.'],
         ]),
-        write('Viết: món ăn phổ biến ở nước bạn (Ex. 23, 26)', 'Dùng kiến thức của unit này, viết bài (120–150 từ) về một món ăn phổ biến ở Việt Nam hoặc món bạn thích. Bài viết cần có: (1) cần những nguyên liệu gì; (2) hướng dẫn cách làm theo từng bước (First, Then, After this, Finally…); (3) lý do món ăn này phổ biến.', {
+        write('Writing: a popular dish in your country (Ex. 23, 26)', 'Using what you have learnt in this unit, write about a popular dish in your country or a dish you like (120–150 words). Include: (1) the ingredients you need; (2) step-by-step instructions (First, Then, After this, Finally…); (3) why the dish is popular.', {
           minWords: 110, maxWords: 170, mustUse: 4,
           targetStructures: ['First', 'Then', 'After this', 'Finally', 'some', 'chop', 'boil', 'fry', 'because'],
           checklist: ['Nêu nguyên liệu (dùng a/an/some đúng)', 'Các bước theo thứ tự với từ nối trình tự', 'Dùng động từ chế biến (chop, mix, fry, boil…)', 'Giải thích vì sao món ăn phổ biến', '120–150 từ'],
@@ -335,7 +335,7 @@ module.exports = {
         ['equal', 'bằng nhau', 'Cut the dough into 20 equal pieces.'],
       ],
       ex: [
-        mcq('Từ đồng nghĩa trước khi nghe (MINI TIPS 08)', 'Chọn nghĩa đúng.', [
+        mcq('Synonyms before you listen (MINI TIPS 08)', 'Choose the correct meaning.', [
           ['"sightseeing" means…', ['visiting famous places', 'eating in a restaurant', 'working in an office'], 'A'],
           ['If you "can\'t afford" something, you don\'t have…', ['time', 'enough money', 'friends'], 'B'],
           ['A "flatmate" is someone who…', ['lives in the same flat as you', 'works with you', 'studies in your class'], 'A'],
@@ -365,13 +365,13 @@ module.exports = {
         ['reminds me of', 'làm tôi nhớ đến', 'It reminds me of my childhood.'],
       ],
       ex: [
-        order('Câu hỏi khảo sát ăn uống (Ex. 19)', 'Sắp xếp thành câu hỏi đúng.', [
+        order('Eating habits survey questions (Ex. 19)', 'Put the words in the correct order to make questions.', [
           ['How much meat do you eat each week?'], ['Are there any recipes you like to cook?'], ['How many cups of tea do you drink a day?'], ['Are there any foods you don\'t like?'],
         ]),
-        speak('Nói: món ăn bạn thích (Ex. 25)', 'Nói 1–2 phút về một bữa ăn bạn thích. Bạn nên nói: ai chuẩn bị món đó cho bạn · khi nào bạn ăn · vì sao bạn thích nó.', 2, [
+        speak('Speaking: a meal you enjoy (Ex. 25)', 'Talk for 1–2 minutes about a meal that you enjoy. You should say: who prepares it for you · when you eat it · and explain why you like it.', 2, [
           ['Talk about a meal that you enjoy.\nYou should say:\n• who prepares it for you\n• when you eat it\nand explain why you like it.', 'The meal I enjoy most is my grandmother\'s fish soup with rice. She usually prepares it for the whole family when we visit her house on Sunday. First, she fries some tomatoes and onions, then she adds fresh fish, pineapple and some herbs, and boils everything for about twenty minutes. The kitchen smells delicious! We usually eat it at lunchtime, all together around a big table, so it\'s a very happy time. I like this meal for two reasons. Firstly, it\'s healthy and not too heavy, so I never feel tired after eating it. Secondly, it reminds me of my childhood, because my grandmother has cooked it for me since I was very small. I\'ve tried fish soup in restaurants, but it\'s never as good as hers.', 'Đủ 3 ý theo thứ tự (who → when → why), có mô tả cách nấu bằng động từ của unit, phần "why" có 2 lý do (Firstly, Secondly).'],
         ]),
-        speak('Nói: trả lời câu hỏi về ẩm thực (Ex. 3, 20)', 'Trả lời từng câu hỏi trong 15–25 giây.', 1, [
+        speak('Speaking: questions about food (Ex. 3, 20)', 'Answer each question in 15–25 seconds.', 1, [
           ['What is your favourite food from your country?', 'My favourite Vietnamese food is bún chả. It\'s grilled pork with rice noodles and fresh herbs. I love it because the meat is sweet and smoky, and it\'s perfect for lunch on a hot day.', 'Món + mô tả nguyên liệu + lý do.'],
           ['What food is popular in your country?', 'Rice is the most popular food in Vietnam – we eat it almost every day. Noodle soups like phở are also very popular, especially for breakfast.', 'Nêu 2 ví dụ.'],
           ['How much water do you drink every day?', 'Not as much as I should! I probably drink about four glasses a day, but I know I need to drink more, especially when I play sport.', 'Câu trả lời trung thực + chi tiết.'],
@@ -386,11 +386,11 @@ module.exports = {
       objectives: ['Ôn tên thực phẩm và much / many / a lot of của Unit 5'],
       keyLanguage: ['a lot of: khẳng định (và phủ định) với cả danh từ đếm được và không đếm được · many: hỏi/phủ định với danh từ đếm được · much: hỏi/phủ định với danh từ không đếm được.'],
       ex: [
-        match('Thực phẩm trong ảnh (G&V Ex. 1)', 'Nối ảnh 1–8 với từ trong khung: beef, lettuce, duck, lobster, spaghetti, salmon, garlic, cauliflower.', [
+        match('Food in the photos (G&V Ex. 1)', 'Match photos 1–8 with the words in the box: beef, lettuce, duck, lobster, spaghetti, salmon, garlic, cauliflower.', [
           ['Photo 1', 'duck'], ['Photo 2', 'lettuce'], ['Photo 3', 'lobster'], ['Photo 4', 'garlic'],
           ['Photo 5', 'salmon'], ['Photo 6', 'spaghetti'], ['Photo 7', 'beef'], ['Photo 8', 'cauliflower'],
         ], { stimulus: picture('media:m0u05-gv-foods.jpg', 'G&V Ex. 1') }),
-        mcq('Bảng quy tắc a lot of / much / many (G&V Ex. 5)', 'Đọc các câu trong bảng và chọn đáp án đúng.', [
+        mcq('Rules: a lot of / much / many (G&V Ex. 5)', 'Read the sentences in the table and choose the correct answer.', [
           ['We use ____ with positive and negative sentences with countable and uncountable nouns.', ['a lot of', 'many'], 'A'],
           ['We have ____ oranges to eat because we have an orange tree in our garden.', ['much', 'a lot of'], 'B', 'Câu khẳng định → a lot of.'],
           ['We don\'t have ____ fruit to eat in winter.', ['a lot of', 'many'], 'A', 'fruit không đếm được → không dùng many.'],

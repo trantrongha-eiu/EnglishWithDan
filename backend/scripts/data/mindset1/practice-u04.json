@@ -1,0 +1,585 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 1 · Unit 4 — Food culture shock",
+   "content": "<h3>Food culture shock</h3>\n\n<p><strong>A — Charles</strong> You would think that eating with your fingers would be easy. In the US, there are only certain things you can eat with your fingers, like burgers, for example, and that's easy enough. When I went to South India, though, I realised that it is a whole new skill to learn to eat rice and curry with your fingers. You have to mix the curries together and with the rice and form a 'ball'. Daal* is particularly helpful as a kind of glue. You use your fingertips, never the palm of your hand, and use your thumb to pop it into your mouth. I thought I knew where my mouth was, but my first few attempts were a disaster. There was food everywhere! (*Daal is a lentil curry widely eaten in the Indian subcontinent.)</p>\n\n<p><strong>B — Alfredo</strong> For me, when I travel, the 'fast food' culture always shocks me. I can't believe there are people in the world who live on 'junk food' like burgers and just grab a sandwich for lunch. Back home, food is very important to us. We cook fresh food for lunch and dinner and sit down and eat as a family at least once a day, twice at weekends. A lot of people grow their own vegetables and keep chickens. Food is part of your identity, so what are you saying about yourself when you eat some rubbish which contains chemicals and goodness knows what else? The worst thing I have seen on my travels is a baby being given a fizzy drink in a bottle. That really shocked me!</p>\n\n<p><strong>C — Qiang Shi</strong> I enjoy trying food from different countries, but what interests me more is the culture and habits surrounding food and eating. In China, when we go to a restaurant with colleagues, when we are offered something, we say 'No thanks', even though we want it, because the person will definitely repeat the offer. In other countries, though, 'no' means 'no', so if you are just trying to be polite and don't take it the first time, you will end up with nothing! To me, it feels wrong to take something the first time it is offered, so it took me a while to get used to that when I travel abroad.</p>\n\n<p><strong>D — Pauline</strong> Being a vegetarian is so easy here in the UK that we forget that not everyone in the world understands vegetarianism. For vegans the situation is even more difficult. Probably the best place I've been to is India, as everything is divided into 'veg' or 'non veg' so you know exactly what you're getting. In many countries, they don't even realise that there is a concept of not eating meat for ethical reasons. In many parts of the world, meat equates to prosperity, so the idea of going out for a meal and not having meat is alien to them. I have travelled to places where, as a vegetarian, all I have been able to eat is salad, fruit and chips. I'm glad to get home where we have special vegetarian products.</p>\n\n<p><strong>E — Aileen</strong> I think breakfast is the meal where food culture shock really hits you. In Australia, there are certain foods you eat for breakfast and certain foods you don't. We usually eat cereal or toast, maybe yoghurt and fruit. We would never eat chicken or vegetables. But when I travelled in Asia, I realised that in many places, there is no difference between breakfast and dinner: rice, curry, noodles, soup, steamed vegetables and fish all appeared at breakfast. Even though I love all those things, I just can't face them at breakfast!</p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Quickly find the following information in the text. Write ONE WORD for each answer. (Ex. 4)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "a food that can be used as a 'glue'",
+       "correctAnswer": "daal / dal / dhal",
+       "explanation": "A (Charles): \"**Daal** is particularly helpful as a kind of glue.\""
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "a meat not usually eaten for breakfast in Australia",
+       "correctAnswer": "chicken",
+       "explanation": "E (Aileen): \"We would never eat **chicken** or vegetables.\""
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "a country where 'no' doesn't always mean 'no'",
+       "correctAnswer": "China",
+       "explanation": "C (Qiang Shi): \"In **China**… we say 'No thanks', even though we want it\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "an example of a 'junk food'",
+       "correctAnswer": "burgers / burger",
+       "explanation": "B (Alfredo): \"'junk food' like **burgers**\"."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "a country which is easy for vegetarians",
+       "correctAnswer": "India",
+       "explanation": "D (Pauline): \"Probably the best place I've been to is **India**\"."
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "a food eaten with fingers in the US",
+       "correctAnswer": "burgers / burger",
+       "explanation": "A (Charles): \"In the US… you can eat with your fingers, like **burgers**\"."
+      }
+     ]
+    },
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 7–12",
+     "instruction": "Which person (A–E): (Ex. 5) NB You may use any letter more than once.",
+     "matchingOptions": [
+      "Charles",
+      "Alfredo",
+      "Qiang Shi",
+      "Pauline",
+      "Aileen"
+     ],
+     "matchingOptionsTitle": "People",
+     "matchingReuseAllowed": true,
+     "questions": [
+      {
+       "questionNumber": 7,
+       "type": "matching-info",
+       "questionText": "realised that some people eat the same dishes for different meals?",
+       "correctAnswer": "E",
+       "explanation": "Aileen: \"in many places, there is **no difference between breakfast and dinner**\"."
+      },
+      {
+       "questionNumber": 8,
+       "type": "matching-info",
+       "questionText": "dislikes the takeaway culture?",
+       "correctAnswer": "B",
+       "explanation": "Alfredo: \"the 'fast food' culture always shocks me\"."
+      },
+      {
+       "questionNumber": 9,
+       "type": "matching-info",
+       "questionText": "discusses travelling for people on a special diet?",
+       "correctAnswer": "D",
+       "explanation": "Pauline: vegetarian, vegans."
+      },
+      {
+       "questionNumber": 10,
+       "type": "matching-info",
+       "questionText": "talks about what is considered polite in different cultures?",
+       "correctAnswer": "C",
+       "explanation": "Qiang Shi: \"if you are just trying to be polite and don't take it the first time…\"."
+      },
+      {
+       "questionNumber": 11,
+       "type": "matching-info",
+       "questionText": "found it difficult to learn a new way of eating?",
+       "correctAnswer": "A",
+       "explanation": "Charles: \"my first few attempts were a disaster\"."
+      },
+      {
+       "questionNumber": 12,
+       "type": "matching-info",
+       "questionText": "talks about producing your own food?",
+       "correctAnswer": "B",
+       "explanation": "Alfredo: \"grow their own vegetables and keep chickens\"."
+      }
+     ]
+    },
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 13–17",
+     "instruction": "Complete these sentences using ONE word from the text. (Ex. 6)",
+     "questions": [
+      {
+       "questionNumber": 13,
+       "type": "fill-blank",
+       "questionText": "In China, if you refuse food, the host will usually ______ the offer.",
+       "correctAnswer": "repeat",
+       "explanation": "C: \"the person will definitely **repeat** the offer\"."
+      },
+      {
+       "questionNumber": 14,
+       "type": "fill-blank",
+       "questionText": "For Alfredo, food plays an important role in a person's ______.",
+       "correctAnswer": "identity",
+       "explanation": "B: \"Food is part of your **identity**\"."
+      },
+      {
+       "questionNumber": 15,
+       "type": "fill-blank",
+       "questionText": "In India, you should not use your ______ when eating.",
+       "correctAnswer": "palm / palms",
+       "explanation": "A: \"You use your fingertips, never the **palm** of your hand\"."
+      },
+      {
+       "questionNumber": 16,
+       "type": "fill-blank",
+       "questionText": "In some countries, eating meat represents ______.",
+       "correctAnswer": "prosperity",
+       "explanation": "D: \"meat equates to **prosperity**\" (equates to = represents)."
+      },
+      {
+       "questionNumber": 17,
+       "type": "fill-blank",
+       "questionText": "In many places in ______, there is no difference between foods eaten for breakfast and dinner.",
+       "correctAnswer": "Asia",
+       "explanation": "E: \"when I travelled in **Asia**, I realised that in many places, there is no difference between breakfast and dinner\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U04-R1"
+  },
+  {
+   "title": "Mindset 1 · Unit 4 — Food TV: education or entertainment?",
+   "content": "<h3>Food TV: education or entertainment?</h3>\n\n<p><strong>A</strong> Shows about cookery have become more and more popular all over the world. But what are the reasons for this, and does it make us cook more? In the UK, BBC viewers complained to the programme Points of View that there were too many cookery shows on TV. In one week, the BBC showed 21 hours of cookery. When shows on other channels were included, this came to an amazing 434.5 hours of food TV.</p>\n\n<p><strong>B</strong> In the past, TV cookery shows were there to teach people how to cook. One of the first famous TV cooks, Julia Child, was American. She began her career as a cook when, in 1948, she moved to Paris and learnt to cook sophisticated French cuisine because her husband loved good food. On her return home, she published a collection of French recipes made simple, for ordinary American housewives to use, which was an instant success. She was invited to do a TV show, where her humour and strong personality soon won her great fame.</p>\n\n<p><strong>C</strong> Nowadays TV chefs are famous for all sorts of different reasons. Gordon Ramsay, for example, is an interesting TV chef. He is famous for having a bad temper and using foul language. In his TV show, Hell's Kitchen, he shouts at his staff when they make mistakes because he wants all the food at his restaurants to be perfect. He has many restaurants in different countries. Jamie Oliver is a good-looking, working-class boy who made healthy eating fashionable. He believes children should eat healthy food and he worked with the government to make school meals healthier. His style of cooking is quick, easy and fun.</p>\n\n<p><strong>D</strong> There are some famous pairs of TV cooks as well. The Hairy Bikers are a pair of chefs who have beards and ride motorbikes. They travel around to different places and cook there. They were both fat but then did a series of shows on how to cook diet food and both lost weight. Another famous pair was the Two Fat Ladies. They cooked unhealthy food using lots of fat and they didn't care about healthy eating. They also rode a motorbike.</p>\n\n<p><strong>E</strong> The introduction of a competitive element to many cookery shows reminds us that food TV is more entertainment than education these days. Many of us love shows like Masterchef, where a contestant is eliminated on every show. The personalities of both the contestants and the judges are far more important than the cookery. In a popular competitive show called The Great British Bake-Off, there was a 'nice judge', Mary Berry, and a 'nasty judge', Paul Hollywood.</p>\n\n<p><strong>F</strong> We know that cooking at home is better for us than eating ready-made or takeaway meals. However, the fact that there is more cookery on TV doesn't necessarily mean people cook more. Different studies have produced different results, but most agree that people generally spend less time cooking than they did in the past. Certain cookery shows influence viewers more than others. One study found that the most influential show was Jamie Oliver's 15 Minute Meals, which influenced 21% of viewers. This may be because his method is to cook quick, simple, healthy meals rather than 'restaurant-style' food.</p>\n\n<p><strong>G</strong> It seems, though, that teaching children to cook at home and at school has much more influence on healthy eating than watching TV programmes on cooking. Grandparents have an important role to play because they may have more time and experience than parents. Cooking with family members on a regular basis and making food preparation part of the school curriculum is likely to ensure that children become adults who can and do cook.</p>",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–7",
+     "instruction": "Read the article about Food TV. Which paragraphs contain the following information? Write the correct letter, A–G. NB You may use any letter more than once.",
+     "matchingOptions": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+     ],
+     "matchingOptionsTitle": "",
+     "matchingReuseAllowed": true,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching-info",
+       "questionText": "The cooking show that affects people most",
+       "correctAnswer": "F",
+       "explanation": "F: \"the most influential show was Jamie Oliver's 15 Minute Meals\" (affects people most = most influential)."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching-info",
+       "questionText": "A TV chef who was first famous as an author",
+       "correctAnswer": "B",
+       "explanation": "B: Julia Child \"published a collection of French recipes… an instant success. She was invited to do a TV show\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching-info",
+       "questionText": "The number of food shows on TV",
+       "correctAnswer": "A",
+       "explanation": "A: \"the BBC showed 21 hours of cookery… 434.5 hours of food TV\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching-info",
+       "questionText": "The role of cookery shows for enjoyment rather than learning",
+       "correctAnswer": "E",
+       "explanation": "E: \"food TV is more entertainment than education these days\"."
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching-info",
+       "questionText": "Why children should be taught to cook at school",
+       "correctAnswer": "G",
+       "explanation": "G: \"making food preparation part of the school curriculum is likely to ensure that children become adults who can and do cook\"."
+      },
+      {
+       "questionNumber": 6,
+       "type": "matching-info",
+       "questionText": "Research about the amount of time people cook",
+       "correctAnswer": "F",
+       "explanation": "F: \"most agree that people generally spend less time cooking than they did in the past\"."
+      },
+      {
+       "questionNumber": 7,
+       "type": "matching-info",
+       "questionText": "Examples of famous cookery partners",
+       "correctAnswer": "D",
+       "explanation": "D: \"There are some famous pairs of TV cooks… The Hairy Bikers… the Two Fat Ladies\"."
+      }
+     ]
+    },
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 8–14",
+     "instruction": "Look at the following descriptions (8–14) and the list of famous chefs. Match each description with the correct chef, A–F. NB You may use any letter more than once.",
+     "matchingOptions": [
+      "Mary Berry",
+      "Jamie Oliver",
+      "The Hairy Bikers",
+      "Gordon Ramsay",
+      "Julia Child",
+      "Two Fat Ladies"
+     ],
+     "matchingOptionsTitle": "Famous chefs",
+     "matchingReuseAllowed": true,
+     "questions": [
+      {
+       "questionNumber": 8,
+       "type": "matching-info",
+       "questionText": "Changed the style of cooking on some of their programmes",
+       "correctAnswer": "C",
+       "explanation": "D: The Hairy Bikers \"were both fat but then did a series of shows on how to cook diet food\"."
+      },
+      {
+       "questionNumber": 9,
+       "type": "matching-info",
+       "questionText": "One of the first TV chefs",
+       "correctAnswer": "E",
+       "explanation": "B: \"One of the first famous TV cooks, Julia Child\"."
+      },
+      {
+       "questionNumber": 10,
+       "type": "matching-info",
+       "questionText": "Helped to get children eating healthy food",
+       "correctAnswer": "B",
+       "explanation": "C: Jamie Oliver \"worked with the government to make school meals healthier\"."
+      },
+      {
+       "questionNumber": 11,
+       "type": "matching-info",
+       "questionText": "The kinder of two judges",
+       "correctAnswer": "A",
+       "explanation": "E: \"a 'nice judge', Mary Berry, and a 'nasty judge', Paul Hollywood\"."
+      },
+      {
+       "questionNumber": 12,
+       "type": "matching-info",
+       "questionText": "Cooked food that was not very good for you",
+       "correctAnswer": "F",
+       "explanation": "D: Two Fat Ladies \"cooked unhealthy food using lots of fat\"."
+      },
+      {
+       "questionNumber": 13,
+       "type": "matching-info",
+       "questionText": "Is very rude to the kitchen workers",
+       "correctAnswer": "D",
+       "explanation": "C: Gordon Ramsay \"shouts at his staff… using foul language\"."
+      },
+      {
+       "questionNumber": 14,
+       "type": "matching-info",
+       "questionText": "Showed people that cooking foreign dishes need not be difficult",
+       "correctAnswer": "E",
+       "explanation": "B: Julia Child published \"French recipes made simple, for ordinary American housewives\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U04-R2"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 1 · Unit 4 — Planning a party meal",
+   "description": "Mike and Jane decide what to cook for a party.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L1_32.mp3",
+   "transcript": "Mike: So, what type of meal do you think we should have at the party, Jane?\nJane: I don't know, Mike. Do you have any ideas?\nMike: What do you think about preparing a Mexican meal?\nJane: I really like Mexican food and we could have some fun Mexican party games, but I think it might be too spicy for some people.\nMike: That's true. We could have pizza. Everybody likes pizza.\nJane: Hmm, I think we should have something healthier.\nMike: I know! We could have salad and roast chicken.\nJane: That sounds like a good idea. And it's fairly simple to prepare. Let's do that.",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–3",
+     "instruction": "Listen to two friends talking about a party they are planning. Match Mike's suggestions (1–3) with Jane's answers (A–C). (Ex. 3)",
+     "matchingOptions": [
+      "I think we should have something healthier.",
+      "That sounds like a good idea. Let's do that.",
+      "I think it might be too spicy for some people."
+     ],
+     "matchingOptionsTitle": "Jane's answers",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching",
+       "questionText": "What do you think about preparing a Mexican meal?",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Làm món Mexico thì sao?\n\nVị trí: Gợi ý 1.\n\nTranscript: “I think it might be too spicy for some people”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching",
+       "questionText": "We could have pizza. Everybody likes pizza.",
+       "correctAnswer": "A",
+       "explanation": "Dịch: Mình có thể làm pizza.\n\nVị trí: Gợi ý 2.\n\nTranscript: “I think we should have something healthier”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "I know! We could have salad and roast chicken.",
+       "correctAnswer": "B",
+       "explanation": "Dịch: Mình làm salad và gà quay nhé!\n\nVị trí: Gợi ý 3.\n\nTranscript: “That sounds like a good idea. And it's fairly simple to prepare. Let's do that”\n\nPhân tích: Họ sẽ làm salad và gà quay."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U04-L1"
+  },
+  {
+   "title": "Mindset 1 · Unit 4 — Preparing the potatoes",
+   "description": "Two friends talk about preparing a meal.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L1_33.mp3",
+   "transcript": "A: So do you think that we now have everything ready for the meal?\nB: Almost, I was just wondering what would be the best way of preparing the potatoes.\nA: Well, you could just boil them and serve them with the fish.\nB: That would be easy, but I don't think it would be very exciting.\nA: What about frying them? Everybody likes fried potatoes.\nB: They aren't very healthy though, and I haven't got much oil left.\nA: You could bake them and serve them with the salad Elly's preparing.\nB: That would taste good, but it takes ages to bake potatoes in the oven. I know, I'll boil them and then put them with Elly's salad.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Question 1",
+     "instruction": "Listen to two friends talking about preparing a meal. (Ex. 4)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "How are they going to prepare the potatoes?",
+       "options": [
+        "boil",
+        "bake",
+        "fry"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Họ sẽ chế biến khoai tây thế nào?\n\nVị trí: Câu cuối.\n\nTranscript: “They aren't very healthy though, and I haven't got much oil left” … “it takes ages to bake potatoes in the oven” … “I know, I'll boil them”\n\nPhân tích: Chiên không tốt cho sức khoẻ, nướng mất quá lâu → luộc. Chờ đến câu quyết định cuối cùng."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U04-L2"
+  },
+  {
+   "title": "Mindset 1 · Unit 4 — Food shopping",
+   "description": "Two friends check their food shopping.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L1_34.mp3",
+   "transcript": "A: Before we go back to the flat, I think we need to check we have everything that we need.\nB: OK, well you went to Arcadia, so I imagine that you got the strawberries and apples from there?\nA: Yes, I did.\nB: Did you notice if they had any cucumbers while you were over there?\nA: I'm not sure. I thought you were going to get them.\nB: Well I went over to Best Buy, and I got some nice carrots and peas, but I didn't like the look of the cucumbers.\nA: Oh, I suppose we can go there on the way back to the station.\nB: Don't forget we need to get some cakes and pastries too. We can get those after we've been to Hampton's to get the lamb and chicken.\nA: OK, good plan.",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–3",
+     "instruction": "Listen to two friends discussing food shopping. Match the names of the shops (1–3) with the different types of food, A–D. (Ex. 5)",
+     "matchingOptions": [
+      "vegetables",
+      "meat",
+      "fruit",
+      "sweets"
+     ],
+     "matchingOptionsTitle": "Types of food",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching",
+       "questionText": "Arcadia",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Arcadia\n\nVị trí: Đầu bài.\n\nTranscript: “you went to Arcadia, so I imagine that you got the strawberries and apples from there?”\n\nPhân tích: strawberries, apples = fruit."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching",
+       "questionText": "Best Buy",
+       "correctAnswer": "A",
+       "explanation": "Dịch: Best Buy\n\nVị trí: Giữa bài.\n\nTranscript: “I went over to Best Buy, and I got some nice carrots and peas”\n\nPhân tích: carrots, peas = vegetables. Dưa chuột cũng ở đây nhưng chưa mua."
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "Hampton's",
+       "correctAnswer": "B",
+       "explanation": "Dịch: Hampton's\n\nVị trí: Cuối bài.\n\nTranscript: “we need to get some cakes and pastries too. We can get those after we've been to Hampton's to get the lamb and chicken”\n\nPhân tích: BẪY: cakes and pastries (D) được nhắc nhưng mua SAU khi đi Hampton's; ở Hampton's họ mua lamb and chicken = meat. D không khớp cửa hàng nào."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U04-L3"
+  },
+  {
+   "title": "Mindset 1 · Unit 4 — Talk of the Town: three restaurants",
+   "description": "A food critic recommends restaurants in Ogdenville.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L1_35.mp3",
+   "transcript": "A: In this new series of 'Talk of the Town' we'll be looking at the different restaurants in and around Ogdenville and getting some tips and recommendations from our resident food critic, Chris Griffin. So Chris, where have you been this week?\nB: Well, one restaurant that I really enjoyed is Adam's. It's on the Town Square. I ordered a steak au poivre and it was perfect.\nA: What's that?\nB: It's a steak in peppercorns – it's quite a typical French dish.\nA: So, is it a French restaurant or a steakhouse?\nB: Well, the chef is French, but it serves food from all over the world. It has a wide variety of dishes. One word of warning though, it gets really busy at weekends, so you should check they have places before you go.\nA: Have you got any other recommendations for us this week, Chris?\nB: Oh, yes. I can really recommend the Duke on Smith Street. I had lobster and it was really tasty. It also has a few vegetarian dishes, but it's the fish dishes that make it famous in the town. The food isn't that low-cost though, so you might want to save going here for a special treat.\nA: What about people who are on a budget? Have you got any suggestions for them?\nB: Yes, I have. The Tower in Market Street is a fashionable restaurant where people can get a good meal at a reasonable price. I had a pizza, but it isn't a fast food restaurant, it specialises in all different types of food from Italy. I've heard that the lasagne is especially good.\nA: Thanks, Chris. You certainly have given us all food for thought.",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–3",
+     "instruction": "Look at the names of restaurants (1–3) and the list of types of restaurant. Match each restaurant with the correct type, A–G. (Ex. 6)",
+     "matchingOptions": [
+      "vegetarian",
+      "steakhouse",
+      "seafood",
+      "Italian",
+      "international",
+      "French",
+      "fast food"
+     ],
+     "matchingOptionsTitle": "Types of restaurant",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching",
+       "questionText": "Adam's",
+       "correctAnswer": "E",
+       "explanation": "Dịch: Adam's\n\nVị trí: Đầu bài.\n\nTranscript: “So, is it a French restaurant or a steakhouse?” … “the chef is French, but it serves food from all over the world”\n\nPhân tích: BẪY: steak au poivre là món Pháp, đầu bếp người Pháp — nhưng nhà hàng phục vụ món khắp thế giới → international."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching",
+       "questionText": "The Duke",
+       "correctAnswer": "C",
+       "explanation": "Dịch: The Duke\n\nVị trí: Giữa bài.\n\nTranscript: “I had lobster” … “It also has a few vegetarian dishes, but it's the fish dishes that make it famous”\n\nPhân tích: BẪY: có vài món chay, nhưng nổi tiếng nhờ món cá → seafood."
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "The Tower",
+       "correctAnswer": "D",
+       "explanation": "Dịch: The Tower\n\nVị trí: Cuối bài.\n\nTranscript: “I had a pizza, but it isn't a fast food restaurant, it specialises in all different types of food from Italy”\n\nPhân tích: BẪY: pizza nhưng \"isn't a fast food restaurant\" → Italian."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U04-L4"
+  },
+  {
+   "title": "Mindset 1 · Unit 4 — Chopsticks and cuisines",
+   "description": "A TV chef talks about Chinese, Japanese and Korean food.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L1_36.mp3",
+   "transcript": "Chef: I suppose one thing that everybody knows about Japanese, Chinese and Korean cooking is that they all use chopsticks rather than knives and forks like people in the West. The chopsticks that people use in the different countries are quite different though. In China the chopsticks tend to be made of wood and are round at the end, whereas in Korea they're made of stainless steel and are rough at the end. This is because in the past the emperor would use silver chopsticks, as they changed colour if there was any poison in the dish. They can be quite tricky to use, but in Korea people use a spoon to eat their rice. In Japan they use a variety of things to make chopsticks. Wood and plastic are the most popular now, but you can find bone, metal and even ivory ones.\nIf we look at the food of the different countries, it's very difficult to talk about China in general terms because it has many different cuisines. So it might be better if we look at Korean and Japanese food a little more. It's well known that Koreans tend to like spicier food and red peppers can be found in a wide number of dishes. I suppose that everybody thinks of sushi when they think of Japanese food, but you can also find a lot of influences from all over Asia and even Europe, for example tempura, which came to Japan from Portugal. Those aren't present in Chinese and Korean food.\nTraditionally, in both Japan and in Korea meat plays less of an important role than in Europe, perhaps because it's so expensive due to the lack of space for keeping animals. That said, both the Japanese and Koreans enjoy meat. Barbecues of all types are popular in Korea and beef forms the basis of many special meals in both of the countries. Now moving back to Chinese cuisine …",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Listen to a famous TV chef talking about different countries and their cuisines. Match the statements with the correct country, A–C. You may use any letter more than once. (Ex. 11)",
+     "matchingOptions": [
+      "China",
+      "Japan",
+      "Korea"
+     ],
+     "matchingOptionsTitle": "Countries",
+     "matchingReuseAllowed": true,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching",
+       "questionText": "They use chopsticks made of several different materials.",
+       "correctAnswer": "B",
+       "explanation": "Dịch: Họ dùng đũa làm từ nhiều chất liệu khác nhau.\n\nVị trí: Đoạn đầu.\n\nTranscript: “In Japan they use a variety of things to make chopsticks. Wood and plastic … bone, metal and even ivory ones”\n\nPhân tích: China: gỗ; Korea: thép không gỉ; Japan: nhiều chất liệu."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching",
+       "questionText": "You can find a lot of different types of regional cooking here.",
+       "correctAnswer": "A",
+       "explanation": "Dịch: Ở đây có nhiều kiểu nấu ăn vùng miền.\n\nVị trí: Đoạn 2.\n\nTranscript: “it's very difficult to talk about China in general terms because it has many different cuisines”\n\nPhân tích: many different cuisines = different types of regional cooking."
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "This place is famous for hot, peppery food.",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Nơi này nổi tiếng với đồ ăn cay.\n\nVị trí: Đoạn 2.\n\nTranscript: “Koreans tend to like spicier food and red peppers can be found in a wide number of dishes”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching",
+       "questionText": "In this country people use recipes that came from different countries.",
+       "correctAnswer": "B",
+       "explanation": "Dịch: Ở nước này người ta dùng công thức đến từ nước khác.\n\nVị trí: Đoạn 2.\n\nTranscript: “you can also find a lot of influences from all over Asia and even Europe, for example tempura, which came to Japan from Portugal”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching",
+       "questionText": "This country is well known for its grilled meat.",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Nước này nổi tiếng với thịt nướng.\n\nVị trí: Đoạn 3.\n\nTranscript: “Barbecues of all types are popular in Korea”\n\nPhân tích: barbecues = grilled meat."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U04-L5"
+  },
+  {
+   "title": "Mindset 1 · Unit 4 — Exam skills: food in Beijing",
+   "description": "An interview with a chef about his TV programme on food in China.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L1_37.mp3",
+   "transcript": "Interviewer: Today in the studio I am pleased to have with me the famous chef, Graham Shepherd. Graham has just come back from Beijing in China, where he was making a TV programme on the food you can try in this historic city. So, Graham, what can you tell us about your trip? Was it how you expected it to be?\nGraham: It was quite surprising really. I suppose that most people think of Beijing duck when they think of Beijing and I did try some of this tasty traditional dish, but with so many people from all over the country living in Beijing there really are a lot of different foods from all regions of the country. One dish that I really enjoyed and I didn't expect to find was kebabs. These tasty snacks are originally from north-west China, but they're very popular street food in Beijing. They're especially popular as a tasty snack at lunchtime for school pupils. They have less meat and more vegetables than we are used to, so they're a bit healthier.\nInterviewer: I'm sure that most people have tried kebabs, but did you try anything that might be unusual for our listeners?\nGraham: Oh, yes. One of the things that I had was jellyfish. It added a nice texture to the dish, but I thought it didn't taste of much. One dish that did have a strong taste was hotpot. The dish I had was made in the Sichuan style, so it was very spicy. What I found interesting was that the hotpot was put on a hotplate in the centre of the table, and we were given a dish of raw food and we chose what we wanted and put it into the pot ourselves, and got it out when it was ready. It was great fun and very sociable. And very tasty!\nInterviewer: I'm sure that you tried some of the dishes that we all know and love too. Can you tell us something interesting about them?\nGraham: Of course, everybody knows about noodles and dumplings, but I doubt many people know how many different types there are! One of the highlights for me was learning how to make fresh noodles with a chef from Northern China. The recipe of egg, salt and wheat flour is quite simple, but to make the noodles by hand you need to be quite a skilful chef.\nSomething which is much simpler to make are dumplings. The basic ingredients are flour and water, but the beauty of this dish is that it's very flexible. You can fill them with whatever you like. I especially enjoyed one with raw prawns, but all sorts of meat and vegetables can be put in them.\nInterviewer: Thanks Graham, that's really interesting, but unfortunately we've run out of time. If you'd like to know more about Graham's adventures, the series will be starting on Thursday at 7 o'clock on Channel 9.",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Choose FOUR answers from the types of food in the box and write the correct letter, A–F, next to questions 1–4. Which of the foods… (Ex. 12)",
+     "matchingOptions": [
+      "Beijing duck",
+      "kebabs",
+      "dumplings",
+      "noodles",
+      "hotpot",
+      "jellyfish"
+     ],
+     "matchingOptionsTitle": "Types of food",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching",
+       "questionText": "is often enjoyed by children?",
+       "correctAnswer": "B",
+       "explanation": "Dịch: Món nào trẻ em thường thích?\n\nVị trí: Đoạn kebabs.\n\nTranscript: “They're especially popular as a tasty snack at lunchtime for school pupils”\n\nPhân tích: school pupils = children."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching",
+       "questionText": "can be cooked in a short time by the dinner guests?",
+       "correctAnswer": "E",
+       "explanation": "Dịch: Món nào khách tự nấu nhanh?\n\nVị trí: Đoạn hotpot.\n\nTranscript: “we were given a dish of raw food and we chose what we wanted and put it into the pot ourselves, and got it out when it was ready”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "needs expertise to make?",
+       "correctAnswer": "D",
+       "explanation": "Dịch: Món nào cần tay nghề?\n\nVị trí: Đoạn noodles.\n\nTranscript: “to make the noodles by hand you need to be quite a skilful chef”\n\nPhân tích: skilful = expertise."
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching",
+       "questionText": "can be adapted to your tastes?",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Món nào thay đổi theo khẩu vị được?\n\nVị trí: Đoạn dumplings.\n\nTranscript: “it's very flexible. You can fill them with whatever you like”\n\nPhân tích: flexible, whatever you like = adapted to your tastes. Duck và jellyfish không dùng."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M1-U04-L6"
+  }
+ ]
+}

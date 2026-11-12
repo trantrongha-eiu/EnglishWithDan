@@ -82,20 +82,20 @@ module.exports = {
         ['stay with a host family', 'ở cùng gia đình bản xứ', 'It is cheaper to stay with a host family.'],
       ],
       ex: [
-        match('Loại kỳ nghỉ trong tranh (Lead-in Ex. 1)', 'Nối tranh 1–4 với loại kỳ nghỉ.', [
+        match('Types of holiday (Lead-in Ex. 1)', 'Match pictures 1–4 with the types of holiday.', [
           ['Picture 1', 'a beach holiday'], ['Picture 2', 'a language exchange'], ['Picture 3', 'an adventure holiday'], ['Picture 4', 'a city break'],
         ], { stimulus: picture('media:m0u04-holidays.jpg', 'Lead-in') }),
-        match('Hoạt động du lịch (Ex. 2)', 'Nối tranh 1–12 với hoạt động.', [
+        match('Holiday activities (Ex. 2)', 'Match pictures 1–12 with the activities.', [
           ['Picture 1', 'try traditional food'], ['Picture 2', 'go horse riding'], ['Picture 3', 'visit water parks'], ['Picture 4', 'go mountain climbing'],
           ['Picture 5', 'go on cycling tours'], ['Picture 6', 'visit beach resorts'], ['Picture 7', 'go shopping'], ['Picture 8', 'see famous buildings'],
           ['Picture 9', 'see local attractions'], ['Picture 10', 'go on day trips'], ['Picture 11', 'go on cultural visits'], ['Picture 12', 'stay with host families'],
         ], { stimulus: picture('media:m0u04-activities.jpg', 'Ex. 2') }),
-        cat('Hoạt động hợp với kỳ nghỉ nào? (G&V Ex. 2)', 'Xếp mỗi hoạt động vào loại kỳ nghỉ phù hợp nhất.', { city: 'city break', adv: 'adventure holiday', beach: 'beach holiday', lang: 'language exchange' }, [
+        cat('Which holiday for each activity? (G&V Ex. 2)', 'Put each activity with the type of holiday it suits best.', { city: 'city break', adv: 'adventure holiday', beach: 'beach holiday', lang: 'language exchange' }, [
           ['go on day trips', 'city'], ['see local attractions', 'city'], ['go shopping', 'city'], ['try traditional food', 'city'], ['see famous buildings', 'city'], ['go on cultural visits', 'city'],
           ['go mountain climbing', 'adv'], ['go horse riding', 'adv'], ['go on cycling tours', 'adv'], ['visit water parks', 'adv'],
           ['visit beach resorts', 'beach'], ['stay with host families', 'lang'],
         ]),
-        gap('Loại kỳ nghỉ (G&V Ex. 1)', 'Hoàn thành câu bằng: a city break, a beach holiday, a family holiday, a language exchange, an adventure holiday.', [
+        gap('Types of holiday (G&V Ex. 1)', 'Complete the sentences with: a city break, a beach holiday, a family holiday, a language exchange, an adventure holiday.', [
           ['You can do lots of activities like cycling and horse-riding on ____.', 'an adventure holiday'],
           ['My friends want to go on ____, but I don\'t enjoy relaxing all the time.', 'a beach holiday'],
           ['I went on ____ to Paris. It was interesting to visit all the museums.', 'a city break'],
@@ -143,11 +143,11 @@ module.exports = {
         ['allow', 'cho phép', 'Their parents will not allow them to travel alone.'],
       ],
       ex: [
-        mcq('Từ khoá của từng người', 'Đọc mô tả về mỗi người và chọn YÊU CẦU QUAN TRỌNG NHẤT của họ.', [
-          ['Tom (19) is very active… He has done a lot of water sports… he would like to try something different… He went to the beach last year, but got bored.', ['muốn nằm biển thư giãn', 'muốn thể thao trên cạn mới lạ, năng động', 'muốn học chèo thuyền buồm'], 'B', 'Tom năng động, muốn thử điều KHÁC thể thao dưới nước, chán biển → Adventure Holidays (D).'],
-          ['Julia (16)… Their parents will not allow their daughters to be in another country without any adults… They both study Spanish.', ['đi một mình ra nước ngoài', 'có người lớn chăm sóc + luyện tiếng Tây Ban Nha', 'đi biển với bạn'], 'B', '→ Language Exchange (F): ở với host family (có người lớn), luyện ngôn ngữ, khám phá châu Âu.'],
-          ['Charlie (21)… prefers holidays in the countryside… would like to get a job working with animals in the future.', ['làm việc với động vật / nông thôn', 'thành phố, bảo tàng', 'ẩm thực'], 'A', '→ Wildlife Experience (A).'],
-          ['Joanna (32)… very tired after a busy term… somewhere hot and near the sea. She wants to relax and not do very much.', ['nóng + biển + thư giãn', 'leo núi', 'học nấu ăn'], 'A', '→ Beach Escape (E).'],
+        mcq('Each person\'s key words', 'Read the description of each person and choose their MOST IMPORTANT requirement.', [
+          ['Tom (19) is very active… He has done a lot of water sports… he would like to try something different… He went to the beach last year, but got bored.', ['relaxing on a beach', 'a new, active sport on land', 'learning to sail'], 'B', 'Tom năng động, muốn thử điều KHÁC thể thao dưới nước, chán biển → Adventure Holidays (D).'],
+          ['Julia (16)… Their parents will not allow their daughters to be in another country without any adults… They both study Spanish.', ['travelling abroad alone', 'adults to look after them + practising Spanish', 'a beach holiday with friends'], 'B', '→ Language Exchange (F): ở với host family (có người lớn), luyện ngôn ngữ, khám phá châu Âu.'],
+          ['Charlie (21)… prefers holidays in the countryside… would like to get a job working with animals in the future.', ['working with animals / the countryside', 'cities and museums', 'food'], 'A', '→ Wildlife Experience (A).'],
+          ['Joanna (32)… very tired after a busy term… somewhere hot and near the sea. She wants to relax and not do very much.', ['somewhere hot + the sea + relaxing', 'mountain climbing', 'learning to cook'], 'A', '→ Beach Escape (E).'],
         ]),
       ],
     },
@@ -168,14 +168,14 @@ module.exports = {
         { grammar: 'present-simple', title: 'Present Simple', note: 'so sánh với hiện tại đơn' },
       ],
       ex: [
-        mcq('Hiện tại hay quá khứ? (Ex. 13–14)', 'Đọc lại lời Anna và chọn đáp án đúng.', [
-          ['"I\'m not very good at sports." — câu này diễn tả…', ['một trạng thái ở hiện tại', 'một thói quen', 'một việc đã xong trong quá khứ'], 'A'],
-          ['"I study French and Spanish at school." — câu này diễn tả…', ['một trạng thái ở hiện tại', 'một thói quen / hoạt động thường xuyên', 'một việc đã xong trong quá khứ'], 'B'],
-          ['"I decided to go to Spain instead." — câu này diễn tả…', ['một thói quen', 'một việc đã xong trong quá khứ'], 'B'],
+        mcq('Present or past? (Ex. 13–14)', 'Read what Anna says again and choose the correct answer.', [
+          ['"I\'m not very good at sports." — this sentence describes…', ['a state in the present', 'a habit', 'a finished action in the past'], 'A'],
+          ['"I study French and Spanish at school." — this sentence describes…', ['a state in the present', 'a habit / regular activity', 'a finished action in the past'], 'B'],
+          ['"I decided to go to Spain instead." — this sentence describes…', ['a habit', 'a finished action in the past'], 'B'],
           ['"Students can travel to France or Spain." — thì gì?', ['Present simple', 'Past simple'], 'A'],
           ['"I didn\'t go to the USA." — thì gì?', ['Present simple', 'Past simple'], 'B'],
         ]),
-        gap('Sửa động từ sai trong tóm tắt (Ex. 15)', 'Bản tóm tắt về Anna có 6 động từ sai thì. Viết dạng đúng (nếu đúng rồi, chép lại).', [
+        gap('Correct the verbs in the summary (Ex. 15)', 'The summary about Anna has six verbs in the wrong tense. Write the correct form (if a verb is already correct, copy it).', [
           ['Anna ____ (1: study) French and Spanish at school at the moment.', 'studies', 'at the moment + thói quen hiện tại, she → studies.'],
           ['Last summer, she ____ (2: goes) to Spain on a language exchange…', 'went', 'last summer → quá khứ.'],
           ['…where she ____ (3: stayed) with a family in a village.', 'stayed', 'Đã đúng.'],
@@ -183,7 +183,7 @@ module.exports = {
           ['…____ (5: was) a good experience for her…', 'was', 'Đã đúng.'],
           ['…although she ____ (6: wasn\'t) much better at Spanish now than before.', 'isn\'t|is not', 'now → hiện tại: isn\'t.'],
         ]),
-        mcq('Hội thoại về kỳ nghỉ (G&V Ex. 5)', 'Chọn đáp án đúng.', [
+        mcq('A conversation about holidays (G&V Ex. 5)', 'Choose the correct answer.', [
           ['A: ____ going on holiday?', ['Do you like', 'You like'], 'A'],
           ['B: Yes, ____. I always have a great time on holiday with my family.', ['I do', 'I did'], 'A'],
           ['A: I do, too. Where ____?', ['did you usually go', 'do you usually go'], 'B', 'usually → hiện tại đơn.'],
@@ -195,7 +195,7 @@ module.exports = {
           ['A: I ____ plays. I think they are boring.', ['not really like', 'don\'t really like'], 'B'],
           ['B: I thought that, too, but this one ____ boring at all.', ['wasn\'t', 'didn\'t'], 'A'],
         ]),
-        gap('Email của Sarah (G&V Ex. 6)', 'Chia động từ trong ngoặc ở hiện tại đơn hoặc quá khứ đơn.', [
+        gap('Sarah\'s email (G&V Ex. 6)', 'Put the verbs in brackets into the present simple or past simple.', [
           ['I ____ (go) to Germany with my family last February.', 'went'],
           ['My family and I ____ (not like) beach holidays, so we ____ (decide) to go to Berlin for a weekend.', ['don\'t like|do not like', 'decided']],
           ['Usually on holiday, I ____ (enjoy) visiting lots of famous museums but we ____ (not have) time to see everything.', ['enjoy', 'didn\'t have|did not have']],
@@ -231,11 +231,11 @@ module.exports = {
         ['I really enjoyed it', 'tôi thực sự rất thích', 'It was short, but I really enjoyed it.'],
       ],
       ex: [
-        mcq('Đọc nhanh email của Simon (Ex. 16)', 'Đọc nhanh email trong 2 phút và trả lời.', [
+        mcq('Read Simon\'s email quickly (Ex. 16)', 'Read the email quickly (two minutes) and answer the question.', [
           ['Where did Simon go?', ['Barcelona', 'Madrid', 'Seville'], 'B'],
           ['Why was this holiday different to his trips before?', ['It was a city break and the weather was cold; normally he goes on beach holidays in warm weather.', 'He went with his family for the first time.', 'He stayed with a host family.'], 'A'],
         ], { stimulus: passage(SIMON, { caption: 'Email from Simon' }) }),
-        gap('Chia động từ trong email của Simon (Ex. 17)', 'Chia động từ trong ngoặc.', [
+        gap('Verbs in Simon\'s email (Ex. 17)', 'Put the verbs in brackets into the correct form.', [
           ['I ____ (go) to Madrid for my last holiday – it ____ (be) great!', ['went', 'was']],
           ['On the first day, I ____ (visit) some of the famous sights. Normally, I ____ (go) to hot places.', ['visited', 'go']],
           ['On my second day, I ____ (go) shopping and ____ (buy) some souvenirs.', ['went', 'bought']],
@@ -244,11 +244,11 @@ module.exports = {
           ['I ____ (try) a traditional meal. It ____ (be) delicious.', ['tried', 'was']],
           ['I ____ (take) lots of photos. What ____ you do on your holiday?', ['took', 'did']],
         ]),
-        cat('Email của Simon có gì? (Ex. 18)', 'Đặc điểm nào CÓ trong email của Simon, đặc điểm nào KHÔNG?', { y: 'Có', n: 'Không' }, [
+        cat('What is in Simon\'s email? (Ex. 18)', 'Which features ARE in Simon\'s email and which are NOT?', { y: 'Yes – in the email', n: 'No – not in the email' }, [
           ['He uses a greeting to start the email.', 'y'], ['He says where he went on holiday.', 'y'], ['He says how he travelled there.', 'n'], ['He says how long he stayed.', 'n'],
           ['He says what he did on holiday.', 'y'], ['He says what he usually does on holiday.', 'y'], ['He asks about his friend\'s last holiday.', 'y'], ['He asks about his friend\'s next holiday.', 'n'], ['He finishes with his name at the end.', 'y'],
         ]),
-        write('Viết email kể về kỳ nghỉ (Ex. 19)', 'Bạn của bạn, Hannah, muốn biết về kỳ nghỉ gần nhất của bạn: bạn đã đi đâu và làm gì. Viết email cho Hannah (150–175 từ). Trong email: (1) nói bạn đã đi đâu; (2) kể bạn đã làm gì ở đó; (3) hỏi Hannah về kỳ nghỉ gần nhất của bạn ấy.', {
+        write('Write an email about a holiday (Ex. 19)', 'Your friend Hannah wants to know about your last holiday: where you went and what you did. Write an email to Hannah (150–175 words). In your email: (1) say where you went; (2) say what you did there; (3) ask Hannah about her last holiday.', {
           minWords: 140, maxWords: 190, mustUse: 4,
           targetStructures: ['went', 'visited', 'was', 'On the first day', 'usually', 'What did you', 'Where did you'],
           checklist: ['Lời chào (Hi Hannah,) và tên ở cuối', 'Nói đã đi đâu', 'Kể đã làm gì (theo ngày/thứ tự)', 'Hỏi Hannah về kỳ nghỉ của bạn ấy', 'Dùng đúng quá khứ đơn (động từ bất quy tắc)', '150–175 từ'],
@@ -290,7 +290,7 @@ module.exports = {
         ['improve', 'cải thiện', 'My language skills have improved a little.'],
       ],
       ex: [
-        mcq('Vì sao C là đáp án đúng? (Ex. 8)', 'Đọc Part 1 và trả lời.', [
+        mcq('Why is C the correct answer? (Ex. 8)', 'Read Part 1 and answer the question.', [
           ['Why did Anna decide to go on a language exchange programme in Spain?', ['She is good at sports.', 'She studies Spanish and not French.', 'She wanted to go somewhere new.'], 'C', '"I\'ve been to France before, so I decided to go to Spain instead." A sai (không giỏi thể thao); B sai (học CẢ tiếng Pháp và Tây Ban Nha).'],
         ], { stimulus: passage(PART1.split('\n').slice(-1)[0].replace('Anna: ', ''), { caption: 'Part 1 (tr. 51)' }) }),
       ],
@@ -324,25 +324,25 @@ module.exports = {
         ['in the end', 'cuối cùng', 'In the end, we stayed for three days.'],
       ],
       ex: [
-        match('Nối hai nửa câu (Ex. 10)', 'Nối hai nửa câu trong lời Anna.', [
+        match('Match the sentence halves (Ex. 10)', 'Match the two halves of the sentences from what Anna says.', [
           ['I didn\'t go to the USA', 'because I\'m not very good at sports.'],
           ['The family had a daughter my age called Carmen,', 'so we had a lot of fun together.'],
           ['As I love animals', 'it was a really good experience for me.'],
           ['Carmen spoke really good English,', 'so I was worried that I wouldn\'t improve my Spanish.'],
         ]),
-        mcq('As, so hay because? (Ex. 11, G&V Ex. 8)', 'Chọn từ nối đúng.', [
+        mcq('As, so or because? (Ex. 11, G&V Ex. 8)', 'Choose the correct linking word.', [
           ['I didn\'t go on the language exchange ____ my language level wasn\'t high enough.', ['because', 'so'], 'A', 'Theo sau là LÝ DO.'],
           ['____ we enjoy kayaking, we decided to go on an adventure holiday this year.', ['As', 'So'], 'A', 'As + lý do ở đầu câu.'],
           ['The host family spoke English really well ____ I wasn\'t worried.', ['so', 'because'], 'A', 'Theo sau là KẾT QUẢ.'],
           ['We prefer city breaks ____ we enjoy exploring new places.', ['so', 'because'], 'B'],
           ['____ my parents enjoy trying traditional food, they went on a food tour.', ['So', 'As'], 'B'],
         ]),
-        speak('Nói: trả lời có lý do (Ex. 12)', 'Trả lời từng câu hỏi trong 20–30 giây, dùng as / so / because để giải thích.', 1, [
+        speak('Speaking: give reasons (Ex. 12)', 'Answer each question in 20–30 seconds. Use as / so / because to explain.', 1, [
           ['If you were on a language exchange, would you like to stay with a host family or in a hotel? Why?', 'I would definitely prefer a host family, because I could practise speaking English every day. As they know the area well, they could also show me interesting places that tourists don\'t usually see.', 'because + as, có hai lý do.'],
           ['What do you like more – holidays with your friends or holidays with your family? Why?', 'I like holidays with my friends more because we like the same activities, so we never get bored. With my family, we usually just relax at the beach, which is nice but a bit boring for me.', 'So sánh hai lựa chọn.'],
           ['What\'s better: a beach holiday or a city break? Why?', 'For me, a city break is better. As I love history and old buildings, I always want to visit museums. I get bored quickly on the beach, so I don\'t often choose beach holidays.', 'As + so.'],
         ]),
-        speak('Nói: một chuyến đi bạn rất thích (Ex. 22–23)', 'Đọc đề, chuẩn bị 1 phút (ghi từ khoá), rồi nói 1–2 phút.', 2, [
+        speak('Speaking: a trip you really enjoyed (Ex. 22–23)', 'Read the task, prepare for one minute (make notes), then speak for 1–2 minutes.', 2, [
           ['Describe a trip you really liked.\nYou should say:\n• where you went\n• what you did on the trip\n• why you went\nand explain why you liked it so much.', 'I\'d like to talk about a trip to Da Lat that I went on with my classmates last December. Da Lat is a city in the mountains in the south of Vietnam, and it\'s famous for its cool weather and flowers. We went there because it was the end of our school term and our teacher organised a trip to celebrate. We travelled by coach and the journey took about seven hours, so we sang songs and played games on the way. During the trip, we visited a beautiful flower garden, walked around Xuan Huong Lake and went to the night market, where I tried grilled rice paper for the first time. It was delicious! On the second day, we got up very early to watch the sunrise from a hill, and that was amazing. I liked this trip so much because I spent time with my best friends without our parents for the first time, so I felt very free and grown-up. Also, as the weather in my city is always hot, it was really nice to wear a jacket and feel cold. I\'ll never forget it.', 'Đi đủ 4 ý trên thẻ theo thứ tự; nhiều chi tiết (thời gian, ai, phương tiện, món ăn); dùng because / so / as cho phần giải thích.'],
         ]),
       ],
@@ -354,7 +354,7 @@ module.exports = {
       minutes: 30,
       objectives: ['Ôn hoạt động du lịch, tính từ mô tả và quá khứ đơn của Unit 4'],
       ex: [
-        gap('Hoạt động du lịch trong câu (G&V Ex. 3)', 'Điền cụm từ đúng: visit water parks, go on day trips, go shopping, go horse-riding, go on a cycling tour, go on a cultural visit, visit a beach resort, go mountain climbing, visit local attractions, stay with a host family.', [
+        gap('Holiday activities (G&V Ex. 3)', 'Complete the sentences with: visit water parks, go on day trips, go shopping, go horse-riding, go on a cycling tour, go on a cultural visit, visit a beach resort, go mountain climbing, visit local attractions, stay with a host family.', [
           ['We often ____ in the airport where you can buy things more cheaply.', 'go shopping'],
           ['When I visit my aunt, we often ____ in the countryside. I love animals.', 'go horse-riding|go horse riding'],
           ['You can ____ like a 9th century castle in my town.', 'visit local attractions'],
@@ -366,7 +366,7 @@ module.exports = {
           ['When you ____ in a city, you have the chance to see museums and art galleries.', 'go on a cultural visit'],
           ['If you ____ you can enjoy being by the sea.', 'visit a beach resort'],
         ]),
-        gap('Tính từ mô tả (G&V Ex. 4)', 'Điền: boring, local, natural, traditional, famous, cultural, fun, popular, delicious, interesting.', [
+        gap('Describing adjectives (G&V Ex. 4)', 'Complete the sentences with: boring, local, natural, traditional, famous, cultural, fun, popular, delicious, interesting.', [
           ['The USA is a very ____ country to visit. Last year, it had over a million visitors.', 'popular'],
           ['I think it is more ____ to go on holiday with friends than with family.', 'fun'],
           ['I would prefer to see animals in their ____ environment than in a zoo.', 'natural'],
@@ -378,7 +378,7 @@ module.exports = {
           ['The Eiffel Tower is the most ____ building in Paris.', 'famous'],
           ['I love to eat ____ food when I go on holiday.', 'traditional'],
         ], { wordBank: ['boring', 'local', 'natural', 'traditional', 'famous', 'cultural', 'fun', 'popular', 'delicious', 'interesting'] }),
-        match('Nối nửa câu (G&V Ex. 7)', 'Nối hai nửa câu.', [
+        match('Match the sentence halves (G&V Ex. 7)', 'Match the two halves of the sentences.', [
           ['I go to French lessons', 'twice a week.'], ['The weather in Stockholm wasn\'t very nice', 'when we visited in December.'],
           ['I\'m not good at sport', 'but I enjoy hiking and horse-riding.'], ['Did you decide to', 'stay with a host family?'], ['Are you good', 'at sailing?'],
         ]),

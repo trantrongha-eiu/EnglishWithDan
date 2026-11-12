@@ -1,0 +1,642 @@
+{
+ "modules": [
+  {
+   "code": "M1-U02",
+   "order": 2,
+   "title": "Unit 2 · Nơi chốn và công trình",
+   "titleEn": "UNIT 02: PLACES AND BUILDINGS — sách tr. 24–29, 35–38",
+   "outcomes": [
+    "Reading: skimming & scanning; nhận diện paraphrase; sentence completion (chép từ trong bài)",
+    "Grammar: hiện tại đơn và quá khứ đơn trong bài đọc",
+    "Listening: short-answer questions; nghe đánh vần tên riêng, địa chỉ, website",
+    "Từ vựng nhà ở, công trình và địa điểm trong thành phố (Sổ 1)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M1-U02-L1",
+   "moduleCode": "M1-U02",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: unusual homes",
+   "titleEn": "Lead-in · Skimming and scanning (pp. 24–26)",
+   "durationMinutes": 35,
+   "objectives": [
+    "Gọi tên các kiểu nhà đặc biệt: treehouse, houseboat, igloo, shipping container home",
+    "Skim bài \"Amazing homes\" trong 1 phút để nắm ý chính",
+    "Phân biệt skimming và scanning"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Skimming và scanning",
+     "titleEn": "Skimming and scanning a text",
+     "formula": [
+      "**Skimming** = đọc lướt nhanh để biết bài nói về **cái gì** (ý chính).",
+      "**Scanning** = đọc lướt để **tìm một thông tin cụ thể** (từ khoá, số, tên riêng)."
+     ],
+     "usage": [
+      "Trước khi xem câu hỏi: đọc lướt cả bài **không quá 1 phút**.",
+      "Bỏ qua từ chức năng (the, they, our, through); để ý **từ nội dung** — danh từ, động từ.",
+      "Đọc câu hỏi → scan tìm từ khoá hoặc từ đồng nghĩa → đọc kỹ đoạn đó."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 9,
+   "images": [
+    {
+     "url": "media:m1u02-homes.jpg",
+     "caption": "Ex. 3 (p. 25): A–D — find the igloo, treehouse, houseboat and shipping container homes"
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 2 · Lead-in & Vocabulary: unusual homes — 36 từ/cụm từ",
+    "words": [
+     {
+      "word": "luxury apartment",
+      "meaning": "căn hộ cao cấp",
+      "example": "I would like to live in a luxury apartment in the city."
+     },
+     {
+      "word": "treehouse",
+      "meaning": "nhà trên cây",
+      "example": "They enjoyed a holiday in a treehouse in Sussex."
+     },
+     {
+      "word": "houseboat",
+      "meaning": "nhà thuyền",
+      "example": "Amsterdam is famous for its houseboats."
+     },
+     {
+      "word": "shipping container",
+      "meaning": "công-te-nơ vận chuyển hàng",
+      "example": "People live in homes made from shipping containers."
+     },
+     {
+      "word": "guest house",
+      "meaning": "nhà nghỉ",
+      "example": "When they go on holiday they stay in a hotel or a guest house."
+     },
+     {
+      "word": "terrace",
+      "meaning": "sân thượng, sân hiên",
+      "example": "Some houseboats even have a terrace on the roof."
+     },
+     {
+      "word": "be close to nature",
+      "meaning": "gần gũi với thiên nhiên",
+      "example": "People who live on houseboats enjoy being close to nature."
+     },
+     {
+      "word": "permanently",
+      "meaning": "cố định, vĩnh viễn",
+      "example": "Others are permanently in one place."
+     },
+     {
+      "word": "transparent",
+      "meaning": "trong suốt",
+      "example": "The couple live in a transparent house."
+     },
+     {
+      "word": "daylight",
+      "meaning": "ánh sáng ban ngày",
+      "example": "There is plenty of daylight but no privacy."
+     },
+     {
+      "word": "privacy",
+      "meaning": "sự riêng tư",
+      "example": "A glass house has no privacy."
+     },
+     {
+      "word": "architect",
+      "meaning": "kiến trúc sư",
+      "example": "Architect Sou Fujimoto designed it."
+     },
+     {
+      "word": "be surrounded by",
+      "meaning": "được bao quanh bởi",
+      "example": "They love being surrounded by the natural world."
+     },
+     {
+      "word": "the natural world",
+      "meaning": "thế giới tự nhiên",
+      "example": "They love the feeling of being surrounded by the natural world."
+     },
+     {
+      "word": "eco-friendly",
+      "meaning": "thân thiện với môi trường",
+      "example": "Containers are cheap to buy and eco-friendly."
+     },
+     {
+      "word": "utility room",
+      "meaning": "phòng tiện ích (giặt giũ, để đồ)",
+      "example": "They can be used as studies or utility rooms."
+     },
+     {
+      "word": "refugee",
+      "meaning": "người tị nạn",
+      "example": "Van Bo Le-Mentzel, a refugee from Laos, built it."
+     },
+     {
+      "word": "draw attention to",
+      "meaning": "thu hút sự chú ý đến",
+      "example": "He built it to draw attention to the world housing shortage."
+     },
+     {
+      "word": "housing shortage",
+      "meaning": "tình trạng thiếu nhà ở",
+      "example": "There is a housing shortage all over the world."
+     },
+     {
+      "word": "wooden structure",
+      "meaning": "kết cấu bằng gỗ",
+      "example": "It is a wooden structure on wheels."
+     },
+     {
+      "word": "uncomfortable",
+      "meaning": "không thoải mái",
+      "example": "He found it a bit uncomfortable!"
+     },
+     {
+      "word": "get away from",
+      "meaning": "thoát khỏi, tránh xa",
+      "example": "It was the perfect place to get away from our busy lives."
+     },
+     {
+      "word": "busy lives",
+      "meaning": "cuộc sống bận rộn",
+      "example": "We wanted to get away from our busy lives."
+     },
+     {
+      "word": "well equipped",
+      "meaning": "được trang bị đầy đủ",
+      "example": "The treehouse was very well equipped."
+     },
+     {
+      "word": "occupant",
+      "meaning": "người cư ngụ",
+      "example": "Houseboat occupants like living close to nature."
+     },
+     {
+      "word": "make sb feel at home",
+      "meaning": "khiến ai thấy thoải mái như ở nhà",
+      "example": "I did everything I could to make Brigitte feel at home."
+     },
+     {
+      "word": "homesick",
+      "meaning": "nhớ nhà",
+      "example": "I knew I would spend three weeks homesick and sad."
+     },
+     {
+      "word": "school trip",
+      "meaning": "chuyến đi do trường tổ chức",
+      "example": "I first went away from home on a school trip."
+     },
+     {
+      "word": "host family",
+      "meaning": "gia đình bản xứ (nhận khách ở cùng)",
+      "example": "The host families were waiting to meet us."
+     },
+     {
+      "word": "exchange partner",
+      "meaning": "bạn trong chương trình trao đổi",
+      "example": "I heard the name of my exchange partner."
+     },
+     {
+      "word": "unfamiliar",
+      "meaning": "lạ lẫm, không quen thuộc",
+      "example": "Would I be able to eat the unfamiliar food?"
+     },
+     {
+      "word": "welcoming",
+      "meaning": "niềm nở, hiếu khách",
+      "example": "The whole family were kind and welcoming."
+     },
+     {
+      "word": "cosy",
+      "meaning": "ấm cúng",
+      "example": "My room was cosy and warm."
+     },
+     {
+      "word": "familiar",
+      "meaning": "quen thuộc",
+      "example": "The smell of apples baking became familiar."
+     },
+     {
+      "word": "comforting",
+      "meaning": "dễ chịu, an ủi",
+      "example": "The smells became familiar and comforting."
+     },
+     {
+      "word": "a warm welcome",
+      "meaning": "sự chào đón nồng hậu",
+      "example": "I now understood the importance of a warm welcome."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M1-U02-L2",
+   "moduleCode": "M1-U02",
+   "order": 2,
+   "title": "📖 Reading: paraphrase & sentence completion",
+   "titleEn": "Understanding paraphrase · Sentence completion · Exam skills (pp. 27–29)",
+   "durationMinutes": 50,
+   "objectives": [
+    "Nhận ra paraphrase — cùng ý nhưng khác từ",
+    "Làm sentence completion: chép đúng từ trong bài, đúng số từ, đúng ngữ pháp",
+    "Luyện đề: Home from home (6 câu, NO MORE THAN THREE WORDS)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Paraphrase",
+     "titleEn": "Understanding paraphrase",
+     "formula": [],
+     "usage": [
+      "Câu hỏi IELTS **không dùng y nguyên từ** trong bài: houseboats → *homes on the water*; privacy → *not being watched by others*; permanently → *forever, always*.",
+      "Khi scan, tìm **cả từ đồng nghĩa** của từ khoá, không chỉ chính từ đó."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Sentence completion",
+     "titleEn": "How to do sentence completion questions",
+     "formula": [
+      "① Gạch chân từ khoá trong câu (houseboat occupants) → ② scan tìm từ khoá hoặc từ cùng nghĩa (people who live on houseboats) → ③ đọc kỹ câu quanh đó (like living = enjoy being) → ④ chọn từ điền vào."
+     ],
+     "usage": [
+      "Kiểm tra lại: **nghĩa** câu khớp với bài; **ngữ pháp** đúng; **số ít/số nhiều**; **đúng số từ** cho phép.",
+      "Ví dụ: Houseboat occupants like living ______ → **close to nature**."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 9,
+   "practiceLinks": [
+    {
+     "ref": "reading:M1-U02-R1",
+     "kind": "reading",
+     "title": "Amazing homes — sentence completion (Ex. 9)",
+     "note": "4 câu, NO MORE THAN TWO WORDS."
+    },
+    {
+     "ref": "reading:M1-U02-R2",
+     "kind": "reading",
+     "title": "Exam skills: Home from home (Ex. 13)",
+     "note": "6 câu, NO MORE THAN THREE WORDS."
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L3",
+   "moduleCode": "M1-U02",
+   "order": 3,
+   "title": "🧩 Grammar focus: present simple & past simple",
+   "titleEn": "Grammar focus: past simple and present simple (p. 28)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Biết vì sao bài đọc đổi thì: hiện tại đơn mô tả ngôi nhà, quá khứ đơn kể trải nghiệm",
+    "Chọn và chia đúng hiện tại đơn / quá khứ đơn"
+   ],
+   "keyLanguage": [
+    "**Hiện tại đơn**: mô tả sự vật, thói quen, điều luôn đúng — Houseboats **have** everything a normal house has.",
+    "**Quá khứ đơn**: kể trải nghiệm, việc đã xảy ra (thiết kế, xây dựng) — Sou Fujimoto **designed** it. We **slept** in an igloo last night.",
+    "Dấu hiệu: now, nowadays, usually → hiện tại · last year, in 2010, once, in the past → quá khứ."
+   ],
+   "theory": [
+    {
+     "title": "Nhận diện thì khi đọc lướt",
+     "titleEn": "Tenses in a passage",
+     "formula": [],
+     "usage": [
+      "Lần đọc lướt đầu tiên, để ý bài viết chủ yếu ở **quá khứ, hiện tại hay tương lai**, và thì có **thay đổi** không — giúp bạn hiểu bài nhanh hơn (TIP của sách)."
+     ],
+     "examples": [
+      {
+       "en": "Most people in China live in flats.",
+       "vi": "Sự thật chung → hiện tại đơn."
+      },
+      {
+       "en": "In 2010, my parents moved to Australia.",
+       "vi": "Mốc quá khứ → quá khứ đơn."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 15,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Present Simple",
+     "note": "mô tả, sự thật chung",
+     "url": "/essential-grammar.html?lesson=present-simple"
+    },
+    {
+     "kind": "grammar",
+     "title": "Past Simple",
+     "note": "kể lại trải nghiệm",
+     "url": "/essential-grammar.html?lesson=past-simple"
+    }
+   ]
+  },
+  {
+   "code": "M1-U02-L4",
+   "moduleCode": "M1-U02",
+   "order": 4,
+   "title": "🎧 Listening: short-answer questions & spelling names",
+   "titleEn": "Lead-in · Spelling names · Short-answer questions · Exam skills (pp. 35–38)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Từ vựng địa điểm trong thành phố",
+    "Nghe đánh vần: double D, \"with an e\", all one word",
+    "Đọc câu hỏi, đoán loại đáp án (số, ngày, tên, nơi chốn…)",
+    "Short-answer: đúng số từ, đúng chính tả, viết số bằng chữ số"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nghe đánh vần tên riêng",
+     "titleEn": "Spelling names",
+     "formula": [],
+     "usage": [
+      "Section 1 hay có **tên người, tên đường, website** — thường được **đánh vần một lần** duy nhất. Sai một chữ là mất điểm.",
+      "Cụm hay gặp: **double D** = DD · **with an \"e\" (at the end)** = có chữ e (Clark**e**) · **all one word** = viết liền (getactive) · **no \"H\"** = Jon (không phải John).",
+      "Ôn bảng chữ cái: dễ nhầm **A/E/I**, **G/J**, **B/V**, **M/N**."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Short-answer questions",
+     "titleEn": "Short-answer questions in Listening",
+     "formula": [
+      "① Đọc câu hỏi, gạch chân **từ khoá** → ② đoán **loại thông tin** (a date, a price, a time, a place, a name…) → ③ nghe và viết đúng **số từ cho phép**."
+     ],
+     "usage": [
+      "Viết số bằng **chữ số** (7.50, 15) — nhanh hơn và ít sai chính tả hơn.",
+      "Đáp án \"shoes\" đúng; \"he bought shoes\" = 3 từ → SAI nếu đề cho ONE WORD.",
+      "Hay có bẫy **sửa lại**: \"Did you say $50?\" – \"No, $15.\""
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 6,
+   "totalPoints": 34,
+   "images": [
+    {
+     "url": "media:m1u02-places.jpg",
+     "caption": "Ex. 1 (p. 35): places in a town A–G"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M1-U02-L1",
+     "kind": "listening",
+     "title": "Two short conversations: where are the speakers? (Ex. 3)",
+     "note": "Nghe xem người nói đang ở đâu."
+    },
+    {
+     "ref": "listening:M1-U02-L2",
+     "kind": "listening",
+     "title": "Spelling names (Ex. 4–5)",
+     "note": "Website, tên người, địa chỉ được đánh vần."
+    },
+    {
+     "ref": "listening:M1-U02-L3",
+     "kind": "listening",
+     "title": "A meal out (Ex. 9)",
+     "note": "NO MORE THAN ONE WORD AND/OR A NUMBER."
+    },
+    {
+     "ref": "listening:M1-U02-L4",
+     "kind": "listening",
+     "title": "Waiting for the bus (Ex. 11)",
+     "note": "7.15 hay 7.50? Blythe viết thế nào?"
+    },
+    {
+     "ref": "listening:M1-U02-L5",
+     "kind": "listening",
+     "title": "A sailing course (Ex. 12)",
+     "note": "4 câu short-answer."
+    },
+    {
+     "ref": "listening:M1-U02-L6",
+     "kind": "listening",
+     "title": "Exam skills: a bike tour in Orientation Week (Ex. 15)",
+     "note": "8 câu — kiểm tra chính tả và số từ."
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 2 · Listening: short-answer questions & spelling names — 34 từ/cụm từ",
+    "words": [
+     {
+      "word": "facilities",
+      "meaning": "cơ sở vật chất, tiện nghi",
+      "example": "I'd like some information about your facilities."
+     },
+     {
+      "word": "squash court",
+      "meaning": "sân bóng quần",
+      "example": "We have a swimming pool and squash courts."
+     },
+     {
+      "word": "become a member",
+      "meaning": "trở thành hội viên",
+      "example": "Our website tells you how you can become a member."
+     },
+     {
+      "word": "yearly fee",
+      "meaning": "phí hằng năm",
+      "example": "How much is the yearly fee?"
+     },
+     {
+      "word": "make a note of",
+      "meaning": "ghi lại",
+      "example": "Do you want to make a note of the address?"
+     },
+     {
+      "word": "open an account",
+      "meaning": "mở tài khoản",
+      "example": "I'd like to open a new account."
+     },
+     {
+      "word": "savings account",
+      "meaning": "tài khoản tiết kiệm",
+      "example": "Is it a basic account or a savings account?"
+     },
+     {
+      "word": "complete an application",
+      "meaning": "hoàn thành đơn đăng ký",
+      "example": "We can complete your application online."
+     },
+     {
+      "word": "personal details",
+      "meaning": "thông tin cá nhân",
+      "example": "I just need a few personal details."
+     },
+     {
+      "word": "a good choice of",
+      "meaning": "nhiều lựa chọn về",
+      "example": "There was a really good choice of meat and fish."
+     },
+     {
+      "word": "far too many",
+      "meaning": "quá nhiều",
+      "example": "There were far too many fish dishes."
+     },
+     {
+      "word": "can't stand",
+      "meaning": "không chịu nổi",
+      "example": "I can't stand seafood."
+     },
+     {
+      "word": "much too expensive",
+      "meaning": "quá đắt",
+      "example": "It was much too expensive."
+     },
+     {
+      "word": "including a tip",
+      "meaning": "đã bao gồm tiền boa",
+      "example": "£40, including a tip."
+     },
+     {
+      "word": "pick sb up",
+      "meaning": "đón ai",
+      "example": "Do you want me to pick you up?"
+     },
+     {
+      "word": "be due",
+      "meaning": "dự kiến đến (xe, tàu)",
+      "example": "There's a bus due in about 15 minutes."
+     },
+     {
+      "word": "run on time",
+      "meaning": "chạy đúng giờ",
+      "example": "It seems to be running on time."
+     },
+     {
+      "word": "traffic lights",
+      "meaning": "đèn giao thông",
+      "example": "The traffic lights have just changed."
+     },
+     {
+      "word": "harbour",
+      "meaning": "bến cảng",
+      "example": "You were on a sailing course down at the harbour."
+     },
+     {
+      "word": "sailing course",
+      "meaning": "khóa học chèo thuyền buồm",
+      "example": "I went on a sailing course at the weekend."
+     },
+     {
+      "word": "breathe in fresh air",
+      "meaning": "hít thở không khí trong lành",
+      "example": "I really enjoyed breathing in all that fresh sea air."
+     },
+     {
+      "word": "the time flew by",
+      "meaning": "thời gian trôi thật nhanh",
+      "example": "It was only two days but the time flew by!"
+     },
+     {
+      "word": "instructor",
+      "meaning": "người hướng dẫn",
+      "example": "The instructor began by teaching us safety rules."
+     },
+     {
+      "word": "safety rules",
+      "meaning": "quy tắc an toàn",
+      "example": "First we learnt the safety rules."
+     },
+     {
+      "word": "lose one's balance",
+      "meaning": "mất thăng bằng",
+      "example": "I lost my balance a few times!"
+     },
+     {
+      "word": "sign up for",
+      "meaning": "đăng ký tham gia",
+      "example": "You could sign up for the next one."
+     },
+     {
+      "word": "experienced",
+      "meaning": "giàu kinh nghiệm",
+      "example": "He's a really experienced sailor."
+     },
+     {
+      "word": "give sb a ring",
+      "meaning": "gọi điện cho ai",
+      "example": "Why don't you give him a ring?"
+     },
+     {
+      "word": "Orientation Week",
+      "meaning": "tuần lễ định hướng cho tân sinh viên",
+      "example": "It's Orientation Week for all you new students."
+     },
+     {
+      "word": "find one's way around",
+      "meaning": "làm quen, biết đường đi lối lại",
+      "example": "Events help us find our way around the university."
+     },
+     {
+      "word": "walking tour",
+      "meaning": "chuyến tham quan đi bộ",
+      "example": "I went on a walking tour of the city."
+     },
+     {
+      "word": "hire",
+      "meaning": "thuê",
+      "example": "We all hired bikes from a little shop."
+     },
+     {
+      "word": "electric",
+      "meaning": "chạy bằng điện",
+      "example": "We could choose a traditional bike or an electric one."
+     },
+     {
+      "word": "helmet",
+      "meaning": "mũ bảo hiểm",
+      "example": "A helmet was included."
+     }
+    ]
+   }
+  }
+ ]
+}

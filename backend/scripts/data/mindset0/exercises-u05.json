@@ -9,8 +9,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Món ăn của nước nào? (Lead-in)",
-   "instruction": "Nối tranh 1–5 với quốc gia.",
+   "title": "Which country? (Lead-in)",
+   "instruction": "Match pictures 1–5 with the countries.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u05-countries.jpg",
@@ -58,8 +58,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Món ăn & nguyên liệu (Ex. 2)",
-   "instruction": "Nối món ăn 1–5 với nhóm nguyên liệu A–E.",
+   "title": "Dishes and ingredients (Ex. 2)",
+   "instruction": "Match dishes 1–5 with the groups of ingredients A–E.",
    "items": [
     {
      "id": "m1",
@@ -102,8 +102,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Thực phẩm trong tranh (Ex. 10)",
-   "instruction": "Nối tranh 1–9 với tên thực phẩm.",
+   "title": "Food in the pictures (Ex. 10)",
+   "instruction": "Match pictures 1–9 with the names of the food.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u05-foods.jpg",
@@ -175,8 +175,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "Phân loại thực phẩm (Ex. 11, G&V Ex. 2)",
-   "instruction": "Xếp mỗi từ vào nhóm đúng.",
+   "title": "Food groups (Ex. 11, G&V Ex. 2)",
+   "instruction": "Put each word into the correct group.",
    "categories": [
     {
      "id": "meat",
@@ -295,8 +295,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Động từ chế biến (Ex. 13)",
-   "instruction": "Nối tranh 1–7 với động từ.",
+   "title": "Cooking verbs (Ex. 13)",
+   "instruction": "Match pictures 1–7 with the verbs.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u05-verbs.jpg",
@@ -356,8 +356,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Định nghĩa cách nấu (G&V Ex. 3)",
-   "instruction": "Nối động từ với định nghĩa.",
+   "title": "Ways of cooking – definitions (G&V Ex. 3)",
+   "instruction": "Match the verbs with the definitions.",
    "items": [
     {
      "id": "m1",
@@ -400,8 +400,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
-   "title": "Sắp xếp tranh: món Bulgogi (Ex. 21)",
-   "instruction": "Nhìn tranh A–F và đọc hướng dẫn. Sắp xếp các chữ cái theo đúng trình tự nấu (bắt đầu bằng B).",
+   "title": "Put the pictures in order: Bulgogi (Ex. 21)",
+   "instruction": "Look at pictures A–F and read the instructions. Put the letters in the correct order for the recipe (start with B).",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u05-bulgogi.jpg",
@@ -440,8 +440,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Hoàn thành công thức Bulgogi (Ex. 22)",
-   "instruction": "Điền a, some hoặc một động từ.",
+   "title": "Complete the Bulgogi recipe (Ex. 22)",
+   "instruction": "Complete the recipe with a, some or a verb.",
    "items": [
     {
      "id": "g1",
@@ -531,8 +531,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Hoàn thành đoạn văn: món ăn yêu thích (Ex. 24)",
-   "instruction": "Chọn đáp án đúng nhất A, B, C hoặc D.",
+   "title": "My favourite meal (Ex. 24)",
+   "instruction": "Choose the best answer, A, B, C or D.",
    "stimulus": {
     "kind": "passage",
     "text": "I don't usually like (1) ____ meals and because I live alone, I often go (2) ____ restaurants or eat fast food in the week. (3) ____ the weekend, I have more (4) ____ time, so I usually cook my favourite meal. My (5) ____ meal is chicken curry with rice and vegetables. I don't have an oven, so I (6) ____ the chicken on its own in a pan and (7) ____ the rice in water. I like this meal so much that sometimes I also order it in restaurants. I sometimes also eat it four times a week! It is very popular (8) ____ my country, too. I think a lot of people like it because it is healthy and easy to make. You can also change the recipe so it is spicy or not, so everybody can enjoy it.",
@@ -742,8 +742,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "Đếm được hay không? (Ex. 16)",
-   "instruction": "Xếp mỗi từ vào nhóm đúng.",
+   "title": "Countable or uncountable? (Ex. 16)",
+   "instruction": "Put each word into the correct group.",
    "categories": [
     {
      "id": "cs",
@@ -842,8 +842,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "a, an, some hay any? (G&V Ex. 4)",
-   "instruction": "Điền a, an, some hoặc any.",
+   "title": "a, an, some or any? (G&V Ex. 4)",
+   "instruction": "Complete the sentences with a, an, some or any.",
    "items": [
     {
      "id": "g1",
@@ -915,7 +915,7 @@
     },
     {
      "id": "g5",
-     "prompt": "Quy tắc: Before singular countable nouns we use ____ before a consonant and ____ before a vowel.",
+     "prompt": "Rule: Before singular countable nouns we use ____ before a consonant and ____ before a vowel.",
      "blanks": [
       {
        "accept": [
@@ -932,7 +932,7 @@
     },
     {
      "id": "g6",
-     "prompt": "Quy tắc: In positive sentences, with plural and uncountable nouns we use ____.",
+     "prompt": "Rule: In positive sentences, with plural and uncountable nouns we use ____.",
      "blanks": [
       {
        "accept": [
@@ -944,7 +944,7 @@
     },
     {
      "id": "g7",
-     "prompt": "Quy tắc: In questions and negative sentences with countable and uncountable nouns, we use ____.",
+     "prompt": "Rule: In questions and negative sentences with countable and uncountable nouns, we use ____.",
      "blanks": [
       {
        "accept": [
@@ -956,7 +956,7 @@
     },
     {
      "id": "g8",
-     "prompt": "Quy tắc: In offers and requests, we use ____.",
+     "prompt": "Rule: In offers and requests, we use ____.",
      "blanks": [
       {
        "accept": [
@@ -977,8 +977,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "much, many hay a lot of? (G&V Ex. 5–6)",
-   "instruction": "Chọn đáp án đúng.",
+   "title": "much, many or a lot of? (G&V Ex. 5–6)",
+   "instruction": "Choose the correct answer.",
    "items": [
     {
      "id": "q1",
@@ -1239,8 +1239,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Đoạn văn về pizza (G&V Ex. 7)",
-   "instruction": "Chọn đáp án đúng nhất.",
+   "title": "A text about pizza (G&V Ex. 7)",
+   "instruction": "Choose the best answer.",
    "items": [
     {
      "id": "q1",
@@ -1453,8 +1453,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "a / an hay some? (Ex. 17)",
-   "instruction": "Hoàn thành quy tắc bằng a / an hoặc some.",
+   "title": "a / an or some? (Ex. 17)",
+   "instruction": "Complete the rules with a / an or some.",
    "items": [
     {
      "id": "g1",
@@ -1520,12 +1520,12 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Hoàn thành tiêu đề bảng (Ex. 18)",
-   "instruction": "Đọc các câu ví dụ trong bảng của sách và chọn tiêu đề đúng cho mỗi cột.",
+   "title": "Complete the table headings (Ex. 18)",
+   "instruction": "Read the example sentences in the book's table and choose the correct heading for each column.",
    "items": [
     {
      "id": "q1",
-     "prompt": "Cột 1: I have some apples. · I don't have any cabbages. · Do you have any onions? · How many carrots do we need? → ____ nouns",
+     "prompt": "Column 1: I have some apples. · I don't have any cabbages. · Do you have any onions? · How many carrots do we need? → ____ nouns",
      "options": [
       {
        "id": "A",
@@ -1541,7 +1541,7 @@
     },
     {
      "id": "q2",
-     "prompt": "Cột 2: I have some rice. · I don't have any milk. · Do you have any meat? · How much water do I put in? → ____ nouns",
+     "prompt": "Column 2: I have some rice. · I don't have any milk. · Do you have any meat? · How much water do I put in? → ____ nouns",
      "options": [
       {
        "id": "A",
@@ -1566,8 +1566,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Món súp lơ Ả Rập: tranh ↔ bước (G&V Ex. 8)",
-   "instruction": "Đây là 7 bước làm món súp lơ kiểu Ả Rập. Nối thứ tự bước (1–7) với câu hướng dẫn đúng.",
+   "title": "Arabic cauliflower: the steps (G&V Ex. 8)",
+   "instruction": "Here are seven steps for making an Arabic cauliflower dish. Match the step numbers (1–7) with the correct instructions.",
    "items": [
     {
      "id": "m1",
@@ -1622,8 +1622,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "paragraph_writing",
-   "title": "Viết: món ăn phổ biến ở nước bạn (Ex. 23, 26)",
-   "instruction": "Dùng kiến thức của unit này, viết bài (120–150 từ) về một món ăn phổ biến ở Việt Nam hoặc món bạn thích. Bài viết cần có: (1) cần những nguyên liệu gì; (2) hướng dẫn cách làm theo từng bước (First, Then, After this, Finally…); (3) lý do món ăn này phổ biến.",
+   "title": "Writing: a popular dish in your country (Ex. 23, 26)",
+   "instruction": "Using what you have learnt in this unit, write about a popular dish in your country or a dish you like (120–150 words). Include: (1) the ingredients you need; (2) step-by-step instructions (First, Then, After this, Finally…); (3) why the dish is popular.",
    "responseSlots": 1,
    "rubric": {
     "bandFocus": [
@@ -1667,8 +1667,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Từ đồng nghĩa trước khi nghe (MINI TIPS 08)",
-   "instruction": "Chọn nghĩa đúng.",
+   "title": "Synonyms before you listen (MINI TIPS 08)",
+   "instruction": "Choose the correct meaning.",
    "items": [
     {
      "id": "q1",
@@ -1741,8 +1741,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
-   "title": "Câu hỏi khảo sát ăn uống (Ex. 19)",
-   "instruction": "Sắp xếp thành câu hỏi đúng.",
+   "title": "Eating habits survey questions (Ex. 19)",
+   "instruction": "Put the words in the correct order to make questions.",
    "items": [
     {
      "id": "o1",
@@ -1857,8 +1857,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: món ăn bạn thích (Ex. 25)",
-   "instruction": "Nói 1–2 phút về một bữa ăn bạn thích. Bạn nên nói: ai chuẩn bị món đó cho bạn · khi nào bạn ăn · vì sao bạn thích nó.",
+   "title": "Speaking: a meal you enjoy (Ex. 25)",
+   "instruction": "Talk for 1–2 minutes about a meal that you enjoy. You should say: who prepares it for you · when you eat it · and explain why you like it.",
    "speakingPart": 2,
    "speakingPrepSeconds": 60,
    "items": [
@@ -1880,8 +1880,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: trả lời câu hỏi về ẩm thực (Ex. 3, 20)",
-   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "title": "Speaking: questions about food (Ex. 3, 20)",
+   "instruction": "Answer each question in 15–25 seconds.",
    "speakingPart": 1,
    "speakingPrepSeconds": 10,
    "items": [
@@ -1917,8 +1917,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Thực phẩm trong ảnh (G&V Ex. 1)",
-   "instruction": "Nối ảnh 1–8 với từ trong khung: beef, lettuce, duck, lobster, spaghetti, salmon, garlic, cauliflower.",
+   "title": "Food in the photos (G&V Ex. 1)",
+   "instruction": "Match photos 1–8 with the words in the box: beef, lettuce, duck, lobster, spaghetti, salmon, garlic, cauliflower.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u05-gv-foods.jpg",
@@ -1984,8 +1984,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Bảng quy tắc a lot of / much / many (G&V Ex. 5)",
-   "instruction": "Đọc các câu trong bảng và chọn đáp án đúng.",
+   "title": "Rules: a lot of / much / many (G&V Ex. 5)",
+   "instruction": "Read the sentences in the table and choose the correct answer.",
    "items": [
     {
      "id": "q1",

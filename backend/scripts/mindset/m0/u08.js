@@ -85,17 +85,17 @@ module.exports = {
         ['healthy diet', 'chế độ ăn lành mạnh', 'It is important to follow a healthy diet.'],
       ],
       ex: [
-        match('Hoạt động trong tranh (Ex. 4)', 'Nối tranh 1–8 với hoạt động.', [
+        match('Activities in the pictures (Ex. 4)', 'Match pictures 1–8 with the activities.', [
           ['Picture 1', 'eat fruit and vegetables'], ['Picture 2', 'play basketball'], ['Picture 3', 'enjoy art and music'], ['Picture 4', 'go cycling'],
           ['Picture 5', 'play tennis'], ['Picture 6', 'drink water'], ['Picture 7', 'watch TV'], ['Picture 8', 'get enough sleep'],
         ], { stimulus: picture('media:m0u08-activities.jpg', 'Ex. 4') }),
-        match('Cách thư giãn (Ex. 15)', 'Nối tranh 1–5 với cách thư giãn.', [
+        match('Ways to relax (Ex. 15)', 'Match pictures 1–5 with the ways to relax.', [
           ['Picture 1', 'do exercise'], ['Picture 2', 'drink tea'], ['Picture 3', 'read a book'], ['Picture 4', 'do yoga'], ['Picture 5', 'go for a walk'],
         ], { stimulus: picture('media:m0u08-relax.jpg', 'Ex. 15') }),
-        match('Hoạt động thể thao (G&V Ex. 1)', 'Nối tranh 1–6 với hoạt động.', [
+        match('Sports activities (G&V Ex. 1)', 'Match pictures 1–6 with the activities.', [
           ['Picture 1', 'go cycling'], ['Picture 2', 'do yoga'], ['Picture 3', 'play tennis'], ['Picture 4', 'play basketball'], ['Picture 5', 'go for a walk'], ['Picture 6', 'do exercise'],
         ], { stimulus: picture('media:m0u08-gv.jpg', 'G&V Ex. 1') }),
-        gap('Động từ đi kèm (G&V Ex. 2)', 'Điền dạng đúng: get (x3), drink (x2), do (x2), eat, have, join, go (x2), play (x2).', [
+        gap('Verb collocations (G&V Ex. 2)', 'Complete the sentences with the correct form of: get (x3), drink (x2), do (x2), eat, have, join, go (x2), play (x2).', [
           ['It can be expensive to ____ a gym, but they often have a lot of modern equipment.', 'join'],
           ['It is very important to ____ plenty of water whenever you ____ exercise.', ['drink', 'do']],
           ['I ____ lots of fruit and vegetables and ____ yoga twice a week.', ['eat', 'do']],
@@ -139,7 +139,7 @@ module.exports = {
         ['in conclusion', 'tóm lại', 'In conclusion, I believe that…'],
       ],
       ex: [
-        mcq('Đọc lướt bài luận (Ex. 6–7)', 'Đọc nhanh bài luận và trả lời.', [
+        mcq('Skim the essay (Ex. 6–7)', 'Read the essay quickly and answer the questions.', [
           ['Which activities from Exercise 4 does the essay talk about?', ['watching TV, going cycling, playing tennis, getting enough sleep', 'yoga, drinking tea, reading', 'basketball, swimming, eating fruit'], 'A'],
           ['Does the writer agree or disagree with the essay question ("Students… should stop sports lessons")?', ['agree', 'disagree'], 'B', '"However, I disagree with these views".'],
           ['What opinion does the writer give?', ['Sports lessons make students healthier and help them feel less stressed.', 'Students should only study maths and science.', 'Sports lessons are too expensive.'], 'A'],
@@ -160,8 +160,8 @@ module.exports = {
       ],
       links: [{ grammar: 'modal-verbs', title: 'Modal verbs (should / have to)', note: 'lời khuyên, sự bắt buộc' }],
       ex: [
-        mcq('should hay shouldn\'t? (Ex. 10–12)', 'Chọn đáp án đúng.', [
-          ['"Children shouldn\'t have sports lessons." — Những phụ huynh này nghĩ học thể thao là ý…', ['good', 'bad'], 'B'],
+        mcq('should or shouldn\'t? (Ex. 10–12)', 'Choose the correct answer.', [
+          ['"Children shouldn\'t have sports lessons." — These parents think sports lessons are a … idea.', ['good', 'bad'], 'B'],
           ['You ____ eat lots of fruit and vegetables. It is really good for your health.', ['should', 'shouldn\'t'], 'A'],
           ['Don\'t watch TV all day. You ____ only watch around three hours a day.', ['should', 'shouldn\'t'], 'A'],
           ['We ____ sit all day without doing some type of exercise.', ['should', 'shouldn\'t'], 'B'],
@@ -170,7 +170,7 @@ module.exports = {
           ['"Children should have more lessons in their exam subjects." — The writer ____ children to have more lessons in their exam subjects.', ['wants', 'doesn\'t want'], 'A', 'should = lời khuyên nên làm → người viết muốn điều đó.'],
           ['"Children should not attend painting and music lessons." — The writer\'s advice for children is ____ to painting and music lessons.', ['to go', 'not to go'], 'B', 'should not = khuyên không nên.'],
         ]),
-        mcq('have to hay don\'t have to? (Ex. 18, G&V Ex. 5)', 'Chọn đáp án đúng.', [
+        mcq('have to or don\'t have to? (Ex. 18, G&V Ex. 5)', 'Choose the correct answer.', [
           ['We ____ arrive to school on time. It\'s one of the school\'s rules.', ['have to', 'don\'t have to'], 'A'],
           ['The deadline isn\'t until next week, so we ____ do it tonight.', ['have to', 'don\'t have to'], 'B'],
           ['____ play sport at school?', ['You have to', 'Do you have to'], 'B'],
@@ -185,21 +185,21 @@ module.exports = {
           ['You ____ join the gym to take exercise classes, but they cost less for members.', ['have to', 'don\'t have to'], 'B', 'Không bắt buộc, chỉ rẻ hơn cho hội viên.'],
           ['You ____ be good at sports to stay fit, but regular physical activity is good for you.', ['have to', 'don\'t have to'], 'B'],
         ]),
-        gap('Chương trình sức khoẻ trên TV (G&V Ex. 4)', 'Điền should / shouldn\'t + động từ: eat, drink, play, ride, watch, get.', [
+        gap('A health programme on TV (G&V Ex. 4)', 'Complete the sentences with should / shouldn\'t + a verb: eat, drink, play, ride, watch, get.', [
           ['Do you know we ____ ____ five glasses of water a day?', ['should', 'drink']],
           ['I always think I ____ ____ more sleep.', ['should', 'get']],
           ['It said we ____ ____ more than two to three hours a day (of TV).', ['shouldn\'t|should not', 'watch']],
           ['You ____ ____ sport at school if you like it. If not, you ____ ____ a bicycle or walk to school.', ['should', 'play', 'should', 'ride']],
           ['We ____ ____ fast food more than once a week.', ['shouldn\'t|should not', 'eat']],
         ]),
-        mcq('Câu đúng hay sai? (G&V Ex. 3)', 'Chọn câu đúng.', [
-          ['Hỏi xin lời khuyên về ăn uống:', ['What you should eat to be healthy?', 'What should you eat to be healthy?'], 'B'],
+        mcq('Correct or incorrect? (G&V Ex. 3)', 'Choose the correct sentence.', [
+          ['Asking for advice about food:', ['What you should eat to be healthy?', 'What should you eat to be healthy?'], 'B'],
           ['Is it a good idea to play computer games for many hours? — No, ____', ['you should play on your computer for so long.', 'you shouldn\'t play on your computer for so long.'], 'B'],
           ['I like doing yoga. ____', ['I think you shouldn\'t try it.', 'I think you should try it.'], 'B'],
           ['Is it important to exercise? — ____', ['Yes, you should exercise for at least 150 minutes a week.', 'Yes, you should to exercise for at least 150 minutes a week.'], 'A', 'Câu trong sách đã đúng: should + động từ nguyên mẫu (không có to).'],
           ['Do you have any other advice about being healthy? — ____', ['I think you should find ways to relax.', 'I think you should finding ways to relax.'], 'A', 'Câu trong sách đã đúng.'],
         ]),
-        gap('Quy định ở trường (G&V Ex. 6)', 'Điền has to / have to / doesn\'t have to / don\'t have to.', [
+        gap('School rules (G&V Ex. 6)', 'Complete the sentences with has to / have to / doesn\'t have to / don\'t have to.', [
           ['The most important rule is that we ____ turn off our mobile phones before the lesson.', 'have to'],
           ['However, unlike most schools, we ____ wear school uniform every day. We can wear our own clothes.', 'don\'t have to'],
           ['At university, students ____ come into class every morning. It is their choice.', 'don\'t have to'],
@@ -230,12 +230,12 @@ module.exports = {
         ['Take care', 'Bảo trọng (kết thư)', 'Take care, Minh'],
       ],
       ex: [
-        mcq('Email của Helen (Ex. 19)', 'Đọc email của Helen gửi Alice và trả lời.', [
+        mcq('Helen\'s email (Ex. 19)', 'Read Helen\'s email to Alice and answer the questions.', [
           ['What activities does Helen say are a good idea?', ['tennis and basketball', 'yoga and swimming', 'computer games'], 'A'],
           ['Which piece of advice uses "don\'t have to"?', ['You don\'t have to study for hours and should try to take regular breaks.', 'You should eat lots of fruit and vegetables.', 'I don\'t think you should play computer games all day.'], 'A'],
           ['Why is it important to stay healthy, according to Helen?', ['It gives you more energy and makes you feel good.', 'It helps you pass exams.', 'It is cheap.'], 'A'],
         ], { stimulus: passage("Hi Alice,\n\nI think it's a good idea to play tennis or basketball. Playing sport is a good way to stay healthy. I don't think you should play computer games all day. You should make sure you get enough sleep every night, between seven and 10 hours. You don't have to study for hours and should try to take regular breaks. You should eat lots of fruit and vegetables and get lots of regular exercise. Being healthy gives you more energy and makes you feel good.\n\nFrom,\nHelen", { caption: 'Email from Helen' }) }),
-        write('Viết email khuyên Alice (Ex. 20)', 'Bạn của bạn, Alice, hỏi lời khuyên về cách sống khoẻ. Viết email trả lời (80–100 từ). Trong email: (1) nói Alice có thể làm những hoạt động gì để giữ sức khoẻ; (2) kể các hoạt động lành mạnh và cách thư giãn; (3) nói vì sao cần sống khoẻ. Dùng should / shouldn\'t / have to / don\'t have to.', {
+        write('Write an email giving Alice advice (Ex. 20)', 'Your friend Alice has asked for advice about living a healthy life. Write a reply (80–100 words). In your email: (1) say what activities Alice could do to stay healthy; (2) describe healthy activities and ways to relax; (3) say why it is important to live a healthy life. Use should / shouldn\'t / have to / don\'t have to.', {
           minWords: 80, maxWords: 115, mustUse: 3,
           targetStructures: ['should', "shouldn't", "don't have to", 'have to', 'because'],
           checklist: ['Các hoạt động giữ sức khoẻ', 'Ít nhất một cách thư giãn', 'Vì sao cần sống khoẻ', 'Dùng should / shouldn\'t và have to / don\'t have to đúng', '80–100 từ, có chào và kết'],
@@ -278,7 +278,7 @@ module.exports = {
         ['calm / calmer', 'bình tĩnh / bình tĩnh hơn', 'Green tea makes me feel calmer.'],
       ],
       ex: [
-        mcq('Từ khoá trong ý kiến (Ex. 3)', 'Chọn từ khoá quan trọng nhất trong mỗi ý kiến.', [
+        mcq('Key words in opinions (Ex. 3)', 'Choose the most important key word in each opinion.', [
           ['Joining the gym is too expensive.', ['gym', 'too expensive'], 'B'],
           ['Running is a boring way to exercise.', ['running', 'boring'], 'B'],
           ['It is better to exercise outdoors.', ['better', 'outdoors'], 'B'],
@@ -307,13 +307,13 @@ module.exports = {
         ['healthy snack', 'món ăn vặt lành mạnh', 'He is eating a healthy snack.'],
       ],
       ex: [
-        order('Sắp xếp phần mô tả tranh (Ex. 13)', 'Sắp xếp các chữ cái theo đúng trình tự mô tả: chung → chi tiết → ý kiến. (A: lời khuyên · B: chi tiết · C: mô tả chung)', [
+        order('Order of a picture description (Ex. 13)', 'Put the letters in the correct order for a description: general → details → opinion. (A: advice · B: details · C: general description)', [
           ['C B A', 'C "The picture shows a boy in his bedroom…" (chung) → B "I think the boy is playing on his computer at night…" (chi tiết) → A "I think the boy should go to sleep…" (ý kiến + lời khuyên).'],
         ], { stimulus: picture('media:m0u08-boy.jpg', 'Ex. 13') }),
-        speak('Nói: mô tả tranh và khuyên (Ex. 14)', 'Nhìn hai bức tranh (người đàn ông ăn rau quả; người phụ nữ làm việc bận rộn). Nói 1–2 phút: mô tả chung, chi tiết, ý kiến và lời khuyên với should / shouldn\'t.', 2, [
+        speak('Speaking: describe the pictures and give advice (Ex. 14)', 'Look at the two pictures (a man eating fruit and vegetables; a busy woman working). Speak for 1–2 minutes: give a general description, details, your opinion and advice with should / shouldn\'t.', 2, [
           ['Describe the two pictures. Talk generally about what you can see, give specific details, give your opinion and reasons, and give advice using should / shouldn\'t.', 'The first picture shows a man sitting at a table with a plate of fruit and vegetables. It looks like he is thinking about what to eat. I think he is trying to eat healthily, which is a good idea because fruit and vegetables give you lots of energy. Maybe he should also drink more water. In the second picture, I can see a woman in an office. There are lots of books and papers on her desk, and it looks like she is very busy and stressed. I think she is working very long hours. In my opinion, she shouldn\'t work all day without a break. She should go for a short walk or do some exercise, because that helps you feel less stressed. She should also get enough sleep.', 'Hai tranh, mỗi tranh đi đủ 3 bước; có lý do (because) và lời khuyên (should / shouldn\'t).'],
         ], { stimulus: picture('media:m0u08-pictures.jpg', 'Ex. 14') }),
-        speak('Nói: giữ sức khoẻ (Lead-in, Ex. 5)', 'Trả lời từng câu hỏi trong 15–25 giây.', 1, [
+        speak('Speaking: keeping healthy (Lead-in, Ex. 5)', 'Answer each question in 15–25 seconds.', 1, [
           ['How do you like to keep healthy?', 'I usually go cycling with my friends twice a week, and I try to eat lots of vegetables. I also drink a lot of water, especially when the weather is hot.', 'Hai–ba cách + tần suất.'],
           ['Imagine you have important exams and feel stressed. Which activities would help? Why?', 'I think going for a walk would help, because fresh air helps you think clearly. I would also make sure I get enough sleep, because it\'s difficult to remember anything when you\'re tired.', 'Hai hoạt động + lý do.'],
           ['What is your favourite way to relax?', 'My favourite way to relax is listening to music in my room. It helps me forget about my worries, and after twenty minutes I usually feel much calmer.', 'Cách thư giãn + tác dụng.'],
@@ -327,7 +327,7 @@ module.exports = {
       minutes: 25,
       objectives: ['Ôn should / have to và các cụm từ sức khoẻ'],
       ex: [
-        gap('Lời khuyên chơi tennis (G&V Ex. 7)', 'Điền should / shouldn\'t.', [
+        gap('Tennis tips (G&V Ex. 7)', 'Complete the tips with should / shouldn\'t.', [
           ['I enjoy playing tennis but I want to improve. What ____ I do?', 'should'],
           ['My advice is you ____ practise as much as possible.', 'should'],
           ['I suggest you ____ train more often.', 'should'],
@@ -335,7 +335,7 @@ module.exports = {
           ['Maybe not every day, but you ____ just play twice a week – that\'s not enough.', 'shouldn\'t|should not'],
           ['I think you ____ have tennis lessons.', 'should'],
         ]),
-        match('Nối nửa câu (G&V Ex. 8)', 'Nối hai nửa câu.', [
+        match('Match the sentence halves (G&V Ex. 8)', 'Match the two halves of the sentences.', [
           ['It is a good idea to pay', 'for a personal trainer.'], ['Joining the gym', 'can be expensive.'], ['It is more fun when you go', 'running with other people.'],
           ['It is important to follow', 'a healthy diet.'], ['I think it\'s better to do', 'yoga than go to the gym.'], ['Running is a', 'great way to keep fit.'],
         ]),

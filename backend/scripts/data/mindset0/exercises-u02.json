@@ -9,8 +9,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Các phòng trong nhà (Ex. 1)",
-   "instruction": "Nhìn tranh 4 phòng và viết tên phòng (chữ cái đầu đã cho sẵn — gõ cả từ).",
+   "title": "Rooms in a house (Ex. 1)",
+   "instruction": "Look at the pictures of four rooms and write the name of each room. The first letter is given – type the whole word.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u02-rooms.jpg",
@@ -86,8 +86,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Khu vực trong & quanh nhà (Ex. 2)",
-   "instruction": "Nhìn tranh 1–7 và nối mỗi tranh với tên khu vực: garden, hall, hallway, basement, attic, garage, study.",
+   "title": "Places in and around a house (Ex. 2)",
+   "instruction": "Match pictures 1–7 with the places: garden, hall, hallway, basement, attic, garage, study.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u02-places.jpg",
@@ -147,8 +147,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Đồ vật trong nhà — Student A (Ex. 3–4)",
-   "instruction": "Nhìn 6 tranh và nối số tranh với tên đồ vật.",
+   "title": "Things in a house – Student A (Ex. 3–4)",
+   "instruction": "Look at the six pictures and match each picture with the name of the item.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u02-items-a.jpg",
@@ -202,8 +202,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Đồ vật trong nhà — Student B (Ex. 3–4)",
-   "instruction": "Nhìn 6 tranh và nối số tranh với tên đồ vật.",
+   "title": "Things in a house – Student B (Ex. 3–4)",
+   "instruction": "Look at the six pictures and match each picture with the name of the item.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u02-items-b.jpg",
@@ -257,8 +257,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Phân biệt các cặp từ (Ex. 6)",
-   "instruction": "Chọn từ đúng cho mỗi câu.",
+   "title": "Pairs of words (Ex. 6)",
+   "instruction": "Choose the correct word for each sentence.",
    "items": [
     {
      "id": "q1",
@@ -351,8 +351,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Xây dựng hội thoại: chọn câu đúng (Ex. 14)",
-   "instruction": "Đọc các câu trong cuộc gọi giữa Giorgio và Andrew Taylor. Chọn câu đúng nhất A, B hoặc C cho mỗi chỗ trống.",
+   "title": "Building a conversation (Ex. 14)",
+   "instruction": "Read the sentences from the phone call between Giorgio and Andrew Taylor. Choose the best sentence, A, B or C, for each gap.",
    "items": [
     {
      "id": "q1",
@@ -525,8 +525,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Hoàn thành hội thoại (Ex. 16)",
-   "instruction": "Đọc phần cuối cuộc trò chuyện. Nối mỗi câu trả lời của Andrew với câu Giorgio nói NGAY TRƯỚC đó.",
+   "title": "Complete the conversation (Ex. 16)",
+   "instruction": "Read the end of the conversation. Match each of Andrew's answers with what Giorgio says JUST BEFORE it.",
    "items": [
     {
      "id": "m1",
@@ -575,8 +575,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Hoàn thành bảng ngữ pháp (Ex. 11)",
-   "instruction": "Hoàn thành câu khẳng định (+), phủ định (−) và câu hỏi (?).",
+   "title": "Complete the grammar table (Ex. 11)",
+   "instruction": "Complete the positive (+), negative (−) and question (?) forms.",
    "items": [
     {
      "id": "g1",
@@ -698,7 +698,7 @@
    "difficulty": 1,
    "type": "gap_fill",
    "title": "The car / I play games (Ex. 12)",
-   "instruction": "Viết lại theo dạng trong ngoặc: (+) khẳng định, (−) phủ định, (?) câu hỏi.",
+   "instruction": "Rewrite each sentence in the form in brackets: (+) positive, (−) negative, (?) question.",
    "items": [
     {
      "id": "g1",
@@ -827,8 +827,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Buổi sáng của Giorgio (Ex. 18)",
-   "instruction": "Đọc Giorgio kể về một ngày và chọn đáp án đúng A, B hoặc C.",
+   "title": "Giorgio's morning (Ex. 18)",
+   "instruction": "Read Giorgio's description of his day and choose the correct answer, A, B or C.",
    "stimulus": {
     "kind": "passage",
     "text": "Every weekday morning, my alarm goes (1) ____ at 8:30am. This gives me enough time to get ready before my lectures start at 10:00am. Then, I (2) ____ up and go downstairs. I'm often too tired to eat breakfast, so I sometimes go to the (3) ____ and just get some juice. I always talk to my housemates if they are there, in the (4) ____. After that, I head back upstairs to get ready. I go to the bathroom, (5) ____ my teeth and sometimes (6) ____ my room. When it's time to leave, I pack my bag and go to college. At the end of the day when I get back home, I sometimes help the others with the (7) ____ – if we don't do it, all the rooms we share get very messy. When the house is clean again, we usually spend some time in the living room. We sit down together on the (8) ____ and play games online for a while. We're always happy when we get the chance to do this, as it helps us relax. Before I go to sleep, I sit at my (9) ____ and do my homework. I never forget to do it. At the weekend, I can finally relax. I have a lie (10) ____ until about 11:30am.",
@@ -1046,20 +1046,20 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Quy tắc vị trí trạng từ (Ex. 19–21)",
-   "instruction": "Chọn đáp án đúng.",
+   "title": "Rules for adverb position (Ex. 19–21)",
+   "instruction": "Choose the correct answer.",
    "items": [
     {
      "id": "q1",
-     "prompt": "Khi dùng động từ \"to be\", trạng từ tần suất đứng ____ động từ.",
+     "prompt": "With the verb \"to be\", the frequency adverb goes ____ the verb.",
      "options": [
       {
        "id": "A",
-       "text": "before (trước)"
+       "text": "before"
       },
       {
        "id": "B",
-       "text": "after (sau)"
+       "text": "after"
       }
      ],
      "answer": "B",
@@ -1067,15 +1067,15 @@
     },
     {
      "id": "q2",
-     "prompt": "Khi dùng động từ thường, trạng từ tần suất đứng ____ động từ.",
+     "prompt": "With other verbs, the frequency adverb goes ____ the verb.",
      "options": [
       {
        "id": "A",
-       "text": "before (trước)"
+       "text": "before"
       },
       {
        "id": "B",
-       "text": "after (sau)"
+       "text": "after"
       }
      ],
      "answer": "A",
@@ -1083,7 +1083,7 @@
     },
     {
      "id": "q3",
-     "prompt": "Câu nào đúng?",
+     "prompt": "Which sentence is correct?",
      "options": [
       {
        "id": "A",
@@ -1103,7 +1103,7 @@
     },
     {
      "id": "q4",
-     "prompt": "Câu nào đúng?",
+     "prompt": "Which sentence is correct?",
      "options": [
       {
        "id": "A",
@@ -1132,8 +1132,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "error_correction",
-   "title": "Sửa lỗi vị trí trạng từ (G&V Ex. 7)",
-   "instruction": "Mỗi câu có thể sai vị trí trạng từ hoặc trật tự từ. Viết lại câu đúng (nếu câu đã đúng, chép lại nguyên câu).",
+   "title": "Correct the adverb position (G&V Ex. 7)",
+   "instruction": "Some sentences have the adverb or the words in the wrong place. Write the correct sentence (if the sentence is already correct, copy it).",
    "items": [
     {
      "id": "e1",
@@ -1182,8 +1182,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "error_correction",
-   "title": "Đổi sang câu hỏi (G&V Ex. 6)",
-   "instruction": "Viết lại mỗi câu thành câu hỏi Yes/No.",
+   "title": "Make questions (G&V Ex. 6)",
+   "instruction": "Rewrite each sentence as a Yes/No question.",
    "items": [
     {
      "id": "e1",
@@ -1232,8 +1232,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Mục đích của email (Ex. 26)",
-   "instruction": "Đọc email Gavin gửi Giorgio. Lý do chính Gavin viết email là gì?",
+   "title": "The purpose of the email (Ex. 26)",
+   "instruction": "Read Gavin's email to Giorgio. What is the main reason Gavin is writing?",
    "stimulus": {
     "kind": "passage",
     "text": "Hi Giorgio,\n\nSo, we're both university students now! I like my room on campus very much. Are you on campus or in private accommodation? Are you happy with your choice of where you're living? Please tell me about your room. What other things do you like about where you live?\n\nWrite soon,\nGavin",
@@ -1271,8 +1271,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Sửa viết hoa & dấu câu (Ex. 27)",
-   "instruction": "Email của Giorgio không viết hoa, không có dấu câu. Với mỗi phần, chọn cách viết ĐÚNG.",
+   "title": "Capital letters and punctuation (Ex. 27)",
+   "instruction": "Giorgio's email has no capital letters or punctuation. For each part, choose the CORRECT version.",
    "items": [
     {
      "id": "q1",
@@ -1385,8 +1385,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "paragraph_writing",
-   "title": "Viết email trả lời Giorgio (Ex. 28)",
-   "instruction": "Hãy tưởng tượng bạn là Gavin. Viết email trả lời Giorgio (60–80 từ): trả lời 2 câu hỏi của Giorgio (\"Do you have Wi-Fi in your room?\" và \"Is the food nice where you live?\"), sau đó hỏi Giorgio 2 câu về chỗ ở của cậu ấy. Nhớ viết hoa và dùng dấu câu đúng.",
+   "title": "Write a reply to Giorgio (Ex. 28)",
+   "instruction": "Imagine you are Gavin. Write a reply to Giorgio (60–80 words): answer his two questions (\"Do you have Wi-Fi in your room?\" and \"Is the food nice where you live?\"), then ask Giorgio two questions about his accommodation. Remember to use capital letters and correct punctuation.",
    "responseSlots": 1,
    "rubric": {
     "bandFocus": [
@@ -1426,8 +1426,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "Ai có thể nói câu này? (Ex. 10)",
-   "instruction": "Giorgio gọi điện cho Andrew Taylor. Mỗi câu dưới đây nhiều khả năng do ai nói?",
+   "title": "Who is speaking? (Ex. 10)",
+   "instruction": "Giorgio phones Andrew Taylor. Who is more likely to say each sentence?",
    "categories": [
     {
      "id": "g",
@@ -1486,8 +1486,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "Campus hay private? (Ex. 24)",
-   "instruction": "Mỗi đặc điểm thuộc chỗ ở nào mà Andrew Taylor gửi cho Giorgio?",
+   "title": "Campus or private? (Ex. 24)",
+   "instruction": "Which accommodation that Andrew Taylor sent to Giorgio has each feature?",
    "categories": [
     {
      "id": "c",
@@ -1582,8 +1582,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: bạn chọn chỗ ở nào? (Ex. 25)",
-   "instruction": "Trả lời từng câu hỏi trong 20–30 giây. Nêu lựa chọn + lý do (because) + một chi tiết.",
+   "title": "Speaking: which accommodation would you choose? (Ex. 25)",
+   "instruction": "Answer each question in 20–30 seconds. Give your choice + a reason (because) + a detail.",
    "speakingPart": 3,
    "speakingPrepSeconds": 10,
    "items": [
@@ -1626,8 +1626,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: ngày thường và cuối tuần (Ex. 17, 23)",
-   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "title": "Speaking: weekdays and weekends (Ex. 17, 23)",
+   "instruction": "Answer each question in 15–25 seconds.",
    "speakingPart": 1,
    "speakingPrepSeconds": 10,
    "items": [
@@ -1663,8 +1663,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Định nghĩa nơi chốn trong nhà (G&V Ex. 1)",
-   "instruction": "Đọc định nghĩa và viết từ đúng.",
+   "title": "Places in a house – definitions (G&V Ex. 1)",
+   "instruction": "Read the definitions and write the correct word.",
    "items": [
     {
      "id": "g1",
@@ -1755,8 +1755,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Chọn từ đúng (G&V Ex. 2)",
-   "instruction": "Chọn từ phù hợp với mô tả.",
+   "title": "Choose the correct word (G&V Ex. 2)",
+   "instruction": "Choose the word that matches the description.",
    "items": [
     {
      "id": "q1",
@@ -1881,8 +1881,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Nối câu hỏi – câu trả lời (G&V Ex. 3)",
-   "instruction": "Nối mỗi câu hỏi với câu trả lời phù hợp.",
+   "title": "Questions and answers (G&V Ex. 3)",
+   "instruction": "Match each question with the correct answer.",
    "items": [
     {
      "id": "m1",
@@ -1943,8 +1943,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Sửa lỗi chính tả (G&V Ex. 5)",
-   "instruction": "Mỗi câu có một từ sai chính tả (trong ngoặc). Viết lại từ đúng.",
+   "title": "Spelling mistakes (G&V Ex. 5)",
+   "instruction": "Each sentence has one word spelt wrongly (in brackets). Write the word correctly.",
    "items": [
     {
      "id": "g1",
@@ -2034,8 +2034,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
-   "title": "Sắp xếp câu (G&V Ex. 8)",
-   "instruction": "Sắp xếp các từ thành câu đúng.",
+   "title": "Make sentences (G&V Ex. 8)",
+   "instruction": "Put the words in the correct order to make sentences.",
    "items": [
     {
      "id": "o1",
@@ -2246,12 +2246,12 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Tìm 11 từ trong ô chữ (G&V Ex. 4)",
-   "instruction": "Sách có một ô chữ giấu 11 từ về nhà cửa. Dựa vào gợi ý và chữ cái đầu, viết lại 11 từ đó.",
+   "title": "Find 11 words (G&V Ex. 4)",
+   "instruction": "The book has a word square with 11 words about the home. Use the clues and the first letters to write the 11 words.",
    "items": [
     {
      "id": "g1",
-     "prompt": "Phòng/khoảng trống ngay dưới mái nhà: ____ (a…)",
+     "prompt": "The room or space just under the roof of a house: ____ (a…)",
      "blanks": [
       {
        "accept": [
@@ -2263,7 +2263,7 @@
     },
     {
      "id": "g2",
-     "prompt": "Khoảng đất có cỏ, hoa quanh nhà: ____ (g…)",
+     "prompt": "The area with grass and flowers around a house: ____ (g…)",
      "blanks": [
       {
        "accept": [
@@ -2275,7 +2275,7 @@
     },
     {
      "id": "g3",
-     "prompt": "Phòng làm việc, đọc sách trong nhà: ____ (s…)",
+     "prompt": "A room in a house for working or reading: ____ (s…)",
      "blanks": [
       {
        "accept": [
@@ -2287,7 +2287,7 @@
     },
     {
      "id": "g4",
-     "prompt": "Tầng hầm, dưới mặt đất: ____ (b…)",
+     "prompt": "A room below the ground: ____ (b…)",
      "blanks": [
       {
        "accept": [
@@ -2299,7 +2299,7 @@
     },
     {
      "id": "g5",
-     "prompt": "Nơi nấu ăn: ____ (k…)",
+     "prompt": "The room where you cook: ____ (k…)",
      "blanks": [
       {
        "accept": [
@@ -2311,7 +2311,7 @@
     },
     {
      "id": "g6",
-     "prompt": "Thiết bị để xem phim, tin tức: ____ (t…)",
+     "prompt": "A machine for watching films and the news: ____ (t…)",
      "blanks": [
       {
        "accept": [
@@ -2324,7 +2324,7 @@
     },
     {
      "id": "g7",
-     "prompt": "Bàn để học / làm việc: ____ (d…)",
+     "prompt": "A table for studying or working: ____ (d…)",
      "blanks": [
       {
        "accept": [
@@ -2336,7 +2336,7 @@
     },
     {
      "id": "g8",
-     "prompt": "Vòi sen tắm: ____ (s…)",
+     "prompt": "You stand under it to wash: ____ (s…)",
      "blanks": [
       {
        "accept": [
@@ -2348,7 +2348,7 @@
     },
     {
      "id": "g9",
-     "prompt": "Cửa sổ: ____ (w…)",
+     "prompt": "You look outside through it: ____ (w…)",
      "blanks": [
       {
        "accept": [
@@ -2360,7 +2360,7 @@
     },
     {
      "id": "g10",
-     "prompt": "Bồn rửa (tay, bát): ____ (s…)",
+     "prompt": "You wash your hands or the dishes in it: ____ (s…)",
      "blanks": [
       {
        "accept": [
@@ -2372,7 +2372,7 @@
     },
     {
      "id": "g11",
-     "prompt": "Rèm cuốn / mành che cửa sổ: ____ (b…)",
+     "prompt": "It covers a window to keep out the light: ____ (b…)",
      "blanks": [
       {
        "accept": [

@@ -79,22 +79,22 @@ module.exports = {
         ['online study', 'học trực tuyến', 'Online study is popular now.'],
       ],
       ex: [
-        match('Các cách học tiếng Anh (Lead-in)', 'Nối tranh 1–8 với cách học.', [
+        match('Ways to learn English (Lead-in)', 'Match pictures 1–8 with the ways of learning.', [
           ['Picture 1', 'use a dictionary'], ['Picture 2', 'talk to people whose first language is English'], ['Picture 3', 'listen to songs in English'], ['Picture 4', 'write an email to a friend'],
           ['Picture 5', 'keep a vocabulary notebook'], ['Picture 6', 'study with a teacher in a classroom'], ['Picture 7', 'watch videos online'], ['Picture 8', 'read newspapers and magazines'],
         ], { stimulus: picture('media:m0u09-leadin.jpg', 'Lead-in') }),
-        mcq('Giới từ đi với động từ giao tiếp (Ex. 3)', 'Chọn giới từ đúng.', [
+        mcq('Prepositions with communication verbs (Ex. 3)', 'Choose the correct preposition.', [
           ['Can you phone me when you are free? I need to talk ____ you.', ['for', 'to', 'by'], 'B'],
           ['When you apply for a job, I think it is best to communicate ____ email first.', ['to', 'with', 'by'], 'C'],
           ['The weather is a popular topic to talk ____ in the UK.', ['for', 'about', 'by'], 'B', 'talk about + chủ đề. (Lưu ý: discuss KHÔNG cần giới từ — discuss the weather.)'],
           ['Whenever I visit your home, they always chat ____ me.', ['about', 'with', 'for'], 'B'],
           ['I know enough of the language to hold a conversation ____ someone.', ['with', 'for', 'to'], 'A'],
         ]),
-        match('Nối nửa câu hỏi (Ex. 4)', 'Nối hai nửa câu hỏi.', [
+        match('Match the question halves (Ex. 4)', 'Match the two halves of the questions.', [
           ['What is the main language that', 'you speak in your country?'], ['Do you prefer to communicate', 'by phone or by email?'], ['How often do you talk', 'to people on the internet?'],
           ['What do you usually chat', 'about with your friends?'], ['Do you think reading newspapers', 'can help with language learning?'],
         ]),
-        match('Kế hoạch học tiếng Anh (G&V Ex. 2)', 'Nối hai nửa câu.', [
+        match('Plans for learning English (G&V Ex. 2)', 'Match the two halves of the sentences.', [
           ["I'm going to study", 'with a teacher in a classroom.'], ["I'm going to talk", 'to people whose first language is English.'], ["I'm going to use", 'a dictionary.'], ["I'm going to listen", 'to songs in English.'],
           ["I'm going to keep", 'a vocabulary notebook.'], ["I'm going to watch", 'online videos.'], ["I'm going to read", 'newspapers and magazines.'], ["I'm going to write", 'emails to my friends.'],
         ]),
@@ -139,23 +139,23 @@ module.exports = {
         ["make somebody laugh","làm ai đó cười","Robert really makes me laugh."],
       ],
       ex: [
-        mcq('Collocation (Ex. 15)', 'Chọn động từ đúng.', [
+        mcq('Collocations (Ex. 15)', 'Choose the correct verb.', [
           ['____ a conversation', ['speak', 'do', 'hold'], 'C'], ['____ an advantage', ['make', 'have', 'do'], 'B'], ['____ your skills', ['have', 'get', 'practise'], 'C'],
           ['____ an effort', ['make', 'give', 'take'], 'A'], ['____ some work', ['practise', 'do', 'hold'], 'B'], ['____ fun', ['get', 'begin', 'have'], 'C'],
           ['____ a language', ['get', 'hold', 'speak'], 'C'], ['____ someone\'s advice', ['do', 'take', 'speak'], 'B'], ['____ time (to do something)', ['have', 'practise', 'do'], 'A'], ['____ progress', ['do', 'make', 'have'], 'B'],
         ]),
-        cat('MAKE hay TAKE? (G&V Ex. 7)', 'Xếp mỗi cụm vào MAKE hoặc TAKE.', { make: 'make', take: 'take' }, [
+        cat('MAKE or TAKE? (G&V Ex. 7)', 'Put each phrase into the MAKE or TAKE column.', { make: 'make', take: 'take' }, [
           ['a mistake', 'make'], ['dinner', 'make'], ['somebody laugh', 'make'], ['a noise', 'make'], ['a difference', 'make'], ['a guess', 'make'],
           ['a test', 'take'], ['an exam', 'take'], ['a picture', 'take'], ['a walk', 'take'],
         ]),
-        gap('Hội thoại về em trai Susan (G&V Ex. 5)', 'Điền: time, advantage, skills, advice, effort, progress, fun, work.', [
+        gap('A conversation about Susan\'s brother (G&V Ex. 5)', 'Complete the conversation with: time, advantage, skills, advice, effort, progress, fun, work.', [
           ['My brother says he won\'t be able to pass his English exam, so he\'s not going to make an ____. — Well, he never does any ____.', ['effort', 'work']],
           ['I tried to give him some ____, but he didn\'t take it. He only wants to have ____.', ['advice', 'fun']],
           ['I told him that it takes a long ____ to learn a language.', 'time'],
           ['He should also practise his speaking ____ as well as listening. It\'s more difficult to make any ____ if you don\'t speak.', ['skills', 'progress']],
           ['He also has a big ____ because your dad is an English teacher!', 'advantage'],
         ], { wordBank: ['time', 'advantage', 'skills', 'advice', 'effort', 'progress', 'fun', 'work'] }),
-        gap('Viết lại ý của hội thoại (G&V Ex. 6)', 'Hoàn thành các câu paraphrase của hội thoại ở bài trước. Viết MỘT đến BA từ.', [
+        gap('Paraphrase the conversation (G&V Ex. 6)', 'Complete the sentences that paraphrase the conversation in the previous exercise. Write ONE to THREE words.', [
           ['Susan\'s brother isn\'t going to study because he believes he is going to fail ____.', 'his English exam|his exam'],
           ['He didn\'t want to take Susan\'s ____.', 'advice'],
           ['Susan\'s brother isn\'t interested in his studies and he would much rather ____.', 'have fun'],
@@ -163,7 +163,7 @@ module.exports = {
           ['George thinks that without practising your speaking skills, it is more difficult to ____.', 'make any progress|make progress'],
           ['The biggest advantage that Susan\'s brother has is that their father teaches ____.', 'English'],
         ]),
-        mcq('Tóm ý chính đoạn văn (Ex. 17)', 'Đọc lại bài về Richard Doner và chọn từ đúng để tóm tắt ý chính.', [
+        mcq('Summarise the main ideas (Ex. 17)', 'Read the text about Richard Doner again and choose the correct word to summarise the main idea.', [
           ['Richard Doner is very special because he can speak ____ languages…', ['more', 'less', 'most'], 'A'],
           ['…than ____ people.', ['more', 'most of', 'most'], 'C', 'most people = hầu hết mọi người (không có "of" khi không có the/my…).'],
           ['Richard is very lucky as he has ____ opportunities to practise his language skills.', ['many', 'any', 'lots of'], 'C', 'Đáp án sách: lots of.'],
@@ -185,33 +185,33 @@ module.exports = {
       ],
       links: [{ grammar: 'be-going-to', title: 'Be Going To', note: 'kế hoạch, dự định' }, { grammar: 'future-simple', title: 'Future Simple (will)', note: 'so sánh will và be going to' }],
       ex: [
-        gap('Kế hoạch (Ex. 5)', 'Điền động từ: learn, meet, send, study, video call.', [
+        gap('Plans (Ex. 5)', 'Complete the sentences with the verbs: learn, meet, send, study, video call.', [
           ['I\'m going to ____ my friends at the cinema tonight.', 'meet'],
           ['I\'m going to ____ my cousin on the computer this afternoon. He\'s moving to Canada next week.', 'video call'],
           ['Whenever I read a newspaper, I say to myself: \'I\'m going to ____ five new phrases today\'.', 'learn'],
           ['I\'m going to ____ in the library this morning.', 'study'],
           ['I\'m going to ____ an email to my English friend at the weekend.', 'send'],
         ], { wordBank: ['learn', 'meet', 'send', 'study', 'video call'] }),
-        mcq('Câu đúng hay sai? (Ex. 9)', 'Chọn câu ĐÚNG.', [
-          ['Khi 18 tuổi, tôi sẽ học ở Anh:', ['When I am 18, I going to study in the UK.', 'When I am 18, I am going to study in the UK.'], 'B', 'Thiếu "am".'],
-          ['Đi mua sắm cùng tôi nhé?', ['Are you going to come shopping with me later?', 'You going to come shopping with me later?'], 'A'],
-          ['Cô ấy sẽ mua điện thoại mới:', ['She is going buy a new smartphone at the weekend.', 'She is going to buy a new smartphone at the weekend.'], 'B', 'Thiếu "to".'],
-          ['Hỏi: Bạn có định nói với bố mẹ không?', ['You are going to tell your parents that you got bad results?', 'Are you going to tell your parents that you got bad results?'], 'B', 'Câu hỏi phải đảo are lên trước.'],
-          ['Hỏi nơi xem trận bóng:', ['Where are you going to watch the football match?', 'Where you are going to watch the football match?'], 'A'],
-          ['Tôi sẽ không gọi món ăn:', ['I\'m not going to order any food at the restaurant – I\'m not hungry.', 'I\'m going not to order any food at the restaurant – I\'m not hungry.'], 'A', 'Câu trong sách đã đúng: not đứng ngay sau am.'],
+        mcq('Correct or incorrect? (Ex. 9)', 'Choose the CORRECT sentence.', [
+          ['A plan to study in the UK at 18:', ['When I am 18, I going to study in the UK.', 'When I am 18, I am going to study in the UK.'], 'B', 'Thiếu "am".'],
+          ['An invitation to go shopping later:', ['Are you going to come shopping with me later?', 'You going to come shopping with me later?'], 'A'],
+          ['Her plan to buy a new phone:', ['She is going buy a new smartphone at the weekend.', 'She is going to buy a new smartphone at the weekend.'], 'B', 'Thiếu "to".'],
+          ['A question about telling your parents:', ['You are going to tell your parents that you got bad results?', 'Are you going to tell your parents that you got bad results?'], 'B', 'Câu hỏi phải đảo are lên trước.'],
+          ['A question about where to watch the match:', ['Where are you going to watch the football match?', 'Where you are going to watch the football match?'], 'A'],
+          ['Not ordering food at the restaurant:', ['I\'m not going to order any food at the restaurant – I\'m not hungry.', 'I\'m going not to order any food at the restaurant – I\'m not hungry.'], 'A', 'Câu trong sách đã đúng: not đứng ngay sau am.'],
         ]),
-        gap('Khẳng định, phủ định, câu hỏi (G&V Ex. 3)', 'Viết dạng going to đúng theo ký hiệu (+ / − / ?).', [
+        gap('Positive, negative and questions (G&V Ex. 3)', 'Write the correct form of going to (+ / − / ?).', [
           ['(−/I/worry) ____ about my English test tomorrow. It is only a practice test.', 'I\'m not going to worry|I am not going to worry'],
           ['(?/you/learn) ____ some French before your holiday in Paris?', 'Are you going to learn'],
           ['(+/I/try) ____ my hardest to improve my vocabulary.', 'I\'m going to try|I am going to try'],
           ['(?/you/meet) ____ them outside the library?', 'Are you going to meet'],
           ['(−/she/live) ____ in campus accommodation when she goes to university.', 'She isn\'t going to live|She is not going to live|She\'s not going to live'],
         ]),
-        order('Đặt câu hỏi với going to (G&V Ex. 4)', 'Sắp xếp thành câu hỏi đúng.', [
+        order('Questions with going to (G&V Ex. 4)', 'Put the words in the correct order to make questions.', [
           ['Who are you going to do the language project with?'], ['Where are you going to buy a dictionary from?'], ['How are you going to improve your language skills?'], ['Why are you not going to go to university next year?'],
           ['When are you going to tell the teacher you want to move up to a higher level class?'],
         ]),
-        mcq('Phân tích các câu kế hoạch (Ex. 6)', 'Xem lại 5 câu ở bài "Kế hoạch (Ex. 5)" và trả lời.', [
+        mcq('Sentences about plans (Ex. 6)', 'Look again at the five sentences in "Plans (Ex. 5)" and answer the questions.', [
           ['How do we know the writer is talking about future plans?', ['The writer uses going to.', 'The writer uses the past simple.', 'The writer uses can.'], 'A', 'be going to + V = kế hoạch đã định.'],
           ['Which of these is NOT an adverb of time used in the sentences?', ['tonight', 'this afternoon', 'yesterday'], 'C', 'Các trạng từ trong bài: tonight, this afternoon, next week, today, this morning, at the weekend.'],
           ['Adverbs of time (next week, tomorrow, later…) usually go ____.', ['at the start of the sentence', 'at the end of the sentence', 'before going to'], 'B', 'Theo hộp gợi ý của sách: thường đứng cuối câu.'],
@@ -244,10 +244,10 @@ module.exports = {
         ['motivated', 'có động lực', 'You have to be very motivated.'],
       ],
       ex: [
-        order('Bố cục bài luận (Ex. 23)', 'Sắp xếp các phần của bài luận theo đúng thứ tự (A: đoạn nhược điểm · B: kết luận · C: mở bài · D: đoạn ưu điểm).', [
+        order('Essay structure (Ex. 23)', 'Put the parts of the essay in the correct order (A: disadvantages paragraph · B: conclusion · C: introduction · D: advantages paragraph).', [
           ['C D A B', 'Introduction → Paragraph (advantages) → Paragraph (disadvantages) → Conclusion.'],
         ]),
-        mcq('Bài luận về từ điển online (Ex. 24–25)', 'Đọc bài luận của học sinh và chọn đáp án đúng cho mỗi chỗ trống.', [
+        mcq('An essay about online dictionaries (Ex. 24–25)', 'Read the student\'s essay and choose the correct answer for each gap.', [
           ['(1) In this essay, I ____ discuss the advantages and disadvantages of this.', ['am going', 'going to', 'am going to'], 'C'],
           ['(2) if a student doesn\'t ____ the meaning of a word', ['see', 'know', 'think'], 'B'],
           ['(3) if they are afraid of ____ a mistake', ['having', 'doing', 'making'], 'C', 'make a mistake.'],
@@ -257,10 +257,10 @@ module.exports = {
           ['(7) to look ____ a word', ['up', 'at', 'to'], 'A', 'look up = tra cứu.'],
           ['(8) they won\'t ____ any progress', ['do', 'make', 'have'], 'B'],
         ], { stimulus: passage(DICT_ESSAY, { caption: 'What are the advantages and disadvantages of using an online dictionary in a language class?' }) }),
-        cat('Từ nối dùng để làm gì? (Ex. 26)', 'Xếp từ nối theo chức năng.', { main: 'Ý chính đầu tiên', extra: 'Thêm thông tin', new: 'Ý mới, đối lập', end: 'Kết luận' }, [
+        cat('What are linking words used for? (Ex. 26)', 'Put the linking words into groups by function.', { main: 'The first main point', extra: 'Adding information', new: 'A new or contrasting point', end: 'Conclusion' }, [
           ['Firstly', 'main'], ['Furthermore', 'extra'], ['Additionally', 'extra'], ['On the other hand', 'new'], ['However', 'new'], ['To sum up', 'end'],
         ]),
-        write('Viết bài luận: học tiếng Anh cùng bạn cùng quốc tịch (Ex. 27)', 'Viết bài luận (220–250 từ): "What are the advantages and disadvantages of taking English lessons with classmates from the same country?" Bài viết cần có: mở bài và kết luận rõ ràng; các đoạn thân bài bàn về ưu điểm và nhược điểm; từ nối để sắp xếp ý (Firstly, Furthermore, On the other hand, However, To sum up…).', {
+        write('Write an essay: classmates from the same country (Ex. 27)', 'Write an essay (220–250 words): "What are the advantages and disadvantages of taking English lessons with classmates from the same country?" Include a clear introduction and conclusion, body paragraphs about the advantages and the disadvantages, and linking words to organise your ideas (Firstly, Furthermore, On the other hand, However, To sum up…).', {
           minWords: 200, maxWords: 270, mustUse: 4,
           targetStructures: ['Firstly', 'Furthermore', 'Additionally', 'On the other hand', 'However', 'To sum up', 'In this essay'],
           checklist: ['Mở bài giới thiệu chủ đề và mục đích bài luận', 'Một đoạn ưu điểm (ít nhất 2 ý)', 'Một đoạn nhược điểm (ít nhất 2 ý)', 'Kết luận có ý kiến cá nhân', 'Dùng từ nối đúng chức năng', '220–250 từ'],
@@ -297,7 +297,7 @@ module.exports = {
         ['the floor above', 'tầng trên', 'You need to go to the floor above.'],
       ],
       ex: [
-        mcq('Collocation trong bài nghe', 'Chọn từ đúng (dựa vào hội thoại của Sofia và Oliver).', [
+        mcq('Collocations in the recording', 'Choose the correct word (from the conversation between Sofia and Oliver).', [
           ['Can I ____ a suggestion?', ['make', 'do', 'take'], 'A'],
           ['I\'ll ____ an appointment to go and speak to somebody.', ['take', 'make', 'have'], 'B'],
           ['We don\'t have enough time to ____ a chat with the whole college.', ['have', 'do', 'take'], 'A'],
@@ -327,10 +327,10 @@ module.exports = {
         ['follow-up question', 'câu hỏi tiếp theo', 'Ask follow-up questions about the topic.'],
       ],
       ex: [
-        speak('Nói: ngôn ngữ bạn đang học (Ex. 13–14)', 'Đọc đề, chuẩn bị 1 phút, rồi nói 1–2 phút.', 2, [
+        speak('Speaking: a language you are learning (Ex. 13–14)', 'Read the task, prepare for one minute, then speak for 1–2 minutes.', 2, [
           ['Describe a language that you are studying, other than your first language.\nYou should say:\n• what the language is\n• how well you know the language\n• how long you are going to study the language for\nand explain why you are learning this language.', 'The language I\'m studying at the moment is English. I started learning it in primary school, so I\'ve studied it for about eight years, but I think my level is only pre-intermediate. I can read simple articles and I can hold a short conversation about everyday topics, but I still find listening quite difficult, especially when people speak fast. I\'m going to study English for at least two more years, because I\'m going to take the IELTS test before I finish high school. My plan is to practise my skills every day – for example, I\'m going to watch one video online and learn ten new words each evening. The main reason I\'m learning English is that I want to study abroad, maybe in Australia. Also, English gives you more job opportunities, and it helps me talk to people from all over the world, so I think it\'s really worth the effort.', 'Đủ 4 ý; dùng going to cho kế hoạch, collocation (hold a conversation, practise my skills, worth the effort), có lý do cụ thể.'],
         ]),
-        speak('Nói: câu hỏi về việc học ngôn ngữ (Ex. 2, 5)', 'Trả lời từng câu hỏi trong 15–25 giây.', 1, [
+        speak('Speaking: questions about learning languages (Ex. 2, 5)', 'Answer each question in 15–25 seconds.', 1, [
           ['Which ways of learning English work best for you? Why?', 'Watching videos online works best for me, because I can learn real English and it\'s fun. I also keep a vocabulary notebook, so I can review new words before tests.', 'Hai cách + lý do.'],
           ['Do you prefer to communicate by phone or by email?', 'I prefer to communicate by phone, because it\'s faster and I can hear the other person\'s voice. I only use email for school or when I need to send documents.', 'Lựa chọn + lý do + ngoại lệ.'],
           ['What are you going to do to improve your English next month?', 'Next month, I\'m going to join an English club at school, and I\'m going to read one short book in English. I think speaking with other students will help me become more confident.', 'Dùng going to.'],
@@ -344,23 +344,23 @@ module.exports = {
       minutes: 30,
       objectives: ['Ôn giới từ giao tiếp, make/take, going to và từ nối'],
       ex: [
-        mcq('Giới từ (G&V Ex. 1)', 'Chọn giới từ đúng (hoặc "không cần giới từ").', [
-          ['I usually communicate ____ email with my lecturer at university.', ['by', 'to', '(không cần giới từ)'], 'A'],
-          ['If you are having a difficult time, it is best to talk ____ someone.', ['to', 'about', '(không cần giới từ)'], 'A', 'talk to / with somebody.'],
-          ['You must be able to hold a conversation ____ someone to pass the exam.', ['with', 'about', '(không cần giới từ)'], 'A'],
-          ['You can\'t take the course, unless you speak ____ English really well.', ['to', 'with', '(không cần giới từ)'], 'C', 'speak + tên ngôn ngữ, không giới từ.'],
-          ['Have you got any free time? I want to have a chat ____ something.', ['about', 'by', '(không cần giới từ)'], 'A'],
-          ['You can go to the careers office to have a chat ____ someone about jobs.', ['with', 'by', '(không cần giới từ)'], 'A'],
-          ['Do you want to discuss ____ a topic for the project?', ['about', 'with', '(không cần giới từ)'], 'C', 'discuss + tân ngữ trực tiếp.'],
+        mcq('Prepositions (G&V Ex. 1)', 'Choose the correct preposition (or "no preposition").', [
+          ['I usually communicate ____ email with my lecturer at university.', ['by', 'to', '(no preposition)'], 'A'],
+          ['If you are having a difficult time, it is best to talk ____ someone.', ['to', 'about', '(no preposition)'], 'A', 'talk to / with somebody.'],
+          ['You must be able to hold a conversation ____ someone to pass the exam.', ['with', 'about', '(no preposition)'], 'A'],
+          ['You can\'t take the course, unless you speak ____ English really well.', ['to', 'with', '(no preposition)'], 'C', 'speak + tên ngôn ngữ, không giới từ.'],
+          ['Have you got any free time? I want to have a chat ____ something.', ['about', 'by', '(no preposition)'], 'A'],
+          ['You can go to the careers office to have a chat ____ someone about jobs.', ['with', 'by', '(no preposition)'], 'A'],
+          ['Do you want to discuss ____ a topic for the project?', ['about', 'with', '(no preposition)'], 'C', 'discuss + tân ngữ trực tiếp.'],
         ]),
-        mcq('MAKE hay TAKE? (G&V Ex. 8)', 'Chọn đáp án đúng.', [
+        mcq('MAKE or TAKE? (G&V Ex. 8)', 'Choose the correct answer.', [
           ['It is a beautiful day. I ____ a walk.', ['am going to take', 'am taking', 'am going to make'], 'A'],
           ['Lucinda is upset. She thinks she ____ many mistakes in the exam.', ['took', 'made', 'makes'], 'B'],
           ['Robert is so funny. He really ____ me laugh.', ['makes', 'takes', 'is making'], 'A'],
           ['I always ____ lots of photos when I go sightseeing on holiday.', ['make', 'am taking', 'take'], 'C'],
           ['What really ____ a difference to your language skills is if you don\'t worry about making mistakes.', ['makes', 'is making', 'made'], 'A'],
         ]),
-        gap('Chia động từ (G&V Ex. 10)', 'Điền dạng đúng: have (x2), discuss, hold, communicate, try.', [
+        gap('Verb forms (G&V Ex. 10)', 'Complete the sentences with the correct form of: have (x2), discuss, hold, communicate, try.', [
           ['I don\'t know what university to apply for. My father and I ____ a chat about it tomorrow.', 'are going to have|are having'],
           ['Come in, Alison. We ____ to decide what to have for dinner.', 'are trying|\'re trying'],
           ['Look, we ____ this last week – I don\'t want to have a party for my birthday.', 'discussed'],
@@ -368,7 +368,7 @@ module.exports = {
           ['Our English teacher always tells us ____ more conversations with each other after class.', 'to hold'],
           ['I ____ a chat with my mum about what language course to take.', 'had|am having|\'m having|will have|am going to have|\'m going to have', 'Sách chấp nhận nhiều thì: had / am having / will have / am going to have.'],
         ]),
-        gap('Sắp xếp lại từ nối (G&V Ex. 9)', 'Năm từ nối in đậm trong đoạn văn đang bị đặt sai chỗ. Viết từ nối đúng cho mỗi vị trí 1–5 (dùng: To sum up, firstly, However, Furthermore, Additionally).', [
+        gap('Put the linking words in the right place (G&V Ex. 9)', 'Five linking words in bold in the text are in the wrong places. Write the correct linking word for each position 1–5 (use: To sum up, firstly, However, Furthermore, Additionally).', [
           ['I\'m going to talk about a project I did at college. (1) ____, it was a language project, and I worked with my friend, Peter.', 'Firstly', 'Ý đầu tiên → Firstly.'],
           ['We had to find out how many people in college speak more than one language and, (2) ____, what their level of English is.', 'additionally|furthermore', 'Thêm một việc nữa phải tìm hiểu → additionally / furthermore.'],
           ['I like doing this sort of project, so was happy to work hard. (3) ____, Peter is also a very good student, so we helped each other a lot.', 'Furthermore|Additionally', 'Bổ sung thêm ý tích cực → Furthermore / Additionally.'],

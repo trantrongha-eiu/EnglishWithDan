@@ -68,20 +68,20 @@ module.exports = {
         ["lift","thang máy","Take the lift to the fifth floor."],
       ],
       ex: [
-        match('Họ đang làm gì? (Lead-in Ex. 1)', 'Nối ảnh 1–4 với hoạt động.', [
+        match('What are they doing? (Lead-in Ex. 1)', 'Match photos 1–4 with the activities.', [
           ['Photo 1', 'meeting'], ['Photo 2', 'studying'], ['Photo 3', 'helping the elderly'], ['Photo 4', 'wearing a uniform'],
         ], { stimulus: picture('media:m0u07-leadin.jpg', 'Lead-in') }),
-        match('Kỹ năng trong tranh (Ex. 2)', 'Nối tranh 1–10 với kỹ năng.', [
+        match('Skills in the pictures (Ex. 2)', 'Match pictures 1–10 with the skills.', [
           ['Picture 1', 'write well'], ['Picture 2', 'remember a lot of information'], ['Picture 3', 'work for long hours'], ['Picture 4', 'play sport well'], ['Picture 5', 'understand maths easily'],
           ['Picture 6', 'talk to new people easily'], ['Picture 7', 'do well in exams'], ['Picture 8', 'speak many languages'], ['Picture 9', 'cook many types of food'], ['Picture 10', 'read a map'],
         ], { stimulus: picture('media:m0u07-skills.jpg', 'Ex. 2') }),
-        match('Việc làm hè (Ex. 12)', 'Nối ảnh 1–5 với công việc.', [
+        match('Summer jobs (Ex. 12)', 'Match photos 1–5 with the jobs.', [
           ['Photo 1', 'video game designer'], ['Photo 2', 'helping elderly people'], ['Photo 3', 'sports coach'], ['Photo 4', 'lifeguard'], ['Photo 5', 'sales assistant'],
         ], { stimulus: picture('media:m0u07-summerjobs.jpg', 'Ex. 12') }),
-        match('Nghề nghiệp (G&V Ex. 3)', 'Nối tranh 1–8 với nghề.', [
+        match('Jobs (G&V Ex. 3)', 'Match pictures 1–8 with the jobs.', [
           ['Picture 1', 'receptionist'], ['Picture 2', 'doctor'], ['Picture 3', 'waiter'], ['Picture 4', 'teacher'], ['Picture 5', 'lifeguard'], ['Picture 6', 'shop assistant'], ['Picture 7', 'cleaner'], ['Picture 8', 'chef'],
         ], { stimulus: picture('media:m0u07-jobs.jpg', 'G&V Ex. 3') }),
-        cat('Nhà hàng, khách sạn hay cửa hàng? (G&V Ex. 6)', 'Xếp từ vào nơi làm việc phù hợp.', { r: 'Restaurant', h: 'Hotel', s: 'Shop' }, [
+        cat('Restaurant, hotel or shop? (G&V Ex. 6)', 'Put each word with the correct workplace.', { r: 'Restaurant', h: 'Hotel', s: 'Shop' }, [
           ['waiter', 'r'], ['tables', 'r'], ['chef', 'r'], ['meal', 'r'],
           ['receptionist', 'h'], ['rooms', 'h'], ['guests', 'h'], ['lift', 'h'], ['cleaner', 'h'],
           ['cash desk', 's'], ['clothes', 's'], ['changing rooms', 's'], ['shop assistant', 's'],
@@ -125,7 +125,7 @@ module.exports = {
         ['training programme', 'chương trình đào tạo', 'IT companies have training programmes.'],
       ],
       ex: [
-        mcq('Đọc lướt bài báo (Ex. 13–14)', 'Đọc nhanh phần giới thiệu và bài báo, trả lời câu hỏi.', [
+        mcq('Skim the article (Ex. 13–14)', 'Read the introduction and the article quickly and answer the questions.', [
           ['What does a careers advisor do?', ['gives people advice about jobs and careers', 'finds jobs for teachers', 'teaches IT skills'], 'A'],
           ['What will Helen Green do in this article?', ['explain how young people can use their summer holiday to get useful work experience', 'tell her life story', 'advertise her company'], 'A'],
           ['Why is it good for young people to get a summer job?', ['They earn money, get work experience and learn new skills.', 'They don\'t need to go to university.', 'They can travel abroad.'], 'A'],
@@ -147,11 +147,11 @@ module.exports = {
       ],
       links: [{ grammar: 'modal-verbs', title: 'Modal verbs (can / could)', note: 'khả năng hiện tại và quá khứ' }],
       ex: [
-        cat('Jack Riley: xưa và nay (Ex. 7)', 'Xếp các khả năng của đầu bếp Jack vào đúng ô.', { can: 'can (now)', cant: "can't (now)", could: 'could (past)', couldnt: "couldn't (past)" }, [
+        cat('Jack Riley: then and now (Ex. 7)', 'Put chef Jack\'s abilities into the correct box.', { can: 'can (now)', cant: "can't (now)", could: 'could (past)', couldnt: "couldn't (past)" }, [
           ['write books', 'can'], ['cook many types of food', 'can'], ['work long hours', 'cant'],
           ['cook only one type of food', 'could'], ['understand maths easily', 'couldnt'], ['write well', 'couldnt'], ['do well in exams', 'couldnt'],
         ]),
-        gap('Hội thoại về kỹ năng (Ex. 8)', 'Điền can / can\'t / could / couldn\'t.', [
+        gap('A conversation about skills (Ex. 8)', 'Complete the conversation with can / can\'t / could / couldn\'t.', [
           ['Well, I have a good memory. I ____ remember lots of information.', 'can'],
           ['No, not really. I ____ really play sport that well.', 'can\'t|cannot'],
           ['When I was younger, I ____ play badminton a little bit, but I stopped because I found it boring.', 'could'],
@@ -159,7 +159,7 @@ module.exports = {
           ['In the past, I ____ cook anything very well without burning it…', 'couldn\'t|could not'],
           ['…but I\'ve been taking cooking classes and I ____ cook many different types of food.', 'can'],
         ]),
-        match('Nối nửa câu (G&V Ex. 1)', 'Nối hai nửa câu.', [
+        match('Match the sentence halves (G&V Ex. 1)', 'Match the two halves of the sentences.', [
           ['John works many hours, but he doesn\'t mind because he', 'can finish early on Fridays.'],
           ['Julia learnt Spanish very quickly this year. I think it is because she', 'could already speak two other languages.'],
           ['I have improved a lot. I got top marks for my essay, but just a year ago, I', 'couldn\'t even write very well.'],
@@ -171,7 +171,7 @@ module.exports = {
           ['Joseph is really good at football, tennis and basketball.', 'Could he play sport well when he was a child, too?'],
           ['Lucy is late. I think she is lost. She', 'can\'t read maps very well.'],
         ]),
-        mcq('Hỏi và trả lời với can (G&V Ex. 7–8)', 'Chọn đáp án đúng.', [
+        mcq('Questions and answers with can (G&V Ex. 7–8)', 'Choose the correct answer.', [
           ['A: ____ play sport?', ['You can', 'You can\'t', 'Can you'], 'C'],
           ['B: Yes, ____ play basketball.', ['I can', 'I can\'t', 'can I'], 'A'],
           ['A: Not really, ____ play many sports, but I like watching them on TV.', ['I can', 'I can\'t', 'can I'], 'B'],
@@ -209,7 +209,7 @@ module.exports = {
         ['hard-working', 'chăm chỉ', 'You should be hard-working.'],
       ],
       ex: [
-        cat('Email của Laura có gì? (Ex. 18–19)', 'Đọc email của Laura (ứng tuyển lễ tân khách sạn). Đặc điểm nào CÓ (đạt) và đặc điểm nào KHÔNG?', { y: 'Có / đạt', n: 'Không / chưa đạt' }, [
+        cat('What is in Laura\'s email? (Ex. 18–19)', 'Read Laura\'s email (an application for a hotel receptionist job). Which features does it HAVE and which does it NOT have?', { y: 'Yes – it has this', n: 'No – it does not have this' }, [
           ['She says which job she is interested in.', 'y'], ['She says what skills she has.', 'y'],
           ['She says what skills she didn\'t have in the past but does now.', 'n', 'Laura viết "I can\'t work long hours but I want to learn this" — không phải kỹ năng quá khứ.'],
           ['She uses a good structure – greeting to start the email and ends with her name.', 'y'],
@@ -217,14 +217,14 @@ module.exports = {
           ['She only talks about the information in the instructions.', 'n', 'Thêm chuyện làm nhà hàng — không được yêu cầu.'],
           ['She uses the correct number of words.', 'y'],
         ], { stimulus: passage('Dear Simon,\n\nI\'m interested in the hotel receptionist job. I think I have good skills to be a hotel receptionist. I could talk to new people easily and I could speak three languages – English, Spanish and Arabic. I can\'t work long hours but I want to learn this. I have a lot of experience. When I was younger, I worked in a restaurant.\n\nThanks,\nLaura', { caption: "Laura's email" }) }),
-        mcq('Sửa email của Pablo (G&V Ex. 9)', 'Email của Pablo xin làm cứu hộ. Mỗi câu dùng can/could đúng hay sai?', [
-          ['"I could swim very well." (nói về hiện tại)', ['Đúng', 'Sai → I can swim very well.'], 'B'],
-          ['"I couldn\'t swim when I was a child but I learnt when I was 12."', ['Đúng', 'Sai'], 'A'],
-          ['"I can also remember lots of information and instructions very well."', ['Đúng', 'Sai'], 'A'],
-          ['"They could talk to new people easily?"', ['Đúng', 'Sai → Could they talk to new people easily?'], 'B', 'Câu hỏi phải đảo could lên trước chủ ngữ.'],
-          ['"I can so I think I am a good choice for this job."', ['Đúng', 'Sai'], 'A'],
+        mcq('Correct Pablo\'s email (G&V Ex. 9)', 'Pablo\'s email is an application for a lifeguard job. Is can/could used correctly in each sentence?', [
+          ['"I could swim very well." (about the present)', ['Correct', 'Incorrect → I can swim very well.'], 'B'],
+          ['"I couldn\'t swim when I was a child but I learnt when I was 12."', ['Correct', 'Incorrect'], 'A'],
+          ['"I can also remember lots of information and instructions very well."', ['Correct', 'Incorrect'], 'A'],
+          ['"They could talk to new people easily?"', ['Correct', 'Incorrect → Could they talk to new people easily?'], 'B', 'Câu hỏi phải đảo could lên trước chủ ngữ.'],
+          ['"I can so I think I am a good choice for this job."', ['Correct', 'Incorrect'], 'A'],
         ]),
-        write('Viết email xin việc làm hè (Ex. 17, 20–21)', 'Bạn nhận được email về các việc làm hè. Hãy viết email cho Simon Stone (điều phối viên việc làm hè) để ứng tuyển MỘT công việc trong bài báo (sports coach, helping elderly people, fashion sales assistant, lifeguard, digital designer). Trong email: (1) nói bạn quan tâm công việc nào; (2) bạn có những kỹ năng, khả năng gì; (3) kỹ năng nào trước đây bạn chưa có nhưng bây giờ đã có. Viết 60–80 từ, có lời chào và kết thư lịch sự.', {
+        write('Write an email applying for a summer job (Ex. 17, 20–21)', 'You have received an email about summer jobs. Write an email to Simon Stone (the summer jobs coordinator) to apply for ONE job in the article (sports coach, helping elderly people, fashion sales assistant, lifeguard, digital designer). In your email: (1) say which job you are interested in; (2) say what skills and abilities you have; (3) say which skill you couldn\'t do before but can do now. Write 60–80 words with a polite greeting and ending.', {
           minWords: 60, maxWords: 90, mustUse: 3,
           targetStructures: ['Dear Simon', "I'm interested in", 'I can', "couldn't", 'now I can'],
           checklist: ['Nói rõ công việc muốn ứng tuyển', 'Nêu kỹ năng hiện có (can)', 'Nêu kỹ năng trước đây chưa có nhưng nay đã có (couldn\'t… but now I can…)', 'Mở đầu Dear Simon, kết thư lịch sự + tên', 'Không thêm thông tin ngoài đề', '60–80 từ'],
@@ -261,7 +261,7 @@ module.exports = {
         ['head chef', 'bếp trưởng', 'I worked as head chef at two restaurants.'],
       ],
       ex: [
-        mcq('Đoán loại thông tin (Ex. 4)', 'Trước khi nghe: mỗi chỗ trống trong ghi chú cần loại thông tin gì?', [
+        mcq('Predict the type of information (Ex. 4)', 'Before you listen: what type of information does each gap in the notes need?', [
           ['Day: ____', ['a day of the week', 'a number', 'a name'], 'A'],
           ['Time: ____', ['a time', 'a year', 'an age'], 'A'],
           ['left school at the age of ____', ['a year', 'an age (number)', 'a place'], 'B'],
@@ -293,7 +293,7 @@ module.exports = {
         ['patient', 'kiên nhẫn', 'You need to be patient with children.'],
       ],
       ex: [
-        speak('Nói: kỹ năng và khả năng của bạn (Ex. 9–11)', 'Trả lời từng câu hỏi trong 20–30 giây. Dùng can / can\'t / could / couldn\'t, thêm lý do và ví dụ.', 1, [
+        speak('Speaking: your skills and abilities (Ex. 9–11)', 'Answer each question in 20–30 seconds. Use can / can\'t / could / couldn\'t and add a reason and an example.', 1, [
           ['What are your best skills and abilities?', 'I think my best skill is remembering information. For example, I can learn twenty new English words in an evening and still remember them the next week. I\'m also quite good at drawing, because I practise every weekend.', 'Kỹ năng + ví dụ cụ thể + lý do.'],
           ['What skills do you want to learn?', 'I\'d really like to learn how to cook, because at the moment I can only make instant noodles! My mum is a great cook, so I want to learn some traditional dishes from her, like spring rolls.', 'Mong muốn + lý do + ví dụ.'],
           ['What skills and abilities did you have when you were younger?', 'When I was younger, I could swim really well – I was in the school swimming team. I could also play the piano a little, but I stopped when I started secondary school.', 'Dùng could cho quá khứ.'],
@@ -308,7 +308,7 @@ module.exports = {
       minutes: 30,
       objectives: ['Ôn động từ học tập/công việc, giới từ in/on/at và từ vựng quảng cáo việc làm'],
       ex: [
-        gap('Động từ học tập & công việc (G&V Ex. 2)', 'Điền dạng đúng: get, learn (x2), teach, pass, start (x2), fail, take (x2), finish, study.', [
+        gap('Verbs for studying and working (G&V Ex. 2)', 'Complete the sentences with the correct form of: get, learn (x2), teach, pass, start (x2), fail, take (x2), finish, study.', [
           ['I ____ my driving test last month. Now, I drive to school every day.', 'passed'],
           ['My older sister is ____ law. When she ____ university, she wants to be a family lawyer.', ['studying', 'finishes']],
           ['I think that it is difficult for young people to ____ a good job without experience.', 'get'],
@@ -318,14 +318,14 @@ module.exports = {
           ['I ____ my computer course last week. I want to ____ how to design my own website.', ['started', 'learn']],
           ['My friend is ____ her new job tomorrow. She feels a bit nervous.', 'starting'],
         ]),
-        gap('Quảng cáo việc làm hè (G&V Ex. 4)', 'Điền: experience, friendly and helpful, sports, art or music, energy, long hours, speak another language, hard-working, weekend.', [
+        gap('A summer job advert (G&V Ex. 4)', 'Complete the advert with: experience, friendly and helpful, sports, art or music, energy, long hours, speak another language, hard-working, weekend.', [
           ['Waiter/Waitress: You do not need to have ____ of working in a restaurant, but you should be ____ and happy to work in a team.', ['experience', 'hard-working']],
           ['You will work ____, especially at the weekends when we are very busy.', 'long hours'],
           ['Receptionist for busy city hotel, who can ____ (French, German or Spanish). You should be ____ to guests.', ['speak another language', 'friendly and helpful']],
           ['Summer Camp Leaders to teach children ____ at a summer camp. You should have a lot of ____.', ['sports, art or music', 'energy']],
           ['You will need to work weekdays and at the ____, but you will have one day off each week.', 'weekend'],
         ], { wordBank: ['experience', 'friendly and helpful', 'sports, art or music', 'energy', 'long hours', 'speak another language', 'hard-working', 'weekend'] }),
-        mcq('in / on / at (G&V Ex. 5)', 'Chọn giới từ đúng.', [
+        mcq('in / on / at (G&V Ex. 5)', 'Choose the correct preposition.', [
           ['My brother is working as a lifeguard ____ the swimming pool.', ['in', 'on', 'at'], 'C'],
           ['My cousin studies nursing ____ university.', ['in', 'on', 'at'], 'C'],
           ['I wouldn\'t like to work ____ a restaurant. I think it would be too stressful.', ['in', 'on', 'at'], 'A'],

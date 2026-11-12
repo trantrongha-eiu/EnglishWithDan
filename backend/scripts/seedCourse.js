@@ -28,6 +28,7 @@ const COURSES = {
   t2: { dir: 'writingTask2', tag: 'WT2Seed' },
   speaking: { dir: 'speakingCourse', tag: 'SpeakingSeed' },
   mindset0: { dir: 'mindset0', tag: 'Mindset0Seed' },
+  mindset1: { dir: 'mindset1', tag: 'Mindset1Seed' },
 };
 const courseKey = process.argv.slice(2).find((a) => !a.startsWith('--'));
 const COURSE = COURSES[courseKey];

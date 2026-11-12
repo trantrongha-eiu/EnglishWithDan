@@ -9,8 +9,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Hoạt động trong tranh (Lead-in Ex. 1)",
-   "instruction": "Nối tranh 1–6 với hoạt động (bài có 9 hoạt động, 3 hoạt động không dùng: shopping, cooking, reading).",
+   "title": "Activities in the pictures (Lead-in Ex. 1)",
+   "instruction": "Match pictures 1–6 with the activities. There are nine activities, so three are not used: shopping, cooking, reading.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u03-leadin.jpg",
@@ -64,8 +64,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Môn thể thao trong tranh (G&V Ex. 1)",
-   "instruction": "Nối tranh 1–10 với tên môn thể thao.",
+   "title": "Sports in the pictures (G&V Ex. 1)",
+   "instruction": "Match pictures 1–10 with the names of the sports.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u03-sports.jpg",
@@ -143,8 +143,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "PLAY, DO hay GO? (G&V Ex. 2)",
-   "instruction": "Xếp mỗi môn vào cột đúng.",
+   "title": "PLAY, DO or GO? (G&V Ex. 2)",
+   "instruction": "Put each sport into the correct column.",
    "categories": [
     {
      "id": "play",
@@ -309,8 +309,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Động từ thể thao (G&V Ex. 3)",
-   "instruction": "Điền dạng đúng của các động từ trong khung: score, win, kick, play, hit, throw, catch, lose, beat.",
+   "title": "Sports verbs (G&V Ex. 3)",
+   "instruction": "Complete the sentences with the correct form of the verbs in the box: score, win, kick, play, hit, throw, catch, lose, beat.",
    "wordBank": [
     "score",
     "win",
@@ -442,8 +442,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Môn cricket (G&V Ex. 4)",
-   "instruction": "Chọn từ đúng.",
+   "title": "Cricket (G&V Ex. 4)",
+   "instruction": "Choose the correct word.",
    "items": [
     {
      "id": "q1",
@@ -556,12 +556,12 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Môn nào? (Speaking and vocabulary Ex. 15)",
-   "instruction": "Tranh trong sách: basketball, football, badminton, table tennis, chess, tai chi, kite flying. Trong môn nào bạn…?",
+   "title": "Which activity? (Speaking and vocabulary Ex. 15)",
+   "instruction": "The pictures show basketball, football, badminton, table tennis, chess, tai chi and kite flying. In which activity do you…?",
    "items": [
     {
      "id": "q1",
-     "prompt": "…catch a ball? (bắt bóng)",
+     "prompt": "…catch a ball?",
      "options": [
       {
        "id": "A",
@@ -601,7 +601,7 @@
     },
     {
      "id": "q3",
-     "prompt": "…kick a ball? (đá bóng)",
+     "prompt": "…kick a ball?",
      "options": [
       {
        "id": "A",
@@ -621,7 +621,7 @@
     },
     {
      "id": "q4",
-     "prompt": "…hit a ball? (đánh bóng)",
+     "prompt": "…hit a ball?",
      "options": [
       {
        "id": "A",
@@ -661,7 +661,7 @@
     },
     {
      "id": "q6",
-     "prompt": "…use a racket? (dùng vợt)",
+     "prompt": "…use a racket?",
      "options": [
       {
        "id": "A",
@@ -681,7 +681,7 @@
     },
     {
      "id": "q7",
-     "prompt": "…move a piece? (di chuyển quân cờ)",
+     "prompt": "…move a piece?",
      "options": [
       {
        "id": "A",
@@ -701,7 +701,7 @@
     },
     {
      "id": "q8",
-     "prompt": "…relax your mind? (thư giãn đầu óc)",
+     "prompt": "…relax your mind?",
      "options": [
       {
        "id": "A",
@@ -721,7 +721,7 @@
     },
     {
      "id": "q9",
-     "prompt": "…play in a team? (chơi theo đội)",
+     "prompt": "…play in a team?",
      "options": [
       {
        "id": "A",
@@ -741,7 +741,7 @@
     },
     {
      "id": "q10",
-     "prompt": "…play alone? (chơi một mình)",
+     "prompt": "…play alone?",
      "options": [
       {
        "id": "A",
@@ -770,8 +770,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Đọc lướt: bài báo nói về gì? (Ex. 12)",
-   "instruction": "Đọc lướt bài báo và trả lời.",
+   "title": "What is the article about? (Ex. 12)",
+   "instruction": "Skim the article and answer the question.",
    "stimulus": {
     "kind": "passage",
     "text": "Aimee Fuller was born in England but now lives in the USA. She moved to the east coast of the United States at the age of 12 because she knew she wanted to be a professional snowboarder. It wasn't possible to train properly in her hometown because it hardly ever snowed. There was a dry ski slope in her town, where she learnt how to ski and snowboard, but there weren't any mountains with snow to practise the sport.\n\nAimee quickly found sponsors and a coach when she arrived in the USA, and she is now a successful and well-known snowboarding star. She has done really well in many national competitions and her dream is to win an Olympic gold medal one day.\n\nAimee spends most of her time practising on the snow, and trains in the gym four to five times a week. She also goes cycling and running. Aimee says it is very important to keep fit because that helps her stay safe when she is doing snowboarding tricks and jumps. Her advice to people who want to learn how to do jumps, is to start small and only do bigger jumps when they feel ready.\n\n**During her free time, Aimee likes to spend time at home, switch off her phone and laptop and hang out with her friends and family.**",
@@ -849,8 +849,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Từ vựng trong bài (Ex. 14)",
-   "instruction": "Hoàn thành từ trong bài báo khớp với định nghĩa.",
+   "title": "Words in the article (Ex. 14)",
+   "instruction": "Complete the words from the article that match the definitions.",
    "items": [
     {
      "id": "g1",
@@ -928,8 +928,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "Phân loại động từ trong blog (Ex. 6)",
-   "instruction": "Đọc blog từ Iceland. Mỗi cụm động từ thuộc thì nào?",
+   "title": "Verbs in the blog (Ex. 6)",
+   "instruction": "Read the blog from Iceland. Which tense is each verb phrase?",
    "stimulus": {
     "kind": "passage",
     "text": "I'm having a great time here in Iceland. I don't miss home at all. I'm not staying in a hotel. I'm staying at a little guesthouse with 11 other people. Every day, we get up early and go hiking or climbing. At the moment, I'm resting in my room because I'm exhausted. At home, I usually sleep about eight hours a night but on this holiday I need at least 10 hours a night because I'm so active! Our guide is great. He looks after us really well and he always makes us laugh. I'm happy with the food, but my friend doesn't like it very much. Today, we're having reindeer burgers. The chef is cooking them now and they smell delicious.",
@@ -1023,8 +1023,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Quy tắc dùng thì (Ex. 7, 9)",
-   "instruction": "Chọn \"simple\" hoặc \"continuous\".",
+   "title": "Rules for the tenses (Ex. 7, 9)",
+   "instruction": "Choose \"simple\" or \"continuous\".",
    "items": [
     {
      "id": "q1",
@@ -1133,8 +1133,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Viết dạng -s và -ing (Ex. 8)",
-   "instruction": "Viết dạng ngôi thứ ba (-s/-es/-ies) và dạng -ing của động từ.",
+   "title": "-s and -ing forms (Ex. 8)",
+   "instruction": "Write the third person (-s/-es/-ies) form and the -ing form of the verbs.",
    "items": [
     {
      "id": "g1",
@@ -1300,8 +1300,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Hỏi – đáp hai thì (Ex. 9)",
-   "instruction": "Nối câu hỏi 1–4 với câu trả lời A–D.",
+   "title": "Questions and answers in two tenses (Ex. 9)",
+   "instruction": "Match questions 1–4 with answers A–D.",
    "items": [
     {
      "id": "m1",
@@ -1338,8 +1338,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Hội thoại: chia động từ (Ex. 10)",
-   "instruction": "Chia động từ trong ngoặc ở hiện tại đơn hoặc hiện tại tiếp diễn.",
+   "title": "A conversation – verb forms (Ex. 10)",
+   "instruction": "Put the verbs in brackets into the present simple or present continuous.",
    "items": [
     {
      "id": "g1",
@@ -1471,8 +1471,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
-   "title": "Đặt câu hỏi (Ex. 11)",
-   "instruction": "Sắp xếp thành câu hỏi đúng.",
+   "title": "Make questions (Ex. 11)",
+   "instruction": "Put the words in the correct order to make questions.",
    "items": [
     {
      "id": "o1",
@@ -1594,8 +1594,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Ghi chú: liên hoan phim (Ex. 21)",
-   "instruction": "Đọc quảng cáo và email của Andrew rồi hoàn thành ghi chú của Joshua.",
+   "title": "Notes: a film festival (Ex. 21)",
+   "instruction": "Read the advert and Andrew's email, then complete Joshua's notes.",
    "stimulus": {
     "kind": "passage",
     "text": "FILM FESTIVAL IN SUNNYHILL PARK — Saturday 23rd and Sunday 24th June\n2:00PM Blue Rain · 4:00PM Child in Time\nTICKETS: £20 on the day or £15 from www.parkcinema.com\nAlso available – food stalls, art and other activities\n\nTo: Joshua · From: Andrew\nHi Joshua, I'm emailing you about the film festival at the weekend. I can only go on Saturday as I'm working on Sunday. I don't mind if we miss Blue Rain, but I can't wait to see Child in Time! We can get food there, but don't forget an umbrella as it looks like the weather won't be good. I'll get the tickets online tonight and you can pay me then. See you at the entrance at 1:00pm. Andrew",
@@ -1685,8 +1685,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Richard muốn gì? (Ex. 22)",
-   "instruction": "Bạn và Andrew đang ở liên hoan phim. Richard nhắn tin cho bạn.",
+   "title": "What does Richard want? (Ex. 22)",
+   "instruction": "You and Andrew are at the film festival. Richard sends you a text message.",
    "stimulus": {
     "kind": "passage",
     "text": "Hi Joshua,\nWhere are you? Are you busy? I'm watching TV at home at the moment but I'm really bored.\nDo you want to meet up? Let me know soon!\nRichard",
@@ -1724,8 +1724,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "paragraph_writing",
-   "title": "Viết tin nhắn trả lời Richard (Ex. 23)",
-   "instruction": "Dùng thông tin của unit này để viết tin nhắn trả lời Richard (khoảng 60–90 từ). Tin nhắn phải có: nơi bạn đang ở · bạn đang đi cùng ai · bạn đang làm gì · chuyện gì đang diễn ra · nơi bạn có thể gặp Richard · Richard nên mang gì theo. Dùng đúng hiện tại đơn và hiện tại tiếp diễn.",
+   "title": "Write a reply to Richard (Ex. 23)",
+   "instruction": "Use the information in this unit to write a reply to Richard (about 60–90 words). Include: where you are · who you are with · what you are doing · what is happening · where you can meet Richard · what Richard should bring. Use the present simple and present continuous correctly.",
    "responseSlots": 1,
    "rubric": {
     "bandFocus": [
@@ -1766,8 +1766,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Hoạt động nào được nhắc tới? (Ex. 4)",
-   "instruction": "Nghe/đọc bài: hoạt động nào sau đây Deon CÓ nhắc tới?",
+   "title": "Which activities are mentioned? (Ex. 4)",
+   "instruction": "Which of these activities DOES Deon mention?",
    "items": [
     {
      "id": "q1",
@@ -1775,11 +1775,11 @@
      "options": [
       {
        "id": "A",
-       "text": "được nhắc tới"
+       "text": "mentioned"
       },
       {
        "id": "B",
-       "text": "không được nhắc tới"
+       "text": "not mentioned"
       }
      ],
      "answer": "A",
@@ -1791,11 +1791,11 @@
      "options": [
       {
        "id": "A",
-       "text": "được nhắc tới"
+       "text": "mentioned"
       },
       {
        "id": "B",
-       "text": "không được nhắc tới"
+       "text": "not mentioned"
       }
      ],
      "answer": "B",
@@ -1807,11 +1807,11 @@
      "options": [
       {
        "id": "A",
-       "text": "được nhắc tới"
+       "text": "mentioned"
       },
       {
        "id": "B",
-       "text": "không được nhắc tới"
+       "text": "not mentioned"
       }
      ],
      "answer": "A",
@@ -1823,11 +1823,11 @@
      "options": [
       {
        "id": "A",
-       "text": "được nhắc tới"
+       "text": "mentioned"
       },
       {
        "id": "B",
-       "text": "không được nhắc tới"
+       "text": "not mentioned"
       }
      ],
      "answer": "B",
@@ -1839,11 +1839,11 @@
      "options": [
       {
        "id": "A",
-       "text": "được nhắc tới"
+       "text": "mentioned"
       },
       {
        "id": "B",
-       "text": "không được nhắc tới"
+       "text": "not mentioned"
       }
      ],
      "answer": "A",
@@ -1855,11 +1855,11 @@
      "options": [
       {
        "id": "A",
-       "text": "được nhắc tới"
+       "text": "mentioned"
       },
       {
        "id": "B",
-       "text": "không được nhắc tới"
+       "text": "not mentioned"
       }
      ],
      "answer": "A",
@@ -1876,8 +1876,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: mô tả hai bức tranh công viên (Ex. 19)",
-   "instruction": "Nhìn Picture 1 và Picture 2 (ở trên). Nói khoảng 1 phút: mô tả chuyện gì đang xảy ra trong mỗi tranh, nêu 3–5 điểm giống và 3–5 điểm khác. Dùng hiện tại tiếp diễn.",
+   "title": "Speaking: describe two pictures of a park (Ex. 19)",
+   "instruction": "Look at Picture 1 and Picture 2. Speak for about one minute: describe what is happening in each picture and give 3–5 similarities and 3–5 differences. Use the present continuous.",
    "speakingPart": 2,
    "speakingPrepSeconds": 60,
    "stimulus": {
@@ -1904,8 +1904,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: sở thích của bạn (Ex. 3, 20)",
-   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "title": "Speaking: your free-time activities (Ex. 3, 20)",
+   "instruction": "Answer each question in 15–25 seconds.",
    "speakingPart": 1,
    "speakingPrepSeconds": 10,
    "items": [
@@ -1948,8 +1948,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Từ nào khác loại? (G&V Ex. 5)",
-   "instruction": "Chọn từ KHÁC nhóm với các từ còn lại.",
+   "title": "Odd one out (G&V Ex. 5)",
+   "instruction": "Choose the word that is DIFFERENT from the others.",
    "items": [
     {
      "id": "q1",
@@ -2082,8 +2082,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Nối nửa câu (G&V Ex. 7)",
-   "instruction": "Nối hai nửa câu.",
+   "title": "Match the sentence halves (G&V Ex. 7)",
+   "instruction": "Match the two halves of the sentences.",
    "items": [
     {
      "id": "m1",
@@ -2138,8 +2138,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Động từ trạng thái (G&V Ex. 8)",
-   "instruction": "Chọn dạng đúng.",
+   "title": "State verbs (G&V Ex. 8)",
+   "instruction": "Choose the correct form.",
    "items": [
     {
      "id": "q1",
@@ -2280,8 +2280,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Email của Katy ở Leeds (G&V Ex. 9)",
-   "instruction": "Chia động từ trong ngoặc (hiện tại đơn hoặc hiện tại tiếp diễn).",
+   "title": "Katy's email from Leeds (G&V Ex. 9)",
+   "instruction": "Put the verbs in brackets into the present simple or present continuous.",
    "items": [
     {
      "id": "g1",
@@ -2384,8 +2384,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Câu hỏi và câu trả lời ngắn (G&V Ex. 10)",
-   "instruction": "Nối câu hỏi với câu trả lời ngắn phù hợp.",
+   "title": "Short answers (G&V Ex. 10)",
+   "instruction": "Match the questions with the correct short answers.",
    "items": [
     {
      "id": "m1",
@@ -2446,8 +2446,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Ngôi thứ ba & dạng -ing (G&V Ex. 6)",
-   "instruction": "Viết dạng ngôi thứ ba số ít (hiện tại đơn) và dạng -ing của mỗi động từ.",
+   "title": "Third person and -ing forms (G&V Ex. 6)",
+   "instruction": "Write the third person singular (present simple) and the -ing form of each verb.",
    "items": [
     {
      "id": "g1",

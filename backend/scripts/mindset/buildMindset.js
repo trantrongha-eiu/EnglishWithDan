@@ -19,6 +19,7 @@ const path = require('path');
 
 const LEVELS = {
   m0: { src: 'm0', out: 'mindset0', prefix: 'M0', course: 'MINDSET-0' },
+  m1: { src: 'm1', out: 'mindset1', prefix: 'M1', course: 'MINDSET-1' },
 };
 
 const KEYS = [
@@ -88,14 +89,16 @@ function buildUnit(lv, u) {
         return { ref: p.ref, kind: p.ref.split(':')[0], title: p.title, note: p.note || '' };
       });
     }
-    if (k.slot && l.vocab && l.vocab.length) {
+    // l.slot overrides the per-skill default (Mindset 1/2 print "Sổ N" per unit pair).
+    const slot = l.slot || k.slot;
+    if (slot && l.vocab && l.vocab.length) {
       lesson.vocabSave = {
-        slot: k.slot,
+        slot,
         title: `Unit ${u.n} · ${l.title || k.label} — ${l.vocab.length} từ/cụm từ`,
         words: l.vocab.map(([word, meaning, example]) => ({ word, meaning, example: example || '' })),
       };
     } else if (l.vocab && l.vocab.length) {
-      throw new Error(`${code}: chỉ các buổi vocab/reading/writing/listening/speaking mới có Sổ`);
+      throw new Error(`${code}: buổi này không có Sổ — thêm slot: N hoặc chuyển từ sang buổi có Sổ`);
     }
     lessons.push(lesson);
     exercises.push(...exs);

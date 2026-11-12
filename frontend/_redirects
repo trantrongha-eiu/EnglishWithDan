@@ -72,6 +72,7 @@
 /writing/task1-grammar/:skill /task1-practice.html?skill=:skill 200
 /speaking/course/*          /speaking-course.html        200
 /mindset/0/*                /mindset-0.html              200
+/mindset/1/*                /mindset-1.html              200
 /speaking/part2/:story      /speaking-part2.html?story=:story 200
 /dictation/*                /dictation.html              200
 /shadowing/*                /shadowing.html              200
@@ -137,6 +138,7 @@
 /speaking        /speaking.html         200
 /speaking/course /speaking-course.html  200
 /mindset/0       /mindset-0.html        200
+/mindset/1       /mindset-1.html        200
 /speaking/part2  /speaking-part2.html   200
 /essential-grammar /essential-grammar.html 200
 /entrance-test   /entrance-test.html    200

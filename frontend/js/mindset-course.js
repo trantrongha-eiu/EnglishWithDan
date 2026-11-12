@@ -20,6 +20,7 @@
   var LEVEL = (document.body && document.body.getAttribute('data-mindset-level')) || '0';
   var LEVELS = {
     '0': { name: 'Foundation', band: 'A2 → Band 4.0–4.5', units: 10 },
+    '1': { name: 'Level 1', band: 'Band 4.5 → 5.5', units: 8, rl: true },
   };
   var LV = LEVELS[LEVEL] || LEVELS['0'];
   var COURSE = 'MINDSET-' + LEVEL;
@@ -178,7 +179,9 @@
       heroClass: 't1-hero',
       heroStatsExtra: '<span>' + LV.band + '</span>',
       paywallTitle: 'Khoá Mindset chỉ dành cho Premium',
-      paywallBlurb: LV.units + ' unit bám sát giáo trình Mindset for IELTS ' + LV.name + ' (Cambridge): bài giảng tiếng Việt, Reading/Listening trên giao diện thi thật, Writing & Speaking được AI chấm, từ vựng lưu thẳng vào Sổ 1–5.',
+      paywallBlurb: LV.rl
+        ? LV.units + ' unit bám sát giáo trình Mindset for IELTS ' + LV.name + ' Reading & Listening (Cambridge): bài giảng chiến thuật tiếng Việt, mọi bài Reading/Listening làm trên giao diện thi thật (audio gốc), từ vựng lưu thẳng vào Sổ.'
+        : LV.units + ' unit bám sát giáo trình Mindset for IELTS ' + LV.name + ' (Cambridge): bài giảng tiếng Việt, Reading/Listening trên giao diện thi thật, Writing & Speaking được AI chấm, từ vựng lưu thẳng vào Sổ 1–5.',
       premiumBlurb: 'Trọn bộ ' + LV.units + ' unit Mindset ' + LV.name,
       heroFallback: 'Khoá học theo giáo trình Mindset for IELTS ' + LV.name + '.',
       moduleClass: undefined,

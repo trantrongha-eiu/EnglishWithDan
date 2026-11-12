@@ -1,0 +1,661 @@
+{
+ "modules": [
+  {
+   "code": "M1-U04",
+   "order": 4,
+   "title": "Unit 4 · Ẩm thực",
+   "titleEn": "UNIT 04: FOOD AND DRINK — sách tr. 64–69, 75–79",
+   "outcomes": [
+    "Reading: định vị thông tin nhanh; nối thông tin với người/đoạn (matching information, matching features); sentence completion 1 từ",
+    "Grammar: danh từ đếm được / không đếm được; some, any, much, many",
+    "Listening: matching — nhận diện \"distractors\"; classification A–C; synonym & paraphrase",
+    "Từ vựng món ăn, cách chế biến, văn hoá ẩm thực (Sổ 2)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M1-U04-L1",
+   "moduleCode": "M1-U04",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: food and food culture",
+   "titleEn": "Lead-in · Locating information in a text (pp. 64–65)",
+   "durationMinutes": 35,
+   "objectives": [
+    "Gọi tên món ăn và phân loại đếm được / không đếm được",
+    "Đọc lướt \"Food culture shock\" — 5 người kể về cú sốc văn hoá ẩm thực"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Đếm được hay không đếm được",
+     "titleEn": "Countable and uncountable food words",
+     "formula": [],
+     "usage": [
+      "**Countable**: có số nhiều — three apples, burgers, chips, noodles, vegetables.",
+      "**Uncountable**: không có số nhiều, không dùng a/an — bread, cereal, rice, curry, salad, toast, mashed potato.",
+      "**chicken / fish** là thịt/cá dùng làm món ăn → không đếm được (some chicken); khi là con vật → đếm được (two chickens)."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 20,
+   "images": [
+    {
+     "url": "media:m1u04-foods.jpg",
+     "caption": "Ex. 1 (p. 64): pictures 1–8"
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 4 · Lead-in & Vocabulary: food and food culture — 36 từ/cụm từ",
+    "words": [
+     {
+      "word": "eat with one's fingers",
+      "meaning": "ăn bốc",
+      "example": "Food culture shock A — Charles You would think that eating with your fingers would be easy."
+     },
+     {
+      "word": "fingertip",
+      "meaning": "đầu ngón tay",
+      "example": "You use your fingertips, never the palm of your hand, and use your thumb to pop it into your mouth."
+     },
+     {
+      "word": "palm",
+      "meaning": "lòng bàn tay",
+      "example": "You use your fingertips, never the palm of your hand, and use your thumb to pop it into your mouth."
+     },
+     {
+      "word": "attempt",
+      "meaning": "lần thử, nỗ lực",
+      "example": "I thought I knew where my mouth was, but my first few attempts were a disaster."
+     },
+     {
+      "word": "fast food culture",
+      "meaning": "văn hóa đồ ăn nhanh",
+      "example": "(*Daal is a lentil curry widely eaten in the Indian subcontinent.) B — Alfredo For me, when I travel, the 'fast food' culture always shocks me."
+     },
+     {
+      "word": "junk food",
+      "meaning": "đồ ăn không lành mạnh",
+      "example": "I can't believe there are people in the world who live on 'junk food' like burgers and just grab a sandwich for lunch."
+     },
+     {
+      "word": "grab a sandwich",
+      "meaning": "ăn vội một cái bánh mì kẹp",
+      "example": "I can't believe there are people in the world who live on 'junk food' like burgers and just grab a sandwich for lunch."
+     },
+     {
+      "word": "grow one's own vegetables",
+      "meaning": "tự trồng rau",
+      "example": "A lot of people grow their own vegetables and keep chickens."
+     },
+     {
+      "word": "keep chickens",
+      "meaning": "nuôi gà",
+      "example": "A lot of people grow their own vegetables and keep chickens."
+     },
+     {
+      "word": "identity",
+      "meaning": "bản sắc",
+      "example": "Food is part of your identity, so what are you saying about yourself when you eat some rubbish which contains chemicals and goodness knows what else?"
+     },
+     {
+      "word": "fizzy drink",
+      "meaning": "nước ngọt có ga",
+      "example": "The worst thing I have seen on my travels is a baby being given a fizzy drink in a bottle."
+     },
+     {
+      "word": "be polite",
+      "meaning": "lịch sự",
+      "example": "In other countries, though, 'no' means 'no', so if you are just trying to be polite and don't take it the first time, you will end up with nothing!"
+     },
+     {
+      "word": "get used to",
+      "meaning": "quen với",
+      "example": "To me, it feels wrong to take something the first time it is offered, so it took me a while to get used to that when I travel abroad."
+     },
+     {
+      "word": "vegetarian",
+      "meaning": "người ăn chay",
+      "example": "I'm glad to get home where we have special vegetarian products."
+     },
+     {
+      "word": "for ethical reasons",
+      "meaning": "vì lý do đạo đức",
+      "example": "In many countries, they don't even realise that there is a concept of not eating meat for ethical reasons."
+     },
+     {
+      "word": "prosperity",
+      "meaning": "sự thịnh vượng, giàu có",
+      "example": "In many parts of the world, meat equates to prosperity, so the idea of going out for a meal and not having meat is alien to them."
+     },
+     {
+      "word": "be alien to sb",
+      "meaning": "xa lạ với ai",
+      "example": "In many parts of the world, meat equates to prosperity, so the idea of going out for a meal and not having meat is alien to them."
+     },
+     {
+      "word": "culture shock",
+      "meaning": "cú sốc văn hóa",
+      "example": "E — Aileen I think breakfast is the meal where food culture shock really hits you."
+     },
+     {
+      "word": "steamed vegetables",
+      "meaning": "rau hấp",
+      "example": ""
+     },
+     {
+      "word": "can't face sth",
+      "meaning": "không nuốt nổi, không thiết (ăn) cái gì",
+      "example": "Even though I love all those things, I just can't face them at breakfast!"
+     },
+     {
+      "word": "cookery show",
+      "meaning": "chương trình dạy nấu ăn",
+      "example": "Certain cookery shows influence viewers more than others."
+     },
+     {
+      "word": "sophisticated",
+      "meaning": "tinh tế, cầu kỳ",
+      "example": "She began her career as a cook when, in 1948, she moved to Paris and learnt to cook sophisticated French cuisine because her husband loved good food."
+     },
+     {
+      "word": "cuisine",
+      "meaning": "ẩm thực",
+      "example": "She began her career as a cook when, in 1948, she moved to Paris and learnt to cook sophisticated French cuisine because her husband loved good food."
+     },
+     {
+      "word": "recipe",
+      "meaning": "công thức nấu ăn",
+      "example": "On her return home, she published a collection of French recipes made simple, for ordinary American housewives to use, which was an instant success."
+     },
+     {
+      "word": "an instant success",
+      "meaning": "thành công ngay lập tức",
+      "example": "On her return home, she published a collection of French recipes made simple, for ordinary American housewives to use, which was an instant success."
+     },
+     {
+      "word": "have a bad temper",
+      "meaning": "nóng tính",
+      "example": "He is famous for having a bad temper and using foul language."
+     },
+     {
+      "word": "foul language",
+      "meaning": "ngôn từ thô tục",
+      "example": "He is famous for having a bad temper and using foul language."
+     },
+     {
+      "word": "make healthy eating fashionable",
+      "meaning": "biến ăn uống lành mạnh thành xu hướng",
+      "example": ""
+     },
+     {
+      "word": "lose weight",
+      "meaning": "giảm cân",
+      "example": "They were both fat but then did a series of shows on how to cook diet food and both lost weight."
+     },
+     {
+      "word": "competitive element",
+      "meaning": "yếu tố cạnh tranh",
+      "example": "E The introduction of a competitive element to many cookery shows reminds us that food TV is more entertainment than education these days."
+     },
+     {
+      "word": "contestant",
+      "meaning": "thí sinh",
+      "example": "Many of us love shows like Masterchef, where a contestant is eliminated on every show."
+     },
+     {
+      "word": "be eliminated",
+      "meaning": "bị loại",
+      "example": "Many of us love shows like Masterchef, where a contestant is eliminated on every show."
+     },
+     {
+      "word": "ready-made meals",
+      "meaning": "đồ ăn chế biến sẵn",
+      "example": "F We know that cooking at home is better for us than eating ready-made or takeaway meals."
+     },
+     {
+      "word": "influential",
+      "meaning": "có sức ảnh hưởng",
+      "example": "One study found that the most influential show was Jamie Oliver's 15 Minute Meals, which influenced 21% of viewers."
+     },
+     {
+      "word": "on a regular basis",
+      "meaning": "một cách thường xuyên",
+      "example": "Cooking with family members on a regular basis and making food preparation part of the school curriculum is likely to ensure that children become adults who can and do cook."
+     },
+     {
+      "word": "school curriculum",
+      "meaning": "chương trình học ở trường",
+      "example": "Cooking with family members on a regular basis and making food preparation part of the school curriculum is likely to ensure that children become adults who can and do cook."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M1-U04-L2",
+   "moduleCode": "M1-U04",
+   "order": 2,
+   "title": "📖 Reading: locating & matching information",
+   "titleEn": "Locating information · Paraphrase · Sentence completion · Exam skills (pp. 65–69)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Tìm rất nhanh thông tin cụ thể (một từ, một tên nước)",
+    "Nối câu hỏi \"Who…?\" với người nói nhờ paraphrase",
+    "Hoàn thành câu bằng 1 từ trong bài",
+    "Matching information (đoạn nào chứa…) và matching features (nối mô tả với tên người)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Tìm thông tin cụ thể",
+     "titleEn": "Locating information in a text",
+     "formula": [],
+     "usage": [
+      "Có câu hỏi chỉ cần **một chi tiết** (a food used as glue → daal). Scan tìm từ khoá hoặc **từ cùng nghĩa** (glue ↔ \"a kind of glue\").",
+      "Định vị nhanh còn giúp làm **sentence completion**: tìm đúng câu rồi chọn từ phù hợp ngữ pháp."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Paraphrase trong câu hỏi \"Who…?\"",
+     "titleEn": "Paraphrase",
+     "formula": [],
+     "usage": [
+      "Câu hỏi: *Who is concerned about healthy eating?* → **Alfredo** — đoạn B không có cụm \"healthy eating\" nhưng có các manh mối: \"fast food culture always shocks me\", \"rubbish which contains chemicals\", \"a baby being given a fizzy drink\".",
+      "Đọc cả **ý của câu**, không chỉ tìm từ giống hệt."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Matching information & matching features",
+     "titleEn": "Exam skills: matching",
+     "formula": [
+      "**Which paragraph contains…?** → nối thông tin với đoạn A–G. **NB You may use any letter more than once** = một đoạn có thể là đáp án nhiều lần.",
+      "**Matching features** → nối mô tả với tên (người/vật) trong danh sách."
+     ],
+     "usage": [
+      "Câu hỏi matching information **không theo thứ tự** bài → đọc lướt từng đoạn, nhớ đại ý mỗi đoạn.",
+      "Với matching features, scan **tên riêng** trước, rồi đọc kỹ câu quanh tên đó."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 6,
+   "practiceLinks": [
+    {
+     "ref": "reading:M1-U04-R1",
+     "kind": "reading",
+     "title": "Food culture shock (Ex. 4–6)",
+     "note": "Locate information · Who…? · sentence completion."
+    },
+    {
+     "ref": "reading:M1-U04-R2",
+     "kind": "reading",
+     "title": "Exam skills: Food TV — education or entertainment? (Ex. 9–10)",
+     "note": "Matching information A–G + matching features (chefs)."
+    }
+   ]
+  },
+  {
+   "code": "M1-U04-L3",
+   "moduleCode": "M1-U04",
+   "order": 3,
+   "title": "🧩 Grammar focus: countable & uncountable nouns",
+   "titleEn": "Grammar focus: countable and uncountable nouns · some, any, much, many (p. 66)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Sửa lỗi thường gặp với danh từ không đếm được (fruit is, chicken)",
+    "Bỏ \"the\" khi nói chung chung (Burgers and pizza…, vegetarian food)",
+    "Dùng some / any / much / many"
+   ],
+   "keyLanguage": [
+    "Danh từ không đếm được + **động từ số ít**: Fresh fruit **is** healthy (không phải fruit are). Đại từ thay thế: **it** (không phải them).",
+    "Nói **chung chung** → không dùng \"the\": **Burgers and pizza** are the cheapest foods. In **India** (không có the) it is easy to find **vegetarian food**.",
+    "**some**: khẳng định + lời mời/đề nghị (Can I have some more cake?) · **any**: phủ định/câu hỏi · **many** + số nhiều · **much** + không đếm được (How much rice…?)."
+   ],
+   "theory": [
+    {
+     "title": "some / any / much / many",
+     "titleEn": "Quantifiers",
+     "formula": [
+      "some + N (số nhiều / không đếm được) — câu khẳng định, lời đề nghị",
+      "any + N — câu hỏi, câu phủ định",
+      "many + N đếm được số nhiều · much + N không đếm được (thường trong câu hỏi, phủ định)"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "There are some mushrooms in the fridge.",
+       "vi": "Khẳng định."
+      },
+      {
+       "en": "I don't put much sugar in my tea.",
+       "vi": "Phủ định + không đếm được."
+      },
+      {
+       "en": "How much rice do you eat every week?",
+       "vi": "Câu hỏi + không đếm được."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 11,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Countable vs Uncountable",
+     "note": "some, any, much, many",
+     "url": "/essential-grammar.html?lesson=countable-uncountable"
+    },
+    {
+     "kind": "grammar",
+     "title": "Articles (a / an / the)",
+     "note": "khi nào bỏ \"the\"",
+     "url": "/essential-grammar.html?lesson=articles"
+    }
+   ]
+  },
+  {
+   "code": "M1-U04-L4",
+   "moduleCode": "M1-U04",
+   "order": 4,
+   "title": "🎧 Listening: matching & classification",
+   "titleEn": "Lead-in · Matching tasks · Synonym and paraphrase · Classification tasks · Exam skills (pp. 75–79)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Từ vựng cách chế biến và nhóm thực phẩm",
+    "Matching: nghe hết thông tin về mọi phương án, loại \"distractors\"",
+    "Nhận ra câu đồng nghĩa / không đồng nghĩa",
+    "Classification: nối câu với A–C (dùng lại được)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Matching tasks và distractors",
+     "titleEn": "Matching tasks",
+     "formula": [],
+     "usage": [
+      "Bạn có thể nghe thông tin về **nhiều phương án**, nhưng chỉ **một** đúng (Jane bác Mexican vì quá cay, bác pizza vì muốn món lành mạnh hơn → chọn salad & roast chicken).",
+      "**Distractor** = phương án được nhắc đến nhưng bị phủ định/không phù hợp (\"is it a French restaurant? – Well, … it serves food from all over the world\").",
+      "Không cần dùng hết các chữ cái; câu hỏi đi **theo thứ tự** bài nghe."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Classification tasks",
+     "titleEn": "Classification",
+     "formula": [
+      "Nối nhiều câu (1–5) với **3 lựa chọn A–C**; mỗi chữ cái **dùng lại được**."
+     ],
+     "usage": [
+      "Nghe **ý**, không chờ đúng từ: \"hot, peppery food\" ↔ \"spicier food… red peppers\" (Korea); \"different types of regional cooking\" ↔ \"many different cuisines\" (China)."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 5,
+   "totalPoints": 41,
+   "images": [
+    {
+     "url": "media:m1u04-cooking.jpg",
+     "caption": "Ex. 1 (p. 75): ways of preparing food A–D"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M1-U04-L1",
+     "kind": "listening",
+     "title": "Planning a party meal (Ex. 3)",
+     "note": "Nối gợi ý của Mike với câu trả lời của Jane."
+    },
+    {
+     "ref": "listening:M1-U04-L2",
+     "kind": "listening",
+     "title": "Preparing the potatoes (Ex. 4)",
+     "note": "Boil, bake hay fry?"
+    },
+    {
+     "ref": "listening:M1-U04-L3",
+     "kind": "listening",
+     "title": "Food shopping (Ex. 5)",
+     "note": "Nối cửa hàng với loại thực phẩm."
+    },
+    {
+     "ref": "listening:M1-U04-L4",
+     "kind": "listening",
+     "title": "Talk of the Town: three restaurants (Ex. 6)",
+     "note": "Nối nhà hàng với loại nhà hàng A–G."
+    },
+    {
+     "ref": "listening:M1-U04-L5",
+     "kind": "listening",
+     "title": "A TV chef: China, Japan, Korea (Ex. 11)",
+     "note": "Classification A–C."
+    },
+    {
+     "ref": "listening:M1-U04-L6",
+     "kind": "listening",
+     "title": "Exam skills: food in Beijing (Ex. 12)",
+     "note": "Chọn 4 món A–F cho câu 1–4."
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 4 · Listening: matching & classification — 35 từ/cụm từ",
+    "words": [
+     {
+      "word": "spicy",
+      "meaning": "cay",
+      "example": "The dish I had was made in the Sichuan style, so it was very spicy."
+     },
+     {
+      "word": "simple to prepare",
+      "meaning": "dễ chuẩn bị",
+      "example": "And it's fairly simple to prepare."
+     },
+     {
+      "word": "boil",
+      "meaning": "luộc",
+      "example": "I know, I'll boil them and then put them with Elly's salad."
+     },
+     {
+      "word": "fry",
+      "meaning": "chiên, rán",
+      "example": "What about frying them?"
+     },
+     {
+      "word": "bake",
+      "meaning": "nướng (bằng lò)",
+      "example": "You could bake them and serve them with the salad Elly's preparing."
+     },
+     {
+      "word": "serve sth with",
+      "meaning": "dọn món gì kèm với",
+      "example": "Well, you could just boil them and serve them with the fish."
+     },
+     {
+      "word": "take ages",
+      "meaning": "mất rất nhiều thời gian",
+      "example": "That would taste good, but it takes ages to bake potatoes in the oven."
+     },
+     {
+      "word": "tips and recommendations",
+      "meaning": "lời khuyên và gợi ý",
+      "example": ""
+     },
+     {
+      "word": "food critic",
+      "meaning": "nhà phê bình ẩm thực",
+      "example": ""
+     },
+     {
+      "word": "a wide variety of",
+      "meaning": "rất nhiều loại",
+      "example": "It has a wide variety of dishes."
+     },
+     {
+      "word": "word of warning",
+      "meaning": "lời cảnh báo",
+      "example": "One word of warning though, it gets really busy at weekends, so you should check they have places before you go."
+     },
+     {
+      "word": "tasty",
+      "meaning": "ngon",
+      "example": "And very tasty!"
+     },
+     {
+      "word": "low-cost",
+      "meaning": "giá rẻ",
+      "example": "The food isn't that low-cost though, so you might want to save going here for a special treat."
+     },
+     {
+      "word": "a special treat",
+      "meaning": "dịp tự thưởng đặc biệt",
+      "example": "The food isn't that low-cost though, so you might want to save going here for a special treat."
+     },
+     {
+      "word": "be on a budget",
+      "meaning": "phải chi tiêu dè sẻn",
+      "example": "What about people who are on a budget?"
+     },
+     {
+      "word": "specialise in",
+      "meaning": "chuyên về",
+      "example": "I had a pizza, but it isn't a fast food restaurant, it specialises in all different types of food from Italy."
+     },
+     {
+      "word": "food for thought",
+      "meaning": "điều đáng suy ngẫm",
+      "example": "You certainly have given us all food for thought."
+     },
+     {
+      "word": "chopsticks",
+      "meaning": "đũa",
+      "example": "In Japan they use a variety of things to make chopsticks."
+     },
+     {
+      "word": "stainless steel",
+      "meaning": "thép không gỉ",
+      "example": "In China the chopsticks tend to be made of wood and are round at the end, whereas in Korea they're made of stainless steel and are rough at the end."
+     },
+     {
+      "word": "tricky",
+      "meaning": "khó, rắc rối",
+      "example": "They can be quite tricky to use, but in Korea people use a spoon to eat their rice."
+     },
+     {
+      "word": "in general terms",
+      "meaning": "nói chung",
+      "example": "If we look at the food of the different countries, it's very difficult to talk about China in general terms because it has many different cuisines."
+     },
+     {
+      "word": "play a role",
+      "meaning": "đóng vai trò",
+      "example": ""
+     },
+     {
+      "word": "due to the lack of",
+      "meaning": "do thiếu",
+      "example": ""
+     },
+     {
+      "word": "form the basis of",
+      "meaning": "là nền tảng của",
+      "example": "Barbecues of all types are popular in Korea and beef forms the basis of many special meals in both of the countries."
+     },
+     {
+      "word": "historic city",
+      "meaning": "thành phố cổ, giàu lịch sử",
+      "example": "Graham has just come back from Beijing in China, where he was making a TV programme on the food you can try in this historic city."
+     },
+     {
+      "word": "street food",
+      "meaning": "đồ ăn đường phố",
+      "example": "These tasty snacks are originally from north-west China, but they're very popular street food in Beijing."
+     },
+     {
+      "word": "texture",
+      "meaning": "kết cấu (độ dai, giòn của món ăn)",
+      "example": "It added a nice texture to the dish, but I thought it didn't taste of much."
+     },
+     {
+      "word": "raw",
+      "meaning": "sống, chưa nấu",
+      "example": "I especially enjoyed one with raw prawns, but all sorts of meat and vegetables can be put in them."
+     },
+     {
+      "word": "sociable",
+      "meaning": "mang tính giao lưu, vui vẻ",
+      "example": "It was great fun and very sociable."
+     },
+     {
+      "word": "dumpling",
+      "meaning": "bánh bao, sủi cảo",
+      "example": "Something which is much simpler to make are dumplings."
+     },
+     {
+      "word": "skilful",
+      "meaning": "khéo léo, lành nghề",
+      "example": "The recipe of egg, salt and wheat flour is quite simple, but to make the noodles by hand you need to be quite a skilful chef."
+     },
+     {
+      "word": "ingredient",
+      "meaning": "nguyên liệu",
+      "example": "The basic ingredients are flour and water, but the beauty of this dish is that it's very flexible."
+     },
+     {
+      "word": "flexible",
+      "meaning": "linh hoạt",
+      "example": "The basic ingredients are flour and water, but the beauty of this dish is that it's very flexible."
+     },
+     {
+      "word": "run out of time",
+      "meaning": "hết thời gian",
+      "example": "Thanks Graham, that's really interesting, but unfortunately we've run out of time."
+     },
+     {
+      "word": "hotpot",
+      "meaning": "món lẩu",
+      "example": "One dish that did have a strong taste was hotpot."
+     }
+    ]
+   }
+  }
+ ]
+}

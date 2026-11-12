@@ -28,6 +28,11 @@ const COURSES = {
     r2Folder: 'mindset/foundation',
     audioDir: path.join(__dirname, '..', '..', 'Mindset curriculum', 'mindset 0 au'),
   },
+  mindset1: {
+    dir: 'mindset1',
+    r2Folder: 'mindset/level1',
+    audioDir: path.join(__dirname, '..', '..', 'Mindset curriculum', 'mindset 1 audio'),
+  },
 };
 
 const key = process.argv.slice(2).find((a) => !a.startsWith('--'));

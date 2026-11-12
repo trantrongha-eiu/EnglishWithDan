@@ -1,0 +1,767 @@
+{
+ "exercises": [
+  {
+   "code": "M1-U05-L1-E01",
+   "lessonCode": "M1-U05-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 11,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Activities at a mall (Ex. 1–2)",
+   "instruction": "Which of these activities are mentioned in the text \"The future of malls\"? (According to the text, all of them can be done at a mall.)",
+   "stimulus": {
+    "kind": "passage",
+    "text": "The future of malls\n\n**A** Shopping malls have never been just about shopping. They began in the United States after the Second World War and, for the young, they were always a place to 'hang out' and be seen. However, the world has moved on, and just providing shops and a food court is no longer enough to keep malls alive. Malls became less popular at the start of the 21st century, mainly because of online shopping. There is even a website, deadmalls.com, which shows the end of many US malls. **Malls need to change to survive.** So what will the mall of the future look like?\n\n**B** Malls are already becoming bigger and better all over the world. Asia and not the US is now the 'mall capital' of the world and is home to the five largest malls in the world. China is home to the two largest. Some malls in the Middle East and East Asia are starting to specialise. It is predicted that this will happen more and more in the future. Some malls will only sell electrical items, for example, or only fashion for young people. Some malls will only include expensive shops or cheap shops, as already happens in Bangkok and Singapore.\n\n**C** Malls are becoming 'the new downtown', with cinemas, bowling alleys, climbing walls and even concert halls. Xanadu, a mall 30 km from Madrid, is a recreation centre for a family day out as well as a shopping centre, with ski slopes, minigolf, go-karts, balloon rides, bowling and billiards. We have always been able to grab a burger at the mall, but in the future we are going to see 'fine dining' too, with more expensive restaurants based at malls, as well as spas, fitness centres and art galleries. There are also going to be more apartments and office space so that more people can live, work, shop and be entertained in one location.\n\n**D** Mall owners are going to need to think of new ideas to remain in business. One growing trend is the seasonal changes in the mall. It began with having Santa Claus in December, but now there are 'pop-ups' – temporary shops, stalls and kiosks – for other seasons and events. Brent Cross in North London has an 'urban beach' in summer, and its main lobby has different promotions and events every week, from bungee jumping for kids to free health checks.\n\n**E** So, we have looked at the facilities malls will need to offer. Malls will need to consider the environment too. There will be more open-air malls and more natural features. Mall designers will have to make sure people can get there by public transport. They will also need to use more natural sources of heat and light. We will see more plants, trees, grass and even waterfalls at our local malls in the future.\n\n**F** The future of malls looks exciting: there will be 'virtual malls' and technology will be used within malls to help us shop, find bargains and even park our car. With all these creative innovations, the mall will go from strength to strength.",
+    "caption": "The future of malls (p. 87)"
+   },
+   "categories": [
+    {
+     "id": "y",
+     "label": "Mentioned in the text"
+    },
+    {
+     "id": "n",
+     "label": "Not mentioned"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "go climbing",
+     "category": "y",
+     "explanation": "climbing walls (C)."
+    },
+    {
+     "id": "c2",
+     "text": "ski",
+     "category": "y",
+     "explanation": "ski slopes ở Xanadu (C)."
+    },
+    {
+     "id": "c3",
+     "text": "go in a hot air balloon",
+     "category": "y",
+     "explanation": "balloon rides (C)."
+    },
+    {
+     "id": "c4",
+     "text": "have a beauty treatment",
+     "category": "y",
+     "explanation": "spas (C)."
+    },
+    {
+     "id": "c5",
+     "text": "check your health",
+     "category": "y",
+     "explanation": "free health checks (D)."
+    },
+    {
+     "id": "c6",
+     "text": "go to the beach",
+     "category": "y",
+     "explanation": "an 'urban beach' in summer (D)."
+    },
+    {
+     "id": "c7",
+     "text": "have an expensive meal",
+     "category": "y",
+     "explanation": "'fine dining' (C)."
+    },
+    {
+     "id": "c8",
+     "text": "see plants and trees",
+     "category": "y",
+     "explanation": "plants, trees, grass (E)."
+    },
+    {
+     "id": "c9",
+     "text": "buy or rent an apartment",
+     "category": "y",
+     "explanation": "more apartments and office space (C)."
+    },
+    {
+     "id": "c10",
+     "text": "see a film",
+     "category": "y",
+     "explanation": "cinemas (C)."
+    },
+    {
+     "id": "c11",
+     "text": "see an art exhibition",
+     "category": "y",
+     "explanation": "art galleries (C)."
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L1-E02",
+   "lessonCode": "M1-U05-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Skim reading (Ex. 2)",
+   "instruction": "Read the text in one minute. Answer the questions.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "The future of malls\n\n**A** Shopping malls have never been just about shopping. They began in the United States after the Second World War and, for the young, they were always a place to 'hang out' and be seen. However, the world has moved on, and just providing shops and a food court is no longer enough to keep malls alive. Malls became less popular at the start of the 21st century, mainly because of online shopping. There is even a website, deadmalls.com, which shows the end of many US malls. **Malls need to change to survive.** So what will the mall of the future look like?\n\n**B** Malls are already becoming bigger and better all over the world. Asia and not the US is now the 'mall capital' of the world and is home to the five largest malls in the world. China is home to the two largest. Some malls in the Middle East and East Asia are starting to specialise. It is predicted that this will happen more and more in the future. Some malls will only sell electrical items, for example, or only fashion for young people. Some malls will only include expensive shops or cheap shops, as already happens in Bangkok and Singapore.\n\n**C** Malls are becoming 'the new downtown', with cinemas, bowling alleys, climbing walls and even concert halls. Xanadu, a mall 30 km from Madrid, is a recreation centre for a family day out as well as a shopping centre, with ski slopes, minigolf, go-karts, balloon rides, bowling and billiards. We have always been able to grab a burger at the mall, but in the future we are going to see 'fine dining' too, with more expensive restaurants based at malls, as well as spas, fitness centres and art galleries. There are also going to be more apartments and office space so that more people can live, work, shop and be entertained in one location.\n\n**D** Mall owners are going to need to think of new ideas to remain in business. One growing trend is the seasonal changes in the mall. It began with having Santa Claus in December, but now there are 'pop-ups' – temporary shops, stalls and kiosks – for other seasons and events. Brent Cross in North London has an 'urban beach' in summer, and its main lobby has different promotions and events every week, from bungee jumping for kids to free health checks.\n\n**E** So, we have looked at the facilities malls will need to offer. Malls will need to consider the environment too. There will be more open-air malls and more natural features. Mall designers will have to make sure people can get there by public transport. They will also need to use more natural sources of heat and light. We will see more plants, trees, grass and even waterfalls at our local malls in the future.\n\n**F** The future of malls looks exciting: there will be 'virtual malls' and technology will be used within malls to help us shop, find bargains and even park our car. With all these creative innovations, the mall will go from strength to strength.",
+    "caption": "The future of malls"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Which places are mentioned in the text?",
+     "options": [
+      {
+       "id": "A",
+       "text": "the US, China, Bangkok, Singapore, Madrid, London"
+      },
+      {
+       "id": "B",
+       "text": "Paris, Tokyo, New York, Sydney"
+      },
+      {
+       "id": "C",
+       "text": "Brazil, India, Russia, Canada"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Is the text mainly about the past, present or future?",
+     "options": [
+      {
+       "id": "A",
+       "text": "the past"
+      },
+      {
+       "id": "B",
+       "text": "the present and future"
+      },
+      {
+       "id": "C",
+       "text": "only the past and present"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Có nhắc lịch sử (đoạn A) nhưng chủ yếu nói về hiện tại (are becoming…) và tương lai (will, going to)."
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L2-E01",
+   "lessonCode": "M1-U05-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Supporting ideas in paragraph B (Ex. 3)",
+   "instruction": "The topic sentence in paragraph B is \"Malls are already becoming bigger and better all over the world.\" Which sentences are evidence that supports it?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "The future of malls\n\n**A** Shopping malls have never been just about shopping. They began in the United States after the Second World War and, for the young, they were always a place to 'hang out' and be seen. However, the world has moved on, and just providing shops and a food court is no longer enough to keep malls alive. Malls became less popular at the start of the 21st century, mainly because of online shopping. There is even a website, deadmalls.com, which shows the end of many US malls. **Malls need to change to survive.** So what will the mall of the future look like?\n\n**B** Malls are already becoming bigger and better all over the world. Asia and not the US is now the 'mall capital' of the world and is home to the five largest malls in the world. China is home to the two largest. Some malls in the Middle East and East Asia are starting to specialise. It is predicted that this will happen more and more in the future. Some malls will only sell electrical items, for example, or only fashion for young people. Some malls will only include expensive shops or cheap shops, as already happens in Bangkok and Singapore.\n\n**C** Malls are becoming 'the new downtown', with cinemas, bowling alleys, climbing walls and even concert halls. Xanadu, a mall 30 km from Madrid, is a recreation centre for a family day out as well as a shopping centre, with ski slopes, minigolf, go-karts, balloon rides, bowling and billiards. We have always been able to grab a burger at the mall, but in the future we are going to see 'fine dining' too, with more expensive restaurants based at malls, as well as spas, fitness centres and art galleries. There are also going to be more apartments and office space so that more people can live, work, shop and be entertained in one location.\n\n**D** Mall owners are going to need to think of new ideas to remain in business. One growing trend is the seasonal changes in the mall. It began with having Santa Claus in December, but now there are 'pop-ups' – temporary shops, stalls and kiosks – for other seasons and events. Brent Cross in North London has an 'urban beach' in summer, and its main lobby has different promotions and events every week, from bungee jumping for kids to free health checks.\n\n**E** So, we have looked at the facilities malls will need to offer. Malls will need to consider the environment too. There will be more open-air malls and more natural features. Mall designers will have to make sure people can get there by public transport. They will also need to use more natural sources of heat and light. We will see more plants, trees, grass and even waterfalls at our local malls in the future.\n\n**F** The future of malls looks exciting: there will be 'virtual malls' and technology will be used within malls to help us shop, find bargains and even park our car. With all these creative innovations, the mall will go from strength to strength.",
+    "caption": "The future of malls"
+   },
+   "categories": [
+    {
+     "id": "s",
+     "label": "Supports the topic sentence"
+    },
+    {
+     "id": "n",
+     "label": "Does not support it"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "Asia and not the US is now the 'mall capital' of the world and is home to the five largest malls in the world.",
+     "category": "s",
+     "explanation": "Bằng chứng cho \"bigger\"."
+    },
+    {
+     "id": "c2",
+     "text": "China is home to the two largest.",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "Malls became less popular at the start of the 21st century.",
+     "category": "n",
+     "explanation": "Thuộc đoạn A, nói về sự suy giảm."
+    },
+    {
+     "id": "c4",
+     "text": "There is even a website, deadmalls.com.",
+     "category": "n",
+     "explanation": "Đoạn A."
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L2-E02",
+   "lessonCode": "M1-U05-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Topic sentences of C, D and E (Ex. 4)",
+   "instruction": "Find the topic sentences in paragraphs C, D and E.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "The future of malls\n\n**A** Shopping malls have never been just about shopping. They began in the United States after the Second World War and, for the young, they were always a place to 'hang out' and be seen. However, the world has moved on, and just providing shops and a food court is no longer enough to keep malls alive. Malls became less popular at the start of the 21st century, mainly because of online shopping. There is even a website, deadmalls.com, which shows the end of many US malls. **Malls need to change to survive.** So what will the mall of the future look like?\n\n**B** Malls are already becoming bigger and better all over the world. Asia and not the US is now the 'mall capital' of the world and is home to the five largest malls in the world. China is home to the two largest. Some malls in the Middle East and East Asia are starting to specialise. It is predicted that this will happen more and more in the future. Some malls will only sell electrical items, for example, or only fashion for young people. Some malls will only include expensive shops or cheap shops, as already happens in Bangkok and Singapore.\n\n**C** Malls are becoming 'the new downtown', with cinemas, bowling alleys, climbing walls and even concert halls. Xanadu, a mall 30 km from Madrid, is a recreation centre for a family day out as well as a shopping centre, with ski slopes, minigolf, go-karts, balloon rides, bowling and billiards. We have always been able to grab a burger at the mall, but in the future we are going to see 'fine dining' too, with more expensive restaurants based at malls, as well as spas, fitness centres and art galleries. There are also going to be more apartments and office space so that more people can live, work, shop and be entertained in one location.\n\n**D** Mall owners are going to need to think of new ideas to remain in business. One growing trend is the seasonal changes in the mall. It began with having Santa Claus in December, but now there are 'pop-ups' – temporary shops, stalls and kiosks – for other seasons and events. Brent Cross in North London has an 'urban beach' in summer, and its main lobby has different promotions and events every week, from bungee jumping for kids to free health checks.\n\n**E** So, we have looked at the facilities malls will need to offer. Malls will need to consider the environment too. There will be more open-air malls and more natural features. Mall designers will have to make sure people can get there by public transport. They will also need to use more natural sources of heat and light. We will see more plants, trees, grass and even waterfalls at our local malls in the future.\n\n**F** The future of malls looks exciting: there will be 'virtual malls' and technology will be used within malls to help us shop, find bargains and even park our car. With all these creative innovations, the mall will go from strength to strength.",
+    "caption": "The future of malls"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Paragraph C",
+     "options": [
+      {
+       "id": "A",
+       "text": "Malls are becoming 'the new downtown', with cinemas, bowling alleys, climbing walls and even concert halls."
+      },
+      {
+       "id": "B",
+       "text": "Xanadu, a mall 30 km from Madrid, is a recreation centre for a family day out."
+      },
+      {
+       "id": "C",
+       "text": "There are also going to be more apartments and office space."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Các câu sau là ví dụ cho \"the new downtown\"."
+    },
+    {
+     "id": "q2",
+     "prompt": "Paragraph D",
+     "options": [
+      {
+       "id": "A",
+       "text": "Mall owners are going to need to think of new ideas to remain in business."
+      },
+      {
+       "id": "B",
+       "text": "It began with having Santa Claus in December."
+      },
+      {
+       "id": "C",
+       "text": "Brent Cross in North London has an 'urban beach' in summer."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Paragraph E",
+     "options": [
+      {
+       "id": "A",
+       "text": "So, we have looked at the facilities malls will need to offer."
+      },
+      {
+       "id": "B",
+       "text": "Malls will need to consider the environment too."
+      },
+      {
+       "id": "C",
+       "text": "We will see more plants, trees, grass and even waterfalls."
+      }
+     ],
+     "answer": "B",
+     "explanation": "Câu đầu chỉ là câu chuyển ý; câu chủ đề là câu thứ hai."
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L2-E03",
+   "lessonCode": "M1-U05-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "One more supporting idea (Ex. 5)",
+   "instruction": "Choose one more supporting idea for each paragraph.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "The future of malls\n\n**A** Shopping malls have never been just about shopping. They began in the United States after the Second World War and, for the young, they were always a place to 'hang out' and be seen. However, the world has moved on, and just providing shops and a food court is no longer enough to keep malls alive. Malls became less popular at the start of the 21st century, mainly because of online shopping. There is even a website, deadmalls.com, which shows the end of many US malls. **Malls need to change to survive.** So what will the mall of the future look like?\n\n**B** Malls are already becoming bigger and better all over the world. Asia and not the US is now the 'mall capital' of the world and is home to the five largest malls in the world. China is home to the two largest. Some malls in the Middle East and East Asia are starting to specialise. It is predicted that this will happen more and more in the future. Some malls will only sell electrical items, for example, or only fashion for young people. Some malls will only include expensive shops or cheap shops, as already happens in Bangkok and Singapore.\n\n**C** Malls are becoming 'the new downtown', with cinemas, bowling alleys, climbing walls and even concert halls. Xanadu, a mall 30 km from Madrid, is a recreation centre for a family day out as well as a shopping centre, with ski slopes, minigolf, go-karts, balloon rides, bowling and billiards. We have always been able to grab a burger at the mall, but in the future we are going to see 'fine dining' too, with more expensive restaurants based at malls, as well as spas, fitness centres and art galleries. There are also going to be more apartments and office space so that more people can live, work, shop and be entertained in one location.\n\n**D** Mall owners are going to need to think of new ideas to remain in business. One growing trend is the seasonal changes in the mall. It began with having Santa Claus in December, but now there are 'pop-ups' – temporary shops, stalls and kiosks – for other seasons and events. Brent Cross in North London has an 'urban beach' in summer, and its main lobby has different promotions and events every week, from bungee jumping for kids to free health checks.\n\n**E** So, we have looked at the facilities malls will need to offer. Malls will need to consider the environment too. There will be more open-air malls and more natural features. Mall designers will have to make sure people can get there by public transport. They will also need to use more natural sources of heat and light. We will see more plants, trees, grass and even waterfalls at our local malls in the future.\n\n**F** The future of malls looks exciting: there will be 'virtual malls' and technology will be used within malls to help us shop, find bargains and even park our car. With all these creative innovations, the mall will go from strength to strength.",
+    "caption": "The future of malls"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "C — Xanadu is a recreation centre for a family day out as well as a shopping centre. Another supporting idea:",
+     "options": [
+      {
+       "id": "A",
+       "text": "There will be spas, fitness centres and art galleries."
+      },
+      {
+       "id": "B",
+       "text": "Malls use natural sources of heat and light."
+      },
+      {
+       "id": "C",
+       "text": "There are pop-up shops for different seasons."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "D — Brent Cross has different promotions and events every week. Another supporting idea:",
+     "options": [
+      {
+       "id": "A",
+       "text": "There are 'pop-up' shops, stalls and kiosks at different times of the year."
+      },
+      {
+       "id": "B",
+       "text": "There will be more apartments and office space."
+      },
+      {
+       "id": "C",
+       "text": "China is home to the two largest malls."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "E — There will be more open-air malls and more natural features. Another supporting idea:",
+     "options": [
+      {
+       "id": "A",
+       "text": "Malls will have to make sure people can reach them by public transport."
+      },
+      {
+       "id": "B",
+       "text": "Malls will only sell electrical items."
+      },
+      {
+       "id": "C",
+       "text": "There will be virtual malls."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L2-E04",
+   "lessonCode": "M1-U05-L2",
+   "order": 4,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Headings and topic sentences (Ex. 7)",
+   "instruction": "Match the words and phrases 1–6 (from the headings) with the words and phrases a–f (from the topic sentences of paragraphs B–E).",
+   "items": [
+    {
+     "id": "m1",
+     "left": "innovate",
+     "right": "think of new ideas",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "stay alive",
+     "right": "remain in business",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "expanding",
+     "right": "becoming bigger",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "improving",
+     "right": "becoming better",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "natural world",
+     "right": "environment",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "city centre",
+     "right": "downtown",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L3-E01",
+   "lessonCode": "M1-U05-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Future forms in the passage (Ex. 9)",
+   "instruction": "Find examples of future forms in the passage \"The future of malls\". Which form does each example use?",
+   "categories": [
+    {
+     "id": "w",
+     "label": "will + infinitive"
+    },
+    {
+     "id": "g",
+     "label": "going to + infinitive"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "So what will the mall of the future look like?",
+     "category": "w",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "It is predicted that this will happen more and more in the future.",
+     "category": "w",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "Some malls will only sell electrical items.",
+     "category": "w",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "In the future we are going to see 'fine dining' too.",
+     "category": "g",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "There are also going to be more apartments and office space.",
+     "category": "g",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "Mall owners are going to need to think of new ideas.",
+     "category": "g",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "Malls will need to consider the environment too.",
+     "category": "w",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "The mall will go from strength to strength.",
+     "category": "w",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L3-E02",
+   "lessonCode": "M1-U05-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "will or going to? (Ex. 10)",
+   "instruction": "Complete the sentences with the correct form of will or going to.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Look at these plans for the new mall! There ____ be a climbing wall!",
+     "blanks": [
+      {
+       "accept": [
+        "is going to"
+       ]
+      }
+     ],
+     "explanation": "Có bản kế hoạch → going to."
+    },
+    {
+     "id": "g2",
+     "prompt": "This newspaper article says they ____ spend $25 million on the project.",
+     "blanks": [
+      {
+       "accept": [
+        "are going to"
+       ]
+      }
+     ],
+     "explanation": "Kế hoạch đã được đưa tin."
+    },
+    {
+     "id": "g3",
+     "prompt": "I think it ____ be great when it is finished!",
+     "blanks": [
+      {
+       "accept": [
+        "will"
+       ]
+      }
+     ],
+     "explanation": "I think → dự đoán."
+    },
+    {
+     "id": "g4",
+     "prompt": "I agree, but I'm afraid many local businesses ____ have to close.",
+     "blanks": [
+      {
+       "accept": [
+        "will",
+        "are going to"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "I heard there ____ be 12 different restaurants!",
+     "blanks": [
+      {
+       "accept": [
+        "are going to"
+       ]
+      }
+     ],
+     "explanation": "Thông tin về kế hoạch."
+    },
+    {
+     "id": "g6",
+     "prompt": "I expect most of the shops ____ be expensive ones.",
+     "blanks": [
+      {
+       "accept": [
+        "will"
+       ]
+      }
+     ],
+     "explanation": "I expect → dự đoán."
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L4-E01",
+   "lessonCode": "M1-U05-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Places to shop (Ex. 1)",
+   "instruction": "Match the places in the box with pictures A–E: coffee shop, department store, outdoor market, shopping centre, supermarket.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m1u05-shops.jpg",
+    "caption": "Ex. 1"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture A",
+     "right": "supermarket",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture B",
+     "right": "shopping centre",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture C",
+     "right": "outdoor market",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture D",
+     "right": "department store",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Picture E",
+     "right": "coffee shop",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L4-E02",
+   "lessonCode": "M1-U05-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Synonyms and paraphrases (Ex. 5)",
+   "instruction": "Match the words and phrases 1–6 with their synonyms or paraphrases a–f.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "a good selection",
+     "right": "a wide choice",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "at the weekend",
+     "right": "on Saturday and Sunday",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "shoes",
+     "right": "footwear",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "under one roof",
+     "right": "in one building",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "walk",
+     "right": "go on foot",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "picture",
+     "right": "photograph",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M1-U05-L4-E03",
+   "lessonCode": "M1-U05-L4",
+   "order": 3,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Paraphrases of the options (Ex. 6–8)",
+   "instruction": "Match the options with the paraphrases.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "\"What kind of T-shirts does the man sell most of?\" — Option C \"plain T-shirts\" means…",
+     "options": [
+      {
+       "id": "A",
+       "text": "T-shirts with nothing on them"
+      },
+      {
+       "id": "B",
+       "text": "T-shirts with writing on them"
+      },
+      {
+       "id": "C",
+       "text": "T-shirts with a photograph on them"
+      }
+     ],
+     "answer": "A",
+     "explanation": "plain = trơn, không in gì."
+    },
+    {
+     "id": "q2",
+     "prompt": "\"The writer will arrive at…\" — Option B \"2.15 pm\" can be said as…",
+     "options": [
+      {
+       "id": "A",
+       "text": "quarter to two"
+      },
+      {
+       "id": "B",
+       "text": "quarter past two"
+      },
+      {
+       "id": "C",
+       "text": "half past two"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "\"The writer will arrive at…\" — Option A \"12.00 pm\" can be said as…",
+     "options": [
+      {
+       "id": "A",
+       "text": "midnight"
+      },
+      {
+       "id": "B",
+       "text": "noon"
+      }
+     ],
+     "answer": "B",
+     "explanation": "12.00 pm = 12 giờ trưa = noon."
+    },
+    {
+     "id": "q4",
+     "prompt": "\"What does the woman complain about? A the staff B the litter C the food\" — Which paraphrase is INCORRECT?",
+     "options": [
+      {
+       "id": "A",
+       "text": "the staff = the customers"
+      },
+      {
+       "id": "B",
+       "text": "the litter = the rubbish"
+      },
+      {
+       "id": "C",
+       "text": "the food = the lunch"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Staff là nhân viên phục vụ khách, không phải khách hàng."
+    }
+   ]
+  }
+ ]
+}

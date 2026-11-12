@@ -1,6 +1,7 @@
-// Whole-course content sweep for Mindset 0 as a real student would see it:
-// every lesson of all 10 units is loaded from the built seed data
-// (scripts/data/mindset0), then walked in order through the public API —
+// Whole-course content sweep for every Mindset course (0 Foundation, 1 Level 1)
+// as a real student would see it: every lesson of every unit is loaded from
+// the built seed data (scripts/data/mindset<N>), then walked in order through
+// the public API —
 //   1. the lesson opens (gate passed by finishing the previous lesson),
 //   2. no exercise leaks its answer key before submission,
 //   3. a wrong submission is graded 0 and every item shows the correct
@@ -22,14 +23,18 @@ const { OBJECTIVE_TYPES } = require('../../services/wt1GradingService');
 
 jest.setTimeout(240000);
 
-const DIR = path.join(__dirname, '../../scripts/data/mindset0');
-const read = (f) => JSON.parse(fs.readFileSync(path.join(DIR, f), 'utf8'));
-const units = [];
-for (let u = 1; u <= 10; u++) {
-  const tag = `u${String(u).padStart(2, '0')}`;
-  const L = read(`lessons-${tag}.json`);
-  const E = read(`exercises-${tag}.json`);
-  units.push({ L, exercises: Array.isArray(E) ? E : E.exercises });
+const COURSES = [
+  { dir: 'mindset0', code: 'MINDSET-0', name: 'Mindset 0', units: 10 },
+  { dir: 'mindset1', code: 'MINDSET-1', name: 'Mindset 1', units: 8 },
+];
+function loadUnits(dir) {
+  const DIR = path.join(__dirname, '../../scripts/data', dir);
+  const read = (f) => JSON.parse(fs.readFileSync(path.join(DIR, f), 'utf8'));
+  return fs.readdirSync(DIR).filter((f) => /^lessons-u\d+\.json$/.test(f)).sort().map((f) => {
+    const tag = f.slice(8, 11);
+    const E = read(`exercises-${tag}.json`);
+    return { L: read(f), exercises: Array.isArray(E) ? E : E.exercises };
+  });
 }
 
 function correctAnswers(ex) {
@@ -75,11 +80,16 @@ function leaks(ex) {
   return out;
 }
 
+describe.each(COURSES)('$name', ({ dir, code: COURSE, name, units: nUnits }) => {
+const units = loadUnits(dir);
+
+test('has every unit built', () => { expect(units.length).toBe(nUnits); });
+
 beforeEach(async () => {
   const { course } = units[0].L;
-  await WT1Course.create({ ...course, code: 'MINDSET-0' });
+  await WT1Course.create({ ...course, code: COURSE });
   for (const { L, exercises } of units) {
-    await WT1Module.insertMany(L.modules.map((m) => ({ ...m, courseCode: 'MINDSET-0' })));
+    await WT1Module.insertMany(L.modules.map((m) => ({ ...m, courseCode: COURSE })));
     // practiceLinks[].ref is resolved against Passage/ListeningSection by
     // seedCourse — irrelevant here, give them a plain url.
     await WT1Lesson.insertMany(L.lessons.map((l) => ({
@@ -90,7 +100,7 @@ beforeEach(async () => {
   }
 });
 
-test('a student can open, do and get marked + shown the answers for every Mindset 0 exercise', async () => {
+test(`a student can open, do and get marked + shown the answers for every ${name} exercise`, async () => {
   const student = await createPremiumStudent();
   const auth = { Authorization: `Bearer ${signTokenFor(student)}` };
   const problems = [];
@@ -135,4 +145,5 @@ test('a student can open, do and get marked + shown the answers for every Mindse
 
   expect(problems).toEqual([]);
   expect(checked).toBe(units.reduce((n, u) => n + u.exercises.filter((e) => OBJECTIVE_TYPES.has(e.type)).length, 0));
+});
 });

@@ -67,18 +67,18 @@ module.exports = {
         ['monument', 'đài tưởng niệm, di tích', 'Are there any famous monuments in your town?'],
       ],
       ex: [
-        match('Công trình nổi tiếng (Lead-in Ex. 1–2)', 'Nối tranh 1–5 với từ: statue, castle, stadium, tower, bridge.', [
+        match('Famous places (Lead-in Ex. 1–2)', 'Match pictures 1–5 with the words: statue, castle, stadium, tower, bridge.', [
           ['Picture 1 (Sydney Harbour, Australia)', 'bridge'], ['Picture 2 (Bird\'s Nest, China)', 'stadium'], ['Picture 3 (Liberty, USA)', 'statue'], ['Picture 4 (Neuschwanstein, Germany)', 'castle'], ['Picture 5 (Pisa, Italy)', 'tower'],
         ], { stimulus: picture('media:m0u06-landmarks.jpg', 'Lead-in') }),
-        cat('Địa điểm hay giao thông? (Ex. 4–5)', 'Xếp mỗi từ vào nhóm đúng.', { place: 'Places in a city', travel: 'Travel and transport' }, [
+        cat('Places or transport? (Ex. 4–5)', 'Put each word into the correct group.', { place: 'Places in a city', travel: 'Travel and transport' }, [
           ['square', 'place'], ['post office', 'place'], ['police station', 'place'], ['library', 'place'], ['sports centre', 'place'], ['department store', 'place'], ['museum', 'place'], ['theatre', 'place'],
           ['motorway', 'travel'], ['motorbike', 'travel'], ['coach', 'travel'], ['platform', 'travel'], ['ticket', 'travel'], ['the underground', 'travel'], ['flight', 'travel'], ['boat trip', 'travel'],
         ]),
-        match('Bạn đến đâu để…? (G&V Ex. 1)', 'Nối hoạt động với địa điểm.', [
+        match('Where do you go to…? (G&V Ex. 1)', 'Match the activities with the places.', [
           ['send a parcel', 'post office'], ['stay for a few days', 'hotel'], ['speak to a policeman', 'police station'], ['exercise', 'sports centre'], ['have a meal', 'restaurant'],
           ['do some food shopping', 'supermarket'], ['catch a bus or a train', 'station'], ['relax on the grass', 'park'], ['borrow a book', 'library'], ['look at things from the past', 'museum'],
         ]),
-        match('Nhóm từ thuộc nơi nào? (G&V Ex. 2)', 'Nối mỗi nhóm từ với địa điểm/sự vật.', [
+        match('Which place is it? (G&V Ex. 2)', 'Match each group of words with a place or thing.', [
           ['seat · ticket · platform · travel', 'train'], ['lift · floor · clothes · toys', 'department store'], ['cars · road · sign · fast', 'motorway'],
           ['coffee · snack · talk · table', 'cafe'], ['houses · cars · bikes · neighbours', 'street'], ['history · visitors · building · museum', 'castle'], ['flight · plane · passenger · pilot', 'airport'],
         ]),
@@ -116,7 +116,7 @@ module.exports = {
         ['crowded / full of', 'đông đúc', 'The centre was full of people.'],
       ],
       ex: [
-        mcq('Câu chuyện mua sắm của Sally (G&V Ex. 4)', 'Chọn từ đúng.', [
+        mcq('Sally\'s shopping story (G&V Ex. 4)', 'Choose the correct word.', [
           ['Sally and her friend had nothing to do and they felt a bit ____.', ['bored', 'sorry', 'heavy'], 'A'],
           ['They decided to go to the shopping centre to get some ____ clothes.', ['latest', 'new', 'early'], 'B'],
           ['The shopping centre had all of Sally\'s ____ shops.', ['popular', 'favourite', 'great'], 'B'],
@@ -141,12 +141,12 @@ module.exports = {
       ],
       links: [{ grammar: 'comparisons', title: 'Comparisons', note: 'so sánh hơn, so sánh nhất, as … as' }],
       ex: [
-        gap('Viết dạng so sánh (Ex. 13)', 'Viết dạng so sánh hơn và so sánh nhất.', [
+        gap('Comparative and superlative forms (Ex. 13)', 'Write the comparative and superlative forms.', [
           ['tall → ____ / the ____', ['taller', 'tallest']], ['famous → ____ / the ____', ['more famous', 'most famous']], ['hot → ____ / the ____', ['hotter', 'hottest']],
           ['busy → ____ / the ____', ['busier', 'busiest']], ['interesting → ____ / the ____', ['more interesting', 'most interesting']], ['friendly → ____ / the ____', ['friendlier|more friendly', 'friendliest|most friendly']],
           ['old → ____ / the ____', ['older', 'oldest']], ['thin → ____ / the ____', ['thinner', 'thinnest']],
         ]),
-        mcq('Sự thật về Manchester (Ex. 14)', 'Chọn dạng đúng.', [
+        mcq('Facts about Manchester (Ex. 14)', 'Choose the correct form.', [
           ['Manchester is in the north of England and is the UK\'s fifth ____ city.', ['largest', 'larger'], 'A', 'the + fifth + so sánh nhất.'],
           ['Manchester has ____ students than any other city in the world.', ['most', 'more'], 'B', 'than → so sánh hơn.'],
           ['Manchester\'s Chetham\'s Library is the ____ public library in the English-speaking world.', ['old', 'oldest'], 'B'],
@@ -158,11 +158,11 @@ module.exports = {
           ['Manchester Piccadilly is one of the ____ train stations in England.', ['busy', 'busiest'], 'B', 'one of the + so sánh nhất + danh từ số nhiều.'],
           ['____ than 20 Nobel prize winners have come from Manchester.', ['More', 'Most'], 'A'],
         ]),
-        cat('Thêm -er/-est hay more/the most? (G&V Ex. 6)', 'Xếp tính từ vào cột đúng.', { er: '+er / +est', more: 'more / the most' }, [
+        cat('-er/-est or more/the most? (G&V Ex. 6)', 'Put the adjectives into the correct column.', { er: '+er / +est', more: 'more / the most' }, [
           ['clean', 'er'], ['low', 'er'], ['high', 'er'], ['cheap', 'er'], ['old', 'er'], ['new', 'er'], ['fast', 'er'], ['strong', 'er'],
           ['expensive', 'more'], ['modern', 'more'], ['comfortable', 'more'], ['difficult', 'more'], ['important', 'more'], ['careful', 'more'], ['interesting', 'more'], ['crowded', 'more'],
         ]),
-        gap('Ba chiếc xe (G&V Ex. 9)', 'Nhìn tranh 3 chiếc xe A (1), B (2), C (3) và hoàn thành câu bằng dạng so sánh nhất.', [
+        gap('Three cars (G&V Ex. 9)', 'Look at the pictures of three cars, A (1), B (2) and C (3), and complete the sentences with the superlative form.', [
           ['Car A is ____ (cheap).', 'the cheapest'], ['Car B has ____ (many) doors.', 'the most'], ['Car C has ____ (large) engine.', 'the largest'],
           ['Car A has ____ (many) kilometres on the clock.', 'the most'], ['Car C is ____ (expensive).', 'the most expensive'], ['Car A has ____ (small) engine.', 'the smallest'], ['Car B is ____ (old).', 'the oldest'],
         ], { stimulus: picture('media:m0u06-cars.jpg', 'Cars A, B, C (1, 2, 3)') }),
@@ -193,7 +193,7 @@ module.exports = {
         ['deep / deepest', 'sâu / sâu nhất', 'The largest and deepest lakes.'],
       ],
       ex: [
-        gap('Tính từ mô tả (G&V Ex. 5)', 'Điền tính từ: friendly, high, comfortable, old, famous, interesting, modern.', [
+        gap('Describing adjectives (G&V Ex. 5)', 'Complete the sentences with the adjectives: friendly, high, comfortable, old, famous, interesting, modern.', [
           ['I didn\'t enjoy the flight because my seat was not at all ____.', 'comfortable'],
           ['The library looks very ____ – the building is made of glass and it is an unusual shape.', 'modern'],
           ['The staff at the hotel were always polite and ____.', 'friendly'],
@@ -202,12 +202,12 @@ module.exports = {
           ['The mountain isn\'t very ____ but the views from the top are still amazing.', 'high'],
           ['I sat next to a well-known actor on the train. I had never seen a ____ person before that.', 'famous'],
         ], { wordBank: ['friendly', 'high', 'comfortable', 'old', 'famous', 'interesting', 'modern'] }),
-        mcq('Phân tích email mẫu của Martin (Ex. 22)', 'Đọc email mẫu và trả lời.', [
+        mcq('Martin\'s model email (Ex. 22)', 'Read the model email and answer the questions.', [
           ['Martin answers how many of Sandy\'s questions?', ['1', '2', 'all 3'], 'C', 'Nơi nên đến, vì sao thú vị, cách đi lại.'],
           ['Which sentence uses a superlative to say why a place is interesting?', ['The buses and the underground are the best ways to travel.', 'It\'s one of the most famous cities in the world.', 'You can get there by train.'], 'B'],
           ['Which linker introduces the second place?', ['After that', 'Because', 'If'], 'A'],
         ], { stimulus: passage('Hi Sandy,\n\nI\'m really pleased you\'re coming to visit my country. The first place you should visit is London. It\'s one of the most famous cities in the world. It has fantastic museums and parks and is perfect if you like shopping. The buses and the underground are the best ways to travel.\n\nAfter that you should go to the Lake District. I think this is the most beautiful part of England. It has the highest mountains in the country and the largest and deepest lakes. You can get there by train and then use the buses to get around.\n\nBest wishes,\nMartin', { caption: 'Model answer' }) }),
-        write('Viết email trả lời Sandy (Ex. 20–22)', 'Đây là một phần email từ bạn qua thư Sandy: "I\'m coming to your country next month on holiday. Where do you think I should go and why are those places interesting? What\'s the best way for me to travel around?" Viết email trả lời Sandy (khoảng 100 từ). Bắt đầu: "Hi Sandy, I\'m really pleased you\'re coming to visit my country. The first place you should visit is…". Dùng so sánh hơn/nhất và các từ nối if, so, because, after that.', {
+        write('Write a reply to Sandy (Ex. 20–22)', 'This is part of an email from your penfriend Sandy: "I\'m coming to your country next month on holiday. Where do you think I should go and why are those places interesting? What\'s the best way for me to travel around?" Write a reply to Sandy (about 100 words). Begin: "Hi Sandy, I\'m really pleased you\'re coming to visit my country. The first place you should visit is…". Use comparatives and superlatives and the linking words if, so, because, after that.', {
           minWords: 90, maxWords: 140, mustUse: 3,
           targetStructures: ['the most', 'the best', 'because', 'After that', 'If you like'],
           checklist: ['Trả lời: nên đi đâu (ít nhất 2 nơi)', 'Giải thích vì sao các nơi đó thú vị', 'Nói cách đi lại tốt nhất', 'Dùng ít nhất 2 tính từ so sánh nhất', 'Mở đầu và kết thúc email đúng', 'Khoảng 100 từ'],
@@ -253,10 +253,10 @@ module.exports = {
         ['in front of', 'phía trước', 'The bus stop is in front of the park.'],
       ],
       ex: [
-        match('Giới từ vị trí (Ex. 9)', 'Nhìn 5 hình (ngôi nhà đỏ so với toà nhà) và nối số hình với giới từ.', [
+        match('Prepositions of place (Ex. 9)', 'Look at the five pictures (the red house and the building) and match each picture with a preposition.', [
           ['Diagram 1', 'on the left of'], ['Diagram 2', 'on the right of'], ['Diagram 3', 'opposite'], ['Diagram 4', 'next to'], ['Diagram 5', 'between'],
         ], { stimulus: picture('media:m0u06-prepositions.jpg', 'Ex. 9') }),
-        gap('Bản đồ thị trấn (G&V Ex. 3)', 'Nhìn bản đồ và điền: next, in front of, on your left, behind, on your right, across, opposite, between.', [
+        gap('A town map (G&V Ex. 3)', 'Look at the map and complete the sentences with: next, in front of, on your left, behind, on your right, across, opposite, between.', [
           ['The park is ____ the cinema.', 'opposite'],
           ['The petrol station is ____ the road from the cinema.', 'across'],
           ['The post office is ____ the café and the hotel.', 'between'],
@@ -290,12 +290,12 @@ module.exports = {
         ['public transport', 'phương tiện công cộng', 'We need better public transport.'],
       ],
       ex: [
-        mcq('Hỏi đường trên bản đồ (Ex. 12)', 'Dựa vào bản đồ Northfields (bài nghe Part 2), chọn câu trả lời đúng.', [
+        mcq('Asking for directions on a map (Ex. 12)', 'Use the map of Northfields (Part 2 of the recording) and choose the correct answer.', [
           ['Where\'s the mobile phone shop?', ['It\'s between the bank and the shoe shop.', 'It\'s next to the café.', 'It\'s on the first floor.'], 'A'],
           ['Where can I watch a film?', ['In the cinema on the first floor.', 'In Green\'s department store.', 'Next to the toilets.'], 'A'],
           ['Where is the book store?', ['The last shop on your right.', 'The second shop on your right from the car park entrance, next to the sports shop.', 'Opposite the cinema.'], 'B'],
         ], { stimulus: picture('media:m0u06-map.jpg', 'Northfields\' map') }),
-        speak('Nói: giao thông & quê hương (Ex. 18)', 'Trả lời từng câu hỏi trong 15–25 giây. Dùng từ vựng của unit và so sánh hơn/nhất.', 1, [
+        speak('Speaking: transport and your home town (Ex. 18)', 'Answer each question in 15–25 seconds. Use the vocabulary of this unit and comparatives/superlatives.', 1, [
           ['How did you travel here today?', 'I came by motorbike with my older brother. It only took about fifteen minutes, which is much faster than taking the bus, because the bus stops at so many places.', 'Phương tiện + thời gian + so sánh.'],
           ['How do people prefer to travel in your country?', 'Most people in Vietnam prefer motorbikes because they are cheap and you can go almost anywhere. In big cities, more people are starting to use the metro and buses now.', 'Ý chính + lý do + xu hướng mới.'],
           ['Is traffic a problem in your town?', 'Yes, definitely. In the morning and evening there are terrible traffic jams, especially near schools. I think the government should build more bus lanes.', 'Yes + ví dụ + gợi ý.'],
@@ -311,20 +311,20 @@ module.exports = {
       minutes: 30,
       objectives: ['Ôn so sánh hơn và so sánh nhất của Unit 6'],
       ex: [
-        gap('So sánh hơn (G&V Ex. 7)', 'Hoàn thành câu bằng dạng so sánh hơn của tính từ trong ngoặc.', [
+        gap('Comparatives (G&V Ex. 7)', 'Complete the sentences with the comparative form of the adjective in brackets.', [
           ['I think trains are ____ (safe) and ____ (fast) than cars.', ['safer', 'faster']], ['The traffic is usually ____ (bad) in the city than in the countryside.', 'worse'],
           ['In London, the bus is ____ (cheap) than the trains.', 'cheaper'], ['The main square is ____ (old) than any other parts of the town.', 'older'],
           ['My old house was ____ (big) than the one I live in now.', 'bigger'], ['I live far from college so I have to get up ____ (early) than my friends.', 'earlier'],
           ['Our garden always looks ____ (pretty) in summer than in winter.', 'prettier'], ['My friend has lost weight and is much ____ (thin) than last year.', 'thinner'],
           ['It is ____ (good) for your health to cycle to work than get the bus.', 'better'], ['Jon lives ____ (far) away from me than Pete.', 'further|farther'],
         ]),
-        gap('…but … is even more! (G&V Ex. 8)', 'Hoàn thành câu bằng dạng so sánh hơn.', [
+        gap('…but … is even more! (G&V Ex. 8)', 'Complete the sentences with the comparative form.', [
           ['My bike was expensive but my brother\'s was ____.', 'more expensive'], ['Art galleries are interesting but museums are ____.', 'more interesting'],
           ['Madrid is hot but Kuwait is ____.', 'hotter'], ['This garden is pretty but the one we saw yesterday was ____.', 'prettier'],
           ['This restaurant is good but the Italian one is ____.', 'better'], ['I was excited about the trip but my friend was ____.', 'more excited'],
           ['Cars are noisy but motorbikes are ____.', 'noisier'], ['I\'m bad at maths but my friend is ____.', 'worse'],
         ]),
-        gap('Email của William từ Munich (G&V Ex. 10)', 'Chia tính từ trong ngoặc ở dạng so sánh hơn hoặc nhất.', [
+        gap('William\'s email from Munich (G&V Ex. 10)', 'Put the adjectives in brackets into the comparative or superlative form.', [
           ['It isn\'t ____ (good) hotel in town but it is nice enough and it was ____ (cheap) than most of the others.', ['the best', 'cheaper']],
           ['…the Englischer Garten, a beautiful park that is ____ (big) than Central Park in New York!', 'bigger'],
           ['…the Deutsches Museum – one of ____ (large) in Europe. ____ (interesting) part for me was the space exhibition.', ['the largest', 'The most interesting']],

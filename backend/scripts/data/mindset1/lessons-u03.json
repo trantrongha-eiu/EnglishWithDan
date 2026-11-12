@@ -1,0 +1,647 @@
+{
+ "modules": [
+  {
+   "code": "M1-U03",
+   "order": 3,
+   "title": "Unit 3 · Giáo dục và việc làm",
+   "titleEn": "UNIT 03: EDUCATION AND EMPLOYMENT — sách tr. 44–48, 54–57",
+   "outcomes": [
+    "Reading: multiple-choice 4 phương án — tìm đúng đoạn chứa đáp án; xác định ý chính (main idea)",
+    "Reading: nhận diện paraphrase (abroad ↔ overseas, useful ↔ valuable)",
+    "Grammar: thì hiện tại hoàn thành — việc bắt đầu trong quá khứ, kết quả ở hiện tại",
+    "Listening: sentence completion — gạch chân từ khoá, đoán loại thông tin, số ít/số nhiều, giới hạn số từ",
+    "Từ vựng giáo dục, nghề nghiệp, khoá học (Sổ 2)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M1-U03-L1",
+   "moduleCode": "M1-U03",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: work and studies",
+   "titleEn": "Lead-in · Finding the answer (pp. 44–45)",
+   "durationMinutes": 35,
+   "objectives": [
+    "Phân loại từ vựng chủ đề công việc và học tập",
+    "Đọc lướt bài \"Globalisation of education and the workplace\" trong 1 phút",
+    "Nhận ra thái độ chung của bài (tích cực hay tiêu cực)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Sổ từ vựng theo chủ đề",
+     "titleEn": "Divide your vocabulary notebook into topics",
+     "formula": [],
+     "usage": [
+      "Chia sổ từ vựng **theo chủ đề** (Work / Studies…) và chừa chỗ để thêm từ mới khi học (TIP của sách).",
+      "**Work**: business, employers, job, office, retirement · **Studies**: academic, blended learning, degree, qualification, primary education, lifelong learning, seminars."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 25,
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 3 · Lead-in & Vocabulary: work and studies — 36 từ/cụm từ",
+    "words": [
+     {
+      "word": "academic",
+      "meaning": "thuộc học thuật",
+      "example": "In practice, however, only 0.5% of pupils went to technical schools, and this system divided students at a very young age into academic and non-academic."
+     },
+     {
+      "word": "degree",
+      "meaning": "bằng đại học",
+      "example": "At the same time, those in the countries providing world-class degrees also benefit."
+     },
+     {
+      "word": "qualification",
+      "meaning": "bằng cấp, chứng chỉ",
+      "example": "Many adults go back to college later in life because it is so easy to get a qualification without giving up work or disrupting family life."
+     },
+     {
+      "word": "blended learning",
+      "meaning": "học kết hợp (trên lớp và trực tuyến)",
+      "example": "'Blended learning' means studying partly in a traditional way in the classroom and partly online or via email."
+     },
+     {
+      "word": "lifelong learning",
+      "meaning": "học tập suốt đời",
+      "example": "These changes also mean that there is now more interest in 'lifelong learning', the idea that we go on learning throughout our working lives and even into retirement."
+     },
+     {
+      "word": "retirement",
+      "meaning": "sự nghỉ hưu",
+      "example": "These changes also mean that there is now more interest in 'lifelong learning', the idea that we go on learning throughout our working lives and even into retirement."
+     },
+     {
+      "word": "primary education",
+      "meaning": "giáo dục tiểu học",
+      "example": "Many people in rural areas have not even had a primary education."
+     },
+     {
+      "word": "employer",
+      "meaning": "nhà tuyển dụng, chủ lao động",
+      "example": "It helps employers understand what workers can do."
+     },
+     {
+      "word": "globalisation",
+      "meaning": "toàn cầu hóa",
+      "example": "E Educational institutions have changed their focus due to globalisation."
+     },
+     {
+      "word": "affect most aspects of our lives",
+      "meaning": "ảnh hưởng đến hầu hết mọi mặt cuộc sống",
+      "example": "Globalisation of education and the workplace A Globalisation has affected most aspects of our lives."
+     },
+     {
+      "word": "distance learning",
+      "meaning": "học từ xa",
+      "example": "At the same time, more people stay at home and study by distance learning."
+     },
+     {
+      "word": "attend",
+      "meaning": "theo học, tham dự",
+      "example": "It is easy to attend 'webinars' or online seminars without being away from our offices."
+     },
+     {
+      "word": "give up work",
+      "meaning": "nghỉ việc",
+      "example": "Many adults go back to college later in life because it is so easy to get a qualification without giving up work or disrupting family life."
+     },
+     {
+      "word": "disrupt family life",
+      "meaning": "làm xáo trộn cuộc sống gia đình",
+      "example": "Many adults go back to college later in life because it is so easy to get a qualification without giving up work or disrupting family life."
+     },
+     {
+      "word": "benefit from",
+      "meaning": "được lợi từ",
+      "example": "B Different countries have benefitted from the globalisation of education in different ways."
+     },
+     {
+      "word": "internationally recognised",
+      "meaning": "được công nhận quốc tế",
+      "example": "Students can get an internationally recognised degree at a much cheaper price than going abroad and so can improve their chances of getting a good job."
+     },
+     {
+      "word": "improve one's chances of",
+      "meaning": "tăng cơ hội để",
+      "example": "Students can get an internationally recognised degree at a much cheaper price than going abroad and so can improve their chances of getting a good job."
+     },
+     {
+      "word": "world-class",
+      "meaning": "đẳng cấp thế giới",
+      "example": "At the same time, those in the countries providing world-class degrees also benefit."
+     },
+     {
+      "word": "have access to",
+      "meaning": "được tiếp cận",
+      "example": "It is usually the elite – or the richest people in the large cities – who have access to international education."
+     },
+     {
+      "word": "enrich",
+      "meaning": "làm phong phú",
+      "example": "The aim is to enrich and share; the flow of ideas and information should go from East to West as well as from West to East."
+     },
+     {
+      "word": "developing countries",
+      "meaning": "các nước đang phát triển",
+      "example": "C However, it is not good news for everyone in some developing countries."
+     },
+     {
+      "word": "the elite",
+      "meaning": "tầng lớp tinh hoa",
+      "example": "It is usually the elite – or the richest people in the large cities – who have access to international education."
+     },
+     {
+      "word": "rural areas",
+      "meaning": "vùng nông thôn",
+      "example": "Many people in rural areas have not even had a primary education."
+     },
+     {
+      "word": "reliable internet connection",
+      "meaning": "kết nối internet ổn định",
+      "example": "Also, those areas usually do not have reliable internet connections and most people do not own a computer."
+     },
+     {
+      "word": "treat sth with respect",
+      "meaning": "đối xử tôn trọng với cái gì",
+      "example": "Education should treat every culture with respect; it should not be just learning about the West, but should include different ways of teaching and approaches from around the world."
+     },
+     {
+      "word": "institution",
+      "meaning": "cơ sở giáo dục, tổ chức",
+      "example": "E Educational institutions have changed their focus due to globalisation."
+     },
+     {
+      "word": "compete for",
+      "meaning": "cạnh tranh để giành",
+      "example": "There are so many benefits of having overseas students that universities are competing for them, using strategies from the world of business."
+     },
+     {
+      "word": "emphasis on",
+      "meaning": "sự chú trọng vào",
+      "example": "There is also more emphasis on the student experience."
+     },
+     {
+      "word": "settle in",
+      "meaning": "ổn định, làm quen với nơi mới",
+      "example": "There is more focus on customer care, especially helping international students to settle in, improve their English and understand the academic culture of the host country."
+     },
+     {
+      "word": "leave sb behind",
+      "meaning": "bỏ lại ai phía sau",
+      "example": "However, it is important to make sure the benefits reach everyone and don't leave many citizens of the developing world behind."
+     },
+     {
+      "word": "school leaver",
+      "meaning": "học sinh mới tốt nghiệp phổ thông",
+      "example": "This is because many employers felt that school leavers were not prepared well enough and didn't have the skills they would need to do well at work."
+     },
+     {
+      "word": "apprenticeship",
+      "meaning": "hình thức học nghề (vừa học vừa làm)",
+      "example": "These 'modern apprenticeships' are available at three different levels."
+     },
+     {
+      "word": "vocational",
+      "meaning": "thuộc về dạy nghề",
+      "example": "C In the 1980s the British government introduced NVQs or National Vocational Qualifications so that young people could get certificates to show their practical skills."
+     },
+     {
+      "word": "practical experience",
+      "meaning": "kinh nghiệm thực tế",
+      "example": "D At the higher levels of education, too, there has been more emphasis on work-based learning, which links academic study closely to practical experience."
+     },
+     {
+      "word": "work-based learning",
+      "meaning": "học tập gắn với công việc",
+      "example": "F There are some challenges involved in work-based learning."
+     },
+     {
+      "word": "mentor",
+      "meaning": "người cố vấn, kèm cặp",
+      "example": "Older or recently retired employees have been given the opportunity to develop new skills as tutors, mentors and coaches for the work-based part of these courses."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M1-U03-L2",
+   "moduleCode": "M1-U03",
+   "order": 2,
+   "title": "📖 Reading: multiple-choice questions & main ideas",
+   "titleEn": "Multiple-choice questions · Words with similar meanings · Identifying the main idea · Exam skills (pp. 45–48)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Làm multiple choice A–D: skim → tìm từ khoá ở phần câu hỏi → tìm đúng đoạn",
+    "Tìm từ đồng nghĩa (paraphrase) giữa câu hỏi và bài",
+    "Xác định ý chính — thường ở câu đầu đoạn",
+    "Cách thứ hai: tự trả lời trước rồi mới nhìn các phương án"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Multiple choice: tìm đúng chỗ chứa đáp án",
+     "titleEn": "Finding the answer",
+     "formula": [
+      "① **Skim** bài thật nhanh → ② đọc **phần chính của câu hỏi** (KHÔNG phải A, B, C, D), chọn từ khoá → ③ đọc lướt lại, chỉ tìm từ khoá hoặc từ cùng nghĩa → đó là chỗ có đáp án."
+     ],
+     "usage": [
+      "Trong phòng thi **không đủ thời gian đọc kỹ cả bài**.",
+      "Thuật ngữ (blended learning) thường giữ nguyên; các từ khác thường được **paraphrase** (abroad → overseas, benefits → advantages)."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Ý chính của bài",
+     "titleEn": "Identifying the main idea",
+     "formula": [],
+     "usage": [
+      "Câu hỏi thường liên quan đến **ý chính**.",
+      "Đọc **đoạn đầu** và **câu đầu tiên của mỗi đoạn** — ý chính thường nằm ở đó.",
+      "Chi tiết nhỏ (học sau khi nghỉ hưu, học phí năm 2012…) không phải ý chính."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Cách làm thứ hai",
+     "titleEn": "Multiple-choice questions: another way to do them",
+     "formula": [
+      "Gạch chân từ khoá → tìm đoạn có đáp án → **tự trả lời** câu hỏi → tìm phương án **khớp với câu trả lời của bạn** → kiểm tra các phương án còn lại sai ở đâu."
+     ],
+     "usage": [],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 17,
+   "practiceLinks": [
+    {
+     "ref": "reading:M1-U03-R1",
+     "kind": "reading",
+     "title": "Globalisation of education and the workplace (Ex. 4, 7)",
+     "note": "5 câu multiple choice — tìm đoạn chứa đáp án trước."
+    },
+    {
+     "ref": "reading:M1-U03-R2",
+     "kind": "reading",
+     "title": "Exam skills: Education and the workplace in the UK (Ex. 9)",
+     "note": "4 câu multiple choice A–D."
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L3",
+   "moduleCode": "M1-U03",
+   "order": 3,
+   "title": "🧩 Grammar focus: the present perfect",
+   "titleEn": "Grammar focus: the present perfect (p. 47)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Hiểu thì hiện tại hoàn thành nối quá khứ với hiện tại",
+    "Biết vì sao bài về toàn cầu hoá dùng nhiều hiện tại hoàn thành"
+   ],
+   "keyLanguage": [
+    "Cấu trúc: **have / has + V3 (past participle)** — Globalisation **has affected** most aspects of our lives.",
+    "Ý nghĩa: việc **bắt đầu trong quá khứ** và **còn kết quả / ảnh hưởng ở hiện tại** (chúng ta vẫn đang chịu ảnh hưởng của toàn cầu hoá).",
+    "Phủ định: have/has **not** + V3 — Many people **have not** even **had** a primary education."
+   ],
+   "theory": [
+    {
+     "title": "Hiện tại hoàn thành",
+     "titleEn": "The present perfect",
+     "formula": [
+      "S + have/has + V3",
+      "S + have/has + not + V3",
+      "Have/Has + S + V3 …?"
+     ],
+     "usage": [
+      "Thay đổi bắt đầu từ quá khứ, kết quả vẫn còn: Educational institutions **have changed** their focus.",
+      "Tình huống ảnh hưởng đến người ta **bây giờ** → bài viết dùng nhiều hiện tại hoàn thành."
+     ],
+     "examples": [
+      {
+       "en": "Different countries have benefitted from the globalisation of education.",
+       "vi": "Các nước đã được lợi (trong quá khứ) và vẫn đang được lợi."
+      },
+      {
+       "en": "Many people in rural areas have not even had a primary education.",
+       "vi": "Họ chưa từng được học tiểu học — ảnh hưởng đến hiện tại."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 9,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Present Perfect",
+     "note": "have/has + V3: quá khứ nối với hiện tại",
+     "url": "/essential-grammar.html?lesson=present-perfect"
+    }
+   ]
+  },
+  {
+   "code": "M1-U03-L4",
+   "moduleCode": "M1-U03",
+   "order": 4,
+   "title": "🎧 Listening: sentence completion",
+   "titleEn": "Lead-in · Sentence completion · Synonyms and paraphrase · Exam skills (pp. 54–57)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Từ vựng nghề nghiệp và khoá học (-er, -ist = người; -ology, -tion, -ing = ngành)",
+    "Sentence completion: gạch chân từ khoá trước/sau chỗ trống, đoán loại từ",
+    "Viết đúng số ít/số nhiều, đúng số từ, không viết lại chữ đã có trong câu",
+    "Nhận ra từ đồng nghĩa trong bài nghe (title ↔ it's called, cost ↔ fee)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Sentence completion",
+     "titleEn": "Sentence completion",
+     "formula": [
+      "Điền **tối đa 3 từ**, hoặc **2 từ và/hoặc một số**. Chỗ trống có thể ở đầu, giữa hoặc cuối câu.",
+      "Trước khi nghe: gạch chân **từ khoá trước và sau chỗ trống** → đoán **loại thông tin** (nghề, môn học, ngày, số, nơi chốn)."
+     ],
+     "usage": [
+      "**a store assistant** (không phải \"a assistant\" vì trước nguyên âm phải là \"an\").",
+      "**information** không đếm được → không viết \"informations\".",
+      "\"The Moving Images\" = 3 từ → sai nếu đề cho TWO WORDS; \"Moving Image\" sai vì người nói dùng số nhiều."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Giới hạn số từ và cách viết số",
+     "titleEn": "Word limits and numbers",
+     "formula": [],
+     "usage": [
+      "NO MORE THAN ONE WORD AND/OR A NUMBER: ✓ 19 · 19th · nineteenth (of) — ✗ \"the 19\" · \"19th of September\" (lặp lại chữ September đã có trong câu).",
+      "Viết số bằng **chữ số** cho nhanh và không sai chính tả.",
+      "Câu hỏi đi **theo thứ tự** của bài nghe."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Từ đồng nghĩa trong bài nghe",
+     "titleEn": "Synonyms and paraphrase",
+     "formula": [],
+     "usage": [
+      "Người nói thường dùng **từ khác** với câu hỏi: title ↔ it's called · starts ↔ begins · lasts ↔ goes on · teach ↔ train · nearby ↔ local · total cost ↔ full fee · practical ↔ hands-on."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 10,
+   "totalPoints": 76,
+   "images": [
+    {
+     "url": "media:m1u03-jobs.jpg",
+     "caption": "Ex. 1 (p. 54): areas of work or study A–G"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M1-U03-L1",
+     "kind": "listening",
+     "title": "A job or a course? / Booking a course (Ex. 5, 10)",
+     "note": "Hai hội thoại ngắn + ngày học và số chỗ."
+    },
+    {
+     "ref": "listening:M1-U03-L2",
+     "kind": "listening",
+     "title": "Anna and the store manager (Ex. 8)",
+     "note": "3 câu, NO MORE THAN TWO WORDS — để ý số ít/số nhiều."
+    },
+    {
+     "ref": "listening:M1-U03-L3",
+     "kind": "listening",
+     "title": "Exam skills: the Food Photography course (Ex. 15)",
+     "note": "6 câu sentence completion."
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 3 · Listening: sentence completion — 36 từ/cụm từ",
+    "words": [
+     {
+      "word": "be delighted that",
+      "meaning": "rất vui mừng rằng",
+      "example": "First of all, we're delighted that you'll be joining us as a store assistant at the beginning of next week."
+     },
+     {
+      "word": "store assistant",
+      "meaning": "nhân viên bán hàng",
+      "example": "First of all, we're delighted that you'll be joining us as a store assistant at the beginning of next week."
+     },
+     {
+      "word": "look forward to the challenge",
+      "meaning": "mong chờ thử thách",
+      "example": "I'm really looking forward to the challenge."
+     },
+     {
+      "word": "book a place on a course",
+      "meaning": "đăng ký một suất học",
+      "example": "I'd like to book a place on the Food Photography course."
+     },
+     {
+      "word": "a couple of",
+      "meaning": "một vài",
+      "example": "And it looks like you're in luck – there are only a couple of spaces left."
+     },
+     {
+      "word": "be in luck",
+      "meaning": "gặp may",
+      "example": "And it looks like you're in luck – there are only a couple of spaces left."
+     },
+     {
+      "word": "be limited to",
+      "meaning": "được giới hạn ở",
+      "example": "We've taken ten bookings already, so you've just made it – the course is limited to 12 participants."
+     },
+     {
+      "word": "participant",
+      "meaning": "người tham gia",
+      "example": "We've taken ten bookings already, so you've just made it – the course is limited to 12 participants."
+     },
+     {
+      "word": "check the details",
+      "meaning": "kiểm tra thông tin chi tiết",
+      "example": "Now can I just check the details of the course?"
+     },
+     {
+      "word": "Information Technology",
+      "meaning": "công nghệ thông tin",
+      "example": "Now, we know you've just finished a course in Information Technology, so we've decided to put you in the computing and phones section of our department store."
+     },
+     {
+      "word": "department store",
+      "meaning": "cửa hàng bách hóa",
+      "example": "Now, we know you've just finished a course in Information Technology, so we've decided to put you in the computing and phones section of our department store."
+     },
+     {
+      "word": "audio equipment",
+      "meaning": "thiết bị âm thanh",
+      "example": "Now, that's next to the radios and audio equipment, isn't it?"
+     },
+     {
+      "word": "be based in",
+      "meaning": "làm việc tại (bộ phận, nơi)",
+      "example": "But as I've just said, you'll be based in the computing and phones section."
+     },
+     {
+      "word": "a wider range of",
+      "meaning": "nhiều chủng loại hơn",
+      "example": "Now we've recently made this area of our store much bigger so that we can sell a much wider range of computer equipment, such as smart watches."
+     },
+     {
+      "word": "attract customers",
+      "meaning": "thu hút khách hàng",
+      "example": "We really want to attract a younger group of customers."
+     },
+     {
+      "word": "give sth a new look",
+      "meaning": "làm mới diện mạo của cái gì",
+      "example": "And we haven't just given this whole area a completely new look – we've re-named it too!"
+     },
+     {
+      "word": "rename",
+      "meaning": "đổi tên",
+      "example": "We haven't just given this area a new look – we've re-named it too!"
+     },
+     {
+      "word": "move on",
+      "meaning": "chuyển sang (việc khác)",
+      "example": "Now, do you have any questions before we move on?"
+     },
+     {
+      "word": "leaflet",
+      "meaning": "tờ rơi",
+      "example": "Now it says on the leaflet … um, let me find it … OK, got it!"
+     },
+     {
+      "word": "an early start",
+      "meaning": "sự khởi đầu sớm",
+      "example": "That's right – it's an early start."
+     },
+     {
+      "word": "last",
+      "meaning": "kéo dài",
+      "example": "Oh, I'm glad it lasts for more than a few hours."
+     },
+     {
+      "word": "the basics",
+      "meaning": "kiến thức cơ bản",
+      "example": "So it'll train you in the basics of using a range of camera angles."
+     },
+     {
+      "word": "camera angle",
+      "meaning": "góc máy",
+      "example": "Camera angles?"
+     },
+     {
+      "word": "close-up shot",
+      "meaning": "cảnh chụp cận",
+      "example": "Yes, you'll learn how to photograph food using close-up shots, wide-angle shots and shots taken from above, that sort of thing."
+     },
+     {
+      "word": "edit pictures",
+      "meaning": "chỉnh sửa ảnh",
+      "example": "What about learning to edit pictures on my computer?"
+     },
+     {
+      "word": "in the first place",
+      "meaning": "ngay từ đầu",
+      "example": "The purpose of the workshop is to teach you how to take good photos in the first place."
+     },
+     {
+      "word": "hands-on",
+      "meaning": "mang tính thực hành",
+      "example": "It's a really hands-on session – in fact, you'll spend some of the day on location in a local hotel."
+     },
+     {
+      "word": "on location",
+      "meaning": "tại địa điểm thực tế",
+      "example": "It's a really hands-on session – in fact, you'll spend some of the day on location in a local hotel."
+     },
+     {
+      "word": "just round the corner",
+      "meaning": "ngay gần đây",
+      "example": "It's just round the corner from the college – the Lincoln Hotel – so you'll have the opportunity to practise taking photographs using real dishes!"
+     },
+     {
+      "word": "have the opportunity to",
+      "meaning": "có cơ hội để",
+      "example": "It's just round the corner from the college – the Lincoln Hotel – so you'll have the opportunity to practise taking photographs using real dishes!"
+     },
+     {
+      "word": "practical course",
+      "meaning": "khóa học thực hành",
+      "example": "That's great – a practical course is exactly what I'm looking for!"
+     },
+     {
+      "word": "full fee",
+      "meaning": "toàn bộ học phí",
+      "example": "The full fee for the course is $55 and that includes a light lunch and refreshments at the hotel."
+     },
+     {
+      "word": "refreshments",
+      "meaning": "đồ ăn nhẹ và đồ uống",
+      "example": "The full fee for the course is $55 and that includes a light lunch and refreshments at the hotel."
+     },
+     {
+      "word": "snack",
+      "meaning": "đồ ăn vặt",
+      "example": "That means I don't have to worry about bringing along my own drinks and snacks on the day."
+     },
+     {
+      "word": "confirm one's place",
+      "meaning": "xác nhận chỗ của ai",
+      "example": "OK, I think that's everything, so I'll just take your details so that we can confirm your place on the course."
+     },
+     {
+      "word": "workshop",
+      "meaning": "buổi học thực hành, hội thảo",
+      "example": "The purpose of the workshop is to teach you how to take good photos in the first place."
+     }
+    ]
+   }
+  }
+ ]
+}

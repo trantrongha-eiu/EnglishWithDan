@@ -165,6 +165,55 @@ function qFill(n, instruction, qs, groupTitle) {
   };
 }
 
+// Reading YES/NO/NOT GIVEN (writer's views). qs: [text, 'YES'|'NO'|'NOT GIVEN', expl]
+function qYNNG(n, instruction, qs, groupTitle) {
+  return {
+    groupType: 'plain', groupTitle: groupTitle || '', instruction,
+    questions: qs.map(([text, ans, explanation], i) => ({ questionNumber: n + i, type: 'yes-no-ng', questionText: text, correctAnswer: ans, explanation: explanation || '' })),
+  };
+}
+// Matching headings. headings: ['i text', 'ii text', …] or [['i','text'],…]; qs: ['Paragraph B', 'iv', expl]
+function qHeadings(n, instruction, headings, qs, groupTitle) {
+  const hs = headings.map((h) => {
+    if (Array.isArray(h)) return { numeral: h[0], text: h[1] };
+    const m = /^([ivxl]+)[.)]?\s+(.*)$/i.exec(String(h));
+    return { numeral: m[1].toLowerCase(), text: m[2] };
+  });
+  return {
+    groupType: 'matching-headings', groupTitle: groupTitle || '', instruction,
+    headingsConfig: { headings: hs },
+    questions: qs.map(([text, ans, explanation], i) => ({ questionNumber: n + i, type: 'matching-headings', questionText: text, correctAnswer: String(ans).toLowerCase(), explanation: explanation || '' })),
+  };
+}
+// Summary completion from a word bank (drag & drop). text uses __Qn__; bank: ['A word', …] or ['word', …];
+// answers: { n: 'word' } — the WORD, not its letter (that is what the UI stores).
+function qSummary(instruction, text, bank, answers, explanations = {}, groupTitle) {
+  const wb = bank.map((w, i) => {
+    const m = /^([A-P])\s+(.*)$/.exec(String(w));
+    return m && m[1] === L[i] ? { letter: m[1], word: m[2] } : { letter: L[i], word: String(w) };
+  });
+  for (const a of Object.values(answers)) if (!wb.some((w) => w.word === a)) throw new Error('qSummary: "' + a + '" không có trong word bank');
+  return {
+    groupType: 'summary-completion', groupTitle: groupTitle || '', instruction,
+    summaryConfig: { text, wordBank: wb },
+    questions: Object.entries(answers).map(([n, a]) => ({
+      questionNumber: Number(n), type: 'fill-blank', questionText: 'Question ' + n, correctAnswer: a, explanation: explanations[n] || '',
+    })),
+  };
+}
+// Sentence endings. endings: ['A text', …]; qs: [sentence start, letter, expl]
+function qEndings(n, instruction, endings, qs, groupTitle) {
+  const es = endings.map((e, i) => {
+    const m = /^([A-P])\s+(.*)$/.exec(String(e));
+    return m && m[1] === L[i] ? { letter: m[1], text: m[2] } : { letter: L[i], text: String(e) };
+  });
+  return {
+    groupType: 'sentence-endings', groupTitle: groupTitle || '', instruction,
+    endingsConfig: { endings: es },
+    questions: qs.map(([text, ans, explanation], i) => ({ questionNumber: n + i, type: 'sentence-completion', questionText: text, correctAnswer: letterOf(ans), explanation: explanation || '' })),
+  };
+}
+
 // Listening explanation in the site's "Dịch / Vị trí / Transcript / Phân tích" format.
 function lx(d, v, t, p) {
   const parts = ['Dịch: ' + d];
@@ -187,5 +236,5 @@ function html(text) {
 
 module.exports = {
   mcq, gap, match, order, cat, fix, write, speak, passage, picture, card,
-  qMcq, qTF, qTFNG, qMatch, qNote, qTable, qFill, lx, html,
+  qMcq, qTF, qTFNG, qYNNG, qMatch, qHeadings, qSummary, qEndings, qNote, qTable, qFill, lx, html,
 };

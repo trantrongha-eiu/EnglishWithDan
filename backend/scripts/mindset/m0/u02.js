@@ -99,13 +99,13 @@ module.exports = {
         ["wardrobe","tủ quần áo","Most of my clothes are in my wardrobe."],
       ],
       ex: [
-        gap('Các phòng trong nhà (Ex. 1)', 'Nhìn tranh 4 phòng và viết tên phòng (chữ cái đầu đã cho sẵn — gõ cả từ).', [
+        gap('Rooms in a house (Ex. 1)', 'Look at the pictures of four rooms and write the name of each room. The first letter is given – type the whole word.', [
           ['Picture 1: b _ _ _ _ _ _ → ____', 'bedroom|edroom', 'bedroom — phòng ngủ.'],
           ['Picture 2: b _ _ _ _ _ _ _ → ____', 'bathroom|athroom', 'bathroom — phòng tắm.'],
           ['Picture 3: k _ _ _ _ _ _ → ____', 'kitchen|itchen', 'kitchen — nhà bếp.'],
           ['Picture 4: l _ _ _ _ _  r _ _ _ → ____ ____', ['living|iving', 'room|oom'], 'living room — phòng khách.'],
         ], { stimulus: picture('media:m0u02-rooms.jpg', 'Ex. 1 — What rooms are they?') }),
-        match('Khu vực trong & quanh nhà (Ex. 2)', 'Nhìn tranh 1–7 và nối mỗi tranh với tên khu vực: garden, hall, hallway, basement, attic, garage, study.', [
+        match('Places in and around a house (Ex. 2)', 'Match pictures 1–7 with the places: garden, hall, hallway, basement, attic, garage, study.', [
           ['Picture 1', 'basement', 'Tầng hầm — dưới mặt đất, có cầu thang đi xuống.'],
           ['Picture 2', 'hall', 'Sảnh — khoảng trống ngay khi bước vào cửa.'],
           ['Picture 3', 'hallway', 'Hành lang — có cầu thang và lối đi giữa các phòng.'],
@@ -114,15 +114,15 @@ module.exports = {
           ['Picture 6', 'garage', 'Nhà để xe.'],
           ['Picture 7', 'garden', 'Vườn.'],
         ], { stimulus: picture('media:m0u02-places.jpg', 'Ex. 2') }),
-        match('Đồ vật trong nhà — Student A (Ex. 3–4)', 'Nhìn 6 tranh và nối số tranh với tên đồ vật.', [
+        match('Things in a house – Student A (Ex. 3–4)', 'Look at the six pictures and match each picture with the name of the item.', [
           ['Picture 1', 'curtains'], ['Picture 2', 'table lamp'], ['Picture 3', 'TV'],
           ['Picture 4', 'desk'], ['Picture 5', 'shower'], ['Picture 6', 'drawers'],
         ], { stimulus: picture('media:m0u02-items-a.jpg', 'Student A pictures') }),
-        match('Đồ vật trong nhà — Student B (Ex. 3–4)', 'Nhìn 6 tranh và nối số tranh với tên đồ vật.', [
+        match('Things in a house – Student B (Ex. 3–4)', 'Look at the six pictures and match each picture with the name of the item.', [
           ['Picture 1', 'window'], ['Picture 2', 'poster'], ['Picture 3', 'blind'],
           ['Picture 4', 'sink'], ['Picture 5', 'pillows'], ['Picture 6', 'oven / cooker'],
         ], { stimulus: picture('media:m0u02-items-b.jpg', 'Student B pictures') }),
-        mcq('Phân biệt các cặp từ (Ex. 6)', 'Chọn từ đúng cho mỗi câu.', [
+        mcq('Pairs of words (Ex. 6)', 'Choose the correct word for each sentence.', [
           ['I keep the ice cream in the ____ — it needs to stay frozen.', ['fridge', 'freezer'], 'B', 'freezer làm đông (âm độ); fridge chỉ giữ lạnh.'],
           ['I pull the ____ down at night. It has lots of thin pieces of plastic.', ['curtains', 'blind'], 'B', 'blind là rèm sáo/cuốn kéo lên xuống; curtains là rèm vải kéo ngang.'],
           ['I wash my hands and brush my teeth at the ____.', ['bath', 'sink'], 'B', 'sink = bồn rửa; bath = bồn tắm để nằm.'],
@@ -182,7 +182,7 @@ module.exports = {
         ['advice', 'lời khuyên', 'Can you give me some advice?'],
       ],
       ex: [
-        mcq('Xây dựng hội thoại: chọn câu đúng (Ex. 14)', 'Đọc các câu trong cuộc gọi giữa Giorgio và Andrew Taylor. Chọn câu đúng nhất A, B hoặc C cho mỗi chỗ trống.', [
+        mcq('Building a conversation (Ex. 14)', 'Read the sentences from the phone call between Giorgio and Andrew Taylor. Choose the best sentence, A, B or C, for each gap.', [
           ['Andrew: Good afternoon, Prime Location Agency, Andrew Taylor speaking. ____', ['Can I check your student status?', 'Can I give you my student status?', 'Have you got time to speak? Can you check my student status?'], 'A', 'Andrew (người môi giới) muốn kiểm tra tư cách sinh viên của khách → "Can I check…?"'],
           ['Andrew: Thank you for your call, I have some questions for you. ____', ['I hope that you don\'t mind.', 'I hope that you mind.', 'Do you mind?'], 'A', 'Lịch sự: "I hope you don\'t mind" = mong bạn không phiền.'],
           ['Andrew: First of all, ____ – in a room on campus or in private accommodation?', ['Where you want to live?', 'Where you do want to live?', 'Where do you want to live?'], 'C', 'Wh- + do + you + V.'],
@@ -192,7 +192,7 @@ module.exports = {
           ['Andrew: …it takes a long time to travel to university. ____', ['What you think?', 'What you do think?', 'What do you think?'], 'C', 'What + do + you + think?'],
           ['Giorgio: I\'m not sure. ____', ['What is catered mean?', 'What does catered mean?', 'What means catered?'], 'B', 'What does + từ + mean? = từ … nghĩa là gì?'],
         ]),
-        match('Hoàn thành hội thoại (Ex. 16)', 'Đọc phần cuối cuộc trò chuyện. Nối mỗi câu trả lời của Andrew với câu Giorgio nói NGAY TRƯỚC đó.', [
+        match('Complete the conversation (Ex. 16)', 'Read the end of the conversation. Match each of Andrew\'s answers with what Giorgio says JUST BEFORE it.', [
           ['Andrew: "I think the house has superfast broadband. The Wi-Fi is sometimes very busy and slow on campus."', 'Yes. Is the Wi-Fi connection better on campus or in the private house?', 'Andrew trả lời về Wi-Fi → Giorgio vừa hỏi về Wi-Fi (D).'],
           ['Andrew: "You also have a TV in the private room, so you can connect your computer and play games on the TV."', 'Oh, that\'s good to know. I really like playing online games, you see.', 'Andrew nói thêm về chơi game trên TV → Giorgio vừa nói thích chơi game online (G).'],
           ['Andrew: "No, but you or your roommate can bring one."', 'Oh, great. Do the rooms on campus also have TVs?', '"No… can bring one" = trả lời câu hỏi Yes/No về TV (A).'],
@@ -224,7 +224,7 @@ module.exports = {
         { grammar: 'modal-verbs', title: 'Modal verbs (can)', note: 'can / can\'t + V nguyên mẫu' },
       ],
       ex: [
-        gap('Hoàn thành bảng ngữ pháp (Ex. 11)', 'Hoàn thành câu khẳng định (+), phủ định (−) và câu hỏi (?).', [
+        gap('Complete the grammar table (Ex. 11)', 'Complete the positive (+), negative (−) and question (?) forms.', [
           ['(−) I ____ a student.', 'am not|\'m not', 'Phủ định của be: am not.'],
           ['(+) I ____ with my parents.', 'live', 'I + V nguyên mẫu.'],
           ['(−) He ____ ____ with his parents.', ['doesn\'t|does not', 'live'], 'He/She + doesn\'t + V nguyên mẫu.'],
@@ -234,7 +234,7 @@ module.exports = {
           ['(?) What do you ____ to study?', 'want', 'What + do + you + V?'],
           ['(?) Why ____ he want to live in the UK?', 'does', 'Why + does + he + V?'],
         ]),
-        gap('The car / I play games (Ex. 12)', 'Viết lại theo dạng trong ngoặc: (+) khẳng định, (−) phủ định, (?) câu hỏi.', [
+        gap('The car / I play games (Ex. 12)', 'Rewrite each sentence in the form in brackets: (+) positive, (−) negative, (?) question.', [
           ['The car ____ in the garage. (−)', 'isn\'t|is not', 'be phủ định.'],
           ['____ ____ ____ in the garage? (?)', ['Is', 'the', 'car'], 'Đảo is lên đầu.'],
           ['Where ____ the car? (?)', 'is', 'Where + is + S?'],
@@ -243,7 +243,7 @@ module.exports = {
           ['What games ____ you ____ on your phone? (?)', ['do', 'play'], 'What + do + you + V?'],
           ['Can ____ ____ a game on my phone later? (?)', ['I', 'play'], 'Can I + V?'],
         ]),
-        mcq('Buổi sáng của Giorgio (Ex. 18)', 'Đọc Giorgio kể về một ngày và chọn đáp án đúng A, B hoặc C.', [
+        mcq('Giorgio\'s morning (Ex. 18)', 'Read Giorgio\'s description of his day and choose the correct answer, A, B or C.', [
           ['Every weekday morning, my alarm goes ____ at 8:30am.', ['up', 'on', 'off'], 'C', 'alarm goes off = chuông báo thức reo.'],
           ['Then, I ____ up and go downstairs.', ['get', 'go', 'put'], 'A', 'get up = thức dậy.'],
           ['I sometimes go to the ____ and just get some juice.', ['fridge', 'sink', 'freezer'], 'A', 'Nước ép để trong tủ lạnh (fridge).'],
@@ -255,13 +255,13 @@ module.exports = {
           ['Before I go to sleep, I sit at my ____ and do my homework.', ['desk', 'bed', 'drawers'], 'A', 'Ngồi vào bàn học (desk).'],
           ['At the weekend, I have a lie ____ until about 11:30am.', ['on', 'up', 'in'], 'C', 'have a lie in = ngủ nướng.'],
         ], { stimulus: passage(GIORGIO_MORNING.replace('goes off', 'goes (1) ____').replace('I get up', 'I (2) ____ up').replace('to the fridge', 'to the (3) ____').replace('in the kitchen', 'in the (4) ____').replace('brush my teeth', '(5) ____ my teeth').replace('tidy my room', '(6) ____ my room').replace('with the housework', 'with the (7) ____').replace('on the sofa', 'on the (8) ____').replace('at my desk', 'at my (9) ____').replace('a lie in', 'a lie (10) ____'), { caption: 'Ex. 18 — Giorgio\'s day (đã che các từ cần điền)' }) }),
-        mcq('Quy tắc vị trí trạng từ (Ex. 19–21)', 'Chọn đáp án đúng.', [
-          ['Khi dùng động từ "to be", trạng từ tần suất đứng ____ động từ.', ['before (trước)', 'after (sau)'], 'B', 'I am often too tired… → sau "am".'],
-          ['Khi dùng động từ thường, trạng từ tần suất đứng ____ động từ.', ['before (trước)', 'after (sau)'], 'A', 'We usually spend time… → trước "spend".'],
-          ['Câu nào đúng?', ['I am never late for school.', 'I never am late for school.', 'I am late never for school.'], 'A', 'never đứng sau am.'],
-          ['Câu nào đúng?', ['I forget never to do my homework.', 'I never forget to do my homework.', 'Never I forget to do my homework.'], 'B', 'never đứng trước forget.'],
+        mcq('Rules for adverb position (Ex. 19–21)', 'Choose the correct answer.', [
+          ['With the verb "to be", the frequency adverb goes ____ the verb.', ['before', 'after'], 'B', 'I am often too tired… → sau "am".'],
+          ['With other verbs, the frequency adverb goes ____ the verb.', ['before', 'after'], 'A', 'We usually spend time… → trước "spend".'],
+          ['Which sentence is correct?', ['I am never late for school.', 'I never am late for school.', 'I am late never for school.'], 'A', 'never đứng sau am.'],
+          ['Which sentence is correct?', ['I forget never to do my homework.', 'I never forget to do my homework.', 'Never I forget to do my homework.'], 'B', 'never đứng trước forget.'],
         ]),
-        fix('Sửa lỗi vị trí trạng từ (G&V Ex. 7)', 'Mỗi câu có thể sai vị trí trạng từ hoặc trật tự từ. Viết lại câu đúng (nếu câu đã đúng, chép lại nguyên câu).', [
+        fix('Correct the adverb position (G&V Ex. 7)', 'Some sentences have the adverb or the words in the wrong place. Write the correct sentence (if the sentence is already correct, copy it).', [
           ['In my country, people live usually in apartments and not houses.', 'In my country, people usually live in apartments and not houses.', 'usually đứng trước động từ thường live.'],
           ['My uncle keeps his car always in the garage because it is very expensive.', 'My uncle always keeps his car in the garage because it is very expensive.', 'always trước keeps.'],
           ['Our sink sometimes makes a very strange noise.', 'Our sink sometimes makes a very strange noise.', 'Câu đúng.'],
@@ -269,7 +269,7 @@ module.exports = {
           ['In your country, do people usually celebrate their 18th birthday with a party?', 'In your country, do people usually celebrate their 18th birthday with a party?', 'Câu đúng: usually đứng sau chủ ngữ, trước động từ celebrate.'],
           ['Do you prefer to do your homework in your bedroom?', 'Do you prefer to do your homework in your bedroom?', 'Câu đúng.'],
         ]),
-        fix('Đổi sang câu hỏi (G&V Ex. 6)', 'Viết lại mỗi câu thành câu hỏi Yes/No.', [
+        fix('Make questions (G&V Ex. 6)', 'Rewrite each sentence as a Yes/No question.', [
           ['It is okay to come to your house this evening.', 'Is it okay to come to your house this evening?', 'be → đảo Is lên đầu.'],
           ['You can check that the windows are all closed before we go out.', 'Can you check that the windows are all closed before we go out?', 'can → đảo Can lên đầu.'],
           ['You are in the living room next to the kitchen.', 'Are you in the living room next to the kitchen?', 'are → Are you…?'],
@@ -322,17 +322,17 @@ module.exports = {
         ['online games', 'trò chơi trực tuyến', 'I can also play online games.'],
       ],
       ex: [
-        mcq('Mục đích của email (Ex. 26)', 'Đọc email Gavin gửi Giorgio. Lý do chính Gavin viết email là gì?', [
+        mcq('The purpose of the email (Ex. 26)', 'Read Gavin\'s email to Giorgio. What is the main reason Gavin is writing?', [
           ['The main reason for writing is…', ['to say thank you to Giorgio.', 'to ask Giorgio for advice.', 'to tell Giorgio that he likes university.'], 'C', 'Bài mẫu của sách chọn C: Gavin kể mình thích phòng ở trường và hỏi chuyện Giorgio. Không có lời cảm ơn hay xin lời khuyên.'],
         ], { stimulus: passage('Hi Giorgio,\n\nSo, we\'re both university students now! I like my room on campus very much. Are you on campus or in private accommodation? Are you happy with your choice of where you\'re living? Please tell me about your room. What other things do you like about where you live?\n\nWrite soon,\nGavin', { caption: 'Email from Gavin' }) }),
-        mcq('Sửa viết hoa & dấu câu (Ex. 27)', 'Email của Giorgio không viết hoa, không có dấu câu. Với mỗi phần, chọn cách viết ĐÚNG.', [
+        mcq('Capital letters and punctuation (Ex. 27)', 'Giorgio\'s email has no capital letters or punctuation. For each part, choose the CORRECT version.', [
           ['hi gavin', ['Hi Gavin,', 'hi Gavin', 'Hi gavin.'], 'A', 'Viết hoa chữ đầu và tên riêng; dấu phẩy sau lời chào.'],
           ['i live in private accommodation i am very happy with my room', ['I live in private accommodation, i am very happy with my room.', 'I live in private accommodation. I am very happy with my room.', 'i live in private accommodation. I am very happy with my room'], 'B', 'Đại từ I luôn viết hoa; hai ý → hai câu, mỗi câu kết bằng dấu chấm.'],
           ['the Wi-Fi here is very fast i am happy about that', ['The Wi-Fi here is very fast. I am happy about that.', 'The Wi-Fi here is very fast I am happy about that.', 'the Wi-Fi here is very fast. i am happy about that.'], 'A', 'Câu mới bắt đầu bằng chữ in hoa; có dấu chấm giữa hai câu.'],
           ['do you have Wi-Fi in your room is the food nice where you live', ['Do you have Wi-Fi in your room. Is the food nice where you live.', 'Do you have Wi-Fi in your room? Is the food nice where you live?', 'Do you have Wi-Fi in your room, is the food nice where you live?'], 'B', 'Hai câu hỏi → hai dấu chấm hỏi.'],
           ['write soon giorgio', ['write soon, giorgio', 'Write soon. Giorgio.', 'Write soon,\nGiorgio'], 'C', 'Câu kết viết hoa, dấu phẩy, tên ở dòng dưới và viết hoa.'],
         ]),
-        write('Viết email trả lời Giorgio (Ex. 28)', 'Hãy tưởng tượng bạn là Gavin. Viết email trả lời Giorgio (60–80 từ): trả lời 2 câu hỏi của Giorgio ("Do you have Wi-Fi in your room?" và "Is the food nice where you live?"), sau đó hỏi Giorgio 2 câu về chỗ ở của cậu ấy. Nhớ viết hoa và dùng dấu câu đúng.', {
+        write('Write a reply to Giorgio (Ex. 28)', 'Imagine you are Gavin. Write a reply to Giorgio (60–80 words): answer his two questions ("Do you have Wi-Fi in your room?" and "Is the food nice where you live?"), then ask Giorgio two questions about his accommodation. Remember to use capital letters and correct punctuation.', {
           minWords: 60, maxWords: 95, mustUse: 2,
           targetStructures: ['Hi Giorgio', 'Do you', 'Is your', 'Write soon'],
           checklist: ['Mở đầu "Hi Giorgio," và kết "Write soon, Gavin"', 'Trả lời câu hỏi về Wi-Fi', 'Trả lời câu hỏi về đồ ăn', 'Hỏi lại Giorgio 2 câu về chỗ ở', 'Viết hoa, dấu chấm và dấu hỏi đúng', '60–80 từ'],
@@ -390,7 +390,7 @@ module.exports = {
         ['difficult decision', 'quyết định khó khăn', "It's a difficult decision."],
       ],
       ex: [
-        cat('Ai có thể nói câu này? (Ex. 10)', 'Giorgio gọi điện cho Andrew Taylor. Mỗi câu dưới đây nhiều khả năng do ai nói?', { g: 'Giorgio', a: 'Andrew Taylor' }, [
+        cat('Who is speaking? (Ex. 10)', 'Giorgio phones Andrew Taylor. Who is more likely to say each sentence?', { g: 'Giorgio', a: 'Andrew Taylor' }, [
           ['Are you a student?', 'a', 'Người môi giới hỏi để kiểm tra tư cách sinh viên.'],
           ['I am a student.', 'g'],
           ['What do you want to study?', 'a'],
@@ -435,7 +435,7 @@ module.exports = {
         ['have a lie in', 'ngủ nướng', 'I have a lie in at the weekend.'],
       ],
       ex: [
-        cat('Campus hay private? (Ex. 24)', 'Mỗi đặc điểm thuộc chỗ ở nào mà Andrew Taylor gửi cho Giorgio?', { c: 'Campus accommodation', p: 'Private accommodation' }, [
+        cat('Campus or private? (Ex. 24)', 'Which accommodation that Andrew Taylor sent to Giorgio has each feature?', { c: 'Campus accommodation', p: 'Private accommodation' }, [
           ['Five minutes\' walk to the lecture hall', 'c'], ['25-minute bus ride to the lecture hall', 'p'],
           ['Fast Wi-Fi (sometimes slow at busy times)', 'c'], ['Superfast Wi-Fi (always)', 'p'],
           ['Shared bathroom on every floor', 'c'], ['Private bathroom', 'p'],
@@ -443,13 +443,13 @@ module.exports = {
           ['All meals included', 'c'], ['No meals included', 'p'],
           ['Single bed – no pillows or sheets provided', 'c'], ['Double bed – pillows and sheets provided', 'p'],
         ]),
-        speak('Nói: bạn chọn chỗ ở nào? (Ex. 25)', 'Trả lời từng câu hỏi trong 20–30 giây. Nêu lựa chọn + lý do (because) + một chi tiết.', 3, [
+        speak('Speaking: which accommodation would you choose? (Ex. 25)', 'Answer each question in 20–30 seconds. Give your choice + a reason (because) + a detail.', 3, [
           ['In your opinion, what is more important, having superfast Wi-Fi or having a short walk to lectures?', 'For me, a short walk to lectures is more important. I often get up late, so if I live five minutes from the lecture hall, I will never be late. Wi-Fi is useful, but I can always study in the library.', 'Chọn rõ ràng → lý do cá nhân → nhắc lại lựa chọn kia (but…).'],
           ['Are you unhappy about the idea of sharing a bathroom with other students? Or does it not matter to you?', 'To be honest, I don\'t really like it. I prefer a private bathroom because I can take my time in the morning. When I share a bathroom with my brother, we often argue about it!', 'Thêm ví dụ thật từ cuộc sống.'],
           ['What do you think about having all your meals included?', 'I think it\'s a great idea, because I can\'t cook very well and it saves a lot of time. However, the food in a canteen is sometimes boring, so I would also like to cook at the weekend.', 'Nêu cả ưu điểm và nhược điểm (However…).'],
           ['What are the advantages and disadvantages of living with lots of other students?', 'The main advantage is that you can make lots of new friends and you never feel lonely. The disadvantage is that it can be very noisy, especially at night, so it is difficult to study or sleep.', 'Dùng "The main advantage is… The disadvantage is…".'],
         ]),
-        speak('Nói: ngày thường và cuối tuần (Ex. 17, 23)', 'Trả lời từng câu hỏi trong 15–25 giây.', 1, [
+        speak('Speaking: weekdays and weekends (Ex. 17, 23)', 'Answer each question in 15–25 seconds.', 1, [
           ['On a weekday morning, what time does your alarm go off?', 'My alarm usually goes off at six fifteen, but I always press snooze once! I get up at about six thirty because my school starts at seven fifteen.', 'Dùng đúng cụm "alarm goes off" của bài.'],
           ['Do you like to have a lie in at the weekend?', 'Yes, I love it. On Sundays I usually have a lie in until nine o\'clock because I\'m tired after a long week. Then I have a big breakfast with my family.', 'Yes → lý do → hoạt động tiếp theo.'],
           ['Describe a typical day for you at the weekend.', 'On Saturdays I usually help my mum with the housework in the morning. In the afternoon, I often meet my friends at a café, and in the evening we sometimes watch a film at home.', 'Theo trình tự sáng – chiều – tối + trạng từ tần suất.'],
@@ -463,7 +463,7 @@ module.exports = {
       minutes: 35,
       objectives: ['Ôn từ vựng nhà cửa, câu hỏi và trật tự từ của Unit 2'],
       ex: [
-        gap('Định nghĩa nơi chốn trong nhà (G&V Ex. 1)', 'Đọc định nghĩa và viết từ đúng.', [
+        gap('Places in a house – definitions (G&V Ex. 1)', 'Read the definitions and write the correct word.', [
           ['This is the place where you usually sleep every night. → ____', 'bedroom'],
           ['This is the place where you have a wash and brush your teeth. → ____', 'bathroom'],
           ['This is the place where people usually sit together to talk, play games or watch TV. → ____ ____', ['living', 'room']],
@@ -471,7 +471,7 @@ module.exports = {
           ['This is the place that you walk through to move from one room to another. → ____', 'hallway|hall'],
           ['This is the place where you can be outside and sit on the grass. → ____', 'garden'],
         ]),
-        mcq('Chọn từ đúng (G&V Ex. 2)', 'Chọn từ phù hợp với mô tả.', [
+        mcq('Choose the correct word (G&V Ex. 2)', 'Choose the word that matches the description.', [
           ['It keeps food cold but not frozen.', ['a fridge', 'a freezer'], 'A'],
           ['A house that shares one wall with the house next to it.', ['a terraced house', 'a semi-detached house'], 'B', 'semi-detached = nhà song lập (chung 1 bức tường); terraced = nhà liền dãy.'],
           ['A piece of furniture with boxes you pull out to keep clothes in.', ['a desk', 'some drawers'], 'B'],
@@ -480,7 +480,7 @@ module.exports = {
           ['A small piece of furniture with a door, often in the kitchen, for cups and plates.', ['a wardrobe', 'a cupboard'], 'B', 'wardrobe = tủ quần áo.'],
           ['You sit on it alone; it has four legs and a back.', ['a chair', 'a sofa'], 'A'],
         ]),
-        match('Nối câu hỏi – câu trả lời (G&V Ex. 3)', 'Nối mỗi câu hỏi với câu trả lời phù hợp.', [
+        match('Questions and answers (G&V Ex. 3)', 'Match each question with the correct answer.', [
           ['What do you like about your room?', 'My comfortable bed and my posters.'],
           ['Who do you live with?', 'My parents, my sister and my grandparents.'],
           ['Do you like to cook?', 'Yes, and I think I\'m quite good at it.'],
@@ -490,7 +490,7 @@ module.exports = {
           ['Can you tell me where the bathroom is, please?', 'Yes. Go down the hall and it is next to the living room.'],
           ['Why don\'t you often go in the kitchen?', 'Because I can\'t cook!'],
         ]),
-        gap('Sửa lỗi chính tả (G&V Ex. 5)', 'Mỗi câu có một từ sai chính tả (trong ngoặc). Viết lại từ đúng.', [
+        gap('Spelling mistakes (G&V Ex. 5)', 'Each sentence has one word spelt wrongly (in brackets). Write the word correctly.', [
           ['I really like my (certains) – they are red and black. → ____', 'curtains'],
           ['I have a bright (tabel lamb) that I use when I do my homework. → ____ ____', ['table', 'lamp']],
           ['I think (potsers) make the walls look more interesting. → ____', 'posters'],
@@ -498,23 +498,23 @@ module.exports = {
           ['The only thing he can do is turn on the (uven)! → ____', 'oven'],
           ['Most of my clothes are in my (walldrobe). → ____', 'wardrobe'],
         ]),
-        order('Sắp xếp câu (G&V Ex. 8)', 'Sắp xếp các từ thành câu đúng.', [
+        order('Make sentences (G&V Ex. 8)', 'Put the words in the correct order to make sentences.', [
           ['He never does the washing up.'], ['Can you give me some advice?'], ['I always leave my house at eight o\'clock in the morning.'],
           ['What time does your alarm usually go off?'], ['My cousin often comes to my house for dinner.'], ['Where do you want to live in the future?'],
           ['How many people do you live with?'], ['Do you live on the university campus?'],
         ]),
-        gap('Tìm 11 từ trong ô chữ (G&V Ex. 4)', 'Sách có một ô chữ giấu 11 từ về nhà cửa. Dựa vào gợi ý và chữ cái đầu, viết lại 11 từ đó.', [
-          ['Phòng/khoảng trống ngay dưới mái nhà: ____ (a…)', 'attic'],
-          ['Khoảng đất có cỏ, hoa quanh nhà: ____ (g…)', 'garden'],
-          ['Phòng làm việc, đọc sách trong nhà: ____ (s…)', 'study'],
-          ['Tầng hầm, dưới mặt đất: ____ (b…)', 'basement'],
-          ['Nơi nấu ăn: ____ (k…)', 'kitchen'],
-          ['Thiết bị để xem phim, tin tức: ____ (t…)', 'television|TV'],
-          ['Bàn để học / làm việc: ____ (d…)', 'desk'],
-          ['Vòi sen tắm: ____ (s…)', 'shower'],
-          ['Cửa sổ: ____ (w…)', 'window'],
-          ['Bồn rửa (tay, bát): ____ (s…)', 'sink'],
-          ['Rèm cuốn / mành che cửa sổ: ____ (b…)', 'blind'],
+        gap('Find 11 words (G&V Ex. 4)', 'The book has a word square with 11 words about the home. Use the clues and the first letters to write the 11 words.', [
+          ['The room or space just under the roof of a house: ____ (a…)', 'attic'],
+          ['The area with grass and flowers around a house: ____ (g…)', 'garden'],
+          ['A room in a house for working or reading: ____ (s…)', 'study'],
+          ['A room below the ground: ____ (b…)', 'basement'],
+          ['The room where you cook: ____ (k…)', 'kitchen'],
+          ['A machine for watching films and the news: ____ (t…)', 'television|TV'],
+          ['A table for studying or working: ____ (d…)', 'desk'],
+          ['You stand under it to wash: ____ (s…)', 'shower'],
+          ['You look outside through it: ____ (w…)', 'window'],
+          ['You wash your hands or the dishes in it: ____ (s…)', 'sink'],
+          ['It covers a window to keep out the light: ____ (b…)', 'blind'],
         ]),
       ],
     },

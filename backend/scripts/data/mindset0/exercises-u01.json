@@ -9,8 +9,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Ping ở Anh — chọn từ đúng (Ex. 3)",
-   "instruction": "Đọc các câu về Ping, một chàng trai đang học khoá ngôn ngữ ở Anh. Chọn đáp án đúng nhất A, B hoặc C.",
+   "title": "Ping in England – choose the correct word (Ex. 3)",
+   "instruction": "Read the sentences about Ping, a young man on a language course in England. Choose the best answer, A, B or C.",
    "items": [
     {
      "id": "q1",
@@ -143,8 +143,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Hoàn thành cụm từ hằng ngày (Lead-in)",
-   "instruction": "Điền MỘT động từ để hoàn thành cụm từ trong tranh Lead-in. Chia động từ theo chủ ngữ nếu cần.",
+   "title": "Everyday phrases (Lead-in)",
+   "instruction": "Complete the phrases from the Lead-in pictures with ONE verb. Change the form of the verb if necessary.",
    "items": [
     {
      "id": "g1",
@@ -230,8 +230,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Đoán nghĩa từ trong \"A Day in the Life\"",
-   "instruction": "Đọc lại câu trong bài và chọn nghĩa đúng nhất của cụm từ in đậm (đoán qua ngữ cảnh).",
+   "title": "Words in \"A Day in the Life\"",
+   "instruction": "Read the sentences from the text again and choose the best meaning of the phrase in bold. Use the context to help you.",
    "stimulus": {
     "kind": "passage",
     "text": "NINA — NORWAY\n\nI live in a village on Norway's Atlantic coast. I get up at 7:30am and walk to college. Classes begin at 8:30am and finish at 3pm. After that, I go to one of the college clubs. These are not very expensive and there are lots to choose from. I do athletics and football but you can also do things like folk dancing and cross-country skiing. When my parents come home from work, my dad makes dinner and we all eat together. After that, my mum takes me out for a driving lesson. I've got my test soon and I need to practise!\n\nAVA — AUSTRALIA\n\nI'm from a small town in Queensland. Most people in Australia live near the coast, but we live on a cattle farm in the centre of the country. I get up at around 7am and have breakfast. My mum teaches at my college, so I usually go with her in the car instead of taking the bus. College starts at 8:30am and finishes at 4pm. When I get home, I help my dad on the farm for a few hours. In the evenings, I try to watch TV but I'm usually too tired. I go to bed at about 10:00pm.\n\nMICHAEL — BRAZIL\n\nI live in Rio de Janeiro. I get up at 6am and catch a bus to college at 6:30am. Lessons start at 7:20am. We have a break at 9:50am and then study until 12:30pm. I get home at about 1:40pm. After that, I often go to the beach with my friends to swim in the ocean or play beach volleyball, but I sometimes also just stay at home to sleep or study. In the evenings, I cook dinner for my family, then we watch TV or listen to the radio before bed. I switch off my light at about 10pm.",
@@ -240,19 +240,19 @@
    "items": [
     {
      "id": "q1",
-     "prompt": "\"You can also do things like **folk dancing** and cross-country skiing.\" — folk dancing là gì?",
+     "prompt": "\"You can also do things like **folk dancing** and cross-country skiing.\" — What is folk dancing?",
      "options": [
       {
        "id": "A",
-       "text": "một loại hoạt động/điệu múa truyền thống"
+       "text": "a kind of traditional activity / dance"
       },
       {
        "id": "B",
-       "text": "một món ăn của Na Uy"
+       "text": "a kind of Norwegian food"
       },
       {
        "id": "C",
-       "text": "một môn học bắt buộc"
+       "text": "a compulsory school subject"
       }
      ],
      "answer": "A",
@@ -260,19 +260,19 @@
     },
     {
      "id": "q2",
-     "prompt": "\"We live on a **cattle farm** in the centre of the country.\" — cattle là gì?",
+     "prompt": "\"We live on a **cattle farm** in the centre of the country.\" — What are cattle?",
      "options": [
       {
        "id": "A",
-       "text": "cây lúa"
+       "text": "rice plants"
       },
       {
        "id": "B",
-       "text": "bò, gia súc"
+       "text": "cows (farm animals)"
       },
       {
        "id": "C",
-       "text": "xe tải"
+       "text": "lorries"
       }
      ],
      "answer": "B",
@@ -284,15 +284,15 @@
      "options": [
       {
        "id": "A",
-       "text": "cùng với"
+       "text": "together with"
       },
       {
        "id": "B",
-       "text": "thay vì"
+       "text": "in place of / rather than"
       },
       {
        "id": "C",
-       "text": "sau khi"
+       "text": "after"
       }
      ],
      "answer": "B",
@@ -304,15 +304,15 @@
      "options": [
       {
        "id": "A",
-       "text": "rất thích"
+       "text": "I really enjoy it"
       },
       {
        "id": "B",
-       "text": "quá mệt (nên không xem được)"
+       "text": "so tired that I can't do it"
       },
       {
        "id": "C",
-       "text": "quá bận học"
+       "text": "too busy studying"
       }
      ],
      "answer": "B",
@@ -324,15 +324,15 @@
      "options": [
       {
        "id": "A",
-       "text": "bật đèn lên"
+       "text": "turn the light on"
       },
       {
        "id": "B",
-       "text": "tắt đèn (đi ngủ)"
+       "text": "turn the light off (go to sleep)"
       },
       {
        "id": "C",
-       "text": "thay bóng đèn"
+       "text": "change the light bulb"
       }
      ],
      "answer": "B",
@@ -349,15 +349,15 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Reading: hoàn thành đoạn văn về Dan (Ex. 10)",
-   "instruction": "Đọc thông tin về thói quen của Dan, sinh viên một trường đại học ở Anh. Chia động từ trong ngoặc ở thì hiện tại đơn (he → thêm -s/-es).",
+   "title": "Dan's daily routine (Ex. 10)",
+   "instruction": "Read the information about Dan, a student at a university in the UK. Put the verbs in brackets into the present simple.",
    "stimulus": {
     "kind": "text",
-    "caption": "Mẹo (TIP 11)",
+    "caption": "TIP 11",
     "rows": [
      [
-      "Từ tô vàng",
-      "usually, always, sometimes, often, never — cho biết Dan làm việc đó thường xuyên đến mức nào."
+      "Highlighted words",
+      "usually, always, sometimes, often, never — they tell you how often Dan does something."
      ]
     ]
    },
@@ -509,8 +509,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Reading: nối cụm từ đồng nghĩa — việc nhà (Ex. 12)",
-   "instruction": "Đọc đoạn văn về việc nhà và nối mỗi cụm từ (1–6) với cụm có nghĩa tương tự (A–F).",
+   "title": "Phrases with a similar meaning – housework (Ex. 12)",
+   "instruction": "Read the text about housework and match each phrase (1–6) with a phrase with a similar meaning (A–F).",
    "stimulus": {
     "kind": "passage",
     "text": "I often help a lot around the house and I usually help my mum **do the laundry**. My brother is lazy and he never washes his clothes. He always leaves them in a pile on his bedroom floor. In the evening after school, I always **tidy up** my room. I put things away and get my schoolbag ready for the next day. My dad sometimes **washes up** after dinner. We don't have a dishwasher at the moment because our old one broke down, so he has to clean the dishes by himself. My sister likes cooking, so she often helps mum **make lunch and dinner**. She prepared a delicious meal of roast chicken at the weekend. Sometimes my brother **puts the rubbish out**, but he usually just leaves it by the back door instead of taking it out to the bins. We all usually try and help and **do the cleaning**. When the housework is done, we always relax and watch TV.",
@@ -564,8 +564,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Hộp ngữ pháp: hỏi – đáp (Ex. 7)",
-   "instruction": "Đọc Grammar box (phần \"Ngữ pháp cần nhớ\" ở trên), rồi nối câu hỏi 1–3 với câu trả lời A–C.",
+   "title": "Grammar box: questions and answers (Ex. 7)",
+   "instruction": "Read the Grammar box, then match questions 1–3 with answers A–C.",
    "items": [
     {
      "id": "m1",
@@ -596,24 +596,24 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "Xếp động từ vào 4 nhóm chia ngôi thứ ba (Ex. 8)",
-   "instruction": "Mỗi động từ thuộc nhóm nào khi chia với he/she/it?",
+   "title": "Third person verb endings (Ex. 8)",
+   "instruction": "Put each verb into the correct group for he/she/it.",
    "categories": [
     {
      "id": "g1",
-     "label": "Nhóm 1: thêm -s (gets up)"
+     "label": "Group 1: add -s (gets up)"
     },
     {
      "id": "g2",
-     "label": "Nhóm 2: -s, -ch, -sh, -x → thêm -es (watches)"
+     "label": "Group 2: -s, -ch, -sh, -x → add -es (watches)"
     },
     {
      "id": "g3",
-     "label": "Nhóm 3: phụ âm + y → -ies (tries)"
+     "label": "Group 3: consonant + y → -ies (tries)"
     },
     {
      "id": "g4",
-     "label": "Nhóm 4: go/do/wash… → -es (goes)"
+     "label": "Group 4: go/do/wash… → -es (goes)"
     }
    ],
    "items": [
@@ -766,8 +766,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Chia ngôi thứ ba số ít (G&V Ex. 5)",
-   "instruction": "Hoàn thành câu bằng dạng ngôi thứ ba (he/she/it) của động từ trong ngoặc.",
+   "title": "Third person singular (G&V Ex. 5)",
+   "instruction": "Complete the sentences with the he/she/it form of the verb in brackets.",
    "items": [
     {
      "id": "g1",
@@ -901,8 +901,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Chọn dạng động từ đúng (G&V Ex. 6)",
-   "instruction": "Chọn dạng đúng của động từ trong mỗi câu.",
+   "title": "Choose the correct verb form (G&V Ex. 6)",
+   "instruction": "Choose the correct form of the verb in each sentence.",
    "items": [
     {
      "id": "q1",
@@ -1075,8 +1075,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
-   "title": "Vị trí trạng từ tần suất",
-   "instruction": "Sắp xếp các từ thành câu đúng. Nhớ: trạng từ tần suất đứng TRƯỚC động từ thường, SAU động từ \"be\".",
+   "title": "Position of frequency adverbs",
+   "instruction": "Put the words in the correct order to make sentences. Frequency adverbs go BEFORE most verbs and AFTER the verb \"be\".",
    "items": [
     {
      "id": "o1",
@@ -1202,8 +1202,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Từ chỉ trình tự & tần suất",
-   "instruction": "Điền từ thích hợp vào chỗ trống: after that / next / then / finally / always / never.",
+   "title": "Sequencing words and frequency adverbs",
+   "instruction": "Complete the sentences with after that, next, then, finally, always or never.",
    "wordBank": [
     "After that",
     "Next",
@@ -1274,8 +1274,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
-   "title": "Sắp xếp câu mô tả",
-   "instruction": "Sắp xếp từ thành câu hoàn chỉnh (chú ý dấu phẩy sau từ trình tự).",
+   "title": "Sentences describing a routine",
+   "instruction": "Put the words in the correct order to make sentences. Remember the comma after a sequencing word.",
    "items": [
     {
      "id": "o1",
@@ -1373,8 +1373,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "paragraph_writing",
-   "title": "Viết về thói quen hằng ngày của bạn (Ex. 11)",
-   "instruction": "Nhìn lại đoạn văn về Dan (Ex. 10). Viết một đoạn văn (70–100 từ) về thói quen hằng ngày của BẠN: bạn làm gì, lúc mấy giờ. Dùng ít nhất 4 trạng từ tần suất (always, usually, often, sometimes, never) và 2 từ chỉ trình tự (After that, Then, Next…). Ví dụ: I sometimes do the laundry. I never make dinner. My brother often takes out the bins.",
+   "title": "Write about your daily routine (Ex. 11)",
+   "instruction": "Look again at the paragraph about Dan (Ex. 10). Write a paragraph (70–100 words) about YOUR daily routine: what you do and when. Use at least four frequency adverbs (always, usually, often, sometimes, never) and two sequencing words (After that, Then, Next…). Example: I sometimes do the laundry. I never make dinner. My brother often takes out the bins.",
    "responseSlots": 1,
    "rubric": {
     "bandFocus": [
@@ -1415,13 +1415,13 @@
    "source": "original",
    "difficulty": 1,
    "type": "paragraph_writing",
-   "title": "Viết về một ngày của Julia Grant (Ex. 13)",
-   "instruction": "Nhìn các bức tranh về Julia Grant, tình nguyện viên trong một dự án khoa học. Viết đoạn văn (80–120 từ) mô tả một ngày của Julia. Yêu cầu: (1) mở đầu bằng \"Julia Grant is 21 years old and works as a volunteer on a science project in Fiji. Every morning, she …\"; (2) viết các hoạt động cô ấy làm và giờ làm; (3) dùng từ trình tự After that… / Next… / Then…; (4) dùng trạng từ tần suất.",
+   "title": "A day in the life of Julia Grant (Ex. 13)",
+   "instruction": "Look at the pictures of Julia Grant, a volunteer on a science project. Write a paragraph (80–120 words) describing a day in Julia's life. (1) Begin: \"Julia Grant is 21 years old and works as a volunteer on a science project in Fiji. Every morning, she …\" (2) Write what she does and when. (3) Use After that… / Next… / Then… (4) Use frequency adverbs.",
    "responseSlots": 1,
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u01-julia.jpg",
-    "caption": "Một ngày của Julia Grant ở Fiji"
+    "caption": "A day in the life of Julia Grant in Fiji"
    },
    "rubric": {
     "bandFocus": [
@@ -1462,8 +1462,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Trước khi nghe: Đúng hay Sai? (Ex. 15)",
-   "instruction": "Đọc thông tin trên trang web về chương trình trao đổi học sinh. Mỗi câu sau Đúng (True) hay Sai (False)?",
+   "title": "Before you listen: true or false? (Ex. 15)",
+   "instruction": "Read the information on the website about a student exchange programme. Are the sentences true or false?",
    "stimulus": {
     "kind": "passage",
     "imageUrl": "media:m0u01-exchange-web.jpg",
@@ -1530,8 +1530,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Nghe tìm từ đồng nghĩa",
-   "instruction": "Trong bài nghe, người nói dùng từ khác với danh sách A–H. Chọn hoạt động có nghĩa giống câu nói.",
+   "title": "Words with a similar meaning",
+   "instruction": "The speakers use different words from the list A–H. Choose the activity that has the same meaning as what the speaker says.",
    "items": [
     {
      "id": "q1",
@@ -1624,24 +1624,24 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Mẹo nói 1–2 phút",
-   "instruction": "Chọn cách làm ĐÚNG khi chuẩn bị và nói.",
+   "title": "Tips for a 1–2 minute talk",
+   "instruction": "Choose the CORRECT way to prepare and speak.",
    "items": [
     {
      "id": "q1",
-     "prompt": "Trong 1–2 phút chuẩn bị, bạn nên…",
+     "prompt": "In the one minute of preparation time, you should…",
      "options": [
       {
        "id": "A",
-       "text": "viết cả câu hoàn chỉnh rồi đọc lên"
+       "text": "write full sentences and read them out"
       },
       {
        "id": "B",
-       "text": "ghi từ khoá, cụm ngắn cho từng ý"
+       "text": "write key words and short phrases for each point"
       },
       {
        "id": "C",
-       "text": "không ghi gì cả"
+       "text": "not write anything"
       }
      ],
      "answer": "B",
@@ -1649,19 +1649,19 @@
     },
     {
      "id": "q2",
-     "prompt": "Nếu không nhớ mình đi học cùng ai, bạn nên…",
+     "prompt": "If you can't remember who you go to school with, you should…",
      "options": [
       {
        "id": "A",
-       "text": "im lặng cho tới khi nhớ ra"
+       "text": "stop talking until you remember"
       },
       {
        "id": "B",
-       "text": "bỏ qua ý đó"
+       "text": "skip that point"
       },
       {
        "id": "C",
-       "text": "nghĩ ra một chi tiết hợp lý và nói tiếp"
+       "text": "invent a reasonable detail and keep talking"
       }
      ],
      "answer": "C",
@@ -1669,7 +1669,7 @@
     },
     {
      "id": "q3",
-     "prompt": "Câu nào giúp câu trả lời dài và hay hơn?",
+     "prompt": "Which answer is longer and better?",
      "options": [
       {
        "id": "A",
@@ -1689,7 +1689,7 @@
     },
     {
      "id": "q4",
-     "prompt": "Theo Ex. 20, điều nào là DẤU HIỆU XẤU?",
+     "prompt": "According to Ex. 20, which is a BAD sign?",
      "options": [
       {
        "id": "A",
@@ -1718,8 +1718,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: Một ngày bình thường của bạn (Ex. 19–21)",
-   "instruction": "Đọc đề, dành 1 phút ghi chú từ khoá, rồi nói 1–2 phút. Describe what you usually do on an average day. You should say: what you do · who you do it with · where you do it — and explain what you enjoy most about your day and why.",
+   "title": "Speaking: an average day (Ex. 19–21)",
+   "instruction": "Read the task, spend one minute making notes, then speak for 1–2 minutes. Describe what you usually do on an average day. You should say: what you do · who you do it with · where you do it — and explain what you enjoy most about your day and why.",
    "speakingPart": 2,
    "speakingPrepSeconds": 60,
    "items": [
@@ -1741,8 +1741,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: trả lời câu hỏi ngắn về thói quen (Ex. 4, 18)",
-   "instruction": "Trả lời từng câu hỏi trong 15–25 giây: trả lời thẳng → lý do → ví dụ.",
+   "title": "Speaking: questions about your routine (Ex. 4, 18)",
+   "instruction": "Answer each question in 15–25 seconds: a direct answer → a reason → an example.",
    "speakingPart": 1,
    "speakingPrepSeconds": 10,
    "items": [
@@ -1778,8 +1778,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Đọc giờ (G&V Ex. 1)",
-   "instruction": "Nối giờ dạng số với cách đọc bằng chữ.",
+   "title": "Telling the time (G&V Ex. 1)",
+   "instruction": "Match the times in numbers with the times in words.",
    "items": [
     {
      "id": "m1",
@@ -1852,8 +1852,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Giải mã chữ cái — một buổi sáng (G&V Ex. 2)",
-   "instruction": "Sắp xếp lại các chữ cái trong ngoặc để được từ đúng.",
+   "title": "A morning routine – unscramble the words (G&V Ex. 2)",
+   "instruction": "Put the letters in brackets in the correct order to make words.",
    "items": [
     {
      "id": "g1",
@@ -1951,8 +1951,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "categorize",
-   "title": "MAKE hay DO? (G&V Ex. 3)",
-   "instruction": "Xếp mỗi cụm vào cột MAKE hoặc DO.",
+   "title": "MAKE or DO? (G&V Ex. 3)",
+   "instruction": "Put each phrase into the MAKE or DO column.",
    "categories": [
     {
      "id": "make",
@@ -2035,8 +2035,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Email từ Pháp (G&V Ex. 4)",
-   "instruction": "Hoàn thành email của Harry bằng các từ trong khung.",
+   "title": "An email from France (G&V Ex. 4)",
+   "instruction": "Complete Harry's email with the words in the box.",
    "wordBank": [
     "walk",
     "leave",
@@ -2146,8 +2146,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
-   "title": "Sắp xếp thành câu đúng (G&V Ex. 7)",
-   "instruction": "Sắp xếp các từ thành câu hoàn chỉnh.",
+   "title": "Make sentences (G&V Ex. 7)",
+   "instruction": "Put the words in the correct order to make sentences.",
    "items": [
     {
      "id": "o1",
@@ -2344,8 +2344,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Công việc mới ở siêu thị (G&V Ex. 8)",
-   "instruction": "Hoàn thành đoạn văn bằng các từ trong khung (chia động từ nếu cần).",
+   "title": "A new job at the supermarket (G&V Ex. 8)",
+   "instruction": "Complete the text with the words in the box. Change the form of the verbs if necessary.",
    "wordBank": [
     "shouts",
     "work",

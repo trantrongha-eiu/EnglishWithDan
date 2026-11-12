@@ -90,19 +90,19 @@ module.exports = {
         ["horse-riding","cưỡi ngựa","I go horse-riding in the countryside."],
       ],
       ex: [
-        match('Hoạt động trong tranh (Lead-in Ex. 1)', 'Nối tranh 1–6 với hoạt động (bài có 9 hoạt động, 3 hoạt động không dùng: shopping, cooking, reading).', [
+        match('Activities in the pictures (Lead-in Ex. 1)', 'Match pictures 1–6 with the activities. There are nine activities, so three are not used: shopping, cooking, reading.', [
           ['Picture 1', 'hiking'], ['Picture 2', 'canoeing'], ['Picture 3', 'cycling'], ['Picture 4', 'sailing'], ['Picture 5', 'climbing'], ['Picture 6', 'white water rafting'],
         ], { stimulus: picture('media:m0u03-leadin.jpg', 'Lead-in') }),
-        match('Môn thể thao trong tranh (G&V Ex. 1)', 'Nối tranh 1–10 với tên môn thể thao.', [
+        match('Sports in the pictures (G&V Ex. 1)', 'Match pictures 1–10 with the names of the sports.', [
           ['Picture 1', 'tennis'], ['Picture 2', 'volleyball'], ['Picture 3', 'basketball'], ['Picture 4', 'football'], ['Picture 5', 'badminton'],
           ['Picture 6', 'swimming'], ['Picture 7', 'skiing'], ['Picture 8', 'cycling'], ['Picture 9', 'sailing'], ['Picture 10', 'hiking'],
         ], { stimulus: picture('media:m0u03-sports.jpg', 'G&V Ex. 1') }),
-        cat('PLAY, DO hay GO? (G&V Ex. 2)', 'Xếp mỗi môn vào cột đúng.', { play: 'play', do: 'do', go: 'go' }, [
+        cat('PLAY, DO or GO? (G&V Ex. 2)', 'Put each sport into the correct column.', { play: 'play', do: 'do', go: 'go' }, [
           ['tennis', 'play'], ['chess', 'play'], ['volleyball', 'play'], ['football', 'play'], ['badminton', 'play'], ['hockey', 'play'], ['table tennis', 'play'], ['basketball', 'play'],
           ['karate', 'do'], ['judo', 'do'], ['boxing', 'do'], ['gymnastics', 'do'], ['taekwondo', 'do'], ['athletics', 'do'],
           ['horse-riding', 'go'], ['swimming', 'go'], ['skiing', 'go'], ['cycling', 'go'], ['sailing', 'go'], ['hiking', 'go'], ['canoeing', 'go'], ['fishing', 'go'], ['bowling', 'go'],
         ]),
-        gap('Động từ thể thao (G&V Ex. 3)', 'Điền dạng đúng của các động từ trong khung: score, win, kick, play, hit, throw, catch, lose, beat.', [
+        gap('Sports verbs (G&V Ex. 3)', 'Complete the sentences with the correct form of the verbs in the box: score, win, kick, play, hit, throw, catch, lose, beat.', [
           ['I\'m playing in a tennis tournament tomorrow. I hope I ____ some of my matches.', 'win'],
           ['Our school football team is not doing well this term. Every team we play against ____ us.', 'beats'],
           ['I really want to learn how to ____ baseball but it isn\'t a popular sport in Britain.', 'play'],
@@ -113,24 +113,24 @@ module.exports = {
           ['In baseball, players wear a special glove to help them ____ the ball.', 'catch'],
           ['In football and handball, the team that ____ the most goals is the winner.', 'scores'],
         ], { wordBank: ['score', 'win', 'kick', 'play', 'hit', 'throw', 'catch', 'lose', 'beat'] }),
-        mcq('Môn cricket (G&V Ex. 4)', 'Chọn từ đúng.', [
+        mcq('Cricket (G&V Ex. 4)', 'Choose the correct word.', [
           ['Cricket is a ____ sport in several countries around the world, including India and Britain.', ['popular', 'good', 'favourite'], 'A'],
           ['There are 11 people in a cricket ____.', ['team', 'group', 'set'], 'A'],
           ['You play the sport by ____ a hard red ball with a bat.', ['throwing', 'hitting', 'kicking'], 'B'],
           ['It can take five days to complete a cricket ____.', ['goal', 'match', 'point'], 'B'],
           ['People often ____ white clothes to play cricket.', ['use', 'wear', 'put'], 'B'],
         ]),
-        mcq('Môn nào? (Speaking and vocabulary Ex. 15)', 'Tranh trong sách: basketball, football, badminton, table tennis, chess, tai chi, kite flying. Trong môn nào bạn…?', [
-          ['…catch a ball? (bắt bóng)', ['basketball', 'badminton', 'chess'], 'A', 'Bóng rổ: bắt và ném bóng bằng tay.'],
+        mcq('Which activity? (Speaking and vocabulary Ex. 15)', 'The pictures show basketball, football, badminton, table tennis, chess, tai chi and kite flying. In which activity do you…?', [
+          ['…catch a ball?', ['basketball', 'badminton', 'chess'], 'A', 'Bóng rổ: bắt và ném bóng bằng tay.'],
           ['…throw a ball? (ném bóng)', ['table tennis', 'basketball', 'tai chi'], 'B'],
-          ['…kick a ball? (đá bóng)', ['football', 'badminton', 'kite flying'], 'A'],
-          ['…hit a ball? (đánh bóng)', ['football', 'chess', 'table tennis'], 'C', 'Sách: badminton, table tennis — đánh bằng vợt.'],
+          ['…kick a ball?', ['football', 'badminton', 'kite flying'], 'A'],
+          ['…hit a ball?', ['football', 'chess', 'table tennis'], 'C', 'Sách: badminton, table tennis — đánh bằng vợt.'],
           ['…score a goal? (ghi bàn)', ['football', 'tai chi', 'table tennis'], 'A'],
-          ['…use a racket? (dùng vợt)', ['basketball', 'badminton', 'chess'], 'B', 'Sách: badminton, table tennis.'],
-          ['…move a piece? (di chuyển quân cờ)', ['chess', 'football', 'kite flying'], 'A', 'piece = quân cờ.'],
-          ['…relax your mind? (thư giãn đầu óc)', ['football', 'tai chi', 'basketball'], 'B', 'Sách: kite flying, tai chi.'],
-          ['…play in a team? (chơi theo đội)', ['chess', 'basketball', 'kite flying'], 'B', 'Sách: basketball, football.'],
-          ['…play alone? (chơi một mình)', ['football', 'basketball', 'kite flying'], 'C', 'Sách: badminton, table tennis, kite flying, tai chi, chess.'],
+          ['…use a racket?', ['basketball', 'badminton', 'chess'], 'B', 'Sách: badminton, table tennis.'],
+          ['…move a piece?', ['chess', 'football', 'kite flying'], 'A', 'piece = quân cờ.'],
+          ['…relax your mind?', ['football', 'tai chi', 'basketball'], 'B', 'Sách: kite flying, tai chi.'],
+          ['…play in a team?', ['chess', 'basketball', 'kite flying'], 'B', 'Sách: basketball, football.'],
+          ['…play alone?', ['football', 'basketball', 'kite flying'], 'C', 'Sách: badminton, table tennis, kite flying, tai chi, chess.'],
         ]),
       ],
     },
@@ -183,12 +183,12 @@ module.exports = {
         ['hang out with', 'đi chơi, tụ tập với', 'She hangs out with her friends.'],
       ],
       ex: [
-        mcq('Đọc lướt: bài báo nói về gì? (Ex. 12)', 'Đọc lướt bài báo và trả lời.', [
+        mcq('What is the article about? (Ex. 12)', 'Skim the article and answer the question.', [
           ['Who is Aimee Fuller?', ['an English snowboarder who lives in the USA', 'an American ski coach', 'a famous Olympic champion'], 'A', '"born in England but now lives in the USA… professional snowboarder".'],
           ['What sport has Aimee become successful in?', ['skiing', 'snowboarding', 'cycling'], 'B'],
           ['What is the reason for this article?', ['to sell snowboards', 'to tell readers about Aimee\'s life and career', 'to explain the rules of snowboarding'], 'B', 'Bài giới thiệu cuộc đời và sự nghiệp của Aimee.'],
         ], { stimulus: passage(AIMEE, { caption: 'Snowboarding star (tr. 38)' }) }),
-        gap('Từ vựng trong bài (Ex. 14)', 'Hoàn thành từ trong bài báo khớp với định nghĩa.', [
+        gap('Words in the article (Ex. 14)', 'Complete the words from the article that match the definitions.', [
           ['This is someone who is paid to do a sport or other activity. → p____', 'professional|rofessional'],
           ['This means to practise your sport. → t____', 'train|rain'],
           ['This word describes someone who is doing well in his/her life. → s____', 'successful|uccessful'],
@@ -218,11 +218,11 @@ module.exports = {
         { grammar: 'present-continuous', title: 'Present Continuous', note: 'đang xảy ra lúc nói, mô tả tranh' },
       ],
       ex: [
-        cat('Phân loại động từ trong blog (Ex. 6)', 'Đọc blog từ Iceland. Mỗi cụm động từ thuộc thì nào?', { ps: 'Present simple', pc: 'Present continuous' }, [
+        cat('Verbs in the blog (Ex. 6)', 'Read the blog from Iceland. Which tense is each verb phrase?', { ps: 'Present simple', pc: 'Present continuous' }, [
           ['we get up', 'ps'], ['I don\'t miss', 'ps'], ['I usually sleep', 'ps'], ['He looks after us', 'ps'], ['he always makes us laugh', 'ps'], ['my friend doesn\'t like', 'ps'],
           ['I\'m having a great time', 'pc'], ['I\'m not staying', 'pc'], ['I\'m resting', 'pc'], ['we\'re having reindeer burgers', 'pc'], ['The chef is cooking', 'pc'],
         ], { stimulus: passage(BLOG, { caption: 'MY BLOG — Iceland' }) }),
-        mcq('Quy tắc dùng thì (Ex. 7, 9)', 'Chọn "simple" hoặc "continuous".', [
+        mcq('Rules for the tenses (Ex. 7, 9)', 'Choose "simple" or "continuous".', [
           ['We use the present ____ with time words and phrases, such as at the moment, today and now.', ['simple', 'continuous'], 'B'],
           ['We use the present ____ with adverbs, such as always, sometimes, usually and every day.', ['simple', 'continuous'], 'A'],
           ['We use the present ____ to talk about habits and routines.', ['simple', 'continuous'], 'A'],
@@ -230,18 +230,18 @@ module.exports = {
           ['When you make a question in the present ____, use the auxiliary verb do.', ['simple', 'continuous'], 'A'],
           ['When you make a question in the present ____, use the question form of the verb to be.', ['simple', 'continuous'], 'B'],
         ]),
-        gap('Viết dạng -s và -ing (Ex. 8)', 'Viết dạng ngôi thứ ba (-s/-es/-ies) và dạng -ing của động từ.', [
+        gap('-s and -ing forms (Ex. 8)', 'Write the third person (-s/-es/-ies) form and the -ing form of the verbs.', [
           ['live → ____ / ____', ['lives', 'living']], ['get → ____ / ____', ['gets', 'getting']], ['carry → ____ / ____', ['carries', 'carrying']],
           ['hope → ____ / ____', ['hopes', 'hoping']], ['run → ____ / ____', ['runs', 'running']], ['lie → ____ / ____', ['lies', 'lying']],
           ['cry → ____ / ____', ['cries', 'crying']], ['make → ____ / ____', ['makes', 'making']], ['begin → ____ / ____', ['begins', 'beginning']],
         ]),
-        match('Hỏi – đáp hai thì (Ex. 9)', 'Nối câu hỏi 1–4 với câu trả lời A–D.', [
+        match('Questions and answers in two tenses (Ex. 9)', 'Match questions 1–4 with answers A–D.', [
           ['Are you enjoying your holiday?', 'Yes, I am. / No, I\'m not.'],
           ['What are you doing at the moment?', 'I\'m having a rest.'],
           ['Do you usually get up early?', 'Yes, I do. / No, I don\'t.'],
           ['When does your brother get up?', 'At about 7am.'],
         ]),
-        gap('Hội thoại: chia động từ (Ex. 10)', 'Chia động từ trong ngoặc ở hiện tại đơn hoặc hiện tại tiếp diễn.', [
+        gap('A conversation – verb forms (Ex. 10)', 'Put the verbs in brackets into the present simple or present continuous.', [
           ['A: Hi, Gabby. What ____ (you/do) at the moment? Do you ____ (want) to go out somewhere?', ['are you doing', 'want']],
           ['B: I can\'t, sorry. I ____ (watch) a football match on TV. My team usually ____ (play) really well but they ____ (lose) very badly today!', ['\'m watching|am watching', 'plays', 'are losing|\'re losing']],
           ['A: Tom, I ____ (wait) for you outside the cinema. — B: I\'m sorry, this bus never ____ (arrive) on time.', ['\'m waiting|am waiting', 'arrives']],
@@ -249,7 +249,7 @@ module.exports = {
           ['How do you usually ____ (get) to college? — I ____ (walk). It ____ (not take) long.', ['get', 'walk', 'doesn\'t take|does not take']],
           ['My Dad usually ____ (drive) me there but he ____ (work) today.', ['drives', '\'s working|is working']],
         ]),
-        order('Đặt câu hỏi (Ex. 11)', 'Sắp xếp thành câu hỏi đúng.', [
+        order('Make questions (Ex. 11)', 'Put the words in the correct order to make questions.', [
           ['Why are you learning English?'], ['What time do you usually get up?'], ['What are you learning about in geography at the moment?'], ['Do you play tennis?'], ['What is the teacher doing now?'],
         ]),
       ],
@@ -284,17 +284,17 @@ module.exports = {
         ['at the moment', 'lúc này', "I'm at the festival at the moment."],
       ],
       ex: [
-        gap('Ghi chú: liên hoan phim (Ex. 21)', 'Đọc quảng cáo và email của Andrew rồi hoàn thành ghi chú của Joshua.', [
+        gap('Notes: a film festival (Ex. 21)', 'Read the advert and Andrew\'s email, then complete Joshua\'s notes.', [
           ['Date we will go: ____ 23rd June', 'Saturday', 'Andrew: "I can only go on Saturday as I\'m working on Sunday." Quảng cáo: Saturday 23rd and Sunday 24th June.'],
           ['Cost for me: £____', '15', 'Andrew mua vé online tối nay → giá online £15 (mua tại chỗ £20).'],
           ['Time to meet Andrew: ____', '1:00pm|1pm|1.00pm', '"See you at the entrance at 1:00pm."'],
           ['Film we will see: ____ ____ ____', ['Child', 'in', 'Time'], '"I don\'t mind if we miss Blue Rain, but I can\'t wait to see Child in Time!"'],
           ['What to take: an ____', 'umbrella', '"don\'t forget an umbrella as it looks like the weather won\'t be good."'],
         ], { stimulus: passage('FILM FESTIVAL IN SUNNYHILL PARK — Saturday 23rd and Sunday 24th June\n2:00PM Blue Rain · 4:00PM Child in Time\nTICKETS: £20 on the day or £15 from www.parkcinema.com\nAlso available – food stalls, art and other activities\n\nTo: Joshua · From: Andrew\nHi Joshua, I\'m emailing you about the film festival at the weekend. I can only go on Saturday as I\'m working on Sunday. I don\'t mind if we miss Blue Rain, but I can\'t wait to see Child in Time! We can get food there, but don\'t forget an umbrella as it looks like the weather won\'t be good. I\'ll get the tickets online tonight and you can pay me then. See you at the entrance at 1:00pm. Andrew', { caption: 'Ex. 21 — Place: Sunnyhill Park (ví dụ)' }) }),
-        mcq('Richard muốn gì? (Ex. 22)', 'Bạn và Andrew đang ở liên hoan phim. Richard nhắn tin cho bạn.', [
+        mcq('What does Richard want? (Ex. 22)', 'You and Andrew are at the film festival. Richard sends you a text message.', [
           ['What does Richard want to do?', ['watch TV at home with you', 'meet up with you', 'buy tickets for the festival'], 'B', '"Do you want to meet up? Let me know soon!"'],
         ], { stimulus: passage('Hi Joshua,\nWhere are you? Are you busy? I\'m watching TV at home at the moment but I\'m really bored.\nDo you want to meet up? Let me know soon!\nRichard', { caption: 'Message from Richard' }) }),
-        write('Viết tin nhắn trả lời Richard (Ex. 23)', 'Dùng thông tin của unit này để viết tin nhắn trả lời Richard (khoảng 60–90 từ). Tin nhắn phải có: nơi bạn đang ở · bạn đang đi cùng ai · bạn đang làm gì · chuyện gì đang diễn ra · nơi bạn có thể gặp Richard · Richard nên mang gì theo. Dùng đúng hiện tại đơn và hiện tại tiếp diễn.', {
+        write('Write a reply to Richard (Ex. 23)', 'Use the information in this unit to write a reply to Richard (about 60–90 words). Include: where you are · who you are with · what you are doing · what is happening · where you can meet Richard · what Richard should bring. Use the present simple and present continuous correctly.', {
           minWords: 55, maxWords: 100, mustUse: 3,
           targetStructures: ["I'm", "We're", 'at the moment', 'Bring', 'See you'],
           checklist: ['Nơi bạn đang ở', 'Đi cùng ai', 'Đang làm gì', 'Chuyện gì đang diễn ra', 'Hẹn gặp ở đâu', 'Richard nên mang gì', 'Dùng hiện tại tiếp diễn cho việc đang xảy ra'],
@@ -342,13 +342,13 @@ module.exports = {
         ['Shall I…?', 'Tôi … nhé? (đề nghị)', 'Shall I come to your place at seven?'],
       ],
       ex: [
-        mcq('Hoạt động nào được nhắc tới? (Ex. 4)', 'Nghe/đọc bài: hoạt động nào sau đây Deon CÓ nhắc tới?', [
-          ['cycling', ['được nhắc tới', 'không được nhắc tới'], 'A', '"He went on one of their cycling holidays last year".'],
-          ['shopping', ['được nhắc tới', 'không được nhắc tới'], 'B'],
-          ['hiking and cooking', ['được nhắc tới', 'không được nhắc tới'], 'A', '"in the forest where you can do hiking and cooking".'],
-          ['canoeing', ['được nhắc tới', 'không được nhắc tới'], 'B', 'Có nói "water sports" nhưng không nói canoeing.'],
-          ['climbing and white water rafting', ['được nhắc tới', 'không được nhắc tới'], 'A', '"in the mountains… climbing and white water rafting".'],
-          ['sailing', ['được nhắc tới', 'không được nhắc tới'], 'A', '"The sailing holidays are eight hundred pounds".'],
+        mcq('Which activities are mentioned? (Ex. 4)', 'Which of these activities DOES Deon mention?', [
+          ['cycling', ['mentioned', 'not mentioned'], 'A', '"He went on one of their cycling holidays last year".'],
+          ['shopping', ['mentioned', 'not mentioned'], 'B'],
+          ['hiking and cooking', ['mentioned', 'not mentioned'], 'A', '"in the forest where you can do hiking and cooking".'],
+          ['canoeing', ['mentioned', 'not mentioned'], 'B', 'Có nói "water sports" nhưng không nói canoeing.'],
+          ['climbing and white water rafting', ['mentioned', 'not mentioned'], 'A', '"in the mountains… climbing and white water rafting".'],
+          ['sailing', ['mentioned', 'not mentioned'], 'A', '"The sailing holidays are eight hundred pounds".'],
         ]),
       ],
     },
@@ -383,10 +383,10 @@ module.exports = {
         ['spend time outdoors', 'dành thời gian ngoài trời', 'It is important to spend time outdoors.'],
       ],
       ex: [
-        speak('Nói: mô tả hai bức tranh công viên (Ex. 19)', 'Nhìn Picture 1 và Picture 2 (ở trên). Nói khoảng 1 phút: mô tả chuyện gì đang xảy ra trong mỗi tranh, nêu 3–5 điểm giống và 3–5 điểm khác. Dùng hiện tại tiếp diễn.', 2, [
+        speak('Speaking: describe two pictures of a park (Ex. 19)', 'Look at Picture 1 and Picture 2. Speak for about one minute: describe what is happening in each picture and give 3–5 similarities and 3–5 differences. Use the present continuous.', 2, [
           ['Describe Picture 1 and Picture 2. Say what is happening in each picture, and find things that are the same and different.', 'In both pictures, I can see a big park with lots of trees and green grass, and people are doing exercise. In picture 1, a man is riding a bike at the top and a woman is lying on a bench. In the middle, some people are standing on a red mat and talking. A father is walking with his son and holding hands. In picture 2, there is no bike, but a person is running at the bottom. In the middle, a group of people are doing yoga, and on the right a man is doing push-ups. So the main difference is that people in picture 2 are more active.', 'Mở bằng điểm chung (In both pictures), rồi lần lượt tranh 1 → tranh 2, có vị trí (at the top, in the middle, on the right), kết bằng nhận xét.'],
         ], { stimulus: picture('media:m0u03-park-pictures.jpg', 'Picture 1 & 2') }),
-        speak('Nói: sở thích của bạn (Ex. 3, 20)', 'Trả lời từng câu hỏi trong 15–25 giây.', 1, [
+        speak('Speaking: your free-time activities (Ex. 3, 20)', 'Answer each question in 15–25 seconds.', 1, [
           ['What activities do you like doing in your free time?', 'In my free time I usually play badminton with my friends after school. I also love reading comics because it helps me relax before I go to sleep.', '2 hoạt động + tần suất + lý do.'],
           ['Which sports do you like doing? Which sports do you watch on TV?', 'I like swimming because it\'s good exercise and it keeps me fit. On TV, I usually watch football with my dad, especially when Vietnam is playing.', 'Tách 2 ý: chơi gì / xem gì.'],
           ['Is it important to spend time outdoors? Why or why not?', 'Yes, I think so. We spend too much time looking at screens, so going outside helps us feel healthier and happier. For example, I feel much better after a walk in the park.', 'Opinion → reason → example.'],
@@ -401,7 +401,7 @@ module.exports = {
       objectives: ['Ôn từ vựng thể thao, hiện tại đơn / tiếp diễn và động từ chỉ trạng thái (know, want, belong…)'],
       keyLanguage: ['Động từ chỉ trạng thái (state verbs) KHÔNG dùng tiếp diễn: know, understand, remember, want, like, belong, hear (can hear) → I don\'t know (KHÔNG: I\'m not knowing).'],
       ex: [
-        mcq('Từ nào khác loại? (G&V Ex. 5)', 'Chọn từ KHÁC nhóm với các từ còn lại.', [
+        mcq('Odd one out (G&V Ex. 5)', 'Choose the word that is DIFFERENT from the others.', [
           ['sailing · swimming · tennis · canoeing · windsurfing', ['sailing', 'tennis', 'canoeing'], 'B', 'Các từ khác là water sports (thể thao dưới nước).'],
           ['football · rugby · cricket · athletics · baseball', ['rugby', 'cricket', 'athletics'], 'C', 'Các từ khác là team sports.'],
           ['catch · hit · kick · lose · run', ['hit', 'lose', 'run'], 'B', 'Các từ khác là hành động trong khi chơi thể thao (actions used in sports).'],
@@ -409,11 +409,11 @@ module.exports = {
           ['snowboarding · boxing · skiing · climbing · hiking', ['skiing', 'boxing', 'hiking'], 'B', 'Các từ khác là mountain sports.'],
           ['ball · winner · bat · racket · stick', ['winner', 'bat', 'stick'], 'A', 'Các từ khác là dụng cụ thể thao (sports equipment).'],
         ]),
-        match('Nối nửa câu (G&V Ex. 7)', 'Nối hai nửa câu.', [
+        match('Match the sentence halves (G&V Ex. 7)', 'Match the two halves of the sentences.', [
           ['My mum is working', 'in Italy at the moment.'], ['I often go to the cinema', 'on a Saturday evening.'], ['I can\'t speak to you right now', 'because I\'m studying.'],
           ['What does your brother', 'like doing in his free time?'], ['In this photo, I\'m climbing', 'a volcano with my uncle.'], ['What do you usually do', 'at the weekend?'], ['Why isn\'t Sam', 'eating his sandwich?'],
         ]),
-        mcq('Động từ trạng thái (G&V Ex. 8)', 'Chọn dạng đúng.', [
+        mcq('State verbs (G&V Ex. 8)', 'Choose the correct form.', [
           ['____ how to play tennis, but I would like to learn.', ['I don\'t know', 'I\'m not knowing'], 'A', 'know là state verb → không dùng tiếp diễn.'],
           ['I\'m very sorry, ____ your name.', ['I can\'t remember', 'I\'m not remembering'], 'A'],
           ['Can you help me with my homework? ____ this question.', ['I\'m not understanding', 'I don\'t understand'], 'B'],
@@ -423,20 +423,20 @@ module.exports = {
           ['My brother ____ so many hobbies! At the moment, he ____ photos in the garden.', ['has / is taking', 'is having / takes'], 'A', 'have (sở hữu) là state verb; at the moment → is taking.'],
           ['Sue ____ you at the moment. She ____ a shower.', ['isn\'t hearing / has', 'can\'t hear / is having'], 'B'],
         ]),
-        gap('Email của Katy ở Leeds (G&V Ex. 9)', 'Chia động từ trong ngoặc (hiện tại đơn hoặc hiện tại tiếp diễn).', [
+        gap('Katy\'s email from Leeds (G&V Ex. 9)', 'Put the verbs in brackets into the present simple or present continuous.', [
           ['I ____ (have) a great time here in Leeds. The city is really big and it ____ (have) so many interesting places to visit.', ['am having|\'m having', 'has']],
           ['I ____ (enjoy) my course so far and I really ____ (like) my classmates.', ['am enjoying|\'m enjoying', 'like']],
           ['I ____ (stay) in one of the halls of residence this year.', ['am staying|\'m staying']],
           ['I ____ (have got) a job in a local restaurant. I ____ (work) there three evenings a week.', ['have got|\'ve got', 'work']],
           ['It\'s fine, but at the moment I ____ (look) for another job. I ____ (want) one that ____ (finish) a bit earlier.', ['am looking|\'m looking', 'want', 'finishes']],
         ]),
-        match('Câu hỏi và câu trả lời ngắn (G&V Ex. 10)', 'Nối câu hỏi với câu trả lời ngắn phù hợp.', [
+        match('Short answers (G&V Ex. 10)', 'Match the questions with the correct short answers.', [
           ['Is that your brother playing tennis over there?', 'Yes, it is.'], ['Do you always get up so early?', 'Yes, I do.'],
           ['Are your parents staying in a hotel?', 'Yes, they are.'], ['Are you making chocolate cake?', 'No, I\'m not.'],
           ['Is your brother having a good time in Iceland?', 'Yes, he is.'], ['Do you and your parents always eat together in the evenings?', 'No, we don\'t.'],
           ['Look at this picture of me as a young child. Am I wearing your gold necklace?', 'Yes, you are.'], ['Do any of your school friends do taekwondo?', 'No, they don\'t.'],
         ]),
-        gap('Ngôi thứ ba & dạng -ing (G&V Ex. 6)', 'Viết dạng ngôi thứ ba số ít (hiện tại đơn) và dạng -ing của mỗi động từ.', [
+        gap('Third person and -ing forms (G&V Ex. 6)', 'Write the third person singular (present simple) and the -ing form of each verb.', [
           ['snow → ____ / ____', ['snows', 'snowing']],
           ['fix → ____ / ____', ['fixes', 'fixing'], '-x → thêm -es.'],
           ['get → ____ / ____', ['gets', 'getting'], 'Phụ âm–nguyên âm–phụ âm → gấp đôi t: getting.'],

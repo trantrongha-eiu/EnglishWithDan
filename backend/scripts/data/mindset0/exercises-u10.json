@@ -9,8 +9,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Thiết bị trong tranh (Lead-in)",
-   "instruction": "Nối tranh 1–8 với thiết bị.",
+   "title": "Devices in the pictures (Lead-in)",
+   "instruction": "Match pictures 1–8 with the devices.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u10-tech.jpg",
@@ -76,8 +76,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Chính tả đúng (Ex. 3)",
-   "instruction": "Chọn cách viết đúng.",
+   "title": "Correct spelling (Ex. 3)",
+   "instruction": "Choose the correct spelling.",
    "items": [
     {
      "id": "q1",
@@ -190,8 +190,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Từ máy tính (Ex. 4)",
-   "instruction": "Điền: attachments, backup, download, store, stream.",
+   "title": "Computer words (Ex. 4)",
+   "instruction": "Complete the sentences with: attachments, backup, download, store, stream.",
    "wordBank": [
     "attachments",
     "backup",
@@ -271,8 +271,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Định nghĩa (G&V Ex. 2)",
-   "instruction": "Điền: stream, website, device, crash, attachment, backup.",
+   "title": "Definitions (G&V Ex. 2)",
+   "instruction": "Complete the definitions with: stream, website, device, crash, attachment, backup.",
    "items": [
     {
      "id": "g1",
@@ -357,8 +357,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Chọn tiêu đề (Ex. 5)",
-   "instruction": "Đọc lướt bài báo và chọn tiêu đề phù hợp nhất.",
+   "title": "Choose a title (Ex. 5)",
+   "instruction": "Skim the article and choose the best title.",
    "stimulus": {
     "kind": "passage",
     "text": "The internet is still quite a new development in technology, however it is impossible to think about life without it. It works in a very simple way. It takes information and sends it from one computer to another. It is not a difficult job, but it is a very big one. There are hundreds of millions of computers connected to the internet at the same time. However, they don't all do the same thing. Some computers are like a digital box that store information (like videos or music files) that people see, read or listen to. These stores of information are called servers, and there are three categories.\n\nThe first type is a file server, which holds ordinary documents. The second is a mail server for sending and receiving emails. The third is a web server for web pages. We know these servers store information but how do people find this information or send it to each other? For this, you need a client.\n\nA client is a computer that gets information from a server and delivers it to another computer. When you go online on your smartphone, you are using it as a client. When two computers on the internet exchange information, they are known as peers.\n\nPeer-to-peer (P2P) communication is when you send someone a photo on your smartphone. When that person sees this photo, your smartphone is working as the server. It stores the photo and the other person's device is the client, which searches for your information. It then displays the photo on the other person's screen.",
@@ -396,8 +396,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Từ trái nghĩa / đồng nghĩa (MINI TIPS)",
-   "instruction": "Chọn từ cùng nghĩa hoặc trái nghĩa đúng.",
+   "title": "Synonyms and opposites (MINI TIPS)",
+   "instruction": "Choose the word with the same or the opposite meaning.",
    "items": [
     {
      "id": "q1",
@@ -470,8 +470,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Bảng will / won't (Ex. 10)",
-   "instruction": "Hoàn thành câu từ bài giảng Part 2.",
+   "title": "will / won't table (Ex. 10)",
+   "instruction": "Complete the sentences from Part 2 of the lecture.",
    "items": [
     {
      "id": "g1",
@@ -553,8 +553,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Phỏng vấn về tương lai (G&V Ex. 3)",
-   "instruction": "Chia động từ với will / won't.",
+   "title": "An interview about the future (G&V Ex. 3)",
+   "instruction": "Complete the sentences with will / won't and the verb.",
    "items": [
     {
      "id": "g1",
@@ -652,8 +652,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Từ chỉ thay đổi (Ex. 12)",
-   "instruction": "Điền dạng đúng.",
+   "title": "Words for describing change (Ex. 12)",
+   "instruction": "Complete the sentences with the correct form.",
    "items": [
     {
      "id": "g1",
@@ -738,8 +738,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Mô tả số liệu điện thoại thông minh (Ex. 14)",
-   "instruction": "Đọc mô tả và chọn đáp án đúng.",
+   "title": "Describing smartphone data (Ex. 14)",
+   "instruction": "Read the description and choose the correct answer.",
    "items": [
     {
      "id": "q1",
@@ -852,8 +852,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Xu hướng từng đường (Ex. 15)",
-   "instruction": "Nhìn biểu đồ và chọn mô tả đúng.",
+   "title": "The trend of each line (Ex. 15)",
+   "instruction": "Look at the graph and choose the correct description.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u10-graph.jpg",
@@ -951,8 +951,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Bản tóm tắt tốt nhất (G&V Ex. 6)",
-   "instruction": "Nhìn biểu đồ Line A / Line B. Đâu là bản tóm tắt tốt nhất?",
+   "title": "The best summary (G&V Ex. 6)",
+   "instruction": "Look at the graph of Line A and Line B. Which is the best summary?",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u10-lineab.jpg",
@@ -990,8 +990,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Mô tả Line B (G&V Ex. 5)",
-   "instruction": "Hoàn thành mô tả Line B bằng: fall, down, rise, decrease, went, increased, 2020, 55%, 50%, 2015, 40%, 2005.",
+   "title": "Describe Line B (G&V Ex. 5)",
+   "instruction": "Complete the description of Line B with: fall, down, rise, decrease, went, increased, 2020, 55%, 50%, 2015, 40%, 2005.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u10-lineab.jpg",
@@ -1084,8 +1084,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "paragraph_writing",
-   "title": "Viết: mô tả biểu đồ sở hữu thiết bị (Ex. 15–16)",
-   "instruction": "Nhìn biểu đồ \"Percentage of people who own the devices from 2010 to 2025\" (smartphone, laptop, smart watch, tablet). Viết đoạn văn 100–130 từ mô tả các thay đổi chính: câu mở đầu giới thiệu biểu đồ, một câu nêu xu hướng chung (Overall…), rồi mô tả từng thiết bị bằng rise / increase / go up / fall / decrease / go down và from… to…, by…. Dùng quá khứ cho 2010–2015 và will cho 2020–2025.",
+   "title": "Writing: describe the device ownership graph (Ex. 15–16)",
+   "instruction": "Look at the graph \"Percentage of people who own the devices from 2010 to 2025\" (smartphone, laptop, smart watch, tablet). Write a paragraph (100–130 words) describing the main changes: an introductory sentence about the graph, one sentence with the overall trend (Overall…), then describe each device with rise / increase / go up / fall / decrease / go down and from… to…, by…. Use the past for 2010–2015 and will for 2020–2025.",
    "responseSlots": 1,
    "stimulus": {
     "kind": "image",
@@ -1134,8 +1134,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
-   "title": "Tên bộ phận điện thoại (Ex. 7)",
-   "instruction": "Sắp xếp lại chữ cái để được tên bộ phận.",
+   "title": "Parts of a phone (Ex. 7)",
+   "instruction": "Put the letters in the correct order to make the names of the parts.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u10-phone.jpg",
@@ -1243,8 +1243,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "matching",
-   "title": "Từ trong câu trả lời của Lorenzo (Ex. 18)",
-   "instruction": "Nối từ với định nghĩa.",
+   "title": "Words in Lorenzo's answers (Ex. 18)",
+   "instruction": "Match the words with the definitions.",
    "items": [
     {
      "id": "m1",
@@ -1287,8 +1287,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Câu trả lời nào trả lời câu hỏi nào? (Ex. 19)",
-   "instruction": "Đọc 4 câu trả lời của Lorenzo và chọn câu hỏi tương ứng.",
+   "title": "Which answer goes with which question? (Ex. 19)",
+   "instruction": "Read Lorenzo's four answers and choose the question for each one.",
    "stimulus": {
     "kind": "passage",
     "text": "1 It has a silver case, and the screen is bigger than most other smartphones. The display is also really clear. It's really light and thin, it's got a lot of memory, and the battery lasts for a very long time.\n2 It's very expensive, so before I buy it, I'm going to visit a mobile phone shop first, so I can try all the new features. But I'm definitely going to get it online in the end. I'm sure it will be cheaper.\n3 The phone I have now, the Plus 5, is the latest model – it came out last year. But I think it will start to be really slow and seem out of date soon. The Plus 6 is even faster, and it's better for playing games and streaming things online, so that's why I'm going to get it as soon as I can.\n4 I'm not sure if it will help me with everything. It won't do my homework for me if I swipe the screen, for example. But I think it will be helpful for some things. There's an app for writing a study plan, so I'm going to download that, anyway.",
@@ -1386,8 +1386,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: thiết bị bạn muốn mua (Ex. 20–22)",
-   "instruction": "Chuẩn bị 1 phút, rồi nói 1–2 phút.",
+   "title": "Speaking: a device you would like to buy (Ex. 20–22)",
+   "instruction": "Prepare for one minute, then speak for 1–2 minutes.",
    "speakingPart": 2,
    "speakingPrepSeconds": 60,
    "items": [
@@ -1409,8 +1409,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Nói: công nghệ trong đời sống (Lead-in Ex. 2)",
-   "instruction": "Trả lời từng câu hỏi trong 15–25 giây.",
+   "title": "Speaking: technology in your life (Lead-in Ex. 2)",
+   "instruction": "Answer each question in 15–25 seconds.",
    "speakingPart": 1,
    "speakingPrepSeconds": 10,
    "items": [
@@ -1446,8 +1446,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Chọn từ đúng (G&V Ex. 1)",
-   "instruction": "Chọn đáp án đúng.",
+   "title": "Choose the correct word (G&V Ex. 1)",
+   "instruction": "Choose the correct answer.",
    "items": [
     {
      "id": "q1",
@@ -1540,8 +1540,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Email của ông nội (G&V Ex. 7)",
-   "instruction": "Chọn đáp án đúng.",
+   "title": "Grandad's email (G&V Ex. 7)",
+   "instruction": "Choose the correct answer.",
    "items": [
     {
      "id": "q1",
@@ -1714,8 +1714,8 @@
    "source": "original",
    "difficulty": 1,
    "type": "mcq",
-   "title": "Câu nào mô tả đoạn nào của Line A? (G&V Ex. 4)",
-   "instruction": "Nhìn Line A (đường màu xanh) trên biểu đồ. Mỗi câu mô tả đoạn nào? Có những câu thừa (không đúng với Line A).",
+   "title": "Which part of Line A? (G&V Ex. 4)",
+   "instruction": "Look at Line A (the blue line) on the graph. Which part of the line does each sentence describe? Some sentences are not true for Line A.",
    "stimulus": {
     "kind": "image",
     "imageUrl": "media:m0u10-lineab.jpg",
@@ -1740,7 +1740,7 @@
       },
       {
        "id": "D",
-       "text": "Câu thừa"
+       "text": "Not true for Line A"
       }
      ],
      "answer": "A",
@@ -1764,7 +1764,7 @@
       },
       {
        "id": "D",
-       "text": "Câu thừa"
+       "text": "Not true for Line A"
       }
      ],
      "answer": "D",
@@ -1788,7 +1788,7 @@
       },
       {
        "id": "D",
-       "text": "Câu thừa"
+       "text": "Not true for Line A"
       }
      ],
      "answer": "A",
@@ -1812,7 +1812,7 @@
       },
       {
        "id": "D",
-       "text": "Câu thừa"
+       "text": "Not true for Line A"
       }
      ],
      "answer": "D",
@@ -1836,7 +1836,7 @@
       },
       {
        "id": "D",
-       "text": "Câu thừa"
+       "text": "Not true for Line A"
       }
      ],
      "answer": "B",
@@ -1860,7 +1860,7 @@
       },
       {
        "id": "D",
-       "text": "Câu thừa"
+       "text": "Not true for Line A"
       }
      ],
      "answer": "D",
@@ -1884,7 +1884,7 @@
       },
       {
        "id": "D",
-       "text": "Câu thừa"
+       "text": "Not true for Line A"
       }
      ],
      "answer": "D",
@@ -1908,7 +1908,7 @@
       },
       {
        "id": "D",
-       "text": "Câu thừa"
+       "text": "Not true for Line A"
       }
      ],
      "answer": "B",
@@ -1932,7 +1932,7 @@
       },
       {
        "id": "D",
-       "text": "Câu thừa"
+       "text": "Not true for Line A"
       }
      ],
      "answer": "B",
@@ -1956,7 +1956,7 @@
       },
       {
        "id": "D",
-       "text": "Câu thừa"
+       "text": "Not true for Line A"
       }
      ],
      "answer": "D",
