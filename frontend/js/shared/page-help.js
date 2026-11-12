@@ -318,14 +318,15 @@
       intro: 'Bộ khung Master Story: thuộc 7 câu chuyện gốc (phần FIXED), rồi thay đoạn WHY cuối bài theo cue card — trả lời được phần lớn đề Part 2.',
       sections: [
         { icon: '🗺️', title: 'Cách học một câu chuyện', items: [
+          'Mỗi bài nói đi theo <b>7 khung</b>: khung 1–5 (FIXED, ≈ 140–160 từ) giữ nguyên với mọi đề trong nhóm → khung 6 (WHY) đổi theo cue card → khung 7 kết luận.',
           '<b>① Đọc bài mẫu</b>: đọc to, bấm 🔊 để nghe từng câu; bật/tắt <b>Hiện tiếng Việt</b>.',
           '<b>② Từ vựng ăn điểm</b>: đọc nghĩa + câu ví dụ bị che, gõ lại cụm từ.',
-          '<b>③ Dịch FIXED</b> và <b>④ Dịch WHY</b>: đọc câu tiếng Việt, gõ lại câu tiếng Anh từng chữ. Gõ sai 1 từ 3 lần là câu tính sai và phải làm lại (quay lại sau 3 câu). Bí thì bấm <b>Hỏi Lulu</b>.',
-          '<b>⑤ Nói thử</b>: chọn đề, xem bài ghép (cả bài / chữ cái đầu / chỉ khung xương), bấm <b>Bắt đầu nói</b> — đồng hồ 2 phút, có thể bật 1 phút chuẩn bị và ghi âm để nghe lại.',
+          '<b>③ Học thuộc 7 khung</b>: mỗi câu có 2 điểm — 🎙️ <b>Nhại</b> (nói theo, máy chấm phát âm, đạt khi ≥ 70%) và ⌨️ <b>Dịch</b> (đọc tiếng Việt, gõ lại câu tiếng Anh từng chữ; gõ sai 1 từ 3 lần là câu tính sai và quay lại sau 3 câu). Khung trước thuộc ≥ 70% mới mở khung sau. Bí thì bấm <b>Hỏi Lulu</b>.',
+          '<b>④ Nói thử</b>: chọn đề, xem bài ghép (cả bài / chữ cái đầu / chỉ 7 khung), bấm <b>Bắt đầu nói</b> — đồng hồ 2 phút (khoảng 1:15 nên tới phần WHY), có thể bật 1 phút chuẩn bị và ghi âm để nghe lại.',
         ] },
         { icon: '🔎', title: 'Gặp đề lạ', items: [
           'Ở trang chính, gõ cue card vào ô <b>“Gặp cue card này thì kể chuyện nào?”</b> để biết dùng câu chuyện nào và đoạn WHY nào.',
-          'Tiến độ được lưu trên trình duyệt này.',
+          'Tiến độ lưu theo tài khoản (đồng bộ giữa các thiết bị). Cả câu chuyện thuộc ≥ 70% là <b>đạt</b> bài tập giáo viên giao.',
         ] },
       ],
       keys: [['Enter', 'Câu tiếp theo (sau khi gõ xong)']],

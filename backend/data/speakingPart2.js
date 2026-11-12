@@ -1,37 +1,47 @@
 'use strict';
 
-// Content of "IELTS Speaking Part 2 — Master Story Framework" (English With
-// Dan, 28-page PDF) — the 7 master stories behind speaking-part2.html.
+// Content of "IELTS Speaking Part 2 — Master Story Framework v3" (English
+// With Dan, IELTS_Speaking_Part2_Master_Framework_v3.docx) — the 7 master
+// stories behind speaking-part2.html. v3 = "phiên bản rút gọn": every FIXED
+// part cut to ≈ 140–160 words so the WHY part always fits inside 2 minutes.
 // Served ONLY through GET /api/speaking-part2/content (login + Premium, see
 // services/speakingPart2Service.js), never as a public static file.
 //
-// English text is copied from the PDF unchanged. The Vietnamese line of each
-// sentence is the prompt of the "Dịch câu" drill. Shapes:
+// English text is copied from the framework unchanged. The Vietnamese line of
+// each sentence is the prompt of the "Dịch câu" drill. Shapes:
 //   sentence  [en, vi]
 //   vocab     [cat, term, meaningVi, example, answer]
 //             cat: 'col' | 'idiom' | 'adj'; answer = the exact words of
 //             `example` the student types (the cloze in the vocab drill).
 // Progress keys (v<i>, f<sec>.<j>, w<k>.<j>, c<j>) are built from array
-// positions — append new sentences/variants at the END to keep old progress.
+// positions. Changing the FIXED sentences means bumping VERSION and adding a
+// key map to services/speakingPart2Service.js (V3_FIXED_KEYS / upgradeKeys) so progress
+// already made moves onto the right sentences; append-only changes need
+// neither.
 //
 // 7 khung nói: every story is spoken as 5 FIXED frames + WHY + Kết luận. A
 // section with `join: '<frame title>'` is merged into the frame before it
-// (the frame takes that title) — sections stay separate here so the
-// f<sec>.<j> progress keys never move.
+// (the frame takes that title).
+
+// v1/v2 = the long FIXED parts (≈ 200–230 words); v3 = framework v3 (2026-11-12).
+var VERSION = 3;
 
 var HOW_TO = {
-  goal: 'Không học thuộc một bài riêng cho từng topic. Học sinh chỉ cần thuộc khoảng 70% phần FIXED, sau đó thay 20–30 giây cuối theo cue card.',
+  goal: 'Không học thuộc một bài riêng cho từng topic. Học sinh chỉ cần thuộc phần FIXED (khoảng 60% bài nói), sau đó thay 30–40 giây cuối theo cue card.',
   budget: [
-    ['FIXED (giới thiệu → câu chuyện → quay lại cue card)', '≈ 1:30', '200–230 từ'],
-    ['FLEXIBLE (phần WHY theo đề)', '≈ 0:20–0:25', '40–60 từ'],
+    ['FIXED (giới thiệu → câu chuyện → quay lại cue card)', '≈ 1:05–1:10', '140–160 từ'],
+    ['FLEXIBLE (phần WHY theo đề)', '≈ 0:25–0:35', '50–70 từ'],
     ['Kết luận', '≈ 0:10', '20–35 từ'],
-    ['Tổng', '≤ 2:00', '≈ 270–300 từ']
+    ['Tổng', '≤ 2:00', '≈ 210–260 từ']
   ],
-  budgetNote: 'Giám khảo sẽ dừng thí sinh khi hết 2 phút. Nếu phần FIXED quá dài, phần WHY — phần trả lời trực tiếp cue card — sẽ bị cắt mất. Học sinh band 6.0–7.0 thường nói khoảng 120–140 từ/phút, vì vậy tất cả phần FIXED trong bản này đã được rút gọn về khoảng 200–230 từ.',
+  // Word targets of the "Ghép bài & nói thử" budget + by when (seconds into
+  // the 2 minutes) the speaker should have reached the WHY frame.
+  targets: { fixed: '140–160', why: '50–70', con: '20–35', total: '210–260', whyBy: 75 },
+  budgetNote: 'Giám khảo sẽ dừng thí sinh khi hết 2 phút. Nếu phần FIXED quá dài, phần WHY — phần trả lời trực tiếp cue card — sẽ bị cắt mất. Học sinh band 6.0–7.0 thường nói khoảng 120–140 từ/phút, vì vậy tất cả phần FIXED trong bản này đã được rút gọn về khoảng 140–160 từ, chừa đủ thời gian cho phần WHY và một khoảng đệm khi bị ngập ngừng.',
   rules: [
-    ['Thiếu thời gian → cắt phần giữa, không cắt phần WHY.', 'Nếu nói chậm, bỏ bớt câu mô tả ở phần Ngoại hình / Mô tả, nhưng luôn giữ đoạn WHY vì đó là phần trả lời đúng đề.'],
+    ['Thiếu thời gian → cắt phần giữa, không cắt phần WHY.', 'Nếu nói chậm, bỏ bớt câu mô tả ở phần Ngoại hình & tính cách / Mô tả, nhưng luôn giữ đoạn WHY vì đó là phần trả lời đúng đề.'],
     ['Cá nhân hoá chi tiết.', 'Đổi tên, địa điểm, con số thành chi tiết thật của chính mình. Câu chuyện thật nghe tự nhiên hơn, dễ trả lời câu hỏi Part 3 hơn, và tránh bị giám khảo nhận ra là bài học thuộc.'],
-    ['Dùng bảng từ vựng có chọn lọc.', 'Mỗi bài nói chọn 3–4 collocations và tối đa 1–2 idioms — idiom dùng sai ngữ cảnh gây hại nhiều hơn là không dùng.']
+    ['Dùng bảng từ vựng có chọn lọc.', 'Cuối mỗi nhóm có bảng Collocations – Idioms – Adjectives. Mỗi bài nói chọn 3–4 collocations và tối đa 1–2 idioms — idiom dùng sai ngữ cảnh gây hại nhiều hơn là không dùng.']
   ]
 };
 
@@ -39,7 +49,7 @@ var LOGIC = {
   intro: 'Mỗi nhóm chủ đề trong cue card IELTS Speaking Part 2 thực chất chỉ xoay quanh một câu hỏi gốc. Ghi nhớ bảng dưới đây để nhận diện nhanh nên dùng câu chuyện nào — và câu chuyện đó có thể "mượn" sang nhóm nào khác.',
   philosophy: [
     'Học sinh không học thuộc hàng chục bài mẫu khác nhau cho từng cue card.',
-    'Mỗi nhóm chủ đề chỉ cần MỘT câu chuyện gốc (70% FIXED), sau đó thay đúng đoạn WHY ở cuối (khoảng 30% FLEXIBLE) để khớp với bất kỳ đề nào trong nhóm.',
+    'Mỗi nhóm chủ đề chỉ cần MỘT câu chuyện gốc (khoảng 60% FIXED, ≈ 150 từ), sau đó thay đúng đoạn WHY ở cuối (khoảng 30% FLEXIBLE) để khớp với bất kỳ đề nào trong nhóm.',
     'Kết quả: 7 câu chuyện → xử lý phần lớn ngân hàng cue card Part 2.'
   ],
   limits: '7 câu chuyện gốc không phủ tốt các dạng đề sau: thể thao / hoạt động thể chất · toà nhà, công trình, căn phòng · món ăn · công nghệ (app, website, thiết bị) · phim điện ảnh / sách · luật lệ, quy định.',
@@ -53,31 +63,25 @@ var STORIES = [
     title: 'Mrs Hoa — Người cô đáng nhớ',
     rootQ: 'WHO — ai?',
     borrow: 'a time someone helped you → kể dài câu chuyện lần đầu gặp',
-    skeleton: 'Mrs Hoa → giáo viên tiếng Anh → ngoại hình → tính cách → quen 5 năm → câu chuyện lần đầu gặp',
+    skeleton: 'Mrs Hoa → giáo viên tiếng Anh → ngoại hình & tính cách (2 câu) → quen 5 năm → câu chuyện lần đầu gặp',
     fixed: [
       { h: 'Giới thiệu', s: [
-        ["The person I'd like to talk about is Mrs Hoa, who was my English teacher in high school.", 'Người mà tôi muốn kể là cô Hoa, cô giáo dạy tiếng Anh của tôi hồi cấp ba.'],
-        ["She's a warm-hearted and down-to-earth person with a calm and approachable personality.", 'Cô là một người ấm áp, giản dị, với tính cách điềm đạm và dễ gần.']
+        ["The person I'd like to talk about is Mrs Hoa, who was my English teacher in high school.", 'Người mà tôi muốn kể là cô Hoa, cô giáo dạy tiếng Anh của tôi hồi cấp ba.']
       ] },
-      { h: 'Ngoại hình', s: [
-        ["In terms of appearance, she's of medium height, with shoulder-length black hair and a bright, infectious smile.", 'Về ngoại hình, cô có chiều cao trung bình, mái tóc đen dài ngang vai và nụ cười rạng rỡ, dễ lan toả.'],
-        ['She always looks neat and well-presented, but what makes her memorable is the way she makes people feel comfortable around her.', 'Cô lúc nào trông cũng gọn gàng, chỉn chu, nhưng điều khiến cô đáng nhớ là cách cô làm mọi người thấy thoải mái khi ở bên cô.']
-      ] },
-      { h: 'Tính cách', join: 'Ngoại hình & tính cách', s: [
-        ["Personality-wise, she's incredibly patient and genuinely caring.", 'Về tính cách, cô cực kỳ kiên nhẫn và thật lòng quan tâm đến người khác.'],
-        ["She's also quite open-minded and encouraging, which is something I've always appreciated about her.", 'Cô cũng khá cởi mở và hay động viên, đó là điều tôi luôn trân trọng ở cô.']
+      { h: 'Ngoại hình & tính cách', note: 'Chỉ 2 câu: câu 1 (ngoại hình) là câu phức với mệnh đề which, câu 2 (tính cách) là câu ghép nối bằng and + cấu trúc so … that. Không liệt kê thêm tính từ.', s: [
+        ["She's of medium height, with shoulder-length black hair and a bright, infectious smile, which makes her look friendly and approachable from the very first moment.", 'Cô có chiều cao trung bình, mái tóc đen dài ngang vai và nụ cười rạng rỡ, dễ lan toả, điều khiến cô trông thân thiện và dễ gần ngay từ giây phút đầu tiên.'],
+        ["Personality-wise, she's incredibly patient and genuinely caring, and she's so encouraging that even shy students feel comfortable speaking up in her class.", 'Về tính cách, cô cực kỳ kiên nhẫn và thật lòng quan tâm đến người khác, và cô hay động viên đến mức ngay cả những bạn nhút nhát cũng thấy thoải mái phát biểu trong lớp của cô.']
       ] },
       { h: 'Đã quen bao lâu', s: [
-        ["I've known Mrs Hoa for about five years — she taught me for three years in high school, and we've kept in touch ever since.", 'Tôi quen cô Hoa khoảng năm năm rồi — cô dạy tôi ba năm cấp ba, và từ đó đến nay chúng tôi vẫn giữ liên lạc.']
+        ["I've known her for about five years — she taught me for three years, and we've kept in touch ever since.", 'Tôi quen cô khoảng năm năm rồi — cô dạy tôi ba năm, và từ đó đến nay chúng tôi vẫn giữ liên lạc.']
       ] },
       { h: 'Ấn tượng đầu tiên — câu chuyện ngắn', s: [
         ['I still remember the first time I met her.', 'Tôi vẫn nhớ lần đầu tiên gặp cô.'],
-        ['I was sitting at the back of the classroom, struggling with an English exercise, when she walked over to my desk.', 'Lúc đó tôi đang ngồi cuối lớp, loay hoay với một bài tập tiếng Anh, thì cô bước đến bàn tôi.'],
-        ["She was checking other students' work, but she noticed that I was struggling and stopped to help me.", 'Cô đang kiểm tra bài của các bạn khác, nhưng nhận ra tôi đang gặp khó nên dừng lại giúp tôi.'],
-        ['It was only a small moment, but it immediately showed me that she genuinely cared about her students.', 'Đó chỉ là một khoảnh khắc nhỏ, nhưng nó cho tôi thấy ngay rằng cô thật lòng quan tâm đến học sinh của mình.']
+        ['I was struggling with an exercise at the back of the classroom when she noticed and stopped to help me.', 'Lúc đó tôi đang loay hoay với một bài tập ở cuối lớp thì cô để ý và dừng lại giúp tôi.'],
+        ['It was only a small moment, but it showed me that she genuinely cared about her students.', 'Đó chỉ là một khoảnh khắc nhỏ, nhưng nó cho tôi thấy cô thật lòng quan tâm đến học sinh của mình.']
       ] },
       { h: 'Quay lại cue card', s: [
-        ["And I suppose that's one of the reasons why Mrs Hoa immediately came to mind when I saw this topic.", 'Và tôi nghĩ đó là một trong những lý do khiến tôi nghĩ ngay đến cô Hoa khi thấy đề bài này.']
+        ["And I suppose that's why Mrs Hoa immediately came to mind when I saw this topic.", 'Và tôi nghĩ đó là lý do tôi nghĩ ngay đến cô Hoa khi thấy đề bài này.']
       ] }
     ],
     why: [
@@ -114,7 +118,7 @@ var STORIES = [
       ['So overall, Mrs Hoa is someone I genuinely look up to, and I feel lucky to have met someone who has had such a positive influence on me.', 'Nói chung, cô Hoa là người tôi thật lòng kính trọng, và tôi thấy mình may mắn khi gặp được một người có ảnh hưởng tích cực đến tôi như vậy.']
     ],
     remember: {
-      fixed: 'Mrs Hoa → English teacher → appearance → personality → 5 years → first-meeting story.',
+      fixed: 'Mrs Hoa → English teacher → appearance & personality (2 sentences) → 5 years → first-meeting story.',
       flexible: '"That\'s why she came to mind…" → WHY? → Reason 1 + Example → Reason 2 + Example.',
       topics: ['person you admire', 'person you look up to', 'important person', 'person who helped you', 'creative person', 'successful person', 'person who influenced you', 'person with a good personality', 'person you learned something from']
     },
@@ -148,22 +152,18 @@ var STORIES = [
     skeleton: 'Đà Nẵng → vị trí → lần đầu ghé thăm → câu chuyện làn gió biển → mô tả → gắn bó cá nhân',
     fixed: [
       { h: 'Giới thiệu', s: [
-        ["The place I'd like to talk about is Da Nang, a coastal city in central Vietnam.", 'Nơi tôi muốn kể là Đà Nẵng, một thành phố biển ở miền Trung Việt Nam.'],
-        ["It's a lively but laid-back city, best known for its stunning beaches and relaxed atmosphere.", 'Đó là một thành phố sôi động nhưng thư thái, nổi tiếng nhất với những bãi biển tuyệt đẹp và bầu không khí dễ chịu.']
+        ["The place I'd like to talk about is Da Nang, a coastal city in central Vietnam that's best known for its stunning beaches and laid-back atmosphere.", 'Nơi tôi muốn kể là Đà Nẵng, một thành phố biển ở miền Trung Việt Nam, nổi tiếng nhất với những bãi biển tuyệt đẹp và bầu không khí thư thái.']
       ] },
       { h: 'Ấn tượng đầu tiên', s: [
-        ['I first visited Da Nang about three years ago, and I still remember how impressed I was when I arrived.', 'Lần đầu tôi đến Đà Nẵng là khoảng ba năm trước, và tôi vẫn nhớ mình đã ấn tượng thế nào khi vừa đặt chân đến.'],
+        ['I first visited it about three years ago.', 'Lần đầu tôi đến đó là khoảng ba năm trước.'],
         ['I was walking along My Khe Beach in the late afternoon when I felt the cool sea breeze and heard the waves crashing against the shore.', 'Tôi đang đi dạo dọc bãi biển Mỹ Khê vào chiều muộn thì cảm nhận được làn gió biển mát lạnh và nghe tiếng sóng vỗ vào bờ.'],
-        ['It immediately felt refreshing and peaceful, especially after months of living in a big, noisy city.', 'Cảm giác ngay lập tức thật sảng khoái và bình yên, nhất là sau nhiều tháng sống ở một thành phố lớn, ồn ào.']
+        ['After months in a big, noisy city, it felt incredibly peaceful.', 'Sau nhiều tháng sống ở một thành phố lớn, ồn ào, cảm giác lúc đó bình yên vô cùng.']
       ] },
       { h: 'Mô tả', s: [
-        ['What really stands out about Da Nang is its perfect mix of nature and modern city life.', 'Điều thật sự nổi bật ở Đà Nẵng là sự kết hợp hoàn hảo giữa thiên nhiên và cuộc sống đô thị hiện đại.'],
-        ['It has pristine beaches, impressive mountains and a lively city centre, all within a relatively short distance.', 'Ở đó có những bãi biển hoang sơ, những ngọn núi ấn tượng và một trung tâm thành phố nhộn nhịp, tất cả đều cách nhau không xa.'],
-        ['I also love the fact that the city feels modern without being too overwhelming or fast-paced.', 'Tôi cũng thích việc thành phố mang cảm giác hiện đại mà không quá ngột ngạt hay hối hả.']
+        ['What really stands out is its mix of nature and city life — pristine beaches, impressive mountains and a lively centre, all within a short distance — yet it never feels overwhelming.', 'Điều thật sự nổi bật là sự kết hợp giữa thiên nhiên và nhịp sống đô thị — những bãi biển hoang sơ, những ngọn núi ấn tượng và một trung tâm nhộn nhịp, tất cả đều cách nhau không xa — vậy mà nơi đây chưa bao giờ tạo cảm giác ngột ngạt.']
       ] },
       { h: 'Gắn bó cá nhân', s: [
-        ["I've been back to Da Nang several times since that first trip, and I still find it incredibly relaxing.", 'Từ chuyến đi đầu tiên đó, tôi đã quay lại Đà Nẵng vài lần, và tôi vẫn thấy nơi đây cực kỳ thư giãn.'],
-        ['Whenever I go there, I usually spend some time by the beach, try some local food and just slow down for a while.', 'Mỗi lần đến đó, tôi thường dành thời gian ở bãi biển, thử vài món ăn địa phương và chỉ đơn giản là sống chậm lại một chút.']
+        ["I've been back several times since then, and whenever I go, I spend time by the beach, try some local food and just slow down.", 'Từ đó tôi đã quay lại vài lần, và mỗi lần đến, tôi dành thời gian ở bãi biển, thử vài món ăn địa phương và chỉ đơn giản là sống chậm lại.']
       ] },
       { h: 'Quay lại cue card', s: [
         ["And I suppose that's why Da Nang immediately came to mind when I saw this topic.", 'Và tôi nghĩ đó là lý do Đà Nẵng hiện lên ngay trong đầu tôi khi thấy đề bài này.']
@@ -239,28 +239,24 @@ var STORIES = [
     title: 'Chiếc máy ảnh film của cha',
     rootQ: 'WHAT — cái gì?',
     borrow: 'a gift · something that reminds you of someone',
-    skeleton: 'old film camera → silver & black, compact, scratches → father bought it in the late 1980s → handed down to me → photography → family memories',
+    skeleton: 'old film camera → silver & black, compact, scratches → father bought it in the late 1980s → handed down to me → photography → special occasions',
     fixed: [
       { h: 'Giới thiệu', s: [
-        ["The object I'd like to talk about is an old film camera, which has been in my family for over thirty years.", 'Đồ vật tôi muốn kể là một chiếc máy ảnh film cũ, đã ở trong gia đình tôi hơn ba mươi năm.'],
-        ["It's a silver-and-black Canon camera that originally belonged to my father, and it's still one of the most meaningful things I own.", 'Đó là một chiếc máy ảnh Canon màu bạc pha đen vốn là của bố tôi, và đến giờ nó vẫn là một trong những món đồ ý nghĩa nhất mà tôi có.']
+        ["The object I'd like to talk about is an old Canon film camera that originally belonged to my father and has been in my family for over thirty years.", 'Đồ vật tôi muốn kể là một chiếc máy ảnh film Canon cũ vốn là của bố tôi và đã ở trong gia đình tôi hơn ba mươi năm.']
       ] },
-      { h: 'Ngoại hình', note: 'Lưu ý tốc độ: chỉ cần 2 câu ở phần Appearance. Đừng mô tả quá lâu — giới hạn khoảng 20 giây trong bài nói.', s: [
-        ["In terms of appearance, it's quite compact, with a silver-and-black body that's a little worn with age.", 'Về hình dáng, nó khá nhỏ gọn, với thân máy màu bạc pha đen hơi sờn cũ theo năm tháng.'],
-        ["It looks rather old-fashioned by today's standards, but the small scratches on the surface actually make it more interesting because they tell the story of all the places it's been.", 'Theo tiêu chuẩn ngày nay thì nó trông khá lỗi thời, nhưng những vết xước nhỏ trên bề mặt lại khiến nó thú vị hơn vì chúng kể lại câu chuyện về tất cả những nơi nó từng đi qua.']
+      { h: 'Ngoại hình', note: 'Lưu ý tốc độ: phần Appearance chỉ còn 1 câu ghép — khoảng 10 giây. Đừng mô tả thêm.', s: [
+        ["It's quite compact, with a silver-and-black body that's a little worn with age, and although it looks old-fashioned by today's standards, the small scratches tell the story of all the places it's been.", 'Nó khá nhỏ gọn, với thân máy màu bạc pha đen hơi sờn cũ theo năm tháng, và dù trông khá lỗi thời theo tiêu chuẩn ngày nay, những vết xước nhỏ lại kể câu chuyện về tất cả những nơi nó từng đi qua.']
       ] },
       { h: 'Nguồn gốc / lịch sử', s: [
-        ['My father bought it in the late eighties, when he was in his twenties.', 'Bố tôi mua nó vào cuối những năm tám mươi, khi ông đang ở độ tuổi hai mươi.'],
-        ['He used it to take photos on his travels, and when I was about ten, he eventually handed it down to me.', 'Ông dùng nó để chụp ảnh trong những chuyến đi, và khi tôi khoảng mười tuổi, cuối cùng ông đã truyền lại nó cho tôi.'],
+        ['My father bought it in the late eighties and took it on his travels, and when I was about ten, he handed it down to me.', 'Bố tôi mua nó vào cuối những năm tám mươi và mang nó theo trong những chuyến đi, và khi tôi khoảng mười tuổi, ông đã truyền lại nó cho tôi.'],
         ['I still remember him saying, "Technology changes, but a good photograph lasts forever."', 'Tôi vẫn nhớ ông đã nói: “Công nghệ thì thay đổi, nhưng một bức ảnh đẹp thì còn mãi.”'],
-        ['That was actually the moment I became interested in photography.', 'Đó thực ra là khoảnh khắc tôi bắt đầu yêu thích nhiếp ảnh.']
+        ['That was the moment I became interested in photography.', 'Đó là khoảnh khắc tôi bắt đầu yêu thích nhiếp ảnh.']
       ] },
       { h: 'Cách sử dụng', s: [
-        ["I don't use it every day, but I still take it out on special occasions, such as family gatherings or trips.", 'Tôi không dùng nó hằng ngày, nhưng vẫn mang nó ra vào những dịp đặc biệt, như những buổi họp mặt gia đình hay những chuyến đi.'],
-        ['I love using it because film photography makes me slow down and think carefully before taking a picture.', 'Tôi thích dùng nó vì chụp ảnh film khiến tôi chậm lại và suy nghĩ kỹ trước khi bấm máy.']
+        ['Nowadays, I only take it out on special occasions like family gatherings or trips, because film photography makes me slow down and think carefully before taking a picture.', 'Bây giờ, tôi chỉ mang nó ra vào những dịp đặc biệt như họp mặt gia đình hay những chuyến đi, vì chụp ảnh film khiến tôi chậm lại và suy nghĩ kỹ trước khi bấm máy.']
       ] },
       { h: 'Quay lại cue card', s: [
-        ["And I suppose that's why this particular object immediately came to mind when I saw this topic.", 'Và tôi nghĩ đó là lý do chính món đồ này hiện lên ngay trong đầu tôi khi thấy đề bài.']
+        ["And I suppose that's why this camera immediately came to mind when I saw this topic.", 'Và tôi nghĩ đó là lý do chiếc máy ảnh này hiện lên ngay trong đầu tôi khi thấy đề bài.']
       ] }
     ],
     why: [
@@ -293,7 +289,7 @@ var STORIES = [
       ["That's why, even though I have much more modern technology, I still want to keep it for as long as possible.", 'Đó là lý do vì sao, dù có những thiết bị hiện đại hơn nhiều, tôi vẫn muốn giữ nó càng lâu càng tốt.']
     ],
     remember: {
-      fixed: 'film camera → appearance (2 câu) → father bought it (late 1980s) → handed down at 10 → photography → special occasions.',
+      fixed: 'film camera → appearance (1 câu) → father bought it (late 1980s) → handed down at 10 → photography → special occasions.',
       flexible: 'Why does it fit this topic? → lý do chính + chi tiết minh hoạ.',
       topics: ['old object', 'gift you received', 'something important to you', 'something you want to keep', 'something old in your family', 'something that reminds you of someone']
     },
@@ -331,31 +327,23 @@ var STORIES = [
     skeleton: 'university presentation → chưa từng nói trước đám đông → hồi hộp nhiều ngày → quên câu mở đầu → miệng khô / tay run → hít thở & nói lại → giáo viên khen → turning point',
     fixed: [
       { h: 'Giới thiệu', s: [
-        ["I'd like to tell you about a presentation I gave at university about two years ago.", 'Tôi muốn kể về một bài thuyết trình tôi đã làm ở trường đại học khoảng hai năm trước.'],
-        ["It wasn't a huge event, but it was memorable because I'd never spoken in front of that many people before.", 'Đó không phải là một sự kiện lớn, nhưng nó đáng nhớ vì trước đó tôi chưa từng nói trước nhiều người như vậy.']
+        ["I'd like to tell you about a presentation I gave at university about two years ago, which was memorable because I'd never spoken in front of so many people before.", 'Tôi muốn kể về một bài thuyết trình tôi đã làm ở trường đại học khoảng hai năm trước, một trải nghiệm đáng nhớ vì trước đó tôi chưa từng nói trước nhiều người như vậy.']
       ] },
       { h: 'Bối cảnh', s: [
-        ['At the time, I was in my second year, working on a group project about social media.', 'Khi đó, tôi đang học năm hai và làm một dự án nhóm về mạng xã hội.'],
-        ['It all started when our lecturer asked each group to give a ten-minute presentation to the whole class.', 'Mọi chuyện bắt đầu khi giảng viên yêu cầu mỗi nhóm thuyết trình mười phút trước cả lớp.'],
-        ["To be honest, I wasn't a confident public speaker, so I was nervous for days beforehand.", 'Thành thật mà nói, tôi không phải người tự tin khi nói trước đám đông, nên tôi đã hồi hộp suốt mấy ngày trước đó.']
+        ["It all started when our lecturer asked each group to give a presentation to the whole class, and since I wasn't a confident speaker, I was nervous for days beforehand.", 'Mọi chuyện bắt đầu khi giảng viên yêu cầu mỗi nhóm thuyết trình trước cả lớp, và vì tôi không phải người tự tin khi nói, tôi đã hồi hộp suốt mấy ngày trước đó.']
       ] },
       { h: 'Khoảnh khắc quan trọng nhất', s: [
-        ['The most important moment was when I stood up and suddenly forgot my opening lines.', 'Khoảnh khắc quan trọng nhất là khi tôi đứng lên và đột nhiên quên mất câu mở đầu.'],
-        ['I was completely caught off guard — my mouth went dry and my hands were shaking slightly.', 'Tôi hoàn toàn bị bất ngờ — miệng tôi khô khốc và tay hơi run.'],
-        ['For a few seconds, I just stared at my notes.', 'Trong vài giây, tôi chỉ biết nhìn chằm chằm vào tờ ghi chú.'],
-        ['Then I took a deep breath, started again, and surprisingly, everything became much easier.', 'Rồi tôi hít một hơi thật sâu, bắt đầu lại, và thật bất ngờ, mọi thứ trở nên dễ dàng hơn nhiều.'],
-        ['By the end, I was actually enjoying it.', 'Đến cuối buổi, tôi thực sự còn thấy thích thú.']
+        ['The most important moment was when I stood up and completely forgot my opening lines.', 'Khoảnh khắc quan trọng nhất là khi tôi đứng lên và quên sạch câu mở đầu.'],
+        ['My mouth went dry and my hands were shaking, but I took a deep breath, started again, and by the end, I was actually enjoying it.', 'Miệng tôi khô khốc và tay run lên, nhưng tôi hít một hơi thật sâu, bắt đầu lại, và đến cuối buổi, tôi thực sự còn thấy thích thú.']
       ] },
       { h: 'Kết quả', s: [
-        ["In the end, it went much better than I'd expected.", 'Cuối cùng, mọi chuyện diễn ra tốt hơn nhiều so với tôi mong đợi.'],
-        ['My lecturer said our ideas were clear and well-organised, and she specifically praised the way I explained the main points.', 'Giảng viên nói ý tưởng của nhóm rõ ràng và mạch lạc, và cô đặc biệt khen cách tôi giải thích các ý chính.']
+        ["In the end, it went much better than I'd expected, and my lecturer praised the way I explained the main points.", 'Cuối cùng, mọi chuyện diễn ra tốt hơn nhiều so với tôi mong đợi, và giảng viên đã khen cách tôi giải thích các ý chính.']
       ] },
       { h: 'Suy ngẫm', join: 'Kết quả & suy ngẫm', s: [
-        ['Looking back, it was a real turning point.', 'Nhìn lại, đó thực sự là một bước ngoặt.'],
-        ["I came to realise that I wasn't bad at public speaking — I'd simply never had enough practice.", 'Tôi dần nhận ra rằng mình không hề kém trong việc nói trước đám đông — chỉ là tôi chưa bao giờ được luyện tập đủ.']
+        ["Looking back, it was a real turning point, because I realised I wasn't bad at public speaking — I'd just never had enough practice.", 'Nhìn lại, đó thực sự là một bước ngoặt, vì tôi nhận ra mình không hề kém trong việc nói trước đám đông — chỉ là tôi chưa bao giờ được luyện tập đủ.']
       ] },
       { h: 'Quay lại cue card', s: [
-        ["And I suppose that's why this particular experience immediately came to mind when I saw this topic.", 'Và tôi nghĩ đó là lý do trải nghiệm này hiện lên ngay trong đầu tôi khi thấy đề bài.']
+        ["And I suppose that's why this experience immediately came to mind when I saw this topic.", 'Và tôi nghĩ đó là lý do trải nghiệm này hiện lên ngay trong đầu tôi khi thấy đề bài.']
       ] }
     ],
     why: [
@@ -435,22 +423,17 @@ var STORIES = [
     skeleton: 'playing guitar → bắt đầu năm 15 tuổi → buổi tập 30 phút → quá trình tiến bộ → lý do yêu thích',
     fixed: [
       { h: 'Giới thiệu', s: [
-        ["The activity I'd like to talk about is playing the guitar.", 'Hoạt động tôi muốn kể là chơi đàn guitar.'],
-        ['I first picked it up when I was about fifteen, and since then, it has become one of my favourite ways to spend my free time.', 'Tôi bắt đầu tập chơi khi khoảng mười lăm tuổi, và từ đó, nó đã trở thành một trong những cách tôi thích nhất để dành thời gian rảnh.']
+        ["The activity I'd like to talk about is playing the acoustic guitar, which I picked up when I was about fifteen and which has become one of my favourite ways to spend my free time.", 'Hoạt động tôi muốn kể là chơi guitar thùng, thứ tôi bắt đầu tập khi khoảng mười lăm tuổi và đã trở thành một trong những cách tôi thích nhất để dành thời gian rảnh.']
       ] },
       { h: 'Đó là gì', s: [
-        ["I mainly play acoustic guitar, and you don't need much to get started — just a guitar, a few basic chords and plenty of patience.", 'Tôi chủ yếu chơi guitar thùng, và bạn không cần nhiều thứ để bắt đầu — chỉ cần một cây đàn, vài hợp âm cơ bản và thật nhiều kiên nhẫn.'],
-        ['A typical practice session takes me about thirty minutes: some chord exercises first, then the last ten or fifteen minutes learning a song.', 'Một buổi tập thông thường của tôi mất khoảng ba mươi phút: tập hợp âm trước, rồi dành mười hay mười lăm phút cuối để học một bài hát.']
+        ["You don't need much to get started — just a guitar and plenty of patience — and a typical session takes me about thirty minutes: chord exercises first, then learning a song.", 'Bạn không cần nhiều thứ để bắt đầu — chỉ cần một cây đàn và thật nhiều kiên nhẫn — và một buổi tập thông thường của tôi mất khoảng ba mươi phút: tập hợp âm trước, rồi học một bài hát.']
       ] },
       { h: 'Quá trình tiến bộ', s: [
-        ['I still remember how hard it was at the beginning.', 'Tôi vẫn nhớ lúc mới bắt đầu khó khăn đến thế nào.'],
-        ['I could barely switch between two chords, and my fingertips would hurt after just a few minutes.', 'Tôi gần như không chuyển nổi giữa hai hợp âm, và đầu ngón tay đau chỉ sau vài phút.'],
-        ['Over time, I improved by practising every evening and breaking difficult songs into smaller sections.', 'Theo thời gian, tôi tiến bộ nhờ luyện tập mỗi tối và chia những bài khó thành từng đoạn nhỏ.'],
-        ["Nowadays, basic chord changes have become second nature, and I've started pushing myself to play more complicated songs.", 'Bây giờ, việc chuyển các hợp âm cơ bản đã trở thành phản xạ tự nhiên, và tôi bắt đầu thử thách bản thân với những bài phức tạp hơn.']
+        ['At the beginning, I could barely switch between two chords, and my fingertips hurt after just a few minutes.', 'Lúc mới bắt đầu, tôi gần như không chuyển nổi giữa hai hợp âm, và đầu ngón tay đau chỉ sau vài phút.'],
+        ['But by practising every evening and breaking songs into smaller sections, I improved steadily, and now basic chord changes have become second nature.', 'Nhưng nhờ luyện tập mỗi tối và chia bài hát thành từng đoạn nhỏ, tôi tiến bộ đều đặn, và giờ việc chuyển các hợp âm cơ bản đã trở thành phản xạ tự nhiên.']
       ] },
       { h: 'Vì sao thích', s: [
-        ["What I love most is that it's incredibly stress-relieving — after a long day, I can just sit down, play a few songs and switch off.", 'Điều tôi thích nhất là nó giúp giải toả căng thẳng cực kỳ hiệu quả — sau một ngày dài, tôi chỉ cần ngồi xuống, chơi vài bài và gác lại mọi thứ.'],
-        ['It also gives me a real sense of achievement, because I can actually see my progress.', 'Nó cũng mang lại cho tôi cảm giác thành tựu thực sự, vì tôi có thể thấy rõ sự tiến bộ của mình.']
+        ["What I love most is that it's incredibly stress-relieving, and it also gives me a real sense of achievement because I can actually see my progress.", 'Điều tôi thích nhất là nó giúp giải toả căng thẳng cực kỳ hiệu quả, và nó còn mang lại cảm giác thành tựu thực sự vì tôi có thể thấy rõ sự tiến bộ của mình.']
       ] },
       { h: 'Quay lại cue card', s: [
         ["And I suppose that's why playing the guitar immediately came to mind when I saw this topic.", 'Và tôi nghĩ đó là lý do việc chơi guitar hiện lên ngay trong đầu tôi khi thấy đề bài.']
@@ -523,22 +506,18 @@ var STORIES = [
     skeleton: 'snow leopard → ngoại hình & tập tính → bắt đầu quan tâm từ phim tài liệu (12 tuổi) → hiểu biết hiện tại → tình trạng bảo tồn',
     fixed: [
       { h: 'Giới thiệu', s: [
-        ["The animal I'd like to talk about is the snow leopard, a wild cat I've been fascinated by for years.", 'Loài vật tôi muốn kể là báo tuyết, một loài mèo hoang dã mà tôi đã say mê suốt nhiều năm.'],
-        ["It's a solitary and elusive creature that lives in the high mountains of Central and South Asia.", 'Đó là một loài vật sống đơn độc và khó bắt gặp, sinh sống ở vùng núi cao Trung Á và Nam Á.']
+        ["The animal I'd like to talk about is the snow leopard, a solitary and elusive wild cat that lives in the high mountains of Central and South Asia.", 'Loài vật tôi muốn kể là báo tuyết, một loài mèo hoang sống đơn độc và khó bắt gặp, sinh sống ở vùng núi cao Trung Á và Nam Á.']
       ] },
       { h: 'Đặc điểm', s: [
         ['It has thick, greyish fur with dark spots, which helps it blend perfectly into rocky, snowy surroundings.', 'Nó có bộ lông dày màu xám với những đốm sẫm, giúp nó hoà lẫn hoàn hảo vào môi trường đá và tuyết xung quanh.'],
-        ["It's also extremely well adapted to high altitudes and usually lives alone rather than in groups.", 'Nó cũng thích nghi cực tốt với độ cao lớn và thường sống một mình thay vì theo bầy.'],
-        ['What makes it so special, though, is how rarely people ever see one in the wild.', 'Tuy vậy, điều khiến nó đặc biệt đến thế là con người hiếm khi nhìn thấy nó ngoài tự nhiên.']
+        ['It usually lives alone and is so well adapted to high altitudes that people very rarely see one in the wild.', 'Nó thường sống một mình và thích nghi với độ cao lớn tốt đến mức con người rất hiếm khi nhìn thấy nó ngoài tự nhiên.']
       ] },
       { h: 'Vì sao quan tâm', s: [
-        ['My interest started when I was about twelve, when I watched a documentary about wildlife photographers who spent months in the mountains trying to film one.', 'Tôi bắt đầu quan tâm từ năm khoảng mười hai tuổi, khi xem một bộ phim tài liệu về các nhiếp ảnh gia động vật hoang dã đã dành nhiều tháng trên núi để cố quay được một con.'],
-        ['They barely managed to get a few seconds of footage, and I found that incredibly intriguing.', 'Họ chỉ vừa đủ quay được vài giây phim, và tôi thấy điều đó cực kỳ hấp dẫn.'],
+        ['My interest started when I was about twelve and watched a documentary about photographers who spent months in the mountains just to get a few seconds of footage of one.', 'Tôi bắt đầu quan tâm từ năm khoảng mười hai tuổi, khi xem một bộ phim tài liệu về những nhiếp ảnh gia đã dành nhiều tháng trên núi chỉ để quay được vài giây hình ảnh của một con báo tuyết.'],
         ["Since then, I've watched quite a few documentaries and read articles about them.", 'Từ đó, tôi đã xem khá nhiều phim tài liệu và đọc các bài báo về chúng.']
       ] },
       { h: 'Những gì tôi biết', s: [
-        ["From what I know, snow leopards are officially listed as vulnerable, and they're threatened by habitat loss, poaching and conflict with local herders.", 'Theo những gì tôi biết, báo tuyết chính thức được xếp vào nhóm sắp nguy cấp, và chúng đang bị đe doạ bởi mất môi trường sống, nạn săn trộm và xung đột với những người chăn thả địa phương.'],
-        ['Conservation projects are running in several countries, but protecting such a remote habitat remains a major challenge.', 'Các dự án bảo tồn đang được triển khai ở một số quốc gia, nhưng bảo vệ một môi trường sống hẻo lánh như vậy vẫn là một thách thức lớn.']
+        ["From what I know, they're officially listed as vulnerable, mainly because of habitat loss, poaching and conflict with local herders.", 'Theo những gì tôi biết, chúng chính thức được xếp vào nhóm sắp nguy cấp, chủ yếu do mất môi trường sống, nạn săn trộm và xung đột với những người chăn thả địa phương.']
       ] },
       { h: 'Quay lại cue card', s: [
         ["And I suppose that's why the snow leopard immediately came to mind when I saw this topic.", 'Và tôi nghĩ đó là lý do báo tuyết hiện lên ngay trong đầu tôi khi thấy đề bài.']
@@ -611,24 +590,19 @@ var STORIES = [
     skeleton: 'YouTube video → người đàn ông Việt-Mỹ lớn tuổi → hành trình gian khó → lòng biết ơn → một câu nói đáng nhớ → chia sẻ với bạn bè → thông điệp về cuộc sống bình thường',
     fixed: [
       { h: 'Giới thiệu', s: [
-        ["The piece of media I'd like to talk about is a short interview video I came across on YouTube, from a channel that shares real-life stories of ordinary people — a bit like Humans of New York.", 'Nội dung tôi muốn kể là một video phỏng vấn ngắn tôi tình cờ xem được trên YouTube, từ một kênh chuyên chia sẻ những câu chuyện đời thực của người bình thường — hơi giống Humans of New York.'],
-        ['I watched it about three months ago while casually browsing online, and it left a lasting impression on me.', 'Tôi xem nó khoảng ba tháng trước trong lúc lướt mạng, và nó đã để lại ấn tượng lâu dài trong tôi.']
+        ["The piece of media I'd like to talk about is a short interview video I came across on YouTube, from a channel that shares real-life stories of ordinary people.", 'Nội dung tôi muốn kể là một video phỏng vấn ngắn tôi tình cờ xem được trên YouTube, từ một kênh chuyên chia sẻ những câu chuyện đời thực của những người bình thường.']
       ] },
-      { h: 'Nội dung', note: 'Dừng lại ở đây — không kể tiếp cốt truyện.', s: [
-        ['Essentially, it features an elderly Vietnamese-American man who left Vietnam when he was young and later rebuilt his life in New York.', 'Về cơ bản, video kể về một cụ ông người Mỹ gốc Việt rời Việt Nam khi còn trẻ và sau đó gây dựng lại cuộc sống ở New York.'],
-        ['He talks about his difficult journey, the uncertainty he faced and the kindness he received from strangers — all in a very simple, honest way.', 'Ông kể về hành trình gian khó, những bất trắc ông đã đối mặt và lòng tốt ông nhận được từ những người xa lạ — tất cả bằng một cách rất giản dị, chân thật.']
+      { h: 'Nội dung', note: 'Dừng lại ở đây — học sinh không kể tiếp cốt truyện.', s: [
+        ['It features an elderly Vietnamese-American man who left Vietnam when he was young and rebuilt his life in New York, and he talks about his difficult journey and the kindness of strangers in a very simple, honest way.', 'Video kể về một cụ ông người Mỹ gốc Việt rời Việt Nam khi còn trẻ và gây dựng lại cuộc sống ở New York, và ông nói về hành trình gian khó cũng như lòng tốt của những người xa lạ một cách rất giản dị, chân thật.']
       ] },
       { h: 'Điều cuốn hút nhất', s: [
         ['What I found most captivating was the way he talked about gratitude.', 'Điều tôi thấy cuốn hút nhất là cách ông nói về lòng biết ơn.'],
-        ['He said something along the lines of, "Every ordinary day feels like a gift because I remember when ordinary life was impossible."', 'Ông nói đại ý rằng: “Mỗi ngày bình thường đều như một món quà, vì tôi vẫn nhớ có thời cuộc sống bình thường là điều không thể.”'],
+        ['He said something like, "Every ordinary day feels like a gift because I remember when ordinary life was impossible."', 'Ông nói đại ý: “Mỗi ngày bình thường đều như một món quà, vì tôi vẫn nhớ có thời cuộc sống bình thường là điều không thể.”'],
         ['That line genuinely stopped me in my tracks.', 'Câu nói đó thực sự khiến tôi phải khựng lại.']
       ] },
-      { h: 'Tác động đến bản thân', s: [
-        ['After watching it, I started thinking about how much I take for granted — a stable home, access to education and the freedom to plan my future.', 'Sau khi xem, tôi bắt đầu nghĩ về việc mình đã xem bao nhiêu thứ là hiển nhiên — một mái nhà ổn định, được đi học và tự do lên kế hoạch cho tương lai.'],
-        ['I also shared it with a few friends, and it sparked a meaningful conversation about how lucky we are.', 'Tôi cũng chia sẻ nó với vài người bạn, và nó đã mở ra một cuộc trò chuyện ý nghĩa về việc chúng tôi may mắn đến thế nào.']
-      ] },
-      { h: 'Thông điệp', join: 'Tác động & thông điệp', s: [
-        ["For me, the message is simple: ordinary life is incredibly valuable, especially at a time when social media makes us focus on what we don't have.", 'Với tôi, thông điệp rất đơn giản: cuộc sống bình thường vô cùng quý giá, nhất là trong thời đại mạng xã hội khiến chúng ta chỉ chăm chăm vào những gì mình không có.']
+      { h: 'Tác động & thông điệp', s: [
+        ['It made me realise how much I take for granted, so I shared it with a few friends, and it sparked a meaningful conversation about how lucky we are.', 'Nó khiến tôi nhận ra mình đã xem bao nhiêu thứ là hiển nhiên, nên tôi đã chia sẻ nó với vài người bạn, và nó mở ra một cuộc trò chuyện ý nghĩa về việc chúng tôi may mắn đến thế nào.'],
+        ['For me, the message is simple: ordinary life is incredibly valuable.', 'Với tôi, thông điệp rất đơn giản: cuộc sống bình thường vô cùng quý giá.']
       ] },
       { h: 'Quay lại cue card', s: [
         ["And I suppose that's why this particular video immediately came to mind when I saw this topic.", 'Và tôi nghĩ đó là lý do video này hiện lên ngay trong đầu tôi khi thấy đề bài.']
@@ -669,12 +643,12 @@ var STORIES = [
       ["It's the kind of content that stays in your mind because it changes the way you look at ordinary life.", 'Đó là kiểu nội dung đọng lại trong tâm trí vì nó thay đổi cách bạn nhìn cuộc sống thường ngày.']
     ],
     remember: {
-      fixed: 'YouTube video → elderly Vietnamese-American man → journey → gratitude quote → reflection → shared with friends → message.',
+      fixed: 'YouTube video → elderly Vietnamese-American man → journey → gratitude quote → reflection & sharing → message.',
       flexible: 'Lý do theo đề (interesting / meaningful / shared / lesson / recommend).',
       topics: ['interesting thing on social media', 'story that made you think', 'something meaningful you watched', 'something you shared', 'something that taught you a lesson', "media you'd recommend", 'TV programme (khi đề chấp nhận video online)']
     },
     notes: [
-      { kind: 'tip', title: 'Công thức cực ngắn', text: 'WHAT → SUMMARY → CAPTIVATING → REACTION → MESSAGE → WHY' },
+      { kind: 'tip', title: 'Công thức cực ngắn', text: 'WHAT → SUMMARY → CAPTIVATING → REACTION & MESSAGE → WHY' },
       { kind: 'tip', title: 'Lưu ý khi mở rộng', text: 'Không nên nhồi narrative arc, cultural significance, oral tradition vào master story — chỉ hữu ích khi gặp đúng chủ đề story / culture / tradition. Ưu tiên cụm tái sử dụng rộng: thought-provoking · resonated with me · raise awareness · sparked a meaningful conversation · stopped me in my tracks · What I found most captivating was…' },
       { kind: 'warn', title: 'Không dùng cho', text: '"a film / movie you watched" hoặc "a book you read" — video YouTube không phải phim điện ảnh hay sách; cần câu chuyện riêng.' }
     ],
@@ -699,4 +673,4 @@ var STORIES = [
   }
 ];
 
-module.exports = { howTo: HOW_TO, logic: LOGIC, stories: STORIES };
+module.exports = { version: VERSION, howTo: HOW_TO, logic: LOGIC, stories: STORIES };

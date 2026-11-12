@@ -53,6 +53,47 @@ const ALL_KEYS = new Map([...SENTENCE_KEYS].map(([id, k]) => [id, new Set([...VO
 // Shadow scores are stored with "_" for "." ("f0.1" → "f0_1"): a dotted key
 // in a Mixed field would be saved as a nested path.
 const toDbKey = (k) => k.replace('.', '_');
+
+// ── content versions ────────────────────────────────────────────────────
+// FIXED sentence keys are positional, so when the FIXED text is rewritten the
+// old keys would land on different sentences. v3 (framework v3, 2026-11-12)
+// shortened every FIXED part: a pre-v3 key is carried over only when its old
+// sentence covers >= 85% of the new sentence's words (in order) — the rest
+// are dropped and learnt again. WHY / Kết luận / vocab keys did not change.
+const VERSION = DATA.version;
+const V3_FIXED_KEYS = {
+  people: { 'f0.0': 'f0.0', 'f3.0': 'f2.0', 'f4.0': 'f3.0', 'f4.3': 'f3.2', 'f5.0': 'f4.0' },
+  places: { 'f1.0': 'f1.0', 'f1.1': 'f1.1', 'f4.0': 'f4.0' },
+  objects: { 'f2.2': 'f2.1', 'f2.3': 'f2.2', 'f4.0': 'f4.0' },
+  events: { 'f2.0': 'f2.0', 'f5.0': 'f5.0' },
+  activities: { 'f4.0': 'f4.0' },
+  nature: { 'f1.0': 'f1.0', 'f2.2': 'f2.1', 'f4.0': 'f4.0' },
+  media: { 'f0.0': 'f0.0', 'f2.0': 'f2.0', 'f2.1': 'f2.1', 'f2.2': 'f2.2', 'f4.0': 'f3.1', 'f5.0': 'f4.0' },
+};
+const isFixedKey = (k) => /^f\d/.test(k);
+// A progress doc (lean or not) whose keys predate v3 → { ok, shadow } with the
+// FIXED keys moved onto the v3 sentences; null when it's already current.
+function upgradeKeys(doc) {
+  if (!doc || (Number(doc.v) || 0) >= VERSION) return null;
+  const map = V3_FIXED_KEYS[doc.storyId] || {};
+  const ok = [];
+  for (const k of doc.ok || []) {
+    if (!isFixedKey(k)) ok.push(k);
+    else if (map[k] && !ok.includes(map[k])) ok.push(map[k]);
+  }
+  const shadow = {};
+  for (const [dk, v] of Object.entries(doc.shadow || {})) {
+    const k = dk.replace('_', '.');
+    const nk = isFixedKey(k) ? map[k] : k;
+    if (nk) shadow[toDbKey(nk)] = Math.max(Number(shadow[toDbKey(nk)]) || 0, Number(v) || 0);
+  }
+  return { ok, shadow };
+}
+// Lean doc → same doc with current keys (for reads; saved on the next write).
+function current(doc) {
+  const up = upgradeKeys(doc);
+  return up ? { ...doc, ...up, v: VERSION } : doc;
+}
 function shadowOut(doc) {
   const out = {};
   for (const [k, v] of Object.entries((doc && doc.shadow) || {})) out[k.replace('_', '.')] = Number(v) || 0;
@@ -114,8 +155,8 @@ function summaryOf(st) {
   };
 }
 function getContent(user) {
-  if (hasFullAccess(user)) return { locked: false, howTo: DATA.howTo, logic: DATA.logic, stories: STORIES };
-  return { locked: true, howTo: DATA.howTo, logic: DATA.logic, stories: STORIES.map(summaryOf) };
+  if (hasFullAccess(user)) return { locked: false, version: VERSION, howTo: DATA.howTo, logic: DATA.logic, stories: STORIES };
+  return { locked: true, version: VERSION, howTo: DATA.howTo, logic: DATA.logic, stories: STORIES.map(summaryOf) };
 }
 
 // ── progress ────────────────────────────────────────────────────────────
@@ -130,7 +171,7 @@ function publicShape(doc) {
 async function getProgress(userId) {
   const rows = await SpeakingPart2Progress.find({ userId }).lean();
   const out = {};
-  for (const r of rows) if (byId.has(r.storyId)) out[r.storyId] = publicShape(r);
+  for (const r of rows) if (byId.has(r.storyId)) out[r.storyId] = publicShape(current(r));
   return out;
 }
 
@@ -139,14 +180,22 @@ async function getProgress(userId) {
 // this run's values. Step dates are stamped the first time a step turns
 // done; masteredAt when the story first reaches PASS_PERCENT, completedAt
 // when all 4 steps are done.
+// FIXED keys are only taken from a page that sends the current content
+// version (body.v): a tab opened before a content change would otherwise
+// post its old keys onto the new sentences.
 async function saveProgress(userId, storyId, body) {
   if (!byId.has(storyId)) { const e = new Error('Không tìm thấy câu chuyện'); e.status = 404; throw e; }
   body = body || {};
+  const fresh = Number(body.v) === VERSION;
+  const accept = (k) => fresh || !isFixedKey(k);
   const valid = ALL_KEYS.get(storyId);
   const sentences = SENTENCE_KEYS.get(storyId);
-  const doc = (await SpeakingPart2Progress.findOne({ userId, storyId })) || new SpeakingPart2Progress({ userId, storyId });
+  const doc = (await SpeakingPart2Progress.findOne({ userId, storyId })) || new SpeakingPart2Progress({ userId, storyId, v: VERSION });
+  const up = upgradeKeys(doc);
+  if (up) { doc.ok = up.ok; doc.shadow = up.shadow; doc.markModified('shadow'); }
+  doc.v = VERSION;
   const ok = new Set(doc.ok || []);
-  if (Array.isArray(body.ok)) for (const k of body.ok) if (typeof k === 'string' && valid.has(k)) ok.add(k);
+  if (Array.isArray(body.ok)) for (const k of body.ok) if (typeof k === 'string' && valid.has(k) && accept(k)) ok.add(k);
   doc.ok = [...ok];
   // Sent as [[key, score], …] — the request sanitizer drops dotted object keys.
   if (Array.isArray(body.shadow)) {
@@ -155,7 +204,7 @@ async function saveProgress(userId, storyId, body) {
       if (!Array.isArray(pair) || typeof pair[0] !== 'string') continue;
       const [k, v] = pair;
       const n = Math.round(Number(v));
-      if (sentences.has(k) && Number.isFinite(n)) sh[toDbKey(k)] = Math.max(Number(sh[toDbKey(k)]) || 0, Math.max(0, Math.min(100, n)));
+      if (sentences.has(k) && accept(k) && Number.isFinite(n)) sh[toDbKey(k)] = Math.max(Number(sh[toDbKey(k)]) || 0, Math.max(0, Math.min(100, n)));
     }
     doc.shadow = sh;
     doc.markModified('shadow');
@@ -214,17 +263,20 @@ async function vocabLessonsForStory(rowId) {
 // A story finished under the old rule (all 5 old steps, before the 70% rule
 // of 2026-11-11) keeps its pass: completedAt is only set now once the story
 // is >= 70%, so a completedAt below 70% can only come from the old rule.
+// Likewise a story that once reached 70% (masteredAt) stays passed when a
+// content change (v3 shortened the FIXED parts) brings its % back down.
 async function checkCompletion(studentId, ids) {
   const out = new Map();
   const want = STORY_ROWS.filter((r) => ids.some((id) => String(id) === String(r._id)));
   if (!want.length) return out;
   const rows = await SpeakingPart2Progress.find({ userId: studentId, storyId: { $in: want.map((r) => r.code) } }).lean();
   for (const r of want) {
-    const doc = rows.find((d) => d.storyId === r.code);
-    if (!doc) continue;
+    const raw = rows.find((d) => d.storyId === r.code);
+    if (!raw) continue;
+    const doc = current(raw);
     const m = masteryOf(r.code, doc);
     const steps = stepsDone(r.code, doc);
-    const passed = m.pct >= PASS_PERCENT || !!doc.completedAt;
+    const passed = m.pct >= PASS_PERCENT || !!doc.completedAt || !!doc.masteredAt;
     out.set(String(r._id), {
       completed: passed, completedAt: (passed && (doc.masteredAt || doc.completedAt)) || doc.updatedAt,
       scorePercent: m.pct,
@@ -235,6 +287,6 @@ async function checkCompletion(studentId, ids) {
 }
 
 module.exports = {
-  STORY_ROWS, STEP_KEYS, PASS_PERCENT, SHADOW_PASS, STORY_VOCAB_LESSON, vocabLessonsForStory,
-  getContent, getProgress, saveProgress, checkCompletion, stepsDone, masteryOf, framesOf,
+  STORY_ROWS, STEP_KEYS, PASS_PERCENT, SHADOW_PASS, STORY_VOCAB_LESSON, VERSION, vocabLessonsForStory,
+  getContent, getProgress, saveProgress, checkCompletion, stepsDone, masteryOf, framesOf, upgradeKeys,
 };

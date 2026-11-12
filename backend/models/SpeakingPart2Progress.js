@@ -9,6 +9,10 @@ const mongoose = require('mongoose');
 const speakingPart2ProgressSchema = new mongoose.Schema({
   userId:  { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   storyId: { type: String, required: true },          // data/speakingPart2.js stories[].id
+  // Content version the f<sec>.<j> keys below refer to (data/speakingPart2.js
+  // VERSION). Missing = written before v3; speakingPart2Service.upgradeKeys
+  // moves those keys onto the v3 sentences on the next read/save.
+  v:       { type: Number, default: null },
   read:    { type: Boolean, default: false },          // ① "Đã đọc xong"
   ok:      { type: [String], default: [] },            // sentence/vocab keys typed correctly at least once
   shadow:  { type: mongoose.Schema.Types.Mixed, default: {} }, // sentence key ("." → "_", f0_1) -> best nhại score 0–100

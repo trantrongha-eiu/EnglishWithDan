@@ -60,7 +60,7 @@
     learn: { say: 'Bước 3: học thuộc từng khung — 🎙️ nhại theo từng câu để máy chấm phát âm, rồi ⌨️ dịch Việt → Anh. Khung nào đạt 70% thì mở khung tiếp theo!',
              tips: ['Nhại: nghe câu mẫu rồi bấm “Nói theo” — từ xanh là máy nghe đúng, từ đỏ cần luyện thêm.', 'Mỗi câu có 2 điểm: nhại đạt 70% và dịch đúng. Cả bài đạt 70% là bài tập được tính đạt nha!', 'Bật “Che câu” khi nhại để tự nói từ trí nhớ — thuộc nhanh hơn nhiều!'] },
     speak: { say: 'Bước 4: ghép bài và nói thử trong 2 phút. Nhớ đến được khung WHY trước khi hết giờ nha!',
-             tips: ['Đến khoảng 1:30 mà chưa tới khung WHY thì bỏ bớt câu mô tả đi.', 'Thử chế độ “Chữ cái đầu” rồi “Chỉ 7 khung” để tự kiểm tra trí nhớ.'] }
+             tips: ['Đến khoảng 1:15 mà chưa tới khung WHY thì bỏ bớt câu mô tả đi — phần WHY mới là phần trả lời đúng đề.', 'Thử chế độ “Chữ cái đầu” rồi “Chỉ 7 khung” để tự kiểm tra trí nhớ.'] }
   };
 
   // ── tiny helpers ──────────────────────────────────────────────────────
@@ -74,6 +74,11 @@
   function reduceMotion() { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
   function storyById(id) { for (var i = 0; i < STORIES.length; i++) if (STORIES[i].id === id) return STORIES[i]; return null; }
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  // Word targets + "be at WHY by" second, from the framework (data howTo.targets).
+  function targets() {
+    var t = (DATA && DATA.howTo && DATA.howTo.targets) || {};
+    return { fixed: t.fixed || '140–160', why: t.why || '50–70', con: t.con || '20–35', total: t.total || '210–260', whyBy: t.whyBy || 75 };
+  }
   function luluSvg(mood) { try { return window.Mascot ? window.Mascot.svg(mood, { label: 'Lulu' }) : '🍊'; } catch (e) { return '🍊'; } }
 
   // ── progress (localStorage, per user) ────────────────────────────────
@@ -111,7 +116,25 @@
   function payloadOf(id) {
     var p = sp(id);
     // shadow as [key, score] pairs: the server's request sanitizer drops dotted object keys ("f0.1").
-    return { read: !!p.read, ok: Object.keys(p.ok), shadow: Object.keys(p.shadow).map(function (k) { return [k, p.shadow[k]]; }), speak: p.speak || 0, best: p.best || {} };
+    // v = content version: the server only takes FIXED keys (f<sec>.<j>) from the current one.
+    return { v: (DATA && DATA.version) || 0, read: !!p.read, ok: Object.keys(p.ok), shadow: Object.keys(p.shadow).map(function (k) { return [k, p.shadow[k]]; }), speak: p.speak || 0, best: p.best || {} };
+  }
+  // The FIXED sentences changed (DATA.version bump): this browser's FIXED keys
+  // point at the old sentences — drop them. The server moved its copy onto the
+  // new sentences (speakingPart2Service.upgradeKeys) and mergeServer brings
+  // those back.
+  function upgradeLocal() {
+    var p = prog(), ver = (DATA && DATA.version) || 0;
+    if (p._v === ver) return;
+    Object.keys(p).forEach(function (id) {
+      var s = p[id];
+      if (!s || typeof s !== 'object') return;
+      ['ok', 'shadow'].forEach(function (f) {
+        Object.keys(s[f] || {}).forEach(function (k) { if (/^f\d/.test(k)) delete s[f][k]; });
+      });
+    });
+    p._v = ver;
+    try { localStorage.setItem(userKey(), JSON.stringify(p)); } catch (e) {}
   }
   function flushSync(keepalive) {
     clearTimeout(_syncT);
@@ -371,11 +394,11 @@
       '<section class="t2w-hero sp2-hero">' +
         '<div class="t2w-hero-text">' +
           '<h1 class="t2w-hero-title">Speaking Part 2 <span class="t2w-hero-tag">7 câu chuyện gốc</span></h1>' +
-          '<p class="t2w-hero-sub">Không học thuộc một bài riêng cho từng topic: thuộc khoảng 70% phần <b>FIXED</b> của 1 câu chuyện, rồi thay 20–30 giây cuối (<b>WHY</b>) theo cue card.</p>' +
+          '<p class="t2w-hero-sub">Không học thuộc một bài riêng cho từng topic: thuộc phần <b>FIXED</b> của 1 câu chuyện (khoảng 60% bài nói), rồi thay 30–40 giây cuối (<b>WHY</b>) theo cue card.</p>' +
           '<div class="t2w-hero-badges">' +
             '<span class="t2w-hero-badge"><i class="fas fa-flag-checkered"></i> ' + nDone + '/' + STORIES.length + ' câu chuyện đã thuộc</span>' +
             (nDoing ? '<span class="t2w-hero-badge">✍️ ' + nDoing + ' đang học</span>' : '') +
-            '<span class="t2w-hero-badge"><i class="fas fa-clock"></i> ≤ 2:00 · ≈ 270–300 từ</span>' +
+            '<span class="t2w-hero-badge"><i class="fas fa-clock"></i> ≤ 2:00 · ≈ ' + esc(targets().total) + ' từ</span>' +
           '</div>' +
         '</div>' +
         '<div class="lh-mascot" aria-hidden="true">' + (window.Mascot ? window.Mascot.duo('happy') : '') + '</div>' +
@@ -835,12 +858,12 @@
     }
     return '<section class="t2-step' + (isCur ? ' is-current' : '') + '" id="sp2-step-speak">' +
       stepHead(4, 'Ghép bài & nói thử 2 phút', p.speak ? '<span class="t2-step-tag ok">Đã nói ' + p.speak + ' lần</span>' : '', (p.speak || 0) > 0) +
-      '<p class="t2-step-desc">Chọn một đề, đọc lướt bài ghép, rồi bấm <b>Bắt đầu nói</b> và nói to không nhìn bài. Đồng hồ 2 phút như phòng thi — đến khoảng 1:30 nên đang ở khung 6 (WHY).</p>' +
+      '<p class="t2-step-desc">Chọn một đề, đọc lướt bài ghép, rồi bấm <b>Bắt đầu nói</b> và nói to không nhìn bài. Đồng hồ 2 phút như phòng thi — đến khoảng ' + fmt(targets().whyBy) + ' nên đang ở khung 6 (WHY).</p>' +
       '<label class="sp2-field"><span>Đề (cue card):</span><select id="sp2-variant" class="sp2-select">' +
         st.why.map(function (w, i) { return '<option value="' + i + '"' + (i === k ? ' selected' : '') + '>' + esc(w.q) + ' — ' + esc(w.vi) + '</option>'; }).join('') +
       '</select></label>' +
       '<div class="sp2-budget">' +
-        budgetCell('FIXED', fw, '200–230') + budgetCell('WHY', ww, '40–60') + budgetCell('Kết luận', cw, '20–35') +
+        budgetCell('FIXED', fw, targets().fixed) + budgetCell('WHY', ww, targets().why, true) + budgetCell('Kết luận', cw, targets().con) +
         '<div class="sp2-budget-cell is-total"><b>' + total + ' từ</b><span>≈ ' + fmt(secs) + ' ở ' + WPM + ' từ/phút</span></div>' +
       '</div>' +
       '<div class="t2-seg sp2-seg" role="tablist" aria-label="Chế độ xem bài">' +
@@ -850,9 +873,11 @@
       '<div class="sp2-timer" id="sp2-timer">' + timerHtml() + '</div>' +
     '</section>';
   }
-  function budgetCell(lbl, n, range) {
+  // noUnder: the framework's own WHY samples are often shorter than the 50–70
+  // words it budgets (students add their own example) — only flag a long one.
+  function budgetCell(lbl, n, range, noUnder) {
     var lo = parseInt(range, 10), hi = parseInt(range.split('–')[1], 10);
-    var cls = n > hi + 10 ? ' is-over' : n < lo - 10 ? ' is-under' : '';
+    var cls = n > hi + 10 ? ' is-over' : !noUnder && n < lo - 10 ? ' is-under' : '';
     return '<div class="sp2-budget-cell' + cls + '"><b>' + lbl + ': ' + n + ' từ</b><span>mục tiêu ' + range + '</span></div>';
   }
   function segBtn(mode, label) {
@@ -940,11 +965,11 @@
       var total = ph === 'prep' ? PREP_SECONDS : SPEAK_SECONDS;
       var pct = Math.round((total - timer.left) / total * 100);
       var hint = ph === 'prep' ? 'Chuẩn bị — ghi vài từ khoá theo khung xương sống' :
-        (SPEAK_SECONDS - timer.left) >= 90 ? 'Đã 1:30 — phải đang ở phần WHY rồi nha!' : 'Đang nói phần FIXED…';
+        (SPEAK_SECONDS - timer.left) >= targets().whyBy ? whyByHint() : 'Đang nói phần FIXED…';
       return '<div class="sp2-timer-box is-' + ph + '">' +
         '<div class="sp2-timer-lbl">' + (ph === 'prep' ? '⏳ Chuẩn bị' : '🎙️ Đang nói') + (timer.rec ? ' · <span class="sp2-rec-dot"></span> đang ghi âm' : '') + '</div>' +
         '<div class="sp2-timer-num" id="sp2-timer-num">' + fmt(timer.left) + '</div>' +
-        '<div class="sp2-timer-bar' + (ph === 'talk' ? ' has-mark' : '') + '"><i id="sp2-timer-fill" style="width:' + pct + '%"></i></div>' +
+        '<div class="sp2-timer-bar' + (ph === 'talk' ? ' has-mark' : '') + '" style="--why-at:' + (targets().whyBy / SPEAK_SECONDS * 100).toFixed(1) + '%"><i id="sp2-timer-fill" style="width:' + pct + '%"></i></div>' +
         '<div class="sp2-timer-hint" id="sp2-timer-hint">' + hint + '</div>' +
         '<div class="t2-actions">' +
           (ph === 'prep' ? '<button type="button" class="t2-primary" data-act="timer-skip"><i class="fas fa-forward"></i> Bắt đầu nói luôn</button>' : '') +
@@ -960,6 +985,7 @@
       '<button type="button" class="t2-pill-toggle' + (prefs.rec ? ' on' : '') + '" data-act="pref" data-pref="rec" title="Ghi âm để nghe lại giọng mình">🎙️ Ghi âm</button>' +
     '</div>';
   }
+  function whyByHint() { return 'Đã ' + fmt(targets().whyBy) + ' — phải đang ở phần WHY rồi nha!'; }
   function paintTimer() { var el = document.getElementById('sp2-timer'); if (el) el.innerHTML = timerHtml(); }
   function timerStart() {
     stopTts();
@@ -979,7 +1005,7 @@
       var n = document.getElementById('sp2-timer-num'); if (n) n.textContent = fmt(timer.left);
       var f = document.getElementById('sp2-timer-fill'); if (f) f.style.width = Math.round(gone / total * 100) + '%';
       var h = document.getElementById('sp2-timer-hint');
-      if (h && ph === 'talk' && gone >= 90) h.textContent = 'Đã 1:30 — phải đang ở phần WHY rồi nha!';
+      if (h && ph === 'talk' && gone >= targets().whyBy) h.textContent = whyByHint();
       if (timer.left <= 0) { if (ph === 'prep') beginTalk(); else timerStop(true); }
     }, 250);
   }
@@ -1633,6 +1659,7 @@
     }
     DATA = content; STORIES = content.stories || []; LOCKED = !!content.locked;
     _finder = null;
+    if (!LOCKED) upgradeLocal();
     var wanted = new URLSearchParams(location.search).get('story');
     if (!LOCKED) {
       try { var pr = await api('/speaking-part2/progress'); mergeServer(pr.progress || {}); } catch (e) { /* offline: local progress still works */ }
