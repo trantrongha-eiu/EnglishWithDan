@@ -317,6 +317,8 @@ function hwLockNote(a) {
 function hwScrollTo(id) {
   const el = document.querySelector(`.hw-item[data-id="${id}"]`);
   if (!el) return;
+  const group = el.closest('details');
+  if (group) group.open = true;
   el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   el.classList.add('hw-item--flash');
   setTimeout(() => el.classList.remove('hw-item--flash'), 1600);
@@ -355,17 +357,56 @@ function hwAssignmentBlock(a) {
   </div>`;
 }
 
+// Last /assignments/mine answer, kept in localStorage so the card paints the
+// moment the dashboard opens (marked "đang cập nhật") instead of staying
+// blank for the whole round trip to the API — the slow part for students.
+// The live answer replaces it as soon as it lands. Tied to this login by a
+// hash of the auth header (never the token itself), like nav.js's summary.
+const HW_CACHE_KEY = 'ews_hw_mine';
+const HW_CACHE_MAX_MS = 24 * 60 * 60 * 1000;
+function hwCacheTag() {
+  const s = String(authH().Authorization || '');
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return String(h);
+}
+function hwReadCache() {
+  try {
+    const c = JSON.parse(localStorage.getItem(HW_CACHE_KEY) || 'null');
+    if (c && c.tag === hwCacheTag() && Date.now() - c.at < HW_CACHE_MAX_MS) return c.data;
+  } catch (_) { /* storage blocked / corrupt — just fetch */ }
+  return null;
+}
+function hwWriteCache(data) {
+  try { localStorage.setItem(HW_CACHE_KEY, JSON.stringify({ tag: hwCacheTag(), at: Date.now(), data })); } catch (_) { /* quota / blocked */ }
+}
+
+let hwPainted = false; // something (cached or live) is already on screen
+
 async function loadHomework() {
   const card = document.getElementById('homework-card');
   if (!card) return;
+  if (!hwPainted) {
+    const cached = hwReadCache();
+    if (cached) { hwRender(card, cached, { stale: true }); hwPainted = true; }
+  }
   let data;
   try {
     const res = await fetch(`${API}/assignments/mine`, { headers: authH() });
     data = await window.ApiClient.handleResponse(res);
   } catch (err) {
     console.error('loadHomework:', err);
-    return; // stay hidden on error
+    // keep whatever is on screen (hidden if nothing was cached); drop the
+    // "updating" marker so it doesn't spin forever
+    card.querySelector('.hw-sync')?.remove();
+    return;
   }
+  hwWriteCache(data);
+  hwPainted = true;
+  hwRender(card, data);
+}
+
+function hwRender(card, data, { stale = false } = {}) {
   hwCollectVocabGoals(data);
   if (!data || !data.hasClasses) { card.style.display = 'none'; return; }
 
@@ -396,8 +437,11 @@ async function loadHomework() {
     </ul>
   </details>`;
 
+  // Painted from the localStorage copy while the live answer is on its way.
+  const sync = stale ? '<span class="hw-sync" title="Đang tải trạng thái mới nhất">⟳ Đang cập nhật…</span>' : '';
+
   if (!data.assignments.length) {
-    card.innerHTML = `<div class="hw-head"><h3>📚 Bài tập cần làm</h3></div>${warn}
+    card.innerHTML = `<div class="hw-head"><h3>📚 Bài tập cần làm</h3>${sync}</div>${warn}
       <div class="hw-empty">Hiện tại không có bài tập nào.</div>`;
     return;
   }
@@ -413,12 +457,28 @@ async function loadHomework() {
   const countLabel = incompleteItems > incompleteAssignments.length
     ? `${incompleteAssignments.length} bài tập chưa xong · còn ${incompleteItems} mục`
     : `${incompleteAssignments.length} chưa xong`;
+  // Finished assignments fold into one closed group under the open ones:
+  // over a course they pile up and pushed the work still to do (and the
+  // whole dashboard below it) far down the page. Its open/closed state
+  // survives a re-render like the rules panel's.
+  const doneAssignments = data.assignments.filter((a) => a.status === 'completed');
+  const doneWasOpen = !!card.querySelector('.hw-done-group[open]');
+  const openList = incompleteAssignments.length
+    ? `<div class="hw-list">${incompleteAssignments.map(hwAssignmentBlock).join('')}</div>`
+    : '<div class="hw-empty">🎉 Bạn đã hoàn thành hết bài tập được giao.</div>';
+  const doneGroup = doneAssignments.length
+    ? `<details class="hw-done-group"${doneWasOpen ? ' open' : ''}>
+        <summary>✔ Đã hoàn thành (${doneAssignments.length})</summary>
+        <div class="hw-list">${doneAssignments.map(hwAssignmentBlock).join('')}</div>
+      </details>`
+    : '';
   card.innerHTML = `<div class="hw-head"><h3>📚 Bài tập cần làm</h3>
-      <span class="hw-count">${countLabel}</span></div>
+      <span class="hw-head-right">${sync}<span class="hw-count">${countLabel}</span></span></div>
     ${lockBanner}
     ${rules}
     ${lockBanner ? '' : warn}
-    <div class="hw-list">${data.assignments.map(hwAssignmentBlock).join('')}</div>`;
+    ${openList}
+    ${doneGroup}`;
 }
 
 // Vocab goals ("học N từ trong sổ") of assignments not finished yet —

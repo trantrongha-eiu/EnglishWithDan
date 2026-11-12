@@ -246,37 +246,78 @@ function lockedMessage(row) {
 // student never ticks anything.
 // `readOnly` (the parent view) skips every write, including the "nộp trễ"
 // miss flags — the cron and the student's/teacher's own reads still set those.
+// Items whose completion is already settled by what's stored — the sticky
+// `auto` ticks (internal + vocab_goal) and the student's manual ticks. A
+// subset of what the loop below counts as done, so "all of them settled" is
+// safe to act on without the live check.
+function settledItemIds(prog) {
+  const ids = new Set();
+  for (const it of (prog && prog.items) || []) {
+    if (it.status === 'completed' && (it.source === 'auto' || it.source === 'manual')) ids.add(String(it.resourceItemId));
+  }
+  return ids;
+}
+
+// An archived assignment the student fully finished on time is dropped from
+// the list by the loop below (archived + completed + not late). When the
+// stored ticks alone already prove that, skip it before any of the expensive
+// work (snapshot refresh, attempt-history scan, vocab book load) — over a
+// long course these pile up and used to be re-checked on every page load.
+function archivedAndSettled(a, prog) {
+  if (a.status !== 'archived' || !a.resources.length) return false;
+  if (missFlagApplies(a, prog)) return false; // completed late — still listed
+  const settled = settledItemIds(prog);
+  return a.resources.every((r) => settled.has(String(r._id)));
+}
+
 async function getStudentAssignments(studentId, now = new Date(), { persist = false, readOnly = false } = {}) {
   const enrollments = await ClassEnrollment.find({ studentId, removedAt: null }).lean();
   if (!enrollments.length) return { assignments: [], homeworkWarning: null, homeworkLock: null, hasClasses: false };
 
   const enrollByClass = new Map(enrollments.map((e) => [String(e.classId), e]));
   const classIds = enrollments.map((e) => e.classId);
-  const [classes, assignments] = await Promise.all([
+  const [classes, allAssignments] = await Promise.all([
     ClassGroup.find({ _id: { $in: classIds } }).select('name policy teacherId').lean(),
     // archived too — see archivedIsMissed; the non-missed ones are dropped below
     Assignment.find({ classId: { $in: classIds }, status: { $in: ['active', 'archived'] } }).sort({ createdAt: -1 }).lean(),
   ]);
   const classMap = new Map(classes.map((c) => [String(c._id), c]));
-  const teachers = await User.find({ _id: { $in: classes.map((c) => c.teacherId) } }).select('username firstName lastName').lean();
+  const [teachers, stored] = await Promise.all([
+    User.find({ _id: { $in: classes.map((c) => c.teacherId) } }).select('username firstName lastName').lean(),
+    AssignmentProgress.find({ studentId, assignmentId: { $in: allAssignments.map((a) => a._id) } }).lean(),
+  ]);
   const teacherMap = new Map(teachers.map((t) => [String(t._id), t]));
+  const storedMap = new Map(stored.map((p) => [String(p.assignmentId), p]));
 
-  await rcs.refreshResourceSnapshots(assignments.flatMap((a) => a.resources));
+  // `since` for the batched check stays the EARLIEST createdAt of every
+  // assignment (skipped ones included) so the attempt window — which matters
+  // for priorCounts types — is exactly what it was before the skip below.
+  const earliest = allAssignments.reduce((min, a) => (a.createdAt < min ? a.createdAt : min), now);
+  const assignments = allAssignments.filter((a) => !archivedAndSettled(a, storedMap.get(String(a._id))));
 
-  // one batched completion check across every internal item of every assignment
+  // one batched completion check across every internal item of every
+  // assignment — minus items already stickily ticked for their assignment
+  // (the loop below never reads their live hit). Fixed-bundle mocks always
+  // go in: their hit also carries the run's bands for display.
   const allInternal = [];
   for (const a of assignments) {
-    for (const r of a.resources) if (r.kind === 'internal') allInternal.push(rcs.completionItem(r));
+    const sticky = stickyAutoItems(storedMap.get(String(a._id)));
+    for (const r of a.resources) {
+      if (r.kind !== 'internal') continue;
+      if (sticky.has(String(r._id)) && !rcs.isFixedMock(r)) continue;
+      allInternal.push(rcs.completionItem(r));
+    }
   }
   // group completion by (assignment.createdAt as `since`) — simplest correct
   // approach is per-assignment, but batching by type still helps: we pass the
   // EARLIEST assignment createdAt as `since`, then filter per assignment below.
-  const earliest = assignments.reduce((min, a) => (a.createdAt < min ? a.createdAt : min), now);
-  const completionMap = await rcs.checkCompleted(studentId, allInternal, earliest);
-
-  const stored = await AssignmentProgress.find({ studentId, assignmentId: { $in: assignments.map((a) => a._id) } }).lean();
-  const storedMap = new Map(stored.map((p) => [String(p.assignmentId), p]));
-  const vocabMap = await resolveVocabGoals(studentId, assignments, storedMap, now);
+  // Independent reads — run together (snapshot refresh only rewrites
+  // label/resourceCode, which neither of the other two reads).
+  const [, completionMap, vocabMap] = await Promise.all([
+    rcs.refreshResourceSnapshots(assignments.flatMap((a) => a.resources)),
+    rcs.checkCompleted(studentId, allInternal, earliest),
+    resolveVocabGoals(studentId, assignments, storedMap, now),
+  ]);
 
   const rows = [];
   const missFlagWrites = [];
@@ -453,6 +494,27 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
   return { assignments: rows, homeworkWarning, homeworkLock, hasClasses: true };
 }
 
+// ── One computation per student at a time ──────────────────────────────
+// A dashboard load asks for the same aggregate three times at once:
+// GET /api/nav/summary (homeworkSummary), GET /api/assignments/mine and
+// GET /api/classes/my/overview (missed-homework badge). Each used to run the
+// whole thing — every query, every attempt-history scan — in parallel with
+// the others. Calls that arrive while one is IN FLIGHT now share its result;
+// nothing is kept once it settles, so a request made after the student's
+// latest change always computes fresh (no time-based staleness). Always
+// `persist`: its writes are guarded no-ops in steady state and keep the
+// teacher's "X/Y hoàn thành" rollup honest whichever caller got there first.
+const _inFlight = new Map(); // studentId -> Promise
+function getStudentAssignmentsShared(studentId) {
+  const k = String(studentId);
+  const running = _inFlight.get(k);
+  if (running) return running;
+  const p = getStudentAssignments(studentId, new Date(), { persist: true })
+    .finally(() => { if (_inFlight.get(k) === p) _inFlight.delete(k); });
+  _inFlight.set(k, p);
+  return p;
+}
+
 // ── Live "how many assignments is this student currently behind on, in this
 //    one class" — sourced from getStudentAssignments's per-assignment rows.
 //    Used by classAttendanceService (refreshClass/refreshEnrollment) to fold
@@ -478,8 +540,9 @@ async function getOverdueCountForClass(studentId, classId, now = new Date()) {
 // assignment per class, for the student's own "Lớp học của tôi" card /
 // warning popup. Map classId -> { count, missed: [...], late: [...] } where
 // each entry is { _id, title, deadline, archived, done, total }.
-async function getMissedAssignmentsByClass(studentId, now = new Date()) {
-  const { assignments } = await getStudentAssignments(studentId, now);
+// No `now` = a live student request: shares an in-flight computation.
+async function getMissedAssignmentsByClass(studentId, now) {
+  const { assignments } = now ? await getStudentAssignments(studentId, now) : await getStudentAssignmentsShared(studentId);
   const out = new Map();
   for (const a of assignments) {
     if (a.status !== 'overdue' && !a.late) continue;
@@ -499,8 +562,11 @@ function displayNameOf(u) {
 }
 
 // lightweight version for nav.js
-async function getStudentHomeworkSummary(studentId, now = new Date()) {
-  const { assignments, homeworkWarning, homeworkLock, hasClasses } = await getStudentAssignments(studentId, now);
+// No `now` = a live student request: shares an in-flight computation.
+async function getStudentHomeworkSummary(studentId, now) {
+  const { assignments, homeworkWarning, homeworkLock, hasClasses } = now
+    ? await getStudentAssignments(studentId, now) : await getStudentAssignmentsShared(studentId);
+  now = now || new Date();
   const incomplete = assignments.filter((a) => a.status !== 'completed');
   const overdue = assignments.filter((a) => a.status === 'overdue');
   const next = incomplete
@@ -685,6 +751,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
 module.exports = {
   deriveAssignmentStatus,
   getStudentAssignments,
+  getStudentAssignmentsShared,
   getStudentHomeworkSummary,
   getOverdueCountForClass,
   effectiveMissCount,

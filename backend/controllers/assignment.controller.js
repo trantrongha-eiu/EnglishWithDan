@@ -547,7 +547,8 @@ exports.uploadAssignmentImages = async (req, res) => {
 // GET /api/assignments/mine
 exports.myAssignments = async (req, res) => {
   try {
-    const data = await svc.getStudentAssignments(req.user._id, new Date(), { persist: true });
+    // shared with the nav summary / class-card requests a page load fires at the same time
+    const data = await svc.getStudentAssignmentsShared(req.user._id);
     res.json({ success: true, ...data });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });

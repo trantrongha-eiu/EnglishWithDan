@@ -2436,6 +2436,16 @@ a.welcome-feat-card{display:block;text-decoration:none;color:inherit}
 .hw-res-locked{font-size:12px;font-weight:600;color:var(--text3);white-space:nowrap}
 .hw-empty{font-size:13px;color:var(--text3);padding:14px 0}
 .hw-list{display:flex;flex-direction:column;gap:12px}
+.hw-head-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.hw-sync{font-size:11px;font-weight:700;color:var(--text3);white-space:nowrap;animation:hwSyncPulse 1.2s ease-in-out infinite}
+@keyframes hwSyncPulse{50%{opacity:.45}}
+@media (prefers-reduced-motion:reduce){.hw-sync{animation:none}}
+.hw-done-group{margin-top:12px;border-top:1px dashed var(--border);padding-top:10px}
+.hw-done-group>summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--text2);list-style:none;padding:4px 0}
+.hw-done-group>summary::-webkit-details-marker{display:none}
+.hw-done-group>summary::before{content:'▸ ';display:inline-block;transition:transform .15s}
+.hw-done-group[open]>summary::before{transform:rotate(90deg)}
+.hw-done-group[open]>.hw-list{margin-top:10px}
 @keyframes hw-fade{from{opacity:0}to{opacity:1}}
 .hw-item{position:relative;border:1px solid var(--border);border-left:4px solid #94a3b8;border-radius:12px;padding:16px 16px 16px 18px;background:var(--surface);transition:transform .15s,box-shadow .15s;animation:hw-fade .2s ease both}
 .hw-item:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.08)}
