@@ -21,49 +21,49 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "eat fruit and vegetables",
-     "explanation": ""
+     "explanation": "eat fruit and vegetables — ăn hoa quả và rau."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "play basketball",
-     "explanation": ""
+     "explanation": "play basketball — chơi bóng rổ (play + môn bóng)."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "enjoy art and music",
-     "explanation": ""
+     "explanation": "enjoy art and music — thưởng thức nghệ thuật và âm nhạc."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "go cycling",
-     "explanation": ""
+     "explanation": "go cycling — đi đạp xe (go + V-ing)."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "play tennis",
-     "explanation": ""
+     "explanation": "play tennis — chơi quần vợt."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "drink water",
-     "explanation": ""
+     "explanation": "drink water — uống nước."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "watch TV",
-     "explanation": ""
+     "explanation": "watch TV — xem ti vi."
     },
     {
      "id": "m8",
      "left": "Picture 8",
      "right": "get enough sleep",
-     "explanation": ""
+     "explanation": "get enough sleep — ngủ đủ giấc."
     }
    ]
   },
@@ -88,31 +88,31 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "do exercise",
-     "explanation": ""
+     "explanation": "do exercise — tập thể dục."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "drink tea",
-     "explanation": ""
+     "explanation": "drink tea — uống trà."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "read a book",
-     "explanation": ""
+     "explanation": "read a book — đọc sách."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "do yoga",
-     "explanation": ""
+     "explanation": "do yoga — tập yoga (do + môn tập không bóng)."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "go for a walk",
-     "explanation": ""
+     "explanation": "go for a walk — đi dạo."
     }
    ]
   },
@@ -137,37 +137,37 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "go cycling",
-     "explanation": ""
+     "explanation": "go cycling — đạp xe (go + V-ing)."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "do yoga",
-     "explanation": ""
+     "explanation": "do yoga — tập yoga."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "play tennis",
-     "explanation": ""
+     "explanation": "play tennis — chơi quần vợt (môn bóng, có vợt)."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "play basketball",
-     "explanation": ""
+     "explanation": "play basketball — chơi bóng rổ."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "go for a walk",
-     "explanation": ""
+     "explanation": "go for a walk — đi dạo."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "do exercise",
-     "explanation": ""
+     "explanation": "do exercise — tập thể dục."
     }
    ]
   },
@@ -193,7 +193,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "join a gym = đăng ký vào phòng tập."
     },
     {
      "id": "g2",
@@ -210,7 +210,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "drink water = uống nước; do exercise = tập thể dục."
     },
     {
      "id": "g3",
@@ -227,7 +227,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "eat fruit and vegetables; do yoga (do + môn tập)."
     },
     {
      "id": "g4",
@@ -244,7 +244,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "go running = đi chạy bộ; get some fresh air = hít thở không khí trong lành."
     },
     {
      "id": "g5",
@@ -261,7 +261,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "have a personal trainer = có huấn luyện viên riêng; get advice = nhận lời khuyên."
     },
     {
      "id": "g6",
@@ -278,7 +278,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "play tennis; go for walks = đi dạo."
     },
     {
      "id": "g7",
@@ -290,7 +290,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "get sleep = ngủ (get enough/lots of sleep)."
     },
     {
      "id": "g8",
@@ -302,7 +302,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "drink green tea = uống trà xanh."
     },
     {
      "id": "g9",
@@ -314,7 +314,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "play a sport = chơi một môn thể thao."
     }
    ]
   },
@@ -353,7 +353,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Bài luận nhắc tới xem TV, đạp xe, chơi tennis và ngủ đủ giấc (các hoạt động ở Ex. 4)."
     },
     {
      "id": "q2",
@@ -389,7 +389,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Người viết cho rằng học thể thao giúp học sinh khoẻ hơn và bớt căng thẳng."
     }
    ]
   },
@@ -419,7 +419,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "shouldn't = không nên → họ cho rằng học thể thao là ý không tốt (bad idea)."
     },
     {
      "id": "q2",
@@ -435,7 +435,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Tốt cho sức khoẻ → should (nên)."
     },
     {
      "id": "q3",
@@ -451,7 +451,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "only watch around three hours = lời khuyên nên giới hạn → should."
     },
     {
      "id": "q4",
@@ -467,7 +467,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Ngồi cả ngày không vận động là không tốt → shouldn't."
     },
     {
      "id": "q5",
@@ -483,7 +483,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Ngủ 7–10 tiếng mỗi đêm là lời khuyên tốt → should."
     },
     {
      "id": "q6",
@@ -499,7 +499,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Có 'and play more sport instead' → không nên ngồi máy tính cả ngày: shouldn't."
     },
     {
      "id": "q7",
@@ -561,7 +561,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Nội quy của trường → bắt buộc: have to."
     },
     {
      "id": "q2",
@@ -577,7 +577,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Hạn nộp còn tới tuần sau → không bắt buộc làm tối nay: don't have to."
     },
     {
      "id": "q3",
@@ -593,7 +593,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Câu hỏi: Do you have to + V?"
     },
     {
      "id": "q4",
@@ -609,7 +609,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "He (ngôi 3 số ít) → has to."
     },
     {
      "id": "q5",
@@ -625,7 +625,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "We → don't have to (không bắt buộc, nhưng thầy khuyên nên học)."
     },
     {
      "id": "q6",
@@ -641,7 +641,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Muốn làm cứu hộ thì bắt buộc phải qua bài kiểm tra bơi → have to."
     },
     {
      "id": "q7",
@@ -657,7 +657,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Ai cũng có thể thử → không cần phải khoẻ: don't have to."
     },
     {
      "id": "q8",
@@ -673,7 +673,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Chạy bộ ở công viên miễn phí → không cần tốn nhiều tiền: don't have to."
     },
     {
      "id": "q9",
@@ -689,7 +689,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Vận động viên chuyên nghiệp bắt buộc tập ít nhất 3 tiếng/ngày → have to."
     },
     {
      "id": "q10",
@@ -721,7 +721,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Otherwise it is difficult to run → cần thiết: have to."
     },
     {
      "id": "q12",
@@ -753,7 +753,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Không cần giỏi thể thao mới khoẻ được → don't have to."
     }
    ]
   },
@@ -783,7 +783,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Câu hỏi với should: Wh- + should + you + V (đảo should lên trước chủ ngữ)."
     },
     {
      "id": "q2",
@@ -799,7 +799,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Trả lời No → lời khuyên phủ định: you shouldn't play…"
     },
     {
      "id": "q3",
@@ -815,7 +815,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Tôi thích yoga → khuyên bạn thử: you should try it."
     },
     {
      "id": "q4",
@@ -878,7 +878,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Lời khuyên: should + drink (5 cốc nước mỗi ngày)."
     },
     {
      "id": "g2",
@@ -895,7 +895,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "should + get more sleep = nên ngủ nhiều hơn."
     },
     {
      "id": "g3",
@@ -913,7 +913,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Không nên xem TV quá 2–3 tiếng → shouldn't watch."
     },
     {
      "id": "g4",
@@ -940,7 +940,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "should play sport (nếu thích); nếu không thì should ride a bicycle (đạp xe) hoặc đi bộ."
     },
     {
      "id": "g5",
@@ -958,7 +958,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Không nên ăn đồ ăn nhanh quá một lần/tuần → shouldn't eat."
     }
    ]
   },
@@ -984,7 +984,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Quy định quan trọng nhất → bắt buộc: we have to."
     },
     {
      "id": "g2",
@@ -996,7 +996,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Được mặc đồ của mình → không bắt buộc mặc đồng phục: don't have to."
     },
     {
      "id": "g3",
@@ -1008,7 +1008,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "It is their choice → không bắt buộc: students don't have to."
     },
     {
      "id": "g4",
@@ -1020,7 +1020,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nếu muộn thì bắt buộc gửi email → they have to."
     }
    ]
   },
@@ -1059,7 +1059,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Helen nhắc tennis và bóng rổ là những hoạt động nên làm."
     },
     {
      "id": "q2",
@@ -1079,7 +1079,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Câu có don't have to: không cần học hàng giờ liền, nên nghỉ giải lao thường xuyên."
     },
     {
      "id": "q3",
@@ -1099,7 +1099,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Theo Helen, sống khoẻ giúp có thêm năng lượng và cảm thấy dễ chịu."
     }
    ]
   },
@@ -1169,7 +1169,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Ý kiến nằm ở 'too expensive' (quá đắt) — đó là từ khoá cần nghe."
     },
     {
      "id": "q2",
@@ -1185,7 +1185,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "'boring' là nhận xét (ý kiến) về việc chạy bộ."
     },
     {
      "id": "q3",
@@ -1201,7 +1201,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "'outdoors' là điểm chính: tập ngoài trời tốt hơn."
     }
    ]
   },
@@ -1326,7 +1326,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Hỏi xin lời khuyên: What should I do?"
     },
     {
      "id": "g2",
@@ -1338,7 +1338,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Lời khuyên: you should practise as much as possible."
     },
     {
      "id": "g3",
@@ -1350,7 +1350,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "I suggest you should train more often."
     },
     {
      "id": "g4",
@@ -1362,7 +1362,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nên có ngày nghỉ không tập → should have rest days."
     },
     {
      "id": "g5",
@@ -1375,7 +1375,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Chỉ chơi 2 lần/tuần là không đủ → shouldn't."
     },
     {
      "id": "g6",
@@ -1387,7 +1387,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Khuyên nên học lớp tennis → should."
     }
    ]
   },
@@ -1407,37 +1407,37 @@
      "id": "m1",
      "left": "It is a good idea to pay",
      "right": "for a personal trainer.",
-     "explanation": ""
+     "explanation": "pay for + dịch vụ: trả tiền cho huấn luyện viên riêng."
     },
     {
      "id": "m2",
      "left": "Joining the gym",
      "right": "can be expensive.",
-     "explanation": ""
+     "explanation": "Joining the gym (chủ ngữ V-ing) + can be expensive."
     },
     {
      "id": "m3",
      "left": "It is more fun when you go",
      "right": "running with other people.",
-     "explanation": ""
+     "explanation": "go running = đi chạy bộ cùng người khác thì vui hơn."
     },
     {
      "id": "m4",
      "left": "It is important to follow",
      "right": "a healthy diet.",
-     "explanation": ""
+     "explanation": "follow a healthy diet = theo chế độ ăn lành mạnh."
     },
     {
      "id": "m5",
      "left": "I think it's better to do",
      "right": "yoga than go to the gym.",
-     "explanation": ""
+     "explanation": "better to do yoga than go to the gym (so sánh hơn với than)."
     },
     {
      "id": "m6",
      "left": "Running is a",
      "right": "great way to keep fit.",
-     "explanation": ""
+     "explanation": "a great way to keep fit = cách tuyệt vời để giữ dáng."
     }
    ]
   }

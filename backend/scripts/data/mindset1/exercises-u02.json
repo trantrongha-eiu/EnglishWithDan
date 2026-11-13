@@ -21,25 +21,25 @@
      "id": "m1",
      "left": "Picture A",
      "right": "treehouse",
-     "explanation": ""
+     "explanation": "treehouse — nhà trên cây."
     },
     {
      "id": "m2",
      "left": "Picture B",
      "right": "shipping container homes",
-     "explanation": ""
+     "explanation": "shipping container homes — nhà làm từ container chở hàng."
     },
     {
      "id": "m3",
      "left": "Picture C",
      "right": "igloo",
-     "explanation": ""
+     "explanation": "igloo — nhà tuyết hình vòm của người Inuit."
     },
     {
      "id": "m4",
      "left": "Picture D",
      "right": "houseboat",
-     "explanation": ""
+     "explanation": "houseboat — nhà thuyền, sống trên mặt nước."
     }
    ]
   },
@@ -189,37 +189,37 @@
      "id": "m1",
      "left": "houseboats",
      "right": "homes on the water",
-     "explanation": ""
+     "explanation": "houseboats = nhà thuyền → homes on the water."
     },
     {
      "id": "m2",
      "left": "permanently",
      "right": "forever, always",
-     "explanation": ""
+     "explanation": "permanently = vĩnh viễn, lâu dài → forever, always."
     },
     {
      "id": "m3",
      "left": "privacy",
      "right": "not being watched by others",
-     "explanation": ""
+     "explanation": "privacy = sự riêng tư → không bị người khác nhìn thấy."
     },
     {
      "id": "m4",
      "left": "surrounded by the natural world",
      "right": "having nature all around",
-     "explanation": ""
+     "explanation": "surrounded by the natural world = được thiên nhiên bao quanh."
     },
     {
      "id": "m5",
      "left": "uncomfortable",
      "right": "not feeling pleasant",
-     "explanation": ""
+     "explanation": "uncomfortable = không thoải mái → not feeling pleasant."
     },
     {
      "id": "m6",
      "left": "Sweden, Norway and Finland",
      "right": "Nordic countries",
-     "explanation": ""
+     "explanation": "Thuỵ Điển, Na Uy, Phần Lan = các nước Bắc Âu (Nordic countries)."
     }
    ]
   },
@@ -327,7 +327,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Bài mô tả nhà ở hiện tại (present) và kể trải nghiệm, việc xây nhà trong quá khứ (past) → cả hai."
     },
     {
      "id": "q2",
@@ -437,7 +437,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Sự thật chung ở Anh hiện nay → hiện tại đơn: have."
     },
     {
      "id": "q3",
@@ -523,7 +523,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Last year → quá khứ đơn: lived."
     },
     {
      "id": "g3",
@@ -547,7 +547,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Mô tả căn hộ hiện tại, ngôi 3 số ít → has."
     },
     {
      "id": "g5",
@@ -559,7 +559,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "In 2014 → quá khứ đơn: moved."
     }
    ]
   },
@@ -584,43 +584,43 @@
      "id": "m1",
      "left": "Picture A",
      "right": "sports centre",
-     "explanation": ""
+     "explanation": "sports centre — trung tâm thể thao."
     },
     {
      "id": "m2",
      "left": "Picture B",
      "right": "museum",
-     "explanation": ""
+     "explanation": "museum — bảo tàng."
     },
     {
      "id": "m3",
      "left": "Picture C",
      "right": "bank",
-     "explanation": ""
+     "explanation": "bank — ngân hàng."
     },
     {
      "id": "m4",
      "left": "Picture D",
      "right": "railway station",
-     "explanation": ""
+     "explanation": "railway station — ga tàu hoả."
     },
     {
      "id": "m5",
      "left": "Picture E",
      "right": "bus stop",
-     "explanation": ""
+     "explanation": "bus stop — trạm xe buýt."
     },
     {
      "id": "m6",
      "left": "Picture F",
      "right": "restaurant",
-     "explanation": ""
+     "explanation": "restaurant — nhà hàng."
     },
     {
      "id": "m7",
      "left": "Picture G",
      "right": "harbour",
-     "explanation": ""
+     "explanation": "harbour — bến cảng (nơi tàu thuyền neo đậu)."
     }
    ]
   },
@@ -658,43 +658,43 @@
      "id": "c1",
      "text": "harbour",
      "category": "t",
-     "explanation": ""
+     "explanation": "harbour — bến cảng, nơi tàu thuyền ra vào → giao thông."
     },
     {
      "id": "c2",
      "text": "bus stop",
      "category": "t",
-     "explanation": ""
+     "explanation": "bus stop — trạm xe buýt → giao thông."
     },
     {
      "id": "c3",
      "text": "railway station",
      "category": "t",
-     "explanation": ""
+     "explanation": "railway station — ga tàu → giao thông."
     },
     {
      "id": "c4",
      "text": "sports centre",
      "category": "s",
-     "explanation": ""
+     "explanation": "sports centre — chơi thể thao → thể thao & giải trí."
     },
     {
      "id": "c5",
      "text": "restaurant",
      "category": "s",
-     "explanation": ""
+     "explanation": "restaurant — ăn uống, giải trí → leisure."
     },
     {
      "id": "c6",
      "text": "museum",
      "category": "a",
-     "explanation": ""
+     "explanation": "museum — bảo tàng → nghệ thuật & văn hoá."
     },
     {
      "id": "c7",
      "text": "bank",
      "category": "m",
-     "explanation": ""
+     "explanation": "bank — ngân hàng → tiền."
     }
    ]
   },
@@ -714,49 +714,49 @@
      "id": "m1",
      "left": "1 What did the speakers order in the restaurant?",
      "right": "a meal or a kind of food",
-     "explanation": ""
+     "explanation": "order in the restaurant → đáp án là món ăn."
     },
     {
      "id": "m2",
      "left": "2 How much did each person pay for their meal?",
      "right": "a price",
-     "explanation": ""
+     "explanation": "How much… pay → giá tiền."
     },
     {
      "id": "m3",
      "left": "3 What time is the bus due?",
      "right": "a time",
-     "explanation": ""
+     "explanation": "What time → giờ."
     },
     {
      "id": "m4",
      "left": "4 Where is the bus stop?",
      "right": "a place",
-     "explanation": ""
+     "explanation": "Where → địa điểm."
     },
     {
      "id": "m5",
      "left": "5 How long did the course last?",
      "right": "a period of time",
-     "explanation": ""
+     "explanation": "How long → khoảng thời gian."
     },
     {
      "id": "m6",
      "left": "6 Which TWO things did the speaker do on the course?",
      "right": "the names of activities or skills",
-     "explanation": ""
+     "explanation": "Which TWO things did the speaker do → tên hoạt động/kỹ năng."
     },
     {
      "id": "m7",
      "left": "7 What is the date of the next course?",
      "right": "a date",
-     "explanation": ""
+     "explanation": "What is the date → ngày tháng."
     },
     {
      "id": "m8",
      "left": "8 Who will lead the course?",
      "right": "a name of a person",
-     "explanation": ""
+     "explanation": "Who → tên người."
     }
    ]
   },
@@ -786,7 +786,7 @@
      "id": "c1",
      "text": "1 What did the speakers order in the restaurant?",
      "category": "no",
-     "explanation": ""
+     "explanation": "Hỏi món ăn → viết chữ, không cần số."
     },
     {
      "id": "c2",
@@ -804,7 +804,7 @@
      "id": "c4",
      "text": "4 Where is the bus stop?",
      "category": "no",
-     "explanation": ""
+     "explanation": "Hỏi địa điểm → tên đường/nơi chốn, không phải số."
     },
     {
      "id": "c5",
@@ -816,7 +816,7 @@
      "id": "c6",
      "text": "6 Which TWO things did the speaker do on the course?",
      "category": "no",
-     "explanation": ""
+     "explanation": "Hỏi hoạt động → chữ."
     },
     {
      "id": "c7",
@@ -828,7 +828,7 @@
      "id": "c8",
      "text": "8 Who will lead the course?",
      "category": "no",
-     "explanation": ""
+     "explanation": "Hỏi tên người → chữ."
     }
    ]
   },
@@ -920,7 +920,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Người nói đánh vần có chữ e ở cuối Blythe → Blythe Road (chính tả phải đúng tuyệt đối)."
     },
     {
      "id": "q3",

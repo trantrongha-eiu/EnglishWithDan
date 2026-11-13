@@ -307,10 +307,10 @@ module.exports = {
       questionGroups: [
         qMcq(1, 'A school student is discussing how to apply for university with a teacher. Listen and choose the correct word in each sentence. (Ex. 5)', [
           ['Register on the UCAS website, enter your personal details and choose ___ universities which offer a course you want to study.', ['five', 'seven'], 'A', lx('Chọn bao nhiêu trường?', '', ['there are seven good choices I could give you', 'the maximum number that you can put on your application is five'], 'BẪY: seven là số gợi ý của thầy.')],
-          ['Write your personal ___, telling the universities about you and why they should offer you a place.', ['statement', 'assessment'], 'A', lx('Bài viết cá nhân', '', "You mean your 'personal statement'?")],
+          ['Write your personal ___, telling the universities about you and why they should offer you a place.', ['assessment', 'statement'], 'B', lx('Bài viết cá nhân', '', "You mean your 'personal statement'?")],
           ['The ___ will be supplied by your UCAS adviser at school.', ['reference', 'advice'], 'A', lx('Thư giới thiệu', '', 'I can add the reference and your predicted grades before sending it to UCAS')],
-          ['Offers may be ___, which means you have to get certain grades.', ['conditional', 'provisional'], 'A', lx('Loại thư mời', '', 'Usually any offer from a university will be a conditional offer', 'BẪY: "provisional" nói về điểm dự đoán.')],
-          ['If your exam results meet the requirements, the university will ___ the offer and you can accept or reject it.', ['confirm', 'renew'], 'A', lx('Xác nhận', '', "If you meet the predicted grades, they'll usually confirm the original offer, but if not, they don't tend to renew it")],
+          ['Offers may be ___, which means you have to get certain grades.', ['provisional', 'conditional'], 'B', lx('Loại thư mời', '', 'Usually any offer from a university will be a conditional offer', 'BẪY: "provisional" nói về điểm dự đoán.')],
+          ['If your exam results meet the requirements, the university will ___ the offer and you can accept or reject it.', ['renew', 'confirm'], 'B', lx('Xác nhận', '', "If you meet the predicted grades, they'll usually confirm the original offer, but if not, they don't tend to renew it")],
           ['Many universities use a ___ system to offer unfilled places on their courses.', ['clearing', 'reapplying'], 'A', lx('Hệ thống xét tuyển bổ sung', '', "you can try to get a place through 'clearing'")],
         ], 'Questions 1–6'),
       ],

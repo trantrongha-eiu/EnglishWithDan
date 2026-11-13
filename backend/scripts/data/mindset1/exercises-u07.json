@@ -34,55 +34,55 @@
      "id": "c1",
      "text": "Google",
      "category": "s",
-     "explanation": ""
+     "explanation": "Google — công cụ tìm kiếm (search engine)."
     },
     {
      "id": "c2",
      "text": "Bing",
      "category": "s",
-     "explanation": ""
+     "explanation": "Bing — công cụ tìm kiếm của Microsoft."
     },
     {
      "id": "c3",
      "text": "BBC News",
      "category": "n",
-     "explanation": ""
+     "explanation": "BBC News — trang tin tức."
     },
     {
      "id": "c4",
      "text": "The New York Times",
      "category": "n",
-     "explanation": ""
+     "explanation": "The New York Times — báo, trang tin tức."
     },
     {
      "id": "c5",
      "text": "Facebook",
      "category": "m",
-     "explanation": ""
+     "explanation": "Facebook — mạng xã hội."
     },
     {
      "id": "c6",
      "text": "Instagram",
      "category": "m",
-     "explanation": ""
+     "explanation": "Instagram — mạng xã hội chia sẻ ảnh."
     },
     {
      "id": "c7",
      "text": "Weibo",
      "category": "m",
-     "explanation": ""
+     "explanation": "Weibo — mạng xã hội của Trung Quốc."
     },
     {
      "id": "c8",
      "text": "Wikipedia",
      "category": "f",
-     "explanation": ""
+     "explanation": "Wikipedia — bách khoa toàn thư mở, thông tin về nhiều chủ đề."
     },
     {
      "id": "c9",
      "text": "Britannica.com",
      "category": "f",
-     "explanation": ""
+     "explanation": "Britannica.com — bách khoa toàn thư Britannica, thông tin dữ kiện."
     }
    ]
   },
@@ -254,25 +254,25 @@
      "id": "m1",
      "left": "If you want to become famous on YouTube,",
      "right": "you should make lots of videos and release one every day.",
-     "explanation": ""
+     "explanation": "Muốn nổi tiếng trên YouTube → lời khuyên (should): làm nhiều video, mỗi ngày một video."
     },
     {
      "id": "m2",
      "left": "If you allow advertisements in your videos,",
      "right": "you will make money when people view the adverts.",
-     "explanation": ""
+     "explanation": "Cho phép quảng cáo → kết quả: will make money khi người xem xem quảng cáo."
     },
     {
      "id": "m3",
      "left": "If you achieve fame on Facebook,",
      "right": "it probably won't last.",
-     "explanation": ""
+     "explanation": "Nổi tiếng trên Facebook → kết quả dự đoán: it probably won't last (không lâu bền)."
     },
     {
      "id": "m4",
      "left": "If you want to become known on Twitter,",
      "right": "you will need to post lots of entertaining content.",
-     "explanation": ""
+     "explanation": "Muốn được biết đến trên Twitter → will need to post nhiều nội dung giải trí."
     }
    ]
   },
@@ -338,7 +338,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu điều kiện loại 1: If + hiện tại đơn (post), will + V (will follow)."
     },
     {
      "id": "g2",
@@ -357,7 +357,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "If + phủ định hiện tại đơn (she → doesn't have), won't + V (won't look)."
     },
     {
      "id": "g3",
@@ -369,7 +369,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "If + hiện tại đơn: want; mệnh đề chính dùng should."
     },
     {
      "id": "g4",
@@ -387,7 +387,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Mệnh đề chính có thể đứng trước: won't watch… if they are boring."
     },
     {
      "id": "g5",
@@ -405,7 +405,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "If he + creates (ngôi 3), will make money."
     }
    ]
   },
@@ -485,49 +485,49 @@
      "id": "c1",
      "text": "I would hate people to (1) ___ me all the time.",
      "category": "v",
-     "explanation": ""
+     "explanation": "Sau to → động từ nguyên mẫu (vd. recognise)."
     },
     {
      "id": "c2",
      "text": "You would always be followed by (2) ___",
      "category": "n",
-     "explanation": ""
+     "explanation": "Sau giới từ by → danh từ (vd. photographers)."
     },
     {
      "id": "c3",
      "text": "…wearing your best jeans, is perhaps (3) ___",
      "category": "a",
-     "explanation": ""
+     "explanation": "Sau is perhaps → tính từ."
     },
     {
      "id": "c4",
      "text": "I would adore all the (4) ___ and the special treatment.",
      "category": "n",
-     "explanation": ""
+     "explanation": "Sau all the → danh từ (vd. attention)."
     },
     {
      "id": "c5",
      "text": "…people would know my name and I wouldn't need to (5) ___ any more.",
      "category": "v",
-     "explanation": ""
+     "explanation": "Sau need to → động từ (vd. queue)."
     },
     {
      "id": "c6",
      "text": "I can imagine that would be so (6) ___",
      "category": "a",
-     "explanation": ""
+     "explanation": "Sau so → tính từ."
     },
     {
      "id": "c7",
      "text": "They would come to my (7) ___ yacht",
      "category": "a",
-     "explanation": ""
+     "explanation": "Giữa my và danh từ yacht → tính từ bổ nghĩa (vd. luxury/private)."
     },
     {
      "id": "c8",
      "text": "…and I would (8) ___ their mansions.",
      "category": "v",
-     "explanation": ""
+     "explanation": "Sau would → động từ nguyên mẫu (vd. visit)."
     }
    ]
   },
@@ -569,13 +569,13 @@
      "id": "c3",
      "text": "Create (3) ___ and market yourself.",
      "category": "n",
-     "explanation": ""
+     "explanation": "Sau động từ Create → danh từ làm tân ngữ (vd. a website)."
     },
     {
      "id": "c4",
      "text": "Don't worry if sometimes you (4) ___. You can learn from the experience.",
      "category": "v",
-     "explanation": ""
+     "explanation": "Sau chủ ngữ you → động từ (vd. fail)."
     }
    ]
   },
@@ -605,43 +605,43 @@
      "id": "c1",
      "text": "…learn how to use the (1) ___ controls.",
      "category": "a",
-     "explanation": ""
+     "explanation": "Giữa the và danh từ controls → tính từ (vd. manual)."
     },
     {
      "id": "c2",
      "text": "The Focus function on the camera is very (2) ___.",
      "category": "a",
-     "explanation": ""
+     "explanation": "Sau very → tính từ (vd. useful)."
     },
     {
      "id": "c3",
      "text": "…whether the object you want to film is (3) ___ or further away.",
      "category": "a",
-     "explanation": ""
+     "explanation": "Đối lập với 'further away' → tính từ (vd. close/near)."
     },
     {
      "id": "c4",
      "text": "…controls the amount of (4) ___ coming through the lens.",
      "category": "n",
-     "explanation": ""
+     "explanation": "Sau amount of → danh từ (vd. light)."
     },
     {
      "id": "c5",
      "text": "…more light comes in and the picture appears (5) ___.",
      "category": "a",
-     "explanation": ""
+     "explanation": "Sau appears → tính từ (vd. brighter)."
     },
     {
      "id": "c6",
      "text": "…the Zoom is a very (6) ___ manual function",
      "category": "a",
-     "explanation": ""
+     "explanation": "Giữa very và 'manual function' → tính từ (vd. useful)."
     },
     {
      "id": "c7",
      "text": "For (7) ___ zooms a tripod is recommended.",
      "category": "a",
-     "explanation": ""
+     "explanation": "Trước danh từ zooms → tính từ (vd. long)."
     }
    ]
   }

@@ -2389,7 +2389,7 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
       draggable="${isReview ? 'false' : 'true'}"
       ondragstart="dragStart(event,'${escH(letter)}')"
       onclick="clickMOChip('${escH(letter)}','${groupId}')">
-      <strong>${escHtml(letter)}</strong>${label}
+      <span><strong>${escHtml(letter)}</strong>${label}</span>
     </span>`;
   }).join('');
 
@@ -2420,7 +2420,7 @@ function renderMatchingOptionsGroup(group, isReview, reviewMap) {
     const optDesc = optIdx >= 0 ? (matchingOptions[optIdx] || '') : '';
     const short = optDesc.length > 30 ? optDesc.slice(0, 30) + '…' : optDesc;
     const displayText = ans
-      ? `<strong>${escHtml(ans)}</strong>${short && short.length > 1 ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`
+      ? `<span><strong>${escHtml(ans)}</strong>${short && short.length > 1 ? '. ' + escHtml(short) : ''}</span><span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`
       : 'Kéo chữ cái vào đây';
 
     return `<div class="match-question-row" id="q${qNum}" data-qnum="${qNum}">
@@ -2474,7 +2474,7 @@ function renderMatchingHeadingsGroup(group, isReview, reviewMap) {
     const review = reviewMap[qNum];
     const ans = isReview ? (review?.userAnswer || '') : (state.answers[qNum] || '');
     const ansObj = headings.find(h => h.numeral === ans);
-    const displayText = ansObj ? `<em>${escHtml(ans)}</em>. ${escHtml(ansObj.text.slice(0, 40))}${ansObj.text.length > 40 ? '…' : ''}` : '';
+    const displayText = ansObj ? `<span><em>${escHtml(ans)}</em>. ${escHtml(ansObj.text.slice(0, 40))}${ansObj.text.length > 40 ? '…' : ''}</span>` : '';
 
     if (isReview) {
       const isCorrect = review?.isCorrect;
@@ -2529,7 +2529,7 @@ function renderSummaryCompletionGroup(group, isReview, reviewMap) {
       draggable="${isReview ? 'false' : 'true'}"
       ondragstart="dragStart(event,'${escH(word)}')"
       onclick="clickSCChip('${escH(word)}','${groupId}')">
-      <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i><strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}
+      <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i><span><strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}</span>
     </span>`;
   }).join('');
 
@@ -2978,7 +2978,7 @@ function _refreshMOZone(qNum, groupId) {
   }
   const short = desc.length > 30 ? desc.slice(0, 30) + '…' : desc;
   dz.classList.add('filled');
-  dz.innerHTML = `<strong>${escHtml(letter)}</strong>${short && short.length > 1 ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`;
+  dz.innerHTML = `<span><strong>${escHtml(letter)}</strong>${short && short.length > 1 ? '. ' + escHtml(short) : ''}</span><span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`;
   updateQNavBtn(qNum);
 }
 
@@ -3015,7 +3015,7 @@ function _refreshMHZone(qNum, groupId) {
   const numeral = state.answers[qNum] || '';
   const short = headingText.length > 40 ? headingText.slice(0, 40) + '…' : headingText;
   dz.classList.add('filled');
-  dz.innerHTML = `<em>${escHtml(numeral)}</em>${short ? '. ' + escHtml(short) : ''}<span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`;
+  dz.innerHTML = `<span><em>${escHtml(numeral)}</em>${short ? '. ' + escHtml(short) : ''}</span><span class="clear-drop" onclick="clearDragDrop(${qNum},'${groupId}')">✕</span>`;
   updateQNavBtn(qNum);
 }
 

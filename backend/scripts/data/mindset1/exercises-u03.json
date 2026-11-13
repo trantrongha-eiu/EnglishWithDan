@@ -26,73 +26,73 @@
      "id": "c1",
      "text": "academic",
      "category": "s",
-     "explanation": ""
+     "explanation": "academic = thuộc về học thuật → học tập."
     },
     {
      "id": "c2",
      "text": "degree",
      "category": "s",
-     "explanation": ""
+     "explanation": "degree = bằng đại học → học tập."
     },
     {
      "id": "c3",
      "text": "job",
      "category": "w",
-     "explanation": ""
+     "explanation": "job = công việc → làm việc."
     },
     {
      "id": "c4",
      "text": "office",
      "category": "w",
-     "explanation": ""
+     "explanation": "office = văn phòng → nơi làm việc."
     },
     {
      "id": "c5",
      "text": "blended learning",
      "category": "s",
-     "explanation": ""
+     "explanation": "blended learning = học kết hợp (trực tuyến + trên lớp) → học tập."
     },
     {
      "id": "c6",
      "text": "employers",
      "category": "w",
-     "explanation": ""
+     "explanation": "employers = nhà tuyển dụng, chủ lao động → làm việc."
     },
     {
      "id": "c7",
      "text": "qualification",
      "category": "s",
-     "explanation": ""
+     "explanation": "qualification = bằng cấp, chứng chỉ → học tập."
     },
     {
      "id": "c8",
      "text": "lifelong learning",
      "category": "s",
-     "explanation": ""
+     "explanation": "lifelong learning = học tập suốt đời → học tập."
     },
     {
      "id": "c9",
      "text": "business",
      "category": "w",
-     "explanation": ""
+     "explanation": "business = kinh doanh, doanh nghiệp → làm việc."
     },
     {
      "id": "c10",
      "text": "retirement",
      "category": "w",
-     "explanation": ""
+     "explanation": "retirement = nghỉ hưu (kết thúc đời làm việc) → làm việc."
     },
     {
      "id": "c11",
      "text": "primary education",
      "category": "s",
-     "explanation": ""
+     "explanation": "primary education = giáo dục tiểu học → học tập."
     },
     {
      "id": "c12",
      "text": "seminars",
      "category": "s",
-     "explanation": ""
+     "explanation": "seminars = buổi thảo luận nhóm ở đại học → học tập."
     }
    ]
   },
@@ -127,19 +127,19 @@
      "id": "c1",
      "text": "academic",
      "category": "y",
-     "explanation": ""
+     "explanation": "academic có trong bài đọc."
     },
     {
      "id": "c2",
      "text": "degree",
      "category": "y",
-     "explanation": ""
+     "explanation": "degree có trong bài đọc."
     },
     {
      "id": "c3",
      "text": "job",
      "category": "y",
-     "explanation": ""
+     "explanation": "job có trong bài đọc."
     },
     {
      "id": "c4",
@@ -151,49 +151,49 @@
      "id": "c5",
      "text": "blended learning",
      "category": "y",
-     "explanation": ""
+     "explanation": "blended learning có trong bài đọc."
     },
     {
      "id": "c6",
      "text": "employers",
      "category": "y",
-     "explanation": ""
+     "explanation": "employers có trong bài đọc."
     },
     {
      "id": "c7",
      "text": "qualification",
      "category": "y",
-     "explanation": ""
+     "explanation": "qualification có trong bài đọc."
     },
     {
      "id": "c8",
      "text": "lifelong learning",
      "category": "y",
-     "explanation": ""
+     "explanation": "lifelong learning có trong bài đọc."
     },
     {
      "id": "c9",
      "text": "business",
      "category": "y",
-     "explanation": ""
+     "explanation": "business có trong bài đọc."
     },
     {
      "id": "c10",
      "text": "retirement",
      "category": "y",
-     "explanation": ""
+     "explanation": "retirement có trong bài đọc."
     },
     {
      "id": "c11",
      "text": "primary education",
      "category": "y",
-     "explanation": ""
+     "explanation": "primary education có trong bài đọc."
     },
     {
      "id": "c12",
      "text": "seminars",
      "category": "y",
-     "explanation": ""
+     "explanation": "seminars có trong bài đọc."
     }
    ]
   },
@@ -307,43 +307,43 @@
      "id": "m1",
      "left": "abroad",
      "right": "overseas",
-     "explanation": ""
+     "explanation": "abroad = ở nước ngoài ≈ overseas."
     },
     {
      "id": "m2",
      "left": "benefits",
      "right": "advantages",
-     "explanation": ""
+     "explanation": "benefits = lợi ích ≈ advantages."
     },
     {
      "id": "m3",
      "left": "disturbing",
      "right": "disrupting",
-     "explanation": ""
+     "explanation": "disturbing = làm phiền, gián đoạn ≈ disrupting."
     },
     {
      "id": "m4",
      "left": "going to",
      "right": "attending",
-     "explanation": ""
+     "explanation": "going to (school/class) ≈ attending (tham dự)."
     },
     {
      "id": "m5",
      "left": "make better",
      "right": "enrich",
-     "explanation": ""
+     "explanation": "make better = làm cho tốt hơn ≈ enrich (làm phong phú)."
     },
     {
      "id": "m6",
      "left": "useful",
      "right": "valuable",
-     "explanation": ""
+     "explanation": "useful = hữu ích ≈ valuable (có giá trị)."
     },
     {
      "id": "m7",
      "left": "workplaces",
      "right": "offices",
-     "explanation": ""
+     "explanation": "workplaces = nơi làm việc ≈ offices."
     }
    ]
   },
@@ -588,7 +588,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Hiện tại hoàn thành: has + V3; Globalisation số ít → has affected."
     },
     {
      "id": "g2",
@@ -601,7 +601,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Different countries số nhiều → have benefitted (benefit → benefited/benefitted)."
     },
     {
      "id": "g3",
@@ -619,7 +619,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Phủ định: have not + even + had (V3 của have là had)."
     },
     {
      "id": "g4",
@@ -631,7 +631,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "institutions số nhiều → have changed."
     }
    ]
   },
@@ -656,43 +656,43 @@
      "id": "m1",
      "left": "Picture A",
      "right": "construction",
-     "explanation": ""
+     "explanation": "construction — xây dựng."
     },
     {
      "id": "m2",
      "left": "Picture B",
      "right": "sports and leisure",
-     "explanation": ""
+     "explanation": "sports and leisure — thể thao và giải trí."
     },
     {
      "id": "m3",
      "left": "Picture C",
      "right": "retail",
-     "explanation": ""
+     "explanation": "retail — bán lẻ (cửa hàng)."
     },
     {
      "id": "m4",
      "left": "Picture D",
      "right": "hotel and catering",
-     "explanation": ""
+     "explanation": "hotel and catering — khách sạn và dịch vụ ăn uống."
     },
     {
      "id": "m5",
      "left": "Picture E",
      "right": "health",
-     "explanation": ""
+     "explanation": "health — y tế."
     },
     {
      "id": "m6",
      "left": "Picture F",
      "right": "art and design",
-     "explanation": ""
+     "explanation": "art and design — nghệ thuật và thiết kế."
     },
     {
      "id": "m7",
      "left": "Picture G",
      "right": "information technology",
-     "explanation": ""
+     "explanation": "information technology — công nghệ thông tin."
     }
    ]
   },
@@ -722,79 +722,79 @@
      "id": "c1",
      "text": "computing",
      "category": "c",
-     "explanation": ""
+     "explanation": "computing — ngành máy tính → khoá học."
     },
     {
      "id": "c2",
      "text": "graphic designer",
      "category": "j",
-     "explanation": ""
+     "explanation": "graphic designer — người thiết kế đồ hoạ (đuôi -er chỉ người) → nghề."
     },
     {
      "id": "c3",
      "text": "web designer",
      "category": "j",
-     "explanation": ""
+     "explanation": "web designer — thiết kế web → nghề."
     },
     {
      "id": "c4",
      "text": "chef",
      "category": "j",
-     "explanation": ""
+     "explanation": "chef — đầu bếp → nghề."
     },
     {
      "id": "c5",
      "text": "doctor",
      "category": "j",
-     "explanation": ""
+     "explanation": "doctor — bác sĩ → nghề."
     },
     {
      "id": "c6",
      "text": "medicine",
      "category": "c",
-     "explanation": ""
+     "explanation": "medicine — ngành y → khoá học."
     },
     {
      "id": "c7",
      "text": "textiles",
      "category": "c",
-     "explanation": ""
+     "explanation": "textiles — ngành dệt may → khoá học."
     },
     {
      "id": "c8",
      "text": "building engineering",
      "category": "c",
-     "explanation": ""
+     "explanation": "building engineering — kỹ thuật xây dựng → khoá học."
     },
     {
      "id": "c9",
      "text": "fitness training",
      "category": "c",
-     "explanation": ""
+     "explanation": "fitness training — huấn luyện thể hình → khoá học."
     },
     {
      "id": "c10",
      "text": "shop management",
      "category": "c",
-     "explanation": ""
+     "explanation": "shop management — quản lý cửa hàng → khoá học."
     },
     {
      "id": "c11",
      "text": "badminton coach",
      "category": "j",
-     "explanation": ""
+     "explanation": "badminton coach — huấn luyện viên cầu lông → nghề."
     },
     {
      "id": "c12",
      "text": "food technology",
      "category": "c",
-     "explanation": ""
+     "explanation": "food technology — công nghệ thực phẩm → khoá học."
     },
     {
      "id": "c13",
      "text": "store assistant",
      "category": "j",
-     "explanation": ""
+     "explanation": "store assistant — nhân viên cửa hàng → nghề."
     }
    ]
   },
@@ -814,43 +814,43 @@
      "id": "m1",
      "left": "graphic designer (art and design)",
      "right": "textiles",
-     "explanation": ""
+     "explanation": "Thiết kế (art and design) ↔ khoá textiles (dệt may, thiết kế vải)."
     },
     {
      "id": "m2",
      "left": "architect (construction)",
      "right": "building engineering",
-     "explanation": ""
+     "explanation": "Kiến trúc sư (xây dựng) ↔ building engineering."
     },
     {
      "id": "m3",
      "left": "doctor (health)",
      "right": "medicine",
-     "explanation": ""
+     "explanation": "Bác sĩ (y tế) ↔ medicine."
     },
     {
      "id": "m4",
      "left": "chef (hotel and catering)",
      "right": "food technology",
-     "explanation": ""
+     "explanation": "Đầu bếp (khách sạn, ăn uống) ↔ food technology."
     },
     {
      "id": "m5",
      "left": "web designer (information technology)",
      "right": "computing",
-     "explanation": ""
+     "explanation": "Thiết kế web (CNTT) ↔ computing."
     },
     {
      "id": "m6",
      "left": "store assistant (retail)",
      "right": "shop management",
-     "explanation": ""
+     "explanation": "Nhân viên cửa hàng (bán lẻ) ↔ shop management."
     },
     {
      "id": "m7",
      "left": "badminton coach (sports and leisure)",
      "right": "fitness training",
-     "explanation": ""
+     "explanation": "Huấn luyện viên cầu lông (thể thao) ↔ fitness training."
     }
    ]
   },
@@ -880,7 +880,7 @@
      "id": "c1",
      "text": "1 I've done a course in … computing",
      "category": "ok",
-     "explanation": ""
+     "explanation": "a course in + tên ngành học: computing ✓."
     },
     {
      "id": "c2",
@@ -892,13 +892,13 @@
      "id": "c3",
      "text": "1 I've done a course in … food technology",
      "category": "ok",
-     "explanation": ""
+     "explanation": "a course in food technology ✓ (ngành học)."
     },
     {
      "id": "c4",
      "text": "2 My sister has worked on a cruise ship as a … chef",
      "category": "ok",
-     "explanation": ""
+     "explanation": "work as a + nghề: a chef ✓."
     },
     {
      "id": "c5",
@@ -910,19 +910,19 @@
      "id": "c6",
      "text": "2 My sister has worked on a cruise ship as a … doctor",
      "category": "ok",
-     "explanation": ""
+     "explanation": "work as a doctor ✓ (bác sĩ trên tàu du lịch)."
     },
     {
      "id": "c7",
      "text": "3 Our son had a job as a(n) … architect",
      "category": "ok",
-     "explanation": ""
+     "explanation": "a job as an + nghề: an architect ✓."
     },
     {
      "id": "c8",
      "text": "3 Our son had a job as a(n) … store assistant",
      "category": "ok",
-     "explanation": ""
+     "explanation": "a job as a store assistant ✓."
     },
     {
      "id": "c9",
@@ -940,13 +940,13 @@
      "id": "c11",
      "text": "4 He's very keen on … fitness training",
      "category": "ok",
-     "explanation": ""
+     "explanation": "keen on + danh từ/hoạt động: fitness training ✓."
     },
     {
      "id": "c12",
      "text": "4 He's very keen on … textiles",
      "category": "ok",
-     "explanation": ""
+     "explanation": "keen on textiles ✓ (lĩnh vực yêu thích)."
     }
    ]
   },
@@ -966,31 +966,31 @@
      "id": "m1",
      "left": "1 Anna has got a job as a ______.",
      "right": "a type of job",
-     "explanation": ""
+     "explanation": "a job as a ___ → cần một nghề."
     },
     {
      "id": "m2",
      "left": "2 She has recently completed a course in ______.",
      "right": "an area of study",
-     "explanation": ""
+     "explanation": "a course in ___ → một ngành học."
     },
     {
      "id": "m3",
      "left": "3 The new name of the department which sells computers and phones is ______.",
      "right": "a name of a place",
-     "explanation": ""
+     "explanation": "the new name of the department → tên một nơi/bộ phận."
     },
     {
      "id": "m4",
      "left": "4 The Food Photography course takes place on the ______ September.",
      "right": "a date",
-     "explanation": ""
+     "explanation": "on the ___ September → ngày."
     },
     {
      "id": "m5",
      "left": "5 There is a total of ______ places available on the course.",
      "right": "a number only",
-     "explanation": ""
+     "explanation": "a total of ___ places → chỉ là con số."
     }
    ]
   },
@@ -1086,13 +1086,13 @@
      "id": "c1",
      "text": "19",
      "category": "ok",
-     "explanation": ""
+     "explanation": "'19' là số hợp lệ: on the 19 September đọc thành on the nineteenth."
     },
     {
      "id": "c2",
      "text": "19th",
      "category": "ok",
-     "explanation": ""
+     "explanation": "'19th' là số thứ tự hợp lệ."
     },
     {
      "id": "c3",
@@ -1136,37 +1136,37 @@
      "id": "m1",
      "left": "the name of the course",
      "right": "Question 1",
-     "explanation": ""
+     "explanation": "Câu 1 hỏi tên khoá học."
     },
     {
      "id": "m2",
      "left": "the starting time of the course",
      "right": "Question 2",
-     "explanation": ""
+     "explanation": "Câu 2 hỏi giờ bắt đầu."
     },
     {
      "id": "m3",
      "left": "the duration of the course",
      "right": "Question 3",
-     "explanation": ""
+     "explanation": "Câu 3 hỏi thời lượng."
     },
     {
      "id": "m4",
      "left": "the purpose of the course",
      "right": "Question 4",
-     "explanation": ""
+     "explanation": "Câu 4 hỏi mục đích của khoá học."
     },
     {
      "id": "m5",
      "left": "the location of the course",
      "right": "Question 5",
-     "explanation": ""
+     "explanation": "Câu 5 hỏi địa điểm."
     },
     {
      "id": "m6",
      "left": "the price of the course",
      "right": "Question 6",
-     "explanation": ""
+     "explanation": "Câu 6 hỏi học phí."
     }
    ]
   },
@@ -1186,55 +1186,55 @@
      "id": "m1",
      "left": "price",
      "right": "cost",
-     "explanation": ""
+     "explanation": "price ≈ cost (giá)."
     },
     {
      "id": "m2",
      "left": "name",
      "right": "title",
-     "explanation": ""
+     "explanation": "name ≈ title (tên, tiêu đề)."
     },
     {
      "id": "m3",
      "left": "duration",
      "right": "length",
-     "explanation": ""
+     "explanation": "duration ≈ length (thời lượng)."
     },
     {
      "id": "m4",
      "left": "starts",
      "right": "begins",
-     "explanation": ""
+     "explanation": "starts ≈ begins (bắt đầu)."
     },
     {
      "id": "m5",
      "left": "takes place",
      "right": "is held",
-     "explanation": ""
+     "explanation": "takes place ≈ is held (được tổ chức)."
     },
     {
      "id": "m6",
      "left": "purpose",
      "right": "reason for",
-     "explanation": ""
+     "explanation": "purpose ≈ reason for (mục đích, lý do)."
     },
     {
      "id": "m7",
      "left": "ends",
      "right": "finishes",
-     "explanation": ""
+     "explanation": "ends ≈ finishes (kết thúc)."
     },
     {
      "id": "m8",
      "left": "location",
      "right": "place",
-     "explanation": ""
+     "explanation": "location ≈ place (địa điểm)."
     },
     {
      "id": "m9",
      "left": "practical",
      "right": "hands-on",
-     "explanation": ""
+     "explanation": "practical ≈ hands-on (thực hành)."
     }
    ]
   },
@@ -1254,49 +1254,49 @@
      "id": "m1",
      "left": "title",
      "right": "it's called",
-     "explanation": ""
+     "explanation": "title → bài nghe nói 'it's called' (nó tên là…)."
     },
     {
      "id": "m2",
      "left": "starts",
      "right": "begins",
-     "explanation": ""
+     "explanation": "starts → 'begins'."
     },
     {
      "id": "m3",
      "left": "lasts",
      "right": "goes on",
-     "explanation": ""
+     "explanation": "lasts → 'goes on' (kéo dài)."
     },
     {
      "id": "m4",
      "left": "teach",
      "right": "train",
-     "explanation": ""
+     "explanation": "teach → 'train' (đào tạo)."
     },
     {
      "id": "m5",
      "left": "different",
      "right": "a range of",
-     "explanation": ""
+     "explanation": "different → 'a range of' (nhiều loại khác nhau)."
     },
     {
      "id": "m6",
      "left": "part",
      "right": "some",
-     "explanation": ""
+     "explanation": "part → 'some' (một phần)."
     },
     {
      "id": "m7",
      "left": "nearby",
      "right": "local",
-     "explanation": ""
+     "explanation": "nearby → 'local' (gần đây, địa phương)."
     },
     {
      "id": "m8",
      "left": "total cost",
      "right": "full fee",
-     "explanation": ""
+     "explanation": "total cost → 'full fee' (toàn bộ học phí)."
     }
    ]
   }

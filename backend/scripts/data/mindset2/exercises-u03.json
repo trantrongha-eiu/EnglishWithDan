@@ -69,13 +69,13 @@
      "id": "c1",
      "text": "The answers do not follow the same order as the text.",
      "category": "t",
-     "explanation": ""
+     "explanation": "Đúng: dạng Matching information không theo thứ tự bài đọc."
     },
     {
      "id": "c2",
      "text": "The answers may not be the main idea of the paragraph.",
      "category": "t",
-     "explanation": ""
+     "explanation": "Đúng: thông tin cần tìm thường là chi tiết nhỏ, không phải ý chính của đoạn."
     },
     {
      "id": "c3",
@@ -93,7 +93,7 @@
      "id": "c5",
      "text": "The questions will often use synonyms rather than wording from the text.",
      "category": "t",
-     "explanation": ""
+     "explanation": "Đúng: câu hỏi thường dùng từ đồng nghĩa (paraphrase) thay vì lặp lại từ trong bài."
     }
    ]
   },
@@ -118,31 +118,31 @@
      "id": "m1",
      "left": "66%",
      "right": "over half",
-     "explanation": ""
+     "explanation": "66% ≈ over half (hơn một nửa)."
     },
     {
      "id": "m2",
      "left": "a combination of two or three",
      "right": "several methods",
-     "explanation": ""
+     "explanation": "a combination of two or three ≈ several methods (nhiều cách)."
     },
     {
      "id": "m3",
      "left": "25%",
      "right": "a quarter of",
-     "explanation": ""
+     "explanation": "25% = a quarter of (một phần tư)."
     },
     {
      "id": "m4",
      "left": "survey",
      "right": "questionnaire",
-     "explanation": ""
+     "explanation": "survey ≈ questionnaire (khảo sát, bảng hỏi)."
     },
     {
      "id": "m5",
      "left": "on a weekly basis",
      "right": "often",
-     "explanation": ""
+     "explanation": "on a weekly basis (hằng tuần) ≈ often (thường xuyên)."
     }
    ]
   },
@@ -350,7 +350,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Luôn đọc kỹ câu hỏi và hướng dẫn trước (có được dùng lại chữ cái không…)."
     },
     {
      "id": "q2",
@@ -366,7 +366,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Câu hỏi thường paraphrase → tìm từ đồng nghĩa."
     },
     {
      "id": "q3",
@@ -382,7 +382,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Đáp án KHÔNG theo thứ tự bài đọc."
     },
     {
      "id": "q4",
@@ -414,7 +414,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Không phải đoạn nào cũng có đáp án."
     }
    ]
   },
@@ -434,25 +434,25 @@
      "id": "m1",
      "left": "… social media is used for breaking news …",
      "right": "present simple passive",
-     "explanation": ""
+     "explanation": "is used = am/is/are + V3 → bị động hiện tại đơn."
     },
     {
      "id": "m2",
      "left": "… it was also revealed …",
      "right": "past simple passive",
-     "explanation": ""
+     "explanation": "was revealed = was/were + V3 → bị động quá khứ đơn."
     },
     {
      "id": "m3",
      "left": "… social networks are being used selectively …",
      "right": "present continuous passive",
-     "explanation": ""
+     "explanation": "are being used = am/is/are + being + V3 → bị động hiện tại tiếp diễn."
     },
     {
      "id": "m4",
      "left": "… there has been growing concern by researchers …",
      "right": "present perfect passive",
-     "explanation": ""
+     "explanation": "has been = has/have + been → cấu trúc hiện tại hoàn thành (has been growing concern)."
     }
    ]
   },
@@ -587,7 +587,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "found (quá khứ đơn) → bị động: was found."
     },
     {
      "id": "g3",
@@ -599,7 +599,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "have recovered (hiện tại hoàn thành) → bị động: has been recovered (treasure không đếm được → has)."
     },
     {
      "id": "g4",
@@ -611,7 +611,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "are celebrating (hiện tại tiếp diễn) → bị động: is being celebrated."
     }
    ]
   },

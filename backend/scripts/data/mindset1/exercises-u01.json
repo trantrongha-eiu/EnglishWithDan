@@ -16,61 +16,61 @@
      "id": "m1",
      "left": "brother",
      "right": "my parents' son",
-     "explanation": ""
+     "explanation": "brother — anh/em trai = con trai của bố mẹ mình."
     },
     {
      "id": "m2",
      "left": "cousin",
      "right": "my aunt or uncle's son or daughter",
-     "explanation": ""
+     "explanation": "cousin — anh chị em họ = con của cô/dì/chú/bác."
     },
     {
      "id": "m3",
      "left": "father-in-law",
      "right": "my husband or wife's father",
-     "explanation": ""
+     "explanation": "father-in-law — bố chồng/bố vợ (in-law = họ hàng qua hôn nhân)."
     },
     {
      "id": "m4",
      "left": "grandfather",
      "right": "my mother or father's father",
-     "explanation": ""
+     "explanation": "grandfather — ông = bố của bố hoặc mẹ."
     },
     {
      "id": "m5",
      "left": "uncle",
      "right": "my mother or father's brother",
-     "explanation": ""
+     "explanation": "uncle — chú/bác/cậu = anh em trai của bố hoặc mẹ."
     },
     {
      "id": "m6",
      "left": "aunt",
      "right": "my mother or father's sister",
-     "explanation": ""
+     "explanation": "aunt — cô/dì/bác gái = chị em gái của bố hoặc mẹ."
     },
     {
      "id": "m7",
      "left": "nephew",
      "right": "my brother or sister's son",
-     "explanation": ""
+     "explanation": "nephew — cháu trai = con trai của anh chị em mình."
     },
     {
      "id": "m8",
      "left": "niece",
      "right": "my brother or sister's daughter",
-     "explanation": ""
+     "explanation": "niece — cháu gái = con gái của anh chị em mình."
     },
     {
      "id": "m9",
      "left": "great-aunt",
      "right": "my grandmother or grandfather's sister",
-     "explanation": ""
+     "explanation": "great-aunt — bà cô/bà dì = chị em gái của ông hoặc bà."
     },
     {
      "id": "m10",
      "left": "grandmother",
      "right": "my mother or father's mother",
-     "explanation": ""
+     "explanation": "grandmother — bà = mẹ của bố hoặc mẹ."
     }
    ]
   },
@@ -568,7 +568,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "always (luôn luôn) đứng sau động từ be: is always."
     },
     {
      "id": "g2",
@@ -580,7 +580,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "often (thường) đứng trước động từ thường: often prefer."
     },
     {
      "id": "g3",
@@ -597,7 +597,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "often đứng sau are (are often retired); not always = không phải lúc nào cũng."
     },
     {
      "id": "g4",
@@ -609,7 +609,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "usually đứng trước động từ thường: usually get."
     },
     {
      "id": "g5",
@@ -622,7 +622,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Sometimes có thể đứng đầu câu để nhấn mạnh."
     }
    ]
   },
@@ -850,31 +850,31 @@
      "id": "m1",
      "left": "a goodbye party",
      "right": "a leaving party",
-     "explanation": ""
+     "explanation": "a goodbye party = a leaving party (tiệc chia tay người sắp rời đi)."
     },
     {
      "id": "m2",
      "left": "a soccer game",
      "right": "a football match",
-     "explanation": ""
+     "explanation": "soccer (Anh-Mỹ) = football (Anh-Anh); game = match (trận đấu)."
     },
     {
      "id": "m3",
      "left": "a celebration",
      "right": "a birthday party",
-     "explanation": ""
+     "explanation": "a birthday party là một dạng celebration (dịp kỷ niệm, ăn mừng)."
     },
     {
      "id": "m4",
      "left": "brother and sister",
      "right": "members of the same family",
-     "explanation": ""
+     "explanation": "Anh chị em ruột = các thành viên trong cùng một gia đình."
     },
     {
      "id": "m5",
      "left": "work in the same office",
      "right": "colleagues",
-     "explanation": ""
+     "explanation": "Làm cùng văn phòng = colleagues (đồng nghiệp)."
     }
    ]
   },
@@ -894,37 +894,37 @@
      "id": "m1",
      "left": "1 Who are the two speakers?",
      "right": "The relationship between the people",
-     "explanation": ""
+     "explanation": "Who are the two speakers? → hỏi mối quan hệ giữa hai người nói."
     },
     {
      "id": "m2",
      "left": "2 What celebration are they talking about?",
      "right": "The type of event",
-     "explanation": ""
+     "explanation": "What celebration…? → loại sự kiện."
     },
     {
      "id": "m3",
      "left": "3 What colour hat do baby girls wear at the event in Korea?",
      "right": "Colour",
-     "explanation": ""
+     "explanation": "What colour hat…? → màu sắc."
     },
     {
      "id": "m4",
      "left": "4 The purse represents …",
      "right": "The meaning of something",
-     "explanation": ""
+     "explanation": "The purse represents… → ý nghĩa tượng trưng của đồ vật."
     },
     {
      "id": "m5",
      "left": "5 What food do guests have at the event?",
      "right": "Food",
-     "explanation": ""
+     "explanation": "What food…? → đồ ăn."
     },
     {
      "id": "m6",
      "left": "6 What does the baby receive from the guests?",
      "right": "Presents",
-     "explanation": ""
+     "explanation": "What does the baby receive? → quà tặng."
     }
    ]
   }

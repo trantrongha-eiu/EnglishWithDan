@@ -21,25 +21,25 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "a beach holiday",
-     "explanation": ""
+     "explanation": "beach holiday — kỳ nghỉ biển: nằm phơi nắng, tắm biển."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "a language exchange",
-     "explanation": ""
+     "explanation": "language exchange — trao đổi ngôn ngữ: sang nước khác học tiếng, thường ở với gia đình bản xứ."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "an adventure holiday",
-     "explanation": ""
+     "explanation": "adventure holiday — kỳ nghỉ mạo hiểm: leo núi, chèo thuyền, đạp xe…"
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "a city break",
-     "explanation": ""
+     "explanation": "city break — chuyến đi ngắn ngày tới một thành phố: tham quan, mua sắm."
     }
    ]
   },
@@ -64,73 +64,73 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "try traditional food",
-     "explanation": ""
+     "explanation": "try traditional food — thử món ăn truyền thống của địa phương."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "go horse riding",
-     "explanation": ""
+     "explanation": "go horse riding — đi cưỡi ngựa."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "visit water parks",
-     "explanation": ""
+     "explanation": "visit water parks — đi công viên nước (cầu trượt, hồ bơi)."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "go mountain climbing",
-     "explanation": ""
+     "explanation": "go mountain climbing — đi leo núi."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "go on cycling tours",
-     "explanation": ""
+     "explanation": "go on cycling tours — tham gia tour đạp xe."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "visit beach resorts",
-     "explanation": ""
+     "explanation": "visit beach resorts — tới khu nghỉ dưỡng ven biển."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "go shopping",
-     "explanation": ""
+     "explanation": "go shopping — đi mua sắm."
     },
     {
      "id": "m8",
      "left": "Picture 8",
      "right": "see famous buildings",
-     "explanation": ""
+     "explanation": "see famous buildings — ngắm các toà nhà nổi tiếng."
     },
     {
      "id": "m9",
      "left": "Picture 9",
      "right": "see local attractions",
-     "explanation": ""
+     "explanation": "see local attractions — tham quan các điểm hấp dẫn của địa phương."
     },
     {
      "id": "m10",
      "left": "Picture 10",
      "right": "go on day trips",
-     "explanation": ""
+     "explanation": "go on day trips — đi chơi trong ngày (đi rồi về luôn)."
     },
     {
      "id": "m11",
      "left": "Picture 11",
      "right": "go on cultural visits",
-     "explanation": ""
+     "explanation": "go on cultural visits — đi tham quan văn hoá: bảo tàng, phòng tranh, di tích."
     },
     {
      "id": "m12",
      "left": "Picture 12",
      "right": "stay with host families",
-     "explanation": ""
+     "explanation": "stay with host families — ở cùng gia đình bản xứ (gia đình chủ nhà)."
     }
    ]
   },
@@ -163,7 +163,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nhiều hoạt động như đạp xe, cưỡi ngựa → an adventure holiday."
     },
     {
      "id": "g2",
@@ -175,7 +175,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Manh mối 'relaxing all the time' (nằm nghỉ suốt) → a beach holiday."
     },
     {
      "id": "g3",
@@ -187,7 +187,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Tới Paris, đi thăm bảo tàng → a city break (chuyến đi thành phố)."
     },
     {
      "id": "g4",
@@ -199,7 +199,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Ở cùng gia đình bản xứ ở Ý → a language exchange."
     },
     {
      "id": "g5",
@@ -211,7 +211,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Đi cùng bố mẹ, cắm trại bên hồ → a family holiday."
     }
    ]
   },
@@ -249,73 +249,73 @@
      "id": "c1",
      "text": "go on day trips",
      "category": "city",
-     "explanation": ""
+     "explanation": "Đi chơi trong ngày từ thành phố → hợp với city break."
     },
     {
      "id": "c2",
      "text": "see local attractions",
      "category": "city",
-     "explanation": ""
+     "explanation": "Tham quan các điểm nổi tiếng của thành phố → city break."
     },
     {
      "id": "c3",
      "text": "go shopping",
      "category": "city",
-     "explanation": ""
+     "explanation": "Mua sắm ở các trung tâm thành phố → city break."
     },
     {
      "id": "c4",
      "text": "try traditional food",
      "category": "city",
-     "explanation": ""
+     "explanation": "Ăn món truyền thống ở nhà hàng thành phố → city break."
     },
     {
      "id": "c5",
      "text": "see famous buildings",
      "category": "city",
-     "explanation": ""
+     "explanation": "Ngắm các toà nhà nổi tiếng → city break."
     },
     {
      "id": "c6",
      "text": "go on cultural visits",
      "category": "city",
-     "explanation": ""
+     "explanation": "Bảo tàng, phòng tranh → city break."
     },
     {
      "id": "c7",
      "text": "go mountain climbing",
      "category": "adv",
-     "explanation": ""
+     "explanation": "Leo núi là hoạt động mạo hiểm → adventure holiday."
     },
     {
      "id": "c8",
      "text": "go horse riding",
      "category": "adv",
-     "explanation": ""
+     "explanation": "Cưỡi ngựa là hoạt động vận động ngoài trời → adventure holiday."
     },
     {
      "id": "c9",
      "text": "go on cycling tours",
      "category": "adv",
-     "explanation": ""
+     "explanation": "Tour đạp xe đường dài → adventure holiday."
     },
     {
      "id": "c10",
      "text": "visit water parks",
      "category": "adv",
-     "explanation": ""
+     "explanation": "Công viên nước với cầu trượt cảm giác mạnh → adventure holiday."
     },
     {
      "id": "c11",
      "text": "visit beach resorts",
      "category": "beach",
-     "explanation": ""
+     "explanation": "Khu nghỉ dưỡng ven biển → beach holiday."
     },
     {
      "id": "c12",
      "text": "stay with host families",
      "category": "lang",
-     "explanation": ""
+     "explanation": "Ở với gia đình bản xứ để học tiếng → language exchange."
     }
    ]
   },
@@ -443,7 +443,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "be good at mô tả trạng thái/khả năng ở hiện tại → a state in the present."
     },
     {
      "id": "q2",
@@ -463,7 +463,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Học ở trường đều đặn → thói quen/việc thường xuyên (hiện tại đơn)."
     },
     {
      "id": "q3",
@@ -479,7 +479,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "decided là quá khứ đơn → hành động đã kết thúc trong quá khứ."
     },
     {
      "id": "q4",
@@ -495,7 +495,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "can travel → nói về điều chung ở hiện tại → Present simple."
     },
     {
      "id": "q5",
@@ -511,7 +511,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "didn't + V → phủ định quá khứ đơn → Past simple."
     }
    ]
   },
@@ -628,7 +628,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Câu hỏi hiện tại đơn cần trợ động từ: Do you like + V-ing?"
     },
     {
      "id": "q2",
@@ -644,7 +644,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Hỏi bằng Do → trả lời ngắn Yes, I do (hiện tại, vì 'always' là thói quen)."
     },
     {
      "id": "q3",
@@ -676,7 +676,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "last summer → quá khứ đơn: went."
     },
     {
      "id": "q5",
@@ -692,7 +692,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Hỏi về chuyến đi mùa hè năm ngoái → What did you do?"
     },
     {
      "id": "q6",
@@ -740,7 +740,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Hỏi về vở kịch đã xem → quá khứ: Was it good?"
     },
     {
      "id": "q9",
@@ -756,7 +756,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Phủ định hiện tại đơn: don't + really + like (sở thích chung)."
     },
     {
      "id": "q10",
@@ -772,7 +772,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Vở kịch đã xem trong quá khứ; boring là tính từ → dùng be: wasn't boring."
     }
    ]
   },
@@ -798,7 +798,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "last February → quá khứ đơn: went."
     },
     {
      "id": "g2",
@@ -816,7 +816,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Sở thích chung (không thích biển) → hiện tại đơn don't like; quyết định trong quá khứ → decided."
     },
     {
      "id": "g3",
@@ -834,7 +834,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Usually → hiện tại đơn enjoy; chuyến đi đã qua → didn't have time."
     },
     {
      "id": "g4",
@@ -851,7 +851,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Đã xem trong chuyến đi → saw; nhận xét hiện tại (các công trình vẫn còn đó) → are."
     },
     {
      "id": "g5",
@@ -874,7 +874,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "last year → learnt/learned; cảm giác trong chuyến đi → felt; thời điểm khi đó → was."
     },
     {
      "id": "g6",
@@ -899,7 +899,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Hỏi sở thích chung → hiện tại đơn: Do you prefer…?"
     }
    ]
   },
@@ -938,7 +938,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Simon viết 'I went to Madrid for my last holiday' → Madrid."
     },
     {
      "id": "q2",
@@ -958,7 +958,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Bình thường anh ấy đi nơi nóng (biển); lần này là city break và trời lạnh → A."
     }
    ]
   },
@@ -989,7 +989,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Kỳ nghỉ vừa qua → quá khứ đơn: went; was."
     },
     {
      "id": "g2",
@@ -1006,7 +1006,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Ngày đầu tiên (đã qua) → visited; Normally (thói quen) → go."
     },
     {
      "id": "g3",
@@ -1023,7 +1023,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Ngày thứ hai → went; buy → bought (bất quy tắc)."
     },
     {
      "id": "g4",
@@ -1040,7 +1040,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "That night → was; eat → ate (bất quy tắc)."
     },
     {
      "id": "g5",
@@ -1058,7 +1058,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "usually → hiện tại đơn don't try; this time (lần này đã làm) → did."
     },
     {
      "id": "g6",
@@ -1080,7 +1080,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "try → tried (y → ied); bữa ăn đã qua → was; chuyến đi đã kết thúc → was."
     },
     {
      "id": "g7",
@@ -1102,7 +1102,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "take → took; câu hỏi quá khứ: What did you do…? Where did you go?"
     }
    ]
   },
@@ -1132,55 +1132,55 @@
      "id": "c1",
      "text": "He uses a greeting to start the email.",
      "category": "y",
-     "explanation": ""
+     "explanation": "Email mở đầu bằng lời chào (Hi …)."
     },
     {
      "id": "c2",
      "text": "He says where he went on holiday.",
      "category": "y",
-     "explanation": ""
+     "explanation": "Có nói nơi đi: Madrid."
     },
     {
      "id": "c3",
      "text": "He says how he travelled there.",
      "category": "n",
-     "explanation": ""
+     "explanation": "Không nhắc phương tiện (máy bay, tàu…)."
     },
     {
      "id": "c4",
      "text": "He says how long he stayed.",
      "category": "n",
-     "explanation": ""
+     "explanation": "Không nói ở bao lâu (chỉ nói ngày đầu, ngày thứ hai)."
     },
     {
      "id": "c5",
      "text": "He says what he did on holiday.",
      "category": "y",
-     "explanation": ""
+     "explanation": "Có kể: tham quan, mua sắm, ăn nhà hàng, chụp ảnh."
     },
     {
      "id": "c6",
      "text": "He says what he usually does on holiday.",
      "category": "y",
-     "explanation": ""
+     "explanation": "Có nói thói quen: Normally I go to hot places / usually don't try new food."
     },
     {
      "id": "c7",
      "text": "He asks about his friend's last holiday.",
      "category": "y",
-     "explanation": ""
+     "explanation": "Có hỏi bạn: What did you do on your holiday? Where did you go?"
     },
     {
      "id": "c8",
      "text": "He asks about his friend's next holiday.",
      "category": "n",
-     "explanation": ""
+     "explanation": "Không hỏi về kỳ nghỉ sắp tới."
     },
     {
      "id": "c9",
      "text": "He finishes with his name at the end.",
      "category": "y",
-     "explanation": ""
+     "explanation": "Kết thúc email bằng tên Simon."
     }
    ]
   },
@@ -1283,25 +1283,25 @@
      "id": "m1",
      "left": "I didn't go to the USA",
      "right": "because I'm not very good at sports.",
-     "explanation": ""
+     "explanation": "Lý do không đi Mỹ: because + nguyên nhân (không giỏi thể thao)."
     },
     {
      "id": "m2",
      "left": "The family had a daughter my age called Carmen,",
      "right": "so we had a lot of fun together.",
-     "explanation": ""
+     "explanation": "Có bạn cùng tuổi → kết quả: so we had a lot of fun together."
     },
     {
      "id": "m3",
      "left": "As I love animals",
      "right": "it was a really good experience for me.",
-     "explanation": ""
+     "explanation": "As (= because) + lý do (yêu động vật) → mệnh đề kết quả: trải nghiệm rất tốt."
     },
     {
      "id": "m4",
      "left": "Carmen spoke really good English,",
      "right": "so I was worried that I wouldn't improve my Spanish.",
-     "explanation": ""
+     "explanation": "Carmen nói tiếng Anh giỏi → kết quả: so I was worried… (lo không cải thiện được tiếng Tây Ban Nha)."
     }
    ]
   },
@@ -1379,7 +1379,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Mệnh đề sau là lý do (thích khám phá nơi mới) → because."
     },
     {
      "id": "q5",
@@ -1395,7 +1395,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Đứng đầu câu, nêu lý do → As (So không đứng đầu câu với nghĩa 'vì')."
     }
    ]
   },
@@ -1481,7 +1481,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Mua đồ rẻ hơn ở sân bay → go shopping."
     },
     {
      "id": "g2",
@@ -1494,7 +1494,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Ở nông thôn, yêu động vật → go horse-riding."
     },
     {
      "id": "g3",
@@ -1506,7 +1506,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Lâu đài thế kỷ 9 ở thị trấn → visit local attractions."
     },
     {
      "id": "g4",
@@ -1518,7 +1518,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Trời nóng, muốn mát → visit water parks."
     },
     {
      "id": "g5",
@@ -1530,7 +1530,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Đi xe khách ra ngoại ô rồi về trong ngày → go on day trips."
     },
     {
      "id": "g6",
@@ -1542,7 +1542,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Ở nhà người ta rẻ hơn khách sạn → stay with a host family."
     },
     {
      "id": "g7",
@@ -1554,7 +1554,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Cần khoẻ (fit) để đi xa bằng xe đạp → go on a cycling tour."
     },
     {
      "id": "g8",
@@ -1566,7 +1566,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Môn thể thao nguy hiểm, không nên đi một mình → go mountain climbing."
     },
     {
      "id": "g9",
@@ -1578,7 +1578,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Xem bảo tàng, phòng tranh → go on a cultural visit."
     },
     {
      "id": "g10",
@@ -1590,7 +1590,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Được ở gần biển → visit a beach resort."
     }
    ]
   },
@@ -1628,7 +1628,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Hơn một triệu khách mỗi năm → popular (được ưa chuộng)."
     },
     {
      "id": "g2",
@@ -1640,7 +1640,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "So sánh đi với bạn và với gia đình → fun (vui)."
     },
     {
      "id": "g3",
@@ -1652,7 +1652,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Động vật sống trong môi trường tự nhiên của chúng → natural."
     },
     {
      "id": "g4",
@@ -1664,7 +1664,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Khu vực gia đình bản xứ sống → local (địa phương)."
     },
     {
      "id": "g5",
@@ -1676,7 +1676,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nhiều người thích biển nhưng tôi thấy… → boring (chán, trái với số đông)."
     },
     {
      "id": "g6",
@@ -1688,7 +1688,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Bảo tàng, phòng tranh → cultural (văn hoá)."
     },
     {
      "id": "g7",
@@ -1700,7 +1700,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nhiều toà nhà do Gaudí thiết kế → interesting (thú vị)."
     },
     {
      "id": "g8",
@@ -1712,7 +1712,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Bữa ăn ngon nhất → delicious."
     },
     {
      "id": "g9",
@@ -1724,7 +1724,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Tháp Eiffel → famous (nổi tiếng nhất Paris)."
     },
     {
      "id": "g10",
@@ -1736,7 +1736,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Món ăn truyền thống của nơi mình tới → traditional."
     }
    ]
   },
@@ -1756,31 +1756,31 @@
      "id": "m1",
      "left": "I go to French lessons",
      "right": "twice a week.",
-     "explanation": ""
+     "explanation": "go to lessons (thói quen) + tần suất: twice a week."
     },
     {
      "id": "m2",
      "left": "The weather in Stockholm wasn't very nice",
      "right": "when we visited in December.",
-     "explanation": ""
+     "explanation": "wasn't (quá khứ) + when we visited in December (thời điểm trong quá khứ)."
     },
     {
      "id": "m3",
      "left": "I'm not good at sport",
      "right": "but I enjoy hiking and horse-riding.",
-     "explanation": ""
+     "explanation": "Đối lập: không giỏi thể thao but thích đi bộ đường dài, cưỡi ngựa."
     },
     {
      "id": "m4",
      "left": "Did you decide to",
      "right": "stay with a host family?",
-     "explanation": ""
+     "explanation": "decide to + V: Did you decide to stay with a host family?"
     },
     {
      "id": "m5",
      "left": "Are you good",
      "right": "at sailing?",
-     "explanation": ""
+     "explanation": "be good at + danh từ/V-ing: Are you good at sailing?"
     }
    ]
   }

@@ -174,7 +174,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Bài không nói ai cũng thích sinh nhật → Not Given (đừng dùng hiểu biết bên ngoài)."
     },
     {
      "id": "q5",
@@ -194,7 +194,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Bài không đề cập cách tổ chức sinh nhật ở các nước khác nhau → Not Given."
     }
    ]
   },
@@ -220,7 +220,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Không dựa vào (rely on) việc từ giống nhau để chọn đáp án."
     },
     {
      "id": "g2",
@@ -232,7 +232,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Đáp án theo đúng thứ tự (order) trong bài."
     },
     {
      "id": "g3",
@@ -244,7 +244,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "True nghĩa là thông tin giống hệt (the same) bài đọc, không chỉ tương tự."
     },
     {
      "id": "g4",
@@ -256,7 +256,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Đọc thật kỹ (carefully) phần liên quan."
     },
     {
      "id": "g5",
@@ -268,7 +268,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Tìm từ đồng nghĩa (synonyms) vì câu hỏi hiếm khi dùng lại từ trong bài."
     }
    ]
   },
@@ -302,31 +302,31 @@
      "id": "c1",
      "text": "The statement means the same as the text, using synonyms.",
      "category": "t",
-     "explanation": ""
+     "explanation": "Nhận định cùng nghĩa với bài, chỉ khác từ (đồng nghĩa) → True."
     },
     {
      "id": "c2",
      "text": "The text says something different (e.g. \"many\" in the text, \"everyone\" in the statement).",
      "category": "f",
-     "explanation": ""
+     "explanation": "Bài nói 'many' nhưng câu nói 'everyone' → mâu thuẫn → False."
     },
     {
      "id": "c3",
      "text": "The text contradicts a word like \"only\" or \"any number\".",
      "category": "f",
-     "explanation": ""
+     "explanation": "Bài phủ nhận các từ như 'only' / 'any number' → False."
     },
     {
      "id": "c4",
      "text": "It may be true in real life, but the text does not say it.",
      "category": "n",
-     "explanation": ""
+     "explanation": "Đúng ngoài đời nhưng bài không nói → Not Given."
     },
     {
      "id": "c5",
      "text": "The text does not mention the topic at all.",
      "category": "n",
-     "explanation": ""
+     "explanation": "Bài không nhắc tới chủ đề → Not Given."
     }
    ]
   },
@@ -356,7 +356,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Câu b dùng could… would (điều kiện loại 2) → khó xảy ra / giả định."
     },
     {
      "id": "q2",
@@ -372,7 +372,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Câu a dùng If + hiện tại, will → có thể xảy ra."
     },
     {
      "id": "q3",
@@ -388,7 +388,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "If I have…, I will come → điều kiện loại 1."
     },
     {
      "id": "q4",
@@ -404,7 +404,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "If I could…, it would be → điều kiện loại 2."
     }
    ]
   },
@@ -435,7 +435,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Loại 1: If + hiện tại đơn, will + động từ nguyên mẫu."
     },
     {
      "id": "g2",
@@ -452,7 +452,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Loại 2: If + quá khứ đơn, would + động từ nguyên mẫu."
     }
    ]
   },
@@ -602,37 +602,37 @@
      "id": "c1",
      "text": "athletics events, champions, competition",
      "category": "s",
-     "explanation": ""
+     "explanation": "Điền kinh, nhà vô địch, thi đấu → lễ hội thể thao."
     },
     {
      "id": "c2",
      "text": "dishes, produce from different parts of the world",
      "category": "f",
-     "explanation": ""
+     "explanation": "Món ăn, nông sản khắp thế giới → lễ hội ẩm thực."
     },
     {
      "id": "c3",
      "text": "main attraction, cancel, throat infection",
      "category": "m",
-     "explanation": ""
+     "explanation": "Tiết mục chính bị huỷ vì viêm họng (ca sĩ) → lễ hội âm nhạc."
     },
     {
      "id": "c4",
      "text": "products, practical applications, developments",
      "category": "t",
-     "explanation": ""
+     "explanation": "Sản phẩm, ứng dụng thực tế, phát triển → hội chợ công nghệ."
     },
     {
      "id": "c5",
      "text": "talks, novelist, plotting and characterisation",
      "category": "p",
-     "explanation": ""
+     "explanation": "Buổi nói chuyện, tiểu thuyết gia, xây dựng cốt truyện và nhân vật → lễ hội văn học."
     },
     {
      "id": "c6",
      "text": "works on display, exhibition space, portraits",
      "category": "a",
-     "explanation": ""
+     "explanation": "Tác phẩm trưng bày, không gian triển lãm, chân dung → lễ hội nghệ thuật và thủ công."
     }
    ]
   }

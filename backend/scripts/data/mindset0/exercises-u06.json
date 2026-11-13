@@ -21,31 +21,31 @@
      "id": "m1",
      "left": "Picture 1 (Sydney Harbour, Australia)",
      "right": "bridge",
-     "explanation": ""
+     "explanation": "Sydney Harbour Bridge — cây cầu (bridge) bắc qua vịnh Sydney."
     },
     {
      "id": "m2",
      "left": "Picture 2 (Bird's Nest, China)",
      "right": "stadium",
-     "explanation": ""
+     "explanation": "Tổ chim (Bird's Nest) ở Bắc Kinh là sân vận động (stadium) Olympic 2008."
     },
     {
      "id": "m3",
      "left": "Picture 3 (Liberty, USA)",
      "right": "statue",
-     "explanation": ""
+     "explanation": "Tượng Nữ thần Tự do (Statue of Liberty) → statue (bức tượng)."
     },
     {
      "id": "m4",
      "left": "Picture 4 (Neuschwanstein, Germany)",
      "right": "castle",
-     "explanation": ""
+     "explanation": "Neuschwanstein là lâu đài (castle) ở Đức."
     },
     {
      "id": "m5",
      "left": "Picture 5 (Pisa, Italy)",
      "right": "tower",
-     "explanation": ""
+     "explanation": "Tháp nghiêng Pisa → tower (tháp)."
     }
    ]
   },
@@ -75,97 +75,97 @@
      "id": "c1",
      "text": "square",
      "category": "place",
-     "explanation": ""
+     "explanation": "square — quảng trường → địa điểm trong thành phố."
     },
     {
      "id": "c2",
      "text": "post office",
      "category": "place",
-     "explanation": ""
+     "explanation": "post office — bưu điện → địa điểm."
     },
     {
      "id": "c3",
      "text": "police station",
      "category": "place",
-     "explanation": ""
+     "explanation": "police station — đồn cảnh sát → địa điểm."
     },
     {
      "id": "c4",
      "text": "library",
      "category": "place",
-     "explanation": ""
+     "explanation": "library — thư viện → địa điểm."
     },
     {
      "id": "c5",
      "text": "sports centre",
      "category": "place",
-     "explanation": ""
+     "explanation": "sports centre — trung tâm thể thao → địa điểm."
     },
     {
      "id": "c6",
      "text": "department store",
      "category": "place",
-     "explanation": ""
+     "explanation": "department store — cửa hàng bách hoá → địa điểm."
     },
     {
      "id": "c7",
      "text": "museum",
      "category": "place",
-     "explanation": ""
+     "explanation": "museum — bảo tàng → địa điểm."
     },
     {
      "id": "c8",
      "text": "theatre",
      "category": "place",
-     "explanation": ""
+     "explanation": "theatre — nhà hát → địa điểm."
     },
     {
      "id": "c9",
      "text": "motorway",
      "category": "travel",
-     "explanation": ""
+     "explanation": "motorway — đường cao tốc → đi lại, giao thông."
     },
     {
      "id": "c10",
      "text": "motorbike",
      "category": "travel",
-     "explanation": ""
+     "explanation": "motorbike — xe máy → phương tiện."
     },
     {
      "id": "c11",
      "text": "coach",
      "category": "travel",
-     "explanation": ""
+     "explanation": "coach — xe khách đường dài → phương tiện."
     },
     {
      "id": "c12",
      "text": "platform",
      "category": "travel",
-     "explanation": ""
+     "explanation": "platform — sân ga (nơi đứng chờ tàu) → giao thông."
     },
     {
      "id": "c13",
      "text": "ticket",
      "category": "travel",
-     "explanation": ""
+     "explanation": "ticket — vé → đi lại."
     },
     {
      "id": "c14",
      "text": "the underground",
      "category": "travel",
-     "explanation": ""
+     "explanation": "the underground — tàu điện ngầm → phương tiện."
     },
     {
      "id": "c15",
      "text": "flight",
      "category": "travel",
-     "explanation": ""
+     "explanation": "flight — chuyến bay → đi lại."
     },
     {
      "id": "c16",
      "text": "boat trip",
      "category": "travel",
-     "explanation": ""
+     "explanation": "boat trip — chuyến đi bằng thuyền → đi lại."
     }
    ]
   },
@@ -185,61 +185,61 @@
      "id": "m1",
      "left": "send a parcel",
      "right": "post office",
-     "explanation": ""
+     "explanation": "Gửi bưu kiện (parcel) → post office."
     },
     {
      "id": "m2",
      "left": "stay for a few days",
      "right": "hotel",
-     "explanation": ""
+     "explanation": "Ở lại vài ngày → hotel."
     },
     {
      "id": "m3",
      "left": "speak to a policeman",
      "right": "police station",
-     "explanation": ""
+     "explanation": "Nói chuyện với cảnh sát → police station."
     },
     {
      "id": "m4",
      "left": "exercise",
      "right": "sports centre",
-     "explanation": ""
+     "explanation": "Tập thể dục → sports centre."
     },
     {
      "id": "m5",
      "left": "have a meal",
      "right": "restaurant",
-     "explanation": ""
+     "explanation": "Ăn một bữa → restaurant."
     },
     {
      "id": "m6",
      "left": "do some food shopping",
      "right": "supermarket",
-     "explanation": ""
+     "explanation": "Mua thực phẩm → supermarket."
     },
     {
      "id": "m7",
      "left": "catch a bus or a train",
      "right": "station",
-     "explanation": ""
+     "explanation": "Bắt xe buýt/tàu → station (bến, ga)."
     },
     {
      "id": "m8",
      "left": "relax on the grass",
      "right": "park",
-     "explanation": ""
+     "explanation": "Nằm thư giãn trên cỏ → park."
     },
     {
      "id": "m9",
      "left": "borrow a book",
      "right": "library",
-     "explanation": ""
+     "explanation": "Mượn sách → library (thư viện cho mượn; bookshop là nơi bán)."
     },
     {
      "id": "m10",
      "left": "look at things from the past",
      "right": "museum",
-     "explanation": ""
+     "explanation": "Xem đồ vật thời xưa → museum."
     }
    ]
   },
@@ -259,43 +259,43 @@
      "id": "m1",
      "left": "seat · ticket · platform · travel",
      "right": "train",
-     "explanation": ""
+     "explanation": "Ghế, vé, sân ga (platform), di chuyển → train (tàu hoả)."
     },
     {
      "id": "m2",
      "left": "lift · floor · clothes · toys",
      "right": "department store",
-     "explanation": ""
+     "explanation": "Thang máy, các tầng, quần áo, đồ chơi → department store (bách hoá nhiều tầng)."
     },
     {
      "id": "m3",
      "left": "cars · road · sign · fast",
      "right": "motorway",
-     "explanation": ""
+     "explanation": "Xe ô tô, đường, biển báo, chạy nhanh → motorway (cao tốc)."
     },
     {
      "id": "m4",
      "left": "coffee · snack · talk · table",
      "right": "cafe",
-     "explanation": ""
+     "explanation": "Cà phê, đồ ăn nhẹ, trò chuyện, bàn → cafe."
     },
     {
      "id": "m5",
      "left": "houses · cars · bikes · neighbours",
      "right": "street",
-     "explanation": ""
+     "explanation": "Nhà, xe, xe đạp, hàng xóm → street (con phố)."
     },
     {
      "id": "m6",
      "left": "history · visitors · building · museum",
      "right": "castle",
-     "explanation": ""
+     "explanation": "Lịch sử, khách tham quan, công trình cổ → castle (lâu đài)."
     },
     {
      "id": "m7",
      "left": "flight · plane · passenger · pilot",
      "right": "airport",
-     "explanation": ""
+     "explanation": "Chuyến bay, máy bay, hành khách, phi công → airport."
     }
    ]
   },
@@ -329,7 +329,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Không có gì làm → cảm thấy chán: bored."
     },
     {
      "id": "q2",
@@ -349,7 +349,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Mua quần áo mới → new clothes."
     },
     {
      "id": "q3",
@@ -369,7 +369,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Các cửa hàng mình thích nhất → favourite shops."
     },
     {
      "id": "q4",
@@ -429,7 +429,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Đi mua sắm vài tiếng → mệt: tired, nên vào quán nghỉ."
     },
     {
      "id": "q7",
@@ -449,7 +449,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Một món ăn nhẹ tốt cho sức khoẻ → healthy snack."
     }
    ]
   },
@@ -480,7 +480,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Tính từ một âm tiết → +er / +est: taller, the tallest."
     },
     {
      "id": "g2",
@@ -497,7 +497,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "famous có hai âm tiết (không tận cùng -y) → more / the most."
     },
     {
      "id": "g3",
@@ -514,7 +514,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Phụ âm–nguyên âm–phụ âm → gấp đôi t: hotter, the hottest."
     },
     {
      "id": "g4",
@@ -531,7 +531,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Tận cùng -y → đổi thành i: busier, the busiest."
     },
     {
      "id": "g5",
@@ -548,7 +548,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Tính từ dài → more interesting / the most interesting."
     },
     {
      "id": "g6",
@@ -567,7 +567,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "friendly (-ly) dùng được cả hai cách: friendlier / more friendly."
     },
     {
      "id": "g7",
@@ -584,7 +584,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Một âm tiết → older, the oldest."
     },
     {
      "id": "g8",
@@ -601,7 +601,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Gấp đôi n: thinner, the thinnest."
     }
    ]
   },
@@ -663,7 +663,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Có the + 'in the English-speaking world' (so với cả nhóm) → so sánh nhất: oldest."
     },
     {
      "id": "q4",
@@ -679,7 +679,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Có than → so sánh hơn: More languages."
     },
     {
      "id": "q5",
@@ -695,7 +695,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Năm 1830, nhà ga đầu tiên trên thế giới → first."
     },
     {
      "id": "q6",
@@ -711,7 +711,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "the + được bình chọn là nơi đáng sống nhất → best."
     },
     {
      "id": "q7",
@@ -727,7 +727,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Có than → so sánh hơn: larger."
     },
     {
      "id": "q8",
@@ -743,7 +743,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "the + successful (tính từ dài) → the most successful."
     },
     {
      "id": "q9",
@@ -775,7 +775,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "More than 20 = hơn 20 (có than)."
     }
    ]
   },
@@ -805,97 +805,97 @@
      "id": "c1",
      "text": "clean",
      "category": "er",
-     "explanation": ""
+     "explanation": "clean — một âm tiết → cleaner, the cleanest."
     },
     {
      "id": "c2",
      "text": "low",
      "category": "er",
-     "explanation": ""
+     "explanation": "low — một âm tiết → lower, the lowest."
     },
     {
      "id": "c3",
      "text": "high",
      "category": "er",
-     "explanation": ""
+     "explanation": "high — một âm tiết → higher, the highest."
     },
     {
      "id": "c4",
      "text": "cheap",
      "category": "er",
-     "explanation": ""
+     "explanation": "cheap — một âm tiết → cheaper, the cheapest."
     },
     {
      "id": "c5",
      "text": "old",
      "category": "er",
-     "explanation": ""
+     "explanation": "old — một âm tiết → older, the oldest."
     },
     {
      "id": "c6",
      "text": "new",
      "category": "er",
-     "explanation": ""
+     "explanation": "new — một âm tiết → newer, the newest."
     },
     {
      "id": "c7",
      "text": "fast",
      "category": "er",
-     "explanation": ""
+     "explanation": "fast — một âm tiết → faster, the fastest."
     },
     {
      "id": "c8",
      "text": "strong",
      "category": "er",
-     "explanation": ""
+     "explanation": "strong — một âm tiết → stronger, the strongest."
     },
     {
      "id": "c9",
      "text": "expensive",
      "category": "more",
-     "explanation": ""
+     "explanation": "expensive — ba âm tiết → more / the most."
     },
     {
      "id": "c10",
      "text": "modern",
      "category": "more",
-     "explanation": ""
+     "explanation": "modern — hai âm tiết không tận cùng -y → more modern."
     },
     {
      "id": "c11",
      "text": "comfortable",
      "category": "more",
-     "explanation": ""
+     "explanation": "comfortable — tính từ dài → more / the most."
     },
     {
      "id": "c12",
      "text": "difficult",
      "category": "more",
-     "explanation": ""
+     "explanation": "difficult — tính từ dài → more / the most."
     },
     {
      "id": "c13",
      "text": "important",
      "category": "more",
-     "explanation": ""
+     "explanation": "important — tính từ dài → more / the most."
     },
     {
      "id": "c14",
      "text": "careful",
      "category": "more",
-     "explanation": ""
+     "explanation": "careful — hai âm tiết, tận cùng -ful → more careful."
     },
     {
      "id": "c15",
      "text": "interesting",
      "category": "more",
-     "explanation": ""
+     "explanation": "interesting — tính từ dài → more / the most."
     },
     {
      "id": "c16",
      "text": "crowded",
      "category": "more",
-     "explanation": ""
+     "explanation": "crowded — tính từ đuôi -ed → more crowded."
     }
    ]
   },
@@ -926,7 +926,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "So sánh 3 xe, xe A rẻ nhất → the cheapest (cheap + est)."
     },
     {
      "id": "g2",
@@ -938,7 +938,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "many → so sánh nhất bất quy tắc: the most doors."
     },
     {
      "id": "g3",
@@ -950,7 +950,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "large tận cùng e → thêm -st: the largest engine."
     },
     {
      "id": "g4",
@@ -962,7 +962,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "many → the most kilometres."
     },
     {
      "id": "g5",
@@ -974,7 +974,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "expensive dài → the most expensive."
     },
     {
      "id": "g6",
@@ -986,7 +986,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "small → the smallest."
     },
     {
      "id": "g7",
@@ -998,7 +998,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "old → the oldest."
     }
    ]
   },
@@ -1099,7 +1099,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "one of the most famous cities = so sánh nhất (the most + tính từ dài) nêu lý do nơi này thú vị."
     },
     {
      "id": "q3",
@@ -1119,7 +1119,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "After that = sau đó, dùng để chuyển sang nơi thứ hai."
     }
    ]
   },
@@ -1154,7 +1154,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Không thích chuyến bay vì ghế không thoải mái → comfortable."
     },
     {
      "id": "g2",
@@ -1166,7 +1166,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Kính, hình dáng lạ → hiện đại: modern."
     },
     {
      "id": "g3",
@@ -1178,7 +1178,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nhân viên lịch sự và thân thiện → friendly."
     },
     {
      "id": "g4",
@@ -1190,7 +1190,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Cuốn sách về tương lai hành tinh → interesting."
     },
     {
      "id": "g5",
@@ -1202,7 +1202,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Từ thế kỷ 19 → old."
     },
     {
      "id": "g6",
@@ -1214,7 +1214,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Núi không cao lắm nhưng cảnh vẫn đẹp → high."
     },
     {
      "id": "g7",
@@ -1226,7 +1226,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "well-known = famous (người nổi tiếng)."
     }
    ]
   },
@@ -1251,31 +1251,31 @@
      "id": "m1",
      "left": "Diagram 1",
      "right": "on the left of",
-     "explanation": ""
+     "explanation": "Ngôi nhà đỏ nằm bên trái toà nhà → on the left of."
     },
     {
      "id": "m2",
      "left": "Diagram 2",
      "right": "on the right of",
-     "explanation": ""
+     "explanation": "Ngôi nhà nằm bên phải → on the right of."
     },
     {
      "id": "m3",
      "left": "Diagram 3",
      "right": "opposite",
-     "explanation": ""
+     "explanation": "Hai bên đối diện nhau (cách một con đường) → opposite."
     },
     {
      "id": "m4",
      "left": "Diagram 4",
      "right": "next to",
-     "explanation": ""
+     "explanation": "Sát cạnh nhau → next to."
     },
     {
      "id": "m5",
      "left": "Diagram 5",
      "right": "between",
-     "explanation": ""
+     "explanation": "Nằm giữa hai toà nhà → between."
     }
    ]
   },
@@ -1316,7 +1316,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Hai nơi đối diện nhau → opposite."
     },
     {
      "id": "g2",
@@ -1328,7 +1328,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Bên kia đường so với rạp → across (the road from)."
     },
     {
      "id": "g3",
@@ -1340,7 +1340,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Giữa quán cà phê và khách sạn → between… and…"
     },
     {
      "id": "g4",
@@ -1352,7 +1352,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nằm phía sau trạm xăng → behind."
     },
     {
      "id": "g5",
@@ -1364,7 +1364,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "next to = ngay bên cạnh (chỗ trống đứng trước 'to')."
     },
     {
      "id": "g6",
@@ -1376,7 +1376,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Ra khỏi khách sạn, bưu điện ở phía tay phải → on your right."
     },
     {
      "id": "g7",
@@ -1388,7 +1388,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Bến xe buýt ở phía trước công viên → in front of."
     },
     {
      "id": "g8",
@@ -1400,7 +1400,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Ra khỏi bảo tàng, thư viện ở bên tay trái → on your left."
     }
    ]
   },
@@ -1439,7 +1439,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Trên bản đồ, cửa hàng điện thoại nằm giữa ngân hàng và cửa hàng giày."
     },
     {
      "id": "q2",
@@ -1459,7 +1459,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Xem phim ở rạp chiếu (cinema) trên tầng một."
     },
     {
      "id": "q3",
@@ -1479,7 +1479,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Hiệu sách là cửa hàng thứ hai bên phải tính từ lối vào bãi xe, cạnh cửa hàng thể thao."
     }
    ]
   },
@@ -1561,7 +1561,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "safe → safer (tận cùng e thêm -r); fast → faster."
     },
     {
      "id": "g2",
@@ -1573,7 +1573,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "bad → worse (bất quy tắc)."
     },
     {
      "id": "g3",
@@ -1585,7 +1585,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "cheap → cheaper."
     },
     {
      "id": "g4",
@@ -1597,7 +1597,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "old → older."
     },
     {
      "id": "g5",
@@ -1609,7 +1609,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "big → bigger (gấp đôi g)."
     },
     {
      "id": "g6",
@@ -1621,7 +1621,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "early → earlier (y → i)."
     },
     {
      "id": "g7",
@@ -1633,7 +1633,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "pretty → prettier (y → i)."
     },
     {
      "id": "g8",
@@ -1645,7 +1645,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "thin → thinner (gấp đôi n)."
     },
     {
      "id": "g9",
@@ -1657,7 +1657,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "good → better (bất quy tắc)."
     },
     {
      "id": "g10",
@@ -1670,7 +1670,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "far → further / farther (bất quy tắc)."
     }
    ]
   },
@@ -1696,7 +1696,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "expensive dài → more expensive."
     },
     {
      "id": "g2",
@@ -1708,7 +1708,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "interesting dài → more interesting."
     },
     {
      "id": "g3",
@@ -1720,7 +1720,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "hot → hotter (gấp đôi t)."
     },
     {
      "id": "g4",
@@ -1732,7 +1732,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "pretty → prettier."
     },
     {
      "id": "g5",
@@ -1744,7 +1744,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "good → better."
     },
     {
      "id": "g6",
@@ -1756,7 +1756,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "excited (đuôi -ed) → more excited."
     },
     {
      "id": "g7",
@@ -1768,7 +1768,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "noisy → noisier (y → i)."
     },
     {
      "id": "g8",
@@ -1780,7 +1780,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "bad → worse."
     }
    ]
   },
@@ -1811,7 +1811,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "So với mọi khách sạn trong thị trấn → the best; có than → cheaper."
     },
     {
      "id": "g2",
@@ -1823,7 +1823,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Có than → so sánh hơn: bigger (gấp đôi g)."
     },
     {
      "id": "g3",
@@ -1840,7 +1840,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "one of the + so sánh nhất: the largest; phần thú vị nhất → The most interesting."
     },
     {
      "id": "g4",
@@ -1852,7 +1852,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "one of the + so sánh nhất: the finest (fine + st)."
     }
    ]
   }

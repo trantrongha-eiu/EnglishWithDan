@@ -21,31 +21,31 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "China",
-     "explanation": ""
+     "explanation": "China (Trung Quốc) — món ăn trong ảnh tiêu biểu của Trung Quốc (vd. sủi cảo, đũa)."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "Saudi Arabia",
-     "explanation": ""
+     "explanation": "Saudi Arabia (Ả Rập Xê Út) — món ăn kiểu Trung Đông."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "Italy",
-     "explanation": ""
+     "explanation": "Italy (Ý) — quê hương của pizza/mì Ý."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "the United Kingdom",
-     "explanation": ""
+     "explanation": "the United Kingdom (Anh) — có mạo từ the vì là tên nước dạng 'vương quốc'."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "Brazil",
-     "explanation": ""
+     "explanation": "Brazil — món ăn kiểu Nam Mỹ."
     }
    ]
   },
@@ -114,55 +114,55 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "flour",
-     "explanation": ""
+     "explanation": "flour — bột mì (dùng làm bánh), danh từ không đếm được."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "spring onions",
-     "explanation": ""
+     "explanation": "spring onions — hành lá."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "garlic",
-     "explanation": ""
+     "explanation": "garlic — tỏi."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "rice",
-     "explanation": ""
+     "explanation": "rice — gạo/cơm."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "pasta",
-     "explanation": ""
+     "explanation": "pasta — mì Ý (các loại nui, mì ống)."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "lamb",
-     "explanation": ""
+     "explanation": "lamb — thịt cừu non."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "salmon",
-     "explanation": ""
+     "explanation": "salmon — cá hồi (chữ l câm: /ˈsæmən/)."
     },
     {
      "id": "m8",
      "left": "Picture 8",
      "right": "carrot",
-     "explanation": ""
+     "explanation": "carrot — cà rốt."
     },
     {
      "id": "m9",
      "left": "Picture 9",
      "right": "onion",
-     "explanation": ""
+     "explanation": "onion — hành tây."
     }
    ]
   },
@@ -204,85 +204,85 @@
      "id": "c1",
      "text": "lamb",
      "category": "meat",
-     "explanation": ""
+     "explanation": "lamb — thịt cừu → Meat."
     },
     {
      "id": "c2",
      "text": "beef",
      "category": "meat",
-     "explanation": ""
+     "explanation": "beef — thịt bò → Meat."
     },
     {
      "id": "c3",
      "text": "duck",
      "category": "meat",
-     "explanation": ""
+     "explanation": "duck — thịt vịt → Meat."
     },
     {
      "id": "c4",
      "text": "carrot",
      "category": "veg",
-     "explanation": ""
+     "explanation": "carrot — cà rốt → Vegetables."
     },
     {
      "id": "c5",
      "text": "garlic",
      "category": "veg",
-     "explanation": ""
+     "explanation": "garlic — tỏi → Vegetables."
     },
     {
      "id": "c6",
      "text": "lettuce",
      "category": "veg",
-     "explanation": ""
+     "explanation": "lettuce — rau xà lách → Vegetables."
     },
     {
      "id": "c7",
      "text": "cauliflower",
      "category": "veg",
-     "explanation": ""
+     "explanation": "cauliflower — súp lơ trắng → Vegetables."
     },
     {
      "id": "c8",
      "text": "salmon",
      "category": "fish",
-     "explanation": ""
+     "explanation": "salmon — cá hồi → Fish / Seafood."
     },
     {
      "id": "c9",
      "text": "lobster",
      "category": "fish",
-     "explanation": ""
+     "explanation": "lobster — tôm hùm → Fish / Seafood."
     },
     {
      "id": "c10",
      "text": "rice",
      "category": "carb",
-     "explanation": ""
+     "explanation": "rice — gạo, nguồn tinh bột → Carbohydrates."
     },
     {
      "id": "c11",
      "text": "pasta",
      "category": "carb",
-     "explanation": ""
+     "explanation": "pasta — mì Ý làm từ bột mì → Carbohydrates."
     },
     {
      "id": "c12",
      "text": "spaghetti",
      "category": "carb",
-     "explanation": ""
+     "explanation": "spaghetti — mì sợi Ý → Carbohydrates."
     },
     {
      "id": "c13",
      "text": "flour",
      "category": "other",
-     "explanation": ""
+     "explanation": "flour — bột mì, nguyên liệu để làm bánh → Other ingredients."
     },
     {
      "id": "c14",
      "text": "salt",
      "category": "other",
-     "explanation": ""
+     "explanation": "salt — muối, gia vị → Other ingredients."
     }
    ]
   },
@@ -307,43 +307,43 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "chop",
-     "explanation": ""
+     "explanation": "chop — băm/thái nhỏ (bằng dao, thành miếng nhỏ)."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "mix",
-     "explanation": ""
+     "explanation": "mix — trộn các nguyên liệu với nhau."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "cut",
-     "explanation": ""
+     "explanation": "cut — cắt (nói chung)."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "roll",
-     "explanation": ""
+     "explanation": "roll — cán/cuộn (vd. cán bột bằng cây lăn)."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "fold",
-     "explanation": ""
+     "explanation": "fold — gấp (vd. gấp vỏ bánh, gói sủi cảo)."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "boil",
-     "explanation": ""
+     "explanation": "boil — luộc/đun sôi trong nước."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "fry",
-     "explanation": ""
+     "explanation": "fry — chiên/rán trong dầu."
     }
    ]
   },
@@ -363,31 +363,31 @@
      "id": "m1",
      "left": "bake",
      "right": "to cook something such as bread or a cake with dry heat in the oven",
-     "explanation": ""
+     "explanation": "bake — nướng (bánh mì, bánh ngọt) bằng hơi nóng khô trong lò."
     },
     {
      "id": "m2",
      "left": "boil",
      "right": "to cook food in water",
-     "explanation": ""
+     "explanation": "boil — luộc, nấu trong nước sôi."
     },
     {
      "id": "m3",
      "left": "chop",
      "right": "to cut something into small pieces",
-     "explanation": ""
+     "explanation": "chop — thái nhỏ thành từng miếng."
     },
     {
      "id": "m4",
      "left": "fry",
      "right": "to cook something in hot oil or fat",
-     "explanation": ""
+     "explanation": "fry — chiên/rán trong dầu hoặc mỡ nóng."
     },
     {
      "id": "m5",
      "left": "mix",
      "right": "to put two or more ingredients together",
-     "explanation": ""
+     "explanation": "mix — trộn hai hay nhiều nguyên liệu với nhau."
     }
    ]
   },
@@ -657,7 +657,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "favourite meal = món ăn yêu thích nhất của mình (popular là được nhiều người thích)."
     },
     {
      "id": "q6",
@@ -729,7 +729,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "popular in + nơi chốn (in my country)."
     }
    ]
   },
@@ -763,73 +763,73 @@
      "id": "c1",
      "text": "(an) apple",
      "category": "cs",
-     "explanation": ""
+     "explanation": "apple đếm được, số ít → dùng an (bắt đầu bằng nguyên âm)."
     },
     {
      "id": "c2",
      "text": "(a) cabbage",
      "category": "cs",
-     "explanation": ""
+     "explanation": "cabbage (bắp cải) đếm được, số ít → a cabbage."
     },
     {
      "id": "c3",
      "text": "onions",
      "category": "cp",
-     "explanation": ""
+     "explanation": "onions có -s → danh từ đếm được số nhiều."
     },
     {
      "id": "c4",
      "text": "oranges",
      "category": "cp",
-     "explanation": ""
+     "explanation": "oranges có -s → đếm được số nhiều."
     },
     {
      "id": "c5",
      "text": "potatoes",
      "category": "cp",
-     "explanation": ""
+     "explanation": "potatoes (-o + es) → đếm được số nhiều."
     },
     {
      "id": "c6",
      "text": "shrimps",
      "category": "cp",
-     "explanation": ""
+     "explanation": "shrimps (con tôm) có -s → đếm được số nhiều."
     },
     {
      "id": "c7",
      "text": "flour",
      "category": "u",
-     "explanation": ""
+     "explanation": "flour (bột mì) là chất bột → không đếm được."
     },
     {
      "id": "c8",
      "text": "meat",
      "category": "u",
-     "explanation": ""
+     "explanation": "meat (thịt) → không đếm được (đếm bằng a piece/kilo of meat)."
     },
     {
      "id": "c9",
      "text": "milk",
      "category": "u",
-     "explanation": ""
+     "explanation": "milk (sữa) là chất lỏng → không đếm được."
     },
     {
      "id": "c10",
      "text": "rice",
      "category": "u",
-     "explanation": ""
+     "explanation": "rice (gạo) hạt quá nhỏ, nói chung → không đếm được."
     },
     {
      "id": "c11",
      "text": "salt",
      "category": "u",
-     "explanation": ""
+     "explanation": "salt (muối) → không đếm được."
     },
     {
      "id": "c12",
      "text": "water",
      "category": "u",
-     "explanation": ""
+     "explanation": "water (nước) là chất lỏng → không đếm được."
     }
    ]
   },
@@ -879,7 +879,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Danh từ đếm được số nhiều → dùng some: some dumplings."
     },
     {
      "id": "g3",
@@ -973,7 +973,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "sandwich đếm được số ít, bắt đầu bằng phụ âm → a; apple bắt đầu bằng nguyên âm → an."
     },
     {
      "id": "g2",
@@ -990,7 +990,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu khẳng định: juice (không đếm được) và oranges (số nhiều) → some."
     },
     {
      "id": "g3",
@@ -1007,7 +1007,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi → any (cả tomatoes số nhiều lẫn fish không đếm được)."
     },
     {
      "id": "g4",
@@ -1053,7 +1053,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu khẳng định với danh từ số nhiều / không đếm được → some."
     },
     {
      "id": "g7",
@@ -1065,7 +1065,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi và câu phủ định → any."
     },
     {
      "id": "g8",
@@ -1159,7 +1159,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Câu phủ định + milk (không đếm được) → much."
     },
     {
      "id": "q5",
@@ -1179,7 +1179,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "eggs đếm được → How many…?"
     },
     {
      "id": "q6",
@@ -1199,7 +1199,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Câu khẳng định, potatoes số nhiều → a lot of (much/any không dùng ở đây)."
     },
     {
      "id": "q7",
@@ -1219,7 +1219,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Câu hỏi + spaghetti (không đếm được) → any."
     },
     {
      "id": "q8",
@@ -1239,7 +1239,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Câu khẳng định với carrots (số nhiều) → some."
     },
     {
      "id": "q9",
@@ -1259,7 +1259,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "sugar không đếm được → How much…?"
     },
     {
      "id": "q10",
@@ -1279,7 +1279,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "vegetables đếm được, câu phủ định → many (chỉ có súp lơ và xà lách — không nhiều)."
     },
     {
      "id": "q11",
@@ -1299,7 +1299,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "beef không đếm được, câu phủ định với nghĩa 'không còn chút nào' → any."
     },
     {
      "id": "q12",
@@ -1373,7 +1373,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "favourite food = món ăn yêu thích."
     },
     {
      "id": "q2",
@@ -1393,7 +1393,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "like + V-ing: like eating."
     },
     {
      "id": "q3",
@@ -1413,7 +1413,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "make your own pizza = tự làm pizza."
     },
     {
      "id": "q4",
@@ -1433,7 +1433,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "add = thêm (nguyên liệu) lên trên."
     },
     {
      "id": "q5",
@@ -1453,7 +1453,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "ingredients đếm được số nhiều → many other ingredients."
     },
     {
      "id": "q6",
@@ -1473,7 +1473,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "cook it in the oven = nấu (nướng) trong lò; boil/fry không dùng lò."
     },
     {
      "id": "q7",
@@ -1493,7 +1493,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "pizza (một cái) đếm được số ít → a pizza."
     },
     {
      "id": "q8",
@@ -1513,7 +1513,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "a lot of people = rất nhiều người (a lot + of)."
     },
     {
      "id": "q9",
@@ -1533,7 +1533,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "at the weekend (tiếng Anh-Anh)."
     },
     {
      "id": "q10",
@@ -1553,7 +1553,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "go to + nơi chốn: go to a take-away restaurant."
     }
    ]
   },
@@ -1618,43 +1618,43 @@
      "id": "m1",
      "left": "Step 1",
      "right": "First, take a large cauliflower and cut the leaves off so that you only have the white part.",
-     "explanation": ""
+     "explanation": "First — bước đầu tiên: cắt bỏ lá súp lơ."
     },
     {
      "id": "m2",
      "left": "Step 2",
      "right": "Next, take the cauliflower and place it in boiling water.",
-     "explanation": ""
+     "explanation": "Next — luộc súp lơ trong nước sôi."
     },
     {
      "id": "m3",
      "left": "Step 3",
      "right": "While the cauliflower is boiling, chop some garlic.",
-     "explanation": ""
+     "explanation": "While the cauliflower is boiling — trong lúc đang luộc thì băm tỏi."
     },
     {
      "id": "m4",
      "left": "Step 4",
      "right": "Next, add the garlic to some special mixture called tahini paste and some lemon juice.",
-     "explanation": ""
+     "explanation": "Next — cho tỏi vào hỗn hợp tahini và nước cốt chanh."
     },
     {
      "id": "m5",
      "left": "Step 5",
      "right": "Mix the paste, the lemon juice and the garlic together.",
-     "explanation": ""
+     "explanation": "Trộn đều hỗn hợp vừa cho vào (sau khi đã thêm tỏi)."
     },
     {
      "id": "m6",
      "left": "Step 6",
      "right": "Add the mixture of paste, garlic and lemon juice to the cauliflower.",
-     "explanation": ""
+     "explanation": "Rưới hỗn hợp đã trộn lên súp lơ."
     },
     {
      "id": "m7",
      "left": "Step 7",
      "right": "Finally, cover the dish and put it in the fridge until you are ready to eat it.",
-     "explanation": ""
+     "explanation": "Finally — bước cuối: đậy lại và cho vào tủ lạnh."
     }
    ]
   },
@@ -1688,7 +1688,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "sightseeing = đi tham quan các địa danh nổi tiếng."
     },
     {
      "id": "q2",
@@ -1708,7 +1708,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "can't afford = không đủ tiền để mua/làm gì."
     },
     {
      "id": "q3",
@@ -1728,7 +1728,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "flatmate = người ở chung căn hộ (flat) với mình."
     }
    ]
   },
@@ -1804,7 +1804,7 @@
       "each",
       "week?"
      ],
-     "explanation": ""
+     "explanation": "meat không đếm được → How much meat; do you eat + each week."
     },
     {
      "id": "o2",
@@ -1829,7 +1829,7 @@
       "to",
       "cook?"
      ],
-     "explanation": ""
+     "explanation": "Are there any + danh từ số nhiều; mệnh đề you like to cook bổ nghĩa cho recipes."
     },
     {
      "id": "o3",
@@ -1858,7 +1858,7 @@
       "a",
       "day?"
      ],
-     "explanation": ""
+     "explanation": "cups đếm được → How many cups of tea + do you drink + a day."
     },
     {
      "id": "o4",
@@ -1881,7 +1881,7 @@
       "don't",
       "like?"
      ],
-     "explanation": ""
+     "explanation": "Are there any foods + you don't like? (mệnh đề quan hệ rút gọn)."
     }
    ]
   },
@@ -1929,49 +1929,49 @@
      "id": "m1",
      "left": "Photo 1",
      "right": "duck",
-     "explanation": ""
+     "explanation": "duck — vịt."
     },
     {
      "id": "m2",
      "left": "Photo 2",
      "right": "lettuce",
-     "explanation": ""
+     "explanation": "lettuce — xà lách."
     },
     {
      "id": "m3",
      "left": "Photo 3",
      "right": "lobster",
-     "explanation": ""
+     "explanation": "lobster — tôm hùm."
     },
     {
      "id": "m4",
      "left": "Photo 4",
      "right": "garlic",
-     "explanation": ""
+     "explanation": "garlic — tỏi."
     },
     {
      "id": "m5",
      "left": "Photo 5",
      "right": "salmon",
-     "explanation": ""
+     "explanation": "salmon — cá hồi (thịt màu cam hồng)."
     },
     {
      "id": "m6",
      "left": "Photo 6",
      "right": "spaghetti",
-     "explanation": ""
+     "explanation": "spaghetti — mì Ý sợi dài."
     },
     {
      "id": "m7",
      "left": "Photo 7",
      "right": "beef",
-     "explanation": ""
+     "explanation": "beef — thịt bò."
     },
     {
      "id": "m8",
      "left": "Photo 8",
      "right": "cauliflower",
-     "explanation": ""
+     "explanation": "cauliflower — súp lơ trắng."
     }
    ]
   },
@@ -2001,7 +2001,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "a lot of dùng được cả câu khẳng định lẫn phủ định, với danh từ đếm được và không đếm được."
     },
     {
      "id": "q2",
@@ -2049,7 +2049,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "many dùng trong câu hỏi/phủ định với danh từ đếm được."
     },
     {
      "id": "q5",
@@ -2065,7 +2065,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "lemons đếm được → How many?"
     },
     {
      "id": "q6",
@@ -2081,7 +2081,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "cauliflowers đếm được, câu phủ định → many."
     },
     {
      "id": "q7",
@@ -2097,7 +2097,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "much dùng trong câu hỏi/phủ định với danh từ không đếm được."
     },
     {
      "id": "q8",
@@ -2113,7 +2113,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "coffee không đếm được → How much?"
     },
     {
      "id": "q9",
@@ -2129,7 +2129,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "sugar không đếm được, câu phủ định → much."
     }
    ]
   }

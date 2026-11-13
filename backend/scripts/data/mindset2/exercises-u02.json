@@ -16,31 +16,31 @@
      "id": "m1",
      "left": "Muhammad Ali",
      "right": "boxing",
-     "explanation": ""
+     "explanation": "Muhammad Ali — huyền thoại quyền anh (boxing)."
     },
     {
      "id": "m2",
      "left": "Michael Jordan",
      "right": "basketball",
-     "explanation": ""
+     "explanation": "Michael Jordan — huyền thoại bóng rổ NBA."
     },
     {
      "id": "m3",
      "left": "Serena Williams",
      "right": "tennis",
-     "explanation": ""
+     "explanation": "Serena Williams — tay vợt nữ số 1 thế giới (tennis)."
     },
     {
      "id": "m4",
      "left": "David Beckham",
      "right": "football",
-     "explanation": ""
+     "explanation": "David Beckham — cựu đội trưởng tuyển Anh (football)."
     },
     {
      "id": "m5",
      "left": "Jack Nicklaus",
      "right": "golf",
-     "explanation": ""
+     "explanation": "Jack Nicklaus — huyền thoại golf."
     }
    ]
   },
@@ -74,7 +74,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Serena lần đầu lên số 1 thế giới năm 2002."
     },
     {
      "id": "q2",
@@ -94,7 +94,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Jack Nicklaus giành 18 giải major trong sự nghiệp."
     },
     {
      "id": "q3",
@@ -134,7 +134,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Beckham làm đội trưởng tuyển Anh 6 năm (2000–2006)."
     },
     {
      "id": "q5",
@@ -154,7 +154,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Michael Jordan cao 1,98 m."
     }
    ]
   },
@@ -288,7 +288,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Gạch chân từ khoá (key words) như ngày tháng, tên riêng."
     },
     {
      "id": "g3",
@@ -301,7 +301,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Scan = dò tìm nhanh từ khoá hoặc từ đồng nghĩa trong bài."
     },
     {
      "id": "g4",
@@ -313,7 +313,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Kiểm tra các phương án khác đều sai (wrong) rồi mới chốt."
     }
    ]
   },
@@ -338,43 +338,43 @@
      "id": "m1",
      "left": "powerful (text)",
      "right": "strong (question)",
-     "explanation": ""
+     "explanation": "powerful ≈ strong (mạnh mẽ)."
     },
     {
      "id": "m2",
      "left": "determination",
      "right": "self-belief",
-     "explanation": ""
+     "explanation": "determination (quyết tâm) ≈ self-belief (niềm tin vào bản thân)."
     },
     {
      "id": "m3",
      "left": "be important",
      "right": "focused on",
-     "explanation": ""
+     "explanation": "be important ≈ focused on (được chú trọng)."
     },
     {
      "id": "m4",
      "left": "training to be tennis stars",
      "right": "tennis training",
-     "explanation": ""
+     "explanation": "training to be tennis stars ≈ tennis training."
     },
     {
      "id": "m5",
      "left": "education",
      "right": "studies",
-     "explanation": ""
+     "explanation": "education ≈ studies (việc học)."
     },
     {
      "id": "m6",
      "left": "speed of thought",
      "right": "thinks quickly",
-     "explanation": ""
+     "explanation": "speed of thought (tốc độ tư duy) ≈ thinks quickly."
     },
     {
      "id": "m7",
      "left": "powerful shots",
      "right": "can hit the ball hard",
-     "explanation": ""
+     "explanation": "powerful shots ≈ can hit the ball hard (đánh bóng mạnh)."
     }
    ]
   },
@@ -404,19 +404,19 @@
      "id": "c1",
      "text": "According to the writer, Serena has become so famous because …",
      "category": "c",
-     "explanation": ""
+     "explanation": "Câu kết thúc bằng 'because …' bỏ lửng → hoàn thành câu."
     },
     {
      "id": "c2",
      "text": "During Serena's upbringing, what did her father consider to be important?",
      "category": "q",
-     "explanation": ""
+     "explanation": "Câu bắt đầu bằng What… và có dấu hỏi → trả lời câu hỏi."
     },
     {
      "id": "c3",
      "text": "Her tennis game is so successful because …",
      "category": "c",
-     "explanation": ""
+     "explanation": "Câu bỏ lửng sau 'because …' → hoàn thành câu."
     }
    ]
   },
@@ -508,13 +508,13 @@
      "id": "c4",
      "text": "past perfect",
      "category": "n",
-     "explanation": ""
+     "explanation": "Bài không có had + V3 → không dùng quá khứ hoàn thành."
     },
     {
      "id": "c5",
      "text": "future simple",
      "category": "n",
-     "explanation": ""
+     "explanation": "Bài kể về quá khứ và hiện tại, không có will + V → không dùng tương lai đơn."
     }
    ]
   },
@@ -548,7 +548,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "was playing = quá khứ tiếp diễn; hit = quá khứ đơn (hit-hit-hit)."
     },
     {
      "id": "q2",
@@ -616,7 +616,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "were training = were + V-ing → quá khứ tiếp diễn."
     }
    ]
   },
@@ -648,7 +648,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Quá khứ tiếp diễn cho hành động nền (đang diễn ra); quá khứ đơn cho hành động ngắn xen vào."
     }
    ]
   },

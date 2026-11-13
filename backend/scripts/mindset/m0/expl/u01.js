@@ -1,0 +1,47 @@
+// Mindset 0 · Unit 1 — per-item explanations (merged by buildMindset.js).
+module.exports = {
+  'M0-U01-L7-E01': [
+    "15 phút = quarter (một phần tư giờ); phút 1–30 dùng past + giờ hiện tại → quarter past five.",
+    "20 phút ≤ 30 → past: twenty past eight.",
+    "45 phút > 30 → đếm ngược tới giờ sau: còn 15 phút nữa là 7 giờ → quarter to seven.",
+    "30 phút = half; 14:30 là 2 giờ chiều → half past two (nói giờ kiểu 12 tiếng).",
+    "20:50 = 8 giờ 50 → còn 10 phút là 9 giờ → ten to nine.",
+    "10 phút ≤ 30 → ten past nine.",
+    "15:35 = 3 giờ 35 → còn 25 phút là 4 giờ → twenty-five to four.",
+    "5 phút → five past ten.",
+    "Giờ chẵn dùng o'clock: twelve o'clock.",
+    "16:55 = 4 giờ 55 → còn 5 phút là 5 giờ → five to five.",
+  ],
+  'M0-U01-L7-E02': [
+    "have a shower = tắm (vòi sen); collocation cố định với have, không dùng make/do.",
+    "brush my teeth = đánh răng; meet my friends = gặp bạn; catch the bus = bắt xe buýt.",
+    "leave the college = rời khỏi trường; go home = về nhà (home không có to).",
+    "watch TV = xem TV; do my homework = làm bài tập (luôn đi với do, không dùng make).",
+    "go to bed = đi ngủ (lên giường); fall asleep = chìm vào giấc ngủ.",
+  ],
+  'M0-U01-L7-E04': [
+    "live in an apartment = sống ở căn hộ; work as journalists = làm nghề nhà báo (work as + nghề).",
+    "get up early = dậy sớm; leave the house = ra khỏi nhà (leave + nơi chốn, không cần from).",
+    "have breakfast = ăn sáng; walk there = đi bộ tới đó; catch the bus khi bị muộn (đi xe cho nhanh).",
+    "Lessons finish at 4pm = giờ học kết thúc lúc 4 giờ, nên sau đó mới về nhà được.",
+    "meet (in a café) = gặp nhau ở quán cà phê; go out to the cinema = ra ngoài đi xem phim.",
+  ],
+  'M0-U01-L7-E05': [
+    "Trật tự câu: Chủ ngữ (My friend) + động từ (tidies) + tân ngữ (the room). Ngôi 3 số ít → tidies.",
+    "S + V + O + trạng từ thời gian ở cuối: I play football + at the weekend.",
+    "take sth to + nơi chốn + for lunch: mang bánh mì tới trường để ăn trưa.",
+    "wake up là cụm động từ (không tách); giờ đứng sau at: at half past six.",
+    "Cụm tần suất every five minutes đặt cuối câu; checks thêm -s vì My brother là ngôi 3 số ít.",
+    "have a shower + in the evening (thời gian ở cuối câu).",
+    "try to + V (cố gắng làm gì); stop + V-ing (dừng làm gì): try to stop studying before 9pm.",
+    "go to the dentist = đi khám răng; every six months đặt cuối câu.",
+    "",
+    "visit + người (visit my family) — không có to; at the weekends ở cuối câu.",
+  ],
+  'M0-U01-L7-E06': [
+    "Việc lặp lại hằng tuần → hiện tại đơn: I work, I start; the shop là ngôi 3 số ít → opens.",
+    "fill the shelves = xếp đầy kệ; tidy the baskets = dọn gọn giỏ; clean the floors = lau sàn; work at the checkout = làm ở quầy thu ngân.",
+    "She là ngôi 3 số ít → tells (bảo tôi làm gì), never shouts (không bao giờ quát).",
+    "take breaks = nghỉ giải lao; finish at 4pm; the shop gets busy (ngôi 3 → gets); enjoy it = thích công việc.",
+  ],
+};

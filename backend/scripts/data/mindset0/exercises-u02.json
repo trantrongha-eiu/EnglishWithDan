@@ -159,37 +159,37 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "curtains",
-     "explanation": ""
+     "explanation": "curtains — rèm cửa bằng vải, kéo sang hai bên cửa sổ; thường dùng số nhiều (một đôi rèm)."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "table lamp",
-     "explanation": ""
+     "explanation": "table lamp — đèn bàn (đèn nhỏ đặt trên bàn, khác ceiling light là đèn trần)."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "TV",
-     "explanation": ""
+     "explanation": "TV (television) — ti vi."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "desk",
-     "explanation": ""
+     "explanation": "desk — bàn học/bàn làm việc (có thể có ngăn kéo), khác table là bàn nói chung (bàn ăn…)."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "shower",
-     "explanation": ""
+     "explanation": "shower — vòi sen để tắm đứng (have a shower)."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "drawers",
-     "explanation": ""
+     "explanation": "drawers — tủ ngăn kéo (các ngăn kéo ra để đựng quần áo, đồ dùng)."
     }
    ]
   },
@@ -214,37 +214,37 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "window",
-     "explanation": ""
+     "explanation": "window — cửa sổ."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "poster",
-     "explanation": ""
+     "explanation": "poster — áp phích, tranh in dán tường."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "blind",
-     "explanation": ""
+     "explanation": "blind — rèm cuốn/rèm sáo, kéo lên xuống để che sáng (khác curtains kéo ngang)."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "sink",
-     "explanation": ""
+     "explanation": "sink — bồn rửa (rửa tay, rửa bát)."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "pillows",
-     "explanation": ""
+     "explanation": "pillows — gối (đầu) trên giường; số nhiều vì có hai cái."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "oven / cooker",
-     "explanation": ""
+     "explanation": "oven / cooker — lò nướng / bếp nấu trong nhà bếp."
     }
    ]
   },
@@ -1449,25 +1449,25 @@
      "id": "c2",
      "text": "I am a student.",
      "category": "g",
-     "explanation": ""
+     "explanation": "Giorgio là người đi học và đang tìm chỗ ở → anh ấy tự giới thiệu: I am a student."
     },
     {
      "id": "c3",
      "text": "What do you want to study?",
      "category": "a",
-     "explanation": ""
+     "explanation": "Andrew Taylor (bên cho thuê) hỏi Giorgio định học ngành gì."
     },
     {
      "id": "c4",
      "text": "I live with my parents at the moment.",
      "category": "g",
-     "explanation": ""
+     "explanation": "Giorgio kể về hoàn cảnh hiện tại của mình: đang sống với bố mẹ."
     },
     {
      "id": "c5",
      "text": "Can you speak English?",
      "category": "a",
-     "explanation": ""
+     "explanation": "Andrew Taylor hỏi để biết Giorgio có giao tiếp được bằng tiếng Anh không."
     },
     {
      "id": "c6",
@@ -1540,73 +1540,73 @@
      "id": "c1",
      "text": "Five minutes' walk to the lecture hall",
      "category": "c",
-     "explanation": ""
+     "explanation": "Ký túc xá trong khuôn viên trường (campus) → đi bộ 5 phút là tới giảng đường."
     },
     {
      "id": "c2",
      "text": "25-minute bus ride to the lecture hall",
      "category": "p",
-     "explanation": ""
+     "explanation": "Nhà tư nhân ở xa trường → phải đi xe buýt 25 phút."
     },
     {
      "id": "c3",
      "text": "Fast Wi-Fi (sometimes slow at busy times)",
      "category": "c",
-     "explanation": ""
+     "explanation": "Ký túc xá đông người dùng chung mạng → nhanh nhưng đôi khi chậm vào giờ cao điểm."
     },
     {
      "id": "c4",
      "text": "Superfast Wi-Fi (always)",
      "category": "p",
-     "explanation": ""
+     "explanation": "Nhà tư nhân ít người dùng → Wi-Fi siêu nhanh lúc nào cũng vậy."
     },
     {
      "id": "c5",
      "text": "Shared bathroom on every floor",
      "category": "c",
-     "explanation": ""
+     "explanation": "Ký túc xá: mỗi tầng có phòng tắm chung (shared bathroom)."
     },
     {
      "id": "c6",
      "text": "Private bathroom",
      "category": "p",
-     "explanation": ""
+     "explanation": "Nhà tư nhân: có phòng tắm riêng (private bathroom)."
     },
     {
      "id": "c7",
      "text": "Live with 159 other students",
      "category": "c",
-     "explanation": ""
+     "explanation": "Ký túc xá lớn: sống cùng 159 sinh viên khác."
     },
     {
      "id": "c8",
      "text": "Live with two other students and the homeowner",
      "category": "p",
-     "explanation": ""
+     "explanation": "Nhà tư nhân: chỉ ở cùng 2 sinh viên và chủ nhà (homeowner)."
     },
     {
      "id": "c9",
      "text": "All meals included",
      "category": "c",
-     "explanation": ""
+     "explanation": "Ký túc xá trọn gói: đã bao gồm mọi bữa ăn (all meals included)."
     },
     {
      "id": "c10",
      "text": "No meals included",
      "category": "p",
-     "explanation": ""
+     "explanation": "Nhà tư nhân: không bao bữa ăn, phải tự nấu."
     },
     {
      "id": "c11",
      "text": "Single bed – no pillows or sheets provided",
      "category": "c",
-     "explanation": ""
+     "explanation": "Ký túc xá: giường đơn, không cung cấp gối và ga trải giường."
     },
     {
      "id": "c12",
      "text": "Double bed – pillows and sheets provided",
      "category": "p",
-     "explanation": ""
+     "explanation": "Nhà tư nhân: giường đôi, có sẵn gối và ga (provided = được cung cấp)."
     }
    ]
   },
@@ -1676,7 +1676,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nơi ngủ mỗi đêm → bedroom (phòng ngủ)."
     },
     {
      "id": "g2",
@@ -1688,7 +1688,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nơi rửa mặt, đánh răng → bathroom (phòng tắm)."
     },
     {
      "id": "g3",
@@ -1705,7 +1705,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nơi cả nhà ngồi nói chuyện, chơi, xem TV → living room (phòng khách) — hai từ."
     },
     {
      "id": "g4",
@@ -1717,7 +1717,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nơi để ô tô → garage (nhà để xe)."
     },
     {
      "id": "g5",
@@ -1730,7 +1730,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Lối đi nối các phòng với nhau → hallway / hall (hành lang)."
     },
     {
      "id": "g6",
@@ -1742,7 +1742,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Không gian ngoài trời có cỏ để ngồi → garden (vườn)."
     }
    ]
   },
@@ -1772,7 +1772,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "fridge giữ lạnh nhưng không đông đá; freezer mới làm đông."
     },
     {
      "id": "q2",
@@ -1804,7 +1804,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "drawers = ngăn kéo kéo ra để cất quần áo; desk là bàn học."
     },
     {
      "id": "q4",
@@ -1820,7 +1820,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Cả nhà ngồi xem TV → living room; study là phòng làm việc/đọc sách."
     },
     {
      "id": "q5",
@@ -1836,7 +1836,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Phòng trên cùng, ngay dưới mái → attic (gác mái); basement nằm dưới mặt đất."
     },
     {
      "id": "q6",
@@ -1868,7 +1868,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Ngồi một mình, có 4 chân và lưng tựa → chair; sofa dài, ngồi được nhiều người."
     }
    ]
   },
@@ -1888,49 +1888,49 @@
      "id": "m1",
      "left": "What do you like about your room?",
      "right": "My comfortable bed and my posters.",
-     "explanation": ""
+     "explanation": "What do you like…? hỏi điều thích → trả lời bằng các thứ mình thích: cái giường thoải mái và áp phích."
     },
     {
      "id": "m2",
      "left": "Who do you live with?",
      "right": "My parents, my sister and my grandparents.",
-     "explanation": ""
+     "explanation": "Who…? hỏi về người → trả lời bằng người: bố mẹ, chị gái, ông bà."
     },
     {
      "id": "m3",
      "left": "Do you like to cook?",
      "right": "Yes, and I think I'm quite good at it.",
-     "explanation": ""
+     "explanation": "Câu hỏi Yes/No (Do you…?) → bắt đầu bằng Yes, rồi nói thêm mình nấu khá giỏi."
     },
     {
      "id": "m4",
      "left": "Where do you watch television?",
      "right": "Usually in the living room and sometimes in my bedroom.",
-     "explanation": ""
+     "explanation": "Where…? hỏi nơi chốn → in the living room / in my bedroom."
     },
     {
      "id": "m5",
      "left": "Is it often sunny where you live?",
      "right": "Yes. I like it because I can spend time in the garden.",
-     "explanation": ""
+     "explanation": "Hỏi trời có hay nắng không (Yes/No) → Yes + lý do: được ở ngoài vườn."
     },
     {
      "id": "m6",
      "left": "Where do you do your homework?",
      "right": "Usually in the study and sometimes in my bedroom.",
-     "explanation": ""
+     "explanation": "Where do you do your homework? → nơi chốn: in the study (phòng làm việc)."
     },
     {
      "id": "m7",
      "left": "Can you tell me where the bathroom is, please?",
      "right": "Yes. Go down the hall and it is next to the living room.",
-     "explanation": ""
+     "explanation": "Hỏi đường tới phòng tắm → câu chỉ đường: Go down the hall… next to the living room."
     },
     {
      "id": "m8",
      "left": "Why don't you often go in the kitchen?",
      "right": "Because I can't cook!",
-     "explanation": ""
+     "explanation": "Why…? hỏi lý do → trả lời bằng Because…: vì tôi không biết nấu."
     }
    ]
   },
@@ -1956,7 +1956,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "attic — gác mái, không gian ngay dưới mái nhà."
     },
     {
      "id": "g2",
@@ -1968,7 +1968,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "garden — vườn có cỏ và hoa quanh nhà."
     },
     {
      "id": "g3",
@@ -1980,7 +1980,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "study — phòng làm việc/đọc sách trong nhà (danh từ, không phải động từ 'học')."
     },
     {
      "id": "g4",
@@ -1992,7 +1992,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "basement — tầng hầm, nằm dưới mặt đất."
     },
     {
      "id": "g5",
@@ -2004,7 +2004,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "kitchen — nhà bếp, nơi nấu ăn."
     },
     {
      "id": "g6",
@@ -2017,7 +2017,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "television / TV — ti vi để xem phim, xem thời sự."
     },
     {
      "id": "g7",
@@ -2029,7 +2029,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "desk — bàn học/bàn làm việc."
     },
     {
      "id": "g8",
@@ -2041,7 +2041,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "shower — vòi sen; đứng dưới để tắm."
     },
     {
      "id": "g9",
@@ -2053,7 +2053,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "window — cửa sổ, nhìn ra ngoài qua đó."
     },
     {
      "id": "g10",
@@ -2065,7 +2065,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "sink — bồn rửa tay/rửa bát."
     },
     {
      "id": "g11",
@@ -2077,7 +2077,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "blind — rèm cuốn che cửa sổ để chắn sáng."
     }
    ]
   },
@@ -2103,7 +2103,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "curtains (rèm cửa) — viết c-u-r-t-a-i-n-s, có 'ur' chứ không phải 'er'."
     },
     {
      "id": "g2",
@@ -2120,7 +2120,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "table lamp (đèn bàn) — table viết -ble; lamp tận cùng bằng p, không phải b."
     },
     {
      "id": "g3",
@@ -2132,7 +2132,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "posters (áp phích) — thứ tự chữ p-o-s-t-e-r-s."
     },
     {
      "id": "g4",
@@ -2144,7 +2144,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "pillows (gối) — bắt đầu bằng p, hai chữ l: p-i-l-l-o-w-s."
     },
     {
      "id": "g5",
@@ -2156,7 +2156,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "oven (lò nướng) — bắt đầu bằng o: o-v-e-n; turn on the oven = bật lò."
     },
     {
      "id": "g6",
@@ -2168,7 +2168,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "wardrobe (tủ quần áo) — w-a-r-d-r-o-b-e, có 'ar' không phải 'all'."
     }
    ]
   },
@@ -2203,7 +2203,7 @@
       "washing",
       "up."
      ],
-     "explanation": ""
+     "explanation": "Trạng từ tần suất (never) đứng trước động từ thường: He never does…; do the washing up = rửa bát."
     },
     {
      "id": "o2",
@@ -2224,7 +2224,7 @@
       "some",
       "advice?"
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi với động từ khuyết thiếu: Can + chủ ngữ + V: Can you give me some advice?"
     },
     {
      "id": "o3",
@@ -2255,7 +2255,7 @@
       "the",
       "morning."
      ],
-     "explanation": ""
+     "explanation": "always đứng trước động từ thường; leave my house + at eight o'clock + in the morning."
     },
     {
      "id": "o4",
@@ -2280,7 +2280,7 @@
       "go",
       "off?"
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi: What time + does + S + usually + V; go off = (chuông báo thức) reo."
     },
     {
      "id": "o5",
@@ -2307,7 +2307,7 @@
       "for",
       "dinner."
      ],
-     "explanation": ""
+     "explanation": "often đứng sau chủ ngữ, trước động từ: My cousin often comes…; for dinner = ăn tối."
     },
     {
      "id": "o6",
@@ -2334,7 +2334,7 @@
       "the",
       "future?"
      ],
-     "explanation": ""
+     "explanation": "Where + do + you + want to live + in the future? (want to + V)."
     },
     {
      "id": "o7",
@@ -2357,7 +2357,7 @@
       "live",
       "with?"
      ],
-     "explanation": ""
+     "explanation": "How many people + do you live with? — giới từ with đứng cuối câu hỏi."
     },
     {
      "id": "o8",
@@ -2380,7 +2380,7 @@
       "university",
       "campus?"
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi Yes/No: Do + you + live + on the university campus? (on campus = trong khuôn viên trường)."
     }
    ]
   }

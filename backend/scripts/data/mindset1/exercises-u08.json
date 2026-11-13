@@ -47,7 +47,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "pod = đàn cá heo, tức là một group → nghĩa giống nhau."
     },
     {
      "id": "q3",
@@ -63,7 +63,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "conservation (bảo tồn) ≈ protection (bảo vệ) → giống nhau."
     },
     {
      "id": "q4",
@@ -79,7 +79,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "survived (sống sót) ↔ died (chết) → trái nghĩa."
     },
     {
      "id": "q5",
@@ -95,7 +95,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "automatic (tự động) ≈ instinctive (theo bản năng) → giống nhau."
     }
    ]
   },
@@ -115,31 +115,31 @@
      "id": "m1",
      "left": "filming",
      "right": "videoing",
-     "explanation": ""
+     "explanation": "filming ≈ videoing (quay phim)."
     },
     {
      "id": "m2",
      "left": "came to his rescue",
      "right": "saved the life of",
-     "explanation": ""
+     "explanation": "came to his rescue ≈ saved the life of (cứu sống)."
     },
     {
      "id": "m3",
      "left": "well-known",
      "right": "famous",
-     "explanation": ""
+     "explanation": "well-known ≈ famous (nổi tiếng)."
     },
     {
      "id": "m4",
      "left": "against the killing of",
      "right": "for the protection of",
-     "explanation": ""
+     "explanation": "against the killing of ≈ for the protection of (chống giết hại = bảo vệ)."
     },
     {
      "id": "m5",
      "left": "pod",
      "right": "group (of dolphins)",
-     "explanation": ""
+     "explanation": "pod = group of dolphins (đàn cá heo)."
     }
    ]
   },
@@ -198,7 +198,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Thông tin về cá voi sát thủ (orcas) và cá voi trắng (beluga) nằm ở đoạn E."
     },
     {
      "id": "q3",
@@ -218,7 +218,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Câu chuyện chú cá heo Moko dẫn đường cho cá voi mắc cạn nằm ở đoạn C."
     }
    ]
   },
@@ -282,49 +282,49 @@
      "id": "c1",
      "text": "Dolphins can tell when a woman is pregnant.",
      "category": "a",
-     "explanation": ""
+     "explanation": "can tell = có khả năng nhận biết → ability."
     },
     {
      "id": "c2",
      "text": "Experts think they may understand that humans are similar to them.",
      "category": "p",
-     "explanation": ""
+     "explanation": "may understand = có thể (khả năng xảy ra) → possibility."
     },
     {
      "id": "c3",
      "text": "Dolphins' protection of humans might not be just automatic or instinctive.",
      "category": "p",
-     "explanation": ""
+     "explanation": "might not be = có lẽ không phải → possibility."
     },
     {
      "id": "c4",
      "text": "They may actively decide to help in certain situations.",
      "category": "p",
-     "explanation": ""
+     "explanation": "may actively decide = có thể → possibility."
     },
     {
      "id": "c5",
      "text": "Perhaps they could tell he was a person who cared very much about dolphins.",
      "category": "a",
-     "explanation": ""
+     "explanation": "could tell = đã có khả năng nhận ra → ability (quá khứ)."
     },
     {
      "id": "c6",
      "text": "He couldn't get away.",
      "category": "a",
-     "explanation": ""
+     "explanation": "couldn't get away = không thể thoát ra (quá khứ) → ability."
     },
     {
      "id": "c7",
      "text": "Yang Yun found she couldn't move her legs due to the freezing temperatures.",
      "category": "a",
-     "explanation": ""
+     "explanation": "couldn't move her legs = không cử động được → ability."
     },
     {
      "id": "c8",
      "text": "Although we may never be sure why they help us…",
      "category": "p",
-     "explanation": ""
+     "explanation": "may never be sure = có thể sẽ không bao giờ chắc → possibility."
     }
    ]
   },
@@ -350,7 +350,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Khả năng ở hiện tại → can."
     },
     {
      "id": "g2",
@@ -363,7 +363,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Khả năng trong quá khứ, phủ định → couldn't."
     },
     {
      "id": "g3",
@@ -377,7 +377,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Khả năng xảy ra (đoán) → may/might/could have saved."
     },
     {
      "id": "g4",
@@ -390,7 +390,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Quá khứ, không thể tìm được lối qua bãi cát → couldn't."
     },
     {
      "id": "g5",
@@ -403,7 +403,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Khả năng xảy ra → may/might never be sure."
     }
    ]
   },
@@ -428,25 +428,25 @@
      "id": "m1",
      "left": "Photograph A",
      "right": "mountain gorilla",
-     "explanation": ""
+     "explanation": "mountain gorilla — khỉ đột núi."
     },
     {
      "id": "m2",
      "left": "Photograph B",
      "right": "blue ring octopus",
-     "explanation": ""
+     "explanation": "blue ring octopus — bạch tuộc đốm xanh."
     },
     {
      "id": "m3",
      "left": "Photograph C",
      "right": "Pere David's deer",
-     "explanation": ""
+     "explanation": "Pere David's deer — hươu Père David (hươu sao Trung Quốc)."
     },
     {
      "id": "m4",
      "left": "Photograph D",
      "right": "Arabian leopard",
-     "explanation": ""
+     "explanation": "Arabian leopard — báo hoa mai Ả Rập."
     }
    ]
   },
@@ -466,31 +466,31 @@
      "id": "m1",
      "left": "Country of origin",
      "right": "Where does it come from?",
-     "explanation": ""
+     "explanation": "Country of origin (nguồn gốc) → Nó đến từ đâu?"
     },
     {
      "id": "m2",
      "left": "Dangers",
      "right": "What threats does it face?",
-     "explanation": ""
+     "explanation": "Dangers (mối nguy) → Nó gặp những đe doạ nào?"
     },
     {
      "id": "m3",
      "left": "Diet",
      "right": "What does it eat?",
-     "explanation": ""
+     "explanation": "Diet (chế độ ăn) → Nó ăn gì?"
     },
     {
      "id": "m4",
      "left": "Habitat",
      "right": "Where does it live?",
-     "explanation": ""
+     "explanation": "Habitat (môi trường sống) → Nó sống ở đâu?"
     },
     {
      "id": "m5",
      "left": "Physical description",
      "right": "What does it look like?",
-     "explanation": ""
+     "explanation": "Physical description (ngoại hình) → Nó trông thế nào?"
     }
    ]
   },
@@ -510,31 +510,31 @@
      "id": "m1",
      "left": "Comes from Africa",
      "right": "Country of origin",
-     "explanation": ""
+     "explanation": "Đến từ châu Phi → nguồn gốc."
     },
     {
      "id": "m2",
      "left": "People are using its land for cows and sheep",
      "right": "Dangers",
-     "explanation": ""
+     "explanation": "Đất bị dùng nuôi bò, cừu → mối nguy."
     },
     {
      "id": "m3",
      "left": "Mainly eats grass",
      "right": "Diet",
-     "explanation": ""
+     "explanation": "Chủ yếu ăn cỏ → chế độ ăn."
     },
     {
      "id": "m4",
      "left": "Lives on wet lands",
      "right": "Habitat",
-     "explanation": ""
+     "explanation": "Sống ở vùng đất ngập nước → môi trường sống."
     },
     {
      "id": "m5",
      "left": "Has long arms",
      "right": "Physical description",
-     "explanation": ""
+     "explanation": "Có tay dài → ngoại hình."
     }
    ]
   },
@@ -568,7 +568,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "'now I'm going to talk about' → chuyển sang chủ đề mới (thường là đề mục mới trong ghi chú)."
     },
     {
      "id": "q2",
@@ -588,7 +588,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "'two reasons why' → báo trước có hai lý do, nghe đủ cả hai."
     },
     {
      "id": "q3",
@@ -608,7 +608,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "'move on to' → chuyển chủ đề mới."
     },
     {
      "id": "q4",
@@ -628,7 +628,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Firstly… Secondly… → lý do thứ nhất, lý do thứ hai."
     },
     {
      "id": "q5",
@@ -648,7 +648,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "'conclude by' → chủ đề cuối cùng."
     },
     {
      "id": "q6",
@@ -668,7 +668,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "In other words → nói lại cùng ý bằng từ khác."
     }
    ]
   },
@@ -688,31 +688,31 @@
      "id": "m1",
      "left": "Gap 1: Builds a nest on the ___",
      "right": "the name of a place",
-     "explanation": ""
+     "explanation": "on the ___ → một nơi chốn (vd. ground)."
     },
     {
      "id": "m2",
      "left": "Gap 2: Older males have a ___ coloured coat",
      "right": "a colour",
-     "explanation": ""
+     "explanation": "___ coloured → một màu sắc."
     },
     {
      "id": "m3",
      "left": "Gap 3: Younger males are called ___",
      "right": "a name",
-     "explanation": ""
+     "explanation": "are called ___ → một tên gọi."
     },
     {
      "id": "m4",
      "left": "Gap 4: Plants provide the ___ they require",
      "right": "something gorillas need to eat or drink",
-     "explanation": ""
+     "explanation": "Plants provide the ___ they require → thứ gorilla cần ăn/uống (vd. water)."
     },
     {
      "id": "m5",
      "left": "Gap 5: Dangers: ___",
      "right": "something bad for gorillas",
-     "explanation": ""
+     "explanation": "Dangers: ___ → điều có hại cho gorilla."
     }
    ]
   },
@@ -732,37 +732,37 @@
      "id": "m1",
      "left": "Gap 1: introduced into the UK at the beginning of the ___ century",
      "right": "When did it come to Britain?",
-     "explanation": ""
+     "explanation": "at the beginning of the ___ century → khi nào tới Anh."
     },
     {
      "id": "m2",
      "left": "Gap 2: female weighs up to ___ grams",
      "right": "How much does it weigh?",
-     "explanation": ""
+     "explanation": "weighs up to ___ grams → nặng bao nhiêu."
     },
     {
      "id": "m3",
      "left": "Gap 3: has a flat ___",
      "right": "What part of its body is flat?",
-     "explanation": ""
+     "explanation": "has a flat ___ → bộ phận nào dẹt."
     },
     {
      "id": "m4",
      "left": "Gap 4: male frog has a ___ coloured throat",
      "right": "What colour is the throat of the male?",
-     "explanation": ""
+     "explanation": "___ coloured throat → màu cổ họng con đực."
     },
     {
      "id": "m5",
      "left": "Gap 5: eats … birds and animals including ___",
      "right": "What kind of animals does it eat?",
-     "explanation": ""
+     "explanation": "eats … including ___ → ăn loài vật nào."
     },
     {
      "id": "m6",
      "left": "Gap 6: a total of £___ already spent",
      "right": "How much money has been spent on control measures?",
-     "explanation": ""
+     "explanation": "£___ spent → đã chi bao nhiêu tiền."
     }
    ]
   }

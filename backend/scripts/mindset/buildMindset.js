@@ -72,6 +72,25 @@ function bookOrder(exs, links) {
   return keyed.map((x) => x.e);
 }
 
+// Per-item "why" for exercises the book only gives answers for:
+// <level>/expl/uNN.js = { '<exercise code>': [one string per item, in item
+// order; '' / null keeps the DSL's own] }. Fails loudly when a code or the
+// item count drifts (exercises re-ordered / items added) so nothing lands on
+// the wrong item. List what is still missing: missingExpl.js.
+function mergeExplanations(lv, n, exercises) {
+  const file = path.join(__dirname, lv.src, 'expl', `u${pad(n)}.js`);
+  if (!fs.existsSync(file)) return;
+  const map = require(file);
+  for (const [code, list] of Object.entries(map)) {
+    const e = exercises.find((x) => x.code === code);
+    if (!e) throw new Error(`${file}: không có bài ${code}`);
+    if (!Array.isArray(list) || list.length !== (e.items || []).length) {
+      throw new Error(`${code}: expl có ${Array.isArray(list) ? list.length : '?'} câu, bài có ${(e.items || []).length}`);
+    }
+    e.items = e.items.map((it, i) => (list[i] && !String(it.explanation || '').trim() ? { ...it, explanation: list[i] } : it));
+  }
+}
+
 function buildUnit(lv, u) {
   const mod = `${lv.prefix}-U${pad(u.n)}`;
   const module = {
@@ -142,6 +161,8 @@ function buildUnit(lv, u) {
     exercises.push(...exs);
   }
   for (const k of Object.keys(u.lessons)) if (!KEYS.some((x) => x.key === k)) throw new Error(`Unit ${u.n}: lesson key lạ "${k}"`);
+
+  mergeExplanations(lv, u.n, exercises);
 
   const passages = (u.passages || []).map((p) => ({ ...p, courseRef: p.courseRef || p.ref, ref: undefined }));
   const sections = (u.sections || []).map((s) => ({ ...s, courseRef: s.courseRef || s.ref, ref: undefined }));

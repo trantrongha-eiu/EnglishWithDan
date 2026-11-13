@@ -1,0 +1,47 @@
+// Mindset 2 · Unit 6 — per-item explanations (merged by buildMindset.js).
+module.exports = {
+  'M2-U06-L1-E01': [
+    "habitat — môi trường sống tự nhiên.",
+    "extinction — sự tuyệt chủng.",
+    "conservation — sự bảo tồn thiên nhiên.",
+    "endangered — có nguy cơ tuyệt chủng.",
+    "species — loài.",
+    "threaten — đe doạ.",
+    "poach — săn trộm.",
+    "captivity — tình trạng bị nuôi nhốt/giam giữ.",
+  ],
+  'M2-U06-L2-E02': [
+    "Bước 1: đọc kỹ hướng dẫn.",
+    "Bước 2: đọc lướt bài để nắm chủ đề.",
+    "Bước 3: đọc kỹ các nhận định, gạch chân từ khoá.",
+    "Bước 4: dò bài tìm từ khoá hoặc từ đồng nghĩa.",
+    "Bước 5: gạch chân các từ đó trong bài.",
+    "Bước 6: đọc câu trước và sau chỗ có từ khoá.",
+    "Bước 7: chọn Yes, No hoặc Not Given.",
+  ],
+  'M2-U06-L4-E01': [
+    "well — giếng khoan.",
+    "fissure — khe nứt trong đá.",
+    "drill — mũi khoan/máy khoan.",
+    "shale — đá phiến sét (chứa khí đốt).",
+  ],
+  'M2-U06-L4-E03': [
+    "few (rất ít) + danh từ đếm được số nhiều.",
+    "fewer (ít hơn) + danh từ đếm được.",
+    "several (vài) + danh từ đếm được.",
+    "many (nhiều) + danh từ đếm được.",
+    "every + danh từ đếm được số ít.",
+    "a little (một chút) + danh từ không đếm được.",
+    "much (nhiều) + danh từ không đếm được.",
+    "less (ít hơn) + danh từ không đếm được.",
+    "all dùng được cả hai (all students / all water).",
+    "a lot of dùng được cả hai.",
+    "more dùng được cả hai.",
+    "some dùng được cả hai.",
+  ],
+  'M2-U06-L4-E04': [
+    "those who are in favour of fracking ≈ supporters of fracking (người ủng hộ).",
+    "the main benefit ≈ lợi ích kinh tế 'usually seen as more significant'.",
+    "lower energy bills ≈ energy prices will come down (giá năng lượng giảm).",
+  ],
+};

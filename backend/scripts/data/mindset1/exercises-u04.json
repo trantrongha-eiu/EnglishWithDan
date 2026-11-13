@@ -21,49 +21,49 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "curry and rice",
-     "explanation": ""
+     "explanation": "curry and rice — cà ri ăn với cơm."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "cereal",
-     "explanation": ""
+     "explanation": "cereal — ngũ cốc ăn sáng (thường ăn với sữa)."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "mashed potato",
-     "explanation": ""
+     "explanation": "mashed potato — khoai tây nghiền."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "fish and chips",
-     "explanation": ""
+     "explanation": "fish and chips — cá tẩm bột chiên và khoai tây chiên (món Anh)."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "noodles, vegetables and chicken",
-     "explanation": ""
+     "explanation": "noodles, vegetables and chicken — mì xào rau và gà."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "chicken and salad",
-     "explanation": ""
+     "explanation": "chicken and salad — gà và rau trộn."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "toast",
-     "explanation": ""
+     "explanation": "toast — bánh mì nướng lát."
     },
     {
      "id": "m8",
      "left": "Picture 8",
      "right": "burger",
-     "explanation": ""
+     "explanation": "burger — bánh hamburger."
     }
    ]
   },
@@ -93,73 +93,73 @@
      "id": "c1",
      "text": "burger",
      "category": "c",
-     "explanation": ""
+     "explanation": "a burger, two burgers → đếm được."
     },
     {
      "id": "c2",
      "text": "cereal",
      "category": "u",
-     "explanation": ""
+     "explanation": "cereal (ngũ cốc) nói chung → không đếm được."
     },
     {
      "id": "c3",
      "text": "chips",
      "category": "c",
-     "explanation": ""
+     "explanation": "chips (từng miếng khoai chiên) có -s → đếm được."
     },
     {
      "id": "c4",
      "text": "curry",
      "category": "u",
-     "explanation": ""
+     "explanation": "curry (món cà ri) → không đếm được."
     },
     {
      "id": "c5",
      "text": "fish",
      "category": "u",
-     "explanation": ""
+     "explanation": "fish là món ăn (thịt cá) → không đếm được."
     },
     {
      "id": "c6",
      "text": "mashed potato",
      "category": "u",
-     "explanation": ""
+     "explanation": "mashed potato (khoai nghiền) là khối → không đếm được."
     },
     {
      "id": "c7",
      "text": "chicken",
      "category": "u",
-     "explanation": ""
+     "explanation": "chicken là thịt gà (món ăn) → không đếm được."
     },
     {
      "id": "c8",
      "text": "noodle",
      "category": "c",
-     "explanation": ""
+     "explanation": "a noodle, noodles → đếm được."
     },
     {
      "id": "c9",
      "text": "rice",
      "category": "u",
-     "explanation": ""
+     "explanation": "rice → không đếm được."
     },
     {
      "id": "c10",
      "text": "salad",
      "category": "u",
-     "explanation": ""
+     "explanation": "salad (rau trộn nói chung) → không đếm được."
     },
     {
      "id": "c11",
      "text": "toast",
      "category": "u",
-     "explanation": ""
+     "explanation": "toast (bánh mì nướng) → không đếm được (a slice of toast)."
     },
     {
      "id": "c12",
      "text": "vegetable",
      "category": "c",
-     "explanation": ""
+     "explanation": "a vegetable, vegetables → đếm được."
     }
    ]
   },
@@ -279,7 +279,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu khẳng định + mushrooms số nhiều → some."
     },
     {
      "id": "g2",
@@ -291,7 +291,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi + people (số nhiều, đếm được) → many."
     },
     {
      "id": "g3",
@@ -303,7 +303,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Phủ định + sugar không đếm được → much."
     },
     {
      "id": "g4",
@@ -316,7 +316,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi + flour không đếm được → any (hoặc much)."
     },
     {
      "id": "g5",
@@ -340,7 +340,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "rice không đếm được → How much?"
     }
    ]
   },
@@ -365,25 +365,25 @@
      "id": "m1",
      "left": "Picture A",
      "right": "boil",
-     "explanation": ""
+     "explanation": "boil — luộc trong nước sôi."
     },
     {
      "id": "m2",
      "left": "Picture B",
      "right": "fry",
-     "explanation": ""
+     "explanation": "fry — chiên trong chảo dầu."
     },
     {
      "id": "m3",
      "left": "Picture C",
      "right": "bake",
-     "explanation": ""
+     "explanation": "bake — nướng trong lò (bánh mì, bánh ngọt)."
     },
     {
      "id": "m4",
      "left": "Picture D",
      "right": "grill",
-     "explanation": ""
+     "explanation": "grill — nướng vỉ (nhiệt trực tiếp từ trên/dưới)."
     }
    ]
   },
@@ -421,97 +421,97 @@
      "id": "c1",
      "text": "beef",
      "category": "m",
-     "explanation": ""
+     "explanation": "beef — thịt bò → món thịt."
     },
     {
      "id": "c2",
      "text": "steak",
      "category": "m",
-     "explanation": ""
+     "explanation": "steak — bít tết → món thịt."
     },
     {
      "id": "c3",
      "text": "burger",
      "category": "m",
-     "explanation": ""
+     "explanation": "burger — bánh kẹp thịt → món thịt."
     },
     {
      "id": "c4",
      "text": "lamb",
      "category": "m",
-     "explanation": ""
+     "explanation": "lamb — thịt cừu → món thịt."
     },
     {
      "id": "c5",
      "text": "potatoes",
      "category": "v",
-     "explanation": ""
+     "explanation": "potatoes — khoai tây → rau củ."
     },
     {
      "id": "c6",
      "text": "carrots",
      "category": "v",
-     "explanation": ""
+     "explanation": "carrots — cà rốt → rau củ."
     },
     {
      "id": "c7",
      "text": "cucumbers",
      "category": "v",
-     "explanation": ""
+     "explanation": "cucumbers — dưa chuột → rau củ."
     },
     {
      "id": "c8",
      "text": "peas",
      "category": "v",
-     "explanation": ""
+     "explanation": "peas — đậu Hà Lan → rau củ."
     },
     {
      "id": "c9",
      "text": "apples",
      "category": "f",
-     "explanation": ""
+     "explanation": "apples — táo → trái cây."
     },
     {
      "id": "c10",
      "text": "strawberries",
      "category": "f",
-     "explanation": ""
+     "explanation": "strawberries — dâu tây → trái cây."
     },
     {
      "id": "c11",
      "text": "pears",
      "category": "f",
-     "explanation": ""
+     "explanation": "pears — lê → trái cây."
     },
     {
      "id": "c12",
      "text": "bananas",
      "category": "f",
-     "explanation": ""
+     "explanation": "bananas — chuối → trái cây."
     },
     {
      "id": "c13",
      "text": "biscuits",
      "category": "s",
-     "explanation": ""
+     "explanation": "biscuits — bánh quy → đồ ngọt."
     },
     {
      "id": "c14",
      "text": "cake",
      "category": "s",
-     "explanation": ""
+     "explanation": "cake — bánh ngọt → đồ ngọt."
     },
     {
      "id": "c15",
      "text": "chocolate",
      "category": "s",
-     "explanation": ""
+     "explanation": "chocolate — sô-cô-la → đồ ngọt."
     },
     {
      "id": "c16",
      "text": "pastries",
      "category": "s",
-     "explanation": ""
+     "explanation": "pastries — bánh ngọt nướng (bánh sừng bò…) → đồ ngọt."
     }
    ]
   },
@@ -531,31 +531,31 @@
      "id": "m1",
      "left": "crowded",
      "right": "busy",
-     "explanation": ""
+     "explanation": "crowded (đông đúc) ≈ busy."
     },
     {
      "id": "m2",
      "left": "delicious",
      "right": "tasty",
-     "explanation": ""
+     "explanation": "delicious (ngon) ≈ tasty."
     },
     {
      "id": "m3",
      "left": "cheap",
      "right": "low-cost",
-     "explanation": ""
+     "explanation": "cheap (rẻ) ≈ low-cost."
     },
     {
      "id": "m4",
      "left": "smart",
      "right": "fashionable",
-     "explanation": ""
+     "explanation": "smart (sang trọng) ≈ fashionable."
     },
     {
      "id": "m5",
      "left": "inexpensive",
      "right": "reasonable",
-     "explanation": ""
+     "explanation": "inexpensive (không đắt) ≈ reasonable (giá phải chăng)."
     }
    ]
   },
@@ -669,7 +669,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "skilful = khéo léo, giỏi nghề; A nói đầu bếp làm dở → KHÔNG cùng nghĩa."
     },
     {
      "id": "q6",
@@ -709,7 +709,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "famous across the country = nổi tiếng cả nước; C nói không ai biết ngoài thị trấn → ngược nghĩa."
     },
     {
      "id": "q8",
@@ -749,49 +749,49 @@
      "id": "m1",
      "left": "cheap",
      "right": "reasonable, budget",
-     "explanation": ""
+     "explanation": "cheap ≈ reasonable, budget (giá phải chăng, bình dân)."
     },
     {
      "id": "m2",
      "left": "tasty",
      "right": "delicious, mouth-watering",
-     "explanation": ""
+     "explanation": "tasty ≈ delicious, mouth-watering (ngon, thèm chảy nước miếng)."
     },
     {
      "id": "m3",
      "left": "old-fashioned",
      "right": "traditional, historic",
-     "explanation": ""
+     "explanation": "old-fashioned ≈ traditional, historic (kiểu xưa, truyền thống)."
     },
     {
      "id": "m4",
      "left": "street food",
      "right": "sold outdoors, from stalls in the streets",
-     "explanation": ""
+     "explanation": "street food ≈ sold outdoors / from stalls in the streets (bán ngoài trời, ở quầy ven đường)."
     },
     {
      "id": "m5",
      "left": "skilful",
      "right": "expertise, highly trained",
-     "explanation": ""
+     "explanation": "skilful ≈ expertise, highly trained (chuyên môn cao)."
     },
     {
      "id": "m6",
      "left": "can be changed",
      "right": "use different ingredients, flexible",
-     "explanation": ""
+     "explanation": "can be changed ≈ use different ingredients, flexible (linh hoạt)."
     },
     {
      "id": "m7",
      "left": "famous",
      "right": "well known, recognised",
-     "explanation": ""
+     "explanation": "famous ≈ well known, recognised (được biết đến)."
     },
     {
      "id": "m8",
      "left": "too spicy",
      "right": "too much pepper, too hot",
-     "explanation": ""
+     "explanation": "too spicy ≈ too much pepper, too hot (quá cay)."
     }
    ]
   }

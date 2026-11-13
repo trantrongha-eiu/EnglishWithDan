@@ -21,49 +21,49 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "use a dictionary",
-     "explanation": ""
+     "explanation": "use a dictionary — tra từ điển."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "talk to people whose first language is English",
-     "explanation": ""
+     "explanation": "talk to people whose first language is English — nói chuyện với người bản ngữ tiếng Anh."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "listen to songs in English",
-     "explanation": ""
+     "explanation": "listen to songs in English — nghe nhạc tiếng Anh."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "write an email to a friend",
-     "explanation": ""
+     "explanation": "write an email to a friend — viết email cho bạn."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "keep a vocabulary notebook",
-     "explanation": ""
+     "explanation": "keep a vocabulary notebook — ghi sổ từ vựng."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "study with a teacher in a classroom",
-     "explanation": ""
+     "explanation": "study with a teacher in a classroom — học với giáo viên trên lớp."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "watch videos online",
-     "explanation": ""
+     "explanation": "watch videos online — xem video trên mạng."
     },
     {
      "id": "m8",
      "left": "Picture 8",
      "right": "read newspapers and magazines",
-     "explanation": ""
+     "explanation": "read newspapers and magazines — đọc báo và tạp chí."
     }
    ]
   },
@@ -97,7 +97,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "talk to sb = nói chuyện với ai."
     },
     {
      "id": "q2",
@@ -117,7 +117,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "communicate by email = liên lạc bằng email (by + phương tiện)."
     },
     {
      "id": "q3",
@@ -157,7 +157,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "chat with sb = tán gẫu với ai."
     },
     {
      "id": "q5",
@@ -177,7 +177,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "hold a conversation with sb = duy trì cuộc trò chuyện với ai."
     }
    ]
   },
@@ -197,31 +197,31 @@
      "id": "m1",
      "left": "What is the main language that",
      "right": "you speak in your country?",
-     "explanation": ""
+     "explanation": "What is the main language that + you speak in your country? (mệnh đề quan hệ bổ nghĩa cho language)."
     },
     {
      "id": "m2",
      "left": "Do you prefer to communicate",
      "right": "by phone or by email?",
-     "explanation": ""
+     "explanation": "communicate + by phone or by email (by + phương tiện liên lạc)."
     },
     {
      "id": "m3",
      "left": "How often do you talk",
      "right": "to people on the internet?",
-     "explanation": ""
+     "explanation": "How often do you talk + to people on the internet? (talk to sb)."
     },
     {
      "id": "m4",
      "left": "What do you usually chat",
      "right": "about with your friends?",
-     "explanation": ""
+     "explanation": "What do you usually chat + about…? (chat about sth — giới từ ở cuối câu hỏi)."
     },
     {
      "id": "m5",
      "left": "Do you think reading newspapers",
      "right": "can help with language learning?",
-     "explanation": ""
+     "explanation": "Do you think reading newspapers + can help with language learning? (help with sth)."
     }
    ]
   },
@@ -241,49 +241,49 @@
      "id": "m1",
      "left": "I'm going to study",
      "right": "with a teacher in a classroom.",
-     "explanation": ""
+     "explanation": "study with a teacher in a classroom."
     },
     {
      "id": "m2",
      "left": "I'm going to talk",
      "right": "to people whose first language is English.",
-     "explanation": ""
+     "explanation": "talk to people… (talk to sb)."
     },
     {
      "id": "m3",
      "left": "I'm going to use",
      "right": "a dictionary.",
-     "explanation": ""
+     "explanation": "use a dictionary."
     },
     {
      "id": "m4",
      "left": "I'm going to listen",
      "right": "to songs in English.",
-     "explanation": ""
+     "explanation": "listen to songs (listen luôn đi với to)."
     },
     {
      "id": "m5",
      "left": "I'm going to keep",
      "right": "a vocabulary notebook.",
-     "explanation": ""
+     "explanation": "keep a vocabulary notebook = duy trì sổ từ vựng."
     },
     {
      "id": "m6",
      "left": "I'm going to watch",
      "right": "online videos.",
-     "explanation": ""
+     "explanation": "watch online videos."
     },
     {
      "id": "m7",
      "left": "I'm going to read",
      "right": "newspapers and magazines.",
-     "explanation": ""
+     "explanation": "read newspapers and magazines."
     },
     {
      "id": "m8",
      "left": "I'm going to write",
      "right": "emails to my friends.",
-     "explanation": ""
+     "explanation": "write emails to my friends."
     }
    ]
   },
@@ -317,7 +317,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "hold a conversation = duy trì một cuộc hội thoại."
     },
     {
      "id": "q2",
@@ -337,7 +337,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "have an advantage = có lợi thế."
     },
     {
      "id": "q3",
@@ -357,7 +357,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "practise your skills = luyện kỹ năng."
     },
     {
      "id": "q4",
@@ -377,7 +377,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "make an effort = nỗ lực."
     },
     {
      "id": "q5",
@@ -397,7 +397,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "do some work = làm việc/học bài."
     },
     {
      "id": "q6",
@@ -417,7 +417,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "have fun = vui vẻ."
     },
     {
      "id": "q7",
@@ -437,7 +437,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "speak a language = nói một ngôn ngữ."
     },
     {
      "id": "q8",
@@ -457,7 +457,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "take someone's advice = nghe theo lời khuyên của ai."
     },
     {
      "id": "q9",
@@ -477,7 +477,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "have time (to do sth) = có thời gian."
     },
     {
      "id": "q10",
@@ -497,7 +497,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "make progress = tiến bộ."
     }
    ]
   },
@@ -531,7 +531,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "So sánh hơn với than (…than most people) → more languages."
     },
     {
      "id": "q2",
@@ -632,7 +632,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "make an effort = cố gắng; do work = làm bài/học."
     },
     {
      "id": "g2",
@@ -649,7 +649,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "give advice = cho lời khuyên; have fun = chơi vui."
     },
     {
      "id": "g3",
@@ -661,7 +661,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "it takes a long time = mất nhiều thời gian."
     },
     {
      "id": "g4",
@@ -678,7 +678,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "speaking skills = kỹ năng nói; make progress = tiến bộ."
     },
     {
      "id": "g5",
@@ -690,7 +690,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "have an advantage = có lợi thế (vì bố là giáo viên tiếng Anh)."
     }
    ]
   },
@@ -717,7 +717,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Hội thoại: em trai nói sẽ không đỗ bài thi tiếng Anh → fail his English exam."
     },
     {
      "id": "g2",
@@ -729,7 +729,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu gốc: I tried to give him some advice, but he didn't take it → take Susan's advice."
     },
     {
      "id": "g3",
@@ -741,7 +741,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "He only wants to have fun → would rather have fun."
     },
     {
      "id": "g4",
@@ -753,7 +753,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "it takes a long time → happens over a long time."
     },
     {
      "id": "g5",
@@ -766,7 +766,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "It's more difficult to make any progress if you don't speak."
     },
     {
      "id": "g6",
@@ -778,7 +778,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Lợi thế: bố là giáo viên tiếng Anh → their father teaches English."
     }
    ]
   },
@@ -808,61 +808,61 @@
      "id": "c1",
      "text": "a mistake",
      "category": "make",
-     "explanation": ""
+     "explanation": "make a mistake = mắc lỗi."
     },
     {
      "id": "c2",
      "text": "dinner",
      "category": "make",
-     "explanation": ""
+     "explanation": "make dinner = nấu bữa tối."
     },
     {
      "id": "c3",
      "text": "somebody laugh",
      "category": "make",
-     "explanation": ""
+     "explanation": "make somebody laugh = làm ai cười."
     },
     {
      "id": "c4",
      "text": "a noise",
      "category": "make",
-     "explanation": ""
+     "explanation": "make a noise = gây ồn."
     },
     {
      "id": "c5",
      "text": "a difference",
      "category": "make",
-     "explanation": ""
+     "explanation": "make a difference = tạo ra sự khác biệt."
     },
     {
      "id": "c6",
      "text": "a guess",
      "category": "make",
-     "explanation": ""
+     "explanation": "make a guess = đoán."
     },
     {
      "id": "c7",
      "text": "a test",
      "category": "take",
-     "explanation": ""
+     "explanation": "take a test = làm bài kiểm tra."
     },
     {
      "id": "c8",
      "text": "an exam",
      "category": "take",
-     "explanation": ""
+     "explanation": "take an exam = dự thi."
     },
     {
      "id": "c9",
      "text": "a picture",
      "category": "take",
-     "explanation": ""
+     "explanation": "take a picture = chụp ảnh."
     },
     {
      "id": "c10",
      "text": "a walk",
      "category": "take",
-     "explanation": ""
+     "explanation": "take a walk = đi dạo."
     }
    ]
   },
@@ -895,7 +895,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "meet my friends at the cinema = gặp bạn ở rạp phim."
     },
     {
      "id": "g2",
@@ -907,7 +907,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "on the computer + anh họ sắp đi Canada → video call (gọi video)."
     },
     {
      "id": "g3",
@@ -919,7 +919,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "learn five new phrases = học 5 cụm từ mới."
     },
     {
      "id": "g4",
@@ -931,7 +931,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "study in the library = học ở thư viện."
     },
     {
      "id": "g5",
@@ -943,7 +943,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "send an email = gửi email."
     }
    ]
   },
@@ -1063,7 +1063,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Câu hỏi với going to phải đảo be: Are you going to…?"
     },
     {
      "id": "q3",
@@ -1111,7 +1111,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Wh- + be + S + going to: Where are you going to watch…? (không giữ trật tự câu khẳng định)."
     },
     {
      "id": "q6",
@@ -1154,7 +1154,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Phủ định: S + am not + going to + V: I'm not going to worry."
     },
     {
      "id": "g2",
@@ -1166,7 +1166,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi: Are you going to learn…?"
     },
     {
      "id": "g3",
@@ -1179,7 +1179,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Khẳng định: I'm going to try my hardest."
     },
     {
      "id": "g4",
@@ -1191,7 +1191,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi: Are you going to meet them…?"
     },
     {
      "id": "g5",
@@ -1205,7 +1205,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Phủ định ngôi 3: She isn't going to live…"
     }
    ]
   },
@@ -1248,7 +1248,7 @@
       "project",
       "with?"
      ],
-     "explanation": ""
+     "explanation": "Wh- + are + you + going to + V…; giới từ with đứng cuối (do the project with sb)."
     },
     {
      "id": "o2",
@@ -1275,7 +1275,7 @@
       "dictionary",
       "from?"
      ],
-     "explanation": ""
+     "explanation": "Where + are you going to buy… + from? (buy sth from a place)."
     },
     {
      "id": "o3",
@@ -1302,7 +1302,7 @@
       "language",
       "skills?"
      ],
-     "explanation": ""
+     "explanation": "How + are you going to + improve…?"
     },
     {
      "id": "o4",
@@ -1333,7 +1333,7 @@
       "next",
       "year?"
      ],
-     "explanation": ""
+     "explanation": "Why + are you not going to + go… (not đứng sau chủ ngữ, trước going to)."
     },
     {
      "id": "o5",
@@ -1378,7 +1378,7 @@
       "level",
       "class?"
      ],
-     "explanation": ""
+     "explanation": "When + are you going to tell the teacher + (that) you want to move up…?"
     }
    ]
   },
@@ -1448,7 +1448,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Dạng đầy đủ: S + am going to + V → I am going to discuss."
     },
     {
      "id": "q2",
@@ -1468,7 +1468,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "know the meaning of a word = biết nghĩa của từ."
     },
     {
      "id": "q3",
@@ -1508,7 +1508,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "stop to check every word = dừng lại để tra từng từ."
     },
     {
      "id": "q5",
@@ -1528,7 +1528,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "practise their language skills = luyện kỹ năng ngôn ngữ."
     },
     {
      "id": "q6",
@@ -1548,7 +1548,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "are + V-ing (hiện tại tiếp diễn): are using their computers."
     },
     {
      "id": "q7",
@@ -1588,7 +1588,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "make progress = tiến bộ."
     }
    ]
   },
@@ -1626,37 +1626,37 @@
      "id": "c1",
      "text": "Firstly",
      "category": "main",
-     "explanation": ""
+     "explanation": "Firstly = trước hết → mở ý chính thứ nhất."
     },
     {
      "id": "c2",
      "text": "Furthermore",
      "category": "extra",
-     "explanation": ""
+     "explanation": "Furthermore = hơn nữa → bổ sung thông tin."
     },
     {
      "id": "c3",
      "text": "Additionally",
      "category": "extra",
-     "explanation": ""
+     "explanation": "Additionally = thêm vào đó → bổ sung thông tin."
     },
     {
      "id": "c4",
      "text": "On the other hand",
      "category": "new",
-     "explanation": ""
+     "explanation": "On the other hand = mặt khác → ý đối lập."
     },
     {
      "id": "c5",
      "text": "However",
      "category": "new",
-     "explanation": ""
+     "explanation": "However = tuy nhiên → ý đối lập."
     },
     {
      "id": "c6",
      "text": "To sum up",
      "category": "end",
-     "explanation": ""
+     "explanation": "To sum up = tóm lại → kết luận."
     }
    ]
   },
@@ -1734,7 +1734,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "make a suggestion = đưa ra gợi ý."
     },
     {
      "id": "q2",
@@ -1754,7 +1754,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "make an appointment = đặt lịch hẹn."
     },
     {
      "id": "q3",
@@ -1774,7 +1774,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "have a chat = trò chuyện."
     }
    ]
   },
@@ -1868,7 +1868,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "communicate by email (by + phương tiện)."
     },
     {
      "id": "q2",
@@ -1908,7 +1908,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "hold a conversation with someone."
     },
     {
      "id": "q4",
@@ -1948,7 +1948,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "have a chat about something (về chuyện gì)."
     },
     {
      "id": "q6",
@@ -1968,7 +1968,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "have a chat with someone (với ai)."
     },
     {
      "id": "q7",
@@ -2022,7 +2022,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Kế hoạch vừa nảy ra dựa trên tình huống; take a walk = đi dạo → am going to take."
     },
     {
      "id": "q2",
@@ -2042,7 +2042,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Bài thi đã qua → quá khứ; make a mistake → made."
     },
     {
      "id": "q3",
@@ -2062,7 +2062,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "make sb laugh; nói về tính cách chung (luôn vậy) → makes."
     },
     {
      "id": "q4",
@@ -2082,7 +2082,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "take photos; always → hiện tại đơn take."
     },
     {
      "id": "q5",
@@ -2102,7 +2102,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "make a difference; sự thật chung → makes."
     }
    ]
   },
@@ -2205,7 +2205,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "tomorrow (kế hoạch đã định) → are going to have / are having a chat."
     },
     {
      "id": "g2",
@@ -2218,7 +2218,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Việc đang làm lúc nói → are trying to decide."
     },
     {
      "id": "g3",
@@ -2230,7 +2230,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "last week → quá khứ: discussed."
     },
     {
      "id": "g4",
@@ -2242,7 +2242,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "who + ngôi 3 số ít (anyone) → communicates."
     },
     {
      "id": "g5",
@@ -2254,7 +2254,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "tell sb to + V → to hold more conversations."
     },
     {
      "id": "g6",

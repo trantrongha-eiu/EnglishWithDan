@@ -16,61 +16,61 @@
      "id": "m1",
      "left": "attraction",
      "right": "a place that people visit for pleasure and interest, usually while they are on holiday",
-     "explanation": ""
+     "explanation": "attraction — điểm tham quan hấp dẫn."
     },
     {
      "id": "m2",
      "left": "a local",
      "right": "someone who lives in the area you are talking about",
-     "explanation": ""
+     "explanation": "a local — người dân địa phương."
     },
     {
      "id": "m3",
      "left": "cancellation",
      "right": "the act of stopping something that was going to happen or stopping an order for something",
-     "explanation": ""
+     "explanation": "cancellation — sự huỷ bỏ (chuyến đi, đơn hàng)."
     },
     {
      "id": "m4",
      "left": "mother tongue",
      "right": "the first language that you learn when you are a child",
-     "explanation": ""
+     "explanation": "mother tongue — tiếng mẹ đẻ."
     },
     {
      "id": "m5",
      "left": "custom",
      "right": "a habit or tradition",
-     "explanation": ""
+     "explanation": "custom — phong tục, tập quán."
     },
     {
      "id": "m6",
      "left": "body language",
      "right": "the way you move your body, showing people what you are feeling",
-     "explanation": ""
+     "explanation": "body language — ngôn ngữ cơ thể."
     },
     {
      "id": "m7",
      "left": "native",
      "right": "relating to the people who lived in a country first, before other people took control of it",
-     "explanation": ""
+     "explanation": "native — bản địa (người sống ở đó đầu tiên)."
     },
     {
      "id": "m8",
      "left": "integrate",
      "right": "to become part of a group or society, or to help someone do this",
-     "explanation": ""
+     "explanation": "integrate — hoà nhập vào một nhóm/xã hội."
     },
     {
      "id": "m9",
      "left": "offend",
      "right": "to make someone upset or angry",
-     "explanation": ""
+     "explanation": "offend — xúc phạm, làm ai buồn/giận."
     },
     {
      "id": "m10",
      "left": "focus on",
      "right": "to give all your attention to something that you are doing",
-     "explanation": ""
+     "explanation": "focus on — tập trung vào."
     }
    ]
   },
@@ -149,43 +149,43 @@
      "id": "m1",
      "left": "construction",
      "right": "building",
-     "explanation": ""
+     "explanation": "construction ≈ building (việc xây dựng)."
     },
     {
      "id": "m2",
      "left": "convicts",
      "right": "prisoners",
-     "explanation": ""
+     "explanation": "convicts ≈ prisoners (tù nhân)."
     },
     {
      "id": "m3",
      "left": "arguments",
      "right": "controversy",
-     "explanation": ""
+     "explanation": "arguments ≈ controversy (tranh cãi)."
     },
     {
      "id": "m4",
      "left": "move to a new area",
      "right": "migrate",
-     "explanation": ""
+     "explanation": "move to a new area ≈ migrate (di cư)."
     },
     {
      "id": "m5",
      "left": "revolution",
      "right": "transformation",
-     "explanation": ""
+     "explanation": "revolution ≈ transformation (thay đổi lớn)."
     },
     {
      "id": "m6",
      "left": "exports",
      "right": "items sold abroad",
-     "explanation": ""
+     "explanation": "exports = items sold abroad (hàng xuất khẩu)."
     },
     {
      "id": "m7",
      "left": "impact",
      "right": "effect",
-     "explanation": ""
+     "explanation": "impact ≈ effect (tác động)."
     }
    ]
   },
@@ -222,7 +222,7 @@
       "heading",
       "twice"
      ],
-     "explanation": ""
+     "explanation": "Câu mệnh lệnh phủ định: Do not + V + tân ngữ + twice — không dùng một tiêu đề hai lần."
     },
     {
      "id": "o2",
@@ -239,7 +239,7 @@
       "of",
       "time"
      ],
-     "explanation": ""
+     "explanation": "Keep track of time = theo dõi thời gian."
     },
     {
      "id": "o3",
@@ -258,7 +258,7 @@
       "paragraph",
       "first"
      ],
-     "explanation": ""
+     "explanation": "Read + the shortest paragraph + first — đọc đoạn ngắn nhất trước."
     },
     {
      "id": "o4",
@@ -279,7 +279,7 @@
       "not",
       "understand"
      ],
-     "explanation": ""
+     "explanation": "Ignore + words + (that) you do not understand — bỏ qua từ không hiểu."
     }
    ]
   },
@@ -299,19 +299,19 @@
      "id": "m1",
      "left": "The journey has captured the imagination of travellers from far and wide since construction began in 1891.",
      "right": "present perfect + past simple",
-     "explanation": ""
+     "explanation": "has captured = hiện tại hoàn thành; began = quá khứ đơn."
     },
     {
      "id": "m2",
      "left": "From the moment building began, the project faced many difficulties.",
      "right": "past simple",
-     "explanation": ""
+     "explanation": "began, faced = quá khứ đơn."
     },
     {
      "id": "m3",
      "left": "Although officials have been building this line since 1891, it is still being expanded today.",
      "right": "present perfect continuous + present continuous passive",
-     "explanation": ""
+     "explanation": "have been building = hiện tại hoàn thành tiếp diễn; is being expanded = bị động hiện tại tiếp diễn."
     }
    ]
   },
@@ -331,19 +331,19 @@
      "id": "m1",
      "left": "An action which took place in the past, and is now finished.",
      "right": "b From the moment building began, the project faced many difficulties.",
-     "explanation": ""
+     "explanation": "Hành động đã xong trong quá khứ → quá khứ đơn (câu b)."
     },
     {
      "id": "m2",
      "left": "An action which took place in the past, and still has a connection to the present.",
      "right": "a The journey has captured the imagination of travellers…",
-     "explanation": ""
+     "explanation": "Bắt đầu trong quá khứ, còn liên quan tới hiện tại → hiện tại hoàn thành (câu a)."
     },
     {
      "id": "m3",
      "left": "A continuous action which took place in the past, and still has a connection to the present.",
      "right": "c Although officials have been building this line since 1891…",
-     "explanation": ""
+     "explanation": "Hành động kéo dài từ quá khứ tới nay → hiện tại hoàn thành tiếp diễn (câu c)."
     }
    ]
   },
@@ -455,31 +455,31 @@
      "id": "m1",
      "left": "Well, shall we take the train?",
      "right": "Proposing",
-     "explanation": ""
+     "explanation": "shall we…? = đề xuất (proposing)."
     },
     {
      "id": "m2",
      "left": "I really think you should do some more exercise.",
      "right": "Persuading",
-     "explanation": ""
+     "explanation": "I really think you should… = thuyết phục (persuading)."
     },
     {
      "id": "m3",
      "left": "Excuse me, could you tell me …?",
      "right": "Enquiring",
-     "explanation": ""
+     "explanation": "could you tell me…? = hỏi thông tin (enquiring)."
     },
     {
      "id": "m4",
      "left": "Are you sure? I really don't think that's a good idea.",
      "right": "Expressing doubt",
-     "explanation": ""
+     "explanation": "Are you sure? I don't think that's a good idea = bày tỏ nghi ngờ."
     },
     {
      "id": "m5",
      "left": "I don't believe it!",
      "right": "Complaining",
-     "explanation": ""
+     "explanation": "I don't believe it! = than phiền, bực bội (complaining)."
     }
    ]
   }

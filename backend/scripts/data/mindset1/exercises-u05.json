@@ -130,7 +130,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Lướt nhanh tên riêng viết hoa trong bài: the US, China, Bangkok, Singapore, Madrid, London."
     },
     {
      "id": "q2",
@@ -191,7 +191,7 @@
      "id": "c2",
      "text": "China is home to the two largest.",
      "category": "s",
-     "explanation": ""
+     "explanation": "Trung Quốc có hai trung tâm thương mại lớn nhất → bằng chứng cho 'bigger and better'."
     },
     {
      "id": "c3",
@@ -262,7 +262,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Câu chủ đề nêu ý khái quát (chủ mall phải nghĩ ý tưởng mới để trụ lại); Santa Claus, 'urban beach' chỉ là ví dụ minh hoạ."
     },
     {
      "id": "q3",
@@ -321,7 +321,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Đoạn C nói mall thành nơi giải trí → spa, phòng gym, phòng tranh cùng ý."
     },
     {
      "id": "q2",
@@ -341,7 +341,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Đoạn D nói khuyến mãi, sự kiện thay đổi → cửa hàng 'pop-up' theo mùa cùng ý."
     },
     {
      "id": "q3",
@@ -361,7 +361,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Đoạn E nói về môi trường → đi tới bằng giao thông công cộng (giảm xe hơi) cùng ý."
     }
    ]
   },
@@ -381,37 +381,37 @@
      "id": "m1",
      "left": "innovate",
      "right": "think of new ideas",
-     "explanation": ""
+     "explanation": "innovate (đổi mới) ≈ think of new ideas."
     },
     {
      "id": "m2",
      "left": "stay alive",
      "right": "remain in business",
-     "explanation": ""
+     "explanation": "stay alive (sống sót) ≈ remain in business (tiếp tục kinh doanh)."
     },
     {
      "id": "m3",
      "left": "expanding",
      "right": "becoming bigger",
-     "explanation": ""
+     "explanation": "expanding (mở rộng) ≈ becoming bigger."
     },
     {
      "id": "m4",
      "left": "improving",
      "right": "becoming better",
-     "explanation": ""
+     "explanation": "improving (cải thiện) ≈ becoming better."
     },
     {
      "id": "m5",
      "left": "natural world",
      "right": "environment",
-     "explanation": ""
+     "explanation": "natural world ≈ environment (môi trường)."
     },
     {
      "id": "m6",
      "left": "city centre",
      "right": "downtown",
-     "explanation": ""
+     "explanation": "city centre ≈ downtown (trung tâm thành phố)."
     }
    ]
   },
@@ -441,49 +441,49 @@
      "id": "c1",
      "text": "So what will the mall of the future look like?",
      "category": "w",
-     "explanation": ""
+     "explanation": "will + look → will + nguyên mẫu (dự đoán)."
     },
     {
      "id": "c2",
      "text": "It is predicted that this will happen more and more in the future.",
      "category": "w",
-     "explanation": ""
+     "explanation": "will + happen → will + nguyên mẫu."
     },
     {
      "id": "c3",
      "text": "Some malls will only sell electrical items.",
      "category": "w",
-     "explanation": ""
+     "explanation": "will + sell → will + nguyên mẫu."
     },
     {
      "id": "c4",
      "text": "In the future we are going to see 'fine dining' too.",
      "category": "g",
-     "explanation": ""
+     "explanation": "are going to + see → going to + nguyên mẫu."
     },
     {
      "id": "c5",
      "text": "There are also going to be more apartments and office space.",
      "category": "g",
-     "explanation": ""
+     "explanation": "are going to + be → going to."
     },
     {
      "id": "c6",
      "text": "Mall owners are going to need to think of new ideas.",
      "category": "g",
-     "explanation": ""
+     "explanation": "are going to + need → going to."
     },
     {
      "id": "c7",
      "text": "Malls will need to consider the environment too.",
      "category": "w",
-     "explanation": ""
+     "explanation": "will + need → will."
     },
     {
      "id": "c8",
      "text": "The mall will go from strength to strength.",
      "category": "w",
-     "explanation": ""
+     "explanation": "will + go → will."
     }
    ]
   },
@@ -546,7 +546,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Dự đoán/ý kiến cá nhân (I'm afraid) → will; dựa trên thông tin sẵn có thì going to cũng được."
     },
     {
      "id": "g5",
@@ -595,31 +595,31 @@
      "id": "m1",
      "left": "Picture A",
      "right": "supermarket",
-     "explanation": ""
+     "explanation": "supermarket — siêu thị (thực phẩm, đồ gia dụng, xe đẩy)."
     },
     {
      "id": "m2",
      "left": "Picture B",
      "right": "shopping centre",
-     "explanation": ""
+     "explanation": "shopping centre — trung tâm thương mại nhiều cửa hàng."
     },
     {
      "id": "m3",
      "left": "Picture C",
      "right": "outdoor market",
-     "explanation": ""
+     "explanation": "outdoor market — chợ ngoài trời."
     },
     {
      "id": "m4",
      "left": "Picture D",
      "right": "department store",
-     "explanation": ""
+     "explanation": "department store — cửa hàng bách hoá nhiều tầng."
     },
     {
      "id": "m5",
      "left": "Picture E",
      "right": "coffee shop",
-     "explanation": ""
+     "explanation": "coffee shop — quán cà phê."
     }
    ]
   },
@@ -639,37 +639,37 @@
      "id": "m1",
      "left": "a good selection",
      "right": "a wide choice",
-     "explanation": ""
+     "explanation": "a good selection ≈ a wide choice (nhiều lựa chọn)."
     },
     {
      "id": "m2",
      "left": "at the weekend",
      "right": "on Saturday and Sunday",
-     "explanation": ""
+     "explanation": "at the weekend = on Saturday and Sunday."
     },
     {
      "id": "m3",
      "left": "shoes",
      "right": "footwear",
-     "explanation": ""
+     "explanation": "shoes ≈ footwear (giày dép)."
     },
     {
      "id": "m4",
      "left": "under one roof",
      "right": "in one building",
-     "explanation": ""
+     "explanation": "under one roof = in one building (cùng một toà nhà)."
     },
     {
      "id": "m5",
      "left": "walk",
      "right": "go on foot",
-     "explanation": ""
+     "explanation": "walk = go on foot (đi bộ)."
     },
     {
      "id": "m6",
      "left": "picture",
      "right": "photograph",
-     "explanation": ""
+     "explanation": "picture ≈ photograph (ảnh)."
     }
    ]
   },
@@ -723,7 +723,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "2.15 = 2 giờ 15 → quarter past two."
     },
     {
      "id": "q3",

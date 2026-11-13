@@ -121,43 +121,43 @@
      "id": "m1",
      "left": "fast",
      "right": "quickly / every 93 minutes",
-     "explanation": ""
+     "explanation": "fast ≈ quickly / 'every 93 minutes' (sản xuất rất nhanh)."
     },
     {
      "id": "m2",
      "left": "popular",
      "right": "the masses",
-     "explanation": ""
+     "explanation": "popular ≈ the masses (đại chúng)."
     },
     {
      "id": "m3",
      "left": "family member",
      "right": "uncle",
-     "explanation": ""
+     "explanation": "family member → uncle (chú/bác là một người thân)."
     },
     {
      "id": "m4",
      "left": "at home",
      "right": "family garage",
-     "explanation": ""
+     "explanation": "at home → family garage (gara của gia đình)."
     },
     {
      "id": "m5",
      "left": "first-rate",
      "right": "high-quality",
-     "explanation": ""
+     "explanation": "first-rate ≈ high-quality (chất lượng cao)."
     },
     {
      "id": "m6",
      "left": "looking after clients",
      "right": "customer service",
-     "explanation": ""
+     "explanation": "looking after clients ≈ customer service (dịch vụ khách hàng)."
     },
     {
      "id": "m7",
      "left": "gave … wealth away",
      "right": "donated",
-     "explanation": ""
+     "explanation": "gave … wealth away ≈ donated (quyên góp)."
     }
    ]
   },
@@ -177,37 +177,37 @@
      "id": "m1",
      "left": "Step 1",
      "right": "Read all the instructions carefully.",
-     "explanation": ""
+     "explanation": "Bước 1: đọc kỹ toàn bộ hướng dẫn."
     },
     {
      "id": "m2",
      "left": "Step 2",
      "right": "Skim read the whole passage to gain a general understanding.",
-     "explanation": ""
+     "explanation": "Bước 2: đọc lướt cả bài để nắm ý chung."
     },
     {
      "id": "m3",
      "left": "Step 3",
      "right": "Decide if the text is mainly factual, opinion-based or theoretical.",
-     "explanation": ""
+     "explanation": "Bước 3: xác định bài thiên về dữ kiện, ý kiến hay lý thuyết."
     },
     {
      "id": "m4",
      "left": "Step 4",
      "right": "Scan both the passage and question and identify the options, key words and synonyms.",
-     "explanation": ""
+     "explanation": "Bước 4: dò cả bài và câu hỏi, tìm các lựa chọn, từ khoá, từ đồng nghĩa."
     },
     {
      "id": "m5",
      "left": "Step 5",
      "right": "Read the sentence before and after each option in the passage and match the information to a statement.",
-     "explanation": ""
+     "explanation": "Bước 5: đọc câu trước và sau mỗi lựa chọn trong bài để đối chiếu với nhận định."
     },
     {
      "id": "m6",
      "left": "Step 6",
      "right": "Match a statement to a name/option.",
-     "explanation": ""
+     "explanation": "Bước 6: ghép nhận định với tên/lựa chọn."
     }
    ]
   },
@@ -232,31 +232,31 @@
      "id": "m1",
      "left": "save lives",
      "right": "search-and-rescue operations",
-     "explanation": ""
+     "explanation": "save lives ≈ search-and-rescue operations (tìm kiếm cứu nạn)."
     },
     {
      "id": "m2",
      "left": "harmful",
      "right": "serious health problems",
-     "explanation": ""
+     "explanation": "harmful ≈ serious health problems (có hại cho sức khoẻ)."
     },
     {
      "id": "m3",
      "left": "controlled using technology",
      "right": "an app … will be able to handle",
-     "explanation": ""
+     "explanation": "controlled using technology ≈ an app … will be able to handle."
     },
     {
      "id": "m4",
      "left": "fulfil a worldwide need",
      "right": "satisfy a growing global demand",
-     "explanation": ""
+     "explanation": "fulfil a worldwide need ≈ satisfy a growing global demand."
     },
     {
      "id": "m5",
      "left": "significant impact on an existing business",
      "right": "mean the end of traditional cattle farming",
-     "explanation": ""
+     "explanation": "significant impact on an existing business ≈ mean the end of traditional cattle farming."
     }
    ]
   },
@@ -276,31 +276,31 @@
      "id": "m1",
      "left": "Aside from the job itself,",
      "right": "the work environment is very important to an employee.",
-     "explanation": ""
+     "explanation": "Aside from the job itself (ngoài công việc) + the work environment is very important — đối chiếu job ↔ environment."
     },
     {
      "id": "m2",
      "left": "A positive work environment makes",
      "right": "employees feel good about coming to work.",
-     "explanation": ""
+     "explanation": "makes + tân ngữ + V nguyên mẫu: makes employees feel good."
     },
     {
      "id": "m3",
      "left": "If you're looking for a new job,",
      "right": "assessing the work environment is very important.",
-     "explanation": ""
+     "explanation": "If you're looking for a new job → việc nên làm: đánh giá môi trường làm việc."
     },
     {
      "id": "m4",
      "left": "Having a sense of balance between work and personal life",
      "right": "improves job satisfaction among employees.",
-     "explanation": ""
+     "explanation": "Chủ ngữ V-ing số ít (Having a sense of balance) + improves."
     },
     {
      "id": "m5",
      "left": "Employees should work in an environment",
      "right": "where they are not afraid to suggest ideas for improvement.",
-     "explanation": ""
+     "explanation": "an environment + where (mệnh đề quan hệ chỉ nơi chốn)."
     }
    ]
   },
@@ -472,37 +472,37 @@
      "id": "c1",
      "text": "however",
      "category": "c",
-     "explanation": ""
+     "explanation": "however = tuy nhiên → đối lập."
     },
     {
      "id": "c2",
      "text": "on the other hand",
      "category": "c",
-     "explanation": ""
+     "explanation": "on the other hand = mặt khác → đối lập."
     },
     {
      "id": "c3",
      "text": "on the negative side",
      "category": "c",
-     "explanation": ""
+     "explanation": "on the negative side = về mặt tiêu cực → đối lập với mặt tích cực."
     },
     {
      "id": "c4",
      "text": "similarly",
      "category": "s",
-     "explanation": ""
+     "explanation": "similarly = tương tự → giống nhau."
     },
     {
      "id": "c5",
      "text": "the same is true of …",
      "category": "s",
-     "explanation": ""
+     "explanation": "the same is true of … = điều tương tự cũng đúng với … → giống nhau."
     },
     {
      "id": "c6",
      "text": "as with …",
      "category": "s",
-     "explanation": ""
+     "explanation": "as with … = cũng như với … → giống nhau."
     }
    ]
   }

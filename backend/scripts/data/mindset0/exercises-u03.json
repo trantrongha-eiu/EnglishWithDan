@@ -21,37 +21,37 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "hiking",
-     "explanation": ""
+     "explanation": "hiking — đi bộ đường dài, leo dốc trên núi/đồi với ba lô."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "canoeing",
-     "explanation": ""
+     "explanation": "canoeing — chèo xuồng (canoe) bằng mái chèo một bản."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "cycling",
-     "explanation": ""
+     "explanation": "cycling — đạp xe."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "sailing",
-     "explanation": ""
+     "explanation": "sailing — đi thuyền buồm, dùng gió để chạy."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "climbing",
-     "explanation": ""
+     "explanation": "climbing — leo núi/leo vách đá bằng tay và chân."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "white water rafting",
-     "explanation": ""
+     "explanation": "white water rafting — chèo bè vượt ghềnh (nước chảy xiết, sủi bọt trắng)."
     }
    ]
   },
@@ -105,7 +105,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "throw = ném bằng tay → basketball (ném bóng vào rổ)."
     },
     {
      "id": "q3",
@@ -125,7 +125,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "kick = đá bằng chân → football."
     },
     {
      "id": "q4",
@@ -165,7 +165,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "score a goal = ghi bàn (đưa bóng vào khung thành) → football."
     },
     {
      "id": "q6",
@@ -350,61 +350,61 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "tennis",
-     "explanation": ""
+     "explanation": "tennis — quần vợt: đánh bóng qua lưới bằng vợt."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "volleyball",
-     "explanation": ""
+     "explanation": "volleyball — bóng chuyền: đập bóng bằng tay qua lưới cao."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "basketball",
-     "explanation": ""
+     "explanation": "basketball — bóng rổ: ném bóng vào rổ."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "football",
-     "explanation": ""
+     "explanation": "football — bóng đá: đá bóng vào khung thành."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "badminton",
-     "explanation": ""
+     "explanation": "badminton — cầu lông: đánh quả cầu bằng vợt."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "swimming",
-     "explanation": ""
+     "explanation": "swimming — bơi lội."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "skiing",
-     "explanation": ""
+     "explanation": "skiing — trượt tuyết bằng ván trượt đôi."
     },
     {
      "id": "m8",
      "left": "Picture 8",
      "right": "cycling",
-     "explanation": ""
+     "explanation": "cycling — đạp xe."
     },
     {
      "id": "m9",
      "left": "Picture 9",
      "right": "sailing",
-     "explanation": ""
+     "explanation": "sailing — đi thuyền buồm."
     },
     {
      "id": "m10",
      "left": "Picture 10",
      "right": "hiking",
-     "explanation": ""
+     "explanation": "hiking — đi bộ đường dài."
     }
    ]
   },
@@ -438,139 +438,139 @@
      "id": "c1",
      "text": "tennis",
      "category": "play",
-     "explanation": ""
+     "explanation": "play + môn chơi với bóng/đối thủ: play tennis."
     },
     {
      "id": "c2",
      "text": "chess",
      "category": "play",
-     "explanation": ""
+     "explanation": "play + trò chơi có đối thủ: play chess (cờ vua)."
     },
     {
      "id": "c3",
      "text": "volleyball",
      "category": "play",
-     "explanation": ""
+     "explanation": "Môn bóng → play volleyball."
     },
     {
      "id": "c4",
      "text": "football",
      "category": "play",
-     "explanation": ""
+     "explanation": "Môn bóng → play football."
     },
     {
      "id": "c5",
      "text": "badminton",
      "category": "play",
-     "explanation": ""
+     "explanation": "Môn dùng vợt và cầu, thi đấu với đối thủ → play badminton."
     },
     {
      "id": "c6",
      "text": "hockey",
      "category": "play",
-     "explanation": ""
+     "explanation": "Môn bóng/ gậy theo đội → play hockey (khúc côn cầu)."
     },
     {
      "id": "c7",
      "text": "table tennis",
      "category": "play",
-     "explanation": ""
+     "explanation": "Môn bóng dùng vợt → play table tennis (bóng bàn)."
     },
     {
      "id": "c8",
      "text": "basketball",
      "category": "play",
-     "explanation": ""
+     "explanation": "Môn bóng → play basketball."
     },
     {
      "id": "c9",
      "text": "karate",
      "category": "do",
-     "explanation": ""
+     "explanation": "do + võ thuật/môn tập cá nhân không có bóng: do karate."
     },
     {
      "id": "c10",
      "text": "judo",
      "category": "do",
-     "explanation": ""
+     "explanation": "Võ thuật → do judo."
     },
     {
      "id": "c11",
      "text": "boxing",
      "category": "do",
-     "explanation": ""
+     "explanation": "Môn đối kháng tập luyện cá nhân → do boxing."
     },
     {
      "id": "c12",
      "text": "gymnastics",
      "category": "do",
-     "explanation": ""
+     "explanation": "Môn tập luyện (không bóng) → do gymnastics (thể dục dụng cụ)."
     },
     {
      "id": "c13",
      "text": "taekwondo",
      "category": "do",
-     "explanation": ""
+     "explanation": "Võ thuật → do taekwondo."
     },
     {
      "id": "c14",
      "text": "athletics",
      "category": "do",
-     "explanation": ""
+     "explanation": "athletics (điền kinh) là môn tập luyện chung → do athletics."
     },
     {
      "id": "c15",
      "text": "horse-riding",
      "category": "go",
-     "explanation": ""
+     "explanation": "go + hoạt động đuôi -ing (đi đâu đó để làm): go horse-riding (cưỡi ngựa)."
     },
     {
      "id": "c16",
      "text": "swimming",
      "category": "go",
-     "explanation": ""
+     "explanation": "Đuôi -ing → go swimming."
     },
     {
      "id": "c17",
      "text": "skiing",
      "category": "go",
-     "explanation": ""
+     "explanation": "Đuôi -ing → go skiing."
     },
     {
      "id": "c18",
      "text": "cycling",
      "category": "go",
-     "explanation": ""
+     "explanation": "Đuôi -ing → go cycling."
     },
     {
      "id": "c19",
      "text": "sailing",
      "category": "go",
-     "explanation": ""
+     "explanation": "Đuôi -ing → go sailing."
     },
     {
      "id": "c20",
      "text": "hiking",
      "category": "go",
-     "explanation": ""
+     "explanation": "Đuôi -ing → go hiking."
     },
     {
      "id": "c21",
      "text": "canoeing",
      "category": "go",
-     "explanation": ""
+     "explanation": "Đuôi -ing → go canoeing."
     },
     {
      "id": "c22",
      "text": "fishing",
      "category": "go",
-     "explanation": ""
+     "explanation": "Đuôi -ing → go fishing (đi câu cá)."
     },
     {
      "id": "c23",
      "text": "bowling",
      "category": "go",
-     "explanation": ""
+     "explanation": "Đuôi -ing → go bowling (đi chơi bowling)."
     }
    ]
   },
@@ -607,7 +607,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "win (thắng) a match — hi vọng thắng vài trận trong giải đấu."
     },
     {
      "id": "g2",
@@ -619,7 +619,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "beat + đối thủ = đánh bại ai; Every team (số ít) → beats."
     },
     {
      "id": "g3",
@@ -631,7 +631,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "learn how to + V nguyên mẫu; chơi môn thể thao → play baseball."
     },
     {
      "id": "g4",
@@ -643,7 +643,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "hit the ball with the racket = đánh bóng bằng vợt; sau how to → nguyên mẫu hit."
     },
     {
      "id": "g5",
@@ -655,7 +655,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "lose a match = thua trận (trái nghĩa với win)."
     },
     {
      "id": "g6",
@@ -667,7 +667,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Sau giới từ by → V-ing; chuyền bóng bằng tay → throwing."
     },
     {
      "id": "g7",
@@ -679,7 +679,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Không được cầm bóng → phải dùng chân: by kicking it."
     },
     {
      "id": "g8",
@@ -691,7 +691,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Găng tay đặc biệt giúp bắt bóng → catch; help sb + V nguyên mẫu."
     },
     {
      "id": "g9",
@@ -703,7 +703,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "score goals = ghi bàn; the team (số ít) → scores."
     }
    ]
   },
@@ -737,7 +737,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "popular = được nhiều người ưa chuộng ở nhiều nước; favourite chỉ sở thích của một người."
     },
     {
      "id": "q2",
@@ -757,7 +757,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "11 người trong một đội → team."
     },
     {
      "id": "q3",
@@ -777,7 +777,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Đánh bóng bằng gậy (bat) → hitting."
     },
     {
      "id": "q4",
@@ -797,7 +797,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Một trận đấu → match; goal/point là bàn thắng/điểm số."
     },
     {
      "id": "q5",
@@ -817,7 +817,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Mặc quần áo → wear clothes (không dùng use/put)."
     }
    ]
   },
@@ -876,7 +876,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Bài viết nói Aimee là vận động viên trượt ván tuyết (snowboarder) → snowboarding."
     },
     {
      "id": "q3",
@@ -923,7 +923,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "professional — vận động viên chuyên nghiệp, được trả tiền để thi đấu."
     },
     {
      "id": "g2",
@@ -936,7 +936,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "train — tập luyện môn thể thao của mình."
     },
     {
      "id": "g3",
@@ -949,7 +949,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "successful — thành công, đang làm tốt trong cuộc sống/sự nghiệp."
     },
     {
      "id": "g4",
@@ -962,7 +962,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "fit — khoẻ, có thể lực tốt, vận động không bị mệt nhanh."
     },
     {
      "id": "g5",
@@ -975,7 +975,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "advice — lời khuyên (danh từ không đếm được); hỏi khi muốn biết nên làm gì."
     }
    ]
   },
@@ -1010,67 +1010,67 @@
      "id": "c1",
      "text": "we get up",
      "category": "ps",
-     "explanation": ""
+     "explanation": "Thói quen hằng ngày (dậy lúc mấy giờ) → hiện tại đơn: we get up."
     },
     {
      "id": "c2",
      "text": "I don't miss",
      "category": "ps",
-     "explanation": ""
+     "explanation": "don't + V → dạng phủ định của hiện tại đơn."
     },
     {
      "id": "c3",
      "text": "I usually sleep",
      "category": "ps",
-     "explanation": ""
+     "explanation": "Có trạng từ tần suất usually → hiện tại đơn."
     },
     {
      "id": "c4",
      "text": "He looks after us",
      "category": "ps",
-     "explanation": ""
+     "explanation": "looks (thêm -s, ngôi 3) → hiện tại đơn; việc anh ấy thường làm."
     },
     {
      "id": "c5",
      "text": "he always makes us laugh",
      "category": "ps",
-     "explanation": ""
+     "explanation": "always + makes → hiện tại đơn (thói quen)."
     },
     {
      "id": "c6",
      "text": "my friend doesn't like",
      "category": "ps",
-     "explanation": ""
+     "explanation": "doesn't like → hiện tại đơn; like là động từ trạng thái."
     },
     {
      "id": "c7",
      "text": "I'm having a great time",
      "category": "pc",
-     "explanation": ""
+     "explanation": "am + having → hiện tại tiếp diễn: đang có khoảng thời gian tuyệt vời ngay lúc viết."
     },
     {
      "id": "c8",
      "text": "I'm not staying",
      "category": "pc",
-     "explanation": ""
+     "explanation": "am not + staying → hiện tại tiếp diễn (phủ định), việc tạm thời trong chuyến đi."
     },
     {
      "id": "c9",
      "text": "I'm resting",
      "category": "pc",
-     "explanation": ""
+     "explanation": "am + resting → đang nghỉ ngơi ngay lúc này."
     },
     {
      "id": "c10",
      "text": "we're having reindeer burgers",
      "category": "pc",
-     "explanation": ""
+     "explanation": "are + having → hiện tại tiếp diễn: đang ăn (bữa tối hôm nay)."
     },
     {
      "id": "c11",
      "text": "The chef is cooking",
      "category": "pc",
-     "explanation": ""
+     "explanation": "is + cooking → hiện tại tiếp diễn: đầu bếp đang nấu."
     }
    ]
   },
@@ -1100,7 +1100,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "at the moment / today / now = đang xảy ra lúc nói → present continuous."
     },
     {
      "id": "q2",
@@ -1116,7 +1116,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "always, sometimes, usually, every day = tần suất → present simple."
     },
     {
      "id": "q3",
@@ -1132,7 +1132,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Thói quen, việc lặp lại → present simple."
     },
     {
      "id": "q4",
@@ -1148,7 +1148,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Mô tả hành động trong ảnh (đang diễn ra trong ảnh) → present continuous."
     },
     {
      "id": "q5",
@@ -1164,7 +1164,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Câu hỏi hiện tại đơn dùng trợ động từ do/does: Do you…?"
     },
     {
      "id": "q6",
@@ -1180,7 +1180,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Câu hỏi hiện tại tiếp diễn đảo be lên đầu: Are you…?"
     }
    ]
   },
@@ -1211,7 +1211,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "lives (thêm -s); living (bỏ e câm rồi thêm -ing)."
     },
     {
      "id": "g2",
@@ -1228,7 +1228,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "gets; getting — một âm tiết, kết thúc phụ âm–nguyên âm–phụ âm → gấp đôi t."
     },
     {
      "id": "g3",
@@ -1245,7 +1245,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "carries (phụ âm + y → ies); carrying (giữ y khi thêm -ing)."
     },
     {
      "id": "g4",
@@ -1262,7 +1262,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "hopes; hoping — bỏ e câm trước -ing."
     },
     {
      "id": "g5",
@@ -1279,7 +1279,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "runs; running — gấp đôi n (phụ âm–nguyên âm–phụ âm)."
     },
     {
      "id": "g6",
@@ -1296,7 +1296,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "lies; lying — đuôi -ie đổi thành y trước -ing."
     },
     {
      "id": "g7",
@@ -1313,7 +1313,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "cries (y → ies); crying (giữ y)."
     },
     {
      "id": "g8",
@@ -1330,7 +1330,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "makes; making — bỏ e câm."
     },
     {
      "id": "g9",
@@ -1347,7 +1347,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "begins; beginning — trọng âm ở âm cuối (be'gin) → gấp đôi n."
     }
    ]
   },
@@ -1367,25 +1367,25 @@
      "id": "m1",
      "left": "Are you enjoying your holiday?",
      "right": "Yes, I am. / No, I'm not.",
-     "explanation": ""
+     "explanation": "Hỏi bằng Are you…? → trả lời ngắn bằng be: Yes, I am / No, I'm not."
     },
     {
      "id": "m2",
      "left": "What are you doing at the moment?",
      "right": "I'm having a rest.",
-     "explanation": ""
+     "explanation": "What are you doing at the moment? hỏi việc đang làm → trả lời bằng tiếp diễn: I'm having a rest."
     },
     {
      "id": "m3",
      "left": "Do you usually get up early?",
      "right": "Yes, I do. / No, I don't.",
-     "explanation": ""
+     "explanation": "Hỏi bằng Do you…? → trả lời ngắn bằng do: Yes, I do / No, I don't."
     },
     {
      "id": "m4",
      "left": "When does your brother get up?",
      "right": "At about 7am.",
-     "explanation": ""
+     "explanation": "When…? hỏi thời gian → trả lời bằng giờ: At about 7am."
     }
    ]
   },
@@ -1416,7 +1416,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "at the moment → tiếp diễn: are you doing; want là động từ trạng thái → Do you want."
     },
     {
      "id": "g2",
@@ -1440,7 +1440,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Đang xem lúc nói → 'm watching; usually → hiện tại đơn plays; today (đang diễn ra) → are losing."
     },
     {
      "id": "g3",
@@ -1458,7 +1458,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Đang đứng chờ lúc gọi → 'm waiting; never (thói quen của xe buýt) → arrives."
     },
     {
      "id": "g4",
@@ -1477,7 +1477,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "today: việc đang diễn ra trong hôm nay → isn't answering; at the moment → 's studying."
     },
     {
      "id": "g5",
@@ -1500,7 +1500,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "usually → hiện tại đơn: get, walk; It (ngôi 3) phủ định → doesn't take."
     },
     {
      "id": "g6",
@@ -1518,7 +1518,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "usually → drives (ngôi 3); today (khác thường lệ) → 's working."
     }
    ]
   },
@@ -1551,7 +1551,7 @@
       "learning",
       "English?"
      ],
-     "explanation": ""
+     "explanation": "Wh- + are + you + V-ing: hỏi lý do đang học tiếng Anh (việc diễn ra trong giai đoạn này)."
     },
     {
      "id": "o2",
@@ -1574,7 +1574,7 @@
       "get",
       "up?"
      ],
-     "explanation": ""
+     "explanation": "Wh- + do + you + usually + V: usually đứng ngay trước động từ chính."
     },
     {
      "id": "o3",
@@ -1603,7 +1603,7 @@
       "the",
       "moment?"
      ],
-     "explanation": ""
+     "explanation": "at the moment → tiếp diễn: What are you learning about…? giới từ about đi sau learning."
     },
     {
      "id": "o4",
@@ -1620,7 +1620,7 @@
       "play",
       "tennis?"
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi Yes/No hiện tại đơn: Do + you + play + tennis?"
     },
     {
      "id": "o5",
@@ -1641,7 +1641,7 @@
       "doing",
       "now?"
      ],
-     "explanation": ""
+     "explanation": "now → tiếp diễn: What is the teacher doing now?"
     }
    ]
   },
@@ -1859,7 +1859,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Deon không nhắc tới shopping (một trong ba hoạt động không dùng ở Lead-in)."
     },
     {
      "id": "q3",
@@ -2160,7 +2160,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "snows (+s); snowing (+ing, w không gấp đôi)."
     },
     {
      "id": "g2",
@@ -2211,7 +2211,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "stops; stopping — phụ âm–nguyên âm–phụ âm → gấp đôi p."
     },
     {
      "id": "g5",
@@ -2279,7 +2279,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "makes; making — bỏ e câm trước -ing."
     },
     {
      "id": "g9",
@@ -2347,7 +2347,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "copies (phụ âm + y → ies); copying (giữ y)."
     },
     {
      "id": "g13",
@@ -2364,7 +2364,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "dances; dancing — bỏ e câm."
     },
     {
      "id": "g14",
@@ -2381,7 +2381,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "swims; swimming — gấp đôi m."
     },
     {
      "id": "g15",
@@ -2398,7 +2398,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "happens; happening — trọng âm ở âm đầu ('hap-pen) → không gấp đôi n."
     },
     {
      "id": "g16",
@@ -2436,43 +2436,43 @@
      "id": "m1",
      "left": "My mum is working",
      "right": "in Italy at the moment.",
-     "explanation": ""
+     "explanation": "is working (tạm thời) + in Italy at the moment — at the moment khớp với tiếp diễn."
     },
     {
      "id": "m2",
      "left": "I often go to the cinema",
      "right": "on a Saturday evening.",
-     "explanation": ""
+     "explanation": "often go (thói quen, hiện tại đơn) + on a Saturday evening."
     },
     {
      "id": "m3",
      "left": "I can't speak to you right now",
      "right": "because I'm studying.",
-     "explanation": ""
+     "explanation": "right now → lý do đang diễn ra: because I'm studying."
     },
     {
      "id": "m4",
      "left": "What does your brother",
      "right": "like doing in his free time?",
-     "explanation": ""
+     "explanation": "What does your brother + like doing…? (like + V-ing; trợ động từ does đi với hiện tại đơn)."
     },
     {
      "id": "m5",
      "left": "In this photo, I'm climbing",
      "right": "a volcano with my uncle.",
-     "explanation": ""
+     "explanation": "Mô tả ảnh → tiếp diễn: I'm climbing + a volcano (tân ngữ của climb)."
     },
     {
      "id": "m6",
      "left": "What do you usually do",
      "right": "at the weekend?",
-     "explanation": ""
+     "explanation": "What do you usually do + at the weekend? (usually → hiện tại đơn)."
     },
     {
      "id": "m7",
      "left": "Why isn't Sam",
      "right": "eating his sandwich?",
-     "explanation": ""
+     "explanation": "Why isn't Sam + eating his sandwich? (isn't + V-ing → tiếp diễn)."
     }
    ]
   },
@@ -2518,7 +2518,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "remember là động từ trạng thái (không dùng tiếp diễn) → I can't remember."
     },
     {
      "id": "q3",
@@ -2534,7 +2534,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "understand là động từ trạng thái → I don't understand."
     },
     {
      "id": "q4",
@@ -2582,7 +2582,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "want là động từ trạng thái → I don't want to."
     },
     {
      "id": "q7",
@@ -2614,7 +2614,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "hear là động từ trạng thái → can't hear; have a shower là hành động đang diễn ra → is having."
     }
    ]
   },
@@ -2646,7 +2646,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "have a great time là hành động (đang tận hưởng) → am having; has = sở hữu (trạng thái) → hiện tại đơn."
     },
     {
      "id": "g2",
@@ -2664,7 +2664,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "so far, việc đang diễn ra → am enjoying; like là động từ trạng thái → like."
     },
     {
      "id": "g3",
@@ -2677,7 +2677,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "this year = sắp xếp tạm thời → am staying."
     },
     {
      "id": "g4",
@@ -2695,7 +2695,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "have got = có (sở hữu, trạng thái) → have got; three evenings a week (lịch đều đặn) → work."
     },
     {
      "id": "g5",
@@ -2718,7 +2718,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "at the moment → am looking; want là động từ trạng thái → want; one (công việc) ngôi 3 → finishes."
     }
    ]
   },
@@ -2738,49 +2738,49 @@
      "id": "m1",
      "left": "Is that your brother playing tennis over there?",
      "right": "Yes, it is.",
-     "explanation": ""
+     "explanation": "Is that…? → Yes, it is (that → it)."
     },
     {
      "id": "m2",
      "left": "Do you always get up so early?",
      "right": "Yes, I do.",
-     "explanation": ""
+     "explanation": "Do you…? → Yes, I do."
     },
     {
      "id": "m3",
      "left": "Are your parents staying in a hotel?",
      "right": "Yes, they are.",
-     "explanation": ""
+     "explanation": "Are your parents…? → Yes, they are."
     },
     {
      "id": "m4",
      "left": "Are you making chocolate cake?",
      "right": "No, I'm not.",
-     "explanation": ""
+     "explanation": "Are you…? → No, I'm not."
     },
     {
      "id": "m5",
      "left": "Is your brother having a good time in Iceland?",
      "right": "Yes, he is.",
-     "explanation": ""
+     "explanation": "Is your brother…? → Yes, he is."
     },
     {
      "id": "m6",
      "left": "Do you and your parents always eat together in the evenings?",
      "right": "No, we don't.",
-     "explanation": ""
+     "explanation": "Do you and your parents…? (you and your parents = we) → No, we don't."
     },
     {
      "id": "m7",
      "left": "Look at this picture of me as a young child. Am I wearing your gold necklace?",
      "right": "Yes, you are.",
-     "explanation": ""
+     "explanation": "Am I…? → người nghe trả lời về 'you': Yes, you are."
     },
     {
      "id": "m8",
      "left": "Do any of your school friends do taekwondo?",
      "right": "No, they don't.",
-     "explanation": ""
+     "explanation": "Do any of your friends…? (số nhiều → they) → No, they don't."
     }
    ]
   }

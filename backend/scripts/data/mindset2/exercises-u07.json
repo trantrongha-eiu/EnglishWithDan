@@ -16,61 +16,61 @@
      "id": "m1",
      "left": "a formal talk given to a group of people in order to teach them about a subject",
      "right": "lecture",
-     "explanation": ""
+     "explanation": "lecture — bài giảng trước đông người."
     },
     {
      "id": "m2",
      "left": "to become or make someone become an official member of a course, college or group",
      "right": "enrol",
-     "explanation": ""
+     "explanation": "enrol — đăng ký nhập học/ghi danh vào khoá học."
     },
     {
      "id": "m3",
      "left": "to provide money for an event, activity or organisation",
      "right": "fund",
-     "explanation": ""
+     "explanation": "fund — cấp vốn, tài trợ."
     },
     {
      "id": "m4",
      "left": "a piece of work or job that you are given to do",
      "right": "assignment",
-     "explanation": ""
+     "explanation": "assignment — bài tập được giao."
     },
     {
      "id": "m5",
      "left": "the land and buildings belonging to a college or university",
      "right": "campus",
-     "explanation": ""
+     "explanation": "campus — khuôn viên trường đại học."
     },
     {
      "id": "m6",
      "left": "a particular department at a college or university, or the teachers in that department",
      "right": "faculty",
-     "explanation": ""
+     "explanation": "faculty — khoa (và giảng viên của khoa)."
     },
     {
      "id": "m7",
      "left": "a higher university qualification that usually takes one or two more years of study after your first degree",
      "right": "Master's degree",
-     "explanation": ""
+     "explanation": "Master's degree — bằng thạc sĩ (học thêm 1–2 năm sau cử nhân)."
     },
     {
      "id": "m8",
      "left": "a student who is studying for their first university degree",
      "right": "undergraduate",
-     "explanation": ""
+     "explanation": "undergraduate — sinh viên đại học (chưa có bằng đầu tiên)."
     },
     {
      "id": "m9",
      "left": "a university degree that is given after a course of study that usually takes three or four years",
      "right": "Bachelor's degree",
-     "explanation": ""
+     "explanation": "Bachelor's degree — bằng cử nhân (3–4 năm)."
     },
     {
      "id": "m10",
      "left": "a student who has one degree and is now studying at a university for a more advanced degree",
      "right": "postgraduate",
-     "explanation": ""
+     "explanation": "postgraduate — học viên sau đại học (đã có một bằng)."
     }
    ]
   },
@@ -104,7 +104,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Tiêu đề 'Applying to study at university in Australia (for international students)' → cách nộp hồ sơ vào đại học Úc cho sinh viên quốc tế."
     },
     {
      "id": "q2",
@@ -274,7 +274,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Biển báo nêu quy định cấm → must not; 'don't have to' (không bắt buộc) không hợp lý."
     },
     {
      "id": "q2",
@@ -290,7 +290,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Gian lận bị cấm → must not cheat; 'don't have to cheat' vô lý."
     },
     {
      "id": "q3",
@@ -345,7 +345,7 @@
      "id": "c1",
      "text": "lever",
      "category": "f",
-     "explanation": ""
+     "explanation": "lever được giải thích bằng chú thích cuối trang (footnote)."
     },
     {
      "id": "c2",
@@ -357,7 +357,7 @@
      "id": "c3",
      "text": "carriage return lever",
      "category": "c",
-     "explanation": ""
+     "explanation": "carriage return lever — đoán nghĩa nhờ ngữ cảnh xung quanh."
     },
     {
      "id": "c4",
@@ -381,7 +381,7 @@
      "id": "c7",
      "text": "microchip",
      "category": "f",
-     "explanation": ""
+     "explanation": "microchip được giải thích bằng footnote."
     }
    ]
   },
@@ -415,7 +415,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "should = lời khuyên → câu c."
     },
     {
      "id": "q2",
@@ -435,7 +435,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "have to và must = nghĩa vụ → câu a và b."
     },
     {
      "id": "q3",
@@ -455,7 +455,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "must = nghĩa vụ mạnh (người nói tự thấy bắt buộc) → câu b."
     },
     {
      "id": "q4",
@@ -475,7 +475,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Quá khứ của have to là had to."
     },
     {
      "id": "q5",
@@ -495,7 +495,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "should + choose → should have + V3 (should have chosen); will → would."
     }
    ]
   },
@@ -522,7 +522,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Nghĩa vụ mạnh → must / have to."
     },
     {
      "id": "g2",
@@ -537,7 +537,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Không bắt buộc → don't have to / needn't."
     },
     {
      "id": "g3",
@@ -550,7 +550,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Lời khuyên → should / ought to."
     },
     {
      "id": "g4",
@@ -563,7 +563,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Cấm (nghĩa vụ phủ định mạnh) → mustn't."
     }
    ]
   },
@@ -597,43 +597,43 @@
      "id": "c1",
      "text": "Children usually start in an early class called \"Reception\".",
      "category": "early",
-     "explanation": ""
+     "explanation": "Reception là lớp đầu tiên của tiểu học ở Anh → mầm non / tiểu học."
     },
     {
      "id": "c2",
      "text": "Children learn to read and write in infant school.",
      "category": "early",
-     "explanation": ""
+     "explanation": "Infant school (lớp nhỏ của tiểu học) dạy đọc, viết → tiểu học."
     },
     {
      "id": "c3",
      "text": "Students go to different classrooms for different subjects.",
      "category": "school",
-     "explanation": ""
+     "explanation": "Đổi phòng theo môn học → trung học."
     },
     {
      "id": "c4",
      "text": "Students prepare for A levels for two years.",
      "category": "school",
-     "explanation": ""
+     "explanation": "A levels học 2 năm ở sixth form → trung học / dự bị đại học."
     },
     {
      "id": "c5",
      "text": "A vocational course prepares students for work in a profession.",
      "category": "after",
-     "explanation": ""
+     "explanation": "Vocational course (học nghề) → giáo dục bậc cao/thường xuyên (further education)."
     },
     {
      "id": "c6",
      "text": "Students live away from home for the first time.",
      "category": "after",
-     "explanation": ""
+     "explanation": "Lần đầu sống xa nhà → đại học (higher education)."
     },
     {
      "id": "c7",
      "text": "Cheap evening and weekend courses.",
      "category": "after",
-     "explanation": ""
+     "explanation": "Khoá học tối và cuối tuần giá rẻ → giáo dục cho người lớn (adult education)."
     }
    ]
   }

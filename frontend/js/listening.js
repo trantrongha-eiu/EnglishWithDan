@@ -1991,7 +1991,7 @@ function renderSummaryCompletionGroup(group, isReview) {
                     draggable="${isReview ? 'false' : 'true'}"
                     ondragstart="ltDragStart(event,'${escH(word)}')"
                     onclick="ltClickSCChip('${escH(word)}','${groupId}')">
-                    <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i><strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}
+                    <i class="fas fa-grip-vertical" style="color:#c4b5fd;font-size:10px;flex-shrink:0"></i><span><strong>${escHtml(w.letter || '')}</strong>. ${escHtml(word)}</span>
                 </span>`;
     }).join('');
 

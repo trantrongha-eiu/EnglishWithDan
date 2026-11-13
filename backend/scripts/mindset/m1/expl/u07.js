@@ -1,0 +1,51 @@
+// Mindset 1 · Unit 7 — per-item explanations (merged by buildMindset.js).
+module.exports = {
+  'M1-U07-L1-E01': [
+    "Google — công cụ tìm kiếm (search engine).",
+    "Bing — công cụ tìm kiếm của Microsoft.",
+    "BBC News — trang tin tức.",
+    "The New York Times — báo, trang tin tức.",
+    "Facebook — mạng xã hội.",
+    "Instagram — mạng xã hội chia sẻ ảnh.",
+    "Weibo — mạng xã hội của Trung Quốc.",
+    "Wikipedia — bách khoa toàn thư mở, thông tin về nhiều chủ đề.",
+    "Britannica.com — bách khoa toàn thư Britannica, thông tin dữ kiện.",
+  ],
+  'M1-U07-L3-E01': [
+    "Muốn nổi tiếng trên YouTube → lời khuyên (should): làm nhiều video, mỗi ngày một video.",
+    "Cho phép quảng cáo → kết quả: will make money khi người xem xem quảng cáo.",
+    "Nổi tiếng trên Facebook → kết quả dự đoán: it probably won't last (không lâu bền).",
+    "Muốn được biết đến trên Twitter → will need to post nhiều nội dung giải trí.",
+  ],
+  'M1-U07-L3-E03': [
+    "Câu điều kiện loại 1: If + hiện tại đơn (post), will + V (will follow).",
+    "If + phủ định hiện tại đơn (she → doesn't have), won't + V (won't look).",
+    "If + hiện tại đơn: want; mệnh đề chính dùng should.",
+    "Mệnh đề chính có thể đứng trước: won't watch… if they are boring.",
+    "If he + creates (ngôi 3), will make money.",
+  ],
+  'M1-U07-L4-E02': [
+    "Sau to → động từ nguyên mẫu (vd. recognise).",
+    "Sau giới từ by → danh từ (vd. photographers).",
+    "Sau is perhaps → tính từ.",
+    "Sau all the → danh từ (vd. attention).",
+    "Sau need to → động từ (vd. queue).",
+    "Sau so → tính từ.",
+    "Giữa my và danh từ yacht → tính từ bổ nghĩa (vd. luxury/private).",
+    "Sau would → động từ nguyên mẫu (vd. visit).",
+  ],
+  'M1-U07-L4-E03': [
+    "", "",
+    "Sau động từ Create → danh từ làm tân ngữ (vd. a website).",
+    "Sau chủ ngữ you → động từ (vd. fail).",
+  ],
+  'M1-U07-L4-E04': [
+    "Giữa the và danh từ controls → tính từ (vd. manual).",
+    "Sau very → tính từ (vd. useful).",
+    "Đối lập với 'further away' → tính từ (vd. close/near).",
+    "Sau amount of → danh từ (vd. light).",
+    "Sau appears → tính từ (vd. brighter).",
+    "Giữa very và 'manual function' → tính từ (vd. useful).",
+    "Trước danh từ zooms → tính từ (vd. long).",
+  ],
+};

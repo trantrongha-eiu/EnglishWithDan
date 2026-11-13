@@ -16,49 +16,49 @@
      "id": "m1",
      "left": "the natural environment of an animal or plant",
      "right": "habitat",
-     "explanation": ""
+     "explanation": "habitat — môi trường sống tự nhiên."
     },
     {
      "id": "m2",
      "left": "a situation in which a type of animal no longer exists",
      "right": "extinction",
-     "explanation": ""
+     "explanation": "extinction — sự tuyệt chủng."
     },
     {
      "id": "m3",
      "left": "the protection of nature",
      "right": "conservation",
-     "explanation": ""
+     "explanation": "conservation — sự bảo tồn thiên nhiên."
     },
     {
      "id": "m4",
      "left": "situation where animals or plants may soon not exist because there are very few now alive",
      "right": "endangered",
-     "explanation": ""
+     "explanation": "endangered — có nguy cơ tuyệt chủng."
     },
     {
      "id": "m5",
      "left": "a group of plants or animals that share similar characteristics",
      "right": "species",
-     "explanation": ""
+     "explanation": "species — loài."
     },
     {
      "id": "m6",
      "left": "be likely to cause harm or damage to something or someone",
      "right": "threaten",
-     "explanation": ""
+     "explanation": "threaten — đe doạ."
     },
     {
      "id": "m7",
      "left": "illegally catch or kill animals, especially by going onto land without the permission of the person who owns it",
      "right": "poach",
-     "explanation": ""
+     "explanation": "poach — săn trộm."
     },
     {
      "id": "m8",
      "left": "a situation in which an animal is kept in a zoo or a person is kept as a prisoner, rather than being free",
      "right": "captivity",
-     "explanation": ""
+     "explanation": "captivity — tình trạng bị nuôi nhốt/giam giữ."
     }
    ]
   },
@@ -177,43 +177,43 @@
      "id": "m1",
      "left": "Step 1",
      "right": "Read the instructions carefully.",
-     "explanation": ""
+     "explanation": "Bước 1: đọc kỹ hướng dẫn."
     },
     {
      "id": "m2",
      "left": "Step 2",
      "right": "Skim read the text to gain a general understanding of the topic.",
-     "explanation": ""
+     "explanation": "Bước 2: đọc lướt bài để nắm chủ đề."
     },
     {
      "id": "m3",
      "left": "Step 3",
      "right": "Read the question statements carefully and underline key words.",
-     "explanation": ""
+     "explanation": "Bước 3: đọc kỹ các nhận định, gạch chân từ khoá."
     },
     {
      "id": "m4",
      "left": "Step 4",
      "right": "Scan the text for these key words or words of a similar meaning.",
-     "explanation": ""
+     "explanation": "Bước 4: dò bài tìm từ khoá hoặc từ đồng nghĩa."
     },
     {
      "id": "m5",
      "left": "Step 5",
      "right": "Underline these words in the text.",
-     "explanation": ""
+     "explanation": "Bước 5: gạch chân các từ đó trong bài."
     },
     {
      "id": "m6",
      "left": "Step 6",
      "right": "Read the sentence before and after the key words or synonyms in the text.",
-     "explanation": ""
+     "explanation": "Bước 6: đọc câu trước và sau chỗ có từ khoá."
     },
     {
      "id": "m7",
      "left": "Step 7",
      "right": "Choose Yes, No or Not Given.",
-     "explanation": ""
+     "explanation": "Bước 7: chọn Yes, No hoặc Not Given."
     }
    ]
   },
@@ -376,25 +376,25 @@
      "id": "m1",
      "left": "Picture A",
      "right": "well",
-     "explanation": ""
+     "explanation": "well — giếng khoan."
     },
     {
      "id": "m2",
      "left": "Picture B",
      "right": "fissure",
-     "explanation": ""
+     "explanation": "fissure — khe nứt trong đá."
     },
     {
      "id": "m3",
      "left": "Picture C",
      "right": "drill",
-     "explanation": ""
+     "explanation": "drill — mũi khoan/máy khoan."
     },
     {
      "id": "m4",
      "left": "Picture D",
      "right": "shale",
-     "explanation": ""
+     "explanation": "shale — đá phiến sét (chứa khí đốt)."
     }
    ]
   },
@@ -522,73 +522,73 @@
      "id": "c1",
      "text": "few",
      "category": "c",
-     "explanation": ""
+     "explanation": "few (rất ít) + danh từ đếm được số nhiều."
     },
     {
      "id": "c2",
      "text": "fewer",
      "category": "c",
-     "explanation": ""
+     "explanation": "fewer (ít hơn) + danh từ đếm được."
     },
     {
      "id": "c3",
      "text": "several",
      "category": "c",
-     "explanation": ""
+     "explanation": "several (vài) + danh từ đếm được."
     },
     {
      "id": "c4",
      "text": "many",
      "category": "c",
-     "explanation": ""
+     "explanation": "many (nhiều) + danh từ đếm được."
     },
     {
      "id": "c5",
      "text": "every",
      "category": "c",
-     "explanation": ""
+     "explanation": "every + danh từ đếm được số ít."
     },
     {
      "id": "c6",
      "text": "a little",
      "category": "u",
-     "explanation": ""
+     "explanation": "a little (một chút) + danh từ không đếm được."
     },
     {
      "id": "c7",
      "text": "much",
      "category": "u",
-     "explanation": ""
+     "explanation": "much (nhiều) + danh từ không đếm được."
     },
     {
      "id": "c8",
      "text": "less",
      "category": "u",
-     "explanation": ""
+     "explanation": "less (ít hơn) + danh từ không đếm được."
     },
     {
      "id": "c9",
      "text": "all",
      "category": "b",
-     "explanation": ""
+     "explanation": "all dùng được cả hai (all students / all water)."
     },
     {
      "id": "c10",
      "text": "a lot of",
      "category": "b",
-     "explanation": ""
+     "explanation": "a lot of dùng được cả hai."
     },
     {
      "id": "c11",
      "text": "more",
      "category": "b",
-     "explanation": ""
+     "explanation": "more dùng được cả hai."
     },
     {
      "id": "c12",
      "text": "some",
      "category": "b",
-     "explanation": ""
+     "explanation": "some dùng được cả hai."
     }
    ]
   },
@@ -608,19 +608,19 @@
      "id": "m1",
      "left": "those who are in favour of fracking",
      "right": "supporters of fracking",
-     "explanation": ""
+     "explanation": "those who are in favour of fracking ≈ supporters of fracking (người ủng hộ)."
     },
     {
      "id": "m2",
      "left": "the main benefit",
      "right": "the economic benefit… is usually seen as more significant",
-     "explanation": ""
+     "explanation": "the main benefit ≈ lợi ích kinh tế 'usually seen as more significant'."
     },
     {
      "id": "m3",
      "left": "lower energy bills",
      "right": "energy prices will come down",
-     "explanation": ""
+     "explanation": "lower energy bills ≈ energy prices will come down (giá năng lượng giảm)."
     }
    ]
   },

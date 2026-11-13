@@ -21,49 +21,49 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "smartphone",
-     "explanation": ""
+     "explanation": "smartphone — điện thoại thông minh (màn hình cảm ứng)."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "letter",
-     "explanation": ""
+     "explanation": "letter — lá thư viết tay."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "laptop",
-     "explanation": ""
+     "explanation": "laptop — máy tính xách tay (gập lại mang đi được)."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "tablet",
-     "explanation": ""
+     "explanation": "tablet — máy tính bảng."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "landline telephone",
-     "explanation": ""
+     "explanation": "landline telephone — điện thoại bàn (có dây)."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "smart TV",
-     "explanation": ""
+     "explanation": "smart TV — ti vi thông minh kết nối internet."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "smart watch",
-     "explanation": ""
+     "explanation": "smart watch — đồng hồ thông minh."
     },
     {
      "id": "m8",
      "left": "Picture 8",
      "right": "desktop computer",
-     "explanation": ""
+     "explanation": "desktop computer — máy tính để bàn."
     }
    ]
   },
@@ -97,7 +97,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "crash (máy tính bị treo/sập) → quá khứ crashed; crush là đè bẹp."
     },
     {
      "id": "q2",
@@ -117,7 +117,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "shut down = tắt máy; shout = hét, shot = bắn."
     },
     {
      "id": "q3",
@@ -137,7 +137,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "website viết w-e-b-s-i-t-e."
     },
     {
      "id": "q4",
@@ -157,7 +157,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "devices = thiết bị; advice là lời khuyên."
     },
     {
      "id": "q5",
@@ -177,7 +177,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "network = mạng (net + work)."
     }
    ]
   },
@@ -210,7 +210,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Không biết người gửi thì không nên mở tệp đính kèm (attachments)."
     },
     {
      "id": "g2",
@@ -222,7 +222,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "download music = tải nhạc về máy."
     },
     {
      "id": "g3",
@@ -234,7 +234,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "stream films = xem phim trực tuyến không cần tải về."
     },
     {
      "id": "g4",
@@ -246,7 +246,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "create a backup = tạo bản sao lưu để không mất dữ liệu."
     },
     {
      "id": "g5",
@@ -258,7 +258,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "store your files = lưu trữ tệp trên đám mây."
     }
    ]
   },
@@ -284,7 +284,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "website — tập hợp các trang thông tin trên mạng."
     },
     {
      "id": "g2",
@@ -296,7 +296,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "backup — bản sao lưu cất ở nơi khác."
     },
     {
      "id": "g3",
@@ -308,7 +308,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "device — thiết bị (như smartphone) kết nối được internet."
     },
     {
      "id": "g4",
@@ -320,7 +320,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "attachment — tệp đính kèm thêm vào email."
     },
     {
      "id": "g5",
@@ -332,7 +332,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "crash — máy tính đột ngột ngừng hoạt động."
     },
     {
      "id": "g6",
@@ -344,7 +344,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "stream — nhạc/video xem trực tiếp trên mạng, không tải về trước."
     }
    ]
   },
@@ -417,7 +417,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "difficult (khó) ↔ easy (dễ)."
     },
     {
      "id": "q2",
@@ -437,7 +437,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "the same (giống nhau) ↔ different (khác nhau); similar là gần nghĩa."
     },
     {
      "id": "q3",
@@ -457,7 +457,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "deliver information = truyền tải/gửi thông tin → send."
     }
    ]
   },
@@ -493,7 +493,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Khẳng định: S + will + V nguyên mẫu: People will be richer."
     },
     {
      "id": "g2",
@@ -516,7 +516,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Phủ định: S + won't + V: They won't look the same…"
     },
     {
      "id": "g3",
@@ -538,7 +538,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi Yes/No: Will + S + V: Will they look…?"
     },
     {
      "id": "g4",
@@ -565,7 +565,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Wh- + will + S + V: What will smartphones look like?"
     }
    ]
   },
@@ -596,7 +596,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "rise (tăng) → quá khứ bất quy tắc rose; danh từ a rise."
     },
     {
      "id": "g2",
@@ -613,7 +613,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "increase (tăng) → danh từ an increase (trọng âm khác: 'increase)."
     },
     {
      "id": "g3",
@@ -625,7 +625,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "went up là quá khứ của go up (tăng lên)."
     },
     {
      "id": "g4",
@@ -642,7 +642,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "fell là quá khứ của fall (giảm) → danh từ a fall."
     },
     {
      "id": "g5",
@@ -659,7 +659,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "decrease (giảm) → decreased; danh từ a decrease."
     },
     {
      "id": "g6",
@@ -671,7 +671,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "go down → quá khứ went down."
     }
    ]
   },
@@ -705,7 +705,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "increase from X (mốc bắt đầu) to Y (mốc kết thúc)."
     },
     {
      "id": "q2",
@@ -725,7 +725,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "…to 62% in 2015 — to + con số đạt tới."
     },
     {
      "id": "q3",
@@ -785,7 +785,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "will + V nguyên mẫu: will finish on 86% (kết thúc ở mức)."
     }
    ]
   },
@@ -811,7 +811,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Dự đoán tương lai: will + communicate."
     },
     {
      "id": "g2",
@@ -824,7 +824,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Phủ định: There won't be any crashes."
     },
     {
      "id": "g3",
@@ -836,7 +836,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Câu hỏi: Will the cars be able to fly?"
     },
     {
      "id": "g4",
@@ -848,7 +848,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Wh- + will + S + V: what will people eat?"
     },
     {
      "id": "g5",
@@ -860,7 +860,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Trạng từ definitely đứng sau will: will definitely need."
     },
     {
      "id": "g6",
@@ -872,7 +872,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "I'm not sure that it will be possible."
     },
     {
      "id": "g7",
@@ -884,7 +884,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "how will the animals breathe…?"
     }
    ]
   },
@@ -923,7 +923,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Đường smartphone đi lên đều từ 38% lên 86%."
     },
     {
      "id": "q2",
@@ -943,7 +943,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Laptop tăng nhẹ lên khoảng 71% năm 2015 rồi giảm còn khoảng 59%."
     },
     {
      "id": "q3",
@@ -963,7 +963,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Smart watch bắt đầu rất thấp rồi tăng lên 40%."
     },
     {
      "id": "q4",
@@ -983,7 +983,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Tablet tăng từ 22% lên khoảng 62% năm 2020 rồi giảm nhẹ."
     }
    ]
   },
@@ -1074,7 +1074,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "increased from 30% in 2005 to 55% in 2010 (from mốc đầu, to mốc sau)."
     },
     {
      "id": "g2",
@@ -1086,7 +1086,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "went up by another 20% = tăng thêm 20% (55% → 75%)."
     },
     {
      "id": "g3",
@@ -1109,7 +1109,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "start to fall/decrease = bắt đầu giảm; going down to 40% in 2020."
     },
     {
      "id": "g4",
@@ -1127,7 +1127,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Tương lai: will rise to 50% in 2025, then will decrease/fall to 45%."
     }
    ]
   },
@@ -1198,7 +1198,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "display — màn hình hiển thị (touch screen)."
     },
     {
      "id": "g2",
@@ -1217,7 +1217,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "power button — nút nguồn."
     },
     {
      "id": "g3",
@@ -1230,7 +1230,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "USB input — cổng cắm USB (sạc/kết nối)."
     },
     {
      "id": "g4",
@@ -1243,7 +1243,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "microphone — micrô thu âm."
     },
     {
      "id": "g5",
@@ -1262,7 +1262,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "power bar — thanh hiển thị mức pin."
     },
     {
      "id": "g6",
@@ -1275,7 +1275,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "case — vỏ điện thoại."
     }
    ]
   },
@@ -1295,31 +1295,31 @@
      "id": "m1",
      "left": "features",
      "right": "Important and interesting parts of a device.",
-     "explanation": ""
+     "explanation": "features — tính năng, các phần quan trọng và thú vị của thiết bị."
     },
     {
      "id": "m2",
      "left": "latest model",
      "right": "The newest device you can buy.",
-     "explanation": ""
+     "explanation": "latest model — mẫu mới nhất có thể mua."
     },
     {
      "id": "m3",
      "left": "swipe",
      "right": "To move your finger from one side to the other on a device.",
-     "explanation": ""
+     "explanation": "swipe — vuốt ngón tay ngang màn hình."
     },
     {
      "id": "m4",
      "left": "out of date",
      "right": "A device that is old.",
-     "explanation": ""
+     "explanation": "out of date — lỗi thời, cũ."
     },
     {
      "id": "m5",
      "left": "memory",
      "right": "The part of a device that stores data.",
-     "explanation": ""
+     "explanation": "memory — bộ nhớ lưu dữ liệu."
     }
    ]
   },
@@ -1395,7 +1395,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Mô tả vỏ bạc, màn hình to → câu hỏi về ngoại hình: What does it look like?"
     },
     {
      "id": "q2",
@@ -1435,7 +1435,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Điện thoại cũ sắp lỗi thời, mẫu mới nhanh hơn 'so that's why…' → lý do muốn mua."
     },
     {
      "id": "q4",
@@ -1455,7 +1455,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Nói nó sẽ giúp ích việc gì → How will it make your life better?"
     }
    ]
   },
@@ -1508,7 +1508,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "store files = lưu tệp (stream là xem trực tuyến)."
     },
     {
      "id": "q2",
@@ -1524,7 +1524,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "connect computers on a network = nối các máy tính vào mạng."
     },
     {
      "id": "q3",
@@ -1540,7 +1540,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Làm việc ở bất cứ đâu → laptop (xách tay được)."
     },
     {
      "id": "q4",
@@ -1556,7 +1556,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Ra lệnh tắt máy → Shut down your computer (crash là tự bị sập)."
     },
     {
      "id": "q5",
@@ -1572,7 +1572,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Trả tiền cho apps; download them for free = tải miễn phí (có thể gây lỗi)."
     }
    ]
   },
@@ -1885,7 +1885,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "the latest model = mẫu mới nhất."
     },
     {
      "id": "q3",
@@ -1905,7 +1905,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Hài lòng với máy cũ hơn → out of date (lỗi thời); out of order là hỏng."
     },
     {
      "id": "q4",
@@ -1925,7 +1925,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "great features = tính năng tuyệt vời."
     },
     {
      "id": "q5",
@@ -1945,7 +1945,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "swiping a screen = vuốt màn hình."
     },
     {
      "id": "q6",
@@ -1965,7 +1965,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "memory (bộ nhớ) không đếm được; memories là kỷ niệm."
     },
     {
      "id": "q7",
@@ -1985,7 +1985,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "store apps and files = lưu ứng dụng và tệp."
     },
     {
      "id": "q8",
@@ -2005,7 +2005,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "silver case = vỏ màu bạc."
     }
    ]
   }

@@ -21,31 +21,31 @@
      "id": "m1",
      "left": "Picture A",
      "right": "baseball",
-     "explanation": ""
+     "explanation": "baseball — bóng chày (đánh bóng bằng gậy)."
     },
     {
      "id": "m2",
      "left": "Picture B",
      "right": "martial arts",
-     "explanation": ""
+     "explanation": "martial arts — võ thuật."
     },
     {
      "id": "m3",
      "left": "Picture C",
      "right": "hockey",
-     "explanation": ""
+     "explanation": "hockey — khúc côn cầu (gậy cong, đánh bóng vào khung thành)."
     },
     {
      "id": "m4",
      "left": "Picture D",
      "right": "table tennis",
-     "explanation": ""
+     "explanation": "table tennis — bóng bàn."
     },
     {
      "id": "m5",
      "left": "Picture E",
      "right": "rugby",
-     "explanation": ""
+     "explanation": "rugby — bóng bầu dục (bóng hình bầu dục, có tranh cướp)."
     }
    ]
   },
@@ -79,7 +79,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Hockey: môn đồng đội, ghi bàn, có thủ môn, dùng bóng, tranh bóng (tackle), chơi trên cỏ."
     },
     {
      "id": "q2",
@@ -99,7 +99,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Tennis: đánh bóng qua lưới bằng vợt, chơi đơn hoặc đôi."
     },
     {
      "id": "q3",
@@ -119,7 +119,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Volleyball: môn đồng đội, đánh bóng qua lưới, không được cầm bóng chạy."
     },
     {
      "id": "q4",
@@ -139,7 +139,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Football: đồng đội, ghi bàn, có thủ môn, tranh bóng, chơi trên cỏ."
     },
     {
      "id": "q5",
@@ -179,7 +179,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Baseball: môn đồng đội, đánh bóng bằng gậy (bat)."
     },
     {
      "id": "q7",
@@ -219,7 +219,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Võ thuật: thăng cấp bằng đai màu (coloured belts)."
     },
     {
      "id": "q9",
@@ -239,7 +239,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Basketball: môn đồng đội, ghi điểm vào rổ, dùng bóng."
     }
    ]
   },
@@ -264,31 +264,31 @@
      "id": "m1",
      "left": "a sport which is trying to get into the Olympic games",
      "right": "Paragraph B (buzkashi)",
-     "explanation": ""
+     "explanation": "Đoạn B (buzkashi) nói môn này đang cố được vào Thế vận hội."
     },
     {
      "id": "m2",
      "left": "a sport which has been played for more than a thousand years and is based on an activity most of us know",
      "right": "Paragraph E (roshambo)",
-     "explanation": ""
+     "explanation": "Đoạn E (roshambo = oẳn tù tì) đã có hơn nghìn năm, dựa trên trò ai cũng biết."
     },
     {
      "id": "m3",
      "left": "a sport influenced by two very popular sports",
      "right": "Paragraph A (bossaball)",
-     "explanation": ""
+     "explanation": "Đoạn A (bossaball) chịu ảnh hưởng của hai môn phổ biến (bóng đá, bóng chuyền)."
     },
     {
      "id": "m4",
      "left": "a sport which may involve repeating a word",
      "right": "Paragraph C (kabaddi)",
-     "explanation": ""
+     "explanation": "Đoạn C (kabaddi): người chơi lặp đi lặp lại một từ khi tấn công."
     },
     {
      "id": "m5",
      "left": "a sport which involves two activities which are very unlike each other",
      "right": "Paragraph D (chess boxing)",
-     "explanation": ""
+     "explanation": "Đoạn D (chess boxing): cờ vua và quyền anh — hai hoạt động rất khác nhau."
     }
    ]
   },
@@ -314,7 +314,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "fast một âm tiết → faster."
     },
     {
      "id": "g2",
@@ -326,7 +326,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "dangerous dài → more dangerous."
     },
     {
      "id": "g3",
@@ -338,7 +338,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "exciting dài → more exciting."
     },
     {
      "id": "g4",
@@ -350,7 +350,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "hard một âm tiết → harder."
     },
     {
      "id": "g5",
@@ -398,7 +398,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "cheap → cheaper (không cần dụng cụ nên rẻ hơn)."
     },
     {
      "id": "g9",
@@ -456,7 +456,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "dangerous là tính từ dài → more dangerous; không thêm -er, không dùng cả hai."
     },
     {
      "id": "q2",
@@ -476,7 +476,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "not as + tính từ nguyên mẫu + as: not as fast as."
     },
     {
      "id": "q3",
@@ -521,49 +521,49 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "turn right",
-     "explanation": ""
+     "explanation": "turn right — rẽ phải."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "go straight ahead / straight on",
-     "explanation": ""
+     "explanation": "go straight ahead / straight on — đi thẳng."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "turn left",
-     "explanation": ""
+     "explanation": "turn left — rẽ trái."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "go past",
-     "explanation": ""
+     "explanation": "go past — đi qua (vượt qua một địa điểm)."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "next to",
-     "explanation": ""
+     "explanation": "next to — ngay bên cạnh."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "opposite",
-     "explanation": ""
+     "explanation": "opposite — đối diện."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "in front of",
-     "explanation": ""
+     "explanation": "in front of — phía trước."
     },
     {
      "id": "m8",
      "left": "Picture 8",
      "right": "behind",
-     "explanation": ""
+     "explanation": "behind — phía sau."
     }
    ]
   },
@@ -588,49 +588,49 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "roundabout",
-     "explanation": ""
+     "explanation": "roundabout — vòng xuyến/bùng binh."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "park",
-     "explanation": ""
+     "explanation": "park — công viên."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "traffic lights",
-     "explanation": ""
+     "explanation": "traffic lights — đèn giao thông."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "pond",
-     "explanation": ""
+     "explanation": "pond — ao, hồ nhỏ."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "zebra crossing",
-     "explanation": ""
+     "explanation": "zebra crossing — vạch kẻ sang đường cho người đi bộ."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "crossroads",
-     "explanation": ""
+     "explanation": "crossroads — ngã tư."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "river",
-     "explanation": ""
+     "explanation": "river — sông."
     },
     {
      "id": "m8",
      "left": "Picture 8",
      "right": "bridge",
-     "explanation": ""
+     "explanation": "bridge — cầu."
     }
    ]
   },
@@ -684,7 +684,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "'Instead of turning left here' nhắc tới rẽ trái nhưng thực ra phải rẽ phải → bẫy."
     },
     {
      "id": "q3",
@@ -704,7 +704,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "'shops on the left' gây nhiễu — nhà Sarah ở bên phải, căn thứ hai sau cầu."
     }
    ]
   }

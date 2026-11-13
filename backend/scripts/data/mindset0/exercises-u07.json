@@ -21,25 +21,25 @@
      "id": "m1",
      "left": "Photo 1",
      "right": "meeting",
-     "explanation": ""
+     "explanation": "meeting — đang họp/gặp gỡ, mọi người ngồi trao đổi với nhau."
     },
     {
      "id": "m2",
      "left": "Photo 2",
      "right": "studying",
-     "explanation": ""
+     "explanation": "studying — đang học bài, đọc sách vở."
     },
     {
      "id": "m3",
      "left": "Photo 3",
      "right": "helping the elderly",
-     "explanation": ""
+     "explanation": "helping the elderly — giúp đỡ người cao tuổi (the elderly = người già)."
     },
     {
      "id": "m4",
      "left": "Photo 4",
      "right": "wearing a uniform",
-     "explanation": ""
+     "explanation": "wearing a uniform — mặc đồng phục."
     }
    ]
   },
@@ -64,61 +64,61 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "write well",
-     "explanation": ""
+     "explanation": "write well — viết tốt."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "remember a lot of information",
-     "explanation": ""
+     "explanation": "remember a lot of information — nhớ được nhiều thông tin."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "work for long hours",
-     "explanation": ""
+     "explanation": "work for long hours — làm việc nhiều giờ liền."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "play sport well",
-     "explanation": ""
+     "explanation": "play sport well — chơi thể thao giỏi."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "understand maths easily",
-     "explanation": ""
+     "explanation": "understand maths easily — hiểu toán dễ dàng."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "talk to new people easily",
-     "explanation": ""
+     "explanation": "talk to new people easily — dễ bắt chuyện với người lạ."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "do well in exams",
-     "explanation": ""
+     "explanation": "do well in exams — làm bài thi tốt."
     },
     {
      "id": "m8",
      "left": "Picture 8",
      "right": "speak many languages",
-     "explanation": ""
+     "explanation": "speak many languages — nói được nhiều thứ tiếng."
     },
     {
      "id": "m9",
      "left": "Picture 9",
      "right": "cook many types of food",
-     "explanation": ""
+     "explanation": "cook many types of food — nấu được nhiều món."
     },
     {
      "id": "m10",
      "left": "Picture 10",
      "right": "read a map",
-     "explanation": ""
+     "explanation": "read a map — đọc bản đồ."
     }
    ]
   },
@@ -143,31 +143,31 @@
      "id": "m1",
      "left": "Photo 1",
      "right": "video game designer",
-     "explanation": ""
+     "explanation": "video game designer — người thiết kế trò chơi điện tử (làm việc với máy tính)."
     },
     {
      "id": "m2",
      "left": "Photo 2",
      "right": "helping elderly people",
-     "explanation": ""
+     "explanation": "helping elderly people — giúp đỡ người cao tuổi."
     },
     {
      "id": "m3",
      "left": "Photo 3",
      "right": "sports coach",
-     "explanation": ""
+     "explanation": "sports coach — huấn luyện viên thể thao."
     },
     {
      "id": "m4",
      "left": "Photo 4",
      "right": "lifeguard",
-     "explanation": ""
+     "explanation": "lifeguard — nhân viên cứu hộ ở bể bơi/bãi biển."
     },
     {
      "id": "m5",
      "left": "Photo 5",
      "right": "sales assistant",
-     "explanation": ""
+     "explanation": "sales assistant — nhân viên bán hàng."
     }
    ]
   },
@@ -192,49 +192,49 @@
      "id": "m1",
      "left": "Picture 1",
      "right": "receptionist",
-     "explanation": ""
+     "explanation": "receptionist — lễ tân (ngồi quầy tiếp khách ở khách sạn, công ty)."
     },
     {
      "id": "m2",
      "left": "Picture 2",
      "right": "doctor",
-     "explanation": ""
+     "explanation": "doctor — bác sĩ."
     },
     {
      "id": "m3",
      "left": "Picture 3",
      "right": "waiter",
-     "explanation": ""
+     "explanation": "waiter — bồi bàn, phục vụ nhà hàng."
     },
     {
      "id": "m4",
      "left": "Picture 4",
      "right": "teacher",
-     "explanation": ""
+     "explanation": "teacher — giáo viên."
     },
     {
      "id": "m5",
      "left": "Picture 5",
      "right": "lifeguard",
-     "explanation": ""
+     "explanation": "lifeguard — cứu hộ."
     },
     {
      "id": "m6",
      "left": "Picture 6",
      "right": "shop assistant",
-     "explanation": ""
+     "explanation": "shop assistant — nhân viên cửa hàng."
     },
     {
      "id": "m7",
      "left": "Picture 7",
      "right": "cleaner",
-     "explanation": ""
+     "explanation": "cleaner — người dọn vệ sinh."
     },
     {
      "id": "m8",
      "left": "Picture 8",
      "right": "chef",
-     "explanation": ""
+     "explanation": "chef — đầu bếp (chef đọc /ʃef/)."
     }
    ]
   },
@@ -268,79 +268,79 @@
      "id": "c1",
      "text": "waiter",
      "category": "r",
-     "explanation": ""
+     "explanation": "waiter — người phục vụ bàn → nhà hàng."
     },
     {
      "id": "c2",
      "text": "tables",
      "category": "r",
-     "explanation": ""
+     "explanation": "tables — bàn ăn → nhà hàng."
     },
     {
      "id": "c3",
      "text": "chef",
      "category": "r",
-     "explanation": ""
+     "explanation": "chef — đầu bếp → nhà hàng."
     },
     {
      "id": "c4",
      "text": "meal",
      "category": "r",
-     "explanation": ""
+     "explanation": "meal — bữa ăn → nhà hàng."
     },
     {
      "id": "c5",
      "text": "receptionist",
      "category": "h",
-     "explanation": ""
+     "explanation": "receptionist — lễ tân → khách sạn."
     },
     {
      "id": "c6",
      "text": "rooms",
      "category": "h",
-     "explanation": ""
+     "explanation": "rooms — phòng nghỉ → khách sạn."
     },
     {
      "id": "c7",
      "text": "guests",
      "category": "h",
-     "explanation": ""
+     "explanation": "guests — khách lưu trú → khách sạn."
     },
     {
      "id": "c8",
      "text": "lift",
      "category": "h",
-     "explanation": ""
+     "explanation": "lift — thang máy lên các tầng phòng → khách sạn."
     },
     {
      "id": "c9",
      "text": "cleaner",
      "category": "h",
-     "explanation": ""
+     "explanation": "cleaner — người dọn phòng → khách sạn."
     },
     {
      "id": "c10",
      "text": "cash desk",
      "category": "s",
-     "explanation": ""
+     "explanation": "cash desk — quầy thu ngân → cửa hàng."
     },
     {
      "id": "c11",
      "text": "clothes",
      "category": "s",
-     "explanation": ""
+     "explanation": "clothes — quần áo bày bán → cửa hàng."
     },
     {
      "id": "c12",
      "text": "changing rooms",
      "category": "s",
-     "explanation": ""
+     "explanation": "changing rooms — phòng thử đồ → cửa hàng."
     },
     {
      "id": "c13",
      "text": "shop assistant",
      "category": "s",
-     "explanation": ""
+     "explanation": "shop assistant — nhân viên bán hàng → cửa hàng."
     }
    ]
   },
@@ -379,7 +379,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "careers advisor = người tư vấn nghề nghiệp, cho lời khuyên về việc làm."
     },
     {
      "id": "q2",
@@ -399,7 +399,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Phần giới thiệu nói Helen hướng dẫn cách dùng kỳ nghỉ hè để có kinh nghiệm làm việc."
     },
     {
      "id": "q3",
@@ -419,7 +419,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Bài viết nêu lợi ích: kiếm tiền, có kinh nghiệm làm việc và học kỹ năng mới."
     },
     {
      "id": "q4",
@@ -477,43 +477,43 @@
      "id": "c1",
      "text": "write books",
      "category": "can",
-     "explanation": ""
+     "explanation": "Hiện tại Jack viết sách → can (now)."
     },
     {
      "id": "c2",
      "text": "cook many types of food",
      "category": "can",
-     "explanation": ""
+     "explanation": "Bây giờ nấu được nhiều món → can (now)."
     },
     {
      "id": "c3",
      "text": "work long hours",
      "category": "cant",
-     "explanation": ""
+     "explanation": "Hiện nay không thể làm việc nhiều giờ liền → can't (now)."
     },
     {
      "id": "c4",
      "text": "cook only one type of food",
      "category": "could",
-     "explanation": ""
+     "explanation": "Ngày trước chỉ nấu được một kiểu món → could (past)."
     },
     {
      "id": "c5",
      "text": "understand maths easily",
      "category": "couldnt",
-     "explanation": ""
+     "explanation": "Hồi đi học không hiểu toán dễ dàng → couldn't (past)."
     },
     {
      "id": "c6",
      "text": "write well",
      "category": "couldnt",
-     "explanation": ""
+     "explanation": "Hồi trước viết không tốt → couldn't (past)."
     },
     {
      "id": "c7",
      "text": "do well in exams",
      "category": "couldnt",
-     "explanation": ""
+     "explanation": "Hồi đi học thi không tốt → couldn't (past)."
     }
    ]
   },
@@ -539,7 +539,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Có trí nhớ tốt (hiện tại) → can remember."
     },
     {
      "id": "g2",
@@ -552,7 +552,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "No, not really → hiện tại không chơi thể thao giỏi: can't."
     },
     {
      "id": "g3",
@@ -564,7 +564,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "When I was younger → khả năng trong quá khứ: could."
     },
     {
      "id": "g4",
@@ -577,7 +577,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "When I was a child + not at all → couldn't."
     },
     {
      "id": "g5",
@@ -590,7 +590,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "In the past + 'without burning it' → couldn't."
     },
     {
      "id": "g6",
@@ -602,7 +602,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Đã đi học nấu ăn, bây giờ nấu được → can."
     }
    ]
   },
@@ -622,61 +622,61 @@
      "id": "m1",
      "left": "John works many hours, but he doesn't mind because he",
      "right": "can finish early on Fridays.",
-     "explanation": ""
+     "explanation": "Không ngại làm nhiều giờ vì thứ Sáu được về sớm → can (hiện tại)."
     },
     {
      "id": "m2",
      "left": "Julia learnt Spanish very quickly this year. I think it is because she",
      "right": "could already speak two other languages.",
-     "explanation": ""
+     "explanation": "Học nhanh vì đã biết sẵn hai ngôn ngữ (trước khi học) → could already speak."
     },
     {
      "id": "m3",
      "left": "I have improved a lot. I got top marks for my essay, but just a year ago, I",
      "right": "couldn't even write very well.",
-     "explanation": ""
+     "explanation": "just a year ago → quá khứ: couldn't even write very well."
     },
     {
      "id": "m4",
      "left": "Jim's results are really impressive and he didn't even study that much. He",
      "right": "can just do very well in exams.",
-     "explanation": ""
+     "explanation": "Kết quả tốt dù không học nhiều → hiện tại: can just do very well."
     },
     {
      "id": "m5",
      "left": "In the job interview, it's important that you don't forget anything.",
      "right": "Can you remember a lot of information?",
-     "explanation": ""
+     "explanation": "Phỏng vấn, không được quên gì → hỏi khả năng hiện tại: Can you remember…?"
     },
     {
      "id": "m6",
      "left": "Matteo will become a chef one day, I think. He",
      "right": "can cook many types of food.",
-     "explanation": ""
+     "explanation": "Sẽ thành đầu bếp vì bây giờ nấu được nhiều món → can cook."
     },
     {
      "id": "m7",
      "left": "Sandra is very popular and has so many friends. It's difficult to believe that she",
      "right": "couldn't even talk to new people easily a few months ago.",
-     "explanation": ""
+     "explanation": "a few months ago → quá khứ: couldn't even talk to new people."
     },
     {
      "id": "m8",
      "left": "I know it is simple but I need to use my calculator because I",
      "right": "can't understand maths very easily.",
-     "explanation": ""
+     "explanation": "Phải dùng máy tính vì không hiểu toán → can't understand."
     },
     {
      "id": "m9",
      "left": "Joseph is really good at football, tennis and basketball.",
      "right": "Could he play sport well when he was a child, too?",
-     "explanation": ""
+     "explanation": "when he was a child → câu hỏi quá khứ: Could he play…?"
     },
     {
      "id": "m10",
      "left": "Lucy is late. I think she is lost. She",
      "right": "can't read maps very well.",
-     "explanation": ""
+     "explanation": "Bị lạc → không đọc bản đồ giỏi: can't read maps."
     }
    ]
   },
@@ -710,7 +710,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Câu hỏi: đảo can lên trước chủ ngữ → Can you…?"
     },
     {
      "id": "q2",
@@ -730,7 +730,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Trả lời Yes → khẳng định: I can."
     },
     {
      "id": "q3",
@@ -750,7 +750,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Not really, chỉ thích xem → I can't play many sports."
     },
     {
      "id": "q4",
@@ -770,7 +770,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "Câu hỏi với từ để hỏi: How many languages + can you + V?"
     },
     {
      "id": "q5",
@@ -790,7 +790,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Điểm cao vì viết tốt (khả năng hiện tại) → can."
     },
     {
      "id": "q6",
@@ -810,7 +810,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "last year → quá khứ, căng thẳng nên không nhớ gì → couldn't."
     },
     {
      "id": "q7",
@@ -947,13 +947,13 @@
      "id": "c1",
      "text": "She says which job she is interested in.",
      "category": "y",
-     "explanation": ""
+     "explanation": "Laura nói rõ cô quan tâm vị trí lễ tân khách sạn."
     },
     {
      "id": "c2",
      "text": "She says what skills she has.",
      "category": "y",
-     "explanation": ""
+     "explanation": "Cô có nêu các kỹ năng của mình."
     },
     {
      "id": "c3",
@@ -965,7 +965,7 @@
      "id": "c4",
      "text": "She uses a good structure – greeting to start the email and ends with her name.",
      "category": "y",
-     "explanation": ""
+     "explanation": "Email mở đầu bằng lời chào và kết thúc bằng tên."
     },
     {
      "id": "c5",
@@ -983,7 +983,7 @@
      "id": "c7",
      "text": "She uses the correct number of words.",
      "category": "y",
-     "explanation": ""
+     "explanation": "Độ dài đúng số từ đề yêu cầu."
     }
    ]
   },
@@ -1013,7 +1013,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "Nói về hiện tại → phải dùng can: I can swim very well."
     },
     {
      "id": "q2",
@@ -1029,7 +1029,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "when I was a child → couldn't (quá khứ) là đúng."
     },
     {
      "id": "q3",
@@ -1045,7 +1045,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Khả năng hiện tại → can remember: đúng."
     },
     {
      "id": "q4",
@@ -1077,7 +1077,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "can (hiện tại) đúng ngữ pháp."
     }
    ]
   },
@@ -1111,7 +1111,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Sau 'Day:' cần một ngày trong tuần (Monday, Tuesday…)."
     },
     {
      "id": "q2",
@@ -1131,7 +1131,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "Sau 'Time:' cần giờ (vd. 10.30)."
     },
     {
      "id": "q3",
@@ -1151,7 +1151,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "at the age of + tuổi (một con số)."
     },
     {
      "id": "q4",
@@ -1171,7 +1171,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "trained … in + nơi chốn (thành phố)."
     },
     {
      "id": "q5",
@@ -1191,7 +1191,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "in + năm (wrote … in 2010)."
     }
    ]
   },
@@ -1261,7 +1261,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "pass a test = thi đỗ; last month → quá khứ passed."
     },
     {
      "id": "g2",
@@ -1278,7 +1278,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "Đang học ngành luật → is studying; finish university = tốt nghiệp (hiện tại đơn sau When)."
     },
     {
      "id": "g3",
@@ -1290,7 +1290,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "get a good job = kiếm được việc tốt."
     },
     {
      "id": "g4",
@@ -1302,7 +1302,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "teach sb how to = dạy ai cách làm gì; quá khứ của teach → taught."
     },
     {
      "id": "g5",
@@ -1319,7 +1319,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "learn how to play = học chơi; take lessons = đi học (lớp)."
     },
     {
      "id": "g6",
@@ -1336,7 +1336,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "fail an exam = thi trượt → failed; take an exam = dự thi lại."
     },
     {
      "id": "g7",
@@ -1353,7 +1353,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "last week → started the course; learn how to design = học cách thiết kế."
     },
     {
      "id": "g8",
@@ -1365,7 +1365,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "tomorrow (kế hoạch đã sắp xếp) → is starting her new job."
     }
    ]
   },
@@ -1406,7 +1406,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "have experience of = có kinh nghiệm; hard-working = chăm chỉ, đi với 'happy to work in a team'."
     },
     {
      "id": "g2",
@@ -1418,7 +1418,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "work long hours = làm việc nhiều giờ, nhất là cuối tuần đông khách."
     },
     {
      "id": "g3",
@@ -1435,7 +1435,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "can speak another language (French, German…); be friendly and helpful to guests."
     },
     {
      "id": "g4",
@@ -1452,7 +1452,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "teach children sports, art or music; have a lot of energy = nhiều năng lượng."
     },
     {
      "id": "g5",
@@ -1464,7 +1464,7 @@
        ]
       }
      ],
-     "explanation": ""
+     "explanation": "at the weekend = vào cuối tuần."
     }
    ]
   },
@@ -1498,7 +1498,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "at + địa điểm cụ thể nơi làm việc: at the swimming pool."
     },
     {
      "id": "q2",
@@ -1518,7 +1518,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "at university = học đại học."
     },
     {
      "id": "q3",
@@ -1538,7 +1538,7 @@
       }
      ],
      "answer": "A",
-     "explanation": ""
+     "explanation": "in a restaurant = làm việc bên trong nhà hàng."
     },
     {
      "id": "q4",
@@ -1558,7 +1558,7 @@
       }
      ],
      "answer": "B",
-     "explanation": ""
+     "explanation": "on + thứ trong tuần: on Monday."
     },
     {
      "id": "q5",
@@ -1578,7 +1578,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "at work = đang ở chỗ làm."
     },
     {
      "id": "q6",
@@ -1598,7 +1598,7 @@
       }
      ],
      "answer": "C",
-     "explanation": ""
+     "explanation": "at + giờ: at five o'clock."
     },
     {
      "id": "q7",

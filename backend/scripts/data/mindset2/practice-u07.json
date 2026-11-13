@@ -579,10 +579,10 @@
        "type": "multiple-choice",
        "questionText": "Write your personal ___, telling the universities about you and why they should offer you a place.",
        "options": [
-        "statement",
-        "assessment"
+        "assessment",
+        "statement"
        ],
-       "correctAnswer": "A",
+       "correctAnswer": "B",
        "explanation": "Dịch: Bài viết cá nhân\n\nTranscript: “You mean your 'personal statement'?”"
       },
       {
@@ -601,10 +601,10 @@
        "type": "multiple-choice",
        "questionText": "Offers may be ___, which means you have to get certain grades.",
        "options": [
-        "conditional",
-        "provisional"
+        "provisional",
+        "conditional"
        ],
-       "correctAnswer": "A",
+       "correctAnswer": "B",
        "explanation": "Dịch: Loại thư mời\n\nTranscript: “Usually any offer from a university will be a conditional offer”\n\nPhân tích: BẪY: \"provisional\" nói về điểm dự đoán."
       },
       {
@@ -612,10 +612,10 @@
        "type": "multiple-choice",
        "questionText": "If your exam results meet the requirements, the university will ___ the offer and you can accept or reject it.",
        "options": [
-        "confirm",
-        "renew"
+        "renew",
+        "confirm"
        ],
-       "correctAnswer": "A",
+       "correctAnswer": "B",
        "explanation": "Dịch: Xác nhận\n\nTranscript: “If you meet the predicted grades, they'll usually confirm the original offer, but if not, they don't tend to renew it”"
       },
       {

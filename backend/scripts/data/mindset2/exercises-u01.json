@@ -42,163 +42,163 @@
      "id": "c1",
      "text": "beach",
      "category": "loc",
-     "explanation": ""
+     "explanation": "beach — bãi biển → vị trí."
     },
     {
      "id": "c2",
      "text": "city centre",
      "category": "loc",
-     "explanation": ""
+     "explanation": "city centre — trung tâm thành phố → vị trí."
     },
     {
      "id": "c3",
      "text": "mountains",
      "category": "loc",
-     "explanation": ""
+     "explanation": "mountains — vùng núi → vị trí."
     },
     {
      "id": "c4",
      "text": "countryside",
      "category": "loc",
-     "explanation": ""
+     "explanation": "countryside — vùng nông thôn → vị trí."
     },
     {
      "id": "c5",
      "text": "remote island",
      "category": "loc",
-     "explanation": ""
+     "explanation": "remote island — hòn đảo xa xôi → vị trí."
     },
     {
      "id": "c6",
      "text": "apartment",
      "category": "type",
-     "explanation": ""
+     "explanation": "apartment — căn hộ → kiểu nhà."
     },
     {
      "id": "c7",
      "text": "skyscraper",
      "category": "type",
-     "explanation": ""
+     "explanation": "skyscraper — nhà chọc trời → kiểu nhà."
     },
     {
      "id": "c8",
      "text": "bungalow",
      "category": "type",
-     "explanation": ""
+     "explanation": "bungalow — nhà một tầng → kiểu nhà."
     },
     {
      "id": "c9",
      "text": "mansion",
      "category": "type",
-     "explanation": ""
+     "explanation": "mansion — dinh thự → kiểu nhà."
     },
     {
      "id": "c10",
      "text": "castle",
      "category": "type",
-     "explanation": ""
+     "explanation": "castle — lâu đài → kiểu nhà."
     },
     {
      "id": "c11",
      "text": "garage",
      "category": "type",
-     "explanation": ""
+     "explanation": "garage — nhà để xe (công trình riêng) → kiểu nhà."
     },
     {
      "id": "c12",
      "text": "glamorous",
      "category": "style",
-     "explanation": ""
+     "explanation": "glamorous — lộng lẫy, hào nhoáng → phong cách."
     },
     {
      "id": "c13",
      "text": "simple",
      "category": "style",
-     "explanation": ""
+     "explanation": "simple — đơn giản → phong cách."
     },
     {
      "id": "c14",
      "text": "traditional",
      "category": "style",
-     "explanation": ""
+     "explanation": "traditional — truyền thống → phong cách."
     },
     {
      "id": "c15",
      "text": "modern",
      "category": "style",
-     "explanation": ""
+     "explanation": "modern — hiện đại → phong cách."
     },
     {
      "id": "c16",
      "text": "spacious",
      "category": "style",
-     "explanation": ""
+     "explanation": "spacious — rộng rãi → phong cách."
     },
     {
      "id": "c17",
      "text": "cellar",
      "category": "rooms",
-     "explanation": ""
+     "explanation": "cellar — hầm (chứa rượu, đồ) → phòng."
     },
     {
      "id": "c18",
      "text": "gym",
      "category": "rooms",
-     "explanation": ""
+     "explanation": "gym — phòng tập → phòng."
     },
     {
      "id": "c19",
      "text": "dining room",
      "category": "rooms",
-     "explanation": ""
+     "explanation": "dining room — phòng ăn → phòng."
     },
     {
      "id": "c20",
      "text": "staircase",
      "category": "parts",
-     "explanation": ""
+     "explanation": "staircase — cầu thang → bộ phận trong nhà."
     },
     {
      "id": "c21",
      "text": "floor",
      "category": "parts",
-     "explanation": ""
+     "explanation": "floor — sàn nhà → bộ phận."
     },
     {
      "id": "c22",
      "text": "ceiling",
      "category": "parts",
-     "explanation": ""
+     "explanation": "ceiling — trần nhà → bộ phận."
     },
     {
      "id": "c23",
      "text": "window",
      "category": "parts",
-     "explanation": ""
+     "explanation": "window — cửa sổ → bộ phận."
     },
     {
      "id": "c24",
      "text": "wood",
      "category": "mat",
-     "explanation": ""
+     "explanation": "wood — gỗ → vật liệu."
     },
     {
      "id": "c25",
      "text": "marble",
      "category": "mat",
-     "explanation": ""
+     "explanation": "marble — đá cẩm thạch → vật liệu."
     },
     {
      "id": "c26",
      "text": "leather",
      "category": "mat",
-     "explanation": ""
+     "explanation": "leather — da thuộc → vật liệu."
     },
     {
      "id": "c27",
      "text": "stone",
      "category": "mat",
-     "explanation": ""
+     "explanation": "stone — đá → vật liệu."
     }
    ]
   },
@@ -294,19 +294,19 @@
      "id": "c2",
      "text": "verbs",
      "category": "y",
-     "explanation": ""
+     "explanation": "Động từ mang hành động chính → cần chú ý khi đọc lướt."
     },
     {
      "id": "c3",
      "text": "adjectives",
      "category": "y",
-     "explanation": ""
+     "explanation": "Tính từ cho biết đặc điểm/ý kiến → cần chú ý."
     },
     {
      "id": "c4",
      "text": "numbers",
      "category": "y",
-     "explanation": ""
+     "explanation": "Con số (năm, giá, số đo) là thông tin nổi bật → cần chú ý."
     },
     {
      "id": "c5",
@@ -438,49 +438,49 @@
      "id": "m1",
      "left": "desirable facilities",
      "right": "health spa and libraries",
-     "explanation": ""
+     "explanation": "desirable facilities (tiện ích hấp dẫn) → ví dụ cụ thể: health spa và libraries."
     },
     {
      "id": "m2",
      "left": "outside spaces",
      "right": "gardens",
-     "explanation": ""
+     "explanation": "outside spaces (không gian ngoài trời) ≈ gardens."
     },
     {
      "id": "m3",
      "left": "inside",
      "right": "interior",
-     "explanation": ""
+     "explanation": "inside ≈ interior (nội thất, bên trong)."
     },
     {
      "id": "m4",
      "left": "extravagant",
      "right": "expensive",
-     "explanation": ""
+     "explanation": "extravagant (xa hoa) ≈ expensive."
     },
     {
      "id": "m5",
      "left": "city",
      "right": "Mumbai",
-     "explanation": ""
+     "explanation": "city → tên thành phố cụ thể: Mumbai."
     },
     {
      "id": "m6",
      "left": "visitors",
      "right": "guests",
-     "explanation": ""
+     "explanation": "visitors ≈ guests (khách)."
     },
     {
      "id": "m7",
      "left": "equipped to make visitors feel welcome",
      "right": "designed to entertain guests",
-     "explanation": ""
+     "explanation": "equipped to make visitors feel welcome ≈ designed to entertain guests."
     },
     {
      "id": "m8",
      "left": "expensive materials",
      "right": "rare wood and fine rugs",
-     "explanation": ""
+     "explanation": "expensive materials → ví dụ cụ thể: gỗ quý hiếm và thảm cao cấp."
     }
    ]
   },
@@ -510,37 +510,37 @@
      "id": "c1",
      "text": "temporary",
      "category": "pc",
-     "explanation": ""
+     "explanation": "Hành động tạm thời → hiện tại tiếp diễn."
     },
     {
      "id": "c2",
      "text": "an action which is not complete",
      "category": "pc",
-     "explanation": ""
+     "explanation": "Hành động chưa hoàn tất → hiện tại tiếp diễn."
     },
     {
      "id": "c3",
      "text": "happening at the time of speaking",
      "category": "pc",
-     "explanation": ""
+     "explanation": "Đang xảy ra lúc nói → hiện tại tiếp diễn."
     },
     {
      "id": "c4",
      "text": "repeated actions",
      "category": "ps",
-     "explanation": ""
+     "explanation": "Hành động lặp lại → hiện tại đơn."
     },
     {
      "id": "c5",
      "text": "general facts",
      "category": "ps",
-     "explanation": ""
+     "explanation": "Sự thật chung → hiện tại đơn."
     },
     {
      "id": "c6",
      "text": "opinions",
      "category": "ps",
-     "explanation": ""
+     "explanation": "Ý kiến (think, believe…) → hiện tại đơn."
     }
    ]
   },
@@ -705,13 +705,13 @@
      "id": "c2",
      "text": "Number of bedrooms: ____",
      "category": "num",
-     "explanation": ""
+     "explanation": "Number of… → một con số."
     },
     {
      "id": "c3",
      "text": "Number of lounges: ____",
      "category": "num",
-     "explanation": ""
+     "explanation": "Number of… → một con số."
     },
     {
      "id": "c4",
@@ -729,7 +729,7 @@
      "id": "c6",
      "text": "Appointment time: ____",
      "category": "time",
-     "explanation": ""
+     "explanation": "Appointment time → giờ hẹn."
     },
     {
      "id": "c7",

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -26,10 +26,14 @@ const DETAIL = {
 };
 
 describe('OnlineTime', () => {
+  // The page opens on today's date (vnToday), so pin the clock to the fixture's day.
   beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-11-07T05:00:00Z'));
     apiFetch.mockReset();
     apiFetch.mockImplementation(path => Promise.resolve(path.startsWith('/admin/online-time/') ? DETAIL : LIST));
   });
+  afterEach(() => vi.useRealTimers());
 
   it('lists students for the day and opens the session detail', async () => {
     render(<MemoryRouter><OnlineTime /></MemoryRouter>);
