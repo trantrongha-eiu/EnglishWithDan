@@ -19,6 +19,13 @@ const speakingRecording = require('../../services/speakingRecordingService');
 
 const router = express.Router();
 
+// A malformed id is "not found" — it used to surface as a 500 with the raw
+// Mongoose CastError message.
+router.param('id', (req, res, next, id) => {
+  if (!require('mongoose').isValidObjectId(id)) return res.status(404).json({ success: false, message: 'Không tìm thấy bài làm' });
+  next();
+});
+
 // ══════════════════════════════════════════════════
 // DELETE EXAM ATTEMPTS (Admin xóa bài thi)
 // ══════════════════════════════════════════════════
@@ -124,6 +131,16 @@ router.delete('/speaking-attempts/:id', auth, teacherOnly, async (req, res) => {
 });
 
 // DELETE /api/admin/dictation-attempts/:id
+router.delete('/shadowing-attempts/:id', auth, teacherOnly, async (req, res) => {
+  try {
+    const result = await require('../../models/ShadowingAttempt').findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài luyện' });
+    res.json({ success: true, message: 'Đã xóa bài luyện Shadowing' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 router.delete('/dictation-attempts/:id', auth, teacherOnly, async (req, res) => {
   try {
     const result = await DictationAttempt.findByIdAndDelete(req.params.id);

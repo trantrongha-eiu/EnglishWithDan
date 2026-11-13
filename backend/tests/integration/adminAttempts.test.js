@@ -51,13 +51,13 @@ describe('DELETE /api/admin/attempts/:id — shared role gate (representative of
     expect(await TestAttempt.findById(attempt._id)).not.toBeNull();
   });
 
-  test('an invalid ObjectId hits the catch block and returns 500', async () => {
+  test('an invalid ObjectId is a 404 (not a 500 CastError)', async () => {
     const admin = await createAdmin();
     const token = signTokenFor(admin);
     const res = await request(app)
       .delete('/api/admin/attempts/not-a-valid-object-id')
       .set('Authorization', `Bearer ${token}`);
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(404);
     expect(res.body.success).toBe(false);
   });
 });

@@ -308,11 +308,11 @@ describe('GET /api/admin/vocab-activity/:userId (teacherOnly)', () => {
     ]);
   });
 
-  test('an invalid userId (not a valid ObjectId) hits the catch block and returns 500', async () => {
+  test('an invalid userId (not a valid ObjectId) is a 404 (not a 500 CastError)', async () => {
     const teacher = await createTeacher();
     const res = await request(app)
       .get('/api/admin/vocab-activity/not-a-valid-object-id')
       .set('Authorization', `Bearer ${signTokenFor(teacher)}`);
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(404);
   });
 });

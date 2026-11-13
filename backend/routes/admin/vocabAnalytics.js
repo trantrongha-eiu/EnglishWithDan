@@ -13,6 +13,12 @@ const User          = require('../../models/User');
 
 const router = express.Router();
 
+// A malformed student id is "not found", not a CastError → 500.
+router.param('userId', (req, res, next, id) => {
+  if (!mongoose.isValidObjectId(id)) return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
+  next();
+});
+
 // ══════════════════════════════════════════════════
 // VOCAB STUDENT ANALYTICS
 // ══════════════════════════════════════════════════

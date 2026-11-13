@@ -12,6 +12,15 @@ const { isStaff } = require('../utils/roles');
 // Admin/teacher accounts see every lesson unlocked (no score / code gate).
 const gateOpts = (req) => ({ staff: isStaff(req.user) });
 
+// exerciseCode must be a plain string — a JSON object ({ "$ne": null })
+// went straight into findOne({ code }) and matched some other exercise.
+const codeOf = (v) => (typeof v === 'string' ? v.trim().slice(0, 80) : '');
+// Body caps: the JSON limit is 20 MB, and both shapes are stored on the
+// submission (and writing goes to Gemini) as sent.
+const MAX_ANSWERS_JSON = 50000;
+const MAX_RESPONSE_CHARS = 8000;
+const MAX_RESPONSES = 30;
+
 exports.getOverview = async (req, res) => {
   try {
     res.json({ success: true, ...(await svc.getOverview(req.user._id, req.query.course, gateOpts(req))) });
@@ -37,9 +46,13 @@ exports.getLesson = async (req, res) => {
 };
 
 exports.check = async (req, res) => {
-  const { exerciseCode, answers } = req.body;
+  const exerciseCode = codeOf(req.body && req.body.exerciseCode);
+  const answers = req.body && req.body.answers;
   if (!exerciseCode || typeof answers !== 'object' || answers == null) {
     return res.status(400).json({ success: false, message: 'Thiếu exerciseCode hoặc answers' });
+  }
+  if (JSON.stringify(answers).length > MAX_ANSWERS_JSON) {
+    return res.status(400).json({ success: false, message: 'Bài làm quá dài' });
   }
   try {
     const ex = await WT1Exercise.findOne({ code: exerciseCode, published: true }).lean();
@@ -71,8 +84,11 @@ exports.check = async (req, res) => {
 };
 
 exports.submitWriting = async (req, res) => {
-  const { exerciseCode, responses } = req.body;
-  const arr = Array.isArray(responses) ? responses : (responses != null ? [responses] : []);
+  const exerciseCode = codeOf(req.body && req.body.exerciseCode);
+  const responses = req.body && req.body.responses;
+  const arr = (Array.isArray(responses) ? responses : (responses != null ? [responses] : []))
+    .slice(0, MAX_RESPONSES)
+    .map((r) => (r == null ? '' : String(r).slice(0, MAX_RESPONSE_CHARS)));
   if (!exerciseCode || !arr.length || !arr.some((r) => String(r || '').trim())) {
     return res.status(400).json({ success: false, message: 'Thiếu exerciseCode hoặc nội dung bài viết' });
   }
@@ -165,8 +181,9 @@ async function _gradeOneAnswer(questionText, text, part, audio, durationSec) {
 //    (see wt1Service.recordSpeakingItem, called below — it persists the
 //    already-graded result and reports back once every item is in).
 exports.submitSpeaking = async (req, res) => {
-  const { exerciseCode, transcript, duration } = req.body;
-  const text = String(transcript || '').trim();
+  const { transcript, duration } = req.body;
+  const exerciseCode = codeOf(req.body.exerciseCode);
+  const text = String(transcript || '').trim().slice(0, 20000);
   if (!exerciseCode) {
     return res.status(400).json({ success: false, message: 'Thiếu exerciseCode' });
   }

@@ -20,6 +20,7 @@ const Task2TemplateAttempt      = require('../../models/Task2TemplateAttempt');
 const EssentialGrammarAttemptLog = require('../../models/EssentialGrammarAttemptLog');
 const VocabularyLessonAttemptLog = require('../../models/VocabularyLessonAttemptLog');
 const DictationAttempt = require('../../models/DictationAttempt');
+const ShadowingAttempt = require('../../models/ShadowingAttempt');
 const GapFillAttempt = require('../../models/GapFillAttempt');
 const AdvSentenceAttempt = require('../../models/AdvSentenceAttempt');
 const WT1Submission    = require('../../models/WT1Submission');
@@ -328,6 +329,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       count('essential-grammar', () => EssentialGrammarAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
       count('vocabulary-lesson', () => VocabularyLessonAttemptLog.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
       count('dictation', () => DictationAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
+      count('shadowing', () => ShadowingAttempt.countDocuments({ ...(uid && { userId: uid }) }).catch(() => 0)),
       // 'draft' = a multi-item speaking_response attempt still mid-recording
       // (see wt1Service.recordSpeakingItem) — never a real attempt yet.
       count('wt1', () => WT1Submission.countDocuments(wt1Match).catch(() => 0)),
@@ -345,7 +347,7 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
     const [reading, listening, writing, listeningPractice, readingPractice,
            wpAttempts, task1Attempts, task2Attempts, speakingAttempts,
            task2TemplateAttempts, grammarAttempts, vocabLessonAttempts, dictationAttempts,
-           wt1Submissions, gapFillAttempts, advSentenceAttempts] = await Promise.all([
+           wt1Submissions, gapFillAttempts, advSentenceAttempts, shadowingAttempts] = await Promise.all([
       rowsOf('reading', () => TestAttempt.find({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
@@ -438,6 +440,11 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .populate('userId', 'username firstName lastName')
         .sort({ completedAt: -1 }).limit(LIMIT)
         .select('-sentencesAttempted').lean()
+        .catch(() => [])),
+      rowsOf('shadowing', () => ShadowingAttempt.find({ ...(uid && { userId: uid }) })
+        .populate('userId', 'username firstName lastName')
+        .sort({ submittedAt: -1 }).limit(LIMIT)
+        .select('userId lessonTitle mode accuracy totalSegments submittedAt createdAt answers.segmentIndex').lean()
         .catch(() => [])),
     ]);
 
@@ -707,7 +714,20 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         correctCount: h.correctCount ?? null,
         totalQuestions: h.totalQuestions ?? null,
         duration: null
-      }))
+      })),
+      // Shadowing / Dictation on YouTube clips (shadowing.html) — was never
+      // listed here, so a teacher couldn't see that practice at all.
+      ...shadowingAttempts.map(h => ({
+        _id: h._id, skill: 'shadowing',
+        testName: h.lessonTitle || '–',
+        testMeta: `${h.mode === 'dictation' ? 'Chép chính tả' : 'Nói theo'} · đúng ${h.accuracy ?? 0}% số từ`,
+        userId: normUser(h.userId),
+        date: h.submittedAt || h.createdAt,
+        bandScore: null,
+        correctCount: (h.answers || []).length,
+        totalQuestions: h.totalSegments ?? null,
+        duration: null
+      })),
     ].filter(r => !skill || r.skill === skill);
 
     rows.sort((a, b) => new Date(b.date) - new Date(a.date));

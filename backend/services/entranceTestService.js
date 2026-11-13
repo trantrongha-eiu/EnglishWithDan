@@ -70,6 +70,8 @@ const SUBMIT_GRACE_SEC = { speaking: 60 };
 const SPEAKING_PREP_SEC = 70;
 const SPEAKING_MAX_SEC = 120;
 const SPEAKING_TRANSCRIPT_MAX = 10000;
+const ANSWER_MAX = 500;            // one Grammar / Reading / Listening answer
+const WRITING_ANSWER_MAX = 20000;  // Task 1 is ~150–300 words; 20k chars is far past any real essay
 
 // What each section may be drawn from (product decision, 2026-09-24):
 // Reading = a Passage 2 (13 questions, 20 minutes). Listening = a Part 3
@@ -904,12 +906,20 @@ async function saveAnswer(userId, attemptId, section, payload = {}) {
     if (attempt.status !== 'in-progress') throw new AppError('Bài làm đã kết thúc', 409);
     if (attempt.currentSection !== section) throw new AppError(`Phần hiện tại là ${attempt.currentSection}, không phải ${section}`, 409);
 
+    // Every free-text field is capped: the JSON body limit is 20 MB, and an
+    // uncapped essay/answer could push the attempt past MongoDB's 16 MB
+    // document limit — every later save of that attempt would then fail.
     if (section === 'grammar') {
       const questionId = String(payload.questionId || '');
       if (!questionId) throw new ValidationError('Thiếu questionId');
+      // Only this attempt's own 25 questions — an arbitrary id used to add
+      // a row to the answer list on every call.
+      if (!(attempt.sections.grammar.questionsSnapshot || []).some(q => String(q._id) === questionId)) {
+        throw new ValidationError('Câu hỏi không thuộc bài làm này');
+      }
       const list = attempt.sections.grammar.answers;
       const idx = list.findIndex(a => a.questionId === questionId);
-      const userAnswer = payload.answer == null ? '' : String(payload.answer);
+      const userAnswer = payload.answer == null ? '' : String(payload.answer).slice(0, ANSWER_MAX);
       if (idx === -1) list.push({ questionId, topic: '', userAnswer, correct: false });
       else list[idx].userAnswer = userAnswer;
     } else if ((section === 'reading' || section === 'listening') && payload.answers && typeof payload.answers === 'object') {
@@ -918,19 +928,19 @@ async function saveAnswer(userId, attemptId, section, payload = {}) {
       // replaces the section's draft answers wholesale.
       const entries = Object.entries(payload.answers).slice(0, 100);
       attempt.sections[section].answers = entries
-        .map(([num, val]) => ({ questionNumber: Number(num), userAnswer: val == null ? '' : String(val).slice(0, 500) }))
-        .filter(a => Number.isFinite(a.questionNumber) && a.questionNumber > 0)
+        .map(([num, val]) => ({ questionNumber: Number(num), userAnswer: val == null ? '' : String(val).slice(0, ANSWER_MAX) }))
+        .filter(a => Number.isInteger(a.questionNumber) && a.questionNumber > 0)
         .map(a => ({ ...a, correctAnswer: '', isCorrect: false }));
     } else if (section === 'reading' || section === 'listening') {
       const questionNumber = Number(payload.questionNumber);
-      if (!Number.isFinite(questionNumber)) throw new ValidationError('Thiếu questionNumber');
+      if (!Number.isInteger(questionNumber) || questionNumber < 1 || questionNumber > 200) throw new ValidationError('Thiếu questionNumber');
       const list = attempt.sections[section].answers;
       const idx = list.findIndex(a => a.questionNumber === questionNumber);
-      const userAnswer = payload.answer == null ? '' : String(payload.answer);
+      const userAnswer = payload.answer == null ? '' : String(payload.answer).slice(0, ANSWER_MAX);
       if (idx === -1) list.push({ questionNumber, userAnswer, correctAnswer: '', isCorrect: false });
       else list[idx].userAnswer = userAnswer;
     } else if (section === 'writing') {
-      const writingAnswer = payload.writingAnswer == null ? '' : String(payload.writingAnswer);
+      const writingAnswer = payload.writingAnswer == null ? '' : String(payload.writingAnswer).slice(0, WRITING_ANSWER_MAX);
       attempt.sections.writing.writingAnswer = writingAnswer;
       attempt.sections.writing.wordCount = countWords(writingAnswer);
     } else if (section === 'speaking') {
@@ -1299,9 +1309,13 @@ const ADMIN_LIST_EXCLUDE = '-sections.grammar.questionsSnapshot -sections.gramma
 
 async function listAdminAttempts({ page = 1, limit = 50, userId, status, resultStatus } = {}) {
   const filter = {};
-  if (userId) filter.userId = userId;
-  if (status) filter.status = status;
-  if (resultStatus) filter.resultStatus = resultStatus;
+  if (userId) {
+    if (!mongoose.isValidObjectId(userId)) return { attempts: [], total: 0, pendingReview: 0 };
+    filter.userId = userId;
+  }
+  // Plain strings only — a ?status[$ne]=x query object is not a filter.
+  if (status) filter.status = String(status);
+  if (resultStatus) filter.resultStatus = String(resultStatus);
   const p = Math.max(1, Number(page) || 1);
   const l = Math.min(200, Math.max(1, Number(limit) || 50));
 

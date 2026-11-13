@@ -19,6 +19,7 @@ export const SKILL_META = {
   'essential-grammar':  { color: '#0ea5e9', label: '📘 Ngữ pháp' },
   'vocabulary-lesson':  { color: '#14b8a6', label: '🗂 Từ vựng' },
   'dictation':          { color: '#22d3ee', label: '🎧 Dictation' },
+  'shadowing':          { color: '#f472b6', label: '🎬 Shadowing (video)' },
   'listening-gapfill':  { color: '#06b6d4', label: '📝 Gap-fill' },
   'adv-sentence':       { color: '#ea580c', label: '🧩 Viết câu nâng cao' },
   // Task 1/Task 2/Speaking/Noun Phrase course exercises all share one

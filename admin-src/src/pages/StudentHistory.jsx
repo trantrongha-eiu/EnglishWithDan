@@ -31,6 +31,7 @@ const DELETE_ENDPOINT = {
   'task2-practice':     id => `/admin/task2-attempts/${id}`,
   'speaking':           id => `/admin/speaking-attempts/${id}`,
   'dictation':          id => `/admin/dictation-attempts/${id}`,
+  'shadowing':          id => `/admin/shadowing-attempts/${id}`,
 };
 
 export default function StudentHistory() {
