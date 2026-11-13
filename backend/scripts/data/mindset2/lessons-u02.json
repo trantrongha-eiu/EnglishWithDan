@@ -1,0 +1,665 @@
+{
+ "modules": [
+  {
+   "code": "M2-U02",
+   "order": 2,
+   "title": "Unit 2 · Thể thao và giải trí",
+   "titleEn": "UNIT 02: LEISURE AND RECREATION — sách tr. 28–33, 39–41",
+   "outcomes": [
+    "Reading: phân biệt câu hỏi về sự kiện (factual) và câu hỏi về ý kiến người viết (opinion); multiple choice (chọn 1 và chọn 2); global understanding",
+    "Grammar: past simple và past continuous",
+    "Listening: chỉ đường và điền bản đồ; nối mô tả với môn thể thao; điền bảng",
+    "Từ vựng thể thao, thi đấu, đường sá (Sổ 1)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M2-U02-L1",
+   "moduleCode": "M2-U02",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: sporting legends",
+   "titleEn": "Lead-in · Sporting legends quiz (pp. 28–29)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Nói về các huyền thoại thể thao và môn thể thao của họ",
+    "Làm quen dạng multiple choice: đáp án luôn nằm trong bài đọc, không kiểm tra kiến thức chung"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Multiple choice trong Reading",
+     "titleEn": "Multiple-choice questions",
+     "formula": [],
+     "usage": [
+      "Bài thi Reading có dạng câu hỏi trắc nghiệm như quiz này, nhưng **đáp án luôn nằm trong bài đọc** — không kiểm tra kiến thức chung của bạn.",
+      "Đừng chọn theo hiểu biết riêng; hãy tìm bằng chứng trong bài."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 10,
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 2 · Lead-in & Vocabulary: sporting legends — 35 từ/cụm từ",
+    "words": [
+     {
+      "word": "legendary",
+      "meaning": "huyền thoại",
+      "example": "Muhammad Ali Although Muhammad Ali was responsible for many legendary moments in the boxing ring, there was much more to this man's appeal."
+     },
+     {
+      "word": "appeal",
+      "meaning": "sức hút, sức hấp dẫn",
+      "example": "Muhammad Ali Although Muhammad Ali was responsible for many legendary moments in the boxing ring, there was much more to this man's appeal."
+     },
+     {
+      "word": "work ethic",
+      "meaning": "tinh thần làm việc",
+      "example": "Not only was he a successful athlete, but he was also well known for his strong work ethic and fearless approach to standing up for his beliefs."
+     },
+     {
+      "word": "stand up for one's beliefs",
+      "meaning": "đấu tranh cho niềm tin của mình",
+      "example": "Not only was he a successful athlete, but he was also well known for his strong work ethic and fearless approach to standing up for his beliefs."
+     },
+     {
+      "word": "refer to oneself as",
+      "meaning": "tự gọi mình là",
+      "example": "He referred to himself as 'The Greatest', and was famous for boasting about his ability to 'float like a butterfly and sting like a bee'."
+     },
+     {
+      "word": "boast about",
+      "meaning": "khoe khoang về",
+      "example": "He referred to himself as 'The Greatest', and was famous for boasting about his ability to 'float like a butterfly and sting like a bee'."
+     },
+     {
+      "word": "take responsibility for",
+      "meaning": "chịu trách nhiệm về",
+      "example": "Her father took responsibility for the girls' home-schooling."
+     },
+     {
+      "word": "be determined to",
+      "meaning": "quyết tâm",
+      "example": "She was determined to become World Number 1."
+     },
+     {
+      "word": "be focused on",
+      "meaning": "tập trung vào",
+      "example": "Although Mr Williams was determined that his daughters would succeed in the tennis world, he was also focused on giving them a good education."
+     },
+     {
+      "word": "put sb under pressure",
+      "meaning": "gây áp lực cho ai",
+      "example": "This powerful serve helps put her opponents under pressure from the very start of the game."
+     },
+     {
+      "word": "opponent",
+      "meaning": "đối thủ",
+      "example": "This powerful serve helps put her opponents under pressure from the very start of the game."
+     },
+     {
+      "word": "upbringing",
+      "meaning": "sự nuôi dạy, quá trình lớn lên",
+      "example": "Her father played a big part in Serena's upbringing."
+     },
+     {
+      "word": "exceptionally",
+      "meaning": "đặc biệt, phi thường",
+      "example": "David Beckham Despite Beckham's good looks and famous marriage to Victoria Beckham, he was actually an exceptionally good footballer."
+     },
+     {
+      "word": "make one's debut",
+      "meaning": "ra mắt lần đầu",
+      "example": "Beckham made his England debut at the age of 21."
+     },
+     {
+      "word": "praise sb for",
+      "meaning": "khen ngợi ai vì",
+      "example": "His former boss, Alex Ferguson, praised David for always trying hard, playing with supreme confidence and scoring important goals."
+     },
+     {
+      "word": "supreme confidence",
+      "meaning": "sự tự tin tuyệt đối",
+      "example": "His former boss, Alex Ferguson, praised David for always trying hard, playing with supreme confidence and scoring important goals."
+     },
+     {
+      "word": "in retaliation",
+      "meaning": "để trả đũa",
+      "example": "In retaliation, Beckham kicked Simeone and was given a red card."
+     },
+     {
+      "word": "be portrayed negatively by the media",
+      "meaning": "bị truyền thông miêu tả tiêu cực",
+      "example": "Consequently, when England went on to lose the game and go out of the World Cup, Beckham became hated by football fans and was portrayed very negatively by the media."
+     },
+     {
+      "word": "redeem oneself",
+      "meaning": "chuộc lỗi, lấy lại hình ảnh",
+      "example": "It took three years before Beckham was allowed to play for England again and in 2002 he redeemed himself by scoring a penalty in a 1-0 victory against Argentina."
+     },
+     {
+      "word": "retire from",
+      "meaning": "giải nghệ, nghỉ hưu",
+      "example": "In 2013 Beckham retired from professional football and played the last game of his 20-year career."
+     },
+     {
+      "word": "brand endorsement",
+      "meaning": "hợp đồng quảng cáo cho thương hiệu",
+      "example": "In 2014 it was documented that he earned £50.5 million, a large portion of which came from brand endorsements for companies such as Adidas, Sky Sports and Samsung."
+     },
+     {
+      "word": "origin",
+      "meaning": "nguồn gốc",
+      "example": "Their game, originally named 'Tsu Chu', involved kicking a leather ball into a small hole."
+     },
+     {
+      "word": "impose a ban",
+      "meaning": "áp đặt lệnh cấm",
+      "example": "The king imposed a ban on football in the 1300s."
+     },
+     {
+      "word": "lift a ban",
+      "meaning": "dỡ bỏ lệnh cấm",
+      "example": "The ban on women's football was lifted in 1971."
+     },
+     {
+      "word": "grow in popularity",
+      "meaning": "ngày càng phổ biến",
+      "example": "Football grew in popularity after it became legal again."
+     },
+     {
+      "word": "establish rules",
+      "meaning": "thiết lập luật lệ",
+      "example": "Schools established rules to make the game less violent."
+     },
+     {
+      "word": "athlete",
+      "meaning": "vận động viên",
+      "example": "Not only was he a successful athlete, but he was also well known for his strong work ethic and fearless approach to standing up for his beliefs."
+     },
+     {
+      "word": "championship",
+      "meaning": "giải vô địch",
+      "example": "During her career, she has won 56 singles championships, 22 doubles championships and was also a gold medallist at the 2000, 2008 and 2012 Olympics."
+     },
+     {
+      "word": "coach",
+      "meaning": "huấn luyện",
+      "example": "She was coached by her father, Richard Williams, until she was 12."
+     },
+     {
+      "word": "rapid movement",
+      "meaning": "sự di chuyển nhanh",
+      "example": "… so successful on the tennis court because of her rapid movement, speed of thought and powerful shots."
+     },
+     {
+      "word": "violent",
+      "meaning": "bạo lực",
+      "example": "Games were violent and injury and death were common."
+     },
+     {
+      "word": "injury",
+      "meaning": "chấn thương",
+      "example": "Games were violent and injury and death were common."
+     },
+     {
+      "word": "historian",
+      "meaning": "nhà sử học",
+      "example": "… where and when football was actually invented, but most historians agree that some type of ball game had been played centuries before the modern …"
+     },
+     {
+      "word": "traditionally",
+      "meaning": "theo truyền thống",
+      "example": "An increase in women playing the sport began during the First World War, when women did jobs traditionally done by men."
+     },
+     {
+      "word": "consequently",
+      "meaning": "do đó, vì vậy",
+      "example": "Consequently, when England went on to lose the game and go out of the World Cup, Beckham became hated by football fans and was portrayed very negatively by the media."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M2-U02-L2",
+   "moduleCode": "M2-U02",
+   "order": 2,
+   "title": "📖 Reading: facts, opinions & multiple choice",
+   "titleEn": "Facts and opinions · Approaching the question · Global understanding · Exam skills (pp. 29–33)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Phân biệt câu hỏi hỏi sự kiện và câu hỏi hỏi ý kiến người viết",
+    "Áp dụng quy trình 5 bước để trả lời multiple choice",
+    "Không chọn đáp án chỉ vì có từ giống bài — tìm từ đồng nghĩa",
+    "Chọn tiêu đề phù hợp cho cả bài (global understanding)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Sự kiện và ý kiến",
+     "titleEn": "Facts and opinions",
+     "formula": [],
+     "usage": [
+      "Có hai loại câu hỏi: hỏi **thông tin sự kiện** (năm, tên, con số…) và hỏi **ý kiến của người viết** (why does the writer think…).",
+      "Câu hỏi ý kiến: nhiều phương án nghe có vẻ đúng → chọn phương án **phù hợp nhất** với toàn bộ ý của người viết.",
+      "**Từ trùng với bài thường là bẫy**: \"appeal\", \"successful athlete\" xuất hiện trong bài nhưng A, C không phải đáp án đúng."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Quy trình làm bài",
+     "titleEn": "Approaching the question",
+     "formula": [
+      "① Đọc kỹ **instructions** → ② đọc bài để **hiểu ý chung** → ③ đọc lại câu hỏi, gạch chân **key words** (ngày, tên…) → ④ **scan** tìm key words hoặc từ đồng nghĩa → đọc quanh chỗ đó → chọn đáp án → ⑤ kiểm tra nhanh vì sao các phương án khác **sai**."
+     ],
+     "usage": [
+      "Đọc kỹ đề: số chữ cái cần chọn có thể thay đổi (**Choose TWO letters**)."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Global understanding",
+     "titleEn": "Global understanding",
+     "formula": [],
+     "usage": [
+      "Câu hỏi kiểm tra hiểu **cả bài** (tiêu đề tốt nhất, mục đích của bài).",
+      "Đừng chọn dựa trên **một đoạn**: tiêu đề chỉ khớp một đoạn (vd. chỉ nói về rắc rối) là bẫy."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 6,
+   "totalPoints": 19,
+   "practiceLinks": [
+    {
+     "ref": "reading:M2-U02-R1",
+     "kind": "reading",
+     "title": "Serena Williams — Choose TWO letters (Ex. 7)",
+     "note": "3 câu, mỗi câu chọn 2 đáp án — tìm từ đồng nghĩa."
+    },
+    {
+     "ref": "reading:M2-U02-R2",
+     "kind": "reading",
+     "title": "Exam skills: A brief history of football (Ex. 15)",
+     "note": "4 câu multiple choice A, B, C."
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L3",
+   "moduleCode": "M2-U02",
+   "order": 3,
+   "title": "🧩 Grammar focus: past simple and past continuous",
+   "titleEn": "Grammar focus: past simple / past continuous (p. 31)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Nhận ra các thì quá khứ trong bài đọc",
+    "Dùng past continuous cho hành động nền (dài) và past simple cho hành động ngắn, đã xong"
+   ],
+   "keyLanguage": [
+    "…**whilst she was playing** a match in the 2013 Australian Open, Serena **hit** a serve at a speed of just under 207 km per hour.",
+    "**Past continuous** (was/were + V-ing) = hành động **nền, kéo dài** (playing a match); **past simple** = hành động **ngắn, đã hoàn tất** xen vào (hit a serve). Cả hai đều đã kết thúc.",
+    "Hay đi với **while / whilst** (+ past continuous) và **when** (+ past simple)."
+   ],
+   "theory": [
+    {
+     "title": "Past simple và past continuous",
+     "titleEn": "Past simple / past continuous",
+     "formula": [
+      "S + was/were + V-ing (hành động nền) … S + V-ed (hành động ngắn)",
+      "PAST ——— playing a tennis match ——— PRESENT; ↑ I hit a serve"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "Whilst she was playing basketball, her phone rang.",
+       "vi": "đang chơi (nền) → điện thoại reo (ngắn)."
+      },
+      {
+       "en": "It started to rain in the middle of the race.",
+       "vi": "Một hành động ngắn → past simple."
+      },
+      {
+       "en": "It was raining during the race.",
+       "vi": "Kéo dài suốt cuộc đua → past continuous."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 15,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Past Simple",
+     "note": "hành động ngắn, đã xong",
+     "url": "/essential-grammar.html?lesson=past-simple"
+    },
+    {
+     "kind": "grammar",
+     "title": "Past Continuous",
+     "note": "hành động nền đang diễn ra",
+     "url": "/essential-grammar.html?lesson=past-continuous"
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L4",
+   "moduleCode": "M2-U02",
+   "order": 4,
+   "title": "🎧 Listening: directions, maps & tables",
+   "titleEn": "Lead-in · Completion/matching tasks · Exam skills (pp. 39–41)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Hiểu từ vựng chỉ đường: bend, crossroads, flyover, junction, roundabout, traffic lights",
+    "Nghe chỉ đường và điền vị trí trên bản đồ",
+    "Nối mô tả với môn thể thao bằng từ khóa",
+    "Điền bảng: nhìn thông tin có sẵn để đoán thông tin còn thiếu"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Điền bản đồ",
+     "titleEn": "Completion/matching tasks: maps",
+     "formula": [],
+     "usage": [
+      "Trước khi nghe: **nhìn kỹ bản đồ**, xác định điểm xuất phát và các loại địa điểm cần tìm.",
+      "Khi nghe: bám các cụm **turn left, go straight on/over, carry on, after the flyover…** và đoán thông tin tiếp theo.",
+      "Cẩn thận lời phủ định: \"You see a sign to Hinton saying turn left… **don't take that one**\"."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Nối mô tả",
+     "titleEn": "Matching descriptions",
+     "formula": [],
+     "usage": [
+      "Tập trung vào **từ khóa** cho biết đang mô tả cái gì — và cái gì **không** phải: goal, run, kick → football; ride, wheel, race → cycling.",
+      "shuttlecock, smaller playing area → badminton; very tall, run, throw → basketball."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Điền bảng",
+     "titleEn": "Completing tables",
+     "formula": [],
+     "usage": [
+      "Nhìn thông tin **đã có** trong bảng để biết cần nghe gì: \"nets\" đã có ở cột basketball → câu 2 là một đồ dùng khác cho basketball.",
+      "Viết **đúng từ nghe được**, đúng số từ cho phép; đáp án theo **thứ tự** bài nghe."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 6,
+   "images": [
+    {
+     "url": "media:m2u02-roads.jpg",
+     "caption": "Ex. 1 (p. 39): road diagrams 1–6"
+    },
+    {
+     "url": "media:m2u02-map.jpg",
+     "caption": "Ex. 3 (p. 40): map — boxes numbered 1–6"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M2-U02-L1",
+     "kind": "listening",
+     "title": "Directions 1–6 (Ex. 2)",
+     "note": "Mỗi câu chỉ đường nói về loại đường nào?"
+    },
+    {
+     "ref": "listening:M2-U02-L2",
+     "kind": "listening",
+     "title": "Map: from South Hinton to North Hinton (Ex. 3)",
+     "note": "Kéo chữ A–F vào ô 1–6 trên bản đồ."
+    },
+    {
+     "ref": "listening:M2-U02-L3",
+     "kind": "listening",
+     "title": "Descriptions of sports (Ex. 4)",
+     "note": "Mô tả 1–5 là môn nào?"
+    },
+    {
+     "ref": "listening:M2-U02-L4",
+     "kind": "listening",
+     "title": "Preparing the rooms (Ex. 5)",
+     "note": "Điền môn thể thao vào bảng — một môn xuất hiện hai lần."
+    },
+    {
+     "ref": "listening:M2-U02-L5",
+     "kind": "listening",
+     "title": "Exam skills: the equipment (Ex. 6)",
+     "note": "Điền bảng, ONE WORD ONLY."
+    },
+    {
+     "ref": "listening:M2-U02-L6",
+     "kind": "listening",
+     "title": "Who is in charge? (Ex. 7)",
+     "note": "Nối sự kiện với người phụ trách A–D."
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 2 · Listening: directions, maps & tables — 36 từ/cụm từ",
+    "words": [
+     {
+      "word": "change of plan",
+      "meaning": "thay đổi kế hoạch",
+      "example": "I'm really sorry but there's been a change of plan."
+     },
+     {
+      "word": "flooding",
+      "meaning": "lũ lụt, ngập nước",
+      "example": "We can't have the competition at the centre because of the flooding last week after all the rain."
+     },
+     {
+      "word": "equipment",
+      "meaning": "thiết bị, dụng cụ",
+      "example": "Now, about the equipment."
+     },
+     {
+      "word": "motorway",
+      "meaning": "đường cao tốc",
+      "example": "Stay in the middle lane so that you can go over the motorway."
+     },
+     {
+      "word": "lane",
+      "meaning": "làn đường",
+      "example": "Stay in the middle lane so that you can go over the motorway."
+     },
+     {
+      "word": "roundabout",
+      "meaning": "vòng xuyến",
+      "example": "Go straight over that roundabout and you come to a crossroads."
+     },
+     {
+      "word": "take the third exit",
+      "meaning": "rẽ vào lối ra thứ ba",
+      "example": "Go round and take the third exit on the right."
+     },
+     {
+      "word": "crossroads",
+      "meaning": "ngã tư",
+      "example": "Go straight over that roundabout and you come to a crossroads."
+     },
+     {
+      "word": "flyover",
+      "meaning": "cầu vượt",
+      "example": "After the flyover, you come to the junction with Bramley Road."
+     },
+     {
+      "word": "junction",
+      "meaning": "giao lộ, ngã ba",
+      "example": "After the flyover, you come to the junction with Bramley Road."
+     },
+     {
+      "word": "bend",
+      "meaning": "khúc cua",
+      "example": "Then you go left round a bend and just after the bend you see a petrol station on the left."
+     },
+     {
+      "word": "carry on",
+      "meaning": "tiếp tục (đi)",
+      "example": "Carry on for about a kilometre."
+     },
+     {
+      "word": "look out for",
+      "meaning": "để ý tìm, chú ý",
+      "example": "The turning for Hinton is just after that at the traffic lights, so make sure you look out for it."
+     },
+     {
+      "word": "flexible",
+      "meaning": "dẻo dai, linh hoạt",
+      "example": "You have to be very strong in your arms and legs but also light and flexible to do this sport because you use your whole body all the time."
+     },
+     {
+      "word": "accurately",
+      "meaning": "một cách chính xác",
+      "example": "… think very fast and move your arms quickly and accurately because the playing area is so small and the ball is so light."
+     },
+     {
+      "word": "be in charge of",
+      "meaning": "phụ trách",
+      "example": "I've tried to work it out so that each of you can be in charge of the event you prefer as far as possible."
+     },
+     {
+      "word": "take on",
+      "meaning": "đảm nhận",
+      "example": "Go round and take the third exit on the right."
+     },
+     {
+      "word": "be capable of",
+      "meaning": "có khả năng",
+      "example": "Either of you is capable of doing that, but that leaves the weightlifting."
+     },
+     {
+      "word": "be keen on",
+      "meaning": "rất thích",
+      "example": "Then I can take over the weightlifting in the afternoon as I'm particularly keen on that, as you all know, and I'd like a chance to get involved with it."
+     },
+     {
+      "word": "get involved with",
+      "meaning": "tham gia vào",
+      "example": "Then I can take over the weightlifting in the afternoon as I'm particularly keen on that, as you all know, and I'd like a chance to get involved with it."
+     },
+     {
+      "word": "can't make it",
+      "meaning": "không đến được",
+      "example": "… in the afternoon, and if something happens and I can't make it in the early afternoon, you can take care of the weightlifting till …"
+     },
+     {
+      "word": "set up",
+      "meaning": "dựng, bố trí",
+      "example": "Then on the side, set up the bars for the gymnastics."
+     },
+     {
+      "word": "schedule",
+      "meaning": "lịch trình",
+      "example": "So first of all, let me give you the schedule for the morning."
+     },
+     {
+      "word": "spare",
+      "meaning": "dự phòng, thừa ra",
+      "example": "The players will bring their own racquets with them, but there are some spare ones, so take them into the badminton room as well, just in case."
+     },
+     {
+      "word": "just in case",
+      "meaning": "phòng khi cần",
+      "example": "The players will bring their own racquets with them, but there are some spare ones, so take them into the badminton room as well, just in case."
+     },
+     {
+      "word": "contestant",
+      "meaning": "thí sinh, người dự thi",
+      "example": "We can check everything together and then get ready to welcome the contestants and the spectators."
+     },
+     {
+      "word": "spectator",
+      "meaning": "khán giả",
+      "example": "We can check everything together and then get ready to welcome the contestants and the spectators."
+     },
+     {
+      "word": "directions",
+      "meaning": "lời chỉ đường",
+      "example": "… how to get to North Hinton, I'll give you directions avoiding the town centre, because it can be quite busy in the morning."
+     },
+     {
+      "word": "petrol station",
+      "meaning": "trạm xăng",
+      "example": "Then you go left round a bend and just after the bend you see a petrol station on the left."
+     },
+     {
+      "word": "traffic lights",
+      "meaning": "đèn giao thông",
+      "example": "The turning for Hinton is just after that at the traffic lights, so make sure you look out for it."
+     },
+     {
+      "word": "car park",
+      "meaning": "bãi đỗ xe",
+      "example": "There's a car park there so you shouldn't have a problem parking."
+     },
+     {
+      "word": "you can't miss it",
+      "meaning": "rất dễ thấy, không thể bỏ lỡ",
+      "example": "You can't miss it."
+     },
+     {
+      "word": "appointment",
+      "meaning": "cuộc hẹn",
+      "example": "I'll be there at about ten o' clock as I have an appointment first thing, so you should be ready by then."
+     },
+     {
+      "word": "arrangement",
+      "meaning": "sự sắp xếp",
+      "example": "… but I have to make sure of the best arrangement on the day."
+     },
+     {
+      "word": "take over",
+      "meaning": "tiếp quản, đảm nhận thay",
+      "example": "Then I can take over the weightlifting in the afternoon as I'm particularly keen on that, as you all know, and I'd like a chance to get involved with it."
+     },
+     {
+      "word": "storeroom",
+      "meaning": "nhà kho",
+      "example": "For the badminton in the Dean Room, there are two nets in the storeroom to set up and you know what to do so it shouldn't take you long."
+     }
+    ]
+   }
+  }
+ ]
+}

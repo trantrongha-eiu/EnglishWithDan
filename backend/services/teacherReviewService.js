@@ -56,7 +56,7 @@ const SCORE_LABELS = {
 // Student-facing course page, for the "xem lại ở đâu" line of the message.
 const COURSE_PAGES = {
   'IELTS-W-T1': 'writing-task1.html', 'IELTS-W-T2': 'writing-task2-course.html',
-  'IELTS-SPEAKING': 'speaking-course.html', 'MINDSET-0': 'mindset-0.html', 'MINDSET-1': 'mindset-1.html',
+  'IELTS-SPEAKING': 'speaking-course.html', 'MINDSET-0': 'mindset-0.html', 'MINDSET-1': 'mindset-1.html', 'MINDSET-2': 'mindset-2.html',
 };
 
 const NOTE_MAX = 4000;

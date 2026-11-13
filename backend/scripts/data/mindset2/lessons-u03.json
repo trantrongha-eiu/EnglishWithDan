@@ -1,0 +1,677 @@
+{
+ "modules": [
+  {
+   "code": "M2-U03",
+   "order": 3,
+   "title": "Unit 3 · Tin tức và truyền thông",
+   "titleEn": "UNIT 03: THE NEWS AND MEDIA — sách tr. 48–53, 60–64",
+   "outcomes": [
+    "Reading: matching information (đoạn nào chứa thông tin); nhận diện loại thông tin (fact, opinion, reason, cause and effect, summary…)",
+    "Grammar: câu bị động (present simple / continuous / perfect, past simple passive)",
+    "Listening: Section 3 — nhận ra thái độ và ý kiến của người nói; distractors trong multiple choice; nhận ra paraphrase",
+    "Từ vựng tin tức, truyền thông, thái độ (Sổ 2)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M2-U03-L1",
+   "moduleCode": "M2-U03",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: how we consume the news",
+   "titleEn": "Lead-in · Opinions about the news (p. 48)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Đọc các ý kiến về cách mọi người tiếp nhận tin tức",
+    "Nối câu paraphrase với ý kiến tương ứng — bước đầu của matching information"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Matching information — khởi động",
+     "titleEn": "Matching information",
+     "formula": [],
+     "usage": [
+      "Trong bài thi, bạn phải nối thông tin trong câu hỏi với thông tin trong bài — bài dài 750–950 từ và phải nối với **một đoạn**.",
+      "Câu hỏi **paraphrase** bài: \"Continual exposure to the news is bad for us\" ↔ \"access… 24 hours a day… negative impact\"."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 4,
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 3 · Lead-in & Vocabulary: how we consume the news — 36 từ/cụm từ",
+    "words": [
+     {
+      "word": "consume the news",
+      "meaning": "tiếp nhận tin tức",
+      "example": "C Social media also plays an important part in consuming the news for the younger generation."
+     },
+     {
+      "word": "access the news",
+      "meaning": "truy cập tin tức",
+      "example": "A smarter way to access the news?"
+     },
+     {
+      "word": "have a negative impact on",
+      "meaning": "có tác động tiêu cực đến",
+      "example": "This is having an increasingly negative impact on society, and consequently we have all become news addicts!"
+     },
+     {
+      "word": "news addict",
+      "meaning": "người nghiện tin tức",
+      "example": "This is having an increasingly negative impact on society, and consequently we have all become news addicts!"
+     },
+     {
+      "word": "as a matter of habit",
+      "meaning": "theo thói quen",
+      "example": "(Sarah, 35) B Adults aged 60+ buy a daily newspaper as a matter of habit."
+     },
+     {
+      "word": "rely on",
+      "meaning": "dựa vào, tin cậy vào",
+      "example": "For those topics, I'd only rely on television bulletins."
+     },
+     {
+      "word": "continual exposure to",
+      "meaning": "tiếp xúc liên tục với",
+      "example": "Continual exposure to the news can make people feel anxious."
+     },
+     {
+      "word": "reveal",
+      "meaning": "tiết lộ, cho thấy",
+      "example": "It was also revealed that most youngsters actually don't seek out news from social media, but choose to follow it once they see it there."
+     },
+     {
+      "word": "on a weekly basis",
+      "meaning": "hằng tuần",
+      "example": "Furthermore, 66% of smartphone users are now using the device for news on a weekly basis."
+     },
+     {
+      "word": "sophisticated",
+      "meaning": "tinh vi, hiện đại",
+      "example": "More sophisticated smartphones are reducing the need for other portable devices."
+     },
+     {
+      "word": "portable device",
+      "meaning": "thiết bị di động",
+      "example": "More sophisticated smartphones are reducing the need for other portable devices."
+     },
+     {
+      "word": "trusted news source",
+      "meaning": "nguồn tin đáng tin cậy",
+      "example": "… on average people only use a small number of trusted news sources on their phones, the average across all countries being 1.52 per person."
+     },
+     {
+      "word": "overall trend",
+      "meaning": "xu hướng chung",
+      "example": "The overall trend, however, is not to use just one digital device to access the news, but rather a combination of two or three."
+     },
+     {
+      "word": "growing concern",
+      "meaning": "mối lo ngại ngày càng tăng",
+      "example": "… the news A In recent years, there has been growing concern by researchers and indeed the older generation that the younger generation are somewhat …"
+     },
+     {
+      "word": "be disengaged from",
+      "meaning": "thờ ơ với, tách rời khỏi",
+      "example": "… researchers and indeed the older generation that the younger generation are somewhat disengaged from the news, and as a result have a very narrow …"
+     },
+     {
+      "word": "a narrow view",
+      "meaning": "cái nhìn hạn hẹp",
+      "example": "… disengaged from the news, and as a result have a very narrow view of the world around them."
+     },
+     {
+      "word": "couldn't be further from the truth",
+      "meaning": "hoàn toàn sai sự thật",
+      "example": "This, however, couldn't be further from the truth, as shown by a recent study carried out by the Media Insight Project (American Press Institute & Associated Press)."
+     },
+     {
+      "word": "keep up to date with",
+      "meaning": "cập nhật thông tin về",
+      "example": "According to this research, 85% of youngsters say that keeping up to date with the news is important to them, and 69% receive news on a daily basis."
+     },
+     {
+      "word": "breaking news",
+      "meaning": "tin nóng",
+      "example": "For example, social media is used for breaking news, but is not relied on in terms of accuracy."
+     },
+     {
+      "word": "accuracy",
+      "meaning": "độ chính xác",
+      "example": "For accuracy and reliability, television is still the preferred choice for both generations."
+     },
+     {
+      "word": "reliability",
+      "meaning": "độ tin cậy",
+      "example": "For accuracy and reliability, television is still the preferred choice for both generations."
+     },
+     {
+      "word": "convenience",
+      "meaning": "sự tiện lợi",
+      "example": "In her current report on the topic, she states that, for the younger generation, news is largely about convenience and being social."
+     },
+     {
+      "word": "a sense of duty",
+      "meaning": "tinh thần trách nhiệm",
+      "example": "For the older generation, however, motivation is greatly linked to a sense of duty and habit."
+     },
+     {
+      "word": "encounter",
+      "meaning": "bắt gặp, tình cờ gặp",
+      "example": "In other words, they encounter it accidentally and therefore following the news is secondary."
+     },
+     {
+      "word": "catch sb's eye",
+      "meaning": "thu hút sự chú ý của ai",
+      "example": "These catch the user's eye and consequently the news link is clicked and followed."
+     },
+     {
+      "word": "regardless of",
+      "meaning": "bất kể",
+      "example": "F Overall, it is fair to say that news plays an important part in all our everyday lives, regardless of generation."
+     },
+     {
+      "word": "issue a report",
+      "meaning": "công bố báo cáo",
+      "example": "Reuters issued a report on how people access the news."
+     },
+     {
+      "word": "news agency",
+      "meaning": "hãng thông tấn",
+      "example": "A A recent report, issued by the international news agency Reuters, reveals that smartphones are quickly becoming the most popular way to access the news."
+     },
+     {
+      "word": "social media",
+      "meaning": "mạng xã hội",
+      "example": "(Charles, 65) D I would only use social media sites to check entertainment news."
+     },
+     {
+      "word": "bulletin",
+      "meaning": "bản tin",
+      "example": "For those topics, I'd only rely on television bulletins."
+     },
+     {
+      "word": "carry out a study",
+      "meaning": "tiến hành nghiên cứu",
+      "example": "The Media Insight Project carried out a study of young people's news habits."
+     },
+     {
+      "word": "selectively",
+      "meaning": "một cách có chọn lọc",
+      "example": "D For the moment, social networks are being used selectively, however."
+     },
+     {
+      "word": "motivation",
+      "meaning": "động lực",
+      "example": "For the older generation, however, motivation is greatly linked to a sense of duty and habit."
+     },
+     {
+      "word": "headline",
+      "meaning": "tiêu đề tin",
+      "example": "For example, when accessing social media sites, news headlines automatically appear."
+     },
+     {
+      "word": "unemployment rate",
+      "meaning": "tỷ lệ thất nghiệp",
+      "example": "The unemployment rate was down, more jobs were created, and generally people felt they had more money to spend."
+     },
+     {
+      "word": "witness",
+      "meaning": "nhân chứng",
+      "example": "According to a witness, he was wearing black clothes and a mask during the robbery."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M2-U03-L2",
+   "moduleCode": "M2-U03",
+   "order": 2,
+   "title": "📖 Reading: matching information",
+   "titleEn": "Matching information · Identifying different types of information · Exam skills (pp. 49–53)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Làm matching information: đoạn nào chứa thông tin",
+    "Nhận ra từ đồng nghĩa giữa câu hỏi và bài",
+    "Gắn nhãn loại thông tin cho từng đoạn trước khi làm bài để tiết kiệm thời gian"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Matching information",
+     "titleEn": "Matching information",
+     "formula": [
+      "Câu hỏi: \"Which paragraph contains the following information?\" — ghi chữ cái của đoạn."
+     ],
+     "usage": [
+      "Đáp án **không theo thứ tự** của bài.",
+      "Đáp án **không nhất thiết là ý chính** của đoạn — có thể là một chi tiết.",
+      "Một đoạn có thể chứa **nhiều đáp án** (You may use any letter more than once); có đoạn **không chứa** đáp án nào.",
+      "Câu hỏi thường dùng **từ đồng nghĩa**: 66% ↔ over half; survey ↔ questionnaire; on a weekly basis ↔ often; 25% ↔ a quarter of."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Loại thông tin",
+     "titleEn": "Identifying different types of information",
+     "formula": [],
+     "usage": [
+      "Mẹo tiết kiệm thời gian: **gắn nhãn** mục đích từng đoạn trước khi làm câu hỏi.",
+      "Các loại thường gặp: a fact, a reason, a summary, a cause, an effect, a conclusion, a description, a finding, an opinion, a reaction, an account (tường thuật sự việc).",
+      "Ví dụ: \"The overall trend, however, is not to use just one digital device…\" (bài) ↔ \"the most popular way to access the news digitally is by using several methods\" (câu hỏi) — cả hai đều **tóm tắt sự kiện**."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 5,
+   "totalPoints": 26,
+   "practiceLinks": [
+    {
+     "ref": "reading:M2-U03-R1",
+     "kind": "reading",
+     "title": "A smarter way to access the news? — matching information (Ex. 5)",
+     "note": "4 câu, đoạn A–D, một chữ cái có thể dùng nhiều lần."
+    },
+    {
+     "ref": "reading:M2-U03-R2",
+     "kind": "reading",
+     "title": "Exam skills: How the younger generation consumes the news (Ex. 15)",
+     "note": "6 câu matching information, đoạn A–F."
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L3",
+   "moduleCode": "M2-U03",
+   "order": 3,
+   "title": "🧩 Grammar focus: the passive",
+   "titleEn": "Grammar focus: the passive (pp. 51–52)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Nhận ra các thì của câu bị động trong bài",
+    "Hiểu vì sao bản tin hay dùng bị động",
+    "Chuyển câu chủ động sang bị động"
+   ],
+   "keyLanguage": [
+    "Bị động = **be** (chia theo thì) + **V3/V-ed**: social media **is used** · it **was** also **revealed** · social networks **are being used** · treasure **has been recovered**.",
+    "Dùng bị động khi **người thực hiện không quan trọng** hoặc không cần nêu, và trong **văn viết trang trọng** (bản tin, báo cáo)."
+   ],
+   "theory": [
+    {
+     "title": "Các dạng bị động",
+     "titleEn": "The passive",
+     "formula": [
+      "present simple: am/is/are + V3",
+      "present continuous: am/is/are being + V3",
+      "present perfect: has/have been + V3",
+      "past simple: was/were + V3"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "Holidays are ruined by air strikes.",
+       "vi": "present simple passive"
+      },
+      {
+       "en": "The victims of the air disaster were named earlier this morning.",
+       "vi": "past simple passive"
+      },
+      {
+       "en": "A new medicine… is being developed in Cambridge at the moment.",
+       "vi": "present continuous passive"
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 13,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Passive Voice",
+     "note": "câu bị động",
+     "url": "/essential-grammar.html?lesson=passive-voice"
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L4",
+   "moduleCode": "M2-U03",
+   "order": 4,
+   "title": "🎧 Listening: speakers' attitudes & multiple choice",
+   "titleEn": "Lead-in · Identifying speakers and their opinions · Understanding speakers' attitudes · Recognising paraphrases · Exam skills (pp. 60–64)",
+   "durationMinutes": 60,
+   "objectives": [
+    "Xác định chủ đề chính của cuộc thảo luận",
+    "Nhận ra thái độ tích cực, tiêu cực, trung lập qua ngữ điệu và cách diễn đạt",
+    "Phân biệt từng người nói và ý kiến của họ",
+    "Loại distractor và nhận ra paraphrase trong multiple choice"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Thái độ của người nói",
+     "titleEn": "Understanding speakers' attitudes",
+     "formula": [],
+     "usage": [
+      "Thái độ thể hiện qua **ngữ điệu** và **cách diễn đạt**.",
+      "**Tích cực**: certainly, definitely, I'm all for that, a good thing.",
+      "**Tiêu cực**: I don't see how…, I can't seriously believe that, I really don't think…",
+      "**Trung lập**: well, to be honest, I'm not really worried · It's all the same to me, it shouldn't matter."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Distractors trong multiple choice",
+     "titleEn": "Multiple choice: distractors",
+     "formula": [],
+     "usage": [
+      "Mỗi câu có 1 đáp án đúng và 2 **distractor**: chúng nhắc tới nội dung đúng nhưng **thông tin sai**, hoặc **không trả lời câu hỏi**.",
+      "Ví dụ: \"Pluto project is successful\" → không phải Mars (A sai); \"robots and machines… colony\" → dự án Moon của Trung Quốc (B sai).",
+      "Khi kiểm tra đáp án, nghĩ xem **vì sao** distractor sai."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Nhận ra paraphrase",
+     "titleEn": "Recognising paraphrases",
+     "formula": [],
+     "usage": [
+      "Đáp án đúng thường **diễn đạt lại** ý trong bài: \"isolation… no escape\" ↔ \"difficulty being in a closed space\".",
+      "Phương án dùng **đúng từ** trong bài (\"quiet\", \"hit Martin\") thường là bẫy."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 9,
+   "practiceLinks": [
+    {
+     "ref": "listening:M2-U03-L1",
+     "kind": "listening",
+     "title": "Three discussions: the main topic (Ex. 1)",
+     "note": "Mỗi cuộc thảo luận có thêm một chủ đề phụ."
+    },
+    {
+     "ref": "listening:M2-U03-L2",
+     "kind": "listening",
+     "title": "Speakers' attitudes: modern art & climate change (Ex. 2)",
+     "note": "Ai tích cực, ai tiêu cực, ai trung lập?"
+    },
+    {
+     "ref": "listening:M2-U03-L3",
+     "kind": "listening",
+     "title": "Choosing a study topic: three space expeditions (Ex. 3–4)",
+     "note": "Lựa chọn cuối cùng + thái độ từng người."
+    },
+    {
+     "ref": "listening:M2-U03-L4",
+     "kind": "listening",
+     "title": "Six short conversations: attitudes (Ex. 5)",
+     "note": "Positive, negative hay neutral?"
+    },
+    {
+     "ref": "listening:M2-U03-L5",
+     "kind": "listening",
+     "title": "Distractors: why Mars? (Ex. 7)",
+     "note": "1 câu — rồi xem vì sao A, B sai."
+    },
+    {
+     "ref": "listening:M2-U03-L6",
+     "kind": "listening",
+     "title": "One month later (Ex. 9)",
+     "note": "3 câu, mỗi câu 1 đáp án + 1 distractor."
+    },
+    {
+     "ref": "listening:M2-U03-L7",
+     "kind": "listening",
+     "title": "Recognising paraphrases: an example (Ex. 10)",
+     "note": "Ví dụ trong sách."
+    },
+    {
+     "ref": "listening:M2-U03-L8",
+     "kind": "listening",
+     "title": "Paraphrases: the next part (Ex. 11)",
+     "note": "3 câu A, B, C."
+    },
+    {
+     "ref": "listening:M2-U03-L9",
+     "kind": "listening",
+     "title": "Exam skills: the final part (Ex. 12)",
+     "note": "6 câu multiple choice."
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 3 · Listening: speakers' attitudes & multiple choice — 38 từ/cụm từ",
+    "words": [
+     {
+      "word": "win the election",
+      "meaning": "thắng cử",
+      "example": "… 1 All I'm saying is that if this government wins the election tomorrow, I think they'll just continue with the same things they've been …"
+     },
+     {
+      "word": "economic situation",
+      "meaning": "tình hình kinh tế",
+      "example": "… doing over the last five years and make the economic situation worse in this country."
+     },
+     {
+      "word": "critic",
+      "meaning": "nhà phê bình",
+      "example": "… the review on the radio this afternoon and the critic really liked it, which is unusual because he doesn't usually recommend big commercial projects …"
+     },
+     {
+      "word": "appeal to sb",
+      "meaning": "hấp dẫn, thu hút ai",
+      "example": "As far as I'm concerned, if it appeals to someone, that's fine."
+     },
+     {
+      "word": "take it or leave it",
+      "meaning": "có cũng được, không có cũng chẳng sao",
+      "example": "I can take it or leave it."
+     },
+     {
+      "word": "tackle an issue head-on",
+      "meaning": "giải quyết vấn đề trực diện",
+      "example": "We need to tackle the issue of climate change head-on."
+     },
+     {
+      "word": "take action",
+      "meaning": "hành động",
+      "example": "We can't let it go on any longer without taking action."
+     },
+     {
+      "word": "get out of control",
+      "meaning": "vượt khỏi tầm kiểm soát",
+      "example": "All the science shows that it's going to get out of control if we fail to act."
+     },
+     {
+      "word": "renewable energy",
+      "meaning": "năng lượng tái tạo",
+      "example": "The government should be supporting renewable forms of energy and we really need to reduce our dependence on oil and gas."
+     },
+     {
+      "word": "reduce our dependence on",
+      "meaning": "giảm sự phụ thuộc vào",
+      "example": "The government should be supporting renewable forms of energy and we really need to reduce our dependence on oil and gas."
+     },
+     {
+      "word": "not convinced either way",
+      "meaning": "chưa bị thuyết phục bởi bên nào",
+      "example": "Speaker 3: I'm not really convinced either way, actually."
+     },
+     {
+      "word": "extreme weather",
+      "meaning": "thời tiết khắc nghiệt",
+      "example": "Floods and heatwaves are examples of extreme weather."
+     },
+     {
+      "word": "expedition",
+      "meaning": "chuyến thám hiểm",
+      "example": "Have you heard of the Pluto expedition?"
+     },
+     {
+      "word": "in depth",
+      "meaning": "một cách chuyên sâu",
+      "example": "It would give you a better chance to study it in depth and do far more analysis for your monthly update reports."
+     },
+     {
+      "word": "coverage",
+      "meaning": "sự đưa tin (của báo chí)",
+      "example": "There'll be a lot of coverage on the news over the next few weeks."
+     },
+     {
+      "word": "on second thoughts",
+      "meaning": "nghĩ lại thì",
+      "example": "On second thoughts, maybe Dr Thornton's right."
+     },
+     {
+      "word": "assess",
+      "meaning": "đánh giá",
+      "example": "Well, I'm not sure if I could take that on as well as producing an assessment of the life support issues."
+     },
+     {
+      "word": "promising",
+      "meaning": "đầy hứa hẹn",
+      "example": "Hmm ... yeah ... that sounds promising."
+     },
+     {
+      "word": "have a point",
+      "meaning": "có lý",
+      "example": "You have a point."
+     },
+     {
+      "word": "raise taxes",
+      "meaning": "tăng thuế",
+      "example": "Conversation 1 It looks like the government is going to raise taxes in the budget tomorrow."
+     },
+     {
+      "word": "go on strike",
+      "meaning": "đình công",
+      "example": "The air traffic controllers are going on strike."
+     },
+     {
+      "word": "I'm all for that",
+      "meaning": "tôi hoàn toàn ủng hộ",
+      "example": "I'm all for that."
+     },
+     {
+      "word": "fill vacancies",
+      "meaning": "lấp chỗ trống nhân sự",
+      "example": "Conversation 6 The government is going to bring more doctors and medical staff from abroad to fill vacancies."
+     },
+     {
+      "word": "isolation",
+      "meaning": "sự cô lập, biệt lập",
+      "example": "Many types of people participate in projects studying the effects of isolation."
+     },
+     {
+      "word": "enclosed environment",
+      "meaning": "môi trường khép kín",
+      "example": "I'm focusing specifically on their abilities to work under the stresses of living in an enclosed environment."
+     },
+     {
+      "word": "enhance",
+      "meaning": "nâng cao, cải thiện",
+      "example": "I think it would significantly enhance your research and findings."
+     },
+     {
+      "word": "bear sth in mind",
+      "meaning": "ghi nhớ điều gì",
+      "example": "I think you should bear it in mind."
+     },
+     {
+      "word": "be cut off",
+      "meaning": "bị cô lập, tách biệt",
+      "example": "I don't know if I'd want to be cut off for so long."
+     },
+     {
+      "word": "interact with",
+      "meaning": "tương tác với",
+      "example": "I think it was really good the way that all the characters were actually well developed and interacted with each other."
+     },
+     {
+      "word": "commercial",
+      "meaning": "mang tính thương mại",
+      "example": "… which is unusual because he doesn't usually recommend big commercial projects which just aim to make as much money as possible."
+     },
+     {
+      "word": "ridiculous",
+      "meaning": "lố bịch, vô lý",
+      "example": "It's ridiculous!"
+     },
+     {
+      "word": "talk nonsense",
+      "meaning": "nói chuyện vô lý",
+      "example": "Speaker 2: Well, from what I can see, you have a lot of people looking at it and talking nonsense about how good it is."
+     },
+     {
+      "word": "appreciate",
+      "meaning": "trân trọng, đánh giá cao",
+      "example": "Speaker 3: Oh, I think not enough people appreciate it."
+     },
+     {
+      "word": "massive delays",
+      "meaning": "sự chậm trễ nghiêm trọng",
+      "example": "That will cause massive delays at the airports and ruin a lot of travel plans."
+     },
+     {
+      "word": "qualified",
+      "meaning": "có trình độ chuyên môn",
+      "example": "As long as they're qualified and speak good English, it shouldn't matter where they're from."
+     },
+     {
+      "word": "participant",
+      "meaning": "người tham gia",
+      "example": "Obviously, they'll have to find some more participants."
+     },
+     {
+      "word": "efficiency",
+      "meaning": "hiệu suất, hiệu quả",
+      "example": "… - but for me, the main thing is the efficiency of the crew and how well they managed to perform their duties."
+     },
+     {
+      "word": "worthwhile",
+      "meaning": "đáng làm, đáng giá",
+      "example": "I think it'd be worthwhile writing about the physical effects of the project, you know, how they kept healthy …"
+     }
+    ]
+   }
+  }
+ ]
+}

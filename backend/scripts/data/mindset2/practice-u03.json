@@ -1,0 +1,747 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 2 · Unit 3 — A smarter way to access the news?",
+   "content": "<h3>A smarter way to access the news?</h3>\n\n<p><strong>A</strong> A recent report, issued by the international news agency Reuters, reveals that smartphones are quickly becoming the most popular way to access the news. Over the last year, this increase has been particularly noted in countries such as the UK, the USA and Japan. In fact, for all countries involved in the survey, usage has increased from 37% to 46%. Furthermore, 66% of smartphone users are now using the device for news on a weekly basis.</p>\n\n<p><strong>B</strong> By comparison, the number of people using tablets to access the news is decreasing in most countries. More sophisticated smartphones are reducing the need for other portable devices. The need for accessing the news on laptops and desktops has also changed. Over half (57%) still consider these devices the most important ways to access the news, but this is a decrease of 8% from last year.</p>\n\n<p><strong>C</strong> The report also revealed, however, that on average people only use a small number of trusted news sources on their phones, the average across all countries being 1.52 per person. In the UK, for example, over half of smartphone users (51%) regularly use the BBC app.</p>\n\n<p><strong>D</strong> Across all countries included in the survey, 25% stated that their smartphone was the main device used for accessing digital news, an increase of 20% since last year. This is particularly true of those aged under 35, with the figure rising to 41%. The overall trend, however, is not to use just one digital device to access the news, but rather a combination of two or three.</p>",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Which paragraphs (A–D) contain this information? You may write any letter more than once. (Ex. 5)",
+     "matchingOptions": [
+      "A",
+      "B",
+      "C",
+      "D"
+     ],
+     "matchingOptionsTitle": "",
+     "matchingReuseAllowed": true,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching-info",
+       "questionText": "other ways news is accessed online",
+       "correctAnswer": "B",
+       "explanation": "Đoạn B: tablets, laptops and desktops — các cách khác để đọc tin trên mạng."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching-info",
+       "questionText": "over half of smartphone users access news via their phones",
+       "correctAnswer": "A",
+       "explanation": "Đoạn A: \"**66%** of smartphone users are now using the device for news\" (66% = over half). BẪY: đoạn C có cụm \"over half of smartphone users (51%)\" nhưng nói về ứng dụng BBC."
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching-info",
+       "questionText": "the most popular way to access the news digitally is by using several methods",
+       "correctAnswer": "D",
+       "explanation": "Đoạn D: \"not to use just one digital device… but rather **a combination of two or three**\" (= several methods)."
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching-info",
+       "questionText": "the younger generation are more likely to use their smartphone to access the news",
+       "correctAnswer": "D",
+       "explanation": "Đoạn D: \"This is particularly true of **those aged under 35**, with the figure rising to 41%\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U03-R1"
+  },
+  {
+   "title": "Mindset 2 · Unit 3 — How the younger generation consumes the news",
+   "content": "<h3>How the younger generation consumes the news</h3>\n\n<p><strong>A</strong> In recent years, there has been growing concern by researchers and indeed the older generation that the younger generation are somewhat disengaged from the news, and as a result have a very narrow view of the world around them. This, however, couldn't be further from the truth, as shown by a recent study carried out by the Media Insight Project (American Press Institute & Associated Press). According to this research, 85% of youngsters say that keeping up to date with the news is important to them, and 69% receive news on a daily basis.</p>\n\n<p><strong>B</strong> Perhaps what some of the older generation fail to understand is that just because the younger generation does not buy a daily newspaper, it doesn't mean that they don't follow the news. Born into a digital age, or more specifically the age of the internet, the younger generation simply accesses news through the digital devices they grew up using: laptops, tablets, smartphones, etc. A recent study produced by Ofcom revealed that 60% of youngsters in the UK use the internet or apps for news, compared to just 21% of those in the older age range.</p>\n\n<p><strong>C</strong> Social media also plays an important part in consuming the news for the younger generation. It was also revealed that most youngsters actually don't seek out news from social media, but choose to follow it once they see it there. In other words, they encounter it accidentally and therefore following the news is secondary. For example, when accessing social media sites, news headlines automatically appear. These catch the user's eye and consequently the news link is clicked and followed.</p>\n\n<p><strong>D</strong> For the moment, social networks are being used selectively, however. For example, social media is used for breaking news, but is not relied on in terms of accuracy. For hard news topics, such as economics or local crime, youngsters continue to look to original sources. For accuracy and reliability, television is still the preferred choice for both generations.</p>\n\n<p><strong>E</strong> According to Alison Preston, Head of Media Literacy Research at Ofcom, motivations for following the news also vary according to the generation. In her current report on the topic, she states that, for the younger generation, news is largely about convenience and being social. For the older generation, however, motivation is greatly linked to a sense of duty and habit.</p>\n\n<p><strong>F</strong> Overall, it is fair to say that news plays an important part in all our everyday lives, regardless of generation. However, what is different amongst the generations is why and how it is accessed.</p>",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–6",
+     "instruction": "The reading passage 'How the younger generation consumes the news' has six paragraphs, A–F. Which paragraph contains the following information? You may use any letter more than once. (Ex. 15)",
+     "matchingOptions": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+     ],
+     "matchingOptionsTitle": "",
+     "matchingReuseAllowed": true,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching-info",
+       "questionText": "the reasons why the younger generation seeks news",
+       "correctAnswer": "E",
+       "explanation": "Đoạn E: \"**motivations** for following the news… for the younger generation, news is largely about convenience and being social\" (motivations = reasons)."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching-info",
+       "questionText": "the opinion that news is important to the younger generation",
+       "correctAnswer": "A",
+       "explanation": "Đoạn A: \"85% of youngsters say that keeping up to date with the news is **important** to them\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching-info",
+       "questionText": "the percentage of older adults in the UK who access the news digitally",
+       "correctAnswer": "B",
+       "explanation": "Đoạn B: \"compared to just **21%** of those in the older age range\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching-info",
+       "questionText": "the idea that the younger generation largely encounters the news by chance",
+       "correctAnswer": "C",
+       "explanation": "Đoạn C: \"they encounter it **accidentally**\" (accidentally = by chance)."
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching-info",
+       "questionText": "the news is of great significance to both young and old people",
+       "correctAnswer": "F",
+       "explanation": "Đoạn F: \"news plays an important part in all our everyday lives, **regardless of generation**\"."
+      },
+      {
+       "questionNumber": 6,
+       "type": "matching-info",
+       "questionText": "why the younger generation consumes the news through modern technology",
+       "correctAnswer": "B",
+       "explanation": "Đoạn B: \"Born into a digital age… simply accesses news through the digital devices they grew up using\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U03-R2"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 2 · Unit 3 — Three discussions",
+   "description": "Three short discussions, each on a particular topic.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_20.mp3",
+   "transcript": "Discussion 1\nA: All I'm saying is that if this government wins the election tomorrow, I think they'll just continue with the same things they've been doing over the last five years and make the economic situation worse in this country. People are already finding it difficult to live with prices going up and salaries staying the same.\nB: I don't think they'll win. People have had enough and are ready to vote for a change. I hope they do. If the other party gets in, it'll be like them winning the World Cup!\nDiscussion 2\nA: Yeah, I saw it last night. I think it was really good the way that all the characters were actually well developed and interacted with each other. The danger with that kind of film is that the science fiction aspect just takes over and you get spaceships and battles with aliens who are trying to take over the Earth.\nB: I'm going to see it tonight. I listened to the review on the radio this afternoon and the critic really liked it, which is unusual because he doesn't usually recommend big commercial projects which just aim to make as much money as possible.\nDiscussion 3\nA: Did you see that report on the news tonight - the one about the robot football competition?\nB: Yeah. It was quite amazing. I mean, it wasn't like real football, but it is amazing what they can get machines to do with the right programming these days. I mean, those robots can detect the ball as it moves around the pitch and pass it to each other. And that winning goal was like Messi scoring!\nA: Yeah, I can see it becoming a real money-making business, just like the real thing!",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–3",
+     "instruction": "Listen to three short discussions. In each discussion, another topic is also referred to. Choose the main topic in each discussion. (Ex. 1)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Discussion 1",
+       "options": [
+        "sport",
+        "politics",
+        "economics"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Thảo luận 1\n\nTranscript: “if this government wins the election tomorrow” … “ready to vote for a change”\n\nPhân tích: Chủ đề chính: bầu cử (politics); kinh tế chỉ được nhắc thêm."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Discussion 2",
+       "options": [
+        "business",
+        "science",
+        "entertainment"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Thảo luận 2\n\nTranscript: “I saw it last night… all the characters were actually well developed” … “I'm going to see it tonight. I listened to the review on the radio”\n\nPhân tích: Bàn về một bộ phim → entertainment. \"science fiction\" và \"make as much money as possible\" chỉ là chủ đề phụ (distractors)."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Discussion 3",
+       "options": [
+        "technology",
+        "sport",
+        "business"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Thảo luận 3\n\nTranscript: “it is amazing what they can get machines to do with the right programming these days” … “those robots can detect the ball”\n\nPhân tích: Robot và lập trình → technology. \"football\", \"Messi\" và \"money-making business\" chỉ là chủ đề phụ."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U03-L1"
+  },
+  {
+   "title": "Mindset 2 · Unit 3 — Speakers' attitudes",
+   "description": "Three speakers on modern art and on combating climate change.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_21.mp3",
+   "transcript": "Topic 1: Modern art\nSpeaker 1: I don't really have much of an opinion about it. As far as I'm concerned, if it appeals to someone, that's fine. If it doesn't then why should anyone complain about that? Personally, I like some of it, but I'm not really bothered. I can take it or leave it.\nSpeaker 2: Well, from what I can see, you have a lot of people looking at it and talking nonsense about how good it is. Then you also have people with too much money and too little sense who are prepared to waste their money on this stuff. It's ridiculous! There's no comparison with the great art of the past few centuries.\nSpeaker 3: Oh, I think not enough people appreciate it. They look at it and think, well, my kid could do that. They think that something from the eighteenth or nineteenth century is true art and they don't understand that art develops and changes over time. These artists today are just as skilled and creative as those in the past and they should be appreciated for what they do.\nTopic 2: Combating climate change\nSpeaker 1: It's so important that we tackle this issue head-on. We can't let it go on any longer without taking action. All the science shows that it's going to get out of control if we fail to act. The government should be supporting renewable forms of energy and we really need to reduce our dependence on oil and gas. I just wish other people could see that!\nSpeaker 2: There's so much nonsense spoken about it. Really, I can't understand why people get so upset about it. They quote all kinds of studies, but they don't amount to anything real. If you ask me, the climate is getting colder, at least in this country. Look at the amount of snow we had last winter! They just want to scare people for no reason.\nSpeaker 3: I'm not really convinced either way, actually. I mean, there are arguments on both sides, but I think it's still too early to tell. Yes, we can see that the weather in different parts of the world is becoming more extreme, but if you ask the climate experts, they never say that it's definitely climate change and just say they need more time to be sure. So that's where I am at the moment.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Listen to Speakers 1–3. Identify who has the positive attitude, the negative attitude and the neutral attitude. (Ex. 2)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Topic 1: Modern art — positive attitude",
+       "options": [
+        "Speaker 1",
+        "Speaker 2",
+        "Speaker 3"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Nghệ thuật hiện đại — tích cực\n\nTranscript: “Oh, I think not enough people appreciate it”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Topic 1: Modern art — negative attitude",
+       "options": [
+        "Speaker 1",
+        "Speaker 2",
+        "Speaker 3"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Nghệ thuật hiện đại — tiêu cực\n\nTranscript: “Well, from what I can see, you have a lot of people looking”\n\nPhân tích: Người nói 2 chê bai."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Topic 1: Modern art — neutral attitude",
+       "options": [
+        "Speaker 1",
+        "Speaker 2",
+        "Speaker 3"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Nghệ thuật hiện đại — trung lập\n\nTranscript: “I don't really have much of an opinion about it”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Topic 2: Combating climate change — positive attitude",
+       "options": [
+        "Speaker 1",
+        "Speaker 2",
+        "Speaker 3"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Chống biến đổi khí hậu — tích cực\n\nTranscript: “It's so important that we tackle this issue head-on”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "Topic 2: Combating climate change — negative attitude",
+       "options": [
+        "Speaker 1",
+        "Speaker 2",
+        "Speaker 3"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Chống biến đổi khí hậu — tiêu cực\n\nTranscript: “There's so much nonsense spoken about it”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "multiple-choice",
+       "questionText": "Topic 2: Combating climate change — neutral attitude",
+       "options": [
+        "Speaker 1",
+        "Speaker 2",
+        "Speaker 3"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Chống biến đổi khí hậu — trung lập\n\nTranscript: “I'm not really convinced either way, actually”"
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U03-L2"
+  },
+  {
+   "title": "Mindset 2 · Unit 3 — Three space expeditions",
+   "description": "Maria, Simon and Dr Thornton choose a study topic.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_22.mp3",
+   "transcript": "Maria: Hello Simon.\nSimon: Hi Maria.\nMaria: OK. What topic do you think we should choose for the project we're starting next week? I think we need to make sure that it's going to last over the next few months so that we can complete the project.\nSimon: Well, there are several possibilities. Have you heard of the Pluto expedition? The spacecraft is about to arrive there and it's going to send back pictures that we've never seen before. It should be really interesting.\nMaria: That sounds like a good idea. What do you think, Dr Thornton?\nDr Thornton: Well, I'm not so sure about that one. I mean, it's already been going for ten years and I think we should look at something which is planned for the future but hasn't started yet. It would give you a better chance to study it in depth and do far more analysis for your monthly update reports.\nSimon: I don't think that's a problem. There'll be a lot of coverage on the news over the next few weeks.\nMaria: Hmm ... that's true ... but we really need something to last for a few months. On second thoughts, maybe Dr Thornton's right. Perhaps we should look at something which hasn't started yet. Isn't there something I heard about a new Mars expedition? I think there's a group of people out in America somewhere who are preparing for a trip to Mars.\nSimon: Yes. It was in the news last week. They've built a sort of camp in the desert in Arizona. There are ten people living there for six months, just like they would be together on the trip to Mars and after they arrive there.\nDr Thornton: That'd be ideal. Six months is just right for you. You could follow their progress and how the project develops. From what I know, the Pluto project is already a success, but with the Mars one you can assess how successful it is as it progresses and you can write it up for your final report.\nMaria: Hmm ... yeah ... that sounds promising.\nSimon: OK, but before we decide, I'd just like to mention one more. I heard that the Chinese are planning an expedition to the moon.\nMaria: What? Another man or woman on the moon? That's already been done. I don't think the moon's particularly interesting these days.\nDr Thornton: Simon has a point. I mean, the Chinese are coming up now and they've got some new ideas. I don't think they're sending any astronauts. I think it's just an expedition with robots and machines to find the best place to start a colony.\nMaria: Yes, but I don't think that's particularly interesting. I mean, no one has ever seen Pluto close up and no one has tried to go to Mars, so I think they'd be more interesting expeditions to do.\nSimon: You have a point. Perhaps it would be better to focus on one of the other two.\nDr Thornton: OK, if you ask me, I'd prefer to see how a group of people get along living together in a difficult situation, like they'll be doing in Arizona in preparation for their trip. I think you'd get far more out of that, but the final decision is yours. What do you think?\nMaria: I agree. I'd prefer to go for that one.\nSimon: So that's agreed then. Good. Let's make a start.\nDr Thornton: Excellent. I'll make a note of that. We'll meet again next Wednesday and you can give me your project outline. I'm looking forward to seeing it.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Question 1",
+     "instruction": "Listen and identify their final choice, A, B or C. (Ex. 3)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Their final choice is the",
+       "options": [
+        "Moon expedition.",
+        "Mars expedition.",
+        "Pluto expedition."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Lựa chọn cuối cùng\n\nVị trí: Cuối đoạn.\n\nTranscript: “I'd prefer to see how a group of people get along living together in a difficult situation, like they'll be doing in Arizona” … “I agree. I'd prefer to go for that one” … “So that's agreed then”\n\nPhân tích: Dự án ở Arizona chuẩn bị cho chuyến đi sao Hỏa → Mars."
+      }
+     ]
+    },
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 2–10",
+     "instruction": "Listen to the first part of the discussion again and decide what each speaker says they prefer first for each suggestion: positive, negative or neutral. (Ex. 4)",
+     "questions": [
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Simon — Pluto expedition",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Simon về Pluto\n\nTranscript: “It should be really interesting”\n\nPhân tích: Positive."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Simon — Mars expedition",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Simon về Mars\n\nTranscript: “It was in the news last week. They've built a sort of camp in the desert in Arizona”\n\nPhân tích: Chỉ mô tả thông tin → neutral."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Simon — Moon expedition",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Simon về Moon\n\nTranscript: “I'd just like to mention one more. I heard that the Chinese are planning an expedition to the moon”\n\nPhân tích: Chỉ nêu thêm một lựa chọn → neutral."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "Maria — Pluto expedition",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Maria về Pluto\n\nTranscript: “That sounds like a good idea”\n\nPhân tích: Positive."
+      },
+      {
+       "questionNumber": 6,
+       "type": "multiple-choice",
+       "questionText": "Maria — Mars expedition",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Maria về Mars\n\nTranscript: “Hmm ... yeah ... that sounds promising”\n\nPhân tích: Positive."
+      },
+      {
+       "questionNumber": 7,
+       "type": "multiple-choice",
+       "questionText": "Maria — Moon expedition",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Maria về Moon\n\nTranscript: “That's already been done. I don't think the moon's particularly interesting these days”\n\nPhân tích: Negative."
+      },
+      {
+       "questionNumber": 8,
+       "type": "multiple-choice",
+       "questionText": "Dr Thornton — Pluto expedition",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Dr Thornton về Pluto\n\nTranscript: “Well, I'm not so sure about that one”\n\nPhân tích: Negative."
+      },
+      {
+       "questionNumber": 9,
+       "type": "multiple-choice",
+       "questionText": "Dr Thornton — Mars expedition",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Dr Thornton về Mars\n\nTranscript: “That'd be ideal. Six months is just right for you”\n\nPhân tích: Positive."
+      },
+      {
+       "questionNumber": 10,
+       "type": "multiple-choice",
+       "questionText": "Dr Thornton — Moon expedition",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Dr Thornton về Moon\n\nTranscript: “Simon has a point. I mean, the Chinese are coming up now and they've got some new ideas”\n\nPhân tích: Không khen, không chê → neutral."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U03-L3"
+  },
+  {
+   "title": "Mindset 2 · Unit 3 — Six short conversations",
+   "description": "Six short conversations: the attitude of the second speaker.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_23.mp3",
+   "transcript": "Conversation 1\nA: It looks like the government is going to raise taxes in the budget tomorrow.\nB: Seriously? I really don't see how that could be a good idea. It'll reduce spending and affect the economy without a doubt.\nConversation 2\nA: They just said on the local news that the bus companies are planning to reduce fares for travel after ten o'clock to get more people to come into town.\nB: That certainly sounds like it would work well. It would definitely help shops and businesses, as well as the local attractions.\nConversation 3\nA: Oh no, not again! The air traffic controllers are going on strike. That will cause massive delays at the airports and ruin a lot of travel plans.\nB: Well, to be honest, I'm not really worried. I'm travelling by train for my holiday.\nConversation 4\nA: It says here in today's paper that the government is going to offer free dental checks to people over 60.\nB: I'm all for that. Anything that helps people take care of their teeth has to be a good thing.\nConversation 5\nA: There's a report in the sports section that says Athletic are going to buy that Brazilian striker Reginaldo for £40 million.\nB: That much? I can't seriously believe that! I really don't think he's as good as the experts say he is.\nConversation 6\nA: The government is going to bring more doctors and medical staff from abroad to fill vacancies. Maybe they should try to find more here.\nB: It's all the same to me. As long as they're qualified and speak good English, it shouldn't matter where they're from.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Listen to six short conversations and choose Positive (A), Negative (B) or Neutral (C) for each attitude expressed by the second speaker. (Ex. 5)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Conversation 1",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Hội thoại 1\n\nTranscript: “Seriously? I really don't see how”\n\nPhân tích: I don't see how → negative."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Conversation 2",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Hội thoại 2\n\nPhân tích: certainly, definitely → positive."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Conversation 3",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Hội thoại 3\n\nPhân tích: Well, to be honest, I'm not really worried → neutral."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Conversation 4",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Hội thoại 4\n\nPhân tích: I'm all for that… a good thing → positive."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "Conversation 5",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Hội thoại 5\n\nPhân tích: I can't seriously believe that… I really don't think → negative."
+      },
+      {
+       "questionNumber": 6,
+       "type": "multiple-choice",
+       "questionText": "Conversation 6",
+       "options": [
+        "Positive",
+        "Negative",
+        "Neutral"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Hội thoại 6\n\nPhân tích: It's all the same to me… it shouldn't matter → neutral."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U03-L4"
+  },
+  {
+   "title": "Mindset 2 · Unit 3 — Why Mars?",
+   "description": "Part of the conversation between Maria, Simon and Dr Thornton.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_24.mp3",
+   "transcript": "Dr Thornton: That'd be ideal. Six months is just right for you. You could follow their progress and how the project develops. From what I know, the Pluto project is already a success, but with the Mars one you can assess how successful it is as it progresses and you can write it up for your final report.\nMaria: Hmm ... yeah ... that sounds promising.\nSimon: OK, but before we decide, I'd just like to mention one more. I heard that the Chinese are planning an expedition to the moon.\nMaria: What? Another man or woman on the moon? That's already been done. I don't think the moon's particularly interesting these days.\nDr Thornton: Simon has a point. I mean, the Chinese are coming up now and they've got some new ideas. I don't think they're sending any astronauts. I think it's just an expedition with robots and machines to find the best place to start a colony.\nMaria: Yes, but I don't think that's particularly interesting. I mean, no one has ever seen Pluto close up and no one has tried to go to Mars, so I think they'd be more interesting expeditions to do.\nSimon: You have a point. Perhaps it would be better to focus on one of the other two.\nDr Thornton: OK, if you ask me, I'd prefer to see how a group of people get along living together in a difficult situation, like they'll be doing in Arizona in preparation for their trip. I think you'd get far more out of that, but the final decision is yours. What do you think?",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Question 1",
+     "instruction": "Listen to part of the conversation again and choose the correct answer, A, B or C. (Ex. 7)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Dr Thornton thinks studying the Mars expedition is a good idea because",
+       "options": [
+        "she thinks the mission will be successful.",
+        "robots and machines will be used to start a colony there.",
+        "the students will have the chance to study it until it ends."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Dr Thornton cho rằng nghiên cứu dự án Mars là ý hay vì\n\nVị trí: Đầu đoạn.\n\nTranscript: “That'd be ideal. Six months is just right”\n\nPhân tích: Dự án kéo dài 6 tháng — vừa đủ để sinh viên theo dõi đến hết. A: chính dự án Pluto mới \"successful\"; B: robot và máy móc thuộc dự án Moon của Trung Quốc."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U03-L5"
+  },
+  {
+   "title": "Mindset 2 · Unit 3 — One month later",
+   "description": "Maria, Simon and Dr Thornton one month after the start of the project.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_25.mp3",
+   "transcript": "Dr Thornton: I assume you've seen the latest update from the Mars project? One of the people has had to leave the project in Arizona, which is a bit of bad news. It only came out last night.\nMaria: Oh, really? We missed that. Who is it?\nDr Thornton: Alfonso, the biologist. That means that they won't be able to monitor the plants they've been growing for food. Apparently, his mother was taken ill, so he decided it was more important to be with her than stay with the project.\nSimon: His mother's ill? That's a pity. I hope it's nothing serious. Are they planning to bring someone else in, or have they got someone to take over the plant care?\nDr Thornton: Well, as you know, according to the rules of the project, no one else can come in once it's started, so they'll just have to make the best of it. After all, in a real situation, you can't just call up an agency and get someone else.\nMaria: I think Carla would be the best person to take over. As chief medical officer, she's had training in biology.\nSimon: That might be true, but I'm not sure that means she's the best person for the job.\nMaria: Why not? There's nobody else in the project who's got her experience in that area.\nDr Thornton: Maybe, but I personally think the best solution would be to share the work. I'm sure they can all learn how to do it, and what's more, they can make sure that if anything else happens to one of them, the others will have a good idea of what to do.\nSimon: Yeah, I agree with Dr Thornton. That would be the best solution. But I'm sure they'll announce their plans later.\nDr Thornton: Right, so now that update is out of the way, let's see what other progress you've made ...",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–3",
+     "instruction": "There are two options for each question: one correct answer and one distractor. Choose the correct answer and think about why the distractor is wrong. (Ex. 9)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Alfonso has left the Mars project because",
+       "options": [
+        "he became ill while they were in Arizona.",
+        "he had a problem unconnected to the project."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Alfonso rời dự án vì\n\nTranscript: “Apparently, his mother was taken ill, so he decided it was more important to be with her”\n\nPhân tích: Người bị ốm là MẸ của Alfonso, không phải anh ấy → một vấn đề không liên quan đến dự án. A là distractor."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "If someone leaves the Mars project, the rules say that",
+       "options": [
+        "a new person must take their place.",
+        "no new people can join at a later date."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Nếu có người rời dự án, quy định là\n\nTranscript: “according to the rules of the project, no one else can come in once it's started”\n\nPhân tích: A là distractor (Simon chỉ hỏi \"Are they planning to bring someone else in\")."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Simon agrees that",
+       "options": [
+        "only one person should look after the food production.",
+        "more than one person should look after the food production."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Simon đồng ý rằng\n\nTranscript: “I personally think the best solution would be to share the work” … “Yeah, I agree with Dr Thornton”\n\nPhân tích: A là ý của Maria (Carla nên đảm nhận) — Simon không đồng ý với ý đó."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U03-L6"
+  },
+  {
+   "title": "Mindset 2 · Unit 3 — Recognising paraphrases: an example",
+   "description": "The next conversation about the project.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_26.mp3",
+   "transcript": "Simon: OK, so the latest from the project is that one of the people taking part, Joe, attacked another person on the team, Martin, and hit him. I really can't believe that Joe would do something like that! He's been the quietest up until now.\nMaria: Sometimes that's what happens. You think someone is OK, but it turns out that they're not. Why did he do it? Is it anything to do with personality problems, or is it just a disagreement about something?\nSimon: Well, there are strong signs that there've been some emotional or psychological problems which result from being isolated for so long.\nMaria: Isolation? What, so you're saying that Joe might be suffering some kind of psychological problems? I can see how that can happen in an environment like that, where there's no escape from the situation ...",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Question 1",
+     "instruction": "Listen and choose the answer, A, B or C, which correctly paraphrases the information in the recording. (Ex. 10)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "One person has most probably been physically violent because",
+       "options": [
+        "they do not speak very much as a rule.",
+        "they might have difficulty being in a closed space.",
+        "they always disliked another participant."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Một người có lẽ đã có hành vi bạo lực vì\n\nPhân tích: Ví dụ trong sách: Joe trầm tính chỉ là một nhận xét, không phải lý do (A sai). Có nói anh ấy đánh Martin nhưng không nói anh ấy luôn ghét Martin (C sai). Lý do được nêu là sự cô lập — ở trong không gian kín, không lối thoát → B."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U03-L7"
+  },
+  {
+   "title": "Mindset 2 · Unit 3 — Paraphrases: the next part",
+   "description": "The next part of the conversation about the Mars project.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_27.mp3",
+   "transcript": "Dr Thornton: Well, as psychology tutor, I find that really interesting. Many types of people participate in projects studying the effects of isolation. We all know that one of the main issues with a project like this is how people will get on when they are locked away together for such a long time. It can produce all kinds of psychological and emotional problems. That's what I'm particularly interested in and one of the reasons why I wanted you to do this particular project.\nSimon: Me too. That'll be one of the most important things to come out of this project - how people can control their emotions and feelings over a long time when they can't get away from each other.\nMaria: True, but we have to remember that this is a science project and not some soap opera or television series with lots of silly people locked up in a big house or something.\nDr Thornton: I can see what both of you are saying, but there are always going to be problems like these, so it's not surprising when they happen. In fact, this is the first time someone has got really angry in the first three months, so I think that's quite a positive thing.\nMaria: So what do you think will happen? Will they make him leave?\nSimon: I don't think they can. It's all part of the programme. And anyway, as the environmental engineer, Joe is an essential member of the team. If he left then the whole environment of the building would go wrong, so I think they'll just have to work the situation out. Remember last month, when the ventilation system broke down? They almost lost all their fresh air. He only had a couple of hours to fix it and he managed to do it.\nDr Thornton: I'm sure they'll work it out. So what else have you found",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–3",
+     "instruction": "Now listen to the next part of the conversation and choose the correct answer, A, B or C. (Ex. 11)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Dr Thornton's main interest is in",
+       "options": [
+        "what kinds of people take part in projects like this.",
+        "how she can be a psychology expert on the project.",
+        "how people interact in long periods of isolation together."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Mối quan tâm chính của Dr Thornton là\n\nVị trí: Đầu đoạn.\n\nTranscript: “Well, as psychology tutor, I find that really interesting”\n\nPhân tích: Cô là giảng viên tâm lý học và nói nhiều kiểu người tham gia, nhưng điều cô đặc biệt quan tâm là con người hòa hợp ra sao khi bị cô lập cùng nhau."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Dr Thornton thinks it's good that",
+       "options": [
+        "it took some time for the first serious conflict to take place.",
+        "problems like these happen on this type of project.",
+        "the project is not like a television series or soap opera."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Dr Thornton cho là điều tốt khi\n\nPhân tích: Cô không ngạc nhiên vì có xung đột; cô đồng ý với Maria rằng đây không phải phim truyền hình, nhưng điều tích cực là dấu hiệu tức giận đầu tiên chỉ xuất hiện sau ba tháng."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Simon states that",
+       "options": [
+        "Joe could cause problems for the environment of the building if he stays.",
+        "Joe successfully dealt with a serious environmental situation.",
+        "they could solve any environmental problems if Joe left."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Simon nói rằng\n\nPhân tích: Simon nhắc đến sự cố môi trường nhưng không phải do Joe gây ra; \"giải quyết vấn đề\" là nói về xung đột. Joe đã sửa được hệ thống thông gió (ventilation system)."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U03-L8"
+  },
+  {
+   "title": "Mindset 2 · Unit 3 — Exam skills: the end of the project",
+   "description": "The final part of the conversation.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_28.mp3",
+   "transcript": "Dr Thornton: So now that the project has ended, we need to review it and I can help you plan your final assignments.\nMaria: Yes. I never thought that of the ten who started only six would finish in the end, and it was really hard for them to get through the whole programme. So, what have we learnt?\nSimon: Well, I've got lots of data on the environmental systems and life support, and that's the key focus of my project report, especially considering the events last week, when the whole system came close to failing.\nMaria: Right. When the life support system went off line for four hours, they had to really race to fix it. If that happened on a real trip, it'd be a disaster! They could all die.\nSimon: I know. It's good that they weren't actually in danger in this project, but I agree, in a real situation people could have been killed. Who would've thought that it'd be on the front page and the first item on the evening bulletin? It shows how much interest there's been in the project. Anyway, I'm hoping to use the data to design a new system if it's not too difficult.\nDr Thornton: That would be challenging but fascinating at the same time. I think you'll do well with that, Simon. Personally, I'd love to focus on the particularly interesting and useful data on the health of the participants. I think it'd be worthwhile writing about the physical effects of the project, you know, how they kept healthy in the long term, even though they became ill sometimes, but also about the psychological effects of living in an enclosed group like that. It'd be interesting to see if any of them will have any long-term health changes. Would either of you like to take that on?\nSimon: Well, I'm not sure if I could take that on as well as producing an assessment of the life support issues. I feel that those are more significant in view of the current developments in technology to support this kind of expedition. I've already looked at the latest reports in the popular science magazines, though there are some fascinating articles due in the next Journal of Space Studies. Maybe I could beat them to it!\nMaria: That'd be a great idea, Simon - to write an article - but for me, the main thing is the efficiency of the crew and how well they managed to perform their duties. I'm focusing specifically on their abilities to work under the stresses of living in an enclosed environment. I'm going to analyse how well they managed to maintain their effectiveness over time.\nDr Thornton: That's interesting. Maybe you could include a section on the psychological effects of long-term isolation. Remember the incident early in the project? It'd be very interesting to follow that up with the latest developments and results. I can give you some of the latest research on the subject from other studies for you to compare. I think it would significantly enhance your research and findings.\nMaria: OK. That sounds like a good idea. It shouldn't be too difficult to develop a wider theme to include the psychological studies. I'll work out a structure for next week.\nDr Thornton: That's great, Maria. We can meet again next Wednesday and I can help you structure it. And what about you, Simon? Do you think you have enough?\nSimon: Yes, thanks, Dr Thornton. I've got plenty to think about, especially as the study of life support was the main aim of the whole project. I could include some observations about the effects on the physical and mental health of the participants, as it's relevant.\nDr Thornton: That's fine, then. Is there anything else you want to discuss?\nSimon: One thing I'm really surprised about is that they managed to complete the project without any extra costs. Everyone was expecting it to go over the original $10 million. I personally thought that it might even go up to something like $12 million.\nDr Thornton: Well, actually, it says here that the final cost was $9.5 million, so they saved half a million in the end.\nSimon: They could give that to us to fund our projects! Is there anything about future developments?\nDr Thornton: Well, I heard that they're going to share their research results with government and private organisations. There are a few other organisations planning trips to Mars that would love to study the results. I'm not sure the government is planning anything, but they'd be interested anyway.\nMaria: What about a follow-up? Are they planning another project?\nDr Thornton: Well, depending on the results from this one, they're going to decide whether to have another one that will last a year. Obviously, they'll have to find some more participants. Would either of you be interested in taking part?\nMaria: It depends. I wouldn't say no, but I'd have to think a long time about it. I don't know if I'd want to be cut off for so long.\nDr Thornton: I think you should bear it in mind. It would be so interesting to see how staying in a situation like that for a year affects physical and mental health. I'd love to follow your progress myself. I might even volunteer! What about you, Simon?\nSimon: Oh, you wouldn't catch me inside one of those places! I'll be happy to follow what goes on and see how the whole system works over a year, but definitely from the outside, not the inside ... I wouldn't mind working for the company, though. It'd be great to study it and get paid at the same time!\nDr Thornton: Well, thank you, both of you. You've produced excellent results and I'm looking forward to seeing your final submissions.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Listen to the final part of the conversation and choose the correct answer, A, B or C. (Ex. 12)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Simon is going to base his main study on",
+       "options": [
+        "why just over half of the participants stayed until the end of the project.",
+        "how to make sure that people can survive on a real trip to Mars.",
+        "how much the project was covered in the news media."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Nghiên cứu chính của Simon dựa trên\n\nVị trí: Đầu bài.\n\nTranscript: “I've got lots of data on the environmental systems and life support, and that's the key focus of my project report” … “in a real situation people could have been killed”\n\nPhân tích: life support = hệ thống giúp con người sống sót. BẪY: A — chỉ có 6/10 người hoàn thành là chi tiết Maria nhắc; C — tin tức chỉ được nhắc thêm."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "One surprising result of the project was that",
+       "options": [
+        "it was reported as a major news item.",
+        "the participants were in danger of losing their lives.",
+        "information from the project will be used in a new design."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Một kết quả bất ngờ của dự án là\n\nTranscript: “Who would've thought that it'd be on the front page and the first item on the evening bulletin?”\n\nPhân tích: Who would've thought = thật bất ngờ. B sai: \"they weren't actually in danger\"; C chỉ là hy vọng của Simon."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "One thing that Dr Thornton is interested in finding out about the people in the Mars project is",
+       "options": [
+        "why they had health problems.",
+        "how they coped physically with living close together.",
+        "how their physical well-being might develop in the future."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Điều Dr Thornton muốn tìm hiểu\n\nTranscript: “It'd be interesting to see if any of them will have any long-term health changes”\n\nPhân tích: long-term health changes = physical well-being… in the future."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Maria intends to",
+       "options": [
+        "make a contribution to an important scientific publication.",
+        "write about how well the participants performed while living in a small space.",
+        "focus only on the psychological issues affecting the participants."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Maria dự định\n\nTranscript: “the main thing is the efficiency of the crew and how well they managed to perform their duties” … “living in an enclosed environment”\n\nPhân tích: enclosed environment = a small space. A: Maria chỉ khen ý của Simon; C: cô chỉ mở rộng thêm phần tâm lý, không phải \"only\"."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "In the end, the total spent on the Mars project was",
+       "options": [
+        "just over the planned amount.",
+        "twice the planned amount.",
+        "just under the planned amount."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Tổng chi phí của dự án Mars\n\nTranscript: “Everyone was expecting it to go over the original $10 million” … “the final cost was $9.5 million, so they saved half a million”\n\nPhân tích: $9.5 million < $10 million kế hoạch → just under."
+      },
+      {
+       "questionNumber": 6,
+       "type": "multiple-choice",
+       "questionText": "The person who would absolutely refuse to be a participant in a repeat project is",
+       "options": [
+        "Simon.",
+        "Dr Thornton.",
+        "Maria."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Người chắc chắn từ chối tham gia nếu dự án lặp lại\n\nVị trí: Cuối bài.\n\nTranscript: “Oh, you wouldn't catch me inside one of those places!”\n\nPhân tích: Maria \"wouldn't say no\"; Dr Thornton \"might even volunteer\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U03-L9"
+  }
+ ]
+}

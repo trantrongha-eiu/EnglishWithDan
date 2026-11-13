@@ -36,6 +36,7 @@ export const NAV_GROUPS = [
     { to: '/wt1-course?course=IELTS-SPEAKING', icon: '🗣️', label: 'Khoá Speaking' },
     { to: '/wt1-course?course=MINDSET-0', icon: '📗', label: 'Khoá Mindset 0' },
     { to: '/wt1-course?course=MINDSET-1', icon: '📘', label: 'Khoá Mindset 1' },
+    { to: '/wt1-course?course=MINDSET-2', icon: '📙', label: 'Khoá Mindset 2' },
     { to: '/courses', icon: '🎓', label: 'Trang giới thiệu khoá học' },
   ] },
   { id: 'practice', label: 'Luyện tập Writing', items: [

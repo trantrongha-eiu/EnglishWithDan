@@ -1,0 +1,38 @@
+energy source: nguồn năng lượng
+renewable: tái tạo được
+non-renewable: không tái tạo được
+polluting: gây ô nhiễm
+it's widely accepted that: người ta thừa nhận rộng rãi rằng
+wind turbine: tua-bin gió
+dam: đập nước
+coastal areas: vùng ven biển
+extract: khai thác, chiết xuất
+drill: khoan
+invest in: đầu tư vào
+employment opportunities: cơ hội việc làm
+consumer: người tiêu dùng
+greenhouse gas: khí nhà kính
+global warming: sự nóng lên toàn cầu
+well founded: có cơ sở
+contaminate: làm ô nhiễm
+earthquake: động đất
+agriculture: nông nghiệp
+leak into: rò rỉ vào
+residents: cư dân
+protest: biểu tình, phản đối
+consumption: sự tiêu thụ
+sea levels rise: mực nước biển dâng
+run out: cạn kiệt
+oppose: phản đối
+persuade: thuyết phục
+coal: than đá
+natural gas: khí tự nhiên
+hydroelectric power: thuỷ điện
+solar power: năng lượng mặt trời
+licence: giấy phép
+estimate: ước tính
+supply: nguồn cung
+chemicals: hoá chất
+atmosphere: bầu khí quyển
+polar regions: vùng cực
+melt: tan chảy

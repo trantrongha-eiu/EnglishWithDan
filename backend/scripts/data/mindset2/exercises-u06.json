@@ -1,0 +1,678 @@
+{
+ "exercises": [
+  {
+   "code": "M2-U06-L1-E01",
+   "lessonCode": "M2-U06-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Environment words (Ex. 1)",
+   "instruction": "Match the words in the box with the definitions 1–8.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "the natural environment of an animal or plant",
+     "right": "habitat",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "a situation in which a type of animal no longer exists",
+     "right": "extinction",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "the protection of nature",
+     "right": "conservation",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "situation where animals or plants may soon not exist because there are very few now alive",
+     "right": "endangered",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "a group of plants or animals that share similar characteristics",
+     "right": "species",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "be likely to cause harm or damage to something or someone",
+     "right": "threaten",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "illegally catch or kill animals, especially by going onto land without the permission of the person who owns it",
+     "right": "poach",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "a situation in which an animal is kept in a zoo or a person is kept as a prisoner, rather than being free",
+     "right": "captivity",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U06-L2-E01",
+   "lessonCode": "M2-U06-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Yes, No or Not Given? A short text (Ex. 2)",
+   "instruction": "Read the short text. Do the statements agree with the views of the writer? Write YES, NO or NOT GIVEN.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "It is commonly believed that taking steps to protect the environment is morally the right thing to do. What is sadly evident, however, is that we all have friends and family who do not concern themselves at all with tackling this problem.\n\nThe number one reason for this is that, for some, it is just inconvenient. Other people just do not feel that their contribution makes a difference. Fortunately, however, the majority of us do give it the attention it deserves and many people go to great lengths to ensure the planet is protected for future generations.",
+    "caption": "A short text (p. 109)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Some people do not pay attention to environmental issues because they do not believe their involvement would make an impact.",
+     "options": [
+      {
+       "id": "A",
+       "text": "Yes"
+      },
+      {
+       "id": "B",
+       "text": "No"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"Other people just do not feel that their **contribution makes a difference**\" (involvement ↔ contribution; make an impact ↔ makes a difference)."
+    },
+    {
+     "id": "q2",
+     "prompt": "Some people tackle environmental problems in the wrong way.",
+     "options": [
+      {
+       "id": "A",
+       "text": "Yes"
+      },
+      {
+       "id": "B",
+       "text": "No"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Bài không nói gì về việc giải quyết vấn đề \"sai cách\"."
+    },
+    {
+     "id": "q3",
+     "prompt": "Most people do not care about environmental issues.",
+     "options": [
+      {
+       "id": "A",
+       "text": "Yes"
+      },
+      {
+       "id": "B",
+       "text": "No"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "B",
+     "explanation": "\"the **majority of us** do give it the attention it deserves\" → trái ngược."
+    },
+    {
+     "id": "q4",
+     "prompt": "Some people do a great deal to protect the environment.",
+     "options": [
+      {
+       "id": "A",
+       "text": "Yes"
+      },
+      {
+       "id": "B",
+       "text": "No"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"many people **go to great lengths** to ensure the planet is protected\" (do a great deal ↔ go to great lengths)."
+    }
+   ]
+  },
+  {
+   "code": "M2-U06-L2-E02",
+   "lessonCode": "M2-U06-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Approaching Yes / No / Not Given tasks (Ex. 3)",
+   "instruction": "Put the steps in order.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Step 1",
+     "right": "Read the instructions carefully.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Step 2",
+     "right": "Skim read the text to gain a general understanding of the topic.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Step 3",
+     "right": "Read the question statements carefully and underline key words.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Step 4",
+     "right": "Scan the text for these key words or words of a similar meaning.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Step 5",
+     "right": "Underline these words in the text.",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Step 6",
+     "right": "Read the sentence before and after the key words or synonyms in the text.",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "Step 7",
+     "right": "Choose Yes, No or Not Given.",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U06-L2-E03",
+   "lessonCode": "M2-U06-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Distractors in the summary (Ex. 8)",
+   "instruction": "Look at the words in the box in exercise 7 (carefully, quickly, entertaining, animal, conservation, reproduce, younger). Which words are distractors, and where would they have been grammatically correct?",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "\"quickly\" is a distractor. In which gap would it have been grammatically correct?",
+     "options": [
+      {
+       "id": "A",
+       "text": "gap 3 (This is handled ___)"
+      },
+      {
+       "id": "B",
+       "text": "gap 1 (focused mainly on ___ the public)"
+      },
+      {
+       "id": "C",
+       "text": "gap 4 (to inform the ___ generation)"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Gap 3 cần trạng từ — quickly đúng ngữ pháp nhưng sai nghĩa (bài nói \"manage the programmes carefully\")."
+    },
+    {
+     "id": "q2",
+     "prompt": "\"animal\" is a distractor. In which gap would it have been grammatically correct?",
+     "options": [
+      {
+       "id": "A",
+       "text": "gap 2 (an active part in ___ projects)"
+      },
+      {
+       "id": "B",
+       "text": "gap 3 (This is handled ___)"
+      },
+      {
+       "id": "C",
+       "text": "gap 1 (focused mainly on ___ the public)"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"animal projects\" đúng ngữ pháp nhưng bài nói về conservation projects."
+    }
+   ]
+  },
+  {
+   "code": "M2-U06-L3-E01",
+   "lessonCode": "M2-U06-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Agree or disagree (Ex. 6)",
+   "instruction": "Answer using so, too, either and neither. More than one answer is possible.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "'I like exploring nature.' (agree) → '____'",
+     "blanks": [
+      {
+       "accept": [
+        "Me too.",
+        "So do I.",
+        "I do, too.",
+        "Me too",
+        "So do I",
+        "I do too",
+        "I do, too",
+        "I do too."
+       ]
+      }
+     ],
+     "explanation": "Đồng ý với câu khẳng định, trợ động từ do."
+    },
+    {
+     "id": "g2",
+     "prompt": "'I would love to go on a safari holiday.' (disagree) → '____'",
+     "blanks": [
+      {
+       "accept": [
+        "I wouldn't.",
+        "I wouldn't",
+        "I would not.",
+        "I would not"
+       ]
+      }
+     ],
+     "explanation": "Không đồng ý với \"I would…\" → I wouldn't."
+    },
+    {
+     "id": "g3",
+     "prompt": "'I'm really interested in animal conservation.' (agree) → '____'",
+     "blanks": [
+      {
+       "accept": [
+        "Me too.",
+        "So am I.",
+        "I am, too.",
+        "Me too",
+        "So am I",
+        "I am too",
+        "I am, too",
+        "I am too."
+       ]
+      }
+     ],
+     "explanation": "Trợ động từ am."
+    },
+    {
+     "id": "g4",
+     "prompt": "'I don't know anything about endangered species.' (agree) → '____'",
+     "blanks": [
+      {
+       "accept": [
+        "Neither do I.",
+        "Me neither.",
+        "I don't either.",
+        "Neither do I",
+        "Me neither",
+        "I don't either"
+       ]
+      }
+     ],
+     "explanation": "Đồng ý với câu phủ định → neither / either."
+    }
+   ]
+  },
+  {
+   "code": "M2-U06-L4-E01",
+   "lessonCode": "M2-U06-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Words from the lecture (Ex. 2)",
+   "instruction": "Match the words with the correct picture, A–D.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m2u06-pictures.jpg",
+    "caption": "Ex. 2"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Picture A",
+     "right": "well",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Picture B",
+     "right": "fissure",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Picture C",
+     "right": "drill",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Picture D",
+     "right": "shale",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U06-L4-E02",
+   "lessonCode": "M2-U06-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Choose the correct quantifier (Ex. 5)",
+   "instruction": "Choose the correct quantifier in these sentences.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "___ of the renewable energy sources, such as wind and wave power, have been developed and used around the world.",
+     "options": [
+      {
+       "id": "A",
+       "text": "Little"
+      },
+      {
+       "id": "B",
+       "text": "Few"
+      }
+     ],
+     "answer": "B",
+     "explanation": "sources đếm được → Few."
+    },
+    {
+     "id": "q2",
+     "prompt": "Although coal is still widely used, ___ more gas is used instead these days.",
+     "options": [
+      {
+       "id": "A",
+       "text": "much"
+      },
+      {
+       "id": "B",
+       "text": "many"
+      }
+     ],
+     "answer": "A",
+     "explanation": "gas không đếm được → much."
+    },
+    {
+     "id": "q3",
+     "prompt": "___ non-renewable resources have negative effects on the environment.",
+     "options": [
+      {
+       "id": "A",
+       "text": "All"
+      },
+      {
+       "id": "B",
+       "text": "Every"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Every + danh từ số ít; resources số nhiều → All."
+    },
+    {
+     "id": "q4",
+     "prompt": "___ energy production in the UK comes from wind turbines.",
+     "options": [
+      {
+       "id": "A",
+       "text": "Several"
+      },
+      {
+       "id": "B",
+       "text": "Some"
+      }
+     ],
+     "answer": "B",
+     "explanation": "production không đếm được → Some."
+    },
+    {
+     "id": "q5",
+     "prompt": "There are not ___ suitable sites for solar power in the UK.",
+     "options": [
+      {
+       "id": "A",
+       "text": "a lot of"
+      },
+      {
+       "id": "B",
+       "text": "much"
+      }
+     ],
+     "answer": "A",
+     "explanation": "sites đếm được, số nhiều → a lot of."
+    }
+   ]
+  },
+  {
+   "code": "M2-U06-L4-E03",
+   "lessonCode": "M2-U06-L4",
+   "order": 3,
+   "autoGrade": true,
+   "points": 12,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Countable or uncountable? (Ex. 7)",
+   "instruction": "Write the quantifiers in the correct place in the table.",
+   "categories": [
+    {
+     "id": "c",
+     "label": "Used only with countable nouns"
+    },
+    {
+     "id": "u",
+     "label": "Used only with uncountable nouns"
+    },
+    {
+     "id": "b",
+     "label": "Used with both"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "few",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "fewer",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "several",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "many",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "every",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "a little",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "much",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "less",
+     "category": "u",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "all",
+     "category": "b",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "a lot of",
+     "category": "b",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "more",
+     "category": "b",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "some",
+     "category": "b",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U06-L4-E04",
+   "lessonCode": "M2-U06-L4",
+   "order": 4,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Signposting (Ex. 16)",
+   "instruction": "Listen again to the lecturer talking about people's concerns. Match each signposting expression with its function: sequencing (SE), contrast (C), addition (AD), summarising (SU), topic change (T) or attitude (AT).",
+   "items": [
+    {
+     "id": "m1",
+     "left": "The first and possibly most significant environmental concern is …",
+     "right": "sequencing (SE)",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "What's more, it is likely that …",
+     "right": "addition (AD)",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "While there's clearly an increase in economic activity …",
+     "right": "contrast (C)",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Now I'd like to turn to the economic concerns.",
+     "right": "topic change (T)",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Clearly, a lot more research needs to be done …",
+     "right": "attitude (AT)",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "So to summarise, there are significant environmental …",
+     "right": "summarising (SU)",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U06-L4-E05",
+   "lessonCode": "M2-U06-L4",
+   "order": 5,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Same meaning, different words (Ex. 9)",
+   "instruction": "Match the words in question 1 and the correct answer with the words and phrases in the listening which mean the same.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "those who are in favour of fracking",
+     "right": "supporters of fracking",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "the main benefit",
+     "right": "the economic benefit… is usually seen as more significant",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "lower energy bills",
+     "right": "energy prices will come down",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

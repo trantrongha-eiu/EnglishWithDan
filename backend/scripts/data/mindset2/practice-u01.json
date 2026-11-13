@@ -1,0 +1,772 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 2 · Unit 1 — Antilia",
+   "content": "<h3>Antilia</h3>\n\n<p><strong>A</strong> Mukesh Ambani is one of the richest men in the world, and the first man to own a private residence costing more than one billion dollars to build. The home is on Altamount Road in Mumbai, one of the most expensive addresses in the world. Named after the mythical island Antilia, the property has 27 floors.</p>\n\n<p><strong>B</strong> The interior of the home is very glamorous and each floor is made from different materials to give an individual look. Marble floors, rare wood and fine rugs are just some of the design features used to create this extravagant home. The lotus flower and the sun are common symbols used throughout. Many of the rooms have floor-to-ceiling glass windows, offering spectacular views of Mumbai and the Arabian Sea.</p>\n\n<p><strong>C</strong> The skyscraper has a multi-storey garage with space for 168 cars. Alternatively, there are also three helipads on the roof of the building. The lobby has numerous reception areas and nine lifts. There are also several floors for dining, vast libraries and a health spa, including a gym, several swimming pools and yoga facilities. There is even an 'ice-room' which creates man-made snow, a Hindu prayer room and several floors of gardens.</p>\n\n<p><strong>D</strong> The Ambani residence is clearly designed to entertain guests. It has a theatre which seats 50, several guest bedrooms and a grand ballroom filled with chandeliers.</p>\n\n<p><strong>E</strong> The living quarters are on the top floors, because the family wanted as much sunlight as possible. The 400,000 ft² residence requires 600 staff, but all three Am bani children are required to clean their own rooms when they are at home.</p>\n\n<p><strong>F</strong> Several experts have criticised the architecture of this very expensive home, comparing it to an 'unstable pile of books'. Mrs Ambani, however, describes her home as 'an elevated house on top of a garden' and 'a modern home with an Indian heart'.</p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Scan the text for the information to answer these questions. (Ex. 7)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Who owns the property?",
+       "correctAnswer": "Mukesh Ambani / Ambani",
+       "explanation": "Đoạn A: \"**Mukesh Ambani** is one of the richest men in the world, and the first man to own a private residence…\" — scan tên riêng."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "How many floors does it have?",
+       "correctAnswer": "27 / twenty-seven",
+       "explanation": "Đoạn A: \"the property has **27** floors\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "What are the floors made out of?",
+       "correctAnswer": "marble / marble floors",
+       "explanation": "Đoạn B: \"**Marble** floors, rare wood and fine rugs…\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "What are the common symbols used throughout the house?",
+       "correctAnswer": "the lotus flower and the sun / lotus flower and sun / the lotus flower and sun / lotus flower and the sun",
+       "explanation": "Đoạn B: \"**The lotus flower and the sun** are common symbols used throughout\"."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "How many cars does the garage have space for?",
+       "correctAnswer": "168",
+       "explanation": "Đoạn C: \"a multi-storey garage with space for **168** cars\"."
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "How many people are required to work in the home?",
+       "correctAnswer": "600 / six hundred / 600 staff",
+       "explanation": "Đoạn E: \"The 400,000 ft² residence requires **600** staff\". BẪY: 400,000 là diện tích."
+      }
+     ]
+    },
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 7–9",
+     "instruction": "Answer the questions. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer. (Ex. 10)",
+     "questions": [
+      {
+       "questionNumber": 7,
+       "type": "fill-blank",
+       "questionText": "How many lifts does the home have?",
+       "correctAnswer": "9 / nine",
+       "explanation": "Đoạn C: \"The lobby has numerous reception areas and **nine** lifts.\""
+      },
+      {
+       "questionNumber": 8,
+       "type": "fill-blank",
+       "questionText": "What can you find in the ice-room?",
+       "correctAnswer": "man-made snow",
+       "explanation": "Đoạn C: \"an 'ice-room' which creates **man-made snow**\"."
+      },
+      {
+       "questionNumber": 9,
+       "type": "fill-blank",
+       "questionText": "What do the Ambani children have to do when at home?",
+       "correctAnswer": "clean their rooms / clean their own rooms / clean their room",
+       "explanation": "Đoạn E: \"all three Ambani children are required to **clean their own rooms**\" (are required to = have to). \"clean their own rooms\" = 4 từ; \"clean their rooms\" vẫn đúng ý và đúng giới hạn."
+      }
+     ]
+    },
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 10–12",
+     "instruction": "Complete the sentences. Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer. (Ex. 11)",
+     "questions": [
+      {
+       "questionNumber": 10,
+       "type": "fill-blank",
+       "questionText": "The name Antilia comes from a ______.",
+       "correctAnswer": "mythical island",
+       "explanation": "Đoạn A: \"Named after **the mythical island** Antilia\" (named after = the name comes from)."
+      },
+      {
+       "questionNumber": 11,
+       "type": "fill-blank",
+       "questionText": "There are many facilities to accommodate a large number of ______.",
+       "correctAnswer": "guests",
+       "explanation": "Đoạn D: \"clearly designed to entertain **guests**… a theatre which seats 50, several guest bedrooms\"."
+      },
+      {
+       "questionNumber": 12,
+       "type": "fill-blank",
+       "questionText": "Opinions on the ______ of the house vary.",
+       "correctAnswer": "architecture",
+       "explanation": "Đoạn F: \"Several experts have criticised **the architecture**… Mrs Ambani, however, describes her home as…\" → ý kiến khác nhau (vary)."
+      }
+     ]
+    },
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 13–18",
+     "instruction": "These statements paraphrase each of the paragraphs in the text. Match each statement with the correct paragraph, A–F. (Ex. 8)",
+     "matchingOptions": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+     ],
+     "matchingOptionsTitle": "",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 13,
+       "type": "matching-info",
+       "questionText": "The house has many desirable facilities and outside spaces. Guests can either drive or fly to the home.",
+       "correctAnswer": "C",
+       "explanation": "Đoạn C: garage for 168 cars (drive), three helipads (fly), spa, libraries, gardens."
+      },
+      {
+       "questionNumber": 14,
+       "type": "matching-info",
+       "questionText": "The family live on the top floor because they want exposure to sunlight.",
+       "correctAnswer": "E",
+       "explanation": "Đoạn E: \"The living quarters are on the top floors, because the family wanted as much sunlight as possible.\""
+      },
+      {
+       "questionNumber": 15,
+       "type": "matching-info",
+       "questionText": "Mrs Ambani and the architecture experts have different opinions about the house.",
+       "correctAnswer": "F",
+       "explanation": "Đoạn F: experts \"criticised\"; Mrs Ambani \"however, describes her home as…\"."
+      },
+      {
+       "questionNumber": 16,
+       "type": "matching-info",
+       "questionText": "Antilia is situated in Mumbai and owned by Mukesh Ambani.",
+       "correctAnswer": "A",
+       "explanation": "Đoạn A."
+      },
+      {
+       "questionNumber": 17,
+       "type": "matching-info",
+       "questionText": "The appearance inside the house is very extravagant and expensive materials have been used. The house also has magnificent views of the city.",
+       "correctAnswer": "B",
+       "explanation": "Đoạn B: interior = inside; marble, rare wood; \"spectacular views of Mumbai\"."
+      },
+      {
+       "questionNumber": 18,
+       "type": "matching-info",
+       "questionText": "The home is fully equipped to make visitors feel welcome.",
+       "correctAnswer": "D",
+       "explanation": "Đoạn D: \"clearly designed to entertain guests\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U01-R1"
+  },
+  {
+   "title": "Mindset 2 · Unit 1 — Hearst Castle",
+   "content": "<h3>Hearst Castle</h3>\n\n<p><strong>A</strong> William Randolph Hearst was a successful American newspaper publisher who received over 1,000 km² of land when his mother died in 1919. Initially, he had planned to build just a small bungalow, so he hired Julia Morgan, the first female architect in California. Together, however, they designed a magnificent castle which cost 10 million dollars and took 28 years to build. The property, named La Cuesta Encantada (The Enchanted Mountain), has 56 bedrooms, 61 bathrooms, 19 sitting rooms and about 52,000 m² of garden.</p>\n\n<p><strong>B</strong> Hearst loved travelling to Europe when he was a child and we can see this in the overall design of the house. He even included cathedral ceilings and Roman columns in his home. Hearst was also a keen art collector and, during his lifetime, spent $3.5 million on his collection, which is displayed in the rooms at Hearst Castle. Today, his collection is worth much more, with one piece alone valued at $10 million.</p>\n\n<p><strong>C</strong> One of the highlights of the estate is the Neptune Pool. It took 15 years to build and includes the front of an ancient Roman temple. It is on top of a hill and has wonderful views of the mountains, ocean and main house. The pool was rebuilt three times until he was satisfied.</p>\n\n<p><strong>D</strong> Although the inside of the house is very European, the outside is very Californian, with palm trees and water. Hearst loved trees and 70,000 were planted on the property during his lifetime. The castle was also home to the world's largest private zoo, holding animals from every continent. Although the zoo is now closed, zebras can still be seen on the hillside.</p>\n\n<p><strong>E</strong> As well as the Casa Grande (the main house), there are also three guest houses on the property: Casa Del Monte, Casa Del Sol and Casa Del Mar. Hearst entertained a great number of Hollywood stars and political leaders at the castle and many used his private airfield. Guests had to attend formal dinners every evening, but were free to do what they liked during the day. They were invited to stay as long as they wanted, but the longer they stayed, the further away they sat from Hearst at the dinner table.</p>\n\n<p><strong>F</strong> When Hearst died in 1951, his family learnt how expensive maintenance would be, and the mansion was donated to the State of California. Since then, it has been open for public tours and the site attracts millions of tourists every year. However, the Hearst family is still allowed to use it when they wish. The castle was never completed and remains unfinished.</p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Choose NO MORE THAN THREE WORDS AND/OR A NUMBER from the passage for each answer.",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "What job did William Hearst do?",
+       "correctAnswer": "newspaper publisher / publisher",
+       "explanation": "Đoạn A: \"a successful American **newspaper publisher**\"."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Who helped Hearst design the Castle?",
+       "correctAnswer": "Julia Morgan",
+       "explanation": "Đoạn A: \"he hired **Julia Morgan**, the first female architect in California. Together… they designed a magnificent castle\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "How much did Hearst spend on art during his lifetime?",
+       "correctAnswer": "$3.5 million / 3.5 million dollars / $3,500,000",
+       "explanation": "Đoạn B: \"during his lifetime, spent **$3.5 million** on his collection\". BẪY: $10 million là giá một tác phẩm hiện nay; 10 million dollars là chi phí xây lâu đài."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "How many times was the Neptune pool rebuilt before Hearst was happy with it?",
+       "correctAnswer": "3 / three / three times / 3 times",
+       "explanation": "Đoạn C: \"The pool was rebuilt **three** times until he was satisfied\" (satisfied = happy)."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "What were visitors to the Castle required to do every evening?",
+       "correctAnswer": "attend formal dinners / attend formal dinner / attend dinners",
+       "explanation": "Đoạn E: \"Guests had to **attend formal dinners** every evening\" (had to = were required to)."
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Who owns the mansion now?",
+       "correctAnswer": "the State of California / State of California",
+       "explanation": "Đoạn F: \"the mansion was donated to **the State of California**\". BẪY: gia đình Hearst chỉ \"still allowed to use it\"."
+      }
+     ]
+    },
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 7–12",
+     "instruction": "Complete the sentences. Write NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer.",
+     "questions": [
+      {
+       "questionNumber": 7,
+       "type": "fill-blank",
+       "questionText": "As a child, Hearst enjoyed his holidays to ______.",
+       "correctAnswer": "Europe",
+       "explanation": "Đoạn B: \"Hearst loved travelling to **Europe** when he was a child\"."
+      },
+      {
+       "questionNumber": 8,
+       "type": "fill-blank",
+       "questionText": "Hearst inherited the land from his ______.",
+       "correctAnswer": "mother",
+       "explanation": "Đoạn A: \"received over 1,000 km² of land when his **mother** died\" (inherit = nhận thừa kế)."
+      },
+      {
+       "questionNumber": 9,
+       "type": "fill-blank",
+       "questionText": "Builders spent ______ creating the magnificent Neptune Pool.",
+       "correctAnswer": "15 years / fifteen years",
+       "explanation": "Đoạn C: \"It took **15 years** to build\". BẪY: 28 years là thời gian xây cả lâu đài."
+      },
+      {
+       "questionNumber": 10,
+       "type": "fill-blank",
+       "questionText": "Hearst took animals from ______ for his private zoo.",
+       "correctAnswer": "every continent",
+       "explanation": "Đoạn D: \"the world's largest private zoo, holding animals from **every continent**\"."
+      },
+      {
+       "questionNumber": 11,
+       "type": "fill-blank",
+       "questionText": "Although the zoo is now closed, ______ still walk about the hillside.",
+       "correctAnswer": "zebras",
+       "explanation": "Đoạn D: \"Although the zoo is now closed, **zebras** can still be seen on the hillside.\""
+      },
+      {
+       "questionNumber": 12,
+       "type": "fill-blank",
+       "questionText": "The family donated the property because of ______.",
+       "correctAnswer": "expensive maintenance / the expensive maintenance",
+       "explanation": "Đoạn F: \"his family learnt how **expensive maintenance** would be, and the mansion was donated\". Viết tối đa 2 từ."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U01-R2"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 2 · Unit 1 — Three properties for sale",
+   "description": "An estate agent describes three properties.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L2_02.mp3",
+   "transcript": "1 This is a very nice ground floor two-bedroom flat. It was recently modernised, with a new bathroom and kitchen. The main bedroom is a double bedroom with an en-suite bathroom and toilet, in addition to the main bathroom and toilet. There is a second, smaller bedroom. The living room is spacious and there is a large kitchen, which is big enough to be used as a dining room. The garden is accessible through the living room and the kitchen.\n2 This first floor flat is in a very nice area of the town and is connected to local shops and services, as well as having good transport connections. There are two double bedrooms, one bathroom, a newly fitted kitchen, a living room and a separate dining room, which could be turned into a third bedroom. There are stairs to the garden at the back. The flat needs some modernisation, but it is very well kept and would be an excellent family home.\n3 This is a lovely flat, suitable for a family or for people sharing. The flat is on two levels - there's a first floor and a second floor, above a separate ground floor flat. Upstairs, there's a large double bedroom and a smaller double, as well as a third bedroom, which is only a single, but is still a good size. There's a large bathroom upstairs and also a small shower room downstairs. There's a spacious living room and a large kitchen I dining room, with a rear door to steps leading to the garden.",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Questions 1–3",
+     "instruction": "Listen to an estate agent describing the three properties in the pictures. Which picture, A, B or C, does each description match? (Ex. 1–2)",
+     "imageUrl": "media:m2u01-properties.jpg",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Description 1",
+       "options": [
+        "Picture A",
+        "Picture B",
+        "Picture C"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Mô tả 1\n\nVị trí: Căn đầu tiên.\n\nTranscript: “a very nice ground floor two-bedroom flat” … “The garden is accessible through the living room and the kitchen”\n\nPhân tích: ground floor + two bedrooms → tranh C (chỉ tầng trệt có phòng ở)."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Description 2",
+       "options": [
+        "Picture A",
+        "Picture B",
+        "Picture C"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Mô tả 2\n\nVị trí: Căn thứ hai.\n\nTranscript: “This first floor flat” … “two double bedrooms, one bathroom” … “There are stairs to the garden at the back”\n\nPhân tích: first floor + cầu thang xuống vườn → tranh B."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Description 3",
+       "options": [
+        "Picture A",
+        "Picture B",
+        "Picture C"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Mô tả 3\n\nVị trí: Căn thứ ba.\n\nTranscript: “The flat is on two levels - there's a first floor and a second floor, above a separate ground floor flat” … “a large double bedroom and a smaller double, as well as a third bedroom”\n\nPhân tích: two levels (tầng 1 và 2) + ba phòng ngủ → tranh A."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U01-L1"
+  },
+  {
+   "title": "Mindset 2 · Unit 1 — Phoning the estate agent",
+   "description": "Caroline phones an estate agent about a house for sale.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L2_03.mp3",
+   "transcript": "Estate agent: Morgan's Estate Agents. How can I help you?\nCaroline: Hello. I'm calling about a property that you have for sale -in Churchill Road.\nEstate agent: Sorry. Did you say Church Mill Road?\nCaroline: No. Churchill Road - C-H-U-R-C-H-I-L-L.\nEstate agent: Oh, right. We have two for sale in Churchill Road - a three-bedroom property and a two-bedroom one. Can you tell me which one you're calling about?\nCaroline: It's the three-bedroom one.\nEstate agent: Oh, yes. Would you like to arrange a viewing?\nCaroline: Yes, but first of all, I'd like to check some details.\nEstate agent: Certainly. What would you like to know?\nCaroline: First, how many lounges has it got?\nEstate agent: There are two. There's a small one at the front and a larger one at the back, leading to a sun-room.\nCaroline: A sun-room? That's nice to know.\nEstate agent: Yes. It's perfect to sit in on those chilly or rainy days as it's got its own heating. And you can get to the garden through the sun-room door.\nCaroline: Lovely. I've always liked the idea of outdoor space with a lawn. I do a bit of gardening myself. What about the kitchen?\nEstate agent: It's fully-fitted - so it includes a cooker and a dishwasher and all the other things you'd expect in a kitchen. You can also get to the outside space through the kitchen door.\nCaroline: That sounds great, not having to buy a cooker and dishwasher.\nEstate agent: Yes, it would be perfect for you. I should add that there's a garage and a short driveway.\nCaroline: Oh, that's very useful. My husband usually drives to work, but I mostly use public transport.\nEstate agent: Well, regarding transport, it's only five minutes from Edgely Station and there are regular buses to the town centre, so it's very well connected.\nCaroline: That's excellent!\nEstate agent: So, would you like to arrange a viewing?\nCaroline: I'm free tomorrow morning. Is 11 o'clock OK?\nEstate agent: Oh, no, I'm sorry. I'm busy then.\nCaroline: How about one o'clock then, or one forty-five?\nEstate agent: One o'clock would be best for me.\nCaroline: OK, great. Let's meet then. Oh, my name is Caroline Prendergast. My number is 07945 872310.\nEstate agent: I'm Peter Eliot.\nCaroline: Is that with two 'l's?\nEstate agent: No, one: E-L-I-O-T. My number is 07863 905073. That's 07863 905073. I look forward to seeing you then.\nCaroline: OK. Goodbye.\nEstate agent: Goodbye.",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–9",
+     "instruction": "Complete the notes. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer. (Ex. 3)",
+     "noteConfig": {
+      "title": "Property enquiry",
+      "lines": [
+       "Address of property: __Q1__",
+       "Number of bedrooms: __Q2__",
+       "Number of lounges: __Q3__",
+       "Access to the __Q4__ through sun-room door",
+       "Kitchen: fully-fitted, includes __Q5__ and __Q6__",
+       "Appointment time: __Q7__",
+       "Estate agent's name: Peter __Q8__",
+       "Estate agent's number: __Q9__"
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "Churchill Road",
+       "explanation": "Dịch: Địa chỉ\n\nVị trí: Đầu bài.\n\nTranscript: “in Churchill Road” … “Did you say Church Mill Road?” … “No. Churchill Road - C-H-U-R-C-H-I-L-L”\n\nPhân tích: BẪY: \"Church Mill Road\" là nghe nhầm và bị sửa."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "3 / three",
+       "explanation": "Dịch: Số phòng ngủ\n\nTranscript: “We have two for sale in Churchill Road - a three-bedroom property and a two-bedroom one” … “It's the three-bedroom one”\n\nPhân tích: Distractor: two-bedroom (căn kia)."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "2 / two",
+       "explanation": "Dịch: Số phòng khách\n\nTranscript: “how many lounges has it got?” … “There are two. There's a small one at the front and a larger one at the back”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "garden",
+       "explanation": "Dịch: Lối ra\n\nTranscript: “you can get to the garden through the sun-room door”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "cooker / a cooker / dishwasher / a dishwasher",
+       "explanation": "Dịch: Đồ bếp có sẵn\n\nTranscript: “it includes a cooker and a dishwasher”\n\nPhân tích: Hai chỗ 5 và 6 điền cooker và dishwasher, thứ tự nào cũng được."
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "dishwasher / a dishwasher / cooker / a cooker",
+       "explanation": "Dịch: Đồ bếp có sẵn\n\nTranscript: “it includes a cooker and a dishwasher”\n\nPhân tích: Hai chỗ 5 và 6 điền cooker và dishwasher, thứ tự nào cũng được."
+      },
+      {
+       "questionNumber": 7,
+       "type": "fill-blank",
+       "questionText": "Question 7",
+       "correctAnswer": "1 o'clock / one o'clock / 1.00 / 1:00 / 1 pm / 1.00 pm",
+       "explanation": "Dịch: Giờ hẹn\n\nTranscript: “Is 11 o'clock OK?” … “I'm busy then” … “How about one o'clock then, or one forty-five?” … “One o'clock would be best for me”\n\nPhân tích: Distractors: 11 o'clock, 1.45."
+      },
+      {
+       "questionNumber": 8,
+       "type": "fill-blank",
+       "questionText": "Question 8",
+       "correctAnswer": "Eliot",
+       "explanation": "Dịch: Tên người môi giới\n\nTranscript: “I'm Peter Eliot” … “Is that with two 'l's?” … “No, one: E-L-I-O-T”\n\nPhân tích: Một chữ l."
+      },
+      {
+       "questionNumber": 9,
+       "type": "fill-blank",
+       "questionText": "Question 9",
+       "correctAnswer": "07863 905073 / 07863905073",
+       "explanation": "Dịch: Số điện thoại\n\nTranscript: “My number is 07863 905073”\n\nPhân tích: BẪY: 07945 872310 là số của Caroline."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U01-L2"
+  },
+  {
+   "title": "Mindset 2 · Unit 1 — Numbers in five conversations",
+   "description": "Five short conversations with prices, distances, phone numbers and sizes.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L2_04.mp3",
+   "transcript": "Conversation 1\nA: How much is that altogether?\nB: That's £53.72, please.\nA: Sorry, did you say £43.72?\nB: No, £53.72.\nConversation 2\nA: So how far is it to Paris?\nB: I've just checked. It's 472 km.\nA: 472 km? That's a long way. Are you sure you want to drive?\nConversation 3\nA: Someone left a message for you, Mr Henry. He wants you to call him on 01897 625730.\nB: Sorry, I didn't get all that. Did you say 01857 629730?\nA: No, it's 01897 625730.\nConversation 4\nA: So how big is the football field?\nB: It's 110 m by 55 m.\nA: 110 m long and 55 m wide? That's quite big.\nConversation 5\nA: Can I book a place on the course on Saturday, please?\nB: Certainly madam. What's your membership number?\nA: It's 81074.\nB: Sorry, did you say 01074?\nA: No, 81074.\nB: Oh, OK, thank you.",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Listen to these short conversations and write down the numbers in each. (Ex. 4)",
+     "noteConfig": {
+      "title": "Numbers",
+      "lines": [
+       "Conversation 1: £__Q1__",
+       "Conversation 2: __Q2__ km",
+       "Conversation 3: __Q3__",
+       "Conversation 4: __Q4__ m x __Q5__ m",
+       "Conversation 5: __Q6__"
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "53.72 / £53.72",
+       "explanation": "Dịch: Giá tiền\n\nVị trí: Hội thoại 1.\n\nTranscript: “That's £53.72, please” … “Sorry, did you say £43.72?” … “No, £53.72”\n\nPhân tích: Distractor: £43.72 (nghe nhầm)."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "472",
+       "explanation": "Dịch: Khoảng cách\n\nVị trí: Hội thoại 2.\n\nTranscript: “It's 472 km”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "01897 625730 / 01897625730",
+       "explanation": "Dịch: Số điện thoại\n\nVị trí: Hội thoại 3.\n\nTranscript: “call him on 01897 625730” … “Did you say 01857 629730?” … “No, it's 01897 625730”\n\nPhân tích: Distractor: 01857 629730."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "110",
+       "explanation": "Dịch: Chiều dài sân bóng\n\nVị trí: Hội thoại 4.\n\nTranscript: “It's 110 m by 55 m”\n\nPhân tích: 110 m long and 55 m wide."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "55",
+       "explanation": "Dịch: Chiều rộng sân bóng\n\nVị trí: Hội thoại 4.\n\nTranscript: “110 m long and 55 m wide”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "81074 / B1074",
+       "explanation": "Dịch: Số hội viên\n\nVị trí: Hội thoại 5.\n\nTranscript: “It's 81074” … “Sorry, did you say 01074?” … “No, 81074”\n\nPhân tích: Audioscript ghi 81074; Answer Key của sách in \"B1074\" — cả hai đều được chấm đúng. Distractor: 01074."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U01-L3"
+  },
+  {
+   "title": "Mindset 2 · Unit 1 — Viewing the house",
+   "description": "The estate agent shows Caroline round the house.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L2_05.mp3",
+   "transcript": "Estate agent: Hello. I'm Peter Eliot. You must be Ms Prendergast.\nCaroline: Yes, that's right.\nEstate agent: So, this is the property.\nCaroline: Oh, I just wanted to check one thing - the price. If I remember rightly, it's £340,000.\nEstate agent: Actually, it's £350,000 at the moment, but we can discuss that later if you like it. As you can see, the front garden is very well kept.\nCaroline: Yes. The owners have taken very good care of it.\nEstate agent: Shall we go in? Follow me. Here's the hall and the front lounge to the left.\nCaroline: Hmm, yes. It's very nice. What are the dimensions?\nEstate agent: It's 4.3 m by 3.28 m. That's very spacious for a smaller lounge.\nCaroline: Hmm, yes. 4.3 m long and 3.28 m wide. Can we go through to the second lounge?\nEstate agent: Certainly. If you'd like to follow me.\nCaroline: Oh, it's lovely. What's the size of this room?\nEstate agent: Er, let's see ... the second lounge ... er ... it's 6.5 m x 4.25 m. And you can see the sun-room at the back and the garden.\nCaroline: Can we go and have a look?\nEstate agent: Of course. As you can see, there's enough room here for some plants and two sofas. You could even put a dining suite here.\nCaroline: That would be perfect for cooler days. I love it!\nEstate agent: And as you can see, there's a patio and a large lawn with flowers round the edges.\nCaroline: What are the dimensions of the garden?\nEstate agent: It's 30 m long and 10 m wide.\nCaroline: 30 m by 10 m? That's a good size for a family. It would be lovely in summer.\nEstate agent: Of course. Walk this way. Would you like to look upstairs?\nCaroline: Yes, OK.\nEstate agent: Here's the main bedroom. It's 4.91 m x 3.95 m - perfect for a large double bed. Oh, sorry, that's 4.91 m long and 3.95 m wide. And there's an en-suite bathroom here, though it only has a shower unit and not a big bath like the main bathroom.\nCaroline: That would come in very useful when we all get up to get ready for school or work.\nEstate agent: Yes, that's a real positive. Here's the second bedroom. It's 4.2 m x 3.55 m - ideal for children to share.\nCaroline: 4.2 m long and 3.55 m wide? OK, that's good. Yes, it's got plenty of room to play in.\nEstate agent: And here's the last bedroom, which is 3.25 m x 2.5 m. It would be ideal for a child.\nCaroline: Yes, it would be fine for my older daughter.\nEstate agent: The bathroom is just over here. It's got a large bath as well as a shower fitting.\nCaroline: Great! It's just what we need.\nEstate agent: So, would you like to put in an offer?\nCaroline: Yes, please. This is the best property I've seen so far. I don't think I'll find a more suitable one.\nEstate agent: Wonderful! If you'd like to come back to the office, I can take your details and arrange everything.",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–9",
+     "instruction": "Listen to the estate agent and client and complete the information sheet. (Ex. 5)",
+     "noteConfig": {
+      "title": "Property for sale",
+      "lines": [
+       "Price: £__Q1__",
+       "Kitchen: 3.10 x 2.25 m",
+       "Lounge 1: __Q2__ x __Q3__ m",
+       "Lounge 2: 6.50 x 4.25 m",
+       "Front garden: 10 x 8 m",
+       "Rear garden: __Q4__ x __Q5__ m — patio, lawn and flower beds",
+       "Bedroom 1: __Q6__ x __Q7__ m",
+       "Bedroom 2: __Q8__ x __Q9__ m",
+       "Bedroom 3: 3.25 x 2.5 m"
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "350,000 / £350,000 / 350000",
+       "explanation": "Dịch: Giá\n\nVị trí: Đầu bài.\n\nTranscript: “If I remember rightly, it's £340,000” … “Actually, it's £350,000 at the moment”\n\nPhân tích: Distractor: £340,000 (Caroline nhớ nhầm)."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "4.3",
+       "explanation": "Dịch: Phòng khách 1 — chiều dài\n\nTranscript: “It's 4.3 m by 3.28 m”\n\nPhân tích: 4.3 m long and 3.28 m wide."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "3.28",
+       "explanation": "Dịch: Phòng khách 1 — chiều rộng\n\nTranscript: “4.3 m long and 3.28 m wide”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "30",
+       "explanation": "Dịch: Vườn sau — chiều dài\n\nTranscript: “It's 30 m long and 10 m wide”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "10",
+       "explanation": "Dịch: Vườn sau — chiều rộng\n\nTranscript: “30 m by 10 m?”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "4.91",
+       "explanation": "Dịch: Phòng ngủ 1 — chiều dài\n\nTranscript: “It's 4.91 m x 3.95 m”\n\nPhân tích: that's 4.91 m long and 3.95 m wide."
+      },
+      {
+       "questionNumber": 7,
+       "type": "fill-blank",
+       "questionText": "Question 7",
+       "correctAnswer": "3.95",
+       "explanation": "Dịch: Phòng ngủ 1 — chiều rộng\n\nTranscript: “4.91 m long and 3.95 m wide”"
+      },
+      {
+       "questionNumber": 8,
+       "type": "fill-blank",
+       "questionText": "Question 8",
+       "correctAnswer": "4.2",
+       "explanation": "Dịch: Phòng ngủ 2 — chiều dài\n\nTranscript: “It's 4.2 m x 3.55 m - ideal for children to share”"
+      },
+      {
+       "questionNumber": 9,
+       "type": "fill-blank",
+       "questionText": "Question 9",
+       "correctAnswer": "3.55",
+       "explanation": "Dịch: Phòng ngủ 2 — chiều rộng\n\nTranscript: “4.2 m long and 3.55 m wide?”"
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U01-L4"
+  },
+  {
+   "title": "Mindset 2 · Unit 1 — Making an offer",
+   "description": "Caroline gives the estate agent her details and makes an offer.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L2_06.mp3",
+   "transcript": "Estate agent: So, Ms Prendergast, let me take your details. I'll just enter your name. How do you spell it?\nCaroline: P-R-E-N-D-E-R-G-A-S-T.\nEstate agent: OK, that's it. And what's your present address?\nCaroline: 52, Lanchester Road. That's L-A-N-C-H-E-S-T-E-R. It's in the Riverside part of town. The postcode is KE7 8UD.\nEstate agent: And your home phone number?\nCaroline: 01594 398210.\nEstate agent: And I've got your mobile number: 07945 872310.\nCaroline: Yes, that's right.\nEstate agent: OK. Now the house is on the market for £350,000, but I know that the owners would be happy to accept a close offer as it's been on for a few months. What would your first offer be?\nCaroline: I think £340,000 would be fair.\nEstate agent: OK. I'll put that offer to them and we'll see what they say. Now, usually buyers have a mortgage arranged with a bank – a loan to buy the house - so that we can quickly complete the sale. Do you have one arranged yet?\nCaroline: We've spoken to our bank and they're happy to offer us what we need, up to £300,000. We also have a 15% deposit in our bank account - about £52,000 - so that won't be a problem.\nEstate agent: And is anyone buying your house? Will the sellers of this property need to wait for you to sell yours?\nCaroline: No. We sold it a couple of months ago and we're staying with relatives, so we're ready to move in as soon as the sale is completed. So, when do you think you can get an answer on the offer?\nEstate agent: I should be able to get one tomorrow. Then, if they agree, we can do things quite quickly. Your bank will do the survey – you know, send someone to check the house is in good condition and at the right price - and, if that's OK, we can then prepare the contracts for you and the seller to sign.\nCaroline: How long do you think the sale will take after that?\nEstate agent: Well, it's difficult to say. If things go well, we should complete it in about two months at the most. Most sales take about two months. However, if there are any problems, it could take longer, but we hope it won't be more than three months. For example, part of the house, like the roof, might be in bad condition and might need some work. Or there might be plans for a new road in the local area. Anything like that can delay the sale, but most of our sales go through quickly.\nCaroline: Oh, I hope nothing like that happens! We're really looking forward to moving in soon. It's not easy living a long time with relatives, and my husband has a long journey to get to work, but those aren't the things I'm really worried about. If we can move in before the end of the summer, it'll be much easier for the children to go to their new school. That's why I hope we can complete everything on time.\nEstate agent: Don't worry. I don't see any problems with this sale, so I'm quite sure you'll be in the house by then. So, just to go over things again: I'll talk to the sellers tomorrow. If they accept your offer then we can continue. If they don't, you'll need to put in a higher one quickly, but we should be able to agree by the end of the week. Then you ask your bank to send someone to check the house. If that's all OK, the next step is to prepare the contracts for you and the seller to sign, and we should complete the sale soon after that.\nCaroline: Wonderful! I'll look forward to your call tomorrow. Bye.\nEstate agent: Bye.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–2",
+     "instruction": "Listen to the final conversation between the estate agent and client and answer these questions. (Ex. 6)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "What information does the estate agent need?",
+       "options": [
+        "her name, address and home phone number",
+        "her name, email address and work phone number",
+        "her address and her husband's work address"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Người môi giới cần thông tin gì?\n\nVị trí: Đầu bài.\n\nTranscript: “let me take your details… How do you spell it?” … “And what's your present address?” … “And your home phone number?”\n\nPhân tích: Số di động thì ông ấy đã có sẵn."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "How will the client get the money to pay for the house?",
+       "options": [
+        "a mortgage from the bank and a deposit in her bank account",
+        "money from her relatives and a loan from the bank",
+        "a loan from the estate agent"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Khách lấy tiền ở đâu để mua nhà?\n\nTranscript: “they're happy to offer us what we need, up to £300,000” … “We also have a 15% deposit in our bank account”\n\nPhân tích: mortgage = khoản vay mua nhà của ngân hàng."
+      }
+     ]
+    },
+    {
+     "groupType": "plain",
+     "groupTitle": "Question 3",
+     "instruction": "Write NO MORE THAN TWO WORDS for the answer.",
+     "questions": [
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "How long does the estate agent think it will take to sell the house?",
+       "correctAnswer": "two months / 2 months / about two months",
+       "explanation": "Dịch: Người môi giới nghĩ bán nhà mất bao lâu?\n\nTranscript: “we should complete it in about two months at the most” … “we hope it won't be more than three months”\n\nPhân tích: Thường là two months; tối đa three months nếu có vấn đề."
+      }
+     ]
+    },
+    {
+     "groupType": "plain",
+     "groupTitle": "Question 4",
+     "instruction": "Choose the correct letter, A, B or C.",
+     "questions": [
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "The most important thing for the client is",
+       "options": [
+        "to stay a little longer where she is living now.",
+        "to help her husband travel to work more easily.",
+        "to move in before the end of the school holiday."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Điều quan trọng nhất với khách là\n\nVị trí: Cuối bài.\n\nTranscript: “my husband has a long journey to get to work, but those aren't the things I'm really worried about” … “If we can move in before the end of the summer, it'll be much easier for the children to go to their new school”\n\nPhân tích: Chuyện ở nhờ họ hàng và đường đi làm của chồng đều bị gạt đi (\"those aren't the things I'm really worried about\")."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U01-L5"
+  },
+  {
+   "title": "Mindset 2 · Unit 1 — Dealing with distractors",
+   "description": "A short extract from the house viewing.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L2_07.mp3",
+   "transcript": "Estate agent: And there's an en-suite bathroom here, though it only has a shower unit and not a big bath like the main bathroom.\nCaroline: That would come in very useful when we all get up to get ready for school or work.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Question 1",
+     "instruction": "Listen to part of the recording again and choose the correct letter, A, B or C. (Ex. 7)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "The en-suite bathroom will be useful because",
+       "options": [
+        "it has a shower unit.",
+        "it has a big bath.",
+        "it helps everyone in the mornings."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Phòng tắm riêng sẽ hữu ích vì\n\nTranscript: “though it only has a shower unit and not a big bath like the main bathroom” … “That would come in very useful when we all get up to get ready for school or work”\n\nPhân tích: A đúng sự thật nhưng không phải lý do; B sai (bồn lớn ở phòng tắm chính); get up to get ready for school or work = in the mornings."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U01-L6"
+  },
+  {
+   "title": "Mindset 2 · Unit 1 — Exam skills: making an offer",
+   "description": "The final conversation between the estate agent and Caroline.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L2_06.mp3",
+   "transcript": "Estate agent: So, Ms Prendergast, let me take your details. I'll just enter your name. How do you spell it?\nCaroline: P-R-E-N-D-E-R-G-A-S-T.\nEstate agent: OK, that's it. And what's your present address?\nCaroline: 52, Lanchester Road. That's L-A-N-C-H-E-S-T-E-R. It's in the Riverside part of town. The postcode is KE7 8UD.\nEstate agent: And your home phone number?\nCaroline: 01594 398210.\nEstate agent: And I've got your mobile number: 07945 872310.\nCaroline: Yes, that's right.\nEstate agent: OK. Now the house is on the market for £350,000, but I know that the owners would be happy to accept a close offer as it's been on for a few months. What would your first offer be?\nCaroline: I think £340,000 would be fair.\nEstate agent: OK. I'll put that offer to them and we'll see what they say. Now, usually buyers have a mortgage arranged with a bank – a loan to buy the house - so that we can quickly complete the sale. Do you have one arranged yet?\nCaroline: We've spoken to our bank and they're happy to offer us what we need, up to £300,000. We also have a 15% deposit in our bank account - about £52,000 - so that won't be a problem.\nEstate agent: And is anyone buying your house? Will the sellers of this property need to wait for you to sell yours?\nCaroline: No. We sold it a couple of months ago and we're staying with relatives, so we're ready to move in as soon as the sale is completed. So, when do you think you can get an answer on the offer?\nEstate agent: I should be able to get one tomorrow. Then, if they agree, we can do things quite quickly. Your bank will do the survey – you know, send someone to check the house is in good condition and at the right price - and, if that's OK, we can then prepare the contracts for you and the seller to sign.\nCaroline: How long do you think the sale will take after that?\nEstate agent: Well, it's difficult to say. If things go well, we should complete it in about two months at the most. Most sales take about two months. However, if there are any problems, it could take longer, but we hope it won't be more than three months. For example, part of the house, like the roof, might be in bad condition and might need some work. Or there might be plans for a new road in the local area. Anything like that can delay the sale, but most of our sales go through quickly.\nCaroline: Oh, I hope nothing like that happens! We're really looking forward to moving in soon. It's not easy living a long time with relatives, and my husband has a long journey to get to work, but those aren't the things I'm really worried about. If we can move in before the end of the summer, it'll be much easier for the children to go to their new school. That's why I hope we can complete everything on time.\nEstate agent: Don't worry. I don't see any problems with this sale, so I'm quite sure you'll be in the house by then. So, just to go over things again: I'll talk to the sellers tomorrow. If they accept your offer then we can continue. If they don't, you'll need to put in a higher one quickly, but we should be able to agree by the end of the week. Then you ask your bank to send someone to check the house. If that's all OK, the next step is to prepare the contracts for you and the seller to sign, and we should complete the sale soon after that.\nCaroline: Wonderful! I'll look forward to your call tomorrow. Bye.\nEstate agent: Bye.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Listen to the final conversation again and choose the correct letter, A, B or C. (Ex. 8)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "At the moment, Caroline lives in",
+       "options": [
+        "Prendergast Road.",
+        "Lanchester Road.",
+        "Riverside Road."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Hiện Caroline sống ở\n\nVị trí: Đầu bài.\n\nTranscript: “52, Lanchester Road… It's in the Riverside part of town”\n\nPhân tích: Prendergast là họ của cô; Riverside là khu (part of town), không phải tên đường."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Caroline wants to make a first offer of",
+       "options": [
+        "£300,000.",
+        "£350,000.",
+        "£340,000."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Caroline muốn trả giá lần đầu\n\nTranscript: “the house is on the market for £350,000” … “I think £340,000 would be fair” … “up to £300,000”\n\nPhân tích: £350,000 là giá rao; £300,000 là khoản ngân hàng cho vay."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Caroline and her family",
+       "options": [
+        "have sold their house.",
+        "are selling their house now.",
+        "will sell their house in two months' time."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Gia đình Caroline\n\nTranscript: “We sold it a couple of months ago and we're staying with relatives”\n\nPhân tích: \"two months\" là thời gian hoàn tất việc mua nhà mới."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "It may take longer to sell the house if",
+       "options": [
+        "the bank does not check the house quickly.",
+        "there are plans to do some building near the house.",
+        "her husband has problems at work."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Việc bán nhà có thể lâu hơn nếu\n\nTranscript: “there might be plans for a new road in the local area. Anything like that can delay the sale”\n\nPhân tích: a new road = some building near the house. Ngân hàng chỉ \"do the survey\"; chồng cô chỉ đi làm xa."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "If the sellers do not accept her first offer, Caroline will need to",
+       "options": [
+        "increase her offer.",
+        "come to an agreement in a week.",
+        "contact her bank and ask for more money."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Nếu người bán không nhận giá đầu, Caroline sẽ phải\n\nVị trí: Cuối bài.\n\nTranscript: “If they don't, you'll need to put in a higher one quickly”\n\nPhân tích: put in a higher one = increase her offer. \"by the end of the week\" chỉ là dự đoán thời điểm thỏa thuận."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U01-L7"
+  }
+ ]
+}

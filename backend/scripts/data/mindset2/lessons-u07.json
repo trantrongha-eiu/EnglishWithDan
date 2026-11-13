@@ -1,0 +1,696 @@
+{
+ "modules": [
+  {
+   "code": "M2-U07",
+   "order": 7,
+   "title": "Unit 7 · Hệ thống giáo dục",
+   "titleEn": "UNIT 07: EDUCATION SYSTEMS — sách tr. 128–134, 139–143",
+   "outcomes": [
+    "Reading: hoàn thành flow-chart, bảng, sơ đồ và hình vẽ kỹ thuật; tìm đáp án nhanh; hiểu cách bài giải thích thuật ngữ",
+    "Grammar: modal verbs chỉ sự bắt buộc — should, have to, must",
+    "Listening: điền bảng và sơ đồ; hoàn thành câu; theo dõi hướng đi của cuộc hội thoại",
+    "Từ vựng giáo dục, đại học (Sổ 4)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M2-U07-L1",
+   "moduleCode": "M2-U07",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: university life",
+   "titleEn": "Lead-in (p. 128)",
+   "durationMinutes": 25,
+   "objectives": [
+    "Hiểu các từ về đại học: lecture, enrol, fund, assignment, campus, faculty, undergraduate, postgraduate…"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Từ vựng đại học",
+     "titleEn": "University words",
+     "formula": [],
+     "usage": [
+      "**undergraduate** (sinh viên học bằng đầu tiên) ↔ **postgraduate** (đã có bằng, học lên cao).",
+      "**Bachelor's degree** (3–4 năm) → **Master's degree** (thêm 1–2 năm).",
+      "**enrol on** a course · **fund** your course · **submit** an assignment · the **Faculty** of Education."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 10,
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 7 · Lead-in & Vocabulary: university life — 37 từ/cụm từ",
+    "words": [
+     {
+      "word": "undergraduate",
+      "meaning": "sinh viên đại học (chưa tốt nghiệp)",
+      "example": "On all undergraduate courses, students tend to write about 3,000 words or so, but it varies depending on the question."
+     },
+     {
+      "word": "postgraduate",
+      "meaning": "học viên sau đại học",
+      "example": "In your case though, your main route into teaching would be to do a Postgraduate Certificate in Education."
+     },
+     {
+      "word": "lecture",
+      "meaning": "bài giảng",
+      "example": "The lecturer sets out the topic and discusses it and you take notes."
+     },
+     {
+      "word": "enrol on a course",
+      "meaning": "đăng ký khoá học",
+      "example": "To enrol on extra courses, please visit the university website."
+     },
+     {
+      "word": "fund",
+      "meaning": "chi trả, tài trợ",
+      "example": "It also costs a lot, and you may need to fund yourself while you're studying."
+     },
+     {
+      "word": "assignment",
+      "meaning": "bài tập lớn",
+      "example": "And talking about assignments, how long should they be?"
+     },
+     {
+      "word": "submit by the deadline",
+      "meaning": "nộp đúng hạn",
+      "example": "All assignments should be submitted by the deadline given by your tutor."
+     },
+     {
+      "word": "campus",
+      "meaning": "khuôn viên trường",
+      "example": "The university campus Another significant difference between university and high school is the size of the campus."
+     },
+     {
+      "word": "faculty",
+      "meaning": "khoa",
+      "example": "Usually, however, each faculty is located in a building with classrooms and lecture halls close by."
+     },
+     {
+      "word": "Bachelor's degree",
+      "meaning": "bằng cử nhân",
+      "example": "A Bachelor's degree usually takes three or four years."
+     },
+     {
+      "word": "Master's degree",
+      "meaning": "bằng thạc sĩ",
+      "example": "It would probably be better to do a Master's degree first and then transfer onto a PhD course."
+     },
+     {
+      "word": "prospectus",
+      "meaning": "tài liệu giới thiệu của trường",
+      "example": "For more information, please take a prospectus from the student information centre."
+     },
+     {
+      "word": "apply for a student visa",
+      "meaning": "xin thị thực du học",
+      "example": "You can apply for a student visa once you have proof of admission."
+     },
+     {
+      "word": "an enriching experience",
+      "meaning": "một trải nghiệm bổ ích",
+      "example": "Studying abroad Studying abroad as an international student can be an enriching experience."
+     },
+     {
+      "word": "proof of admission",
+      "meaning": "giấy xác nhận nhập học",
+      "example": "In order to obtain a visa, you will need proof of admission to the college."
+     },
+     {
+      "word": "adequate funds",
+      "meaning": "đủ tài chính",
+      "example": "You need to show that you have adequate funds for the first year of study."
+     },
+     {
+      "word": "accommodation",
+      "meaning": "chỗ ở",
+      "example": "This is something that you don't need to worry about, as each university has an accommodation team to help you."
+     },
+     {
+      "word": "preferential treatment",
+      "meaning": "sự ưu tiên, ưu đãi",
+      "example": "Furthermore, preferential treatment is given for new students from abroad."
+     },
+     {
+      "word": "tutorial",
+      "meaning": "buổi học nhóm nhỏ với giảng viên",
+      "example": "And what about tutorials?"
+     },
+     {
+      "word": "contact time",
+      "meaning": "thời gian học trực tiếp trên lớp",
+      "example": "At university, there is much less contact time and therefore you must have a great deal of self-discipline."
+     },
+     {
+      "word": "self-discipline",
+      "meaning": "tính kỷ luật tự giác",
+      "example": "At university, there is much less contact time and therefore you must have a great deal of self-discipline."
+     },
+     {
+      "word": "revise for exams",
+      "meaning": "ôn thi",
+      "example": "In the afternoons, I use my time for private study, either working on assignments or revising for exams."
+     },
+     {
+      "word": "become involved in",
+      "meaning": "tham gia vào",
+      "example": "Another important part of university life is making sure you become involved in other activities, such as clubs or sport."
+     },
+     {
+      "word": "cheat in exams",
+      "meaning": "gian lận trong thi cử",
+      "example": "You mustn't cheat in exams."
+     },
+     {
+      "word": "admission",
+      "meaning": "việc nhận vào học",
+      "example": "It's the University and Colleges Admissions Service."
+     },
+     {
+      "word": "in duration",
+      "meaning": "về thời lượng",
+      "example": "Masters courses are typically one year in duration for full-time study (or two years when completed part-time)."
+     },
+     {
+      "word": "dissertation",
+      "meaning": "luận văn, luận án",
+      "example": "A doctoral degree is assessed based on a dissertation, although coursework may feature in the first year."
+     },
+     {
+      "word": "private study",
+      "meaning": "thời gian tự học",
+      "example": "In the afternoons, I use my time for private study, either working on assignments or revising for exams."
+     },
+     {
+      "word": "careers centre",
+      "meaning": "trung tâm hướng nghiệp",
+      "example": "Advice is given by the careers centre, which is just behind the medical centre."
+     },
+     {
+      "word": "lecture hall",
+      "meaning": "giảng đường",
+      "example": "Usually, however, each faculty is located in a building with classrooms and lecture halls close by."
+     },
+     {
+      "word": "spread around",
+      "meaning": "trải rộng khắp",
+      "example": "A university campus is much bigger and is often spread around a city, meaning that sometimes you have to walk to different areas of the city to attend lectures."
+     },
+     {
+      "word": "technological revolution",
+      "meaning": "cuộc cách mạng công nghệ",
+      "example": "Before the technological revolution in the 1980s, if you didn't want to write by hand you had to use one of these machines - a typewriter."
+     },
+     {
+      "word": "overheating",
+      "meaning": "sự quá nhiệt",
+      "example": "As it is used it becomes incredibly hot and a fan prevents the computer from overheating."
+     },
+     {
+      "word": "achievement",
+      "meaning": "thành tích",
+      "example": "Admission to postgraduate programmes is based on achievement in previous university studies and, for some courses, on professional experience as well."
+     },
+     {
+      "word": "full-time",
+      "meaning": "toàn thời gian",
+      "example": "The first thing to decide is whether to start work or to continue studying full-time."
+     },
+     {
+      "word": "part-time",
+      "meaning": "bán thời gian",
+      "example": "Masters courses are typically one year in duration for full-time study (or two years when completed part-time)."
+     },
+     {
+      "word": "doctoral degree",
+      "meaning": "bằng tiến sĩ",
+      "example": "A doctoral degree is assessed based on a dissertation, although coursework may feature in the first year."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M2-U07-L2",
+   "moduleCode": "M2-U07",
+   "order": 2,
+   "title": "📖 Reading: flow-charts, tables & diagrams",
+   "titleEn": "Completing flow-charts · Charts and diagrams · Locating the answer quickly · Understanding explanations · Exam skills (pp. 129–134)",
+   "durationMinutes": 65,
+   "objectives": [
+    "Đọc tiêu đề và các mục của flow-chart để đoán thông tin cần điền",
+    "Xác định loại từ thiếu (noun, adverb, adjective…)",
+    "Tìm đáp án nhanh trên sơ đồ nhờ từ chỉ vị trí (behind, next to, in front of)",
+    "Nhận ra thuật ngữ được giải thích bằng footnote, ngay trong bài hoặc qua ngữ cảnh"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Flow-chart, bảng và sơ đồ",
+     "titleEn": "Completing flow-charts and diagrams",
+     "formula": [],
+     "usage": [
+      "Đọc **tiêu đề** và các **mục chính** trước để biết sơ đồ nói về gì.",
+      "Không cần hiểu hết từ — tập trung vào **key words**.",
+      "Đoán **loại từ** còn thiếu; đáp án thường **theo thứ tự** bài.",
+      "Điền xong kiểm tra: câu có **đúng ngữ pháp** và sơ đồ có **hợp lý** không? Từ có gạch nối tính là **một từ**."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Tìm đáp án nhanh",
+     "titleEn": "Locating the answer quickly",
+     "formula": [],
+     "usage": [
+      "Đáp án thường chỉ nằm ở **một phần** bài (vd. hai đoạn cuối).",
+      "Dùng tên địa điểm đã có trên sơ đồ và **giới từ vị trí** (next to, behind, in front of) để định vị.",
+      "Chép **đúng chính tả** thuật ngữ kỹ thuật."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Cách giải thích thuật ngữ",
+     "titleEn": "Understanding explanations",
+     "formula": [],
+     "usage": [
+      "**Footnote**: lever*, microchip* — giải thích ở cuối.",
+      "**Ngay trong bài**: \"a piece of cloth with ink on it called the ribbon\"; \"a hard drive (a huge magnetic memory)\".",
+      "**Qua ngữ cảnh**: carriage return lever — hiểu nhờ câu xung quanh nói nó làm gì."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 4,
+   "totalPoints": 18,
+   "practiceLinks": [
+    {
+     "ref": "reading:M2-U07-R1",
+     "kind": "reading",
+     "title": "University life — complete the timetable (Ex. 7)",
+     "note": "NO MORE THAN TWO WORDS AND/OR A NUMBER."
+    },
+    {
+     "ref": "reading:M2-U07-R2",
+     "kind": "reading",
+     "title": "The university campus — label the diagram (Ex. 13)",
+     "note": "Tìm nhanh bằng giới từ vị trí."
+    },
+    {
+     "ref": "reading:M2-U07-R3",
+     "kind": "reading",
+     "title": "The typewriter — technical drawing (Ex. 15)",
+     "note": "NO MORE THAN TWO WORDS — chép đúng chính tả."
+    },
+    {
+     "ref": "reading:M2-U07-R4",
+     "kind": "reading",
+     "title": "How the modern computer works (Ex. 18)",
+     "note": "Hoàn thành sơ đồ."
+    },
+    {
+     "ref": "reading:M2-U07-R5",
+     "kind": "reading",
+     "title": "Exam skills: Australian university qualifications (Ex. 19)",
+     "note": "4 chỗ trống trên sơ đồ."
+    }
+   ]
+  },
+  {
+   "code": "M2-U07-L3",
+   "moduleCode": "M2-U07",
+   "order": 3,
+   "title": "🧩 Grammar focus: should, have to and must",
+   "titleEn": "Grammar focus: modal verbs of obligation (pp. 130–131)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Phân biệt lời khuyên (should) với sự bắt buộc (have to, must)",
+    "Phân biệt mustn't (không được phép) với don't have to (không bắt buộc)",
+    "Dạng phủ định và quá khứ"
+   ],
+   "keyLanguage": [
+    "**should** = lời khuyên: you **should** choose something you will enjoy.",
+    "**have to** = bắt buộc (quy định từ bên ngoài): I **have to** attend three lectures a week. · **must** = bắt buộc mạnh: you **must** have a great deal of self-discipline.",
+    "**mustn't** = không được phép: You **mustn't** cheat in exams. · **don't have to** = không bắt buộc: You **don't have to** study tonight.",
+    "Quá khứ: have to / must → **had to**; should → **should have + V3**."
+   ],
+   "theory": [
+    {
+     "title": "Modal verbs of obligation",
+     "titleEn": "Should, have to and must",
+     "formula": [
+      "should / ought to + V — lời khuyên",
+      "have to / must + V — bắt buộc",
+      "mustn't + V — cấm · don't have to / needn't + V — không cần"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "I must study harder.",
+       "vi": "bắt buộc mạnh"
+      },
+      {
+       "en": "I don't have to go to school today.",
+       "vi": "không bắt buộc"
+      },
+      {
+       "en": "You should revise for your exams this weekend.",
+       "vi": "lời khuyên"
+      },
+      {
+       "en": "You mustn't be late for lessons.",
+       "vi": "cấm"
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 9,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Modal Verbs",
+     "note": "should, have to, must",
+     "url": "/essential-grammar.html?lesson=modal-verbs"
+    }
+   ]
+  },
+  {
+   "code": "M2-U07-L4",
+   "moduleCode": "M2-U07",
+   "order": 4,
+   "title": "🎧 Listening: charts, diagrams & conversations",
+   "titleEn": "Lead-in · Charts and diagrams · Completing sentences · Following conversations · Exam skills (pp. 139–143)",
+   "durationMinutes": 60,
+   "objectives": [
+    "Hiểu các cấp học ở Anh: nursery, primary, secondary, sixth form, further education, university, adult education",
+    "Hoàn thành bảng và sơ đồ có mũi tên",
+    "Chọn đúng từ trong câu khi nghe",
+    "Theo dõi hướng đi của cuộc hội thoại để chọn ghi chú đúng"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Bảng và sơ đồ",
+     "titleEn": "Charts and diagrams",
+     "formula": [],
+     "usage": [
+      "Nhìn kỹ bảng/sơ đồ và nghĩ xem cần **loại thông tin** gì.",
+      "Trong bảng hệ thống giáo dục, **độ tuổi** là gợi ý giúp chọn đúng (5–7: infant; 7–11: junior).",
+      "Sơ đồ có **mũi tên** → dùng mũi tên để đoán thứ tự thông tin sẽ nghe."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Theo dõi hội thoại",
+     "titleEn": "Following conversations",
+     "formula": [],
+     "usage": [
+      "Người nói hay nói một ý rồi **điều chỉnh**: \"you might have three weeks between tutorials… So that works out at about one every two weeks.\"",
+      "Nghe đến hết ý trước khi chọn; để ý các từ **minimum / maximum / at least / no upper limit**."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 7,
+   "images": [
+    {
+     "url": "media:m2u07-post16.jpg",
+     "caption": "Ex. 4 (p. 141): choices at 16"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M2-U07-L1",
+     "kind": "listening",
+     "title": "Seven conversations: types of education (Ex. 1–2)",
+     "note": "Ghi số hội thoại và thông tin A–G cho từng cấp học."
+    },
+    {
+     "ref": "listening:M2-U07-L2",
+     "kind": "listening",
+     "title": "The education system up to 16 (Ex. 3)",
+     "note": "Chọn đáp án đúng trong bảng."
+    },
+    {
+     "ref": "listening:M2-U07-L3",
+     "kind": "listening",
+     "title": "Choices at 16 — complete the diagram (Ex. 4)",
+     "note": "ONE OR TWO WORDS."
+    },
+    {
+     "ref": "listening:M2-U07-L4",
+     "kind": "listening",
+     "title": "Applying to university (Ex. 5)",
+     "note": "Chọn từ đúng trong mỗi câu."
+    },
+    {
+     "ref": "listening:M2-U07-L5",
+     "kind": "listening",
+     "title": "Following a conversation: a new student (Ex. 6)",
+     "note": "Chọn ghi chú a hay b."
+    },
+    {
+     "ref": "listening:M2-U07-L6",
+     "kind": "listening",
+     "title": "Exam skills: after graduation (Ex. 7)",
+     "note": "NO MORE THAN TWO WORDS."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 7 · Listening: charts, diagrams & conversations — 39 từ/cụm từ",
+    "words": [
+     {
+      "word": "vocational course",
+      "meaning": "khoá học nghề",
+      "example": "Maybe I'll take a vocational course there instead to learn the skills for a particular job, like accountancy or business studies."
+     },
+     {
+      "word": "settle down",
+      "meaning": "ổn định, quen dần",
+      "example": "Conversation 2 So how's Jenny settling down?"
+     },
+     {
+      "word": "get used to",
+      "meaning": "quen với",
+      "example": "My son, Timmy, took weeks to get used to being away from me all day."
+     },
+     {
+      "word": "adjust to",
+      "meaning": "thích nghi với",
+      "example": "It often takes time for them to adjust to the idea of having more responsibility."
+     },
+     {
+      "word": "make one's own way in the world",
+      "meaning": "tự lập trong cuộc sống",
+      "example": "After all, she's 18 now and they all have to make their own way in the world sometime."
+     },
+     {
+      "word": "compulsory",
+      "meaning": "bắt buộc",
+      "example": "The National Curriculum defined a set of compulsory subjects."
+     },
+     {
+      "word": "optional",
+      "meaning": "tự chọn",
+      "example": "For example, Modern Foreign Languages start in primary school, and continue up to Key Stage 3, after which they're optional."
+     },
+     {
+      "word": "apprenticeship",
+      "meaning": "chương trình học nghề (vừa học vừa làm)",
+      "example": "The second is to apply for an apprenticeship or traineeship."
+     },
+     {
+      "word": "nursery",
+      "meaning": "nhà trẻ",
+      "example": "Before the age of five, children can attend nursery, though they don't have to attend any educational institution at all before the age of five."
+     },
+     {
+      "word": "tertiary education",
+      "meaning": "giáo dục đại học",
+      "example": "Universities and colleges provide tertiary education after secondary school."
+     },
+     {
+      "word": "curriculum",
+      "meaning": "chương trình học",
+      "example": "The National Curriculum defined a set of compulsory subjects."
+     },
+     {
+      "word": "assess progress",
+      "meaning": "đánh giá sự tiến bộ",
+      "example": "Although teachers assess their pupils' progress throughout primary school, at the end of Key Stage 2, unlike in Key Stage 1, pupils have to take SATS."
+     },
+     {
+      "word": "qualification",
+      "meaning": "bằng cấp, chứng chỉ",
+      "example": "Academic qualifications, mainly Advanced level exams, known as 'A levels', are taken by students aiming for university study."
+     },
+     {
+      "word": "gain job-related skills",
+      "meaning": "có được kỹ năng nghề nghiệp",
+      "example": "With apprenticeships, young people get to work with experienced staff and gain job-related skills."
+     },
+     {
+      "word": "earn a wage",
+      "meaning": "kiếm tiền lương",
+      "example": "They earn a wage, although this is typically less than a 'regular' employee, and get to continue studying part-time - usually one day a week."
+     },
+     {
+      "word": "permanent job",
+      "meaning": "công việc ổn định lâu dài",
+      "example": "You could try getting a permanent job now if you want."
+     },
+     {
+      "word": "application",
+      "meaning": "hồ sơ đăng ký",
+      "example": "So, Amanda, you want me to help you with your application."
+     },
+     {
+      "word": "reputation",
+      "meaning": "danh tiếng",
+      "example": "Remember, you'll want to choose the universities which have the best reputation, but you need to have some kind of back-up in case you don't get into your first choice."
+     },
+     {
+      "word": "back-up",
+      "meaning": "phương án dự phòng",
+      "example": "Remember, you'll want to choose the universities which have the best reputation, but you need to have some kind of back-up in case you don't get into your first choice."
+     },
+     {
+      "word": "personal statement",
+      "meaning": "bài luận cá nhân",
+      "example": "You mean your 'personal statement'?"
+     },
+     {
+      "word": "predicted grades",
+      "meaning": "điểm dự đoán",
+      "example": "After you've completed your application, I can add the reference and your predicted grades before sending it to UCAS."
+     },
+     {
+      "word": "conditional offer",
+      "meaning": "thư mời nhập học có điều kiện",
+      "example": "Usually any offer from a university will be a conditional offer."
+     },
+     {
+      "word": "take a year off",
+      "meaning": "nghỉ một năm",
+      "example": "Well, if you don't get a place at any of your chosen universities, you can take a year off and try reapplying next year."
+     },
+     {
+      "word": "continuous assessment",
+      "meaning": "đánh giá liên tục",
+      "example": "Well, that varies from course to course, but generally we focus on continuous assessment more than exams, though exams are, of course, very important too."
+     },
+     {
+      "word": "exchange ideas",
+      "meaning": "trao đổi ý kiến",
+      "example": "It allows you to discuss the topic, exchange ideas and prepare for your assignments."
+     },
+     {
+      "word": "read widely",
+      "meaning": "đọc rộng",
+      "example": "Ideally, you should have around ten references for each assignment to show that you've read widely, but we expect a minimum of five sources which are academic journals and books."
+     },
+     {
+      "word": "be in high demand",
+      "meaning": "có nhu cầu cao, được săn đón",
+      "example": "Well, anyone with a degree in Chemistry will always be in high demand."
+     },
+     {
+      "word": "specialise in",
+      "meaning": "chuyên sâu về",
+      "example": "It'll give you a chance to develop your career and also learn more about your subject specialisation in a commercial environment."
+     },
+     {
+      "word": "internship",
+      "meaning": "kỳ thực tập",
+      "example": "We have some good commercial contacts for internships here."
+     },
+     {
+      "word": "grades",
+      "meaning": "điểm số",
+      "example": "Conversation 1 I'm sorry to hear that you didn't get the grades to get into university."
+     },
+     {
+      "word": "timetable",
+      "meaning": "thời khoá biểu",
+      "example": "He has to make sure he knows his timetable and gets to the right classroom on time."
+     },
+     {
+      "word": "Freshers' Week",
+      "meaning": "tuần lễ chào đón tân sinh viên",
+      "example": "… a week for the new students - it's called Freshers' Week-when they find out what they need to know, join clubs and get used …"
+     },
+     {
+      "word": "secondary school",
+      "meaning": "trường trung học",
+      "example": "In secondary school, students take Citizenship from Key Stage 3."
+     },
+     {
+      "word": "educational institution",
+      "meaning": "cơ sở giáo dục",
+      "example": "Before the age of five, children can attend nursery, though they don't have to attend any educational institution at all before the age of five."
+     },
+     {
+      "word": "core subjects",
+      "meaning": "các môn chính",
+      "example": "… in place in 1988 to specify a set of core main subjects that all school pupils have to study."
+     },
+     {
+      "word": "academic",
+      "meaning": "thuộc về học thuật",
+      "example": "For those who want to continue studying full-time, there are two paths: academic and vocational."
+     },
+     {
+      "word": "seminar",
+      "meaning": "buổi thảo luận nhóm",
+      "example": "Are they like seminars?"
+     },
+     {
+      "word": "references",
+      "meaning": "tài liệu tham khảo",
+      "example": "So I should aim for between two and three thousand as a rule ... there's one last thing I wanted to check about assignments, and that's references."
+     },
+     {
+      "word": "relevant",
+      "meaning": "liên quan",
+      "example": "… much as a lot of that might not be relevant to the question."
+     }
+    ]
+   }
+  }
+ ]
+}

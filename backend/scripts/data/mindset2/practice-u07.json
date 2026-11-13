@@ -1,0 +1,779 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 2 · Unit 7 — University life",
+   "content": "<h3>University life</h3>\n\n<p>University life is quite different to life at school or college. One of the most significant differences is the amount of time you spend at university, either attending lectures or tutorials. At school you spend about 30 hours a week studying in the classroom. At university, there is much less contact time and therefore you must have a great deal of self-discipline. At the moment I have to attend three lectures a week, all in the morning. In the afternoons, I use my time for private study, either working on assignments or revising for exams. That is unless I have a scheduled tutorial. Tutorials are an opportunity to work through assignments or topics in small groups. In some countries they are also referred to as 'seminars'. I attend tutorials weekly, one in the middle and one at the end of the week.</p>\n\n<p>Another important part of university life is making sure you become involved in other activities, such as clubs or sport. You should choose something you will enjoy or something new. This will help you make friends and enjoy your time away from home. Towards the end of the week, I have football training in the evening and on Tuesday evening I attend the cinema club.</p>",
+   "questionGroups": [
+    {
+     "groupType": "table",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Complete the gaps in the chart. Write NO MORE THAN TWO WORDS AND/OR A NUMBER. (Ex. 7)",
+     "tableConfig": {
+      "headers": [
+       "",
+       "Monday",
+       "Tuesday",
+       "Wednesday",
+       "Thursday",
+       "Friday"
+      ],
+      "rows": [
+       [
+        "9.00–12.00",
+        "__Q1__",
+        "",
+        "__Q3__",
+        "",
+        "Lecture"
+       ],
+       [
+        "12.00–15.00",
+        "",
+        "",
+        "",
+        "",
+        ""
+       ],
+       [
+        "15.00–18.00",
+        "Private study",
+        "__Q2__",
+        "Tutorial",
+        "Private study",
+        "__Q5__"
+       ],
+       [
+        "18.00–21.00",
+        "",
+        "Cinema club",
+        "",
+        "__Q4__",
+        ""
+       ]
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "lecture / lectures",
+       "explanation": "\"I have to attend three **lectures** a week, all in the morning\" → 3 buổi sáng: thứ Hai, thứ Tư, thứ Sáu."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "private study",
+       "explanation": "\"In the afternoons, I use my time for **private study**… unless I have a scheduled tutorial\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "lecture / lectures",
+       "explanation": "Buổi **lecture** thứ ba trong tuần (\"three lectures a week, all in the morning\")."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "football training / football",
+       "explanation": "\"Towards the end of the week, I have **football training** in the evening\"."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "tutorial / tutorials",
+       "explanation": "\"I attend **tutorials** weekly, one in the middle and one at the end of the week\" → thứ Tư và thứ Sáu."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U07-R1"
+  },
+  {
+   "title": "Mindset 2 · Unit 7 — The university campus",
+   "content": "<h3>The university campus</h3>\n\n<p>Another significant difference between university and high school is the size of the campus. A university campus is much bigger and is often spread around a city, meaning that sometimes you have to walk to different areas of the city to attend lectures. Usually, however, each faculty is located in a building with classrooms and lecture halls close by.</p>\n\n<p>The main student facilities tend to be in just one area. Universities have a variety of services to offer students, from areas for sport and relaxation, to places for quiet study.</p>\n\n<p>I do most of my assignments in the university library, situated next to residential services and just behind the finance office. When I have finished, I like to relax, by going either to the gym or the students' union. Conveniently, both are close by, near student services. The students' union is a great place to have something to eat or drink and socialise with friends.</p>\n\n<p>The university also offers help in finding a job. Advice is given by the careers centre, which is just behind the medical centre. Generally, though, if you need any advice on where to find things, just go to the main reception, in front of the finance office.</p>",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Complete the gaps in the diagram using NO MORE THAN TWO WORDS AND/OR A NUMBER. Try to locate the answers as quickly as possible. (Ex. 13)",
+     "imageUrl": "media:m2u07-campus.jpg",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Label 1 (between student services and residential services)",
+       "correctAnswer": "library / university library",
+       "explanation": "\"the university **library**, situated next to residential services and just behind the finance office\"."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Label 2 (next to the students' union)",
+       "correctAnswer": "gym",
+       "explanation": "\"either to the **gym** or the students' union… both are close by, near student services\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Label 3 (behind the medical centre)",
+       "correctAnswer": "careers centre / careers center",
+       "explanation": "\"the **careers centre**, which is just behind the medical centre\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Label 4 (in front of the finance office)",
+       "correctAnswer": "reception / main reception",
+       "explanation": "\"the main **reception**, in front of the finance office\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U07-R2"
+  },
+  {
+   "title": "Mindset 2 · Unit 7 — The typewriter",
+   "content": "<h3>The typewriter</h3>\n\n<p>Can you imagine being a student at university before computers? Before the technological revolution in the 1980s, if you didn't want to write by hand you had to use one of these machines - a typewriter.</p>\n\n<p>It's called a typewriter because you are able to write on the page with pieces of type. The metal bars have letters on them, which allow you to write on paper neatly.</p>\n\n<p>So how does it work? First, you need to press down on one of the keys and the lever* makes another lever called the type hammer move up towards the paper. The type hammer has the metal bar with the letters attached to it at the end. Just before the letter hits the paper a piece of cloth with ink on it called the ribbon moves upwards between the type and the paper. The letter then appears in ink on the piece of paper.</p>\n\n<p>When you take your finger off the key, a spring makes the hammer move back to where it was before. At the same time, the carriage, which is the cylinder-shaped part at the top where the paper is held, moves to the left. You can therefore continue to write the word that you want. When the carriage gets to the end of a line you hear a bell. When you hear the bell, you press the carriage return lever on the left-hand side of the typewriter, which moves the paper up, so that you can continue writing on a new line.</p>\n\n<p>*lever – a long bar that you use to lift or move something by pressing one end</p>",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Study the diagram, then read the text. Write NO MORE THAN TWO WORDS from the text for each answer. (1 Key and 6 Carriage return lever are given.) (Ex. 15)",
+     "imageUrl": "media:m2u07-typewriter.jpg",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Label 2",
+       "correctAnswer": "lever",
+       "explanation": "\"press down on one of the keys and the **lever*** makes another lever… move up\" — nối với phím."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Label 3",
+       "correctAnswer": "type hammer",
+       "explanation": "\"another lever called the **type hammer** move up towards the paper\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Label 4",
+       "correctAnswer": "ribbon",
+       "explanation": "\"a piece of cloth with ink on it called the **ribbon** moves upwards between the type and the paper\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Label 5",
+       "correctAnswer": "carriage",
+       "explanation": "\"the **carriage**, which is the cylinder-shaped part at the top where the paper is held\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U07-R3"
+  },
+  {
+   "title": "Mindset 2 · Unit 7 — How the modern computer works",
+   "content": "<h3>How the modern computer works</h3>\n\n<p>The mouse and keyboard are input units: ways of getting information into your computer. Most computers store all this information on a hard drive (a huge magnetic memory). However, smaller computer-based devices like digital cameras and mobile phones use other kinds of storage, such as flash memory cards.</p>\n\n<p>The computer's processor, also known as the central processing unit, is a microchip* buried deep inside. As it is used it becomes incredibly hot and a fan prevents the computer from overheating.</p>\n\n<p>Many computers now have LCD screens, capable of displaying high-resolution graphics, such as very clear and detailed photographs. Many computers also have loudspeakers and can be connected to a printer.</p>\n\n<p>*microchip – a very small part of a computer or machine that does calculations or stores information</p>",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Questions 1–3",
+     "instruction": "Using your understanding of the text, complete this diagram. Write NO MORE THAN TWO WORDS from the text for each answer. (Ex. 18)",
+     "imageUrl": "media:m2u07-computer.jpg",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Label 1 (storage)",
+       "correctAnswer": "hard drive",
+       "explanation": "\"Most computers store all this information on a **hard drive**\"."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Label 2 (keyboard and mouse)",
+       "correctAnswer": "input / input units",
+       "explanation": "\"The mouse and keyboard are **input** units\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Label 3 (output)",
+       "correctAnswer": "LCD screen / LCD screens",
+       "explanation": "\"Many computers now have **LCD screens**\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U07-R4"
+  },
+  {
+   "title": "Mindset 2 · Unit 7 — Common Australian university qualifications",
+   "content": "<h3>Common Australian university qualifications</h3>\n\n<p>The most common degree from an Australian university is a three-year bachelor degree in a field such as arts, business or science. Professional degrees such as engineering or law are completed over four years. Veterinary and dentistry degrees take five years and medical degrees take up to six.</p>\n\n<p>Admission to postgraduate programmes is based on achievement in previous university studies and, for some courses, on professional experience as well.</p>\n\n<p>To be accepted onto a doctoral programme, you need high achievement in a masters degree or to have a bachelor degree with at least upper-level second – class honours. A doctoral degree is assessed based on a dissertation, although coursework may feature in the first year. Generally this degree will last three to four years.</p>\n\n<p>A bachelor degree with 'honours' is usually achieved by doing an extra year of study at a more advanced level. Honours programme placements are offered to students with high bachelor-degree grades, particularly in the final year.</p>\n\n<p>Masters courses are typically one year in duration for full-time study (or two years when completed part-time). MBAs may require one or two years of full-time study but are most commonly one and a half years.</p>",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Read the text and complete the diagram using NO MORE THAN TWO WORDS AND/OR A NUMBER. (Ex. 19)",
+     "imageUrl": "media:m2u07-qualifications.jpg",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Undergraduate: Bachelor Degree 1 ___ (4 years)",
+       "correctAnswer": "professional",
+       "explanation": "\"**Professional** degrees such as engineering or law are completed over four years\"."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Undergraduate: Bachelor Degree with 2 ___ (Bachelor Degree + 1 year)",
+       "correctAnswer": "honours / honors",
+       "explanation": "\"A bachelor degree with '**honours**' is usually achieved by doing an extra year of study\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Postgraduate: Master Degree 3 ___ (1 year)",
+       "correctAnswer": "full-time / full time",
+       "explanation": "\"Masters courses are typically one year in duration for **full-time** study (or two years when completed part-time)\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Postgraduate: 4 ___ (3–4 years)",
+       "correctAnswer": "doctoral degree / doctorate",
+       "explanation": "\"A **doctoral degree**… Generally this degree will last three to four years\". BẪY: MBA chỉ 1–2 năm."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U07-R5"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 2 · Unit 7 — Types of education",
+   "description": "Seven short conversations about education in the UK.",
+   "partNumber": 1,
+   "audioFile": "Mindset_L2_60.mp3",
+   "transcript": "Conversation 1\nA: I'm sorry to hear that you didn't get the grades to get into university. What are you going to do now?\nB: I'm not sure. I can take my exams again at the local college, but I'm not sure if I want to do that. Maybe I'll take a vocational course there instead to learn the skills for a particular job, like accountancy or business studies. At least if I pass that, I can go straight into work.\nConversation 2\nA: So how's Jenny settling down? It's always difficult when they start school. My son, Timmy, took weeks to get used to being away from me all day.\nB: Oh, she's fine. She loves it, especially learning to write. She doesn't miss me at all. I'm the one with the problem. I really miss her being at home all day. But after all, it's the law - she has to go!\nConversation 3\nA: I've found this evening course in photography at my local centre. It's two evenings a week and only costs £150 for the term. You've always been interested in photography as a hobby. Why don't you come too?\nB: Oh, I did that course last year. It's really good. I'm planning to take a course on setting up a website, so that I can display all my photos. It does seem strange, though, to be learning something new again after so many years!\nConversation 4\nA: I think it's really useful for them to start early. I know it can be expensive, but it's worth it because they already know what it's like to be with others in a class when they start school.\nB: That's true. In my case, it's not just the benefits of socialising with other children, it also means I can go back to work. It's a pity I can't get a free place for my son - though I don't have to pay very much, thank goodness.\nConversation 5\nA: Well, my daughter is off tomorrow to start her degree course - a whole new adventure in a new city. I'm nervous, but she's really thrilled about it. There's a week for the new students - it's called Freshers' Week-when they find out what they need to know, join clubs and get used to being away from home, and then the course starts the week after.\nB: Well, don't worry. I'm sure she'll be fine. After all, she's 18 now and they all have to make their own way in the world sometime.\nConversation 6\nA: I'm a bit worried about my son. He's not doing very well. The thing is he needs to understand that it's not like his last school, when he did everything in the same class. He has to make sure he knows his timetable and gets to the right classroom on time. He keeps getting to class late and not doing his homework.\nB: Don't worry. It often takes time for them to adjust to the idea of having more responsibility. I'm sure he'll do better when he settles down.\nConversation 7\nA: My son passed all his GCSE exams and wants to go to university in two years' time. We can't decide whether he should continue at his school or go to that new college near our house. What do you think?\nB: Well, the college has taken the best kids from the local schools since it opened two years ago and almost all of them have passed their A levels and gone on to university, so I think it's really good. Also, it makes them feel more grown-up when they go there.",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–7",
+     "instruction": "Listen to seven short conversations. Which conversation is mainly about each type of education? (Ex. 1)",
+     "matchingOptions": [
+      "Conversation 1",
+      "Conversation 2",
+      "Conversation 3",
+      "Conversation 4",
+      "Conversation 5",
+      "Conversation 6",
+      "Conversation 7"
+     ],
+     "matchingOptionsTitle": "Conversations",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching",
+       "questionText": "Nursery",
+       "correctAnswer": "D",
+       "explanation": "Dịch: Mẫu giáo\n\nVị trí: Hội thoại 4.\n\nTranscript: “it's really useful for them to start early” … “when they start school” … “I can't get a free place for my son”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching",
+       "questionText": "Primary school",
+       "correctAnswer": "B",
+       "explanation": "Dịch: Tiểu học\n\nVị trí: Hội thoại 2.\n\nTranscript: “It's always difficult when they start school” … “it's the law - she has to go!”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "Secondary school",
+       "correctAnswer": "F",
+       "explanation": "Dịch: Trung học\n\nVị trí: Hội thoại 6.\n\nTranscript: “it's not like his last school, when he did everything in the same class. He has to make sure he knows his timetable and gets to the right classroom”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching",
+       "questionText": "Sixth form college",
+       "correctAnswer": "G",
+       "explanation": "Dịch: Cao đẳng dự bị (16–18)\n\nVị trí: Hội thoại 7.\n\nTranscript: “My son passed all his GCSE exams and wants to go to university in two years' time” … “that new college”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching",
+       "questionText": "Further education college",
+       "correctAnswer": "A",
+       "explanation": "Dịch: Cao đẳng nghề / bổ túc\n\nVị trí: Hội thoại 1.\n\nTranscript: “I can take my exams again at the local college” … “Maybe I'll take a vocational course there instead”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "matching",
+       "questionText": "University",
+       "correctAnswer": "E",
+       "explanation": "Dịch: Đại học\n\nVị trí: Hội thoại 5.\n\nTranscript: “my daughter is off tomorrow to start her degree course - a whole new adventure in a new city”"
+      },
+      {
+       "questionNumber": 7,
+       "type": "matching",
+       "questionText": "Adult education",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Giáo dục người lớn\n\nVị trí: Hội thoại 3.\n\nTranscript: “this evening course in photography… only costs £150 for the term” … “to be learning something new again after so many years”"
+      }
+     ]
+    },
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 8–14",
+     "instruction": "Read the information A–G about different educational institutions in the UK. Listen again and choose the correct information for each type of education. (Ex. 2)",
+     "matchingOptions": [
+      "This is usually the first time students become completely independent. It's normal in the UK for these students to study in places a long way from their homes.",
+      "You can take courses in all kinds of subjects, usually after work or at the weekend. The courses are usually quite cheap.",
+      "The purpose of a vocational course is to prepare students for work in a certain profession, like hairdressing or car mechanics.",
+      "Students no longer study in one classroom, but have to go to different classrooms depending on the subjects that they are studying.",
+      "Parents can choose to send their children here. Many places are free, but parents often have to pay.",
+      "When children are required to start full-time education, the majority of them go to this institution.",
+      "Although students can prepare to pass exams for university entry at their schools, they can also choose to go to this special institution for two years."
+     ],
+     "matchingOptionsTitle": "Information",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 8,
+       "type": "matching",
+       "questionText": "Nursery",
+       "correctAnswer": "E",
+       "explanation": "Dịch: Nursery\n\nPhân tích: Không bắt buộc, có chỗ miễn phí nhưng thường phải trả tiền (E)."
+      },
+      {
+       "questionNumber": 9,
+       "type": "matching",
+       "questionText": "Primary school",
+       "correctAnswer": "F",
+       "explanation": "Dịch: Primary school\n\nPhân tích: Bắt buộc theo luật — đa số trẻ đi học ở đây (F)."
+      },
+      {
+       "questionNumber": 10,
+       "type": "matching",
+       "questionText": "Secondary school",
+       "correctAnswer": "D",
+       "explanation": "Dịch: Secondary school\n\nPhân tích: Học ở nhiều phòng theo môn (D)."
+      },
+      {
+       "questionNumber": 11,
+       "type": "matching",
+       "questionText": "Sixth form college",
+       "correctAnswer": "G",
+       "explanation": "Dịch: Sixth form college\n\nPhân tích: Học 2 năm để thi vào đại học (G)."
+      },
+      {
+       "questionNumber": 12,
+       "type": "matching",
+       "questionText": "Further education college",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Further education college\n\nPhân tích: Khóa học nghề (C)."
+      },
+      {
+       "questionNumber": 13,
+       "type": "matching",
+       "questionText": "University",
+       "correctAnswer": "A",
+       "explanation": "Dịch: University\n\nPhân tích: Lần đầu tự lập, học xa nhà (A)."
+      },
+      {
+       "questionNumber": 14,
+       "type": "matching",
+       "questionText": "Adult education",
+       "correctAnswer": "B",
+       "explanation": "Dịch: Adult education\n\nPhân tích: Khóa học buổi tối, giá rẻ (B)."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U07-L1"
+  },
+  {
+   "title": "Mindset 2 · Unit 7 — The education system up to 16",
+   "description": "A lecturer talks about the education system in England and Wales up to the age of 16.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_61.mp3",
+   "transcript": "Lecturer: The British education system is not the same everywhere in the UK. Scotland has its own system, and while Northern Ireland has the same basic system as England and Wales, there are some differences. Because of this, I'm going to focus mainly on England and Wales.\nThe system in England and Wales is divided into three main levels: primary, secondary and tertiary. In the first part of my lecture, I'll talk about the primary and secondary levels up to the age of 16, and in the second part I'll discuss the options between 16 and 18. Then, finally, I'll talk about tertiary, or 'higher' level, education. As in most similar countries, education at school is compulsory between the ages of five and 16. Pupils can leave school at 16 but they must stay in an approved learning environment until the age of 18. This can be full-time education, a job or volunteering combined with part-time study, or an apprenticeship, sometimes called a 'traineeship'. Before the age of five, children can attend nursery, though they don't have to attend any educational institution at all before the age of five. However, when they reach the age of four, they usually start school in an early class called 'Reception', which helps them to adjust to regular schooling.\nPrimary school runs from the ages of five to 11. The first part of primary school, between the ages of five and seven, is traditionally known as 'infant school' and this is where children learn to manipulate numbers, read and write. Traditional infant schools offer an informal education using child-centred techniques. The second part of primary school, from seven to 11, is known as 'junior school'. The education system has undergone various changes in the last 30 years, most notably with the National Curriculum, which was put in place in 1988 to specify a set of core main subjects that all school pupils have to study. These subjects have to be assessed at four key stages up to the age of 16. At certain stages, the children take exams known as 'Standard Assessment Tests', or 'SATS'. These tests are designed to check the pupils' progress against the national standards, as well as to provide teachers and parents with an assessment of their school's performance.\nKey Stage 1 assessment comes at the age of seven, when the pupils do their first 'Teacher Assessments'. Key Stage 2 comes at the age of 11, when the pupils are ready to leave primary school. Although teachers assess their pupils' progress throughout primary school, at the end of Key Stage 2, unlike in Key Stage 1, pupils have to take SATS. Key Stage 3 is reached after the first three years in secondary school, when the pupils are 14. However, this time, the students are assessed directly by the teachers and not by sitting national tests. These assessments help teachers, students and parents to decide which subjects the students should choose to prepare for Key Stage 4, when they take exams which will help decide their future career choices. Unlike SATS, these assessments, known as 'General Certificate of Secondary Education' exams, or 'GCSEs', are not primarily designed to assess progress or give schools an official statement of their performance, but to provide students with their own personal qualifications.\nThe National Curriculum defined a set of compulsory subjects. These are subjects which the law requires all students to study. There are also some subjects which pupils and students have to study at different stages. For example, Modern Foreign Languages start in primary school, and continue up to Key Stage 3, after which they're optional. In secondary school, students take Citizenship from Key Stage 3. When they enter Key Stage 4, pupils are allowed to make more choices. For example, all learners have to take History and Design and Technology up to the age of 14, but then they can choose whether to continue them or not.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–7",
+     "instruction": "The lecturer is talking about the education system in England and Wales up until the age of 16. Listen and choose the correct answers in the table. (Ex. 3)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Key stage 0 (age 4/5) — school: Nursery or Reception?",
+       "options": [
+        "Nursery",
+        "Reception"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Giai đoạn 0\n\nTranscript: “when they reach the age of four, they usually start school in an early class called 'Reception'”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Key stage 1 (age 5–7) — Primary: Infant or Junior?",
+       "options": [
+        "Infant",
+        "Junior"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Giai đoạn 1\n\nTranscript: “The first part of primary school, between the ages of five and seven, is traditionally known as 'infant school'”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Key stage 2 (age 7–11) — Primary: Infant or Junior?",
+       "options": [
+        "Infant",
+        "Junior"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Giai đoạn 2\n\nTranscript: “The second part of primary school, from seven to 11, is known as 'junior school'”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Key stage 2 — assessments: Standard Assessment Tests or Teacher Assessments?",
+       "options": [
+        "Standard Assessment Tests",
+        "Teacher Assessments"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Đánh giá giai đoạn 2\n\nTranscript: “at the end of Key Stage 2, unlike in Key Stage 1, pupils have to take SATS”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "Key stage 3 (age 11–14) — assessments: Standard Assessment Tests or Teacher Assessments?",
+       "options": [
+        "Standard Assessment Tests",
+        "Teacher Assessments"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Đánh giá giai đoạn 3\n\nTranscript: “this time, the students are assessed directly by the teachers and not by sitting national tests”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "multiple-choice",
+       "questionText": "Key stage 4 (age 14–16) — assessments: Standard Assessment Tests or General Certificates of Secondary Education?",
+       "options": [
+        "Standard Assessment Tests",
+        "General Certificates of Secondary Education"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Đánh giá giai đoạn 4\n\nTranscript: “these assessments, known as 'General Certificate of Secondary Education' exams, or 'GCSEs'”"
+      },
+      {
+       "questionNumber": 7,
+       "type": "multiple-choice",
+       "questionText": "Key stage 2 — compulsory subjects include: Modern Foreign Languages or Citizenship?",
+       "options": [
+        "Modern Foreign Languages",
+        "Citizenship"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Môn bắt buộc giai đoạn 2\n\nTranscript: “Modern Foreign Languages start in primary school, and continue up to Key Stage 3” … “students take Citizenship from Key Stage 3”\n\nPhân tích: Citizenship chỉ bắt đầu từ trung học."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U07-L2"
+  },
+  {
+   "title": "Mindset 2 · Unit 7 — Choices at 16",
+   "description": "The lecturer talks about post-16 educational opportunities.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_62.mp3",
+   "transcript": "Lecturer: Now I'd like to turn to educational opportunities between the ages of 16 and 18. There are various choices open to pupils of this age. The first thing to decide is whether to start work or to continue studying full-time. Of course, starting work means going straight into employment, although young people aged between 16 and 18 will still need either to study part-time, as well as doing their job, or to join an apprenticeship or traineeship scheme. For those who want to continue studying full-time, there are two paths: academic and vocational. Academic qualifications, mainly Advanced level exams, known as 'A levels', are taken by students aiming for university study. Vocational qualifications, such as those offered by the Business and Technology Education Council (or 'BTEC' for short), prepare pupils for a specific profession, such as engineering or computing. Most of those who wish to continue academic studies will go to the sixth form in their school or a specialist sixth form college. Alternatively, they can study A levels at a further education college, also known as an 'FE' college. Either of these routes will take students to university. On the other hand, those who wish to study a vocational qualification will typically go to a Further Education college and, after qualifying, will be ready for employment.\nThere are other options for those who want to start work at 16. Since 2015, young people between the ages of 16 and 18 must continue to learn in a specified learning environment, in addition to working for an employer. The first option is to work for an employer and study part-time for a vocational qualification, such as a National Vocational Qualification (or 'NVQ' for short). The second is to apply for an apprenticeship or traineeship. With apprenticeships, young people get to work with experienced staff and gain job-related skills. They earn a wage, although this is typically less than a 'regular' employee, and get to continue studying part-time - usually one day a week. They study towards a qualification related to the job they are doing and their apprenticeship can last anywhere between one and four years. Almost always, they are offered a permanent job by the same employer at the end of their apprenticeship.",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Questions 1–5",
+     "instruction": "The lecturer is talking about post-16 educational opportunities – the choices which pupils can make between the ages of 16 and 18. Listen and complete the diagram. Write ONE OR TWO WORDS in each gap. (Ex. 4)",
+     "imageUrl": "media:m2u07-post16.jpg",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Label 1 (continue studying: the other path besides vocational)",
+       "correctAnswer": "academic",
+       "explanation": "Dịch: Nhãn 1\n\nTranscript: “there are two paths: academic and vocational”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Label 2 (… college)",
+       "correctAnswer": "further education / FE",
+       "explanation": "Dịch: Nhãn 2\n\nTranscript: “a further education college, also known as an 'FE' college” … “those who wish to study a vocational qualification will typically go to a Further Education college”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Label 3 (after the sixth form or college)",
+       "correctAnswer": "university",
+       "explanation": "Dịch: Nhãn 3\n\nTranscript: “Either of these routes will take students to university”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Label 4 (where all the arrows end)",
+       "correctAnswer": "employment",
+       "explanation": "Dịch: Nhãn 4\n\nTranscript: “after qualifying, will be ready for employment”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Label 5 (… and job-related qualification)",
+       "correctAnswer": "apprenticeship / an apprenticeship",
+       "explanation": "Dịch: Nhãn 5\n\nTranscript: “to join an apprenticeship or traineeship scheme” … “They study towards a qualification related to the job they are doing”"
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U07-L3"
+  },
+  {
+   "title": "Mindset 2 · Unit 7 — Applying to university",
+   "description": "A school student discusses how to apply for university with a teacher.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_63.mp3",
+   "transcript": "Mr Green: So, Amanda, you want me to help you with your application. Let's have a look at the UCAS website. Do you know what 'UCAS' stands for, by the way? It's the University and Colleges Admissions Service. Have you set up an account with them yet?\nAmanda: Yes. I did it last week, but I haven't completed my application. One thing I need to know is how many universities I can apply to.\nMr Green: Well, first of all, you need to see how many offer the course you want. Remember, you'll want to choose the universities which have the best reputation, but you need to have some kind of back-up in case you don't get into your first choice. What are you studying?\nAmanda: I'm doing A levels in Biology, Chemistry and Psychology, so I'm thinking of taking Biochemistry.\nMr Green: OK. Well, there are seven good choices I could give you. Apart from Oxford and Cambridge, Imperial College in London is very good, and York is also a good possibility and easier to get into.\nAmanda: OK. I don't think I'll get into Oxford or Cambridge, so I can include York and Imperial College.\nMr Green: OK. I think you should go for those two, plus three others, because the maximum number that you can put on your application is five. How about Durham, Sheffield and Exeter?\nAmanda: OK, I'll look at those. Another thing I'm not sure about is how to make a good assessment of myself and my skills and abilities. I've always found that difficult.\nMr Green: You mean your 'personal statement'? Well, just be honest. I can help you phrase it so that it reads well, but you need to note down what you want to include. If you can do that by Friday, we can write it up together.\nAmanda: That's great! Thanks.\nMr Green: Well, that's what I'm here for - to give you the advice that you need. After you've completed your application, I can add the reference and your predicted grades before sending it to UCAS.\nAmanda: Great! After we send it in, what happens next?\nMr Green: Well, UCAS processes your application and sends it on to each university that you've chosen. Then the universities assess it and decide whether to make you an offer. Remember that your predicted grades are only provisional, which means they are not confirmed until you get your actual results, so you need to pass the exams to actually get those grades. Usually any offer from a university will be a conditional offer. That means they can't give you a definite offer because it depends on your final grades. Then, when your exam results come through, they get sent to the school here and to the universities.\nAmanda: Do I have to contact the universities to ask them about my application?\nMr Green: No. They'll contact UCAS about their offer. If you meet the predicted grades, they'll usually confirm the original offer, but if not, they don't tend to renew it or change it.\nAmanda: Oh, I hope that doesn't happen. But if it does, what can I do?\nMr Green: Well, if you don't get a place at any of your chosen universities, you can take a year off and try reapplying next year. Alternatively, you can try to get a place through 'clearing'. This is a way universities fill remaining places on their courses and it's a second chance for students to get into another university if they didn't succeed with any of their chosen ones. It's a sort of safety net, but I hope it doesn't come to that.\nAmanda: Well, thanks for your help. I'll complete my application and then come and see you on Friday.\nMr Green: Glad to help, Amanda. See you then.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–6",
+     "instruction": "A school student is discussing how to apply for university with a teacher. Listen and choose the correct word in each sentence. (Ex. 5)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Register on the UCAS website, enter your personal details and choose ___ universities which offer a course you want to study.",
+       "options": [
+        "five",
+        "seven"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Chọn bao nhiêu trường?\n\nTranscript: “there are seven good choices I could give you” … “the maximum number that you can put on your application is five”\n\nPhân tích: BẪY: seven là số gợi ý của thầy."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Write your personal ___, telling the universities about you and why they should offer you a place.",
+       "options": [
+        "statement",
+        "assessment"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Bài viết cá nhân\n\nTranscript: “You mean your 'personal statement'?”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "The ___ will be supplied by your UCAS adviser at school.",
+       "options": [
+        "reference",
+        "advice"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Thư giới thiệu\n\nTranscript: “I can add the reference and your predicted grades before sending it to UCAS”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Offers may be ___, which means you have to get certain grades.",
+       "options": [
+        "conditional",
+        "provisional"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Loại thư mời\n\nTranscript: “Usually any offer from a university will be a conditional offer”\n\nPhân tích: BẪY: \"provisional\" nói về điểm dự đoán."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "If your exam results meet the requirements, the university will ___ the offer and you can accept or reject it.",
+       "options": [
+        "confirm",
+        "renew"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Xác nhận\n\nTranscript: “If you meet the predicted grades, they'll usually confirm the original offer, but if not, they don't tend to renew it”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "multiple-choice",
+       "questionText": "Many universities use a ___ system to offer unfilled places on their courses.",
+       "options": [
+        "clearing",
+        "reapplying"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Hệ thống xét tuyển bổ sung\n\nTranscript: “you can try to get a place through 'clearing'”"
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U07-L4"
+  },
+  {
+   "title": "Mindset 2 · Unit 7 — A new student and his tutor",
+   "description": "A student who has just started university discusses his course with a tutor.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_64.mp3",
+   "transcript": "Dr Harris: Hi, Terry. Come in. What can I do for you?\nTerry: Hi, Dr Harris. Well, I just wanted to check on some information about the course, as it's all new to me.\nDr Harris: Of course. What do you need to know?\nTerry: Well, first of all, I'm not sure exactly what a seminar is for. We never had them at school. I know it's to discuss things together, but is it more than that?\nDr Harris: Well, yes, you're right, it is really. You see, at university we typically have lectures, you know, with about 100 or 200 students in the lecture theatre together. It's a one-way form of learning. The lecturer sets out the topic and discusses it and you take notes. Then you need to review your notes following the lecture and also do some extra reading.\nTerry: And where does the seminar fit in?\nDr Harris: It could come at any time once you've had some time to think about the lecture. When you attend the seminar, you should have some of your own ideas to discuss with the other students, usually up to ten of you. It allows you to discuss the topic, exchange ideas and prepare for your assignments.\nTerry: OK, thanks. And what about tutorials? Are they like seminars?\nDr Harris: Well, usually we try to space them out over the term, so that we can have a chance to check on your progress and how well you're doing with your assignments. It often depends on when your tutor is available, and at times that might mean you have three weeks between tutorials. Normally, every term you should have one at the beginning, then usually another four, spaced out depending on your programme, and one before the holiday. So that works out at about one every two weeks.\nTerry: Right. And what about assessment? How many exams do we have to do?\nDr Harris: Well, that varies from course to course, but generally we focus on continuous assessment more than exams, though exams are, of course, very important too. We tend to assess you over the first two years through your assignments, which is over half of your overall assessment, usually 60%, and then most of your exams will come in the final year.\nTerry: OK, I'm happy with that. I get really nervous before exams. And talking about assignments, how long should they be?\nDr Harris: On all undergraduate courses, students tend to write about 3,000 words or so, but it varies depending on the question. However, there's a minimum of 2,000, and while there's no upper limit, you should be careful that you don't write too much as a lot of that might not be relevant to the question.\nTerry: So I should aim for between two and three thousand as a rule ... there's one last thing I wanted to check about assignments, and that's references. How many do we need generally?\nDr Harris: Well, as your course is international finance, you have to use banking, finance and news sources as well as academic sources. Ideally, you should have around ten references for each assignment to show that you've read widely, but we expect a minimum of five sources which are academic journals and books. From the other sources, we'd generally expect three to be used.\nTerry: OK, thank you, Dr Harris. That's cleared up a lot of things for me.\nDr Harris: Glad to be of help, Terry. See you next week.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Practise following the direction of a conversation by choosing the correct notes (a or b) for 1–5. (Ex. 6)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Seminars and lectures",
+       "options": [
+        "Students usually attend a seminar after they have been to a lecture.",
+        "Students usually attend a lecture after they have been to a seminar."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Seminar và bài giảng\n\nTranscript: “review your notes following the lecture and also do some extra reading” … “When you attend the seminar, you should have some of your own ideas to discuss”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Tutorials",
+       "options": [
+        "Students usually attend tutorials every three weeks to discuss their progress with the tutor.",
+        "Students usually attend tutorials every two weeks to discuss their progress with the tutor."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Buổi gặp tutor\n\nTranscript: “at times that might mean you have three weeks between tutorials” … “So that works out at about one every two weeks”\n\nPhân tích: Người nói điều chỉnh: \"three weeks\" chỉ là đôi khi."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Assessment",
+       "options": [
+        "The assessment over the whole course is 60% course assignments and 40% exams.",
+        "The assessment over the whole course is 40% course assignments and 60% exams."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Đánh giá\n\nTranscript: “through your assignments, which is over half of your overall assessment, usually 60%”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Length of assignments",
+       "options": [
+        "Course assignments should be no fewer than 2,000 words.",
+        "Course assignments should not be more than 3,000 words."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Độ dài bài\n\nTranscript: “there's a minimum of 2,000, and while there's no upper limit”\n\nPhân tích: BẪY: 3,000 là độ dài thường gặp, không phải giới hạn."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "References",
+       "options": [
+        "Every assignment should have at least three academic references and five non-academic ones.",
+        "Every assignment should have at least five academic references and three non-academic ones."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Tài liệu tham khảo\n\nTranscript: “we expect a minimum of five sources which are academic journals and books”"
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U07-L5"
+  },
+  {
+   "title": "Mindset 2 · Unit 7 — Exam skills: after graduation",
+   "description": "A student who is about to finish university discusses opportunities with a tutor.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_65.mp3",
+   "transcript": "Dr Ross: So, Jessica, congratulations! You got a first class degree. I always knew you could manage it. What are your plans now?\nJessica: Thank you! I couldn't have done it without all your help. Well, I'm not sure. I'm still thinking about the possibilities. I'm not sure if I want to teach or go into research, or even find a position in a company, perhaps.\nDr Ross: Well, anyone with a degree in Chemistry will always be in high demand. Have you thought about teaching?\nJessica: Yes, but don't you need a degree in education to do that?\nDr Ross: Well, many teachers do that, but, of course, you have to be sure that you want to teach before starting your degree course. In your case though, your main route into teaching would be to do a Postgraduate Certificate in Education. That's another year of study, and you'll learn everything you need to know about teaching, while also getting teaching practice in your subject at local schools. You could study that here if you want.\nJessica: That sounds like a good idea. I'll think about it, but I feel I have more studying to do in chemistry before I think about teaching it.\nDr Ross: Then you could always take a Master of Science degree. That will allow you to specialise in a particular area of chemistry, but if you want to teach in secondary schools, you won't need to have such a specialisation. It's up to you.\nJessica: Yes, I see. Actually, I've often thought of doing a research degree.\nDr Ross: That would be a very good idea, but remember that it will take you at least three years to complete that. It would probably be better to do a Master's degree first and then transfer onto a PhD course. It also costs a lot, and you may need to fund yourself while you're studying. Have you thought of going straight into work?\nJessica: Yes, I have, but I'm not sure if that's the best choice for me.\nDr Ross: Well, you could try doing a company internship for a few months. A company internship is a chance to work in a company without actually being an employee, but possibly with some pay. It'll give you a chance to develop your career and also learn more about your subject specialisation in a commercial environment. After that, you may well get a good position in the company. We have some good commercial contacts for internships here.\nJessica: That might be the best option, but I wouldn't earn much to begin with, would I?\nDr Ross: No, you wouldn't. You could try getting a permanent job now if you want. There's a graduate fair here in the city every year, as well as in other cities around the country. You'll have the chance to meet all the leading companies in the sector and discuss opportunities with them.\nJessica: It's worth considering. Well, I have a lot to think about. Can I meet you again next week?\nDr Ross: Of course. Just send me an email and let me know when would be a good time.",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Listen and complete each sentence with NO MORE THAN TWO WORDS. (Ex. 7)",
+     "noteConfig": {
+      "title": "Opportunities after university",
+      "lines": [
+       "If you want to teach in a school, the best option is to complete a __Q1__ in Education.",
+       "You can also apply to study on a __Q2__ of __Q3__ course.",
+       "If you want to do a __Q4__ like a PhD, it may take at least three years to complete.",
+       "A __Q5__ provides a good opportunity to gain commercial experience in your chosen profession.",
+       "If you want to find work, a good idea would be to attend a __Q6__, which gives you the opportunity to talk to many potential employers in one place."
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "Postgraduate Certificate",
+       "explanation": "Dịch: Muốn dạy học\n\nTranscript: “your main route into teaching would be to do a Postgraduate Certificate in Education”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "Master",
+       "explanation": "Dịch: Khóa học tiếp theo\n\nTranscript: “you could always take a Master of Science degree”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "Science",
+       "explanation": "Dịch: Khóa học tiếp theo\n\nTranscript: “a Master of Science degree”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "research degree",
+       "explanation": "Dịch: Như PhD\n\nTranscript: “I've often thought of doing a research degree”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "company internship / internship",
+       "explanation": "Dịch: Kinh nghiệm thương mại\n\nTranscript: “A company internship is a chance to work in a company without actually being an employee”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "graduate fair",
+       "explanation": "Dịch: Gặp nhà tuyển dụng\n\nTranscript: “There's a graduate fair here in the city every year”"
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U07-L6"
+  }
+ ]
+}

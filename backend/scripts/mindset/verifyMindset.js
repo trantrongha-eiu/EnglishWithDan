@@ -109,7 +109,17 @@ for (const tag of tags) {
     }
     if (new Set(nums).size !== nums.length) err(`${owner}: trùng số câu hỏi`);
     const ans = {};
-    for (const g of groups) for (const q of g.questions || []) ans[q.questionNumber] = String(q.correctAnswer).split(/\s*\/\s*/)[0];
+    for (const g of groups) {
+      for (const q of g.questions || []) {
+        if (q.type === 'multi-answer-group') {
+          // the UI writes the cluster's whole selection to every question of it
+          const cluster = g.questions.filter((x) => x.type === q.type && x.questionText === q.questionText);
+          if (cluster.length !== q.checkboxCount) err(`${owner} Q${q.questionNumber}: checkboxCount ${q.checkboxCount} ≠ ${cluster.length} câu`);
+          if (!(q.options || [])[q.correctAnswer.charCodeAt(0) - 65]) err(`${owner} Q${q.questionNumber}: đáp án ${q.correctAnswer} ngoài options`);
+          ans[q.questionNumber] = JSON.stringify(cluster.map((x) => x.correctAnswer));
+        } else ans[q.questionNumber] = String(q.correctAnswer).split(/\s*\/\s*/)[0];
+      }
+    }
     const r = grader(groups, ans);
     if (r !== nums.length) err(`${owner}: đáp án của chính bài chỉ đúng ${r}/${nums.length}`);
   };

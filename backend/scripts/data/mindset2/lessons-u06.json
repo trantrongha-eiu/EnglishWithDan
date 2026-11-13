@@ -1,0 +1,701 @@
+{
+ "modules": [
+  {
+   "code": "M2-U06",
+   "order": 6,
+   "title": "Unit 6 · Môi trường tự nhiên",
+   "titleEn": "UNIT 06: THE NATURAL ENVIRONMENT — sách tr. 108–113, 115–121",
+   "outcomes": [
+    "Reading: Yes / No / Not Given (quan điểm của người viết); summary completion (từ trong khung hoặc từ trong bài)",
+    "Grammar: so, too, either, neither để đồng ý / không đồng ý",
+    "Listening: Section 4 — hoàn thành sơ đồ quy trình; lượng từ (quantifiers); multiple choice; signposting",
+    "Từ vựng môi trường, bảo tồn, năng lượng (Sổ 3)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M2-U06-L1",
+   "moduleCode": "M2-U06",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: the environment",
+   "titleEn": "Lead-in (p. 108)",
+   "durationMinutes": 25,
+   "objectives": [
+    "Hiểu các từ về môi trường và bảo tồn: habitat, extinction, conservation, endangered, species, threaten, poach, captivity"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Chủ đề môi trường",
+     "titleEn": "The natural environment",
+     "formula": [],
+     "usage": [
+      "Môi trường là chủ đề rất hay gặp trong IELTS. Học theo họ từ: **endangered** species, risk **extinction**, **conservation** projects, loss of **habitat**, kept in **captivity**, animals are **poached**."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 8,
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 6 · Lead-in & Vocabulary: the environment — 37 từ/cụm từ",
+    "words": [
+     {
+      "word": "habitat",
+      "meaning": "môi trường sống",
+      "example": "Nevertheless, they continue to face major threats from both loss of habitat and poaching."
+     },
+     {
+      "word": "captivity",
+      "meaning": "tình trạng bị nuôi nhốt",
+      "example": "Secondly, after several generations in captivity, species could become less able to survive in the wild."
+     },
+     {
+      "word": "conservation",
+      "meaning": "sự bảo tồn",
+      "example": "How effective are conservation efforts?"
+     },
+     {
+      "word": "poach",
+      "meaning": "săn trộm",
+      "example": "The poachers are clever and use methods which are sometimes completely undetectable."
+     },
+     {
+      "word": "endangered species",
+      "meaning": "loài có nguy cơ tuyệt chủng",
+      "example": "Another way in which zoos protect endangered species is through reintroduction programmes."
+     },
+     {
+      "word": "extinction",
+      "meaning": "sự tuyệt chủng",
+      "example": "It is a method used to increase the populations of endangered species, in order to prevent extinction."
+     },
+     {
+      "word": "threaten",
+      "meaning": "đe doạ",
+      "example": "Although conservation measures have helped to prevent humans from completely destroying all natural habitats, human invasion will always be one of the greatest risks to threatened species."
+     },
+     {
+      "word": "go to great lengths to",
+      "meaning": "cố gắng hết sức để",
+      "example": "Fortunately, however, the majority of us do give it the attention it deserves and many people go to great lengths to ensure the planet is protected for future generations."
+     },
+     {
+      "word": "future generations",
+      "meaning": "các thế hệ tương lai",
+      "example": "Fortunately, however, the majority of us do give it the attention it deserves and many people go to great lengths to ensure the planet is protected for future generations."
+     },
+     {
+      "word": "decline in wildlife",
+      "meaning": "sự suy giảm động vật hoang dã",
+      "example": "Good zoos have changed their focus and are now responding to environmental problems, such as the decline in wildlife and loss of habitat."
+     },
+     {
+      "word": "biodiversity",
+      "meaning": "đa dạng sinh học",
+      "example": "The modern zoo, therefore, has developed dramatically as a major force in conserving biodiversity worldwide."
+     },
+     {
+      "word": "captive breeding",
+      "meaning": "nhân giống trong điều kiện nuôi nhốt",
+      "example": "One of the main challenges facing captive breeding programmes, however, is maintaining genetic diversity."
+     },
+     {
+      "word": "reintroduction programme",
+      "meaning": "chương trình thả về tự nhiên",
+      "example": "Another way in which zoos protect endangered species is through reintroduction programmes."
+     },
+     {
+      "word": "genetic diversity",
+      "meaning": "đa dạng di truyền",
+      "example": "One of the main challenges facing captive breeding programmes, however, is maintaining genetic diversity."
+     },
+     {
+      "word": "raise money for",
+      "meaning": "gây quỹ cho",
+      "example": "Visiting the zoo not only raises money for conservation projects, but also reminds individuals about environmental issues."
+     },
+     {
+      "word": "increase awareness of",
+      "meaning": "nâng cao nhận thức về",
+      "example": "Zoo visits increase awareness of environmental problems."
+     },
+     {
+      "word": "critically endangered",
+      "meaning": "cực kỳ nguy cấp",
+      "example": "Currently there are fewer than 900 surviving and they are classed as critically endangered."
+     },
+     {
+      "word": "territory",
+      "meaning": "lãnh thổ, vùng sinh sống",
+      "example": "They are endangered for several reasons, but most significantly because humans are moving further into their territory and consequently destroying their habitats."
+     },
+     {
+      "word": "put effort into",
+      "meaning": "dồn công sức vào",
+      "example": "Many organisations put a lot of effort into conservation projects."
+     },
+     {
+      "word": "exotic animals",
+      "meaning": "động vật ngoại lai, quý hiếm",
+      "example": "Whilst there remains a demand for exotic animals in society, endangered species will always be at risk of being hunted and poached."
+     },
+     {
+      "word": "nature reserve",
+      "meaning": "khu bảo tồn thiên nhiên",
+      "example": "A recent case involved 300 elephants being killed in Zimbabwe's largest nature reserve."
+     },
+     {
+      "word": "ecosystem",
+      "meaning": "hệ sinh thái",
+      "example": "Poachers put poison in the water holes, killing hundreds of elephants and destroying an entire ecosystem."
+     },
+     {
+      "word": "survive in the wild",
+      "meaning": "sống sót ngoài tự nhiên",
+      "example": "Secondly, after several generations in captivity, species could become less able to survive in the wild."
+     },
+     {
+      "word": "conservation measures",
+      "meaning": "các biện pháp bảo tồn",
+      "example": "Although conservation measures have helped to prevent humans from completely destroying all natural habitats, human invasion will always be one of the greatest risks to threatened species."
+     },
+     {
+      "word": "safeguard",
+      "meaning": "bảo vệ",
+      "example": "These efforts are not enough to safeguard some species in the long term."
+     },
+     {
+      "word": "sought-after",
+      "meaning": "được săn lùng, được ưa chuộng",
+      "example": "Rhino horn is still a sought-after product in some countries."
+     },
+     {
+      "word": "cope with",
+      "meaning": "đối phó, thích nghi với",
+      "example": "Animals bred in captivity may not cope with life in the wild."
+     },
+     {
+      "word": "morally",
+      "meaning": "về mặt đạo đức",
+      "example": "It is commonly believed that taking steps to protect the environment is morally the right thing to do."
+     },
+     {
+      "word": "heavily criticised",
+      "meaning": "bị chỉ trích nặng nề",
+      "example": "The role of the modern zoo Initially seen purely as centres of entertainment, zoos were often heavily criticised in society for keeping animals captive."
+     },
+     {
+      "word": "respond to",
+      "meaning": "phản ứng, đối phó với",
+      "example": "Good zoos have changed their focus and are now responding to environmental problems, such as the decline in wildlife and loss of habitat."
+     },
+     {
+      "word": "dramatically",
+      "meaning": "một cách mạnh mẽ, đáng kể",
+      "example": "The modern zoo, therefore, has developed dramatically as a major force in conserving biodiversity worldwide."
+     },
+     {
+      "word": "release",
+      "meaning": "thả ra",
+      "example": "These programmes release animals that have been in the zoo back into their natural habitats."
+     },
+     {
+      "word": "restricted conditions",
+      "meaning": "điều kiện hạn chế",
+      "example": "Captive breeding is the process of breeding animals outside their natural environment in restricted conditions such as farms, zoos or other closed areas."
+     },
+     {
+      "word": "refugee",
+      "meaning": "người tị nạn",
+      "example": "Consequently, gorillas have been killed by bombs and war refugees have removed trees from the forests to create new homes and farms."
+     },
+     {
+      "word": "undetectable",
+      "meaning": "không thể phát hiện",
+      "example": "The poachers are clever and use methods which are sometimes completely undetectable."
+     },
+     {
+      "word": "repopulate",
+      "meaning": "tái tạo quần thể",
+      "example": "Poachers often target larger animals - animals which take a long time to repopulate, such as rhinos and elephants."
+     },
+     {
+      "word": "human invasion",
+      "meaning": "sự xâm lấn của con người",
+      "example": "Human invasion also brings with it the risk of disease and the threat of being poached."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M2-U06-L2",
+   "moduleCode": "M2-U06",
+   "order": 2,
+   "title": "📖 Reading: Yes / No / Not Given & summary completion",
+   "titleEn": "Yes / No / Not Given tasks · Summary completion tasks · Exam skills (pp. 109–113)",
+   "durationMinutes": 60,
+   "objectives": [
+    "Phân biệt YES (đồng ý với quan điểm người viết), NO (trái với quan điểm), NOT GIVEN (không biết người viết nghĩ gì)",
+    "Làm summary completion với từ trong khung (có distractor) và với từ trong bài",
+    "Kiểm tra ngữ pháp của câu sau khi điền"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Yes / No / Not Given",
+     "titleEn": "Yes / No / Not Given tasks",
+     "formula": [
+      "YES — phát biểu **khớp với quan điểm/nhận định** của người viết",
+      "NO — phát biểu **trái ngược** quan điểm người viết",
+      "NOT GIVEN — **không thể biết** người viết nghĩ gì về điều này"
+     ],
+     "usage": [
+      "\"View\" = ý kiến cá nhân; \"claim\" = điều người viết khẳng định là đúng.",
+      "Thứ tự: ① đọc kỹ instructions → ② skim bài → ③ đọc phát biểu, gạch chân key words → ④ scan tìm key words hoặc từ đồng nghĩa → ⑤ gạch chân trong bài → ⑥ đọc câu trước và sau → ⑦ chọn Yes/No/Not Given.",
+      "Chú ý từ tuyệt đối: \"**Most** people do not care\" ↔ bài nói \"**the majority of us** do give it the attention it deserves\" → NO. \"**All** zoos\" ↔ \"**many** zoos\" → NO."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Summary completion",
+     "titleEn": "Summary completion tasks",
+     "formula": [],
+     "usage": [
+      "Hai dạng: chọn từ trong **khung** (có từ thừa, có distractor) hoặc lấy từ **trong bài**.",
+      "Bản tóm tắt thường chỉ bao một **phần** bài.",
+      "Xác định **loại từ** cần điền (noun, adjective…) trước khi scan.",
+      "Điền xong đọc lại — câu phải **đúng ngữ pháp**: \"This is handled ___\" cần trạng từ (carefully, không phải animal)."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 13,
+   "practiceLinks": [
+    {
+     "ref": "reading:M2-U06-R1",
+     "kind": "reading",
+     "title": "The role of the modern zoo — Yes/No/Not Given + summary (Ex. 4, 7)",
+     "note": "4 câu Y/N/NG + 4 chỗ trống chọn từ trong khung."
+    },
+    {
+     "ref": "reading:M2-U06-R2",
+     "kind": "reading",
+     "title": "Mountain gorillas — summary from the text (Ex. 10)",
+     "note": "ONE WORD from the text."
+    },
+    {
+     "ref": "reading:M2-U06-R3",
+     "kind": "reading",
+     "title": "Exam skills: How effective are conservation efforts? (Ex. 11–12)",
+     "note": "4 câu Y/N/NG + 6 chỗ trống chọn A–L."
+    }
+   ]
+  },
+  {
+   "code": "M2-U06-L3",
+   "moduleCode": "M2-U06",
+   "order": 3,
+   "title": "🧩 Grammar focus: so, too, either and neither",
+   "titleEn": "Grammar focus: so, too, either and neither (p. 110)",
+   "durationMinutes": 25,
+   "objectives": [
+    "Đồng ý với câu khẳng định: Me too / So do I / I do, too",
+    "Đồng ý với câu phủ định: Me neither / Neither do I / I don't either",
+    "Không đồng ý: I don't / I'm not / I would / I wouldn't"
+   ],
+   "keyLanguage": [
+    "Đồng ý (khẳng định): \"I love visiting zoos.\" — **Me too. / So do I. / I do, too.**",
+    "Đồng ý (phủ định): \"I don't like seeing animals in cages.\" — **Me neither. / Neither do I. / I don't either.**",
+    "Trợ động từ phải **khớp** với câu gốc: I'm interested → So **am** I · I would love → So **would** I / I **wouldn't** (không đồng ý)."
+   ],
+   "theory": [
+    {
+     "title": "So, too, either, neither",
+     "titleEn": "Agreeing and disagreeing",
+     "formula": [
+      "So + trợ động từ + S (đồng ý với câu khẳng định)",
+      "Neither + trợ động từ + S (đồng ý với câu phủ định)",
+      "S + trợ động từ (+ not) + too / either"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "'I'm more interested in animals in the wild.' — 'So am I.'",
+       "vi": ""
+      },
+      {
+       "en": "'I don't know anything about endangered species.' — 'Neither do I.'",
+       "vi": ""
+      },
+      {
+       "en": "'I would love to go on a safari holiday.' — 'I wouldn't.'",
+       "vi": "Không đồng ý."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 4
+  },
+  {
+   "code": "M2-U06-L4",
+   "moduleCode": "M2-U06",
+   "order": 4,
+   "title": "🎧 Listening: diagrams, quantifiers, multiple choice & signposting",
+   "titleEn": "Lead-in · Completing diagrams · Quantifiers · Multiple-choice tasks · Understanding signposting · Exam skills (pp. 115–121)",
+   "durationMinutes": 65,
+   "objectives": [
+    "Phân loại nguồn năng lượng tái tạo / không tái tạo",
+    "Hoàn thành sơ đồ quy trình (fracking)",
+    "Dùng đúng lượng từ với danh từ đếm được / không đếm được",
+    "Làm multiple choice: nghe ý, không nghe từ trùng",
+    "Nhận ra signposting để theo dõi bài giảng"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Hoàn thành sơ đồ",
+     "titleEn": "Completing diagrams",
+     "formula": [],
+     "usage": [
+      "Nhìn cả sơ đồ để nắm ý chung, nhưng **tập trung vào chỗ trống**.",
+      "Không cần hiểu hết từ trong sơ đồ.",
+      "Vòng tròn lớn phóng to một phần quan trọng; mũi tên cho biết **trình tự** (bắt đầu ở giếng, đi xuống, rẽ ngang, khí đi lên).",
+      "Đoán **loại từ** cho mỗi chỗ trống (lớp đất → danh từ, thứ thoát ra → danh từ)."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Lượng từ",
+     "titleEn": "Quantifiers with countable and uncountable nouns",
+     "formula": [
+      "Chỉ với danh từ đếm được: few, fewer, several, many, every",
+      "Chỉ với danh từ không đếm được: (a) little, much, less",
+      "Với cả hai: all, a lot of, more, some"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "Few of the renewable energy sources… have been developed.",
+       "vi": "sources đếm được → few."
+      },
+      {
+       "en": "much more gas is used",
+       "vi": "gas không đếm được → much."
+      }
+     ],
+     "notes": []
+    },
+    {
+     "title": "Multiple choice và signposting",
+     "titleEn": "Multiple choice · Signposting",
+     "formula": [],
+     "usage": [
+      "Đừng nghe tìm **từ trùng** với câu hỏi; hãy hiểu **ý** người nói: \"according to supporters of fracking\" = \"those who are in favour of fracking\"; \"prices will come down\" = \"lower energy bills\".",
+      "Nghe đến hết trước khi chọn.",
+      "**Signposting**: to begin with, first, secondly, the last (trình tự); what's more (thêm ý); while (đối lập); now I'd like to turn to (đổi chủ đề); clearly (thái độ); to summarise (tóm tắt)."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 5,
+   "totalPoints": 30,
+   "images": [
+    {
+     "url": "media:m2u06-pictures.jpg",
+     "caption": "Ex. 2 (p. 116): pictures A–D"
+    },
+    {
+     "url": "media:m2u06-fracking.jpg",
+     "caption": "Ex. 4 (p. 116): the fracking process"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M2-U06-L1",
+     "kind": "listening",
+     "title": "Energy sources (Ex. 1)",
+     "note": "Renewable hay non-renewable?"
+    },
+    {
+     "ref": "listening:M2-U06-L2",
+     "kind": "listening",
+     "title": "Words from the lecture (Ex. 2)",
+     "note": "Nối mô tả với tranh A–D."
+    },
+    {
+     "ref": "listening:M2-U06-L3",
+     "kind": "listening",
+     "title": "The fracking process: complete the diagram (Ex. 4)",
+     "note": "NO MORE THAN ONE WORD AND/OR A NUMBER."
+    },
+    {
+     "ref": "listening:M2-U06-L4",
+     "kind": "listening",
+     "title": "Fracking in different countries: quantifiers (Ex. 6)",
+     "note": "Chọn lượng từ đúng với ý người nói."
+    },
+    {
+     "ref": "listening:M2-U06-L5",
+     "kind": "listening",
+     "title": "The benefits of fracking: the main benefit (Ex. 8)",
+     "note": "Nghe ý, không nghe từ trùng."
+    },
+    {
+     "ref": "listening:M2-U06-L6",
+     "kind": "listening",
+     "title": "Benefits: jobs and businesses (Ex. 11)",
+     "note": "Gạch chân từ quan trọng trước khi nghe."
+    },
+    {
+     "ref": "listening:M2-U06-L7",
+     "kind": "listening",
+     "title": "Benefits for the environment (Ex. 13)",
+     "note": "2 câu multiple choice."
+    },
+    {
+     "ref": "listening:M2-U06-L8",
+     "kind": "listening",
+     "title": "People's concerns about fracking (Ex. 14)",
+     "note": "4 câu multiple choice."
+    },
+    {
+     "ref": "listening:M2-U06-L9",
+     "kind": "listening",
+     "title": "Exam skills: the future of energy (Ex. 17)",
+     "note": "5 câu multiple choice."
+    }
+   ],
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 6 · Listening: diagrams, quantifiers, multiple choice & signposting — 38 từ/cụm từ",
+    "words": [
+     {
+      "word": "energy source",
+      "meaning": "nguồn năng lượng",
+      "example": "As we've already seen, there are basically two types of energy source - renewable and non-renewable."
+     },
+     {
+      "word": "renewable",
+      "meaning": "tái tạo được",
+      "example": "As we've already seen, there are basically two types of energy source - renewable and non-renewable."
+     },
+     {
+      "word": "non-renewable",
+      "meaning": "không tái tạo được",
+      "example": "As we've already seen, there are basically two types of energy source - renewable and non-renewable."
+     },
+     {
+      "word": "polluting",
+      "meaning": "gây ô nhiễm",
+      "example": "Historically, coal has been the most-used form of non-renewable energy, but it has also been the most polluting."
+     },
+     {
+      "word": "it's widely accepted that",
+      "meaning": "người ta thừa nhận rộng rãi rằng",
+      "example": "It's widely accepted that we need to use less of it to help protect the environment for the future."
+     },
+     {
+      "word": "wind turbine",
+      "meaning": "tua-bin gió",
+      "example": "… and which has now been developed further, giving us wind turbines which produce electricity."
+     },
+     {
+      "word": "dam",
+      "meaning": "đập nước",
+      "example": "… for many years as a renewable resource, especially with dams on rivers and lakes, but these are expensive to create and maintain, and can …"
+     },
+     {
+      "word": "coastal areas",
+      "meaning": "vùng ven biển",
+      "example": "… in areas with a lot of sun or in coastal areas."
+     },
+     {
+      "word": "extract",
+      "meaning": "khai thác, chiết xuất",
+      "example": "This is a hole in the ground which is dug in order to extract water, oil or gas."
+     },
+     {
+      "word": "drill",
+      "meaning": "khoan",
+      "example": "If a well is drilled into shale, the gas will not come out by itself."
+     },
+     {
+      "word": "invest in",
+      "meaning": "đầu tư vào",
+      "example": "Billions of dollars are being invested in gas exploration and Australia may well become the biggest exporter of gas over the next few years."
+     },
+     {
+      "word": "employment opportunities",
+      "meaning": "cơ hội việc làm",
+      "example": "Furthermore, as with all industrial developments, employment opportunities increase, with most new workers recruited from the population in the surrounding area …"
+     },
+     {
+      "word": "consumer",
+      "meaning": "người tiêu dùng",
+      "example": "As the supply of shale gas grows, energy prices will come down and consumers will save a lot of money, according to supporters of fracking."
+     },
+     {
+      "word": "greenhouse gas",
+      "meaning": "khí nhà kính",
+      "example": "… burning gas produces carbon dioxide, which is the main greenhouse gas causing global warming, the quantities that it produces are far less than the …"
+     },
+     {
+      "word": "global warming",
+      "meaning": "sự nóng lên toàn cầu",
+      "example": "It may well be true that fracking can slow down global warming for a while and allow us to develop better renewable resources."
+     },
+     {
+      "word": "well founded",
+      "meaning": "có cơ sở",
+      "example": "Some of these are real, but it's possible that they're not as well founded as opponents of fracking would have us believe."
+     },
+     {
+      "word": "contaminate",
+      "meaning": "làm ô nhiễm",
+      "example": "If the production site is badly maintained, dangerous chemicals can get into water sources and rivers and contaminate the water."
+     },
+     {
+      "word": "earthquake",
+      "meaning": "động đất",
+      "example": "The last environmental concern connected with drilling is that of earthquakes."
+     },
+     {
+      "word": "agriculture",
+      "meaning": "nông nghiệp",
+      "example": "… I discussed earlier, there are often negative effects on agriculture and farming in these areas and there's good evidence that house prices fall, because …"
+     },
+     {
+      "word": "leak into",
+      "meaning": "rò rỉ vào",
+      "example": "… if there are problems with drilling, the chemicals can leak into the drinking water supply and cause problems for the local population."
+     },
+     {
+      "word": "residents",
+      "meaning": "cư dân",
+      "example": "There've even been reports of residents opening their water taps and seeing brown water and mud coming out."
+     },
+     {
+      "word": "protest",
+      "meaning": "biểu tình, phản đối",
+      "example": "In many places around the world, local people have protested angrily when they've found out that fracking is planned in their area."
+     },
+     {
+      "word": "consumption",
+      "meaning": "sự tiêu thụ",
+      "example": "What's clear is that fracking isn't the answer to the growing worldwide need for energy as countries increase their consumption."
+     },
+     {
+      "word": "sea levels rise",
+      "meaning": "mực nước biển dâng",
+      "example": "Ice in the polar regions will melt and sea levels will rise, which will put coastal cities in greater danger of flooding."
+     },
+     {
+      "word": "run out",
+      "meaning": "cạn kiệt",
+      "example": "Certainly, coal, oil and gas will run out one day, and if we haven't developed other forms of renewable energy, we'll …"
+     },
+     {
+      "word": "oppose",
+      "meaning": "phản đối",
+      "example": "Environmental groups also oppose fracking, not just because they want to protect people living in areas where fracking …"
+     },
+     {
+      "word": "persuade",
+      "meaning": "thuyết phục",
+      "example": "… want to see continued action and are trying to persuade governments to develop wind, wave and solar power, as well as other renewable forms …"
+     },
+     {
+      "word": "coal",
+      "meaning": "than đá",
+      "example": "Clearly, we need to reduce, and eventually stop, using non-renewable resources like coal, oil and gas."
+     },
+     {
+      "word": "natural gas",
+      "meaning": "khí tự nhiên",
+      "example": "Over the last 200 years or so, petroleum has become the most important non-renewable source, though natural gas is overtaking it as it's far cleaner and less polluting."
+     },
+     {
+      "word": "hydroelectric power",
+      "meaning": "thuỷ điện",
+      "example": "Hydroelectric power has been in use for many years as a renewable resource, especially with …"
+     },
+     {
+      "word": "solar power",
+      "meaning": "năng lượng mặt trời",
+      "example": "However, these resources, like wind, wave and solar power, are currently far more expensive to develop than shale gas production."
+     },
+     {
+      "word": "licence",
+      "meaning": "giấy phép",
+      "example": "More recently, a huge amount of shale gas has been found in many areas of the country and drilling companies are trying to get licences to drill in these areas."
+     },
+     {
+      "word": "estimate",
+      "meaning": "ước tính",
+      "example": "Some people estimate that it produces up to 50% less than the other fuels."
+     },
+     {
+      "word": "supply",
+      "meaning": "nguồn cung",
+      "example": "However, it's not only the water supply which can be affected."
+     },
+     {
+      "word": "chemicals",
+      "meaning": "hoá chất",
+      "example": "Then, a mixture of water, sand and various chemicals are sent down into the well."
+     },
+     {
+      "word": "atmosphere",
+      "meaning": "bầu khí quyển",
+      "example": "Already, the amount of carbon dioxide in the atmosphere has reached 400 parts per million."
+     },
+     {
+      "word": "polar regions",
+      "meaning": "vùng cực",
+      "example": "Ice in the polar regions will melt and sea levels will rise, which will put coastal cities in greater danger of flooding."
+     },
+     {
+      "word": "melt",
+      "meaning": "tan chảy",
+      "example": "Ice in the polar regions will melt and sea levels will rise, which will put coastal cities in greater danger of flooding."
+     }
+    ]
+   }
+  }
+ ]
+}

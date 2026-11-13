@@ -1,0 +1,640 @@
+{
+ "exercises": [
+  {
+   "code": "M2-U08-L1-E01",
+   "lessonCode": "M2-U08-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "True, False or Not Given? Three festivals (Ex. 3–5)",
+   "instruction": "Read statements 1–3 relating to the short texts and decide if they are True, False or Not Given.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Three festivals\n\n**La Tomatina (Spain)** La Tomatina is the world's biggest food fight! It is always held on the last Wednesday of August every year in Bunol, a town near Valencia in Spain. Because it is such fun, it has become very popular and officials have had to limit the event to 20,000 people by issuing tickets. More than 100 metric tons of over-ripe tomatoes are thrown in the street during the event.\n\n**Boryeong Mud Festival (South Korea)** A cosmetics company in South Korea created a line of beauty products which featured mud from the Boryeong mud flats as a main ingredient. The company did not want to spend money on advertising, so the Boryeong Mud Festival was born. This allowed potential customers to feel the benefits of the special mud. The festival is home to mud slides, a mud prison, mud pools and mud skiing. You can also enjoy live music, acupuncture and a fireworks display.\n\n**Dia de los Muertos (Day of the Dead, Mexico)** This Mexican holiday is celebrated throughout Mexico and around the world. The holiday focuses on remembering friends and family members who have died. It is particularly celebrated in Mexico, where the day is a bank holiday. Activities involved in the holiday include building private altars, cleaning the graves of loved ones and telling funny stories about dead relatives. Street parties, parades and festivals are also a common feature of the celebration.",
+    "caption": "Three festivals (pp. 148–149)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Any number of people can attend La Tomatina.",
+     "options": [
+      {
+       "id": "A",
+       "text": "True"
+      },
+      {
+       "id": "B",
+       "text": "False"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Từ làm câu này sai: officials have had to **limit** the event to 20,000 people."
+    },
+    {
+     "id": "q2",
+     "prompt": "The mud festival is used to sell a beauty product.",
+     "options": [
+      {
+       "id": "A",
+       "text": "True"
+      },
+      {
+       "id": "B",
+       "text": "False"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Cụm làm câu này đúng: the company did not want to spend money on **advertising**, so the festival was born."
+    },
+    {
+     "id": "q3",
+     "prompt": "On Dia de los muertos people do the same activities their loved ones enjoyed in life.",
+     "options": [
+      {
+       "id": "A",
+       "text": "True"
+      },
+      {
+       "id": "B",
+       "text": "False"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Bài chỉ liệt kê hoạt động (altars, cleaning graves, funny stories…), không nói người đã khuất từng thích chúng."
+    }
+   ]
+  },
+  {
+   "code": "M2-U08-L1-E02",
+   "lessonCode": "M2-U08-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "True, False or Not Given? Birthdays (Ex. 6)",
+   "instruction": "Read this short text and answer True, False or Not Given.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Birthdays\n\nBirthdays take place once a year and celebrate the day you were born. Many people have a party on their birthday and socialise with family and friends. A birthday cake, with candles on the top, is often presented at this celebration, together with gifts and cards.",
+    "caption": "Birthdays (p. 150)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "The candles on the cake often represent your age.",
+     "options": [
+      {
+       "id": "A",
+       "text": "True"
+      },
+      {
+       "id": "B",
+       "text": "False"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Ngoài đời thường đúng, nhưng bài không nói → Not Given."
+    },
+    {
+     "id": "q2",
+     "prompt": "Everyone has a party on their birthday.",
+     "options": [
+      {
+       "id": "A",
+       "text": "True"
+      },
+      {
+       "id": "B",
+       "text": "False"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Bài: \"**Many** people have a party\" — không phải everyone."
+    },
+    {
+     "id": "q3",
+     "prompt": "Presents are often given on birthdays.",
+     "options": [
+      {
+       "id": "A",
+       "text": "True"
+      },
+      {
+       "id": "B",
+       "text": "False"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"together with **gifts** and cards\" (gifts = presents)."
+    },
+    {
+     "id": "q4",
+     "prompt": "Everyone likes birthdays.",
+     "options": [
+      {
+       "id": "A",
+       "text": "True"
+      },
+      {
+       "id": "B",
+       "text": "False"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "Birthdays are celebrated differently around the world.",
+     "options": [
+      {
+       "id": "A",
+       "text": "True"
+      },
+      {
+       "id": "B",
+       "text": "False"
+      },
+      {
+       "id": "C",
+       "text": "Not Given"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U08-L1-E03",
+   "lessonCode": "M2-U08-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Tips for True / False / Not Given (Ex. 7)",
+   "instruction": "Complete the tips using ONE word from the box in each gap: carefully, change, order, rely, same, synonyms. There is one word you do not need.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Do not ____ on matching words in the text and question to decide on your answer.",
+     "blanks": [
+      {
+       "accept": [
+        "rely"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "Answers are in the same ____ as they appear in the text.",
+     "blanks": [
+      {
+       "accept": [
+        "order"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "True means that the information is the ____ as in the text, not similar.",
+     "blanks": [
+      {
+       "accept": [
+        "same"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "Read the relevant part of the text very ____.",
+     "blanks": [
+      {
+       "accept": [
+        "carefully"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "It is useful to look for ____, as the words in the question are rarely the same as those in the text.",
+     "blanks": [
+      {
+       "accept": [
+        "synonyms"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U08-L2-E01",
+   "lessonCode": "M2-U08-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "True, False or Not Given? Key words (Ex. 3–8)",
+   "instruction": "Which kind of evidence leads to each answer?",
+   "categories": [
+    {
+     "id": "t",
+     "label": "True"
+    },
+    {
+     "id": "f",
+     "label": "False"
+    },
+    {
+     "id": "n",
+     "label": "Not Given"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "The statement means the same as the text, using synonyms.",
+     "category": "t",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "The text says something different (e.g. \"many\" in the text, \"everyone\" in the statement).",
+     "category": "f",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "The text contradicts a word like \"only\" or \"any number\".",
+     "category": "f",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "It may be true in real life, but the text does not say it.",
+     "category": "n",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "The text does not mention the topic at all.",
+     "category": "n",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U08-L3-E01",
+   "lessonCode": "M2-U08-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "First or second conditional? (Ex. 9)",
+   "instruction": "Read statements a and b: a If I have the time this weekend, I will come to the Dragon Boat Festival with you. b If I could attend any festival in the world, it would be the carnival in Rio de Janeiro.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "In which statement does the speaker believe that attending the festival is unlikely to happen?",
+     "options": [
+      {
+       "id": "A",
+       "text": "b"
+      },
+      {
+       "id": "B",
+       "text": "a"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "In which statement does the speaker believe that attending the festival may happen?",
+     "options": [
+      {
+       "id": "A",
+       "text": "a"
+      },
+      {
+       "id": "B",
+       "text": "b"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Statement a is the …",
+     "options": [
+      {
+       "id": "A",
+       "text": "first conditional"
+      },
+      {
+       "id": "B",
+       "text": "second conditional"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "Statement b is the …",
+     "options": [
+      {
+       "id": "A",
+       "text": "second conditional"
+      },
+      {
+       "id": "B",
+       "text": "first conditional"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U08-L3-E02",
+   "lessonCode": "M2-U08-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "The rules (Ex. 9)",
+   "instruction": "Complete these rules with these words: past simple, present simple, infinitive, would.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "First conditional: If + ____, … will + ____",
+     "blanks": [
+      {
+       "accept": [
+        "present simple"
+       ]
+      },
+      {
+       "accept": [
+        "infinitive"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "Second conditional: If + ____, … ____ + infinitive",
+     "blanks": [
+      {
+       "accept": [
+        "past simple"
+       ]
+      },
+      {
+       "accept": [
+        "would"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U08-L3-E03",
+   "lessonCode": "M2-U08-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "First or second conditional? (Ex. 10)",
+   "instruction": "Complete the sentences with suitable verbs, using either the first or second conditional form.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "If you ____ to the festival in town tomorrow, there ____ crowds of people. You did say you were going.",
+     "blanks": [
+      {
+       "accept": [
+        "go"
+       ]
+      },
+      {
+       "accept": [
+        "will be",
+        "'ll be"
+       ]
+      }
+     ],
+     "explanation": "Có khả năng → loại 1."
+    },
+    {
+     "id": "g2",
+     "prompt": "If I ____ the time, I ____ to more festivals. I am just too busy with other things.",
+     "blanks": [
+      {
+       "accept": [
+        "had"
+       ]
+      },
+      {
+       "accept": [
+        "would go",
+        "'d go"
+       ]
+      }
+     ],
+     "explanation": "Thực tế không có thời gian → loại 2."
+    },
+    {
+     "id": "g3",
+     "prompt": "If I ____ the time, I ____ bake a cake for the party. I should be able to do it this evening.",
+     "blanks": [
+      {
+       "accept": [
+        "have"
+       ]
+      },
+      {
+       "accept": [
+        "will",
+        "'ll"
+       ]
+      }
+     ],
+     "explanation": "Có khả năng → loại 1."
+    },
+    {
+     "id": "g4",
+     "prompt": "If I ____ enough money, I ____ celebrate New Year in Australia. I just don't have the money at the moment.",
+     "blanks": [
+      {
+       "accept": [
+        "had"
+       ]
+      },
+      {
+       "accept": [
+        "would",
+        "'d"
+       ]
+      }
+     ],
+     "explanation": "Giả định → loại 2."
+    },
+    {
+     "id": "g5",
+     "prompt": "If he ____ this fancy dress costume this afternoon, he ____ be very hot in this summer heat.",
+     "blanks": [
+      {
+       "accept": [
+        "wears"
+       ]
+      },
+      {
+       "accept": [
+        "will",
+        "'ll"
+       ]
+      }
+     ],
+     "explanation": "Có khả năng → loại 1."
+    }
+   ]
+  },
+  {
+   "code": "M2-U08-L4-E01",
+   "lessonCode": "M2-U08-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Key words for each event (Ex. 1)",
+   "instruction": "Which type of event does each group of key words suggest?",
+   "categories": [
+    {
+     "id": "s",
+     "label": "Sports festival"
+    },
+    {
+     "id": "f",
+     "label": "Food festival"
+    },
+    {
+     "id": "m",
+     "label": "Music festival"
+    },
+    {
+     "id": "t",
+     "label": "Technology fair"
+    },
+    {
+     "id": "p",
+     "label": "Poetry and literature festival"
+    },
+    {
+     "id": "a",
+     "label": "Arts and crafts festival"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "athletics events, champions, competition",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "dishes, produce from different parts of the world",
+     "category": "f",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "main attraction, cancel, throat infection",
+     "category": "m",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "products, practical applications, developments",
+     "category": "t",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "talks, novelist, plotting and characterisation",
+     "category": "p",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "works on display, exhibition space, portraits",
+     "category": "a",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

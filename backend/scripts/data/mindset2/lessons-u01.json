@@ -1,0 +1,687 @@
+{
+ "course": {
+  "title": "Mindset for IELTS 2 — Reading & Listening theo giáo trình",
+  "skill": "integrated",
+  "taskType": "foundation",
+  "language": "vi",
+  "targetBand": "5.5 → 6.5",
+  "description": "Bám sát giáo trình Mindset for IELTS Level 2 (Cambridge), phần Reading & Listening: 8 unit chủ đề — The man-made environment, Leisure and recreation, The news and media, Travel and transport, Business and work, The natural environment, Education systems, Festivals and traditions. Mỗi unit gồm Lead-in & Vocabulary → Reading (chiến thuật từng dạng câu hỏi) → Grammar focus → Listening; đề bài giữ nguyên tiếng Anh như sách, bài giảng và giải thích bằng tiếng Việt. Bài đọc và bài nghe làm trên giao diện thi thật (audio gốc của sách), từ vựng lưu thẳng vào Sổ như trong sách của lớp.",
+  "code": "MINDSET-2"
+ },
+ "modules": [
+  {
+   "code": "M2-U01",
+   "order": 1,
+   "title": "Unit 1 · Nhà ở và công trình",
+   "titleEn": "UNIT 01: THE MAN-MADE ENVIRONMENT — sách tr. 8–13, 21–23",
+   "outcomes": [
+    "Reading: skimming và scanning; short-answer questions; sentence completion; paraphrase",
+    "Grammar: present simple và present continuous",
+    "Listening: Section 1 — dự đoán loại thông tin, nghe số phức tạp và đánh vần, loại distractors trong multiple choice",
+    "Từ vựng nhà ở, kiến trúc, mua bán nhà (Sổ 1)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M2-U01-L1",
+   "moduleCode": "M2-U01",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: homes",
+   "titleEn": "Lead-in · Skimming and scanning (pp. 8–9)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Xếp từ vựng về nhà ở theo nhóm: vị trí, loại nhà, phong cách, phòng, bộ phận của phòng, vật liệu",
+    "Phân biệt skimming (đọc lấy ý chung) và scanning (tìm thông tin cụ thể)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Skimming và scanning",
+     "titleEn": "Skimming and scanning",
+     "formula": [],
+     "usage": [
+      "**Skim** = đọc lướt thật nhanh để nắm **ý chung** của bài; bỏ qua từ mới.",
+      "**Scan** = quét mắt tìm **thông tin cụ thể**: tên riêng, con số, ngày tháng, từ khóa.",
+      "Thời gian thi có hạn → skim để biết bố cục, rồi scan để tìm đáp án."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 39,
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 1 · Lead-in & Vocabulary: homes — 35 từ/cụm từ",
+    "words": [
+     {
+      "word": "residence",
+      "meaning": "nơi ở, dinh thự",
+      "example": "D The Ambani residence is clearly designed to entertain guests."
+     },
+     {
+      "word": "property",
+      "meaning": "bất động sản, tài sản nhà đất",
+      "example": "So, this is the property."
+     },
+     {
+      "word": "extravagant",
+      "meaning": "xa hoa, phung phí",
+      "example": "Marble floors, rare wood and fine rugs are just some of the design features used to create this extravagant home."
+     },
+     {
+      "word": "spectacular views",
+      "meaning": "tầm nhìn ngoạn mục",
+      "example": "Many of the rooms have floor-to-ceiling glass windows, offering spectacular views of Mumbai and the Arabian Sea."
+     },
+     {
+      "word": "facilities",
+      "meaning": "cơ sở vật chất, tiện nghi",
+      "example": "There are also several floors for dining, vast libraries and a health spa, including a gym, several swimming pools and yoga facilities."
+     },
+     {
+      "word": "spacious",
+      "meaning": "rộng rãi",
+      "example": "That's very spacious for a smaller lounge."
+     },
+     {
+      "word": "glamorous",
+      "meaning": "lộng lẫy, sang trọng",
+      "example": "B The interior of the home is very glamorous and each floor is made from different materials to give an individual look."
+     },
+     {
+      "word": "skyscraper",
+      "meaning": "nhà chọc trời",
+      "example": "C The skyscraper has a multi-storey garage with space for 168 cars."
+     },
+     {
+      "word": "entertain guests",
+      "meaning": "tiếp đãi khách",
+      "example": "D The Ambani residence is clearly designed to entertain guests."
+     },
+     {
+      "word": "criticise",
+      "meaning": "chỉ trích, phê bình",
+      "example": "F Several experts have criticised the architecture of this very expensive home, comparing it to an 'unstable pile of books'."
+     },
+     {
+      "word": "architecture",
+      "meaning": "kiến trúc",
+      "example": "F Several experts have criticised the architecture of this very expensive home, comparing it to an 'unstable pile of books'."
+     },
+     {
+      "word": "desirable",
+      "meaning": "đáng mơ ước, hấp dẫn",
+      "example": "A garden is a very desirable feature for a family home."
+     },
+     {
+      "word": "interior",
+      "meaning": "nội thất, phần bên trong",
+      "example": "B The interior of the home is very glamorous and each floor is made from different materials to give an individual look."
+     },
+     {
+      "word": "be equipped to",
+      "meaning": "được trang bị để",
+      "example": "The new hall is equipped to hold large concerts."
+     },
+     {
+      "word": "accommodate",
+      "meaning": "có sức chứa, cung cấp chỗ ở cho",
+      "example": "The hotel can accommodate up to 200 guests."
+     },
+     {
+      "word": "inherit",
+      "meaning": "thừa kế",
+      "example": "She inherited the house from her grandmother."
+     },
+     {
+      "word": "magnificent",
+      "meaning": "tráng lệ, nguy nga",
+      "example": "Together, however, they designed a magnificent castle which cost 10 million dollars and took 28 years to build."
+     },
+     {
+      "word": "a keen collector",
+      "meaning": "nhà sưu tầm nhiệt huyết",
+      "example": "Hearst was also a keen art collector and, during his lifetime, spent $3.5 million on his collection, which is displayed in the rooms at Hearst Castle."
+     },
+     {
+      "word": "highlight",
+      "meaning": "điểm nổi bật",
+      "example": "C One of the highlights of the estate is the Neptune Pool."
+     },
+     {
+      "word": "estate",
+      "meaning": "điền trang, khu đất lớn",
+      "example": "Morgan's Estate Agents."
+     },
+     {
+      "word": "be satisfied with",
+      "meaning": "hài lòng với",
+      "example": "Hearst was not satisfied with the pool, so it was rebuilt."
+     },
+     {
+      "word": "maintenance",
+      "meaning": "việc bảo trì, bảo dưỡng",
+      "example": "F When Hearst died in 1951, his family learnt how expensive maintenance would be, and the mansion was donated to the State of California."
+     },
+     {
+      "word": "donate",
+      "meaning": "quyên góp, hiến tặng",
+      "example": "F When Hearst died in 1951, his family learnt how expensive maintenance would be, and the mansion was donated to the State of California."
+     },
+     {
+      "word": "attract millions of tourists",
+      "meaning": "thu hút hàng triệu du khách",
+      "example": "Since then, it has been open for public tours and the site attracts millions of tourists every year."
+     },
+     {
+      "word": "mythical",
+      "meaning": "thuộc thần thoại",
+      "example": "Named after the mythical island Antilia, the property has 27 floors."
+     },
+     {
+      "word": "vast",
+      "meaning": "rộng lớn",
+      "example": "There are also several floors for dining, vast libraries and a health spa, including a gym, several swimming pools and yoga facilities."
+     },
+     {
+      "word": "numerous",
+      "meaning": "nhiều, vô số",
+      "example": "The lobby has numerous reception areas and nine lifts."
+     },
+     {
+      "word": "elevated",
+      "meaning": "nằm trên cao",
+      "example": "Mrs Ambani, however, describes her home as 'an elevated house on top of a garden' and 'a modern home with an Indian heart'."
+     },
+     {
+      "word": "staircase",
+      "meaning": "cầu thang",
+      "example": "A wide marble staircase leads up to the bedrooms."
+     },
+     {
+      "word": "remote island",
+      "meaning": "hòn đảo xa xôi",
+      "example": "They built a small holiday home on a remote island."
+     },
+     {
+      "word": "architect",
+      "meaning": "kiến trúc sư",
+      "example": "F Several experts have criticised the architecture of this very expensive home, comparing it to an 'unstable pile of books'."
+     },
+     {
+      "word": "ancient",
+      "meaning": "cổ xưa",
+      "example": "It took 15 years to build and includes the front of an ancient Roman temple."
+     },
+     {
+      "word": "be valued at",
+      "meaning": "được định giá",
+      "example": "Today, his collection is worth much more, with one piece alone valued at $10 million."
+     },
+     {
+      "word": "remain unfinished",
+      "meaning": "vẫn còn dang dở",
+      "example": "The castle was never completed and remains unfinished."
+     },
+     {
+      "word": "man-made",
+      "meaning": "nhân tạo",
+      "example": "There is even an 'ice-room' which creates man-made snow, a Hindu prayer room and several floors of gardens."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M2-U01-L2",
+   "moduleCode": "M2-U01",
+   "order": 2,
+   "title": "📖 Reading: scanning, short answers & paraphrase",
+   "titleEn": "Skimming and scanning · Paraphrasing · Short-answer questions · Completing sentences · Exam skills (pp. 9–13)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Skim bài để nắm thứ tự thông tin",
+    "Scan tìm tên riêng, con số để trả lời short-answer questions",
+    "Nhận ra paraphrase (synonyms) giữa câu hỏi và bài đọc",
+    "Làm short-answer và sentence completion đúng giới hạn số từ"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Short-answer questions",
+     "titleEn": "Short-answer questions",
+     "formula": [
+      "Đọc kỹ giới hạn: **NO MORE THAN THREE WORDS AND/OR A NUMBER** → tối đa 3 từ và/hoặc 1 con số.",
+      "Đáp án lấy **nguyên từ trong bài**, không đổi từ."
+     ],
+     "usage": [
+      "Câu hỏi hỏi về **chi tiết sự kiện** (ai, cái gì, bao nhiêu…).",
+      "Đáp án thường xuất hiện **theo thứ tự** của bài.",
+      "Gạch chân từ khóa trong câu hỏi → scan bài tìm từ đó hoặc từ đồng nghĩa."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Sentence completion",
+     "titleEn": "Completing sentences",
+     "formula": [],
+     "usage": [
+      "Câu cho sẵn **paraphrase** ý trong bài: \"accommodate a large number of ___\" ↔ \"designed to entertain **guests**\".",
+      "Điền xong đọc lại cả câu: phải **đúng ngữ pháp**."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Paraphrasing",
+     "titleEn": "Paraphrasing",
+     "formula": [],
+     "usage": [
+      "Paraphrase = nói lại ý bằng từ khác, thường đơn giản và ngắn hơn.",
+      "Chìa khóa là **từ đồng nghĩa**: interior ↔ inside, visitors ↔ guests, extravagant ↔ expensive."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Cách tìm đáp án nhanh",
+     "titleEn": "Locating the answer: one approach",
+     "formula": [],
+     "usage": [
+      "Đọc câu hỏi trước để có chúng trong đầu khi đọc bài.",
+      "Hiểu đúng câu hỏi — gạch chân từ khóa.",
+      "Skim bài lấy ý chính → biết đại khái đáp án nằm ở đoạn nào, rồi đọc lại đoạn đó.",
+      "Bấm giờ: luyện tìm thông tin càng nhanh càng tốt."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 16,
+   "practiceLinks": [
+    {
+     "ref": "reading:M2-U01-R1",
+     "kind": "reading",
+     "title": "Antilia — scanning, short answers, sentence completion, paraphrase (Ex. 7, 8, 10, 11)",
+     "note": "18 câu: scan tìm số liệu, trả lời ngắn, hoàn thành câu, nối câu paraphrase với đoạn A–F."
+    },
+    {
+     "ref": "reading:M2-U01-R2",
+     "kind": "reading",
+     "title": "Exam skills: Hearst Castle (Ex. 15)",
+     "note": "12 câu short-answer + sentence completion — bấm giờ!"
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L3",
+   "moduleCode": "M2-U01",
+   "order": 3,
+   "title": "🧩 Grammar focus: present simple and present continuous",
+   "titleEn": "Grammar focus: present simple / present continuous (pp. 11–12)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Biết khi nào dùng present simple, khi nào dùng present continuous",
+    "Nhận ra động từ chỉ trạng thái (believe, think…) không dùng thì tiếp diễn"
+   ],
+   "keyLanguage": [
+    "**Present continuous** (am/is/are + V-ing): hành động **đang xảy ra lúc nói**, hành động **chưa kết thúc**, tình huống **tạm thời**: I **am renting** in the city centre for now.",
+    "**Present simple**: hành động **lặp lại** (thói quen), **sự thật chung**, **ý kiến**: Every day his mum **cleans** the house. · Mrs Ambani **believes** that…",
+    "Động từ chỉ trạng thái/ý kiến (believe, think = cho rằng, like, want, own…) thường **không** dùng ở thì tiếp diễn."
+   ],
+   "theory": [
+    {
+     "title": "Present simple và present continuous",
+     "titleEn": "Present simple / present continuous",
+     "formula": [
+      "S + V(s/es) — present simple",
+      "S + am/is/are + V-ing — present continuous"
+     ],
+     "usage": [
+      "Mindmap trong sách: present continuous ← temporary, an action which is not complete, happening at the time of speaking; present simple ← repeated actions, general facts, opinions."
+     ],
+     "examples": [
+      {
+       "en": "Mukesh Ambani lives in Mumbai.",
+       "vi": "Sự thật chung → present simple (không dùng \"is living\")."
+      },
+      {
+       "en": "Currently, my mum is working in the study.",
+       "vi": "Đang diễn ra, tạm thời → present continuous."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 16,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Present Simple",
+     "note": "thói quen, sự thật, ý kiến",
+     "url": "/essential-grammar.html?lesson=present-simple"
+    },
+    {
+     "kind": "grammar",
+     "title": "Present Continuous",
+     "note": "đang xảy ra, tạm thời",
+     "url": "/essential-grammar.html?lesson=present-continuous"
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L4",
+   "moduleCode": "M2-U01",
+   "order": 4,
+   "title": "🎧 Listening: Section 1 — specific information & distractors",
+   "titleEn": "Lead-in · Listening for specific information · Numbers · Dealing with distractors · Exam skills (pp. 21–23)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Đọc ghi chú trước khi nghe và đoán loại thông tin cần điền (tên, địa chỉ, số…)",
+    "Nghe và viết đúng số phức tạp: giá tiền, số điện thoại, kích thước",
+    "Nghe đánh vần tên riêng",
+    "Loại distractors trong câu multiple choice"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Nghe thông tin cụ thể",
+     "titleEn": "Listening for specific information",
+     "formula": [],
+     "usage": [
+      "Trong bài thi, bạn được biết **bối cảnh** và có thời gian **đọc câu hỏi trước** khi nghe.",
+      "Nhìn từng chỗ trống và đoán: cần **địa chỉ, số, tên, giờ, đồ vật**…?",
+      "Tên riêng thường được **đánh vần**: C-H-U-R-C-H-I-L-L; người nói hay **sửa lại** thông tin (\"Did you say Church Mill Road?\" — \"No, Churchill Road\")."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Số phức tạp",
+     "titleEn": "Numbers",
+     "formula": [],
+     "usage": [
+      "Giá tiền: £53.72 (fifty-three pounds seventy-two); khoảng cách: 472 km.",
+      "Kích thước: \"4.3 m **by** 3.28 m\" = 4.3 m x 3.28 m (dài x rộng).",
+      "Cẩn thận khi người nói nhắc **số sai trước rồi sửa**: \"Did you say £43.72?\" — \"No, £53.72.\""
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Distractors",
+     "titleEn": "Dealing with distractors",
+     "formula": [],
+     "usage": [
+      "Câu multiple choice có **1 đáp án đúng và 2 distractor**.",
+      "Distractor thường **dùng đúng từ trong bài nghe nhưng khác nghĩa**, hoặc đúng sự thật nhưng **không trả lời câu hỏi**.",
+      "Ví dụ: \"The en-suite bathroom will be useful because…\" — A \"it has a shower unit\" đúng nhưng không phải lý do; B sai (bồn tắm lớn ở phòng tắm chính); C đúng: \"useful when we all get up to get ready for school or work\"."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 11,
+   "images": [
+    {
+     "url": "media:m2u01-properties.jpg",
+     "caption": "Ex. 1 (p. 21): three properties A–C"
+    }
+   ],
+   "practiceLinks": [
+    {
+     "ref": "listening:M2-U01-L1",
+     "kind": "listening",
+     "title": "Three properties for sale (Ex. 1–2)",
+     "note": "Nghe mô tả và chọn tranh A, B hay C."
+    },
+    {
+     "ref": "listening:M2-U01-L2",
+     "kind": "listening",
+     "title": "Phoning the estate agent: notes (Ex. 3)",
+     "note": "Địa chỉ, số phòng, giờ hẹn, tên và số điện thoại."
+    },
+    {
+     "ref": "listening:M2-U01-L3",
+     "kind": "listening",
+     "title": "Numbers in five conversations (Ex. 4)",
+     "note": "Giá tiền, km, số điện thoại, kích thước."
+    },
+    {
+     "ref": "listening:M2-U01-L4",
+     "kind": "listening",
+     "title": "Viewing the house: the information sheet (Ex. 5)",
+     "note": "Giá và kích thước các phòng."
+    },
+    {
+     "ref": "listening:M2-U01-L5",
+     "kind": "listening",
+     "title": "Making an offer: questions (Ex. 6)",
+     "note": "Nghe ý chính của cuộc hội thoại cuối."
+    },
+    {
+     "ref": "listening:M2-U01-L6",
+     "kind": "listening",
+     "title": "Dealing with distractors (Ex. 7)",
+     "note": "Nghe lại một đoạn ngắn và xem vì sao A, B sai."
+    },
+    {
+     "ref": "listening:M2-U01-L7",
+     "kind": "listening",
+     "title": "Exam skills: multiple choice (Ex. 8)",
+     "note": "5 câu A, B, C — loại distractor."
+    }
+   ],
+   "vocabSave": {
+    "slot": 1,
+    "title": "Unit 1 · Listening: Section 1 — specific information & distractors — 35 từ/cụm từ",
+    "words": [
+     {
+      "word": "estate agent",
+      "meaning": "nhân viên môi giới bất động sản",
+      "example": "Morgan's Estate Agents."
+     },
+     {
+      "word": "property for sale",
+      "meaning": "bất động sản đang rao bán",
+      "example": "I'm calling about a property that you have for sale -in Churchill Road."
+     },
+     {
+      "word": "arrange a viewing",
+      "meaning": "hẹn lịch xem nhà",
+      "example": "Would you like to arrange a viewing?"
+     },
+     {
+      "word": "modernised",
+      "meaning": "đã được cải tạo, hiện đại hoá",
+      "example": "It was recently modernised, with a new bathroom and kitchen."
+     },
+     {
+      "word": "en-suite bathroom",
+      "meaning": "phòng tắm riêng trong phòng ngủ",
+      "example": "And there's an en-suite bathroom here, though it only has a shower unit and not a big bath like the main bathroom."
+     },
+     {
+      "word": "accessible",
+      "meaning": "có thể vào được, dễ tiếp cận",
+      "example": "The garden is accessible through the living room and the kitchen."
+     },
+     {
+      "word": "well connected",
+      "meaning": "thuận tiện giao thông",
+      "example": "Well, regarding transport, it's only five minutes from Edgely Station and there are regular buses to the town centre, so it's very well connected."
+     },
+     {
+      "word": "transport connections",
+      "meaning": "kết nối giao thông",
+      "example": "This first floor flat is in a very nice area of the town and is connected to local shops and services, as well as having good transport connections."
+     },
+     {
+      "word": "fully-fitted kitchen",
+      "meaning": "bếp được lắp đặt đầy đủ thiết bị",
+      "example": "The flat has a fully-fitted kitchen with a cooker and a dishwasher."
+     },
+     {
+      "word": "well kept",
+      "meaning": "được giữ gìn cẩn thận",
+      "example": "As you can see, the front garden is very well kept."
+     },
+     {
+      "word": "lounge",
+      "meaning": "phòng khách",
+      "example": "First, how many lounges has it got?"
+     },
+     {
+      "word": "driveway",
+      "meaning": "lối xe chạy vào nhà",
+      "example": "I should add that there's a garage and a short driveway."
+     },
+     {
+      "word": "public transport",
+      "meaning": "phương tiện giao thông công cộng",
+      "example": "My husband usually drives to work, but I mostly use public transport."
+     },
+     {
+      "word": "dimensions",
+      "meaning": "kích thước",
+      "example": "What are the dimensions?"
+     },
+     {
+      "word": "lawn",
+      "meaning": "bãi cỏ",
+      "example": "I've always liked the idea of outdoor space with a lawn."
+     },
+     {
+      "word": "take good care of",
+      "meaning": "chăm sóc kỹ lưỡng",
+      "example": "The owners have taken very good care of it."
+     },
+     {
+      "word": "come in useful",
+      "meaning": "hữu ích (khi cần đến)",
+      "example": "That would come in very useful when we all get up to get ready for school or work."
+     },
+     {
+      "word": "put in an offer",
+      "meaning": "đưa ra giá đề nghị mua",
+      "example": "So, would you like to put in an offer?"
+     },
+     {
+      "word": "on the market",
+      "meaning": "đang được rao bán",
+      "example": "The house has been on the market for a few months."
+     },
+     {
+      "word": "mortgage",
+      "meaning": "khoản vay thế chấp mua nhà",
+      "example": "Now, usually buyers have a mortgage arranged with a bank – a loan to buy the house - so that we can quickly complete the sale."
+     },
+     {
+      "word": "deposit",
+      "meaning": "tiền đặt cọc",
+      "example": "We also have a 15% deposit in our bank account - about £52,000 - so that won't be a problem."
+     },
+     {
+      "word": "in good condition",
+      "meaning": "trong tình trạng tốt",
+      "example": "The bank checks that the house is in good condition."
+     },
+     {
+      "word": "complete the sale",
+      "meaning": "hoàn tất giao dịch mua bán",
+      "example": "Now, usually buyers have a mortgage arranged with a bank – a loan to buy the house - so that we can quickly complete the sale."
+     },
+     {
+      "word": "delay",
+      "meaning": "trì hoãn, làm chậm lại",
+      "example": "Anything like that can delay the sale, but most of our sales go through quickly."
+     },
+     {
+      "word": "chilly",
+      "meaning": "se lạnh",
+      "example": "It's perfect to sit in on those chilly or rainy days as it's got its own heating."
+     },
+     {
+      "word": "outdoor space",
+      "meaning": "không gian ngoài trời",
+      "example": "I've always liked the idea of outdoor space with a lawn."
+     },
+     {
+      "word": "patio",
+      "meaning": "hiên lát gạch sau nhà",
+      "example": "And as you can see, there's a patio and a large lawn with flowers round the edges."
+     },
+     {
+      "word": "ideal for",
+      "meaning": "lý tưởng cho",
+      "example": "It would be ideal for a child."
+     },
+     {
+      "word": "suitable for",
+      "meaning": "phù hợp với",
+      "example": "This is a lovely flat, suitable for a family or for people sharing."
+     },
+     {
+      "word": "loan",
+      "meaning": "khoản vay",
+      "example": "Now, usually buyers have a mortgage arranged with a bank – a loan to buy the house - so that we can quickly complete the sale."
+     },
+     {
+      "word": "survey",
+      "meaning": "việc khảo sát, thẩm định nhà",
+      "example": "The bank will do a survey before it lends you the money."
+     },
+     {
+      "word": "contract",
+      "meaning": "hợp đồng",
+      "example": "If that's all OK, the next step is to prepare the contracts for you and the seller to sign, and we should complete the sale soon after that."
+     },
+     {
+      "word": "accept an offer",
+      "meaning": "chấp nhận giá đề nghị",
+      "example": "The owners may accept an offer below the asking price."
+     },
+     {
+      "word": "look forward to",
+      "meaning": "mong đợi, trông chờ",
+      "example": "I look forward to seeing you then."
+     },
+     {
+      "word": "on time",
+      "meaning": "đúng hạn, đúng giờ",
+      "example": "That's why I hope we can complete everything on time."
+     }
+    ]
+   }
+  }
+ ]
+}

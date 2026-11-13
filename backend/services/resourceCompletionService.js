@@ -564,7 +564,7 @@ const REGISTRY = {
   // lesson code's M<level>- prefix picks the student page for the deep link.
   mindset_course_lesson: {
     label: 'Mindset (Buổi học)',
-    catalog: { model: WT1Lesson, filter: { published: true }, courseScope: ['MINDSET-0', 'MINDSET-1'],
+    catalog: { model: WT1Lesson, filter: { published: true }, courseScope: ['MINDSET-0', 'MINDSET-1', 'MINDSET-2'],
       sort: { moduleCode: 1, order: 1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.moduleCode || '' }),
       deepLinkKey: (d) => d.code },

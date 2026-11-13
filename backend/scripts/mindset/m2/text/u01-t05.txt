@@ -1,0 +1,33 @@
+Estate agent: Hello. I'm Peter Eliot. You must be Ms Prendergast.
+Caroline: Yes, that's right.
+Estate agent: So, this is the property.
+Caroline: Oh, I just wanted to check one thing - the price. If I remember rightly, it's £340,000.
+Estate agent: Actually, it's £350,000 at the moment, but we can discuss that later if you like it. As you can see, the front garden is very well kept.
+Caroline: Yes. The owners have taken very good care of it.
+Estate agent: Shall we go in? Follow me. Here's the hall and the front lounge to the left.
+Caroline: Hmm, yes. It's very nice. What are the dimensions?
+Estate agent: It's 4.3 m by 3.28 m. That's very spacious for a smaller lounge.
+Caroline: Hmm, yes. 4.3 m long and 3.28 m wide. Can we go through to the second lounge?
+Estate agent: Certainly. If you'd like to follow me.
+Caroline: Oh, it's lovely. What's the size of this room?
+Estate agent: Er, let's see ... the second lounge ... er ... it's 6.5 m x 4.25 m. And you can see the sun-room at the back and the garden.
+Caroline: Can we go and have a look?
+Estate agent: Of course. As you can see, there's enough room here for some plants and two sofas. You could even put a dining suite here.
+Caroline: That would be perfect for cooler days. I love it!
+Estate agent: And as you can see, there's a patio and a large lawn with flowers round the edges.
+Caroline: What are the dimensions of the garden?
+Estate agent: It's 30 m long and 10 m wide.
+Caroline: 30 m by 10 m? That's a good size for a family. It would be lovely in summer.
+Estate agent: Of course. Walk this way. Would you like to look upstairs?
+Caroline: Yes, OK.
+Estate agent: Here's the main bedroom. It's 4.91 m x 3.95 m - perfect for a large double bed. Oh, sorry, that's 4.91 m long and 3.95 m wide. And there's an en-suite bathroom here, though it only has a shower unit and not a big bath like the main bathroom.
+Caroline: That would come in very useful when we all get up to get ready for school or work.
+Estate agent: Yes, that's a real positive. Here's the second bedroom. It's 4.2 m x 3.55 m - ideal for children to share.
+Caroline: 4.2 m long and 3.55 m wide? OK, that's good. Yes, it's got plenty of room to play in.
+Estate agent: And here's the last bedroom, which is 3.25 m x 2.5 m. It would be ideal for a child.
+Caroline: Yes, it would be fine for my older daughter.
+Estate agent: The bathroom is just over here. It's got a large bath as well as a shower fitting.
+Caroline: Great! It's just what we need.
+Estate agent: So, would you like to put in an offer?
+Caroline: Yes, please. This is the best property I've seen so far. I don't think I'll find a more suitable one.
+Estate agent: Wonderful! If you'd like to come back to the office, I can take your details and arrange everything.

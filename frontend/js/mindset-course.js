@@ -21,6 +21,7 @@
   var LEVELS = {
     '0': { name: 'Foundation', band: 'A2 → Band 4.0–4.5', units: 10 },
     '1': { name: 'Level 1', band: 'Band 4.5 → 5.5', units: 8, rl: true },
+    '2': { name: 'Level 2', band: 'Band 5.5 → 6.5', units: 8, rl: true },
   };
   var LV = LEVELS[LEVEL] || LEVELS['0'];
   var COURSE = 'MINDSET-' + LEVEL;

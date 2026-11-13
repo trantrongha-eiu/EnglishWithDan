@@ -1,0 +1,24 @@
+Conversation 1
+A: How much is that altogether?
+B: That's £53.72, please.
+A: Sorry, did you say £43.72?
+B: No, £53.72.
+Conversation 2
+A: So how far is it to Paris?
+B: I've just checked. It's 472 km.
+A: 472 km? That's a long way. Are you sure you want to drive?
+Conversation 3
+A: Someone left a message for you, Mr Henry. He wants you to call him on 01897 625730.
+B: Sorry, I didn't get all that. Did you say 01857 629730?
+A: No, it's 01897 625730.
+Conversation 4
+A: So how big is the football field?
+B: It's 110 m by 55 m.
+A: 110 m long and 55 m wide? That's quite big.
+Conversation 5
+A: Can I book a place on the course on Saturday, please?
+B: Certainly madam. What's your membership number?
+A: It's 81074.
+B: Sorry, did you say 01074?
+A: No, 81074.
+B: Oh, OK, thank you.

@@ -1,0 +1,781 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 2 · Unit 6 — The role of the modern zoo",
+   "content": "<h3>The role of the modern zoo</h3>\n\n<p>Initially seen purely as centres of entertainment, zoos were often heavily criticised in society for keeping animals captive. Nowadays, however, zoos have a lot more to offer than perhaps some people realise. Good zoos have changed their focus and are now responding to environmental problems, such as the decline in wildlife and loss of habitat. Indeed, scientists believe that a third of all animal and plant species on Earth risk extinction within this century.</p>\n\n<p>The modern zoo, therefore, has developed dramatically as a major force in conserving biodiversity worldwide. Zoos linked with the Association of Zoos and Aquariums participate in Species Survival Plan Programmes, which involve captive breeding, reintroduction programmes and public education to ensure the survival of many of the planet's threatened and endangered species.</p>\n\n<p>Captive breeding is the process of breeding animals outside their natural environment in restricted conditions such as farms, zoos or other closed areas. It is a method used to increase the populations of endangered species, in order to prevent extinction. One of the main challenges facing captive breeding programmes, however, is maintaining genetic diversity. Zoo staff are fully trained in this area, and manage the programmes carefully to ensure genetic variation.</p>\n\n<p>Another way in which zoos protect endangered species is through reintroduction programmes. These programmes release animals that have been in the zoo back into their natural habitats.</p>\n\n<p>Finally, and perhaps most significantly, many zoos now concentrate on educating the public, particularly the younger generation. These zoos educate millions of visitors each year about endangered species and related conservation issues. Visiting the zoo not only raises money for conservation projects, but also reminds individuals about environmental issues.</p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Do the following statements agree with the views or claims of the writer? Write YES, NO or NOT GIVEN. (Ex. 4)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "yes-no-ng",
+       "questionText": "Zoos have been very successful in protecting endangered species.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Bài mô tả các cách zoo bảo vệ loài nguy cấp, nhưng không đánh giá chúng đã \"very successful\" hay chưa."
+      },
+      {
+       "questionNumber": 2,
+       "type": "yes-no-ng",
+       "questionText": "Putting endangered animals back into the wild to reproduce is a good way to increase their populations.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Bài nói reintroduction programmes \"release animals… back into their natural habitats\" nhưng không nói đó là cách tốt để tăng số lượng (việc tăng số lượng là của captive breeding)."
+      },
+      {
+       "questionNumber": 3,
+       "type": "yes-no-ng",
+       "questionText": "All zoos now focus on teaching people about animals facing extinction.",
+       "correctAnswer": "NO",
+       "explanation": "\"**many** zoos now concentrate on educating the public\" → không phải \"all\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "yes-no-ng",
+       "questionText": "Zoo visits increase awareness of environmental problems.",
+       "correctAnswer": "YES",
+       "explanation": "\"Visiting the zoo… also **reminds individuals about environmental issues**\"."
+      }
+     ]
+    },
+    {
+     "groupType": "summary-completion",
+     "groupTitle": "Questions 5–8",
+     "instruction": "Complete the summary with a word from the list, A–G. (Ex. 7)",
+     "summaryConfig": {
+      "text": "In the past, zoos focused mainly on __Q5__ the public. This is certainly not the case any more. Today, the role of good zoos is to take an active part in __Q6__ projects. Several methods are used to achieve this. One way to avoid the extinction of certain species is to ensure that animals within zoos breed. This is handled __Q7__, however, to ensure genetic diversity. Another method is to release the animals back into their natural habitat. Perhaps the most significant role of the zoo, however, is its capacity to educate the general public about conservation and, more specifically, to inform the __Q8__ generation.",
+      "wordBank": [
+       {
+        "letter": "A",
+        "word": "carefully"
+       },
+       {
+        "letter": "B",
+        "word": "quickly"
+       },
+       {
+        "letter": "C",
+        "word": "entertaining"
+       },
+       {
+        "letter": "D",
+        "word": "animal"
+       },
+       {
+        "letter": "E",
+        "word": "conservation"
+       },
+       {
+        "letter": "F",
+        "word": "reproduce"
+       },
+       {
+        "letter": "G",
+        "word": "younger"
+       }
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "entertaining",
+       "explanation": "\"Initially seen purely as centres of **entertainment**\" → focused on entertaining the public."
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "conservation",
+       "explanation": "\"a major force in **conserving** biodiversity\" → conservation projects. BẪY: animal (đúng ngữ pháp, sai nghĩa)."
+      },
+      {
+       "questionNumber": 7,
+       "type": "fill-blank",
+       "questionText": "Question 7",
+       "correctAnswer": "carefully",
+       "explanation": "\"manage the programmes **carefully** to ensure genetic variation\". BẪY: quickly."
+      },
+      {
+       "questionNumber": 8,
+       "type": "fill-blank",
+       "questionText": "Question 8",
+       "correctAnswer": "younger",
+       "explanation": "\"educating the public, particularly the **younger** generation\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-R1"
+  },
+  {
+   "title": "Mindset 2 · Unit 6 — Mountain gorillas",
+   "content": "<h3>Mountain gorillas</h3>\n\n<p>As their name suggests, mountain gorillas live in forests in the mountains, at heights of around 2,400 to 4,000 m. The mountain gorilla's habitat is limited to protected national parks in two regions of Africa. They have thicker fur compared to other great apes and this helps them to survive in a habitat where temperatures often drop below freezing. Mountain gorillas also have shorter arms and tend to be a bit larger than other gorillas.</p>\n\n<p>Currently there are fewer than 900 surviving and they are classed as critically endangered. They are endangered for several reasons, but most significantly because humans are moving further into their territory and consequently destroying their habitats. Human invasion also brings with it the risk of disease and the threat of being poached. Another problem the species faces is the area where they live, which is continuously troubled by war. Consequently, gorillas have been killed by bombs and war refugees have removed trees from the forests to create new homes and farms.</p>\n\n<p>Many conservation projects have been set up to aid mountain gorillas and it is believed that their numbers may slowly be increasing. Nevertheless, they continue to face major threats from both loss of habitat and poaching.</p>",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Complete the summary using ONE WORD from the text. (Ex. 10)",
+     "noteConfig": {
+      "title": "Mountain gorillas",
+      "lines": [
+       "Mountain gorillas are one of the most __Q1__ species in the world. With fewer than 900 surviving, there are several factors which have caused their decline.",
+       "The biggest factor is humans moving into their areas and destroying their __Q2__.",
+       "The risk of being __Q3__ is another major reason.",
+       "In response to this decline in mountain gorillas, efforts have been made by __Q4__ groups to try and increase numbers."
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "endangered",
+       "explanation": "\"they are classed as critically **endangered**\" (cần tính từ)."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "habitats",
+       "explanation": "\"humans are moving further into their territory and consequently destroying their **habitats**\" (số nhiều)."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "poached",
+       "explanation": "\"the threat of being **poached**\" (being + V3)."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "conservation",
+       "explanation": "\"Many **conservation** projects have been set up to aid mountain gorillas\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-R2"
+  },
+  {
+   "title": "Mindset 2 · Unit 6 — How effective are conservation efforts?",
+   "content": "<h3>How effective are conservation efforts?</h3>\n\n<p>While many organisations put a considerable amount of effort into conservation projects, it is just not enough. Many of these efforts are effective short-term, but in the long term they simply do not work, due to a number of factors.</p>\n\n<p>Whilst there remains a demand for exotic animals in society, endangered species will always be at risk of being hunted and poached. Poachers often target larger animals - animals which take a long time to repopulate, such as rhinos and elephants. The poachers are clever and use methods which are sometimes completely undetectable. A recent case involved 300 elephants being killed in Zimbabwe's largest nature reserve. Poachers put poison in the water holes, killing hundreds of elephants and destroying an entire ecosystem.</p>\n\n<p>Captive breeding is perhaps the most effective method of protecting animals from extinction, but this also has its problems. First, releasing animals from captive environments could introduce disease into wild populations. Secondly, after several generations in captivity, species could become less able to survive in the wild. Would they know how to hunt for food? Or how not to be killed by other animals?</p>\n\n<p>Perhaps the biggest problem facing endangered species, however, is the increasing population of the human race. Although conservation measures have helped to prevent humans from completely destroying all natural habitats, human invasion will always be one of the greatest risks to threatened species.</p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Do the following statements agree with the views of the writer? Write YES, NO or NOT GIVEN. (Ex. 11)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "yes-no-ng",
+       "questionText": "Captive breeding programmes ensure that animals can cope in their natural habitat.",
+       "correctAnswer": "NO",
+       "explanation": "\"after several generations in captivity, species could become **less able to survive in the wild**\"."
+      },
+      {
+       "questionNumber": 2,
+       "type": "yes-no-ng",
+       "questionText": "Poachers are good at hiding the way in which they kill animals.",
+       "correctAnswer": "YES",
+       "explanation": "\"The poachers are clever and use methods which are sometimes completely **undetectable**\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "yes-no-ng",
+       "questionText": "Releasing animals into the wild after captive breeding has led to infections spreading.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Bài chỉ nói việc thả động vật \"**could** introduce disease\" — không nói điều đó đã xảy ra."
+      },
+      {
+       "questionNumber": 4,
+       "type": "yes-no-ng",
+       "questionText": "Conservation projects have not made any impact on saving natural habitats.",
+       "correctAnswer": "NO",
+       "explanation": "\"conservation measures have helped to prevent humans from completely destroying all natural habitats\"."
+      }
+     ]
+    },
+    {
+     "groupType": "summary-completion",
+     "groupTitle": "Questions 5–10",
+     "instruction": "Complete the summary using the list of words, A–L. (Ex. 12)",
+     "summaryConfig": {
+      "text": "The problems faced by conservationists. A great deal of effort is put into conservation work in order to protect endangered species from becoming __Q5__. Whilst some of these conservation efforts are successful to an extent, they are still not enough to safeguard certain species in the long term. Culturally, these sought-after endangered __Q6__ are still valuable property and therefore they will always be at risk from __Q7__. __Q8__ is perhaps the best method to ensure their survival, but is also problematic. After generations of being held in a __Q9__ environment, these species may lose their ability to cope in their natural habitat. One of the most significant factors is the increase in the population of the human race, leading to many natural habitats being taken over and __Q10__.",
+      "wordBank": [
+       {
+        "letter": "A",
+        "word": "lost"
+       },
+       {
+        "letter": "B",
+        "word": "poachers"
+       },
+       {
+        "letter": "C",
+        "word": "strange"
+       },
+       {
+        "letter": "D",
+        "word": "diseases"
+       },
+       {
+        "letter": "E",
+        "word": "extinct"
+       },
+       {
+        "letter": "F",
+        "word": "species"
+       },
+       {
+        "letter": "G",
+        "word": "protected"
+       },
+       {
+        "letter": "H",
+        "word": "human"
+       },
+       {
+        "letter": "I",
+        "word": "destroy"
+       },
+       {
+        "letter": "J",
+        "word": "captive breeding"
+       },
+       {
+        "letter": "K",
+        "word": "destroyed"
+       },
+       {
+        "letter": "L",
+        "word": "changed"
+       }
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "extinct",
+       "explanation": "\"protecting animals from **extinction**\" → becoming extinct (cần tính từ)."
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "species",
+       "explanation": "\"a demand for exotic animals… endangered **species** will always be at risk\"."
+      },
+      {
+       "questionNumber": 7,
+       "type": "fill-blank",
+       "questionText": "Question 7",
+       "correctAnswer": "poachers",
+       "explanation": "\"at risk of being hunted and **poached**\" → at risk from poachers."
+      },
+      {
+       "questionNumber": 8,
+       "type": "fill-blank",
+       "questionText": "Question 8",
+       "correctAnswer": "captive breeding",
+       "explanation": "\"**Captive breeding** is perhaps the most effective method of protecting animals from extinction, but this also has its problems\"."
+      },
+      {
+       "questionNumber": 9,
+       "type": "fill-blank",
+       "questionText": "Question 9",
+       "correctAnswer": "protected",
+       "explanation": "captive environment = môi trường được bảo vệ, kiểm soát → protected."
+      },
+      {
+       "questionNumber": 10,
+       "type": "fill-blank",
+       "questionText": "Question 10",
+       "correctAnswer": "destroyed",
+       "explanation": "\"prevent humans from completely **destroying** all natural habitats\" → being taken over and destroyed. BẪY: destroy (sai dạng từ)."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-R3"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 2 · Unit 6 — Energy sources",
+   "description": "The first part of a lecture about the environment and energy sources.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_49.mp3",
+   "transcript": "Lecturer: This week in environmental studies, we're going to look at the latest developments in the energy industry and how they might affect our lives in the future. As we've already seen, there are basically two types of energy source - renewable and non-renewable. As you no doubt remember, renewable sources are those which can be used again and again, while non-renewable sources can be used only once and then they're finished. Historically, coal has been the most-used form of non-renewable energy, but it has also been the most polluting. It's widely accepted that we need to use less of it to help protect the environment for the future. The oldest renewable source is wind power, which has been used for centuries to power windmills and other devices, and which has now been developed further, giving us wind turbines which produce electricity. Over the last 200 years or so, petroleum has become the most important non-renewable source, though natural gas is overtaking it as it's far cleaner and less polluting. Hydroelectric power has been in use for many years as a renewable resource, especially with dams on rivers and lakes, but these are expensive to create and maintain, and can affect the local environment in negative ways. More recently, there've been great developments in two renewable sources: solar power- that is, power produced directly from the sun - and wave power, which comes from the movement of waves at sea, but, of course, these are only effective in areas with a lot of sun or in coastal areas. While there are clear benefits to expanding solar and wave power, one other source has become particularly significant and important, and that is fracking, which is a way of getting natural gas out of the ground. So, the main focus of today's lecture is on fracking and why there's been so much discussion and debate about it in the media.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Listen to the first part of the lecture and decide whether each energy source is renewable or non-renewable. (Ex. 1)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "fracking",
+       "options": [
+        "Renewable",
+        "Non-renewable"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Fracking\n\nPhân tích: Khai thác khí đá phiến — khí đốt không tái tạo."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "petroleum",
+       "options": [
+        "Renewable",
+        "Non-renewable"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Dầu mỏ\n\nPhân tích: Không tái tạo."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "solar power",
+       "options": [
+        "Renewable",
+        "Non-renewable"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Năng lượng mặt trời\n\nPhân tích: Tái tạo."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "wave power",
+       "options": [
+        "Renewable",
+        "Non-renewable"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Năng lượng sóng\n\nPhân tích: Tái tạo."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-L1"
+  },
+  {
+   "title": "Mindset 2 · Unit 6 — Words from the lecture",
+   "description": "Descriptions of four words from the lecture.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_50.mp3",
+   "transcript": "1 You can use this machine to make a hole in something. For example, you use a small one to make a hole in the wall to hang a picture, or a big one to make a hole in the ground.\n2 This is a hole in the ground which is dug in order to extract water, oil or gas.\n3 This is a kind of rock deep in the ground that isn't very hard and is easy to break.\n4 This is a narrow space which appears inside rock when the rock breaks. The space can fill up with water or gas.",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Listen to descriptions of some words from the lecture and match them with the correct picture, A–D. (Ex. 2)",
+     "imageUrl": "media:m2u06-pictures.jpg",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Description 1",
+       "options": [
+        "Picture A",
+        "Picture B",
+        "Picture C",
+        "Picture D"
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Mô tả 1\n\nTranscript: “You can use this machine to make a hole in something”\n\nPhân tích: drill (máy khoan) → C."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Description 2",
+       "options": [
+        "Picture A",
+        "Picture B",
+        "Picture C",
+        "Picture D"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Mô tả 2\n\nTranscript: “This is a hole in the ground which is dug in order to extract water, oil or gas”\n\nPhân tích: well (giếng) → A."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Description 3",
+       "options": [
+        "Picture A",
+        "Picture B",
+        "Picture C",
+        "Picture D"
+       ],
+       "correctAnswer": "D",
+       "explanation": "Dịch: Mô tả 3\n\nTranscript: “a kind of rock deep in the ground that isn't very hard and is easy to break”\n\nPhân tích: shale (đá phiến) → D."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Description 4",
+       "options": [
+        "Picture A",
+        "Picture B",
+        "Picture C",
+        "Picture D"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Mô tả 4\n\nTranscript: “This is a narrow space which appears inside rock when the rock breaks”\n\nPhân tích: fissure (khe nứt) → B."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-L2"
+  },
+  {
+   "title": "Mindset 2 · Unit 6 — The fracking process",
+   "description": "The lecturer explains the fracking process.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_51.mp3",
+   "transcript": "Lecturer: So, what exactly is fracking? It's a way of getting gas out of the ground. Both oil and gas are found deep underground, so to get to them a well must be drilled. Normally, when a well is drilled into ground where there's gas, the natural pressure of the gas pushes it to the surface, where it can easily be taken away and stored. However, a lot of gas is found inside a type of rock called 'shale', where there is no natural pressure to push the gas out. If a well is drilled into shale, the gas will not come out by itself. It needs extra help. This is when fracking is an important way of getting the gas out. The fracking process works in this way: first, a well is drilled into the ground, through the water table (which is the natural level of fresh water). When the drill reaches the shale, which is where the gas is, it turns sideways through 90 degrees and continues horizontally through the shale. So, to put it simply, the drill goes down into the shale, where the gas is, and then turns to the side. Then, a mixture of water, sand and various chemicals are sent down into the well. The mixture creates pressure in the rock and the rock breaks. These small breaks in the rock are known as 'fissures', and these fissures release the gas from the shale. The pressure of the mixture causes the gas to rise to the surface, where it can be collected and stored.",
+   "questionGroups": [
+    {
+     "groupType": "map",
+     "groupTitle": "Questions 1–3",
+     "imageUrl": "media:m2u06-fracking.jpg",
+     "instruction": "The lecturer is talking about the fracking process. Listen and complete the diagram with NO MORE THAN ONE WORD AND/OR A NUMBER for each answer. (Label 1, \"Water table\", is the example.) (Ex. 4)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Label 2 (the deep layer of rock)",
+       "correctAnswer": "shale",
+       "explanation": "Dịch: Nhãn 2\n\nTranscript: “a lot of gas is found inside a type of rock called 'shale'” … “When the drill reaches the shale, which is where the gas is, it turns sideways”\n\nPhân tích: Lớp đá nơi giếng rẽ ngang."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Label 3 (the small breaks in the rock)",
+       "correctAnswer": "fissures / fissure",
+       "explanation": "Dịch: Nhãn 3\n\nTranscript: “These small breaks in the rock are known as 'fissures', and these fissures release the gas from the shale”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Label 4 (what comes up the well)",
+       "correctAnswer": "gas",
+       "explanation": "Dịch: Nhãn 4\n\nTranscript: “these fissures release the gas from the shale”\n\nPhân tích: Mũi tên đi lên giếng → khí (gas) thoát ra."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-L3"
+  },
+  {
+   "title": "Mindset 2 · Unit 6 — Fracking in different countries",
+   "description": "The lecturer talks about fracking in different countries.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_52.mp3",
+   "transcript": "Lecturer: One interesting fact is that fracking isn't new. It's been used for many years around the world, mostly to get the last oil from old wells after the pressure's dropped. But the process has become much better known with the move to fracking for gas and the search for new fracking sites.\nTake Canada, for example. Fracking has been used there to extract oil for over 50 years and gas for almost 40 years. More recently, a huge amount of shale gas has been found in many areas of the country and drilling companies are trying to get licences to drill in these areas. For example, in the western region of British Columbia, it's estimated that there are over seven trillion cubic metres of gas which can be extracted. However, most regions haven't allowed fracking to take place because of various environmental issues, which I'll talk about later.\nIn the USA, the production of shale gas now is around six times greater than it was ten years ago, with more and more licences being given to companies to drill. As a result, shale gas now provides around a quarter of all gas used in the US, and the cost of gas is only around a third of the cost in Europe and a fifth of the cost in Japan. However, because the price has fallen so much, companies are reducing their production and exporting more.\nAs in the USA, production in Australia has grown massively. Although production in Australia was always lower than in the United States, it's over 20 times greater than it was ten years ago and now supplies a quarter of Australia's gas requirement. It's also helped Australia to become a major exporter of gas. Billions of dollars are being invested in gas exploration and Australia may well become the biggest exporter of gas over the next few years. The situation in the UK, however, is quite different. The amount of shale gas in the UK has been estimated to be as high as 400 trillion cubic metres. Although fracking could well provide over 70,000 jobs and attract over £3 billion in investment, very little has been done to develop the industry in the UK. Some estimates say that gas bills could be 5% lower if shale gas is produced in large quantities. However, the main problem for fracking in the UK is the high level of population. While in the USA there are on average only about 40 people per square kilometre, in the UK there are almost 250 people, so fracking in any area will affect far more people in the UK.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Listen and complete the sentences with the quantifier from the box which correctly reflects what the lecturer says: a little, more, all, every, few, fewer, a lot of, many, less, much, some, several. (Ex. 6)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "In Canada, ______ shale gas has been found in various areas.",
+       "correctAnswer": "a lot of",
+       "explanation": "Dịch: Canada\n\nTranscript: “a huge amount of shale gas has been found in many areas of the country”\n\nPhân tích: a huge amount = a lot of (gas không đếm được)."
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Only a ______ Canadian regions have allowed fracking to take place.",
+       "correctAnswer": "few",
+       "explanation": "Dịch: Các vùng của Canada\n\nTranscript: “most regions haven't allowed fracking to take place”\n\nPhân tích: regions đếm được; \"only a few\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "In the USA, ______ of the requirement for gas is met by shale gas.",
+       "correctAnswer": "some",
+       "explanation": "Dịch: Mỹ\n\nTranscript: “shale gas now provides around a quarter of all gas used in the US”\n\nPhân tích: Một phần tư → some (không phải all/much)."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "A great deal ______ shale gas is being produced in Australia now than a decade ago.",
+       "correctAnswer": "more",
+       "explanation": "Dịch: Úc\n\nTranscript: “it's over 20 times greater than it was ten years ago”\n\nPhân tích: a great deal more… than."
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "If fracking takes place in the UK, people might save ______ money on their gas bills.",
+       "correctAnswer": "a little",
+       "explanation": "Dịch: Anh\n\nTranscript: “gas bills could be 5% lower”\n\nPhân tích: 5% → chỉ một ít (money không đếm được)."
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "There are far ______ people per kilometre in the USA than in the UK.",
+       "correctAnswer": "fewer",
+       "explanation": "Dịch: Mật độ dân số\n\nTranscript: “in the USA there are on average only about 40 people per square kilometre, in the UK there are almost 250 people”\n\nPhân tích: people đếm được → fewer."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-L4"
+  },
+  {
+   "title": "Mindset 2 · Unit 6 — The benefits of fracking",
+   "description": "The lecturer talks about the benefits of fracking.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_53.mp3",
+   "transcript": "Lecturer: As you've heard, in countries like Australia and the USA, fracking has been increasing because governments see many benefits for energy supply and their economies. I'd like to discuss these benefits now and then talk about the problems which people have raised about fracking. Well, although increased production of shale gas will make sure that there's always enough gas for people's energy needs and the production of electrical energy, the economic benefit to the consumer is usually seen as more significant. As the supply of shale gas grows, energy prices will come down and consumers will save a lot of money, according to supporters of fracking.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Question 1",
+     "instruction": "Listen to the first part of the lecture and choose the correct answer, A, B or C. (Ex. 8)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Those who are in favour of fracking say that the main benefit is",
+       "options": [
+        "better energy supply.",
+        "lower energy bills.",
+        "increased electricity generation."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Người ủng hộ fracking nói lợi ích chính là\n\nTranscript: “the economic benefit to the consumer is usually seen as more significant” … “energy prices will come down… according to supporters of fracking”\n\nPhân tích: supporters = those in favour; more significant = main; prices come down = lower bills. A: có nhắc nhưng không phải lợi ích chính; C: không nói \"increased\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-L5"
+  },
+  {
+   "title": "Mindset 2 · Unit 6 — Benefits: jobs and the environment",
+   "description": "The lecturer talks about economic activity and environmental benefits.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_54.mp3",
+   "transcript": "Lecturer: Another important economic consideration is the increase in economic activity and employment that results from the development of fracking wells. When a new area is developed, the local economy benefits, with increases in services to the fracking company. Furthermore, as with all industrial developments, employment opportunities increase, with most new workers recruited from the population in the surrounding area - although many workers from outside the area are also attracted by the new vacancies. Of course, companies often bring their own workers with them when they start a new well.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Question 1",
+     "instruction": "Underline the important words and phrases in the question, then listen and choose the correct answer, A, B or C. (Ex. 11)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "When fracking starts in a new location",
+       "options": [
+        "local businesses lose many of their employees.",
+        "companies bring in most of the workers needed.",
+        "it creates more opportunities for businesses in the area."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Khi fracking bắt đầu ở nơi mới\n\nTranscript: “When a new area is developed, the local economy benefits, with increases in services to the fracking company”\n\nPhân tích: A: bài nói lao động mới tuyển từ dân địa phương, không nói họ rời doanh nghiệp khác. B: \"companies often bring their own workers\" — không nói \"most\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-L6"
+  },
+  {
+   "title": "Mindset 2 · Unit 6 — Benefits for the environment",
+   "description": "The lecturer talks about the environmental benefits claimed by supporters.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_55.mp3",
+   "transcript": "Lecturer: Apart from the economic benefits of fracking, its supporters claim that there are significant environmental benefits as well. First, although burning gas produces carbon dioxide, which is the main greenhouse gas causing global warming, the quantities that it produces are far less than the quantities produced by burning coal and oil. Some people estimate that it produces up to 50% less than the other fuels. Burning coal and oil also produces sulphur and mercury, which can be very dangerous to health if breathed in. Another benefit of fracking is that it reduces the amount of water needed for gas production. There's evidence that gas production through fracking uses half the water needed for coal, and a tenth of the water needed for oil. One final benefit could be its use as a bridge to carbon-free energy. This means that, although gas produces carbon dioxide, if gas can replace oil and coal, then the production of carbon dioxide will slow down and the development of renewable sources of energy can take longer.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–2",
+     "instruction": "Listen to the next part of the lecture and choose the correct answer, A, B or C. (Ex. 13)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Although burning gas produces carbon dioxide,",
+       "options": [
+        "it does not produce chemicals which are harmful to the body.",
+        "the amount produced is slightly less than from coal and oil.",
+        "it produces much less water than coal and oil burning produces."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Dù đốt khí sinh ra CO2,\n\nTranscript: “Burning coal and oil also produces sulphur and mercury, which can be very dangerous to health if breathed in”\n\nPhân tích: Khí đốt không sinh ra các chất độc này. B sai: \"far less… up to 50% less\" (không phải slightly). C nói về nước dùng trong sản xuất, không phải nước sinh ra."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Some people think that using more gas from fracking to produce energy means that",
+       "options": [
+        "50% less electricity will be produced than now.",
+        "more water can be used in the production of coal and oil.",
+        "there will be more time to work on environmentally friendly sources of energy."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Một số người cho rằng dùng nhiều khí hơn nghĩa là\n\nVị trí: Cuối đoạn.\n\nTranscript: “One final benefit could be its use as a bridge to carbon-free energy… the development of renewable sources of energy can take longer”\n\nPhân tích: 50% là lượng CO2, không phải điện."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-L7"
+  },
+  {
+   "title": "Mindset 2 · Unit 6 — People's concerns about fracking",
+   "description": "The lecturer talks about people's concerns about fracking.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_56.mp3",
+   "transcript": "Lecturer: Despite the benefits of fracking which its supporters claim, there are clearly various concerns connected with it. Some of these are real, but it's possible that they're not as well founded as opponents of fracking would have us believe. So, what exactly are these concerns? Well, we can divide them into three categories: environmental concerns, health concerns, and economic concerns. To begin with, let's look at the environmental concerns. The first and possibly most significant environmental concern is that, despite producing lower levels of carbon dioxide, shale gas is still a cause of global warming and so it should not be used. In effect, it simply stops energy producers and governments focusing on the real need to develop renewable sources of energy. What's more, it's likely that, although countries which produce shale gas will use less coal and oil, the use of coal and oil will still continue to increase in other places, so globally there will be little or no benefit to the environment.\nAnother environmental concern is pollution. If the production site is badly maintained, dangerous chemicals can get into water sources and rivers and contaminate the water. While there's some evidence of this happening at existing production sites, it isn't clear whether this problem happens everywhere, so more research is needed. The last environmental concern connected with drilling is that of earthquakes. We're more familiar with earthquakes happening in certain areas of the world like Japan and China, but there's evidence that drilling can disturb the ground in the local area, causing it to move and shake, which in turn damages buildings. Usually, these movements aren't serious, but they can cause a lot of worry to the local population, so they need to be considered. In fact, very few of these ground movements have definitely been caused by drilling, and it might be that people are worried because of what they hear or read in the media rather than the actual reality of the situation. Now I'd like to turn to the economic concerns. Opponents of fracking say that the economic benefits are not as great as its supporters claim. While there's clearly an increase in economic activity in the areas where fracking is carried out, as I discussed earlier, there are often negative effects on agriculture and farming in these areas and there's good evidence that house prices fall, because people aren't willing to move into areas where fracking is taking place or has taken place. Another economic concern is that gas production can be very high at the beginning of the fracking process, but it can drop quickly, down to as little as 10% in five years. This can result in more drilling and greater use of water, which increases the cost of getting the gas out of the ground. The other main economic problem is that the estimated amount of gas in the ground may not be anywhere near as high as fracking supporters claim, so investing huge amounts of money in new wells may not benefit the economy at all. This brings me to the last major concern: health. Fracking can bring with it a pollution problem. If the well isn't deep enough - less than 600 metres - or if there are problems with drilling, the chemicals can leak into the drinking water supply and cause problems for the local population. There've even been reports of residents opening their water taps and seeing brown water and mud coming out. However, it's not only the water supply which can be affected. Pollution can also be carried in the air to local towns and affect people with existing medical problems, especially those with breathing difficulties. There've even been reports of more cases of cancer among people living near production sites, as well as among the workers themselves. Clearly, a lot more research needs to be done on the effects of fracking on health.\nSo to summarise, there are significant environmental, economic and health concerns connected with fracking, but we need to carry out a lot more research to see whether these concerns are real. Whether they're real or not, they're having an effect on the fracking industry right now. In many places around the world, local people have protested angrily when they've found out that fracking is planned in their area. These concerns have also led local, regional and national governments to announce that fracking won't start until they're quite sure that it's safe. This means that they'll prevent any activity connected with fracking until there's enough evidence to assure its safety, especially in areas with higher populations. In fact, in France, they've decided not to allow fracking anywhere in the country. We can see that the future is very uncertain, and that is what I'd now like to discuss.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Listen and choose the correct answer, A, B or C. (Ex. 14)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "One of the environmental concerns is that",
+       "options": [
+        "increased use of shale gas will significantly raise carbon dioxide levels.",
+        "using shale gas in some areas will not benefit the environment overall.",
+        "countries that use shale gas will still use high levels of oil and natural gas."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Một mối lo về môi trường\n\nTranscript: “although countries which produce shale gas will use less coal and oil, the use of coal and oil will still continue to increase in other places, so globally there will be little or no benefit to the environment”\n\nPhân tích: C sai: các nước dùng khí đá phiến sẽ dùng ÍT than và dầu hơn."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Fracking may not be economically beneficial because",
+       "options": [
+        "it can reduce the value of homes in the areas where it takes place.",
+        "after five years of fracking, production can fall significantly.",
+        "the levels of gas in the ground are unlikely to be sustainable."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Fracking có thể không có lợi về kinh tế vì\n\nTranscript: “there's good evidence that house prices fall”\n\nPhân tích: B là một mối lo kinh tế khác nhưng chỉ \"can drop… to as little as 10% in five years\" — Answer Key chọn A."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "One medical concern related to fracking is that",
+       "options": [
+        "the quality of the water supply in some areas can be badly affected.",
+        "poor air quality causes breathing problems in healthy people.",
+        "workers are passing on illnesses to local people."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Một mối lo về sức khỏe\n\nTranscript: “the chemicals can leak into the drinking water supply” … “seeing brown water and mud coming out”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Fracking has not been able to take place in some places because",
+       "options": [
+        "local people have managed to prevent it.",
+        "the authorities are waiting for better information about its effects.",
+        "some countries want to follow the example of France."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Fracking chưa thể diễn ra ở một số nơi vì\n\nTranscript: “local, regional and national governments… announce that fracking won't start until they're quite sure that it's safe” … “until there's enough evidence to assure its safety”\n\nPhân tích: C: Pháp đã cấm hẳn — nhưng không nói nước khác muốn làm theo."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-L8"
+  },
+  {
+   "title": "Mindset 2 · Unit 6 — Exam skills: the future of energy",
+   "description": "The lecturer talks about the future of fracking and other forms of energy.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_57.mp3",
+   "transcript": "Lecturer: While fracking is being used around the world, we've seen that there are serious concerns about it. What's clear is that fracking isn't the answer to the growing worldwide need for energy as countries increase their consumption. Already, the amount of carbon dioxide in the atmosphere has reached 400 parts per million. This may not seem very high, but we have to remember that 200 years ago the level was around 280 parts per million, so it's increased by over a third since then. As a result, it's estimated that global temperatures have already increased by almost one degree Celsius. This increase changes the climate and affects the weather in many parts of the world. Many places, such as north-west Europe, are expected to become warmer and wetter, and we've seen winter storms becoming worse in this region. Other places such as sub-Saharan Africa are expected to become hotter and drier, with deserts growing in area and seriously affecting farmland. Ice in the polar regions will melt and sea levels will rise, which will put coastal cities in greater danger of flooding.\nClearly, we need to reduce, and eventually stop, using non-renewable resources like coal, oil and gas. It may well be true that fracking can slow down global warming for a while and allow us to develop better renewable resources. However, these resources, like wind, wave and solar power, are currently far more expensive to develop than shale gas production. On top of that, they take a long time to develop and start paying for themselves. Consumers have to pay higher bills to help the development of cleaner sources, and energy companies don't want to lose customers by asking them to pay more. Consequently, it's important for international organisations like the United Nations and national governments to support the development of renewable resources. The problem here, of course, is that governments usually think of short-term answers to energy problems and not longer-term ones. They're afraid that if they reduce the production and use of gas and oil, their economies will do worse than other economies, so they don't want to take action to increase the use of renewable sources. As I mentioned earlier, there are many people in different countries, like Canada, the UK and France, who don't support fracking, especially if it's going to take place near where they live. Environmental groups also oppose fracking, not just because they want to protect people living in areas where fracking is planned, but also because they see fracking as part of the old way of doing things, like burning coal, oil and gas and increasing global warming. They want to see continued action and are trying to persuade governments to develop wind, wave and solar power, as well as other renewable forms of energy, to fight global warming and ensure the supply of energy in the future. Certainly, coal, oil and gas will run out one day, and if we haven't developed other forms of renewable energy, we'll then have serious problems with supplying energy to the growing world population, and the problems of fracking will seem relatively unimportant.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–5",
+     "instruction": "The lecturer is talking about the future of fracking and other forms of energy. Listen and choose the correct answer, A, B or C. (Ex. 17)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "The problem with fracking is that it",
+       "options": [
+        "has caused carbon dioxide levels to rise by more than a third.",
+        "will not help countries meet their energy requirements.",
+        "will make the world climate warmer by 1 degree Celsius."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Vấn đề của fracking là\n\nVị trí: Đầu bài.\n\nTranscript: “fracking isn't the answer to the growing worldwide need for energy”\n\nPhân tích: A, C: \"over a third\" và \"almost one degree\" là số liệu về CO2 và nhiệt độ nói chung, không phải do fracking."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "One result of climate change is",
+       "options": [
+        "lower levels of rain in some parts of Europe.",
+        "serious problems for food production in some African regions.",
+        "increased risk of ice in populated areas by the sea."
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Một hệ quả của biến đổi khí hậu\n\nTranscript: “sub-Saharan Africa are expected to become hotter and drier, with deserts growing in area and seriously affecting farmland”\n\nPhân tích: A sai: north-west Europe \"warmer and wetter\". C sai: băng tan, nước biển dâng → lũ."
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "A reason renewable energy sources are not being developed quickly is that",
+       "options": [
+        "fracking is the best way to reduce global warming at the moment.",
+        "governments want to find other long-term solutions.",
+        "energy companies are afraid the cost will affect their businesses."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Lý do năng lượng tái tạo phát triển chậm\n\nTranscript: “energy companies don't want to lose customers by asking them to pay more”\n\nPhân tích: B sai: chính phủ thường nghĩ \"short-term answers\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "To develop renewable sources further",
+       "options": [
+        "commercial organisations need external help.",
+        "governments need to produce less gas and oil.",
+        "countries should work together to change their economies."
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Để phát triển nguồn tái tạo\n\nTranscript: “it's important for international organisations like the United Nations and national governments to support the development of renewable resources”\n\nPhân tích: Các công ty năng lượng cần sự hỗ trợ từ bên ngoài (external help)."
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "Environmental groups believe that",
+       "options": [
+        "fracking can help reduce global warming in the short term.",
+        "non-renewable sources can continue alongside renewable sources.",
+        "only renewable sources will be able to provide energy in the future."
+       ],
+       "correctAnswer": "C",
+       "explanation": "Dịch: Các nhóm môi trường tin rằng\n\nVị trí: Cuối bài.\n\nTranscript: “They want to see continued action and are trying to persuade governments to develop wind, wave and solar power” … “coal, oil and gas will run out one day”\n\nPhân tích: A là ý \"may well be true\" của người giảng, không phải của các nhóm môi trường."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U06-L9"
+  }
+ ]
+}

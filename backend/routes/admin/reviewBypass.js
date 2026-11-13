@@ -15,7 +15,7 @@ const WT1Lesson = require('../../models/WT1Lesson');
 
 const router = express.Router();
 // Same set as wt1Service.COURSES / routes/admin/wt1.js COURSES.
-const WT1_COURSES = ['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING', 'MINDSET-0', 'MINDSET-1'];
+const WT1_COURSES = ['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING', 'MINDSET-0', 'MINDSET-1', 'MINDSET-2'];
 
 function genCode() {
   // Avoid look-alike chars (0/O, 1/I) so a code read off a screen is safe.

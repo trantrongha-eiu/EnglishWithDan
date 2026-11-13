@@ -46,6 +46,7 @@
         { divider: true, label: 'Khóa học' },
         { href: 'mindset-0.html',           icon: 'fa-seedling',   label: 'Mindset Foundation' },
         { href: 'mindset-1.html',           icon: 'fa-leaf',       label: 'Mindset Level 1' },
+        { href: 'mindset-2.html',           icon: 'fa-leaf',       label: 'Mindset Level 2' },
       ]
     },
     { href: 'listening.html',        icon: 'fa-headphones',  label: 'Listening',
@@ -57,6 +58,7 @@
         { divider: true, label: 'Khóa học' },
         { href: 'mindset-0.html',           icon: 'fa-seedling',   label: 'Mindset Foundation' },
         { href: 'mindset-1.html',           icon: 'fa-leaf',       label: 'Mindset Level 1' },
+        { href: 'mindset-2.html',           icon: 'fa-leaf',       label: 'Mindset Level 2' },
         { divider: true, label: 'Luyện tập' },
         { href: 'dictation.html',             icon: 'fa-keyboard',   label: 'Dictation' },
       ]

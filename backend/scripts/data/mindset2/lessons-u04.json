@@ -1,0 +1,696 @@
+{
+ "modules": [
+  {
+   "code": "M2-U04",
+   "order": 4,
+   "title": "Unit 4 · Du lịch và giao thông",
+   "titleEn": "UNIT 04: TRAVEL AND TRANSPORT — sách tr. 68–73, 80–83",
+   "outcomes": [
+    "Reading: matching headings — hiểu ý chính của đoạn; nhận ra từ đồng nghĩa giữa tiêu đề và bài",
+    "Grammar: present continuous, present perfect simple / continuous và past simple",
+    "Listening: matching questions; nhận ra chức năng giao tiếp (proposing, persuading, complaining, doubt…)",
+    "Từ vựng du lịch, giao thông đô thị (Sổ 2)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M2-U04-L1",
+   "moduleCode": "M2-U04",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: travel",
+   "titleEn": "Lead-in (p. 68)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Hiểu nghĩa các từ về du lịch: attraction, a local, custom, integrate, offend…",
+    "Dùng các từ này trong câu của riêng mình"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Chủ đề du lịch trong IELTS",
+     "titleEn": "Travel and transport",
+     "formula": [],
+     "usage": [
+      "Travel and transport là chủ đề rất hay gặp. Học từ theo cụm: **meet the locals**, **face delays and cancellations**, **integrate into a society**, **offend locals**, **use body language**."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 10,
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 4 · Lead-in & Vocabulary: travel — 37 từ/cụm từ",
+    "words": [
+     {
+      "word": "attraction",
+      "meaning": "điểm tham quan",
+      "example": "Travel tips A In order to see all the best attractions and avoid the queues, try to get up early."
+     },
+     {
+      "word": "local",
+      "meaning": "người dân địa phương",
+      "example": "Early morning is also a good time to take photographs and meet the locals."
+     },
+     {
+      "word": "cancellation",
+      "meaning": "sự huỷ bỏ",
+      "example": "C Travellers often face delays and cancellations, so it is important that you do not allow them to ruin your trip."
+     },
+     {
+      "word": "mother tongue",
+      "meaning": "tiếng mẹ đẻ",
+      "example": "Although you may be tempted to shout in your mother tongue in order to be understood, it is more polite and often more effective to simply use body language."
+     },
+     {
+      "word": "custom",
+      "meaning": "phong tục",
+      "example": "D Before starting your trip, find out about the people and customs of the place you are visiting."
+     },
+     {
+      "word": "body language",
+      "meaning": "ngôn ngữ cơ thể",
+      "example": "Although you may be tempted to shout in your mother tongue in order to be understood, it is more polite and often more effective to simply use body language."
+     },
+     {
+      "word": "integrate into",
+      "meaning": "hoà nhập vào",
+      "example": "Learning the customs helps travellers integrate into the local community."
+     },
+     {
+      "word": "offend",
+      "meaning": "xúc phạm, làm phật lòng",
+      "example": "This will help you to integrate more easily and will ensure you do not do anything to offend locals."
+     },
+     {
+      "word": "make an effort",
+      "meaning": "nỗ lực",
+      "example": "Even if your pronunciation is not perfect, locals respond better to people who make an effort."
+     },
+     {
+      "word": "get frustrated",
+      "meaning": "bực bội, nản lòng",
+      "example": "Also, try not to get frustrated when you are unable to communicate with a native."
+     },
+     {
+      "word": "be tempted to",
+      "meaning": "muốn làm gì (dù không nên)",
+      "example": "Although you may be tempted to shout in your mother tongue in order to be understood, it is more polite and often more effective to simply use body language."
+     },
+     {
+      "word": "see the funny side",
+      "meaning": "nhìn vào mặt hài hước",
+      "example": "You will have a much better trip if you are prepared for plans to change and you are able to see the funny side if things go wrong."
+     },
+     {
+      "word": "destination",
+      "meaning": "điểm đến",
+      "example": "The more you know about your chosen destination, the more chance you have of gaining the most from your experience."
+     },
+     {
+      "word": "socialise with",
+      "meaning": "giao lưu với",
+      "example": "E Do not just socialise with other travellers, but try to start conversations with locals too."
+     },
+     {
+      "word": "get a real feel for",
+      "meaning": "cảm nhận thật sự về",
+      "example": "F In order to get a real feel for a place, spend a few hours sitting in a park …"
+     },
+     {
+      "word": "memorable",
+      "meaning": "đáng nhớ",
+      "example": "Trans-Siberian Railway A The Trans-Siberian Railway has been described by some as the most memorable journey on Earth."
+     },
+     {
+      "word": "capture the imagination of",
+      "meaning": "khơi gợi trí tưởng tượng của",
+      "example": "The journey has captured the imagination of travellers from far and wide since construction began in 1891."
+     },
+     {
+      "word": "construction",
+      "meaning": "sự xây dựng",
+      "example": "Up to 90,000 men were employed in its construction."
+     },
+     {
+      "word": "expand",
+      "meaning": "mở rộng",
+      "example": "B Although officials have been building this line since 1891, it is still being expanded today."
+     },
+     {
+      "word": "technological marvel",
+      "meaning": "kỳ quan công nghệ",
+      "example": "Even though it was considered a technological marvel at the time, there were arguments about the quality of work."
+     },
+     {
+      "word": "breathtaking views",
+      "meaning": "cảnh đẹp ngoạn mục",
+      "example": "The trip could never be described as dull, however, with breathtaking views from the carriage window and the opportunity to talk to fellow passengers."
+     },
+     {
+      "word": "fellow passengers",
+      "meaning": "hành khách đi cùng",
+      "example": "The trip could never be described as dull, however, with breathtaking views from the carriage window and the opportunity to talk to fellow passengers."
+     },
+     {
+      "word": "pay for itself",
+      "meaning": "tự hoàn vốn",
+      "example": "The railway more than paid for itself in the twentieth century."
+     },
+     {
+      "word": "domestic",
+      "meaning": "trong nước, nội địa",
+      "example": "F Although the trip certainly attracts many foreign tourists, today it gets most of its use from domestic passengers."
+     },
+     {
+      "word": "exports",
+      "meaning": "hàng xuất khẩu",
+      "example": "It is responsible for 30% of Russian exports and carries more than 250,000 containers a year."
+     },
+     {
+      "word": "migrate",
+      "meaning": "di cư",
+      "example": "Millions of poor people migrated to Siberia to find work."
+     },
+     {
+      "word": "controversy",
+      "meaning": "sự tranh cãi",
+      "example": "There was a lot of controversy about the quality of the work."
+     },
+     {
+      "word": "avoid the queues",
+      "meaning": "tránh xếp hàng",
+      "example": "Travel tips A In order to see all the best attractions and avoid the queues, try to get up early."
+     },
+     {
+      "word": "memorise",
+      "meaning": "ghi nhớ, học thuộc",
+      "example": "B It is also a good idea to memorise a few useful phrases, such as 'please' and 'thank you'."
+     },
+     {
+      "word": "pronunciation",
+      "meaning": "cách phát âm",
+      "example": "Even if your pronunciation is not perfect, locals respond better to people who make an effort."
+     },
+     {
+      "word": "ruin your trip",
+      "meaning": "làm hỏng chuyến đi",
+      "example": "C Travellers often face delays and cancellations, so it is important that you do not allow them to ruin your trip."
+     },
+     {
+      "word": "polite",
+      "meaning": "lịch sự",
+      "example": "Although you may be tempted to shout in your mother tongue in order to be understood, it is more polite and often more effective to simply use body language."
+     },
+     {
+      "word": "absorb",
+      "meaning": "cảm nhận trọn vẹn, hấp thụ",
+      "example": "Try to absorb all the colours, smells and sounds which surround you."
+     },
+     {
+      "word": "approximately",
+      "meaning": "xấp xỉ, khoảng",
+      "example": "Measuring nearly 9,300 km, it is the longest railway line in the world and takes approximately a week to complete."
+     },
+     {
+      "word": "a lack of",
+      "meaning": "sự thiếu hụt",
+      "example": "A lack of workmen meant that soldiers and convicts had to be conscripted to help."
+     },
+     {
+      "word": "average speed",
+      "meaning": "tốc độ trung bình",
+      "example": "Running at an average speed of 60 km/h, it is not designed for anyone in a hurry."
+     },
+     {
+      "word": "dull",
+      "meaning": "buồn tẻ",
+      "example": "The trip could never be described as dull, however, with breathtaking views from the carriage window and the opportunity to talk to fellow passengers."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M2-U04-L2",
+   "moduleCode": "M2-U04",
+   "order": 2,
+   "title": "📖 Reading: matching headings",
+   "titleEn": "Matching headings · Recognising synonyms · Useful strategies and tips · Exam skills (pp. 69–73)",
+   "durationMinutes": 55,
+   "objectives": [
+    "Hiểu ý chính của cả đoạn để chọn tiêu đề",
+    "Viết tóm tắt ngắn cho từng đoạn trước khi nối tiêu đề",
+    "Nhận ra từ đồng nghĩa giữa tiêu đề và bài"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Matching headings",
+     "titleEn": "Matching headings",
+     "formula": [],
+     "usage": [
+      "Tiêu đề **tóm tắt ý chính** của đoạn/phần.",
+      "Có tiêu đề chỉ đúng với **một dòng hoặc một cụm** trong đoạn — nếu không tóm tắt **cả đoạn** thì không phải đáp án.",
+      "Ví dụ đoạn A (Travel tips): \"Taking photographs\" và \"Seeing the best attractions\" chỉ khớp một chi tiết; chỉ \"The best time of day to be a tourist\" khớp cả đoạn.",
+      "Đừng chỉ tìm **từ trùng** rồi kết luận."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Viết tóm tắt trước",
+     "titleEn": "Summarising each paragraph",
+     "formula": [
+      "① Gạch chân từ khóa và viết tóm tắt vài chữ cho mỗi đoạn → ② so sánh với bạn → ③ nối tóm tắt với tiêu đề."
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "A: best attractions, avoid queues, early morning… → Good to get up early.",
+       "vi": ""
+      },
+      {
+       "en": "C: delays, cancellations, not frustrated, body language, plans to change… → Don't get upset if plans change.",
+       "vi": ""
+      }
+     ],
+     "notes": []
+    },
+    {
+     "title": "Mẹo làm matching headings",
+     "titleEn": "Useful strategies and tips",
+     "formula": [],
+     "usage": [
+      "Không dùng **một tiêu đề hai lần**.",
+      "Theo dõi **thời gian**.",
+      "Đọc **đoạn ngắn nhất trước**.",
+      "Bỏ qua **từ không hiểu**.",
+      "Tiêu đề thường dùng **từ đồng nghĩa**: construction ↔ building, convicts ↔ prisoners, arguments ↔ controversy, move to a new area ↔ migrate, exports ↔ items sold abroad, impact ↔ effect."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 13,
+   "practiceLinks": [
+    {
+     "ref": "reading:M2-U04-R1",
+     "kind": "reading",
+     "title": "Travel tips — matching headings (Ex. 3–5)",
+     "note": "Chọn tiêu đề cho đoạn B–F (đoạn A làm mẫu)."
+    },
+    {
+     "ref": "reading:M2-U04-R2",
+     "kind": "reading",
+     "title": "Exam skills: Trans-Siberian Railway (Ex. 12)",
+     "note": "6 đoạn A–F, 9 tiêu đề i–ix."
+    }
+   ]
+  },
+  {
+   "code": "M2-U04-L3",
+   "moduleCode": "M2-U04",
+   "order": 3,
+   "title": "🧩 Grammar focus: present perfect, past simple and more",
+   "titleEn": "Grammar focus: present continuous, present perfect simple, present perfect continuous and past simple (p. 72)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Nhận ra các thì trong bài Trans-Siberian Railway",
+    "Phân biệt past simple (đã xong) với present perfect simple / continuous (còn liên hệ với hiện tại)"
+   ],
+   "keyLanguage": [
+    "**Past simple**: hành động trong quá khứ, **đã kết thúc**: From the moment building began, the project **faced** many difficulties.",
+    "**Present perfect simple** (has/have + V3): bắt đầu trong quá khứ, **còn liên hệ với hiện tại**: The journey **has captured** the imagination of travellers… since 1891.",
+    "**Present perfect continuous** (has/have been + V-ing): hành động **kéo dài** từ quá khứ đến nay: officials **have been building** this line since 1891.",
+    "**Present continuous passive** (is being + V3): it **is** still **being expanded** today."
+   ],
+   "theory": [
+    {
+     "title": "Thì quá khứ và hoàn thành",
+     "titleEn": "Past simple vs present perfect",
+     "formula": [
+      "past simple: V2/V-ed",
+      "present perfect: has/have + V3",
+      "present perfect continuous: has/have + been + V-ing"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "I'm so tired. I've been travelling all day.",
+       "vi": "Kéo dài đến bây giờ, còn mệt."
+      },
+      {
+       "en": "Last year, I went on my first-ever cruise.",
+       "vi": "\"Last year\" → past simple."
+      },
+      {
+       "en": "I am very well travelled, I've visited many countries.",
+       "vi": "Kinh nghiệm tính đến nay."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 12,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Past Simple",
+     "note": "đã kết thúc",
+     "url": "/essential-grammar.html?lesson=past-simple"
+    },
+    {
+     "kind": "grammar",
+     "title": "Present Perfect",
+     "note": "liên hệ với hiện tại",
+     "url": "/essential-grammar.html?lesson=present-perfect"
+    },
+    {
+     "kind": "grammar",
+     "title": "Present Perfect Continuous",
+     "note": "kéo dài đến nay",
+     "url": "/essential-grammar.html?lesson=present-perfect-continuous"
+    }
+   ]
+  },
+  {
+   "code": "M2-U04-L4",
+   "moduleCode": "M2-U04",
+   "order": 4,
+   "title": "🎧 Listening: matching & functions",
+   "titleEn": "Lead-in · Matching questions · Identifying different functions · Exam skills (pp. 80–83)",
+   "durationMinutes": 60,
+   "objectives": [
+    "Nhận ra vấn đề giao thông trong từng hội thoại",
+    "Làm matching questions: số câu và số lựa chọn có thể khác nhau",
+    "Nhận ra chức năng giao tiếp: proposing, persuading, complaining, enquiring, expressing doubt, correcting…"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Matching questions",
+     "titleEn": "Matching questions",
+     "formula": [],
+     "usage": [
+      "Câu hỏi theo **thứ tự** bài nghe; đáp án là **chữ cái** của lựa chọn.",
+      "Số câu và số lựa chọn **không phải lúc nào cũng bằng nhau**: ít lựa chọn hơn câu → một chữ cái dùng nhiều lần; nhiều lựa chọn hơn → có lựa chọn không dùng."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Chức năng giao tiếp",
+     "titleEn": "Identifying different functions",
+     "formula": [],
+     "usage": [
+      "**Proposing**: Shall we take the train? · What about…?",
+      "**Persuading**: I really think you should… · I'm sure you'd agree that…",
+      "**Enquiring**: Excuse me, could you tell me…?",
+      "**Expressing doubt**: Are you sure? I really don't think that's a good idea. · I'm not sure about that.",
+      "**Complaining**: I don't believe it! This service is getting worse and worse!",
+      "**Correcting**: Actually, … that's not quite right.",
+      "**Approving**: I think you have a good point there."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 5,
+   "practiceLinks": [
+    {
+     "ref": "listening:M2-U04-L1",
+     "kind": "listening",
+     "title": "Five conversations: problems and functions (Ex. 1–2)",
+     "note": "Vấn đề A–E và chức năng của người nói."
+    },
+    {
+     "ref": "listening:M2-U04-L2",
+     "kind": "listening",
+     "title": "The students' project: the main problem (Ex. 4)",
+     "note": "Một câu A–D."
+    },
+    {
+     "ref": "listening:M2-U04-L3",
+     "kind": "listening",
+     "title": "The worst affected places (Ex. 5)",
+     "note": "Nối địa điểm với vị trí — thừa một vị trí."
+    },
+    {
+     "ref": "listening:M2-U04-L4",
+     "kind": "listening",
+     "title": "Solutions and disadvantages (Ex. 6)",
+     "note": "Nối giải pháp với nhược điểm."
+    },
+    {
+     "ref": "listening:M2-U04-L5",
+     "kind": "listening",
+     "title": "The costs (Ex. 7)",
+     "note": "Thừa hai mức chi phí."
+    },
+    {
+     "ref": "listening:M2-U04-L6",
+     "kind": "listening",
+     "title": "The benefits (Ex. 8)",
+     "note": "Một chữ cái có thể dùng nhiều lần."
+    },
+    {
+     "ref": "listening:M2-U04-L7",
+     "kind": "listening",
+     "title": "Identifying functions: six extracts (Ex. 9)",
+     "note": "Thừa một chức năng."
+    },
+    {
+     "ref": "listening:M2-U04-L8",
+     "kind": "listening",
+     "title": "Exam skills: changes in Ashtown (Ex. 10)",
+     "note": "3 câu multiple choice + 5 câu matching."
+    }
+   ],
+   "vocabSave": {
+    "slot": 2,
+    "title": "Unit 4 · Listening: matching & functions — 38 từ/cụm từ",
+    "words": [
+     {
+      "word": "due in",
+      "meaning": "dự kiến đến trong (bao lâu)",
+      "example": "It's due in twenty minutes."
+     },
+     {
+      "word": "traffic jam",
+      "meaning": "tắc đường",
+      "example": "We were stuck in a traffic jam on the motorway for two hours."
+     },
+     {
+      "word": "there's no point in",
+      "meaning": "chẳng ích gì khi",
+      "example": "There's really no point in driving."
+     },
+     {
+      "word": "fare",
+      "meaning": "giá vé",
+      "example": "I know it's expensive, but maybe we can get a cheaper fare."
+     },
+     {
+      "word": "reliable",
+      "meaning": "đáng tin cậy",
+      "example": "The service isn't reliable enough."
+     },
+     {
+      "word": "take sth into consideration",
+      "meaning": "cân nhắc điều gì",
+      "example": "We need to take that into consideration when deciding on a solution."
+     },
+     {
+      "word": "town council",
+      "meaning": "hội đồng thành phố",
+      "example": "I think the town council can find some extra money to support the train service because, if anything, …"
+     },
+     {
+      "word": "accident rate",
+      "meaning": "tỷ lệ tai nạn",
+      "example": "True, but one good thing is that the road accident rate has been falling recently, partly due to the high volume of traffic on the roads."
+     },
+     {
+      "word": "high volume of traffic",
+      "meaning": "lưu lượng giao thông lớn",
+      "example": "True, but one good thing is that the road accident rate has been falling recently, partly due to the high volume of traffic on the roads."
+     },
+     {
+      "word": "air quality",
+      "meaning": "chất lượng không khí",
+      "example": "I know children are safer, but the air quality is much worse."
+     },
+     {
+      "word": "commute",
+      "meaning": "đi lại (đi làm) hằng ngày",
+      "example": "Remember, there's Liverton to the north and Scotsfield to the south and a lot of people commute to both places for work."
+     },
+     {
+      "word": "rush hour",
+      "meaning": "giờ cao điểm",
+      "example": "They usually make their deliveries in the morning rush hour."
+     },
+     {
+      "word": "proposal",
+      "meaning": "đề xuất",
+      "example": "Do you think either of the other proposals would work?"
+     },
+     {
+      "word": "residential area",
+      "meaning": "khu dân cư",
+      "example": "Drivers think they can find emptier roads in residential areas and it just sends the problem there instead."
+     },
+     {
+      "word": "park and ride scheme",
+      "meaning": "mô hình gửi xe rồi đi xe buýt vào trung tâm",
+      "example": "What about the park and ride scheme?"
+     },
+     {
+      "word": "pedestrian zone",
+      "meaning": "khu vực dành cho người đi bộ",
+      "example": "We could turn the whole of the centre, including the shopping areas, into a pedestrian zone and put in a one-way system round it."
+     },
+     {
+      "word": "one-way system",
+      "meaning": "hệ thống đường một chiều",
+      "example": "And then there's the pedestrian and one-way system."
+     },
+     {
+      "word": "go out of business",
+      "meaning": "phá sản, đóng cửa",
+      "example": "Some shops could go out of business if they have difficulty getting lorries in with their goods."
+     },
+     {
+      "word": "initial cost",
+      "meaning": "chi phí ban đầu",
+      "example": "The initial cost of a tram system would be huge."
+     },
+     {
+      "word": "maintenance expenses",
+      "meaning": "chi phí bảo trì",
+      "example": "The initial financial requirements would be huge and so would the maintenance expenses."
+     },
+     {
+      "word": "keep the costs down",
+      "meaning": "giữ chi phí ở mức thấp",
+      "example": "If they rent them, they could keep the costs down to around £3 million."
+     },
+     {
+      "word": "in the long term",
+      "meaning": "về lâu dài",
+      "example": "I agree that in the long term it would be the best thing."
+     },
+     {
+      "word": "take sth into account",
+      "meaning": "tính đến điều gì",
+      "example": "When I think about it, you have to take pedestrians into account as well."
+     },
+     {
+      "word": "up to a point",
+      "meaning": "ở một mức độ nào đó",
+      "example": "Up to a point, yes, but I'm sure you'd agree that encouraging people to do more cycling would help health far more."
+     },
+     {
+      "word": "bypass",
+      "meaning": "đường tránh, đường vành đai",
+      "example": "Five years ago a bypass was supposed to be built so that people could easily get from one side …"
+     },
+     {
+      "word": "manufacturing",
+      "meaning": "ngành sản xuất",
+      "example": "Manufacturing is still important of course and services such as accountancy firms and website developers …"
+     },
+     {
+      "word": "demolish",
+      "meaning": "phá dỡ",
+      "example": "Some of them have been demolished, and some have been converted for other uses, but that isn't surprising."
+     },
+     {
+      "word": "be converted into",
+      "meaning": "được chuyển đổi thành",
+      "example": "Some old factories have been converted into flats."
+     },
+     {
+      "word": "passenger",
+      "meaning": "hành khách",
+      "example": "The bus company just doesn't care about passengers any more, as long as they get the money."
+     },
+     {
+      "word": "lose weight",
+      "meaning": "giảm cân",
+      "example": "You need to get more exercise and lose weight, especially now that your leg is better."
+     },
+     {
+      "word": "make a big mistake",
+      "meaning": "mắc sai lầm lớn",
+      "example": "Well, if you ask me, I think you're making a big mistake."
+     },
+     {
+      "word": "committee",
+      "meaning": "uỷ ban",
+      "example": "We have to decide which one we could recommend to a transport committee."
+     },
+     {
+      "word": "financial problems",
+      "meaning": "vấn đề tài chính",
+      "example": "We have to remember that many people come into town by rail and the rail company has been talking about reducing staff and services because of financial problems."
+     },
+     {
+      "word": "get stressed",
+      "meaning": "bị căng thẳng",
+      "example": "True, and when I think about it, I can see that the heavy traffic means that businesses lose money, people are late for work and drivers get more stressed."
+     },
+     {
+      "word": "statistics",
+      "meaning": "số liệu thống kê",
+      "example": "Statistics show that the worst place is by the town hall."
+     },
+     {
+      "word": "lorry",
+      "meaning": "xe tải",
+      "example": "Some shops could go out of business if they have difficulty getting lorries in with their goods."
+     },
+     {
+      "word": "widen the roads",
+      "meaning": "mở rộng đường",
+      "example": "It would cost over £20 million just to prepare the route and to lay the lines down, including widening the roads."
+     },
+     {
+      "word": "strong point",
+      "meaning": "điểm mạnh",
+      "example": "Maths was never my strong point!"
+     }
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,646 @@
+{
+ "modules": [
+  {
+   "code": "M2-U08",
+   "order": 8,
+   "title": "Unit 8 · Lễ hội và truyền thống",
+   "titleEn": "UNIT 08: FESTIVALS AND TRADITIONS — sách tr. 148–153, 160–164",
+   "outcomes": [
+    "Reading: True / False / Not Given — thông tin sự kiện; nhận ra khi nào thông tin là Not Given",
+    "Grammar: câu điều kiện loại 1 và loại 2",
+    "Listening: summary completion; điền bảng theo nhóm thông tin; Section 3–4 về tổ chức lễ hội",
+    "Từ vựng lễ hội, sự kiện, tổ chức (Sổ 4)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M2-U08-L1",
+   "moduleCode": "M2-U08",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: festivals around the world",
+   "titleEn": "Lead-in · True / False / Not Given questions (pp. 148–150)",
+   "durationMinutes": 35,
+   "objectives": [
+    "Đọc ba đoạn văn ngắn về các lễ hội nổi tiếng",
+    "Làm quen với True / False / Not Given: thông tin sự kiện, không phải ý kiến",
+    "Không dùng hiểu biết riêng hay phỏng đoán khi trả lời Not Given"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "True / False / Not Given",
+     "titleEn": "True / False / Not Given questions",
+     "formula": [
+      "TRUE — phát biểu **khớp** với thông tin trong bài",
+      "FALSE — phát biểu **trái ngược** thông tin trong bài",
+      "NOT GIVEN — bài **không có** thông tin này"
+     ],
+     "usage": [
+      "Giống Yes/No/Not Given nhưng chỉ về **thông tin sự kiện**, không phải ý kiến người viết.",
+      "Khó nhất là nhận ra **Not Given**: chỉ dựa vào bài, không dựa vào **hiểu biết riêng** hay **phỏng đoán** (\"The candles on the cake often represent your age\" — đúng ngoài đời nhưng bài không nói → Not Given)."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 13,
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 8 · Lead-in & Vocabulary: festivals around the world — 38 từ/cụm từ",
+    "words": [
+     {
+      "word": "be held",
+      "meaning": "được tổ chức",
+      "example": "The carnival was first held in Venice in the 11th century and lasted for over two months."
+     },
+     {
+      "word": "issue tickets",
+      "meaning": "phát hành vé",
+      "example": "Because it is such fun, it has become very popular and officials have had to limit the event to 20,000 people by issuing tickets."
+     },
+     {
+      "word": "ingredient",
+      "meaning": "thành phần, nguyên liệu",
+      "example": "Boryeong Mud Festival (South Korea) A cosmetics company in South Korea created a line of beauty products which featured mud from the Boryeong mud flats as a main ingredient."
+     },
+     {
+      "word": "fireworks display",
+      "meaning": "màn bắn pháo hoa",
+      "example": "You can also enjoy live music, acupuncture and a fireworks display."
+     },
+     {
+      "word": "bank holiday",
+      "meaning": "ngày nghỉ lễ",
+      "example": "It is particularly celebrated in Mexico, where the day is a bank holiday."
+     },
+     {
+      "word": "loved ones",
+      "meaning": "những người thân yêu",
+      "example": "Activities involved in the holiday include building private altars, cleaning the graves of loved ones and telling funny stories about dead relatives."
+     },
+     {
+      "word": "parade",
+      "meaning": "cuộc diễu hành",
+      "example": "Street parties, parades and festivals are also a common feature of the celebration."
+     },
+     {
+      "word": "annual",
+      "meaning": "hằng năm",
+      "example": "This is an annual winter festival which takes place in Harbin, Heilongjiang, China, and is now the largest ice and snow festival in the world."
+     },
+     {
+      "word": "ice sculpture",
+      "meaning": "tượng băng",
+      "example": "The ice sculptures are displayed throughout the city."
+     },
+     {
+      "word": "exhibit",
+      "meaning": "vật trưng bày",
+      "example": "It was felt that we should have both digital and non-digital exhibits."
+     },
+     {
+      "word": "weather permitting",
+      "meaning": "nếu thời tiết cho phép",
+      "example": "However, exhibits often open earlier and finish later, weather permitting."
+     },
+     {
+      "word": "lunar calendar",
+      "meaning": "âm lịch",
+      "example": "The festival occurs on the fifth day of the fifth month of the Chinese lunar calendar."
+     },
+     {
+      "word": "emerge",
+      "meaning": "xuất hiện, hình thành",
+      "example": "The celebration emerged after the Chinese scholar, Qu Yuan, threw himself into the Mi Lo river in protest against the government of the time."
+     },
+     {
+      "word": "in protest against",
+      "meaning": "để phản đối",
+      "example": "The celebration emerged after the Chinese scholar, Qu Yuan, threw himself into the Mi Lo river in protest against the government of the time."
+     },
+     {
+      "word": "get together",
+      "meaning": "tụ họp",
+      "example": "Chinese New Year is a time for families to get together."
+     },
+     {
+      "word": "reunion dinner",
+      "meaning": "bữa cơm đoàn viên",
+      "example": "The New Year's Eve dinner is called Reunion Dinner and is believed to be the most important meal of the year."
+     },
+     {
+      "word": "mark the return of spring",
+      "meaning": "đánh dấu mùa xuân trở lại",
+      "example": "This festival marks the return of spring and is regarded as a day for appreciating family and the bright full moon."
+     },
+     {
+      "word": "appeal to all age groups",
+      "meaning": "thu hút mọi lứa tuổi",
+      "example": "There are several different activities involved in this celebration, appealing to all age groups."
+     },
+     {
+      "word": "play host to",
+      "meaning": "đăng cai, là nơi tổ chức",
+      "example": "The Venice carnival In January or February, Venice plays host to the most magical of carnivals."
+     },
+     {
+      "word": "reinvent a tradition",
+      "meaning": "làm mới một truyền thống",
+      "example": "Party-goers in masks try to reinvent one of the great traditions of Venice."
+     },
+     {
+      "word": "a unique occasion",
+      "meaning": "một dịp có một không hai",
+      "example": "Naturally, it is very crowded and hotels and restaurants are expensive, but it is a unique occasion and a great time to experience this beautiful city."
+     },
+     {
+      "word": "regardless of social status",
+      "meaning": "bất kể địa vị xã hội",
+      "example": "Regardless of social status, participants wore costumes and masks."
+     },
+     {
+      "word": "come to an end",
+      "meaning": "kết thúc",
+      "example": "In the 18th century, this period of festivities came to an end."
+     },
+     {
+      "word": "be eager to",
+      "meaning": "háo hức, nóng lòng",
+      "example": "Today, the carnival is extremely popular with people eager to dress up and parade around the city in their masks and costumes."
+     },
+     {
+      "word": "dress up",
+      "meaning": "hoá trang, ăn diện",
+      "example": "Today, the carnival is extremely popular with people eager to dress up and parade around the city in their masks and costumes."
+     },
+     {
+      "word": "festivities",
+      "meaning": "các hoạt động lễ hội",
+      "example": "During the festivities, you can enjoy live music and take part in a large open-air festival."
+     },
+     {
+      "word": "open-air",
+      "meaning": "ngoài trời",
+      "example": "During the festivities, you can enjoy live music and take part in a large open-air festival."
+     },
+     {
+      "word": "costly",
+      "meaning": "đắt đỏ",
+      "example": "You do have to pay for these, however, and they can be quite costly."
+     },
+     {
+      "word": "cosmetics",
+      "meaning": "mỹ phẩm",
+      "example": "Boryeong Mud Festival (South Korea) A cosmetics company in South Korea created a line of beauty products which featured mud from the Boryeong mud flats as a main ingredient."
+     },
+     {
+      "word": "altar",
+      "meaning": "bàn thờ",
+      "example": "Activities involved in the holiday include building private altars, cleaning the graves of loved ones and telling funny stories about dead relatives."
+     },
+     {
+      "word": "grave",
+      "meaning": "ngôi mộ",
+      "example": "Activities involved in the holiday include building private altars, cleaning the graves of loved ones and telling funny stories about dead relatives."
+     },
+     {
+      "word": "scholar",
+      "meaning": "học giả",
+      "example": "The celebration emerged after the Chinese scholar, Qu Yuan, threw himself into the Mi Lo river in protest against the government of the time."
+     },
+     {
+      "word": "drown",
+      "meaning": "chết đuối",
+      "example": "Qu Yuan was drowned and the people were unable to find the body, so to prevent the fish from eating him, the locals threw rice patties into the river."
+     },
+     {
+      "word": "symbolic",
+      "meaning": "mang tính biểu tượng",
+      "example": "It is a holiday filled with dragons, fireworks, symbolic clothing and flowers."
+     },
+     {
+      "word": "full moon",
+      "meaning": "trăng tròn",
+      "example": "This festival marks the return of spring and is regarded as a day for appreciating family and the bright full moon."
+     },
+     {
+      "word": "crowded",
+      "meaning": "đông đúc",
+      "example": "Naturally, it is very crowded and hotels and restaurants are expensive, but it is a unique occasion and a great time to experience this beautiful city."
+     },
+     {
+      "word": "costume",
+      "meaning": "trang phục hoá trang",
+      "example": "Regardless of social status, participants wore costumes and masks."
+     },
+     {
+      "word": "live music",
+      "meaning": "nhạc sống",
+      "example": "You can also enjoy live music, acupuncture and a fireworks display."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M2-U08-L2",
+   "moduleCode": "M2-U08",
+   "order": 2,
+   "title": "📖 Reading: True / False / Not Given",
+   "titleEn": "True / False / Not Given questions · Exam skills (pp. 150–153)",
+   "durationMinutes": 45,
+   "objectives": [
+    "Áp dụng các mẹo: không dựa vào từ trùng, đáp án theo thứ tự, True = giống hệt thông tin, đọc kỹ phần liên quan, tìm từ đồng nghĩa",
+    "Làm True / False / Not Given với bài đọc dài"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Mẹo làm True / False / Not Given",
+     "titleEn": "Tips",
+     "formula": [],
+     "usage": [
+      "Không dựa vào **từ trùng** để chọn đáp án.",
+      "Đáp án theo **thứ tự** của bài.",
+      "**True** = thông tin **giống** trong bài, không chỉ gần giống.",
+      "Đọc phần liên quan **thật kỹ**; tìm **từ đồng nghĩa**.",
+      "Chú ý từ hạn định: only, all, none, few, before, during — một từ có thể biến câu thành False."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 5,
+   "practiceLinks": [
+    {
+     "ref": "reading:M2-U08-R1",
+     "kind": "reading",
+     "title": "Chinese festivals — True / False / Not Given (Ex. 8)",
+     "note": "5 câu."
+    },
+    {
+     "ref": "reading:M2-U08-R2",
+     "kind": "reading",
+     "title": "Exam skills: The Venice carnival (Ex. 11)",
+     "note": "7 câu True / False / Not Given."
+    }
+   ]
+  },
+  {
+   "code": "M2-U08-L3",
+   "moduleCode": "M2-U08",
+   "order": 3,
+   "title": "🧩 Grammar focus: first and second conditionals",
+   "titleEn": "Grammar focus: first and second conditionals (p. 152)",
+   "durationMinutes": 30,
+   "objectives": [
+    "Dùng câu điều kiện loại 1 cho việc có thể xảy ra",
+    "Dùng câu điều kiện loại 2 cho việc khó / không thể xảy ra"
+   ],
+   "keyLanguage": [
+    "**First conditional** — có thể xảy ra: If I **have** the time this weekend, I **will come** to the Dragon Boat Festival with you.",
+    "**Second conditional** — khó xảy ra / giả định: If I **could attend** any festival in the world, it **would be** the carnival in Rio de Janeiro."
+   ],
+   "theory": [
+    {
+     "title": "Câu điều kiện loại 1 và 2",
+     "titleEn": "First and second conditionals",
+     "formula": [
+      "If + present simple, … will + infinitive",
+      "If + past simple, … would + infinitive"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "If you go to the festival in town tomorrow, there will be crowds of people.",
+       "vi": "Có khả năng xảy ra."
+      },
+      {
+       "en": "If I had enough money, I'd celebrate New Year in Australia.",
+       "vi": "Không có tiền → giả định (\"I just don't have the money\")."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 3,
+   "totalPoints": 11,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "First Conditional",
+     "note": "có thể xảy ra",
+     "url": "/essential-grammar.html?lesson=first-conditional"
+    },
+    {
+     "kind": "grammar",
+     "title": "Second Conditional",
+     "note": "giả định",
+     "url": "/essential-grammar.html?lesson=second-conditional"
+    }
+   ]
+  },
+  {
+   "code": "M2-U08-L4",
+   "moduleCode": "M2-U08",
+   "order": 4,
+   "title": "🎧 Listening: summaries & tables",
+   "titleEn": "Lead-in · Summary completion · Completing tables · Exam skills (pp. 160–164)",
+   "durationMinutes": 60,
+   "objectives": [
+    "Nhận ra loại sự kiện qua từ khóa",
+    "Hoàn thành bản tóm tắt: xác định chủ đề, thông tin thiếu, loại từ",
+    "Hoàn thành bảng có nhiều nhóm thông tin (theo từng người nói, từng mục)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Summary completion",
+     "titleEn": "Summary completion",
+     "formula": [],
+     "usage": [
+      "Trước khi nghe: xác định **chủ đề**, **thông tin thiếu** và **loại từ** (noun, verb, adjective, adverb…).",
+      "Gạch chân **key words** trong bản tóm tắt; thông tin trong bài nghe **theo thứ tự** của bản tóm tắt.",
+      "Có thể nghe cả hai phương án — dựa vào **ngữ cảnh** để chọn đúng."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Điền bảng",
+     "titleEn": "Completing tables",
+     "formula": [],
+     "usage": [
+      "Bảng chia theo **nhóm rõ ràng** (người nói, mục tổ chức, chấp nhận / bác bỏ).",
+      "Nhìn các nhóm có chỗ trống và nghĩ xem cần **loại thông tin** gì.",
+      "Bài thi có thể cho viết **tối đa ba từ và/hoặc một số**."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 6,
+   "practiceLinks": [
+    {
+     "ref": "listening:M2-U08-L1",
+     "kind": "listening",
+     "title": "Six speakers: what kind of event? (Ex. 1)",
+     "note": "Nối người nói với loại sự kiện."
+    },
+    {
+     "ref": "listening:M2-U08-L2",
+     "kind": "listening",
+     "title": "Preparing the arts festival (Ex. 2)",
+     "note": "Chọn phương án đúng trong bản tóm tắt."
+    },
+    {
+     "ref": "listening:M2-U08-L3",
+     "kind": "listening",
+     "title": "Dr Saunders' review of the festival (Ex. 3)",
+     "note": "Up to TWO WORDS AND/OR A NUMBER."
+    },
+    {
+     "ref": "listening:M2-U08-L4",
+     "kind": "listening",
+     "title": "Discussion on events (Ex. 4)",
+     "note": "Chọn phương án đúng trong ghi chú."
+    },
+    {
+     "ref": "listening:M2-U08-L5",
+     "kind": "listening",
+     "title": "Discussion on organisation (Ex. 5)",
+     "note": "ONE WORD AND/OR A NUMBER."
+    },
+    {
+     "ref": "listening:M2-U08-L6",
+     "kind": "listening",
+     "title": "Exam skills: the students' suggestions (Ex. 6)",
+     "note": "NO MORE THAN TWO WORDS AND/OR A NUMBER."
+    }
+   ],
+   "vocabSave": {
+    "slot": 4,
+    "title": "Unit 8 · Listening: summaries & tables — 38 từ/cụm từ",
+    "words": [
+     {
+      "word": "feedback",
+      "meaning": "ý kiến phản hồi",
+      "example": "Our feedback from students and visitors was very positive."
+     },
+     {
+      "word": "participation",
+      "meaning": "sự tham gia",
+      "example": "Next year we'll have more money, so we're going to add new events to increase the competition and participation levels."
+     },
+     {
+      "word": "go to waste",
+      "meaning": "bị lãng phí",
+      "example": "Much of the food went to waste because visitors couldn't try everything."
+     },
+     {
+      "word": "cancel at the last minute",
+      "meaning": "huỷ vào phút chót",
+      "example": "… was that the main attraction, Paul Simmons, had to cancel at the last minute as he'd been suffering from a serious throat infection for …"
+     },
+     {
+      "word": "at very short notice",
+      "meaning": "trong thời gian rất gấp",
+      "example": "As a result, we had to find another act, and managed to get Nicky Munroe at very short notice."
+     },
+     {
+      "word": "a fixture in the calendar",
+      "meaning": "sự kiện cố định hằng năm",
+      "example": "… university and it's clear now that it's fast becoming a fixture in the calendar of the city and the county, and attracting attention from …"
+     },
+     {
+      "word": "attract attention",
+      "meaning": "thu hút sự chú ý",
+      "example": "… the calendar of the city and the county, and attracting attention from the rest of the country, as well as from abroad."
+     },
+     {
+      "word": "the performing arts",
+      "meaning": "nghệ thuật biểu diễn",
+      "example": "It would certainly help the performing arts students to expand their coursework, and we could have a competition for the best new works."
+     },
+     {
+      "word": "crafts",
+      "meaning": "đồ thủ công",
+      "example": "The next thing is the crafts."
+     },
+     {
+      "word": "attendance",
+      "meaning": "số người tham dự",
+      "example": "… students and non-students, but as we expected a greater attendance at this year's festival, we also arranged accommodation at the city college three miles …"
+     },
+     {
+      "word": "catering",
+      "meaning": "dịch vụ ăn uống",
+      "example": "So, I'd like you to think of more ideas to extend the catering opportunities for next year."
+     },
+     {
+      "word": "organisational skills",
+      "meaning": "kỹ năng tổ chức",
+      "example": "… wonderful event, was to help develop our young people's organisational skills and give them some experience of real work, mostly as volunteers."
+     },
+     {
+      "word": "volunteer",
+      "meaning": "tình nguyện viên",
+      "example": "They felt that the standard was quite low and that the volunteers didn't experience good leadership from them."
+     },
+     {
+      "word": "headline act",
+      "meaning": "tiết mục chính",
+      "example": "First, Wayne Rogers, our headline music act, had to call off two days before the event due to illness and we didn't have time to find another act."
+     },
+     {
+      "word": "call off",
+      "meaning": "huỷ bỏ",
+      "example": "First, Wayne Rogers, our headline music act, had to call off two days before the event due to illness and we didn't have time to find another act."
+     },
+     {
+      "word": "poorly attended",
+      "meaning": "ít người tham dự",
+      "example": "… clothes, pottery, sculptures and glass objects, the exhibition was poorly attended, so we have to decide if it needs to be changed or perhaps …"
+     },
+     {
+      "word": "inconvenience",
+      "meaning": "sự bất tiện",
+      "example": "… security for next year, while also avoiding any unnecessary inconvenience for our visitors."
+     },
+     {
+      "word": "budget",
+      "meaning": "ngân sách",
+      "example": "As I said earlier, we had budgeted for £50,000 to organise the event and expected £50,000 in earnings from the event, …"
+     },
+     {
+      "word": "cut spending",
+      "meaning": "cắt giảm chi tiêu",
+      "example": "However, I feel there are still some areas where we could cut our spending and perhaps reduce charges for visitors."
+     },
+     {
+      "word": "raise funds",
+      "meaning": "gây quỹ",
+      "example": "Also, I feel that another good way of raising funds is to get more business support from local companies, who could help the …"
+     },
+     {
+      "word": "sponsor",
+      "meaning": "tài trợ",
+      "example": "Now finance - what are your feelings on Dr Saunders' suggestions about sponsorship?"
+     },
+     {
+      "word": "let sb down",
+      "meaning": "làm ai thất vọng",
+      "example": "You have a point, but I'm not really sure if any artists would be happy to perform only if the main act lets us down."
+     },
+     {
+      "word": "take sth for granted",
+      "meaning": "coi điều gì là hiển nhiên",
+      "example": "I'm not sure we can take that for granted, Lawrence."
+     },
+     {
+      "word": "at all costs",
+      "meaning": "bằng mọi giá",
+      "example": "… we have to make sure we keep them happy at all costs."
+     },
+     {
+      "word": "get rid of",
+      "meaning": "loại bỏ",
+      "example": "I don't think we should get rid of the glass and pottery altogether, but I certainly think we should promote the clothes section more."
+     },
+     {
+      "word": "go down well",
+      "meaning": "được đón nhận tốt",
+      "example": "I don't think that will go down too well with most students."
+     },
+     {
+      "word": "committed",
+      "meaning": "tận tâm",
+      "example": "At least then we can be more certain that they know about the university and they'll probably be more committed to doing a good job."
+     },
+     {
+      "word": "rethink",
+      "meaning": "suy nghĩ lại, xem xét lại",
+      "example": "Speaker 2: It's clear, then, that the events didn't go as well as originally planned, so we will have to rethink our arrangements for next year."
+     },
+     {
+      "word": "throat infection",
+      "meaning": "viêm họng",
+      "example": "… last minute as he'd been suffering from a serious throat infection for a week and hadn't managed to recover in time."
+     },
+     {
+      "word": "vocal range",
+      "meaning": "quãng giọng",
+      "example": "Everyone agreed that she has an amazing vocal range."
+     },
+     {
+      "word": "novelist",
+      "meaning": "tiểu thuyết gia",
+      "example": "The talk given by the top novelist, Henry Peters, on effective plotting and characterisation was excellent, and the audience will have …"
+     },
+     {
+      "word": "exhibition space",
+      "meaning": "không gian triển lãm",
+      "example": "Unfortunately, this was because of the limited exhibition space we had."
+     },
+     {
+      "word": "portrait",
+      "meaning": "tranh chân dung",
+      "example": "This meant that we could only have one room for portraits and another for landscapes."
+     },
+     {
+      "word": "landscape",
+      "meaning": "tranh phong cảnh",
+      "example": "This meant that we could only have one room for portraits and another for landscapes."
+     },
+     {
+      "word": "pottery",
+      "meaning": "đồ gốm",
+      "example": "I don't think we should get rid of the glass and pottery altogether, but I certainly think we should promote the clothes section more."
+     },
+     {
+      "word": "supervise",
+      "meaning": "giám sát",
+      "example": "Many of the volunteers felt that some of the paid helpers that we brought in to supervise the activities were not really worth the expense."
+     },
+     {
+      "word": "playwright",
+      "meaning": "nhà viết kịch",
+      "example": "It's wonderful putting on plays by well-known playwrights and readings of well-known poets, but perhaps we should promote our own talent here in the university."
+     },
+     {
+      "word": "local talent",
+      "meaning": "tài năng địa phương",
+      "example": "That way, we're helping good local talent and making sure that our visitors are happy."
+     }
+    ]
+   }
+  }
+ ]
+}

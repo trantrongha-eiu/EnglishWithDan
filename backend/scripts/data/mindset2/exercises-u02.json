@@ -1,0 +1,785 @@
+{
+ "exercises": [
+  {
+   "code": "M2-U02-L1-E01",
+   "lessonCode": "M2-U02-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Sporting legends (Ex. 1)",
+   "instruction": "Which sport are/were these people famous for?",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Muhammad Ali",
+     "right": "boxing",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Michael Jordan",
+     "right": "basketball",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Serena Williams",
+     "right": "tennis",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "David Beckham",
+     "right": "football",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Jack Nicklaus",
+     "right": "golf",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L1-E02",
+   "lessonCode": "M2-U02-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Sporting legends quiz (Ex. 3)",
+   "instruction": "With a partner, try and answer the multiple-choice quiz.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "In what year did Serena Williams first become World Number 1?",
+     "options": [
+      {
+       "id": "A",
+       "text": "1995"
+      },
+      {
+       "id": "B",
+       "text": "2002"
+      },
+      {
+       "id": "C",
+       "text": "2007"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "How many major championships did Jack Nicklaus win during his career?",
+     "options": [
+      {
+       "id": "A",
+       "text": "18"
+      },
+      {
+       "id": "B",
+       "text": "21"
+      },
+      {
+       "id": "C",
+       "text": "12"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "How old was Muhammad Ali when he started training?",
+     "options": [
+      {
+       "id": "A",
+       "text": "21"
+      },
+      {
+       "id": "B",
+       "text": "12"
+      },
+      {
+       "id": "C",
+       "text": "8"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Bài đọc ở buổi Reading: \"Muhammad Ali began training at just 12 years old\"."
+    },
+    {
+     "id": "q4",
+     "prompt": "How long was David Beckham captain of the England team?",
+     "options": [
+      {
+       "id": "A",
+       "text": "3 years"
+      },
+      {
+       "id": "B",
+       "text": "10 years"
+      },
+      {
+       "id": "C",
+       "text": "6 years"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "How tall is Michael Jordan?",
+     "options": [
+      {
+       "id": "A",
+       "text": "1.98 m"
+      },
+      {
+       "id": "B",
+       "text": "1.70 m"
+      },
+      {
+       "id": "C",
+       "text": "1.82 m"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L2-E01",
+   "lessonCode": "M2-U02-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Facts and opinions: Muhammad Ali (Ex. 4)",
+   "instruction": "Read these paragraphs and answer the questions which follow. Choose the correct letter, A, B or C.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Muhammad Ali\n\nAlthough Muhammad Ali was responsible for many legendary moments in the boxing ring, there was much more to this man's appeal. Not only was he a successful athlete, but he was also well known for his strong work ethic and fearless approach to standing up for his beliefs.\n\nBorn as Cassius Clay in 1942, Muhammad Ali began training at just 12 years old and, at the age of 22, won the world heavyweight championship in 1964. It was a title he went on to win again, in 1974 and 1978. He referred to himself as 'The Greatest', and was famous for boasting about his ability to 'float like a butterfly and sting like a bee'.",
+    "caption": "Muhammad Ali (p. 29)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Why does the writer think that Muhammad Ali is still considered a legend?",
+     "options": [
+      {
+       "id": "A",
+       "text": "because he is a successful athlete"
+      },
+      {
+       "id": "B",
+       "text": "because of several factors, not just his abilities as a boxer"
+      },
+      {
+       "id": "C",
+       "text": "because he has great appeal"
+      }
+     ],
+     "answer": "B",
+     "explanation": "\"there was much more to this man's appeal. Not only was he a successful athlete, but he was also well known for his strong work ethic and fearless approach…\" → nhiều yếu tố, không chỉ tài boxing. A, C dùng từ trùng với bài (successful athlete, appeal) nhưng chỉ là một phần ý."
+    },
+    {
+     "id": "q2",
+     "prompt": "What name did Muhammad Ali give himself during his career?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Cassius Clay"
+      },
+      {
+       "id": "B",
+       "text": "The Greatest"
+      },
+      {
+       "id": "C",
+       "text": "The Champion"
+      }
+     ],
+     "answer": "B",
+     "explanation": "\"He referred to himself as 'The Greatest'\" (referred to himself as = gave himself the name). Cassius Clay là tên khai sinh."
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L2-E02",
+   "lessonCode": "M2-U02-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Factual or opinion? (Ex. 5)",
+   "instruction": "Which question is factual and which asks for the writer's opinion?",
+   "categories": [
+    {
+     "id": "f",
+     "label": "Factual information"
+    },
+    {
+     "id": "o",
+     "label": "The writer's opinion"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "Why does the writer think that Muhammad Ali is still considered a legend?",
+     "category": "o",
+     "explanation": "\"Why does the writer think…\" → ý kiến người viết."
+    },
+    {
+     "id": "c2",
+     "text": "What name did Muhammad Ali give himself during his career?",
+     "category": "f",
+     "explanation": "Hỏi một sự kiện (cái tên)."
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L2-E03",
+   "lessonCode": "M2-U02-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Approaching the question (Ex. 6)",
+   "instruction": "Complete the flow-chart showing one approach with words from the box: instructions, understand, key, questions, scan, wrong.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "① Read the ____ carefully.",
+     "blanks": [
+      {
+       "accept": [
+        "instructions",
+        "questions"
+       ]
+      }
+     ],
+     "explanation": "Answer Key chấp nhận cả instructions và questions."
+    },
+    {
+     "id": "g2",
+     "prompt": "② Read the text to understand the general meaning. ③ Read the questions again and underline the ____ words, e.g. dates, names etc.",
+     "blanks": [
+      {
+       "accept": [
+        "key"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "④ ____ the text for the key words or synonyms. Read around the key words in the text. Re-read the questions and choose an answer.",
+     "blanks": [
+      {
+       "accept": [
+        "Scan",
+        "scan"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "⑤ Quickly check the other options are ____ and make your final choices.",
+     "blanks": [
+      {
+       "accept": [
+        "wrong"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L2-E04",
+   "lessonCode": "M2-U02-L2",
+   "order": 4,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Global understanding: David Beckham (Ex. 14)",
+   "instruction": "Read the text and choose the correct letter, A, B or C. What is the best title for this article?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "David Beckham\n\nDespite Beckham's good looks and famous marriage to Victoria Beckham, he was actually an exceptionally good footballer. His professional career began with Manchester United in 1992, at the age of 17. With United he won the Premier League title six times, the FA Cup twice and the UEFA Champions League in 1999. He later went on to play for Real Madrid and LA Galaxy.\n\nIn international football, he made his England debut in 1996 at the age of 21.\n\nHe was also made captain in 2002 and had short spells at AC Milan and Paris St Germain. His former boss, Alex Ferguson, praised David for always trying hard, playing with supreme confidence and scoring important goals.\n\nHis football career was not always easy, however. During the 1998 World Cup, in a game against Argentina, he was fouled by the player Diego Simeone. In retaliation, Beckham kicked Simeone and was given a red card. Consequently, when England went on to lose the game and go out of the World Cup, Beckham became hated by football fans and was portrayed very negatively by the media.\n\nIt took three years before Beckham was allowed to play for England again and in 2002 he redeemed himself by scoring a penalty in a 1-0 victory against Argentina.\n\nIn 2013 Beckham retired from professional football and played the last game of his 20-year career. Although he is now retired from football, reports claim that he earns more money now than he did as a successful footballer. In 2014 it was documented that he earned £50.5 million, a large portion of which came from brand endorsements for companies such as Adidas, Sky Sports and Samsung.",
+    "caption": "David Beckham (p. 32)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What is the best title for this article?",
+     "options": [
+      {
+       "id": "A",
+       "text": "What has Beckham achieved during his career?"
+      },
+      {
+       "id": "B",
+       "text": "Despite all the media attention, was Beckham a good football player?"
+      },
+      {
+       "id": "C",
+       "text": "What problems did Beckham have during his football career?"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Cả bài: câu đầu \"Despite Beckham's good looks and famous marriage… he was actually an exceptionally good footballer\", rồi đến thành tích, khó khăn và sự nghiệp sau giải nghệ. A chỉ khớp phần thành tích; C chỉ khớp đoạn World Cup 1998."
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L2-E05",
+   "lessonCode": "M2-U02-L2",
+   "order": 5,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Synonyms in the questions (Ex. 8)",
+   "instruction": "Look at exercise 7 again. Match the words in the text with the words used in the questions.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Serena Williams\n\nSerena Williams has dominated women's professional tennis since the late 1990s, when she and her sister, Venus, became global tennis superstars. Serena in particular has become known for her determination, powerful game and unique fashion sense.\n\nSerena was born on 26 September 1981 in Saginaw, Michigan. When she was just a baby, her family moved to California, and it was there she started playing tennis at the age of four. She was coached by her father, Richard Williams, until she was 12. Although Mr Williams was determined that his daughters would succeed in the tennis world, he was also focused on giving them a good education. In fact, whilst they were training to be tennis stars, he also took responsibility for their home-schooling. in as ne\n\nSerena is so successful on the tennis court because of her rapid movement, speed of thought and powerful shots. Indeed, whilst she was playing a match in the 2013 Australian Open, Serena hit a serve at a speed of just under 207 km per hour, the third fastest recorded among female players. This powerful serve helps put her opponents under pressure from the very start of the game.\n\nDuring her career, she has won 56 singles championships, 22 doubles championships and was also a gold medallist at the 2000, 2008 and 2012 Olympics.",
+    "caption": "Serena Williams (p. 30)"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "powerful (text)",
+     "right": "strong (question)",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "determination",
+     "right": "self-belief",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "be important",
+     "right": "focused on",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "training to be tennis stars",
+     "right": "tennis training",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "education",
+     "right": "studies",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "speed of thought",
+     "right": "thinks quickly",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "powerful shots",
+     "right": "can hit the ball hard",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L2-E06",
+   "lessonCode": "M2-U02-L2",
+   "order": 6,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Complete the sentence or answer the question? (Ex. 8)",
+   "instruction": "Which questions in exercise 7 ask you to complete the sentence and which ask you to answer the question?",
+   "categories": [
+    {
+     "id": "c",
+     "label": "Complete the sentence"
+    },
+    {
+     "id": "q",
+     "label": "Answer the question"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "According to the writer, Serena has become so famous because …",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "During Serena's upbringing, what did her father consider to be important?",
+     "category": "q",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "Her tennis game is so successful because …",
+     "category": "c",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L3-E01",
+   "lessonCode": "M2-U02-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Past tenses in the text (Ex. 9)",
+   "instruction": "Say which tenses are used in the text about Serena Williams.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Serena Williams\n\nSerena Williams has dominated women's professional tennis since the late 1990s, when she and her sister, Venus, became global tennis superstars. Serena in particular has become known for her determination, powerful game and unique fashion sense.\n\nSerena was born on 26 September 1981 in Saginaw, Michigan. When she was just a baby, her family moved to California, and it was there she started playing tennis at the age of four. She was coached by her father, Richard Williams, until she was 12. Although Mr Williams was determined that his daughters would succeed in the tennis world, he was also focused on giving them a good education. In fact, whilst they were training to be tennis stars, he also took responsibility for their home-schooling. in as ne\n\nSerena is so successful on the tennis court because of her rapid movement, speed of thought and powerful shots. Indeed, whilst she was playing a match in the 2013 Australian Open, Serena hit a serve at a speed of just under 207 km per hour, the third fastest recorded among female players. This powerful serve helps put her opponents under pressure from the very start of the game.\n\nDuring her career, she has won 56 singles championships, 22 doubles championships and was also a gold medallist at the 2000, 2008 and 2012 Olympics.",
+    "caption": "Serena Williams (p. 30)"
+   },
+   "categories": [
+    {
+     "id": "y",
+     "label": "Used in the text"
+    },
+    {
+     "id": "n",
+     "label": "Not used in the text"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "past simple",
+     "category": "y",
+     "explanation": "was born, moved, started, hit…"
+    },
+    {
+     "id": "c2",
+     "text": "past continuous",
+     "category": "y",
+     "explanation": "were training, was playing"
+    },
+    {
+     "id": "c3",
+     "text": "present perfect",
+     "category": "y",
+     "explanation": "has dominated, has become, has won"
+    },
+    {
+     "id": "c4",
+     "text": "past perfect",
+     "category": "n",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "future simple",
+     "category": "n",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L3-E02",
+   "lessonCode": "M2-U02-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Two actions in the past (Ex. 10–11)",
+   "instruction": "\"… whilst she was playing a match in the 2013 Australian Open, Serena hit a serve at a speed of just under 207 km per hour …\" Answer the questions.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Which two past tenses are in the sentence?",
+     "options": [
+      {
+       "id": "A",
+       "text": "was playing (past continuous) and hit (past simple)"
+      },
+      {
+       "id": "B",
+       "text": "was playing (past simple) and hit (past perfect)"
+      },
+      {
+       "id": "C",
+       "text": "both are past simple"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Which is the long, continued action?",
+     "options": [
+      {
+       "id": "A",
+       "text": "playing a match"
+      },
+      {
+       "id": "B",
+       "text": "hitting a serve"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Trận đấu kéo dài → nền."
+    },
+    {
+     "id": "q3",
+     "prompt": "Which is the short, finished action?",
+     "options": [
+      {
+       "id": "A",
+       "text": "hitting a serve"
+      },
+      {
+       "id": "B",
+       "text": "playing a match"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Cú giao bóng xảy ra trong chốc lát."
+    },
+    {
+     "id": "q4",
+     "prompt": "Are both actions finished now?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Yes"
+      },
+      {
+       "id": "B",
+       "text": "No"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Cả hai đều ở quá khứ (2013)."
+    },
+    {
+     "id": "q5",
+     "prompt": "Which is another example of the past continuous in the text?",
+     "options": [
+      {
+       "id": "A",
+       "text": "whilst they were training to be tennis stars"
+      },
+      {
+       "id": "B",
+       "text": "Serena was born on 26 September 1981"
+      },
+      {
+       "id": "C",
+       "text": "her family moved to California"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L3-E03",
+   "lessonCode": "M2-U02-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Complete the rule (Ex. 11)",
+   "instruction": "Complete this rule.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "When we use the simple past and the past continuous in the same sentence, we use the ____ to talk about the \"background action\" and the ____ to talk about the shorter, completed action.",
+     "blanks": [
+      {
+       "accept": [
+        "past continuous"
+       ]
+      },
+      {
+       "accept": [
+        "past simple",
+        "simple past"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L3-E04",
+   "lessonCode": "M2-U02-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Past continuous or past simple? (Ex. 12)",
+   "instruction": "Complete the sentences by putting the verb in brackets in the correct form of the past continuous or past simple.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Whilst she ____ (play) basketball, her phone ____ (ring).",
+     "blanks": [
+      {
+       "accept": [
+        "was playing"
+       ]
+      },
+      {
+       "accept": [
+        "rang"
+       ]
+      }
+     ],
+     "explanation": "Đang chơi (nền) → điện thoại reo (ngắn)."
+    },
+    {
+     "id": "g2",
+     "prompt": "He ____ (fall), while ____ (run) for the ball.",
+     "blanks": [
+      {
+       "accept": [
+        "fell"
+       ]
+      },
+      {
+       "accept": [
+        "running",
+        "he was running",
+        "was running"
+       ]
+      }
+     ],
+     "explanation": "Ngã (ngắn) trong khi đang chạy (nền). Sau \"while\" có thể lược chủ ngữ + be: while (he was) running."
+    },
+    {
+     "id": "g3",
+     "prompt": "It ____ (start) to rain in the middle of the race.",
+     "blanks": [
+      {
+       "accept": [
+        "started"
+       ]
+      }
+     ],
+     "explanation": "Một thời điểm → past simple."
+    },
+    {
+     "id": "g4",
+     "prompt": "It ____ (rain) during the race.",
+     "blanks": [
+      {
+       "accept": [
+        "was raining"
+       ]
+      }
+     ],
+     "explanation": "Kéo dài suốt cuộc đua → past continuous."
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L4-E01",
+   "lessonCode": "M2-U02-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Roads and directions (Ex. 1)",
+   "instruction": "Write the correct word under each diagram to check your understanding of language connected with road travel and directions.",
+   "stimulus": {
+    "kind": "image",
+    "imageUrl": "media:m2u02-roads.jpg",
+    "caption": "Ex. 1"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Diagram 1",
+     "right": "crossroads",
+     "explanation": "Hai đường cắt nhau."
+    },
+    {
+     "id": "m2",
+     "left": "Diagram 2",
+     "right": "junction",
+     "explanation": "Ngã ba (một đường nhập vào đường khác)."
+    },
+    {
+     "id": "m3",
+     "left": "Diagram 3",
+     "right": "bend",
+     "explanation": "Khúc cua."
+    },
+    {
+     "id": "m4",
+     "left": "Diagram 4",
+     "right": "flyover",
+     "explanation": "Cầu vượt."
+    },
+    {
+     "id": "m5",
+     "left": "Diagram 5",
+     "right": "traffic lights",
+     "explanation": "Đèn giao thông."
+    },
+    {
+     "id": "m6",
+     "left": "Diagram 6",
+     "right": "roundabout",
+     "explanation": "Vòng xuyến."
+    }
+   ]
+  }
+ ]
+}

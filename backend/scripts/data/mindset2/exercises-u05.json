@@ -1,0 +1,510 @@
+{
+ "exercises": [
+  {
+   "code": "M2-U05-L1-E01",
+   "lessonCode": "M2-U05-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Fact, opinion or theory? (Ex. 1)",
+   "instruction": "Read statements 1–3 and decide which category they belong to: fact, opinion or theory.",
+   "categories": [
+    {
+     "id": "f",
+     "label": "fact"
+    },
+    {
+     "id": "o",
+     "label": "opinion"
+    },
+    {
+     "id": "t",
+     "label": "theory"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "I don't believe space tourism will ever be possible - it is far too dangerous.",
+     "category": "o",
+     "explanation": "\"I don't believe…\" → ý kiến cá nhân."
+    },
+    {
+     "id": "c2",
+     "text": "According to experts, robots will soon reach human levels of intelligence.",
+     "category": "t",
+     "explanation": "Dự đoán của chuyên gia → theory."
+    },
+    {
+     "id": "c3",
+     "text": "The first working robot was introduced in 1961. It worked on a production line making cars for Ford.",
+     "category": "f",
+     "explanation": "Sự kiện có năm cụ thể."
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L2-E01",
+   "lessonCode": "M2-U05-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Key words and synonyms (Ex. 6–7)",
+   "instruction": "Look back at the text and match key words in the statements with their synonyms in the text.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Successful entrepreneurs\n\n**A** Andrew Carnegie was one of the wealthiest businessmen of the 19th century. Mostly self-taught, he started his career as a messenger boy and telegraph operator. By 1889, however, he had become the proud owner of Carnegie Steel Corporation, the largest company of its kind. Famous not only for his success and wealth, he was equally well known for his generous contribution to society. During the last 18 years of his life, it is estimated that he donated roughly $350 million to charities, foundations and universities.\n\n**B** Another success story of the 19th and 20th centuries was the founder of the Ford Motor Company, Henry Ford. Responsible for manufacturing an automobile which could be afforded by the masses, he made a significant impact on society and became incredibly wealthy. Primarily, his success was achieved by using the 'assembly line' to manufacture his cars. Before this, employees of other manufacturers would work in groups to build one car at a time. The moving assembly line meant that each individual was responsible for a specific job. This division of work allowed cars to be produced more quickly and efficiently. With the addition of the world's first automatic conveyor belt, it is estimated that Henry Ford's factory was soon producing a car every 93 minutes.\n\n**C** Estee Lauder started her own beauty company in 1946. Her business, which includes product lines such as Estee Lauder, MAC Cosmetics and Clinique, has had incredible success. Born in Queens, New York, in 1908, she started her first beauty company with a skin cream developed by her uncle - a chemist by profession. Recognised as an innovative businesswoman, Lauder became one of the richest self-made women in the world. She believed her success came from producing high-quality products and focusing on excellent customer service.\n\n**D** Steve Jobs made his fortune by creating some of the most popular products of all time. Born in 1955 in San Francisco, California, Jobs co-founded Apple Computer with Steve Wozniak in 1976, when Jobs was just 21. The project started in the family garage and together they revolutionised the computer industry with products such as the iPod, iPhone, iPad and Mac.",
+    "caption": "Successful entrepreneurs (p. 89)"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "fast",
+     "right": "quickly / every 93 minutes",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "popular",
+     "right": "the masses",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "family member",
+     "right": "uncle",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "at home",
+     "right": "family garage",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "first-rate",
+     "right": "high-quality",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "looking after clients",
+     "right": "customer service",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "gave … wealth away",
+     "right": "donated",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L2-E02",
+   "lessonCode": "M2-U05-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Approaching matching features tasks (Ex. 9)",
+   "instruction": "Put the steps in the correct order.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Step 1",
+     "right": "Read all the instructions carefully.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "Step 2",
+     "right": "Skim read the whole passage to gain a general understanding.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Step 3",
+     "right": "Decide if the text is mainly factual, opinion-based or theoretical.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Step 4",
+     "right": "Scan both the passage and question and identify the options, key words and synonyms.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Step 5",
+     "right": "Read the sentence before and after each option in the passage and match the information to a statement.",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "Step 6",
+     "right": "Match a statement to a name/option.",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L2-E03",
+   "lessonCode": "M2-U05-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "What kind of text is it? (Ex. 5, 11)",
+   "instruction": "Decide whether each text is mainly factual, theoretical or opinion-based.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Successful entrepreneurs (Carnegie, Ford, Lauder, Jobs)",
+     "options": [
+      {
+       "id": "A",
+       "text": "factual"
+      },
+      {
+       "id": "B",
+       "text": "theoretical"
+      },
+      {
+       "id": "C",
+       "text": "opinion-based"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Toàn năm, số liệu, sự kiện."
+    },
+    {
+     "id": "q2",
+     "prompt": "Business ideas of the future",
+     "options": [
+      {
+       "id": "A",
+       "text": "factual"
+      },
+      {
+       "id": "B",
+       "text": "theoretical"
+      },
+      {
+       "id": "C",
+       "text": "opinion-based"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Answer Key: chủ yếu là ý kiến/dự đoán của nhiều người (predicts, believes, feels, warns)."
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L2-E04",
+   "lessonCode": "M2-U05-L2",
+   "order": 4,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Sentence beginnings and endings (Ex. 17)",
+   "instruction": "Complete each sentence beginning, 1–5, with the correct ending, A–E.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Aside from the job itself,",
+     "right": "the work environment is very important to an employee.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "A positive work environment makes",
+     "right": "employees feel good about coming to work.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "If you're looking for a new job,",
+     "right": "assessing the work environment is very important.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Having a sense of balance between work and personal life",
+     "right": "improves job satisfaction among employees.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Employees should work in an environment",
+     "right": "where they are not afraid to suggest ideas for improvement.",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L2-E05",
+   "lessonCode": "M2-U05-L2",
+   "order": 5,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Find the paragraph, then the ending (Ex. 19–21)",
+   "instruction": "Match each sentence beginning with its paragraph in \"Business ideas of the future\" and then with its ending.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Business ideas of the future\n\n**A** The most successful entrepreneurs are those who predict the needs of the future earlier than the competition. No new business start-up is without risk, but the benefits can be immeasurable. Inventions such as the automobile, the internet and the iPad were all initially met with a high degree of criticism, so it is important to maintain the belief that anything is possible! Below are just a few of the business ideas expected to be successful in the future.\n\n**B** Travelling to space used to be possible only for governments or large aerospace companies. This is no longer the case, however, and several private companies have planned tourist missions into space which are going to take place in the next few years. Consulting firm Futron Corporation predict that the space tourism industry will be worth $1.3 billion and have more than 25,000 customers in the next five to ten years. Space tourism pioneer Peter Diamandis also predicts that space hotels are going to be big business, with companies from around the world already working on such projects. Not everyone, however, is as convinced about the prospect of space tourism. Jeffrey Jones, a member of the Center for Space Medicine at Baylor College, warns that even a short journey into space could cause serious health problems for tourists of average or poor health.\n\n**C** Another idea comes from a company in New Zealand called Martin Aircraft. They have produced the first commercially available jetpack, which they plan to start selling next year. Initially, they will be sold to shops and cost approximately $150,000. The craft will work for short trips only, approximately 30 minutes, and manage speeds of up to 74 kph and an altitude of 914 m. The CEO of the company, Peter Coker, notes that, as well as being used by the rich for pleasure, they could also be useful in search-and-rescue operations.\n\n**D** Growing meat in a laboratory is an idea which, understandably, appeals greatly to animal rights activists. Jason Matheny, founder of the not-for-profit company New Harvest, also feels that producing meat in this way would satisfy a growing global demand for meat. It would also be healthier, more energy-efficient and sustainable. The Dutch scientist Professor Post, who served up the world's first laboratory-grown beef burger, predicts that 'cultured meat' will mean the end of traditional cattle farming within decades. Tracey Hayes, the CEO of the Northern Territory Cattlemen's Association in Australia, admits that although this technology could be damaging to the worldwide beef industry, it would not affect Australia, as cattle farming is a great Australian tradition.\n\n**E** According to a recent prediction made by the United Nations, in the future, 86% of people living in developed countries will live in cities. With this in mind, an idea called 'vertical farming' has emerged. Essentially, vertical farming comes from the belief that cities should not rely on rural areas for food but should grow their own crops by creating multi-storey, high-tech greenhouses. The idea for vertical farms came from the ecologist Dickson Despommier, who turned his knowledge of parasites into a way of looking at cities.\n\n**F** Daniel Kluka of Green Spirit Farms predicts that software will be used to look after these multiple farms remotely. For example, an app on a smartphone or tablet will be able to handle the day-to-day care of crops. Kluka also believes that this use of technology will help to keep costs to a minimum, allowing vertical farms to compete with traditional farms.",
+    "caption": "Business ideas of the future (p. 90)"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Starting a new business can be difficult (paragraph A)",
+     "right": "but the rewards can be great.",
+     "explanation": "A: \"No new business start-up is without risk, but the benefits can be immeasurable.\""
+    },
+    {
+     "id": "m2",
+     "left": "The first jetpack available to the public (paragraph C)",
+     "right": "will not be able to travel far.",
+     "explanation": "C: \"The craft will work for short trips only\"."
+    },
+    {
+     "id": "m3",
+     "left": "Animal rights activists would definitely (paragraph D)",
+     "right": "support the idea of producing meat in a laboratory.",
+     "explanation": "D: \"appeals greatly to animal rights activists\"."
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L2-E06",
+   "lessonCode": "M2-U05-L2",
+   "order": 6,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Synonyms in the text (Ex. 13)",
+   "instruction": "Scan the text \"Business ideas of the future\" and the statements in exercise 12. Match the key words in the statements with their synonyms in the text.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Business ideas of the future\n\n**A** The most successful entrepreneurs are those who predict the needs of the future earlier than the competition. No new business start-up is without risk, but the benefits can be immeasurable. Inventions such as the automobile, the internet and the iPad were all initially met with a high degree of criticism, so it is important to maintain the belief that anything is possible! Below are just a few of the business ideas expected to be successful in the future.\n\n**B** Travelling to space used to be possible only for governments or large aerospace companies. This is no longer the case, however, and several private companies have planned tourist missions into space which are going to take place in the next few years. Consulting firm Futron Corporation predict that the space tourism industry will be worth $1.3 billion and have more than 25,000 customers in the next five to ten years. Space tourism pioneer Peter Diamandis also predicts that space hotels are going to be big business, with companies from around the world already working on such projects. Not everyone, however, is as convinced about the prospect of space tourism. Jeffrey Jones, a member of the Center for Space Medicine at Baylor College, warns that even a short journey into space could cause serious health problems for tourists of average or poor health.\n\n**C** Another idea comes from a company in New Zealand called Martin Aircraft. They have produced the first commercially available jetpack, which they plan to start selling next year. Initially, they will be sold to shops and cost approximately $150,000. The craft will work for short trips only, approximately 30 minutes, and manage speeds of up to 74 kph and an altitude of 914 m. The CEO of the company, Peter Coker, notes that, as well as being used by the rich for pleasure, they could also be useful in search-and-rescue operations.\n\n**D** Growing meat in a laboratory is an idea which, understandably, appeals greatly to animal rights activists. Jason Matheny, founder of the not-for-profit company New Harvest, also feels that producing meat in this way would satisfy a growing global demand for meat. It would also be healthier, more energy-efficient and sustainable. The Dutch scientist Professor Post, who served up the world's first laboratory-grown beef burger, predicts that 'cultured meat' will mean the end of traditional cattle farming within decades. Tracey Hayes, the CEO of the Northern Territory Cattlemen's Association in Australia, admits that although this technology could be damaging to the worldwide beef industry, it would not affect Australia, as cattle farming is a great Australian tradition.\n\n**E** According to a recent prediction made by the United Nations, in the future, 86% of people living in developed countries will live in cities. With this in mind, an idea called 'vertical farming' has emerged. Essentially, vertical farming comes from the belief that cities should not rely on rural areas for food but should grow their own crops by creating multi-storey, high-tech greenhouses. The idea for vertical farms came from the ecologist Dickson Despommier, who turned his knowledge of parasites into a way of looking at cities.\n\n**F** Daniel Kluka of Green Spirit Farms predicts that software will be used to look after these multiple farms remotely. For example, an app on a smartphone or tablet will be able to handle the day-to-day care of crops. Kluka also believes that this use of technology will help to keep costs to a minimum, allowing vertical farms to compete with traditional farms.",
+    "caption": "Business ideas of the future (p. 90)"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "save lives",
+     "right": "search-and-rescue operations",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "harmful",
+     "right": "serious health problems",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "controlled using technology",
+     "right": "an app … will be able to handle",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "fulfil a worldwide need",
+     "right": "satisfy a growing global demand",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "significant impact on an existing business",
+     "right": "mean the end of traditional cattle farming",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L3-E01",
+   "lessonCode": "M2-U05-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Planned action or prediction? (Ex. 15)",
+   "instruction": "Look at the extract about space tourism and answer the questions using will, going to, or both.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Which future form is used to express a planned action?",
+     "options": [
+      {
+       "id": "A",
+       "text": "going to"
+      },
+      {
+       "id": "B",
+       "text": "will"
+      },
+      {
+       "id": "C",
+       "text": "both"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"have planned tourist missions into space, which are going to take place\"."
+    },
+    {
+     "id": "q2",
+     "prompt": "Which future form is used to express a prediction?",
+     "options": [
+      {
+       "id": "A",
+       "text": "both"
+      },
+      {
+       "id": "B",
+       "text": "going to"
+      },
+      {
+       "id": "C",
+       "text": "will"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"predict that… will be worth $1.3 billion\" và \"predicts that space hotels are going to be big business\"."
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L3-E02",
+   "lessonCode": "M2-U05-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "The correct future form (Ex. 16)",
+   "instruction": "Complete the sentences using the correct future form. More than one answer may be possible.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "In the future, robots ____ do many of our manual tasks.",
+     "blanks": [
+      {
+       "accept": [
+        "will",
+        "are going to"
+       ]
+      }
+     ],
+     "explanation": "Dự đoán → will hoặc are going to."
+    },
+    {
+     "id": "g2",
+     "prompt": "The new invention ____ to be revealed to the public tomorrow, according to the schedule given to the media.",
+     "blanks": [
+      {
+       "accept": [
+        "is going"
+       ]
+      }
+     ],
+     "explanation": "Theo lịch đã định → is going (to be revealed)."
+    },
+    {
+     "id": "g3",
+     "prompt": "A: Are you going to the exhibition on space travel this afternoon? B: I'm not sure, maybe I ____.",
+     "blanks": [
+      {
+       "accept": [
+        "will"
+       ]
+      }
+     ],
+     "explanation": "Quyết định chưa chắc, ngay lúc nói → will."
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L4-E01",
+   "lessonCode": "M2-U05-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Same or different? (Ex. 5)",
+   "instruction": "Which words and phrases introduce a contrast and which introduce a similarity?",
+   "categories": [
+    {
+     "id": "c",
+     "label": "Contrast"
+    },
+    {
+     "id": "s",
+     "label": "Similarity"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "however",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "on the other hand",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "on the negative side",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "similarly",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "the same is true of …",
+     "category": "s",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "as with …",
+     "category": "s",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,650 @@
+{
+ "modules": [
+  {
+   "code": "M2-U05",
+   "order": 5,
+   "title": "Unit 5 · Kinh doanh và công việc",
+   "titleEn": "UNIT 05: BUSINESS AND WORK — sách tr. 88–93, 101–103",
+   "outcomes": [
+    "Reading: phân biệt fact, opinion, theory; matching features (nối ý kiến/sự kiện với người); matching sentence endings",
+    "Grammar: will và going to",
+    "Listening: Section 4 (bài giảng) — xác định ghi chú đúng/sai; điền ghi chú; nhận ra so sánh và đối lập",
+    "Từ vựng kinh doanh, doanh nghiệp, thuế (Sổ 3)"
+   ]
+  }
+ ],
+ "lessons": [
+  {
+   "code": "M2-U05-L1",
+   "moduleCode": "M2-U05",
+   "order": 1,
+   "title": "🔤 Lead-in & Vocabulary: facts, opinions and theories",
+   "titleEn": "Lead-in (p. 88)",
+   "durationMinutes": 25,
+   "objectives": [
+    "Phân biệt fact (sự kiện), opinion (ý kiến) và theory (giả thuyết, dự đoán của chuyên gia)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Fact, opinion, theory",
+     "titleEn": "Facts, opinions and theories",
+     "formula": [],
+     "usage": [
+      "**Fact**: kiểm chứng được — \"The first working robot was introduced in 1961.\"",
+      "**Opinion**: quan điểm cá nhân — \"I don't believe space tourism will ever be possible.\"",
+      "**Theory**: dự đoán/giả thuyết, thường của chuyên gia — \"According to experts, robots will soon reach human levels of intelligence.\""
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 3,
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 5 · Lead-in & Vocabulary: facts, opinions and theories — 38 từ/cụm từ",
+    "words": [
+     {
+      "word": "wealthy",
+      "meaning": "giàu có",
+      "example": "Successful entrepreneurs A Andrew Carnegie was one of the wealthiest businessmen of the 19th century."
+     },
+     {
+      "word": "self-taught",
+      "meaning": "tự học",
+      "example": "Mostly self-taught, he started his career as a messenger boy and telegraph operator."
+     },
+     {
+      "word": "generous contribution to society",
+      "meaning": "đóng góp hào phóng cho xã hội",
+      "example": "Famous not only for his success and wealth, he was equally well known for his generous contribution to society."
+     },
+     {
+      "word": "donate to charity",
+      "meaning": "quyên góp từ thiện",
+      "example": "Carnegie donated millions of dollars to charity."
+     },
+     {
+      "word": "innovative",
+      "meaning": "đổi mới, sáng tạo",
+      "example": "Recognised as an innovative businesswoman, Lauder became one of the richest self-made women in the world."
+     },
+     {
+      "word": "self-made",
+      "meaning": "tự lập, tự thân làm giàu",
+      "example": "Recognised as an innovative businesswoman, Lauder became one of the richest self-made women in the world."
+     },
+     {
+      "word": "customer service",
+      "meaning": "dịch vụ khách hàng",
+      "example": "She believed her success came from producing high-quality products and focusing on excellent customer service."
+     },
+     {
+      "word": "founder",
+      "meaning": "người sáng lập",
+      "example": "B Another success story of the 19th and 20th centuries was the founder of the Ford Motor Company, Henry Ford."
+     },
+     {
+      "word": "be afforded by the masses",
+      "meaning": "đại chúng có thể chi trả",
+      "example": "Responsible for manufacturing an automobile which could be afforded by the masses, he made a significant impact on society and became incredibly wealthy."
+     },
+     {
+      "word": "make a significant impact on",
+      "meaning": "tạo ảnh hưởng đáng kể đến",
+      "example": "Henry Ford made a significant impact on society."
+     },
+     {
+      "word": "assembly line",
+      "meaning": "dây chuyền lắp ráp",
+      "example": "The moving assembly line meant that each individual was responsible for a specific job."
+     },
+     {
+      "word": "efficiently",
+      "meaning": "một cách hiệu quả",
+      "example": "This division of work allowed cars to be produced more quickly and efficiently."
+     },
+     {
+      "word": "make a fortune",
+      "meaning": "làm giàu, kiếm bộn tiền",
+      "example": "Steve Jobs made a fortune from his popular products."
+     },
+     {
+      "word": "revolutionise",
+      "meaning": "cách mạng hoá",
+      "example": "The project started in the family garage and together they revolutionised the computer industry with products such as the iPod, iPhone, iPad and Mac."
+     },
+     {
+      "word": "entrepreneur",
+      "meaning": "doanh nhân, nhà khởi nghiệp",
+      "example": "Successful entrepreneurs A Andrew Carnegie was one of the wealthiest businessmen of the 19th century."
+     },
+     {
+      "word": "start-up",
+      "meaning": "công ty khởi nghiệp",
+      "example": "No new business start-up is without risk, but the benefits can be immeasurable."
+     },
+     {
+      "word": "be met with criticism",
+      "meaning": "vấp phải chỉ trích",
+      "example": "Many new inventions are met with criticism at first."
+     },
+     {
+      "word": "prospect",
+      "meaning": "triển vọng",
+      "example": "Not everyone, however, is as convinced about the prospect of space tourism."
+     },
+     {
+      "word": "pioneer",
+      "meaning": "người tiên phong",
+      "example": "Space tourism pioneer Peter Diamandis also predicts that space hotels are going to be big business, with companies from around the world already working on such projects."
+     },
+     {
+      "word": "commercially available",
+      "meaning": "có bán trên thị trường",
+      "example": "They have produced the first commercially available jetpack, which they plan to start selling next year."
+     },
+     {
+      "word": "search-and-rescue operation",
+      "meaning": "chiến dịch tìm kiếm cứu nạn",
+      "example": "The CEO of the company, Peter Coker, notes that, as well as being used by the rich for pleasure, they could also be useful in search-and-rescue operations."
+     },
+     {
+      "word": "satisfy a growing demand",
+      "meaning": "đáp ứng nhu cầu ngày càng tăng",
+      "example": "Jason Matheny, founder of the not-for-profit company New Harvest, also feels that producing meat in this way would satisfy a growing global demand for meat."
+     },
+     {
+      "word": "energy-efficient",
+      "meaning": "tiết kiệm năng lượng",
+      "example": "It would also be healthier, more energy-efficient and sustainable."
+     },
+     {
+      "word": "sustainable",
+      "meaning": "bền vững",
+      "example": "It would also be healthier, more energy-efficient and sustainable."
+     },
+     {
+      "word": "rural areas",
+      "meaning": "vùng nông thôn",
+      "example": "Essentially, vertical farming comes from the belief that cities should not rely on rural areas for food but should grow their own crops by creating multi-storey, high-tech greenhouses."
+     },
+     {
+      "word": "keep costs to a minimum",
+      "meaning": "giữ chi phí ở mức tối thiểu",
+      "example": "Kluka also believes that this use of technology will help to keep costs to a minimum, allowing vertical farms to compete with traditional farms."
+     },
+     {
+      "word": "compete with",
+      "meaning": "cạnh tranh với",
+      "example": "Kluka also believes that this use of technology will help to keep costs to a minimum, allowing vertical farms to compete with traditional farms."
+     },
+     {
+      "word": "job satisfaction",
+      "meaning": "sự hài lòng trong công việc",
+      "example": "A good work-life balance improves job satisfaction."
+     },
+     {
+      "word": "product line",
+      "meaning": "dòng sản phẩm",
+      "example": "Her business, which includes product lines such as Estee Lauder, MAC Cosmetics and Clinique, has had incredible success."
+     },
+     {
+      "word": "manufacture",
+      "meaning": "sản xuất",
+      "example": "Primarily, his success was achieved by using the 'assembly line' to manufacture his cars."
+     },
+     {
+      "word": "division of work",
+      "meaning": "sự phân công lao động",
+      "example": "This division of work allowed cars to be produced more quickly and efficiently."
+     },
+     {
+      "word": "initially",
+      "meaning": "ban đầu",
+      "example": "Initially, they will be sold to shops and cost approximately $150,000."
+     },
+     {
+      "word": "consulting firm",
+      "meaning": "công ty tư vấn",
+      "example": "Consulting firm Futron Corporation predict that the space tourism industry will be worth $1.3 billion and have more than 25,000 customers in the next five to ten years."
+     },
+     {
+      "word": "animal rights activist",
+      "meaning": "nhà hoạt động vì quyền động vật",
+      "example": "D Growing meat in a laboratory is an idea which, understandably, appeals greatly to animal rights activists."
+     },
+     {
+      "word": "cattle farming",
+      "meaning": "chăn nuôi gia súc",
+      "example": "The Dutch scientist Professor Post, who served up the world's first laboratory-grown beef burger, predicts that 'cultured meat' will mean the end of traditional cattle farming within decades."
+     },
+     {
+      "word": "greenhouse",
+      "meaning": "nhà kính",
+      "example": "Essentially, vertical farming comes from the belief that cities should not rely on rural areas for food but should grow their own crops by creating multi-storey, high-tech greenhouses."
+     },
+     {
+      "word": "remotely",
+      "meaning": "từ xa",
+      "example": "F Daniel Kluka of Green Spirit Farms predicts that software will be used to look after these multiple farms remotely."
+     },
+     {
+      "word": "work environment",
+      "meaning": "môi trường làm việc",
+      "example": "A positive work environment makes employees feel good about coming to work."
+     }
+    ]
+   }
+  },
+  {
+   "code": "M2-U05-L2",
+   "moduleCode": "M2-U05",
+   "order": 2,
+   "title": "📖 Reading: matching features & sentence endings",
+   "titleEn": "Matching features · Matching sentences · Exam skills (pp. 88–93)",
+   "durationMinutes": 60,
+   "objectives": [
+    "Xác định bài chủ yếu là sự kiện, ý kiến hay giả thuyết",
+    "Nối phát biểu với người (matching features) bằng từ đồng nghĩa",
+    "Nối đầu câu với cuối câu (matching sentence endings)"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Matching features",
+     "titleEn": "Matching features",
+     "formula": [
+      "Thứ tự: ① đọc kỹ **instructions** → ② **skim** cả bài → ③ xác định bài chủ yếu là fact/opinion/theory → ④ **scan** tìm tên người, key words và từ đồng nghĩa → ⑤ đọc câu **trước và sau** tên người → ⑥ nối."
+     ],
+     "usage": [
+      "Thường là nối với **người**, nhưng cũng có thể là nơi chốn, năm, vật.",
+      "Một chữ cái có thể dùng **nhiều lần**; có thể có người **không dùng** (distractor).",
+      "Đừng chọn tên **gần nhất** với từ khóa — đọc cả phần để chắc ý đó là của ai.",
+      "Dựa vào **bài đọc**, không dựa vào hiểu biết riêng."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "Matching sentence endings",
+     "titleEn": "Matching sentences",
+     "formula": [],
+     "usage": [
+      "Câu hỏi đi **theo thứ tự** bài.",
+      "Có thể chỉ hỏi về **một phần** bài.",
+      "Các đuôi câu thường **giống nhau về ngữ pháp** → phải dựa vào nghĩa.",
+      "Tập trung vào **đầu câu**; sẽ có đuôi câu thừa.",
+      "Tìm **từ tương tự**, không phải từ trùng."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 6,
+   "totalPoints": 28,
+   "practiceLinks": [
+    {
+     "ref": "reading:M2-U05-R1",
+     "kind": "reading",
+     "title": "Successful entrepreneurs — matching features (Ex. 8)",
+     "note": "5 câu, nối với Carnegie, Ford, Lauder, Jobs."
+    },
+    {
+     "ref": "reading:M2-U05-R2",
+     "kind": "reading",
+     "title": "Exam skills: Business ideas of the future (Ex. 14, 23)",
+     "note": "Matching features (người) + matching sentence endings."
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L3",
+   "moduleCode": "M2-U05",
+   "order": 3,
+   "title": "🧩 Grammar focus: will and going to",
+   "titleEn": "Grammar focus: future — will and going to (p. 91)",
+   "durationMinutes": 25,
+   "objectives": [
+    "Dùng going to cho kế hoạch đã định",
+    "Dùng will hoặc going to cho dự đoán",
+    "Dùng will cho quyết định ngay lúc nói"
+   ],
+   "keyLanguage": [
+    "**Kế hoạch đã định** → going to: several private companies have planned tourist missions into space, which **are going to take place** in the next few years.",
+    "**Dự đoán** → will hoặc going to: the space tourism industry **will be** worth $1.3 billion · space hotels **are going to be** big business.",
+    "**Quyết định tức thì** → will: \"Are you going to the exhibition?\" — \"I'm not sure, maybe I **will**.\""
+   ],
+   "theory": [
+    {
+     "title": "will và going to",
+     "titleEn": "Future: will and going to",
+     "formula": [
+      "S + will + V",
+      "S + am/is/are going to + V"
+     ],
+     "usage": [],
+     "examples": [
+      {
+       "en": "In the future, robots will / are going to do many of our manual tasks.",
+       "vi": "Dự đoán → cả hai."
+      },
+      {
+       "en": "The new invention is going to be revealed to the public tomorrow, according to the schedule.",
+       "vi": "Lịch đã định → going to."
+      }
+     ],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 2,
+   "totalPoints": 5,
+   "practiceLinks": [
+    {
+     "kind": "grammar",
+     "title": "Future Simple (will)",
+     "note": "dự đoán, quyết định tức thì",
+     "url": "/essential-grammar.html?lesson=future-simple"
+    },
+    {
+     "kind": "grammar",
+     "title": "Be Going To",
+     "note": "kế hoạch đã định",
+     "url": "/essential-grammar.html?lesson=be-going-to"
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L4",
+   "moduleCode": "M2-U05",
+   "order": 4,
+   "title": "🎧 Listening: lectures — notes, comparisons & contrasts",
+   "titleEn": "Lead-in · Identifying correct notes · Completion tasks · Identifying comparisons and contrasts · Exam skills (pp. 101–103)",
+   "durationMinutes": 60,
+   "objectives": [
+    "Hiểu ba loại hình doanh nghiệp ở Anh: sole trader, partnership, limited liability company",
+    "Xác định ghi chú đúng/sai và sửa lại",
+    "Điền ghi chú, hoàn thành câu tóm tắt",
+    "Nhận ra từ nối so sánh/đối lập: however, similarly, on the other hand, on the negative side, the same is true"
+   ],
+   "keyLanguage": [],
+   "theory": [
+    {
+     "title": "Ghi chú trong bài giảng",
+     "titleEn": "Identifying correct notes",
+     "formula": [],
+     "usage": [
+      "Nghe kỹ để **chọn đúng thông tin**: người nói thường nhắc cả thông tin đúng và thông tin dễ gây nhầm (every month ↔ once a year).",
+      "Câu tóm tắt **không dùng đúng từ** bạn nghe, nhưng **cùng thông tin, cùng thứ tự**.",
+      "Viết **đúng chính tả** — sai chính tả là mất điểm."
+     ],
+     "examples": [],
+     "notes": []
+    },
+    {
+     "title": "So sánh và đối lập",
+     "titleEn": "Identifying comparisons and contrasts",
+     "formula": [],
+     "usage": [
+      "Đối lập: **however**, **on the other hand**, **on the negative side** → sắp có ý trái ngược (thường là nhược điểm).",
+      "Giống nhau: **similarly**, **the same is true of…**, **as with…** → ý tương tự với điều vừa nói.",
+      "Nhận ra những từ này giúp bạn **đoán trước** thông tin sắp tới."
+     ],
+     "examples": [],
+     "notes": []
+    }
+   ],
+   "gate": {
+    "requireObjectiveCompletion": true,
+    "minObjectiveScorePercent": 70,
+    "minWritingSubmissions": 0
+   },
+   "published": true,
+   "exerciseCount": 1,
+   "totalPoints": 6,
+   "practiceLinks": [
+    {
+     "ref": "listening:M2-U05-L1",
+     "kind": "listening",
+     "title": "Three types of business (Ex. 1)",
+     "note": "Nối loại hình với mô tả A, B, C."
+    },
+    {
+     "ref": "listening:M2-U05-L2",
+     "kind": "listening",
+     "title": "Sole traders: correct or incorrect? (Ex. 2)",
+     "note": "Ghi chú nào đúng, ghi chú nào sai?"
+    },
+    {
+     "ref": "listening:M2-U05-L3",
+     "kind": "listening",
+     "title": "Partnerships: complete the notes (Ex. 3)",
+     "note": "Dùng từ trong khung."
+    },
+    {
+     "ref": "listening:M2-U05-L4",
+     "kind": "listening",
+     "title": "Limited liability companies (Ex. 4)",
+     "note": "ONE OR TWO WORDS AND/OR A NUMBER."
+    },
+    {
+     "ref": "listening:M2-U05-L5",
+     "kind": "listening",
+     "title": "Comparisons and contrasts (Ex. 5)",
+     "note": "however, similarly, on the other hand…"
+    },
+    {
+     "ref": "listening:M2-U05-L6",
+     "kind": "listening",
+     "title": "Exam skills: three case studies (Ex. 6)",
+     "note": "TWO WORDS OR ONE WORD AND/OR A NUMBER — chú ý chính tả."
+    }
+   ],
+   "vocabSave": {
+    "slot": 3,
+    "title": "Unit 5 · Listening: lectures — notes, comparisons & contrasts — 36 từ/cụm từ",
+    "words": [
+     {
+      "word": "earn a living",
+      "meaning": "kiếm sống",
+      "example": "However, people are increasingly looking at other forms of earning a living by working for themselves and being in greater control of their working lives."
+     },
+     {
+      "word": "set up a company",
+      "meaning": "thành lập công ty",
+      "example": "Another possibility would be to set up a limited company with a family member."
+     },
+     {
+      "word": "sole trader",
+      "meaning": "người kinh doanh cá thể",
+      "example": "Clearly this is not a problem for sole traders."
+     },
+     {
+      "word": "partnership",
+      "meaning": "hình thức hợp danh, quan hệ đối tác",
+      "example": "A partnership can be limited or unlimited."
+     },
+     {
+      "word": "limited liability",
+      "meaning": "trách nhiệm hữu hạn",
+      "example": "So why should partners enter into a limited liability partnership?"
+     },
+     {
+      "word": "income tax",
+      "meaning": "thuế thu nhập cá nhân",
+      "example": "The sole trader must submit a yearly income tax assessment to the tax office."
+     },
+     {
+      "word": "corporation tax",
+      "meaning": "thuế doanh nghiệp",
+      "example": "This is more favourable for companies, as corporation tax is usually less than income tax."
+     },
+     {
+      "word": "profits",
+      "meaning": "lợi nhuận",
+      "example": "Regarding tax, limited companies pay corporation tax, which, unlike income tax, is a tax on business profits, not personal earnings."
+     },
+     {
+      "word": "expenses",
+      "meaning": "chi phí",
+      "example": "In this situation, each partner shares expenses and also income."
+     },
+     {
+      "word": "straightforward",
+      "meaning": "đơn giản, dễ hiểu",
+      "example": "As a result, this is the simplest and most straightforward way to start out in business and work for yourself."
+     },
+     {
+      "word": "be your own boss",
+      "meaning": "tự làm chủ",
+      "example": "Another benefit of being a sole trader is that you are your own boss."
+     },
+     {
+      "word": "self-employed",
+      "meaning": "tự kinh doanh, làm tự do",
+      "example": "As with sole traders, each partner must be registered with the tax office as self-employed and must send in a tax return once a year."
+     },
+     {
+      "word": "annual tax return",
+      "meaning": "tờ khai thuế hằng năm",
+      "example": "This means you have to complete an annual tax return."
+     },
+     {
+      "word": "debt",
+      "meaning": "khoản nợ",
+      "example": "Another difference is to do with debt."
+     },
+     {
+      "word": "job security",
+      "meaning": "sự ổn định công việc",
+      "example": "However, increasingly these days, with the reduction in long-term employment and job security, sole traders are coming from other professions, such as computer programming and even teaching, especially tutoring."
+     },
+     {
+      "word": "go bankrupt",
+      "meaning": "phá sản",
+      "example": "All businesses run the risk of failing or going bankrupt."
+     },
+     {
+      "word": "shareholder",
+      "meaning": "cổ đông",
+      "example": "The shareholders also have to submit their own personal tax assessments separately."
+     },
+     {
+      "word": "run the risk of",
+      "meaning": "có nguy cơ",
+      "example": "All businesses run the risk of failing or going bankrupt."
+     },
+     {
+      "word": "administration",
+      "meaning": "công việc hành chính, giấy tờ",
+      "example": "Melissa has also taken a Master's degree in Business Administration, so she's confident about her skills as a businesswoman."
+     },
+     {
+      "word": "decision-making",
+      "meaning": "việc ra quyết định",
+      "example": "You don't have to worry about lots of administration and financial organisation, and you can keep total control of your business and decision-making."
+     },
+     {
+      "word": "get funding",
+      "meaning": "nhận được vốn, tài trợ",
+      "example": "It might be best for them to start as an LLP, so that they can get funding more easily than if they were a simple partnership."
+     },
+     {
+      "word": "in-house",
+      "meaning": "làm nội bộ (không thuê ngoài)",
+      "example": "Alternatively, they could set up a limited liability company if they expect to grow quickly and want to keep every aspect of their business in-house, employing staff directly."
+     },
+     {
+      "word": "start trading",
+      "meaning": "bắt đầu kinh doanh",
+      "example": "The trader can simply choose any name and start trading without paying any fees."
+     },
+     {
+      "word": "build up regular clients",
+      "meaning": "xây dựng tệp khách hàng quen",
+      "example": "He knows that he can build up regular clients from his contacts, but he's not sure if working as a …"
+     },
+     {
+      "word": "on balance",
+      "meaning": "cân nhắc mọi mặt",
+      "example": "On balance, the best option for him would be to start off as a sole …"
+     },
+     {
+      "word": "start out in business",
+      "meaning": "bắt đầu kinh doanh",
+      "example": "Certainly, being a sole trader is a very useful way of starting out in business by yourself."
+     },
+     {
+      "word": "legal registration",
+      "meaning": "đăng ký pháp lý",
+      "example": "On the other hand, a sole trader doesn't need to set up a company; he or she can simply start working without any legal registration."
+     },
+     {
+      "word": "owe money",
+      "meaning": "nợ tiền",
+      "example": "If a business goes bankrupt, it has to close because it owes money and is not able to pay the money back."
+     },
+     {
+      "word": "borrow money",
+      "meaning": "vay tiền",
+      "example": "For example, it might be difficult to borrow money from the bank if you're a sole trader, but easier if you have a limited company, as banks trust companies more."
+     },
+     {
+      "word": "favourable",
+      "meaning": "có lợi",
+      "example": "This is more favourable for companies, as corporation tax is usually less than income tax."
+     },
+     {
+      "word": "submit financial accounts",
+      "meaning": "nộp báo cáo tài chính",
+      "example": "There are also no legal requirements to submit financial accounts to Companies House."
+     },
+     {
+      "word": "regulations",
+      "meaning": "quy định",
+      "example": "You can also employ or give contracts to other people to do work for you, though, of course, you need to be aware of regulations regarding employing others."
+     },
+     {
+      "word": "personal possessions",
+      "meaning": "tài sản cá nhân",
+      "example": "In an LLP, the partners' personal possessions and property are protected."
+     },
+     {
+      "word": "accountant",
+      "meaning": "kế toán viên",
+      "example": "This can all be quite complicated, so it's a good idea to get professional help and advice from an accountant."
+     },
+     {
+      "word": "flexibility",
+      "meaning": "sự linh hoạt",
+      "example": "In any event, an LLP offers the flexibility of being in a simple partnership, but also gives the partners protection so that …"
+     },
+     {
+      "word": "courier company",
+      "meaning": "công ty chuyển phát",
+      "example": "He's been working for a courier company delivering letters and parcels for over five years now and thinks that he'd do better if he worked for himself."
+     }
+    ]
+   }
+  }
+ ]
+}

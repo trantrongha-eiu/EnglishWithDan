@@ -1,0 +1,641 @@
+{
+ "exercises": [
+  {
+   "code": "M2-U07-L1-E01",
+   "lessonCode": "M2-U07-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "University words (Ex. 2)",
+   "instruction": "Read the signs displayed in a local university. Match the words in bold with the definitions 1–10.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "a formal talk given to a group of people in order to teach them about a subject",
+     "right": "lecture",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "to become or make someone become an official member of a course, college or group",
+     "right": "enrol",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "to provide money for an event, activity or organisation",
+     "right": "fund",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "a piece of work or job that you are given to do",
+     "right": "assignment",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "the land and buildings belonging to a college or university",
+     "right": "campus",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "a particular department at a college or university, or the teachers in that department",
+     "right": "faculty",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "a higher university qualification that usually takes one or two more years of study after your first degree",
+     "right": "Master's degree",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "a student who is studying for their first university degree",
+     "right": "undergraduate",
+     "explanation": ""
+    },
+    {
+     "id": "m9",
+     "left": "a university degree that is given after a course of study that usually takes three or four years",
+     "right": "Bachelor's degree",
+     "explanation": ""
+    },
+    {
+     "id": "m10",
+     "left": "a student who has one degree and is now studying at a university for a more advanced degree",
+     "right": "postgraduate",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U07-L2-E01",
+   "lessonCode": "M2-U07-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Study the flow-chart (Ex. 3)",
+   "instruction": "Look at the flow-chart \"Applying to study at university in Australia (for international students)\", ignoring the gaps for the moment. Answer the questions. (1: Once you have chosen, you can apply ___ to the university for a place. 2: Once you have confirmation of ___ 3: and adequate ___ for the first year… 4: especially for ___ students.)",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What does the title suggest the chart is about?",
+     "options": [
+      {
+       "id": "A",
+       "text": "how to apply to an Australian university as an international student"
+      },
+      {
+       "id": "B",
+       "text": "how to find a job in Australia"
+      },
+      {
+       "id": "C",
+       "text": "the history of Australian universities"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "What type of word is missing in gap 1 (apply ___ to the university)?",
+     "options": [
+      {
+       "id": "A",
+       "text": "adverb"
+      },
+      {
+       "id": "B",
+       "text": "noun"
+      },
+      {
+       "id": "C",
+       "text": "adjective"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Bổ nghĩa cho động từ apply → trạng từ."
+    },
+    {
+     "id": "q3",
+     "prompt": "What type of word is missing in gap 2 (confirmation of ___)?",
+     "options": [
+      {
+       "id": "A",
+       "text": "noun"
+      },
+      {
+       "id": "B",
+       "text": "verb"
+      },
+      {
+       "id": "C",
+       "text": "adverb"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Sau giới từ of → danh từ."
+    },
+    {
+     "id": "q4",
+     "prompt": "What type of word is missing in gap 3 (adequate ___)?",
+     "options": [
+      {
+       "id": "A",
+       "text": "noun"
+      },
+      {
+       "id": "B",
+       "text": "adverb"
+      },
+      {
+       "id": "C",
+       "text": "verb"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Sau tính từ adequate → danh từ."
+    },
+    {
+     "id": "q5",
+     "prompt": "What type of word is missing in gap 4 (for ___ students)?",
+     "options": [
+      {
+       "id": "A",
+       "text": "adjective"
+      },
+      {
+       "id": "B",
+       "text": "adverb"
+      },
+      {
+       "id": "C",
+       "text": "verb"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Trước danh từ students → tính từ."
+    }
+   ]
+  },
+  {
+   "code": "M2-U07-L2-E02",
+   "lessonCode": "M2-U07-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Complete the flow-chart (Ex. 4)",
+   "instruction": "Read the short text and then complete the flow-chart using ONE WORD ONLY from the text.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Studying abroad\n\nStudying abroad as an international student can be an enriching experience. If you have a good level of English, you will face the difficult decision of deciding which university you would like to apply to. Once you have chosen, you can contact the university directly in order to apply.\n\nIn order to successfully obtain a place at university, you will need to get a visa to study at the university of your choice. In order to obtain a visa, you will need proof of admission to the college. You will also need to show that you have enough funds for the first year of study. After you have done this, you can apply for a visa. Once you have received a visa, you can start to look for flights and also try to find somewhere to live. This is something that you don't need to worry about, as each university has an accommodation team to help you. Furthermore, preferential treatment is given for new students from abroad.",
+    "caption": "Studying abroad (p. 129)"
+   },
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Step 1 – Choose a university and enrol: Once you have chosen, you can apply ____ to the university for a place.",
+     "blanks": [
+      {
+       "accept": [
+        "directly"
+       ]
+      }
+     ],
+     "explanation": "\"you can contact the university **directly** in order to apply\"."
+    },
+    {
+     "id": "g2",
+     "prompt": "Step 2 – Apply for a student visa: Once you have confirmation of ____ and adequate ____ for the first year, you can apply for your visa.",
+     "blanks": [
+      {
+       "accept": [
+        "admission"
+       ]
+      },
+      {
+       "accept": [
+        "funds"
+       ]
+      }
+     ],
+     "explanation": "\"you will need proof of **admission**… enough **funds** for the first year\"."
+    },
+    {
+     "id": "g3",
+     "prompt": "Step 3 – Book your flight and accommodation: each university has an accommodation team that can help you find a place, especially for ____ students.",
+     "blanks": [
+      {
+       "accept": [
+        "new"
+       ]
+      }
+     ],
+     "explanation": "\"preferential treatment is given for **new** students from abroad\"."
+    }
+   ]
+  },
+  {
+   "code": "M2-U07-L2-E03",
+   "lessonCode": "M2-U07-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "University signs (Ex. 11)",
+   "instruction": "Study these university signs. Which sentence in each pair is most likely to be correct and why?",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "1a YOU MUST NOT EAT IN CLASSROOMS. / 1b YOU DON'T HAVE TO EAT IN CLASSROOMS.",
+     "options": [
+      {
+       "id": "A",
+       "text": "1a — it expresses a rule, something which is not allowed"
+      },
+      {
+       "id": "B",
+       "text": "1b — eating is optional"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "2a YOU DON'T HAVE TO CHEAT IN THE EXAM. / 2b YOU MUST NOT CHEAT IN THE EXAM.",
+     "options": [
+      {
+       "id": "A",
+       "text": "2b — it expresses a rule, something which is not allowed"
+      },
+      {
+       "id": "B",
+       "text": "2a — cheating is optional"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "3a You don't have to return your library book to the reception desk – you can also use the boxes provided. / 3b You must not return your library book to the reception desk – you can also use the boxes provided.",
+     "options": [
+      {
+       "id": "A",
+       "text": "3a — it expresses an idea which is optional"
+      },
+      {
+       "id": "B",
+       "text": "3b — returning books to reception is not allowed"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"you can also use the boxes\" → có lựa chọn → don't have to."
+    }
+   ]
+  },
+  {
+   "code": "M2-U07-L2-E04",
+   "lessonCode": "M2-U07-L2",
+   "order": 4,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "How were the words explained? (Ex. 16–17)",
+   "instruction": "How were these words explained in the texts: by footnote, an explanation in the text, or an explanation given by the surrounding context?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "How the modern computer works\n\nThe mouse and keyboard are input units: ways of getting information into your computer. Most computers store all this information on a hard drive (a huge magnetic memory). However, smaller computer-based devices like digital cameras and mobile phones use other kinds of storage, such as flash memory cards.\n\nThe computer's processor, also known as the central processing unit, is a microchip* buried deep inside. As it is used it becomes incredibly hot and a fan prevents the computer from overheating.\n\nMany computers now have LCD screens, capable of displaying high-resolution graphics, such as very clear and detailed photographs. Many computers also have loudspeakers and can be connected to a printer.\n\n*microchip – a very small part of a computer or machine that does calculations or stores information",
+    "caption": "How the modern computer works (p. 133)"
+   },
+   "categories": [
+    {
+     "id": "f",
+     "label": "footnote"
+    },
+    {
+     "id": "t",
+     "label": "explanation in the text"
+    },
+    {
+     "id": "c",
+     "label": "surrounding context"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "lever",
+     "category": "f",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "ribbon",
+     "category": "t",
+     "explanation": "\"a piece of cloth with ink on it called the ribbon\"."
+    },
+    {
+     "id": "c3",
+     "text": "carriage return lever",
+     "category": "c",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "hard drive",
+     "category": "t",
+     "explanation": "\"a hard drive (a huge magnetic memory)\"."
+    },
+    {
+     "id": "c5",
+     "text": "flash memory cards",
+     "category": "t",
+     "explanation": "\"other kinds of storage, such as flash memory cards\"."
+    },
+    {
+     "id": "c6",
+     "text": "high-resolution",
+     "category": "c",
+     "explanation": "\"such as very clear and detailed photographs\"."
+    },
+    {
+     "id": "c7",
+     "text": "microchip",
+     "category": "f",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U07-L3-E01",
+   "lessonCode": "M2-U07-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Advice or obligation? (Ex. 8)",
+   "instruction": "Look at phrases a–c taken from the text: a I have to attend three lectures a week · b you must have a great deal of self-discipline · c you should choose something you will enjoy.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Which of these statements expresses advice?",
+     "options": [
+      {
+       "id": "A",
+       "text": "c"
+      },
+      {
+       "id": "B",
+       "text": "a"
+      },
+      {
+       "id": "C",
+       "text": "b"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Which two of these statements express an obligation?",
+     "options": [
+      {
+       "id": "A",
+       "text": "a and b"
+      },
+      {
+       "id": "B",
+       "text": "a and c"
+      },
+      {
+       "id": "C",
+       "text": "b and c"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Which of these statements expresses a strong obligation?",
+     "options": [
+      {
+       "id": "A",
+       "text": "b"
+      },
+      {
+       "id": "B",
+       "text": "a"
+      },
+      {
+       "id": "C",
+       "text": "c"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "What is the past tense of \"I have to attend\"?",
+     "options": [
+      {
+       "id": "A",
+       "text": "I had to attend"
+      },
+      {
+       "id": "B",
+       "text": "I have had attend"
+      },
+      {
+       "id": "C",
+       "text": "I must attended"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "What is the past tense of \"you should choose something you will enjoy\"?",
+     "options": [
+      {
+       "id": "A",
+       "text": "You should have chosen something you would enjoy."
+      },
+      {
+       "id": "B",
+       "text": "You should chose something you would enjoy."
+      },
+      {
+       "id": "C",
+       "text": "You had should choose something."
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U07-L3-E02",
+   "lessonCode": "M2-U07-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Strength of obligation (Ex. 10)",
+   "instruction": "Complete the sentences to show strength of obligation. More than one answer is possible.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I ____ study harder. (strong obligation)",
+     "blanks": [
+      {
+       "accept": [
+        "must",
+        "have to"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "I ____ go to school today. (no obligation)",
+     "blanks": [
+      {
+       "accept": [
+        "don't have to",
+        "do not have to",
+        "needn't",
+        "need not"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "You ____ revise for your exams this weekend. (advice)",
+     "blanks": [
+      {
+       "accept": [
+        "should",
+        "ought to"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "You ____ be late for lessons. (strong negative obligation)",
+     "blanks": [
+      {
+       "accept": [
+        "mustn't",
+        "must not"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U07-L4-E01",
+   "lessonCode": "M2-U07-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Which stage of education? (Ex. 1)",
+   "instruction": "Which type of education is each of these about?",
+   "categories": [
+    {
+     "id": "early",
+     "label": "Nursery / primary school"
+    },
+    {
+     "id": "school",
+     "label": "Secondary school / sixth form"
+    },
+    {
+     "id": "after",
+     "label": "Further / higher / adult education"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "Children usually start in an early class called \"Reception\".",
+     "category": "early",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "Children learn to read and write in infant school.",
+     "category": "early",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "Students go to different classrooms for different subjects.",
+     "category": "school",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "Students prepare for A levels for two years.",
+     "category": "school",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "A vocational course prepares students for work in a profession.",
+     "category": "after",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "Students live away from home for the first time.",
+     "category": "after",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "Cheap evening and weekend courses.",
+     "category": "after",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,547 @@
+{
+ "passages": [
+  {
+   "title": "Mindset 2 · Unit 8 — Chinese festivals",
+   "content": "<h3>Chinese festivals</h3>\n\n<p>If I could visit any country to be a part of their celebrations and festivals, it would be China. China is home to some of the most beautiful celebrations on the planet - celebrations filled with colour and meaning.</p>\n\n<p><strong>Dragon Boat Racing</strong> The Dragon Boat festival, also known as the Dwanwu Festival, has been celebrated in China for more than 2,000 years. The festival occurs on the fifth day of the fifth month of the Chinese lunar calendar. The celebration emerged after the Chinese scholar, Qu Yuan, threw himself into the Mi Lo river in protest against the government of the time. Qu Yuan was drowned and the people were unable to find the body, so to prevent the fish from eating him, the locals threw rice patties into the river. Ever since then, rice dumplings or zongzi are prepared and eaten during this festival season. Other activities include drinking a special drink called realgar and dragon-boat racing to the sound of beating drums.</p>\n\n<p><strong>Chinese New Year</strong> By far the biggest celebration in the Chinese calendar, however, is Chinese New Year. In fact, the lantern festival signifies the end of this long celebration, which begins on Chinese New Year's Eve. It is a holiday filled with dragons, fireworks, symbolic clothing and flowers. Chinese New Year is a time for families to get together. The New Year's Eve dinner is called Reunion Dinner and is believed to be the most important meal of the year. Families of several generations sit together enjoying food and socialising.</p>\n\n<p><strong>Lantern Riddles</strong> Also in January there is the Lantern Festival, or the Shangyuan Festival, which is celebrated on 15th January of the Chinese lunar calendar. This festival marks the return of spring and is regarded as a day for appreciating family and the bright full moon. There are several different activities involved in this celebration, appealing to all age groups. These include: watching fireworks or solving the riddles featured on the lanterns.</p>\n\n<p><strong>Harbin Ice and Snow Festival</strong> Another spectacular festival hosted by the Chinese is the Harbin Ice and Snow Festival. This is an annual winter festival which takes place in Harbin, Heilongjiang, China, and is now the largest ice and snow festival in the world. Initially, the majority of participants were Chinese, but it has since become an international festival and competition. The festival includes the world's biggest ice sculptures. Officially, the festival starts on 5th January and lasts for one month. However, exhibits often open earlier and finish later, weather permitting. The ice sculptures are displayed throughout the city.</p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Do the following statements agree with the information given in the texts? Write TRUE, FALSE or NOT GIVEN. (Ex. 8)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "true-false-ng",
+       "questionText": "The Dragon Boat Festival celebrates when Qu Yuan was saved by the people who stopped the fish eating him.",
+       "correctAnswer": "FALSE",
+       "explanation": "Dragon Boat: \"Qu Yuan **was drowned** and the people were unable to find the body\" → ông không được cứu."
+      },
+      {
+       "questionNumber": 2,
+       "type": "true-false-ng",
+       "questionText": "When the Harbin Ice and Snow Festival first began, only the Chinese entered the competition.",
+       "correctAnswer": "FALSE",
+       "explanation": "Harbin: \"Initially, **the majority of** participants were Chinese\" → không phải \"only\"."
+      },
+      {
+       "questionNumber": 3,
+       "type": "true-false-ng",
+       "questionText": "If conditions allow, the exhibits at the Harbin Ice and Snow Festival are displayed when the official festival is over.",
+       "correctAnswer": "TRUE",
+       "explanation": "\"exhibits often open earlier and **finish later, weather permitting**\" (weather permitting = if conditions allow)."
+      },
+      {
+       "questionNumber": 4,
+       "type": "true-false-ng",
+       "questionText": "There are a variety of things to do and see at the Lantern Festival.",
+       "correctAnswer": "TRUE",
+       "explanation": "\"There are **several different activities** involved in this celebration… watching fireworks or solving the riddles\"."
+      },
+      {
+       "questionNumber": 5,
+       "type": "true-false-ng",
+       "questionText": "Chinese New Year is also known as the Spring Festival.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Bài không nói tên gọi khác của Tết. BẪY: \"the return of spring\" nói về Lantern Festival."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U08-R1"
+  },
+  {
+   "title": "Mindset 2 · Unit 8 — The Venice carnival",
+   "content": "<h3>The Venice carnival</h3>\n\n<p>In January or February, Venice plays host to the most magical of carnivals. During the carnival, the city is filled with a mass of masked party-goers, posing and dancing, in an attempt to reinvent one of the great traditions of the city. Naturally, it is very crowded and hotels and restaurants are expensive, but it is a unique occasion and a great time to experience this beautiful city.</p>\n\n<p>The carnival was first held in Venice in the 11th century and lasted for over two months. Activities involved a series of formal parties in St Mark's Square and playing games for money. Regardless of social status, participants wore costumes and masks. Images of the time and occasion are still displayed throughout the city today. During the 18th century, however, this period of festivities came to an end, and the carnival did not return until 1979. Today, the carnival is extremely popular with people eager to dress up and parade around the city in their masks and costumes.</p>\n\n<p>The weekends are the busiest times at the carnival - the final weekend in particular. During the festivities, you can enjoy live music and take part in a large open-air festival. Costumes are also a major feature of the occasion and there is even a competition to judge the best one. The best ones are usually displayed at the centre of carnival festivities, in the breathtaking St Mark's Square. Numerous shops in Venice sell these costumes and masks in preparation for this great event.</p>\n\n<p>Perhaps the most attractive aspect of the Venice carnival, though, is the variety of masked balls and parties there are to attend. You do have to pay for these, however, and they can be quite costly. One of the most expensive parties is the Valentine's Grand Masquerade Ball, held on February 14th at the Palazzo Flangini.</p>",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–7",
+     "instruction": "Do these statements agree with the information given in the text? Write TRUE, FALSE or NOT GIVEN. (Ex. 11)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "true-false-ng",
+       "questionText": "Before the 20th century, only the rich participated in the carnival.",
+       "correctAnswer": "FALSE",
+       "explanation": "\"**Regardless of social status**, participants wore costumes and masks\"."
+      },
+      {
+       "questionNumber": 2,
+       "type": "true-false-ng",
+       "questionText": "The Venice carnival was banned in the 18th century.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Bài chỉ nói \"this period of festivities came to an end\" — không nói bị cấm."
+      },
+      {
+       "questionNumber": 3,
+       "type": "true-false-ng",
+       "questionText": "The most popular days at the carnival are during the week.",
+       "correctAnswer": "FALSE",
+       "explanation": "\"**The weekends** are the busiest times at the carnival\"."
+      },
+      {
+       "questionNumber": 4,
+       "type": "true-false-ng",
+       "questionText": "None of the festivities take place outside.",
+       "correctAnswer": "FALSE",
+       "explanation": "\"take part in a large **open-air** festival\"."
+      },
+      {
+       "questionNumber": 5,
+       "type": "true-false-ng",
+       "questionText": "There are few places in Venice where you can purchase your costume and mask.",
+       "correctAnswer": "FALSE",
+       "explanation": "\"**Numerous** shops in Venice sell these costumes and masks\"."
+      },
+      {
+       "questionNumber": 6,
+       "type": "true-false-ng",
+       "questionText": "In order to take part in the costume competition you need to be Italian.",
+       "correctAnswer": "NOT GIVEN",
+       "explanation": "Bài có nói về cuộc thi trang phục nhưng không nói điều kiện tham gia."
+      },
+      {
+       "questionNumber": 7,
+       "type": "true-false-ng",
+       "questionText": "The tickets for the Valentine's Grand Masquerade Ball are worth a lot of money.",
+       "correctAnswer": "TRUE",
+       "explanation": "\"One of the **most expensive** parties is the Valentine's Grand Masquerade Ball\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U08-R2"
+  }
+ ],
+ "sections": [
+  {
+   "title": "Mindset 2 · Unit 8 — What kind of event?",
+   "description": "Short extracts from talks about six different events.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_68.mp3",
+   "transcript": "Speaker 1: So, in conclusion, we can say that, despite the difficulties we had at the beginning, we managed to complete the programme over the three days without any further problems. In total, 10,000 attended the three days and feedback suggests that the events were exciting and produced true champions, especially the athletics events. Next year we'll have more money, so we're going to add new events to increase the competition and participation levels.\nSpeaker 2: It's clear, then, that the events didn't go as well as originally planned, so we will have to rethink our arrangements for next year. Clearly, a large tent in the college grounds is not ideal for an event of this type if we're hit by bad weather again, as we were with this year's event. This caused a lot of problems with the preparation of the dishes and the display of the produce from different parts of the world. It also meant that visitors couldn't really get a chance to try everything on display. As a result, much of it went to waste, which is something we have to avoid next time.\nSpeaker 3: One of the main issues that we had with this event was that the main attraction, Paul Simmons, had to cancel at the last minute as he'd been suffering from a serious throat infection for a week and hadn't managed to recover in time. As a result, we had to find another act, and managed to get Nicky Munroe at very short notice. She performed magnificently, the audience loved her and that saved the festival I would say. Everyone agreed that she has an amazing vocal range.\nSpeaker 4: The most successful aspect of the event was the variety of products that were on offer. It's wonderful to see students being so creative. We saw practical applications that'll make significant developments in education and even business if they go into production, as well as very entertaining ideas, especially the robot football game. I'm pleased to say that our college team won!\nSpeaker 5: I'm sure you'll all agree when I say that the quality of the talks and performances over the last three days was very high. The talk given by the top novelist, Henry Peters, on effective plotting and characterisation was excellent, and the audience will have learnt a great deal to help them with planning and writing their future works. What's more, the quality of verse produced in the workshops was very high, and we hope to run that again next time with greater overall participation.\nSpeaker 6: While there were some wonderful and fascinating works on display, I felt that there wasn't enough variety. Unfortunately, this was because of the limited exhibition space we had. This meant that we could only have one room for portraits and another for landscapes. We hope to extend that next year into other forms, such as still life and abstract, but we'll have to see what rooms are available. We also hope to install clay ovens next year to give our students the chance to create their own pottery and display it for the visitors.",
+   "questionGroups": [
+    {
+     "groupType": "matching-options",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Listen to these short extracts from talks and choose the type of event each speaker is talking about. (Ex. 1)",
+     "matchingOptions": [
+      "Music festival",
+      "Arts and crafts festival",
+      "Poetry and literature festival",
+      "Food festival",
+      "Sports festival",
+      "Technology fair"
+     ],
+     "matchingOptionsTitle": "Events",
+     "matchingReuseAllowed": false,
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "matching",
+       "questionText": "Speaker 1",
+       "correctAnswer": "E",
+       "explanation": "Dịch: Người nói 1\n\nTranscript: “the athletics events”\n\nPhân tích: Sports festival (Answer Key: các loại khác đã dùng cho người nói 2–6)."
+      },
+      {
+       "questionNumber": 2,
+       "type": "matching",
+       "questionText": "Speaker 2",
+       "correctAnswer": "D",
+       "explanation": "Dịch: Người nói 2\n\nTranscript: “the preparation of the dishes and the display of the produce from different parts of the world”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "matching",
+       "questionText": "Speaker 3",
+       "correctAnswer": "A",
+       "explanation": "Dịch: Người nói 3\n\nTranscript: “the main attraction, Paul Simmons, had to cancel at the last minute as he'd been suffering from a serious throat infection”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "matching",
+       "questionText": "Speaker 4",
+       "correctAnswer": "F",
+       "explanation": "Dịch: Người nói 4\n\nTranscript: “We saw practical applications that'll make significant developments in education and even business”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "matching",
+       "questionText": "Speaker 5",
+       "correctAnswer": "C",
+       "explanation": "Dịch: Người nói 5\n\nTranscript: “The talk given by the top novelist, Henry Peters, on effective plotting and characterisation”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "matching",
+       "questionText": "Speaker 6",
+       "correctAnswer": "B",
+       "explanation": "Dịch: Người nói 6\n\nTranscript: “we could only have one room for portraits”"
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U08-L1"
+  },
+  {
+   "title": "Mindset 2 · Unit 8 — Preparing the arts festival",
+   "description": "Dr Saunders talks about the preparations for a recent arts festival.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_69.mp3",
+   "transcript": "Dr Saunders: Hello everybody. Welcome to this meeting to review this year's arts festival. As you know, this is the fourth and biggest festival that we've run at the university and it's clear now that it's fast becoming a fixture in the calendar of the city and the county, and attracting attention from the rest of the country, as well as from abroad. First of all, I'd like to review the preparations for the festival, then go on to do an analysis of the festival itself and how well it went. The plan is then for you to work in teams of three, with one tutor and two students in each team, and for you to discuss the festival in more detail so you can come up with suggestions for the organising committee to consider for next year's festival. Well, as I said, we're in our fourth year and we've added some new events. The first festival focused mainly on music and the performing arts, as it was felt that those would be the best types of event for both students and the public to take part in. More forms of art, in particular short films and photography, were added over the next two years and this year we have extended our offer to include painting and crafts, with a particular focus on the students here producing their own work, both for exhibition and competition. This was largely successful, but I'll discuss that in detail later. We also invited professional artists in some of the fields to perform, and that will be something for you to review for the next event. What was particularly encouraging this year was that we had contributions to the festival from the highest number of students to date, with representatives from every nationality at the university. As in previous years, we planned to use the spare university accommodation for all the visitors, both students and non-students, but as we expected a greater attendance at this year's festival, we also arranged accommodation at the city college three miles from here and arranged coach transfers between the college and the university campus. Unfortunately, that proved problematic and we won't repeat those arrangements next year. We also arranged the catering both here and at the city college, and one of the new ideas we tried was to experiment with dishes based on different regional themes over the five days. This allowed our international students ... well, the keen cooks among them anyway ... to create the menus and work with the catering company to produce breakfast, lunch and dinner.\nOf course, one of the main aims of this festival, apart from the obvious ones of extending the university's reputation and giving our students the chance to take part in a wonderful event, was to help develop our young people's organisational skills and give them some experience of real work, mostly as volunteers. Of course, we had to pay for professional organisers to make sure the festival ran well, but as our money was limited and we wanted to give as many opportunities to our students as possible, we made sure that they ran all of the events themselves under the direction of the professionals and, of course, alongside the tutors.",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–4",
+     "instruction": "Listen and choose the correct alternative in each sentence to create a summary of his talk. (You may hear both alternatives, but the context should help you make the correct choice.) (Ex. 2)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "The festival has grown in four years from having mostly music and performing arts in the first year to including other art forms, most recently …",
+       "options": [
+        "painting and crafts",
+        "photography and films"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Gần đây nhất\n\nTranscript: “More forms of art, in particular short films and photography, were added over the next two years” … “this year we have extended our offer to include painting and crafts”\n\nPhân tích: Phim và ảnh là các năm trước."
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Dr Saunders is particularly encouraged by the number of … who took part in the latest festival.",
+       "options": [
+        "students",
+        "professional artists"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Điều đáng mừng\n\nTranscript: “What was particularly encouraging this year was that we had contributions to the festival from the highest number of students to date”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "The festival visitors stayed at the university and at the city college, with the students helping with the … arrangements.",
+       "options": [
+        "accommodation",
+        "catering"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Sinh viên giúp gì?\n\nTranscript: “We also arranged the catering both here and at the city college” … “to create the menus and work with the catering company”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "The aims of the festival include giving students the chance to get experience of organising events, mainly as …",
+       "options": [
+        "paid workers",
+        "volunteers"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Kinh nghiệm\n\nTranscript: “give them some experience of real work, mostly as volunteers”\n\nPhân tích: BẪY: \"we had to pay for professional organisers\"."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U08-L2"
+  },
+  {
+   "title": "Mindset 2 · Unit 8 — Dr Saunders' review",
+   "description": "Dr Saunders' review of the festival.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_70.mp3",
+   "transcript": "Dr Saunders: So, now let me turn to the actual event and how it went. As I said, we had the biggest offer of arts events in the four years we've been running the festival. In total, the number of visitors over the whole five days was 12,500, which is a 10% increase on the previous year and just over three times the number in the first year that we held it. This clearly shows that we're going in the right direction by expanding the variety of events on offer. The short film event at the university cinema was the best attended, with entries from a wide variety of nationalities here at the university on a number of fascinating topics. I think we can all agree that the quality was excellent, as was the standard of the photography exhibition and the paintings in the art gallery. Our feedback from students and visitors was very positive.\nHowever, there are three issues that we should address in our discussions. First, Wayne Rogers, our headline music act, had to call off two days before the event due to illness and we didn't have time to find another act. Needless to say, all those who bought tickets for the main concert were disappointed and we had to return their money. We need to discuss suggestions for avoiding this in the future. Also, while we had some good crafts on display, especially the clothes, pottery, sculptures and glass objects, the exhibition was poorly attended, so we have to decide if it needs to be changed or perhaps reduced in some way. The last issue involves the art gallery and, in particular, security. Although we had attendants on duty all the time, three paintings were stolen, much to the disappointment of the artists who painted them. They were valued at around £3,000 in total, and the artists had expected to be able to sell them in the future, so we need to look into this and think about how we can increase security for next year, while also avoiding any unnecessary inconvenience for our visitors.\nRegarding the arrangements for accommodation and catering, generally things went well, but there were some issues with the accommodation in the city college. As there were a lot of late bookings, we had to provide more accommodation than we had originally planned to do, with the result that some people ended up in accommodation of a lower standard than they expected. We apologised to them and gave them back part of their payments, but we need to avoid this issue in the future, especially as the festival is growing and we don't want to harm our reputation. Another issue was that, at certain times of the day, there were not enough volunteers on hand to help visitors, so we'll need to make sure that we organise the availability of volunteers better next time. On the other hand, the transport that we organised was excellent and the catering was highly appreciated, in terms of both variety and quality. So, I'd like you to think of more ideas to extend the catering opportunities for next year.\nThe last thing I want to focus on now is how much we spent. As I said earlier, we had budgeted for £50,000 to organise the event and expected £50,000 in earnings from the event, but the final balance sheet showed that the event made just over £90,000, so we have some money to go into the budget for next year, which is an excellent result. However, I feel there are still some areas where we could cut our spending and perhaps reduce charges for visitors. Many of the volunteers felt that some of the paid helpers that we brought in to supervise the activities were not really worth the expense. They felt that some of them did very little for what we paid them and others didn't really organise some of the events that well, so I would welcome suggestions on improving organisation while saving money. Also, I feel that another good way of raising funds is to get more business support from local companies, who could help the festival grow by sponsoring events and advertising their products and services more around the festival. Now I'd like to turn to ...",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Listen to Dr Saunders' review of the festival and complete the sentences in the summary. Write up to TWO WORDS AND/OR A NUMBER in each gap. (Ex. 3)",
+     "noteConfig": {
+      "title": "Review of the festival",
+      "lines": [
+       "At 12,500, visitors were up by 10% on the previous year.",
+       "The __Q1__ event was the most popular with many different entries and high levels of attendance.",
+       "The crafts exhibition was __Q2__ despite the variety and quality of crafts on display, so it needs to be reviewed.",
+       "Although there was good security present, __Q3__, which were worth about £3,000, were stolen.",
+       "The extra accommodation which was supplied was of a __Q4__.",
+       "A lot of money was spent on __Q5__ to work with the volunteers but they were possibly not worth the money.",
+       "There needs to be more __Q6__, such as advertising and sponsorship, from local companies for the next festival."
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "short film",
+       "explanation": "Dịch: Sự kiện đông nhất\n\nTranscript: “The short film event at the university cinema was the best attended”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "poorly attended / badly attended",
+       "explanation": "Dịch: Triển lãm thủ công\n\nTranscript: “the exhibition was poorly attended”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "three paintings / 3 paintings",
+       "explanation": "Dịch: Bị mất cắp\n\nTranscript: “three paintings were stolen”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "lower standard / low standard / poor standard / poorer standard / lower quality / poor quality",
+       "explanation": "Dịch: Chỗ ở thêm\n\nTranscript: “some people ended up in accommodation of a lower standard”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "paid helpers",
+       "explanation": "Dịch: Chi nhiều tiền cho\n\nTranscript: “some of the paid helpers that we brought in to supervise the activities were not really worth the expense”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "business support",
+       "explanation": "Dịch: Cần thêm\n\nTranscript: “get more business support from local companies, who could help the festival grow by sponsoring events and advertising”"
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U08-L3"
+  },
+  {
+   "title": "Mindset 2 · Unit 8 — Discussion on events",
+   "description": "Dr Reynolds, Sangita and Lawrence discuss the festival programme.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_71.mp3",
+   "transcript": "Dr Reynolds: So, first of all, we need to look at the events and see what should be included in next year's festival and what changes should be made. Dr Saunders mentioned that there were issues with the music and crafts. What are your feelings on those two issues? Do you want to start, Sangita?\nSangita: Well, as regards the music, I think we need to have another artist in reserve in case the main act can't perform, like in this year's festival. It doesn't have to be a well-known band. It could be a small act, like a student band. What do you think, Lawrence?\nLawrence: You have a point, but I'm not really sure if any artists would be happy to perform only if the main act lets us down. In any case, how often does that happen? This was the first time, and I don't see it happening again in the future.\nDr Reynolds: I'm not sure we can take that for granted, Lawrence. If you look at what happened, we lost £3,000 as we had to return money to the audience. I don't think anything bad would have happened, but I think we need to bear in mind that our visitors are the most important aspect of the festival and we have to make sure we keep them happy at all costs.\nLawrence: How about we arrange the programme so that on one night there isn't a famous headline act but a good local band, so that we can change the programme to make them the main act if anyone else isn't able to perform. We could put them on the last evening, and tell them that they may be needed on the other evenings, just in case. That way, we're helping good local talent and making sure that our visitors are happy.\nSangita: Yes, I can see that working. Then we could use the student band to play the last night if we have to switch the local band from the last night to an earlier night.\nDr Reynolds: OK ... good ideas. I'll make a note so that we can take it back to the organising committee. Now, let's move on to the question of crafts. As we heard, the event didn't go very well and lacked visitors. What do you think we should do, Sangita?\nSangita: Well, I have a personal interest in this. I've been creating my own fashion designs and I had some clothes on display mixing Western and Indian themes. Actually, I spent some time watching the visitors and I thought they liked the clothes a lot. I think we have to be careful to distinguish the clothes from the other crafts.\nLawrence: Yes, I noticed that. I spent the third day in the craft section helping visitors and I noticed that the clothes exhibition was the most appreciated. I think the glass and ceramic section had hardly any visitors when I was there. Perhaps we should just have the clothes on display, maybe even extend that section?\nDr Reynolds: Yes, that could be a good solution. I don't think we should get rid of the glass and pottery altogether, but I certainly think we should promote the clothes section more.\nLawrence: Well, here's a suggestion: we could even think of turning that into a separate fashion show. What do you think of that?\nSangita: Good idea! I was thinking about that anyway. Can we put that to the committee?\nDr Reynolds: Of course. I've made a note of it. Regarding the theatre and poetry, do you think we need to make any changes?\nLawrence: Nothing major, I don't think, but perhaps we should use at least one day to present new plays and poems by our own students. It's wonderful putting on plays by well-known playwrights and readings of well-known poets, but perhaps we should promote our own talent here in the university. It would certainly help the performing arts students to expand their coursework, and we could have a competition for the best new works.\nDr Reynolds: Excellent idea, Lawrence. What do you think, Sangita?\nSangita: Yes, but let's not limit it to just English. We could also have performances from our international students in their languages. I think that would really help promote the festival as an international event.\nDr Reynolds: Fine. We can propose that as well. And as far as the photography and cinema sections are concerned, they'll keep expanding.\nLawrence: Well, personally, I don't think the quality of the photography exhibition was very high. I think there are issues with digital photography being presented as a printed exhibition. You can never really capture the true meaning of the photograph like that. I would suggest just having digital displays, you know, tablets that visitors can use to see the photographer's collection. That way, it'll encourage photographers to develop their ideas and think about their exhibits almost as films with a story. I think that's the way photography is going these days.\nSangita: I don't agree. I think each image should be appreciated in its own way, as the photographer intends. I don't think we should push photographers into one direction. That said, I think the idea of having tablets and digital screens is a good idea if we can afford it. Perhaps we could have two sections - digital displays and non-digital displays.\nDr Reynolds: Sounds good, Sangita. I can certainly put that to the committee and see if they'll consider it. So, if that's all about the events themselves, I'd like to discuss the organisation of the festival ...",
+   "questionGroups": [
+    {
+     "groupType": "plain",
+     "groupTitle": "Questions 1–5",
+     "instruction": "A lecturer, Dr Reynolds, and two students, Sangita and Lawrence, are discussing the festival programme. Listen and choose the correct alternative in these notes. (Ex. 4)",
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "multiple-choice",
+       "questionText": "Music — Sangita: artist in reserve:",
+       "options": [
+        "Student band",
+        "Well-known local band"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Âm nhạc — Sangita\n\nTranscript: “It could be a small act, like a student band” … “we could use the student band to play the last night”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "multiple-choice",
+       "questionText": "Music — Lawrence:",
+       "options": [
+        "Book local band for the last night",
+        "Book local band every night"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Âm nhạc — Lawrence\n\nTranscript: “a good local band… We could put them on the last evening”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "multiple-choice",
+       "questionText": "Crafts — Lawrence:",
+       "options": [
+        "Show clothes, glass and pottery",
+        "Show only clothes"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Thủ công — Lawrence\n\nTranscript: “Perhaps we should just have the clothes on display, maybe even extend that section?”\n\nPhân tích: BẪY: \"I don't think we should get rid of the glass and pottery altogether\" là ý của Dr Reynolds."
+      },
+      {
+       "questionNumber": 4,
+       "type": "multiple-choice",
+       "questionText": "Theatre and poetry — Lawrence:",
+       "options": [
+        "Have students' plays and poems",
+        "Have only famous plays and poems"
+       ],
+       "correctAnswer": "A",
+       "explanation": "Dịch: Kịch và thơ — Lawrence\n\nTranscript: “perhaps we should use at least one day to present new plays and poems by our own students”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "multiple-choice",
+       "questionText": "Photography — Sangita:",
+       "options": [
+        "Have only digital photographs displayed",
+        "Have digital and non-digital photographs displayed"
+       ],
+       "correctAnswer": "B",
+       "explanation": "Dịch: Nhiếp ảnh — Sangita\n\nTranscript: “I don't agree” … “Perhaps we could have two sections - digital displays and non-digital displays”\n\nPhân tích: \"Only digital\" là ý của Lawrence."
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U08-L4"
+  },
+  {
+   "title": "Mindset 2 · Unit 8 — Discussion on organisation",
+   "description": "Dr Reynolds, Sangita and Lawrence discuss the practical aspects of the festival.",
+   "partNumber": 3,
+   "audioFile": "Mindset_L2_72.mp3",
+   "transcript": "Dr Reynolds: Now, the next thing I think we should discuss is the accommodation situation. It seems clear that the number of visitors is set to grow, so we need to have a suitable plan in place to deal with the increased numbers. We don't want a repeat of this year. What do you think, Lawrence?\nLawrence: Actually, I saw the accommodation that we used at the city college, and it was pretty basic, though it was clean and tidy. There was only a bed and a desk in each room. Another thing the visitors complained about was the lack of Wi-Fi in the rooms, especially as they'd paid for rooms with Wi-Fi. It certainly wasn't ideal.\nDr Reynolds: Do you have anything to add, Sangita?\nSangita: Yeah ... I can understand why they weren't happy. I'd have felt the same in their position.\nDr Reynolds: Well, there's that new holiday development at Elm Park, quite close to the university. Perhaps we could use their rooms. After all, it won't be the holiday high season, so there should be plenty of empty rooms that we could use.\nSangita: That's true. How about taking over some of their rooms and advertising them as accommodation specifically for families with children? They're going to have an outdoor and an indoor adventure area for young people. We had quite a few teenagers this year coming with their parents. If we can attract more by offering them the facilities at the holiday park in a special package, they can go there if they get bored with the festival.\nLawrence: Excellent idea! They'll be around 15 or 16 years old and when they come to the festival, they'll get an idea of what it'd be like to study here. I'm sure it'll help our future prospects as a university.\nDr Reynolds: I agree. I'll be happy to present those ideas to the committee. Moving on to the catering, it seems clear that the idea of theme days with different kinds of national and regional dishes went down very well. I'll recommend repeating it next year, but do you have anything else to say about the catering?\nSangita: Not really ... one thing is that maybe we could tell the students about the festival earlier in the year and invite them to suggest themes and also to volunteer their own cooking skills to help with it. I think that'll make sure that we vary what we offer from year to year, so that we don't just repeat the same dishes each time.\nLawrence: But we should always have fish and chips on the menu! We can't do without that! Seriously though, I agree.\nDr Reynolds: OK. I'll make a note of that as well. Moving on to the helpers, you were both directly involved in that. Do you think it was a good idea to get professionals for the organising?\nLawrence: In a word, no. I think the ones that I worked with didn't really know what they were doing. We were paying them a lot to do their work, but I don't think they really took it as seriously as they should have. They were thinking it was just a student event. On more than one occasion, some of the volunteers had to take charge and make sure that the events went smoothly.\nSangita: Yes, you're right. That was my experience as well. We ended up paying them a lot of money for poor service. It was one of the reasons why there were too few volunteers at some events -because the organisation was so poor. I think the idea of bringing back former students is a good idea. At least then we can be more certain that they know about the university and they'll probably be more committed to doing a good job.\nDr Reynolds: I think you're both right. I was disappointed and I think former students will be a great improvement, so I'll note that as well. We need to talk about finance, but before that, I just want to mention the issue of security. Thinking about the stolen paintings, what do you think we should do about that?\nLawrence: I'm not really sure. I mean, we had the university security guards on duty the whole time, so I don't think we can really add to that.\nSangita: Well, I noticed on more than one occasion that there were windows open in some rooms which made it easy for people to climb in and steal things. I think the main thing is to remind students and volunteers that it's their personal responsibility to be careful and look out for any security issues. So if one of us sees an open window, we should either check with security why it's open, or simply close it.\nDr Reynolds: You're right, Sangita. I'm sure the committee is aware of this, but I'll note it just to show that we've given it some thought. Now finance - what are your feelings on Dr Saunders' suggestions about sponsorship?\nLawrence: I don't think that will go down too well with most students. I mean, personally, I'm not against it, but I think students generally won't be very keen to have businesses involved in what they see as their arts festival. I'm sure they'll be happy to take part in more events to raise money throughout the year before the festival, but they won't be happy about big businesses taking over and having their names all over the university.\nSangita: Well, I think it's going to happen anyway. Everything is commercial to some extent these days. I don't think it's a bad idea, as long as it's done in good taste. I think any businesses that do want to sponsor us or advertise should be aware that they need to work closely with us and respect the spirit of the festival.\nLawrence: Perhaps we could involve local businesses as well as national ones that don't just put their name on the festival, but can actually sponsor specific events, award prizes, and so on. So, for example, a local cinema could sponsor the short film event and even send along a representative to judge the films, that sort of thing.\nDr Reynolds: Yes, I see what you mean. In that way, they'll be directly involved in the festival, which will encourage them to take an active part and build up their reputations for supporting the arts. Well, thank you both. We have a lot of useful suggestions to take back to the committee.",
+   "questionGroups": [
+    {
+     "groupType": "table",
+     "groupTitle": "Questions 1–5",
+     "instruction": "Listen and complete the notes with ONE WORD AND/OR A NUMBER. (Ex. 5)",
+     "tableConfig": {
+      "headers": [
+       "Aspect of organisation",
+       "Sangita",
+       "Lawrence"
+      ],
+      "rows": [
+       [
+        "Accommodation",
+        "Use holiday accommodation for __Q1__",
+        "Having young people at the festival helps the university in future."
+       ],
+       [
+        "Catering",
+        "Encourage students to give their ideas and offer to use their own __Q2__ skills.",
+        "Agrees"
+       ],
+       [
+        "Professional help / volunteers",
+        "Former students would organise it better.",
+        "The __Q3__ did not work well as they saw the festival as just a student event."
+       ],
+       [
+        "Security",
+        "Windows were open. Everyone should be more careful and take personal __Q4__ for security.",
+        "Nothing to add, as there were security guards around all the time."
+       ],
+       [
+        "Finance",
+        "It's a good idea for businesses to sponsor or advertise as long as they respect the spirit of the festival.",
+        "Businesses can sponsor specific events and present __Q5__."
+       ]
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "families",
+       "explanation": "Dịch: Chỗ ở\n\nTranscript: “advertising them as accommodation specifically for families with children”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "cooking",
+       "explanation": "Dịch: Ăn uống\n\nTranscript: “volunteer their own cooking skills to help with it”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "professionals",
+       "explanation": "Dịch: Người tổ chức\n\nTranscript: “Do you think it was a good idea to get professionals for the organising?” … “In a word, no… They were thinking it was just a student event”\n\nPhân tích: Lawrence: những người tổ chức chuyên nghiệp (professionals) làm không tốt."
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "responsibility",
+       "explanation": "Dịch: An ninh\n\nTranscript: “it's their personal responsibility to be careful and look out for any security issues”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "prizes",
+       "explanation": "Dịch: Tài chính\n\nTranscript: “sponsor specific events, award prizes, and so on”"
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U08-L5"
+  },
+  {
+   "title": "Mindset 2 · Unit 8 — Exam skills: the students' suggestions",
+   "description": "Dr Reynolds tells Dr Saunders about the students' suggestions.",
+   "partNumber": 4,
+   "audioFile": "Mindset_L2_73.mp3",
+   "transcript": "Dr Reynolds: Hello Dr Saunders. I just want to tell you about the suggestions that Lawrence and Sangita made during our discussion and see what you think.\nDr Saunders: Thanks, yes. Please do.\nDr Reynolds: First of all, regarding the music, they think that it might be a good idea to have a good local band who can replace the main act if it has to let us down at the last minute, which is what happened this year. The band could be scheduled for later in the week on the understanding that they might have to play on an earlier night. We could also have one evening with a student band.\nDr Saunders: Well, it sounds good in theory to plan a rearrangement, but I think it would be too complicated to arrange. We would depend too much on all the bands being able to play on any of the nights. I think it's simpler just to give the audience a refund if it happens again. But I'm happy to have one evening supporting local bands and student bands, as that's the main point of the festival - to encourage people to take part.\nDr Reynolds: The next thing is the crafts. They felt that a fashion show would be a good way of expanding the clothes exhibition, and that perhaps we should reduce or even get rid of the glass and pottery exhibition.\nDr Saunders: Well, first of all, I think that the fashion show is a good idea as it can help the international students to get involved in more activities and develop their ideas with clothes. But I'm not keen to get rid of the glass and pottery exhibitions completely, as it's important for the university to be seen to encourage all forms of art and not just the most popular ones, so we should keep that for the time being.\nDr Reynolds: OK ... now ... regarding theatre and poetry, they felt that it would be good for students to write and perform their own plays and poetry, as well as those by famous playwrights and poets.\nDr Saunders: That sounds like an excellent idea! It'd help a lot to raise standards in writing and performance. I'd love to see that taking place.\nDr Reynolds: Also on that topic, there was a feeling that works in other languages should be encouraged.\nDr Saunders: Most certainly. That would help the international students feel far more at home and valued as part of the university.\nDr Reynolds: There was one other event we discussed, and that was photography. It was felt that we should have both digital and non-digital exhibits.\nDr Saunders: I don't think we could manage that, at least not yet. High-quality tablets and screens would be too expensive, especially with the number we'd have to buy, so it's not an option for next year because of the high cost.\nDr Reynolds: OK ... as for the accommodation and the catering, they felt that we could use the holiday park that's being built nearby, and we should encourage students to take a greater part in cooking and helping with the catering.\nDr Saunders: Well, first, I know for a fact that the new holiday park is not likely to be completed by festival time next year as they've run into trouble with the building, but we could certainly think about it in the future. I do like the idea of the students having a greater role in the catering and cooking, as it will clearly be helpful for their all-round development.\nDr Reynolds: OK. The next thing is the professional organisers. They felt that the standard was quite low and that the volunteers didn't experience good leadership from them. They think it would be better to ask former students to work as organisers, as they'd be more familiar with the university and more committed, too.\nDr Saunders: I appreciate that, but unfortunately that wouldn't work. It'd be too much trouble trying to find them and get them employed. However, I think we should review the organisers that we used this year and have a much better selection system in place for the next festival.\nDr Reynolds: Now the last two points are about security and finance. As far as security goes, they think we should do more to encourage the students to take it seriously.\nDr Saunders: I agree. If we can encourage students to be more aware of security, not just during the festival, it'd really help to increase trust among all our students because they'll be looking out for each other.\nDr Reynolds: As for finance, they thought that, first, we could encourage students to help raise money throughout the year, and, secondly, we could encourage businesses to sponsor the events and advertise more, though it needs to be handled with care.\nDr Saunders: Well, regarding sponsorship and advertising, the committee is already looking at the possibilities as it will encourage more interest in the activities that we do and also help our reputation generally. Unfortunately, I don't think asking the students to raise more money during the year is a good idea as we already have a programme in place for that, and if the students are involved any more, they'll spend less time on their studies and I don't want anything to disrupt those.",
+   "questionGroups": [
+    {
+     "groupType": "note-form",
+     "groupTitle": "Questions 1–6",
+     "instruction": "Dr Reynolds is telling Dr Saunders about the students' suggestions. Listen and complete the notes with NO MORE THAN TWO WORDS AND/OR A NUMBER. (Ex. 6)",
+     "noteConfig": {
+      "title": "Suggestions from the discussion on the festival",
+      "lines": [
+       "Crafts (rejected): stop pottery and glass exhibition — need to encourage all __Q1__ of art, not just the popular ones",
+       "Theatre and poetry (accepted): plays and poems by students — it would help to raise __Q2__",
+       "Photography (rejected): digital and non-digital exhibition — not next year because of the __Q3__",
+       "Catering (accepted): encourage students to take part in cooking — helps their __Q4__",
+       "Security (accepted): encourage students to be more careful — it will increase __Q5__ among students",
+       "Finance (rejected): encourage students to have more events to raise money — would take their attention away from their __Q6__"
+      ]
+     },
+     "questions": [
+      {
+       "questionNumber": 1,
+       "type": "fill-blank",
+       "questionText": "Question 1",
+       "correctAnswer": "forms / types / kinds",
+       "explanation": "Dịch: Thủ công — bác bỏ\n\nTranscript: “it's important for the university to be seen to encourage all forms of art and not just the most popular ones”"
+      },
+      {
+       "questionNumber": 2,
+       "type": "fill-blank",
+       "questionText": "Question 2",
+       "correctAnswer": "standards",
+       "explanation": "Dịch: Kịch, thơ — chấp nhận\n\nTranscript: “It'd help a lot to raise standards in writing and performance”"
+      },
+      {
+       "questionNumber": 3,
+       "type": "fill-blank",
+       "questionText": "Question 3",
+       "correctAnswer": "high cost / cost",
+       "explanation": "Dịch: Nhiếp ảnh — bác bỏ\n\nTranscript: “so it's not an option for next year because of the high cost”"
+      },
+      {
+       "questionNumber": 4,
+       "type": "fill-blank",
+       "questionText": "Question 4",
+       "correctAnswer": "development / all-round development",
+       "explanation": "Dịch: Ăn uống — chấp nhận\n\nTranscript: “it will clearly be helpful for their all-round development”"
+      },
+      {
+       "questionNumber": 5,
+       "type": "fill-blank",
+       "questionText": "Question 5",
+       "correctAnswer": "trust",
+       "explanation": "Dịch: An ninh — chấp nhận\n\nTranscript: “it'd really help to increase trust among all our students”"
+      },
+      {
+       "questionNumber": 6,
+       "type": "fill-blank",
+       "questionText": "Question 6",
+       "correctAnswer": "studies / studying / work / academic work / course / courses",
+       "explanation": "Dịch: Tài chính — bác bỏ\n\nTranscript: “they'll spend less time on their studies”"
+      }
+     ]
+    }
+   ],
+   "courseRef": "M2-U08-L6"
+  }
+ ]
+}

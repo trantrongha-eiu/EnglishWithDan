@@ -214,6 +214,20 @@ function qEndings(n, instruction, endings, qs, groupTitle) {
   };
 }
 
+// "Choose TWO/THREE letters" cluster: one question per correct letter, all sharing the
+// text + options (reading-v2.js / listening.js render one checkbox list; each question
+// is correct if the student's selection includes its letter).
+// letters: ['B', 'D'], explanations: one per letter.
+function qMulti(n, instruction, text, options, letters, explanations = [], groupTitle) {
+  return {
+    groupType: 'plain', groupTitle: groupTitle || '', instruction,
+    questions: letters.map((l, i) => ({
+      questionNumber: n + i, type: 'multi-answer-group', questionText: text, options,
+      checkboxCount: letters.length, correctAnswer: letterOf(l), explanation: explanations[i] || '',
+    })),
+  };
+}
+
 // Listening explanation in the site's "Dịch / Vị trí / Transcript / Phân tích" format.
 function lx(d, v, t, p) {
   const parts = ['Dịch: ' + d];
@@ -236,5 +250,5 @@ function html(text) {
 
 module.exports = {
   mcq, gap, match, order, cat, fix, write, speak, passage, picture, card,
-  qMcq, qTF, qTFNG, qYNNG, qMatch, qHeadings, qSummary, qEndings, qNote, qTable, qFill, lx, html,
+  qMcq, qMulti, qTF, qTFNG, qYNNG, qMatch, qHeadings, qSummary, qEndings, qNote, qTable, qFill, lx, html,
 };

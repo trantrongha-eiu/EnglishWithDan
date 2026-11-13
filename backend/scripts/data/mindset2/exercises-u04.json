@@ -1,0 +1,487 @@
+{
+ "exercises": [
+  {
+   "code": "M2-U04-L1-E01",
+   "lessonCode": "M2-U04-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Travel words and definitions (Ex. 1)",
+   "instruction": "Match the words and phrases 1–10 with definitions a–j.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "attraction",
+     "right": "a place that people visit for pleasure and interest, usually while they are on holiday",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "a local",
+     "right": "someone who lives in the area you are talking about",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "cancellation",
+     "right": "the act of stopping something that was going to happen or stopping an order for something",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "mother tongue",
+     "right": "the first language that you learn when you are a child",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "custom",
+     "right": "a habit or tradition",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "body language",
+     "right": "the way you move your body, showing people what you are feeling",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "native",
+     "right": "relating to the people who lived in a country first, before other people took control of it",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "integrate",
+     "right": "to become part of a group or society, or to help someone do this",
+     "explanation": ""
+    },
+    {
+     "id": "m9",
+     "left": "offend",
+     "right": "to make someone upset or angry",
+     "explanation": ""
+    },
+    {
+     "id": "m10",
+     "left": "focus on",
+     "right": "to give all your attention to something that you are doing",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U04-L2-E01",
+   "lessonCode": "M2-U04-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "The most suitable heading (Ex. 3–4)",
+   "instruction": "Choose the most suitable heading for the paragraph.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Travel tips\n\n**A** In order to see all the best attractions and avoid the queues, try to get up early. Early morning is also a good time to take photographs and meet the locals.\n\n**B** It is also a good idea to memorise a few useful phrases, such as 'please' and 'thank you'. You should not be worried about making mistakes, but try practising the language as much as possible. Even if your pronunciation is not perfect, locals respond better to people who make an effort.\n\n**C** Travellers often face delays and cancellations, so it is important that you do not allow them to ruin your trip. Also, try not to get frustrated when you are unable to communicate with a native. Although you may be tempted to shout in your mother tongue in order to be understood, it is more polite and often more effective to simply use body language. You will have a much better trip if you are prepared for plans to change and you are able to see the funny side if things go wrong.\n\n**D** Before starting your trip, find out about the people and customs of the place you are visiting. This will help you to integrate more easily and will ensure you do not do anything to offend locals. The more you know about your chosen destination, the more chance you have of gaining the most from your experience.\n\n**E** Do not just socialise with other travellers, but try to start conversations with locals too. Locals are often the key to knowing the best and cheapest places to visit and eat. Furthermore, talking regularly with natives gives you a much better chance of learning the language. People enhance your travels just as much as sights do.\n\n**F** In order to get a real feel for a place, spend a few hours sitting in a park or in the main square by yourself, just watching daily life happen around you. Try to absorb all the colours, smells and sounds which surround you.",
+    "caption": "Travel tips (p. 69)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Paragraph B",
+     "options": [
+      {
+       "id": "A",
+       "text": "Do not worry about making mistakes."
+      },
+      {
+       "id": "B",
+       "text": "Make an effort with the language."
+      },
+      {
+       "id": "C",
+       "text": "Your pronunciation is not important."
+      }
+     ],
+     "answer": "B",
+     "explanation": "Cả đoạn nói về việc cố gắng dùng ngôn ngữ địa phương (memorise phrases, practise, people who make an effort). A và C chỉ là chi tiết."
+    },
+    {
+     "id": "q2",
+     "prompt": "Paragraph C",
+     "options": [
+      {
+       "id": "A",
+       "text": "Delays and cancellations"
+      },
+      {
+       "id": "B",
+       "text": "Be relaxed if things do not go to plan"
+      },
+      {
+       "id": "C",
+       "text": "Use body language"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Đoạn nói chung về việc không bực bội khi kế hoạch thay đổi (see the funny side). Delays và body language chỉ là ví dụ."
+    }
+   ]
+  },
+  {
+   "code": "M2-U04-L2-E02",
+   "lessonCode": "M2-U04-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Recognising synonyms (Ex. 10)",
+   "instruction": "Match words and phrases 1–7 with the correct synonym a–g.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "construction",
+     "right": "building",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "convicts",
+     "right": "prisoners",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "arguments",
+     "right": "controversy",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "move to a new area",
+     "right": "migrate",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "revolution",
+     "right": "transformation",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "exports",
+     "right": "items sold abroad",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "impact",
+     "right": "effect",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U04-L2-E03",
+   "lessonCode": "M2-U04-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "ordering",
+   "title": "Useful strategies and tips (Ex. 11)",
+   "instruction": "Put the words in the correct order.",
+   "items": [
+    {
+     "id": "o1",
+     "prompt": "",
+     "tokens": [
+      "Do",
+      "not",
+      "use",
+      "the",
+      "same",
+      "heading",
+      "twice"
+     ],
+     "answer": [
+      "Do",
+      "not",
+      "use",
+      "the",
+      "same",
+      "heading",
+      "twice"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o2",
+     "prompt": "",
+     "tokens": [
+      "Keep",
+      "track",
+      "of",
+      "time"
+     ],
+     "answer": [
+      "Keep",
+      "track",
+      "of",
+      "time"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o3",
+     "prompt": "",
+     "tokens": [
+      "Read",
+      "the",
+      "shortest",
+      "paragraph",
+      "first"
+     ],
+     "answer": [
+      "Read",
+      "the",
+      "shortest",
+      "paragraph",
+      "first"
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o4",
+     "prompt": "",
+     "tokens": [
+      "Ignore",
+      "words",
+      "you",
+      "do",
+      "not",
+      "understand"
+     ],
+     "answer": [
+      "Ignore",
+      "words",
+      "you",
+      "do",
+      "not",
+      "understand"
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U04-L3-E01",
+   "lessonCode": "M2-U04-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Tenses in the text (Ex. 7)",
+   "instruction": "Study sentences a–c, taken from the text. What tenses are used in the sentences?",
+   "items": [
+    {
+     "id": "m1",
+     "left": "The journey has captured the imagination of travellers from far and wide since construction began in 1891.",
+     "right": "present perfect + past simple",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "From the moment building began, the project faced many difficulties.",
+     "right": "past simple",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Although officials have been building this line since 1891, it is still being expanded today.",
+     "right": "present perfect continuous + present continuous passive",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U04-L3-E02",
+   "lessonCode": "M2-U04-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Tenses and their meanings (Ex. 8)",
+   "instruction": "Match sentences a–c from exercise 7 with definitions 1–3.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "An action which took place in the past, and is now finished.",
+     "right": "b From the moment building began, the project faced many difficulties.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "An action which took place in the past, and still has a connection to the present.",
+     "right": "a The journey has captured the imagination of travellers…",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "A continuous action which took place in the past, and still has a connection to the present.",
+     "right": "c Although officials have been building this line since 1891…",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U04-L3-E03",
+   "lessonCode": "M2-U04-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Which tense? (Ex. 9)",
+   "instruction": "Complete the sentences with the verb in brackets in the correct form of either the present perfect simple, past simple or present perfect continuous.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I'm so tired. I ____ (travel) all day.",
+     "blanks": [
+      {
+       "accept": [
+        "have been travelling",
+        "'ve been travelling",
+        "have been traveling",
+        "'ve been traveling"
+       ]
+      }
+     ],
+     "explanation": "Kéo dài cả ngày đến giờ → present perfect continuous."
+    },
+    {
+     "id": "g2",
+     "prompt": "I ____ (get up) early this morning to avoid the crowds.",
+     "blanks": [
+      {
+       "accept": [
+        "got up"
+       ]
+      }
+     ],
+     "explanation": "\"this morning\" đã qua → past simple."
+    },
+    {
+     "id": "g3",
+     "prompt": "I'm so annoyed that my flight ____ (cancel).",
+     "blanks": [
+      {
+       "accept": [
+        "has been cancelled",
+        "has been canceled"
+       ]
+      }
+     ],
+     "explanation": "Bị động, kết quả còn ở hiện tại."
+    },
+    {
+     "id": "g4",
+     "prompt": "My back is red, I ____ (sunbathe) too much.",
+     "blanks": [
+      {
+       "accept": [
+        "have been sunbathing",
+        "'ve been sunbathing"
+       ]
+      }
+     ],
+     "explanation": "Hành động kéo dài để lại dấu vết bây giờ."
+    },
+    {
+     "id": "g5",
+     "prompt": "I am very well travelled, I ____ (visit) many countries.",
+     "blanks": [
+      {
+       "accept": [
+        "have visited",
+        "'ve visited"
+       ]
+      }
+     ],
+     "explanation": "Kinh nghiệm đến nay → present perfect simple."
+    },
+    {
+     "id": "g6",
+     "prompt": "Last year, I ____ (go) on my first-ever cruise.",
+     "blanks": [
+      {
+       "accept": [
+        "went"
+       ]
+      }
+     ],
+     "explanation": "\"Last year\" → past simple."
+    }
+   ]
+  },
+  {
+   "code": "M2-U04-L4-E01",
+   "lessonCode": "M2-U04-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Functions in the conversations (Ex. 3)",
+   "instruction": "Match the functions with each of these sentences from the conversations.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Well, shall we take the train?",
+     "right": "Proposing",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "I really think you should do some more exercise.",
+     "right": "Persuading",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "Excuse me, could you tell me …?",
+     "right": "Enquiring",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Are you sure? I really don't think that's a good idea.",
+     "right": "Expressing doubt",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "I don't believe it!",
+     "right": "Complaining",
+     "explanation": ""
+    }
+   ]
+  }
+ ]
+}

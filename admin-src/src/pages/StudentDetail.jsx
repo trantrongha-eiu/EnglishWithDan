@@ -33,7 +33,7 @@ const GROUPS = [
   ['speaking', '🎤 Speaking'], ['grammar', '📘 Ngữ pháp'], ['vocab', '🗂 Từ vựng'],
   ['course', '🎓 Khoá học'], ['mock', '🎯 Thi thử'],
 ];
-const COURSE_LABEL = { 'IELTS-W-T1': 'Khoá Writing Task 1', 'IELTS-W-T2': 'Khoá Writing Task 2', 'IELTS-SPEAKING': 'Khoá Speaking', 'MINDSET-0': 'Khoá Mindset Foundation', 'MINDSET-1': 'Khoá Mindset Level 1' };
+const COURSE_LABEL = { 'IELTS-W-T1': 'Khoá Writing Task 1', 'IELTS-W-T2': 'Khoá Writing Task 2', 'IELTS-SPEAKING': 'Khoá Speaking', 'MINDSET-0': 'Khoá Mindset Foundation', 'MINDSET-1': 'Khoá Mindset Level 1', 'MINDSET-2': 'Khoá Mindset Level 2' };
 const DAY_LABEL = { mon: 'T2', tue: 'T3', wed: 'T4', thu: 'T5', fri: 'T6', sat: 'T7', sun: 'CN' };
 const ENROLL_BADGE = { active: 'badge-green', warning: 'badge-yellow', failed: 'badge-red', completed: 'badge-blue', dropped: 'badge-gray' };
 const ENROLL_LABEL = { active: 'Đang học', warning: 'Cảnh báo', failed: 'Không đạt', completed: 'Hoàn thành', dropped: 'Đã nghỉ' };

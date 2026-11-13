@@ -1,0 +1,31 @@
+Estate agent: Morgan's Estate Agents. How can I help you?
+Caroline: Hello. I'm calling about a property that you have for sale -in Churchill Road.
+Estate agent: Sorry. Did you say Church Mill Road?
+Caroline: No. Churchill Road - C-H-U-R-C-H-I-L-L.
+Estate agent: Oh, right. We have two for sale in Churchill Road - a three-bedroom property and a two-bedroom one. Can you tell me which one you're calling about?
+Caroline: It's the three-bedroom one.
+Estate agent: Oh, yes. Would you like to arrange a viewing?
+Caroline: Yes, but first of all, I'd like to check some details.
+Estate agent: Certainly. What would you like to know?
+Caroline: First, how many lounges has it got?
+Estate agent: There are two. There's a small one at the front and a larger one at the back, leading to a sun-room.
+Caroline: A sun-room? That's nice to know.
+Estate agent: Yes. It's perfect to sit in on those chilly or rainy days as it's got its own heating. And you can get to the garden through the sun-room door.
+Caroline: Lovely. I've always liked the idea of outdoor space with a lawn. I do a bit of gardening myself. What about the kitchen?
+Estate agent: It's fully-fitted - so it includes a cooker and a dishwasher and all the other things you'd expect in a kitchen. You can also get to the outside space through the kitchen door.
+Caroline: That sounds great, not having to buy a cooker and dishwasher.
+Estate agent: Yes, it would be perfect for you. I should add that there's a garage and a short driveway.
+Caroline: Oh, that's very useful. My husband usually drives to work, but I mostly use public transport.
+Estate agent: Well, regarding transport, it's only five minutes from Edgely Station and there are regular buses to the town centre, so it's very well connected.
+Caroline: That's excellent!
+Estate agent: So, would you like to arrange a viewing?
+Caroline: I'm free tomorrow morning. Is 11 o'clock OK?
+Estate agent: Oh, no, I'm sorry. I'm busy then.
+Caroline: How about one o'clock then, or one forty-five?
+Estate agent: One o'clock would be best for me.
+Caroline: OK, great. Let's meet then. Oh, my name is Caroline Prendergast. My number is 07945 872310.
+Estate agent: I'm Peter Eliot.
+Caroline: Is that with two 'l's?
+Estate agent: No, one: E-L-I-O-T. My number is 07863 905073. That's 07863 905073. I look forward to seeing you then.
+Caroline: OK. Goodbye.
+Estate agent: Goodbye.

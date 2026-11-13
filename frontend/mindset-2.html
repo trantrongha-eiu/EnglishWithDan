@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mindset for IELTS Level 2 – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb"/>
+  <link rel="stylesheet" href="/css/components.css?v=bb5d514434"/>
+  <link rel="stylesheet" href="/css/mobile.css?v=1319d3b9c8"/>
+  <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3"/>
+  <script src="/js/theme.js?v=81e03964c4"></script>
+  <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
+  <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
+  <link rel="stylesheet" href="/css/writing-task2-course.css?v=1b1472f9f4">
+  <link rel="stylesheet" href="/css/course-theory.css?v=6921b92f6a">
+  <link rel="stylesheet" href="/css/speaking-response.css?v=e14dc7af50">
+  <link rel="stylesheet" href="/css/mindset-course.css?v=94293789aa">
+  <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
+  <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
+</head>
+<body data-mindset-level="2">
+<script src="/js/bundles/app-shell.js?v=40b0d51cb0"></script>
+<script src="/js/shared/onboarding-tour.js?v=1fa5e11e6c"></script>
+<script src="/js/shared/paste-guard.js?v=574d1d5eb9"></script>
+<script src="/js/shared/route-params.js?v=cb2d4fee78"></script>
+<script src="/js/shared/word-audio.js?v=28a7a7408e"></script>
+<script src="/js/shared/dictionary-lookup.js?v=74785ced6f"></script>
+<script src="/js/shared/wbw-drill.js?v=c4543d57c2"></script>
+
+<div id="app"></div>
+
+<div id="dict-popup" class="dict-popup hidden">
+  <div class="dict-header">
+    <span class="dict-word" id="dict-word"></span>
+    <span class="dict-phonetic" id="dict-phonetic"></span>
+    <button class="dict-speak" onclick="speakDictWord()" title="Nghe phát âm"><i class="fas fa-volume-up"></i></button>
+    <button class="dict-close" onclick="closeDictPopup()"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="dict-body" class="dict-body"></div>
+</div>
+<div id="dict-vocab-modal" class="dict-vocab-modal hidden">
+  <div class="dict-vocab-box">
+    <div class="dict-vocab-header"><h3>📚 Lưu vào sổ từ vựng</h3>
+      <button class="dict-vocab-close" onclick="closeVocabPickerModal()"><i class="fas fa-times"></i></button></div>
+    <div class="dict-vocab-body">
+      <div id="dict-vocab-book-list"></div>
+      <div class="rd-vocab-new-section">
+        <div class="rd-vocab-new-label">Hoặc tạo sổ mới:</div>
+        <div style="display:flex;gap:8px">
+          <input id="dict-new-book-name" type="text" placeholder="Tên sổ mới..." maxlength="40" class="rd-vocab-input"
+            onkeydown="if(event.key==='Enter') createDictBookAndSave()" />
+          <button onclick="createDictBookAndSave()" class="rd-vocab-create-btn">+ Tạo &amp; lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Test-lesson unlock: a locked "Kiểm tra" lesson (isTest) needs a code an
+     admin/teacher issues (ReviewBypassCode kind:'wt1-test-unlock') — see
+     wt1Service.assertLessonUnlocked. -->
+<div id="t1-code-modal" class="t1-hist-modal hidden">
+  <div class="t1-hist-box" style="max-width:360px">
+    <div class="t1-hist-header"><h3><i class="fas fa-lock"></i> <span id="t1-code-title">Mã mở khoá bài kiểm tra</span></h3>
+      <button class="t1-hist-close" id="t1-code-close-btn"><i class="fas fa-times"></i></button></div>
+    <div style="padding:16px">
+      <p id="t1-code-desc" style="font-size:13px;color:var(--text2,#4b5563);margin:0 0 12px">Bài kiểm tra này cần mã do giáo viên cấp để mở khoá.</p>
+      <div style="display:flex;gap:8px">
+        <input id="t1-code-input" maxlength="16" placeholder="NHẬP MÃ" autocomplete="off" spellcheck="false"
+          style="flex:1;min-width:0;padding:9px 11px;border:1.5px solid var(--border,#e5e7eb);border-radius:8px;font-size:14px;font-family:inherit;text-transform:uppercase;letter-spacing:1px;background:var(--bg,#fff);color:var(--text,#111827)">
+        <button id="t1-code-submit" class="t1-btn" style="white-space:nowrap">Áp dụng</button>
+      </div>
+      <div id="t1-code-msg" style="font-size:12px;margin-top:8px;min-height:16px"></div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/shared/course-engine.js?v=9cdf8fb1b0"></script>
+<!-- mindset-course.js sets window.SPEAKING_COURSE_OVERRIDE, then speaking-course.js
+     starts the engine with the Speaking course's speaking_response type kept. -->
+<script src="/js/mindset-course.js?v=4e77a34c50"></script>
+<script src="/js/speaking-course.js?v=a616af9edd"></script>
+</body>
+</html>

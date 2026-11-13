@@ -1,0 +1,823 @@
+{
+ "exercises": [
+  {
+   "code": "M2-U01-L1-E01",
+   "lessonCode": "M2-U01-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 27,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Vocabulary: homes (Ex. 1)",
+   "instruction": "A common topic in the exam is \"home\". Put these words under the correct heading.",
+   "categories": [
+    {
+     "id": "loc",
+     "label": "Location"
+    },
+    {
+     "id": "type",
+     "label": "Building type"
+    },
+    {
+     "id": "style",
+     "label": "Style"
+    },
+    {
+     "id": "rooms",
+     "label": "Rooms"
+    },
+    {
+     "id": "parts",
+     "label": "Parts of a room"
+    },
+    {
+     "id": "mat",
+     "label": "Materials"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "beach",
+     "category": "loc",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "city centre",
+     "category": "loc",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "mountains",
+     "category": "loc",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "countryside",
+     "category": "loc",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "remote island",
+     "category": "loc",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "apartment",
+     "category": "type",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "skyscraper",
+     "category": "type",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "bungalow",
+     "category": "type",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "mansion",
+     "category": "type",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "castle",
+     "category": "type",
+     "explanation": ""
+    },
+    {
+     "id": "c11",
+     "text": "garage",
+     "category": "type",
+     "explanation": ""
+    },
+    {
+     "id": "c12",
+     "text": "glamorous",
+     "category": "style",
+     "explanation": ""
+    },
+    {
+     "id": "c13",
+     "text": "simple",
+     "category": "style",
+     "explanation": ""
+    },
+    {
+     "id": "c14",
+     "text": "traditional",
+     "category": "style",
+     "explanation": ""
+    },
+    {
+     "id": "c15",
+     "text": "modern",
+     "category": "style",
+     "explanation": ""
+    },
+    {
+     "id": "c16",
+     "text": "spacious",
+     "category": "style",
+     "explanation": ""
+    },
+    {
+     "id": "c17",
+     "text": "cellar",
+     "category": "rooms",
+     "explanation": ""
+    },
+    {
+     "id": "c18",
+     "text": "gym",
+     "category": "rooms",
+     "explanation": ""
+    },
+    {
+     "id": "c19",
+     "text": "dining room",
+     "category": "rooms",
+     "explanation": ""
+    },
+    {
+     "id": "c20",
+     "text": "staircase",
+     "category": "parts",
+     "explanation": ""
+    },
+    {
+     "id": "c21",
+     "text": "floor",
+     "category": "parts",
+     "explanation": ""
+    },
+    {
+     "id": "c22",
+     "text": "ceiling",
+     "category": "parts",
+     "explanation": ""
+    },
+    {
+     "id": "c23",
+     "text": "window",
+     "category": "parts",
+     "explanation": ""
+    },
+    {
+     "id": "c24",
+     "text": "wood",
+     "category": "mat",
+     "explanation": ""
+    },
+    {
+     "id": "c25",
+     "text": "marble",
+     "category": "mat",
+     "explanation": ""
+    },
+    {
+     "id": "c26",
+     "text": "leather",
+     "category": "mat",
+     "explanation": ""
+    },
+    {
+     "id": "c27",
+     "text": "stone",
+     "category": "mat",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L1-E02",
+   "lessonCode": "M2-U01-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Skimming or scanning? (Ex. 3)",
+   "instruction": "For each activity, decide whether you would use skimming or scanning.",
+   "categories": [
+    {
+     "id": "sk",
+     "label": "skimming"
+    },
+    {
+     "id": "sc",
+     "label": "scanning"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "looking up a word in the dictionary",
+     "category": "sc",
+     "explanation": "Tìm đúng một từ → scan."
+    },
+    {
+     "id": "c2",
+     "text": "browsing the internet for the latest news stories",
+     "category": "sk",
+     "explanation": "Lướt xem có tin gì → skim."
+    },
+    {
+     "id": "c3",
+     "text": "choosing a book from a library or bookshop",
+     "category": "sk",
+     "explanation": "Đọc lướt để biết sách nói về gì → skim."
+    },
+    {
+     "id": "c4",
+     "text": "finding a particular news story in a newspaper",
+     "category": "sc",
+     "explanation": "Tìm một bài cụ thể → scan."
+    },
+    {
+     "id": "c5",
+     "text": "finding the price of a product in a catalogue",
+     "category": "sc",
+     "explanation": "Tìm một con số → scan."
+    },
+    {
+     "id": "c6",
+     "text": "looking through a magazine for an interesting article",
+     "category": "sk",
+     "explanation": "Lướt tìm bài hay → skim."
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L1-E03",
+   "lessonCode": "M2-U01-L1",
+   "order": 3,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "What did you focus on when skimming? (Ex. 6)",
+   "instruction": "When you were skim reading the text, which of these types of word did you focus on?",
+   "categories": [
+    {
+     "id": "y",
+     "label": "Focus on these"
+    },
+    {
+     "id": "n",
+     "label": "Ignore these"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "names",
+     "category": "y",
+     "explanation": "Tên riêng cho biết bài nói về ai, ở đâu."
+    },
+    {
+     "id": "c2",
+     "text": "verbs",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "adjectives",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "numbers",
+     "category": "y",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "prepositions",
+     "category": "n",
+     "explanation": "Giới từ (in, on, at…) không mang ý chính."
+    },
+    {
+     "id": "c6",
+     "text": "articles",
+     "category": "n",
+     "explanation": "Mạo từ (a, an, the) không mang ý chính."
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L2-E01",
+   "lessonCode": "M2-U01-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "An overall title (Ex. 6)",
+   "instruction": "Skim the text. What overall title would you give the text?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "**A** Mukesh Ambani is one of the richest men in the world, and the first man to own a private residence costing more than one billion dollars to build. The home is on Altamount Road in Mumbai, one of the most expensive addresses in the world. Named after the mythical island Antilia, the property has 27 floors.\n\n**B** The interior of the home is very glamorous and each floor is made from different materials to give an individual look. Marble floors, rare wood and fine rugs are just some of the design features used to create this extravagant home. The lotus flower and the sun are common symbols used throughout. Many of the rooms have floor-to-ceiling glass windows, offering spectacular views of Mumbai and the Arabian Sea.\n\n**C** The skyscraper has a multi-storey garage with space for 168 cars. Alternatively, there are also three helipads on the roof of the building. The lobby has numerous reception areas and nine lifts. There are also several floors for dining, vast libraries and a health spa, including a gym, several swimming pools and yoga facilities. There is even an 'ice-room' which creates man-made snow, a Hindu prayer room and several floors of gardens.\n\n**D** The Ambani residence is clearly designed to entertain guests. It has a theatre which seats 50, several guest bedrooms and a grand ballroom filled with chandeliers.\n\n**E** The living quarters are on the top floors, because the family wanted as much sunlight as possible. The 400,000 ft² residence requires 600 staff, but all three Am bani children are required to clean their own rooms when they are at home.\n\n**F** Several experts have criticised the architecture of this very expensive home, comparing it to an 'unstable pile of books'. Mrs Ambani, however, describes her home as 'an elevated house on top of a garden' and 'a modern home with an Indian heart'.",
+    "caption": "The home in the photo (p. 9)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Choose the best title.",
+     "options": [
+      {
+       "id": "A",
+       "text": "Antilia: a billion-dollar home in Mumbai"
+      },
+      {
+       "id": "B",
+       "text": "The richest men in the world"
+      },
+      {
+       "id": "C",
+       "text": "How to design a garden"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Cả bài nói về ngôi nhà Antilia ở Mumbai (chủ nhà, vật liệu, tiện nghi, ý kiến). B chỉ là chi tiết ở đoạn A; C không có trong bài."
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L2-E02",
+   "lessonCode": "M2-U01-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "The order of information (Ex. 6)",
+   "instruction": "Put the information in the order in which it appears in the passage.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "**A** Mukesh Ambani is one of the richest men in the world, and the first man to own a private residence costing more than one billion dollars to build. The home is on Altamount Road in Mumbai, one of the most expensive addresses in the world. Named after the mythical island Antilia, the property has 27 floors.\n\n**B** The interior of the home is very glamorous and each floor is made from different materials to give an individual look. Marble floors, rare wood and fine rugs are just some of the design features used to create this extravagant home. The lotus flower and the sun are common symbols used throughout. Many of the rooms have floor-to-ceiling glass windows, offering spectacular views of Mumbai and the Arabian Sea.\n\n**C** The skyscraper has a multi-storey garage with space for 168 cars. Alternatively, there are also three helipads on the roof of the building. The lobby has numerous reception areas and nine lifts. There are also several floors for dining, vast libraries and a health spa, including a gym, several swimming pools and yoga facilities. There is even an 'ice-room' which creates man-made snow, a Hindu prayer room and several floors of gardens.\n\n**D** The Ambani residence is clearly designed to entertain guests. It has a theatre which seats 50, several guest bedrooms and a grand ballroom filled with chandeliers.\n\n**E** The living quarters are on the top floors, because the family wanted as much sunlight as possible. The 400,000 ft² residence requires 600 staff, but all three Am bani children are required to clean their own rooms when they are at home.\n\n**F** Several experts have criticised the architecture of this very expensive home, comparing it to an 'unstable pile of books'. Mrs Ambani, however, describes her home as 'an elevated house on top of a garden' and 'a modern home with an Indian heart'.",
+    "caption": "The home in the photo"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "1st",
+     "right": "the owner of the house",
+     "explanation": "Đoạn A: Mukesh Ambani."
+    },
+    {
+     "id": "m2",
+     "left": "2nd",
+     "right": "the cost and address of the house",
+     "explanation": "Đoạn A: more than one billion dollars; Altamount Road in Mumbai."
+    },
+    {
+     "id": "m3",
+     "left": "3rd",
+     "right": "the materials used for the interior",
+     "explanation": "Đoạn B: marble floors, rare wood, fine rugs."
+    },
+    {
+     "id": "m4",
+     "left": "4th",
+     "right": "the facilities in the house",
+     "explanation": "Đoạn C: garage, helipads, spa, gym, pools…"
+    },
+    {
+     "id": "m5",
+     "left": "5th",
+     "right": "information about the theatre and ballroom",
+     "explanation": "Đoạn D."
+    },
+    {
+     "id": "m6",
+     "left": "6th",
+     "right": "where the family live",
+     "explanation": "Đoạn E: the living quarters are on the top floors."
+    },
+    {
+     "id": "m7",
+     "left": "7th",
+     "right": "opinions on the house",
+     "explanation": "Đoạn F: experts criticise it; Mrs Ambani describes it."
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L2-E03",
+   "lessonCode": "M2-U01-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Synonyms for paraphrasing (Ex. 9)",
+   "instruction": "The key to paraphrasing is understanding synonyms and words or phrases with a similar meaning. Match these words and expressions.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "desirable facilities",
+     "right": "health spa and libraries",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "outside spaces",
+     "right": "gardens",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "inside",
+     "right": "interior",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "extravagant",
+     "right": "expensive",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "city",
+     "right": "Mumbai",
+     "explanation": ""
+    },
+    {
+     "id": "m6",
+     "left": "visitors",
+     "right": "guests",
+     "explanation": ""
+    },
+    {
+     "id": "m7",
+     "left": "equipped to make visitors feel welcome",
+     "right": "designed to entertain guests",
+     "explanation": ""
+    },
+    {
+     "id": "m8",
+     "left": "expensive materials",
+     "right": "rare wood and fine rugs",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L3-E01",
+   "lessonCode": "M2-U01-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "The mindmap (Ex. 12)",
+   "instruction": "Put these words and phrases with the appropriate tense in the mindmap.",
+   "categories": [
+    {
+     "id": "pc",
+     "label": "Present continuous"
+    },
+    {
+     "id": "ps",
+     "label": "Present simple"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "temporary",
+     "category": "pc",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "an action which is not complete",
+     "category": "pc",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "happening at the time of speaking",
+     "category": "pc",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "repeated actions",
+     "category": "ps",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "general facts",
+     "category": "ps",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "opinions",
+     "category": "ps",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L3-E02",
+   "lessonCode": "M2-U01-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "error_correction",
+   "title": "Correct the sentences (Ex. 13)",
+   "instruction": "Using the rules in the mindmap, correct these sentences where necessary. If a sentence is already correct, write it again.",
+   "items": [
+    {
+     "id": "e1",
+     "prompt": "Mukesh Ambani is living in Mumbai.",
+     "answer": "Mukesh Ambani lives in Mumbai.",
+     "explanation": "Sự thật chung (nơi ông ấy sống lâu dài) → present simple."
+    },
+    {
+     "id": "e2",
+     "prompt": "Mrs Ambani is believing that her home has an Indian heart.",
+     "answer": "Mrs Ambani believes that her home has an Indian heart.",
+     "explanation": "believe là động từ chỉ ý kiến → không chia tiếp diễn."
+    },
+    {
+     "id": "e3",
+     "prompt": "The family live on the top floor because they want as much exposure to sunlight as possible.",
+     "answer": "The family live on the top floor because they want as much exposure to sunlight as possible.",
+     "explanation": "Câu đúng: sự thật chung + mong muốn (want không chia tiếp diễn)."
+    },
+    {
+     "id": "e4",
+     "prompt": "When the children are at home, they are cleaning their own rooms.",
+     "answer": "When the children are at home, they clean their own rooms.",
+     "explanation": "Việc lặp lại mỗi khi ở nhà → present simple."
+    },
+    {
+     "id": "e5",
+     "prompt": "Mrs Ambani entertains her guests in the ballroom at the moment.",
+     "answer": "Mrs Ambani is entertaining her guests in the ballroom at the moment.",
+     "explanation": "\"at the moment\" → đang xảy ra lúc nói → present continuous."
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L3-E03",
+   "lessonCode": "M2-U01-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Present simple or present continuous? (Ex. 14)",
+   "instruction": "Complete the sentences using the word in brackets and the correct form of the present continuous or the present simple.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Currently, my mum ____ (work) in the study.",
+     "blanks": [
+      {
+       "accept": [
+        "is working",
+        "'s working"
+       ]
+      }
+     ],
+     "explanation": "\"Currently\" → đang diễn ra."
+    },
+    {
+     "id": "g2",
+     "prompt": "I ____ (rent) in the city centre for now.",
+     "blanks": [
+      {
+       "accept": [
+        "am renting",
+        "'m renting"
+       ]
+      }
+     ],
+     "explanation": "\"for now\" → tạm thời."
+    },
+    {
+     "id": "g3",
+     "prompt": "I ____ (think) that buying a new house now would be a very good idea.",
+     "blanks": [
+      {
+       "accept": [
+        "think"
+       ]
+      }
+     ],
+     "explanation": "think = cho rằng (ý kiến) → present simple."
+    },
+    {
+     "id": "g4",
+     "prompt": "What is that going to be? They ____ (build) a new accommodation block for students.",
+     "blanks": [
+      {
+       "accept": [
+        "are building",
+        "'re building"
+       ]
+      }
+     ],
+     "explanation": "Việc xây đang diễn ra, chưa xong."
+    },
+    {
+     "id": "g5",
+     "prompt": "Every day his mum ____ (clean) the house.",
+     "blanks": [
+      {
+       "accept": [
+        "cleans"
+       ]
+      }
+     ],
+     "explanation": "\"Every day\" → thói quen."
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L4-E01",
+   "lessonCode": "M2-U01-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Predict the kind of information (Ex. 3)",
+   "instruction": "Look at the notes and think about the kind of information that you will need for each gap.",
+   "categories": [
+    {
+     "id": "addr",
+     "label": "an address / a name"
+    },
+    {
+     "id": "num",
+     "label": "a number"
+    },
+    {
+     "id": "thing",
+     "label": "a place or a thing"
+    },
+    {
+     "id": "time",
+     "label": "a time"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "Address of property: ____",
+     "category": "addr",
+     "explanation": "Cần tên đường (có thể được đánh vần)."
+    },
+    {
+     "id": "c2",
+     "text": "Number of bedrooms: ____",
+     "category": "num",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "Number of lounges: ____",
+     "category": "num",
+     "explanation": ""
+    },
+    {
+     "id": "c4",
+     "text": "Access to the ____ through sun-room door",
+     "category": "thing",
+     "explanation": "Một nơi: the garden."
+    },
+    {
+     "id": "c5",
+     "text": "Kitchen: fully-fitted, includes ____ and ____",
+     "category": "thing",
+     "explanation": "Đồ dùng nhà bếp."
+    },
+    {
+     "id": "c6",
+     "text": "Appointment time: ____",
+     "category": "time",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "Estate agent's name: Peter ____",
+     "category": "addr",
+     "explanation": "Họ của người — chú ý đánh vần."
+    },
+    {
+     "id": "c8",
+     "text": "Estate agent's number: ____",
+     "category": "num",
+     "explanation": "Số điện thoại — nghe theo từng cụm số."
+    }
+   ]
+  },
+  {
+   "code": "M2-U01-L4-E02",
+   "lessonCode": "M2-U01-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Why are the other options wrong? (Ex. 7)",
+   "instruction": "Look at this example. \"The en-suite bathroom will be useful because A it has a shower unit. B it has a big bath. C it helps everyone in the mornings.\" The answer is C.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Why is A wrong?",
+     "options": [
+      {
+       "id": "A",
+       "text": "It is true, but it is not the reason why the bathroom will be useful for the woman and her family."
+      },
+      {
+       "id": "B",
+       "text": "It is not true: the en-suite bathroom has no shower."
+      },
+      {
+       "id": "C",
+       "text": "The woman does not like showers."
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"it only has a shower unit\" — đúng sự thật, nhưng không phải lý do nó hữu ích."
+    },
+    {
+     "id": "q2",
+     "prompt": "Why is B wrong?",
+     "options": [
+      {
+       "id": "A",
+       "text": "It is not true: the big bath is in the main bathroom, not the en-suite."
+      },
+      {
+       "id": "B",
+       "text": "The woman says the bath is too small."
+      },
+      {
+       "id": "C",
+       "text": "It is true, but the woman does not mention it."
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"not a big bath like the main bathroom\"."
+    },
+    {
+     "id": "q3",
+     "prompt": "Why is C correct?",
+     "options": [
+      {
+       "id": "A",
+       "text": "The woman says it will be useful \"when we all get up to get ready for school or work\" — that happens in the morning."
+      },
+      {
+       "id": "B",
+       "text": "The estate agent says it is the best room in the house."
+      },
+      {
+       "id": "C",
+       "text": "The woman says she has three children."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Cùng nghĩa với bài nghe dù không dùng chữ \"morning\"."
+    }
+   ]
+  }
+ ]
+}

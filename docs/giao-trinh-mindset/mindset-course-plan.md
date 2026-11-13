@@ -1,12 +1,12 @@
 # Khóa Mindset for IELTS trên web: kế hoạch và quy trình
 
-Khóa học bám sát bộ giáo trình **Mindset for IELTS** (Cambridge) trong thư mục `Mindset curriculum/`. Quyển 0 (Foundation, trình độ A2) và quyển 1 (Level 1, Reading & Listening) đã xong. Quyển 2 làm tiếp theo đúng quy trình dưới đây.
+Khóa học bám sát bộ giáo trình **Mindset for IELTS** (Cambridge) trong thư mục `Mindset curriculum/`. Cả ba quyển đã xong: quyển 0 (Foundation, trình độ A2), quyển 1 và quyển 2 (Level 1, Level 2 — Reading & Listening).
 
 | Quyển | Mã khóa | Trang học viên | Trạng thái |
 |---|---|---|---|
 | Mindset 0, Foundation (10 unit, 20 audio) | `MINDSET-0` | `/mindset-0.html` (link gọn `/mindset/0`) | Đã soạn đủ 10 unit |
 | Mindset 1, Level 1 (71 audio) | `MINDSET-1` | `/mindset-1.html` (link gọn `/mindset/1`) | Đã soạn đủ 8 unit (13/11/2026) |
-| Mindset 2, Level 2 (75 audio) | `MINDSET-2` | `/mindset-2.html` | Kế hoạch |
+| Mindset 2, Level 2 (75 audio) | `MINDSET-2` | `/mindset-2.html` (link gọn `/mindset/2`) | Đã soạn đủ 8 unit (13/11/2026) |
 
 ## 1. Cấu trúc mỗi unit (giống thứ tự trong sách)
 
@@ -45,6 +45,15 @@ Giáo viên giao bài từng buổi qua loại bài tập về nhà **"Mindset (
 
 **Quy tắc chung (12/11/2026):** đề bài (tiêu đề, hướng dẫn, câu hỏi, đáp án lựa chọn) giữ **tiếng Anh** như sách; chỉ giải thích và bài giảng ngữ pháp/chiến thuật dùng tiếng Việt. Quyển 0 đã được chuyển đề sang tiếng Anh.
 
+## 2c. Nội dung quyển 2 đã soạn (13/11/2026)
+
+- Giống quyển 1: 8 unit × 4 buổi (Lead-in & Vocabulary → Reading → Grammar focus → Listening) = 32 buổi, 80 bài tự chấm trong khóa.
+- 20 bài Reading + 57 bài Listening, tổng 419 câu, mọi câu có giải thích tiếng Việt; audio `Mindset_L2_NN` = track NN in trong sách (track Speaking không dùng).
+- Sổ theo sách của lớp: Unit 1–2 → Sổ 1, 3–4 → Sổ 2, 5–6 → Sổ 3, 7–8 → Sổ 4. Danh sách từ ở `m2/vocab/*.txt` (trích tự động từ trang "Từ vựng & cụm từ hay" của PDF); câu ví dụ lấy từ bài đọc/transcript, từ nào không có trong bài thì có câu tự viết sau dấu ` | `.
+- **Văn bản sách (bài đọc, transcript) không gõ tay**: `m2/_extract.py` trích từ lớp OCR của PDF theo khai báo trong `m2/texts.json` (vùng cắt, mốc đầu đoạn, các chỗ sửa lỗi OCR) ra `m2/text/*.txt`; unit đọc bằng `txt()` (`m2/_text.js`). Chạy lại: `py scripts/mindset/m2/_extract.py [tên]`. Lý do: viết nguyên văn khối dài từ sách bị bộ lọc nội dung chặn.
+- Dạng mới: "Choose TWO letters" (`qMulti` trong dsl.js → `multi-answer-group`; verifyMindset gửi cả cụm đáp án), sơ đồ điền chữ (group `map` không có `dragDropConfig` → ô nhập chữ cạnh ảnh), bản đồ đánh số ô 1–6 (Unit 2), lượng từ, signposting.
+- Answer Key: Unit 1 Ex. 4 câu 5 key in "B1074", audioscript là "81074" → chấm đúng cả hai. Unit 5 Ex. 12 danh sách ghi "Daniel Kluko", bài đọc ghi "Kluka" → web dùng "Kluka".
+
 ## 3. Quy trình kỹ thuật
 
 ```
@@ -59,7 +68,7 @@ backend/scripts/data/mindset0/media.json  # URL R2 của audio + ảnh (commit f
 2. `node scripts/seedMindsetMedia.js mindset0 --dry`: kiểm tra dữ liệu.
 3. `node scripts/seedMindsetMedia.js mindset0`: upload audio/ảnh lên R2 (chỉ lần đầu, có cache trong media.json), rồi upsert Passage/ListeningSection theo `courseRef`. Dùng `--upload-only` nếu chỉ muốn upload.
 4. `node scripts/seedCourse.js mindset0`: seed khóa, unit, buổi, bài tập. Chuỗi `media:<file>` được thay bằng URL R2, `practiceLinks[].ref` được thay bằng link reading.html / listening.html.
-5. Trước khi seed: `node scripts/mindset/verifyMindset.js mindset1` (không cần DB) chấm mọi bài bằng bộ chấm thật với đáp án của chính nó, kiểm tra ____ / __Qn__, link, giải thích và đề không có tiếng Việt. Quyển 1: thay `m0`/`mindset0` bằng `m1`/`mindset1` ở các lệnh trên.
+5. Trước khi seed: `node scripts/mindset/verifyMindset.js mindset1` (không cần DB) chấm mọi bài bằng bộ chấm thật với đáp án của chính nó, kiểm tra ____ / __Qn__, link, giải thích và đề không có tiếng Việt. Quyển 1/2: thay `m0`/`mindset0` bằng `m1`/`mindset1` hoặc `m2`/`mindset2` ở các lệnh trên.
 
 Bài đọc/nghe của khóa có trường `courseRef`, nên **không hiện trong danh sách đề IELTS**, random test hay tìm kiếm (`utils/courseContent.js` → `NOT_COURSE`). Chúng chỉ mở qua link trong buổi học.
 

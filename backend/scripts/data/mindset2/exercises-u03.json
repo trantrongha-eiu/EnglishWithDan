@@ -1,0 +1,757 @@
+{
+ "exercises": [
+  {
+   "code": "M2-U03-L1-E01",
+   "lessonCode": "M2-U03-L1",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Opinions about the news (Ex. 2)",
+   "instruction": "Read the quotes, which give different opinions about how news is consumed. Match statements 1–4 with quotes A–D.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "**A** Since the birth of the internet, access to local and world news has become possible 24 hours a day, 7 days a week. This is having an increasingly negative impact on society, and consequently we have all become news addicts! (Sarah, 35)\n\n**B** Adults aged 60+ buy a daily newspaper as a matter of habit. Generally, they don't know how to access news online. (Matt, 18)\n\n**C** Youngsters these days aren't interested in the news and spend most of their time on social media sites. They don't buy a newspaper or watch a regular TV bulletin. The only news they might be interested in is entertainment news. (Charles, 65)\n\n**D** I would only use social media sites to check entertainment news. I wouldn't trust it for any serious news, such as crime or politics. For those topics, I'd only rely on television bulletins. (Mary, 25)",
+    "caption": "Quotes A–D (p. 48)"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Continual exposure to the news is bad for us.",
+     "right": "A (Sarah)",
+     "explanation": "\"access… 24 hours a day, 7 days a week… increasingly negative impact on society\"."
+    },
+    {
+     "id": "m2",
+     "left": "As a news source, there is more confidence in television than in the internet.",
+     "right": "D (Mary)",
+     "explanation": "\"I wouldn't trust it for any serious news… I'd only rely on television bulletins.\""
+    },
+    {
+     "id": "m3",
+     "left": "Teenagers are only interested in news about actors and pop stars.",
+     "right": "C (Charles)",
+     "explanation": "\"The only news they might be interested in is entertainment news.\""
+    },
+    {
+     "id": "m4",
+     "left": "The older generation don't know how to read the news using the internet.",
+     "right": "B (Matt)",
+     "explanation": "\"Adults aged 60+… they don't know how to access news online.\""
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L2-E01",
+   "lessonCode": "M2-U03-L2",
+   "order": 1,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "What do you notice about the answers? (Ex. 6)",
+   "instruction": "Look at your answers to the questions in exercise 5 and decide if these statements are True or False.",
+   "categories": [
+    {
+     "id": "t",
+     "label": "True"
+    },
+    {
+     "id": "f",
+     "label": "False"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "The answers do not follow the same order as the text.",
+     "category": "t",
+     "explanation": ""
+    },
+    {
+     "id": "c2",
+     "text": "The answers may not be the main idea of the paragraph.",
+     "category": "t",
+     "explanation": ""
+    },
+    {
+     "id": "c3",
+     "text": "Some paragraphs contain more than one answer.",
+     "category": "t",
+     "explanation": "Đoạn D chứa đáp án câu 3 và 4."
+    },
+    {
+     "id": "c4",
+     "text": "Not all paragraphs contain an answer.",
+     "category": "t",
+     "explanation": "Đoạn C không chứa đáp án nào."
+    },
+    {
+     "id": "c5",
+     "text": "The questions will often use synonyms rather than wording from the text.",
+     "category": "t",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L2-E02",
+   "lessonCode": "M2-U03-L2",
+   "order": 2,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Words in the text and in the question (Ex. 7)",
+   "instruction": "Look again at the text \"A smarter way to access the news?\" and your answers to exercise 5. Match the words in the text with the words in the questions or their synonyms.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "A smarter way to access the news?\n\n**A** A recent report, issued by the international news agency Reuters, reveals that smartphones are quickly becoming the most popular way to access the news. Over the last year, this increase has been particularly noted in countries such as the UK, the USA and Japan. In fact, for all countries involved in the survey, usage has increased from 37% to 46%. Furthermore, 66% of smartphone users are now using the device for news on a weekly basis.\n\n**B** By comparison, the number of people using tablets to access the news is decreasing in most countries. More sophisticated smartphones are reducing the need for other portable devices. The need for accessing the news on laptops and desktops has also changed. Over half (57%) still consider these devices the most important ways to access the news, but this is a decrease of 8% from last year.\n\n**C** The report also revealed, however, that on average people only use a small number of trusted news sources on their phones, the average across all countries being 1.52 per person. In the UK, for example, over half of smartphone users (51%) regularly use the BBC app.\n\n**D** Across all countries included in the survey, 25% stated that their smartphone was the main device used for accessing digital news, an increase of 20% since last year. This is particularly true of those aged under 35, with the figure rising to 41%. The overall trend, however, is not to use just one digital device to access the news, but rather a combination of two or three.",
+    "caption": "A smarter way to access the news? (p. 49)"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "66%",
+     "right": "over half",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "a combination of two or three",
+     "right": "several methods",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "25%",
+     "right": "a quarter of",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "survey",
+     "right": "questionnaire",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "on a weekly basis",
+     "right": "often",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L2-E03",
+   "lessonCode": "M2-U03-L2",
+   "order": 3,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Types of information (Ex. 8)",
+   "instruction": "Read extracts 1–6, taken from various news reports. Then match the extracts with a label from the box: account, cause and effect, description, opinion, reaction, summary.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "**1** Tennis fans were left shocked today, when the favourite to win the championship was defeated in the third round by an unknown player.\n\n**2** According to recent reports, the government feels it is no longer necessary to pay for school meals. Headteachers feel that this would be a disaster, however, especially given the recent progress with making dinners healthier for pupils.\n\n**3** People must be responsible for their own health, otherwise the National Health Service will no longer be able to cope. This was the warning given today by the head of the organisation.\n\n**4** Overall, last year was a very good year for the nation's economy. The unemployment rate was down, more jobs were created, and generally people felt they had more money to spend.\n\n**5** The Queen landed to a red-carpet welcome on Tuesday, as she opened her visit to the USA. She was greeted by hundreds of guests, together with the President and his family.\n\n**6** A 60-year-old man was arrested today, after he was caught stealing from his local shop. According to a witness, he was wearing black clothes and a mask during the robbery.",
+    "caption": "Extracts 1–6 (p. 50)"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Extract 1 (tennis fans)",
+     "right": "reaction",
+     "explanation": "Phản ứng của người hâm mộ: \"were left shocked\"."
+    },
+    {
+     "id": "m2",
+     "left": "Extract 2 (school meals)",
+     "right": "opinion",
+     "explanation": "Ý kiến: \"the government feels… Headteachers feel…\"."
+    },
+    {
+     "id": "m3",
+     "left": "Extract 3 (health)",
+     "right": "cause and effect",
+     "explanation": "\"must be responsible… otherwise the National Health Service will no longer be able to cope\" (nguyên nhân → hậu quả)."
+    },
+    {
+     "id": "m4",
+     "left": "Extract 4 (the nation's economy)",
+     "right": "summary",
+     "explanation": "\"Overall, last year was a very good year…\" — tóm tắt."
+    },
+    {
+     "id": "m5",
+     "left": "Extract 5 (the Queen's visit)",
+     "right": "description",
+     "explanation": "Mô tả sự kiện đón tiếp."
+    },
+    {
+     "id": "m6",
+     "left": "Extract 6 (the robbery)",
+     "right": "account",
+     "explanation": "Tường thuật lại diễn biến vụ trộm."
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L2-E04",
+   "lessonCode": "M2-U03-L2",
+   "order": 4,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Label the paragraphs (Ex. 9)",
+   "instruction": "Skim the text \"How the younger generation consumes the news\" for the main ideas, then label each paragraph with ONE or more of the descriptions: cause and effect, factual, opinion, problems, reason, summary. (Paragraph A: opinion/factual.)",
+   "stimulus": {
+    "kind": "passage",
+    "text": "How the younger generation consumes the news\n\n**A** In recent years, there has been growing concern by researchers and indeed the older generation that the younger generation are somewhat disengaged from the news, and as a result have a very narrow view of the world around them. This, however, couldn't be further from the truth, as shown by a recent study carried out by the Media Insight Project (American Press Institute & Associated Press). According to this research, 85% of youngsters say that keeping up to date with the news is important to them, and 69% receive news on a daily basis.\n\n**B** Perhaps what some of the older generation fail to understand is that just because the younger generation does not buy a daily newspaper, it doesn't mean that they don't follow the news. Born into a digital age, or more specifically the age of the internet, the younger generation simply accesses news through the digital devices they grew up using: laptops, tablets, smartphones, etc. A recent study produced by Ofcom revealed that 60% of youngsters in the UK use the internet or apps for news, compared to just 21% of those in the older age range.\n\n**C** Social media also plays an important part in consuming the news for the younger generation. It was also revealed that most youngsters actually don't seek out news from social media, but choose to follow it once they see it there. In other words, they encounter it accidentally and therefore following the news is secondary. For example, when accessing social media sites, news headlines automatically appear. These catch the user's eye and consequently the news link is clicked and followed.\n\n**D** For the moment, social networks are being used selectively, however. For example, social media is used for breaking news, but is not relied on in terms of accuracy. For hard news topics, such as economics or local crime, youngsters continue to look to original sources. For accuracy and reliability, television is still the preferred choice for both generations.\n\n**E** According to Alison Preston, Head of Media Literacy Research at Ofcom, motivations for following the news also vary according to the generation. In her current report on the topic, she states that, for the younger generation, news is largely about convenience and being social. For the older generation, however, motivation is greatly linked to a sense of duty and habit.\n\n**F** Overall, it is fair to say that news plays an important part in all our everyday lives, regardless of generation. However, what is different amongst the generations is why and how it is accessed.",
+    "caption": "How the younger generation consumes the news (p. 51)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Paragraph B",
+     "options": [
+      {
+       "id": "A",
+       "text": "reason / factual"
+      },
+      {
+       "id": "B",
+       "text": "summary"
+      },
+      {
+       "id": "C",
+       "text": "problems"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Giải thích lý do giới trẻ đọc tin qua thiết bị số + số liệu Ofcom."
+    },
+    {
+     "id": "q2",
+     "prompt": "Paragraph C",
+     "options": [
+      {
+       "id": "A",
+       "text": "cause and effect"
+      },
+      {
+       "id": "B",
+       "text": "opinion"
+      },
+      {
+       "id": "C",
+       "text": "summary"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Tiêu đề tin hiện ra → bắt mắt → được bấm vào (consequently)."
+    },
+    {
+     "id": "q3",
+     "prompt": "Paragraph D",
+     "options": [
+      {
+       "id": "A",
+       "text": "problems / factual"
+      },
+      {
+       "id": "B",
+       "text": "reason"
+      },
+      {
+       "id": "C",
+       "text": "cause and effect"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Hạn chế của mạng xã hội (not relied on in terms of accuracy) + sự kiện."
+    },
+    {
+     "id": "q4",
+     "prompt": "Paragraph E",
+     "options": [
+      {
+       "id": "A",
+       "text": "opinion"
+      },
+      {
+       "id": "B",
+       "text": "summary"
+      },
+      {
+       "id": "C",
+       "text": "problems"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Ý kiến của Alison Preston (\"she states that…\")."
+    },
+    {
+     "id": "q5",
+     "prompt": "Paragraph F",
+     "options": [
+      {
+       "id": "A",
+       "text": "summary"
+      },
+      {
+       "id": "B",
+       "text": "reason"
+      },
+      {
+       "id": "C",
+       "text": "cause and effect"
+      }
+     ],
+     "answer": "A",
+     "explanation": "\"Overall, it is fair to say…\" — tóm tắt cả bài."
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L2-E05",
+   "lessonCode": "M2-U03-L2",
+   "order": 5,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Matching information: what have you learnt? (Ex. 14)",
+   "instruction": "Answer these questions using what you have learnt in this lesson.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What should you read carefully before starting a matching information task?",
+     "options": [
+      {
+       "id": "A",
+       "text": "the questions and instructions"
+      },
+      {
+       "id": "B",
+       "text": "the title only"
+      },
+      {
+       "id": "C",
+       "text": "the last paragraph"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Are you looking for matching words or synonyms?",
+     "options": [
+      {
+       "id": "A",
+       "text": "synonyms"
+      },
+      {
+       "id": "B",
+       "text": "matching words"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Do the answers follow the same order as the text?",
+     "options": [
+      {
+       "id": "A",
+       "text": "No"
+      },
+      {
+       "id": "B",
+       "text": "Yes"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "Can the same letter be used more than once?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Yes"
+      },
+      {
+       "id": "B",
+       "text": "No"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Khi đề ghi \"You may use any letter more than once\"."
+    },
+    {
+     "id": "q5",
+     "prompt": "Do all paragraphs need to be used?",
+     "options": [
+      {
+       "id": "A",
+       "text": "No"
+      },
+      {
+       "id": "B",
+       "text": "Yes"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L3-E01",
+   "lessonCode": "M2-U03-L3",
+   "order": 1,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Passive forms in the text (Ex. 10)",
+   "instruction": "Look at extracts 1–4 from the text. Match a tense from the box with each extract.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "… social media is used for breaking news …",
+     "right": "present simple passive",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "… it was also revealed …",
+     "right": "past simple passive",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "… social networks are being used selectively …",
+     "right": "present continuous passive",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "… there has been growing concern by researchers …",
+     "right": "present perfect passive",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L3-E02",
+   "lessonCode": "M2-U03-L3",
+   "order": 2,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Why the passive? (Ex. 11)",
+   "instruction": "Why has the writer chosen to use the passive rather than the active in these extracts?",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Choose the best explanation.",
+     "options": [
+      {
+       "id": "A",
+       "text": "The passive is common in formal writing, and the agent (who does the action) is not important."
+      },
+      {
+       "id": "B",
+       "text": "The passive makes the sentences shorter and more informal."
+      },
+      {
+       "id": "C",
+       "text": "The writer wants to show exactly who did each action."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Vd. \"social media is used for breaking news\" — ta không quan tâm AI dùng."
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L3-E03",
+   "lessonCode": "M2-U03-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Passive headlines (Ex. 12)",
+   "instruction": "Complete headlines 1–4 with the verb in brackets in one of these passive forms: past simple, present continuous, present perfect, present simple.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Holidays ____ (ruin) by air strikes.",
+     "blanks": [
+      {
+       "accept": [
+        "are ruined"
+       ]
+      }
+     ],
+     "explanation": "Ví dụ của sách (present simple)."
+    },
+    {
+     "id": "g2",
+     "prompt": "The launch of London's night tube ____ (delay) until further notice.",
+     "blanks": [
+      {
+       "accept": [
+        "has been delayed",
+        "is delayed"
+       ]
+      }
+     ],
+     "explanation": "present perfect (hoặc present simple) passive."
+    },
+    {
+     "id": "g3",
+     "prompt": "The victims of the air disaster ____ (name) earlier this morning.",
+     "blanks": [
+      {
+       "accept": [
+        "were named"
+       ]
+      }
+     ],
+     "explanation": "\"earlier this morning\" → past simple."
+    },
+    {
+     "id": "g4",
+     "prompt": "A new medicine to help fight cancer ____ (develop) in Cambridge at the moment.",
+     "blanks": [
+      {
+       "accept": [
+        "is being developed"
+       ]
+      }
+     ],
+     "explanation": "\"at the moment\" → present continuous."
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L3-E04",
+   "lessonCode": "M2-U03-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 4,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Active to passive (Ex. 13)",
+   "instruction": "Read these news headlines written in the active, then change them to the passive.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "People blame all the wet weather on climate change. → Climate change ____ all the wet weather.",
+     "blanks": [
+      {
+       "accept": [
+        "is blamed for"
+       ]
+      }
+     ],
+     "explanation": "blame sth on sb/sth = blame sb/sth for sth."
+    },
+    {
+     "id": "g2",
+     "prompt": "Police found the Hollywood actor unconscious in his Manhattan apartment. → The Hollywood actor ____ unconscious in his Manhattan apartment.",
+     "blanks": [
+      {
+       "accept": [
+        "was found"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "Researchers have recovered treasure from a sunken Spanish ship. → Treasure ____ from a sunken Spanish ship.",
+     "blanks": [
+      {
+       "accept": [
+        "has been recovered"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "Today, the public are celebrating a royal wedding. → A royal wedding ____ today.",
+     "blanks": [
+      {
+       "accept": [
+        "is being celebrated"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L4-E01",
+   "lessonCode": "M2-U03-L4",
+   "order": 1,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "categorize",
+   "title": "Expressions of attitude (Ex. 6)",
+   "instruction": "Listen to the conversations again and write the key words and expressions which express the speaker's attitude. Decide whether each is positive, negative or neutral.",
+   "categories": [
+    {
+     "id": "p",
+     "label": "Positive"
+    },
+    {
+     "id": "n",
+     "label": "Negative"
+    },
+    {
+     "id": "u",
+     "label": "Neutral"
+    }
+   ],
+   "items": [
+    {
+     "id": "c1",
+     "text": "I don't see how …",
+     "category": "n",
+     "explanation": "Hội thoại 1."
+    },
+    {
+     "id": "c2",
+     "text": "certainly, definitely",
+     "category": "p",
+     "explanation": "Hội thoại 2."
+    },
+    {
+     "id": "c3",
+     "text": "Well, (to be honest,) I'm not really worried",
+     "category": "u",
+     "explanation": "Hội thoại 3."
+    },
+    {
+     "id": "c4",
+     "text": "I'm all for that; it's a good thing",
+     "category": "p",
+     "explanation": "Hội thoại 4."
+    },
+    {
+     "id": "c5",
+     "text": "I can't seriously believe that; I really don't think …",
+     "category": "n",
+     "explanation": "Hội thoại 5."
+    },
+    {
+     "id": "c6",
+     "text": "It's all the same to me; it shouldn't matter",
+     "category": "u",
+     "explanation": "Hội thoại 6."
+    }
+   ]
+  },
+  {
+   "code": "M2-U03-L4-E02",
+   "lessonCode": "M2-U03-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Why are the other options wrong? (Ex. 8)",
+   "instruction": "\"Dr Thornton thinks studying the Mars expedition is a good idea because … C the students will have the chance to study it until it ends.\" Answer these questions to find out why the other two options are not correct.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What does Dr Thornton say is actually successful?",
+     "options": [
+      {
+       "id": "A",
+       "text": "the Pluto project"
+      },
+      {
+       "id": "B",
+       "text": "the Mars project"
+      },
+      {
+       "id": "C",
+       "text": "the Chinese Moon project"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Cô nói dự án Pluto thành công, không nói vậy về Mars → A sai."
+    },
+    {
+     "id": "q2",
+     "prompt": "Which expedition is sending robots and machines to find a suitable place for a colony?",
+     "options": [
+      {
+       "id": "A",
+       "text": "a Chinese project on the Moon"
+      },
+      {
+       "id": "B",
+       "text": "the Mars expedition"
+      },
+      {
+       "id": "C",
+       "text": "the Pluto expedition"
+      }
+     ],
+     "answer": "A",
+     "explanation": "→ B sai."
+    },
+    {
+     "id": "q3",
+     "prompt": "What time reference do you hear about the Mars project?",
+     "options": [
+      {
+       "id": "A",
+       "text": "It will last six months — just the right length of time for the students."
+      },
+      {
+       "id": "B",
+       "text": "It will last ten years."
+      },
+      {
+       "id": "C",
+       "text": "It has already ended."
+      }
+     ],
+     "answer": "A",
+     "explanation": "→ C đúng."
+    }
+   ]
+  }
+ ]
+}

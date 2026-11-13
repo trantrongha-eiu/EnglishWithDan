@@ -20,6 +20,7 @@ const path = require('path');
 const LEVELS = {
   m0: { src: 'm0', out: 'mindset0', prefix: 'M0', course: 'MINDSET-0' },
   m1: { src: 'm1', out: 'mindset1', prefix: 'M1', course: 'MINDSET-1' },
+  m2: { src: 'm2', out: 'mindset2', prefix: 'M2', course: 'MINDSET-2' },
 };
 
 const KEYS = [

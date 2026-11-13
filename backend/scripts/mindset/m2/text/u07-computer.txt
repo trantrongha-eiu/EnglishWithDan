@@ -1,0 +1,9 @@
+## How the modern computer works
+
+The mouse and keyboard are input units: ways of getting information into your computer. Most computers store all this information on a hard drive (a huge magnetic memory). However, smaller computer-based devices like digital cameras and mobile phones use other kinds of storage, such as flash memory cards.
+
+The computer's processor, also known as the central processing unit, is a microchip* buried deep inside. As it is used it becomes incredibly hot and a fan prevents the computer from overheating.
+
+Many computers now have LCD screens, capable of displaying high-resolution graphics, such as very clear and detailed photographs. Many computers also have loudspeakers and can be connected to a printer.
+
+*microchip – a very small part of a computer or machine that does calculations or stores information

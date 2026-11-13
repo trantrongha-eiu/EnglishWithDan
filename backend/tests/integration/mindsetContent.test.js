@@ -26,6 +26,7 @@ jest.setTimeout(240000);
 const COURSES = [
   { dir: 'mindset0', code: 'MINDSET-0', name: 'Mindset 0', units: 10 },
   { dir: 'mindset1', code: 'MINDSET-1', name: 'Mindset 1', units: 8 },
+  { dir: 'mindset2', code: 'MINDSET-2', name: 'Mindset 2', units: 8 },
 ];
 function loadUnits(dir) {
   const DIR = path.join(__dirname, '../../scripts/data', dir);
