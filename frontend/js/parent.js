@@ -625,9 +625,11 @@
     },
     speaking: function (s) {
       return '<li class="ph-row"><div class="ph-row-main"><div class="ph-row-title">' + esc(s.topic || 'Speaking') + ' <span class="ph-muted">· Part ' + esc(String(s.part || '')) + '</span></div>' +
-        '<div class="ph-row-sub">' + fmtDate(s.date) + ' · Chấm tự động (AI)' + (s.provisional ? ' · chưa tính phát âm' : '') + '</div>' +
-        chips([['Trôi chảy', s.fluency], ['Từ vựng', s.vocabulary], ['Ngữ pháp', s.grammar], ['Phát âm', s.pronunciation]]) + '</div>' +
-        '<div class="ph-row-side"><div class="ph-band">' + band(s.overallBand) + '</div><div class="ph-row-sub">Band</div></div></li>';
+        '<div class="ph-row-sub">' + fmtDate(s.date) + (s.reviewedAt ? ' · Giáo viên đã chấm' : ' · Chấm tự động (AI)') + (s.provisional ? ' · chưa tính phát âm' : '') + '</div>' +
+        chips([['Trôi chảy', s.fluency], ['Từ vựng', s.vocabulary], ['Ngữ pháp', s.grammar], ['Phát âm', s.pronunciation]]) +
+        note('Nhận xét của giáo viên', s.teacherNote) + '</div>' +
+        // The teacher's band wins over the AI's when there is one.
+        '<div class="ph-row-side"><div class="ph-band">' + band(s.teacherBand != null ? s.teacherBand : s.overallBand) + '</div><div class="ph-row-sub">' + (s.teacherBand != null ? 'Band GV' : 'Band AI') + '</div></div></li>';
     },
   };
 

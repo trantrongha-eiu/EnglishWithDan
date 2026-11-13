@@ -1,6 +1,7 @@
 'use strict';
 
 // Extracted from routes/tuition.js, verbatim logic.
+const mongoose = require('mongoose');
 const mediaStore = require('./mediaStore');
 const TuitionFee = require('../models/TuitionFee');
 const TuitionSettings = require('../models/TuitionSettings');
@@ -106,6 +107,28 @@ async function resetTuitionReminderCountIfCaughtUp(studentId, now = new Date()) 
   }
 }
 
+// Fee fields a staff form sends — checked before writing. Missing month on
+// a monthly fee used to save a "Tháng undefined" row; a negative / NaN
+// amount skewed every total (or 500'd); a course fee with no name showed
+// as an empty "khóa ''".
+const MIN_YEAR = 2000;
+const MAX_YEAR = 2100;
+function feeFieldErrors({ feeType, month, year, courseName, amount }, { partial = false } = {}) {
+  if (amount !== undefined || !partial) {
+    const n = Number(amount);
+    if (amount === '' || amount === null || !Number.isFinite(n) || n < 0) return 'Số tiền không hợp lệ';
+  }
+  if (feeType !== undefined && !['monthly', 'course'].includes(feeType)) return 'Loại học phí không hợp lệ';
+  if (feeType === 'monthly' || (partial && (month !== undefined || year !== undefined))) {
+    if ((!partial || month !== undefined) && !(Number.isInteger(Number(month)) && Number(month) >= 1 && Number(month) <= 12)) return 'Tháng không hợp lệ';
+    if ((!partial || year !== undefined) && !(Number.isInteger(Number(year)) && Number(year) >= MIN_YEAR && Number(year) <= MAX_YEAR)) return 'Năm không hợp lệ';
+  }
+  if (feeType === 'course' && !partial && !String(courseName || '').trim()) return 'Vui lòng nhập tên khóa học';
+  return null;
+}
+const toBool = (v) => (v === true || v === 'true' ? true : v === false || v === 'false' ? false : undefined);
+const validId = (id) => mongoose.isValidObjectId(id);
+
 async function getSettings() {
   return TuitionSettings.getSingleton();
 }
@@ -117,10 +140,14 @@ async function updateSettings(body) {
   if (bankName    !== undefined) s.bankName    = bankName;
   if (bankAccount !== undefined) s.bankAccount = bankAccount;
   if (accountName !== undefined) s.accountName = accountName;
-  if (defaultMonthlyFee !== undefined) s.defaultMonthlyFee = Number(defaultMonthlyFee);
+  if (defaultMonthlyFee !== undefined && Number.isFinite(Number(defaultMonthlyFee)) && Number(defaultMonthlyFee) >= 0) {
+    s.defaultMonthlyFee = Number(defaultMonthlyFee);
+  }
   if (paymentNote !== undefined) s.paymentNote = paymentNote;
-  if (autoRemindEnabled  !== undefined) s.autoRemindEnabled  = Boolean(autoRemindEnabled);
-  if (autoRemindDay      !== undefined) s.autoRemindDay      = Number(autoRemindDay) || 10;
+  if (autoRemindEnabled  !== undefined) s.autoRemindEnabled  = toBool(autoRemindEnabled) ?? Boolean(autoRemindEnabled);
+  // 1–28: a day the cron can meet every month (29/30/31 silently skipped
+  // February / the 30-day months — no reminder at all those months).
+  if (autoRemindDay      !== undefined) s.autoRemindDay      = Math.min(28, Math.max(1, Math.floor(Number(autoRemindDay)) || 10));
   if (autoRemindEndMonth !== undefined) s.autoRemindEndMonth = autoRemindEndMonth ? Number(autoRemindEndMonth) : null;
   if (autoRemindEndYear  !== undefined) s.autoRemindEndYear  = autoRemindEndYear  ? Number(autoRemindEndYear)  : null;
   await s.save();
@@ -165,23 +192,29 @@ async function feeSearchFilter(q) {
 }
 
 async function listFees(query) {
-  const { studentId, month, year, feeType, isPaid, studentNotified, q, page = 1, limit = 50 } = query;
+  const { studentId, month, year, feeType, isPaid, studentNotified, q } = query;
+  // Clamped: page=abc / limit=0 used to 500 or return everything.
+  const page = Math.max(1, parseInt(query.page, 10) || 1);
+  const limit = Math.min(500, Math.max(1, parseInt(query.limit, 10) || 50));
   const filter = {};
   if (q && String(q).trim()) Object.assign(filter, await feeSearchFilter(q));
-  if (studentId) filter.studentId = studentId;
+  if (studentId) {
+    if (!validId(studentId)) return { fees: [], total: 0, stats: { totalAmount: 0, paidAmount: 0, pendingNotify: 0 } };
+    filter.studentId = studentId;
+  }
   if (month)     filter.month     = Number(month);
   if (year)      filter.year      = Number(year);
   if (feeType)   filter.feeType   = feeType;
   if (isPaid !== undefined && isPaid !== '') filter.isPaid = isPaid === 'true';
   if (studentNotified !== undefined && studentNotified !== '') filter.studentNotified = studentNotified === 'true';
 
-  const skip = (Number(page) - 1) * Number(limit);
+  const skip = (page - 1) * limit;
   const [total, fees, aggStats] = await Promise.all([
     TuitionFee.countDocuments(filter),
     TuitionFee.find(filter)
       .populate('studentId', 'username email firstName lastName tuitionReminderCount')
       .sort({ year: -1, month: -1, createdAt: -1 })
-      .skip(skip).limit(Number(limit)).lean(),
+      .skip(skip).limit(limit).lean(),
     TuitionFee.aggregate([
       { $match: filter },
       { $group: {
@@ -404,9 +437,24 @@ async function getClassTuition(cls, { month, year } = {}, now = new Date()) {
 }
 
 async function updateFee(id, body, sender) {
-  const { amount, isPaid, note, courseName, month, year, feeType } = body;
+  const { amount, note, courseName, month, year, feeType } = body;
+  // "true"/"false" strings were stored as booleans by Mongoose but missed
+  // the `isPaid === true` check below — no confirmation message, no reset.
+  const isPaid = body.isPaid === undefined ? undefined : toBool(body.isPaid);
+  if (!validId(id)) return null;
   const fee = await TuitionFee.findById(id);
   if (!fee) return null;
+  const nextType = feeType !== undefined ? feeType : fee.feeType;
+  const fieldErr = feeFieldErrors({
+    feeType, amount, courseName,
+    // switching course → monthly needs a real month/year
+    month: month !== undefined ? month : (nextType === 'monthly' && fee.feeType !== 'monthly' ? fee.month : undefined),
+    year: year !== undefined ? year : (nextType === 'monthly' && fee.feeType !== 'monthly' ? fee.year : undefined),
+  }, { partial: true });
+  if (fieldErr) { const e = new Error(fieldErr); e.status = 400; throw e; }
+  if (nextType === 'course' && courseName !== undefined && !String(courseName).trim()) {
+    const e = new Error('Vui lòng nhập tên khóa học'); e.status = 400; throw e;
+  }
 
   const amountChanged = amount !== undefined && Number(amount) !== fee.amount;
   const monthChanged  = month  !== undefined && Number(month)  !== fee.month;
@@ -429,6 +477,10 @@ async function updateFee(id, body, sender) {
   // kept showing/filtering under its old month/year with the newly-typed
   // courseName orphaned on the record with nothing referencing it).
   if (feeType    !== undefined) fee.feeType    = feeType;
+  // A course fee keeps no month/year: left behind they made the bulk
+  // "Nhắc tháng N" (which matches on month/year only) remind a course fee
+  // as if it were that month's tuition.
+  if (fee.feeType === 'course') { fee.month = undefined; fee.year = undefined; }
 
   // Fee details changed after the student already confirmed payment under the
   // old figures — clear that confirmation so admin doesn't mistake it for
@@ -462,15 +514,21 @@ async function updateFee(id, body, sender) {
 }
 
 async function deleteFee(id) {
+  if (!validId(id)) return;
   const fee = await TuitionFee.findByIdAndDelete(id);
   // Deleting an unpaid fee (e.g. it was created by mistake) can itself
   // resolve the "still owes money" nag, same as marking it paid.
   if (fee && !fee.isPaid) await resetTuitionReminderCountIfCaughtUp(fee.studentId);
 }
 
+// null = no such fee (or its student account was deleted — the populate
+// came back null and the old code crashed on fee.studentId._id); 'paid' =
+// nothing to remind about (it used to tell the student they still owed it).
 async function sendReminder(feeId, customMessage, sender) {
+  if (!validId(feeId)) return null;
   const fee = await TuitionFee.findById(feeId).populate('studentId', 'username email').lean();
-  if (!fee) return null;
+  if (!fee || !fee.studentId) return null;
+  if (fee.isPaid) return 'paid';
   await Message.create({
     fromId: sender._id,
     fromName: sender.username,
@@ -492,8 +550,10 @@ async function sendReminder(feeId, customMessage, sender) {
 }
 
 async function sendBulkReminders({ month, year, customMessage }, sender) {
-  const fees = await TuitionFee.find({ month: Number(month), year: Number(year), isPaid: false })
-    .populate('studentId', 'username email _id').lean();
+  // Monthly fees of a deleted student come back with studentId null — one
+  // such row used to crash the whole "Nhắc cả tháng" (nobody got reminded).
+  const fees = (await TuitionFee.find({ feeType: 'monthly', month: Number(month), year: Number(year), isPaid: false })
+    .populate('studentId', 'username email _id').lean()).filter((f) => f.studentId);
   if (!fees.length) return 0;
   const monthLabel = `tháng ${month}/${year}`;
   const msgs = fees.map(fee => ({
@@ -558,13 +618,20 @@ async function getMyFees(studentId) {
   return { fees, settings };
 }
 
+// "Đã chuyển khoản" is reported once: a second press (double click, the
+// page reloaded, another tab) used to send every admin another copy.
+// Atomic flip, so two simultaneous presses can't both send it either.
 async function notifyPayment(feeId, student) {
-  const fee = await TuitionFee.findOne({ _id: feeId, studentId: student._id });
-  if (!fee) return { status: 'not_found' };
-  if (fee.isPaid) return { status: 'already_paid' };
-  fee.studentNotified   = true;
-  fee.studentNotifiedAt = new Date();
-  await fee.save();
+  if (!validId(feeId)) return { status: 'not_found' };
+  const current = await TuitionFee.findOne({ _id: feeId, studentId: student._id }).select('isPaid studentNotified').lean();
+  if (!current) return { status: 'not_found' };
+  if (current.isPaid) return { status: 'already_paid' };
+  const fee = await TuitionFee.findOneAndUpdate(
+    { _id: feeId, studentId: student._id, isPaid: false, studentNotified: { $ne: true } },
+    { $set: { studentNotified: true, studentNotifiedAt: new Date() } },
+    { new: true }
+  );
+  if (!fee) return { status: 'already_notified' };
   const admins = await User.find({ role: 'admin' }, '_id username').lean();
   const monthLabel = fee.feeType === 'monthly' ? `tháng ${fee.month}/${fee.year}` : `khóa "${fee.courseName}"`;
   const amount = fee.amount.toLocaleString('vi-VN');
@@ -589,5 +656,5 @@ module.exports = {
   getMySummary, getMyFees, notifyPayment,
   buildReminderBody, sendTuitionReminderEmail, bumpTuitionReminderCount, isBilledThisMonth,
   resetTuitionReminderCountIfCaughtUp, remindParents,
-  feeLabel, fmtVNDAmount, PAYMENT_DUE_DAY, PAYMENT_DEADLINE_DAY,
+  feeLabel, fmtVNDAmount, PAYMENT_DUE_DAY, PAYMENT_DEADLINE_DAY, feeFieldErrors,
 };

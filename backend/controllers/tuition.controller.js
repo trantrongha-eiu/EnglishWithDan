@@ -6,7 +6,9 @@
 // switching to catchAsync would change the client-visible error message on
 // every failure in this file. `guard()` below preserves that exact shape
 // while still removing the repeated try/catch boilerplate.
+const mongoose = require('mongoose');
 const tuitionService = require('../services/tuitionService');
+const User = require('../models/User');
 
 function guard(logTag, handler) {
   return async (req, res) => {
@@ -82,6 +84,12 @@ exports.createFee = guard('POST / error:', async (req, res) => {
   if (!studentId || !feeType || amount === undefined) {
     return res.status(400).json({ success: false, message: 'Thiếu thông tin bắt buộc' });
   }
+  const fieldErr = tuitionService.feeFieldErrors({ feeType, month, year, courseName, amount });
+  if (fieldErr) return res.status(400).json({ success: false, message: fieldErr });
+  // A fee for a deleted / mistyped account was saved against nobody.
+  if (!mongoose.isValidObjectId(studentId) || !(await User.exists({ _id: studentId }))) {
+    return res.status(400).json({ success: false, message: 'Không tìm thấy học viên' });
+  }
   if (feeType === 'monthly' && Number(monthCount) > 1) {
     const { fees, skipped } = await tuitionService.createMonthlyFees({ studentId, month, year, monthCount, amount, note, createdBy: req.user._id });
     if (!fees.length) return res.status(400).json({ success: false, message: 'Tất cả các tháng này đã có học phí cho học viên này' });
@@ -97,7 +105,15 @@ exports.createFee = guard('POST / error:', async (req, res) => {
 });
 
 exports.updateFee = guard('error:', async (req, res) => {
-  const fee = await tuitionService.updateFee(req.params.id, req.body, req.user);
+  let fee;
+  try {
+    fee = await tuitionService.updateFee(req.params.id, req.body, req.user);
+  } catch (e) {
+    if (e.status === 400) return res.status(400).json({ success: false, message: e.message });
+    // Moved onto a month this student already has a fee for.
+    if (e.code === 11000) return res.status(400).json({ success: false, message: 'Học viên này đã có học phí tháng đó' });
+    throw e;
+  }
   if (!fee) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
   res.json({ success: true, fee });
 });
@@ -110,6 +126,7 @@ exports.deleteFee = guard('error:', async (req, res) => {
 exports.sendReminder = guard('error:', async (req, res) => {
   const sent = await tuitionService.sendReminder(req.params.id, req.body.customMessage, req.user);
   if (!sent) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+  if (sent === 'paid') return res.status(400).json({ success: false, message: 'Khoản học phí này đã thu — không cần nhắc' });
   res.json({ success: true, message: 'Đã gửi nhắc nhở' });
 });
 
@@ -136,5 +153,6 @@ exports.notifyPayment = guard('error:', async (req, res) => {
   const result = await tuitionService.notifyPayment(req.params.id, req.user);
   if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy' });
   if (result.status === 'already_paid') return res.json({ success: true, message: 'Học phí đã được xác nhận' });
+  if (result.status === 'already_notified') return res.json({ success: true, message: 'Bạn đã báo chuyển khoản rồi — admin sẽ xác nhận sớm nhất!' });
   res.json({ success: true, message: 'Đã gửi thông báo đến admin' });
 });

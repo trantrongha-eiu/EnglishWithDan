@@ -120,10 +120,12 @@ async function getScores(studentId) {
       .sort({ submittedAt: -1 }).limit(SCORE_LIMIT)
       .select('examName submissionType submittedAt grading.overallBand grading.adminNote grading.confirmedAt grading.task1.bandScore grading.task1.overallFeedback grading.task2.bandScore grading.task2.overallFeedback')
       .lean(),
-    // Speaking is AI-graded (no teacher review step) — bands only.
+    // Speaking: AI bands, plus the teacher's own grade + comment once the
+    // admin review queue (teacherReviewService, 2026-11-12) has reviewed it.
+    // Course mirrors (source 'course') are reviewed on their WT1 copy.
     SpeakingAttempt.find({ userId: studentId, status: 'analyzed', 'aiFeedback.noGenuineAnswer': { $ne: true } })
       .sort({ createdAt: -1 }).limit(SCORE_LIMIT)
-      .select('topic part createdAt aiFeedback.overallBand aiFeedback.fluency aiFeedback.vocabulary aiFeedback.grammar aiFeedback.pronunciation aiFeedback.provisional')
+      .select('topic part createdAt aiFeedback.overallBand aiFeedback.fluency aiFeedback.vocabulary aiFeedback.grammar aiFeedback.pronunciation aiFeedback.provisional teacherReview.band teacherReview.note teacherReview.reviewedAt')
       .lean(),
   ]);
 
@@ -176,6 +178,9 @@ async function getScores(studentId) {
       grammar: round1(s.aiFeedback?.grammar) || null,
       pronunciation: round1(s.aiFeedback?.pronunciation) || null,
       provisional: !!s.aiFeedback?.provisional,
+      teacherBand: s.teacherReview?.reviewedAt ? (s.teacherReview.band ?? null) : null,
+      teacherNote: s.teacherReview?.reviewedAt ? (s.teacherReview.note || '') : '',
+      reviewedAt: s.teacherReview?.reviewedAt || null,
     })),
   };
 }

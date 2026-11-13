@@ -612,7 +612,8 @@ export default function Tuition() {
                       </td>
                       <td>
                         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                          <button className="btn btn-ghost btn-sm" title="Nhắc nhở" onClick={() => { setRemindFee(f); setRemindMsg(''); }}>📩</button>
+                          {/* A paid fee has nothing to remind about (the server refuses it too). */}
+                          {!f.isPaid && <button className="btn btn-ghost btn-sm" title="Nhắc nhở" onClick={() => { setRemindFee(f); setRemindMsg(''); }}>📩</button>}
                           {f.studentId?.tuitionReminderCount > 0 && (
                             <span
                               className={`badge ${f.studentId.tuitionReminderCount >= 3 ? 'badge-red' : 'badge-gray'}`}

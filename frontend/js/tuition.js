@@ -15,7 +15,7 @@ const MONTHS = ['','Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Thán
 function fmtPeriod(fee) {
   return fee.feeType === 'monthly'
     ? (MONTHS[fee.month] || 'Tháng ' + fee.month) + '/' + fee.year
-    : (fee.courseName || 'Khóa học');
+    : escHtml(fee.courseName || 'Khóa học'); // admin-typed, rendered via innerHTML
 }
 function fmtTypeLabel(fee) {
   return fee.feeType === 'monthly' ? 'Học phí tháng' : 'Học phí khóa học';
