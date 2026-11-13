@@ -73,7 +73,7 @@ async function getLesson(slug) {
 
 // Answers come from the client, so every number is re-derived/clamped here
 // against the lesson's real segment list rather than trusted as sent.
-async function saveAttempt(slug, { mode, answers }, userId) {
+async function saveAttempt(slug, { mode, answers, sessionId }, userId) {
   if (!MODES.includes(mode)) throw new ValidationError('Chế độ luyện không hợp lệ');
   const lesson = await ShadowingLesson.findOne({ slug: String(slug), isPublished: true })
     .select('_id title segments').lean();
@@ -98,17 +98,24 @@ async function saveAttempt(slug, { mode, answers }, userId) {
   const scoreSum = safeAnswers.reduce((n, a) => n + a.score, 0);
   const avgScore = Math.round(scoreSum / lesson.segments.length);
   const accuracy = Math.round(scoreSum / safeAnswers.length);
-  const attempt = await ShadowingAttempt.create({
-    userId,
-    lessonId: lesson._id,
+  const fields = {
     lessonTitle: lesson.title,
-    mode,
     answers: safeAnswers,
     totalSegments: lesson.segments.length,
     avgScore,
     accuracy,
     submittedAt: new Date(),
-  });
+  };
+  // Same session saved again (tab hidden, then back to the list): update
+  // its row — a new row each time would inflate the session count (badges).
+  const sid = typeof sessionId === 'string' && /^[\w-]{8,64}$/.test(sessionId) ? sessionId : null;
+  const attempt = sid
+    ? await ShadowingAttempt.findOneAndUpdate(
+      { userId, lessonId: lesson._id, mode, sessionId: sid },
+      { $set: fields },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    )
+    : await ShadowingAttempt.create({ userId, lessonId: lesson._id, mode, ...fields });
   // Accuracy >=70% +1 🔥, >=90% +2 🔥 once at least 5 câu are scored (once
   // per lesson + mode per day; a later save of the same lesson only tops up).
   if (safeAnswers.length >= MIN_STREAK_SENTENCES) {

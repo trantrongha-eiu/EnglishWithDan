@@ -44,8 +44,10 @@
       if (!this.supported()) this.showNote('Trình duyệt này không tự nhận diện giọng nói (Chrome trên máy tính thường có). Bạn vẫn ghi âm được để nghe lại — hãy mở mục "Bản ghi lời nói" bên dưới và tự gõ nội dung trước khi nộp.', true);
 
       mic.addEventListener('click', function () { self.recording ? self.stop() : self.start(); });
+      // "Bỏ qua, ghi âm ngay" and the end of the countdown both say the mic
+      // turns on — it used to only unlock the mic button.
       var skip = document.getElementById('sc-prep-skip');
-      if (skip) skip.addEventListener('click', function () { self.endPrep(); });
+      if (skip) skip.addEventListener('click', function () { self.endPrep(true); });
       var redo = document.getElementById('sc-redo');
       if (redo) redo.addEventListener('click', function () { self.reset(); });
 
@@ -57,15 +59,16 @@
           left--;
           var n = document.getElementById('sc-prep-n');
           if (n) n.textContent = left;
-          if (left <= 0) self.endPrep();
+          if (left <= 0) self.endPrep(true);
         }, 1000);
       }
     },
-    endPrep: function () {
+    endPrep: function (autoStart) {
       if (this.prepT) { clearInterval(this.prepT); this.prepT = null; }
       var p = document.getElementById('sc-prep'); if (p) p.remove();
       var mic = document.getElementById('sc-mic'); if (mic) mic.disabled = false;
       var lab = document.getElementById('sc-mic-label'); if (lab) lab.textContent = 'Bấm để bắt đầu ghi âm';
+      if (autoStart && mic && !this.recording) this.start();
     },
     showNote: function (msg) {
       var n = document.getElementById('sc-note');
@@ -74,7 +77,7 @@
     },
     reset: function () {
       this.stop();
-      this.finalText = ''; this.t0 = 0;
+      this.finalText = ''; this.t0 = 0; this.t1 = 0; this.chunks = [];
       var ta = document.getElementById('sc-transcript'); if (ta) ta.value = '';
       var au = document.getElementById('sc-audio'); if (au) { au.hidden = true; au.removeAttribute('src'); }
       var t = document.getElementById('sc-time'); if (t) t.hidden = true;
@@ -95,6 +98,8 @@
       var au = document.getElementById('sc-audio');
       this.finalText = (ta && ta.value.trim()) ? ta.value.trim() + ' ' : '';
       this.recording = true;
+      this.t1 = 0;
+      var session = this.session = (this.session || 0) + 1;
       if (au) { au.hidden = true; au.removeAttribute('src'); }
       if (mic) { mic.classList.add('rec'); mic.innerHTML = '<i class="fas fa-stop"></i>'; }
       if (lab) lab.textContent = 'Đang ghi âm — bấm để dừng';
@@ -114,6 +119,9 @@
       // audio capture (optional)
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder) {
         navigator.mediaDevices.getUserMedia({ audio: true }).then(function (s) {
+          // Stopped (or restarted) while the permission prompt was up — the
+          // late stream would otherwise keep the mic on with nothing to stop it.
+          if (!self.recording || session !== self.session) { s.getTracks().forEach(function (t) { t.stop(); }); return; }
           self.stream = s; self.chunks = [];
           try {
             self.mr = new MediaRecorder(s);
@@ -167,6 +175,7 @@
     // below still happens immediately, only the returned Promise is async.
     stop: function () {
       if (!this.recording && !this.rec && !this.mr) return Promise.resolve();
+      if (this.recording) this.t1 = Date.now();
       this.recording = false;
       var mic = document.getElementById('sc-mic');
       var lab = document.getElementById('sc-mic-label');
@@ -193,7 +202,9 @@
       if (this.stream) { this.stream.getTracks().forEach(function (t) { t.stop(); }); this.stream = null; }
       return donePromise;
     },
-    elapsed: function () { return this.t0 ? Math.round((Date.now() - this.t0) / 1000) : 0; },
+    // Seconds actually recorded — up to the stop, not up to "Nộp bài": the
+    // time spent listening back used to be sent as the answer's duration.
+    elapsed: function () { return this.t0 ? Math.round(((this.t1 || Date.now()) - this.t0) / 1000) : 0; },
     // The recorded audio Blob, or null. Sent to the server so Gemini grades
     // Pronunciation from the real recording. Only reliable after the Promise
     // from stop() has resolved — see its comment.
@@ -205,7 +216,7 @@
     teardown: function () {
       if (this.prepT) { clearInterval(this.prepT); this.prepT = null; }
       if (this.recording || this.rec || this.mr || this.stream) this.stop();
-      this.finalText = ''; this.t0 = 0; this.chunks = [];
+      this.finalText = ''; this.t0 = 0; this.t1 = 0; this.chunks = [];
     }
   };
 
@@ -557,6 +568,8 @@
     return x == null ? '' : String(x);
   }
   function scfBar(label, n) {
+    // Nearest half band — older multi-question summaries stored raw means.
+    if (n != null && !isNaN(n)) n = Math.round(Number(n) * 2) / 2;
     var v = (n == null || isNaN(n)) ? 0 : Math.max(0, Math.min(9, n));
     var col = v >= 7 ? '#22c55e' : v >= 5 ? '#f59e0b' : '#ef4444';
     return '<div class="scf-bar"><span class="lb">' + label + '</span>' +

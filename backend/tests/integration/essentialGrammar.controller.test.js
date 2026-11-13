@@ -76,7 +76,7 @@ describe('Student progress: GET/POST /:id/attempt (auth required, no premium gat
   test('requires authentication (401)', async () => {
     const lesson = await createEssentialGrammarLesson();
     expect((await request(app).get(`/api/essential-grammar/${lesson._id}/attempt`)).status).toBe(401);
-    expect((await request(app).post(`/api/essential-grammar/${lesson._id}/attempt`).send({ totalCount: 1 })).status).toBe(401);
+    expect((await request(app).post(`/api/essential-grammar/${lesson._id}/attempt`).send({ answers: [] })).status).toBe(401);
   });
 
   test('a plain free-plan student (no premium) can submit and read an attempt', async () => {
@@ -90,7 +90,7 @@ describe('Student progress: GET/POST /:id/attempt (auth required, no premium gat
     const submitRes = await request(app)
       .post(`/api/essential-grammar/${lesson._id}/attempt`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ correctCount: 1, totalCount: 2, timeSpent: 10, wrongQuestions: ['q2'] });
+      .send({ answers: [{ ref: 'q:0:0', chosen: 1 }, { ref: 'q:0:1', chosen: 2 }], timeSpent: 10 });
     expect(submitRes.status).toBe(200);
     expect(submitRes.body.attempt.score).toBe(50);
     expect(submitRes.body.attempt.bestScore).toBe(50);
@@ -104,13 +104,13 @@ describe('Student progress: GET/POST /:id/attempt (auth required, no premium gat
     expect(res.status).toBe(404);
   });
 
-  test('submitAttempt rejects a missing/invalid totalCount (400)', async () => {
+  test('submitAttempt rejects a bare correctCount/totalCount — only server-graded answers are accepted (400)', async () => {
     const lesson = await createEssentialGrammarLesson();
     const user = await createStudent();
     const res = await request(app)
       .post(`/api/essential-grammar/${lesson._id}/attempt`)
       .set('Authorization', `Bearer ${signTokenFor(user)}`)
-      .send({ correctCount: 1 });
+      .send({ correctCount: 2, totalCount: 2 });
     expect(res.status).toBe(400);
   });
 
@@ -120,9 +120,9 @@ describe('Student progress: GET/POST /:id/attempt (auth required, no premium gat
     const studentB = await createStudent();
 
     await request(app).post(`/api/essential-grammar/${lesson._id}/attempt`).set('Authorization', `Bearer ${signTokenFor(studentA)}`)
-      .send({ correctCount: 2, totalCount: 2, timeSpent: 5 });
+      .send({ answers: [{ ref: 'q:0:0', chosen: 1 }, { ref: 'q:0:1', chosen: 0 }], timeSpent: 10 });
     await request(app).post(`/api/essential-grammar/${lesson._id}/attempt`).set('Authorization', `Bearer ${signTokenFor(studentB)}`)
-      .send({ correctCount: 0, totalCount: 2, timeSpent: 5 });
+      .send({ answers: [{ ref: 'q:0:0', chosen: 0 }, { ref: 'q:0:1', chosen: 1 }], timeSpent: 10 });
 
     const res = await request(app).get(`/api/essential-grammar/${lesson._id}/attempt/history`).set('Authorization', `Bearer ${signTokenFor(studentA)}`);
     expect(res.status).toBe(200);
@@ -143,16 +143,16 @@ describe('GET /api/essential-grammar/my-progress — best score per lesson (cros
     const other = await createStudent();
     const auth = (u) => ({ Authorization: `Bearer ${signTokenFor(u)}` });
 
-    await request(app).post(`/api/essential-grammar/${l1._id}/attempt`).set(auth(me)).send({ correctCount: 9, totalCount: 10 });
-    await request(app).post(`/api/essential-grammar/${l1._id}/attempt`).set(auth(me)).send({ correctCount: 5, totalCount: 10 });
-    await request(app).post(`/api/essential-grammar/${l2._id}/attempt`).set(auth(other)).send({ correctCount: 10, totalCount: 10 });
+    await request(app).post(`/api/essential-grammar/${l1._id}/attempt`).set(auth(me)).send({ answers: [{ ref: 'q:0:0', chosen: 1 }, { ref: 'q:0:1', chosen: 0 }], timeSpent: 10 });
+    await request(app).post(`/api/essential-grammar/${l1._id}/attempt`).set(auth(me)).send({ answers: [{ ref: 'q:0:0', chosen: 1 }, { ref: 'q:0:1', chosen: 1 }], timeSpent: 10 });
+    await request(app).post(`/api/essential-grammar/${l2._id}/attempt`).set(auth(other)).send({ answers: [{ ref: 'q:0:0', chosen: 1 }, { ref: 'q:0:1', chosen: 0 }], timeSpent: 10 });
 
     const res = await request(app).get('/api/essential-grammar/my-progress').set(auth(me));
     expect(res.status).toBe(200);
     expect(res.body.progress).toHaveLength(1);
     const row = res.body.progress[0];
     expect(String(row.lessonId)).toBe(String(l1._id));
-    expect(row.bestScore).toBe(90);
+    expect(row.bestScore).toBe(100);
     expect(row.score).toBe(50);
     expect(row.attemptCount).toBe(2);
   });
@@ -241,7 +241,7 @@ describe('Admin analytics — teacherOnly gate + not-found handling', () => {
     const student = await createStudent();
     const teacher = await createTeacher();
     await request(app).post(`/api/essential-grammar/${lesson._id}/attempt`).set('Authorization', `Bearer ${signTokenFor(student)}`)
-      .send({ correctCount: 1, totalCount: 1, timeSpent: 5 });
+      .send({ answers: [{ ref: 'q:0:0', chosen: 1 }, { ref: 'q:0:1', chosen: 0 }], timeSpent: 10 });
 
     const res = await request(app).get(`/api/essential-grammar/admin/${lesson._id}/students`).set('Authorization', `Bearer ${signTokenFor(teacher)}`);
     expect(res.status).toBe(200);
@@ -254,7 +254,7 @@ describe('Admin analytics — teacherOnly gate + not-found handling', () => {
     const student = await createStudent();
     const teacher = await createTeacher();
     await request(app).post(`/api/essential-grammar/${lesson._id}/attempt`).set('Authorization', `Bearer ${signTokenFor(student)}`)
-      .send({ correctCount: 1, totalCount: 1, timeSpent: 5 });
+      .send({ answers: [{ ref: 'q:0:0', chosen: 1 }, { ref: 'q:0:1', chosen: 0 }], timeSpent: 10 });
 
     const res = await request(app)
       .get(`/api/essential-grammar/admin/${lesson._id}/students/${student._id}/history`)
@@ -268,7 +268,7 @@ describe('Admin analytics — teacherOnly gate + not-found handling', () => {
     const student = await createStudent();
     const teacher = await createTeacher();
     await request(app).post(`/api/essential-grammar/${lesson._id}/attempt`).set('Authorization', `Bearer ${signTokenFor(student)}`)
-      .send({ correctCount: 1, totalCount: 1, timeSpent: 5 });
+      .send({ answers: [{ ref: 'q:0:0', chosen: 1 }, { ref: 'q:0:1', chosen: 0 }], timeSpent: 10 });
 
     const res = await request(app).get(`/api/essential-grammar/admin/${lesson._id}/export.csv`).set('Authorization', `Bearer ${signTokenFor(teacher)}`);
     expect(res.status).toBe(200);

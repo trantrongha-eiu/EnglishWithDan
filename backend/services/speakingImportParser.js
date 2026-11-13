@@ -205,11 +205,13 @@ function parseSpeakingText(raw) {
       }
     }
 
-    // dup questions within a part
+    // dup questions within a part — the same loose key the import matches
+    // on, so "What's your favourite…" + "What is your favorite…" in one
+    // paste is caught here instead of becoming two near-identical questions.
     for (const [part, list] of [['1', p1], ['3', p3]]) {
       const seen = new Set();
       list.forEach(q => {
-        const k = q.toLowerCase().replace(/[’‘`]/g, "'").replace(/\s+/g, ' ');
+        const k = normQuestionKey(q);
         if (seen.has(k)) errors.push(`Topic ${label} Part ${part}: câu hỏi trùng ("${q.slice(0, 50)}")`);
         else seen.add(k);
       });

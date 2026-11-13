@@ -192,7 +192,9 @@ exports.submitSpeaking = async (req, res) => {
     const audio = req.file
       ? speakingService.normalizeAudioForGemini(req.file.buffer, req.file.mimetype)
       : null;
-    const durationSec = Number(duration) || 0;
+    // Client-measured; clamped so a bogus value can't skew the fluency /
+    // length grading or the stored history (30 min is far past any answer).
+    const durationSec = Math.min(1800, Math.max(0, Math.round(Number(duration) || 0)));
 
     // itemIndex only makes sense (and is only ever sent by the frontend)
     // for a multi-item exercise — a single-item one always takes the
@@ -258,7 +260,8 @@ exports.submitSpeaking = async (req, res) => {
           await speakingService.saveAttempt(req.user, {
             topic: ex.title || '', part,
             questionText: items.map((it) => it.prompt).filter(Boolean).join(' | '),
-            transcript: finalText, duration: durationSec, feedback: aggregate, source: 'course',
+            transcript: (aggregate.transcripts || []).filter(Boolean).join('\n\n') || finalText,
+            duration: durationSec, feedback: aggregate, source: 'course',
           });
         } catch (mirrorErr) {
           console.warn('[WT1] speaking attempt mirror failed:', mirrorErr.message);

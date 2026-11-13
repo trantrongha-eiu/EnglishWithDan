@@ -98,7 +98,7 @@ describe('mock-test advance + current + history', () => {
     const api = authed(user);
 
     const started = (await api.post('/api/mock-test/start')).body.attempt;
-    const la = await createListeningAttempt({ userId: user._id, bandScore: 6 });
+    const la = await createListeningAttempt({ userId: user._id, testId: started.bundle.listeningTestId, bandScore: 6 });
 
     const adv = await api.post(`/api/mock-test/${started._id}/advance`, { skill: 'listening', attemptId: la._id });
     expect(adv.status).toBe(200);
@@ -116,11 +116,11 @@ describe('mock-test advance + current + history', () => {
     const api = authed(user);
     const m = (await api.post('/api/mock-test/start')).body.attempt;
 
-    const la = await createListeningAttempt({ userId: user._id, bandScore: 6 });
+    const la = await createListeningAttempt({ userId: user._id, testId: m.bundle.listeningTestId, bandScore: 6 });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
     const ra = await createTestAttempt({ userId: user._id, testId: m.bundle.readingTestId, status: 'completed', extra: { bandScore: 6 } });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'reading', attemptId: ra._id });
-    const wa = await createWritingAttempt({ userId: user._id, extra: { grading: { overallBand: 6 } } });
+    const wa = await createWritingAttempt({ userId: user._id, examId: m.bundle.writingExamId, extra: { grading: { overallBand: 6 } } });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'writing', attemptId: wa._id });
     const sa = await createSpeakingAttempt({ userId: user._id, part: 2, extra: { aiFeedback: { overallBand: 6 } } });
     const last = await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'speaking', attemptId: sa._id });
@@ -144,11 +144,11 @@ describe('mock-test advance + current + history', () => {
     const api = authed(user);
     const m = (await api.post('/api/mock-test/start')).body.attempt;
 
-    const la = await createListeningAttempt({ userId: user._id, bandScore: 6 });
+    const la = await createListeningAttempt({ userId: user._id, testId: m.bundle.listeningTestId, bandScore: 6 });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
     const ra = await createTestAttempt({ userId: user._id, testId: m.bundle.readingTestId, status: 'completed', extra: { bandScore: 6 } });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'reading', attemptId: ra._id });
-    const wa = await createWritingAttempt({ userId: user._id }); // not graded yet
+    const wa = await createWritingAttempt({ userId: user._id, examId: m.bundle.writingExamId }); // not graded yet
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'writing', attemptId: wa._id });
     const sa = await createSpeakingAttempt({ userId: user._id, part: 2 });
     const last = await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'speaking', attemptId: sa._id });
@@ -194,7 +194,7 @@ describe('DELETE /api/mock-test/current — abandon the open run', () => {
     const api = authed(user);
 
     const m = (await api.post('/api/mock-test/start')).body.attempt;
-    const la = await createListeningAttempt({ userId: user._id, bandScore: 6 });
+    const la = await createListeningAttempt({ userId: user._id, testId: m.bundle.listeningTestId, bandScore: 6 });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
     await api.del('/api/mock-test/current');
 
@@ -259,11 +259,11 @@ describe('POST /api/mock-test/:id/violation — tab-switch proctoring', () => {
     const api = authed(user);
     const m = (await api.post('/api/mock-test/start')).body.attempt;
 
-    const la = await createListeningAttempt({ userId: user._id, bandScore: 6 });
+    const la = await createListeningAttempt({ userId: user._id, testId: m.bundle.listeningTestId, bandScore: 6 });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
     const ra = await createTestAttempt({ userId: user._id, testId: m.bundle.readingTestId, status: 'completed', extra: { bandScore: 6 } });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'reading', attemptId: ra._id });
-    const wa = await createWritingAttempt({ userId: user._id, extra: { grading: { overallBand: 6 } } });
+    const wa = await createWritingAttempt({ userId: user._id, examId: m.bundle.writingExamId, extra: { grading: { overallBand: 6 } } });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'writing', attemptId: wa._id });
     const sa = await createSpeakingAttempt({ userId: user._id, part: 2, extra: { aiFeedback: { overallBand: 6 } } });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'speaking', attemptId: sa._id });
@@ -295,7 +295,7 @@ describe('POST /api/mock-test/:id/violation — tab-switch proctoring', () => {
     expect(blocked.body.cooldownSeconds).toBeGreaterThan(0);
 
     // A submit that raced the disqualification can't advance the voided run.
-    const la = await createListeningAttempt({ userId: user._id, bandScore: 6 });
+    const la = await createListeningAttempt({ userId: user._id, testId: m.bundle.listeningTestId, bandScore: 6 });
     const adv = await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
     expect(adv.status).toBe(409);
   });
@@ -308,7 +308,7 @@ describe('PUT /api/admin/mock-tests/:id/scores', () => {
     const api = authed(student);
     const m = (await api.post('/api/mock-test/start')).body.attempt;
 
-    const la = await createListeningAttempt({ userId: student._id, bandScore: 6 });
+    const la = await createListeningAttempt({ userId: student._id, testId: m.bundle.listeningTestId, bandScore: 6 });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
     const ra = await createTestAttempt({ userId: student._id, testId: m.bundle.readingTestId, status: 'completed', extra: { bandScore: 7 } });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'reading', attemptId: ra._id });
@@ -349,11 +349,11 @@ describe('PUT /api/admin/mock-tests/:id/scores', () => {
     const api = authed(student);
     const m = (await api.post('/api/mock-test/start')).body.attempt;
 
-    const la = await createListeningAttempt({ userId: student._id, bandScore: 6 });
+    const la = await createListeningAttempt({ userId: student._id, testId: m.bundle.listeningTestId, bandScore: 6 });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'listening', attemptId: la._id });
     const ra = await createTestAttempt({ userId: student._id, testId: m.bundle.readingTestId, status: 'completed', extra: { bandScore: 6 } });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'reading', attemptId: ra._id });
-    const wa = await createWritingAttempt({ userId: student._id });
+    const wa = await createWritingAttempt({ userId: student._id, examId: m.bundle.writingExamId });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'writing', attemptId: wa._id });
     const sa = await createSpeakingAttempt({ userId: student._id, part: 2 });
     await api.post(`/api/mock-test/${m._id}/advance`, { skill: 'speaking', attemptId: sa._id });

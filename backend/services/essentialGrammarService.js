@@ -25,7 +25,12 @@ async function listLessons() {
 // Student-facing reads
 // ══════════════════════════════════════════════════════
 
+// A malformed id (typo'd / truncated deep link) is "not found", not a
+// CastError → 500.
+const validId = (id) => mongoose.isValidObjectId(id);
+
 async function getLessonById(id) {
+  if (!validId(id)) return null;
   return EssentialGrammarLesson.findOne({ _id: id, isActive: true }).select('-__v').lean();
 }
 
@@ -98,8 +103,10 @@ function gradeAnswers(lesson, answers) {
 }
 
 // `answers` present → graded here from the lesson (the stored score and the
-// homework 70% bar no longer trust the browser's count). Without it (a page
-// loaded before this change), the old client-count path is kept.
+// homework 70% bar never trust the browser's count). The bare
+// correctCount/totalCount path is internal only (scripts / tests): since
+// 2026-11-14 the HTTP route requires `answers` — anyone could post
+// { correctCount: 10, totalCount: 10 } and tick a grammar homework.
 async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeSpent, wrongQuestions, answers }) {
   let total, correct, answered = null, graded = 'client', answerRows;
   let safeWrongQuestions;
@@ -114,9 +121,6 @@ async function submitAttempt(userId, lessonId, { correctCount, totalCount, timeS
   } else {
     total = Math.max(0, Number(totalCount) || 0);
     correct = Math.max(0, Math.min(Number(correctCount) || 0, total));
-    // Client-supplied, so bounded + coerced to plain strings before it ever
-    // reaches an aggregation ($unwind over an attacker-controlled array of
-    // arbitrary type would be an easy DoS/garbage-in vector for getMostMissedQuestions()).
     safeWrongQuestions = Array.isArray(wrongQuestions)
       ? wrongQuestions.slice(0, MAX_WRONG_QUESTIONS_LOGGED).map(q => String(q).slice(0, 200))
       : [];
@@ -162,6 +166,7 @@ async function listMyProgress(userId) {
 // Shared by the student's own "past attempts" view and the admin's
 // per-student drill-down — same shape either way, just different callers.
 async function getAttemptHistory(userId, lessonId, limit = 20) {
+  if (!validId(userId) || !validId(lessonId)) return [];
   return EssentialGrammarAttemptLog.find({ userId, lessonId })
     .sort({ createdAt: -1 })
     .limit(limit)
@@ -203,6 +208,7 @@ async function listAdminLessons() {
 }
 
 async function getAdminLesson(id) {
+  if (!validId(id)) return null;
   // No isActive filter — admin must be able to see/manage hidden lessons.
   return EssentialGrammarLesson.findById(id).lean();
 }
@@ -212,6 +218,7 @@ async function getAdminLesson(id) {
 // them here would silently break the next seed run's {category,lessonKey}
 // matching (see seedEssentialGrammar.js).
 async function updateLessonMeta(id, payload) {
+  if (!validId(id)) return null;
   const lesson = await EssentialGrammarLesson.findById(id);
   if (!lesson) return null;
 
@@ -222,7 +229,7 @@ async function updateLessonMeta(id, payload) {
   if (payload.summary != null) lesson.summary = String(payload.summary).trim();
   if (payload.icon != null) lesson.icon = String(payload.icon).trim() || '📘';
   if (payload.orderIndex != null) {
-    if (Number.isNaN(Number(payload.orderIndex))) throw new Error('"orderIndex" phải là số');
+    if (String(payload.orderIndex).trim() === '' || Number.isNaN(Number(payload.orderIndex))) throw new Error('"orderIndex" phải là số');
     lesson.orderIndex = Number(payload.orderIndex);
   }
   if (typeof payload.isActive === 'boolean') lesson.isActive = payload.isActive;
@@ -232,6 +239,7 @@ async function updateLessonMeta(id, payload) {
 }
 
 async function deleteLesson(id) {
+  if (!validId(id)) return null;
   const lesson = await EssentialGrammarLesson.findByIdAndDelete(id);
   if (lesson) {
     await Promise.all([
@@ -243,6 +251,7 @@ async function deleteLesson(id) {
 }
 
 async function setActive(id, isActive) {
+  if (!validId(id)) return null;
   return EssentialGrammarLesson.findByIdAndUpdate(id, { isActive: !!isActive }, { new: true });
 }
 

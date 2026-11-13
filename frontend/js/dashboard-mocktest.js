@@ -67,6 +67,9 @@
     fetch(MT_API + '/mock-test/current', { method: 'DELETE', headers: mtHeaders() })
       .then(function (r) { return window.ApiClient.handleResponse(r); })
       .then(function () {
+        // Reset the link too — it's only hidden now, and the next open run
+        // would otherwise show a dead "Đang huỷ…" button.
+        if (link) { link.disabled = false; link.textContent = 'Bỏ qua & làm lại'; }
         if (window.toast) window.toast('Đã huỷ bài thi thử đang làm dở.', 'success');
         renderMockTestCard();
       })

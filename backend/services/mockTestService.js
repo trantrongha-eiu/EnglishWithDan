@@ -69,28 +69,57 @@ function numericBand(v) {
   return typeof v === 'number' && v > 0 ? v : null;
 }
 
-// Pull the band for one already-graded sub-attempt. Returns null when the
+// Pull the band for one already-graded sub-attempt of THIS student (a
+// sub-attempt id that isn't theirs reads as no band). Returns null when the
 // skill grades asynchronously and isn't done yet (Writing: teacher/AI;
-// Speaking: AI) — history re-checks those later.
-async function readBand(skill, attemptId) {
-  if (!attemptId) return null;
+// Speaking: AI) — history re-checks those later. Speaking: a teacher's grade
+// from the review queue (teacherReview.band) wins over the AI band.
+async function readBand(skill, attemptId, userId) {
+  if (!attemptId || !mongoose.isValidObjectId(attemptId)) return null;
+  const q = userId ? { _id: attemptId, userId } : { _id: attemptId };
   if (skill === 'listening') {
-    const a = await ListeningAttempt.findById(attemptId).select('bandScore').lean();
+    const a = await ListeningAttempt.findOne(q).select('bandScore').lean();
     return numericBand(a && a.bandScore);
   }
   if (skill === 'reading') {
-    const a = await TestAttempt.findById(attemptId).select('bandScore').lean();
+    const a = await TestAttempt.findOne(q).select('bandScore').lean();
     return numericBand(a && a.bandScore);
   }
   if (skill === 'writing') {
-    const a = await WritingAttempt.findById(attemptId).select('grading.overallBand').lean();
+    const a = await WritingAttempt.findOne(q).select('grading.overallBand').lean();
     return numericBand(a && a.grading && a.grading.overallBand);
   }
   if (skill === 'speaking') {
-    const a = await SpeakingAttempt.findById(attemptId).select('aiFeedback.overallBand status').lean();
-    return numericBand(a && a.aiFeedback && a.aiFeedback.overallBand);
+    const a = await SpeakingAttempt.findOne(q).select('aiFeedback.overallBand teacherReview.band teacherReview.reviewedAt').lean();
+    if (!a) return null;
+    const teacher = a.teacherReview && a.teacherReview.reviewedAt ? numericBand(a.teacherReview.band) : null;
+    return teacher !== null ? teacher : numericBand(a.aiFeedback && a.aiFeedback.overallBand);
   }
   return null;
+}
+
+// The sub-attempt a skill page reports on /advance must be this student's
+// own, made for this run: same test as the bundle (Listening / Reading /
+// Writing) and started after the run itself. Before this check any
+// attemptId was taken as sent — a run could pick up another student's (or
+// an older, better) attempt's band.
+const SUB_MODELS = { listening: ListeningAttempt, reading: TestAttempt, writing: WritingAttempt, speaking: SpeakingAttempt };
+const SUB_TEST_FIELD = {
+  listening: ['testId', 'listeningTestId'],
+  reading: ['testId', 'readingTestId'],
+  writing: ['examId', 'writingExamId'],
+};
+const CLOCK_SKEW_MS = 60 * 1000;
+async function assertOwnSubAttempt(doc, skill, attemptId) {
+  if (!mongoose.isValidObjectId(attemptId)) throw new ValidationError('attemptId không hợp lệ');
+  const [field, bundleKey] = SUB_TEST_FIELD[skill] || [];
+  const sub = await SUB_MODELS[skill].findOne({ _id: attemptId, userId: doc.userId })
+    .select(`createdAt${field ? ` ${field}` : ''}`).lean();
+  const wrongTest = sub && field && doc.bundle[bundleKey] && String(sub[field] || '') !== String(doc.bundle[bundleKey]);
+  const tooOld = sub && doc.createdAt && sub.createdAt && new Date(sub.createdAt).getTime() < new Date(doc.createdAt).getTime() - CLOCK_SKEW_MS;
+  if (!sub || wrongTest || tooOld) {
+    throw new ValidationError('Bài làm này không thuộc lượt thi thử hiện tại.');
+  }
 }
 
 // Recomputes overallBand + status from whatever bands are currently on the
@@ -440,7 +469,7 @@ async function attachDisqualifiedStep(userId, mockId, { skill, attemptId }) {
 
   doc.steps[skill] = {
     attemptId,
-    band: prev.manual ? prev.band : await readBand(skill, attemptId),
+    band: prev.manual ? prev.band : await readBand(skill, attemptId, userId),
     manual: !!prev.manual,
     manualBy: prev.manualBy,
     manualAt: prev.manualAt
@@ -471,11 +500,12 @@ async function advance(userId, mockId, { skill, attemptId }) {
   }
 
   if (!alreadyDone) {
+    if (attemptId) await assertOwnSubAttempt(doc, skill, attemptId);
     // A teacher may have pre-entered this skill's band by hand (Speaking run
     // live, in person) before the student's own sub-attempt lands — keep the
     // manual band + flags, never overwrite with the auto-graded one.
     const prev = doc.steps[skill] || {};
-    const band = prev.manual ? prev.band : await readBand(skill, attemptId);
+    const band = prev.manual ? prev.band : await readBand(skill, attemptId, userId);
     doc.steps[skill] = {
       attemptId: attemptId || prev.attemptId || undefined,
       band,
@@ -515,15 +545,21 @@ function navFor(doc, skill) {
 }
 
 // Re-reads any sub-attempt whose band is still null (Writing graded later by
-// admin/cron, Speaking by AI) and patches it in. Mutates + saves if changed.
+// admin/cron, Speaking by AI) and patches it in. Writing / Speaking are
+// re-read even once they have a band: a teacher may grade (or re-grade)
+// them after the AI did — the Speaking review queue, Writing confirmation.
+// Mutates + saves if changed.
+const REGRADABLE = new Set(['writing', 'speaking']);
 async function refreshGrades(doc) {
   let changed = false;
+  const userId = doc.userId && doc.userId._id ? doc.userId._id : doc.userId;
   for (const skill of SKILL_ORDER) {
     const step = doc.steps[skill];
     // A manually-entered band is authoritative — never re-read over it.
-    if (step && !step.manual && step.completedAt && step.attemptId && numericBand(step.band) === null) {
-      const band = await readBand(skill, step.attemptId);
-      if (band !== null) { step.band = band; changed = true; }
+    if (step && !step.manual && step.completedAt && step.attemptId
+        && (numericBand(step.band) === null || REGRADABLE.has(skill))) {
+      const band = await readBand(skill, step.attemptId, userId);
+      if (band !== null && band !== step.band) { step.band = band; changed = true; }
     }
   }
   if (changed) {

@@ -20,6 +20,10 @@ const ShadowingAttemptSchema = new mongoose.Schema({
   lessonId:    { type: mongoose.Schema.Types.ObjectId, ref: 'ShadowingLesson', required: true },
   lessonTitle: { type: String, default: '' },
   mode:        { type: String, enum: ['dictation', 'shadowing'], required: true },
+  // One id per lesson opening (client-made). The page saves again whenever
+  // the tab is hidden (mobile browsers often never fire pagehide), so a
+  // repeat save of the same session updates this row instead of adding one.
+  sessionId:   { type: String, default: undefined },
 
   answers:       [ShadowingAnswerSchema],
   totalSegments: { type: Number, default: 0 }, // segments in the lesson

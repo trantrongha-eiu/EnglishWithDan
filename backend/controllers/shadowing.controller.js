@@ -18,7 +18,7 @@ exports.getLesson = catchAsync(async (req, res) => {
 
 // ── POST /api/shadowing/lessons/:slug/attempt ────────────────
 exports.saveAttempt = catchAsync(async (req, res) => {
-  const { mode, answers } = req.body || {};
-  const result = await shadowingService.saveAttempt(req.params.slug, { mode, answers }, req.user._id);
+  const { mode, answers, sessionId } = req.body || {};
+  const result = await shadowingService.saveAttempt(req.params.slug, { mode, answers, sessionId }, req.user._id);
   res.json({ success: true, ...result });
 });

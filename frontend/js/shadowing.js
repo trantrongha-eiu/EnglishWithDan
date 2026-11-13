@@ -84,6 +84,9 @@
   // Best result per segment, per mode: { shadowing: {i: {matched,total}}, dictation: {...} }
   let answers = { shadowing: {}, dictation: {} };
   let dirty = { shadowing: false, dictation: false };
+  // One id per lesson opening — the server updates that session's row on a
+  // repeat save (tab hidden, then back to the list) instead of adding one.
+  let sessionId = '';
 
   // ══════════════ YOUTUBE PLAYER ══════════════
   let resolveYtApi;
@@ -591,7 +594,7 @@
       (extra.length ? ' ' + extra.map((w) => `<span class="w-extra">${escHtml(w)}</span>`).join(' ') : '');
     $('dc-diff').classList.add('show');
     // The Vietnamese meaning is the reward for a sentence typed right.
-    $('dc-vi').textContent = [seg.answer ? seg.text : '', perfect ? (seg.vi || '') : ''].filter(Boolean).join(' — ');
+    $('dc-vi').textContent = [seg.answer ? seg.text : '', perfect ? viOf(seg) : ''].filter(Boolean).join(' — ');
     showScore('dc-score', perfect ? 'good' : scoreClass(pct),
       perfect ? '✓ Chính xác!' : `Đúng ${refHit.size}/${ref.length} từ`,
       perfect ? '' : `Từ bôi đỏ là từ bạn thiếu/sai${extra.length ? ', xám gạch ngang là từ thừa' : ''}.`);
@@ -757,9 +760,12 @@
     $('sh-list').innerHTML = lesson.segments.map((s, i) => {
       const a = done[i];
       const pct = a ? Math.round((a.matched / a.total) * 100) : null;
-      const masked = mode === 'dictation' && !a;
+      // Dictation, and Shadowing with "Ẩn câu (thử thách)" on: a sentence not
+      // tried yet stays hidden here too — the list used to show the very
+      // sentence the challenge hides above it.
+      const masked = !a && (mode === 'dictation' || (mode === 'shadowing' && $('opt-hide').checked));
       // Dictation: the meaning only shows for sentences already typed right.
-      const vi = mode !== 'dictation' || (a && a.matched === a.total) ? viOf(s) : '';
+      const vi = masked ? '' : mode !== 'dictation' || (a && a.matched === a.total) ? viOf(s) : '';
       return `<div class="sh-item${i === idx ? ' current' : ''}" data-i="${i}">
         <span class="sh-item-num">${i + 1}</span>
         <span class="sh-item-text${masked ? ' masked' : ''}">${masked ? '•••' : escHtml(s.text) + (vi ? `<span class="sh-item-vi">${escHtml(vi)}</span>` : '')}</span>
@@ -837,12 +843,15 @@
       dirty[m] = false;
       pending.push(fetch(`${API}/shadowing/lessons/${encodeURIComponent(lesson.slug)}/attempt`, {
         method: 'POST', headers: authH(), keepalive: true,
-        body: JSON.stringify({ mode: m, answers: rows }),
+        body: JSON.stringify({ mode: m, answers: rows, sessionId }),
       }).catch(() => {}));
     }
     return Promise.all(pending);
   }
   document.addEventListener('pagehide', saveSession);
+  // Mobile browsers often kill a backgrounded tab without any pagehide —
+  // save whenever the page is hidden too (same session row, see sessionId).
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveSession(); });
 
   // ══════════════ PICKER ══════════════
   async function loadList() {
@@ -951,6 +960,7 @@
 
     answers = { shadowing: {}, dictation: {} };
     dirty = { shadowing: false, dictation: false };
+    sessionId = Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
     idx = 0;
     $('sh-title').textContent = lesson.title;
     $('sh-sub').innerHTML = `${escHtml(CATEGORY_LABEL[lesson.category] || '')} · ${escHtml(lesson.channel)} · ${escHtml(lesson.level || '')} · ${lesson.segments.length} câu`;
@@ -1037,7 +1047,7 @@
   document.querySelectorAll('.sh-choice').forEach((b) => b.addEventListener('click', () => chooseMode(b.dataset.mode)));
   // Clicking the dimmed backdrop just closes the picker (current mode, nothing plays).
   $('sh-chooser').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeChooser(); });
-  $('opt-hide').addEventListener('change', () => { savePrefs(); goTo(idx); });
+  $('opt-hide').addEventListener('change', () => { savePrefs(); goTo(idx); renderList(); });
   $('opt-autorec').addEventListener('change', savePrefs);
   // "Hiện tiếng Việt" lives in both the watch and the shadowing pane.
   function onViToggle(e) {

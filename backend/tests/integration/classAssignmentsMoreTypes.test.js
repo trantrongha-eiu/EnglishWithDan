@@ -206,23 +206,25 @@ test('task1 practice API: tag=set2 lists only Bộ 2 exercises; meta has Bộ 2 
   expect(meta.body.setCounts.set2).toMatchObject({ _total: 1, comparison: 1 });
 });
 
-test('grammar: a lesson homework ticks only once one attempt reaches 70% (69% does not)', async () => {
+test('grammar: a lesson homework ticks only once one attempt reaches 70% (60% does not)', async () => {
   const { createEssentialGrammarLesson } = require('../factories/contentFactory');
   const { t, s, cls } = await setup();
-  const lesson = await createEssentialGrammarLesson({ title: 'Present Simple' });
+  const questions = Array.from({ length: 10 }, (_, i) => ({ question: `Q${i}`, options: ['a', 'b'], answerIndex: 0, explanation: '' }));
+  const lesson = await createEssentialGrammarLesson({ title: 'Present Simple', blocks: [{ type: 'quiz', data: { questions } }] });
   const asg = await assign(t, cls, [{ kind: 'internal', resourceType: 'grammar', resourceId: lesson._id }]);
-  const submit = (correctCount, totalCount) => request(app)
-    .post(`/api/essential-grammar/${lesson._id}/attempt`).set(authH(s)).send({ correctCount, totalCount });
+  const submit = (nRight) => request(app)
+    .post(`/api/essential-grammar/${lesson._id}/attempt`).set(authH(s))
+    .send({ answers: questions.map((_, i) => ({ ref: `q:0:${i}`, chosen: i < nRight ? 0 : 1 })) });
 
-  expect((await submit(69, 100)).status).toBe(200);
+  expect((await submit(6)).status).toBe(200);
   expect((await itemOf(s, asg._id)).completed).toBe(false);
 
-  expect((await submit(7, 10)).status).toBe(200);
+  expect((await submit(7)).status).toBe(200);
   expect((await itemOf(s, asg._id)).completed).toBe(true);
 
   // Both submissions are kept in the student's own history.
   const hist = await request(app).get(`/api/essential-grammar/${lesson._id}/attempt/history`).set(authH(s));
-  expect(hist.body.history.map((h) => h.score)).toEqual([70, 69]);
+  expect(hist.body.history.map((h) => h.score)).toEqual([70, 60]);
 });
 
 test('grammar: answers are graded server-side — every question must be answered AND ≥ 70%', async () => {

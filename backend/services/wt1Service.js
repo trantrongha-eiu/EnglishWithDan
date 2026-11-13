@@ -557,8 +557,13 @@ async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, tota
   const KEYS = ['fluency', 'vocabulary', 'grammar', 'pronunciation'];
   const results = doc.itemResults;
   const scores = {};
-  for (const k of KEYS) scores[k] = results.reduce((s, r) => s + (Number(r.feedback?.scores?.[k]) || 0), 0) / results.length;
-  const bandEstimate = Math.round(((scores.fluency + scores.vocabulary + scores.grammar + scores.pronunciation) / 4) * 2) / 2;
+  const half = (x) => Math.round(x * 2) / 2;
+  const raw = {};
+  for (const k of KEYS) raw[k] = results.reduce((s, r) => s + (Number(r.feedback?.scores?.[k]) || 0), 0) / results.length;
+  const bandEstimate = half((raw.fluency + raw.vocabulary + raw.grammar + raw.pronunciation) / 4);
+  // Criterion averages to the nearest half band, like the overall — a raw
+  // mean of 3 questions showed as "Fluency 6.333333333333333".
+  for (const k of KEYS) scores[k] = half(raw[k]);
   const corrections = results.flatMap((r) => r.feedback?.corrections || []);
   const feedbackVi = results
     .map((r, i) => (r.feedback?.feedbackVi ? `Câu ${i + 1}: ${r.feedback.feedbackVi}` : ''))
@@ -578,6 +583,9 @@ async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, tota
     fluency: scores.fluency, vocabulary: scores.vocabulary, grammar: scores.grammar, pronunciation: scores.pronunciation,
     overallBand: bandEstimate, overallFeedback: feedbackVi, strengths, improvements,
     mistakes: corrections.map((c) => ({ original: c.original, corrected: c.corrected, reason: c.note })),
+    // Every question's transcript, in order — the Speaking-history mirror
+    // keeps the whole answer, not just the last question's.
+    transcripts: results.map((r) => r.transcript || ''),
   };
 }
 

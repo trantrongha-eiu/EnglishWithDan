@@ -3,7 +3,17 @@ const API = (window.AuthService && window.AuthService.API && window.AuthService.
 const LAST_LESSON_KEY = 'eg_last_lesson';
 const COLLAPSED_KEY = 'eg_collapsed_categories';
 
-const SCORE_KEY = 'eg_lesson_scores';
+// Per account: on a shared computer the next student logging in used to see
+// the previous one's ticks and best scores (the server copy — my-progress —
+// is merged in on top, see syncServerProgress).
+const SCORE_KEY = (function () {
+  let uid = '';
+  try {
+    const u = window.AuthService && window.AuthService.getUser ? window.AuthService.getUser() : null;
+    uid = (u && (u._id || u.id || u.username)) || '';
+  } catch { /* not logged in */ }
+  return uid ? 'eg_lesson_scores:' + uid : 'eg_lesson_scores';
+})();
 const COMPLETE_THRESHOLD = 80;
 const EX_TYPE_LABELS = {
   multiple_choice: 'Trắc nghiệm',
@@ -758,7 +768,12 @@ function checkQuizAnswer(btn, qi, oi, answerIndex) {
 }
 
 function finalizeQuiz() {
-  if (!quizState || !quizState.lessonKey) return;
+  if (!quizState || !quizState.lessonKey || quizState.finalized) return;
+  quizState.finalized = true;
+  // The attempt is in: questions left blank ("Chấm điểm ngay") lock too —
+  // answering them afterwards used to grade + save the lesson a second time.
+  // "Làm lại bài" re-renders the lesson for a fresh go.
+  document.querySelectorAll('#eg-main-content .eg-quiz-option:not(:disabled)').forEach(b => { b.disabled = true; });
   const gf = document.getElementById('eg-grade-footer');
   if (gf) gf.style.display = 'none';
   // Unanswered items count as wrong (score over the lesson-wide total) —
@@ -778,18 +793,33 @@ function finalizeQuiz() {
     + (passed ? ' Bài học đã được đánh dấu hoàn thành!' : ' Cần đạt từ ' + COMPLETE_THRESHOLD + '% để đánh dấu hoàn thành bài học.')
     + hwNote;
   const result = document.getElementById('eg-quiz-result');
+  // "Làm lại bao nhiêu lần cũng được" — but every answered option stays
+  // locked, so the only way to redo was reloading the page.
+  const retryBtn = '<div style="text-align:center;margin-top:10px"><button type="button" class="eg-retry-btn" onclick="retryLessonQuiz()" '
+    + 'style="background:transparent;border:1.5px solid currentColor;border-radius:10px;padding:8px 18px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit;color:inherit">'
+    + '<i class="fas fa-rotate-left"></i> Làm lại bài</button></div>';
   if (result) {
     result.className = 'eg-quiz-result vis ' + (passed ? 'eg-qr-good' : 'eg-qr-bad');
     // Lulu reads the summary out (js/shared/playful.js); icon + text without it.
-    result.innerHTML = window.Mascot && window.Mascot.reactHtml
+    result.innerHTML = (window.Mascot && window.Mascot.reactHtml
       ? window.Mascot.reactHtml({ pct: score, text: summary, size: 64 })
-      : (passed ? '<i class="fas fa-trophy"></i> ' : '<i class="fas fa-redo"></i> ') + summary;
+      : (passed ? '<i class="fas fa-trophy"></i> ' : '<i class="fas fa-redo"></i> ') + summary) + retryBtn;
     result.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } else if (typeof showToast === 'function') {
     // Lessons that grade only through practice_exercises (no <quiz> block)
     // have no #eg-quiz-result node — the completion feedback would otherwise
     // just be a quiet badge change far up the page.
     showToast((passed ? '🏆 ' : '🔁 ') + summary, passed ? 'success' : 'warn', 5000);
+  }
+  if (!result && gf) {
+    // No Mini Quiz block to hold the result — the grade footer becomes the
+    // "Làm lại bài" button.
+    const btn = document.getElementById('eg-grade-now-btn');
+    if (btn) {
+      btn.setAttribute('onclick', 'retryLessonQuiz()');
+      btn.innerHTML = '<i class="fas fa-rotate-left"></i> Làm lại bài';
+      gf.style.display = 'block';
+    }
   }
   const heroStatus = document.getElementById('eg-hero-status');
   if (heroStatus) heroStatus.innerHTML = heroStatusHtml();
@@ -811,12 +841,9 @@ function finalizeQuiz() {
       headers: Object.assign({ 'Content-Type': 'application/json' }, _egAuthHeaders()),
       body: JSON.stringify({
         // Each pick, graded on the server (which also stores the answers
-        // for the teacher — kept 3 months). The counts are only a fallback.
+        // for the teacher — kept 3 months).
         answers: quizState.answers,
-        correctCount: quizState.correct,
-        totalCount: quizState.total,
         timeSpent,
-        wrongQuestions: quizState.wrongTexts,
       }),
     })
       .then(r => r.json().then(d => { if (!r.ok || !d.success) throw new Error('save failed'); }))
@@ -831,6 +858,16 @@ function finalizeQuiz() {
         }
       });
   }
+}
+
+// Fresh go at the open lesson: re-render it (all answers cleared, a new
+// quizState) and bring the first graded question into view.
+function retryLessonQuiz() {
+  const lesson = allLessons.find(l => keyOf(l) === _renderedLessonKey);
+  if (!lesson || !Array.isArray(lesson.blocks)) return;
+  renderLessonContent(lesson);
+  const first = document.querySelector('#eg-main-content .eg-quiz-q, #eg-main-content .eg-ex-item[data-ref]');
+  if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function renderSummaryBlock(data) {

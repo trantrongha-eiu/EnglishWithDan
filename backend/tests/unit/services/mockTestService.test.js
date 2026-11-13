@@ -82,7 +82,7 @@ describe('mockTestService.advance', () => {
     const { attempt } = await mockTestService.startMockTest(student._id);
     const mockId = attempt._id;
 
-    const la = await createListeningAttempt({ userId: student._id, bandScore: 6.5 });
+    const la = await createListeningAttempt({ userId: student._id, testId: attempt.bundle.listeningTestId, bandScore: 6.5 });
     let r = await mockTestService.advance(student._id, mockId, { skill: 'listening', attemptId: la._id });
     expect(r.attempt.progress).toBe('reading');
     expect(r.nav).toEqual({ nextSkill: 'reading', nextTargetId: attempt.bundle.readingTestId });
@@ -96,7 +96,7 @@ describe('mockTestService.advance', () => {
     expect(r.attempt.sitting1CompletedAt).toBeFalsy();
     expect(r.attempt.status).toBe('in-progress');
 
-    const wa = await createWritingAttempt({ userId: student._id, extra: { grading: { overallBand: 6 } } });
+    const wa = await createWritingAttempt({ userId: student._id, examId: attempt.bundle.writingExamId, extra: { grading: { overallBand: 6 } } });
     r = await mockTestService.advance(student._id, mockId, { skill: 'writing', attemptId: wa._id });
     expect(r.attempt.progress).toBe('speaking');
     // Writing ends sitting 1 — a sitting break (back to the dashboard), not
@@ -120,11 +120,11 @@ describe('mockTestService.advance', () => {
     const { attempt } = await mockTestService.startMockTest(student._id);
     const mockId = attempt._id;
 
-    const la = await createListeningAttempt({ userId: student._id, bandScore: 6 });
+    const la = await createListeningAttempt({ userId: student._id, testId: attempt.bundle.listeningTestId, bandScore: 6 });
     await mockTestService.advance(student._id, mockId, { skill: 'listening', attemptId: la._id });
     const ra = await createTestAttempt({ userId: student._id, testId: attempt.bundle.readingTestId, status: 'completed', extra: { bandScore: 6 } });
     await mockTestService.advance(student._id, mockId, { skill: 'reading', attemptId: ra._id });
-    const wa = await createWritingAttempt({ userId: student._id }); // gradingStatus pending, no band
+    const wa = await createWritingAttempt({ userId: student._id, examId: attempt.bundle.writingExamId }); // gradingStatus pending, no band
     await mockTestService.advance(student._id, mockId, { skill: 'writing', attemptId: wa._id });
     const sa = await createSpeakingAttempt({ userId: student._id, part: 2 }); // no aiFeedback band
     const r = await mockTestService.advance(student._id, mockId, { skill: 'speaking', attemptId: sa._id });
@@ -152,11 +152,11 @@ describe('mockTestService.getHistory', () => {
     const { attempt } = await mockTestService.startMockTest(student._id);
     const mockId = attempt._id;
 
-    const la = await createListeningAttempt({ userId: student._id, bandScore: 7 });
+    const la = await createListeningAttempt({ userId: student._id, testId: attempt.bundle.listeningTestId, bandScore: 7 });
     await mockTestService.advance(student._id, mockId, { skill: 'listening', attemptId: la._id });
     const ra = await createTestAttempt({ userId: student._id, testId: attempt.bundle.readingTestId, status: 'completed', extra: { bandScore: 7 } });
     await mockTestService.advance(student._id, mockId, { skill: 'reading', attemptId: ra._id });
-    const wa = await createWritingAttempt({ userId: student._id }); // pending
+    const wa = await createWritingAttempt({ userId: student._id, examId: attempt.bundle.writingExamId }); // pending
     await mockTestService.advance(student._id, mockId, { skill: 'writing', attemptId: wa._id });
     const sa = await createSpeakingAttempt({ userId: student._id, part: 2, extra: { aiFeedback: { overallBand: 7 } } });
     await mockTestService.advance(student._id, mockId, { skill: 'speaking', attemptId: sa._id });
@@ -257,7 +257,7 @@ describe('mockTestService.setManualScores', () => {
   async function runThroughReading(student) {
     await seedPools();
     const { attempt } = await mockTestService.startMockTest(student._id);
-    const la = await createListeningAttempt({ userId: student._id, bandScore: 6 });
+    const la = await createListeningAttempt({ userId: student._id, testId: attempt.bundle.listeningTestId, bandScore: 6 });
     await mockTestService.advance(student._id, attempt._id, { skill: 'listening', attemptId: la._id });
     const ra = await createTestAttempt({ userId: student._id, testId: attempt.bundle.readingTestId, status: 'completed', extra: { bandScore: 7 } });
     await mockTestService.advance(student._id, attempt._id, { skill: 'reading', attemptId: ra._id });
@@ -284,11 +284,11 @@ describe('mockTestService.setManualScores', () => {
     await seedPools();
     const { attempt } = await mockTestService.startMockTest(student._id);
     const mockId = attempt._id;
-    const la = await createListeningAttempt({ userId: student._id, bandScore: 7 });
+    const la = await createListeningAttempt({ userId: student._id, testId: attempt.bundle.listeningTestId, bandScore: 7 });
     await mockTestService.advance(student._id, mockId, { skill: 'listening', attemptId: la._id });
     const ra = await createTestAttempt({ userId: student._id, testId: attempt.bundle.readingTestId, status: 'completed', extra: { bandScore: 7 } });
     await mockTestService.advance(student._id, mockId, { skill: 'reading', attemptId: ra._id });
-    const wa = await createWritingAttempt({ userId: student._id, extra: { grading: { overallBand: 6 } } });
+    const wa = await createWritingAttempt({ userId: student._id, examId: attempt.bundle.writingExamId, extra: { grading: { overallBand: 6 } } });
     await mockTestService.advance(student._id, mockId, { skill: 'writing', attemptId: wa._id });
     const sa = await createSpeakingAttempt({ userId: student._id, part: 2, extra: { aiFeedback: { overallBand: 5 } } });
     await mockTestService.advance(student._id, mockId, { skill: 'speaking', attemptId: sa._id });
@@ -325,11 +325,11 @@ describe('mockTestService.setManualScores', () => {
     const { attempt } = await mockTestService.startMockTest(student._id);
     const mockId = attempt._id;
 
-    const la = await createListeningAttempt({ userId: student._id, bandScore: 6 });
+    const la = await createListeningAttempt({ userId: student._id, testId: attempt.bundle.listeningTestId, bandScore: 6 });
     await mockTestService.advance(student._id, mockId, { skill: 'listening', attemptId: la._id });
     const ra = await createTestAttempt({ userId: student._id, testId: attempt.bundle.readingTestId, status: 'completed', extra: { bandScore: 6 } });
     await mockTestService.advance(student._id, mockId, { skill: 'reading', attemptId: ra._id });
-    const wa = await createWritingAttempt({ userId: student._id }); // pending, no band
+    const wa = await createWritingAttempt({ userId: student._id, examId: attempt.bundle.writingExamId }); // pending, no band
     await mockTestService.advance(student._id, mockId, { skill: 'writing', attemptId: wa._id });
     const sa = await createSpeakingAttempt({ userId: student._id, part: 2 }); // pending, no aiFeedback band
     await mockTestService.advance(student._id, mockId, { skill: 'speaking', attemptId: sa._id });
