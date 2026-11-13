@@ -435,7 +435,7 @@
         {
           "id": "q1",
           "left": "Once + S + V (Once = When)",
-          "right": "Once it is ready, the pulp is poured into a shallow tray."
+          "right": "Once separated, the liquid ethanol undergoes the next phase of the process — purification."
         },
         {
           "id": "q2",
@@ -729,7 +729,7 @@
       "order": 5,
       "type": "mcq",
       "title": "Milk production – đâu là một bước của quy trình?",
-      "instruction": "Nhìn sơ đồ quy trình sản xuất sữa. Với mỗi mục, chọn xem đó có phải một BƯỚC của quy trình hay không.",
+      "instruction": "Nhìn sơ đồ quy trình sản xuất sữa. Với mỗi mục, chọn xem đó có phải một BƯỚC của quy trình hay không (sách: 5 bước chính).",
       "source": "original",
       "skillTags": [
         "process-analysis"
@@ -763,7 +763,7 @@
         },
         {
           "id": "q2",
-          "prompt": "\"Milking the cows\"",
+          "prompt": "\"Milking the cows by machine twice a day\"",
           "options": [
             {
               "id": "A",
@@ -775,10 +775,58 @@
             }
           ],
           "answer": "A",
-          "explanation": "Vắt sữa là bước 1."
+          "explanation": "Bước 1."
         },
         {
           "id": "q3",
+          "prompt": "\"Storing the milk in refrigerated tanks\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Là một bước"
+            },
+            {
+              "id": "B",
+              "text": "Không tính là bước"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Bước 2 — kho lạnh ngay tại trang trại."
+        },
+        {
+          "id": "q4",
+          "prompt": "\"Delivering it daily by tanker to the dairy\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Là một bước"
+            },
+            {
+              "id": "B",
+              "text": "Không tính là bước"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Bước 3."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"Pasteurising and packaging the milk at the dairy\"",
+          "options": [
+            {
+              "id": "A",
+              "text": "Là một bước"
+            },
+            {
+              "id": "B",
+              "text": "Không tính là bước"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Bước 4."
+        },
+        {
+          "id": "q6",
           "prompt": "\"Cheese, cream and butter\" (mũi tên vàng)",
           "options": [
             {
@@ -794,40 +842,8 @@
           "explanation": "Byproducts — không phải bước của quy trình sản xuất sữa."
         },
         {
-          "id": "q4",
-          "prompt": "\"Transporting the milk to the storage facility\"",
-          "options": [
-            {
-              "id": "A",
-              "text": "Là một bước"
-            },
-            {
-              "id": "B",
-              "text": "Không tính là bước"
-            }
-          ],
-          "answer": "A",
-          "explanation": "Vận chuyển tới kho là một bước."
-        },
-        {
-          "id": "q5",
-          "prompt": "\"Heating (pasteurising) the milk\"",
-          "options": [
-            {
-              "id": "A",
-              "text": "Là một bước"
-            },
-            {
-              "id": "B",
-              "text": "Không tính là bước"
-            }
-          ],
-          "answer": "A",
-          "explanation": "Tiệt trùng là một bước."
-        },
-        {
-          "id": "q6",
-          "prompt": "\"Delivering the milk to retailers\"",
+          "id": "q7",
+          "prompt": "\"Distributing it to supermarkets and shops\"",
           "options": [
             {
               "id": "A",
@@ -839,7 +855,7 @@
             }
           ],
           "answer": "A",
-          "explanation": "Giao tới cửa hàng là bước cuối."
+          "explanation": "Bước 5 — bước cuối."
         }
       ]
     },
@@ -848,8 +864,8 @@
       "lessonCode": "T1-L21",
       "order": 6,
       "type": "gap_fill",
-      "title": "Brick manufacturing – điền động từ bị động cho 7 giai đoạn",
-      "instruction": "Điền dạng bị động hiện tại đơn của động từ để mô tả quy trình sản xuất gạch.",
+      "title": "HOMEWORK — Đề 2: Brick manufacturing — điền từ cho 7 giai đoạn",
+      "instruction": "Điền từ còn thiếu theo gợi ý chia đoạn Body của sách (Body 1 — 3 giai đoạn đầu; Body 2 — 4 giai đoạn sau).",
       "source": "original",
       "skillTags": [
         "process-manufacturing",
@@ -866,103 +882,145 @@
         "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image12.png"
       },
       "wordBank": [
-        "is dug",
-        "is placed",
-        "is passed",
-        "is mixed",
-        "are dried",
-        "are placed",
-        "are left"
+        "dug from",
+        "placed",
+        "passed",
+        "mixed",
+        "individual",
+        "dried",
+        "heated",
+        "cooled"
       ],
       "items": [
         {
           "id": "q1",
-          "prompt": "At the first stage, clay ____ from the ground.",
+          "prompt": "Stage 1: clay is ____ the ground.",
           "blanks": [
             {
               "accept": [
-                "is dug"
+                "dug from"
               ]
             }
           ],
-          "explanation": "dig → dug (V3)."
+          "explanation": "dig → dug (V3): is dug from the ground."
         },
         {
           "id": "q2",
-          "prompt": "It is then ____ onto a metal grid.",
+          "prompt": "Stage 2: It is then ____ onto a metal grid and ____ through a roller.",
           "blanks": [
             {
               "accept": [
-                "is placed",
-                "placed"
+                "placed",
+                "put"
+              ]
+            },
+            {
+              "accept": [
+                "passed"
               ]
             }
           ],
-          "explanation": "is placed onto a metal grid."
+          "explanation": "is placed onto … and passed through a roller."
         },
         {
           "id": "q3",
-          "prompt": "The clay ____ through a roller.",
+          "prompt": "Stage 3: It is ____ with sand and water → is either put in a mould or cut by a wire cutter to make ____ bricks.",
           "blanks": [
             {
               "accept": [
-                "is passed"
+                "mixed"
+              ]
+            },
+            {
+              "accept": [
+                "individual"
               ]
             }
           ],
-          "explanation": "is passed through a roller."
+          "explanation": "is mixed with sand and water; individual bricks = từng viên gạch."
         },
         {
           "id": "q4",
-          "prompt": "Next, it ____ with sand and water.",
+          "prompt": "Stage 4: bricks are ____ in a drying oven (24 – 48 hrs).",
           "blanks": [
             {
               "accept": [
-                "is mixed"
+                "dried"
               ]
             }
           ],
-          "explanation": "is mixed with sand and water."
+          "explanation": "are dried."
         },
         {
           "id": "q5",
-          "prompt": "After being moulded or cut, the bricks ____ in a drying oven for 24–48 hours.",
+          "prompt": "Stage 5: they are ____ in a kiln (200 to 980 degrees → 870 to 1300 degrees).",
           "blanks": [
             {
               "accept": [
-                "are dried",
-                "are placed"
+                "heated",
+                "fired"
               ]
             }
           ],
-          "explanation": "bricks (số nhiều) → are dried / are placed."
+          "explanation": "are heated / fired in a kiln."
         },
         {
           "id": "q6",
-          "prompt": "They ____ in a kiln at between 870 and 1300 degrees.",
+          "prompt": "Stage 6: they are ____ in a cooling chamber (48 – 72 hrs).",
           "blanks": [
             {
               "accept": [
-                "are placed"
+                "cooled"
               ]
             }
           ],
-          "explanation": "are placed in a kiln."
-        },
-        {
-          "id": "q7",
-          "prompt": "Finally, they ____ in a cooling chamber for 48–72 hours before being packaged and delivered.",
-          "blanks": [
-            {
-              "accept": [
-                "are left",
-                "are placed"
-              ]
-            }
-          ],
-          "explanation": "are left to cool / are placed in a cooling chamber."
+          "explanation": "are cooled."
         }
       ]
+    },
+    {
+      "code": "T1-L21-E11",
+      "lessonCode": "T1-L21",
+      "order": 7,
+      "type": "full_task1",
+      "title": "HOMEWORK — Đề 2: Brick manufacturing (bài hoàn chỉnh)",
+      "instruction": "The diagram below shows the process by which bricks are manufactured for the building industry. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "source": "book",
+      "skillTags": [
+        "process",
+        "full-writing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 25,
+      "points": 20,
+      "autoGrade": false,
+      "timerMinutes": 20,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Brick manufacturing process",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image12.png",
+        "note": "Body 1: 3 giai đoạn đầu (dig clay → shape bricks). Body 2: 4 giai đoạn sau (dry → fire → cool → package & deliver)."
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "Overall, there are … stages, beginning with … and ending with …",
+          "After being + V3",
+          "is then + V3",
+          "before being + V3"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "Đủ 7 giai đoạn, không bỏ bước",
+          "Bị động hiện tại đơn",
+          "Body 1 = 3 giai đoạn đầu, Body 2 = 4 giai đoạn sau"
+        ],
+        "sampleAnswer": "The diagram illustrates the process by which bricks are manufactured for the building industry.\n\nOverall, there are seven stages in the process, beginning with the digging of clay and ending with the delivery of the finished bricks.\n\nAt the first stage, clay is dug from the ground by a digger. It is then placed onto a metal grid and passed through a roller, after which sand and water are added. The mixture is then either put into a mould or cut by a wire cutter to make individual bricks.\n\nNext, the bricks are dried in a drying oven for 24 to 48 hours. They are then heated in a kiln, first at a moderate temperature and then at a high temperature, before being cooled in a cooling chamber for 48 to 72 hours. Finally, the bricks are packaged and delivered to their destinations.",
+        "commonErrors": [
+          "bỏ sót giai đoạn làm nguội",
+          "dùng thì quá khứ"
+        ]
+      }
     },
     {
       "code": "T1-L22-E01",
@@ -1187,7 +1245,7 @@
           "Dùng thể CHỦ ĐỘNG (Natural Process), thì hiện tại đơn",
           "Có ít nhất 2 từ nối trình tự khác nhau"
         ],
-        "sampleAnswer": "The diagram illustrates the main stages in the life cycle of a bee.\n\nOverall, the life cycle consists of six stages and takes about 34 to 36 days to complete, beginning with eggs being laid and ending with a fully mature adult bee.\n\nAt the first stage, a female bee lays one or two eggs every three days. After about nine to ten days, these eggs hatch. Roughly five days later, the young bee goes through its first moulting.\n\nAround seven days after this, the bee experiences its second moulting. A young adult bee then emerges about nine days later, and it takes approximately four more days for it to reach full maturity, at which point the cycle can begin again.",
+        "sampleAnswer": "The diagram illustrates the different stages in the life cycle of a bee, from the laying of eggs to the emergence of a mature adult.\n\nOverall, the life cycle of a bee consists of six stages and takes about 34–35 days to complete, beginning with the female laying eggs and ending with a fully mature adult bee. It is also clear that the young bee moults twice before it becomes an adult.\n\nThe cycle starts when a female bee lays one or two eggs every three days. After about nine to ten days, the eggs hatch, and the young bee goes through its first moulting roughly five days later. This is followed by a second moulting after another seven days, during which the bee continues to grow in size.\n\nAbout nine days after the second moulting, a young adult bee emerges. It then takes around four more days for the bee to reach maturity. At this point, a female is able to lay eggs, and the cycle begins again.",
         "commonErrors": [
           "dùng bị động (the eggs are hatched)",
           "thiếu Overview",
@@ -1254,7 +1312,7 @@
           "Không mô tả thông tin nền như một giai đoạn",
           "Tối thiểu 150 từ"
         ],
-        "sampleAnswer": "The diagram illustrates the stages in the life cycle of the salmon, from eggs to spawning adults.\n\nOverall, the salmon goes through several main stages over a number of years, beginning as eggs in fresh water and ending as adults that return from the sea to spawn and then die.\n\nAt the first stage, salmon eggs are laid in fresh water, and they hatch after about three months. The young fish, known as alevins, feed off their yolk sacs for several weeks before developing into fry. At five to ten weeks old, the fry begin swimming.\n\nAfter several months, the fry grow into parr, which develop “finger” markings on their bodies. When they are one to three years old, they become smolts, which group together and head out to sea. The salmon then spend one to six years in the ocean as adults, before returning to fresh water, where they spawn and die within two weeks.",
+        "sampleAnswer": "The diagram illustrates the life cycle of the salmon, from eggs in fresh water to adult fish that return to spawn.\n\nOverall, the life cycle of a salmon consists of eight stages, beginning with eggs in fresh water and ending with adult salmon returning to fresh water to spawn.\n\nThe cycle starts when eggs are laid in fresh water, and they hatch after about three months. The young fish, known as alevin, then feed off their yolk sac for several weeks. After that, they develop into fry, which are 5 to 10 weeks old and are able to swim.\n\nOver the following months, the fry grow into parr and develop finger-like markings on their sides. When they are one to three years old, they become smolt and swim out to sea in groups. The salmon then spend one to six years at sea as adults before returning to fresh water, where they spawn and die within about two weeks.",
         "commonErrors": [
           "dùng bị động cho quy trình tự nhiên",
           "bỏ sót giai đoạn parr / smolt",
@@ -1424,7 +1482,7 @@
         },
         {
           "id": "q7",
-          "prompt": "\"Once being separated\" là dạng rút gọn của:",
+          "prompt": "\"Once separated\" là dạng rút gọn của:",
           "options": [
             {
               "id": "A",
@@ -1444,7 +1502,7 @@
             }
           ],
           "answer": "B",
-          "explanation": "Cùng chủ ngữ → bỏ chủ ngữ, đổi 'is' → 'being'."
+          "explanation": "Bỏ chủ ngữ và “be”: Once it is separated → Once separated. Không viết “Once being separated”."
         },
         {
           "id": "q8",
@@ -1579,13 +1637,11 @@
           "blanks": [
             {
               "accept": [
-                "separated",
-                "being separated",
-                "it is separated"
+                "separated"
               ]
             }
           ],
-          "explanation": "Once (being) separated / Once it is separated."
+          "explanation": "Once + V3 (rút gọn): Once separated."
         },
         {
           "id": "q5",
@@ -1649,7 +1705,7 @@
         },
         {
           "id": "q10",
-          "prompt": "The bricks ____ (place) in a kiln for 24 to 48 hours.",
+          "prompt": "The bricks ____ (place) in a drying oven for 24 to 48 hours.",
           "blanks": [
             {
               "accept": [
@@ -1770,6 +1826,7 @@
           "prompt": "The milk is collected. It is transported to the dairy.",
           "cue": "followed by",
           "sampleAnswers": [
+            "The milk is collected, followed by its transportation to the dairy.",
             "The milk is collected, followed by transportation to the dairy."
           ],
           "promptVi": "Sữa được thu gom và sau đó được vận chuyển đến nhà máy sữa."
@@ -1818,7 +1875,7 @@
       "order": 5,
       "type": "full_task1",
       "title": "PHẦN B – Bài viết mô tả quy trình (60 điểm)",
-      "instruction": "The diagram below shows the process by which bricks are manufactured for the building industry. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. You should spend about 25 minutes on this part.",
+      "instruction": "The diagram below shows how orange juice is produced and delivered to shops. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. You should spend about 20 minutes on this part.",
       "source": "original",
       "skillTags": [
         "module4-review",
@@ -1829,13 +1886,13 @@
       "estimatedMinutes": 25,
       "points": 60,
       "autoGrade": false,
-      "timerMinutes": 25,
+      "timerMinutes": 20,
       "needsAsset": false,
       "stimulus": {
         "kind": "image",
-        "caption": "Đề thi Phần B – Brick manufacturing",
-        "imageUrl": "https://media.ieltsthayha.com/wt1/maps-process/image12.png",
-        "note": "Body 1: 3 giai đoạn đầu (dig clay → place on grid + roll → mix with sand/water → mould or wire-cut). Body 2: 4 giai đoạn sau (dry 24–48h → kiln 870–1300°C → cool 48–72h → package & deliver)."
+        "caption": "The production of bottled orange juice",
+        "imageUrl": "https://media.ieltsthayha.com/course-theory/ielts-writing-englishwithdan-ban-hoc-vien/1c36c96cd3520b868aa324a15d7d4623e26c49bb_1794574972506.png",
+        "note": "9 bước chính (harvesting → delivery); “animal feed” là sản phẩm phụ, không phải một bước."
       },
       "rubric": {
         "minWords": 150,
@@ -1864,13 +1921,12 @@
           }
         ],
         "checklist": [
-          "Toàn bài thì hiện tại đơn, thể bị động (Manufacturing Process)",
-          "Overview: 7 giai đoạn, bắt đầu bằng đào đất sét, kết thúc bằng đóng gói & giao hàng",
-          "Chia thân bài 3 + 4 giai đoạn",
-          "Có nêu số liệu nhiệt độ / thời gian trong sơ đồ (24–48h, 870–1300°C, 48–72h)",
-          "Tối thiểu 150 từ"
+          "Overview: 9 bước, bắt đầu bằng harvesting, kết thúc bằng delivery",
+          "Nhắc sản phẩm phụ (pulp and peel → animal feed)",
+          "Bị động hiện tại đơn",
+          "Không bỏ bước pasteurising / cooling"
         ],
-        "sampleAnswer": "The diagram illustrates the process by which bricks are manufactured for the building industry.\n\nOverall, there are seven main stages in the process, beginning with the digging of clay from the ground and ending with the delivery of the finished bricks to customers.\n\nAt the first stage, clay is dug out of the ground using a digger and placed onto a metal grid and passed through a roller. The clay is then mixed with sand and water, after which it is shaped into bricks either by a mould or by a wire cutter.\n\nOnce the bricks have been formed, they are left to dry in an oven for 24 to 48 hours. Having been dried, they are fired in a kiln, first at a moderate temperature of 200 to 980°C and then at a high temperature of 870 to 1,300°C. The bricks are subsequently cooled in a chamber for 48 to 72 hours before being packaged and, finally, delivered to their destination.",
+        "sampleAnswer": "The diagram illustrates how bottled orange juice is produced and delivered to shops.\n\nOverall, there are nine main stages in the process, beginning with the harvesting of oranges and ending with the delivery of the finished juice to shops. It is also clear that the pulp and peel removed during production are used to make animal feed.\n\nAt the first stage, oranges are picked by hand and transported by truck to a factory, where they are washed in cold water. The clean oranges are then put through a juice extractor, which squeezes the juice out of the fruit. After that, the juice is filtered so that the seeds and pulp are removed, and this waste, together with the peel, is used as animal feed.\n\nNext, the juice is pasteurised by being heated to 90°C for 30 seconds before being cooled to 4°C. Once cooled, it is packaged into cartons and bottles. Finally, the products are delivered to shops in refrigerated lorries.",
         "commonErrors": [
           "dùng chủ động (workers dig the clay)",
           "bỏ sót giai đoạn làm nguội",
@@ -1913,7 +1969,7 @@
           "Đủ các giai đoạn: eggs → embryo → tadpole → froglet → adult frog",
           "Có từ nối chỉ trình tự"
         ],
-        "sampleAnswer": "1. The life cycle of a frog consists of five main stages, beginning with eggs and ending with an adult frog.\n2. At the first stage, the female frog lays a large number of eggs in a pond.\n3. An embryo then develops inside each egg.\n4. After a few days, the eggs hatch into tadpoles, which live underwater and breathe through gills.\n5. Over time, the tadpoles grow back legs and then front legs, while their tails become shorter.\n6. Once the front legs break through, the young frog starts to breathe with its lungs.\n7. At this point, it becomes a froglet and begins to leave the water.\n8. Finally, the tail disappears completely, and the froglet grows into an adult frog that can live both in water and on land.",
+        "sampleAnswer": "The life cycle of a frog consists of five main stages. It begins when an adult female frog lays eggs in a pond. After a few days, an embryo develops inside each egg, and the eggs then hatch into tadpoles, which live in the water and breathe through gills. Over time, the tadpoles grow back legs and then front legs, while their tails become shorter. At this stage, they start to breathe through lungs. Finally, the tail disappears completely, and the young frog becomes an adult frog, which can live both in water and on land. The adult frog then lays eggs, and the cycle begins again.",
         "commonErrors": [
           "The eggs are hatched (sai — quy trình tự nhiên dùng chủ động: The eggs hatch)"
         ]
@@ -1940,37 +1996,37 @@
         {
           "id": "q1",
           "prompt": "Once the material is heated, it is transferred to a large container.",
-          "cue": "Once + being + V3",
+          "cue": "Once + V3 (rút gọn) / Once + S + has been + V3",
           "starter": "Once …, it is transferred to a large container.",
           "sampleAnswers": [
-            "Once being heated, it is transferred to a large container."
+            "Once heated, it is transferred to a large container."
           ]
         },
         {
           "id": "q2",
           "prompt": "Once the mixture is filtered, it is placed in a clean tray.",
-          "cue": "Once + being + V3",
+          "cue": "Once + V3 (rút gọn) / Once + S + has been + V3",
           "starter": "Once …, it is placed in a clean tray.",
           "sampleAnswers": [
-            "Once being filtered, it is placed in a clean tray."
+            "Once filtered, it is placed in a clean tray."
           ]
         },
         {
           "id": "q3",
           "prompt": "Once the water is purified, it is stored in a tank.",
-          "cue": "Once + being + V3",
+          "cue": "Once + V3 (rút gọn) / Once + S + has been + V3",
           "starter": "Once …, it is stored in a tank.",
           "sampleAnswers": [
-            "Once being purified, it is stored in a tank."
+            "Once purified, it is stored in a tank."
           ]
         },
         {
           "id": "q4",
           "prompt": "Once the raw materials are collected, they are transported to the factory.",
-          "cue": "Once + being + V3",
+          "cue": "Once + V3 (rút gọn) / Once + S + has been + V3",
           "starter": "Once …, they are transported to the factory.",
           "sampleAnswers": [
-            "Once being collected, they are transported to the factory."
+            "Once collected, they are transported to the factory."
           ]
         },
         {
@@ -2119,29 +2175,30 @@
       "items": [
         {
           "id": "q1",
-          "prompt": "Dịch sang tiếng Anh — cấu trúc: Once + being + V3",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: Once + V3",
           "promptVi": "Một khi được làm nóng, hỗn hợp được chuyển sang một chiếc bồn lớn.",
-          "cue": "Once + being + V3",
+          "cue": "Once + V3",
           "sampleAnswers": [
-            "Once being heated, the mixture is transferred to a large container."
+            "Once heated, the mixture is transferred to a large tank.",
+            "Once heated, the mixture is transferred to a large container."
           ]
         },
         {
           "id": "q2",
-          "prompt": "Dịch sang tiếng Anh — cấu trúc: Once + being + V3",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: Once + V3",
           "promptVi": "Một khi được lọc, chất lỏng được lưu trữ trong một bể chứa.",
-          "cue": "Once + being + V3",
+          "cue": "Once + V3",
           "sampleAnswers": [
-            "Once being filtered, the liquid is stored in a tank."
+            "Once filtered, the liquid is stored in a tank."
           ]
         },
         {
           "id": "q3",
-          "prompt": "Dịch sang tiếng Anh — cấu trúc: Once + being + V3",
+          "prompt": "Dịch sang tiếng Anh — cấu trúc: Once + V3",
           "promptVi": "Một khi được thu thập, các nguyên liệu thô được vận chuyển đến nhà máy.",
-          "cue": "Once + being + V3",
+          "cue": "Once + V3",
           "sampleAnswers": [
-            "Once being collected, the raw materials are transported to the factory."
+            "Once collected, the raw materials are transported to the factory."
           ]
         },
         {
@@ -2177,6 +2234,7 @@
           "promptVi": "Sau khi được ngâm trong một giờ, hỗn hợp được nghiền để tạo thành bột giấy.",
           "cue": "After + being + V3",
           "sampleAnswers": [
+            "After being soaked for an hour, the mixture is ground to form a pulp.",
             "After being soaked for an hour, the mixture is beaten to form a pulp."
           ]
         },
@@ -2186,6 +2244,7 @@
           "promptVi": "Sau khi được làm nóng, chất lỏng được chuyển sang một chiếc bồn khác.",
           "cue": "After + being + V3",
           "sampleAnswers": [
+            "After being heated, the liquid is transferred to another tank.",
             "After being heated, the liquid is transferred to another container."
           ]
         },
@@ -2222,6 +2281,7 @@
           "promptVi": "Các chai được làm sạch, sau đó là quá trình đổ đầy nước.",
           "cue": "S + V, followed by + N",
           "sampleAnswers": [
+            "The bottles are cleaned, followed by the filling process.",
             "The bottles are cleaned, followed by a water-filling process."
           ]
         },
@@ -2231,6 +2291,7 @@
           "promptVi": "Sản phẩm được đóng gói, sau đó là quá trình vận chuyển đến siêu thị.",
           "cue": "S + V, followed by + N",
           "sampleAnswers": [
+            "The products are packaged, followed by their transportation to supermarkets.",
             "The products are packaged, followed by transportation to supermarkets."
           ]
         }
@@ -2278,7 +2339,7 @@
           "6 động từ khác nhau",
           "Thì hiện tại đơn, bị động khi có con người tác động"
         ],
-        "sampleAnswer": "1. (Solid) The wet clay is pressed into moulds and then hardens as it dries in the sun.\n2. (Solid) The roasted coffee beans are ground into a fine powder.\n3. (Liquid) The hot liquid is poured into large tanks, where it gradually cools down.\n4. (Liquid) As the sea water is heated, it evaporates and later condenses into small droplets.\n5. (Gas) The gas is compressed before being heated up in a chamber.\n6. (Gas) Once the fuel is ignited, it burns and releases carbon dioxide into the air.",
+        "sampleAnswer": "Chất rắn: 1. The clay is pressed into moulds. 2. The coffee beans are ground into a fine powder.\nChất lỏng: 3. The liquid is poured into a large tank. 4. The water is filtered to remove impurities.\nChất khí: 5. The gas expands when it is heated. 6. The steam condenses into water as it cools down.",
         "commonErrors": []
       }
     },
@@ -2318,7 +2379,7 @@
           "Không coi cows grazing hay sản phẩm phụ là một bước",
           "Bị động, thì hiện tại đơn"
         ],
-        "sampleAnswer": "The diagram illustrates the process by which milk is produced and delivered to retailers.\n\nOverall, there are six main stages in the process, beginning with the milking of cows and ending with the distribution of packaged milk to supermarkets and shops.\n\nAt the first stage, the cows are milked by a milking machine twice a day. The milk is then kept cold in refrigerated storage on the farm, before being collected by a milk tanker, which delivers it to the dairy every day.\n\nOnce it has arrived at the dairy, the milk is stored in large tanks. While part of it is used to make by-products such as cheese, cream and butter, the remaining milk is heated to be pasteurised and is then packaged into bottles. Finally, the packaged milk is transported to supermarkets and shops, where it is sold to consumers.",
+        "sampleAnswer": "The diagram illustrates how milk is produced, from the milking of cows to the delivery of milk to shops.\n\nOverall, there are five main stages in the process, beginning with the milking of cows by machine and ending with the distribution of the packaged milk to supermarkets and shops.\n\nAt the first stage, cows are milked by machine twice a day. The milk is then stored in refrigerated tanks before being collected by a milk tanker, which delivers it to the dairy every day.\n\nAt the dairy, the milk is pasteurised and packaged into bottles, while some of it is used to make by-products such as cheese, cream and butter. Finally, the packaged milk is transported to supermarkets and shops, where it is sold to customers.",
         "commonErrors": [
           "Coi “cows grazing” là bước 1",
           "Mô tả cheese, cream, butter như một bước của quy trình"
@@ -2357,7 +2418,7 @@
           "Dùng ít nhất 5 cụm trong bảng 22.6",
           "Có từ nối chỉ trình tự"
         ],
-        "sampleAnswer": "1. The life cycle of a butterfly consists of four main stages: egg, caterpillar, pupa and adult.\n2. At the first stage, a female butterfly lays a number of tiny eggs on the leaves of a plant.\n3. These eggs hatch within five to seven days.\n4. Each egg hatches into a small caterpillar, which feeds on the leaves around it.\n5. As it grows bigger, the caterpillar sheds its outer layer several times.\n6. After about two weeks, it forms a hard shell around itself and becomes a pupa.\n7. Inside the pupa, the caterpillar undergoes dramatic changes and turns into a butterfly.\n8. Finally, the fully developed butterfly emerges, and once it has mated, the cycle begins again.",
+        "sampleAnswer": "1. The life cycle of a butterfly consists of four main stages.\n2. It begins when a female butterfly lays eggs on a leaf.\n3. After a few days, the eggs hatch into tiny caterpillars.\n4. The caterpillars feed on leaves and grow rapidly.\n5. During this stage, they shed their skin several times.\n6. Once fully grown, each caterpillar forms a hard shell called a chrysalis.\n7. Inside the chrysalis, it gradually develops into an adult butterfly.\n8. Finally, the adult butterfly emerges, and the cycle begins again.",
         "commonErrors": []
       }
     }

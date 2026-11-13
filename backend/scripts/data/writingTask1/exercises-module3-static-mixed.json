@@ -6,7 +6,7 @@
       "order": 1,
       "type": "categorize",
       "title": "Static hay Dynamic?",
-      "instruction": "Xếp mỗi đề bài vào đúng nhóm dữ liệu.",
+      "instruction": "Xếp mỗi đề bài vào đúng nhóm: S (static) hoặc D (dynamic). Đọc phần giải thích để biết động từ chính nên dùng.",
       "autoGrade": true,
       "points": 8,
       "estimatedMinutes": 4,
@@ -29,22 +29,26 @@
         {
           "id": "c1",
           "text": "The pie chart shows household spending in Korea in 2015.",
-          "category": "static"
+          "category": "static",
+          "explanation": "Động từ nên dùng: accounts for / makes up."
         },
         {
           "id": "c2",
           "text": "The line graph shows rainfall in Hanoi from 1990 to 2020.",
-          "category": "dynamic"
+          "category": "dynamic",
+          "explanation": "Động từ nên dùng: rose / fell / fluctuated."
         },
         {
           "id": "c3",
-          "text": "The table compares five airlines in terms of punctuality in 2019.",
-          "category": "static"
+          "text": "The table shows the punctuality of five airlines in 2019.",
+          "category": "static",
+          "explanation": "Động từ nên dùng: was / had / topped the list."
         },
         {
           "id": "c4",
           "text": "The bar chart shows sales of four products between 2000 and 2010.",
-          "category": "dynamic"
+          "category": "dynamic",
+          "explanation": "Động từ nên dùng: increased / decreased."
         }
       ]
     },
@@ -67,8 +71,9 @@
         {
           "id": "e1",
           "prompt": "In 2010, football increased to 87% among boys aged 6–11.",
-          "answer": "In 2010, football accounted for 87% among boys aged 6–11.",
+          "answer": "In 2010, football was the most popular sport among boys aged 6–11, at 87%.",
           "accept": [
+            "In 2010, football accounted for 87% among boys aged 6–11.",
             "Football was the most popular sport among boys aged 6-11, at 87%.",
             "In 2010, football topped the list at 87% among boys aged 6-11."
           ],
@@ -77,8 +82,9 @@
         {
           "id": "e2",
           "prompt": "Swimming fell to only 19% in both age groups.",
-          "answer": "Swimming was the least popular sport, at only 19% in both age groups.",
+          "answer": "Swimming had the lowest participation rate in both age groups, at only 19%.",
           "accept": [
+            "Swimming was the least popular sport, at only 19% in both age groups.",
             "The bottom position belonged to swimming, with only 19% in both age groups."
           ],
           "explanation": "\"fell\" là từ xu hướng — dùng \"was lowest\"/\"the bottom position belonged to\"."
@@ -86,8 +92,9 @@
         {
           "id": "e3",
           "prompt": "Cricket rose to 45% for younger boys.",
-          "answer": "Cricket accounted for 45% of younger boys.",
+          "answer": "Cricket was played by 45% of younger boys.",
           "accept": [
+            "Cricket accounted for 45% of younger boys.",
             "Cricket made up 45% of younger boys."
           ],
           "explanation": "\"rose\" là từ xu hướng — dùng \"accounted for\"/\"made up\"."
@@ -160,7 +167,7 @@
           "Không dùng từ vựng xu hướng (increase/decrease)",
           "Đúng 2 câu, không đi vào chi tiết từng số liệu"
         ],
-        "sampleAnswer": "1. It is clear from the table that boys aged 6-11 were generally more likely to play sports than the other group.\n2. Additionally, football was the most popular type of sport for both age groups."
+        "sampleAnswer": "Overview một câu (công thức while / whereas): Overall, while football was by far the most popular sport in both age groups, swimming attracted the lowest proportion of boys.\n\n— Overview hai câu —\n1. It is clear from the table that boys aged 6-11 were generally more likely to play sports than the other group.\n2. Additionally, football was the most popular type of sport for both age groups."
       }
     },
     {
@@ -306,7 +313,7 @@
           "Body 2 gộp 2 cột còn lại, chỉ chọn số liệu cao nhất/thấp nhất mỗi cột",
           "Không dùng từ vựng xu hướng (increase/decrease)"
         ],
-        "sampleAnswer": "The table gives information about the percentage of national consumer spending devoted to three categories—food, drinks and tobacco; clothing and footwear; and leisure and education—in five countries in 2002.\n\nOverall, food, drinks and tobacco absorbed by far the largest share of spending in every country, whereas leisure and education received the smallest proportion in all five.\n\nThe percentage spent on food, drinks and tobacco was highest in Turkey and Ireland, at 32.14% and 28.91% respectively. The figures for Spain, Italy and Sweden were considerably lower and fairly close together, ranging from 18.80% down to 15.77%.\n\nSpending on clothing and footwear varied far less across the five countries, from a high of 9.00% in Italy to a low of 5.40% in Sweden. Leisure and education attracted the least expenditure everywhere, with Turkey and Sweden spending the most on this category, at 4.35% and 3.22%, while Spain devoted the smallest share of all, at just 1.98%."
+        "sampleAnswer": "The table illustrates what proportion of consumer spending went on three categories of products in Ireland, Italy, Spain, Sweden and Turkey in 2002.\n\nOverall, while food, drinks and tobacco took the largest share of spending in all five countries, leisure and education accounted for the smallest proportion. It is also clear that Turkey spent the highest percentage of its budget on food, drinks and tobacco.\n\nTurkish consumers spent 32.14% of their budget on food, drinks and tobacco, which was slightly higher than the figure for Ireland, at 28.91%. The proportions spent on this category in Spain, Italy and Sweden were considerably lower, at between 15.77% and 18.80%.\n\nRegarding clothing and footwear, Italy had the highest figure, at 9%, whereas Sweden had the lowest, at 5.40%. The other three countries spent around 6.5% on this category. Spending on leisure and education was the lowest in all five countries, ranging from just 1.98% in Spain to 4.35% in Turkey."
       }
     },
     {
@@ -350,7 +357,7 @@
           "Body chia theo 2 nhóm thành phố có đặc điểm giống nhau (Liverpool+Manchester / London riêng)",
           "Dùng đúng thì quá khứ đơn (khảo sát năm 2009)"
         ],
-        "sampleAnswer": "The bar chart illustrates the results of a 2009 survey on the types of housing preferred by people living in three UK cities, namely Liverpool, London and Manchester.\n\nOverall, apartments were by far the most popular choice in Liverpool, whereas semi-detached houses were favoured most in London and Manchester. Terraced houses were the least preferred type of housing in all three cities.\n\nIn Liverpool, nearly 60% of residents preferred to live in an apartment, roughly three times the figure for Manchester (just under 20%). By contrast, detached and semi-detached houses were chosen by only around 15% and 18% of people in Liverpool respectively, considerably fewer than in Manchester, where each type was preferred by about 35%. Terraced houses were the least popular option in both cities, at roughly 10%.\n\nIn London, semi-detached houses were the most popular, at almost 40%. Apartments came next, at around 30%, followed by detached houses at about 25%. Terraced houses received the smallest share, at just under 20%."
+        "sampleAnswer": "The bar chart illustrates the results of a 2009 survey about the types of housing that people in Liverpool, London and Manchester preferred.\n\nOverall, while apartments were the most popular choice in Liverpool, semi-detached houses were preferred in London and Manchester. Terraced houses were the least popular type of home in all three cities.\n\nAround 58% of people in Liverpool wanted to live in an apartment, which was about three times as many as the figure for Manchester, at around 19%. By contrast, only 15% and 18% of Liverpool residents chose detached and semi-detached houses, respectively, compared to about 35% and 37% in Manchester. Terraced houses attracted the smallest share in both cities, at 9% and 12%.\n\nIn London, semi-detached houses topped the list, at nearly 37%, followed by apartments, at about 29%. A quarter of Londoners preferred detached houses, while the bottom position belonged to terraced houses, with just under 20% choosing them."
       }
     },
     {
@@ -393,7 +400,7 @@
           "Mỗi đoạn: nêu tỷ lệ cao nhất trước, sau đó so sánh với các con số còn lại",
           "Dùng thì hiện tại đơn, dùng \"larger\" khi so sánh %"
         ],
-        "sampleAnswer": "The pie charts compare the proportions of three materials, namely plastics, glass and paper, that make up recycled waste in Sydney, Melbourne and the world as a whole.\n\nOverall, paper accounts for the largest share of recycling worldwide, whereas plastics and glass make up the largest proportions in Sydney and Melbourne respectively. It is also noticeable that glass represents the smallest share globally.\n\nPaper constitutes 55% of all recycled materials worldwide, a much larger proportion than in the two Australian cities, where it accounts for only 22% in Sydney and 21% in Melbourne.\n\nGlass shows the opposite pattern. It makes up 58% of recycling in Melbourne and 38% in Sydney, but only 11% across the world.\n\nAs for plastics, Sydney has the largest figure, at 40%, which is slightly larger than the global proportion of 34%. In Melbourne, by contrast, plastics account for just 21% of the total."
+        "sampleAnswer": "The pie charts illustrate the proportions of plastics, glass and paper that are recycled in Sydney, Melbourne and around the world.\n\nOverall, while plastics and glass make up the largest proportions of recycled material in Sydney and Melbourne, paper accounts for more than half of all recycling worldwide.\n\nPlastics and glass dominate recycling in the two Australian cities. In Sydney, plastics account for 40% of all recycled material, slightly higher than the figure for glass, at 38%. In Melbourne, glass is by far the most recycled material, at 58%, while plastics make up 21%. Worldwide, by contrast, plastics constitute 34% of recycling, and glass only 11%.\n\nPaper shows the opposite pattern. Worldwide, it accounts for 55% of all recycled material, which is the largest share in any of the three charts. However, paper makes up only 22% of recycling in Sydney and 21% in Melbourne."
       }
     },
     {
@@ -435,7 +442,7 @@
           "Thân bài 2 đoạn, mỗi đoạn 1 biểu đồ",
           "Dùng thì hiện tại đơn, \"larger\" khi so sánh %"
         ],
-        "sampleAnswer": "The first pie chart illustrates how energy is consumed in a typical Australian household, while the second shows the proportion of greenhouse gas emissions produced by each type of energy use.\n\nOverall, heating uses the largest share of household energy, but it is water heating that is responsible for the largest proportion of greenhouse gas emissions.\n\nIn terms of energy use, heating accounts for 42% of the total, followed by water heating at 30%. Other appliances make up 15%, while refrigeration, lighting and cooling together represent only 13%, at 7%, 4% and 2% respectively.\n\nThe emissions chart presents a different picture. Water heating generates 32% of household greenhouse gases, and other appliances produce 28%, a much larger share than their proportion of energy use. Heating, despite consuming the most energy, accounts for just 15% of emissions, almost the same as refrigeration at 14%. Lighting and cooling contribute 8% and 3% respectively."
+        "sampleAnswer": "The first pie chart illustrates how energy is used in a typical Australian household, while the second shows the greenhouse gas emissions that result from this energy use.\n\nOverall, while heating accounts for the largest share of household energy use, water heating is responsible for the largest proportion of greenhouse gas emissions.\n\nHeating makes up 42% of the energy consumed in an average Australian home, followed by water heating, at 30%. Other appliances take up 15%, while refrigeration accounts for 7%. Lighting and cooling use the smallest amounts of energy, at just 4% and 2%, respectively.\n\nTurning to emissions, water heating produces the largest share, at 32%, closely followed by other appliances, at 28%. Heating, which uses the most energy, generates only 15% of emissions, a similar figure to that for refrigeration, at 14%. Lighting and cooling are responsible for the remaining 8% and 3%."
       }
     },
     {
@@ -482,6 +489,45 @@
           "promptVi": "Tủ lạnh tiêu thụ 7% tổng năng lượng."
         }
       ]
+    },
+    {
+      "code": "T1-L11-E06",
+      "lessonCode": "T1-L11",
+      "order": 6,
+      "type": "sentence_writing",
+      "title": "Bài tập bổ sung — Viết Overview trong 90 giây",
+      "instruction": "Nhìn nhanh vào hai biểu đồ tròn ở phần 11.4 và viết Overview chỉ trong 90 giây, không nhìn lại gợi ý.",
+      "source": "book",
+      "skillTags": [
+        "overview",
+        "speed"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 2,
+      "points": 5,
+      "autoGrade": false,
+      "timerMinutes": 1.5,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Australian household energy use and resulting greenhouse gas emissions",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/australian-household-energy-emissions_bmw4ozgiu.png"
+      },
+      "responseSlots": 1,
+      "rubric": {
+        "minWords": 15,
+        "targetStructures": [
+          "Overall, while …, …"
+        ],
+        "mustUse": 1,
+        "checklist": [
+          "1–2 câu, không số liệu",
+          "Nêu điểm nổi bật của cả hai biểu đồ"
+        ],
+        "sampleAnswer": "Overall, while heating accounts for the largest share of household energy use, water heating is responsible for the largest proportion of greenhouse gas emissions.",
+        "commonErrors": [
+          "đưa số liệu vào Overview"
+        ]
+      }
     },
     {
       "code": "T1-L12-E01",
@@ -560,7 +606,7 @@
           "Body 2 mô tả biểu đồ cột: France cao nhất, so sánh Spain/USA/Greece/Turkey",
           "Không cố mô tả hết mọi số liệu — chỉ chọn điểm quan trọng nhất mỗi biểu đồ"
         ],
-        "sampleAnswer": "The line graph illustrates the number of visits abroad made by UK residents and the number of visits to the UK by overseas residents between 1979 and 1999, while the bar chart shows how many UK residents travelled to the five most popular destinations in 1999.\n\nIt is clear that both the number of UK residents travelling abroad and the number of overseas visitors coming to the UK increased over the period. Additionally, France was by far the most popular country among UK travellers.\n\nIn 1979, UK residents made around 13 million visits abroad, compared to about 10 million visits to the UK by overseas residents. Both figures increased throughout the period, but trips abroad by UK residents rose much more quickly, especially after 1985, and by 1999 they had reached about 53 million. Visits by foreigners, meanwhile, rose more steadily to approximately 27 million.\n\nAs for the most popular destinations, France topped the list, attracting about 11 million UK visitors. Spain came next with around 9.5 million, while the figures for the USA, Greece and Turkey were considerably lower, at around 3.5 million, 3 million and 2 million respectively."
+        "sampleAnswer": "The line graph illustrates the number of UK residents travelling abroad and the number of overseas visitors coming to the UK, while the bar chart shows data on how many UK residents travelled to five of the most popular destinations.\n\nIt is clear that both the numbers of UK residents travelling abroad and overseas visitors coming to the UK increased over the period. Additionally, France was the most popular country among UK travellers.\n\nIn 1979, around 13 million UK residents travelled abroad, compared to about 10 million overseas visitors to the UK. Both figures increased throughout the period, and by 1999, the number of UK residents travelling abroad had reached about 53 million, while the number of foreign visitors rose to approximately 27 million.\n\nAs for the most popular destinations, France topped the list, attracting about 11 million UK visitors. Spain came next with around 9.5 million visitors, while the figures for the USA, Greece and Turkey were considerably lower, at around 3.5 million, 3 million and 2 million, respectively."
       }
     },
     {
@@ -601,7 +647,7 @@
           "Body 1 chỉ mô tả biểu đồ đường, Body 2 chỉ mô tả bảng",
           "Không nhầm giữa hai biểu đồ trong cùng một đoạn"
         ],
-        "sampleAnswer": "The line graph illustrates the average monthly temperatures in London, New York and Sydney, while the table shows how many hours of sunshine each city receives per year.\n\nOverall, temperatures in London and New York peak in the middle of the year, whereas Sydney is coldest during the same period. It is also clear that London has by far the fewest hours of sunshine of the three cities.\n\nIn January, Sydney is the warmest city, at about 26°C, compared with only around 8°C in London and 4°C in New York. Temperatures in London and New York then rise steadily, reaching peaks of about 23°C and 29°C respectively in July, while the temperature in Sydney falls to its lowest point of around 16°C. From August onwards, the trends reverse: London and New York cool to about 9°C and 5°C by December, while Sydney warms back up to roughly 25°C.\n\nTurning to the table, New York receives the most sunshine, at 2,535 hours per year, slightly more than Sydney with 2,473 hours. London, by contrast, has only 1,180 hours, less than half the figure for either of the other two cities."
+        "sampleAnswer": "The line graph illustrates the average monthly temperatures in London, New York and Sydney, while the table shows the total number of hours of sunshine that each city receives per year.\n\nOverall, while temperatures in London and New York peak in the middle of the year, Sydney is coolest during this period. New York and Sydney have far more hours of sunshine than London.\n\nIn January, Sydney is the warmest city, at about 26°C, compared to around 8°C in London and only 4°C in New York. Temperatures in London and New York then rise steadily to a peak in July, at about 23°C and 29°C, respectively, before falling back to around 9°C and 5°C in December. Sydney shows the reverse pattern: its temperature drops to a low of about 16°C in July and then climbs back to 25°C by the end of the year.\n\nIn terms of sunshine, New York receives the most hours per year, at 2,535, which is only slightly higher than the figure for Sydney, at 2,473. London, by contrast, gets just 1,180 hours of sunshine annually, less than half the figure for either of the other two cities."
       }
     },
     {
@@ -671,7 +717,7 @@
         },
         {
           "id": "q3",
-          "prompt": "So sánh phần trăm nên dùng:",
+          "prompt": "Từ nào KHÔNG dùng để so sánh hai tỉ lệ phần trăm?",
           "options": [
             {
               "id": "A",
@@ -679,19 +725,19 @@
             },
             {
               "id": "B",
-              "text": "taller"
-            },
-            {
-              "id": "C",
               "text": "larger"
             },
             {
+              "id": "C",
+              "text": "greater"
+            },
+            {
               "id": "D",
-              "text": "longer"
+              "text": "taller"
             }
           ],
-          "answer": "C",
-          "explanation": "\"percentage\" là danh từ chỉ lượng — dùng \"larger\", không dùng \"higher\"."
+          "answer": "D",
+          "explanation": "So sánh phần trăm dùng higher / larger / greater (luân phiên để tránh lặp). “taller” chỉ chiều cao."
         },
         {
           "id": "q4",
@@ -723,11 +769,11 @@
           "options": [
             {
               "id": "A",
-              "text": "1 câu"
+              "text": "1 câu chỉ nói biểu đồ 1"
             },
             {
               "id": "B",
-              "text": "2 câu, mỗi câu cho một biểu đồ"
+              "text": "1–2 câu, nêu điểm nổi bật của cả hai biểu đồ"
             },
             {
               "id": "C",
@@ -739,7 +785,7 @@
             }
           ],
           "answer": "B",
-          "explanation": "Mỗi biểu đồ 1 câu nêu điểm nổi bật nhất."
+          "explanation": "Overview đề kết hợp nêu điểm nổi bật của CẢ HAI biểu đồ, trong 1–2 câu."
         }
       ]
     },
@@ -761,7 +807,7 @@
       "items": [
         {
           "id": "q1",
-          "prompt": "Football was highest, at 87%.",
+          "prompt": "Football was the highest, at 87%.",
           "cue": "topped the list",
           "sampleAnswers": [
             "Football topped the list, at 87%."
@@ -770,9 +816,10 @@
         },
         {
           "id": "q2",
-          "prompt": "Swimming was lowest, at 19%.",
+          "prompt": "Swimming was the lowest, at 19%.",
           "cue": "the bottom position belonged to",
           "sampleAnswers": [
+            "The bottom position belonged to swimming, with only 19% of boys choosing it.",
             "The bottom position belonged to swimming, with only 19%."
           ],
           "promptVi": "Vị trí bét bảng thuộc về môn bơi lội, chỉ chiếm 19%."
@@ -782,6 +829,7 @@
           "prompt": "45% of boys played cricket.",
           "cue": "accounted for",
           "sampleAnswers": [
+            "Boys who played cricket accounted for 45% of the group.",
             "Cricket accounted for 45% of boys."
           ],
           "promptVi": "Môn cricket chiếm 45% ở các bé trai."
@@ -800,6 +848,7 @@
           "prompt": "Terraced houses got the fewest votes.",
           "cue": "the bottom position belonged to",
           "sampleAnswers": [
+            "The bottom position belonged to terraced houses, which received the fewest votes.",
             "The bottom position belonged to terraced houses."
           ],
           "promptVi": "Vị trí cuối cùng thuộc về nhà liền kề."
@@ -834,7 +883,7 @@
           "Nêu được cả 2 cách chia Body (theo cột và theo hàng)",
           "Chọn 1 cách cụ thể và giải thích lý do chọn"
         ],
-        "sampleAnswer": "There are two possible ways to organise the Body. The first is to divide it by column, describing each time period in turn across all four rows. The second is to divide it by row, describing each item across the three columns. I would split the Body by column, because the table has only three columns but four rows, so grouping by column produces two balanced paragraphs and makes the comparison over time clearer."
+        "sampleAnswer": "A3 (gợi ý): Cách 1 — chia theo cột (3 cột: Body 1 = cột quan trọng nhất, Body 2 = hai cột còn lại). Cách 2 — chia theo hàng (Body 1 = 2 hàng có số liệu nổi bật, Body 2 = 2 hàng còn lại). Chọn cách có số lượng số liệu cân bằng và giúp so sánh trực tiếp các con số lớn nhất / nhỏ nhất."
       }
     },
     {
@@ -866,7 +915,7 @@
           "Nối hai mệnh đề bằng and/while/dấu phẩy",
           "Đúng thì hiện tại đơn (không có mốc thời gian ngoài \"2020\")"
         ],
-        "sampleAnswer": "The pie chart provides information about where households in Vietnam obtained their water in 2020, while the bar chart shows how much water four different sectors consumed in the same year."
+        "sampleAnswer": "A4 (gợi ý): The pie chart illustrates where households in Vietnam obtained their water in 2020, while the bar chart shows how much water was consumed by four sectors in the same year."
       }
     },
     {
@@ -875,7 +924,7 @@
       "order": 5,
       "type": "full_task1",
       "title": "Phần B — Bài viết hoàn chỉnh",
-      "instruction": "The table below shows the percentage of household income spent on five categories in three countries in 2015. Summarize the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "instruction": "The table below shows the percentage of household income spent on five categories in three countries in 2015 (hypothetical data). Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "autoGrade": false,
       "points": 60,
       "estimatedMinutes": 20,
@@ -888,7 +937,7 @@
       "timerMinutes": 20,
       "stimulus": {
         "kind": "table",
-        "caption": "Percentage of household income spent on five categories — 2015",
+        "caption": "Percentage of household income spent on five categories in three countries — 2015 (hypothetical data)",
         "headers": [
           "Category",
           "Japan",
@@ -925,8 +974,15 @@
             "14%",
             "8%",
             "4%"
+          ],
+          [
+            "Other",
+            "15%",
+            "16%",
+            "17%"
           ]
-        ]
+        ],
+        "note": "Hàng “Other” (các khoản khác) được thêm để mỗi cột cộng đủ 100%."
       },
       "rubric": {
         "minWords": 150,
@@ -957,7 +1013,7 @@
           "Body chia hợp lý — theo cột (mỗi nước 1 đoạn) hoặc theo hàng (nhóm hạng mục)",
           "Không dùng increase/decrease — đây là dữ liệu tĩnh (1 năm duy nhất)"
         ],
-        "sampleAnswer": "The table shows the percentage of household income that was spent on five categories—food, housing, transport, education and leisure—in Japan, Brazil and Nigeria in 2015.\n\nOverall, the pattern of spending differed markedly with national wealth: households in Nigeria devoted the greatest share of their income to food, whereas those in Japan spent proportionally more on housing and on the non-essential categories of education and leisure.\n\nFood took up by far the largest proportion of income in Nigeria, at 46%, compared to 27% in Brazil and only 18% in Japan. The reverse was true for housing, which accounted for the biggest share in Japan, at 26%, but just 15% in Nigeria. Transport spending was fairly similar across the three countries, ranging from 18% in Brazil to 12% in Nigeria.\n\nThe gap was widest in the discretionary categories. Japanese households spent 12% of their income on education and 14% on leisure, roughly double and triple the corresponding Nigerian figures of 6% and 4%. Brazil fell between the two in every category."
+        "sampleAnswer": "The table illustrates what percentage of household income was spent on five categories of goods and services in Japan, Brazil and Nigeria in 2015.\n\nOverall, while food was the largest expense for households in Brazil and Nigeria, Japanese households spent the most on housing. It is also clear that leisure and education took up a much smaller share of income in Nigeria than in the other two countries.\n\nNigerian households spent 46% of their income on food, which was more than twice as high as the figure for Japan, at 18%. Brazil was in the middle, at 27%. By contrast, housing accounted for 26% of spending in Japan, compared to 22% in Brazil and only 15% in Nigeria.\n\nTransport costs were fairly similar in the three countries, ranging from 12% in Nigeria to 18% in Brazil. Japanese families spent 14% of their income on leisure and 12% on education, while the figures for Nigeria were just 4% and 6%, respectively. Brazil spent slightly less than Japan on these two categories, at 8% and 9%."
       }
     }
   ]

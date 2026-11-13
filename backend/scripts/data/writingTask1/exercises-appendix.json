@@ -1,0 +1,1035 @@
+{
+  "exercises": [
+    {
+      "code": "T1-PLD1-E01",
+      "lessonCode": "T1-PLD1",
+      "order": 1,
+      "type": "mcq",
+      "title": "D.6. PRACTICE 1 — Chọn từ đúng",
+      "instruction": "Khoanh tròn phương án đúng.",
+      "source": "book",
+      "skillTags": [
+        "paraphrase",
+        "subject"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 4,
+      "points": 6,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The chart shows the hobbies of ( … ).",
+          "options": [
+            {
+              "id": "A",
+              "text": "10-years-old children"
+            },
+            {
+              "id": "B",
+              "text": "10-year-old children"
+            }
+          ],
+          "answer": "B",
+          "explanation": "“year-old” đứng trước danh từ thì không có “s”: 10-year-old children."
+        },
+        {
+          "id": "q2",
+          "prompt": "The number of ( … ) aged under 14 was 100.",
+          "options": [
+            {
+              "id": "A",
+              "text": "men"
+            },
+            {
+              "id": "B",
+              "text": "males"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Dưới 14 tuổi không phải “men” (đàn ông trưởng thành) → males dùng được cho mọi lứa tuổi."
+        },
+        {
+          "id": "q3",
+          "prompt": "( … ) aged 25 to 40 spent the most on housing.",
+          "options": [
+            {
+              "id": "A",
+              "text": "Boys and girls"
+            },
+            {
+              "id": "B",
+              "text": "Men and women"
+            }
+          ],
+          "answer": "B",
+          "explanation": "25–40 tuổi là người trưởng thành → men and women."
+        },
+        {
+          "id": "q4",
+          "prompt": "The figure for ( … ) was the highest of the four countries.",
+          "options": [
+            {
+              "id": "A",
+              "text": "the USA"
+            },
+            {
+              "id": "B",
+              "text": "USA"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Tên nước dạng viết tắt / có “States, Kingdom” cần “the”: the USA, the UK."
+        },
+        {
+          "id": "q5",
+          "prompt": "It is a class of ( … ).",
+          "options": [
+            {
+              "id": "A",
+              "text": "12-year-old"
+            },
+            {
+              "id": "B",
+              "text": "12-year-olds"
+            }
+          ],
+          "answer": "B",
+          "explanation": "“year-olds” là danh từ số nhiều khi đứng một mình: a class of 12-year-olds."
+        },
+        {
+          "id": "q6",
+          "prompt": "The proportion of ( … ) rose sharply after 2010.",
+          "options": [
+            {
+              "id": "A",
+              "text": "the elderly"
+            },
+            {
+              "id": "B",
+              "text": "elderly"
+            }
+          ],
+          "answer": "A",
+          "explanation": "“the + adj” chỉ một nhóm người: the elderly, the young."
+        }
+      ]
+    },
+    {
+      "code": "T1-PLD1-E02",
+      "lessonCode": "T1-PLD1",
+      "order": 2,
+      "type": "sentence_transform",
+      "title": "D.7. PRACTICE 2 — Paraphrase chủ thể",
+      "instruction": "Viết lại mỗi cụm sau bằng hai cách khác nhau (ngăn cách bằng dấu “/”).",
+      "source": "book",
+      "skillTags": [
+        "paraphrase",
+        "subject"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "points": 6,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "children aged 5 to 11",
+          "sampleAnswers": [
+            "5- to 11-year-olds / children (who are) aged 5 to 11"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "people aged 65 and over",
+          "sampleAnswers": [
+            "the elderly / senior citizens"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "people from Spain",
+          "sampleAnswers": [
+            "the Spanish / Spanish people"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "teenagers",
+          "sampleAnswers": [
+            "adolescents / young people aged 13–19"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "adults in employment",
+          "sampleAnswers": [
+            "working adults / employed people"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "people in their forties",
+          "sampleAnswers": [
+            "40- to 49-year-olds / people aged 40 to 49"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-PLD1-E03",
+      "lessonCode": "T1-PLD1",
+      "order": 3,
+      "type": "sentence_writing",
+      "title": "D.8. HOMEWORK — Phần 1",
+      "instruction": "Viết 6 câu tiếng Anh so sánh số liệu giữa hai quốc gia và hai nhóm tuổi bất kỳ. Mỗi câu phải dùng một cách gọi chủ thể khác nhau, không được lặp lại.",
+      "source": "book",
+      "skillTags": [
+        "paraphrase",
+        "subject"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 12,
+      "points": 6,
+      "autoGrade": false,
+      "responseSlots": 6,
+      "rubric": {
+        "minWords": 60,
+        "targetStructures": [
+          "aged 65 and over",
+          "senior citizens",
+          "twelve-year-olds",
+          "their … counterparts",
+          "adolescents",
+          "in their forties"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "6 câu, mỗi câu một cách gọi chủ thể khác nhau",
+          "Có so sánh giữa hai quốc gia / hai nhóm tuổi",
+          "Không lặp lại cách gọi"
+        ],
+        "sampleAnswer": "1. The proportion of Japanese people aged 65 and over was higher than the figure for the USA.\n2. In Canada, senior citizens outnumbered children aged 5 to 11.\n3. Twelve-year-olds in Spain spent more time online than their Italian counterparts.\n4. The number of males aged under 14 in Mexico was twice as high as that in Germany.\n5. Adolescents in the UK used social media more than the elderly did.\n6. The figure for Australians in their forties was slightly lower than that for working-age Canadians.",
+        "commonErrors": [
+          "10-years-old",
+          "men cho trẻ em"
+        ]
+      }
+    },
+    {
+      "code": "T1-PLD2-E01",
+      "lessonCode": "T1-PLD2",
+      "order": 1,
+      "type": "sentence_transform",
+      "title": "D.18. PRACTICE 1 — Viết lại câu không lặp từ",
+      "instruction": "Viết lại mỗi câu sau bằng một cách diễn đạt khác, giữ nguyên nghĩa.",
+      "source": "book",
+      "skillTags": [
+        "paraphrase",
+        "subject"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "points": 8,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The percentage of Internet users in Japan was 60%.",
+          "sampleAnswers": [
+            "60% of people in Japan used the Internet."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "The unemployment rate in Spain rose to 20%.",
+          "sampleAnswers": [
+            "The level of joblessness in Spain rose to 20%."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "The poverty rate in Laos was 15%.",
+          "sampleAnswers": [
+            "15% of people in Laos lived below the poverty line."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Sales of coffee reached $4 billion.",
+          "sampleAnswers": [
+            "Coffee earned $4 billion.",
+            "Turnover from coffee reached $4 billion."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "People in Sweden spent $750 on mobile phones.",
+          "sampleAnswers": [
+            "Swedish consumers spent $750 on mobile phones.",
+            "Expenditure on mobile phones in Sweden was $"
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "The number of people who travel by car doubled.",
+          "sampleAnswers": [
+            "The number of car commuters doubled."
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "Beef consumption was 90 pounds per person.",
+          "sampleAnswers": [
+            "The per capita consumption of beef was 90 pounds."
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "The amount of paper produced fell sharply.",
+          "sampleAnswers": [
+            "Paper production fell sharply."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-PLD2-E02",
+      "lessonCode": "T1-PLD2",
+      "order": 2,
+      "type": "sentence_writing",
+      "title": "D.19. PRACTICE 2 — Ba cách cho một số liệu",
+      "instruction": "Với mỗi số liệu, viết ba câu tiếng Anh khác nhau cùng diễn đạt một ý (viết cả ba câu vào ô của số liệu đó).",
+      "source": "book",
+      "skillTags": [
+        "paraphrase",
+        "subject"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 12,
+      "points": 9,
+      "autoGrade": false,
+      "responseSlots": 3,
+      "stimulus": {
+        "kind": "text",
+        "caption": "Ba số liệu",
+        "rows": [
+          [
+            "1",
+            "Vietnam: Internet users 70%, Thailand: 55%"
+          ],
+          [
+            "2",
+            "UK: unemployment 8%, Mexico: 4%"
+          ],
+          [
+            "3",
+            "Average weekly spending on food in France: $120"
+          ]
+        ]
+      },
+      "rubric": {
+        "minWords": 60,
+        "targetStructures": [
+          "The percentage of … was …",
+          "stood at",
+          "compared with / compared to",
+          "per capita",
+          "The level of joblessness"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Mỗi số liệu đủ 3 câu",
+          "3 câu dùng 3 cách gọi chủ thể / 3 cấu trúc khác nhau",
+          "Giữ nguyên số liệu"
+        ],
+        "sampleAnswer": "1. The percentage of Internet users in Vietnam was 70%, compared to 55% in Thailand.\n70% of Vietnamese people used the Internet, while the figure for Thailand was 55%.\nInternet usage in Vietnam stood at 70%, 15 percentage points higher than that in Thailand.\n\n2. The unemployment rate in the UK was 8%, twice as high as that in Mexico, at 4%.\n8% of British people were jobless, compared with only 4% in Mexico.\nThe level of joblessness in the UK was double the figure for Mexico.\n\n3. Average weekly spending on food in France was $120.\nOn average, French people spent $120 on food per week.\nWeekly expenditure on food per person in France stood at $120.",
+        "commonErrors": [
+          "ba câu chỉ khác một từ"
+        ]
+      }
+    },
+    {
+      "code": "T1-PLD2-E03",
+      "lessonCode": "T1-PLD2",
+      "order": 3,
+      "type": "sentence_writing",
+      "title": "D.20. HOMEWORK — Phần 2",
+      "instruction": "Chọn 5 mục bất kỳ trong Phần 2 (D.9–D.17). Với mỗi mục, viết hai câu tiếng Anh dùng hai cách paraphrase khác nhau (mỗi ô một mục, ghi tên mục ở đầu).",
+      "source": "book",
+      "skillTags": [
+        "paraphrase",
+        "subject"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 15,
+      "points": 10,
+      "autoGrade": false,
+      "responseSlots": 5,
+      "rubric": {
+        "minWords": 80,
+        "targetStructures": [
+          "turnover",
+          "expenditure on",
+          "per capita",
+          "level of joblessness",
+          "below the poverty line"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "5 mục khác nhau",
+          "Mỗi mục 2 câu với 2 cách paraphrase",
+          "Tổng cộng 10 câu"
+        ],
+        "sampleAnswer": "Gợi ý của sách (ví dụ một cặp):\nD.11 — The unemployment rate in Spain was 20%.\nThe level of joblessness in Spain stood at 20%.\nD.12 — The poverty rate in Laos was 15%.\n15% of the Laotian population lived below the poverty line.",
+        "commonErrors": [
+          "hai câu chỉ đổi số liệu"
+        ]
+      }
+    },
+    {
+      "code": "T1-TESTD-A1",
+      "lessonCode": "T1-TESTD",
+      "order": 1,
+      "type": "mcq",
+      "title": "PHẦN A1 — Trắc nghiệm (10 điểm)",
+      "instruction": "Chọn đáp án đúng. Mỗi câu 1 điểm.",
+      "source": "book",
+      "skillTags": [
+        "paraphrase"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "points": 10,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Cách viết đúng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "12-years-old students"
+            },
+            {
+              "id": "B",
+              "text": "12-year-old students"
+            },
+            {
+              "id": "C",
+              "text": "12 year olds students"
+            },
+            {
+              "id": "D",
+              "text": "students age 12"
+            }
+          ],
+          "answer": "B",
+          "explanation": "“year-old” trước danh từ: không có s, có gạch nối."
+        },
+        {
+          "id": "q2",
+          "prompt": "Từ nào KHÔNG dùng cho trẻ em?",
+          "options": [
+            {
+              "id": "A",
+              "text": "youngsters"
+            },
+            {
+              "id": "B",
+              "text": "children"
+            },
+            {
+              "id": "C",
+              "text": "women"
+            },
+            {
+              "id": "D",
+              "text": "the young"
+            }
+          ],
+          "answer": "C",
+          "explanation": "women = phụ nữ trưởng thành."
+        },
+        {
+          "id": "q3",
+          "prompt": "\"Người cao tuổi\" là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "grown-ups"
+            },
+            {
+              "id": "B",
+              "text": "senior citizens"
+            },
+            {
+              "id": "C",
+              "text": "adolescents"
+            },
+            {
+              "id": "D",
+              "text": "the working-age population"
+            }
+          ],
+          "answer": "B",
+          "explanation": "senior citizens = the elderly."
+        },
+        {
+          "id": "q4",
+          "prompt": "Chọn câu đúng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "The figure for USA"
+            },
+            {
+              "id": "B",
+              "text": "The figure for the USA"
+            },
+            {
+              "id": "C",
+              "text": "The figure of USA"
+            },
+            {
+              "id": "D",
+              "text": "The figure in USA"
+            }
+          ],
+          "answer": "B",
+          "explanation": "“the figure for” + the USA."
+        },
+        {
+          "id": "q5",
+          "prompt": "\"Per capita\" đồng nghĩa với:",
+          "options": [
+            {
+              "id": "A",
+              "text": "per year"
+            },
+            {
+              "id": "B",
+              "text": "per week"
+            },
+            {
+              "id": "C",
+              "text": "per person"
+            },
+            {
+              "id": "D",
+              "text": "per country"
+            }
+          ],
+          "answer": "C",
+          "explanation": "per capita = per person = bình quân đầu người."
+        },
+        {
+          "id": "q6",
+          "prompt": "\"Sales\" có thể thay bằng:",
+          "options": [
+            {
+              "id": "A",
+              "text": "turnover"
+            },
+            {
+              "id": "B",
+              "text": "spender"
+            },
+            {
+              "id": "C",
+              "text": "expenditure"
+            },
+            {
+              "id": "D",
+              "text": "consumption"
+            }
+          ],
+          "answer": "A",
+          "explanation": "sales = turnover (doanh số)."
+        },
+        {
+          "id": "q7",
+          "prompt": "\"Level of joblessness\" nghĩa là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "tỷ lệ nghèo"
+            },
+            {
+              "id": "B",
+              "text": "tỷ lệ thất nghiệp"
+            },
+            {
+              "id": "C",
+              "text": "mức chi tiêu"
+            },
+            {
+              "id": "D",
+              "text": "tỷ lệ dùng Internet"
+            }
+          ],
+          "answer": "B",
+          "explanation": "joblessness = unemployment."
+        },
+        {
+          "id": "q8",
+          "prompt": "Người dân Tây Ban Nha gọi là:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Spainish"
+            },
+            {
+              "id": "B",
+              "text": "The Spanish"
+            },
+            {
+              "id": "C",
+              "text": "Spains"
+            },
+            {
+              "id": "D",
+              "text": "Spainese"
+            }
+          ],
+          "answer": "B",
+          "explanation": "the Spanish / Spanish people."
+        },
+        {
+          "id": "q9",
+          "prompt": "\"Annual\" đồng nghĩa với:",
+          "options": [
+            {
+              "id": "A",
+              "text": "weekly"
+            },
+            {
+              "id": "B",
+              "text": "monthly"
+            },
+            {
+              "id": "C",
+              "text": "yearly"
+            },
+            {
+              "id": "D",
+              "text": "daily"
+            }
+          ],
+          "answer": "C",
+          "explanation": "annual = yearly = per year."
+        },
+        {
+          "id": "q10",
+          "prompt": "Câu nào đúng?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The amount of students rose."
+            },
+            {
+              "id": "B",
+              "text": "The number of students rose."
+            },
+            {
+              "id": "C",
+              "text": "The number of water rose."
+            },
+            {
+              "id": "D",
+              "text": "The amount of people rose."
+            }
+          ],
+          "answer": "B",
+          "explanation": "students đếm được → the number of."
+        }
+      ]
+    },
+    {
+      "code": "T1-TESTD-A2",
+      "lessonCode": "T1-TESTD",
+      "order": 2,
+      "type": "gap_fill",
+      "title": "PHẦN A2 — Điền từ (10 điểm)",
+      "instruction": "Điền: per capita / turnover / senior citizens / expenditure / commuters / joblessness / adolescents / poverty line / the aging population / males. Mỗi câu 1 điểm.",
+      "source": "book",
+      "skillTags": [
+        "paraphrase"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 6,
+      "points": 10,
+      "autoGrade": true,
+      "wordBank": [
+        "per capita",
+        "turnover",
+        "senior citizens",
+        "expenditure",
+        "commuters",
+        "joblessness",
+        "adolescents",
+        "poverty line",
+        "the aging population",
+        "males"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The number of ____ aged under 14 was 100.",
+          "blanks": [
+            {
+              "accept": [
+                "males"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "____ from fast food increased over the period shown.",
+          "blanks": [
+            {
+              "accept": [
+                "Turnover"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "The ____ consumption of beef rose to 90 pounds.",
+          "blanks": [
+            {
+              "accept": [
+                "per capita"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Around 5 million ____ traveled by bus in 2010.",
+          "blanks": [
+            {
+              "accept": [
+                "commuters"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "The level of ____ in England fell to only 10%.",
+          "blanks": [
+            {
+              "accept": [
+                "joblessness"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "____ on mobile phones rose to around $750.",
+          "blanks": [
+            {
+              "accept": [
+                "Expenditure"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "The percentage of people who live under the ____ was 10%.",
+          "blanks": [
+            {
+              "accept": [
+                "poverty line"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "____ is growing rapidly in many developed countries.",
+          "blanks": [
+            {
+              "accept": [
+                "The aging population",
+                "the aging population"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q9",
+          "prompt": "____ aged 13 to 19 spent the most time online.",
+          "blanks": [
+            {
+              "accept": [
+                "Adolescents"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "q10",
+          "prompt": "The proportion of ____ over 65 doubled in twenty years.",
+          "blanks": [
+            {
+              "accept": [
+                "senior citizens"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-TESTD-A3",
+      "lessonCode": "T1-TESTD",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "PHẦN A3 — Viết lại câu (30 điểm)",
+      "instruction": "Viết lại câu bằng cách diễn đạt khác, giữ nguyên nghĩa. Mỗi câu 3 điểm.",
+      "source": "book",
+      "skillTags": [
+        "paraphrase"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 12,
+      "points": 30,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The percentage of people using the Internet in Korea was 80%.",
+          "sampleAnswers": [
+            "80% of Koreans used the Internet."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "The unemployment rate in Greece was 25%.",
+          "sampleAnswers": [
+            "The level of joblessness in Greece was 25%."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "12% of Indian people were poor.",
+          "sampleAnswers": [
+            "The poverty rate in India was 12%."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "Sales of electric cars reached $3 billion.",
+          "sampleAnswers": [
+            "Turnover from electric cars reached $3 billion."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "People in Japan spent $500 a year on books.",
+          "sampleAnswers": [
+            "Japanese consumers spent $500 per year on books."
+          ]
+        },
+        {
+          "id": "q6",
+          "prompt": "The number of people who cycle to work rose.",
+          "sampleAnswers": [
+            "The number of cycling commuters rose."
+          ]
+        },
+        {
+          "id": "q7",
+          "prompt": "Rice consumption was 100 kilograms per person per year.",
+          "sampleAnswers": [
+            "Annual rice consumption per capita was 100 kilograms."
+          ]
+        },
+        {
+          "id": "q8",
+          "prompt": "Children aged 10 to 12 preferred reading.",
+          "sampleAnswers": [
+            "10- to 12-year-olds preferred reading."
+          ]
+        },
+        {
+          "id": "q9",
+          "prompt": "The figure for people from Ireland was the lowest.",
+          "sampleAnswers": [
+            "The figure for the Irish was the lowest."
+          ]
+        },
+        {
+          "id": "q10",
+          "prompt": "The amount of steel produced in China increased.",
+          "sampleAnswers": [
+            "Steel production in China increased."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-TESTD-B1",
+      "lessonCode": "T1-TESTD",
+      "order": 4,
+      "type": "full_task1",
+      "title": "PHẦN B — Đề 1 (chọn một trong hai đề)",
+      "instruction": "The table below shows the unemployment rate among people aged 16–24 and the poverty rate in four countries in 2010 and 2020 (hypothetical data). Write at least 150 words in 20 minutes. Mục tiêu: gọi tên chủ thể bằng ít nhất 4 cách khác nhau trong bài.",
+      "source": "book",
+      "skillTags": [
+        "paraphrase",
+        "full-writing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 25,
+      "points": 50,
+      "autoGrade": false,
+      "timerMinutes": 20,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Unemployment (16–24) and poverty rate in four countries, 2010 and 2020 (hypothetical data)",
+        "headers": [
+          "COUNTRY",
+          "UNEMPLOYMENT 16–24 (2010)",
+          "UNEMPLOYMENT 16–24 (2020)",
+          "POVERTY RATE (2010)",
+          "POVERTY RATE (2020)"
+        ],
+        "rows": [
+          [
+            "Spain",
+            "41%",
+            "38%",
+            "21%",
+            "20%"
+          ],
+          [
+            "England",
+            "18%",
+            "12%",
+            "15%",
+            "13%"
+          ],
+          [
+            "Mexico",
+            "9%",
+            "8%",
+            "46%",
+            "41%"
+          ],
+          [
+            "Vietnam",
+            "6%",
+            "7%",
+            "14%",
+            "5%"
+          ]
+        ],
+        "note": "Chỉ cần làm MỘT trong hai đề của Phần B."
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "16- to 24-year-olds",
+          "level of joblessness",
+          "below the poverty line",
+          "the poverty rate",
+          "compared with"
+        ],
+        "mustUse": 4,
+        "checklist": [
+          "Gọi tên chủ thể bằng ít nhất 4 cách khác nhau",
+          "Overview không có số liệu",
+          "Có so sánh giữa các nước và giữa hai năm"
+        ],
+        "sampleAnswer": "The table compares four countries in terms of the proportion of 16- to 24-year-olds who were out of work and the percentage of people living in poverty in 2010 and 2020.\n\nOverall, while youth unemployment was by far the highest in Spain, Mexico had the largest share of people living below the poverty line. It is also clear that both rates fell in most of the four countries over the decade.\n\nSpain had the highest level of joblessness among young people, at 41% in 2010, before a slight fall to 38% ten years later. The figure for England was much lower, at 18%, and it dropped to 12% in 2020. By contrast, youth unemployment in Mexico and Vietnam stood at under 10% in both years, although the Vietnamese rate rose slightly from 6% to 7%.\n\nTurning to poverty, 46% of Mexicans were poor in 2010, which was more than twice as high as the figure for Spain, at 21%. Both countries saw only small decreases, to 41% and 20%, respectively. The poverty rate in England fell slightly from 15% to 13%, whereas Vietnam saw the most dramatic improvement, with the proportion of poor people dropping from 14% to just 5%.",
+        "commonErrors": [
+          "lặp “the unemployment rate” ở mọi câu",
+          "Overview có số liệu"
+        ]
+      }
+    },
+    {
+      "code": "T1-TESTD-B2",
+      "lessonCode": "T1-TESTD",
+      "order": 5,
+      "type": "full_task1",
+      "title": "PHẦN B — Đề 2 (chọn một trong hai đề)",
+      "instruction": "The table below shows average yearly spending per person on three items in four countries in 2015 (hypothetical data, US dollars). Write at least 150 words in 20 minutes. Mục tiêu: gọi tên chủ thể bằng ít nhất 4 cách khác nhau trong bài.",
+      "source": "book",
+      "skillTags": [
+        "paraphrase",
+        "full-writing"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 25,
+      "points": 50,
+      "autoGrade": false,
+      "timerMinutes": 20,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Average yearly spending per person on three items, 2015 (hypothetical data, US dollars)",
+        "headers": [
+          "COUNTRY",
+          "MOBILE PHONES",
+          "BOOKS",
+          "PUBLIC TRANSPORT"
+        ],
+        "rows": [
+          [
+            "Sweden",
+            "750",
+            "210",
+            "640"
+          ],
+          [
+            "Japan",
+            "520",
+            "500",
+            "980"
+          ],
+          [
+            "Canada",
+            "610",
+            "260",
+            "410"
+          ],
+          [
+            "Italy",
+            "430",
+            "180",
+            "360"
+          ]
+        ],
+        "note": "Chỉ cần làm MỘT trong hai đề của Phần B."
+      },
+      "rubric": {
+        "minWords": 150,
+        "targetStructures": [
+          "annual expenditure on",
+          "per capita",
+          "spent … on average",
+          "Swedes / the Japanese / Italians",
+          "followed by"
+        ],
+        "mustUse": 4,
+        "checklist": [
+          "Gọi tên chủ thể bằng ít nhất 4 cách khác nhau",
+          "Overview không có số liệu",
+          "So sánh theo hàng và theo cột"
+        ],
+        "sampleAnswer": "The table compares how much money people in Sweden, Japan, Canada and Italy spent on average each year on mobile phones, books and public transport in 2015.\n\nOverall, Japanese people spent the most on books and public transport, while Swedes spent the most on mobile phones. Italians had the lowest spending in all three categories.\n\nSweden had the highest annual expenditure on mobile phones, at $750 per person, followed by Canada and Japan, at $610 and $520, respectively. Italians spent only $430. Spending on books was much lower in most countries, at $260 in Canada, $210 in Sweden and $180 in Italy. Japan, however, was an exception, with $500 per person spent on books.\n\nPublic transport accounted for the largest expenditure in Japan, at $980, which was more than twice the figure for Canada ($410). Swedes spent $640 on public transport, while Italians spent the least, at $360.",
+        "commonErrors": [
+          "lặp “spending on” ở mọi câu",
+          "dùng từ xu hướng cho bảng một năm"
+        ]
+      }
+    }
+  ]
+}

@@ -5,7 +5,7 @@
       "lessonCode": "T1-L01",
       "order": 1,
       "type": "categorize",
-      "title": "Phân loại dạng đề: Dynamic hay Static?",
+      "title": "Bài tập 1 — Phân loại dạng đề: Dynamic hay Static?",
       "instruction": "Đọc từng đề bài. Xếp vào đúng nhóm: dữ liệu động (thay đổi theo thời gian) hay dữ liệu tĩnh (tại một thời điểm).",
       "autoGrade": true,
       "points": 12,
@@ -54,7 +54,8 @@
         {
           "id": "c6",
           "text": "The graph shows electricity production in Germany between 1980 and 2030.",
-          "category": "dynamic"
+          "category": "dynamic",
+          "explanation": "Có cả số liệu dự báo đến 2030 → dùng thêm thì tương lai."
         }
       ]
     },
@@ -63,7 +64,7 @@
       "lessonCode": "T1-L01",
       "order": 2,
       "type": "categorize",
-      "title": "Chẩn đoán lỗi theo tiêu chí",
+      "title": "Bài tập 2 — Chẩn đoán lỗi theo tiêu chí",
       "instruction": "Với mỗi nhận xét của giám khảo, xếp vào đúng tiêu chí bị mất điểm.",
       "autoGrade": true,
       "points": 10,
@@ -252,6 +253,125 @@
           ],
           "answer": "C",
           "explanation": "4 tiêu chí × 25% = 100%: Task Achievement, Coherence and Cohesion, Lexical Resource, Grammatical Range and Accuracy."
+        }
+      ]
+    },
+    {
+      "code": "T1-L01-E04",
+      "lessonCode": "T1-L01",
+      "order": 4,
+      "type": "mcq",
+      "title": "Bài tập 3 — Nói nhanh trước lớp",
+      "instruction": "Nhìn biểu đồ dưới đây và trả lời nhanh 4 câu hỏi.",
+      "autoGrade": true,
+      "points": 4,
+      "estimatedMinutes": 4,
+      "difficulty": 1,
+      "skillTags": [
+        "chart-type",
+        "analysis"
+      ],
+      "stimulus": {
+        "kind": "image",
+        "caption": "Household waste recycled, by material, in three cities in 2021",
+        "imageUrl": "https://media.ieltsthayha.com/course-theory/ielts-writing-englishwithdan-ban-hoc-vien/72a3a0e5469cf7f71e37a5f22d642fdf142ba369_1794574971634.png"
+      },
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Đây là dạng biểu đồ gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Line graph"
+            },
+            {
+              "id": "B",
+              "text": "Bar chart"
+            },
+            {
+              "id": "C",
+              "text": "Pie chart"
+            },
+            {
+              "id": "D",
+              "text": "Table"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Các cột đứng theo từng loại vật liệu → bar chart (biểu đồ cột)."
+        },
+        {
+          "id": "q2",
+          "prompt": "Dữ liệu động hay tĩnh? Vì vậy phải dùng thì gì?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Dữ liệu động — hiện tại đơn"
+            },
+            {
+              "id": "B",
+              "text": "Dữ liệu tĩnh — quá khứ đơn"
+            },
+            {
+              "id": "C",
+              "text": "Dữ liệu động — quá khứ đơn"
+            },
+            {
+              "id": "D",
+              "text": "Dữ liệu tĩnh — tương lai"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Chỉ có một năm (2021) → dữ liệu tĩnh; năm đã qua → thì quá khứ đơn."
+        },
+        {
+          "id": "q3",
+          "prompt": "Đơn vị đo là gì (người, tấn, phần trăm, độ C…)?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Số người"
+            },
+            {
+              "id": "B",
+              "text": "Tấn"
+            },
+            {
+              "id": "C",
+              "text": "Phần trăm rác thải được tái chế"
+            },
+            {
+              "id": "D",
+              "text": "Độ C"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Trục dọc: Percentage of waste recycled → phần trăm rác thải được tái chế."
+        },
+        {
+          "id": "q4",
+          "prompt": "Có bao nhiêu nhóm dữ liệu cần mô tả?",
+          "options": [
+            {
+              "id": "A",
+              "text": "3 thành phố × 4 loại vật liệu"
+            },
+            {
+              "id": "B",
+              "text": "4 thành phố × 3 loại vật liệu"
+            },
+            {
+              "id": "C",
+              "text": "Chỉ 3 thành phố"
+            },
+            {
+              "id": "D",
+              "text": "Chỉ 4 loại vật liệu"
+            }
+          ],
+          "answer": "A",
+          "explanation": "Osaka, Toronto, Manila × giấy, thủy tinh, nhựa, rác thực phẩm."
         }
       ]
     },
@@ -652,6 +772,7 @@
           "prompt": "The number of British cyclists was 4 million in 2010.",
           "cue": "đầu câu + giữa câu",
           "sampleAnswers": [
+            "4 million British people cycled in 2010.",
             "In 2010, 4 million British people cycled.",
             "There were 4 million cyclists in Britain in 2010."
           ],
@@ -662,6 +783,8 @@
           "prompt": "300,000 Japanese people visited Vietnam in 2019.",
           "cue": "cuối câu + giữa câu",
           "sampleAnswers": [
+            "The number of Japanese people visiting Vietnam stood at 300,000 in 2019.",
+            "There were 300,000 Japanese visitors to Vietnam in 2019.",
             "The number of Japanese visitors to Vietnam was 300,000 in 2019.",
             "There were 300,000 Japanese people visiting Vietnam in 2019."
           ],
@@ -672,6 +795,7 @@
           "prompt": "There were 12 million tonnes of waste produced in Australia.",
           "cue": "cuối câu + đầu câu",
           "sampleAnswers": [
+            "Australia produced 12 million tonnes of waste.",
             "The amount of waste produced in Australia was 12 million tonnes.",
             "12 million tonnes of waste were produced in Australia."
           ],
@@ -682,6 +806,7 @@
           "prompt": "The amount of gas used by factories stood at 800 million m³.",
           "cue": "đầu câu + giữa câu",
           "sampleAnswers": [
+            "Factories used 800 million m³ of gas.",
             "800 million m³ of gas were used by factories.",
             "There were 800 million m³ of gas used by factories."
           ],
@@ -762,7 +887,7 @@
           "Dùng number (không dùng amount) vì users đếm được",
           "Động từ chia đúng số ít/số nhiều"
         ],
-        "sampleAnswer": "1. The number of Vietnamese motorbike users was 20 million in 2005.\n2. 7 million people in Vietnam travelled by car.\n3. There were 2 million individuals using buses.\n4. The figure for bus users was the lowest of the three means of transport.",
+        "sampleAnswer": "In 2005, 20 million Vietnamese people travelled by motorbike, compared to only 7 million car users.\nThe number of bus users in Vietnam stood at just 2 million.\n\n— Cách viết khác —\n1. The number of Vietnamese motorbike users was 20 million in 2005.\n2. 7 million people in Vietnam travelled by car.\n3. There were 2 million individuals using buses.\n4. The figure for bus users was the lowest of the three means of transport.",
         "commonErrors": [
           "The number of motorbike were",
           "The amount of car users"
@@ -787,7 +912,7 @@
       "autoGrade": false,
       "stimulus": {
         "kind": "table",
-        "caption": "Số lượng sinh viên quốc tế học ở nước ngoài (2005)",
+        "caption": "Số lượng sinh viên quốc tế học ở nước ngoài (2005) — số liệu giả định",
         "headers": [
           "QUỐC GIA",
           "SỐ LƯỢNG (triệu sinh viên)"
@@ -832,7 +957,7 @@
           "Dùng ít nhất 3 vị trí đặt số liệu khác nhau",
           "Có ít nhất 1 câu dùng “the figure for”"
         ],
-        "sampleAnswer": "1. The number of international students in the US was 10 million in 2005.\n2. 4 million individuals chose to pursue a degree in Australia.\n3. There were 2 million students attending university in the UK.\n4. The figure for Canada was the lowest, at only 1 million.",
+        "sampleAnswer": "There were 10 million international students in the US, which was five times as many as the figure for the UK, at 2 million.\nAustralia attracted 4 million international students, while the figure for Canada was only 1 million.\n\n— Cách viết khác —\n1. The number of international students in the US was 10 million in 2005.\n2. 4 million individuals chose to pursue a degree in Australia.\n3. There were 2 million students attending university in the UK.\n4. The figure for Canada was the lowest, at only 1 million.",
         "commonErrors": [
           "The amount of students"
         ]
@@ -894,7 +1019,7 @@
           "Dùng ít nhất 3 cấu trúc khác nhau",
           "Có dùng “the figure for” ít nhất một lần"
         ],
-        "sampleAnswer": "1. The amount of fast food consumed in China was 10,000 tonnes, the highest of the four countries.\n2. 5,000 tonnes of fast food were eaten in the US.\n3. There were 2,000 tonnes consumed in the UK.\n4. The figure for Vietnam was the lowest, at only 400 tonnes.",
+        "sampleAnswer": "China consumed 10,000 tonnes of fast food, followed by the US, at 5,000 tonnes.\nThe UK consumed 2,000 tonnes of fast food, compared to just 400 tonnes in Vietnam.\nThe US consumed 5,000 tonnes of fast food, which was half the figure for China.\n\n— Cách viết khác —\n1. The amount of fast food consumed in China was 10,000 tonnes, the highest of the four countries.\n2. 5,000 tonnes of fast food were eaten in the US.\n3. There were 2,000 tonnes consumed in the UK.\n4. The figure for Vietnam was the lowest, at only 400 tonnes.",
         "commonErrors": [
           "The number of fast food"
         ]
@@ -1133,17 +1258,17 @@
         {
           "id": "q5",
           "left": "CT5 — twice as many as",
-          "right": "The number of bike users was 10 million, which was twice as many as that of car users."
+          "right": "The number of Vietnamese bike users was 10 million, which was twice as many as that of car users."
         },
         {
           "id": "q6",
           "left": "CT6 — which was … higher than",
-          "right": "There were 20 million motorbike users, which was significantly higher than that of car users, at only 5 million."
+          "right": "There were 20 million individuals travelling by motorbike, which was significantly higher than the figure for car users, at only 5 million."
         },
         {
           "id": "q7",
           "left": "CT7 — followed by",
-          "right": "Motorbikes topped the list at 20 million, followed by that of car users, at only 5 million."
+          "right": "20 million individuals were travelling by motorbike, followed by the figure for car users, at only 5 million."
         }
       ]
     },
@@ -1276,7 +1401,7 @@
           "Dùng “that of” để tránh lặp “the number of”",
           "Số liệu chính xác so với bảng"
         ],
-        "sampleAnswer": "1. The numbers of tourists visiting Thailand and Vietnam were 38 million and 15 million, respectively.\n2. The figure for Cambodia was 6 million, compared to 4 million for Laos.\n3. Thailand welcomed 38 million visitors, while Vietnam received only 15 million.\n4. Cambodia attracted 6 million tourists. Meanwhile, the figure for Laos was 4 million.\n5. The number of tourists in Vietnam was 15 million, which was nearly four times as many as that of Laos.\n6. Thailand recorded 38 million arrivals, which was significantly higher than that of Vietnam, at only 15 million.\n7. Thailand topped the list at 38 million, followed by Vietnam, Cambodia and Laos, at 15, 6 and 4 million.",
+        "sampleAnswer": "1. Thailand and Vietnam attracted 38 million and 15 million tourists, respectively.\n2. Cambodia received 6 million tourists, compared to 15 million in Vietnam.\n3. Thailand welcomed 38 million visitors, while the figure for Laos was only 4 million.\n4. Vietnam attracted 15 million tourists. Meanwhile, Cambodia received only 6 million.\n5. Thailand attracted 38 million tourists, which was more than twice as many as Vietnam (15 million).\n6. There were 15 million tourists visiting Vietnam, which was 9 million higher than the figure for Cambodia.\n7. Thailand topped the list, at 38 million tourists, followed by Vietnam, at 15 million.\n\n— Cách viết khác —\n1. The numbers of tourists visiting Thailand and Vietnam were 38 million and 15 million, respectively.\n2. The figure for Cambodia was 6 million, compared to 4 million for Laos.\n3. Thailand welcomed 38 million visitors, while Vietnam received only 15 million.\n4. Cambodia attracted 6 million tourists. Meanwhile, the figure for Laos was 4 million.\n5. The number of tourists in Vietnam was 15 million, which was nearly four times as many as that of Laos.\n6. Thailand recorded 38 million arrivals, which was significantly higher than that of Vietnam, at only 15 million.\n7. Thailand topped the list at 38 million, followed by Vietnam, Cambodia and Laos, at 15, 6 and 4 million.",
         "commonErrors": [
           "Respectively đứng đầu câu",
           "while + cụm danh từ không có động từ"
@@ -1341,7 +1466,7 @@
           "Không lặp một cấu trúc quá 2 lần",
           "Có ít nhất 1 câu dùng bội số (twice / five times as much as)"
         ],
-        "sampleAnswer": "1. The amounts of fast food consumed in the UK and the US were 2,000 and 5,000 tonnes, respectively.\n2. The figure for the UK was 2,000 tonnes, compared to only 400 tonnes for Vietnam.\n3. The US consumed 5,000 tonnes, while Vietnam used just 400 tonnes.\n4. The amount eaten in China was 10,000 tonnes, which was 25 times as much as that of Vietnam.\n5. China topped the list at 10,000 tonnes, followed by the US, at half that figure.",
+        "sampleAnswer": "The US consumed 5,000 tonnes of fast food, which was more than twice as much as the figure for the UK, at 2,000 tonnes.\nThe UK consumed 2,000 tonnes, compared to only 400 tonnes in Vietnam.\nThe amount of fast food eaten in China was 10,000 tonnes, which was twice as much as that in the US.\nThe US consumed 5,000 tonnes of fast food, whereas the figure for Vietnam was only 400 tonnes.\nVietnam consumed only 400 tonnes of fast food, compared to 10,000 tonnes in China.\n\n— Cách viết khác —\n1. The amounts of fast food consumed in the UK and the US were 2,000 and 5,000 tonnes, respectively.\n2. The figure for the UK was 2,000 tonnes, compared to only 400 tonnes for Vietnam.\n3. The US consumed 5,000 tonnes, while Vietnam used just 400 tonnes.\n4. The amount eaten in China was 10,000 tonnes, which was 25 times as much as that of Vietnam.\n5. China topped the list at 10,000 tonnes, followed by the US, at half that figure.",
         "commonErrors": [
           "twice as many as + danh từ không đếm được"
         ]
@@ -1365,7 +1490,7 @@
       "autoGrade": false,
       "stimulus": {
         "kind": "table",
-        "caption": "Percentage of the population using the Internet in different countries in 1990",
+        "caption": "Percentage of the population using the Internet in different countries in 2005 (hypothetical data)",
         "headers": [
           "COUNTRY",
           "PERCENTAGE"
@@ -1404,12 +1529,12 @@
         ],
         "mustUse": 3,
         "checklist": [
-          "Mở đầu bằng mốc thời gian (In 1990, …)",
+          "Mở đầu bằng mốc thời gian (In 2005, …)",
           "Mô tả số cao nhất trước",
           "KHÔNG dùng “There were” với phần trăm",
           "Dùng ít nhất 3 cấu trúc so sánh khác nhau"
         ],
-        "sampleAnswer": "In 1990, the percentage of people who used the Internet in the US was the highest, at 70%, while the figure for the UK was slightly lower, at 55%. 25% of Japanese citizens used the Internet, compared to only 10% in Vietnam. Meanwhile, Internet users made up 40% of the total Australian population.",
+        "sampleAnswer": "In 2005, the US had the highest proportion of Internet users, at 70%, followed by the UK, at 55%. The figure for Australia was 40%, which was considerably lower than that for the UK. By contrast, only 25% of people in Japan used the Internet, and Vietnam had the lowest percentage, at just 10%.",
         "commonErrors": [
           "There were 70% of Americans…",
           "lặp “The percentage of…” ở cả 4 câu"
@@ -1449,7 +1574,7 @@
             "88%"
           ],
           [
-            "Máy điều hoà (Air conditioner)",
+            "Máy điều hòa (Air conditioner)",
             "47%"
           ],
           [
@@ -1475,7 +1600,7 @@
           "Không dùng There were với %",
           "Có nêu cao nhất và thấp nhất"
         ],
-        "sampleAnswer": "In 2020, televisions were the most common device in Vietnamese households, at 92%, followed closely by smartphones, at 88%. Air conditioners were owned by 47% of households, which was significantly lower than that of the two leading devices. Laptops accounted for just 34%, the smallest proportion of the four items. In other words, while almost every household had a television, only around one third possessed a laptop.",
+        "sampleAnswer": "In 2020, televisions were the most widely owned appliance in Vietnam, at 92% of households, followed closely by smartphones, at 88%. By contrast, only 47% of households had an air conditioner, while the figure for laptops was even lower, at 34%. The proportion of homes with a television was almost three times as high as that of homes with a laptop.",
         "commonErrors": [
           "There were 92% of households",
           "lặp cấu trúc “The percentage of…”"
@@ -1771,6 +1896,7 @@
           "id": "q3",
           "prompt": "The amount of plastic waste stood at 8 million tonnes. (2050)",
           "sampleAnswers": [
+            "The amount of plastic waste is projected to stand at 8 million tonnes in 2050.",
             "The amount of plastic waste is likely to stand at 8 million tonnes in 2050.",
             "By 2050, the amount of plastic waste is projected to reach 8 million tonnes."
           ],
@@ -1864,7 +1990,7 @@
           "Ít nhất 3 cấu trúc so sánh",
           "Nêu rõ cao nhất và thấp nhất"
         ],
-        "sampleAnswer": "In 2005, the amount of pizza produced in China was the largest, at 5,500 grams, followed by Australia, at 3,100 grams. 2,500 grams of pizza were made in the US, compared to only 1,000 grams in the UK. In other words, Chinese output was more than five times as much as that of the UK, which recorded the lowest figure of the four countries.",
+        "sampleAnswer": "In 2005, China produced the largest amount of pizza, at 5,500 grams, followed by Australia, at 3,100 grams. The figure for the US was 2,500 grams, while the UK produced only 1,000 grams, which was less than a fifth of the Chinese figure.",
         "commonErrors": [
           "The number of pizza"
         ]
@@ -1928,7 +2054,7 @@
           "Dùng NUMBER không dùng AMOUNT",
           "Có so sánh chứ không chỉ liệt kê"
         ],
-        "sampleAnswer": "In 2000, people aged 30–40 formed the largest group of car users in Vietnam, at 2.5 million, followed closely by the 40–50 age group, at 2.2 million. The number of drivers who were over 50 stood at 1.2 million, compared to only 1 million among under-30s. Overall, each of the two middle age groups had more than twice as many car users as the youngest group.",
+        "sampleAnswer": "In 2000, people aged 30–40 made up the largest group of car users in Vietnam, at 2.5 million, followed closely by 40- to 50-year-olds, at 2.2 million. By contrast, there were only 1.2 million car users aged over 50, and the figure for those under 30 was the lowest, at just 1 million.",
         "commonErrors": [
           "people age 25–30",
           "25-30 years old people"
@@ -1994,7 +2120,7 @@
           "Dùng ít nhất 2 cụm dự đoán khác nhau",
           "Dùng AMOUNT với nước"
         ],
-        "sampleAnswer": "In 2030, the amount of clean water consumed in Berlin is projected to be the highest of the four cities, at 2,700 m³, followed by London, at 2,400 m³. New York is expected to use 2,100 m³, whereas the figure for Paris is likely to stand at just 1,200 m³. In other words, Berlin is anticipated to consume more than twice as much water as Paris.",
+        "sampleAnswer": "In 2030, Berlin is expected to consume the most clean water, at 2,700 m³, followed by London, at 2,400 m³. New York's consumption is projected to stand at 2,100 m³, while Paris is predicted to use the least, at only 1,200 m³, less than half the figure for Berlin.",
         "commonErrors": [
           "was expected to be",
           "In 2030, the figure stood at"
@@ -2067,31 +2193,31 @@
         },
         {
           "id": "q3",
-          "prompt": "Dạng biểu đồ nào LUÔN là dữ liệu tĩnh?",
+          "prompt": "Một biểu đồ tròn chỉ có số liệu của MỘT năm thuộc nhóm dữ liệu nào?",
           "options": [
             {
               "id": "A",
-              "text": "Line graph"
+              "text": "Dữ liệu động"
             },
             {
               "id": "B",
-              "text": "Pie chart"
+              "text": "Dữ liệu tĩnh"
             },
             {
               "id": "C",
-              "text": "Bar chart"
+              "text": "Dữ liệu tương lai"
             },
             {
               "id": "D",
-              "text": "Table"
+              "text": "Quy trình"
             }
           ],
           "answer": "B",
-          "explanation": "Pie chart luôn thể hiện tỷ lệ tại một thời điểm."
+          "explanation": "Một năm duy nhất → dữ liệu tĩnh. (Nhiều biểu đồ tròn qua nhiều năm mới là dữ liệu động.)"
         },
         {
           "id": "q4",
-          "prompt": "Chọn câu đúng:",
+          "prompt": "Chọn cụm đúng:",
           "options": [
             {
               "id": "A",
@@ -2139,7 +2265,7 @@
         },
         {
           "id": "q6",
-          "prompt": "Câu nào KHÔNG dùng được với dữ liệu phần trăm?",
+          "prompt": "Cấu trúc nào KHÔNG dùng được với dữ liệu phần trăm?",
           "options": [
             {
               "id": "A",
@@ -2215,7 +2341,7 @@
           "options": [
             {
               "id": "A",
-              "text": "two-thirds"
+              "text": "nearly two-thirds"
             },
             {
               "id": "B",
@@ -2231,7 +2357,7 @@
             }
           ],
           "answer": "A",
-          "explanation": "65% ≈ 66% = hai phần ba (có thể thêm “just under”)."
+          "explanation": "65% ≈ gần hai phần ba (bảng quy đổi Buổi 4: 65% = nearly two-thirds)."
         },
         {
           "id": "q10",
@@ -2509,6 +2635,7 @@
           "prompt": "Cars: 5 million. Motorbikes: 20 million.",
           "cue": "whereas",
           "sampleAnswers": [
+            "There were 5 million car users, whereas the figure for motorbikes was 20 million.",
             "The number of car users was 5 million, whereas that of motorbike users was 20 million."
           ],
           "promptVi": "Số lượng người dùng ô tô là 5 triệu, trong khi con số này ở xe máy là 20 triệu."
@@ -2518,6 +2645,7 @@
           "prompt": "Cars: 5 million. Motorbikes: 20 million.",
           "cue": "compared to",
           "sampleAnswers": [
+            "5 million people used cars, compared to 20 million motorbike users.",
             "There were 5 million car users, compared to 20 million motorbike users."
           ],
           "promptVi": "Có 5 triệu người dùng ô tô, trong khi con số này ở xe máy là 20 triệu."
@@ -2527,6 +2655,7 @@
           "prompt": "Cars: 5 million. Motorbikes: 20 million.",
           "cue": "followed by",
           "sampleAnswers": [
+            "Motorbikes topped the list at 20 million users, followed by cars, at 5 million.",
             "Motorbikes topped the list at 20 million, followed by cars, at only 5 million."
           ],
           "promptVi": "Xe máy đứng đầu danh sách với 20 triệu người, theo sau là ô tô với chỉ 5 triệu người."
@@ -2566,7 +2695,7 @@
       "order": 5,
       "type": "full_task1",
       "title": "PHẦN B — Bài viết mô tả bảng số liệu",
-      "instruction": "The table below shows the number of international students studying in four countries in 2005 and the amount of money each country earned from them. Describe and compare the data. Write at least 120 words. You should spend about 25 minutes on this part.",
+      "instruction": "The table below shows the number of international students studying in four countries in 2005 and the amount of money each country earned from them (hypothetical data). Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. You should spend about 20 minutes on this part.",
       "source": "original",
       "skillTags": [
         "module1-review",
@@ -2576,7 +2705,7 @@
       "estimatedMinutes": 25,
       "points": 60,
       "autoGrade": false,
-      "timerMinutes": 25,
+      "timerMinutes": 20,
       "stimulus": {
         "kind": "table",
         "caption": "International students and revenue in four countries, 2005",
@@ -2609,7 +2738,7 @@
         ]
       },
       "rubric": {
-        "minWords": 120,
+        "minWords": 150,
         "targetStructures": [
           "respectively",
           "compared to",
@@ -2643,7 +2772,7 @@
           "Có so sánh giữa các nước, không chỉ liệt kê",
           "Đủ tối thiểu 120 từ"
         ],
-        "sampleAnswer": "In 2005, the US attracted by far the largest number of international students, at 10 million, followed by Australia and the UK, at 4 million and 2 million, respectively. Canada received only 1 million students, the lowest figure of the four countries. A similar pattern could be seen in the revenue earned. The US generated 24 billion USD from foreign students, which was significantly higher than that of Australia, at 9.5 billion. The UK earned 8 billion USD, compared to just 3.5 billion for Canada. Interestingly, although the UK hosted half as many students as Australia, the amount of money it earned was almost the same, suggesting that each student in the UK contributed considerably more than one in Australia.",
+        "sampleAnswer": "The table gives information about the number of international students who studied in four countries in 2005 and the amount of money that each country earned from them.\n\nOverall, the US was by far the most popular destination and also earned the most money, while Canada ranked last on both measures.\n\nThe US hosted 10 million international students, which was more than twice as many as Australia, at 4 million. The UK and Canada attracted far fewer students, at 2 million and 1 million, respectively.\n\nIn terms of revenue, the US earned 24 billion USD, compared to 9.5 billion USD in Australia. Although the UK had only half as many students as Australia, it earned a similar amount, at 8 billion USD. Meanwhile, Canada received just 3.5 billion USD, the lowest figure in the table. This suggests that each student in the UK brought in more money than a student in the other three countries.",
         "commonErrors": [
           "The amount of students",
           "The number of tourists were",

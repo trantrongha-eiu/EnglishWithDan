@@ -695,7 +695,7 @@
           "Không dùng lại cùng một động từ xu hướng",
           "Có số liệu cụ thể trong mỗi câu"
         ],
-        "sampleAnswer": "1. (A–C) The figure rose gradually from 50 to 60.\n2. (C–D) It then dropped significantly by 40 to just 20.\n3. (D–E) After that, the figure remained relatively stable at 20 for a short period.\n4. (E–G) This was followed by a substantial increase of 75 units.\n5. (G) The figure climbed steeply to reach a peak of 95.\n6. (G–L) Over the next stage, the number fluctuated considerably between 5 and 80.\n7. (J) In the middle of this period, it plunged dramatically to hit the lowest point of only 5.\n8. (L–N) Finally, the figure fell slowly by 10, from 50 to 40.",
+        "sampleAnswer": "Gợi ý của sách (số liệu tự đặt):\n1. Sales rose gradually from 200 to 350 units between 2000 and 2005.\n2. The figure then dropped significantly to 150 units in 2006.\n3. It remained stable at 150 units for the next two years.\n4. Sales increased substantially to 600 units in 2010.\n5. The figure reached a peak of 650 units in 2011.\n6. After that, it fluctuated between 100 and 550 units.\n7. It hit the lowest point of 100 units in 2014.\n8. Finally, sales fell slowly from 400 to 320 units at the end of the period.\n\n— Cách viết khác (số liệu tự đặt) —\n1. (A–C) The figure rose gradually from 50 to 60.\n2. (C–D) It then dropped significantly by 40 to just 20.\n3. (D–E) After that, the figure remained relatively stable at 20 for a short period.\n4. (E–G) This was followed by a substantial increase of 75 units.\n5. (G) The figure climbed steeply to reach a peak of 95.\n6. (G–L) Over the next stage, the number fluctuated considerably between 5 and 80.\n7. (J) In the middle of this period, it plunged dramatically to hit the lowest point of only 5.\n8. (L–N) Finally, the figure fell slowly by 10, from 50 to 40.",
         "commonErrors": [
           "increased strongly (không tự nhiên)",
           "dùng “dramatically” cho mức tăng 2%"
@@ -708,7 +708,7 @@
       "order": 1,
       "type": "gap_fill",
       "title": "Practice 1 — Complete the sentences below using prepositions",
-      "instruction": "Điền giới từ thích hợp vào chỗ trống (22 câu trong sách). Ngân hàng giới từ: at · to · by · of · in · with · from · between … and … · over · around (+ up).",
+      "instruction": "Điền giới từ thích hợp vào chỗ trống (22 câu trong sách). Ngân hàng giới từ: at · to · by · of · in · with · from · between … and … · over · around.",
       "source": "original",
       "skillTags": [
         "prepositions"
@@ -822,7 +822,7 @@
         },
         {
           "id": "q7",
-          "prompt": "Canada and Australia’s wheat exports fluctuated ____ 5 million and 6 million respectively.",
+          "prompt": "Canada’s and Australia’s wheat exports fluctuated ____ 5 million and 6 million, respectively.",
           "blanks": [
             {
               "accept": [
@@ -873,7 +873,7 @@
         },
         {
           "id": "q10",
-          "prompt": "Profits fell ____ 10%, from 2,000 to 1,800 in the 1970s.",
+          "prompt": "Profits fell ____ 10%, from 2,000 to 1,800, in the 1970s.",
           "blanks": [
             {
               "accept": [
@@ -911,7 +911,7 @@
         },
         {
           "id": "q13",
-          "prompt": "Cases of AIDS shot ____ from 2,400 in 1996 to 4,000 in 2004.",
+          "prompt": "Cases of the disease shot ____ from 2,400 in 1996 to 4,000 in 2004.",
           "blanks": [
             {
               "accept": [
@@ -944,7 +944,7 @@
         },
         {
           "id": "q16",
-          "prompt": "Students do between three ____ four hours homework a night.",
+          "prompt": "Students do between three ____ four hours of homework a night.",
           "blanks": [
             {
               "accept": [
@@ -985,7 +985,7 @@
         },
         {
           "id": "q19",
-          "prompt": "Oil production rose dramatically at first but then levelled out ____ $70 a barrel.",
+          "prompt": "Oil prices rose dramatically at first but then levelled out ____ $70 a barrel.",
           "blanks": [
             {
               "accept": [
@@ -1088,7 +1088,7 @@
               ]
             }
           ],
-          "explanation": "Tăng thêm 5 điểm phần trăm, lên mức 45%."
+          "explanation": "BY = tăng thêm bao nhiêu (5 điểm phần trăm); TO = đạt tới mức nào (45%)."
         },
         {
           "id": "q2",
@@ -1100,23 +1100,23 @@
               ]
             }
           ],
-          "explanation": "Giảm 2,000 đơn vị → BY."
+          "explanation": "Mức đích đã có ở “reaching 8,000” → 2,000 là mức giảm → BY."
         },
         {
           "id": "q3",
-          "prompt": "The population increased ____ 12 million to reach 46 million by 2020.",
+          "prompt": "The population increased ____ 12 million by 2020.",
           "blanks": [
             {
               "accept": [
-                "by"
+                "to"
               ]
             }
           ],
-          "explanation": "Đích đến đã cho rõ là 46 triệu (\"reach 46 million\") → 12 triệu chỉ có thể là MỨC TĂNG → BY."
+          "explanation": "12 triệu là mức dân số đạt tới (vào năm 2020) → TO. “by 2020” ở đây nghĩa là “tính đến năm 2020”."
         },
         {
           "id": "q4",
-          "prompt": "There was a drop ____ 300 tonnes, from 1,500 tonnes ____ 1,200 tonnes.",
+          "prompt": "There was a drop ____ 300 tonnes ____ 1,200 tonnes.",
           "blanks": [
             {
               "accept": [
@@ -1129,11 +1129,11 @@
               ]
             }
           ],
-          "explanation": "Sau danh từ dùng OF cho mức giảm (300 tấn); điểm xuất phát 1,500 tấn đã cho rõ nên chỗ trống còn lại chỉ có thể là TO cho giá trị cuối (1,200 tấn)."
+          "explanation": "Sau danh từ “a drop” dùng OF cho mức giảm (300 tấn); TO cho mức cuối (1,200 tấn)."
         },
         {
           "id": "q5",
-          "prompt": "Starting at 16%, the rate climbed ____ 3 percentage points ____ 19%.",
+          "prompt": "The rate climbed ____ 3 percentage points ____ 19%.",
           "blanks": [
             {
               "accept": [
@@ -1146,7 +1146,7 @@
               ]
             }
           ],
-          "explanation": "Điểm xuất phát 16% đã cho rõ, nên BY cho mức tăng (3 điểm %) và TO cho đích đến (19%) là hai đáp án duy nhất hợp lý."
+          "explanation": "BY cho mức tăng (3 điểm %), TO cho đích đến (19%)."
         }
       ]
     },
@@ -1172,6 +1172,7 @@
           "prompt": "The number of cars fell gradually over the period from 1990 to 2000.",
           "starter": "The number of cars",
           "sampleAnswers": [
+            "The number of cars experienced a gradual fall from 1990 to 2000.",
             "The number of cars experienced a gradual fall over the period from 1990 to 2000."
           ],
           "promptVi": "Số lượng ô tô đã giảm dần trong suốt giai đoạn từ năm 1990 đến năm 2000."
@@ -1190,18 +1191,19 @@
           "prompt": "There was a slight fall in the sales of mangos in 2006.",
           "starter": "The sales",
           "sampleAnswers": [
+            "The sales of mangoes fell slightly in 2006.",
             "The sales of mangos fell slightly in 2006."
           ],
           "promptVi": "Doanh số bán xoài đã giảm nhẹ vào năm 2006."
         },
         {
           "id": "q4",
-          "prompt": "The quality of food in supermarkets has increased sharply.",
+          "prompt": "The number of organic products in supermarkets has increased sharply.",
           "starter": "There",
           "sampleAnswers": [
-            "There has been a sharp increase in the quality of food in supermarkets."
+            "There has been a sharp increase in the number of organic products in supermarkets."
           ],
-          "promptVi": "Chất lượng thực phẩm trong các siêu thị đã tăng lên một cách rõ rệt."
+          "promptVi": "Số lượng sản phẩm hữu cơ trong siêu thị đã tăng mạnh."
         },
         {
           "id": "q5",
@@ -1217,6 +1219,7 @@
           "prompt": "The price of laptops dropped quickly over the period.",
           "starter": "A quick drop",
           "sampleAnswers": [
+            "A quick drop in the price of laptops was seen over the period.",
             "A quick drop was seen in the price of laptops over the period."
           ],
           "promptVi": "Một sự sụt giảm nhanh chóng đã được ghi nhận ở giá laptop trong suốt giai đoạn này."
@@ -1226,6 +1229,7 @@
           "prompt": "There was an upward trend in the number of visitors to the website.",
           "starter": "The number of visitors",
           "sampleAnswers": [
+            "The number of visitors to the website increased steadily.",
             "The number of visitors to the website experienced an upward trend."
           ],
           "promptVi": "Số lượng lượt truy cập trang web đã trải qua xu hướng đi lên."
@@ -1235,6 +1239,7 @@
           "prompt": "The growth rate fluctuated wildly throughout the years.",
           "starter": "There",
           "sampleAnswers": [
+            "There were wild fluctuations in the growth rate throughout the years.",
             "There was a wild fluctuation in the growth rate throughout the years."
           ],
           "promptVi": "Tốc độ tăng trưởng đã trải qua những biến động mạnh trong suốt những năm đó."
@@ -1244,6 +1249,7 @@
           "prompt": "The number of students applying to the university stabilized over the decade.",
           "starter": "A stability",
           "sampleAnswers": [
+            "A period of stability was seen in the number of students applying to the university over the decade.",
             "A stability was seen in the number of students applying to the university over the decade."
           ],
           "promptVi": "Số lượng học sinh nộp đơn vào trường đại học đã duy trì sự ổn định trong suốt thập kỷ qua."
@@ -1335,7 +1341,7 @@
           "Dùng đúng BY cho mức thay đổi và TO cho giá trị đích",
           "Dùng AMOUNT cho giấy tái chế, PERCENTAGE cho tỷ lệ thất nghiệp"
         ],
-        "sampleAnswer": "Hành khách đi tàu ở Nhật (2005 → 2015)\n1. (CT1) The number of rail passengers in Japan increased dramatically by 12 million to 20 million between 2005 and 2015.\n2. (CT2) There was a dramatic increase of 12 million to 20 million in the number of Japanese rail passengers between 2005 and 2015.\n3. (CT3) Japan witnessed a dramatic increase of 12 million to 20 million in the number of rail passengers over the decade.\n\nLượng giấy tái chế ở Đức (1990 → 2000)\n4. (CT1) The amount of paper recycled in Germany decreased significantly by 3 million tonnes to 3 million tonnes between 1990 and 2000.\n5. (CT2) There was a significant decrease of 3 million tonnes to 3 million tonnes in the amount of paper recycled in Germany.\n6. (CT3) The amount of recycled paper in Germany experienced a significant decrease, halving from 6 million to 3 million tonnes.\n\nTỷ lệ thất nghiệp ở Tây Ban Nha (2008 → 2013)\n7. (CT1) The unemployment rate in Spain rose sharply by 18 percentage points to 26% between 2008 and 2013.\n8. (CT2) There was a sharp rise of 18 percentage points to 26% in the Spanish unemployment rate between 2008 and 2013.\n9. (CT3) Spain saw a sharp rise of 18 percentage points to 26% in its unemployment rate over this five-year period.",
+        "sampleAnswer": "Dữ liệu 1:\n(C1) The number of train passengers in Japan increased dramatically by 12 million to 20 million between 2005 and 2015.\n(C2) There was a dramatic increase of 12 million in the number of train passengers in Japan between 2005 and 2015.\n(C3) Japan saw a dramatic increase of 12 million in the number of train passengers from 2005 to 2015.\n\nDữ liệu 2:\nThe amount of recycled paper in Germany decreased significantly by 3 million tonnes to 3 million tonnes between 1990 and 2000.\nThere was a significant decrease of 3 million tonnes in the amount of recycled paper in Germany from 1990 to 2000.\nGermany saw a significant decrease in the amount of paper recycled, from 6 million tonnes in 1990 to 3 million tonnes in 2000.\n\nDữ liệu 3:\nThe unemployment rate in Spain rose sharply by 18 percentage points to 26% between 2008 and 2013.\nThere was a sharp rise of 18 percentage points in the unemployment rate in Spain over this period.\nSpain experienced a sharp rise in its unemployment rate, from 8% in 2008 to 26% in 2013.",
         "commonErrors": [
           "increased by to 20 million",
           "There was a dramatically increase"
@@ -1529,7 +1535,7 @@
       "lessonCode": "T1-L06",
       "order": 7,
       "type": "sentence_writing",
-      "title": "Practice 3 — Mô tả xu hướng dùng Internet 1990–2000",
+      "title": "Practice 3 — Describing trends (Internet users, 2000 và 2010)",
       "instruction": "Viết 5 câu mô tả xu hướng của từng quốc gia. Chú ý: có nước tăng, nước giảm, nước không đổi.",
       "source": "original",
       "skillTags": [
@@ -1542,11 +1548,11 @@
       "autoGrade": false,
       "stimulus": {
         "kind": "table",
-        "caption": "The percentage of Internet users across five countries, 1990 and 2000",
+        "caption": "The percentage of Internet users across five countries in two years, 2000 and 2010 (hypothetical data)",
         "headers": [
           "COUNTRY",
-          "1990",
-          "2000"
+          "2000",
+          "2010"
         ],
         "rows": [
           [
@@ -1574,7 +1580,8 @@
             "40%",
             "10%"
           ]
-        ]
+        ],
+        "note": "Từ 70% lên 80% là tăng 10 percentage points (10 điểm phần trăm), không phải “increase of 10%” (vì 10% của 70% chỉ là 7)."
       },
       "responseSlots": 5,
       "rubric": {
@@ -1591,7 +1598,7 @@
           "Dùng ít nhất 3 cấu trúc khác nhau",
           "Có dùng “by” và “to” đúng chỗ"
         ],
-        "sampleAnswer": "1. In 2000, the percentage of Internet users in the UK remained stable at 55%.\n2. There was a slight increase of 10% to 80% in the proportion of Internet users in the US.\n3. Vietnam experienced a dramatic rise of 40 percentage points to 50%.\n4. Meanwhile, the figure for Japan dipped slightly by 5% to 20%.\n5. Australia saw the sharpest decline, plummeting from 40% to only 10%.",
+        "sampleAnswer": "1. In 2010, the percentage of Internet users in the UK remained stable at 55%.\n2. In 2010, there was a moderate increase of 10 percentage points to 80% in the proportion of Internet users in the US.\n3. The proportion of Internet users in Vietnam rose dramatically from 10% to 50%, a five-fold increase.\n4. By contrast, the figure for Australia plummeted from 40% to only 10%.\n5. Japan saw a slight fall of 5 percentage points to 20%.",
         "commonErrors": [
           "dùng “dramatically” cho mức giảm 5%",
           "There were 55% of British people"
@@ -1616,7 +1623,7 @@
       "autoGrade": false,
       "stimulus": {
         "kind": "table",
-        "caption": "The amount of clean water consumed in four megacities (m³)",
+        "caption": "The amount of clean water consumed in four megacities (projections, m³)",
         "headers": [
           "CITY",
           "2030",
@@ -1714,7 +1721,7 @@
             "2,700"
           ]
         ],
-        "note": "Gợi ý mở đầu Đ1: “In 2005, 5,500 grams of pizza were made in China, which topped the list…”. Gợi ý mở đầu Đ2: “In the next 5 years, the amount of pizza produced in the US increased dramatically by 5,000 grams to 7,500 grams…”"
+        "note": "Gợi ý mở đầu Đ1: “In 2005, 5,500 grams of pizza were eaten in China, which topped the list…”. Gợi ý mở đầu Đ2: “In the next 5 years, the amount of pizza eaten in the US increased dramatically by 5,000 grams to 7,500 grams…”"
       },
       "responseSlots": 2,
       "rubric": {
@@ -1733,7 +1740,7 @@
           "Đoạn 2 CHỈ mô tả xu hướng 2005→2010",
           "Có phân biệt mức độ: US tăng mạnh, China và UK tăng nhẹ, Australia giảm đáng kể"
         ],
-        "sampleAnswer": "In 2005, 5,500 grams of pizza were made in China, which topped the list among the four given countries, compared to 3,100 grams in Australia. The figures for the US and the UK were 2,500 and 1,000 grams, respectively, the latter being the lowest of all.\n\nIn the next 5 years, the amount of pizza produced in the US increased dramatically by 5,000 grams to 7,500 grams and became the highest figure in the table. British production also rose significantly, almost trebling to 2,700 grams. By contrast, the figure for Australia fell sharply by 2,100 grams to only 1,000 grams, while Chinese output remained unchanged at 5,500 grams.",
+        "sampleAnswer": "Paragraph 1: In 2005, 5,500 grams of pizza were eaten in China, which topped the list among the four given countries, compared to 3,100 grams in Australia. The figures for the US and the UK were lower, at 2,500 grams and 1,000 grams, respectively.\n\nParagraph 2: In the next five years, the amount of pizza eaten in the US increased dramatically by 5,000 grams to 7,500 grams and became the highest figure in the table. The UK also saw a significant rise to 2,700 grams, while the figure for China remained unchanged. By contrast, Australia experienced a sharp fall to only 1,000 grams.",
         "commonErrors": [
           "trộn lẫn dữ liệu và xu hướng trong cùng một đoạn"
         ]
@@ -1782,7 +1789,7 @@
           "Dùng AMOUNT vì thịt/cá không đếm được",
           "Nêu rõ chicken đi ngược xu hướng chung"
         ],
-        "sampleAnswer": "In 1979, around 220 grams of beef were consumed per person on a weekly basis, which was considerably higher than the figures for chicken and lamb, at roughly 150 grams each. The amount of fish eaten was the lowest, at approximately 60 grams.\n\nIn the next 25 years, there was a steady rise of about 100 grams in the consumption of chicken, to around 250 grams, making it the most popular food by 2004. By contrast, the amounts of beef and lamb that were eaten saw a sharp decrease, to roughly 110 grams and 55 grams respectively. Meanwhile, fish consumption in this European nation remained relatively stable, dipping only slightly to just under 40 grams per person per week.",
+        "sampleAnswer": "Paragraph 1: In 1979, beef was the most popular food, at about 220 grams per person per week, compared to around 150 grams for both chicken and lamb. Fish was eaten the least, at only about 60 grams.\n\nParagraph 2: Over the next 25 years, chicken consumption rose to about 250 grams, making it the most popular food by 2004. By contrast, the figures for beef and lamb fell considerably to around 110 grams and 55 grams, respectively, while fish consumption declined slightly to under 40 grams.",
         "commonErrors": [
           "The number of chicken consumed"
         ]
@@ -1829,7 +1836,7 @@
           "Đoạn 1 chỉ dữ liệu 1981",
           "Dùng “percentage points” khi nói mức chênh lệch giữa hai tỷ lệ"
         ],
-        "sampleAnswer": "In 1981, the largest share of the school's budget, at 40%, was spent on teachers' salaries, compared to 28% for the salaries of other workers. Resources such as books and furniture and equipment each accounted for 15% of total spending, while insurance took up only 2%.\n\nBy 1991, the proportion spent on teachers' salaries had risen by 10 percentage points to 50%, making up half of the budget. Spending on resources also increased, to 20%, and the figure for insurance rose slightly to 3%. By contrast, the share allocated to other workers' salaries fell to 22%, and spending on furniture and equipment dropped sharply, from 15% to just 5%.",
+        "sampleAnswer": "Paragraph 1: In 1981, teachers' salaries accounted for the largest share of the school's spending, at 40%, followed by other workers' salaries, at 28%. Resources and furniture and equipment each made up 15%, while insurance took up only 2%.\n\nParagraph 2: By 1991, the proportion spent on teachers' salaries had risen to half of the budget, and spending on resources had also increased to 20%. By contrast, the figures for other workers' salaries and furniture and equipment fell to 22% and 5%, respectively, whereas insurance rose slightly to 3%.",
         "commonErrors": [
           "There were 40% of the budget",
           "increased by 40% (khi thực ra là 40 percentage points)"
@@ -1878,7 +1885,7 @@
           "Có nêu thời điểm hai đường giao nhau nếu có",
           "Đoạn 2 phải có ít nhất 2 cấu trúc so sánh xu hướng"
         ],
-        "sampleAnswer": "In 1985, there were approximately 2,200 male fitness members in Thailand, compared to only around 1,300 female members. Men therefore outnumbered women by almost 1,000 at the start of the period.\n\nOver the next 30 years, the number of male members fluctuated dramatically. It rose to about 3,800 in 1990, fell to around 1,800 in 2000 and then surged to a peak of 5,000 in 2010, before plummeting to just 1,000 in 2015. Female membership, by contrast, changed less dramatically, fluctuating between roughly 1,700 and 3,000 and reaching its highest point of about 2,950 in 2010. By 2015, the figure for women stood at 2,000, twice as high as that for men.",
+        "sampleAnswer": "Paragraph 1: In 1985, there were about 2,200 male fitness club members in Thailand, compared to around 1,300 female members.\n\nParagraph 2: Over the next 30 years, the number of male members fluctuated dramatically, peaking at 5,000 in 2010 before plummeting to just 1,000 in 2015. Meanwhile, female membership rose overall to nearly 3,000 in 2010 and then fell to around 2,000 in 2015, which was twice as many as the figure for men.",
         "commonErrors": [
           "The amount of members"
         ]
@@ -1890,7 +1897,7 @@
       "order": 1,
       "type": "gap_fill",
       "title": "Exercise 1 — Điền từ: Number of road accidents in Someland (1983–1995)",
-      "instruction": "Điền từ thích hợp vào chỗ trống để miêu tả biểu đồ “Number of road accidents in Someland between 1983 and 1995” (đơn vị: triệu vụ).",
+      "instruction": "Điền từ thích hợp vào chỗ trống để miêu tả biểu đồ dưới đây.",
       "source": "original",
       "skillTags": [
         "cloze",
@@ -1901,54 +1908,59 @@
       "points": 7,
       "autoGrade": true,
       "wordBank": [
-        "saw",
-        "fell",
-        "it",
-        "a drop",
+        "rose",
         "peaked",
+        "plummeting",
         "fluctuation",
-        "plummeting"
+        "a fall",
+        "saw",
+        "declined"
       ],
       "items": [
         {
           "id": "q1",
-          "prompt": "The number of road accidents began at over 4 million in 1983 and then (1) ____ rose steadily to nearly 5 million in 1985.",
+          "prompt": "The number of road accidents began at just over 4 million in 1983, and then it (1) ____ steadily to nearly 5 million in 1985.",
           "blanks": [
             {
               "accept": [
-                "it",
-                "gradually",
-                "slowly"
+                "rose",
+                "climbed",
+                "increased",
+                "grew",
+                "went up"
               ]
             }
-          ]
+          ],
+          "explanation": "Xu hướng tăng đều → rose / climbed (steadily)."
         },
         {
           "id": "q2",
-          "prompt": "In the following year, the figure (2) ____ at 6.5 million",
+          "prompt": "In the following year, the figure (2) ____ at about 6.5 million",
           "blanks": [
             {
               "accept": [
                 "peaked"
               ]
             }
-          ]
+          ],
+          "explanation": "1986 là điểm cao nhất → peaked at."
         },
         {
           "id": "q3",
-          "prompt": "… before (3) ____ to 3.5 million in 1987.",
+          "prompt": "… before (3) ____ to just over 3 million in 1987.",
           "blanks": [
             {
               "accept": [
                 "plummeting",
+                "dropping sharply",
                 "plunging",
+                "falling sharply",
                 "dropping",
-                "falling",
-                "declining",
-                "decreasing"
+                "falling"
               ]
             }
-          ]
+          ],
+          "explanation": "Sau “before” dùng V-ing; giảm rất mạnh → plummeting / dropping sharply."
         },
         {
           "id": "q4",
@@ -1960,26 +1972,28 @@
                 "slight fluctuation"
               ]
             }
-          ]
+          ],
+          "explanation": "Lên xuống quanh 3–3.5 triệu → a fluctuation."
         },
         {
           "id": "q5",
-          "prompt": "… which was followed by (5) ____ to a low of just under 3 million in 1991.",
+          "prompt": "… which was followed by (5) ____ to a low of about 2.5 million in 1991.",
           "blanks": [
             {
               "accept": [
-                "a drop",
                 "a fall",
                 "a decline",
+                "a drop",
                 "a decrease",
                 "a dip"
               ]
             }
-          ]
+          ],
+          "explanation": "“followed by” + cụm danh từ → a fall / a decline."
         },
         {
           "id": "q6",
-          "prompt": "The year 1992 (6) ____ a recovery back to 4 million accidents,",
+          "prompt": "The year 1992 (6) ____ a recovery to nearly 4 million accidents,",
           "blanks": [
             {
               "accept": [
@@ -1988,27 +2002,28 @@
                 "experienced"
               ]
             }
-          ]
+          ],
+          "explanation": "Năm làm chủ ngữ → saw / witnessed."
         },
         {
           "id": "q7",
-          "prompt": "… but the figure then (7) ____ to 3 million cases at the end of the period.",
+          "prompt": "… but the figure then (7) ____ to just under 2.5 million at the end of the period.",
           "blanks": [
             {
               "accept": [
+                "declined",
                 "fell",
                 "dropped",
-                "declined",
-                "decreased",
-                "dipped"
+                "decreased"
               ]
             }
-          ]
+          ],
+          "explanation": "Giảm dần đến cuối giai đoạn → declined / fell."
         }
       ],
       "stimulus": {
         "kind": "image",
-        "caption": "Number of road accidents in Someland between 1983 and 1995 (millions of accidents)",
+        "caption": "Number of road accidents in Someland between 1983 and 1995 (millions)",
         "imageUrl": "https://media.ieltsthayha.com/wt1/charts/road-accidents-someland-1983-1995_1794032458134.png"
       }
     },
@@ -2048,7 +2063,7 @@
           "Không lặp lại một cấu trúc nối quá 2 lần",
           "Có ít nhất một câu nối 3 xu hướng"
         ],
-        "sampleAnswer": "1. (A) Starting at about 95,000 in 1960, the number of Net users fell dramatically to around 30,000 in 1980, before declining only slightly and ending at 20,000 in 2010.\n2. (B) The number of Net users rose sharply from 20 in 1960 to 95 in 1980, but later remained stable at this level until 2010.\n3. (C) The number of Net users increased steadily from just 10 in 1960 to 100 in 2000, and then it continued its upward trend, reaching a peak of 105 in 2010.\n4. (D) There was a steady decline in the bird population from 95,000 in 1960 to 60,000 in 1980, which was followed by a sharp drop to a low of 20,000 in 1990; however, the figure then recovered to 70,000 by 2010.\n5. (E) The bird population fell slightly from 95 to 80 between 1960 and 1970 before plummeting to 20 in 1980, after which it levelled off at around 15 for the rest of the period.\n6. (F) Starting at 85 in 1960, the bird population plunged to 10 in 1970, rebounded to 70 in 1980 and dropped again to 15 in 1990, before surging to a peak of 105 in 2010.",
+        "sampleAnswer": "A: Starting at about 95,000 in 1960, the number of Internet users fell sharply to around 30,000 in 1980 before levelling off at roughly 20,000–25,000 until 2010.\nB: The figure rose rapidly from 20 to 95 between 1960 and 1980, and then it remained stable at this level until 2010.\nC: The number of users increased steadily from about 10 in 1960 and then continued its upward trend, reaching a peak of about 105 in 2010.\nD: The bird population declined from about 95,000 in 1960 to a low of 20,000 in 1990, but later recovered to 70,000 in 2010.\nE: The figure dropped dramatically from 95 to 20 between 1960 and 1980, followed by a period of stability at around 15.\nF: The bird population fluctuated wildly, hitting lows of about 10 in 1970 and 15 in 1990 before rising to a peak of about 105 in 2010.\n\n— Cách viết khác —\n1. (A) Starting at about 95,000 in 1960, the number of Net users fell dramatically to around 30,000 in 1980, before declining only slightly and ending at 20,000 in 2010.\n2. (B) The number of Net users rose sharply from 20 in 1960 to 95 in 1980, but later remained stable at this level until 2010.\n3. (C) The number of Net users increased steadily from just 10 in 1960 to 100 in 2000, and then it continued its upward trend, reaching a peak of 105 in 2010.\n4. (D) There was a steady decline in the bird population from 95,000 in 1960 to 60,000 in 1980, which was followed by a sharp drop to a low of 20,000 in 1990; however, the figure then recovered to 70,000 by 2010.\n5. (E) The bird population fell slightly from 95 to 80 between 1960 and 1970 before plummeting to 20 in 1980, after which it levelled off at around 15 for the rest of the period.\n6. (F) Starting at 85 in 1960, the bird population plunged to 10 in 1970, rebounded to 70 in 1980 and dropped again to 15 in 1990, before surging to a peak of 105 in 2010.",
         "commonErrors": [
           "dùng “and then” cho xu hướng trái ngược",
           "dùng “however” cho hai xu hướng cùng chiều"
@@ -2061,7 +2076,7 @@
       "order": 3,
       "type": "paragraph_writing",
       "title": "Exercise 3 — Biểu đồ có dự báo tương lai (1940 → 2030)",
-      "instruction": "Mô tả toàn bộ giai đoạn từ 1940 đến 2030. Cẩn thận khi chọn thì quá khứ hay tương lai.",
+      "instruction": "Describe the changes and trends in the chart. You can use the suggested phrases below to write your response. Describe the period from 1940 all the way to 2030 — be careful when choosing between past or future tenses.",
       "source": "original",
       "skillTags": [
         "combining-trends",
@@ -2074,7 +2089,7 @@
       "needsAsset": false,
       "stimulus": {
         "kind": "image",
-        "caption": "Biểu đồ có phần dữ liệu quá khứ và phần dự báo tương lai",
+        "caption": "The number of XYZ radio station listeners since 1940 with projections until 2030",
         "imageUrl": "https://media.ieltsthayha.com/wt1/charts/forecast-1940-2030.png",
         "note": "Xác định “năm chuyển giao” giữa dữ liệu thật và dữ liệu dự báo trước khi viết."
       },
@@ -2109,7 +2124,7 @@
           "Dùng ít nhất 4 cụm danh từ trong bảng gợi ý",
           "Có nêu năm chuyển giao rõ ràng"
         ],
-        "sampleAnswer": "Looking at the line graph in more detail, it can clearly be seen that the number of listeners of the XYZ radio station stood at around 20 thousand in 1940, followed by a steep rise to 105 thousand in 1955, which was the highest point on the chart. However, this figure then plummeted to approximately 20 thousand in 1960. From 1960 to 1980, the number of people who listened to the station climbed significantly to 45 thousand and reached a plateau, before falling back and hitting its rock bottom of only about 15 thousand in 1980. Between 1980 and 2000, radio listeners experienced a period of slight volatility, ranging from about 15 to 30 thousand. In the next two decades, the number of listeners seemed to be levelling off at just over 20 thousand, before being expected to soar to just under 85 thousand by 2030. After that, the figure is anticipated to remain constant until the end of the period.",
+        "sampleAnswer": "Looking at the line graph in more detail, the number of XYZ radio listeners stood at about 20,000 in 1940 and rose steadily to a peak of approximately 105,000 in 1955, the highest point on the chart. However, this figure then plummeted to around 20,000 in 1960. Over the next five years, it climbed to about 45,000 and remained at this level until 1975, before falling to its lowest point of around 15,000 in 1980.\n\nBetween 1980 and 2000, the number of listeners experienced a period of slight volatility, ranging from about 15,000 to 30,000. From 2000 to 2015, the figure levelled off at just over 20,000. It is expected to soar to approximately 80,000 by 2030 and then remain constant until the end of the period.",
         "commonErrors": [
           "dùng “was” cho mốc 2030",
           "dùng “will be increased”"
@@ -2140,11 +2155,11 @@
         },
         {
           "id": "q2",
-          "prompt": "In the first half of 2006, the percentage of traffic accidents in New York jumped eightfold before experiencing a steep decline and reaching its rock bottom of 5% in 2010."
+          "prompt": "In the first half of 2006, the number of traffic accidents in New York jumped eightfold before experiencing a steep decline and reaching its rock bottom of 500 cases in 2010."
         },
         {
           "id": "q3",
-          "prompt": "In France, the number of internet users who bought items online witnessed an unprecedented rise in 2002, at 85 (a massive rate). However, this figure then saw a slight dip 2 years later."
+          "prompt": "In France, the percentage of internet users who bought items online saw an unprecedented rise in 2002, reaching 85%. However, this figure then saw a slight dip two years later."
         },
         {
           "id": "q4",
@@ -2165,7 +2180,7 @@
           "Thay ít nhất 3 cụm từ vựng trong mỗi đoạn",
           "Đổi ít nhất 1 cấu trúc câu trong mỗi đoạn (chủ động ↔ danh từ hoá)"
         ],
-        "sampleAnswer": "1. Car ownership in the US accounted for 35% in 1999, after which it slowed down and fell to slightly below 15%, before recovering to 22% by 2005.\n2. During the first six months of 2006, the proportion of road accidents in New York rose eight times, before falling steeply and hitting its lowest point of 5% in 2010.\n3. The number of French internet users who shopped online rose dramatically to an unprecedented level of 85 in 2002; however, this figure then dipped slightly two years later.\n4. Between 1990 and 1995, the unemployment rate dropped sharply from 60% to 20% in just five years, and it then remained stable for the rest of the period.",
+        "sampleAnswer": "1. In 1999, 35% of people in the US owned a car. This proportion then fell to just under 15% before recovering to 22% in 2005.\n2. In the first six months of 2006, the number of road accidents in New York increased eightfold. However, it then fell sharply and hit a low of 500 cases in 2010.\n3. The proportion of French Internet users who shopped online rose dramatically to 85% in 2002, but it then fell slightly over the following two years.\n4. Between 1990 and 1995, the unemployment rate fell dramatically from 60% to 20%, and it then remained stable until the end of the period.",
         "commonErrors": [
           "chép lại nguyên cụm gốc",
           "đổi số liệu khi paraphrase"
@@ -2177,7 +2192,7 @@
       "lessonCode": "T1-L07",
       "order": 5,
       "type": "sentence_transform",
-      "title": "Bài tập bổ sung — Nối ba xu hướng trong một câu",
+      "title": "Bài tập bổ sung — Nối ba xu hướng",
       "instruction": "Dùng Cấu trúc 4: “Starting at + figure, S + V, followed by … / before V-ing … / but later + V” để viết MỘT câu duy nhất cho mỗi chuỗi dữ liệu.",
       "source": "original",
       "skillTags": [
@@ -2192,6 +2207,7 @@
           "id": "q1",
           "prompt": "2000: 200 → 2005: 800 → 2010: 500",
           "sampleAnswers": [
+            "Starting at 200 in 2000, the figure rose to 800 in 2005 before falling to 500 in 2010.",
             "Starting at 200 in 2000, the figure quadrupled to 800 five years later, before falling back to 500 by 2010."
           ],
           "promptVi": "Bắt đầu ở mức 200 vào năm 2000, số liệu này đã tăng gấp bốn lần lên 800 sau đó năm năm, trước khi giảm trở lại mức 500 vào năm 2010."
@@ -2200,6 +2216,7 @@
           "id": "q2",
           "prompt": "1990: 45% → 2000: 20% → 2010: 20%",
           "sampleAnswers": [
+            "Starting at 45% in 1990, the figure dropped to 20% in 2000, but later remained stable at this level until 2010.",
             "Starting at 45% in 1990, the proportion more than halved to 20% by 2000, but later remained unchanged until the end of the period."
           ],
           "promptVi": "Bắt đầu ở mức 45% vào năm 1990, tỷ lệ này đã giảm hơn một nửa xuống còn 20% vào năm 2000, nhưng sau đó giữ nguyên không đổi cho đến cuối kỳ."
@@ -2208,6 +2225,7 @@
           "id": "q3",
           "prompt": "1980: 3 tấn → 1990: 3 tấn → 2000: 9 tấn",
           "sampleAnswers": [
+            "Starting at 3 tonnes in 1980, the figure remained unchanged until 1990, followed by a three-fold increase to 9 tonnes in 2000.",
             "Starting at 3 tonnes in 1980, the amount stayed stable for a decade, followed by a three-fold increase to 9 tonnes in 2000."
           ],
           "promptVi": "Bắt đầu ở mức 3 tấn vào năm 1980, khối lượng này giữ nguyên ổn định trong một thập kỷ, tiếp theo là mức tăng gấp ba lần lên 9 tấn vào năm 2000."
@@ -2236,57 +2254,57 @@
       "lessonCode": "T1-L08",
       "order": 1,
       "type": "matching",
-      "title": "Warm-up — Nối keyword với cách paraphrase",
-      "instruction": "Nối từ/cụm gốc trong đề bài với cách viết lại phù hợp.",
-      "source": "added",
+      "title": "Warm-up — Viết lại từ khóa trong đề (8.3 · 8.4)",
+      "instruction": "Nối cụm trong đề bài với cách viết lại đúng (bảng Bước 2 và bảng Phương pháp 2).",
+      "source": "book",
       "skillTags": [
-        "paraphrasing",
-        "introduction"
+        "introduction",
+        "paraphrasing"
       ],
       "difficulty": 1,
-      "estimatedMinutes": 4,
+      "estimatedMinutes": 5,
       "points": 8,
       "autoGrade": true,
       "items": [
         {
           "id": "q1",
-          "left": "shows",
-          "right": "illustrates / compares / gives information about"
+          "left": "The graph",
+          "right": "The line graph / The line chart"
         },
         {
           "id": "q2",
-          "left": "the graph",
-          "right": "the line chart / the bar chart"
+          "left": "shows",
+          "right": "illustrates / gives information about / depicts / presents"
         },
         {
           "id": "q3",
-          "left": "the number of cars sold",
-          "right": "how many cars were sold"
+          "left": "over a period of 15 years",
+          "right": "between 2000 and 2015 / over a 15-year period"
         },
         {
           "id": "q4",
-          "left": "the amount of energy consumed",
-          "right": "how much energy was consumed"
+          "left": "in the twentieth century",
+          "right": "from 1900 to 2000 / over a 100-year period"
         },
         {
           "id": "q5",
-          "left": "over a period of 15 years",
-          "right": "between the years 2000 and 2015"
+          "left": "in three countries",
+          "right": "in the USA, Sweden and Japan"
         },
         {
           "id": "q6",
-          "left": "the contribution of three sectors",
-          "right": "how three sectors contributed"
+          "left": "the number of tourists who visited …",
+          "right": "how many tourists visited …"
         },
         {
           "id": "q7",
-          "left": "the proportion of people living in poverty",
-          "right": "poverty rates"
+          "left": "the amount of electricity produced",
+          "right": "how much electricity was produced"
         },
         {
           "id": "q8",
-          "left": "different categories of families",
-          "right": "six types of households"
+          "left": "the contribution of three sectors",
+          "right": "how three sectors contributed to …"
         }
       ]
     },
@@ -2295,557 +2313,146 @@
       "lessonCode": "T1-L08",
       "order": 2,
       "type": "mcq",
-      "title": "Bổ sung — Introduction nào đạt chuẩn?",
-      "instruction": "Đề bài: “The graph below shows the amounts of waste produced by three companies over a period of 15 years (2000–2015).” Chọn đáp án đúng.",
-      "source": "added",
+      "title": "Bổ sung — Introduction hay Overview? (8.2)",
+      "instruction": "Chọn đáp án đúng theo bảng so sánh Introduction – Overview.",
+      "source": "book",
       "skillTags": [
         "introduction",
-        "paraphrasing"
-      ],
-      "difficulty": 2,
-      "estimatedMinutes": 5,
-      "points": 4,
-      "autoGrade": true,
-      "items": [
-        {
-          "id": "q1",
-          "prompt": "Introduction nào TỐT NHẤT?",
-          "options": [
-            {
-              "id": "A",
-              "text": "The graph below shows the amounts of waste produced by three companies over a period of 15 years."
-            },
-            {
-              "id": "B",
-              "text": "The line chart compares three companies in terms of their waste output between the years 2000 and 2015."
-            },
-            {
-              "id": "C",
-              "text": "This graph is about waste."
-            }
-          ],
-          "answer": "B",
-          "explanation": "A là chép nguyên đề (không được tính từ), C quá sơ sài và thiếu thông tin."
-        },
-        {
-          "id": "q2",
-          "prompt": "Lỗi lớn nhất của phương án A ở câu trên là gì?",
-          "options": [
-            {
-              "id": "A",
-              "text": "Sai ngữ pháp"
-            },
-            {
-              "id": "B",
-              "text": "Chép nguyên văn đề bài, không được tính vào số từ"
-            },
-            {
-              "id": "C",
-              "text": "Quá dài"
-            }
-          ],
-          "answer": "B",
-          "explanation": "Giám khảo loại bỏ phần chép nguyên đề khi đếm từ và chấm Lexical Resource."
-        },
-        {
-          "id": "q3",
-          "prompt": "Cách viết lại nào dùng đúng phương pháp 2 (đổi dạng từ + how)?",
-          "options": [
-            {
-              "id": "A",
-              "text": "The line chart illustrates how much waste three companies produced from 2000 to 2015."
-            },
-            {
-              "id": "B",
-              "text": "The line chart compares waste output in terms of three companies."
-            },
-            {
-              "id": "C",
-              "text": "The line chart shows the waste production of three companies."
-            }
-          ],
-          "answer": "A",
-          "explanation": "“the amounts of waste produced” → “how much waste … produced”."
-        },
-        {
-          "id": "q4",
-          "prompt": "Cụm nào dùng để liệt kê các đối tượng trong Introduction?",
-          "options": [
-            {
-              "id": "A",
-              "text": "for example"
-            },
-            {
-              "id": "B",
-              "text": "namely"
-            },
-            {
-              "id": "C",
-              "text": "such that"
-            }
-          ],
-          "answer": "B",
-          "explanation": "“namely + A, B and C” là cụm liệt kê chuẩn trong Task 1."
-        }
-      ]
-    },
-    {
-      "code": "T1-L08-E03",
-      "lessonCode": "T1-L08",
-      "order": 3,
-      "type": "sentence_writing",
-      "title": "Practice — Viết Introduction cho 5 đề",
-      "instruction": "Với mỗi đề, gạch chân keyword rồi viết Introduction bằng ÍT NHẤT 2 trong 3 phương pháp đã học.",
-      "source": "original",
-      "skillTags": [
-        "introduction",
-        "paraphrasing"
-      ],
-      "difficulty": 2,
-      "estimatedMinutes": 20,
-      "points": 10,
-      "autoGrade": false,
-      "stimulus": {
-        "kind": "text",
-        "caption": "Năm đề bài",
-        "rows": [
-          [
-            "Đề 1",
-            "The chart shows the participation by young people in sports by gender in Great Britain in 1999.",
-            "https://media.ieltsthayha.com/wt1/charts/sports-participation-gender-gb-1999_bmw4ozgiu.png"
-          ],
-          [
-            "Đề 2",
-            "The two pie charts below show changes in world population by region between 1900 and 2000.",
-            "https://media.ieltsthayha.com/wt1/charts/world-population-region-1900-2000_bmw4ozgiu.png"
-          ],
-          [
-            "Đề 3",
-            "The chart shows the average number of commuters travelling each day by car, bus or train in the UK between 1970 and 2000."
-          ],
-          [
-            "Đề 4",
-            "The chart illustrates the amount of electricity produced from three sources in 2010."
-          ],
-          [
-            "Đề 5",
-            "The graph below shows the contribution of three sectors – Agriculture, Manufacturing, and Business and Financial services – to the UK economy in the twentieth century.",
-            "https://media.ieltsthayha.com/wt1/charts/uk-economy-sectors-20th-century_bmw4ozgiu.png"
-          ]
-        ]
-      },
-      "responseSlots": 10,
-      "rubric": {
-        "minWords": 100,
-        "targetStructures": [
-          "paraphrase keyword",
-          "how many / how much / how + S + V",
-          "compare(s) … in terms of …",
-          "namely + A, B and C"
-        ],
-        "mustUse": 2,
-        "checklist": [
-          "Không chép nguyên bất kỳ cụm nào dài hơn 3 từ từ đề bài",
-          "Ghi rõ năm cụ thể thay vì “over a period of X years”",
-          "Nêu rõ loại biểu đồ (line chart / bar chart / pie chart / table)",
-          "Mỗi đề có 2 phiên bản khác nhau"
-        ],
-        "sampleAnswer": "Đề 1\n- The bar chart depicts how many youngsters participated in physical activities, broken down by sex, in the UK in 1999.\n- The bar chart compares six sports in terms of the participation of young males and females in Great Britain in 1999.\n\nĐề 2\n- The two pie charts illustrate how the world population was distributed across different regions in 1900 and 2000.\n- The pie charts compare different regions of the world in terms of their share of the global population in 1900 and 2000.\n\nĐề 3\n- The chart illustrates how many people commuted daily by three different means of transport in the UK over a period of 30 years.\n- The chart compares cars, buses and trains in terms of the average number of people who used them to commute each day in the UK from 1970 to 2000.\n\nĐề 4\n- The chart illustrates how much electricity was produced from three sources in 2010.\n- The chart compares three sources of energy in terms of the amount of electricity they generated in 2010.\n\nĐề 5\n- The bar chart illustrates the percentages of three different areas, namely Agriculture, Manufacturing, and Business and Financial Services, in the economy of the UK from 1901 to 2000.\n- The bar chart illustrates how three areas, namely Manufacturing, Agriculture, and Business and Financial Services, contributed to the economy of the UK from 1901 to 2000.\n- The bar chart compares three different areas, namely Agriculture, Manufacturing, and Business and Financial Services, in terms of their contribution to the economy of the UK from 1901 to 2000.",
-        "commonErrors": [
-          "chép nguyên “The graph below shows”",
-          "đảo ngược thứ tự năm (from 2000 to 1970)"
-        ]
-      }
-    },
-    {
-      "code": "T1-L08-E04",
-      "lessonCode": "T1-L08",
-      "order": 4,
-      "type": "sentence_writing",
-      "title": "Homework — Introduction cho 5 biểu đồ",
-      "instruction": "Viết Introduction cho các biểu đồ sau, mỗi đề một cách paraphrase khác nhau.",
-      "source": "original",
-      "skillTags": [
-        "introduction"
-      ],
-      "difficulty": 3,
-      "estimatedMinutes": 20,
-      "points": 10,
-      "autoGrade": false,
-      "needsAsset": false,
-      "stimulus": {
-        "kind": "text",
-        "caption": "Năm đề bài homework",
-        "rows": [
-          [
-            "Đề 1",
-            "The graph below shows the number of Asian elephants between 1994 and 2007.",
-            "https://media.ieltsthayha.com/wt1/charts/asian-elephants-1997-2004_bmw4ozgiu.png"
-          ],
-          [
-            "Đề 2",
-            "The graph below shows the number of university graduates in Canada from 1992 to 2007.",
-            "https://media.ieltsthayha.com/wt1/charts/canada-graduates-1992-2007_bmw4ozgiu.png"
-          ],
-          [
-            "Đề 3",
-            "The graph below gives information about U.S. government spending on research between 1980 and 2008.",
-            "https://media.ieltsthayha.com/wt1/charts/us-research-spending-1980-2008_bmw4ozgiu.png"
-          ],
-          [
-            "Đề 4",
-            "The pie charts below compare water usage in San Diego, California and the rest of the world.",
-            "https://media.ieltsthayha.com/wt1/charts/water-usage-san-diego-california-world_bmw4ozgiu.png"
-          ],
-          [
-            "Đề 5",
-            "The table below gives information about changes in modes of travel in England between 1985 and 2000.",
-            "https://media.ieltsthayha.com/wt1/charts/england-travel-modes-1985-2000_bmw4ozgiu.png"
-          ]
-        ],
-        "imageUrl": null,
-        "note": "Đề 1: biểu đồ chỉ có số liệu năm 1997 và 2004 — ghi đúng hai năm này trong Introduction."
-      },
-      "responseSlots": 5,
-      "rubric": {
-        "minWords": 80,
-        "targetStructures": [
-          "illustrates / compares / gives information about",
-          "how many / how much",
-          "in terms of",
-          "namely"
-        ],
-        "mustUse": 3,
-        "checklist": [
-          "5 Introduction, mỗi cái một cách khác nhau",
-          "Nêu rõ loại biểu đồ và mốc thời gian",
-          "Không chép đề"
-        ],
-        "sampleAnswer": "1. The bar chart compares nine Asian countries in terms of the estimated maximum number of elephants living there in 1997 and 2004.\n2. The line graph illustrates how many men and women graduated from university in Canada between 1992 and 2007.\n3. The line graph gives information about how much the US government spent on five areas of research, namely health, space, energy, general science and other fields, from 1980 to 2008.\n4. The pie charts compare San Diego County, the state of California and the world as a whole in terms of the proportions of water used for residential, industrial and agricultural purposes.\n5. The table compares eight modes of travel in England in terms of how much each one was used in 1985 and 2000.",
-        "commonErrors": [
-          "The graph shows…",
-          "thiếu mốc thời gian"
-        ]
-      }
-    },
-    {
-      "code": "T1-L09-E01",
-      "lessonCode": "T1-L09",
-      "order": 1,
-      "type": "mcq",
-      "title": "Bài tập — Overview nào đúng?",
-      "instruction": "Đánh giá mỗi Overview: đạt chuẩn hay không đạt chuẩn?",
-      "source": "original",
-      "skillTags": [
-        "overview"
-      ],
-      "difficulty": 2,
-      "estimatedMinutes": 6,
-      "points": 4,
-      "autoGrade": true,
-      "items": [
-        {
-          "id": "q1",
-          "prompt": "“Overall, the number of cars rose from 5 million to 15 million.”",
-          "options": [
-            {
-              "id": "A",
-              "text": "✔ Đạt chuẩn"
-            },
-            {
-              "id": "B",
-              "text": "✘ Không đạt"
-            }
-          ],
-          "answer": "B",
-          "explanation": "Overview KHÔNG được chứa số liệu cụ thể. Ngoài ra chỉ nêu được 1 đặc điểm."
-        },
-        {
-          "id": "q2",
-          "prompt": "“It is clear that all three figures increased over the period. Additionally, chicken was by far the most popular meat.”",
-          "options": [
-            {
-              "id": "A",
-              "text": "✔ Đạt chuẩn"
-            },
-            {
-              "id": "B",
-              "text": "✘ Không đạt"
-            }
-          ],
-          "answer": "A",
-          "explanation": "Đủ 2 câu, 2 đặc điểm nổi bật, không có số liệu."
-        },
-        {
-          "id": "q3",
-          "prompt": "“The chart shows information about four countries.”",
-          "options": [
-            {
-              "id": "A",
-              "text": "✔ Đạt chuẩn"
-            },
-            {
-              "id": "B",
-              "text": "✘ Không đạt"
-            }
-          ],
-          "answer": "B",
-          "explanation": "Đây là câu Introduction lặp lại, không nêu được đặc điểm nổi bật nào."
-        },
-        {
-          "id": "q4",
-          "prompt": "“Overall, while the figures for A and B declined steadily, that for C showed the opposite trend.”",
-          "options": [
-            {
-              "id": "A",
-              "text": "✔ Đạt chuẩn"
-            },
-            {
-              "id": "B",
-              "text": "✘ Không đạt"
-            }
-          ],
-          "answer": "A",
-          "explanation": "Nêu được xu hướng chung và điểm khác biệt, không có số liệu."
-        }
-      ]
-    },
-    {
-      "code": "T1-L09-E02",
-      "lessonCode": "T1-L09",
-      "order": 2,
-      "type": "gap_fill",
-      "title": "Bổ sung — Khung câu Overview",
-      "instruction": "Điền từ còn thiếu vào hai công thức Overview chuẩn.",
-      "source": "added",
-      "skillTags": [
         "overview"
       ],
       "difficulty": 1,
-      "estimatedMinutes": 3,
+      "estimatedMinutes": 5,
       "points": 6,
       "autoGrade": true,
-      "wordBank": [
-        "clear",
-        "Additionally",
-        "Overall",
-        "noticeable",
-        "also",
-        "far"
-      ],
       "items": [
         {
           "id": "q1",
-          "prompt": "It is ____ that all three figures increased over the period.",
-          "blanks": [
+          "prompt": "Introduction trả lời câu hỏi nào?",
+          "options": [
             {
-              "accept": [
-                "clear",
-                "noticeable"
-              ]
+              "id": "A",
+              "text": "Biểu đồ thể hiện điều gì?"
+            },
+            {
+              "id": "B",
+              "text": "Điều gì nổi bật nhất trong biểu đồ?"
+            },
+            {
+              "id": "C",
+              "text": "Số liệu nào cao nhất?"
             }
           ],
-          "explanation": "It is clear / noticeable that…"
+          "answer": "A",
+          "explanation": "Introduction = đề bài nói gì (nguồn ý: đề bài). Overview mới trả lời “điều gì nổi bật nhất”."
         },
         {
           "id": "q2",
-          "prompt": "____, chicken was the most popular meat throughout.",
-          "blanks": [
+          "prompt": "Overview có bao nhiêu câu?",
+          "options": [
             {
-              "accept": [
-                "Additionally"
-              ]
+              "id": "A",
+              "text": "1 câu duy nhất"
+            },
+            {
+              "id": "B",
+              "text": "1–2 câu, nêu 2 đặc điểm nổi bật"
+            },
+            {
+              "id": "C",
+              "text": "3–4 câu có số liệu"
             }
           ],
-          "explanation": "Nối sang đặc điểm thứ hai."
+          "answer": "B",
+          "explanation": "2 đặc điểm nổi bật, viết trong 1 câu (while / whereas) hoặc 2 câu."
         },
         {
           "id": "q3",
-          "prompt": "____, the figures for A and B rose while that for C fell.",
-          "blanks": [
+          "prompt": "Introduction viết ở thì nào?",
+          "options": [
             {
-              "accept": [
-                "Overall"
-              ]
+              "id": "A",
+              "text": "Hiện tại đơn (shows / illustrates)"
+            },
+            {
+              "id": "B",
+              "text": "Quá khứ đơn"
+            },
+            {
+              "id": "C",
+              "text": "Theo năm của dữ liệu"
             }
           ],
-          "explanation": "Công thức 2 mở đầu bằng Overall."
+          "answer": "A",
+          "explanation": "Biểu đồ đang “cho thấy” → hiện tại đơn. Overview mới đi theo thì của dữ liệu."
         },
         {
           "id": "q4",
-          "prompt": "It is ____ noted that C experienced the most significant change.",
-          "blanks": [
+          "prompt": "Đề: “The graph shows … in the twentieth century”. Cách viết lại nào SAI?",
+          "options": [
             {
-              "accept": [
-                "also"
-              ]
+              "id": "A",
+              "text": "from 1900 to 2000"
+            },
+            {
+              "id": "B",
+              "text": "over a 100-year period"
+            },
+            {
+              "id": "C",
+              "text": "over a 10-year period"
             }
           ],
-          "explanation": "It is also clear / noticeable / noted that…"
+          "answer": "C",
+          "explanation": "1900–2000 là 100 năm — luôn tính lại độ dài giai đoạn."
         },
         {
           "id": "q5",
-          "prompt": "The number of C was by ____ the highest during the research period.",
-          "blanks": [
+          "prompt": "Câu nào SAI?",
+          "options": [
             {
-              "accept": [
-                "far"
-              ]
+              "id": "A",
+              "text": "The chart illustrates how many tourists visited Spain."
+            },
+            {
+              "id": "B",
+              "text": "The chart illustrates how many water was consumed."
+            },
+            {
+              "id": "C",
+              "text": "The chart illustrates how much water was consumed."
             }
           ],
-          "explanation": "“by far” nhấn mạnh vị trí dẫn đầu áp đảo."
+          "answer": "B",
+          "explanation": "water không đếm được → how much water / the amount of water."
         },
         {
           "id": "q6",
-          "prompt": "It is ____ that the figure for D fluctuated throughout.",
-          "blanks": [
+          "prompt": "Đề dùng “Manufacturing”. Khi paraphrase nên làm gì?",
+          "options": [
             {
-              "accept": [
-                "noticeable",
-                "clear"
-              ]
+              "id": "A",
+              "text": "Đổi thành “Industry” cho khác đề"
+            },
+            {
+              "id": "B",
+              "text": "Giữ nguyên tên ngành chuyên môn"
+            },
+            {
+              "id": "C",
+              "text": "Bỏ đi cho ngắn"
             }
           ],
-          "explanation": "Hai từ dùng thay nhau được."
+          "answer": "B",
+          "explanation": "Bước 3: không đổi nghĩa từ chuyên môn — giữ Manufacturing nếu đề không dùng từ khác."
         }
       ]
-    },
-    {
-      "code": "T1-L09-E03",
-      "lessonCode": "T1-L09",
-      "order": 3,
-      "type": "sentence_writing",
-      "title": "Review — Viết Introduction cho 4 biểu đồ",
-      "instruction": "Viết Introduction cho 4 đề dưới đây, áp dụng 3 phương pháp paraphrasing đã học.",
-      "source": "original",
-      "skillTags": [
-        "introduction"
-      ],
-      "difficulty": 2,
-      "estimatedMinutes": 15,
-      "points": 8,
-      "autoGrade": false,
-      "needsAsset": false,
-      "stimulus": {
-        "kind": "text",
-        "caption": "Bốn đề bài",
-        "rows": [
-          [
-            "Graph 1",
-            "The consumption of fish and different kinds of meat in a European country between 1979 and 2004.",
-            "https://media.ieltsthayha.com/wt1/charts/fish-meat-1979-2004.png"
-          ],
-          [
-            "Graph 2",
-            "The proportion of the population aged 65 and over between 1940 and 2040 in three different countries.",
-            "https://media.ieltsthayha.com/wt1/charts/population-65plus.png"
-          ],
-          [
-            "Graph 3",
-            "The changes in annual spending by a particular UK school in 1981 and 1991.",
-            "https://media.ieltsthayha.com/wt1/charts/uk-school-pie-1981-1991.png"
-          ],
-          [
-            "Graph 4",
-            "Male and female fitness membership in Thailand between 1985 and 2015.",
-            "https://media.ieltsthayha.com/wt1/charts/gym-thailand-1985-2015.png"
-          ]
-        ]
-      },
-      "responseSlots": 4,
-      "rubric": {
-        "minWords": 70,
-        "targetStructures": [
-          "illustrates / compares",
-          "how much / how many",
-          "in terms of",
-          "namely"
-        ],
-        "mustUse": 2,
-        "checklist": [
-          "Không chép đề",
-          "Nêu đúng loại biểu đồ",
-          "Có mốc thời gian đầy đủ"
-        ],
-        "sampleAnswer": "1. The line graph illustrates how much fish and various types of meat were eaten in a European country between 1979 and 2004.\n2. The line graph compares the percentage of people aged 65 and above in three countries over the hundred years from 1940 to 2040.\n3. The pie charts illustrate how a particular UK school allocated its annual budget in 1981 and 1991.\n4. The bar chart compares the number of men and women who were members of fitness centres in Thailand between 1985 and 2015.",
-        "commonErrors": [
-          "The graph below shows…"
-        ]
-      }
-    },
-    {
-      "code": "T1-L09-E04",
-      "lessonCode": "T1-L09",
-      "order": 4,
-      "type": "paragraph_writing",
-      "title": "Practice — Viết Overview cho 4 biểu đồ trên",
-      "instruction": "Viết Overview (2 câu, 2 đặc điểm nổi bật, KHÔNG số liệu) cho từng biểu đồ ở bài trước.",
-      "source": "original",
-      "skillTags": [
-        "overview"
-      ],
-      "difficulty": 3,
-      "estimatedMinutes": 20,
-      "points": 12,
-      "autoGrade": false,
-      "needsAsset": false,
-      "stimulus": {
-        "kind": "text",
-        "caption": "Dùng lại 4 biểu đồ ở bài trước (T1-L09-E03)",
-        "rows": [
-          [
-            "Graph 1",
-            "The consumption of fish and different kinds of meat in a European country between 1979 and 2004.",
-            "https://media.ieltsthayha.com/wt1/charts/fish-meat-1979-2004.png"
-          ],
-          [
-            "Graph 2",
-            "The proportion of the population aged 65 and over between 1940 and 2040 in three different countries.",
-            "https://media.ieltsthayha.com/wt1/charts/population-65plus.png"
-          ],
-          [
-            "Graph 3",
-            "The changes in annual spending by a particular UK school in 1981 and 1991.",
-            "https://media.ieltsthayha.com/wt1/charts/uk-school-pie-1981-1991.png"
-          ],
-          [
-            "Graph 4",
-            "Male and female fitness membership in Thailand between 1985 and 2015.",
-            "https://media.ieltsthayha.com/wt1/charts/gym-thailand-1985-2015.png"
-          ]
-        ],
-        "note": "Bốn cách tìm đặc điểm nổi bật: (1) tất cả cùng tăng/giảm? (2) cái nào luôn cao/thấp nhất? (3) cái nào thay đổi mạnh nhất? (4) có xu hướng trái ngược không?"
-      },
-      "responseSlots": 4,
-      "rubric": {
-        "minWords": 80,
-        "targetStructures": [
-          "It is clear / noticeable that …. Additionally, …",
-          "Overall, …. It is also noted that …",
-          "by far the highest / lowest",
-          "the opposite trend"
-        ],
-        "mustUse": 2,
-        "checklist": [
-          "MỖI Overview đúng 2 câu",
-          "TUYỆT ĐỐI không có số liệu cụ thể",
-          "Nêu được 2 đặc điểm khác nhau (không phải 2 cách nói của cùng 1 ý)",
-          "Dùng cả 2 công thức, không lặp lại một công thức cho cả 4 bài"
-        ],
-        "sampleAnswer": "Graph 1 — Fish and meat\nOverall, while the consumption of chicken rose steadily over the period, the opposite trend was true for beef, lamb and fish. It is also noticeable that beef, the most popular food in 1979, had been overtaken by chicken by the end of the period.\n\nGraph 2 — Population aged 65 and over\nOverall, the proportion of people aged 65 and over increased in all three countries and is expected to continue rising until 2040. Additionally, although Japan had the lowest figure for most of the period, it is projected to have the highest by 2040.\n\nGraph 3 — UK school spending\nOverall, teachers' salaries made up by far the largest share of the school's spending in both years, and this proportion grew further by 1991. It is also clear that insurance accounted for the smallest share of the budget in both years.\n\nGraph 4 — Fitness membership in Thailand\nOverall, the numbers of both male and female members fluctuated considerably over the 30-year period. Additionally, although men outnumbered women in most years, women became the larger group in 2000, 2005 and 2015.",
-        "commonErrors": [
-          "Overview chứa số liệu",
-          "Overview chỉ nêu 1 đặc điểm",
-          "Overview lặp lại Introduction"
-        ]
-      }
     },
     {
       "code": "T1-L09-E05",
       "lessonCode": "T1-L09",
-      "order": 5,
+      "order": 1,
       "type": "sentence_transform",
-      "title": "Warm-up — Nâng cấp câu mô tả xu hướng trái ngược",
+      "title": "Warm-up — Nâng cấp câu mô tả xu hướng trái ngược (9.6)",
       "instruction": "Nâng cấp câu cơ bản lên mức Band 7 và Band 8 bằng các cụm học thuật.",
       "source": "original",
       "skillTags": [
@@ -2858,17 +2465,17 @@
       "items": [
         {
           "id": "q1",
-          "prompt": "Câu cơ bản: “Additionally, while chicken consumption increased, the figures for beef, lamb, and fish all decreased from 1979 to 2004.” → nâng lên Band 7",
+          "prompt": "Câu cơ bản: “While chicken consumption increased, the figures for beef, lamb and fish all decreased from 1979 to 2004.” → câu nâng cấp",
           "sampleAnswers": [
-            "Additionally, while chicken consumption increased, the opposite trend was true for the figures for beef, lamb, and fish from 1979 to 2004."
+            "While chicken consumption increased, the opposite trend was true for beef, lamb and fish from 1979 to 2004."
           ],
           "promptVi": "Thêm vào đó, trong khi lượng tiêu thụ thịt gà tăng lên thì xu hướng ngược lại lại đúng với số liệu của thịt bò, thịt cừu và cá từ năm 1979 đến năm 2004."
         },
         {
           "id": "q2",
-          "prompt": "→ nâng tiếp lên Band 8",
+          "prompt": "→ nâng tiếp lên câu Band 8+",
           "sampleAnswers": [
-            "Additionally, while chicken consumption experienced an upward trend, the reverse patterns could be seen in the figures for beef, lamb, and fish from 1979 to 2004."
+            "While chicken consumption experienced an upward trend, the reverse pattern could be seen in the figures for beef, lamb and fish from 1979 to 2004."
           ],
           "promptVi": "Ngoài ra, trong khi lượng tiêu thụ thịt gà trải qua xu hướng tăng, các mô hình ngược lại có thể được thấy ở số liệu của thịt bò, thịt cừu và cá từ năm 1979 đến năm 2004."
         },
@@ -2926,9 +2533,9 @@
     {
       "code": "T1-L09-E06",
       "lessonCode": "T1-L09",
-      "order": 6,
+      "order": 4,
       "type": "mcq",
-      "title": "Bổ sung — Xác định “năm nổi bật”",
+      "title": "Bổ sung — Năm nổi bật và số lượng số liệu",
       "instruction": "Chọn năm nên dùng để chia hai đoạn thân bài.",
       "source": "added",
       "skillTags": [
@@ -3027,8 +2634,8 @@
       "lessonCode": "T1-L09",
       "order": 7,
       "type": "full_task1",
-      "title": "Practice — Complete the essay for this graph (Fast food in the UK, 1970–1990)",
-      "instruction": "The given graph shows the consumption of fast food in UK (per week) from 1970 to 1990. Write a report for a university lecturer making comparisons where relevant and reporting the main features. Write at least 150 words.",
+      "title": "Practice — Complete the essay for this graph (9.10)",
+      "instruction": "The graph below shows the consumption of fast food in the UK (grams per person per week) from 1970 to 1990. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "original",
       "skillTags": [
         "full-writing",
@@ -3041,7 +2648,7 @@
       "needsAsset": false,
       "stimulus": {
         "kind": "image",
-        "caption": "Consumption of fast food in the UK (grams per week), 1970–1990",
+        "caption": "Consumption of fast food in the UK (grams per person per week), 1970–1990",
         "imageUrl": "https://media.ieltsthayha.com/wt1/charts/fast-food-uk-1970-1990_1794032459115.png"
       },
       "rubric": {
@@ -3056,87 +2663,17 @@
         ],
         "mustUse": 4,
         "checklist": [
-          "Tổng cả hai đoạn chỉ 8–10 số liệu",
-          "Body 1 có mô tả dữ liệu năm đầu tiên",
-          "Body 2 bắt đầu từ năm nổi bật",
-          "Có nhóm các đối tượng cùng xu hướng lại với nhau"
+          "Introduction 1 câu, Overview không số liệu",
+          "Cả bài 8–10 số liệu",
+          "Chọn một chiến lược gom nhóm và giữ cho cả hai đoạn Body",
+          "Có nhắc điểm giao cắt"
         ],
-        "sampleAnswer": "The line graph illustrates the amount of fast food consumed in Britain on a weekly basis over a twenty-year period, starting in 1970.\n\nOverall, it is evident that while the consumption of fish and chips and hamburgers showed an upward trend, the reverse pattern was observed in pizza consumption. Additionally, fish and chips overtook pizza to become the most popular fast food by the end of the period.\n\nLooking at the diagram in more detail, from 1970 to 1980, hamburger and fish and chips consumption by British people gradually increased from around 30 grams and 75 grams to approximately 80 grams and 150 grams, respectively. Subsequently, the amount of hamburgers eaten continued to rise, reaching 120 grams in 1985, before soaring to roughly 280 grams at the end of the surveyed period. Similarly, consumption of fish and chips experienced a rapid surge, doubling to 300 grams by 1985 and peaking at 500 grams in 1990.\n\nAs for the remaining data, in 1970, the quantity of pizza consumed stood at around 310 grams, which far exceeded the figures for the other fast foods. However, this statistic then declined steadily to 200 grams in 1985, before recovering slightly by 20 grams at the end of the period.",
+        "sampleAnswer": "The line graph illustrates how much fast food people in the UK ate per week, measured in grams per person, between 1970 and 1990.\n\nOverall, while the consumption of fish and chips and hamburgers rose significantly, the reverse pattern could be seen in pizza consumption. It is also clear that fish and chips became the most popular fast food by the end of the period.\n\nFish and chips and hamburgers both showed an upward trend. In 1970, people ate about 75 grams of fish and chips per week, and this figure rose gradually to 150 grams in 1980 before surging to 300 grams in 1985 and 500 grams in 1990. Hamburger consumption followed a similar pattern, climbing slowly from 30 grams to 120 grams in 1985 and then more than doubling to around 280 grams in 1990.\n\nBy contrast, pizza was the most popular fast food in 1970, at about 310 grams. However, its consumption fell steadily to a low of 200 grams in 1985, having been overtaken by fish and chips in the early 1980s, and it was later overtaken by hamburgers as well. The figure then rose slightly to about 220 grams in 1990.",
         "commonErrors": [
           "liệt kê hết mọi số liệu",
           "hai đoạn trùng nội dung"
         ]
       }
-    },
-    {
-      "code": "T1-L09-E08",
-      "lessonCode": "T1-L09",
-      "order": 8,
-      "type": "paragraph_writing",
-      "title": "Homework — Viết 2 đoạn thân bài cho 4 biểu đồ của Buổi 9",
-      "instruction": "Viết hai đoạn Body cho từng biểu đồ trong 4 đề của Buổi 9 (Introduction và Overview đã làm trên lớp). Mỗi biểu đồ một ô: Body 1 + Body 2, chọn 4–5 số liệu mỗi đoạn.",
-      "source": "original",
-      "skillTags": [
-        "body-paragraphs",
-        "data-selection"
-      ],
-      "difficulty": 3,
-      "estimatedMinutes": 40,
-      "points": 40,
-      "autoGrade": false,
-      "timerMinutes": 20,
-      "needsAsset": false,
-      "stimulus": {
-        "kind": "text",
-        "caption": "Bốn đề của Buổi 9",
-        "rows": [
-          [
-            "Graph 1",
-            "The consumption of fish and different kinds of meat in a European country between 1979 and 2004.",
-            "https://media.ieltsthayha.com/wt1/charts/fish-meat-1979-2004.png"
-          ],
-          [
-            "Graph 2",
-            "The proportion of the population aged 65 and over between 1940 and 2040 in three different countries.",
-            "https://media.ieltsthayha.com/wt1/charts/population-65plus.png"
-          ],
-          [
-            "Graph 3",
-            "The changes in annual spending by a particular UK school in 1981 and 1991.",
-            "https://media.ieltsthayha.com/wt1/charts/uk-school-pie-1981-1991.png"
-          ],
-          [
-            "Graph 4",
-            "Male and female fitness membership in Thailand between 1985 and 2015.",
-            "https://media.ieltsthayha.com/wt1/charts/gym-thailand-1985-2015.png"
-          ]
-        ]
-      },
-      "rubric": {
-        "minWords": 320,
-        "targetStructures": [
-          "compares … in terms of",
-          "It is clear that … Additionally, …",
-          "increased by … to …",
-          "the opposite trend was true for",
-          "respectively",
-          "reached a peak of"
-        ],
-        "mustUse": 4,
-        "checklist": [
-          "Introduction paraphrase, không chép đề",
-          "Overview 2 câu, KHÔNG có số liệu",
-          "Body 1 và Body 2 chia theo năm nổi bật",
-          "Tối thiểu 150 từ"
-        ],
-        "sampleAnswer": "Graph 1 — Fish and meat consumption, 1979–2004\nBody 1: In 1979, around 220 grams of beef were eaten per person per week, compared to about 150 grams for both chicken and lamb, while fish consumption was the lowest, at roughly 60 grams. Over the following ten years, beef consumption fluctuated but stayed at around 200 grams or more, whereas chicken rose steadily and overtook beef in about 1989.\nBody 2: From 1989 onwards, the opposite trend was true for these two foods. Chicken consumption continued to climb, reaching a peak of around 250 grams in 2004, while the figure for beef fell sharply to just over 100 grams. Lamb consumption also declined, to about 55 grams, and fish consumption dipped slightly to below 40 grams by the end of the period.\n\nGraph 2 — Population aged 65 and over, 1940–2040\nBody 1: In 1940, around 9% of Americans were aged 65 and over, compared to about 7% in Sweden and 5% in Japan. Over the next four decades, the figures for the USA and Sweden rose to roughly 15% and 14% respectively, whereas the proportion in Japan dipped to around 3% and remained at this level until the mid-1980s.\nBody 2: After that, the Japanese figure rose slowly to about 10% in 2030, before it is expected to soar to approximately 27% in 2040, the highest of the three countries. The proportion of elderly people in Sweden climbed to 20% by around 2010 and is projected to reach about 25% by 2040, while the figure for the USA, having remained stable at around 14% between 1990 and 2020, is predicted to rise to approximately 23%.\n\nGraph 3 — UK school annual spending, 1981 and 1991\nBody 1: In 1981, teachers' salaries accounted for the largest proportion of the school's spending, at 40%, followed by other workers' salaries, at 28%. Resources such as books and furniture and equipment each took up 15% of the budget, while insurance made up only 2%.\nBody 2: Ten years later, the share spent on teachers' salaries had risen to half of the total budget, and spending on resources also increased, to 20%. By contrast, the proportion allocated to other workers' salaries fell to 22%, and that for furniture and equipment dropped sharply to just 5%. Insurance remained the smallest category, rising only slightly to 3%.\n\nGraph 4 — Fitness membership in Thailand, 1985–2015\nBody 1: In 1985, there were around 2,200 male fitness members in Thailand, compared to about 1,300 female members. Five years later, male membership rose sharply to around 3,800, while the female figure increased more modestly to about 1,900. In 2000, however, the number of men fell to around 1,800, and women became the larger group for the first time, at about 2,800.\nBody 2: From 2000 to 2010, male membership surged to a peak of 5,000, whereas the number of female members fluctuated before reaching about 2,950. In the final five years, both figures declined, but men's membership plummeted to just 1,000, half the figure for women, at 2,000.",
-        "commonErrors": [
-          "thiếu Overview",
-          "Overview có số liệu",
-          "viết hết mọi con số"
-        ]
-      },
-      "responseSlots": 4
     },
     {
       "code": "T1-TEST2-A1",
@@ -3472,7 +3009,7 @@
       "order": 4,
       "type": "sentence_transform",
       "title": "PHẦN A4 — Nối hai xu hướng",
-      "instruction": "Nối mỗi cặp xu hướng thành một câu duy nhất bằng các cấu trúc khác nhau (followed by / before V-ing / but later + V / Starting at …). Mỗi câu 5 điểm.",
+      "instruction": "Nối mỗi cặp xu hướng thành MỘT câu duy nhất bằng cấu trúc khác nhau (followed by / before V-ing / but later + V / Starting at …). Mỗi câu 2,5 điểm.",
       "source": "added",
       "skillTags": [
         "trend-structures"
@@ -3486,6 +3023,7 @@
           "id": "q1",
           "prompt": "Tăng từ 100 lên 400 (2000–2010), sau đó giảm về 250 (2010–2020).",
           "sampleAnswers": [
+            "The figure rose from 100 to 400 between 2000 and 2010 before falling to 250 in 2020.",
             "Starting at 100 in 2000, the figure quadrupled to 400 in 2010, before falling to 250 in 2020.",
             "The figure rose from 100 in 2000 to 400 in 2010, but later decreased to 250 in 2020."
           ]
@@ -3494,9 +3032,28 @@
           "id": "q2",
           "prompt": "Giảm từ 80% xuống 30% (1990–2000), sau đó giữ nguyên đến 2010.",
           "sampleAnswers": [
+            "The percentage dropped from 80% to 30% between 1990 and 2000, followed by a period of stability until 2010.",
             "The figure fell sharply from 80% in 1990 to 30% in 2000, before remaining stable at this level until 2010.",
             "There was a sharp fall from 80% to 30% between 1990 and 2000, which was followed by a period of stability until 2010."
           ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Bắt đầu ở 500 (2005), tăng lên 900 (2010), sau đó giảm mạnh còn 200 (2015).",
+          "cue": "Starting at",
+          "sampleAnswers": [
+            "Starting at 500 in 2005, the figure rose to 900 in 2010, but later plummeted to 200 in 2015."
+          ],
+          "promptVi": "Bắt đầu ở mức 500 năm 2005, số liệu tăng lên 900 năm 2010 nhưng sau đó giảm mạnh còn 200 năm 2015."
+        },
+        {
+          "id": "q4",
+          "prompt": "A tăng từ 20% lên 60% (2000–2020), trong khi B giảm từ 50% xuống 10% cùng giai đoạn.",
+          "cue": "While",
+          "sampleAnswers": [
+            "While A rose from 20% to 60% between 2000 and 2020, B fell from 50% to 10% over the same period."
+          ],
+          "promptVi": "Trong khi A tăng từ 20% lên 60% giai đoạn 2000–2020, B giảm từ 50% xuống 10% cùng giai đoạn."
         }
       ],
       "rubric": {
@@ -3523,7 +3080,7 @@
       "order": 5,
       "type": "full_task1",
       "title": "PHẦN B — Bài viết hoàn chỉnh",
-      "instruction": "The graph below shows the number of visitors to three museums in London between 2005 and 2020. Summarize the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
+      "instruction": "The table below shows the number of visitors to three museums in London between 2005 and 2020 (millions). Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "original",
       "skillTags": [
         "full-writing",
@@ -3608,7 +3165,7 @@
           "Không dùng “There were” với phần trăm",
           "Tối thiểu 150 từ"
         ],
-        "sampleAnswer": "The table illustrates how many people visited three museums in London, namely the British Museum, Tate Modern and the Science Museum, between 2005 and 2020.\n\nOverall, visitor numbers at all three museums rose for most of the period before falling dramatically in 2020. It is also clear that the British Museum was the most visited of the three throughout, whereas the Science Museum attracted the fewest visitors.\n\nIn 2005, the British Museum welcomed 4.5 million visitors, compared to 3.9 million for Tate Modern and only 2.0 million for the Science Museum. Over the next ten years, the figure for the British Museum climbed steadily to a peak of 6.8 million in 2015, and the Science Museum saw a similar upward trend, reaching 3.4 million. Tate Modern, by contrast, rose to 5.1 million in 2010 before dipping slightly to 4.7 million in 2015.\n\nBetween 2015 and 2020, all three museums experienced a dramatic decline. The number of visitors to the British Museum plummeted to just 1.3 million, while the figures for Tate Modern and the Science Museum fell to 1.0 million and 0.9 million respectively, the lowest points in the period.",
+        "sampleAnswer": "The table gives information about the number of people who visited three museums in London between 2005 and 2020.\n\nOverall, while visitor numbers at all three museums rose in the first ten years, they all fell dramatically in 2020. The British Museum was the most popular museum throughout the period.\n\nIn 2005, the British Museum attracted 4.5 million visitors, compared to 3.9 million for the Tate Modern and only 2 million for the Science Museum. Over the next five years, all three figures increased, reaching 5.8 million, 5.1 million and 2.8 million, respectively.\n\nFrom 2010 onwards, the trends were different. Visitor numbers at the British Museum continued to grow to a peak of 6.8 million in 2015, and the Science Museum also rose to 3.4 million. By contrast, the Tate Modern saw a slight fall to 4.7 million. In 2020, however, all three museums experienced a sharp drop, with the figures falling to just 1.3 million, 1 million and 0.9 million, respectively.",
         "commonErrors": [
           "thiếu Overview",
           "dùng thì quá khứ cho mốc 2040",
@@ -3679,6 +3236,878 @@
           "right": "fell slowly"
         }
       ]
+    },
+    {
+      "code": "T1-L08-E05",
+      "lessonCode": "T1-L08",
+      "order": 3,
+      "type": "sentence_transform",
+      "title": "Bài tập 1 — Viết một câu cho mỗi phương pháp được chỉ định",
+      "instruction": "Viết một câu Introduction cho mỗi đề, dùng đúng phương pháp ghi trong ngoặc (PP1 / PP2 / PP3).",
+      "source": "book",
+      "skillTags": [
+        "introduction",
+        "paraphrasing"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "points": 8,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "The chart shows the participation of young people in sports by gender in Great Britain in 1999. (PP2)",
+          "cue": "PP2 — how many / how much / what percentage / how + S + V",
+          "sampleAnswers": [
+            "The bar chart illustrates how many boys and girls took part in different sports in Great Britain in 1999."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "The chart illustrates the amount of electricity produced from three sources in 2010. (PP2)",
+          "cue": "PP2 — how much + N + V",
+          "sampleAnswers": [
+            "The chart illustrates how much electricity was produced from three sources in 2010."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "The graph below shows the number of Asian elephants in nine countries in 1997 and 2004. (PP3)",
+          "cue": "PP3 — the number of + N + who / that + V",
+          "sampleAnswers": [
+            "The bar chart shows the number of Asian elephants that lived in nine countries in 1997 and 2004."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The table shows the proportion of people in different age groups who used the Internet in 2015. (PP1)",
+          "cue": "PP1 — paraphrase từ khóa",
+          "sampleAnswers": [
+            "The table gives information about the percentage of people of different ages who went online in 2015."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-L08-E06",
+      "lessonCode": "T1-L08",
+      "order": 4,
+      "type": "sentence_transform",
+      "title": "Bài tập 2 — Chuyển qua lại giữa “the number of …” và “how many …”",
+      "instruction": "Viết lại cụm danh từ thành cụm “how many / how much / what percentage” và ngược lại.",
+      "source": "book",
+      "skillTags": [
+        "introduction",
+        "paraphrasing"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 5,
+      "points": 5,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "the number of cars that were sold in Japan → how many …",
+          "starter": "how many",
+          "sampleAnswers": [
+            "how many cars were sold in Japan"
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "how much coffee was exported → the amount of …",
+          "starter": "the amount of",
+          "sampleAnswers": [
+            "the amount of coffee that was exported",
+            "the amount of coffee exported"
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "the percentage of students who studied abroad → what percentage …",
+          "starter": "what percentage",
+          "sampleAnswers": [
+            "what percentage of students studied abroad"
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "how many people visited the museum → the number of …",
+          "starter": "the number of",
+          "sampleAnswers": [
+            "the number of people who visited the museum"
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "the amount of money that the government spent on research → how much …",
+          "starter": "how much",
+          "sampleAnswers": [
+            "how much money the government spent on research"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-L08-E11",
+      "lessonCode": "T1-L08",
+      "order": 5,
+      "type": "gap_fill",
+      "title": "Bổ sung — Khung câu Overview (Công thức 1 và 2)",
+      "instruction": "Điền từ còn thiếu vào hai công thức Overview chuẩn.",
+      "source": "added",
+      "skillTags": [
+        "overview"
+      ],
+      "difficulty": 1,
+      "estimatedMinutes": 3,
+      "points": 6,
+      "autoGrade": true,
+      "wordBank": [
+        "clear",
+        "Additionally",
+        "Overall",
+        "noticeable",
+        "also",
+        "far"
+      ],
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "It is ____ that all three figures increased over the period.",
+          "blanks": [
+            {
+              "accept": [
+                "clear",
+                "noticeable"
+              ]
+            }
+          ],
+          "explanation": "It is clear / noticeable that…"
+        },
+        {
+          "id": "q2",
+          "prompt": "____, chicken was the most popular meat throughout.",
+          "blanks": [
+            {
+              "accept": [
+                "Additionally"
+              ]
+            }
+          ],
+          "explanation": "Nối sang đặc điểm thứ hai."
+        },
+        {
+          "id": "q3",
+          "prompt": "____, the figures for A and B rose while that for C fell.",
+          "blanks": [
+            {
+              "accept": [
+                "Overall"
+              ]
+            }
+          ],
+          "explanation": "Công thức 2 mở đầu bằng Overall."
+        },
+        {
+          "id": "q4",
+          "prompt": "It is ____ noted that C experienced the most significant change.",
+          "blanks": [
+            {
+              "accept": [
+                "also"
+              ]
+            }
+          ],
+          "explanation": "It is also clear / noticeable / noted that…"
+        },
+        {
+          "id": "q5",
+          "prompt": "The number of C was by ____ the highest during the research period.",
+          "blanks": [
+            {
+              "accept": [
+                "far"
+              ]
+            }
+          ],
+          "explanation": "“by far” nhấn mạnh vị trí dẫn đầu áp đảo."
+        },
+        {
+          "id": "q6",
+          "prompt": "It is ____ that the figure for D fluctuated throughout.",
+          "blanks": [
+            {
+              "accept": [
+                "noticeable",
+                "clear"
+              ]
+            }
+          ],
+          "explanation": "Hai từ dùng thay nhau được."
+        }
+      ]
+    },
+    {
+      "code": "T1-L08-E07",
+      "lessonCode": "T1-L08",
+      "order": 6,
+      "type": "sentence_transform",
+      "title": "Bài tập 3 — Gộp hai câu thành một câu while / whereas",
+      "instruction": "Gộp hai câu thành MỘT câu Overview dùng while hoặc whereas (Công thức 3). Chú ý dấu phẩy và hai vế song song.",
+      "source": "book",
+      "skillTags": [
+        "overview",
+        "while-whereas"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 8,
+      "points": 5,
+      "autoGrade": false,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Overall, sales of laptops rose. Sales of desktop computers fell.",
+          "sampleAnswers": [
+            "Overall, while sales of laptops rose, sales of desktop computers fell.",
+            "Overall, sales of laptops rose, whereas sales of desktop computers fell."
+          ]
+        },
+        {
+          "id": "q2",
+          "prompt": "It is clear that rice was the main export. Coffee exports grew the fastest.",
+          "sampleAnswers": [
+            "It is clear that rice was the main export, whereas coffee exports grew the fastest."
+          ]
+        },
+        {
+          "id": "q3",
+          "prompt": "Overall, the number of cyclists remained stable. The number of car users doubled.",
+          "sampleAnswers": [
+            "Overall, while the number of cyclists remained stable, the number of car users doubled."
+          ]
+        },
+        {
+          "id": "q4",
+          "prompt": "The village centre became more commercial. The farmland in the east was replaced by housing.",
+          "sampleAnswers": [
+            "Overall, while the village centre became more commercial, the farmland in the east was replaced by housing."
+          ]
+        },
+        {
+          "id": "q5",
+          "prompt": "The first stages of the process take place in the field. The final stages happen in a factory.",
+          "sampleAnswers": [
+            "Overall, while the first stages of the process take place in the field, the final stages happen in a factory."
+          ]
+        }
+      ]
+    },
+    {
+      "code": "T1-L08-E08",
+      "lessonCode": "T1-L08",
+      "order": 7,
+      "type": "mcq",
+      "title": "Bài tập 4 — Overview nào đạt chuẩn?",
+      "instruction": "Đánh dấu ✔ hoặc ✘ cho mỗi Overview.",
+      "source": "book",
+      "skillTags": [
+        "overview"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 5,
+      "points": 6,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "“Overall, the number of cars rose from 5 million to 15 million.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "✔ Đạt chuẩn"
+            },
+            {
+              "id": "B",
+              "text": "✘ Không đạt"
+            }
+          ],
+          "answer": "B",
+          "explanation": "✘ — có số liệu. Overview tuyệt đối không có số liệu."
+        },
+        {
+          "id": "q2",
+          "prompt": "“It is clear that all three figures increased over the period. Additionally, chicken was by far the most popular meat.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "✔ Đạt chuẩn"
+            },
+            {
+              "id": "B",
+              "text": "✘ Không đạt"
+            }
+          ],
+          "answer": "A",
+          "explanation": "✔ — hai đặc điểm rõ ràng, không số liệu (Công thức 1)."
+        },
+        {
+          "id": "q3",
+          "prompt": "“The chart shows information about four countries.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "✔ Đạt chuẩn"
+            },
+            {
+              "id": "B",
+              "text": "✘ Không đạt"
+            }
+          ],
+          "answer": "B",
+          "explanation": "✘ — chỉ nhắc lại đề, không có đặc điểm nổi bật."
+        },
+        {
+          "id": "q4",
+          "prompt": "“Overall, while the figures for A and B declined steadily, that for C showed the opposite trend.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "✔ Đạt chuẩn"
+            },
+            {
+              "id": "B",
+              "text": "✘ Không đạt"
+            }
+          ],
+          "answer": "A",
+          "explanation": "✔ — Công thức 3, hai vế song song (cùng là xu hướng)."
+        },
+        {
+          "id": "q5",
+          "prompt": "“Overall, while A increased, B was the highest.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "✔ Đạt chuẩn"
+            },
+            {
+              "id": "B",
+              "text": "✘ Không đạt"
+            }
+          ],
+          "answer": "B",
+          "explanation": "✘ — hai vế không song song (một vế là xu hướng, một vế là thứ hạng)."
+        },
+        {
+          "id": "q6",
+          "prompt": "“In general, women outnumbered men in most years, whereas the figure for men was far more volatile.”",
+          "options": [
+            {
+              "id": "A",
+              "text": "✔ Đạt chuẩn"
+            },
+            {
+              "id": "B",
+              "text": "✘ Không đạt"
+            }
+          ],
+          "answer": "A",
+          "explanation": "✔ — hai đặc điểm, không số liệu, “whereas” đúng chức năng đối lập."
+        }
+      ]
+    },
+    {
+      "code": "T1-L08-E09",
+      "lessonCode": "T1-L08",
+      "order": 8,
+      "type": "paragraph_writing",
+      "title": "Luyện chung — Introduction + Overview cho 3 đề (8.7)",
+      "instruction": "Với mỗi đề, viết 1 câu Introduction (ghi rõ dùng phương pháp nào) và Overview (ghi rõ dùng công thức nào). Viết vào ô của từng đề.",
+      "source": "book",
+      "skillTags": [
+        "introduction",
+        "overview"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 15,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "text",
+        "caption": "Ba đề luyện chung",
+        "rows": [
+          [
+            "Đề 1",
+            "The graph below shows the number of university graduates in Canada from 1992 to 2007. Số liệu: nữ luôn cao hơn nam; cả hai gần như đi ngang đến khoảng 2001, sau đó tăng mạnh (nữ từ khoảng 100,000 lên gần 150,000; nam từ khoảng 70,000 lên 95,000).",
+            "https://media.ieltsthayha.com/wt1/charts/canada-graduates-1992-2007_bmw4ozgiu.png"
+          ],
+          [
+            "Đề 2",
+            "The table below gives information about changes in modes of travel in England between 1985 and 2000 (average distance in miles travelled per person per year). Số liệu: car 3,199 → 4,806 · train 289 → 366 · local bus 429 → 274 · walking 255 → 237 · bicycle 51 → 41 · long distance bus 54 → 124 · taxi 13 → 42 · other 450 → 585 · all modes 4,740 → 6,475.",
+            "https://media.ieltsthayha.com/wt1/charts/england-travel-modes-1985-2000_bmw4ozgiu.png"
+          ],
+          [
+            "Đề 3",
+            "The pie charts below compare water usage in San Diego County, California and the rest of the world. Số liệu: San Diego — residential 60%, industry 23%, agriculture 17% · California — residential 39%, industry 33%, agriculture 28% · Worldwide — agriculture 69%, industry 23%, residential 8%.",
+            "https://media.ieltsthayha.com/wt1/charts/water-usage-san-diego-california-world_bmw4ozgiu.png"
+          ]
+        ],
+        "note": "Sau khi viết, tự chấm theo bảng 8.2: Introduction 1 câu, không số liệu; Overview 1–2 câu, 2 đặc điểm, không số liệu."
+      },
+      "responseSlots": 3,
+      "rubric": {
+        "minWords": 90,
+        "targetStructures": [
+          "illustrates how many / how much / what percentage",
+          "the number / percentage of + N + who / that",
+          "Overall, while …, …",
+          "It is clear that … Additionally, …"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "Mỗi đề: Introduction đúng 1 câu, ghi rõ PP1 / PP2 / PP3",
+          "Overview nêu 2 đặc điểm nổi bật, ghi rõ công thức 1 / 2 / 3",
+          "Không có số liệu ở cả Introduction và Overview",
+          "Không chép nguyên văn đề"
+        ],
+        "sampleAnswer": "Đề 1: The line graph illustrates how many men and women graduated from universities in Canada between 1992 and 2007. Overall, while the number of graduates of both sexes rose over the period, female graduates outnumbered male graduates in every year.\n\nĐề 2: The table gives information about the average distance that people in England travelled per year by different modes of transport in 1985 and 2000. Overall, the car was by far the most common means of travel in both years. While the total distance travelled rose, the figures for local buses, walking and cycling fell.\n\nĐề 3: The three pie charts illustrate what percentage of water was used for residential, industrial and agricultural purposes in San Diego County, California and the world as a whole. Overall, while residential use took the largest share in San Diego County, agriculture used by far the most water worldwide.",
+        "commonErrors": [
+          "Overview có số liệu",
+          "Introduction viết thành 2 câu",
+          "chép nguyên “The graph below shows…”"
+        ]
+      }
+    },
+    {
+      "code": "T1-L08-E10",
+      "lessonCode": "T1-L08",
+      "order": 9,
+      "type": "paragraph_writing",
+      "title": "Homework — Buổi 8",
+      "instruction": "Viết Introduction (2 phương pháp khác nhau) và Overview (công thức 3 — while / whereas) cho hai đề sau.",
+      "source": "book",
+      "skillTags": [
+        "introduction",
+        "overview"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 20,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "text",
+        "caption": "Hai đề homework",
+        "rows": [
+          [
+            "Đề 1",
+            "The graph below gives information about U.S. government spending on research between 1980 and 2008. Số liệu: chi cho y tế (health) tăng mạnh từ khoảng 8 tỉ lên đỉnh khoảng 22 tỉ USD năm 2004 rồi giảm còn 18 tỉ; các lĩnh vực khác (space, energy, general science, other) dao động trong khoảng 3–9 tỉ USD.",
+            "https://media.ieltsthayha.com/wt1/charts/us-research-spending-1980-2008_bmw4ozgiu.png"
+          ],
+          [
+            "Đề 2",
+            "The chart below shows the participation of boys and girls in six sports in Great Britain in 1999. Số liệu: con trai cao hơn ở tennis, cycling, football, hockey; con gái cao hơn ở badminton và swimming; football của con trai cao nhất (khoảng 60%), hockey thấp nhất ở cả hai giới.",
+            "https://media.ieltsthayha.com/wt1/charts/sports-participation-gender-gb-1999_bmw4ozgiu.png"
+          ]
+        ]
+      },
+      "responseSlots": 2,
+      "rubric": {
+        "minWords": 70,
+        "targetStructures": [
+          "illustrates how much / what percentage",
+          "gives information about the amount of money that …",
+          "Overall, while …, …"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "Mỗi đề có 2 câu Introduction theo 2 phương pháp khác nhau",
+          "Overview dùng while / whereas, hai vế song song",
+          "Không có số liệu trong Overview"
+        ],
+        "sampleAnswer": "Đề 1\nIntroduction: The line graph gives information about the amount of money that the US government spent on research in five areas between 1980 and 2008. / The line graph illustrates how much the US government spent on research in five areas from 1980 to 2008.\nOverview: Overall, while spending on health rose dramatically and became by far the largest area of research spending, the other four areas remained relatively low throughout the period.\n\nĐề 2\nIntroduction: The bar chart illustrates what percentage of boys and girls took part in six sports in Great Britain in 1999. / The bar chart compares the percentage of boys and girls who participated in six different sports in Great Britain in 1999.\nOverview: Overall, while boys were more active in four of the six sports, girls participated more in badminton and swimming. Football was the most popular sport among boys, whereas hockey attracted the fewest participants of both sexes.",
+        "commonErrors": [
+          "hai câu Introduction cùng một phương pháp",
+          "Overview có số liệu"
+        ]
+      }
+    },
+    {
+      "code": "T1-L09-E09",
+      "lessonCode": "T1-L09",
+      "order": 2,
+      "type": "categorize",
+      "title": "Bài tập 1–2 — Card sort: xếp số liệu vào Body 1 / Body 2 và chọn 8–10 số liệu",
+      "instruction": "Đề fast food (mục 9.10), chiến lược 1 — theo chiều xu hướng. Xếp mỗi thẻ vào Body 1, Body 2, hoặc bỏ ra ngoài nếu không cần dùng (quy tắc Bước 4: luôn chọn điểm đầu, điểm cuối, đỉnh / đáy, điểm giao cắt; bỏ giá trị ở giữa không làm đổi xu hướng).",
+      "source": "book",
+      "skillTags": [
+        "body-paragraphs",
+        "data-selection"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 10,
+      "points": 16,
+      "autoGrade": true,
+      "stimulus": {
+        "kind": "image",
+        "caption": "Consumption of fast food in the UK (grams per person per week), 1970–1990",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/fast-food-uk-1970-1990_1794032459115.png"
+      },
+      "categories": [
+        {
+          "id": "b1",
+          "label": "Body 1 — fish and chips + hamburgers (tăng)"
+        },
+        {
+          "id": "b2",
+          "label": "Body 2 — pizza (giảm rồi tăng nhẹ) + điểm giao cắt"
+        },
+        {
+          "id": "skip",
+          "label": "Bỏ ra ngoài"
+        }
+      ],
+      "items": [
+        {
+          "id": "c1",
+          "text": "fish and chips 1970: 75 g",
+          "category": "b1"
+        },
+        {
+          "id": "c2",
+          "text": "fish and chips 1985: 300 g",
+          "category": "b1"
+        },
+        {
+          "id": "c3",
+          "text": "fish and chips 1990: 500 g",
+          "category": "b1"
+        },
+        {
+          "id": "c4",
+          "text": "fish and chips 1975: 100 g",
+          "category": "skip"
+        },
+        {
+          "id": "c5",
+          "text": "hamburgers 1970: 30 g",
+          "category": "b1"
+        },
+        {
+          "id": "c6",
+          "text": "hamburgers 1985: 120 g",
+          "category": "b1"
+        },
+        {
+          "id": "c7",
+          "text": "hamburgers 1990: 280 g",
+          "category": "b1"
+        },
+        {
+          "id": "c8",
+          "text": "hamburgers 1980: 80 g",
+          "category": "skip"
+        },
+        {
+          "id": "c9",
+          "text": "pizza 1970: 310 g",
+          "category": "b2"
+        },
+        {
+          "id": "c10",
+          "text": "pizza 1980: 220 g",
+          "category": "skip"
+        },
+        {
+          "id": "c11",
+          "text": "pizza 1985: 200 g",
+          "category": "b2"
+        },
+        {
+          "id": "c12",
+          "text": "pizza 1990: 220 g",
+          "category": "b2"
+        },
+        {
+          "id": "c13",
+          "text": "điểm giao: fish and chips vượt pizza (≈ 1982)",
+          "category": "b2"
+        },
+        {
+          "id": "c14",
+          "text": "điểm giao: hamburgers vượt pizza (≈ 1988)",
+          "category": "b2"
+        },
+        {
+          "id": "c15",
+          "text": "pizza 1975: 280 g",
+          "category": "skip"
+        },
+        {
+          "id": "c16",
+          "text": "hamburgers 1975: 50 g",
+          "category": "skip"
+        }
+      ]
+    },
+    {
+      "code": "T1-L09-E10",
+      "lessonCode": "T1-L09",
+      "order": 3,
+      "type": "mcq",
+      "title": "Bài tập 3 — Xác định năm nổi bật",
+      "instruction": "Với mỗi mô tả dữ liệu, chọn năm nổi bật và chiến lược gom nhóm phù hợp.",
+      "source": "book",
+      "skillTags": [
+        "body-paragraphs",
+        "significant-year"
+      ],
+      "difficulty": 2,
+      "estimatedMinutes": 6,
+      "points": 4,
+      "autoGrade": true,
+      "items": [
+        {
+          "id": "q1",
+          "prompt": "Số người đi xe buýt: 2000 = 30 triệu, 2005 = 45 triệu, 2010 = 60 triệu, 2015 = 40 triệu, 2020 = 25 triệu.",
+          "options": [
+            {
+              "id": "A",
+              "text": "2010 (đỉnh) → chiến lược 3"
+            },
+            {
+              "id": "B",
+              "text": "2000 (năm đầu) → chiến lược 1"
+            },
+            {
+              "id": "C",
+              "text": "2020 (năm cuối) → chiến lược 2"
+            },
+            {
+              "id": "D",
+              "text": "Không có năm nổi bật → chiến lược 4"
+            }
+          ],
+          "answer": "A",
+          "explanation": "2010 là đỉnh, sau đó đổi chiều → chia theo mốc thời gian (chiến lược 3)."
+        },
+        {
+          "id": "q2",
+          "prompt": "Doanh số TV (A) và máy tính bảng (B): 2010: A 80, B 5; 2014: A 50, B 50; 2018: A 30, B 90.",
+          "options": [
+            {
+              "id": "A",
+              "text": "2010 → chiến lược 2"
+            },
+            {
+              "id": "B",
+              "text": "2014 (A và B bằng nhau, giao cắt) → chiến lược 3 hoặc 4"
+            },
+            {
+              "id": "C",
+              "text": "2018 → chiến lược 1"
+            },
+            {
+              "id": "D",
+              "text": "Không có năm nổi bật"
+            }
+          ],
+          "answer": "B",
+          "explanation": "2014 là điểm giao cắt; chia theo thời gian (3) hoặc theo đối tượng (4) đều hợp lý."
+        },
+        {
+          "id": "q3",
+          "prompt": "Dân số thành phố: 2000 = 2 triệu, 2010 = 2.5 triệu, 2020 = 3 triệu, dự báo 2030 = 4 triệu, 2040 = 5.5 triệu.",
+          "options": [
+            {
+              "id": "A",
+              "text": "2000 → chiến lược 1"
+            },
+            {
+              "id": "B",
+              "text": "2010 → chiến lược 2"
+            },
+            {
+              "id": "C",
+              "text": "2020 (chuyển sang dự báo) → chiến lược 3"
+            },
+            {
+              "id": "D",
+              "text": "2040 → chiến lược 4"
+            }
+          ],
+          "answer": "C",
+          "explanation": "Năm chuyển từ số liệu thật sang dự báo → chia theo thời gian để tách thì quá khứ và tương lai."
+        },
+        {
+          "id": "q4",
+          "prompt": "Lượng tiêu thụ than, dầu, điện gió: than và dầu giảm đều, điện gió tăng từ 0 lên mức cao nhất năm cuối.",
+          "options": [
+            {
+              "id": "A",
+              "text": "Năm cuối → chiến lược 3"
+            },
+            {
+              "id": "B",
+              "text": "Không có năm đặc biệt; hai nhóm ngược chiều → chiến lược 1"
+            },
+            {
+              "id": "C",
+              "text": "Năm đầu → chiến lược 2"
+            },
+            {
+              "id": "D",
+              "text": "Năm giữa → chiến lược 4"
+            }
+          ],
+          "answer": "B",
+          "explanation": "Nhóm giảm (than, dầu) và nhóm tăng (điện gió) tách bạch → chia theo chiều xu hướng."
+        }
+      ]
+    },
+    {
+      "code": "T1-L09-E11",
+      "lessonCode": "T1-L09",
+      "order": 5,
+      "type": "paragraph_writing",
+      "title": "Bài tập 4 — Sửa đoạn Body lỗi (Graph 2)",
+      "instruction": "Đoạn dưới đây (mô tả Graph 2) mắc hai lỗi: liệt kê mọi con số và trộn thì quá khứ / tương lai. Viết lại thành một đoạn 4–5 câu.",
+      "source": "book",
+      "skillTags": [
+        "body-paragraphs",
+        "tense"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 10,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "passage",
+        "caption": "Graph 2 — Population aged 65 and over, 1940–2040",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/population-65plus.png",
+        "text": "In 1940, the USA was 9%. In 1960, the USA was 10%. In 1980, the USA was 15%. In 2000, the USA was 14%. In 2020, the USA was 14%. In 2030, the USA rose to 16%. In 2040, the USA increased to 23%. Japan was 5% in 1940 and it rose dramatically to 27% in 2040."
+      },
+      "rubric": {
+        "minWords": 60,
+        "targetStructures": [
+          "compared to",
+          "whereas",
+          "From 2020 onwards",
+          "is projected / expected to"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "Chỉ chọn điểm đầu, cuối, đỉnh, đáy — không liệt kê từng năm",
+          "Phần dự báo (sau 2020) dùng is expected / is projected / is likely to",
+          "Có ít nhất một câu so sánh USA với Japan"
+        ],
+        "sampleAnswer": "In 1940, 9% of Americans were aged 65 or over, compared to just 5% of the Japanese population. Over the following 80 years, the American figure rose gradually to around 14%, whereas the proportion in Japan remained low until 2000. From 2020 onwards, the percentage of elderly Americans is projected to climb to 23% by 2040, while the figure for Japan is expected to rocket to about 27%.",
+        "commonErrors": [
+          "vẫn liệt kê từng năm",
+          "dùng “rose” cho năm 2030–2040"
+        ]
+      }
+    },
+    {
+      "code": "T1-L09-E12",
+      "lessonCode": "T1-L09",
+      "order": 6,
+      "type": "paragraph_writing",
+      "title": "Bài tập 5 — Viết Body từ dàn ý cho sẵn (fast food, chiến lược 1)",
+      "instruction": "Dựa vào dàn ý (đề fast food, chiến lược 1 — theo chiều xu hướng), viết hoàn chỉnh hai đoạn Body.",
+      "source": "book",
+      "skillTags": [
+        "body-paragraphs"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 15,
+      "points": 10,
+      "autoGrade": false,
+      "stimulus": {
+        "kind": "table",
+        "caption": "Dàn ý — Consumption of fast food in the UK, 1970–1990",
+        "headers": [
+          "ĐOẠN",
+          "DÀN Ý"
+        ],
+        "rows": [
+          [
+            "Body 1",
+            "Câu chủ đề: fish and chips và hamburgers đều tăng · fish and chips: 75 g (1970) → 150 g (1980) → tăng vọt lên 300 g (1985) → 500 g (1990), cao nhất · hamburgers: 30 g → 120 g (1985) → 280 g (1990)"
+          ],
+          [
+            "Body 2",
+            "Câu chủ đề: pizza theo xu hướng ngược lại · cao nhất năm 1970 (≈ 310 g) · giảm xuống 200 g (1985), bị fish and chips (≈ 1982) và hamburgers (≈ 1988) vượt · tăng nhẹ lên 220 g (1990)"
+          ]
+        ]
+      },
+      "responseSlots": 2,
+      "rubric": {
+        "minWords": 100,
+        "targetStructures": [
+          "showed an upward trend",
+          "followed a similar pattern",
+          "By contrast,",
+          "having been overtaken by"
+        ],
+        "mustUse": 2,
+        "checklist": [
+          "Mỗi đoạn mở bằng câu chủ đề",
+          "Giữ một chiến lược (theo chiều xu hướng) cho cả hai đoạn",
+          "Nhắc hai điểm giao cắt ở Body 2"
+        ],
+        "sampleAnswer": "Fish and chips and hamburgers both showed an upward trend. In 1970, people ate about 75 grams of fish and chips per week, and this figure rose gradually to 150 grams in 1980 before surging to 300 grams in 1985 and 500 grams in 1990. Hamburger consumption followed a similar pattern, climbing slowly from 30 grams to 120 grams in 1985 and then more than doubling to around 280 grams in 1990.\n\nBy contrast, pizza was the most popular fast food in 1970, at about 310 grams. However, its consumption fell steadily to a low of 200 grams in 1985, having been overtaken by fish and chips in the early 1980s, and it was later overtaken by hamburgers as well. The figure then rose slightly to about 220 grams in 1990.",
+        "commonErrors": [
+          "đổi chiến lược giữa hai đoạn",
+          "liệt kê cả giá trị 1975"
+        ]
+      }
+    },
+    {
+      "code": "T1-L09-E13",
+      "lessonCode": "T1-L09",
+      "order": 8,
+      "type": "full_task1",
+      "title": "Homework — Viết bài hoàn chỉnh (9.11)",
+      "instruction": "The graph below shows the number of university graduates in Canada from 1992 to 2007. Viết bài hoàn chỉnh (4 đoạn, 160–190 từ). Ghi rõ chiến lược gom nhóm bạn chọn ở đầu bài.",
+      "source": "book",
+      "skillTags": [
+        "full-writing",
+        "body-paragraphs"
+      ],
+      "difficulty": 3,
+      "estimatedMinutes": 25,
+      "points": 20,
+      "autoGrade": false,
+      "timerMinutes": 20,
+      "stimulus": {
+        "kind": "image",
+        "caption": "University graduates, Canada, 1992–2007",
+        "imageUrl": "https://media.ieltsthayha.com/wt1/charts/canada-graduates-1992-2007_bmw4ozgiu.png"
+      },
+      "rubric": {
+        "minWords": 150,
+        "maxWords": 200,
+        "targetStructures": [
+          "Overall, … It is also clear that …",
+          "changed very little",
+          "From 2001 onwards",
+          "rose dramatically to",
+          "which was still far lower than"
+        ],
+        "mustUse": 3,
+        "checklist": [
+          "Ghi chiến lược gom nhóm ở đầu bài",
+          "Overview: cả hai giới tăng (mạnh nhất sau 2001); nữ luôn cao hơn nam",
+          "Năm nổi bật ≈ 2001 chia hai đoạn Body",
+          "160–190 từ"
+        ],
+        "sampleAnswer": "Chiến lược: 3 — theo mốc thời gian (năm nổi bật ≈ 2001).\n\nThe line graph illustrates how many men and women graduated from universities in Canada between 1992 and 2007.\n\nOverall, the number of graduates of both sexes rose over the period, with the most significant growth after 2001. It is also clear that women outnumbered men in every year.\n\nBetween 1992 and 2001, the figures for both sexes changed very little. The number of female graduates rose slightly from about 98,000 to a high of around 104,000 in 1996, before falling back to approximately 100,000 at the end of the 1990s. Similarly, the number of male graduates fluctuated between roughly 70,000 and 76,000 during this time.\n\nFrom 2001 onwards, however, both figures increased considerably. The number of women graduating climbed steadily to about 125,000 in 2004 and then rose dramatically to nearly 150,000 in 2007. Over the same period, the number of male graduates grew from about 73,000 to approximately 95,000, which was still far lower than the figure for women.",
+        "commonErrors": [
+          "liệt kê số liệu từng năm",
+          "Overview có số liệu"
+        ]
+      }
     }
   ]
 }

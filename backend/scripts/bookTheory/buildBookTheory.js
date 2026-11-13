@@ -1,8 +1,10 @@
 // Turn the theory pages of the two printed books into lesson theory cards
 // ("📘 Lý thuyết" on the lesson page), word for word and in the book's order:
 //
-//   Writing book  task 1 grammar/AcademicWritingFull_DanielHa.docx
-//                 → Task 1 course (Buổi 1–22 + Phụ lục Layout) and
+//   Writing book  writing/IELTS_Writing_EnglishWithDan_Ban_Hoc_Vien*.docx (2026-11
+//                 edition, student copy; the old task 1 grammar/AcademicWritingFull_
+//                 DanielHa.docx still parses too — see normalizeEdition)
+//                 → Task 1 course (Buổi 1–22 + Mở rộng Layout + Phụ lục A–B, D) and
 //                   Task 2 course (Phần A, 7 dạng đề, Phần C, lỗi + checklist)
 //   Speaking book speaking/IELTS_Speaking_StudentsBook_DanielHa_v2.docx
 //                 → Speaking course Part 1 / 2 / 3 (45 lessons)
@@ -147,6 +149,52 @@ function makeCards() {
 }
 const finish = (cards) => cards.filter((c) => c.blocks.length);
 
+// ═════════════════════ WRITING BOOK: NEW EDITION → LEVELS ════════════
+// The 2026-11 edition (writing/IELTS_Writing_EnglishWithDan_Ban_Hoc_Vien.docx)
+// has no numbered heading styles any more: every heading is "Heading2" and
+// sub-headings / bullets are plain paragraphs (fully bold / "● …"). Give them
+// back the old book's levels so one parser reads both editions:
+//   Task 1  '2' Layout appendix · '3' tests / appendices / other headings ·
+//           '4' "N.N." sections (+ Layout "I. …") · '5' bold sub-heading ·
+//           '18' bullet
+//   Task 2  '2' PHẦN / TYPE / Phần C long headings · '3' A1… / Nhận diện đề /
+//           01. … / Lỗi N · '4' bold sub-heading
+// "● x" / "**●** x" / "**● x**" → "x" with the bold kept balanced
+const dropBullet = (t) => String(t).replace(/^\s*\*\*●\s*\*\*\s*/, '').replace(/^\s*(\*\*)?●\s*/, '$1');
+const fullyBold = (t) => /^\*\*[^*]+\*\*:?$/.test(String(t || '').trim());
+function normalizeEdition(blocks) {
+  if (!blocks.some((b) => b.k === 'p' && b.s === 'Heading2')) return blocks; // old edition
+  let task2 = false;
+  let layout = false;
+  return blocks.map((b) => {
+    if (b.k !== 'p') return b;
+    const t = unbold(b.t).trim();
+    if (b.s === 'Heading2' && /^CÁCH DÙNG SÁCH NÀY$/.test(t)) task2 = true;
+    let s = b.s;
+    let text = b.t;
+    if (!task2) {
+      if (b.s === 'Heading2') {
+        layout = /DẠNG LAYOUT/.test(t);
+        s = layout ? '2' : /^(\d+|D)\.\d+\.\s/.test(t) ? '4' : '3';
+      } else if (/^●\s*/.test(t)) {
+        s = '18';
+        text = dropBullet(b.t);
+      } else if (fullyBold(b.t) && t.length < 140 && !/^[▸→]/.test(t)) {
+        if (/^Phần 2 — Dịch câu$/i.test(t)) s = '3';
+        else if (/^[AB]\.\d+\.\s/.test(t)) s = '4'; // Phụ lục A.1… / B.1…
+        else s = layout && /^(I|II|III|IV)\.\s/.test(t) ? '3' : '5';
+      }
+    } else if (b.s === 'Heading2') {
+      s = /^(PHẦN [ABC] —|TYPE 0\d|BẢNG TRA NHANH|BA LỖI NGỮ PHÁP|CHECKLIST BA PHÚT|CÁCH DÙNG SÁCH NÀY|MỤC LỤC|BẢNG TỰ ĐÁNH GIÁ)/.test(t)
+        || (/^\d\d\.\s+\S.* – /.test(t) && t === t.toUpperCase()) ? '2' : '3';
+    } else if (/^●\s*/.test(t)) {
+      s = '18';
+      text = dropBullet(b.t);
+    } else if (fullyBold(b.t) && t.length < 100 && !/^[▸→]/.test(t)) s = '4';
+    return s === b.s && text === b.t ? b : { ...b, s, t: text };
+  });
+}
+
 // ═════════════════════ WRITING BOOK: TASK 1 ══════════════════════════
 const T1_SKIP = /PRACTICE|HOMEWORK|Bài tập|Exercise \d|REVIEW|THỰC HÀNH|Luyện tập trên lớp|^[①②③④]/i;
 const T1_SKIP_SUB = /Bài tập|PRACTICE|HOMEWORK|Viết câu mô tả/i;
@@ -167,15 +215,23 @@ function parseTask1(blocks) {
       const first = unbold((b.rows[0] && b.rows[0][0] || [])[0] || '').trim();
       const m = /^BUỔI (\d+)$/.exec(first);
       if (m) { open('T1-L' + m[1].padStart(2, '0')); continue; }
-      if (isBox(b) && /^MODULE \d/.test(first)) { lesson = null; continue; }
+      if (isBox(b) && /^(MODULE|M O D U L E|P H Ụ\s+L Ụ C)\s+\S/.test(first)) { lesson = null; continue; }
       if (/^🎯\s*Mục tiêu buổi học/.test(first)) continue; // = lesson.objectives
     }
     if (b.k === 'p') {
       const t = unbold(b.t).trim();
       if (b.s === '2' || b.s === '3') {
         if (b.s === '2' && /DẠNG LAYOUT/.test(t)) { open('T1-L18B'); continue; }
-        if (/^PHẦN 2 — DỊCH CÂU/.test(t)) { skip = true; C.stop(); continue; }
+        if (/^PHẦN 2 — DỊCH CÂU/i.test(t)) { skip = true; C.stop(); continue; }
         if (lesson === 'T1-L18B' && b.s === '3' && !/BÀI KIỂM TRA/.test(t)) { section(b.t.replace(/\s*\(\d+ phút\)/, '')); continue; }
+        // New edition appendices: A (cheat sheet) + B (40 khung câu) = one
+        // reference lesson; D (paraphrase chủ thể, tự học) = two lessons.
+        // C is a paper progress tracker — the site tracks progress itself.
+        if (/^PHỤ LỤC [AB] —/.test(t)) { if (lesson !== 'T1-PLAB') open('T1-PLAB'); C.start(b.t); continue; }
+        if (/^NỘI DUNG PHỤ LỤC D/.test(t)) { open('T1-PLD1'); skip = true; continue; }
+        if (lesson === 'T1-PLD1' && /^Vì sao phải học/.test(t)) { section(b.t); continue; }
+        if (lesson === 'T1-PLD1' && /^PHẦN 1 —/.test(t)) { skip = true; C.stop(); continue; }
+        if (/^PHẦN 2 — Paraphrase chủ thể/.test(t)) { open('T1-PLD2'); skip = true; continue; }
         lesson = null; continue;
       }
       if (!lesson) continue;
@@ -253,6 +309,9 @@ function parseTask2(blocks) {
       }
       continue;
     }
+    // New edition: "PHẦN III · BÀI TẬP LUYỆN DỊCH" cover box ends the theory
+    // (the translation sentences are the Phần C lessons' exercises).
+    if (b.k === 'tbl' && /^PHẦN III\b/.test(unbold((b.rows[0] && b.rows[0][0] || [])[0] || '').trim())) { mode = null; lesson = null; C = null; continue; }
     if (!C || !C.cur) continue;
     // The English subtitle right under a heading ("The four marking criteria").
     if (b.k === 'p' && b.s === '' && !C.cur.blocks.length && !C.cur.titleEn && !hasVi(t) && t.length < 90) { C.cur.titleEn = t; continue; }
@@ -485,7 +544,7 @@ if (!wPath && !sPath) {
   process.exit(1);
 }
 if (wPath) {
-  const wb = attachCaptions(JSON.parse(fs.readFileSync(wPath, 'utf8')));
+  const wb = attachCaptions(normalizeEdition(JSON.parse(fs.readFileSync(wPath, 'utf8'))));
   const np = opt('--nounphrase') ? parseNounPhrase(attachCaptions(JSON.parse(fs.readFileSync(opt('--nounphrase'), 'utf8')))) : {};
   const pick = (re) => Object.fromEntries(Object.entries(np).filter(([c]) => re.test(c)));
   report('Task 1 (writingTask1)', apply('writingTask1', { ...parseTask1(wb), ...pick(/^T1-/) }));

@@ -191,7 +191,7 @@
       "instruction": "Điền từ còn thiếu vào bản Band 7+ của mỗi câu khung.",
       "items": [
         { "id": "g1", "prompt": "The causes of (problem) are both complex and ____.", "blanks": [ { "accept": [ "multifaceted" ] } ], "explanation": "6+: \"There are several reasons why this happens.\"" },
-        { "id": "g2", "prompt": "It is widely ____ that (clause), making it a central driver of this trend.", "blanks": [ { "accept": [ "acknowledged" ] } ], "explanation": "6+: \"Many people think that…\"" },
+        { "id": "g2", "prompt": "There is little ____ that (clause), making it a central driver of this trend.", "blanks": [ { "accept": [ "doubt" ] } ], "explanation": "6+: \"Many people think that…\"" },
         { "id": "g3", "prompt": "Not only does this trigger (effect), but it also creates a ____ effect across society.", "blanks": [ { "accept": [ "ripple" ] } ], "explanation": "6+: \"This causes many problems in society.\"" },
         { "id": "g4", "prompt": "Over time, these effects may ____, placing substantial pressure on (group).", "blanks": [ { "accept": [ "accumulate" ] } ], "explanation": "6+: \"This puts pressure on society.\"" }
       ]
@@ -203,11 +203,11 @@
       "stimulus": { "kind": "text", "note": "Đề không hỏi giải pháp. Nguyên nhân = \"vì sao chuyện này xảy ra\"." },
       "rubric": {
         "minWords": 85,
-        "targetStructures": [ "The causes of", "are both complex and multifaceted", "It is widely acknowledged that", "Not only does this", "which competes directly for" ],
+        "targetStructures": [ "The causes of", "are both complex and multifaceted", "There is little doubt that", "Not only does this", "which competes directly for" ],
         "mustUse": 2,
         "bandFocus": [ "Task Response", "Lexical Resource" ],
         "checklist": [ "Nêu ít nhất 2 nguyên nhân", "Mỗi nguyên nhân có giải thích, ít nhất một ví dụ cụ thể", "Không viết giải pháp" ],
-        "sampleAnswer": "The causes of this decline are both complex and multifaceted. One primary factor is the sheer availability of digital entertainment, which competes directly for people's limited free time. It is widely acknowledged that a smartphone offers instant access to videos, games and social media, making it a far easier choice than a three-hundred-page novel at the end of a long day. For example, a commuter in Hanoi who once carried a paperback now scrolls through short videos for the same twenty minutes. Not only does this convenience displace reading, but it also gradually reshapes what people expect from entertainment: speed, novelty and constant stimulation. A second contributing factor is the intensity of modern working and studying schedules, which leaves many adults with little mental energy for sustained concentration."
+        "sampleAnswer": "The causes of this decline are both complex and multifaceted. One primary factor is the sheer availability of digital entertainment, which competes directly for people's limited free time. There is little doubt that a smartphone offers instant access to videos, games and social media, making it a far easier choice than a three-hundred-page novel at the end of a long day. For example, a commuter in Hanoi who once carried a paperback now scrolls through short videos for the same twenty minutes. Not only does this convenience displace reading, but it also gradually reshapes what people expect from entertainment: speed, novelty and constant stimulation. A second contributing factor is the intensity of modern working and studying schedules, which leaves many adults with little mental energy for sustained concentration."
       }
     },
 
@@ -245,11 +245,11 @@
       "stimulus": { "kind": "text", "note": "Giữ lập trường nhất quán với Introduction/Conclusion bạn định viết." },
       "rubric": {
         "minWords": 85,
-        "targetStructures": [ "One compelling reason", "This can be attributed to the fact that", "Research has consistently shown that", "thereby reinforcing the view that", "For instance" ],
+        "targetStructures": [ "One compelling reason", "This can be attributed to the fact that", "thereby reinforcing the view that", "For instance" ],
         "mustUse": 2,
         "bandFocus": [ "Task Response", "Grammatical Range & Accuracy" ],
         "checklist": [ "Nêu MỘT lý do rõ ràng cho lập trường", "Lý do → giải thích → bằng chứng/ví dụ", "Lập trường nhất quán, không đảo chiều giữa đoạn" ],
-        "sampleAnswer": "One compelling reason for this position is that a large number of readers continue to value the tangible experience that physical books provide. This can be attributed to the fact that printed pages create a focused, distraction-free environment which screens rarely replicate. Research has consistently shown that readers retain information more effectively from paper, thereby reinforcing the view that print serves a purpose beyond nostalgia. For instance, many universities still require students to work from printed course readers during examinations precisely because concentration is easier to sustain."
+        "sampleAnswer": "One compelling reason for this position is that a large number of readers continue to value the tangible experience that physical books provide. This can be attributed to the fact that printed pages create a focused, distraction-free environment which screens rarely replicate. Many readers find that they retain information more effectively from paper, thereby reinforcing the view that print serves a purpose beyond nostalgia. For instance, many universities still require students to work from printed course readers during examinations precisely because concentration is easier to sustain."
       }
     },
 

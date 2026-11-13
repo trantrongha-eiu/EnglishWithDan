@@ -210,6 +210,16 @@ async function runSeed({ course, modules, lessons, exercises }) {
     await upsert(WT1Exercise, { code: ex.code }, doc, 'exercise', EXERCISE_OPTIONAL_FIELDS);
   }
 
+  // An exercise dropped from the seed (e.g. the book edition removed it) would
+  // otherwise stay published forever — the upserts above never delete. Hide
+  // it instead of deleting so students' submissions / history keep their
+  // exercise doc; re-adding the code to the seed publishes it again.
+  const stale = await WT1Exercise.updateMany(
+    { lessonCode: { $in: lessons.map((l) => l.code) }, code: { $nin: exercises.map((e) => e.code) }, published: true },
+    { $set: { published: false } }
+  );
+  if (stale.modifiedCount) console.log(`\n  ⤫ ẩn ${stale.modifiedCount} bài không còn trong seed (published=false)`);
+
   const pending = exercises.filter((e) => e.needsAsset).map((e) => e.code);
   if (pending.length) {
     console.log(`\n⚠️  ${pending.length} bài đang chờ ảnh biểu đồ (published=false):\n   ${pending.join(', ')}`);

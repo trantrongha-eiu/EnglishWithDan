@@ -33,6 +33,7 @@
           "prompt": "Vì giao thông công cộng ở nhiều thành phố vẫn chưa phát triển đầy đủ, nhiều người buộc phải sử dụng phương tiện cá nhân.",
           "cue": "public transport system · underdeveloped · be forced to · private vehicles",
           "sampleAnswers": [
+            "Because the public transport system in many cities is still underdeveloped, many people are forced to use private vehicles.",
             "Because public transport systems in many cities are still underdeveloped, many people are forced to use private vehicles."
           ],
           "explanation": "",
@@ -43,6 +44,7 @@
           "prompt": "Trong khi công nghệ có thể giúp học sinh tiếp cận thông tin nhanh chóng, việc sử dụng nó quá mức có thể làm giảm khả năng tập trung.",
           "cue": "access information · excessive use · reduce one's ability to concentrate",
           "sampleAnswers": [
+            "While technology can help students access information quickly, its excessive use may reduce their ability to concentrate.",
             "While technology can help students access information quickly, excessive use of it may reduce their ability to concentrate."
           ],
           "explanation": "",
@@ -53,6 +55,7 @@
           "prompt": "Nếu chính phủ không có những biện pháp hiệu quả, tình trạng ô nhiễm không khí có thể trở nên nghiêm trọng hơn trong tương lai.",
           "cue": "take effective measures · air pollution · become more serious",
           "sampleAnswers": [
+            "If the government does not take effective measures, air pollution may become more serious in the future.",
             "If governments do not take effective measures, air pollution may become more serious in the future."
           ],
           "explanation": "",
@@ -63,6 +66,7 @@
           "prompt": "Mặc dù nhiều người muốn sống ở các thành phố lớn, chi phí sinh hoạt cao khiến cuộc sống đô thị trở nên khó khăn đối với một số gia đình.",
           "cue": "the high cost of living · urban life · make sth difficult for sb",
           "sampleAnswers": [
+            "Although many people want to live in big cities, the high cost of living makes urban life difficult for some families.",
             "Although many people want to live in large cities, the high cost of living makes urban life difficult for some families."
           ],
           "explanation": "",
@@ -93,6 +97,7 @@
           "prompt": "Chính phủ đã đầu tư một khoản tiền lớn vào hệ thống giao thông công cộng, nhưng tình trạng tắc nghẽn vẫn chưa được cải thiện đáng kể.",
           "cue": "invest a large amount of money in · traffic congestion · improve significantly",
           "sampleAnswers": [
+            "The government has invested a large amount of money in the public transport system, but traffic congestion has not improved significantly.",
             "The government has invested a large amount of money in public transport systems, but traffic congestion has not improved significantly."
           ],
           "explanation": "",
@@ -103,6 +108,7 @@
           "prompt": "Các phương tiện truyền thông xã hội giúp mọi người duy trì liên lạc với nhau, nhưng chúng cũng có thể làm giảm chất lượng của các mối quan hệ trực tiếp.",
           "cue": "enable sb to · stay in touch with one another · the quality of face-to-face relationships",
           "sampleAnswers": [
+            "Social media enables people to stay in touch with one another, but it may also reduce the quality of face-to-face relationships.",
             "Social media enables people to stay in touch with one another, but it can also reduce the quality of face-to-face relationships."
           ],
           "explanation": "",
@@ -123,6 +129,7 @@
           "prompt": "Xe điện tạo ra ít khí thải hơn; tuy nhiên, giá thành cao vẫn khiến nhiều người không thể mua chúng.",
           "cue": "electric vehicles · produce fewer emissions · prevent sb from V-ing · purchase",
           "sampleAnswers": [
+            "Electric vehicles produce fewer emissions; however, their high price still prevents many people from purchasing them.",
             "Electric vehicles produce fewer emissions; however, their high cost still prevents many people from purchasing them."
           ],
           "explanation": "",
@@ -133,6 +140,7 @@
           "prompt": "Dân số đô thị đang tăng nhanh, và điều này tạo ra áp lực lớn lên hệ thống nhà ở và dịch vụ công cộng.",
           "cue": "urban population · grow rapidly · place pressure on · public services",
           "sampleAnswers": [
+            "The urban population is growing rapidly, and this places great pressure on housing and public services.",
             "Urban populations are growing rapidly, and this places considerable pressure on housing and public services."
           ],
           "explanation": "",
@@ -163,6 +171,7 @@
           "prompt": "Nếu chính phủ đầu tư nhiều hơn vào giáo dục công, mọi trẻ em sẽ có cơ hội tiếp cận nền giáo dục chất lượng cao hơn.",
           "cue": "invest in public education · have access to · higher-quality education",
           "sampleAnswers": [
+            "If the government invested more in public education, every child would have access to higher-quality education.",
             "If governments invested more in public education, every child would have access to higher-quality education."
           ],
           "explanation": "",
@@ -193,6 +202,7 @@
           "prompt": "Nếu các công ty cho phép nhân viên làm việc từ xa, nhiều người sẽ có sự cân bằng tốt hơn giữa công việc và cuộc sống.",
           "cue": "allow sb to work remotely · achieve a better work-life balance",
           "sampleAnswers": [
+            "If companies allowed their employees to work remotely, many people would achieve a better work-life balance.",
             "If companies allowed employees to work remotely, many people would achieve a better work-life balance."
           ],
           "explanation": "",
@@ -203,6 +213,7 @@
           "prompt": "Trừ khi các biện pháp nghiêm ngặt được thực hiện, lượng rác thải nhựa sẽ tiếp tục tăng trong những năm tới.",
           "cue": "unless · strict measures are taken · plastic waste · in the coming years",
           "sampleAnswers": [
+            "Unless strict measures are taken, the amount of plastic waste will continue to rise in the coming years.",
             "Unless strict measures are taken, the amount of plastic waste will continue to increase in the coming years."
           ],
           "explanation": "",
@@ -213,6 +224,7 @@
           "prompt": "Nếu chính phủ đã giải quyết vấn đề này sớm hơn, nhiều hậu quả tiêu cực có thể đã được ngăn chặn.",
           "cue": "address an issue · negative consequences · could have been prevented",
           "sampleAnswers": [
+            "If the government had addressed this issue earlier, many negative consequences could have been prevented.",
             "If governments had addressed this issue earlier, many negative consequences could have been prevented."
           ],
           "explanation": "",
@@ -253,6 +265,7 @@
           "prompt": "Nhiều biện pháp đã được đề xuất nhằm giải quyết tình trạng thiếu nhà ở tại các thành phố lớn.",
           "cue": "a number of measures · be proposed · address the housing shortage",
           "sampleAnswers": [
+            "A number of measures have been proposed to address the housing shortage in big cities.",
             "A number of measures have been proposed to address the housing shortage in large cities."
           ],
           "explanation": "",
@@ -283,6 +296,7 @@
           "prompt": "Nguồn ngân sách lớn hơn nên được phân bổ cho hệ thống y tế công cộng.",
           "cue": "funding · be allocated to · public healthcare system",
           "sampleAnswers": [
+            "More funding should be allocated to the public healthcare system.",
             "More funding should be allocated to public healthcare systems."
           ],
           "explanation": "",
@@ -323,6 +337,7 @@
           "prompt": "Làm việc từ xa giúp người lao động tiết kiệm thời gian đi lại, điều này có thể cải thiện chất lượng cuộc sống của họ.",
           "cue": "remote working · commuting time · , which · quality of life",
           "sampleAnswers": [
+            "Remote working saves employees commuting time, which can improve their quality of life.",
             "Remote working helps employees save commuting time, which can improve their quality of life."
           ],
           "explanation": "",
@@ -343,6 +358,7 @@
           "prompt": "Nhiều người muốn chuyển đến các thành phố lớn, nơi có nhiều cơ hội việc làm hơn.",
           "cue": "move to · , where · employment opportunities",
           "sampleAnswers": [
+            "Many people want to move to big cities, where there are more employment opportunities.",
             "Many people want to move to large cities, where there are more employment opportunities."
           ],
           "explanation": "",
@@ -353,6 +369,7 @@
           "prompt": "Việc sử dụng xe đạp ngày càng phổ biến, điều này có thể giúp giảm tình trạng ô nhiễm không khí.",
           "cue": "increasingly popular · , which · reduce air pollution",
           "sampleAnswers": [
+            "Cycling is becoming increasingly popular, which can help reduce air pollution.",
             "The use of bicycles is becoming increasingly popular, which can help reduce air pollution."
           ],
           "explanation": "",
@@ -403,6 +420,7 @@
           "prompt": "Chính sách này không chỉ giúp giảm ùn tắc giao thông mà còn cải thiện chất lượng không khí tại các thành phố lớn.",
           "cue": "not only does ... but ... also · traffic congestion · air quality",
           "sampleAnswers": [
+            "Not only does this policy reduce traffic congestion, but it also improves air quality in big cities.",
             "Not only does this policy help reduce traffic congestion, but it also improves air quality in large cities."
           ],
           "explanation": "",
@@ -413,6 +431,7 @@
           "prompt": "Chưa bao giờ con người có thể tiếp cận một lượng thông tin lớn như hiện nay.",
           "cue": "never before have · have access to · a vast amount of information",
           "sampleAnswers": [
+            "Never before have people had access to such a vast amount of information as they do today.",
             "Never before have people had access to such a vast amount of information."
           ],
           "explanation": "",
@@ -423,6 +442,7 @@
           "prompt": "Chỉ bằng cách đầu tư vào giao thông công cộng, các thành phố mới có thể giải quyết vấn đề ùn tắc trong dài hạn.",
           "cue": "only by V-ing can · solve the problem of · in the long term",
           "sampleAnswers": [
+            "Only by investing in public transport can cities solve the problem of congestion in the long term.",
             "Only by investing in public transport can cities solve the problem of traffic congestion in the long term."
           ],
           "explanation": "",
@@ -483,6 +503,7 @@
           "prompt": "Điều mà nhiều học sinh cần không phải là nhiều bài tập hơn mà là sự hướng dẫn hiệu quả hơn từ giáo viên.",
           "cue": "what ... need is · not ... but · effective guidance",
           "sampleAnswers": [
+            "What many students need is not more homework but more effective guidance from their teachers.",
             "What many students need is not more homework but more effective guidance from teachers."
           ],
           "explanation": "",
@@ -543,6 +564,7 @@
           "prompt": "Chính phủ nên đầu tư để cải thiện hệ thống giáo dục, giảm tỷ lệ thất nghiệp và nâng cao chất lượng cuộc sống của người dân.",
           "cue": "improving the education system · reducing unemployment · enhancing quality of life",
           "sampleAnswers": [
+            "The government should invest in improving the education system, reducing unemployment and enhancing people's quality of life.",
             "Governments should invest in improving the education system, reducing unemployment, and enhancing people's quality of life."
           ],
           "explanation": "",
@@ -553,7 +575,7 @@
           "prompt": "Chương trình này nhằm giảm lượng rác thải, bảo vệ môi trường và khuyến khích người dân tái chế.",
           "cue": "aim to · reduce waste · protect the environment · recycle",
           "sampleAnswers": [
-            "This programme aims to reduce waste, protect the environment, and encourage people to recycle."
+            "This programme aims to reduce waste, protect the environment and encourage people to recycle."
           ],
           "explanation": "",
           "promptVi": "Chương trình này nhằm mục đích giảm thiểu rác thải, bảo vệ môi trường và khuyến khích mọi người tái chế."
@@ -563,6 +585,7 @@
           "prompt": "Giáo dục đại học có thể giúp sinh viên phát triển kiến thức chuyên môn, cải thiện kỹ năng tư duy phản biện và mở rộng cơ hội nghề nghiệp.",
           "cue": "specialised knowledge · critical-thinking skills · expand career opportunities",
           "sampleAnswers": [
+            "University education can help students develop specialised knowledge, improve their critical-thinking skills and expand their career opportunities.",
             "Higher education can help students develop specialised knowledge, improve their critical-thinking skills, and expand their career opportunities."
           ],
           "explanation": "",
@@ -573,7 +596,7 @@
           "prompt": "Một hệ thống giao thông hiệu quả cần phải nhanh chóng, đáng tin cậy và có giá cả phải chăng.",
           "cue": "an efficient transport system · fast · reliable · affordable",
           "sampleAnswers": [
-            "An efficient transport system needs to be fast, reliable, and affordable."
+            "An efficient transport system needs to be fast, reliable and affordable."
           ],
           "explanation": "",
           "promptVi": "Một hệ thống giao thông hiệu quả cần phải nhanh chóng, đáng tin cậy và có mức giá phải chăng."
@@ -583,6 +606,7 @@
           "prompt": "Các công ty nên khuyến khích nhân viên làm việc hiệu quả hơn, sử dụng thời gian hợp lý hơn và duy trì sự cân bằng giữa công việc và cuộc sống.",
           "cue": "work efficiently · use time effectively · maintain a work-life balance",
           "sampleAnswers": [
+            "Companies should encourage their employees to work efficiently, use their time effectively and maintain a work-life balance.",
             "Companies should encourage employees to work more efficiently, use their time more effectively, and maintain a healthy work-life balance."
           ],
           "explanation": "",
@@ -613,6 +637,7 @@
           "prompt": "Chính phủ nên đầu tư nhiều hơn vào năng lượng tái tạo để giảm sự phụ thuộc vào nhiên liệu hóa thạch.",
           "cue": "should · renewable energy · dependence on fossil fuels",
           "sampleAnswers": [
+            "The government should invest more in renewable energy to reduce the country's dependence on fossil fuels.",
             "Governments should invest more in renewable energy to reduce their dependence on fossil fuels."
           ],
           "explanation": "",
@@ -623,6 +648,7 @@
           "prompt": "Việc sử dụng mạng xã hội quá mức có thể ảnh hưởng tiêu cực đến sức khỏe tinh thần của người trẻ.",
           "cue": "may · excessive use of social media · negatively affect · well-being",
           "sampleAnswers": [
+            "Excessive use of social media may negatively affect the mental well-being of young people.",
             "Excessive use of social media may negatively affect young people's well-being."
           ],
           "explanation": "",
@@ -703,6 +729,7 @@
           "prompt": "Càng nhiều thời gian trẻ em dành cho thiết bị điện tử, chúng càng ít tham gia vào các hoạt động thể chất.",
           "cue": "the more ..., the less ... · electronic devices · physical activities",
           "sampleAnswers": [
+            "The more time children spend on electronic devices, the less they take part in physical activities.",
             "The more time children spend on electronic devices, the less they participate in physical activities."
           ],
           "explanation": "",
@@ -713,6 +740,7 @@
           "prompt": "Sống ở thành phố lớn thường đắt đỏ hơn nhiều so với sống ở vùng nông thôn.",
           "cue": "considerably more expensive than · rural areas",
           "sampleAnswers": [
+            "Living in a big city is often considerably more expensive than living in rural areas.",
             "Living in a large city is often considerably more expensive than living in rural areas."
           ],
           "explanation": "",
@@ -723,6 +751,7 @@
           "prompt": "Giáo dục trực tuyến không đáng tin cậy bằng giáo dục truyền thống trong một số lĩnh vực thực hành.",
           "cue": "not nearly as reliable as · practical fields",
           "sampleAnswers": [
+            "In some practical fields, online education is not nearly as reliable as traditional education.",
             "Online education is not nearly as reliable as traditional education in some practical fields."
           ],
           "explanation": "",
@@ -743,6 +772,7 @@
           "prompt": "Trong nhiều trường hợp, phòng ngừa bệnh tật quan trọng hơn nhiều so với việc điều trị bệnh sau khi nó đã xảy ra.",
           "cue": "far more important than · prevent diseases · treat",
           "sampleAnswers": [
+            "In many cases, preventing diseases is far more important than treating them after they have occurred.",
             "In many cases, preventing diseases is far more important than treating them after they have developed."
           ],
           "explanation": "",
@@ -783,6 +813,7 @@
           "prompt": "Các khóa học trực tuyến giúp sinh viên tiếp cận kiến thức từ bất cứ đâu, cho phép họ học tập mà không cần chuyển đến các thành phố lớn.",
           "cue": "provide sb with access to · allowing them to",
           "sampleAnswers": [
+            "Online courses provide students with access to knowledge from anywhere, allowing them to study without moving to big cities.",
             "Online courses provide students with access to knowledge from anywhere, allowing them to study without moving to large cities."
           ],
           "explanation": "",
@@ -803,6 +834,7 @@
           "prompt": "Sau khi đầu tư mạnh vào giáo dục, quốc gia này đã đạt được những tiến bộ đáng kể về kinh tế.",
           "cue": "having invested heavily in · make significant economic progress",
           "sampleAnswers": [
+            "Having invested heavily in education, this country has made significant economic progress.",
             "Having invested heavily in education, the country has made significant economic progress."
           ],
           "explanation": "",
@@ -823,6 +855,7 @@
           "prompt": "Các ứng dụng sức khỏe cung cấp cho người dùng thông tin hữu ích, cho phép họ theo dõi tình trạng sức khỏe của mình dễ dàng hơn.",
           "cue": "provide users with · allowing them to · monitor their health",
           "sampleAnswers": [
+            "Health apps provide users with useful information, allowing them to monitor their health more easily.",
             "Health applications provide users with useful information, allowing them to monitor their health more easily."
           ],
           "explanation": "",
@@ -873,6 +906,7 @@
           "prompt": "Sự phát triển kinh tế thường dẫn đến mức sống cao hơn.",
           "cue": "economic development · lead to · a higher standard of living",
           "sampleAnswers": [
+            "Economic development usually leads to a higher standard of living.",
             "Economic development often leads to a higher standard of living."
           ],
           "explanation": "A. Present Simple",
@@ -923,6 +957,7 @@
           "prompt": "Trước đây, nhiều người trẻ rời quê hương để tìm kiếm cơ hội việc làm tại các thành phố lớn.",
           "cue": "leave one's hometown · seek employment opportunities",
           "sampleAnswers": [
+            "In the past, many young people left their hometowns to seek employment opportunities in big cities.",
             "In the past, many young people left their hometowns to seek employment opportunities in large cities."
           ],
           "explanation": "C. Past Simple",
@@ -953,6 +988,7 @@
           "prompt": "Công nghệ có khả năng sẽ tiếp tục thay đổi thị trường lao động trong những thập kỷ tới.",
           "cue": "be likely to · transform the labour market · in the coming decades",
           "sampleAnswers": [
+            "Technology is likely to continue to transform the labour market in the coming decades.",
             "Technology is likely to continue transforming the labour market in the coming decades."
           ],
           "explanation": "D. Future",

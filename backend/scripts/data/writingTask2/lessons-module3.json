@@ -54,8 +54,7 @@
               "t": "NGUYÊN TẮC VÀNG",
               "lines": [
                 "Một cấu trúc phức tạp **dùng sai** làm hại nhiều hơn một câu đơn **dùng đúng**.",
-                "Mục tiêu thực tế cho một bài 280 từ: khoảng **4 – 6 câu phức** rải đều, **1 – 2 mệnh đề quan hệ**, **1 câu điều kiện**, **1 câu bị động**, và **1 câu nhấn mạnh** (đảo ngữ hoặc câu chẻ). Không cần nhiều hơn.",
-                "Đừng nhồi tất cả cấu trúc hay vào một đoạn. Rải đều để giám khảo thấy bạn kiểm soát được ngôn ngữ."
+                "Mục tiêu thực tế cho một bài 280 từ: khoảng **4 – 6 câu phức** rải đều, **1 – 2 mệnh đề quan hệ**, **1 câu điều kiện**, **1 câu bị động**, và **1 câu nhấn mạnh** (đảo ngữ hoặc câu chẻ). Không cần nhiều hơn. Đừng nhồi tất cả cấu trúc hay vào một đoạn. Rải đều để giám khảo thấy bạn kiểm soát được ngôn ngữ."
               ]
             }
           ]
@@ -810,7 +809,7 @@
                 [
                   "**Body 2** — nhượng bộ",
                   "Although / Admittedly + nevertheless",
-                  "**Admittedly**, X has drawbacks; **nevertheless**,..."
+                  "**Admittedly**, X has drawbacks;\n**nevertheless**,..."
                 ],
                 [
                   "**Conclusion** — tóm tắt",
@@ -888,10 +887,8 @@
               "tone": "tip",
               "t": "QUY TẮC NHANH",
               "lines": [
-                "Nói về **sự vật nói chung** → dùng danh từ số nhiều **không có the**: *Children need physical activity.* (không phải \"The children\")",
-                "Nói về **một thứ cụ thể đã xác định** → dùng **the**: *The government of Vietnam has introduced...*",
-                "Danh từ đếm được số ít **luôn** cần mạo từ: *a solution*, *the solution* — không bao giờ đứng trần.",
-                "**Sai:** The technology has changed the society. · **Đúng:** Technology has changed society."
+                "Nói về **sự vật nói chung** → dùng danh từ số nhiều **không có the**: Children need physical activity. (không phải \"The children\")",
+                "Nói về **một thứ cụ thể đã xác định** → dùng **the**: The government of Vietnam has introduced... Danh từ đếm được số ít **luôn** cần mạo từ: a solution, the solution — không bao giờ đứng trần. **Sai:** The technology has changed the society. · **Đúng:** Technology has changed society."
               ]
             }
           ]
