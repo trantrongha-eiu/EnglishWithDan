@@ -339,3 +339,9 @@ module.exports = {
   },
   '4-86': { kind: 'bar', title: 'Household spending in the UK, 2020', unit: '£ per week', labels: ['Food', 'Entertainment', 'Clothing', 'Transport', 'Other'], series: [{ name: '', values: [120, 80, 40, 42, 38] }], note: PROMPT },
 };
+
+// Bộ 2 (2026-11-13): charts live next to their exercises in task1GrammarSet2.js —
+// listed here too so setTask1ExerciseCharts.js and its test cover them.
+for (const ex of require('./task1GrammarSet2')) {
+  if (ex.chart) module.exports[`${ex.module}-${ex.orderIndex}`] = ex.chart;
+}

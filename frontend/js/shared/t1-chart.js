@@ -12,6 +12,7 @@
      stat    { items:[{icon, value, label}] }
      map     { panels:[{caption, items:[{t, label, x, y, w, h}]}] }  (0–100 grid)
      process { steps:[{icon, label}], cycle? }
+     multi   { charts:[spec, spec] }  (mixed-chart task: two charts stacked)
 
    Colours: the 8-slot categorical palette (fixed order, light + dark steps),
    text always in the site's text tokens. Series ≥2 get a legend; ≤4 lines
@@ -28,6 +29,7 @@
 [data-theme="dark"] .t1-chart{--c1:#3987e5;--c2:#d95926;--c3:#199e70;--c4:#c98500;--c5:#d55181;--c6:#008300;--c7:#9085e9;--c8:#e66767;
   --cgrid:rgba(245,245,245,.08);--caxis:rgba(245,245,245,.3)}
 .t1-chart.hidden{display:none}
+.t1-chart-sub+.t1-chart-sub{margin-top:14px;padding-top:12px;border-top:1px dashed var(--border,#e5e7eb)}
 .t1-chart-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px}
 .t1-chart-kind{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text2,#6b7280)}
 .t1-chart-title{font-size:14px;font-weight:700;line-height:1.35;color:var(--text,#111827)}
@@ -366,8 +368,8 @@
     return bits.join('. ');
   }
 
-  function paint(el, spec) {
-    const W = Math.max(280, Math.min(680, Math.floor(el.clientWidth - 24) || 560));
+  /** Head + drawing + note for one spec, or '' for an unknown kind. */
+  function block(spec, W) {
     let body = '';
     switch (spec.kind) {
       case 'bar': body = drawBar(spec, W); break;
@@ -377,16 +379,33 @@
       case 'stat': body = drawStat(spec); break;
       case 'map': body = drawMap(spec); break;
       case 'process': body = drawProcess(spec); break;
-      default: return false;
+      default: return '';
     }
     const kindLbl = spec.kindLabel || KIND_LABEL[spec.kind] || '';
-    el.innerHTML =
-      `<div class="t1-chart-head"><span class="t1-chart-kind">${esc(kindLbl)}</span>` +
+    return `<div class="t1-chart-head"><span class="t1-chart-kind">${esc(kindLbl)}</span>` +
       (spec.title ? `<span class="t1-chart-title">${esc(spec.title)}</span>` : '') + `</div>` +
       body +
       (spec.note ? `<div class="t1-chart-note">${esc(spec.note)}</div>` : '');
+  }
+
+  function paint(el, spec) {
+    const W = Math.max(280, Math.min(680, Math.floor(el.clientWidth - 24) || 560));
+    let html = '';
+    if (spec.kind === 'multi') {
+      // Mixed-chart prompts (two charts in one task): each drawn in turn.
+      const parts = (spec.charts || []).map(c => block(c, W)).filter(Boolean);
+      if (!parts.length) return false;
+      html = parts.map(p => `<div class="t1-chart-sub">${p}</div>`).join('') +
+        (spec.note ? `<div class="t1-chart-note">${esc(spec.note)}</div>` : '');
+    } else {
+      html = block(spec, W);
+      if (!html) return false;
+    }
+    el.innerHTML = html;
     el.setAttribute('role', 'img');
-    el.setAttribute('aria-label', summary(spec) || kindLbl);
+    el.setAttribute('aria-label', (spec.kind === 'multi'
+      ? (spec.charts || []).map(summary).filter(Boolean).join(' | ')
+      : summary(spec)) || KIND_LABEL[spec.kind] || '');
     bindTips(el);
     return true;
   }

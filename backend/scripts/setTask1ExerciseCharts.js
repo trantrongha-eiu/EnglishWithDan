@@ -12,12 +12,17 @@
  */
 
 const CHARTS = require('./data/task1ExerciseCharts');
-const KINDS = new Set(['bar', 'line', 'pie', 'table', 'stat', 'map', 'process']);
+const KINDS = new Set(['bar', 'line', 'pie', 'table', 'stat', 'map', 'process', 'multi']);
 
 /** Shape checks so a typo can't ship a chart that renders empty. */
 function validateSpec(key, s) {
   const errs = [];
   if (!s || !KINDS.has(s.kind)) return [`${key}: unknown kind ${s && s.kind}`];
+  if (s.kind === 'multi') {
+    // Mixed-chart task: 2+ ordinary specs drawn one under the other.
+    if (!Array.isArray(s.charts) || s.charts.length < 2) return [`${key}: multi needs 2+ charts`];
+    return s.charts.flatMap((c, i) => c && c.kind === 'multi' ? [`${key}.${i}: nested multi`] : validateSpec(`${key}.${i}`, c));
+  }
   if (s.kind === 'bar' || s.kind === 'line') {
     if (!Array.isArray(s.labels) || !s.labels.length) errs.push(`${key}: no labels`);
     (s.series || []).forEach((se, i) => {

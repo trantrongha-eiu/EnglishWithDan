@@ -18,7 +18,7 @@
   <script src="/js/theme.js?v=81e03964c4"></script>
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
-  <link rel="stylesheet" href="/css/task1-practice.css?v=255b5fcdbb">
+  <link rel="stylesheet" href="/css/task1-practice.css?v=1526d7685f">
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
   <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
 </head>
@@ -271,6 +271,24 @@
         </div>
 
         <div class="wp-card" id="exercise-card">
+          <!-- "Khi nào dùng?" — shown on So sánh / Xu hướng exercises (task1-practice.js
+               renderWhenGuide). Row matching the exercise's chart:static|dynamic tag is lit. -->
+          <details class="t1-when hidden" id="t1-when" open>
+            <summary>📌 Khi nào dùng <b>Mô tả xu hướng</b> và <b>So sánh</b>?</summary>
+            <div class="t1-when-row" data-kind="dynamic">
+              <span class="t1-when-ic">📈</span>
+              <div><b>Biểu đồ XU HƯỚNG</b> — có nhiều mốc thời gian (vd: 2000 → 2020), số liệu thay đổi.<br>
+                → Dùng <b>mô tả xu hướng + so sánh</b>: <i>increased, fell, peaked at…</i> kết hợp <i>while / whereas / compared to</i>.</div>
+              <span class="t1-when-this">Câu này</span>
+            </div>
+            <div class="t1-when-row" data-kind="static">
+              <span class="t1-when-ic">📊</span>
+              <div><b>Biểu đồ TĨNH</b> — chỉ có 1 mốc thời gian (vd: in 2020), không có tăng giảm.<br>
+                → <b>Chỉ so sánh</b>: <i>topped the list, followed by, twice as many as…</i> ❌ Không viết <i>increased / decreased</i>.</div>
+              <span class="t1-when-this">Câu này</span>
+            </div>
+            <div class="t1-when-tip">💡 Nhìn <b>mốc thời gian</b>, đừng nhìn loại biểu đồ — bar, pie hay table đều có thể là tĩnh hoặc xu hướng.</div>
+          </details>
           <div id="t1-chart" class="hidden"></div>
 
           <!-- TRANSLATION / DATA_TRANSFORM / ERROR_CORRECTION -->
@@ -531,8 +549,8 @@
 </div>
 
 <script src="/js/shared/sentence-drill.js?v=0eefda7f0c"></script>
-<script src="/js/shared/t1-chart.js?v=64c758bbb9"></script>
-<script src="/js/task1-practice.js?v=16b408e00c"></script>
+<script src="/js/shared/t1-chart.js?v=aaf8083ca2"></script>
+<script src="/js/task1-practice.js?v=acfe52de24"></script>
 
 <!-- ── Mobile FAB ── -->
 <button class="wp-mob-fab" id="wp-mob-fab" onclick="openWpSheet()" aria-label="Bộ lọc & Cài đặt">

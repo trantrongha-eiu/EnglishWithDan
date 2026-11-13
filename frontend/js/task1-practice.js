@@ -567,6 +567,7 @@ function showExercise(idx) {
     document.getElementById('view-' + v).classList.add('hidden'));
   wbwTeardown(); // drop any previous word-by-word drill; showTranslationView re-inits if needed
 
+  renderWhenGuide(ex);
   // Illustration (bar/line/pie/table/map/process) — hidden when the exercise has none
   window.T1Chart?.render(document.getElementById('t1-chart'), ex.chart);
 
@@ -579,6 +580,31 @@ function showExercise(idx) {
   } else if (ex.type === 'multiple_choice' || ex.type === 'paraphrase_choose') {
     showMultipleChoiceView(ex);
   }
+}
+
+// "Khi nào dùng?" box on So sánh / Xu hướng exercises: trend charts (many
+// time points) take trend language + comparison; static charts (one time
+// point, no rise/fall) take comparison only. Lights the row matching the
+// exercise's 'chart:dynamic' / 'chart:static' tag when it has one. The
+// open/closed state is a per-viewer convenience only.
+const WHEN_GUIDE_SKILLS = new Set(['comparison', 'trend_language']);
+const WHEN_GUIDE_KEY = 't1_when_guide_closed';
+function renderWhenGuide(ex) {
+  const box = document.getElementById('t1-when');
+  if (!box) return;
+  const show = WHEN_GUIDE_SKILLS.has(ex.skillType);
+  box.classList.toggle('hidden', !show);
+  if (!show) return;
+  if (!box.dataset.bound) {
+    box.dataset.bound = '1';
+    try { if (localStorage.getItem(WHEN_GUIDE_KEY) === '1') box.open = false; } catch (_) {}
+    box.addEventListener('toggle', () => {
+      try { localStorage.setItem(WHEN_GUIDE_KEY, box.open ? '0' : '1'); } catch (_) {}
+    });
+  }
+  const tags = ex.tags || [];
+  const kind = tags.includes('chart:dynamic') ? 'dynamic' : tags.includes('chart:static') ? 'static' : '';
+  box.querySelectorAll('.t1-when-row').forEach(r => r.classList.toggle('is-current', !!kind && r.dataset.kind === kind));
 }
 
 function showTranslationView(ex) {
