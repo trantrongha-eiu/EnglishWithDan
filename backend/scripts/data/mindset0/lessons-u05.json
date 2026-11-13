@@ -278,7 +278,8 @@
      "ref": "reading:M0-U05-R1",
      "kind": "reading",
      "title": "Chinese Food Festival in London (Ex. 5–6)",
-     "note": "6 câu True / False / Not Given — để ý các từ in đậm trong câu hỏi."
+     "note": "6 câu True / False / Not Given — để ý các từ in đậm trong câu hỏi.",
+     "step": 0
     }
    ],
    "vocabSave": {
@@ -556,19 +557,22 @@
      "ref": "listening:M0-U05-L1",
      "kind": "listening",
      "title": "Mark & Jane — ai không đi lễ hội được? (Ex. 7–9)",
-     "note": "Chọn chủ đề chính, rồi nối 6 người bạn với lý do A–H."
+     "note": "Chọn chủ đề chính, rồi nối 6 người bạn với lý do A–H.",
+     "step": 1
     },
     {
      "ref": "listening:M0-U05-L2",
      "kind": "listening",
      "title": "Đầu bếp giới thiệu món ăn (Ex. 14)",
-     "note": "Món đầu bếp sắp làm là gì?"
+     "note": "Món đầu bếp sắp làm là gì?",
+     "step": 1
     },
     {
      "ref": "listening:M0-U05-L3",
      "kind": "listening",
      "title": "Cách làm bánh há cảo (Ex. 15)",
-     "note": "Điền 8 động từ chế biến vào sơ đồ."
+     "note": "Điền 8 động từ chế biến vào sơ đồ.",
+     "step": 1
     }
    ],
    "vocabSave": {

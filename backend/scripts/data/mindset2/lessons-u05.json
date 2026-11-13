@@ -301,13 +301,15 @@
      "ref": "reading:M2-U05-R1",
      "kind": "reading",
      "title": "Successful entrepreneurs — matching features (Ex. 8)",
-     "note": "5 câu, nối với Carnegie, Ford, Lauder, Jobs."
+     "note": "5 câu, nối với Carnegie, Ford, Lauder, Jobs.",
+     "step": 2
     },
     {
      "ref": "reading:M2-U05-R2",
      "kind": "reading",
      "title": "Exam skills: Business ideas of the future (Ex. 14, 23)",
-     "note": "Matching features (người) + matching sentence endings."
+     "note": "Matching features (người) + matching sentence endings.",
+     "step": 6
     }
    ]
   },
@@ -426,37 +428,43 @@
      "ref": "listening:M2-U05-L1",
      "kind": "listening",
      "title": "Three types of business (Ex. 1)",
-     "note": "Nối loại hình với mô tả A, B, C."
+     "note": "Nối loại hình với mô tả A, B, C.",
+     "step": 0
     },
     {
      "ref": "listening:M2-U05-L2",
      "kind": "listening",
      "title": "Sole traders: correct or incorrect? (Ex. 2)",
-     "note": "Ghi chú nào đúng, ghi chú nào sai?"
+     "note": "Ghi chú nào đúng, ghi chú nào sai?",
+     "step": 0
     },
     {
      "ref": "listening:M2-U05-L3",
      "kind": "listening",
      "title": "Partnerships: complete the notes (Ex. 3)",
-     "note": "Dùng từ trong khung."
+     "note": "Dùng từ trong khung.",
+     "step": 0
     },
     {
      "ref": "listening:M2-U05-L4",
      "kind": "listening",
      "title": "Limited liability companies (Ex. 4)",
-     "note": "ONE OR TWO WORDS AND/OR A NUMBER."
+     "note": "ONE OR TWO WORDS AND/OR A NUMBER.",
+     "step": 0
     },
     {
      "ref": "listening:M2-U05-L5",
      "kind": "listening",
      "title": "Comparisons and contrasts (Ex. 5)",
-     "note": "however, similarly, on the other hand…"
+     "note": "however, similarly, on the other hand…",
+     "step": 1
     },
     {
      "ref": "listening:M2-U05-L6",
      "kind": "listening",
      "title": "Exam skills: three case studies (Ex. 6)",
-     "note": "TWO WORDS OR ONE WORD AND/OR A NUMBER — chú ý chính tả."
+     "note": "TWO WORDS OR ONE WORD AND/OR A NUMBER — chú ý chính tả.",
+     "step": 1
     }
    ],
    "vocabSave": {

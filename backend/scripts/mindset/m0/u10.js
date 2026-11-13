@@ -149,10 +149,10 @@ module.exports = {
       links: [{ grammar: 'future-simple', title: 'Future Simple (will)', note: 'dự đoán tương lai' }, { grammar: 'be-going-to', title: 'Be Going To', note: 'so sánh với kế hoạch' }],
       ex: [
         gap('will / won\'t table (Ex. 10)', 'Complete the sentences from Part 2 of the lecture.', [
-          ['(+) People ____ ____ richer than they are now.', ['will', 'be']],
-          ['(−) They ____ ____ the same as the one in the picture today.', ['won\'t|will not', 'look']],
-          ['(?) ____ they ____ the same as they do now?', ['Will', 'look']],
-          ['(?) What ____ smartphones ____ like?', ['will', 'look']],
+          ['(+) ____ ____ ____ richer than they are now.', ['People', 'will', 'be']],
+          ['(−) ____ ____ ____ the same as the one in the picture today.', ['They', 'won\'t|will not', 'look']],
+          ['(?) ____ ____ ____ the same as they do now?', ['Will', 'they', 'look']],
+          ['(?) ____ ____ ____ ____ like?', ['What', 'will', 'smartphones', 'look']],
         ]),
         gap('An interview about the future (G&V Ex. 3)', 'Complete the sentences with will / won\'t and the verb.', [
           ['No, the cars ____ (communicate) with each other and make sure they all have enough space.', 'will communicate'],
@@ -163,13 +163,13 @@ module.exports = {
           ['I\'m not sure that ____ (be) possible.', 'will be'],
           ['Well, how ____ (the animals / breathe) when they are on the moon?', 'will the animals breathe'],
         ]),
-        gap('Words for describing change (Ex. 12)', 'Complete the sentences with the correct form.', [
-          ['to rise → (past) ____ → (noun) a rise', 'rose'],
-          ['to increase → (past) increased → (noun) ____', 'an increase'],
-          ['to go up → (past) ____', 'went up'],
-          ['to fall → (past) fell → (noun) ____', 'a fall'],
-          ['to decrease → (past) ____ → (noun) a decrease', 'decreased'],
-          ['to go down → (past) ____', 'went down'],
+        gap('Words for describing change (Ex. 12)', 'Complete the table: verb (infinitive) → verb (past) → noun.', [
+          ['(infinitive) ____ → (past) ____ → (noun) a rise', ['to rise', 'rose']],
+          ['(infinitive) ____ → (past) increased → (noun) ____', ['to increase', 'an increase']],
+          ['(infinitive) ____ → (past) went up', 'to go up'],
+          ['(infinitive) ____ → (past) fell → (noun) ____', ['to fall', 'a fall']],
+          ['(infinitive) ____ → (past) ____ → (noun) a decrease', ['to decrease', 'decreased']],
+          ['(infinitive) to go down → (past) ____', 'went down'],
         ]),
         mcq('Describing smartphone data (Ex. 14)', 'Read the description and choose the correct answer.', [
           ['The percentage of people with smartphones increased ____ 38% in 2010…', ['at', 'from', 'to'], 'B'],

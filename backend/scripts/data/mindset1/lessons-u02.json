@@ -297,13 +297,15 @@
      "ref": "reading:M1-U02-R1",
      "kind": "reading",
      "title": "Amazing homes — sentence completion (Ex. 9)",
-     "note": "4 câu, NO MORE THAN TWO WORDS."
+     "note": "4 câu, NO MORE THAN TWO WORDS.",
+     "step": 2
     },
     {
      "ref": "reading:M1-U02-R2",
      "kind": "reading",
      "title": "Exam skills: Home from home (Ex. 13)",
-     "note": "6 câu, NO MORE THAN THREE WORDS."
+     "note": "6 câu, NO MORE THAN THREE WORDS.",
+     "step": 2
     }
    ]
   },
@@ -428,37 +430,43 @@
      "ref": "listening:M1-U02-L1",
      "kind": "listening",
      "title": "Two short conversations: where are the speakers? (Ex. 3)",
-     "note": "Nghe xem người nói đang ở đâu."
+     "note": "Nghe xem người nói đang ở đâu.",
+     "step": 2
     },
     {
      "ref": "listening:M1-U02-L2",
      "kind": "listening",
      "title": "Spelling names (Ex. 4–5)",
-     "note": "Website, tên người, địa chỉ được đánh vần."
+     "note": "Website, tên người, địa chỉ được đánh vần.",
+     "step": 2
     },
     {
      "ref": "listening:M1-U02-L3",
      "kind": "listening",
      "title": "A meal out (Ex. 9)",
-     "note": "NO MORE THAN ONE WORD AND/OR A NUMBER."
+     "note": "NO MORE THAN ONE WORD AND/OR A NUMBER.",
+     "step": 4
     },
     {
      "ref": "listening:M1-U02-L4",
      "kind": "listening",
      "title": "Waiting for the bus (Ex. 11)",
-     "note": "7.15 hay 7.50? Blythe viết thế nào?"
+     "note": "7.15 hay 7.50? Blythe viết thế nào?",
+     "step": 6
     },
     {
      "ref": "listening:M1-U02-L5",
      "kind": "listening",
      "title": "A sailing course (Ex. 12)",
-     "note": "4 câu short-answer."
+     "note": "4 câu short-answer.",
+     "step": 6
     },
     {
      "ref": "listening:M1-U02-L6",
      "kind": "listening",
      "title": "Exam skills: a bike tour in Orientation Week (Ex. 15)",
-     "note": "8 câu — kiểm tra chính tả và số từ."
+     "note": "8 câu — kiểm tra chính tả và số từ.",
+     "step": 6
     }
    ],
    "vocabSave": {

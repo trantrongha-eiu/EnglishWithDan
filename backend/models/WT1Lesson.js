@@ -71,6 +71,9 @@ const WT1LessonSchema = new Schema(
       title: String,
       note: String,
       url: String,
+      // Reading/Listening links: how many of the lesson's exercises come
+      // before this one in the book (the lesson page interleaves them).
+      step: Number,
     }],
     // Mindset: images cut from the book (pictures the lesson talks about).
     images: [{ _id: false, url: String, caption: String }],

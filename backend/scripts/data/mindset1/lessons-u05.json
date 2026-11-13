@@ -295,13 +295,15 @@
      "ref": "reading:M1-U05-R1",
      "kind": "reading",
      "title": "The future of malls — matching headings (Ex. 8)",
-     "note": "Chọn tiêu đề i–v cho đoạn B–E."
+     "note": "Chọn tiêu đề i–v cho đoạn B–E.",
+     "step": 4
     },
     {
      "ref": "reading:M1-U05-R2",
      "kind": "reading",
      "title": "Exam skills: Markets around the world (Ex. 11–12)",
-     "note": "Matching information A–G + matching headings i–vii."
+     "note": "Matching information A–G + matching headings i–vii.",
+     "step": 4
     }
    ]
   },
@@ -425,37 +427,43 @@
      "ref": "listening:M1-U05-L1",
      "kind": "listening",
      "title": "Three short recordings: which place? (Ex. 2)",
-     "note": "Mỗi người nói đang nói về địa điểm nào?"
+     "note": "Mỗi người nói đang nói về địa điểm nào?",
+     "step": 1
     },
     {
      "ref": "listening:M1-U05-L2",
      "kind": "listening",
      "title": "Four recordings: answers and distractors (Ex. 3–4)",
-     "note": "Ghi đáp án đúng rồi ghi cả các distractor."
+     "note": "Ghi đáp án đúng rồi ghi cả các distractor.",
+     "step": 1
     },
     {
      "ref": "listening:M1-U05-L3",
      "kind": "listening",
      "title": "Which T-shirts sell best? (Ex. 6)",
-     "note": "plain = nothing on them."
+     "note": "plain = nothing on them.",
+     "step": 3
     },
     {
      "ref": "listening:M1-U05-L4",
      "kind": "listening",
      "title": "A book signing (Ex. 7)",
-     "note": "noon, quarter past two, half past three…"
+     "note": "noon, quarter past two, half past three…",
+     "step": 3
     },
     {
      "ref": "listening:M1-U05-L5",
      "kind": "listening",
      "title": "A complaint (Ex. 8)",
-     "note": "staff, litter hay food?"
+     "note": "staff, litter hay food?",
+     "step": 3
     },
     {
      "ref": "listening:M1-U05-L6",
      "kind": "listening",
      "title": "Exam skills: a shopping tour (Ex. 9)",
-     "note": "6 câu multiple choice A, B, C — cẩn thận distractor."
+     "note": "6 câu multiple choice A, B, C — cẩn thận distractor.",
+     "step": 3
     }
    ],
    "vocabSave": {

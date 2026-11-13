@@ -139,6 +139,87 @@
    "lessonCode": "M0-U04-L1",
    "order": 3,
    "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Types of holiday (G&V Ex. 1)",
+   "instruction": "Complete the sentences with: a city break, a beach holiday, a family holiday, a language exchange, an adventure holiday.",
+   "wordBank": [
+    "a city break",
+    "a beach holiday",
+    "a family holiday",
+    "a language exchange",
+    "an adventure holiday"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "You can do lots of activities like cycling and horse-riding on ____.",
+     "blanks": [
+      {
+       "accept": [
+        "an adventure holiday"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "My friends want to go on ____, but I don't enjoy relaxing all the time.",
+     "blanks": [
+      {
+       "accept": [
+        "a beach holiday"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "I went on ____ to Paris. It was interesting to visit all the museums.",
+     "blanks": [
+      {
+       "accept": [
+        "a city break"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "My sister is going on ____ and will stay with a host family in Italy.",
+     "blanks": [
+      {
+       "accept": [
+        "a language exchange"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "I went on ____ with my parents and we camped by a lake.",
+     "blanks": [
+      {
+       "accept": [
+        "a family holiday"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U04-L1-E04",
+   "lessonCode": "M0-U04-L1",
+   "order": 4,
+   "autoGrade": true,
    "points": 12,
    "source": "original",
    "difficulty": 1,
@@ -234,87 +315,6 @@
      "id": "c12",
      "text": "stay with host families",
      "category": "lang",
-     "explanation": ""
-    }
-   ]
-  },
-  {
-   "code": "M0-U04-L1-E04",
-   "lessonCode": "M0-U04-L1",
-   "order": 4,
-   "autoGrade": true,
-   "points": 5,
-   "source": "original",
-   "difficulty": 1,
-   "type": "gap_fill",
-   "title": "Types of holiday (G&V Ex. 1)",
-   "instruction": "Complete the sentences with: a city break, a beach holiday, a family holiday, a language exchange, an adventure holiday.",
-   "wordBank": [
-    "a city break",
-    "a beach holiday",
-    "a family holiday",
-    "a language exchange",
-    "an adventure holiday"
-   ],
-   "items": [
-    {
-     "id": "g1",
-     "prompt": "You can do lots of activities like cycling and horse-riding on ____.",
-     "blanks": [
-      {
-       "accept": [
-        "an adventure holiday"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g2",
-     "prompt": "My friends want to go on ____, but I don't enjoy relaxing all the time.",
-     "blanks": [
-      {
-       "accept": [
-        "a beach holiday"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g3",
-     "prompt": "I went on ____ to Paris. It was interesting to visit all the museums.",
-     "blanks": [
-      {
-       "accept": [
-        "a city break"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g4",
-     "prompt": "My sister is going on ____ and will stay with a host family in Italy.",
-     "blanks": [
-      {
-       "accept": [
-        "a language exchange"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g5",
-     "prompt": "I went on ____ with my parents and we camped by a lake.",
-     "blanks": [
-      {
-       "accept": [
-        "a family holiday"
-       ]
-      }
-     ],
      "explanation": ""
     }
    ]
@@ -1062,11 +1062,16 @@
     },
     {
      "id": "g6",
-     "prompt": "I ____ (try) a traditional meal. It ____ (be) delicious.",
+     "prompt": "I ____ (try) a traditional meal. It ____ (be) delicious. It ____ (be) only a short holiday, but I really enjoyed it.",
      "blanks": [
       {
        "accept": [
         "tried"
+       ]
+      },
+      {
+       "accept": [
+        "was"
        ]
       },
       {
@@ -1079,11 +1084,16 @@
     },
     {
      "id": "g7",
-     "prompt": "I ____ (take) lots of photos. What ____ you do on your holiday?",
+     "prompt": "I ____ (take) lots of photos. What ____ (do) you do on your holiday? Where ____ (do) you go?",
      "blanks": [
       {
        "accept": [
         "took"
+       ]
+      },
+      {
+       "accept": [
+        "did"
        ]
       },
       {

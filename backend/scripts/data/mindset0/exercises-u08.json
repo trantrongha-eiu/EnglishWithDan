@@ -765,6 +765,100 @@
    "points": 5,
    "source": "original",
    "difficulty": 1,
+   "type": "mcq",
+   "title": "Correct or incorrect? (G&V Ex. 3)",
+   "instruction": "Choose the correct sentence.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Asking for advice about food:",
+     "options": [
+      {
+       "id": "A",
+       "text": "What you should eat to be healthy?"
+      },
+      {
+       "id": "B",
+       "text": "What should you eat to be healthy?"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q2",
+     "prompt": "Is it a good idea to play computer games for many hours? — No, ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "you should play on your computer for so long."
+      },
+      {
+       "id": "B",
+       "text": "you shouldn't play on your computer for so long."
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "I like doing yoga. ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "I think you shouldn't try it."
+      },
+      {
+       "id": "B",
+       "text": "I think you should try it."
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "Is it important to exercise? — ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "Yes, you should exercise for at least 150 minutes a week."
+      },
+      {
+       "id": "B",
+       "text": "Yes, you should to exercise for at least 150 minutes a week."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Câu trong sách đã đúng: should + động từ nguyên mẫu (không có to)."
+    },
+    {
+     "id": "q5",
+     "prompt": "Do you have any other advice about being healthy? — ____",
+     "options": [
+      {
+       "id": "A",
+       "text": "I think you should find ways to relax."
+      },
+      {
+       "id": "B",
+       "text": "I think you should finding ways to relax."
+      }
+     ],
+     "answer": "A",
+     "explanation": "Câu trong sách đã đúng."
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L3-E04",
+   "lessonCode": "M0-U08-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
    "type": "gap_fill",
    "title": "A health programme on TV (G&V Ex. 4)",
    "instruction": "Complete the sentences with should / shouldn't + a verb: eat, drink, play, ride, watch, get.",
@@ -865,100 +959,6 @@
       }
      ],
      "explanation": ""
-    }
-   ]
-  },
-  {
-   "code": "M0-U08-L3-E04",
-   "lessonCode": "M0-U08-L3",
-   "order": 4,
-   "autoGrade": true,
-   "points": 5,
-   "source": "original",
-   "difficulty": 1,
-   "type": "mcq",
-   "title": "Correct or incorrect? (G&V Ex. 3)",
-   "instruction": "Choose the correct sentence.",
-   "items": [
-    {
-     "id": "q1",
-     "prompt": "Asking for advice about food:",
-     "options": [
-      {
-       "id": "A",
-       "text": "What you should eat to be healthy?"
-      },
-      {
-       "id": "B",
-       "text": "What should you eat to be healthy?"
-      }
-     ],
-     "answer": "B",
-     "explanation": ""
-    },
-    {
-     "id": "q2",
-     "prompt": "Is it a good idea to play computer games for many hours? — No, ____",
-     "options": [
-      {
-       "id": "A",
-       "text": "you should play on your computer for so long."
-      },
-      {
-       "id": "B",
-       "text": "you shouldn't play on your computer for so long."
-      }
-     ],
-     "answer": "B",
-     "explanation": ""
-    },
-    {
-     "id": "q3",
-     "prompt": "I like doing yoga. ____",
-     "options": [
-      {
-       "id": "A",
-       "text": "I think you shouldn't try it."
-      },
-      {
-       "id": "B",
-       "text": "I think you should try it."
-      }
-     ],
-     "answer": "B",
-     "explanation": ""
-    },
-    {
-     "id": "q4",
-     "prompt": "Is it important to exercise? — ____",
-     "options": [
-      {
-       "id": "A",
-       "text": "Yes, you should exercise for at least 150 minutes a week."
-      },
-      {
-       "id": "B",
-       "text": "Yes, you should to exercise for at least 150 minutes a week."
-      }
-     ],
-     "answer": "A",
-     "explanation": "Câu trong sách đã đúng: should + động từ nguyên mẫu (không có to)."
-    },
-    {
-     "id": "q5",
-     "prompt": "Do you have any other advice about being healthy? — ____",
-     "options": [
-      {
-       "id": "A",
-       "text": "I think you should find ways to relax."
-      },
-      {
-       "id": "B",
-       "text": "I think you should finding ways to relax."
-      }
-     ],
-     "answer": "A",
-     "explanation": "Câu trong sách đã đúng."
     }
    ]
   },
@@ -1209,6 +1209,43 @@
    "code": "M0-U08-L6-E01",
    "lessonCode": "M0-U08-L6",
    "order": 1,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Speaking: keeping healthy (Lead-in, Ex. 5)",
+   "instruction": "Answer each question in 15–25 seconds.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "How do you like to keep healthy?",
+     "sampleAnswer": "I usually go cycling with my friends twice a week, and I try to eat lots of vegetables. I also drink a lot of water, especially when the weather is hot.",
+     "sampleNote": "Hai–ba cách + tần suất.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "Imagine you have important exams and feel stressed. Which activities would help? Why?",
+     "sampleAnswer": "I think going for a walk would help, because fresh air helps you think clearly. I would also make sure I get enough sleep, because it's difficult to remember anything when you're tired.",
+     "sampleNote": "Hai hoạt động + lý do.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "What is your favourite way to relax?",
+     "sampleAnswer": "My favourite way to relax is listening to music in my room. It helps me forget about my worries, and after twenty minutes I usually feel much calmer.",
+     "sampleNote": "Cách thư giãn + tác dụng.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U08-L6-E02",
+   "lessonCode": "M0-U08-L6",
+   "order": 2,
    "autoGrade": true,
    "points": 1,
    "source": "original",
@@ -1240,9 +1277,9 @@
    ]
   },
   {
-   "code": "M0-U08-L6-E02",
+   "code": "M0-U08-L6-E03",
    "lessonCode": "M0-U08-L6",
-   "order": 2,
+   "order": 3,
    "autoGrade": false,
    "points": 10,
    "source": "original",
@@ -1263,43 +1300,6 @@
      "prompt": "Describe the two pictures. Talk generally about what you can see, give specific details, give your opinion and reasons, and give advice using should / shouldn't.",
      "sampleAnswer": "The first picture shows a man sitting at a table with a plate of fruit and vegetables. It looks like he is thinking about what to eat. I think he is trying to eat healthily, which is a good idea because fruit and vegetables give you lots of energy. Maybe he should also drink more water. In the second picture, I can see a woman in an office. There are lots of books and papers on her desk, and it looks like she is very busy and stressed. I think she is working very long hours. In my opinion, she shouldn't work all day without a break. She should go for a short walk or do some exercise, because that helps you feel less stressed. She should also get enough sleep.",
      "sampleNote": "Hai tranh, mỗi tranh đi đủ 3 bước; có lý do (because) và lời khuyên (should / shouldn't).",
-     "sampleSource": "new"
-    }
-   ]
-  },
-  {
-   "code": "M0-U08-L6-E03",
-   "lessonCode": "M0-U08-L6",
-   "order": 3,
-   "autoGrade": false,
-   "points": 10,
-   "source": "original",
-   "difficulty": 1,
-   "type": "speaking_response",
-   "title": "Speaking: keeping healthy (Lead-in, Ex. 5)",
-   "instruction": "Answer each question in 15–25 seconds.",
-   "speakingPart": 1,
-   "speakingPrepSeconds": 10,
-   "items": [
-    {
-     "id": "s1",
-     "prompt": "How do you like to keep healthy?",
-     "sampleAnswer": "I usually go cycling with my friends twice a week, and I try to eat lots of vegetables. I also drink a lot of water, especially when the weather is hot.",
-     "sampleNote": "Hai–ba cách + tần suất.",
-     "sampleSource": "new"
-    },
-    {
-     "id": "s2",
-     "prompt": "Imagine you have important exams and feel stressed. Which activities would help? Why?",
-     "sampleAnswer": "I think going for a walk would help, because fresh air helps you think clearly. I would also make sure I get enough sleep, because it's difficult to remember anything when you're tired.",
-     "sampleNote": "Hai hoạt động + lý do.",
-     "sampleSource": "new"
-    },
-    {
-     "id": "s3",
-     "prompt": "What is your favourite way to relax?",
-     "sampleAnswer": "My favourite way to relax is listening to music in my room. It helps me forget about my worries, and after twenty minutes I usually feel much calmer.",
-     "sampleNote": "Cách thư giãn + tác dụng.",
      "sampleSource": "new"
     }
    ]

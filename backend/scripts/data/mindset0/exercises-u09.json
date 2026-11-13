@@ -506,82 +506,92 @@
    "lessonCode": "M0-U09-L2",
    "order": 2,
    "autoGrade": true,
-   "points": 10,
+   "points": 4,
    "source": "original",
    "difficulty": 1,
-   "type": "categorize",
-   "title": "MAKE or TAKE? (G&V Ex. 7)",
-   "instruction": "Put each phrase into the MAKE or TAKE column.",
-   "categories": [
-    {
-     "id": "make",
-     "label": "make"
-    },
-    {
-     "id": "take",
-     "label": "take"
-    }
-   ],
+   "type": "mcq",
+   "title": "Summarise the main ideas (Ex. 17)",
+   "instruction": "Read the text about Richard Doner again and choose the correct word to summarise the main idea.",
    "items": [
     {
-     "id": "c1",
-     "text": "a mistake",
-     "category": "make",
+     "id": "q1",
+     "prompt": "Richard Doner is very special because he can speak ____ languages…",
+     "options": [
+      {
+       "id": "A",
+       "text": "more"
+      },
+      {
+       "id": "B",
+       "text": "less"
+      },
+      {
+       "id": "C",
+       "text": "most"
+      }
+     ],
+     "answer": "A",
      "explanation": ""
     },
     {
-     "id": "c2",
-     "text": "dinner",
-     "category": "make",
-     "explanation": ""
+     "id": "q2",
+     "prompt": "…than ____ people.",
+     "options": [
+      {
+       "id": "A",
+       "text": "more"
+      },
+      {
+       "id": "B",
+       "text": "most of"
+      },
+      {
+       "id": "C",
+       "text": "most"
+      }
+     ],
+     "answer": "C",
+     "explanation": "most people = hầu hết mọi người (không có \"of\" khi không có the/my…)."
     },
     {
-     "id": "c3",
-     "text": "somebody laugh",
-     "category": "make",
-     "explanation": ""
+     "id": "q3",
+     "prompt": "Richard is very lucky as he has ____ opportunities to practise his language skills.",
+     "options": [
+      {
+       "id": "A",
+       "text": "many"
+      },
+      {
+       "id": "B",
+       "text": "any"
+      },
+      {
+       "id": "C",
+       "text": "lots of"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Đáp án sách: lots of."
     },
     {
-     "id": "c4",
-     "text": "a noise",
-     "category": "make",
-     "explanation": ""
-    },
-    {
-     "id": "c5",
-     "text": "a difference",
-     "category": "make",
-     "explanation": ""
-    },
-    {
-     "id": "c6",
-     "text": "a guess",
-     "category": "make",
-     "explanation": ""
-    },
-    {
-     "id": "c7",
-     "text": "a test",
-     "category": "take",
-     "explanation": ""
-    },
-    {
-     "id": "c8",
-     "text": "an exam",
-     "category": "take",
-     "explanation": ""
-    },
-    {
-     "id": "c9",
-     "text": "a picture",
-     "category": "take",
-     "explanation": ""
-    },
-    {
-     "id": "c10",
-     "text": "a walk",
-     "category": "take",
-     "explanation": ""
+     "id": "q4",
+     "prompt": "Richard practises speaking each language ____ to improve.",
+     "options": [
+      {
+       "id": "A",
+       "text": "all the time"
+      },
+      {
+       "id": "B",
+       "text": "regularly"
+      },
+      {
+       "id": "C",
+       "text": "every day"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Đáp án sách: regularly (đều đặn)."
     }
    ]
   },
@@ -777,92 +787,82 @@
    "lessonCode": "M0-U09-L2",
    "order": 5,
    "autoGrade": true,
-   "points": 4,
+   "points": 10,
    "source": "original",
    "difficulty": 1,
-   "type": "mcq",
-   "title": "Summarise the main ideas (Ex. 17)",
-   "instruction": "Read the text about Richard Doner again and choose the correct word to summarise the main idea.",
+   "type": "categorize",
+   "title": "MAKE or TAKE? (G&V Ex. 7)",
+   "instruction": "Put each phrase into the MAKE or TAKE column.",
+   "categories": [
+    {
+     "id": "make",
+     "label": "make"
+    },
+    {
+     "id": "take",
+     "label": "take"
+    }
+   ],
    "items": [
     {
-     "id": "q1",
-     "prompt": "Richard Doner is very special because he can speak ____ languages…",
-     "options": [
-      {
-       "id": "A",
-       "text": "more"
-      },
-      {
-       "id": "B",
-       "text": "less"
-      },
-      {
-       "id": "C",
-       "text": "most"
-      }
-     ],
-     "answer": "A",
+     "id": "c1",
+     "text": "a mistake",
+     "category": "make",
      "explanation": ""
     },
     {
-     "id": "q2",
-     "prompt": "…than ____ people.",
-     "options": [
-      {
-       "id": "A",
-       "text": "more"
-      },
-      {
-       "id": "B",
-       "text": "most of"
-      },
-      {
-       "id": "C",
-       "text": "most"
-      }
-     ],
-     "answer": "C",
-     "explanation": "most people = hầu hết mọi người (không có \"of\" khi không có the/my…)."
+     "id": "c2",
+     "text": "dinner",
+     "category": "make",
+     "explanation": ""
     },
     {
-     "id": "q3",
-     "prompt": "Richard is very lucky as he has ____ opportunities to practise his language skills.",
-     "options": [
-      {
-       "id": "A",
-       "text": "many"
-      },
-      {
-       "id": "B",
-       "text": "any"
-      },
-      {
-       "id": "C",
-       "text": "lots of"
-      }
-     ],
-     "answer": "C",
-     "explanation": "Đáp án sách: lots of."
+     "id": "c3",
+     "text": "somebody laugh",
+     "category": "make",
+     "explanation": ""
     },
     {
-     "id": "q4",
-     "prompt": "Richard practises speaking each language ____ to improve.",
-     "options": [
-      {
-       "id": "A",
-       "text": "all the time"
-      },
-      {
-       "id": "B",
-       "text": "regularly"
-      },
-      {
-       "id": "C",
-       "text": "every day"
-      }
-     ],
-     "answer": "B",
-     "explanation": "Đáp án sách: regularly (đều đặn)."
+     "id": "c4",
+     "text": "a noise",
+     "category": "make",
+     "explanation": ""
+    },
+    {
+     "id": "c5",
+     "text": "a difference",
+     "category": "make",
+     "explanation": ""
+    },
+    {
+     "id": "c6",
+     "text": "a guess",
+     "category": "make",
+     "explanation": ""
+    },
+    {
+     "id": "c7",
+     "text": "a test",
+     "category": "take",
+     "explanation": ""
+    },
+    {
+     "id": "c8",
+     "text": "an exam",
+     "category": "take",
+     "explanation": ""
+    },
+    {
+     "id": "c9",
+     "text": "a picture",
+     "category": "take",
+     "explanation": ""
+    },
+    {
+     "id": "c10",
+     "text": "a walk",
+     "category": "take",
+     "explanation": ""
     }
    ]
   },
@@ -951,6 +951,80 @@
    "code": "M0-U09-L3-E02",
    "lessonCode": "M0-U09-L3",
    "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Sentences about plans (Ex. 6)",
+   "instruction": "Look again at the five sentences in \"Plans (Ex. 5)\" and answer the questions.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "How do we know the writer is talking about future plans?",
+     "options": [
+      {
+       "id": "A",
+       "text": "The writer uses going to."
+      },
+      {
+       "id": "B",
+       "text": "The writer uses the past simple."
+      },
+      {
+       "id": "C",
+       "text": "The writer uses can."
+      }
+     ],
+     "answer": "A",
+     "explanation": "be going to + V = kế hoạch đã định."
+    },
+    {
+     "id": "q2",
+     "prompt": "Which of these is NOT an adverb of time used in the sentences?",
+     "options": [
+      {
+       "id": "A",
+       "text": "tonight"
+      },
+      {
+       "id": "B",
+       "text": "this afternoon"
+      },
+      {
+       "id": "C",
+       "text": "yesterday"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Các trạng từ trong bài: tonight, this afternoon, next week, today, this morning, at the weekend."
+    },
+    {
+     "id": "q3",
+     "prompt": "Adverbs of time (next week, tomorrow, later…) usually go ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "at the start of the sentence"
+      },
+      {
+       "id": "B",
+       "text": "at the end of the sentence"
+      },
+      {
+       "id": "C",
+       "text": "before going to"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Theo hộp gợi ý của sách: thường đứng cuối câu."
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L3-E03",
+   "lessonCode": "M0-U09-L3",
+   "order": 3,
    "autoGrade": true,
    "points": 6,
    "source": "original",
@@ -1058,9 +1132,9 @@
    ]
   },
   {
-   "code": "M0-U09-L3-E03",
+   "code": "M0-U09-L3-E04",
    "lessonCode": "M0-U09-L3",
-   "order": 3,
+   "order": 4,
    "autoGrade": true,
    "points": 5,
    "source": "original",
@@ -1136,9 +1210,9 @@
    ]
   },
   {
-   "code": "M0-U09-L3-E04",
+   "code": "M0-U09-L3-E05",
    "lessonCode": "M0-U09-L3",
-   "order": 4,
+   "order": 5,
    "autoGrade": true,
    "points": 5,
    "source": "original",
@@ -1305,80 +1379,6 @@
       "class?"
      ],
      "explanation": ""
-    }
-   ]
-  },
-  {
-   "code": "M0-U09-L3-E05",
-   "lessonCode": "M0-U09-L3",
-   "order": 5,
-   "autoGrade": true,
-   "points": 3,
-   "source": "original",
-   "difficulty": 1,
-   "type": "mcq",
-   "title": "Sentences about plans (Ex. 6)",
-   "instruction": "Look again at the five sentences in \"Plans (Ex. 5)\" and answer the questions.",
-   "items": [
-    {
-     "id": "q1",
-     "prompt": "How do we know the writer is talking about future plans?",
-     "options": [
-      {
-       "id": "A",
-       "text": "The writer uses going to."
-      },
-      {
-       "id": "B",
-       "text": "The writer uses the past simple."
-      },
-      {
-       "id": "C",
-       "text": "The writer uses can."
-      }
-     ],
-     "answer": "A",
-     "explanation": "be going to + V = kế hoạch đã định."
-    },
-    {
-     "id": "q2",
-     "prompt": "Which of these is NOT an adverb of time used in the sentences?",
-     "options": [
-      {
-       "id": "A",
-       "text": "tonight"
-      },
-      {
-       "id": "B",
-       "text": "this afternoon"
-      },
-      {
-       "id": "C",
-       "text": "yesterday"
-      }
-     ],
-     "answer": "C",
-     "explanation": "Các trạng từ trong bài: tonight, this afternoon, next week, today, this morning, at the weekend."
-    },
-    {
-     "id": "q3",
-     "prompt": "Adverbs of time (next week, tomorrow, later…) usually go ____.",
-     "options": [
-      {
-       "id": "A",
-       "text": "at the start of the sentence"
-      },
-      {
-       "id": "B",
-       "text": "at the end of the sentence"
-      },
-      {
-       "id": "C",
-       "text": "before going to"
-      }
-     ],
-     "answer": "B",
-     "explanation": "Theo hộp gợi ý của sách: thường đứng cuối câu."
     }
    ]
   },
@@ -1787,29 +1787,6 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Speaking: a language you are learning (Ex. 13–14)",
-   "instruction": "Read the task, prepare for one minute, then speak for 1–2 minutes.",
-   "speakingPart": 2,
-   "speakingPrepSeconds": 60,
-   "items": [
-    {
-     "id": "s1",
-     "prompt": "Describe a language that you are studying, other than your first language.\nYou should say:\n• what the language is\n• how well you know the language\n• how long you are going to study the language for\nand explain why you are learning this language.",
-     "sampleAnswer": "The language I'm studying at the moment is English. I started learning it in primary school, so I've studied it for about eight years, but I think my level is only pre-intermediate. I can read simple articles and I can hold a short conversation about everyday topics, but I still find listening quite difficult, especially when people speak fast. I'm going to study English for at least two more years, because I'm going to take the IELTS test before I finish high school. My plan is to practise my skills every day – for example, I'm going to watch one video online and learn ten new words each evening. The main reason I'm learning English is that I want to study abroad, maybe in Australia. Also, English gives you more job opportunities, and it helps me talk to people from all over the world, so I think it's really worth the effort.",
-     "sampleNote": "Đủ 4 ý; dùng going to cho kế hoạch, collocation (hold a conversation, practise my skills, worth the effort), có lý do cụ thể.",
-     "sampleSource": "new"
-    }
-   ]
-  },
-  {
-   "code": "M0-U09-L6-E02",
-   "lessonCode": "M0-U09-L6",
-   "order": 2,
-   "autoGrade": false,
-   "points": 10,
-   "source": "original",
-   "difficulty": 1,
-   "type": "speaking_response",
    "title": "Speaking: questions about learning languages (Ex. 2, 5)",
    "instruction": "Answer each question in 15–25 seconds.",
    "speakingPart": 1,
@@ -1834,6 +1811,29 @@
      "prompt": "What are you going to do to improve your English next month?",
      "sampleAnswer": "Next month, I'm going to join an English club at school, and I'm going to read one short book in English. I think speaking with other students will help me become more confident.",
      "sampleNote": "Dùng going to.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L6-E02",
+   "lessonCode": "M0-U09-L6",
+   "order": 2,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Speaking: a language you are learning (Ex. 13–14)",
+   "instruction": "Read the task, prepare for one minute, then speak for 1–2 minutes.",
+   "speakingPart": 2,
+   "speakingPrepSeconds": 60,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "Describe a language that you are studying, other than your first language.\nYou should say:\n• what the language is\n• how well you know the language\n• how long you are going to study the language for\nand explain why you are learning this language.",
+     "sampleAnswer": "The language I'm studying at the moment is English. I started learning it in primary school, so I've studied it for about eight years, but I think my level is only pre-intermediate. I can read simple articles and I can hold a short conversation about everyday topics, but I still find listening quite difficult, especially when people speak fast. I'm going to study English for at least two more years, because I'm going to take the IELTS test before I finish high school. My plan is to practise my skills every day – for example, I'm going to watch one video online and learn ten new words each evening. The main reason I'm learning English is that I want to study abroad, maybe in Australia. Also, English gives you more job opportunities, and it helps me talk to people from all over the world, so I think it's really worth the effort.",
+     "sampleNote": "Đủ 4 ý; dùng going to cho kế hoạch, collocation (hold a conversation, practise my skills, worth the effort), có lý do cụ thể.",
      "sampleSource": "new"
     }
    ]
@@ -2111,6 +2111,82 @@
    "lessonCode": "M0-U09-L7",
    "order": 3,
    "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Put the linking words in the right place (G&V Ex. 9)",
+   "instruction": "Five linking words in bold in the text are in the wrong places. Write the correct linking word for each position 1–5 (use: To sum up, firstly, However, Furthermore, Additionally).",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "I'm going to talk about a project I did at college. (1) ____, it was a language project, and I worked with my friend, Peter.",
+     "blanks": [
+      {
+       "accept": [
+        "Firstly"
+       ]
+      }
+     ],
+     "explanation": "Ý đầu tiên → Firstly."
+    },
+    {
+     "id": "g2",
+     "prompt": "We had to find out how many people in college speak more than one language and, (2) ____, what their level of English is.",
+     "blanks": [
+      {
+       "accept": [
+        "additionally",
+        "furthermore"
+       ]
+      }
+     ],
+     "explanation": "Thêm một việc nữa phải tìm hiểu → additionally / furthermore."
+    },
+    {
+     "id": "g3",
+     "prompt": "I like doing this sort of project, so was happy to work hard. (3) ____, Peter is also a very good student, so we helped each other a lot.",
+     "blanks": [
+      {
+       "accept": [
+        "Furthermore",
+        "Additionally"
+       ]
+      }
+     ],
+     "explanation": "Bổ sung thêm ý tích cực → Furthermore / Additionally."
+    },
+    {
+     "id": "g4",
+     "prompt": "…and it was quite easy in the end. (4) ____, we didn't get any good advice from Miss Smith in the college office.",
+     "blanks": [
+      {
+       "accept": [
+        "However"
+       ]
+      }
+     ],
+     "explanation": "Chuyển sang ý trái ngược (khó khăn) → However."
+    },
+    {
+     "id": "g5",
+     "prompt": "…and then she couldn't find the correct information herself! (5) ____, she didn't help us at all.",
+     "blanks": [
+      {
+       "accept": [
+        "To sum up"
+       ]
+      }
+     ],
+     "explanation": "Câu kết luận → To sum up."
+    }
+   ]
+  },
+  {
+   "code": "M0-U09-L7-E04",
+   "lessonCode": "M0-U09-L7",
+   "order": 4,
+   "autoGrade": true,
    "points": 6,
    "source": "original",
    "difficulty": 1,
@@ -2196,82 +2272,6 @@
       }
      ],
      "explanation": "Sách chấp nhận nhiều thì: had / am having / will have / am going to have."
-    }
-   ]
-  },
-  {
-   "code": "M0-U09-L7-E04",
-   "lessonCode": "M0-U09-L7",
-   "order": 4,
-   "autoGrade": true,
-   "points": 5,
-   "source": "original",
-   "difficulty": 1,
-   "type": "gap_fill",
-   "title": "Put the linking words in the right place (G&V Ex. 9)",
-   "instruction": "Five linking words in bold in the text are in the wrong places. Write the correct linking word for each position 1–5 (use: To sum up, firstly, However, Furthermore, Additionally).",
-   "items": [
-    {
-     "id": "g1",
-     "prompt": "I'm going to talk about a project I did at college. (1) ____, it was a language project, and I worked with my friend, Peter.",
-     "blanks": [
-      {
-       "accept": [
-        "Firstly"
-       ]
-      }
-     ],
-     "explanation": "Ý đầu tiên → Firstly."
-    },
-    {
-     "id": "g2",
-     "prompt": "We had to find out how many people in college speak more than one language and, (2) ____, what their level of English is.",
-     "blanks": [
-      {
-       "accept": [
-        "additionally",
-        "furthermore"
-       ]
-      }
-     ],
-     "explanation": "Thêm một việc nữa phải tìm hiểu → additionally / furthermore."
-    },
-    {
-     "id": "g3",
-     "prompt": "I like doing this sort of project, so was happy to work hard. (3) ____, Peter is also a very good student, so we helped each other a lot.",
-     "blanks": [
-      {
-       "accept": [
-        "Furthermore",
-        "Additionally"
-       ]
-      }
-     ],
-     "explanation": "Bổ sung thêm ý tích cực → Furthermore / Additionally."
-    },
-    {
-     "id": "g4",
-     "prompt": "…and it was quite easy in the end. (4) ____, we didn't get any good advice from Miss Smith in the college office.",
-     "blanks": [
-      {
-       "accept": [
-        "However"
-       ]
-      }
-     ],
-     "explanation": "Chuyển sang ý trái ngược (khó khăn) → However."
-    },
-    {
-     "id": "g5",
-     "prompt": "…and then she couldn't find the correct information herself! (5) ____, she didn't help us at all.",
-     "blanks": [
-      {
-       "accept": [
-        "To sum up"
-       ]
-      }
-     ],
-     "explanation": "Câu kết luận → To sum up."
     }
    ]
   }

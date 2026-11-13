@@ -838,6 +838,119 @@
    "lessonCode": "M0-U05-L3",
    "order": 2,
    "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "a / an or some? (Ex. 17)",
+   "instruction": "Complete the rules with a / an or some.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "For singular countable nouns, we put ____ before the word, e.g. ____ cabbage.",
+     "blanks": [
+      {
+       "accept": [
+        "a",
+        "an",
+        "a/an"
+       ]
+      },
+      {
+       "accept": [
+        "a"
+       ]
+      }
+     ],
+     "explanation": "Danh từ đếm được số ít → a/an."
+    },
+    {
+     "id": "g2",
+     "prompt": "For plural countable nouns, we can put ____ before the word and we usually add an 's', e.g. ____ dumplings.",
+     "blanks": [
+      {
+       "accept": [
+        "some"
+       ]
+      },
+      {
+       "accept": [
+        "some"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "For uncountable nouns, we put ____ before the word, e.g. ____ milk.",
+     "blanks": [
+      {
+       "accept": [
+        "some"
+       ]
+      },
+      {
+       "accept": [
+        "some"
+       ]
+      }
+     ],
+     "explanation": "Không đếm được → không dùng a/an, không thêm -s."
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L3-E03",
+   "lessonCode": "M0-U05-L3",
+   "order": 3,
+   "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Complete the table headings (Ex. 18)",
+   "instruction": "Read the example sentences in the book's table and choose the correct heading for each column.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Column 1: I have some apples. · I don't have any cabbages. · Do you have any onions? · How many carrots do we need? → ____ nouns",
+     "options": [
+      {
+       "id": "A",
+       "text": "Countable"
+      },
+      {
+       "id": "B",
+       "text": "Uncountable"
+      }
+     ],
+     "answer": "A",
+     "explanation": "apples, cabbages, onions, carrots đều đếm được (có số nhiều)."
+    },
+    {
+     "id": "q2",
+     "prompt": "Column 2: I have some rice. · I don't have any milk. · Do you have any meat? · How much water do I put in? → ____ nouns",
+     "options": [
+      {
+       "id": "A",
+       "text": "Countable"
+      },
+      {
+       "id": "B",
+       "text": "Uncountable"
+      }
+     ],
+     "answer": "B",
+     "explanation": "rice, milk, meat, water không đếm được → dùng much."
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L3-E04",
+   "lessonCode": "M0-U05-L3",
+   "order": 4,
+   "autoGrade": true,
    "points": 8,
    "source": "original",
    "difficulty": 1,
@@ -969,9 +1082,9 @@
    ]
   },
   {
-   "code": "M0-U05-L3-E03",
+   "code": "M0-U05-L3-E05",
    "lessonCode": "M0-U05-L3",
-   "order": 3,
+   "order": 5,
    "autoGrade": true,
    "points": 13,
    "source": "original",
@@ -1231,9 +1344,9 @@
    ]
   },
   {
-   "code": "M0-U05-L3-E04",
+   "code": "M0-U05-L3-E06",
    "lessonCode": "M0-U05-L3",
-   "order": 4,
+   "order": 6,
    "autoGrade": true,
    "points": 10,
    "source": "original",
@@ -1445,122 +1558,54 @@
    ]
   },
   {
-   "code": "M0-U05-L3-E05",
-   "lessonCode": "M0-U05-L3",
-   "order": 5,
-   "autoGrade": true,
-   "points": 3,
-   "source": "original",
-   "difficulty": 1,
-   "type": "gap_fill",
-   "title": "a / an or some? (Ex. 17)",
-   "instruction": "Complete the rules with a / an or some.",
-   "items": [
-    {
-     "id": "g1",
-     "prompt": "For singular countable nouns, we put ____ before the word, e.g. ____ cabbage.",
-     "blanks": [
-      {
-       "accept": [
-        "a",
-        "an",
-        "a/an"
-       ]
-      },
-      {
-       "accept": [
-        "a"
-       ]
-      }
-     ],
-     "explanation": "Danh từ đếm được số ít → a/an."
-    },
-    {
-     "id": "g2",
-     "prompt": "For plural countable nouns, we can put ____ before the word and we usually add an 's', e.g. ____ dumplings.",
-     "blanks": [
-      {
-       "accept": [
-        "some"
-       ]
-      },
-      {
-       "accept": [
-        "some"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g3",
-     "prompt": "For uncountable nouns, we put ____ before the word, e.g. ____ milk.",
-     "blanks": [
-      {
-       "accept": [
-        "some"
-       ]
-      },
-      {
-       "accept": [
-        "some"
-       ]
-      }
-     ],
-     "explanation": "Không đếm được → không dùng a/an, không thêm -s."
-    }
-   ]
-  },
-  {
-   "code": "M0-U05-L3-E06",
-   "lessonCode": "M0-U05-L3",
-   "order": 6,
-   "autoGrade": true,
-   "points": 2,
-   "source": "original",
-   "difficulty": 1,
-   "type": "mcq",
-   "title": "Complete the table headings (Ex. 18)",
-   "instruction": "Read the example sentences in the book's table and choose the correct heading for each column.",
-   "items": [
-    {
-     "id": "q1",
-     "prompt": "Column 1: I have some apples. · I don't have any cabbages. · Do you have any onions? · How many carrots do we need? → ____ nouns",
-     "options": [
-      {
-       "id": "A",
-       "text": "Countable"
-      },
-      {
-       "id": "B",
-       "text": "Uncountable"
-      }
-     ],
-     "answer": "A",
-     "explanation": "apples, cabbages, onions, carrots đều đếm được (có số nhiều)."
-    },
-    {
-     "id": "q2",
-     "prompt": "Column 2: I have some rice. · I don't have any milk. · Do you have any meat? · How much water do I put in? → ____ nouns",
-     "options": [
-      {
-       "id": "A",
-       "text": "Countable"
-      },
-      {
-       "id": "B",
-       "text": "Uncountable"
-      }
-     ],
-     "answer": "B",
-     "explanation": "rice, milk, meat, water không đếm được → dùng much."
-    }
-   ]
-  },
-  {
    "code": "M0-U05-L4-E01",
    "lessonCode": "M0-U05-L4",
    "order": 1,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Writing: a popular dish in your country (Ex. 23, 26)",
+   "instruction": "Using what you have learnt in this unit, write about a popular dish in your country or a dish you like (120–150 words). Include: (1) the ingredients you need; (2) step-by-step instructions (First, Then, After this, Finally…); (3) why the dish is popular.",
+   "responseSlots": 1,
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 110,
+    "maxWords": 170,
+    "mustUse": 4,
+    "targetStructures": [
+     "First",
+     "Then",
+     "After this",
+     "Finally",
+     "some",
+     "chop",
+     "boil",
+     "fry",
+     "because"
+    ],
+    "checklist": [
+     "Nêu nguyên liệu (dùng a/an/some đúng)",
+     "Các bước theo thứ tự với từ nối trình tự",
+     "Dùng động từ chế biến (chop, mix, fry, boil…)",
+     "Giải thích vì sao món ăn phổ biến",
+     "120–150 từ"
+    ],
+    "sampleAnswer": "Bánh mì is one of the most popular foods in Vietnam. To make it, you need a baguette, some pork, some pâté, a cucumber, a carrot, some fresh herbs and some chilli sauce.\n\nFirst, cut the carrot into thin pieces and mix it with a little sugar and vinegar. Then, cut the pork into slices and fry it in a pan for about ten minutes with some garlic and soy sauce. After this, cut the baguette in half and spread some pâté inside. Next, add the pork, the carrot, some cucumber and the herbs. Finally, put some chilli sauce on top and close the bread.\n\nBánh mì is popular because it is cheap, quick and delicious. You can buy it on almost every street, and people often eat it for breakfast on the way to school or work. You can also change the filling, so everybody can enjoy it.",
+    "commonErrors": [
+     "Thiếu từ nối trình tự",
+     "Dùng a với danh từ không đếm được (a rice)",
+     "Quên giải thích lý do món ăn phổ biến"
+    ]
+   }
+  },
+  {
+   "code": "M0-U05-L4-E02",
+   "lessonCode": "M0-U05-L4",
+   "order": 2,
    "autoGrade": true,
    "points": 7,
    "source": "original",
@@ -1612,51 +1657,6 @@
      "explanation": ""
     }
    ]
-  },
-  {
-   "code": "M0-U05-L4-E02",
-   "lessonCode": "M0-U05-L4",
-   "order": 2,
-   "autoGrade": false,
-   "points": 10,
-   "source": "original",
-   "difficulty": 1,
-   "type": "paragraph_writing",
-   "title": "Writing: a popular dish in your country (Ex. 23, 26)",
-   "instruction": "Using what you have learnt in this unit, write about a popular dish in your country or a dish you like (120–150 words). Include: (1) the ingredients you need; (2) step-by-step instructions (First, Then, After this, Finally…); (3) why the dish is popular.",
-   "responseSlots": 1,
-   "rubric": {
-    "bandFocus": [
-     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
-    ],
-    "minWords": 110,
-    "maxWords": 170,
-    "mustUse": 4,
-    "targetStructures": [
-     "First",
-     "Then",
-     "After this",
-     "Finally",
-     "some",
-     "chop",
-     "boil",
-     "fry",
-     "because"
-    ],
-    "checklist": [
-     "Nêu nguyên liệu (dùng a/an/some đúng)",
-     "Các bước theo thứ tự với từ nối trình tự",
-     "Dùng động từ chế biến (chop, mix, fry, boil…)",
-     "Giải thích vì sao món ăn phổ biến",
-     "120–150 từ"
-    ],
-    "sampleAnswer": "Bánh mì is one of the most popular foods in Vietnam. To make it, you need a baguette, some pork, some pâté, a cucumber, a carrot, some fresh herbs and some chilli sauce.\n\nFirst, cut the carrot into thin pieces and mix it with a little sugar and vinegar. Then, cut the pork into slices and fry it in a pan for about ten minutes with some garlic and soy sauce. After this, cut the baguette in half and spread some pâté inside. Next, add the pork, the carrot, some cucumber and the herbs. Finally, put some chilli sauce on top and close the bread.\n\nBánh mì is popular because it is cheap, quick and delicious. You can buy it on almost every street, and people often eat it for breakfast on the way to school or work. You can also change the filling, so everybody can enjoy it.",
-    "commonErrors": [
-     "Thiếu từ nối trình tự",
-     "Dùng a với danh từ không đếm được (a rice)",
-     "Quên giải thích lý do món ăn phổ biến"
-    ]
-   }
   },
   {
    "code": "M0-U05-L5-E01",
@@ -1736,6 +1736,43 @@
    "code": "M0-U05-L6-E01",
    "lessonCode": "M0-U05-L6",
    "order": 1,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Speaking: questions about food (Ex. 3, 20)",
+   "instruction": "Answer each question in 15–25 seconds.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "What is your favourite food from your country?",
+     "sampleAnswer": "My favourite Vietnamese food is bún chả. It's grilled pork with rice noodles and fresh herbs. I love it because the meat is sweet and smoky, and it's perfect for lunch on a hot day.",
+     "sampleNote": "Món + mô tả nguyên liệu + lý do.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "What food is popular in your country?",
+     "sampleAnswer": "Rice is the most popular food in Vietnam – we eat it almost every day. Noodle soups like phở are also very popular, especially for breakfast.",
+     "sampleNote": "Nêu 2 ví dụ.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "How much water do you drink every day?",
+     "sampleAnswer": "Not as much as I should! I probably drink about four glasses a day, but I know I need to drink more, especially when I play sport.",
+     "sampleNote": "Câu trả lời trung thực + chi tiết.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U05-L6-E02",
+   "lessonCode": "M0-U05-L6",
+   "order": 2,
    "autoGrade": true,
    "points": 4,
    "source": "original",
@@ -1849,9 +1886,9 @@
    ]
   },
   {
-   "code": "M0-U05-L6-E02",
+   "code": "M0-U05-L6-E03",
    "lessonCode": "M0-U05-L6",
-   "order": 2,
+   "order": 3,
    "autoGrade": false,
    "points": 10,
    "source": "original",
@@ -1867,43 +1904,6 @@
      "prompt": "Talk about a meal that you enjoy.\nYou should say:\n• who prepares it for you\n• when you eat it\nand explain why you like it.",
      "sampleAnswer": "The meal I enjoy most is my grandmother's fish soup with rice. She usually prepares it for the whole family when we visit her house on Sunday. First, she fries some tomatoes and onions, then she adds fresh fish, pineapple and some herbs, and boils everything for about twenty minutes. The kitchen smells delicious! We usually eat it at lunchtime, all together around a big table, so it's a very happy time. I like this meal for two reasons. Firstly, it's healthy and not too heavy, so I never feel tired after eating it. Secondly, it reminds me of my childhood, because my grandmother has cooked it for me since I was very small. I've tried fish soup in restaurants, but it's never as good as hers.",
      "sampleNote": "Đủ 3 ý theo thứ tự (who → when → why), có mô tả cách nấu bằng động từ của unit, phần \"why\" có 2 lý do (Firstly, Secondly).",
-     "sampleSource": "new"
-    }
-   ]
-  },
-  {
-   "code": "M0-U05-L6-E03",
-   "lessonCode": "M0-U05-L6",
-   "order": 3,
-   "autoGrade": false,
-   "points": 10,
-   "source": "original",
-   "difficulty": 1,
-   "type": "speaking_response",
-   "title": "Speaking: questions about food (Ex. 3, 20)",
-   "instruction": "Answer each question in 15–25 seconds.",
-   "speakingPart": 1,
-   "speakingPrepSeconds": 10,
-   "items": [
-    {
-     "id": "s1",
-     "prompt": "What is your favourite food from your country?",
-     "sampleAnswer": "My favourite Vietnamese food is bún chả. It's grilled pork with rice noodles and fresh herbs. I love it because the meat is sweet and smoky, and it's perfect for lunch on a hot day.",
-     "sampleNote": "Món + mô tả nguyên liệu + lý do.",
-     "sampleSource": "new"
-    },
-    {
-     "id": "s2",
-     "prompt": "What food is popular in your country?",
-     "sampleAnswer": "Rice is the most popular food in Vietnam – we eat it almost every day. Noodle soups like phở are also very popular, especially for breakfast.",
-     "sampleNote": "Nêu 2 ví dụ.",
-     "sampleSource": "new"
-    },
-    {
-     "id": "s3",
-     "prompt": "How much water do you drink every day?",
-     "sampleAnswer": "Not as much as I should! I probably drink about four glasses a day, but I know I need to drink more, especially when I play sport.",
-     "sampleNote": "Câu trả lời trung thực + chi tiết.",
      "sampleSource": "new"
     }
    ]

@@ -597,56 +597,6 @@
    "lessonCode": "M2-U06-L4",
    "order": 4,
    "autoGrade": true,
-   "points": 6,
-   "source": "original",
-   "difficulty": 1,
-   "type": "matching",
-   "title": "Signposting (Ex. 16)",
-   "instruction": "Listen again to the lecturer talking about people's concerns. Match each signposting expression with its function: sequencing (SE), contrast (C), addition (AD), summarising (SU), topic change (T) or attitude (AT).",
-   "items": [
-    {
-     "id": "m1",
-     "left": "The first and possibly most significant environmental concern is …",
-     "right": "sequencing (SE)",
-     "explanation": ""
-    },
-    {
-     "id": "m2",
-     "left": "What's more, it is likely that …",
-     "right": "addition (AD)",
-     "explanation": ""
-    },
-    {
-     "id": "m3",
-     "left": "While there's clearly an increase in economic activity …",
-     "right": "contrast (C)",
-     "explanation": ""
-    },
-    {
-     "id": "m4",
-     "left": "Now I'd like to turn to the economic concerns.",
-     "right": "topic change (T)",
-     "explanation": ""
-    },
-    {
-     "id": "m5",
-     "left": "Clearly, a lot more research needs to be done …",
-     "right": "attitude (AT)",
-     "explanation": ""
-    },
-    {
-     "id": "m6",
-     "left": "So to summarise, there are significant environmental …",
-     "right": "summarising (SU)",
-     "explanation": ""
-    }
-   ]
-  },
-  {
-   "code": "M2-U06-L4-E05",
-   "lessonCode": "M2-U06-L4",
-   "order": 5,
-   "autoGrade": true,
    "points": 3,
    "source": "original",
    "difficulty": 1,
@@ -671,6 +621,178 @@
      "left": "lower energy bills",
      "right": "energy prices will come down",
      "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U06-L4-E05",
+   "lessonCode": "M2-U06-L4",
+   "order": 5,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Signposting (Ex. 16)",
+   "instruction": "Listen again to the lecturer talking about people's concerns. Complete each sentence with a signposting word or expression from the box, then write its function: sequencing (SE), contrast (C), addition (AD), summarising (SU), topic change (T) or attitude (AT). Example: To begin with, let's look at the environmental concerns. → SE",
+   "wordBank": [
+    "clearly",
+    "earlier",
+    "to begin with",
+    "secondly",
+    "now",
+    "while",
+    "that",
+    "first",
+    "to summarise",
+    "what's more",
+    "last"
+   ],
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "The ____ and possibly most significant environmental concern is … → ____",
+     "blanks": [
+      {
+       "accept": [
+        "first"
+       ]
+      },
+      {
+       "accept": [
+        "SE",
+        "sequencing"
+       ]
+      }
+     ],
+     "explanation": "first = thứ nhất → liệt kê theo trình tự (sequencing)."
+    },
+    {
+     "id": "g2",
+     "prompt": "____, it is likely that, although countries which produce shale gas … → ____",
+     "blanks": [
+      {
+       "accept": [
+        "What's more",
+        "Whats more"
+       ]
+      },
+      {
+       "accept": [
+        "AD",
+        "addition"
+       ]
+      }
+     ],
+     "explanation": "What's more = hơn nữa → thêm ý (addition)."
+    },
+    {
+     "id": "g3",
+     "prompt": "____, there are serious pollution problems … → ____",
+     "blanks": [
+      {
+       "accept": [
+        "Secondly"
+       ]
+      },
+      {
+       "accept": [
+        "SE",
+        "sequencing"
+       ]
+      }
+     ],
+     "explanation": "Secondly = thứ hai → trình tự (sequencing)."
+    },
+    {
+     "id": "g4",
+     "prompt": "The ____ environmental concern connected with drilling is that of earthquakes. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "last"
+       ]
+      },
+      {
+       "accept": [
+        "SE",
+        "sequencing"
+       ]
+      }
+     ],
+     "explanation": "The last … = mối lo cuối cùng → trình tự (sequencing)."
+    },
+    {
+     "id": "g5",
+     "prompt": "____ I'd like to turn to the economic concerns. → ____",
+     "blanks": [
+      {
+       "accept": [
+        "Now"
+       ]
+      },
+      {
+       "accept": [
+        "T",
+        "topic change"
+       ]
+      }
+     ],
+     "explanation": "Now I'd like to turn to … = chuyển sang chủ đề mới (topic change)."
+    },
+    {
+     "id": "g6",
+     "prompt": "____ there's clearly an increase in economic activity … → ____",
+     "blanks": [
+      {
+       "accept": [
+        "While"
+       ]
+      },
+      {
+       "accept": [
+        "C",
+        "contrast"
+       ]
+      }
+     ],
+     "explanation": "While = trong khi → đối lập (contrast)."
+    },
+    {
+     "id": "g7",
+     "prompt": "As I mentioned ____, there are a lot of concerns … → ____",
+     "blanks": [
+      {
+       "accept": [
+        "earlier"
+       ]
+      },
+      {
+       "accept": [
+        "SE",
+        "sequencing"
+       ]
+      }
+     ],
+     "explanation": "As I mentioned earlier = như tôi đã nói ở trên → nhắc lại trình tự bài nói (sequencing, theo Answer Key)."
+    },
+    {
+     "id": "g8",
+     "prompt": "____, a lot more research needs to be done … → ____",
+     "blanks": [
+      {
+       "accept": [
+        "Clearly"
+       ]
+      },
+      {
+       "accept": [
+        "AT",
+        "attitude"
+       ]
+      }
+     ],
+     "explanation": "Clearly = rõ ràng → thể hiện thái độ/quan điểm người nói (attitude)."
     }
    ]
   }

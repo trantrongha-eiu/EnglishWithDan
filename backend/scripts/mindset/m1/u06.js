@@ -321,7 +321,7 @@ module.exports = {
         dragDropConfig: { text: '', words: ['art gallery', 'cinema', 'live music', 'car park', 'restaurants', 'exhibition centre', 'Arena', 'shopping centre'] },
         questions: mapQs(1, [
           ['Place 1 (on the map)', 'exhibition centre', lx('Vị trí 1', 'Đoạn 2.', ['on Main Avenue, on your right, there are several restaurants, and opposite these on your left is an exhibition centre', 'There used to be a cinema here'], 'Vị trí 1 ở bên trái Main Avenue → exhibition centre. BẪY: cinema đã chuyển đi.')],
-          ['Place 2 (on the map)', 'restaurants', lx('Vị trí 2', 'Đoạn 2.', 'on Main Avenue, on your right, there are several restaurants', '')],
+          ['Place 2 (on the map)', 'art gallery', lx('Vị trí 2', 'Đoạn 3.', ["I suggest that we go to the one at the end of Main Avenue", "It's right at the end, after you pass the art gallery on the right"], 'Ô 2 nằm bên phải Main Avenue, ngay trước quán cà phê ở cuối đường → art gallery (Answer Key: 2 A). BẪY: "restaurants" cũng ở bên phải nhưng là ba ô nhỏ gần lối vào, không đánh số.')],
           ['Place 3 (on the map)', 'shopping centre', lx('Vị trí 3', 'Đoạn 4.', 'to get into the Arena we just need to go through the shopping centre, which will be on our right once we go back down Main Avenue', '')],
           ['Place 4 (on the map)', 'Arena', lx('Vị trí 4', 'Đoạn 4.', 'the Arena is the other side of it', 'Arena nằm sau trung tâm mua sắm.')],
         ]),

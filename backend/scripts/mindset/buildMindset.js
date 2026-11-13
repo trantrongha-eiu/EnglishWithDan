@@ -36,6 +36,42 @@ const KEYS = [
 const OBJECTIVE = new Set(['mcq', 'gap_fill', 'error_correction', 'word_form', 'categorize', 'matching', 'ordering', 'sentence_transform']);
 const pad = (n) => String(n).padStart(2, '0');
 
+// Book position of an exercise / practice link from its title tag:
+// "(Ex. 7)" → 7, "(Ex. 5–6)" → 5, "(G&V Ex. 3)" → 1003 (the Grammar and
+// Vocabulary page closes the unit), "(Lead-in)" → 0. null = untagged.
+function bookKey(title) {
+  const m = /(G&V )?Ex\.?\s?(\d+)/.exec(String(title || ''));
+  if (m) return (m[1] ? 1000 : 0) + Number(m[2]);
+  if (/Lead-in/i.test(title)) return 0;
+  return null;
+}
+// Lesson flow in book order. Untagged exercises (warm-ups the course adds)
+// stay glued to the exercise written before them (or open the lesson); ties
+// keep the authored order. Each Reading/Listening link gets `step` = how
+// many exercises come before it, so the lesson page can interleave them.
+function bookOrder(exs, links) {
+  let prev = -1;
+  const keyed = exs.map((e, i) => {
+    const k = bookKey(e.title);
+    if (k != null) prev = k;
+    return { e, i, k: k != null ? k : prev };
+  });
+  keyed.sort((a, b) => (a.k - b.k) || (a.i - b.i));
+  for (const p of links) {
+    if (p.grammar) continue;
+    // "Exam skills" closes the book's section → its LAST exercise number
+    // ("(Ex. 14, 23)" → 23); other tests sit at their first one.
+    let k = bookKey(p.title);
+    if (/^Exam skills/i.test(p.title)) {
+      const tag = /\(Ex\.?([^)]*)\)/.exec(p.title);
+      const nums = tag ? (tag[1].match(/\d+/g) || []).map(Number) : [];
+      if (nums.length) k = Math.max(...nums);
+    }
+    p.step = k == null ? keyed.length : keyed.filter((x) => x.k <= k).length;
+  }
+  return keyed.map((x) => x.e);
+}
+
 function buildUnit(lv, u) {
   const mod = `${lv.prefix}-U${pad(u.n)}`;
   const module = {
@@ -52,7 +88,8 @@ function buildUnit(lv, u) {
     if (!l) continue;
     order++;
     const code = `${mod}-L${order}`;
-    const exs = (l.ex || []).map((e, i) => {
+    const linkSpecs = (l.links || []).map((p) => ({ ...p }));
+    const exs = bookOrder(l.ex || [], linkSpecs).map((e, i) => {
       const objective = OBJECTIVE.has(e.type);
       return {
         code: `${code}-E${pad(i + 1)}`, lessonCode: code, order: i + 1,
@@ -84,10 +121,10 @@ function buildUnit(lv, u) {
     if (l.images && l.images.length) {
       lesson.images = l.images.map((im) => (typeof im === 'string' ? { url: im.split('|')[0], caption: im.split('|')[1] || '' } : im));
     }
-    if (l.links && l.links.length) {
-      lesson.practiceLinks = l.links.map((p) => {
+    if (linkSpecs.length) {
+      lesson.practiceLinks = linkSpecs.map((p) => {
         if (p.grammar) return { kind: 'grammar', title: p.title, note: p.note || '', url: '/essential-grammar.html?lesson=' + p.grammar };
-        return { ref: p.ref, kind: p.ref.split(':')[0], title: p.title, note: p.note || '' };
+        return { ref: p.ref, kind: p.ref.split(':')[0], title: p.title, note: p.note || '', step: p.step };
       });
     }
     // l.slot overrides the per-skill default (Mindset 1/2 print "Sổ N" per unit pair).

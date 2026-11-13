@@ -193,7 +193,8 @@
      "ref": "reading:M0-U06-R1",
      "kind": "reading",
      "title": "Signs and messages — 7 văn bản ngắn (Ex. 5–6)",
-     "note": "Chọn A, B hoặc C: văn bản này nói gì / người viết muốn gì?"
+     "note": "Chọn A, B hoặc C: văn bản này nói gì / người viết muốn gì?",
+     "step": 0
     }
    ],
    "vocabSave": {
@@ -462,13 +463,15 @@
      "ref": "listening:M0-U06-L1",
      "kind": "listening",
      "title": "Northfields' Shopping Centre — Part 1 (Ex. 7–8)",
-     "note": "Điền 5 thông tin: tên kiến trúc sư, mã bưu chính, ngày mở muộn, số tuyến xe buýt, thời gian đi tàu điện ngầm."
+     "note": "Điền 5 thông tin: tên kiến trúc sư, mã bưu chính, ngày mở muộn, số tuyến xe buýt, thời gian đi tàu điện ngầm.",
+     "step": 0
     },
     {
      "ref": "listening:M0-U06-L2",
      "kind": "listening",
      "title": "Northfields' Shopping Centre — Part 2 (Ex. 10)",
-     "note": "Nhìn bản đồ và chọn chữ cái A–F cho 6 cửa hàng."
+     "note": "Nhìn bản đồ và chọn chữ cái A–F cho 6 cửa hàng.",
+     "step": 1
     }
    ],
    "vocabSave": {

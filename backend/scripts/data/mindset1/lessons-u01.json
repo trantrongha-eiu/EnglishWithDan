@@ -340,13 +340,15 @@
      "ref": "reading:M1-U01-R1",
      "kind": "reading",
      "title": "Blood is thicker than water (Ex. 5–8)",
-     "note": "7 câu short-answer — gạch chân từ khoá, scan, chép đúng từ trong bài."
+     "note": "7 câu short-answer — gạch chân từ khoá, scan, chép đúng từ trong bài.",
+     "step": 2
     },
     {
      "ref": "reading:M1-U01-R2",
      "kind": "reading",
      "title": "Exam skills: Social media and the meaning of friendship (Ex. 12)",
-     "note": "5 câu hỏi, NO MORE THAN THREE WORDS."
+     "note": "5 câu hỏi, NO MORE THAN THREE WORDS.",
+     "step": 5
     }
    ]
   },
@@ -476,37 +478,43 @@
      "ref": "listening:M1-U01-L1",
      "kind": "listening",
      "title": "Two Section 1 conversations (Ex. 2–4)",
-     "note": "Tình huống nào? Người nói nam hay nữ? Khách muốn gì?"
+     "note": "Tình huống nào? Người nói nam hay nữ? Khách muốn gì?",
+     "step": 1
     },
     {
      "ref": "listening:M1-U01-L2",
      "kind": "listening",
      "title": "Listening for numbers (Ex. 5)",
-     "note": "Chọn số bạn nghe được trong mỗi cặp."
+     "note": "Chọn số bạn nghe được trong mỗi cặp.",
+     "step": 1
     },
     {
      "ref": "listening:M1-U01-L3",
      "kind": "listening",
      "title": "Booking a table (Ex. 6–7)",
-     "note": "Bao nhiêu người? Ngày nào? Phòng chứa tối đa bao nhiêu người?"
+     "note": "Bao nhiêu người? Ngày nào? Phòng chứa tối đa bao nhiêu người?",
+     "step": 1
     },
     {
      "ref": "listening:M1-U01-L4",
      "kind": "listening",
      "title": "The total cost (Ex. 8)",
-     "note": "318 hay 380?"
+     "note": "318 hay 380?",
+     "step": 2
     },
     {
      "ref": "listening:M1-U01-L5",
      "kind": "listening",
      "title": "Buying earrings (Ex. 9–10)",
-     "note": "Giá đôi bông tai và tiền gói quà."
+     "note": "Giá đôi bông tai và tiền gói quà.",
+     "step": 2
     },
     {
      "ref": "listening:M1-U01-L6",
      "kind": "listening",
      "title": "Exam skills: a family celebration in Korea (Ex. 13)",
-     "note": "6 câu multiple choice A, B, C."
+     "note": "6 câu multiple choice A, B, C.",
+     "step": 4
     }
    ],
    "vocabSave": {

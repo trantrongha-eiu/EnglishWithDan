@@ -51,6 +51,7 @@ function hwRuleTag(resourceType) {
   if (resourceType === 'task1_grammar_set2') return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm hết các câu Bộ 2 của kỹ năng này (link mở đúng các câu đó), đúng từ 70% trở lên">Làm hết · ≥70%</span>';
   if (resourceType === 'speaking_topic') return '<span class="hw-res-tag hw-res-tag--quiz" title="Bấm Bắt đầu để trả lời lần lượt TẤT CẢ câu hỏi của chủ đề trong một lượt (Part 2 có kèm luôn các câu Part 3). Bỏ trống câu nào thì chưa tính hoàn thành.">Trả lời hết các câu</span>';
   if (resourceType === 'speaking_part2') return '<span class="hw-res-tag hw-res-tag--quiz" title="Thuộc từ 70% câu chuyện trở lên: mỗi câu của 7 khung nói cần nhại (shadowing) đạt và dịch đúng">≥70% câu chuyện</span>';
+  if (resourceType === 'mindset_course_lesson') return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm hết mọi bài trong buổi học; các bài trắc nghiệm / điền từ đạt trung bình từ 70% trở lên VÀ mỗi bài Reading/Listening của buổi đạt từ 70% trở lên (lấy lần làm tốt nhất — làm lại để nâng điểm)">Làm hết · ≥70% · R/L ≥70%</span>';
   if (HW_COURSE_TYPES.has(resourceType)) return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm hết mọi bài trong buổi học; các bài trắc nghiệm / điền từ phải đạt trung bình từ 70% trở lên (làm lại để nâng điểm)">Làm hết · ≥70%</span>';
   if (HW_WORD_MIN[resourceType]) return `<span class="hw-res-tag hw-res-tag--writing" title="Cần nộp đủ ít nhất ${HW_WORD_MIN[resourceType]} từ mới tính hoàn thành">≥${HW_WORD_MIN[resourceType]} từ</span>`;
   return '';
@@ -445,7 +446,7 @@ function hwRender(card, data, { stale = false } = {}) {
   const rules = `<details class="hw-rules"${rulesWasOpen ? ' open' : ''}>
     <summary>ℹ️ Cách tính bài tập đã hoàn thành</summary>
     <ul>
-      <li><span class="hw-res-tag hw-res-tag--quiz">≥70%</span> Bài có chấm điểm (grammar, vocabulary, viết câu, template, buổi học khóa Writing/Speaking…): cần đạt <b>từ 70% số điểm trở lên</b> mới tính hoàn thành.</li>
+      <li><span class="hw-res-tag hw-res-tag--quiz">≥70%</span> Bài có chấm điểm (grammar, vocabulary, viết câu, template, buổi học khóa Writing/Speaking…): cần đạt <b>từ 70% số điểm trở lên</b> mới tính hoàn thành. Buổi học <b>Mindset</b>: thêm điều kiện mỗi bài Reading/Listening của buổi cũng phải đạt <b>từ 70%</b>.</li>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥${PRACTICE_PASS}%</span> Reading / Listening (đề full, bài đọc lẻ, bài nghe lẻ, dictation): cần đạt <b>từ ${PRACTICE_PASS}% số điểm trở lên</b> là tự động tính hoàn thành.</li>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥${GAPFILL_MIN_CORRECT} câu đúng</span> Bài nghe Gap-fill: cần điền <b>đúng ít nhất ${GAPFILL_MIN_CORRECT} chỗ trống</b> trên tổng số chỗ trống của bài.</li>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥70% đúng</span> Học từ trong sổ từ vựng: chỉ tính <b>Sổ 1–5</b> (sổ mặc định; nếu giáo viên chỉ định sổ thì phải học đúng sổ đó). Sổ phải có <b>đủ số từ giáo viên giao</b> (thiếu thì tự lưu thêm từ vào sổ), rồi luyện tập (quiz/flashcard) <b>đủ số từ đó</b> và trả lời đúng <b>từ 70%</b> trở lên. Đổi trạng thái "đã thuộc" bằng tay không được tính.</li>

@@ -24,7 +24,9 @@ Mỗi unit là một module trên hệ khóa học WT1, gồm tối đa 7 buổi
 
 Khối **"Lưu vào Sổ N trên web"** ở cuối mỗi buổi có nút lưu một chạm vào sổ mặc định N của học viên (`VocabBook.defaultSlot`). Danh sách "từ: nghĩa" kèm câu ví dụ vẫn hiện để chép vào "Nhập hàng loạt". Trùng từ thì bỏ qua.
 
-Giáo viên giao bài từng buổi qua loại bài tập về nhà **"Mindset (Buổi học)"** (`mindset_course_lesson`). Bài tự tick khi học viên làm hết các bài của buổi và đạt ≥70%.
+Trong mỗi buổi, bài tập và bài Reading/Listening (giao diện thi thật) hiện **xen kẽ theo đúng thứ tự số bài trong sách** ("Các bước của buổi học"). `buildMindset.js` sắp bài theo thẻ `(Ex. N)` / `(G&V Ex. N)` (G&V xếp sau cùng vì trang Grammar and Vocabulary đóng unit; bài không có số đi liền sau bài đứng trước nó), gán mã bài theo vị trí mới, và ghi `step` cho mỗi link Reading/Listening (số bài tập đứng trước nó; bài "Exam skills" lấy số bài lớn nhất). Thẻ bài Reading/Listening hiện điểm tốt nhất của học viên.
+
+Admin **và giáo viên** giao bài từng buổi qua loại bài tập về nhà **"Mindset (Buổi học)"** (`mindset_course_lesson`). Bộ chọn hiện "Mindset 1 · Unit 3 · Buổi 2 — …", lọc theo quyển · unit và có nút "Chọn tất cả". Bài tự tick khi học viên làm hết các bài của buổi, các bài tự chấm đạt trung bình ≥70% **và mỗi bài Reading/Listening của buổi đạt ≥70%** (lần làm tốt nhất, `services/coursePracticeService.js`).
 
 ## 2. Nội dung quyển 0 đã soạn
 
@@ -91,3 +93,4 @@ Lần soạn đầu quyển 0 bị sót: G&V 4 (U2), G&V 6 + Ex. 15 (U3), G&V 1/
 6. Sau khi đã seed lên production: **chỉ thêm bài vào cuối buổi, thêm câu vào cuối bài**. Mã bài = vị trí trong buổi (`M0-U05-L3-E07`), chèn giữa sẽ làm lệch bài làm cũ của học viên. Buổi mới chỉ thêm ở cuối unit (review là buổi cuối).
 7. Chạy bộ chấm thật với đáp án của chính bài (mọi bài tự chấm phải đạt 100%) và kiểm tra số `____` khớp số ô trống.
 8. Không tin chú thích "PDF không có" — mở trang PDF kiểm tra lại (G&V 6 của U3 thực ra có trong PDF).
+9. Rà soát 13/11/2026 (sau khi seed): so từng đáp án web với Answer Key (cắt cột key bằng pymupdf, tìm đáp án trong khối Unit) và **đếm số câu mỗi bài trong key so với web**. Đã sửa: M1 U6 Listening Ex. 7 câu 2 (art gallery, không phải restaurants), M0 U1 G&V 7 thiếu câu 6 và 10, M0 U3 Ex. 15 thiếu 3 câu, M0 U4 Ex. 17 thiếu ô 13 và 16, M0 U10 Ex. 10/12 thiếu ô, M2 U6 Ex. 16 làm lại đủ 8 câu như bảng trong sách. Sách tự mâu thuẫn: M0 U1 G&V 7 câu 9 (từ cho sẵn "father", key ghi "mother") → theo từ cho sẵn.

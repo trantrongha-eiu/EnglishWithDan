@@ -51,6 +51,60 @@
    "lessonCode": "M2-U05-L2",
    "order": 1,
    "autoGrade": true,
+   "points": 2,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "What kind of text is it? (Ex. 5, 11)",
+   "instruction": "Decide whether each text is mainly factual, theoretical or opinion-based.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Successful entrepreneurs (Carnegie, Ford, Lauder, Jobs)",
+     "options": [
+      {
+       "id": "A",
+       "text": "factual"
+      },
+      {
+       "id": "B",
+       "text": "theoretical"
+      },
+      {
+       "id": "C",
+       "text": "opinion-based"
+      }
+     ],
+     "answer": "A",
+     "explanation": "Toàn năm, số liệu, sự kiện."
+    },
+    {
+     "id": "q2",
+     "prompt": "Business ideas of the future",
+     "options": [
+      {
+       "id": "A",
+       "text": "factual"
+      },
+      {
+       "id": "B",
+       "text": "theoretical"
+      },
+      {
+       "id": "C",
+       "text": "opinion-based"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Answer Key: chủ yếu là ý kiến/dự đoán của nhiều người (predicts, believes, feels, warns)."
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L2-E02",
+   "lessonCode": "M2-U05-L2",
+   "order": 2,
+   "autoGrade": true,
    "points": 7,
    "source": "original",
    "difficulty": 1,
@@ -108,9 +162,9 @@
    ]
   },
   {
-   "code": "M2-U05-L2-E02",
+   "code": "M2-U05-L2-E03",
    "lessonCode": "M2-U05-L2",
-   "order": 2,
+   "order": 3,
    "autoGrade": true,
    "points": 6,
    "source": "original",
@@ -158,144 +212,9 @@
    ]
   },
   {
-   "code": "M2-U05-L2-E03",
-   "lessonCode": "M2-U05-L2",
-   "order": 3,
-   "autoGrade": true,
-   "points": 2,
-   "source": "original",
-   "difficulty": 1,
-   "type": "mcq",
-   "title": "What kind of text is it? (Ex. 5, 11)",
-   "instruction": "Decide whether each text is mainly factual, theoretical or opinion-based.",
-   "items": [
-    {
-     "id": "q1",
-     "prompt": "Successful entrepreneurs (Carnegie, Ford, Lauder, Jobs)",
-     "options": [
-      {
-       "id": "A",
-       "text": "factual"
-      },
-      {
-       "id": "B",
-       "text": "theoretical"
-      },
-      {
-       "id": "C",
-       "text": "opinion-based"
-      }
-     ],
-     "answer": "A",
-     "explanation": "Toàn năm, số liệu, sự kiện."
-    },
-    {
-     "id": "q2",
-     "prompt": "Business ideas of the future",
-     "options": [
-      {
-       "id": "A",
-       "text": "factual"
-      },
-      {
-       "id": "B",
-       "text": "theoretical"
-      },
-      {
-       "id": "C",
-       "text": "opinion-based"
-      }
-     ],
-     "answer": "C",
-     "explanation": "Answer Key: chủ yếu là ý kiến/dự đoán của nhiều người (predicts, believes, feels, warns)."
-    }
-   ]
-  },
-  {
    "code": "M2-U05-L2-E04",
    "lessonCode": "M2-U05-L2",
    "order": 4,
-   "autoGrade": true,
-   "points": 5,
-   "source": "original",
-   "difficulty": 1,
-   "type": "matching",
-   "title": "Sentence beginnings and endings (Ex. 17)",
-   "instruction": "Complete each sentence beginning, 1–5, with the correct ending, A–E.",
-   "items": [
-    {
-     "id": "m1",
-     "left": "Aside from the job itself,",
-     "right": "the work environment is very important to an employee.",
-     "explanation": ""
-    },
-    {
-     "id": "m2",
-     "left": "A positive work environment makes",
-     "right": "employees feel good about coming to work.",
-     "explanation": ""
-    },
-    {
-     "id": "m3",
-     "left": "If you're looking for a new job,",
-     "right": "assessing the work environment is very important.",
-     "explanation": ""
-    },
-    {
-     "id": "m4",
-     "left": "Having a sense of balance between work and personal life",
-     "right": "improves job satisfaction among employees.",
-     "explanation": ""
-    },
-    {
-     "id": "m5",
-     "left": "Employees should work in an environment",
-     "right": "where they are not afraid to suggest ideas for improvement.",
-     "explanation": ""
-    }
-   ]
-  },
-  {
-   "code": "M2-U05-L2-E05",
-   "lessonCode": "M2-U05-L2",
-   "order": 5,
-   "autoGrade": true,
-   "points": 3,
-   "source": "original",
-   "difficulty": 1,
-   "type": "matching",
-   "title": "Find the paragraph, then the ending (Ex. 19–21)",
-   "instruction": "Match each sentence beginning with its paragraph in \"Business ideas of the future\" and then with its ending.",
-   "stimulus": {
-    "kind": "passage",
-    "text": "Business ideas of the future\n\n**A** The most successful entrepreneurs are those who predict the needs of the future earlier than the competition. No new business start-up is without risk, but the benefits can be immeasurable. Inventions such as the automobile, the internet and the iPad were all initially met with a high degree of criticism, so it is important to maintain the belief that anything is possible! Below are just a few of the business ideas expected to be successful in the future.\n\n**B** Travelling to space used to be possible only for governments or large aerospace companies. This is no longer the case, however, and several private companies have planned tourist missions into space which are going to take place in the next few years. Consulting firm Futron Corporation predict that the space tourism industry will be worth $1.3 billion and have more than 25,000 customers in the next five to ten years. Space tourism pioneer Peter Diamandis also predicts that space hotels are going to be big business, with companies from around the world already working on such projects. Not everyone, however, is as convinced about the prospect of space tourism. Jeffrey Jones, a member of the Center for Space Medicine at Baylor College, warns that even a short journey into space could cause serious health problems for tourists of average or poor health.\n\n**C** Another idea comes from a company in New Zealand called Martin Aircraft. They have produced the first commercially available jetpack, which they plan to start selling next year. Initially, they will be sold to shops and cost approximately $150,000. The craft will work for short trips only, approximately 30 minutes, and manage speeds of up to 74 kph and an altitude of 914 m. The CEO of the company, Peter Coker, notes that, as well as being used by the rich for pleasure, they could also be useful in search-and-rescue operations.\n\n**D** Growing meat in a laboratory is an idea which, understandably, appeals greatly to animal rights activists. Jason Matheny, founder of the not-for-profit company New Harvest, also feels that producing meat in this way would satisfy a growing global demand for meat. It would also be healthier, more energy-efficient and sustainable. The Dutch scientist Professor Post, who served up the world's first laboratory-grown beef burger, predicts that 'cultured meat' will mean the end of traditional cattle farming within decades. Tracey Hayes, the CEO of the Northern Territory Cattlemen's Association in Australia, admits that although this technology could be damaging to the worldwide beef industry, it would not affect Australia, as cattle farming is a great Australian tradition.\n\n**E** According to a recent prediction made by the United Nations, in the future, 86% of people living in developed countries will live in cities. With this in mind, an idea called 'vertical farming' has emerged. Essentially, vertical farming comes from the belief that cities should not rely on rural areas for food but should grow their own crops by creating multi-storey, high-tech greenhouses. The idea for vertical farms came from the ecologist Dickson Despommier, who turned his knowledge of parasites into a way of looking at cities.\n\n**F** Daniel Kluka of Green Spirit Farms predicts that software will be used to look after these multiple farms remotely. For example, an app on a smartphone or tablet will be able to handle the day-to-day care of crops. Kluka also believes that this use of technology will help to keep costs to a minimum, allowing vertical farms to compete with traditional farms.",
-    "caption": "Business ideas of the future (p. 90)"
-   },
-   "items": [
-    {
-     "id": "m1",
-     "left": "Starting a new business can be difficult (paragraph A)",
-     "right": "but the rewards can be great.",
-     "explanation": "A: \"No new business start-up is without risk, but the benefits can be immeasurable.\""
-    },
-    {
-     "id": "m2",
-     "left": "The first jetpack available to the public (paragraph C)",
-     "right": "will not be able to travel far.",
-     "explanation": "C: \"The craft will work for short trips only\"."
-    },
-    {
-     "id": "m3",
-     "left": "Animal rights activists would definitely (paragraph D)",
-     "right": "support the idea of producing meat in a laboratory.",
-     "explanation": "D: \"appeals greatly to animal rights activists\"."
-    }
-   ]
-  },
-  {
-   "code": "M2-U05-L2-E06",
-   "lessonCode": "M2-U05-L2",
-   "order": 6,
    "autoGrade": true,
    "points": 5,
    "source": "original",
@@ -338,6 +257,87 @@
      "left": "significant impact on an existing business",
      "right": "mean the end of traditional cattle farming",
      "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L2-E05",
+   "lessonCode": "M2-U05-L2",
+   "order": 5,
+   "autoGrade": true,
+   "points": 5,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Sentence beginnings and endings (Ex. 17)",
+   "instruction": "Complete each sentence beginning, 1–5, with the correct ending, A–E.",
+   "items": [
+    {
+     "id": "m1",
+     "left": "Aside from the job itself,",
+     "right": "the work environment is very important to an employee.",
+     "explanation": ""
+    },
+    {
+     "id": "m2",
+     "left": "A positive work environment makes",
+     "right": "employees feel good about coming to work.",
+     "explanation": ""
+    },
+    {
+     "id": "m3",
+     "left": "If you're looking for a new job,",
+     "right": "assessing the work environment is very important.",
+     "explanation": ""
+    },
+    {
+     "id": "m4",
+     "left": "Having a sense of balance between work and personal life",
+     "right": "improves job satisfaction among employees.",
+     "explanation": ""
+    },
+    {
+     "id": "m5",
+     "left": "Employees should work in an environment",
+     "right": "where they are not afraid to suggest ideas for improvement.",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U05-L2-E06",
+   "lessonCode": "M2-U05-L2",
+   "order": 6,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "matching",
+   "title": "Find the paragraph, then the ending (Ex. 19–21)",
+   "instruction": "Match each sentence beginning with its paragraph in \"Business ideas of the future\" and then with its ending.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Business ideas of the future\n\n**A** The most successful entrepreneurs are those who predict the needs of the future earlier than the competition. No new business start-up is without risk, but the benefits can be immeasurable. Inventions such as the automobile, the internet and the iPad were all initially met with a high degree of criticism, so it is important to maintain the belief that anything is possible! Below are just a few of the business ideas expected to be successful in the future.\n\n**B** Travelling to space used to be possible only for governments or large aerospace companies. This is no longer the case, however, and several private companies have planned tourist missions into space which are going to take place in the next few years. Consulting firm Futron Corporation predict that the space tourism industry will be worth $1.3 billion and have more than 25,000 customers in the next five to ten years. Space tourism pioneer Peter Diamandis also predicts that space hotels are going to be big business, with companies from around the world already working on such projects. Not everyone, however, is as convinced about the prospect of space tourism. Jeffrey Jones, a member of the Center for Space Medicine at Baylor College, warns that even a short journey into space could cause serious health problems for tourists of average or poor health.\n\n**C** Another idea comes from a company in New Zealand called Martin Aircraft. They have produced the first commercially available jetpack, which they plan to start selling next year. Initially, they will be sold to shops and cost approximately $150,000. The craft will work for short trips only, approximately 30 minutes, and manage speeds of up to 74 kph and an altitude of 914 m. The CEO of the company, Peter Coker, notes that, as well as being used by the rich for pleasure, they could also be useful in search-and-rescue operations.\n\n**D** Growing meat in a laboratory is an idea which, understandably, appeals greatly to animal rights activists. Jason Matheny, founder of the not-for-profit company New Harvest, also feels that producing meat in this way would satisfy a growing global demand for meat. It would also be healthier, more energy-efficient and sustainable. The Dutch scientist Professor Post, who served up the world's first laboratory-grown beef burger, predicts that 'cultured meat' will mean the end of traditional cattle farming within decades. Tracey Hayes, the CEO of the Northern Territory Cattlemen's Association in Australia, admits that although this technology could be damaging to the worldwide beef industry, it would not affect Australia, as cattle farming is a great Australian tradition.\n\n**E** According to a recent prediction made by the United Nations, in the future, 86% of people living in developed countries will live in cities. With this in mind, an idea called 'vertical farming' has emerged. Essentially, vertical farming comes from the belief that cities should not rely on rural areas for food but should grow their own crops by creating multi-storey, high-tech greenhouses. The idea for vertical farms came from the ecologist Dickson Despommier, who turned his knowledge of parasites into a way of looking at cities.\n\n**F** Daniel Kluka of Green Spirit Farms predicts that software will be used to look after these multiple farms remotely. For example, an app on a smartphone or tablet will be able to handle the day-to-day care of crops. Kluka also believes that this use of technology will help to keep costs to a minimum, allowing vertical farms to compete with traditional farms.",
+    "caption": "Business ideas of the future (p. 90)"
+   },
+   "items": [
+    {
+     "id": "m1",
+     "left": "Starting a new business can be difficult (paragraph A)",
+     "right": "but the rewards can be great.",
+     "explanation": "A: \"No new business start-up is without risk, but the benefits can be immeasurable.\""
+    },
+    {
+     "id": "m2",
+     "left": "The first jetpack available to the public (paragraph C)",
+     "right": "will not be able to travel far.",
+     "explanation": "C: \"The craft will work for short trips only\"."
+    },
+    {
+     "id": "m3",
+     "left": "Animal rights activists would definitely (paragraph D)",
+     "right": "support the idea of producing meat in a laboratory.",
+     "explanation": "D: \"appeals greatly to animal rights activists\"."
     }
    ]
   },

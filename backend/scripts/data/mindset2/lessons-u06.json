@@ -294,19 +294,22 @@
      "ref": "reading:M2-U06-R1",
      "kind": "reading",
      "title": "The role of the modern zoo — Yes/No/Not Given + summary (Ex. 4, 7)",
-     "note": "4 câu Y/N/NG + 4 chỗ trống chọn từ trong khung."
+     "note": "4 câu Y/N/NG + 4 chỗ trống chọn từ trong khung.",
+     "step": 2
     },
     {
      "ref": "reading:M2-U06-R2",
      "kind": "reading",
      "title": "Mountain gorillas — summary from the text (Ex. 10)",
-     "note": "ONE WORD from the text."
+     "note": "ONE WORD from the text.",
+     "step": 3
     },
     {
      "ref": "reading:M2-U06-R3",
      "kind": "reading",
      "title": "Exam skills: How effective are conservation efforts? (Ex. 11–12)",
-     "note": "4 câu Y/N/NG + 6 chỗ trống chọn A–L."
+     "note": "4 câu Y/N/NG + 6 chỗ trống chọn A–L.",
+     "step": 3
     }
    ]
   },
@@ -433,7 +436,7 @@
    },
    "published": true,
    "exerciseCount": 5,
-   "totalPoints": 30,
+   "totalPoints": 32,
    "images": [
     {
      "url": "media:m2u06-pictures.jpg",
@@ -449,55 +452,64 @@
      "ref": "listening:M2-U06-L1",
      "kind": "listening",
      "title": "Energy sources (Ex. 1)",
-     "note": "Renewable hay non-renewable?"
+     "note": "Renewable hay non-renewable?",
+     "step": 0
     },
     {
      "ref": "listening:M2-U06-L2",
      "kind": "listening",
      "title": "Words from the lecture (Ex. 2)",
-     "note": "Nối mô tả với tranh A–D."
+     "note": "Nối mô tả với tranh A–D.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U06-L3",
      "kind": "listening",
      "title": "The fracking process: complete the diagram (Ex. 4)",
-     "note": "NO MORE THAN ONE WORD AND/OR A NUMBER."
+     "note": "NO MORE THAN ONE WORD AND/OR A NUMBER.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U06-L4",
      "kind": "listening",
      "title": "Fracking in different countries: quantifiers (Ex. 6)",
-     "note": "Chọn lượng từ đúng với ý người nói."
+     "note": "Chọn lượng từ đúng với ý người nói.",
+     "step": 2
     },
     {
      "ref": "listening:M2-U06-L5",
      "kind": "listening",
      "title": "The benefits of fracking: the main benefit (Ex. 8)",
-     "note": "Nghe ý, không nghe từ trùng."
+     "note": "Nghe ý, không nghe từ trùng.",
+     "step": 3
     },
     {
      "ref": "listening:M2-U06-L6",
      "kind": "listening",
      "title": "Benefits: jobs and businesses (Ex. 11)",
-     "note": "Gạch chân từ quan trọng trước khi nghe."
+     "note": "Gạch chân từ quan trọng trước khi nghe.",
+     "step": 4
     },
     {
      "ref": "listening:M2-U06-L7",
      "kind": "listening",
      "title": "Benefits for the environment (Ex. 13)",
-     "note": "2 câu multiple choice."
+     "note": "2 câu multiple choice.",
+     "step": 4
     },
     {
      "ref": "listening:M2-U06-L8",
      "kind": "listening",
      "title": "People's concerns about fracking (Ex. 14)",
-     "note": "4 câu multiple choice."
+     "note": "4 câu multiple choice.",
+     "step": 4
     },
     {
      "ref": "listening:M2-U06-L9",
      "kind": "listening",
      "title": "Exam skills: the future of energy (Ex. 17)",
-     "note": "5 câu multiple choice."
+     "note": "5 câu multiple choice.",
+     "step": 5
     }
    ],
    "vocabSave": {

@@ -28,6 +28,7 @@ const WT1Progress = require('../models/WT1Progress');
 const ReviewBypassCode = require('../models/ReviewBypassCode');
 const { NotFoundError, AuthorizationError } = require('../errors/AppError');
 const grading = require('./wt1GradingService');
+const coursePractice = require('./coursePracticeService');
 
 const COURSE_CODE = 'IELTS-W-T1';
 // The WT1 stack is course-agnostic — the same models / routes / grading /
@@ -280,6 +281,9 @@ function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons,
       isTest: !!l.isTest, exerciseCount: cnt.count, doneCount,
       objectives: l.objectives || [], durationMinutes: l.durationMinutes,
       done, scorePercent: objAvg, unlocked, needsTestCode,
+      // Mindset: Reading/Listening tests linked from the lesson (done on
+      // reading.html / listening.html, not counted in exerciseCount)
+      practiceCount: (l.practiceLinks || []).filter((p) => p.kind === 'reading' || p.kind === 'listening').length,
     };
   });
 }
@@ -400,7 +404,8 @@ async function getLesson(code, userId, opts = {}) {
       theory: lesson.theory || [],
       bookModels: lesson.bookModels || [],
       vocabSave: lesson.vocabSave && lesson.vocabSave.words && lesson.vocabSave.words.length ? lesson.vocabSave : null,
-      practiceLinks: lesson.practiceLinks || [],
+      // Reading/Listening links carry the student's best result (Mindset).
+      practiceLinks: await coursePractice.withResults(userId, lesson.practiceLinks || []),
       images: lesson.images || [],
       totalPoints: lesson.totalPoints,
     },

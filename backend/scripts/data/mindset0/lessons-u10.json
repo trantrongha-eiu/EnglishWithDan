@@ -188,7 +188,8 @@
      "ref": "reading:M0-U10-R1",
      "kind": "reading",
      "title": "How people communicate on the internet (Ex. 5–6)",
-     "note": "Chọn tiêu đề, rồi hoàn thành 5 câu diễn đạt lại (1–3 từ)."
+     "note": "Chọn tiêu đề, rồi hoàn thành 5 câu diễn đạt lại (1–3 từ).",
+     "step": 2
     }
    ],
    "vocabSave": {
@@ -445,19 +446,22 @@
      "ref": "listening:M0-U10-L1",
      "kind": "listening",
      "title": "Smartphones lecture — Part 1 (Ex. 7–8)",
-     "note": "Nghe và điền công dụng của 6 bộ phận điện thoại."
+     "note": "Nghe và điền công dụng của 6 bộ phận điện thoại.",
+     "step": 1
     },
     {
      "ref": "listening:M0-U10-L2",
      "kind": "listening",
      "title": "Smartphones lecture — Part 2 (Ex. 9)",
-     "note": "Điền % dân số có điện thoại thông minh năm 2010, 2015, 2020, 2025."
+     "note": "Điền % dân số có điện thoại thông minh năm 2010, 2015, 2020, 2025.",
+     "step": 1
     },
     {
      "ref": "listening:M0-U10-L3",
      "kind": "listening",
      "title": "Lorenzo — thiết bị muốn mua (Ex. 17–19)",
-     "note": "Nối 4 câu trả lời của Lorenzo với câu hỏi (có 2 câu hỏi thừa)."
+     "note": "Nối 4 câu trả lời của Lorenzo với câu hỏi (có 2 câu hỏi thừa).",
+     "step": 1
     }
    ],
    "vocabSave": {

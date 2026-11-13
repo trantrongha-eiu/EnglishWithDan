@@ -66,6 +66,9 @@ const RESOURCE_CATS = [
   { type: 'speaking_part2', label: 'Speaking Part 2 (7 câu chuyện gốc)' },
 ];
 const RES_LABEL = Object.fromEntries(RESOURCE_CATS.map((r) => [r.type, r.label]));
+// Types whose picker filters on the catalog row's meta (+ "Chọn tất cả"):
+// Essential Grammar by lesson group, Mindset by "Mindset N · Unit M".
+const GROUP_FILTER_TYPES = new Set(['grammar', 'mindset_course_lesson']);
 // The type dropdown, grouped by skill — each group has its own colour (and
 // emoji) so a long list is quick to scan. Every RESOURCE_CATS type is in
 // exactly one group — `types` are offered in the picker, `legacy` ones only
@@ -209,7 +212,7 @@ const RES_RULE = {
   task1_lesson: 'Tự tick khi học viên làm hết mọi bài của buổi và các bài trắc nghiệm/điền từ đạt trung bình ≥70%. Đã học xong từ trước khi giao cũng tính.',
   task2_course_lesson: 'Tự tick khi học viên làm hết mọi bài của buổi và các bài trắc nghiệm/điền từ đạt trung bình ≥70%. Đã học xong từ trước khi giao cũng tính.',
   speaking_course_lesson: 'Tự tick khi học viên làm hết mọi bài của buổi và các bài trắc nghiệm/điền từ đạt trung bình ≥70%. Đã học xong từ trước khi giao cũng tính.',
-  mindset_course_lesson: 'Tự tick khi học viên làm hết mọi bài của buổi và các bài trắc nghiệm/điền từ đạt trung bình ≥70%. Đã học xong từ trước khi giao cũng tính.',
+  mindset_course_lesson: 'Tự tick khi học viên làm hết mọi bài của buổi, các bài trắc nghiệm/điền từ đạt trung bình ≥70% VÀ mỗi bài Reading/Listening của buổi đạt ≥70% (lấy lần làm tốt nhất). Đã học xong từ trước khi giao cũng tính.',
   vocabulary_lesson: 'Tự tick khi đạt ≥70%.', advanced_sentences: 'Tự tick khi học viên làm ≥80% số câu của cấu trúc trong 1 lượt và đúng ≥70%.',
   shadowing: 'Tự tick khi học viên bấm vào mở video.',
   listening_tip: 'Tự tick khi học viên mở bài giảng.', reading_tip: 'Tự tick khi học viên mở bài giảng.',
@@ -1673,7 +1676,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   const assignedCount = catalog.filter((item) => assignedFor(item)).length;
   const visibleCatalog = catalog
     .filter((item) => !essayFilter || cat !== 'task2' || item.essayType === essayFilter)
-    .filter((item) => !grammarGroup || cat !== 'grammar' || item.meta === grammarGroup)
+    .filter((item) => !grammarGroup || !GROUP_FILTER_TYPES.has(cat) || item.meta === grammarGroup)
     .filter((item) => !assignedFilter || (assignedFilter === 'done' ? !!assignedFor(item) : !assignedFor(item)));
   function togglePick(item) {
     const k = keyOf(cat, item._id);
@@ -1809,9 +1812,10 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                   {Object.entries(ESSAY_TYPES).map(([k, t]) => <option key={k} value={k}>{t.label}</option>)}
                 </select>
               )}
-              {cat === 'grammar' && (
-                <select className="form-input" style={{ width: 200 }} value={grammarGroup} onChange={(e) => setGrammarGroup(e.target.value)} title="Lọc theo nhóm bài ngữ pháp">
-                  <option value="">Tất cả nhóm</option>
+              {GROUP_FILTER_TYPES.has(cat) && (
+                <select className="form-input" style={{ width: 200 }} value={grammarGroup} onChange={(e) => setGrammarGroup(e.target.value)}
+                  title={cat === 'grammar' ? 'Lọc theo nhóm bài ngữ pháp' : 'Lọc theo quyển và unit'}>
+                  <option value="">{cat === 'grammar' ? 'Tất cả nhóm' : 'Tất cả quyển & unit'}</option>
                   {[...new Set(catalog.map((i) => i.meta).filter(Boolean))].map((g) => <option key={g} value={g}>{g}</option>)}
                 </select>
               )}
@@ -1861,10 +1865,10 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                 </button>
               </div>
             )}
-            {cat === 'grammar' && visibleCatalog.length > 0 && (
+            {GROUP_FILTER_TYPES.has(cat) && visibleCatalog.length > 0 && (
               <div style={{ marginBottom: 8 }}>
                 <button type="button" className="btn btn-ghost btn-sm" onClick={pickAllListed}>
-                  ✓ Chọn tất cả {visibleCatalog.length} bài{grammarGroup ? ` nhóm "${grammarGroup}"` : ' ngữ pháp'}{assignedFilter === 'new' ? ' (chưa giao)' : assignedFilter === 'done' ? ' (đã giao)' : ''}
+                  ✓ Chọn tất cả {visibleCatalog.length} {cat === 'grammar' ? 'bài' : 'buổi'}{grammarGroup ? (cat === 'grammar' ? ` nhóm "${grammarGroup}"` : ` · ${grammarGroup}`) : (cat === 'grammar' ? ' ngữ pháp' : ' Mindset')}{assignedFilter === 'new' ? ' (chưa giao)' : assignedFilter === 'done' ? ' (đã giao)' : ''}
                 </button>
               </div>
             )}

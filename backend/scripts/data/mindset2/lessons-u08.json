@@ -290,13 +290,15 @@
      "ref": "reading:M2-U08-R1",
      "kind": "reading",
      "title": "Chinese festivals — True / False / Not Given (Ex. 8)",
-     "note": "5 câu."
+     "note": "5 câu.",
+     "step": 1
     },
     {
      "ref": "reading:M2-U08-R2",
      "kind": "reading",
      "title": "Exam skills: The Venice carnival (Ex. 11)",
-     "note": "7 câu True / False / Not Given."
+     "note": "7 câu True / False / Not Given.",
+     "step": 1
     }
    ]
   },
@@ -412,37 +414,43 @@
      "ref": "listening:M2-U08-L1",
      "kind": "listening",
      "title": "Six speakers: what kind of event? (Ex. 1)",
-     "note": "Nối người nói với loại sự kiện."
+     "note": "Nối người nói với loại sự kiện.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U08-L2",
      "kind": "listening",
      "title": "Preparing the arts festival (Ex. 2)",
-     "note": "Chọn phương án đúng trong bản tóm tắt."
+     "note": "Chọn phương án đúng trong bản tóm tắt.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U08-L3",
      "kind": "listening",
      "title": "Dr Saunders' review of the festival (Ex. 3)",
-     "note": "Up to TWO WORDS AND/OR A NUMBER."
+     "note": "Up to TWO WORDS AND/OR A NUMBER.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U08-L4",
      "kind": "listening",
      "title": "Discussion on events (Ex. 4)",
-     "note": "Chọn phương án đúng trong ghi chú."
+     "note": "Chọn phương án đúng trong ghi chú.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U08-L5",
      "kind": "listening",
      "title": "Discussion on organisation (Ex. 5)",
-     "note": "ONE WORD AND/OR A NUMBER."
+     "note": "ONE WORD AND/OR A NUMBER.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U08-L6",
      "kind": "listening",
      "title": "Exam skills: the students' suggestions (Ex. 6)",
-     "note": "NO MORE THAN TWO WORDS AND/OR A NUMBER."
+     "note": "NO MORE THAN TWO WORDS AND/OR A NUMBER.",
+     "step": 1
     }
    ],
    "vocabSave": {

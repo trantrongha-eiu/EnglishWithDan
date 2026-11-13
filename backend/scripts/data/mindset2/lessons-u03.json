@@ -289,13 +289,15 @@
      "ref": "reading:M2-U03-R1",
      "kind": "reading",
      "title": "A smarter way to access the news? — matching information (Ex. 5)",
-     "note": "4 câu, đoạn A–D, một chữ cái có thể dùng nhiều lần."
+     "note": "4 câu, đoạn A–D, một chữ cái có thể dùng nhiều lần.",
+     "step": 0
     },
     {
      "ref": "reading:M2-U03-R2",
      "kind": "reading",
      "title": "Exam skills: How the younger generation consumes the news (Ex. 15)",
-     "note": "6 câu matching information, đoạn A–F."
+     "note": "6 câu matching information, đoạn A–F.",
+     "step": 5
     }
    ]
   },
@@ -425,55 +427,64 @@
      "ref": "listening:M2-U03-L1",
      "kind": "listening",
      "title": "Three discussions: the main topic (Ex. 1)",
-     "note": "Mỗi cuộc thảo luận có thêm một chủ đề phụ."
+     "note": "Mỗi cuộc thảo luận có thêm một chủ đề phụ.",
+     "step": 0
     },
     {
      "ref": "listening:M2-U03-L2",
      "kind": "listening",
      "title": "Speakers' attitudes: modern art & climate change (Ex. 2)",
-     "note": "Ai tích cực, ai tiêu cực, ai trung lập?"
+     "note": "Ai tích cực, ai tiêu cực, ai trung lập?",
+     "step": 0
     },
     {
      "ref": "listening:M2-U03-L3",
      "kind": "listening",
      "title": "Choosing a study topic: three space expeditions (Ex. 3–4)",
-     "note": "Lựa chọn cuối cùng + thái độ từng người."
+     "note": "Lựa chọn cuối cùng + thái độ từng người.",
+     "step": 0
     },
     {
      "ref": "listening:M2-U03-L4",
      "kind": "listening",
      "title": "Six short conversations: attitudes (Ex. 5)",
-     "note": "Positive, negative hay neutral?"
+     "note": "Positive, negative hay neutral?",
+     "step": 0
     },
     {
      "ref": "listening:M2-U03-L5",
      "kind": "listening",
      "title": "Distractors: why Mars? (Ex. 7)",
-     "note": "1 câu — rồi xem vì sao A, B sai."
+     "note": "1 câu — rồi xem vì sao A, B sai.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U03-L6",
      "kind": "listening",
      "title": "One month later (Ex. 9)",
-     "note": "3 câu, mỗi câu 1 đáp án + 1 distractor."
+     "note": "3 câu, mỗi câu 1 đáp án + 1 distractor.",
+     "step": 2
     },
     {
      "ref": "listening:M2-U03-L7",
      "kind": "listening",
      "title": "Recognising paraphrases: an example (Ex. 10)",
-     "note": "Ví dụ trong sách."
+     "note": "Ví dụ trong sách.",
+     "step": 2
     },
     {
      "ref": "listening:M2-U03-L8",
      "kind": "listening",
      "title": "Paraphrases: the next part (Ex. 11)",
-     "note": "3 câu A, B, C."
+     "note": "3 câu A, B, C.",
+     "step": 2
     },
     {
      "ref": "listening:M2-U03-L9",
      "kind": "listening",
      "title": "Exam skills: the final part (Ex. 12)",
-     "note": "6 câu multiple choice."
+     "note": "6 câu multiple choice.",
+     "step": 2
     }
    ],
    "vocabSave": {

@@ -305,31 +305,36 @@
      "ref": "reading:M2-U07-R1",
      "kind": "reading",
      "title": "University life — complete the timetable (Ex. 7)",
-     "note": "NO MORE THAN TWO WORDS AND/OR A NUMBER."
+     "note": "NO MORE THAN TWO WORDS AND/OR A NUMBER.",
+     "step": 2
     },
     {
      "ref": "reading:M2-U07-R2",
      "kind": "reading",
      "title": "The university campus — label the diagram (Ex. 13)",
-     "note": "Tìm nhanh bằng giới từ vị trí."
+     "note": "Tìm nhanh bằng giới từ vị trí.",
+     "step": 3
     },
     {
      "ref": "reading:M2-U07-R3",
      "kind": "reading",
      "title": "The typewriter — technical drawing (Ex. 15)",
-     "note": "NO MORE THAN TWO WORDS — chép đúng chính tả."
+     "note": "NO MORE THAN TWO WORDS — chép đúng chính tả.",
+     "step": 3
     },
     {
      "ref": "reading:M2-U07-R4",
      "kind": "reading",
      "title": "How the modern computer works (Ex. 18)",
-     "note": "Hoàn thành sơ đồ."
+     "note": "Hoàn thành sơ đồ.",
+     "step": 4
     },
     {
      "ref": "reading:M2-U07-R5",
      "kind": "reading",
      "title": "Exam skills: Australian university qualifications (Ex. 19)",
-     "note": "4 chỗ trống trên sơ đồ."
+     "note": "4 chỗ trống trên sơ đồ.",
+     "step": 4
     }
    ]
   },
@@ -457,37 +462,43 @@
      "ref": "listening:M2-U07-L1",
      "kind": "listening",
      "title": "Seven conversations: types of education (Ex. 1–2)",
-     "note": "Ghi số hội thoại và thông tin A–G cho từng cấp học."
+     "note": "Ghi số hội thoại và thông tin A–G cho từng cấp học.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U07-L2",
      "kind": "listening",
      "title": "The education system up to 16 (Ex. 3)",
-     "note": "Chọn đáp án đúng trong bảng."
+     "note": "Chọn đáp án đúng trong bảng.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U07-L3",
      "kind": "listening",
      "title": "Choices at 16 — complete the diagram (Ex. 4)",
-     "note": "ONE OR TWO WORDS."
+     "note": "ONE OR TWO WORDS.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U07-L4",
      "kind": "listening",
      "title": "Applying to university (Ex. 5)",
-     "note": "Chọn từ đúng trong mỗi câu."
+     "note": "Chọn từ đúng trong mỗi câu.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U07-L5",
      "kind": "listening",
      "title": "Following a conversation: a new student (Ex. 6)",
-     "note": "Chọn ghi chú a hay b."
+     "note": "Chọn ghi chú a hay b.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U07-L6",
      "kind": "listening",
      "title": "Exam skills: after graduation (Ex. 7)",
-     "note": "NO MORE THAN TWO WORDS."
+     "note": "NO MORE THAN TWO WORDS.",
+     "step": 1
     }
    ],
    "vocabSave": {

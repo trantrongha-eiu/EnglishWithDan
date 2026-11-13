@@ -21,6 +21,8 @@
 //    moduleProgress   false hides the "x/y buổi hoàn thành" line
 //    lessonExtra(l)   html appended under a lesson's key-language block
 //    lessonFooter(l)  html appended under the lesson's exercise list
+//    lessonList(l, cards, exercises)  html of the exercise list itself
+//                     (default: the cards one after another)
 //    ui               look switches — Speaking keeps its own (older) styling,
 //                     its stylesheet has none of the newer writing classes:
 //      cueColor, imageAlt, zoom (lightbox + chart thumbnails), essayMeter,
@@ -263,6 +265,7 @@
             '<div class="t1-lesson-body">' +
               '<div class="t1-lesson-title">' + esc(l.title) + (l.isTest ? ' <span class="t1-tag">Kiểm tra</span>' : '') + '</div>' +
               '<div class="t1-lesson-meta">' + l.doneCount + '/' + l.exerciseCount + ' bài' +
+                (l.practiceCount ? ' + ' + l.practiceCount + ' bài Reading/Listening' : '') +
                 (l.scorePercent ? ' · TB ' + l.scorePercent + '%' : '') +
                 (l.durationMinutes ? ' · ' + l.durationMinutes + ' phút' : '') + '</div>' +
               '<div class="t1-lesson-bar"><span style="width:' + pct + '%"></span></div>' +
@@ -339,7 +342,7 @@
 
     function renderLesson() {
       var l = state.lesson || {};
-      var exs = state.exercises.map(function (ex) {
+      var cards = state.exercises.map(function (ex) {
         var done = ex.lastAttempt && (ex.lastAttempt.score != null || ex.lastAttempt.hasAi);
         var plug = TYPES[ex.type];
         var card = (plug && plug.card) ? plug.card(ex) : null;
@@ -349,7 +352,10 @@
           '<span class="nm">' + esc(ex.title) + (card && card.meta ? card.meta : (ex.points ? ' · ' + ex.points + 'đ' : '')) + '</span>' +
           (done ? '<span class="t1-ex-done"><i class="fas fa-check-circle"></i></span>' : '<i class="fas fa-chevron-right" style="color:#9ca3af"></i>') +
           '</div>';
-      }).join('');
+      });
+      // cfg.lessonList(l, cards, exercises) may lay the cards out itself
+      // (Mindset interleaves its Reading/Listening tests in book order).
+      var exs = cfg.lessonList ? cfg.lessonList(l, cards, state.exercises) : cards.join('');
       return '<div class="ce-backrow"><button class="t1-btn" id="t1-back-ov-btn" title="Về danh sách buổi học"><i class="fas fa-arrow-left"></i> Quay lại</button></div>' +
         '<div class="t1-crumb"><span id="t1-back-ov">Khoá học</span> › <b>' + esc(l.title || '') + '</b></div>' +
         '<div class="t1-head" style="padding-top:2px"><h2 class="t1-h2" style="font-size:17px">' + esc(l.title || '') + '</h2></div>' +

@@ -536,8 +536,10 @@ module.exports = {
         ], { wordBank: ['walk', 'leave', 'have', 'finish', 'get up', 'catch', 'go out', 'work', 'meet', 'live'] }),
         order('Make sentences (G&V Ex. 7)', 'Put the words in the correct order to make sentences.', [
           ['My friend tidies the room.'], ['I play football at the weekend.'], ['I take a sandwich to college for lunch.'],
-          ['I wake up at half past six.'], ['My brother checks his phone every five minutes.'], ['I try to stop studying before 9pm.'],
-          ['I go to the dentist every six months.'], ['My father does most of the housework.'],
+          ['I wake up at half past six.'], ['My brother checks his phone every five minutes.'], ['I have a shower in the evening.'],
+          ['I try to stop studying before 9pm.'], ['I go to the dentist every six months.'],
+          ['My father does most of the housework.', 'Sách in các từ "my / the / housework / of / does / father / most" (Answer Key ghi "My mother…") — dùng đúng các từ được cho.'],
+          ['I visit my family at the weekends.'],
         ]),
         gap('A new job at the supermarket (G&V Ex. 8)', 'Complete the text with the words in the box. Change the form of the verbs if necessary.', [
           ['I have got a new job! It\'s in a supermarket and I ____ there every Saturday. I ____ at 8am and the shop ____ at 9am.', ['work', 'start', 'opens']],

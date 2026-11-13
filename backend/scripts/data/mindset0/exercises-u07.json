@@ -878,6 +878,48 @@
    "code": "M0-U07-L4-E01",
    "lessonCode": "M0-U07-L4",
    "order": 1,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Write an email applying for a summer job (Ex. 17, 20–21)",
+   "instruction": "You have received an email about summer jobs. Write an email to Simon Stone (the summer jobs coordinator) to apply for ONE job in the article (sports coach, helping elderly people, fashion sales assistant, lifeguard, digital designer). In your email: (1) say which job you are interested in; (2) say what skills and abilities you have; (3) say which skill you couldn't do before but can do now. Write 60–80 words with a polite greeting and ending.",
+   "responseSlots": 1,
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 60,
+    "maxWords": 90,
+    "mustUse": 3,
+    "targetStructures": [
+     "Dear Simon",
+     "I'm interested in",
+     "I can",
+     "couldn't",
+     "now I can"
+    ],
+    "checklist": [
+     "Nói rõ công việc muốn ứng tuyển",
+     "Nêu kỹ năng hiện có (can)",
+     "Nêu kỹ năng trước đây chưa có nhưng nay đã có (couldn't… but now I can…)",
+     "Mở đầu Dear Simon, kết thư lịch sự + tên",
+     "Không thêm thông tin ngoài đề",
+     "60–80 từ"
+    ],
+    "sampleAnswer": "Dear Simon,\n\nI'm interested in the sports coach job at the summer camp.\n\nI can play football and basketball well, and I'm good at teaching younger children because I often help my little cousins with their homework. I can also work long hours outside.\n\nWhen I was younger, I couldn't talk to new people easily because I was very shy. Now I can make friends quickly, so I think I can work well in a team.\n\nBest wishes,\nMai",
+    "commonErrors": [
+     "Dùng could cho khả năng hiện tại",
+     "Quên ý 3 (kỹ năng trước chưa có)",
+     "Kể thêm thông tin không được yêu cầu"
+    ]
+   }
+  },
+  {
+   "code": "M0-U07-L4-E02",
+   "lessonCode": "M0-U07-L4",
+   "order": 2,
    "autoGrade": true,
    "points": 7,
    "source": "original",
@@ -946,9 +988,9 @@
    ]
   },
   {
-   "code": "M0-U07-L4-E02",
+   "code": "M0-U07-L4-E03",
    "lessonCode": "M0-U07-L4",
-   "order": 2,
+   "order": 3,
    "autoGrade": true,
    "points": 5,
    "source": "original",
@@ -1038,48 +1080,6 @@
      "explanation": ""
     }
    ]
-  },
-  {
-   "code": "M0-U07-L4-E03",
-   "lessonCode": "M0-U07-L4",
-   "order": 3,
-   "autoGrade": false,
-   "points": 10,
-   "source": "original",
-   "difficulty": 1,
-   "type": "paragraph_writing",
-   "title": "Write an email applying for a summer job (Ex. 17, 20–21)",
-   "instruction": "You have received an email about summer jobs. Write an email to Simon Stone (the summer jobs coordinator) to apply for ONE job in the article (sports coach, helping elderly people, fashion sales assistant, lifeguard, digital designer). In your email: (1) say which job you are interested in; (2) say what skills and abilities you have; (3) say which skill you couldn't do before but can do now. Write 60–80 words with a polite greeting and ending.",
-   "responseSlots": 1,
-   "rubric": {
-    "bandFocus": [
-     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
-    ],
-    "minWords": 60,
-    "maxWords": 90,
-    "mustUse": 3,
-    "targetStructures": [
-     "Dear Simon",
-     "I'm interested in",
-     "I can",
-     "couldn't",
-     "now I can"
-    ],
-    "checklist": [
-     "Nói rõ công việc muốn ứng tuyển",
-     "Nêu kỹ năng hiện có (can)",
-     "Nêu kỹ năng trước đây chưa có nhưng nay đã có (couldn't… but now I can…)",
-     "Mở đầu Dear Simon, kết thư lịch sự + tên",
-     "Không thêm thông tin ngoài đề",
-     "60–80 từ"
-    ],
-    "sampleAnswer": "Dear Simon,\n\nI'm interested in the sports coach job at the summer camp.\n\nI can play football and basketball well, and I'm good at teaching younger children because I often help my little cousins with their homework. I can also work long hours outside.\n\nWhen I was younger, I couldn't talk to new people easily because I was very shy. Now I can make friends quickly, so I think I can work well in a team.\n\nBest wishes,\nMai",
-    "commonErrors": [
-     "Dùng could cho khả năng hiện tại",
-     "Quên ý 3 (kỹ năng trước chưa có)",
-     "Kể thêm thông tin không được yêu cầu"
-    ]
-   }
   },
   {
    "code": "M0-U07-L5-E01",

@@ -74,7 +74,7 @@
    },
    "published": true,
    "exerciseCount": 6,
-   "totalPoints": 63,
+   "totalPoints": 66,
    "images": [
     {
      "url": "media:m0u03-leadin.jpg",
@@ -276,7 +276,8 @@
      "ref": "reading:M0-U03-R1",
      "kind": "reading",
      "title": "Aimee Fuller — Snowboarding Star (Ex. 12–13)",
-     "note": "7 câu True / False / Not Given. Đọc lướt trước, rồi tìm từng keyword."
+     "note": "7 câu True / False / Not Given. Đọc lướt trước, rồi tìm từng keyword.",
+     "step": 1
     }
    ],
    "vocabSave": {
@@ -552,7 +553,8 @@
      "ref": "listening:M0-U03-L1",
      "kind": "listening",
      "title": "Deon & Mark — kỳ nghỉ phiêu lưu (Ex. 4–5)",
-     "note": "Nghe audio gốc: chọn đáp án A, B hoặc C cho 6 câu."
+     "note": "Nghe audio gốc: chọn đáp án A, B hoặc C cho 6 câu.",
+     "step": 1
     }
    ],
    "vocabSave": {

@@ -301,13 +301,15 @@
      "ref": "reading:M1-U06-R1",
      "kind": "reading",
      "title": "Unusual sports (Ex. 5–10)",
-     "note": "Scan · True/False · Not Given · summary completion."
+     "note": "Scan · True/False · Not Given · summary completion.",
+     "step": 1
     },
     {
      "ref": "reading:M1-U06-R2",
      "kind": "reading",
      "title": "Exam skills: Parkour (Ex. 12)",
-     "note": "8 câu TFNG + 7 câu summary completion."
+     "note": "8 câu TFNG + 7 câu summary completion.",
+     "step": 1
     }
    ]
   },
@@ -446,31 +448,36 @@
      "ref": "listening:M1-U06-L1",
      "kind": "listening",
      "title": "Melissa's directions (Ex. 4)",
-     "note": "Main Street, Silver Street, nhà Melissa — chọn chữ A–K."
+     "note": "Main Street, Silver Street, nhà Melissa — chọn chữ A–K.",
+     "step": 2
     },
     {
      "ref": "listening:M1-U06-L2",
      "kind": "listening",
      "title": "Melissa's second message (Ex. 5)",
-     "note": "New Road, nhà Sarah, Oak Avenue."
+     "note": "New Road, nhà Sarah, Oak Avenue.",
+     "step": 2
     },
     {
      "ref": "listening:M1-U06-L3",
      "kind": "listening",
      "title": "Map of a building: the Arena (Ex. 7)",
-     "note": "Chọn A–H cho vị trí 1–4."
+     "note": "Chọn A–H cho vị trí 1–4.",
+     "step": 3
     },
     {
      "ref": "listening:M1-U06-L4",
      "kind": "listening",
      "title": "Map of a park: an activity camp (Ex. 9)",
-     "note": "Viết tên hoạt động (tối đa 2 từ)."
+     "note": "Viết tên hoạt động (tối đa 2 từ).",
+     "step": 3
     },
     {
      "ref": "listening:M1-U06-L5",
      "kind": "listening",
      "title": "Exam skills: Pine Woods Centre (Ex. 10)",
-     "note": "8 câu map labelling A–M."
+     "note": "8 câu map labelling A–M.",
+     "step": 3
     }
    ],
    "vocabSave": {

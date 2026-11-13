@@ -475,8 +475,13 @@
    "items": [
     {
      "id": "g1",
-     "prompt": "(+) People ____ ____ richer than they are now.",
+     "prompt": "(+) ____ ____ ____ richer than they are now.",
      "blanks": [
+      {
+       "accept": [
+        "People"
+       ]
+      },
       {
        "accept": [
         "will"
@@ -492,8 +497,13 @@
     },
     {
      "id": "g2",
-     "prompt": "(−) They ____ ____ the same as the one in the picture today.",
+     "prompt": "(−) ____ ____ ____ the same as the one in the picture today.",
      "blanks": [
+      {
+       "accept": [
+        "They"
+       ]
+      },
       {
        "accept": [
         "won't",
@@ -510,11 +520,16 @@
     },
     {
      "id": "g3",
-     "prompt": "(?) ____ they ____ the same as they do now?",
+     "prompt": "(?) ____ ____ ____ the same as they do now?",
      "blanks": [
       {
        "accept": [
         "Will"
+       ]
+      },
+      {
+       "accept": [
+        "they"
        ]
       },
       {
@@ -527,11 +542,21 @@
     },
     {
      "id": "g4",
-     "prompt": "(?) What ____ smartphones ____ like?",
+     "prompt": "(?) ____ ____ ____ ____ like?",
      "blanks": [
       {
        "accept": [
+        "What"
+       ]
+      },
+      {
+       "accept": [
         "will"
+       ]
+      },
+      {
+       "accept": [
+        "smartphones"
        ]
       },
       {
@@ -549,116 +574,22 @@
    "lessonCode": "M0-U10-L3",
    "order": 2,
    "autoGrade": true,
-   "points": 7,
-   "source": "original",
-   "difficulty": 1,
-   "type": "gap_fill",
-   "title": "An interview about the future (G&V Ex. 3)",
-   "instruction": "Complete the sentences with will / won't and the verb.",
-   "items": [
-    {
-     "id": "g1",
-     "prompt": "No, the cars ____ (communicate) with each other and make sure they all have enough space.",
-     "blanks": [
-      {
-       "accept": [
-        "will communicate"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g2",
-     "prompt": "There ____ (not be) any crashes ever again.",
-     "blanks": [
-      {
-       "accept": [
-        "won't be",
-        "will not be"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g3",
-     "prompt": "____ (the cars / be able) to fly?",
-     "blanks": [
-      {
-       "accept": [
-        "Will the cars be able"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g4",
-     "prompt": "And food – what ____ (people / eat)?",
-     "blanks": [
-      {
-       "accept": [
-        "will people eat"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g5",
-     "prompt": "If we want to eat as much meat as we do now, we ____ (definitely need) more space for animals.",
-     "blanks": [
-      {
-       "accept": [
-        "will definitely need"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g6",
-     "prompt": "I'm not sure that ____ (be) possible.",
-     "blanks": [
-      {
-       "accept": [
-        "will be"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g7",
-     "prompt": "Well, how ____ (the animals / breathe) when they are on the moon?",
-     "blanks": [
-      {
-       "accept": [
-        "will the animals breathe"
-       ]
-      }
-     ],
-     "explanation": ""
-    }
-   ]
-  },
-  {
-   "code": "M0-U10-L3-E03",
-   "lessonCode": "M0-U10-L3",
-   "order": 3,
-   "autoGrade": true,
    "points": 6,
    "source": "original",
    "difficulty": 1,
    "type": "gap_fill",
    "title": "Words for describing change (Ex. 12)",
-   "instruction": "Complete the sentences with the correct form.",
+   "instruction": "Complete the table: verb (infinitive) → verb (past) → noun.",
    "items": [
     {
      "id": "g1",
-     "prompt": "to rise → (past) ____ → (noun) a rise",
+     "prompt": "(infinitive) ____ → (past) ____ → (noun) a rise",
      "blanks": [
+      {
+       "accept": [
+        "to rise"
+       ]
+      },
       {
        "accept": [
         "rose"
@@ -669,8 +600,13 @@
     },
     {
      "id": "g2",
-     "prompt": "to increase → (past) increased → (noun) ____",
+     "prompt": "(infinitive) ____ → (past) increased → (noun) ____",
      "blanks": [
+      {
+       "accept": [
+        "to increase"
+       ]
+      },
       {
        "accept": [
         "an increase"
@@ -681,11 +617,11 @@
     },
     {
      "id": "g3",
-     "prompt": "to go up → (past) ____",
+     "prompt": "(infinitive) ____ → (past) went up",
      "blanks": [
       {
        "accept": [
-        "went up"
+        "to go up"
        ]
       }
      ],
@@ -693,8 +629,13 @@
     },
     {
      "id": "g4",
-     "prompt": "to fall → (past) fell → (noun) ____",
+     "prompt": "(infinitive) ____ → (past) fell → (noun) ____",
      "blanks": [
+      {
+       "accept": [
+        "to fall"
+       ]
+      },
       {
        "accept": [
         "a fall"
@@ -705,8 +646,13 @@
     },
     {
      "id": "g5",
-     "prompt": "to decrease → (past) ____ → (noun) a decrease",
+     "prompt": "(infinitive) ____ → (past) ____ → (noun) a decrease",
      "blanks": [
+      {
+       "accept": [
+        "to decrease"
+       ]
+      },
       {
        "accept": [
         "decreased"
@@ -717,7 +663,7 @@
     },
     {
      "id": "g6",
-     "prompt": "to go down → (past) ____",
+     "prompt": "(infinitive) to go down → (past) ____",
      "blanks": [
       {
        "accept": [
@@ -730,9 +676,9 @@
    ]
   },
   {
-   "code": "M0-U10-L3-E04",
+   "code": "M0-U10-L3-E03",
    "lessonCode": "M0-U10-L3",
-   "order": 4,
+   "order": 3,
    "autoGrade": true,
    "points": 5,
    "source": "original",
@@ -844,6 +790,105 @@
    ]
   },
   {
+   "code": "M0-U10-L3-E04",
+   "lessonCode": "M0-U10-L3",
+   "order": 4,
+   "autoGrade": true,
+   "points": 7,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "An interview about the future (G&V Ex. 3)",
+   "instruction": "Complete the sentences with will / won't and the verb.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "No, the cars ____ (communicate) with each other and make sure they all have enough space.",
+     "blanks": [
+      {
+       "accept": [
+        "will communicate"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "There ____ (not be) any crashes ever again.",
+     "blanks": [
+      {
+       "accept": [
+        "won't be",
+        "will not be"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "____ (the cars / be able) to fly?",
+     "blanks": [
+      {
+       "accept": [
+        "Will the cars be able"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "And food – what ____ (people / eat)?",
+     "blanks": [
+      {
+       "accept": [
+        "will people eat"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "If we want to eat as much meat as we do now, we ____ (definitely need) more space for animals.",
+     "blanks": [
+      {
+       "accept": [
+        "will definitely need"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "I'm not sure that ____ (be) possible.",
+     "blanks": [
+      {
+       "accept": [
+        "will be"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "Well, how ____ (the animals / breathe) when they are on the moon?",
+     "blanks": [
+      {
+       "accept": [
+        "will the animals breathe"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
    "code": "M0-U10-L4-E01",
    "lessonCode": "M0-U10-L4",
    "order": 1,
@@ -946,40 +991,51 @@
    "code": "M0-U10-L4-E02",
    "lessonCode": "M0-U10-L4",
    "order": 2,
-   "autoGrade": true,
-   "points": 1,
+   "autoGrade": false,
+   "points": 10,
    "source": "original",
    "difficulty": 1,
-   "type": "mcq",
-   "title": "The best summary (G&V Ex. 6)",
-   "instruction": "Look at the graph of Line A and Line B. Which is the best summary?",
+   "type": "paragraph_writing",
+   "title": "Writing: describe the device ownership graph (Ex. 15–16)",
+   "instruction": "Look at the graph \"Percentage of people who own the devices from 2010 to 2025\" (smartphone, laptop, smart watch, tablet). Write a paragraph (100–130 words) describing the main changes: an introductory sentence about the graph, one sentence with the overall trend (Overall…), then describe each device with rise / increase / go up / fall / decrease / go down and from… to…, by…. Use the past for 2010–2015 and will for 2020–2025.",
+   "responseSlots": 1,
    "stimulus": {
     "kind": "image",
-    "imageUrl": "media:m0u10-lineab.jpg",
-    "caption": "Line A & Line B"
+    "imageUrl": "media:m0u10-graph.jpg",
+    "caption": "Percentage of people who own the devices from 2010 to 2025"
    },
-   "items": [
-    {
-     "id": "q1",
-     "prompt": "Best summary?",
-     "options": [
-      {
-       "id": "A",
-       "text": "Both lines went up and down a lot. Line A changed much more than Line B."
-      },
-      {
-       "id": "B",
-       "text": "The biggest changes for Line A will happen in the last ten years shown on the graph. However, Line B had its own most important changes earlier, especially between 2005 and 2015."
-      },
-      {
-       "id": "C",
-       "text": "Line A went up to 40% in 2010, then down to 20% by 2020, then up to 75% in 2025 and back down to 65%… Line B increased to 75% in 2015, then went down to 40% in 2020…"
-      }
-     ],
-     "answer": "B",
-     "explanation": "A quá chung chung và sai (\"changed much more\"); C liệt kê quá nhiều số liệu — không phải tóm tắt; B nêu đúng xu hướng chính của mỗi đường."
-    }
-   ]
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 100,
+    "maxWords": 150,
+    "mustUse": 4,
+    "targetStructures": [
+     "The graph shows",
+     "Overall",
+     "increased",
+     "rose",
+     "fell",
+     "will",
+     "from",
+     "to"
+    ],
+    "checklist": [
+     "Câu mở đầu giới thiệu biểu đồ",
+     "Câu tổng quan (Overall…)",
+     "Mô tả cả 4 thiết bị",
+     "Có số liệu chính xác (from… to…)",
+     "Đúng thì: quá khứ cho 2010–2015, will cho tương lai",
+     "100–130 từ"
+    ],
+    "sampleAnswer": "The graph shows the percentage of people who owned four different devices between 2010 and 2015, and the expected figures up to 2025.\n\nOverall, smartphones became the most popular device, while laptops became less popular.\n\nThe percentage of people with a smartphone rose from 38% in 2010 to 62% in 2015, and it will continue to increase to 86% in 2025. Laptop ownership went up slightly from 62% to about 71% in 2015, but it will fall to around 59% by the end of the period. Tablets increased quickly from 22% to 51% in 2015 and will reach a peak of about 62% in 2020 before decreasing a little. Smart watches started at almost 0%, but they will rise sharply to 40% in 2025.",
+    "commonErrors": [
+     "Dùng hiện tại cho quá khứ (It rises from 38% in 2010)",
+     "Liệt kê mọi con số mà không có câu tổng quan",
+     "Sai giới từ (increase at / to / by)"
+    ]
+   }
   },
   {
    "code": "M0-U10-L4-E03",
@@ -1079,51 +1135,40 @@
    "code": "M0-U10-L4-E04",
    "lessonCode": "M0-U10-L4",
    "order": 4,
-   "autoGrade": false,
-   "points": 10,
+   "autoGrade": true,
+   "points": 1,
    "source": "original",
    "difficulty": 1,
-   "type": "paragraph_writing",
-   "title": "Writing: describe the device ownership graph (Ex. 15–16)",
-   "instruction": "Look at the graph \"Percentage of people who own the devices from 2010 to 2025\" (smartphone, laptop, smart watch, tablet). Write a paragraph (100–130 words) describing the main changes: an introductory sentence about the graph, one sentence with the overall trend (Overall…), then describe each device with rise / increase / go up / fall / decrease / go down and from… to…, by…. Use the past for 2010–2015 and will for 2020–2025.",
-   "responseSlots": 1,
+   "type": "mcq",
+   "title": "The best summary (G&V Ex. 6)",
+   "instruction": "Look at the graph of Line A and Line B. Which is the best summary?",
    "stimulus": {
     "kind": "image",
-    "imageUrl": "media:m0u10-graph.jpg",
-    "caption": "Percentage of people who own the devices from 2010 to 2025"
+    "imageUrl": "media:m0u10-lineab.jpg",
+    "caption": "Line A & Line B"
    },
-   "rubric": {
-    "bandFocus": [
-     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
-    ],
-    "minWords": 100,
-    "maxWords": 150,
-    "mustUse": 4,
-    "targetStructures": [
-     "The graph shows",
-     "Overall",
-     "increased",
-     "rose",
-     "fell",
-     "will",
-     "from",
-     "to"
-    ],
-    "checklist": [
-     "Câu mở đầu giới thiệu biểu đồ",
-     "Câu tổng quan (Overall…)",
-     "Mô tả cả 4 thiết bị",
-     "Có số liệu chính xác (from… to…)",
-     "Đúng thì: quá khứ cho 2010–2015, will cho tương lai",
-     "100–130 từ"
-    ],
-    "sampleAnswer": "The graph shows the percentage of people who owned four different devices between 2010 and 2015, and the expected figures up to 2025.\n\nOverall, smartphones became the most popular device, while laptops became less popular.\n\nThe percentage of people with a smartphone rose from 38% in 2010 to 62% in 2015, and it will continue to increase to 86% in 2025. Laptop ownership went up slightly from 62% to about 71% in 2015, but it will fall to around 59% by the end of the period. Tablets increased quickly from 22% to 51% in 2015 and will reach a peak of about 62% in 2020 before decreasing a little. Smart watches started at almost 0%, but they will rise sharply to 40% in 2025.",
-    "commonErrors": [
-     "Dùng hiện tại cho quá khứ (It rises from 38% in 2010)",
-     "Liệt kê mọi con số mà không có câu tổng quan",
-     "Sai giới từ (increase at / to / by)"
-    ]
-   }
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Best summary?",
+     "options": [
+      {
+       "id": "A",
+       "text": "Both lines went up and down a lot. Line A changed much more than Line B."
+      },
+      {
+       "id": "B",
+       "text": "The biggest changes for Line A will happen in the last ten years shown on the graph. However, Line B had its own most important changes earlier, especially between 2005 and 2015."
+      },
+      {
+       "id": "C",
+       "text": "Line A went up to 40% in 2010, then down to 20% by 2020, then up to 75% in 2025 and back down to 65%… Line B increased to 75% in 2015, then went down to 40% in 2020…"
+      }
+     ],
+     "answer": "B",
+     "explanation": "A quá chung chung và sai (\"changed much more\"); C liệt kê quá nhiều số liệu — không phải tóm tắt; B nêu đúng xu hướng chính của mỗi đường."
+    }
+   ]
   },
   {
    "code": "M0-U10-L5-E01",
@@ -1282,6 +1327,43 @@
    "code": "M0-U10-L6-E01",
    "lessonCode": "M0-U10-L6",
    "order": 1,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Speaking: technology in your life (Lead-in Ex. 2)",
+   "instruction": "Answer each question in 15–25 seconds.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "Which devices do you use for studying?",
+     "sampleAnswer": "I mostly use my laptop for studying because the screen is bigger and I can type my essays. I also use my smartphone to look up words in an online dictionary.",
+     "sampleNote": "Thiết bị + lý do.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "How do you usually contact your friends?",
+     "sampleAnswer": "I usually send messages on my smartphone, because it's quick and free. Sometimes we make video calls in the evening when we do homework together.",
+     "sampleNote": "Cách + lý do + ví dụ.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "Do you think smartphones will look different in the future?",
+     "sampleAnswer": "Yes, I think they will. They will probably be thinner and maybe they will fold, so the screen will be bigger. I don't think people will stop using them, though.",
+     "sampleNote": "Dùng will cho dự đoán.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L6-E02",
+   "lessonCode": "M0-U10-L6",
+   "order": 2,
    "autoGrade": true,
    "points": 4,
    "source": "original",
@@ -1378,9 +1460,9 @@
    ]
   },
   {
-   "code": "M0-U10-L6-E02",
+   "code": "M0-U10-L6-E03",
    "lessonCode": "M0-U10-L6",
-   "order": 2,
+   "order": 3,
    "autoGrade": false,
    "points": 10,
    "source": "original",
@@ -1396,43 +1478,6 @@
      "prompt": "Describe a piece of technology that you would like to buy in the future.\nYou should say:\n• what it looks like\n• where you want to buy it from\n• why you want to buy it\nand explain how it will make your life better.",
      "sampleAnswer": "The piece of technology I'd like to buy is a new laptop. I'm thinking of a light, thin one with a silver case and a big, clear screen, because I want to carry it to school every day. It should also have a lot of memory and a battery that lasts all day. I'm going to buy it online, because it's usually cheaper than in shops, but first I'm going to visit a computer shop to try the keyboard. The main reason I want it is that my family only has one old desktop computer, and it's really out of date – it crashes almost every time I open more than two websites! I think a laptop will make my life much better. I'll be able to study anywhere, for example in the library, and I'll download English lessons and stream videos to improve my listening. I'm saving up for it now, so I hope I can buy it next summer.",
      "sampleNote": "Đủ 4 ý; dùng going to (kế hoạch), will (dự đoán); từ vựng unit: memory, battery lasts, out of date, crashes, download, stream.",
-     "sampleSource": "new"
-    }
-   ]
-  },
-  {
-   "code": "M0-U10-L6-E03",
-   "lessonCode": "M0-U10-L6",
-   "order": 3,
-   "autoGrade": false,
-   "points": 10,
-   "source": "original",
-   "difficulty": 1,
-   "type": "speaking_response",
-   "title": "Speaking: technology in your life (Lead-in Ex. 2)",
-   "instruction": "Answer each question in 15–25 seconds.",
-   "speakingPart": 1,
-   "speakingPrepSeconds": 10,
-   "items": [
-    {
-     "id": "s1",
-     "prompt": "Which devices do you use for studying?",
-     "sampleAnswer": "I mostly use my laptop for studying because the screen is bigger and I can type my essays. I also use my smartphone to look up words in an online dictionary.",
-     "sampleNote": "Thiết bị + lý do.",
-     "sampleSource": "new"
-    },
-    {
-     "id": "s2",
-     "prompt": "How do you usually contact your friends?",
-     "sampleAnswer": "I usually send messages on my smartphone, because it's quick and free. Sometimes we make video calls in the evening when we do homework together.",
-     "sampleNote": "Cách + lý do + ví dụ.",
-     "sampleSource": "new"
-    },
-    {
-     "id": "s3",
-     "prompt": "Do you think smartphones will look different in the future?",
-     "sampleAnswer": "Yes, I think they will. They will probably be thinner and maybe they will fold, so the screen will be bigger. I don't think people will stop using them, though.",
-     "sampleNote": "Dùng will cho dự đoán.",
      "sampleSource": "new"
     }
    ]
@@ -1535,180 +1580,6 @@
    "code": "M0-U10-L7-E02",
    "lessonCode": "M0-U10-L7",
    "order": 2,
-   "autoGrade": true,
-   "points": 8,
-   "source": "original",
-   "difficulty": 1,
-   "type": "mcq",
-   "title": "Grandad's email (G&V Ex. 7)",
-   "instruction": "Choose the correct answer.",
-   "items": [
-    {
-     "id": "q1",
-     "prompt": "I have some news – ____ buy a smartphone.",
-     "options": [
-      {
-       "id": "A",
-       "text": "I will"
-      },
-      {
-       "id": "B",
-       "text": "I'm going to"
-      },
-      {
-       "id": "C",
-       "text": "I going to"
-      }
-     ],
-     "answer": "B",
-     "explanation": "Kế hoạch đã quyết định → going to."
-    },
-    {
-     "id": "q2",
-     "prompt": "Your mum told me that you have the ____.",
-     "options": [
-      {
-       "id": "A",
-       "text": "latest model"
-      },
-      {
-       "id": "B",
-       "text": "later modern"
-      },
-      {
-       "id": "C",
-       "text": "late model"
-      }
-     ],
-     "answer": "A",
-     "explanation": ""
-    },
-    {
-     "id": "q3",
-     "prompt": "I don't mind if it's a bit ____ – I'll be happy with something a bit older.",
-     "options": [
-      {
-       "id": "A",
-       "text": "out of order"
-      },
-      {
-       "id": "B",
-       "text": "out of time"
-      },
-      {
-       "id": "C",
-       "text": "out of date"
-      }
-     ],
-     "answer": "C",
-     "explanation": ""
-    },
-    {
-     "id": "q4",
-     "prompt": "I see a lot of advertisements for phones with great ____.",
-     "options": [
-      {
-       "id": "A",
-       "text": "features"
-      },
-      {
-       "id": "B",
-       "text": "devices"
-      },
-      {
-       "id": "C",
-       "text": "websites"
-      }
-     ],
-     "answer": "A",
-     "explanation": ""
-    },
-    {
-     "id": "q5",
-     "prompt": "It will be strange to play cards by ____ a ____.",
-     "options": [
-      {
-       "id": "A",
-       "text": "swiping / screen"
-      },
-      {
-       "id": "B",
-       "text": "sweeping / charger"
-      },
-      {
-       "id": "C",
-       "text": "swapping / case"
-      }
-     ],
-     "answer": "A",
-     "explanation": ""
-    },
-    {
-     "id": "q6",
-     "prompt": "Your mother also said that your smartphone has a lot of ____.",
-     "options": [
-      {
-       "id": "A",
-       "text": "memory"
-      },
-      {
-       "id": "B",
-       "text": "memories"
-      },
-      {
-       "id": "C",
-       "text": "memry"
-      }
-     ],
-     "answer": "A",
-     "explanation": ""
-    },
-    {
-     "id": "q7",
-     "prompt": "…you have a lot of space to ____ apps and files.",
-     "options": [
-      {
-       "id": "A",
-       "text": "stand"
-      },
-      {
-       "id": "B",
-       "text": "store"
-      },
-      {
-       "id": "C",
-       "text": "shop"
-      }
-     ],
-     "answer": "B",
-     "explanation": ""
-    },
-    {
-     "id": "q8",
-     "prompt": "I know your phone has a silver ____ but I would prefer mine in black.",
-     "options": [
-      {
-       "id": "A",
-       "text": "case"
-      },
-      {
-       "id": "B",
-       "text": "screen"
-      },
-      {
-       "id": "C",
-       "text": "battery"
-      }
-     ],
-     "answer": "A",
-     "explanation": ""
-    }
-   ]
-  },
-  {
-   "code": "M0-U10-L7-E03",
-   "lessonCode": "M0-U10-L7",
-   "order": 3,
    "autoGrade": true,
    "points": 10,
    "source": "original",
@@ -1961,6 +1832,180 @@
      ],
      "answer": "D",
      "explanation": "Không đoạn nào của Line A tăng đúng 35% (2005–2010 tăng 30%)."
+    }
+   ]
+  },
+  {
+   "code": "M0-U10-L7-E03",
+   "lessonCode": "M0-U10-L7",
+   "order": 3,
+   "autoGrade": true,
+   "points": 8,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Grandad's email (G&V Ex. 7)",
+   "instruction": "Choose the correct answer.",
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "I have some news – ____ buy a smartphone.",
+     "options": [
+      {
+       "id": "A",
+       "text": "I will"
+      },
+      {
+       "id": "B",
+       "text": "I'm going to"
+      },
+      {
+       "id": "C",
+       "text": "I going to"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Kế hoạch đã quyết định → going to."
+    },
+    {
+     "id": "q2",
+     "prompt": "Your mum told me that you have the ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "latest model"
+      },
+      {
+       "id": "B",
+       "text": "later modern"
+      },
+      {
+       "id": "C",
+       "text": "late model"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "I don't mind if it's a bit ____ – I'll be happy with something a bit older.",
+     "options": [
+      {
+       "id": "A",
+       "text": "out of order"
+      },
+      {
+       "id": "B",
+       "text": "out of time"
+      },
+      {
+       "id": "C",
+       "text": "out of date"
+      }
+     ],
+     "answer": "C",
+     "explanation": ""
+    },
+    {
+     "id": "q4",
+     "prompt": "I see a lot of advertisements for phones with great ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "features"
+      },
+      {
+       "id": "B",
+       "text": "devices"
+      },
+      {
+       "id": "C",
+       "text": "websites"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q5",
+     "prompt": "It will be strange to play cards by ____ a ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "swiping / screen"
+      },
+      {
+       "id": "B",
+       "text": "sweeping / charger"
+      },
+      {
+       "id": "C",
+       "text": "swapping / case"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q6",
+     "prompt": "Your mother also said that your smartphone has a lot of ____.",
+     "options": [
+      {
+       "id": "A",
+       "text": "memory"
+      },
+      {
+       "id": "B",
+       "text": "memories"
+      },
+      {
+       "id": "C",
+       "text": "memry"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    },
+    {
+     "id": "q7",
+     "prompt": "…you have a lot of space to ____ apps and files.",
+     "options": [
+      {
+       "id": "A",
+       "text": "stand"
+      },
+      {
+       "id": "B",
+       "text": "store"
+      },
+      {
+       "id": "C",
+       "text": "shop"
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q8",
+     "prompt": "I know your phone has a silver ____ but I would prefer mine in black.",
+     "options": [
+      {
+       "id": "A",
+       "text": "case"
+      },
+      {
+       "id": "B",
+       "text": "screen"
+      },
+      {
+       "id": "C",
+       "text": "battery"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
     }
    ]
   }

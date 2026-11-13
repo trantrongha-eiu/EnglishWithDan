@@ -318,13 +318,15 @@
      "ref": "reading:M2-U01-R1",
      "kind": "reading",
      "title": "Antilia — scanning, short answers, sentence completion, paraphrase (Ex. 7, 8, 10, 11)",
-     "note": "18 câu: scan tìm số liệu, trả lời ngắn, hoàn thành câu, nối câu paraphrase với đoạn A–F."
+     "note": "18 câu: scan tìm số liệu, trả lời ngắn, hoàn thành câu, nối câu paraphrase với đoạn A–F.",
+     "step": 2
     },
     {
      "ref": "reading:M2-U01-R2",
      "kind": "reading",
      "title": "Exam skills: Hearst Castle (Ex. 15)",
-     "note": "12 câu short-answer + sentence completion — bấm giờ!"
+     "note": "12 câu short-answer + sentence completion — bấm giờ!",
+     "step": 3
     }
    ]
   },
@@ -462,43 +464,50 @@
      "ref": "listening:M2-U01-L1",
      "kind": "listening",
      "title": "Three properties for sale (Ex. 1–2)",
-     "note": "Nghe mô tả và chọn tranh A, B hay C."
+     "note": "Nghe mô tả và chọn tranh A, B hay C.",
+     "step": 0
     },
     {
      "ref": "listening:M2-U01-L2",
      "kind": "listening",
      "title": "Phoning the estate agent: notes (Ex. 3)",
-     "note": "Địa chỉ, số phòng, giờ hẹn, tên và số điện thoại."
+     "note": "Địa chỉ, số phòng, giờ hẹn, tên và số điện thoại.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U01-L3",
      "kind": "listening",
      "title": "Numbers in five conversations (Ex. 4)",
-     "note": "Giá tiền, km, số điện thoại, kích thước."
+     "note": "Giá tiền, km, số điện thoại, kích thước.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U01-L4",
      "kind": "listening",
      "title": "Viewing the house: the information sheet (Ex. 5)",
-     "note": "Giá và kích thước các phòng."
+     "note": "Giá và kích thước các phòng.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U01-L5",
      "kind": "listening",
      "title": "Making an offer: questions (Ex. 6)",
-     "note": "Nghe ý chính của cuộc hội thoại cuối."
+     "note": "Nghe ý chính của cuộc hội thoại cuối.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U01-L6",
      "kind": "listening",
      "title": "Dealing with distractors (Ex. 7)",
-     "note": "Nghe lại một đoạn ngắn và xem vì sao A, B sai."
+     "note": "Nghe lại một đoạn ngắn và xem vì sao A, B sai.",
+     "step": 2
     },
     {
      "ref": "listening:M2-U01-L7",
      "kind": "listening",
      "title": "Exam skills: multiple choice (Ex. 8)",
-     "note": "5 câu A, B, C — loại distractor."
+     "note": "5 câu A, B, C — loại distractor.",
+     "step": 2
     }
    ],
    "vocabSave": {

@@ -300,13 +300,15 @@
      "ref": "reading:M1-U03-R1",
      "kind": "reading",
      "title": "Globalisation of education and the workplace (Ex. 4, 7)",
-     "note": "5 câu multiple choice — tìm đoạn chứa đáp án trước."
+     "note": "5 câu multiple choice — tìm đoạn chứa đáp án trước.",
+     "step": 1
     },
     {
      "ref": "reading:M1-U03-R2",
      "kind": "reading",
      "title": "Exam skills: Education and the workplace in the UK (Ex. 9)",
-     "note": "4 câu multiple choice A–D."
+     "note": "4 câu multiple choice A–D.",
+     "step": 4
     }
    ]
   },
@@ -441,19 +443,22 @@
      "ref": "listening:M1-U03-L1",
      "kind": "listening",
      "title": "A job or a course? / Booking a course (Ex. 5, 10)",
-     "note": "Hai hội thoại ngắn + ngày học và số chỗ."
+     "note": "Hai hội thoại ngắn + ngày học và số chỗ.",
+     "step": 4
     },
     {
      "ref": "listening:M1-U03-L2",
      "kind": "listening",
      "title": "Anna and the store manager (Ex. 8)",
-     "note": "3 câu, NO MORE THAN TWO WORDS — để ý số ít/số nhiều."
+     "note": "3 câu, NO MORE THAN TWO WORDS — để ý số ít/số nhiều.",
+     "step": 5
     },
     {
      "ref": "listening:M1-U03-L3",
      "kind": "listening",
      "title": "Exam skills: the Food Photography course (Ex. 15)",
-     "note": "6 câu sentence completion."
+     "note": "6 câu sentence completion.",
+     "step": 10
     }
    ],
    "vocabSave": {

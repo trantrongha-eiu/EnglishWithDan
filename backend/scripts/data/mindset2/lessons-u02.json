@@ -293,13 +293,15 @@
      "ref": "reading:M2-U02-R1",
      "kind": "reading",
      "title": "Serena Williams — Choose TWO letters (Ex. 7)",
-     "note": "3 câu, mỗi câu chọn 2 đáp án — tìm từ đồng nghĩa."
+     "note": "3 câu, mỗi câu chọn 2 đáp án — tìm từ đồng nghĩa.",
+     "step": 3
     },
     {
      "ref": "reading:M2-U02-R2",
      "kind": "reading",
      "title": "Exam skills: A brief history of football (Ex. 15)",
-     "note": "4 câu multiple choice A, B, C."
+     "note": "4 câu multiple choice A, B, C.",
+     "step": 6
     }
    ]
   },
@@ -441,37 +443,43 @@
      "ref": "listening:M2-U02-L1",
      "kind": "listening",
      "title": "Directions 1–6 (Ex. 2)",
-     "note": "Mỗi câu chỉ đường nói về loại đường nào?"
+     "note": "Mỗi câu chỉ đường nói về loại đường nào?",
+     "step": 1
     },
     {
      "ref": "listening:M2-U02-L2",
      "kind": "listening",
      "title": "Map: from South Hinton to North Hinton (Ex. 3)",
-     "note": "Kéo chữ A–F vào ô 1–6 trên bản đồ."
+     "note": "Kéo chữ A–F vào ô 1–6 trên bản đồ.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U02-L3",
      "kind": "listening",
      "title": "Descriptions of sports (Ex. 4)",
-     "note": "Mô tả 1–5 là môn nào?"
+     "note": "Mô tả 1–5 là môn nào?",
+     "step": 1
     },
     {
      "ref": "listening:M2-U02-L4",
      "kind": "listening",
      "title": "Preparing the rooms (Ex. 5)",
-     "note": "Điền môn thể thao vào bảng — một môn xuất hiện hai lần."
+     "note": "Điền môn thể thao vào bảng — một môn xuất hiện hai lần.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U02-L5",
      "kind": "listening",
      "title": "Exam skills: the equipment (Ex. 6)",
-     "note": "Điền bảng, ONE WORD ONLY."
+     "note": "Điền bảng, ONE WORD ONLY.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U02-L6",
      "kind": "listening",
      "title": "Who is in charge? (Ex. 7)",
-     "note": "Nối sự kiện với người phụ trách A–D."
+     "note": "Nối sự kiện với người phụ trách A–D.",
+     "step": 1
     }
    ],
    "vocabSave": {

@@ -345,6 +345,15 @@ function staticDoc(catalog, id) {
   return (catalog.static || []).find((d) => String(d._id) === String(id)) || null;
 }
 
+// Mindset for IELTS — every book in one homework type (mindset_course_lesson).
+const MINDSET_COURSES = ['MINDSET-0', 'MINDSET-1', 'MINDSET-2'];
+function mindsetLessonRow(d) {
+  const m = /^M(\d+)-U(\d+)-L(\d+)/.exec(d.code || '');
+  if (!m) return { _id: d._id, label: d.title, meta: d.moduleCode || '' };
+  const unit = `Mindset ${m[1]} · Unit ${Number(m[2])}`;
+  return { _id: d._id, label: `${unit} · Buổi ${m[3]} — ${d.title}`, meta: unit };
+}
+
 const REGISTRY = {
   reading_test: {
     label: 'Bộ đề Reading',
@@ -596,12 +605,22 @@ const REGISTRY = {
   },
   // Mindset for IELTS (mindset-<level>.html) — every level in one type; the
   // lesson code's M<level>- prefix picks the student page for the deep link.
+  // Label/meta are built from the lesson code (M<book>-U<nn>-L<n>) so the
+  // teacher sees "Mindset 1 · Unit 3 · Buổi 2 — 📖 Reading…" and can filter
+  // or "Chọn tất cả" by meta "Mindset 1 · Unit 3"; `list` searches those
+  // words too ("mindset 2 unit 5"), which live in no DB field.
   mindset_course_lesson: {
     label: 'Mindset (Buổi học)',
-    catalog: { model: WT1Lesson, filter: { published: true }, courseScope: ['MINDSET-0', 'MINDSET-1', 'MINDSET-2'],
+    catalog: { model: WT1Lesson, filter: { published: true }, courseScope: MINDSET_COURSES,
       sort: { moduleCode: 1, order: 1 },
-      shape: (d) => ({ _id: d._id, label: d.title, meta: d.moduleCode || '' }),
-      deepLinkKey: (d) => d.code },
+      shape: mindsetLessonRow,
+      deepLinkKey: (d) => d.code,
+      list: async ({ words }) => {
+        const docs = await WT1Lesson.find({ published: true, moduleCode: { $in: await wt1ModuleCodesForCourse(MINDSET_COURSES) } })
+          .select('_id code title moduleCode order').sort({ moduleCode: 1, order: 1 }).lean();
+        return docs.map((d) => ({ ...mindsetLessonRow(d), resourceCode: d.code }))
+          .filter((row) => words.every((re) => re.test(`${row.label} ${row.meta}`)));
+      } },
     attempt: { model: WT1Progress, custom: true },
   },
   // "Viết câu nâng cao" (advanced-sentences.html) — one pickable row per
@@ -1187,7 +1206,7 @@ async function checkCompleted(studentId, internalItems, since = null) {
       // safety, see WT1Lesson.js). Resolve _id -> code first, then query.
       const ids = [...idSet].filter((x) => x !== '*').map((x) => new mongoose.Types.ObjectId(x));
       if (!ids.length) return;
-      const lessons = await WT1Lesson.find({ _id: { $in: ids } }).select('_id code').lean();
+      const lessons = await WT1Lesson.find({ _id: { $in: ids } }).select('_id code practiceLinks').lean();
       const codeToId = new Map(lessons.map((l) => [l.code, String(l._id)]));
       const codes = [...codeToId.keys()];
       if (!codes.length) return;
@@ -1208,17 +1227,32 @@ async function checkCompleted(studentId, internalItems, since = null) {
           .distinct('lessonCode').catch(() => []),
       ]);
       const hasObjective = new Set(objective);
+      // Mindset lessons also hold Reading / Listening tests (practiceLinks,
+      // done on reading.html / listening.html). Owner 2026-11-13: a Mindset
+      // lesson given as homework ticks only when each of them is ≥ 70% too —
+      // best attempt counts, made before or after the assignment alike.
+      const rlRefs = new Map();
+      let rlBest = new Map();
+      if (type === 'mindset_course_lesson') {
+        const coursePractice = require('./coursePracticeService');
+        for (const l of lessons) rlRefs.set(l.code, coursePractice.practiceRefs(l.practiceLinks));
+        rlBest = await coursePractice.bestScores(studentId, [...rlRefs.values()].flat());
+      }
       for (const r of rows) {
         const lid = codeToId.get(r.lessonCode);
         if (!lid) continue;
         const pct = Number(r.objectiveScorePercent) || 0;
         const scored = hasObjective.has(r.lessonCode);
+        const rl = (rlRefs.get(r.lessonCode) || []).map((x) => (rlBest.get(x.id) || { percent: 0 }).percent);
+        const rlOk = rl.every((p) => p >= PASS_PERCENT);
+        const parts = [...(scored ? [pct] : []), ...rl];
         out.set(resourceKey(type, lid), {
-          completed: !scored || pct >= PASS_PERCENT, completedAt: r.completedAt,
+          completed: (!scored || pct >= PASS_PERCENT) && rlOk, completedAt: r.completedAt,
           // the pre-2026-11-11 rule (every exercise done) — still the bar for
           // homework given before the score rule existed, see hitPasses
           legacyCompleted: true,
-          ...(scored ? { scorePercent: Math.round(pct) } : {}),
+          ...(parts.length ? { scorePercent: Math.round(parts.reduce((a, b) => a + b, 0) / parts.length) } : {}),
+          ...(rl.length ? { practicePassed: rl.filter((p) => p >= PASS_PERCENT).length, practiceTotal: rl.length } : {}),
         });
       }
       return;

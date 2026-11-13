@@ -196,7 +196,8 @@
      "ref": "reading:M0-U04-R1",
      "kind": "reading",
      "title": "Eight holidays — chọn kỳ nghỉ cho 4 người (Ex. 4–5)",
-     "note": "Đọc 8 mô tả kỳ nghỉ A–H, chọn kỳ nghỉ hợp nhất cho Julia, Charlie, Joanna và Roger."
+     "note": "Đọc 8 mô tả kỳ nghỉ A–H, chọn kỳ nghỉ hợp nhất cho Julia, Charlie, Joanna và Roger.",
+     "step": 1
     }
    ],
    "vocabSave": {
@@ -458,13 +459,15 @@
      "ref": "listening:M0-U04-L1",
      "kind": "listening",
      "title": "Phỏng vấn Anna — Part 1 (Ex. 7–8)",
-     "note": "Câu ví dụ: vì sao Anna chọn đi Tây Ban Nha?"
+     "note": "Câu ví dụ: vì sao Anna chọn đi Tây Ban Nha?",
+     "step": 0
     },
     {
      "ref": "listening:M0-U04-L2",
      "kind": "listening",
      "title": "Phỏng vấn Anna — Part 2 (Ex. 9)",
-     "note": "5 câu trắc nghiệm về chương trình trao đổi văn hoá mùa hè."
+     "note": "5 câu trắc nghiệm về chương trình trao đổi văn hoá mùa hè.",
+     "step": 1
     }
    ],
    "vocabSave": {

@@ -293,13 +293,15 @@
      "ref": "reading:M1-U07-R1",
      "kind": "reading",
      "title": "Become rich and famous through the internet (Ex. 4, 7–9)",
-     "note": "Matching features A–E + YES/NO/NOT GIVEN."
+     "note": "Matching features A–E + YES/NO/NOT GIVEN.",
+     "step": 0
     },
     {
      "ref": "reading:M1-U07-R2",
      "kind": "reading",
      "title": "Exam skills: Famous animals (Ex. 11)",
-     "note": "7 câu matching features + 9 câu YES/NO/NOT GIVEN."
+     "note": "7 câu matching features + 9 câu YES/NO/NOT GIVEN.",
+     "step": 2
     }
    ]
   },
@@ -412,31 +414,36 @@
      "ref": "listening:M1-U07-L1",
      "kind": "listening",
      "title": "Justin Bieber's rise to fame (Ex. 2)",
-     "note": "Flow-chart, NO MORE THAN TWO WORDS."
+     "note": "Flow-chart, NO MORE THAN TWO WORDS.",
+     "step": 0
     },
     {
      "ref": "listening:M1-U07-L2",
      "kind": "listening",
      "title": "Would you like to be famous? (Ex. 5)",
-     "note": "Điền 8 chỗ trống đã đoán loại từ."
+     "note": "Điền 8 chỗ trống đã đoán loại từ.",
+     "step": 2
     },
     {
      "ref": "listening:M1-U07-L3",
      "kind": "listening",
      "title": "How to become famous (Ex. 7)",
-     "note": "Flow-chart 4 bước."
+     "note": "Flow-chart 4 bước.",
+     "step": 3
     },
     {
      "ref": "listening:M1-U07-L4",
      "kind": "listening",
      "title": "Getting the best from your camcorder (Ex. 10)",
-     "note": "Chọn 7 từ A–J cho flow-chart kỹ thuật."
+     "note": "Chọn 7 từ A–J cho flow-chart kỹ thuật.",
+     "step": 4
     },
     {
      "ref": "listening:M1-U07-L5",
      "kind": "listening",
      "title": "Exam skills: making a short film (Ex. 11)",
-     "note": "7 bước, NO MORE THAN TWO WORDS."
+     "note": "7 bước, NO MORE THAN TWO WORDS.",
+     "step": 4
     }
    ],
    "vocabSave": {

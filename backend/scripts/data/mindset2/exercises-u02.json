@@ -322,45 +322,6 @@
    "lessonCode": "M2-U02-L2",
    "order": 4,
    "autoGrade": true,
-   "points": 1,
-   "source": "original",
-   "difficulty": 1,
-   "type": "mcq",
-   "title": "Global understanding: David Beckham (Ex. 14)",
-   "instruction": "Read the text and choose the correct letter, A, B or C. What is the best title for this article?",
-   "stimulus": {
-    "kind": "passage",
-    "text": "David Beckham\n\nDespite Beckham's good looks and famous marriage to Victoria Beckham, he was actually an exceptionally good footballer. His professional career began with Manchester United in 1992, at the age of 17. With United he won the Premier League title six times, the FA Cup twice and the UEFA Champions League in 1999. He later went on to play for Real Madrid and LA Galaxy.\n\nIn international football, he made his England debut in 1996 at the age of 21.\n\nHe was also made captain in 2002 and had short spells at AC Milan and Paris St Germain. His former boss, Alex Ferguson, praised David for always trying hard, playing with supreme confidence and scoring important goals.\n\nHis football career was not always easy, however. During the 1998 World Cup, in a game against Argentina, he was fouled by the player Diego Simeone. In retaliation, Beckham kicked Simeone and was given a red card. Consequently, when England went on to lose the game and go out of the World Cup, Beckham became hated by football fans and was portrayed very negatively by the media.\n\nIt took three years before Beckham was allowed to play for England again and in 2002 he redeemed himself by scoring a penalty in a 1-0 victory against Argentina.\n\nIn 2013 Beckham retired from professional football and played the last game of his 20-year career. Although he is now retired from football, reports claim that he earns more money now than he did as a successful footballer. In 2014 it was documented that he earned £50.5 million, a large portion of which came from brand endorsements for companies such as Adidas, Sky Sports and Samsung.",
-    "caption": "David Beckham (p. 32)"
-   },
-   "items": [
-    {
-     "id": "q1",
-     "prompt": "What is the best title for this article?",
-     "options": [
-      {
-       "id": "A",
-       "text": "What has Beckham achieved during his career?"
-      },
-      {
-       "id": "B",
-       "text": "Despite all the media attention, was Beckham a good football player?"
-      },
-      {
-       "id": "C",
-       "text": "What problems did Beckham have during his football career?"
-      }
-     ],
-     "answer": "B",
-     "explanation": "Cả bài: câu đầu \"Despite Beckham's good looks and famous marriage… he was actually an exceptionally good footballer\", rồi đến thành tích, khó khăn và sự nghiệp sau giải nghệ. A chỉ khớp phần thành tích; C chỉ khớp đoạn World Cup 1998."
-    }
-   ]
-  },
-  {
-   "code": "M2-U02-L2-E05",
-   "lessonCode": "M2-U02-L2",
-   "order": 5,
-   "autoGrade": true,
    "points": 7,
    "source": "original",
    "difficulty": 1,
@@ -418,9 +379,9 @@
    ]
   },
   {
-   "code": "M2-U02-L2-E06",
+   "code": "M2-U02-L2-E05",
    "lessonCode": "M2-U02-L2",
-   "order": 6,
+   "order": 5,
    "autoGrade": true,
    "points": 3,
    "source": "original",
@@ -456,6 +417,45 @@
      "text": "Her tennis game is so successful because …",
      "category": "c",
      "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M2-U02-L2-E06",
+   "lessonCode": "M2-U02-L2",
+   "order": 6,
+   "autoGrade": true,
+   "points": 1,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Global understanding: David Beckham (Ex. 14)",
+   "instruction": "Read the text and choose the correct letter, A, B or C. What is the best title for this article?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "David Beckham\n\nDespite Beckham's good looks and famous marriage to Victoria Beckham, he was actually an exceptionally good footballer. His professional career began with Manchester United in 1992, at the age of 17. With United he won the Premier League title six times, the FA Cup twice and the UEFA Champions League in 1999. He later went on to play for Real Madrid and LA Galaxy.\n\nIn international football, he made his England debut in 1996 at the age of 21.\n\nHe was also made captain in 2002 and had short spells at AC Milan and Paris St Germain. His former boss, Alex Ferguson, praised David for always trying hard, playing with supreme confidence and scoring important goals.\n\nHis football career was not always easy, however. During the 1998 World Cup, in a game against Argentina, he was fouled by the player Diego Simeone. In retaliation, Beckham kicked Simeone and was given a red card. Consequently, when England went on to lose the game and go out of the World Cup, Beckham became hated by football fans and was portrayed very negatively by the media.\n\nIt took three years before Beckham was allowed to play for England again and in 2002 he redeemed himself by scoring a penalty in a 1-0 victory against Argentina.\n\nIn 2013 Beckham retired from professional football and played the last game of his 20-year career. Although he is now retired from football, reports claim that he earns more money now than he did as a successful footballer. In 2014 it was documented that he earned £50.5 million, a large portion of which came from brand endorsements for companies such as Adidas, Sky Sports and Samsung.",
+    "caption": "David Beckham (p. 32)"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "What is the best title for this article?",
+     "options": [
+      {
+       "id": "A",
+       "text": "What has Beckham achieved during his career?"
+      },
+      {
+       "id": "B",
+       "text": "Despite all the media attention, was Beckham a good football player?"
+      },
+      {
+       "id": "C",
+       "text": "What problems did Beckham have during his football career?"
+      }
+     ],
+     "answer": "B",
+     "explanation": "Cả bài: câu đầu \"Despite Beckham's good looks and famous marriage… he was actually an exceptionally good footballer\", rồi đến thành tích, khó khăn và sự nghiệp sau giải nghệ. A chỉ khớp phần thành tích; C chỉ khớp đoạn World Cup 1998."
     }
    ]
   },

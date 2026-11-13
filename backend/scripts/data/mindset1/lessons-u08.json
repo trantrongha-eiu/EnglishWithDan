@@ -289,13 +289,15 @@
      "ref": "reading:M1-U08-R1",
      "kind": "reading",
      "title": "Our friends and protectors (Ex. 5–10)",
-     "note": "Notes completion + sentence endings."
+     "note": "Notes completion + sentence endings.",
+     "step": 1
     },
     {
      "ref": "reading:M1-U08-R2",
      "kind": "reading",
      "title": "Exam skills: The modern zoo (Ex. 13)",
-     "note": "6 câu notes completion + 5 câu sentence endings."
+     "note": "6 câu notes completion + 5 câu sentence endings.",
+     "step": 2
     }
    ]
   },
@@ -416,25 +418,29 @@
      "ref": "listening:M1-U08-L1",
      "kind": "listening",
      "title": "Four animals (Ex. 2)",
-     "note": "Mỗi người nói đang mô tả con vật nào?"
+     "note": "Mỗi người nói đang mô tả con vật nào?",
+     "step": 1
     },
     {
      "ref": "listening:M1-U08-L2",
      "kind": "listening",
      "title": "The mountain gorilla (Ex. 8–9)",
-     "note": "5 chỗ trống, NO MORE THAN TWO WORDS."
+     "note": "5 chỗ trống, NO MORE THAN TWO WORDS.",
+     "step": 5
     },
     {
      "ref": "listening:M1-U08-L3",
      "kind": "listening",
      "title": "The American bullfrog (Ex. 11)",
-     "note": "6 chỗ trống, ONE WORD AND/OR A NUMBER."
+     "note": "6 chỗ trống, ONE WORD AND/OR A NUMBER.",
+     "step": 6
     },
     {
      "ref": "listening:M1-U08-L4",
      "kind": "listening",
      "title": "Exam skills: the box jellyfish (Ex. 13)",
-     "note": "Note completion 6 câu."
+     "note": "Note completion 6 câu.",
+     "step": 6
     }
    ],
    "vocabSave": {

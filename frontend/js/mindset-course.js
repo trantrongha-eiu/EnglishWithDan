@@ -9,7 +9,9 @@
 //  Per lesson, on top of the engine's objectives / theory / exercises:
 //    • images         pictures cut from the Student's Book
 //    • practiceLinks  Reading / Listening in the site's own exam UI
-//                     (reading.html / listening.html) + Essential Grammar
+//                     (reading.html / listening.html), slotted between the
+//                     exercises in book order (lessonList) with the student's
+//                     best score; + Essential Grammar links
 //    • vocabSave      "Lưu vào Sổ N" — one click into the student's fixed
 //                     book N (VocabBook.defaultSlot), or copy the list for
 //                     the dashboard's "Nhập hàng loạt"
@@ -59,28 +61,58 @@
     }).join('') + '</div>';
   }
 
-  function renderPractice(l) {
-    var links = l.practiceLinks || [];
-    var exam = links.filter(function (p) { return p.kind !== 'grammar' && p.url; });
-    var gram = links.filter(function (p) { return p.kind === 'grammar' && p.url; });
-    var html = '';
+  // Reading / Listening test card. `result` = the student's best attempt
+  // (wt1Service.getLesson → coursePracticeService); ≥ PASS% counts toward
+  // a Mindset lesson given as homework.
+  var PASS = 70;
+  function taskCard(l, p) {
     // reading.html / listening.html show "Về khóa học" (js/shared/course-return.js)
     // and land back on this lesson when the student closes the practice.
     var back = '/mindset-' + LEVEL + '.html' + (l.code ? '?lesson=' + encodeURIComponent(l.code) : '');
-    function withReturn(u) {
-      if (!/^\/(reading|listening)\.html\?/.test(u)) return u;
-      return u + '&returnTo=' + encodeURIComponent(back);
+    var url = /^\/(reading|listening)\.html\?/.test(p.url) ? p.url + '&returnTo=' + encodeURIComponent(back) : p.url;
+    var k = KIND[p.kind] || KIND.link;
+    var r = p.result;
+    var badge = '';
+    if (r && r.total) {
+      var ok = r.percent >= PASS;
+      badge = '<span class="ms-task-res ' + (ok ? 'is-ok' : 'is-low') + '" title="Kết quả tốt nhất của bạn">' +
+        (ok ? '<i class="fas fa-check-circle"></i> ' : '<i class="fas fa-redo"></i> ') +
+        r.correct + '/' + r.total + ' · ' + r.percent + '%' + (ok ? '' : ' — cần ≥' + PASS + '%') + '</span>';
     }
-    if (exam.length) {
-      html += '<div class="ms-tasks">' + exam.map(function (p) {
-        var k = KIND[p.kind] || KIND.link;
-        return '<a class="ms-task ms-' + esc(p.kind) + '" href="' + esc(withReturn(p.url)) + '">' +
-          '<span class="ms-task-ic"><i class="fas ' + k.icon + '"></i></span>' +
-          '<span class="ms-task-body"><span class="ms-task-k">' + k.label + ' · giao diện thi thật</span>' +
-          '<b>' + esc(p.title) + '</b>' + (p.note ? '<span class="ms-task-n">' + esc(p.note) + '</span>' : '') + '</span>' +
-          '<span class="ms-task-go">' + k.cta + ' <i class="fas fa-arrow-right"></i></span></a>';
-      }).join('') + '</div>';
+    return '<a class="ms-task ms-' + esc(p.kind) + (r && r.total && r.percent >= PASS ? ' is-done' : '') + '" href="' + esc(url) + '">' +
+      '<span class="ms-task-ic"><i class="fas ' + k.icon + '"></i></span>' +
+      '<span class="ms-task-body"><span class="ms-task-k">' + k.label + ' · giao diện thi thật</span>' +
+      '<b>' + esc(p.title) + '</b>' + (p.note ? '<span class="ms-task-n">' + esc(p.note) + '</span>' : '') + badge + '</span>' +
+      '<span class="ms-task-go">' + (r && r.total ? 'Làm lại' : k.cta) + ' <i class="fas fa-arrow-right"></i></span></a>';
+  }
+
+  // The lesson's steps in book order: exercises with the Reading/Listening
+  // tests slotted in at their `step` (number of exercises before them —
+  // set by scripts/mindset/buildMindset.js from the "(Ex. N)" tags).
+  function lessonList(l, cards) {
+    var tasks = (l.practiceLinks || []).filter(function (p) { return p.kind !== 'grammar' && p.url; });
+    if (!tasks.length) return cards.join('');
+    var at = {};
+    tasks.forEach(function (p) {
+      var s = typeof p.step === 'number' ? Math.max(0, Math.min(p.step, cards.length)) : cards.length;
+      (at[s] = at[s] || []).push(p);
+    });
+    var out = [];
+    var n = 0;
+    function step(html) { n++; out.push('<div class="ms-step"><span class="ms-step-n">' + n + '</span>' + html + '</div>'); }
+    for (var i = 0; i <= cards.length; i++) {
+      (at[i] || []).forEach(function (p) { step(taskCard(l, p)); });
+      if (i < cards.length) step(cards[i]);
     }
+    return '<div class="ms-flow-h"><i class="fas fa-list-ol"></i> Các bước của buổi học — theo thứ tự trong sách' +
+      '<span>' + tasks.length + ' bài ' + (tasks.some(function (p) { return p.kind === 'listening'; }) && tasks.some(function (p) { return p.kind === 'reading'; }) ? 'Reading/Listening' : (tasks[0].kind === 'listening' ? 'Listening' : 'Reading')) +
+      ' cần đạt ≥' + PASS + '%</span></div>' + out.join('');
+  }
+
+  function renderPractice(l) {
+    var links = l.practiceLinks || [];
+    var gram = links.filter(function (p) { return p.kind === 'grammar' && p.url; });
+    var html = '';
     if (gram.length) {
       html += '<div class="ms-gram"><div class="ms-gram-t">🧩 Ngữ pháp của bài — học & luyện trên web</div>' +
         '<div class="ms-gram-links">' + gram.map(function (p) {
@@ -198,6 +230,7 @@
       // the Speaking page's older compact one.
       ui: {},
       lessonExtra: function (l) { return renderImages(l) + renderPractice(l); },
+      lessonList: lessonList,
       lessonFooter: renderVocabSave,
       setup: function (engine) {
         E = engine;

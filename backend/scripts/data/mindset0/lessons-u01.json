@@ -277,7 +277,8 @@
      "ref": "reading:M0-U01-R1",
      "kind": "reading",
      "title": "A Day in the Life — 3 học sinh, 7 câu hỏi \"Who…?\" (Ex. 5–6)",
-     "note": "Đọc lướt 1 lần, rồi chọn Ava / Michael / Nina cho từng câu. Có giải thích chi tiết sau khi nộp."
+     "note": "Đọc lướt 1 lần, rồi chọn Ava / Michael / Nina cho từng câu. Có giải thích chi tiết sau khi nộp.",
+     "step": 1
     }
    ],
    "vocabSave": {
@@ -629,7 +630,8 @@
      "ref": "listening:M0-U01-L1",
      "kind": "listening",
      "title": "Carlos & Jack — chuyến trao đổi học sinh (Ex. 16–17)",
-     "note": "Nghe audio gốc của sách: chọn quốc gia của 2 bạn, rồi nối 5 người thân với hoạt động A–H. Có transcript & giải thích."
+     "note": "Nghe audio gốc của sách: chọn quốc gia của 2 bạn, rồi nối 5 người thân với hoạt động A–H. Có transcript & giải thích.",
+     "step": 2
     }
    ],
    "vocabSave": {
@@ -840,7 +842,7 @@
    },
    "published": true,
    "exerciseCount": 6,
-   "totalPoints": 42
+   "totalPoints": 44
   }
  ]
 }

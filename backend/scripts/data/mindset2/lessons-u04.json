@@ -312,13 +312,15 @@
      "ref": "reading:M2-U04-R1",
      "kind": "reading",
      "title": "Travel tips — matching headings (Ex. 3–5)",
-     "note": "Chọn tiêu đề cho đoạn B–F (đoạn A làm mẫu)."
+     "note": "Chọn tiêu đề cho đoạn B–F (đoạn A làm mẫu).",
+     "step": 1
     },
     {
      "ref": "reading:M2-U04-R2",
      "kind": "reading",
      "title": "Exam skills: Trans-Siberian Railway (Ex. 12)",
-     "note": "6 đoạn A–F, 9 tiêu đề i–ix."
+     "note": "6 đoạn A–F, 9 tiêu đề i–ix.",
+     "step": 3
     }
    ]
   },
@@ -450,49 +452,57 @@
      "ref": "listening:M2-U04-L1",
      "kind": "listening",
      "title": "Five conversations: problems and functions (Ex. 1–2)",
-     "note": "Vấn đề A–E và chức năng của người nói."
+     "note": "Vấn đề A–E và chức năng của người nói.",
+     "step": 0
     },
     {
      "ref": "listening:M2-U04-L2",
      "kind": "listening",
      "title": "The students' project: the main problem (Ex. 4)",
-     "note": "Một câu A–D."
+     "note": "Một câu A–D.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U04-L3",
      "kind": "listening",
      "title": "The worst affected places (Ex. 5)",
-     "note": "Nối địa điểm với vị trí — thừa một vị trí."
+     "note": "Nối địa điểm với vị trí — thừa một vị trí.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U04-L4",
      "kind": "listening",
      "title": "Solutions and disadvantages (Ex. 6)",
-     "note": "Nối giải pháp với nhược điểm."
+     "note": "Nối giải pháp với nhược điểm.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U04-L5",
      "kind": "listening",
      "title": "The costs (Ex. 7)",
-     "note": "Thừa hai mức chi phí."
+     "note": "Thừa hai mức chi phí.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U04-L6",
      "kind": "listening",
      "title": "The benefits (Ex. 8)",
-     "note": "Một chữ cái có thể dùng nhiều lần."
+     "note": "Một chữ cái có thể dùng nhiều lần.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U04-L7",
      "kind": "listening",
      "title": "Identifying functions: six extracts (Ex. 9)",
-     "note": "Thừa một chức năng."
+     "note": "Thừa một chức năng.",
+     "step": 1
     },
     {
      "ref": "listening:M2-U04-L8",
      "kind": "listening",
      "title": "Exam skills: changes in Ashtown (Ex. 10)",
-     "note": "3 câu multiple choice + 5 câu matching."
+     "note": "3 câu multiple choice + 5 câu matching.",
+     "step": 1
     }
    ],
    "vocabSave": {

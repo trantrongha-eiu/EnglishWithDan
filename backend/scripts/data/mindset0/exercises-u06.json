@@ -1006,6 +1006,127 @@
    "code": "M0-U06-L4-E01",
    "lessonCode": "M0-U06-L4",
    "order": 1,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "paragraph_writing",
+   "title": "Write a reply to Sandy (Ex. 20–22)",
+   "instruction": "This is part of an email from your penfriend Sandy: \"I'm coming to your country next month on holiday. Where do you think I should go and why are those places interesting? What's the best way for me to travel around?\" Write a reply to Sandy (about 100 words). Begin: \"Hi Sandy, I'm really pleased you're coming to visit my country. The first place you should visit is…\". Use comparatives and superlatives and the linking words if, so, because, after that.",
+   "responseSlots": 1,
+   "rubric": {
+    "bandFocus": [
+     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
+    ],
+    "minWords": 90,
+    "maxWords": 140,
+    "mustUse": 3,
+    "targetStructures": [
+     "the most",
+     "the best",
+     "because",
+     "After that",
+     "If you like"
+    ],
+    "checklist": [
+     "Trả lời: nên đi đâu (ít nhất 2 nơi)",
+     "Giải thích vì sao các nơi đó thú vị",
+     "Nói cách đi lại tốt nhất",
+     "Dùng ít nhất 2 tính từ so sánh nhất",
+     "Mở đầu và kết thúc email đúng",
+     "Khoảng 100 từ"
+    ],
+    "sampleAnswer": "Hi Sandy,\n\nI'm really pleased you're coming to visit my country. The first place you should visit is Hanoi. It's the capital and one of the oldest cities in Vietnam. The Old Quarter is the most interesting part because the streets are full of small shops and delicious street food. If you like history, you should also visit the Temple of Literature.\n\nAfter that, you should go to Ha Long Bay. I think it's the most beautiful place in the country. You can take a boat trip and sleep on the boat. The best way to get there is by coach because it's cheaper than a taxi.\n\nBest wishes,\nNam",
+    "commonErrors": [
+     "more beautiful than / the most beautiful dùng lẫn lộn",
+     "most famous thiếu \"the\"",
+     "Quên nói cách đi lại"
+    ]
+   }
+  },
+  {
+   "code": "M0-U06-L4-E02",
+   "lessonCode": "M0-U06-L4",
+   "order": 2,
+   "autoGrade": true,
+   "points": 3,
+   "source": "original",
+   "difficulty": 1,
+   "type": "mcq",
+   "title": "Martin's model email (Ex. 22)",
+   "instruction": "Read the model email and answer the questions.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Hi Sandy,\n\nI'm really pleased you're coming to visit my country. The first place you should visit is London. It's one of the most famous cities in the world. It has fantastic museums and parks and is perfect if you like shopping. The buses and the underground are the best ways to travel.\n\nAfter that you should go to the Lake District. I think this is the most beautiful part of England. It has the highest mountains in the country and the largest and deepest lakes. You can get there by train and then use the buses to get around.\n\nBest wishes,\nMartin",
+    "caption": "Model answer"
+   },
+   "items": [
+    {
+     "id": "q1",
+     "prompt": "Martin answers how many of Sandy's questions?",
+     "options": [
+      {
+       "id": "A",
+       "text": "1"
+      },
+      {
+       "id": "B",
+       "text": "2"
+      },
+      {
+       "id": "C",
+       "text": "all 3"
+      }
+     ],
+     "answer": "C",
+     "explanation": "Nơi nên đến, vì sao thú vị, cách đi lại."
+    },
+    {
+     "id": "q2",
+     "prompt": "Which sentence uses a superlative to say why a place is interesting?",
+     "options": [
+      {
+       "id": "A",
+       "text": "The buses and the underground are the best ways to travel."
+      },
+      {
+       "id": "B",
+       "text": "It's one of the most famous cities in the world."
+      },
+      {
+       "id": "C",
+       "text": "You can get there by train."
+      }
+     ],
+     "answer": "B",
+     "explanation": ""
+    },
+    {
+     "id": "q3",
+     "prompt": "Which linker introduces the second place?",
+     "options": [
+      {
+       "id": "A",
+       "text": "After that"
+      },
+      {
+       "id": "B",
+       "text": "Because"
+      },
+      {
+       "id": "C",
+       "text": "If"
+      }
+     ],
+     "answer": "A",
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U06-L4-E03",
+   "lessonCode": "M0-U06-L4",
+   "order": 3,
    "autoGrade": true,
    "points": 7,
    "source": "original",
@@ -1108,127 +1229,6 @@
      "explanation": ""
     }
    ]
-  },
-  {
-   "code": "M0-U06-L4-E02",
-   "lessonCode": "M0-U06-L4",
-   "order": 2,
-   "autoGrade": true,
-   "points": 3,
-   "source": "original",
-   "difficulty": 1,
-   "type": "mcq",
-   "title": "Martin's model email (Ex. 22)",
-   "instruction": "Read the model email and answer the questions.",
-   "stimulus": {
-    "kind": "passage",
-    "text": "Hi Sandy,\n\nI'm really pleased you're coming to visit my country. The first place you should visit is London. It's one of the most famous cities in the world. It has fantastic museums and parks and is perfect if you like shopping. The buses and the underground are the best ways to travel.\n\nAfter that you should go to the Lake District. I think this is the most beautiful part of England. It has the highest mountains in the country and the largest and deepest lakes. You can get there by train and then use the buses to get around.\n\nBest wishes,\nMartin",
-    "caption": "Model answer"
-   },
-   "items": [
-    {
-     "id": "q1",
-     "prompt": "Martin answers how many of Sandy's questions?",
-     "options": [
-      {
-       "id": "A",
-       "text": "1"
-      },
-      {
-       "id": "B",
-       "text": "2"
-      },
-      {
-       "id": "C",
-       "text": "all 3"
-      }
-     ],
-     "answer": "C",
-     "explanation": "Nơi nên đến, vì sao thú vị, cách đi lại."
-    },
-    {
-     "id": "q2",
-     "prompt": "Which sentence uses a superlative to say why a place is interesting?",
-     "options": [
-      {
-       "id": "A",
-       "text": "The buses and the underground are the best ways to travel."
-      },
-      {
-       "id": "B",
-       "text": "It's one of the most famous cities in the world."
-      },
-      {
-       "id": "C",
-       "text": "You can get there by train."
-      }
-     ],
-     "answer": "B",
-     "explanation": ""
-    },
-    {
-     "id": "q3",
-     "prompt": "Which linker introduces the second place?",
-     "options": [
-      {
-       "id": "A",
-       "text": "After that"
-      },
-      {
-       "id": "B",
-       "text": "Because"
-      },
-      {
-       "id": "C",
-       "text": "If"
-      }
-     ],
-     "answer": "A",
-     "explanation": ""
-    }
-   ]
-  },
-  {
-   "code": "M0-U06-L4-E03",
-   "lessonCode": "M0-U06-L4",
-   "order": 3,
-   "autoGrade": false,
-   "points": 10,
-   "source": "original",
-   "difficulty": 1,
-   "type": "paragraph_writing",
-   "title": "Write a reply to Sandy (Ex. 20–22)",
-   "instruction": "This is part of an email from your penfriend Sandy: \"I'm coming to your country next month on holiday. Where do you think I should go and why are those places interesting? What's the best way for me to travel around?\" Write a reply to Sandy (about 100 words). Begin: \"Hi Sandy, I'm really pleased you're coming to visit my country. The first place you should visit is…\". Use comparatives and superlatives and the linking words if, so, because, after that.",
-   "responseSlots": 1,
-   "rubric": {
-    "bandFocus": [
-     "A2 (Mindset Foundation, mục tiêu Band 4.0–4.5)"
-    ],
-    "minWords": 90,
-    "maxWords": 140,
-    "mustUse": 3,
-    "targetStructures": [
-     "the most",
-     "the best",
-     "because",
-     "After that",
-     "If you like"
-    ],
-    "checklist": [
-     "Trả lời: nên đi đâu (ít nhất 2 nơi)",
-     "Giải thích vì sao các nơi đó thú vị",
-     "Nói cách đi lại tốt nhất",
-     "Dùng ít nhất 2 tính từ so sánh nhất",
-     "Mở đầu và kết thúc email đúng",
-     "Khoảng 100 từ"
-    ],
-    "sampleAnswer": "Hi Sandy,\n\nI'm really pleased you're coming to visit my country. The first place you should visit is Hanoi. It's the capital and one of the oldest cities in Vietnam. The Old Quarter is the most interesting part because the streets are full of small shops and delicious street food. If you like history, you should also visit the Temple of Literature.\n\nAfter that, you should go to Ha Long Bay. I think it's the most beautiful place in the country. You can take a boat trip and sleep on the boat. The best way to get there is by coach because it's cheaper than a taxi.\n\nBest wishes,\nNam",
-    "commonErrors": [
-     "more beautiful than / the most beautiful dùng lẫn lộn",
-     "most famous thiếu \"the\"",
-     "Quên nói cách đi lại"
-    ]
-   }
   },
   {
    "code": "M0-U06-L5-E01",

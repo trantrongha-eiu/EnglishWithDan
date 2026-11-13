@@ -241,8 +241,8 @@ module.exports = {
           ['On my second day, I ____ (go) shopping and ____ (buy) some souvenirs.', ['went', 'bought']],
           ['That night it ____ (be) really interesting because I ____ (eat) in a Spanish restaurant.', ['was', 'ate']],
           ['I usually ____ (not try) new food on holiday, but I am very happy that I ____ (do) this time.', ['don\'t try|do not try', 'did']],
-          ['I ____ (try) a traditional meal. It ____ (be) delicious.', ['tried', 'was']],
-          ['I ____ (take) lots of photos. What ____ you do on your holiday?', ['took', 'did']],
+          ['I ____ (try) a traditional meal. It ____ (be) delicious. It ____ (be) only a short holiday, but I really enjoyed it.', ['tried', 'was', 'was']],
+          ['I ____ (take) lots of photos. What ____ (do) you do on your holiday? Where ____ (do) you go?', ['took', 'did', 'did']],
         ]),
         cat('What is in Simon\'s email? (Ex. 18)', 'Which features ARE in Simon\'s email and which are NOT?', { y: 'Yes – in the email', n: 'No – not in the email' }, [
           ['He uses a greeting to start the email.', 'y'], ['He says where he went on holiday.', 'y'], ['He says how he travelled there.', 'n'], ['He says how long he stayed.', 'n'],

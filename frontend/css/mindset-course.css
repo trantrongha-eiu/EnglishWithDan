@@ -39,6 +39,26 @@
   .ms-task-go { width: 100%; text-align: right; }
 }
 
+/* lesson steps in book order: exercises + Reading/Listening tests (lessonList) */
+.ms-flow-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: 13px; font-weight: 800; color: var(--text2, #4b5563); margin: 2px 0 2px; }
+.ms-flow-h i { color: #059669; }
+.ms-flow-h span { font-weight: 600; font-size: 12px; color: var(--text3, #6b7280); }
+.ms-step { display: flex; align-items: center; gap: 10px; }
+.ms-step > .t1-ex-card, .ms-step > .ms-task { flex: 1; min-width: 0; }
+.ms-step-n { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--text2, #4b5563); background: var(--bg2, #f3f4f6); border: 1px solid var(--border, #e5e7eb); }
+.ms-task.is-done { border-left-color: #10b981; }
+.ms-task-res { align-self: flex-start; margin-top: 4px; font-size: 12px; font-weight: 800; padding: 2px 9px; border-radius: 999px; }
+.ms-task-res.is-ok { background: #dcfce7; color: #15803d; }
+.ms-task-res.is-low { background: #fef3c7; color: #b45309; }
+[data-theme="dark"] .ms-step-n { background: #1f2937; border-color: #374151; color: #d1d5db; }
+[data-theme="dark"] .ms-task-res.is-ok { background: #0f2a1d; color: #86efac; }
+[data-theme="dark"] .ms-task-res.is-low { background: #2d220b; color: #fcd34d; }
+@media (max-width: 480px) {
+  .ms-step { gap: 6px; }
+  .ms-step-n { width: 22px; height: 22px; font-size: 11px; }
+}
+
 /* grammar → Essential Grammar lessons */
 .ms-gram { margin: 12px 20px 0; padding: 12px 14px; border-radius: 12px; background: #f5f3ff; border: 1px solid #ddd6fe; }
 .ms-gram-t { font-size: 13px; font-weight: 800; color: #6d28d9; margin-bottom: 8px; }

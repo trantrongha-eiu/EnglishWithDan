@@ -1132,56 +1132,6 @@
    "source": "original",
    "difficulty": 1,
    "type": "error_correction",
-   "title": "Correct the adverb position (G&V Ex. 7)",
-   "instruction": "Some sentences have the adverb or the words in the wrong place. Write the correct sentence (if the sentence is already correct, copy it).",
-   "items": [
-    {
-     "id": "e1",
-     "prompt": "In my country, people live usually in apartments and not houses.",
-     "answer": "In my country, people usually live in apartments and not houses.",
-     "explanation": "usually đứng trước động từ thường live."
-    },
-    {
-     "id": "e2",
-     "prompt": "My uncle keeps his car always in the garage because it is very expensive.",
-     "answer": "My uncle always keeps his car in the garage because it is very expensive.",
-     "explanation": "always trước keeps."
-    },
-    {
-     "id": "e3",
-     "prompt": "Our sink sometimes makes a very strange noise.",
-     "answer": "Our sink sometimes makes a very strange noise.",
-     "explanation": "Câu đúng."
-    },
-    {
-     "id": "e4",
-     "prompt": "I have a housemate but I don't see very often him – he is always studying.",
-     "answer": "I have a housemate but I don't see him very often – he is always studying.",
-     "explanation": "very often đứng cuối câu, sau tân ngữ him (hoặc: I don't very often see him)."
-    },
-    {
-     "id": "e5",
-     "prompt": "In your country, do people usually celebrate their 18th birthday with a party?",
-     "answer": "In your country, do people usually celebrate their 18th birthday with a party?",
-     "explanation": "Câu đúng: usually đứng sau chủ ngữ, trước động từ celebrate."
-    },
-    {
-     "id": "e6",
-     "prompt": "Do you prefer to do your homework in your bedroom?",
-     "answer": "Do you prefer to do your homework in your bedroom?",
-     "explanation": "Câu đúng."
-    }
-   ]
-  },
-  {
-   "code": "M0-U02-L3-E06",
-   "lessonCode": "M0-U02-L3",
-   "order": 6,
-   "autoGrade": true,
-   "points": 6,
-   "source": "original",
-   "difficulty": 1,
-   "type": "error_correction",
    "title": "Make questions (G&V Ex. 6)",
    "instruction": "Rewrite each sentence as a Yes/No question.",
    "items": [
@@ -1220,6 +1170,56 @@
      "prompt": "The apartments in the UK are very different from the apartments in your country.",
      "answer": "Are the apartments in the UK very different from the apartments in your country?",
      "explanation": "are → đảo Are lên trước chủ ngữ số nhiều."
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L3-E06",
+   "lessonCode": "M0-U02-L3",
+   "order": 6,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
+   "type": "error_correction",
+   "title": "Correct the adverb position (G&V Ex. 7)",
+   "instruction": "Some sentences have the adverb or the words in the wrong place. Write the correct sentence (if the sentence is already correct, copy it).",
+   "items": [
+    {
+     "id": "e1",
+     "prompt": "In my country, people live usually in apartments and not houses.",
+     "answer": "In my country, people usually live in apartments and not houses.",
+     "explanation": "usually đứng trước động từ thường live."
+    },
+    {
+     "id": "e2",
+     "prompt": "My uncle keeps his car always in the garage because it is very expensive.",
+     "answer": "My uncle always keeps his car in the garage because it is very expensive.",
+     "explanation": "always trước keeps."
+    },
+    {
+     "id": "e3",
+     "prompt": "Our sink sometimes makes a very strange noise.",
+     "answer": "Our sink sometimes makes a very strange noise.",
+     "explanation": "Câu đúng."
+    },
+    {
+     "id": "e4",
+     "prompt": "I have a housemate but I don't see very often him – he is always studying.",
+     "answer": "I have a housemate but I don't see him very often – he is always studying.",
+     "explanation": "very often đứng cuối câu, sau tân ngữ him (hoặc: I don't very often see him)."
+    },
+    {
+     "id": "e5",
+     "prompt": "In your country, do people usually celebrate their 18th birthday with a party?",
+     "answer": "In your country, do people usually celebrate their 18th birthday with a party?",
+     "explanation": "Câu đúng: usually đứng sau chủ ngữ, trước động từ celebrate."
+    },
+    {
+     "id": "e6",
+     "prompt": "Do you prefer to do your homework in your bedroom?",
+     "answer": "Do you prefer to do your homework in your bedroom?",
+     "explanation": "Câu đúng."
     }
    ]
   },
@@ -1481,6 +1481,43 @@
    "code": "M0-U02-L6-E01",
    "lessonCode": "M0-U02-L6",
    "order": 1,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Speaking: weekdays and weekends (Ex. 17, 23)",
+   "instruction": "Answer each question in 15–25 seconds.",
+   "speakingPart": 1,
+   "speakingPrepSeconds": 10,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "On a weekday morning, what time does your alarm go off?",
+     "sampleAnswer": "My alarm usually goes off at six fifteen, but I always press snooze once! I get up at about six thirty because my school starts at seven fifteen.",
+     "sampleNote": "Dùng đúng cụm \"alarm goes off\" của bài.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s2",
+     "prompt": "Do you like to have a lie in at the weekend?",
+     "sampleAnswer": "Yes, I love it. On Sundays I usually have a lie in until nine o'clock because I'm tired after a long week. Then I have a big breakfast with my family.",
+     "sampleNote": "Yes → lý do → hoạt động tiếp theo.",
+     "sampleSource": "new"
+    },
+    {
+     "id": "s3",
+     "prompt": "Describe a typical day for you at the weekend.",
+     "sampleAnswer": "On Saturdays I usually help my mum with the housework in the morning. In the afternoon, I often meet my friends at a café, and in the evening we sometimes watch a film at home.",
+     "sampleNote": "Theo trình tự sáng – chiều – tối + trạng từ tần suất.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L6-E02",
+   "lessonCode": "M0-U02-L6",
+   "order": 2,
    "autoGrade": true,
    "points": 12,
    "source": "original",
@@ -1574,9 +1611,9 @@
    ]
   },
   {
-   "code": "M0-U02-L6-E02",
+   "code": "M0-U02-L6-E03",
    "lessonCode": "M0-U02-L6",
-   "order": 2,
+   "order": 3,
    "autoGrade": false,
    "points": 10,
    "source": "original",
@@ -1613,43 +1650,6 @@
      "prompt": "What are the advantages and disadvantages of living with lots of other students?",
      "sampleAnswer": "The main advantage is that you can make lots of new friends and you never feel lonely. The disadvantage is that it can be very noisy, especially at night, so it is difficult to study or sleep.",
      "sampleNote": "Dùng \"The main advantage is… The disadvantage is…\".",
-     "sampleSource": "new"
-    }
-   ]
-  },
-  {
-   "code": "M0-U02-L6-E03",
-   "lessonCode": "M0-U02-L6",
-   "order": 3,
-   "autoGrade": false,
-   "points": 10,
-   "source": "original",
-   "difficulty": 1,
-   "type": "speaking_response",
-   "title": "Speaking: weekdays and weekends (Ex. 17, 23)",
-   "instruction": "Answer each question in 15–25 seconds.",
-   "speakingPart": 1,
-   "speakingPrepSeconds": 10,
-   "items": [
-    {
-     "id": "s1",
-     "prompt": "On a weekday morning, what time does your alarm go off?",
-     "sampleAnswer": "My alarm usually goes off at six fifteen, but I always press snooze once! I get up at about six thirty because my school starts at seven fifteen.",
-     "sampleNote": "Dùng đúng cụm \"alarm goes off\" của bài.",
-     "sampleSource": "new"
-    },
-    {
-     "id": "s2",
-     "prompt": "Do you like to have a lie in at the weekend?",
-     "sampleAnswer": "Yes, I love it. On Sundays I usually have a lie in until nine o'clock because I'm tired after a long week. Then I have a big breakfast with my family.",
-     "sampleNote": "Yes → lý do → hoạt động tiếp theo.",
-     "sampleSource": "new"
-    },
-    {
-     "id": "s3",
-     "prompt": "Describe a typical day for you at the weekend.",
-     "sampleAnswer": "On Saturdays I usually help my mum with the housework in the morning. In the afternoon, I often meet my friends at a café, and in the evening we sometimes watch a film at home.",
-     "sampleNote": "Theo trình tự sáng – chiều – tối + trạng từ tần suất.",
      "sampleSource": "new"
     }
    ]
@@ -1939,6 +1939,153 @@
    "lessonCode": "M0-U02-L7",
    "order": 4,
    "autoGrade": true,
+   "points": 11,
+   "source": "original",
+   "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Find 11 words (G&V Ex. 4)",
+   "instruction": "The book has a word square with 11 words about the home. Use the clues and the first letters to write the 11 words.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "The room or space just under the roof of a house: ____ (a…)",
+     "blanks": [
+      {
+       "accept": [
+        "attic"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g2",
+     "prompt": "The area with grass and flowers around a house: ____ (g…)",
+     "blanks": [
+      {
+       "accept": [
+        "garden"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g3",
+     "prompt": "A room in a house for working or reading: ____ (s…)",
+     "blanks": [
+      {
+       "accept": [
+        "study"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g4",
+     "prompt": "A room below the ground: ____ (b…)",
+     "blanks": [
+      {
+       "accept": [
+        "basement"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g5",
+     "prompt": "The room where you cook: ____ (k…)",
+     "blanks": [
+      {
+       "accept": [
+        "kitchen"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g6",
+     "prompt": "A machine for watching films and the news: ____ (t…)",
+     "blanks": [
+      {
+       "accept": [
+        "television",
+        "TV"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g7",
+     "prompt": "A table for studying or working: ____ (d…)",
+     "blanks": [
+      {
+       "accept": [
+        "desk"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g8",
+     "prompt": "You stand under it to wash: ____ (s…)",
+     "blanks": [
+      {
+       "accept": [
+        "shower"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g9",
+     "prompt": "You look outside through it: ____ (w…)",
+     "blanks": [
+      {
+       "accept": [
+        "window"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g10",
+     "prompt": "You wash your hands or the dishes in it: ____ (s…)",
+     "blanks": [
+      {
+       "accept": [
+        "sink"
+       ]
+      }
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "g11",
+     "prompt": "It covers a window to keep out the light: ____ (b…)",
+     "blanks": [
+      {
+       "accept": [
+        "blind"
+       ]
+      }
+     ],
+     "explanation": ""
+    }
+   ]
+  },
+  {
+   "code": "M0-U02-L7-E05",
+   "lessonCode": "M0-U02-L7",
+   "order": 5,
+   "autoGrade": true,
    "points": 6,
    "source": "original",
    "difficulty": 1,
@@ -2026,9 +2173,9 @@
    ]
   },
   {
-   "code": "M0-U02-L7-E05",
+   "code": "M0-U02-L7-E06",
    "lessonCode": "M0-U02-L7",
-   "order": 5,
+   "order": 6,
    "autoGrade": true,
    "points": 8,
    "source": "original",
@@ -2232,153 +2379,6 @@
       "the",
       "university",
       "campus?"
-     ],
-     "explanation": ""
-    }
-   ]
-  },
-  {
-   "code": "M0-U02-L7-E06",
-   "lessonCode": "M0-U02-L7",
-   "order": 6,
-   "autoGrade": true,
-   "points": 11,
-   "source": "original",
-   "difficulty": 1,
-   "type": "gap_fill",
-   "title": "Find 11 words (G&V Ex. 4)",
-   "instruction": "The book has a word square with 11 words about the home. Use the clues and the first letters to write the 11 words.",
-   "items": [
-    {
-     "id": "g1",
-     "prompt": "The room or space just under the roof of a house: ____ (a…)",
-     "blanks": [
-      {
-       "accept": [
-        "attic"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g2",
-     "prompt": "The area with grass and flowers around a house: ____ (g…)",
-     "blanks": [
-      {
-       "accept": [
-        "garden"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g3",
-     "prompt": "A room in a house for working or reading: ____ (s…)",
-     "blanks": [
-      {
-       "accept": [
-        "study"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g4",
-     "prompt": "A room below the ground: ____ (b…)",
-     "blanks": [
-      {
-       "accept": [
-        "basement"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g5",
-     "prompt": "The room where you cook: ____ (k…)",
-     "blanks": [
-      {
-       "accept": [
-        "kitchen"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g6",
-     "prompt": "A machine for watching films and the news: ____ (t…)",
-     "blanks": [
-      {
-       "accept": [
-        "television",
-        "TV"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g7",
-     "prompt": "A table for studying or working: ____ (d…)",
-     "blanks": [
-      {
-       "accept": [
-        "desk"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g8",
-     "prompt": "You stand under it to wash: ____ (s…)",
-     "blanks": [
-      {
-       "accept": [
-        "shower"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g9",
-     "prompt": "You look outside through it: ____ (w…)",
-     "blanks": [
-      {
-       "accept": [
-        "window"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g10",
-     "prompt": "You wash your hands or the dishes in it: ____ (s…)",
-     "blanks": [
-      {
-       "accept": [
-        "sink"
-       ]
-      }
-     ],
-     "explanation": ""
-    },
-    {
-     "id": "g11",
-     "prompt": "It covers a window to keep out the light: ____ (b…)",
-     "blanks": [
-      {
-       "accept": [
-        "blind"
-       ]
-      }
      ],
      "explanation": ""
     }

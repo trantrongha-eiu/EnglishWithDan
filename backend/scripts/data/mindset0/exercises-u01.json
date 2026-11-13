@@ -8,6 +8,93 @@
    "points": 6,
    "source": "original",
    "difficulty": 1,
+   "type": "gap_fill",
+   "title": "Everyday phrases (Lead-in)",
+   "instruction": "Complete the phrases from the Lead-in pictures with ONE verb. Change the form of the verb if necessary.",
+   "items": [
+    {
+     "id": "g1",
+     "prompt": "Every morning I ____ breakfast at 7am.",
+     "blanks": [
+      {
+       "accept": [
+        "have"
+       ]
+      }
+     ],
+     "explanation": "have breakfast — ăn sáng (không dùng \"eat a breakfast\")."
+    },
+    {
+     "id": "g2",
+     "prompt": "I usually ____ the bus to college at 7:30.",
+     "blanks": [
+      {
+       "accept": [
+        "catch",
+        "take"
+       ]
+      }
+     ],
+     "explanation": "catch/take the bus."
+    },
+    {
+     "id": "g3",
+     "prompt": "After dinner, my sister ____ online and chats to her friends.",
+     "blanks": [
+      {
+       "accept": [
+        "goes"
+       ]
+      }
+     ],
+     "explanation": "go online — chủ ngữ số ít (my sister) → goes."
+    },
+    {
+     "id": "g4",
+     "prompt": "My dad ____ TV in the living room every evening.",
+     "blanks": [
+      {
+       "accept": [
+        "watches"
+       ]
+      }
+     ],
+     "explanation": "watch TV — he/she → thêm -es (watches)."
+    },
+    {
+     "id": "g5",
+     "prompt": "I always ____ to bed at about 10:30pm.",
+     "blanks": [
+      {
+       "accept": [
+        "go"
+       ]
+      }
+     ],
+     "explanation": "go to bed — đi ngủ."
+    },
+    {
+     "id": "g6",
+     "prompt": "At the weekend, I ____ with friends in a café.",
+     "blanks": [
+      {
+       "accept": [
+        "relax"
+       ]
+      }
+     ],
+     "explanation": "relax with friends — thư giãn cùng bạn."
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L1-E02",
+   "lessonCode": "M0-U01-L1",
+   "order": 2,
+   "autoGrade": true,
+   "points": 6,
+   "source": "original",
+   "difficulty": 1,
    "type": "mcq",
    "title": "Ping in England – choose the correct word (Ex. 3)",
    "instruction": "Read the sentences about Ping, a young man on a language course in England. Choose the best answer, A, B or C.",
@@ -131,93 +218,6 @@
      ],
      "answer": "A",
      "explanation": "watch TV = xem TV (theo dõi một thứ đang chuyển động). see = nhìn thấy; look (at) = nhìn vào."
-    }
-   ]
-  },
-  {
-   "code": "M0-U01-L1-E02",
-   "lessonCode": "M0-U01-L1",
-   "order": 2,
-   "autoGrade": true,
-   "points": 6,
-   "source": "original",
-   "difficulty": 1,
-   "type": "gap_fill",
-   "title": "Everyday phrases (Lead-in)",
-   "instruction": "Complete the phrases from the Lead-in pictures with ONE verb. Change the form of the verb if necessary.",
-   "items": [
-    {
-     "id": "g1",
-     "prompt": "Every morning I ____ breakfast at 7am.",
-     "blanks": [
-      {
-       "accept": [
-        "have"
-       ]
-      }
-     ],
-     "explanation": "have breakfast — ăn sáng (không dùng \"eat a breakfast\")."
-    },
-    {
-     "id": "g2",
-     "prompt": "I usually ____ the bus to college at 7:30.",
-     "blanks": [
-      {
-       "accept": [
-        "catch",
-        "take"
-       ]
-      }
-     ],
-     "explanation": "catch/take the bus."
-    },
-    {
-     "id": "g3",
-     "prompt": "After dinner, my sister ____ online and chats to her friends.",
-     "blanks": [
-      {
-       "accept": [
-        "goes"
-       ]
-      }
-     ],
-     "explanation": "go online — chủ ngữ số ít (my sister) → goes."
-    },
-    {
-     "id": "g4",
-     "prompt": "My dad ____ TV in the living room every evening.",
-     "blanks": [
-      {
-       "accept": [
-        "watches"
-       ]
-      }
-     ],
-     "explanation": "watch TV — he/she → thêm -es (watches)."
-    },
-    {
-     "id": "g5",
-     "prompt": "I always ____ to bed at about 10:30pm.",
-     "blanks": [
-      {
-       "accept": [
-        "go"
-       ]
-      }
-     ],
-     "explanation": "go to bed — đi ngủ."
-    },
-    {
-     "id": "g6",
-     "prompt": "At the weekend, I ____ with friends in a café.",
-     "blanks": [
-      {
-       "accept": [
-        "relax"
-       ]
-      }
-     ],
-     "explanation": "relax with friends — thư giãn cùng bạn."
     }
    ]
   },
@@ -1718,29 +1718,6 @@
    "source": "original",
    "difficulty": 1,
    "type": "speaking_response",
-   "title": "Speaking: an average day (Ex. 19–21)",
-   "instruction": "Read the task, spend one minute making notes, then speak for 1–2 minutes. Describe what you usually do on an average day. You should say: what you do · who you do it with · where you do it — and explain what you enjoy most about your day and why.",
-   "speakingPart": 2,
-   "speakingPrepSeconds": 60,
-   "items": [
-    {
-     "id": "s1",
-     "prompt": "Describe what you usually do on an average day.\nYou should say:\n• what you do\n• who you do it with\n• where you do it\nand explain what you enjoy most about your day and why.",
-     "sampleAnswer": "I'd like to talk about a normal weekday for me. I usually get up at about half past six, and the first thing I do is have a quick breakfast with my mum in the kitchen. After that, I catch the bus to school with my best friend, Lan, because we live on the same street. Lessons start at seven thirty and finish at about four thirty, so I spend most of the day at school with my classmates. In the break, we often chat or play badminton in the yard. When I get home, I sometimes help my mum make dinner, and then I do my homework in my bedroom for about two hours. In the evening, I usually watch TV with my family or go online. What I enjoy most about my day is the evening, because I can finally relax. For example, last night I watched a funny film with my little brother and we laughed a lot. I normally go to bed at around eleven.",
-     "sampleNote": "Đi theo thứ tự thời gian, mỗi ý có chi tiết (giờ, người, nơi chốn). Phần \"explain\" có lý do (because) và ví dụ cụ thể (last night…).",
-     "sampleSource": "new"
-    }
-   ]
-  },
-  {
-   "code": "M0-U01-L6-E03",
-   "lessonCode": "M0-U01-L6",
-   "order": 3,
-   "autoGrade": false,
-   "points": 10,
-   "source": "original",
-   "difficulty": 1,
-   "type": "speaking_response",
    "title": "Speaking: questions about your routine (Ex. 4, 18)",
    "instruction": "Answer each question in 15–25 seconds: a direct answer → a reason → an example.",
    "speakingPart": 1,
@@ -1765,6 +1742,29 @@
      "prompt": "Would you like to go to another country to study? Why or why not?",
      "sampleAnswer": "Yes, I would. I'd love to study in Australia because I want to improve my English and learn about a new culture. I think living with a host family would be a great experience.",
      "sampleNote": "Yes/No rõ ràng → lý do (because) → thêm một chi tiết.",
+     "sampleSource": "new"
+    }
+   ]
+  },
+  {
+   "code": "M0-U01-L6-E03",
+   "lessonCode": "M0-U01-L6",
+   "order": 3,
+   "autoGrade": false,
+   "points": 10,
+   "source": "original",
+   "difficulty": 1,
+   "type": "speaking_response",
+   "title": "Speaking: an average day (Ex. 19–21)",
+   "instruction": "Read the task, spend one minute making notes, then speak for 1–2 minutes. Describe what you usually do on an average day. You should say: what you do · who you do it with · where you do it — and explain what you enjoy most about your day and why.",
+   "speakingPart": 2,
+   "speakingPrepSeconds": 60,
+   "items": [
+    {
+     "id": "s1",
+     "prompt": "Describe what you usually do on an average day.\nYou should say:\n• what you do\n• who you do it with\n• where you do it\nand explain what you enjoy most about your day and why.",
+     "sampleAnswer": "I'd like to talk about a normal weekday for me. I usually get up at about half past six, and the first thing I do is have a quick breakfast with my mum in the kitchen. After that, I catch the bus to school with my best friend, Lan, because we live on the same street. Lessons start at seven thirty and finish at about four thirty, so I spend most of the day at school with my classmates. In the break, we often chat or play badminton in the yard. When I get home, I sometimes help my mum make dinner, and then I do my homework in my bedroom for about two hours. In the evening, I usually watch TV with my family or go online. What I enjoy most about my day is the evening, because I can finally relax. For example, last night I watched a funny film with my little brother and we laughed a lot. I normally go to bed at around eleven.",
+     "sampleNote": "Đi theo thứ tự thời gian, mỗi ý có chi tiết (giờ, người, nơi chốn). Phần \"explain\" có lý do (because) và ví dụ cụ thể (last night…).",
      "sampleSource": "new"
     }
    ]
@@ -2142,7 +2142,7 @@
    "lessonCode": "M0-U01-L7",
    "order": 5,
    "autoGrade": true,
-   "points": 8,
+   "points": 10,
    "source": "original",
    "difficulty": 1,
    "type": "ordering",
@@ -2267,21 +2267,21 @@
      "prompt": "",
      "tokens": [
       "I",
-      "try",
-      "to",
-      "stop",
-      "studying",
-      "before",
-      "9pm."
+      "have",
+      "a",
+      "shower",
+      "in",
+      "the",
+      "evening."
      ],
      "answer": [
       "I",
-      "try",
-      "to",
-      "stop",
-      "studying",
-      "before",
-      "9pm."
+      "have",
+      "a",
+      "shower",
+      "in",
+      "the",
+      "evening."
      ],
      "explanation": ""
     },
@@ -2290,6 +2290,29 @@
      "prompt": "",
      "tokens": [
       "I",
+      "try",
+      "to",
+      "stop",
+      "studying",
+      "before",
+      "9pm."
+     ],
+     "answer": [
+      "I",
+      "try",
+      "to",
+      "stop",
+      "studying",
+      "before",
+      "9pm."
+     ],
+     "explanation": ""
+    },
+    {
+     "id": "o8",
+     "prompt": "",
+     "tokens": [
+      "I",
       "go",
       "to",
       "the",
@@ -2311,7 +2334,7 @@
      "explanation": ""
     },
     {
-     "id": "o8",
+     "id": "o9",
      "prompt": "",
      "tokens": [
       "My",
@@ -2330,6 +2353,29 @@
       "of",
       "the",
       "housework."
+     ],
+     "explanation": "Sách in các từ \"my / the / housework / of / does / father / most\" (Answer Key ghi \"My mother…\") — dùng đúng các từ được cho."
+    },
+    {
+     "id": "o10",
+     "prompt": "",
+     "tokens": [
+      "I",
+      "visit",
+      "my",
+      "family",
+      "at",
+      "the",
+      "weekends."
+     ],
+     "answer": [
+      "I",
+      "visit",
+      "my",
+      "family",
+      "at",
+      "the",
+      "weekends."
      ],
      "explanation": ""
     }

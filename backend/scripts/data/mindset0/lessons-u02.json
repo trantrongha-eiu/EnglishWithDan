@@ -266,7 +266,8 @@
      "ref": "reading:M0-U02-R1",
      "kind": "reading",
      "title": "Prime Location Agency — quảng cáo & email (Ex. 9)",
-     "note": "Hoàn thành 5 ô ghi chú của Giorgio. Nhớ đối chiếu email của Gavin với quảng cáo!"
+     "note": "Hoàn thành 5 ô ghi chú của Giorgio. Nhớ đối chiếu email của Gavin với quảng cáo!",
+     "step": 0
     }
    ],
    "vocabSave": {
@@ -577,13 +578,15 @@
      "ref": "listening:M0-U02-L1",
      "kind": "listening",
      "title": "Phòng ngủ của Giorgio (Ex. 7–8)",
-     "note": "Chọn tranh đúng (câu 1), rồi trả lời 6 câu hỏi ngắn TWO or THREE words."
+     "note": "Chọn tranh đúng (câu 1), rồi trả lời 6 câu hỏi ngắn TWO or THREE words.",
+     "step": 0
     },
     {
      "ref": "listening:M0-U02-L2",
      "kind": "listening",
      "title": "Giorgio gọi cho công ty nhà ở (Ex. 13)",
-     "note": "Nghe cuộc gọi: chủ đề nào CÓ được bàn đến (YES/NO)?"
+     "note": "Nghe cuộc gọi: chủ đề nào CÓ được bàn đến (YES/NO)?",
+     "step": 1
     }
    ],
    "vocabSave": {

@@ -306,13 +306,15 @@
      "ref": "reading:M1-U04-R1",
      "kind": "reading",
      "title": "Food culture shock (Ex. 4–6)",
-     "note": "Locate information · Who…? · sentence completion."
+     "note": "Locate information · Who…? · sentence completion.",
+     "step": 0
     },
     {
      "ref": "reading:M1-U04-R2",
      "kind": "reading",
      "title": "Exam skills: Food TV — education or entertainment? (Ex. 9–10)",
-     "note": "Matching information A–G + matching features (chefs)."
+     "note": "Matching information A–G + matching features (chefs).",
+     "step": 1
     }
    ]
   },
@@ -442,37 +444,43 @@
      "ref": "listening:M1-U04-L1",
      "kind": "listening",
      "title": "Planning a party meal (Ex. 3)",
-     "note": "Nối gợi ý của Mike với câu trả lời của Jane."
+     "note": "Nối gợi ý của Mike với câu trả lời của Jane.",
+     "step": 2
     },
     {
      "ref": "listening:M1-U04-L2",
      "kind": "listening",
      "title": "Preparing the potatoes (Ex. 4)",
-     "note": "Boil, bake hay fry?"
+     "note": "Boil, bake hay fry?",
+     "step": 2
     },
     {
      "ref": "listening:M1-U04-L3",
      "kind": "listening",
      "title": "Food shopping (Ex. 5)",
-     "note": "Nối cửa hàng với loại thực phẩm."
+     "note": "Nối cửa hàng với loại thực phẩm.",
+     "step": 2
     },
     {
      "ref": "listening:M1-U04-L4",
      "kind": "listening",
      "title": "Talk of the Town: three restaurants (Ex. 6)",
-     "note": "Nối nhà hàng với loại nhà hàng A–G."
+     "note": "Nối nhà hàng với loại nhà hàng A–G.",
+     "step": 2
     },
     {
      "ref": "listening:M1-U04-L5",
      "kind": "listening",
      "title": "A TV chef: China, Japan, Korea (Ex. 11)",
-     "note": "Classification A–C."
+     "note": "Classification A–C.",
+     "step": 5
     },
     {
      "ref": "listening:M1-U04-L6",
      "kind": "listening",
      "title": "Exam skills: food in Beijing (Ex. 12)",
-     "note": "Chọn 4 món A–F cho câu 1–4."
+     "note": "Chọn 4 món A–F cho câu 1–4.",
+     "step": 5
     }
    ],
    "vocabSave": {

@@ -199,7 +199,8 @@
      "ref": "reading:M0-U08-R1",
      "kind": "reading",
      "title": "Should students stop sports lessons before exams? (Ex. 6–9)",
-     "note": "Bài luận nêu ý kiến — 5 câu trắc nghiệm A, B, C."
+     "note": "Bài luận nêu ý kiến — 5 câu trắc nghiệm A, B, C.",
+     "step": 1
     }
    ],
    "vocabSave": {
@@ -444,19 +445,22 @@
      "ref": "listening:M0-U08-L1",
      "kind": "listening",
      "title": "Sarah, Tom & Samantha — Part 1 (Ex. 2)",
-     "note": "Tom định đi đâu? Sarah đang nghĩ đến việc gì?"
+     "note": "Tom định đi đâu? Sarah đang nghĩ đến việc gì?",
+     "step": 0
     },
     {
      "ref": "listening:M0-U08-L2",
      "kind": "listening",
      "title": "Gym hay tập ngoài công viên? — Part 2 (Ex. 3)",
-     "note": "Ai nói ý kiến nào: Samantha, Tom hay Sarah?"
+     "note": "Ai nói ý kiến nào: Samantha, Tom hay Sarah?",
+     "step": 1
     },
     {
      "ref": "listening:M0-U08-L3",
      "kind": "listening",
      "title": "5 người nói về cách thư giãn (Ex. 16–17)",
-     "note": "Nối người với hoạt động, rồi trả lời 5 câu trắc nghiệm."
+     "note": "Nối người với hoạt động, rồi trả lời 5 câu trắc nghiệm.",
+     "step": 1
     }
    ],
    "vocabSave": {
