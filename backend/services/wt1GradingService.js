@@ -262,51 +262,124 @@ function gradeWritingLocal(exercise, responses = []) {
 }
 
 // ── AI grading for paragraph_writing / full_task1 ─────────────────────
+const IMG_RE = /^https?:\/\/\S+\.(png|jpe?g|webp|gif)(\?\S*)?$/i;
+const MAX_IMAGES = 4;
+const SAMPLE_MAX = 5000;
+
+// Chart images the student wrote about: stimulus.imageUrl plus image links
+// sitting in a table stimulus (e.g. "Graph 1 | <topic> | <chart url>" rows —
+// a homework covering several charts). Capped so one call stays small.
+function exerciseImageUrls(exercise) {
+  const st = exercise.stimulus || {};
+  const urls = [];
+  if (st.imageUrl) urls.push(st.imageUrl);
+  for (const row of st.rows || []) {
+    for (const cell of row || []) if (IMG_RE.test(String(cell || '').trim())) urls.push(String(cell).trim());
+  }
+  return [...new Set(urls)].slice(0, MAX_IMAGES);
+}
+
+// The question exactly as the student saw it: title, instruction, stimulus
+// (caption / text / table — image links replaced by "[ảnh n]"), sub-prompts.
+// Before this the grader only got `instruction`, so e.g. "write the Body
+// paragraphs for the 4 graphs of Buổi 9" reached the AI without the 4 graphs.
+function questionText(exercise) {
+  const st = exercise.stimulus || {};
+  const urls = exerciseImageUrls(exercise);
+  const lines = [];
+  if (exercise.title) lines.push(`Tên bài: ${exercise.title}`);
+  if (exercise.instruction) lines.push(`Đề bài / yêu cầu: ${exercise.instruction}`);
+  if (st.caption) lines.push(`Tư liệu: ${st.caption}`);
+  if (st.text) lines.push(String(st.text).trim());
+  if (st.headers && st.headers.length) lines.push(st.headers.join(' | '));
+  for (const row of st.rows || []) {
+    lines.push((row || []).map((c) => {
+      const u = String(c || '').trim();
+      if (!IMG_RE.test(u)) return u;
+      const n = urls.indexOf(u);
+      return n >= 0 ? `[ảnh ${n + 1}]` : '[ảnh]';
+    }).filter(Boolean).join(' | '));
+  }
+  if (st.note) lines.push(`Ghi chú: ${st.note}`);
+  const prompts = (exercise.items || []).map((it) => it.prompt).filter(Boolean);
+  if (prompts.length) lines.push('Các câu hỏi:\n' + prompts.map((q, i) => `${i + 1}. ${q}`).join('\n'));
+  if (exercise.wordBank && exercise.wordBank.length) lines.push(`Từ gợi ý: ${exercise.wordBank.join(', ')}`);
+  return lines.filter(Boolean).join('\n');
+}
+
+// The student's answer, one block per answer box, labelled with the
+// question/chart it belongs to when the counts line up.
+function formatResponses(exercise, responses = []) {
+  const arr = (Array.isArray(responses) ? responses : [responses]).map((r) => String(r || '').trim());
+  if (arr.length <= 1) return arr.join('').trim();
+  const prompts = (exercise.items || []).map((it) => it.prompt).filter(Boolean);
+  const rows = (exercise.stimulus && exercise.stimulus.rows) || [];
+  const labelOf = (i) => {
+    if (prompts.length === arr.length) return prompts[i];
+    if (rows.length === arr.length) return (rows[i] || []).filter((c) => !IMG_RE.test(String(c || '').trim())).slice(0, 2).join(' — ');
+    return '';
+  };
+  return arr.map((r, i) => {
+    const label = labelOf(i);
+    return `[Ô ${i + 1}${label ? ` — ${label}` : ''}]\n${r || '(bỏ trống)'}`;
+  }).join('\n\n');
+}
+
+const JSON_SHAPE =
+  '{"scores":{"taskAchievement":<0-9>,"coherence":<0-9>,"lexical":<0-9>,"grammar":<0-9>},' +
+  '"overallBand":<0-9, bội số của 0.5>,' +
+  '"feedbackVi":"<nhận xét tiếng Việt 3–5 câu: làm tốt gì, cần sửa gì, theo đúng yêu cầu đề>",' +
+  '"corrections":[{"original":"<cụm sai trích nguyên văn>","corrected":"<cách sửa>","note":"<giải thích ngắn tiếng Việt>"}],' +
+  '"usedStructures":["<cấu trúc/từ mục tiêu đã dùng>"],"missingStructures":["<cấu trúc/từ mục tiêu còn thiếu>"],' +
+  '"sentenceFeedback":[{"sentence":"<câu>","comment":"<nhận xét tiếng Việt>"}]}';
+
 function buildAiPrompt(exercise) {
   const r = exercise.rubric || {};
-  const lines = [exercise.instruction || ''];
+  const lines = [
+    'Bạn là giáo viên IELTS Writing chấm một bài tập trong giáo trình. Chấm bài làm của học sinh theo ĐÚNG đề dưới đây.',
+    '\n=== ĐỀ BÀI ===',
+    questionText(exercise),
+  ];
+  const imgs = exerciseImageUrls(exercise);
+  if (imgs.length) lines.push(`\nĐính kèm ${imgs.length} ảnh biểu đồ (theo thứ tự [ảnh 1]…[ảnh ${imgs.length}]) — đối chiếu số liệu học sinh viết với ảnh.`);
+  lines.push('\n=== TIÊU CHÍ ===');
+  if (r.minWords) lines.push(`Độ dài mục tiêu: ≥ ${r.minWords} từ${r.maxWords ? ` (≤ ${r.maxWords})` : ''}.`);
   if (r.targetStructures && r.targetStructures.length) {
-    lines.push(`\nCấu trúc mục tiêu cần xuất hiện (ít nhất ${r.mustUse || 3}): ${r.targetStructures.join('; ')}.`);
+    lines.push(`Cấu trúc mục tiêu cần xuất hiện (ít nhất ${r.mustUse || 3}): ${r.targetStructures.join('; ')}.`);
   }
   if (r.checklist && r.checklist.length) {
-    lines.push(`\nYêu cầu cụ thể:\n- ${r.checklist.join('\n- ')}`);
+    lines.push(`Yêu cầu cụ thể:\n- ${r.checklist.join('\n- ')}`);
   }
   if (exercise.type === 'full_task1') {
-    lines.push('\nĐây là một bài IELTS Writing Task 1 hoàn chỉnh — chấm theo 4 tiêu chí (Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy), mỗi tiêu chí 0–9.');
+    lines.push('Đây là một bài IELTS Writing Task 1 hoàn chỉnh — chấm theo 4 tiêu chí (Task Achievement, Coherence & Cohesion, Lexical Resource, Grammatical Range & Accuracy), mỗi tiêu chí 0–9.');
+  } else {
+    lines.push('Đây là bài luyện MỘT PHẦN của bài viết — chấm theo 4 tiêu chí IELTS (0–9) nhưng CHỈ đánh giá phần đề yêu cầu: không trừ điểm vì thiếu phần đề không yêu cầu (VD đề chỉ yêu cầu Body thì không trừ vì thiếu Introduction/Overview), bỏ qua mục checklist không áp dụng cho phần này. Nếu có nhiều ô/biểu đồ, xét từng ô rồi cho một band chung.');
   }
   if (r.commonErrors && r.commonErrors.length) {
-    lines.push(`\nĐối chiếu với các lỗi hay gặp: ${r.commonErrors.join('; ')}.`);
+    lines.push(`Đối chiếu với các lỗi hay gặp: ${r.commonErrors.join('; ')}.`);
   }
   if (r.bandFocus && r.bandFocus.length) {
-    lines.push(`\nTrình độ người học: ${r.bandFocus.join(', ')} — chấm theo band descriptors nhưng nhận xét phù hợp trình độ này.`);
+    lines.push(`Trình độ người học: ${r.bandFocus.join(', ')} — chấm theo band descriptors nhưng nhận xét phù hợp trình độ này.`);
+  }
+  if (r.sampleAnswer) {
+    const sample = String(r.sampleAnswer);
+    lines.push(`\n=== BÀI MẪU (chỉ để đối chiếu ý/số liệu — KHÔNG bắt học sinh viết giống) ===\n${sample.length > SAMPLE_MAX ? `${sample.slice(0, SAMPLE_MAX)} …` : sample}`);
   }
   // checkEssay's system instruction only says "respond in JSON" — without the
   // shape spelled out the model invents its own keys and gradeWritingAI below
   // reads nulls (no bands, no feedback, no corrections on screen).
-  lines.push(
-    '\nTrả về DUY NHẤT một object JSON đúng cấu trúc sau:\n' +
-    '{"scores":{"taskAchievement":<0-9>,"coherence":<0-9>,"lexical":<0-9>,"grammar":<0-9>},' +
-    '"overallBand":<0-9, bội số của 0.5>,' +
-    '"feedbackVi":"<nhận xét tiếng Việt 3–5 câu: làm tốt gì, cần sửa gì, theo đúng yêu cầu đề>",' +
-    '"corrections":[{"original":"<cụm sai trích nguyên văn>","corrected":"<cách sửa>","note":"<giải thích ngắn tiếng Việt>"}],' +
-    '"usedStructures":["<cấu trúc/từ mục tiêu đã dùng>"],"missingStructures":["<cấu trúc/từ mục tiêu còn thiếu>"],' +
-    '"sentenceFeedback":[{"sentence":"<câu>","comment":"<nhận xét tiếng Việt>"}]}',
-  );
+  lines.push(`\nTrả về DUY NHẤT một object JSON đúng cấu trúc sau:\n${JSON_SHAPE}`);
   return lines.filter(Boolean).join('\n');
 }
 
-async function gradeWritingAI(exercise, responses = []) {
-  const essay = (Array.isArray(responses) ? responses : [responses]).join('\n\n').trim();
-  const prompt = buildAiPrompt(exercise);
-  const imageUrl = exercise.stimulus && exercise.stimulus.imageUrl;
-  const raw = await geminiService.checkEssay(prompt, essay, imageUrl || undefined);
-
-  // checkEssay returns the writing-grader JSON; normalise a few field names.
+// Gemini's JSON (or one pasted from an outside AI) → the aiFeedback shape
+// WT1Submission stores; tolerates a few alternative key names.
+function normalizeAiResult(raw, model = 'gemini') {
   const scores = raw.scores || raw.bandScores || {};
   const band = raw.overallBand ?? raw.bandEstimate ?? raw.overall ?? null;
   return {
     graded: 'ai',
-    model: 'gemini',
+    model,
     scores: {
       taskAchievement: scores.taskAchievement ?? scores.task ?? scores.ta ?? null,
       coherence: scores.coherence ?? scores.cc ?? null,
@@ -315,10 +388,31 @@ async function gradeWritingAI(exercise, responses = []) {
     },
     bandEstimate: band,
     feedbackVi: raw.feedbackVi || raw.overallFeedback || raw.feedback || '',
-    corrections: raw.corrections || [],
-    usedStructures: raw.usedStructures || [],
-    missingStructures: raw.missingStructures || [],
+    corrections: Array.isArray(raw.corrections) ? raw.corrections : [],
+    usedStructures: Array.isArray(raw.usedStructures) ? raw.usedStructures : [],
+    missingStructures: Array.isArray(raw.missingStructures) ? raw.missingStructures : [],
   };
+}
+
+async function gradeWritingAI(exercise, responses = []) {
+  const imgs = exerciseImageUrls(exercise);
+  const raw = await geminiService.checkEssay(
+    buildAiPrompt(exercise), formatResponses(exercise, responses),
+    imgs.length > 1 ? imgs : (imgs[0] || undefined),
+  );
+  return normalizeAiResult(raw, 'gemini');
+}
+
+// Everything an outside AI (ChatGPT, Claude…) needs to grade the same
+// submission — the admin "📋 Copy prompt" button. Chart links are listed
+// since a pasted prompt can't carry the image files.
+function buildExternalPrompt(exercise, responses = []) {
+  const imgs = exerciseImageUrls(exercise);
+  return [
+    buildAiPrompt(exercise),
+    imgs.length ? `\nLink ảnh biểu đồ:\n${imgs.map((u, i) => `[ảnh ${i + 1}] ${u}`).join('\n')}` : '',
+    `\n**Bài làm của học sinh:**\n<<<STUDENT_ESSAY_START>>>\n${formatResponses(exercise, responses)}\n<<<STUDENT_ESSAY_END>>>`,
+  ].filter(Boolean).join('\n');
 }
 
 module.exports = {
@@ -326,4 +420,5 @@ module.exports = {
   normalize, fuzzyEqual, ratio,
   gradeObjective, needsAiGrading, gradeSentenceTransformBatch,
   gradeWritingLocal, gradeWritingAI, buildAiPrompt,
+  buildExternalPrompt, normalizeAiResult, exerciseImageUrls, formatResponses, questionText,
 };

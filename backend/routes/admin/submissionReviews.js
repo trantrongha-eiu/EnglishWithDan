@@ -6,7 +6,9 @@
 //   GET  /api/admin/submission-reviews/counts
 //   GET  /api/admin/submission-reviews/:source/:id          source = course | speaking
 //   PUT  /api/admin/submission-reviews/:source/:id          { band, scores, note } → saves + messages the student
+//   GET  /api/admin/submission-reviews/:source/:id/ai-prompt  prompt + question + answer for an outside AI
 //   POST /api/admin/submission-reviews/course/:id/ai-grade  re-run the AI on a course writing submission
+//   (writing rows the AI missed at submit are also re-graded every 10 min — cron/courseWritingAutoGrade.js)
 
 const express = require('express');
 const rateLimit = require('express-rate-limit');
@@ -49,6 +51,14 @@ router.get('/submission-reviews/counts', auth, teacherOnly, async (req, res) => 
 router.get('/submission-reviews/:source/:id', auth, teacherOnly, async (req, res) => {
   try {
     res.json({ success: true, ...(await svc.getDetail(req.params.source, req.params.id)) });
+  } catch (err) { fail(res, err); }
+});
+
+// Grading prompt + question + the student's answer, to paste into an
+// outside AI (admin "📋 Copy prompt"); its reply is pasted back client-side.
+router.get('/submission-reviews/:source/:id/ai-prompt', auth, teacherOnly, async (req, res) => {
+  try {
+    res.json({ success: true, ...(await svc.externalPrompt(req.params.source, req.params.id)) });
   } catch (err) { fail(res, err); }
 });
 

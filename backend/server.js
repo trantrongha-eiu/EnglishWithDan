@@ -44,6 +44,7 @@ const app = require('./app');
 const tuitionCron = require('./cron/tuitionReminder');
 const attemptTimeoutSweepCron = require('./cron/attemptTimeoutSweep');
 const writingAutoGradeCron = require('./cron/writingAutoGrade');
+const courseWritingAutoGradeCron = require('./cron/courseWritingAutoGrade');
 const classAttendanceSweepCron = require('./cron/classAttendanceSweep');
 const assignmentSweepCron = require('./cron/assignmentSweep');
 const parentNotifySweepCron = require('./cron/parentNotifySweep');
@@ -225,6 +226,12 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'WritingAutoGrade cron failed to start', { errorMessage: e.message });
     }
+    // Re-run the AI every 10 min on course writing the AI missed at submit
+    try {
+      courseWritingAutoGradeCron.start();
+    } catch (e) {
+      logger.error('startup', 'CourseWritingAutoGrade cron failed to start', { errorMessage: e.message });
+    }
     // Start class-attendance daily recompute sweep
     try {
       classAttendanceSweepCron.start();
@@ -285,6 +292,7 @@ function shutdown(signal) {
   assignmentSweepCron.stop();
   parentNotifySweepCron.stop();
   speakingGradeQueueCron.stop();
+  courseWritingAutoGradeCron.stop();
   proctorShotCleanupCron.stop();
   speakingRecordingCleanupCron.stop();
 

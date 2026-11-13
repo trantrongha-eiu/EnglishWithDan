@@ -121,18 +121,21 @@ async function checkEssay(question, essay, imageUrl, opts = {}) {
   // Fetched once up front (not per retry attempt below) — a JSON-parse
   // retry re-sends the exact same request, so there's no reason to
   // re-download the image bytes a second time.
-  const imagePart = await fetchImageAsInlineData(imageUrl);
-  return _checkEssayCore(question, essay, imagePart, 0, opts);
+  // `imageUrl` may also be an array (a course homework covering several
+  // charts) — every image that downloads is attached, in order.
+  const urls = (Array.isArray(imageUrl) ? imageUrl : [imageUrl]).filter(Boolean);
+  const imageParts = (await Promise.all(urls.map(fetchImageAsInlineData))).filter(Boolean);
+  return _checkEssayCore(question, essay, imageParts, 0, opts);
 }
 
-async function _checkEssayCore(question, essay, imagePart, _attempt, opts = {}) {
+async function _checkEssayCore(question, essay, imageParts, _attempt, opts = {}) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
 
   const ai = new GoogleGenAI({ apiKey });
 
   const content = `${question}\n\n**Bài làm của học sinh:**\n<<<STUDENT_ESSAY_START>>>\n${essay}\n<<<STUDENT_ESSAY_END>>>`;
-  const contents = imagePart ? [content, { inlineData: imagePart }] : content;
+  const contents = imageParts.length ? [content, ...imageParts.map((p) => ({ inlineData: p }))] : content;
 
   let rawText;
   try {
@@ -147,7 +150,7 @@ async function _checkEssayCore(question, essay, imagePart, _attempt, opts = {}) 
           maxOutputTokens: opts.maxOutputTokens || 8192,
           // Task 1 charts have small axis labels and thin lines; at the
           // default resolution the model misread line-graph values.
-          ...(imagePart ? { mediaResolution: 'MEDIA_RESOLUTION_HIGH' } : {})
+          ...(imageParts.length ? { mediaResolution: 'MEDIA_RESOLUTION_HIGH' } : {})
         }
       }),
       opts.timeoutMs || 45000,
@@ -166,7 +169,7 @@ async function _checkEssayCore(question, essay, imagePart, _attempt, opts = {}) 
   } catch (parseErr) {
     if (_attempt < 1) {
       logger.ai('checkEssay: JSON parse failed, retrying once', { errorMessage: parseErr.message });
-      return _checkEssayCore(question, essay, imagePart, _attempt + 1, opts);
+      return _checkEssayCore(question, essay, imageParts, _attempt + 1, opts);
     }
     logger.ai('checkEssay: JSON parse failed after retry', { rawTextPreview: rawText?.slice(0, 500) });
     throw new Error('Gemini không trả về JSON hợp lệ sau 2 lần thử', { cause: parseErr });

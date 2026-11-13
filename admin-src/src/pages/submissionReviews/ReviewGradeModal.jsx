@@ -7,6 +7,7 @@ import { useToast } from '../../contexts/ToastContext';
 import { OpenResponse, TeacherBlock } from '../../components/Wt1ReviewModal';
 import SpeakingCriteriaTable from '../../components/SpeakingCriteriaTable';
 import { SCORE_LABELS, overallFromScores } from './grading';
+import { parseExternalFeedback } from './externalAi';
 
 // Grade one submission from the "Chấm bài khoá học & Speaking" queue:
 // the student's work + the AI grade on top, the teacher's form below.
@@ -70,9 +71,15 @@ function SpeakingAttemptView({ a }) {
   );
 }
 
-function initialForm(d) {
+function initialForm(d, prefill) {
   const t = d.teacherReview;
   const keys = d.scoreKeys || [];
+  if (prefill) {
+    const scores = {};
+    keys.forEach(k => { scores[k] = prefill.scores?.[k] ?? ''; });
+    const band = prefill.band !== '' ? prefill.band : (overallFromScores(scores, keys) ?? '');
+    return { band, scores, note: prefill.note || t?.note || '' };
+  }
   const scores = {};
   keys.forEach(k => { scores[k] = t?.scores?.[k] ?? ''; });
   // Pre-fill with the AI's band so confirming the AI grade is one click;
@@ -82,12 +89,81 @@ function initialForm(d) {
   return { band, scores, note: t?.note || '' };
 }
 
-function GradeForm({ d, onSaved }) {
+// "Chấm bằng AI ngoài": copy the full grading prompt (question + rubric +
+// the student's answer) for ChatGPT/Claude/…, then paste its reply back —
+// it fills the teacher form below (band, criteria, comment) for review.
+function ExternalAiPanel({ d, onApply }) {
   const toast = useToast();
-  const [form, setForm] = useState(() => initialForm(d));
+  const [open, setOpen] = useState(false);
+  const [copying, setCopying] = useState(false);
+  const [promptText, setPromptText] = useState('');
+  const [reply, setReply] = useState('');
+
+  async function copyPrompt() {
+    setCopying(true);
+    try {
+      const res = await apiFetch(`/admin/submission-reviews/${d.source}/${d.id}/ai-prompt`);
+      setPromptText(res.prompt);
+      try {
+        await navigator.clipboard.writeText(res.prompt);
+        toast('Đã copy prompt + đề + bài làm — dán vào AI bên ngoài');
+      } catch {
+        toast('Trình duyệt chặn copy tự động — bôi đen ô bên dưới rồi Ctrl+C', 'error');
+      }
+      setOpen(true);
+    } catch (e) { toast(e.message, 'error'); }
+    finally { setCopying(false); }
+  }
+
+  function apply() {
+    const r = parseExternalFeedback(reply, d.kind, d.scoreKeys || []);
+    onApply(r);
+    toast(r.parsed ? 'Đã điền band + nhận xét từ AI ngoài — kiểm tra rồi bấm Lưu' : 'Không thấy JSON — đã dán nguyên văn vào ô nhận xét');
+  }
+
+  return (
+    <div style={{ marginTop: 14, border: '1px dashed var(--border)', borderRadius: 10, padding: '8px 12px' }}>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: 13, fontWeight: 700 }}>🧠 Chấm bằng AI bên ngoài</span>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={copyPrompt} disabled={copying}>
+          {copying ? '⏳ Đang tạo prompt...' : '📋 Copy prompt + đề + bài làm'}
+        </button>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={() => setOpen(o => !o)}>
+          {open ? '▴ Ẩn' : '📥 Dán feedback AI'}
+        </button>
+      </div>
+      {open && (
+        <div style={{ marginTop: 8 }}>
+          {promptText && (
+            <>
+              <label htmlFor="ext-prompt" className="muted" style={{ fontSize: 12 }}>Prompt đã copy (sửa được trước khi dán vào AI):</label>
+              <textarea id="ext-prompt" className="form-input" rows={4} value={promptText} onChange={e => setPromptText(e.target.value)}
+                onFocus={e => e.target.select()} style={{ width: '100%', resize: 'vertical', fontSize: 12, fontFamily: 'monospace' }} />
+            </>
+          )}
+          <label htmlFor="ext-reply" className="muted" style={{ fontSize: 12, display: 'block', marginTop: 6 }}>
+            Dán câu trả lời của AI (JSON → tự điền band, tiêu chí, nhận xét; chữ thường → vào ô nhận xét):
+          </label>
+          <textarea id="ext-reply" className="form-input" rows={5} value={reply} onChange={e => setReply(e.target.value)}
+            placeholder='{"overallBand": 6, "feedbackVi": "...", ...}' style={{ width: '100%', resize: 'vertical', fontSize: 12 }} />
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 6 }}>
+            <button type="button" className="btn btn-ghost btn-sm" onClick={apply} disabled={!reply.trim()}>⬇️ Điền vào ô chấm</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GradeForm({ d, onSaved, prefill }) {
+  const toast = useToast();
+  const [form, setForm] = useState(() => initialForm(d, prefill));
   const [saving, setSaving] = useState(false);
   const keys = d.scoreKeys || [];
   const isSpk = d.kind === 'speaking';
+  // Writing grades only an overall band by default; criteria appear once an
+  // outside AI's reply filled them.
+  const showCriteria = isSpk || keys.some(k => form.scores[k] !== '' && form.scores[k] != null);
 
   function setScore(k, v) {
     setForm(f => {
@@ -115,13 +191,13 @@ function GradeForm({ d, onSaved }) {
   return (
     <div style={{ borderTop: '2px solid var(--border)', marginTop: 16, paddingTop: 12 }}>
       <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 8 }}>🧑‍🏫 Giáo viên chấm {d.teacherReview && <span className="muted" style={{ fontWeight: 400, fontSize: 12 }}>(đã chấm — lưu lại sẽ cập nhật & báo học sinh)</span>}</div>
-      {isSpk && (
+      {showCriteria && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 8, marginBottom: 8 }}>
           {keys.map(k => <BandSelect key={k} id={`sc-${k}`} label={SCORE_LABELS[k] || k} value={form.scores[k]} onChange={v => setScore(k, v)} />)}
         </div>
       )}
       <div style={{ maxWidth: 200 }}>
-        <BandSelect id="sc-band" label={isSpk ? 'Band tổng (tự tính từ 4 tiêu chí, sửa được)' : 'Band tổng'} value={form.band} onChange={v => setForm(f => ({ ...f, band: v }))} />
+        <BandSelect id="sc-band" label={showCriteria ? 'Band tổng (tự tính từ 4 tiêu chí, sửa được)' : 'Band tổng'} value={form.band} onChange={v => setForm(f => ({ ...f, band: v }))} />
       </div>
       <label htmlFor="sc-note" style={{ display: 'block', fontSize: 12, color: 'var(--text2)', marginTop: 10 }}>Nhận xét gửi học sinh</label>
       <textarea id="sc-note" className="form-input" rows={5} maxLength={4000} value={form.note}
@@ -141,6 +217,7 @@ export default function ReviewGradeModal({ source, id, onClose, onSaved }) {
   const { data, error, loading, reload } = useApi(`/admin/submission-reviews/${source}/${id}`);
   const [regrading, setRegrading] = useState(false);
   const [override, setOverride] = useState(null); // detail returned by an AI re-grade
+  const [prefill, setPrefill] = useState(null); // { n, band, scores, note } from an outside AI's reply
   const d0 = override || data;
   const d = d0 ? { ...d0, id } : null;
 
@@ -193,7 +270,8 @@ export default function ReviewGradeModal({ source, id, onClose, onSaved }) {
           ) : <SpeakingAttemptView a={d.attempt} />}
 
           {d.teacherReview && <TeacherBlock t={d.teacherReview} />}
-          <GradeForm key={`${d.teacherReview?.reviewedAt || 'new'}${override ? '-ai' : ''}`} d={d} onSaved={onSaved} />
+          <ExternalAiPanel d={d} onApply={r => setPrefill(p => ({ ...r, n: (p?.n || 0) + 1 }))} />
+          <GradeForm key={`${d.teacherReview?.reviewedAt || 'new'}${override ? '-ai' : ''}-${prefill?.n || 0}`} d={d} onSaved={onSaved} prefill={prefill} />
         </div>
       )}
     </Modal>

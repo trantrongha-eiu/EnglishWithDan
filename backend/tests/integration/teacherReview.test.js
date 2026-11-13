@@ -28,7 +28,7 @@ jest.mock('../../services/speakingService', () => {
 const request = require('supertest');
 const app = require('../../app');
 const geminiService = require('../../services/geminiService');
-const { createPremiumStudent, createTeacher, signTokenFor } = require('../factories/userFactory');
+const { createPremiumStudent, createTeacher, createAdmin, signTokenFor } = require('../factories/userFactory');
 const { createSpeakingAttempt } = require('../factories/contentFactory');
 const WT1Course = require('../../models/WT1Course');
 const WT1Module = require('../../models/WT1Module');
@@ -235,5 +235,65 @@ describe('teacherReviewService helpers', () => {
   test('cleanReview drops unknown criteria and rejects out-of-range bands', () => {
     expect(svc._cleanReview('speaking', { band: 7, scores: { fluency: 7, bogus: 3 } })).toEqual({ band: 7, scores: { fluency: 7 }, note: '' });
     expect(() => svc._cleanReview('writing', { band: 9.5 })).toThrow(/0 đến 9/);
+  });
+});
+
+describe('course writing the AI missed → auto re-grade every 10 min + external-AI prompt', () => {
+  async function busySubmission() {
+    const student = await createPremiumStudent();
+    geminiService.checkEssay.mockRejectedValueOnce(Object.assign(new Error('busy'), { isOverloaded: true }));
+    expect((await submitWriting(student)).body.aiUnavailable).toBe(true);
+    return { student, sub: await WT1Submission.findOne({ userId: student._id }).lean() };
+  }
+
+  test('autoRegradePending grades it, clears "AI lỗi/bận" and tells the student', async () => {
+    await createAdmin(); // the inbox message's sender
+    const teacher = await createTeacher();
+    const { student, sub } = await busySubmission();
+    let row = (await request(app).get('/api/admin/submission-reviews?kind=writing').set(bearer(teacher))).body.rows[0];
+    expect(row.aiUnavailable).toBe(true);
+
+    const out = await svc.autoRegradePending({ delayMs: 0 });
+    expect(out).toMatchObject({ graded: 1, failed: 0 });
+    const [prompt] = geminiService.checkEssay.mock.calls.at(-1);
+    expect(prompt).toContain('Write an email to Hannah');
+    expect(prompt).toContain('Writing: holiday email');
+
+    const after = await WT1Submission.findById(sub._id).lean();
+    expect(after.aiFeedback.bandEstimate).toBe(5.5);
+    expect(after.localFeedback.aiUnavailable).toBe(false);
+    row = (await request(app).get('/api/admin/submission-reviews?kind=writing').set(bearer(teacher))).body.rows[0];
+    expect(row).toMatchObject({ aiBand: 5.5, aiUnavailable: false });
+    const msg = await Message.findOne({ toId: student._id }).lean();
+    expect(msg.subject).toContain('Band 5.5');
+
+    // Nothing left to do on the next tick.
+    expect(await svc.autoRegradePending({ delayMs: 0 })).toMatchObject({ graded: 0 });
+  });
+
+  test('an overload stops the run without counting a try; real errors give up after the cap', async () => {
+    await busySubmission();
+    geminiService.checkEssay.mockRejectedValueOnce(Object.assign(new Error('busy'), { isOverloaded: true }));
+    expect(await svc.autoRegradePending({ delayMs: 0 })).toMatchObject({ graded: 0, overloaded: true });
+    expect((await WT1Submission.findOne({}).lean()).aiRetry?.tries ?? 0).toBe(0);
+
+    geminiService.checkEssay.mockRejectedValue(new Error('bad json'));
+    for (let i = 0; i < svc.AUTO_MAX_TRIES; i++) await svc.autoRegradePending({ delayMs: 0 });
+    expect((await WT1Submission.findOne({}).lean()).aiRetry.tries).toBe(svc.AUTO_MAX_TRIES);
+    const calls = geminiService.checkEssay.mock.calls.length;
+    await svc.autoRegradePending({ delayMs: 0 });
+    expect(geminiService.checkEssay.mock.calls.length).toBe(calls); // given up
+  });
+
+  test('ai-prompt returns the question, rubric and the student answer for an outside AI', async () => {
+    const teacher = await createTeacher();
+    const { sub } = await busySubmission();
+    const res = await request(app).get(`/api/admin/submission-reviews/course/${sub._id}/ai-prompt`).set(bearer(teacher));
+    expect(res.status).toBe(200);
+    expect(res.body.kind).toBe('writing');
+    expect(res.body.prompt).toContain('Write an email to Hannah');
+    expect(res.body.prompt).toContain('≥ 140 từ');
+    expect(res.body.prompt).toContain(ESSAY);
+    expect(res.body.prompt).toContain('Dear Hannah'); // sample answer for reference
   });
 });

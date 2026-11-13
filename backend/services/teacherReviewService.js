@@ -35,6 +35,7 @@ const User = require('../models/User');
 const Message = require('../models/Message');
 const wt1Service = require('./wt1Service');
 const grading = require('./wt1GradingService');
+const geminiService = require('./geminiService');
 const logger = require('../utils/logger');
 const { NotFoundError, ValidationError, AppError } = require('../errors/AppError');
 
@@ -331,6 +332,18 @@ async function submitReview(source, id, body, actor) {
   return { teacherReview: a.teacherReview.toObject ? a.teacherReview.toObject() : a.teacherReview };
 }
 
+// Store a fresh AI grade on a course writing row. Clears the "AI bận lúc
+// nộp" flag (the queue's "AI lỗi/bận" tag) and the auto-retry bookkeeping.
+async function saveAiFeedback(sub, ai) {
+  const { graded, ...aiFeedback } = ai; // eslint-disable-line no-unused-vars
+  sub.aiFeedback = aiFeedback;
+  if (sub.localFeedback && sub.localFeedback.aiUnavailable) {
+    sub.localFeedback = { ...sub.localFeedback, aiUnavailable: false, aiRegradedAt: new Date() };
+  }
+  sub.aiRetry = undefined;
+  await sub.save();
+}
+
 // Re-run the AI grader on a course writing submission (e.g. Gemini was busy
 // at submit time and the student only got the rubric fallback, or the
 // exercise is sentence_writing which is never AI-graded on submit). Replaces
@@ -349,10 +362,135 @@ async function aiRegrade(id) {
   } catch (err) {
     throw new AppError(err.isOverloaded ? 'AI đang quá tải, thử lại sau ít phút.' : `AI chấm lỗi: ${err.message}`, 503);
   }
-  const { graded, ...aiFeedback } = ai; // eslint-disable-line no-unused-vars
-  sub.aiFeedback = aiFeedback;
-  await sub.save();
+  await saveAiFeedback(sub, ai);
   return getDetail('course', id);
 }
 
-module.exports = { QUEUE_CUTOFF, WRITING_TYPES, list, counts, getDetail, submitReview, aiRegrade, _messageBody: messageBody, _cleanReview: cleanReview };
+// ── Auto re-grade (cron/courseWritingAutoGrade.js, every 10 minutes) ──────
+// Course paragraph_writing / full_task1 rows still without an AI band —
+// Gemini was busy at submit time, so the student only got the rubric
+// fallback ("AI lỗi/bận" in the queue). Same idea as the IELTS Writing
+// tests' cron/writingAutoGrade.js: a few per tick, one at a time, stop on
+// an overload (it'll be there next tick). A row that keeps failing for a
+// non-overload reason is given up on after AUTO_MAX_TRIES ticks (the
+// teacher's "Chấm bằng AI" / external-AI paste still work).
+const AI_WRITING_TYPES = ['paragraph_writing', 'full_task1'];
+const AUTO_BATCH = 5;
+const AUTO_MAX_TRIES = 6;
+const AUTO_DELAY_MS = 3000;
+let autoRunning = false;
+let systemSenderCache = null;
+
+async function systemSender() {
+  if (systemSenderCache) return systemSenderCache;
+  const admin = await User.findOne({ role: 'admin' }).sort({ createdAt: 1 }).select('_id').lean();
+  if (admin) systemSenderCache = { _id: admin._id, firstName: 'EnglishWithDan' };
+  return systemSenderCache;
+}
+
+async function notifyAiGraded(sub, ex) {
+  const sender = await systemSender();
+  if (!sender) return;
+  const ctx = (await lessonContext([sub.lessonCode]))[sub.lessonCode] || {};
+  const page = COURSE_PAGES[ctx.courseCode] || '';
+  const band = sub.aiFeedback?.bandEstimate;
+  const title = ex.title || ex.code;
+  const body = [
+    `🤖 AI đã chấm xong bài "${title}".`,
+    ...([ctx.courseTitle, ctx.lessonTitle].filter(Boolean).length ? [`(${[ctx.courseTitle, ctx.lessonTitle].filter(Boolean).join(' · ')})`] : []),
+    '',
+    `• Band AI: ${fmtBand(band)}`,
+    '',
+    'Lúc bạn nộp AI đang bận nên bạn mới nhận điểm sơ bộ theo rubric — giờ đã có nhận xét chi tiết và lỗi cần sửa.',
+    page ? `Xem lại: mở ${page} → nút "Lịch sử" của bài này.` : 'Xem lại ở nút "Lịch sử" của bài này.',
+  ].join('\n');
+  await notifyStudent(sender, sub.userId, `🤖 AI đã chấm: ${title} — Band ${fmtBand(band)}`, body);
+}
+
+function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+
+async function autoRegradePending({ limit = AUTO_BATCH, delayMs = AUTO_DELAY_MS } = {}) {
+  if (autoRunning) return { skipped: true };
+  autoRunning = true;
+  let graded = 0, failed = 0, overloaded = false;
+  try {
+    const exs = await WT1Exercise.find({ type: { $in: AI_WRITING_TYPES } }).lean();
+    const exByCode = Object.fromEntries(exs.map((e) => [e.code, e]));
+    if (!exs.length) return { graded, failed, overloaded };
+    const subs = await WT1Submission.find({
+      exerciseCode: { $in: Object.keys(exByCode) }, status: { $ne: 'draft' }, createdAt: { $gte: QUEUE_CUTOFF },
+      'aiFeedback.bandEstimate': null, 'teacherReview.reviewedAt': null,
+      'aiRetry.tries': { $not: { $gte: AUTO_MAX_TRIES } },
+    }).sort({ createdAt: 1 }).limit(limit);
+
+    for (let i = 0; i < subs.length; i++) {
+      const sub = subs[i];
+      const ex = exByCode[sub.exerciseCode];
+      if (!(sub.responses || []).some((r) => String(r || '').trim())) {
+        sub.aiRetry = { tries: AUTO_MAX_TRIES, lastError: 'empty', lastAt: new Date() };
+        await sub.save();
+        continue;
+      }
+      try {
+        const ai = await grading.gradeWritingAI(ex, sub.responses);
+        const wasBusy = !!(sub.localFeedback && sub.localFeedback.aiUnavailable);
+        await saveAiFeedback(sub, ai);
+        graded++;
+        if (wasBusy) await notifyAiGraded(sub, ex);
+      } catch (err) {
+        if (err.isOverloaded) { overloaded = true; break; } // next tick
+        failed++;
+        sub.aiRetry = { tries: ((sub.aiRetry && sub.aiRetry.tries) || 0) + 1, lastError: String(err.message || 'error').slice(0, 300), lastAt: new Date() };
+        await sub.save().catch(() => {});
+        logger.error('teacher-review', 'auto AI re-grade failed', { id: String(sub._id), errorMessage: err.message });
+      }
+      if (i < subs.length - 1 && delayMs) await sleep(delayMs);
+    }
+  } finally {
+    autoRunning = false;
+  }
+  if (graded || failed || overloaded) logger.info('teacher-review', 'auto AI re-grade run', { graded, failed, overloaded });
+  return { graded, failed, overloaded };
+}
+
+// ── "📋 Copy prompt" — grade with an outside AI (ChatGPT, Claude…) ─────────
+// The full grading prompt + question + the student's answer as one text the
+// teacher pastes into another AI; its reply is pasted back into the modal
+// (parsed client-side into the teacher's band/criteria/comment).
+function speakingExternalPrompt(question, transcript, part, durationSec) {
+  const body = geminiService.buildSpeakingGradingPrompt(question, transcript, part, false, durationSec, { compact: true }) || '';
+  return [geminiService.SPEAKING_SYSTEM || '', body, '\nWrite every feedback/comment string in Vietnamese.'].filter(Boolean).join('\n\n');
+}
+
+async function externalPrompt(source, id) {
+  assertSource(source, id);
+  if (source === 'course') {
+    const sub = await WT1Submission.findOne({ _id: id, status: { $ne: 'draft' } }).lean();
+    if (!sub) throw new NotFoundError('Không tìm thấy bài làm (lịch sử chỉ lưu 3 tháng)');
+    const ex = await WT1Exercise.findOne({ code: sub.exerciseCode }).lean();
+    if (!ex || grading.OBJECTIVE_TYPES.has(ex.type)) throw new ValidationError('Bài này chấm tự động, không cần AI ngoài');
+    if (ex.type !== 'speaking_response') {
+      return { kind: 'writing', prompt: grading.buildExternalPrompt(ex, sub.responses || []) };
+    }
+    const prompts = (ex.items || []).map((it) => it.prompt).filter(Boolean);
+    const part = ex.speakingPart || 1;
+    const items = (sub.itemResults || []).filter((r) => String(r.transcript || '').trim());
+    let question, transcript;
+    if (items.length > 1) {
+      question = [ex.instruction, ...items.map((r, i) => `Q${i + 1}: ${r.prompt || prompts[r.itemIndex ?? i] || ''}`)].filter(Boolean).join('\n');
+      transcript = items.map((r, i) => `Q${i + 1} (Part ${part}): ${r.prompt || prompts[r.itemIndex ?? i] || ''}\nA${i + 1}: ${r.transcript}`).join('\n\n');
+    } else {
+      question = [ex.instruction, ...prompts].filter(Boolean).join('\n');
+      transcript = items.length ? items[0].transcript : (sub.responses || []).join('\n');
+    }
+    return { kind: 'speaking', prompt: speakingExternalPrompt(question, transcript, part, sub.timeSpentSeconds || 0) };
+  }
+  const a = await SpeakingAttempt.findById(id).select('question topic part transcript duration').lean();
+  if (!a) throw new NotFoundError('Không tìm thấy bài làm (lịch sử chỉ lưu 3 tháng)');
+  return { kind: 'speaking', prompt: speakingExternalPrompt(a.question || a.topic || '', a.transcript || '', a.part || 1, a.duration || 0) };
+}
+
+module.exports = {
+  QUEUE_CUTOFF, WRITING_TYPES, AUTO_MAX_TRIES, list, counts, getDetail, submitReview, aiRegrade, autoRegradePending, externalPrompt,
+  _messageBody: messageBody, _cleanReview: cleanReview,
+};

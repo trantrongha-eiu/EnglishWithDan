@@ -83,6 +83,11 @@ const WT1SubmissionSchema = new Schema(
     // listen to it from the admin review queue. '' = none saved.
     audioUrl: { type: String, default: '' },
 
+    // Auto AI re-grade bookkeeping (teacherReviewService.autoRegradePending,
+    // every 10 min) for writing rows still without an AI band — non-overload
+    // failures counted; given up after AUTO_MAX_TRIES. Cleared on success.
+    aiRetry: { _id: false, tries: Number, lastError: String, lastAt: Date },
+
     // Teacher's own grade + comment from the admin review queue — see
     // models/shared/teacherReviewSchema.js + services/teacherReviewService.js.
     teacherReview: require('./shared/teacherReviewSchema'),
