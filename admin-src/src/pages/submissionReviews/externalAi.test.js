@@ -36,6 +36,17 @@ describe('parseExternalFeedback', () => {
     expect(r.note).toMatch(/Khá tốt\.[\s\S]*Trôi chảy\.[\s\S]*very much happy → very happy[\s\S]*Mở rộng ý/);
   });
 
+  it('finds the grading JSON among chatter with braces, smart quotes and trailing commas', () => {
+    const reply = 'Format: {band} per criterion. Example {"x":1}\n'
+      + '{ “scores”: { “taskAchievement”: “Band 6”, “coherence”: 6, “lexical”: “5,5”, “grammar”: 5, }, “overallBand”: 6, “feedbackVi”: “Tốt {nhưng} cần số liệu.”, }\n'
+      + 'Hope this helps {:}';
+    const r = parseExternalFeedback(reply, 'writing', W);
+    expect(r.parsed).toBe(true);
+    expect(r.band).toBe(6);
+    expect(r.scores).toEqual({ taskAchievement: 6, coherence: 6, lexical: 5.5, grammar: 5 });
+    expect(r.note).toContain('Tốt {nhưng} cần số liệu.');
+  });
+
   it('plain text becomes the comment', () => {
     const r = parseExternalFeedback('  Bài viết tốt, cần thêm số liệu.  ', 'writing', W);
     expect(r).toMatchObject({ parsed: false, band: '', note: 'Bài viết tốt, cần thêm số liệu.' });

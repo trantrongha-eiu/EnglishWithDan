@@ -6,18 +6,59 @@
 
 const NOTE_MAX = 4000;
 
-function extractJson(text) {
-  const s = String(text || '');
-  const fenced = s.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const body = fenced ? fenced[1] : s;
-  const m = body.match(/\{[\s\S]*\}/);
-  if (!m) return null;
-  try { return JSON.parse(m[0]); } catch { return null; }
+// Every balanced {...} block in `s`, in order (braces inside JSON strings
+// don't count). The old single greedy /\{[\s\S]*\}/ spanned from the first
+// "{" to the last "}", so any brace in the AI's chatter around the JSON
+// ("{band}", a second example object) made the whole reply unparseable.
+function objectBlocks(s) {
+  const out = [];
+  for (let i = s.indexOf('{'); i !== -1; i = s.indexOf('{', i + 1)) {
+    let depth = 0, inStr = false, esc = false;
+    for (let j = i; j < s.length; j++) {
+      const c = s[j];
+      if (inStr) {
+        if (esc) esc = false;
+        else if (c === '\\') esc = true;
+        else if (c === '"') inStr = false;
+      } else if (c === '"') inStr = true;
+      else if (c === '{') depth++;
+      else if (c === '}' && --depth === 0) { out.push(s.slice(i, j + 1)); break; }
+    }
+  }
+  return out;
 }
 
+// Chat UIs often hand back “smart quotes” and trailing commas — retried
+// with those repaired before giving up.
+function tryParse(block) {
+  try { return JSON.parse(block); } catch { /* repair below */ }
+  const fixed = block.replace(/[“”]/g, '"').replace(/[‘’]/g, "'").replace(/,\s*([}\]])/g, '$1');
+  try { return JSON.parse(fixed); } catch { return null; }
+}
+
+const KNOWN_KEYS = ['scores', 'bandScores', 'overallBand', 'bandEstimate', 'criteria', 'feedbackVi', 'overallFeedback'];
+
+function extractJson(text) {
+  const s = String(text || '');
+  const fences = [...s.matchAll(/```(?:json)?\s*([\s\S]*?)```/gi)].map(m => m[1]);
+  let first = null;
+  for (const body of [...fences, s]) {
+    for (const block of objectBlocks(body)) {
+      const j = tryParse(block);
+      if (!j || typeof j !== 'object' || Array.isArray(j)) continue;
+      if (KNOWN_KEYS.some(k => k in j)) return j; // the grading object itself
+      if (!first) first = j;
+    }
+  }
+  return first;
+}
+
+// A band as a number or text ("6.5", "Band 6.5", "6,5").
 function half(v) {
-  const n = Number(v);
-  if (v === null || v === undefined || v === '' || !Number.isFinite(n) || n < 0 || n > 9) return '';
+  if (v === null || v === undefined || v === '') return '';
+  const m = typeof v === 'number' ? [String(v)] : String(v).replace(',', '.').match(/\d+(?:\.\d+)?/);
+  const n = m ? Number(m[0]) : NaN;
+  if (!Number.isFinite(n) || n < 0 || n > 9) return '';
   return Math.round(n * 2) / 2;
 }
 

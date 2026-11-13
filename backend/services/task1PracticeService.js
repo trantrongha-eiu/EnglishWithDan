@@ -1,6 +1,7 @@
 'use strict';
 
 // Extracted from routes/task1Practice.js, verbatim logic.
+const mongoose = require('mongoose');
 const Task1Exercise = require('../models/Task1Exercise');
 const Task1Attempt = require('../models/Task1Attempt');
 const { keepStreakAlive } = require('../utils/streak');
@@ -292,13 +293,20 @@ async function saveBatch(userId, attempts, sessionId) {
   // teacher-facing progress/attempt-history views and per-user XP totals,
   // so a fabricated batch would misrepresent a student's actual work
   // (security audit finding; mirrors checkAnswer()'s own xpEarned formula).
-  const ids = attempts.map(a => a.exerciseId).filter(Boolean);
-  const exerciseList = await Task1Exercise.find({ _id: { $in: ids } }).lean();
+  // Only rows for real exercises are kept, at most MAX_BATCH of them: one
+  // malformed exerciseId used to throw a CastError and lose the whole batch
+  // (the valid answers too), and rows for unknown ids were stored as junk.
+  const MAX_BATCH = 200;
+  const list = (Array.isArray(attempts) ? attempts : [])
+    .filter(a => a && mongoose.isValidObjectId(a.exerciseId)).slice(0, MAX_BATCH);
+  const ids = list.map(a => a.exerciseId);
+  const exerciseList = ids.length ? await Task1Exercise.find({ _id: { $in: ids } }).lean() : [];
   const exMap = Object.fromEntries(exerciseList.map(e => [e._id.toString(), e]));
+  sessionId = typeof sessionId === 'string' ? sessionId.slice(0, 64) : null;
 
-  const docs = attempts.map(a => {
+  const docs = list.filter(a => exMap[String(a.exerciseId)]).map(a => {
     const exercise = exMap[String(a.exerciseId)];
-    const userAnswer = a.userAnswer || '';
+    const userAnswer = String(a.userAnswer == null ? '' : a.userAnswer).slice(0, 2000);
     let isCorrect = false, score = 0, xpEarned = 0;
     if (exercise) {
       const check = localCheck(exercise, userAnswer);
@@ -320,6 +328,7 @@ async function saveBatch(userId, attempts, sessionId) {
       sessionId: sessionId || null
     };
   });
+  if (!docs.length) return 0;
   await Task1Attempt.insertMany(docs);
   // >=70% +1 🔥, >=90% +2 🔥 for a batch of at least 5 graded exercises.
   const graded = docs.filter(d => exMap[String(d.exerciseId)]);

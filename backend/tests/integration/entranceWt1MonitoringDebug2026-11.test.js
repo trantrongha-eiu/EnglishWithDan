@@ -165,3 +165,26 @@ describe('teacher review queue — Speaking stuck without an AI grade', () => {
     expect(counts.body.counts.speaking).toBe(1);
   });
 });
+
+// ── Task 1 Grammar practice save (feeds the Bộ 2 homework tick) ─────────
+describe('POST /api/task1/save-batch', () => {
+  const { createTask1Exercise } = require('../factories/contentFactory');
+  const Task1Attempt = require('../../models/Task1Attempt');
+  test('a malformed or unknown exerciseId no longer loses the valid answers of the batch', async () => {
+    const u = await createPremiumStudent();
+    const ex = await createTask1Exercise({ extra: { primaryAnswer: 'rose', acceptedAnswers: ['rose'] } });
+    const res = await request(app).post('/api/task1/save-batch').set(bearer(u)).send({
+      sessionId: 's1',
+      attempts: [
+        { exerciseId: 'oops', userAnswer: 'x' },
+        { exerciseId: '64b000000000000000000009', userAnswer: 'x' },
+        { exerciseId: String(ex._id), userAnswer: 'rose', isCorrect: false },
+      ],
+    });
+    expect(res.status).toBe(200);
+    expect(res.body.saved).toBe(1);
+    const rows = await Task1Attempt.find({ userId: u._id }).lean();
+    expect(rows).toHaveLength(1);
+    expect(String(rows[0].exerciseId)).toBe(String(ex._id));
+  });
+});
