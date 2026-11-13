@@ -27,12 +27,12 @@ describe('goalService.validateGoalInput', () => {
 
   it('rejects targetBand above 7.5 (Issue M)', () => {
     const errors = goalService.validateGoalInput({ targetBand: 8.0 });
-    expect(errors.some(e => /targetBand/.test(e))).toBe(true);
+    expect(errors.some(e => /Band mục tiêu/.test(e))).toBe(true);
   });
 
   it('rejects currentBand greater than targetBand (Issue N)', () => {
     const errors = goalService.validateGoalInput({ currentBand: 7.0, targetBand: 5.5 });
-    expect(errors.some(e => /currentBand must not be greater/.test(e))).toBe(true);
+    expect(errors.some(e => /không được cao hơn band mục tiêu/.test(e))).toBe(true);
   });
 
   it('accepts currentBand === targetBand', () => {
@@ -52,7 +52,7 @@ describe('goalService.validateGoalInput', () => {
 
   it('rejects a past exam date', () => {
     const errors = goalService.validateGoalInput({ examDate: past(5) });
-    expect(errors.some(e => /examDate/.test(e))).toBe(true);
+    expect(errors.some(e => /Ngày thi/.test(e))).toBe(true);
   });
 
   it('accepts an exam date of today or tomorrow', () => {
@@ -199,7 +199,7 @@ describe('goalService.assessFeasibility', () => {
   it('Issue 24 — 5.5 -> 7.5 in 14 days at 2h/week is flagged challenging, never promises the outcome', () => {
     const result = goalService.assessFeasibility({ currentBand: 5.5, targetBand: 7.5, weeksRemaining: 2, weeklyStudyMinutes: 120 });
     expect(result.level).toBe('challenging');
-    expect(result.message).toMatch(/short timeframe/i);
+    expect(result.message).toMatch(/thời gian ngắn/i);
     expect(result.message).not.toMatch(/on track for/i);
     expect(result.message).not.toMatch(/\bwill\b/i); // never a promise/prediction
   });

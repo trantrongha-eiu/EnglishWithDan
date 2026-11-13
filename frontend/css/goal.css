@@ -36,6 +36,10 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-
 .goal-msg{font-size:13px}
 .goal-msg.error{color:#dc2626}
 .goal-msg.ok{color:var(--success)}
+.goal-hint{font-size:12.5px;color:var(--text-light,#6b7280);margin:10px 0 0;line-height:1.5}
+.goal-hint:empty{display:none}
+.goal-hint.warn{color:#b45309;background:rgba(245,158,11,.1);border-radius:8px;padding:8px 10px}
+.plan-week + .goal-hint{margin:0 0 12px}
 
 .goal-summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:16px}
 .goal-stat{text-align:center;padding:14px 10px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border)}

@@ -24,7 +24,7 @@ describe('recommendationService.getRecommendations', () => {
       expect(result.recommendations).toHaveLength(1);
       expect(result.recommendations[0].type).toBe('GENERAL_REVIEW');
       expect(result.recommendations[0].metadata.onboarding).toBe(true);
-      expect(result.recommendations[0].reason).toMatch(/unlock personalized recommendations/i);
+      expect(result.recommendations[0].reason).toMatch(/gợi ý riêng cho bạn/i);
       expect(result.recommendations[0].reason).not.toMatch(/weak/i);
       expect(result.dataConfidence).toBe('none');
       expect(result.generatedAt).toBeTruthy();
@@ -42,9 +42,9 @@ describe('recommendationService.getRecommendations', () => {
       const result = await recommendationService.getRecommendations(student._id);
       expect(result.recommendations[0].type).toBe('VOCAB_REVIEW');
       expect(result.recommendations[0].priority).toBe(1);
-      expect(result.recommendations[0].title).toBe('Review your vocabulary');
-      expect(result.recommendations[0].reason).toBe('12 words are due for review.');
-      expect(result.recommendations[0].action).toEqual({ label: 'Review 12 words', href: 'dashboard.html', actionLevel: 'vocab-review' });
+      expect(result.recommendations[0].title).toBe('Ôn tập từ vựng');
+      expect(result.recommendations[0].reason).toBe('12 từ đến hạn ôn tập.');
+      expect(result.recommendations[0].action).toEqual({ label: 'Ôn 12 từ', href: 'dashboard.html', actionLevel: 'vocab-review' });
       expect(result.recommendations[0].metadata.dueCount).toBe(12);
       expect(result.recommendations[0].metadata.recommendedSessionSize).toBe(12); // dueCount < 20 -> use dueCount
     });
@@ -72,8 +72,8 @@ describe('recommendationService.getRecommendations', () => {
       expect(rec).toBeTruthy();
       expect(rec.metadata.questionType).toBe('sentence-completion');
       expect(rec.metadata.accuracy).toBe(0);
-      expect(rec.reason).toBe('You scored 0% correctly on "sentence-completion" across your last 4 attempts.');
-      expect(rec.action).toEqual({ label: 'Practice Reading', href: 'reading.html', actionLevel: 'skill' });
+      expect(rec.reason).toBe('Bạn làm đúng 0% dạng "sentence-completion" trong 4 lần làm gần nhất.');
+      expect(rec.action).toEqual({ label: 'Luyện Reading', href: 'reading.html', actionLevel: 'skill' });
     });
 
     it('does NOT surface a reading recommendation once accuracy clears the 70% bar', async () => {
@@ -147,11 +147,11 @@ describe('recommendationService.getRecommendations', () => {
       expect(result.recommendations.find(r => r.type === 'VOCAB_REVIEW')).toBeUndefined(); // nothing due
       const rec = result.recommendations.find(r => r.type === 'VOCAB_WEAK');
       expect(rec).toBeTruthy();
-      expect(rec.title).toBe('Practice weak vocabulary');
+      expect(rec.title).toBe('Luyện từ hay sai');
       expect(rec.metadata.weakCount).toBe(2);
       expect(rec.metadata.recommendedSessionSize).toBe(2); // weakCount < 20 -> use weakCount
-      expect(rec.reason).toBe('2 words in your notebook have been answered wrong 3+ times.');
-      expect(rec.action.label).toBe('Practice 2 weak words');
+      expect(rec.reason).toBe('2 từ trong sổ từ đã trả lời sai từ 3 lần trở lên.');
+      expect(rec.action.label).toBe('Luyện 2 từ hay sai');
     });
 
     it('uses singular grammar for exactly 1 weak word', async () => {
@@ -161,9 +161,9 @@ describe('recommendationService.getRecommendations', () => {
 
       const result = await recommendationService.getRecommendations(student._id);
       const rec = result.recommendations.find(r => r.type === 'VOCAB_WEAK');
-      expect(rec.title).toBe('Practice weak vocabulary');
-      expect(rec.reason).toBe('1 word in your notebook has been answered wrong 3+ times.');
-      expect(rec.action.label).toBe('Practice 1 weak word');
+      expect(rec.title).toBe('Luyện từ hay sai');
+      expect(rec.reason).toBe('1 từ trong sổ từ đã trả lời sai từ 3 lần trở lên.');
+      expect(rec.action.label).toBe('Luyện 1 từ hay sai');
       expect(rec.metadata.recommendedSessionSize).toBe(1);
     });
 
@@ -179,8 +179,8 @@ describe('recommendationService.getRecommendations', () => {
       const rec = result.recommendations.find(r => r.type === 'VOCAB_WEAK');
       expect(rec.metadata.weakCount).toBe(45);
       expect(rec.metadata.recommendedSessionSize).toBe(20);
-      expect(rec.action.label).toBe('Practice 20 weak words');
-      expect(rec.reason).toBe('45 words in your notebook have been answered wrong 3+ times.'); // full count stays visible as context
+      expect(rec.action.label).toBe('Luyện 20 từ hay sai');
+      expect(rec.reason).toBe('45 từ trong sổ từ đã trả lời sai từ 3 lần trở lên.'); // full count stays visible as context
     });
   });
 
@@ -198,8 +198,8 @@ describe('recommendationService.getRecommendations', () => {
       const rec = result.recommendations.find(r => r.type === 'WRITING_WEAK_CRITERION');
       expect(rec).toBeTruthy();
       expect(rec.metadata.criterion).toBe('lr');
-      expect(rec.title).toBe('Practice Writing — Lexical Resource');
-      expect(rec.reason).toContain('Lexical Resource average is 5.0');
+      expect(rec.title).toBe('Luyện Writing — Lexical Resource');
+      expect(rec.reason).toContain('Lexical Resource trung bình của bạn là 5.0');
     });
 
     it('does NOT surface a writing recommendation when criteria are within the imbalance bar', async () => {
@@ -339,8 +339,8 @@ describe('recommendationService.getRecommendations', () => {
       const rec = result.recommendations.find(r => r.type === 'VOCAB_REVIEW');
       expect(rec.metadata.dueCount).toBe(574);
       expect(rec.metadata.recommendedSessionSize).toBe(20);
-      expect(rec.reason).toBe('574 words are due for review.');
-      expect(rec.action.label).toBe('Review 20 words');
+      expect(rec.reason).toBe('574 từ đến hạn ôn tập.');
+      expect(rec.action.label).toBe('Ôn 20 từ');
     });
 
     it('dueCount 12 -> recommendedSessionSize uses the full 12 (below the default cap)', async () => {
@@ -350,7 +350,7 @@ describe('recommendationService.getRecommendations', () => {
       const rec = result.recommendations.find(r => r.type === 'VOCAB_REVIEW');
       expect(rec.metadata.dueCount).toBe(12);
       expect(rec.metadata.recommendedSessionSize).toBe(12);
-      expect(rec.action.label).toBe('Review 12 words');
+      expect(rec.action.label).toBe('Ôn 12 từ');
     });
 
     it('weakCount 45 -> recommendedSessionSize caps at 20', async () => {
@@ -360,7 +360,7 @@ describe('recommendationService.getRecommendations', () => {
       const rec = result.recommendations.find(r => r.type === 'VOCAB_WEAK');
       expect(rec.metadata.weakCount).toBe(45);
       expect(rec.metadata.recommendedSessionSize).toBe(20);
-      expect(rec.action.label).toBe('Practice 20 weak words');
+      expect(rec.action.label).toBe('Luyện 20 từ hay sai');
     });
 
     it('weakCount 7 -> recommendedSessionSize uses the full 7', async () => {
@@ -370,7 +370,7 @@ describe('recommendationService.getRecommendations', () => {
       const rec = result.recommendations.find(r => r.type === 'VOCAB_WEAK');
       expect(rec.metadata.weakCount).toBe(7);
       expect(rec.metadata.recommendedSessionSize).toBe(7);
-      expect(rec.action.label).toBe('Practice 7 weak words');
+      expect(rec.action.label).toBe('Luyện 7 từ hay sai');
     });
 
     it('dueCount 0 -> no VOCAB_REVIEW candidate at all', async () => {

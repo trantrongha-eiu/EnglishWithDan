@@ -90,14 +90,14 @@ function buildVocabReviewCandidate(stats) {
   const sessionSize = sessionSizeFor(n);
   return {
     type: 'VOCAB_REVIEW',
-    title: 'Review your vocabulary',
-    reason: `${n} word${n === 1 ? ' is' : 's are'} due for review.`,
+    title: 'Ôn tập từ vựng',
+    reason: `${n} từ đến hạn ôn tập.`,
     // No standalone page for this action — it lives inside dashboard.html's
     // "Ôn tập hôm nay" flow (openReviewDueModal()). actionLevel is 'vocab-
     // review' rather than 'skill' since it isn't a generic skill page link.
     // label deliberately proposes the CAPPED session, not the full backlog
     // — see DEFAULT_SESSION_SIZE's comment above.
-    action: { label: `Review ${sessionSize} word${sessionSize === 1 ? '' : 's'}`, href: 'dashboard.html', actionLevel: 'vocab-review' },
+    action: { label: `Ôn ${sessionSize} từ`, href: 'dashboard.html', actionLevel: 'vocab-review' },
     metadata: { dueCount: n, recommendedSessionSize: sessionSize, sampleSize: n, confidence: 100, urgency, severity: 0 },
     score: scoreOf(TIER.VOCAB_REVIEW, { confidence: 100, urgency }),
   };
@@ -110,11 +110,11 @@ function buildVocabWeakCandidate(stats) {
   const sessionSize = sessionSizeFor(n);
   return {
     type: 'VOCAB_WEAK',
-    title: 'Practice weak vocabulary',
-    reason: `${n} word${n === 1 ? '' : 's'} in your notebook ${n === 1 ? 'has' : 'have'} been answered wrong 3+ times.`,
+    title: 'Luyện từ hay sai',
+    reason: `${n} từ trong sổ từ đã trả lời sai từ 3 lần trở lên.`,
     // Lives inside dashboard.html's practiceWeakVocab() flow (GET
     // /vocabbook/weak), not a standalone page.
-    action: { label: `Practice ${sessionSize} weak word${sessionSize === 1 ? '' : 's'}`, href: 'dashboard.html', actionLevel: 'vocab-weak' },
+    action: { label: `Luyện ${sessionSize} từ hay sai`, href: 'dashboard.html', actionLevel: 'vocab-weak' },
     metadata: { weakCount: n, recommendedSessionSize: sessionSize, sampleSize: n, confidence: 100, urgency: 0, severity },
     score: scoreOf(TIER.VOCAB_WEAK, { severity, confidence: 100 }),
   };
@@ -128,13 +128,13 @@ function buildSkillTypeCandidate(type, skillEntry, skillLabel, hrefPage) {
   const pct = Math.round(skillEntry.accuracy * 100);
   return {
     type,
-    title: `Practice ${skillLabel} — ${skillEntry.type}`,
-    reason: `You scored ${pct}% correctly on "${skillEntry.type}" across your last ${skillEntry.total} attempt${skillEntry.total === 1 ? '' : 's'}.`,
+    title: `Luyện ${skillLabel} — ${skillEntry.type}`,
+    reason: `Bạn làm đúng ${pct}% dạng "${skillEntry.type}" trong ${skillEntry.total} lần làm gần nhất.`,
     // No per-question-type filter/deep-link exists yet (confirmed in the
     // Priority 1 audit) — action correctly points at the generic skill
     // page, and actionLevel says so explicitly rather than pretending a
     // question-type filter is available.
-    action: { label: `Practice ${skillLabel}`, href: hrefPage, actionLevel: 'skill' },
+    action: { label: `Luyện ${skillLabel}`, href: hrefPage, actionLevel: 'skill' },
     metadata: { questionType: skillEntry.type, accuracy: skillEntry.accuracy, sampleSize: skillEntry.total, confidence, urgency: 0, severity },
     score: scoreOf(TIER[type], { severity, confidence }),
   };
@@ -152,9 +152,9 @@ function buildCriterionCandidate(type, criteriaArr, skillLabel, hrefPage, labels
   const criterionLabel = labels[weakest.criterion] || weakest.criterion;
   return {
     type,
-    title: `Practice ${skillLabel} — ${criterionLabel}`,
-    reason: `Your ${criterionLabel} average is ${weakest.avgScore.toFixed(1)}, ${gap.toFixed(1)} band${gap.toFixed(1) === '1.0' ? '' : 's'} below your other ${skillLabel} criteria.`,
-    action: { label: `Practice ${skillLabel}`, href: hrefPage, actionLevel: 'skill' },
+    title: `Luyện ${skillLabel} — ${criterionLabel}`,
+    reason: `Điểm ${criterionLabel} trung bình của bạn là ${weakest.avgScore.toFixed(1)}, thấp hơn các tiêu chí ${skillLabel} khác ${gap.toFixed(1)} band.`,
+    action: { label: `Luyện ${skillLabel}`, href: hrefPage, actionLevel: 'skill' },
     metadata: { criterion: weakest.criterion, avgScore: weakest.avgScore, sampleSize: weakest.count, confidence, urgency: 0, severity, gapFromSiblings: gap },
     score: scoreOf(TIER[type], { severity, confidence }),
   };
@@ -167,18 +167,18 @@ function buildGeneralReviewCandidate(hasAnyDataAtAll) {
     // weak at Reading") when there's no real signal yet.
     return {
       type: 'GENERAL_REVIEW',
-      title: 'Get started',
-      reason: 'Complete a few practice sessions to unlock personalized recommendations.',
-      action: { label: 'Start Practicing', href: 'reading.html', actionLevel: 'skill' },
+      title: 'Bắt đầu luyện tập',
+      reason: 'Làm vài bài luyện tập để nhận gợi ý riêng cho bạn.',
+      action: { label: 'Bắt đầu luyện', href: 'reading.html', actionLevel: 'skill' },
       metadata: { onboarding: true, sampleSize: 0, confidence: 0, urgency: 0, severity: 0 },
       score,
     };
   }
   return {
     type: 'GENERAL_REVIEW',
-    title: 'Keep your skills balanced',
-    reason: 'No specific weakness stands out in your recent activity — keep practicing across skills.',
-    action: { label: 'Practice', href: 'dashboard.html', actionLevel: 'skill' },
+    title: 'Giữ các kỹ năng cân bằng',
+    reason: 'Gần đây bạn không có điểm yếu nào nổi bật — tiếp tục luyện đều các kỹ năng nhé.',
+    action: { label: 'Luyện tập', href: 'dashboard.html', actionLevel: 'skill' },
     metadata: { onboarding: false, sampleSize: 0, confidence: 0, urgency: 0, severity: 0 },
     score,
   };

@@ -38,7 +38,7 @@ describe('learningService.getTodayLearning', () => {
     expect(result.hasGoal).toBe(false);
     expect(result.hasPlan).toBe(false);
     expect(result.sessions).toEqual([]);
-    expect(result.message).toMatch(/set your ielts goal/i);
+    expect(result.message).toMatch(/Đặt mục tiêu IELTS/i);
   });
 
   it('goal exists but no study plan (no availability configured yet)', async () => {
@@ -48,7 +48,7 @@ describe('learningService.getTodayLearning', () => {
     expect(result.hasGoal).toBe(true);
     expect(result.hasPlan).toBe(false);
     expect(result.sessions).toEqual([]);
-    expect(result.message).toMatch(/set up your study availability/i);
+    expect(result.message).toMatch(/thời gian học mỗi tuần/i);
   });
 
   it('Test B — valid goal + valid study plan: returns today\'s sessions', async () => {
@@ -70,7 +70,7 @@ describe('learningService.getTodayLearning', () => {
     expect(result.hasPlan).toBe(true);
     expect(result.isStudyDay).toBe(false);
     expect(result.sessions).toEqual([]);
-    expect(result.message).toMatch(/not one of your scheduled study days/i);
+    expect(result.message).toMatch(/không phải ngày học/i);
   });
 
   it('Test D — one scheduled category: a tiny session budget yields exactly one item', async () => {
@@ -105,7 +105,7 @@ describe('learningService.getTodayLearning', () => {
     const readingItem = result.sessions.find(s => s.category === 'reading');
     expect(readingItem).toBeTruthy();
     expect(readingItem.recommendationType).toBe('READING_WEAK_TYPE');
-    expect(readingItem.reason).toBe('You scored 0% correctly on "sentence-completion" across your last 4 attempts.');
+    expect(readingItem.reason).toBe('Bạn làm đúng 0% dạng "sentence-completion" trong 4 lần làm gần nhất.');
   });
 
   it('Test G — no matching recommendation: a safe category-level action, never a fabricated weakness claim', async () => {
@@ -124,7 +124,7 @@ describe('learningService.getTodayLearning', () => {
     await setGoal(student._id, { currentBand: 5.5, targetBand: 7.0 });
     const result = await learningService.getTodayLearning(student._id);
     const readingItem = result.sessions.find(s => s.category === 'reading');
-    expect(readingItem.reason).toMatch(/not available yet/i);
+    expect(readingItem.reason).toMatch(/Chưa đủ bài/i);
     expect(readingItem.reason).not.toMatch(/\d+(\.\d+)?%|band \d/i); // no fabricated number
   });
 
@@ -192,7 +192,7 @@ describe('learningService.getTodayLearning', () => {
     const result = await learningService.getTodayLearning(student._id);
     expect(result.hasPlan).toBe(false);
     expect(result.hasGoal).toBe(true);
-    expect(result.message).toMatch(/exam date has passed/i);
+    expect(result.message).toMatch(/Ngày thi bạn đặt đã qua/i);
     expect(result.goal.isPastExamDate).toBe(true);
   });
 });

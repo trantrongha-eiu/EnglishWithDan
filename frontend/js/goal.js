@@ -19,10 +19,43 @@ function populateBandSelects() {
   });
 }
 
+// Profile lets a student pick a target up to 9.0 while this page lists
+// 4.0–7.5 — such a saved value had no option, so the select showed "— Chọn —"
+// and the page refused to save anything. Keep it as an extra option.
+function setBandSelect(id, band) {
+  const sel = document.getElementById(id);
+  const v = String(band);
+  if (![...sel.options].some(o => o.value === v)) {
+    sel.insertAdjacentHTML('beforeend', `<option value="${v}">${Number(band).toFixed(1)} (đặt ở Hồ sơ)</option>`);
+  }
+  sel.value = v;
+}
+
 function toggleDay(el) {
   const day = el.dataset.day;
   if (selectedDays.has(day)) { selectedDays.delete(day); el.classList.remove('active'); }
   else { selectedDays.add(day); el.classList.add('active'); }
+  updateScheduleHint();
+}
+
+// "N ngày × M phút = X phút/tuần" under the form, and a warning when the
+// weekly total can't fit into the chosen days × session length (the plan
+// then simply schedules less than the weekly total).
+function updateScheduleHint() {
+  const el = document.getElementById('schedule-hint');
+  if (!el) return;
+  const weekly = parseInt(document.getElementById('f-weekly').value, 10) || 0;
+  const session = parseInt(document.getElementById('f-session').value, 10) || 0;
+  const days = selectedDays.size;
+  if (!days || !session) { el.textContent = ''; el.className = 'goal-hint'; return; }
+  const fits = days * session;
+  if (weekly > fits) {
+    el.className = 'goal-hint warn';
+    el.textContent = `${days} ngày × ${session} phút = ${fits} phút/tuần — ít hơn ${weekly} phút bạn muốn học. Hãy thêm ngày học hoặc tăng số phút mỗi buổi.`;
+  } else {
+    el.className = 'goal-hint';
+    el.textContent = `${days} ngày × tối đa ${session} phút/buổi${weekly ? ` · ${weekly} phút/tuần chia đều cho các ngày học` : ''}.`;
+  }
 }
 
 async function loadGoal() {
@@ -30,8 +63,8 @@ async function loadGoal() {
     const res = await fetch(`${API}/goals`, { headers: authH() });
     const data = await window.ApiClient.handleResponse(res);
     const g = data.goal || {}; // a "no goal yet" response may omit it entirely
-    if (g.currentBand != null) document.getElementById('f-current').value = g.currentBand;
-    if (g.targetBand != null) document.getElementById('f-target').value = g.targetBand;
+    if (g.currentBand != null) setBandSelect('f-current', g.currentBand);
+    if (g.targetBand != null) setBandSelect('f-target', g.targetBand);
     if (g.examDate) document.getElementById('f-exam').value = g.examDate.slice(0, 10);
     if (g.weeklyStudyMinutes != null) document.getElementById('f-weekly').value = g.weeklyStudyMinutes;
     if (g.preferredSessionMinutes != null) document.getElementById('f-session').value = g.preferredSessionMinutes;
@@ -40,6 +73,7 @@ async function loadGoal() {
       document.querySelector(`.goal-day-chip[data-day="${d}"]`)?.classList.add('active');
     });
     renderSummary(g);
+    updateScheduleHint();
   } catch (e) {
     document.getElementById('goal-msg').textContent = 'Không thể tải mục tiêu.';
     document.getElementById('goal-msg').className = 'goal-msg error';
@@ -52,8 +86,9 @@ function renderSummary(g) {
   card.style.display = '';
   const stats = document.getElementById('summary-stats');
   const parts = [];
-  parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.targetBand ?? '—'}</div><div class="goal-stat-label">Band mục tiêu</div></div>`);
-  parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.currentBand ?? '—'}</div><div class="goal-stat-label">Hiện tại (${g.currentBandSource === 'self_assessed' ? 'tự đánh giá' : '—'})</div></div>`);
+  const band = (b) => (b == null ? '—' : Number(b).toFixed(1));
+  parts.push(`<div class="goal-stat"><div class="goal-stat-val">${band(g.targetBand)}</div><div class="goal-stat-label">Band mục tiêu</div></div>`);
+  parts.push(`<div class="goal-stat"><div class="goal-stat-val">${band(g.currentBand)}</div><div class="goal-stat-label">Hiện tại${g.currentBandSource === 'self_assessed' ? ' (tự đánh giá)' : ''}</div></div>`);
   if (g.gapBands != null) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.gapBands >= 0 ? '+' : ''}${g.gapBands}</div><div class="goal-stat-label">Chênh lệch</div></div>`);
   if (g.daysRemaining != null) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.isPastExamDate ? 'Đã qua' : g.daysRemaining}</div><div class="goal-stat-label">Ngày còn lại</div></div>`);
   if (g.weeklyStudyMinutes) parts.push(`<div class="goal-stat"><div class="goal-stat-val">${g.weeklyStudyMinutes}</div><div class="goal-stat-label">Phút/tuần</div></div>`);
@@ -128,7 +163,7 @@ async function loadPlan() {
     const sessionsHtml = plan.sessions.map(s => `
       <div class="plan-day">
         <div class="plan-day-head">
-          <span class="plan-day-title">${DAY_LABEL[s.day] || s.day} · ${s.date}</span>
+          <span class="plan-day-title">${DAY_LABEL[s.day] || s.day} · ${fmtDate(s.date)}</span>
           <span class="plan-day-total">${s.totalMinutes} phút</span>
         </div>
         ${s.items.map(i => `
@@ -139,8 +174,13 @@ async function loadPlan() {
           </div>`).join('')}
       </div>`).join('');
 
+    const scheduled = plan.scheduledMinutes ?? plan.totalMinutes;
+    const shortNote = scheduled < plan.totalMinutes
+      ? `<div class="goal-hint warn">Lịch học chỉ xếp được ${scheduled}/${plan.totalMinutes} phút — hãy thêm ngày học hoặc tăng số phút mỗi buổi.</div>`
+      : '';
     el.innerHTML = `
-      <div class="plan-week">Tuần ${plan.weekStart} → ${plan.weekEnd} · Tổng ${plan.totalMinutes} phút</div>
+      <div class="plan-week">Tuần ${fmtDate(plan.weekStart)} → ${fmtDate(plan.weekEnd)} · Tổng ${scheduled} phút</div>
+      ${shortNote}
       <div class="plan-alloc">${allocHtml}</div>
       ${sessionsHtml}
     `;
@@ -150,7 +190,9 @@ async function loadPlan() {
   }
 }
 
-function escapeHtml(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function escapeHtml(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+// "2026-11-16" → "16/11" (the page is Vietnamese; ISO dates read as code).
+function fmtDate(iso) { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? `${m[3]}/${m[2]}` : (iso || ''); }
 
 async function loadTodayLearning() {
   const el = document.getElementById('today-content');
@@ -190,9 +232,12 @@ async function loadTodayLearning() {
 document.addEventListener('DOMContentLoaded', () => {
   if (!window.AuthService?.getUser?.()) { window.location.href = 'login.html'; return; }
   populateBandSelects();
-  // No point picking an exam date in the past.
-  document.getElementById('f-exam').min = new Date().toISOString().slice(0, 10);
+  // No point picking an exam date in the past. Local date — toISOString()
+  // is UTC, i.e. still "yesterday" in Vietnam before 7am.
+  const now = new Date();
+  document.getElementById('f-exam').min = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   document.querySelectorAll('.goal-day-chip').forEach(el => el.addEventListener('click', () => toggleDay(el)));
+  ['f-weekly', 'f-session'].forEach(id => document.getElementById(id).addEventListener('input', updateScheduleHint));
   loadGoal();
   loadPlan();
   loadTodayLearning();

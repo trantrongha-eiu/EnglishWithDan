@@ -22,6 +22,7 @@ const BAND_STEP = 0.5;
 const VALID_WEEKDAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 const MIN_SESSION_MINUTES = 5;
 const MAX_SESSION_MINUTES = 240;
+const MAX_WEEKLY_MINUTES = 7 * 24 * 60; // a whole week — anything above is a typo
 
 // Reused verbatim from weaknessService so "enough data to estimate a band"
 // means the same thing everywhere in the app.
@@ -42,36 +43,39 @@ function validateGoalInput(input) {
   const { currentBand, targetBand, examDate, weeklyStudyMinutes, studyDays, preferredSessionMinutes } = input;
 
   if (currentBand !== undefined && currentBand !== null && !isValidBand(currentBand)) {
-    errors.push(`currentBand must be between ${MIN_BAND} and ${MAX_BAND}, in 0.5 steps`);
+    errors.push(`Trình độ hiện tại phải từ ${MIN_BAND.toFixed(1)} đến ${MAX_BAND.toFixed(1)} (bước 0.5)`);
   }
   if (targetBand !== undefined && targetBand !== null && !isValidBand(targetBand)) {
-    errors.push(`targetBand must be between ${MIN_BAND} and ${MAX_BAND}, in 0.5 steps`);
+    errors.push(`Band mục tiêu phải từ ${MIN_BAND.toFixed(1)} đến ${MAX_BAND.toFixed(1)} (bước 0.5)`);
   }
   // Cross-field check only when BOTH are being set/known this call — a
   // partial update of just one of the two can't validate the pair here;
   // updateGoal() re-checks against the merged (existing+incoming) values.
   if (typeof currentBand === 'number' && typeof targetBand === 'number' && currentBand > targetBand) {
-    errors.push('currentBand must not be greater than targetBand');
+    errors.push(CURRENT_ABOVE_TARGET);
   }
   if (examDate !== undefined && examDate !== null) {
     const d = new Date(examDate);
-    if (Number.isNaN(d.getTime())) errors.push('examDate is not a valid date');
-    else if (d < todayVNDate()) errors.push('examDate must not be in the past');
+    if (Number.isNaN(d.getTime())) errors.push('Ngày thi không hợp lệ');
+    else if (d < todayVNDate()) errors.push('Ngày thi không được ở trong quá khứ');
   }
   if (weeklyStudyMinutes !== undefined && weeklyStudyMinutes !== null) {
-    if (typeof weeklyStudyMinutes !== 'number' || weeklyStudyMinutes <= 0) errors.push('weeklyStudyMinutes must be greater than 0');
+    if (typeof weeklyStudyMinutes !== 'number' || !Number.isFinite(weeklyStudyMinutes) || weeklyStudyMinutes <= 0) errors.push('Thời gian học mỗi tuần phải lớn hơn 0 phút');
+    else if (weeklyStudyMinutes > MAX_WEEKLY_MINUTES) errors.push(`Thời gian học mỗi tuần tối đa ${MAX_WEEKLY_MINUTES} phút`);
   }
   if (preferredSessionMinutes !== undefined && preferredSessionMinutes !== null) {
     if (typeof preferredSessionMinutes !== 'number' || preferredSessionMinutes < MIN_SESSION_MINUTES || preferredSessionMinutes > MAX_SESSION_MINUTES) {
-      errors.push(`preferredSessionMinutes must be between ${MIN_SESSION_MINUTES} and ${MAX_SESSION_MINUTES}`);
+      errors.push(`Số phút mỗi buổi phải từ ${MIN_SESSION_MINUTES} đến ${MAX_SESSION_MINUTES}`);
     }
   }
   if (studyDays !== undefined && studyDays !== null) {
-    if (!Array.isArray(studyDays)) errors.push('studyDays must be an array');
-    else if (studyDays.some(d => !VALID_WEEKDAYS.includes(d))) errors.push(`studyDays must only contain valid weekdays (${VALID_WEEKDAYS.join(', ')})`);
+    if (!Array.isArray(studyDays)) errors.push('Ngày học trong tuần không hợp lệ');
+    else if (studyDays.some(d => !VALID_WEEKDAYS.includes(d))) errors.push('Ngày học trong tuần không hợp lệ');
   }
   return errors;
 }
+
+const CURRENT_ABOVE_TARGET = 'Trình độ hiện tại không được cao hơn band mục tiêu';
 
 function examUrgencyFromDays(daysRemaining) {
   if (daysRemaining == null || daysRemaining < 0) return null;
@@ -90,7 +94,7 @@ function assessFeasibility({ currentBand, targetBand, weeksRemaining, weeklyStud
   if (currentBand == null || targetBand == null || weeksRemaining == null || weeksRemaining <= 0 || !weeklyStudyMinutes) return null;
   const gap = Math.max(0, Math.round((targetBand - currentBand) * 10) / 10);
   if (gap === 0) {
-    return { level: 'on_track', gap, message: 'Your current and target bands are the same — focus on maintaining consistency.' };
+    return { level: 'on_track', gap, message: 'Trình độ hiện tại đã bằng band mục tiêu — hãy giữ nhịp học đều đặn để duy trì.' };
   }
   const requiredHours = (gap / BAND_STEP) * ESTIMATED_HOURS_PER_HALF_BAND;
   const availableHours = (weeklyStudyMinutes / 60) * weeksRemaining;
@@ -98,13 +102,13 @@ function assessFeasibility({ currentBand, targetBand, weeksRemaining, weeklyStud
   let level, message;
   if (ratio >= 1) {
     level = 'reasonable';
-    message = 'Your available study time is in a reasonable range for this goal, based on a general study-hours estimate — consistency matters more than any single number.';
+    message = 'Thời gian học bạn dành ra là hợp lý cho mục tiêu này (theo ước tính số giờ học chung) — học đều đặn quan trọng hơn mọi con số.';
   } else if (ratio >= 0.5) {
     level = 'tight';
-    message = 'Your timeline is tight for this goal. Consider increasing weekly study time if possible.';
+    message = 'Thời gian khá gấp cho mục tiêu này. Nếu được, hãy tăng thời gian học mỗi tuần.';
   } else {
     level = 'challenging';
-    message = 'Your target requires a significant improvement in a short timeframe. Consider increasing study time or allowing more preparation time.';
+    message = 'Mục tiêu cần tiến bộ rất nhiều trong thời gian ngắn. Hãy tăng thời gian học hoặc lùi ngày thi để có thêm thời gian chuẩn bị.';
   }
   return { level, gap, requiredHours: Math.round(requiredHours), availableHours: Math.round(availableHours), ratio: Math.round(ratio * 100) / 100, message };
 }
@@ -155,6 +159,20 @@ async function getGoal(userId) {
 // Practice history (attempts, VocabBook, streak, ...) is never touched by
 // this — a goal edit only ever writes these few User fields.
 async function updateGoal(userId, input) {
+  // goal.html re-sends EVERY field on each save. A value that isn't changing
+  // isn't re-validated: an exam date that has since passed, or a target band
+  // above this page's 7.5 scope that was set from Profile (which allows up
+  // to 9.0), used to block every other edit — the student couldn't even
+  // change their study days without first clearing / lowering those.
+  const existing = await User.findById(userId).select('currentBand targetBand targetExamDate').lean();
+  input = { ...input };
+  const sameDay = (a, b) => a && b && !Number.isNaN(new Date(a).getTime())
+    && new Date(a).toISOString().slice(0, 10) === new Date(b).toISOString().slice(0, 10);
+  if (input.targetBand != null && input.targetBand === existing.targetBand) delete input.targetBand;
+  if (input.currentBand != null && input.currentBand === existing.currentBand) delete input.currentBand;
+  if (input.examDate != null && sameDay(input.examDate, existing.targetExamDate)) delete input.examDate;
+  if (Array.isArray(input.studyDays)) input.studyDays = [...new Set(input.studyDays)];
+
   const errors = validateGoalInput(input);
   if (errors.length) return { status: 'invalid', errors };
 
@@ -162,11 +180,10 @@ async function updateGoal(userId, input) {
   // incoming) state — validateGoalInput() above only catches it when both
   // are provided in the SAME call; this also catches e.g. raising
   // currentBand above an already-saved targetBand in isolation.
-  const existing = await User.findById(userId).select('currentBand targetBand').lean();
   const mergedCurrent = input.currentBand !== undefined ? input.currentBand : existing.currentBand;
   const mergedTarget = input.targetBand !== undefined ? input.targetBand : existing.targetBand;
   if (typeof mergedCurrent === 'number' && typeof mergedTarget === 'number' && mergedCurrent > mergedTarget) {
-    return { status: 'invalid', errors: ['currentBand must not be greater than targetBand'] };
+    return { status: 'invalid', errors: [CURRENT_ABOVE_TARGET] };
   }
 
   const update = {};
@@ -212,5 +229,5 @@ async function getEstimatedPerformance(userId) {
 
 module.exports = {
   getGoal, updateGoal, getEstimatedPerformance, validateGoalInput, assessFeasibility,
-  MIN_BAND, MAX_BAND, BAND_STEP, VALID_WEEKDAYS, MIN_SAMPLE_SIZE,
+  MIN_BAND, MAX_BAND, BAND_STEP, MAX_WEEKLY_MINUTES, VALID_WEEKDAYS, MIN_SAMPLE_SIZE,
 };

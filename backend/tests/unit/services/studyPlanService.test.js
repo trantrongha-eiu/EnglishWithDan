@@ -47,7 +47,7 @@ describe('studyPlanService.getStudyPlan', () => {
     const student = await createStudent();
     const plan = await studyPlanService.getStudyPlan(student._id);
     expect(plan.hasPlan).toBe(false);
-    expect(plan.message).toMatch(/set up your study availability/i);
+    expect(plan.message).toMatch(/thời gian học mỗi tuần/i);
     expect(plan.sessions).toBeUndefined();
   });
 
@@ -95,7 +95,7 @@ describe('studyPlanService.getStudyPlan', () => {
     await setGoal(student._id, { targetExamDate: past(5) });
     const plan = await studyPlanService.getStudyPlan(student._id);
     expect(plan.hasPlan).toBe(false);
-    expect(plan.message).toMatch(/exam date has passed/i);
+    expect(plan.message).toMatch(/Ngày thi bạn đặt đã qua/i);
     expect(plan.sessions).toBeUndefined();
     expect(plan.goal.isPastExamDate).toBe(true);
   });

@@ -158,15 +158,15 @@ function allocateWeeklyMinutes(categories, totalMinutes, examUrgency) {
 // ── Session generation ───────────────────────────────────────────────────
 const MIN_CHUNK_MINUTES = 10;
 const DAY_INDEX = { mon: 0, tue: 1, wed: 2, thu: 3, fri: 4, sat: 5, sun: 6 };
-const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening', writing: 'Writing', speaking: 'Speaking', vocabulary: 'Vocabulary' };
+const CATEGORY_LABEL = { reading: 'Reading', listening: 'Listening', writing: 'Writing', speaking: 'Speaking', vocabulary: 'Từ vựng' };
 const CATEGORY_HREF = { reading: 'reading.html', listening: 'listening.html', writing: 'writing.html', speaking: 'speaking.html', vocabulary: 'dashboard.html' };
 
 function buildReason(key, info) {
   if (info.recommendation) return info.recommendation.reason;
-  if (key === 'vocabulary') return 'Keep your vocabulary fresh with regular review.';
-  if (info.dataStatus === 'insufficient_data') return `${CATEGORY_LABEL[key]} performance data is not available yet — this is baseline exposure, not a measured weakness.`;
-  if (info.gapBands > 0) return `Your estimated ${CATEGORY_LABEL[key]} band (${info.currentEstimate}) is below your target (${info.targetBand}) — the largest measured gap gets more time.`;
-  return `Maintain your current ${CATEGORY_LABEL[key]} skill level.`;
+  if (key === 'vocabulary') return 'Ôn từ vựng đều đặn để không quên từ đã học.';
+  if (info.dataStatus === 'insufficient_data') return `Chưa đủ bài ${CATEGORY_LABEL[key]} để đánh giá — đây là thời gian luyện nền, không phải điểm yếu đã đo được.`;
+  if (info.gapBands > 0) return `Band ${CATEGORY_LABEL[key]} ước tính (${info.currentEstimate}) còn thấp hơn mục tiêu (${info.targetBand}) — kỹ năng chênh nhiều nhất được nhiều thời gian hơn.`;
+  return `Giữ vững trình độ ${CATEGORY_LABEL[key]} hiện tại.`;
 }
 
 // Deep-link/action is taken verbatim from the recommendation when one
@@ -175,7 +175,7 @@ function buildReason(key, info) {
 // never claiming a filter that doesn't exist.
 function buildAction(key, info) {
   if (info.recommendation) return info.recommendation.action;
-  return { label: `Practice ${CATEGORY_LABEL[key]}`, href: CATEGORY_HREF[key], actionLevel: key === 'vocabulary' ? 'vocab-review' : 'skill' };
+  return { label: `Luyện ${CATEGORY_LABEL[key]}`, href: CATEGORY_HREF[key], actionLevel: key === 'vocabulary' ? 'vocab-review' : 'skill' };
 }
 
 // Greedy proportional fill: each day's session budget (preferredSessionMinutes)
@@ -184,17 +184,26 @@ function buildAction(key, info) {
 // 100% one category, matching §16's example (Writing + Vocabulary + Reading
 // in the same day) while still spending each category's minutes roughly in
 // priority order across the week.
+//
+// Each day's budget is the session length, or less when the weekly total
+// can't fill every study day at that length: 120 min/week over 5 days of
+// 60-min sessions used to give Mon + Tue an hour each and leave Wed-Fri
+// empty ("Học hôm nay" then had nothing on those days). The week is now
+// spread evenly (rounded up to 5 min), never above the session length.
 function generateSessions(minutesByCategory, categories, studyDays, preferredSessionMinutes, weekStartDate) {
   const queue = CATEGORY_KEYS
     .map(key => ({ key, remaining: minutesByCategory[key] }))
     .filter(c => c.remaining > 0);
 
-  const sortedDays = [...studyDays].sort((a, b) => DAY_INDEX[a] - DAY_INDEX[b]);
-  const chunkCap = Math.max(MIN_CHUNK_MINUTES, Math.round(preferredSessionMinutes / 2));
+  const sortedDays = [...new Set(studyDays)].sort((a, b) => DAY_INDEX[a] - DAY_INDEX[b]);
+  const weekTotal = queue.reduce((t, c) => t + c.remaining, 0);
+  const evenShare = sortedDays.length ? Math.ceil(weekTotal / sortedDays.length / 5) * 5 : 0;
+  const dayBudget = Math.min(preferredSessionMinutes, Math.max(MIN_CHUNK_MINUTES, evenShare));
+  const chunkCap = Math.max(MIN_CHUNK_MINUTES, Math.round(dayBudget / 2));
 
   return sortedDays.map(dayCode => {
     const date = new Date(weekStartDate.getTime() + DAY_INDEX[dayCode] * 86400000);
-    let budget = preferredSessionMinutes;
+    let budget = dayBudget;
     const items = [];
     while (budget >= MIN_CHUNK_MINUTES && queue.some(c => c.remaining > 0)) {
       queue.sort((a, b) => b.remaining - a.remaining);
@@ -246,14 +255,14 @@ async function getStudyPlan(userId) {
   if (goal.isPastExamDate) {
     return {
       hasPlan: false,
-      message: 'Your target exam date has passed — update it in your goal to generate a new study plan.',
+      message: 'Ngày thi bạn đặt đã qua — hãy cập nhật ngày thi mới để Dan lập kế hoạch học.',
       goal,
     };
   }
   if (!goal.weeklyStudyMinutes || !goal.studyDays.length || !goal.preferredSessionMinutes) {
     return {
       hasPlan: false,
-      message: 'Set up your study availability (days per week and session length) to generate a personalized plan.',
+      message: 'Hãy chọn thời gian học mỗi tuần, số phút mỗi buổi và ngày học trong tuần để Dan lập kế hoạch riêng cho bạn.',
       goal,
     };
   }
@@ -263,11 +272,16 @@ async function getStudyPlan(userId) {
   const { monday, sunday } = mondayOfCurrentVNWeek();
   const sessions = generateSessions(minutesByCategory, categories, goal.studyDays, goal.preferredSessionMinutes, monday);
 
+  // What the sessions really hold — less than the weekly total when the
+  // study days × session length can't fit it (goal.html says so).
+  const scheduledMinutes = sessions.reduce((t, d) => t + d.totalMinutes, 0);
+
   return {
     hasPlan: true,
     weekStart: monday.toISOString().slice(0, 10),
     weekEnd: sunday.toISOString().slice(0, 10),
     totalMinutes: goal.weeklyStudyMinutes,
+    scheduledMinutes,
     allocation: CATEGORY_KEYS.map(key => ({
       category: key,
       minutes: minutesByCategory[key],

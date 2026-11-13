@@ -34,7 +34,7 @@ async function getTodayLearning(userId) {
       date: todayStr, totalMinutes: 0, sessions: [],
       message: hasGoal
         ? plan.message
-        : 'Set your IELTS goal to receive a personalized study plan.',
+        : 'Đặt mục tiêu IELTS để nhận kế hoạch học riêng cho bạn.',
       goal: plan.goal,
     };
   }
@@ -46,7 +46,7 @@ async function getTodayLearning(userId) {
     return {
       hasGoal: true, hasPlan: true, isStudyDay: false,
       date: todayStr, totalMinutes: 0, sessions: [],
-      message: 'Today is not one of your scheduled study days.',
+      message: 'Hôm nay không phải ngày học trong lịch của bạn — nghỉ ngơi nhé!',
       goal: plan.goal,
     };
   }
@@ -60,7 +60,7 @@ async function getTodayLearning(userId) {
     return {
       hasGoal: true, hasPlan: true, isStudyDay: true,
       date: todaysSession.date, totalMinutes: 0, sessions: [],
-      message: 'No specific practice was allocated for today — try adjusting your weekly study time or session length.',
+      message: 'Hôm nay chưa được xếp bài nào — hãy tăng thời gian học mỗi tuần hoặc số phút mỗi buổi.',
       goal: plan.goal,
     };
   }
@@ -76,7 +76,7 @@ async function getTodayLearning(userId) {
     sessions: todaysSession.items.map(item => ({
       category: item.category,
       minutes: item.minutes,
-      action: item.action?.label || `Practice ${item.category}`,
+      action: item.action?.label || `Luyện ${item.category}`,
       reason: item.reason,
       recommendationType: item.recommendationType || null,
       practiceType: item.category,
