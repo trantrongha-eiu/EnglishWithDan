@@ -94,9 +94,19 @@ function courseQuery(codes, status, userIds) {
   };
 }
 
+// An attempt still 'pending' this long after it was made never got an AI
+// grade — the mock test's Speaking step saved with no transcript/recording,
+// or the server restarted mid-grade. It used to be left out of the queue
+// for good, so nobody ever graded it (and the mock run waited forever).
+const STUCK_PENDING_MS = 10 * 60 * 1000;
+
 function speakingQuery(status, userIds) {
   return {
-    source: { $ne: 'course' }, status: { $in: ['analyzed', 'error'] },
+    source: { $ne: 'course' },
+    $or: [
+      { status: { $in: ['analyzed', 'error'] } },
+      { status: 'pending', createdAt: { $lt: new Date(Date.now() - STUCK_PENDING_MS) } },
+    ],
     'aiFeedback.noGenuineAnswer': { $ne: true }, createdAt: { $gte: QUEUE_CUTOFF },
     ...reviewedFilter(status),
     ...(userIds ? { userId: { $in: userIds } } : {}),
@@ -150,7 +160,7 @@ function speakingRows(attempts) {
     title: a.question || a.topic || 'Speaking',
     context: a.topic === 'Full Mock Test' ? 'Luyện Speaking · Mock Test' : `Luyện Speaking · Part ${a.part}${a.topic ? ` · ${a.topic}` : ''}`,
     exerciseType: 'speaking', attempt: null,
-    aiBand: a.aiFeedback?.overallBand || null, score: null, aiUnavailable: a.status === 'error',
+    aiBand: a.aiFeedback?.overallBand || null, score: null, aiUnavailable: a.status !== 'analyzed',
     words: null, hasAudio: !!a.audioUrl,
     teacherBand: a.teacherReview?.band ?? null,
     reviewedAt: a.teacherReview?.reviewedAt || null, reviewerName: a.teacherReview?.reviewerName || '',

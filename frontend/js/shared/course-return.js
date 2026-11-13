@@ -17,7 +17,13 @@
   var url = null;
   try {
     var raw = new URLSearchParams(location.search).get('returnTo');
-    if (raw && /^\/(?![\/\\])/.test(raw)) url = raw;
+    // The prefix test alone let "/\t/evil.com" through — browsers drop tabs
+    // and newlines from a URL, leaving "//evil.com". Resolve it the way the
+    // browser will and keep it only if it stays on this site.
+    if (raw && /^\/(?![\/\\])/.test(raw) && !/[\u0000-\u001f\u007f\s\\]/.test(raw)) {
+      var u = new URL(raw, location.origin);
+      if (u.origin === location.origin) url = u.pathname + u.search + u.hash;
+    }
   } catch (e) { /* no URLSearchParams — no return link */ }
 
   window.CourseReturn = {

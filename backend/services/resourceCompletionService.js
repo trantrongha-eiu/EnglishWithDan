@@ -1204,7 +1204,9 @@ async function checkCompleted(studentId, internalItems, since = null) {
       // completion record) is keyed by lessonCode, not an ObjectId ref — the
       // WT1 course intentionally never refs content by _id (re-seeding
       // safety, see WT1Lesson.js). Resolve _id -> code first, then query.
-      const ids = [...idSet].filter((x) => x !== '*').map((x) => new mongoose.Types.ObjectId(x));
+      // Same validity filter as the `check` branch above — one malformed id
+      // used to throw here and fail the whole homework list.
+      const ids = [...idSet].filter((x) => x !== '*' && mongoose.isValidObjectId(x)).map((x) => new mongoose.Types.ObjectId(x));
       if (!ids.length) return;
       const lessons = await WT1Lesson.find({ _id: { $in: ids } }).select('_id code practiceLinks').lean();
       const codeToId = new Map(lessons.map((l) => [l.code, String(l._id)]));

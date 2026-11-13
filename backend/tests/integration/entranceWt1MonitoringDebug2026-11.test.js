@@ -145,3 +145,23 @@ describe('admin Monitoring history', () => {
     expect(obj.status).toBeLessThan(500);
   });
 });
+
+// ── Teacher review queue (admin /submission-reviews) ────────────────────
+describe('teacher review queue — Speaking stuck without an AI grade', () => {
+  const SpeakingAttempt = require('../../models/SpeakingAttempt');
+  test('a Speaking attempt still "pending" after 10 minutes (mock with no transcript, crashed grade) is listed; a fresh one is not', async () => {
+    const s = await createStudent();
+    const t = await createTeacher();
+    const stuck = await SpeakingAttempt.create({ userId: s._id, topic: 'Full Mock Test', part: 2, question: 'Describe a place', transcript: '', status: 'pending' });
+    await SpeakingAttempt.collection.updateOne({ _id: stuck._id }, { $set: { createdAt: new Date(Date.now() - 30 * 60 * 1000) } });
+    await SpeakingAttempt.create({ userId: s._id, topic: 'Hobbies', part: 1, question: 'Q?', transcript: 'x', status: 'pending' });
+
+    const list = await request(app).get('/api/admin/submission-reviews?kind=speaking').set(bearer(t));
+    expect(list.status).toBe(200);
+    const ids = list.body.rows.map((r) => String(r.id));
+    expect(ids).toEqual([String(stuck._id)]);
+    expect(list.body.rows[0].aiUnavailable).toBe(true);
+    const counts = await request(app).get('/api/admin/submission-reviews/counts').set(bearer(t));
+    expect(counts.body.counts.speaking).toBe(1);
+  });
+});
