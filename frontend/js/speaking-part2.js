@@ -1377,7 +1377,10 @@
         if (e.results[k].isFinal) fin += e.results[k][0].transcript + ' ';
         else interim += e.results[k][0].transcript;
       }
-      rec.text = fin;
+      // Grade on everything heard, not just isFinal results: iOS Safari often
+      // ends the session with the whole sentence still interim, which used
+      // to grade as "Chưa nghe thấy bạn nói" while the transcript was on screen.
+      rec.text = fin + interim;
       setText('sp2-sh-interim', (fin + interim).trim() || 'Đang nghe bạn nói…');
       clearTimeout(rec.silence);
       rec.silence = setTimeout(shStop, 1500);

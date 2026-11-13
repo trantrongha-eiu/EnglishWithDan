@@ -420,6 +420,7 @@
   let myAudioUrl = null;
   let myAudio = null;
   let finalText = '';
+  let interimText = ''; // iOS Safari often never marks the sentence final — graded too
   let silenceTimer = null;
   let hardTimer = null;
   let recSession = 0; // bumps per recording, so a late mic grant from an old one is dropped
@@ -431,6 +432,7 @@
     if (continuous) setContinuous(false);
     recording = true;
     finalText = '';
+    interimText = '';
     $('sh-interim').textContent = SR ? 'Đang nghe bạn nói…' : 'Đang ghi âm…';
     $('sh-score').className = 'sh-score';
     const recBtn = $('sh-rec');
@@ -459,6 +461,7 @@
           if (e.results[k].isFinal) finalText += e.results[k][0].transcript + ' ';
           else interim += e.results[k][0].transcript;
         }
+        interimText = interim;
         $('sh-interim').textContent = (finalText + interim).trim() || 'Đang nghe bạn nói…';
         // Stop ~1.5 s after the student goes quiet.
         clearTimeout(silenceTimer);
@@ -534,7 +537,7 @@
     if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
     mediaRecorder = null;
     if (mediaStream) { mediaStream.getTracks().forEach((t) => t.stop()); mediaStream = null; }
-    if (SR) gradeShadow(finalText.trim());
+    if (SR) gradeShadow((finalText + interimText).trim());
     else $('sh-interim').textContent = hadAudio ? 'Đã ghi âm — bấm "Giọng của tôi" để nghe lại và so với bản gốc.' : '';
   }
 
