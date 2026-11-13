@@ -399,6 +399,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       _setRetryCdSkin(false, false);
       _retryState = null;
       _practiceMode = false;
+      // Browser Back from a practice opened by a course lesson → that lesson.
+      if (window.CourseReturn?.go()) return;
       const listEl = document.getElementById('practice-passage-list');
       if (listEl) listEl.innerHTML = '';
       await loadTests(false);
@@ -1788,7 +1790,7 @@ function _enterPracticeScreen(passage, category, passageId, mode = 'practice', s
   window.setTimeBadge?.('retry-time-badge', 0);
 
   document.getElementById('retry-footer-btns').innerHTML = `
-    <button class="btn-ghost" onclick="confirmCloseRetry()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
+    <button class="btn-ghost" onclick="confirmCloseRetry()">${_rdExitLabel()}</button>
     <button class="btn-primary" onclick="submitRetry()"><i class="fas fa-check-circle"></i> Kiểm tra đáp án</button>`;
 
   document.getElementById('retry-passage-inner').innerHTML =
@@ -4069,6 +4071,11 @@ function confirmCloseRetry() {
   }
 }
 
+// Practice footer exit button: "Về khóa học" when opened from a course lesson.
+function _rdExitLabel() {
+  return window.CourseReturn ? window.CourseReturn.exitLabel() : '<i class="fas fa-arrow-left"></i> Chọn bài khác';
+}
+
 function closeRetry() {
   if (document.fullscreenElement) document.exitFullscreen();
   const fromPractice = _retryState?.isPractice || _practiceMode;
@@ -4093,6 +4100,8 @@ function closeRetry() {
   }
   _practiceMode = false;
   if (fromPractice) {
+    // Opened from a course lesson (?returnTo=) — go back there, not to the list.
+    if (window.CourseReturn?.go()) return;
     // Clear list so setReadingMode reloads it fresh
     const listEl = document.getElementById('practice-passage-list');
     if (listEl) listEl.innerHTML = '';
@@ -4373,8 +4382,8 @@ async function _doSubmitRetry() {
   }
 
   document.getElementById('retry-footer-btns').innerHTML = fromPractice
-    ? `<button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
-       <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại bài này</button>`
+    ? `<button class="${window.CourseReturn?.url() ? 'btn-primary' : 'btn-ghost'}" onclick="closeRetry()">${_rdExitLabel()}</button>
+       <button class="${window.CourseReturn?.url() ? 'btn-ghost' : 'btn-primary'}" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại bài này</button>`
     : `<button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Quay lại review</button>
        <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại từ đầu</button>`;
   _setRetryCdSkin(true, false); // review look for questions + footer

@@ -807,7 +807,7 @@ function _enterLTPracticeScreen(section, partNum, sectionId, mode = 'practice', 
     // Title + footer
     document.getElementById('lt-practice-title').innerHTML = `<i class="fas fa-headphones"></i> Luyện: ${escHtml(section.title || `Section ${partNum}`)}`;
     document.getElementById('lt-practice-footer-btns').innerHTML = `
-            <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
+            <button class="btn-ghost" onclick="closeLTPractice()">${_ltExitLabel()}</button>
             <button class="btn-primary" onclick="submitLTPractice()"><i class="fas fa-check"></i> Kiểm tra đáp án</button>`;
 
     // Stopwatch + progress
@@ -1552,8 +1552,8 @@ async function _doSubmitLTPractice() {
 
     // Update footer
     document.getElementById('lt-practice-footer-btns').innerHTML = `
-            <button class="btn-ghost" onclick="closeLTPractice()"><i class="fas fa-arrow-left"></i> Chọn bài khác</button>
-            <button class="btn-primary" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
+            <button class="${window.CourseReturn?.url() ? 'btn-primary' : 'btn-ghost'}" onclick="closeLTPractice()">${_ltExitLabel()}</button>
+            <button class="${window.CourseReturn?.url() ? 'btn-ghost' : 'btn-primary'}" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
     _ltSetCdSkin(true, false); // review look for questions + footer
     window.setTimeBadge?.('lt-practice-time-badge', elapsed);
 
@@ -1608,6 +1608,11 @@ function _ltSyncTranscript(tb, section) {
     });
 }
 
+// Footer exit button: "Về khóa học" when opened from a course lesson.
+function _ltExitLabel() {
+    return window.CourseReturn ? window.CourseReturn.exitLabel() : '<i class="fas fa-arrow-left"></i> Chọn bài khác';
+}
+
 /* ── Close practice → back to section list ───────────────────────────── */
 function closeLTPractice() {
     // Leaving without submitting must disarm proctoring too — only the
@@ -1640,6 +1645,9 @@ function closeLTPractice() {
         _ltPracticeBackup  = null;
     }
     _ltOrigSection = _ltCleanSection = null;
+
+    // Opened from a course lesson (?returnTo=) — go back there, not to the list.
+    if (window.CourseReturn?.go()) return;
 
     // Clear list so it reloads fresh; replaceState keeps correct URL without adding history entry
     // Back to the list tab the student came from ('all' or one section).
@@ -2023,6 +2031,8 @@ window.handleLtPracticePopstate = function(tab, part) {
         _ltPracticeBackup   = null;
     }
     _ltOrigSection = _ltCleanSection = null;
+    // Browser Back from a practice opened by a course lesson → that lesson.
+    if (window.CourseReturn?.go()) return true;
     const _sl = document.getElementById('lt-section-list');
     if (_sl) _sl.innerHTML = '';
     return true;

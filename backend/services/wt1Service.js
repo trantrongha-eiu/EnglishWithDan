@@ -461,17 +461,30 @@ async function _recompute(userId, lessonCode) {
   );
 }
 
-async function recordSubmission(userId, exercise, payload) {
-  const last = await WT1Submission.findOne({ userId, exerciseCode: exercise.code })
-    .sort({ attempt: -1 }).select('attempt').lean();
-  const attempt = (last?.attempt || 0) + 1;
+// Creates the next attempt row for this student + exercise. `attempt` is
+// "highest so far + 1" under a unique index, so two submissions racing
+// (two tabs, a resend on a slow network) used to make the second one fail
+// with E11000 — a 500, and that finished work was never saved. Re-read the
+// number and retry instead.
+async function createNextAttempt(userId, exercise, fields) {
+  for (let tries = 0; ; tries++) {
+    const last = await WT1Submission.findOne({ userId, exerciseCode: exercise.code })
+      .sort({ attempt: -1 }).select('attempt').lean();
+    try {
+      return await WT1Submission.create({
+        userId, exerciseCode: exercise.code, lessonCode: exercise.lessonCode,
+        attempt: (last?.attempt || 0) + 1, ...fields,
+      });
+    } catch (err) {
+      if (err && err.code === 11000 && tries < 4) continue;
+      throw err;
+    }
+  }
+}
 
-  const doc = {
-    userId, exerciseCode: exercise.code, lessonCode: exercise.lessonCode, attempt,
-    status: 'graded',
-    ...payload, // { answers, score, maxScore } | { responses, score } | { responses, aiFeedback }
-  };
-  const saved = await WT1Submission.create(doc);
+async function recordSubmission(userId, exercise, payload) {
+  // payload: { answers, score, maxScore } | { responses, score } | { responses, aiFeedback }
+  const saved = await createNextAttempt(userId, exercise, { status: 'graded', ...payload });
   await _recompute(userId, exercise.lessonCode);
   // Scored exercises: >=70% +1 🔥, >=90% +2 🔥. Writing (AI feedback, no
   // score) earns a flat 1 🔥. Once per exercise per day.
@@ -515,13 +528,8 @@ async function recordSubmission(userId, exercise, payload) {
 // unchanged for the finished-exercise summary screen) once `itemPayload`
 // completes the set, or null while items are still outstanding.
 async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, totalItems) {
-  async function startFreshDraft() {
-    const last = await WT1Submission.findOne({ userId, exerciseCode: exercise.code })
-      .sort({ attempt: -1 }).select('attempt').lean();
-    return WT1Submission.create({
-      userId, exerciseCode: exercise.code, lessonCode: exercise.lessonCode,
-      attempt: (last?.attempt || 0) + 1, status: 'draft', itemResults: [itemPayload],
-    });
+  function startFreshDraft() {
+    return createNextAttempt(userId, exercise, { status: 'draft', itemResults: [itemPayload] });
   }
 
   let doc;

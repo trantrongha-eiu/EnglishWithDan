@@ -63,10 +63,17 @@
     var exam = links.filter(function (p) { return p.kind !== 'grammar' && p.url; });
     var gram = links.filter(function (p) { return p.kind === 'grammar' && p.url; });
     var html = '';
+    // reading.html / listening.html show "Về khóa học" (js/shared/course-return.js)
+    // and land back on this lesson when the student closes the practice.
+    var back = '/mindset-' + LEVEL + '.html' + (l.code ? '?lesson=' + encodeURIComponent(l.code) : '');
+    function withReturn(u) {
+      if (!/^\/(reading|listening)\.html\?/.test(u)) return u;
+      return u + '&returnTo=' + encodeURIComponent(back);
+    }
     if (exam.length) {
       html += '<div class="ms-tasks">' + exam.map(function (p) {
         var k = KIND[p.kind] || KIND.link;
-        return '<a class="ms-task ms-' + esc(p.kind) + '" href="' + esc(p.url) + '">' +
+        return '<a class="ms-task ms-' + esc(p.kind) + '" href="' + esc(withReturn(p.url)) + '">' +
           '<span class="ms-task-ic"><i class="fas ' + k.icon + '"></i></span>' +
           '<span class="ms-task-body"><span class="ms-task-k">' + k.label + ' · giao diện thi thật</span>' +
           '<b>' + esc(p.title) + '</b>' + (p.note ? '<span class="ms-task-n">' + esc(p.note) + '</span>' : '') + '</span>' +

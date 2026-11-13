@@ -170,6 +170,15 @@ describe('POST /check (objective grading)', () => {
     expect(await WT1Submission.countDocuments({ userId: u._id, exerciseCode: code })).toBe(2);
   });
 
+  test('simultaneous submissions are all saved (no attempt-number collision)', async () => {
+    const u = await createPremiumStudent();
+    const results = await Promise.all([1, 2, 3].map(() =>
+      request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MCQ1', answers: { q1: 'B' } })));
+    results.forEach((r) => expect(r.status).toBe(200));
+    const rows = await WT1Submission.find({ userId: u._id, exerciseCode: 'MCQ1' }).select('attempt').lean();
+    expect(rows.map((r) => r.attempt).sort()).toEqual([1, 2, 3]);
+  });
+
   test('a writing type is rejected by /check', async () => {
     const u = await createPremiumStudent();
     const res = await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'PW1', answers: {} });
