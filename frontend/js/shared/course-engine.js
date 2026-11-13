@@ -332,12 +332,23 @@
       } catch (e) {
         var errCode = e && e.body && e.body.code;
         if (errCode === 'PLAN_REQUIRED') { renderPaywall(); return; }
-        if (errCode === 'TEST_CODE_REQUIRED') { openTestCodeModal(code); return; }
+        if (errCode === 'TEST_CODE_REQUIRED') {
+          // Put the course list back behind the code box — closing the box
+          // used to leave the page on this lesson's loading spinner forever.
+          showOverviewBehindModal();
+          openTestCodeModal(code);
+          return;
+        }
         if (errCode === 'LESSON_LOCKED') { goOverview(); openTestCodeModal(code, 'locked'); return; }
         toast('Lỗi tải buổi học', 'error'); goOverview();
       }
     }
     function goOverview() { state.view = 'overview'; history.pushState({ view: 'overview' }, '', cfg.pagePath); loadOverview(); }
+    function showOverviewBehindModal() {
+      state.view = 'overview';
+      history.replaceState({ view: 'overview' }, '', cfg.pagePath);
+      if (state.overview) render(); else loadOverview();
+    }
 
 
     function renderLesson() {
@@ -906,8 +917,13 @@
       }
       if (ex.timerMinutes) {
         state.timeLeft = ex.timerMinutes * 60;
+        // Counted against a fixed end time, not one tick per second: a
+        // background tab throttles setInterval, so the old decrement ran slow
+        // (a student who switched tabs got extra minutes).
+        var endAt = Date.now() + state.timeLeft * 1000;
         state.timer = setInterval(function () {
-          state.timeLeft--; var t = document.getElementById('t1-timer');
+          state.timeLeft = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
+          var t = document.getElementById('t1-timer');
           if (t) { t.innerHTML = timerHtml(state.timeLeft); t.classList.toggle('low', state.timeLeft <= 60); }
           if (state.timeLeft <= 0) { stopTimer(); if (!state.answered) submit(); }
         }, 1000);
@@ -1003,7 +1019,9 @@
       } catch (e) {
         state.answered = false; btn.disabled = false;
         fb.classList.add('hidden');
-        toast('Lỗi chấm bài', 'error');
+        // The server's own message (rate limit, lesson locked…) — a bare
+        // "Lỗi chấm bài" told the student nothing.
+        toast((e && e.message) || 'Lỗi chấm bài', 'error');
       }
     }
 
