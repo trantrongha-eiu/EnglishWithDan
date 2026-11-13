@@ -2,6 +2,7 @@
 // Extracted from backend/routes/admin.js — Speaking Questions, Speaking Materials (PDF), and Speaking History sections.
 
 const express    = require('express');
+const mongoose   = require('mongoose');
 const auth       = require('../../middleware/auth');
 const { teacherOnly, adminOnly, uploadPdf, uploadPdfBuffer } = require('./_shared');
 
@@ -43,11 +44,28 @@ router.post('/speaking/questions', auth, teacherOnly, async (req, res) => {
 });
 
 // PUT /api/admin/speaking/questions/:id
+// The cached AI sample answer + vocab hints (SpeakingQuestion.sampleAnswer /
+// hints, written the first time any student opens them) belong to the
+// wording they were generated for. Rewording the question, its cue card or
+// its part left every student seeing the OLD question's sample answer
+// forever — they're now cleared so the next view regenerates them. Edit
+// payloads can't write those caches directly, and run the schema
+// validators (a bad part/group used to be saved as-is).
+const QUESTION_EDIT_FIELDS = ['topic', 'part', 'group', 'question', 'cueCard', 'isActive'];
 router.put('/speaking/questions/:id', auth, teacherOnly, async (req, res) => {
   try {
-    const q = await SpeakingQuestion.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
+    const q = await SpeakingQuestion.findById(req.params.id);
     if (!q) return res.status(404).json({ success: false, message: 'Không tìm thấy' });
-    res.json({ success: true, question: q });
+    const body = req.body || {};
+    for (const k of QUESTION_EDIT_FIELDS) if (k in body) q.set(k, body[k]);
+    const reworded = ['question', 'cueCard', 'part'].some((k) => q.isModified(k));
+    if (reworded && (q.sampleAnswer || (q.hints && q.hints.vocab && q.hints.vocab.length))) {
+      q.sampleAnswer = '';
+      q.set('hints.vocab', []);
+    }
+    await q.save();
+    res.json({ success: true, question: q, ...(reworded ? { cacheCleared: true } : {}) });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
   }
@@ -225,10 +243,16 @@ router.delete('/speaking/materials/:id/permanent', auth, teacherOnly, async (req
 // GET /api/admin/speaking/history  — tất cả lượt luyện của học sinh
 router.get('/speaking/history', auth, teacherOnly, async (req, res) => {
   try {
-    const { page = 1, limit = 40, userId, part, search } = req.query;
+    const { userId, part, search } = req.query;
+    // Clamped: limit=0 / page=abc used to 500 (NaN skip) or report pages: Infinity.
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(200, Math.max(1, parseInt(req.query.limit, 10) || 40));
     const filter = {};
-    if (userId) filter.userId = userId;
-    if (part) filter.part = Number(part);
+    if (userId) {
+      if (!mongoose.isValidObjectId(userId)) return res.json({ success: true, attempts: [], total: 0, page, pages: 0 });
+      filter.userId = userId;
+    }
+    if ([1, 2, 3].includes(Number(part))) filter.part = Number(part);
     // search used to only be applied client-side against whatever single
     // 40-row page happened to already be loaded (admin-src/src/pages/
     // Speaking.jsx) — a student whose matching attempts sat on a later
@@ -244,16 +268,16 @@ router.get('/speaking/history', auth, teacherOnly, async (req, res) => {
         { topic: regex },
       ];
     }
-    const skip = (Number(page) - 1) * Number(limit);
+    const skip = (page - 1) * limit;
     const [attempts, total] = await Promise.all([
       SpeakingAttempt.find(filter)
         .populate('userId', 'username email plan')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(Number(limit)),
+        .limit(limit),
       SpeakingAttempt.countDocuments(filter)
     ]);
-    res.json({ success: true, attempts, total, page: Number(page), pages: Math.ceil(total / Number(limit)) });
+    res.json({ success: true, attempts, total, page, pages: Math.ceil(total / limit) });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -266,6 +290,7 @@ router.get('/speaking/history', auth, teacherOnly, async (req, res) => {
 // frontend's existing AttemptModal needs no changes to render it.
 router.get('/speaking/attempts/:id', auth, teacherOnly, async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) return res.status(404).json({ success: false, message: 'Không tìm thấy bài làm' });
     const attempt = await SpeakingAttempt.findById(req.params.id).populate('userId', 'username email plan');
     if (!attempt) return res.status(404).json({ success: false, message: 'Không tìm thấy bài làm' });
     res.json({ success: true, attempt });

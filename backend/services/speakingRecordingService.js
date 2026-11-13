@@ -76,6 +76,29 @@ async function remove(audioUrl) {
   }
 }
 
+// Download a saved recording back as a multer-like { buffer, mimetype } so
+// "Thử chấm lại" can grade from what the student really said — an answer
+// recorded on a browser with no speech-to-text has no transcript at all,
+// only this file. null when there is none / it can't be read. Never throws.
+const EXT_TYPE = { webm: 'audio/webm', ogg: 'audio/ogg', m4a: 'audio/mp4', mp3: 'audio/mpeg', wav: 'audio/wav' };
+const MAX_FETCH_BYTES = 12 * 1024 * 1024; // same cap as the /analyze upload
+async function fetchForGrading(audioUrl) {
+  if (!audioUrl || !/^https?:\/\//i.test(audioUrl)) return null;
+  try {
+    const res = await fetch(audioUrl, { signal: AbortSignal.timeout(20000) });
+    if (!res.ok) return null;
+    const buffer = Buffer.from(await res.arrayBuffer());
+    if (!buffer.length || buffer.length > MAX_FETCH_BYTES) return null;
+    const ext = (String(audioUrl).split('?')[0].match(/\.([a-z0-9]+)$/i) || [])[1] || '';
+    const headerType = String(res.headers.get('content-type') || '').split(';')[0].toLowerCase();
+    const mimetype = EXT_TYPE[ext.toLowerCase()] || (headerType.startsWith('audio/') ? headerType : 'audio/webm');
+    return { buffer, mimetype };
+  } catch (e) {
+    logger.error('speaking', 'recording fetch failed', { errorMessage: e.message });
+    return null;
+  }
+}
+
 // Daily sweep: delete every recording older than RETENTION_DAYS (+1 day of
 // slack so a file is never removed before its attempt expires).
 async function purgeOld() {
@@ -85,4 +108,4 @@ async function purgeOld() {
   return { deleted };
 }
 
-module.exports = { upload, save, remove, purgeOld, FOLDER, RETENTION_DAYS };
+module.exports = { upload, save, remove, fetchForGrading, purgeOld, FOLDER, RETENTION_DAYS };

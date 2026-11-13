@@ -183,7 +183,23 @@ async function getProgress(userId) {
 // FIXED keys are only taken from a page that sends the current content
 // version (body.v): a tab opened before a content change would otherwise
 // post its old keys onto the new sentences.
+// Two saves of the same story can overlap (the page's debounced sync, a
+// second tab, the pagehide flush): the first one ever raced to insert the
+// same {userId, storyId} (E11000), later ones to save over the same `ok`
+// array version (VersionError) — both a 500. The merge is idempotent, so a
+// lost race just re-reads and merges again.
 async function saveProgress(userId, storyId, body) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await _saveProgressOnce(userId, storyId, body);
+    } catch (err) {
+      const raced = err && (err.name === 'VersionError' || err.code === 11000);
+      if (!raced || attempt >= 2) throw err;
+    }
+  }
+}
+
+async function _saveProgressOnce(userId, storyId, body) {
   if (!byId.has(storyId)) { const e = new Error('Không tìm thấy câu chuyện'); e.status = 404; throw e; }
   body = body || {};
   const fresh = Number(body.v) === VERSION;

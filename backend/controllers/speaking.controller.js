@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const speakingService = require('../services/speakingService');
 const speakingGradeQueue = require('../services/speakingGradeQueueService');
 const speakingRecording = require('../services/speakingRecordingService');
@@ -24,7 +25,8 @@ exports.getRandom = catchAsync(async (req, res) => {
 exports.getQuestions = catchAsync(async (req, res) => {
   const { topic, part, group, questionId } = req.query;
   if (questionId) {
-    const question = await speakingService.getQuestionById(questionId);
+    // A malformed id is just "not found", not a CastError 500.
+    const question = mongoose.isValidObjectId(questionId) ? await speakingService.getQuestionById(questionId) : null;
     if (!question) return res.status(404).json({ success: false, message: 'Không tìm thấy câu hỏi' });
     return res.json({ success: true, questions: [question], question });
   }
@@ -63,6 +65,12 @@ exports.analyze = catchAsync(async (req, res) => {
   }
 
   const partNum = part ? Number(part) : 1;
+  // Anything else failed SpeakingAttempt's enum silently: no pending row, no
+  // saved attempt — the student got feedback but nothing reached History
+  // or homework.
+  if (![1, 2, 3].includes(partNum)) {
+    return res.status(400).json({ success: false, message: 'Part không hợp lệ' });
+  }
   const questionText = question || 'General speaking practice';
 
   // Optional: the student's real recording (multipart 'audio' field) — lets
@@ -186,12 +194,12 @@ exports.analyze = catchAsync(async (req, res) => {
 // teacher enters the band by hand from the admin mock monitor.
 exports.mockSubmit = catchAsync(async (req, res) => {
   const { transcript, question, questionId, topic, part, duration } = req.body || {};
-  const partNum = part ? Number(part) : 2;
+  const partNum = [1, 2, 3].includes(Number(part)) ? Number(part) : 2;
   const questionText = question || 'IELTS Speaking mock';
   const cleanTranscript = typeof transcript === 'string' ? transcript.trim() : '';
 
   const attemptId = await speakingService.createPendingAttempt(req.user._id, {
-    questionId, topic, part: partNum, questionText,
+    questionId: mongoose.isValidObjectId(questionId) ? questionId : null, topic, part: partNum, questionText,
     transcript: cleanTranscript, duration
   });
   // Optional recording (multipart 'audio') — saved to History like /analyze's.
@@ -199,16 +207,32 @@ exports.mockSubmit = catchAsync(async (req, res) => {
 
   // Best-effort async grade — don't await, don't let a failure touch the
   // response. mockTestService picks the band up on the next history read.
-  if (attemptId && cleanTranscript) {
-    speakingService.gradeSpeaking(questionText, cleanTranscript, partNum, null, Number(duration) || 0)
-      .then(fb => speakingService.finalizeAttempt(attemptId, fb, req.user))
+  // The recording goes to the AI too (as in /analyze): Pronunciation is then
+  // really heard, and a browser with no speech-to-text (iOS / Firefox /
+  // Cốc Cốc) still gets an AI band instead of always waiting for the teacher.
+  // "No genuine answer" is left as 'error' for the teacher, never saved as
+  // an analysed Band 0.
+  const audio = req.file ? speakingService.normalizeAudioForGemini(req.file.buffer, req.file.mimetype) : null;
+  const willGrade = !!(attemptId && (cleanTranscript || audio));
+  if (willGrade) {
+    const dur = Number(duration) || 0;
+    speakingService.gradeSpeaking(questionText, cleanTranscript, partNum, audio, dur)
+      .catch((err) => {
+        if (!audio || !cleanTranscript || err.isOverloaded) throw err;
+        return speakingService.gradeSpeaking(questionText, cleanTranscript, partNum, null, dur);
+      })
+      .then((fb) => {
+        if (fb.noGenuineAnswer) return speakingService.markAttemptError(attemptId);
+        const resolved = cleanTranscript || (typeof fb.transcript === 'string' ? fb.transcript.trim() : '');
+        return speakingService.finalizeAttempt(attemptId, fb, req.user, resolved);
+      })
       .catch(err => {
         console.error('[Speaking] mock-submit background grade failed:', err.message);
         return speakingService.markAttemptError(attemptId);
       });
   }
 
-  res.json({ success: true, attemptId, audioUrl, graded: !!(attemptId && cleanTranscript) });
+  res.json({ success: true, attemptId, audioUrl, graded: willGrade });
 });
 
 // ── POST /api/speaking/sample-answer ─────────────────────────
@@ -308,6 +332,12 @@ exports.retry = catchAsync(async (req, res) => {
     }
     if (result.status === 'already_analyzed') {
       return res.status(409).json({ success: false, message: 'Bài này đã được chấm điểm' });
+    }
+    if (result.status === 'no_content') {
+      return res.status(422).json({ success: false, message: 'Lượt này không có lời thoại hay bản ghi âm nào để chấm — hãy luyện lại câu này nhé.' });
+    }
+    if (result.status === 'no_answer') {
+      return res.status(422).json({ success: false, message: 'AI không nghe thấy câu trả lời trong lượt này (có thể micro không thu được tiếng) — hãy kiểm tra micro và luyện lại câu này nhé.' });
     }
     res.json({ success: true, feedback: result.feedback, attemptId: result.attemptId });
   } catch (aiErr) {

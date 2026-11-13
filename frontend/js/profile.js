@@ -733,20 +733,23 @@ async function uploadAvatar(input) {
   input.value = '';
 }
 
-// ── Activity heatmap (GitHub-style, last ~52 weeks) ─────────
+// ── Activity heatmap (GitHub-style, last 26 weeks) ──────────
+// Practice history is kept 90 days (TTL) and vocab progress a bit longer,
+// so a 52-week grid was ~3/4 empty — half a year is the useful window.
+const HEAT_WEEKS = 26;
 async function loadActivityHeatmap() {
   try {
-    const res  = await fetch(API + '/api/user/activity-heatmap?days=371', { headers: headers() });
+    const res  = await fetch(API + '/api/user/activity-heatmap?days=' + (HEAT_WEEKS * 7 + 7), { headers: headers() });
     const data = await window.ApiClient.handleResponse(res);
     if (!data.success) return;
 
     const counts = {};
     data.activity.forEach(d => { counts[d.date] = d.count; });
 
-    // Full weeks from the Sunday on/before 364 days ago, through today
+    // Full weeks from the Sunday on/before HEAT_WEEKS weeks ago, through today
     const today = new Date(); today.setHours(0,0,0,0);
     const start = new Date(today);
-    start.setDate(start.getDate() - 364);
+    start.setDate(start.getDate() - (HEAT_WEEKS * 7 - 1));
     start.setDate(start.getDate() - start.getDay());
 
     // NOT toISOString() — that converts to UTC, which silently shifts

@@ -782,7 +782,9 @@ describe('speakingService.retryGrading', () => {
     });
     geminiService.checkSpeaking.mockResolvedValue({
       overallBand: 0, fluency: 6, vocabulary: 6, grammar: 6, pronunciation: 6,
-      overallFeedback: 'retried ok', strengths: [], mistakes: [], improvements: [],
+      // A real grade has content — all-empty lists mean "no genuine answer",
+      // which retryGrading leaves as an error (see the no_answer test).
+      overallFeedback: 'retried ok', strengths: ['Clear structure'], mistakes: [], improvements: [],
     });
 
     const result = await speakingService.retryGrading(attempt._id, student);

@@ -789,14 +789,42 @@ async function discardPendingAttempt(attemptId) {
 // successful grade isn't a "retry", it's a silent re-grade a student never
 // asked for. AI errors propagate the same way analyze()'s do, so the
 // controller can apply the same isOverloaded -> 503 handling.
+//
+// The saved recording (audioUrl, R2) is graded too when there is one: an
+// answer recorded on a browser with no speech-to-text (iOS, Cốc Cốc,
+// Firefox…) has an EMPTY stored transcript, and re-grading that alone came
+// back "no genuine answer" — which was then saved as a real Band 0.0.
+// Nothing to grade (no transcript, no recording) → 'no_content'; the AI
+// still hearing no answer → 'no_answer' (left as 'error', never a fake 0).
 async function retryGrading(attemptId, user) {
+  if (!mongoose.isValidObjectId(attemptId)) return { status: 'not_found' };
   const attempt = await SpeakingAttempt.findOne({ _id: attemptId, userId: user._id });
   if (!attempt) return { status: 'not_found' };
   if (attempt.status === 'analyzed') return { status: 'already_analyzed' };
 
+  const stored = String(attempt.transcript || '').trim();
+  const file = attempt.audioUrl ? await require('./speakingRecordingService').fetchForGrading(attempt.audioUrl) : null;
+  const audio = file ? normalizeAudioForGemini(file.buffer, file.mimetype) : null;
+  if (!audio && _candidateWordCount(stored) === 0) {
+    await markAttemptError(attempt._id);
+    return { status: 'no_content' };
+  }
+
   try {
-    const feedback = await gradeSpeaking(attempt.question, attempt.transcript, attempt.part, null, attempt.duration);
-    await finalizeAttempt(attempt._id, feedback, user);
+    let feedback;
+    try {
+      feedback = await gradeSpeaking(attempt.question, stored, attempt.part, audio, attempt.duration);
+    } catch (err) {
+      // Same fallback as the live route: the audio part tripped grading.
+      if (!audio || !stored || err.isOverloaded) throw err;
+      feedback = await gradeSpeaking(attempt.question, stored, attempt.part, null, attempt.duration);
+    }
+    if (feedback.noGenuineAnswer) {
+      await markAttemptError(attempt._id);
+      return { status: 'no_answer' };
+    }
+    const resolved = stored || (typeof feedback.transcript === 'string' ? feedback.transcript.trim() : '');
+    await finalizeAttempt(attempt._id, feedback, user, resolved);
     return { status: 'ok', feedback, attemptId: attempt._id };
   } catch (aiErr) {
     await markAttemptError(attempt._id);
