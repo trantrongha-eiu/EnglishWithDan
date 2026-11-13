@@ -59,8 +59,13 @@ async function getPeerProfile(viewerId, targetId) {
   };
 }
 
+const MAX_PEER_BODY = 4000;   // same cap as an inbox reply (userMessageService)
+const MAX_REPORT_REASON = 1000;
+
 async function sendPeerMessage(fromId, fromName, toId, body) {
-  if (!body || !body.trim()) return { status: 'empty' };
+  body = typeof body === 'string' ? body : '';
+  if (!body.trim()) return { status: 'empty' };
+  if (body.trim().length > MAX_PEER_BODY) return { status: 'too_long', max: MAX_PEER_BODY };
   if (!mongoose.isValidObjectId(toId)) return { status: 'not_found' };
   if (String(fromId) === String(toId)) return { status: 'self' };
 
@@ -193,12 +198,14 @@ async function blockUser(blockerId, blockedId) {
 }
 
 async function unblockUser(blockerId, blockedId) {
+  if (!mongoose.isValidObjectId(blockedId)) return { status: 'ok' }; // nothing to undo (was a CastError 500)
   await Block.deleteOne({ blockerId, blockedId });
   return { status: 'ok' };
 }
 
 async function reportUser(reporterId, reporterName, reportedId, reason, messageId) {
-  if (!reason || !reason.trim()) return { status: 'empty' };
+  if (typeof reason !== 'string' || !reason.trim()) return { status: 'empty' };
+  reason = reason.trim().slice(0, MAX_REPORT_REASON);
   if (!mongoose.isValidObjectId(reportedId)) return { status: 'not_found' };
   const reported = await User.findById(reportedId).select('firstName lastName username').lean();
   if (!reported) return { status: 'not_found' };

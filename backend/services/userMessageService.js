@@ -1,9 +1,16 @@
 'use strict';
 
 // Extracted from the inbox routes in routes/user.js, verbatim logic.
+const mongoose = require('mongoose');
 const Message = require('../models/Message');
 const shopService = require('./shopService');
 const User = require('../models/User');
+
+// A student-written reply / chat line is capped: the Message body had no
+// limit, so one request could drop a multi-megabyte "reply" into a
+// teacher's inbox (and every list that previews it).
+const MAX_STUDENT_BODY = 4000;
+const validId = (id) => mongoose.isValidObjectId(id);
 
 async function getUnreadCount(uid) {
   // Feeds the "Hộp thư" nav badge, so it needs to reflect every kind of
@@ -55,51 +62,70 @@ async function listMessages(uid, page, limit) {
   return { messages: result, total };
 }
 
+// Malformed ids are "not found" (they used to throw a CastError → 500
+// "Lỗi server"). Writes are single atomic updates: two tabs opening the
+// same broadcast no longer race a read-modify-save of readBy.
 async function markRead(id, uid) {
-  const msg = await Message.findById(id);
+  if (!validId(id)) return { status: 'not_found' };
+  const msg = await Message.findById(id).select('isBroadcast toId').lean();
   if (!msg) return { status: 'not_found' };
 
   if (msg.isBroadcast) {
-    if (!msg.readBy.some(rid => rid.toString() === uid.toString())) {
-      msg.readBy.push(uid);
-      await msg.save();
-    }
+    await Message.updateOne({ _id: id }, { $addToSet: { readBy: uid } });
   } else {
-    if (msg.toId.toString() !== uid.toString()) return { status: 'forbidden' };
-    msg.isRead = true;
-    await msg.save();
+    if (!msg.toId || msg.toId.toString() !== uid.toString()) return { status: 'forbidden' };
+    await Message.updateOne({ _id: id }, { $set: { isRead: true } });
   }
   return { status: 'ok' };
 }
 
 async function deleteMessage(id, uid) {
-  const msg = await Message.findById(id);
+  if (!validId(id)) return { status: 'not_found' };
+  const msg = await Message.findById(id).select('isBroadcast toId').lean();
   if (!msg) return { status: 'not_found' };
-  if (!msg.isBroadcast && msg.toId.toString() !== uid.toString()) return { status: 'forbidden' };
-  if (!msg.deletedBy.some(did => did.toString() === uid.toString())) {
-    msg.deletedBy.push(uid);
-    await msg.save();
-  }
+  if (!msg.isBroadcast && (!msg.toId || msg.toId.toString() !== uid.toString())) return { status: 'forbidden' };
+  await Message.updateOne({ _id: id }, { $addToSet: { deletedBy: uid } });
   return { status: 'ok' };
 }
 
 // Student replies to a message they received — routes back to whoever sent
 // the original (works for both a personal message and a broadcast, since
 // broadcasts still carry a real fromId for the teacher/admin who sent it).
+//
+// A message from ANOTHER STUDENT (a Kho đồ gift, a 🎂 cake / ⚔️ duel
+// notice — shopService/duelService) is answered in the peer chat instead
+// (isPeer, same block check as peerService.sendPeerMessage): a plain reply
+// used to land in that student's teacher inbox as a "personal" message,
+// which also went straight past a block between the two.
 async function replyToMessage(uid, uname, messageId, body) {
-  if (!body?.trim()) return { status: 'empty' };
+  const text = typeof body === 'string' ? body.trim() : '';
+  if (!text) return { status: 'empty' };
+  if (text.length > MAX_STUDENT_BODY) return { status: 'too_long', max: MAX_STUDENT_BODY };
+  if (!validId(messageId)) return { status: 'not_found' };
   const original = await Message.findById(messageId);
   if (!original) return { status: 'not_found' };
 
   const isRecipient = original.isBroadcast || (original.toId && original.toId.toString() === uid.toString());
   if (!isRecipient) return { status: 'forbidden' };
+  body = text;
+
+  if (!original.isBroadcast) {
+    const sender = await User.findById(original.fromId).select('role').lean();
+    if (sender && sender.role === 'student' && String(sender._id) !== String(uid)) {
+      // Required lazily — peerService pulls in userService (stats).
+      const peer = require('./peerService');
+      if (await peer.isBlockedEitherWay(uid, sender._id)) return { status: 'blocked' };
+      const chat = await Message.create({ fromId: uid, fromName: uname, toId: sender._id, body, isPeer: true });
+      return { status: 'ok', message: chat, peer: true };
+    }
+  }
 
   const reply = await Message.create({
     fromId:   uid,
     fromName: uname,
     toId:     original.fromId,
     subject:  original.subject ? `Re: ${original.subject}` : 'Re: (không tiêu đề)',
-    body:     body.trim(),
+    body,
     parentId: original._id,
   });
   return { status: 'ok', message: reply };
@@ -112,6 +138,7 @@ async function replyToMessage(uid, uname, messageId, body) {
 // broadcast gift can be claimed once by every recipient, and a personal gift
 // can't be double-claimed by re-opening the message or retrying the request.
 async function claimGift(id, uid) {
+  if (!validId(id)) return { status: 'not_found' };
   const msg = await Message.findById(id).lean();
   if (!msg) return { status: 'not_found' };
 
@@ -182,4 +209,4 @@ async function sendFeedbackToAdmins(student, fromName, { type, message, pageUrl 
   return { status: 'ok' };
 }
 
-module.exports = { getUnreadCount, countMustRead, listMustRead, listMessages, markRead, deleteMessage, replyToMessage, claimGift, sendFeedbackToAdmins };
+module.exports = { MAX_STUDENT_BODY, getUnreadCount, countMustRead, listMustRead, listMessages, markRead, deleteMessage, replyToMessage, claimGift, sendFeedbackToAdmins };

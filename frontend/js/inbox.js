@@ -47,7 +47,12 @@ async function load() {
     updateBadge();
     // inbox.html?msg=<id> — nav.js's "Bạn có tin nhắn mới" popup links here;
     // opening the message marks it read, which is what stops that popup.
+    // An older must-read message can sit past the first page — keep paging
+    // (a few pages at most) until it's found, else the popup never clears.
     const wanted = new URLSearchParams(location.search).get('msg');
+    for (let i = 0; wanted && i < 5 && !messages.some(m => m._id === wanted) && messages.length < totalMessages; i++) {
+      await loadMoreMessages();
+    }
     if (wanted && messages.some(m => m._id === wanted)) selectMsg(wanted);
   } catch (e) {
     document.getElementById('msgList').innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>${esc(e.message)}</p></div>`;
@@ -132,15 +137,21 @@ async function selectMsg(id) {
   if (curEl) curEl.classList.add('selected');
 
   // Mark read
+  // Only shown as read once the server agreed — a failed request used to
+  // look read here while the "Bạn có tin nhắn mới" popup kept coming back.
   if (!msg.isRead) {
-    try { await apiFetch(`/user/messages/${id}/read`, { method: 'PATCH' }); } catch { /* ignore */ }
-    msg.isRead = true;
-    if (curEl) {
-      curEl.classList.remove('unread');
-      curEl.querySelector('.dot-unread')?.remove();
+    let ok = false;
+    try { await apiFetch(`/user/messages/${id}/read`, { method: 'PATCH' }); ok = true; } catch { /* retried on the next open */ }
+    if (ok) {
+      msg.isRead = true;
+      if (curEl) {
+        curEl.classList.remove('unread');
+        curEl.querySelector('.dot-unread')?.remove();
+      }
+      updateBadge();
     }
-    updateBadge();
   }
+  if (selectedId !== id) return; // another message was opened meanwhile
 
   const sender = msg.isBroadcast ? '📢 Thông báo chung' : esc(msg.fromName || 'Giáo viên');
   const subj = msg.subject ? esc(msg.subject) : '(Không có tiêu đề)';
@@ -163,7 +174,7 @@ async function selectMsg(id) {
     <div class="detail-body">${esc(msg.body)}</div>
     ${renderGiftBox(msg)}
     <div class="reply-box">
-      <textarea id="replyText" placeholder="Trả lời ${sender}..." rows="3"></textarea>
+      <textarea id="replyText" placeholder="Trả lời ${sender}..." rows="3" maxlength="4000"></textarea>
       <button class="btn btn-primary" id="replySendBtn" onclick="replyMsg('${id}')"><i class="fas fa-reply"></i> Gửi phản hồi</button>
     </div>
     <div class="detail-actions">
@@ -230,6 +241,16 @@ async function claimGift(id) {
     if (window.showToast) window.showToast('🎁 Đã nhận quà: ' + got.join(', '), 'success');
     if (msg && msg._id === selectedId) selectMsg(id);
   } catch (e) {
+    // 409 = already claimed (another tab / device) — show it as received
+    // instead of a "Nhận quà" button that can only ever fail again.
+    if (e && e.status === 409) {
+      const msg = messages.find(m => m._id === id);
+      if (msg) msg.giftClaimed = true;
+      if (window.showToast) window.showToast('Bạn đã nhận quà này rồi.', 'info');
+      if (msg && msg._id === selectedId) selectMsg(id);
+      renderList();
+      return;
+    }
     if (window.showToast) window.showToast('Lỗi: ' + e.message, 'error');
     if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-gift"></i> Nhận quà'; }
   }
@@ -244,9 +265,10 @@ async function replyMsg(id) {
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
   try {
-    await apiFetch(`/user/messages/${id}/reply`, { method: 'POST', body: JSON.stringify({ body }) });
+    const d = await apiFetch(`/user/messages/${id}/reply`, { method: 'POST', body: JSON.stringify({ body }) });
     textarea.value = '';
-    if (window.showToast) window.showToast('Đã gửi phản hồi', 'success');
+    // A reply to another student's message (quà / bánh kem / thách đấu) goes to the Chat bạn bè.
+    if (window.showToast) window.showToast(d && d.peer ? 'Đã gửi vào Chat bạn bè' : 'Đã gửi phản hồi', 'success');
   } catch (e) {
     if (window.showToast) window.showToast('Lỗi: ' + e.message, 'error');
   } finally {

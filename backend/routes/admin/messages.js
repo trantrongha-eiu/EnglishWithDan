@@ -5,10 +5,25 @@ const express = require('express');
 const auth    = require('../../middleware/auth');
 const { teacherOnly } = require('./_shared');
 
+const mongoose = require('mongoose');
 const Message = require('../../models/Message');
 const Report  = require('../../models/Report');
+const User    = require('../../models/User');
 
 const router = express.Router();
+
+// A malformed :id is "not found" on every route here (it used to surface as
+// a raw Mongoose CastError with a 500).
+router.param('id', (req, res, next, id) => (
+  mongoose.isValidObjectId(id) ? next() : res.status(404).json({ success: false, message: 'Không tìm thấy' })
+));
+
+// page/limit from the query, clamped (limit=0 returned everything, page=abc 500'd).
+function paging(q, defLimit = 20) {
+  const page = Math.max(1, parseInt(q.page, 10) || 1);
+  const limit = Math.min(100, Math.max(1, parseInt(q.limit, 10) || defLimit));
+  return { page, limit, skip: (page - 1) * limit };
+}
 
 // ══════════════════════════════════════════════════
 // MESSAGES (Admin gửi thư cho học sinh)
@@ -17,13 +32,13 @@ const router = express.Router();
 // GET /api/admin/messages  – danh sách thư đã gửi
 router.get('/messages', auth, teacherOnly, async (req, res) => {
   try {
-    const { page = 1, limit = 20 } = req.query;
+    const { limit, skip } = paging(req.query);
     const [messages, total] = await Promise.all([
       Message.find({ fromId: req.user._id })
         .populate('toId', 'username')
         .sort({ createdAt: -1 })
-        .skip((+page - 1) * +limit)
-        .limit(+limit)
+        .skip(skip)
+        .limit(limit)
         .lean(),
       Message.countDocuments({ fromId: req.user._id })
     ]);
@@ -52,14 +67,14 @@ router.get('/messages/unread-count', auth, teacherOnly, async (req, res) => {
 // GET /api/admin/messages/received – thư nhận được (phản hồi từ học sinh, thông báo thanh toán...)
 router.get('/messages/received', auth, teacherOnly, async (req, res) => {
   try {
-    const { page = 1, limit = 20 } = req.query;
+    const { limit, skip } = paging(req.query);
     const filter = { toId: req.user._id, deletedBy: { $ne: req.user._id } };
     const [messages, total] = await Promise.all([
       Message.find(filter)
         .populate('fromId', 'username')
         .sort({ createdAt: -1 })
-        .skip((+page - 1) * +limit)
-        .limit(+limit)
+        .skip(skip)
+        .limit(limit)
         .lean(),
       Message.countDocuments(filter)
     ]);
@@ -121,6 +136,13 @@ router.post('/messages', auth, teacherOnly, async (req, res) => {
     const { toId, subject, body, isBroadcast, giftHammers, giftStreakDays } = req.body;
     if (!body?.trim()) return res.status(400).json({ success: false, message: 'Nội dung không được để trống' });
     if (!isBroadcast && !toId) return res.status(400).json({ success: false, message: 'Vui lòng chọn người nhận' });
+    // The recipient must be a real account: a stale ?to= link / a deleted
+    // student used to "send" (with any gift) into nobody's inbox, reported as
+    // delivered — or 500 on a malformed id.
+    if (!isBroadcast) {
+      const recipient = mongoose.isValidObjectId(toId) ? await User.exists({ _id: toId }) : null;
+      if (!recipient) return res.status(400).json({ success: false, message: 'Không tìm thấy người nhận — tài khoản có thể đã bị xoá' });
+    }
 
     const hammers = Math.max(0, Math.floor(Number(giftHammers) || 0));
     const streakDays = Math.max(0, Math.floor(Number(giftStreakDays) || 0));

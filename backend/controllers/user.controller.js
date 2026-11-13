@@ -139,8 +139,10 @@ exports.listMustReadMessages = messageGuard(async (req, res) => {
 
 // ── GET /api/user/messages ────────────────────────────────────
 exports.listMessages = messageGuard(async (req, res) => {
-  const { page = 1, limit = 30 } = req.query;
-  const { messages, total } = await userMessageService.listMessages(req.user._id, +page, +limit);
+  // Clamped: page=abc used to 500 (NaN skip) and limit=0 returned the whole inbox.
+  const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 30));
+  const { messages, total } = await userMessageService.listMessages(req.user._id, page, limit);
   res.json({ success: true, messages, total });
 });
 
@@ -163,11 +165,15 @@ exports.deleteMessage = messageGuard(async (req, res) => {
 // ── POST /api/user/messages/:id/reply — học sinh phản hồi giáo viên ─
 exports.replyMessage = messageGuard(async (req, res) => {
   const { body } = req.body;
-  const result = await userMessageService.replyToMessage(req.user._id, req.user.username, req.params.id, body);
+  // Display name, same as the peer chat / Góp ý — the bare username read as
+  // a stranger's handle in the teacher's inbox.
+  const result = await userMessageService.replyToMessage(req.user._id, displayName(req.user), req.params.id, body);
   if (result.status === 'empty') return res.status(400).json({ success: false, message: 'Nội dung không được để trống' });
+  if (result.status === 'too_long') return res.status(400).json({ success: false, message: `Phản hồi tối đa ${result.max} ký tự` });
+  if (result.status === 'blocked') return res.status(403).json({ success: false, message: 'Không thể gửi tin nhắn cho người này' });
   if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy tin nhắn' });
   if (result.status === 'forbidden') return res.status(403).json({ success: false, message: 'Không có quyền phản hồi tin nhắn này' });
-  res.status(201).json({ success: true, message: result.message });
+  res.status(201).json({ success: true, message: result.message, peer: !!result.peer });
 });
 
 // ── POST /api/user/messages/:id/claim — nhận quà đính kèm ─────────
@@ -229,6 +235,7 @@ exports.sendPeerMessage = messageGuard(async (req, res) => {
   const { body } = req.body;
   const result = await peerService.sendPeerMessage(req.user._id, displayName(req.user), req.params.id, body);
   if (result.status === 'empty') return res.status(400).json({ success: false, message: 'Nội dung không được để trống' });
+  if (result.status === 'too_long') return res.status(400).json({ success: false, message: `Tin nhắn tối đa ${result.max} ký tự` });
   if (result.status === 'self') return res.status(400).json({ success: false, message: 'Không thể tự nhắn tin cho chính mình' });
   if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy học sinh' });
   if (result.status === 'blocked') return res.status(403).json({ success: false, message: 'Không thể gửi tin nhắn cho người này' });
