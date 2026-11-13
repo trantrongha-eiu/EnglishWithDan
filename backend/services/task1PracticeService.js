@@ -169,11 +169,23 @@ async function getMeta() {
   });
   counts.all._total = levels.reduce((sum, l) => sum + counts[l]._total, 0);
 
-  return { counts, totalExercises: counts.all._total };
+  // Per-skill counts of Bộ 2 (tag 'set2') for the page's "Bộ bài" switch.
+  const set2Agg = await Task1Exercise.aggregate([
+    { $match: { isActive: true, tags: 'set2' } },
+    { $group: { _id: '$skillType', count: { $sum: 1 } } }
+  ]);
+  const set2 = { _total: 0 };
+  skills.forEach(s => { set2[s] = 0; });
+  set2Agg.forEach(({ _id, count }) => { if (_id in set2) { set2[_id] = count; set2._total += count; } });
+
+  return { counts, setCounts: { set2 }, totalExercises: counts.all._total };
 }
 
-async function listExercises({ level = 'all', skillType = 'all', module: mod = 'all' }) {
+async function listExercises({ level = 'all', skillType = 'all', module: mod = 'all', tag = '' }) {
   const query = { isActive: true };
+  // tag = an exercise set, e.g. 'set2' (Task 1 Grammar Bộ 2 — homework
+  // links task1-practice.html?set=set2). Plain string only.
+  if (typeof tag === 'string' && /^[a-z0-9:_-]{1,30}$/.test(tag)) query.tags = tag;
   if (level !== 'all') query.level = level;
   if (skillType !== 'all') query.skillType = skillType;
   if (mod !== 'all') query.module = parseInt(mod);

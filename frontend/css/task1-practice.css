@@ -88,6 +88,13 @@
 [data-theme="dark"] .t1-mc-option.selected{border-color:#3d8bff;background:#0c1e30}
 [data-theme="dark"] .t1-mc-option .t1-opt-letter{background:var(--border2, #333333);color:#94a3b8}
 
+/* ── Exercise-set switch (Tất cả / Bộ 2) ── */
+.t1-set-list{display:flex;gap:6px;margin-bottom:12px}
+.t1-set-tab{flex:1;background:none;border:1.5px solid #e5e7eb;border-radius:8px;padding:5px 8px;font-size:12px;font-weight:600;cursor:pointer;color:#6b7280;transition:all .2s}
+.t1-set-tab.active,.t1-set-tab:hover{border-color:#e53935;color:#e53935;background:#fff0f0}
+[data-theme="dark"] .t1-set-tab{border-color:var(--border2, #333333);color:#64748b}
+[data-theme="dark"] .t1-set-tab.active,[data-theme="dark"] .t1-set-tab:hover{border-color:#f87171;color:#f87171;background:#2d1111}
+
 /* ── Skill tabs in sidebar ── */
 .t1-skill-tab{background:none;border:1.5px solid #e5e7eb;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer;color:#6b7280;transition:all .2s;text-align:left;width:100%}
 .t1-skill-tab.active{border-color:#e53935;color:#e53935;background:#fff0f0}

@@ -18,7 +18,7 @@
   <script src="/js/theme.js?v=81e03964c4"></script>
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
-  <link rel="stylesheet" href="/css/task1-practice.css?v=1526d7685f">
+  <link rel="stylesheet" href="/css/task1-practice.css?v=a16c33b992">
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
   <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
 </head>
@@ -118,6 +118,11 @@
     <!-- Practice filters -->
     <div id="practice-filters">
       <div class="wp-sidebar-section">
+        <div class="wp-sidebar-title"><i class="fas fa-layer-group"></i> Bộ bài</div>
+        <div class="t1-set-list">
+          <button class="t1-set-tab active" data-set=""     onclick="selectSet('')">📚 Tất cả</button>
+          <button class="t1-set-tab"        data-set="set2" onclick="selectSet('set2')">🆕 Bộ 2 (mới)</button>
+        </div>
         <div class="wp-sidebar-title"><i class="fas fa-brain"></i> Kỹ năng</div>
         <div class="t1-skill-list">
           <button class="t1-skill-tab active" data-skill="all"              onclick="selectSkill('all')">🎯 Tất cả</button>
@@ -550,7 +555,7 @@
 
 <script src="/js/shared/sentence-drill.js?v=0eefda7f0c"></script>
 <script src="/js/shared/t1-chart.js?v=aaf8083ca2"></script>
-<script src="/js/task1-practice.js?v=acfe52de24"></script>
+<script src="/js/task1-practice.js?v=5c7be6e560"></script>
 
 <!-- ── Mobile FAB ── -->
 <button class="wp-mob-fab" id="wp-mob-fab" onclick="openWpSheet()" aria-label="Bộ lọc & Cài đặt">
@@ -579,6 +584,11 @@
 
     <!-- Practice filters -->
     <div id="sheet-practice-filters">
+      <div class="wp-sheet-section-title"><i class="fas fa-layer-group"></i> Bộ bài</div>
+      <div class="wp-sheet-filters"><div class="t1-set-list">
+        <button class="t1-set-tab active" data-set=""     onclick="mobSetSet('')">📚 Tất cả</button>
+        <button class="t1-set-tab"        data-set="set2" onclick="mobSetSet('set2')">🆕 Bộ 2 (mới)</button>
+      </div></div>
       <div class="wp-sheet-section-title"><i class="fas fa-brain"></i> Kỹ năng</div>
       <div class="wp-sheet-filters"><div class="t1-skill-list">
         <button class="t1-skill-tab active" data-skill="all"              onclick="mobSetSkill('all')">🎯 Tất cả</button>

@@ -306,6 +306,40 @@ async function checkTask1Skills(studentId, ids, since) {
   return out;
 }
 
+// Task 1 Grammar — Bộ 2 (the newer exercises, Task1Exercise.tags 'set2',
+// 5 per skill; scripts/addTask1GrammarSet2.js). One row per skill plus one
+// for the whole set, stable made-up ids like T1_SKILL_ROWS (prefix 7733 —
+// 7731 = T1 skills, 7732 = speaking Part 2 stories). Never renumber.
+const T1_SET2_TAG = 'set2';
+const T1_SET2_ROWS = [['all', 'Cả 7 kỹ năng'], ...T1_SKILLS].map(([code, name], i) => ({
+  _id: new mongoose.Types.ObjectId(`7733${String(i + 1).padStart(20, '0')}`), code, name,
+}));
+
+// Passed when, since the assignment, the student has answered EVERY active
+// Bộ 2 exercise of that skill (all 35 for the 'all' row) and >= PASS_PERCENT
+// of those answers are correct (re-tries count, like task1_skill).
+async function checkTask1Set2(studentId, ids, since) {
+  const out = new Map();
+  const want = T1_SET2_ROWS.filter((s) => ids.some((id) => String(id) === String(s._id)));
+  if (!want.length) return out;
+  const exs = await Task1Exercise.find({ isActive: true, tags: T1_SET2_TAG }).select('_id skillType').lean().catch(() => []);
+  if (!exs.length) return out;
+  const q = { userId: studentId, exerciseId: { $in: exs.map((e) => e._id) } };
+  if (since) q.createdAt = { $gte: since };
+  const rows = await Task1Attempt.find(q).select('exerciseId isCorrect createdAt').lean().catch(() => []);
+  for (const s of want) {
+    const pool = new Set(exs.filter((e) => s.code === 'all' || e.skillType === s.code).map((e) => String(e._id)));
+    if (!pool.size) continue;
+    const mine = rows.filter((r) => pool.has(String(r.exerciseId)));
+    if (!mine.length) continue;
+    const covered = new Set(mine.map((r) => String(r.exerciseId))).size;
+    const pct = (mine.filter((r) => r.isCorrect).length / mine.length) * 100;
+    const last = mine.reduce((a, r) => (!a || r.createdAt > a ? r.createdAt : a), null);
+    out.set(String(s._id), { completed: covered >= pool.size && pct >= PASS_PERCENT, completedAt: last, scorePercent: Math.round(pct) });
+  }
+  return out;
+}
+
 // Catalog rows for a `static` catalog (no model) — see T1_SKILL_ROWS.
 function staticDoc(catalog, id) {
   return (catalog.static || []).find((d) => String(d._id) === String(id)) || null;
@@ -637,6 +671,15 @@ const REGISTRY = {
       shape: (d) => ({ _id: d._id, label: `Task 1 Practice: ${d.name}`, meta: '' }),
       deepLinkKey: (d) => d.code },
     attempt: { check: checkTask1Skills },
+  },
+  // Task 1 Grammar Bộ 2 — task1-practice.html?skill=<code>&set=set2 opens
+  // only the Bộ 2 exercises of that skill.
+  task1_grammar_set2: {
+    label: 'Task 1 Grammar – Bộ 2 (mới)',
+    catalog: { static: T1_SET2_ROWS,
+      shape: (d) => ({ _id: d._id, label: `Task 1 Grammar Bộ 2: ${d.name}`, meta: d.code === 'all' ? '35 câu' : '5 câu' }),
+      deepLinkKey: (d) => d.code },
+    attempt: { check: checkTask1Set2 },
   },
   // Speaking Part 2 · 7 câu chuyện gốc (speaking-part2.html) — one row per
   // master story (fixed list, stable made-up ids like task1_skill). Passed

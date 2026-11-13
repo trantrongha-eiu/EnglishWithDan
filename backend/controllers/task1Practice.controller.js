@@ -4,8 +4,8 @@ const task1PracticeService = require('../services/task1PracticeService');
 
 exports.getMeta = async (req, res) => {
   try {
-    const { counts, totalExercises } = await task1PracticeService.getMeta();
-    res.json({ success: true, counts, totalExercises });
+    const { counts, setCounts, totalExercises } = await task1PracticeService.getMeta();
+    res.json({ success: true, counts, setCounts, totalExercises });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
@@ -13,8 +13,8 @@ exports.getMeta = async (req, res) => {
 
 exports.listExercises = async (req, res) => {
   try {
-    const { level = 'all', skillType = 'all', module: mod = 'all' } = req.query;
-    const { exercises, total } = await task1PracticeService.listExercises({ level, skillType, module: mod });
+    const { level = 'all', skillType = 'all', module: mod = 'all', tag = '' } = req.query;
+    const { exercises, total } = await task1PracticeService.listExercises({ level, skillType, module: mod, tag });
     res.json({ success: true, exercises, total });
   } catch (err) {
     console.error('[Task1] GET /exercises:', err);

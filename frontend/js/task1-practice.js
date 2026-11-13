@@ -47,6 +47,10 @@ let currentMode  = 'practice';
 let exercises    = [];
 let currentIdx   = 0;
 let currentSkill = 'all';
+// Exercise set: '' = whole bank, 'set2' = Bộ 2 (Task1Exercise.tags) —
+// homework "Task 1 Grammar – Bộ 2" links open ?set=set2.
+const T1_SETS = ['set2'];
+let currentSet   = '';
 let sessionDone  = 0;
 let sessionXP    = 0;
 let sessionCorrect = 0;
@@ -178,7 +182,7 @@ function doneSkillStatusHtml() {
 //  SHAREABLE URL
 // ════════════════════════════════════════════════════════
 function _syncShareUrl(push = false) {
-  const params = `skill=${currentSkill}&mode=${currentMode}`;
+  const params = `skill=${currentSkill}${currentSet ? `&set=${currentSet}` : ''}&mode=${currentMode}`;
   const url = `task1-practice.html?${params}`;
   if (push) history.pushState(null, '', url);
   else history.replaceState(null, '', url);
@@ -198,6 +202,9 @@ function _applyT1UrlFilters() {
     document.querySelectorAll('.t1-skill-tab[data-skill]').forEach(b =>
       b.classList.toggle('active', b.dataset.skill === currentSkill));
   }
+  const _t1Set = _t1p.get('set');
+  currentSet = T1_SETS.includes(_t1Set) ? _t1Set : '';
+  _markSetTabs();
   _doSetMode(_t1Mode === 'test' ? 'test' : 'practice');
 }
 
@@ -429,6 +436,31 @@ function mobSetSkill(skill) {
   document.querySelectorAll('.t1-skill-tab').forEach(b =>
     b.classList.toggle('active', b.dataset.skill === skill));
 }
+function mobSetSet(set) {
+  currentSet = T1_SETS.includes(set) ? set : '';
+  _markSetTabs();
+  _syncShareUrl();
+}
+
+// "Bộ bài" switch: whole bank vs Bộ 2 (newer exercises).
+function _markSetTabs() {
+  document.querySelectorAll('.t1-set-tab[data-set]').forEach(b =>
+    b.classList.toggle('active', b.dataset.set === currentSet));
+  updateSkillCounts();
+}
+function selectSet(set) {
+  const next = T1_SETS.includes(set) ? set : '';
+  if (next === currentSet) return;
+  const doChange = () => {
+    saveBatch(); currentSet = next;
+    _markSetTabs();
+    _syncShareUrl(true);
+    if (currentMode === 'practice') loadExercises();
+  };
+  if (sessionDone > 0) {
+    askWpQuit(doChange, { title:'Đổi bộ bài?', sub:'Tiến độ sẽ được lưu.', confirmText:'Đổi ngay', continueText:'Giữ nguyên' });
+  } else doChange();
+}
 function mobStartLearning() {
   if (sessionDone > 0) {
     closeWpSheet();
@@ -496,7 +528,7 @@ function updateSkillCounts() {
   if (!_t1Meta) return;
   // Practice has no level filter anymore — skill counts always reflect
   // totals across all levels.
-  const levelData = _t1Meta.counts?.all || {};
+  const levelData = (currentSet ? _t1Meta.setCounts?.[currentSet] : _t1Meta.counts?.all) || {};
   document.querySelectorAll('.t1-skill-tab[data-skill]').forEach(btn => {
     const skill = btn.dataset.skill;
     const count = skill === 'all' ? (levelData._total || 0) : (levelData[skill] || 0);
@@ -514,6 +546,7 @@ async function loadExercises() {
   showState('loading');
   try {
     const params = new URLSearchParams({ level: 'all', skillType: currentSkill });
+    if (currentSet) params.set('tag', currentSet);
     const token = window.AuthService.getToken();
     const res  = await fetch(`${API}/api/task1/exercises?${params}`, {
       headers: token ? { 'Authorization': 'Bearer ' + token } : {}

@@ -48,6 +48,7 @@ function hwRuleTag(resourceType) {
   if (HW_VIEW_TYPES.has(resourceType)) return '<span class="hw-res-tag" title="Chỉ cần bấm vào mở xem là tự động tính hoàn thành">Mở xem là xong</span>';
   if (resourceType === 'task2_template') return '<span class="hw-res-tag hw-res-tag--quiz" title="Cần học xong cả 5 bước của lộ trình và thuộc từ 70% số câu (bước ④ Ghép cả bài hoặc Thi thử)">≥70%</span>';
   if (resourceType === 'writing_practice' || resourceType === 'task1_skill') return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm ít nhất 10 câu của chủ đề, đúng từ 70% trở lên">≥10 câu · ≥70%</span>';
+  if (resourceType === 'task1_grammar_set2') return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm hết các câu Bộ 2 của kỹ năng này (link mở đúng các câu đó), đúng từ 70% trở lên">Làm hết · ≥70%</span>';
   if (resourceType === 'speaking_topic') return '<span class="hw-res-tag hw-res-tag--quiz" title="Bấm Bắt đầu để trả lời lần lượt TẤT CẢ câu hỏi của chủ đề trong một lượt (Part 2 có kèm luôn các câu Part 3). Bỏ trống câu nào thì chưa tính hoàn thành.">Trả lời hết các câu</span>';
   if (resourceType === 'speaking_part2') return '<span class="hw-res-tag hw-res-tag--quiz" title="Thuộc từ 70% câu chuyện trở lên: mỗi câu của 7 khung nói cần nhại (shadowing) đạt và dịch đúng">≥70% câu chuyện</span>';
   if (HW_COURSE_TYPES.has(resourceType)) return '<span class="hw-res-tag hw-res-tag--quiz" title="Làm hết mọi bài trong buổi học; các bài trắc nghiệm / điền từ phải đạt trung bình từ 70% trở lên (làm lại để nâng điểm)">Làm hết · ≥70%</span>';
@@ -146,6 +147,7 @@ function hwResourceHref(r) {
     }
     case 'writing_practice':   return r.resourceCode ? `writing-practice.html?topic=${encodeURIComponent(r.resourceCode)}` : 'writing-practice.html';
     case 'task1_skill':        return r.resourceCode ? `task1-practice.html?skill=${encodeURIComponent(r.resourceCode)}` : 'task1-practice.html';
+    case 'task1_grammar_set2': return `task1-practice.html?skill=${encodeURIComponent(r.resourceCode || 'all')}&set=set2`;
     case 'speaking_part2':     return r.resourceCode ? `speaking-part2.html?story=${encodeURIComponent(r.resourceCode)}` : 'speaking-part2.html';
     default:                   return null;
   }

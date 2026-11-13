@@ -158,6 +158,54 @@ test('writing_practice / task1_skill: >= 10 answers since assigned, >= 70% corre
   expect(row.resources[1].resourceCode).toBe('overview');
 });
 
+test('task1_grammar_set2: every Bộ 2 exercise of the skill answered since assigned AND >= 70% correct', async () => {
+  const { createTask1Exercise } = require('../factories/contentFactory');
+  const { t, s, cls } = await setup();
+  const set2 = [];
+  for (let i = 0; i < 3; i++) set2.push(await createTask1Exercise({ skillType: 'comparison', orderIndex: 201 + i, extra: { tags: ['set2'] } }));
+  const old = await createTask1Exercise({ skillType: 'comparison', orderIndex: 5 }); // not Bộ 2
+  const other = await createTask1Exercise({ skillType: 'overview', orderIndex: 230, extra: { tags: ['set2'] } });
+  const row = (code) => rcs.REGISTRY.task1_grammar_set2.catalog.static.find((x) => x.code === code);
+  const asg = await assign(t, cls, [
+    { kind: 'internal', resourceType: 'task1_grammar_set2', resourceId: row('comparison')._id },
+    { kind: 'internal', resourceType: 'task1_grammar_set2', resourceId: row('all')._id },
+  ]);
+  const answer = (ex, ok) => Task1Attempt.create({ userId: s._id, exerciseId: ex._id, userAnswer: 'x', isCorrect: ok, skillType: ex.skillType });
+  const done = async () => (await request(app).get('/api/assignments/mine').set(authH(s))).body.assignments
+    .find((a) => a._id === String(asg._id)).resources.map((r) => r.completed);
+
+  // Old-bank answers don't count; 2 of 3 Bộ 2 comparison exercises — not all answered yet.
+  for (let i = 0; i < 5; i++) await answer(old, true);
+  await answer(set2[0], true); await answer(set2[1], true);
+  expect(await done()).toEqual([false, false]);
+
+  // All 3 answered but 3/5 = 60% correct → still not passed.
+  await answer(set2[2], false); await answer(set2[2], false); await answer(set2[2], true);
+  expect(await done()).toEqual([false, false]);
+
+  // 6/8 = 75% → comparison passes; the whole-set row still needs the overview one.
+  await answer(set2[0], true); await answer(set2[1], true); await answer(set2[2], true);
+  expect(await done()).toEqual([true, false]);
+  await answer(other, true);
+  expect(await done()).toEqual([true, true]);
+
+  const mine = (await request(app).get('/api/assignments/mine').set(authH(s))).body.assignments.find((a) => a._id === String(asg._id));
+  expect(mine.resources.map((r) => r.resourceCode)).toEqual(['comparison', 'all']);
+});
+
+test('task1 practice API: tag=set2 lists only Bộ 2 exercises; meta has Bộ 2 counts', async () => {
+  const { createTask1Exercise } = require('../factories/contentFactory');
+  const s = await createPremiumStudent();
+  await createTask1Exercise({ skillType: 'comparison', orderIndex: 201, extra: { tags: ['set2'] } });
+  await createTask1Exercise({ skillType: 'comparison', orderIndex: 3 });
+  const list = await request(app).get('/api/task1/exercises?skillType=comparison&tag=set2').set(authH(s));
+  expect(list.body.exercises).toHaveLength(1);
+  const all = await request(app).get('/api/task1/exercises?skillType=comparison').set(authH(s));
+  expect(all.body.exercises).toHaveLength(2);
+  const meta = await request(app).get('/api/task1/meta');
+  expect(meta.body.setCounts.set2).toMatchObject({ _total: 1, comparison: 1 });
+});
+
 test('grammar: a lesson homework ticks only once one attempt reaches 70% (69% does not)', async () => {
   const { createEssentialGrammarLesson } = require('../factories/contentFactory');
   const { t, s, cls } = await setup();
