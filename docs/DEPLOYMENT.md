@@ -162,6 +162,29 @@ a diff or PR review.
    Font Awesome CDN) are deliberately left unversioned by us — they're
    already versioned/cached by their own host.
 
+### Deleting a file from `frontend/` — Render keeps serving it
+
+Measured 2026-11-14: the Render static site **never removes files that
+were deleted from the repo**. All 64 frontend files ever deleted from git
+were still answering 200 on ieltsthayha.com (`rndr-id` header, original
+`last-modified`), including the retired vanilla-JS admin panel at
+`/admin.html`. Render also ignores `_redirects`, and `404.html`'s
+clean-url-router only runs on a 404, so a stale file also wins over any
+router rule for its path.
+
+So **never just `git rm` a served file**:
+
+- **A page** (`*.html`) → replace it with a redirect stub (copy
+  `frontend/admin.html`: `noindex` + `location.replace()` to the page
+  that replaced it).
+- **Anything else** (js/css/img/…) → truncate it to an empty file instead of
+  deleting it (`: > frontend/js/old.js`) and add its path to the list in
+  `frontend/tests/render-tombstones.test.js`, which checks every listed
+  file stays empty and that no page references it again.
+
+Clearing these from Render itself (dashboard) would make the tombstones
+unnecessary, but nothing in the repo can delete a file from a deploy.
+
 ## 5. Zero-downtime and rollback
 
 This project has no documented Render-specific rollback procedure verified
