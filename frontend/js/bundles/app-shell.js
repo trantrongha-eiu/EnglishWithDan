@@ -556,7 +556,12 @@
   function getSafeNext(raw) {
     if (!raw) return null;
     if (raw.includes('://') || raw.startsWith('//')) return null;
-    if (/^\/admin\/(#\/[\w./-]*)?$/.test(raw)) return { url: raw, admin: true };
+    // Admin routes may carry a query (#/students/:id?tab=online,
+    // #/monitoring?tab=mock) — those used to fail this test and fall through
+    // to the student branch below as admin:false, so staff logging back in
+    // landed on /admin/ instead of the page they had open.
+    if (/^\/admin\/(#\/[\w./-]*(\?[\w.=&%,:+-]*)?)?$/.test(raw)) return { url: raw, admin: true };
+    if (/^\/admin(\/|$)/.test(raw)) return null;
     if (/^[a-zA-Z0-9][\w-]*\.html([?#].*)?$/.test(raw)) return { url: raw, admin: false };
     if (/^\/[a-zA-Z][\w./-]*([?#].*)?$/.test(raw)) return { url: raw, admin: false };
     return null;
@@ -591,14 +596,19 @@
   window.logout    = AS.logout;
 
   // ── Xác định trang hiện tại ───────────────────────────────
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  // Render also serves "/login" as login.html (and "/reading/" before
+  // theme.js drops the slash) — normalize to the file name so "/register"
+  // isn't treated as a private page (visitors got bounced to login) and
+  // "/reading/" isn't treated as the public "" home page.
+  const currentPage = (window.location.pathname.replace(/\/+$/, '').split('/').pop() || 'index.html')
+    .replace(/^[^.]+$/, '$&.html');
 
   const PUBLIC_PAGES = ['login.html', 'register.html', 'verify-email.html', 'index.html', ''];
   const isPublic     = PUBLIC_PAGES.some(p => currentPage === p);
   // Test đầu vào is open to visitors (name + phone → guest session, see
   // entrance-test.js) and to logged-in students alike: no login redirect,
   // and no "already logged in → dashboard" bounce either.
-  const OPEN_PAGES   = ['entrance-test.html', 'entrance-test'];
+  const OPEN_PAGES   = ['entrance-test.html', 'test-dau-vao.html'];
   const isOpen       = OPEN_PAGES.includes(currentPage);
 
   AS.installBannedInterceptor(isPublic);
@@ -1077,7 +1087,7 @@
     return;
   }
   var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
-  var page = location.pathname.split('/').pop() || 'index.html';
+  var page = (location.pathname.replace(/\/+$/, '').split('/').pop() || 'index.html').replace(/^[^.]+$/, '$&.html'); // "/reading" is reading.html too
 
   // "Student opened this" beacon for view-only homework items (Tips lessons,
   // Vocab/Paraphrase units — backend rcs.VIEW_TYPES). Fire-and-forget; the
@@ -1489,7 +1499,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=08de23d193';
+      s.src = '/js/shared/page-help.js?v=4157189274';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);

@@ -23,7 +23,7 @@
  *   /writing/exam[/practice|/simulation]  /writing/tips[/:tip]  /writing/samples
  *   /speaking/tips[/:tip]  /speaking/practice|history|materials  /speaking/question/:id
  *   /speaking/part2[/:story]                      Part 2 · 7 câu chuyện gốc
- *   /essential-grammar/:lesson  /dictation/:sectionId  /vocab/lesson/:id  …
+ *   /essential-grammar/:lesson  /dictation/:sectionId  /shadowing/:lesson  /vocab/lesson/:id  …
  *   /test-dau-vao  /test-dau-vao/ket-qua/:attemptId   (also /entrance-test/…)
  *   /phu-huynh                                    parent view (link sent to parents)
  */
@@ -40,6 +40,7 @@
   var ROUTES = [
     // Admin SPA uses a HashRouter — /admin/users means /admin/#/users.
     [/^\/admin\/(.+)$/, function (m) { return '/admin/#/' + m[1]; }],
+    [/^\/admin\.html$/, function () { return '/admin/'; }],
 
     // ── Reading ──
     [new RegExp('^/reading/test/' + SEG + MODE + '$'), function (m) { return '/reading.html?testId=' + m[1] + exam(m[2]); }],
@@ -84,6 +85,9 @@
     // ── Other pages ──
     [new RegExp('^/essential-grammar/' + SEG + '$'), function (m) { return '/essential-grammar.html?lesson=' + m[1]; }],
     [new RegExp('^/dictation/' + SEG + '$'), function (m) { return '/dictation.html?sectionId=' + m[1]; }],
+    // shadowing.js reads both /shadowing/:slug and ?lesson= — but without
+    // this row the clean form was a real 404 on Render (routing audit 2026-11-14).
+    [new RegExp('^/shadowing/' + SEG + '$'), function (m) { return '/shadowing.html?lesson=' + m[1]; }],
     [new RegExp('^/task2-practice/' + SEG + '$'), function (m) { return '/task2-practice.html?topicId=' + m[1]; }],
     [new RegExp('^/vocab/lesson/' + SEG + '$'), function (m) { return '/dashboard.html?view=lesson&lessonId=' + m[1]; }],
     [/^\/vocabulary$/, function () { return '/dashboard.html'; }],

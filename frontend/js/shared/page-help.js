@@ -48,7 +48,8 @@
     for (var i = 0; i < CLEAN_PREFIX.length; i++) {
       if (CLEAN_PREFIX[i][0].test(path)) return CLEAN_PREFIX[i][1];
     }
-    return '';
+    // Render serves any "/x" as x.html (/shop, /mock-test, /goal, …).
+    return /^[\w-]+$/.test(last) ? last + '.html' : '';
   }
 
   function kbd(k) { return '<kbd>' + k + '</kbd>'; }

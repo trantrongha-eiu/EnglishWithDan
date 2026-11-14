@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/auth-callback.css?v=c82c5032d0">
-  <script src="/js/theme.js?v=81e03964c4"></script>
+  <script src="/js/theme.js?v=ba9c5b81c3"></script>
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
-  <script src="/js/shared/auth-service.js?v=6608a5d107"></script>
+  <script src="/js/shared/auth-service.js?v=a4b3e5e969"></script>
 </head>
 <body>
   <div class="card" id="card">
@@ -34,7 +34,7 @@
           <div class="spinner"></div>
           <h2>Đăng nhập thất bại</h2>
           <p>${error === 'not_configured' ? 'Google OAuth chưa được cấu hình.' : 'Đã xảy ra lỗi. Vui lòng thử lại.'}</p>
-          <a href="login.html" class="btn">Quay lại đăng nhập</a>
+          <a href="/login.html" class="btn">Quay lại đăng nhập</a>
         `;
         return;
       }
@@ -70,7 +70,7 @@
         document.getElementById('card').innerHTML = `
           <h2 style="color:#ef4444">Lỗi xử lý phản hồi</h2>
           <p>Vui lòng thử lại</p>
-          <a href="login.html" class="btn">Quay lại đăng nhập</a>
+          <a href="/login.html" class="btn">Quay lại đăng nhập</a>
         `;
       }
     })();

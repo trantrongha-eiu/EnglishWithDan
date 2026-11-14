@@ -95,10 +95,12 @@
 
 # "Task 2 Nền tảng" (static reference) and "Viết câu nâng cao" (73
 # translation drills) were folded into the Task 2 Writing course as
-# Module 1 + Module 3 (2026-09) — one place, organized by module. Keep
-# old bookmarks/links working.
-/task2-foundations.html   /writing-task2-course.html            301
-/advanced-sentences.html  /writing-task2-course.html             301
+# Module 1 + Module 3 (2026-09) — one place, organized by module. Both
+# .html files still ship and production (which ignores this file) serves
+# them as-is; advanced-sentences.html?week=&groupId= is also the live target
+# of old "advanced_sentences" homework rows (js/dashboard-homework.js). The
+# 301s that used to sit here would have broken those links on any host that
+# honours _redirects, so they were dropped (routing audit 2026-11-14).
 
 # The standalone "Noun Phrase in Writing" course was folded into the
 # Task 1 and Task 2 Writing courses (2026-09-18) — Module NP-M1 spliced

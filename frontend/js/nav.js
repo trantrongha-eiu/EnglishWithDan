@@ -14,7 +14,7 @@
     return;
   }
   var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
-  var page = location.pathname.split('/').pop() || 'index.html';
+  var page = (location.pathname.replace(/\/+$/, '').split('/').pop() || 'index.html').replace(/^[^.]+$/, '$&.html'); // "/reading" is reading.html too
 
   // "Student opened this" beacon for view-only homework items (Tips lessons,
   // Vocab/Paraphrase units — backend rcs.VIEW_TYPES). Fire-and-forget; the
@@ -426,7 +426,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=08de23d193';
+      s.src = '/js/shared/page-help.js?v=4157189274';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);

@@ -1,3 +1,21 @@
+// ── URL canonicalization (routing audit 2026-11-14) ─────────────────────
+// Render serves both "/reading" and "/reading/" as reading.html. With the
+// trailing slash every RELATIVE URL on the page (a JS-built "dashboard.html"
+// link, a pushState('writing.html'), api-client's 'login.html' bounce…)
+// resolved under "/reading/" and 404'd, and auth.js read the page name as ""
+// (= public) and bounced logged-in students to the dashboard. This is the
+// first synchronous script on every page, so drop the slash here, before
+// anything else resolves a URL — replaceState also moves the document's base
+// URL, no reload. /admin/ (its own SPA, never loads this file) keeps its slash.
+(function () {
+  try {
+    var p = location.pathname;
+    if (p.length > 1 && /\/$/.test(p) && !/^\/admin\/$/.test(p)) {
+      history.replaceState(history.state, '', p.replace(/\/+$/, '').replace(/^\/+/, '/') + location.search + location.hash);
+    }
+  } catch (e) { /* never block the page over this */ }
+})();
+
 // hex "#rgb" / "#rrggbb" -> "rgba(r,g,b,a)". Shared by the accent applier
 // below and profile.html's live-preview swatch handler. Defined first so
 // the pre-paint IIFE can use it.

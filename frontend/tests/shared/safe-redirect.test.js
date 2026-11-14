@@ -69,6 +69,22 @@ describe('SafeRedirect.getSafeNext — open-redirect guard', () => {
     });
   });
 
+  test('keeps an admin route query (student detail tab, monitoring tab) as an admin target', () => {
+    expect(window.SafeRedirect.getSafeNext('/admin/#/students/abc123?tab=online')).toEqual({
+      url: '/admin/#/students/abc123?tab=online',
+      admin: true,
+    });
+    expect(window.SafeRedirect.getSafeNext('/admin/#/monitoring?tab=mock&userId=u1')).toEqual({
+      url: '/admin/#/monitoring?tab=mock&userId=u1',
+      admin: true,
+    });
+  });
+
+  test('never hands an /admin path to the student branch', () => {
+    expect(window.SafeRedirect.getSafeNext('/admin/#/x?<script>')).toBeNull();
+    expect(window.SafeRedirect.getSafeNext('/admin/users')).toBeNull();
+  });
+
   test('rejects a relative path with no leading "/" that is not a .html file', () => {
     expect(window.SafeRedirect.getSafeNext('tuition')).toBeNull();
     expect(window.SafeRedirect.getSafeNext('foo/bar')).toBeNull();

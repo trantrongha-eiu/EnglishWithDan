@@ -292,7 +292,7 @@
 
   // Only the essay-writing pages — not every page that merely mentions writing.
   var WRITING_PAGES = ['writing.html', 'task1-practice.html', 'task2-practice.html', 'writing-practice.html', 'task2-template.html'];
-  var here = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  var here = (location.pathname.replace(/\/+$/, '').split('/').pop() || 'index.html').replace(/^[^.]+$/, '$&.html').toLowerCase();
   if (WRITING_PAGES.indexOf(here) === -1) return;
 
   var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';

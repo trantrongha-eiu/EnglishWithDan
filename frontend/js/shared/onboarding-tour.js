@@ -447,7 +447,7 @@
   // useful for testing/replay from elsewhere). No-op if that page has no
   // tour defined.
   function start(pageOverride) {
-    const page = pageOverride || (location.pathname.split('/').pop() || 'dashboard.html');
+    const page = pageOverride || (location.pathname.replace(/\/+$/, '').split('/').pop() || 'dashboard.html').replace(/^[^.]+$/, '$&.html');
     const steps = PAGE_TOURS[page];
     if (!steps) return;
     endTour(); // reset any stale state before a fresh run
@@ -459,7 +459,7 @@
   }
 
   function reset(pageOverride) {
-    const page = pageOverride || (location.pathname.split('/').pop() || 'dashboard.html');
+    const page = pageOverride || (location.pathname.replace(/\/+$/, '').split('/').pop() || 'dashboard.html').replace(/^[^.]+$/, '$&.html');
     try { localStorage.removeItem(tourKeyFor(page)); } catch (e) {}
   }
 
@@ -474,7 +474,7 @@
   // revealed here only on pages that actually have a tour, independent of
   // whether this browser already auto-saw it once. ───────────────────────
   document.addEventListener('DOMContentLoaded', function () {
-    const page = location.pathname.split('/').pop() || 'dashboard.html';
+    const page = (location.pathname.replace(/\/+$/, '').split('/').pop() || 'dashboard.html').replace(/^[^.]+$/, '$&.html');
     const steps = PAGE_TOURS[page];
     if (!steps) return;
 

@@ -22,14 +22,19 @@
   window.logout    = AS.logout;
 
   // ── Xác định trang hiện tại ───────────────────────────────
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  // Render also serves "/login" as login.html (and "/reading/" before
+  // theme.js drops the slash) — normalize to the file name so "/register"
+  // isn't treated as a private page (visitors got bounced to login) and
+  // "/reading/" isn't treated as the public "" home page.
+  const currentPage = (window.location.pathname.replace(/\/+$/, '').split('/').pop() || 'index.html')
+    .replace(/^[^.]+$/, '$&.html');
 
   const PUBLIC_PAGES = ['login.html', 'register.html', 'verify-email.html', 'index.html', ''];
   const isPublic     = PUBLIC_PAGES.some(p => currentPage === p);
   // Test đầu vào is open to visitors (name + phone → guest session, see
   // entrance-test.js) and to logged-in students alike: no login redirect,
   // and no "already logged in → dashboard" bounce either.
-  const OPEN_PAGES   = ['entrance-test.html', 'entrance-test'];
+  const OPEN_PAGES   = ['entrance-test.html', 'test-dau-vao.html'];
   const isOpen       = OPEN_PAGES.includes(currentPage);
 
   AS.installBannedInterceptor(isPublic);

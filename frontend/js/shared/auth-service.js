@@ -538,7 +538,12 @@
   function getSafeNext(raw) {
     if (!raw) return null;
     if (raw.includes('://') || raw.startsWith('//')) return null;
-    if (/^\/admin\/(#\/[\w./-]*)?$/.test(raw)) return { url: raw, admin: true };
+    // Admin routes may carry a query (#/students/:id?tab=online,
+    // #/monitoring?tab=mock) — those used to fail this test and fall through
+    // to the student branch below as admin:false, so staff logging back in
+    // landed on /admin/ instead of the page they had open.
+    if (/^\/admin\/(#\/[\w./-]*(\?[\w.=&%,:+-]*)?)?$/.test(raw)) return { url: raw, admin: true };
+    if (/^\/admin(\/|$)/.test(raw)) return null;
     if (/^[a-zA-Z0-9][\w-]*\.html([?#].*)?$/.test(raw)) return { url: raw, admin: false };
     if (/^\/[a-zA-Z][\w./-]*([?#].*)?$/.test(raw)) return { url: raw, admin: false };
     return null;
