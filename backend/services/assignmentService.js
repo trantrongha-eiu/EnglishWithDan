@@ -41,7 +41,7 @@ function vocabGoalKey(assignmentId, itemId) {
 // "not done". Two targeted updates instead of load+save so it can't clobber
 // a concurrent manual tick on the same AssignmentProgress doc.
 async function persistVocabGoalDone(studentId, assignment, resource, result, now) {
-  return persistAutoDone(studentId, assignment, resource, now, result.bookId ? `vocabbook:${result.bookId}` : '');
+  return persistAutoDone(studentId, assignment, resource, result.reachedAt || now, result.bookId ? `vocabbook:${result.bookId}` : '');
 }
 
 // Same sticky `auto` item for an internal resource: once the live check has
@@ -100,7 +100,7 @@ async function resolveVocabGoals(studentId, assignments, storedByAssignment, now
   for (const { a, r } of pending) {
     const candidates = r.bookSlot ? books.filter((b) => b.slot === r.bookSlot) : books;
     const res = { ...vgs.evaluateBooks(candidates, a.createdAt, r.wordCount), requiredSlot: r.bookSlot || null };
-    out.set(vocabGoalKey(a._id, r._id), { ...res, completedAt: res.completed ? now : null });
+    out.set(vocabGoalKey(a._id, r._id), { ...res, completedAt: res.completed ? (res.reachedAt || now) : null });
     if (res.completed) newlyDone.push({ a, r, res });
   }
   await Promise.all(newlyDone.map(({ a, r, res }) =>

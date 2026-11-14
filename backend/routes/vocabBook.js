@@ -22,6 +22,11 @@ router.put('/reorder', auth, fullAccess, vocabBookController.reorderBooks);
 // POST /api/vocabbook/practice-complete
 router.post('/practice-complete', auth, fullAccess, vocabBookController.completePractice);
 
+// POST /api/vocabbook/practice-results  – kết quả luyện tập gửi theo lô ngay
+// trong lúc học ({ sid, results: [{ bookId, wordId, correct }] }) — phiên bỏ
+// dở giữa chừng vẫn được tính cho bài tập "học N từ". Above /:id.
+router.post('/practice-results', auth, fullAccess, vocabBookController.recordPracticeResults);
+
 // GET /api/vocabbook/review/due  – từ cần ôn tập hôm nay (spaced repetition)
 // — must stay above /:id, same reason as /reorder and /practice-complete.
 router.get('/review/due', auth, fullAccess, vocabBookController.getDueWords);

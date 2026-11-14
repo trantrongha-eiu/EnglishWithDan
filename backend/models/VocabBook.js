@@ -42,7 +42,14 @@ const SavedWordSchema = new mongoose.Schema({
   // by recordPracticeResult, so a student can't tick a homework quota done
   // by clicking "đã thuộc" instead of actually answering a quiz.
   lastPracticedAt:     { type: Date, default: null },
-  lastPracticeCorrect: { type: Boolean, default: null }
+  lastPracticeCorrect: { type: Boolean, default: null },
+  // Practice session that last recorded this word + the Leitner box it had
+  // before that session's first answer (vocabBookService.applyPracticeAnswer).
+  // Answers are now sent as they happen, so the same word can arrive twice in
+  // one session (right first, wrong on its re-queue) — the box is then
+  // re-derived from practicePrevBox instead of stacking two moves.
+  practiceSid:         { type: String, default: null },
+  practicePrevBox:     { type: Number, default: null }
 }, { _id: true });
 
 // Mỗi "sổ" = 1 topic/chủ đề

@@ -95,9 +95,29 @@ exports.getWeakWords = guard(async (req, res) => {
   res.json({ success: true, words });
 });
 
+// POST /practice-results { sid, results: [{ bookId, wordId, correct, sid? }] }
+exports.recordPracticeResults = guard(async (req, res) => {
+  const { results, sid } = req.body || {};
+  if (!Array.isArray(results) || !results.length) return res.status(400).json({ success: false, message: 'Thiếu kết quả luyện tập' });
+  const out = await vocabBookService.recordPracticeResults(
+    req.user._id,
+    results.map((r) => ({ bookId: r && r.bookId, wordId: r && r.wordId, correct: !!(r && r.correct === true), sid: r && r.sid })),
+    typeof sid === 'string' && sid ? sid.slice(0, 64) : null,
+  );
+  res.json({
+    success: true, recorded: out.recorded, skipped: out.skipped, newlyUnlocked: out.newlyUnlocked,
+    words: out.words.map(({ bookId, word }) => ({
+      bookId, _id: word._id, status: word.status, srsBox: word.srsBox, nextReviewAt: word.nextReviewAt,
+      lastReviewedAt: word.lastReviewedAt, wrongCount: word.wrongCount, correctCount: word.correctCount,
+      lastPracticedAt: word.lastPracticedAt, lastPracticeCorrect: word.lastPracticeCorrect,
+    })),
+  });
+});
+
 exports.recordPracticeResult = guard(async (req, res) => {
   const correct = req.body.correct === true;
-  const result = await vocabBookService.recordPracticeResult(req.params.id, req.params.wordId, req.user._id, correct);
+  const sid = typeof req.body.sid === 'string' && req.body.sid ? req.body.sid.slice(0, 64) : null;
+  const result = await vocabBookService.recordPracticeResult(req.params.id, req.params.wordId, req.user._id, correct, sid);
   if (result.status2 === 'book_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy' });
   if (result.status2 === 'word_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy từ' });
   res.json({ success: true, word: result.word, newlyUnlocked: result.newlyUnlocked });

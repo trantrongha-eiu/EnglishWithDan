@@ -195,7 +195,22 @@ function hwVocabGoalProgress(r) {
     const missing = Math.max(0, (v.minSize || v.wordCount || 0) - (v.bookSize || 0));
     return `<span class="hw-res-desc hw-res-desc--warn">⚠️ ${book}mới có <b>${v.bookSize}/${v.minSize}</b> từ — chưa đủ số từ giáo viên giao. Hãy <b>lưu thêm ${missing} từ</b> vào ${where} rồi luyện tập (quiz/flashcard) để hoàn thành.</span>`;
   }
-  return `<span class="hw-res-desc">${book}đã luyện <b>${Math.min(v.practiced, v.target)}/${v.target}</b> từ · trả lời đúng <b>${v.correct}</b> (cần ≥${v.needCorrect})</span>`;
+  const t = v.target || 1;
+  const practiced = Math.min(v.practiced || 0, t);
+  const pct = (n) => Math.round(Math.min(n, t) / t * 1000) / 10;
+  const left = t - practiced;
+  const needMore = Math.max(0, (v.needCorrect || 0) - (v.correct || 0));
+  const next = left > 0
+    ? `còn <b>${left}</b> từ chưa luyện`
+    : `cần thêm <b>${needMore}</b> từ trả lời đúng — luyện lại từ sai`;
+  return `<span class="hw-vg" title="Cam = đã luyện, xanh = trả lời đúng, vạch = mức cần đạt (${v.needCorrect} từ đúng)">
+      <span class="hw-vg-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${t}" aria-valuenow="${practiced}" aria-label="Số từ đã luyện">
+        <span class="hw-vg-fill hw-vg-fill--all" style="width:${pct(practiced)}%"></span>
+        <span class="hw-vg-fill hw-vg-fill--ok" style="width:${pct(v.correct || 0)}%"></span>
+        <span class="hw-vg-mark" style="left:${pct(v.needCorrect || 0)}%"></span>
+      </span>
+      <span class="hw-res-desc">${book}đã luyện <b>${practiced}/${t}</b> · đúng <b>${v.correct}</b>/${v.needCorrect} · ${next}</span>
+    </span>`;
 }
 
 function hwResourceRow(assignmentId, r, locked) {
@@ -450,7 +465,7 @@ function hwRender(card, data, { stale = false } = {}) {
       <li><span class="hw-res-tag hw-res-tag--quiz">≥70%</span> Bài có chấm điểm (grammar, vocabulary, viết câu, template, buổi học khóa Writing/Speaking…): cần đạt <b>từ 70% số điểm trở lên</b> mới tính hoàn thành. Buổi học <b>Mindset</b>: thêm điều kiện mỗi bài Reading/Listening của buổi cũng phải đạt <b>từ 70%</b>.</li>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥${PRACTICE_PASS}%</span> Reading / Listening (đề full, bài đọc lẻ, bài nghe lẻ, dictation): cần đạt <b>từ ${PRACTICE_PASS}% số điểm trở lên</b> là tự động tính hoàn thành.</li>
       <li><span class="hw-res-tag hw-res-tag--quiz">≥${GAPFILL_MIN_CORRECT} câu đúng</span> Bài nghe Gap-fill: cần điền <b>đúng ít nhất ${GAPFILL_MIN_CORRECT} chỗ trống</b> trên tổng số chỗ trống của bài.</li>
-      <li><span class="hw-res-tag hw-res-tag--quiz">≥70% đúng</span> Học từ trong sổ từ vựng: chỉ tính <b>Sổ 1–5</b> (sổ mặc định; nếu giáo viên chỉ định sổ thì phải học đúng sổ đó). Sổ phải có <b>đủ số từ giáo viên giao</b> (thiếu thì tự lưu thêm từ vào sổ), rồi luyện tập (quiz/flashcard) <b>đủ số từ đó</b> và trả lời đúng <b>từ 70%</b> trở lên. Đổi trạng thái "đã thuộc" bằng tay không được tính.</li>
+      <li><span class="hw-res-tag hw-res-tag--quiz">≥70% đúng</span> Học từ trong sổ từ vựng: chỉ tính <b>Sổ 1–5</b> (sổ mặc định; nếu giáo viên chỉ định sổ thì phải học đúng sổ đó). Sổ phải có <b>đủ số từ giáo viên giao</b> (thiếu thì tự lưu thêm từ vào sổ), rồi luyện tập (quiz/flashcard) <b>đủ số từ đó</b> và trả lời đúng <b>từ 70%</b> trở lên. Kết quả được lưu <b>ngay sau mỗi câu</b> — dừng giữa chừng vẫn được tính; từ <b>chưa có nghĩa</b> không xuất hiện khi luyện nên không được tính. Đổi trạng thái "đã thuộc" bằng tay không được tính.</li>
       <li><span class="hw-res-tag hw-res-tag--writing">≥${MIN_WORDS_T1}/${MIN_WORDS_T2} từ</span> Bài viết (Writing): chỉ cần <b>nộp bài và viết đủ số từ tối thiểu</b> (Task 1 ≥${MIN_WORDS_T1} từ, Task 2 ≥${MIN_WORDS_T2} từ) là tính hoàn thành, không yêu cầu điểm.</li>
       <li><span class="hw-res-tag">Mở xem là xong</span> Video Shadowing, bài giảng Tips, Unit Vocab/Paraphrase: chỉ cần <b>bấm vào mở xem</b> là tự động tính hoàn thành.</li>
       <li>🔒 ${lockRule} (kể cả bài đã quá hạn) thì các bài tập mới hơn sẽ bị <b>khoá</b> — làm bù bài cũ để mở khoá.</li>

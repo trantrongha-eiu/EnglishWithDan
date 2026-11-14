@@ -310,6 +310,65 @@ describe('student progress', () => {
   });
 });
 
+// The practice screen sends answers in batches WHILE the student practises
+// (POST /vocabbook/practice-results) — a session left half-way still counts,
+// and the ✔ is stamped when the quota was reached, not when the list loads.
+describe('batched practice results (sent during the session)', () => {
+  const batch = (student, results, sid = 'sess-1') =>
+    request(app).post('/api/vocabbook/practice-results').set(authH(student)).send({ sid, results });
+
+  test('answers count for the homework as soon as each batch lands', async () => {
+    const { student, book } = await setup({ bookWords: 10, wordCount: 5 });
+    const first = await batch(student, book.words.slice(0, 3).map((w) => ({ bookId: book._id, wordId: w._id, correct: true })));
+    expect(first.status).toBe(200);
+    expect(first.body).toMatchObject({ success: true, recorded: 3, skipped: 0 });
+    expect(first.body.words[0]).toMatchObject({ lastPracticeCorrect: true, srsBox: 1 });
+    let { item } = await myVocabItem(student);
+    expect(item.vocabGoal).toMatchObject({ practiced: 3, correct: 3 });
+
+    await batch(student, book.words.slice(3, 5).map((w) => ({ bookId: book._id, wordId: w._id, correct: true })));
+    ({ item } = await myVocabItem(student));
+    expect(item.completed).toBe(true);
+    const prog = await AssignmentProgress.findOne({ studentId: student._id }).lean();
+    const done = prog.items.find((it) => it.source === 'auto');
+    const fresh = await VocabBook.findById(book._id).lean();
+    const lastAt = Math.max(...fresh.words.slice(0, 5).map((w) => new Date(w.lastPracticedAt).getTime()));
+    expect(new Date(done.completedAt).getTime()).toBe(lastAt); // reach time, not "now"
+  });
+
+  test('same session: a right answer then a miss on the re-queue counts as wrong, once', async () => {
+    const { student, book } = await setup({ bookWords: 10, wordCount: 5 });
+    const w = book.words[0];
+    await batch(student, [{ bookId: book._id, wordId: w._id, correct: true }]);
+    await batch(student, [{ bookId: book._id, wordId: w._id, correct: true }]); // resend = no-op
+    let doc = (await VocabBook.findById(book._id).lean()).words[0];
+    expect(doc).toMatchObject({ srsBox: 1, correctCount: 1, wrongCount: 0, lastPracticeCorrect: true });
+
+    await batch(student, [{ bookId: book._id, wordId: w._id, correct: false }]);
+    doc = (await VocabBook.findById(book._id).lean()).words[0];
+    expect(doc).toMatchObject({ srsBox: 0, correctCount: 0, wrongCount: 1, lastPracticeCorrect: false });
+
+    await batch(student, [{ bookId: book._id, wordId: w._id, correct: true }]); // miss wins in this session
+    doc = (await VocabBook.findById(book._id).lean()).words[0];
+    expect(doc).toMatchObject({ srsBox: 0, lastPracticeCorrect: false });
+
+    await batch(student, [{ bookId: book._id, wordId: w._id, correct: true }], 'sess-2'); // next session
+    doc = (await VocabBook.findById(book._id).lean()).words[0];
+    expect(doc).toMatchObject({ srsBox: 1, correctCount: 1, lastPracticeCorrect: true });
+  });
+
+  test("another student's book / unknown words are skipped, not errors", async () => {
+    const { student, book } = await setup({ bookWords: 10, wordCount: 5 });
+    const other = await createStudent();
+    const res = await batch(other, [{ bookId: book._id, wordId: book.words[0]._id, correct: true }, { bookId: 'nope', wordId: 'x', correct: true }]);
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ recorded: 0, skipped: 2 });
+    const doc = (await VocabBook.findById(book._id).lean()).words[0];
+    expect(doc.lastPracticedAt).toBeNull();
+    expect((await batch(student, [])).status).toBe(400);
+  });
+});
+
 describe('teacher progress table', () => {
   test('shows per-student vocab progress and completion', async () => {
     const { teacher, student, cls, book, assignment } = await setup({ bookWords: 10, wordCount: 5 });

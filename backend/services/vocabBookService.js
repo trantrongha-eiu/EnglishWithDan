@@ -322,7 +322,66 @@ function dueWordMatch(now) {
 //   - wrong: same reset-to-0 computeSrs() already does for 'chua-thuoc'.
 // status is then re-derived from the resulting box via statusFromBox() —
 // "repeated correct answers" is what earns mastery, never a single answer.
-async function recordPracticeResult(bookId, wordId, userId, correct) {
+// SRS move for one graded answer from box `prevBox`. One wrong answer on a
+// mastered word drops it to "So-so" (box 1, back tomorrow) rather than all
+// the way to "Not yet" — a slip on a word the student knew shouldn't erase
+// it; a second miss then resets it to 0.
+function srsForAnswer(prevBox, correct) {
+  return !correct && prevBox >= MASTERED_BOX
+    ? { srsBox: 1, nextReviewAt: new Date(Date.now() + SRS_INTERVAL_DAYS[1] * DAY_MS), lastReviewedAt: new Date() }
+    : computeSrs(prevBox, correct ? 'da-thuoc' : 'chua-thuoc');
+}
+
+// Applies one graded answer to a word subdocument (no save). Returns false
+// when it changes nothing.
+//
+// `sid` = the practice session the answer belongs to. The client sends
+// answers as they happen, so within ONE session a word can arrive more than
+// once (its re-queue / 2nd rep). The session's rule stays the old
+// end-of-session one — one SRS move per word per session, and a miss at any
+// point wins over a right answer:
+//   - first answer of the session: normal move, practicePrevBox remembers
+//     the box it started from
+//   - right again / wrong again: nothing to do
+//   - wrong after a right one: the right answer is undone and the miss is
+//     applied from practicePrevBox, as if the session had sent "wrong" once.
+// No sid (legacy single-answer endpoint): every call is its own move.
+function applyPracticeAnswer(wordDoc, correct, sid) {
+  correct = !!correct;
+  const sameSession = !!sid && wordDoc.practiceSid === sid && wordDoc.lastPracticeCorrect !== null;
+  if (sameSession) {
+    if (correct || wordDoc.lastPracticeCorrect === false) return false;
+    // right → wrong inside one session
+    wordDoc.correctCount = Math.max(0, (wordDoc.correctCount || 0) - 1);
+    wordDoc.wrongCount = (wordDoc.wrongCount || 0) + 1;
+    const from = wordDoc.practicePrevBox ?? effectiveBox(wordDoc);
+    const srs = srsForAnswer(from, false);
+    wordDoc.srsBox = srs.srsBox;
+    wordDoc.nextReviewAt = srs.nextReviewAt;
+    wordDoc.lastReviewedAt = srs.lastReviewedAt;
+    wordDoc.status = statusFromBox(wordDoc.srsBox);
+    wordDoc.lastPracticedAt = srs.lastReviewedAt;
+    wordDoc.lastPracticeCorrect = false;
+    return true;
+  }
+
+  if (correct) wordDoc.correctCount = (wordDoc.correctCount || 0) + 1;
+  else wordDoc.wrongCount = (wordDoc.wrongCount || 0) + 1;
+  const prevBox = effectiveBox(wordDoc);
+  const srs = srsForAnswer(prevBox, correct);
+  wordDoc.srsBox = srs.srsBox;
+  wordDoc.nextReviewAt = srs.nextReviewAt;
+  wordDoc.lastReviewedAt = srs.lastReviewedAt;
+  wordDoc.status = statusFromBox(wordDoc.srsBox);
+  // Homework vocab_goal evidence — set here and nowhere else (see VocabBook.js).
+  wordDoc.lastPracticedAt = srs.lastReviewedAt;
+  wordDoc.lastPracticeCorrect = correct;
+  wordDoc.practiceSid = sid || null;
+  wordDoc.practicePrevBox = sid ? prevBox : null;
+  return true;
+}
+
+async function recordPracticeResult(bookId, wordId, userId, correct, sid = null) {
   const book = await VocabBook.findOne({ _id: bookId, userId });
   if (!book) return { status2: 'book_not_found' };
 
@@ -330,28 +389,7 @@ async function recordPracticeResult(bookId, wordId, userId, correct) {
   if (!wordDoc) return { status2: 'word_not_found' };
 
   const wasMastered = wordDoc.status === 'da-thuoc';
-
-  if (correct) {
-    wordDoc.correctCount = (wordDoc.correctCount || 0) + 1;
-  } else {
-    wordDoc.wrongCount = (wordDoc.wrongCount || 0) + 1;
-  }
-  // One wrong answer on a mastered word drops it to "So-so" (box 1, back
-  // tomorrow) rather than all the way to "Not yet" — a slip on a word the
-  // student knew shouldn't erase it; a second miss then resets it to 0.
-  const prevBox = effectiveBox(wordDoc);
-  const srs = !correct && prevBox >= MASTERED_BOX
-    ? { srsBox: 1, nextReviewAt: new Date(Date.now() + SRS_INTERVAL_DAYS[1] * DAY_MS), lastReviewedAt: new Date() }
-    : computeSrs(prevBox, correct ? 'da-thuoc' : 'chua-thuoc');
-  wordDoc.srsBox = srs.srsBox;
-  wordDoc.nextReviewAt = srs.nextReviewAt;
-  wordDoc.lastReviewedAt = srs.lastReviewedAt;
-  wordDoc.status = statusFromBox(wordDoc.srsBox);
-  // Homework vocab_goal evidence — set here and nowhere else (see VocabBook.js).
-  wordDoc.lastPracticedAt = srs.lastReviewedAt;
-  wordDoc.lastPracticeCorrect = !!correct;
-
-  await book.save();
+  if (applyPracticeAnswer(wordDoc, correct, sid)) await book.save();
 
   // Only worth a badge check when this specific call is what pushed the
   // word INTO mastery — recordPracticeResult fires once per answer, so an
@@ -362,6 +400,45 @@ async function recordPracticeResult(bookId, wordId, userId, correct) {
     newlyUnlocked = (await badgeService.checkAndAwardNewBadges(userId)).newlyUnlocked;
   }
   return { status2: 'ok', word: wordDoc, newlyUnlocked };
+}
+
+// Batch form the practice screen uses: answers are sent a few at a time as
+// the student goes (and on leaving the page), so a session left half-way
+// still counts for homework. results = [{ bookId, wordId, correct, sid? }],
+// `sid` default for items without their own. One load + one save per book.
+// Unknown books/words are skipped (deleted mid-session), never an error.
+const MAX_PRACTICE_BATCH = 200;
+async function recordPracticeResults(userId, results, sid = null) {
+  const list = (Array.isArray(results) ? results : []).slice(0, MAX_PRACTICE_BATCH);
+  const byBook = new Map();
+  for (const r of list) {
+    if (!r || !mongoose.isValidObjectId(r.bookId) || !mongoose.isValidObjectId(r.wordId)) continue;
+    const k = String(r.bookId);
+    if (!byBook.has(k)) byBook.set(k, []);
+    byBook.get(k).push(r);
+  }
+  const words = [];
+  let skipped = list.length - [...byBook.values()].reduce((n, a) => n + a.length, 0);
+  let becameMastered = false;
+  for (const [bookId, items] of byBook) {
+    const book = await VocabBook.findOne({ _id: bookId, userId });
+    if (!book) { skipped += items.length; continue; }
+    let changed = false;
+    for (const r of items) {
+      const wordDoc = book.words.id(r.wordId);
+      if (!wordDoc) { skipped++; continue; }
+      const wasMastered = wordDoc.status === 'da-thuoc';
+      const itemSid = typeof r.sid === 'string' && r.sid ? r.sid.slice(0, 64) : sid;
+      if (applyPracticeAnswer(wordDoc, r.correct, itemSid)) changed = true;
+      if (!wasMastered && wordDoc.status === 'da-thuoc') becameMastered = true;
+      words.push({ bookId, word: wordDoc });
+    }
+    if (changed) await book.save();
+  }
+  const newlyUnlocked = becameMastered
+    ? (await badgeService.checkAndAwardNewBadges(userId)).newlyUnlocked
+    : [];
+  return { recorded: words.length, skipped, words, newlyUnlocked };
 }
 
 async function getBook(id, userId) {
@@ -813,7 +890,7 @@ async function getWeakWords(userId, limit = 20) {
 module.exports = {
   listBooks, reorderBooks, completePractice, getBook, createBook, updateBook,
   mergeBooks, moveAllWords, deleteBook, addWord, updateWord, bulkUpdateStatus, deleteWord, bulkAddWords, deleteWords,
-  getDueWords, countDueWords, getVocabStats, getWeakWords, recordPracticeResult, statusFromBox,
+  getDueWords, countDueWords, getVocabStats, getWeakWords, recordPracticeResult, recordPracticeResults, applyPracticeAnswer, statusFromBox,
   // Exported so the paraphrase-SRS layer (services/paraphraseSrsService.js)
   // reuses the exact same Leitner box maths instead of a second copy.
   computeSrs, SRS_INTERVAL_DAYS,

@@ -25,6 +25,24 @@ const { canonicalName, assignDefaultSlots } = require('../utils/defaultVocabBook
 const MIN_WORD_COUNT = 5;
 const MAX_WORD_COUNT = 300; // = a VocabBook's own word cap (addWord / mergeBooks)
 
+// When the quota was reached: walk the counted words in answer order and
+// stop at the first moment both bars are met. Both counts only grow as words
+// are added, so that moment is well defined. Used as the homework item's
+// completedAt — the old "now" stamped the moment someone next opened the
+// homework list, which could read as after the deadline.
+function reachedAtOf(words, sinceMs, wordCount, needCorrect) {
+  const done = words
+    .filter((w) => w.lastPracticedAt && new Date(w.lastPracticedAt).getTime() >= sinceMs)
+    .sort((a, b) => new Date(a.lastPracticedAt) - new Date(b.lastPracticedAt));
+  let practiced = 0, correct = 0;
+  for (const w of done) {
+    practiced += 1;
+    if (w.lastPracticeCorrect === true) correct += 1;
+    if (practiced >= wordCount && correct >= needCorrect) return new Date(w.lastPracticedAt);
+  }
+  return null;
+}
+
 function evaluateBook(words, since, wordCount) {
   const sinceMs = since ? new Date(since).getTime() : 0;
   const size = words.length;
@@ -36,10 +54,11 @@ function evaluateBook(words, since, wordCount) {
   }
   if (size >= wordCount) {
     const needCorrect = Math.ceil((wordCount * PASS_PERCENT) / 100);
+    const completed = practiced >= wordCount && correct >= needCorrect;
     return {
-      mode: 'quota',
-      completed: practiced >= wordCount && correct >= needCorrect,
+      mode: 'quota', completed,
       practiced, correct, target: wordCount, needCorrect, bookSize: size,
+      reachedAt: completed ? reachedAtOf(words, sinceMs, wordCount, needCorrect) : null,
     };
   }
   // Not eligible yet: minSize = words the book must hold before the quota applies.

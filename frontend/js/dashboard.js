@@ -171,8 +171,11 @@ function _countAnswer() {
     // answer, after wrongWordSet/correctAnswers already reflect this
     // answer's outcome — the single hook point where "this word was seen
     // this session" can be recorded without touching each mode individually.
-    if (currentWord?._id) _vocabWordsSeen.set(currentWord._id, currentWord);
-    // Homework "học N từ" bar — same right/wrong rule the sync below sends
+    if (currentWord?._id) {
+        _vocabWordsSeen.set(currentWord._id, currentWord);
+        _queueEvidence(currentWord); // saved to the server within ~1.5s, not at session end
+    }
+    // Homework "học N từ" bar — same right/wrong rule the server applies
     // ("wrong at any point this session" = wrong).
     if (currentWord?._id && (currentWord._reviewBookId || _isBookPractice)) {
         _goalAnswers.set(String(currentWord._id), !wrongWordSet.has(currentWord.word));
@@ -1116,44 +1119,66 @@ function _goalWordState(g, w, sinceMs) {
 
 function _goalProgress(g, words) {
     const sinceMs = g.since ? new Date(g.since).getTime() : 0;
-    let practiced = 0, correct = 0;
+    let practiced = 0, correct = 0, fresh = 0, noMeaning = 0;
     for (const w of words) {
         const st = _goalWordState(g, w, sinceMs);
-        if (st === undefined) continue;
+        if (st === undefined) {
+            // Practice sessions skip a word without a meaning (startPractice),
+            // so it can never count until the student adds one.
+            if (w.word && String(w.meaning || '').trim()) fresh++; else noMeaning++;
+            continue;
+        }
         practiced++;
         if (st) correct++;
     }
     const size = words.length;
     const done = g.completed || (size >= g.target && practiced >= g.target && correct >= g.needCorrect);
-    return { practiced, correct, size, done };
+    return { practiced, correct, size, done, fresh, noMeaning };
 }
 
 function _goalCardHtml(g, p, inSession) {
     const t = g.target;
-    const head = `📌 Bài tập${g.title ? ` <b>${_esc(g.title)}</b>` : ''}: học <b>${t} từ</b> trong ${g.requiredSlot ? `Sổ ${g.requiredSlot}` : 'một sổ (Sổ 1–5)'}`;
+    const where = g.requiredSlot ? `Sổ ${g.requiredSlot}` : 'một sổ (Sổ 1–5)';
+    const head = `<span class="vgoal-tag">📌 Bài tập${g.title ? ` · ${_esc(g.title)}` : ''}</span>
+        <span class="vgoal-title">Học <b>${t} từ</b> trong ${where}</span>`;
     if (g.completed) {
-        return `<div class="vgoal vgoal--done"><div class="vgoal-head">${head}</div><div class="vgoal-status">✔ Đã hoàn thành chỉ tiêu này.</div></div>`;
+        return `<div class="vgoal vgoal--done"><div class="vgoal-head">${head}<span class="vgoal-badge">✔ Đã đạt</span></div></div>`;
     }
     const okW  = Math.round(Math.min(p.correct, t) / t * 1000) / 10;
     const allW = Math.round(Math.min(p.practiced, t) / t * 1000) / 10;
     const needMark = Math.round(g.needCorrect / t * 1000) / 10;
-    let status;
+    const left = Math.max(0, t - p.practiced);
+    const missingCorrect = Math.max(0, g.needCorrect - p.correct);
+    // Not enough words left that a session can show (no meaning = skipped).
+    const blockedByMeaning = p.size >= t && p.practiced < t && p.practiced + p.fresh < t && p.noMeaning > 0;
+    let status, warn = false, cta = '';
     if (p.done) status = '🎉 Đã đủ chỉ tiêu! Bài tập sẽ được tính là hoàn thành.';
-    else if (p.size < t) status = `⚠️ Sổ mới có <b>${p.size}/${t}</b> từ — hãy <b>lưu thêm ${t - p.size} từ</b> (+ Add word, Nhập hàng loạt, hoặc lưu từ khi làm bài) rồi luyện tập.`;
-    else if (p.practiced < t) status = `Còn <b>${t - p.practiced} từ</b> chưa luyện.`
-        + (p.correct < g.needCorrect && p.practiced - p.correct > 0 ? ' Từ nào trả lời sai thì luyện lại cho đúng.' : '');
-    else status = `Đã luyện đủ ${t} từ — cần thêm <b>${g.needCorrect - p.correct} từ trả lời đúng</b>: luyện lại các từ đang sai.`;
-    const saveHint = inSession && !p.done
-        ? '<div class="vgoal-hint">Kết quả được lưu khi bạn làm hết phiên hoặc bấm dừng / thoát.</div>' : '';
-    return `<div class="vgoal${p.done ? ' vgoal--done' : ''}${p.size < t ? ' vgoal--warn' : ''}">
-        <div class="vgoal-head">${head}</div>
+    else if (p.size < t) {
+        warn = true;
+        status = `⚠️ Sổ mới có <b>${p.size}/${t}</b> từ — hãy <b>lưu thêm ${t - p.size} từ</b> (+ Add word, Nhập hàng loạt, hoặc lưu từ khi làm bài) rồi luyện tập.`;
+    } else if (blockedByMeaning) {
+        warn = true;
+        status = `⚠️ <b>${p.noMeaning} từ chưa có nghĩa</b> nên không xuất hiện khi luyện — còn thiếu <b>${t - p.practiced - p.fresh}</b> từ luyện được. Bấm ✏️ ở từ đó để thêm nghĩa.`;
+    } else if (p.practiced < t) {
+        status = `Còn <b>${left} từ</b> chưa luyện`
+            + (missingCorrect > 0 && p.practiced - p.correct > 0 ? ` · cần thêm <b>${missingCorrect}</b> từ đúng — từ nào sai thì luyện lại cho đúng.` : '.');
+    } else status = `Đã luyện đủ ${t} từ — cần thêm <b>${missingCorrect} từ trả lời đúng</b>: luyện lại các từ đang sai.`;
+    if (!inSession && !p.done && p.size >= t && !blockedByMeaning) {
+        cta = `<button type="button" class="vgoal-cta" onclick="openFlashcardMode()"><i class="fas fa-play"></i> ${p.practiced ? 'Luyện tiếp' : 'Bắt đầu luyện'}</button>`;
+    }
+    const save = inSession && !p.done ? _evidenceStateHtml() : '';
+    return `<div class="vgoal${p.done ? ' vgoal--done' : ''}${warn ? ' vgoal--warn' : ''}">
+        <div class="vgoal-head">${head}${cta}</div>
         <div class="vgoal-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${t}" aria-valuenow="${Math.min(p.practiced, t)}" aria-label="Số từ đã luyện">
             <div class="vgoal-fill vgoal-fill--all" style="width:${allW}%"></div>
             <div class="vgoal-fill vgoal-fill--ok" style="width:${okW}%"></div>
             <div class="vgoal-mark" style="left:${needMark}%" title="Cần ${g.needCorrect} từ đúng"></div>
         </div>
-        <div class="vgoal-nums"><span>Đã luyện <b>${Math.min(p.practiced, t)}/${t}</b> từ</span><span>Đúng <b>${p.correct}</b> / cần ≥${g.needCorrect}</span></div>
-        <div class="vgoal-status">${status}</div>${saveHint}
+        <div class="vgoal-nums">
+            <span><i class="vgoal-dot vgoal-dot--all"></i>Đã luyện <b>${Math.min(p.practiced, t)}/${t}</b></span>
+            <span><i class="vgoal-dot vgoal-dot--ok"></i>Đúng <b>${p.correct}</b> / cần ≥${g.needCorrect}</span>
+        </div>
+        <div class="vgoal-status">${status}</div>${save}
     </div>`;
 }
 
@@ -1183,6 +1208,7 @@ function _showGoalReachedModal(g, p) {
             + '<br>Bạn muốn tiếp tục học hay dừng lại?';
     }
     _clearAutoNext(); // don't let a flashcard auto-advance run behind the popup
+    _flushPracticeEvidence(); // the ✔ lands now, whichever button they pick
     openModal('modal-goal-reached');
 }
 
@@ -2896,8 +2922,17 @@ function _buildSmartBookSession(words) {
             else i++;
         }
     }
+    // Open homework goal: words not practised for it yet go first, so the
+    // first N answers of the session are N words that count.
+    const goalFresh = new Set();
+    for (const g of _goalsForCurrentBook()) {
+        if (g.completed) continue;
+        const sinceMs = g.since ? new Date(g.since).getTime() : 0;
+        for (const w of words) if (_goalWordState(g, w, sinceMs) === undefined) goalFresh.add(w);
+    }
     const score = (w) => {
         let s = (w.srsBox || 0) === 0 && !_wordIsMastered(w) ? 3 : _wordIsMastered(w) ? 0.5 : 2;
+        if (goalFresh.has(w)) s += 6;
         s += Math.min(w.wrongCount || 0, 6) * 0.5;
         if (w.lastPracticeCorrect === false) s += 2;
         const overdueDays = w.nextReviewAt ? (now - new Date(w.nextReviewAt).getTime()) / _DAY_MS : 0;
@@ -3875,59 +3910,191 @@ function retryWrongWords() {
     _activateModeNow(currentMode === 'study' ? 'mixed' : currentMode);
 }
 
-// Once per session: send the answered words (no-op if already sent / none).
+// Session end / quit / mode switch: send whatever is still queued now, then
+// refresh the homework card (its ✔ may have changed).
 function _flushPracticeEvidence() {
-    if (_vocabWordsSeen.size > 0 && !_persistedThisSession) {
-        _persistedThisSession = true;
-        _syncPracticeEvidence();
+    _flushEvidence().then(() => _refreshHomeworkSoon(true));
+}
+
+/* ── Graded-practice evidence, saved WHILE practising ──
+   Until 2026-11-14 every answer was held in memory and sent only when the
+   session ended (or on Dừng/Thoát): a student who learnt 50 words in a long
+   session saw "đã luyện 4/50" on the homework card the whole time, lost
+   everything on a closed tab / reload / dead phone battery, and the ✔ was
+   stamped at the moment the batch finally arrived (after the deadline).
+
+   Now each answered book word is queued and sent in small batches to
+   POST /vocabbook/practice-results — ~1.5s after the last answer, at once
+   when 8 are waiting, and with keepalive when the page is hidden/closed.
+   The server keeps the old session rule (one SRS move per word per session,
+   a miss at any point wins — vocabBookService.applyPracticeAnswer, keyed by
+   the session id), so a word is sent again only when its outcome flips
+   right → wrong, and resending the same answer is harmless. Unsent answers
+   live in localStorage too and go out on the next page load. */
+const EVIDENCE_LS_KEY = 'dash_vocab_evidence_q';
+const EVIDENCE_BATCH_MAX = 150;
+const _evidenceQueue = new Map();    // `${sid}:${wordId}` -> { bookId, wordId, correct, sid }
+const _evidenceInflight = new Map(); // same shape, batch currently being sent
+const _evidenceOutcome = new Map();  // `${sid}:${wordId}` -> outcome already queued/sent
+const _evidenceWordObj = new Map();  // wordId -> word object to reflect the server result onto
+let _evidenceTimer = null;
+let _evidencePromise = null;
+let _evidenceFailures = 0;
+let _evidenceState = 'idle';         // idle | pending | saving | saved | retry
+let _evidencePageSid = null;         // fallback session id (practice outside startPractice)
+
+function _evidenceKey(sid, wordId) { return `${sid}:${wordId}`; }
+
+function _queueEvidence(w) {
+    const bookId = w._reviewBookId || (_isBookPractice ? currentBookId : null);
+    if (!bookId || !w._id) return; // curriculum Unit word etc. — no server SRS to update
+    if (!_evidencePageSid) _evidencePageSid = _newVocabSessionId();
+    const sid = _streakSess?.sid || _evidencePageSid;
+    const correct = !wrongWordSet.has(w.word);
+    const k = _evidenceKey(sid, w._id);
+    const prev = _evidenceOutcome.get(k);
+    // Already recorded a miss (it wins), or nothing changed.
+    if (prev === false || prev === correct) return;
+    _evidenceOutcome.set(k, correct);
+    _evidenceQueue.set(k, { bookId: String(bookId), wordId: String(w._id), correct, sid });
+    _evidenceWordObj.set(String(w._id), w);
+    _saveEvidenceLocal();
+    _setEvidenceState('pending');
+    if (_evidenceQueue.size >= 8) _flushEvidence();
+    else _scheduleEvidenceFlush(1500);
+}
+
+function _scheduleEvidenceFlush(ms) {
+    if (_evidenceTimer) clearTimeout(_evidenceTimer);
+    _evidenceTimer = setTimeout(() => { _evidenceTimer = null; _flushEvidence(); }, ms);
+}
+
+function _saveEvidenceLocal() {
+    try {
+        const all = [..._evidenceInflight.values(), ..._evidenceQueue.values()];
+        if (all.length) localStorage.setItem(EVIDENCE_LS_KEY, JSON.stringify({ at: Date.now(), items: all.slice(-500) }));
+        else localStorage.removeItem(EVIDENCE_LS_KEY);
+    } catch (e) {}
+}
+
+// Server outcome (status/srsBox/counters/lastPractice*) back onto the word
+// object the page shows. For a book session that is the very object in
+// currentBookData.words, so the table/goal bar read fresh values without a
+// reload; for review-due copies the assign is harmless.
+function _reflectEvidence(words) {
+    for (const s of words || []) {
+        const w = _evidenceWordObj.get(String(s._id));
+        if (!w) continue;
+        const { bookId, ...fields } = s;
+        Object.assign(w, fields);
     }
 }
 
-/* ── Sync graded-practice evidence to the server (fire-and-forget) ──
-   Single call site every practice mode funnels through at session end —
-   replaces the old _persistWrongCounts() (wrongCount-only, in-book practice
-   only) AND dashboard-review.js's former per-word status PATCH (review-due
-   only). Server computes the actual SRS box movement, wrongCount/
-   correctCount, and derived status (see vocabBookService.recordPracticeResult) —
-   this only decides WHICH book each word belongs to and whether it was
-   "ever wrong this session" (wins over any correct answer along the way,
-   same rule the old review-due flow already used — not "last answer wins"). */
-async function _syncPracticeEvidence() {
-    if (!_vocabWordsSeen.size) return;
-    const calls = [];
-    for (const w of _vocabWordsSeen.values()) {
-        const bookId = w._reviewBookId || (_isBookPractice ? currentBookId : null);
-        if (!bookId) continue; // no resolvable book context (e.g. a curriculum Unit word) — nothing to sync
-        const correct = !wrongWordSet.has(w.word);
-        calls.push(
-            fetch(`${API}/vocabbook/${bookId}/words/${w._id}/practice-result`, {
-                method: 'POST', headers: authH(),
-                body: JSON.stringify({ correct })
-            })
-            .then(r => window.ApiClient.handleResponse(r))
-            // Reflect the server-computed outcome (status/srsBox/wrongCount/
-            // correctCount) back onto THIS word object. For a book-practice
-            // session `w` is the exact same object referenced by
-            // currentBookData.words (openFlashcardMode/practiceHardWords
-            // build currentUnit.words from that array, never a deep copy),
-            // so this is what closeUnitView()'s re-render actually reads —
-            // without it, the table would show pre-session wrongCount/status
-            // until the next full page load. For review-due/weak-vocab
-            // sessions `w` is a throwaway spread copy with nothing reading
-            // it afterward, so the assign is harmless there.
-            .then(data => {
-                if (data?.word) Object.assign(w, data.word);
-                if (window.showBadgeUnlocked && data?.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
-            })
-            .catch(() => {})
-        );
+// Sends the queue (one request at a time). Resolves true when nothing is
+// left unsent. keepalive: page is going away — fire and forget, the local
+// copy stays so the next load resends (idempotent on the server).
+function _flushEvidence({ keepalive = false } = {}) {
+    if (_evidenceTimer) { clearTimeout(_evidenceTimer); _evidenceTimer = null; }
+    if (keepalive) {
+        const items = [..._evidenceInflight.values(), ..._evidenceQueue.values()].slice(0, EVIDENCE_BATCH_MAX);
+        if (!items.length) return Promise.resolve(true);
+        _saveEvidenceLocal();
+        try {
+            fetch(`${API}/vocabbook/practice-results`, {
+                method: 'POST', headers: authH(), keepalive: true,
+                body: JSON.stringify({ results: items }),
+            }).catch(() => {});
+        } catch (e) {}
+        return Promise.resolve(true);
     }
-    if (!calls.length) return;
-    await Promise.all(calls);
-    // A homework "học N từ" may be done now — refresh the homework card
-    // (its ✔ and the goal list behind the progress bars).
-    if ((window._hwVocabGoals || []).some(g => !g.completed) && typeof window.loadHomework === 'function') window.loadHomework();
+    if (_evidencePromise) return _evidencePromise.then(() => _evidenceQueue.size ? _flushEvidence() : true);
+    if (!_evidenceQueue.size) return Promise.resolve(true);
+
+    const batch = [..._evidenceQueue.entries()].slice(0, EVIDENCE_BATCH_MAX);
+    for (const [k, v] of batch) { _evidenceQueue.delete(k); _evidenceInflight.set(k, v); }
+    _setEvidenceState('saving');
+    _evidencePromise = (async () => {
+        let ok = false;
+        try {
+            const res = await fetch(`${API}/vocabbook/practice-results`, {
+                method: 'POST', headers: authH(),
+                body: JSON.stringify({ results: batch.map(([, v]) => v) }),
+            });
+            const data = await window.ApiClient.handleResponse(res);
+            _reflectEvidence(data.words);
+            if (window.showBadgeUnlocked && data.newlyUnlocked?.length) window.showBadgeUnlocked(data.newlyUnlocked);
+            ok = true;
+        } catch (err) {
+            const st = err && err.status;
+            // A 4xx other than 429 won't succeed on retry (locked plan, bad id) — drop it.
+            if (st && st >= 400 && st < 500 && st !== 429 && st !== 401) ok = true;
+            else {
+                for (const [k, v] of batch) if (!_evidenceQueue.has(k)) _evidenceQueue.set(k, v);
+            }
+        }
+        for (const [k] of batch) _evidenceInflight.delete(k);
+        _saveEvidenceLocal();
+        if (ok) {
+            _evidenceFailures = 0;
+            _setEvidenceState(_evidenceQueue.size ? 'pending' : 'saved');
+            if (_evidenceQueue.size) _scheduleEvidenceFlush(300);
+            _refreshHomeworkSoon(false);
+        } else {
+            _evidenceFailures++;
+            _setEvidenceState('retry');
+            _scheduleEvidenceFlush(Math.min(30000, 2000 * 2 ** Math.min(_evidenceFailures, 4)));
+        }
+        return ok && !_evidenceQueue.size;
+    })().finally(() => { _evidencePromise = null; });
+    return _evidencePromise;
 }
+
+function _setEvidenceState(s) {
+    if (_evidenceState === s) return;
+    _evidenceState = s;
+    document.querySelectorAll('[data-evidence-state]').forEach(el => { el.outerHTML = _evidenceStateHtml(); });
+}
+function _evidenceStateHtml() {
+    const m = {
+        idle:    ['', ''],
+        pending: ['is-pending', '<i class="fas fa-circle-notch fa-spin"></i> Đang lưu…'],
+        saving:  ['is-pending', '<i class="fas fa-circle-notch fa-spin"></i> Đang lưu…'],
+        saved:   ['is-saved',   '<i class="fas fa-cloud-arrow-up"></i> Đã lưu từng câu lên hệ thống'],
+        retry:   ['is-retry',   '<i class="fas fa-triangle-exclamation"></i> Chưa lưu được (mạng yếu?) — đang tự thử lại, đừng đóng trang'],
+    }[_evidenceState] || ['', ''];
+    return `<span class="vgoal-save ${m[0]}" data-evidence-state>${m[1]}</span>`;
+}
+
+// The homework card (and the goal list behind the in-book bars) — at most
+// every 10s while practising, right away at session end.
+let _hwRefreshAt = 0, _hwRefreshTimer = null;
+function _refreshHomeworkSoon(now) {
+    if (!(window._hwVocabGoals || []).some(g => !g.completed) || typeof window.loadHomework !== 'function') return;
+    const wait = now ? 0 : Math.max(0, _hwRefreshAt + 10000 - Date.now());
+    if (_hwRefreshTimer) { if (!now) return; clearTimeout(_hwRefreshTimer); }
+    _hwRefreshTimer = setTimeout(() => { _hwRefreshTimer = null; _hwRefreshAt = Date.now(); window.loadHomework(); }, wait);
+}
+
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') _flushEvidence({ keepalive: true });
+});
+window.addEventListener('pagehide', () => _flushEvidence({ keepalive: true }));
+
+// Answers left unsent by an earlier visit (closed tab, offline) — resend.
+(function _resendStoredEvidence() {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(EVIDENCE_LS_KEY) || 'null'); } catch (e) {}
+    if (!saved || !Array.isArray(saved.items) || !saved.items.length) return;
+    // Older than 7 days: the session is long over and the words may be gone.
+    if (Date.now() - (saved.at || 0) > 7 * 24 * 3600 * 1000) { try { localStorage.removeItem(EVIDENCE_LS_KEY); } catch (e) {} return; }
+    for (const it of saved.items) {
+        if (!it || !it.bookId || !it.wordId || !it.sid) continue;
+        const k = _evidenceKey(it.sid, it.wordId);
+        _evidenceQueue.set(k, { bookId: String(it.bookId), wordId: String(it.wordId), correct: !!it.correct, sid: String(it.sid) });
+        _evidenceOutcome.set(k, !!it.correct);
+    }
+    if (_evidenceQueue.size && localStorage.getItem('token')) setTimeout(() => _flushEvidence(), 2500);
+})();
 
 /* ══════════════════════════════════════════════
    DIFFICULT WORDS TRACKER

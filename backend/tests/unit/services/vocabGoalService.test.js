@@ -15,6 +15,21 @@ function words({ practiced = 0, correct = 0, untouched = 0, at = AFTER }) {
 }
 
 describe('evaluateBook — book with >= N words (quota mode)', () => {
+  test('reachedAt = the answer that first met both bars, not the latest one', () => {
+    const t = (m) => new Date(AFTER.getTime() + m * 60000);
+    const ws = [
+      { lastPracticedAt: t(1), lastPracticeCorrect: true },
+      { lastPracticedAt: t(2), lastPracticeCorrect: false },
+      { lastPracticedAt: t(3), lastPracticeCorrect: true },
+      { lastPracticedAt: t(4), lastPracticeCorrect: true },  // 4 practised, 3 correct
+      { lastPracticedAt: t(9), lastPracticeCorrect: true },  // later extra practice
+    ];
+    const r = evaluateBook(ws, SINCE, 4); // need 3 correct
+    expect(r.completed).toBe(true);
+    expect(r.reachedAt.getTime()).toBe(t(4).getTime());
+    expect(evaluateBook([...ws.slice(0, 2), {}, {}], SINCE, 4).reachedAt).toBeNull();
+  });
+
   test('passes at exactly N practised with 70% correct', () => {
     const r = evaluateBook(words({ practiced: 100, correct: 70, untouched: 20 }), SINCE, 100);
     expect(r).toMatchObject({ mode: 'quota', completed: true, practiced: 100, correct: 70, target: 100, needCorrect: 70 });
