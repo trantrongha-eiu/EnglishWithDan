@@ -124,6 +124,7 @@ router.delete('/speaking-attempts/:id', auth, teacherOnly, async (req, res) => {
     const result = await SpeakingAttempt.findByIdAndDelete(req.params.id);
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài Speaking' });
     if (result.audioUrl) await speakingRecording.remove(result.audioUrl);
+    for (const c of result.audioClips || []) await speakingRecording.remove(c.url);
     res.json({ success: true, message: 'Đã xóa bài Speaking' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

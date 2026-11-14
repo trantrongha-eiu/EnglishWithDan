@@ -55,6 +55,9 @@ exports.analyze = catchAsync(async (req, res) => {
   const { transcript, question, questionId, topic, part, duration } = req.body;
   // Whole-topic run only (see SpeakingAttempt.sessionQuestionIds).
   const { sessionQuestionIds, answeredQuestionIds } = req.body;
+  // Multi-question run: the per-question recordings already uploaded via
+  // POST /clip — only this student's own speaking-recordings files survive.
+  const audioClips = speakingRecording.cleanClips(req.user._id, req.body.audioClips);
   const clientTranscript = typeof transcript === 'string' ? transcript.trim() : '';
   // A recording with NO client speech-to-text (mobile Safari/iOS, in-app
   // webviews, a blocked recognition service) is valid — Gemini transcribes
@@ -88,7 +91,7 @@ exports.analyze = catchAsync(async (req, res) => {
   // invisible or silently lost. May be null (never blocks grading below).
   const pendingId = await speakingService.createPendingAttempt(req.user._id, {
     questionId, topic, part: partNum, questionText, transcript: clientTranscript, duration,
-    sessionQuestionIds, answeredQuestionIds,
+    sessionQuestionIds, answeredQuestionIds, audioClips,
   });
 
   // Save the recording to the student's history (R2, kept 3 months) while
@@ -138,9 +141,9 @@ exports.analyze = catchAsync(async (req, res) => {
       if (pendingId) await speakingService.markAttemptError(pendingId);
       await recordingSaved; // the error'd attempt keeps its recording
       if (aiErr.isOverloaded) {
-        return res.status(503).json({ success: false, message: aiErr.message });
+        return res.status(503).json({ success: false, message: aiErr.message, attemptId: pendingId || undefined });
       }
-      return res.status(500).json({ success: false, message: 'AI không thể phân tích. Vui lòng thử lại.' });
+      return res.status(500).json({ success: false, message: 'AI không thể phân tích. Vui lòng thử lại.', attemptId: pendingId || undefined });
     }
   }
 
@@ -164,6 +167,7 @@ exports.analyze = catchAsync(async (req, res) => {
     // itself if it finishes after the attempt is gone).
     const discardedUrl = await recordingSaved;
     if (discardedUrl) await speakingRecording.remove(discardedUrl);
+    for (const c of audioClips) await speakingRecording.remove(c.url);
     return res.json({
       success: true, noGenuineAnswer: true, feedback,
       message: 'Không phát hiện được nội dung trả lời trong bản ghi — hãy kiểm tra micro và thử ghi âm lại.',
@@ -172,7 +176,7 @@ exports.analyze = catchAsync(async (req, res) => {
 
   const { attemptId, newlyUnlocked } = pendingId
     ? await speakingService.finalizeAttempt(pendingId, feedback, req.user, resolvedTranscript)
-    : await speakingService.saveAttempt(req.user, { questionId, topic, part: partNum, questionText, transcript: resolvedTranscript, duration, feedback, sessionQuestionIds, answeredQuestionIds });
+    : await speakingService.saveAttempt(req.user, { questionId, topic, part: partNum, questionText, transcript: resolvedTranscript, duration, feedback, sessionQuestionIds, answeredQuestionIds, audioClips });
 
   const audioUrl = await recordingSaved;
 
@@ -180,6 +184,30 @@ exports.analyze = catchAsync(async (req, res) => {
   // was actually said; `audioUrl` is the recording saved to History ('' when
   // none — the client then keeps its local IndexedDB copy, keyed by attemptId).
   res.json({ success: true, feedback, attemptId, newlyUnlocked, transcript: resolvedTranscript, audioUrl });
+});
+
+// ── POST /api/speaking/clip ──────────────────────────────────
+// One question's recording from a multi-question run (Part 1 topic, Part 2
+// + 3, the full mock), uploaded as soon as the student moves on so the
+// teacher can listen to every answer. /analyze then lists the returned URLs
+// on the attempt (audioClips). transcribe=1: the device recorded without
+// live speech-to-text (its mic can't feed both at once), so the text comes
+// from Whisper here — '' when that fails; the recording is still kept.
+exports.clip = catchAsync(async (req, res) => {
+  if (!req.file || !req.file.buffer || !req.file.buffer.length) {
+    return res.status(400).json({ success: false, message: 'Không có bản ghi âm.' });
+  }
+  const url = await speakingRecording.upload(req.file, speakingRecording.clipTag(req.user._id, req.body.index));
+  let transcript = '';
+  if (String(req.body.transcribe) === '1') {
+    try {
+      const audio = speakingService.normalizeAudioForGemini(req.file.buffer, req.file.mimetype);
+      transcript = await require('../services/groqService').transcribeSpeechGroq(audio);
+    } catch (e) {
+      console.warn('[Speaking] clip transcription failed:', e.message);
+    }
+  }
+  res.json({ success: true, url, transcript });
 });
 
 // ── POST /api/speaking/mock-submit ───────────────────────────

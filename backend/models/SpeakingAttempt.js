@@ -66,6 +66,18 @@ const SpeakingAttemptSchema = new mongoose.Schema({
   // History on any device. '' = no recording saved. Deleted after 3 months
   // with the attempt — see services/speakingRecordingService.js.
   audioUrl:     { type: String, default: '' },
+  // Multi-question runs (a Part 1 topic, Part 2 + 3, the full mock, a course
+  // exercise with several questions): one recording per question, same R2
+  // folder + same 3-month purge. audioUrl stays '' on those.
+  audioClips:   {
+    type: [new mongoose.Schema({
+      index:      { type: Number, default: 0 },
+      questionId: { type: String, default: '' },
+      question:   { type: String, default: '' },
+      url:        { type: String, required: true },
+    }, { _id: false })],
+    default: [],
+  },
   // 'course' = mirrored from a course speaking_response (wt1.controller
   // submitSpeaking) — the WT1Submission is the copy the teacher reviews, so
   // the admin review queue skips these. '' = standalone Speaking practice.

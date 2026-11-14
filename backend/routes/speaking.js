@@ -43,6 +43,19 @@ const analyzeLimiter = rateLimit({
   skip: req => req.user?.role === 'admin'
 });
 
+// /clip: one upload per question of a multi-question run (a full mock is
+// ~15) — generous, it only stores a file (+ Whisper on audio-only devices).
+const clipLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 120,
+  keyGenerator: req => req.user?._id?.toString() || ipKeyGenerator(req.ip),
+  handler: (req, res) => {
+    logger.security('Rate limit exceeded', { path: req.path, userId: req.user?._id?.toString(), ip: req.ip });
+    res.status(429).json({ success: false, message: 'Quá nhiều bản ghi âm, vui lòng thử lại sau 15 phút.' });
+  },
+  skip: req => req.user?.role === 'admin'
+});
+
 // /sample-answer also calls Gemini — its own cap, separate from /analyze's
 // quota, so generating sample answers doesn't eat into a student's
 // analyze budget for the same session.
@@ -90,6 +103,7 @@ router.get('/questions',        auth, premiumOnly, speakCtrl.getQuestions);
 router.get('/topic-set/:questionId', auth, premiumOnly, speakCtrl.getTopicSet);
 router.post('/analyze',         auth, premiumOnly, analyzeLimiter, optionalAudio('audio'), speakCtrl.analyze);
 router.post('/mock-submit',     auth, premiumOnly, analyzeLimiter, optionalAudio('audio'), speakCtrl.mockSubmit);
+router.post('/clip',           auth, premiumOnly, clipLimiter, optionalAudio('audio'), speakCtrl.clip);
 router.post('/:attemptId/retry', auth, premiumOnly, analyzeLimiter, speakCtrl.retry);
 router.post('/sample-answer',   auth, premiumOnly, sampleAnswerLimiter, speakCtrl.sampleAnswer);
 router.post('/hints',           auth, premiumOnly, hintsLimiter, speakCtrl.hints);

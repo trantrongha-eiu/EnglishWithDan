@@ -99,6 +99,37 @@ async function fetchForGrading(audioUrl) {
   }
 }
 
+// Per-question recordings of a multi-question run (POST /api/speaking/clip)
+// are uploaded while the student is still answering, then listed on the
+// attempt by /analyze. Tag = u<userId>_q<index>, so cleanClips() can check a
+// client-sent URL really is one of THIS student's uploads — nobody can attach
+// someone else's file (or an arbitrary URL) to their attempt.
+const MAX_CLIPS = 40;
+function clipTag(userId, index) {
+  return `u${userId}_q${Math.max(0, Math.min(MAX_CLIPS, Number(index) || 0))}`;
+}
+function cleanClips(userId, raw) {
+  let list = raw;
+  if (typeof list === 'string') { try { list = JSON.parse(list); } catch { return []; } }
+  if (!Array.isArray(list)) return [];
+  const prefix = `${FOLDER}/sp_u${userId}_`;
+  const seen = new Set();
+  const out = [];
+  for (const c of list.slice(0, MAX_CLIPS)) {
+    if (!c || typeof c.url !== 'string') continue;
+    const key = r2Service.keyOf(c.url);
+    if (!key || !key.startsWith(prefix) || seen.has(c.url)) continue;
+    seen.add(c.url);
+    out.push({
+      index: Math.max(0, Number(c.index) || 0),
+      questionId: String(c.questionId || '').slice(0, 40),
+      question: String(c.question || '').slice(0, 1000),
+      url: c.url,
+    });
+  }
+  return out.sort((a, b) => a.index - b.index);
+}
+
 // Daily sweep: delete every recording older than RETENTION_DAYS (+1 day of
 // slack so a file is never removed before its attempt expires).
 async function purgeOld() {
@@ -108,4 +139,4 @@ async function purgeOld() {
   return { deleted };
 }
 
-module.exports = { upload, save, remove, fetchForGrading, purgeOld, FOLDER, RETENTION_DAYS };
+module.exports = { upload, save, remove, fetchForGrading, purgeOld, clipTag, cleanClips, FOLDER, RETENTION_DAYS };

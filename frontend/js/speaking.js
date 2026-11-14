@@ -1203,6 +1203,15 @@ function _finishRecordingUI() {
   if (!state._recordingFinalized) {
     state._recordingFinalized = true;
     _stopAudioCapture().then(blob => {
+      // Late catch of the mic conflict (_onMicConflict normally fires
+      // mid-answer): words were recognised but the recording is silent.
+      // Don't upload silence as "the recording" — keep the transcript, and
+      // record audio-only from the next answer on.
+      if (blob && blob._silent && _wordCount(state.finalTranscript) >= 3) {
+        _rememberMicConflict();
+        blob = null;
+        showToast('Bản ghi âm lần này bị trống (máy không cho vừa nhận diện giọng nói vừa ghi âm). Từ lần sau hệ thống sẽ chỉ ghi âm — hãy ghi âm lại để giáo viên nghe được bài nói.', 'warn', 9000);
+      }
       _lastRecordingBlob = blob;
       const pb = document.getElementById('btn-playback-recording');
       if (pb) pb.classList.toggle('hidden', !blob);
@@ -1294,11 +1303,19 @@ function setupRecognition() {
     // recording off around a minute in — long before the actual 2-minute
     // limit — which is exactly what students were reporting.
     state._restartAttempts = 0;
+    if (state._micConflictAbort) return; // this take was thrown away — see _onMicConflict()
     let interim = '';
     for (let i = e.resultIndex; i < e.results.length; i++) {
       const t = e.results[i][0].transcript;
       if (e.results[i].isFinal) state.finalTranscript += t + ' ';
       else interim += t;
+    }
+    // Speech-to-text hears words but the recording is flat silence: this
+    // device can't do both — switch it to audio-only before the student
+    // finishes an answer the teacher could never listen to.
+    if (state.isRecording && _recordingLooksSilent(state.finalTranscript + ' ' + interim)) {
+      _onMicConflict();
+      return;
     }
     const interimEl = document.getElementById('transcript-interim');
     if (interimEl) interimEl.textContent = interim;
@@ -1405,60 +1422,175 @@ function setupRecognition() {
 // exactly as before, the student just doesn't get a playback button.
 // ──────────────────────────────────────────────────────
 let _mediaRecorder = null;
-let _mediaChunks = [];
 let _mediaStream = null;
 let _lastRecordingBlob = null;
+let _captureStarting = null; // getUserMedia still pending — see _startAudioCapture
 
-async function _startAudioCapture() {
-  if (!('MediaRecorder' in window) || !navigator.mediaDevices?.getUserMedia) return;
-  if (_mediaRecorder) return; // idempotent — already capturing this session
+// ── Mic-conflict guard ────────────────────────────────────
+// On some devices (seen on phones: 2 of 161 saved recordings, 2026-11-14)
+// the mic can't feed the browser's speech-to-text AND our MediaRecorder at
+// once: speech-to-text hears the student, the recording is pure silence —
+// so the teacher had nothing to listen to. A level meter on the recorder's
+// own stream spots that within a few seconds (words recognised, recorder
+// flat). The device is then remembered and every later answer is recorded
+// audio-only (the server transcribes it), which always keeps the recording.
+const MIC_CONFLICT_KEY = 'ews_sp_mic_conflict';
+const SILENT_PEAK = 0.002;  // RMS; real speech is ~0.02–0.3, a starved track is ~0
+const VOICE_LEVEL = 0.02;   // RMS that counts as "the student is talking"
+function _micConflictKnown() {
+  try { return localStorage.getItem(MIC_CONFLICT_KEY) === '1'; } catch (_) { return false; }
+}
+function _rememberMicConflict() {
+  try { localStorage.setItem(MIC_CONFLICT_KEY, '1'); } catch (_) {}
+}
+function _wordCount(s) { return String(s || '').split(/\s+/).filter(Boolean).length; }
+
+// One AudioContext for the whole page, resumed from a click (primeAudioMeter)
+// so a recording that starts later without a gesture (Part 2 prep timer,
+// the sequential run after the question is read) can still be measured.
+let _meterCtx = null;
+function _primeAudioMeter() {
   try {
-    // Explicit constraints (not just `audio: true`) — without these, some
-    // browsers/devices don't enable echo cancellation by default, so the
-    // recording picks up its own speaker output as a faint echo, especially
-    // noticeable on laptops without headphones (student report).
-    _mediaStream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-    });
-    _mediaChunks = [];
-    _mediaRecorder = new MediaRecorder(_mediaStream);
-    _mediaRecorder.ondataavailable = e => { if (e.data.size > 0) _mediaChunks.push(e.data); };
-    // Timeslice: flush a chunk every second so an abrupt end (tab close,
-    // crash, forced stop) still leaves a usable blob instead of nothing.
-    _mediaRecorder.start(1000);
-  } catch (e) {
-    console.warn('_startAudioCapture:', e.name, e.message);
-    // If getUserMedia already resolved but `new MediaRecorder()` then threw
-    // (unsupported container on some browsers), the mic stream is live and
-    // would leak — release it before dropping the ref.
-    try { _mediaStream?.getTracks().forEach(t => t.stop()); } catch (_) {}
-    _mediaRecorder = null;
-    _mediaStream = null;
-    // Mic permission / hardware problems are the #1 "recording doesn't work"
-    // report — say what's actually wrong instead of failing silently.
-    if (e.name === 'NotAllowedError' || e.name === 'SecurityError') {
-      showToast('Trình duyệt đang chặn micro. Bấm biểu tượng khoá 🔒 trên thanh địa chỉ → cho phép Micro → tải lại trang.', 'error', 7000);
-    } else if (e.name === 'NotFoundError' || e.name === 'DevicesNotFoundError') {
-      showToast('Không tìm thấy micro nào. Hãy cắm tai nghe/micro rồi thử lại.', 'error', 6000);
-    } else if (e.name === 'NotReadableError' || e.name === 'TrackStartError') {
-      showToast('Micro đang bị ứng dụng khác chiếm (Zoom, Meet…). Đóng ứng dụng đó rồi thử lại.', 'error', 6000);
-    }
-  }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!_meterCtx) _meterCtx = new AC();
+    if (_meterCtx.state === 'suspended') _meterCtx.resume().catch(() => {});
+  } catch (_) { _meterCtx = null; }
 }
 
-function _stopAudioCapture() {
-  return new Promise(resolve => {
-    if (!_mediaRecorder) { resolve(null); return; }
-    const recorder = _mediaRecorder;
-    recorder.onstop = () => {
-      const blob = _mediaChunks.length ? new Blob(_mediaChunks, { type: recorder.mimeType || 'audio/webm' }) : null;
-      _mediaStream?.getTracks().forEach(t => t.stop());
-      _mediaStream = null;
+let _level = null; // { src, timer, peak, samples, startedAt, onVoice }
+function _startLevelMeter(stream) {
+  _stopLevelMeter();
+  try {
+    _primeAudioMeter();
+    if (!_meterCtx) return;
+    const src = _meterCtx.createMediaStreamSource(stream);
+    const an = _meterCtx.createAnalyser();
+    an.fftSize = 2048;
+    src.connect(an);
+    const buf = new Float32Array(an.fftSize);
+    const lv = { src, peak: 0, samples: 0, startedAt: Date.now(), onVoice: null };
+    lv.timer = setInterval(() => {
+      if (!_meterCtx || _meterCtx.state !== 'running') return; // a suspended context reads 0 — not evidence
+      an.getFloatTimeDomainData(buf);
+      let sum = 0;
+      for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+      const rms = Math.sqrt(sum / buf.length);
+      lv.samples++;
+      if (rms > lv.peak) lv.peak = rms;
+      if (rms > VOICE_LEVEL && lv.onVoice) { const f = lv.onVoice; lv.onVoice = null; f(); }
+    }, 200);
+    _level = lv;
+  } catch (e) {
+    console.warn('_startLevelMeter:', e.message);
+    _level = null;
+  }
+}
+function _stopLevelMeter() {
+  const lv = _level;
+  _level = null;
+  if (!lv) return null;
+  clearInterval(lv.timer);
+  try { lv.src.disconnect(); } catch (_) {}
+  return { peak: lv.peak, measured: lv.samples >= 5 };
+}
+// True once it's clear the recorder is getting silence while speech-to-text
+// is hearing words — the mic conflict described above.
+function _recordingLooksSilent(heardText) {
+  const lv = _level;
+  if (!lv || lv.samples < 10 || Date.now() - lv.startedAt < 2500) return false;
+  return _wordCount(heardText) >= 3 && lv.peak < SILENT_PEAK;
+}
+
+function _startAudioCapture() {
+  if (!('MediaRecorder' in window) || !navigator.mediaDevices?.getUserMedia) return Promise.resolve();
+  if (_mediaRecorder) return Promise.resolve(); // idempotent — already capturing this session
+  if (_captureStarting) return _captureStarting;
+  _captureStarting = (async () => {
+    try {
+      // Explicit constraints (not just `audio: true`) — without these, some
+      // browsers/devices don't enable echo cancellation by default, so the
+      // recording picks up its own speaker output as a faint echo, especially
+      // noticeable on laptops without headphones (student report).
+      _mediaStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+      });
+      const chunks = [];
+      _mediaRecorder = new MediaRecorder(_mediaStream);
+      _mediaRecorder._chunks = chunks; // per-recorder, so a stop still finishing can't mix with the next answer
+      _mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+      // Timeslice: flush a chunk every second so an abrupt end (tab close,
+      // crash, forced stop) still leaves a usable blob instead of nothing.
+      _mediaRecorder.start(1000);
+      _startLevelMeter(_mediaStream);
+    } catch (e) {
+      console.warn('_startAudioCapture:', e.name, e.message);
+      // If getUserMedia already resolved but `new MediaRecorder()` then threw
+      // (unsupported container on some browsers), the mic stream is live and
+      // would leak — release it before dropping the ref.
+      try { _mediaStream?.getTracks().forEach(t => t.stop()); } catch (_) {}
       _mediaRecorder = null;
+      _mediaStream = null;
+      // Mic permission / hardware problems are the #1 "recording doesn't work"
+      // report — say what's actually wrong instead of failing silently.
+      if (e.name === 'NotAllowedError' || e.name === 'SecurityError') {
+        showToast('Trình duyệt đang chặn micro. Bấm biểu tượng khoá 🔒 trên thanh địa chỉ → cho phép Micro → tải lại trang.', 'error', 7000);
+      } else if (e.name === 'NotFoundError' || e.name === 'DevicesNotFoundError') {
+        showToast('Không tìm thấy micro nào. Hãy cắm tai nghe/micro rồi thử lại.', 'error', 6000);
+      } else if (e.name === 'NotReadableError' || e.name === 'TrackStartError') {
+        showToast('Micro đang bị ứng dụng khác chiếm (Zoom, Meet…). Đóng ứng dụng đó rồi thử lại.', 'error', 6000);
+      }
+    }
+  })().finally(() => { _captureStarting = null; });
+  return _captureStarting;
+}
+
+// Resolves the recorded Blob (or null). The recorder is detached at once, so
+// the next answer's capture can start while this one is still finishing.
+// blob._silent = the level meter measured nothing but silence throughout.
+function _stopAudioCapture() {
+  if (_captureStarting) return _captureStarting.then(() => _stopAudioCapture());
+  const recorder = _mediaRecorder;
+  const stream = _mediaStream;
+  if (!recorder) return Promise.resolve(null);
+  _mediaRecorder = null;
+  _mediaStream = null;
+  const lvl = _stopLevelMeter();
+  return new Promise(resolve => {
+    const release = () => { try { stream?.getTracks().forEach(t => t.stop()); } catch (_) {} };
+    recorder.onstop = () => {
+      const chunks = recorder._chunks || [];
+      const blob = chunks.length ? new Blob(chunks, { type: recorder.mimeType || 'audio/webm' }) : null;
+      if (blob) blob._silent = !!(lvl && lvl.measured && lvl.peak < SILENT_PEAK);
+      release();
       resolve(blob);
     };
-    try { recorder.stop(); } catch (e) { resolve(null); }
+    try { recorder.stop(); } catch (e) { release(); resolve(null); }
   });
+}
+
+// Single-question flow: the mic conflict showed up mid-answer. Throw this
+// take away (its recording is silent), remember the device, and let the
+// student answer again — this time audio-only (toggleRecord routes there).
+const MIC_CONFLICT_MSG = 'Máy của bạn không cho vừa nhận diện giọng nói vừa ghi âm nên bản ghi bị trống. Đã chuyển sang chế độ chỉ ghi âm (AI sẽ tự chép lại lời bạn nói) — hãy bấm micro và trả lời lại từ đầu.';
+function _onMicConflict() {
+  _rememberMicConflict();
+  state._micConflictAbort = true;
+  state._userStoppedRecording = true;
+  state.isRecording = false;
+  try { state.recognition.stop(); } catch (_) {} // stop, not abort: abort fires an "aborted" error toast
+  state._recordingFinalized = true; // _finishRecordingUI must not keep the silent blob
+  _stopAudioCapture();
+  state.finalTranscript = '';
+  const ta = document.getElementById('transcript-textarea');
+  if (ta) ta.value = '';
+  _lastRecordingBlob = null;
+  _finishRecordingUI();
+  const btn = document.getElementById('btn-analyze');
+  if (btn) btn.disabled = true;
+  const recStatus = document.getElementById('rec-status');
+  if (recStatus) recStatus.textContent = '⚠️ ' + MIC_CONFLICT_MSG;
+  showToast(MIC_CONFLICT_MSG, 'warn', 9000);
 }
 
 function _recordingExt(blob) {
@@ -1521,10 +1653,18 @@ function playbackRecording() {
 // idempotent — safe to call from any of the three sites with no pre-check.
 function _startRecordingGuarded() {
   if (!state.recognition || state.isRecording || state._recordBusy) return;
+  // A device known to starve the recorder while speech-to-text runs
+  // (_micConflictKnown) records audio-only — the server transcribes it.
+  if (_micConflictKnown() && !_audioOnlyRecording) {
+    setTranscriptView('locked');
+    _toggleAudioOnlyRecording();
+    return;
+  }
   const btnRecord = document.getElementById('btn-record');
   state._recordBusy = true;
   if (btnRecord) btnRecord.disabled = true;
   try {
+    state._micConflictAbort = false;
     state._userStoppedRecording = false;
     state._restartAttempts = 0;
     state._recognitionEverStarted = false;
@@ -1594,10 +1734,12 @@ function _toggleAudioOnlyRecording() {
 
   if (_audioOnlyRecording) {
     _audioOnlyBusy = true;
+    state._recordingFinalized = true; // this stop owns the blob — a later _finishRecordingUI() must not null it
     _audioOnlyRecording = false;
     state.isRecording = false;
     state._frozenDurationSeconds = getElapsedSeconds();
     stopElapsedTimer();
+    hideSpeakCountdown();
     if (recIcon)   recIcon.className = 'fas fa-microphone rec-mic';
     if (recLabel)  recLabel.textContent = 'Bắt đầu';
     if (btnRecord) { btnRecord.classList.remove('recording'); btnRecord.disabled = true; }
@@ -1637,7 +1779,9 @@ function _toggleAudioOnlyRecording() {
   if (btnRecord) btnRecord.classList.add('recording');
   if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm (AI sẽ tự chép lại lời thoại)'; recStatus.classList.add('live'); }
   document.getElementById('transcript-textarea')?.classList.add('sp-rec-live');
+  state._recordingFinalized = false; // Part 2's 2-min cap ends it through _finishRecordingUI()
   startElapsedTimer();
+  startSpeakCountdown(); // Part 2 only (no-op otherwise)
   // Wait for getUserMedia to actually settle before the button is live again,
   // so a fast double-tap can't stop a capture that hasn't started yet (which
   // would leak the mic stream).
@@ -1645,6 +1789,7 @@ function _toggleAudioOnlyRecording() {
 }
 
 function toggleRecord() {
+  _primeAudioMeter(); // inside the click — lets the level meter run (see _primeAudioMeter)
   // A session that recognition.onerror already degraded to audio-only
   // mid-recording (speech-to-text service unreachable — see the
   // 'network'/'service-not-allowed' handling above) has a dead
@@ -2331,6 +2476,9 @@ function beginSeqRun(queue, headerTitle) {
   state.seqAnswers       = [];
   state.seqActive        = true;
   state.seqTotalElapsed  = 0;
+  state.seqClipJobs      = []; // per-question recording uploads (_seqUploadClip)
+  state._seqAudioOnly    = false;
+  _primeAudioMeter(); // started from a click — see _primeAudioMeter
 
   const headerTitleEl = document.getElementById('seq-header-title');
   if (headerTitleEl) headerTitleEl.textContent = headerTitle;
@@ -2570,6 +2718,9 @@ function replaySeqQuestion() {
 
 // Mirrors _finishRecordingUI() for the sequential (mock-test) flow.
 function _finishSeqRecordingUI() {
+  // Recognition ending (aborted by _seqSwitchToAudioOnly) while this question
+  // is still being recorded audio-only — the answer isn't over yet.
+  if (state._seqAudioOnly && state.seqActive && (_mediaRecorder || _captureStarting)) return;
   state.seqIsRecording = false;
   stopSeqElapsedTimer();
   hideSeqSpeakCountdown();
@@ -2584,6 +2735,81 @@ function _finishSeqRecordingUI() {
   }
 }
 
+// Recording UI + timers for one sequential question — from recognition's
+// onstart, or straight away for an audio-only question.
+function _seqRecordingStartedUI() {
+  state.seqIsRecording = true;
+  const recIndicator = document.getElementById('seq-rec-indicator');
+  const recIcon      = document.getElementById('seq-rec-icon');
+  const recStatus    = document.getElementById('seq-rec-status');
+  if (recIndicator) recIndicator.classList.add('recording');
+  if (recIcon)      recIcon.className = 'fas fa-stop rec-mic';
+  if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm... (bấm vào mic để dừng)'; recStatus.classList.add('live'); }
+  // Only (re)start timers on the genuine first start — see the matching
+  // comment in setupRecognition(); same Chrome auto-stop concern applies here.
+  if (!state._seqRecognitionEverStarted) {
+    state._seqRecognitionEverStarted = true;
+    startSeqElapsedTimer();
+    const q = state.seqQueue[state.seqIndex];
+    if (q && q.part === 2) startSeqSpeakCountdown();
+    else startSeqSilenceTimer();
+  }
+}
+
+// The mic conflict (see _micConflictKnown) showed up mid-question: drop the
+// silent take, record this question again audio-only (Whisper transcribes
+// it when the student moves on — _seqUploadClip).
+function _seqSwitchToAudioOnly() {
+  _rememberMicConflict();
+  state._seqAudioOnly = true;
+  state._seqUserStoppedRecording = true;
+  try { state.seqRecognition.stop(); } catch (_) {} // stop, not abort: abort reports an "aborted" error
+  state.seqFinalTranscript = '';
+  _stopAudioCapture(); // the silent part — discarded
+  _startAudioCapture().then(_seqWatchVoice);
+  clearSeqSilenceTimer();
+  const msg = 'Máy của bạn không cho vừa nhận diện giọng nói vừa ghi âm — đã chuyển sang chỉ ghi âm. Hãy trả lời lại câu này từ đầu.';
+  const recStatus = document.getElementById('seq-rec-status');
+  if (recStatus) recStatus.textContent = '⚠️ ' + msg;
+  showToast(msg, 'warn', 8000);
+}
+
+// Audio-only: no speech-to-text to cancel the "haven't said anything yet"
+// auto-advance, so the level meter does it the moment the student talks.
+function _seqWatchVoice() {
+  // No working meter (audio context not running) → nothing could ever cancel
+  // the auto-advance; drop it rather than skip a question being answered.
+  if (!_level || !_meterCtx || _meterCtx.state !== 'running') { if (state._seqAudioOnly) clearSeqSilenceTimer(); return; }
+  _level.onVoice = () => { if (state._seqAudioOnly) clearSeqSilenceTimer(); };
+}
+
+// Stop this question's recording and upload it (POST /api/speaking/clip) in
+// the background while the student goes on; finishSequentialSession waits
+// for these before grading. Audio-only answers come back transcribed.
+async function _seqUploadClip(ansIdx) {
+  const blob = await _stopAudioCapture();
+  const ans = state.seqAnswers[ansIdx];
+  if (!blob || !blob.size || !ans) return;
+  if (blob._silent && !ans.audioOnly && _wordCount(ans.transcript) >= 3) {
+    _rememberMicConflict(); // missed mid-question — the next questions go audio-only
+    return;                 // nothing audible to keep; the transcript is still graded
+  }
+  for (let tries = 0; tries < 2; tries++) {
+    try {
+      const fd = new FormData();
+      fd.append('index', String(ansIdx));
+      if (ans.audioOnly) fd.append('transcribe', '1');
+      fd.append('audio', blob, `answer.${_recordingExt(blob)}`);
+      const d = await apiFetch('/api/speaking/clip', { method: 'POST', body: fd });
+      if (d && d.url) ans.audioUrl = d.url;
+      if (ans.audioOnly && d && d.transcript && !String(ans.transcript || '').trim()) ans.transcript = d.transcript;
+      return;
+    } catch (e) {
+      console.warn('_seqUploadClip:', e && e.message);
+    }
+  }
+}
+
 function setupSeqRecognition() {
   if (state.seqRecognition) return;
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -2593,30 +2819,14 @@ function setupSeqRecognition() {
   state.seqRecognition.continuous     = true;
   state.seqRecognition.interimResults = true;
 
-  state.seqRecognition.onstart = () => {
-    state.seqIsRecording = true;
-    const recIndicator = document.getElementById('seq-rec-indicator');
-    const recIcon      = document.getElementById('seq-rec-icon');
-    const recStatus    = document.getElementById('seq-rec-status');
-    if (recIndicator) recIndicator.classList.add('recording');
-    if (recIcon)      recIcon.className = 'fas fa-stop rec-mic';
-    if (recStatus) { recStatus.textContent = '🔴 Đang ghi âm... (bấm vào mic để dừng)'; recStatus.classList.add('live'); }
-    // Only (re)start timers on the genuine first start — see the matching
-    // comment in setupRecognition(); same Chrome auto-stop concern applies here.
-    if (!state._seqRecognitionEverStarted) {
-      state._seqRecognitionEverStarted = true;
-      startSeqElapsedTimer();
-      const q = state.seqQueue[state.seqIndex];
-      if (q && q.part === 2) startSeqSpeakCountdown();
-      else startSeqSilenceTimer();
-    }
-  };
+  state.seqRecognition.onstart = () => _seqRecordingStartedUI();
 
   state.seqRecognition.onresult = (e) => {
     // See setupRecognition()'s onresult — resets the restart-attempt streak
     // on real speech so routine Chrome auto-restarts during a long, healthy
     // answer don't exhaust the dead-mic cap and cut the recording off early.
     state._seqRestartAttempts = 0;
+    if (state._seqAudioOnly) return; // late results of the take dropped by _seqSwitchToAudioOnly
     // Deliberately NOT rendered anywhere while recording — the student's
     // transcript only becomes visible after the whole session is submitted
     // (finishSequentialSession's results screen), never live as they speak.
@@ -2625,6 +2835,10 @@ function setupSeqRecognition() {
       const t = e.results[i][0].transcript;
       if (e.results[i].isFinal) state.seqFinalTranscript += t + ' ';
       else interim += t;
+    }
+    if (!state._seqAudioOnly && state.seqIsRecording && _recordingLooksSilent(state.seqFinalTranscript + ' ' + interim)) {
+      _seqSwitchToAudioOnly();
+      return;
     }
     if (state.seqFinalTranscript.trim() || interim.trim()) clearSeqSilenceTimer();
   };
@@ -2673,16 +2887,29 @@ function setupSeqRecognition() {
 }
 
 function startSeqRecording() {
-  if (!state.seqRecognition) {
+  if (state.seqIsRecording) return;
+  const canRecord = 'MediaRecorder' in window && !!navigator.mediaDevices?.getUserMedia;
+  // Audio-only (Whisper transcribes each answer server-side) on a device
+  // known to starve the recorder during speech-to-text, and on browsers
+  // with no speech-to-text at all (Firefox / some in-app webviews).
+  const audioOnly = canRecord && (_micConflictKnown() || !state.seqRecognition);
+  if (!state.seqRecognition && !audioOnly) {
     showToast('Trình duyệt không hỗ trợ ghi âm cho phần luyện nói này. Vui lòng dùng Google Chrome.', 'warn');
     return;
   }
-  if (state.seqIsRecording) return;
+  state._seqAudioOnly = audioOnly;
+  state._seqUserStoppedRecording = false;
+  state._seqRestartAttempts = 0;
+  state._seqRecognitionEverStarted = false;
+  state.seqFinalTranscript = '';
+  // Every answer is recorded for the teacher (uploaded in confirmSeqAnswer).
+  const capture = _startAudioCapture();
+  if (audioOnly) {
+    _seqRecordingStartedUI();
+    capture.then(_seqWatchVoice);
+    return;
+  }
   try {
-    state._seqUserStoppedRecording = false;
-    state._seqRestartAttempts = 0;
-    state._seqRecognitionEverStarted = false;
-    state.seqFinalTranscript = '';
     state.seqRecognition.start();
   } catch (e) {
     // Already starting/started — safe to ignore, user can still confirm manually.
@@ -2712,7 +2939,13 @@ function confirmSeqAnswer() {
     stopSeqElapsedTimer();
 
     const q = state.seqQueue[state.seqIndex];
-    state.seqAnswers.push({ questionId: q._id, question: q.question, part: q.part, transcript });
+    state.seqAnswers.push({ questionId: q._id, question: q.question, part: q.part, transcript, audioOnly: !!state._seqAudioOnly });
+    const ansIdx = state.seqAnswers.length - 1;
+    (state.seqClipJobs = state.seqClipJobs || [])[ansIdx] = _seqUploadClip(ansIdx);
+    if (state._seqAudioOnly) {
+      state._seqAudioOnly = false; // capture is already detached — let the UI reset
+      _finishSeqRecordingUI();
+    }
 
     state.seqIndex++;
     if (state.seqIndex < state.seqQueue.length) {
@@ -2757,6 +2990,8 @@ function exitSequentialSession() {
   // onend fires hits startSeqRecording()'s `if (state.seqIsRecording) return;`
   // guard and silently never records the new session's first question.
   state.seqIsRecording = false;
+  state._seqAudioOnly = false;
+  _stopAudioCapture(); // abandoned run — release the mic, nothing is uploaded
   window.speechSynthesis?.cancel();
   // Full mock test was launched from the home card, not from browsing a
   // topic — return there instead of the (unvisited) practice sidebar.
@@ -2773,6 +3008,24 @@ function seqAnswerCounts(transcript) {
 
 async function finishSequentialSession() {
   state.seqActive = false;
+
+  // Each answer's recording is uploaded as the student moves on; wait for
+  // the last ones (and any Whisper transcripts) so the attempt lists them.
+  const clipJobs = (state.seqClipJobs || []).filter(Boolean);
+  if (clipJobs.length) {
+    const bodyEl0 = document.getElementById('seq-body');
+    const resultsEl0 = document.getElementById('seq-results');
+    const loadingEl0 = document.getElementById('seq-feedback-loading');
+    const textEl0 = document.getElementById('seq-feedback-loading-text');
+    if (bodyEl0) bodyEl0.style.display = 'none';
+    if (resultsEl0) resultsEl0.style.display = 'block';
+    if (loadingEl0) loadingEl0.style.display = 'flex';
+    if (textEl0) textEl0.textContent = 'Đang lưu bản ghi âm của bạn…';
+    await Promise.race([Promise.allSettled(clipJobs), new Promise(r => setTimeout(r, 60000))]);
+  }
+  const audioClips = state.seqAnswers
+    .map((a, i) => (a.audioUrl ? { index: i, questionId: a.questionId || '', question: a.question || '', url: a.audioUrl } : null))
+    .filter(Boolean);
 
   let topic, questionLabel, partForApi;
   if (state.seqIsFullMock) {
@@ -2815,9 +3068,10 @@ async function finishSequentialSession() {
 
   // Same worst-case reasoning as the single-question flow above: Gemini's
   // own ~30s timeout, plus up to ~40s more if it fails over to Groq
-  // (speakingService.gradeSpeaking's fallback chain) — this flow never
-  // attaches audio, but the combined multi-question transcript can still
-  // take a while to grade. A 45s client timeout was aborting (and showing
+  // (speakingService.gradeSpeaking's fallback chain) — grading here is
+  // transcript-only (the per-question recordings are only listed on the
+  // attempt, for the teacher), but the combined transcript can still take a
+  // while to grade. A 45s client timeout was aborting (and showing
   // a false "AI failed" error) before the server's own fallback finished.
   const _ctrl = new AbortController();
   const _killer = setTimeout(() => _ctrl.abort(), 90000);
@@ -2834,6 +3088,7 @@ async function finishSequentialSession() {
         duration:   state.seqTotalElapsed,
         sessionQuestionIds,
         answeredQuestionIds,
+        audioClips,
       }),
     });
     clearTimeout(_killer);

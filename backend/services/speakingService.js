@@ -663,7 +663,7 @@ function mapFeedbackToAiFeedback(feedback) {
 // key a locally-stored (IndexedDB) audio recording to this exact attempt.
 // `user` is the full req.user Mongoose document (not just an id) — needed
 // to advance the streak below, same convention as reading/listeningService.
-async function saveAttempt(user, { questionId, topic, part, questionText, transcript, duration, feedback, sessionQuestionIds, answeredQuestionIds, source, audioUrl }) {
+async function saveAttempt(user, { questionId, topic, part, questionText, transcript, duration, feedback, sessionQuestionIds, answeredQuestionIds, source, audioUrl, audioClips }) {
   try {
     const attempt = new SpeakingAttempt({
       userId: user._id,
@@ -671,6 +671,7 @@ async function saveAttempt(user, { questionId, topic, part, questionText, transc
       ...cleanSessionIds(sessionQuestionIds, answeredQuestionIds),
       ...(source ? { source } : {}),
       ...(audioUrl ? { audioUrl } : {}),
+      ...(audioClips && audioClips.length ? { audioClips } : {}),
       topic: topic || '',
       part,
       question: questionText,
@@ -708,12 +709,13 @@ async function _creditStreakForAnalyzedAttempt(user, attempt) {
 // or fail outright, and previously nothing was saved until grading
 // succeeded, so a slow/failed grade meant the attempt was invisible or
 // silently lost. Same never-throw contract as saveAttempt.
-async function createPendingAttempt(userId, { questionId, topic, part, questionText, transcript, duration, sessionQuestionIds, answeredQuestionIds }) {
+async function createPendingAttempt(userId, { questionId, topic, part, questionText, transcript, duration, sessionQuestionIds, answeredQuestionIds, audioClips }) {
   try {
     const attempt = new SpeakingAttempt({
       userId,
       questionId: questionId || null,
       ...cleanSessionIds(sessionQuestionIds, answeredQuestionIds),
+      ...(audioClips && audioClips.length ? { audioClips } : {}),
       topic: topic || '',
       part,
       question: questionText,

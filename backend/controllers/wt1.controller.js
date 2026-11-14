@@ -288,7 +288,7 @@ exports.submitSpeaking = async (req, res) => {
             topic: ex.title || '', part,
             questionText: items.map((it) => it.prompt).filter(Boolean).join(' | '),
             transcript: (aggregate.transcripts || []).filter(Boolean).join('\n\n') || finalText,
-            duration: durationSec, feedback: aggregate, source: 'course',
+            duration: durationSec, feedback: aggregate, source: 'course', audioClips: aggregate.audioClips || [],
           });
         } catch (mirrorErr) {
           console.warn('[WT1] speaking attempt mirror failed:', mirrorErr.message);

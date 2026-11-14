@@ -174,7 +174,7 @@ function speakingRows(attempts) {
     context: a.topic === 'Full Mock Test' ? 'Luyện Speaking · Mock Test' : `Luyện Speaking · Part ${a.part}${a.topic ? ` · ${a.topic}` : ''}`,
     exerciseType: 'speaking', attempt: null,
     aiBand: a.aiFeedback?.overallBand || null, score: null, aiUnavailable: a.status !== 'analyzed',
-    words: null, hasAudio: !!a.audioUrl,
+    words: null, hasAudio: !!(a.audioUrl || (a.audioClips || []).length),
     teacherBand: a.teacherReview?.band ?? null,
     reviewedAt: a.teacherReview?.reviewedAt || null, reviewerName: a.teacherReview?.reviewerName || '',
   }));
@@ -182,7 +182,7 @@ function speakingRows(attempts) {
 
 const USER_FIELDS = 'username firstName lastName';
 const COURSE_LIST_FIELDS = 'userId exerciseCode lessonCode attempt createdAt score responses aiFeedback.bandEstimate localFeedback.aiUnavailable audioUrl itemResults.audioUrl teacherReview awaitingTeacher';
-const SPEAKING_LIST_FIELDS = 'userId topic part question createdAt status audioUrl aiFeedback.overallBand teacherReview';
+const SPEAKING_LIST_FIELDS = 'userId topic part question createdAt status audioUrl audioClips.url aiFeedback.overallBand teacherReview';
 
 async function list({ kind = 'writing', status = 'pending', search, page = 1, limit = 30 } = {}) {
   if (!KINDS.has(kind)) throw new ValidationError('kind phải là writing hoặc speaking');

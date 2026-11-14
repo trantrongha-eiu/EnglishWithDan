@@ -591,6 +591,9 @@ async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, tota
     // Every question's transcript, in order — the Speaking-history mirror
     // keeps the whole answer, not just the last question's.
     transcripts: results.map((r) => r.transcript || ''),
+    // Each question's recording (R2), so the Speaking-history mirror can be
+    // listened to question by question.
+    audioClips: results.filter((r) => r.audioUrl).map((r) => ({ index: r.itemIndex, question: r.prompt || '', url: r.audioUrl })),
   };
 }
 

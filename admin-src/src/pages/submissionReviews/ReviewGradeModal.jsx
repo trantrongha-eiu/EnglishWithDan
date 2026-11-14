@@ -6,6 +6,8 @@ import { apiFetch, formatDate } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
 import { OpenResponse, TeacherBlock } from '../../components/Wt1ReviewModal';
 import SpeakingCriteriaTable from '../../components/SpeakingCriteriaTable';
+import SpeakingRecordings from '../../components/SpeakingRecordings';
+import { hasRecordings } from '../../utils/speakingRecordings';
 import { SCORE_LABELS, overallFromScores } from './grading';
 import { parseExternalFeedback } from './externalAi';
 
@@ -42,8 +44,8 @@ function SpeakingAttemptView({ a }) {
       <div style={secTitle}>Câu hỏi</div>
       <div style={{ ...box, background: 'transparent' }}>{a.question || '—'}</div>
       <div style={secTitle}>Bản ghi âm</div>
-      {a.audioUrl
-        ? <audio controls preload="metadata" src={a.audioUrl} style={{ width: '100%', height: 34 }} />
+      {hasRecordings(a)
+        ? <SpeakingRecordings attempt={a} />
         : <div className="muted" style={{ fontSize: 13 }}>Không có bản ghi âm được lưu (học sinh gõ/nhận diện giọng nói, hoặc upload lỗi) — chấm theo transcript.</div>}
       <div style={secTitle}>Transcript</div>
       <div style={box}>{a.transcript || <i>(trống)</i>}</div>

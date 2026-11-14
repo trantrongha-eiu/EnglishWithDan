@@ -5,6 +5,8 @@ import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 import SpeakingCriteriaTable from '../components/SpeakingCriteriaTable';
+import SpeakingRecordings from '../components/SpeakingRecordings';
+import { hasRecordings } from '../utils/speakingRecordings';
 
 const PARTS = [1, 2, 3];
 
@@ -85,10 +87,10 @@ function AttemptModal({ attempt, onClose }) {
           )}
 
           {/* Recording (saved 3 months, then deleted with the attempt) */}
-          {attempt.audioUrl && (
+          {hasRecordings(attempt) && (
             <div style={{ background:'var(--surface2,#f1f5f9)', borderRadius:10, padding:'12px 14px', fontSize:13 }}>
               <div style={{ fontWeight:700, marginBottom:6, color:'var(--text2,#555)' }}>🔊 Bản ghi âm</div>
-              <audio controls preload="metadata" src={attempt.audioUrl} style={{ width:'100%', height:34 }} />
+              <SpeakingRecordings attempt={attempt} />
             </div>
           )}
 
