@@ -207,7 +207,7 @@ export default function Courses() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">Khóa học ({filtered.length})</h2>
+        <h2 className="section-title">Trang giới thiệu khóa học ({filtered.length})</h2>
         <button className="btn btn-primary" onClick={() => { setEditCourse(null); setShowModal(true); }}>+ Thêm khóa học</button>
       </div>
 

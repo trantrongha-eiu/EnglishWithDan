@@ -2,64 +2,96 @@
 // Sidebar renders these groups, and AdminLayout derives the page title +
 // breadcrumb from them (it used to keep its own, drifting TITLES map).
 //
+// Restructured 2026-11-14 to mirror the student menu (frontend/js/nav.js
+// LINKS): one group per skill in the same order (Reading → Listening →
+// Writing → Speaking → Vocab → Mocktest → BXH vocab), with items named the
+// way students see them ("Full đề", "Bài lẻ", "Task 2 Luyện đề tuần",
+// "Viết câu giao tiếp", "Mindset Foundation"…), so a teacher can find the
+// admin side of any student page by its student-facing name. Student
+// features with no admin side before (Shadowing, Part 2 · 7 câu chuyện gốc,
+// Cửa hàng lửa) got pages. Keep the two menus in step when either changes.
+//
 // item fields:
 //   to        route (may carry a ?query for deep-linked tabs)
 //   match     extra path prefixes that should highlight this item
 //   badge     key of useAdminData().badges to show as a count
 //   adminOnly hidden from teachers (the route itself is admin-only)
+//   student   the student page it manages (shown as the item's tooltip)
 export const NAV_GROUPS = [
   { id: 'overview', label: 'Tổng quan', items: [
     { to: '/dashboard', icon: '📊', label: 'Dashboard' },
   ] },
-  { id: 'students', label: 'Học sinh', items: [
+  { id: 'students', label: 'Học sinh & Lớp', items: [
     { to: '/users', icon: '👥', label: 'Người dùng', match: ['/students/'] },
     { to: '/classes', icon: '🗓️', label: 'Lớp & Điểm danh' },
     { to: '/monitoring', icon: '📈', label: 'Theo dõi luyện tập', badge: 'violations', badgeTone: 'warn',
       badgeTitle: 'Lượt thi thử / Test Simulation bị đánh dấu vi phạm giám sát',
-      match: ['/history', '/mock-tests', '/reading-stats', '/listening-stats', '/vocab-activity'] },
-    { to: '/entrance-test', icon: '🚪', label: 'Test đầu vào', badge: 'pendingEntranceReviews', badgeTitle: 'Kết quả đang chờ duyệt' },
+      match: ['/history', '/reading-stats', '/listening-stats', '/vocab-activity'] },
+    { to: '/messages', icon: '✉️', label: 'Hộp thư', badge: 'pendingMessages', badgeTitle: 'Tin nhắn chưa đọc', student: 'inbox.html' },
+  ] },
+  { id: 'grading', label: 'Chấm bài', items: [
     { to: '/writing-grades', icon: '✍️', label: 'Chấm bài Writing', badge: 'pendingGrades', badgeTitle: 'Bài đang chờ chấm' },
-    { to: '/submission-reviews', icon: '🧑‍🏫', label: 'Chấm bài khoá học & Speaking', badge: 'pendingReviews', badgeTitle: 'Bài viết khoá học / Speaking chờ giáo viên chấm' },
-    { to: '/messages', icon: '✉️', label: 'Hộp thư', badge: 'pendingMessages', badgeTitle: 'Tin nhắn chưa đọc' },
+    { to: '/submission-reviews', icon: '🧑‍🏫', label: 'Chấm bài khóa học & Speaking', badge: 'pendingReviews', badgeTitle: 'Bài viết khóa học / Speaking chờ giáo viên chấm' },
   ] },
-  { id: 'exams', label: 'Đề thi IELTS', items: [
-    { to: '/reading-tests', icon: '📋', label: 'Bộ đề Reading' },
-    { to: '/passages', icon: '📖', label: 'Bài đọc (Passages)' },
-    { to: '/listening-tests', icon: '🎧', label: 'Đề Listening' },
-    { to: '/listening-sections', icon: '🎵', label: 'Bài lẻ Listening' },
-    { to: '/writing-tests', icon: '✏️', label: 'Đề Writing' },
-    { to: '/speaking', icon: '🎤', label: 'Speaking' },
+  { id: 'reading', label: 'Reading', items: [
+    { to: '/reading-tests', icon: '📋', label: 'Full đề Reading', student: 'reading.html?mode=full' },
+    { to: '/passages', icon: '📖', label: 'Bài lẻ Reading', student: 'reading.html?mode=single' },
+    { to: '/tips', icon: '💡', label: 'Reading Tips', student: 'reading.html?mode=tips' },
   ] },
-  { id: 'courses', label: 'Khoá học', items: [
-    { to: '/wt1-course', icon: '📘', label: 'Khoá Writing Task 1' },
-    { to: '/wt1-course?course=IELTS-W-T2', icon: '📗', label: 'Khoá Writing Task 2' },
-    { to: '/wt1-course?course=IELTS-SPEAKING', icon: '🗣️', label: 'Khoá Speaking' },
-    { to: '/wt1-course?course=MINDSET-0', icon: '📗', label: 'Khoá Mindset 0' },
-    { to: '/wt1-course?course=MINDSET-1', icon: '📘', label: 'Khoá Mindset 1' },
-    { to: '/wt1-course?course=MINDSET-2', icon: '📙', label: 'Khoá Mindset 2' },
-    { to: '/courses', icon: '🎓', label: 'Trang giới thiệu khoá học' },
+  { id: 'listening', label: 'Listening', items: [
+    { to: '/listening-tests', icon: '🎧', label: 'Full đề Listening', student: 'listening.html?mode=full' },
+    { to: '/listening-sections', icon: '🎵', label: 'Bài lẻ Listening & Dictation', student: 'listening.html?mode=single · dictation.html' },
+    { to: '/tips?skill=listening', icon: '💡', label: 'Listening Tips', student: 'listening.html?mode=tips' },
   ] },
-  { id: 'practice', label: 'Luyện tập Writing', items: [
-    { to: '/writing-practice', icon: '🖊️', label: 'Writing Practice' },
-    { to: '/task2-exercises', icon: '📝', label: 'Task 2 Writing' },
-    { to: '/task2-templates', icon: '📄', label: 'Task 2 Templates' },
-    { to: '/advanced-sentences', icon: '🧩', label: 'Viết câu nâng cao' },
-    { to: '/task1-exercises', icon: '📉', label: 'Task 1 Grammar (cũ)' },
+  { id: 'writing', label: 'Writing', items: [
+    { to: '/writing-tests', icon: '✏️', label: 'Full đề Writing', student: 'writing.html' },
+    { to: '/writing-tests?tab=task1', icon: '📊', label: 'Đề Task 1', student: 'writing.html?taskType=1' },
+    { to: '/writing-tests?tab=task2', icon: '📝', label: 'Đề Task 2', student: 'writing.html?taskType=2' },
+    { to: '/writing-tests?tab=samples', icon: '📄', label: 'Bài mẫu Writing' },
+    { to: '/tips?skill=writing', icon: '💡', label: 'Writing Tips', student: 'writing.html?view=writing-tips' },
+    { to: '/task2-exercises', icon: '🗓️', label: 'Task 2 Luyện đề tuần', student: 'task2-practice.html' },
+    { to: '/task2-templates', icon: '📑', label: 'Task 2 Templates', student: 'task2-template.html' },
   ] },
-  { id: 'vocab', label: 'Từ vựng & Ngữ pháp', items: [
-    { to: '/vocabulary', icon: '🟩', label: 'Từ vựng (Units)' },
-    { to: '/vocabulary-lessons', icon: '🏫', label: 'Vocabulary Lessons' },
-    { to: '/essential-grammar', icon: '📘', label: 'Essential Grammar' },
+  { id: 'grammar', label: 'Ngữ pháp & Viết câu', items: [
+    { to: '/essential-grammar', icon: '🎓', label: 'Essential Grammar', student: 'essential-grammar.html' },
+    { to: '/task1-exercises', icon: '📉', label: 'Task 1 Grammar', student: 'task1-practice.html' },
+    { to: '/writing-practice', icon: '💬', label: 'Viết câu giao tiếp', student: 'writing-practice.html' },
+    { to: '/advanced-sentences', icon: '🧩', label: 'Viết câu nâng cao', student: 'advanced-sentences.html' },
   ] },
-  { id: 'tips', label: 'Tips & Tài liệu', items: [
-    { to: '/tips', icon: '💡', label: 'Tips 4 kỹ năng' },
-    { to: '/tip-packs', icon: '🖨️', label: 'Tài liệu in (Tips)' },
+  { id: 'speaking', label: 'Speaking', items: [
+    { to: '/speaking', icon: '🎤', label: 'Speaking forecast', student: 'speaking.html' },
+    { to: '/speaking?tab=materials', icon: '📚', label: 'Tài liệu Speaking', student: 'speaking.html?tab=materials' },
+    { to: '/tips?skill=speaking', icon: '💡', label: 'Speaking Tips', student: 'speaking.html?tab=speaking-tips' },
+    { to: '/speaking-part2', icon: '📖', label: 'Part 2 · 7 câu chuyện gốc', student: 'speaking-part2.html' },
+    { to: '/shadowing', icon: '🗣️', label: 'Shadowing (Video)', student: 'shadowing.html' },
+  ] },
+  { id: 'vocab', label: 'Vocab', items: [
+    { to: '/vocabulary', icon: '🟩', label: 'Học Paraphrase', student: 'dashboard.html?view=paraphrase' },
+    { to: '/vocabulary-lessons', icon: '🔷', label: 'Học Vocab Topics', student: 'dashboard.html?view=topics' },
+  ] },
+  { id: 'courses', label: 'Khóa học', items: [
+    { to: '/wt1-course', icon: '📘', label: 'Task 1 Writing', student: 'writing-task1.html' },
+    { to: '/wt1-course?course=IELTS-W-T2', icon: '📗', label: 'Task 2 Writing', student: 'writing-task2-course.html' },
+    { to: '/wt1-course?course=IELTS-SPEAKING', icon: '🗣️', label: 'Khóa học Speaking', student: 'speaking-course.html' },
+    { to: '/wt1-course?course=MINDSET-0', icon: '🌱', label: 'Mindset Foundation', student: 'mindset-0.html' },
+    { to: '/wt1-course?course=MINDSET-1', icon: '🍃', label: 'Mindset Level 1', student: 'mindset-1.html' },
+    { to: '/wt1-course?course=MINDSET-2', icon: '🌿', label: 'Mindset Level 2', student: 'mindset-2.html' },
+    { to: '/courses', icon: '🎓', label: 'Trang giới thiệu khóa học', student: 'courses.html' },
+  ] },
+  { id: 'mocktest', label: 'Mocktest', items: [
+    { to: '/entrance-test', icon: '🚪', label: 'Test đầu vào', badge: 'pendingEntranceReviews', badgeTitle: 'Kết quả đang chờ duyệt', student: 'entrance-test.html' },
+    { to: '/mock-tests', icon: '🎯', label: 'Full Mock Test', student: 'mock-test.html' },
+  ] },
+  { id: 'fun', label: 'BXH vocab', items: [
+    { to: '/shop', icon: '🏆', label: 'Bảng xếp hạng', student: 'vocab-leaderboard.html' },
+    { to: '/shop?tab=shop', icon: '🔥', label: 'Cửa hàng lửa', student: 'shop.html' },
   ] },
   { id: 'finance', label: 'Tài chính', items: [
     { to: '/upgrade-requests', icon: '⭐', label: 'Yêu cầu nâng cấp', badge: 'pendingUpgrades', badgeTitle: 'Yêu cầu đang chờ duyệt', adminOnly: true },
-    { to: '/tuition', icon: '💰', label: 'Học phí', badge: 'pendingTuition', badgeTitle: 'Học sinh còn nợ học phí', adminOnly: true },
+    { to: '/tuition', icon: '💰', label: 'Học phí', badge: 'pendingTuition', badgeTitle: 'Học sinh còn nợ học phí', adminOnly: true, student: 'tuition.html' },
   ] },
-  { id: 'system', label: 'Hệ thống', items: [
+  { id: 'system', label: 'Công cụ giáo viên', items: [
+    { to: '/tip-packs', icon: '🖨️', label: 'Tài liệu in (Tips)' },
     { to: '/review-bypass', icon: '🎫', label: 'Mã bỏ qua Review' },
   ] },
 ];
@@ -67,14 +99,13 @@ export const NAV_GROUPS = [
 // Titles for routes that aren't sidebar entries (sub-pages, legacy routes).
 const EXTRA_TITLES = [
   ['/students/', 'Chi tiết học sinh', 'students'],
-  ['/reading-tests/', 'Chỉnh sửa đề Reading', 'exams'],
-  ['/listening-tests/', 'Chỉnh sửa đề Listening', 'exams'],
-  ['/listening-sections/', 'Chỉnh sửa bài Listening', 'exams'],
-  ['/speaking/import', 'Import câu hỏi Speaking', 'exams'],
-  ['/vocabulary-lessons/import', 'Import Vocabulary Lesson', 'vocab'],
+  ['/reading-tests/', 'Chỉnh sửa đề Reading', 'reading'],
+  ['/listening-tests/', 'Chỉnh sửa đề Listening', 'listening'],
+  ['/listening-sections/', 'Chỉnh sửa bài lẻ Listening', 'listening'],
+  ['/speaking/import', 'Import câu hỏi Speaking', 'speaking'],
+  ['/vocabulary-lessons/import', 'Import Vocab Topic', 'vocab'],
   ['/classes/', 'Chi tiết lớp', 'students'],
   ['/history', 'Lịch sử làm bài', 'students'],
-  ['/mock-tests', 'Thi thử Full 4 kỹ năng', 'students'],
   ['/reading-stats', 'Thống kê Reading', 'students'],
   ['/listening-stats', 'Thống kê Listening', 'students'],
   ['/vocab-activity', 'Hoạt động từ vựng', 'students'],
@@ -86,8 +117,9 @@ function splitTo(to) {
 }
 
 // Is `item` the active entry for this location? Items sharing one path
-// (the three /wt1-course?course= entries) are told apart by their query;
-// the query-less one is the default when the URL has no ?course=.
+// (the /wt1-course?course=, /tips?skill=, /writing-tests?tab= entries) are
+// told apart by their query; the query-less one is the default when the URL
+// carries none of its siblings' queries.
 export function isItemActive(item, pathname, search) {
   const { path, query } = splitTo(item.to);
   if (pathname === path || (path !== '/' && pathname.startsWith(path + '/'))) {

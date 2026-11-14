@@ -412,7 +412,7 @@ export default function VocabularyLessons() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">Vocabulary Lessons ({filtered.length})</h2>
+        <h2 className="section-title">Học Vocab Topics ({filtered.length})</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-ghost" onClick={() => setShowHistory(true)}>📜 Import History</button>
           <button className="btn btn-primary" onClick={() => navigate('/vocabulary-lessons/import')}>+ Import bài học</button>

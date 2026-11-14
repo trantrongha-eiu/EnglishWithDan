@@ -42,7 +42,7 @@ export default function Sidebar({ mobileOpen, onClose, compact, onToggleCompact 
     return NAV_GROUPS
       .map(g => ({
         ...g,
-        items: g.items.filter(i => (isAdmin || !i.adminOnly) && (!q || i.label.toLowerCase().includes(q) || g.label.toLowerCase().includes(q))),
+        items: g.items.filter(i => (isAdmin || !i.adminOnly) && (!q || i.label.toLowerCase().includes(q) || g.label.toLowerCase().includes(q) || (i.student || '').toLowerCase().includes(q))),
       }))
       .filter(g => g.items.length);
   }, [isAdmin, query]);
@@ -134,7 +134,7 @@ export default function Sidebar({ mobileOpen, onClose, compact, onToggleCompact 
                       className={`nav-item${active ? ' active' : ''}`}
                       aria-current={active ? 'page' : undefined}
                       onClick={onClose}
-                      title={compact ? item.label : undefined}
+                      title={compact ? item.label : (item.student ? `Quản lý trang học sinh: ${item.student}` : undefined)}
                     >
                       <span className="nav-icon" aria-hidden="true">{item.icon}</span>
                       <span className="nav-label">{item.label}</span>

@@ -289,7 +289,7 @@ export default function MockTests() {
   return (
     <>
       <div className="section-header">
-        <h2 className="section-title">🎯 Thi thử Full 4 kỹ năng</h2>
+        <h2 className="section-title">🎯 Full Mock Test — thi thử 4 kỹ năng</h2>
       </div>
 
       <div className="stats-row" style={{ marginBottom: 16 }}>

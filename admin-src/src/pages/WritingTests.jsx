@@ -493,6 +493,8 @@ function WritingExamModal({ exam, onClose, onSaved }) {
   );
 }
 
+const WT_TABS = ['exams', 'task1', 'task2', 'samples'];
+
 export default function WritingTests() {
   const toast = useToast();
   const confirm = useConfirm();
@@ -503,7 +505,15 @@ export default function WritingTests() {
   // against synchronous setState-in-effect; the param strip + id resolution
   // (task1 loads asynchronously) both happen below.
   const [searchParams, setSearchParams] = useSearchParams();
-  const [tab, setTab] = useState(() => searchParams.get('tab') || 'exams');
+  // The tab lives in the URL (?tab=task1|task2|samples) so the sidebar's
+  // "Đề Task 1 / Đề Task 2 / Bài mẫu Writing" entries open (and highlight)
+  // the right tab, even when this page is already open.
+  const tab = WT_TABS.includes(searchParams.get('tab')) ? searchParams.get('tab') : 'exams';
+  const setTab = t => {
+    const next = new URLSearchParams(searchParams);
+    if (t === 'exams') next.delete('tab'); else next.set('tab', t);
+    setSearchParams(next, { replace: true });
+  };
   const [pendingEditTask1Id, setPendingEditTask1Id] = useState(() => searchParams.get('edit'));
   const [task1, setTask1] = useState([]);
   const [task2, setTask2] = useState([]);
@@ -537,12 +547,11 @@ export default function WritingTests() {
 
   useEffect(() => { loadT1(); loadT2(); loadSamples(); loadExams(); }, []);
 
-  // Strip the deep-link params from the URL right after mount so a refresh
-  // or Back doesn't keep reopening the editor.
+  // Strip the ?edit= deep link right after mount so a refresh or Back
+  // doesn't keep reopening the editor (?tab= stays — it is the tab).
   useEffect(() => {
-    if (!searchParams.get('tab') && !searchParams.get('edit')) return;
+    if (!searchParams.get('edit')) return;
     const next = new URLSearchParams(searchParams);
-    next.delete('tab');
     next.delete('edit');
     setSearchParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -660,7 +669,7 @@ export default function WritingTests() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">Đề Writing</h2>
+        <h2 className="section-title">Full đề Writing</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           {tab === 'task1' && <>
             <button className="btn btn-ghost" onClick={() => bulkToggle(task1List, id => `/admin/writing-task1/${id}`, 'prompt Task 1', loadT1)} disabled={task1List.filtered.length === 0}>
@@ -690,10 +699,10 @@ export default function WritingTests() {
       </div>
 
       <div className="inner-tabs-nav">
-        <Tab label="🗂 Đề thi" active={tab === 'exams'} onClick={() => setTab('exams')} />
-        <Tab label="📝 Task 1 Pool" active={tab === 'task1'} onClick={() => setTab('task1')} />
-        <Tab label="📝 Task 2 Pool" active={tab === 'task2'} onClick={() => setTab('task2')} />
-        <Tab label="📄 Bài mẫu" active={tab === 'samples'} onClick={() => setTab('samples')} />
+        <Tab label="🗂 Full đề" active={tab === 'exams'} onClick={() => setTab('exams')} />
+        <Tab label="📊 Đề Task 1" active={tab === 'task1'} onClick={() => setTab('task1')} />
+        <Tab label="📝 Đề Task 2" active={tab === 'task2'} onClick={() => setTab('task2')} />
+        <Tab label="📄 Bài mẫu Writing" active={tab === 'samples'} onClick={() => setTab('samples')} />
       </div>
 
       {tab === 'exams' && (

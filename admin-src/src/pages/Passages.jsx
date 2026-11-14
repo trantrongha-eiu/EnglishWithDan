@@ -411,7 +411,7 @@ export default function Passages() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">Bài đọc ({total})</h2>
+        <h2 className="section-title">Bài lẻ Reading ({total})</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-ghost" onClick={bulkToggle} disabled={total === 0}>
             {anyVisibleOnPage ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}

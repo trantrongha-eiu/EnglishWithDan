@@ -16,7 +16,7 @@ const OnlineTime = lazy(() => import('./OnlineTime'));
 
 const TABS = [
   { key: 'history',   label: '🕓 Lịch sử làm bài', El: StudentHistory },
-  { key: 'mock',      label: '🎯 Thi thử Full',    El: MockTests },
+  { key: 'mock',      label: '🎯 Full Mock Test',    El: MockTests },
   { key: 'reading',   label: '📖 Thống kê Reading', El: ReadingStats },
   { key: 'listening', label: '🎧 Thống kê Listening', El: ListeningStats },
   { key: 'vocab',     label: '📈 Hoạt động từ vựng', El: VocabActivity },

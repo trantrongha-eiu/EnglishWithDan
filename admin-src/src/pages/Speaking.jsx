@@ -345,13 +345,23 @@ function MaterialModal({ material, onClose, onSaved }) {
   );
 }
 
+const SP_TABS = ['questions', 'materials', 'history'];
+
 export default function Speaking() {
   const toast = useToast();
   const confirm = useConfirm();
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [tab, setTab] = useState(() => (searchParams.get('viewAttempt') ? 'history' : 'questions'));
+  // Tab in the URL (?tab=materials|history) so the sidebar's "Tài liệu
+  // Speaking" entry opens it, even when this page is already open.
+  const urlTab = searchParams.get('tab');
+  const tab = searchParams.get('viewAttempt') ? 'history' : (SP_TABS.includes(urlTab) ? urlTab : 'questions');
+  const setTab = t => {
+    const next = new URLSearchParams(searchParams);
+    if (t === 'questions') next.delete('tab'); else next.set('tab', t);
+    setSearchParams(next, { replace: true });
+  };
   const [bulkBusy, setBulkBusy] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [materials, setMaterials] = useState([]);
@@ -412,6 +422,7 @@ export default function Speaking() {
       .catch((e) => toast(e.message, 'error'));
     const next = new URLSearchParams(searchParams);
     next.delete('viewAttempt');
+    next.set('tab', 'history'); // stay on the history tab once the param is gone
     setSearchParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -498,7 +509,7 @@ export default function Speaking() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">Speaking</h2>
+        <h2 className="section-title">Speaking forecast</h2>
         {tab === 'questions' && (
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <button className="btn btn-ghost" onClick={() => navigate('/speaking/import')}>📥 Import đề</button>
@@ -521,7 +532,7 @@ export default function Speaking() {
 
       <div className="inner-tabs-nav">
         <button className={`inner-tab${tab === 'questions' ? ' active' : ''}`} onClick={() => setTab('questions')}>🎤 Câu hỏi Speaking</button>
-        <button className={`inner-tab${tab === 'materials' ? ' active' : ''}`} onClick={() => setTab('materials')}>📄 Tài liệu PDF</button>
+        <button className={`inner-tab${tab === 'materials' ? ' active' : ''}`} onClick={() => setTab('materials')}>📚 Tài liệu Speaking</button>
         <button className={`inner-tab${tab === 'history' ? ' active' : ''}`} onClick={() => setTab('history')}>📊 Lịch sử học sinh</button>
       </div>
 

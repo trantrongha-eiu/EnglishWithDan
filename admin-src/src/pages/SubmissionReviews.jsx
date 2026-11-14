@@ -7,7 +7,7 @@ import Pagination from '../components/Pagination';
 import { useAdminData } from '../contexts/AdminDataContext';
 import ReviewGradeModal from './submissionReviews/ReviewGradeModal';
 
-// "Chấm bài khoá học & Speaking".
+// "Chấm bài khóa học & Speaking".
 //  - Writing khoá học: the AI grades on submit but the student does NOT see
 //    it yet — the teacher checks the AI band here, confirms/corrects it and
 //    sends it (inbox + the attempt's Lịch sử). These are the "chờ chấm" rows.
@@ -71,7 +71,7 @@ export default function SubmissionReviews() {
 
       <div className="section-header">
         <div>
-          <h2 className="section-title">Chấm bài khoá học & Speaking</h2>
+          <h2 className="section-title">Chấm bài khóa học & Speaking</h2>
           <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>
             <b>Writing khoá học:</b> AI chấm ngay khi nộp nhưng học sinh <b>chưa thấy điểm</b> — giáo viên xem điểm AI, xác nhận/sửa rồi gửi (học sinh nhận ở Hộp thư + Lịch sử bài làm).{' '}
             <b>Speaking:</b> điểm AI đã gửi thẳng cho học sinh — giáo viên chỉ cần chấm những bài AI chấm lỗi, còn lại nghe/nhận xét thêm nếu muốn.

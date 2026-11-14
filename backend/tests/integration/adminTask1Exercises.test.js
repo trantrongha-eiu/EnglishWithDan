@@ -48,6 +48,38 @@ describe('GET /api/admin/task1/exercises', () => {
   });
 });
 
+describe('GET /api/admin/task1/exercises — Bộ 1 / Bộ 2, chart, meta', () => {
+  test('set=set1|set2 splits on the set2 tag, chart filter, and meta counts per skill × bộ', async () => {
+    await createTask1Exercise({ skillType: 'comparison', instruction: 'Bo1 plain' });
+    await createTask1Exercise({ skillType: 'comparison', instruction: 'Bo2 chart', extra: { tags: ['set2', 'chart:static'], chart: { kind: 'bar' } } });
+    await createTask1Exercise({ skillType: 'overview', instruction: 'Bo2 hidden', isActive: false, extra: { tags: ['set2'] } });
+    const token = await authedTeacher();
+    const get = qs => request(app).get(`/api/admin/task1/exercises?${qs}`).set('Authorization', `Bearer ${token}`);
+
+    const s2 = await get('set=set2');
+    expect(s2.body.exercises.map(e => e.instruction).sort()).toEqual(['Bo2 chart', 'Bo2 hidden']);
+    expect(s2.body.exercises.every(e => e.set === 'set2')).toBe(true);
+
+    const s1 = await get('set=set1');
+    expect(s1.body.exercises.map(e => e.instruction)).toEqual(['Bo1 plain']);
+
+    const withChart = await get('chart=yes');
+    expect(withChart.body.exercises.map(e => e.instruction)).toEqual(['Bo2 chart']);
+    expect(withChart.body.exercises[0].hasChart).toBe(true);
+    const noChart = await get('chart=no');
+    expect(noChart.body.total).toBe(2);
+
+    const hidden = await get('active=false');
+    expect(hidden.body.exercises.map(e => e.instruction)).toEqual(['Bo2 hidden']);
+
+    expect(s1.body.meta.total).toBe(3);
+    expect(s1.body.meta.active).toBe(2);
+    expect(s1.body.meta.withChart).toBe(1);
+    expect(s1.body.meta.bySkill.comparison).toEqual({ set1: 1, set2: 1, active: 2 });
+    expect(s1.body.meta.bySkill.overview).toEqual({ set1: 0, set2: 1, active: 0 });
+  });
+});
+
 describe('POST /api/admin/task1/exercises', () => {
   test('student is blocked with 403', async () => {
     const student = await createStudent();

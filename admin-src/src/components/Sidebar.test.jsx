@@ -51,7 +51,8 @@ describe('Sidebar', () => {
     mockUseAuth.mockReturnValue({ user: { username: 'dan', role: 'admin' }, isAdmin: true, logout: vi.fn() });
     renderSidebar();
     fireEvent.change(screen.getByLabelText('Tìm chức năng trong menu'), { target: { value: 'listening' } });
-    expect(screen.getByText('Đề Listening')).toBeInTheDocument();
+    expect(screen.getByText('Full đề Listening')).toBeInTheDocument();
+    expect(screen.getByText('Listening Tips')).toBeInTheDocument();
     expect(screen.queryByText('Người dùng')).not.toBeInTheDocument();
   });
 
@@ -66,8 +67,8 @@ describe('Sidebar', () => {
   it('remembers collapsed groups', () => {
     mockUseAuth.mockReturnValue({ user: { username: 'dan', role: 'admin' }, isAdmin: true, logout: vi.fn() });
     renderSidebar();
-    fireEvent.click(screen.getByRole('button', { name: /Đề thi IELTS/ }));
-    expect(screen.queryByText('Bộ đề Reading')).not.toBeInTheDocument();
-    expect(JSON.parse(localStorage.getItem('admin-nav-closed'))).toContain('exams');
+    fireEvent.click(screen.getByRole('button', { name: /^Reading/ }));
+    expect(screen.queryByText('Full đề Reading')).not.toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem('admin-nav-closed'))).toContain('reading');
   });
 });

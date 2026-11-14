@@ -95,7 +95,7 @@ export default function Tips() {
     <>
       {preview && <PreviewModal skill={preview.skill} tip={preview.tip} onClose={() => setPreview(null)} />}
       <PageHeader
-        title="Tips 4 kỹ năng"
+        title={active ? `${active.label} Tips` : "Tips 4 kỹ năng"}
         subtitle="Bài hướng dẫn chiến thuật học sinh đọc ở trang Reading / Listening / Writing / Speaking. Ẩn một bài để gỡ khỏi trang học sinh ngay lập tức (tối đa ~2 phút do cache)."
       />
 

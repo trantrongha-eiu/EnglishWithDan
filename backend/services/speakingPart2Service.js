@@ -302,7 +302,21 @@ async function checkCompletion(studentId, ids) {
   return out;
 }
 
+// Admin view of one progress row (routes/admin/speakingPart2.js): the same
+// mastery % / step flags the student sees, after the key upgrade.
+function adminSummary(doc) {
+  if (!byId.has(doc.storyId)) return null;
+  const d = current(doc);
+  const m = masteryOf(d.storyId, d);
+  return {
+    storyId: d.storyId, pct: m ? m.pct : 0, steps: stepsDone(d.storyId, d),
+    speakRuns: Number(d.speak) || 0, masteredAt: d.masteredAt || null, completedAt: d.completedAt || null,
+    updatedAt: d.updatedAt || null,
+  };
+}
+
 module.exports = {
+  adminSummary, STORIES,
   STORY_ROWS, STEP_KEYS, PASS_PERCENT, SHADOW_PASS, STORY_VOCAB_LESSON, VERSION, vocabLessonsForStory,
   getContent, getProgress, saveProgress, checkCompletion, stepsDone, masteryOf, framesOf, upgradeKeys,
 };

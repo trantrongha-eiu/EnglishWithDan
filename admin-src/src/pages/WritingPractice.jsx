@@ -299,7 +299,7 @@ export default function WritingPractice() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">Luyện viết (Writing Practice)</h2>
+        <h2 className="section-title">Viết câu giao tiếp</h2>
       </div>
 
       <div className="inner-tabs-nav">

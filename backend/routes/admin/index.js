@@ -43,5 +43,8 @@ router.use(require('./studentOverview'));  // GET /users/:id/overview — per-st
 router.use(require('./parents'));          // Phụ huynh accounts linked to a student (create / reset / unlink)
 router.use(require('./tips'));             // Tips 4 kỹ năng: list / preview / show-hide
 router.use(require('./onlineTime'));       // Thời gian online: minutes per student per day + session detail
+router.use(require('./shadowing'));        // Shadowing (Video): lessons list / preview / sentence fixes / show-hide
+router.use(require('./speakingPart2'));    // Part 2 · 7 câu chuyện gốc: per-story + per-student progress (read-only)
+router.use(require('./shop'));             // BXH vocab + Cửa hàng lửa: players, purchases, duels (read-only)
 
 module.exports = router;

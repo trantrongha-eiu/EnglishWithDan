@@ -84,7 +84,7 @@ export default function ReadingTests() {
   return (
     <>
       <div className="section-header">
-        <h2 className="section-title">Bộ đề Reading ({filteredCount})</h2>
+        <h2 className="section-title">Full đề Reading ({filteredCount})</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-ghost" onClick={bulkToggle} disabled={filtered.length === 0}>
             {anyVisibleInFilter ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}

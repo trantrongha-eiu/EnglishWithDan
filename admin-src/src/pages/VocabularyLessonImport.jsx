@@ -127,7 +127,7 @@ export default function VocabularyLessonImport() {
   return (
     <>
       <div className="section-header">
-        <h2 className="section-title">{lessonId ? `Sửa nội dung: ${lessonTitle}` : 'Import Lesson'}</h2>
+        <h2 className="section-title">{lessonId ? `Sửa nội dung: ${lessonTitle}` : 'Import Vocab Topic'}</h2>
         <button className="btn btn-ghost" onClick={() => navigate('/vocabulary-lessons')}>← Quay lại danh sách</button>
       </div>
 

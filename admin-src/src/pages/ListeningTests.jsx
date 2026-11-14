@@ -159,7 +159,7 @@ export default function ListeningTests() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">Đề Listening ({filteredCount})</h2>
+        <h2 className="section-title">Full đề Listening ({filteredCount})</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-ghost" onClick={bulkToggle} disabled={filtered.length === 0}>
             {anyVisibleInFilter ? '🙈 Ẩn tất cả' : '👁 Hiện tất cả'}

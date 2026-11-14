@@ -510,7 +510,7 @@ export default function Vocabulary() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">Từ vựng – Units ({filtered.length})</h2>
+        <h2 className="section-title">Học Paraphrase – Units ({filtered.length})</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-ghost" onClick={() => setShowImport(true)}>📂 Import JSON</button>
           {units.some(u => (u.wordCount ?? 0) > 120) && (

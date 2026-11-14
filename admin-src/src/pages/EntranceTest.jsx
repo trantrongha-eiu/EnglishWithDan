@@ -710,7 +710,7 @@ export default function EntranceTest() {
   return (
     <>
       <div className="section-header">
-        <h2 className="section-title">🚪 IELTS Entrance Test (Test đầu vào)</h2>
+        <h2 className="section-title">🚪 Test đầu vào (IELTS Entrance Test)</h2>
       </div>
       <div className="inner-tabs-nav" style={{ marginBottom: 18 }}>
         {TABS.map(t => (

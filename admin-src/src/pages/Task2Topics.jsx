@@ -414,7 +414,7 @@ export default function Task2Topics() {
     <div className="page-container">
       <div className="page-header">
         <div>
-          <h1 className="page-title">Task 2 Writing</h1>
+          <h1 className="page-title">Task 2 Luyện đề tuần</h1>
           <p className="page-subtitle">{total} topic — quản lý câu hỏi luyện viết IELTS Task 2</p>
         </div>
         <div style={{ display:'flex', gap:8 }}>

@@ -383,7 +383,7 @@ export default function WritingTask1Course() {
       )}
 
       <div className="section-header">
-        <h2 className="section-title">{course === 'MINDSET-0' ? 'Mindset Foundation' : course === 'MINDSET-1' ? 'Mindset Level 1' : course === 'MINDSET-2' ? 'Mindset Level 2' : course === 'IELTS-SPEAKING' ? 'Speaking' : course === 'IELTS-W-T2' ? 'Task 2 Writing' : 'Task 1 Writing'} — khoá học (WT1/WT2/Speaking)</h2>
+        <h2 className="section-title">{course === 'MINDSET-0' ? 'Mindset Foundation' : course === 'MINDSET-1' ? 'Mindset Level 1' : course === 'MINDSET-2' ? 'Mindset Level 2' : course === 'IELTS-SPEAKING' ? 'Khóa học Speaking' : course === 'IELTS-W-T2' ? 'Task 2 Writing' : 'Task 1 Writing'}</h2>
       </div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
         <button className={`btn btn-sm ${course === 'IELTS-W-T1' ? 'btn-primary' : 'btn-ghost'}`} onClick={() => switchCourse('IELTS-W-T1')}>Task 1 Writing</button>

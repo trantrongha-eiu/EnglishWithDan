@@ -369,14 +369,14 @@ function mindsetLessonRow(d) {
 
 const REGISTRY = {
   reading_test: {
-    label: 'Bộ đề Reading',
+    label: 'Full đề Reading',
     catalog: { model: ReadingTest, filter: { isActive: true }, sort: { testNumber: -1 },
       shape: (d) => ({ _id: d._id, label: d.name, meta: `Test ${d.testNumber}` }) },
     attempt: { model: TestAttempt, userField: 'userId', idField: 'testId', filter: { status: 'completed' } },
     scoreGate: { fields: 'correctCount totalQuestions', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   listening_test: {
-    label: 'Đề Listening',
+    label: 'Full đề Listening',
     catalog: { model: ListeningTest, filter: { isActive: true }, sort: { testNumber: -1 },
       shape: (d) => ({ _id: d._id, label: d.name, meta: `Test ${d.testNumber}` }),
       // partsPickable: every section has its own audio, so the teacher can
@@ -391,14 +391,14 @@ const REGISTRY = {
     scoreGate: { fields: 'correctCount totalQuestions', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   reading_practice: {
-    label: 'Bài đọc lẻ (Passage)',
+    label: 'Bài lẻ Reading (Passage)',
     catalog: { model: Passage, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.category }) },
     attempt: { model: ReadingPracticeAttempt, userField: 'userId', idField: 'passageId', filter: COUNTABLE_ATTEMPT },
     scoreGate: { fields: 'correctCount totalQuestions', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
   },
   listening_practice: {
-    label: 'Bài nghe lẻ (Section)',
+    label: 'Bài lẻ Listening (Section)',
     catalog: { model: ListeningSection, filter: { isActive: true }, sort: { createdAt: -1 }, sectionSearch: true,
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.partNumber ? `Part ${d.partNumber}` : '' }) },
     attempt: { model: ListeningPracticeAttempt, userField: 'userId', idField: 'sectionId', filter: COUNTABLE_ATTEMPT },
@@ -408,7 +408,7 @@ const REGISTRY = {
   // sections whose gap-fill an admin reviewed and published are pickable —
   // the same set students see (listeningService.listGapFillSections).
   listening_gapfill: {
-    label: 'Bài nghe lẻ (Gap-fill)',
+    label: 'Bài lẻ Listening (Gap-fill)',
     catalog: { model: ListeningSection, filter: { isActive: true, gapFillPublished: true }, sort: { createdAt: -1 }, sectionSearch: true,
       shape: (d) => ({ _id: d._id, label: d.title,
         meta: [d.partNumber ? `Part ${d.partNumber}` : '', `${(d.gapFillAnswers || []).length} chỗ trống`].filter(Boolean).join(' · ') }) },
@@ -427,7 +427,7 @@ const REGISTRY = {
     scoreGate: { fields: 'correctCount totalSentences', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalSentences ? (d.correctCount / d.totalSentences) * 100 : 0) },
   },
   writing_exam: {
-    label: 'Đề Writing (Full Task 1+2)',
+    label: 'Full đề Writing (Task 1+2)',
     catalog: { model: WritingExam, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.name, meta: '' }) },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'examId', filter: COUNTABLE_ATTEMPT },
@@ -445,7 +445,7 @@ const REGISTRY = {
   // speaking — see PASS_PERCENT's comment), but wordCountGate below still
   // requires actually meeting the task's real minimum, not just submitting.
   task1_practice: {
-    label: 'Task 1 Writing (Đề lẻ)',
+    label: 'Đề Task 1 (Đề lẻ)',
     catalog: { model: WritingTask1, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'task1Id', filter: { submissionType: 'practice', ...COUNTABLE_ATTEMPT } },
@@ -453,7 +453,7 @@ const REGISTRY = {
     equivalence: { model: WritingTask1 },
   },
   task2_practice: {
-    label: 'Task 2 Writing (Đề lẻ)',
+    label: 'Đề Task 2 (Đề lẻ)',
     catalog: { model: WritingTask2, filter: { isActive: true }, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'task2Id', filter: { submissionType: 'practice', ...COUNTABLE_ATTEMPT } },
@@ -461,7 +461,7 @@ const REGISTRY = {
     equivalence: { model: WritingTask2 },
   },
   task2: {
-    label: 'Task 2 Writing (Topic)',
+    label: 'Task 2 Luyện đề tuần',
     // task2-practice.html only jumps straight to a topic when it has BOTH
     // ?week & ?topicId (loadWeeks: `if (urlWeek && urlTopicId)`), so snapshot
     // the week into resourceCode at assign time — same pattern as
@@ -513,7 +513,7 @@ const REGISTRY = {
   // see speakingService.getTopicSet. The student answers the whole set in
   // one run (speaking.html?topicSet=<id>); see checkSpeakingTopicSets.
   speaking_topic: {
-    label: 'Speaking (Theo topic)',
+    label: 'Speaking forecast (Theo topic)',
     catalog: { model: SpeakingQuestion, filter: { isActive: true, part: { $in: [1, 2] } },
       shape: (d) => ({ _id: d._id, label: speakingSvc().topicSetLabel(d), meta: d.topic || '' }),
       list: ({ words, extraFilters }) => speakingSvc().listTopicSets({ part: extraFilters.part || null, words }) },
@@ -544,14 +544,14 @@ const REGISTRY = {
     },
   },
   vocabulary_lesson: {
-    label: 'Vocabulary Lessons',
+    label: 'Học Vocab Topics',
     catalog: { model: VocabularyLesson, filter: {}, sort: { createdAt: -1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: [d.difficulty, d.targetClass && `Lớp ${d.targetClass}`].filter(Boolean).join(' · ') }) },
     attempt: { model: VocabularyLessonAttemptLog, userField: 'userId', idField: 'lessonId', filter: {} },
     scoreGate: { fields: 'correct total', percent: (d) => (d.total ? (d.correct / d.total) * 100 : 0) },
   },
   mock_test: {
-    label: 'Thi thử 4 kỹ năng',
+    label: 'Full Mock Test (4 kỹ năng)',
     catalog: null, // synthetic — a single pickable entry, no id
     attempt: { model: MockTestAttempt, userField: 'userId', idField: null, filter: { status: 'completed' } },
   },
@@ -569,7 +569,7 @@ const REGISTRY = {
     bandGate: { fields: 'status aiFeedback.overallBand transcript', ok: speakingAttemptCounts },
   },
   task1_lesson: {
-    label: 'Writing Task 1 (Buổi học)',
+    label: 'Khóa Task 1 Writing (Buổi học)',
     // WT1Lesson's real Mongo _id is used as the assignment's resourceId (so
     // it fits the same ObjectId-keyed schema every other type uses), but the
     // course itself tracks progress by `code` — a re-seeding-safe id, not
@@ -601,7 +601,7 @@ const REGISTRY = {
   // student-facing page for the deep link. checkCompleted's `custom` branch
   // is already course-agnostic so nothing there needs to change.
   task2_course_lesson: {
-    label: 'Writing Task 2 (Buổi học)',
+    label: 'Khóa Task 2 Writing (Buổi học)',
     catalog: { model: WT1Lesson, filter: { published: true }, courseScope: 'IELTS-W-T2',
       sort: { moduleCode: 1, order: 1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.isTest ? 'Test' : (d.moduleCode || '') }),
@@ -609,7 +609,7 @@ const REGISTRY = {
     attempt: { model: WT1Progress, custom: true },
   },
   speaking_course_lesson: {
-    label: 'Speaking (Buổi học)',
+    label: 'Khóa học Speaking (Buổi học)',
     catalog: { model: WT1Lesson, filter: { published: true }, courseScope: 'IELTS-SPEAKING',
       sort: { moduleCode: 1, order: 1 },
       shape: (d) => ({ _id: d._id, label: d.title, meta: d.isTest ? 'Test' : (d.moduleCode || '') }),
@@ -623,7 +623,7 @@ const REGISTRY = {
   // or "Chọn tất cả" by meta "Mindset 1 · Unit 3"; `list` searches those
   // words too ("mindset 2 unit 5"), which live in no DB field.
   mindset_course_lesson: {
-    label: 'Mindset (Buổi học)',
+    label: 'Khóa Mindset (Buổi học)',
     catalog: { model: WT1Lesson, filter: { published: true }, courseScope: MINDSET_COURSES,
       sort: { moduleCode: 1, order: 1 },
       shape: mindsetLessonRow,
@@ -670,7 +670,7 @@ const REGISTRY = {
   speaking_tip:  { label: 'Speaking Tips (Bài giảng)',  catalog: tipCatalog(SpeakingTip),  attempt: viewAttempt('speaking_tip') },
   // Vocab Topics / Paraphrase units (dashboard.html?view=unit&unit=N).
   vocab_unit: {
-    label: 'Vocab Topics / Paraphrase (Unit)',
+    label: 'Học Paraphrase (Unit)',
     catalog: { model: VocabUnit, filter: { isActive: true }, sort: { sortOrder: 1, unitNumber: 1 },
       shape: (d) => ({ _id: d._id, label: `Unit ${d.unitNumber}: ${d.title}`, meta: d.type === 'paraphrase' ? 'Paraphrase' : 'Vocab' }),
       deepLinkKey: (d) => String(d.unitNumber) },
@@ -691,14 +691,14 @@ const REGISTRY = {
     attempt: { check: checkTask2Templates },
   },
   writing_practice: {
-    label: 'Luyện viết câu giao tiếp (Chủ đề)',
+    label: 'Viết câu giao tiếp (Chủ đề)',
     catalog: { model: WPTopic, filter: { isActive: true }, sort: { orderIndex: 1 },
       shape: (d) => ({ _id: d._id, label: d.titleVi ? `${d.titleVi} (${d.title})` : d.title, meta: '' }),
       deepLinkKey: (d) => d.key },
     attempt: { check: checkWritingPractice },
   },
   task1_skill: {
-    label: 'Task 1 Practice (Kỹ năng)',
+    label: 'Task 1 Grammar (Luyện theo kỹ năng · 10 câu)',
     catalog: { static: T1_SKILL_ROWS,
       shape: (d) => ({ _id: d._id, label: `Task 1 Practice: ${d.name}`, meta: '' }),
       deepLinkKey: (d) => d.code },
@@ -708,7 +708,7 @@ const REGISTRY = {
   // ?skill=<code> opens every exercise of the skill. Skills hold 13–36
   // exercises, so rows carry no fixed count.
   task1_grammar: {
-    label: 'Task 1 Grammar (Bộ 1 + Bộ 2)',
+    label: 'Task 1 Grammar (Làm hết Bộ 1 + Bộ 2)',
     catalog: { static: T1_GRAMMAR_ROWS,
       shape: (d) => ({ _id: d._id, label: `Task 1 Grammar: ${d.name}`, meta: '' }),
       deepLinkKey: (d) => d.code },
@@ -729,7 +729,7 @@ const REGISTRY = {
   // khung; like a course lesson, a story learnt before the assignment counts
   // (priorCounts).
   speaking_part2: {
-    label: 'Speaking Part 2 (7 câu chuyện gốc)',
+    label: 'Part 2 · 7 câu chuyện gốc',
     catalog: { static: speakingPart2Service.STORY_ROWS,
       shape: (d) => ({ _id: d._id, label: `Speaking Part 2: ${d.name}`, meta: '' }),
       deepLinkKey: (d) => d.code },

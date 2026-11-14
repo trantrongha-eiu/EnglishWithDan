@@ -185,13 +185,13 @@ function RecentAttempts() {
 
 function ContentPanel({ content, stats }) {
   const rows = [
-    { to: '/reading-tests', label: 'Bộ đề Reading', n: content?.readingTests },
-    { to: '/listening-tests', label: 'Đề Listening', n: content?.listeningTests },
-    { to: '/listening-sections', label: 'Bài lẻ Listening', n: content?.listeningSections },
-    { to: '/writing-tests', label: 'Đề Writing', n: content?.writingExams },
-    { to: '/speaking', label: 'Câu hỏi Speaking', n: content?.speakingQuestions },
-    { to: '/passages', label: 'Bài đọc (Passages)', n: stats?.passageCount },
-    { to: '/vocabulary', label: 'Vocab Units', n: stats?.vocabUnitCount },
+    { to: '/reading-tests', label: 'Full đề Reading', n: content?.readingTests },
+    { to: '/listening-tests', label: 'Full đề Listening', n: content?.listeningTests },
+    { to: '/listening-sections', label: 'Bài lẻ Listening & Dictation', n: content?.listeningSections },
+    { to: '/writing-tests', label: 'Full đề Writing', n: content?.writingExams },
+    { to: '/speaking', label: 'Speaking forecast (câu hỏi)', n: content?.speakingQuestions },
+    { to: '/passages', label: 'Bài lẻ Reading', n: stats?.passageCount },
+    { to: '/vocabulary', label: 'Học Paraphrase (Units)', n: stats?.vocabUnitCount },
   ];
   return (
     <div className="panel">
