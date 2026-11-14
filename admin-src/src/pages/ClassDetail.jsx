@@ -62,6 +62,7 @@ const RESOURCE_CATS = [
   { type: 'task2_template', label: 'Task 2 Templates' },
   { type: 'writing_practice', label: 'Luyện viết câu giao tiếp (Chủ đề)' },
   { type: 'task1_skill', label: 'Task 1 Practice (Kỹ năng)' },
+  { type: 'task1_grammar', label: 'Task 1 Grammar (Bộ 1 + Bộ 2)' },
   { type: 'task1_grammar_set2', label: 'Task 1 Grammar – Bộ 2 (mới)' },
   { type: 'speaking_part2', label: 'Speaking Part 2 (7 câu chuyện gốc)' },
 ];
@@ -80,7 +81,9 @@ const RES_GROUPS = [
     types: ['listening_test', 'listening_practice', 'listening_gapfill', 'dictation', 'shadowing', 'listening_tip'] },
   { key: 'writing', label: '✍️ WRITING', icon: '✍️', color: '#c2410c', bg: '#fff7ed',
     types: ['writing_exam', 'task1_lesson', 'task2_course_lesson', 'task1_practice', 'task2_practice', 'task2',
-      'task1_skill', 'task1_grammar_set2', 'task2_template', 'advanced_sentences', 'writing_practice', 'writing_tip'] },
+      'task1_skill', 'task1_grammar', 'task2_template', 'advanced_sentences', 'writing_practice', 'writing_tip'],
+    // Bộ 2 on its own was merged into task1_grammar (2026-11-14).
+    legacy: ['task1_grammar_set2'] },
   { key: 'speaking', label: '🗣️ SPEAKING', icon: '🗣️', color: '#7c3aed', bg: '#f5f3ff',
     types: ['speaking_course_lesson', 'speaking_part2', 'speaking_topic', 'speaking_full_mock', 'speaking_tip'], legacy: ['speaking'] },
   { key: 'vocab', label: '📚 TỪ VỰNG & NGỮ PHÁP', icon: '📚', color: '#be185d', bg: '#fdf2f8',
@@ -222,6 +225,7 @@ const RES_RULE = {
   task2_template: 'Tự tick khi học viên học xong cả 5 bước của lộ trình VÀ thuộc ≥70% số câu (nhớ lại cả bài ở bước ④ hoặc Thi thử, làm sau khi giao bài).',
   writing_practice: 'Tự tick khi học viên làm ≥10 câu của chủ đề, đúng ≥70%.',
   task1_skill: 'Tự tick khi học viên làm ≥10 câu của kỹ năng này, đúng ≥70%.',
+  task1_grammar: 'Mỗi dòng gồm câu của CẢ Bộ 1 + Bộ 2 của kỹ năng (13–36 câu tuỳ kỹ năng; dòng "Cả 7 kỹ năng" = cả ngân hàng ~160 câu). Link mở đúng các câu đó. Tự tick khi học viên làm hết các câu đó sau khi giao và đúng ≥70% (tính cả lần làm lại).',
   task1_grammar_set2: 'Link mở đúng các câu Bộ 2 của kỹ năng (5 câu; dòng "Cả 7 kỹ năng" = 35 câu). Tự tick khi học viên làm hết các câu đó sau khi giao và đúng ≥70% (tính cả lần làm lại).',
   grammar: 'Tự tick khi học viên làm hết mọi câu chấm điểm của bài (Mini Quiz + trắc nghiệm) và đúng ≥70%. Đáp án từng câu được lưu 3 tháng.',
   speaking_topic: 'Mỗi dòng là cả 1 chủ đề: Part 1 = mọi câu của topic; Part 2 = cue card + tự kèm luôn các câu Part 3 cùng chủ đề. Học viên bấm Bắt đầu sẽ trả lời lần lượt hết các câu trong 1 lượt. Tự tick khi trả lời đủ tất cả các câu (bỏ trống câu nào là chưa tính).',

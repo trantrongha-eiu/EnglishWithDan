@@ -12,6 +12,7 @@ describe('studentPathFor', () => {
     expect(studentPathFor({ resourceType: 'task2', resourceId: 'x', resourceCode: '9' })).toBe('/task2-practice.html?week=9&topicId=x');
     expect(studentPathFor({ resourceType: 'speaking_part2', resourceId: 'x', resourceCode: 'places' })).toBe('/speaking-part2.html?story=places');
     expect(studentPathFor({ resourceType: 'task1_grammar_set2', resourceId: 'x', resourceCode: 'comparison' })).toBe('/task1-practice.html?skill=comparison&set=set2');
+    expect(studentPathFor({ resourceType: 'task1_grammar', resourceId: 'x', resourceCode: 'comparison' })).toBe('/task1-practice.html?skill=comparison');
   });
 
   it('falls back to a catalog row _id (editor picker)', () => {

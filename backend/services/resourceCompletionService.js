@@ -314,15 +314,28 @@ const T1_SET2_TAG = 'set2';
 const T1_SET2_ROWS = [['all', 'Cả 7 kỹ năng'], ...T1_SKILLS].map(([code, name], i) => ({
   _id: new mongoose.Types.ObjectId(`7733${String(i + 1).padStart(20, '0')}`), code, name,
 }));
+// Task 1 Grammar — Bộ 1 + Bộ 2 together (the whole Task1Exercise bank;
+// task1-practice.html?skill=<code>). Same row layout, prefix 7734. Replaced
+// task1_grammar_set2 in the picker on 2026-11-14 (old Bộ 2 homework still works).
+const T1_GRAMMAR_ROWS =[['all', 'Cả 7 kỹ năng'], ...T1_SKILLS].map(([code, name], i) => ({
+  _id: new mongoose.Types.ObjectId(`7734${String(i + 1).padStart(20, '0')}`), code, name,
+}));
 
 // Passed when, since the assignment, the student has answered EVERY active
 // Bộ 2 exercise of that skill (all 35 for the 'all' row) and >= PASS_PERCENT
 // of those answers are correct (re-tries count, like task1_skill).
-async function checkTask1Set2(studentId, ids, since) {
+// task1_grammar (Bộ 1 + Bộ 2) uses the same rule over the whole bank.
+function checkTask1Set2(studentId, ids, since) {
+  return checkTask1SetRows(T1_SET2_ROWS, { tags: T1_SET2_TAG }, studentId, ids, since);
+}
+function checkTask1Grammar(studentId, ids, since) {
+  return checkTask1SetRows(T1_GRAMMAR_ROWS, {}, studentId, ids, since);
+}
+async function checkTask1SetRows(setRows, setFilter, studentId, ids, since) {
   const out = new Map();
-  const want = T1_SET2_ROWS.filter((s) => ids.some((id) => String(id) === String(s._id)));
+  const want = setRows.filter((s) => ids.some((id) => String(id) === String(s._id)));
   if (!want.length) return out;
-  const exs = await Task1Exercise.find({ isActive: true, tags: T1_SET2_TAG }).select('_id skillType').lean().catch(() => []);
+  const exs = await Task1Exercise.find({ isActive: true, ...setFilter }).select('_id skillType').lean().catch(() => []);
   if (!exs.length) return out;
   const q = { userId: studentId, exerciseId: { $in: exs.map((e) => e._id) } };
   if (since) q.createdAt = { $gte: since };
@@ -691,8 +704,18 @@ const REGISTRY = {
       deepLinkKey: (d) => d.code },
     attempt: { check: checkTask1Skills },
   },
-  // Task 1 Grammar Bộ 2 — task1-practice.html?skill=<code>&set=set2 opens
-  // only the Bộ 2 exercises of that skill.
+  // Task 1 Grammar Bộ 1 + Bộ 2 in one row per skill — task1-practice.html
+  // ?skill=<code> opens every exercise of the skill. Skills hold 13–36
+  // exercises, so rows carry no fixed count.
+  task1_grammar: {
+    label: 'Task 1 Grammar (Bộ 1 + Bộ 2)',
+    catalog: { static: T1_GRAMMAR_ROWS,
+      shape: (d) => ({ _id: d._id, label: `Task 1 Grammar: ${d.name}`, meta: '' }),
+      deepLinkKey: (d) => d.code },
+    attempt: { check: checkTask1Grammar },
+  },
+  // Bộ 2 only (task1-practice.html?set=set2) — no longer in the picker
+  // (merged into task1_grammar), kept so homework given before still ticks.
   task1_grammar_set2: {
     label: 'Task 1 Grammar – Bộ 2 (mới)',
     catalog: { static: T1_SET2_ROWS,

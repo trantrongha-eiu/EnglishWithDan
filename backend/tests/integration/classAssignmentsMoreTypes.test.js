@@ -206,6 +206,32 @@ test('task1 practice API: tag=set2 lists only Bộ 2 exercises; meta has Bộ 2 
   expect(meta.body.setCounts.set2).toMatchObject({ _total: 1, comparison: 1 });
 });
 
+test('task1_grammar: every Bộ 1 + Bộ 2 exercise of the skill answered since assigned AND >= 70% correct', async () => {
+  const { createTask1Exercise } = require('../factories/contentFactory');
+  const { t, s, cls } = await setup();
+  const old = await createTask1Exercise({ skillType: 'comparison', orderIndex: 1 });
+  const newer = await createTask1Exercise({ skillType: 'comparison', orderIndex: 201, extra: { tags: ['set2'] } });
+  const other = await createTask1Exercise({ skillType: 'overview', orderIndex: 2 });
+  const row = (code) => rcs.REGISTRY.task1_grammar.catalog.static.find((x) => x.code === code);
+  const asg = await assign(t, cls, [
+    { kind: 'internal', resourceType: 'task1_grammar', resourceId: row('comparison')._id },
+    { kind: 'internal', resourceType: 'task1_grammar', resourceId: row('all')._id },
+  ]);
+  const answer = (ex, ok) => Task1Attempt.create({ userId: s._id, exerciseId: ex._id, userAnswer: 'x', isCorrect: ok, skillType: ex.skillType });
+  const done = async () => (await request(app).get('/api/assignments/mine').set(authH(s))).body.assignments
+    .find((a) => a._id === String(asg._id)).resources.map((r) => r.completed);
+
+  // Only the Bộ 1 one answered — the Bộ 2 one is part of the row too.
+  await answer(old, true);
+  expect(await done()).toEqual([false, false]);
+  await answer(newer, true);
+  expect(await done()).toEqual([true, false]);
+  await answer(other, true);
+  expect(await done()).toEqual([true, true]);
+  const mine = (await request(app).get('/api/assignments/mine').set(authH(s))).body.assignments.find((a) => a._id === String(asg._id));
+  expect(mine.resources.map((r) => r.resourceCode)).toEqual(['comparison', 'all']);
+});
+
 test('grammar: a lesson homework ticks only once one attempt reaches 70% (60% does not)', async () => {
   const { createEssentialGrammarLesson } = require('../factories/contentFactory');
   const { t, s, cls } = await setup();
