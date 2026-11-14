@@ -181,6 +181,8 @@
       '- Students work in groups to identify synonyms or suggest alternative paraphrases for each item.',
       '- Leave space for students to write their answers.',
       '',
+      'Create a word bank for the activities, along with an answer key for teachers.',
+      '',
     ].join('\n');
   }
 
@@ -319,7 +321,7 @@
     if (!isStaff() || !id) return '';
     return '<button type="button" class="syn-prompt-btn' + (variant ? ' syn-prompt-btn--' + variant : '') + '"' +
       ' onclick="event.stopPropagation();SynonymPrompt.copy(\'' + kind + '\',\'' + String(id).replace(/[^\w-]/g, '') + '\',this)"' +
-      ' title="Copy prompt AI: 2 warm-up activities (Vocabulary in Context + Synonym &amp; Paraphrase Hunt) từ ' + (kind.indexOf('ls-') === 0 ? 'transcript' : 'passage') + ' (kèm nội dung đề). Chỉ admin/teacher thấy nút này.">' +
+      ' title="Copy prompt AI: 2 warm-up activities (Vocabulary in Context + Synonym &amp; Paraphrase Hunt + word bank + answer key) từ ' + (kind.indexOf('ls-') === 0 ? 'transcript' : 'passage') + ' (kèm nội dung đề). Chỉ admin/teacher thấy nút này.">' +
       '<i class="fas fa-wand-magic-sparkles"></i><span>Prompt</span></button>';
   }
 
