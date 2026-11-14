@@ -12,7 +12,9 @@ import { parseExternalFeedback } from './externalAi';
 // Grade one submission from the "Chấm bài khoá học & Speaking" queue:
 // the student's work + the AI grade on top, the teacher's form below.
 // Saving PUTs /admin/submission-reviews/:source/:id, which stores the
-// teacher's grade on the row and messages the student.
+// teacher's grade on the row and messages the student. Course writing is
+// held (d.held) — the student sees nothing until this is saved; speaking
+// already got its AI grade, so a teacher grade there is optional.
 
 const BANDS = Array.from({ length: 19 }, (_, i) => i / 2);
 const num = (n) => (n == null || Number.isNaN(Number(n)) ? '–' : Math.round(Number(n) * 10) / 10);
@@ -182,7 +184,7 @@ function GradeForm({ d, onSaved, prefill }) {
         method: 'PUT',
         body: JSON.stringify({ band: form.band === '' ? null : form.band, scores, note: form.note }),
       });
-      toast('Đã lưu điểm & gửi feedback cho học sinh');
+      toast(d.held ? 'Đã xác nhận điểm & gửi cho học sinh' : 'Đã lưu điểm & gửi feedback cho học sinh');
       onSaved();
     } catch (e) { toast(e.message, 'error'); }
     finally { setSaving(false); }
@@ -191,6 +193,14 @@ function GradeForm({ d, onSaved, prefill }) {
   return (
     <div style={{ borderTop: '2px solid var(--border)', marginTop: 16, paddingTop: 12 }}>
       <div style={{ fontWeight: 800, fontSize: 14, marginBottom: 8 }}>🧑‍🏫 Giáo viên chấm {d.teacherReview && <span className="muted" style={{ fontWeight: 400, fontSize: 12 }}>(đã chấm — lưu lại sẽ cập nhật & báo học sinh)</span>}</div>
+      {d.held && (
+        <div className="hint-box" style={{ marginBottom: 10, fontSize: 13 }}>
+          ⏳ Học sinh <b>chưa thấy điểm</b> bài này. Band AI đã điền sẵn bên dưới — kiểm tra/sửa rồi bấm xác nhận: học sinh nhận band của giáo viên + nhận xét, và phần nhận xét chi tiết của AI mở ra cho học sinh.
+        </div>
+      )}
+      {!d.teacherReview && isSpk && d.attempt?.status !== 'error' && d.attempt?.status !== 'pending' && (
+        <div className="muted" style={{ marginBottom: 10, fontSize: 12 }}>Điểm AI đã gửi thẳng cho học sinh. Chấm/nhận xét thêm ở đây là không bắt buộc.</div>
+      )}
       {showCriteria && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 8, marginBottom: 8 }}>
           {keys.map(k => <BandSelect key={k} id={`sc-${k}`} label={SCORE_LABELS[k] || k} value={form.scores[k]} onChange={v => setScore(k, v)} />)}
@@ -205,7 +215,7 @@ function GradeForm({ d, onSaved, prefill }) {
         onChange={e => setForm(f => ({ ...f, note: e.target.value }))} style={{ width: '100%', resize: 'vertical' }} />
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
         <button type="button" className="btn btn-primary" onClick={save} disabled={saving || (form.band === '' && !form.note.trim())}>
-          {saving ? '⏳ Đang gửi...' : '✅ Lưu điểm & gửi feedback'}
+          {saving ? '⏳ Đang gửi...' : d.held ? '✅ Xác nhận & gửi cho học sinh' : '✅ Lưu điểm & gửi feedback'}
         </button>
       </div>
     </div>

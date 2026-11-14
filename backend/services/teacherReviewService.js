@@ -2,17 +2,26 @@
 
 // Teacher review queue — "Chấm bài khoá học & Speaking" (admin
 // /submission-reviews). Every open-ended submission a student makes is
-// AI-graded instantly as before; this is the human layer on top:
+// AI-graded on submit; what happens next depends on the kind:
 //
 //  - kind 'writing'  = course writing (WT1Submission whose exercise is
 //    sentence_writing / paragraph_writing / full_task1 — every course on the
-//    WT1 stack, Mindset included). The teacher reads it next to the AI grade,
-//    can re-run the AI (e.g. it was busy at submit time and the student only
-//    got the rubric fallback), then confirms a band and/or writes a comment.
-//  - kind 'speaking' = course speaking_response (WT1Submission, recordings
-//    saved per item since this feature) + standalone Speaking practice
-//    (SpeakingAttempt, minus the course mirrors tagged source:'course'). The
-//    teacher listens to the recording and grades by hand.
+//    WT1 stack, Mindset included). Since 2026-11-14 the AI/rubric grade is
+//    HELD (WT1Submission.awaitingTeacher): the student only sees "chờ giáo
+//    viên xác nhận" until the teacher, who sees the AI band here, confirms
+//    or corrects it (can also re-run the AI). Confirming releases the
+//    teacher's band + note AND the AI feedback to the student. These are
+//    the "chờ chấm" rows (sidebar badge).
+//  - kind 'speaking' = course speaking_response + standalone Speaking
+//    practice (SpeakingAttempt, minus the course mirrors tagged
+//    source:'course'). The AI grade goes straight to the student, so an
+//    AI-graded answer never counts as "chờ chấm" (the teacher can still
+//    listen and add a grade/comment from the tab). The only speaking rows
+//    that wait on the teacher are the ones the AI could NOT grade — status
+//    'error', or still 'pending' after STUCK_PENDING_MS (mock test with no
+//    transcript, crashed grade): the student got nothing, and a mock run
+//    waits on that band. Course speaking never ends up there (an AI failure
+//    503s and stores nothing).
 //
 // Confirming writes `teacherReview` on the row (models/shared/
 // teacherReviewSchema.js) and sends the student an inbox message; the
@@ -101,12 +110,14 @@ function courseQuery(codes, status, userIds) {
 const STUCK_PENDING_MS = 10 * 60 * 1000;
 
 function speakingQuery(status, userIds) {
+  const noAiGrade = [
+    { status: 'error' },
+    { status: 'pending', createdAt: { $lt: new Date(Date.now() - STUCK_PENDING_MS) } },
+  ];
   return {
     source: { $ne: 'course' },
-    $or: [
-      { status: { $in: ['analyzed', 'error'] } },
-      { status: 'pending', createdAt: { $lt: new Date(Date.now() - STUCK_PENDING_MS) } },
-    ],
+    // "pending" = only the answers the AI couldn't grade (see top).
+    $or: status === 'pending' ? noAiGrade : [{ status: 'analyzed' }, ...noAiGrade],
     'aiFeedback.noGenuineAnswer': { $ne: true }, createdAt: { $gte: QUEUE_CUTOFF },
     ...reviewedFilter(status),
     ...(userIds ? { userId: { $in: userIds } } : {}),
@@ -145,6 +156,8 @@ async function courseRows(subs, exByCode) {
       aiBand: s.aiFeedback?.bandEstimate ?? null,
       score: s.aiFeedback ? null : (s.score ?? null),
       aiUnavailable: !!(s.localFeedback && s.localFeedback.aiUnavailable),
+      // The student hasn't seen any grade yet — waiting on this confirm.
+      held: !!s.awaitingTeacher && !s.teacherReview?.reviewedAt,
       words: ex.type === 'speaking_response' ? null : wordCount(s.responses),
       hasAudio: !!(s.audioUrl || items.some((r) => r.audioUrl)),
       teacherBand: s.teacherReview?.band ?? null,
@@ -168,7 +181,7 @@ function speakingRows(attempts) {
 }
 
 const USER_FIELDS = 'username firstName lastName';
-const COURSE_LIST_FIELDS = 'userId exerciseCode lessonCode attempt createdAt score responses aiFeedback.bandEstimate localFeedback.aiUnavailable audioUrl itemResults.audioUrl teacherReview';
+const COURSE_LIST_FIELDS = 'userId exerciseCode lessonCode attempt createdAt score responses aiFeedback.bandEstimate localFeedback.aiUnavailable audioUrl itemResults.audioUrl teacherReview awaitingTeacher';
 const SPEAKING_LIST_FIELDS = 'userId topic part question createdAt status audioUrl aiFeedback.overallBand teacherReview';
 
 async function list({ kind = 'writing', status = 'pending', search, page = 1, limit = 30 } = {}) {
@@ -191,12 +204,15 @@ async function list({ kind = 'writing', status = 'pending', search, page = 1, li
 
   // Speaking spans two collections: take the newest (page × limit) of each,
   // merge by date and cut the requested page out of the merged list.
+  // Course speaking always has its AI grade (a failed grade stores
+  // nothing), so it's never in the "pending" (AI couldn't grade) list.
   const sq = speakingQuery(status, userIds);
   const upto = pg * lim;
+  const withCourse = status !== 'pending';
   const [subs, attempts, totalA, totalB] = await Promise.all([
-    WT1Submission.find(cq).select(COURSE_LIST_FIELDS).populate('userId', USER_FIELDS).sort({ createdAt: -1 }).limit(upto).lean(),
+    withCourse ? WT1Submission.find(cq).select(COURSE_LIST_FIELDS).populate('userId', USER_FIELDS).sort({ createdAt: -1 }).limit(upto).lean() : [],
     SpeakingAttempt.find(sq).select(SPEAKING_LIST_FIELDS).populate('userId', USER_FIELDS).sort({ createdAt: -1 }).limit(upto).lean(),
-    WT1Submission.countDocuments(cq),
+    withCourse ? WT1Submission.countDocuments(cq) : 0,
     SpeakingAttempt.countDocuments(sq),
   ]);
   const merged = [...(await courseRows(subs, exByCode)), ...speakingRows(attempts)]
@@ -205,15 +221,15 @@ async function list({ kind = 'writing', status = 'pending', search, page = 1, li
   return { rows: merged, total: totalA + totalB, page: pg, limit: lim };
 }
 
-// Pending counts per tab (+ the sidebar badge, which is their sum).
+// Pending counts per tab (+ the sidebar badge, which is their sum):
+// course writing held for the teacher + speaking the AI couldn't grade.
 async function counts() {
-  const [wEx, sEx] = await Promise.all([exercisesOfTypes(WRITING_TYPES), exercisesOfTypes(SPEAKING_TYPES)]);
-  const [writing, courseSpeaking, speaking] = await Promise.all([
+  const wEx = await exercisesOfTypes(WRITING_TYPES);
+  const [writing, speaking] = await Promise.all([
     WT1Submission.countDocuments(courseQuery(wEx.map((e) => e.code), 'pending', null)),
-    WT1Submission.countDocuments(courseQuery(sEx.map((e) => e.code), 'pending', null)),
     SpeakingAttempt.countDocuments(speakingQuery('pending', null)),
   ]);
-  return { writing, speaking: courseSpeaking + speaking };
+  return { writing, speaking };
 }
 
 function assertSource(source, id) {
@@ -236,6 +252,7 @@ async function getDetail(source, id) {
       review: data.review,
       rubric: { minWords: rubric.minWords || null, maxWords: rubric.maxWords || null, targetStructures: rubric.targetStructures || [] },
       teacherReview: data.sub.teacherReview?.reviewedAt ? data.sub.teacherReview : null,
+      held: wt1Service.heldForTeacher(data.sub),
       scoreKeys: SCORE_KEYS[data.review.kind === 'speaking' ? 'speaking' : 'writing'],
     };
   }
@@ -280,7 +297,7 @@ function cleanReview(kind, body) {
 
 const fmtBand = (n) => (n == null ? '–' : Number(n).toFixed(1));
 
-function messageBody({ title, context, review, page, updated }) {
+function messageBody({ title, context, review, page, updated, released }) {
   const lines = [
     updated
       ? `💬 Giáo viên đã cập nhật nhận xét cho bài "${title}".`
@@ -293,6 +310,7 @@ function messageBody({ title, context, review, page, updated }) {
   const scoreLine = Object.keys(sc).map((k) => `${SCORE_LABELS[k] || k}: ${fmtBand(sc[k])}`).join(' · ');
   if (scoreLine) lines.push(`• ${scoreLine}`);
   if (review.note) lines.push('', 'Nhận xét của giáo viên:', review.note);
+  if (released) lines.push('', 'Nhận xét chi tiết (lỗi cần sửa, cấu trúc đã dùng) cũng đã mở trong bài làm.');
   lines.push('', page
     ? `Xem lại bài làm: mở ${page} → nút "Lịch sử" của bài này.`
     : 'Xem lại bài làm ở tab "Lịch sử" trang Luyện Speaking.');
@@ -320,12 +338,15 @@ async function submitReview(source, id, body, actor) {
     const kind = ex.type === 'speaking_response' ? 'speaking' : 'writing';
     const review = cleanReview(kind, body);
     const updated = !!sub.teacherReview?.reviewedAt;
+    // First confirm of a held course-writing grade: the AI/rubric feedback
+    // opens for the student together with the teacher's grade.
+    const released = !updated && !!sub.awaitingTeacher && !!(sub.aiFeedback || sub.localFeedback);
     sub.teacherReview = { ...review, reviewedBy: actor._id, reviewerName: displayName(actor), reviewedAt: now };
     await sub.save();
     const ctx = (await lessonContext([sub.lessonCode]))[sub.lessonCode] || {};
     await notifyStudent(actor, sub.userId, `💬 Giáo viên đã chấm: ${ex.title || ex.code}`, messageBody({
       title: ex.title || ex.code, context: [ctx.courseTitle, ctx.lessonTitle].filter(Boolean).join(' · '),
-      review, page: COURSE_PAGES[ctx.courseCode] || '', updated,
+      review, page: COURSE_PAGES[ctx.courseCode] || '', updated, released,
     }));
     return { teacherReview: sub.teacherReview.toObject ? sub.teacherReview.toObject() : sub.teacherReview };
   }
@@ -446,7 +467,11 @@ async function autoRegradePending({ limit = AUTO_BATCH, delayMs = AUTO_DELAY_MS 
         const wasBusy = !!(sub.localFeedback && sub.localFeedback.aiUnavailable);
         await saveAiFeedback(sub, ai);
         graded++;
-        if (wasBusy) await notifyAiGraded(sub, ex);
+        // A held grade (awaitingTeacher) goes to the teacher, not the
+        // student — they hear about it when the teacher confirms. Only rows
+        // from before the hold (student already saw the rubric fallback)
+        // still get the "AI đã chấm xong" message.
+        if (wasBusy && !sub.awaitingTeacher) await notifyAiGraded(sub, ex);
       } catch (err) {
         if (err.isOverloaded) { overloaded = true; break; } // next tick
         failed++;

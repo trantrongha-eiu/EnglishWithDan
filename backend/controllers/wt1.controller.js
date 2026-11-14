@@ -107,13 +107,25 @@ exports.submitWriting = async (req, res) => {
     // under "Xem bài mẫu" in the feedback panel for every writing type.
     const sampleAnswer = (ex.rubric && ex.rubric.sampleAnswer) || '';
 
+    // paragraph_writing / full_task1 are graded now (AI, or the rubric when
+    // the AI is busy) but the grade is HELD for the teacher: it shows in
+    // admin "Chấm bài khoá học" and only reaches the student once the
+    // teacher confirms it (teacherReviewService.submitReview). The student
+    // gets "đã nộp — chờ giáo viên xác nhận" + the model answer. The
+    // submission still counts toward the lesson gate right away.
+    const held = (extra = {}) => res.json({
+      success: true, graded: 'pending', pendingReview: true, sampleAnswer, ...extra,
+    });
+
+    // sentence_writing (rubric checklist, no AI) is NOT held — the student
+    // sees the checklist + score straight away (user decision 2026-11-14).
     if (ex.type === 'sentence_writing') {
       const result = grading.gradeWritingLocal(ex, arr);
       await svc.recordSubmission(req.user._id, ex, {
         responses: arr, score: result.score,
         localFeedback: { feedbackVi: result.feedbackVi, checklist: result.checklist },
       });
-      return res.json({ success: true, ...result });
+      return res.json({ success: true, ...result, sampleAnswer });
     }
 
     // paragraph_writing / full_task1 → Gemini. If the AI is overloaded /
@@ -128,18 +140,16 @@ exports.submitWriting = async (req, res) => {
       console.warn('[WT1] AI grading unavailable — grading against the rubric instead:', aiErr.message);
       const local = grading.gradeWritingLocal(ex, arr);
       await svc.recordSubmission(req.user._id, ex, {
-        responses: arr, score: local.score,
+        responses: arr, score: local.score, awaitingTeacher: true,
         localFeedback: { feedbackVi: local.feedbackVi, checklist: local.checklist, aiUnavailable: true },
       });
-      // `aiUnavailable` drives the "AI đang bận — điểm sơ bộ theo rubric"
-      // banner in showWritingFeedback (all 3 course pages). `local` already
-      // carries score / checklist / sampleAnswer in the same shape
-      // sentence_writing returns, so the existing local-feedback branch
-      // renders it unchanged.
-      return res.json({ success: true, ...local, sampleAnswer, aiUnavailable: true, aiOverloaded: !!aiErr.isOverloaded });
+      // `aiUnavailable` = the row shows "AI lỗi/bận" in the admin queue; the
+      // cron (courseWritingAutoGrade) re-runs the AI before the teacher
+      // confirms. The student's view is the same "chờ giáo viên" either way.
+      return held({ aiUnavailable: true, aiOverloaded: !!aiErr.isOverloaded });
     }
-    await svc.recordSubmission(req.user._id, ex, { responses: arr, aiFeedback: ai });
-    res.json({ success: true, ...ai, sampleAnswer });
+    await svc.recordSubmission(req.user._id, ex, { responses: arr, aiFeedback: ai, awaitingTeacher: true });
+    held();
   } catch (err) {
     if (err.statusCode) return res.status(err.statusCode).json({ success: false, message: err.message, code: err.code });
     console.error('[WT1] submitWriting:', err.message);

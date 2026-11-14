@@ -192,10 +192,15 @@ describe('POST /submit-writing', () => {
     const res = await request(app).post('/api/wt1/submit-writing').set(bearer(u))
       .send({ exerciseCode: 'SW1', responses: ['The number of cars was five million in 2005.', 'There were two million bikes.'] });
     expect(res.status).toBe(200);
+    // Not held: the student sees the rubric checklist + score straight away.
     expect(res.body.graded).toBe('local');
+    expect(res.body.pendingReview).toBeUndefined();
+    expect(typeof res.body.score).toBe('number');
+    expect(Array.isArray(res.body.checklist)).toBe(true);
     expect(geminiService.checkEssay).not.toHaveBeenCalled();
     const sub = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'SW1' }).lean();
     expect(sub.responses).toHaveLength(2);
+    expect(sub.awaitingTeacher).toBeUndefined();
   });
 
   test('paragraph_writing calls checkEssay with the chart image and stores aiFeedback', async () => {
@@ -207,8 +212,10 @@ describe('POST /submit-writing', () => {
     const res = await request(app).post('/api/wt1/submit-writing').set(bearer(u))
       .send({ exerciseCode: 'PW1', responses: ['In 2005, the chart shows that car use rose while bike use fell, and there were more buses than trains.'] });
     expect(res.status).toBe(200);
-    expect(res.body.graded).toBe('ai');
-    expect(res.body.scores.taskAchievement).toBe(6);
+    // The AI grade is held for the teacher — not in the student's response.
+    expect(res.body).toMatchObject({ graded: 'pending', pendingReview: true });
+    expect(res.body.scores).toBeUndefined();
+    expect(res.body.bandEstimate).toBeUndefined();
     const [, , imageUrl] = geminiService.checkEssay.mock.calls[0];
     expect(imageUrl).toBe('https://example.com/x.png');
     const sub = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'PW1' }).lean();
@@ -222,16 +229,15 @@ describe('POST /submit-writing', () => {
       .send({ exerciseCode: 'PW1', responses: [('word '.repeat(50)).trim()] });
 
     expect(res.status).toBe(200);
-    expect(res.body.graded).toBe('local');
-    expect(res.body.aiUnavailable).toBe(true);
-    expect(typeof res.body.score).toBe('number');
+    expect(res.body).toMatchObject({ graded: 'pending', pendingReview: true, aiUnavailable: true });
+    expect(res.body.score).toBeUndefined(); // held for the teacher
     expect(res.body.sampleAnswer).toBe('hidden sample'); // model answer still returned
-    expect(Array.isArray(res.body.checklist)).toBe(true);
 
     // recorded → counts toward the lesson's writing-submission gate
     const sub = await WT1Submission.findOne({ userId: u._id, exerciseCode: 'PW1' }).lean();
     expect(sub).toBeTruthy();
-    expect(sub.score).toBe(res.body.score);
+    expect(typeof sub.score).toBe('number');
+    expect(sub.localFeedback.aiUnavailable).toBe(true);
     expect(sub.aiFeedback?.bandEstimate == null).toBe(true); // no AI band — graded locally
   });
 });

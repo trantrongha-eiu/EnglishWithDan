@@ -1,8 +1,9 @@
 // Teacher review queue — "Chấm bài khoá học & Speaking"
 // (services/teacherReviewService.js, routes/admin/submissionReviews.js):
-// course writing + course/standalone speaking land in the queue after the AI
-// grade; the teacher grades/comments, the student gets an inbox message and
-// sees it in Lịch sử. R2 + Gemini are mocked.
+// course writing is AI-graded but HELD until the teacher confirms it (the
+// student sees nothing before that); speaking's AI grade goes straight to
+// the student and never waits in the queue (teacher comment optional).
+// R2 + Gemini are mocked.
 jest.mock('../../services/r2Service', () => {
   const host = 'https://media.test';
   return {
@@ -82,13 +83,21 @@ describe('course writing → teacher review queue', () => {
   test('an AI-graded course essay waits in the writing queue; the teacher grade reaches the student', async () => {
     const student = await createPremiumStudent({ firstName: 'Lan' });
     const teacher = await createTeacher({ firstName: 'Thầy', lastName: 'Hà' });
-    expect((await submitWriting(student)).status).toBe(200);
+    const submit = await submitWriting(student);
+    expect(submit.status).toBe(200);
+    // The AI grade is held — the student only learns it was submitted.
+    expect(submit.body).toMatchObject({ pendingReview: true, sampleAnswer: 'Dear Hannah…' });
+    expect(submit.body.bandEstimate).toBeUndefined();
+    const before = await request(app).get('/api/wt1/exercise/TR-L1-W/history').set(bearer(student));
+    expect(before.body.history[0]).toMatchObject({ awaitingTeacher: true, band: null, teacherReviewed: false });
+    const lesson = await request(app).get('/api/wt1/lesson/TR-L1').set(bearer(student));
+    expect(lesson.body.exercises.find((e) => e.code === 'TR-L1-W').lastAttempt).toMatchObject({ pendingReview: true, score: null });
 
     const list = await request(app).get('/api/admin/submission-reviews?kind=writing').set(bearer(teacher));
     expect(list.status).toBe(200);
     expect(list.body.total).toBe(1);
     const row = list.body.rows[0];
-    expect(row).toMatchObject({ source: 'course', title: 'Writing: holiday email', exerciseType: 'paragraph_writing', aiBand: 5.5, reviewedAt: null });
+    expect(row).toMatchObject({ source: 'course', title: 'Writing: holiday email', exerciseType: 'paragraph_writing', aiBand: 5.5, reviewedAt: null, held: true });
     expect(row.context).toContain('Mindset Foundation');
     expect(row.words).toBeGreaterThan(20);
     expect((await svc.counts()).writing).toBe(1);
@@ -98,6 +107,8 @@ describe('course writing → teacher review queue', () => {
     expect(detail.body.kind).toBe('writing');
     expect(detail.body.review.responses[0]).toBe(ESSAY);
     expect(detail.body.rubric.minWords).toBe(140);
+    expect(detail.body.held).toBe(true);
+    expect(detail.body.review.ai.band).toBe(5.5); // the teacher sees the AI grade
 
     const put = await request(app).put(`/api/admin/submission-reviews/course/${row.id}`).set(bearer(teacher))
       .send({ band: 6, note: 'Dùng thì quá khứ tốt. Viết thêm cho đủ 150 từ.' });
@@ -112,6 +123,7 @@ describe('course writing → teacher review queue', () => {
     expect(msg.body).toContain('Band giáo viên chấm: 6.0');
     expect(msg.body).toContain('Viết thêm cho đủ 150 từ');
     expect(msg.body).toContain('mindset-0.html');
+    expect(msg.body).toContain('Nhận xét chi tiết');
 
     // Out of the pending queue, into "đã chấm".
     expect((await request(app).get('/api/admin/submission-reviews?kind=writing').set(bearer(teacher))).body.total).toBe(0);
@@ -119,9 +131,12 @@ describe('course writing → teacher review queue', () => {
 
     // Student sees it in Lịch sử (list chip + detail block).
     const hist = await request(app).get('/api/wt1/exercise/TR-L1-W/history').set(bearer(student));
-    expect(hist.body.history[0]).toMatchObject({ teacherReviewed: true, teacherBand: 6 });
+    expect(hist.body.history[0]).toMatchObject({ teacherReviewed: true, teacherBand: 6, band: 6, awaitingTeacher: false });
     const att = await request(app).get(`/api/wt1/attempt/${row.id}`).set(bearer(student));
     expect(att.body.review.teacher).toMatchObject({ band: 6, note: expect.stringContaining('150 từ'), reviewerName: 'Thầy Hà' });
+    // Released: the teacher's band is the one shown, the AI feedback opens too.
+    expect(att.body.review).toMatchObject({ band: 6, awaitingTeacher: false });
+    expect(att.body.review.ai.band).toBe(5.5);
   });
 
   test('re-running the AI replaces the rubric-only fallback grade', async () => {
@@ -172,7 +187,7 @@ describe('speaking → recordings kept + manual grading', () => {
     const mirror = await SpeakingAttempt.findOne({ userId: student._id }).lean();
     expect(mirror).toMatchObject({ source: 'course', audioUrl: sub.audioUrl });
 
-    const list = await request(app).get('/api/admin/submission-reviews?kind=speaking').set(bearer(teacher));
+    const list = await request(app).get('/api/admin/submission-reviews?kind=speaking&status=all').set(bearer(teacher));
     expect(list.body.total).toBe(1);
     expect(list.body.rows[0]).toMatchObject({ source: 'course', hasAudio: true });
 
@@ -202,7 +217,7 @@ describe('speaking → recordings kept + manual grading', () => {
     const old = await createSpeakingAttempt({ userId: student._id });
     await SpeakingAttempt.collection.updateOne({ _id: old._id }, { $set: { createdAt: new Date('2026-11-01T00:00:00Z') } });
 
-    const list = await request(app).get('/api/admin/submission-reviews?kind=speaking').set(bearer(teacher));
+    const list = await request(app).get('/api/admin/submission-reviews?kind=speaking&status=all').set(bearer(teacher));
     expect(list.body.rows.map((r) => String(r.id))).toEqual([String(own._id)]);
     expect(list.body.rows[0]).toMatchObject({ source: 'speaking', hasAudio: true, aiBand: 6 });
 
@@ -214,14 +229,33 @@ describe('speaking → recordings kept + manual grading', () => {
     expect(a.teacherReview).toMatchObject({ band: 6.5, note: 'Tốt' });
   });
 
-  test('sidebar badge counts both queues', async () => {
+  test('sidebar badge: course writing + only the speaking the AI could not grade', async () => {
     const student = await createPremiumStudent();
     const teacher = await createTeacher();
     await submitWriting(student);
     await createSpeakingAttempt({ userId: student._id });
+    expect((await submitSpeaking(student)).status).toBe(200);
+    expect(await svc.counts()).toEqual({ writing: 1, speaking: 0 });
+    const failed = await createSpeakingAttempt({ userId: student._id, status: 'error' });
+    expect(await svc.counts()).toEqual({ writing: 1, speaking: 1 });
     const res = await request(app).get('/api/admin/sidebar-badges').set(bearer(teacher));
     expect(res.status).toBe(200);
     expect(res.body.pendingReviews).toBe(2);
+    // "pending" speaking = just the failed one; "all" still lists every answer
+    // (AI-graded ones too, for an optional teacher comment).
+    const pend = await request(app).get('/api/admin/submission-reviews?kind=speaking&status=pending').set(bearer(teacher));
+    expect(pend.body.rows.map((r) => String(r.id))).toEqual([String(failed._id)]);
+    const all = await request(app).get('/api/admin/submission-reviews?kind=speaking&status=all').set(bearer(teacher));
+    expect(all.body.total).toBe(3);
+  });
+
+  test('course speaking returns the AI grade to the student straight away', async () => {
+    const student = await createPremiumStudent();
+    const res = await submitSpeaking(student);
+    expect(res.status).toBe(200);
+    expect(res.body.pendingReview).toBeUndefined();
+    const hist = await request(app).get('/api/wt1/exercise/TR-L1-S/history').set(bearer(student));
+    expect(hist.body.history[0]).toMatchObject({ band: 6, awaitingTeacher: false });
   });
 });
 
@@ -246,7 +280,7 @@ describe('course writing the AI missed → auto re-grade every 10 min + external
     return { student, sub: await WT1Submission.findOne({ userId: student._id }).lean() };
   }
 
-  test('autoRegradePending grades it, clears "AI lỗi/bận" and tells the student', async () => {
+  test('autoRegradePending grades it and clears "AI lỗi/bận" — the held grade goes to the teacher, not the student', async () => {
     await createAdmin(); // the inbox message's sender
     const teacher = await createTeacher();
     const { student, sub } = await busySubmission();
@@ -263,9 +297,10 @@ describe('course writing the AI missed → auto re-grade every 10 min + external
     expect(after.aiFeedback.bandEstimate).toBe(5.5);
     expect(after.localFeedback.aiUnavailable).toBe(false);
     row = (await request(app).get('/api/admin/submission-reviews?kind=writing').set(bearer(teacher))).body.rows[0];
-    expect(row).toMatchObject({ aiBand: 5.5, aiUnavailable: false });
-    const msg = await Message.findOne({ toId: student._id }).lean();
-    expect(msg.subject).toContain('Band 5.5');
+    expect(row).toMatchObject({ aiBand: 5.5, aiUnavailable: false, held: true });
+    expect(await Message.findOne({ toId: student._id }).lean()).toBeNull();
+    const hist = await request(app).get('/api/wt1/exercise/TR-L1-W/history').set(bearer(student));
+    expect(hist.body.history[0]).toMatchObject({ awaitingTeacher: true, band: null });
 
     // Nothing left to do on the next tick.
     expect(await svc.autoRegradePending({ delayMs: 0 })).toMatchObject({ graded: 0 });

@@ -7,10 +7,13 @@ import Pagination from '../components/Pagination';
 import { useAdminData } from '../contexts/AdminDataContext';
 import ReviewGradeModal from './submissionReviews/ReviewGradeModal';
 
-// "Chấm bài khoá học & Speaking" — every course writing submission and every
-// Speaking answer (course + standalone practice) lands here after the AI has
-// graded it. The teacher reads/listens, sets a band and/or comment, and the
-// student gets it in their inbox + the attempt's Lịch sử.
+// "Chấm bài khoá học & Speaking".
+//  - Writing khoá học: the AI grades on submit but the student does NOT see
+//    it yet — the teacher checks the AI band here, confirms/corrects it and
+//    sends it (inbox + the attempt's Lịch sử). These are the "chờ chấm" rows.
+//  - Speaking (course + standalone practice): the AI grade already went to
+//    the student; the teacher can still listen and add a grade/comment. Only
+//    answers the AI could NOT grade wait on the teacher ("pending" + badge).
 // Backend: routes/admin/submissionReviews.js → services/teacherReviewService.js.
 // The IELTS Writing tests keep their own page (/writing-grades).
 
@@ -33,7 +36,11 @@ function bandBadge(b) {
 export default function SubmissionReviews() {
   const [params, setParams] = useSearchParams();
   const kind = TABS.some(t => t.key === params.get('tab')) ? params.get('tab') : 'writing';
-  const [status, setStatus] = useState('pending');
+  const [writingStatus, setWritingStatus] = useState('pending');
+  const [speakingStatus, setSpeakingStatus] = useState('all');
+  const isWriting = kind === 'writing';
+  const status = isWriting ? writingStatus : speakingStatus;
+  const setStatus = isWriting ? setWritingStatus : setSpeakingStatus;
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(null); // { source, id }
@@ -66,7 +73,8 @@ export default function SubmissionReviews() {
         <div>
           <h2 className="section-title">Chấm bài khoá học & Speaking</h2>
           <div style={{ fontSize: 12, color: 'var(--text3)', marginTop: 2 }}>
-            AI đã chấm ngay khi học sinh nộp — giáo viên duyệt, chấm tay và gửi nhận xét (học sinh nhận ở Hộp thư + Lịch sử bài làm).
+            <b>Writing khoá học:</b> AI chấm ngay khi nộp nhưng học sinh <b>chưa thấy điểm</b> — giáo viên xem điểm AI, xác nhận/sửa rồi gửi (học sinh nhận ở Hộp thư + Lịch sử bài làm).{' '}
+            <b>Speaking:</b> điểm AI đã gửi thẳng cho học sinh — giáo viên chỉ cần chấm những bài AI chấm lỗi, còn lại nghe/nhận xét thêm nếu muốn.
             Bài thi Writing IELTS chấm ở trang <Link to="/writing-grades">Chấm bài Writing</Link>.
           </div>
         </div>
@@ -88,7 +96,7 @@ export default function SubmissionReviews() {
         <input className="form-input search-input" placeholder="Tìm học sinh..." value={search}
           onChange={e => setSearch(e.target.value)} style={{ maxWidth: 260 }} aria-label="Tìm học sinh" />
         <select className="form-input" value={status} onChange={e => setStatus(e.target.value)} style={{ width: 180 }} aria-label="Trạng thái">
-          <option value="pending">⏳ Chờ giáo viên chấm</option>
+          <option value="pending">{isWriting ? '⏳ Chờ giáo viên xác nhận' : '⚠️ AI chấm lỗi — cần GV chấm'}</option>
           <option value="done">✅ Đã chấm</option>
           <option value="all">Tất cả</option>
         </select>
@@ -109,7 +117,7 @@ export default function SubmissionReviews() {
             </tr>
           </thead>
           <TableBody loading={loading} error={error} onRetry={reload} colSpan={8}
-            empty={!rows.length && <EmptyState icon={status === 'pending' ? '🎉' : '📭'} title={status === 'pending' ? 'Không còn bài nào chờ chấm' : 'Chưa có bài nào'} />}>
+            empty={!rows.length && <EmptyState icon={status === 'pending' ? '🎉' : '📭'} title={status === 'pending' ? (isWriting ? 'Không còn bài nào chờ xác nhận' : 'Không có bài Speaking nào AI chấm lỗi') : 'Chưa có bài nào'} />}>
             {rows.map(r => (
               <tr key={`${r.source}-${r.id}`}>
                 <td>
@@ -131,12 +139,16 @@ export default function SubmissionReviews() {
                 <td>
                   {r.reviewedAt
                     ? <>{bandBadge(r.teacherBand)}<div className="muted" style={{ fontSize: 11 }}>{r.reviewerName}</div></>
-                    : <span className="badge badge-yellow">Chờ chấm</span>}
+                    : isWriting
+                      ? <><span className="badge badge-yellow">Chờ xác nhận</span>{r.held && <div className="muted" style={{ fontSize: 11 }}>HS chưa thấy điểm</div>}</>
+                      : r.aiUnavailable
+                        ? <span className="badge badge-yellow">Cần GV chấm</span>
+                        : <span className="muted" style={{ fontSize: 12 }}>AI đã gửi HS</span>}
                 </td>
                 <td style={{ fontSize: 12, whiteSpace: 'nowrap' }}>{formatDate(r.createdAt)}</td>
                 <td>
-                  <button type="button" className={`btn btn-sm ${r.reviewedAt ? 'btn-ghost' : 'btn-primary'}`} onClick={() => setOpen({ source: r.source, id: r.id })}>
-                    {r.reviewedAt ? 'Xem / sửa' : 'Chấm'}
+                  <button type="button" className={`btn btn-sm ${r.reviewedAt || (!isWriting && !r.aiUnavailable) ? 'btn-ghost' : 'btn-primary'}`} onClick={() => setOpen({ source: r.source, id: r.id })}>
+                    {r.reviewedAt ? 'Xem / sửa' : isWriting ? 'Xác nhận' : r.aiUnavailable ? 'Chấm' : 'Xem / nhận xét'}
                   </button>
                 </td>
               </tr>

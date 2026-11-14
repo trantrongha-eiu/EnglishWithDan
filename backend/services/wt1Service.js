@@ -384,7 +384,7 @@ async function getLesson(code, userId, opts = {}) {
   await assertLessonUnlocked(userId, code, opts);
   const exercises = await WT1Exercise.find({ lessonCode: code, published: true }).sort({ order: 1 }).lean();
   const subs = await WT1Submission.find({ userId, exerciseCode: { $in: exercises.map((e) => e.code) }, status: { $ne: 'draft' } })
-    .select('exerciseCode score maxScore aiFeedback status createdAt').sort({ createdAt: -1 }).lean();
+    .select('exerciseCode score maxScore aiFeedback status createdAt awaitingTeacher teacherReview.reviewedAt').sort({ createdAt: -1 }).lean();
   const lastByCode = {};
   for (const s of subs) if (!lastByCode[s.exerciseCode]) lastByCode[s.exerciseCode] = s;
   // Exercises whose submissions have all expired (3-month TTL) still show
@@ -412,7 +412,12 @@ async function getLesson(code, userId, opts = {}) {
     exercises: exercises.map((ex) => {
       const s = sanitizeExercise(ex, courseCode);
       const last = lastByCode[ex.code];
-      s.lastAttempt = last ? { score: last.score ?? null, hasAi: !!last.aiFeedback, at: last.createdAt }
+      // A course-writing grade still held for the teacher isn't shown —
+      // the card is ticked as done ("chờ giáo viên chấm"), with no score.
+      s.lastAttempt = last
+        ? (heldForTeacher(last)
+          ? { score: null, hasAi: false, pendingReview: true, at: last.createdAt }
+          : { score: last.score ?? null, hasAi: !!last.aiFeedback, at: last.createdAt })
         : (ex.code in durable ? { score: Number(durable[ex.code]) || 0, hasAi: false, at: null } : null);
       return s;
     }),
@@ -594,12 +599,30 @@ async function recordSpeakingItem(userId, exercise, itemIndex, itemPayload, tota
 // band if AI-graded, date); a row's full detail (answers/responses/full
 // aiFeedback) is fetched on demand via the existing getAttemptDetail/
 // GET /wt1/attempt/:id, same as clicking into one attempt already works.
-const HISTORY_FIELDS = 'exerciseCode lessonCode attempt score maxScore correctCount status aiFeedback.bandEstimate teacherReview.band teacherReview.reviewedAt createdAt';
+const HISTORY_FIELDS = 'exerciseCode lessonCode attempt score maxScore correctCount status aiFeedback.bandEstimate teacherReview.band teacherReview.reviewedAt awaitingTeacher createdAt';
 function clampLimit(limit) { return Math.min(Math.max(Number(limit) || 50, 1), 200); }
+
+// Course writing whose grade is held until the teacher confirms it (admin
+// "Chấm bài khoá học", teacherReviewService.submitReview). Student-facing
+// reads hide its score / band / AI feedback while this is true.
+function heldForTeacher(s) {
+  return !!(s && s.awaitingTeacher && !(s.teacherReview && s.teacherReview.reviewedAt));
+}
+// Band the student sees: for a held-then-confirmed row the teacher's band
+// wins over the AI's (the teacher may have corrected it).
+function shownBand(s) {
+  const ai = s.aiFeedback?.bandEstimate ?? null;
+  if (!s.awaitingTeacher) return ai;
+  if (heldForTeacher(s)) return null;
+  return s.teacherReview?.band ?? ai;
+}
+
 function historyRow(s) {
+  const held = heldForTeacher(s);
   return {
-    id: s._id, attempt: s.attempt, score: s.score ?? null, maxScore: s.maxScore ?? null,
-    correctCount: s.correctCount ?? null, band: s.aiFeedback?.bandEstimate ?? null,
+    id: s._id, attempt: s.attempt, score: held ? null : (s.score ?? null), maxScore: s.maxScore ?? null,
+    correctCount: s.correctCount ?? null, band: shownBand(s),
+    awaitingTeacher: held,
     status: s.status, createdAt: s.createdAt,
     // A teacher graded/commented this attempt (admin review queue) — the
     // list shows a "💬 GV" chip; the detail view shows the comment itself.
@@ -678,7 +701,12 @@ function itemPrompt(ex, it) {
 // course pages and the admin panel share one renderer. Objective items use
 // the verdict saved at grading time (`results`); rows saved before that
 // field existed are re-graded locally against the current answer key.
-function buildReview(sub, ex, lessonTitle) {
+//
+// `opts.student`: the student's own view — a course-writing grade still held
+// for the teacher (heldForTeacher) comes back with no score / band / AI or
+// rubric feedback, just `awaitingTeacher: true`. Admin views see it all.
+function buildReview(sub, ex, lessonTitle, opts = {}) {
+  const held = !!opts.student && heldForTeacher(sub);
   const type = ex ? ex.type : null;
   const kind = type === 'speaking_response' ? 'speaking' : (grading.OBJECTIVE_TYPES.has(type) ? 'objective' : 'writing');
   const review = {
@@ -687,8 +715,9 @@ function buildReview(sub, ex, lessonTitle) {
     exercise: ex
       ? { code: ex.code, title: ex.title, type: ex.type, instruction: ex.instruction || '' }
       : { code: sub.exerciseCode, title: sub.exerciseCode, type: null, instruction: '' },
-    kind, score: sub.score ?? null, maxScore: sub.maxScore ?? null, correctCount: sub.correctCount ?? null,
-    band: sub.aiFeedback?.bandEstimate ?? null,
+    kind, score: held ? null : (sub.score ?? null), maxScore: sub.maxScore ?? null, correctCount: sub.correctCount ?? null,
+    band: opts.student ? shownBand(sub) : (sub.aiFeedback?.bandEstimate ?? null),
+    awaitingTeacher: held,
     // Teacher's grade + comment from the admin review queue (null until one
     // is given) — shown above the AI feedback in Lịch sử, student + admin.
     teacher: sub.teacherReview?.reviewedAt ? {
@@ -714,7 +743,7 @@ function buildReview(sub, ex, lessonTitle) {
     return review;
   }
 
-  const ai = sub.aiFeedback;
+  const ai = held ? null : sub.aiFeedback;
   review.responses = sub.responses || [];
   review.prompts = ex ? (ex.items || []).map((it) => it.prompt).filter(Boolean) : [];
   review.ai = ai ? {
@@ -722,7 +751,7 @@ function buildReview(sub, ex, lessonTitle) {
     corrections: ai.corrections || [], usedStructures: ai.usedStructures || [],
     missingStructures: ai.missingStructures || [], strengths: ai.strengths || [], improvements: ai.improvements || [],
   } : null;
-  review.local = sub.localFeedback || null;
+  review.local = held ? null : (sub.localFeedback || null);
   review.sampleAnswer = (ex && ex.rubric && ex.rubric.sampleAnswer) || '';
   if (kind === 'speaking') {
     review.audioUrl = sub.audioUrl || '';
@@ -742,7 +771,7 @@ function buildReview(sub, ex, lessonTitle) {
 
 // `filter` scopes the lookup: { userId } for a student (own attempts only),
 // {} for admin/teacher. Drafts (half-recorded speaking) are never shown.
-async function getSubmissionReview(id, filter = {}) {
+async function getSubmissionReview(id, filter = {}, opts = {}) {
   if (!mongoose.isValidObjectId(id)) return null;
   const sub = await WT1Submission.findOne({ _id: id, status: { $ne: 'draft' }, ...filter })
     .populate('userId', 'username firstName lastName email').lean();
@@ -751,14 +780,17 @@ async function getSubmissionReview(id, filter = {}) {
     WT1Exercise.findOne({ code: sub.exerciseCode }).lean(),
     sub.lessonCode ? WT1Lesson.findOne({ code: sub.lessonCode }).select('title').lean() : null,
   ]);
-  return { sub, ex, review: buildReview(sub, ex, lesson && lesson.title) };
+  return { sub, ex, review: buildReview(sub, ex, lesson && lesson.title, opts) };
 }
 
 async function getAttemptDetail(userId, id) {
-  const data = await getSubmissionReview(id, { userId });
+  const data = await getSubmissionReview(id, { userId }, { student: true });
   if (!data) return null;
   const submission = { ...data.sub };
   delete submission.userId;
+  if (heldForTeacher(data.sub)) {
+    delete submission.score; delete submission.aiFeedback; delete submission.localFeedback; delete submission.aiRetry;
+  }
   return { submission, exercise: data.ex ? sanitizeExercise(data.ex) : null, review: data.review };
 }
 
@@ -774,5 +806,5 @@ async function getProgress(userId) {
 module.exports = {
   COURSE_CODE, sanitizeExercise, gateDefaults,
   getOverview, getLesson, recordSubmission, recordSpeakingItem, getAttemptDetail, getExerciseHistory, getProgress,
-  getCourseHistory, getSubmissionReview, assertLessonUnlocked,
+  getCourseHistory, getSubmissionReview, assertLessonUnlocked, heldForTeacher,
 };

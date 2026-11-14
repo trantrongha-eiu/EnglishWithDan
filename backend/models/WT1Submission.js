@@ -88,6 +88,14 @@ const WT1SubmissionSchema = new Schema(
     // failures counted; given up after AUTO_MAX_TRIES. Cleared on success.
     aiRetry: { _id: false, tries: Number, lastError: String, lastAt: Date },
 
+    // Course writing (since 2026-11-14): the AI/rubric grade is HELD for the
+    // teacher — the student sees "chờ giáo viên xác nhận" (no band/score/AI
+    // feedback) until teacherReview.reviewedAt is set from the admin queue,
+    // then gets the teacher's grade + the AI feedback. Rows without this flag
+    // (older ones, speaking, objective) show the AI grade straight away.
+    // See wt1Service.heldForTeacher.
+    awaitingTeacher: { type: Boolean, default: undefined },
+
     // Teacher's own grade + comment from the admin review queue — see
     // models/shared/teacherReviewSchema.js + services/teacherReviewService.js.
     teacherReview: require('./shared/teacherReviewSchema'),

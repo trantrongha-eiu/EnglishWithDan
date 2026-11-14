@@ -354,7 +354,7 @@
     function renderLesson() {
       var l = state.lesson || {};
       var cards = state.exercises.map(function (ex) {
-        var done = ex.lastAttempt && (ex.lastAttempt.score != null || ex.lastAttempt.hasAi);
+        var done = ex.lastAttempt && (ex.lastAttempt.score != null || ex.lastAttempt.hasAi || ex.lastAttempt.pendingReview);
         var plug = TYPES[ex.type];
         var card = (plug && plug.card) ? plug.card(ex) : null;
         var cls = card ? card.cls : '';
@@ -1084,9 +1084,19 @@
 
     function showWritingFeedback(d) {
       var _wex = curEx();
-      if (_wex) _recordResult({ code: _wex.code, label: _wex.title || ('Bài ' + (state.exIdx + 1)), kind: 'writing', score: (d.graded === 'ai' ? null : d.score), band: d.bandEstimate });
+      var pending = !!d.pendingReview;
+      if (_wex) _recordResult({ code: _wex.code, label: _wex.title || ('Bài ' + (state.exIdx + 1)), kind: 'writing', score: (pending || d.graded === 'ai' ? null : d.score), band: pending ? null : d.bandEstimate });
       var body;
-      if (d.graded === 'ai') {
+      if (pending) {
+        // Course writing: the AI grade is held until the teacher confirms it
+        // (admin "Chấm bài khoá học") — the score + feedback arrive in Hộp thư
+        // and this exercise's Lịch sử once they do.
+        body = '<div style="text-align:center;padding:6px 4px 2px">' +
+          '<div style="font-size:30px;line-height:1">📨</div>' +
+          '<div style="font-weight:800;font-size:15px;margin-top:6px">Đã nộp bài</div>' +
+          '<div style="font-size:13px;line-height:1.65;color:var(--text2,#4b5563);margin-top:6px">Bài của bạn đã được chấm sơ bộ và đang <b>chờ giáo viên xác nhận</b>. ' +
+          'Khi giáo viên chấm xong, bạn sẽ nhận điểm + nhận xét ở <b>Hộp thư</b> và xem lại ở nút <b>Lịch sử</b> của bài này.</div></div>';
+      } else if (d.graded === 'ai') {
         body = ui.aiWritingBody ? ui.aiWritingBody(d, E) : aiWritingBody(d);
       } else {
         body = (d.aiUnavailable ? '<div style="background:#fef3c7;border:1px solid #fcd34d;color:#92400e;border-radius:10px;padding:8px 12px;font-size:12.5px;line-height:1.55;margin-bottom:10px">AI chấm chi tiết đang bận. Đây là điểm sơ bộ theo rubric — nộp lại sau để được AI chấm theo band.</div>' : '') +
@@ -1531,6 +1541,7 @@
     '.wh-li{font-size:12.5px;margin-top:3px;line-height:1.55}',
     '.wh-chip{display:inline-block;font-size:11.5px;border-radius:999px;padding:2px 8px;margin:2px 4px 2px 0;background:#dcfce7;color:#166534}',
     '.wh-chip.miss{background:#fee2e2;color:#991b1b}',
+    '.wh-wait{background:rgba(59,130,246,.08);border:1px solid #93c5fd;color:var(--text1,#1e3a8a);border-radius:10px;padding:8px 12px;font-size:12.5px;line-height:1.55;margin-top:10px}',
     '.wh-warn{background:#fef3c7;border:1px solid #fcd34d;color:#92400e;border-radius:10px;padding:8px 12px;font-size:12.5px;margin-top:10px}',
     '.wh-sub{border:1px solid var(--border,#e5e7eb);border-radius:10px;padding:10px 12px;margin-top:8px}',
     'details.wh-det summary{cursor:pointer;font-size:12.5px;font-weight:700;color:#0ea5e9}',
@@ -1581,6 +1592,7 @@
   }
   function num(n) { return (n == null || isNaN(n)) ? '–' : (Math.round(Number(n) * 10) / 10); }
   function scoreText(r) {
+    if (r.awaitingTeacher) return '⏳ Chờ GV chấm';
     if (r.band != null) return 'Band ' + num(r.band);
     if (r.correctCount != null && r.maxScore != null) return r.correctCount + '/' + r.maxScore + ' câu';
     if (r.score != null) return r.score + '%';
@@ -1781,6 +1793,7 @@
       '<span>' + esc(r.lessonTitle) + '</span><span>Lượt <b>' + r.attempt + '</b></span><span>' + fmtDate(r.createdAt) + '</span></div>';
     if (r.exercise && r.exercise.instruction) h += '<div class="wh-instr">' + esc(r.exercise.instruction) + '</div>';
     h += teacherBlock(r.teacher);
+    if (r.awaitingTeacher) h += '<div class="wh-wait">⏳ Bài này đang chờ giáo viên xác nhận điểm. Điểm + nhận xét sẽ hiện ở đây (và gửi vào Hộp thư) khi giáo viên chấm xong.</div>';
 
     if (r.kind === 'objective') {
       if (!(r.items || []).length) return h + '<div class="wh-empty">Bài tập này không còn trong khoá học.</div>';

@@ -79,8 +79,29 @@ describe('attempt review (student)', () => {
     const r = res.body.review;
     expect(r.kind).toBe('writing');
     expect(r.responses).toEqual(['The number of cars rose sharply in 2005.']);
-    expect(r.local.checklist.length).toBeGreaterThan(0);
+    expect(r.local.checklist.length).toBeGreaterThan(0); // Viết câu is not held
     expect(r.sampleAnswer).toBe('The number of cars rose.');
+  });
+
+  test('a held writing grade (awaitingTeacher) is hidden from the student until the teacher confirms', async () => {
+    const u = await createPremiumStudent();
+    await request(app).post('/api/wt1/submit-writing').set(bearer(u)).send({ exerciseCode: 'H-SW', responses: ['The number of cars rose sharply in 2005.'] });
+    const sub = await WT1Submission.findOne({ userId: u._id }).lean();
+    await WT1Submission.updateOne({ _id: sub._id }, { $set: { awaitingTeacher: true } });
+    const res = await request(app).get(`/api/wt1/attempt/${sub._id}`).set(bearer(u));
+    const r = res.body.review;
+    expect(r.responses).toEqual(['The number of cars rose sharply in 2005.']);
+    // Held: no score / rubric feedback for the student yet (raw row stripped too).
+    expect(r).toMatchObject({ awaitingTeacher: true, score: null, band: null, local: null, ai: null });
+    expect(res.body.submission.score).toBeUndefined();
+    expect(res.body.submission.localFeedback).toBeUndefined();
+
+    // Once the teacher confirms, the rubric feedback opens.
+    await WT1Submission.updateOne({ _id: sub._id }, { $set: { teacherReview: { band: null, note: 'Tốt', reviewedAt: new Date() } } });
+    const after = (await request(app).get(`/api/wt1/attempt/${sub._id}`).set(bearer(u))).body.review;
+    expect(after.awaitingTeacher).toBe(false);
+    expect(after.local.checklist.length).toBeGreaterThan(0);
+    expect(typeof after.score).toBe('number');
   });
 
   test('legacy objective rows (no saved verdicts) are re-graded for review', async () => {
