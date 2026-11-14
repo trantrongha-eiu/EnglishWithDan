@@ -67,7 +67,7 @@
       {
         icon: '🔔',
         title: 'Thông báo & Trang cá nhân',
-        body: 'Bấm chuông để xem thông báo, kính lúp để tìm đề nhanh, và bấm avatar để vào Trang cá nhân — nơi bạn theo dõi streak học liên tục, huy hiệu và điểm số các bài đã làm.',
+        body: 'Bấm chuông để xem thông báo, kính lúp để tìm đề nhanh, và bấm avatar ở góc dưới bên trái màn hình để vào Trang cá nhân — nơi bạn theo dõi streak học liên tục, huy hiệu và điểm số các bài đã làm.',
         resolve() {
           const actions = document.querySelector('.top-nav .nav-actions');
           return isVisible(actions) ? actions : null;

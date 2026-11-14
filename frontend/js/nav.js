@@ -240,7 +240,7 @@
     _isStaffUser = !!(_su && (_su.role === 'admin' || _su.role === 'teacher'));
   } catch (e) {}
   var STAFF_ADMIN_ICON = _isStaffUser
-    ? '<a class="btn-dark-mode nav-action-hide-mobile" id="navAdminBtn" href="/admin/" title="Về trang quản trị" aria-label="Về trang quản trị"><i class="fas fa-user-shield"></i></a>'
+    ? '<a class="btn-dark-mode" id="navAdminBtn" href="/admin/" title="Về trang quản trị" aria-label="Về trang quản trị"><i class="fas fa-user-shield"></i></a>'
     : '';
   var STAFF_ADMIN_MOBILE = _isStaffUser
     ? '<a href="/admin/" class="mobile-nav-link"><i class="fas fa-user-shield" style="width:20px;text-align:center"></i> Về trang quản trị</a>'
@@ -289,14 +289,27 @@
       // count, and every bell item just deep-linked to inbox.html anyway.
       // One mailbox now: the fa-envelope utility icon below.
       mkUtilityIcons() +
-      STAFF_ADMIN_ICON +
-      '<a href="/profile.html" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân" style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;overflow:hidden;cursor:pointer;text-decoration:none;flex-shrink:0;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(255,255,255,.25);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform=\'scale(1.1)\';this.style.boxShadow=\'0 0 0 3px rgba(99,102,241,.35)\'" onmouseout="this.style.transform=\'scale(1)\';this.style.boxShadow=\'none\'">' +
-        '<span id="navAvatar" style="line-height:1;pointer-events:none">?</span>' +
-      '</a>' +
-      '<button class="btn-dark-mode" id="globalLogoutBtn" title="Đăng xuất" aria-label="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>' +
       '<button class="hamburger" id="globalHamburger" aria-label="Mở menu"><span></span><span></span><span></span></button>' +
     '</div>';
   document.body.insertBefore(nav, document.body.firstChild);
+
+  // ── Account dock (bottom-left corner) ─────────────────────
+  // "Về trang quản trị" / avatar (Trang cá nhân) / Đăng xuất used to sit at
+  // the end of .nav-actions and crowded the top bar — they now live in a
+  // small fixed pill in the bottom-left corner of the screen (desktop only;
+  // ≤1024px the hamburger drawer carries all three — css/mobile.css). IDs are
+  // unchanged so profile.js / dashboard.js keep updating #navAvatar.
+  var cornerDock = document.createElement('div');
+  cornerDock.className = 'nav-corner-dock';
+  cornerDock.id = 'navCornerDock';
+  cornerDock.innerHTML =
+    STAFF_ADMIN_ICON +
+    '<a href="/profile.html" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân">' +
+      '<span id="navAvatar">?</span>' +
+    '</a>' +
+    '<button class="btn-dark-mode" id="globalLogoutBtn" title="Đăng xuất" aria-label="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>';
+  document.body.appendChild(cornerDock);
+  document.body.classList.add('has-corner-dock');
 
   // ── Add padding class to body ─────────────────────────────
   document.body.classList.add('has-global-nav');
@@ -329,6 +342,7 @@
     '<div class="mobile-nav-inner">' +
     mkMobileLinks() +
     mkUtilityMobileLinks() +
+    '<a href="/profile.html" class="mobile-nav-link"><i class="fas fa-user-circle" style="width:20px;text-align:center"></i> Trang cá nhân</a>' +
     STAFF_ADMIN_MOBILE +
     '<div class="mobile-nav-divider"></div>' +
     '<button id="mobileLangBtn" class="mobile-nav-link ews-lang-mobile" data-i18n-skip style="width:100%;border:none;background:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:500;text-align:left;color:var(--text-light);">' +
@@ -386,7 +400,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=23f740462c';
+    i18nScript.src = '/js/shared/i18n.js?v=f2d267dfaf';
     document.body.appendChild(i18nScript);
   }
 
@@ -447,7 +461,7 @@
   // guard. Null-guarded: the owl DOM is created lazily on first use, so it
   // often doesn't exist yet here.
   function _toggleExamAids(hidden) {
-    ['pcw-root', 'ews-sl-icon', 'ews-sl-popup', 'ews-mascot-dock', 'ews-pet-layer'].forEach(function (id) {
+    ['pcw-root', 'ews-sl-icon', 'ews-sl-popup', 'ews-mascot-dock', 'ews-pet-layer', 'navCornerDock'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = hidden ? 'none' : '';
     });

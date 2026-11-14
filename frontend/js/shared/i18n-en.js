@@ -431,7 +431,7 @@
     'Bấm "Giọng của tôi" để nghe lại và so với giọng gốc.': 'Click "My voice" to listen back and compare with the original.',
     'Bấm "Nói theo" và đọc to câu trên, gần micro hơn một chút.': 'Click "Repeat" and read the sentence above aloud, a little closer to the mic.',
     'Bấm chọn các từ khoá trong câu hỏi: tên riêng, số / năm, từ khó thay thế.': 'Pick the keywords in the question: proper names, numbers / years, hard words likely to be paraphrased.',
-    'Bấm chuông để xem thông báo, kính lúp để tìm đề nhanh, và bấm avatar để vào Trang cá nhân — nơi bạn theo dõi streak học liên tục, huy hiệu và điểm số các bài đã làm.': 'Click the bell for notifications, the magnifier to find tests fast, and your avatar to open your Profile — where you track your study streak, badges and test scores.',
+    'Bấm chuông để xem thông báo, kính lúp để tìm đề nhanh, và bấm avatar ở góc dưới bên trái màn hình để vào Trang cá nhân — nơi bạn theo dõi streak học liên tục, huy hiệu và điểm số các bài đã làm.': 'Click the bell for notifications, the magnifier to find tests fast, and your avatar in the bottom-left corner to open your Profile — where you track your study streak, badges and test scores.',
     'Bấm để bắt đầu ghi âm': 'Click to start recording',
     'Bấm để bỏ': 'Click to remove',
     'Bấm để bỏ từ này': 'Click to remove this word',
