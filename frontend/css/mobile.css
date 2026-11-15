@@ -316,19 +316,23 @@ img { max-width: 100%; height: auto; }
 /* Account dock — admin / avatar / logout, moved out of the top bar into the
    bottom-left corner (js/nav.js #navCornerDock). Sits above the walking pet
    (880) and the Lulu/Lumi dock (900, nudged right below), under modals. */
+/* A full-width strip flush with the bottom-left corner, as wide as the
+   dashboard's notebook sidebar (240px, css/dashboard.css .vocab-sidebar) so
+   it fills the bottom of that column instead of floating as a small pill. */
 .nav-corner-dock {
-  position: fixed; left: 14px; bottom: 14px; z-index: 950;
-  display: flex; align-items: center; gap: 6px;
-  padding: 5px;
+  position: fixed; left: 0; bottom: 0; z-index: 950;
+  width: 240px; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: space-evenly; gap: 6px;
+  padding: 8px 12px;
   background: var(--surface, #fff);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, .14);
+  border-top: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  box-shadow: 0 -4px 14px rgba(0, 0, 0, .06);
 }
-.nav-corner-dock .btn-dark-mode { width: 36px; height: 36px; font-size: 16px; }
+.nav-corner-dock .btn-dark-mode { width: 38px; height: 38px; font-size: 16px; }
 #navUserWidget {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 36px; height: 36px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+  width: 38px; height: 38px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: #fff; font-size: 14px; font-weight: 700; text-decoration: none;
   border: 2px solid rgba(255, 255, 255, .25);
@@ -340,7 +344,7 @@ img { max-width: 100%; height: auto; }
 #navAvatar img { width: 100% !important; height: 100% !important; border-radius: 50%; object-fit: cover; display: block; }
 @media (min-width: 1025px) {
   /* Keep the Lulu/Lumi corner companion clear of the account dock. */
-  body.has-corner-dock .ews-mascot-dock { left: 150px; }
+  body.has-corner-dock .ews-mascot-dock { left: 252px; }
 }
 @media print { .nav-corner-dock { display: none !important; } }
 
