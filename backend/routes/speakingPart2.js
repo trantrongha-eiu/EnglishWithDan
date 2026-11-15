@@ -10,6 +10,10 @@ const ctrl    = require('../controllers/speakingPart2.controller');
 // inside next to the upgrade button.
 router.get('/content', auth, ctrl.getContent);
 
+// GET /full/:storyId — the story word for word as in the framework docx
+// ("📄 Xem full bài mẫu"), Premium like the content itself.
+router.get('/full/:storyId', auth, requirePremium(), ctrl.getFull);
+
 // GET /progress — { [storyId]: { read, ok, speak, best, steps, completedAt } }
 router.get('/progress', auth, requirePremium(), ctrl.getProgress);
 

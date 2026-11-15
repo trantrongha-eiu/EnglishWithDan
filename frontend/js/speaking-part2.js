@@ -489,6 +489,8 @@
           '<span class="t2w-sess-go" aria-hidden="true">' + (stt === 'done' ? '<i class="fas fa-check"></i>' : '<i class="fas fa-chevron-right"></i>') + '</span>' +
         '</button>' +
       '</div>' +
+      '<button type="button" class="sp2-full-btn" data-act="full" data-id="' + st.id + '">' +
+        (LOCKED ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-file-alt"></i>') + ' Xem full bài mẫu</button>' +
       '<div class="sp2-topics"><span class="sp2-topics-lbl">Dùng cho:</span> ' + topics.slice(0, 5).map(esc).join(' · ') +
         (topics.length > 5 ? ' <span class="sp2-muted">+' + (topics.length - 5) + '</span>' : '') + '</div>' +
     '</div>';
@@ -567,7 +569,7 @@
     return '' +
     '<div class="t2-nav t2-nav-row">' +
       '<div class="t2-nav-crumb"><span data-act="home">7 câu chuyện</span> › <b>' + st.no + ' · ' + esc(st.group) + '</b></div>' +
-      '<div style="display:flex;gap:6px"><button class="t2-icon-btn" data-act="copy-link" title="Sao chép link" aria-label="Sao chép link"><i class="fas fa-link"></i></button></div>' +
+      '<div style="display:flex;gap:6px"><button type="button" class="sp2-full-btn is-nav" data-act="full" data-id="' + st.id + '"><i class="fas fa-file-alt"></i> Xem full bài mẫu</button><button class="t2-icon-btn" data-act="copy-link" title="Sao chép link" aria-label="Sao chép link"><i class="fas fa-link"></i></button></div>' +
     '</div>' +
     '<div class="t2-hub sp2-hub" style="--g-c:' + st.color + '">' +
       '<div class="t2-hub-head">' +
@@ -1533,6 +1535,66 @@
     window.scrollTo(0, 0);
   }
 
+  // ── "📄 Xem full bài mẫu": the story word for word as in the framework
+  //    docx (GET /speaking-part2/full/:id, built by buildPart2Full.js) ──────
+  var _full = {};
+  function rich(s) { return esc(s).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'); }
+  function fullBlocks(blocks) {
+    return blocks.map(function (b) {
+      if (b.k === 'sub') return '<p class="sp2-full-sub">' + esc(b.t) + '</p>';
+      if (b.k === 'h') return '<h3 class="sp2-full-h' + (/^▼/.test(b.t) ? ' is-flex' : /^★/.test(b.t) ? ' is-star' : '') + '">' + esc(b.t) + '</h3>';
+      if (b.k === 'p') return '<p class="sp2-full-p">' + rich(b.t) + '</p>';
+      if (b.k === 'box') {
+        var tone = /GHI NHỚ/i.test(b.label) ? 'goal' : /Lưu ý/i.test(b.label) ? 'warn' : /Khung xương/i.test(b.label) ? 'note' : 'tip';
+        return '<div class="sp2-full-box is-' + tone + '">' + (b.label ? '<b class="sp2-full-box-l">' + esc(b.label) + '</b>' : '') +
+          b.lines.map(function (l) { return '<p>' + rich(l) + '</p>'; }).join('') + '</div>';
+      }
+      if (b.k === 'table') {
+        var cols = (b.head || b.rows[0] || []).length;
+        return '<div class="sp2-table-wrap"><table class="sp2-table sp2-full-table">' +
+          (b.head ? '<thead><tr>' + b.head.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr></thead>' : '') +
+          '<tbody>' + b.rows.map(function (r) {
+            if (r.length === 1 && cols > 1) return '<tr class="is-sec"><td colspan="' + cols + '">' + rich(r[0]) + '</td></tr>';
+            return '<tr>' + r.map(function (c) { return '<td>' + rich(c) + '</td>'; }).join('') + '</tr>';
+          }).join('') + '</tbody></table></div>';
+      }
+      return '';
+    }).join('');
+  }
+  function closeFull() {
+    var ov = document.getElementById('sp2-full-ov');
+    if (ov) ov.remove();
+    document.removeEventListener('keydown', fullKey);
+    document.body.style.overflow = '';
+  }
+  function fullKey(e) { if (e.key === 'Escape') closeFull(); }
+  async function openFull(id) {
+    if (LOCKED) { upgrade(); return; }
+    var st = storyById(id);
+    if (!st) return;
+    closeFull();
+    var ov = document.createElement('div');
+    ov.id = 'sp2-full-ov';
+    ov.className = 'sp2-full-ov';
+    ov.innerHTML = '<div class="sp2-full-dlg" role="dialog" aria-modal="true" aria-label="Full bài mẫu ' + esc(st.title) + '" style="--g-c:' + st.color + '">' +
+      '<div class="sp2-full-head"><span class="sp2-full-emoji">' + st.emoji + '</span>' +
+        '<div class="sp2-full-ttl"><small>Bài mẫu gốc · Master Framework v3</small><b>' + st.no + ' · ' + esc(st.title) + '</b></div>' +
+        '<button type="button" class="t2-icon-btn" data-full-close aria-label="Đóng"><i class="fas fa-times"></i></button></div>' +
+      '<div class="sp2-full-body"><div class="sp2-boot"><i class="fas fa-spinner fa-spin"></i> Đang tải…</div></div></div>';
+    ov.addEventListener('click', function (e) { if (e.target === ov || e.target.closest('[data-full-close]')) closeFull(); });
+    document.body.appendChild(ov);
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', fullKey);
+    ov.querySelector('[data-full-close]').focus();
+    var body = ov.querySelector('.sp2-full-body');
+    try {
+      if (!_full[id]) _full[id] = (await api('/speaking-part2/full/' + encodeURIComponent(id))).full;
+      if (document.getElementById('sp2-full-ov') === ov) body.innerHTML = fullBlocks(_full[id].blocks);
+    } catch (e) {
+      body.innerHTML = '<div class="sp2-boot">Không tải được bài mẫu — thử lại sau nha.</div>';
+    }
+  }
+
   // ── quit modal (same as Task 2's "Dừng luyện tập?") ─────────────────
   function askQuit(onLeave) {
     var r = state.run;
@@ -1562,6 +1624,7 @@
         break;
       case 'home': go('home', null); break;
       case 'upgrade': upgrade(); break;
+      case 'full': openFull(el.dataset.id); break;
       case 'copy-link': copyLink(); break;
       case 'poke': poke(); break;
       case 'scroll': scrollToStep(el.dataset.step); break;

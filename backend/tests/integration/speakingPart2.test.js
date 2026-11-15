@@ -81,6 +81,21 @@ test('content: full text for Premium, story list only for an expired free accoun
   expect((await request(app).put('/api/speaking-part2/progress/people').set(authH(f)).send({ read: true })).status).toBe(403);
 });
 
+test('full: every story has its whole framework lesson ("Xem full bài mẫu"), Premium only', async () => {
+  const p = await createPremiumStudent();
+  for (const st of DATA.stories) {
+    const r = await request(app).get('/api/speaking-part2/full/' + st.id).set(authH(p));
+    expect(r.status).toBe(200);
+    const kinds = r.body.full.blocks.map((b) => b.k);
+    expect(r.body.full.title).toContain(st.no + ' · ');
+    expect(kinds).toEqual(expect.arrayContaining(['sub', 'h', 'p', 'box', 'table']));
+    const text = JSON.stringify(r.body.full.blocks);
+    st.conclusion.forEach((c) => expect(text).toContain(c[0].slice(0, 40)));   // book text kept word for word
+  }
+  expect((await request(app).get('/api/speaking-part2/full/nope').set(authH(p))).status).toBe(404);
+  expect((await request(app).get('/api/speaking-part2/full/people').set(authH(await expiredFree()))).status).toBe(403);
+});
+
 test('progress: merges across saves, ignores bogus keys, steps are recomputed server-side', async () => {
   const s = await createPremiumStudent();
   const st = DATA.stories[0];

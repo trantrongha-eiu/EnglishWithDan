@@ -11,6 +11,12 @@ exports.getContent = async (req, res) => {
   }
 };
 
+exports.getFull = (req, res) => {
+  const full = svc.getFull(req.params.storyId);
+  if (!full) return res.status(404).json({ success: false, message: 'Không tìm thấy câu chuyện' });
+  res.json({ success: true, full });
+};
+
 exports.getProgress = async (req, res) => {
   try {
     res.json({ success: true, progress: await svc.getProgress(req.user._id) });

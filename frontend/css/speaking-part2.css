@@ -282,3 +282,38 @@
 /* Loading / error while GET /api/speaking-part2/content is in flight */
 .sp2-boot { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 80px 20px; text-align: center; font-weight: 700; color: var(--text2, #6b7280); }
 .sp2-promo { margin-bottom: 18px; }
+
+/* ── "📄 Xem full bài mẫu" (story word for word from the framework docx) ── */
+.sp2-full-btn { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; margin: 2px 0 10px; padding: 6px 12px; border: 1.5px solid var(--g-c, #6366f1); border-radius: 999px; background: var(--surface, #fff); color: var(--g-c, #6366f1); font: 800 12.5px/1.2 inherit; cursor: pointer; }
+.sp2-full-btn:hover { background: var(--g-c, #6366f1); color: #fff; }
+.sp2-full-btn:focus-visible { outline: 3px solid var(--g-c, #6366f1); outline-offset: 2px; }
+.sp2-full-btn.is-nav { margin: 0; --g-c: #6366f1; }
+@media (max-width: 520px) { .sp2-full-btn.is-nav { font-size: 0; gap: 0; padding: 8px 10px; } .sp2-full-btn.is-nav i { font-size: 13px; } }
+
+.sp2-full-ov { position: fixed; inset: 0; z-index: var(--z-modal, 1000); background: rgba(15, 12, 8, .55); display: flex; align-items: flex-start; justify-content: center; padding: 24px 16px; overflow-y: auto; }
+.sp2-full-dlg { width: 100%; max-width: 860px; background: var(--surface, #fff); color: var(--text, #111827); border: 2.5px solid var(--pf-ink, #1d1a16); border-radius: 18px; box-shadow: 4px 4px 0 var(--pf-ink, #1d1a16); }
+.sp2-full-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 2px solid var(--pf-line, #efe3cf); background: var(--surface, #fff); border-radius: 16px 16px 0 0; }
+.sp2-full-emoji { font-size: 28px; }
+.sp2-full-ttl { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.sp2-full-ttl small { font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--g-c); }
+.sp2-full-ttl b { font-size: 17px; line-height: 1.3; }
+.sp2-full-body { padding: 14px 20px 22px; }
+.sp2-full-sub { margin: 0 0 12px; font-weight: 800; font-size: 13px; color: var(--g-c); }
+.sp2-full-h { margin: 18px 0 6px; font-size: 15px; font-weight: 800; color: var(--text, #111827); }
+.sp2-full-h.is-flex { color: #c2410c; letter-spacing: .03em; border-top: 2px dashed #fdba74; padding-top: 12px; }
+.sp2-full-h.is-star { color: #b45309; }
+.sp2-full-p { margin: 0 0 6px; font-size: 14.5px; line-height: 1.6; }
+.sp2-full-box { margin: 10px 0; padding: 10px 14px; border-radius: 12px; border-left: 5px solid; font-size: 13.5px; line-height: 1.55; }
+.sp2-full-box p { margin: 2px 0; }
+.sp2-full-box-l { display: block; margin-bottom: 3px; }
+.sp2-full-box.is-note { background: #eef2ff; border-color: #6366f1; }
+.sp2-full-box.is-warn { background: #fff7ed; border-color: #f97316; }
+.sp2-full-box.is-goal { background: #ecfdf5; border-color: #10b981; }
+.sp2-full-box.is-tip  { background: #fefce8; border-color: #eab308; }
+.sp2-full-table { margin: 6px 0 4px; }
+.sp2-full-table tr.is-sec td { background: var(--pf-paper2, #fdf0dc); font-size: 12.5px; }
+[data-theme="dark"] .sp2-full-box { color: #111827; }
+[data-theme="dark"] .sp2-full-dlg, [data-theme="dark"] .sp2-full-head, [data-theme="dark"] .sp2-full-btn { background: #141414; color: #eee; border-color: #3a3a3a; }
+[data-theme="dark"] .sp2-full-btn { color: var(--g-c); }
+[data-theme="dark"] .sp2-full-h { color: #eee; }
+@media (max-width: 520px) { .sp2-full-ov { padding: 0; } .sp2-full-dlg { border-radius: 0; border-width: 0; box-shadow: none; min-height: 100%; } .sp2-full-head { top: 0; border-radius: 0; } .sp2-full-body { padding: 12px 14px 20px; } }

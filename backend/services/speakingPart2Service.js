@@ -14,6 +14,7 @@
 
 const mongoose = require('mongoose');
 const DATA = require('../data/speakingPart2');
+const FULL = require('../data/speakingPart2Full');
 const SpeakingPart2Progress = require('../models/SpeakingPart2Progress');
 const VocabularyLesson = require('../models/VocabularyLesson');
 const { hasFullAccess } = require('../utils/plan');
@@ -157,6 +158,11 @@ function summaryOf(st) {
 function getContent(user) {
   if (hasFullAccess(user)) return { locked: false, version: VERSION, howTo: DATA.howTo, logic: DATA.logic, stories: STORIES };
   return { locked: true, version: VERSION, howTo: DATA.howTo, logic: DATA.logic, stories: STORIES.map(summaryOf) };
+}
+
+// The story exactly as in the framework docx ("📄 Xem full bài mẫu").
+function getFull(storyId) {
+  return Object.prototype.hasOwnProperty.call(FULL, storyId) ? FULL[storyId] : null;
 }
 
 // ── progress ────────────────────────────────────────────────────────────
@@ -316,6 +322,7 @@ function adminSummary(doc) {
 }
 
 module.exports = {
+  getFull,
   adminSummary, STORIES,
   STORY_ROWS, STEP_KEYS, PASS_PERCENT, SHADOW_PASS, STORY_VOCAB_LESSON, VERSION, vocabLessonsForStory,
   getContent, getProgress, saveProgress, checkCompletion, stepsDone, masteryOf, framesOf, upgradeKeys,
