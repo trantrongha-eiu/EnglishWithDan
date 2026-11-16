@@ -90,21 +90,18 @@ function _loadPartAudio(idx, isReview) {
 // Practice on a partial attempt: no one-shot auto-play — the student
 // plays each section's audio themself with this button (play/pause).
 function _isPartPractice() {
-    return state.mode === 'practice' && !_mockMode && !state.isReview && _hasPartAudio(false);
+    return _isFreePractice() && _hasPartAudio(false);
 }
+// Practice on a full test (whole or some sections): the audio bar has the
+// same free controls as "lẻ" practice — ▶/⏸, ±10s, seek, speed — so there
+// is no "plays once" overlay, countdown or "Phát tiếp" prompt.
+function _isFreePractice() {
+    return state.mode === 'practice' && !_mockMode && !state.isReview;
+}
+// Practice plays with the bar's own ▶/⏸ (#play-btn-ex), so the
+// "Phát ngay / Phát tiếp" button never shows there.
 function _syncPartPlayBtn() {
-    if (!_isPartPractice()) return;
-    const btn = document.getElementById('aso-play-now-btn');
-    const s = getSortedSections(false)[state.audioPartIdx];
-    if (!btn || !s) return;
-    btn.classList.remove('hidden');
-    btn.innerHTML = audio.paused
-        ? `<i class="fas fa-play"></i> Phát Section ${s.partNumber}`
-        : `<i class="fas fa-pause"></i> Dừng`;
-    if (audio.paused) {
-        const el = document.getElementById('exam-audio-status');
-        if (el) { el.innerHTML = `<i class="fas fa-headphones"></i> Audio Section ${s.partNumber}`; el.style.color = ''; }
-    }
+    if (_isFreePractice()) _hidePlayNowBtn();
 }
 function examPlayBtn() {
     if (_isPartPractice()) { togglePlay(); return; }
@@ -333,8 +330,8 @@ function resumeExam() {
 
     // Resume mode: skip overlay, auto-play after 5s countdown
     document.getElementById('audio-start-overlay').classList.add('hidden');
-    if (_isPartPractice()) {
-        // Partial Practice: the student plays each section themself.
+    if (_isFreePractice()) {
+        // Practice: the student plays the audio themself.
         _syncPartPlayBtn();
         clearInterval(_saveInterval);
         _saveInterval = setInterval(saveExamToStorage, 10000);
@@ -1227,9 +1224,9 @@ async function startTest(testId, mode = 'practice', parts = null) {
         _updateExamToolbarForMode();
         showScreen('exam');
         const playNowBtn = document.getElementById('aso-play-now-btn');
-        if (_isPartPractice()) {
-            // Partial Practice: no "plays once" warning or countdown —
-            // the student plays each section's audio with the button.
+        if (_isFreePractice()) {
+            // Practice: no "plays once" warning or countdown — the student
+            // plays / pauses / seeks with the bar's own controls.
             document.getElementById('audio-start-overlay').classList.add('hidden');
             _syncPartPlayBtn();
         } else if (state.mode === 'simulation' && !_mockMode) {
@@ -1290,7 +1287,7 @@ function setupAudioEvents() {
         if (prSeek) { prSeek.max = dur; prSeek.value = 0; }
     });
     audio.addEventListener('play', () => {
-        ['play-btn', 'play-btn-rv', 'play-btn-pr'].forEach(id => {
+        ['play-btn', 'play-btn-rv', 'play-btn-pr', 'play-btn-ex'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.innerHTML = '<i class="fas fa-pause"></i>';
         });
@@ -1300,7 +1297,7 @@ function setupAudioEvents() {
         if (_isOneShotExamAudio()) _hidePlayNowBtn();
     });
     audio.addEventListener('pause', () => {
-        ['play-btn', 'play-btn-rv', 'play-btn-pr'].forEach(id => {
+        ['play-btn', 'play-btn-rv', 'play-btn-pr', 'play-btn-ex'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.innerHTML = '<i class="fas fa-play"></i>';
         });
@@ -1447,6 +1444,7 @@ function toggleMute() {
 }
 
 function setSpeed(speed, btn) {
+    audio.defaultPlaybackRate = speed;   // kept when another section's audio loads
     audio.playbackRate = speed;
     document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.speed-btn').forEach(b => {
@@ -1516,7 +1514,7 @@ function _playExamAudio(retry) {
 // The full test's single run-through audio is on screen (not review, a
 // partial Practice with its own play/pause button, or "lẻ" practice).
 function _isOneShotExamAudio() {
-    return !state.isReview && !state.submitted && !_isPartPractice()
+    return !state.isReview && !state.submitted && !_isFreePractice()
         && !window.isLtPracticeActive?.()
         && !!audio.getAttribute('src')
         && !!document.getElementById('screen-exam')?.classList.contains('active');
@@ -3534,7 +3532,13 @@ function _updateExamToolbarForMode() {
         seek.tabIndex = show ? 0 : -1;
         seek.oninput = show ? () => onSeekInput(seek.value) : null;
     }
-    document.querySelectorAll('.exam-skip-btn').forEach(b => { b.style.display = show ? '' : 'none'; });
+    document.querySelectorAll('.exam-skip-btn, .exam-pr-ctl').forEach(b => { b.style.display = show ? '' : 'none'; });
+    // the ▶/⏸ button replaces the status pill + "Phát ngay" button
+    const status = document.getElementById('exam-audio-status');
+    if (status) status.style.display = show ? 'none' : '';
+    if (show) _hidePlayNowBtn();
+    // a timed run never inherits a practice speed
+    else if (audio.playbackRate !== 1 || audio.defaultPlaybackRate !== 1) setSpeed(1, document.querySelector('#exam-audio-bar .speed-btn:nth-child(2)'));
 }
 
 function setToolExam(tool) {

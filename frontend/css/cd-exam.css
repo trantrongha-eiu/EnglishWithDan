@@ -598,16 +598,25 @@ body.cd-exam-on #section-nav-fixed { display: none !important; }
 .cd-skin #practice-audio-bar .volume-icon { color: var(--cd-ink); }
 .cd-skin #practice-audio-bar input[type="range"] { background: #d9d9d9; accent-color: var(--cd-focus); border-radius: 4px; }
 [data-theme="dark"] .cd-skin #practice-audio-bar input[type="range"] { background: #3a3a3a; }
-.cd-skin #practice-audio-bar .audio-play-btn { background: var(--cd-blue); }
-.cd-skin #practice-audio-bar .audio-play-btn:hover { background: var(--cd-blue-dark); }
+/* …and a full test's bar in Practice (▶/⏸, ±10s, speed — listening.js
+   _updateExamToolbarForMode) looks the same. */
+.cd-skin #practice-audio-bar .audio-play-btn,
+:is(#screen-exam, .cd-skin) #exam-audio-bar .audio-play-btn { background: var(--cd-blue); }
+.cd-skin #practice-audio-bar .audio-play-btn:hover,
+:is(#screen-exam, .cd-skin) #exam-audio-bar .audio-play-btn:hover { background: var(--cd-blue-dark); }
 .cd-skin #practice-audio-bar .audio-skip-btn,
-.cd-skin #practice-audio-bar .speed-btn {
+.cd-skin #practice-audio-bar .speed-btn,
+:is(#screen-exam, .cd-skin) #exam-audio-bar .audio-skip-btn,
+:is(#screen-exam, .cd-skin) #exam-audio-bar .speed-btn {
   background: transparent; border: 1px solid var(--cd-line); border-radius: 4px;
   color: var(--cd-ink);
 }
 .cd-skin #practice-audio-bar .audio-skip-btn:hover,
-.cd-skin #practice-audio-bar .speed-btn:hover { background: var(--cd-line2); }
-.cd-skin #practice-audio-bar .speed-btn.active { background: var(--cd-blue); border-color: var(--cd-blue); color: #fff; }
+.cd-skin #practice-audio-bar .speed-btn:hover,
+:is(#screen-exam, .cd-skin) #exam-audio-bar .audio-skip-btn:hover,
+:is(#screen-exam, .cd-skin) #exam-audio-bar .speed-btn:hover { background: var(--cd-line2); }
+.cd-skin #practice-audio-bar .speed-btn.active,
+:is(#screen-exam, .cd-skin) #exam-audio-bar .speed-btn.active { background: var(--cd-blue); border-color: var(--cd-blue); color: #fff; }
 
 /* Listening body: the question column reads like the exam's. The Part box
    names the section, so the dark "SECTION 1" card is not needed. */
@@ -623,6 +632,7 @@ body.cd-exam-on #section-nav-fixed { display: none !important; }
 @media (max-width: 768px) {
   .cd-skin:is(#screen-practice, #screen-retry) .practice-progress-txt { display: none !important; }
   .cd-skin #practice-audio-bar { padding: 8px 12px; gap: 6px; }
+  :is(#screen-exam, .cd-skin) #exam-audio-bar { padding: 8px 12px; gap: 6px; }
   /* Three tool chips leave "Listen and answer…" a one-word column —
      give the text its own row, tools under it. */
   .cd-skin:is(#screen-practice, #screen-retry) .cd-part-text { flex: 1 1 100%; }

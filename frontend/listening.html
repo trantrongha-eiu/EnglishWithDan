@@ -183,10 +183,12 @@
         </div>
 
         <div class="audio-bar exam-audio-bar" id="exam-audio-bar">
+            <!-- Practice only (same controls as "lẻ" practice) — _updateExamToolbarForMode() -->
+            <button class="audio-play-btn exam-pr-ctl" id="play-btn-ex" onclick="togglePlay()" style="display:none" aria-label="Phát / dừng"><i class="fas fa-play"></i></button>
             <span class="exam-audio-status" id="exam-audio-status"><i class="fas fa-headphones"></i> Chờ audio...</span>
             <button id="aso-play-now-btn" class="aso-play-now-btn hidden" onclick="examPlayBtn()"><i class="fas fa-play"></i> Phát ngay</button>
-            <!-- Seek/skip are unlocked only in Practice — see _updateExamToolbarForMode() -->
-            <button class="audio-skip-btn exam-skip-btn" onclick="skipAudio(-5)" style="display:none"><i class="fas fa-backward"></i> 5s</button>
+            <!-- Seek/skip/speed are unlocked only in Practice — see _updateExamToolbarForMode() -->
+            <button class="audio-skip-btn exam-skip-btn" onclick="skipAudio(-10)" style="display:none"><i class="fas fa-backward"></i> 10s</button>
             <div class="audio-seek-wrap" style="flex:1">
                 <input type="range" class="audio-seek exam-seek-readonly" id="audio-seek" value="0" min="0" max="100"
                     step="0.1" tabindex="-1" />
@@ -195,7 +197,13 @@
                     <span id="audio-total">00:00</span>
                 </div>
             </div>
-            <button class="audio-skip-btn exam-skip-btn" onclick="skipAudio(5)" style="display:none">5s <i class="fas fa-forward"></i></button>
+            <button class="audio-skip-btn exam-skip-btn" onclick="skipAudio(10)" style="display:none">10s <i class="fas fa-forward"></i></button>
+            <div class="speed-btns exam-pr-ctl" style="display:none">
+                <button class="speed-btn" onclick="setSpeed(0.75, this)">×0.75</button>
+                <button class="speed-btn active" onclick="setSpeed(1, this)">×1</button>
+                <button class="speed-btn" onclick="setSpeed(1.1, this)">×1.1</button>
+                <button class="speed-btn" onclick="setSpeed(1.5, this)">×1.5</button>
+            </div>
             <!-- Volume control -->
             <div class="volume-wrap">
                 <span class="volume-icon" id="vol-icon-exam" onclick="toggleMute()"><i class="fas fa-volume-up"></i></span>
@@ -668,11 +676,11 @@
     <link rel="stylesheet" href="/css/qtype-filter.css?v=a122912ba7">
     <link rel="stylesheet" href="/css/listening-extra.css?v=495cc6841a">
     <link rel="stylesheet" href="/css/listening-tips-practice.css?v=67532d532a">
-    <link rel="stylesheet" href="/css/cd-exam.css?v=f84347dca2">
+    <link rel="stylesheet" href="/css/cd-exam.css?v=9aff603e9e">
     <link rel="stylesheet" href="/css/listening-warmup.css?v=cd419383e2">
 
 
-    <script src="/js/listening.js?v=e64e809138"></script>
+    <script src="/js/listening.js?v=a0b21580a1"></script>
 
     <!-- ══ Bài lẻ Listening – mode switch + practice flow ══════════════════ -->
     <script src="/js/shared/qtype-filter.js?v=a8ce27cba2"></script>
