@@ -36,3 +36,20 @@ exports.saveProgress = async (req, res) => {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
+
+// POST /transcribe — one shadowing take → text. The audio is not kept: a
+// shadowing take is graded on the spot against the sentence, nothing for a
+// teacher to review.
+exports.transcribe = async (req, res) => {
+  if (!req.file || !req.file.buffer || !req.file.buffer.length) {
+    return res.status(400).json({ success: false, message: 'Không có bản ghi âm.' });
+  }
+  try {
+    const audio = require('../services/speakingService').normalizeAudioForGemini(req.file.buffer, req.file.mimetype);
+    const transcript = await require('../services/groqService').transcribeSpeechGroq(audio, { timeoutMs: 20000 });
+    res.json({ success: true, transcript });
+  } catch (err) {
+    console.warn('[SpeakingPart2] transcribe failed:', err.message);
+    res.status(502).json({ success: false, message: 'Máy chấm đang bận — thử lại sau vài giây nhé.' });
+  }
+};

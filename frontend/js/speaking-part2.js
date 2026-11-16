@@ -13,7 +13,8 @@
 //               is worth 2 points — nhại (shadowing score >= 70%) and dịch
 //               (typed right). A frame opens once the one before is >= 70%;
 //               the story is "đạt" (homework) at >= 70% overall.
-//    shadow   — listen (TTS) → say it → browser SpeechRecognition + the same
+//    shadow   — listen (TTS) → say it → browser SpeechRecognition (or, on
+//               iPhone / in-app browsers, a recording sent to Whisper) + the same
 //               LCS word diff as shadowing.html → % of the sentence's words.
 //    practice — Việt → Anh word-by-word typing (shared WbwDrill). The 3rd
 //               wrong try on one word = the sentence counts wrong and
@@ -767,7 +768,7 @@
         'Khung trước thuộc <b>≥' + PASS + '%</b> mới mở khung sau. Cả bài thuộc <b>≥' + PASS + '%</b> là <b>đạt</b> (bài tập giáo viên giao).</p>' +
       '<div class="sp2-pass-meter' + (pass ? ' is-ok' : '') + '"><span style="width:' + m.pct + '%"></span><i style="left:' + PASS + '%" title="Mốc đạt ' + PASS + '%"></i></div>' +
       '<div class="t2-wc-row"><span class="t2-step-chip' + (pass ? ' ok' : '') + '">' + (pass ? '<i class="fas fa-medal"></i> Đạt — ' : '') + 'Thuộc ' + m.pct + '% cả bài' + (pass ? '' : ' · cần ≥' + PASS + '%') + '</span></div>' +
-      (SR ? '' : '<div class="sp2-callout is-warn" style="margin:8px 0"><b>Trình duyệt này chưa chấm được phát âm.</b><p>Mở trang bằng Chrome hoặc Edge (máy tính / Android) để luyện Nhại — phần Dịch vẫn làm được ở đây.</p></div>') +
+      (canShadow() ? '' : '<div class="sp2-callout is-warn" style="margin:8px 0"><b>Trình duyệt này không ghi âm được.</b><p>Mở trang bằng Chrome, Edge hoặc Safari để luyện Nhại — phần Dịch vẫn làm được ở đây.</p></div>') +
       '<ol class="sp2-ladder">' + frames.map(function (f, i) { return frameRow(st, f, m.frames[i], i === cur); }).join('') + '</ol>' +
       practiceOpts() +
     '</section>';
@@ -1306,12 +1307,47 @@
     window.scrollTo(0, 0);
   }
 
+  // ── How a take is heard ──────────────────────────────────────────────
+  //  'sr'     — the browser's own speech-to-text (desktop Chrome / Edge,
+  //             Android Chrome) + a parallel recording for "Giọng của tôi".
+  //  'server' — record only, then POST /speaking-part2/transcribe (Whisper).
+  //             iPhone/iPad (Safari, Zalo, Google app…) and in-app browsers:
+  //             there the recognizer and the recorder fight over the mic and
+  //             the student got "Chưa nghe thấy bạn nói" on every take
+  //             (2026-11-16 complaint — every student stuck at 0–1 nhại was
+  //             on iOS). Also any browser with no SpeechRecognition, and a
+  //             device where 'sr' missed a voiced take twice (SH_SERVER_KEY).
+  //  Either way a take the recognizer heard nothing of, but whose recording
+  //  has voice in it, is sent to the server instead of failing.
+  var UA = navigator.userAgent || '';
+  var IS_IOS = /iPad|iPhone|iPod/.test(UA) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var IS_ANDROID = /Android/i.test(UA);
+  var IN_APP = /Zalo|FBAN|FBAV|FB_IAB|Instagram|Line\/|TikTok|musical_ly|GSA\/|; wv\)/i.test(UA);
+  var CAN_REC = !!(window.MediaRecorder && navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  var SH_SERVER_KEY = 'sp2_sh_server';
+  var VOICE_LEVEL = 0.02;   // RMS that counts as talking (speech ≈ 0.02–0.3)
+  function shServerMode() {
+    if (!CAN_REC) return false;
+    if (!SR || IS_IOS || IN_APP) return true;
+    try { return localStorage.getItem(SH_SERVER_KEY) === '1'; } catch (e) { return false; }
+  }
+  function canShadow() { return !!SR || CAN_REC; }
+
   function renderShadow() {
     var r = state.sh, st = curStory(), q = r.qs[r.idx], p = sp(st.id);
     var best = p.shadow[q.key];
     var pct = Math.round((r.idx + 1) / r.qs.length * 100);
     var last = r.idx >= r.qs.length - 1;
     var graded = r.run[q.key] != null;
+    var masked = prefs.shMask && !graded;
+    var ok = canShadow();
+    function side(act, icon, label, extra) {
+      return '<button type="button" class="sp2-sh-side" data-act="' + act + '"' + (extra || '') + '>' +
+        '<span class="sp2-sh-ico"><i class="fas ' + icon + '"></i></span><span class="sp2-sh-lbl">' + label + '</span></button>';
+    }
+    function pill(k, label, title) {
+      return '<button type="button" class="sp2-sh-pill' + (prefs[k] ? ' on' : '') + '" data-act="sh-pref" data-pref="' + k + '" aria-pressed="' + !!prefs[k] + '" title="' + esc(title) + '">' + label + '</button>';
+    }
     return '' +
     '<div class="t2-prac-head">' +
       '<button class="t2-back-btn" data-act="sh-quit"><i class="fas fa-times"></i> Thoát</button>' +
@@ -1323,118 +1359,298 @@
     '<div class="t2-q-dots">' + r.qs.map(function (x, i) {
       var sc = r.run[x.key] != null ? r.run[x.key] : null;
       var c = sc == null ? (i === r.idx ? 't2-dot-current' : '') : sc >= SHADOW_PASS ? 't2-dot-ok' : 't2-dot-err';
-      return '<button type="button" class="t2-q-dot ' + c + '" data-act="sh-go" data-i="' + i + '" title="Câu ' + (i + 1) + (sc != null ? ' · ' + sc + '%' : '') + '"></button>';
+      return '<button type="button" class="t2-q-dot ' + c + '" data-act="sh-go" data-i="' + i + '" aria-label="Câu ' + (i + 1) + (sc != null ? ' · ' + sc + '%' : '') + '" title="Câu ' + (i + 1) + (sc != null ? ' · ' + sc + '%' : '') + '"></button>';
     }).join('') + '</div>' +
-    '<div class="wp-exercise-meta" style="padding:8px 20px">' +
-      '<span class="wp-ex-counter">' + (r.idx + 1) + ' / ' + r.qs.length + '</span>' +
-      '<span class="wp-type-tag">' + esc(q.ctx) + '</span>' +
-      (best != null ? '<span class="wp-type-tag sp2-best ' + (best >= SHADOW_PASS ? 'is-ok' : '') + '">Cao nhất: ' + best + '%</span>' : '') +
-    '</div>' +
-    '<div class="wp-card sp2-shcard" style="margin:0 20px">' +
-      '<div class="wp-task-label">Nghe câu mẫu rồi nói theo</div>' +
-      '<div class="sp2-sh-sent' + (prefs.shMask && !graded ? ' is-masked' : '') + '" id="sp2-sh-sent">' + (prefs.shMask && !graded ? maskWords(q.en) : esc(q.en)) + '</div>' +
-      (prefs.vi ? '<div class="sp2-sh-vi">' + esc(q.vi) + '</div>' : '') +
-      '<div class="sp2-sh-ctrl">' +
-        '<button type="button" class="t2-secondary" data-act="sh-listen"><i class="fas fa-volume-up"></i> Nghe</button>' +
-        '<button type="button" class="t2-secondary" data-act="sh-slow" title="Nghe chậm"><i class="fas fa-walking"></i> Chậm</button>' +
-        '<button type="button" class="t2-primary sp2-sh-rec" id="sp2-sh-rec" data-act="sh-rec"' + (SR ? '' : ' disabled') + '><i class="fas fa-microphone"></i> Nói theo</button>' +
-        '<button type="button" class="t2-secondary" id="sp2-sh-mine" data-act="sh-mine" disabled title="Nghe lại giọng của bạn"><i class="fas fa-play"></i> Giọng của tôi</button>' +
+    '<div class="sp2-sh-wrap" style="--g-c:' + st.color + '">' +
+    '<div class="sp2-shcard">' +
+      '<div class="sp2-sh-top">' +
+        '<span class="sp2-sh-count">Câu <b>' + (r.idx + 1) + '</b> / ' + r.qs.length + '</span>' +
+        '<span class="sp2-sh-ctx">' + esc(q.ctx) + '</span>' +
+        (best != null ? '<span class="sp2-sh-best' + (best >= SHADOW_PASS ? ' is-ok' : '') + '" title="Điểm nhại cao nhất của câu này">' + (best >= SHADOW_PASS ? '<i class="fas fa-check"></i> ' : '') + 'Cao nhất ' + best + '%</span>' : '') +
       '</div>' +
-      '<div class="sp2-sh-interim" id="sp2-sh-interim" aria-live="polite">' + (SR ? '' : 'Trình duyệt này chưa chấm được phát âm — mở bằng Chrome hoặc Edge nha.') + '</div>' +
+      '<ol class="sp2-sh-steps" id="sp2-sh-steps" aria-hidden="true">' +
+        '<li data-s="listen"><span>1</span>Nghe mẫu</li>' +
+        '<li data-s="say"><span>2</span>Nói theo</li>' +
+        '<li data-s="score"><span>3</span>Xem điểm</li>' +
+      '</ol>' +
+      '<div class="sp2-sh-stage">' +
+        '<div class="sp2-sh-sent' + (masked ? ' is-masked' : '') + '" id="sp2-sh-sent" lang="en">' + (masked ? maskWords(q.en) : esc(q.en)) + '</div>' +
+        (prefs.vi ? '<div class="sp2-sh-vi">' + esc(q.vi) + '</div>' : '') +
+      '</div>' +
+      '<div class="sp2-sh-ctrl">' +
+        side('sh-listen', 'fa-volume-up', 'Nghe') +
+        side('sh-slow', 'fa-walking', 'Nghe chậm') +
+        '<div class="sp2-sh-micwrap" id="sp2-sh-micwrap">' +
+          '<span class="sp2-sh-lvl" aria-hidden="true"></span>' +
+          '<button type="button" class="sp2-sh-mic" id="sp2-sh-rec" data-act="sh-rec" aria-label="Nói theo"' + (ok ? '' : ' disabled') + '><i class="fas fa-microphone"></i></button>' +
+        '</div>' +
+        side('sh-mine', 'fa-user', 'Giọng tôi', ' id="sp2-sh-mine" disabled title="Nghe lại giọng của bạn"') +
+      '</div>' +
+      '<div class="sp2-sh-miclbl" id="sp2-sh-miclbl">' + (ok ? 'Bấm micro rồi đọc to câu trên' : 'Trình duyệt này không ghi âm được') + '</div>' +
+      '<div class="sp2-sh-interim" id="sp2-sh-interim" aria-live="polite">' + (ok ? '' : 'Mở trang bằng Chrome, Edge hoặc Safari để nhại nha.') + '</div>' +
       '<div class="sp2-sh-score" id="sp2-sh-score" aria-live="polite"></div>' +
+      '<div class="sp2-sh-help" id="sp2-sh-help" hidden>' + micHelpHtml() + '</div>' +
+      '<div class="sp2-sh-foot">' +
+        '<div class="sp2-sh-pills">' +
+          pill('shMask', '<i class="fas fa-eye-slash"></i> Che câu', 'Che câu mẫu, chỉ hiện chữ cái đầu — nói từ trí nhớ') +
+          pill('vi', '<i class="fas fa-language"></i> Tiếng Việt', 'Hiện nghĩa tiếng Việt') +
+          pill('autoNext', '<i class="fas fa-forward"></i> Tự chuyển câu', 'Nhại đạt thì tự sang câu tiếp') +
+        '</div>' +
+        '<button type="button" class="sp2-sh-helpbtn" data-act="sh-help"><i class="fas fa-circle-question"></i> Micro không thu được tiếng?</button>' +
+      '</div>' +
     '</div>' +
     '<div class="sp2-sh-nav">' +
-      '<button type="button" class="t2-secondary" data-act="sh-prev"' + (r.idx ? '' : ' disabled') + '><i class="fas fa-arrow-left"></i> Câu trước</button>' +
-      '<button type="button" class="t2-primary" data-act="sh-next">' + (last ? 'Xem kết quả' : 'Câu tiếp') + ' <i class="fas fa-arrow-right"></i></button>' +
+      '<button type="button" class="t2-secondary" data-act="sh-prev"' + (r.idx ? '' : ' disabled') + '><i class="fas fa-arrow-left"></i> <span>Câu trước</span></button>' +
+      '<button type="button" class="t2-primary" data-act="sh-next"><span>' + (last ? 'Xem kết quả' : 'Câu tiếp') + '</span> <i class="fas fa-arrow-right"></i></button>' +
+    '</div>' +
+    '<p class="sp2-sh-kbd">Mẹo: <kbd>Space</kbd> bật/tắt micro · <kbd>Enter</kbd> sang câu tiếp</p>' +
     '</div>';
+  }
+  // Step-by-step mic fixes for the device the student is on.
+  function micHelpHtml() {
+    var steps;
+    if (IS_IOS && /Zalo/i.test(UA)) steps = ['Mở <b>Cài đặt</b> iPhone → <b>Zalo</b> → bật <b>Micrô</b>.', 'Hoặc bấm <b>⋯</b> góc trên → <b>Mở bằng trình duyệt</b> (Safari) rồi thử lại.'];
+    else if (IS_IOS) steps = ['Bấm <b>aA</b> (hoặc biểu tượng ở thanh địa chỉ) → <b>Cài đặt trang web</b> → <b>Micrô</b> → <b>Cho phép</b>.', 'Hoặc vào <b>Cài đặt</b> iPhone → <b>Safari</b> → <b>Micrô</b> → <b>Cho phép</b>, rồi tải lại trang.', 'Tắt chế độ im lặng không ảnh hưởng — nhưng hãy ngắt tai nghe Bluetooth nếu đang kết nối.'];
+    else if (IS_ANDROID) steps = ['Bấm biểu tượng <b>ⓘ / ổ khóa</b> cạnh địa chỉ web → <b>Quyền</b> → <b>Micrô</b> → <b>Cho phép</b>.', 'Đang mở trong Zalo/Facebook? Bấm <b>⋮</b> → <b>Mở bằng Chrome</b>.', 'Kiểm tra không có app khác (gọi điện, ghi âm) đang dùng micro.'];
+    else steps = ['Bấm biểu tượng <b>ổ khóa</b> cạnh địa chỉ web → <b>Micrô</b> → <b>Cho phép</b>, rồi tải lại trang.', 'Kiểm tra đúng micro trong <b>Cài đặt âm thanh</b> của máy, và micro không bị tắt tiếng.', 'Đóng Zoom / Meet / Teams nếu đang mở — các app đó có thể giữ micro.'];
+    return '<b class="sp2-sh-help-h"><i class="fas fa-screwdriver-wrench"></i> Cách bật micro</b><ol>' + steps.map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ol>' +
+      '<p class="sp2-sh-help-note">Bấm micro xong mà vòng tròn quanh nút <b>không rung</b> theo giọng bạn = máy chưa nhận được tiếng.</p>';
   }
   function mountShadow() {
     var r = state.sh, q = r.qs[r.idx];
-    if (r.run[q.key] != null && r.said[q.key] != null) showShadowResult(q, r.said[q.key], r.run[q.key], true);
-    else setTimeout(function () { if (state.view === 'shadow' && state.sh === r) speak([q.en]); }, 250);
+    if (r.run[q.key] != null && r.said[q.key] != null) { showShadowResult(q, r.said[q.key], r.run[q.key], true); return; }
+    if (r.noAuto) { r.noAuto = false; setStep(null); return; }
+    setTimeout(function () {
+      if (state.view !== 'shadow' || state.sh !== r || r.idx !== r.qs.indexOf(q) || rec.on) return;
+      setStep('listen');
+      speak([q.en]);
+    }, 250);
+  }
+  function setStep(s) {
+    var ol = document.getElementById('sp2-sh-steps');
+    if (!ol) return;
+    var order = ['listen', 'say', 'score'], at = order.indexOf(s);
+    ol.querySelectorAll('li').forEach(function (li, i) {
+      li.classList.toggle('is-on', i === at);
+      li.classList.toggle('is-done', at > -1 && i < at);
+    });
+  }
+  // Mic button + label for: idle · rec (listening) · busy (server grading).
+  function shUi(phase) {
+    var btn = document.getElementById('sp2-sh-rec'), wrap = document.getElementById('sp2-sh-micwrap');
+    var lbl = document.getElementById('sp2-sh-miclbl');
+    if (wrap) { wrap.classList.toggle('is-rec', phase === 'rec'); wrap.classList.toggle('is-busy', phase === 'busy'); wrap.style.setProperty('--lvl', 0); }
+    if (btn) {
+      btn.innerHTML = phase === 'rec' ? '<i class="fas fa-stop"></i>' : phase === 'busy' ? '<i class="fas fa-spinner fa-spin"></i>' : '<i class="fas fa-microphone"></i>';
+      btn.setAttribute('aria-label', phase === 'rec' ? 'Dừng' : 'Nói theo');
+      btn.disabled = phase === 'busy' || !canShadow();
+    }
+    if (lbl) lbl.textContent = phase === 'rec' ? 'Đang nghe… nói xong bấm để dừng' : phase === 'busy' ? 'Đang chấm…' : 'Bấm micro rồi đọc to câu trên';
+    if (phase === 'rec') setStep('say');
   }
 
-  var rec = { on: false, recog: null, media: null, stream: null, text: '', silence: null, hard: null, session: 0, url: null, audio: null };
+  var rec = { on: false, busy: false, mode: 'sr', recog: null, media: null, stream: null, text: '', silence: null, hard: null,
+    session: 0, url: null, audio: null, ctx: null, lv: null, peak: 0, voiced: false, srDead: false, srErr: '', micErr: '', onBlob: null, misses: 0 };
   function shStart() {
     var r = state.sh;
-    if (rec.on || !r || !SR) return;
+    if (rec.on || rec.busy || !r || !canShadow()) return;
     stopTts();
+    clearTimeout(_autoNext);
+    if (rec.audio) rec.audio.pause();
     var q = r.qs[r.idx], session = ++rec.session;
-    rec.on = true; rec.text = '';
-    setText('sp2-sh-interim', 'Đang nghe bạn nói…');
+    rec.on = true; rec.text = ''; rec.peak = 0; rec.voiced = false; rec.srDead = false; rec.srErr = ''; rec.micErr = ''; rec.onBlob = null;
+    rec.mode = SR && !shServerMode() ? 'sr' : 'server';
+    rec.idx = r.idx;
+    primeMeter();   // inside the click — iOS only starts an AudioContext from a gesture
+    setText('sp2-sh-interim', rec.mode === 'sr' ? 'Đang nghe bạn nói…' : 'Đang ghi âm — đọc to câu trên…');
     var sc = document.getElementById('sp2-sh-score'); if (sc) { sc.className = 'sp2-sh-score'; sc.innerHTML = ''; }
-    var btn = document.getElementById('sp2-sh-rec');
-    if (btn) { btn.classList.add('is-recording'); btn.innerHTML = '<i class="fas fa-stop"></i> Dừng'; }
-    rec.hard = setTimeout(shStop, Math.max(6000, wc(q.en) * 1000 + 3000));
+    shUi('rec');
+    rec.hard = setTimeout(shStop, Math.max(7000, wc(q.en) * 900 + 4000));
     // Recognition first, own-voice capture after (Android lets only one hold the mic).
+    if (rec.mode === 'sr') startRecognition(session);
+    if (CAN_REC) captureOwnVoice(session, r.idx);
+  }
+  function startRecognition(session) {
     var recog = new SR();
     rec.recog = recog;
     recog.lang = 'en-US';
-    recog.continuous = !/Android/i.test(navigator.userAgent);
+    recog.continuous = !IS_ANDROID;
     recog.interimResults = true;
     recog.maxAlternatives = 1;
     recog.onresult = function (e) {
+      if (session !== rec.session || !rec.on) return;
       var interim = '', fin = '';
       for (var k = 0; k < e.results.length; k++) {
         if (e.results[k].isFinal) fin += e.results[k][0].transcript + ' ';
         else interim += e.results[k][0].transcript;
       }
-      // Grade on everything heard, not just isFinal results: iOS Safari often
-      // ends the session with the whole sentence still interim, which used
-      // to grade as "Chưa nghe thấy bạn nói" while the transcript was on screen.
+      // Grade on everything heard, not just isFinal results (iOS Safari
+      // often ends with the whole sentence still interim).
       rec.text = fin + interim;
       setText('sp2-sh-interim', (fin + interim).trim() || 'Đang nghe bạn nói…');
       clearTimeout(rec.silence);
       rec.silence = setTimeout(shStop, 1500);
     };
     recog.onerror = function (e) {
-      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') toast('Không truy cập được micro — hãy cho phép quyền micro trên trình duyệt.', 'error');
-      else if (e.error === 'network') toast('Không kết nối được dịch vụ nhận diện giọng nói — kiểm tra mạng rồi thử lại.', 'error');
+      if (session !== rec.session) return;
+      rec.srErr = e.error;
+      if (e.error === 'no-speech' || e.error === 'aborted') return;
+      // The recognizer gave up (mic clash, offline, service blocked): keep
+      // recording — the take is graded by the server instead.
+      rec.srDead = true;
+      if (e.error === 'network' && !rec.media) toast('Không kết nối được dịch vụ nhận diện giọng nói — kiểm tra mạng rồi thử lại.', 'error');
     };
-    recog.onend = function () { if (rec.on) shStop(); };
-    try { recog.start(); } catch (err) { /* already started */ }
-    captureOwnVoice(session, r.idx);
+    recog.onend = function () {
+      if (session !== rec.session || !rec.on) return;
+      // Ended with nothing heard while the recording still runs — let the
+      // recording finish the take (stops on silence / Dừng / hard timer).
+      if (!rec.text.trim() && rec.media && rec.media.state === 'recording') { rec.srDead = true; return; }
+      shStop();
+    };
+    try { recog.start(); } catch (err) { rec.srDead = true; }
   }
   function captureOwnVoice(session, recIdx) {
-    if (!window.MediaRecorder || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(function (stream) {
       if (!rec.on || session !== rec.session) { stream.getTracks().forEach(function (t) { t.stop(); }); return; }
       rec.stream = stream;
-      var chunks = [], mr = new MediaRecorder(stream);
+      startMeter(stream, session);
+      var chunks = [], mr;
+      try { mr = new MediaRecorder(stream); } catch (e) { return; }
       rec.media = mr;
       mr.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
       mr.onstop = function () {
-        if (!state.sh || state.sh.idx !== recIdx) return;
+        var blob = chunks.length ? new Blob(chunks, { type: mr.mimeType || chunks[0].type || 'audio/webm' }) : null;
+        if (session === rec.session && rec.onBlob) { var f = rec.onBlob; rec.onBlob = null; f(blob); }
+        if (!state.sh || state.sh.idx !== recIdx || state.view !== 'shadow') return;
         if (rec.url) { try { URL.revokeObjectURL(rec.url); } catch (e) {} }
-        rec.url = chunks.length ? URL.createObjectURL(new Blob(chunks, { type: mr.mimeType || 'audio/webm' })) : null;
+        rec.url = blob ? URL.createObjectURL(blob) : null;
         var b = document.getElementById('sp2-sh-mine'); if (b) b.disabled = !rec.url;
       };
       mr.start();
-    }).catch(function () { /* recognition still scores */ });
+    }).catch(function (err) {
+      if (session !== rec.session) return;
+      rec.micErr = (err && err.name) || 'Error';
+      // Audio-only take with no mic = nothing to grade; recognition mode
+      // still scores without the recording.
+      if (rec.on && (rec.mode === 'server' || rec.srDead)) shStop();
+    });
   }
-  // silent: leaving the screen — stop without grading.
+  function primeMeter() {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!rec.ctx) rec.ctx = new AC();
+      if (rec.ctx.state === 'suspended') rec.ctx.resume().catch(function () {});
+    } catch (e) { rec.ctx = null; }
+  }
+  // Live level → the ring around the mic (the student SEES the mic hear
+  // them), "voiced" for the server fallback, and stop-on-silence for takes
+  // with no recognizer to say they're done.
+  function startMeter(stream, session) {
+    stopMeter();
+    if (!rec.ctx) return;
+    try {
+      var src = rec.ctx.createMediaStreamSource(stream), an = rec.ctx.createAnalyser();
+      an.fftSize = 1024;
+      src.connect(an);
+      var buf = new Float32Array(an.fftSize), loud = 0, quietSince = 0, wrap = document.getElementById('sp2-sh-micwrap');
+      var lv = { src: src, samples: 0 };
+      lv.timer = setInterval(function () {
+        if (!rec.on || session !== rec.session || !rec.ctx || rec.ctx.state !== 'running') return;
+        an.getFloatTimeDomainData(buf);
+        var sum = 0;
+        for (var i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+        var rms = Math.sqrt(sum / buf.length);
+        lv.samples++;
+        if (rms > rec.peak) rec.peak = rms;
+        if (wrap) wrap.style.setProperty('--lvl', Math.min(1, rms / 0.12).toFixed(2));
+        if (rms > VOICE_LEVEL) { loud++; quietSince = 0; if (loud >= 2) rec.voiced = true; }
+        else if (!quietSince) quietSince = Date.now();
+        if (rec.voiced && quietSince && Date.now() - quietSince > 1700 && (rec.mode === 'server' || rec.srDead)) shStop();
+      }, 100);
+      rec.lv = lv;
+    } catch (e) { rec.lv = null; }
+  }
+  function stopMeter() {
+    var lv = rec.lv;
+    rec.lv = null;
+    if (!lv) return false;
+    clearInterval(lv.timer);
+    try { lv.src.disconnect(); } catch (e) {}
+    return lv.samples >= 5;
+  }
+  // silent: leaving the screen / another sentence — stop without grading.
   function shStop(silent) {
     if (!rec.on) return;
     rec.on = false;
     clearTimeout(rec.silence); clearTimeout(rec.hard);
-    if (rec.recog) { rec.recog.onend = null; try { rec.recog.stop(); } catch (e) {} rec.recog = null; }
-    if (rec.media && rec.media.state !== 'inactive') { try { rec.media.stop(); } catch (e) {} }
-    rec.media = null;
+    if (rec.recog) { rec.recog.onend = null; rec.recog.onresult = null; try { rec.recog.stop(); } catch (e) {} rec.recog = null; }
+    var measured = stopMeter();
+    var mr = rec.media; rec.media = null;
+    var live = !!(mr && mr.state !== 'inactive');
+    var text = rec.text.trim(), session = rec.session, idx = rec.idx, mode = rec.mode;
+    var quit = silent === true || state.view !== 'shadow';
+    // Nothing recognised but there is a recording → the server hears it.
+    // Always, not only when the level meter saw a voice: a meter that reads
+    // zeros (iOS quirk) must never leave a student stuck again.
+    var toServer = !quit && !text && live;
+    if (toServer) {
+      rec.busy = true;
+      rec.onBlob = function (blob) { serverGrade(blob, session, idx, mode, measured); };
+    }
+    if (live) { try { mr.stop(); } catch (e) {} }
     if (rec.stream) { rec.stream.getTracks().forEach(function (t) { t.stop(); }); rec.stream = null; }
-    var btn = document.getElementById('sp2-sh-rec');
-    if (btn) { btn.classList.remove('is-recording'); btn.innerHTML = '<i class="fas fa-microphone"></i> Nói theo'; }
-    if (silent === true || state.view !== 'shadow') return;
-    gradeShadow(rec.text.trim());
+    if (quit) { rec.onBlob = null; rec.busy = false; shUi('idle'); return; }
+    shUi(toServer ? 'busy' : 'idle');
+    if (toServer) { setText('sp2-sh-interim', 'Đang chấm phát âm…'); return; }
+    if (text) { if (mode === 'sr') rec.misses = 0; gradeShadow(text); }
+    else noVoice(measured);
+  }
+  function serverGrade(blob, session, idx, mode, measured) {
+    function stale() { return session !== rec.session || !state.sh || state.sh.idx !== idx || state.view !== 'shadow'; }
+    function done() { rec.busy = false; if (!stale()) shUi('idle'); }
+    if (!blob || blob.size < 800) { done(); if (!stale()) noVoice(measured); return; }
+    var type = blob.type || '';
+    var fd = new FormData();
+    fd.append('audio', blob, 'take.' + (/mp4|m4a|aac/.test(type) ? 'm4a' : /ogg/.test(type) ? 'ogg' : /wav/.test(type) ? 'wav' : 'webm'));
+    var token = window.AuthService && window.AuthService.getToken();
+    fetch(API + '/speaking-part2/transcribe', { method: 'POST', headers: token ? { Authorization: 'Bearer ' + token } : {}, body: fd })
+      .then(function (res) { return res.json().catch(function () { return {}; }).then(function (d) { return { ok: res.ok, d: d || {} }; }); })
+      .then(function (x) {
+        done();
+        if (stale()) return;
+        if (!x.ok || !x.d.success) { showScore('low', x.d.message || 'Chưa chấm được lần này', 'Bấm micro để thử lại nhé.'); setText('sp2-sh-interim', ''); return; }
+        var t = String(x.d.transcript || '').trim();
+        if (!t) { noVoice(measured); return; }
+        // The browser's recognizer missed a take that had words in it —
+        // twice and this device is switched to server grading for good.
+        if (mode === 'sr' && ++rec.misses >= 2) { try { localStorage.setItem(SH_SERVER_KEY, '1'); } catch (e) {} }
+        gradeShadow(t);
+      })
+      .catch(function () {
+        done();
+        if (stale()) return;
+        setText('sp2-sh-interim', '');
+        showScore('low', 'Mất kết nối khi gửi bản ghi', 'Kiểm tra mạng rồi bấm micro thử lại.');
+      });
+  }
+  function noVoice(measured) {
+    setText('sp2-sh-interim', '');
+    var denied = /NotAllowed|Security|PermissionDenied/i.test(rec.micErr) || rec.srErr === 'not-allowed' || rec.srErr === 'service-not-allowed';
+    if (denied) { showScore('low', 'Trình duyệt đang chặn micro', 'Làm theo hướng dẫn bên dưới để cho phép micro, rồi thử lại.'); toggleHelp(true); return; }
+    if (/NotFound|NotReadable|Overconstrained/i.test(rec.micErr) || rec.srErr === 'audio-capture') { showScore('low', 'Không mở được micro', 'Máy không có micro, hoặc app khác (Zalo call, Zoom…) đang dùng micro.'); toggleHelp(true); return; }
+    showScore('low', 'Chưa nghe thấy bạn nói', measured && !rec.voiced ? 'Micro không thu được tiếng nào — nói to hơn, gần micro hơn, hoặc xem cách bật micro bên dưới.' : 'Bấm micro rồi đọc to câu trên, gần micro hơn một chút.');
+    if (measured && !rec.voiced) toggleHelp(true);
+  }
+  function toggleHelp(force) {
+    var el = document.getElementById('sp2-sh-help');
+    if (!el) return;
+    el.hidden = force != null ? !force : !el.hidden;
   }
   function gradeShadow(said) {
     var r = state.sh, st = curStory();
     if (!r || !st) return;
     var q = r.qs[r.idx];
-    if (!said) {
-      setText('sp2-sh-interim', '');
-      showScore('low', 'Chưa nghe thấy bạn nói', 'Bấm “Nói theo” và đọc to câu trên, gần micro hơn một chút.');
-      return;
-    }
     var ref = tokens(q.en), hit = diffWords(ref, tokens(said));
     var n = Object.keys(hit).length, pct = ref.length ? Math.round(n / ref.length * 100) : 0;
     var before = mastery(st), p = sp(st.id);
@@ -1445,7 +1661,7 @@
     paintShadowDots();
     noteUnlocks(st, before);
     if (pct >= 85 && window.playOk) window.playOk();
-    if (pct >= SHADOW_PASS && prefs.autoNext) { clearTimeout(_autoNext); _autoNext = setTimeout(shNext, 1600); }
+    if (pct >= SHADOW_PASS && prefs.autoNext) { clearTimeout(_autoNext); _autoNext = setTimeout(shNext, 1800); }
   }
   function showShadowResult(q, said, pct, restored) {
     var ref = tokens(q.en), hit = diffWords(ref, tokens(said));
@@ -1456,14 +1672,20 @@
     }
     setText('sp2-sh-interim', 'Máy nghe được: “' + said + '”');
     var cls = scoreClass(pct), passed = pct >= SHADOW_PASS;
-    var msg = cls === 'good' ? 'Tuyệt vời!' : passed ? 'Đạt — luyện thêm các từ màu đỏ.' : 'Chưa đạt ' + SHADOW_PASS + '% — nghe lại rồi thử thêm lần nữa nhé.';
-    showScore(cls, (restored ? 'Lần này: ' : '') + pct + '% — ' + msg, 'Đúng ' + Object.keys(hit).length + '/' + ref.length + ' từ. Bấm “Giọng của tôi” để so với câu mẫu.');
+    var msg = cls === 'good' ? 'Tuyệt vời!' : passed ? 'Đạt rồi — luyện thêm các từ màu đỏ.' : 'Chưa đạt ' + SHADOW_PASS + '% — nghe lại rồi thử thêm lần nữa nhé.';
+    var miss = ref.length - Object.keys(hit).length;
+    showScore(cls, (restored ? 'Lần này: ' : '') + msg,
+      'Đúng ' + Object.keys(hit).length + '/' + ref.length + ' từ' + (miss ? ' · ' + miss + ' từ đỏ cần luyện' : '') + '. Bấm “Giọng tôi” để so với câu mẫu.', pct);
+    setStep('score');
   }
-  function showScore(cls, title, sub) {
+  function showScore(cls, title, sub, pct) {
     var el = document.getElementById('sp2-sh-score');
     if (!el) return;
     el.className = 'sp2-sh-score show ' + cls;
-    el.innerHTML = esc(title) + (sub ? '<small>' + esc(sub) + '</small>' : '');
+    var badge = pct != null
+      ? '<span class="sp2-sh-ring" style="--p:' + pct + '"><b>' + pct + '<small>%</small></b></span>'
+      : '<span class="sp2-sh-ring is-ico"><i class="fas fa-microphone-slash"></i></span>';
+    el.innerHTML = badge + '<span class="sp2-sh-score-txt"><strong>' + esc(title) + '</strong>' + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span>';
   }
   function paintShadowDots() {
     var r = state.sh, dots = document.querySelectorAll('.t2-q-dot');
@@ -1485,6 +1707,8 @@
     if (!r || i < 0 || i >= r.qs.length) return;
     clearTimeout(_autoNext);
     shStop(true); stopTts();
+    rec.session++; rec.busy = false; rec.onBlob = null;   // drop a server grade still in flight
+    if (rec.audio) rec.audio.pause();
     if (rec.url) { try { URL.revokeObjectURL(rec.url); } catch (e) {} rec.url = null; }
     r.idx = i;
     render();
@@ -1492,8 +1716,20 @@
   function shNext() {
     var r = state.sh;
     if (!r || state.view !== 'shadow') return;
-    if (r.idx >= r.qs.length - 1) { shStop(true); stopTts(); state.view = 'shdone'; render(); window.scrollTo(0, 0); return; }
+    if (r.idx >= r.qs.length - 1) { shStop(true); stopTts(); rec.session++; rec.busy = false; state.view = 'shdone'; render(); window.scrollTo(0, 0); return; }
     shGo(r.idx + 1);
+  }
+  // A toggle on the shadow screen re-draws the sentence, without re-playing it.
+  function shPref(k) {
+    prefs[k] = !prefs[k]; savePrefs();
+    if (!state.sh || rec.on || rec.busy) {
+      var b = document.querySelector('[data-act="sh-pref"][data-pref="' + k + '"]');
+      if (b) { b.classList.toggle('on', !!prefs[k]); b.setAttribute('aria-pressed', !!prefs[k]); }
+      return;
+    }
+    state.sh.noAuto = true;
+    render();
+    var mb = document.getElementById('sp2-sh-mine'); if (mb) mb.disabled = !rec.url;   // keep "Giọng tôi"
   }
   function renderShadowDone() {
     var r = state.sh, st = curStory(), p = sp(st.id);
@@ -1648,9 +1884,11 @@
         });
         break;
       case 'shadow': startShadow(+el.dataset.f, el.dataset.k != null ? +el.dataset.k : null); break;
-      case 'sh-listen': shStop(true); speak([state.sh.qs[state.sh.idx].en]); break;
-      case 'sh-slow': shStop(true); speak([state.sh.qs[state.sh.idx].en], null, 0.7); break;
+      case 'sh-listen': if (rec.busy) break; shStop(true); setStep('listen'); speak([state.sh.qs[state.sh.idx].en]); break;
+      case 'sh-slow': if (rec.busy) break; shStop(true); setStep('listen'); speak([state.sh.qs[state.sh.idx].en], null, 0.7); break;
       case 'sh-rec': if (rec.on) shStop(); else shStart(); break;
+      case 'sh-help': toggleHelp(); break;
+      case 'sh-pref': shPref(el.dataset.pref); break;
       case 'sh-mine': playMine(); break;
       case 'sh-prev': shGo(state.sh.idx - 1); break;
       case 'sh-next': shNext(); break;
@@ -1699,6 +1937,8 @@
   }, true);
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Enter' && state.view === 'shadow' && !(e.target && /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName))) { e.preventDefault(); shNext(); return; }
+    // Space = mic on/off on the shadow screen (a focused button keeps its own Space).
+    if ((e.key === ' ' || e.code === 'Space') && state.view === 'shadow' && !e.repeat && !(e.target && /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(e.target.tagName))) { e.preventDefault(); if (rec.on) shStop(); else shStart(); return; }
     if (e.key !== 'Enter' || state.view !== 'practice' || !state.run || !state.run.answered) return;
     if (e.target && /^(INPUT|TEXTAREA|SELECT|BUTTON)$/.test(e.target.tagName) && !e.target.disabled && e.target.tagName !== 'BUTTON') return;
     e.preventDefault();

@@ -230,3 +230,31 @@ test('story rows keep stable ids', () => {
   expect(String(svc.STORY_ROWS[0]._id)).toBe('773200000000000000000001');
   expect(svc.STORY_ROWS.map((r) => r.code)).toEqual(DATA.stories.map((s) => s.id));
 });
+
+test('transcribe (🎙️ Nhại on iPhone / in-app browsers): Whisper text back, Premium only, nothing stored', async () => {
+  const groq = require('../../services/groqService');
+  const spy = jest.spyOn(groq, 'transcribeSpeechGroq').mockResolvedValue('The person I would like to talk about');
+  try {
+    const premium = await createPremiumStudent();
+    const audio = Buffer.alloc(4000, 1);
+    const ok = await request(app).post('/api/speaking-part2/transcribe').set(authH(premium))
+      .attach('audio', audio, { filename: 'take.m4a', contentType: 'audio/mp4' });
+    expect(ok.status).toBe(200);
+    expect(ok.body).toEqual({ success: true, transcript: 'The person I would like to talk about' });
+    expect(spy).toHaveBeenCalledWith(expect.objectContaining({ mimeType: 'video/mp4' }), expect.any(Object));
+
+    const none = await request(app).post('/api/speaking-part2/transcribe').set(authH(premium));
+    expect(none.status).toBe(400);
+
+    const free = await expiredFree();
+    const locked = await request(app).post('/api/speaking-part2/transcribe').set(authH(free))
+      .attach('audio', audio, { filename: 'take.webm', contentType: 'audio/webm' });
+    expect(locked.status).toBe(403);
+
+    spy.mockRejectedValueOnce(new Error('Groq down'));
+    const down = await request(app).post('/api/speaking-part2/transcribe').set(authH(premium))
+      .attach('audio', audio, { filename: 'take.webm', contentType: 'audio/webm' });
+    expect(down.status).toBe(502);
+    expect(down.body.success).toBe(false);
+  } finally { spy.mockRestore(); }
+});
