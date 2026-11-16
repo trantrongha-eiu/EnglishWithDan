@@ -89,4 +89,18 @@ describe('userService.getStreakStanding', () => {
     const a = await createAdmin({ extra: { learningStreak: 9, lastActivityDate: daysAgo(0) } });
     expect((await userService.getStreakStanding(a._id)).me).toBeNull();
   });
+
+  test('"Xem thêm": board-wide total comes back for everyone, and a bigger limit shows the lower ranks', async () => {
+    const ids = [];
+    for (const n of [9, 8, 7, 6]) {
+      ids.push((await createStudent({ extra: { learningStreak: n, lastActivityDate: daysAgo(0) } }))._id);
+    }
+    const first = await userService.getStreakStanding(ids[0], 2);
+    expect(first.total).toBe(4);
+    expect(first.leaderboard).toHaveLength(2);
+    const more = await userService.getStreakStanding(ids[0], 4);
+    expect(more.leaderboard.map(b => b.streak)).toEqual([9, 8, 7, 6]);
+    const a = await createAdmin({ extra: {} });
+    expect((await userService.getStreakStanding(a._id, 2)).total).toBe(4);
+  });
 });

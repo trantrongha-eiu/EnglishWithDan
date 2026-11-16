@@ -1477,7 +1477,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=f2d267dfaf';
+    i18nScript.src = '/js/shared/i18n.js?v=53663f6f7e';
     document.body.appendChild(i18nScript);
   }
 

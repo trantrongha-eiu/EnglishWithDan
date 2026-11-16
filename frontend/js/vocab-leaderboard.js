@@ -4,7 +4,8 @@
  * the dashboard home screen onto their own page (2026-10-01), plus the
  * student's own standing ("Vị trí của bạn") from each board's `me` field —
  * shown in a tile above the boards and, when they rank below the top 10,
- * as a pinned row under the list.
+ * as a pinned row under the list. A "Xem thêm" button under each board
+ * loads 20 more ranks at a time (?limit=, server cap 200; 2026-11-16).
  *
  * Needs: AuthService, ApiClient, escHtml + getFireTier (shared/utils.js),
  * openPeerProfile (shared/peer-profile.js).
@@ -105,10 +106,24 @@
             .then(function (res) { return window.ApiClient.handleResponse(res); });
     }
 
-    function renderList(listEl, rows, emptyMsg, renderRow, pinnedHtml) {
+    // "Xem thêm": each board starts at the top 10 and grows by MORE_STEP rows
+    // per click (server caps ?limit= at 200). Kept across re-renders, so a
+    // 🎂 / 🔍 refresh doesn't snap the list back to 10.
+    var MORE_STEP = 20;
+    var MAX_LIMIT = 200;
+    var boardLimit = { streak: 10, quiz: 10 };
+
+    function moreBtnHtml(kind, shown, total) {
+        if (!total || shown >= total || shown >= MAX_LIMIT) return '';
+        return '<button type="button" class="btn btn-ghost btn-sm vlb-more" data-more="' + kind + '">'
+            + '<i class="fas fa-chevron-down"></i> <span>Xem thêm</span>'
+            + ' <span class="vlb-more-count">+' + Math.min(MORE_STEP, total - shown) + '</span></button>';
+    }
+
+    function renderList(listEl, rows, emptyMsg, renderRow, pinnedHtml, moreHtml) {
         listEl.removeAttribute('aria-busy');
         listEl.innerHTML = rows.length
-            ? rows.map(function (r, i) { return renderRow(r, i + 1); }).join('') + (pinnedHtml || '')
+            ? rows.map(function (r, i) { return renderRow(r, i + 1); }).join('') + (moreHtml || '') + (pinnedHtml || '')
             : '<div class="dan-lb-empty">' + emptyMsg + '</div>';
     }
     function renderError(listEl) {
@@ -154,13 +169,14 @@
     function loadStreakBoard() {
         var listEl = document.getElementById('dan-lb-list');
         if (!listEl) return;
-        fetchBoard('/user/streak-leaderboard').then(function (data) {
+        return fetchBoard('/user/streak-leaderboard?limit=' + boardLimit.streak).then(function (data) {
             var rows = data.leaderboard || [];
             var s = data.me;
             standings.streak = s || null; updateLulu();
             renderList(listEl, rows, 'Chưa có ai đang giữ streak — hãy là người đầu tiên! 🔥',
                 function (r, rank) { return rowHtml(rank, r._id, r.name, r.avatar, streakValue(r.streak), r); },
-                s ? pinnedMeRow(s, rows.length, streakValue(s.streak)) : '');
+                s ? pinnedMeRow(s, rows.length, streakValue(s.streak)) : '',
+                moreBtnHtml('streak', rows.length, data.total));
             if (!s) return;
             var sub;
             if (!s.rank) sub = 'Học ít nhất 1 bài hôm nay để bắt đầu chuỗi và có tên trên bảng.';
@@ -175,13 +191,14 @@
     function loadQuizBoard() {
         var listEl = document.getElementById('quiz-lb-list');
         if (!listEl) return;
-        fetchBoard('/vocabulary-lessons/leaderboard').then(function (data) {
+        return fetchBoard('/vocabulary-lessons/leaderboard?limit=' + boardLimit.quiz).then(function (data) {
             var rows = data.leaderboard || [];
             var q = data.me;
             standings.quiz = q || null; updateLulu();
             renderList(listEl, rows, 'Chưa có ai làm Quiz đủ điều kiện xếp hạng — hãy là người đầu tiên! ⏱',
                 function (r, rank) { return rowHtml(rank, r.userId, r.name, r.avatar, quizValue(r.score, r.timeSpent), r); },
-                q ? pinnedMeRow(q, rows.length, q.rank ? quizValue(q.score, q.timeSpent) : '') : '');
+                q ? pinnedMeRow(q, rows.length, q.rank ? quizValue(q.score, q.timeSpent) : '') : '',
+                moreBtnHtml('quiz', rows.length, data.total));
             if (!q) return;
             var sub;
             if (!q.rank) sub = 'Làm một bài Quiz từ vựng (từ 5 câu trở lên) để có tên trên bảng.';
@@ -220,6 +237,17 @@
             strip.hidden = false;
         }).catch(function () {});
     }
+
+    // "Xem thêm" under a board: fetch MORE_STEP more rows and re-render.
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest && e.target.closest('.vlb-more[data-more]');
+        if (!btn || btn.disabled) return;
+        var kind = btn.getAttribute('data-more');
+        boardLimit[kind] = Math.min(MAX_LIMIT, boardLimit[kind] + MORE_STEP);
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Đang tải…</span>';
+        if (kind === 'quiz') loadQuizBoard(); else loadStreakBoard();
+    });
 
     // Wiped from the shop-feed.js cake popup — take the 🎂 off my row.
     document.addEventListener('ews:cake-wiped', function () { loadStreakBoard(); });

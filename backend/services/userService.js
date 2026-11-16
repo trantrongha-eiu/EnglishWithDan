@@ -400,20 +400,22 @@ async function getStreakLeaderboard(limit = 10, viewerId = null) {
 async function getStreakStanding(userId, limit = 10) {
   const all = await rankedStreaks(userId);
   const leaderboard = all.slice(0, limit);
+  const total = all.length; // whole board size — drives the page's "Xem thêm"
   const user = await User.findById(userId).select('role activePet crownUntil invisibleUntil cakedUntil cakedBy').lean();
-  if (!user || !isFlameRole(user.role)) return { leaderboard, me: null };
+  if (!user || !isFlameRole(user.role)) return { leaderboard, total, me: null };
   const decor = shopService.boardDecor(user);
   const idx = all.findIndex(u => String(u._id) === String(userId));
-  if (idx === -1) return { leaderboard, me: { rank: null, streak: 0, total: all.length, ...decor } };
+  if (idx === -1) return { leaderboard, total, me: { rank: null, streak: 0, total, ...decor } };
   // Streak of the next place up (first entry with a strictly longer
   // streak) — unknown when that student is wearing an Áo Tàng Hình.
   const above = all.slice(0, idx).reverse().find(u => u.streak === null || u.streak > all[idx].streak);
   return {
     leaderboard,
+    total,
     me: {
       rank: idx + 1,
       streak: all[idx].streak,
-      total: all.length,
+      total,
       nextStreak: (above && above.streak) || null,
       ...decor,
     },

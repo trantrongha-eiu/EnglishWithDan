@@ -196,17 +196,19 @@ async function getQuizLeaderboard(limit = 10) {
 async function getQuizStanding(userId, limit = 10) {
   const all = await rankedQuizAverages(0);
   const leaderboard = all.slice(0, limit);
+  const total = all.length; // whole board size — drives the page's "Xem thêm"
   const user = await User.findById(userId).select('role activePet crownUntil invisibleUntil cakedUntil cakedBy').lean();
-  if (!user || !isFlameRole(user.role)) return { leaderboard, me: null };
+  if (!user || !isFlameRole(user.role)) return { leaderboard, total, me: null };
   const { pet, crown, cakedBy } = shopService.boardDecor(user);
   const idx = all.findIndex(r => String(r.userId) === String(userId));
-  if (idx === -1) return { leaderboard, me: { rank: null, total: all.length, pet, crown, cakedBy } };
+  if (idx === -1) return { leaderboard, total, me: { rank: null, total, pet, crown, cakedBy } };
   const mine = all[idx];
   const above = idx > 0 ? all[idx - 1] : null;
   return {
     leaderboard,
+    total,
     me: {
-      rank: idx + 1, score: mine.score, timeSpent: mine.timeSpent, attempts: mine.attempts, total: all.length,
+      rank: idx + 1, score: mine.score, timeSpent: mine.timeSpent, attempts: mine.attempts, total,
       nextScore: above ? above.score : null,
       pet, crown, cakedBy,
     },

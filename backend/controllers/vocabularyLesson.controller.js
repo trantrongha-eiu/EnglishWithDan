@@ -26,8 +26,10 @@ exports.getPublicLesson = async (req, res) => {
 
 exports.getQuizLeaderboard = async (req, res) => {
   try {
-    const { leaderboard, me } = await vocabularyLessonService.getQuizStanding(req.user._id, 10);
-    res.json({ success: true, leaderboard, me });
+    // ?limit= — the BXH page's "Xem thêm" button asks for more rows (10–200).
+    const limit = Math.min(200, Math.max(10, parseInt(req.query.limit, 10) || 10));
+    const { leaderboard, me, total } = await vocabularyLessonService.getQuizStanding(req.user._id, limit);
+    res.json({ success: true, leaderboard, me, total });
   } catch (err) {
     console.error('[VocabularyLesson]', err);
     res.status(500).json({ success: false, message: 'Lỗi server' });

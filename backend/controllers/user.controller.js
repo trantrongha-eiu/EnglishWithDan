@@ -91,9 +91,11 @@ exports.getActivityHeatmap = catchAsync(async (req, res) => {
 });
 
 // ── GET /api/user/streak-leaderboard ─────────────────────────
+// ?limit= — the BXH page's "Xem thêm" button asks for more rows (10–200).
 exports.getStreakLeaderboard = catchAsync(async (req, res) => {
-  const { leaderboard, me } = await userService.getStreakStanding(req.user._id, 10);
-  res.json({ success: true, leaderboard, me });
+  const limit = Math.min(200, Math.max(10, parseInt(req.query.limit, 10) || 10));
+  const { leaderboard, me, total } = await userService.getStreakStanding(req.user._id, limit);
+  res.json({ success: true, leaderboard, me, total });
 });
 
 // ── POST /api/user/streak/use-hammer ─────────────────────────

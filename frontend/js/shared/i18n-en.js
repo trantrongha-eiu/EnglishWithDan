@@ -399,6 +399,8 @@
     'Band ước tính theo bảng quy đổi Listening của British Council/IDP. Đề thi thật được cân bằng độ khó theo từng phiên nên có thể chênh khoảng ±0.5.': 'Estimated band from the British Council/IDP Listening conversion table. Real tests are balanced for difficulty per session, so it may differ by about ±0.5.',
     'Bảng xếp hạng': 'Leaderboard',
     'Bảng xếp hạng bài này': 'Leaderboard for this test',
+    'Xem thêm': 'Show more',
+    'Đang tải…': 'Loading…',
     'Bảng xếp hạng chuỗi ngày học và điểm Quiz từ vựng. Bấm vào tên một bạn để xem hồ sơ hoặc nhắn tin.': 'Leaderboard for study streaks and vocabulary quiz scores. Click a name to see their profile or send a message.',
     'Báo cáo sẽ được gửi tới giáo viên để xem xét.': 'The report will be sent to your teacher for review.',
     'Báo cáo tin nhắn này': 'Report this message',

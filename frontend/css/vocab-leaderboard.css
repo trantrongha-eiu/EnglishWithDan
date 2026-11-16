@@ -48,6 +48,10 @@
 /* Own row pinned under the top 10 when the student ranks lower. */
 .vlb-gap { text-align: center; color: var(--text3); font-weight: 800; letter-spacing: 3px; line-height: 1; padding: 2px 0; }
 
+/* "Xem thêm" — loads the next ranks under the board. */
+.vlb-more { align-self: center; margin-top: 6px; gap: 6px; }
+.vlb-more-count { font-size: 11px; font-weight: 700; color: var(--text3); }
+
 /* Loading skeleton */
 .vlb-skel { display: flex; align-items: center; gap: 10px; padding: 9px 12px; }
 .vlb-skel span { display: block; border-radius: 6px; background: var(--surface2, rgba(0, 0, 0, .06)); animation: vlbPulse 1.2s ease-in-out infinite; }
