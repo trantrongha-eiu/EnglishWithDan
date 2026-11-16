@@ -41,7 +41,7 @@ const normPrompt = s => (s || '').toLowerCase().replace(/\s+/g, ' ').replace(/[.
 function questionText(s) {
   const head = SECTION_HEAD[s.sec];
   return s.key
-    ? `${head} · Dịch câu trong bài mẫu (dùng cấu trúc "${s.key}"):\n\n"${s.vi}"`
+    ? `${head} · Dịch câu trong bài mẫu (dùng ${s.vocab ? 'từ' : 'cấu trúc'} "${s.key}"):\n\n"${s.vi}"`
     : `${head} · Dịch câu trong bài mẫu:\n\n"${s.vi}"`;
 }
 
@@ -72,7 +72,8 @@ function buildQuestions(entry, sample) {
       correctAnswer: s.en,
       modelAnswer: s.en,
       explanationVi: `Câu trong bài mẫu của Daniel · ${SECTION_HEAD[s.sec]}${role ? ` · ${role}` : ''}.`
-        + (s.key ? ` Cấu trúc "${s.key}" là khung câu của template Band 7.0 — dùng lại được cho đề khác.` : ''),
+        + (s.key && !s.vocab ? ` Cấu trúc "${s.key}" là khung câu của template Band 7.0 — dùng lại được cho đề khác.` : '')
+        + (s.key && s.vocab ? ` "${s.key}" là từ vựng của buổi này.` : ''),
       fallbackKeywords: keywords(s),
       orderIndex: ORDER_BASE + i + 1,
       isActive: true
