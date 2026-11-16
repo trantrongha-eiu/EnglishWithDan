@@ -308,8 +308,12 @@
       '<span id="navAvatar">?</span>' +
     '</a>' +
     '<button class="btn-dark-mode" id="globalLogoutBtn" title="Đăng xuất" aria-label="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>';
-  document.body.appendChild(cornerDock);
-  document.body.classList.add('has-corner-dock');
+  // Home page (vocab dashboard) only — every other page leaves it out; the
+  // drawer / profile link still cover those actions there.
+  if (_onVocabHomePage()) {
+    document.body.appendChild(cornerDock);
+    document.body.classList.add('has-corner-dock');
+  }
 
   // ── Add padding class to body ─────────────────────────────
   document.body.classList.add('has-global-nav');
@@ -547,7 +551,8 @@
     if (window.AuthService) { window.AuthService.clearSession(); }
     location.href = '/login.html';
   }
-  document.getElementById('globalLogoutBtn').addEventListener('click', doLogout);
+  var _dockLogout = document.getElementById('globalLogoutBtn'); // dock is home-page only
+  if (_dockLogout) _dockLogout.addEventListener('click', doLogout);
   document.getElementById('mobileLogoutBtn').addEventListener('click', doLogout);
 
   // ── Dropdown hover management (delay prevents accidental close) ──
