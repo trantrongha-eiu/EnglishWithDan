@@ -36,6 +36,89 @@ function contentWords(s) {
   return normalize(s).split(' ').filter((w) => w.length > 3);
 }
 
+// Like normalize() but punctuation INSIDE the sentence is kept (commas,
+// semicolons, colons) — only case, curly quotes, spacing and the final
+// full stop are ignored. Used where the fix itself may be punctuation
+// ("Well I usually…" → "Well, I usually…").
+function strictNorm(str) {
+  return String(str == null ? '' : str)
+    .toLowerCase()
+    .replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, '-')
+    .replace(/\s+([,;:.!?])/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[.!?]+$/, '')
+    .trim();
+}
+function strictDist(a, b) { return levenshtein(strictNorm(a), strictNorm(b)); }
+
+// error_correction candidates: the answer + its `accept` list. An accept
+// that is only the corrected word(s) ("amount", "is located") is turned into
+// a full sentence by swapping it in for the item's errorSpan — the student
+// always rewrites the whole sentence, so a bare fragment never matched.
+function correctionCandidates(it) {
+  const prompt = String(it.prompt || '');
+  const span = String(it.errorSpan || '');
+  const out = [it.answer];
+  for (const acc of it.accept || []) {
+    const short = String(acc).trim().split(/\s+/).length <= 3 && String(it.answer || '').split(/\s+/).length > 4;
+    if (short && span && prompt.includes(span)) out.push(prompt.replace(span, String(acc).replace(/[.]+$/, '')));
+    else out.push(acc);
+  }
+  return [...new Set(out.filter(Boolean))];
+}
+
+// One rewritten sentence vs the key. Near-misses (a typo) still pass, but
+// the answer has to be strictly closer to the correction than to the
+// original mistake: the 0.92 similarity alone let a student copy the WRONG
+// sentence unchanged and get it marked right on any short sentence
+// ("It help me relax." vs "It helps me relax." is 0.94 similar).
+function correctionMatches(it, a) {
+  if (a == null || !String(a).trim()) return false;
+  const prompt = String(it.prompt || '');
+  return correctionCandidates(it).some((c) => {
+    const close = strictNorm(a) === strictNorm(c) || normalize(a) === normalize(c) || ratio(a, c) >= 0.92;
+    // "Some sentences are already correct" items (Mindset) have key = prompt.
+    if (!prompt || strictNorm(prompt) === strictNorm(c)) return close;
+    return close && strictDist(a, c) < strictDist(a, prompt);
+  });
+}
+
+// Pieces of a rubric target like "S + saw / witnessed / experienced + …":
+// "…" / "+" separate parts that must ALL appear, " / " separates
+// alternatives (any one will do). Formula placeholders (S, V, adj, noun…)
+// and Vietnamese labels ("Chất rắn: …") are dropped.
+const PLACEHOLDERS = new Set([
+  's', 'v', 'o', 'n', 'x', 'y', 'adj', 'adv', 'adverb', 'adjective', 'noun', 'verb', 'ing', 'v3', 'v2', 'ved', 'sth', 'sb',
+  'clause', 'n1', 'n2', 'a', 'an', 'direction', 'place', 'position', 'location', 'object', 'participle',
+]);
+const VI_CHARS = /[ăâđêôơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i;
+function targetParts(t) {
+  let s = String(t || '');
+  const colon = s.indexOf(':');
+  if (colon > 0 && colon < 30 && VI_CHARS.test(s.slice(0, colon))) s = s.slice(colon + 1);
+  // "[Số liệu]" / "[location]" are slots, like "…"
+  return s.split(/…|\.\.\.|\+|\[[^\]]*\]/)
+    .map((part) => part.split(/\s*\/\s*/)
+      .map((alt) => normalize(alt).split(' ').filter((w) => w && !PLACEHOLDERS.has(w) && !VI_CHARS.test(w)).join(' '))
+      .filter((alt) => alt.replace(/\s/g, '').length > 2))
+    .filter((alts) => alts.length);
+}
+// Was this target structure / word used in the (normalized) text? A long
+// literal part (4+ words) also counts when all its content words are there,
+// so one changed article doesn't hide a correctly used structure.
+function targetUsed(t, norm) {
+  const parts = targetParts(t);
+  if (!parts.length) return false;
+  const padded = ` ${norm} `;
+  return parts.every((alts) => alts.some((alt) => {
+    if (padded.includes(` ${alt} `) || norm.includes(alt)) return true;
+    const words = alt.split(' ');
+    const cw = words.filter((w) => w.length > 3);
+    return words.length >= 4 && cw.length > 0 && cw.every((w) => padded.includes(` ${w} `));
+  }));
+}
+
 const OBJECTIVE_TYPES = new Set([
   'mcq', 'gap_fill', 'error_correction', 'word_form',
   'categorize', 'matching', 'ordering', 'sentence_transform',
@@ -79,8 +162,7 @@ function gradeObjective(exercise, answers = {}) {
       }
       case 'error_correction': {
         correctAnswer = it.answer || '';
-        const cands = [it.answer, ...(it.accept || [])].filter(Boolean);
-        correct = cands.some((c) => normalize(a) === normalize(c) || ratio(a, c) >= 0.92);
+        correct = correctionMatches(it, a);
         break;
       }
       case 'word_form': {
@@ -229,12 +311,16 @@ function gradeWritingLocal(exercise, responses = []) {
   const rubric = exercise.rubric || {};
   const words = text.split(/\s+/).filter(Boolean).length;
 
-  const targets = [...(rubric.targetStructures || []), ...(rubric.targetVocab || [])];
-  const used = targets.filter((t) => {
-    const key = normalize(t).split(/[\s/|]+/).filter((w) => w.length > 3).slice(0, 2).join(' ');
-    return key && norm.includes(key);
-  });
-  const mustUse = rubric.mustUse || Math.min(3, targets.length);
+  // A pure formula with no literal words left ("S + V + adverb + by … to …")
+  // can't be spotted in text — it isn't counted for or against the student.
+  const targets = [...(rubric.targetStructures || []), ...(rubric.targetVocab || [])].filter((t) => targetParts(t).length);
+  // The old key ("first two 4+-letter words of the target") could never
+  // match targets like "aged 65 and over" or "their … counterparts" — the
+  // two words are never side by side in a real sentence.
+  const used = targets.filter((t) => targetUsed(t, norm));
+  // mustUse can't exceed the number of targets (T1-L14-E04 asked for 8 of 2,
+  // so even a perfect answer topped out at 2/8).
+  const mustUse = Math.max(1, Math.min(rubric.mustUse || 3, targets.length));
   const enoughWords = !rubric.minWords || words >= rubric.minWords;
 
   let score = 0;
@@ -246,7 +332,7 @@ function gradeWritingLocal(exercise, responses = []) {
 
   const checklist = [
     { label: `Đủ độ dài (${rubric.minWords || '—'} từ)`, ok: enoughWords, detail: `${words} từ` },
-    { label: `Dùng ≥ ${mustUse} cấu trúc/từ mục tiêu`, ok: used.length >= mustUse, detail: `${used.length} phát hiện được` },
+    ...(targets.length ? [{ label: `Dùng ≥ ${mustUse} cấu trúc/từ mục tiêu`, ok: used.length >= mustUse, detail: `${used.length} phát hiện được` }] : []),
     ...(rubric.checklist || []).map((c) => ({ label: c, ok: null })),
   ];
   return {

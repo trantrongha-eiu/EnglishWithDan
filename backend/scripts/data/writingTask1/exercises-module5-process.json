@@ -5,8 +5,8 @@
       "lessonCode": "T1-L19",
       "order": 1,
       "type": "mcq",
-      "title": "PRACTICE 1 – Nhận diện loại quy trình và thể",
-      "instruction": "Với mỗi đề bài, xác định đây là Natural Process (N) hay Manufacturing Process (M), và chọn thể phù hợp để mô tả.",
+      "title": "PRACTICE 1 – Identify the process type and voice",
+      "instruction": "For each task, decide whether it is a Natural Process (N) or a Manufacturing Process (M), and choose the voice to describe it.",
       "source": "original",
       "skillTags": [
         "process-types",
@@ -120,8 +120,8 @@
       "lessonCode": "T1-L19",
       "order": 2,
       "type": "sentence_transform",
-      "title": "PRACTICE 2 – Chuyển sang thể bị động (hiện tại đơn)",
-      "instruction": "Chuyển các câu sau sang thể bị động, thì hiện tại đơn — đúng như trong bài Manufacturing Process.",
+      "title": "PRACTICE 2 – Change to the passive (present simple)",
+      "instruction": "Change the sentences to the passive, present simple — just as in a Manufacturing Process essay.",
       "source": "original",
       "skillTags": [
         "passive-voice",
@@ -138,7 +138,8 @@
           "sampleAnswers": [
             "Limestone and clay are crushed."
           ],
-          "promptVi": "Đá vôi và đất sét được nghiền nhỏ."
+          "promptVi": "Đá vôi và đất sét được nghiền nhỏ.",
+          "explanation": "Quy trình nhân tạo → bị động hiện tại đơn: are + V3; bỏ tác nhân \"people\"."
         },
         {
           "id": "q2",
@@ -146,7 +147,8 @@
           "sampleAnswers": [
             "The powder is mixed in a mixer."
           ],
-          "promptVi": "Bột được trộn đều trong máy trộn."
+          "promptVi": "Bột được trộn đều trong máy trộn.",
+          "explanation": "\"is mixed\" — chủ ngữ số ít; bỏ tác nhân \"workers\"."
         },
         {
           "id": "q3",
@@ -154,7 +156,8 @@
           "sampleAnswers": [
             "The mixture is heated at a high temperature."
           ],
-          "promptVi": "Hỗn hợp được nung ở nhiệt độ cao."
+          "promptVi": "Hỗn hợp được nung ở nhiệt độ cao.",
+          "explanation": "\"is heated at a high temperature\"."
         },
         {
           "id": "q4",
@@ -162,7 +165,8 @@
           "sampleAnswers": [
             "The material is ground into fine cement."
           ],
-          "promptVi": "Nguyên liệu được nghiền thành xi măng mịn."
+          "promptVi": "Nguyên liệu được nghiền thành xi măng mịn.",
+          "explanation": "grind → V3 bất quy tắc \"ground\": \"is ground into fine cement\"."
         },
         {
           "id": "q5",
@@ -170,7 +174,8 @@
           "sampleAnswers": [
             "The cement is packaged into bags."
           ],
-          "promptVi": "Xi măng được đóng vào các bao."
+          "promptVi": "Xi măng được đóng vào các bao.",
+          "explanation": "\"is packaged into bags\"."
         },
         {
           "id": "q6",
@@ -178,7 +183,8 @@
           "sampleAnswers": [
             "The bricks are delivered to construction sites."
           ],
-          "promptVi": "Gạch được vận chuyển đến các công trường xây dựng."
+          "promptVi": "Gạch được vận chuyển đến các công trường xây dựng.",
+          "explanation": "Chủ ngữ số nhiều \"The bricks\" → \"are delivered\"."
         }
       ],
       "rubric": {
@@ -201,8 +207,8 @@
       "lessonCode": "T1-L20",
       "order": 1,
       "type": "gap_fill",
-      "title": "Cement Production – điền động từ bị động cho từng bước",
-      "instruction": "Điền dạng bị động hiện tại đơn của động từ trong khung để mô tả 4 bước sản xuất xi măng.",
+      "title": "Cement Production – passive verbs for each stage",
+      "instruction": "Fill in the present simple passive of the verbs in the box to describe the 4 stages of cement production.",
       "source": "original",
       "skillTags": [
         "process-manufacturing",
@@ -288,8 +294,8 @@
       "lessonCode": "T1-L20",
       "order": 2,
       "type": "word_form",
-      "title": "PRACTICE – Động từ → tên máy (đuôi -er)",
-      "instruction": "Viết tên máy móc (danh từ) tương ứng với mỗi động từ trong quy trình sản xuất.",
+      "title": "PRACTICE – Verb → machine name (-er ending)",
+      "instruction": "Write the machine name (noun) for each verb in the production process.",
       "source": "original",
       "skillTags": [
         "process-vocabulary",
@@ -307,7 +313,8 @@
           "accept": [
             "crusher",
             "a crusher"
-          ]
+          ],
+          "explanation": "crush + -er = crusher (máy nghiền)."
         },
         {
           "id": "q2",
@@ -316,7 +323,8 @@
           "accept": [
             "mixer",
             "a mixer"
-          ]
+          ],
+          "explanation": "mix + -er = mixer (máy trộn)."
         },
         {
           "id": "q3",
@@ -325,7 +333,8 @@
           "accept": [
             "grinder",
             "a grinder"
-          ]
+          ],
+          "explanation": "grind + -er = grinder (máy xay/nghiền mịn)."
         },
         {
           "id": "q4",
@@ -335,7 +344,8 @@
             "heater",
             "a heater",
             "rotating heater"
-          ]
+          ],
+          "explanation": "heat + -er = heater (bộ gia nhiệt)."
         },
         {
           "id": "q5",
@@ -345,7 +355,8 @@
             "cutter",
             "wire cutter",
             "a cutter"
-          ]
+          ],
+          "explanation": "Máy cắt bằng dây = wire cutter."
         },
         {
           "id": "q6",
@@ -356,7 +367,8 @@
             "drier",
             "a dryer",
             "drying oven"
-          ]
+          ],
+          "explanation": "dry + -er = dryer (máy/buồng sấy)."
         },
         {
           "id": "q7",
@@ -365,7 +377,8 @@
           "accept": [
             "roller",
             "a roller"
-          ]
+          ],
+          "explanation": "roll + -er = roller (con lăn)."
         },
         {
           "id": "q8",
@@ -375,7 +388,8 @@
             "concrete mixer",
             "a concrete mixer",
             "mixer"
-          ]
+          ],
+          "explanation": "Máy trộn bê tông = concrete mixer."
         }
       ]
     },
@@ -384,8 +398,8 @@
       "lessonCode": "T1-L20",
       "order": 3,
       "type": "ordering",
-      "title": "Sắp xếp các bước sản xuất xi măng theo đúng thứ tự",
-      "instruction": "Kéo thả để sắp xếp các bước của quy trình Cement Production theo đúng trình tự.",
+      "title": "Put the cement production stages in order",
+      "instruction": "Drag and drop to put the stages of Cement Production in the correct order.",
       "source": "original",
       "skillTags": [
         "process-manufacturing",
@@ -421,8 +435,8 @@
       "lessonCode": "T1-L21",
       "order": 1,
       "type": "matching",
-      "title": "Bốn cấu trúc nối bước – nối tên với ví dụ",
-      "instruction": "Nối tên mỗi cấu trúc nối bước với câu ví dụ tương ứng.",
+      "title": "Four sequencing structures – match names with examples",
+      "instruction": "Match the name of each sequencing structure with its example sentence.",
       "source": "original",
       "skillTags": [
         "process-linking"
@@ -435,22 +449,26 @@
         {
           "id": "q1",
           "left": "Once + S + V (Once = When)",
-          "right": "Once separated, the liquid ethanol undergoes the next phase of the process — purification."
+          "right": "Once separated, the liquid ethanol undergoes the next phase of the process — purification.",
+          "explanation": "\"Once separated, …\" = một khi (đã) được tách ra — Once + V3."
         },
         {
           "id": "q2",
           "left": "Having + V3, S + V",
-          "right": "Having been poured into a shallow tray with some water, the pulp is then mixed by hand."
+          "right": "Having been poured into a shallow tray with some water, the pulp is then mixed by hand.",
+          "explanation": "\"Having been poured…, the pulp is…\" — Having + (been) V3 mở đầu câu."
         },
         {
           "id": "q3",
           "left": "After / Before + V-ing, S + V",
-          "right": "After being soaked for an hour, the mixture is beaten for about 45 seconds."
+          "right": "After being soaked for an hour, the mixture is beaten for about 45 seconds.",
+          "explanation": "\"After being soaked…\" — After + V-ing (bị động: being + V3)."
         },
         {
           "id": "q4",
           "left": "S + V, followed by + Noun",
-          "right": "The pulp is poured into a shallow tray, followed by a hand-mixing process."
+          "right": "The pulp is poured into a shallow tray, followed by a hand-mixing process.",
+          "explanation": "\"…, followed by a hand-mixing process\" — followed by + danh từ."
         }
       ]
     },
@@ -459,8 +477,8 @@
       "lessonCode": "T1-L21",
       "order": 2,
       "type": "sentence_transform",
-      "title": "PRACTICE – Nối hai bước thành một câu",
-      "instruction": "Dùng cấu trúc trong ngoặc để nối hai câu thành một câu duy nhất.",
+      "title": "PRACTICE – Join two stages into one sentence",
+      "instruction": "Use the structure in brackets to join the two sentences into one.",
       "source": "original",
       "skillTags": [
         "process-linking"
@@ -477,7 +495,8 @@
           "sampleAnswers": [
             "After being dug from the ground, the clay is put onto a metal grid."
           ],
-          "promptVi": "Sau khi được đào lên từ mặt đất, đất sét được đặt lên một tấm lưới kim loại."
+          "promptVi": "Sau khi được đào lên từ mặt đất, đất sét được đặt lên một tấm lưới kim loại.",
+          "explanation": "\"After + being + V3, S + V\" — bước trước rút gọn sau giới từ After (bị động nên dùng being + V3)."
         },
         {
           "id": "q2",
@@ -487,7 +506,8 @@
             "Once the bricks are dried in an oven, they are placed in a kiln.",
             "Once dried in an oven, the bricks are placed in a kiln."
           ],
-          "promptVi": "Khi gạch đã được làm khô trong lò sấy, chúng được chuyển vào lò nung."
+          "promptVi": "Khi gạch đã được làm khô trong lò sấy, chúng được chuyển vào lò nung.",
+          "explanation": "\"Once + S + V, S + V\" — giữ nguyên chủ ngữ ở vế Once, vế sau dùng đại từ they."
         },
         {
           "id": "q3",
@@ -496,7 +516,8 @@
           "sampleAnswers": [
             "The mixture is heated at a high temperature before being ground into fine cement."
           ],
-          "promptVi": "Hỗn hợp được nung ở nhiệt độ cao trước khi được nghiền thành xi măng mịn."
+          "promptVi": "Hỗn hợp được nung ở nhiệt độ cao trước khi được nghiền thành xi măng mịn.",
+          "explanation": "\"…before being ground into…\" — before + being + V3 nối bước kế tiếp."
         },
         {
           "id": "q4",
@@ -505,7 +526,8 @@
           "sampleAnswers": [
             "The milk is collected from the cows, followed by transportation to the dairy."
           ],
-          "promptVi": "Sữa được vắt từ bò, tiếp theo là được vận chuyển đến nhà máy sữa."
+          "promptVi": "Sữa được vắt từ bò, tiếp theo là được vận chuyển đến nhà máy sữa.",
+          "explanation": "\"S + V, followed by + danh từ\" — bước sau được danh hoá (V → N / a … process). transported → transportation."
         },
         {
           "id": "q5",
@@ -514,7 +536,8 @@
           "sampleAnswers": [
             "Having been soaked in water, the paper is beaten into a pulp."
           ],
-          "promptVi": "Sau khi được ngâm trong nước, giấy được nghiền thành bột."
+          "promptVi": "Sau khi được ngâm trong nước, giấy được nghiền thành bột.",
+          "explanation": "\"Having been + V3, S + V\" — bước trước rút thành cụm phân từ hoàn thành; chủ ngữ chung đặt ở vế sau."
         },
         {
           "id": "q6",
@@ -523,7 +546,8 @@
           "sampleAnswers": [
             "The sand and water are added to the clay. After that, the mixture is cut by a wire cutter."
           ],
-          "promptVi": "Cát và nước được cho vào đất sét. Sau đó, hỗn hợp được cắt bằng một dụng cụ cắt dây."
+          "promptVi": "Cát và nước được cho vào đất sét. Sau đó, hỗn hợp được cắt bằng một dụng cụ cắt dây.",
+          "explanation": "\"After that,\" đứng đầu câu thứ hai để chỉ bước tiếp theo."
         }
       ],
       "rubric": {
@@ -549,8 +573,8 @@
       "lessonCode": "T1-L21",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền từ nối chỉ trình tự",
-      "instruction": "Điền một từ / cụm từ nối chỉ trình tự phù hợp vào chỗ trống. Có thể có nhiều đáp án đúng.",
+      "title": "Fill in the sequencing words",
+      "instruction": "Fill in each blank with a suitable sequencing word / phrase. More than one answer may be correct.",
       "source": "added",
       "skillTags": [
         "process-sequencers"
@@ -662,7 +686,7 @@
       "lessonCode": "T1-L21",
       "order": 4,
       "type": "full_task1",
-      "title": "Bài mẫu – Cement and Concrete Production (20 phút)",
+      "title": "Model essay – Cement and Concrete Production (20 minutes)",
       "instruction": "The diagrams below show the stages and equipment used in the cement-making process, and how cement is used to produce concrete for building purposes. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "original",
       "skillTags": [
@@ -728,8 +752,8 @@
       "lessonCode": "T1-L21",
       "order": 5,
       "type": "mcq",
-      "title": "Milk production – đâu là một bước của quy trình?",
-      "instruction": "Nhìn sơ đồ quy trình sản xuất sữa. Với mỗi mục, chọn xem đó có phải một BƯỚC của quy trình hay không (sách: 5 bước chính).",
+      "title": "Milk production – which items are stages of the process?",
+      "instruction": "Look at the milk production diagram. For each item, decide whether it is a STAGE of the process or not (the book: 5 main stages).",
       "source": "original",
       "skillTags": [
         "process-analysis"
@@ -864,8 +888,8 @@
       "lessonCode": "T1-L21",
       "order": 6,
       "type": "gap_fill",
-      "title": "HOMEWORK — Đề 2: Brick manufacturing — điền từ cho 7 giai đoạn",
-      "instruction": "Điền từ còn thiếu theo gợi ý chia đoạn Body của sách (Body 1 — 3 giai đoạn đầu; Body 2 — 4 giai đoạn sau).",
+      "title": "HOMEWORK — Task 2: Brick manufacturing — fill in the 7 stages",
+      "instruction": "Fill in the missing words following the book’s Body plan (Body 1 — the first 3 stages; Body 2 — the last 4 stages).",
       "source": "original",
       "skillTags": [
         "process-manufacturing",
@@ -983,7 +1007,7 @@
       "lessonCode": "T1-L21",
       "order": 7,
       "type": "full_task1",
-      "title": "HOMEWORK — Đề 2: Brick manufacturing (bài hoàn chỉnh)",
+      "title": "HOMEWORK — Task 2: Brick manufacturing (full essay)",
       "instruction": "The diagram below shows the process by which bricks are manufactured for the building industry. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "book",
       "skillTags": [
@@ -1027,8 +1051,8 @@
       "lessonCode": "T1-L22",
       "order": 1,
       "type": "matching",
-      "title": "Từ vựng dạng Process – nối tiếng Anh với nghĩa",
-      "instruction": "Nối mỗi từ / cụm chuyên dạng Process với nghĩa tiếng Việt.",
+      "title": "Process vocabulary – match the English with its meaning",
+      "instruction": "Match each Process word / phrase with its Vietnamese meaning.",
       "source": "original",
       "skillTags": [
         "process-vocabulary"
@@ -1041,52 +1065,62 @@
         {
           "id": "q1",
           "left": "to be harvested",
-          "right": "được thu hoạch"
+          "right": "được thu hoạch",
+          "explanation": "\"to be harvested\" = được thu hoạch."
         },
         {
           "id": "q2",
           "left": "to be sorted",
-          "right": "được phân loại"
+          "right": "được phân loại",
+          "explanation": "\"to be sorted\" = được phân loại."
         },
         {
           "id": "q3",
           "left": "to be moulded",
-          "right": "được đúc khuôn"
+          "right": "được đúc khuôn",
+          "explanation": "\"to be moulded\" = được đúc/ép khuôn."
         },
         {
           "id": "q4",
           "left": "to be separated",
-          "right": "được tách ra"
+          "right": "được tách ra",
+          "explanation": "\"to be separated\" = được tách ra."
         },
         {
           "id": "q5",
           "left": "to lay eggs",
-          "right": "đẻ trứng"
+          "right": "đẻ trứng",
+          "explanation": "\"to lay eggs\" = đẻ trứng."
         },
         {
           "id": "q6",
           "left": "to hatch",
-          "right": "nở ra"
+          "right": "nở ra",
+          "explanation": "\"to hatch\" = nở (từ trứng)."
         },
         {
           "id": "q7",
           "left": "to feed on",
-          "right": "ăn (cái gì)"
+          "right": "ăn (cái gì)",
+          "explanation": "\"to feed on\" = ăn, lấy làm thức ăn."
         },
         {
           "id": "q8",
           "left": "to shed the outer layer",
-          "right": "thay lớp da / lớp vỏ bên ngoài"
+          "right": "thay lớp da / lớp vỏ bên ngoài",
+          "explanation": "\"to shed the outer layer\" = lột/thay lớp vỏ ngoài."
         },
         {
           "id": "q9",
           "left": "to grow to maturity",
-          "right": "phát triển hoàn thiện / trưởng thành"
+          "right": "phát triển hoàn thiện / trưởng thành",
+          "explanation": "\"to grow to maturity\" = lớn lên đến khi trưởng thành."
         },
         {
           "id": "q10",
           "left": "to undergo metamorphosis",
-          "right": "trải qua quá trình biến thái"
+          "right": "trải qua quá trình biến thái",
+          "explanation": "\"to undergo metamorphosis\" = trải qua biến thái (như nòng nọc → ếch)."
         }
       ]
     },
@@ -1095,8 +1129,8 @@
       "lessonCode": "T1-L22",
       "order": 2,
       "type": "gap_fill",
-      "title": "Vòng đời của ếch – điền động từ (chủ động, hiện tại đơn)",
-      "instruction": "Đây là Natural Process → dùng thể CHỦ ĐỘNG, thì hiện tại đơn. Điền động từ trong khung.",
+      "title": "The life cycle of a frog – fill in the verbs (active, present simple)",
+      "instruction": "This is a Natural Process → use the ACTIVE voice, present simple. Fill in the verbs from the box.",
       "source": "original",
       "skillTags": [
         "natural-process",
@@ -1214,7 +1248,7 @@
       "order": 3,
       "type": "full_task1",
       "title": "PRACTICE — The life cycle of a bee (Introduction, Overview, Body 1, Body 2)",
-      "instruction": "The diagram shows the life cycle of a bee. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. Dùng thể chủ động, thì hiện tại đơn.",
+      "instruction": "The diagram shows the life cycle of a bee. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. Use the active voice and the present simple.",
       "source": "original",
       "skillTags": [
         "natural-process",
@@ -1258,7 +1292,7 @@
       "lessonCode": "T1-L22",
       "order": 4,
       "type": "full_task1",
-      "title": "HOMEWORK – The life cycle of the salmon (bài hoàn chỉnh)",
+      "title": "HOMEWORK – The life cycle of the salmon (full essay)",
       "instruction": "The diagram below shows the life cycle of the salmon. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "original",
       "skillTags": [
@@ -1325,8 +1359,8 @@
       "lessonCode": "T1-TEST5",
       "order": 1,
       "type": "mcq",
-      "title": "PHẦN A1 – Trắc nghiệm (10 điểm)",
-      "instruction": "Chọn đáp án đúng. Mỗi câu 1 điểm.",
+      "title": "PART A1 – Multiple choice (10 points)",
+      "instruction": "Choose the correct answer. 1 point each.",
       "source": "original",
       "skillTags": [
         "module4-review"
@@ -1583,8 +1617,8 @@
       "lessonCode": "T1-TEST5",
       "order": 2,
       "type": "gap_fill",
-      "title": "PHẦN A2 – Điền dạng đúng của động từ (10 điểm)",
-      "instruction": "Điền dạng đúng của động từ trong ngoặc (bị động hiện tại đơn, hoặc dạng V-ing / V3 theo cấu trúc).",
+      "title": "PART A2 – Correct form of the verb (10 points)",
+      "instruction": "Fill in the correct form of the verb in brackets (present simple passive, or V-ing / V3 as the structure requires).",
       "source": "original",
       "skillTags": [
         "module4-review",
@@ -1722,8 +1756,8 @@
       "lessonCode": "T1-TEST5",
       "order": 3,
       "type": "error_correction",
-      "title": "PHẦN A3 – Sửa lỗi (10 điểm)",
-      "instruction": "Mỗi câu có đúng một lỗi. Viết lại cả câu cho đúng. Mỗi câu 2 điểm.",
+      "title": "PART A3 – Error correction (10 points)",
+      "instruction": "Each sentence has exactly one mistake. Rewrite the whole sentence correctly. 2 points each.",
       "source": "original",
       "skillTags": [
         "module4-review"
@@ -1790,8 +1824,8 @@
       "lessonCode": "T1-TEST5",
       "order": 4,
       "type": "sentence_transform",
-      "title": "PHẦN A4 – Nối câu (10 điểm)",
-      "instruction": "Nối hai câu thành một câu, dùng cấu trúc trong ngoặc. Mỗi câu 2 điểm.",
+      "title": "PART A4 – Join the sentences (10 points)",
+      "instruction": "Join the two sentences into one, using the structure in brackets. 2 points each.",
       "source": "original",
       "skillTags": [
         "module4-review",
@@ -1809,7 +1843,8 @@
           "sampleAnswers": [
             "After being dug from the ground, the clay is placed on a metal grid."
           ],
-          "promptVi": "Sau khi được khai thác từ lòng đất, đất sét được đặt lên một tấm lưới kim loại."
+          "promptVi": "Sau khi được khai thác từ lòng đất, đất sét được đặt lên một tấm lưới kim loại.",
+          "explanation": "\"After + being + V3, S + V\" — bước trước rút gọn sau giới từ After (bị động nên dùng being + V3)."
         },
         {
           "id": "q2",
@@ -1819,7 +1854,8 @@
             "Once the bricks are dried, they are moved to a kiln.",
             "Once dried, the bricks are moved to a kiln."
           ],
-          "promptVi": "Sau khi gạch được phơi khô, chúng được chuyển đến lò nung."
+          "promptVi": "Sau khi gạch được phơi khô, chúng được chuyển đến lò nung.",
+          "explanation": "\"Once the bricks are dried, they are moved…\" — Once + mệnh đề đầy đủ."
         },
         {
           "id": "q3",
@@ -1829,7 +1865,8 @@
             "The milk is collected, followed by its transportation to the dairy.",
             "The milk is collected, followed by transportation to the dairy."
           ],
-          "promptVi": "Sữa được thu gom và sau đó được vận chuyển đến nhà máy sữa."
+          "promptVi": "Sữa được thu gom và sau đó được vận chuyển đến nhà máy sữa.",
+          "explanation": "\"S + V, followed by + danh từ\" — bước sau được danh hoá (V → N / a … process). \"its transportation\"."
         },
         {
           "id": "q4",
@@ -1838,7 +1875,8 @@
           "sampleAnswers": [
             "Having been poured into a tray, the pulp is mixed by hand."
           ],
-          "promptVi": "Sau khi được đổ vào khay, phần bột giấy được trộn đều bằng tay."
+          "promptVi": "Sau khi được đổ vào khay, phần bột giấy được trộn đều bằng tay.",
+          "explanation": "\"Having been + V3, S + V\" — bước trước rút thành cụm phân từ hoàn thành; chủ ngữ chung đặt ở vế sau."
         },
         {
           "id": "q5",
@@ -1848,7 +1886,8 @@
             "Before going through its first moulting, the young bee hatches from the egg.",
             "The eggs hatch before the young bee goes through its first moulting."
           ],
-          "promptVi": "Trước khi trải qua lần lột xác đầu tiên, ong non nở ra từ trứng."
+          "promptVi": "Trước khi trải qua lần lột xác đầu tiên, ong non nở ra từ trứng.",
+          "explanation": "\"Before going through…, the young bee hatches…\" — quy trình tự nhiên nên Before + V-ing chủ động."
         }
       ],
       "rubric": {
@@ -1874,7 +1913,7 @@
       "lessonCode": "T1-TEST5",
       "order": 5,
       "type": "full_task1",
-      "title": "PHẦN B – Bài viết mô tả quy trình (60 điểm)",
+      "title": "PART B – Describe the process (60 points)",
       "instruction": "The diagram below shows how orange juice is produced and delivered to shops. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. You should spend about 20 minutes on this part.",
       "source": "original",
       "skillTags": [
@@ -1939,8 +1978,8 @@
       "lessonCode": "T1-L19",
       "order": 3,
       "type": "sentence_writing",
-      "title": "HOMEWORK — Viết lại vòng đời của con ếch (8 câu)",
-      "instruction": "Viết lại vòng đời của con ếch bằng tiếng Anh, dùng thể chủ động và thì hiện tại đơn, khoảng 8 câu. Bắt đầu bằng “The life cycle of a frog consists of…”.",
+      "title": "HOMEWORK — Rewrite the life cycle of a frog (8 sentences)",
+      "instruction": "Rewrite the life cycle of a frog in English, using the active voice and the present simple, in about 8 sentences. Start with “The life cycle of a frog consists of…”.",
       "source": "original",
       "skillTags": [
         "natural-process",
@@ -1980,8 +2019,8 @@
       "lessonCode": "T1-L21",
       "order": 2.1,
       "type": "sentence_transform",
-      "title": "Luyện tập — Viết lại câu bằng 4 cấu trúc nối bước",
-      "instruction": "Viết lại câu sử dụng cấu trúc được yêu cầu. Giữ nguyên nghĩa.",
+      "title": "Practice — Rewrite using the 4 sequencing structures",
+      "instruction": "Rewrite each sentence using the structure required. Keep the same meaning.",
       "source": "original",
       "skillTags": [
         "process-linking",
@@ -2000,7 +2039,8 @@
           "starter": "Once …, it is transferred to a large container.",
           "sampleAnswers": [
             "Once heated, it is transferred to a large container."
-          ]
+          ],
+          "explanation": "Rút gọn \"Once + S + is + V3\" thành \"Once + V3\" khi hai vế cùng chủ ngữ."
         },
         {
           "id": "q2",
@@ -2009,7 +2049,8 @@
           "starter": "Once …, it is placed in a clean tray.",
           "sampleAnswers": [
             "Once filtered, it is placed in a clean tray."
-          ]
+          ],
+          "explanation": "Rút gọn \"Once + S + is + V3\" thành \"Once + V3\" khi hai vế cùng chủ ngữ."
         },
         {
           "id": "q3",
@@ -2018,7 +2059,8 @@
           "starter": "Once …, it is stored in a tank.",
           "sampleAnswers": [
             "Once purified, it is stored in a tank."
-          ]
+          ],
+          "explanation": "Rút gọn \"Once + S + is + V3\" thành \"Once + V3\" khi hai vế cùng chủ ngữ."
         },
         {
           "id": "q4",
@@ -2027,7 +2069,8 @@
           "starter": "Once …, they are transported to the factory.",
           "sampleAnswers": [
             "Once collected, they are transported to the factory."
-          ]
+          ],
+          "explanation": "Rút gọn \"Once + S + is + V3\" thành \"Once + V3\" khi hai vế cùng chủ ngữ."
         },
         {
           "id": "q5",
@@ -2036,7 +2079,8 @@
           "starter": "…, the pulp is then mixed by hand.",
           "sampleAnswers": [
             "Having been poured into a tray, the pulp is then mixed by hand."
-          ]
+          ],
+          "explanation": "\"Having been + V3, S + V\" — bước trước rút thành cụm phân từ hoàn thành; chủ ngữ chung đặt ở vế sau."
         },
         {
           "id": "q6",
@@ -2045,7 +2089,8 @@
           "starter": "…, the material is subsequently transferred to another container.",
           "sampleAnswers": [
             "Having been heated, the material is subsequently transferred to another container."
-          ]
+          ],
+          "explanation": "\"Having been + V3, S + V\" — bước trước rút thành cụm phân từ hoàn thành; chủ ngữ chung đặt ở vế sau."
         },
         {
           "id": "q7",
@@ -2054,7 +2099,8 @@
           "starter": "…, the mixture is then stored in a large tank.",
           "sampleAnswers": [
             "Having been filtered, the mixture is then stored in a large tank."
-          ]
+          ],
+          "explanation": "\"Having been + V3, S + V\" — bước trước rút thành cụm phân từ hoàn thành; chủ ngữ chung đặt ở vế sau."
         },
         {
           "id": "q8",
@@ -2063,7 +2109,8 @@
           "starter": "…, the finished product is then delivered to supermarkets.",
           "sampleAnswers": [
             "Having been packaged, the finished product is then delivered to supermarkets."
-          ]
+          ],
+          "explanation": "\"Having been + V3, S + V\" — bước trước rút thành cụm phân từ hoàn thành; chủ ngữ chung đặt ở vế sau."
         },
         {
           "id": "q9",
@@ -2072,7 +2119,8 @@
           "starter": "After …, the mixture is beaten to form a pulp.",
           "sampleAnswers": [
             "After being soaked for an hour, the mixture is beaten to form a pulp."
-          ]
+          ],
+          "explanation": "\"After + being + V3, S + V\" — bước trước rút gọn sau giới từ After (bị động nên dùng being + V3)."
         },
         {
           "id": "q10",
@@ -2081,7 +2129,8 @@
           "starter": "After …, the materials are sent to the factory.",
           "sampleAnswers": [
             "After being cleaned, the materials are sent to the factory."
-          ]
+          ],
+          "explanation": "\"After + being + V3, S + V\" — bước trước rút gọn sau giới từ After (bị động nên dùng being + V3)."
         },
         {
           "id": "q11",
@@ -2090,7 +2139,8 @@
           "starter": "After …, the liquid is stored in a tank.",
           "sampleAnswers": [
             "After being filtered, the liquid is stored in a tank."
-          ]
+          ],
+          "explanation": "\"After + being + V3, S + V\" — bước trước rút gọn sau giới từ After (bị động nên dùng being + V3)."
         },
         {
           "id": "q12",
@@ -2099,7 +2149,8 @@
           "starter": "Before …, the bottles are labelled.",
           "sampleAnswers": [
             "Before being packed into boxes, the bottles are labelled."
-          ]
+          ],
+          "explanation": "\"Before being packed…, the bottles are labelled\" — bước SAU đặt sau Before, bước TRƯỚC là mệnh đề chính."
         },
         {
           "id": "q13",
@@ -2108,7 +2159,8 @@
           "starter": "The pulp is poured into a tray, followed by …",
           "sampleAnswers": [
             "The pulp is poured into a tray, followed by a hand-mixing process."
-          ]
+          ],
+          "explanation": "\"S + V, followed by + danh từ\" — bước sau được danh hoá (V → N / a … process). mixed by hand → a hand-mixing process."
         },
         {
           "id": "q14",
@@ -2118,7 +2170,8 @@
           "sampleAnswers": [
             "The mixture is heated, followed by a filtering process.",
             "The mixture is heated, followed by filtration."
-          ]
+          ],
+          "explanation": "\"S + V, followed by + danh từ\" — bước sau được danh hoá (V → N / a … process). filtered → a filtering process."
         },
         {
           "id": "q15",
@@ -2127,7 +2180,8 @@
           "starter": "The bottles are cleaned, followed by …",
           "sampleAnswers": [
             "The bottles are cleaned, followed by a water-filling process."
-          ]
+          ],
+          "explanation": "\"S + V, followed by + danh từ\" — bước sau được danh hoá (V → N / a … process). filled with water → a water-filling process."
         },
         {
           "id": "q16",
@@ -2136,7 +2190,8 @@
           "starter": "The products are packaged, followed by …",
           "sampleAnswers": [
             "The products are packaged, followed by transportation to supermarkets."
-          ]
+          ],
+          "explanation": "\"S + V, followed by + danh từ\" — bước sau được danh hoá (V → N / a … process). transported → transportation."
         }
       ],
       "rubric": {
@@ -2160,8 +2215,8 @@
       "lessonCode": "T1-L21",
       "order": 2.2,
       "type": "sentence_transform",
-      "title": "PHẦN 2 — Dịch câu (4 cấu trúc nối bước)",
-      "instruction": "Dịch các câu sau sang tiếng Anh, sử dụng cấu trúc được yêu cầu.",
+      "title": "PART 2 — Translation (4 sequencing structures)",
+      "instruction": "Translate the sentences into English, using the structure required.",
       "source": "original",
       "skillTags": [
         "process-linking",
@@ -2181,7 +2236,8 @@
           "sampleAnswers": [
             "Once heated, the mixture is transferred to a large tank.",
             "Once heated, the mixture is transferred to a large container."
-          ]
+          ],
+          "explanation": "\"Một khi được làm nóng\" = Once heated (Once + V3); mệnh đề chính bị động hiện tại đơn."
         },
         {
           "id": "q2",
@@ -2190,7 +2246,8 @@
           "cue": "Once + V3",
           "sampleAnswers": [
             "Once filtered, the liquid is stored in a tank."
-          ]
+          ],
+          "explanation": "\"Once filtered, the liquid is stored in a tank.\""
         },
         {
           "id": "q3",
@@ -2199,7 +2256,8 @@
           "cue": "Once + V3",
           "sampleAnswers": [
             "Once collected, the raw materials are transported to the factory."
-          ]
+          ],
+          "explanation": "\"Once collected, the raw materials are transported…\" — chủ ngữ số nhiều → are."
         },
         {
           "id": "q4",
@@ -2208,7 +2266,8 @@
           "cue": "Having been + V3",
           "sampleAnswers": [
             "Having been poured into a tray, the pulp is then mixed by hand."
-          ]
+          ],
+          "explanation": "\"Having been + V3, S + V\" — bước trước rút thành cụm phân từ hoàn thành; chủ ngữ chung đặt ở vế sau."
         },
         {
           "id": "q5",
@@ -2217,7 +2276,8 @@
           "cue": "Having been + V3",
           "sampleAnswers": [
             "Having been cleaned, the materials are moved to the next stage."
-          ]
+          ],
+          "explanation": "\"Having been + V3, S + V\" — bước trước rút thành cụm phân từ hoàn thành; chủ ngữ chung đặt ở vế sau."
         },
         {
           "id": "q6",
@@ -2226,7 +2286,8 @@
           "cue": "Having been + V3",
           "sampleAnswers": [
             "Having been filtered, the liquid is stored in a large tank."
-          ]
+          ],
+          "explanation": "\"Having been + V3, S + V\" — bước trước rút thành cụm phân từ hoàn thành; chủ ngữ chung đặt ở vế sau."
         },
         {
           "id": "q7",
@@ -2236,7 +2297,8 @@
           "sampleAnswers": [
             "After being soaked for an hour, the mixture is ground to form a pulp.",
             "After being soaked for an hour, the mixture is beaten to form a pulp."
-          ]
+          ],
+          "explanation": "\"After + being + V3, S + V\" — bước trước rút gọn sau giới từ After (bị động nên dùng being + V3)."
         },
         {
           "id": "q8",
@@ -2246,7 +2308,8 @@
           "sampleAnswers": [
             "After being heated, the liquid is transferred to another tank.",
             "After being heated, the liquid is transferred to another container."
-          ]
+          ],
+          "explanation": "\"After + being + V3, S + V\" — bước trước rút gọn sau giới từ After (bị động nên dùng being + V3)."
         },
         {
           "id": "q9",
@@ -2255,7 +2318,8 @@
           "cue": "Before + being + V3",
           "sampleAnswers": [
             "Before being packaged, the products are carefully checked."
-          ]
+          ],
+          "explanation": "\"Trước khi được đóng gói\" = Before being packaged; \"được kiểm tra cẩn thận\" = are carefully checked."
         },
         {
           "id": "q10",
@@ -2264,7 +2328,8 @@
           "cue": "S + V, followed by + N",
           "sampleAnswers": [
             "The pulp is poured into a tray, followed by a hand-mixing process."
-          ]
+          ],
+          "explanation": "\"S + V, followed by + danh từ\" — bước sau được danh hoá (V → N / a … process)."
         },
         {
           "id": "q11",
@@ -2273,7 +2338,8 @@
           "cue": "S + V, followed by + N",
           "sampleAnswers": [
             "The mixture is filtered, followed by a heating process."
-          ]
+          ],
+          "explanation": "\"S + V, followed by + danh từ\" — bước sau được danh hoá (V → N / a … process)."
         },
         {
           "id": "q12",
@@ -2283,7 +2349,8 @@
           "sampleAnswers": [
             "The bottles are cleaned, followed by the filling process.",
             "The bottles are cleaned, followed by a water-filling process."
-          ]
+          ],
+          "explanation": "\"S + V, followed by + danh từ\" — bước sau được danh hoá (V → N / a … process)."
         },
         {
           "id": "q13",
@@ -2293,7 +2360,8 @@
           "sampleAnswers": [
             "The products are packaged, followed by their transportation to supermarkets.",
             "The products are packaged, followed by transportation to supermarkets."
-          ]
+          ],
+          "explanation": "\"S + V, followed by + danh từ\" — bước sau được danh hoá (V → N / a … process)."
         }
       ],
       "rubric": {
@@ -2315,8 +2383,8 @@
       "lessonCode": "T1-L21",
       "order": 3.5,
       "type": "sentence_writing",
-      "title": "HOMEWORK phần 1 — 6 câu mô tả biến đổi của vật chất",
-      "instruction": "Học thuộc bảng từ vựng ở mục 21.6. Viết 6 câu tiếng Anh mô tả biến đổi của vật chất, mỗi câu dùng một động từ khác nhau: hai câu chất rắn, hai câu chất lỏng, hai câu chất khí.",
+      "title": "HOMEWORK part 1 — 6 sentences describing changes of state",
+      "instruction": "Learn the vocabulary table in section 21.6. Write 6 English sentences describing changes to materials, each with a different verb: two about solids, two about liquids and two about gases.",
       "source": "original",
       "skillTags": [
         "process-vocabulary"
@@ -2348,7 +2416,7 @@
       "lessonCode": "T1-L21",
       "order": 5.5,
       "type": "full_task1",
-      "title": "HOMEWORK — Đề 1: Milk production (bài hoàn chỉnh)",
+      "title": "HOMEWORK — Task 1: Milk production (full essay)",
       "instruction": "The diagram below shows the process of milk production. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "original",
       "skillTags": [
@@ -2391,8 +2459,8 @@
       "lessonCode": "T1-L22",
       "order": 2.5,
       "type": "sentence_writing",
-      "title": "HOMEWORK phần 1 — 8 câu mô tả vòng đời một loài vật",
-      "instruction": "Học thuộc bảng từ vựng ở mục 22.6. Viết 8 câu mô tả vòng đời của một loài vật em tự chọn (bướm, gà, muỗi…), dùng thể chủ động và thì hiện tại đơn.",
+      "title": "HOMEWORK part 1 — 8 sentences describing an animal’s life cycle",
+      "instruction": "Learn the vocabulary table in section 22.6. Write 8 sentences describing the life cycle of an animal of your choice (butterfly, chicken, mosquito…), using the active voice and the present simple.",
       "source": "original",
       "skillTags": [
         "natural-process",

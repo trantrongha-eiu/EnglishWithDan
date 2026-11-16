@@ -1,0 +1,152 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Course pages (writing-task1 / writing-task2-course / speaking-course /
+   mindset-0|1|2) — shared layout for js/shared/course-engine.js:
+   progress card + "Học tiếp", collapsible modules, lesson header,
+   numbered exercise steps, step bar + task card in the exercise view.
+   Loaded LAST (after pf-pages.css) and uses the playful --pf-* tokens.
+   Accent per course: #app[data-course] (set by CourseEngine.start).
+   ══════════════════════════════════════════════════════════════════════ */
+#app { --cx-accent: #0ea5e9; --cx-accent-soft: #e0f2fe; --cx-ink: var(--pf-ink, #1d1a16); }
+#app[data-course="IELTS-W-T2"] { --cx-accent: #e64980; --cx-accent-soft: #ffe3ef; }
+#app[data-course="IELTS-SPEAKING"] { --cx-accent: #f0644f; --cx-accent-soft: #ffe6e1; }
+#app[data-course^="MINDSET"] { --cx-accent: #2f9e5b; --cx-accent-soft: #dcf5e6; }
+[data-theme="dark"] #app { --cx-accent-soft: rgba(255,255,255,.08); }
+
+/* ── shared bits ───────────────────────────────────────────────────── */
+.cx-cta { display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex-shrink: 0;
+  background: var(--pf-sun, #ffd23f); color: #1d1a16; border: 2.5px solid var(--cx-ink); border-radius: 14px;
+  padding: 10px 18px; font: 900 14.5px/1.2 var(--pf-head, inherit); cursor: pointer; white-space: nowrap;
+  box-shadow: 3px 3px 0 var(--cx-ink); transition: transform .18s var(--pf-spring, ease), box-shadow .18s; }
+.cx-cta:hover { transform: translate(-1px, -2px); box-shadow: 5px 5px 0 var(--cx-ink); }
+.cx-cta:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--cx-ink); }
+.cx-cta:focus-visible, .t1-lesson:focus-visible, .t1-ex-card:focus-visible, .cx-seg:focus-visible, .cx-link:focus-visible {
+  outline: 3px solid var(--cx-accent); outline-offset: 2px; }
+.cx-pill { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; font-size: 11.5px; font-weight: 800; white-space: nowrap;
+  padding: 3px 10px; border-radius: 999px; background: var(--surface2, #f3f4f6); color: var(--text2, #4b5563); border: 1.5px solid transparent; }
+.cx-pill.ok { background: #dcfce7; color: #15803d; }
+.cx-pill.prog { background: #fff3c4; color: #92400e; }
+.cx-pill.bad { background: #fee2e2; color: #b91c1c; }
+.cx-pill.wait { background: #e0e7ff; color: #3730a3; }
+.cx-pill.lock { background: transparent; color: var(--text3, #9ca3af); }
+.cx-pill.go { background: var(--pf-sun, #ffd23f); color: #1d1a16; border-color: var(--cx-ink); }
+[data-theme="dark"] .cx-pill.ok { background: #0f2a1d; color: #86efac; }
+[data-theme="dark"] .cx-pill.prog { background: #2d220b; color: #fcd34d; }
+[data-theme="dark"] .cx-pill.bad { background: #2c1212; color: #fca5a5; }
+[data-theme="dark"] .cx-pill.wait { background: #1e1b4b; color: #c7d2fe; }
+.cx-chev { color: var(--text3, #9ca3af); font-size: 13px; flex-shrink: 0; }
+.cx-bar { flex: 1; min-width: 80px; height: 10px; border-radius: 99px; background: var(--surface, #fff); border: 2px solid var(--cx-ink); overflow: hidden; }
+.cx-bar > span { display: block; height: 100%; background: var(--pf-leaf, #2f9e5b); border-radius: 99px; transition: width .5s ease; }
+
+/* ── overview: hero text, progress card, module list ───────────────── */
+#app .pf-hero .pf-hero-sub { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; cursor: pointer; }
+#app .pf-hero .pf-hero-sub.is-open { -webkit-line-clamp: unset; display: block; }
+
+.cx-progress { display: flex; align-items: center; gap: 16px; margin: 0 20px 18px; padding: 16px 18px;
+  background: var(--surface, #fff); border: 2.5px solid var(--cx-ink); border-radius: 20px; box-shadow: var(--pf-shadow, 4px 4px 0 #1d1a16); }
+.cx-ring { --p: 0; flex-shrink: 0; width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center;
+  background: conic-gradient(var(--pf-leaf, #2f9e5b) calc(var(--p) * 1%), var(--surface2, #eef2f7) 0); border: 2.5px solid var(--cx-ink); }
+.cx-ring b { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; background: var(--surface, #fff);
+  border: 2px solid var(--cx-ink); font: 900 15px/1 var(--pf-head, inherit); }
+.cx-progress-body { flex: 1; min-width: 0; }
+.cx-progress-t { font: 900 17px/1.25 var(--pf-head, inherit); }
+.cx-progress-s { font-size: 13px; color: var(--text2, #4b5563); margin-top: 3px; }
+.cx-progress-n { font-size: 13px; margin-top: 6px; line-height: 1.45; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+.cx-mod-tools { display: flex; align-items: center; justify-content: space-between; margin: 0 22px 6px; }
+.cx-mod-tools > span { font: 900 15px/1.2 var(--pf-head, inherit); }
+.cx-link { background: none; border: none; color: var(--cx-accent); font: 800 13px/1 inherit; font-family: inherit; cursor: pointer; padding: 6px 2px; }
+.cx-link:hover { text-decoration: underline; }
+
+details.cx-mod { margin-top: 12px; }
+details.cx-mod > summary { list-style: none; display: flex; align-items: center; gap: 12px; cursor: pointer; -webkit-user-select: none; user-select: none; }
+details.cx-mod > summary::-webkit-details-marker { display: none; }
+details.cx-mod:not([open]) > summary { border-bottom: none; }
+.cx-mod-hd-main { flex: 1; min-width: 0; }
+.cx-mod-caret { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 13px;
+  background: var(--surface, #fff); border: 2px solid var(--cx-ink); transition: transform .25s ease; }
+details.cx-mod[open] .cx-mod-caret { transform: rotate(180deg); }
+.cx-mod-prog { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 12px; font-weight: 700; color: var(--text2, #4b5563); }
+.cx-mod-bar { width: 120px; height: 7px; border-radius: 99px; background: var(--surface, #fff); border: 1.5px solid var(--cx-ink); overflow: hidden; }
+.cx-mod-bar > span { display: block; height: 100%; background: var(--pf-leaf, #2f9e5b); }
+details.cx-mod[open] .cx-mod-body { animation: cxOpen .22s ease both; }
+@keyframes cxOpen { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+.t1-lesson { gap: 12px; padding: 13px 16px; transition: background .15s; }
+.t1-lesson .cx-pill { margin-left: 4px; }
+.t1-lesson.is-next { background: #fff8db; box-shadow: inset 5px 0 0 var(--pf-sun, #ffd23f); }
+[data-theme="dark"] .t1-lesson.is-next { background: rgba(255,210,63,.08); }
+.t1-lesson.is-locked { opacity: .55; }
+.t1-lesson.is-locked:hover { opacity: .75; }
+.t1-lesson-bar { max-width: 200px; }
+
+/* ── lesson page ───────────────────────────────────────────────────── */
+.cx-lhead { margin: 10px 20px 14px; padding: 16px 18px; background: var(--surface, #fff); border: 2.5px solid var(--cx-ink);
+  border-radius: 20px; box-shadow: var(--pf-shadow, 4px 4px 0 #1d1a16); }
+.cx-lhead .t1-crumb { padding: 0 0 4px; font-size: 12.5px; }
+.cx-lhead .t1-crumb span { color: var(--cx-accent); }
+.cx-lhead-t { margin: 0; font: 900 21px/1.3 var(--pf-head, inherit); }
+.cx-lhead-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: 12.5px; font-weight: 700; color: var(--text2, #4b5563); }
+.cx-lhead-meta i { color: var(--cx-accent); margin-right: 3px; }
+.cx-lhead-row { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+
+.cx-sec-h { display: flex; align-items: baseline; justify-content: space-between; margin: 22px 22px 0; font: 900 17px/1.3 var(--pf-head, inherit); }
+.cx-sec-c { font: 700 12.5px/1 inherit; font-family: inherit; color: var(--text3, #6b7280); }
+
+.t1-ex-card.cx-ex { gap: 14px; padding: 12px 14px; border-radius: 16px; }
+.cx-step { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+  font: 900 13.5px/1 var(--pf-head, inherit); background: var(--surface, #fff); border: 2px solid var(--cx-ink); color: var(--text, #111827); }
+.t1-ex-card.is-done .cx-step { background: #b9f0c9; color: #14532d; }
+.t1-ex-card.is-next .cx-step { background: var(--pf-sun, #ffd23f); color: #1d1a16; }
+.t1-ex-card.is-next { border-color: var(--cx-ink); box-shadow: 3px 3px 0 var(--cx-ink); }
+.cx-ex-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.cx-ex-body .nm { font-size: 14px; font-weight: 800; line-height: 1.4; }
+.cx-ex-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 11.5px; font-weight: 600; color: var(--text3, #6b7280); }
+.cx-ex-meta .t1-ex-type { margin: 0; }
+.cx-ex-meta i { margin-right: 2px; }
+/* Mindset numbers its steps itself (book order) */
+.ms-step .cx-step { display: none; }
+
+/* ── exercise view ─────────────────────────────────────────────────── */
+.cx-steps { display: flex; gap: 5px; margin: 2px 20px 0; }
+.cx-seg { flex: 1; min-width: 6px; height: 9px; padding: 0; border-radius: 99px; cursor: pointer;
+  background: var(--surface2, #e9ecef); border: 1.5px solid var(--border, #d1d5db); transition: transform .15s, background .15s; }
+.cx-seg:hover { transform: scaleY(1.35); }
+.cx-seg.done { background: var(--pf-leaf, #2f9e5b); border-color: var(--pf-leaf, #2f9e5b); }
+.cx-seg.cur { background: var(--pf-sun, #ffd23f); border-color: var(--cx-ink); transform: scaleY(1.25); }
+
+.cx-task { margin: 8px 20px 0; padding: 14px 16px; background: var(--surface, #fff); border: 2.5px solid var(--cx-ink);
+  border-left: 7px solid var(--cx-accent); border-radius: 16px; box-shadow: 3px 3px 0 var(--cx-ink); }
+.cx-task-t { font: 900 16.5px/1.35 var(--pf-head, inherit); }
+.cx-task .t1-instr { margin: 6px 0 0; font-size: 14px; line-height: 1.65; color: var(--text2, #374151); white-space: pre-line; }
+
+/* the submit button stays in reach on long exercises — not on the
+   Speaking recorder, where it would float over the mic */
+#t1-body:not(:has(.sc-panel)) > .t1-submit { position: sticky; bottom: 12px; z-index: 4; box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+
+/* ── phones ────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .cx-progress { flex-wrap: wrap; margin: 0 12px 16px; padding: 14px; gap: 12px; }
+  .cx-ring { width: 62px; height: 62px; }
+  .cx-ring b { width: 44px; height: 44px; font-size: 13px; }
+  .cx-progress .cx-cta { width: 100%; }
+  .cx-mod-tools { margin: 0 14px 4px; }
+  .t1-lesson { padding: 12px; gap: 10px; }
+  /* only the meaningful status stays — "Bắt đầu"/"Đang khoá" are clear from the icon */
+  .t1-lesson .cx-pill:not(.go):not(.ok) { display: none; }
+  .t1-lesson .cx-pill.ok { font-size: 0; padding: 4px 6px; gap: 0; }
+  .t1-lesson .cx-pill.ok i { font-size: 11px; }
+  .cx-lhead { margin: 8px 12px 12px; padding: 14px; }
+  .cx-lhead-t { font-size: 18.5px; }
+  .cx-lhead-row { flex-direction: column; align-items: stretch; gap: 10px; }
+  .cx-lhead-row .cx-cta { width: 100%; }
+  .cx-lhead-row .cx-bar { flex: none; width: 100%; box-sizing: border-box; }
+  .cx-sec-h { margin: 18px 14px 0; }
+  .t1-ex-card.cx-ex { gap: 10px; padding: 11px 12px; }
+  .cx-step { width: 28px; height: 28px; font-size: 12.5px; }
+  .cx-steps { margin: 2px 12px 0; gap: 3px; }
+  .cx-task { margin: 8px 12px 0; padding: 12px 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cx-cta, .cx-seg, .cx-mod-caret, .cx-bar > span { transition: none; }
+  details.cx-mod[open] .cx-mod-body { animation: none; }
+}

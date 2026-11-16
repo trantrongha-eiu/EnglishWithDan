@@ -5,9 +5,9 @@
       "lessonCode": "T2-L12",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Câu phức — Dịch câu",
+      "title": "Complex sentences — Translation",
       "titleEn": "Complex Sentences — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Sử dụng: although, because, since, while, as, if...",
+      "instruction": "Translate the sentence into English using the target structure: although, because, since, while, as, if…",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 8,
@@ -25,7 +25,7 @@
           "sampleAnswers": [
             "Although online education offers flexibility, it cannot completely replace face-to-face interaction between teachers and students."
           ],
-          "explanation": "",
+          "explanation": "\"Mặc dù\" → Although + mệnh đề; vế sau không thêm \"but\". \"offers\" chia theo chủ ngữ số ít.",
           "promptVi": "Mặc dù giáo dục trực tuyến mang lại sự linh hoạt, nó không thể thay thế hoàn toàn sự tương tác trực tiếp giữa giáo viên và học sinh."
         },
         {
@@ -36,7 +36,7 @@
             "Because the public transport system in many cities is still underdeveloped, many people are forced to use private vehicles.",
             "Because public transport systems in many cities are still underdeveloped, many people are forced to use private vehicles."
           ],
-          "explanation": "",
+          "explanation": "\"Vì\" → Because + mệnh đề nguyên nhân; \"buộc phải\" = be forced to.",
           "promptVi": "Vì hệ thống giao thông công cộng ở nhiều thành phố vẫn chưa phát triển đầy đủ, nhiều người buộc phải sử dụng phương tiện cá nhân."
         },
         {
@@ -47,7 +47,7 @@
             "While technology can help students access information quickly, its excessive use may reduce their ability to concentrate.",
             "While technology can help students access information quickly, excessive use of it may reduce their ability to concentrate."
           ],
-          "explanation": "",
+          "explanation": "\"While\" mở mệnh đề tương phản; \"its excessive use\" là danh từ hoá của \"việc sử dụng quá mức\".",
           "promptVi": "Mặc dù công nghệ có thể giúp học sinh tiếp cận thông tin nhanh chóng, việc lạm dụng nó có thể làm giảm khả năng tập trung của các em."
         },
         {
@@ -58,7 +58,7 @@
             "If the government does not take effective measures, air pollution may become more serious in the future.",
             "If governments do not take effective measures, air pollution may become more serious in the future."
           ],
-          "explanation": "",
+          "explanation": "Điều kiện loại 1: If + hiện tại đơn (does not take), mệnh đề chính may/will + V.",
           "promptVi": "Nếu các chính phủ không đưa ra các biện pháp hiệu quả, ô nhiễm không khí có thể trở nên nghiêm trọng hơn trong tương lai."
         },
         {
@@ -69,7 +69,7 @@
             "Although many people want to live in big cities, the high cost of living makes urban life difficult for some families.",
             "Although many people want to live in large cities, the high cost of living makes urban life difficult for some families."
           ],
-          "explanation": "",
+          "explanation": "\"Although…\" + \"the high cost of living makes urban life difficult for some families\" (make + O + adj + for sb).",
           "promptVi": "Mặc dù nhiều người muốn sống ở các thành phố lớn, chi phí sinh hoạt đắt đỏ khiến cuộc sống đô thị trở nên khó khăn đối với một số gia đình."
         }
       ]
@@ -79,9 +79,9 @@
       "lessonCode": "T2-L12",
       "order": 8,
       "type": "sentence_transform",
-      "title": "Câu ghép — Dịch câu",
+      "title": "Compound sentences — Translation",
       "titleEn": "Compound Sentences — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Sử dụng: and, but, so, yet; hoặc dấu chấm phẩy với however, therefore, nevertheless...",
+      "instruction": "Translate the sentence into English using the target structure: and, but, so, yet; or a semicolon with however, therefore, nevertheless…",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 8,
@@ -100,7 +100,7 @@
             "The government has invested a large amount of money in the public transport system, but traffic congestion has not improved significantly.",
             "The government has invested a large amount of money in public transport systems, but traffic congestion has not improved significantly."
           ],
-          "explanation": "",
+          "explanation": "Câu ghép: hai mệnh đề độc lập nối bằng \", but\"; hiện tại hoàn thành vì kết quả còn tới hiện tại.",
           "promptVi": "Chính phủ đã đầu tư một khoản tiền lớn vào các hệ thống giao thông công cộng, nhưng tình trạng tắc nghẽn giao thông vẫn chưa được cải thiện đáng kể."
         },
         {
@@ -111,7 +111,7 @@
             "Social media enables people to stay in touch with one another, but it may also reduce the quality of face-to-face relationships.",
             "Social media enables people to stay in touch with one another, but it can also reduce the quality of face-to-face relationships."
           ],
-          "explanation": "",
+          "explanation": "\", but it may also…\" — but nối hai ý trái chiều; \"enable sb to V\".",
           "promptVi": "Mạng xã hội giúp mọi người giữ liên lạc với nhau, nhưng nó cũng có thể làm giảm chất lượng của các mối quan hệ trực tiếp."
         },
         {
@@ -121,7 +121,7 @@
           "sampleAnswers": [
             "Many students want to pursue higher education, so universities are facing an increasing number of applications."
           ],
-          "explanation": "",
+          "explanation": "\", so…\" nối nguyên nhân → kết quả; \"pursue higher education\".",
           "promptVi": "Nhiều học sinh muốn theo học bậc cao đẳng và đại học, vì vậy các trường đại học đang phải đối mặt với số lượng hồ sơ nộp vào ngày càng tăng."
         },
         {
@@ -132,7 +132,7 @@
             "Electric vehicles produce fewer emissions; however, their high price still prevents many people from purchasing them.",
             "Electric vehicles produce fewer emissions; however, their high cost still prevents many people from purchasing them."
           ],
-          "explanation": "",
+          "explanation": "Dấu chấm phẩy + however + dấu phẩy: \"; however,\"; \"prevent sb from V-ing\".",
           "promptVi": "Xe điện thải ra ít khí thải hơn; tuy nhiên, giá thành cao của chúng vẫn khiến nhiều người không thể mua được."
         },
         {
@@ -143,7 +143,7 @@
             "The urban population is growing rapidly, and this places great pressure on housing and public services.",
             "Urban populations are growing rapidly, and this places considerable pressure on housing and public services."
           ],
-          "explanation": "",
+          "explanation": "\", and this places great pressure on…\" — and nối hai mệnh đề độc lập.",
           "promptVi": "Dân số thành thị đang tăng lên nhanh chóng, điều này tạo ra áp lực đáng kể lên nhà ở và các dịch vụ công cộng."
         }
       ]
@@ -153,9 +153,9 @@
       "lessonCode": "T2-L13",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Câu điều kiện — Dịch câu",
+      "title": "Conditionals — Translation",
       "titleEn": "Conditional Sentences — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Sử dụng: If (loại 1, 2, 3), Unless, Provided that...",
+      "instruction": "Translate the sentence into English using the target structure: If (types 1, 2, 3), Unless, Provided that…",
       "autoGrade": true,
       "points": 12,
       "estimatedMinutes": 9,
@@ -174,7 +174,7 @@
             "If the government invested more in public education, every child would have access to higher-quality education.",
             "If governments invested more in public education, every child would have access to higher-quality education."
           ],
-          "explanation": "",
+          "explanation": "Điều kiện loại 2 (giả định ở hiện tại): If + quá khứ đơn (invested), would + V.",
           "promptVi": "Nếu chính phủ đầu tư nhiều hơn vào giáo dục công lập, mọi đứa trẻ sẽ có cơ hội tiếp cận nền giáo dục chất lượng cao hơn."
         },
         {
@@ -184,7 +184,7 @@
           "sampleAnswers": [
             "If people continue to rely on private cars, traffic congestion will become more serious."
           ],
-          "explanation": "",
+          "explanation": "Điều kiện loại 1 (khả năng có thật): If + hiện tại đơn, will + V.",
           "promptVi": "Nếu người dân tiếp tục phụ thuộc vào xe hơi cá nhân, tình trạng tắc nghẽn giao thông sẽ ngày càng trở nên nghiêm trọng hơn."
         },
         {
@@ -194,7 +194,7 @@
           "sampleAnswers": [
             "If cities invested more in metro systems, emissions from transportation could be reduced significantly."
           ],
-          "explanation": "",
+          "explanation": "Loại 2 + bị động ở mệnh đề chính: could be reduced.",
           "promptVi": "Nếu các thành phố đầu tư nhiều hơn vào hệ thống tàu điện ngầm, lượng khí thải từ giao thông có thể được giảm đáng kể."
         },
         {
@@ -205,7 +205,7 @@
             "If companies allowed their employees to work remotely, many people would achieve a better work-life balance.",
             "If companies allowed employees to work remotely, many people would achieve a better work-life balance."
           ],
-          "explanation": "",
+          "explanation": "Loại 2: If companies allowed…, many people would achieve…",
           "promptVi": "Nếu các công ty cho phép nhân viên làm việc từ xa, nhiều người sẽ đạt được sự cân bằng tốt hơn giữa công việc và cuộc sống."
         },
         {
@@ -216,7 +216,7 @@
             "Unless strict measures are taken, the amount of plastic waste will continue to rise in the coming years.",
             "Unless strict measures are taken, the amount of plastic waste will continue to increase in the coming years."
           ],
-          "explanation": "",
+          "explanation": "\"Unless\" = If … not; sau Unless dùng mệnh đề khẳng định (Unless strict measures are taken).",
           "promptVi": "Trừ khi các biện pháp nghiêm ngặt được thực hiện, lượng rác thải nhựa sẽ tiếp tục tăng trong những năm tới."
         },
         {
@@ -227,7 +227,7 @@
             "If the government had addressed this issue earlier, many negative consequences could have been prevented.",
             "If governments had addressed this issue earlier, many negative consequences could have been prevented."
           ],
-          "explanation": "",
+          "explanation": "Điều kiện loại 3 (giả định trong quá khứ): If + had V3, could have been V3.",
           "promptVi": "Nếu chính phủ giải quyết vấn đề này sớm hơn, nhiều hệ lụy tiêu cực đã có thể được ngăn chặn."
         }
       ]
@@ -237,9 +237,9 @@
       "lessonCode": "T2-L13",
       "order": 8,
       "type": "sentence_transform",
-      "title": "Câu bị động — Dịch câu",
+      "title": "The passive — Translation",
       "titleEn": "Passive Voice — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Sử dụng: should be + V3, have been + V3, It is widely acknowledged that...",
+      "instruction": "Translate the sentence into English using the target structure: should be + V3, have been + V3, It is widely acknowledged that…",
       "autoGrade": true,
       "points": 12,
       "estimatedMinutes": 9,
@@ -257,7 +257,7 @@
           "sampleAnswers": [
             "Stricter regulations should be introduced to reduce emissions from factories."
           ],
-          "explanation": "",
+          "explanation": "Bị động với modal: should be + V3 (should be introduced).",
           "promptVi": "Cần ban hành các quy định nghiêm ngặt hơn để giảm lượng khí thải từ các nhà máy."
         },
         {
@@ -268,7 +268,7 @@
             "A number of measures have been proposed to address the housing shortage in big cities.",
             "A number of measures have been proposed to address the housing shortage in large cities."
           ],
-          "explanation": "",
+          "explanation": "Bị động hiện tại hoàn thành: have been proposed; \"A number of + N số nhiều\" → động từ số nhiều.",
           "promptVi": "Nhiều biện pháp đã được đề xuất nhằm giải quyết tình trạng thiếu nhà ở tại các thành phố lớn."
         },
         {
@@ -278,7 +278,7 @@
           "sampleAnswers": [
             "It is widely acknowledged that education plays an important role in the development of a country."
           ],
-          "explanation": "",
+          "explanation": "\"Người ta thừa nhận rộng rãi\" → It is widely acknowledged that + mệnh đề.",
           "promptVi": "Nhiều người công nhận rằng giáo dục đóng một vai trò quan trọng trong sự phát triển của một quốc gia."
         },
         {
@@ -288,7 +288,7 @@
           "sampleAnswers": [
             "Many simple jobs may be replaced by artificial intelligence in the future."
           ],
-          "explanation": "",
+          "explanation": "Bị động với may: may be replaced by.",
           "promptVi": "Nhiều công việc đơn giản có thể bị thay thế bởi trí tuệ nhân tạo trong tương lai."
         },
         {
@@ -299,7 +299,7 @@
             "More funding should be allocated to the public healthcare system.",
             "More funding should be allocated to public healthcare systems."
           ],
-          "explanation": "",
+          "explanation": "\"More funding should be allocated to…\" — funding là danh từ không đếm được.",
           "promptVi": "Cần phân bổ thêm nguồn vốn cho hệ thống y tế công cộng."
         },
         {
@@ -309,7 +309,7 @@
           "sampleAnswers": [
             "It is often believed that children should be encouraged to read from an early age."
           ],
-          "explanation": "",
+          "explanation": "\"It is often believed that…\"; \"should be encouraged to + V\".",
           "promptVi": "Người ta thường tin rằng trẻ em nên được khuyến khích đọc sách từ khi còn nhỏ."
         }
       ]
@@ -319,9 +319,9 @@
       "lessonCode": "T2-L14",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Mệnh đề quan hệ — Dịch câu",
+      "title": "Relative clauses — Translation",
       "titleEn": "Relative Clauses — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Chú ý sử dụng: who, which, where, whose...",
+      "instruction": "Translate the sentence into English using the target structure: who, which, where, whose…",
       "autoGrade": true,
       "points": 12,
       "estimatedMinutes": 9,
@@ -340,7 +340,7 @@
             "Remote working saves employees commuting time, which can improve their quality of life.",
             "Remote working helps employees save commuting time, which can improve their quality of life."
           ],
-          "explanation": "",
+          "explanation": "\", which…\" thay cho cả mệnh đề trước (việc tiết kiệm thời gian), luôn có dấu phẩy.",
           "promptVi": "Làm việc từ xa giúp nhân viên tiết kiệm thời gian di chuyển, từ đó có thể cải thiện chất lượng cuộc sống."
         },
         {
@@ -350,7 +350,7 @@
           "sampleAnswers": [
             "Students who have access to modern technology often have more learning opportunities."
           ],
-          "explanation": "",
+          "explanation": "\"Students who have access to…\" — who thay cho người, không dấu phẩy vì xác định danh từ.",
           "promptVi": "Những học sinh có điều kiện tiếp cận công nghệ hiện đại thường có nhiều cơ hội học tập hơn."
         },
         {
@@ -361,7 +361,7 @@
             "Many people want to move to big cities, where there are more employment opportunities.",
             "Many people want to move to large cities, where there are more employment opportunities."
           ],
-          "explanation": "",
+          "explanation": "\", where…\" thay cho nơi chốn (big cities).",
           "promptVi": "Nhiều người muốn chuyển đến các thành phố lớn, nơi có nhiều cơ hội việc làm hơn."
         },
         {
@@ -372,7 +372,7 @@
             "Cycling is becoming increasingly popular, which can help reduce air pollution.",
             "The use of bicycles is becoming increasingly popular, which can help reduce air pollution."
           ],
-          "explanation": "",
+          "explanation": "\", which can help reduce…\" — which bổ sung ý cho cả mệnh đề trước.",
           "promptVi": "Việc sử dụng xe đạp đang ngày càng trở nên phổ biến, điều này có thể giúp giảm ô nhiễm không khí."
         },
         {
@@ -382,7 +382,7 @@
           "sampleAnswers": [
             "Children whose parents regularly read with them tend to develop better language skills."
           ],
-          "explanation": "",
+          "explanation": "\"whose\" chỉ sở hữu: children whose parents… (cha mẹ của những đứa trẻ đó).",
           "promptVi": "Trẻ em có cha mẹ thường xuyên đọc sách cùng có xu hướng phát triển kỹ năng ngôn ngữ tốt hơn."
         },
         {
@@ -392,7 +392,7 @@
           "sampleAnswers": [
             "Many countries are investing in renewable energy, which helps reduce their dependence on fossil fuels."
           ],
-          "explanation": "",
+          "explanation": "\", which helps reduce…\" — which thay cho việc đầu tư vào năng lượng tái tạo.",
           "promptVi": "Nhiều quốc gia đang đầu tư vào năng lượng tái tạo, giúp giảm sự phụ thuộc vào nhiên liệu hóa thạch."
         }
       ]
@@ -402,9 +402,9 @@
       "lessonCode": "T2-L14",
       "order": 8,
       "type": "sentence_transform",
-      "title": "Đảo ngữ để nhấn mạnh — Dịch câu",
+      "title": "Inversion for emphasis — Translation",
       "titleEn": "Inversion — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Sử dụng các mẫu: Not only... but also... / Never before... / Only by...",
+      "instruction": "Translate the sentence into English using one of these patterns: Not only… but also… / Never before… / Only by…",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 8,
@@ -423,7 +423,7 @@
             "Not only does this policy reduce traffic congestion, but it also improves air quality in big cities.",
             "Not only does this policy help reduce traffic congestion, but it also improves air quality in large cities."
           ],
-          "explanation": "",
+          "explanation": "Đảo ngữ: Not only + trợ động từ + S + V, but + S + also + V.",
           "promptVi": "Chính sách này không chỉ giúp giảm ùn tắc giao thông mà còn cải thiện chất lượng không khí ở các thành phố lớn."
         },
         {
@@ -434,7 +434,7 @@
             "Never before have people had access to such a vast amount of information as they do today.",
             "Never before have people had access to such a vast amount of information."
           ],
-          "explanation": "",
+          "explanation": "\"Never before\" đầu câu → đảo trợ động từ: Never before have people had…",
           "promptVi": "Chưa bao giờ con người lại có thể tiếp cận với lượng thông tin khổng lồ đến vậy."
         },
         {
@@ -445,7 +445,7 @@
             "Only by investing in public transport can cities solve the problem of congestion in the long term.",
             "Only by investing in public transport can cities solve the problem of traffic congestion in the long term."
           ],
-          "explanation": "",
+          "explanation": "\"Only by + V-ing\" đầu câu → đảo: can cities solve…",
           "promptVi": "Chỉ bằng cách đầu tư vào giao thông công cộng, các thành phố mới có thể giải quyết tận gốc vấn đề ùn tắc giao thông trong dài hạn."
         },
         {
@@ -455,7 +455,7 @@
           "sampleAnswers": [
             "Not only has technology changed the way people work, but it has also transformed the way they communicate."
           ],
-          "explanation": "",
+          "explanation": "Not only has technology changed…, but it has also transformed… (đảo với has).",
           "promptVi": "Công nghệ không chỉ thay đổi cách mọi người làm việc mà còn chuyển đổi cả cách họ giao tiếp."
         },
         {
@@ -465,7 +465,7 @@
           "sampleAnswers": [
             "Only by raising public awareness can we encourage people to protect the environment."
           ],
-          "explanation": "",
+          "explanation": "Only by raising public awareness can we encourage…",
           "promptVi": "Chỉ bằng cách nâng cao nhận thức cộng đồng, chúng ta mới có thể khuyến khích mọi người bảo vệ môi trường."
         }
       ]
@@ -475,9 +475,9 @@
       "lessonCode": "T2-L15",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Câu chẻ — Dịch câu",
+      "title": "Cleft sentences — Translation",
       "titleEn": "Cleft Sentences — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Sử dụng: It is/was ... that/who ... | What ... is/was ...",
+      "instruction": "Translate the sentence into English using the target structure: It is/was … that/who … | What … is/was …",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 8,
@@ -495,7 +495,7 @@
           "sampleAnswers": [
             "It is the lack of affordable housing that makes it difficult for many young people to live in cities."
           ],
-          "explanation": "",
+          "explanation": "Câu chẻ nhấn mạnh chủ ngữ: It is + cụm cần nhấn mạnh + that + V.",
           "promptVi": "Chính sự thiếu hụt nhà ở giá rẻ khiến nhiều người trẻ khó sinh sống ở các thành phố lớn."
         },
         {
@@ -506,7 +506,7 @@
             "What many students need is not more homework but more effective guidance from their teachers.",
             "What many students need is not more homework but more effective guidance from teachers."
           ],
-          "explanation": "",
+          "explanation": "\"What + S + need is…\" — mệnh đề What làm chủ ngữ; \"not X but Y\".",
           "promptVi": "Điều mà nhiều học sinh cần không phải là thêm bài tập về nhà mà là sự hướng dẫn hiệu quả hơn từ giáo viên."
         },
         {
@@ -516,7 +516,7 @@
           "sampleAnswers": [
             "It is the rapid development of technology that has changed the way people access education."
           ],
-          "explanation": "",
+          "explanation": "\"It is the rapid development of technology that has changed…\".",
           "promptVi": "Chính sự phát triển vũ bão của công nghệ đã làm thay đổi cách con người tiếp cận giáo dục."
         },
         {
@@ -526,7 +526,7 @@
           "sampleAnswers": [
             "What cities need to do is invest more in public infrastructure."
           ],
-          "explanation": "",
+          "explanation": "\"What cities need to do is invest…\" — sau \"is\" dùng V nguyên mẫu.",
           "promptVi": "Điều mà các thành phố cần làm là đầu tư nhiều hơn vào cơ sở hạ tầng công cộng."
         },
         {
@@ -536,7 +536,7 @@
           "sampleAnswers": [
             "It is the lack of time that prevents many people from maintaining a healthy lifestyle."
           ],
-          "explanation": "",
+          "explanation": "\"It is the lack of time that prevents…\"; prevent sb from V-ing.",
           "promptVi": "Chính sự thiếu thốn thời gian đã ngăn cản nhiều người duy trì lối sống lành mạnh."
         }
       ]
@@ -546,9 +546,9 @@
       "lessonCode": "T2-L15",
       "order": 8,
       "type": "sentence_transform",
-      "title": "Cấu trúc song song — Dịch câu",
+      "title": "Parallel structure — Translation",
       "titleEn": "Parallel Structures — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Các thành phần liệt kê phải cùng dạng: V-ing / to V / danh từ / tính từ.",
+      "instruction": "Translate the sentence into English using the target structure: listed items must have the same form — V-ing / to V / noun / adjective.",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 8,
@@ -567,7 +567,7 @@
             "The government should invest in improving the education system, reducing unemployment and enhancing people's quality of life.",
             "Governments should invest in improving the education system, reducing unemployment, and enhancing people's quality of life."
           ],
-          "explanation": "",
+          "explanation": "Ba thành phần sau \"invest in\" cùng dạng V-ing: improving / reducing / enhancing.",
           "promptVi": "Các chính phủ nên đầu tư nâng cao hệ thống giáo dục, giảm thiểu thất nghiệp và cải thiện chất lượng cuộc sống của người dân."
         },
         {
@@ -577,7 +577,7 @@
           "sampleAnswers": [
             "This programme aims to reduce waste, protect the environment and encourage people to recycle."
           ],
-          "explanation": "",
+          "explanation": "Ba động từ nguyên mẫu song song sau \"aims to\": reduce / protect / encourage.",
           "promptVi": "Chương trình này nhằm mục đích giảm thiểu rác thải, bảo vệ môi trường và khuyến khích mọi người tái chế."
         },
         {
@@ -588,7 +588,7 @@
             "University education can help students develop specialised knowledge, improve their critical-thinking skills and expand their career opportunities.",
             "Higher education can help students develop specialised knowledge, improve their critical-thinking skills, and expand their career opportunities."
           ],
-          "explanation": "",
+          "explanation": "Ba cụm V nguyên mẫu song song sau \"help students\": develop / improve / expand.",
           "promptVi": "Giáo dục đại học có thể giúp sinh viên phát triển kiến thức chuyên môn, cải thiện kỹ năng tư duy phản biện và mở rộng cơ hội nghề nghiệp."
         },
         {
@@ -598,7 +598,7 @@
           "sampleAnswers": [
             "An efficient transport system needs to be fast, reliable and affordable."
           ],
-          "explanation": "",
+          "explanation": "Ba tính từ song song: fast, reliable and affordable.",
           "promptVi": "Một hệ thống giao thông hiệu quả cần phải nhanh chóng, đáng tin cậy và có mức giá phải chăng."
         },
         {
@@ -609,7 +609,7 @@
             "Companies should encourage their employees to work efficiently, use their time effectively and maintain a work-life balance.",
             "Companies should encourage employees to work more efficiently, use their time more effectively, and maintain a healthy work-life balance."
           ],
-          "explanation": "",
+          "explanation": "Ba cụm V song song sau \"encourage … to\": work / use / maintain.",
           "promptVi": "Các công ty nên khuyến khích nhân viên làm việc hiệu quả hơn, sử dụng thời gian hợp lý hơn và duy trì sự cân bằng lành mạnh giữa công việc và cuộc sống."
         }
       ]
@@ -619,9 +619,9 @@
       "lessonCode": "T2-L16",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Động từ khuyết thiếu — Dịch câu",
+      "title": "Modal verbs — Translation",
       "titleEn": "Modal Verbs — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Sử dụng phù hợp: should, must, may, might, could, can, would...",
+      "instruction": "Translate the sentence into English using a suitable modal: should, must, may, might, could, can, would…",
       "autoGrade": true,
       "points": 12,
       "estimatedMinutes": 9,
@@ -640,7 +640,7 @@
             "The government should invest more in renewable energy to reduce the country's dependence on fossil fuels.",
             "Governments should invest more in renewable energy to reduce their dependence on fossil fuels."
           ],
-          "explanation": "",
+          "explanation": "\"should\" = nên (lời khuyên, đề xuất).",
           "promptVi": "Chính phủ nên đầu tư nhiều hơn vào năng lượng tái tạo để giảm sự phụ thuộc vào nhiên liệu hóa thạch."
         },
         {
@@ -651,7 +651,7 @@
             "Excessive use of social media may negatively affect the mental well-being of young people.",
             "Excessive use of social media may negatively affect young people's well-being."
           ],
-          "explanation": "",
+          "explanation": "\"may\" = có thể (khả năng, không chắc chắn) — giảm độ khẳng định khi nêu tác hại.",
           "promptVi": "Việc sử dụng mạng xã hội quá mức có thể tác động tiêu cực đến sức khỏe tinh thần và thể chất của giới trẻ."
         },
         {
@@ -661,7 +661,7 @@
           "sampleAnswers": [
             "Cities must take effective measures to address the problem of traffic congestion."
           ],
-          "explanation": "",
+          "explanation": "\"must\" = phải (bắt buộc, cấp thiết).",
           "promptVi": "Các thành phố phải thực hiện các biện pháp hiệu quả để giải quyết vấn đề ùn tắc giao thông."
         },
         {
@@ -671,7 +671,7 @@
           "sampleAnswers": [
             "If implemented on a large scale, this policy could improve people's quality of life."
           ],
-          "explanation": "",
+          "explanation": "\"If implemented on a large scale\" là điều kiện rút gọn; \"could\" = có thể (giả định).",
           "promptVi": "Nếu được triển khai trên diện rộng, chính sách này có thể cải thiện chất lượng cuộc sống của người dân."
         },
         {
@@ -681,7 +681,7 @@
           "sampleAnswers": [
             "Online education can provide more opportunities for people living in rural areas."
           ],
-          "explanation": "",
+          "explanation": "\"can\" = có thể (khả năng thực tế).",
           "promptVi": "Giáo dục trực tuyến có thể mang lại nhiều cơ hội hơn cho những người sống ở vùng nông thôn."
         },
         {
@@ -691,7 +691,7 @@
           "sampleAnswers": [
             "Increasing taxes on tobacco could reduce the number of smokers."
           ],
-          "explanation": "",
+          "explanation": "V-ing làm chủ ngữ (Increasing taxes…) + could + V.",
           "promptVi": "Tăng thuế thuốc lá có thể làm giảm số lượng người hút thuốc."
         }
       ]
@@ -701,9 +701,9 @@
       "lessonCode": "T2-L16",
       "order": 8,
       "type": "sentence_transform",
-      "title": "Cấu trúc so sánh — Dịch câu",
+      "title": "Comparisons — Translation",
       "titleEn": "Comparatives and Superlatives — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Sử dụng: significantly/far/considerably + comparative | the more..., the more/less... | not nearly as...as...",
+      "instruction": "Translate the sentence into English using the target structure: significantly/far/considerably + comparative | the more…, the more/less… | not nearly as…as…",
       "autoGrade": true,
       "points": 12,
       "estimatedMinutes": 9,
@@ -721,7 +721,7 @@
           "sampleAnswers": [
             "Public transport in developed countries is often significantly more efficient than that in developing countries."
           ],
-          "explanation": "",
+          "explanation": "\"significantly + more + adj + than\"; \"that\" thay cho \"public transport\" để khỏi lặp.",
           "promptVi": "Giao thông công cộng ở các nước phát triển thường hiệu quả hơn đáng kể so với ở các nước đang phát triển."
         },
         {
@@ -732,7 +732,7 @@
             "The more time children spend on electronic devices, the less they take part in physical activities.",
             "The more time children spend on electronic devices, the less they participate in physical activities."
           ],
-          "explanation": "",
+          "explanation": "\"The more…, the less…\" = càng…, càng ít…",
           "promptVi": "Trẻ càng dành nhiều thời gian cho các thiết bị điện tử thì càng ít tham gia các hoạt động thể chất."
         },
         {
@@ -743,7 +743,7 @@
             "Living in a big city is often considerably more expensive than living in rural areas.",
             "Living in a large city is often considerably more expensive than living in rural areas."
           ],
-          "explanation": "",
+          "explanation": "\"considerably more expensive than\"; so sánh hai V-ing song song: Living… than living…",
           "promptVi": "Sống ở thành phố lớn thường đắt đỏ hơn đáng kể so với việc sống ở vùng nông thôn."
         },
         {
@@ -754,7 +754,7 @@
             "In some practical fields, online education is not nearly as reliable as traditional education.",
             "Online education is not nearly as reliable as traditional education in some practical fields."
           ],
-          "explanation": "",
+          "explanation": "\"not nearly as + adj + as\" = kém xa.",
           "promptVi": "Giáo dục trực tuyến không đáng tin cậy bằng giáo dục truyền thống trong một số lĩnh vực thực tiễn."
         },
         {
@@ -764,7 +764,7 @@
           "sampleAnswers": [
             "The more people use public transport, the more carbon emissions can be reduced."
           ],
-          "explanation": "",
+          "explanation": "\"The more people use…, the more carbon emissions can be reduced\".",
           "promptVi": "Càng nhiều người sử dụng phương tiện công cộng, lượng khí thải carbon càng có thể được giảm bớt."
         },
         {
@@ -775,7 +775,7 @@
             "In many cases, preventing diseases is far more important than treating them after they have occurred.",
             "In many cases, preventing diseases is far more important than treating them after they have developed."
           ],
-          "explanation": "",
+          "explanation": "\"far more important than\"; hai V-ing song song: preventing… than treating…",
           "promptVi": "Trong nhiều trường hợp, việc phòng bệnh quan trọng hơn rất nhiều so với việc chữa bệnh sau khi chúng đã phát triển."
         }
       ]
@@ -785,9 +785,9 @@
       "lessonCode": "T2-L17",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Cụm phân từ — Dịch câu",
+      "title": "Participle clauses — Translation",
       "titleEn": "Participle Clauses — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Sử dụng: ..., thereby + V-ing | ..., allowing/enabling + sb + to V | Having + V3, ...",
+      "instruction": "Translate the sentence into English using the target structure: …, thereby + V-ing | …, allowing/enabling + sb + to V | Having + V3, …",
       "autoGrade": true,
       "points": 12,
       "estimatedMinutes": 9,
@@ -805,7 +805,7 @@
           "sampleAnswers": [
             "Remote working eliminates the need for employees to commute every day, thereby reducing stress and carbon emissions."
           ],
-          "explanation": "",
+          "explanation": "\", thereby + V-ing\" nêu kết quả trực tiếp của mệnh đề trước.",
           "promptVi": "Làm việc từ xa giúp nhân viên không phải di chuyển đi lại mỗi ngày, từ đó giảm bớt căng thẳng và lượng khí thải carbon."
         },
         {
@@ -816,7 +816,7 @@
             "Online courses provide students with access to knowledge from anywhere, allowing them to study without moving to big cities.",
             "Online courses provide students with access to knowledge from anywhere, allowing them to study without moving to large cities."
           ],
-          "explanation": "",
+          "explanation": "\", allowing + sb + to V\" = cho phép ai làm gì (kết quả).",
           "promptVi": "Các khóa học trực tuyến giúp học sinh tiếp cận kiến thức từ bất cứ đâu mà không cần phải chuyển lên các thành phố lớn."
         },
         {
@@ -826,7 +826,7 @@
           "sampleAnswers": [
             "The government has built more metro lines, thereby helping to reduce the number of cars on the roads."
           ],
-          "explanation": "",
+          "explanation": "\", thereby helping to reduce…\".",
           "promptVi": "Chính phủ đã xây dựng thêm nhiều tuyến metro, qua đó giúp giảm số lượng ô tô trên đường."
         },
         {
@@ -837,7 +837,7 @@
             "Having invested heavily in education, this country has made significant economic progress.",
             "Having invested heavily in education, the country has made significant economic progress."
           ],
-          "explanation": "",
+          "explanation": "\"Having + V3, S + V\" — hành động hoàn tất trước; chủ ngữ hai vế là một.",
           "promptVi": "Đã đầu tư mạnh mẽ vào giáo dục, đất nước này đã đạt được những tiến bộ kinh tế đáng kể."
         },
         {
@@ -847,7 +847,7 @@
           "sampleAnswers": [
             "The use of solar energy reduces dependence on fossil fuels, thereby limiting negative impacts on the environment."
           ],
-          "explanation": "",
+          "explanation": "\", thereby limiting negative impacts on…\".",
           "promptVi": "Việc sử dụng năng lượng mặt trời giúp giảm sự phụ thuộc vào nhiên liệu hóa thạch, từ đó hạn chế những tác động tiêu cực đến môi trường."
         },
         {
@@ -858,7 +858,7 @@
             "Health apps provide users with useful information, allowing them to monitor their health more easily.",
             "Health applications provide users with useful information, allowing them to monitor their health more easily."
           ],
-          "explanation": "",
+          "explanation": "\", allowing them to monitor…\".",
           "promptVi": "Các ứng dụng chăm sóc sức khỏe cung cấp cho người dùng thông tin hữu ích, giúp họ theo dõi sức khỏe của mình dễ dàng hơn."
         }
       ]
@@ -868,9 +868,9 @@
       "lessonCode": "T2-L17",
       "order": 8,
       "type": "sentence_transform",
-      "title": "Cách dùng thì — Dịch câu",
+      "title": "Tenses — Translation",
       "titleEn": "Tense Usage — Translation",
-      "instruction": "Dịch câu sau sang tiếng Anh, dùng đúng cấu trúc: Chọn đúng thì theo ngữ cảnh và mốc thời gian trong câu.",
+      "instruction": "Translate the sentence into English, choosing the right tense for the context and time expressions.",
       "autoGrade": true,
       "points": 24,
       "estimatedMinutes": 18,
@@ -1011,8 +1011,8 @@
       "lessonCode": "T2-L18",
       "order": 1,
       "type": "error_correction",
-      "title": "Sửa ba lỗi ngữ pháp mất band nhiều nhất",
-      "instruction": "Mỗi câu sau mắc một lỗi phổ biến (comma splice, số nhiều/chủ-vị, mạo từ). Viết lại câu cho đúng.",
+      "title": "Fix the three grammar mistakes that cost the most marks",
+      "instruction": "Each sentence contains a common mistake (comma splice, plural / subject–verb agreement, articles). Rewrite the sentence correctly.",
       "autoGrade": true,
       "points": 12,
       "estimatedMinutes": 8,
@@ -1077,8 +1077,8 @@
       "lessonCode": "T2-L18",
       "order": 2,
       "type": "matching",
-      "title": "Bảng tra nhanh: cắm cấu trúc nào vào đâu trong bài",
-      "instruction": "Nối mỗi vị trí trong bài với cấu trúc câu nên dùng ở vị trí đó.",
+      "title": "Quick reference: which structure goes where in the essay",
+      "instruction": "Match each position in the essay with the sentence structure to use there.",
       "autoGrade": true,
       "points": 9,
       "estimatedMinutes": 6,
@@ -1092,47 +1092,56 @@
         {
           "id": "m1",
           "left": "Introduction — câu mở đề",
-          "right": "Present Perfect — \"Over the past two decades, X has gained considerable momentum.\""
+          "right": "Present Perfect — \"Over the past two decades, X has gained considerable momentum.\"",
+          "explanation": "Câu mở đề nói về xu hướng kéo dài tới nay → hiện tại hoàn thành."
         },
         {
           "id": "m2",
           "left": "Introduction — paraphrase",
-          "right": "Câu phức với While/Although — \"While X offers clear benefits, its drawbacks deserve attention.\""
+          "right": "Câu phức với While/Although — \"While X offers clear benefits, its drawbacks deserve attention.\"",
+          "explanation": "Paraphrase đề hai mặt → câu phức While/Although."
         },
         {
           "id": "m3",
           "left": "Body — câu chủ đề",
-          "right": "Câu chẻ hoặc danh từ hóa — \"It is the lack of regulation that lies at the heart of the problem.\""
+          "right": "Câu chẻ hoặc danh từ hóa — \"It is the lack of regulation that lies at the heart of the problem.\"",
+          "explanation": "Câu chủ đề cần nhấn mạnh ý chính → câu chẻ / danh từ hoá."
         },
         {
           "id": "m4",
           "left": "Body — giải thích",
-          "right": "Bị động học thuật — \"It is widely acknowledged that…\""
+          "right": "Bị động học thuật — \"It is widely acknowledged that…\"",
+          "explanation": "Giải thích khách quan → bị động học thuật \"It is widely acknowledged that…\"."
         },
         {
           "id": "m5",
           "left": "Body — nêu kết quả",
-          "right": "Cụm phân từ thereby + V-ing — \"This reduces commuting, thereby lowering emissions.\""
+          "right": "Cụm phân từ thereby + V-ing — \"This reduces commuting, thereby lowering emissions.\"",
+          "explanation": "Nêu kết quả gọn trong một câu → \", thereby + V-ing\"."
         },
         {
           "id": "m6",
           "left": "Body — đẩy ý sâu hơn",
-          "right": "Mệnh đề quan hệ , which… — \"Students gain flexibility, which allows them to work part-time.\""
+          "right": "Mệnh đề quan hệ , which… — \"Students gain flexibility, which allows them to work part-time.\"",
+          "explanation": "Đẩy ý thêm một bước → mệnh đề quan hệ \", which…\"."
         },
         {
           "id": "m7",
           "left": "Body — cảnh báo hệ quả",
-          "right": "Câu điều kiện loại 1 — \"If this trend continues, it could lead to…\""
+          "right": "Câu điều kiện loại 1 — \"If this trend continues, it could lead to…\"",
+          "explanation": "Cảnh báo hệ quả có thể xảy ra → điều kiện loại 1."
         },
         {
           "id": "m8",
           "left": "Body — đề xuất giải pháp",
-          "right": "Bị động + modal — \"Stricter regulations should be introduced.\""
+          "right": "Bị động + modal — \"Stricter regulations should be introduced.\"",
+          "explanation": "Đề xuất giải pháp khách quan → bị động + modal (should be introduced)."
         },
         {
           "id": "m9",
           "left": "Conclusion — chốt quan điểm",
-          "right": "Having + V3 — \"Having weighed both sides, I maintain that…\""
+          "right": "Having + V3 — \"Having weighed both sides, I maintain that…\"",
+          "explanation": "Chốt quan điểm sau khi cân nhắc → \"Having weighed both sides, …\"."
         }
       ]
     }

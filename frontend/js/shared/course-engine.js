@@ -131,6 +131,8 @@
     // into the next one.
     var state = { view: 'overview', overview: null, lesson: null, exercises: [], exIdx: 0, answered: false, timer: null, timeLeft: 0, _submitting: false, results: [], itemIdx: 0 };
     var app = document.getElementById('app');
+    // per-course accent colour in css/course-ui.css
+    if (app) app.dataset.course = cfg.courseCode || '';
 
     function esc(s) {
       return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -253,10 +255,42 @@
         '<span>' + cfg.paywallBlurb + '</span></div>' +
         '<button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Nâng cấp Premium</button></div>';
     }
+    // The lesson a student should open next: the first open lesson that
+    // isn't finished, in course order (null when everything open is done).
+    function nextLesson(d) {
+      var mods = (d && d.modules) || [];
+      for (var mi = 0; mi < mods.length; mi++) {
+        var ls = mods[mi].lessons || [];
+        for (var li = 0; li < ls.length; li++) {
+          if (ls[li].unlocked && !ls[li].done && ls[li].exerciseCount > 0) return { module: mods[mi], lesson: ls[li] };
+        }
+      }
+      return null;
+    }
+    // Which modules are expanded on the overview — remembered per course in
+    // this browser; first visit = only the module holding the next lesson.
+    var MOD_KEY = 'ce-open-modules:' + cfg.courseCode;
+    function openModules() {
+      try { var v = JSON.parse(localStorage.getItem(MOD_KEY) || 'null'); return Array.isArray(v) ? v : null; } catch (e) { return null; }
+    }
+    function saveOpenModules() {
+      var open = Array.prototype.map.call(document.querySelectorAll('details.cx-mod[open]'), function (x) { return x.dataset.mod; });
+      try { localStorage.setItem(MOD_KEY, JSON.stringify(open)); } catch (e) { /* private mode */ }
+    }
+    function lessonStatus(l, isNext) {
+      if (l.done) return '<span class="cx-pill ok"><i class="fas fa-check"></i> Hoàn thành</span>';
+      if (!l.unlocked) return l.needsTestCode ? '<span class="cx-pill lock">🎫 Cần mã</span>' : '<span class="cx-pill lock"><i class="fas fa-lock"></i> Đang khoá</span>';
+      if (isNext) return '<span class="cx-pill go"><i class="fas fa-play"></i> Học tiếp</span>';
+      if (l.doneCount > 0) return '<span class="cx-pill prog">Đang học</span>';
+      return '<span class="cx-pill">Bắt đầu</span>';
+    }
     function renderOverview() {
       var d = state.overview || { modules: [] };
+      var nx = nextLesson(d);
+      var remembered = openModules();
       var mods = (d.modules || []).map(function (m, mi) {
         var lessons = (m.lessons || []).map(function (l) {
+          var isNext = !!(nx && nx.lesson.code === l.code);
           var icCls = l.done ? 'done' : (l.doneCount > 0 ? 'prog' : '');
           var lockIcon = l.needsTestCode ? '🎫' : '🔒';
           var icTxt = l.done ? '✓' : (l.unlocked ? (l.doneCount > 0 ? '▶' : (m.lessons.indexOf(l) + 1)) : lockIcon);
@@ -266,7 +300,8 @@
           // since openLesson() ran unconditionally. Server-side, getLesson/
           // check/submitWriting/submitSpeaking now also hard-enforce this
           // (wt1Service.assertLessonUnlocked), so this is UX, not the only gate.
-          return '<div class="t1-lesson' + (l.unlocked ? '' : ' is-locked') + '" data-code="' + l.code + '"' +
+          return '<div class="t1-lesson' + (l.unlocked ? '' : ' is-locked') + (isNext ? ' is-next' : '') + (l.done ? ' is-done' : '') + '" data-code="' + l.code + '"' +
+            ' role="button" tabindex="0"' +
             (l.unlocked ? '' : ' data-locked="1"') + (l.needsTestCode ? ' data-needs-code="1"' : '') + '>' +
             '<div class="t1-lesson-ic ' + icCls + '">' + icTxt + '</div>' +
             '<div class="t1-lesson-body">' +
@@ -275,20 +310,41 @@
                 (l.practiceCount ? ' + ' + l.practiceCount + ' bài ' + (l.practiceKind === 'reading' ? 'Reading' : l.practiceKind === 'listening' ? 'Listening' : 'Reading/Listening') : '') +
                 (l.scorePercent ? ' · TB ' + l.scorePercent + '%' : '') +
                 (l.durationMinutes ? ' · ' + l.durationMinutes + ' phút' : '') + '</div>' +
-              '<div class="t1-lesson-bar"><span style="width:' + pct + '%"></span></div>' +
-            '</div><i class="fas fa-chevron-right" style="color:#9ca3af"></i></div>';
+              // an empty bar on every untouched lesson was noise
+              (pct > 0 && !l.done ? '<div class="t1-lesson-bar"><span style="width:' + pct + '%"></span></div>' : '') +
+            '</div>' + lessonStatus(l, isNext) + '<i class="fas fa-chevron-right cx-chev"></i></div>';
         }).join('');
         var modCls = cfg.moduleClass ? cfg.moduleClass(m, mi) : 'acc' + ((mi % 5) + 1);
-        var progress = '';
-        if (cfg.moduleProgress !== false) {
-          var doneL = (m.lessons || []).filter(function (x) { return x.done; }).length;
-          progress = '<div style="font-size:11px;color:var(--text3,#9ca3af);margin-top:3px">' + doneL + '/' + (m.lessons || []).length + ' buổi hoàn thành</div>';
-        }
-        return '<div class="t1-module ' + modCls + '"><div class="t1-module-hd"><div class="en">' + esc(m.titleEn || '') + '</div>' +
-          '<h3>' + esc(m.title) + '</h3>' + progress + '</div>' + lessons + '</div>';
+        var total = (m.lessons || []).length;
+        var doneL = (m.lessons || []).filter(function (x) { return x.done; }).length;
+        var mpct = total ? Math.round(doneL / total * 100) : 0;
+        var open = remembered ? remembered.indexOf(m.code) >= 0 : (nx ? nx.module.code === m.code : mi === 0);
+        var progress = cfg.moduleProgress !== false
+          ? '<div class="cx-mod-prog"><span class="cx-mod-bar"><span style="width:' + mpct + '%"></span></span>' + doneL + '/' + total + ' buổi</div>'
+          : '<div class="cx-mod-prog">' + total + ' buổi' + (doneL ? ' · ' + doneL + ' đã xong' : '') + '</div>';
+        // <details>: 45 Speaking lessons (10 modules) used to be one endless
+        // scroll; now only the module in progress starts open.
+        return '<details class="t1-module cx-mod ' + modCls + '" data-mod="' + esc(m.code) + '"' + (open ? ' open' : '') + '>' +
+          '<summary class="t1-module-hd"><div class="cx-mod-hd-main"><div class="en">' + esc(m.titleEn || '') + '</div>' +
+          '<h3>' + esc(m.title) + '</h3>' + progress + '</div><i class="fas fa-chevron-down cx-mod-caret"></i></summary>' +
+          '<div class="cx-mod-body">' + lessons + '</div></details>';
       }).join('');
-      var nMod = (d.modules || []).length, nLes = 0, nEx = 0;
-      (d.modules || []).forEach(function (m) { (m.lessons || []).forEach(function (l) { nLes++; nEx += (l.exerciseCount || 0); }); });
+      var nMod = (d.modules || []).length, nLes = 0, nEx = 0, doneLes = 0, doneEx = 0;
+      (d.modules || []).forEach(function (m) {
+        (m.lessons || []).forEach(function (l) { nLes++; nEx += (l.exerciseCount || 0); doneEx += Math.min(l.doneCount || 0, l.exerciseCount || 0); if (l.done) doneLes++; });
+      });
+      var cpct = nEx ? Math.round(doneEx / nEx * 100) : 0;
+      // "Tiếp tục học" card: overall progress + one button straight into the
+      // next lesson, instead of hunting for it in the module list.
+      var progressCard = nLes ? '<div class="cx-progress">' +
+          '<div class="cx-ring" style="--p:' + cpct + '"><b>' + cpct + '%</b></div>' +
+          '<div class="cx-progress-body"><div class="cx-progress-t">Tiến độ khoá học</div>' +
+            '<div class="cx-progress-s"><b>' + doneLes + '</b>/' + nLes + ' buổi · <b>' + doneEx + '</b>/' + nEx + ' bài tập</div>' +
+            (nx ? '<div class="cx-progress-n">' + (nx.lesson.doneCount ? 'Đang học: ' : 'Buổi tiếp theo: ') + '<b>' + esc(nx.lesson.title) + '</b></div>'
+              : (doneLes ? '<div class="cx-progress-n">🎉 Bạn đã xong mọi buổi đang mở — mở buổi bất kỳ để ôn lại.</div>' : '')) +
+          '</div>' +
+          (nx ? '<button class="cx-cta" id="cx-continue" data-code="' + esc(nx.lesson.code) + '"><i class="fas fa-play"></i> ' + (nx.lesson.doneCount || doneEx ? 'Học tiếp' : 'Bắt đầu học') + '</button>' : '') +
+        '</div>' : '';
       // .pf-hero = the coloured Reading/Listening-style banner (css/playful.css).
       return '<div class="' + (cfg.heroClass || 't1-hero') + ' pf-hero ' + (cfg.heroColor || 'pf-hero-sky') + '"><div class="pf-hero-body">' +
         '<h2>' + (cfg.heroTitle || cfg.title) + '</h2>' +
@@ -297,17 +353,39 @@
         '<button class="t1-btn pf-hbtn is-solid" id="t1-course-hist" style="margin-top:12px"><i class="fas fa-history"></i> Lịch sử luyện tập</button>' +
         '</div></div>' +
         (!isPremium() ? '<div class="t1-premium"><div style="font-size:22px">⭐</div><div class="t"><b>Nâng cấp Premium để luyện tập không giới hạn</b><span>' + cfg.premiumBlurb + '</span></div><button onclick="if(window.openUpgradeModal)window.openUpgradeModal()">Upgrade Premium</button></div>' : '') +
+        progressCard +
+        (nMod > 1 ? '<div class="cx-mod-tools"><span>Nội dung khoá học</span><button type="button" class="cx-link" id="cx-toggle-all"></button></div>' : '') +
         mods;
     }
     function bindOverview() {
       var hb = document.getElementById('t1-course-hist');
       if (hb && window.WT1History) hb.addEventListener('click', function () { window.WT1History.openCourse(); });
+      var sub = document.querySelector('#app .pf-hero-sub');
+      if (sub) sub.addEventListener('click', function () { sub.classList.toggle('is-open'); });
+      var cont = document.getElementById('cx-continue');
+      if (cont) cont.addEventListener('click', function () { openLesson(cont.dataset.code); });
+      var tog = document.getElementById('cx-toggle-all');
+      var mods = document.querySelectorAll('details.cx-mod');
+      function syncTog() {
+        if (!tog) return;
+        var allOpen = Array.prototype.every.call(mods, function (x) { return x.open; });
+        tog.textContent = allOpen ? 'Thu gọn tất cả' : 'Mở tất cả';
+        tog.dataset.open = allOpen ? '1' : '';
+      }
+      mods.forEach(function (x) { x.addEventListener('toggle', function () { saveOpenModules(); syncTog(); }); });
+      if (tog) tog.addEventListener('click', function () {
+        var open = !tog.dataset.open;
+        mods.forEach(function (x) { x.open = open; });
+      });
+      syncTog();
       document.querySelectorAll('.t1-lesson').forEach(function (el) {
-        el.addEventListener('click', function () {
+        function go() {
           if (el.dataset.needsCode === '1') { openTestCodeModal(el.dataset.code); return; }
           if (el.dataset.locked === '1') { openTestCodeModal(el.dataset.code, 'locked'); return; }
           openLesson(el.dataset.code);
-        });
+        }
+        el.addEventListener('click', go);
+        el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
       });
     }
 
@@ -358,42 +436,87 @@
     }
 
 
+    function exDone(ex) {
+      return !!(ex && ex.lastAttempt && (ex.lastAttempt.score != null || ex.lastAttempt.hasAi || ex.lastAttempt.pendingReview));
+    }
+    // Right-hand status of an exercise card: last score / waiting / open.
+    function exStatus(ex) {
+      var la = ex.lastAttempt;
+      if (!exDone(ex)) return '<i class="fas fa-chevron-right cx-chev"></i>';
+      if (la.pendingReview) return '<span class="cx-pill wait">⏳ Chờ GV</span>';
+      if (la.score != null && OBJECTIVE[ex.type]) {
+        var s = Math.round(la.score);
+        return '<span class="cx-pill ' + (s >= 80 ? 'ok' : s >= 50 ? 'prog' : 'bad') + '">' + s + '%</span>';
+      }
+      return '<span class="cx-pill ok"><i class="fas fa-check"></i> Đã làm</span>';
+    }
     function renderLesson() {
       var l = state.lesson || {};
-      var cards = state.exercises.map(function (ex) {
-        var done = ex.lastAttempt && (ex.lastAttempt.score != null || ex.lastAttempt.hasAi || ex.lastAttempt.pendingReview);
+      var n = state.exercises.length;
+      var doneN = state.exercises.filter(exDone).length;
+      var firstTodo = state.exercises.findIndex(function (e) { return !exDone(e); });
+      var cards = state.exercises.map(function (ex, i) {
+        var done = exDone(ex);
         var plug = TYPES[ex.type];
         var card = (plug && plug.card) ? plug.card(ex) : null;
         var cls = card ? card.cls : '';
-        return '<div class="t1-ex-card' + cls + '" data-code="' + ex.code + '">' +
-          '<span class="t1-ex-type' + cls + '">' + (card ? card.icon : '') + esc(TYPE_LABEL[ex.type] || ex.type) + '</span>' +
-          '<span class="nm">' + esc(ex.title) + (card && card.meta ? card.meta : (ex.points ? ' · ' + ex.points + 'đ' : '')) + '</span>' +
-          (done ? '<span class="t1-ex-done"><i class="fas fa-check-circle"></i></span>' : '<i class="fas fa-chevron-right" style="color:#9ca3af"></i>') +
-          '</div>';
+        var meta = [];
+        if (ex.estimatedMinutes) meta.push('<span><i class="far fa-clock"></i> ' + ex.estimatedMinutes + ' phút</span>');
+        if (ex.timerMinutes) meta.push('<span><i class="fas fa-stopwatch"></i> tính giờ ' + ex.timerMinutes + '′</span>');
+        if (!(card && card.meta) && ex.points) meta.push('<span>' + ex.points + 'đ</span>');
+        return '<div class="t1-ex-card cx-ex' + cls + (done ? ' is-done' : '') + (i === firstTodo ? ' is-next' : '') + '" data-code="' + ex.code + '" role="button" tabindex="0">' +
+          '<span class="cx-step">' + (done ? '<i class="fas fa-check"></i>' : (i + 1)) + '</span>' +
+          '<span class="cx-ex-body"><span class="nm">' + esc(ex.title) + '</span>' +
+            '<span class="cx-ex-meta"><span class="t1-ex-type' + cls + '">' + (card ? card.icon : '') + esc(TYPE_LABEL[ex.type] || ex.type) + '</span>' +
+            (card && card.meta ? card.meta : '') + meta.join('') + '</span></span>' +
+          exStatus(ex) + '</div>';
       });
       // cfg.lessonList(l, cards, exercises) may lay the cards out itself
       // (Mindset interleaves its Reading/Listening tests in book order).
       var exs = cfg.lessonList ? cfg.lessonList(l, cards, state.exercises) : cards.join('');
+      var pct = n ? Math.round(doneN / n * 100) : 0;
+      var startLabel = !n ? '' : firstTodo < 0 ? '<i class="fas fa-rotate-left"></i> Làm lại từ đầu'
+        // Mindset (cfg.lessonList) numbers its steps in book order, not by
+        // exercise index — no number in its button.
+        : doneN ? '<i class="fas fa-play"></i> Làm tiếp' + (cfg.lessonList ? '' : ' bài ' + (firstTodo + 1)) : '<i class="fas fa-play"></i> Bắt đầu' + (cfg.lessonList ? '' : ' bài 1');
       return '<div class="ce-backrow"><button class="t1-btn" id="t1-back-ov-btn" title="Về danh sách buổi học"><i class="fas fa-arrow-left"></i> Quay lại</button></div>' +
-        '<div class="t1-crumb"><span id="t1-back-ov">Khoá học</span> › <b>' + esc(l.title || '') + '</b></div>' +
-        '<div class="t1-head" style="padding-top:2px"><h2 class="t1-h2" style="font-size:17px">' + esc(l.title || '') + '</h2></div>' +
+        '<div class="cx-lhead">' +
+          '<div class="t1-crumb"><span id="t1-back-ov" role="link" tabindex="0">Khoá học</span> › ' + esc(l.title || '') + '</div>' +
+          '<h2 class="cx-lhead-t">' + esc(l.title || '') + (l.isTest ? ' <span class="t1-tag">Kiểm tra</span>' : '') + '</h2>' +
+          (n ? '<div class="cx-lhead-meta"><span><i class="fas fa-list-check"></i> ' + n + ' bài tập</span>' +
+            (l.durationMinutes ? '<span><i class="far fa-clock"></i> ' + l.durationMinutes + ' phút</span>' : '') +
+            '<span><i class="fas fa-circle-check"></i> Đã xong ' + doneN + '/' + n + '</span></div>' +
+            '<div class="cx-lhead-row"><div class="cx-bar"><span style="width:' + pct + '%"></span></div>' +
+            '<button class="cx-cta" id="cx-start" data-i="' + (firstTodo < 0 ? 0 : firstTodo) + '">' + startLabel + '</button></div>' : '') +
+        '</div>' +
         ((l.objectives && l.objectives.length) ? '<div class="t1-objs"><div class="t1-objs-t">🎯 Mục tiêu buổi học</div><ul>' + l.objectives.map(function (o) { return '<li>' + esc(o) + '</li>'; }).join('') + '</ul></div>' : '') +
         renderTheory(l.theory) +
         ((l.keyLanguage && l.keyLanguage.length) ? '<details class="t1-key"><summary>🧩 Ngữ pháp / Cấu trúc cần nhớ</summary><ul>' + l.keyLanguage.map(function (k) { return '<li>' + esc(k) + '</li>'; }).join('') + '</ul></details>' : '') +
         (cfg.lessonExtra ? cfg.lessonExtra(l) : '') +
+        (n && !cfg.lessonList ? '<div class="cx-sec-h" id="cx-ex-h"><span>📝 Bài tập</span><span class="cx-sec-c">' + doneN + '/' + n + ' đã làm</span></div>' : '') +
         '<div class="t1-ex-list">' + exs + '</div>' +
         (cfg.lessonFooter ? cfg.lessonFooter(l) : '');
     }
+    function openExerciseAt(i) {
+      if (i < 0 || i >= state.exercises.length) return;
+      state.exIdx = i;
+      state.itemIdx = 0;
+      state.view = 'exercise';
+      history.pushState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', cfg.pagePath + '?lesson=' + state.lesson.code + '&ex=' + curEx().code);
+      render();
+      window.scrollTo(0, 0);
+    }
     function bindLesson() {
-      document.getElementById('t1-back-ov').addEventListener('click', goOverview);
+      var crumb = document.getElementById('t1-back-ov');
+      crumb.addEventListener('click', goOverview);
+      crumb.addEventListener('keydown', function (e) { if (e.key === 'Enter') goOverview(); });
       document.getElementById('t1-back-ov-btn').addEventListener('click', goOverview);
+      var st = document.getElementById('cx-start');
+      if (st) st.addEventListener('click', function () { openExerciseAt(+st.dataset.i || 0); });
       document.querySelectorAll('.t1-ex-card').forEach(function (el) {
-        el.addEventListener('click', function () {
-          state.exIdx = state.exercises.findIndex(function (e) { return e.code === el.dataset.code; });
-          state.view = 'exercise';
-          history.pushState({ view: 'exercise', lesson: state.lesson.code, ex: el.dataset.code }, '', cfg.pagePath + '?lesson=' + state.lesson.code + '&ex=' + el.dataset.code);
-          render();
-        });
+        function go() { openExerciseAt(state.exercises.findIndex(function (e) { return e.code === el.dataset.code; })); }
+        el.addEventListener('click', go);
+        el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
       });
     }
 
@@ -690,9 +813,12 @@
         '<span style="font-size:12px;color:#9ca3af;font-weight:700">Bài ' + (state.exIdx + 1) + ' / ' + state.exercises.length +
         '<button class="t1-hist-btn" id="t1-hist-btn" title="Lịch sử luyện tập bài này"><i class="fas fa-history"></i> Lịch sử</button></span>' +
         (ex.timerMinutes ? '<span class="t1-timer" id="t1-timer">' + timerHtml(ex.timerMinutes * 60) + '</span>' : '<span></span>') + '</div>' +
-        (ui.progressHtml ? ui.progressHtml(pct) : '<div class="t1-prog"><span style="width:' + pct + '%"></span></div>') +
-        '<div class="t1-crumb" style="padding-top:8px"><span id="t1-back-ls">' + esc(state.lesson.title) + '</span> › <b>' + esc(TYPE_LABEL[ex.type] || ex.type) + '</b></div>' +
-        '<div class="t1-instr">' + esc(ex.instruction || ex.title) + '</div>' +
+        (ui.progressHtml ? ui.progressHtml(pct) : stepsHtml()) +
+        '<div class="t1-crumb" style="padding-top:8px"><span id="t1-back-ls" role="link" tabindex="0">' + esc(state.lesson.title) + '</span> › <b>' + esc(TYPE_LABEL[ex.type] || ex.type) + '</b></div>' +
+        // The exercise's own title used to be shown nowhere on this screen —
+        // only its instruction (or the title when there was none).
+        '<div class="cx-task"><div class="cx-task-t">' + esc(ex.title || TYPE_LABEL[ex.type] || '') + '</div>' +
+          (ex.instruction && ex.instruction !== ex.title ? '<div class="t1-instr">' + esc(ex.instruction) + '</div>' : '') + '</div>' +
         (paired ? renderStimulusHeader(ex.stimulus) : renderStimulus(ex.stimulus)) +
         (ex.wordBank && ex.wordBank.length ? '<div class="t1-wb">' + ex.wordBank.map(function (w) { return '<span class="chip">' + esc(w) + '</span>'; }).join('') + '</div>' : '') +
         (paired
@@ -701,6 +827,16 @@
         '<div class="t1-fb hidden" id="t1-fb"></div></div></div>';
     }
 
+    // One segment per exercise of the lesson (done / current / to do) —
+    // click one to jump straight to that exercise.
+    function stepsHtml() {
+      return '<div class="cx-steps" aria-label="Các bài trong buổi học">' + state.exercises.map(function (e, i) {
+        var done = exDone(e) || state.results.some(function (r) { return r.code === e.code; });
+        return '<button type="button" class="cx-seg' + (done ? ' done' : '') + (i === state.exIdx ? ' cur' : '') + '" data-i="' + i + '"' +
+          ' title="Bài ' + (i + 1) + ': ' + esc(e.title || '') + '" aria-label="Bài ' + (i + 1) + (done ? ' (đã làm)' : '') + '"' +
+          (i === state.exIdx ? ' aria-current="step"' : '') + '></button>';
+      }).join('') + '</div>';
+    }
     function fmt(s) { s = Math.max(0, s); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
 
     // Drag a chip from a pool onto a single-chip drop zone (or back to the
@@ -728,6 +864,17 @@
       document.getElementById('t1-prev').addEventListener('click', prevExercise);
       document.getElementById('t1-quit').addEventListener('click', goToLesson);
       document.getElementById('t1-back-ls').addEventListener('click', goToLesson);
+      document.querySelectorAll('.cx-seg').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var i = +b.dataset.i;
+          if (i === state.exIdx) return;
+          stopTimer();
+          state.exIdx = i; state.itemIdx = 0;
+          history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', cfg.pagePath + '?lesson=' + state.lesson.code + '&ex=' + curEx().code);
+          render();
+          window.scrollTo(0, 0);
+        });
+      });
       document.getElementById('t1-submit').addEventListener('click', submit);
       document.getElementById('t1-hist-btn').addEventListener('click', openHistory);
       if (window.WT1History && window.WT1History.mountSide) window.WT1History.mountSide(document.getElementById('ce-hist-side'), ex.code, ex.title);
@@ -1170,6 +1317,8 @@
       state.exIdx++;
       history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', cfg.pagePath + '?lesson=' + state.lesson.code + '&ex=' + curEx().code);
       render();
+      // the feedback panel left the page scrolled to the bottom
+      window.scrollTo(0, 0);
     }
     // "Làm lại" on the feedback screen — redo the SAME exercise right away
     // instead of forcing the student back through the whole lesson. render()
@@ -1186,6 +1335,8 @@
       state.exIdx--;
       history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', cfg.pagePath + '?lesson=' + state.lesson.code + '&ex=' + curEx().code);
       render();
+      // the feedback panel left the page scrolled to the bottom
+      window.scrollTo(0, 0);
     }
     function goToLesson() {
       stopTimer(); state.view = 'lesson';

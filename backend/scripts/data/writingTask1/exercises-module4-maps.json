@@ -5,8 +5,8 @@
       "lessonCode": "T1-L13",
       "order": 1,
       "type": "gap_fill",
-      "title": "PRACTICE 1 – Điền hướng còn thiếu",
-      "instruction": "Dựa vào sơ đồ tám hướng, điền từ tiếng Anh chính xác vào chỗ trống.",
+      "title": "PRACTICE 1 – Fill in the missing directions",
+      "instruction": "Using the eight-point compass, fill in each blank with the correct English word.",
       "source": "original",
       "skillTags": [
         "map-directions"
@@ -114,8 +114,8 @@
       "lessonCode": "T1-L13",
       "order": 2,
       "type": "sentence_transform",
-      "title": "PRACTICE 2 – Viết câu mô tả vị trí",
-      "instruction": "Dùng 4 cấu trúc đã học, viết một câu hoàn chỉnh cho mỗi gợi ý. Mỗi câu dùng một cấu trúc khác nhau.",
+      "title": "PRACTICE 2 – Write sentences describing location",
+      "instruction": "Using the 4 structures you have learnt, write one complete sentence for each prompt. Use a different structure in each sentence.",
       "source": "original",
       "skillTags": [
         "map-position",
@@ -135,7 +135,8 @@
             "There was a hospital in the northeast of the town.",
             "In the northeast corner of the town, there was a hospital.",
             "A hospital was located in the northeastern area of the town."
-          ]
+          ],
+          "explanation": "\"in the northeast of + nơi\" = nằm bên trong phần phía đông bắc của nơi đó."
         },
         {
           "id": "q2",
@@ -145,7 +146,8 @@
           "sampleAnswers": [
             "The railway station was located to the west of the river.",
             "The railway station was situated to the west of the river."
-          ]
+          ],
+          "explanation": "\"to the west of the river\" = nằm bên ngoài, về phía tây con sông; \"was located\" = nằm ở."
         },
         {
           "id": "q3",
@@ -155,7 +157,8 @@
           "sampleAnswers": [
             "Two factories were situated in the bottom right-hand corner of the map.",
             "There were two factories in the bottom right-hand corner of the map."
-          ]
+          ],
+          "explanation": "\"were situated in the bottom right-hand corner of the map\" — số nhiều nên dùng were."
         },
         {
           "id": "q4",
@@ -164,7 +167,8 @@
           "cue": "S + was located/situated in …",
           "sampleAnswers": [
             "A large park was located in the centre of the village."
-          ]
+          ],
+          "explanation": "\"S + was located in the centre of…\" — cấu trúc vị trí bị động."
         },
         {
           "id": "q5",
@@ -173,7 +177,8 @@
           "cue": "There was + N + to the … of …",
           "sampleAnswers": [
             "There was a car park to the south of the school."
-          ]
+          ],
+          "explanation": "\"There was + N + to the south of + nơi\"."
         }
       ],
       "rubric": {
@@ -199,8 +204,8 @@
       "lessonCode": "T1-L13",
       "order": 3,
       "type": "mcq",
-      "title": "Warm-up – in the north of hay to the north of?",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Warm-up – in the north of or to the north of?",
+      "instruction": "Choose the correct answer.",
       "source": "added",
       "skillTags": [
         "map-directions",
@@ -298,8 +303,8 @@
       "lessonCode": "T1-L14",
       "order": 1,
       "type": "categorize",
-      "title": "Bảng từ vựng mô tả sự thay đổi – phân loại động từ",
-      "instruction": "Kéo mỗi động từ / cụm từ vào đúng nhóm nghĩa.",
+      "title": "Vocabulary for describing change – classify the verbs",
+      "instruction": "Drag each verb / phrase into the correct meaning group.",
       "source": "original",
       "skillTags": [
         "map-change-vocabulary"
@@ -330,62 +335,74 @@
         {
           "id": "q1",
           "text": "enlarged",
-          "category": "expand"
+          "category": "expand",
+          "explanation": "\"enlarged\" = làm to ra → mở rộng."
         },
         {
           "id": "q2",
           "text": "extended",
-          "category": "expand"
+          "category": "expand",
+          "explanation": "\"extended\" = kéo dài, nới rộng → mở rộng."
         },
         {
           "id": "q3",
           "text": "widened",
-          "category": "expand"
+          "category": "expand",
+          "explanation": "\"widened\" = làm rộng ra (thường là đường) → mở rộng."
         },
         {
           "id": "q4",
           "text": "demolished",
-          "category": "remove"
+          "category": "remove",
+          "explanation": "\"demolished\" = phá dỡ (công trình)."
         },
         {
           "id": "q5",
           "text": "knocked down",
-          "category": "remove"
+          "category": "remove",
+          "explanation": "\"knocked down\" = đập bỏ (công trình)."
         },
         {
           "id": "q6",
           "text": "cut down",
-          "category": "remove"
+          "category": "remove",
+          "explanation": "\"cut down\" = chặt hạ (cây)."
         },
         {
           "id": "q7",
           "text": "cleared",
-          "category": "remove"
+          "category": "remove",
+          "explanation": "\"cleared\" = dọn sạch, phát quang (rừng, đất)."
         },
         {
           "id": "q8",
           "text": "constructed",
-          "category": "add"
+          "category": "add",
+          "explanation": "\"constructed\" = được xây mới."
         },
         {
           "id": "q9",
           "text": "erected",
-          "category": "add"
+          "category": "add",
+          "explanation": "\"erected\" = được dựng lên (toà nhà, tượng)."
         },
         {
           "id": "q10",
           "text": "planted",
-          "category": "add"
+          "category": "add",
+          "explanation": "\"planted\" = được trồng thêm (cây) → thêm vào."
         },
         {
           "id": "q11",
           "text": "converted",
-          "category": "change"
+          "category": "change",
+          "explanation": "\"converted (into)\" = chuyển đổi công năng thành."
         },
         {
           "id": "q12",
           "text": "transformed",
-          "category": "change"
+          "category": "change",
+          "explanation": "\"transformed (into)\" = biến đổi hoàn toàn thành."
         }
       ]
     },
@@ -394,8 +411,8 @@
       "lessonCode": "T1-L14",
       "order": 2,
       "type": "gap_fill",
-      "title": "PRACTICE 1 – Fill in the blanks (thị trấn ven cảng, 2005 & 2010)",
-      "instruction": "Quan sát hai bản đồ rồi điền vào chỗ trống bằng từ / cụm từ trong khung (A. chopped down · B. constructed · C. built (x2) · D. converted into · E. reopened · F. relocated to · G. make way for · H. replaced by).",
+      "title": "PRACTICE 1 – Fill in the blanks (harbour town, 2005 & 2010)",
+      "instruction": "Study the two maps, then fill in the blanks with the words / phrases in the box (A. chopped down · B. constructed · C. built (x2) · D. converted into · E. reopened · F. relocated to · G. make way for · H. replaced by).",
       "source": "original",
       "skillTags": [
         "map-change-vocabulary",
@@ -433,7 +450,8 @@
                 "constructed"
               ]
             }
-          ]
+          ],
+          "explanation": "Nhà kho xuất hiện mới → \"was built / constructed\"."
         },
         {
           "id": "q2",
@@ -450,7 +468,8 @@
                 "relocated to"
               ]
             }
-          ]
+          ],
+          "explanation": "Bến xe bị thay bằng bãi đỗ xe (\"converted into / replaced by\") và dời đi chỗ khác (\"relocated to\")."
         },
         {
           "id": "q3",
@@ -467,7 +486,8 @@
                 "make way for"
               ]
             }
-          ]
+          ],
+          "explanation": "Cây bị chặt (\"chopped down\") để nhường chỗ (\"make way for\") cho bệnh viện."
         },
         {
           "id": "q4",
@@ -484,7 +504,8 @@
                 "constructed"
               ]
             }
-          ]
+          ],
+          "explanation": "Đường ray bỏ hoang được mở lại (\"reopened\"), nhà ga mới được xây (\"built\")."
         },
         {
           "id": "q5",
@@ -496,7 +517,8 @@
                 "converted into"
               ]
             }
-          ]
+          ],
+          "explanation": "Trang trại trở thành sân golf → \"replaced by / converted into\"."
         },
         {
           "id": "q6",
@@ -508,7 +530,8 @@
                 "built"
               ]
             }
-          ]
+          ],
+          "explanation": "Con đường mới xuất hiện → \"constructed / built\"."
         }
       ]
     },
@@ -517,8 +540,8 @@
       "lessonCode": "T1-L14",
       "order": 3,
       "type": "sentence_transform",
-      "title": "PRACTICE 2 – Viết lại câu bằng bị động (quá khứ đơn)",
-      "instruction": "Viết lại mỗi câu ở thể bị động, thì quá khứ đơn, dùng động từ gợi ý trong ngoặc.",
+      "title": "PRACTICE 2 – Rewrite in the passive (past simple)",
+      "instruction": "Rewrite each sentence in the passive, past simple, using the verb in brackets.",
       "source": "original",
       "skillTags": [
         "passive-voice",
@@ -533,10 +556,11 @@
           "id": "q1",
           "prompt": "They removed the old factory in 2005. (demolish)",
           "sampleAnswers": [
-            "The old factory was demolished in",
+            "The old factory was demolished in 2005.",
             "The old factory was demolished in 2005."
           ],
-          "promptVi": "Nhà máy cũ đã bị phá bỏ vào năm 2005."
+          "promptVi": "Nhà máy cũ đã bị phá bỏ vào năm 2005.",
+          "explanation": "Bị động quá khứ đơn: was + V3 → \"was demolished\"; giữ mốc \"in 2005\"."
         },
         {
           "id": "q2",
@@ -544,7 +568,8 @@
           "sampleAnswers": [
             "The small park was converted into a car park."
           ],
-          "promptVi": "Công viên nhỏ đã được quy hoạch thành bãi đỗ xe."
+          "promptVi": "Công viên nhỏ đã được quy hoạch thành bãi đỗ xe.",
+          "explanation": "\"made … into\" → \"was converted into\"."
         },
         {
           "id": "q3",
@@ -552,7 +577,8 @@
           "sampleAnswers": [
             "The shopping centre was extended."
           ],
-          "promptVi": "Trung tâm thương mại đã được mở rộng."
+          "promptVi": "Trung tâm thương mại đã được mở rộng.",
+          "explanation": "\"made … bigger\" → \"was extended\"."
         },
         {
           "id": "q4",
@@ -560,7 +586,8 @@
           "sampleAnswers": [
             "The stadium was relocated to the north of the river."
           ],
-          "promptVi": "Sân vận động đã được dời ra phía bắc con sông."
+          "promptVi": "Sân vận động đã được dời ra phía bắc con sông.",
+          "explanation": "\"moved … to\" → \"was relocated to\"."
         },
         {
           "id": "q5",
@@ -568,7 +595,8 @@
           "sampleAnswers": [
             "The woodland was replaced by a supermarket."
           ],
-          "promptVi": "Khu rừng đã bị thay thế bằng một siêu thị."
+          "promptVi": "Khu rừng đã bị thay thế bằng một siêu thị.",
+          "explanation": "\"took the place of\" → \"was replaced by\" (chủ ngữ mới là thứ bị thay)."
         },
         {
           "id": "q6",
@@ -576,7 +604,8 @@
           "sampleAnswers": [
             "Many trees were planted around the new hospital."
           ],
-          "promptVi": "Nhiều cây xanh đã được trồng xung quanh bệnh viện mới."
+          "promptVi": "Nhiều cây xanh đã được trồng xung quanh bệnh viện mới.",
+          "explanation": "Số nhiều \"Many trees\" → \"were planted\"."
         }
       ],
       "rubric": {
@@ -599,8 +628,8 @@
       "lessonCode": "T1-L14",
       "order": 4,
       "type": "sentence_writing",
-      "title": "HOMEWORK – 10 câu mô tả thay đổi",
-      "instruction": "Viết 10 câu mô tả thay đổi tưởng tượng cho thị trấn nơi em sống, mỗi câu dùng một động từ khác nhau trong bảng từ vựng mục 2.8.",
+      "title": "HOMEWORK – 10 sentences describing change",
+      "instruction": "Write 10 sentences describing imaginary changes to your home town, using a different verb from the vocabulary table in section 2.8 in each sentence.",
       "source": "original",
       "skillTags": [
         "map-change-vocabulary",
@@ -617,7 +646,7 @@
           "S + was/were + V3",
           "S appeared / disappeared / remained unchanged"
         ],
-        "mustUse": 8,
+        "mustUse": 2,
         "checklist": [
           "Đủ 10 câu, mỗi câu một động từ mô tả thay đổi khác nhau",
           "Ít nhất 8 câu ở thể bị động quá khứ đơn",
@@ -635,8 +664,8 @@
       "lessonCode": "T1-L15",
       "order": 1,
       "type": "matching",
-      "title": "Nối mẫu câu Overview với nghĩa tiếng Việt",
-      "instruction": "Nối mỗi câu mẫu Overview (dạng Maps) với nghĩa tiếng Việt tương ứng.",
+      "title": "Match Overview sentence patterns with their meanings",
+      "instruction": "Match each Overview sentence pattern (Maps) with its Vietnamese meaning.",
       "source": "original",
       "skillTags": [
         "maps-overview"
@@ -649,32 +678,38 @@
         {
           "id": "q1",
           "left": "Overall, a comparison between the two maps reveals a change from a largely rural into a mainly urban landscape.",
-          "right": "Nhìn chung, so sánh hai bản đồ cho thấy khu vực chuyển từ nông thôn sang đô thị là chủ yếu."
+          "right": "Nhìn chung, so sánh hai bản đồ cho thấy khu vực chuyển từ nông thôn sang đô thị là chủ yếu.",
+          "explanation": "\"a change from a largely rural into a mainly urban landscape\" = từ nông thôn thành đô thị."
         },
         {
           "id": "q2",
           "left": "Over the period, the area witnessed dramatic changes.",
-          "right": "Trong giai đoạn này, khu vực đã trải qua nhiều thay đổi đáng kể."
+          "right": "Trong giai đoạn này, khu vực đã trải qua nhiều thay đổi đáng kể.",
+          "explanation": "\"witnessed dramatic changes\" = trải qua nhiều thay đổi đáng kể."
         },
         {
           "id": "q3",
           "left": "During the 10-year period, the industrial area was totally transformed.",
-          "right": "Trong 10 năm, khu công nghiệp đã được thay đổi hoàn toàn."
+          "right": "Trong 10 năm, khu công nghiệp đã được thay đổi hoàn toàn.",
+          "explanation": "\"was totally transformed\" = được thay đổi hoàn toàn."
         },
         {
           "id": "q4",
           "left": "Overall, it is clear that the town has undergone a considerable transformation over the period.",
-          "right": "Nhìn chung, rõ ràng thị trấn đã trải qua một sự thay đổi đáng kể trong suốt giai đoạn."
+          "right": "Nhìn chung, rõ ràng thị trấn đã trải qua một sự thay đổi đáng kể trong suốt giai đoạn.",
+          "explanation": "\"has undergone a considerable transformation\" = trải qua một sự thay đổi đáng kể."
         },
         {
           "id": "q5",
           "left": "Overall, there have been several changes, the most noticeable being the construction of new housing.",
-          "right": "Nhìn tổng thể, có nhiều thay đổi, nổi bật nhất là việc xây dựng khu nhà ở mới."
+          "right": "Nhìn tổng thể, có nhiều thay đổi, nổi bật nhất là việc xây dựng khu nhà ở mới.",
+          "explanation": "\"the most noticeable being…\" = nổi bật nhất là…"
         },
         {
           "id": "q6",
           "left": "The village changed considerably over the time period.",
-          "right": "Ngôi làng đã thay đổi đáng kể trong suốt giai đoạn."
+          "right": "Ngôi làng đã thay đổi đáng kể trong suốt giai đoạn.",
+          "explanation": "\"changed considerably\" = thay đổi đáng kể."
         }
       ]
     },
@@ -684,7 +719,7 @@
       "order": 2,
       "type": "gap_fill",
       "title": "PRACTICE – Gap fill: Youngsville, New Zealand (1990 & 2010)",
-      "instruction": "Đọc đoạn văn mẫu Band 7.0 và điền một từ trong khung vào mỗi chỗ trống.",
+      "instruction": "Read the Band 7.0 model text and fill in each blank with a word from the box.",
       "source": "original",
       "skillTags": [
         "maps-full-text",
@@ -841,8 +876,8 @@
       "lessonCode": "T1-L15",
       "order": 3,
       "type": "sentence_writing",
-      "title": "PRACTICE 2 – Viết Introduction và Overview",
-      "instruction": "Che phần bài mẫu Youngsville. Tự viết một câu Introduction và hai câu Overview bằng từ ngữ của mình.",
+      "title": "PRACTICE 2 – Write an Introduction and Overview",
+      "instruction": "Cover the Youngsville model answer. Write one Introduction sentence and two Overview sentences in your own words.",
       "source": "original",
       "skillTags": [
         "maps-introduction",
@@ -866,7 +901,7 @@
           "Overall, a comparison … reveals …",
           "Overall, the town has undergone …"
         ],
-        "mustUse": 2,
+        "mustUse": 1,
         "checklist": [
           "Introduction CHỈ một câu, đã paraphrase, không chép đề",
           "Overview có chữ Overall và nêu 2–3 thay đổi lớn, KHÔNG liệt kê chi tiết từng công trình",
@@ -884,8 +919,8 @@
       "lessonCode": "T1-L16",
       "order": 1,
       "type": "sentence_transform",
-      "title": "PRACTICE 1 – Nối câu bằng \"with + S + being + V3\"",
-      "instruction": "Nối hai câu thành một câu duy nhất, dùng cấu trúc with + S + being + V3.",
+      "title": "PRACTICE 1 – Join sentences with \"with + S + being + V3\"",
+      "instruction": "Join the two sentences into one, using the structure with + S + being + V3.",
       "source": "original",
       "skillTags": [
         "maps-body",
@@ -902,7 +937,8 @@
           "sampleAnswers": [
             "The residential area was redeveloped, with many old houses being knocked down."
           ],
-          "promptVi": "Khu dân cư đã được quy hoạch lại, với nhiều ngôi nhà cũ bị đập bỏ."
+          "promptVi": "Khu dân cư đã được quy hoạch lại, với nhiều ngôi nhà cũ bị đập bỏ.",
+          "explanation": "Câu 2 rút gọn thành \"with + S + being + V3\": with many old houses being knocked down."
         },
         {
           "id": "q2",
@@ -910,7 +946,8 @@
           "sampleAnswers": [
             "The city centre changed dramatically, with a shopping mall being constructed in the north."
           ],
-          "promptVi": "Trung tâm thành phố đã thay đổi chóng mặt, với một trung tâm thương mại được xây dựng ở phía bắc."
+          "promptVi": "Trung tâm thành phố đã thay đổi chóng mặt, với một trung tâm thương mại được xây dựng ở phía bắc.",
+          "explanation": "\"with a shopping mall being constructed in the north\"."
         },
         {
           "id": "q3",
@@ -918,7 +955,8 @@
           "sampleAnswers": [
             "The park was made smaller, with half of the trees being cut down."
           ],
-          "promptVi": "Công viên đã bị thu nhỏ lại, với một nửa số cây bị chặt hạ."
+          "promptVi": "Công viên đã bị thu nhỏ lại, với một nửa số cây bị chặt hạ.",
+          "explanation": "\"with half of the trees being cut down\"."
         },
         {
           "id": "q4",
@@ -926,7 +964,8 @@
           "sampleAnswers": [
             "The seaside resort was upgraded, with a new ferry terminal being added."
           ],
-          "promptVi": "Khu nghỉ dưỡng ven biển đã được nâng cấp, với một bến phà mới được xây thêm."
+          "promptVi": "Khu nghỉ dưỡng ven biển đã được nâng cấp, với một bến phà mới được xây thêm.",
+          "explanation": "\"with a new ferry terminal being added\"."
         },
         {
           "id": "q5",
@@ -934,7 +973,8 @@
           "sampleAnswers": [
             "The school site was reorganised, with the farmland being converted into a sports field."
           ],
-          "promptVi": "Khuôn viên trường học đã được sắp xếp lại, trong đó phần đất nông nghiệp được chuyển thành sân thể thao."
+          "promptVi": "Khuôn viên trường học đã được sắp xếp lại, trong đó phần đất nông nghiệp được chuyển thành sân thể thao.",
+          "explanation": "\"with the farmland being converted into a sports field\"."
         }
       ],
       "rubric": {
@@ -957,8 +997,8 @@
       "lessonCode": "T1-L16",
       "order": 2,
       "type": "mcq",
-      "title": "PRACTICE 2 – Chọn cách chia thân bài",
-      "instruction": "Với mỗi đề, chọn cách chia thân bài phù hợp: Cách 1 (theo thời gian) hay Cách 2 (theo khu vực).",
+      "title": "PRACTICE 2 – Choose how to split the body",
+      "instruction": "For each task, choose the best way to split the body: Option 1 (by time) or Option 2 (by area).",
       "source": "original",
       "skillTags": [
         "maps-body",
@@ -1040,8 +1080,8 @@
       "lessonCode": "T1-L17",
       "order": 1,
       "type": "paragraph_writing",
-      "title": "PRACTICE – Viết Introduction + Overview cho West Park Secondary School",
-      "instruction": "Che bài mẫu. Viết một câu Introduction và một Overview (2 câu) cho đề West Park Secondary School (1950, 1980, 2010).",
+      "title": "PRACTICE – Introduction + Overview for West Park Secondary School",
+      "instruction": "Cover the model answer. Write one Introduction sentence and an Overview (2 sentences) for the West Park Secondary School task (1950, 1980, 2010).",
       "source": "original",
       "skillTags": [
         "maps-introduction",
@@ -1082,7 +1122,7 @@
       "lessonCode": "T1-L17",
       "order": 2,
       "type": "full_task1",
-      "title": "PRACTICE – Bài hoàn chỉnh West Park Secondary School (20 phút)",
+      "title": "PRACTICE – Full essay: West Park Secondary School (20 minutes)",
       "instruction": "The diagrams show the changes that have taken place at West Park Secondary School since its construction in 1950. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words in about 20 minutes.",
       "source": "original",
       "skillTags": [
@@ -1146,7 +1186,7 @@
       "lessonCode": "T1-L18",
       "order": 1,
       "type": "full_task1",
-      "title": "Đề 1 – Templeton seaside resort (2000 & 2013)",
+      "title": "Task 1 – Templeton seaside resort (2000 & 2013)",
       "instruction": "The maps below show the changes that took place at the seaside resort of Templeton between 2000 and 2013. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "original",
       "skillTags": [
@@ -1193,7 +1233,7 @@
       "lessonCode": "T1-L18",
       "order": 2,
       "type": "full_task1",
-      "title": "Đề 2 – Eastminster village (1999 & 2009)",
+      "title": "Task 2 – Eastminster village (1999 & 2009)",
       "instruction": "The maps show the transformation of the village of Eastminster over a ten-year period. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "original",
       "skillTags": [
@@ -1239,8 +1279,8 @@
       "lessonCode": "T1-L18",
       "order": 3,
       "type": "mcq",
-      "title": "Chiến lược: bản đồ có mốc tự nhiên ở giữa",
-      "instruction": "Chọn đáp án đúng về chiến lược viết bài Maps.",
+      "title": "Strategy: maps with a natural landmark in the middle",
+      "instruction": "Choose the correct answer about strategies for Maps essays.",
       "source": "added",
       "skillTags": [
         "maps-strategy"
@@ -1337,7 +1377,7 @@
       "lessonCode": "T1-L18",
       "order": 4,
       "type": "full_task1",
-      "title": "Đề 3 – Islip town centre (hiện tại và quy hoạch)",
+      "title": "Task 3 – Islip town centre (present and planned)",
       "instruction": "The maps below show the centre of a small town called Islip as it is now, and plans for its development. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "original",
       "skillTags": [
@@ -1383,8 +1423,8 @@
       "lessonCode": "T1-L18",
       "order": 5,
       "type": "full_task1",
-      "title": "Đề 4 – City Hospital road access (2007 & 2010)",
-      "instruction": "The two maps below show road access to a city hospital in 2007 and 2010. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. Dàn ý 4 đoạn: Introduction – Overview (số lượng & loại thay đổi) – Body 1 (bus access + roundabouts) – Body 2 (parking).",
+      "title": "Task 4 – City Hospital road access (2007 & 2010)",
+      "instruction": "The two maps below show road access to a city hospital in 2007 and 2010. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. 4-paragraph outline: Introduction – Overview (number & type of changes) – Body 1 (bus access + roundabouts) – Body 2 (parking).",
       "source": "original",
       "skillTags": [
         "maps-full-writing",
@@ -1429,8 +1469,8 @@
       "lessonCode": "T1-L18",
       "order": 6,
       "type": "gap_fill",
-      "title": "Bản đồ quy hoạch – chọn đúng thì",
-      "instruction": "Điền dạng đúng của động từ trong ngoặc: thì hiện tại đơn cho hiện trạng, will be + V3 / is going to be + V3 cho quy hoạch.",
+      "title": "Planning maps – choose the right tense",
+      "instruction": "Fill in the correct form of the verb in brackets: present simple for what exists now, will be + V3 / is going to be + V3 for the plans.",
       "source": "added",
       "skillTags": [
         "future-plans",
@@ -1524,8 +1564,8 @@
       "lessonCode": "T1-L18B",
       "order": 1,
       "type": "mcq",
-      "title": "Nhận diện dạng Layout — 2 biến thể",
-      "instruction": "Đọc đề bài hoặc câu ví dụ, xác định đúng biến thể của dạng Layout và cách viết phù hợp.",
+      "title": "Identify the Layout task — 2 variants",
+      "instruction": "Read the task or example sentence, identify which Layout variant it is and the right way to write it.",
       "source": "original",
       "skillTags": [
         "maps-layout",
@@ -1623,7 +1663,7 @@
       "lessonCode": "T1-L18B",
       "order": 2,
       "type": "full_task1",
-      "title": "PRACTICE — Bài hoàn chỉnh: Hai phương án bố trí phòng hội thảo (Plan A vs Plan B)",
+      "title": "PRACTICE — Full essay: two layouts for a conference room (Plan A vs Plan B)",
       "instruction": "The plans below show two different seating layout options, Plan A and Plan B, for the same seminar room. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "original",
       "skillTags": [
@@ -1688,7 +1728,7 @@
       "lessonCode": "T1-L18B",
       "order": 3,
       "type": "full_task1",
-      "title": "HOMEWORK — Bài hoàn chỉnh: Văn phòng hiện tại và tương lai (Present vs Future)",
+      "title": "HOMEWORK — Full essay: the present and future office (Present vs Future)",
       "instruction": "The plans below show the present layout of an office building and its planned layout in the future. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "source": "original",
       "skillTags": [
@@ -1755,8 +1795,8 @@
       "lessonCode": "T1-TEST4",
       "order": 1,
       "type": "mcq",
-      "title": "PHẦN A1 – Trắc nghiệm (10 điểm)",
-      "instruction": "Chọn đáp án đúng. Mỗi câu 1 điểm.",
+      "title": "PART A1 – Multiple choice (10 points)",
+      "instruction": "Choose the correct answer. 1 point each.",
       "source": "original",
       "skillTags": [
         "module3-review"
@@ -2013,8 +2053,8 @@
       "lessonCode": "T1-TEST4",
       "order": 2,
       "type": "gap_fill",
-      "title": "PHẦN A2 – Điền từ (10 điểm)",
-      "instruction": "Điền một từ thích hợp vào chỗ trống (dạng bị động quá khứ đơn khi cần).",
+      "title": "PART A2 – Fill in the blanks (10 points)",
+      "instruction": "Fill in each blank with a suitable word (past simple passive where needed).",
       "source": "original",
       "skillTags": [
         "module3-review",
@@ -2165,8 +2205,8 @@
       "lessonCode": "T1-TEST4",
       "order": 3,
       "type": "error_correction",
-      "title": "PHẦN A3 – Sửa lỗi (10 điểm)",
-      "instruction": "Mỗi câu có đúng một lỗi. Viết lại cả câu cho đúng. Mỗi câu 2 điểm.",
+      "title": "PART A3 – Error correction (10 points)",
+      "instruction": "Each sentence has exactly one mistake. Rewrite the whole sentence correctly. 2 points each.",
       "source": "original",
       "skillTags": [
         "module3-review",
@@ -2236,8 +2276,8 @@
       "lessonCode": "T1-TEST4",
       "order": 4,
       "type": "sentence_transform",
-      "title": "PHẦN A4 – Viết lại câu (10 điểm)",
-      "instruction": "Viết lại câu dùng từ gợi ý trong ngoặc, giữ nguyên nghĩa. Mỗi câu 2 điểm.",
+      "title": "PART A4 – Rewrite the sentences (10 points)",
+      "instruction": "Rewrite each sentence using the word in brackets, keeping the same meaning. 2 points each.",
       "source": "original",
       "skillTags": [
         "module3-review"
@@ -2255,7 +2295,8 @@
             "A stadium was built in the place of the trees.",
             "A stadium was built in the place of the woodland that had been cut down."
           ],
-          "promptVi": "Một sân vận động đã được xây lên thay cho hàng cây."
+          "promptVi": "Một sân vận động đã được xây lên thay cho hàng cây.",
+          "explanation": "\"in the place of\" = ở chỗ của (thứ đã bị bỏ đi)."
         },
         {
           "id": "q2",
@@ -2264,7 +2305,8 @@
           "sampleAnswers": [
             "The town centre was modernised, with many old buildings being demolished."
           ],
-          "promptVi": "Trung tâm thị trấn đã được hiện đại hóa, với nhiều tòa nhà cổ bị phá bỏ."
+          "promptVi": "Trung tâm thị trấn đã được hiện đại hóa, với nhiều tòa nhà cổ bị phá bỏ.",
+          "explanation": "Gộp hai câu bằng \"with + S + being + V3\"."
         },
         {
           "id": "q3",
@@ -2273,7 +2315,8 @@
           "sampleAnswers": [
             "A supermarket was built where a school once stood."
           ],
-          "promptVi": "Một siêu thị đã được xây dựng ngay vị trí từng là ngôi trường."
+          "promptVi": "Một siêu thị đã được xây dựng ngay vị trí từng là ngôi trường.",
+          "explanation": "\"where … once stood\" = nơi trước kia từng có…"
         },
         {
           "id": "q4",
@@ -2282,7 +2325,8 @@
           "sampleAnswers": [
             "The shopping centre was extended."
           ],
-          "promptVi": "Trung tâm thương mại đã được mở rộng."
+          "promptVi": "Trung tâm thương mại đã được mở rộng.",
+          "explanation": "\"became bigger\" → bị động \"was extended\"."
         },
         {
           "id": "q5",
@@ -2292,7 +2336,8 @@
             "The airport remained unchanged.",
             "The airport remained intact throughout the period."
           ],
-          "promptVi": "Khu vực sân bay vẫn giữ nguyên không thay đổi."
+          "promptVi": "Khu vực sân bay vẫn giữ nguyên không thay đổi.",
+          "explanation": "\"did not change\" → \"remained unchanged\"."
         }
       ],
       "rubric": {
@@ -2319,7 +2364,7 @@
       "lessonCode": "T1-TEST4",
       "order": 5,
       "type": "full_task1",
-      "title": "PHẦN B – Bài viết mô tả bản đồ (60 điểm)",
+      "title": "PART B – Describe the maps (60 points)",
       "instruction": "The maps below show the changes that took place in the village of Riverton between 2000 and 2020. Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. You should spend about 20 minutes on this part.",
       "source": "original",
       "skillTags": [
@@ -2386,8 +2431,8 @@
       "lessonCode": "T1-L13",
       "order": 4,
       "type": "sentence_writing",
-      "title": "HOMEWORK — 8 câu mô tả vị trí trên bản đồ Youngsville",
-      "instruction": "Nhìn vào bản đồ Youngsville và viết 8 câu mô tả vị trí của 8 công trình khác nhau. Mỗi cấu trúc trong mục 13.3 (In the … corner/area of … · To the … of … · S + was located/situated in … · There was + N + to the … of …) phải xuất hiện ít nhất hai lần.",
+      "title": "HOMEWORK — 8 sentences describing locations on the Youngsville map",
+      "instruction": "Look at the Youngsville map and write 8 sentences describing the locations of 8 different buildings. Each structure in section 13.3 (In the … corner/area of … · To the … of … · S + was located/situated in … · There was + N + to the … of …) must appear at least twice.",
       "source": "original",
       "skillTags": [
         "map-directions",
@@ -2428,8 +2473,8 @@
       "lessonCode": "T1-L15",
       "order": 4,
       "type": "sentence_writing",
-      "title": "HOMEWORK — 5 mẫu câu Overview cho một thành phố ở Việt Nam",
-      "instruction": "Chọn 5 mẫu câu Overview em thấy dễ nhớ nhất trong bảng 15.3 và viết lại mỗi mẫu câu cho một thành phố có thật ở Việt Nam mà em biết rõ.",
+      "title": "HOMEWORK — 5 Overview patterns for a city in Vietnam",
+      "instruction": "Choose the 5 Overview patterns from table 15.3 that you find easiest to remember and rewrite each one about a real city in Vietnam that you know well.",
       "source": "original",
       "skillTags": [
         "maps-overview"
@@ -2444,7 +2489,7 @@
         "minWords": 60,
         "targetStructures": [
           "Overall, a comparison between the two maps reveals …",
-          "Over the period, … witnessed dramatic changes.",
+          "Over the period / Over the past … years, … has witnessed dramatic changes.",
           "Overall, it is clear that … has undergone a considerable transformation …"
         ],
         "checklist": [
@@ -2453,7 +2498,8 @@
           "Không đưa chi tiết nhỏ vào Overview"
         ],
         "sampleAnswer": "Over the past 20 years, Da Nang has witnessed dramatic changes, with many new hotels being built along the coast.\nOverall, a comparison between the two maps of Ho Chi Minh City reveals a change from a mainly low-rise into a high-rise urban landscape.\nFrom 2005 to 2020, the centre of Hanoi was considerably modernised, while the Old Quarter remained largely unchanged.",
-        "commonErrors": []
+        "commonErrors": [],
+        "mustUse": 2
       }
     },
     {
@@ -2461,8 +2507,8 @@
       "lessonCode": "T1-L16",
       "order": 3,
       "type": "paragraph_writing",
-      "title": "HOMEWORK — Hai đoạn thân bài Youngsville (chia theo khu vực)",
-      "instruction": "Viết hai đoạn thân bài cho bản đồ Youngsville (Buổi 15) theo Cách 2 — chia theo khu vực Bắc và Nam sông Alanah. Mỗi đoạn 4–5 câu, phải dùng ít nhất một lần cấu trúc with + S + being + V3.",
+      "title": "HOMEWORK — Two Youngsville body paragraphs (split by area)",
+      "instruction": "Write two body paragraphs for the Youngsville map (Lesson 15) using Option 2 — split into the areas north and south of the River Alanah. Each paragraph should have 4–5 sentences and use with + S + being + V3 at least once.",
       "source": "original",
       "skillTags": [
         "maps-body",

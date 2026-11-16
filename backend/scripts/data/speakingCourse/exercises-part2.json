@@ -5,8 +5,8 @@
       "lessonCode": "SPK-P2-L01",
       "order": 1,
       "type": "mcq",
-      "title": "Cơ chế Part 2 & khung 4 phần",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "How Part 2 works & the 4-part frame",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -137,40 +137,46 @@
       "lessonCode": "SPK-P2-L01",
       "order": 2,
       "type": "matching",
-      "title": "Nối phần bài nói với mẫu câu mở đầu",
-      "instruction": "Nối mỗi phần của khung với câu mở đầu điển hình.",
+      "title": "Match each part of the talk with an opening line",
+      "instruction": "Match each part of the frame with a typical opening sentence.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "1. INTRODUCTION (10–15s)",
-          "right": "I'd like to talk about… · This is… · I chose this because…"
+          "right": "I'd like to talk about… · This is… · I chose this because…",
+          "explanation": "Introduction: giới thiệu đối tượng và lý do chọn — ngắn gọn, 10–15 giây."
         },
         {
           "id": "m2",
           "left": "2. DESCRIPTION (40–50s)",
-          "right": "First of all,… · What I remember most is… · For example,…"
+          "right": "First of all,… · What I remember most is… · For example,…",
+          "explanation": "Description: phần dài nhất, mô tả chi tiết + ví dụ."
         },
         {
           "id": "m3",
           "left": "3. WHY IT IS SPECIAL (30–40s)",
-          "right": "The reason I chose this is that… · It means a lot to me because… · Since then,…"
+          "right": "The reason I chose this is that… · It means a lot to me because… · Since then,…",
+          "explanation": "Why it is special: giải thích ý nghĩa/ảnh hưởng với bản thân."
         },
         {
           "id": "m4",
           "left": "4. CONCLUSION (10–15s)",
-          "right": "Overall,… · I'll always remember… · I'd definitely recommend…"
+          "right": "Overall,… · I'll always remember… · I'd definitely recommend…",
+          "explanation": "Conclusion: chốt lại bằng đánh giá, kỷ niệm hoặc lời khuyên."
         },
         {
           "id": "m5",
           "left": "Giây 1–10 của phần chuẩn bị",
-          "right": "Đọc cue card, xác định đối tượng chính, chọn ngay không đắn đo"
+          "right": "Đọc cue card, xác định đối tượng chính, chọn ngay không đắn đo",
+          "explanation": "Những giây đầu của 1 phút chuẩn bị: đọc đề và chốt đối tượng ngay."
         },
         {
           "id": "m6",
           "left": "Giây 40–55 của phần chuẩn bị",
-          "right": "Quyết định câu mở đầu và câu kết, nhẩm trong đầu một lần"
+          "right": "Quyết định câu mở đầu và câu kết, nhẩm trong đầu một lần",
+          "explanation": "Cuối giờ chuẩn bị: chuẩn bị sẵn câu mở và câu kết để vào bài trơn tru."
         }
       ]
     },
@@ -179,8 +185,8 @@
       "lessonCode": "SPK-P2-L01",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp một long turn theo đúng khung",
-      "instruction": "Kéo để xếp các câu theo thứ tự một bài nói hoàn chỉnh (cue card: Describe a person who has helped you).",
+      "title": "Put a long turn in order",
+      "instruction": "Drag the sentences into the order of a complete talk (cue card: Describe a person who has helped you).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -208,8 +214,8 @@
       "lessonCode": "SPK-P2-L01",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi câu mở đầu",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix opening sentences",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -247,8 +253,8 @@
       "lessonCode": "SPK-P2-L01",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: long turn theo khung 4 phần",
-      "instruction": "Chỉ 30 giây chuẩn bị (ghi từ khoá), rồi ghi âm nói liên tục ít nhất 75 giây theo đủ 4 phần. AI chấm theo 4 tiêu chí.",
+      "title": "Speaking: a long turn with the 4-part frame",
+      "instruction": "Only 30 seconds to prepare (note keywords), then record yourself speaking for at least 75 seconds covering all 4 parts. The AI marks it on the 4 criteria.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -290,7 +296,7 @@
       "order": 1,
       "type": "mcq",
       "title": "Keyword notes",
-      "instruction": "Chọn đáp án đúng.",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -421,35 +427,40 @@
       "lessonCode": "SPK-P2-L02",
       "order": 2,
       "type": "matching",
-      "title": "Nối mục đích với mẫu câu mở rộng",
-      "instruction": "Nối mỗi mục đích với cụm dùng để mở rộng danh từ khi nói.",
+      "title": "Match each purpose with an expanding phrase",
+      "instruction": "Match each purpose with the phrase used to expand a noun when speaking.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "Thêm vị trí",
-          "right": "which is located… / a five-minute walk from… / just around the corner from…"
+          "right": "which is located… / a five-minute walk from… / just around the corner from…",
+          "explanation": "Vị trí: which is located… / just around the corner from…"
         },
         {
           "id": "m2",
           "left": "Thêm thời gian",
-          "right": "I first went there when… / I have been going there since…"
+          "right": "I first went there when… / I have been going there since…",
+          "explanation": "Thời gian: I first went there when… / I have been going there since…"
         },
         {
           "id": "m3",
           "left": "Thêm chi tiết giác quan",
-          "right": "What strikes you first is… / The moment you walk in, you…"
+          "right": "What strikes you first is… / The moment you walk in, you…",
+          "explanation": "Giác quan: What strikes you first is… / The moment you walk in…"
         },
         {
           "id": "m4",
           "left": "Thêm câu chuyện",
-          "right": "I remember one time when… / There was this one occasion when…"
+          "right": "I remember one time when… / There was this one occasion when…",
+          "explanation": "Câu chuyện: I remember one time when…"
         },
         {
           "id": "m5",
           "left": "Thêm ý nghĩa",
-          "right": "It has become a sort of… / For me it is more than just a…"
+          "right": "It has become a sort of… / For me it is more than just a…",
+          "explanation": "Ý nghĩa: For me it is more than just a…"
         }
       ]
     },
@@ -458,8 +469,8 @@
       "lessonCode": "SPK-P2-L02",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp các lớp mở rộng danh từ",
-      "instruction": "Kéo để xếp các phiên bản của cụm danh từ từ TRẦN NHẤT đến CHI TIẾT NHẤT.",
+      "title": "Order the layers of noun expansion",
+      "instruction": "Drag the versions of the noun phrase into order from the BAREST to the MOST DETAILED.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -489,8 +500,8 @@
       "lessonCode": "SPK-P2-L02",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi trật tự tính từ & hiện tại hoàn thành",
-      "instruction": "Viết lại cả cụm/câu cho đúng.",
+      "title": "Fix adjective order & present perfect errors",
+      "instruction": "Rewrite the whole phrase / sentence correctly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -528,8 +539,8 @@
       "lessonCode": "SPK-P2-L02",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: từ 6 từ khoá thành 90 giây",
-      "instruction": "30 giây ghi chú CHỈ từ khoá (tối đa 8), rồi ghi âm nói 90 giây phát triển từ đúng trang ghi chú đó. Liếc giấy tối đa 3 lần.",
+      "title": "Speaking: from 6 keywords to 90 seconds",
+      "instruction": "Take 30 seconds to note ONLY keywords (8 at most), then record a 90-second talk built from those notes. Glance at your notes no more than 3 times.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -577,8 +588,8 @@
       "lessonCode": "SPK-P2-L03",
       "order": 1,
       "type": "mcq",
-      "title": "Mở đầu & câu kết",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Openings & closing lines",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -709,30 +720,34 @@
       "lessonCode": "SPK-P2-L03",
       "order": 2,
       "type": "matching",
-      "title": "Nối kiểu câu kết với nhóm chủ đề",
-      "instruction": "Nối mỗi kiểu câu kết với nhóm cue card hợp nhất.",
+      "title": "Match closing-line types with topic groups",
+      "instruction": "Match each type of closing line with the cue-card group it suits best.",
       "autoGrade": true,
       "points": 8,
       "items": [
         {
           "id": "m1",
           "left": "Tổng kết đánh giá: Overall, it was a truly [adj] experience.",
-          "right": "Mọi nhóm — an toàn nhất"
+          "right": "Mọi nhóm — an toàn nhất",
+          "explanation": "Câu tổng kết đánh giá hợp với mọi đề — lựa chọn an toàn nhất."
         },
         {
           "id": "m2",
           "left": "Nhìn lại / suy ngẫm: Looking back, I think it taught me…",
-          "right": "EVENTS, ACTIVITIES"
+          "right": "EVENTS, ACTIVITIES",
+          "explanation": "Suy ngẫm về bài học hợp với sự việc và hoạt động đã trải qua."
         },
         {
           "id": "m3",
           "left": "Khuyến nghị: I'd definitely recommend it to anyone who…",
-          "right": "PLACES, CULTURE / MEDIA"
+          "right": "PLACES, CULTURE / MEDIA",
+          "explanation": "Lời khuyên hợp với nơi chốn, sách/phim/chương trình."
         },
         {
           "id": "m4",
           "left": "Cam kết tương lai: I'll always remember… / I hope to… one day.",
-          "right": "PEOPLE, OBJECTS"
+          "right": "PEOPLE, OBJECTS",
+          "explanation": "Cam kết/ghi nhớ hợp với người và đồ vật gắn bó."
         }
       ]
     },
@@ -741,8 +756,8 @@
       "lessonCode": "SPK-P2-L03",
       "order": 3,
       "type": "categorize",
-      "title": "Câu kết TỐT hay câu kết BỊ CẤM?",
-      "instruction": "Kéo mỗi câu kết vào đúng cột.",
+      "title": "A GOOD closing line or a BANNED one?",
+      "instruction": "Drag each closing line into the correct column.",
       "autoGrade": true,
       "points": 10,
       "categories": [
@@ -759,42 +774,50 @@
         {
           "id": "c1",
           "text": "Overall, they've quietly reshaped how I get through my day.",
-          "category": "good"
+          "category": "good",
+          "explanation": "Có \"Overall\" và một ý đánh giá rõ ràng → câu kết tốt."
         },
         {
           "id": "c2",
           "text": "That's all.",
-          "category": "banned"
+          "category": "banned",
+          "explanation": "\"That's all.\" kết thúc cụt, không có nội dung → bị cấm."
         },
         {
           "id": "c3",
           "text": "Looking back, that visit is probably why I still enjoy old maps.",
-          "category": "good"
+          "category": "good",
+          "explanation": "\"Looking back…\" + bài học → câu kết tốt."
         },
         {
           "id": "c4",
           "text": "Yeah… so… (rồi im lặng)",
-          "category": "banned"
+          "category": "banned",
+          "explanation": "Bỏ lửng rồi im lặng → mất điểm Fluency."
         },
         {
           "id": "c5",
           "text": "I'd definitely recommend it to anyone visiting the area.",
-          "category": "good"
+          "category": "good",
+          "explanation": "Lời khuyên cụ thể → câu kết tốt."
         },
         {
           "id": "c6",
           "text": "Sorry, I don't know what else to say.",
-          "category": "banned"
+          "category": "banned",
+          "explanation": "Xin lỗi vì hết ý → cho giám khảo thấy bạn bí."
         },
         {
           "id": "c7",
           "text": "All in all, it's one of those things I'd struggle to live without.",
-          "category": "good"
+          "category": "good",
+          "explanation": "\"All in all\" + đánh giá → câu kết tốt."
         },
         {
           "id": "c8",
           "text": "Finished.",
-          "category": "banned"
+          "category": "banned",
+          "explanation": "\"Finished.\" không phải ngôn ngữ tự nhiên → bị cấm."
         }
       ]
     },
@@ -803,8 +826,8 @@
       "lessonCode": "SPK-P2-L03",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Sửa lỗi mệnh đề quan hệ mở đầu",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Fix relative clauses in openings",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -851,8 +874,8 @@
       "lessonCode": "SPK-P2-L03",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: chú trọng 15 giây đầu và 15 giây cuối",
-      "instruction": "30 giây chuẩn bị, ghi âm nói 60–75 giây. Câu mở phải paraphrase đề + có mệnh đề quan hệ; câu kết bắt đầu bằng Overall / Looking back / All in all, giọng xuống dứt khoát.",
+      "title": "Speaking: focus on the first and last 15 seconds",
+      "instruction": "Prepare for 30 seconds, then record a 60–75 second talk. Your opening must paraphrase the task and include a relative clause; your closing line starts with Overall / Looking back / All in all, with a firm falling intonation.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -893,8 +916,8 @@
       "lessonCode": "SPK-P2-L04",
       "order": 1,
       "type": "mcq",
-      "title": "NHÓM PEOPLE — nguyên tắc",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "The PEOPLE group — principles",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1025,50 +1048,58 @@
       "lessonCode": "SPK-P2-L04",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm tả người với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Phrases for describing people and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "charismatic",
-          "right": "có sức lôi cuốn"
+          "right": "có sức lôi cuốn",
+          "explanation": "VD: She's so charismatic that everyone listens when she speaks."
         },
         {
           "id": "m2",
           "left": "down-to-earth",
-          "right": "chân chất, không kiêu ngạo"
+          "right": "chân chất, không kiêu ngạo",
+          "explanation": "VD: Despite his success, he's very down-to-earth."
         },
         {
           "id": "m3",
           "left": "outgoing personality",
-          "right": "tính cách hướng ngoại"
+          "right": "tính cách hướng ngoại",
+          "explanation": "VD: Her outgoing personality makes her easy to talk to."
         },
         {
           "id": "m4",
           "left": "look up to",
-          "right": "ngưỡng mộ, noi gương"
+          "right": "ngưỡng mộ, noi gương",
+          "explanation": "VD: I've always looked up to my grandfather."
         },
         {
           "id": "m5",
           "left": "genuine kindness",
-          "right": "sự tốt bụng thật sự"
+          "right": "sự tốt bụng thật sự",
+          "explanation": "VD: What I admire is her genuine kindness to strangers."
         },
         {
           "id": "m6",
           "left": "resilient",
-          "right": "kiên cường"
+          "right": "kiên cường",
+          "explanation": "VD: She was resilient enough to start again after failing."
         },
         {
           "id": "m7",
           "left": "leave a lasting impression",
-          "right": "để lại ấn tượng lâu dài"
+          "right": "để lại ấn tượng lâu dài",
+          "explanation": "VD: Our first meeting left a lasting impression on me."
         },
         {
           "id": "m8",
           "left": "a real eye-opener",
-          "right": "điều làm mở mang tầm nhìn"
+          "right": "điều làm mở mang tầm nhìn",
+          "explanation": "VD: Working with him was a real eye-opener."
         }
       ]
     },
@@ -1077,8 +1108,8 @@
       "lessonCode": "SPK-P2-L04",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp bài nói nhóm PEOPLE theo template",
-      "instruction": "Kéo để xếp các câu theo đúng 5 phần của template PEOPLE.",
+      "title": "Order a PEOPLE talk using the template",
+      "instruction": "Drag the sentences into the 5 parts of the PEOPLE template.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1108,8 +1139,8 @@
       "lessonCode": "SPK-P2-L04",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi mệnh đề quan hệ who / whom / whose",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix who / whom / whose relative clauses",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1147,8 +1178,8 @@
       "lessonCode": "SPK-P2-L04",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: mô tả một người (nhóm PEOPLE)",
-      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây theo template PEOPLE. Mỗi tính từ phải có bằng chứng; có phần ảnh hưởng lên bản thân.",
+      "title": "Speaking: describe a person (PEOPLE group)",
+      "instruction": "Prepare for 45 seconds, then record a 75–100 second talk using the PEOPLE template. Every adjective needs evidence; include how the person influenced you.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -1189,8 +1220,8 @@
       "lessonCode": "SPK-P2-L05",
       "order": 1,
       "type": "mcq",
-      "title": "NHÓM PLACES — nguyên tắc",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "The PLACES group — principles",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1321,50 +1352,58 @@
       "lessonCode": "SPK-P2-L05",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm tả nơi chốn với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Phrases for describing places and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "breathtaking scenery",
-          "right": "cảnh đẹp ngoạn mục"
+          "right": "cảnh đẹp ngoạn mục",
+          "explanation": "VD: The mountains offer breathtaking scenery."
         },
         {
           "id": "m2",
           "left": "pristine beaches",
-          "right": "bãi biển hoang sơ, sạch đẹp"
+          "right": "bãi biển hoang sơ, sạch đẹp",
+          "explanation": "VD: The island is known for its pristine beaches."
         },
         {
           "id": "m3",
           "left": "lively and vibrant",
-          "right": "sôi động, nhộn nhịp"
+          "right": "sôi động, nhộn nhịp",
+          "explanation": "VD: The night market is lively and vibrant."
         },
         {
           "id": "m4",
           "left": "iconic landmark",
-          "right": "công trình biểu tượng"
+          "right": "công trình biểu tượng",
+          "explanation": "VD: The Japanese Bridge is an iconic landmark of Hoi An."
         },
         {
           "id": "m5",
           "left": "a perfect mix of…",
-          "right": "sự kết hợp hoàn hảo của…"
+          "right": "sự kết hợp hoàn hảo của…",
+          "explanation": "VD: The city offers a perfect mix of old and new."
         },
         {
           "id": "m6",
           "left": "serene and tranquil",
-          "right": "yên bình, thanh tịnh"
+          "right": "yên bình, thanh tịnh",
+          "explanation": "VD: The temple is serene and tranquil early in the morning."
         },
         {
           "id": "m7",
           "left": "a hidden gem",
-          "right": "nơi tuyệt vời ít ai biết"
+          "right": "nơi tuyệt vời ít ai biết",
+          "explanation": "VD: This little café is a hidden gem."
         },
         {
           "id": "m8",
           "left": "off the beaten track",
-          "right": "xa khỏi chỗ đông người"
+          "right": "xa khỏi chỗ đông người",
+          "explanation": "VD: The village is off the beaten track, so it's rarely crowded."
         }
       ]
     },
@@ -1373,8 +1412,8 @@
       "lessonCode": "SPK-P2-L05",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp bài nói nhóm PLACES theo template",
-      "instruction": "Kéo để xếp các câu theo đúng 5 phần của template PLACES.",
+      "title": "Order a PLACES talk using the template",
+      "instruction": "Drag the sentences into the 5 parts of the PLACES template.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1404,8 +1443,8 @@
       "lessonCode": "SPK-P2-L05",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi giới từ nơi chốn & so sánh",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix place prepositions & comparisons",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1440,8 +1479,8 @@
       "lessonCode": "SPK-P2-L05",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: mô tả một nơi (nhóm PLACES)",
-      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây theo template PLACES. Có ≥1 chi tiết giác quan, một lý do cá nhân, KHÔNG dùng \"beautiful\" hay \"nice\".",
+      "title": "Speaking: describe a place (PLACES group)",
+      "instruction": "Prepare for 45 seconds, then record a 75–100 second talk using the PLACES template. Include at least 1 sensory detail and a personal reason, and do NOT use \"beautiful\" or \"nice\".",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -1482,8 +1521,8 @@
       "lessonCode": "SPK-P2-L06",
       "order": 1,
       "type": "mcq",
-      "title": "NHÓM OBJECTS — nguyên tắc",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "The OBJECTS group — principles",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1614,50 +1653,58 @@
       "lessonCode": "SPK-P2-L06",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm tả đồ vật với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Phrases for describing objects and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "sentimental value",
-          "right": "giá trị tinh thần / kỷ niệm"
+          "right": "giá trị tinh thần / kỷ niệm",
+          "explanation": "VD: The watch has huge sentimental value for me."
         },
         {
           "id": "m2",
           "left": "pass down / hand down",
-          "right": "truyền lại cho thế hệ sau"
+          "right": "truyền lại cho thế hệ sau",
+          "explanation": "VD: The ring was handed down from my grandmother."
         },
         {
           "id": "m3",
           "left": "a keepsake",
-          "right": "vật lưu niệm"
+          "right": "vật lưu niệm",
+          "explanation": "VD: I keep the ticket as a keepsake."
         },
         {
           "id": "m4",
           "left": "worn with age",
-          "right": "cũ đi theo thời gian"
+          "right": "cũ đi theo thời gian",
+          "explanation": "VD: The leather is worn with age, but I still use it."
         },
         {
           "id": "m5",
           "left": "irreplaceable",
-          "right": "không thể thay thế được"
+          "right": "không thể thay thế được",
+          "explanation": "VD: To me, that camera is irreplaceable."
         },
         {
           "id": "m6",
           "left": "heirloom",
-          "right": "đồ gia bảo, di vật"
+          "right": "đồ gia bảo, di vật",
+          "explanation": "VD: This vase is a family heirloom."
         },
         {
           "id": "m7",
           "left": "tell the story of…",
-          "right": "kể lại lịch sử của…"
+          "right": "kể lại lịch sử của…",
+          "explanation": "VD: Every scratch tells the story of our trips."
         },
         {
           "id": "m8",
           "left": "state-of-the-art",
-          "right": "công nghệ tiên tiến nhất"
+          "right": "công nghệ tiên tiến nhất",
+          "explanation": "VD: It's a state-of-the-art laptop."
         }
       ]
     },
@@ -1666,8 +1713,8 @@
       "lessonCode": "SPK-P2-L06",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp bài nói nhóm OBJECTS theo template",
-      "instruction": "Kéo để xếp các câu theo đúng các phần của template OBJECTS.",
+      "title": "Order an OBJECTS talk using the template",
+      "instruction": "Drag the sentences into the parts of the OBJECTS template.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1697,8 +1744,8 @@
       "lessonCode": "SPK-P2-L06",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi trật tự tính từ & for/since",
-      "instruction": "Viết lại cả cụm/câu cho đúng.",
+      "title": "Fix adjective order & for/since",
+      "instruction": "Rewrite the whole phrase / sentence correctly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1733,8 +1780,8 @@
       "lessonCode": "SPK-P2-L06",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: mô tả một đồ vật (nhóm OBJECTS)",
-      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây. Mô tả hình dáng ≤20 giây; có mốc thời gian (for/since) và một câu chuyện hoặc kỷ niệm cụ thể.",
+      "title": "Speaking: describe an object (OBJECTS group)",
+      "instruction": "Prepare for 45 seconds, then record a 75–100 second talk. Describe its appearance in 20 seconds or less; include a time reference (for/since) and a specific story or memory.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -1775,8 +1822,8 @@
       "lessonCode": "SPK-P2-L07",
       "order": 1,
       "type": "mcq",
-      "title": "EVENTS I — khung kể chuyện 6 bước",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "EVENTS I — the 6-step story frame",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1907,50 +1954,58 @@
       "lessonCode": "SPK-P2-L07",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm kể chuyện với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Storytelling phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "it all started when…",
-          "right": "mọi chuyện bắt đầu khi…"
+          "right": "mọi chuyện bắt đầu khi…",
+          "explanation": "Câu mở đầu câu chuyện: It all started when I missed my bus…"
         },
         {
           "id": "m2",
           "left": "a turning point",
-          "right": "bước ngoặt"
+          "right": "bước ngoặt",
+          "explanation": "VD: That trip was a turning point in my life."
         },
         {
           "id": "m3",
           "left": "I was caught off guard",
-          "right": "tôi bị bất ngờ"
+          "right": "tôi bị bất ngờ",
+          "explanation": "VD: I was caught off guard when they called my name."
         },
         {
           "id": "m4",
           "left": "it dawned on me",
-          "right": "tôi chợt nhận ra"
+          "right": "tôi chợt nhận ra",
+          "explanation": "VD: It dawned on me that I had left my passport at home."
         },
         {
           "id": "m5",
           "left": "to make matters worse",
-          "right": "tệ hơn nữa là"
+          "right": "tệ hơn nữa là",
+          "explanation": "Thêm diễn biến xấu hơn: To make matters worse, it started to rain."
         },
         {
           "id": "m6",
           "left": "before I knew it",
-          "right": "chưa kịp nhận ra thì"
+          "right": "chưa kịp nhận ra thì",
+          "explanation": "VD: Before I knew it, the day was over."
         },
         {
           "id": "m7",
           "left": "in hindsight",
-          "right": "nhìn lại từ hiện tại"
+          "right": "nhìn lại từ hiện tại",
+          "explanation": "VD: In hindsight, I should have asked for help."
         },
         {
           "id": "m8",
           "left": "it was well worth it",
-          "right": "hoàn toàn xứng đáng"
+          "right": "hoàn toàn xứng đáng",
+          "explanation": "VD: It was a long walk, but it was well worth it."
         }
       ]
     },
@@ -1959,8 +2014,8 @@
       "lessonCode": "SPK-P2-L07",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp câu chuyện theo khung 6 bước",
-      "instruction": "Kéo để xếp các câu theo đúng 6 bước kể chuyện.",
+      "title": "Order a story using the 6-step frame",
+      "instruction": "Drag the sentences into the 6 storytelling steps.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1992,8 +2047,8 @@
       "lessonCode": "SPK-P2-L07",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi past simple / past continuous",
-      "instruction": "Viết lại cả câu cho đúng, chú ý thì.",
+      "title": "Fix past simple / past continuous errors",
+      "instruction": "Rewrite the whole sentence correctly, paying attention to tense.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2028,8 +2083,8 @@
       "lessonCode": "SPK-P2-L07",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: kể một sự việc (nhóm EVENTS)",
-      "instruction": "45 giây chuẩn bị, ghi âm nói 90–110 giây theo khung 6 bước. Phần Key moment phải dài nhất; không lẫn thì hiện tại; có phần Reflection.",
+      "title": "Speaking: tell about an event (EVENTS group)",
+      "instruction": "Prepare for 45 seconds, then record a 90–110 second talk using the 6-step frame. The Key moment must be the longest part; do not slip into the present tense; include a Reflection.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -2070,8 +2125,8 @@
       "lessonCode": "SPK-P2-L08",
       "order": 1,
       "type": "mcq",
-      "title": "EVENTS II — cảm xúc & chiều sâu",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "EVENTS II — emotion & depth",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2202,50 +2257,58 @@
       "lessonCode": "SPK-P2-L08",
       "order": 2,
       "type": "matching",
-      "title": "Nối cách diễn đạt cảm xúc với sắc thái",
-      "instruction": "Nối mỗi cụm với ý nghĩa của nó.",
+      "title": "Ways of expressing emotion and their nuances",
+      "instruction": "Match each phrase with its meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "I was over the moon",
-          "right": "rất vui, phấn khích"
+          "right": "rất vui, phấn khích",
+          "explanation": "Thành ngữ: vui sướng tột độ."
         },
         {
           "id": "m2",
           "left": "it left a lasting impression",
-          "right": "để lại ấn tượng lâu dài"
+          "right": "để lại ấn tượng lâu dài",
+          "explanation": "\"lasting\" = lâu dài → ấn tượng còn mãi."
         },
         {
           "id": "m3",
           "left": "I came to realise",
-          "right": "dần dần nhận ra"
+          "right": "dần dần nhận ra",
+          "explanation": "\"came to realise\" = nhận ra dần theo thời gian."
         },
         {
           "id": "m4",
           "left": "it blew me away",
-          "right": "choáng ngợp, sững sờ"
+          "right": "choáng ngợp, sững sờ",
+          "explanation": "\"blew me away\" = khiến choáng ngợp (tích cực)."
         },
         {
           "id": "m5",
           "left": "I was genuinely moved",
-          "right": "thực sự xúc động"
+          "right": "thực sự xúc động",
+          "explanation": "\"moved\" = xúc động."
         },
         {
           "id": "m6",
           "left": "I have mixed feelings about it",
-          "right": "cảm xúc lẫn lộn"
+          "right": "cảm xúc lẫn lộn",
+          "explanation": "\"mixed feelings\" = vừa vui vừa buồn, cảm xúc lẫn lộn."
         },
         {
           "id": "m7",
           "left": "it stopped me in my tracks",
-          "right": "khiến tôi sững lại"
+          "right": "khiến tôi sững lại",
+          "explanation": "\"stopped me in my tracks\" = khiến đứng sững lại."
         },
         {
           "id": "m8",
           "left": "it shaped who I am today",
-          "right": "định hình con người tôi"
+          "right": "định hình con người tôi",
+          "explanation": "\"shaped who I am today\" = góp phần tạo nên con người tôi bây giờ."
         }
       ]
     },
@@ -2254,8 +2317,8 @@
       "lessonCode": "SPK-P2-L08",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp một câu cảm xúc từ lớp 1 đến lớp 3",
-      "instruction": "Kéo để xếp các câu từ CẢM XÚC TRẦN đến CẢM XÚC + NGUYÊN NHÂN + BIỂU HIỆN.",
+      "title": "Build an emotion sentence from layer 1 to layer 3",
+      "instruction": "Drag the sentences into order from a BARE EMOTION to EMOTION + CAUSE + PHYSICAL SIGN.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2281,8 +2344,8 @@
       "lessonCode": "SPK-P2-L08",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Sửa lỗi past perfect & câu cảm xúc",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Fix past perfect & emotion sentences",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2329,8 +2392,8 @@
       "lessonCode": "SPK-P2-L08",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: kể một sự việc có chiều sâu cảm xúc",
-      "instruction": "45 giây chuẩn bị, ghi âm nói 90–110 giây. Dùng ≥3 cách diễn đạt cảm xúc KHÁC NHAU, ≥1 biểu hiện cơ thể, ≥1 câu past perfect, và một câu suy ngẫm ở cuối. KHÔNG dùng happy / sad / good / bad.",
+      "title": "Speaking: an event with emotional depth",
+      "instruction": "Prepare for 45 seconds, then record a 90–110 second talk. Use at least 3 DIFFERENT ways of expressing emotion, at least 1 physical sign, at least 1 past perfect sentence, and a reflective sentence at the end. Do NOT use happy / sad / good / bad.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -2371,8 +2434,8 @@
       "lessonCode": "SPK-P2-L09",
       "order": 1,
       "type": "mcq",
-      "title": "ACTIVITIES / SKILLS — nguyên tắc",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "ACTIVITIES / SKILLS — principles",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2503,50 +2566,58 @@
       "lessonCode": "SPK-P2-L09",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm hoạt động / kỹ năng với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Activity / skill phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "pick up a new skill",
-          "right": "học một kỹ năng mới"
+          "right": "học một kỹ năng mới",
+          "explanation": "VD: I picked up a new skill during the lockdown."
         },
         {
           "id": "m2",
           "left": "a natural flair for",
-          "right": "năng khiếu tự nhiên về"
+          "right": "năng khiếu tự nhiên về",
+          "explanation": "VD: She has a natural flair for drawing."
         },
         {
           "id": "m3",
           "left": "hone one's skills",
-          "right": "mài giũa kỹ năng"
+          "right": "mài giũa kỹ năng",
+          "explanation": "VD: I joined a club to hone my skills."
         },
         {
           "id": "m4",
           "left": "stress-relieving",
-          "right": "giải toả căng thẳng"
+          "right": "giải toả căng thẳng",
+          "explanation": "VD: Playing the guitar is really stress-relieving."
         },
         {
           "id": "m5",
           "left": "build discipline",
-          "right": "xây dựng kỷ luật"
+          "right": "xây dựng kỷ luật",
+          "explanation": "VD: Practising every morning helped me build discipline."
         },
         {
           "id": "m6",
           "left": "push oneself to the limit",
-          "right": "thúc đẩy bản thân đến giới hạn"
+          "right": "thúc đẩy bản thân đến giới hạn",
+          "explanation": "VD: The marathon pushed me to the limit."
         },
         {
           "id": "m7",
           "left": "go from strength to strength",
-          "right": "ngày càng tiến bộ"
+          "right": "ngày càng tiến bộ",
+          "explanation": "VD: Since then, my playing has gone from strength to strength."
         },
         {
           "id": "m8",
           "left": "second nature",
-          "right": "thành phản xạ tự nhiên"
+          "right": "thành phản xạ tự nhiên",
+          "explanation": "VD: Now changing chords is second nature to me."
         }
       ]
     },
@@ -2555,8 +2626,8 @@
       "lessonCode": "SPK-P2-L09",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp bài nói nhóm ACTIVITIES theo template",
-      "instruction": "Kéo để xếp các câu theo đúng các phần của template ACTIVITIES.",
+      "title": "Order an ACTIVITIES talk using the template",
+      "instruction": "Drag the sentences into the parts of the ACTIVITIES template.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2586,8 +2657,8 @@
       "lessonCode": "SPK-P2-L09",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi V-ing sau giới từ",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix V-ing after prepositions",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2628,8 +2699,8 @@
       "lessonCode": "SPK-P2-L09",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: mô tả một kỹ năng / hoạt động",
-      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây theo template ACTIVITIES. Mô tả quy trình luyện tập với ít nhất 3 bước; đủ 3 mốc at first / over time / nowadays; không sai V-ing sau giới từ.",
+      "title": "Speaking: describe a skill / activity",
+      "instruction": "Prepare for 45 seconds, then record a 75–100 second talk using the ACTIVITIES template. Describe how you practise in at least 3 steps; cover at first / over time / nowadays; no mistakes with V-ing after prepositions.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -2677,8 +2748,8 @@
       "lessonCode": "SPK-P2-L10",
       "order": 1,
       "type": "mcq",
-      "title": "NATURE / SCIENCE — nguyên tắc",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "NATURE / SCIENCE — principles",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2809,50 +2880,58 @@
       "lessonCode": "SPK-P2-L10",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm môi trường / khoa học với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Environment / science phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "biodiversity",
-          "right": "đa dạng sinh học"
+          "right": "đa dạng sinh học",
+          "explanation": "VD: The forest is rich in biodiversity."
         },
         {
           "id": "m2",
           "left": "ecosystem",
-          "right": "hệ sinh thái"
+          "right": "hệ sinh thái",
+          "explanation": "VD: Coral reefs are fragile ecosystems."
         },
         {
           "id": "m3",
           "left": "habitat loss",
-          "right": "mất môi trường sống"
+          "right": "mất môi trường sống",
+          "explanation": "VD: Habitat loss is the biggest threat to the species."
         },
         {
           "id": "m4",
           "left": "conservation efforts",
-          "right": "nỗ lực bảo tồn"
+          "right": "nỗ lực bảo tồn",
+          "explanation": "VD: Conservation efforts have helped numbers recover."
         },
         {
           "id": "m5",
           "left": "renewable energy",
-          "right": "năng lượng tái tạo"
+          "right": "năng lượng tái tạo",
+          "explanation": "VD: Solar power is a form of renewable energy."
         },
         {
           "id": "m6",
           "left": "apex predator",
-          "right": "loài săn mồi đầu bảng"
+          "right": "loài săn mồi đầu bảng",
+          "explanation": "VD: The snow leopard is an apex predator in its habitat."
         },
         {
           "id": "m7",
           "left": "carbon footprint",
-          "right": "lượng khí thải carbon"
+          "right": "lượng khí thải carbon",
+          "explanation": "VD: Flying less reduces your carbon footprint."
         },
         {
           "id": "m8",
           "left": "an elusive creature",
-          "right": "sinh vật bí ẩn, khó thấy"
+          "right": "sinh vật bí ẩn, khó thấy",
+          "explanation": "VD: The snow leopard is an elusive creature — rarely seen."
         }
       ]
     },
@@ -2861,8 +2940,8 @@
       "lessonCode": "SPK-P2-L10",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp bài nói nhóm NATURE theo template",
-      "instruction": "Kéo để xếp các câu theo đúng các phần của template NATURE / SCIENCE.",
+      "title": "Order a NATURE talk using the template",
+      "instruction": "Drag the sentences into the parts of the NATURE / SCIENCE template.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2892,8 +2971,8 @@
       "lessonCode": "SPK-P2-L10",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi câu bị động",
-      "instruction": "Viết lại cả câu ở dạng bị động cho đúng.",
+      "title": "Fix passive sentences",
+      "instruction": "Rewrite the whole sentence correctly in the passive.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2928,8 +3007,8 @@
       "lessonCode": "SPK-P2-L10",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: mô tả một chủ đề thiên nhiên / khoa học",
-      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây theo template NATURE. Cân bằng thông tin và cá nhân; có ≥1 câu bị động, ≥1 câu an toàn (From what I know…), và một ý kiến ở cuối.",
+      "title": "Speaking: describe a nature / science topic",
+      "instruction": "Prepare for 45 seconds, then record a 75–100 second talk using the NATURE template. Balance facts with personal content; include at least 1 passive sentence, at least 1 safe phrase (From what I know…) and an opinion at the end.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -2970,8 +3049,8 @@
       "lessonCode": "SPK-P2-L11",
       "order": 1,
       "type": "mcq",
-      "title": "CULTURE / MEDIA — nguyên tắc",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "CULTURE / MEDIA — principles",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3102,50 +3181,58 @@
       "lessonCode": "SPK-P2-L11",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm văn hoá / truyền thông với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Culture / media phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "thought-provoking",
-          "right": "gợi suy nghĩ sâu sắc"
+          "right": "gợi suy nghĩ sâu sắc",
+          "explanation": "VD: It was a thought-provoking documentary."
         },
         {
           "id": "m2",
           "left": "resonated with me",
-          "right": "tạo cảm xúc đồng cảm"
+          "right": "tạo cảm xúc đồng cảm",
+          "explanation": "VD: The main character's story really resonated with me."
         },
         {
           "id": "m3",
           "left": "went viral",
-          "right": "lan truyền rộng rãi"
+          "right": "lan truyền rộng rãi",
+          "explanation": "VD: The video went viral within days."
         },
         {
           "id": "m4",
           "left": "raise awareness",
-          "right": "nâng cao nhận thức"
+          "right": "nâng cao nhận thức",
+          "explanation": "VD: The campaign aims to raise awareness of mental health."
         },
         {
           "id": "m5",
           "left": "cultural significance",
-          "right": "ý nghĩa văn hoá"
+          "right": "ý nghĩa văn hoá",
+          "explanation": "VD: The festival has great cultural significance."
         },
         {
           "id": "m6",
           "left": "reflect society",
-          "right": "phản ánh xã hội"
+          "right": "phản ánh xã hội",
+          "explanation": "VD: Good films often reflect society."
         },
         {
           "id": "m7",
           "left": "spark a conversation",
-          "right": "khơi dậy cuộc trò chuyện"
+          "right": "khơi dậy cuộc trò chuyện",
+          "explanation": "VD: The film sparked a conversation about family pressure."
         },
         {
           "id": "m8",
           "left": "narrative arc",
-          "right": "cung bậc câu chuyện"
+          "right": "cung bậc câu chuyện",
+          "explanation": "VD: The narrative arc builds slowly to an emotional ending."
         }
       ]
     },
@@ -3154,8 +3241,8 @@
       "lessonCode": "SPK-P2-L11",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp bài nói nhóm CULTURE/MEDIA theo template",
-      "instruction": "Kéo để xếp các câu theo đúng các phần của template CULTURE / MEDIA.",
+      "title": "Order a CULTURE/MEDIA talk using the template",
+      "instruction": "Drag the sentences into the parts of the CULTURE / MEDIA template.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -3185,8 +3272,8 @@
       "lessonCode": "SPK-P2-L11",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Sửa lỗi mệnh đề What… & thì tóm tắt",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Fix What… clauses & summary tenses",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -3233,8 +3320,8 @@
       "lessonCode": "SPK-P2-L11",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: mô tả một tác phẩm (nhóm CULTURE / MEDIA)",
-      "instruction": "45 giây chuẩn bị, ghi âm nói 75–100 giây. Tóm tắt ≤25 giây; có ít nhất 1 mệnh đề bắt đầu bằng What…; có một câu thông điệp CỤ THỂ.",
+      "title": "Speaking: describe a work (CULTURE / MEDIA group)",
+      "instruction": "Prepare for 45 seconds, then record a 75–100 second talk. Keep the summary to 25 seconds or less; include at least 1 clause starting with What…; state a SPECIFIC message.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -3276,7 +3363,7 @@
       "order": 1,
       "type": "mcq",
       "title": "Storytelling & Emotions",
-      "instruction": "Chọn đáp án đúng.",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3373,7 +3460,8 @@
               "text": "so cho câu ngắn, such cho câu dài"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "such đi với danh từ (such a nice day), so đi với tính từ/trạng từ (so nice)."
         },
         {
           "id": "q5",
@@ -3406,30 +3494,34 @@
       "lessonCode": "SPK-P2-L12",
       "order": 2,
       "type": "matching",
-      "title": "Nối câu micro-story với chức năng",
-      "instruction": "Nối mỗi câu với vai trò của nó trong micro-story ba câu.",
+      "title": "Match micro-story sentences with their functions",
+      "instruction": "Match each sentence with its role in a three-sentence micro-story.",
       "autoGrade": true,
       "points": 8,
       "items": [
         {
           "id": "m1",
           "left": "There was this one time when the power went out across the whole district.",
-          "right": "Câu 1 — SETUP (dựng bối cảnh)"
+          "right": "Câu 1 — SETUP (dựng bối cảnh)",
+          "explanation": "\"There was this one time when…\" mở bối cảnh câu chuyện."
         },
         {
           "id": "m2",
           "left": "…and then, within about ten minutes, almost every household had put a candle out on the pavement.",
-          "right": "Câu 2 — BIẾN CỐ (điều bất ngờ)"
+          "right": "Câu 2 — BIẾN CỐ (điều bất ngờ)",
+          "explanation": "\"…and then, within about ten minutes…\" — điều bất ngờ xảy ra."
         },
         {
           "id": "m3",
           "left": "I just stood at our gate watching it — I still think about that evening.",
-          "right": "Câu 3 — PHẢN ỨNG (cảm xúc / hệ quả)"
+          "right": "Câu 3 — PHẢN ỨNG (cảm xúc / hệ quả)",
+          "explanation": "Câu cuối nêu cảm xúc / hệ quả với người kể."
         },
         {
           "id": "m4",
           "left": "It was so lively that you could barely walk in a straight line.",
-          "right": "Câu nhấn mạnh so… that (tăng sức nặng)"
+          "right": "Câu nhấn mạnh so… that (tăng sức nặng)",
+          "explanation": "\"so + adj + that…\" nhấn mạnh mức độ và hệ quả."
         }
       ]
     },
@@ -3438,8 +3530,8 @@
       "lessonCode": "SPK-P2-L12",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền so / such / such a",
-      "instruction": "Điền so, such hoặc such a vào mỗi chỗ trống.",
+      "title": "so / such / such a",
+      "instruction": "Fill in so, such or such a in each blank.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3510,8 +3602,8 @@
       "lessonCode": "SPK-P2-L12",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi so / such",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix so / such errors",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -3546,8 +3638,8 @@
       "lessonCode": "SPK-P2-L12",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: chèn một micro-story vào bài",
-      "instruction": "45 giây chuẩn bị, ghi âm nói 90 giây. Trong bài phải có MỘT micro-story dài 20–30 giây (đủ SETUP – BIẾN CỐ – PHẢN ỨNG), ít nhất 1 cấu trúc so… that / such a… that, và một lần đổi tốc độ ở câu biến cố.",
+      "title": "Speaking: add a micro-story to your talk",
+      "instruction": "Prepare for 45 seconds, then record a 90-second talk. It must include ONE 20–30 second micro-story (SETUP – TWIST – REACTION), at least 1 so… that / such a… that structure, and one change of pace at the twist.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -3588,8 +3680,8 @@
       "lessonCode": "SPK-P2-L13",
       "order": 1,
       "type": "mcq",
-      "title": "Kéo dài đến 2 phút",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Extending to 2 minutes",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3638,7 +3730,8 @@
               "text": "Nói về điều mình ước"
             }
           ],
-          "answer": "C"
+          "answer": "C",
+          "explanation": "IMPACT = nói về ảnh hưởng sau đó: \"Since then, I've started to…\"."
         },
         {
           "id": "q3",
@@ -3685,7 +3778,8 @@
               "text": "phải nói lại từ đầu"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Giám khảo dừng bạn ở 2 phút là bình thường; chỉ dừng quá sớm mới bị trừ Fluency."
         },
         {
           "id": "q5",
@@ -3718,30 +3812,34 @@
       "lessonCode": "SPK-P2-L13",
       "order": 2,
       "type": "matching",
-      "title": "Nối kỹ thuật kéo dài với mẫu câu mở đầu",
-      "instruction": "Nối mỗi kỹ thuật với câu mở đầu và việc nó làm.",
+      "title": "Match extension techniques with opening lines",
+      "instruction": "Match each technique with its opening line and what it does.",
       "autoGrade": true,
       "points": 8,
       "items": [
         {
           "id": "m1",
           "left": "ZOOM IN",
-          "right": "To give you an idea,… / More specifically,… — thêm chi tiết cụ thể hơn vào điểm vừa nói"
+          "right": "To give you an idea,… / More specifically,… — thêm chi tiết cụ thể hơn vào điểm vừa nói",
+          "explanation": "ZOOM IN: đi sâu vào chi tiết của điểm vừa nói."
         },
         {
           "id": "m2",
           "left": "COMPARE",
-          "right": "Compared to… / Unlike… / It used to be… — so sánh với thứ khác hoặc với quá khứ"
+          "right": "Compared to… / Unlike… / It used to be… — so sánh với thứ khác hoặc với quá khứ",
+          "explanation": "COMPARE: so sánh với thứ khác hoặc với trước đây."
         },
         {
           "id": "m3",
           "left": "IMAGINE",
-          "right": "If I could go back, I would… / Next time, I'd love to… — nói về điều mình ước hoặc dự định"
+          "right": "If I could go back, I would… / Next time, I'd love to… — nói về điều mình ước hoặc dự định",
+          "explanation": "IMAGINE: điều mình ước / dự định trong tương lai."
         },
         {
           "id": "m4",
           "left": "IMPACT",
-          "right": "Since then, I've started to… / It changed the way I… — nói về ảnh hưởng lên cuộc sống sau đó"
+          "right": "Since then, I've started to… / It changed the way I… — nói về ảnh hưởng lên cuộc sống sau đó",
+          "explanation": "IMPACT: ảnh hưởng lên cuộc sống sau đó."
         }
       ]
     },
@@ -3750,8 +3848,8 @@
       "lessonCode": "SPK-P2-L13",
       "order": 3,
       "type": "categorize",
-      "title": "Câu mở rộng này dùng kỹ thuật nào?",
-      "instruction": "Kéo mỗi câu (mở rộng từ \"The sunset was beautiful\") vào đúng kỹ thuật.",
+      "title": "Which technique does this extension use?",
+      "instruction": "Drag each sentence (extended from \"The sunset was beautiful\") to the correct technique.",
       "autoGrade": true,
       "points": 8,
       "categories": [
@@ -3776,22 +3874,26 @@
         {
           "id": "c1",
           "text": "To give you an idea, the colours ranged from deep orange to pale violet, and for about five minutes the whole sky looked like it was on fire.",
-          "category": "zoom"
+          "category": "zoom",
+          "explanation": "\"To give you an idea…\" + màu sắc cụ thể → ZOOM IN."
         },
         {
           "id": "c2",
           "text": "Compared to the sunsets I'd seen in the city, where buildings cut everything off, this was completely uninterrupted from one side to the other.",
-          "category": "compare"
+          "category": "compare",
+          "explanation": "\"Compared to…\" → COMPARE."
         },
         {
           "id": "c3",
           "text": "If I could go back, I'd definitely stay another night just to see whether it happens every evening.",
-          "category": "imagine"
+          "category": "imagine",
+          "explanation": "\"If I could go back, I'd…\" → IMAGINE."
         },
         {
           "id": "c4",
           "text": "Since that trip, I've started making a point of getting up for sunrise whenever I travel.",
-          "category": "impact"
+          "category": "impact",
+          "explanation": "\"Since that trip, I've started…\" → IMPACT."
         }
       ]
     },
@@ -3800,8 +3902,8 @@
       "lessonCode": "SPK-P2-L13",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi nối mệnh đề dài",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix long linked clauses",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -3842,8 +3944,8 @@
       "lessonCode": "SPK-P2-L13",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: nói đủ 120 giây bằng 4 kỹ thuật",
-      "instruction": "60 giây chuẩn bị, ghi âm nói ĐỦ 120 giây, không dừng quá 3 giây. Dùng ít nhất 3 trong 4 kỹ thuật ZOOM IN / COMPARE / IMAGINE / IMPACT. Không lặp lại ý.",
+      "title": "Speaking: a full 120 seconds with the 4 techniques",
+      "instruction": "Prepare for 60 seconds, then record a FULL 120-second talk with no pause longer than 3 seconds. Use at least 3 of the 4 techniques ZOOM IN / COMPARE / IMAGINE / IMPACT. Do not repeat ideas.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -3884,8 +3986,8 @@
       "lessonCode": "SPK-P2-L14",
       "order": 1,
       "type": "mcq",
-      "title": "Cue card lạ",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Unfamiliar cue cards",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3982,7 +4084,8 @@
               "text": "\"Ummmmm……\""
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Bắt đầu ngay bằng câu mua thời gian tự nhiên rồi đi vào ý đầu tiên."
         },
         {
           "id": "q5",
@@ -4005,7 +4108,8 @@
               "text": "\"were\" chỉ dùng số nhiều"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Câu giả định loại 2 dùng \"were\" cho mọi ngôi — chuẩn hơn trong bài thi."
         }
       ]
     },
@@ -4014,40 +4118,46 @@
       "lessonCode": "SPK-P2-L14",
       "order": 2,
       "type": "matching",
-      "title": "Nối cue card lạ với nhóm chủ đề",
-      "instruction": "Nối mỗi cue card lạ với nhóm chủ đề (và template) nên dùng.",
+      "title": "Match unfamiliar cue cards with topic groups",
+      "instruction": "Match each unfamiliar cue card with the topic group (and template) to use.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "Describe a piece of advice you were given",
-          "right": "EVENTS — Storytelling 6 bước"
+          "right": "EVENTS — Storytelling 6 bước",
+          "explanation": "Lời khuyên gắn với một sự việc → kể theo khung EVENTS."
         },
         {
           "id": "m2",
           "left": "Describe a law you think is useful",
-          "right": "CULTURE / MEDIA — Nội dung → phản ứng → thông điệp"
+          "right": "CULTURE / MEDIA — Nội dung → phản ứng → thông điệp",
+          "explanation": "Luật là một nội dung xã hội → template CULTURE/MEDIA (nội dung → phản ứng → thông điệp)."
         },
         {
           "id": "m3",
           "left": "Describe a water sport you want to try",
-          "right": "ACTIVITIES — Template hoạt động + IMAGINE"
+          "right": "ACTIVITIES — Template hoạt động + IMAGINE",
+          "explanation": "Môn thể thao muốn thử → ACTIVITIES + IMAGINE (vì chưa làm)."
         },
         {
           "id": "m4",
           "left": "Describe an app that helps you",
-          "right": "OBJECTS — Template đồ vật"
+          "right": "OBJECTS — Template đồ vật",
+          "explanation": "Ứng dụng là công cụ → template OBJECTS."
         },
         {
           "id": "m5",
           "left": "Describe a sound you like",
-          "right": "PLACES / OBJECTS — Mô tả + chi tiết giác quan"
+          "right": "PLACES / OBJECTS — Mô tả + chi tiết giác quan",
+          "explanation": "Âm thanh → mô tả nơi/vật kèm chi tiết giác quan."
         },
         {
           "id": "m6",
           "left": "Describe a person who solved a problem",
-          "right": "PEOPLE — Template người + giai thoại"
+          "right": "PEOPLE — Template người + giai thoại",
+          "explanation": "Người giải quyết vấn đề → template PEOPLE + một giai thoại."
         }
       ]
     },
@@ -4056,35 +4166,40 @@
       "lessonCode": "SPK-P2-L14",
       "order": 3,
       "type": "matching",
-      "title": "Nối chiến lược IMAGINE với mẫu câu",
-      "instruction": "Nối mỗi cách với mẫu câu tương ứng.",
+      "title": "Match IMAGINE strategies with sentence patterns",
+      "instruction": "Match each approach with its sentence pattern.",
       "autoGrade": true,
       "points": 8,
       "items": [
         {
           "id": "m1",
           "left": "Thừa nhận rồi chuyển sang mong muốn",
-          "right": "Although I haven't tried this personally, I've always wanted to…"
+          "right": "Although I haven't tried this personally, I've always wanted to…",
+          "explanation": "\"Although I haven't tried this personally, I've always wanted to…\"."
         },
         {
           "id": "m2",
           "left": "Dùng kiến thức gián tiếp",
-          "right": "I've watched a documentary about… and it seems…"
+          "right": "I've watched a documentary about… and it seems…",
+          "explanation": "Dựa vào phim tài liệu, bài báo: \"I've watched a documentary about…\"."
         },
         {
           "id": "m3",
           "left": "Chuyển sang câu chuyện của người khác",
-          "right": "A friend of mine once told me about… and ever since then…"
+          "right": "A friend of mine once told me about… and ever since then…",
+          "explanation": "Kể trải nghiệm của bạn bè: \"A friend of mine once told me about…\"."
         },
         {
           "id": "m4",
           "left": "Câu điều kiện loại 2 giả định",
-          "right": "If I had the chance, I imagine it would feel…"
+          "right": "If I had the chance, I imagine it would feel…",
+          "explanation": "Giả định: \"If I had the chance, I imagine it would feel…\"."
         },
         {
           "id": "m5",
           "left": "Bắc cầu sang trải nghiệm gần giống",
-          "right": "I can't say I've done this myself, but the closest thing was…"
+          "right": "I can't say I've done this myself, but the closest thing was…",
+          "explanation": "Nối sang trải nghiệm gần giống: \"the closest thing was…\"."
         }
       ]
     },
@@ -4093,8 +4208,8 @@
       "lessonCode": "SPK-P2-L14",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Sửa lỗi câu điều kiện loại 2 & câu mở đề lạ",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Fix second conditionals & openings for unfamiliar topics",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -4142,8 +4257,8 @@
       "lessonCode": "SPK-P2-L14",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: một cue card hoàn toàn xa lạ",
-      "instruction": "45 giây chuẩn bị, ghi âm nói 90–110 giây. Bắt đầu nói trong 3 giây, KHÔNG phân trần. Dùng ít nhất 1 mẫu IMAGINE / trải nghiệm vay mượn và 1 câu điều kiện loại 2 đúng.",
+      "title": "Speaking: a completely unfamiliar cue card",
+      "instruction": "Prepare for 45 seconds, then record a 90–110 second talk. Start speaking within 3 seconds and do NOT make excuses. Use at least 1 IMAGINE pattern / borrowed experience and 1 correct second conditional.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 2,
@@ -4184,8 +4299,8 @@
       "lessonCode": "SPK-P2-L15",
       "order": 1,
       "type": "mcq",
-      "title": "Phiếu chấm Part 2 — 4 tiêu chí",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Part 2 score sheet — the 4 criteria",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -4210,7 +4325,8 @@
               "text": "Đọc thuộc trơn tru"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Band 7 Fluency: nói đủ thời gian, có thể ngập ngừng tự nhiên, dùng từ nối mạch lạc."
         },
         {
           "id": "q2",
@@ -4233,7 +4349,8 @@
               "text": "Có câu mở và câu kết"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Như phòng thi thật: không được dừng lại hỏi từ."
         },
         {
           "id": "q3",
@@ -4256,7 +4373,8 @@
               "text": "Chỉ dùng \"good\", \"nice\", \"beautiful\""
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Band 7 Lexical: collocation và cách diễn đạt ít phổ biến, dùng đúng ngữ cảnh."
         },
         {
           "id": "q4",
@@ -4279,7 +4397,8 @@
               "text": "Chỉ cần nói to"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Phiếu tick nhanh kiểm tra đủ các yếu tố của một bài Part 2 hoàn chỉnh."
         },
         {
           "id": "q5",
@@ -4302,7 +4421,8 @@
               "text": "Khi nói được trên 3 phút mỗi bài"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Ngưỡng sẵn sàng sang Part 3: đạt ít nhất 4/5 tiêu chí."
         }
       ]
     },
@@ -4311,8 +4431,8 @@
       "lessonCode": "SPK-P2-L15",
       "order": 2,
       "type": "speaking_response",
-      "title": "THI THỬ — Test A (Người có ảnh hưởng)",
-      "instruction": "Điều kiện thi: 1 phút chuẩn bị, KHÔNG dừng để hỏi từ vựng. Ghi âm trả lời cue card rồi trả lời tiếp 2 câu hỏi phụ. AI chấm theo 4 tiêu chí.",
+      "title": "MOCK TEST — Test A (An influential person)",
+      "instruction": "Exam conditions: 1 minute to prepare, do NOT stop to look up words. Record your answer to the cue card, then answer the 2 follow-up questions. The AI marks it on the 4 criteria.",
       "autoGrade": false,
       "points": 14,
       "speakingPart": 2,
@@ -4364,8 +4484,8 @@
       "lessonCode": "SPK-P2-L15",
       "order": 3,
       "type": "speaking_response",
-      "title": "THI THỬ — Test B (Việc không như dự tính)",
-      "instruction": "1 phút chuẩn bị, ghi âm trả lời cue card rồi 2 câu hỏi phụ, không dừng giữa chừng. AI chấm theo 4 tiêu chí.",
+      "title": "MOCK TEST — Test B (Something that didn’t go to plan)",
+      "instruction": "1 minute to prepare; record your answer to the cue card and then the 2 follow-up questions without stopping. The AI marks it on the 4 criteria.",
       "autoGrade": false,
       "points": 14,
       "speakingPart": 2,
@@ -4417,8 +4537,8 @@
       "lessonCode": "SPK-P2-L15",
       "order": 4,
       "type": "speaking_response",
-      "title": "THI THỬ — Test C (Nơi giới thiệu cho khách)",
-      "instruction": "1 phút chuẩn bị, ghi âm trả lời cue card rồi 2 câu hỏi phụ, không dừng giữa chừng. AI chấm theo 4 tiêu chí.",
+      "title": "MOCK TEST — Test C (A place to recommend to visitors)",
+      "instruction": "1 minute to prepare; record your answer to the cue card and then the 2 follow-up questions without stopping. The AI marks it on the 4 criteria.",
       "autoGrade": false,
       "points": 14,
       "speakingPart": 2,

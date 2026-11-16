@@ -5,8 +5,8 @@
       "lessonCode": "T2-L19",
       "order": 1,
       "type": "mcq",
-      "title": "Noun phrase & Head noun — lý thuyết",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Noun phrases & head nouns — theory",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 5,
@@ -142,8 +142,8 @@
       "lessonCode": "T2-L19",
       "order": 2,
       "type": "matching",
-      "title": "Nối noun phrase với head noun",
-      "instruction": "Nối mỗi noun phrase với head noun của nó.",
+      "title": "Match each noun phrase with its head noun",
+      "instruction": "Match each noun phrase with its head noun.",
       "autoGrade": true,
       "points": 7,
       "estimatedMinutes": 5,
@@ -155,37 +155,44 @@
         {
           "id": "q1",
           "left": "the increasing cost of living",
-          "right": "cost"
+          "right": "cost",
+          "explanation": "Head noun là danh từ chính mà cả cụm nói về: \"the increasing cost of living\" → cost; phần còn lại chỉ bổ nghĩa."
         },
         {
           "id": "q2",
           "left": "a significant rise in unemployment",
-          "right": "rise"
+          "right": "rise",
+          "explanation": "Head noun là danh từ chính mà cả cụm nói về: \"a significant rise in unemployment\" → rise; phần còn lại chỉ bổ nghĩa."
         },
         {
           "id": "q3",
           "left": "the growing number of university students",
-          "right": "number"
+          "right": "number",
+          "explanation": "Head noun là danh từ chính mà cả cụm nói về: \"the growing number of university students\" → number; phần còn lại chỉ bổ nghĩa."
         },
         {
           "id": "q4",
           "left": "widespread use of social media",
-          "right": "use"
+          "right": "use",
+          "explanation": "Head noun là danh từ chính mà cả cụm nói về: \"widespread use of social media\" → use; phần còn lại chỉ bổ nghĩa."
         },
         {
           "id": "q5",
           "left": "the rapid development of technology",
-          "right": "development"
+          "right": "development",
+          "explanation": "Head noun là danh từ chính mà cả cụm nói về: \"the rapid development of technology\" → development; phần còn lại chỉ bổ nghĩa."
         },
         {
           "id": "q6",
           "left": "the decision to study abroad",
-          "right": "decision"
+          "right": "decision",
+          "explanation": "Head noun là danh từ chính mà cả cụm nói về: \"the decision to study abroad\" → decision; phần còn lại chỉ bổ nghĩa."
         },
         {
           "id": "q7",
           "left": "the decline in traditional values",
-          "right": "decline"
+          "right": "decline",
+          "explanation": "Head noun là danh từ chính mà cả cụm nói về: \"the decline in traditional values\" → decline; phần còn lại chỉ bổ nghĩa."
         }
       ]
     },
@@ -194,8 +201,8 @@
       "lessonCode": "T2-L19",
       "order": 3,
       "type": "categorize",
-      "title": "Clause hay Noun phrase?",
-      "instruction": "Xếp mỗi cụm/câu vào đúng nhóm.",
+      "title": "Clause or noun phrase?",
+      "instruction": "Put each phrase / sentence into the correct group.",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 6,
@@ -217,42 +224,50 @@
         {
           "id": "c1",
           "text": "students dropping out of university",
-          "category": "phrase"
+          "category": "phrase",
+          "explanation": "Noun phrase: không có động từ chính chia thì (chỉ có V-ing/V3 bổ nghĩa). \"dropping\" chỉ là phân từ."
         },
         {
           "id": "c2",
           "text": "Students are dropping out of university.",
-          "category": "clause"
+          "category": "clause",
+          "explanation": "Clause: có chủ ngữ + động từ chính chia thì. \"are dropping\"."
         },
         {
           "id": "c3",
           "text": "the rapidly growing number of students",
-          "category": "phrase"
+          "category": "phrase",
+          "explanation": "Noun phrase: không có động từ chính chia thì (chỉ có V-ing/V3 bổ nghĩa)."
         },
         {
           "id": "c4",
           "text": "The number of students is rising.",
-          "category": "clause"
+          "category": "clause",
+          "explanation": "Clause: có chủ ngữ + động từ chính chia thì. \"is rising\"."
         },
         {
           "id": "c5",
           "text": "young people using social media",
-          "category": "phrase"
+          "category": "phrase",
+          "explanation": "Noun phrase: không có động từ chính chia thì (chỉ có V-ing/V3 bổ nghĩa). \"using\" chỉ là phân từ."
         },
         {
           "id": "c6",
           "text": "Young people use social media every day.",
-          "category": "clause"
+          "category": "clause",
+          "explanation": "Clause: có chủ ngữ + động từ chính chia thì. \"use\"."
         },
         {
           "id": "c7",
           "text": "the increasing pressure placed on students",
-          "category": "phrase"
+          "category": "phrase",
+          "explanation": "Noun phrase: không có động từ chính chia thì (chỉ có V-ing/V3 bổ nghĩa). \"placed\" là V3 bổ nghĩa."
         },
         {
           "id": "c8",
           "text": "More pressure is placed on students.",
-          "category": "clause"
+          "category": "clause",
+          "explanation": "Clause: có chủ ngữ + động từ chính chia thì. \"is placed\"."
         }
       ]
     },
@@ -261,8 +276,8 @@
       "lessonCode": "T2-L19",
       "order": 4,
       "type": "gap_fill",
-      "title": "Tìm head noun",
-      "instruction": "Điền HEAD NOUN của cụm được nêu.",
+      "title": "Find the head noun",
+      "instruction": "Write the HEAD NOUN of each phrase.",
       "autoGrade": true,
       "points": 6,
       "estimatedMinutes": 5,
@@ -280,7 +295,8 @@
                 "people"
               ]
             }
-          ]
+          ],
+          "explanation": "\"many\" và \"young\" bổ nghĩa → head noun là people."
         },
         {
           "id": "q2",
@@ -291,7 +307,8 @@
                 "demand"
               ]
             }
-          ]
+          ],
+          "explanation": "\"the increasing demand for…\" — danh từ chính là demand; \"for skilled workers\" chỉ bổ sung."
         },
         {
           "id": "q3",
@@ -302,7 +319,8 @@
                 "investment"
               ]
             }
-          ]
+          ],
+          "explanation": "\"government\" đứng trước bổ nghĩa, \"in education\" đứng sau → head noun là investment."
         },
         {
           "id": "q4",
@@ -313,7 +331,8 @@
                 "availability"
               ]
             }
-          ]
+          ],
+          "explanation": "\"the widespread availability of online courses\" → head noun là availability."
         },
         {
           "id": "q5",
@@ -324,7 +343,8 @@
                 "dependence"
               ]
             }
-          ]
+          ],
+          "explanation": "\"the growing dependence on private vehicles\" → head noun là dependence."
         },
         {
           "id": "q6",
@@ -335,7 +355,8 @@
                 "students"
               ]
             }
-          ]
+          ],
+          "explanation": "\"from low-income families\" bổ nghĩa sau → head noun là students."
         }
       ]
     },
@@ -344,8 +365,8 @@
       "lessonCode": "T2-L19",
       "order": 5,
       "type": "sentence_transform",
-      "title": "Clause → Noun phrase",
-      "instruction": "Biến mỗi clause thành một noun phrase (dùng participle V-ing/V3, bỏ main verb).",
+      "title": "Clause → noun phrase",
+      "instruction": "Turn each clause into a noun phrase (use a V-ing/V3 participle and drop the main verb).",
       "autoGrade": true,
       "points": 8,
       "estimatedMinutes": 8,
@@ -361,7 +382,8 @@
           "sampleAnswers": [
             "students dropping out of university"
           ],
-          "promptVi": "sinh viên bỏ học đại học"
+          "promptVi": "sinh viên bỏ học đại học",
+          "explanation": "Bỏ động từ chia thì: drop → dropping (phân từ)."
         },
         {
           "id": "q2",
@@ -369,7 +391,8 @@
           "sampleAnswers": [
             "young people using social media"
           ],
-          "promptVi": "giới trẻ sử dụng mạng xã hội"
+          "promptVi": "giới trẻ sử dụng mạng xã hội",
+          "explanation": "use → using: \"young people using social media\"."
         },
         {
           "id": "q3",
@@ -377,7 +400,8 @@
           "sampleAnswers": [
             "the increasing cost of living"
           ],
-          "promptVi": "chi phí sinh hoạt ngày càng tăng"
+          "promptVi": "chi phí sinh hoạt ngày càng tăng",
+          "explanation": "\"is increasing\" → tính từ \"increasing\" đặt trước danh từ: the increasing cost of living."
         },
         {
           "id": "q4",
@@ -386,7 +410,8 @@
             "the rapid development of technology",
             "the rapidly developing technology"
           ],
-          "promptVi": "sự phát triển nhanh chóng của công nghệ"
+          "promptVi": "sự phát triển nhanh chóng của công nghệ",
+          "explanation": "\"is developing rapidly\" → danh từ hoá: the rapid development of technology (trạng từ → tính từ)."
         },
         {
           "id": "q5",
@@ -394,7 +419,8 @@
           "sampleAnswers": [
             "the increasing pressure placed on students"
           ],
-          "promptVi": "áp lực ngày càng tăng đặt lên vai học sinh sinh viên"
+          "promptVi": "áp lực ngày càng tăng đặt lên vai học sinh sinh viên",
+          "explanation": "\"is placed on\" → V3 \"placed\" đặt sau danh từ: the increasing pressure placed on students."
         },
         {
           "id": "q6",
@@ -402,7 +428,8 @@
           "sampleAnswers": [
             "the growing number of university students"
           ],
-          "promptVi": "số lượng sinh viên đại học ngày càng tăng"
+          "promptVi": "số lượng sinh viên đại học ngày càng tăng",
+          "explanation": "\"is growing\" → \"the growing number of…\"."
         }
       ]
     },
@@ -411,8 +438,8 @@
       "lessonCode": "T2-L19",
       "order": 6,
       "type": "ordering",
-      "title": "Xây noun phrase đúng thứ tự",
-      "instruction": "Sắp xếp các thành phần theo công thức: Determiner + Adjective + NOUN + extra information.",
+      "title": "Build a noun phrase in the right order",
+      "instruction": "Put the parts in order following the formula: Determiner + Adjective + NOUN + extra information.",
       "autoGrade": true,
       "points": 4,
       "estimatedMinutes": 3,
@@ -460,8 +487,8 @@
       "lessonCode": "T2-L20",
       "order": 1,
       "type": "word_form",
-      "title": "Verb → Noun (bộ nền tảng)",
-      "instruction": "Viết dạng danh từ (noun) của mỗi động từ.",
+      "title": "Verb → noun (core set)",
+      "instruction": "Write the noun form of each verb.",
       "autoGrade": true,
       "points": 17,
       "estimatedMinutes": 6,
@@ -477,7 +504,8 @@
           "answer": "growth",
           "accept": [
             "growth"
-          ]
+          ],
+          "explanation": "grow → growth (đuôi -th)."
         },
         {
           "id": "q2",
@@ -485,7 +513,8 @@
           "answer": "development",
           "accept": [
             "development"
-          ]
+          ],
+          "explanation": "develop → development (đuôi -ment)."
         },
         {
           "id": "q3",
@@ -493,7 +522,8 @@
           "answer": "improvement",
           "accept": [
             "improvement"
-          ]
+          ],
+          "explanation": "improve → improvement (đuôi -ment)."
         },
         {
           "id": "q4",
@@ -501,7 +531,8 @@
           "answer": "reduction",
           "accept": [
             "reduction"
-          ]
+          ],
+          "explanation": "reduce → reduction (đuôi -tion)."
         },
         {
           "id": "q5",
@@ -509,7 +540,8 @@
           "answer": "decision",
           "accept": [
             "decision"
-          ]
+          ],
+          "explanation": "decide → decision (đuôi -sion)."
         },
         {
           "id": "q6",
@@ -517,7 +549,8 @@
           "answer": "choice",
           "accept": [
             "choice"
-          ]
+          ],
+          "explanation": "choose → choice (bất quy tắc)."
         },
         {
           "id": "q7",
@@ -525,7 +558,8 @@
           "answer": "education",
           "accept": [
             "education"
-          ]
+          ],
+          "explanation": "educate → education (đuôi -tion)."
         },
         {
           "id": "q8",
@@ -533,7 +567,8 @@
           "answer": "employment",
           "accept": [
             "employment"
-          ]
+          ],
+          "explanation": "employ → employment (đuôi -ment)."
         },
         {
           "id": "q9",
@@ -541,7 +576,8 @@
           "answer": "achievement",
           "accept": [
             "achievement"
-          ]
+          ],
+          "explanation": "achieve → achievement (đuôi -ment)."
         },
         {
           "id": "q10",
@@ -549,7 +585,8 @@
           "answer": "failure",
           "accept": [
             "failure"
-          ]
+          ],
+          "explanation": "fail → failure (đuôi -ure)."
         },
         {
           "id": "q11",
@@ -557,7 +594,8 @@
           "answer": "migration",
           "accept": [
             "migration"
-          ]
+          ],
+          "explanation": "migrate → migration (đuôi -tion)."
         },
         {
           "id": "q12",
@@ -565,7 +603,8 @@
           "answer": "pollution",
           "accept": [
             "pollution"
-          ]
+          ],
+          "explanation": "pollute → pollution (đuôi -tion)."
         },
         {
           "id": "q13",
@@ -573,7 +612,8 @@
           "answer": "consumption",
           "accept": [
             "consumption"
-          ]
+          ],
+          "explanation": "consume → consumption (chú ý thêm p)."
         },
         {
           "id": "q14",
@@ -582,7 +622,8 @@
           "accept": [
             "behaviour",
             "behavior"
-          ]
+          ],
+          "explanation": "behave → behaviour (Anh–Mỹ: behavior)."
         },
         {
           "id": "q15",
@@ -590,7 +631,8 @@
           "answer": "investment",
           "accept": [
             "investment"
-          ]
+          ],
+          "explanation": "invest → investment (đuôi -ment)."
         },
         {
           "id": "q16",
@@ -598,7 +640,8 @@
           "answer": "communication",
           "accept": [
             "communication"
-          ]
+          ],
+          "explanation": "communicate → communication (đuôi -tion)."
         },
         {
           "id": "q17",
@@ -607,7 +650,8 @@
           "accept": [
             "reliance",
             "dependence"
-          ]
+          ],
+          "explanation": "rely → reliance (y → i + -ance)."
         }
       ]
     },
@@ -617,7 +661,7 @@
       "order": 2,
       "type": "sentence_transform",
       "title": "Verb → noun phrase",
-      "instruction": "Biến mỗi câu thành một noun phrase (không phải câu hoàn chỉnh).",
+      "instruction": "Turn each sentence into a noun phrase (not a complete sentence).",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 10,
@@ -634,7 +678,8 @@
             "the growing number of students studying abroad",
             "the increasing number of students studying abroad"
           ],
-          "promptVi": "số lượng học sinh đi du học ngày càng tăng"
+          "promptVi": "số lượng học sinh đi du học ngày càng tăng",
+          "explanation": "\"More students study abroad\" → the growing number of + N + V-ing."
         },
         {
           "id": "q2",
@@ -643,7 +688,8 @@
             "the increasing number of people using private cars",
             "the increasing use of private cars"
           ],
-          "promptVi": "số lượng người sử dụng xe hơi cá nhân ngày càng tăng"
+          "promptVi": "số lượng người sử dụng xe hơi cá nhân ngày càng tăng",
+          "explanation": "\"More people use…\" → the increasing number of people using…"
         },
         {
           "id": "q3",
@@ -652,7 +698,8 @@
             "the increase in university tuition fees",
             "the rise in university tuition fees"
           ],
-          "promptVi": "sự tăng lên của học phí đại học"
+          "promptVi": "sự tăng lên của học phí đại học",
+          "explanation": "\"are increasing\" → the increase in + N."
         },
         {
           "id": "q4",
@@ -660,7 +707,8 @@
           "sampleAnswers": [
             "the growing number of young people living with their parents"
           ],
-          "promptVi": "số lượng người trẻ sống cùng cha mẹ ngày càng tăng"
+          "promptVi": "số lượng người trẻ sống cùng cha mẹ ngày càng tăng",
+          "explanation": "\"More young people live…\" → the growing number of young people living…"
         },
         {
           "id": "q5",
@@ -669,7 +717,8 @@
             "the growing dependence on technology",
             "the increasing dependence on technology"
           ],
-          "promptVi": "sự phụ thuộc ngày càng nhiều vào công nghệ"
+          "promptVi": "sự phụ thuộc ngày càng nhiều vào công nghệ",
+          "explanation": "\"becoming dependent on\" → the growing dependence on + N."
         },
         {
           "id": "q6",
@@ -677,7 +726,8 @@
           "sampleAnswers": [
             "the increasing number of children using smartphones"
           ],
-          "promptVi": "số lượng trẻ em sử dụng điện thoại thông minh ngày càng tăng"
+          "promptVi": "số lượng trẻ em sử dụng điện thoại thông minh ngày càng tăng",
+          "explanation": "\"More children are using…\" → the increasing number of children using…"
         },
         {
           "id": "q7",
@@ -686,7 +736,8 @@
             "increased government investment in renewable energy",
             "the growing government investment in renewable energy"
           ],
-          "promptVi": "việc chính phủ tăng cường đầu tư vào năng lượng tái tạo"
+          "promptVi": "việc chính phủ tăng cường đầu tư vào năng lượng tái tạo",
+          "explanation": "\"Governments are investing more in\" → increased government investment in."
         },
         {
           "id": "q8",
@@ -695,7 +746,8 @@
             "the growing popularity of online shopping",
             "the increasing number of people shopping online"
           ],
-          "promptVi": "sự phổ biến ngày càng tăng của việc mua sắm trực tuyến"
+          "promptVi": "sự phổ biến ngày càng tăng của việc mua sắm trực tuyến",
+          "explanation": "\"More people are shopping online\" → the growing popularity of online shopping."
         },
         {
           "id": "q9",
@@ -704,7 +756,8 @@
             "the rising number of unemployed people",
             "the increase in unemployment"
           ],
-          "promptVi": "số lượng người thất nghiệp ngày càng tăng"
+          "promptVi": "số lượng người thất nghiệp ngày càng tăng",
+          "explanation": "\"people without jobs\" → unemployed people; \"is increasing\" → the rising number of."
         },
         {
           "id": "q10",
@@ -713,7 +766,8 @@
             "the decline in public transport use",
             "the fall in the number of people using public transport"
           ],
-          "promptVi": "sự sụt giảm trong việc sử dụng phương tiện giao thông công cộng"
+          "promptVi": "sự sụt giảm trong việc sử dụng phương tiện giao thông công cộng",
+          "explanation": "\"Fewer people use public transport\" → the decline in public transport use."
         }
       ]
     },
@@ -722,8 +776,8 @@
       "lessonCode": "T2-L20",
       "order": 3,
       "type": "ordering",
-      "title": "Quy trình 4 bước Task 2",
-      "instruction": "Sắp xếp 4 bước theo đúng thứ tự: VERB → NOUN → NOUN PHRASE → IELTS SENTENCE.",
+      "title": "The 4-step process for Task 2",
+      "instruction": "Put the 4 steps in the correct order: VERB → NOUN → NOUN PHRASE → IELTS SENTENCE.",
       "autoGrade": true,
       "points": 4,
       "estimatedMinutes": 3,
@@ -755,8 +809,8 @@
       "lessonCode": "T2-L20",
       "order": 4,
       "type": "mcq",
-      "title": "Paraphrase Task 2: không word-by-word",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Paraphrasing in Task 2: not word by word",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 8,
       "estimatedMinutes": 5,
@@ -869,8 +923,8 @@
       "lessonCode": "T2-L20",
       "order": 5,
       "type": "sentence_writing",
-      "title": "Viết câu IELTS từ noun phrase mục tiêu",
-      "instruction": "Cho câu gốc và noun phrase mục tiêu, viết một câu IELTS Task 2 hoàn chỉnh (có mệnh đề chính, ý nghĩa academic). Làm cả 4 câu.",
+      "title": "Write IELTS sentences from target noun phrases",
+      "instruction": "Using the original sentence and the target noun phrase, write a complete IELTS Task 2 sentence (with a main clause and an academic meaning). Do all 4 sentences.",
       "source": "original",
       "autoGrade": false,
       "points": 12,
@@ -881,7 +935,7 @@
       ],
       "responseSlots": 4,
       "rubric": {
-        "minWords": 70,
+        "minWords": 55,
         "targetStructures": [
           "the increasing use of private cars",
           "the growing number of students studying online",
@@ -908,8 +962,8 @@
       "lessonCode": "T2-L20",
       "order": 6,
       "type": "error_correction",
-      "title": "Sửa lỗi noun phrase trong câu Task 2",
-      "instruction": "Mỗi câu có đúng một lỗi. Viết lại cả câu cho đúng.",
+      "title": "Fix noun-phrase errors in Task 2 sentences",
+      "instruction": "Each sentence has exactly one mistake. Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 6,
       "estimatedMinutes": 7,
@@ -985,8 +1039,8 @@
       "lessonCode": "T2-L21",
       "order": 1,
       "type": "matching",
-      "title": "Nối pattern với ví dụ",
-      "instruction": "Nối mỗi pattern noun phrase với câu ví dụ đúng.",
+      "title": "Match each pattern with an example",
+      "instruction": "Match each noun-phrase pattern with the correct example sentence.",
       "autoGrade": true,
       "points": 7,
       "estimatedMinutes": 5,
@@ -998,37 +1052,44 @@
         {
           "id": "q1",
           "left": "the growing number of + N + V-ing",
-          "right": "the growing number of young people using social media"
+          "right": "the growing number of young people using social media",
+          "explanation": "Mẫu \"the growing number of + N + V-ing\" khớp với \"young people using social media\"."
         },
         {
           "id": "q2",
           "left": "the rise in + N",
-          "right": "the rise in tuition fees"
+          "right": "the rise in tuition fees",
+          "explanation": "\"rise\" đi với giới từ in: the rise in tuition fees."
         },
         {
           "id": "q3",
           "left": "the decline in + N",
-          "right": "the decline in academic performance"
+          "right": "the decline in academic performance",
+          "explanation": "\"decline\" đi với in: the decline in academic performance."
         },
         {
           "id": "q4",
           "left": "the increasing pressure on + N",
-          "right": "the increasing pressure on university students"
+          "right": "the increasing pressure on university students",
+          "explanation": "\"pressure\" đi với on: the increasing pressure on…"
         },
         {
           "id": "q5",
           "left": "the growing dependence on + N",
-          "right": "the growing dependence on technology"
+          "right": "the growing dependence on technology",
+          "explanation": "\"dependence\" đi với on: the growing dependence on technology."
         },
         {
           "id": "q6",
           "left": "the widespread use of + N",
-          "right": "the widespread use of social media"
+          "right": "the widespread use of social media",
+          "explanation": "\"use\" đi với of: the widespread use of social media."
         },
         {
           "id": "q7",
           "left": "the decision to + V",
-          "right": "the decision to study abroad"
+          "right": "the decision to study abroad",
+          "explanation": "\"decision\" + to V: the decision to study abroad."
         }
       ]
     },
@@ -1037,8 +1098,8 @@
       "lessonCode": "T2-L21",
       "order": 2,
       "type": "gap_fill",
-      "title": "Điền giới từ cho pattern",
-      "instruction": "Điền giới từ đúng: in, on, for, to, of.",
+      "title": "Prepositions in the patterns",
+      "instruction": "Fill in the correct preposition: in, on, for, to, of.",
       "autoGrade": true,
       "points": 8,
       "estimatedMinutes": 5,
@@ -1064,7 +1125,8 @@
                 "in"
               ]
             }
-          ]
+          ],
+          "explanation": "rise in + đối tượng tăng."
         },
         {
           "id": "q2",
@@ -1075,7 +1137,8 @@
                 "on"
               ]
             }
-          ]
+          ],
+          "explanation": "dependence on (phụ thuộc vào)."
         },
         {
           "id": "q3",
@@ -1086,7 +1149,8 @@
                 "for"
               ]
             }
-          ]
+          ],
+          "explanation": "demand for (nhu cầu về)."
         },
         {
           "id": "q4",
@@ -1097,7 +1161,8 @@
                 "to"
               ]
             }
-          ]
+          ],
+          "explanation": "decision to + V."
         },
         {
           "id": "q5",
@@ -1108,7 +1173,8 @@
                 "of"
               ]
             }
-          ]
+          ],
+          "explanation": "use of + đối tượng được dùng."
         },
         {
           "id": "q6",
@@ -1119,7 +1185,8 @@
                 "on"
               ]
             }
-          ]
+          ],
+          "explanation": "pressure on (áp lực lên ai)."
         },
         {
           "id": "q7",
@@ -1130,7 +1197,8 @@
                 "in"
               ]
             }
-          ]
+          ],
+          "explanation": "decline in + đối tượng giảm."
         },
         {
           "id": "q8",
@@ -1141,7 +1209,8 @@
                 "to"
               ]
             }
-          ]
+          ],
+          "explanation": "failure to + V (không làm được việc gì)."
         }
       ]
     },
@@ -1150,8 +1219,8 @@
       "lessonCode": "T2-L21",
       "order": 3,
       "type": "sentence_transform",
-      "title": "Paraphrase câu Task 2 bằng noun phrase",
-      "instruction": "Paraphrase mỗi câu bằng một noun phrase (không phải câu hoàn chỉnh).",
+      "title": "Paraphrase Task 2 sentences with noun phrases",
+      "instruction": "Paraphrase each sentence as a noun phrase (not a complete sentence).",
       "autoGrade": true,
       "points": 8,
       "estimatedMinutes": 9,
@@ -1168,7 +1237,8 @@
             "the increasing use of social media",
             "the growing use of social media"
           ],
-          "promptVi": "việc sử dụng mạng xã hội ngày càng tăng"
+          "promptVi": "việc sử dụng mạng xã hội ngày càng tăng",
+          "explanation": "\"are using social media\" → the increasing use of social media."
         },
         {
           "id": "q2",
@@ -1177,7 +1247,8 @@
             "the increasing prevalence of obesity",
             "the rising prevalence of obesity"
           ],
-          "promptVi": "tình trạng béo phì ngày càng phổ biến"
+          "promptVi": "tình trạng béo phì ngày càng phổ biến",
+          "explanation": "\"is becoming more common\" → the increasing prevalence of (mức độ phổ biến)."
         },
         {
           "id": "q3",
@@ -1185,7 +1256,8 @@
           "sampleAnswers": [
             "the decline in academic performance"
           ],
-          "promptVi": "sự suy giảm về thành tích học tập"
+          "promptVi": "sự suy giảm về thành tích học tập",
+          "explanation": "\"is falling\" → the decline in academic performance."
         },
         {
           "id": "q4",
@@ -1193,7 +1265,8 @@
           "sampleAnswers": [
             "the increasing demand for skilled workers"
           ],
-          "promptVi": "nhu cầu ngày càng tăng đối với lao động có tay nghề"
+          "promptVi": "nhu cầu ngày càng tăng đối với lao động có tay nghề",
+          "explanation": "\"demanding more skilled workers\" → the increasing demand for skilled workers."
         },
         {
           "id": "q5",
@@ -1202,7 +1275,8 @@
             "the growing dependence on private vehicles",
             "the growing reliance on private vehicles"
           ],
-          "promptVi": "sự phụ thuộc ngày càng lớn vào các phương tiện cá nhân"
+          "promptVi": "sự phụ thuộc ngày càng lớn vào các phương tiện cá nhân",
+          "explanation": "\"rely on … more and more\" → the growing dependence on…"
         },
         {
           "id": "q6",
@@ -1210,7 +1284,8 @@
           "sampleAnswers": [
             "the failure to complete a degree"
           ],
-          "promptVi": "việc không hoàn thành bậc đại học"
+          "promptVi": "việc không hoàn thành bậc đại học",
+          "explanation": "\"fail to finish their degree\" → the failure to complete a degree."
         }
       ]
     },
@@ -1219,8 +1294,8 @@
       "lessonCode": "T2-L21",
       "order": 4,
       "type": "categorize",
-      "title": "Task 1 hay Task 2?",
-      "instruction": "Xếp mỗi prompt vào Task 1 (mô tả số liệu tĩnh của một biểu đồ) hay Task 2 (xu hướng xã hội cần bàn luận).",
+      "title": "Task 1 or Task 2?",
+      "instruction": "Put each prompt into Task 1 (describing static data from a chart) or Task 2 (a social trend to discuss).",
       "autoGrade": true,
       "points": 12,
       "estimatedMinutes": 6,
@@ -1242,32 +1317,38 @@
         {
           "id": "c1",
           "text": "fast food consumption in Vietnam, 2000–2020",
-          "category": "t1"
+          "category": "t1",
+          "explanation": "Số liệu cụ thể theo nơi chốn và mốc thời gian → mô tả biểu đồ Task 1."
         },
         {
           "id": "c2",
           "text": "More people are using private cars.",
-          "category": "t2"
+          "category": "t2",
+          "explanation": "Một xu hướng xã hội cần bàn luận → Task 2."
         },
         {
           "id": "c3",
           "text": "electricity consumption in the UK",
-          "category": "t1"
+          "category": "t1",
+          "explanation": "Tiêu đề số liệu → Task 1."
         },
         {
           "id": "c4",
           "text": "People are increasingly dependent on technology.",
-          "category": "t2"
+          "category": "t2",
+          "explanation": "Hiện tượng xã hội để thảo luận → Task 2."
         },
         {
           "id": "c5",
           "text": "car ownership in Australia",
-          "category": "t1"
+          "category": "t1",
+          "explanation": "Tiêu đề số liệu → Task 1."
         },
         {
           "id": "c6",
           "text": "More students are choosing vocational education.",
-          "category": "t2"
+          "category": "t2",
+          "explanation": "Xu hướng xã hội về lựa chọn giáo dục → Task 2."
         }
       ]
     },
@@ -1276,8 +1357,8 @@
       "lessonCode": "T2-L21",
       "order": 5,
       "type": "sentence_writing",
-      "title": "Paraphrase đề Task 2 bằng 3 noun phrase",
-      "instruction": "Đề: \"In several countries, a growing number of university students leave higher education before completing their degree. What are the causes and effects?\" Viết 3 câu, mỗi câu dùng MỘT noun phrase khác nhau để nói về hiện tượng / nguyên nhân / hệ quả.",
+      "title": "Paraphrase a Task 2 question with 3 noun phrases",
+      "instruction": "Task: \"In several countries, a growing number of university students leave higher education before completing their degree. What are the causes and effects?\" Write 3 sentences, each using ONE different noun phrase for the trend / the causes / the effects.",
       "source": "original",
       "autoGrade": false,
       "points": 10,
@@ -1289,7 +1370,7 @@
       ],
       "responseSlots": 3,
       "rubric": {
-        "minWords": 60,
+        "minWords": 50,
         "targetStructures": [
           "the increasing university dropout rate",
           "the failure to complete a degree",
@@ -1315,8 +1396,8 @@
       "lessonCode": "T2-L21",
       "order": 6,
       "type": "paragraph_writing",
-      "title": "Viết Introduction Task 2 bằng noun phrase",
-      "instruction": "Viết một Introduction (2–3 câu) cho đề: \"In several countries, a growing number of university students leave higher education before completing their degree program. What are the main causes of this trend, and what effects does it have on society?\" Dùng ít nhất 2 pattern noun phrase và nêu rõ hai nhiệm vụ (causes + effects).",
+      "title": "Write a Task 2 Introduction with noun phrases",
+      "instruction": "Write an Introduction (2–3 sentences) for the task: \"In several countries, a growing number of university students leave higher education before completing their degree program. What are the main causes of this trend, and what effects does it have on society?\" Use at least 2 noun-phrase patterns and state both tasks clearly (causes + effects).",
       "source": "original",
       "autoGrade": false,
       "points": 12,

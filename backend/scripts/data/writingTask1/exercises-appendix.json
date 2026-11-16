@@ -5,8 +5,8 @@
       "lessonCode": "T1-PLD1",
       "order": 1,
       "type": "mcq",
-      "title": "D.6. PRACTICE 1 — Chọn từ đúng",
-      "instruction": "Khoanh tròn phương án đúng.",
+      "title": "D.6. PRACTICE 1 — Choose the correct word",
+      "instruction": "Choose the correct option.",
       "source": "book",
       "skillTags": [
         "paraphrase",
@@ -120,8 +120,8 @@
       "lessonCode": "T1-PLD1",
       "order": 2,
       "type": "sentence_transform",
-      "title": "D.7. PRACTICE 2 — Paraphrase chủ thể",
-      "instruction": "Viết lại mỗi cụm sau bằng hai cách khác nhau (ngăn cách bằng dấu “/”).",
+      "title": "D.7. PRACTICE 2 — Paraphrase the subject",
+      "instruction": "Rewrite each phrase in two different ways (separate them with “/”).",
       "source": "book",
       "skillTags": [
         "paraphrase",
@@ -137,42 +137,48 @@
           "prompt": "children aged 5 to 11",
           "sampleAnswers": [
             "5- to 11-year-olds / children (who are) aged 5 to 11"
-          ]
+          ],
+          "explanation": "Cách 1: tính từ ghép \"5- to 11-year-olds\" (year không có s khi làm tính từ). Cách 2: giữ \"children\" + \"aged 5 to 11\"."
         },
         {
           "id": "q2",
           "prompt": "people aged 65 and over",
           "sampleAnswers": [
             "the elderly / senior citizens"
-          ]
+          ],
+          "explanation": "\"the elderly\" (the + tính từ = cả nhóm người) hoặc \"senior citizens\" — đều chỉ người từ 65 tuổi trở lên."
         },
         {
           "id": "q3",
           "prompt": "people from Spain",
           "sampleAnswers": [
             "the Spanish / Spanish people"
-          ]
+          ],
+          "explanation": "Người của một nước: \"the + tính từ quốc tịch\" (the Spanish) hoặc \"tính từ + people\" (Spanish people)."
         },
         {
           "id": "q4",
           "prompt": "teenagers",
           "sampleAnswers": [
             "adolescents / young people aged 13–19"
-          ]
+          ],
+          "explanation": "\"adolescents\" là từ học thuật cho tuổi teen; hoặc diễn giải bằng độ tuổi \"young people aged 13–19\"."
         },
         {
           "id": "q5",
           "prompt": "adults in employment",
           "sampleAnswers": [
             "working adults / employed people"
-          ]
+          ],
+          "explanation": "\"in employment\" = đang đi làm → \"working adults\" hoặc \"employed people\"."
         },
         {
           "id": "q6",
           "prompt": "people in their forties",
           "sampleAnswers": [
             "40- to 49-year-olds / people aged 40 to 49"
-          ]
+          ],
+          "explanation": "\"in their forties\" = 40–49 tuổi → \"40- to 49-year-olds\" hoặc \"people aged 40 to 49\"."
         }
       ]
     },
@@ -181,8 +187,8 @@
       "lessonCode": "T1-PLD1",
       "order": 3,
       "type": "sentence_writing",
-      "title": "D.8. HOMEWORK — Phần 1",
-      "instruction": "Viết 6 câu tiếng Anh so sánh số liệu giữa hai quốc gia và hai nhóm tuổi bất kỳ. Mỗi câu phải dùng một cách gọi chủ thể khác nhau, không được lặp lại.",
+      "title": "D.8. HOMEWORK — Part 1",
+      "instruction": "Write 6 English sentences comparing data between any two countries and two age groups. Each sentence must refer to the subject in a different way — no repetition.",
       "source": "book",
       "skillTags": [
         "paraphrase",
@@ -221,8 +227,8 @@
       "lessonCode": "T1-PLD2",
       "order": 1,
       "type": "sentence_transform",
-      "title": "D.18. PRACTICE 1 — Viết lại câu không lặp từ",
-      "instruction": "Viết lại mỗi câu sau bằng một cách diễn đạt khác, giữ nguyên nghĩa.",
+      "title": "D.18. PRACTICE 1 — Rewrite without repeating words",
+      "instruction": "Rewrite each sentence in a different way, keeping the same meaning.",
       "source": "book",
       "skillTags": [
         "paraphrase",
@@ -238,21 +244,24 @@
           "prompt": "The percentage of Internet users in Japan was 60%.",
           "sampleAnswers": [
             "60% of people in Japan used the Internet."
-          ]
+          ],
+          "explanation": "Đổi \"The percentage of… was 60%\" thành câu có động từ thật: \"60% of people… used…\"."
         },
         {
           "id": "q2",
           "prompt": "The unemployment rate in Spain rose to 20%.",
           "sampleAnswers": [
             "The level of joblessness in Spain rose to 20%."
-          ]
+          ],
+          "explanation": "\"unemployment rate\" ↔ \"level of joblessness\" — paraphrase danh từ, giữ nguyên động từ \"rose to\"."
         },
         {
           "id": "q3",
           "prompt": "The poverty rate in Laos was 15%.",
           "sampleAnswers": [
             "15% of people in Laos lived below the poverty line."
-          ]
+          ],
+          "explanation": "\"poverty rate\" được diễn giải thành \"lived below the poverty line\" (sống dưới mức nghèo)."
         },
         {
           "id": "q4",
@@ -260,7 +269,8 @@
           "sampleAnswers": [
             "Coffee earned $4 billion.",
             "Turnover from coffee reached $4 billion."
-          ]
+          ],
+          "explanation": "\"Sales of coffee reached\" ↔ \"Coffee earned\" — đổi chủ ngữ thành sản phẩm và dùng động từ earn."
         },
         {
           "id": "q5",
@@ -268,28 +278,32 @@
           "sampleAnswers": [
             "Swedish consumers spent $750 on mobile phones.",
             "Expenditure on mobile phones in Sweden was $"
-          ]
+          ],
+          "explanation": "\"People in Sweden\" ↔ \"Swedish consumers\" — dùng tính từ quốc tịch + danh từ chỉ nhóm người."
         },
         {
           "id": "q6",
           "prompt": "The number of people who travel by car doubled.",
           "sampleAnswers": [
             "The number of car commuters doubled."
-          ]
+          ],
+          "explanation": "Mệnh đề \"people who travel by car\" được rút gọn thành danh từ \"car commuters\"."
         },
         {
           "id": "q7",
           "prompt": "Beef consumption was 90 pounds per person.",
           "sampleAnswers": [
             "The per capita consumption of beef was 90 pounds."
-          ]
+          ],
+          "explanation": "\"per person\" ↔ \"per capita\"; đưa \"beef\" ra sau thành \"consumption of beef\"."
         },
         {
           "id": "q8",
           "prompt": "The amount of paper produced fell sharply.",
           "sampleAnswers": [
             "Paper production fell sharply."
-          ]
+          ],
+          "explanation": "\"The amount of paper produced\" được danh hoá gọn thành \"Paper production\"."
         }
       ]
     },
@@ -298,8 +312,8 @@
       "lessonCode": "T1-PLD2",
       "order": 2,
       "type": "sentence_writing",
-      "title": "D.19. PRACTICE 2 — Ba cách cho một số liệu",
-      "instruction": "Với mỗi số liệu, viết ba câu tiếng Anh khác nhau cùng diễn đạt một ý (viết cả ba câu vào ô của số liệu đó).",
+      "title": "D.19. PRACTICE 2 — Three ways to report one figure",
+      "instruction": "For each figure, write three different English sentences that express the same idea (write all three in that figure’s box).",
       "source": "book",
       "skillTags": [
         "paraphrase",
@@ -354,8 +368,8 @@
       "lessonCode": "T1-PLD2",
       "order": 3,
       "type": "sentence_writing",
-      "title": "D.20. HOMEWORK — Phần 2",
-      "instruction": "Chọn 5 mục bất kỳ trong Phần 2 (D.9–D.17). Với mỗi mục, viết hai câu tiếng Anh dùng hai cách paraphrase khác nhau (mỗi ô một mục, ghi tên mục ở đầu).",
+      "title": "D.20. HOMEWORK — Part 2",
+      "instruction": "Choose any 5 items from Part 2 (D.9–D.17). For each item, write two English sentences using two different paraphrasing methods (one item per box, with the item name at the start).",
       "source": "book",
       "skillTags": [
         "paraphrase",
@@ -392,8 +406,8 @@
       "lessonCode": "T1-TESTD",
       "order": 1,
       "type": "mcq",
-      "title": "PHẦN A1 — Trắc nghiệm (10 điểm)",
-      "instruction": "Chọn đáp án đúng. Mỗi câu 1 điểm.",
+      "title": "PART A1 — Multiple choice (10 points)",
+      "instruction": "Choose the correct answer. 1 point each.",
       "source": "book",
       "skillTags": [
         "paraphrase"
@@ -650,8 +664,8 @@
       "lessonCode": "T1-TESTD",
       "order": 2,
       "type": "gap_fill",
-      "title": "PHẦN A2 — Điền từ (10 điểm)",
-      "instruction": "Điền: per capita / turnover / senior citizens / expenditure / commuters / joblessness / adolescents / poverty line / the aging population / males. Mỗi câu 1 điểm.",
+      "title": "PART A2 — Fill in the blanks (10 points)",
+      "instruction": "Fill in: per capita / turnover / senior citizens / expenditure / commuters / joblessness / adolescents / poverty line / the aging population / males. 1 point each.",
       "source": "book",
       "skillTags": [
         "paraphrase"
@@ -682,7 +696,8 @@
                 "males"
               ]
             }
-          ]
+          ],
+          "explanation": "\"aged under 14\" cần một danh từ chỉ người → \"males\" (nam giới)."
         },
         {
           "id": "q2",
@@ -693,7 +708,8 @@
                 "Turnover"
               ]
             }
-          ]
+          ],
+          "explanation": "\"Turnover from…\" = doanh thu từ một mặt hàng."
         },
         {
           "id": "q3",
@@ -704,7 +720,8 @@
                 "per capita"
               ]
             }
-          ]
+          ],
+          "explanation": "\"per capita consumption\" = mức tiêu thụ bình quân đầu người, đứng trước danh từ như một tính từ."
         },
         {
           "id": "q4",
@@ -715,7 +732,8 @@
                 "commuters"
               ]
             }
-          ]
+          ],
+          "explanation": "\"traveled by bus\" → người đi lại hằng ngày = \"commuters\"."
         },
         {
           "id": "q5",
@@ -726,7 +744,8 @@
                 "joblessness"
               ]
             }
-          ]
+          ],
+          "explanation": "\"The level of joblessness\" = tỷ lệ thất nghiệp."
         },
         {
           "id": "q6",
@@ -737,7 +756,8 @@
                 "Expenditure"
               ]
             }
-          ]
+          ],
+          "explanation": "\"Expenditure on + N\" = chi tiêu cho một thứ gì đó."
         },
         {
           "id": "q7",
@@ -748,7 +768,8 @@
                 "poverty line"
               ]
             }
-          ]
+          ],
+          "explanation": "\"live under the poverty line\" = sống dưới mức nghèo."
         },
         {
           "id": "q8",
@@ -760,7 +781,8 @@
                 "the aging population"
               ]
             }
-          ]
+          ],
+          "explanation": "\"is growing rapidly in developed countries\" → hiện tượng dân số già hoá = \"the aging population\"."
         },
         {
           "id": "q9",
@@ -771,7 +793,8 @@
                 "Adolescents"
               ]
             }
-          ]
+          ],
+          "explanation": "\"aged 13 to 19\" = tuổi teen → \"Adolescents\"."
         },
         {
           "id": "q10",
@@ -782,7 +805,8 @@
                 "senior citizens"
               ]
             }
-          ]
+          ],
+          "explanation": "\"over 65\" → người cao tuổi = \"senior citizens\"."
         }
       ]
     },
@@ -791,8 +815,8 @@
       "lessonCode": "T1-TESTD",
       "order": 3,
       "type": "sentence_transform",
-      "title": "PHẦN A3 — Viết lại câu (30 điểm)",
-      "instruction": "Viết lại câu bằng cách diễn đạt khác, giữ nguyên nghĩa. Mỗi câu 3 điểm.",
+      "title": "PART A3 — Rewrite the sentences (30 points)",
+      "instruction": "Rewrite each sentence in a different way, keeping the same meaning. 3 points each.",
       "source": "book",
       "skillTags": [
         "paraphrase"
@@ -807,70 +831,80 @@
           "prompt": "The percentage of people using the Internet in Korea was 80%.",
           "sampleAnswers": [
             "80% of Koreans used the Internet."
-          ]
+          ],
+          "explanation": "Đổi chủ ngữ \"The percentage of…\" thành \"80% of Koreans\" + động từ thật \"used\"."
         },
         {
           "id": "q2",
           "prompt": "The unemployment rate in Greece was 25%.",
           "sampleAnswers": [
             "The level of joblessness in Greece was 25%."
-          ]
+          ],
+          "explanation": "\"unemployment rate\" ↔ \"level of joblessness\"."
         },
         {
           "id": "q3",
           "prompt": "12% of Indian people were poor.",
           "sampleAnswers": [
             "The poverty rate in India was 12%."
-          ]
+          ],
+          "explanation": "Ngược chiều: \"12% of Indian people were poor\" → danh từ \"The poverty rate in India was 12%\"."
         },
         {
           "id": "q4",
           "prompt": "Sales of electric cars reached $3 billion.",
           "sampleAnswers": [
             "Turnover from electric cars reached $3 billion."
-          ]
+          ],
+          "explanation": "\"Sales of…\" ↔ \"Turnover from…\" (doanh thu)."
         },
         {
           "id": "q5",
           "prompt": "People in Japan spent $500 a year on books.",
           "sampleAnswers": [
             "Japanese consumers spent $500 per year on books."
-          ]
+          ],
+          "explanation": "\"People in Japan\" ↔ \"Japanese consumers\"; \"a year\" ↔ \"per year\"."
         },
         {
           "id": "q6",
           "prompt": "The number of people who cycle to work rose.",
           "sampleAnswers": [
             "The number of cycling commuters rose."
-          ]
+          ],
+          "explanation": "Mệnh đề \"people who cycle to work\" → danh từ ghép \"cycling commuters\"."
         },
         {
           "id": "q7",
           "prompt": "Rice consumption was 100 kilograms per person per year.",
           "sampleAnswers": [
             "Annual rice consumption per capita was 100 kilograms."
-          ]
+          ],
+          "explanation": "\"per person per year\" ↔ \"annual … per capita\"."
         },
         {
           "id": "q8",
           "prompt": "Children aged 10 to 12 preferred reading.",
           "sampleAnswers": [
             "10- to 12-year-olds preferred reading."
-          ]
+          ],
+          "explanation": "\"Children aged 10 to 12\" ↔ tính từ ghép \"10- to 12-year-olds\"."
         },
         {
           "id": "q9",
           "prompt": "The figure for people from Ireland was the lowest.",
           "sampleAnswers": [
             "The figure for the Irish was the lowest."
-          ]
+          ],
+          "explanation": "\"people from Ireland\" ↔ \"the Irish\" (the + tính từ quốc tịch)."
         },
         {
           "id": "q10",
           "prompt": "The amount of steel produced in China increased.",
           "sampleAnswers": [
             "Steel production in China increased."
-          ]
+          ],
+          "explanation": "\"The amount of steel produced\" được danh hoá thành \"Steel production\"."
         }
       ]
     },
@@ -879,8 +913,8 @@
       "lessonCode": "T1-TESTD",
       "order": 4,
       "type": "full_task1",
-      "title": "PHẦN B — Đề 1 (chọn một trong hai đề)",
-      "instruction": "The table below shows the unemployment rate among people aged 16–24 and the poverty rate in four countries in 2010 and 2020 (hypothetical data). Write at least 150 words in 20 minutes. Mục tiêu: gọi tên chủ thể bằng ít nhất 4 cách khác nhau trong bài.",
+      "title": "PART B — Task 1 (choose one of the two tasks)",
+      "instruction": "The table below shows the unemployment rate among people aged 16–24 and the poverty rate in four countries in 2010 and 2020 (hypothetical data). Write at least 150 words in 20 minutes. Goal: refer to the subjects in at least 4 different ways.",
       "source": "book",
       "skillTags": [
         "paraphrase",
@@ -960,8 +994,8 @@
       "lessonCode": "T1-TESTD",
       "order": 5,
       "type": "full_task1",
-      "title": "PHẦN B — Đề 2 (chọn một trong hai đề)",
-      "instruction": "The table below shows average yearly spending per person on three items in four countries in 2015 (hypothetical data, US dollars). Write at least 150 words in 20 minutes. Mục tiêu: gọi tên chủ thể bằng ít nhất 4 cách khác nhau trong bài.",
+      "title": "PART B — Task 2 (choose one of the two tasks)",
+      "instruction": "The table below shows average yearly spending per person on three items in four countries in 2015 (hypothetical data, US dollars). Write at least 150 words in 20 minutes. Goal: refer to the subjects in at least 4 different ways.",
       "source": "book",
       "skillTags": [
         "paraphrase",

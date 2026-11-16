@@ -5,8 +5,8 @@
       "lessonCode": "SPK-P1-L01",
       "order": 1,
       "type": "mcq",
-      "title": "Luật chơi Part 1 & công thức O.R.E.",
-      "instruction": "Chọn đáp án đúng về cách trả lời Part 1.",
+      "title": "Part 1 rules & the O.R.E. formula",
+      "instruction": "Choose the correct answer about how to answer Part 1.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -137,8 +137,8 @@
       "lessonCode": "SPK-P1-L01",
       "order": 2,
       "type": "matching",
-      "title": "Nối các mảnh của công thức O.R.E.",
-      "instruction": "Nối mỗi ký hiệu / yêu cầu với mô tả đúng.",
+      "title": "Match the parts of the O.R.E. formula",
+      "instruction": "Match each letter / requirement with the correct description.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -179,8 +179,8 @@
       "lessonCode": "SPK-P1-L01",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền từ nối theo công thức O.R.E.",
-      "instruction": "Điền MỘT từ vào mỗi chỗ trống để hoàn thành câu trả lời mẫu.",
+      "title": "Linking words for the O.R.E. formula",
+      "instruction": "Fill in ONE word in each blank to complete the model answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -251,8 +251,8 @@
       "lessonCode": "SPK-P1-L01",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi present simple",
-      "instruction": "Viết lại cả câu cho đúng. Lỗi nặng nhất của học sinh Việt là thiếu đuôi -s.",
+      "title": "Present simple error correction",
+      "instruction": "Rewrite the whole sentence correctly. The most serious mistake Vietnamese learners make is dropping the -s ending.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -293,8 +293,8 @@
       "lessonCode": "SPK-P1-L01",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: trả lời theo O.R.E.",
-      "instruction": "Ghi âm câu trả lời của bạn cho từng câu hỏi dưới đây. Mỗi câu 15–25 giây, đủ Opinion → Reason → Example. AI sẽ chấm theo 4 tiêu chí.",
+      "title": "Speaking: answer using O.R.E.",
+      "instruction": "Record your answer to each question below. 15–25 seconds each, with Opinion → Reason → Example. The AI will mark it on the 4 criteria.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -349,8 +349,8 @@
       "lessonCode": "SPK-P1-L02",
       "order": 1,
       "type": "mcq",
-      "title": "Filler dùng thế nào cho đúng",
-      "instruction": "Chọn đáp án đúng về cách dùng filler.",
+      "title": "How to use fillers correctly",
+      "instruction": "Choose the correct answer about using fillers.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -481,8 +481,8 @@
       "lessonCode": "SPK-P1-L02",
       "order": 2,
       "type": "matching",
-      "title": "Nối filler với tình huống dùng",
-      "instruction": "Nối mỗi filler với thời điểm nên dùng nó.",
+      "title": "Match each filler with when to use it",
+      "instruction": "Match each filler with the moment you should use it.",
       "autoGrade": true,
       "points": 12,
       "items": [
@@ -529,8 +529,8 @@
       "lessonCode": "SPK-P1-L02",
       "order": 3,
       "type": "gap_fill",
-      "title": "Chọn filler đúng",
-      "instruction": "Điền MỘT filler phù hợp vào mỗi chỗ trống (Well / Actually / To be honest / Let me think / I mean).",
+      "title": "Choose the right filler",
+      "instruction": "Fill in ONE suitable filler in each blank (Well / Actually / To be honest / Let me think / I mean).",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -601,8 +601,8 @@
       "lessonCode": "SPK-P1-L02",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa câu dùng filler máy móc / sai vị trí",
-      "instruction": "Viết lại cho tự nhiên. Chỉ giữ MỘT filler và đặt đúng vị trí.",
+      "title": "Fix mechanical or misplaced fillers",
+      "instruction": "Rewrite it so it sounds natural. Keep only ONE filler and put it in the right place.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -637,8 +637,8 @@
       "lessonCode": "SPK-P1-L02",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: không có khoảng lặng",
-      "instruction": "Ghi âm câu trả lời cho từng câu. Luật: không im quá 3 giây — nếu bí, dùng filler. Mỗi câu 15–25 giây.",
+      "title": "Speaking: no silent gaps",
+      "instruction": "Record an answer to each question. Rule: no silence longer than 3 seconds — if you get stuck, use a filler. 15–25 seconds each.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -693,8 +693,8 @@
       "lessonCode": "SPK-P1-L03",
       "order": 1,
       "type": "mcq",
-      "title": "Lý do & ví dụ — nhận diện",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Reasons & examples — recognition",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -825,8 +825,8 @@
       "lessonCode": "SPK-P1-L03",
       "order": 2,
       "type": "categorize",
-      "title": "Cụm này nêu LÝ DO hay đưa VÍ DỤ?",
-      "instruction": "Kéo mỗi cụm vào đúng cột.",
+      "title": "Does this phrase give a REASON or an EXAMPLE?",
+      "instruction": "Drag each phrase into the correct column.",
       "autoGrade": true,
       "points": 10,
       "categories": [
@@ -843,42 +843,50 @@
         {
           "id": "c1",
           "text": "since…",
-          "category": "reason"
+          "category": "reason",
+          "explanation": "\"since…\" = vì… — dẫn nguyên nhân, thay cho because."
         },
         {
           "id": "c2",
           "text": "mainly because…",
-          "category": "reason"
+          "category": "reason",
+          "explanation": "\"mainly because…\" = chủ yếu là vì… — nêu lý do chính."
         },
         {
           "id": "c3",
           "text": "one reason is that…",
-          "category": "reason"
+          "category": "reason",
+          "explanation": "\"one reason is that…\" = một lý do là… — mở lý do."
         },
         {
           "id": "c4",
           "text": "that's why…",
-          "category": "reason"
+          "category": "reason",
+          "explanation": "\"that's why…\" = đó là lý do… — nối lý do với kết quả."
         },
         {
           "id": "c5",
           "text": "For instance, …",
-          "category": "example"
+          "category": "example",
+          "explanation": "\"For instance\" = ví dụ như — mở ví dụ."
         },
         {
           "id": "c6",
           "text": "Like last week, …",
-          "category": "example"
+          "category": "example",
+          "explanation": "\"Like last week, …\" — kể một trường hợp cụ thể làm ví dụ (văn nói)."
         },
         {
           "id": "c7",
           "text": "Take my street for example",
-          "category": "example"
+          "category": "example",
+          "explanation": "\"Take … for example\" = lấy … làm ví dụ."
         },
         {
           "id": "c8",
           "text": "A good case in point is…",
-          "category": "example"
+          "category": "example",
+          "explanation": "\"A good case in point is…\" = một ví dụ điển hình là…"
         }
       ]
     },
@@ -887,8 +895,8 @@
       "lessonCode": "SPK-P1-L03",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền cách nói lý do / ví dụ",
-      "instruction": "Điền từ còn thiếu vào mỗi câu.",
+      "title": "Ways to give reasons / examples",
+      "instruction": "Fill in the missing word in each sentence.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -960,8 +968,8 @@
       "lessonCode": "SPK-P1-L03",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Sửa 3 lỗi kinh điển của mệnh đề nguyên nhân",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Fix 3 classic mistakes with reason clauses",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1012,8 +1020,8 @@
       "lessonCode": "SPK-P1-L03",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: trả lời câu \"Why…?\"",
-      "instruction": "Ghi âm câu trả lời cho mỗi câu \"Why…?\". Dài 20–25 giây, đủ Answer → Reason → Example, và KHÔNG dùng \"because\".",
+      "title": "Speaking: answer \"Why…?\" questions",
+      "instruction": "Record an answer to each \"Why…?\" question. 20–25 seconds, with Answer → Reason → Example, and WITHOUT using \"because\".",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -1068,8 +1076,8 @@
       "lessonCode": "SPK-P1-L04",
       "order": 1,
       "type": "mcq",
-      "title": "Công thức nâng band",
-      "instruction": "Chọn đáp án đúng về cách nâng câu trả lời Band 5 → 6 → 7.",
+      "title": "The formula for a higher band",
+      "instruction": "Choose the correct answer about raising an answer from Band 5 → 6 → 7.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1200,8 +1208,8 @@
       "lessonCode": "SPK-P1-L04",
       "order": 2,
       "type": "ordering",
-      "title": "Xếp câu trả lời từ Band 5 lên Band 7",
-      "instruction": "Kéo để xếp các mảnh theo thứ tự một câu trả lời phát triển dần: trả lời → lý do cụ thể → ví dụ chi tiết → chi tiết cá nhân → ý đối lập.",
+      "title": "Build an answer from Band 5 up to Band 7",
+      "instruction": "Drag the pieces into the order of an answer that develops step by step: answer → specific reason → detailed example → personal detail → contrasting point.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1231,8 +1239,8 @@
       "lessonCode": "SPK-P1-L04",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền cụm dùng để nâng band",
-      "instruction": "Điền từ còn thiếu.",
+      "title": "Phrases that raise your band",
+      "instruction": "Fill in the missing words.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1303,8 +1311,8 @@
       "lessonCode": "SPK-P1-L04",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Nối câu đơn rời rạc thành câu ghép",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Viết lại thành MỘT câu, dùng so / which / although.",
+      "title": "Join short separate sentences into one",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints). Rewrite them as ONE sentence using so / which / although.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1345,8 +1353,8 @@
       "lessonCode": "SPK-P1-L04",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: nâng câu trả lời của bạn lên Band 7",
-      "instruction": "Ghi âm câu trả lời ở mức cao nhất bạn có thể: lý do cụ thể + ví dụ chi tiết + 1 chi tiết cá nhân thật + 1 ý đối lập. 20–25 giây.",
+      "title": "Speaking: raise your answer to Band 7",
+      "instruction": "Record your answer at the highest level you can: a specific reason + a detailed example + 1 real personal detail + 1 contrasting point. 20–25 seconds.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -1401,8 +1409,8 @@
       "lessonCode": "SPK-P1-L05",
       "order": 1,
       "type": "mcq",
-      "title": "Giới thiệu bản thân — Work / Study",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Introducing yourself — Work / Study",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1533,50 +1541,58 @@
       "lessonCode": "SPK-P1-L05",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm Work / Study với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Work / Study phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "academic workload",
-          "right": "khối lượng học tập"
+          "right": "khối lượng học tập",
+          "explanation": "VD: My academic workload is quite heavy this term."
         },
         {
           "id": "m2",
           "left": "hand in assignments",
-          "right": "nộp bài tập"
+          "right": "nộp bài tập",
+          "explanation": "VD: We have to hand in assignments every Friday."
         },
         {
           "id": "m3",
           "left": "work long hours",
-          "right": "làm việc nhiều giờ"
+          "right": "làm việc nhiều giờ",
+          "explanation": "VD: I sometimes work long hours before deadlines."
         },
         {
           "id": "m4",
           "left": "job satisfaction",
-          "right": "sự hài lòng với công việc"
+          "right": "sự hài lòng với công việc",
+          "explanation": "VD: What I value most is job satisfaction, not just the salary."
         },
         {
           "id": "m5",
           "left": "career prospects",
-          "right": "triển vọng nghề nghiệp"
+          "right": "triển vọng nghề nghiệp",
+          "explanation": "VD: I chose this major for its good career prospects."
         },
         {
           "id": "m6",
           "left": "gain experience",
-          "right": "tích lũy kinh nghiệm"
+          "right": "tích lũy kinh nghiệm",
+          "explanation": "VD: I took a part-time job to gain experience."
         },
         {
           "id": "m7",
           "left": "work-life balance",
-          "right": "cân bằng công việc – cuộc sống"
+          "right": "cân bằng công việc – cuộc sống",
+          "explanation": "VD: It's hard to keep a healthy work-life balance."
         },
         {
           "id": "m8",
           "left": "challenging yet rewarding",
-          "right": "thử thách nhưng đáng làm"
+          "right": "thử thách nhưng đáng làm",
+          "explanation": "VD: My job is challenging yet rewarding — \"yet\" nối hai ý trái chiều."
         }
       ]
     },
@@ -1585,8 +1601,8 @@
       "lessonCode": "SPK-P1-L05",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền cụm đúng vào câu giới thiệu",
-      "instruction": "Điền cụm còn thiếu (major in · academic workload · hand in · career prospects · gain experience · job satisfaction).",
+      "title": "Complete the self-introduction",
+      "instruction": "Fill in the missing phrase (major in · academic workload · hand in · career prospects · gain experience · job satisfaction).",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1665,8 +1681,8 @@
       "lessonCode": "SPK-P1-L05",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi thì & giới từ khi giới thiệu bản thân",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Tense & preposition errors in self-introductions",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1710,8 +1726,8 @@
       "lessonCode": "SPK-P1-L05",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: giới thiệu bản thân",
-      "instruction": "Ghi âm câu trả lời. Câu giới thiệu phải đủ WHERE + HOW LONG + WHAT và dùng ít nhất 2 target phrases. 20–25 giây.",
+      "title": "Speaking: introduce yourself",
+      "instruction": "Record your answer. Your introduction must cover WHERE + HOW LONG + WHAT and use at least 2 target phrases. 20–25 seconds.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -1766,8 +1782,8 @@
       "lessonCode": "SPK-P1-L06",
       "order": 1,
       "type": "mcq",
-      "title": "Hometown ≠ The area where you live",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Hometown ≠ the area where you live",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1898,8 +1914,8 @@
       "lessonCode": "SPK-P1-L06",
       "order": 2,
       "type": "categorize",
-      "title": "Câu hỏi này về HOMETOWN hay AREA?",
-      "instruction": "Kéo mỗi câu hỏi vào đúng cột.",
+      "title": "Is this question about your HOMETOWN or your AREA?",
+      "instruction": "Drag each question into the correct column.",
       "autoGrade": true,
       "points": 12,
       "categories": [
@@ -1916,32 +1932,38 @@
         {
           "id": "c1",
           "text": "Where did you grow up?",
-          "category": "hometown"
+          "category": "hometown",
+          "explanation": "\"grow up\" = nơi lớn lên → hỏi về quê (hometown)."
         },
         {
           "id": "c2",
           "text": "Is it easy to get around your neighbourhood?",
-          "category": "area"
+          "category": "area",
+          "explanation": "\"your neighbourhood\" = khu bạn đang sống."
         },
         {
           "id": "c3",
           "text": "Has your hometown changed much?",
-          "category": "hometown"
+          "category": "hometown",
+          "explanation": "Hỏi quê đã thay đổi thế nào → hometown."
         },
         {
           "id": "c4",
           "text": "Do you know your neighbours well?",
-          "category": "area"
+          "category": "area",
+          "explanation": "\"neighbours\" = hàng xóm nơi đang ở → the area where you live."
         },
         {
           "id": "c5",
           "text": "Would you like to move back there one day?",
-          "category": "hometown"
+          "category": "hometown",
+          "explanation": "\"move back there\" = quay về nơi từng sống → hometown."
         },
         {
           "id": "c6",
           "text": "What facilities are there near your house?",
-          "category": "area"
+          "category": "area",
+          "explanation": "\"near your house\" → khu đang sống."
         }
       ]
     },
@@ -1950,50 +1972,58 @@
       "lessonCode": "SPK-P1-L06",
       "order": 3,
       "type": "matching",
-      "title": "Nối cụm mô tả nơi chốn với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Phrases for describing places and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "bustling city",
-          "right": "thành phố nhộn nhịp"
+          "right": "thành phố nhộn nhịp",
+          "explanation": "VD: Hanoi is a bustling city, especially at rush hour."
         },
         {
           "id": "m2",
           "left": "pace of life",
-          "right": "nhịp sống"
+          "right": "nhịp sống",
+          "explanation": "VD: The pace of life in my hometown is much slower."
         },
         {
           "id": "m3",
           "left": "local cuisine",
-          "right": "ẩm thực địa phương"
+          "right": "ẩm thực địa phương",
+          "explanation": "VD: The local cuisine is famous for its noodle dishes."
         },
         {
           "id": "m4",
           "left": "close-knit community",
-          "right": "cộng đồng gắn kết"
+          "right": "cộng đồng gắn kết",
+          "explanation": "VD: It's a close-knit community where everyone knows each other."
         },
         {
           "id": "m5",
           "left": "residential area",
-          "right": "khu dân cư"
+          "right": "khu dân cư",
+          "explanation": "VD: I live in a quiet residential area."
         },
         {
           "id": "m6",
           "left": "within walking distance",
-          "right": "đi bộ tới được"
+          "right": "đi bộ tới được",
+          "explanation": "VD: The market is within walking distance of my house."
         },
         {
           "id": "m7",
           "left": "local amenities",
-          "right": "tiện ích quanh nhà"
+          "right": "tiện ích quanh nhà",
+          "explanation": "VD: There are plenty of local amenities like gyms and cafés."
         },
         {
           "id": "m8",
           "left": "good transport links",
-          "right": "giao thông thuận tiện"
+          "right": "giao thông thuận tiện",
+          "explanation": "VD: The area has good transport links to the city centre."
         }
       ]
     },
@@ -2002,8 +2032,8 @@
       "lessonCode": "SPK-P1-L06",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Sửa lỗi khi mô tả quê hương",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Fix mistakes when describing your hometown",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2054,8 +2084,8 @@
       "lessonCode": "SPK-P1-L06",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: mô tả quê hương và khu bạn ở",
-      "instruction": "Ghi âm câu trả lời. Theo đúng khung Location → Look/Feel → Highlight → Opinion, và KHÔNG dùng \"beautiful\" hay \"nice\". 20–25 giây.",
+      "title": "Speaking: describe your hometown and the area where you live",
+      "instruction": "Record your answer. Follow the frame Location → Look/Feel → Highlight → Opinion, and do NOT use \"beautiful\" or \"nice\". 20–25 seconds.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -2110,8 +2140,8 @@
       "lessonCode": "SPK-P1-L07",
       "order": 1,
       "type": "mcq",
-      "title": "Mô tả nơi chốn & so sánh",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Describing & comparing places",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2242,35 +2272,40 @@
       "lessonCode": "SPK-P1-L07",
       "order": 2,
       "type": "matching",
-      "title": "Nối cấu trúc so sánh với ví dụ",
-      "instruction": "Nối mỗi cấu trúc với câu ví dụ dùng nó.",
+      "title": "Match comparison structures with examples",
+      "instruction": "Match each structure with an example sentence that uses it.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "far more … than",
-          "right": "It's far more crowded than the park near my house."
+          "right": "It's far more crowded than the park near my house.",
+          "explanation": "\"far more … than\" — so sánh hơn được nhấn mạnh bằng far."
         },
         {
           "id": "m2",
           "left": "not as … as",
-          "right": "It's not as peaceful as it used to be."
+          "right": "It's not as peaceful as it used to be.",
+          "explanation": "\"not as … as\" — so sánh không bằng (it used to be = trước đây)."
         },
         {
           "id": "m3",
           "left": "nowhere near as … as",
-          "right": "The new mall is nowhere near as lively as the old market."
+          "right": "The new mall is nowhere near as lively as the old market.",
+          "explanation": "\"nowhere near as … as\" — kém xa, mạnh hơn \"not as … as\"."
         },
         {
           "id": "m4",
           "left": "whereas",
-          "right": "The park is quiet in the morning, whereas it gets packed after five."
+          "right": "The park is quiet in the morning, whereas it gets packed after five.",
+          "explanation": "\"whereas\" nối hai mệnh đề tương phản trong một câu."
         },
         {
           "id": "m5",
           "left": "What you do find is…",
-          "right": "What you do find is a lot of small family-run cafés, which I much prefer."
+          "right": "What you do find is a lot of small family-run cafés, which I much prefer.",
+          "explanation": "\"What you do find is…\" — câu chẻ nhấn mạnh điểm nổi bật của nơi đó."
         }
       ]
     },
@@ -2279,8 +2314,8 @@
       "lessonCode": "SPK-P1-L07",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền cụm mô tả nơi chốn",
-      "instruction": "Điền từ còn thiếu.",
+      "title": "Phrases for describing places",
+      "instruction": "Fill in the missing words.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2352,8 +2387,8 @@
       "lessonCode": "SPK-P1-L07",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi khi mô tả & so sánh",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix mistakes in describing & comparing",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2388,8 +2423,8 @@
       "lessonCode": "SPK-P1-L07",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: mô tả một nơi công cộng",
-      "instruction": "Ghi âm câu trả lời. Đủ 4 lớp (Location → Atmosphere → Facilities → Opinion) và có ít nhất 1 câu so sánh. 20–25 giây.",
+      "title": "Speaking: describe a public place",
+      "instruction": "Record your answer. Cover all 4 layers (Location → Atmosphere → Facilities → Opinion) and include at least 1 comparison. 20–25 seconds.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -2444,8 +2479,8 @@
       "lessonCode": "SPK-P1-L08",
       "order": 1,
       "type": "mcq",
-      "title": "Nói về sở thích & lựa chọn",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Talking about preferences & choices",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2576,35 +2611,40 @@
       "lessonCode": "SPK-P1-L08",
       "order": 2,
       "type": "matching",
-      "title": "Nối cấu trúc nói sở thích với lưu ý",
-      "instruction": "Nối mỗi cấu trúc với lưu ý dùng đúng.",
+      "title": "Preference structures and how to use them",
+      "instruction": "Match each structure with its usage note.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "I prefer A to B",
-          "right": "Dùng \"to\", KHÔNG dùng \"more than\""
+          "right": "Dùng \"to\", KHÔNG dùng \"more than\"",
+          "explanation": "\"prefer A to B\" — giới từ là to: I prefer tea to coffee."
         },
         {
           "id": "m2",
           "left": "I tend to…",
-          "right": "Nghe tự nhiên hơn \"I usually\""
+          "right": "Nghe tự nhiên hơn \"I usually\"",
+          "explanation": "\"tend to + V\" = thường có xu hướng — tự nhiên hơn \"usually\"."
         },
         {
           "id": "m3",
           "left": "I'd rather … than …",
-          "right": "Sau \"rather\" là V nguyên thể, không \"to\""
+          "right": "Sau \"rather\" là V nguyên thể, không \"to\"",
+          "explanation": "\"would rather + V nguyên thể + than + V nguyên thể\": I'd rather stay in than go out."
         },
         {
           "id": "m4",
           "left": "I prioritise X over Y",
-          "right": "Rất mạnh — dùng 1 lần trong câu trả lời là đủ"
+          "right": "Rất mạnh — dùng 1 lần trong câu trả lời là đủ",
+          "explanation": "\"prioritise X over Y\" = ưu tiên X hơn Y — nghĩa mạnh, dùng một lần là đủ."
         },
         {
           "id": "m5",
           "left": "It depends on…",
-          "right": "PHẢI nói rõ phụ thuộc vào cái gì"
+          "right": "PHẢI nói rõ phụ thuộc vào cái gì",
+          "explanation": "\"It depends on…\" phải nói tiếp phụ thuộc vào gì, nếu không nghe như né câu hỏi."
         }
       ]
     },
@@ -2613,8 +2653,8 @@
       "lessonCode": "SPK-P1-L08",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền cấu trúc sở thích",
-      "instruction": "Điền từ còn thiếu.",
+      "title": "Preference structures",
+      "instruction": "Fill in the missing words.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2686,8 +2726,8 @@
       "lessonCode": "SPK-P1-L08",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi cấu trúc sở thích",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix preference-structure errors",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2731,8 +2771,8 @@
       "lessonCode": "SPK-P1-L08",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: trả lời câu hỏi lựa chọn",
-      "instruction": "Ghi âm câu trả lời theo 3 bước: nêu 2 tiêu chí → chọn 1 + lý do → điều kiện đảo chiều. 20–25 giây.",
+      "title": "Speaking: answer choice questions",
+      "instruction": "Record your answer in 3 steps: name 2 criteria → choose 1 + a reason → the condition that would change your choice. 20–25 seconds.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -2787,8 +2827,8 @@
       "lessonCode": "SPK-P1-L09",
       "order": 1,
       "type": "mcq",
-      "title": "Thói quen & tần suất",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Habits & frequency",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2919,8 +2959,8 @@
       "lessonCode": "SPK-P1-L09",
       "order": 2,
       "type": "ordering",
-      "title": "Xếp thang tần suất từ nhiều đến ít",
-      "instruction": "Kéo để xếp các cụm tần suất từ THƯỜNG XUYÊN NHẤT xuống ÍT NHẤT.",
+      "title": "Rank frequency from most to least",
+      "instruction": "Drag the frequency phrases into order from MOST OFTEN to LEAST OFTEN.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2950,8 +2990,8 @@
       "lessonCode": "SPK-P1-L09",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền trạng từ / cụm thói quen",
-      "instruction": "Điền từ còn thiếu.",
+      "title": "Adverbs / phrases for habits",
+      "instruction": "Fill in the missing words.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3022,8 +3062,8 @@
       "lessonCode": "SPK-P1-L09",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa vị trí trạng từ tần suất",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix the position of frequency adverbs",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3064,8 +3104,8 @@
       "lessonCode": "SPK-P1-L09",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: trả lời câu \"How often…?\"",
-      "instruction": "Ghi âm câu trả lời theo khung Frequency → Context → Reason → Example. Không lặp trạng từ tần suất. ~20 giây.",
+      "title": "Speaking: answer \"How often…?\" questions",
+      "instruction": "Record your answer using the frame Frequency → Context → Reason → Example. Do not repeat the same frequency adverb. About 20 seconds.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -3120,8 +3160,8 @@
       "lessonCode": "SPK-P1-L10",
       "order": 1,
       "type": "mcq",
-      "title": "Kể chuyện mini về quá khứ",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Mini stories about the past",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3252,8 +3292,8 @@
       "lessonCode": "SPK-P1-L10",
       "order": 2,
       "type": "categorize",
-      "title": "Đuôi -ed: /t/, /d/ hay /ɪd/?",
-      "instruction": "Kéo mỗi động từ vào đúng cách phát âm đuôi -ed.",
+      "title": "-ed endings: /t/, /d/ or /ɪd/?",
+      "instruction": "Drag each verb to the correct pronunciation of its -ed ending.",
       "autoGrade": true,
       "points": 12,
       "categories": [
@@ -3274,47 +3314,56 @@
         {
           "id": "c1",
           "text": "walked",
-          "category": "t"
+          "category": "t",
+          "explanation": "Âm cuối /k/ là âm vô thanh → -ed đọc /t/: walked /wɔːkt/."
         },
         {
           "id": "c2",
           "text": "finished",
-          "category": "t"
+          "category": "t",
+          "explanation": "Âm cuối /ʃ/ vô thanh → /t/."
         },
         {
           "id": "c3",
           "text": "watched",
-          "category": "t"
+          "category": "t",
+          "explanation": "Âm cuối /tʃ/ vô thanh → /t/."
         },
         {
           "id": "c4",
           "text": "lived",
-          "category": "d"
+          "category": "d",
+          "explanation": "Âm cuối /v/ hữu thanh → /d/."
         },
         {
           "id": "c5",
           "text": "learned",
-          "category": "d"
+          "category": "d",
+          "explanation": "Âm cuối /n/ hữu thanh → /d/."
         },
         {
           "id": "c6",
           "text": "enjoyed",
-          "category": "d"
+          "category": "d",
+          "explanation": "Âm cuối là nguyên âm (hữu thanh) → /d/."
         },
         {
           "id": "c7",
           "text": "visited",
-          "category": "id"
+          "category": "id",
+          "explanation": "Âm cuối /t/ → -ed đọc /ɪd/ (thêm một âm tiết)."
         },
         {
           "id": "c8",
           "text": "wanted",
-          "category": "id"
+          "category": "id",
+          "explanation": "Âm cuối /t/ → /ɪd/."
         },
         {
           "id": "c9",
           "text": "decided",
-          "category": "id"
+          "category": "id",
+          "explanation": "Âm cuối /d/ → /ɪd/."
         }
       ]
     },
@@ -3323,8 +3372,8 @@
       "lessonCode": "SPK-P1-L10",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền cụm kể chuyện",
-      "instruction": "Điền từ còn thiếu.",
+      "title": "Storytelling phrases",
+      "instruction": "Fill in the missing words.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3395,8 +3444,8 @@
       "lessonCode": "SPK-P1-L10",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi past simple / used to",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix past simple / used to errors",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3437,8 +3486,8 @@
       "lessonCode": "SPK-P1-L10",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: kể một câu chuyện nhỏ",
-      "instruction": "Ghi âm câu trả lời theo đủ 4 bước: When → What happened → How I felt → What I learned. Khoảng 25 giây.",
+      "title": "Speaking: tell a short story",
+      "instruction": "Record your answer with all 4 steps: When → What happened → How I felt → What I learned. About 25 seconds.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -3493,8 +3542,8 @@
       "lessonCode": "SPK-P1-L11",
       "order": 1,
       "type": "mcq",
-      "title": "Mô tả sự thay đổi",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Describing change",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3625,35 +3674,40 @@
       "lessonCode": "SPK-P1-L11",
       "order": 2,
       "type": "matching",
-      "title": "Nối trạng từ mức độ với nghĩa",
-      "instruction": "Nối mỗi trạng từ mức độ với mô tả đúng.",
+      "title": "Adverbs of degree and their meanings",
+      "instruction": "Match each adverb of degree with the correct description.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "dramatically",
-          "right": "thay đổi rất mạnh (House prices have risen dramatically.)"
+          "right": "thay đổi rất mạnh (House prices have risen dramatically.)",
+          "explanation": "\"dramatically\" = mức thay đổi mạnh nhất."
         },
         {
           "id": "m2",
           "left": "considerably",
-          "right": "thay đổi mạnh (has changed considerably over the past few years)"
+          "right": "thay đổi mạnh (has changed considerably over the past few years)",
+          "explanation": "\"considerably\" = thay đổi đáng kể."
         },
         {
           "id": "m3",
           "left": "steadily",
-          "right": "thay đổi đều, trung bình (has grown steadily since 2015)"
+          "right": "thay đổi đều, trung bình (has grown steadily since 2015)",
+          "explanation": "\"steadily\" = đều đặn, từ từ."
         },
         {
           "id": "m4",
           "left": "slightly",
-          "right": "thay đổi nhẹ (has improved slightly)"
+          "right": "thay đổi nhẹ (has improved slightly)",
+          "explanation": "\"slightly\" = thay đổi nhẹ."
         },
         {
           "id": "m5",
           "left": "has stayed much the same",
-          "right": "gần như không đổi"
+          "right": "gần như không đổi",
+          "explanation": "\"has stayed much the same\" = hầu như giữ nguyên."
         }
       ]
     },
@@ -3662,8 +3716,8 @@
       "lessonCode": "SPK-P1-L11",
       "order": 3,
       "type": "gap_fill",
-      "title": "Chia thì đúng khi nói về thay đổi",
-      "instruction": "Điền dạng đúng của động từ / cụm còn thiếu.",
+      "title": "The right tense for talking about change",
+      "instruction": "Fill in the correct form of the verb / the missing phrase.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3734,8 +3788,8 @@
       "lessonCode": "SPK-P1-L11",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Sửa lỗi present perfect & so sánh",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Fix present perfect & comparison errors",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -3782,8 +3836,8 @@
       "lessonCode": "SPK-P1-L11",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: X đã thay đổi thế nào?",
-      "instruction": "Ghi âm câu trả lời theo đủ Past → Present → Result. Dùng đúng present perfect ít nhất 1 lần và ≥1 trạng từ mức độ. 20–25 giây.",
+      "title": "Speaking: how has X changed?",
+      "instruction": "Record your answer covering Past → Present → Result. Use the present perfect correctly at least once and at least 1 adverb of degree. 20–25 seconds.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -3838,8 +3892,8 @@
       "lessonCode": "SPK-P1-L12",
       "order": 1,
       "type": "mcq",
-      "title": "Trả lời hai chiều",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Two-sided answers",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3970,40 +4024,46 @@
       "lessonCode": "SPK-P1-L12",
       "order": 2,
       "type": "matching",
-      "title": "Nối cấu trúc hai chiều với sắc thái",
-      "instruction": "Nối mỗi cấu trúc với sắc thái của nó.",
+      "title": "Two-sided structures and their nuances",
+      "instruction": "Match each structure with its nuance.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "Yes, but…",
-          "right": "Đồng ý có điều kiện"
+          "right": "Đồng ý có điều kiện",
+          "explanation": "\"Yes, but…\" — đồng ý nhưng kèm điều kiện/ngoại lệ."
         },
         {
           "id": "m2",
           "left": "No, although…",
-          "right": "Không đồng ý nhưng vẫn công bằng với ý kia"
+          "right": "Không đồng ý nhưng vẫn công bằng với ý kia",
+          "explanation": "\"No, although…\" — phản đối nhưng vẫn ghi nhận ý bên kia."
         },
         {
           "id": "m3",
           "left": "It depends on…",
-          "right": "Trung lập — PHẢI nêu điều kiện"
+          "right": "Trung lập — PHẢI nêu điều kiện",
+          "explanation": "\"It depends on…\" — trung lập, bắt buộc nêu điều kiện cụ thể."
         },
         {
           "id": "m4",
           "left": "On the one hand… on the other hand…",
-          "right": "Cân bằng rõ ràng hai vế"
+          "right": "Cân bằng rõ ràng hai vế",
+          "explanation": "\"On the one hand… on the other hand…\" — trình bày cân bằng hai mặt."
         },
         {
           "id": "m5",
           "left": "To be fair, …",
-          "right": "Thừa nhận ý đối lập có lý"
+          "right": "Thừa nhận ý đối lập có lý",
+          "explanation": "\"To be fair, …\" — thừa nhận ý đối lập cũng có lý."
         },
         {
           "id": "m6",
           "left": "So on balance, I'd say…",
-          "right": "Câu CHỐT lập trường cuối cùng"
+          "right": "Câu CHỐT lập trường cuối cùng",
+          "explanation": "\"So on balance, I'd say…\" — chốt lập trường sau khi cân nhắc."
         }
       ]
     },
@@ -4012,8 +4072,8 @@
       "lessonCode": "SPK-P1-L12",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền cấu trúc hai chiều & cụm chốt",
-      "instruction": "Điền từ còn thiếu.",
+      "title": "Two-sided structures & closing phrases",
+      "instruction": "Fill in the missing words.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -4084,8 +4144,8 @@
       "lessonCode": "SPK-P1-L12",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi câu nhượng bộ",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix concession sentences",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -4126,8 +4186,8 @@
       "lessonCode": "SPK-P1-L12",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: trả lời câu hỏi có tính đánh giá",
-      "instruction": "Ghi âm câu trả lời theo khung Mặt A → Mặt B → CHỐT. Phải kết bằng một cụm chốt lập trường. ~25 giây.",
+      "title": "Speaking: answer evaluative questions",
+      "instruction": "Record your answer using the frame Side A → Side B → VERDICT. You must finish with a phrase that states your position. About 25 seconds.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -4182,8 +4242,8 @@
       "lessonCode": "SPK-P1-L13",
       "order": 1,
       "type": "mcq",
-      "title": "Xử lý câu hỏi bất ngờ",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Handling unexpected questions",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -4314,30 +4374,34 @@
       "lessonCode": "SPK-P1-L13",
       "order": 2,
       "type": "matching",
-      "title": "Nối chiến lược cứu nguy với cụm mở đầu",
-      "instruction": "Nối mỗi chiến lược với cụm mở đầu tương ứng.",
+      "title": "Match rescue strategies with opening phrases",
+      "instruction": "Match each strategy with its opening phrase.",
       "autoGrade": true,
       "points": 8,
       "items": [
         {
           "id": "m1",
           "left": "1. Thú nhận rồi rẽ hướng",
-          "right": "I've never really been into…, but…"
+          "right": "I've never really been into…, but…",
+          "explanation": "Thừa nhận không quen chủ đề rồi chuyển sang điều mình biết."
         },
         {
           "id": "m2",
           "left": "2. Nói về người khác",
-          "right": "I don't, but my sister does — she…"
+          "right": "I don't, but my sister does — she…",
+          "explanation": "Không có trải nghiệm thì kể về người thân có trải nghiệm đó."
         },
         {
           "id": "m3",
           "left": "3. Đoán có căn cứ",
-          "right": "If I had to guess, I'd say…"
+          "right": "If I had to guess, I'd say…",
+          "explanation": "Không chắc thì đoán có lý do: \"If I had to guess, I'd say…\"."
         },
         {
           "id": "m4",
           "left": "4. Nhìn từ góc khác",
-          "right": "I can see why some people…"
+          "right": "I can see why some people…",
+          "explanation": "Nhìn từ góc độ người khác: \"I can see why some people…\"."
         }
       ]
     },
@@ -4346,8 +4410,8 @@
       "lessonCode": "SPK-P1-L13",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền cụm mở đầu cho chủ đề lạ",
-      "instruction": "Điền từ còn thiếu.",
+      "title": "Opening phrases for unfamiliar topics",
+      "instruction": "Fill in the missing words.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -4420,8 +4484,8 @@
       "lessonCode": "SPK-P1-L13",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Sửa câu điều kiện loại 2 & câu \"bí ý\"",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Fix second conditionals & \"stuck for ideas\" sentences",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -4469,8 +4533,8 @@
       "lessonCode": "SPK-P1-L13",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: chủ đề bất ngờ",
-      "instruction": "Ghi âm câu trả lời NGAY, chỉ 5 giây suy nghĩ. Không nói \"I don't know\". Dùng ít nhất 1 chiến lược cứu nguy. ~15–20 giây.",
+      "title": "Speaking: an unexpected topic",
+      "instruction": "Record your answer RIGHT AWAY with only 5 seconds to think. Do not say \"I don't know\". Use at least 1 rescue strategy. About 15–20 seconds.",
       "autoGrade": false,
       "points": 10,
       "speakingPart": 1,
@@ -4525,8 +4589,8 @@
       "lessonCode": "SPK-P1-L14",
       "order": 1,
       "type": "mcq",
-      "title": "Phiếu chấm — 4 tiêu chí IELTS Speaking",
-      "instruction": "Chọn đáp án đúng để biết giám khảo nghe gì ở mỗi tiêu chí.",
+      "title": "Score sheet — the 4 IELTS Speaking criteria",
+      "instruction": "Choose the correct answer to learn what the examiner listens for in each criterion.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -4551,7 +4615,8 @@
               "text": "Đọc thuộc trơn tru"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Fluency = nói liền mạch, không ngập ngừng lâu, độ dài phù hợp — không phải nói thật nhanh."
         },
         {
           "id": "q2",
@@ -4574,7 +4639,8 @@
               "text": "Chỉ dùng \"good / nice / beautiful\""
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Vocabulary tốt = dùng cụm từ chính xác, tránh tính từ chung chung."
         },
         {
           "id": "q3",
@@ -4597,7 +4663,8 @@
               "text": "Số lượng ví dụ"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Grammar = độ chính xác (thì, -s, -ed, vị trí trạng từ) + có câu phức/ghép."
         },
         {
           "id": "q4",
@@ -4620,7 +4687,8 @@
               "text": "Đọc từng từ tách rời"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Pronunciation chấm độ dễ hiểu: trọng âm, ngữ điệu, nối âm — không đòi giọng bản xứ."
         },
         {
           "id": "q5",
@@ -4643,7 +4711,8 @@
               "text": "Luôn dài trên 45 giây"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Câu trả lời Part 1 tốt có đủ O.R.E. và chốt lập trường khi câu hỏi mang tính đánh giá."
         },
         {
           "id": "q6",
@@ -4666,7 +4735,8 @@
               "text": "Khi nói được trên 60 giây mỗi câu"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Ngưỡng sẵn sàng sang Part 2 trong sách: đạt ít nhất 4/5 tiêu chí trên phiếu chấm."
         }
       ]
     },
@@ -4675,8 +4745,8 @@
       "lessonCode": "SPK-P1-L14",
       "order": 2,
       "type": "speaking_response",
-      "title": "THI THỬ — Test A",
-      "instruction": "Điều kiện thi: KHÔNG dừng để hỏi từ vựng. Ghi âm liên tục, trả lời lần lượt từng câu như một bộ Part 1 thật (khoảng 4–5 phút). AI chấm theo 4 tiêu chí.",
+      "title": "MOCK TEST — Test A",
+      "instruction": "Exam conditions: do NOT stop to look up words. Record continuously and answer each question in turn like a real Part 1 (about 4–5 minutes). The AI marks it on the 4 criteria.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 1,
@@ -4782,8 +4852,8 @@
       "lessonCode": "SPK-P1-L14",
       "order": 3,
       "type": "speaking_response",
-      "title": "THI THỬ — Test B",
-      "instruction": "Ghi âm liên tục, trả lời lần lượt từng câu như một bộ Part 1 thật. Không dừng lại. AI chấm theo 4 tiêu chí.",
+      "title": "MOCK TEST — Test B",
+      "instruction": "Record continuously and answer each question in turn like a real Part 1. Do not stop. The AI marks it on the 4 criteria.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 1,
@@ -4889,8 +4959,8 @@
       "lessonCode": "SPK-P1-L14",
       "order": 4,
       "type": "speaking_response",
-      "title": "THI THỬ — Test C (có chủ đề bất ngờ)",
-      "instruction": "Ghi âm liên tục. Nhóm chủ đề cuối (Art) là chủ đề bất ngờ — dùng chiến lược cứu nguy, KHÔNG nói \"I don't know\". AI chấm theo 4 tiêu chí.",
+      "title": "MOCK TEST — Test C (with an unexpected topic)",
+      "instruction": "Record continuously. The last topic group (Art) is an unexpected topic — use a rescue strategy and do NOT say \"I don't know\". The AI marks it on the 4 criteria.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 1,

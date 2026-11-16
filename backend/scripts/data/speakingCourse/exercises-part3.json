@@ -5,8 +5,8 @@
       "lessonCode": "SPK-P3-L01",
       "order": 1,
       "type": "mcq",
-      "title": "Khung REASON × 3",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "The REASON × 3 framework",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -137,50 +137,58 @@
       "lessonCode": "SPK-P3-L01",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm nêu nguyên nhân với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Phrases for giving causes and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "for several reasons",
-          "right": "vì một vài lý do"
+          "right": "vì một vài lý do",
+          "explanation": "Câu báo trước nhiều lý do: \"I think this is the case for several reasons.\""
         },
         {
           "id": "m2",
           "left": "stems from",
-          "right": "bắt nguồn từ"
+          "right": "bắt nguồn từ",
+          "explanation": "VD: Much of this stress stems from academic pressure."
         },
         {
           "id": "m3",
           "left": "can be attributed to",
-          "right": "có thể quy cho"
+          "right": "có thể quy cho",
+          "explanation": "VD: The rise in obesity can be attributed to sedentary jobs."
         },
         {
           "id": "m4",
           "left": "from a practical standpoint",
-          "right": "xét về mặt thực tế"
+          "right": "xét về mặt thực tế",
+          "explanation": "Mở lý do tầng THỰC TẾ: From a practical standpoint, cities offer more jobs."
         },
         {
           "id": "m5",
           "left": "psychologically speaking",
-          "right": "xét về mặt tâm lý"
+          "right": "xét về mặt tâm lý",
+          "explanation": "Mở lý do tầng TÂM LÝ: Psychologically speaking, nature helps people unwind."
         },
         {
           "id": "m6",
           "left": "on a social level",
-          "right": "ở tầng xã hội"
+          "right": "ở tầng xã hội",
+          "explanation": "Mở lý do tầng XÃ HỘI: On a social level, it is a way to bond with others."
         },
         {
           "id": "m7",
           "left": "a contributing factor is",
-          "right": "một yếu tố góp phần là"
+          "right": "một yếu tố góp phần là",
+          "explanation": "VD: A contributing factor is the high cost of living."
         },
         {
           "id": "m8",
           "left": "this largely explains why",
-          "right": "điều này phần lớn giải thích vì sao"
+          "right": "điều này phần lớn giải thích vì sao",
+          "explanation": "Câu kết khung REASON: This largely explains why so many people…"
         }
       ]
     },
@@ -189,8 +197,8 @@
       "lessonCode": "SPK-P3-L01",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp câu trả lời theo khung REASON × 3",
-      "instruction": "Kéo để xếp các câu theo đúng 5 bước của khung (câu hỏi: Why do people enjoy spending time in natural places?).",
+      "title": "Order an answer using REASON × 3",
+      "instruction": "Drag the sentences into the 5 steps of the framework (question: Why do people enjoy spending time in natural places?).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -220,8 +228,8 @@
       "lessonCode": "SPK-P3-L01",
       "order": 4,
       "type": "categorize",
-      "title": "Lý do này thuộc tầng nào?",
-      "instruction": "Kéo mỗi lý do (câu hỏi: Why do people move to big cities?) vào đúng tầng.",
+      "title": "Which level does this reason belong to?",
+      "instruction": "Drag each reason (question: Why do people move to big cities?) to the correct level.",
       "autoGrade": true,
       "points": 10,
       "categories": [
@@ -242,32 +250,38 @@
         {
           "id": "c1",
           "text": "There are far more job opportunities.",
-          "category": "tt"
+          "category": "tt",
+          "explanation": "Việc làm là lợi ích vật chất, cụ thể → tầng THỰC TẾ."
         },
         {
           "id": "c2",
           "text": "People want to escape the feeling of being stuck in one place.",
-          "category": "tl"
+          "category": "tl",
+          "explanation": "Cảm giác bị mắc kẹt là động cơ bên trong → tầng TÂM LÝ."
         },
         {
           "id": "c3",
           "text": "Their friends and relatives have already moved there.",
-          "category": "xh"
+          "category": "xh",
+          "explanation": "Đi theo bạn bè, người thân → tầng XÃ HỘI."
         },
         {
           "id": "c4",
           "text": "Public transport and hospitals are much better.",
-          "category": "tt"
+          "category": "tt",
+          "explanation": "Dịch vụ, cơ sở hạ tầng → tầng THỰC TẾ."
         },
         {
           "id": "c5",
           "text": "Living in a city carries a certain social status.",
-          "category": "xh"
+          "category": "xh",
+          "explanation": "Địa vị trong mắt người khác → tầng XÃ HỘI."
         },
         {
           "id": "c6",
           "text": "People feel more anonymous and freer to be themselves.",
-          "category": "tl"
+          "category": "tl",
+          "explanation": "Cảm giác tự do, được là chính mình → tầng TÂM LÝ."
         }
       ]
     },
@@ -276,8 +290,8 @@
       "lessonCode": "SPK-P3-L01",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: trả lời câu WHY theo khung REASON × 3",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 60–75 giây. Bắt đầu bằng câu báo trước nhiều lý do, nêu đủ ba tầng (tâm lý / thực tế / xã hội), mỗi lý do có một câu triển khai, và một câu kết luận.",
+      "title": "Speaking: answer a WHY question with REASON × 3",
+      "instruction": "15 seconds to think, then record a 60–75 second answer. Start with a sentence signalling several reasons, cover all three levels (psychological / practical / social), develop each reason in one sentence, and finish with a conclusion.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -325,8 +339,8 @@
       "lessonCode": "SPK-P3-L02",
       "order": 1,
       "type": "mcq",
-      "title": "Khung NUANCED OPINION",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "The NUANCED OPINION framework",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -375,7 +389,8 @@
               "text": "Problem → Solution → Limit"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Khung NUANCED OPINION: mở có sắc thái → một mặt → mặt kia → kết luận có điều kiện."
         },
         {
           "id": "q3",
@@ -398,7 +413,8 @@
               "text": "\"I completely agree, one hundred percent.\""
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Kết luận nên chọn bên nhưng kèm điều kiện — vừa rõ ràng vừa có chiều sâu."
         },
         {
           "id": "q4",
@@ -421,7 +437,8 @@
               "text": "Sai ngữ pháp"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Chồng nhiều lớp hedging nghe như thiếu tự tin; một lớp cho mỗi khẳng định là đủ."
         },
         {
           "id": "q5",
@@ -454,50 +471,58 @@
       "lessonCode": "SPK-P3-L02",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm hedging với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Hedging phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "to a certain extent",
-          "right": "ở một mức độ nhất định"
+          "right": "ở một mức độ nhất định",
+          "explanation": "VD: To a certain extent, I agree with that."
         },
         {
           "id": "m2",
           "left": "generally speaking",
-          "right": "nói chung"
+          "right": "nói chung",
+          "explanation": "VD: Generally speaking, young people adapt faster."
         },
         {
           "id": "m3",
           "left": "it depends on",
-          "right": "còn tuỳ vào"
+          "right": "còn tuỳ vào",
+          "explanation": "Phải nói tiếp tuỳ vào điều gì: It depends on the child's interests."
         },
         {
           "id": "m4",
           "left": "on balance",
-          "right": "xét toàn cục"
+          "right": "xét toàn cục",
+          "explanation": "VD: On balance, the benefits seem greater."
         },
         {
           "id": "m5",
           "left": "while it is true that",
-          "right": "tuy đúng là"
+          "right": "tuy đúng là",
+          "explanation": "Mở nhượng bộ: While it is true that…, …"
         },
         {
           "id": "m6",
           "left": "I would argue that",
-          "right": "tôi cho rằng"
+          "right": "tôi cho rằng",
+          "explanation": "Nêu quan điểm một cách học thuật: I would argue that…"
         },
         {
           "id": "m7",
           "left": "all things considered",
-          "right": "cân nhắc mọi mặt"
+          "right": "cân nhắc mọi mặt",
+          "explanation": "Mở câu kết: All things considered, …"
         },
         {
           "id": "m8",
           "left": "arguably",
-          "right": "có thể lập luận rằng"
+          "right": "có thể lập luận rằng",
+          "explanation": "VD: It is arguably the most important skill a child can learn."
         }
       ]
     },
@@ -506,8 +531,8 @@
       "lessonCode": "SPK-P3-L02",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp câu trả lời theo khung NUANCED OPINION",
-      "instruction": "Kéo để xếp các câu theo đúng 4 bước (câu hỏi: Is it important for children to learn a musical instrument?).",
+      "title": "Order an answer using NUANCED OPINION",
+      "instruction": "Drag the sentences into the 4 steps (question: Is it important for children to learn a musical instrument?).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -535,8 +560,8 @@
       "lessonCode": "SPK-P3-L02",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Chuyển Yes/No thành câu có sắc thái",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Viết lại mỗi câu trả lời nghèo nàn thành một câu mở có sắc thái, dùng cụm hedging.",
+      "title": "Turn Yes/No into a nuanced answer",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints). Rewrite each weak answer as a nuanced opening sentence using a hedging phrase.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -583,8 +608,8 @@
       "lessonCode": "SPK-P3-L02",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: trả lời câu Opinion có sắc thái",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 60–80 giây. Câu mở phải có sắc thái (KHÔNG Yes/No đơn lẻ), nêu một mặt ủng hộ có ví dụ và một mặt giới hạn, kết bằng câu chọn bên có điều kiện.",
+      "title": "Speaking: a nuanced opinion answer",
+      "instruction": "15 seconds to think, then record a 60–80 second answer. The opening must be nuanced (NOT a bare Yes/No); give one supporting side with an example and one limitation, and finish by choosing a side with a condition.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -632,8 +657,8 @@
       "lessonCode": "SPK-P3-L03",
       "order": 1,
       "type": "mcq",
-      "title": "Khung BENEFIT–DRAWBACK–BALANCE",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "The BENEFIT–DRAWBACK–BALANCE framework",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -706,7 +731,8 @@
               "text": "\"So there are good things and bad things.\""
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Kết dạng lợi–hại bằng một điều kiện đánh đổi, không đếm số lợi/hại."
         },
         {
           "id": "q4",
@@ -763,50 +789,58 @@
       "lessonCode": "SPK-P3-L03",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm lợi–hại với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Pros-and-cons phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "the main benefit is",
-          "right": "lợi ích chính là"
+          "right": "lợi ích chính là",
+          "explanation": "VD: The main benefit is the flexibility it offers."
         },
         {
           "id": "m2",
           "left": "a significant drawback",
-          "right": "một bất lợi đáng kể"
+          "right": "một bất lợi đáng kể",
+          "explanation": "VD: A significant drawback is the lack of social contact."
         },
         {
           "id": "m3",
           "left": "outweigh",
-          "right": "lớn hơn, vượt trội"
+          "right": "lớn hơn, vượt trội",
+          "explanation": "VD: The benefits outweigh the drawbacks."
         },
         {
           "id": "m4",
           "left": "at the expense of",
-          "right": "đánh đổi bằng"
+          "right": "đánh đổi bằng",
+          "explanation": "VD: Convenience often comes at the expense of privacy."
         },
         {
           "id": "m5",
           "left": "the trade-off is",
-          "right": "sự đánh đổi là"
+          "right": "sự đánh đổi là",
+          "explanation": "VD: The trade-off is less time with colleagues."
         },
         {
           "id": "m6",
           "left": "a double-edged sword",
-          "right": "con dao hai lưỡi"
+          "right": "con dao hai lưỡi",
+          "explanation": "VD: Social media is a double-edged sword."
         },
         {
           "id": "m7",
           "left": "offset by",
-          "right": "được bù lại bởi"
+          "right": "được bù lại bởi",
+          "explanation": "VD: The higher cost is offset by lower travel expenses."
         },
         {
           "id": "m8",
           "left": "counterproductive",
-          "right": "phản tác dụng"
+          "right": "phản tác dụng",
+          "explanation": "VD: Banning phones completely might be counterproductive."
         }
       ]
     },
@@ -815,8 +849,8 @@
       "lessonCode": "SPK-P3-L03",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp câu trả lời theo khung BENEFIT–DRAWBACK–BALANCE",
-      "instruction": "Kéo để xếp các câu theo đúng 4 bước (câu hỏi: advantages and disadvantages of working from home).",
+      "title": "Order an answer using BENEFIT–DRAWBACK–BALANCE",
+      "instruction": "Drag the sentences into the 4 steps (question: advantages and disadvantages of working from home).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -844,8 +878,8 @@
       "lessonCode": "SPK-P3-L03",
       "order": 4,
       "type": "categorize",
-      "title": "Câu hỏi này là OPINION hay ADV/DISADV?",
-      "instruction": "Kéo mỗi câu hỏi vào đúng dạng.",
+      "title": "Is this an OPINION or an ADV/DISADV question?",
+      "instruction": "Drag each question to the correct type.",
       "autoGrade": true,
       "points": 10,
       "categories": [
@@ -862,32 +896,38 @@
         {
           "id": "c1",
           "text": "Do you think online shopping is a good thing?",
-          "category": "op"
+          "category": "op",
+          "explanation": "\"Do you think … is a good thing?\" hỏi quan điểm → OPINION."
         },
         {
           "id": "c2",
           "text": "What are the drawbacks of living in a large city?",
-          "category": "ad"
+          "category": "ad",
+          "explanation": "Hỏi trực tiếp về drawbacks → ADV / DISADV."
         },
         {
           "id": "c3",
           "text": "Is it important for everyone to learn a foreign language?",
-          "category": "op"
+          "category": "op",
+          "explanation": "\"Is it important…?\" hỏi quan điểm → OPINION."
         },
         {
           "id": "c4",
           "text": "What benefits does tourism bring to a small town?",
-          "category": "ad"
+          "category": "ad",
+          "explanation": "Hỏi về benefits → ADV / DISADV."
         },
         {
           "id": "c5",
           "text": "Do you agree that exams put too much pressure on students?",
-          "category": "op"
+          "category": "op",
+          "explanation": "\"Do you agree…?\" → OPINION."
         },
         {
           "id": "c6",
           "text": "What are the advantages and disadvantages of having a car in the city?",
-          "category": "ad"
+          "category": "ad",
+          "explanation": "\"advantages and disadvantages\" → ADV / DISADV."
         }
       ]
     },
@@ -896,8 +936,8 @@
       "lessonCode": "SPK-P3-L03",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: trả lời câu Advantages / Disadvantages",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 70–90 giây. Nêu hai lợi ích (ít nhất một có ví dụ), một bất lợi THẬT có người chịu thiệt, dùng while hoặc whereas, và kết bằng điều kiện đánh đổi.",
+      "title": "Speaking: answer an Advantages / Disadvantages question",
+      "instruction": "15 seconds to think, then record a 70–90 second answer. Give two benefits (at least one with an example), one REAL drawback with someone who loses out, use while or whereas, and finish with the trade-off condition.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -945,8 +985,8 @@
       "lessonCode": "SPK-P3-L04",
       "order": 1,
       "type": "mcq",
-      "title": "Khung COMPARE FRAMEWORK",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "The COMPARE framework",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1043,7 +1083,8 @@
               "text": "Lặp lại câu mở"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Kết dạng so sánh bằng cách chỉ ra MỘT khác biệt quan trọng nhất."
         },
         {
           "id": "q5",
@@ -1076,50 +1117,58 @@
       "lessonCode": "SPK-P3-L04",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm so sánh với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Comparison phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "differ in several significant ways",
-          "right": "khác nhau ở vài điểm đáng kể"
+          "right": "khác nhau ở vài điểm đáng kể",
+          "explanation": "Câu mở khung COMPARE: The two differ in several significant ways."
         },
         {
           "id": "m2",
           "left": "in terms of",
-          "right": "xét về mặt"
+          "right": "xét về mặt",
+          "explanation": "So sánh theo khía cạnh: In terms of convenience, …"
         },
         {
           "id": "m3",
           "left": "by comparison",
-          "right": "so với đó"
+          "right": "so với đó",
+          "explanation": "VD: By comparison, shopping in the past took much longer."
         },
         {
           "id": "m4",
           "left": "share some common ground",
-          "right": "có điểm chung"
+          "right": "có điểm chung",
+          "explanation": "Nêu điểm chung: They do share some common ground."
         },
         {
           "id": "m5",
           "left": "nowhere near as",
-          "right": "không hề bằng"
+          "right": "không hề bằng",
+          "explanation": "VD: Markets are nowhere near as convenient as apps."
         },
         {
           "id": "m6",
           "left": "the overriding priority",
-          "right": "ưu tiên bao trùm"
+          "right": "ưu tiên bao trùm",
+          "explanation": "VD: Price used to be the overriding priority."
         },
         {
           "id": "m7",
           "left": "the most significant shift is in",
-          "right": "thay đổi lớn nhất nằm ở"
+          "right": "thay đổi lớn nhất nằm ở",
+          "explanation": "Câu kết khung COMPARE: The most significant shift is in…"
         },
         {
           "id": "m8",
           "left": "undergone a dramatic transformation",
-          "right": "đã trải qua biến đổi mạnh mẽ"
+          "right": "đã trải qua biến đổi mạnh mẽ",
+          "explanation": "VD: Shopping has undergone a dramatic transformation."
         }
       ]
     },
@@ -1128,8 +1177,8 @@
       "lessonCode": "SPK-P3-L04",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp câu trả lời theo khung COMPARE",
-      "instruction": "Kéo để xếp các câu theo đúng 5 bước (câu hỏi: How has the way people shop changed compared to the past?).",
+      "title": "Order an answer using COMPARE",
+      "instruction": "Drag the sentences into the 5 steps (question: How has the way people shop changed compared to the past?).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1159,8 +1208,8 @@
       "lessonCode": "SPK-P3-L04",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi so sánh nâng cao",
-      "instruction": "Viết lại cả câu cho đúng.",
+      "title": "Fix advanced comparison errors",
+      "instruction": "Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1198,8 +1247,8 @@
       "lessonCode": "SPK-P3-L04",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: trả lời câu Compare / Contrast",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 70–90 giây. So sánh theo KHÍA CẠNH (ít nhất 2), nêu một điểm chung, và kết bằng nhận định về khác biệt quan trọng nhất. Không dùng \"better\".",
+      "title": "Speaking: answer a Compare / Contrast question",
+      "instruction": "15 seconds to think, then record a 70–90 second answer. Compare by ASPECT (at least 2), mention one similarity, and finish with a judgement on the most important difference. Do not use \"better\".",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -1247,8 +1296,8 @@
       "lessonCode": "SPK-P3-L05",
       "order": 1,
       "type": "mcq",
-      "title": "Khung Problem / Solution & vai trò chính phủ",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Problem / Solution & the role of government",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1321,7 +1370,8 @@
               "text": "Past → Present → Future"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Câu hỏi về chính phủ: vai trò → việc chỉ chính phủ làm được → giới hạn → giải pháp cân bằng → trách nhiệm ba bên."
         },
         {
           "id": "q4",
@@ -1378,50 +1428,58 @@
       "lessonCode": "SPK-P3-L05",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm giải pháp / vai trò với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Solution / responsibility phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "the root cause is",
-          "right": "nguyên nhân gốc rễ là"
+          "right": "nguyên nhân gốc rễ là",
+          "explanation": "VD: The root cause is poor urban planning."
         },
         {
           "id": "m2",
           "left": "address the underlying issue",
-          "right": "giải quyết vấn đề cốt lõi"
+          "right": "giải quyết vấn đề cốt lõi",
+          "explanation": "VD: We need to address the underlying issue, not the symptoms."
         },
         {
           "id": "m3",
           "left": "a more effective approach might be",
-          "right": "một cách hiệu quả hơn có thể là"
+          "right": "một cách hiệu quả hơn có thể là",
+          "explanation": "Đề xuất giải pháp mềm: A more effective approach might be…"
         },
         {
           "id": "m4",
           "left": "incentivise rather than penalise",
-          "right": "khuyến khích thay vì phạt"
+          "right": "khuyến khích thay vì phạt",
+          "explanation": "VD: Governments should incentivise rather than penalise."
         },
         {
           "id": "m5",
           "left": "generate public backlash",
-          "right": "gây phản ứng dữ dội từ dân"
+          "right": "gây phản ứng dữ dội từ dân",
+          "explanation": "Nêu giới hạn: A ban could generate public backlash."
         },
         {
           "id": "m6",
           "left": "a short-term fix",
-          "right": "giải pháp tạm thời"
+          "right": "giải pháp tạm thời",
+          "explanation": "VD: Widening roads is only a short-term fix."
         },
         {
           "id": "m7",
           "left": "a three-way responsibility",
-          "right": "trách nhiệm ba bên"
+          "right": "trách nhiệm ba bên",
+          "explanation": "Câu kết: It is really a three-way responsibility — government, businesses and individuals."
         },
         {
           "id": "m8",
           "left": "create the right framework",
-          "right": "tạo ra khuôn khổ phù hợp"
+          "right": "tạo ra khuôn khổ phù hợp",
+          "explanation": "VD: The government's job is to create the right framework."
         }
       ]
     },
@@ -1430,8 +1488,8 @@
       "lessonCode": "SPK-P3-L05",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp câu trả lời theo khung 5B (chính phủ)",
-      "instruction": "Kéo để xếp các câu theo đúng 5 bước (câu hỏi: Should the government do more to protect the environment?).",
+      "title": "Order an answer using the 5-step framework (government)",
+      "instruction": "Drag the sentences into the 5 steps (question: Should the government do more to protect the environment?).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1461,8 +1519,8 @@
       "lessonCode": "SPK-P3-L05",
       "order": 4,
       "type": "categorize",
-      "title": "Triệu chứng hay nguyên nhân gốc?",
-      "instruction": "Kéo mỗi câu (vấn đề: Traffic congestion in large cities) vào đúng cột.",
+      "title": "Symptom or root cause?",
+      "instruction": "Drag each sentence (problem: Traffic congestion in large cities) into the correct column.",
       "autoGrade": true,
       "points": 10,
       "categories": [
@@ -1479,27 +1537,32 @@
         {
           "id": "c1",
           "text": "There are too many motorbikes on the road.",
-          "category": "tc"
+          "category": "tc",
+          "explanation": "Nhiều xe máy là hiện tượng nhìn thấy → triệu chứng."
         },
         {
           "id": "c2",
           "text": "Cities were built without proper public transport networks.",
-          "category": "nn"
+          "category": "nn",
+          "explanation": "Thiếu mạng lưới giao thông công cộng là gốc rễ khiến người dân phải đi xe riêng."
         },
         {
           "id": "c3",
           "text": "People leave home at the same time every morning.",
-          "category": "tc"
+          "category": "tc",
+          "explanation": "Giờ cao điểm là biểu hiện → triệu chứng."
         },
         {
           "id": "c4",
           "text": "Housing near workplaces is unaffordable, so people commute long distances.",
-          "category": "nn"
+          "category": "nn",
+          "explanation": "Nhà gần nơi làm quá đắt → buộc đi xa → nguyên nhân gốc."
         },
         {
           "id": "c5",
           "text": "The roads are too narrow.",
-          "category": "tc"
+          "category": "tc",
+          "explanation": "Đường hẹp là biểu hiện bề mặt → triệu chứng."
         }
       ]
     },
@@ -1508,8 +1571,8 @@
       "lessonCode": "SPK-P3-L05",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: trả lời câu Problem / Solution",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Nêu nguyên nhân GỐC (không phải triệu chứng), một giải pháp CÓ CHỦ THỂ rõ ràng, một giới hạn của giải pháp, và một câu về trách nhiệm nhiều bên.",
+      "title": "Speaking: answer a Problem / Solution question",
+      "instruction": "15 seconds to think, then record a 75–90 second answer. Give the ROOT cause (not a symptom), one solution with a clear ACTOR, one limitation of that solution, and one sentence about shared responsibility.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -1557,8 +1620,8 @@
       "lessonCode": "SPK-P3-L06",
       "order": 1,
       "type": "mcq",
-      "title": "Khung Past · Present · Future",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "The Past · Present · Future framework",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1607,7 +1670,8 @@
               "text": "Đọc · viết · nghe · nói"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Bốn lực đẩy cho câu dự đoán: công nghệ, dân số, kinh tế, môi trường/văn hoá."
         },
         {
           "id": "q3",
@@ -1678,7 +1742,8 @@
               "text": "Chỉ khác về thời gian"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "\"used to + V\" = thói quen/trạng thái trong quá khứ; \"be used to + V-ing\" = đã quen với."
         }
       ]
     },
@@ -1687,50 +1752,58 @@
       "lessonCode": "SPK-P3-L06",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm dự đoán / thay đổi với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Prediction / change phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "it seems likely that",
-          "right": "có vẻ khả năng cao là"
+          "right": "có vẻ khả năng cao là",
+          "explanation": "Dự đoán thận trọng: It seems likely that cities will become greener."
         },
         {
           "id": "m2",
           "left": "driven by",
-          "right": "được thúc đẩy bởi"
+          "right": "được thúc đẩy bởi",
+          "explanation": "Nêu lực đẩy: …, driven by advances in technology."
         },
         {
           "id": "m3",
           "left": "if this continues",
-          "right": "nếu điều này tiếp diễn"
+          "right": "nếu điều này tiếp diễn",
+          "explanation": "VD: If this continues, traffic will only get worse."
         },
         {
           "id": "m4",
           "left": "it is difficult to predict with any certainty",
-          "right": "rất khó dự đoán chắc chắn"
+          "right": "rất khó dự đoán chắc chắn",
+          "explanation": "Câu thận trọng: It is difficult to predict with any certainty, but…"
         },
         {
           "id": "m5",
           "left": "a more cautious view might be",
-          "right": "một cách nhìn thận trọng hơn là"
+          "right": "một cách nhìn thận trọng hơn là",
+          "explanation": "VD: A more cautious view might be that change will be gradual."
         },
         {
           "id": "m6",
           "left": "an oversimplification to say",
-          "right": "quá đơn giản hoá khi nói rằng"
+          "right": "quá đơn giản hoá khi nói rằng",
+          "explanation": "VD: It would be an oversimplification to say that robots will replace teachers."
         },
         {
           "id": "m7",
           "left": "on the cusp of",
-          "right": "đang ở ngưỡng của"
+          "right": "đang ở ngưỡng của",
+          "explanation": "VD: We are on the cusp of a major shift in how we work."
         },
         {
           "id": "m8",
           "left": "shaped by",
-          "right": "được định hình bởi"
+          "right": "được định hình bởi",
+          "explanation": "VD: Cities will be shaped by climate change."
         }
       ]
     },
@@ -1739,8 +1812,8 @@
       "lessonCode": "SPK-P3-L06",
       "order": 3,
       "type": "ordering",
-      "title": "Xếp câu trả lời theo khung THEN–NOW–NEXT",
-      "instruction": "Kéo để xếp các câu theo đúng 5 bước (câu hỏi: How will cities change in the future?).",
+      "title": "Order an answer using THEN–NOW–NEXT",
+      "instruction": "Drag the sentences into the 5 steps (question: How will cities change in the future?).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1770,8 +1843,8 @@
       "lessonCode": "SPK-P3-L06",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Sửa lỗi used to / dự đoán",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Fix used to / prediction errors",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -1818,8 +1891,8 @@
       "lessonCode": "SPK-P3-L06",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: trả lời câu Past · Present · Future",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Có đủ ba mốc (trước kia / hiện nay / tương lai), dự đoán có LỰC ĐẨY cụ thể, KHÔNG dùng \"will\" trần cho mọi dự đoán, và một câu thận trọng kèm lý do.",
+      "title": "Speaking: answer a Past · Present · Future question",
+      "instruction": "15 seconds to think, then record a 75–90 second answer. Cover all three time frames (past / present / future), give predictions a specific DRIVER, do NOT use bare \"will\" for every prediction, and include one cautious sentence with a reason.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -1867,8 +1940,8 @@
       "lessonCode": "SPK-P3-L07",
       "order": 1,
       "type": "mcq",
-      "title": "TOPIC EDUCATION — chọn khung & lập luận",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "TOPIC EDUCATION — choosing a framework & arguing",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -1965,7 +2038,8 @@
               "text": "hoạt động ngoại khoá"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "\"rote learning\" = học thuộc lòng máy móc, không hiểu bản chất."
         },
         {
           "id": "q5",
@@ -1998,50 +2072,58 @@
       "lessonCode": "SPK-P3-L07",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm chủ đề Education với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Education phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "critical thinking skills",
-          "right": "kỹ năng tư duy phản biện"
+          "right": "kỹ năng tư duy phản biện",
+          "explanation": "VD: Schools should develop critical thinking skills."
         },
         {
           "id": "m2",
           "left": "rote learning",
-          "right": "học vẹt"
+          "right": "học vẹt",
+          "explanation": "VD: The system still relies on rote learning."
         },
         {
           "id": "m3",
           "left": "academic pressure",
-          "right": "áp lực học tập"
+          "right": "áp lực học tập",
+          "explanation": "VD: Academic pressure starts very early."
         },
         {
           "id": "m4",
           "left": "a well-rounded education",
-          "right": "giáo dục toàn diện"
+          "right": "giáo dục toàn diện",
+          "explanation": "VD: A well-rounded education includes art and sport."
         },
         {
           "id": "m5",
           "left": "foster creativity",
-          "right": "nuôi dưỡng sáng tạo"
+          "right": "nuôi dưỡng sáng tạo",
+          "explanation": "VD: Project work can foster creativity."
         },
         {
           "id": "m6",
           "left": "student-centred approach",
-          "right": "phương pháp lấy học sinh làm trung tâm"
+          "right": "phương pháp lấy học sinh làm trung tâm",
+          "explanation": "VD: A student-centred approach lets learners lead."
         },
         {
           "id": "m7",
           "left": "standardised testing",
-          "right": "thi cử chuẩn hoá"
+          "right": "thi cử chuẩn hoá",
+          "explanation": "VD: Standardised testing rewards memorisation."
         },
         {
           "id": "m8",
           "left": "intellectual independence",
-          "right": "sự độc lập trong tư duy"
+          "right": "sự độc lập trong tư duy",
+          "explanation": "VD: University should build intellectual independence."
         }
       ]
     },
@@ -2050,35 +2132,40 @@
       "lessonCode": "SPK-P3-L07",
       "order": 3,
       "type": "matching",
-      "title": "Nối câu hỏi Education với dạng / khung",
-      "instruction": "Nối mỗi câu hỏi với dạng và khung phải dùng.",
+      "title": "Match Education questions with type / framework",
+      "instruction": "Match each question with the question type and framework you must use.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "How can education help children develop their own ideas?",
-          "right": "Dạng 5 — CAUSE–EFFECT–SOLUTION"
+          "right": "Dạng 5 — CAUSE–EFFECT–SOLUTION",
+          "explanation": "Dạng 5: \"How can … help…?\" hỏi cách/giải pháp → CAUSE–EFFECT–SOLUTION."
         },
         {
           "id": "m2",
           "left": "Do children usually share the same opinions as their parents?",
-          "right": "Dạng 2 — NUANCED OPINION"
+          "right": "Dạng 2 — NUANCED OPINION",
+          "explanation": "Dạng 2: câu Yes/No hỏi quan điểm → NUANCED OPINION."
         },
         {
           "id": "m3",
           "left": "Why do parents put so much academic pressure on their children?",
-          "right": "Dạng 1 — REASON × 3"
+          "right": "Dạng 1 — REASON × 3",
+          "explanation": "Dạng 1: \"Why…?\" → REASON × 3."
         },
         {
           "id": "m4",
           "left": "What are the drawbacks of standardised testing?",
-          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE"
+          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE",
+          "explanation": "Dạng 3: hỏi drawbacks → BENEFIT–DRAWBACK–BALANCE."
         },
         {
           "id": "m5",
           "left": "How is school today different from school fifty years ago?",
-          "right": "Dạng 4 — COMPARE FRAMEWORK"
+          "right": "Dạng 4 — COMPARE FRAMEWORK",
+          "explanation": "Dạng 4: so sánh hiện tại với 50 năm trước → COMPARE."
         }
       ]
     },
@@ -2087,8 +2174,8 @@
       "lessonCode": "SPK-P3-L07",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Nâng cấp từ vựng & sửa lỗi Education",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Upgrade vocabulary & fix Education errors",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2135,8 +2222,8 @@
       "lessonCode": "SPK-P3-L07",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: câu hỏi Education",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 70–85 giây. Gọi tên dạng câu hỏi trước khi nói, dùng đúng khung của dạng đó, nói về HỆ THỐNG (không kể chuyện trường mình), dùng ít nhất 3 cụm ★.",
+      "title": "Speaking: an Education question",
+      "instruction": "15 seconds to think, then record a 70–85 second answer. Name the question type before you speak, use that type’s framework, talk about the SYSTEM (not your own school) and use at least 3 ★ phrases.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -2184,8 +2271,8 @@
       "lessonCode": "SPK-P3-L08",
       "order": 1,
       "type": "mcq",
-      "title": "TOPIC TECHNOLOGY — lập luận hai chiều",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "TOPIC TECHNOLOGY — two-sided arguments",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2258,7 +2345,8 @@
               "text": "Dùng cụm danh hoá"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Nói \"technology\" chung chung khiến lập luận mơ hồ — hãy nêu loại công nghệ cụ thể."
         },
         {
           "id": "q4",
@@ -2281,7 +2369,8 @@
               "text": "dependencing on technology"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Danh hoá: depend on → dependency; technology → technological (tính từ)."
         },
         {
           "id": "q5",
@@ -2314,50 +2403,58 @@
       "lessonCode": "SPK-P3-L08",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm chủ đề Technology với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Technology phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "digital divide",
-          "right": "khoảng cách số"
+          "right": "khoảng cách số",
+          "explanation": "VD: The digital divide leaves rural students behind."
         },
         {
           "id": "m2",
           "left": "technological dependency",
-          "right": "sự phụ thuộc vào công nghệ"
+          "right": "sự phụ thuộc vào công nghệ",
+          "explanation": "VD: Technological dependency weakens basic skills."
         },
         {
           "id": "m3",
           "left": "privacy concerns",
-          "right": "lo ngại quyền riêng tư"
+          "right": "lo ngại quyền riêng tư",
+          "explanation": "VD: Smart speakers raise privacy concerns."
         },
         {
           "id": "m4",
           "left": "automation",
-          "right": "tự động hoá"
+          "right": "tự động hoá",
+          "explanation": "VD: Automation is replacing factory jobs."
         },
         {
           "id": "m5",
           "left": "social media algorithms",
-          "right": "thuật toán mạng xã hội"
+          "right": "thuật toán mạng xã hội",
+          "explanation": "VD: Social media algorithms decide what we see."
         },
         {
           "id": "m6",
           "left": "disruptive innovation",
-          "right": "đổi mới đột phá"
+          "right": "đổi mới đột phá",
+          "explanation": "VD: Ride-hailing apps were a disruptive innovation."
         },
         {
           "id": "m7",
           "left": "cybersecurity threats",
-          "right": "mối đe doạ an ninh mạng"
+          "right": "mối đe doạ an ninh mạng",
+          "explanation": "VD: Banks face growing cybersecurity threats."
         },
         {
           "id": "m8",
           "left": "free up cognitive bandwidth",
-          "right": "giải phóng năng lực tư duy"
+          "right": "giải phóng năng lực tư duy",
+          "explanation": "VD: Navigation apps free up cognitive bandwidth for other tasks."
         }
       ]
     },
@@ -2366,35 +2463,40 @@
       "lessonCode": "SPK-P3-L08",
       "order": 3,
       "type": "matching",
-      "title": "Nối câu hỏi Technology với dạng / khung",
-      "instruction": "Nối mỗi câu hỏi với dạng và khung phải dùng.",
+      "title": "Match Technology questions with type / framework",
+      "instruction": "Match each question with the question type and framework you must use.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "Does technology make people lazier?",
-          "right": "Dạng 2 — NUANCED OPINION"
+          "right": "Dạng 2 — NUANCED OPINION",
+          "explanation": "Dạng 2: Yes/No hỏi quan điểm → NUANCED OPINION."
         },
         {
           "id": "m2",
           "left": "What are the drawbacks of children using smartphones?",
-          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE"
+          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE",
+          "explanation": "Dạng 3: hỏi drawbacks → BENEFIT–DRAWBACK–BALANCE."
         },
         {
           "id": "m3",
           "left": "How will artificial intelligence change the way we work?",
-          "right": "Dạng 6 — TREND–PREDICTION–CAVEAT"
+          "right": "Dạng 6 — TREND–PREDICTION–CAVEAT",
+          "explanation": "Dạng 6: \"How will … change…?\" hỏi tương lai → TREND–PREDICTION–CAVEAT."
         },
         {
           "id": "m4",
           "left": "Why are older people often reluctant to use new technology?",
-          "right": "Dạng 1 — REASON × 3"
+          "right": "Dạng 1 — REASON × 3",
+          "explanation": "Dạng 1: \"Why…?\" → REASON × 3."
         },
         {
           "id": "m5",
           "left": "Should governments control what people post online?",
-          "right": "Dạng 5 — ROLE–RESPONSIBILITY–LIMIT"
+          "right": "Dạng 5 — ROLE–RESPONSIBILITY–LIMIT",
+          "explanation": "Dạng 5: \"Should governments…?\" hỏi vai trò chính phủ → ROLE–RESPONSIBILITY–LIMIT."
         }
       ]
     },
@@ -2403,8 +2505,8 @@
       "lessonCode": "SPK-P3-L08",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Danh hoá & sửa lỗi Technology",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Nominalisation & Technology error correction",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2451,8 +2553,8 @@
       "lessonCode": "SPK-P3-L08",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: câu hỏi Technology",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Lập luận HAI CHIỀU, nêu ít nhất 2 loại công nghệ cụ thể (không nói \"technology\" chung chung), có ít nhất một câu tự phản bác, và một câu kết có sắc thái.",
+      "title": "Speaking: a Technology question",
+      "instruction": "15 seconds to think, then record a 75–90 second answer. Argue BOTH sides, name at least 2 specific technologies (not \"technology\" in general), include at least one counter-argument to yourself, and end with a nuanced conclusion.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -2500,8 +2602,8 @@
       "lessonCode": "SPK-P3-L09",
       "order": 1,
       "type": "mcq",
-      "title": "TOPIC ENVIRONMENT — cá nhân vs hệ thống",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "TOPIC ENVIRONMENT — individual vs system",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2550,7 +2652,8 @@
               "text": "Không cần làm gì"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "\"necessary but not sufficient\" = cần thiết nhưng chưa đủ — hành động cá nhân cần, nhưng phải có thay đổi hệ thống."
         },
         {
           "id": "q3",
@@ -2573,7 +2676,8 @@
               "text": "Không ai chịu trách nhiệm"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "\"deflection\" = sự đánh lạc hướng — đẩy trách nhiệm sang cá nhân để né trách nhiệm của doanh nghiệp/chính phủ."
         },
         {
           "id": "q4",
@@ -2620,7 +2724,8 @@
               "text": "tái chế"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "\"greenwashing\" = quảng cáo mình \"xanh\" trong khi thực tế không phải vậy."
         }
       ]
     },
@@ -2629,50 +2734,58 @@
       "lessonCode": "SPK-P3-L09",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm chủ đề Environment với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Environment phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "carbon emissions",
-          "right": "khí thải carbon"
+          "right": "khí thải carbon",
+          "explanation": "VD: Transport is a major source of carbon emissions."
         },
         {
           "id": "m2",
           "left": "sustainable development",
-          "right": "phát triển bền vững"
+          "right": "phát triển bền vững",
+          "explanation": "VD: Growth must be balanced with sustainable development."
         },
         {
           "id": "m3",
           "left": "biodiversity loss",
-          "right": "mất đa dạng sinh học"
+          "right": "mất đa dạng sinh học",
+          "explanation": "VD: Deforestation drives biodiversity loss."
         },
         {
           "id": "m4",
           "left": "renewable energy transition",
-          "right": "chuyển đổi năng lượng tái tạo"
+          "right": "chuyển đổi năng lượng tái tạo",
+          "explanation": "VD: The renewable energy transition needs public investment."
         },
         {
           "id": "m5",
           "left": "greenwashing",
-          "right": "giả vờ thân thiện môi trường"
+          "right": "giả vờ thân thiện môi trường",
+          "explanation": "VD: Some \"eco\" labels are just greenwashing."
         },
         {
           "id": "m6",
           "left": "single-use plastics",
-          "right": "nhựa dùng một lần"
+          "right": "nhựa dùng một lần",
+          "explanation": "VD: Many countries are banning single-use plastics."
         },
         {
           "id": "m7",
           "left": "stringent regulation",
-          "right": "quy định nghiêm ngặt"
+          "right": "quy định nghiêm ngặt",
+          "explanation": "VD: Stringent regulation forces factories to clean up."
         },
         {
           "id": "m8",
           "left": "ecological footprint",
-          "right": "dấu chân sinh thái"
+          "right": "dấu chân sinh thái",
+          "explanation": "VD: Rich countries have a larger ecological footprint."
         }
       ]
     },
@@ -2681,8 +2794,8 @@
       "lessonCode": "SPK-P3-L09",
       "order": 3,
       "type": "categorize",
-      "title": "Hành động này là CÁ NHÂN hay HỆ THỐNG?",
-      "instruction": "Kéo mỗi hành động vào đúng cột.",
+      "title": "Is this action INDIVIDUAL or SYSTEMIC?",
+      "instruction": "Drag each action into the correct column.",
       "autoGrade": true,
       "points": 10,
       "categories": [
@@ -2699,32 +2812,38 @@
         {
           "id": "c1",
           "text": "Bringing your own bag to the supermarket.",
-          "category": "cn"
+          "category": "cn",
+          "explanation": "Một người tự làm → hành động CÁ NHÂN."
         },
         {
           "id": "c2",
           "text": "A national tax on carbon emissions.",
-          "category": "ht"
+          "category": "ht",
+          "explanation": "Thuế quốc gia áp lên toàn xã hội → HỆ THỐNG."
         },
         {
           "id": "c3",
           "text": "Choosing to travel by train instead of by plane.",
-          "category": "cn"
+          "category": "cn",
+          "explanation": "Lựa chọn đi lại của từng người → CÁ NHÂN."
         },
         {
           "id": "c4",
           "text": "Requiring all new buildings to be energy-efficient.",
-          "category": "ht"
+          "category": "ht",
+          "explanation": "Quy định bắt buộc cho mọi công trình → HỆ THỐNG."
         },
         {
           "id": "c5",
           "text": "Switching to a plant-based diet.",
-          "category": "cn"
+          "category": "cn",
+          "explanation": "Thay đổi chế độ ăn của bản thân → CÁ NHÂN."
         },
         {
           "id": "c6",
           "text": "Banning industrial waste from being dumped in rivers.",
-          "category": "ht"
+          "category": "ht",
+          "explanation": "Lệnh cấm do nhà nước ban hành → HỆ THỐNG."
         }
       ]
     },
@@ -2733,8 +2852,8 @@
       "lessonCode": "SPK-P3-L09",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Bị động vô nhân xưng & sửa lỗi Environment",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Impersonal passives & Environment error correction",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -2781,8 +2900,8 @@
       "lessonCode": "SPK-P3-L09",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: câu hỏi Environment",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Có cả trục CÁ NHÂN và trục HỆ THỐNG, ít nhất một câu bị động vô nhân xưng, dùng thuật ngữ chính xác, KHÔNG dùng khẩu hiệu rỗng.",
+      "title": "Speaking: an Environment question",
+      "instruction": "15 seconds to think, then record a 75–90 second answer. Cover both the INDIVIDUAL and the SYSTEM level, use at least one impersonal passive, use precise terms and NO empty slogans.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -2830,8 +2949,8 @@
       "lessonCode": "SPK-P3-L10",
       "order": 1,
       "type": "mcq",
-      "title": "TOPIC SOCIETY — cộng đồng & điều kiện kinh tế",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "TOPIC SOCIETY — community & economic conditions",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -2856,7 +2975,8 @@
               "text": "Nói cộng đồng rất quan trọng"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Band 8 giải thích bằng cơ chế/điều kiện kinh tế thay vì lên lớp đạo đức."
         },
         {
           "id": "q2",
@@ -2927,7 +3047,8 @@
               "text": "tầng lớp xã hội"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "\"the social fabric\" = các mối quan hệ gắn kết một xã hội lại với nhau."
         },
         {
           "id": "q5",
@@ -2960,50 +3081,58 @@
       "lessonCode": "SPK-P3-L10",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm chủ đề Society với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Society phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "a sense of belonging",
-          "right": "cảm giác thuộc về"
+          "right": "cảm giác thuộc về",
+          "explanation": "VD: Clubs give people a sense of belonging."
         },
         {
           "id": "m2",
           "left": "social cohesion",
-          "right": "sự gắn kết xã hội"
+          "right": "sự gắn kết xã hội",
+          "explanation": "VD: Festivals strengthen social cohesion."
         },
         {
           "id": "m3",
           "left": "urban isolation",
-          "right": "sự cô lập ở đô thị"
+          "right": "sự cô lập ở đô thị",
+          "explanation": "VD: Urban isolation is common among the elderly."
         },
         {
           "id": "m4",
           "left": "civic responsibility",
-          "right": "trách nhiệm công dân"
+          "right": "trách nhiệm công dân",
+          "explanation": "VD: Voting is a civic responsibility."
         },
         {
           "id": "m5",
           "left": "social mobility",
-          "right": "dịch chuyển xã hội"
+          "right": "dịch chuyển xã hội",
+          "explanation": "VD: Free education improves social mobility."
         },
         {
           "id": "m6",
           "left": "marginalised communities",
-          "right": "cộng đồng bị gạt ra lề"
+          "right": "cộng đồng bị gạt ra lề",
+          "explanation": "VD: Marginalised communities often lack services."
         },
         {
           "id": "m7",
           "left": "the social fabric",
-          "right": "kết cấu xã hội"
+          "right": "kết cấu xã hội",
+          "explanation": "VD: Long working hours weaken the social fabric."
         },
         {
           "id": "m8",
           "left": "networks of mutual obligation",
-          "right": "mạng lưới trách nhiệm tương hỗ"
+          "right": "mạng lưới trách nhiệm tương hỗ",
+          "explanation": "VD: Villages run on networks of mutual obligation."
         }
       ]
     },
@@ -3012,35 +3141,40 @@
       "lessonCode": "SPK-P3-L10",
       "order": 3,
       "type": "matching",
-      "title": "Nối câu hỏi Society với dạng / khung",
-      "instruction": "Nối mỗi câu hỏi với dạng và khung phải dùng.",
+      "title": "Match Society questions with type / framework",
+      "instruction": "Match each question with the question type and framework you must use.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "How important is it for people to help their local community?",
-          "right": "Dạng 2 — NUANCED OPINION"
+          "right": "Dạng 2 — NUANCED OPINION",
+          "explanation": "Dạng 2: \"How important…?\" hỏi quan điểm → NUANCED OPINION."
         },
         {
           "id": "m2",
           "left": "How are neighbourhoods today different from in the past?",
-          "right": "Dạng 4 — COMPARE FRAMEWORK"
+          "right": "Dạng 4 — COMPARE FRAMEWORK",
+          "explanation": "Dạng 4: so sánh xưa và nay → COMPARE."
         },
         {
           "id": "m3",
           "left": "What can be done to reduce loneliness in large cities?",
-          "right": "Dạng 5 — CAUSE–EFFECT–SOLUTION"
+          "right": "Dạng 5 — CAUSE–EFFECT–SOLUTION",
+          "explanation": "Dạng 5: \"What can be done…?\" hỏi giải pháp → CAUSE–EFFECT–SOLUTION."
         },
         {
           "id": "m4",
           "left": "Why do fewer people know their neighbours nowadays?",
-          "right": "Dạng 1 — REASON × 3"
+          "right": "Dạng 1 — REASON × 3",
+          "explanation": "Dạng 1: \"Why…?\" → REASON × 3."
         },
         {
           "id": "m5",
           "left": "Should young people be required to do community service?",
-          "right": "Dạng 5 — ROLE–RESPONSIBILITY–LIMIT"
+          "right": "Dạng 5 — ROLE–RESPONSIBILITY–LIMIT",
+          "explanation": "Dạng 5: \"Should … be required…?\" hỏi về quy định/trách nhiệm → ROLE–RESPONSIBILITY–LIMIT."
         }
       ]
     },
@@ -3049,8 +3183,8 @@
       "lessonCode": "SPK-P3-L10",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Mệnh đề nhấn mạnh & sửa lỗi Society",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Viết lại mỗi câu bằng \"What… is…\" hoặc \"The fact that… means…\".",
+      "title": "Emphatic clauses & Society error correction",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints). Rewrite each sentence with \"What… is…\" or \"The fact that… means…\".",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -3098,8 +3232,8 @@
       "lessonCode": "SPK-P3-L10",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: câu hỏi Society & Community",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Nêu CƠ CHẾ (không chỉ hiện tượng), có ít nhất một mệnh đề What… hoặc The fact that…, có nhắc đến ĐIỀU KIỆN KINH TẾ, và KHÔNG đạo đức hoá.",
+      "title": "Speaking: a Society & Community question",
+      "instruction": "15 seconds to think, then record a 75–90 second answer. Explain the MECHANISM (not just the phenomenon), use at least one What… or The fact that… clause, mention ECONOMIC CONDITIONS, and do NOT moralise.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -3147,8 +3281,8 @@
       "lessonCode": "SPK-P3-L11",
       "order": 1,
       "type": "mcq",
-      "title": "TOPIC HEALTH — rào cản cấu trúc",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "TOPIC HEALTH — structural barriers",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3173,7 +3307,8 @@
               "text": "chỉ nói về ăn uống và tập thể dục"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Giải thích bằng rào cản cấu trúc (thời gian, chi phí, môi trường) thay vì đổ lỗi cho ý chí."
         },
         {
           "id": "q2",
@@ -3196,7 +3331,8 @@
               "text": "Nhà · trường · công ty"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Ba loại rào cản trong sách: thời gian, chi phí, môi trường."
         },
         {
           "id": "q3",
@@ -3243,7 +3379,8 @@
               "text": "\"That's all I know about health.\""
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Câu kết chuyển trọng tâm từ lời khuyên cá nhân sang thay đổi môi trường."
         },
         {
           "id": "q5",
@@ -3266,7 +3403,8 @@
               "text": "tuổi thọ trung bình"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "\"sedentary\" = ít vận động, ngồi nhiều."
         }
       ]
     },
@@ -3275,50 +3413,58 @@
       "lessonCode": "SPK-P3-L11",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm chủ đề Health với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Health phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "sedentary lifestyle",
-          "right": "lối sống ít vận động"
+          "right": "lối sống ít vận động",
+          "explanation": "VD: Office jobs encourage a sedentary lifestyle."
         },
         {
           "id": "m2",
           "left": "preventive healthcare",
-          "right": "y tế dự phòng"
+          "right": "y tế dự phòng",
+          "explanation": "VD: Preventive healthcare saves money in the long run."
         },
         {
           "id": "m3",
           "left": "work-related stress",
-          "right": "căng thẳng do công việc"
+          "right": "căng thẳng do công việc",
+          "explanation": "VD: Work-related stress affects sleep."
         },
         {
           "id": "m4",
           "left": "mental health awareness",
-          "right": "nhận thức về sức khoẻ tinh thần"
+          "right": "nhận thức về sức khoẻ tinh thần",
+          "explanation": "VD: Mental health awareness has grown among young people."
         },
         {
           "id": "m5",
           "left": "well-being",
-          "right": "sức khoẻ tổng thể"
+          "right": "sức khoẻ tổng thể",
+          "explanation": "VD: Exercise improves both physical and mental well-being."
         },
         {
           "id": "m6",
           "left": "life expectancy",
-          "right": "tuổi thọ trung bình"
+          "right": "tuổi thọ trung bình",
+          "explanation": "VD: Life expectancy has risen in most countries."
         },
         {
           "id": "m7",
           "left": "structural barriers",
-          "right": "rào cản cấu trúc"
+          "right": "rào cản cấu trúc",
+          "explanation": "VD: Cost and time are structural barriers, not a lack of willpower."
         },
         {
           "id": "m8",
           "left": "public health campaigns",
-          "right": "chiến dịch y tế công cộng"
+          "right": "chiến dịch y tế công cộng",
+          "explanation": "VD: Public health campaigns can change smoking habits."
         }
       ]
     },
@@ -3327,8 +3473,8 @@
       "lessonCode": "SPK-P3-L11",
       "order": 3,
       "type": "categorize",
-      "title": "Rào cản này thuộc loại nào?",
-      "instruction": "Kéo mỗi rào cản (với việc duy trì lối sống lành mạnh) vào đúng loại.",
+      "title": "What kind of barrier is this?",
+      "instruction": "Drag each barrier (to keeping a healthy lifestyle) to the correct type.",
       "autoGrade": true,
       "points": 10,
       "categories": [
@@ -3349,32 +3495,38 @@
         {
           "id": "c1",
           "text": "Long working hours and a two-hour daily commute.",
-          "category": "tg"
+          "category": "tg",
+          "explanation": "Giờ làm dài + đi lại lâu → thiếu THỜI GIAN."
         },
         {
           "id": "c2",
           "text": "Fresh food costs more per calorie than processed food.",
-          "category": "cp"
+          "category": "cp",
+          "explanation": "Thực phẩm tươi đắt hơn → rào cản CHI PHÍ."
         },
         {
           "id": "c3",
           "text": "There is no safe place to walk or cycle in the neighbourhood.",
-          "category": "mt"
+          "category": "mt",
+          "explanation": "Không có chỗ đi bộ/đạp xe an toàn → rào cản MÔI TRƯỜNG."
         },
         {
           "id": "c4",
           "text": "Caring for young children and elderly parents at the same time.",
-          "category": "tg"
+          "category": "tg",
+          "explanation": "Vừa chăm con vừa chăm bố mẹ → không còn THỜI GIAN."
         },
         {
           "id": "c5",
           "text": "A gym membership and time off work both cost money.",
-          "category": "cp"
+          "category": "cp",
+          "explanation": "Phí phòng gym và nghỉ làm đều tốn tiền → CHI PHÍ."
         },
         {
           "id": "c6",
           "text": "The office canteen only sells fried food.",
-          "category": "mt"
+          "category": "mt",
+          "explanation": "Căng-tin chỉ bán đồ chiên → MÔI TRƯỜNG xung quanh quyết định lựa chọn."
         }
       ]
     },
@@ -3383,8 +3535,8 @@
       "lessonCode": "SPK-P3-L11",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Từ ý chí sang cấu trúc & câu điều kiện",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Viết lại mỗi câu đổ lỗi ý chí thành một câu nêu rào cản cấu trúc.",
+      "title": "From willpower to structure & conditionals",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints). Rewrite each sentence that blames willpower as one that names a structural barrier.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -3431,8 +3583,8 @@
       "lessonCode": "SPK-P3-L11",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: câu hỏi Health",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. KHÔNG đổ lỗi cho ý chí; nêu ít nhất hai loại rào cản khác nhau (thời gian / chi phí / môi trường), có ít nhất một câu điều kiện, và một kết luận ở tầm chính sách hoặc môi trường.",
+      "title": "Speaking: a Health question",
+      "instruction": "15 seconds to think, then record a 75–90 second answer. Do NOT blame willpower; name at least two different kinds of barrier (time / cost / environment), use at least one conditional, and conclude at the level of policy or environment.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -3480,8 +3632,8 @@
       "lessonCode": "SPK-P3-L12",
       "order": 1,
       "type": "mcq",
-      "title": "TOPIC WORK & ECONOMY — ba tầng động lực",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "TOPIC WORK & ECONOMY — three levels of motivation",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3530,7 +3682,8 @@
               "text": "Tham vọng luôn tốt"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Ở nơi bất bình đẳng cao, người ta cố gắng vì bắt buộc phải có thu nhập hơn là vì mong muốn."
         },
         {
           "id": "q3",
@@ -3611,50 +3764,58 @@
       "lessonCode": "SPK-P3-L12",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm chủ đề Work & Economy với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Work & Economy phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "the job market",
-          "right": "thị trường lao động"
+          "right": "thị trường lao động",
+          "explanation": "VD: The job market is very competitive for graduates."
         },
         {
           "id": "m2",
           "left": "the gig economy",
-          "right": "nền kinh tế việc tự do"
+          "right": "nền kinh tế việc tự do",
+          "explanation": "VD: Many delivery drivers work in the gig economy."
         },
         {
           "id": "m3",
           "left": "income inequality",
-          "right": "bất bình đẳng thu nhập"
+          "right": "bất bình đẳng thu nhập",
+          "explanation": "VD: Income inequality has widened in big cities."
         },
         {
           "id": "m4",
           "left": "workforce automation",
-          "right": "tự động hoá lực lượng lao động"
+          "right": "tự động hoá lực lượng lao động",
+          "explanation": "VD: Workforce automation threatens routine jobs."
         },
         {
           "id": "m5",
           "left": "work-life balance",
-          "right": "cân bằng công việc và cuộc sống"
+          "right": "cân bằng công việc và cuộc sống",
+          "explanation": "VD: Flexible hours improve work-life balance."
         },
         {
           "id": "m6",
           "left": "career development",
-          "right": "phát triển sự nghiệp"
+          "right": "phát triển sự nghiệp",
+          "explanation": "VD: Training courses support career development."
         },
         {
           "id": "m7",
           "left": "job security",
-          "right": "sự ổn định công việc"
+          "right": "sự ổn định công việc",
+          "explanation": "VD: Older generations valued job security above all."
         },
         {
           "id": "m8",
           "left": "normative pressure",
-          "right": "áp lực chuẩn mực nhóm"
+          "right": "áp lực chuẩn mực nhóm",
+          "explanation": "VD: Normative pressure pushes graduates into \"respectable\" jobs."
         }
       ]
     },
@@ -3663,35 +3824,40 @@
       "lessonCode": "SPK-P3-L12",
       "order": 3,
       "type": "matching",
-      "title": "Nối câu hỏi Work với dạng / khung",
-      "instruction": "Nối mỗi câu hỏi với dạng và khung phải dùng.",
+      "title": "Match Work questions with type / framework",
+      "instruction": "Match each question with the question type and framework you must use.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "Why are some people very ambitious at work?",
-          "right": "Dạng 1 — REASON × 3"
+          "right": "Dạng 1 — REASON × 3",
+          "explanation": "Dạng 1: \"Why…?\" → REASON × 3."
         },
         {
           "id": "m2",
           "left": "What are the advantages and disadvantages of the gig economy?",
-          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE"
+          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE",
+          "explanation": "Dạng 3: \"advantages and disadvantages\" → BENEFIT–DRAWBACK–BALANCE."
         },
         {
           "id": "m3",
           "left": "How will automation change the kinds of jobs people do?",
-          "right": "Dạng 6 — TREND–PREDICTION–CAVEAT"
+          "right": "Dạng 6 — TREND–PREDICTION–CAVEAT",
+          "explanation": "Dạng 6: \"How will … change…?\" → TREND–PREDICTION–CAVEAT."
         },
         {
           "id": "m4",
           "left": "Do you think people should stay in one job for their whole career?",
-          "right": "Dạng 2 — NUANCED OPINION"
+          "right": "Dạng 2 — NUANCED OPINION",
+          "explanation": "Dạng 2: \"Do you think…?\" → NUANCED OPINION."
         },
         {
           "id": "m5",
           "left": "How is work today different from work in your parents' generation?",
-          "right": "Dạng 4 — COMPARE FRAMEWORK"
+          "right": "Dạng 4 — COMPARE FRAMEWORK",
+          "explanation": "Dạng 4: so sánh với thế hệ trước → COMPARE."
         }
       ]
     },
@@ -3700,8 +3866,8 @@
       "lessonCode": "SPK-P3-L12",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Mệnh đề rút gọn & sửa lỗi Work",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Rút gọn mỗi câu bằng Having… hoặc Given that…",
+      "title": "Reduced clauses & Work error correction",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints). Shorten each sentence using Having… or Given that…",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -3748,8 +3914,8 @@
       "lessonCode": "SPK-P3-L12",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: câu hỏi Work & Economy",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Có ít nhất hai tầng động lực khác nhau, có nhắc đến yếu tố KINH TẾ cụ thể, dùng job / career / profession đúng nghĩa, và một câu về mặt trái hoặc giới hạn.",
+      "title": "Speaking: a Work & Economy question",
+      "instruction": "15 seconds to think, then record a 75–90 second answer. Include at least two different levels of motivation, mention a specific ECONOMIC factor, use job / career / profession correctly, and add one sentence about a downside or limitation.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -3797,8 +3963,8 @@
       "lessonCode": "SPK-P3-L13",
       "order": 1,
       "type": "mcq",
-      "title": "TOPIC TRAVEL & TOURISM — ai hưởng lợi, ai chịu thiệt",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "TOPIC TRAVEL & TOURISM — who gains, who loses",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -3823,7 +3989,8 @@
               "text": "Du lịch tốt cho \"the city\" như một khối đồng nhất"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Band 7: phân tích ai được lợi, ai chịu thiệt — không coi \"the city\" là một khối."
         },
         {
           "id": "q2",
@@ -3846,7 +4013,8 @@
               "text": "Ngân sách thuế quốc gia"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Cư dân lâu năm bị đẩy đi vì giá nhà/giá thuê tăng do du lịch."
         },
         {
           "id": "q3",
@@ -3869,7 +4037,8 @@
               "text": "much"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "Lượng từ chính xác giúp lập luận cụ thể: a significant proportion of / the vast majority of…"
         },
         {
           "id": "q4",
@@ -3892,7 +4061,8 @@
               "text": "định giá di sản"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "\"price … out\" = giá tăng cao đến mức người ta không còn đủ khả năng ở lại."
         },
         {
           "id": "q5",
@@ -3915,7 +4085,8 @@
               "text": "Khách không đến nữa"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "\"erode\" = bào mòn; du lịch đại trà làm mất chính sự chân thực đã thu hút khách."
         }
       ]
     },
@@ -3924,50 +4095,58 @@
       "lessonCode": "SPK-P3-L13",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm chủ đề Travel với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Travel phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "over-tourism",
-          "right": "du lịch quá tải"
+          "right": "du lịch quá tải",
+          "explanation": "VD: Over-tourism has damaged Venice."
         },
         {
           "id": "m2",
           "left": "sustainable tourism",
-          "right": "du lịch bền vững"
+          "right": "du lịch bền vững",
+          "explanation": "VD: Sustainable tourism limits visitor numbers."
         },
         {
           "id": "m3",
           "left": "cultural exchange",
-          "right": "giao lưu văn hoá"
+          "right": "giao lưu văn hoá",
+          "explanation": "VD: Homestays encourage cultural exchange."
         },
         {
           "id": "m4",
           "left": "heritage preservation",
-          "right": "bảo tồn di sản"
+          "right": "bảo tồn di sản",
+          "explanation": "VD: Ticket income funds heritage preservation."
         },
         {
           "id": "m5",
           "left": "the local economy",
-          "right": "kinh tế địa phương"
+          "right": "kinh tế địa phương",
+          "explanation": "VD: Tourism boosts the local economy."
         },
         {
           "id": "m6",
           "left": "strain infrastructure",
-          "right": "gây quá tải hạ tầng"
+          "right": "gây quá tải hạ tầng",
+          "explanation": "VD: Millions of visitors strain infrastructure."
         },
         {
           "id": "m7",
           "left": "price local residents out",
-          "right": "đẩy dân địa phương ra khỏi nơi ở"
+          "right": "đẩy dân địa phương ra khỏi nơi ở",
+          "explanation": "VD: Short-term rentals price local residents out."
         },
         {
           "id": "m8",
           "left": "form a virtuous cycle",
-          "right": "tạo thành vòng tuần hoàn tích cực"
+          "right": "tạo thành vòng tuần hoàn tích cực",
+          "explanation": "VD: Protecting heritage attracts visitors, which funds more protection — a virtuous cycle."
         }
       ]
     },
@@ -3976,35 +4155,40 @@
       "lessonCode": "SPK-P3-L13",
       "order": 3,
       "type": "matching",
-      "title": "Nối câu hỏi Travel với dạng / khung",
-      "instruction": "Nối mỗi câu hỏi với dạng và khung phải dùng.",
+      "title": "Match Travel questions with type / framework",
+      "instruction": "Match each question with the question type and framework you must use.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "What advantages can tourism bring to a city?",
-          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE"
+          "right": "Dạng 3 — BENEFIT–DRAWBACK–BALANCE",
+          "explanation": "Dạng 3: hỏi advantages → BENEFIT–DRAWBACK–BALANCE."
         },
         {
           "id": "m2",
           "left": "How can cities manage the problems caused by mass tourism?",
-          "right": "Dạng 5 — CAUSE–EFFECT–SOLUTION"
+          "right": "Dạng 5 — CAUSE–EFFECT–SOLUTION",
+          "explanation": "Dạng 5: \"How can cities manage the problems…?\" hỏi giải pháp → CAUSE–EFFECT–SOLUTION."
         },
         {
           "id": "m3",
           "left": "Why do people travel abroad rather than within their own country?",
-          "right": "Dạng 1 — REASON × 3"
+          "right": "Dạng 1 — REASON × 3",
+          "explanation": "Dạng 1: \"Why…?\" → REASON × 3."
         },
         {
           "id": "m4",
           "left": "Do you think tourism does more harm than good?",
-          "right": "Dạng 2 — NUANCED OPINION"
+          "right": "Dạng 2 — NUANCED OPINION",
+          "explanation": "Dạng 2: \"Do you think…?\" → NUANCED OPINION."
         },
         {
           "id": "m5",
           "left": "How has the way people travel changed in the past thirty years?",
-          "right": "Dạng 4 — COMPARE FRAMEWORK"
+          "right": "Dạng 4 — COMPARE FRAMEWORK",
+          "explanation": "Dạng 4: so sánh 30 năm trước với nay → COMPARE."
         }
       ]
     },
@@ -4013,8 +4197,8 @@
       "lessonCode": "SPK-P3-L13",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Lượng từ chính xác & sửa lỗi Travel",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý).",
+      "title": "Precise quantifiers & Travel error correction",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints).",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -4062,8 +4246,8 @@
       "lessonCode": "SPK-P3-L13",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: câu hỏi Travel & Tourism",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 75–90 giây. Phân tích lợi ích và chi phí theo NHÓM DÂN CƯ (nêu rõ ai hưởng lợi, ai chịu thiệt), dùng lượng từ chính xác, KHÔNG kể chuyến đi của mình.",
+      "title": "Speaking: a Travel & Tourism question",
+      "instruction": "15 seconds to think, then record a 75–90 second answer. Analyse benefits and costs by GROUP OF PEOPLE (say clearly who gains and who loses), use precise quantifiers, and do NOT talk about your own trips.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -4111,8 +4295,8 @@
       "lessonCode": "SPK-P3-L14",
       "order": 1,
       "type": "mcq",
-      "title": "TOPIC MEDIA — cơ chế thiết kế nền tảng",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "TOPIC MEDIA — how platforms are designed",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -4137,7 +4321,8 @@
               "text": "Dùng từ \"fake news\" nhiều hơn"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Band 8 giải thích CƠ CHẾ (nền tảng thiết kế để tối đa tương tác), không chỉ mô tả hành vi."
         },
         {
           "id": "q2",
@@ -4160,7 +4345,8 @@
               "text": "disinformation là tin cũ"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "misinformation = sai mà không biết; disinformation = cố tình bịa để đánh lừa."
         },
         {
           "id": "q3",
@@ -4207,7 +4393,8 @@
               "text": "Dùng thuật ngữ chính xác"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "\"the media\" không phải một chủ thể thống nhất có ý chí — cần nói rõ nền tảng/nhóm nào."
         },
         {
           "id": "q5",
@@ -4230,7 +4417,8 @@
               "text": "Nền tảng chỉ để giải trí"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Nền tảng tối ưu thời gian bạn dùng, không phải lợi ích của bạn."
         }
       ]
     },
@@ -4239,50 +4427,58 @@
       "lessonCode": "SPK-P3-L14",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm chủ đề Media với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Media phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "misinformation",
-          "right": "thông tin sai lệch"
+          "right": "thông tin sai lệch",
+          "explanation": "VD: Misinformation spreads quickly during a crisis."
         },
         {
           "id": "m2",
           "left": "media literacy",
-          "right": "năng lực đọc hiểu truyền thông"
+          "right": "năng lực đọc hiểu truyền thông",
+          "explanation": "VD: Schools should teach media literacy."
         },
         {
           "id": "m3",
           "left": "echo chambers",
-          "right": "buồng vang"
+          "right": "buồng vang",
+          "explanation": "VD: Algorithms trap users in echo chambers."
         },
         {
           "id": "m4",
           "left": "algorithmic bias",
-          "right": "thiên kiến thuật toán"
+          "right": "thiên kiến thuật toán",
+          "explanation": "VD: Algorithmic bias can affect who sees job ads."
         },
         {
           "id": "m5",
           "left": "public discourse",
-          "right": "diễn ngôn công cộng"
+          "right": "diễn ngôn công cộng",
+          "explanation": "VD: Social media now shapes public discourse."
         },
         {
           "id": "m6",
           "left": "digital footprint",
-          "right": "dấu vết số"
+          "right": "dấu vết số",
+          "explanation": "VD: Employers check your digital footprint."
         },
         {
           "id": "m7",
           "left": "marginalised voices",
-          "right": "tiếng nói bị gạt ra lề"
+          "right": "tiếng nói bị gạt ra lề",
+          "explanation": "VD: Online platforms give visibility to marginalised voices."
         },
         {
           "id": "m8",
           "left": "engagement-driven design",
-          "right": "thiết kế hướng tương tác"
+          "right": "thiết kế hướng tương tác",
+          "explanation": "VD: Endless scrolling is a feature of engagement-driven design."
         }
       ]
     },
@@ -4291,8 +4487,8 @@
       "lessonCode": "SPK-P3-L14",
       "order": 3,
       "type": "categorize",
-      "title": "Mô tả này là thuật ngữ nào?",
-      "instruction": "Kéo mỗi mô tả vào đúng thuật ngữ.",
+      "title": "Which term does this describe?",
+      "instruction": "Drag each description to the correct term.",
       "autoGrade": true,
       "points": 12,
       "categories": [
@@ -4325,32 +4521,38 @@
         {
           "id": "c1",
           "text": "Sharing something false without knowing it is false.",
-          "category": "misinfo"
+          "category": "misinfo",
+          "explanation": "Chia sẻ tin sai mà không biết → misinformation."
         },
         {
           "id": "c2",
           "text": "Deliberately spreading false information to mislead people.",
-          "category": "disinfo"
+          "category": "disinfo",
+          "explanation": "Cố tình lan truyền tin sai → disinformation."
         },
         {
           "id": "c3",
           "text": "Only ever seeing opinions that match your own.",
-          "category": "echo"
+          "category": "echo",
+          "explanation": "Chỉ thấy ý kiến giống mình → echo chamber."
         },
         {
           "id": "c4",
           "text": "A recommendation system that reproduces existing prejudice.",
-          "category": "algobias"
+          "category": "algobias",
+          "explanation": "Hệ thống gợi ý lặp lại định kiến → algorithmic bias."
         },
         {
           "id": "c5",
           "text": "The permanent trace of everything you have posted.",
-          "category": "footprint"
+          "category": "footprint",
+          "explanation": "Dấu vết vĩnh viễn của những gì đã đăng → digital footprint."
         },
         {
           "id": "c6",
           "text": "The skill of judging whether a source is reliable.",
-          "category": "literacy"
+          "category": "literacy",
+          "explanation": "Kỹ năng đánh giá độ tin cậy của nguồn → media literacy."
         }
       ]
     },
@@ -4359,8 +4561,8 @@
       "lessonCode": "SPK-P3-L14",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Nhượng bộ nâng cao & sửa lỗi Media",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Nối hai vế bằng Whilst / Despite the fact that / Admittedly cho đúng.",
+      "title": "Advanced concession & Media error correction",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints). Join the two parts correctly with Whilst / Despite the fact that / Admittedly.",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -4407,8 +4609,8 @@
       "lessonCode": "SPK-P3-L14",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: câu hỏi Media & Communication",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 80–95 giây. Nêu CƠ CHẾ (engagement-driven design), có cả mặt trao quyền và mặt gây hại, dùng thuật ngữ chính xác (không nói \"fake news\" cho mọi thứ), và có ít nhất một mệnh đề nhượng bộ nâng cao.",
+      "title": "Speaking: a Media & Communication question",
+      "instruction": "15 seconds to think, then record an 80–95 second answer. Explain the MECHANISM (engagement-driven design), cover both the empowering and the harmful side, use precise terms (not \"fake news\" for everything), and include at least one advanced concession clause.",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -4456,8 +4658,8 @@
       "lessonCode": "SPK-P3-L15",
       "order": 1,
       "type": "mcq",
-      "title": "TOPIC FAMILY & ARTS — lực đẩy & giá trị",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "TOPIC FAMILY & ARTS — drivers & values",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "items": [
@@ -4482,7 +4684,8 @@
               "text": "Không có lý do nào"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Lực đẩy kinh tế: phụ nữ đi làm hàng loạt đã thay đổi cấu trúc hộ gia đình."
         },
         {
           "id": "q2",
@@ -4505,7 +4708,8 @@
               "text": "Ai cũng thích nghệ thuật"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Nghệ thuật tạo giá trị xã hội mà thị trường không định giá đúng → cần tài trợ công."
         },
         {
           "id": "q3",
@@ -4552,7 +4756,8 @@
               "text": "câu giờ"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "\"not so much X as Y\" định khung lại vấn đề — rất hợp làm câu kết."
         },
         {
           "id": "q5",
@@ -4585,50 +4790,58 @@
       "lessonCode": "SPK-P3-L15",
       "order": 2,
       "type": "matching",
-      "title": "Nối cụm chủ đề Family & Arts với nghĩa",
-      "instruction": "Nối mỗi cụm với nghĩa tiếng Việt.",
+      "title": "Family & Arts phrases and their meanings",
+      "instruction": "Match each phrase with its Vietnamese meaning.",
       "autoGrade": true,
       "points": 12,
       "items": [
         {
           "id": "m1",
           "left": "nuclear family",
-          "right": "gia đình hạt nhân"
+          "right": "gia đình hạt nhân",
+          "explanation": "VD: The nuclear family is now the norm in cities."
         },
         {
           "id": "m2",
           "left": "extended family",
-          "right": "gia đình mở rộng"
+          "right": "gia đình mở rộng",
+          "explanation": "VD: In the countryside, extended families often live together."
         },
         {
           "id": "m3",
           "left": "intergenerational relationships",
-          "right": "quan hệ giữa các thế hệ"
+          "right": "quan hệ giữa các thế hệ",
+          "explanation": "VD: Living together strengthens intergenerational relationships."
         },
         {
           "id": "m4",
           "left": "social support network",
-          "right": "mạng lưới hỗ trợ xã hội"
+          "right": "mạng lưới hỗ trợ xã hội",
+          "explanation": "VD: Grandparents form part of a social support network."
         },
         {
           "id": "m5",
           "left": "cultural identity",
-          "right": "bản sắc văn hoá"
+          "right": "bản sắc văn hoá",
+          "explanation": "VD: Festivals help preserve cultural identity."
         },
         {
           "id": "m6",
           "left": "artistic freedom",
-          "right": "tự do nghệ thuật"
+          "right": "tự do nghệ thuật",
+          "explanation": "VD: Public funding should not limit artistic freedom."
         },
         {
           "id": "m7",
           "left": "cultural homogenisation",
-          "right": "đồng hoá văn hoá"
+          "right": "đồng hoá văn hoá",
+          "explanation": "VD: Global brands drive cultural homogenisation."
         },
         {
           "id": "m8",
           "left": "intangible cultural heritage",
-          "right": "di sản văn hoá phi vật thể"
+          "right": "di sản văn hoá phi vật thể",
+          "explanation": "VD: Ca trù is part of Vietnam's intangible cultural heritage."
         }
       ]
     },
@@ -4637,35 +4850,40 @@
       "lessonCode": "SPK-P3-L15",
       "order": 3,
       "type": "matching",
-      "title": "Nối câu hỏi Family / Arts với khung",
-      "instruction": "Nối mỗi câu hỏi với khung phải dùng.",
+      "title": "Match Family / Arts questions with a framework",
+      "instruction": "Match each question with the framework you must use.",
       "autoGrade": true,
       "points": 10,
       "items": [
         {
           "id": "m1",
           "left": "How have family structures changed in recent decades?",
-          "right": "THEN–NOW–NEXT"
+          "right": "THEN–NOW–NEXT",
+          "explanation": "\"How have … changed in recent decades?\" → THEN–NOW–NEXT."
         },
         {
           "id": "m2",
           "left": "Are family relationships weaker than in the past?",
-          "right": "COMPARE FRAMEWORK"
+          "right": "COMPARE FRAMEWORK",
+          "explanation": "\"weaker than in the past\" — so sánh → COMPARE."
         },
         {
           "id": "m3",
           "left": "Should governments fund the arts?",
-          "right": "ROLE–RESPONSIBILITY–LIMIT"
+          "right": "ROLE–RESPONSIBILITY–LIMIT",
+          "explanation": "\"Should governments fund…?\" → ROLE–RESPONSIBILITY–LIMIT."
         },
         {
           "id": "m4",
           "left": "Why is traditional culture disappearing in many countries?",
-          "right": "REASON × 3"
+          "right": "REASON × 3",
+          "explanation": "\"Why…?\" → REASON × 3."
         },
         {
           "id": "m5",
           "left": "Do you think globalisation makes cultures more similar?",
-          "right": "NUANCED OPINION"
+          "right": "NUANCED OPINION",
+          "explanation": "\"Do you think…?\" → NUANCED OPINION."
         }
       ]
     },
@@ -4674,8 +4892,8 @@
       "lessonCode": "SPK-P3-L15",
       "order": 4,
       "type": "sentence_transform",
-      "title": "not so much X as Y & sửa lỗi Family/Arts",
-      "instruction": "Gõ lại câu đã sửa / nâng cấp theo mẫu (gõ từng chữ, có gợi ý). Viết lại mỗi câu bằng cấu trúc \"not so much X as Y\" hoặc \"less about X and more about Y\".",
+      "title": "not so much X as Y & Family/Arts error correction",
+      "instruction": "Type the corrected / upgraded sentence (word by word, with hints). Rewrite each sentence with \"not so much X as Y\" or \"less about X and more about Y\".",
       "autoGrade": true,
       "points": 8,
       "items": [
@@ -4722,8 +4940,8 @@
       "lessonCode": "SPK-P3-L15",
       "order": 5,
       "type": "speaking_response",
-      "title": "Nói: câu hỏi Family & Arts",
-      "instruction": "15 giây suy nghĩ, ghi âm nói 80–95 giây. Nêu ít nhất hai lực đẩy (kinh tế / văn hoá), có một câu về khác biệt giữa các nền văn hoá, KHÔNG kể chuyện gia đình mình. Với chủ đề Arts, dùng lập luận \"giá trị thị trường không định giá được\".",
+      "title": "Speaking: a Family & Arts question",
+      "instruction": "15 seconds to think, then record an 80–95 second answer. Give at least two drivers (economic / cultural), include one sentence about differences between cultures, and do NOT talk about your own family. For Arts topics, use the argument that \"market value can’t measure it\".",
       "autoGrade": false,
       "points": 12,
       "speakingPart": 3,
@@ -4771,8 +4989,8 @@
       "lessonCode": "SPK-P3-L16",
       "order": 1,
       "type": "mcq",
-      "title": "WARM-UP — nhận diện dạng câu hỏi trong 2 giây",
-      "instruction": "Với mỗi câu hỏi, chọn ĐÚNG dạng / khung phải dùng.",
+      "title": "WARM-UP — identify the question type in 2 seconds",
+      "instruction": "For each question, choose the type / framework you must use.",
       "autoGrade": true,
       "points": 12,
       "items": [
@@ -4797,7 +5015,8 @@
               "text": "TREND–PREDICTION–CAVEAT"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "\"Why…?\" → REASON × 3."
         },
         {
           "id": "q2",
@@ -4820,7 +5039,8 @@
               "text": "COMPARE"
             }
           ],
-          "answer": "B"
+          "answer": "B",
+          "explanation": "\"Do you think … should…?\" → NUANCED OPINION."
         },
         {
           "id": "q3",
@@ -4843,7 +5063,8 @@
               "text": "TREND–PREDICTION–CAVEAT"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Hỏi drawbacks → BENEFIT–DRAWBACK–BALANCE."
         },
         {
           "id": "q4",
@@ -4866,7 +5087,8 @@
               "text": "NUANCED OPINION"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "So sánh hiện tại và 20 năm trước → COMPARE."
         },
         {
           "id": "q5",
@@ -4889,7 +5111,8 @@
               "text": "TREND–PREDICTION–CAVEAT"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "\"What can be done…?\" hỏi giải pháp → CAUSE–EFFECT–SOLUTION."
         },
         {
           "id": "q6",
@@ -4912,7 +5135,8 @@
               "text": "COMPARE"
             }
           ],
-          "answer": "A"
+          "answer": "A",
+          "explanation": "Dự đoán tương lai → TREND–PREDICTION–CAVEAT."
         }
       ]
     },
@@ -4921,8 +5145,8 @@
       "lessonCode": "SPK-P3-L16",
       "order": 2,
       "type": "speaking_response",
-      "title": "THI THỬ — Bộ đề 1: Education & Work",
-      "instruction": "Điều kiện thi: giám khảo hỏi liên tiếp, KHÔNG dừng giữa chừng. Ghi âm trả lời cả 5 câu hỏi, mỗi câu 60–90 giây. Nhận đúng dạng và dùng đúng khung cho từng câu.",
+      "title": "MOCK TEST — Set 1: Education & Work",
+      "instruction": "Exam conditions: the examiner asks one question after another — do NOT stop. Record answers to all 5 questions, 60–90 seconds each. Identify the type and use the right framework for each one.",
       "autoGrade": false,
       "points": 15,
       "speakingPart": 3,
@@ -4991,8 +5215,8 @@
       "lessonCode": "SPK-P3-L16",
       "order": 3,
       "type": "speaking_response",
-      "title": "THI THỬ — Bộ đề 2: Environment & Community",
-      "instruction": "Giám khảo hỏi liên tiếp, không dừng giữa chừng. Ghi âm trả lời cả 5 câu, mỗi câu 60–90 giây. Nhận đúng dạng và dùng đúng khung.",
+      "title": "MOCK TEST — Set 2: Environment & Community",
+      "instruction": "The examiner asks one question after another — do not stop. Record answers to all 5 questions, 60–90 seconds each. Identify the type and use the right framework.",
       "autoGrade": false,
       "points": 15,
       "speakingPart": 3,
@@ -5061,8 +5285,8 @@
       "lessonCode": "SPK-P3-L16",
       "order": 4,
       "type": "speaking_response",
-      "title": "THI THỬ — Bộ đề 3: Technology & Society",
-      "instruction": "Giám khảo hỏi liên tiếp, không dừng giữa chừng. Ghi âm trả lời cả 5 câu, mỗi câu 60–90 giây. Nhận đúng dạng và dùng đúng khung.",
+      "title": "MOCK TEST — Set 3: Technology & Society",
+      "instruction": "The examiner asks one question after another — do not stop. Record answers to all 5 questions, 60–90 seconds each. Identify the type and use the right framework.",
       "autoGrade": false,
       "points": 15,
       "speakingPart": 3,

@@ -636,6 +636,9 @@
     document.getElementById('t1-next-item').addEventListener('click', function () {
       E.state.itemIdx = idx + 1;
       E.render();
+      // the feedback above left the page scrolled to the bottom
+      var q = document.querySelector('.sc-q.cur');
+      if (q) q.scrollIntoView({ block: 'center' });
     });
     document.getElementById('t1-retry-item').addEventListener('click', function () {
       E.render();
@@ -683,10 +686,6 @@
       essayMeter: false,
       plainTimer: true,
       plainScore: true,
-      progressHtml: function (pct) {
-        return '<div style="margin:0 20px;height:4px;border-radius:4px;background:var(--surface2,#eef2f7);overflow:hidden">' +
-          '<span style="display:block;height:100%;width:' + pct + '%;background:linear-gradient(90deg,#f43f5e,#22c55e);border-radius:4px"></span></div>';
-      },
       aiWritingBody: aiWritingBody,
     },
     // speaking_response is neither objective nor a writing type — it has its

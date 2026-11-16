@@ -5,8 +5,8 @@
       "lessonCode": "T1-L10",
       "order": 1,
       "type": "categorize",
-      "title": "Static hay Dynamic?",
-      "instruction": "Xếp mỗi đề bài vào đúng nhóm: S (static) hoặc D (dynamic). Đọc phần giải thích để biết động từ chính nên dùng.",
+      "title": "Static or Dynamic?",
+      "instruction": "Put each task in the correct group: S (static) or D (dynamic). Read the explanation to see which main verbs to use.",
       "autoGrade": true,
       "points": 8,
       "estimatedMinutes": 4,
@@ -57,8 +57,8 @@
       "lessonCode": "T1-L10",
       "order": 2,
       "type": "error_correction",
-      "title": "Sửa lỗi dùng sai từ xu hướng cho biểu đồ tĩnh",
-      "instruction": "Các câu sau viết cho biểu đồ tĩnh nhưng dùng nhầm từ vựng xu hướng (increase/fall/rise). Viết lại cho đúng — bỏ động từ xu hướng, dùng cách mô tả/so sánh tĩnh.",
+      "title": "Fix trend words used for a static chart",
+      "instruction": "These sentences describe a static chart but wrongly use trend vocabulary (increase/fall/rise). Rewrite them correctly — drop the trend verb and use static description/comparison instead.",
       "autoGrade": true,
       "points": 9,
       "estimatedMinutes": 6,
@@ -106,8 +106,8 @@
       "lessonCode": "T1-L10",
       "order": 3,
       "type": "sentence_writing",
-      "title": "Viết Overview cho bảng thể thao học sinh nam",
-      "instruction": "Dựa vào bảng số liệu, viết 2 câu Overview: một câu so sánh 2 nhóm tuổi (cột), một câu nêu môn thể thao phổ biến nhất (hàng).",
+      "title": "Write an Overview for the boys’ sports table",
+      "instruction": "Using the table, write a 2-sentence Overview: one sentence comparing the 2 age groups (columns), one naming the most popular sport (rows).",
       "autoGrade": false,
       "points": 10,
       "estimatedMinutes": 8,
@@ -175,8 +175,8 @@
       "lessonCode": "T1-L10",
       "order": 4,
       "type": "paragraph_writing",
-      "title": "Viết Body 1 (nhóm 6–11 tuổi)",
-      "instruction": "Dùng bảng số liệu ở bài trước, viết đoạn Body 1 mô tả và so sánh 5 số liệu của nhóm 6–11 tuổi. Dùng ít nhất 3 cấu trúc so sánh khác nhau.",
+      "title": "Write Body 1 (ages 6–11)",
+      "instruction": "Using the table from the previous exercise, write Body 1 describing and comparing the 5 figures for the 6–11 age group. Use at least 3 different comparison structures.",
       "autoGrade": false,
       "points": 15,
       "estimatedMinutes": 12,
@@ -450,8 +450,8 @@
       "lessonCode": "T1-L11",
       "order": 5,
       "type": "sentence_transform",
-      "title": "Chuyển câu sang thì hiện tại đơn",
-      "instruction": "Biểu đồ không có mốc thời gian cụ thể — chuyển các câu sau (đang ở quá khứ) sang thì hiện tại đơn.",
+      "title": "Change the sentences to the present simple",
+      "instruction": "The chart has no specific time reference — change these sentences (currently in the past) to the present simple.",
       "autoGrade": true,
       "points": 6,
       "estimatedMinutes": 4,
@@ -468,7 +468,8 @@
           "sampleAnswers": [
             "Heating accounts for 42% of household energy use."
           ],
-          "promptVi": "Việc sưởi ấm chiếm 42% lượng năng lượng tiêu thụ trong các hộ gia đình."
+          "promptVi": "Việc sưởi ấm chiếm 42% lượng năng lượng tiêu thụ trong các hộ gia đình.",
+          "explanation": "Biểu đồ không có mốc thời gian → dùng hiện tại đơn: accounted for → accounts for (chủ ngữ số ít thêm -s)."
         },
         {
           "id": "q2",
@@ -477,7 +478,8 @@
           "sampleAnswers": [
             "Water heating makes up 32% of emissions."
           ],
-          "promptVi": "Việc đun nước chiếm 32% lượng khí thải."
+          "promptVi": "Việc đun nước chiếm 32% lượng khí thải.",
+          "explanation": "made up → makes up (hiện tại đơn, ngôi ba số ít)."
         },
         {
           "id": "q3",
@@ -486,7 +488,8 @@
           "sampleAnswers": [
             "Refrigeration takes up 7% of the total energy consumed."
           ],
-          "promptVi": "Tủ lạnh tiêu thụ 7% tổng năng lượng."
+          "promptVi": "Tủ lạnh tiêu thụ 7% tổng năng lượng.",
+          "explanation": "took up → takes up (hiện tại đơn, ngôi ba số ít)."
         }
       ]
     },
@@ -495,8 +498,8 @@
       "lessonCode": "T1-L11",
       "order": 6,
       "type": "sentence_writing",
-      "title": "Bài tập bổ sung — Viết Overview trong 90 giây",
-      "instruction": "Nhìn nhanh vào hai biểu đồ tròn ở phần 11.4 và viết Overview chỉ trong 90 giây, không nhìn lại gợi ý.",
+      "title": "Extra practice — Write an Overview in 90 seconds",
+      "instruction": "Glance at the two pie charts in section 11.4 and write an Overview in just 90 seconds, without looking back at the hints.",
       "source": "book",
       "skillTags": [
         "overview",
@@ -534,8 +537,8 @@
       "lessonCode": "T1-L12",
       "order": 1,
       "type": "sentence_transform",
-      "title": "Viết Introduction kết hợp hai biểu đồ",
-      "instruction": "Dùng \"and\"/\"while\"/dấu phẩy để nối hai mệnh đề mô tả hai biểu đồ thành một câu Introduction.",
+      "title": "Write an Introduction for two combined charts",
+      "instruction": "Use \"and\"/\"while\"/a comma to join the two clauses describing the two charts into one Introduction sentence.",
       "autoGrade": false,
       "points": 8,
       "estimatedMinutes": 6,
@@ -553,7 +556,8 @@
             "The line graph compares the number of UK residents travelling abroad and the number of overseas visitors coming to the UK, while the bar chart shows the most popular countries visited by UK residents.",
             "The line graph compares the number of visitors travelling to and from the UK, and the bar chart illustrates the most popular countries visited by UK residents."
           ],
-          "promptVi": "Biểu đồ đường so sánh số lượng du khách đến và rời khỏi Vương quốc Anh, còn biểu đồ cột minh họa các quốc gia được người dân Anh ghé thăm nhiều nhất."
+          "promptVi": "Biểu đồ đường so sánh số lượng du khách đến và rời khỏi Vương quốc Anh, còn biểu đồ cột minh họa các quốc gia được người dân Anh ghé thăm nhiều nhất.",
+          "explanation": "Mỗi vế giới thiệu một biểu đồ; \", while\" nối hai vế thành một câu Introduction."
         },
         {
           "id": "q2",
@@ -562,7 +566,8 @@
           "sampleAnswers": [
             "The line graph illustrates the monthly average temperatures in three cities, while the table shows the average annual sunshine hours in the same three cities."
           ],
-          "promptVi": "Biểu đồ đường thể hiện nhiệt độ trung bình hàng tháng ở ba thành phố, trong khi bảng số liệu cho biết tổng số giờ có nắng trung bình trong năm của cả ba thành phố đó."
+          "promptVi": "Biểu đồ đường thể hiện nhiệt độ trung bình hàng tháng ở ba thành phố, trong khi bảng số liệu cho biết tổng số giờ có nắng trung bình trong năm của cả ba thành phố đó.",
+          "explanation": "\"illustrates\" cho biểu đồ 1, \"shows\" cho biểu đồ 2 để khỏi lặp; nối bằng \", while\"."
         }
       ]
     },
@@ -655,8 +660,8 @@
       "lessonCode": "T1-TEST3",
       "order": 1,
       "type": "mcq",
-      "title": "Phần A1 — Trắc nghiệm",
-      "instruction": "Chọn đáp án đúng (2 điểm/câu).",
+      "title": "Part A1 — Multiple choice",
+      "instruction": "Choose the correct answer (2 points each).",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 6,
@@ -794,8 +799,8 @@
       "lessonCode": "T1-TEST3",
       "order": 2,
       "type": "sentence_transform",
-      "title": "Phần A2 — Viết lại câu cho biểu đồ tĩnh",
-      "instruction": "Viết lại câu, thay cụm gạch chân bằng cách diễn đạt nâng cấp (2 điểm/câu).",
+      "title": "Part A2 — Rewrite sentences for a static chart",
+      "instruction": "Rewrite each sentence, replacing the underlined phrase with an upgraded expression (2 points each).",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 8,
@@ -812,7 +817,8 @@
           "sampleAnswers": [
             "Football topped the list, at 87%."
           ],
-          "promptVi": "Bóng đá đứng đầu danh sách với 87%."
+          "promptVi": "Bóng đá đứng đầu danh sách với 87%.",
+          "explanation": "\"was the highest\" → \"topped the list\" (đứng đầu danh sách)."
         },
         {
           "id": "q2",
@@ -822,7 +828,8 @@
             "The bottom position belonged to swimming, with only 19% of boys choosing it.",
             "The bottom position belonged to swimming, with only 19%."
           ],
-          "promptVi": "Vị trí bét bảng thuộc về môn bơi lội, chỉ chiếm 19%."
+          "promptVi": "Vị trí bét bảng thuộc về môn bơi lội, chỉ chiếm 19%.",
+          "explanation": "\"was the lowest\" → \"The bottom position belonged to…\" (vị trí cuối thuộc về…)."
         },
         {
           "id": "q3",
@@ -832,7 +839,8 @@
             "Boys who played cricket accounted for 45% of the group.",
             "Cricket accounted for 45% of boys."
           ],
-          "promptVi": "Môn cricket chiếm 45% ở các bé trai."
+          "promptVi": "Môn cricket chiếm 45% ở các bé trai.",
+          "explanation": "\"accounted for 45%\" = chiếm 45%."
         },
         {
           "id": "q4",
@@ -841,7 +849,8 @@
           "sampleAnswers": [
             "Apartments topped the list in Liverpool."
           ],
-          "promptVi": "Căn hộ đứng đầu danh sách ở Liverpool."
+          "promptVi": "Căn hộ đứng đầu danh sách ở Liverpool.",
+          "explanation": "\"were the most popular\" → \"topped the list\"."
         },
         {
           "id": "q5",
@@ -851,7 +860,8 @@
             "The bottom position belonged to terraced houses, which received the fewest votes.",
             "The bottom position belonged to terraced houses."
           ],
-          "promptVi": "Vị trí cuối cùng thuộc về nhà liền kề."
+          "promptVi": "Vị trí cuối cùng thuộc về nhà liền kề.",
+          "explanation": "\"got the fewest votes\" → \"The bottom position belonged to…\"."
         }
       ]
     },
@@ -860,8 +870,8 @@
       "lessonCode": "T1-TEST3",
       "order": 3,
       "type": "sentence_writing",
-      "title": "Phần A3 — Lập dàn ý",
-      "instruction": "Cho bảng số liệu 4 hàng x 3 cột. Đề xuất hai cách chia Body, cho biết bạn chọn cách nào và vì sao.",
+      "title": "Part A3 — Plan the essay",
+      "instruction": "You are given a table with 4 rows × 3 columns. Suggest two ways to split the Body, say which one you would choose and why.",
       "autoGrade": false,
       "points": 10,
       "estimatedMinutes": 6,
@@ -891,8 +901,8 @@
       "lessonCode": "T1-TEST3",
       "order": 4,
       "type": "sentence_writing",
-      "title": "Phần A4 — Viết Introduction cho đề kết hợp",
-      "instruction": "Đề: The pie chart shows the sources of household water in Vietnam in 2020, and the bar chart shows water consumption by four sectors in the same year. Viết Introduction (1 câu, 2 mệnh đề).",
+      "title": "Part A4 — Write an Introduction for a combined task",
+      "instruction": "Task: The pie chart shows the sources of household water in Vietnam in 2020, and the bar chart shows water consumption by four sectors in the same year. Write the Introduction (1 sentence, 2 clauses).",
       "autoGrade": false,
       "points": 10,
       "estimatedMinutes": 6,
@@ -923,7 +933,7 @@
       "lessonCode": "T1-TEST3",
       "order": 5,
       "type": "full_task1",
-      "title": "Phần B — Bài viết hoàn chỉnh",
+      "title": "Part B — Full essay",
       "instruction": "The table below shows the percentage of household income spent on five categories in three countries in 2015 (hypothetical data). Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.",
       "autoGrade": false,
       "points": 60,

@@ -5,8 +5,8 @@
       "lessonCode": "T1-L01",
       "order": 1,
       "type": "categorize",
-      "title": "Bài tập 1 — Phân loại dạng đề: Dynamic hay Static?",
-      "instruction": "Đọc từng đề bài. Xếp vào đúng nhóm: dữ liệu động (thay đổi theo thời gian) hay dữ liệu tĩnh (tại một thời điểm).",
+      "title": "Exercise 1 — Classify the task: Dynamic or Static?",
+      "instruction": "Read each task. Put it in the correct group: dynamic data (changes over time) or static data (one point in time).",
       "autoGrade": true,
       "points": 12,
       "estimatedMinutes": 6,
@@ -29,27 +29,32 @@
         {
           "id": "c1",
           "text": "The line graph shows the number of visitors to three museums between 1990 and 2015.",
-          "category": "dynamic"
+          "category": "dynamic",
+          "explanation": "\"between 1990 and 2015\" — nhiều mốc thời gian → dữ liệu thay đổi theo thời gian (dynamic)."
         },
         {
           "id": "c2",
           "text": "The pie chart shows the proportion of household spending in Japan in 2018.",
-          "category": "static"
+          "category": "static",
+          "explanation": "Chỉ một năm (2018) → dữ liệu tại một thời điểm (static)."
         },
         {
           "id": "c3",
           "text": "The table below shows the average monthly rainfall in four cities in 2020.",
-          "category": "static"
+          "category": "static",
+          "explanation": "Chỉ năm 2020 → static: so sánh các thành phố, không có xu hướng."
         },
         {
           "id": "c4",
           "text": "The bar chart compares the sales of four car brands from 2005 to 2020.",
-          "category": "dynamic"
+          "category": "dynamic",
+          "explanation": "\"from 2005 to 2020\" → có xu hướng tăng/giảm → dynamic."
         },
         {
           "id": "c5",
           "text": "The chart shows the percentage of men and women in five occupations in Canada in 2011.",
-          "category": "static"
+          "category": "static",
+          "explanation": "Chỉ năm 2011 → static: so sánh nam/nữ trong các nghề."
         },
         {
           "id": "c6",
@@ -64,8 +69,8 @@
       "lessonCode": "T1-L01",
       "order": 2,
       "type": "categorize",
-      "title": "Bài tập 2 — Chẩn đoán lỗi theo tiêu chí",
-      "instruction": "Với mỗi nhận xét của giám khảo, xếp vào đúng tiêu chí bị mất điểm.",
+      "title": "Exercise 2 — Diagnose the mistake by criterion",
+      "instruction": "For each examiner comment, choose the criterion that loses marks.",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 6,
@@ -95,27 +100,32 @@
         {
           "id": "c1",
           "text": "\"The essay has no summary of the main features.\"",
-          "category": "ta"
+          "category": "ta",
+          "explanation": "Thiếu Overview (tóm tắt đặc điểm chính) là lỗi Task Achievement."
         },
         {
           "id": "c2",
           "text": "\"The writer repeats the word 'increase' eleven times.\"",
-          "category": "lr"
+          "category": "lr",
+          "explanation": "Lặp từ \"increase\" là vấn đề vốn từ → Lexical Resource."
         },
         {
           "id": "c3",
           "text": "\"Ideas jump between the two charts with no linking words.\"",
-          "category": "cc"
+          "category": "cc",
+          "explanation": "Thiếu từ nối, ý nhảy cóc → Coherence and Cohesion."
         },
         {
           "id": "c4",
           "text": "\"Frequent errors with articles and subject–verb agreement.\"",
-          "category": "gra"
+          "category": "gra",
+          "explanation": "Lỗi mạo từ và hoà hợp chủ–vị → Grammatical Range and Accuracy."
         },
         {
           "id": "c5",
           "text": "\"The response is only 118 words long.\"",
-          "category": "ta"
+          "category": "ta",
+          "explanation": "Dưới 150 từ thì bị trừ điểm Task Achievement."
         }
       ]
     },
@@ -124,8 +134,8 @@
       "lessonCode": "T1-L01",
       "order": 3,
       "type": "mcq",
-      "title": "Luật chơi Task 1",
-      "instruction": "Chọn đáp án đúng về format, thời gian và cách chấm điểm Task 1.",
+      "title": "Task 1 ground rules",
+      "instruction": "Choose the correct answer about the format, timing and marking of Task 1.",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 5,
@@ -261,8 +271,8 @@
       "lessonCode": "T1-L01",
       "order": 4,
       "type": "mcq",
-      "title": "Bài tập 3 — Nói nhanh trước lớp",
-      "instruction": "Nhìn biểu đồ dưới đây và trả lời nhanh 4 câu hỏi.",
+      "title": "Exercise 3 — Quick-fire questions",
+      "instruction": "Look at the chart below and quickly answer the 4 questions.",
       "autoGrade": true,
       "points": 4,
       "estimatedMinutes": 4,
@@ -380,8 +390,8 @@
       "lessonCode": "T1-L02",
       "order": 1,
       "type": "categorize",
-      "title": "Warm-up — Danh từ này đi với từ nào?",
-      "instruction": "Kéo mỗi danh từ vào đúng cột. Hỏi bản thân: đếm được hay không đếm được?",
+      "title": "Warm-up — Which word goes with this noun?",
+      "instruction": "Drag each noun into the correct column. Ask yourself: is it countable or uncountable?",
       "source": "added",
       "skillTags": [
         "noun-choice",
@@ -405,62 +415,74 @@
         {
           "id": "q1",
           "text": "cars",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"cars\" đếm được, số nhiều → the number of cars."
         },
         {
           "id": "q2",
           "text": "water",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"water\" không đếm được → the amount of water."
         },
         {
           "id": "q3",
           "text": "students",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"students\" đếm được, số nhiều → the number of students."
         },
         {
           "id": "q4",
           "text": "electricity",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"electricity\" không đếm được → the amount of electricity."
         },
         {
           "id": "q5",
           "text": "tourists",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"tourists\" đếm được, số nhiều → the number of tourists."
         },
         {
           "id": "q6",
           "text": "rice",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"rice\" không đếm được → the amount of rice."
         },
         {
           "id": "q7",
           "text": "households",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"households\" đếm được, số nhiều → the number of households."
         },
         {
           "id": "q8",
           "text": "coffee",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"coffee\" không đếm được (khi nói về chất) → the amount of coffee."
         },
         {
           "id": "q9",
           "text": "accidents",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"accidents\" đếm được, số nhiều → the number of accidents."
         },
         {
           "id": "q10",
           "text": "waste",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"waste\" không đếm được → the amount of waste."
         },
         {
           "id": "q11",
           "text": "factories",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"factories\" đếm được, số nhiều → the number of factories."
         },
         {
           "id": "q12",
           "text": "energy",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"energy\" không đếm được → the amount of energy."
         }
       ]
     },
@@ -469,8 +491,8 @@
       "lessonCode": "T1-L02",
       "order": 2,
       "type": "gap_fill",
-      "title": "Bài tập 4 — Chọn danh từ đúng",
-      "instruction": "Điền number, amount, percentage hoặc figure vào chỗ trống.",
+      "title": "Exercise 4 — Choose the correct noun",
+      "instruction": "Fill in the blanks with number, amount, percentage or figure.",
       "source": "original",
       "skillTags": [
         "noun-choice"
@@ -591,8 +613,8 @@
       "lessonCode": "T1-L02",
       "order": 3,
       "type": "gap_fill",
-      "title": "Bổ sung — was hay were?",
-      "instruction": "Điền was hoặc were. Nhớ: chủ ngữ thật sự là “the number / the amount / the percentage”, không phải danh từ đứng sau “of”.",
+      "title": "Extra practice — was or were?",
+      "instruction": "Fill in was or were. Remember: the real subject is “the number / the amount / the percentage”, not the noun after “of”.",
       "source": "added",
       "skillTags": [
         "subject-verb-agreement"
@@ -685,8 +707,8 @@
       "lessonCode": "T1-L02",
       "order": 4,
       "type": "error_correction",
-      "title": "Bài tập 6 — Sửa lỗi",
-      "instruction": "Mỗi câu dưới đây có đúng một lỗi. Viết lại cả câu cho đúng.",
+      "title": "Exercise 6 — Error correction",
+      "instruction": "Each sentence below has exactly one mistake. Rewrite the whole sentence correctly.",
       "source": "original",
       "skillTags": [
         "noun-choice",
@@ -755,8 +777,8 @@
       "lessonCode": "T1-L02",
       "order": 5,
       "type": "sentence_transform",
-      "title": "Bài tập 5 — Đổi vị trí số liệu trong câu",
-      "instruction": "Mỗi câu đang dùng một trong ba vị trí đặt số liệu (đầu / giữa / cuối câu). Viết lại theo hai vị trí còn lại.",
+      "title": "Exercise 5 — Move the figure in the sentence",
+      "instruction": "Each sentence puts the figure in one of three positions (start / middle / end). Rewrite it using the other two positions.",
       "source": "original",
       "skillTags": [
         "sentence-position",
@@ -776,7 +798,8 @@
             "In 2010, 4 million British people cycled.",
             "There were 4 million cyclists in Britain in 2010."
           ],
-          "promptVi": "Vào năm 2010, có 4 triệu người Anh đi xe đạp."
+          "promptVi": "Vào năm 2010, có 4 triệu người Anh đi xe đạp.",
+          "explanation": "Số liệu đưa lên làm chủ ngữ: \"4 million British people\" + động từ thật \"cycled\"."
         },
         {
           "id": "q2",
@@ -788,7 +811,8 @@
             "The number of Japanese visitors to Vietnam was 300,000 in 2019.",
             "There were 300,000 Japanese people visiting Vietnam in 2019."
           ],
-          "promptVi": "Số lượng du khách Nhật Bản đến Việt Nam là 300.000 người vào năm 2019."
+          "promptVi": "Số lượng du khách Nhật Bản đến Việt Nam là 300.000 người vào năm 2019.",
+          "explanation": "Đưa số liệu về cuối câu với \"The number of… stood at 300,000\"."
         },
         {
           "id": "q3",
@@ -799,7 +823,8 @@
             "The amount of waste produced in Australia was 12 million tonnes.",
             "12 million tonnes of waste were produced in Australia."
           ],
-          "promptVi": "Lượng rác thải được tạo ra ở Úc là 12 triệu tấn."
+          "promptVi": "Lượng rác thải được tạo ra ở Úc là 12 triệu tấn.",
+          "explanation": "Chủ ngữ là nơi chốn: \"Australia produced 12 million tonnes of waste\" — số liệu ở giữa câu."
         },
         {
           "id": "q4",
@@ -810,7 +835,8 @@
             "800 million m³ of gas were used by factories.",
             "There were 800 million m³ of gas used by factories."
           ],
-          "promptVi": "800 triệu mét khối khí đốt đã được các nhà máy sử dụng."
+          "promptVi": "800 triệu mét khối khí đốt đã được các nhà máy sử dụng.",
+          "explanation": "Chủ ngữ là người dùng: \"Factories used 800 million m³ of gas\" — số liệu ở giữa câu."
         }
       ],
       "rubric": {
@@ -835,8 +861,8 @@
       "lessonCode": "T1-L02",
       "order": 6,
       "type": "sentence_writing",
-      "title": "Bài tập 1 — Phương tiện giao thông ở Việt Nam (2005)",
-      "instruction": "Viết 4 câu mô tả số liệu dưới đây. Luân phiên cả 3 vị trí đặt số liệu, không lặp lại một cấu trúc quá 2 lần.",
+      "title": "Exercise 1 — Transport in Vietnam (2005)",
+      "instruction": "Write 4 sentences describing the data below. Rotate all 3 figure positions and do not use any structure more than twice.",
       "source": "original",
       "skillTags": [
         "describing-data",
@@ -899,8 +925,8 @@
       "lessonCode": "T1-L02",
       "order": 7,
       "type": "sentence_writing",
-      "title": "Bài tập 2 — Sinh viên quốc tế (2005)",
-      "instruction": "Viết 4 câu mô tả số liệu. Dùng các động từ gợi ý để tránh lặp “studied”.",
+      "title": "Exercise 2 — International students (2005)",
+      "instruction": "Write 4 sentences describing the data. Use the suggested verbs to avoid repeating “studied”.",
       "source": "original",
       "skillTags": [
         "describing-data",
@@ -968,8 +994,8 @@
       "lessonCode": "T1-L02",
       "order": 8,
       "type": "sentence_writing",
-      "title": "Bài tập 3 — Mức tiêu thụ đồ ăn nhanh",
-      "instruction": "Viết 4 câu mô tả dữ liệu dưới đây. Chú ý: đây là danh từ KHÔNG đếm được.",
+      "title": "Exercise 3 — Fast food consumption",
+      "instruction": "Write 4 sentences describing the data below. Note: this is an UNCOUNTABLE noun.",
       "source": "original",
       "skillTags": [
         "describing-data",
@@ -1030,8 +1056,8 @@
       "lessonCode": "T1-L03",
       "order": 1,
       "type": "mcq",
-      "title": "Warm-up — “20% của cái gì?”",
-      "instruction": "Chọn câu diễn đạt đúng ý nghĩa được mô tả.",
+      "title": "Warm-up — “20% of what?”",
+      "instruction": "Choose the sentence that correctly expresses the meaning described.",
       "source": "added",
       "skillTags": [
         "percentage-interpretation",
@@ -1129,8 +1155,8 @@
       "lessonCode": "T1-L03",
       "order": 2,
       "type": "gap_fill",
-      "title": "Bài tập 8 — Chọn động từ phần trăm đúng",
-      "instruction": "Điền: accounted for / made up / stood at / constituted / took up. Có thể có nhiều đáp án đúng.",
+      "title": "Exercise 8 — Choose the right percentage verb",
+      "instruction": "Fill in: accounted for / made up / stood at / constituted / took up. More than one answer may be correct.",
       "source": "original",
       "skillTags": [
         "percentage-verbs"
@@ -1224,8 +1250,8 @@
       "lessonCode": "T1-L03",
       "order": 3,
       "type": "matching",
-      "title": "Bổ sung — Nhận diện 7 cấu trúc so sánh",
-      "instruction": "Nối tên cấu trúc với câu ví dụ tương ứng.",
+      "title": "Extra practice — Identify the 7 comparison structures",
+      "instruction": "Match each structure name with its example sentence.",
       "source": "added",
       "skillTags": [
         "comparison-structures"
@@ -1238,37 +1264,44 @@
         {
           "id": "q1",
           "left": "CT1 — respectively",
-          "right": "The numbers of car and motorbike users were 5 million and 20 million, respectively."
+          "right": "The numbers of car and motorbike users were 5 million and 20 million, respectively.",
+          "explanation": "\"respectively\" đứng cuối câu, ghép hai chủ thể với hai số liệu theo đúng thứ tự."
         },
         {
           "id": "q2",
           "left": "CT2 — compared to",
-          "right": "The number of car users was 5 million, compared to 20 million motorbike users."
+          "right": "The number of car users was 5 million, compared to 20 million motorbike users.",
+          "explanation": "\"compared to + số liệu + N\" đặt số thứ hai ngay sau số thứ nhất."
         },
         {
           "id": "q3",
           "left": "CT3 — while / whereas",
-          "right": "The number of car users was 5 million, while the number of motorbike users was 20 million."
+          "right": "The number of car users was 5 million, while the number of motorbike users was 20 million.",
+          "explanation": "\"while / whereas\" nối hai mệnh đề đối lập trong cùng một câu."
         },
         {
           "id": "q4",
           "left": "CT4 — Meanwhile / By contrast",
-          "right": "5 million people used cars. Meanwhile, there were 20 million individuals travelling by motorbike."
+          "right": "5 million people used cars. Meanwhile, there were 20 million individuals travelling by motorbike.",
+          "explanation": "\"Meanwhile,\" mở đầu câu thứ hai để đối chiếu với câu trước."
         },
         {
           "id": "q5",
           "left": "CT5 — twice as many as",
-          "right": "The number of Vietnamese bike users was 10 million, which was twice as many as that of car users."
+          "right": "The number of Vietnamese bike users was 10 million, which was twice as many as that of car users.",
+          "explanation": "\"twice as many as\" diễn tả gấp đôi (dùng many với danh từ đếm được)."
         },
         {
           "id": "q6",
           "left": "CT6 — which was … higher than",
-          "right": "There were 20 million individuals travelling by motorbike, which was significantly higher than the figure for car users, at only 5 million."
+          "right": "There were 20 million individuals travelling by motorbike, which was significantly higher than the figure for car users, at only 5 million.",
+          "explanation": "\", which was … higher than the figure for…\" bổ sung phép so sánh bằng mệnh đề quan hệ."
         },
         {
           "id": "q7",
           "left": "CT7 — followed by",
-          "right": "20 million individuals were travelling by motorbike, followed by the figure for car users, at only 5 million."
+          "right": "20 million individuals were travelling by motorbike, followed by the figure for car users, at only 5 million.",
+          "explanation": "\"followed by\" giới thiệu số liệu đứng thứ hai sau số cao nhất."
         }
       ]
     },
@@ -1277,8 +1310,8 @@
       "lessonCode": "T1-L03",
       "order": 4,
       "type": "error_correction",
-      "title": "Bổ sung — Sửa lỗi khi so sánh",
-      "instruction": "Mỗi câu có một lỗi liên quan đến cấu trúc so sánh hoặc phần trăm. Viết lại câu đúng.",
+      "title": "Extra practice — Comparison errors",
+      "instruction": "Each sentence has one mistake with a comparison structure or a percentage. Rewrite the sentence correctly.",
       "source": "added",
       "skillTags": [
         "comparison-structures",
@@ -1346,8 +1379,8 @@
       "lessonCode": "T1-L03",
       "order": 5,
       "type": "sentence_writing",
-      "title": "Bài tập 7 — Mỗi cấu trúc một câu",
-      "instruction": "Dùng dữ liệu sau, viết 7 câu — mỗi câu dùng một cấu trúc so sánh khác nhau (CT1 → CT7).",
+      "title": "Exercise 7 — One sentence per structure",
+      "instruction": "Using the data below, write 7 sentences — each one with a different comparison structure (CT1 → CT7).",
       "source": "original",
       "skillTags": [
         "comparison-structures"
@@ -1413,8 +1446,8 @@
       "lessonCode": "T1-L03",
       "order": 6,
       "type": "sentence_writing",
-      "title": "Example 4 — So sánh từng cặp dữ liệu",
-      "instruction": "Viết 5 câu so sánh các cặp sau: UK–US ; UK–Vietnam ; US–Vietnam ; Vietnam–China ; US–China.",
+      "title": "Example 4 — Compare each pair of figures",
+      "instruction": "Write 5 sentences comparing these pairs: UK–US; UK–Vietnam; US–Vietnam; Vietnam–China; US–China.",
       "source": "original",
       "skillTags": [
         "comparison-structures",
@@ -1477,8 +1510,8 @@
       "lessonCode": "T1-L03",
       "order": 7,
       "type": "paragraph_writing",
-      "title": "Example 5 — Viết đoạn mô tả tỷ lệ dùng Internet",
-      "instruction": "Viết một đoạn mô tả và so sánh dữ liệu. Bắt đầu bằng năm; mô tả số cao nhất trước rồi so sánh với các số còn lại.",
+      "title": "Example 5 — A paragraph on Internet use",
+      "instruction": "Write a paragraph describing and comparing the data. Start with the year; describe the highest figure first, then compare it with the others.",
       "source": "original",
       "skillTags": [
         "percentage",
@@ -1546,8 +1579,8 @@
       "lessonCode": "T1-L03",
       "order": 8,
       "type": "paragraph_writing",
-      "title": "Bài tập 9 — Thiết bị gia đình ở Việt Nam 2020",
-      "instruction": "Viết một đoạn 4–5 câu mô tả và so sánh dữ liệu, dùng ít nhất 3 cấu trúc so sánh khác nhau.",
+      "title": "Exercise 9 — Household appliances in Vietnam, 2020",
+      "instruction": "Write a 4–5 sentence paragraph describing and comparing the data, using at least 3 different comparison structures.",
       "source": "original",
       "skillTags": [
         "percentage",
@@ -1612,8 +1645,8 @@
       "lessonCode": "T1-L04",
       "order": 1,
       "type": "gap_fill",
-      "title": "Warm-up — Diễn đạt số ước lượng",
-      "instruction": "Chọn cụm phù hợp nhất để diễn đạt số liệu trong ngoặc so với 1,000.",
+      "title": "Warm-up — Approximate figures",
+      "instruction": "Choose the best phrase to express the figure in brackets compared with 1,000.",
       "source": "added",
       "skillTags": [
         "approximation"
@@ -1717,8 +1750,8 @@
       "lessonCode": "T1-L04",
       "order": 2,
       "type": "matching",
-      "title": "Bổ sung — Đổi phần trăm sang chữ",
-      "instruction": "Nối mỗi con số phần trăm với cách diễn đạt bằng chữ chính xác nhất.",
+      "title": "Extra practice — Percentages in words",
+      "instruction": "Match each percentage with the most accurate way to express it in words.",
       "source": "added",
       "skillTags": [
         "percentage-in-words"
@@ -1731,42 +1764,50 @@
         {
           "id": "q1",
           "left": "80%",
-          "right": "four fifths"
+          "right": "four fifths",
+          "explanation": "80% = 4/5 → four fifths."
         },
         {
           "id": "q2",
           "left": "75%",
-          "right": "three quarters"
+          "right": "three quarters",
+          "explanation": "75% = 3/4 → three quarters."
         },
         {
           "id": "q3",
           "left": "66%",
-          "right": "two thirds"
+          "right": "two thirds",
+          "explanation": "66% ≈ 2/3 → two thirds."
         },
         {
           "id": "q4",
           "left": "50%",
-          "right": "half"
+          "right": "half",
+          "explanation": "50% = half."
         },
         {
           "id": "q5",
           "left": "33%",
-          "right": "a third"
+          "right": "a third",
+          "explanation": "33% ≈ 1/3 → a third."
         },
         {
           "id": "q6",
           "left": "25%",
-          "right": "a quarter"
+          "right": "a quarter",
+          "explanation": "25% = 1/4 → a quarter."
         },
         {
           "id": "q7",
           "left": "20%",
-          "right": "a fifth"
+          "right": "a fifth",
+          "explanation": "20% = 1/5 → a fifth."
         },
         {
           "id": "q8",
           "left": "5%",
-          "right": "a twentieth / a very small minority"
+          "right": "a twentieth / a very small minority",
+          "explanation": "5% = 1/20 → a twentieth, hoặc \"a very small minority\"."
         }
       ]
     },
@@ -1775,8 +1816,8 @@
       "lessonCode": "T1-L04",
       "order": 3,
       "type": "sentence_transform",
-      "title": "Bổ sung — 5 cách diễn đạt nhóm tuổi",
-      "instruction": "Viết lại phần in đậm bằng cách diễn đạt nhóm tuổi được yêu cầu.",
+      "title": "Extra practice — 5 ways to express age groups",
+      "instruction": "Rewrite the bold part using the age-group expression required.",
       "source": "added",
       "skillTags": [
         "age-groups"
@@ -1862,8 +1903,8 @@
       "lessonCode": "T1-L04",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Bài tập bổ sung — Viết lại sang thì tương lai",
-      "instruction": "Chuyển các câu sau sang thì tương lai bằng các cụm dự đoán đã học (is expected / predicted / projected / likely to…). Dùng năm cho trong ngoặc.",
+      "title": "Extra practice — Rewrite in the future tense",
+      "instruction": "Put the sentences into the future using the prediction phrases you have learnt (is expected / predicted / projected / likely to…). Use the year given in brackets.",
       "source": "original",
       "skillTags": [
         "future-tense",
@@ -1881,7 +1922,8 @@
             "The number of electric cars in Norway is expected to be 500,000 in 2035.",
             "The number of electric cars in Norway is projected to stand at 500,000 in 2035."
           ],
-          "promptVi": "Số lượng ô tô điện ở Na Uy được dự kiến là 500.000 chiếc vào năm 2035."
+          "promptVi": "Số lượng ô tô điện ở Na Uy được dự kiến là 500.000 chiếc vào năm 2035.",
+          "explanation": "Dự báo: \"is expected to be\" + năm tương lai (in 2035)."
         },
         {
           "id": "q2",
@@ -1890,7 +1932,8 @@
             "Coal is predicted to account for 30% of energy production in 2040.",
             "In 2040, coal is likely to make up 30% of energy production."
           ],
-          "promptVi": "Than đá được dự đoán sẽ chiếm 30% sản lượng năng lượng vào năm 2040."
+          "promptVi": "Than đá được dự đoán sẽ chiếm 30% sản lượng năng lượng vào năm 2040.",
+          "explanation": "\"is predicted to + V nguyên mẫu\": accounted for → account for."
         },
         {
           "id": "q3",
@@ -1900,7 +1943,8 @@
             "The amount of plastic waste is likely to stand at 8 million tonnes in 2050.",
             "By 2050, the amount of plastic waste is projected to reach 8 million tonnes."
           ],
-          "promptVi": "Lượng rác thải nhựa có khả năng sẽ ở mức 8 triệu tấn vào năm 2050."
+          "promptVi": "Lượng rác thải nhựa có khả năng sẽ ở mức 8 triệu tấn vào năm 2050.",
+          "explanation": "\"is projected to stand at\" — động từ sau to giữ nguyên mẫu."
         },
         {
           "id": "q4",
@@ -1909,7 +1953,8 @@
             "25% of the population is expected to live in rural areas in 2045.",
             "In 2045, a quarter of the population is anticipated to live in rural areas."
           ],
-          "promptVi": "25% dân số dự kiến sẽ sinh sống ở các vùng nông thôn vào năm 2045."
+          "promptVi": "25% dân số dự kiến sẽ sinh sống ở các vùng nông thôn vào năm 2045.",
+          "explanation": "Chủ ngữ \"25% of the population\" (số ít) → \"is expected to live\"."
         }
       ],
       "rubric": {
@@ -1936,8 +1981,8 @@
       "lessonCode": "T1-L04",
       "order": 5,
       "type": "paragraph_writing",
-      "title": "Homework 1 — Lượng pizza sản xuất (2005)",
-      "instruction": "Viết một đoạn mô tả và so sánh dữ liệu, dùng nhiều cấu trúc và từ vựng khác nhau.",
+      "title": "Homework 1 — Pizza production (2005)",
+      "instruction": "Write a paragraph describing and comparing the data, using a range of structures and vocabulary.",
       "source": "original",
       "skillTags": [
         "describing-data",
@@ -2001,8 +2046,8 @@
       "lessonCode": "T1-L04",
       "order": 6,
       "type": "paragraph_writing",
-      "title": "Homework 2 — Người dùng ô tô theo nhóm tuổi (2000)",
-      "instruction": "Viết một đoạn mô tả và so sánh. Bắt buộc dùng ít nhất 3 cách diễn đạt nhóm tuổi khác nhau.",
+      "title": "Homework 2 — Car users by age group (2000)",
+      "instruction": "Write a paragraph describing and comparing the data. You must use at least 3 different ways of expressing age groups.",
       "source": "original",
       "skillTags": [
         "age-groups",
@@ -2066,8 +2111,8 @@
       "lessonCode": "T1-L04",
       "order": 7,
       "type": "paragraph_writing",
-      "title": "Homework 3 — Tiêu thụ nước sạch năm 2030",
-      "instruction": "Viết một đoạn mô tả và so sánh. LƯU Ý: đây là số liệu dự báo năm 2030 → bắt buộc dùng thì tương lai.",
+      "title": "Homework 3 — Clean water consumption in 2030",
+      "instruction": "Write a paragraph describing and comparing the data. NOTE: these are forecasts for 2030, so you must use the future tense.",
       "source": "original",
       "skillTags": [
         "future-tense",
@@ -2132,8 +2177,8 @@
       "lessonCode": "T1-TEST1",
       "order": 1,
       "type": "mcq",
-      "title": "PHẦN A1 — Trắc nghiệm",
-      "instruction": "Chọn đáp án đúng. Mỗi câu 1 điểm.",
+      "title": "PART A1 — Multiple choice",
+      "instruction": "Choose the correct answer. 1 point each.",
       "source": "original",
       "skillTags": [
         "module1-review"
@@ -2390,8 +2435,8 @@
       "lessonCode": "T1-TEST1",
       "order": 2,
       "type": "gap_fill",
-      "title": "PHẦN A2 — Điền từ",
-      "instruction": "Điền number / amount / percentage / figure / proportion. Mỗi câu 1 điểm.",
+      "title": "PART A2 — Fill in the blanks",
+      "instruction": "Fill in number / amount / percentage / figure / proportion. 1 point each.",
       "source": "original",
       "skillTags": [
         "noun-choice"
@@ -2540,8 +2585,8 @@
       "lessonCode": "T1-TEST1",
       "order": 3,
       "type": "error_correction",
-      "title": "PHẦN A3 — Sửa lỗi",
-      "instruction": "Tìm và sửa lỗi trong mỗi câu. Mỗi câu 2 điểm.",
+      "title": "PART A3 — Error correction",
+      "instruction": "Find and correct the mistake in each sentence. 2 points each.",
       "source": "original",
       "skillTags": [
         "module1-review"
@@ -2610,8 +2655,8 @@
       "lessonCode": "T1-TEST1",
       "order": 4,
       "type": "sentence_transform",
-      "title": "PHẦN A4 — Viết lại câu",
-      "instruction": "Viết lại câu dùng từ gợi ý trong ngoặc, giữ nguyên nghĩa. Mỗi câu 2 điểm.",
+      "title": "PART A4 — Rewrite the sentences",
+      "instruction": "Rewrite each sentence using the word in brackets, keeping the same meaning. 2 points each.",
       "source": "original",
       "skillTags": [
         "comparison-structures"
@@ -2628,7 +2673,8 @@
           "sampleAnswers": [
             "The numbers of car and motorbike users were 5 million and 20 million, respectively."
           ],
-          "promptVi": "Số lượng người dùng ô tô và xe máy lần lượt là 5 triệu và 20 triệu."
+          "promptVi": "Số lượng người dùng ô tô và xe máy lần lượt là 5 triệu và 20 triệu.",
+          "explanation": "\"respectively\" ở cuối câu; chủ ngữ số nhiều \"The numbers of car and motorbike users were\"."
         },
         {
           "id": "q2",
@@ -2638,7 +2684,8 @@
             "There were 5 million car users, whereas the figure for motorbikes was 20 million.",
             "The number of car users was 5 million, whereas that of motorbike users was 20 million."
           ],
-          "promptVi": "Số lượng người dùng ô tô là 5 triệu, trong khi con số này ở xe máy là 20 triệu."
+          "promptVi": "Số lượng người dùng ô tô là 5 triệu, trong khi con số này ở xe máy là 20 triệu.",
+          "explanation": "\"whereas\" nối hai mệnh đề đối lập; dùng \"the figure for\" để khỏi lặp \"the number of\"."
         },
         {
           "id": "q3",
@@ -2648,7 +2695,8 @@
             "5 million people used cars, compared to 20 million motorbike users.",
             "There were 5 million car users, compared to 20 million motorbike users."
           ],
-          "promptVi": "Có 5 triệu người dùng ô tô, trong khi con số này ở xe máy là 20 triệu."
+          "promptVi": "Có 5 triệu người dùng ô tô, trong khi con số này ở xe máy là 20 triệu.",
+          "explanation": "\"compared to + 20 million motorbike users\" đặt hai số liệu cạnh nhau."
         },
         {
           "id": "q4",
@@ -2658,7 +2706,8 @@
             "Motorbikes topped the list at 20 million users, followed by cars, at 5 million.",
             "Motorbikes topped the list at 20 million, followed by cars, at only 5 million."
           ],
-          "promptVi": "Xe máy đứng đầu danh sách với 20 triệu người, theo sau là ô tô với chỉ 5 triệu người."
+          "promptVi": "Xe máy đứng đầu danh sách với 20 triệu người, theo sau là ô tô với chỉ 5 triệu người.",
+          "explanation": "Nêu số cao nhất trước (\"topped the list\"), rồi \"followed by\" số thứ hai."
         },
         {
           "id": "q5",
@@ -2667,7 +2716,8 @@
           "sampleAnswers": [
             "The number of motorbike users was 10 million, which was twice as many as that of car users."
           ],
-          "promptVi": "Số lượng người dùng xe máy là 10 triệu, gấp đôi số lượng người dùng ô tô."
+          "promptVi": "Số lượng người dùng xe máy là 10 triệu, gấp đôi số lượng người dùng ô tô.",
+          "explanation": "10 triệu gấp đôi 5 triệu → \", which was twice as many as that of car users\"."
         }
       ],
       "rubric": {
@@ -2694,7 +2744,7 @@
       "lessonCode": "T1-TEST1",
       "order": 5,
       "type": "full_task1",
-      "title": "PHẦN B — Bài viết mô tả bảng số liệu",
+      "title": "PART B — Describe the table",
       "instruction": "The table below shows the number of international students studying in four countries in 2005 and the amount of money each country earned from them (hypothetical data). Summarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words. You should spend about 20 minutes on this part.",
       "source": "original",
       "skillTags": [

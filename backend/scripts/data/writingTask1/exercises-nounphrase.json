@@ -5,8 +5,8 @@
       "lessonCode": "T1-L09B",
       "order": 1,
       "type": "categorize",
-      "title": "Đếm được → NUMBER, không đếm được → AMOUNT",
-      "instruction": "Kéo mỗi danh từ vào đúng nhóm: dùng \"the number of\" (đếm được, số nhiều) hay \"the amount of\" (không đếm được).",
+      "title": "Countable → NUMBER, uncountable → AMOUNT",
+      "instruction": "Drag each noun into the correct group: \"the number of\" (countable, plural) or \"the amount of\" (uncountable).",
       "autoGrade": true,
       "points": 12,
       "estimatedMinutes": 6,
@@ -29,62 +29,74 @@
         {
           "id": "c1",
           "text": "tourists",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"tourists\" đếm được, số nhiều → the number of."
         },
         {
           "id": "c2",
           "text": "electricity",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"electricity\" không đếm được → the amount of."
         },
         {
           "id": "c3",
           "text": "students",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"students\" đếm được → the number of."
         },
         {
           "id": "c4",
           "text": "waste",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"waste\" không đếm được → the amount of."
         },
         {
           "id": "c5",
           "text": "cars",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"cars\" đếm được → the number of."
         },
         {
           "id": "c6",
           "text": "oil",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"oil\" không đếm được → the amount of."
         },
         {
           "id": "c7",
           "text": "households",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"households\" đếm được → the number of."
         },
         {
           "id": "c8",
           "text": "energy",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"energy\" không đếm được → the amount of."
         },
         {
           "id": "c9",
           "text": "employees",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"employees\" đếm được → the number of."
         },
         {
           "id": "c10",
           "text": "fast food",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"fast food\" không đếm được → the amount of."
         },
         {
           "id": "c11",
           "text": "people",
-          "category": "number"
+          "category": "number",
+          "explanation": "\"people\" là danh từ số nhiều đếm được → the number of."
         },
         {
           "id": "c12",
           "text": "water",
-          "category": "amount"
+          "category": "amount",
+          "explanation": "\"water\" không đếm được → the amount of."
         }
       ]
     },
@@ -93,8 +105,8 @@
       "lessonCode": "T1-L09B",
       "order": 2,
       "type": "mcq",
-      "title": "Luật number / amount / figure / percentage",
-      "instruction": "Chọn đáp án đúng.",
+      "title": "Rules for number / amount / figure / percentage",
+      "instruction": "Choose the correct answer.",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 5,
@@ -230,8 +242,8 @@
       "lessonCode": "T1-L09B",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền number / amount / percentage / figure",
-      "instruction": "Điền một trong: number, amount, percentage, figure.",
+      "title": "Fill in number / amount / percentage / figure",
+      "instruction": "Fill in one of: number, amount, percentage, figure.",
       "autoGrade": true,
       "points": 8,
       "estimatedMinutes": 6,
@@ -351,8 +363,8 @@
       "lessonCode": "T1-L09B",
       "order": 4,
       "type": "error_correction",
-      "title": "Sửa lỗi countability & agreement",
-      "instruction": "Mỗi câu có đúng một lỗi. Viết lại cả câu cho đúng.",
+      "title": "Fix countability & agreement errors",
+      "instruction": "Each sentence has exactly one mistake. Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 5,
       "estimatedMinutes": 6,
@@ -431,7 +443,7 @@
       "order": 5,
       "type": "sentence_transform",
       "title": "Bare phrase → the number/amount of …",
-      "instruction": "Viết lại cụm cho trước thành \"the number of …\" hoặc \"the amount of …\" (kèm V-ing/V3 nếu có).",
+      "instruction": "Rewrite each phrase as \"the number of …\" or \"the amount of …\" (with V-ing/V3 where needed).",
       "autoGrade": true,
       "points": 8,
       "estimatedMinutes": 8,
@@ -447,7 +459,8 @@
           "sampleAnswers": [
             "the number of students studying overseas"
           ],
-          "promptVi": "số lượng học sinh sinh viên đi du học"
+          "promptVi": "số lượng học sinh sinh viên đi du học",
+          "explanation": "\"students\" đếm được → the number of + N + V-ing (studying)."
         },
         {
           "id": "q2",
@@ -455,7 +468,8 @@
           "sampleAnswers": [
             "the amount of electricity consumed"
           ],
-          "promptVi": "lượng điện tiêu thụ"
+          "promptVi": "lượng điện tiêu thụ",
+          "explanation": "\"electricity\" không đếm được → the amount of + N + V3 (consumed)."
         },
         {
           "id": "q3",
@@ -463,7 +477,8 @@
           "sampleAnswers": [
             "the number of people using public transport"
           ],
-          "promptVi": "số lượng người sử dụng phương tiện giao thông công cộng"
+          "promptVi": "số lượng người sử dụng phương tiện giao thông công cộng",
+          "explanation": "\"people\" đếm được → the number of people using…"
         },
         {
           "id": "q4",
@@ -471,7 +486,8 @@
           "sampleAnswers": [
             "the amount of water used by households"
           ],
-          "promptVi": "lượng nước sinh hoạt được sử dụng bởi các hộ gia đình"
+          "promptVi": "lượng nước sinh hoạt được sử dụng bởi các hộ gia đình",
+          "explanation": "\"water\" không đếm được → the amount of water used by…"
         },
         {
           "id": "q5",
@@ -479,7 +495,8 @@
           "sampleAnswers": [
             "the number of cars sold"
           ],
-          "promptVi": "số lượng ô tô được bán ra"
+          "promptVi": "số lượng ô tô được bán ra",
+          "explanation": "\"cars\" đếm được → the number of cars sold."
         },
         {
           "id": "q6",
@@ -487,7 +504,8 @@
           "sampleAnswers": [
             "the amount of oil imported"
           ],
-          "promptVi": "lượng dầu được nhập khẩu"
+          "promptVi": "lượng dầu được nhập khẩu",
+          "explanation": "\"oil\" không đếm được → the amount of oil imported."
         },
         {
           "id": "q7",
@@ -495,7 +513,8 @@
           "sampleAnswers": [
             "the number of households with internet access"
           ],
-          "promptVi": "số lượng hộ gia đình có kết nối internet"
+          "promptVi": "số lượng hộ gia đình có kết nối internet",
+          "explanation": "\"households\" đếm được → the number of households with…"
         },
         {
           "id": "q8",
@@ -503,7 +522,8 @@
           "sampleAnswers": [
             "the amount of waste produced by households"
           ],
-          "promptVi": "lượng rác thải do các hộ gia đình tạo ra"
+          "promptVi": "lượng rác thải do các hộ gia đình tạo ra",
+          "explanation": "\"waste\" không đếm được → the amount of waste produced by…"
         }
       ]
     },
@@ -512,8 +532,8 @@
       "lessonCode": "T1-L09B",
       "order": 6,
       "type": "sentence_writing",
-      "title": "Bài viết — Mức tiêu thụ đồ ăn nhanh (1990)",
-      "instruction": "Viết 4 câu mô tả bảng dưới đây. Bắt buộc dùng cả \"the number of\" và \"the amount of\" đúng chỗ, và ít nhất một câu dùng \"the figure for\".",
+      "title": "Writing — Fast food consumption (1990)",
+      "instruction": "Write 4 sentences describing the table below. You must use both \"the number of\" and \"the amount of\" correctly, and at least one sentence with \"the figure for\".",
       "source": "original",
       "autoGrade": false,
       "points": 10,
@@ -551,7 +571,7 @@
       },
       "responseSlots": 4,
       "rubric": {
-        "minWords": 55,
+        "minWords": 50,
         "targetStructures": [
           "The amount of … was …",
           "[Số liệu] tonnes of … were …",
@@ -577,8 +597,8 @@
       "lessonCode": "T1-L09C",
       "order": 1,
       "type": "matching",
-      "title": "Nối chiến thuật với ví dụ",
-      "instruction": "Nối tên chiến thuật biến đổi với câu ví dụ tương ứng.",
+      "title": "Match each strategy with an example",
+      "instruction": "Match each transformation strategy with its example sentence.",
       "autoGrade": true,
       "points": 5,
       "estimatedMinutes": 5,
@@ -590,27 +610,32 @@
         {
           "id": "q1",
           "left": "Chiến thuật 1 — Amount/Number + V-ing/V3",
-          "right": "the amount of electricity consumed in the UK"
+          "right": "the amount of electricity consumed in the UK",
+          "explanation": "Chiến thuật 1: the amount of + N + V3 (consumed)."
         },
         {
           "id": "q2",
           "left": "Chiến thuật 2 — Noun + of",
-          "right": "the consumption of electricity in the UK"
+          "right": "the consumption of electricity in the UK",
+          "explanation": "Chiến thuật 2: the + noun + of + object (the consumption of electricity)."
         },
         {
           "id": "q3",
           "left": "Chiến thuật 3 — Word form + synonym",
-          "right": "the amount of electricity used in the UK"
+          "right": "the amount of electricity used in the UK",
+          "explanation": "Chiến thuật 3: đổi từ loại + dùng từ đồng nghĩa (consumed → used)."
         },
         {
           "id": "q4",
           "left": "Chiến thuật 1 (đếm được)",
-          "right": "the number of people using public transport"
+          "right": "the number of people using public transport",
+          "explanation": "Chiến thuật 1 với danh từ đếm được: the number of + N + V-ing."
         },
         {
           "id": "q5",
           "left": "Chiến thuật 2 (ownership)",
-          "right": "the ownership of cars in Australia"
+          "right": "the ownership of cars in Australia",
+          "explanation": "Chiến thuật 2 với ownership: the ownership of cars."
         }
       ]
     },
@@ -620,7 +645,7 @@
       "order": 2,
       "type": "word_form",
       "title": "Noun → V3 / V-ing",
-      "instruction": "Viết dạng participle (V3 hoặc V-ing) tương ứng của danh từ.",
+      "instruction": "Write the participle (V3 or V-ing) that matches each noun.",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 5,
@@ -636,7 +661,8 @@
           "accept": [
             "consumed",
             "consuming"
-          ]
+          ],
+          "explanation": "consumption ↔ consume → consumed."
         },
         {
           "id": "q2",
@@ -646,7 +672,8 @@
             "produced",
             "producing",
             "generated"
-          ]
+          ],
+          "explanation": "production ↔ produce → produced."
         },
         {
           "id": "q3",
@@ -655,7 +682,8 @@
           "accept": [
             "used",
             "using"
-          ]
+          ],
+          "explanation": "use ↔ use → used."
         },
         {
           "id": "q4",
@@ -665,7 +693,8 @@
             "generated",
             "generating",
             "produced"
-          ]
+          ],
+          "explanation": "generation ↔ generate → generated."
         },
         {
           "id": "q5",
@@ -674,7 +703,8 @@
           "accept": [
             "owned",
             "owning"
-          ]
+          ],
+          "explanation": "ownership ↔ own → owned."
         },
         {
           "id": "q6",
@@ -682,7 +712,8 @@
           "answer": "employed",
           "accept": [
             "employed"
-          ]
+          ],
+          "explanation": "employment ↔ employ → employed."
         },
         {
           "id": "q7",
@@ -691,7 +722,8 @@
           "accept": [
             "imported",
             "importing"
-          ]
+          ],
+          "explanation": "import ↔ import → imported."
         },
         {
           "id": "q8",
@@ -700,7 +732,8 @@
           "accept": [
             "exported",
             "exporting"
-          ]
+          ],
+          "explanation": "export ↔ export → exported."
         },
         {
           "id": "q9",
@@ -709,7 +742,8 @@
           "accept": [
             "invested",
             "investing"
-          ]
+          ],
+          "explanation": "investment ↔ invest → invested."
         },
         {
           "id": "q10",
@@ -717,7 +751,8 @@
           "answer": "sold",
           "accept": [
             "sold"
-          ]
+          ],
+          "explanation": "sale ↔ sell → sold (bất quy tắc)."
         }
       ]
     },
@@ -726,8 +761,8 @@
       "lessonCode": "T1-L09C",
       "order": 3,
       "type": "gap_fill",
-      "title": "Điền OF vào cấu trúc Noun + of",
-      "instruction": "Điền đúng danh từ (consumption / use / production / ownership / import) vào chỗ trống.",
+      "title": "Noun + of: fill in the noun",
+      "instruction": "Fill in the correct noun (consumption / use / production / ownership / import).",
       "autoGrade": true,
       "points": 6,
       "estimatedMinutes": 5,
@@ -752,7 +787,8 @@
                 "consumption"
               ]
             }
-          ]
+          ],
+          "explanation": "\"electricity consumption\" → the consumption of electricity."
         },
         {
           "id": "q2",
@@ -763,7 +799,8 @@
                 "use"
               ]
             }
-          ]
+          ],
+          "explanation": "\"public transport use\" → the use of public transport."
         },
         {
           "id": "q3",
@@ -774,7 +811,8 @@
                 "production"
               ]
             }
-          ]
+          ],
+          "explanation": "\"waste production\" → the production of waste."
         },
         {
           "id": "q4",
@@ -785,7 +823,8 @@
                 "ownership"
               ]
             }
-          ]
+          ],
+          "explanation": "\"car ownership\" → the ownership of cars."
         },
         {
           "id": "q5",
@@ -796,7 +835,8 @@
                 "import"
               ]
             }
-          ]
+          ],
+          "explanation": "\"oil imports\" → the import of oil."
         }
       ]
     },
@@ -805,8 +845,8 @@
       "lessonCode": "T1-L09C",
       "order": 4,
       "type": "sentence_transform",
-      "title": "Chiến thuật 2 — đổi thành \"the … of …\"",
-      "instruction": "Viết lại cụm \"N + N\" thành cấu trúc \"the + noun + of + object\".",
+      "title": "Strategy 2 — change to \"the … of …\"",
+      "instruction": "Rewrite each \"N + N\" phrase as \"the + noun + of + object\".",
       "autoGrade": true,
       "points": 8,
       "estimatedMinutes": 8,
@@ -822,7 +862,8 @@
           "sampleAnswers": [
             "the consumption of electricity"
           ],
-          "promptVi": "lượng điện tiêu thụ"
+          "promptVi": "lượng điện tiêu thụ",
+          "explanation": "N + N → the + noun chính (consumption) + of + đối tượng (electricity)."
         },
         {
           "id": "q2",
@@ -830,7 +871,8 @@
           "sampleAnswers": [
             "the consumption of water"
           ],
-          "promptVi": "lượng nước tiêu thụ"
+          "promptVi": "lượng nước tiêu thụ",
+          "explanation": "\"water consumption\" → the consumption of water."
         },
         {
           "id": "q3",
@@ -838,7 +880,8 @@
           "sampleAnswers": [
             "the ownership of cars"
           ],
-          "promptVi": "tỷ lệ sở hữu ô tô"
+          "promptVi": "tỷ lệ sở hữu ô tô",
+          "explanation": "\"car ownership\" → the ownership of cars (đối tượng đếm được để số nhiều)."
         },
         {
           "id": "q4",
@@ -846,7 +889,8 @@
           "sampleAnswers": [
             "the use of public transport"
           ],
-          "promptVi": "mức độ sử dụng phương tiện giao thông công cộng"
+          "promptVi": "mức độ sử dụng phương tiện giao thông công cộng",
+          "explanation": "\"public transport use\" → the use of public transport."
         },
         {
           "id": "q5",
@@ -854,7 +898,8 @@
           "sampleAnswers": [
             "the production of waste"
           ],
-          "promptVi": "lượng rác thải sản ra"
+          "promptVi": "lượng rác thải sản ra",
+          "explanation": "\"waste production\" → the production of waste."
         },
         {
           "id": "q6",
@@ -862,7 +907,8 @@
           "sampleAnswers": [
             "the consumption of energy"
           ],
-          "promptVi": "lượng năng lượng tiêu thụ"
+          "promptVi": "lượng năng lượng tiêu thụ",
+          "explanation": "\"energy consumption\" → the consumption of energy."
         },
         {
           "id": "q7",
@@ -871,7 +917,8 @@
             "the import of oil",
             "oil imports"
           ],
-          "promptVi": "lượng dầu nhập khẩu"
+          "promptVi": "lượng dầu nhập khẩu",
+          "explanation": "\"oil imports\" → the import of oil."
         },
         {
           "id": "q8",
@@ -880,7 +927,8 @@
             "the export of goods",
             "goods exports"
           ],
-          "promptVi": "lượng hàng hóa xuất khẩu"
+          "promptVi": "lượng hàng hóa xuất khẩu",
+          "explanation": "\"goods exports\" → the export of goods."
         }
       ]
     },
@@ -889,8 +937,8 @@
       "lessonCode": "T1-L09C",
       "order": 5,
       "type": "sentence_transform",
-      "title": "Chiến thuật 3 — Word form + synonym",
-      "instruction": "Đổi danh từ hoá thành cụm \"the amount/number of + N + V3\", dùng synonym hợp nghĩa nếu tự nhiên hơn.",
+      "title": "Strategy 3 — Word form + synonym",
+      "instruction": "Change each nominalised phrase into \"the amount/number of + N + V3\", using a suitable synonym if it sounds more natural.",
       "autoGrade": true,
       "points": 8,
       "estimatedMinutes": 8,
@@ -907,7 +955,8 @@
             "the amount of water consumed",
             "the amount of water used"
           ],
-          "promptVi": "lượng nước được tiêu thụ"
+          "promptVi": "lượng nước được tiêu thụ",
+          "explanation": "consumption → consumed: the amount of water consumed."
         },
         {
           "id": "q2",
@@ -916,7 +965,8 @@
             "the amount of electricity produced",
             "the amount of electricity generated"
           ],
-          "promptVi": "lượng điện được sản xuất"
+          "promptVi": "lượng điện được sản xuất",
+          "explanation": "production → produced: the amount of electricity produced."
         },
         {
           "id": "q3",
@@ -925,7 +975,8 @@
             "the amount of fast food consumed",
             "the amount of fast food eaten"
           ],
-          "promptVi": "lượng thức ăn nhanh được tiêu thụ"
+          "promptVi": "lượng thức ăn nhanh được tiêu thụ",
+          "explanation": "\"fast food\" không đếm được → the amount of fast food consumed."
         },
         {
           "id": "q4",
@@ -934,7 +985,8 @@
             "the amount of goods imported",
             "the amount of goods brought into the country"
           ],
-          "promptVi": "lượng hàng hóa được nhập khẩu"
+          "promptVi": "lượng hàng hóa được nhập khẩu",
+          "explanation": "\"goods\" không có số đếm cụ thể → the amount of goods imported."
         },
         {
           "id": "q5",
@@ -942,7 +994,8 @@
           "sampleAnswers": [
             "the number of cars sold"
           ],
-          "promptVi": "số lượng ô tô được bán ra"
+          "promptVi": "số lượng ô tô được bán ra",
+          "explanation": "\"cars\" đếm được → the number of cars sold."
         },
         {
           "id": "q6",
@@ -950,7 +1003,8 @@
           "sampleAnswers": [
             "the number of houses built"
           ],
-          "promptVi": "số lượng nhà được xây dựng"
+          "promptVi": "số lượng nhà được xây dựng",
+          "explanation": "\"houses\" đếm được → the number of houses built."
         }
       ]
     },
@@ -959,8 +1013,8 @@
       "lessonCode": "T1-L09C",
       "order": 6,
       "type": "sentence_writing",
-      "title": "Viết 3 phiên bản cho một tiêu đề",
-      "instruction": "Cho tiêu đề \"Electricity consumption in the UK increased from 2000 to 2010.\" Viết 3 phiên bản: (1) Amount/Number + V3, (2) Noun + of, (3) Word form / synonym.",
+      "title": "Write 3 versions of one title",
+      "instruction": "Title: \"Electricity consumption in the UK increased from 2000 to 2010.\" Write 3 versions: (1) Amount/Number + V3, (2) Noun + of, (3) Word form / synonym.",
       "source": "original",
       "autoGrade": false,
       "points": 9,
@@ -997,8 +1051,8 @@
       "lessonCode": "T1-L09D",
       "order": 1,
       "type": "sentence_transform",
-      "title": "Paraphrase tiêu đề biểu đồ",
-      "instruction": "Paraphrase mỗi tiêu đề biểu đồ thành một noun phrase mô tả, giữ nguyên meaning.",
+      "title": "Paraphrase chart titles",
+      "instruction": "Paraphrase each chart title as a descriptive noun phrase, keeping the same meaning.",
       "autoGrade": false,
       "points": 10,
       "estimatedMinutes": 12,
@@ -1015,7 +1069,8 @@
             "the amount of fast food consumed in Vietnam between 2000 and 2020",
             "the consumption of fast food in Vietnam from 2000 to 2020"
           ],
-          "promptVi": "lượng thức ăn nhanh tiêu thụ ở Việt Nam trong khoảng thời gian từ năm 2000 đến năm 2020"
+          "promptVi": "lượng thức ăn nhanh tiêu thụ ở Việt Nam trong khoảng thời gian từ năm 2000 đến năm 2020",
+          "explanation": "Tiêu đề danh từ → \"the amount of fast food consumed\" + nơi chốn + \"between 2000 and 2020\"."
         },
         {
           "id": "q2",
@@ -1024,7 +1079,8 @@
             "the amount of electricity consumed in four countries",
             "the consumption of electricity in four countries"
           ],
-          "promptVi": "lượng điện tiêu thụ ở bốn quốc gia"
+          "promptVi": "lượng điện tiêu thụ ở bốn quốc gia",
+          "explanation": "\"Electricity consumption\" → the amount of electricity consumed."
         },
         {
           "id": "q3",
@@ -1033,7 +1089,8 @@
             "the number of cars owned in Australia",
             "the number of people owning cars in Australia"
           ],
-          "promptVi": "số lượng ô tô sở hữu ở Úc"
+          "promptVi": "số lượng ô tô sở hữu ở Úc",
+          "explanation": "\"Car ownership\" → the number of cars owned (cars đếm được)."
         },
         {
           "id": "q4",
@@ -1042,7 +1099,8 @@
             "the number of adults using public transport",
             "the use of public transport among adults"
           ],
-          "promptVi": "số lượng người trưởng thành sử dụng phương tiện giao thông công cộng"
+          "promptVi": "số lượng người trưởng thành sử dụng phương tiện giao thông công cộng",
+          "explanation": "\"Public transport use among adults\" → the number of adults using public transport."
         },
         {
           "id": "q5",
@@ -1051,7 +1109,8 @@
             "the amount of water consumed by households",
             "the consumption of water by households"
           ],
-          "promptVi": "lượng nước mà các hộ gia đình tiêu thụ"
+          "promptVi": "lượng nước mà các hộ gia đình tiêu thụ",
+          "explanation": "\"Water consumption by households\" → the amount of water consumed by households."
         },
         {
           "id": "q6",
@@ -1060,7 +1119,8 @@
             "the number of young people shopping online",
             "the number of young people purchasing goods online"
           ],
-          "promptVi": "số lượng người trẻ mua sắm trực tuyến"
+          "promptVi": "số lượng người trẻ mua sắm trực tuyến",
+          "explanation": "\"Online shopping among young people\" → the number of young people shopping online."
         }
       ],
       "rubric": {
@@ -1085,8 +1145,8 @@
       "lessonCode": "T1-L09D",
       "order": 2,
       "type": "error_correction",
-      "title": "Sửa lỗi tổng hợp",
-      "instruction": "Mỗi câu có đúng một lỗi noun phrase. Viết lại cả câu cho đúng.",
+      "title": "Mixed error correction",
+      "instruction": "Each sentence has exactly one noun-phrase mistake. Rewrite the whole sentence correctly.",
       "autoGrade": true,
       "points": 6,
       "estimatedMinutes": 7,
@@ -1163,8 +1223,8 @@
       "lessonCode": "T1-L09D",
       "order": 3,
       "type": "mcq",
-      "title": "10 điều phải nhớ — Task 1",
-      "instruction": "Chọn đáp án đúng theo phần Tips Task 1.",
+      "title": "10 things to remember — Task 1",
+      "instruction": "Choose the correct answer based on the Task 1 Tips section.",
       "autoGrade": true,
       "points": 10,
       "estimatedMinutes": 5,
@@ -1300,8 +1360,8 @@
       "lessonCode": "T1-L09D",
       "order": 4,
       "type": "ordering",
-      "title": "Sắp xếp quy trình biến đổi",
-      "instruction": "Sắp xếp các bước theo đúng thứ tự khi biến một tiêu đề thành câu mô tả.",
+      "title": "Order the transformation steps",
+      "instruction": "Put the steps in the correct order for turning a title into a descriptive sentence.",
       "autoGrade": true,
       "points": 4,
       "estimatedMinutes": 3,
@@ -1349,8 +1409,8 @@
       "lessonCode": "T1-L09D",
       "order": 5,
       "type": "sentence_writing",
-      "title": "Mini writing challenge — 4 cấu trúc khác nhau",
-      "instruction": "Cho biểu đồ giả định về giao thông đô thị. Viết 4 câu, mỗi câu dùng MỘT cấu trúc khác nhau: (1) the number of, (2) the amount of, (3) noun + of, (4) noun phrase có V-ing/V3.",
+      "title": "Mini writing challenge — 4 different structures",
+      "instruction": "You are given a hypothetical chart about urban transport. Write 4 sentences, each using ONE different structure: (1) the number of, (2) the amount of, (3) noun + of, (4) a noun phrase with V-ing/V3.",
       "source": "original",
       "autoGrade": false,
       "points": 10,
@@ -1387,7 +1447,7 @@
       },
       "responseSlots": 4,
       "rubric": {
-        "minWords": 50,
+        "minWords": 40,
         "targetStructures": [
           "the number of + N + V",
           "the amount of + N + V3",
@@ -1413,8 +1473,8 @@
       "lessonCode": "T1-L09D",
       "order": 6,
       "type": "paragraph_writing",
-      "title": "Introduction + câu mô tả cho biểu đồ Task 1",
-      "instruction": "Viết Introduction (1 câu, paraphrase đề) và 2 câu mô tả số liệu cho đề: \"The chart below shows fast food consumption in Vietnam, the UK and the US between 2000 and 2020.\" Dùng ít nhất 3 cấu trúc noun phrase khác nhau.",
+      "title": "Introduction + descriptive sentences for a Task 1 chart",
+      "instruction": "Write an Introduction (1 sentence paraphrasing the task) and 2 sentences describing the data for the task: \"The chart below shows fast food consumption in Vietnam, the UK and the US between 2000 and 2020.\" Use at least 3 different noun-phrase structures.",
       "source": "original",
       "autoGrade": false,
       "points": 12,
