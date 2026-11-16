@@ -28,10 +28,10 @@ const WBW_MAX_WORD_ERRORS = 3;
 const WBW_MAX_ASKS = 3;       // "Hỏi Lulu" asks per sentence (graded, so capped)
 const WBW_REQUEUE_GAP = 3;
 const WBW_MAX_REQUEUES = 2;
-// "Viết đoạn kết bài" (short_writing): the model is one ~35-word sentence,
-// too long to type word by word — the student rebuilds it from short
-// phrases instead (click to order). The ORD_MAX_TRIES-th wrong check fails it.
-const ORD_TYPES = new Set(['short_writing']);
+// Long sentences (> DRILL_LONG_WORDS) and paraphrases are rebuilt from short
+// phrases (click to order). The ORD_MAX_TRIES-th wrong check fails it.
+// "Viết đoạn kết bài" (short_writing) is NOT a drill: the student writes
+// their own conclusion from the Band 7 template — see _renderConclusionQuestion.
 const ORD_MAX_TRIES = 3;
 const LEVEL_COLORS = { beginner:'#22c55e', elementary:'#3b82f6', intermediate:'#a855f7' };
 
@@ -71,8 +71,8 @@ const ESSAY_TYPE_ID = { advantages_disadvantages:'type01', discuss_both_views:'t
 const LESSON_SECTIONS = [
   { key: 'intro',      label: 'Mở bài',     en: 'Introduction', phase: 'class', tplIdx: 0, ph: 'Paraphrase đề bài + nêu hướng triển khai / quan điểm (thesis)...' },
   { key: 'body1',      label: 'Thân bài 1', en: 'Body 1',       phase: 'class', tplIdx: 1, ph: 'Câu chủ đề (ý chính) → giải thích (because) → kết quả (result) → ví dụ (example)...' },
-  { key: 'body2',      label: 'Thân bài 2', en: 'Body 2',       phase: 'home',  tplIdx: 2, ph: 'Viết theo template trong sách: câu chủ đề → giải thích → kết quả → ví dụ...' },
-  { key: 'conclusion', label: 'Kết bài',    en: 'Conclusion',   phase: 'home',  tplIdx: 3, ph: 'In conclusion, ... tóm tắt 2 ý chính + nhắc lại quan điểm...' }
+  { key: 'body2',      label: 'Thân bài 2', en: 'Body 2',       phase: 'home',  tplIdx: 2, ph: 'Viết theo template Band 7.0: câu chủ đề → giải thích → kết quả → ví dụ...' },
+  { key: 'conclusion', label: 'Kết bài',    en: 'Conclusion',   phase: 'home',  tplIdx: 3, ph: 'In conclusion, … tóm tắt ý ở 2 thân bài + nêu ý kiến (nếu đề hỏi) · thử 1 câu điều kiện loại 1/2…' }
 ];
 const LESSON_MIN_WORDS = 250;
 function sessionNumber(topicId) {
@@ -467,7 +467,10 @@ function translateProgress(topicId) {
   const correct = L.sentences.filter(x => x.en && x.isCorrect).length;
   const pct = total ? Math.round(correct / total * 100) : 100;
   const need = Math.max(0, Math.ceil(total * T2_TRANSLATE_PASS / 100) - correct);
-  return { total, translated, correct, pct, passed: need === 0, need };
+  // legacyPassed: this buổi's sentence set was replaced after the student
+  // had already passed the old one — the writing steps stay open.
+  const legacy = !!L.legacyPassed && need > 0;
+  return { total, translated, correct, pct, passed: need === 0 || legacy, need: legacy ? 0 : need, legacy };
 }
 
 function isWritingUnlocked(topicId) {
@@ -1331,11 +1334,12 @@ function renderTranslateStep(isCurrent) {
       ${_infoBody('translate', `<ul class="t2-info-list">
         <li>Mỗi câu là một ý chính của đề, dùng từ vựng vừa học. Câu làm xong sẽ hiện ở cột trái khi bạn viết bài.</li>
         <li>Chỉ khoảng <b>1/4 số câu phải gõ cả câu</b> — còn lại là chọn cụm đúng, điền cụm từ, nghe &amp; điền, ghép cụm.</li>
+        <li>Câu cuối: <b>tự viết đoạn kết bài</b> theo template Band 7.0 — tóm tắt ý thân bài, nêu ý kiến nếu đề hỏi, thử dùng câu điều kiện loại 1/2. AI chấm.</li>
         <li><b>Đúng ≥ ${T2_TRANSLATE_PASS}% số câu</b> là mở khoá phần viết trên lớp. Sai 3 lần thì câu tính sai và quay lại sau để làm lại.</li>
       </ul>`)}
-      <div class="t2-mode-legend">${['mcq', 'gap', 'listen', 'type', 'order'].map(m => _modeBadge(m)).join('')}</div>
+      <div class="t2-mode-legend">${['mcq', 'gap', 'listen', 'type', 'order', 'write'].map(m => _modeBadge(m)).join('')}</div>
       ${sent.length ? `<div class="t2-meter${allDone ? ' ok' : ''}"><span style="width:${Math.round(done / sent.length * 100)}%"></span></div>
-      <div class="t2-wc-row"><span class="t2-step-chip${allDone ? ' ok' : ''}">Đã làm ${done}/${sent.length} câu</span>${tp && done ? `<span class="t2-step-chip${passed ? ' ok' : ''}">Đúng ${tp.correct}/${tp.total} · ${tp.pct}%${passed ? ' · đã mở khoá phần viết' : ` · cần ≥ ${T2_TRANSLATE_PASS}%`}</span>` : ''}</div>` : ''}
+      <div class="t2-wc-row"><span class="t2-step-chip${allDone ? ' ok' : ''}">Đã làm ${done}/${sent.length} câu</span>${tp && done ? `<span class="t2-step-chip${passed ? ' ok' : ''}">Đúng ${tp.correct}/${tp.total} · ${tp.pct}%${passed ? (tp.legacy ? ' · đã mở khoá từ bộ câu cũ' : ' · đã mở khoá phần viết') : ` · cần ≥ ${T2_TRANSLATE_PASS}%`}</span>` : ''}</div>` : ''}
       ${tp && done && !passed ? `<p class="t2-step-desc" style="margin:6px 0 0">🔒 Cần đúng thêm <b>${tp.need} câu</b>.</p>` : ''}
       <div class="t2-actions">
         <button class="t2-primary is-lg" onclick="startTranslate(this)"><i class="fas fa-language"></i> ${!done ? 'Bắt đầu' : !todo ? 'Làm lại' : allDone ? `Làm lại ${todo} câu chưa đúng` : `Làm tiếp ${todo} câu`}</button>
@@ -1482,7 +1486,8 @@ function renderHomeStep(isCurrent) {
       ${_stepHead(6, 'Viết Thân bài 2 + Kết bài', `${submitted ? '<span class="t2-step-tag ok"><i class="fas fa-check"></i> Đã nộp</span>' : ''}${_infoBtn('home')}`, done)}
       <div class="t2-sec-pills"><span class="t2-sec-c2">Thân bài 2</span><span class="t2-sec-c3">Kết bài</span></div>
       ${_infoBody('home', `<ul class="t2-info-list">
-        <li>Viết theo <b>template trong sách</b> (tab “Template” ở cột trái màn hình viết).</li>
+        <li>Viết theo <b>template Band 7.0</b> (tab “Template” ở cột trái màn hình viết).</li>
+        <li><b>Kết bài:</b> chép lại đoạn kết bạn đã tự viết ở bước ③ rồi sửa cho khớp với 2 thân bài.</li>
         <li>Dùng từ vựng, ý tưởng và câu đã dịch — <b>tự viết bằng lời của bạn</b>, không chép bài mẫu.</li>
         <li>Đủ 4 phần (≥ ${LESSON_MIN_WORDS} từ) → bấm <b>Nộp bài chấm AI</b>.</li>
       </ul>`)}
@@ -1849,7 +1854,7 @@ function loadLesson(id, force) {
       }
       // Keep only edits this device can still vouch for if a save is pending.
       if (state.lesson.topicId === id && _lessonDirty.topicId === id && _lessonDirty.sections) Object.assign(sections, state.lesson.sections);
-      state.lesson = { topicId: id, status: 'ready', sentences: d.sentences || [], sections, submittedAt: w.submittedAt || null };
+      state.lesson = { topicId: id, status: 'ready', sentences: d.sentences || [], sections, submittedAt: w.submittedAt || null, legacyPassed: !!d.legacyPassed };
       if (state.brainstorm.topicId === id && brainstorm && !state.brainstorm.notes.some(n => (n || '').trim())) {
         state.brainstorm.notes = brainstorm;
       }
@@ -1964,7 +1969,7 @@ function _noteMySentence(q, answer, isOk) {
   s.isCorrect = !!isOk;
 }
 
-// Type guides (outline + model essay) and the book's Band 6 templates — both
+// Type guides (outline + model essay) and the Band 7.0 templates — both
 // premium endpoints, loaded once per page. null = not loaded yet.
 let _guideCache = null;
 let _tplCache = null;
@@ -1983,7 +1988,7 @@ function _loadGuides() {
 function _loadTemplates() {
   if (_tplCache) return Promise.resolve(_tplCache);
   if (!_tplLoading) {
-    _tplLoading = apiFetch('/api/task2/templates?level=band6')
+    _tplLoading = apiFetch('/api/task2/templates?level=band7')
       .then(d => (_tplCache = d.templates || []))
       .catch(() => (_tplCache = []))
       .finally(() => { _tplLoading = null; });
@@ -2100,7 +2105,7 @@ function renderCompose() {
           ${_composeTplHtml()}
           ${C.phase === 'class'
             ? `<div class="t2c-tip"><b>🏫 Trên lớp:</b> viết <b>Mở bài</b> (cá nhân) rồi <b>Thân bài 1</b> (thảo luận nhóm → tự viết). Dùng câu đã dịch ở cột trái làm điểm tựa — ${_isStaffUser() ? 'bấm <b>＋</b> để chèn vào chỗ con trỏ rồi sửa cho liền mạch' : '<b>tự gõ lại</b> từng câu (không dán) để nhớ lâu hơn, rồi sửa cho liền mạch'}.</div>`
-            : `<div class="t2c-tip is-home"><b>🏠 Về nhà:</b> viết <b>Thân bài 2</b> + <b>Kết bài</b> theo template trong sách (tab <b>Template</b>). Dùng ý tưởng và câu đã dịch, nhưng <b>viết bằng lời của bạn</b> — đừng chép nguyên bài mẫu.</div>`}
+            : `<div class="t2c-tip is-home"><b>🏠 Về nhà:</b> viết <b>Thân bài 2</b> + <b>Kết bài</b> theo template Band 7.0 (tab <b>Template</b>). Dùng ý tưởng và câu đã dịch, nhưng <b>viết bằng lời của bạn</b> — đừng chép nguyên bài mẫu.</div>`}
           ${LESSON_SECTIONS.map(renderComposeSection).join('')}
           <div class="t2c-foot">
             <span class="t2c-foot-note">Bài tự lưu khi bạn gõ. Đủ 4 phần (${filled}/4) và ≥ ${LESSON_MIN_WORDS} từ thì nộp để AI chấm.</span>
@@ -2153,7 +2158,7 @@ function _composeTplHtml() {
     C.tplFor = t._id;
     C.tplType = ESSAY_TYPE_ID[t.essayType] || Task2GenericTpl.guessType(t.prompt || '') || null;
   }
-  if (!C.tplLevel) C.tplLevel = 'band6';
+  if (!C.tplLevel) C.tplLevel = 'band7';
   const types = Task2GenericTpl.TYPES.map((x, i) => `
       <button type="button" class="pw-tpl-type" data-type="${x.id}" onclick="pickComposeTpl('${x.id}')">
         <span class="pw-tpl-type-no">${String(i + 1).padStart(2, '0')}</span> ${_escHtml(x.label)}
@@ -2291,8 +2296,21 @@ function _refreshComposeRef() {
 const _SENT_GROUPS = [
   { type: 'paraphrase',    title: 'Paraphrase đề — dùng cho Mở bài' },
   { type: 'translation',   title: 'Câu ý chính & dẫn chứng — dùng cho Thân bài' },
-  { type: 'short_writing', title: 'Câu kết — dùng cho Kết bài' }
+  { type: 'short_writing', title: 'Kết bài bạn tự viết — dùng cho Kết bài' }
 ];
+// Sentences taken from Daniel's model essay are tagged with their paragraph
+// ("MỞ BÀI · …", "THÂN BÀI 1 · …") — the writer then lists them per paragraph.
+const _SECTION_GROUPS = [
+  { type: 'intro', re: /^MỞ BÀI\b/,     title: 'Mở bài' },
+  { type: 'body1', re: /^THÂN BÀI 1\b/, title: 'Thân bài 1' },
+  { type: 'body2', re: /^THÂN BÀI 2\b/, title: 'Thân bài 2' },
+  { type: 'short_writing', re: null,    title: 'Kết bài bạn tự viết' }
+];
+function _sentSection(s) {
+  if (s.type === 'short_writing') return 'short_writing';
+  const g = _SECTION_GROUPS.find(x => x.re && x.re.test(String(s.questionText || '').trim()));
+  return g ? g.type : null;
+}
 // A translated conclusion ("In conclusion, …") belongs with the Kết bài group.
 function _sentGroupType(s) {
   if (s.type === 'translation' && /^(in conclusion|to conclude|to sum up|in summary|overall,)/i.test(String(s.model || '').trim())) return 'short_writing';
@@ -2304,11 +2322,12 @@ function _refSentences() {
   const missing = L.sentences.filter(s => !s.en).length;
   const item = (s) => {
     const i = L.sentences.indexOf(s);
-    const { vi, kw } = _sentenceParts(s.questionText);
+    // The conclusion is the student's own paragraph — no Vietnamese source.
+    const { vi, kw } = s.type === 'short_writing' ? { vi: '', kw: '' } : _sentenceParts(s.questionText);
     if (s.en) {
       return `<div class="t2c-sent">
         <div class="t2c-sent-en">${_escHtml(s.en)}</div>
-        <div class="t2c-sent-vi">${_escHtml(vi)}</div>
+        ${vi ? `<div class="t2c-sent-vi">${_escHtml(vi)}</div>` : ''}
         ${kw ? `<div class="t2c-sent-meta"><span class="t2c-kw">${_escHtml(kw)}</span></div>` : ''}
         ${_insBtn(s.en)}
       </div>`;
@@ -2316,20 +2335,23 @@ function _refSentences() {
     if (state.compose.revealed[L.topicId + ':' + i] && s.model) {
       return `<div class="t2c-sent is-model">
         <div class="t2c-sent-en">${_escHtml(s.model)}</div>
-        <div class="t2c-sent-vi">${_escHtml(vi)}</div>
+        ${vi ? `<div class="t2c-sent-vi">${_escHtml(vi)}</div>` : ''}
         <div class="t2c-sent-meta">Câu mẫu — bạn chưa tự dịch câu này</div>
         ${_insBtn(s.model)}
       </div>`;
     }
     return `<div class="t2c-sent is-todo">
-      <div class="t2c-sent-vi">${_escHtml(vi)}</div>
-      <div class="t2c-sent-meta">${kw ? `<span class="t2c-kw">${_escHtml(kw)}</span>` : ''}Chưa dịch${s.model ? ` · <button type="button" class="t2-link" style="padding:0;font-size:11px" onclick="revealModelSentence(${i})">Xem câu mẫu</button>` : ''}</div>
+      ${vi ? `<div class="t2c-sent-vi">${_escHtml(vi)}</div>` : ''}
+      <div class="t2c-sent-meta">${kw ? `<span class="t2c-kw">${_escHtml(kw)}</span>` : ''}${s.type === 'short_writing' ? 'Chưa viết' : 'Chưa dịch'}${s.model ? ` · <button type="button" class="t2-link" style="padding:0;font-size:11px" onclick="revealModelSentence(${i})">Xem câu mẫu</button>` : ''}</div>
     </div>`;
   };
+  const bySection = L.sentences.some(s => s.type !== 'short_writing' && _sentSection(s));
+  const groups = bySection ? _SECTION_GROUPS : _SENT_GROUPS;
+  const groupOf = bySection ? _sentSection : _sentGroupType;
   return `
     <p class="t2c-note">Câu bạn đã dịch ở bước ③. ${_isStaffUser() ? 'Bấm <b>＋</b> để chèn vào ô đang viết (chỗ con trỏ)' : '<b>Tự gõ lại</b> câu vào ô đang viết — gõ tay giúp bạn nhớ lâu hơn'}, rồi chỉnh lại cho hợp đoạn văn.</p>
-    ${_SENT_GROUPS.map(g => {
-      const list = L.sentences.filter(s => _sentGroupType(s) === g.type);
+    ${groups.map(g => {
+      const list = L.sentences.filter(s => groupOf(s) === g.type);
       return list.length ? `<div class="t2c-group">${g.title}</div>${list.map(item).join('')}` : '';
     }).join('')}
     ${missing ? `<button type="button" class="t2-secondary" style="width:100%;justify-content:center;margin-top:6px" onclick="translateFromCompose(this)"><i class="fas fa-language"></i> Dịch ${missing} câu còn lại</button>` : ''}`;
@@ -2358,7 +2380,7 @@ function _refVocab() {
       ${_insBtn(v.term)}
     </div>`).join('')}`;
 }
-// The book's Band 6 template for this essay type: blanks shown filled (bold)
+// The Band 7.0 template for this essay type: blanks shown filled (bold)
 // and "(topic)" marked as the part the student must replace.
 function _refTemplate() {
   if (_tplCache === null) return '<p class="t2c-note"><i class="fas fa-spinner fa-spin"></i> Đang tải template...</p>';
@@ -2377,7 +2399,7 @@ function _refTemplate() {
       .replace(/\((topic|chủ đề)\)/gi, '<mark>($1)</mark>');
   };
   return `
-    <p class="t2c-note">Template trong sách (${_escHtml(tpl.name)}). Thay <mark style="background:#fef3c7;color:#92400e;border-radius:4px;padding:0 3px">(topic)</mark> và ví dụ bằng nội dung của đề này — không chép nguyên văn.</p>
+    <p class="t2c-note">Template Band 7.0 (${_escHtml(tpl.name)}). Thay <mark style="background:#fef3c7;color:#92400e;border-radius:4px;padding:0 3px">(topic)</mark> và ví dụ bằng nội dung của đề này — không chép nguyên văn.</p>
     ${tpl.sections.map((sec, i) => `
       <details class="t2c-tplsec" ${openIdx.has(i) ? 'open' : ''}>
         <summary>${_escHtml(sec.title)}</summary>
@@ -2930,6 +2952,7 @@ async function _startPractice(opts = {}) {
   }
   try {
     const params = new URLSearchParams({ level: state.selectedLevel });
+    _loadTemplates(); // the "Tự viết kết bài" card shows the Band 7 conclusion frames
     const data = await apiFetch(`/api/task2/questions/topic/${state.selectedTopic._id}?${params}`);
     if (!data.questions?.length) { showToast('Chưa có câu hỏi ở level này', 'warn'); return; }
     let questions = data.questions;
@@ -3142,8 +3165,8 @@ function renderPractice() {
     <div class="wp-feedback-card hidden" id="feedback-card" style="margin:12px 20px">
       <div class="wp-result-banner" id="result-banner"></div>
       <div id="comparison-box">
-        <div class="wp-cmp-row wp-cmp-student"><span class="wp-cmp-label">📝 Câu của bạn:</span><span id="student-answer-display" class="wp-cmp-text"></span></div>
-        <div class="wp-cmp-row wp-cmp-sample" id="model-answer-row"><span class="wp-cmp-label">✅ Đáp án mẫu:</span><span id="model-answer-display" class="wp-cmp-text"></span></div>
+        <div class="wp-cmp-row wp-cmp-student"><span class="wp-cmp-label">📝 ${q.type === 'short_writing' ? 'Kết bài của bạn' : 'Câu của bạn'}:</span><span id="student-answer-display" class="wp-cmp-text"></span></div>
+        <div class="wp-cmp-row wp-cmp-sample" id="model-answer-row"><span class="wp-cmp-label">${q.type === 'short_writing' ? '📘 Kết bài mẫu (chỉ để tham khảo):' : '✅ Đáp án mẫu:'}</span><span id="model-answer-display" class="wp-cmp-text"></span></div>
       </div>
       <div class="t2-explanation hidden" id="explanation-box">
         <div class="t2-exp-title">💡 Giải thích</div>
@@ -3236,6 +3259,7 @@ function renderQuestion(q) {
   // character-typing drill. Needs the exact model sentence, which the server
   // ships as q.translationAnswer for the topic-practice flow. Falls back to
   // the plain textarea below when the answer is absent (older data, exam mode).
+  if (q.type === 'short_writing' && state.currentMode !== 'exam') return _renderConclusionQuestion(q);
   if (_isGfQuestion(q)) return _renderGfQuestion(q);
   if (_isOrdQuestion(q)) {
     const tr = q.type === 'translation';
@@ -3300,6 +3324,108 @@ function renderQuestion(q) {
   ${q.type === 'translation' ? '<div class="wp-hints-row" id="hints-row"></div>' : ''}
   <textarea class="wp-answer-box${isLong ? ' t2-writing-area' : ''}" id="answer-box" rows="${isLong ? 6 : 3}" placeholder="${isLong ? 'Viết đoạn văn tại đây...' : 'Nhập câu trả lời tại đây...'}" ${isLong ? '' : 'onkeydown="handleEnter(event)"'} oninput="updateWordCount(this);checkSubmitEnabled()"></textarea>
   ${isLong ? '<div class="t2-word-count" id="word-count">0 từ</div>' : ''}`;
+}
+
+// ── "Tự viết kết bài" (short_writing) ───────────────────────────────────
+// Not a drill: the student sees the Band 7 conclusion template of this essay
+// type and writes their OWN conclusion — sum up the two body paragraphs,
+// give an opinion when the prompt asks for one, and try a type 1 / type 2
+// conditional. AI-graded (POST /api/task2/check → conclusion rubric); the
+// live checklist below the box is only a guide, never the grade.
+const CONCL_START_RE = /^\s*(in conclusion|to conclude|to sum up|in summary|to summari[sz]e|overall|in short|all things considered|on balance)\b/i;
+const CONCL_OPINION_RE = /\b(I\s+(strongly\s+|firmly\s+)?(believe|think|feel|maintain|would argue|am convinced|agree|disagree)|in my (view|opinion)|personally|from my (perspective|point of view))\b/i;
+function _conclAsksOpinion(t) {
+  if (!t) return false;
+  if (['agree_disagree', 'discuss_both_views', 'positive_or_negative_development'].includes(t.essayType)) return true;
+  return /\b(your (own )?opinion|do you (agree|think|believe)|to what extent|outweigh|positive or negative|which .{0,40}(better|more important))\b/i.test(t.prompt || '');
+}
+// → Set of conditional types (1, 2) found. "would have" (type 3) not counted.
+function _conditionalTypes(text) {
+  const out = new Set();
+  String(text || '').split(/(?<=[.!?])\s+/).forEach(s => {
+    if (!/\b(if|unless|provided that|as long as)\b/i.test(s) && !/^\s*were\s+\w+/i.test(s)) return;
+    if (/\b(would|could|might)\s+have\s+\w+/i.test(s)) return;
+    if (/\b(would|could|might)\b/i.test(s) || /^\s*were\s+\w+/i.test(s)) out.add(2);
+    else if (/\b(will|can|may|must|should|is likely to|are likely to|is going to|are going to)\b/i.test(s)) out.add(1);
+  });
+  return out;
+}
+function _conclChecks(text, t) {
+  const v = String(text || '').trim();
+  const wc = _wc(v);
+  const nSent = (v.match(/[.!?](\s|$)/g) || []).length;
+  const cond = _conditionalTypes(v);
+  const checks = [
+    { ok: CONCL_START_RE.test(v), label: 'Mở bằng In conclusion / To sum up' },
+    { ok: nSent >= 2 && wc >= 25, label: `2–3 câu · ${wc} từ` }
+  ];
+  if (_conclAsksOpinion(t)) checks.push({ ok: CONCL_OPINION_RE.test(v), label: 'Nêu ý kiến của bạn' });
+  checks.push({ ok: cond.size > 0, bonus: true, label: cond.size ? `Câu điều kiện loại ${[...cond].sort().join(' + ')}` : 'Câu điều kiện loại 1/2' });
+  return checks;
+}
+function _conclChecksHtml(text, t) {
+  return _conclChecks(text, t).map(c => `<span class="t2-concl-chk${c.ok ? ' ok' : ''}${c.bonus ? ' is-bonus' : ''}"><i class="fas fa-${c.ok ? 'check' : c.bonus ? 'star' : 'circle'}"></i> ${_escHtml(c.label)}</span>`).join('');
+}
+function onConclInput(ta) {
+  const el = document.getElementById('t2-concl-checks');
+  if (el) el.innerHTML = _conclChecksHtml(ta.value, state.selectedTopic);
+  checkSubmitEnabled();
+}
+// The Band 7 template's "④ Conclusion" frames for this topic's essay type.
+function _conclTplHtml() {
+  if (_tplCache === null) return '<p class="t2c-note"><i class="fas fa-spinner fa-spin"></i> Đang tải template...</p>';
+  const tpl = _templateFor(state.selectedTopic);
+  const sec = tpl && (tpl.sections || []).find(s => /conclu|kết bài/i.test(s.title));
+  if (!sec) return '<p class="t2c-note">Chưa có template kết bài cho dạng này.</p>';
+  return (sec.items || []).map(it => {
+    const ans = it.answer || (it.answers || [])[0] || '';
+    const en = _escHtml(it.en || '')
+      .replace(/_{3,}/, ans ? `<b>${_escHtml(ans)}</b>` : '___')
+      .replace(/\(([^)]{2,40})\)/g, '<mark>($1)</mark>');
+    return `<li><div class="t2-concl-tpl-en">${en}</div>${it.vi ? `<div class="t2-concl-tpl-vi">${_escHtml(String(it.vi).replace(/^→\s*/, ''))}</div>` : ''}</li>`;
+  }).join('');
+}
+function _renderConclusionQuestion(q) {
+  const t = state.selectedTopic;
+  const asks = _conclAsksOpinion(t);
+  const sides = _ideaSides(t).map(s => s.side);
+  const L = _lessonFor(t._id);
+  const prev = L ? (L.sentences.find(s => s.questionId === (q.questionId || q._id)) || {}).en || '' : '';
+  const notes = state.brainstorm.topicId === t._id ? state.brainstorm.notes : [];
+  const sec = L ? L.sections : _emptySections();
+  const mine = [
+    ...(sec.body1 || '').trim() ? [['Thân bài 1 của bạn', sec.body1]] : [],
+    ...(sec.body2 || '').trim() ? [['Thân bài 2 của bạn', sec.body2]] : [],
+    ...sides.map((s, i) => [s, notes[i] || '']).filter(([, n]) => n.trim())
+  ];
+  if (_tplCache === null) _loadTemplates().then(() => { const el = document.getElementById('t2-concl-tpl'); if (el) el.innerHTML = _conclTplHtml(); });
+  return `
+  <div class="wp-task-label">✍️ Tự viết đoạn kết bài</div>
+  <div class="t2-concl">
+    <div class="t2-concl-block">
+      <div class="t2-concl-k">📘 Template kết bài · Band 7.0 <span>${_escHtml(ESSAY_LABELS[t.essayType] || '')}</span></div>
+      <ol class="t2-concl-tpl" id="t2-concl-tpl">${_conclTplHtml()}</ol>
+      <p class="t2-concl-note">Thay phần <mark>(…)</mark> bằng ý của đề này — dùng khung câu, <b>đừng chép nguyên văn</b>.</p>
+    </div>
+    <div class="t2-concl-block is-hint">
+      <div class="t2-concl-k">💡 Gợi ý viết</div>
+      <ul class="t2-concl-hints">
+        <li>Mở đầu bằng <b>In conclusion,</b> / <b>To sum up,</b></li>
+        <li><b>Tóm tắt lại các ý đã viết ở thân bài</b>${sides.length > 1 ? ` (${sides.map(_escHtml).join(' + ')})` : ''} — diễn đạt ngắn gọn, <b>không thêm ý mới</b>.</li>
+        ${asks
+          ? '<li>Đề <b>hỏi ý kiến</b> của bạn → nhắc lại rõ quan điểm: <i>I believe / In my view, …</i></li>'
+          : '<li>Đề không hỏi ý kiến → có thể kết bằng một lời khuyến nghị hoặc dự đoán ngắn.</li>'}
+        <li>Cố gắng dùng <b>câu điều kiện loại 1 hoặc 2</b>:
+          <div class="t2-concl-cond"><span class="t2-concl-tag">Loại 1</span> <i>If governments invest in …, … <b>will</b> be significantly reduced.</i></div>
+          <div class="t2-concl-cond"><span class="t2-concl-tag is-2">Loại 2</span> <i>If more people <b>were</b> aware of …, they <b>would</b> …</i></div>
+        </li>
+      </ul>
+      ${mine.length ? `<details class="t2-concl-mine"><summary>Xem lại ý bạn đã có để tóm tắt</summary>${mine.map(([k, v]) => `<div class="t2-concl-mine-k">${_escHtml(k)}</div><div class="t2-concl-mine-v">${_escHtml(v)}</div>`).join('')}</details>` : ''}
+    </div>
+    <textarea class="wp-answer-box t2-writing-area t2-concl-ta" id="answer-box" rows="6" spellcheck="false"
+      placeholder="In conclusion, …" oninput="onConclInput(this)">${_escHtml(prev)}</textarea>
+    <div class="t2-concl-checks" id="t2-concl-checks" aria-live="polite">${_conclChecksHtml(prev, t)}</div>
+  </div>`;
 }
 
 function revealVocabHint() {
@@ -3786,7 +3912,8 @@ const DRILL_MODES = {
   gap:    { label: 'Điền cụm từ',   icon: 'fa-pen',          cls: 'm-gap' },
   listen: { label: 'Nghe & điền',   icon: 'fa-headphones',   cls: 'm-listen' },
   type:   { label: 'Gõ cả câu',     icon: 'fa-keyboard',     cls: 'm-type' },
-  order:  { label: 'Ghép cụm',      icon: 'fa-puzzle-piece', cls: 'm-order' }
+  order:  { label: 'Ghép cụm',      icon: 'fa-puzzle-piece', cls: 'm-order' },
+  write:  { label: 'Tự viết kết bài', icon: 'fa-feather-pointed', cls: 'm-write' }
 };
 const DRILL_CYCLE = ['mcq', 'gap', 'listen', 'type'];
 const DRILL_LONG_WORDS = 22;   // longer sentences are clicked into order instead
@@ -3803,10 +3930,11 @@ function _isGfQuestion(q) {
   return !!(q && q.translationAnswer && ['mcq', 'gap', 'listen'].includes(q._mode) && _gfBlanks(q).length);
 }
 function _isOrdQuestion(q) {
-  return !!(q && q.translationAnswer && (ORD_TYPES.has(q.type) || q._mode === 'order'));
+  return !!(q && q.translationAnswer && q.type !== 'short_writing' && q._mode === 'order');
 }
 // The format this question is drilled in (null: not a sentence-building drill).
 function _drillMode(q) {
+  if (q && q.type === 'short_writing') return 'write';
   if (!q || !WBW_TYPES.has(q.type) || !q.translationAnswer) return null;
   if (_isGfQuestion(q)) return q._mode;
   if (_isOrdQuestion(q)) return 'order';
@@ -3832,7 +3960,8 @@ function _keySpan(q) {
 // Runs on every freshly fetched question list (all of the topic's questions,
 // so a sentence's format doesn't depend on which subset is being practised).
 function _assignDrillModes(questions) {
-  const list = (questions || []).filter(q => WBW_TYPES.has(q.type) && q.translationAnswer)
+  (questions || []).forEach(q => { if (q.type === 'short_writing') { q._mode = 'write'; q._key = null; } });
+  const list = (questions || []).filter(q => WBW_TYPES.has(q.type) && q.type !== 'short_writing' && q.translationAnswer)
     .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
   let k = 0, j = 0;
   list.forEach(q => {
@@ -4102,6 +4231,11 @@ function bindPractice() {
   wbwInit();
   ordInit();
   gfInit();
+  const concl = q && q.type === 'short_writing' && document.querySelector('.t2-concl-ta');
+  if (concl) {
+    if (!_isStaffUser() && window.PasteGuard) window.PasteGuard.attach(concl, { hint: 'tự viết kết bài bằng lời của bạn nha!' });
+    checkSubmitEnabled();
+  }
   // remove previous listener before adding a new one
   if (_practiceKeyHandler) document.removeEventListener('keydown', _practiceKeyHandler);
   _practiceKeyHandler = function(e) {
@@ -5169,6 +5303,8 @@ function checkSubmitEnabled() {
     return;
   }
   if (_ordActive()) { btn.disabled = _ord.done || _ord.picked.length < _ord.chunks.length; return; }
+  // A conclusion needs some substance before it is worth an AI grade.
+  if (q.type === 'short_writing') { btn.disabled = _wc(document.getElementById('answer-box')?.value) < 15; return; }
   btn.disabled = !(document.getElementById('answer-box')?.value?.trim());
 }
 

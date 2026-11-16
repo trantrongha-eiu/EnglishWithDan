@@ -6,6 +6,7 @@ const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createPremiumStudent, signTokenFor } = require('../factories/userFactory');
 const { createTask2Topic } = require('../factories/contentFactory');
+const Task2LessonWork = require('../../models/Task2LessonWork');
 
 function question(overrides = {}) {
   return {
@@ -490,7 +491,7 @@ describe('Lessons — /api/task2/sessions + /api/task2/lesson/:topicId', () => {
     expect(res.body.sentences.map(s => s.en)).toEqual(['One.', 'Two.']);
   });
 
-  test('a sentence asked twice (same model) is listed once and keeps the answer given on either copy', async () => {
+  test('the conclusion asked twice (KẾT BÀI translation + short_writing) is listed once, as the short_writing row', async () => {
     const topic = await createTask2Topic({ questions: [
       question({ type: 'translation', questionText: 'Dịch câu KẾT BÀI', correctAnswer: 'In conclusion, it helps.', orderIndex: 1 }),
       question({ type: 'translation', questionText: 'Dịch 2', correctAnswer: 'Two.', orderIndex: 2 }),
@@ -504,9 +505,50 @@ describe('Lessons — /api/task2/sessions + /api/task2/lesson/:topicId', () => {
         questionsAttempted: [{ questionId: q3, userAnswer: 'In conclusion, it helps.', isCorrect: true, score: 100 }] });
 
     const res = await request(app).get(`/api/task2/lesson/${topic._id}`).set('Authorization', auth);
-    expect(res.body.sentences.map(s => s.questionId)).toEqual([q1, expect.any(String)]);
+    expect(res.body.sentences.map(s => s.questionId)).toEqual([expect.any(String), q3]);
+    expect(res.body.sentences.map(s => s.type)).toEqual(['translation', 'short_writing']);
+    expect(res.body.sentences[1]).toMatchObject({ en: 'In conclusion, it helps.', isCorrect: true });
+    expect(res.body.sentences.map(s => s.questionId)).not.toContain(q1);
+  });
+
+  test('an answer on the (deactivated) KẾT BÀI translation still counts for the conclusion row', async () => {
+    const topic = await createTask2Topic({ questions: [
+      question({ type: 'translation', questionText: 'Dịch câu KẾT BÀI', correctAnswer: 'In conclusion, it helps.', orderIndex: 1, isActive: false }),
+      question({ type: 'translation', questionText: 'Dịch 2', correctAnswer: 'Two.', orderIndex: 2 }),
+      question({ type: 'translation', questionText: 'Gần trùng', correctAnswer: 'Two!', orderIndex: 3, isActive: false }),
+      question({ type: 'short_writing', questionText: 'Tự viết kết bài', correctAnswer: 'In conclusion, it helps.', orderIndex: 4 }),
+    ] });
+    const [q1, , , q4] = topic.questions.map(q => String(q._id));
+    const user = await createPremiumStudent();
+    const auth = `Bearer ${signTokenFor(user)}`;
+    await request(app).post('/api/task2/save-attempt').set('Authorization', auth)
+      .send({ topicId: String(topic._id), topicName: topic.topicName, level: 'beginner',
+        questionsAttempted: [{ questionId: q1, userAnswer: 'In conclusion, it helps.', isCorrect: true, score: 100 }] });
+
+    const res = await request(app).get(`/api/task2/lesson/${topic._id}`).set('Authorization', auth);
     expect(res.body.sentences).toHaveLength(2);
-    expect(res.body.sentences[0]).toMatchObject({ en: 'In conclusion, it helps.', isCorrect: true });
+    expect(res.body.sentences[1]).toMatchObject({ questionId: q4, type: 'short_writing', en: 'In conclusion, it helps.', isCorrect: true });
+  });
+
+  test('a replaced sentence set keeps the writing steps open for a student who passed the old one (legacyPassed)', async () => {
+    const old = Array.from({ length: 10 }, (_, i) => question({ type: 'translation', questionText: 'Cũ ' + i, correctAnswer: 'Old ' + i + '.', orderIndex: i + 1, isActive: false }));
+    const topic = await createTask2Topic({ questions: [
+      ...old,
+      question({ type: 'translation', questionText: 'MỞ BÀI · Dịch câu trong bài mẫu:\n\n"x"', correctAnswer: 'New one.', orderIndex: 31 }),
+    ] });
+    const ids = topic.questions.map(q => String(q._id));
+    const passer = await createPremiumStudent();
+    const other = await createPremiumStudent();
+    await Task2LessonWork.create({ userId: passer._id, topicId: topic._id,
+      sentences: Object.fromEntries(ids.slice(0, 7).map(id => [id, { en: 'x', isCorrect: true }])) });
+    await Task2LessonWork.create({ userId: other._id, topicId: topic._id,
+      sentences: Object.fromEntries(ids.slice(0, 6).map(id => [id, { en: 'x', isCorrect: true }])) });
+
+    const a = await request(app).get(`/api/task2/lesson/${topic._id}`).set('Authorization', `Bearer ${signTokenFor(passer)}`);
+    expect(a.body.sentences).toHaveLength(1);
+    expect(a.body.legacyPassed).toBe(true);
+    const b = await request(app).get(`/api/task2/lesson/${topic._id}`).set('Authorization', `Bearer ${signTokenFor(other)}`);
+    expect(b.body.legacyPassed).toBe(false);
   });
 
   test('malformed body / unknown topic are rejected', async () => {

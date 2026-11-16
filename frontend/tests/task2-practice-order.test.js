@@ -1,5 +1,5 @@
 /**
- * Task 2 practice → "Viết đoạn kết bài" (short_writing) as click-to-order
+ * Task 2 practice → long sentences / paraphrases (_mode "order") as click-to-order
  * phrases (js/task2-practice.js: _ordChunks / ordInit / ordPick /
  * ordAskLulu / submitPractice). The model conclusion is one ~35-word
  * sentence, so instead of typing it word by word the student rebuilds it
@@ -57,7 +57,7 @@ beforeAll(() => {
 
 function startQuestion() {
   setupDom();
-  const q = { _id: 'q1', type: 'short_writing', questionText: 'Viết đoạn kết bài', translationAnswer: MODEL };
+  const q = { _id: 'q1', type: 'paraphrase', _mode: 'order', questionText: 'Paraphrase', translationAnswer: MODEL };
   Object.assign(t2.state, {
     questions: [q], questionStatus: ['pending'], currentIdx: 0,
     selectedTopic: { _id: 't1' }, sessionDone: 0, sessionCorrect: 0, sessionAttempts: [],

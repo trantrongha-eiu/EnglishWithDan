@@ -26,6 +26,8 @@ const AI_GRADED_TYPES = new Set(['translation', 'error_correction', 'short_writi
 // aborted (no signal is threaded through gradeT2Question); its late result
 // is just ignored.
 const AI_GRADE_TIMEOUT_MS = 5000;
+// A whole conclusion paragraph with a longer rubric takes the model longer.
+const AI_GRADE_TIMEOUT_CONCL_MS = 9000;
 const AUTO_DERIVE_TYPES = new Set(['translation', 'rearrange', 'error_correction', 'paraphrase']);
 // Practice-mode types that show a "word count + first-letter" hint under the
 // question text. Scoped to short free-text sentence answers, not the
@@ -133,6 +135,34 @@ function autoGrade(q, userAnswer) {
   return keywordMatch(userAnswer, q.fallbackKeywords, q.modelAnswer);
 }
 
+// ── "Tự viết kết bài" (short_writing) ──────────────────────────────────
+// Does the essay prompt want the writer's own view in the conclusion?
+// Same rule as frontend/js/task2-practice.js _conclAsksOpinion.
+const OPINION_ESSAY_TYPES = new Set(['agree_disagree', 'discuss_both_views', 'positive_or_negative_development']);
+function conclusionAsksOpinion(topic) {
+  if (!topic) return false;
+  if (OPINION_ESSAY_TYPES.has(topic.essayType)) return true;
+  return /\b(your (own )?opinion|do you (agree|think|believe)|to what extent|outweigh|positive or negative|which .{0,40}(better|more important))\b/i.test(topic.prompt || '');
+}
+const CONCL_START_RE = /^\s*(in conclusion|to conclude|to sum up|in summary|to summari[sz]e|overall|in short|all things considered|on balance)\b/i;
+const CONCL_OPINION_RE = /\b(I\s+(strongly\s+|firmly\s+)?(believe|think|feel|maintain|would argue|am convinced|agree|disagree)|in my (view|opinion)|personally|from my (perspective|point of view))\b/i;
+// Used only when the AI grader is unavailable / rate-limited. The keyword
+// ratio check can't judge a free paragraph (it wanted "in conclusion",
+// "to sum up", "overall" AND "therefore" all at once), so check the shape.
+function gradeConclusionLocally(topic, text) {
+  const v = String(text || '').trim();
+  const words = v ? v.split(/\s+/).length : 0;
+  const sentences = (v.match(/[.!?](\s|$)/g) || []).length;
+  const missing = [];
+  if (!CONCL_START_RE.test(v)) missing.push('mở bằng "In conclusion," / "To sum up,"');
+  if (words < 25 || sentences < 2) missing.push('viết đủ 2–3 câu');
+  if (conclusionAsksOpinion(topic) && !CONCL_OPINION_RE.test(v)) missing.push('nêu rõ ý kiến của bạn (I believe / In my view …)');
+  if (!missing.length) {
+    return { isCorrect: true, score: 80, feedbackVi: '✅ Đoạn kết đủ ý và đúng khung. Đọc lại để chắc rằng bạn chỉ tóm tắt ý ở thân bài, không thêm ý mới.' };
+  }
+  return { isCorrect: false, score: Math.max(0, 70 - missing.length * 20), feedbackVi: `📝 Đoạn kết cần: ${missing.join('; ')}.` };
+}
+
 function sanitizeQuestionForClient(q, opts = {}) {
   const { includeHints = true } = opts;
   // modelAnswer was previously left in `rest` unstripped — for
@@ -167,7 +197,10 @@ function sanitizeQuestionForClient(q, opts = {}) {
   // point is to reproduce the model verbatim, and every keystroke is still
   // graded fresh server-side on submit). Thi thử / exam mode passes
   // includeHints:false, so it stays fully hint-free and answer-free.
-  if (includeHints && WBW_TYPES.has(q.type)) {
+  // short_writing is excluded: the student writes their OWN conclusion from
+  // the Band 7 template (AI-graded), so the model stays server-side until
+  // checkAnswer returns it as a reference.
+  if (includeHints && WBW_TYPES.has(q.type) && q.type !== 'short_writing') {
     const answerText = correctAnswer || modelAnswer || '';
     if (answerText) rest.translationAnswer = answerText;
   }
@@ -255,7 +288,9 @@ async function getTopicQuestions(topicId, level) {
   const topic = await Task2Topic.findById(topicId).lean();
   if (!topic) return null;
 
-  let questions = topic.questions || [];
+  // Retired questions (isActive:false — trimTask2Redundant.js /
+  // seedTask2SampleSentences.js) stay in the doc for history but are never served.
+  let questions = (topic.questions || []).filter(q => q.isActive !== false);
   if (level !== 'all') questions = questions.filter(q => q.level === level);
   questions = questions.sort((a, b) => a.orderIndex - b.orderIndex);
 
@@ -294,21 +329,26 @@ async function checkAnswer(topicId, questionId, userAnswer, opts = {}) {
           type: q.type,
           questionText: q.questionText,
           modelAnswer: q.modelAnswer || q.correctAnswer || '',
-          userAnswer: trimmed
+          userAnswer: trimmed,
+          ...(q.type === 'short_writing' ? {
+            essayPrompt: topic.prompt,
+            asksOpinion: conclusionAsksOpinion(topic)
+          } : {})
         }),
         new Promise((_, reject) => {
-          timer = setTimeout(() => reject(new Error(`AI grading timed out (>${AI_GRADE_TIMEOUT_MS}ms)`)), AI_GRADE_TIMEOUT_MS);
+          const ms = q.type === 'short_writing' ? AI_GRADE_TIMEOUT_CONCL_MS : AI_GRADE_TIMEOUT_MS;
+          timer = setTimeout(() => reject(new Error(`AI grading timed out (>${ms}ms)`)), ms);
         })
       ]);
       aiGraded = true;
     } catch (aiErr) {
       console.warn('[Task2/check] AI grading unavailable, keyword fallback:', aiErr.message);
-      result = autoGrade(q, trimmed);
+      result = q.type === 'short_writing' ? gradeConclusionLocally(topic, trimmed) : autoGrade(q, trimmed);
     } finally {
       clearTimeout(timer);
     }
   } else {
-    result = autoGrade(q, trimmed);
+    result = q.type === 'short_writing' ? gradeConclusionLocally(topic, trimmed) : autoGrade(q, trimmed);
   }
 
   return {
@@ -331,7 +371,7 @@ async function getExam({ week = 'all', level = 'all', count = 10 }) {
 
   let allQ = [];
   topics.forEach(t => {
-    let qs = (t.questions || []);
+    let qs = (t.questions || []).filter(q => q.isActive !== false);
     if (level !== 'all') qs = qs.filter(q => q.level === level);
     qs.forEach(q => allQ.push({ ...q, topicId: t._id, topicName: t.topicName, prompt: t.prompt, essayType: t.essayType }));
   });
@@ -669,6 +709,8 @@ const LESSON_BRAINSTORM_MAX = 6;
 // from saved attempts, then the answers kept from earlier drafts, then the
 // unfinished-session draft (newest), keeping a correct answer over a later
 // wrong one.
+const LEGACY_MIN_RETIRED = 8;
+const LEGACY_PASS_PCT = 70; // = T2_TRANSLATE_PASS in frontend/js/task2-practice.js
 async function _lessonSentences(userId, topic, kept) {
   const [attempts, draft] = await Promise.all([
     Task2Attempt.find({ userId, topicId: topic._id }).select('questionsAttempted').sort({ completedAt: 1, _id: 1 }).lean(),
@@ -687,34 +729,64 @@ async function _lessonSentences(userId, topic, kept) {
 
   const out = [];
   const byModel = new Map();
-  (topic.questions || [])
-    .filter(q => q.isActive !== false && WBW_TYPES.has(q.type))
-    .sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0))
-    .forEach(q => {
-      const id = q.questionId || String(q._id);
-      const mine = best[id] || best[String(q._id)] || null;
-      const model = q.correctAnswer || q.modelAnswer || '';
-      const row = {
-        questionId: id,
-        type: q.type,
-        questionText: q.questionText,
-        model,
-        en: mine ? mine.en : '',
-        isCorrect: mine ? mine.isCorrect : null
-      };
-      // Most topics ask for the same conclusion twice (a "Dịch câu KẾT BÀI"
-      // translation and the short_writing task, same model). The lesson keeps
-      // the first one; an answer given on the copy still counts for it.
-      const key = normSentence(model);
-      const first = key ? byModel.get(key) : null;
-      if (first) {
-        if (row.en && (!first.en || (row.isCorrect && !first.isCorrect))) { first.en = row.en; first.isCorrect = row.isCorrect; }
-        return;
-      }
-      if (key) byModel.set(key, row);
-      out.push(row);
-    });
-  return out;
+  const wbw = (topic.questions || []).filter(q => WBW_TYPES.has(q.type));
+  // The "Dịch câu KẾT BÀI" translation repeats the short_writing model.
+  // Since 2026-11-16 the conclusion is written by the student (Band 7
+  // template, AI-graded) and those translations are deactivated
+  // (scripts/trimTask2Redundant.js). The conclusion row is always the
+  // short_writing one; an answer given earlier on the translation copy —
+  // active or not — still counts for it, so nobody's gate flips.
+  const conclKeys = new Set(wbw.filter(q => q.type === 'short_writing' && q.isActive !== false)
+    .map(q => normSentence(q.correctAnswer || q.modelAnswer || '')).filter(Boolean));
+  const rowOf = (q) => {
+    const id = q.questionId || String(q._id);
+    const mine = best[id] || best[String(q._id)] || null;
+    return {
+      questionId: id,
+      type: q.type,
+      questionText: q.questionText,
+      model: q.correctAnswer || q.modelAnswer || '',
+      en: mine ? mine.en : '',
+      isCorrect: mine ? mine.isCorrect : null
+    };
+  };
+  const merge = (into, row) => {
+    if (row.en && (!into.en || (row.isCorrect && !into.isCorrect))) { into.en = row.en; into.isCorrect = row.isCorrect; }
+  };
+  const ordered = wbw.slice().sort((a, b) => (a.type === 'short_writing') - (b.type === 'short_writing') || (a.orderIndex || 0) - (b.orderIndex || 0));
+  // Conclusion rows first (so a translation copy can merge into them), then
+  // everything else in orderIndex order; the output keeps orderIndex order.
+  ordered.filter(q => q.type === 'short_writing' && q.isActive !== false).forEach(q => {
+    const row = rowOf(q);
+    const key = normSentence(row.model);
+    if (key && byModel.has(key)) return merge(byModel.get(key), row);
+    if (key) byModel.set(key, row);
+    row._order = q.orderIndex || 0;
+    out.push(row);
+  });
+  ordered.filter(q => q.type !== 'short_writing').forEach(q => {
+    const row = rowOf(q);
+    const key = normSentence(row.model);
+    const first = key ? byModel.get(key) : null;
+    if (first) return merge(first, row);
+    if (q.isActive === false || (key && conclKeys.has(key))) return;
+    if (key) byModel.set(key, row);
+    row._order = q.orderIndex || 0;
+    out.push(row);
+  });
+  out.sort((a, b) => a._order - b._order || (a.type === 'short_writing') - (b.type === 'short_writing'));
+  out.forEach(r => { delete r._order; });
+
+  // A topic whose sentence set was replaced (scripts/seedTask2SampleSentences.js
+  // retires the old translations) must not re-lock the writing steps for a
+  // student who had already passed it: ≥ LEGACY_PASS_PCT of the retired set
+  // correct → legacyPassed. A handful of retired near-duplicates
+  // (trimTask2Redundant.js) is not a replaced set, hence the minimum size.
+  const retired = wbw.filter(q => q.isActive === false && q.type !== 'short_writing'
+    && !conclKeys.has(normSentence(q.correctAnswer || q.modelAnswer || '')));
+  const retiredOk = retired.filter(q => { const b = best[q.questionId || String(q._id)] || best[String(q._id)]; return b && b.isCorrect; }).length;
+  const legacyPassed = retired.length >= LEGACY_MIN_RETIRED && retiredOk >= Math.ceil(retired.length * LEGACY_PASS_PCT / 100);
+  return { sentences: out, legacyPassed };
 }
 
 function normSentence(s) {
@@ -726,10 +798,10 @@ async function getLessonWork(userId, topicId) {
   const topic = await Task2Topic.findById(topicId).select('questions').lean();
   if (!topic) return null;
   const work = await Task2LessonWork.findOne({ userId, topicId }).select('brainstorm sections submittedAt updatedAt sentences').lean();
-  const sentences = await _lessonSentences(userId, topic, work && work.sentences);
-  if (!work) return { work: null, sentences };
+  const { sentences, legacyPassed } = await _lessonSentences(userId, topic, work && work.sentences);
+  if (!work) return { work: null, sentences, legacyPassed };
   const { sentences: _kept, ...rest } = work;
-  return { work: rest, sentences };
+  return { work: rest, sentences, legacyPassed };
 }
 
 async function saveLessonWork(userId, topicId, body = {}) {
@@ -836,4 +908,5 @@ module.exports = {
   checkAnswer, getExam, submitExam, saveAttempt, getHistory, getAttemptDetail, getProgress, getWrongQuestions,
   getTopicPracticeStats, saveDraft, getDraft, deleteDraft, listDrafts,
   listSessions, getLessonWork, saveLessonWork, listLessonProgress, syncVocabProgress,
+  conclusionAsksOpinion, gradeConclusionLocally,
 };

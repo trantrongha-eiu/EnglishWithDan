@@ -1309,3 +1309,49 @@ mark.t2-fill.bad{background:#fee2e2;color:#991b1b;text-decoration:line-through}
   .t2-vi-main{font-size:15.5px}
   .t2-bs-grid{grid-template-columns:1fr}
 }
+
+/* ── ③ "Tự viết kết bài" (short_writing) — Band 7 template + own paragraph ── */
+.m-write{--mc:#0d9488;--mb:#ccfbf1;--mt:#115e59}
+[data-theme="dark"] .m-write{--mc:#2dd4bf;--mb:#0b2e2b;--mt:#99f6e4}
+.t2-concl{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+.t2-concl-block{border:1.5px solid #99f6e4;background:#f0fdfa;border-radius:14px;padding:12px 14px}
+.t2-concl-block.is-hint{border-color:#fde68a;background:#fffbeb}
+.t2-concl-k{font-size:13px;font-weight:800;color:#115e59;margin-bottom:8px;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.t2-concl-k span{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:#0f766e;background:#ccfbf1;border-radius:20px;padding:1px 8px}
+.t2-concl-block.is-hint .t2-concl-k{color:#92400e}
+.t2-concl-tpl{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.t2-concl-tpl li{font-size:14px;line-height:1.55;color:#1f2937}
+.t2-concl-tpl mark,.t2-concl-note mark{background:#fef3c7;color:#92400e;border-radius:4px;padding:0 3px}
+.t2-concl-tpl b{color:#0f766e}
+.t2-concl-tpl-vi{font-size:12.5px;color:#6b7280;margin-top:2px}
+.t2-concl-note{font-size:12px;color:#6b7280;margin:8px 0 0}
+.t2-concl-hints{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;line-height:1.5;color:#374151}
+.t2-concl-cond{margin-top:4px;font-size:13px;color:#4b5563}
+.t2-concl-tag{display:inline-block;font-size:10.5px;font-weight:800;font-style:normal;color:#1d4ed8;background:#dbeafe;border-radius:6px;padding:0 6px;margin-right:2px}
+.t2-concl-tag.is-2{color:#7c3aed;background:#ede9fe}
+.t2-concl-mine{margin-top:10px;font-size:13px}
+.t2-concl-mine summary{cursor:pointer;font-weight:700;color:#92400e}
+.t2-concl-mine-k{font-size:11px;font-weight:800;text-transform:uppercase;color:#9ca3af;margin:8px 0 2px}
+.t2-concl-mine-v{white-space:pre-wrap;color:#374151;line-height:1.5}
+.t2-concl-ta{min-height:140px}
+.t2-concl-checks{display:flex;flex-wrap:wrap;gap:6px}
+.t2-concl-chk{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:#6b7280;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:20px;padding:3px 10px}
+.t2-concl-chk i{font-size:10px}
+.t2-concl-chk.ok{color:#166534;background:#dcfce7;border-color:#86efac}
+.t2-concl-chk.is-bonus:not(.ok){color:#7c3aed;background:#f5f3ff;border-color:#ddd6fe}
+[data-theme="dark"] .t2-concl-block{background:#0b2421;border-color:#115e59}
+[data-theme="dark"] .t2-concl-block.is-hint{background:#2a2108;border-color:#78350f}
+[data-theme="dark"] .t2-concl-k{color:#5eead4}
+[data-theme="dark"] .t2-concl-block.is-hint .t2-concl-k,[data-theme="dark"] .t2-concl-mine summary{color:#fcd34d}
+[data-theme="dark"] .t2-concl-tpl li,[data-theme="dark"] .t2-concl-hints,[data-theme="dark"] .t2-concl-mine-v{color:#e5e7eb}
+[data-theme="dark"] .t2-concl-tpl b{color:#5eead4}
+[data-theme="dark"] .t2-concl-tpl-vi,[data-theme="dark"] .t2-concl-note,[data-theme="dark"] .t2-concl-cond{color:#9ca3af}
+[data-theme="dark"] .t2-concl-chk{background:#1f2937;border-color:#374151;color:#9ca3af}
+[data-theme="dark"] .t2-concl-chk.ok{background:#14321a;border-color:#166534;color:#86efac}
+
+/* Phones: the floating XP/streak pills sat on top of the hub's Guideline /
+   link / history buttons and, in a session, over the stats bar (which shows
+   XP itself). Hide them on small screens. */
+@media (max-width:768px){
+  .wp-mini-stats{display:none!important}
+}

@@ -259,3 +259,121 @@ describe('listTopicsForWeek — self-healing "Viết bài ngay" essay link', () 
     expect(String((await Task2Topic.findById(t._id).lean()).writingTask2Id)).toBe(String(linkedId));
   });
 });
+
+describe('"Tự viết kết bài" (short_writing)', () => {
+  const MODEL = 'In conclusion, work pressure is the main cause, but counselling can help.';
+  async function conclusionTopic(extra = {}) {
+    return Task2Topic.create({
+      week: 5, block: 'cause_solution', orderIndex: 1, topicName: 'Stress', essayType: 'cause_solution',
+      prompt: 'What are the causes of stress, and what solutions can be implemented?',
+      questions: [{
+        questionId: 'c_q1', level: 'intermediate', orderIndex: 1, type: 'short_writing',
+        questionText: 'Tự viết ĐOẠN KẾT BÀI', modelAnswer: MODEL,
+        fallbackKeywords: ['in conclusion', 'to sum up', 'overall', 'therefore'],
+      }],
+      ...extra,
+    });
+  }
+  const GOOD = 'In conclusion, work pressure and social media are the main causes of rising stress. If schools and employers provide accessible counselling, public mental well-being will improve significantly.';
+
+  test('the model conclusion is never shipped to the client', async () => {
+    const topic = await conclusionTopic();
+    const { questions } = await svc.getTopicQuestions(String(topic._id), 'all');
+    expect(questions[0].translationAnswer).toBeUndefined();
+    expect(questions[0].modelAnswer).toBeUndefined();
+  });
+
+  test('AI grading gets the essay prompt and whether an opinion is required', async () => {
+    geminiService.gradeT2Question.mockResolvedValue({ isCorrect: true, score: 90, feedbackVi: 'Tốt' });
+    const topic = await conclusionTopic();
+    const res = await svc.checkAnswer(String(topic._id), 'c_q1', GOOD);
+    expect(res).toMatchObject({ aiGraded: true, isCorrect: true, modelAnswer: MODEL });
+    expect(geminiService.gradeT2Question).toHaveBeenCalledWith(expect.objectContaining({
+      type: 'short_writing', essayPrompt: topic.prompt, asksOpinion: false, userAnswer: GOOD,
+    }));
+  });
+
+  test('without AI, a well-shaped conclusion passes (not the 4-keyword ratio)', async () => {
+    geminiService.gradeT2Question.mockRejectedValue(new Error('down'));
+    const topic = await conclusionTopic();
+    const ok = await svc.checkAnswer(String(topic._id), 'c_q1', GOOD);
+    expect(ok).toMatchObject({ aiGraded: false, isCorrect: true });
+    const bad = await svc.checkAnswer(String(topic._id), 'c_q1', 'Stress is bad.');
+    expect(bad.isCorrect).toBe(false);
+    expect(bad.feedbackVi).toMatch(/In conclusion/);
+  });
+
+  test('conclusionAsksOpinion / gradeConclusionLocally', () => {
+    expect(svc.conclusionAsksOpinion({ essayType: 'agree_disagree', prompt: '' })).toBe(true);
+    expect(svc.conclusionAsksOpinion({ essayType: 'advantages_disadvantages', prompt: 'Do the advantages outweigh the disadvantages?' })).toBe(true);
+    expect(svc.conclusionAsksOpinion({ essayType: 'cause_solution', prompt: 'What are the causes?' })).toBe(false);
+    const opinionTopic = { essayType: 'agree_disagree', prompt: '' };
+    expect(svc.gradeConclusionLocally(opinionTopic, GOOD).isCorrect).toBe(false);
+    expect(svc.gradeConclusionLocally(opinionTopic, GOOD + ' Personally, I believe this approach is the best.').isCorrect).toBe(true);
+  });
+});
+
+describe('scripts/trimTask2Redundant plan()', () => {
+  const { plan, conclusionText } = require('../../../scripts/trimTask2Redundant');
+  const q = (id, type, text, ans, order) => ({ _id: id, type, questionText: text, correctAnswer: ans, orderIndex: order });
+  test('drops the KẾT BÀI copy and the near-duplicate without a key phrase; rewords the conclusion task', () => {
+    const topic = { prompt: 'P?', questions: [
+      q('a', 'translation', 'Dịch câu sau:\n\n"x"', 'A high salary helps provide financial security for workers.', 1),
+      q('b', 'translation', 'Dịch sang tiếng Anh (dùng từ "financial security"):\n\n"x"', 'A high salary helps provide financial security for workers.', 2),
+      q('c', 'translation', 'Dịch câu sau:\n\n"y"', 'Remote work is popular.', 3),
+      q('d', 'translation', 'Dịch câu KẾT BÀI', 'In conclusion, it helps.', 4),
+      q('e', 'short_writing', 'Viết kết bài', 'In conclusion, it helps.', 5),
+    ] };
+    const { off, reword } = plan(topic);
+    expect([...off.keys()].sort()).toEqual(['a', 'd']);
+    expect(reword.map(x => x._id)).toEqual(['e']);
+    expect(conclusionText('P?')).toMatch(/câu điều kiện loại 1 hoặc loại 2/);
+  });
+});
+
+describe('scripts/seedTask2SampleSentences buildQuestions()', () => {
+  const { buildQuestions } = require('../../../scripts/seedTask2SampleSentences');
+  const sample = [
+    { title: 'Introduction', content: 'In recent years, stress has become an increasingly serious problem. This essay will explore it.' },
+    { title: 'Body 1', content: 'There are several underlying factors contributing to stress.  One of the main reasons is work.',
+      highlights: [{ role: 'topic', text: 'There are several underlying factors contributing to stress.' }] },
+    { title: 'Body 2', content: 'Nevertheless, several practical measures can be taken.' },
+    { title: 'Conclusion', content: 'In conclusion, …' }
+  ];
+  const entry = (sentences) => ({ prefix: 'x_d', sentences });
+
+  test('builds tagged translation questions in essay order from Daniel\'s sentences', () => {
+    const qs = buildQuestions(entry([
+      { sec: 'intro', key: 'an increasingly serious problem', en: 'In recent years, stress has become an increasingly serious problem.', vi: 'Gần đây…' },
+      { sec: 'body1', key: 'underlying factors contributing to', en: 'There are several underlying factors contributing to stress.', vi: 'Có nhiều…' },
+      { sec: 'body2', en: 'Nevertheless, several practical measures can be taken.', vi: 'Tuy nhiên…' },
+    ]), sample);
+    expect(qs.map(q => q.questionId)).toEqual(['x_d01', 'x_d02', 'x_d03']);
+    expect(qs[0].questionText).toBe('MỞ BÀI · Dịch câu trong bài mẫu (dùng cấu trúc "an increasingly serious problem"):\n\n"Gần đây…"');
+    expect(qs[1].explanationVi).toMatch(/THÂN BÀI 1 · câu chủ đề của đoạn/);
+    expect(qs[2].questionText.startsWith('THÂN BÀI 2 · Dịch câu trong bài mẫu:')).toBe(true);
+    expect(qs.every(q => q.type === 'translation' && q.correctAnswer === q.modelAnswer)).toBe(true);
+  });
+
+  test('refuses a sentence that is not in the sample, or a key not in the sentence', () => {
+    expect(() => buildQuestions(entry([{ sec: 'body1', en: 'Invented sentence.', vi: 'x' }]), sample)).toThrow(/not in Daniel/);
+    expect(() => buildQuestions(entry([{ sec: 'body1', key: 'nope', en: 'One of the main reasons is work.', vi: 'x' }]), sample)).toThrow(/key "nope"/);
+  });
+});
+
+describe('retired questions (isActive:false)', () => {
+  test('are never served in topic practice or Thi thử, but can still be checked', async () => {
+    const topic = await Task2Topic.create({
+      week: 3, block: 'cause_solution', orderIndex: 1, topicName: 'Retired', essayType: 'cause_solution', prompt: 'p',
+      questions: [
+        { questionId: 'r1', level: 'beginner', orderIndex: 1, type: 'fill_blank', questionText: 'A', correctAnswer: 'a' },
+        { questionId: 'r2', level: 'beginner', orderIndex: 2, type: 'fill_blank', questionText: 'B', correctAnswer: 'b', isActive: false },
+      ],
+    });
+    const { questions } = await svc.getTopicQuestions(String(topic._id), 'all');
+    expect(questions.map(q => q.questionId)).toEqual(['r1']);
+    const exam = await svc.getExam({ week: 3, level: 'all', count: 10 });
+    expect(exam.questions.map(q => q.questionId)).not.toContain('r2');
+    expect((await svc.checkAnswer(String(topic._id), 'r2', 'b')).isCorrect).toBe(true);
+  });
+});

@@ -72,11 +72,11 @@ function mount(q) {
 beforeEach(() => { window.showToast.mockClear(); });
 
 describe('_assignDrillModes', () => {
-  test('cycles mcq → gap → listen → type; long sentences and short_writing are ordered; other types untouched', () => {
+  test('cycles mcq → gap → listen → type; long sentences are ordered; short_writing is written freely; other types untouched', () => {
     const qs = topicQuestions();
     t2.state.selectedTopic = { _id: 't1' };
     window._assignDrillModes(qs);
-    expect(qs.map(q => window._drillMode(q))).toEqual(['mcq', 'gap', 'listen', 'type', 'mcq', 'order', 'order', null]);
+    expect(qs.map(q => window._drillMode(q))).toEqual(['mcq', 'gap', 'listen', 'type', 'mcq', 'order', 'write', null]);
     expect(qs[0]._key.text).toBe('online learning');
   });
 

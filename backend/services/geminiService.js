@@ -856,11 +856,39 @@ async function _gradeWithGeminiJson({ prompt, systemInstruction, maxOutputTokens
 /**
  * Grade a single open-ended Task 2 practice sentence with Gemini.
  */
-async function gradeT2Question({ type, questionText, modelAnswer, userAnswer }) {
+// "Tự viết kết bài": the student's OWN conclusion, written from the Band 7
+// template — judged on what a conclusion must do, never on closeness to the
+// model (which is only context).
+function _conclusionPrompt({ essayPrompt, modelAnswer, userAnswer, asksOpinion }) {
+  return `Dạng bài: Học sinh TỰ VIẾT đoạn KẾT BÀI (2–3 câu) cho bài IELTS Writing Task 2, theo template Band 7.0.
+Đề bài: "${essayPrompt || ''}"
+${modelAnswer ? `Một kết bài mẫu (CHỈ để hiểu đề — KHÔNG bắt học sinh viết giống): "${modelAnswer}"\n` : ''}Đề ${asksOpinion ? 'CÓ' : 'KHÔNG'} hỏi ý kiến người viết.
+Đoạn kết của học sinh:
+<<<STUDENT_ANSWER_START>>>
+${userAnswer}
+<<<STUDENT_ANSWER_END>>>
+
+Tiêu chí:
+1. Mở bằng cụm kết luận (In conclusion / To sum up / Overall …).
+2. Tóm tắt lại các ý chính phù hợp với đề (hai phần thân bài), ngắn gọn, KHÔNG đưa ý mới.
+3. ${asksOpinion ? 'Nêu rõ quan điểm của người viết (bắt buộc vì đề hỏi ý kiến).' : 'Không bắt buộc nêu ý kiến; có thể kết bằng khuyến nghị / dự đoán.'}
+4. Ngữ pháp và từ vựng chấp nhận được.
+5. Điểm cộng (KHÔNG bắt buộc): có dùng câu điều kiện loại 1 hoặc loại 2 đúng ngữ pháp.
+
+- isCorrect: true nếu đạt tiêu chí 1–4 (lỗi nhỏ vẫn chấp nhận). Không cần giống bài mẫu.
+- score: 0-100 (cộng tối đa 10 điểm nếu dùng đúng câu điều kiện loại 1/2).
+- feedbackVi: 2-3 câu tiếng Việt: nêu điểm tốt hoặc lỗi cụ thể và cách sửa; nếu học sinh CHƯA dùng câu điều kiện thì gợi ý 1 câu điều kiện loại 1 hoặc 2 phù hợp đoạn của họ; nếu đã dùng thì khen/sửa câu đó.
+
+Trả về JSON: {"isCorrect": boolean, "score": number, "feedbackVi": string}`;
+}
+
+async function gradeT2Question({ type, questionText, modelAnswer, userAnswer, essayPrompt, asksOpinion }) {
   const typeLabel = T2_TYPE_VI[type] || type;
   const modelRef  = modelAnswer ? `\nĐáp án mẫu tham khảo: "${modelAnswer}"` : '';
 
-  const prompt = `Dạng bài: ${typeLabel}
+  const prompt = type === 'short_writing' && essayPrompt
+    ? _conclusionPrompt({ essayPrompt, modelAnswer, userAnswer, asksOpinion: !!asksOpinion })
+    : `Dạng bài: ${typeLabel}
 Câu hỏi/Yêu cầu: "${questionText}"${modelRef}
 Câu trả lời của học sinh:
 <<<STUDENT_ANSWER_START>>>
@@ -875,7 +903,7 @@ ${userAnswer}
 Trả về JSON: {"isCorrect": boolean, "score": number, "feedbackVi": string}`;
 
   const parsed = await _gradeWithGeminiJson({
-    prompt, systemInstruction: T2_GRADE_SYSTEM, maxOutputTokens: 300,
+    prompt, systemInstruction: T2_GRADE_SYSTEM, maxOutputTokens: type === 'short_writing' ? 500 : 300,
     timeoutMessage: 'AI phản hồi quá lâu, vui lòng thử lại.', logLabel: 'gradeT2Question',
   });
   // Normalise types in case Gemini returns strings
