@@ -34,6 +34,7 @@
 // history from before this feature existed doesn't flood the queue.
 
 const mongoose = require('mongoose');
+const { userIdsMatching } = require('../utils/userSearch');
 const WT1Submission = require('../models/WT1Submission');
 const WT1Exercise = require('../models/WT1Exercise');
 const WT1Lesson = require('../models/WT1Lesson');
@@ -86,13 +87,9 @@ async function exercisesOfTypes(types) {
   return WT1Exercise.find({ type: { $in: types } }).select('code title type lessonCode').lean();
 }
 
+// full name in any order, accents optional (utils/userSearch)
 async function studentIdsMatching(search) {
-  const s = String(search || '').trim();
-  if (!s) return null;
-  const re = new RegExp(s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-  const users = await User.find({ $or: [{ username: re }, { firstName: re }, { lastName: re }, { email: re }] })
-    .select('_id').limit(500).lean();
-  return users.map((u) => u._id);
+  return userIdsMatching(search, { limit: 500 });
 }
 
 function courseQuery(codes, status, userIds) {

@@ -2,9 +2,10 @@
 // Extracted from backend/routes/admin.js — Task 1 Exercises CRUD section.
 
 const express = require('express');
+const SearchMatch = require('../../utils/searchMatch');
 const mongoose = require('mongoose');
 const auth    = require('../../middleware/auth');
-const { teacherOnly, escapeRegex } = require('./_shared');
+const { teacherOnly } = require('./_shared');
 
 const Task1Exercise = require('../../models/Task1Exercise');
 const Task1Attempt = require('../../models/Task1Attempt');
@@ -98,10 +99,7 @@ router.get('/task1/exercises', auth, teacherOnly, async (req, res) => {
     if (active === 'false') query.isActive = false;
     if (chart === 'yes') query.chart = { $ne: null };   // $ne null also excludes a missing field
     if (chart === 'no') query.chart = null;             // matches missing or null
-    if (search) {
-      const rx = { $regex: escapeRegex(String(search).slice(0, 100)), $options: 'i' };
-      query.$or = [{ instruction: rx }, { questionEn: rx }, { questionVi: rx }, { sentenceWithBlanks: rx }, { primaryAnswer: rx }, { grammarPoint: rx }];
-    }
+    if (search) Object.assign(query, SearchMatch.mongoFilter(search, ['instruction', 'questionEn', 'questionVi', 'sentenceWithBlanks', 'primaryAnswer', 'grammarPoint']) || {});
 
     const lim = Math.min(Math.max(Number(limit) || 20, 1), 5000);
     const pg = Math.max(Number(page) || 1, 1);

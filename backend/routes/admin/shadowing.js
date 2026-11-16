@@ -8,9 +8,10 @@
 // category for students.
 
 const express = require('express');
+const SearchMatch = require('../../utils/searchMatch');
 const mongoose = require('mongoose');
 const auth = require('../../middleware/auth');
-const { teacherOnly, escapeRegex } = require('./_shared');
+const { teacherOnly } = require('./_shared');
 const ShadowingLesson = require('../../models/ShadowingLesson');
 const ShadowingAttempt = require('../../models/ShadowingAttempt');
 
@@ -27,10 +28,7 @@ router.get('/shadowing/lessons', auth, teacherOnly, async (req, res) => {
     if (LEVELS.includes(level)) q.level = level;
     if (published === 'true') q.isPublished = true;
     if (published === 'false') q.isPublished = false;
-    if (search) {
-      const rx = { $regex: escapeRegex(String(search).slice(0, 100)), $options: 'i' };
-      q.$or = [{ title: rx }, { slug: rx }, { sourceTitle: rx }, { channel: rx }];
-    }
+    if (search) Object.assign(q, SearchMatch.mongoFilter(search, ['title', 'slug', 'sourceTitle', 'channel']) || {});
     const [lessons, catCounts, stats] = await Promise.all([
       ShadowingLesson.find(q).select('-segments').sort({ category: 1, order: 1, createdAt: 1 }).lean(),
       ShadowingLesson.aggregate([{ $group: { _id: '$category', total: { $sum: 1 }, published: { $sum: { $cond: ['$isPublished', 1, 0] } } } }]),

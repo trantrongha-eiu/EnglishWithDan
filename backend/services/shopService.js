@@ -5,11 +5,11 @@
 // conditional update (wallet >= price, item count >= 1, …) so a
 // double-click or two tabs can never overspend or double-use.
 const User = require('../models/User');
+const { userSearchFilter } = require('../utils/userSearch');
 const Message = require('../models/Message');
 const ShopPurchase = require('../models/ShopPurchase');
 const ShopAnnouncement = require('../models/ShopAnnouncement');
 const Block = require('../models/Block');
-const { escapeRegex } = require('../utils/strings');
 const mongoose = require('mongoose');
 const { getVNDay, effectiveStreak, coverMissedDaysWithShields } = require('../utils/streak');
 const { DAILY_STREAK_BONUS_CAP, streakBonusEarnedToday } = require('./streakBonusService');
@@ -681,10 +681,8 @@ async function giftTarget(userId, toId) {
 async function searchGiftRecipients(userId, q) {
   const filter = { role: { $in: FLAME_ROLES }, isBanned: { $ne: true }, _id: { $ne: userId } };
   const term = String(q || '').trim().slice(0, 50);
-  if (term) {
-    const words = term.split(/\s+/).map(w => new RegExp(escapeRegex(w), 'i'));
-    filter.$and = words.map(rx => ({ $or: [{ firstName: rx }, { lastName: rx }, { username: rx }] }));
-  }
+  // every word, any order, accents optional ("nguyen an" finds "Nguyễn Văn An")
+  if (term) Object.assign(filter, userSearchFilter(term, ['firstName', 'lastName', 'username']) || {});
   const [users, blocks] = await Promise.all([
     User.find(filter).select('firstName lastName username avatar role')
       .sort({ learningStreak: -1, firstName: 1 }).limit(GIFT_SEARCH_LIMIT * 2).lean(),

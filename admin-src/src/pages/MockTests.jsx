@@ -5,6 +5,7 @@ import { useToast } from '../contexts/ToastContext';
 import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
 import ProctorPanel from '../components/ui/ProctorPanel';
+import SearchMatch from '../utils/searchMatch';
 
 // Admin monitoring for the full 4-skill mock test. Before this page the run
 // history + proctoring log ("gậy" = tab-switch count) were written to
@@ -280,10 +281,7 @@ export default function MockTests() {
 
   const q = search.trim().toLowerCase();
   const shown = q
-    ? rows.filter(r =>
-        r.user.displayName.toLowerCase().includes(q) ||
-        r.user.username.toLowerCase().includes(q) ||
-        r.user.className.toLowerCase().includes(q))
+    ? rows.filter(r => SearchMatch.matches([r.user.displayName, r.user.username, r.user.className], q))
     : rows;
 
   return (

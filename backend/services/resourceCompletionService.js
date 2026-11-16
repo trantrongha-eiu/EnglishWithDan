@@ -14,6 +14,7 @@
 // "any completed MockTestAttempt since the assignment was created".
 
 const mongoose = require('mongoose');
+const SearchMatch = require('../utils/searchMatch');
 
 const ReadingTest = require('../models/ReadingTest');
 const ListeningTest = require('../models/ListeningTest');
@@ -67,7 +68,6 @@ const Task1Exercise = require('../models/Task1Exercise');
 const Task1Attempt = require('../models/Task1Attempt');
 const speakingPart2Service = require('./speakingPart2Service');
 
-const { escapeRegex } = require('../utils/strings');
 const { normalizeParts } = require('../utils/partSelection');
 
 // A homework item is "hoàn thành" only once the student clears this % — for
@@ -808,8 +808,9 @@ async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
   }
   // Every word must appear somewhere, in any order: "fossil park" finds
   // "Green Mountain Fossil Park".
+  // Accents optional ("de" finds "Đề") and numbers whole ("test 1" ≠ "Test 10").
   const words = String(search || '').trim().split(/\s+/).filter(Boolean).slice(0, 8)
-    .map((w) => new RegExp(escapeRegex(w), 'i'));
+    .map((w) => new RegExp(SearchMatch.wordRegexSource(w), 'i'));
   if (entry.catalog.list) return (await entry.catalog.list({ words, extraFilters })).slice(0, Math.min(Number(limit) || 100, CATALOG_MAX));
   if (entry.catalog.static) {
     const { shape, deepLinkKey } = entry.catalog;

@@ -6,6 +6,7 @@ import { useToast } from '../../contexts/ToastContext';
 import { useAuth } from '../../contexts/AuthContext';
 import StudentTuitionModal from '../tuition/StudentTuitionModal';
 import { MONTHS, YEARS, fmtVND, fmtLabel } from '../tuition/helpers';
+import SearchMatch from '../../utils/searchMatch';
 
 // Class page "Học phí" tab — GET /classes/:id/tuition (rule in
 // tuitionService.getClassTuition). Teachers see their own class read-only;
@@ -39,7 +40,7 @@ export default function ClassTuitionTab({ cls }) {
   students.forEach((s) => { counts[s.status] += 1; });
   const needle = q.trim().toLowerCase();
   const rows = students.filter((s) => (!status || s.status === status)
-    && (!needle || [displayName(s), s.username, s.email].some((v) => (v || '').toLowerCase().includes(needle))));
+    && (!needle || SearchMatch.matches([displayName(s), s.username, s.email], needle)));
   const setP = (k) => (e) => setPeriod((p) => ({ ...p, [k]: Number(e.target.value) }));
 
   return (

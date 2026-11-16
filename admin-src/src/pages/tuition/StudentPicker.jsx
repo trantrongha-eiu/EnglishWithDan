@@ -4,6 +4,7 @@
 // rest of that file where every tab shares the same closure over ~15
 // pieces of state.
 import { useEffect, useRef, useState } from 'react';
+import SearchMatch from '../../utils/searchMatch';
 
 // `onSearch` (optional): when provided, the picker delegates matching to the
 // parent — it debounces the query and calls onSearch(q), and renders
@@ -39,7 +40,7 @@ export default function StudentPicker({ students, value, onChange, onSearch }) {
   const filtered = onSearch
     ? students // parent already returns the matched set
     : search.trim()
-      ? students.filter(s => (s.username + ' ' + s.email).toLowerCase().includes(search.toLowerCase()))
+      ? students.filter(s => SearchMatch.matches([s.firstName, s.lastName, s.displayName, s.name, s.username, s.email], search))
       : students;
 
   useEffect(() => {

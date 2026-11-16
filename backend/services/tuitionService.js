@@ -2,6 +2,8 @@
 
 // Extracted from routes/tuition.js, verbatim logic.
 const mongoose = require('mongoose');
+const SearchMatch = require('../utils/searchMatch');
+const { userIdsMatching } = require('../utils/userSearch');
 const mediaStore = require('./mediaStore');
 const TuitionFee = require('../models/TuitionFee');
 const TuitionSettings = require('../models/TuitionSettings');
@@ -12,7 +14,6 @@ const { escapeHtml } = require('../utils/escapeHtml');
 const ClassGroup = require('../models/ClassGroup');
 const ClassEnrollment = require('../models/ClassEnrollment');
 const { vnTodayKey } = require('../utils/classProgress');
-const { escapeRegex } = require('../utils/strings');
 const parentNotifyService = require('./parentNotifyService');
 
 // Shared by every tuition-reminder sender — sendReminder, sendBulkReminders
@@ -179,16 +180,10 @@ async function deleteQr() {
 // username/email/first/last name (so "Bùi Tuấn" finds firstName "Bùi" +
 // lastName "Tuấn"), or the whole text hits the fee's course name / note.
 async function feeSearchFilter(q) {
-  const text = String(q).trim().slice(0, 100);
-  const words = text.split(/\s+/);
-  const users = await User.find({
-    $and: words.map(w => {
-      const rx = new RegExp(escapeRegex(w), 'i');
-      return { $or: [{ username: rx }, { email: rx }, { firstName: rx }, { lastName: rx }] };
-    }),
-  }).select('_id').limit(500).lean();
-  const rx = new RegExp(escapeRegex(text), 'i');
-  return { $or: [{ studentId: { $in: users.map(u => u._id) } }, { courseName: rx }, { note: rx }] };
+  // accents optional too ("bui tuan" finds "Bùi Tuấn") — utils/userSearch
+  const ids = (await userIdsMatching(q, { limit: 500 })) || [];
+  const byText = SearchMatch.mongoFilter(q, ['courseName', 'note']);
+  return { $or: [{ studentId: { $in: ids } }, ...(byText ? [byText] : [])] };
 }
 
 async function listFees(query) {

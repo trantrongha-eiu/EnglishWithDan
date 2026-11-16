@@ -102,6 +102,8 @@
     /* ── Rendering ── */
     function matches(q, ...fields) {
         if (!q) return true;
+        // accents optional, every typed word anywhere in the fields
+        if (window.SearchMatch) return window.SearchMatch.matches(fields.map(f => String(f || '')), q);
         const needle = q.toLowerCase();
         return fields.some(f => String(f || '').toLowerCase().includes(needle));
     }

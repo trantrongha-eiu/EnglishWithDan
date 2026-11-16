@@ -2680,7 +2680,7 @@ function _cwRenderOnline() {
   const list = document.getElementById('t2cw-list');
   if (!list || !_cw.online) return;
   const q = (document.getElementById('t2cw-search')?.value || '').trim().toLowerCase();
-  const rows = _cw.online.filter(u => !q || u.name.toLowerCase().includes(q));
+  const rows = _cw.online.filter(u => !q || (window.SearchMatch ? window.SearchMatch.matches(u.name, q) : u.name.toLowerCase().includes(q)));
   if (!_cw.online.length) { list.innerHTML = '<div class="t2cw-empty">😴 Chưa có bạn nào online lúc này.</div>'; return; }
   if (!rows.length) { list.innerHTML = '<div class="t2cw-empty">Không tìm thấy bạn nào.</div>'; return; }
   list.innerHTML = rows.map(u => {

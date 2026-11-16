@@ -2,9 +2,10 @@
 // Extracted from backend/routes/admin.js — Vocab Student Analytics section.
 
 const express  = require('express');
+const { userSearchFilter } = require('../../utils/userSearch');
 const mongoose = require('mongoose');
 const auth     = require('../../middleware/auth');
-const { teacherOnly, escapeRegex, effectiveStreak } = require('./_shared');
+const { teacherOnly, effectiveStreak } = require('./_shared');
 const { getVNDay } = require('../../utils/streak');
 
 const VocabBook     = require('../../models/VocabBook');
@@ -67,17 +68,8 @@ router.get('/vocab-students', auth, teacherOnly, async (req, res) => {
     }
 
     // 1. Lấy tất cả user (không lọc role để admin/teacher cũng thấy – nhưng ưu tiên student)
-    const re = search ? escapeRegex(search) : null;
-    const searchFilter = re
-      ? {
-          $or: [
-            { username:  { $regex: re, $options: 'i' } },
-            { email:     { $regex: re, $options: 'i' } },
-            { firstName: { $regex: re, $options: 'i' } },
-            { lastName:  { $regex: re, $options: 'i' } },
-          ],
-        }
-      : {};
+    // full name in any order, accents optional (utils/userSearch)
+    const searchFilter = userSearchFilter(search) || {};
 
     const users = await User.find({ role: 'student', ...searchFilter, ...(userId && { _id: userId }) })
       .select('username email firstName lastName createdAt learningStreak lastActivityDate shopItems.iceShield previousStreak isBanned studyReminderCount streakHammers')

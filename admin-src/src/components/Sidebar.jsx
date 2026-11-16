@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useAdminData } from '../contexts/AdminDataContext';
 import { NAV_GROUPS, isItemActive } from '../layouts/navConfig';
+import SearchMatch from '../utils/searchMatch';
 
 // Sidebar (redesigned 2026-09-25, docs/ADMIN_AUDIT_2026-09-25.md §6/§9):
 //  - groups from navConfig, each collapsible (remembered per browser); the
@@ -42,7 +43,7 @@ export default function Sidebar({ mobileOpen, onClose, compact, onToggleCompact 
     return NAV_GROUPS
       .map(g => ({
         ...g,
-        items: g.items.filter(i => (isAdmin || !i.adminOnly) && (!q || i.label.toLowerCase().includes(q) || g.label.toLowerCase().includes(q) || (i.student || '').toLowerCase().includes(q))),
+        items: g.items.filter(i => (isAdmin || !i.adminOnly) && (!q || SearchMatch.matches([i.label, g.label, i.student], q))),
       }))
       .filter(g => g.items.length);
   }, [isAdmin, query]);

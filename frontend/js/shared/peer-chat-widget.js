@@ -522,7 +522,9 @@
     if (!listEl) return;
     var q = (query || '').trim().toLowerCase();
     var rows = (_allStudents || []).filter(function (s) {
-      return !q || (s.name || '').toLowerCase().indexOf(q) !== -1;
+      if (!q) return true;
+      // accents optional: "nguyen an" finds "Nguyễn Văn An"
+      return window.SearchMatch ? window.SearchMatch.matches(s.name, q) : (s.name || '').toLowerCase().indexOf(q) !== -1;
     });
     if (!rows.length) {
       listEl.innerHTML = '<div class="pcw-empty">' +

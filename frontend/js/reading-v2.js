@@ -69,6 +69,7 @@ const RD_PRACTICE_CATEGORIES = ['passage1', 'passage2', 'passage3', 'actual-test
 function _rdParseCategory(raw) { return RD_PRACTICE_CATEGORIES.includes(raw) ? raw : 'all'; }
 function _rdListUrl(cat) { return cat === 'all' ? '?mode=single' : `?mode=single&category=${cat}`; }
 let _rdCategoryCache = {};      // category → { passages, doneMap }
+let _rdCategoryLoading = {};    // category → in-flight list request (search)
 let _testsCache = null;         // { tests, userPlan, planExpiresAt } — avoids refetching /api/reading/tests on every list-screen return
 let _testsCacheAt = 0;
 const TESTS_CACHE_TTL_MS = 60000;
@@ -752,14 +753,15 @@ function applyTestFilters() {
 }
 
 function getFilteredTests() {
-  const q = (document.getElementById('test-search')?.value || '').trim().toLowerCase();
-  return allTests
-    .filter(t => {
-      const done = !!t.lastAttempt;
-      const matchFilter = _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
-      const matchSearch = !q || (t.name || '').toLowerCase().includes(q);
-      return matchFilter && matchSearch;
-    })
+  const q = (document.getElementById('test-search')?.value || '').trim();
+  const byStatus = allTests.filter(t => {
+    const done = !!t.lastAttempt;
+    return _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
+  });
+  // SearchMatch (js/shared/search-match.js): accent/punctuation-insensitive,
+  // any word order ("vol2 test 1", "test 1 vol 2"), best match first.
+  if (q && window.SearchMatch) return window.SearchMatch.filter(byStatus, q, t => t.name);
+  return byStatus
     // Random-passage tests (isFixed:false) bubble to the front — the API
     // sorts alphabetically by name, which buried "MockTest Đề Random" on
     // the last page since "M" sorts after "A" ("Actual Mocktest ..."), even
@@ -1365,13 +1367,18 @@ async function _rdRunGlobalSearch() {
     if (listEl && !_rdGlobalSearchActive) {
       listEl.innerHTML = `<div style="text-align:center;padding:40px 16px;color:#9ca3af"><i class="fas fa-spinner fa-spin" style="font-size:24px"></i><div style="font-size:14px;margin-top:10px">Đang tìm trong toàn bộ đề...</div></div>`;
     }
-    await Promise.all(toFetch.map(async c => {
-      try {
-        const res = await apiFetch(`/api/reading/practice/list?category=${c}`);
-        _rdCategoryCache[c] = { passages: res.passages || [], doneMap: res.doneMap || {} };
-      } catch (e) {
-        _rdCategoryCache[c] = { passages: [], doneMap: {} };
+    // One request per category even while the student keeps typing (each
+    // keystroke used to fire all 4 list requests again until they landed).
+    await Promise.all(toFetch.map(c => {
+      if (!_rdCategoryLoading[c]) {
+        _rdCategoryLoading[c] = apiFetch(`/api/reading/practice/list?category=${c}`)
+          .then(res => { _rdCategoryCache[c] = { passages: res.passages || [], doneMap: res.doneMap || {} }; })
+          // Not cached on failure: an empty list stored here made every later
+          // search come back empty until a page reload. The next keystroke retries.
+          .catch(e => console.warn('[reading search] list failed', c, e))
+          .finally(() => { delete _rdCategoryLoading[c]; });
       }
+      return _rdCategoryLoading[c];
     }));
   }
   if (token !== _rdGlobalSearchToken) return; // một tìm kiếm mới hơn đã bắt đầu
@@ -1406,16 +1413,21 @@ function _applyPracticeFilters() {
 }
 
 function getRdFilteredPassages(skipTypeFilter = false) {
-  const q = (document.getElementById('practice-search-input')?.value || '').trim().toLowerCase();
+  const q = (document.getElementById('practice-search-input')?.value || '').trim();
   const qtf = skipTypeFilter ? null : _rdQTypes();
-  return _allPracticePassages.filter(p => {
+  const list = _allPracticePassages.filter(p => {
     const isDone = !!_practiceDoneMap[p._id?.toString()];
-    const passTitle  = !q || (p.title || '').toLowerCase().includes(q);
     const passStatus = _practiceStatusFilter === 'all'
       || (_practiceStatusFilter === 'done' && isDone)
       || (_practiceStatusFilter === 'new'  && !isDone);
-    return passTitle && passStatus && (!qtf || qtf.matches(p));
+    return passStatus && (!qtf || qtf.matches(p));
   });
+  if (!q) return list;
+  const label = { passage1: 'passage 1', passage2: 'passage 2', passage3: 'passage 3' };
+  const text = p => [p.title, (p.__isActual || p.isActualTest) ? 'actual test' : (label[p.category] || '')];
+  return window.SearchMatch
+    ? window.SearchMatch.filter(list, q, text)
+    : list.filter(p => (p.title || '').toLowerCase().includes(q.toLowerCase()));
 }
 
 function rerenderPracticePassages() {

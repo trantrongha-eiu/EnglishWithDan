@@ -4,6 +4,7 @@ import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 import ImportStatusBox from '../components/ImportStatusBox';
+import SearchMatch from '../utils/searchMatch';
 
 const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 
@@ -421,10 +422,7 @@ export default function Vocabulary() {
   useEffect(() => { load(); }, []);
 
   const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    return units.filter(u =>
-      !search || u.title?.toLowerCase().includes(q) || u.level?.toLowerCase().includes(q)
-    );
+    return units.filter(u => !search || SearchMatch.matches([u.title, u.level], search));
   }, [units, search]);
 
   async function toggleActive(id, isActive) {

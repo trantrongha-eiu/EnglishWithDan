@@ -7,10 +7,15 @@ const ListeningSection = require('../../../models/ListeningSection');
 const WritingTask1 = require('../../../models/WritingTask1');
 const WritingTask2 = require('../../../models/WritingTask2');
 const SpeakingQuestion = require('../../../models/SpeakingQuestion');
+const Passage = require('../../../models/Passage');
+const EssentialGrammarLesson = require('../../../models/EssentialGrammarLesson');
 const { createReadingTest, createListeningTest, createVocabUnit } = require('../../factories/contentFactory');
 const { createStudent, createTeacher } = require('../../factories/userFactory');
 
 describe('searchService.search', () => {
+  // the catalog is cached in memory; each test seeds its own data
+  beforeEach(() => searchService.clearCache());
+
   it('finds a Reading test by a partial, case-insensitive name match', async () => {
     await createReadingTest({ name: 'Orange Test 20' });
     const student = await createStudent();
@@ -169,5 +174,49 @@ describe('searchService.search', () => {
 
     const results = await searchService.search('repeated match', student);
     expect(results).toHaveLength(5);
+  });
+
+  describe('matching what students actually type', () => {
+    it('ignores punctuation, spacing and word order ("cam18t4", "test 4 cam 18")', async () => {
+      await createListeningTest({ name: 'Cam 18 - Test 4' });
+      await createListeningTest({ name: 'Cam 18 - Test 3' });
+      const student = await createStudent();
+
+      for (const q of ['cam 18 test 4', 'cam18t4', 'test 4 cam 18', 'Cambridge 18 test 4']) {
+        const results = await searchService.search(q, student);
+        expect(results.map(r => r.label)).toEqual(['Cam 18 - Test 4']);
+      }
+    });
+
+    it('matches numbers whole ("vol 1" is not "Vol 10") and ranks the exact name first', async () => {
+      await createReadingTest({ name: 'Vol 10 - Test 1' });
+      await createReadingTest({ name: 'Vol 1 - Test 10' });
+      await createReadingTest({ name: 'Vol 1 - Test 1' });
+      const student = await createStudent();
+
+      expect((await searchService.search('vol 1 test 1', student))[0].label).toBe('Vol 1 - Test 1');
+      expect((await searchService.search('vol 1', student)).map(r => r.label)).not.toContain('Vol 10 - Test 1');
+    });
+
+    it('is accent-insensitive both ways', async () => {
+      await createReadingTest({ name: 'MockTest Đề Random' });
+      const student = await createStudent();
+
+      expect(await searchService.search('de random', student)).toHaveLength(1);
+      expect(await searchService.search('đề random', student)).toHaveLength(1);
+    });
+
+    it('finds Reading practice passages and grammar lessons', async () => {
+      await Passage.create({ title: 'The Dinosaur Museum', category: 'passage2', content: 'x', questionRange: { start: 14, end: 26 } });
+      await EssentialGrammarLesson.create({ category: 'tenses', lessonKey: 'present-perfect', title: 'Present perfect' });
+      const student = await createStudent();
+
+      const [passage] = await searchService.search('dinosaur', student);
+      expect(passage).toMatchObject({ category: 'Reading · Bài lẻ', label: 'The Dinosaur Museum' });
+      expect(passage.url).toMatch(/^reading\.html\?passageId=/);
+      expect(await searchService.search('present perfect', student)).toEqual([
+        { category: 'Ngữ pháp', label: 'Present perfect', url: 'essential-grammar.html?lesson=present-perfect' },
+      ]);
+    });
   });
 });

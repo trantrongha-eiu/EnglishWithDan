@@ -584,8 +584,11 @@ function applyListFilters() {
   const q = (document.getElementById('q-search-input')?.value || '').trim().toLowerCase();
   let filtered = state.lastQuestionList;
   if (state.hideAnswered) filtered = filtered.filter(item => !item.attempted);
-  if (q) filtered = filtered.filter(item =>
-    item.question.toLowerCase().includes(q) || (item.topic || '').toLowerCase().includes(q)
+  // SearchMatch: every typed word, any order, no accents needed
+  // ("hometown like" finds "What do you like about your hometown?").
+  if (q) filtered = filtered.filter(item => window.SearchMatch
+    ? window.SearchMatch.matches([item.question, item.topic], q)
+    : item.question.toLowerCase().includes(q) || (item.topic || '').toLowerCase().includes(q)
   );
   const emptyMessage = state.hideAnswered
     ? 'Bạn đã trả lời hết câu hỏi ở đây rồi — bỏ chọn "Ẩn câu đã trả lời" để xem lại.'

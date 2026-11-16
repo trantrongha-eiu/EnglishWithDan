@@ -4,7 +4,8 @@
 const express = require('express');
 const bcrypt  = require('bcryptjs');
 const auth    = require('../../middleware/auth');
-const { teacherOnly, adminOnly, escapeRegex } = require('./_shared');
+const { teacherOnly, adminOnly } = require('./_shared');
+const { userSearchFilter } = require('../../utils/userSearch');
 const logger  = require('../../utils/logger');
 // namespace import (not destructured) so tests can spy on the size check
 const validation = require('../../utils/validation');
@@ -60,15 +61,9 @@ router.get('/users', auth, teacherOnly, async (req, res) => {
     const page  = Math.max(1, parseInt(req.query.page) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 50));
     const filter = {};
-    if (search) {
-      const re = escapeRegex(search);
-      filter.$or = [
-        { username:  { $regex: re, $options: 'i' } },
-        { email:     { $regex: re, $options: 'i' } },
-        { firstName: { $regex: re, $options: 'i' } },
-        { lastName:  { $regex: re, $options: 'i' } }
-      ];
-    }
+    // Every word must hit username/email/first/last name, accents optional:
+    // "nguyen van an" finds firstName "Nguyễn Văn" + lastName "An".
+    if (search) Object.assign(filter, userSearchFilter(search) || {});
     // Guests (no-login Entrance Test takers) only show when asked for —
     // they're not site accounts; the Entrance Test page lists them.
     filter.role = role || { $ne: 'guest' };

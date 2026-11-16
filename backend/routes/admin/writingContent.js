@@ -2,15 +2,16 @@
 // Extracted from backend/routes/admin.js — Writing Tests dropdown, Writing Exams, Writing History, Writing Task 1 Pool, Writing Task 2 Pool sections.
 
 const express    = require('express');
+const SearchMatch = require('../../utils/searchMatch');
+const { userIdsMatching } = require('../../utils/userSearch');
 const auth       = require('../../middleware/auth');
 const { isImageDataUri } = require('../../utils/validation');
-const { teacherOnly, uploadImageDataUri, escapeRegex } = require('./_shared');
+const { teacherOnly, uploadImageDataUri } = require('./_shared');
 
 const WritingExam    = require('../../models/WritingExam');
 const WritingTask1   = require('../../models/WritingTask1');
 const WritingTask2   = require('../../models/WritingTask2');
 const WritingAttempt = require('../../models/WritingAttempt');
-const User           = require('../../models/User');
 const { REWRITE_CUTOFF } = require('../../services/writingService');
 const { REAL_ATTEMPT } = require('../../services/attemptVisibility');
 const { isValidCoverUrl } = require('../../utils/cardThumbnail');
@@ -122,17 +123,11 @@ router.get('/writing-history', auth, teacherOnly, async (req, res) => {
       and.push({ $or: [{ submissionType: 'exam' }, { submissionType: { $exists: false } }, { submissionType: null }] });
     }
     if (search) {
-      const re = escapeRegex(search);
-      const matchingUsers = await User.find({
-        $or: [
-          { username:  { $regex: re, $options: 'i' } },
-          { firstName: { $regex: re, $options: 'i' } },
-          { lastName:  { $regex: re, $options: 'i' } }
-        ]
-      }).select('_id');
+      // student (full name, any order, accents optional) or exam name
+      const userIds = await userIdsMatching(search, { fields: ['username', 'firstName', 'lastName'] });
       and.push({ $or: [
-        { examName: { $regex: re, $options: 'i' } },
-        { userId: { $in: matchingUsers.map(u => u._id) } }
+        SearchMatch.mongoFilter(search, ['examName']),
+        { userId: { $in: userIds || [] } }
       ] });
     }
     const filter = and.length ? { $and: and } : {};

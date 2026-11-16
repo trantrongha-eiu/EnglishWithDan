@@ -5,6 +5,7 @@ import { useApi } from '../hooks/useApi';
 import PageHeader from '../components/ui/PageHeader';
 import StatCard from '../components/ui/StatCard';
 import { ErrorState, EmptyState, TableBody } from '../components/ui/States';
+import SearchMatch from '../utils/searchMatch';
 
 // BXH vocab + Cửa hàng lửa 🔥 — admin view of vocab-leaderboard.html and
 // shop.html (GET /api/admin/shop/overview). Read-only: 🔥 / items only move
@@ -26,7 +27,7 @@ function Board({ data, loading }) {
   const petName = useMemo(() => Object.fromEntries((data?.catalog?.pets || []).map(p => [p.id, p.name])), [data]);
   const rows = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return (data?.players || []).filter(r => !q || (r.name || '').toLowerCase().includes(q));
+    return (data?.players || []).filter(r => !q || SearchMatch.matches(r.name, q));
   }, [data, search]);
   return (
     <>

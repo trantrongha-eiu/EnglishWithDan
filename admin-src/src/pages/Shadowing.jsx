@@ -8,6 +8,7 @@ import Modal from '../components/ui/Modal';
 import StatCard from '../components/ui/StatCard';
 import { ErrorState, EmptyState, Skeleton, TableBody } from '../components/ui/States';
 import { formatDur } from '../utils/format';
+import SearchMatch from '../utils/searchMatch';
 
 // Shadowing (Video) — admin side of shadowing.html (GET/PUT/PATCH
 // /api/admin/shadowing/*). Lessons are YouTube clips cut into timed
@@ -130,7 +131,7 @@ export default function Shadowing() {
     return lessons.filter(l => (!category || l.category === category)
       && (!level || l.level === level)
       && (!status || (status === 'visible' ? l.isPublished : !l.isPublished))
-      && (!q || [l.title, l.slug, l.sourceTitle, l.channel].some(x => (x || '').toLowerCase().includes(q))));
+      && (!q || SearchMatch.matches([l.title, l.slug, l.sourceTitle, l.channel], q)));
   }, [lessons, category, level, status, search]);
 
   const totals = useMemo(() => ({

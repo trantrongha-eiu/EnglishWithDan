@@ -4,6 +4,7 @@ import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 import Pagination from '../components/Pagination';
+import SearchMatch from '../utils/searchMatch';
 
 const PAGE = 20;
 const LEVELS = ['beginner', 'elementary', 'intermediate'];
@@ -259,7 +260,7 @@ export default function WritingPractice() {
     if (topicFilter && ex.topicKey !== topicFilter) return false;
     if (statusFilter === 'active' && ex.isActive === false) return false;
     if (statusFilter === 'hidden' && ex.isActive !== false) return false;
-    if (exSearch && !ex.question?.toLowerCase().includes(exSearch.toLowerCase())) return false;
+    if (exSearch && !SearchMatch.matches(ex.question, exSearch)) return false;
     return true;
   });
 
@@ -401,9 +402,7 @@ export default function WritingPractice() {
 
       {tab === 'attempts' && (() => {
         const filtAtt = attempts.filter(a => !attemptSearch
-          || (a.studentId?.username || '').toLowerCase().includes(attemptSearch.toLowerCase())
-          || (a.studentId?.firstName || '').toLowerCase().includes(attemptSearch.toLowerCase())
-          || (a.topic || '').toLowerCase().includes(attemptSearch.toLowerCase()));
+          || SearchMatch.matches([a.studentId?.firstName, a.studentId?.lastName, a.studentId?.username, a.topic], attemptSearch));
         const ATT_PAGE = 25;
         const attPages = Math.max(1, Math.ceil(filtAtt.length / ATT_PAGE));
         const attRows  = filtAtt.slice((attPage - 1) * ATT_PAGE, attPage * ATT_PAGE);

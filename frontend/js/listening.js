@@ -998,13 +998,17 @@ function applyTestFilters() {
 }
 
 function getLsFilteredTests() {
-    const q = (document.getElementById('test-search')?.value || '').trim().toLowerCase();
-    return (state.tests || []).filter(t => {
+    const q = (document.getElementById('test-search')?.value || '').trim();
+    const list = (state.tests || []).filter(t => {
         const done = !!t.lastAttempt;
-        const matchFilter = _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
-        const matchSearch = !q || (t.name || '').toLowerCase().includes(q);
-        return matchFilter && matchSearch;
+        return _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
     });
+    if (!q) return list;
+    // SearchMatch (js/shared/search-match.js): "cam18 test 2", "vol 3 t1",
+    // any word order — best match first (its series group comes first too).
+    return window.SearchMatch
+        ? window.SearchMatch.filter(list, q, t => [t.name, t.seriesName])
+        : list.filter(t => (t.name || '').toLowerCase().includes(q.toLowerCase()));
 }
 
 function rerenderLsFilteredTests() {

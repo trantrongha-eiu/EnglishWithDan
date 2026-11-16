@@ -4,6 +4,7 @@ import { FRONTEND_URL, formatDate } from '../utils/api';
 import { useApi } from '../hooks/useApi';
 import PageHeader from '../components/ui/PageHeader';
 import { ErrorState, EmptyState, TableBody } from '../components/ui/States';
+import SearchMatch from '../utils/searchMatch';
 
 // Part 2 · 7 câu chuyện gốc — admin view of speaking-part2.html
 // (GET /api/admin/speaking-part2/overview). The 7 stories are code-owned
@@ -44,7 +45,7 @@ export default function SpeakingPart2() {
     const q = search.trim().toLowerCase();
     return (data?.rows || []).filter(r => (!story || r.storyId === story)
       && (!state || (state === 'mastered' ? r.masteredAt : state === 'completed' ? r.completedAt : !r.masteredAt))
-      && (!q || (r.name || '').toLowerCase().includes(q) || (r.email || '').toLowerCase().includes(q)));
+      && (!q || SearchMatch.matches([r.name, r.email], q)));
   }, [data, story, search, state]);
 
   return (

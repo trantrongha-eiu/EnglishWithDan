@@ -3,6 +3,7 @@ import { apiFetch } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
+import SearchMatch from '../utils/searchMatch';
 
 const CATEGORIES = [
   { value: 'ielts', label: 'Luyện thi IELTS' },
@@ -174,7 +175,7 @@ export default function Courses() {
   useEffect(() => { load(); }, []);
 
   const filtered = courses.filter(c => {
-    if (search && !c.title?.toLowerCase().includes(search.toLowerCase())) return false;
+    if (search && !SearchMatch.matches(c.title, search)) return false;
     if (catFilter && c.category !== catFilter) return false;
     return true;
   });

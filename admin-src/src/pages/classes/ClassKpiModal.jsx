@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '../../utils/api';
 import { sessionName } from './classProgressUtils';
+import SearchMatch from '../../utils/searchMatch';
 
 // Drill-down behind the 4 KPI tiles on the class list. Class-based tiles
 // (active / today) reuse the already-loaded class list; student-based tiles
@@ -136,8 +137,7 @@ export default function ClassKpiModal({ kind, classes, isAdmin, onClose }) {
     const rank = { failed: 0, warning: 1, active: 2, completed: 3, dropped: 4 };
     const rows = (students || [])
       .filter((e) => kind !== 'atRisk' || e.status === 'warning' || e.status === 'failed')
-      .filter((e) => !needle || [e.student.name, e.student.username, e.student.email, e.class.name]
-        .filter(Boolean).some((v) => v.toLowerCase().includes(needle)))
+      .filter((e) => !needle || SearchMatch.matches([e.student.name, e.student.username, e.student.email, e.class.name], needle))
       .sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9)
         || (a.student.name || '').localeCompare(b.student.name || '', 'vi'));
     count = rows.length;
@@ -146,7 +146,7 @@ export default function ClassKpiModal({ kind, classes, isAdmin, onClose }) {
       : <StudentRows rows={rows} risk={kind === 'atRisk'} />;
   } else {
     const rows = (kind === 'today' ? live.filter((c) => c.progress?.todaySession) : live)
-      .filter((c) => !needle || [c.name, c.courseName, c.teacher?.name].filter(Boolean).some((v) => v.toLowerCase().includes(needle)))
+      .filter((c) => !needle || SearchMatch.matches([c.name, c.courseName, c.teacher?.name], needle))
       .sort((a, b) => (a.progress?.todaySession?.startTime || a.startTime || '99').localeCompare(b.progress?.todaySession?.startTime || b.startTime || '99'));
     count = rows.length;
     body = <ClassRows classes={rows} isAdmin={isAdmin} mode={kind} />;

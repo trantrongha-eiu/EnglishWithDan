@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import SpeakingCriteriaTable from '../components/SpeakingCriteriaTable';
 import SpeakingRecordings from '../components/SpeakingRecordings';
 import { hasRecordings } from '../utils/speakingRecordings';
+import SearchMatch from '../utils/searchMatch';
 
 const PARTS = [1, 2, 3];
 
@@ -491,11 +492,11 @@ export default function Speaking() {
 
   const filteredQ = questions.filter(q => {
     if (partFilter && String(q.part) !== partFilter) return false;
-    if (search && !q.question?.toLowerCase().includes(search.toLowerCase()) && !q.topic?.toLowerCase().includes(search.toLowerCase())) return false;
+    if (search && !SearchMatch.matches([q.question, q.topic], search)) return false;
     return true;
   });
   const filteredM = materials.filter(m =>
-    !search || m.title?.toLowerCase().includes(search.toLowerCase()) || m.topic?.toLowerCase().includes(search.toLowerCase())
+    !search || SearchMatch.matches([m.title, m.topic], search)
   );
 
   return (

@@ -98,10 +98,13 @@ function renderDictList() {
     grid.innerHTML = `<div class="dict-empty"><i class="fas fa-keyboard"></i>Chưa có bài nào sẵn sàng để luyện Dictation.</div>`;
     return;
   }
-  // Every word typed must appear somewhere in the title / Part label.
-  const terms = _dictNorm(document.getElementById('dict-search').value).split(' ').filter(Boolean);
-  const list = dictSections.filter(s => {
-    const hay = _dictNorm(s.title + ' ' + (s.isActualTest ? 'actual test' : 'part ' + s.partNumber));
+  // Every word typed must appear somewhere in the title / Part label —
+  // SearchMatch (js/shared/search-match.js), same matcher as the other pages.
+  const query = document.getElementById('dict-search').value;
+  const text = s => [s.title, s.isActualTest ? 'actual test' : 'part ' + s.partNumber];
+  const list = window.SearchMatch ? window.SearchMatch.filter(dictSections, query, text) : dictSections.filter(s => {
+    const terms = _dictNorm(query).split(' ').filter(Boolean);
+    const hay = _dictNorm(text(s).join(' '));
     const compact = hay.replace(/ /g, '');
     return terms.every(t => hay.includes(t) || compact.includes(t));
   });

@@ -7,6 +7,7 @@ import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
 import LessonPreview from '../components/LessonPreview';
 import CoverImageField from '../components/CoverImageField';
+import SearchMatch from '../utils/searchMatch';
 
 const DIFFICULTY_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 const PREFILL_KEY = 'vocabLessonImportPrefill';
@@ -366,7 +367,7 @@ export default function VocabularyLessons() {
   useEffect(() => { load(); }, []);
 
   const filtered = lessons.filter(l =>
-    !search || l.title?.toLowerCase().includes(search.toLowerCase())
+    !search || SearchMatch.matches([l.title, l.targetClass], search)
   );
 
   async function togglePublish(id, published) {

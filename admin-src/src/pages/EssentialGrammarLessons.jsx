@@ -4,6 +4,7 @@ import { downloadCsv } from '../utils/csvDownload';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
 import { useAuth } from '../contexts/AuthContext';
+import SearchMatch from '../utils/searchMatch';
 
 // Seed-reset caveat (see backend/scripts/seedEssentialGrammar.js): every
 // server restart re-upserts every lesson from the seed data via a full
@@ -257,7 +258,7 @@ export default function EssentialGrammarLessons() {
 
   const categories = [...new Set(lessons.map(l => l.category))];
   const filtered = lessons.filter(l =>
-    (!search || l.title?.toLowerCase().includes(search.toLowerCase())) &&
+    (!search || SearchMatch.matches([l.title, l.category, l.lessonKey], search)) &&
     (!category || l.category === category)
   );
 

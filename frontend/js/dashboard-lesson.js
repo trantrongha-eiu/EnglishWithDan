@@ -111,7 +111,7 @@ function setupTodaysLessonPicker() {
     function render(query) {
         const lessons = lessonState.publicLessons;
         const filtered = query
-            ? lessons.filter(l => l.title.toLowerCase().includes(query.toLowerCase()))
+            ? (window.SearchMatch ? window.SearchMatch.filter(lessons, query, l => l.title) : lessons.filter(l => l.title.toLowerCase().includes(query.toLowerCase())))
             : lessons;
         resultsEl.innerHTML = (query && !filtered.length)
             ? '<div class="up-empty">Không tìm thấy bài quiz nào</div>'
@@ -200,7 +200,7 @@ function buildClassroomPicker(container, opts) {
     // many assigned quizzes doesn't have to scroll/scan the whole thing.
     function render(query) {
         const filtered = query
-            ? lessons.filter(l => l.title.toLowerCase().includes(query.toLowerCase()))
+            ? (window.SearchMatch ? window.SearchMatch.filter(lessons, query, l => l.title) : lessons.filter(l => l.title.toLowerCase().includes(query.toLowerCase())))
             : lessons;
         resultsEl.innerHTML = (query && !filtered.length)
             ? '<div class="up-empty">Không tìm thấy bài quiz nào</div>'

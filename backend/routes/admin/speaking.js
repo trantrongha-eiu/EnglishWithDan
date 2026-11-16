@@ -2,6 +2,8 @@
 // Extracted from backend/routes/admin.js — Speaking Questions, Speaking Materials (PDF), and Speaking History sections.
 
 const express    = require('express');
+const SearchMatch = require('../../utils/searchMatch');
+const { userIdsMatching } = require('../../utils/userSearch');
 const mongoose   = require('mongoose');
 const auth       = require('../../middleware/auth');
 const { teacherOnly, adminOnly, uploadPdf, uploadPdfBuffer } = require('./_shared');
@@ -9,7 +11,6 @@ const { teacherOnly, adminOnly, uploadPdf, uploadPdfBuffer } = require('./_share
 const SpeakingQuestion = require('../../models/SpeakingQuestion');
 const SpeakingMaterial = require('../../models/SpeakingMaterial');
 const SpeakingAttempt  = require('../../models/SpeakingAttempt');
-const User             = require('../../models/User');
 const { parseSpeakingText } = require('../../services/speakingImportParser');
 const { loadBankIndex, warnAboutExisting, buildImportOps } = require('../../services/speakingImportService');
 
@@ -259,13 +260,13 @@ router.get('/speaking/history', auth, teacherOnly, async (req, res) => {
     // page looked exactly like "no history", with the total/matched
     // counters right next to each other implying otherwise. userId isn't
     // text-searchable directly, so resolve matching usernames first.
+    // student name/username/email (was: username only — a teacher typing
+    // the student's name found nothing), or the question / topic text.
     if (search && search.trim()) {
-      const regex = new RegExp(search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-      const matchingUsers = await User.find({ username: regex }).select('_id').lean();
+      const userIds = await userIdsMatching(search);
       filter.$or = [
-        { userId: { $in: matchingUsers.map(u => u._id) } },
-        { question: regex },
-        { topic: regex },
+        { userId: { $in: userIds || [] } },
+        SearchMatch.mongoFilter(search, ['question', 'topic']),
       ];
     }
     const skip = (page - 1) * limit;

@@ -11,6 +11,7 @@ import { TableBody, EmptyState } from '../components/ui/States';
 import { bandBadge, simBadge } from '../components/ui/badges';
 import { formatDur, formatNumber } from '../utils/format';
 import AttemptTitle from '../components/AttemptTitle';
+import SearchMatch from '../utils/searchMatch';
 
 const PAGE_SIZE = 25;
 const INITIAL_LOAD = 150;
@@ -54,10 +55,7 @@ export default function StudentHistory() {
 
   const filtered = useMemo(() => all.filter(h => {
     if (!search) return true;
-    const q = search.toLowerCase();
-    return (h.userId?.displayName || '').toLowerCase().includes(q)
-      || (h.userId?.username || '').toLowerCase().includes(q)
-      || (h.testName || '').toLowerCase().includes(q);
+    return SearchMatch.matches([h.userId?.displayName, h.userId?.username, h.testName], search);
   }), [all, search]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));

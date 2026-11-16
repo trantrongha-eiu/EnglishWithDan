@@ -59,7 +59,7 @@
       if(!inp||!dd) return null;
       var isOpen=false;
       function render(q){
-        var list=q?_units.filter(function(u){return u.label.toLowerCase().includes(q.toLowerCase());}):_units;
+        var list=q?(window.SearchMatch?window.SearchMatch.filter(_units,q,function(u){return u.label;}):_units.filter(function(u){return u.label.toLowerCase().includes(q.toLowerCase());})):_units;
         dd.innerHTML='';
         if(!list.length){dd.innerHTML='<div class="up-empty">Không tìm thấy</div>';return;}
         list.forEach(function(u){

@@ -10,9 +10,10 @@
 // Built by scripts/seedTask2SampleSentences.js from data/task2/sampleSentences.js.
 
 const express = require('express');
+const SearchMatch = require('../../utils/searchMatch');
 const mongoose = require('mongoose');
 const auth    = require('../../middleware/auth');
-const { teacherOnly, escapeRegex } = require('./_shared');
+const { teacherOnly } = require('./_shared');
 
 const Task2Topic = require('../../models/Task2Topic');
 const WritingTask2 = require('../../models/WritingTask2');
@@ -93,10 +94,7 @@ router.get('/task2/topics', auth, teacherOnly, async (req, res) => {
     if (essayType !== 'all' && essayType) query.essayType = String(essayType);
     if (active === 'true') query.isActive = true;
     if (active === 'false') query.isActive = false;
-    if (search) {
-      const rx = { $regex: escapeRegex(String(search).slice(0, 100)), $options: 'i' };
-      query.$or = [{ topicName: rx }, { prompt: rx }];
-    }
+    if (search) Object.assign(query, SearchMatch.mongoFilter(search, ['topicName', 'prompt']) || {});
 
     const lim = Math.min(Math.max(Number(limit) || 20, 1), 5000);
     const pg = Math.max(Number(page) || 1, 1);

@@ -2,9 +2,10 @@
 // Extracted from backend/routes/admin.js — Passages + Reading Tests + Listening Tests dropdown sections.
 
 const express    = require('express');
+const SearchMatch = require('../../utils/searchMatch');
 const auth       = require('../../middleware/auth');
 const { isImageDataUri } = require('../../utils/validation');
-const { teacherOnly, uploadImageDataUri, uploadCoverImageDataUri, escapeRegex } = require('./_shared');
+const { teacherOnly, uploadImageDataUri, uploadCoverImageDataUri } = require('./_shared');
 
 const Passage      = require('../../models/Passage');
 const ReadingTest  = require('../../models/ReadingTest');
@@ -24,7 +25,7 @@ function buildPassageFilter({ category, search, difficulty }) {
   const filter = {};
   if (category)   filter.category   = category;
   if (difficulty) filter.difficulty = difficulty;
-  if (search)     filter.title      = { $regex: escapeRegex(String(search)), $options: 'i' };
+  if (search)     Object.assign(filter, SearchMatch.mongoFilter(String(search), ['title']) || {});
   return filter;
 }
 

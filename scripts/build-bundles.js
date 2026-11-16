@@ -31,6 +31,7 @@ const BUNDLES = {
     'js/auth.js',
     'js/upgrade-modal.js',
     'js/shared/popup-queue.js',
+    'js/shared/search-match.js',
     'js/nav.js',
     'js/shared/playful.js',
     'js/shared/sound-effects.js',

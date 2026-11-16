@@ -7,6 +7,7 @@ import PageHeader from '../components/ui/PageHeader';
 import Modal from '../components/ui/Modal';
 import { ErrorState, EmptyState, Skeleton } from '../components/ui/States';
 import { renderMarkdown } from '../utils/markdown';
+import SearchMatch from '../utils/searchMatch';
 
 // Tips 4 kỹ năng — admin view of the Reading/Listening/Writing/Speaking Tips
 // articles students read (GET/PATCH /api/admin/tips). Until now these had
@@ -66,7 +67,7 @@ export default function Tips() {
     return active.tips.map(withOverride).filter(t => {
       if (status === 'visible' && !t.isActive) return false;
       if (status === 'hidden' && t.isActive) return false;
-      return !q || t.title.toLowerCase().includes(q) || t.lessonKey.toLowerCase().includes(q) || (t.category || '').toLowerCase().includes(q);
+      return !q || SearchMatch.matches([t.title, t.lessonKey, t.category], q);
     });
   }, [active, search, status, override]); // eslint-disable-line react-hooks/exhaustive-deps
 

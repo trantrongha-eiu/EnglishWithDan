@@ -2339,8 +2339,11 @@ function _applyTaskFilters() {
   const q = (document.getElementById('writing-task-search')?.value || '').trim().toLowerCase();
   const cat = _catList().find(c => c.id === practiceState.essayType) || null;
   const type = cat ? cat.id : null;
-  practiceState.filteredTasks = (practiceState.tasks || []).filter(t =>
-    (!q || (t.prompt || '').toLowerCase().includes(q)) && (!type || _taskCat(t) === type));
+  const byType = (practiceState.tasks || []).filter(t => !type || _taskCat(t) === type);
+  // SearchMatch: every typed word, any order ("children technology") — best first
+  practiceState.filteredTasks = !q ? byType : window.SearchMatch
+    ? window.SearchMatch.filter(byType, q, t => t.prompt)
+    : byType.filter(t => (t.prompt || '').toLowerCase().includes(q));
   practiceState.page = 1;
   const titleEl = document.getElementById('practice-list-title');
   if (titleEl) titleEl.textContent = `Chọn đề Task ${practiceState.taskType}` + (cat ? ` · ${cat.label}` : '');

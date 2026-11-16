@@ -5,6 +5,7 @@ import { useToast } from '../contexts/ToastContext';
 import { downloadText } from '../utils/csvDownload';
 import { renderMarkdown } from '../utils/markdown';
 import WarmUpPromptPanel from '../components/WarmUpPromptPanel';
+import SearchMatch from '../utils/searchMatch';
 
 // "Tài liệu in (Tips)": for every Tips lesson of the four skills, a Markdown
 // pack (AI prompt + the tip's content + for Reading/Listening its fixed
@@ -44,7 +45,7 @@ export default function TipLecturePacks() {
   const groups = useMemo(() => {
     if (!active) return [];
     const needle = q.trim().toLowerCase();
-    const tips = active.tips.filter(t => !needle || `${t.title} ${t.category}`.toLowerCase().includes(needle));
+    const tips = active.tips.filter(t => !needle || SearchMatch.matches([t.title, t.category], needle));
     const byCat = new Map();
     tips.forEach(t => { if (!byCat.has(t.category)) byCat.set(t.category, []); byCat.get(t.category).push(t); });
     return [...byCat.entries()];

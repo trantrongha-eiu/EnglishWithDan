@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { ProgressRing, ProgressChips, WeekTrack } from './classes/ClassProgress';
 import { phaseText, keyLabel, relDay, sessionName } from './classes/classProgressUtils';
 import ClassKpiModal from './classes/ClassKpiModal';
+import SearchMatch from '../utils/searchMatch';
 
 const POLICY_BLANK = {
   maxAbsencesAllowed: 3,
@@ -218,7 +219,7 @@ export default function Classes() {
     : ({ ongoing: 1, upcoming: 2, unscheduled: 3, ended: 4 })[c.progress?.phase] ?? 3);
   const rows = classes
     .filter((c) => (showArchived ? true : c.status !== 'archived'))
-    .filter((c) => !needle || [c.name, c.courseName, c.teacher?.name].filter(Boolean).some((v) => v.toLowerCase().includes(needle)))
+    .filter((c) => !needle || SearchMatch.matches([c.name, c.courseName, c.teacher?.name], needle))
     .filter((c) => {
       const k = c.enrollmentCounts || {};
       if (filter === 'today') return !!c.progress?.todaySession;

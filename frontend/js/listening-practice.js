@@ -26,6 +26,7 @@ function _ltQTypes() {
 let _ltSearchVal        = '';    // current text search value
 const LT_PRACTICE_PARTS = [1, 2, 3, 4, 'actual'];
 let _ltCategoryCache      = {}; // partNum -> { sections, doneMap }
+let _ltCategoryLoading    = {}; // partNum -> in-flight list request (search)
 let _ltGlobalSearchActive = false;
 let _ltGlobalSearchToken  = 0;
 let _ltPracticeElapsed  = 0;
@@ -320,17 +321,22 @@ async function _ltRunGlobalSearch() {
         if (listEl && !_ltGlobalSearchActive) {
             listEl.innerHTML = `<div style="text-align:center;padding:40px 16px;color:#9ca3af"><i class="fas fa-spinner fa-spin" style="font-size:24px"></i><div style="font-size:14px;margin-top:10px">Đang tìm trong toàn bộ đề...</div></div>`;
         }
-        await Promise.all(toFetch.map(async part => {
-            try {
+        // One request per part even while the student keeps typing (each
+        // keystroke used to fire all 5 list requests again until they landed).
+        await Promise.all(toFetch.map(part => {
+            if (!_ltCategoryLoading[part]) {
                 const url = part === 'actual'
                     ? `${API}/listening/practice/list?actualTest=true`
                     : `${API}/listening/practice/list?part=${part}`;
-                const res  = await fetch(url, { headers: authH() });
-                const data = await safeJson(res);
-                _ltCategoryCache[part] = { sections: data.sections || [], doneMap: data.doneMap || {} };
-            } catch (e) {
-                _ltCategoryCache[part] = { sections: [], doneMap: {} };
+                _ltCategoryLoading[part] = fetch(url, { headers: authH() })
+                    .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return safeJson(res); })
+                    .then(data => { _ltCategoryCache[part] = { sections: data.sections || [], doneMap: data.doneMap || {} }; })
+                    // Not cached on failure: an empty list stored here made every
+                    // later search come back empty until a page reload.
+                    .catch(e => console.warn('[listening search] list failed', part, e))
+                    .finally(() => { delete _ltCategoryLoading[part]; });
             }
+            return _ltCategoryLoading[part];
         }));
     }
     if (token !== _ltGlobalSearchToken) return; // một tìm kiếm mới hơn đã bắt đầu
@@ -368,15 +374,20 @@ function _applyLtFilters() {
 
 function getLtFilteredSections(skipTypeFilter = false) {
     const qtf = skipTypeFilter ? null : _ltQTypes();
-    return _ltAllSections.filter(s => {
-        const title  = (s.title || '').toLowerCase();
+    const list = _ltAllSections.filter(s => {
         const isDone = !!_ltPracticeDoneMap[s._id?.toString()];
-        const passTitle  = !_ltSearchVal || title.includes(_ltSearchVal);
         const passStatus = _ltStatusFilter === 'all'
             || (_ltStatusFilter === 'done' && isDone)
             || (_ltStatusFilter === 'new'  && !isDone);
-        return passTitle && passStatus && (!qtf || qtf.matches(s));
+        return passStatus && (!qtf || qtf.matches(s));
     });
+    if (!_ltSearchVal) return list;
+    // SearchMatch (js/shared/search-match.js): "cam18 test 2 part 3",
+    // "festival", no accents, any word order — best match first.
+    const text = s => [s.title, (s.__isActual || s.isActualTest) ? 'actual test' : 'part ' + s.partNumber];
+    return window.SearchMatch
+        ? window.SearchMatch.filter(list, _ltSearchVal, text)
+        : list.filter(s => (s.title || '').toLowerCase().includes(_ltSearchVal));
 }
 
 function _ltRenderSectionCard(s) {

@@ -395,7 +395,7 @@ img { max-width: 100%; height: auto; }
 .nav-search-results{overflow-y:auto;flex:1}
 .nav-search-group-label{padding:8px 16px 4px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
 .nav-search-item{display:block;padding:8px 16px;font-size:13px;color:var(--text);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nav-search-item:hover{background:var(--surface2,#f8f9fb)}
+.nav-search-item:hover,.nav-search-item.is-active{background:var(--surface2,#f8f9fb)}
 @media(max-width:480px){
   .nav-search-panel{position:fixed;top:var(--nav-height,64px);right:8px;left:8px;width:auto;max-width:none;max-height:70vh}
 }

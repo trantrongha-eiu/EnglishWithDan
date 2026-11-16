@@ -6,8 +6,9 @@
 // enough (5–12 per group) that per-sentence endpoints aren't worth it.
 
 const express = require('express');
+const SearchMatch = require('../../utils/searchMatch');
 const auth    = require('../../middleware/auth');
-const { teacherOnly, escapeRegex } = require('./_shared');
+const { teacherOnly } = require('./_shared');
 
 const SentenceStructureGroup = require('../../models/SentenceStructureGroup');
 
@@ -19,10 +20,7 @@ router.get('/adv-sentence/groups', auth, teacherOnly, async (req, res) => {
     const { week = 'all', search = '' } = req.query;
     const query = {};
     if (week !== 'all') query.week = parseInt(week);
-    if (search) query.$or = [
-      { nameVi: { $regex: escapeRegex(search), $options: 'i' } },
-      { nameEn: { $regex: escapeRegex(search), $options: 'i' } },
-    ];
+    if (search) Object.assign(query, SearchMatch.mongoFilter(search, ['nameVi', 'nameEn', 'code']) || {});
     const groups = await SentenceStructureGroup.aggregate([
       { $match: query },
       { $sort: { week: 1, order: 1 } },

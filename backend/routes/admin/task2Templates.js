@@ -3,8 +3,9 @@
 // Large on purpose: SEED_TEMPLATES is essay-template content (data), not logic.
 
 const express = require('express');
+const SearchMatch = require('../../utils/searchMatch');
 const auth    = require('../../middleware/auth');
-const { teacherOnly, escapeRegex } = require('./_shared');
+const { teacherOnly } = require('./_shared');
 
 const Task2Template = require('../../models/Task2Template');
 const Task2TemplateAttempt = require('../../models/Task2TemplateAttempt');
@@ -213,7 +214,7 @@ const SEED_TEMPLATES = [
 router.get('/task2/templates', auth, teacherOnly, async (req, res) => {
   try {
     const { search = '' } = req.query;
-    const query = search ? { $or: [{ name: { $regex: escapeRegex(search), $options: 'i' } }, { typeId: { $regex: escapeRegex(search), $options: 'i' } }] } : {};
+    const query = SearchMatch.mongoFilter(search, ['name', 'typeId']) || {};
     const templates = await Task2Template.find(query).sort({ orderIndex: 1 }).lean();
     res.json({ success: true, templates });
   } catch (err) {

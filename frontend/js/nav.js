@@ -611,19 +611,37 @@
   var searchInput = document.getElementById('globalSearchInput');
   var searchResults = document.getElementById('globalSearchResults');
   var _searchDebounce = null;
+  // Each search gets a number; a reply for an older number is dropped, so a
+  // slow reply for "ca" can no longer overwrite the results for "cam 18".
+  var _searchSeq = 0;
+  var _searchAbort = null;
+  var _searchCache = {}; // query → results (backspacing re-shows instantly)
+  var _searchSlowTimer = null;
 
+  function _searchNote(html) {
+    searchResults.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">' + html + '</div>';
+  }
   function openSearchPanel() {
     searchPanel.classList.add('open');
     searchBtn.setAttribute('aria-expanded', 'true');
     searchInput.focus();
+    searchInput.select();
   }
   function closeSearchPanel() {
     searchPanel.classList.remove('open');
     searchBtn.setAttribute('aria-expanded', 'false');
   }
-  function _renderSearchResults(results) {
+  function _searchItems() {
+    return Array.prototype.slice.call(searchResults.querySelectorAll('.nav-search-item'));
+  }
+  function _setSearchCursor(i) {
+    var items = _searchItems();
+    items.forEach(function (a, j) { a.classList.toggle('is-active', j === i); });
+    if (items[i]) items[i].scrollIntoView({ block: 'nearest' });
+  }
+  function _renderSearchResults(results, q) {
     if (!results.length) {
-      searchResults.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">Không tìm thấy kết quả nào</div>';
+      _searchNote('Không tìm thấy kết quả cho “' + _escAttn(q) + '”.<br><span style="font-size:12px">Thử gõ ít chữ hơn, ví dụ: <b>cam 18</b>, <b>vol 2 test 1</b>, <b>festival</b>.</span>');
       return;
     }
     var byCategory = {};
@@ -634,10 +652,41 @@
     });
     searchResults.innerHTML = order.map(function (cat) {
       var items = byCategory[cat].map(function (r) {
-        return '<a href="' + r.url + '" class="nav-search-item">' + r.label + '</a>';
+        return '<a href="' + _escAttn(r.url).replace(/"/g, '&quot;') + '" class="nav-search-item">' + _escAttn(r.label) + '</a>';
       }).join('');
-      return '<div class="nav-search-group"><div class="nav-search-group-label">' + cat + '</div>' + items + '</div>';
+      return '<div class="nav-search-group"><div class="nav-search-group-label">' + _escAttn(cat) + '</div>' + items + '</div>';
     }).join('');
+    _setSearchCursor(0);
+  }
+  function _runSiteSearch(q) {
+    var seq = ++_searchSeq;
+    if (_searchAbort) _searchAbort.abort();
+    _searchAbort = window.AbortController ? new AbortController() : null;
+    clearTimeout(_searchSlowTimer);
+    _searchNote('<i class="fas fa-spinner fa-spin"></i> Đang tìm…');
+    // Render's free instance can take a while to wake up — say so.
+    _searchSlowTimer = setTimeout(function () {
+      if (seq === _searchSeq) _searchNote('<i class="fas fa-spinner fa-spin"></i> Đang tìm… (máy chủ đang khởi động, chờ vài giây)');
+    }, 4000);
+    var headers = window.AuthService ? window.AuthService.authHeader() : {};
+    fetch(API + '/search?q=' + encodeURIComponent(q), { headers: headers, signal: _searchAbort ? _searchAbort.signal : undefined })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (d) {
+        if (seq !== _searchSeq) return;
+        clearTimeout(_searchSlowTimer);
+        _searchCache[q] = d.results || [];
+        _renderSearchResults(_searchCache[q], q);
+      })
+      .catch(function (err) {
+        if (seq !== _searchSeq || (err && err.name === 'AbortError')) return;
+        clearTimeout(_searchSlowTimer);
+        _searchNote('Lỗi tìm kiếm. <a href="#" id="globalSearchRetry">Thử lại</a>');
+        var retry = document.getElementById('globalSearchRetry');
+        if (retry) retry.addEventListener('click', function (e) { e.preventDefault(); _runSiteSearch(q); });
+      });
   }
   if (searchBtn) {
     searchBtn.addEventListener('click', function (e) {
@@ -646,18 +695,24 @@
     });
     searchInput.addEventListener('input', function () {
       clearTimeout(_searchDebounce);
-      var q = searchInput.value.trim();
-      if (!q) { searchResults.innerHTML = ''; return; }
-      _searchDebounce = setTimeout(function () {
-        searchResults.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px"><i class="fas fa-spinner fa-spin"></i></div>';
-        var headers = window.AuthService ? window.AuthService.authHeader() : {};
-        fetch(API + '/search?q=' + encodeURIComponent(q), { headers: headers })
-          .then(function (r) { return r.json(); })
-          .then(function (d) { _renderSearchResults(d.results || []); })
-          .catch(function () {
-            searchResults.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">Lỗi tìm kiếm.</div>';
-          });
-      }, 300);
+      var q = searchInput.value.trim().replace(/\s+/g, ' ');
+      if (!q) {
+        ++_searchSeq;
+        clearTimeout(_searchSlowTimer);
+        searchResults.innerHTML = '';
+        return;
+      }
+      if (_searchCache[q]) { ++_searchSeq; clearTimeout(_searchSlowTimer); _renderSearchResults(_searchCache[q], q); return; }
+      _searchDebounce = setTimeout(function () { _runSiteSearch(q); }, 250);
+    });
+    // ↑ ↓ move, Enter opens the highlighted result (the first one by default)
+    searchInput.addEventListener('keydown', function (e) {
+      var items = _searchItems();
+      if (!items.length) return;
+      var cur = items.findIndex(function (a) { return a.classList.contains('is-active'); });
+      if (e.key === 'ArrowDown') { e.preventDefault(); _setSearchCursor((cur + 1) % items.length); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); _setSearchCursor((cur - 1 + items.length) % items.length); }
+      else if (e.key === 'Enter') { e.preventDefault(); location.href = items[Math.max(0, cur)].href; }
     });
     document.addEventListener('click', function (e) {
       if (!searchPanel.classList.contains('open')) return;

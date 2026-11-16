@@ -4,9 +4,9 @@
 // (routes/admin/onlineTime.js).
 
 const mongoose = require('mongoose');
+const SearchMatch = require('../utils/searchMatch');
 const OnlineSession = require('../models/OnlineSession');
 const User = require('../models/User');
-const { escapeRegex } = require('../utils/strings');
 
 const VN_OFFSET_MS = 7 * 3600 * 1000;
 const DAY_MS = 864e5;
@@ -122,9 +122,9 @@ async function listDay({ day, search, sort, page = 1, limit = 50 }) {
     idlePauses: list.reduce((s, r) => s + r.idlePauses, 0),
   };
 
-  if (search) {
-    const re = new RegExp(escapeRegex(String(search).trim()), 'i');
-    list = list.filter(({ user: u }) => [u.username, u.firstName, u.lastName, u.email, u.className].some((v) => v && re.test(v)));
+  // full name in any order, accents optional ("nguyen an"), or class
+  if (search && SearchMatch.norm(search)) {
+    list = list.filter(({ user: u }) => SearchMatch.matches([u.firstName, u.lastName, u.username, u.email, u.className], search));
   }
   list.sort(DAY_SORTS[sort] || DAY_SORTS.minutes);
 

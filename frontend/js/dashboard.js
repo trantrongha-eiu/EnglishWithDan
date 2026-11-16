@@ -1419,8 +1419,10 @@ function filterByStatus(status) {
 function _applyWordFilters(words, query) {
     let result = words;
     if (query) {
-        result = result.filter(w =>
-            w.word.toLowerCase().includes(query) ||
+        // SearchMatch: accents optional ("moi truong" finds "môi trường")
+        result = result.filter(w => window.SearchMatch
+            ? window.SearchMatch.matches([w.word, w.meaning, w.note], query)
+            : w.word.toLowerCase().includes(query) ||
             (w.meaning || '').toLowerCase().includes(query) ||
             (w.note || '').toLowerCase().includes(query));
     }

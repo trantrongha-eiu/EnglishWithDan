@@ -352,7 +352,10 @@ function renderSidebar() {
   categories.forEach(cat => {
     const lessons = allLessons
       .filter(l => l.category === cat)
-      .filter(l => !term || l.title.toLowerCase().includes(term) || cat.toLowerCase().includes(term))
+      // SearchMatch: no accents needed, any word order ("perfect present")
+      .filter(l => !term || (window.SearchMatch
+        ? window.SearchMatch.matches([l.title, cat], term)
+        : l.title.toLowerCase().includes(term) || cat.toLowerCase().includes(term)))
       .sort((a, b) => a.orderIndex - b.orderIndex);
     if (!lessons.length) return;
     anyMatch = true;
