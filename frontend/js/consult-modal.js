@@ -70,11 +70,13 @@
               '<label>Khóa học quan tâm</label>' +
               '<select id="_cmCourse">' +
                 '<option value="">-- Chọn khóa học --</option>' +
-                '<option>IELTS Mất Gốc → 6.0+</option>' +
-                '<option>IELTS 3.0 → 6.0+</option>' +
+                '<option>IELTS Foundation (0 → 3.0)</option>' +
+                '<option>Tiếng Anh Giao Tiếp (A1 → A2)</option>' +
+                '<option>IELTS 3.0 → 4.0</option>' +
+                '<option>IELTS 5.0 → 6.0</option>' +
                 '<option>IELTS 6.0 → 7.0+</option>' +
-                '<option>IELTS Speaking Chuyên Sâu</option>' +
-                '<option>Giao Tiếp Tiếng Anh Cơ Bản</option>' +
+                '<option>IELTS Speaking/Writing Chuyên Sâu</option>' +
+                '<option>Kèm 1-1 (cam kết đầu ra)</option>' +
                 '<option>Tiếng Anh Giao Tiếp Văn Phòng</option>' +
                 '<option>Chưa biết – cần tư vấn</option>' +
               '</select>' +

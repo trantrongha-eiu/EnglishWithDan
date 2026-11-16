@@ -1588,3 +1588,47 @@
 @media (prefers-reduced-motion: reduce) {
   .et-hero-card, .et-hero-card::before, .et-hero-glow::before, .et-hero-icon, .et-nav-pill, .et-live-dot, .et-new-tag { animation: none; }
 }
+
+/* ── Khai giảng (current intake): flyer + per-course register rows ── */
+.intake-section { background: linear-gradient(180deg, #f8fafc, #eef4ff); }
+.intake-tag { background: #fff1e6; color: #c2410c; }
+.intake-wrap { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 32px; max-width: 1200px; margin: 0 auto; align-items: start; }
+.intake-flyer { position: relative; display: block; width: 100%; padding: 0; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: #faf7f2; cursor: zoom-in; box-shadow: 0 12px 40px rgba(15, 23, 42, .12); transition: transform .25s, box-shadow .25s; }
+.intake-flyer:hover { transform: translateY(-3px); box-shadow: 0 18px 50px rgba(15, 23, 42, .18); }
+.intake-flyer:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.intake-flyer img { display: block; width: 100%; height: auto; }
+.intake-zoom { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity .2s; pointer-events: none; background: rgba(15, 23, 42, .78); color: #fff; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 999px; }
+.intake-flyer:hover .intake-zoom, .intake-flyer:focus-visible .intake-zoom { opacity: 1; }
+.intake-list { display: flex; flex-direction: column; gap: 12px; }
+.intake-item { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; }
+.intake-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+.intake-kind { font-size: 11px; font-weight: 700; color: var(--blue); background: var(--blue-light); padding: 2px 10px; border-radius: 999px; }
+.intake-date { font-size: 12px; font-weight: 700; color: #c2410c; }
+.intake-item h3 { font-size: 16px; font-weight: 800; margin: 2px 0; }
+.intake-band { color: var(--blue); white-space: nowrap; }
+.intake-item p { font-size: 13px; color: var(--gray); line-height: 1.5; margin: 0 0 10px; }
+.intake-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.intake-price { font-size: 12px; color: var(--gray); }
+.intake-price strong { font-size: 18px; font-weight: 900; color: var(--dark); }
+.intake-price small { display: block; font-size: 11.5px; margin-top: 1px; }
+.intake-foot .btn { padding: 8px 16px; font-size: 13px; flex-shrink: 0; }
+.intake-note { font-size: 12.5px; color: var(--gray); margin: 4px 2px 0; }
+.intake-note i { color: var(--red); margin-right: 4px; }
+@media (max-width: 960px) {
+  .intake-wrap { grid-template-columns: 1fr; gap: 24px; }
+}
+@media (max-width: 400px) {
+  .intake-foot { flex-direction: column; align-items: stretch; }
+  .intake-foot .btn { justify-content: center; }
+}
+[data-theme="dark"] .intake-section { background: #111827; }
+[data-theme="dark"] .intake-tag { background: rgba(234, 88, 12, .18); color: #fdba74; }
+[data-theme="dark"] .intake-item { background: var(--surface); border-color: var(--border2); }
+[data-theme="dark"] .intake-item p,
+[data-theme="dark"] .intake-price,
+[data-theme="dark"] .intake-note { color: var(--text2); }
+[data-theme="dark"] .intake-price strong,
+[data-theme="dark"] .intake-item h3 { color: var(--text); }
+[data-theme="dark"] .intake-kind { background: rgba(61, 139, 255, .18); }
+[data-theme="dark"] .intake-date { color: #fdba74; }
+[data-theme="dark"] .intake-flyer { border-color: var(--border2); }

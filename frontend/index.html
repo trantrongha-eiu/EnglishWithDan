@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb" />
   <link rel="stylesheet" href="/css/motion.css?v=cf232e2585" />
-  <link rel="stylesheet" href="/css/main.css?v=dbdbc48a39" />
-  <link rel="stylesheet" href="/css/index.css?v=fd55d7aaf9">
+  <link rel="stylesheet" href="/css/main.css?v=afaeccef16" />
+  <link rel="stylesheet" href="/css/index.css?v=d78967a112">
   <!-- BUG-016: deferred only where a real dependency check confirmed it's
        safe — theme.js stays synchronous (sets data-theme before first
        paint to avoid a flash of the wrong theme); auth-service.js + auth.js
@@ -120,13 +120,13 @@
       </a>
       <div class="hero-actions">
         <a href="#contact" class="btn btn-red btn-lg"><i class="fas fa-phone-alt"></i> Tư vấn miễn phí</a>
-        <a href="#courses" class="btn btn-outline btn-lg"><i class="fas fa-book-open"></i> Xem khóa học</a>
+        <a href="#khai-giang" class="btn btn-outline btn-lg"><i class="fas fa-bullhorn"></i> Lịch khai giảng</a>
       </div>
       <div class="hero-stats">
         <div class="hero-stat"><strong>100+</strong><span>Học viên</span></div>
         <div class="hero-stat"><strong>8.0</strong><span>IELTS của thầy</span></div>
         <div class="hero-stat"><strong>4+</strong><span>Năm kinh nghiệm</span></div>
-        <div class="hero-stat"><strong>90%</strong><span>Đạt mục tiêu</span></div>
+        <div class="hero-stat"><strong>1-1</strong><span>Cam kết đầu ra</span></div>
       </div>
     </div>
 
@@ -139,6 +139,83 @@
           <strong>IELTS 8.0</strong>
           <span>Chứng chỉ IDP & BC</span>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ KHAI GIẢNG (new intakes) ════════════════════
+       Update the flyer + the 4 rows below together when a new intake opens.
+       Rows are static on purpose: the /api/courses cards further down are the
+       long-running programmes; this block is the current intake only. -->
+  <section id="khai-giang" class="intake-section">
+    <div class="section-head" data-reveal style="text-align:center;max-width:640px;margin:0 auto 40px">
+      <div class="section-tag intake-tag"><i class="fas fa-bullhorn"></i> Khai giảng 30/11 &amp; 21/12</div>
+      <h2 class="section-title">4 khóa mới — <span style="color:var(--blue)">nhận lớp ngay</span></h2>
+      <p class="section-sub" style="margin:0 auto">Lớp nhỏ ≤ 12 học viên · Lịch học linh hoạt · Học Online hoặc Offline</p>
+    </div>
+
+    <div class="intake-wrap">
+      <button type="button" class="intake-flyer" data-reveal
+        onclick="openResultLightbox('/img/khai-giang-2026-11.jpg','Khai giảng 30/11 & 21/12 – 4 khóa mới')"
+        aria-label="Xem ảnh lịch khai giảng cỡ lớn">
+        <picture>
+          <source srcset="/img/khai-giang-2026-11.webp" type="image/webp">
+          <img src="/img/khai-giang-2026-11.jpg" width="2150" height="1712" loading="lazy"
+            alt="Lịch khai giảng 4 khóa mới: IELTS Foundation 0→3.0, Tiếng Anh Giao Tiếp A1→A2, IELTS 3.0→4.0, IELTS 5.0→6.0">
+        </picture>
+        <span class="intake-zoom" aria-hidden="true"><i class="fas fa-search-plus"></i> Xem ảnh lớn</span>
+      </button>
+
+      <div class="intake-list" data-reveal-children>
+        <div class="intake-item">
+          <div class="intake-head">
+            <span class="intake-kind">Mất gốc</span>
+            <span class="intake-date"><i class="far fa-calendar"></i> 30/11</span>
+          </div>
+          <h3>IELTS Foundation <span class="intake-band">0 → 3.0</span></h3>
+          <p>3 tháng · 2 buổi/tuần · 2h/buổi</p>
+          <div class="intake-foot">
+            <div class="intake-price"><strong>1.440.000đ</strong>/tháng<small>Offline · Online: 1.240.000đ/tháng</small></div>
+            <button type="button" class="btn btn-primary" onclick="openConsultModal('IELTS Foundation (0 → 3.0)')">Đăng ký</button>
+          </div>
+        </div>
+        <div class="intake-item">
+          <div class="intake-head">
+            <span class="intake-kind">Giao tiếp</span>
+            <span class="intake-date"><i class="far fa-calendar"></i> 30/11</span>
+          </div>
+          <h3>Tiếng Anh Giao Tiếp <span class="intake-band">A1 → A2</span></h3>
+          <p>3 tháng · 2 buổi/tuần · 2h/buổi</p>
+          <div class="intake-foot">
+            <div class="intake-price"><strong>850.000đ</strong>/tháng<small>Offline · Online: 650.000đ/tháng</small></div>
+            <button type="button" class="btn btn-primary" onclick="openConsultModal('Tiếng Anh Giao Tiếp (A1 → A2)')">Đăng ký</button>
+          </div>
+        </div>
+        <div class="intake-item">
+          <div class="intake-head">
+            <span class="intake-kind">Luyện thi</span>
+            <span class="intake-date"><i class="far fa-calendar"></i> 21/12</span>
+          </div>
+          <h3>IELTS <span class="intake-band">3.0 → 4.0</span></h3>
+          <p>3 tháng · 2 buổi/tuần · 2h/buổi · Giáo trình Mindset 1 + bộ tài liệu Speaking &amp; Writing của thầy Daniel</p>
+          <div class="intake-foot">
+            <div class="intake-price"><strong>1.440.000đ</strong>/tháng<small>Offline · Online: 1.240.000đ/tháng</small></div>
+            <button type="button" class="btn btn-primary" onclick="openConsultModal('IELTS 3.0 → 4.0')">Đăng ký</button>
+          </div>
+        </div>
+        <div class="intake-item">
+          <div class="intake-head">
+            <span class="intake-kind">Luyện thi</span>
+            <span class="intake-date"><i class="far fa-calendar"></i> 30/11</span>
+          </div>
+          <h3>IELTS <span class="intake-band">5.0 → 6.0</span></h3>
+          <p>3 tháng · 3 buổi/tuần · 1h40/buổi · 6 tuần cuối luyện đề chuyên sâu · Speaking 1-1, nhận feedback trực tiếp từ giáo viên</p>
+          <div class="intake-foot">
+            <div class="intake-price"><strong>2.310.000đ</strong>/tháng<small>Offline · Online: 2.110.000đ/tháng</small></div>
+            <button type="button" class="btn btn-primary" onclick="openConsultModal('IELTS 5.0 → 6.0')">Đăng ký</button>
+          </div>
+        </div>
+        <p class="intake-note"><i class="fas fa-map-marker-alt"></i> Học offline tại 1239 Đ. Mỹ Phước – Tân Vạn, Bình Dương, TP.HCM</p>
       </div>
     </div>
   </section>
@@ -168,8 +245,8 @@
       </div>
       <div class="why-card">
         <div class="why-icon" style="background:#fff7ed;color:#ea580c"><i class="fas fa-trophy"></i></div>
-        <h3>Cam kết đầu ra</h3>
-        <p>90% học viên đạt band điểm mục tiêu. Học lại miễn phí nếu chưa đạt kết quả cam kết.</p>
+        <h3>Nỗ lực khác nhau, kết quả khác nhau</h3>
+        <p>Không có phép màu nào thay được việc luyện tập mỗi ngày. Bạn bỏ công bao nhiêu, band điểm sẽ đáp lại bấy nhiêu – và chúng tôi đồng hành cùng bạn ở từng bước.</p>
       </div>
     </div>
   </section>
@@ -325,13 +402,12 @@
   <section id="teacher">
     <div class="teacher-wrap">
       <div class="teacher-img">
-        <!-- THAY ẢNH: ảnh thầy Daniel Hà chụp đẹp -->
         <img src="/img/certificate.jpg" alt="Thầy Daniel Hà"
           onerror="this.style.background='linear-gradient(135deg,#dbeafe,#fce4e4)';this.removeAttribute('src')" />
         <div class="teacher-badge-wrap">
           <div class="t-badge">
             <div class="dot" style="background:#eff6ff;color:var(--blue)">🎓</div>
-            <div>IELTS 8.0<br><small style="color:var(--gray);font-weight:400">British Council Certified</small></div>
+            <div>IELTS 8.0<br><small style="color:var(--gray);font-weight:400">IDP &amp; British Council</small></div>
           </div>
           <div class="t-badge">
             <div class="dot" style="background:#f0fdf4;color:#16a34a">🏆</div>
@@ -362,15 +438,13 @@
           <div class="cert-item">
             <span class="cert-icon">📜</span>
             <div>
-              <!-- THAY: bằng cấp đại học/thạc sĩ thực tế của thầy -->
-              <strong>Graduated from </strong>
+              <strong>Tốt nghiệp</strong>
               <div>Eastern International University</div>
             </div>
           </div>
           <div class="cert-item">
             <span class="cert-icon">🏅</span>
             <div>
-              <!-- THAY: chứng chỉ giảng dạy thực tế -->
               <strong>TESOL 120h</strong>
               <div>Chứng chỉ giảng dạy quốc tế</div>
             </div>
@@ -379,7 +453,7 @@
             <span class="cert-icon">⭐</span>
             <div>
               <strong>100+ học viên</strong>
-              <div>Tỷ lệ đạt mục tiêu 90%</div>
+              <div>Đồng hành từ mất gốc đến 7.5</div>
             </div>
           </div>
         </div>
@@ -399,13 +473,12 @@
     <div class="testi-grid" data-reveal-children>
       <div class="testi-card">
         <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">"When I came to study with Teacher Daniel, I was at a complete loss.My English was very
-          poor and my prounciation was a real disaster. But his patient and clear teaching style helped me improve
-          significantly. After 11 months, I achieved an IELTS score of 6.5! and got accepted into RMIT University in Sai
-          Gon."</p>
+        <p class="testi-text">"When I came to study with Teacher Daniel, I was at a complete loss. My English was very
+          poor and my pronunciation was a real disaster. But his patient and clear teaching style helped me improve
+          significantly. After 11 months, I achieved an IELTS score of 6.5 and got accepted into RMIT University in Sai
+          Gon!"</p>
         <div class="testi-author">
-          <!-- THAY ẢNH: ảnh học viên (nếu có) -->
-          <div class="testi-avatar">N</div>
+          <div class="testi-avatar">D</div>
           <div>
             <strong>Ding Weicheng</strong>
             <span>IELTS 0 → 6.5 · Bình Dương</span>
@@ -415,13 +488,13 @@
       <div class="testi-card">
         <div class="testi-stars">★★★★★</div>
         <p class="testi-text">"Mình tìm đến thầy Hà với mục tiêu cải thiện kỹ năng Speaking cũng như điểm số overall để
-          apply vào Đại Học Ngoại Thương. Thầy kiên nhẫn, giảng cực dễ hiểu. Sau 5 tháng mình có IELTS 7.5! và đặt chân
+          apply vào Đại Học Ngoại Thương. Thầy kiên nhẫn, giảng cực dễ hiểu. Sau 5 tháng mình đạt IELTS 7.5 và đặt chân
           vào trường đại học mơ ước!"</p>
         <div class="testi-author">
-          <div class="testi-avatar" style="background:linear-gradient(135deg,#16a34a,#065f46)">T</div>
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#16a34a,#065f46)">V</div>
           <div>
             <strong>Nguyễn Thị Ái Vân</strong>
-            <span>IELTS 6.5 → IELTS 7.5 · Online(Vũng Tàu)</span>
+            <span>IELTS 6.5 → 7.5 · Online (Vũng Tàu)</span>
           </div>
         </div>
       </div>
@@ -433,7 +506,7 @@
           <div class="testi-avatar" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">H</div>
           <div>
             <strong>Hoàng Văn Dũng</strong>
-            <span>Khóa Business English · Online(Hà Nội)</span>
+            <span>Khóa Business English · Online (Hà Nội)</span>
           </div>
         </div>
       </div>
@@ -523,8 +596,7 @@
             <div class="ci-icon"><i class="fas fa-map-marker-alt"></i></div>
             <div>
               <div>Địa chỉ</div>
-              <!-- THAY: địa chỉ thật -->
-              <strong>Phường Bình Dương, TP. Hồ Chí Minh, Việt Nam</strong>
+              <strong>1239 Đ. Mỹ Phước – Tân Vạn, Bình Dương, TP.HCM</strong>
             </div>
           </div>
           <div class="contact-info-item">
@@ -534,6 +606,10 @@
               <strong>T2–T7 · 8:00 – 21:00</strong>
             </div>
           </div>
+        </div>
+        <div class="map-embed">
+          <iframe src="https://maps.google.com/maps?q=Chung%20c%C6%B0%20Minh%20Qu%E1%BB%91c%20Plaza%2C%201239%20%C4%90.%20M%E1%BB%B9%20Ph%C6%B0%E1%BB%9Bc%20-%20T%C3%A2n%20V%E1%BA%A1n%2C%20B%C3%ACnh%20D%C6%B0%C6%A1ng&amp;hl=vi&amp;z=16&amp;output=embed"
+            title="Bản đồ: 1239 Đ. Mỹ Phước – Tân Vạn, Bình Dương" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
         </div>
       </div>
 
@@ -559,11 +635,13 @@
             <label for="f-course">Khóa học quan tâm</label>
             <select id="f-course">
               <option value="">-- Chọn khóa học --</option>
-              <option>IELTS Mất Gốc → 6.0+</option>
-              <option>IELTS 3.0 → 6.0+</option>
+              <option>IELTS Foundation (0 → 3.0)</option>
+              <option>Tiếng Anh Giao Tiếp (A1 → A2)</option>
+              <option>IELTS 3.0 → 4.0</option>
+              <option>IELTS 5.0 → 6.0</option>
               <option>IELTS 6.0 → 7.0+</option>
-              <option>IELTS Speaking Chuyên Sâu</option>
-              <option>Giao Tiếp Tiếng Anh Cơ Bản</option>
+              <option>IELTS Speaking/Writing Chuyên Sâu</option>
+              <option>Kèm 1-1 (cam kết đầu ra)</option>
               <option>Tiếng Anh Giao Tiếp Văn Phòng</option>
               <option>Chưa biết – cần tư vấn</option>
             </select>
@@ -586,17 +664,17 @@
     <div class="footer-top">
       <div class="footer-brand">
         <img src="/img/big_logo.png" alt="Daniel Hà English Education" class="footer-logo-img">
-        <p>Trung tâm luyện thi IELTS và tiếng Anh giao tiếp. Cam kết đầu ra thực chất, học viên là ưu tiên số 1.</p>
+        <p>Trung tâm luyện thi IELTS và tiếng Anh giao tiếp. Nỗ lực khác nhau tạo ra kết quả khác nhau – học viên là ưu tiên số 1.</p>
       </div>
       <div class="footer-col">
         <h4>Khóa học</h4>
         <ul>
-          <li><a href="#courses">IELTS Mất Gốc → 6.0+</a></li>
-          <li><a href="#courses">IELTS 3.0 → 6.0+</a></li>
+          <li><a href="#khai-giang">IELTS Foundation 0 → 3.0</a></li>
+          <li><a href="#khai-giang">Tiếng Anh Giao Tiếp A1 → A2</a></li>
+          <li><a href="#khai-giang">IELTS 3.0 → 4.0</a></li>
+          <li><a href="#khai-giang">IELTS 5.0 → 6.0</a></li>
           <li><a href="#courses">IELTS 6.0 → 7.0+</a></li>
-          <li><a href="#courses">IELTS Speaking</a></li>
-          <li><a href="#courses">Giao Tiếp Cơ Bản</a></li>
-          <li><a href="#courses">Giao Tiếp Văn Phòng</a></li>
+          <li><a href="#courses">Kèm 1-1</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -615,35 +693,31 @@
         <ul>
           <li><a href="tel:0914769618">📞 0914 769 618</a></li>
           <li><a href="https://www.facebook.com/EnglishWithDan" target="_blank" rel="noopener">📘 Facebook</a></li>
-          <li><a href="https://zalo.me/0914769618" target="_blank" rel="noopener">💬 Zalo OA</a></li>
-          <!-- THAY: link YouTube thật -->
-          <li><a href="#">🎬 YouTube</a></li>
+          <li><a href="https://zalo.me/0914769618" target="_blank" rel="noopener">💬 Zalo</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <p>© <span id="footer-year"></span> EnglishWithDan – Daniel Hà English Center. All rights reserved. · <a href="/ban-quyen">Bản quyền &amp; DMCA</a></p>
       <div class="footer-socials">
-        <a href="https://www.facebook.com/EnglishWithDan" target="_blank" rel="noopener" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-        <!-- THAY: link YouTube, TikTok thật -->
-        <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
-        <a href="#" class="social-btn"><i class="fab fa-tiktok"></i></a>
-        <a href="#" class="social-btn"><i class="fas fa-envelope"></i></a>
+        <a href="https://www.facebook.com/EnglishWithDan" target="_blank" rel="noopener" class="social-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://zalo.me/0914769618" target="_blank" rel="noopener" class="social-btn" title="Zalo" style="font-weight:800;font-size:11px">Zalo</a>
+        <a href="mailto:tranhaforwork@gmail.com" class="social-btn" title="Email"><i class="fas fa-envelope"></i></a>
       </div>
     </div>
   </footer>
 
   <!-- ════════════════════ SCRIPTS ════════════════════ -->
-  <script src="/js/index.js?v=cf25968c55"></script>
-  <script src="/js/consult-modal.js?v=1694f7cfed"></script>
+  <script src="/js/index.js?v=1886b6d5de"></script>
+  <script src="/js/consult-modal.js?v=f8f08c4d9b"></script>
 
   <!-- ════ FLOATING BUTTONS ════ -->
   <div class="float-btns" id="float-btns">
-    <a href="https://www.facebook.com/EnglishWithDan" target="_blank" class="fb-float" title="Nhắn tin Facebook">
+    <a href="https://www.facebook.com/EnglishWithDan" target="_blank" rel="noopener" class="fb-float" title="Nhắn tin Facebook">
       <i class="fab fa-facebook-messenger"></i>
       <span class="float-label">Facebook</span>
     </a>
-    <a href="https://zalo.me/0914769618" target="_blank" class="zalo-btn" title="Chat Zalo ngay">
+    <a href="https://zalo.me/0914769618" target="_blank" rel="noopener" class="zalo-btn" title="Chat Zalo ngay">
       <img src="/img/zalo-icon.png" alt="Zalo">
       <span class="zalo-btn-label">Chat Zalo</span>
     </a>
