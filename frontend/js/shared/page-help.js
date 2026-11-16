@@ -81,7 +81,7 @@
       intro: 'Nơi lưu và ôn từ vựng của bạn, kèm các bài học Paraphrase Cambridge và Vocab Topics.',
       sections: [
         { icon: '📒', title: 'Sổ từ vựng', items: [
-          'Bạn có 5 sổ cố định (Sổ 1 – Sổ 5) — giáo viên giao bài theo số sổ. Mỗi sổ tối đa 500 từ.',
+          'Bạn có 5 sổ cố định (Sổ 1 – Sổ 5) — giáo viên giao bài theo số sổ. Mỗi sổ tối đa 1000 từ.',
           'Thêm từ: bấm <b>+ Add word</b>, hoặc <b>Nhập hàng loạt</b> rồi dán danh sách dạng <code>word: nghĩa</code> — hệ thống tự tra ví dụ và phát âm.',
           'Khi làm Reading, Listening, Writing… <b>double-click vào một từ</b> để tra nghĩa và lưu thẳng vào sổ.',
           'Đánh dấu mức nhớ từng từ: <b>Not yet</b> → <b>So-so</b> → <b>Mastered</b>.',

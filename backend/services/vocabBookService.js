@@ -74,8 +74,8 @@ async function trackUnitProgress(userId, sessionId, wordsAnswered, correctAnswer
 // the server's raw UTC day here would misfile anything done 00:00–07:00 VN
 // time under the previous calendar day).
 // Per-book word cap (was 300 until 2026-09-30). Mirrored in dashboard.js's
-// VOCAB_BOOK_MAX_WORDS for the "N / 500 từ" counters.
-const MAX_WORDS_PER_BOOK = 500;
+// VOCAB_BOOK_MAX_WORDS for the "N / 1000 từ" counters.
+const MAX_WORDS_PER_BOOK = 1000;
 
 function logActivity(userId, inc) {
   VocabActivity.findOneAndUpdate(
@@ -796,7 +796,7 @@ async function deleteWords(bookId, userId, wordIds) {
 
 // Words due for review "today": nextReviewAt in the past, OR never reviewed
 // at all (a freshly-saved word should show up in the queue right away).
-// $unwind across a user's books' embedded word arrays — capped at 500
+// $unwind across a user's books' embedded word arrays — capped at 1000
 // words/book x 15 books/user max, comfortably small for this per-request
 // aggregation (see docs/PRODUCT_FEATURE_AUDIT.md's SRS phase for why no
 // dedicated index was added: revisit only if that cap assumption changes).
@@ -893,5 +893,5 @@ module.exports = {
   getDueWords, countDueWords, getVocabStats, getWeakWords, recordPracticeResult, recordPracticeResults, applyPracticeAnswer, statusFromBox,
   // Exported so the paraphrase-SRS layer (services/paraphraseSrsService.js)
   // reuses the exact same Leitner box maths instead of a second copy.
-  computeSrs, SRS_INTERVAL_DAYS,
+  computeSrs, SRS_INTERVAL_DAYS, MAX_WORDS_PER_BOOK,
 };

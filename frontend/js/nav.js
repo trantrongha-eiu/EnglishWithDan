@@ -404,7 +404,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=53663f6f7e';
+    i18nScript.src = '/js/shared/i18n.js?v=be908b2e82';
     document.body.appendChild(i18nScript);
   }
 
@@ -444,7 +444,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=4157189274';
+      s.src = '/js/shared/page-help.js?v=d913f4e1c9';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);

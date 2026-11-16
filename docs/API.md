@@ -996,7 +996,7 @@ If the caller is a `student`, this fire-and-forget logs a daily `wordsAdded` act
 **Error responses**
 - `400` — `word` missing/blank.
 - `404` — book not found / not owned by caller.
-- `400` — book already has 500 words: `{message:'Sổ "<name>" đã đạt giới hạn 500 từ...'}`.
+- `400` — book already has 1000 words: `{message:'Sổ "<name>" đã đạt giới hạn 1000 từ...'}`.
 - `200` (not an error status) — duplicate word.
 
 ---

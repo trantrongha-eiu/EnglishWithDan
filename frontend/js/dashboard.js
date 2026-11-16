@@ -106,7 +106,7 @@ function announceHammerEarned() {
 
 // ── Vocab book practice tracking ───────────────
 // Per-book word cap — mirrors vocabBookService.MAX_WORDS_PER_BOOK.
-const VOCAB_BOOK_MAX_WORDS = 500;
+const VOCAB_BOOK_MAX_WORDS = 1000;
 let _isBookPractice = false;     // true khi luyện từ sổ cá nhân, false khi luyện unit
 let _isDifficultPractice = false; // true khi ôn từ hay sai
 // Separate from _isDifficultPractice above (which startPractice() resets on

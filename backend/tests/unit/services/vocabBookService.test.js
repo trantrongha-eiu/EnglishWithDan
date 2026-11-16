@@ -64,13 +64,13 @@ describe('vocabBookService', () => {
       const student = await createStudent();
       const src = await createVocabBook({ userId: student._id,
         words: [{ word: 'Apple', meaning: 'táo', example: 'An apple a day.' }, { word: 'extra1' }, { word: 'extra2' }] });
-      const dest = await createVocabBook({ userId: student._id, words: makeWords(498, 'd').concat([{ word: 'apple', meaning: 'quả táo' }]) });
+      const dest = await createVocabBook({ userId: student._id, words: makeWords(998, 'd').concat([{ word: 'apple', meaning: 'quả táo' }]) });
 
       const result = await vocabBookService.moveAllWords(src._id, dest._id, student._id);
       expect(result).toMatchObject({ status: 'ok', movedCount: 1, duplicateCount: 1, skippedLimit: 1 });
 
       const [s, d] = await Promise.all([VocabBook.findById(src._id), VocabBook.findById(dest._id)]);
-      expect(d.words).toHaveLength(500);
+      expect(d.words).toHaveLength(1000);
       const apple = d.words.filter(w => w.word.toLowerCase() === 'apple');
       expect(apple).toHaveLength(1);
       expect(apple[0].meaning).toBe('quả táo'); // destination entry kept
@@ -101,11 +101,11 @@ describe('vocabBookService', () => {
       expect(result.word.word).toBe('apple');
     });
 
-    it('enforces the 500-word-per-book cap (and 300 is no longer full)', async () => {
+    it('enforces the 1000-word-per-book cap (and 500 is no longer full)', async () => {
       const student = await createStudent();
-      const book300 = await createVocabBook({ userId: student._id, words: makeWords(300) });
+      const book300 = await createVocabBook({ userId: student._id, words: makeWords(500) });
       expect((await vocabBookService.addWord(book300._id, student, { word: 'fits', meaning: 'm' })).status).toBe('ok');
-      const book = await createVocabBook({ userId: student._id, words: makeWords(500) });
+      const book = await createVocabBook({ userId: student._id, words: makeWords(1000) });
       const result = await vocabBookService.addWord(book._id, student, { word: 'newword', meaning: 'm' });
       expect(result.status).toBe('limit_reached');
       expect(result.bookName).toBe(book.name);
@@ -638,9 +638,9 @@ describe('vocabBookService', () => {
       expect(reloaded.words).toHaveLength(2);
     });
 
-    it('stops adding once the destination would exceed 500 words', async () => {
+    it('stops adding once the destination would exceed 1000 words', async () => {
       const student = await createStudent();
-      const dest = await createVocabBook({ userId: student._id, words: makeWords(498, 'dest') });
+      const dest = await createVocabBook({ userId: student._id, words: makeWords(998, 'dest') });
       const src = await createVocabBook({ userId: student._id, words: makeWords(5, 'src') });
 
       const result = await vocabBookService.mergeBooks(dest._id, student._id, [src._id]);
@@ -648,7 +648,7 @@ describe('vocabBookService', () => {
       expect(result.addedCount).toBe(2);
 
       const reloaded = await VocabBook.findById(dest._id);
-      expect(reloaded.words).toHaveLength(500);
+      expect(reloaded.words).toHaveLength(1000);
     });
 
     it('deletes non-default source books after merging', async () => {
@@ -688,8 +688,8 @@ describe('vocabBookService', () => {
   describe('bulkAddWords', () => {
     it('counts skippedDup and skippedLimit separately', async () => {
       const student = await createStudent();
-      const book = await createVocabBook({ userId: student._id, words: makeWords(498, 'existing').concat([{ word: 'Dup' }]) });
-      // book now has 499 words, 1 free slot
+      const book = await createVocabBook({ userId: student._id, words: makeWords(998, 'existing').concat([{ word: 'Dup' }]) });
+      // book now has 999 words, 1 free slot
 
       const result = await vocabBookService.bulkAddWords(book._id, student, [
         { word: 'dup' },     // duplicate (case-insensitive) of 'Dup'
@@ -703,7 +703,7 @@ describe('vocabBookService', () => {
       expect(result.skippedLimit).toBe(1);
 
       const reloaded = await VocabBook.findById(book._id);
-      expect(reloaded.words).toHaveLength(500);
+      expect(reloaded.words).toHaveLength(1000);
     });
 
     it('returns not_found for a missing book', async () => {

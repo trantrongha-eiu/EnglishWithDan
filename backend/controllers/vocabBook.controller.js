@@ -35,7 +35,7 @@ exports.completePractice = guard(async (req, res) => {
   // Counts come from the client: coerce to sane integers (a string or NaN
   // used to slip past the "< 5" check and into the streak maths), never more
   // correct than answered. A bad unitId used to throw a CastError → 500.
-  const toCount = (v) => { const n = Math.floor(Number(v)); return Number.isFinite(n) && n > 0 ? Math.min(n, 500) : 0; };
+  const toCount = (v) => { const n = Math.floor(Number(v)); return Number.isFinite(n) && n > 0 ? Math.min(n, vocabBookService.MAX_WORDS_PER_BOOK) : 0; };
   const words = toCount(wordsAnswered);
   const correct = Math.min(toCount(correctAnswered), words);
   const safeUnitId = unitId && mongoose.isValidObjectId(unitId) ? unitId : null;
@@ -150,10 +150,10 @@ exports.moveAllWords = guard(async (req, res) => {
   if (result.status === 'same_book') return res.status(400).json({ success: false, message: 'Sổ đích phải khác sổ hiện tại' });
   if (result.status === 'source_not_found' || result.status === 'dest_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });
   if (result.status === 'empty') return res.status(400).json({ success: false, message: 'Sổ này chưa có từ nào để chuyển' });
-  if (result.status === 'dest_full') return res.status(400).json({ success: false, message: 'Sổ đích đã đầy (500 từ) — không chuyển được từ nào' });
+  if (result.status === 'dest_full') return res.status(400).json({ success: false, message: `Sổ đích đã đầy (${vocabBookService.MAX_WORDS_PER_BOOK} từ) — không chuyển được từ nào` });
   const parts = [`Đã chuyển ${result.movedCount} từ từ "${result.sourceName}" sang "${result.destName}"`];
   if (result.duplicateCount) parts.push(`${result.duplicateCount} từ đã có sẵn trong sổ đích`);
-  if (result.skippedLimit) parts.push(`${result.skippedLimit} từ còn lại vì sổ đích đã đủ 500 từ`);
+  if (result.skippedLimit) parts.push(`${result.skippedLimit} từ còn lại vì sổ đích đã đủ ${vocabBookService.MAX_WORDS_PER_BOOK} từ`);
   res.json({ success: true, ...result, message: parts.join(' · ') });
 });
 
@@ -191,7 +191,7 @@ exports.addWord = guard(async (req, res) => {
   const result = await vocabBookService.addWord(req.params.id, req.user, req.body);
   if (result.status === 'not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy sổ' });
   if (result.status === 'limit_reached') {
-    return res.status(400).json({ success: false, message: `Sổ "${result.bookName}" đã đạt giới hạn 500 từ. Hãy chuyển sang sổ khác hoặc xóa bớt từ cũ.` });
+    return res.status(400).json({ success: false, message: `Sổ "${result.bookName}" đã đạt giới hạn ${vocabBookService.MAX_WORDS_PER_BOOK} từ. Hãy chuyển sang sổ khác hoặc xóa bớt từ cũ.` });
   }
   if (result.status === 'duplicate') return res.json({ success: false, message: `"${word}" đã có trong sổ này` });
   res.status(201).json({ success: true, message: `Đã lưu "${word}" vào "${result.bookName}"`, word: result.word });
@@ -221,7 +221,7 @@ exports.bulkAddWords = guard(async (req, res) => {
 
   const parts = [`Đã thêm ${result.addedCount} từ`];
   if (result.skippedDup > 0) parts.push(`${result.skippedDup} từ trùng`);
-  if (result.skippedLimit > 0) parts.push(`${result.skippedLimit} từ vượt giới hạn 500`);
+  if (result.skippedLimit > 0) parts.push(`${result.skippedLimit} từ vượt giới hạn ${vocabBookService.MAX_WORDS_PER_BOOK}`);
   res.json({ success: true, addedCount: result.addedCount, skippedDup: result.skippedDup, skippedLimit: result.skippedLimit, message: parts.join(' · ') });
 });
 
