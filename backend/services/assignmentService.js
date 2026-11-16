@@ -12,6 +12,8 @@ const AssignmentProgress = require('../models/AssignmentProgress');
 const ClassGroup = require('../models/ClassGroup');
 const ClassEnrollment = require('../models/ClassEnrollment');
 const User = require('../models/User');
+const ListeningTest = require('../models/ListeningTest');
+const ListeningSection = require('../models/ListeningSection');
 const rcs = require('./resourceCompletionService');
 const vgs = require('./vocabGoalService');
 // From utils/, not classAttendanceService — that service now depends on THIS
@@ -277,6 +279,70 @@ function archivedAndSettled(a, prog) {
   return a.resources.every((r) => settled.has(String(r._id)));
 }
 
+// "🎯 Thi thật · ⏱ 60 phút" on the student's homework: how long the
+// Simulation the teacher required actually runs, same rules as the test
+// pages — Reading 20 min per passage (readingService / examSimulationService),
+// Listening = the real audio + the 30 s check at the end (listening.js
+// SIMULATION_REVIEW_SECONDS). Some sections of a Listening test play each
+// section's own stand-alone audio (listeningService.findPartAudios — same
+// title + partNumber rule), so those lengths are summed; a part without one
+// falls back to an even share of the whole test (approx: true).
+const READING_SIM_SEC_PER_PASSAGE = 20 * 60;
+const LISTENING_SIM_REVIEW_SEC = 30;
+const READING_TEST_PASSAGES = 3;
+const LISTENING_TEST_SECTIONS = 4;
+async function simulationTimes(resources) {
+  const sim = resources.filter((r) => r.kind === 'internal' && rcs.assignedMode(r) === 'simulation' && r.resourceId);
+  const ids = (type) => [...new Set(sim.filter((r) => r.resourceType === type).map((r) => String(r.resourceId)))];
+  const testIds = ids('listening_test'), secIds = ids('listening_practice');
+  const [tests, secs] = await Promise.all([
+    testIds.length ? ListeningTest.find({ _id: { $in: testIds } }).select('audioDuration sections.partNumber sections.title').lean() : [],
+    secIds.length ? ListeningSection.find({ _id: { $in: secIds } }).select('audioDuration').lean() : [],
+  ]);
+  const testMap = new Map(tests.map((t) => [String(t._id), t]));
+  const secMap = new Map(secs.map((x) => [String(x._id), x]));
+  // stand-alone audio of the sections picked from a full test
+  const pickedKeys = [];
+  for (const r of sim) {
+    const parts = r.resourceType === 'listening_test' && rcs.assignedParts(r);
+    const t = parts && testMap.get(String(r.resourceId));
+    if (t) (t.sections || []).filter((x) => parts.includes(x.partNumber)).forEach((x) => pickedKeys.push({ title: x.title, partNumber: x.partNumber }));
+  }
+  const partAudio = new Map();
+  if (pickedKeys.length) {
+    const lone = await ListeningSection.find({ $or: pickedKeys, audioUrl: { $nin: ['', null] } }).select('title partNumber audioDuration isActive').lean();
+    lone.sort((a, b) => (a.isActive ? 1 : 0) - (b.isActive ? 1 : 0)) // active one wins (set last)
+      .forEach((l) => { if (l.audioDuration) partAudio.set(l.partNumber + '|' + l.title, l.audioDuration); });
+  }
+  const out = new Map();
+  for (const r of sim) {
+    const parts = rcs.assignedParts(r);
+    let seconds = 0, approx = false;
+    if (r.resourceType === 'reading_test') seconds = READING_SIM_SEC_PER_PASSAGE * (parts ? parts.length : READING_TEST_PASSAGES);
+    else if (r.resourceType === 'reading_practice') seconds = READING_SIM_SEC_PER_PASSAGE;
+    else if (r.resourceType === 'listening_test') {
+      const t = testMap.get(String(r.resourceId));
+      const audio = t && t.audioDuration ? t.audioDuration : 0;
+      const n = (t && t.sections && t.sections.length) || LISTENING_TEST_SECTIONS;
+      const some = !!t && !!parts && parts.length < n;
+      if (some) {
+        let sum = 0;
+        t.sections.filter((x) => parts.includes(x.partNumber)).forEach((x) => {
+          const own = partAudio.get(x.partNumber + '|' + x.title);
+          if (own) sum += own;
+          else if (audio) { sum += audio / n; approx = true; }
+        });
+        if (sum) seconds = Math.round(sum) + LISTENING_SIM_REVIEW_SEC;
+      } else if (audio) seconds = audio + LISTENING_SIM_REVIEW_SEC;
+    } else if (r.resourceType === 'listening_practice') {
+      const x = secMap.get(String(r.resourceId));
+      if (x && x.audioDuration) seconds = x.audioDuration + LISTENING_SIM_REVIEW_SEC;
+    }
+    if (seconds) out.set(String(r._id), { seconds, approx });
+  }
+  return out;
+}
+
 async function getStudentAssignments(studentId, now = new Date(), { persist = false, readOnly = false } = {}) {
   const enrollments = await ClassEnrollment.find({ studentId, removedAt: null }).lean();
   if (!enrollments.length) return { assignments: [], homeworkWarning: null, homeworkLock: null, hasClasses: false };
@@ -320,11 +386,12 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
   // EARLIEST assignment createdAt as `since`, then filter per assignment below.
   // Independent reads — run together (snapshot refresh only rewrites
   // label/resourceCode, which neither of the other two reads).
-  const [, completionMap, vocabMap, gone] = await Promise.all([
+  const [, completionMap, vocabMap, gone, simTimes] = await Promise.all([
     rcs.refreshResourceSnapshots(assignments.flatMap((a) => a.resources)),
     rcs.checkCompleted(studentId, allInternal, earliest),
     resolveVocabGoals(studentId, assignments, storedMap, now),
     rcs.missingResourceItemIds(assignments.flatMap((a) => a.resources)),
+    simulationTimes(assignments.flatMap((a) => a.resources)),
   ]);
 
   const rows = [];
@@ -382,6 +449,8 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
         parts: rcs.assignedParts(r),
         // 'practice' | 'simulation' the teacher requires — null = student picks
         examMode: rcs.assignedMode(r),
+        // { seconds, approx } — real length of the required Simulation, else null
+        simTime: simTimes.get(String(r._id)) || null,
         mockParts: rcs.isFixedMock(r) && (r.mockBundle.listeningParts?.length || r.mockBundle.readingParts?.length)
           ? { listening: r.mockBundle.listeningParts?.length ? [...r.mockBundle.listeningParts] : null,
             reading: r.mockBundle.readingParts?.length ? [...r.mockBundle.readingParts] : null }

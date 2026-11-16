@@ -73,7 +73,14 @@ function hwExamLabel(r) {
   const label = HW_EXAM_MODE_LABEL[r.examMode];
   if (!label) return '';
   const name = r.examMode === 'simulation' ? 'Test Simulation (thi thật)' : 'Luyện tập';
-  return `<span class="hw-res-parts hw-res-mode hw-res-mode--${r.examMode}" title="Giáo viên giao ở chế độ ${name} — chỉ bài làm ở chế độ này được tính">${label}</span>`;
+  // Thi thật: the real exam length (server simTime — Reading 20 phút/passage,
+  // Listening = audio thật + 30 giây kiểm tra)
+  const t = r.examMode === 'simulation' && r.simTime && r.simTime.seconds;
+  const min = t ? Math.max(1, Math.round(t / 60)) : 0;
+  const time = min ? ` · ⏱ ${r.simTime.approx ? '≈ ' : ''}${min} phút` : '';
+  const why = !min ? '' : r.resourceType.startsWith('reading') ? ' — 20 phút cho mỗi passage, hết giờ tự nộp'
+    : ' — nghe audio 1 lần (không dừng, không tua) + 30 giây kiểm tra, hết giờ tự nộp';
+  return `<span class="hw-res-parts hw-res-mode hw-res-mode--${r.examMode}" title="Giáo viên giao ở chế độ ${name} — chỉ bài làm ở chế độ này được tính${why}">${label}${time}</span>`;
 }
 
 // " · Section 1, 2, 4" next to the test name

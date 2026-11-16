@@ -3,7 +3,9 @@
 const request = require('supertest');
 const app = require('../../app');
 const { createStudent, createTeacher, signTokenFor } = require('../factories/userFactory');
-const { createReadingTest, createPassage, createListeningSection, createReadingPracticeAttempt } = require('../factories/contentFactory');
+const { createReadingTest, createPassage, createListeningSection, createListeningTest, createReadingPracticeAttempt } = require('../factories/contentFactory');
+const ListeningSection = require('../../models/ListeningSection');
+const ListeningTest = require('../../models/ListeningTest');
 const { createClassGroup, enrollStudent } = require('../factories/classFactory');
 const TestAttempt = require('../../models/TestAttempt');
 const ListeningPracticeAttempt = require('../../models/ListeningPracticeAttempt');
@@ -107,5 +109,42 @@ describe('Reading / Listening homework pinned to one exam mode', () => {
       .send({ title: 'HW', resources: [{ kind: 'internal', resourceType: 'reading_test', resourceId: String(rt._id), examMode: 'simulation' }] });
     expect(changed.body.assignment.resources[0].examMode).toBe('simulation');
     expect(changed.body.assignment.resources[0]._id).not.toBe(firstItem);
+  });
+
+  test('Thi thật items carry the real exam length (simTime) the student sees', async () => {
+    const { t, s, cls } = await setup();
+    const rt = await createReadingTest();
+    const p = await createPassage();
+    const sec = await createListeningSection();
+    await ListeningSection.updateOne({ _id: sec._id }, { audioDuration: 410 });
+    const part = (n) => ({ partNumber: n, title: 'Part ' + n, questionRange: { start: n, end: n }, questionGroups: [] });
+    const lt = await createListeningTest({ sections: [part(1), part(2), part(3), part(4)] });
+    await ListeningTest.updateOne({ _id: lt._id }, { audioDuration: 1800 });
+    // the stand-alone audio each section plays when given section by section
+    const own = [400, 380, 460, 520];
+    for (const n of [1, 2, 3, 4]) {
+      const x = await createListeningSection({ partNumber: n, title: 'Part ' + n });
+      await ListeningSection.updateOne({ _id: x._id }, { audioUrl: 'https://x/p' + n + '.mp3', audioDuration: own[n - 1] });
+    }
+    const res = await post(t, cls, [
+      { kind: 'internal', resourceType: 'reading_test', resourceId: String(rt._id), examMode: 'simulation' },
+      { kind: 'internal', resourceType: 'reading_test', resourceId: String(rt._id), parts: [1], examMode: 'simulation' },
+      { kind: 'internal', resourceType: 'reading_practice', resourceId: String(p._id), examMode: 'simulation' },
+      { kind: 'internal', resourceType: 'listening_practice', resourceId: String(sec._id), examMode: 'simulation' },
+      { kind: 'internal', resourceType: 'listening_test', resourceId: String(lt._id), examMode: 'simulation' },
+      { kind: 'internal', resourceType: 'listening_test', resourceId: String(lt._id), parts: [1, 2], examMode: 'simulation' },
+      { kind: 'internal', resourceType: 'reading_practice', resourceId: String(p._id), examMode: 'practice' },
+    ]);
+    expect(res.status).toBe(201);
+    const times = (await mine(s, res.body.assignment._id)).resources.map((r) => r.simTime);
+    expect(times).toEqual([
+      { seconds: 3600, approx: false },  // 3 passages × 20 phút
+      { seconds: 1200, approx: false },  // Passage 1 only
+      { seconds: 1200, approx: false },
+      { seconds: 440, approx: false },   // audio + 30 s check
+      { seconds: 1830, approx: false },
+      { seconds: 810, approx: false },   // Section 1 + 2's own audio + 30 s
+      null,                              // Luyện tập — no exam clock
+    ]);
   });
 });
