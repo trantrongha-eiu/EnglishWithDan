@@ -180,7 +180,7 @@ WritingTask2.findById(task2Id).lean()
 
 **Indexes:** `{ isActive: 1, orderIndex: 1 }` — matches the hot-path filter+sort shape used by the exercise listing endpoints.
 
-**Lifecycle:** Seeded in bulk via `scripts/seedTask1Exercises.js`, editable via `routes/admin/task1Exercises.js`, hard-deletable. Read-heavy from `services/task1PracticeService.js`. No TTL.
+**Lifecycle:** Bank = Bộ 1 (`scripts/data/task1GrammarSet1Kept.json` + `task1GrammarSet1.js`, rebuilt by `scripts/rebuildTask1GrammarSet1.js`) + Bộ 2 (`task1GrammarSet2.js`, `scripts/addTask1GrammarSet2.js`); server startup only inserts missing ones (`scripts/task1GrammarBank.js`). Editable via `routes/admin/task1Exercises.js`, hard-deletable. Read-heavy from `services/task1PracticeService.js`. No TTL.
 
 **Common queries:**
 ```js

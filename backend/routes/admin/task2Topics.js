@@ -3,7 +3,7 @@
 
 const express = require('express');
 const auth    = require('../../middleware/auth');
-const { teacherOnly, adminOnly, escapeRegex } = require('./_shared');
+const { teacherOnly, escapeRegex } = require('./_shared');
 
 const Task2Topic = require('../../models/Task2Topic');
 
@@ -160,15 +160,9 @@ router.delete('/task2/topics/:topicId/questions/:qid', auth, teacherOnly, async 
 // script for reference, just no longer wired to an HTTP route.
 // ──────────────────────────────────────────────────────────────────────────
 
-// POST /api/admin/fix-task1-context — add data context to ambiguous by/to questions
-router.post('/fix-task1-context', auth, adminOnly, async (req, res) => {
-  try {
-    const { run } = require('../../scripts/updateTask1Context');
-    await run();
-    res.json({ success: true, message: 'Updated task1 context for Q15 and Q16.' });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-});
+// POST /api/admin/fix-task1-context was removed 2026-11-16: it re-added the
+// "data context" box to Task 1 Grammar Q15/Q16 by orderIndex alone, undoing
+// the Bộ 1 rebuild (scripts/rebuildTask1GrammarSet1.js — charts replaced
+// dataContext, and orderIndex repeats across modules).
 
 module.exports = router;

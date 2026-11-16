@@ -7,7 +7,11 @@
  * theo khóa Task 1 (backend/scripts/data/writingTask1/lessons*.json):
  * Buổi 2–4 (mô tả số liệu, %, 7 cấu trúc so sánh, tương lai, nhóm tuổi,
  * ước lượng), Buổi 5–7 (xu hướng, by/to, nối xu hướng), Buổi 8 (Introduction),
- * Buổi 9–12 (Overview, biểu đồ tĩnh, biểu đồ kết hợp), Phụ lục Noun Phrase.
+ * Buổi 9–12 (Body, biểu đồ tĩnh, biểu đồ kết hợp), tài liệu Noun Phrase
+ * (writing/Noun_Phrase_IELTS_Task_1_Task_2_Teaching_Material.docx).
+ * 2026-11-16: đối chiếu lại sách bản 2026-11-13 — Introduction dùng 3 PHƯƠNG PHÁP
+ * của Buổi 8.4 (PP3 = the number / amount / percentage of + N + who / that + V),
+ * Overview = Buổi 8.5.
  *
  * Mỗi câu mang luôn `chart` (vẽ bởi frontend/js/shared/t1-chart.js) và tag
  * 'chart:dynamic' / 'chart:static' — task1-practice.js dùng tag này để tô
@@ -49,7 +53,7 @@ module.exports = [
       'The number of electricity consumption in the UK were rising steadily.',
     ],
     correctOptionIndex: 2,
-    grammarPoint: 'The amount of + N không đếm được + V3 (Phụ lục Noun Phrase — Chiến thuật 1)',
+    grammarPoint: 'The amount of + N không đếm được + V3 (Noun Phrase — Cách 1: the amount / number + V3)',
     explanation: '"electricity" là danh từ KHÔNG đếm được → "the amount of", không dùng "number". "consumed" (V3) bổ nghĩa cho electricity = điện được tiêu thụ. "consumptions" sai vì không đếm được thì không thêm -s; "were" sai vì chủ ngữ "the number/the amount" là số ít.',
     chart: { kind: 'line', title: 'Electricity consumption in the UK, 2000–2020', unit: 'TWh', labels: ['2000', '2005', '2010', '2015', '2020'], series: [{ name: 'Electricity', values: [300, 320, 340, 355, 370] }], note: DEMO },
     tags: ['set2', 'chart:dynamic'], xpReward: 8,
@@ -108,7 +112,7 @@ module.exports = [
       'The consumption of fast food in Vietnam doubled between 2000 and 2020.',
     ],
     primaryAnswer: 'The consumption of fast food in Vietnam doubled from 2000 to 2020.',
-    grammarPoint: 'Chiến thuật 2: fast food consumption → the consumption of fast food | double (v) = tăng gấp đôi',
+    grammarPoint: 'Noun Phrase — Cách 2 (noun + of): fast food consumption → the consumption of fast food | double (v) = tăng gấp đôi',
     explanation: 'Đọc biểu đồ: 10 kg (2000) → 20 kg (2020) = gấp đôi → "doubled" (Buổi 6). "fast food consumption" đổi thành "the consumption of fast food" (noun + of) để tránh lặp "the amount of fast food consumed".',
     hints: ['The consumption of', 'fast food', 'doubled', 'from 2000 to 2020'],
     chart: { kind: 'line', title: 'Fast food consumption in Vietnam, 2000–2020', unit: 'kg / person / year', labels: ['2000', '2005', '2010', '2015', '2020'], series: [{ name: 'Fast food', values: [10, 12, 15, 18, 20] }], note: DEMO },
@@ -393,14 +397,14 @@ module.exports = [
       'The line graph illustrates how many cars were sold in three countries from 2010 to 2020.',
     ],
     correctOptionIndex: 3,
-    grammarPoint: '"the number of …" → "how many + S + V" (Buổi 8 — Cách 2)',
-    explanation: '"cars" đếm được → "how many", không "how much"/"the amount of". Xe ĐƯỢC bán → bị động "were sold"; thiếu "were" (câu B) thì "cars sold" thành xe tự bán. Đổi "graph" → "line graph", "shows" → "illustrates" là paraphrase keyword (Cách 1).',
+    grammarPoint: '"the number of …" → "how many + S + V" (Buổi 8.4 — Phương pháp 2)',
+    explanation: '"cars" đếm được → "how many", không "how much"/"the amount of". Xe ĐƯỢC bán → bị động "were sold"; thiếu "were" (câu B) thì "cars sold" thành xe tự bán. Đổi "graph" → "line graph", "shows" → "illustrates" là paraphrase từ khóa (Phương pháp 1).',
     chart: { kind: 'line', title: 'Cars sold in three countries, 2010–2020', unit: 'million cars', labels: ['2010', '2015', '2020'], series: [{ name: 'Japan', values: [4.9, 5.0, 4.6] }, { name: 'Germany', values: [2.9, 3.2, 2.9] }, { name: 'UK', values: [2.0, 2.6, 1.6] }], note: PROMPT },
     tags: ['set2', 'chart:dynamic'], xpReward: 8,
   },
   {
     skillType: 'paraphrase', module: 3, level: 'intermediate', type: 'fill_blank', orderIndex: 224,
-    instruction: 'Đề: "…the contribution of tourism to the economies of three countries in 2019." Đổi danh từ → động từ (Cách 2, Buổi 8) — 2 chỗ trống, cách nhau bằng dấu phẩy:',
+    instruction: 'Đề: "…the contribution of tourism to the economies of three countries in 2019." Đổi danh từ → động từ + how (Phương pháp 2, Buổi 8.4) — 2 chỗ trống, cách nhau bằng dấu phẩy:',
     sentenceWithBlanks: 'The bar chart illustrates how much tourism ___ ___ the economies of three countries in 2019.',
     blanksCount: 2,
     sampleAnswers: ['contributed, to'],
@@ -434,24 +438,24 @@ module.exports = [
   // ═══ INTRODUCTION (module 3) ═════════════════════════════════════════
   {
     skillType: 'introduction', module: 3, level: 'elementary', type: 'multiple_choice', orderIndex: 226,
-    instruction: 'Câu mở bài sau dùng CÁCH nào trong 3 cách viết Introduction (Buổi 8.4)?',
-    questionEn: '"The bar chart compares five countries in terms of their coffee consumption in 2020."',
+    instruction: 'Câu mở bài sau dùng PHƯƠNG PHÁP nào trong 3 phương pháp viết Introduction (Buổi 8.4)?',
+    questionEn: '"The bar chart shows the amount of coffee that was consumed per person in five countries in 2020."',
     options: [
-      'Cách 1 — chỉ paraphrase keyword',
-      'Cách 2 — đổi dạng từ (noun → verb) + how',
-      'Cách 3 — compare(s) … in terms of …',
+      'Phương pháp 1 — paraphrase từ khóa',
+      'Phương pháp 2 — how many / how much + S + V',
+      'Phương pháp 3 — the number / amount / percentage of + N + who / that + V',
       'Đây là câu Overview, không phải Introduction',
     ],
     correctOptionIndex: 2,
-    grammarPoint: 'Cách 3: [Chart] compares + đối tượng + in terms of + khía cạnh',
-    explanation: '"compares five countries in terms of their coffee consumption" — đối tượng được so sánh (five countries) đứng sau "compares", khía cạnh so sánh đứng sau "in terms of" → Cách 3. Không phải Overview vì không nêu đặc điểm nổi bật (cao nhất/thấp nhất…).',
+    grammarPoint: 'Buổi 8.4 — PP1: paraphrase từ khóa | PP2: how many / how much + S + V | PP3: the number / amount / percentage of + N + who / that + V',
+    explanation: '"the amount of coffee THAT WAS CONSUMED" = the amount of + N + that + V → Phương pháp 3 (cà phê là vật → "that"; người → "who"). Nếu là PP2 câu sẽ thành "how much coffee was consumed …". Không phải Overview vì câu chỉ giới thiệu biểu đồ, không nêu đặc điểm nổi bật (cao nhất / thấp nhất…).',
     chart: { kind: 'bar', title: 'Coffee consumption in five countries, 2020', unit: 'kg / person', labels: ['Finland', 'Norway', 'Netherlands', 'Germany', 'Vietnam'], series: [{ name: '', values: [12, 9.9, 8.4, 5.5, 1.6] }], note: PROMPT },
     tags: ['set2', 'chart:static'], xpReward: 8,
   },
   {
     skillType: 'introduction', module: 3, level: 'intermediate', type: 'rearrange', orderIndex: 227,
-    instruction: 'ĐỀ: "The graph below shows the amount of energy generated from coal, gas and wind in the UK from 2000 to 2020." Sắp xếp thành Introduction theo Cách 2 (how much + S + V) + "namely":',
-    questionEn: 'Introduction — Cách 2 + namely',
+    instruction: 'ĐỀ: "The graph below shows the amount of energy generated from coal, gas and wind in the UK from 2000 to 2020." Sắp xếp thành Introduction theo Phương pháp 2 (how much + S + V) + "namely":',
+    questionEn: 'Introduction — Phương pháp 2 + namely',
     baseWords: ['The', 'line', 'graph', 'illustrates', 'how', 'much', 'energy', 'was', 'generated', 'from', 'three', 'sources', 'namely', 'coal', 'gas', 'and', 'wind', 'in', 'the', 'UK', 'between', '2000', 'and', '2020'],
     sampleAnswers: (() => {
       const perms = [['coal', 'gas', 'wind'], ['coal', 'wind', 'gas'], ['gas', 'coal', 'wind'], ['gas', 'wind', 'coal'], ['wind', 'coal', 'gas'], ['wind', 'gas', 'coal']];
@@ -459,7 +463,7 @@ module.exports = [
     })(),
     primaryAnswer: 'The line graph illustrates how much energy was generated from three sources, namely coal, gas and wind, in the UK between 2000 and 2020.',
     grammarPoint: '"the amount of" → "how much + S + V" | "namely + A, B and C" để liệt kê | from … to … → between … and …',
-    explanation: 'Cách 2 (Buổi 8): "the amount of energy generated" → "how much energy was generated" (năng lượng ĐƯỢC tạo ra → bị động). Gom "coal, gas and wind" thành "three sources, namely …". Mốc thời gian "from 2000 to 2020" đổi thành "between 2000 and 2020".',
+    explanation: 'Phương pháp 2 (Buổi 8.4): "the amount of energy generated" → "how much energy was generated" (năng lượng ĐƯỢC tạo ra → bị động). Gom "coal, gas and wind" thành "three sources, namely …". Mốc thời gian "from 2000 to 2020" đổi thành "between 2000 and 2020".',
     chart: { kind: 'line', title: 'Electricity generated from three sources in the UK, 2000–2020', unit: 'TWh', labels: ['2000', '2005', '2010', '2015', '2020'], series: [{ name: 'Coal', values: [120, 130, 100, 25, 2] }, { name: 'Gas', values: [150, 140, 175, 100, 110] }, { name: 'Wind', values: [1, 3, 10, 40, 75] }], note: PROMPT },
     tags: ['set2', 'chart:dynamic'], xpReward: 10,
   },
@@ -494,18 +498,19 @@ module.exports = [
   },
   {
     skillType: 'introduction', module: 3, level: 'intermediate', type: 'data_transform', orderIndex: 230,
-    instruction: 'Viết Introduction theo Cách 3 (compares … in terms of …) cho đề sau:',
-    questionEn: 'ĐỀ: The chart below shows the average number of hours per week spent watching TV by people in four age groups in the UK in 2018.',
+    instruction: 'Viết Introduction theo Phương pháp 3 (the number / amount / percentage of + N + who / that + V — Buổi 8.4) cho đề sau:',
+    questionEn: 'ĐỀ: The chart below shows the number of people in four age groups who used social media every day in the UK in 2018.',
     sampleAnswers: [
-      'The bar chart compares four age groups in the UK in terms of the average number of hours per week they spent watching TV in 2018.',
-      'The bar chart compares people in four age groups in the UK in terms of the average weekly time they spent watching television in 2018.',
-      'The bar chart compares four age groups in the UK in terms of how many hours per week they spent watching TV on average in 2018.',
+      'The bar chart illustrates the number of people in four age groups who used social media every day in the UK in 2018.',
+      'The bar chart shows the number of people from four age groups who used social media on a daily basis in the UK in 2018.',
+      'The bar chart illustrates the number of British people in four age groups who used social media daily in 2018.',
+      'The bar chart gives information about the number of people in four age groups who used social media every day in the UK in 2018.',
     ],
-    primaryAnswer: 'The bar chart compares four age groups in the UK in terms of the average number of hours per week they spent watching TV in 2018.',
-    grammarPoint: 'Cách 3: The bar chart compares [đối tượng] in terms of [khía cạnh] + mốc thời gian',
-    explanation: 'Đối tượng so sánh = four age groups (đặt ngay sau "compares"); khía cạnh = thời gian xem TV mỗi tuần (đặt sau "in terms of"). "The chart" → "The bar chart" (nói rõ loại biểu đồ). Giữ đủ địa điểm (in the UK) và mốc thời gian (in 2018).',
-    hints: ['The bar chart compares', 'four age groups', 'in terms of', 'in 2018'],
-    chart: { kind: 'bar', title: 'Average hours of TV watched per week by age group, UK 2018', unit: 'hours / week', labels: ['16–24', '25–44', '45–64', '65+'], series: [{ name: '', values: [14, 20, 27, 35] }], note: PROMPT },
+    primaryAnswer: 'The bar chart illustrates the number of people in four age groups who used social media every day in the UK in 2018.',
+    grammarPoint: 'Phương pháp 3: The + [loại biểu đồ] + shows / illustrates + the number of + N + who / that + V + [địa điểm] + [thời gian]',
+    explanation: 'Người → "who"; số liệu năm 2018 đã qua → "used" (quá khứ), còn động từ của biểu đồ để hiện tại "illustrates". "The chart" → "The bar chart" (gọi đúng loại biểu đồ), "shows" → "illustrates" / "gives information about". Giữ đủ chủ thể (people in four age groups), địa điểm (in the UK) và thời gian (in 2018) — Introduction chỉ 1 câu, không số liệu.',
+    hints: ['The bar chart illustrates', 'the number of people', 'who used', 'in 2018'],
+    chart: { kind: 'bar', title: 'Daily social media users by age group, UK 2018', unit: 'million people', labels: ['16–24', '25–44', '45–64', '65+'], series: [{ name: '', values: [6.1, 11.4, 8.2, 3.5] }], note: PROMPT },
     tags: ['set2', 'chart:static'], xpReward: 12,
   },
 
@@ -521,7 +526,7 @@ module.exports = [
       'Overall, the car was by far the most popular means of commuting, while walking was the least common option.',
     ],
     correctOptionIndex: 3,
-    grammarPoint: 'Overview biểu đồ tĩnh: cao nhất + thấp nhất, KHÔNG xu hướng, KHÔNG số liệu (Buổi 9–10)',
+    grammarPoint: 'Overview biểu đồ tĩnh: cao nhất + thấp nhất, KHÔNG xu hướng, KHÔNG số liệu (Buổi 8.5 + Buổi 10)',
     explanation: 'A dùng increased/declined cho biểu đồ chỉ có 1 năm → sai bản chất dạng tĩnh. B đưa số liệu cụ thể vào Overview. C chỉ nêu 1 đặc điểm (câu 2 vẫn nói về ô tô, lại kèm số liệu "nearly half"). D nêu đủ 2 điểm nổi bật: cao nhất (by far) và thấp nhất.',
     chart: { kind: 'pie', title: 'How people commute to work in City X, 2020', pies: [{ caption: '2020', slices: [{ label: 'Car', value: 45 }, { label: 'Bus', value: 25 }, { label: 'Train', value: 15 }, { label: 'Bicycle', value: 10 }, { label: 'Walking', value: 5 }] }], note: DEMO },
     tags: ['set2', 'chart:static'], xpReward: 10,
@@ -537,14 +542,14 @@ module.exports = [
       'Overall, Business topped the list in 2020, followed by Engineering.',
     ],
     correctOptionIndex: 0,
-    grammarPoint: '4 cách tìm đặc điểm nổi bật (Buổi 9.2): luôn cao nhất? thay đổi mạnh nhất? cùng tăng/giảm hay trái chiều?',
+    grammarPoint: '4 cách tìm đặc điểm nổi bật (Buổi 8.5): luôn cao nhất? thay đổi mạnh nhất? cùng tăng/giảm hay trái chiều?',
     explanation: 'Engineering luôn cao nhất; Business tăng mạnh nhất (200 → 900); Arts là môn duy nhất giảm → câu A nêu đúng cả xu hướng lẫn so sánh. B có số liệu; C sai dữ liệu (Arts giảm, không phải "all rose"); D đọc sai (2020 Engineering 1,000 > Business 900) và chỉ so sánh 1 năm như biểu đồ tĩnh — bỏ mất xu hướng.',
     chart: { kind: 'line', title: 'Students enrolled in four subjects at a university, 2000–2020', unit: 'students', labels: ['2000', '2005', '2010', '2015', '2020'], series: [{ name: 'Engineering', values: [800, 850, 900, 950, 1000] }, { name: 'Business', values: [200, 350, 500, 700, 900] }, { name: 'Arts', values: [400, 380, 350, 300, 250] }, { name: 'Medicine', values: [300, 310, 320, 330, 340] }], note: DEMO },
     tags: ['set2', 'chart:dynamic'], xpReward: 12,
   },
   {
     skillType: 'overview', module: 4, level: 'intermediate', type: 'fill_blank', orderIndex: 233,
-    instruction: 'Nâng cấp câu Overview (Buổi 9.6) — 2 chỗ trống, cách nhau bằng dấu phẩy:',
+    instruction: 'Nâng cấp câu Overview (Buổi 8.5 công thức 3 + Buổi 9.3) — 2 chỗ trống, cách nhau bằng dấu phẩy:',
     sentenceWithBlanks: 'Overall, while sales of digital newspapers experienced an ___ trend, the ___ was true for print newspapers.',
     blanksCount: 2,
     sampleAnswers: ['upward, opposite', 'upward, reverse'],

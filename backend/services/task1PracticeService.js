@@ -142,6 +142,10 @@ function sanitizeExerciseForClient(ex, opts = {}) {
   return rest;
 }
 
+// Task 1 Grammar exercise sets ("Bộ bài"): Bộ 1 = scripts/rebuildTask1GrammarSet1.js,
+// Bộ 2 = scripts/addTask1GrammarSet2.js.
+const T1_SET_TAGS = ['set1', 'set2'];
+
 async function getMeta() {
   const agg = await Task1Exercise.aggregate([
     { $match: { isActive: true } },
@@ -170,16 +174,25 @@ async function getMeta() {
   });
   counts.all._total = levels.reduce((sum, l) => sum + counts[l]._total, 0);
 
-  // Per-skill counts of Bộ 2 (tag 'set2') for the page's "Bộ bài" switch.
-  const set2Agg = await Task1Exercise.aggregate([
-    { $match: { isActive: true, tags: 'set2' } },
-    { $group: { _id: '$skillType', count: { $sum: 1 } } }
+  // Per-skill counts of Bộ 1 / Bộ 2 (tags 'set1' / 'set2') for the page's
+  // "Bộ bài" switch.
+  const setAgg = await Task1Exercise.aggregate([
+    { $match: { isActive: true, tags: { $in: T1_SET_TAGS } } },
+    { $unwind: '$tags' },
+    { $match: { tags: { $in: T1_SET_TAGS } } },
+    { $group: { _id: { set: '$tags', skillType: '$skillType' }, count: { $sum: 1 } } }
   ]);
-  const set2 = { _total: 0 };
-  skills.forEach(s => { set2[s] = 0; });
-  set2Agg.forEach(({ _id, count }) => { if (_id in set2) { set2[_id] = count; set2._total += count; } });
+  const setCounts = {};
+  T1_SET_TAGS.forEach(t => {
+    setCounts[t] = { _total: 0 };
+    skills.forEach(s => { setCounts[t][s] = 0; });
+  });
+  setAgg.forEach(({ _id, count }) => {
+    const row = setCounts[_id.set];
+    if (row && _id.skillType in row) { row[_id.skillType] += count; row._total += count; }
+  });
 
-  return { counts, setCounts: { set2 }, totalExercises: counts.all._total };
+  return { counts, setCounts, totalExercises: counts.all._total };
 }
 
 async function listExercises({ level = 'all', skillType = 'all', module: mod = 'all', tag = '' }) {

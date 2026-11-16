@@ -2,8 +2,8 @@
 /**
  * Task 1 Grammar — Bộ 2: +5 câu cho mỗi mục (scripts/data/task1GrammarSet2.js).
  *
- * Upserts on (module, orderIndex) — orderIndex 201–235, clear of the old bank
- * (1–109) and of seedTask1Exercises.js's startup seed. Dry run by default.
+ * Upserts on (module, orderIndex) — orderIndex 201–235, clear of Bộ 1
+ * (1–199, scripts/rebuildTask1GrammarSet1.js). Dry run by default.
  *
  *   node backend/scripts/addTask1GrammarSet2.js          # check + dry run
  *   node backend/scripts/addTask1GrammarSet2.js --apply  # write

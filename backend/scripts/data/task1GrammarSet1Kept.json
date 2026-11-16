@@ -1,0 +1,5963 @@
+[
+ {
+  "skillType": "noun_phrase",
+  "module": 1,
+  "level": "beginner",
+  "type": "fill_blank",
+  "instruction": "Nhìn biểu đồ rồi điền number / amount / percentage / figure (Buổi 2.1):",
+  "sentenceWithBlanks": "The ___ of Vietnamese Internet users in 2003 was 5 million people.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "number",
+   "quantity"
+  ],
+  "primaryAnswer": "number",
+  "grammarPoint": "The number / quantity of + N đếm được số nhiều + verb (Buổi 2.1)",
+  "explanation": "\"Internet users\" đếm được → \"the number of\" (hoặc \"the quantity of\"). Đây là câu mẫu của Buổi 2.1: \"The number of Vietnamese Internet users in 2003 was 5 million people.\"",
+  "hints": [
+   "number",
+   "quantity"
+  ],
+  "orderIndex": 1,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-1"
+  ],
+  "chart": {
+   "kind": "stat",
+   "title": "Internet users in Vietnam, 2003",
+   "items": [
+    {
+     "icon": "👥",
+     "value": "5 million",
+     "label": "Internet users in Vietnam (2003)"
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "noun_phrase",
+  "module": 1,
+  "level": "beginner",
+  "type": "fill_blank",
+  "instruction": "Nhìn biểu đồ rồi điền number / amount / percentage / figure (Buổi 2.1):",
+  "sentenceWithBlanks": "The ___ of water used in the year 2010 was 5 million m³.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "amount",
+   "quantity"
+  ],
+  "primaryAnswer": "amount",
+  "grammarPoint": "The amount / quantity of + N không đếm được + verb (Buổi 2.1)",
+  "explanation": "\"water\" không đếm được → \"the amount of\" (hoặc \"the quantity of\"). Câu mẫu Buổi 2.1: \"The amount of water used in the year 2010 was 5 million m³.\"",
+  "hints": [
+   "amount",
+   "quantity"
+  ],
+  "orderIndex": 2,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-2"
+  ],
+  "chart": {
+   "kind": "stat",
+   "title": "Water used, 2010",
+   "items": [
+    {
+     "icon": "💧",
+     "value": "5 million m³",
+     "label": "Water used (2010)"
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "noun_phrase",
+  "module": 1,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Biểu đồ tròn cho biết tỉ lệ trên TỔNG DÂN SỐ Việt Nam. Chọn câu ĐÚNG (Buổi 3.1–3.2):",
+  "questionEn": "Which sentence describes the chart correctly?",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The number of Vietnamese Internet users was 20%.",
+   "The percentage of Vietnamese Internet users was 20% of the total population.",
+   "There were 20% Vietnamese Internet users.",
+   "The amount of Internet users was 20%."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "Phần trăm: The percentage / proportion / rate of + N + was X% of … — không dùng number / amount / There were",
+  "explanation": "Câu mẫu Buổi 3.2: \"The percentage of Vietnamese Internet users was 20% of the total Vietnamese population.\" Phần trăm không đi với \"the number of\" / \"the amount of\", và không dùng \"There were\" với %.",
+  "hints": [],
+  "orderIndex": 3,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-3"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Internet users in Vietnam (% of total population)",
+   "pies": [
+    {
+     "caption": "",
+     "slices": [
+      {
+       "label": "Internet users",
+       "value": 20
+      },
+      {
+       "label": "Non-users",
+       "value": 80
+      }
+     ]
+    }
+   ],
+   "note": null
+  }
+ },
+ {
+  "skillType": "noun_phrase",
+  "module": 1,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Nhìn biểu đồ rồi chọn câu ĐÚNG:",
+  "questionVi": "20 triệu người Việt Nam sử dụng xe máy",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The number of Vietnamese motorbike users was 20 million.",
+   "The amount of Vietnamese motorbike users was 20 million.",
+   "The percentage of Vietnamese motorbike users was 20 million.",
+   "The figure of Vietnamese motorbike users was 20 million."
+  ],
+  "correctOptionIndex": 0,
+  "sampleAnswers": [],
+  "grammarPoint": "The number of + N đếm được (Buổi 2.1) | \"the figure FOR\", không \"the figure of\"",
+  "explanation": "\"motorbike users\" đếm được → \"The number of\". \"percentage\" đi với %, không đi với \"20 million\"; \"the figure OF\" sai giới từ (phải là \"the figure for\").",
+  "hints": [],
+  "orderIndex": 4,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-4"
+  ],
+  "chart": {
+   "kind": "stat",
+   "title": "Motorbike users in Vietnam",
+   "items": [
+    {
+     "icon": "🏍️",
+     "value": "20 million",
+     "label": "Motorbike users in Vietnam"
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "data_description",
+  "module": 1,
+  "level": "beginner",
+  "type": "translation",
+  "instruction": "Dịch sang tiếng Anh — Cấu trúc 1: số liệu ở CUỐI câu (Buổi 2.2):",
+  "questionVi": "Số lượng sinh viên đại học ở Anh năm 2010 là 2,5 triệu người.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The number of university students in the UK was 2.5 million in 2010.",
+   "The number of university students in the UK stood at 2.5 million in 2010.",
+   "The quantity of university students in the UK was 2.5 million in 2010."
+  ],
+  "primaryAnswer": "The number of university students in the UK was 2.5 million in 2010.",
+  "grammarPoint": "Cấu trúc 1: The number of + N + was / stood at + số liệu (+ in + năm)",
+  "explanation": "Cấu trúc 1 (Buổi 2.2): chủ ngữ \"The number of university students in the UK\", số liệu đứng cuối. \"stood at\" là cách thay cho \"was\" để tránh lặp.",
+  "hints": [
+   "The number of",
+   "university students",
+   "in the UK",
+   "was/stood at",
+   "2.5 million"
+  ],
+  "orderIndex": 5,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-5"
+  ],
+  "chart": {
+   "kind": "stat",
+   "title": null,
+   "items": [
+    {
+     "icon": "🎓",
+     "value": "2.5 million",
+     "label": "University students in the UK (2010)"
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "data_description",
+  "module": 1,
+  "level": "beginner",
+  "type": "translation",
+  "instruction": "Dịch sang tiếng Anh — phần trăm ở ĐẦU câu (Buổi 3.2):",
+  "questionVi": "38% dân số Australia sử dụng phương tiện công cộng vào năm 2018.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "38% of the Australian population used public transport in 2018.",
+   "38% of Australia's population travelled by public transport in 2018."
+  ],
+  "primaryAnswer": "38% of the Australian population used public transport in 2018.",
+  "grammarPoint": "Phần trăm ở đầu câu: X% of + N + V (Buổi 3.2)",
+  "explanation": "Câu mẫu Buổi 3.2: \"20% of the Vietnamese population used the Internet.\" — số liệu % làm chủ ngữ, \"of\" chỉ tổng thể, rồi đến động từ quá khứ.",
+  "hints": [
+   "38% of",
+   "the Australian population",
+   "used",
+   "in 2018"
+  ],
+  "orderIndex": 6,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-6"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Australian population using public transport, 2018",
+   "pies": [
+    {
+     "caption": "",
+     "slices": [
+      {
+       "label": "Public transport users",
+       "value": 38
+      },
+      {
+       "label": "Others",
+       "value": 62
+      }
+     ]
+    }
+   ],
+   "note": null
+  }
+ },
+ {
+  "skillType": "data_description",
+  "module": 1,
+  "level": "beginner",
+  "type": "translation",
+  "instruction": "Dịch sang tiếng Anh — Cấu trúc 3 \"There were\" + số ước lượng (Buổi 2.2, 4.3):",
+  "questionVi": "Có khoảng 1,2 tỷ người sử dụng xe đạp trên toàn thế giới vào năm 2015.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "There were approximately 1.2 billion people using bicycles worldwide in 2015.",
+   "There were around 1.2 billion bicycle users across the world in 2015."
+  ],
+  "primaryAnswer": "There were approximately 1.2 billion people using bicycles worldwide in 2015.",
+  "grammarPoint": "Cấu trúc 3: There were + approximately / around + số liệu + N + V-ing",
+  "explanation": "Cấu trúc 3 (số liệu ở giữa câu): \"There were … people using bicycles\". \"khoảng\" = approximately / around / about (Buổi 4.3).",
+  "hints": [
+   "There were",
+   "approximately",
+   "1.2 billion people",
+   "using bicycles",
+   "worldwide"
+  ],
+  "orderIndex": 7,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-7"
+  ],
+  "chart": {
+   "kind": "stat",
+   "title": null,
+   "items": [
+    {
+     "icon": "🚲",
+     "value": "≈ 1.2 billion",
+     "label": "People using bicycles worldwide (2015)"
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "data_description",
+  "module": 1,
+  "level": "elementary",
+  "type": "rearrange",
+  "instruction": "Nhìn biểu đồ rồi sắp xếp thành câu — phần trăm ở ĐẦU câu (Buổi 3.2):",
+  "questionEn": "UK: 55% Internet users (1990)",
+  "blanksCount": 1,
+  "baseWords": [
+   "55%",
+   "of",
+   "the",
+   "UK",
+   "population",
+   "used",
+   "the",
+   "Internet",
+   "in",
+   "1990"
+  ],
+  "options": [],
+  "sampleAnswers": [
+   "55% of the UK population used the Internet in 1990."
+  ],
+  "primaryAnswer": "55% of the UK population used the Internet in 1990.",
+  "grammarPoint": "Phần trăm ở đầu câu: X% of + N + V (Buổi 3.2)",
+  "explanation": "\"55% of the UK population used the Internet in 1990.\" — giống câu mẫu \"20% of the Vietnamese population used the Internet\" (Buổi 3.2).",
+  "hints": [],
+  "orderIndex": 8,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-8"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "UK population using the Internet, 1990",
+   "pies": [
+    {
+     "caption": "",
+     "slices": [
+      {
+       "label": "Internet users",
+       "value": 55
+      },
+      {
+       "label": "Non-users",
+       "value": 45
+      }
+     ]
+    }
+   ],
+   "note": null
+  }
+ },
+ {
+  "skillType": "data_description",
+  "module": 1,
+  "level": "elementary",
+  "type": "rearrange",
+  "instruction": "Sắp xếp các từ thành câu đúng:",
+  "questionEn": "Brazil coffee exports = $5 billion (2005)",
+  "blanksCount": 1,
+  "baseWords": [
+   "Brazil's",
+   "coffee",
+   "exports",
+   "were",
+   "worth",
+   "$5",
+   "billion",
+   "in",
+   "2005"
+  ],
+  "options": [],
+  "sampleAnswers": [
+   "Brazil's coffee exports were worth $5 billion in 2005."
+  ],
+  "primaryAnswer": "Brazil's coffee exports were worth $5 billion in 2005.",
+  "grammarPoint": "Số liệu tiền: S + were worth + số tiền (số liệu ở cuối câu)",
+  "explanation": "\"be worth + số tiền\" = trị giá. \"exports\" số nhiều → \"were worth\". Cách khác theo Cấu trúc 1: \"The value of Brazil's coffee exports stood at $5 billion in 2005.\"",
+  "hints": [],
+  "orderIndex": 9,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-9"
+  ],
+  "chart": {
+   "kind": "stat",
+   "title": null,
+   "items": [
+    {
+     "icon": "☕",
+     "value": "$5 billion",
+     "label": "Brazil's coffee exports (2005)"
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "fill_blank",
+  "instruction": "Điền từ/cụm từ so sánh thích hợp:",
+  "sentenceWithBlanks": "The UK spent $50 billion on education in 2019, ___ only $30 billion in France.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "compared to",
+   "compared with",
+   "in comparison with"
+  ],
+  "primaryAnswer": "compared to",
+  "grammarPoint": "Cấu trúc 2: A was X, compared to / in comparison with Y (Buổi 3.3)",
+  "explanation": "Cấu trúc 2 (Buổi 3.3): dấu phẩy + \"compared to / compared with / in comparison with\" + số liệu đối tượng thứ hai.",
+  "hints": [
+   "compared to",
+   "compared with"
+  ],
+  "orderIndex": 10,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-10"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Spending on education, 2019",
+   "unit": "$ billion",
+   "labels": [
+    "UK",
+    "France"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      50,
+      30
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "translation",
+  "instruction": "Dịch câu so sánh sau sang tiếng Anh dùng \"whereas\":",
+  "questionVi": "Số người dùng ô tô là 10 triệu, trong khi số người đi xe buýt là 25 triệu.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The number of car users was 10 million, whereas the number of bus users was 25 million.",
+   "There were 10 million car users, whereas there were 25 million bus users.",
+   "The figure for car users was 10 million, whereas the figure for bus users was 25 million."
+  ],
+  "primaryAnswer": "The number of car users was 10 million, whereas the number of bus users was 25 million.",
+  "grammarPoint": "Cấu trúc 3: A was X, while / whereas B was Y (Buổi 3.3)",
+  "explanation": "Câu mẫu Cấu trúc 3: \"The number of Vietnamese car users was 5 million, while the number of motorbike users was 20 million.\" — whereas = while, có dấu phẩy trước.",
+  "hints": [
+   "The number of car users",
+   "was 10 million",
+   "whereas",
+   "the number of bus users",
+   "was 25 million"
+  ],
+  "orderIndex": 11,
+  "xpReward": 10,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-11"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Car users vs bus users",
+   "unit": "million",
+   "labels": [
+    "Car users",
+    "Bus users"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      10,
+      25
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng \"respectively\":",
+  "questionVi": "Tỷ lệ nam và nữ theo học đại học lần lượt là 55% và 45%.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The proportions of male and female university students were 55% and 45%, respectively.",
+   "The figures for male and female university enrolment were 55% and 45%, respectively."
+  ],
+  "primaryAnswer": "The proportions of male and female university students were 55% and 45%, respectively.",
+  "grammarPoint": "Cấu trúc 1: A and B were X and Y, respectively (Buổi 3.3)",
+  "explanation": "\"respectively\" luôn đặt CUỐI câu (có dấu phẩy trước) để chỉ rõ con số nào thuộc đối tượng nào. Chủ ngữ số nhiều \"The proportions\" vì có 2 tỉ lệ.",
+  "hints": [
+   "The proportions of",
+   "male and female",
+   "were 55% and 45%",
+   "respectively"
+  ],
+  "orderIndex": 12,
+  "xpReward": 10,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-12"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "University students by gender",
+   "pies": [
+    {
+     "slices": [
+      {
+       "label": "Male",
+       "value": 55
+      },
+      {
+       "label": "Female",
+       "value": 45
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch câu sau sang tiếng Anh dùng cụm \"three times as many as\":",
+  "questionVi": "Số người dùng điện thoại thông minh gấp ba lần số người dùng máy tính bảng.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The number of smartphone users was three times as many as that of tablet users.",
+   "The figure for smartphone users was three times as high as that for tablet users.",
+   "There were three times as many smartphone users as tablet users."
+  ],
+  "primaryAnswer": "The number of smartphone users was three times as many as that of tablet users.",
+  "grammarPoint": "Cấu trúc 5: X times as many as that of … (that = the number) (Buổi 3.3)",
+  "explanation": "60 ÷ 20 = 3 → \"three times as many as\". \"that of tablet users\" = \"the number of tablet users\" (chỉ dùng \"that of\" khi trước đó đã có \"the number of\").",
+  "hints": [
+   "three times as many as",
+   "that of tablet users"
+  ],
+  "orderIndex": 13,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-13"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Smartphone users vs tablet users",
+   "unit": "million",
+   "labels": [
+    "Smartphone users",
+    "Tablet users"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      60,
+      20
+     ]
+    }
+   ],
+   "note": "Tỉ lệ 3 : 1 — Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng \"respectively\":",
+  "questionVi": "Năm 2020, lượng điện sản xuất từ than và khí đốt tự nhiên lần lượt là 400 TWh và 250 TWh.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "In 2020, the amounts of electricity produced from coal and natural gas were 400 TWh and 250 TWh, respectively.",
+   "In 2020, electricity production from coal and natural gas stood at 400 TWh and 250 TWh, respectively."
+  ],
+  "primaryAnswer": "In 2020, the amounts of electricity produced from coal and natural gas were 400 TWh and 250 TWh, respectively.",
+  "grammarPoint": "Cấu trúc 1: respectively đặt CUỐI câu, có dấu phẩy trước (Buổi 3.3)",
+  "hints": [
+   "In 2020",
+   "the amounts of electricity produced",
+   "from coal and natural gas",
+   "respectively"
+  ],
+  "orderIndex": 20,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "respectively",
+   "energy",
+   "bar chart",
+   "set1",
+   "chart:static",
+   "old:1-20"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Electricity produced from coal and natural gas, 2020",
+   "unit": "TWh",
+   "labels": [
+    "Coal",
+    "Natural gas"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      400,
+      250
+     ]
+    }
+   ]
+  },
+  "explanation": "\"respectively\" luôn đứng cuối câu (Buổi 3.3), nên mốc thời gian \"In 2020\" chuyển lên đầu câu. \"electricity\" không đếm được → \"the amounts of electricity\" (số nhiều vì có 2 lượng)."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng \"respectively\":",
+  "questionVi": "Năm 2015, tỷ lệ người dùng Internet ở Bắc Mỹ, Châu Âu và Châu Á lần lượt là 35%, 30% và 25%.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "In 2015, the proportions of Internet users in North America, Europe and Asia were 35%, 30% and 25%, respectively.",
+   "In 2015, the percentages of Internet users in North America, Europe and Asia were 35%, 30% and 25%, respectively."
+  ],
+  "primaryAnswer": "In 2015, the proportions of Internet users in North America, Europe and Asia were 35%, 30% and 25%, respectively.",
+  "grammarPoint": "Cấu trúc 1: respectively đặt CUỐI câu, có dấu phẩy trước (Buổi 3.3)",
+  "hints": [
+   "In 2015",
+   "the proportions of Internet users",
+   "were 35%, 30% and 25%",
+   "respectively"
+  ],
+  "orderIndex": 21,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "respectively",
+   "internet",
+   "pie chart",
+   "set1",
+   "chart:static",
+   "old:1-21"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Proportion of Internet users by region, 2015",
+   "unit": "%",
+   "labels": [
+    "North America",
+    "Europe",
+    "Asia"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      35,
+      30,
+      25
+     ]
+    }
+   ]
+  },
+  "explanation": "Ba đối tượng ↔ ba con số theo đúng thứ tự, \"respectively\" chốt cuối câu (Buổi 3.3) → đưa \"In 2015\" lên đầu."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "beginner",
+  "type": "translation",
+  "instruction": "Dịch sang tiếng Anh — phần trăm ở GIỮA câu + Cấu trúc 2 \"compared to\" (Buổi 3.2–3.3):",
+  "questionVi": "Nông nghiệp chiếm 70% lượng nước tiêu thụ, so với chỉ 20% của công nghiệp.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Agriculture accounted for 70% of water consumption, compared to only 20% for industry.",
+   "Agriculture accounted for 70% of water consumption, compared with only 20% for industry."
+  ],
+  "primaryAnswer": "Agriculture accounted for 70% of water consumption, compared to only 20% for industry.",
+  "grammarPoint": "N + accounted for X% of …, compared to only Y% for … (Buổi 3.2 + Cấu trúc 2)",
+  "hints": [
+   "Agriculture accounted for",
+   "70% of water consumption",
+   "compared to",
+   "only 20% for industry"
+  ],
+  "orderIndex": 22,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "compared to",
+   "water",
+   "bar chart",
+   "set1",
+   "chart:static",
+   "old:1-22"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Water consumption by sector",
+   "unit": "% of total",
+   "labels": [
+    "Agriculture",
+    "Industry"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      70,
+      20
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  },
+  "explanation": "Đơn vị là % → dùng \"accounted for\" (Buổi 3.2), không viết \"Water consumption … was higher compared to\" (lẫn hai cấu trúc so sánh). Vế sau: \"compared to only 20% for industry\"."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "fill_blank",
+  "instruction": "Điền \"in comparison with\" hoặc \"compared to\" vào chỗ trống:",
+  "sentenceWithBlanks": "The number of tourists visiting France in 2019 rose sharply ___ the previous year.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "in comparison with",
+   "compared to",
+   "compared with"
+  ],
+  "primaryAnswer": "in comparison with",
+  "grammarPoint": "in comparison with / compared to + mốc so sánh (Buổi 3.3)",
+  "hints": [
+   "Cả hai cụm đều đúng ngữ pháp ở đây"
+  ],
+  "orderIndex": 23,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "in comparison with",
+   "tourism",
+   "table",
+   "set1",
+   "chart:dynamic",
+   "old:1-23"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Tourists visiting France",
+   "unit": "million",
+   "labels": [
+    "2018",
+    "2019"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      70,
+      90
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  },
+  "explanation": "\"rose sharply in comparison with the previous year\" = tăng mạnh so với năm trước. \"in comparison WITH\", \"compared TO / WITH\" — chú ý giới từ."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "beginner",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng \"while\":",
+  "questionVi": "Lượng khí thải CO₂ ở các nước phát triển giảm dần, trong khi ở các nước đang phát triển lại tăng mạnh.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "CO₂ emissions in developed countries gradually declined, while those in developing countries increased sharply.",
+   "CO₂ emissions in developed countries fell steadily, while emissions in developing countries rose significantly."
+  ],
+  "primaryAnswer": "CO₂ emissions in developed countries gradually declined, while those in developing countries increased sharply.",
+  "grammarPoint": "Cấu trúc 3 cho xu hướng đối lập: A declined, while those in B increased (Buổi 6.7)",
+  "hints": [
+   "Dùng \"those\" để thay thế \"CO₂ emissions\" ở mệnh đề sau"
+  ],
+  "orderIndex": 24,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "while",
+   "environment",
+   "line graph",
+   "set1",
+   "chart:dynamic",
+   "old:1-24"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "CO₂ emissions, developed vs developing countries",
+   "unit": "billion tonnes",
+   "labels": [
+    "1990",
+    "2000",
+    "2010",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Developed",
+     "values": [
+      15,
+      14,
+      13,
+      12
+     ]
+    },
+    {
+     "name": "Developing",
+     "values": [
+      7,
+      10,
+      15,
+      20
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  },
+  "explanation": "Hai xu hướng ngược chiều nối bằng \"while / whereas\" (Buổi 6.7). \"those\" = the CO₂ emissions (số nhiều) để tránh lặp."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng \"whereas\":",
+  "questionVi": "Xe hơi chiếm 50% lượng người sử dụng phương tiện giao thông đô thị, trong khi xe buýt chỉ chiếm 15%.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Cars accounted for 50% of urban transport users, whereas buses represented only 15%.",
+   "Cars made up 50% of urban transport users, whereas buses accounted for only 15%."
+  ],
+  "primaryAnswer": "Cars accounted for 50% of urban transport users, whereas buses represented only 15%.",
+  "grammarPoint": "Cấu trúc 3: A accounted for X%, whereas B represented only Y% (Buổi 3.3)",
+  "hints": [
+   "accounted for / made up / represented đều diễn tả %"
+  ],
+  "orderIndex": 25,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "whereas",
+   "transport",
+   "pie chart",
+   "set1",
+   "chart:static",
+   "old:1-25"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Urban transport users by mode",
+   "pies": [
+    {
+     "slices": [
+      {
+       "label": "Cars",
+       "value": 50
+      },
+      {
+       "label": "Buses",
+       "value": 15
+      },
+      {
+       "label": "Other modes",
+       "value": 35
+      }
+     ]
+    }
+   ]
+  },
+  "explanation": "Phần trăm ở giữa câu (accounted for / made up / represented) + \"whereas\" nối hai mệnh đề tương phản."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "translation",
+  "instruction": "Dịch đoạn sau dùng \"By contrast\":",
+  "questionVi": "Tỷ lệ việc làm trong ngành nông nghiệp giảm xuống còn 20%. Ngược lại, ngành dịch vụ mở rộng lên tới 60%.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Employment in agriculture fell to 20%. By contrast, the service sector expanded to 60%.",
+   "The proportion of jobs in agriculture dropped to 20%. By contrast, employment in the service sector grew to 60%."
+  ],
+  "primaryAnswer": "Employment in agriculture fell to 20%. By contrast, the service sector expanded to 60%.",
+  "grammarPoint": "Cấu trúc 4: … . By contrast, … (hai câu, xu hướng trái chiều — Buổi 3.3, 6.7)",
+  "hints": [
+   "By contrast đứng đầu câu, theo sau là dấu phẩy"
+  ],
+  "orderIndex": 26,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "by contrast",
+   "employment",
+   "bar chart",
+   "set1",
+   "chart:dynamic",
+   "old:1-26"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Employment by sector",
+   "unit": "% of workforce",
+   "labels": [
+    "1990",
+    "2000",
+    "2010",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Agriculture",
+     "values": [
+      40,
+      33,
+      26,
+      20
+     ],
+     "callouts": [
+      3
+     ]
+    },
+    {
+     "name": "Services",
+     "values": [
+      40,
+      47,
+      54,
+      60
+     ],
+     "callouts": [
+      3
+     ]
+    }
+   ],
+   "note": "Số đầu và cuối lấy từ đề bài; các điểm ở giữa là minh họa."
+  },
+  "explanation": "\"By contrast\" đứng ĐẦU câu thứ hai, có dấu phẩy sau, nối hai xu hướng trái chiều (giảm ↔ tăng)."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch đoạn sau dùng \"Meanwhile\":",
+  "questionVi": "Tuổi thọ của phụ nữ tăng đều đặn lên 82 tuổi trong giai đoạn này. Trong khi đó, tuổi thọ của nam giới vẫn ổn định ở mức 74 tuổi.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Women's life expectancy increased steadily to 82 years over this period. Meanwhile, men's life expectancy remained stable at 74 years.",
+   "Female life expectancy rose steadily to 82. Meanwhile, male life expectancy stayed at 74."
+  ],
+  "primaryAnswer": "Women's life expectancy increased steadily to 82 years over this period. Meanwhile, men's life expectancy remained stable at 74 years.",
+  "grammarPoint": "Cấu trúc 4: … . Meanwhile, … (Buổi 3.3)",
+  "hints": [
+   "Meanwhile chỉ sự song song hoặc tương phản nhẹ, không mạnh bằng \"By contrast\""
+  ],
+  "orderIndex": 27,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "meanwhile",
+   "health",
+   "line graph",
+   "set1",
+   "chart:dynamic",
+   "old:1-27"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Life expectancy by gender",
+   "unit": "years",
+   "yMin": 60,
+   "labels": [
+    "1980",
+    "1990",
+    "2000",
+    "2010",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Women",
+     "values": [
+      76,
+      77.5,
+      79,
+      80.5,
+      82
+     ],
+     "callouts": [
+      4
+     ]
+    },
+    {
+     "name": "Men",
+     "values": [
+      74,
+      74,
+      74,
+      74,
+      74
+     ],
+     "callouts": [
+      4
+     ]
+    }
+   ],
+   "note": "Số đầu và cuối lấy từ đề bài; các điểm ở giữa là minh họa."
+  },
+  "explanation": "\"Meanwhile\" (trong khi đó) đứng đầu câu thứ hai. Câu 1: increased steadily to 82; câu 2: remained stable at 74."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng \"twice as much as\":",
+  "questionVi": "Lượng điện từ năng lượng mặt trời năm 2020 gấp đôi so với năm 2015.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The amount of electricity from solar energy in 2020 was twice as much as that in 2015.",
+   "Solar electricity generation in 2020 was twice as much as that recorded in 2015."
+  ],
+  "primaryAnswer": "The amount of electricity from solar energy in 2020 was twice as much as that in 2015.",
+  "grammarPoint": "Cấu trúc 5: twice as much as (N không đếm được) + that in … (Buổi 3.3)",
+  "hints": [
+   "electricity = uncountable → \"as much as\"; dùng \"that\" để tránh lặp"
+  ],
+  "orderIndex": 28,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "twice as much as",
+   "energy",
+   "table",
+   "set1",
+   "chart:dynamic",
+   "old:1-28"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Electricity from solar energy",
+   "unit": "TWh",
+   "labels": [
+    "2015",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      50,
+      100
+     ]
+    }
+   ],
+   "note": "Gấp đôi (×2) — Số liệu minh họa — chỉ để hình dung câu mô tả."
+  },
+  "explanation": "100 ÷ 50 = 2 → \"twice as much as\". Điện không đếm được → \"much\". \"that in 2015\" = the amount in 2015."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng \"twice as many as\":",
+  "questionVi": "Số du khách đến thăm bảo tàng lịch sử nhiều gấp đôi so với bảo tàng nghệ thuật vào năm 2022.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The history museum attracted twice as many visitors as the art museum in 2022.",
+   "The number of visitors to the history museum was twice as high as the figure for the art museum in 2022."
+  ],
+  "primaryAnswer": "The history museum attracted twice as many visitors as the art museum in 2022.",
+  "grammarPoint": "twice as many + N đếm được + as … (Cấu trúc 5, Buổi 3.3)",
+  "hints": [
+   "The history museum",
+   "attracted twice as many visitors",
+   "as the art museum",
+   "in 2022"
+  ],
+  "orderIndex": 29,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "twice as many as",
+   "culture",
+   "bar chart",
+   "set1",
+   "chart:static",
+   "old:1-29"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Museum visitors, 2022",
+   "unit": "million",
+   "labels": [
+    "History museum",
+    "Art museum"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      2,
+      1
+     ]
+    }
+   ],
+   "note": "Gấp đôi (×2) — Số liệu minh họa — chỉ để hình dung câu mô tả."
+  },
+  "explanation": "2 ÷ 1 = 2 → \"twice as many visitors as\". \"visitors\" đếm được → \"many\". Nếu chủ ngữ là \"the number of visitors\" thì so sánh với \"the figure for the art museum\"."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng mệnh đề quan hệ \"which was higher/lower than\":",
+  "questionVi": "Tốc độ tăng trưởng GDP của Việt Nam đạt 7% năm 2019, cao hơn mức 5% của Thái Lan.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Vietnam's GDP growth rate reached 7% in 2019, which was higher than Thailand's figure of 5%.",
+   "Vietnam's GDP growth stood at 7% in 2019, which was higher than that of Thailand at 5%."
+  ],
+  "primaryAnswer": "Vietnam's GDP growth rate reached 7% in 2019, which was higher than Thailand's figure of 5%.",
+  "grammarPoint": "Cấu trúc 6: …, which was higher than … (Buổi 3.3)",
+  "hints": [
+   "which was + higher/lower than → mệnh đề quan hệ phi hạn định bổ sung thêm thông tin so sánh"
+  ],
+  "orderIndex": 30,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "relative clause",
+   "higher than",
+   "economy",
+   "line graph",
+   "set1",
+   "chart:static",
+   "old:1-30"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "GDP growth rate, 2019",
+   "unit": "%",
+   "labels": [
+    "Vietnam",
+    "Thailand"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      7,
+      5
+     ]
+    }
+   ]
+  },
+  "explanation": "Mệnh đề quan hệ \"which was higher than\" nối thẳng vào con số trước nó, giúp so sánh trong một câu."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng mệnh đề quan hệ \"which was lower than\":",
+  "questionVi": "Tỷ lệ biết chữ ở nông thôn chỉ đạt 72%, thấp hơn đáng kể so với mức 95% ở thành thị.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The literacy rate in rural areas stood at only 72%, which was significantly lower than the urban figure of 95%.",
+   "Rural literacy stood at 72%, which was considerably lower than the 95% recorded in urban areas."
+  ],
+  "primaryAnswer": "The literacy rate in rural areas stood at only 72%, which was significantly lower than the urban figure of 95%.",
+  "grammarPoint": "Cấu trúc 6: …, which was significantly lower than … (Buổi 3.3)",
+  "hints": [
+   "\"the urban figure of 95%\" = cách diễn đạt tránh lặp lại \"literacy rate\""
+  ],
+  "orderIndex": 31,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "relative clause",
+   "lower than",
+   "education",
+   "table",
+   "set1",
+   "chart:static",
+   "old:1-31"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Literacy rate",
+   "unit": "%",
+   "labels": [
+    "Rural areas",
+    "Urban areas"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      72,
+      95
+     ]
+    }
+   ]
+  },
+  "explanation": "72% so với 95% → \"which was significantly lower than the urban figure of 95%\". \"stood at\" là động từ chuẩn cho % ở cuối câu."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng \"followed by\":",
+  "questionVi": "Nhiên liệu hóa thạch là nguồn năng lượng lớn nhất chiếm 40%, theo sau là năng lượng mặt trời với 25%.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Fossil fuels were the largest energy source at 40%, followed by solar energy at 25%.",
+   "Fossil fuels accounted for the largest share at 40%, followed by solar energy at 25%."
+  ],
+  "primaryAnswer": "Fossil fuels were the largest energy source at 40%, followed by solar energy at 25%.",
+  "grammarPoint": "Cấu trúc 7: … at X, followed by B, at Y (Buổi 3.3)",
+  "hints": [
+   "\"followed by\" + danh từ → không cần động từ; \"at 25%\" = cách viết ngắn gọn cho tỷ lệ"
+  ],
+  "orderIndex": 32,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "followed by",
+   "energy",
+   "pie chart",
+   "set1",
+   "chart:static",
+   "old:1-32"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Energy sources",
+   "pies": [
+    {
+     "slices": [
+      {
+       "label": "Fossil fuels",
+       "value": 40
+      },
+      {
+       "label": "Solar",
+       "value": 25
+      },
+      {
+       "label": "Wind",
+       "value": 20
+      },
+      {
+       "label": "Hydro",
+       "value": 15
+      }
+     ]
+    }
+   ],
+   "note": "Fossil fuels 40% và Solar 25% lấy từ đề; Wind/Hydro là minh họa."
+  },
+  "explanation": "\"followed by + danh từ\" dùng để mô tả THỨ HẠNG, đi từ cao xuống thấp; số liệu đứng sau \"at\"."
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "fill_blank",
+  "instruction": "Điền \"followed by\" vào chỗ trống để hoàn thành câu:",
+  "sentenceWithBlanks": "Agriculture was the main cause of water pollution at 45%, ___ industrial waste at 30% and urban runoff at 15%.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "followed by"
+  ],
+  "primaryAnswer": "followed by",
+  "grammarPoint": "Cấu trúc 7: … at X, followed by B at Y and C at Z (Buổi 3.3)",
+  "hints": [
+   "followed by liệt kê nguyên nhân theo thứ tự từ cao đến thấp"
+  ],
+  "orderIndex": 33,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "comparison",
+   "followed by",
+   "environment",
+   "bar chart",
+   "set1",
+   "chart:static",
+   "old:1-33"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Causes of water pollution",
+   "pies": [
+    {
+     "slices": [
+      {
+       "label": "Agriculture",
+       "value": 45
+      },
+      {
+       "label": "Industrial waste",
+       "value": 30
+      },
+      {
+       "label": "Urban runoff",
+       "value": 15
+      },
+      {
+       "label": "Other",
+       "value": 10
+      }
+     ]
+    }
+   ]
+  },
+  "explanation": "\"followed by\" liệt kê thứ hạng giảm dần: 45% → 30% → 15%."
+ },
+ {
+  "skillType": "noun_phrase",
+  "module": 1,
+  "level": "beginner",
+  "type": "fill_blank",
+  "instruction": "Nhìn biểu đồ rồi điền number / amount / percentage / figure (Buổi 2.1):",
+  "sentenceWithBlanks": "The ___ of CO₂ emitted by factories in 2010 was 500 tonnes.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "amount",
+   "quantity"
+  ],
+  "primaryAnswer": "amount",
+  "grammarPoint": "The amount / quantity of + N không đếm được (Buổi 2.1)",
+  "explanation": "\"CO₂\" (khí) không đếm được → \"the amount of\" (hoặc \"the quantity of\"), giống water / electricity / waste.",
+  "hints": [
+   "amount",
+   "quantity"
+  ],
+  "orderIndex": 37,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-37"
+  ],
+  "chart": {
+   "kind": "stat",
+   "title": "CO₂ emitted by factories, 2010",
+   "items": [
+    {
+     "icon": "🏭",
+     "value": "500 tonnes",
+     "label": "CO₂ emitted by factories (2010)"
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "noun_phrase",
+  "module": 1,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Nhìn biểu đồ tròn rồi chọn câu ĐÚNG:",
+  "questionEn": "Subject: students enrolled in university | Data: 45%",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The number of students enrolled was 45%.",
+   "The proportion of students enrolled in university was 45%.",
+   "The amount of students enrolled was 45%.",
+   "The figure of enrolled students was 45%."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "Phần trăm → The proportion / percentage / rate of + N (Buổi 2.1)",
+  "explanation": "Số liệu là phần trăm (45%) → \"The proportion of students enrolled in university\". \"number / amount\" không đi với %; \"the figure OF\" sai giới từ.",
+  "hints": [],
+  "orderIndex": 38,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-38"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Students enrolled in university",
+   "pies": [
+    {
+     "caption": "",
+     "slices": [
+      {
+       "label": "Enrolled",
+       "value": 45
+      },
+      {
+       "label": "Not enrolled",
+       "value": 55
+      }
+     ]
+    }
+   ],
+   "note": null
+  }
+ },
+ {
+  "skillType": "noun_phrase",
+  "module": 1,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Chọn câu ĐÚNG ngữ pháp:",
+  "questionEn": "Chủ đề: tourists visiting Paris | Năm: 2019 | Số liệu: 38 million",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The amount of tourists visiting Paris was 38 million in 2019.",
+   "The number of tourists visiting Paris stood at 38 million in 2019.",
+   "The percentage of tourists in Paris was 38 million.",
+   "There was 38 million tourists visiting Paris."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "The number of + N đếm được + stood at + số liệu (Cấu trúc 1, Buổi 2.2)",
+  "explanation": "\"tourists\" đếm được → \"The number of\"; \"stood at\" thay cho \"was\" (Cấu trúc 1 — số liệu ở cuối câu). \"There was 38 million tourists\" sai vì số nhiều phải là \"There were\".",
+  "hints": [],
+  "orderIndex": 40,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-40"
+  ],
+  "chart": {
+   "kind": "stat",
+   "title": null,
+   "items": [
+    {
+     "icon": "🗼",
+     "value": "38 million",
+     "label": "Tourists visiting Paris (2019)"
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "noun_phrase",
+  "module": 1,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Chọn cụm danh từ ĐÚNG cho dữ liệu sau:",
+  "questionEn": "Data: 60% of workers in the UK used public transport in 2015",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The number of UK workers using public transport was 60%.",
+   "The rate of UK workers using public transport stood at 60% in 2015.",
+   "The amount of workers in the UK was 60% in 2015.",
+   "60% figures of UK workers used public transport."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "Phần trăm → the rate / proportion / percentage of + N + stood at X% (Buổi 2.1, 3.2)",
+  "explanation": "Dữ liệu là 60% → \"The rate / proportion of UK workers using public transport stood at 60%\". \"The number of … was 60%\" sai vì number không đi với %.",
+  "hints": [],
+  "orderIndex": 41,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-41"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "UK workers using public transport, 2015",
+   "pies": [
+    {
+     "caption": "",
+     "slices": [
+      {
+       "label": "Public transport",
+       "value": 60
+      },
+      {
+       "label": "Other ways",
+       "value": 40
+      }
+     ]
+    }
+   ],
+   "note": null
+  }
+ },
+ {
+  "skillType": "data_description",
+  "module": 1,
+  "level": "beginner",
+  "type": "rearrange",
+  "instruction": "Sắp xếp các từ thành câu đúng:",
+  "questionEn": "Japan renewable energy = 20% of total electricity (2020)",
+  "blanksCount": 1,
+  "baseWords": [
+   "renewable",
+   "energy",
+   "accounted",
+   "for",
+   "20%",
+   "of",
+   "Japan's",
+   "total",
+   "electricity",
+   "in",
+   "2020"
+  ],
+  "options": [],
+  "sampleAnswers": [
+   "Renewable energy accounted for 20% of Japan's total electricity in 2020."
+  ],
+  "primaryAnswer": "Renewable energy accounted for 20% of Japan's total electricity in 2020.",
+  "grammarPoint": "Phần trăm ở GIỮA câu: N + accounted for + X% of … (Buổi 3.2)",
+  "explanation": "Câu mẫu Buổi 3.2: \"Internet users accounted for 20% of the Vietnamese population.\" — chủ ngữ là đối tượng, \"accounted for / made up\" + X% + of + tổng thể.",
+  "hints": [],
+  "orderIndex": 44,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-44"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Japan's electricity by source, 2020",
+   "pies": [
+    {
+     "caption": "",
+     "slices": [
+      {
+       "label": "Renewable energy",
+       "value": 20
+      },
+      {
+       "label": "Other sources",
+       "value": 80
+      }
+     ]
+    }
+   ],
+   "note": null
+  }
+ },
+ {
+  "skillType": "data_description",
+  "module": 1,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng cụm \"constituted\":",
+  "questionVi": "Lĩnh vực dịch vụ chiếm 72% GDP của Anh vào năm 2000.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The service sector constituted 72% of the UK's GDP in 2000.",
+   "The service sector made up 72% of the UK's GDP in 2000.",
+   "The service sector represented 72% of UK GDP in 2000."
+  ],
+  "primaryAnswer": "The service sector constituted 72% of the UK's GDP in 2000.",
+  "grammarPoint": "constituted / made up / accounted for + X% of … = chiếm (Buổi 3.2)",
+  "explanation": "Phần trăm ở giữa câu: \"The service sector constituted 72% of the UK's GDP\". Không dùng \"There were\" với %.",
+  "hints": [],
+  "orderIndex": 47,
+  "xpReward": 10,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-47"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "UK's GDP by sector, 2000",
+   "pies": [
+    {
+     "caption": "",
+     "slices": [
+      {
+       "label": "Service sector",
+       "value": 72
+      },
+      {
+       "label": "Other sectors",
+       "value": 28
+      }
+     ]
+    }
+   ],
+   "note": null
+  }
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch câu dùng \"by contrast\":",
+  "questionVi": "Dân số đô thị của Trung Quốc tăng mạnh lên 60%. Ngược lại, dân số nông thôn giảm xuống còn 40%.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "China's urban population rose significantly to 60%. By contrast, the rural population declined to 40%.",
+   "The urban population of China increased sharply to 60%. By contrast, the rural figure fell to just 40%."
+  ],
+  "primaryAnswer": "China's urban population rose significantly to 60%. By contrast, the rural population declined to 40%.",
+  "grammarPoint": "Cấu trúc 4 cho xu hướng: … . By contrast, … (Buổi 6.7)",
+  "explanation": "Hai xu hướng ngược chiều (đô thị tăng, nông thôn giảm) → hai câu nối bằng \"By contrast\".",
+  "hints": [],
+  "orderIndex": 52,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:1-52"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "China's urban and rural population",
+   "unit": "% of population",
+   "labels": [
+    "2000",
+    "2005",
+    "2010",
+    "2015",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Urban",
+     "values": [
+      36,
+      43,
+      50,
+      56,
+      60
+     ],
+     "callouts": [
+      4
+     ]
+    },
+    {
+     "name": "Rural",
+     "values": [
+      64,
+      57,
+      50,
+      44,
+      40
+     ],
+     "callouts": [
+      4
+     ]
+    }
+   ],
+   "note": "Số đầu và cuối lấy từ đề bài; các điểm ở giữa là minh họa."
+  }
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "intermediate",
+  "type": "multiple_choice",
+  "instruction": "Chọn câu SO SÁNH đúng nhất:",
+  "questionEn": "Germany: 80 million tonnes steel | France: 40 million tonnes steel (same year)",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "Germany produced as twice as much steel as France.",
+   "Germany produced twice as much steel as France.",
+   "Germany produced two times more steel as France.",
+   "Germany's steel was double than France."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "Cấu trúc 5: twice as much + N + as (không \"as twice\", không \"more\") (Buổi 3.3)",
+  "explanation": "80 ÷ 40 = 2 → \"twice as much steel as France\". Thép không đếm được → \"much\". Không viết \"as twice as\", \"two times more … as\" hay \"double than\".",
+  "hints": [],
+  "orderIndex": 53,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-53"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Steel production (same year)",
+   "unit": "million tonnes",
+   "labels": [
+    "Germany",
+    "France"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      80,
+      40
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "translation",
+  "instruction": "Dịch câu sau mô tả biểu đồ tròn (pie chart):",
+  "questionVi": "Giao thông cá nhân chiếm tỷ lệ lớn nhất với 45%, tiếp theo là xe buýt với 30% và tàu điện với 25%.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Private transport accounted for the largest share at 45%, followed by bus at 30% and tram at 25%.",
+   "Private vehicles constituted the highest proportion at 45%, with bus and tram making up 30% and 25% respectively."
+  ],
+  "primaryAnswer": "Private transport accounted for the largest share at 45%, followed by bus at 30% and tram at 25%.",
+  "grammarPoint": "accounted for the largest share at X, followed by … (Cấu trúc 7, Buổi 3.3)",
+  "explanation": "Biểu đồ tròn là dữ liệu TĨNH → chỉ so sánh, không dùng tăng/giảm. \"accounted for the largest share\" + \"followed by\" (thứ hạng giảm dần).",
+  "hints": [
+   "accounted for the largest share",
+   "at 45%",
+   "followed by",
+   "at 30%",
+   "and...at 25%"
+  ],
+  "orderIndex": 81,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:2-81"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Share of transport use",
+   "pies": [
+    {
+     "slices": [
+      {
+       "label": "Private transport",
+       "value": 45
+      },
+      {
+       "label": "Bus",
+       "value": 30
+      },
+      {
+       "label": "Tram",
+       "value": 25
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "comparison",
+  "module": 1,
+  "level": "elementary",
+  "type": "rearrange",
+  "instruction": "Sắp xếp từ thành câu so sánh đúng:",
+  "questionEn": "Context: Spain tourism revenue > Germany tourism revenue (both in 2019)",
+  "blanksCount": 1,
+  "baseWords": [
+   "Spain",
+   "earned",
+   "significantly",
+   "more",
+   "tourism",
+   "revenue",
+   "than",
+   "Germany",
+   "in",
+   "2019"
+  ],
+  "options": [],
+  "sampleAnswers": [
+   "Spain earned significantly more tourism revenue than Germany in 2019."
+  ],
+  "primaryAnswer": "Spain earned significantly more tourism revenue than Germany in 2019.",
+  "grammarPoint": "So sánh hơn với danh từ: more + N + than",
+  "explanation": "\"earned significantly more tourism revenue than Germany\" — \"significantly\" nhấn mạnh mức chênh lệch lớn (80 so với 42).",
+  "hints": [],
+  "orderIndex": 82,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-82"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Tourism revenue, 2019",
+   "unit": "$ billion",
+   "labels": [
+    "Spain",
+    "Germany"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      80,
+      42
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "data_description",
+  "module": 1,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch câu sau mô tả bảng số liệu (table) với nhiều dữ liệu:",
+  "questionVi": "Năm 2010, Mỹ dẫn đầu về chi tiêu quân sự với 690 tỷ đô, gấp gần ba lần chi tiêu của Trung Quốc là 240 tỷ đô.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "In 2010, the USA led in military spending at $690 billion, which was almost three times as much as China's expenditure of $240 billion.",
+   "The USA topped military spending in 2010 at $690 billion, nearly three times the figure for China at $240 billion."
+  ],
+  "primaryAnswer": "In 2010, the USA led in military spending at $690 billion, which was almost three times as much as China's expenditure of $240 billion.",
+  "grammarPoint": "Cấu trúc 5 + 7: led / topped … at X, which was almost three times as much as … (Buổi 3.3)",
+  "explanation": "690 ÷ 240 ≈ 2.9 → \"almost three times as much as\". Tiền là danh từ không đếm được → \"as much as\". \"at $690 billion\" đặt số liệu sau \"at\" như Cấu trúc 7.",
+  "hints": [],
+  "orderIndex": 84,
+  "xpReward": 15,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:1-84"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Military spending, 2010",
+   "unit": "$ billion",
+   "labels": [
+    "USA",
+    "China"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      690,
+      240
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Chọn từ MÔ TẢ XU HƯỚNG TĂNG phù hợp nhất:",
+  "questionEn": "The number of students ___ significantly in 2005.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "increased",
+   "decreased",
+   "remained",
+   "fluctuated"
+  ],
+  "correctOptionIndex": 0,
+  "sampleAnswers": [],
+  "grammarPoint": "Động từ xu hướng tăng: rise / increase / grow / climb (Buổi 5.1)",
+  "explanation": "\"Increased\" = tăng. Các từ tăng khác: rose, grew, climbed, jumped",
+  "hints": [],
+  "orderIndex": 14,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-14"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Number of students, 2003–2006",
+   "unit": "students",
+   "labels": [
+    "2003",
+    "2004",
+    "2005",
+    "2006"
+   ],
+   "series": [
+    {
+     "name": "Students",
+     "values": [
+      6000,
+      6200,
+      9000,
+      9200
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "beginner",
+  "type": "fill_blank",
+  "instruction": "Nhìn biểu đồ (8,000 → 10,000) rồi điền by hoặc to:",
+  "sentenceWithBlanks": "The number of students increased ___ 2,000 after 2 years.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "by"
+  ],
+  "primaryAnswer": "by",
+  "grammarPoint": "by + mức thay đổi | to + giá trị cuối (Buổi 6.1)",
+  "explanation": "Tăng THÊM 2,000 (8,000 → 10,000) là mức chênh lệch → \"by 2,000\".",
+  "hints": [
+   "by",
+   "to"
+  ],
+  "orderIndex": 15,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-15"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Number of students, 2003 and 2005",
+   "unit": "students",
+   "labels": [
+    "2003",
+    "2005"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      8000,
+      10000
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "beginner",
+  "type": "fill_blank",
+  "instruction": "Nhìn biểu đồ (8,000 → 10,000) rồi điền by hoặc to:",
+  "sentenceWithBlanks": "The number of students increased ___ 10,000 after 2 years.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "to"
+  ],
+  "primaryAnswer": "to",
+  "grammarPoint": "by + mức thay đổi | to + giá trị cuối (Buổi 6.1)",
+  "explanation": "10,000 là giá trị CUỐI (đạt tới) → \"to 10,000\".",
+  "hints": [
+   "to",
+   "by"
+  ],
+  "orderIndex": 16,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-16"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Number of students, 2003 and 2005",
+   "unit": "students",
+   "labels": [
+    "2003",
+    "2005"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      8000,
+      10000
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Chọn cách mô tả xu hướng ĐÚNG và HỌC THUẬT NHẤT:",
+  "questionEn": "Wind energy production: 2000 = 10 GW → 2020 = 200 GW (tăng rất mạnh)",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "Wind energy went up a lot from 2000 to 2020.",
+   "There was a dramatic increase in wind energy production, from 10 GW in 2000 to 200 GW in 2020.",
+   "Wind energy increased to 200 GW by 10 GW dramatically.",
+   "There was wind energy that increased dramatically from 2000."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "Cấu trúc 2: There was a + adj + noun + in + chủ thể, from X to Y (Buổi 6.1)",
+  "explanation": "Cấu trúc danh từ \"There was a dramatic increase in...\" rất học thuật. Không dùng \"went up a lot\" (không trang trọng).",
+  "hints": [],
+  "orderIndex": 17,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-17"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Wind energy production, 2000–2020",
+   "unit": "GW",
+   "labels": [
+    "2000",
+    "2005",
+    "2010",
+    "2015",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Wind energy",
+     "values": [
+      10,
+      25,
+      60,
+      120,
+      200
+     ],
+     "callouts": [
+      0,
+      4
+     ]
+    }
+   ],
+   "note": "Số đầu và cuối lấy từ đề bài; các điểm ở giữa là minh họa."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "elementary",
+  "type": "translation",
+  "instruction": "Dịch sang tiếng Anh dùng cấu trúc \"experienced\":",
+  "questionVi": "Số lượng khách du lịch đến Thái Lan tăng đều đặn từ 20 triệu lên 40 triệu trong giai đoạn 2000-2019.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The number of tourists visiting Thailand experienced a steady increase from 20 million to 40 million between 2000 and 2019.",
+   "Tourism in Thailand experienced a gradual rise from 20 million to 40 million visitors between 2000 and 2019."
+  ],
+  "primaryAnswer": "The number of tourists visiting Thailand experienced a steady increase from 20 million to 40 million between 2000 and 2019.",
+  "grammarPoint": "Cấu trúc 3: S + experienced a + adj + noun + from X to Y (Buổi 6.1)",
+  "explanation": "\"experienced\" = \"trải qua/ghi nhận\". \"a steady increase\" là cấu trúc danh từ, lịch sự hơn \"increased steadily\".",
+  "hints": [
+   "experienced",
+   "a steady increase",
+   "from 20 million",
+   "to 40 million",
+   "between 2000 and 2019"
+  ],
+  "orderIndex": 18,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-18"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Tourists visiting Thailand, 2000–2019",
+   "unit": "million",
+   "labels": [
+    "2000",
+    "2005",
+    "2010",
+    "2015",
+    "2019"
+   ],
+   "series": [
+    {
+     "name": "Tourists",
+     "values": [
+      20,
+      25,
+      30,
+      35,
+      40
+     ],
+     "callouts": [
+      0,
+      4
+     ]
+    }
+   ],
+   "note": "Số đầu và cuối lấy từ đề bài; các điểm ở giữa là minh họa."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Chọn tính từ mô tả mức độ thay đổi MẠNH NHẤT:",
+  "questionEn": "The figure ___ from 500 to 12,000 in just 6 years.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "slightly increased",
+   "gradually rose",
+   "dramatically jumped",
+   "minimally grew"
+  ],
+  "correctOptionIndex": 2,
+  "sampleAnswers": [],
+  "grammarPoint": "Mức độ: slightly → gradually → significantly → dramatically (Buổi 5.3)",
+  "explanation": "500 → 12,000 là tăng gấp 24 lần → dùng \"dramatically\" (mạnh nhất)",
+  "hints": [],
+  "orderIndex": 19,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-19"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "The figure over six years",
+   "labels": [
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Figure",
+     "values": [
+      500,
+      900,
+      2000,
+      4500,
+      7000,
+      10000,
+      12000
+     ],
+     "callouts": [
+      0,
+      6
+     ]
+    }
+   ],
+   "note": "Số đầu và cuối lấy từ đề bài; các điểm ở giữa là minh họa."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "elementary",
+  "type": "fill_blank",
+  "instruction": "Điền giới từ thích hợp:",
+  "sentenceWithBlanks": "Sales reached a peak ___ 45,000 in early March.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "of"
+  ],
+  "primaryAnswer": "of",
+  "grammarPoint": "reach a peak OF + số liệu | peak AT + số liệu (Buổi 6.2)",
+  "explanation": "\"reach a peak of...\" = đạt đỉnh ở mức... Dùng \"of\" sau peak/high/low",
+  "hints": [],
+  "orderIndex": 20,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-20"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Monthly sales",
+   "unit": "units",
+   "labels": [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May"
+   ],
+   "series": [
+    {
+     "name": "Sales",
+     "values": [
+      30000,
+      38000,
+      45000,
+      40000,
+      36000
+     ],
+     "callouts": [
+      2
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch sang tiếng Anh dùng cấu trúc kết hợp 2 xu hướng (tăng rồi giảm):",
+  "questionVi": "Giá bất động sản tại Mỹ tăng mạnh từ 1990 đến 2006, cho đến khi đạt đỉnh gần $300,000; tuy nhiên, sau đó bắt đầu giảm nhanh xuống dưới $180,000 vào năm 2010.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "US property prices rose sharply between 1990 and 2006, until they reached a peak of almost $300,000; however, prices began to fall steeply to under $180,000 by 2010.",
+   "There was a sharp increase in US property prices between 1990 and 2006, reaching a high of almost $300,000; however, prices then declined rapidly to under $180,000 in 2010."
+  ],
+  "primaryAnswer": "US property prices rose sharply between 1990 and 2006, until they reached a peak of almost $300,000; however, prices began to fall steeply to under $180,000 by 2010.",
+  "grammarPoint": "Nối xu hướng tăng rồi giảm: … until they reached a peak of …; however, … (Buổi 7.1)",
+  "explanation": "Dùng \"however\" (dấu chấm phẩy trước) để nối hai xu hướng trái ngược. \"until\" chỉ điểm đảo chiều.",
+  "hints": [
+   "until they reached a peak of",
+   "however",
+   "began to fall steeply"
+  ],
+  "orderIndex": 21,
+  "xpReward": 15,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-21"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Average US property prices, 1990–2010",
+   "unit": "$",
+   "labels": [
+    "1990",
+    "1994",
+    "1998",
+    "2002",
+    "2006",
+    "2008",
+    "2010"
+   ],
+   "series": [
+    {
+     "name": "Price",
+     "values": [
+      130000,
+      150000,
+      175000,
+      230000,
+      298000,
+      240000,
+      175000
+     ],
+     "callouts": [
+      4,
+      6
+     ]
+    }
+   ],
+   "note": "Số đầu và cuối lấy từ đề bài; các điểm ở giữa là minh họa."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "beginner",
+  "type": "fill_blank",
+  "instruction": "Điền giới từ đúng (from, to, by, at, of, between, and):",
+  "sentenceWithBlanks": "___ 1990 ___ 2000, there was a drop ___ 15%.",
+  "blanksCount": 3,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "From, to, of",
+   "Between, and, of"
+  ],
+  "primaryAnswer": "From, to, of",
+  "grammarPoint": "From … to … / Between … and … | a drop OF + mức chênh lệch (Buổi 6 — Practice 1, câu 1)",
+  "explanation": "Đáp án Practice 1 câu 1: From / Between … to / and … of. \"drop\" là danh từ → mức chênh lệch đi với \"of\".",
+  "hints": [],
+  "orderIndex": 22,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-22"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "The figure, 1990–2000",
+   "unit": "%",
+   "labels": [
+    "1990",
+    "1995",
+    "2000"
+   ],
+   "series": [
+    {
+     "name": "Figure",
+     "values": [
+      60,
+      52,
+      45
+     ],
+     "callouts": [
+      0,
+      2
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "beginner",
+  "type": "fill_blank",
+  "instruction": "Điền giới từ đúng:",
+  "sentenceWithBlanks": "Solar panel installations peaked ___ 80,000 units in 2020.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "at"
+  ],
+  "primaryAnswer": "at",
+  "grammarPoint": "peak AT + số liệu (Buổi 6.2)",
+  "explanation": "\"peaked at 80,000\" = đạt đỉnh tại mức 80,000. Sau các từ chỉ trạng thái (peak, bottom, remain) dùng \"at\".",
+  "hints": [
+   "at",
+   "to",
+   "by"
+  ],
+  "orderIndex": 23,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-23"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Solar panel installations",
+   "unit": "units",
+   "labels": [
+    "2010",
+    "2012",
+    "2014",
+    "2016",
+    "2018",
+    "2020",
+    "2022"
+   ],
+   "series": [
+    {
+     "name": "Installations",
+     "values": [
+      5000,
+      12000,
+      25000,
+      40000,
+      60000,
+      80000,
+      72000
+     ],
+     "callouts": [
+      5
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "elementary",
+  "type": "fill_blank",
+  "instruction": "Điền giới từ đúng:",
+  "sentenceWithBlanks": "The unemployment rate of Vietnam fluctuated ___ 8% and 12% from 2007 to 2010.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "between"
+  ],
+  "primaryAnswer": "between",
+  "grammarPoint": "fluctuate BETWEEN A and B (Buổi 6.2)",
+  "explanation": "\"fluctuate between A and B\" = dao động từ A đến B. Luôn dùng \"between...and...\"",
+  "hints": [
+   "between",
+   "from",
+   "around"
+  ],
+  "orderIndex": 24,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-24"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Unemployment rate in Vietnam, 2007–2010",
+   "unit": "%",
+   "yMax": 14,
+   "labels": [
+    "2007",
+    "mid-07",
+    "2008",
+    "mid-08",
+    "2009",
+    "mid-09",
+    "2010"
+   ],
+   "series": [
+    {
+     "name": "Unemployment",
+     "values": [
+      9,
+      12,
+      8,
+      11,
+      8.5,
+      12,
+      10
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "intermediate",
+  "type": "data_transform",
+  "instruction": "Viết lại câu bắt đầu bằng \"The number of electric vehicles\":",
+  "questionEn": "ORIGINAL: There was a gradual rise in the number of electric vehicles sold in Europe from 2015 to 2022.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The number of electric vehicles sold in Europe rose gradually from 2015 to 2022.",
+   "The number of electric vehicles sold in Europe increased gradually between 2015 and 2022.",
+   "The number of electric vehicles sold in Europe grew gradually from 2015 to 2022."
+  ],
+  "primaryAnswer": "The number of electric vehicles sold in Europe rose gradually from 2015 to 2022.",
+  "grammarPoint": "Cấu trúc 2 → Cấu trúc 1: There was a gradual rise in … → S + rose gradually (Buổi 6.1)",
+  "explanation": "\"There was a gradual rise\" (cụm danh từ) → \"rose gradually\" (động từ + trạng từ). Đây là phép biến đổi noun phrase → verb phrase.",
+  "hints": [
+   "The number of electric vehicles",
+   "rose/increased/grew",
+   "gradually",
+   "from 2015 to 2022"
+  ],
+  "orderIndex": 25,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-25"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Electric vehicles sold in Europe, 2015–2022",
+   "unit": "million",
+   "labels": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022"
+   ],
+   "series": [
+    {
+     "name": "EV sales",
+     "values": [
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "intermediate",
+  "type": "multiple_choice",
+  "instruction": "Chọn cách diễn đạt DỰ ĐOÁN TƯƠNG LAI đúng nhất:",
+  "questionEn": "In 2050, gas [?] 40% of total energy production.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "accounted for",
+   "accounts for",
+   "is predicted to account for",
+   "will accounts for"
+  ],
+  "correctOptionIndex": 2,
+  "sampleAnswers": [],
+  "grammarPoint": "Tương lai: is predicted to + V nguyên mẫu (Buổi 4.1)",
+  "explanation": "Dữ liệu tương lai: \"is predicted/expected/projected to + verb\". KHÔNG dùng thì quá khứ.",
+  "hints": [],
+  "orderIndex": 27,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:2-27"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Energy production by source, 2050 (forecast)",
+   "pies": [
+    {
+     "slices": [
+      {
+       "label": "Gas",
+       "value": 40
+      },
+      {
+       "label": "Renewables",
+       "value": 35
+      },
+      {
+       "label": "Nuclear",
+       "value": 15
+      },
+      {
+       "label": "Coal",
+       "value": 10
+      }
+     ]
+    }
+   ],
+   "note": "Gas 40% lấy từ đề; các nguồn còn lại là minh họa."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Chọn từ mô tả xu hướng GIẢM phù hợp nhất:",
+  "questionEn": "The number of coal mines ___ sharply between 1980 and 2000.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "increased",
+   "declined",
+   "fluctuated",
+   "stabilised"
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "Động từ giảm: fall / drop / decline / decrease (Buổi 5.1)",
+  "explanation": "Các từ chỉ giảm: fell, dropped, declined, decreased, plummeted, plunged.",
+  "hints": [],
+  "orderIndex": 54,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-54"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Number of coal mines, 1980–2000",
+   "unit": "mines",
+   "labels": [
+    "1980",
+    "1985",
+    "1990",
+    "1995",
+    "2000"
+   ],
+   "series": [
+    {
+     "name": "Coal mines",
+     "values": [
+      220,
+      180,
+      120,
+      70,
+      40
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "beginner",
+  "type": "fill_blank",
+  "instruction": "Điền giới từ đúng (to / by / at / of):",
+  "sentenceWithBlanks": "Oil prices fell ___ $30 per barrel in 2016.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "to"
+  ],
+  "primaryAnswer": "to",
+  "grammarPoint": "fall TO + giá trị cuối (Buổi 6.1)",
+  "explanation": "\"to\" = điểm đến (giá trị sau khi thay đổi). \"by\" = mức thay đổi. Ví dụ: fell by $20 vs fell to $30.",
+  "hints": [
+   "to",
+   "by"
+  ],
+  "orderIndex": 55,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-55"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Oil prices, 2012–2016",
+   "unit": "$ per barrel",
+   "labels": [
+    "2012",
+    "2013",
+    "2014",
+    "2015",
+    "2016"
+   ],
+   "series": [
+    {
+     "name": "Oil price",
+     "values": [
+      110,
+      105,
+      95,
+      50,
+      30
+     ],
+     "callouts": [
+      4
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "beginner",
+  "type": "fill_blank",
+  "instruction": "Điền giới từ đúng:",
+  "sentenceWithBlanks": "House prices rose ___ 15% over the decade.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "by"
+  ],
+  "primaryAnswer": "by",
+  "grammarPoint": "rise BY + mức thay đổi (Buổi 6.1)",
+  "explanation": "\"by 15%\" = tăng THÊM 15%. Nếu ban đầu là 100, sau là 115.",
+  "hints": [
+   "by",
+   "to"
+  ],
+  "orderIndex": 56,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-56"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Average house prices over a decade",
+   "unit": "$ thousand",
+   "yMin": 150,
+   "labels": [
+    "2010",
+    "2012",
+    "2014",
+    "2016",
+    "2018",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "House price",
+     "values": [
+      200,
+      204,
+      210,
+      216,
+      223,
+      230
+     ],
+     "callouts": [
+      0,
+      5
+     ]
+    }
+   ],
+   "note": "200 → 230 = +15% — Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "beginner",
+  "type": "fill_blank",
+  "instruction": "Điền giới từ đúng:",
+  "sentenceWithBlanks": "Internet usage levelled off ___ around 70% from 2015 onwards.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "at"
+  ],
+  "primaryAnswer": "at",
+  "grammarPoint": "level off / remain stable AT + mức (Buổi 6.2)",
+  "explanation": "Sau các từ chỉ trạng thái ổn định (level off, stabilise, plateau, remain) dùng \"at\".",
+  "hints": [
+   "at",
+   "to"
+  ],
+  "orderIndex": 57,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-57"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Internet usage",
+   "unit": "% of population",
+   "labels": [
+    "2005",
+    "2007",
+    "2009",
+    "2011",
+    "2013",
+    "2015",
+    "2017",
+    "2019",
+    "2021"
+   ],
+   "series": [
+    {
+     "name": "Internet usage",
+     "values": [
+      30,
+      38,
+      47,
+      56,
+      64,
+      70,
+      70,
+      71,
+      70
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "elementary",
+  "type": "fill_blank",
+  "instruction": "Điền từ chỉ xu hướng ổn định thích hợp:",
+  "sentenceWithBlanks": "The birth rate in Japan ___ at approximately 1.2% throughout the 2010s.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "remained stable",
+   "stayed constant",
+   "levelled off",
+   "plateaued"
+  ],
+  "primaryAnswer": "remained stable",
+  "grammarPoint": "Ổn định: remained stable / stayed constant / levelled off (Buổi 5.1)",
+  "explanation": "Xu hướng không đổi: \"remained stable/constant\", \"levelled off\", \"plateaued\" đều được.",
+  "hints": [],
+  "orderIndex": 60,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-60"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Birth rate in Japan, 2010–2019",
+   "unit": "%",
+   "yMax": 2,
+   "labels": [
+    "2010",
+    "2011",
+    "2012",
+    "2013",
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019"
+   ],
+   "series": [
+    {
+     "name": "Birth rate",
+     "values": [
+      1.21,
+      1.19,
+      1.2,
+      1.2,
+      1.21,
+      1.2,
+      1.19,
+      1.2,
+      1.21,
+      1.2
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "elementary",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng \"reached a peak\":",
+  "questionVi": "Doanh số bán điện thoại thông minh đạt đỉnh ở mức 1,5 tỷ chiếc vào năm 2017 trước khi bắt đầu giảm.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Smartphone sales reached a peak of 1.5 billion units in 2017 before beginning to decline.",
+   "Smartphone sales peaked at 1.5 billion in 2017 before starting to fall."
+  ],
+  "primaryAnswer": "Smartphone sales reached a peak of 1.5 billion units in 2017 before beginning to decline.",
+  "grammarPoint": "reached a peak of … before + V-ing (Buổi 5.2, 7.2)",
+  "explanation": "\"reached a peak OF 1.5 billion\" (danh từ \"peak\" + \"of\"). \"peaked AT 1.5 billion\" (động từ \"peaked\" + \"at\").",
+  "hints": [
+   "reached a peak of",
+   "before beginning to decline"
+  ],
+  "orderIndex": 61,
+  "xpReward": 10,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-61"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Global smartphone sales",
+   "unit": "billion units",
+   "labels": [
+    "2013",
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Sales",
+     "values": [
+      1,
+      1.25,
+      1.42,
+      1.47,
+      1.5,
+      1.45,
+      1.4,
+      1.3
+     ],
+     "callouts": [
+      4
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch câu sau dùng \"witnessed\":",
+  "questionVi": "Năm 2008 chứng kiến sự sụt giảm mạnh về giá bất động sản tại Mỹ, từ 300.000$ xuống còn 180.000$.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The year 2008 witnessed a sharp decline in US property prices, from $300,000 to $180,000.",
+   "2008 witnessed a dramatic fall in US house prices, dropping from $300,000 to $180,000."
+  ],
+  "primaryAnswer": "The year 2008 witnessed a sharp decline in US property prices, from $300,000 to $180,000.",
+  "grammarPoint": "Cấu trúc 3: The year … witnessed a + adj + noun + in … (Buổi 6.1)",
+  "explanation": "Đổi chủ ngữ thành năm để tránh lặp. \"witnessed\" = \"saw\" = \"chứng kiến\".",
+  "hints": [],
+  "orderIndex": 62,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-62"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "US property prices, 2005–2010",
+   "unit": "$",
+   "labels": [
+    "2005",
+    "2006",
+    "2007",
+    "2008",
+    "2009",
+    "2010"
+   ],
+   "series": [
+    {
+     "name": "Price",
+     "values": [
+      270000,
+      295000,
+      300000,
+      180000,
+      175000,
+      178000
+     ],
+     "callouts": [
+      2,
+      3
+     ]
+    }
+   ],
+   "note": "Số đầu và cuối lấy từ đề bài; các điểm ở giữa là minh họa."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "intermediate",
+  "type": "data_transform",
+  "instruction": "Viết lại câu bắt đầu bằng \"There was\":",
+  "questionEn": "Solar panel installations rose sharply from 5,000 to 80,000 units between 2010 and 2020.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "There was a sharp rise in solar panel installations, from 5,000 to 80,000 units between 2010 and 2020.",
+   "There was a dramatic increase in the number of solar panel installations from 5,000 to 80,000 between 2010 and 2020."
+  ],
+  "primaryAnswer": "There was a sharp rise in solar panel installations, from 5,000 to 80,000 units between 2010 and 2020.",
+  "grammarPoint": "Cấu trúc 1 → 2: rose sharply → There was a sharp rise in … (Buổi 6.1)",
+  "explanation": "Chuyển động từ + trạng từ → tính từ + danh từ để thay đổi cấu trúc câu.",
+  "hints": [],
+  "orderIndex": 63,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-63"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Solar panel installations, 2010–2020",
+   "unit": "units",
+   "labels": [
+    "2010",
+    "2012",
+    "2014",
+    "2016",
+    "2018",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Installations",
+     "values": [
+      5000,
+      12000,
+      25000,
+      40000,
+      60000,
+      80000
+     ],
+     "callouts": [
+      0,
+      5
+     ]
+    }
+   ],
+   "note": "Số đầu và cuối lấy từ đề bài; các điểm ở giữa là minh họa."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch câu dự đoán tương lai sang tiếng Anh:",
+  "questionVi": "Dân số thế giới được dự báo sẽ đạt 10 tỷ người vào năm 2050.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The world's population is projected to reach 10 billion by 2050.",
+   "The global population is predicted to reach 10 billion by 2050.",
+   "The world population is expected to hit 10 billion by 2050."
+  ],
+  "primaryAnswer": "The world's population is projected to reach 10 billion by 2050.",
+  "grammarPoint": "Tương lai: is projected to + V nguyên mẫu (Buổi 4.1)",
+  "explanation": "Dữ liệu tương lai KHÔNG dùng thì quá khứ. Dùng \"is projected/predicted/expected to\".",
+  "hints": [
+   "is projected/predicted/expected to",
+   "reach",
+   "by 2050"
+  ],
+  "orderIndex": 64,
+  "xpReward": 10,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-64"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "World population (projection after 2020)",
+   "unit": "billion",
+   "labels": [
+    "2000",
+    "2010",
+    "2020",
+    "2030",
+    "2040",
+    "2050"
+   ],
+   "forecastFrom": 2,
+   "series": [
+    {
+     "name": "Population",
+     "values": [
+      6.1,
+      6.9,
+      7.8,
+      8.6,
+      9.3,
+      10
+     ],
+     "callouts": [
+      5
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "intermediate",
+  "type": "fill_blank",
+  "instruction": "Điền giới từ đúng vào tất cả chỗ trống:",
+  "sentenceWithBlanks": "___ 2005 ___ 2015, the unemployment rate fluctuated ___ 5% and 9%, finally settling ___ around 6%.",
+  "blanksCount": 4,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "From, to, between, at",
+   "Between, and, between, at"
+  ],
+  "primaryAnswer": "From, to, between, at",
+  "grammarPoint": "From … to … | fluctuate between … and … | settle at (Buổi 6.2)",
+  "explanation": "From 2005 to 2015 (hoặc Between … and …) = giai đoạn; \"fluctuated between 5% and 9%\" = dao động trong khoảng; \"settling at around 6%\" = dừng lại ở mức.",
+  "hints": [],
+  "orderIndex": 65,
+  "xpReward": 10,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-65"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Unemployment rate, 2005–2015",
+   "unit": "%",
+   "yMax": 10,
+   "labels": [
+    "2005",
+    "2006",
+    "2007",
+    "2008",
+    "2009",
+    "2010",
+    "2011",
+    "2012",
+    "2013",
+    "2014",
+    "2015"
+   ],
+   "series": [
+    {
+     "name": "Unemployment",
+     "values": [
+      6,
+      9,
+      5,
+      8,
+      5.5,
+      9,
+      6.5,
+      7,
+      6,
+      6,
+      6
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "intermediate",
+  "type": "multiple_choice",
+  "instruction": "Chọn tính từ mô tả mức độ thay đổi ĐÚNG nhất:",
+  "questionEn": "Sales: Jan = 10,000 → Feb = 10,200 (thay đổi rất nhỏ)",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "dramatically increased",
+   "sharply rose",
+   "slightly increased",
+   "significantly grew"
+  ],
+  "correctOptionIndex": 2,
+  "sampleAnswers": [],
+  "grammarPoint": "Mức độ: slightly = thay đổi rất nhỏ (Buổi 5.3)",
+  "explanation": "Tăng 200 trên 10,000 (2%) = rất nhỏ → \"slightly\". Chọn adverb phù hợp với MỨC ĐỘ thay đổi.",
+  "hints": [],
+  "orderIndex": 66,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-66"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Sales, January vs February",
+   "unit": "units",
+   "labels": [
+    "Jan",
+    "Feb"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      10000,
+      10200
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Chọn từ mô tả xu hướng DAO ĐỘNG phù hợp nhất:",
+  "questionEn": "The price of oil ___ between $40 and $80 per barrel throughout the 2000s.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "increased",
+   "decreased",
+   "fluctuated",
+   "doubled"
+  ],
+  "correctOptionIndex": 2,
+  "sampleAnswers": [],
+  "grammarPoint": "fluctuate (between … and …) = dao động lên xuống (Buổi 5.1)",
+  "explanation": "\"fluctuate\" = lúc tăng lúc giảm, không theo hướng rõ ràng. Luôn dùng kèm \"between X and Y\".",
+  "hints": [],
+  "orderIndex": 80,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-80"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Price of oil in the 2000s",
+   "unit": "$ per barrel",
+   "yMax": 100,
+   "labels": [
+    "2000",
+    "2001",
+    "2002",
+    "2003",
+    "2004",
+    "2005",
+    "2006",
+    "2007",
+    "2008",
+    "2009"
+   ],
+   "series": [
+    {
+     "name": "Oil price",
+     "values": [
+      45,
+      70,
+      40,
+      78,
+      50,
+      80,
+      42,
+      75,
+      60,
+      48
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "trend_language",
+  "module": 2,
+  "level": "intermediate",
+  "type": "translation",
+  "instruction": "Dịch câu sau mô tả xu hướng có ĐẢO CHIỀU:",
+  "questionVi": "Số lượng người hút thuốc lá ở Anh liên tục giảm từ 1990 đến 2010, tuy nhiên sau đó tăng nhẹ trở lại vào năm 2015.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The number of smokers in the UK declined continuously from 1990 to 2010; however, this figure experienced a slight recovery in 2015.",
+   "Smoking rates in the UK fell steadily between 1990 and 2010, before experiencing a modest increase in 2015."
+  ],
+  "primaryAnswer": "The number of smokers in the UK declined continuously from 1990 to 2010; however, this figure experienced a slight recovery in 2015.",
+  "grammarPoint": "Nối xu hướng đảo chiều: …; however, … / … before experiencing … (Buổi 7.1–7.2)",
+  "explanation": "\"however\" (dấu chấm phẩy trước) hoặc \"before + V-ing\" để nối xu hướng đảo chiều.",
+  "hints": [],
+  "orderIndex": 85,
+  "xpReward": 15,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:2-85"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Number of smokers in the UK, 1990–2015",
+   "unit": "million",
+   "labels": [
+    "1990",
+    "1995",
+    "2000",
+    "2005",
+    "2010",
+    "2015"
+   ],
+   "series": [
+    {
+     "name": "Smokers",
+     "values": [
+      14,
+      12.5,
+      11,
+      9.5,
+      8,
+      8.6
+     ]
+    }
+   ],
+   "note": "Số liệu minh họa — chỉ để hình dung câu mô tả."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Câu nào là cách PARAPHRASE TỐT NHẤT cho câu gốc?",
+  "questionEn": "ORIGINAL: \"The graph below shows the consumption of fish and different kinds of meat in a European country between 1979 and 2004.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The graph below shows the consumption of fish and different kinds of meat in a European country between 1979 and 2004.",
+   "The line graph illustrates the amount of fish and 3 other types of meat which were consumed in a European country from 1979 to 2004.",
+   "The chart shows fish and meat consumption.",
+   "The line graph shows some information about food in Europe."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "graph → line graph | shows → illustrates | the consumption of … → the amount of … which were consumed (Phương pháp 3, Buổi 8.4)",
+  "explanation": "Đáp án 1: copy nguyên văn. Đáp án 3,4: quá ngắn, thiếu thông tin. Đáp án 2: đúng — đổi từ, giữ đủ ý.",
+  "hints": [],
+  "orderIndex": 29,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-29"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Consumption of fish and meat in a European country, 1979–2004",
+   "unit": "grams / person / week",
+   "labels": [
+    "1979",
+    "1984",
+    "1989",
+    "1994",
+    "1999",
+    "2004"
+   ],
+   "series": [
+    {
+     "name": "Beef",
+     "values": [
+      220,
+      205,
+      195,
+      180,
+      160,
+      150
+     ]
+    },
+    {
+     "name": "Lamb",
+     "values": [
+      150,
+      130,
+      110,
+      90,
+      70,
+      60
+     ]
+    },
+    {
+     "name": "Chicken",
+     "values": [
+      150,
+      145,
+      170,
+      200,
+      230,
+      250
+     ]
+    },
+    {
+     "name": "Fish",
+     "values": [
+      60,
+      55,
+      55,
+      52,
+      50,
+      50
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "data_transform",
+  "instruction": "Viết Introduction cho đề sau (Buổi 8.3–8.4):",
+  "questionEn": "ORIGINAL: \"The graph below shows the contribution of three sectors – Agriculture, Manufacturing, and Business and Financial services - to the UK economy in the twentieth century.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The bar chart illustrates the percentages of three different areas, namely Agriculture, Manufacturing, and Business and Financial, in the economy of the UK from 1901 to 2000.",
+   "The bar chart illustrates how three areas, namely Industry, Agriculture, and Business and Financial Services, contributed to the economy of the UK from 1901 to 2000.",
+   "The bar chart compares three different areas, namely Agriculture, Manufacturing, and Business and Financial Services, in terms of their contribution to the economy of the UK from 1901 to 2000."
+  ],
+  "primaryAnswer": "The bar chart illustrates the percentages of three different areas, namely Agriculture, Manufacturing, and Business and Financial, in the economy of the UK from 1901 to 2000.",
+  "grammarPoint": "Phương pháp 2: contribution → how … contributed to … | in the twentieth century → from 1901 to 2000 | namely + A, B and C",
+  "explanation": "\"the contribution of three sectors to the UK economy\" → \"how three sectors contributed to the economy of the UK\" (Phương pháp 2: danh từ hóa → how + S + V). \"in the twentieth century\" → ghi rõ năm.",
+  "hints": [
+   "bar chart",
+   "illustrates/compares",
+   "namely",
+   "from 1901 to 2000"
+  ],
+  "orderIndex": 31,
+  "xpReward": 15,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-31"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Contribution of three sectors to the UK economy, 1901–2000",
+   "unit": "% of GDP",
+   "labels": [
+    "1901",
+    "1951",
+    "2000"
+   ],
+   "series": [
+    {
+     "name": "Agriculture",
+     "values": [
+      25,
+      10,
+      2
+     ]
+    },
+    {
+     "name": "Manufacturing",
+     "values": [
+      35,
+      40,
+      15
+     ]
+    },
+    {
+     "name": "Business & Financial",
+     "values": [
+      20,
+      30,
+      45
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Chọn cách viết lại ĐÚNG dùng cấu trúc \"how many\":",
+  "questionEn": "ORIGINAL: \"The chart shows the average number of commuters travelling each day by car, bus or train.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The chart shows the average number of commuters.",
+   "The chart illustrates how many people commuted daily by three different means of transport.",
+   "The chart shows how much commuters travelled.",
+   "The chart compares commuters in the UK."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "Phương pháp 2: the number of + N → how many + S + V (Buổi 8.4)",
+  "explanation": "\"the number of commuters\" → \"how many people commuted\". Đổi danh từ → động từ.",
+  "hints": [],
+  "orderIndex": 32,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-32"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Average number of daily commuters by mode",
+   "unit": "million",
+   "labels": [
+    "Car",
+    "Bus",
+    "Train"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      18,
+      8,
+      5
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "intermediate",
+  "type": "multiple_choice",
+  "instruction": "Câu mở bài sau có 2 lỗi. Chọn câu đã sửa ĐỦ lỗi:",
+  "questionEn": "The table compares proportions of australians from six different family types who were class as poor in 1999.",
+  "blanksCount": 0,
+  "baseWords": [],
+  "options": [
+   "The table compares proportions of Australians from six different family types who were classed as poor in 1999.",
+   "The table compares proportions of australians from six different family types who were classed as poor in 1999.",
+   "The table compares proportions of Australians from six different family types who were class as poor in 1999.",
+   "The table compare proportions of Australians from six different family types who were classed as poor in 1999."
+  ],
+  "grammarPoint": "Tên người dân viết HOA (Australians) | bị động: were + V3 (were classed)",
+  "explanation": "Hai lỗi: \"australians\" → \"Australians\" (tên người dân viết hoa, Phụ lục D.5) và \"were class\" → \"were classed\" (bị động: be + V3). Câu D sai thêm chủ – vị (The table compareS).",
+  "orderIndex": 33,
+  "xpReward": 10,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-33"
+  ],
+  "chart": {
+   "kind": "table",
+   "title": "Proportion of families living in poverty, Australia 1999",
+   "head": [
+    "Family type",
+    "% in poverty"
+   ],
+   "rows": [
+    [
+     "Single aged person",
+     "6%"
+    ],
+    [
+     "Aged couple",
+     "4%"
+    ],
+    [
+     "Single, no children",
+     "19%"
+    ],
+    [
+     "Couple, no children",
+     "7%"
+    ],
+    [
+     "Sole parent",
+     "21%"
+    ],
+    [
+     "Couple with children",
+     "12%"
+    ]
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  },
+  "correctOptionIndex": 0
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Chọn cách paraphrase TỐT NHẤT cho câu gốc:",
+  "questionEn": "ORIGINAL: \"The chart below shows the number of overseas students studying in five English-speaking countries in 2012.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The chart below shows the number of overseas students studying in five English-speaking countries in 2012.",
+   "The bar chart illustrates how many international students studied in five countries where English is the primary language in 2012.",
+   "The chart shows overseas students in countries.",
+   "There is a chart about students in 2012."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "Phương pháp 2: the number of … → how many + S + V (Buổi 8.4)",
+  "explanation": "Đổi tên biểu đồ, đổi động từ, đổi tính từ/danh từ đồng nghĩa. KHÔNG sao chép nguyên văn.",
+  "hints": [],
+  "orderIndex": 67,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-67"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Overseas students in five English-speaking countries, 2012",
+   "unit": "thousand",
+   "labels": [
+    "USA",
+    "UK",
+    "Australia",
+    "Canada",
+    "New Zealand"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      740,
+      430,
+      250,
+      120,
+      40
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Chọn từ thay thế ĐÚNG cho \"between 2000 and 2020\":",
+  "questionEn": "The graph shows changes in energy consumption ___ 2000 ___ 2020.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "between...and... (giữ nguyên)",
+   "from...to...",
+   "during the period from...to...",
+   "Cả B và C đều đúng"
+  ],
+  "correctOptionIndex": 3,
+  "sampleAnswers": [],
+  "grammarPoint": "Thời gian: between X and Y = from X to Y = during the period from X to Y (Buổi 8.3)",
+  "explanation": "Tất cả đều đúng và có thể thay thế nhau khi paraphrase thời gian.",
+  "hints": [],
+  "orderIndex": 68,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-68"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Energy consumption, 2000–2020",
+   "unit": "Mtoe",
+   "labels": [
+    "2000",
+    "2005",
+    "2010",
+    "2015",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Energy consumption",
+     "values": [
+      100,
+      110,
+      125,
+      135,
+      150
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "data_transform",
+  "instruction": "Viết câu mở bài (paraphrase) cho đề bài sau:",
+  "questionEn": "ORIGINAL: \"The diagram below shows how solar panels work to produce electricity for home use.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The diagram illustrates the process by which solar panels generate electricity for domestic use.",
+   "The diagram depicts how electricity is produced from solar panels for use in homes.",
+   "The diagram shows the stages involved in generating electricity from solar panels for household purposes."
+  ],
+  "primaryAnswer": "The diagram illustrates the process by which solar panels generate electricity for domestic use.",
+  "grammarPoint": "Process: shows how … → illustrates the process by which … / how … is produced (Buổi 19)",
+  "explanation": "Với process diagram: \"illustrates the process by which...\" hoặc \"depicts how...\". \"home\" → \"domestic/household\".",
+  "hints": [
+   "illustrates",
+   "the process by which",
+   "generate",
+   "domestic use"
+  ],
+  "orderIndex": 69,
+  "xpReward": 15,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-69"
+  ],
+  "chart": {
+   "kind": "process",
+   "title": "How solar panels produce electricity for home use",
+   "steps": [
+    {
+     "icon": "☀️",
+     "label": "Sunlight hits the panels"
+    },
+    {
+     "icon": "🔲",
+     "label": "Cells produce DC electricity"
+    },
+    {
+     "icon": "🔌",
+     "label": "Inverter converts DC to AC"
+    },
+    {
+     "icon": "🏠",
+     "label": "Electricity powers the home"
+    },
+    {
+     "icon": "⚡",
+     "label": "Surplus goes to the grid"
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "data_transform",
+  "instruction": "Viết câu mở bài cho đề bài sau:",
+  "questionEn": "ORIGINAL: \"The table below shows the percentage of the population who used the Internet in six countries in 2000 and 2010.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The table compares the proportions of internet users in six countries in 2000 and 2010.",
+   "The table illustrates the rates of internet usage among the populations of six different countries in 2000 and 2010.",
+   "The table provides data on the percentage of people who had access to the internet in six countries across two years, 2000 and 2010."
+  ],
+  "primaryAnswer": "The table compares the proportions of internet users in six countries in 2000 and 2010.",
+  "grammarPoint": "Phương pháp 1: percentage → proportion | used the Internet → Internet users (Buổi 8.4)",
+  "explanation": "\"the percentage of people who used\" → gộp lại thành \"internet users\" hoặc \"internet usage\" ngắn gọn hơn.",
+  "hints": [],
+  "orderIndex": 70,
+  "xpReward": 15,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-70"
+  ],
+  "chart": {
+   "kind": "table",
+   "title": "Percentage of the population using the Internet",
+   "head": [
+    "Country",
+    "2000",
+    "2010"
+   ],
+   "rows": [
+    [
+     "Canada",
+     "51%",
+     "80%"
+    ],
+    [
+     "UK",
+     "27%",
+     "85%"
+    ],
+    [
+     "USA",
+     "43%",
+     "74%"
+    ],
+    [
+     "Japan",
+     "30%",
+     "78%"
+    ],
+    [
+     "Brazil",
+     "3%",
+     "41%"
+    ],
+    [
+     "Mexico",
+     "5%",
+     "31%"
+    ]
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Câu mở bài sau có lỗi. Chọn câu đã sửa ĐỦ lỗi:",
+  "questionEn": "The pie chart compare the main reasons why people choose to work aboard in 2019.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The pie chart compares the main reasons why people chose to work abroad in 2019.",
+   "The pie chart compare the main reasons why people chose to work abroad in 2019.",
+   "The pie chart compares the main reasons why people chose to work aboard in 2019.",
+   "The pie charts compares the main reasons why people chose to work abroad in 2019."
+  ],
+  "grammarPoint": "Chủ – vị: The pie chart compareS | aboard (trên tàu) ≠ abroad (nước ngoài) | số liệu 2019 → quá khứ (chose)",
+  "explanation": "\"The pie chart\" số ít → \"compares\" (động từ của biểu đồ ở hiện tại). \"aboard\" = trên tàu/xe — phải là \"abroad\" (ra nước ngoài). Số liệu năm 2019 đã qua → \"chose\" (Buổi 8.4: động từ của số liệu theo mốc thời gian).",
+  "orderIndex": 71,
+  "xpReward": 10,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-71"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Main reasons for working abroad, 2019",
+   "pies": [
+    {
+     "slices": [
+      {
+       "label": "Higher salary",
+       "value": 40
+      },
+      {
+       "label": "Career development",
+       "value": 25
+      },
+      {
+       "label": "New culture",
+       "value": 20
+      },
+      {
+       "label": "Family reasons",
+       "value": 15
+      }
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  },
+  "correctOptionIndex": 0
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "intermediate",
+  "type": "data_transform",
+  "instruction": "Viết câu mở bài cho đề bài sau (dùng cấu trúc \"in terms of\"):",
+  "questionEn": "ORIGINAL: \"The charts below show the electricity generated in Germany and France from all sources and renewables in 2009.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The charts compare Germany and France in terms of their total electricity generation and the share produced from renewable sources in 2009.",
+   "The charts illustrate the total electricity output and the proportion from renewable energy in both Germany and France in 2009."
+  ],
+  "primaryAnswer": "The charts compare Germany and France in terms of their total electricity generation and the share produced from renewable sources in 2009.",
+  "grammarPoint": "Hai đối tượng: compare A and B in terms of … | generated → generation",
+  "explanation": "\"in terms of\" dùng để chỉ tiêu chí so sánh. \"generated\" → \"generation/output\". \"renewables\" → \"renewable sources\".",
+  "hints": [],
+  "orderIndex": 72,
+  "xpReward": 15,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-72"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Electricity generated in Germany and France, 2009",
+   "pies": [
+    {
+     "caption": "Germany",
+     "slices": [
+      {
+       "label": "Fossil fuels",
+       "value": 60
+      },
+      {
+       "label": "Nuclear",
+       "value": 23
+      },
+      {
+       "label": "Renewables",
+       "value": 17
+      }
+     ]
+    },
+    {
+     "caption": "France",
+     "slices": [
+      {
+       "label": "Fossil fuels",
+       "value": 10
+      },
+      {
+       "label": "Nuclear",
+       "value": 76
+      },
+      {
+       "label": "Renewables",
+       "value": 14
+      }
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "intermediate",
+  "type": "multiple_choice",
+  "instruction": "Câu mở bài sau có nhiều lỗi. Chọn câu đã sửa ĐỦ lỗi:",
+  "questionEn": "The line graph illustrate informations about how much money was spend on fast food in britain between 1970 and 1990.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The line graph illustrates the amount of money spent on fast food in Britain between 1970 and 1990.",
+   "The line graph illustrates the amount of money spend on fast food in Britain between 1970 and 1990.",
+   "The line graph illustrate how much money was spent on fast food in Britain between 1970 and 1990.",
+   "The line graph illustrates informations about how much money was spent on fast food in Britain between 1970 and 1990."
+  ],
+  "grammarPoint": "illustrateS | information không đếm được (không \"s\") | spend → spent (V3) | Britain viết hoa",
+  "explanation": "Sửa: \"illustrate\" → \"illustrates\" (chủ ngữ số ít); bỏ \"informations\" (information không đếm được); \"spend\" → \"spent\" (V3 bổ nghĩa cho money — Phương pháp 3: the amount of money spent); \"britain\" → \"Britain\".",
+  "orderIndex": 73,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-73"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Money spent on fast food in Britain, 1970–1990",
+   "unit": "£ million",
+   "labels": [
+    "1970",
+    "1975",
+    "1980",
+    "1985",
+    "1990"
+   ],
+   "series": [
+    {
+     "name": "Spending",
+     "values": [
+      100,
+      180,
+      260,
+      350,
+      450
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  },
+  "correctOptionIndex": 0
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Chọn từ thay thế ĐÚNG và HỌC THUẬT cho \"shows\" trong Task 1:",
+  "questionEn": "The bar chart ___ the population growth in three Asian cities from 1990 to 2020.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "shows",
+   "illustrates",
+   "depicts",
+   "Cả B và C đều đúng"
+  ],
+  "correctOptionIndex": 3,
+  "sampleAnswers": [],
+  "grammarPoint": "Động từ thay \"shows\": illustrates / gives information about / depicts / presents (Buổi 8.3)",
+  "explanation": "Cả \"illustrates\" và \"depicts\" đều là thay thế học thuật tốt cho \"shows\".",
+  "hints": [],
+  "orderIndex": 83,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-83"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Population of three Asian cities, 1990–2020",
+   "unit": "million",
+   "labels": [
+    "1990",
+    "2000",
+    "2010",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Bangkok",
+     "values": [
+      5.9,
+      6.4,
+      8.3,
+      10.5
+     ]
+    },
+    {
+     "name": "Jakarta",
+     "values": [
+      8.2,
+      8.4,
+      9.6,
+      10.6
+     ]
+    },
+    {
+     "name": "Hanoi",
+     "values": [
+      2,
+      2.7,
+      6.5,
+      8.2
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Chọn từ ĐỒNG NGHĨA (synonym) thay thế cho từ in đậm:",
+  "questionEn": "ORIGINAL: \"The bar chart shows the **amount** of water used for agriculture in Australia in 2015.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "number",
+   "quantity",
+   "percentage",
+   "figure"
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "amount → quantity (N không đếm được) (Buổi 2.1)",
+  "explanation": "\"amount\" và \"quantity\" đều dùng cho danh từ không đếm được (water). \"number\" dùng cho danh từ đếm được. \"figure\" thay cho số liệu, không thay cho \"amount\" trực tiếp.",
+  "hints": [],
+  "orderIndex": 87,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-87"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Water used for agriculture in Australia, 2015",
+   "unit": "thousand GL",
+   "labels": [
+    "NSW",
+    "VIC",
+    "QLD",
+    "SA",
+    "WA"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      4,
+      3,
+      2.5,
+      1.2,
+      0.5
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "beginner",
+  "type": "multiple_choice",
+  "instruction": "Chọn cặp synonym ĐÚNG để paraphrase các từ được gạch dưới:",
+  "questionEn": "ORIGINAL: \"The table shows the number of cars **produced** in different **countries** in 2020.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "produced → made | countries → nations",
+   "produced → consumed | countries → cities",
+   "produced → exported | countries → regions",
+   "produced → used | countries → areas"
+  ],
+  "correctOptionIndex": 0,
+  "sampleAnswers": [],
+  "grammarPoint": "produce = make / manufacture (Phụ lục D.17) | country → nation",
+  "explanation": "\"produced → made\" và \"countries → nations\" là cặp synonym phổ biến và chính xác nhất. \"made\" tương đương \"produced\" trong ngữ cảnh sản xuất.",
+  "hints": [],
+  "orderIndex": 89,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-89"
+  ],
+  "chart": {
+   "kind": "table",
+   "title": "Cars produced in different countries, 2020",
+   "head": [
+    "Country",
+    "Cars produced (million)"
+   ],
+   "rows": [
+    [
+     "China",
+     "25.2"
+    ],
+    [
+     "USA",
+     "8.8"
+    ],
+    [
+     "Japan",
+     "8.1"
+    ],
+    [
+     "Germany",
+     "3.7"
+    ],
+    [
+     "South Korea",
+     "3.5"
+    ]
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "fill_blank",
+  "instruction": "Điền dạng DANH TỪ phù hợp (word form — Noun Phrase Cách 3):",
+  "sentenceWithBlanks": "ORIGINAL: \"The amount of water **consumed** in households.\" → PARAPHRASE: \"Water ___ in households.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "consumption"
+  ],
+  "primaryAnswer": "consumption",
+  "grammarPoint": "consumed (V3) → consumption (n) (Noun Phrase — word form)",
+  "explanation": "\"consumed\" là động từ → biến đổi thành danh từ \"consumption\". Cấu trúc: [Subject] + [noun form] + [prepositional phrase].",
+  "hints": [
+   "consumption",
+   "consuming"
+  ],
+  "orderIndex": 90,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-90"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Water consumed in households",
+   "unit": "litres / person / day",
+   "labels": [
+    "Bathing",
+    "Toilet",
+    "Cooking",
+    "Laundry",
+    "Other"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      55,
+      40,
+      15,
+      25,
+      10
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "fill_blank",
+  "instruction": "Điền dạng DANH TỪ phù hợp (word form — Noun Phrase Cách 3):",
+  "sentenceWithBlanks": "ORIGINAL: \"The number of cars **sold** in Asia.\" → PARAPHRASE: \"Car ___ in Asia.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "sales"
+  ],
+  "primaryAnswer": "sales",
+  "grammarPoint": "sold → sales (n) | Sales = turnover (Phụ lục D.13)",
+  "explanation": "\"sold\" là động từ quá khứ của \"sell\" → danh từ là \"sales\". Ví dụ tương tự: export → exports, import → imports.",
+  "hints": [
+   "sales",
+   "selling"
+  ],
+  "orderIndex": 91,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-91"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Car sales in Asia, 2015–2020",
+   "unit": "million cars",
+   "labels": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Car sales",
+     "values": [
+      38,
+      41,
+      43,
+      42,
+      40,
+      36
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Chọn câu paraphrase dùng WORD FORM đúng (Noun Phrase — Cách 3):",
+  "questionEn": "ORIGINAL: \"The amount of money **spent** on education in five countries in 2018.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The money spending on education in five countries in 2018.",
+   "Education expenditure in five countries in 2018.",
+   "The amount of money expenditure on education in five countries in 2018.",
+   "The spending money on education in five countries in 2018."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "spent → expenditure / spending (Phụ lục D.15)",
+  "explanation": "\"spent\" → \"expenditure\" (học thuật hơn) hoặc \"spending\". Cấu trúc: [Subject] + [noun form] + [location/context]. KHÔNG ghép \"amount of\" với \"expenditure\".",
+  "hints": [],
+  "orderIndex": 92,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-92"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Money spent on education in five countries, 2018",
+   "unit": "$ billion",
+   "labels": [
+    "USA",
+    "Japan",
+    "Germany",
+    "UK",
+    "France"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      700,
+      160,
+      140,
+      120,
+      110
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Chọn câu ĐÚNG theo cấu trúc noun + of (Noun Phrase — Cách 2):",
+  "questionEn": "ORIGINAL: \"Electricity consumption in Germany between 2000 and 2020.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The electricity of consumption in Germany between 2000 and 2020.",
+   "The consumption of electricity in Germany between 2000 and 2020.",
+   "The consuming of electricity in Germany between 2000 and 2020.",
+   "Electricity of the consumption in Germany between 2000 and 2020."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "Noun Phrase — Cách 2: electricity consumption → the consumption of electricity",
+  "explanation": "\"Electricity consumption\" → \"The consumption of electricity\". Luôn dùng danh từ đúng, không dùng V-ing.",
+  "hints": [],
+  "orderIndex": 93,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-93"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Electricity consumption in Germany, 2000–2020",
+   "unit": "TWh",
+   "yMin": 400,
+   "labels": [
+    "2000",
+    "2005",
+    "2010",
+    "2015",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Consumption",
+     "values": [
+      550,
+      590,
+      600,
+      590,
+      550
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Chọn câu áp dụng ĐÚNG cả 3 cách paraphrase:",
+  "questionEn": "ORIGINAL: \"The graph shows the number of cars sold in Asia from 2015 to 2020.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The line graph illustrates car sales in Asia during the period 2015 to 2020.",
+   "The graph shows car selling in Asian countries in 2015 and 2020.",
+   "The graph illustrates how much cars were sold in Asia from 2015 to 2020.",
+   "The graph illustrates the numbers of sold cars in Asian from 2015 to 2020."
+  ],
+  "correctOptionIndex": 0,
+  "sampleAnswers": [],
+  "grammarPoint": "graph → line graph | shows → illustrates | the number of cars sold → car sales (word form)",
+  "explanation": "Đáp án A: dùng đủ 3 kỹ thuật. B: sai (\"car selling\" không tự nhiên). C: \"how much\" sai (cars đếm được → \"how many\"). D: \"numbers of sold\" không đúng cấu trúc.",
+  "hints": [],
+  "orderIndex": 94,
+  "xpReward": 10,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-94"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Car sales in Asia, 2015–2020",
+   "unit": "million cars",
+   "labels": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Car sales",
+     "values": [
+      38,
+      41,
+      43,
+      42,
+      40,
+      36
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "data_transform",
+  "instruction": "Viết lại dùng WORD FORM (Noun Phrase — Cách 3), bắt đầu bằng \"Education\":",
+  "questionEn": "ORIGINAL: \"The amount of money spent on education in five countries in 2018.\"\nViết lại bắt đầu bằng: \"Education ___\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Education expenditure in five countries in 2018.",
+   "Education spending in five countries in 2018."
+  ],
+  "primaryAnswer": "Education expenditure in five countries in 2018.",
+  "grammarPoint": "the amount of money spent on → expenditure / spending (Phụ lục D.15)",
+  "explanation": "\"spent\" → \"expenditure/spending\". Bỏ \"the amount of money\" đi, chỉ cần \"Education expenditure/spending\". Đây là cách rút gọn rất phổ biến trong Task 1.",
+  "hints": [
+   "Education expenditure",
+   "Education spending"
+  ],
+  "orderIndex": 96,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-96"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Money spent on education in five countries, 2018",
+   "unit": "$ billion",
+   "labels": [
+    "USA",
+    "Japan",
+    "Germany",
+    "UK",
+    "France"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      700,
+      160,
+      140,
+      120,
+      110
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "elementary",
+  "type": "data_transform",
+  "instruction": "Viết lại theo noun + of (Noun Phrase — Cách 2), bắt đầu bằng \"The ___ of\":",
+  "questionEn": "ORIGINAL: \"Car sales in Asia from 2015 to 2020.\"\nViết lại bắt đầu bằng: \"The ___ of ___\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The sales of cars in Asia from 2015 to 2020.",
+   "The sale of cars in Asia from 2015 to 2020."
+  ],
+  "primaryAnswer": "The sales of cars in Asia from 2015 to 2020.",
+  "grammarPoint": "Noun Phrase — Cách 2: car sales → the sales of cars",
+  "explanation": "\"Car sales\" → \"The sales of cars\". Cấu trúc này áp dụng được cho: water consumption → the consumption of water, electricity use → the use of electricity, student enrolment → the enrolment of students.",
+  "hints": [
+   "The sales of cars"
+  ],
+  "orderIndex": 97,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-97"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Car sales in Asia, 2015–2020",
+   "unit": "million cars",
+   "labels": [
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Car sales",
+     "values": [
+      38,
+      41,
+      43,
+      42,
+      40,
+      36
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "intermediate",
+  "type": "data_transform",
+  "instruction": "Paraphrase câu mở bài Task 1 sau dùng ÍT NHẤT 2 trong 3 kỹ thuật:",
+  "questionEn": "ORIGINAL: \"The bar chart below shows the amount of water used for agriculture in Australia in 2015.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The bar chart illustrates the quantity of water used for agriculture in Australia in 2015.",
+   "The bar chart illustrates how much water was used for agriculture in Australia in 2015.",
+   "The bar chart depicts agricultural water use in Australia in 2015.",
+   "The bar chart presents the use of water for agricultural purposes in Australia in 2015.",
+   "The bar chart illustrates the quantity of water utilized for farming in Australia in 2015."
+  ],
+  "primaryAnswer": "The bar chart illustrates the quantity of water used for agriculture in Australia in 2015.",
+  "grammarPoint": "Phương pháp 1: paraphrase từ khóa — giữ nghĩa, không cố thay mọi từ (Buổi 8.3; Noun Phrase: accuracy > show-off)",
+  "explanation": "shows → illustrates; amount → quantity (hoặc Phương pháp 2: how much water was used). Không cần thay mọi từ: tài liệu Noun Phrase nhắc \"Không cố paraphrase mọi từ trong tiêu đề — accuracy > vocabulary show-off\".",
+  "hints": [
+   "illustrates/depicts",
+   "quantity/volume",
+   "utilized/employed",
+   "farming/agricultural purposes"
+  ],
+  "orderIndex": 99,
+  "xpReward": 15,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-99"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Water used for agriculture in Australia, 2015",
+   "unit": "thousand GL",
+   "labels": [
+    "NSW",
+    "VIC",
+    "QLD",
+    "SA",
+    "WA"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      4,
+      3,
+      2.5,
+      1.2,
+      0.5
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "intermediate",
+  "type": "multiple_choice",
+  "instruction": "Câu paraphrase sau có 3 lỗi. Chọn câu đã sửa ĐỦ lỗi:",
+  "questionEn": "The chart illustrate how much people travelled by public transport in large city in 2010.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "The chart illustrates how many people travelled by public transport in large cities in 2010.",
+   "The chart illustrates how much people travelled by public transport in large cities in 2010.",
+   "The chart illustrate how many people travelled by public transport in large cities in 2010.",
+   "The chart illustrates how many people travelled by public transport in large city in 2010."
+  ],
+  "grammarPoint": "illustrateS | how MANY + N đếm được (people) | major cities → large cities (số nhiều)",
+  "explanation": "Ba lỗi: chủ ngữ số ít → \"illustrates\"; \"people\" đếm được → \"how many\" (Phương pháp 2, Buổi 8.4); \"major cities\" số nhiều → \"large cities\".",
+  "orderIndex": 100,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-100"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "People using public transport in major cities, 2010",
+   "unit": "million / day",
+   "labels": [
+    "Tokyo",
+    "London",
+    "Paris",
+    "New York"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      14,
+      6,
+      5,
+      7
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  },
+  "correctOptionIndex": 0
+ },
+ {
+  "skillType": "paraphrase",
+  "module": 3,
+  "level": "intermediate",
+  "type": "data_transform",
+  "instruction": "Viết câu mở bài Task 1 hoàn chỉnh cho đề bài sau (dùng ít nhất 2 kỹ thuật paraphrase):",
+  "questionEn": "ORIGINAL: \"The pie chart below shows the percentage of people who used different types of energy in Australia in 2020.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The pie chart illustrates the percentage of people in Australia who used different types of energy in 2020.",
+   "The pie chart illustrates the proportion of Australians who used various types of energy in 2020.",
+   "The pie chart illustrates what percentage of Australians used different types of energy in 2020.",
+   "The pie chart compares the rates of energy use across different sources in Australia in 2020."
+  ],
+  "primaryAnswer": "The pie chart illustrates the percentage of people in Australia who used different types of energy in 2020.",
+  "grammarPoint": "Phương pháp 3: the percentage of people who + V | Phương pháp 2: what percentage of … + V (Buổi 8.4)",
+  "explanation": "Phương pháp 3: \"the percentage of people … who used …\" (người → who). Phương pháp 2: \"what percentage of Australians used …\". people in Australia = Australians (Phụ lục D.5).",
+  "hints": [
+   "illustrates/depicts/compares",
+   "proportion/rate",
+   "utilized/employed",
+   "various/different types of",
+   "Australians/the Australian population"
+  ],
+  "orderIndex": 101,
+  "xpReward": 20,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-101"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Types of energy used in Australia, 2020",
+   "pies": [
+    {
+     "slices": [
+      {
+       "label": "Oil",
+       "value": 37
+      },
+      {
+       "label": "Coal",
+       "value": 31
+      },
+      {
+       "label": "Gas",
+       "value": 25
+      },
+      {
+       "label": "Renewables",
+       "value": 7
+      }
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "introduction",
+  "module": 3,
+  "level": "elementary",
+  "type": "data_transform",
+  "instruction": "Viết Introduction theo Phương pháp 2 (how many + S + V) cho đề sau (Buổi 8 — Bài tập 1):",
+  "questionEn": "ORIGINAL: \"The chart shows the participation by young people in sports by gender in Great Britain in 1999.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The bar chart illustrates how many boys and girls took part in different sports in Great Britain in 1999.",
+   "The bar chart illustrates how many boys and girls participated in different sports in Great Britain in 1999.",
+   "The bar chart shows how many young people of each gender took part in sports in Great Britain in 1999."
+  ],
+  "primaryAnswer": "The bar chart illustrates how many boys and girls took part in different sports in Great Britain in 1999.",
+  "grammarPoint": "Phương pháp 2: participation → took part in | young people by gender → boys and girls (Phụ lục D.4)",
+  "explanation": "Đáp án Bài tập 1 câu 1 (Buổi 8). \"participation\" (danh từ) → \"took part in\" (động từ, quá khứ vì 1999); \"young people … by gender\" → \"boys and girls\" (dưới 18 tuổi dùng boys / girls).",
+  "hints": [
+   "The bar chart illustrates",
+   "how many boys and girls",
+   "took part in",
+   "in Great Britain in 1999"
+  ],
+  "orderIndex": 103,
+  "xpReward": 15,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-103"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Participation by young people in sports, Great Britain 1999",
+   "unit": "%",
+   "labels": [
+    "Swimming",
+    "Cycling",
+    "Football",
+    "Tennis"
+   ],
+   "series": [
+    {
+     "name": "Boys",
+     "values": [
+      55,
+      50,
+      60,
+      25
+     ]
+    },
+    {
+     "name": "Girls",
+     "values": [
+      60,
+      38,
+      15,
+      24
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "introduction",
+  "module": 3,
+  "level": "elementary",
+  "type": "data_transform",
+  "instruction": "Viết Introduction cho đề có 2 biểu đồ tròn (Buổi 8.3):",
+  "questionEn": "ORIGINAL: \"The two pie charts below show changes in world population by region between 1900 and 2000.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The two pie charts illustrate alterations in the global population by region over a 100-year period, from 1900 to 2000.",
+   "The two pie charts compare five different regions in terms of their share of the world population in 1900 and 2000.",
+   "The two pie charts give information about how the distribution of the world population by region changed between 1900 and 2000."
+  ],
+  "primaryAnswer": "The two pie charts give information about how the distribution of the world population by region changed between 1900 and 2000.",
+  "grammarPoint": "changes … by region → how the distribution … changed | between 1900 and 2000 → over a 100-year period (Buổi 8.3)",
+  "explanation": "\"changes\" → \"alterations\" (đồng nghĩa). \"between 1900 and 2000\" → \"over a 100-year period, from 1900 to 2000\" (thêm khoảng thời gian).",
+  "hints": [
+   "two pie charts",
+   "illustrate/compare",
+   "alterations",
+   "by region",
+   "from 1900 to 2000"
+  ],
+  "orderIndex": 105,
+  "xpReward": 15,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-105"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "World population by region, 1900 and 2000",
+   "pies": [
+    {
+     "caption": "1900",
+     "slices": [
+      {
+       "label": "Asia",
+       "value": 57
+      },
+      {
+       "label": "Europe",
+       "value": 25
+      },
+      {
+       "label": "Americas",
+       "value": 10
+      },
+      {
+       "label": "Africa",
+       "value": 8
+      }
+     ]
+    },
+    {
+     "caption": "2000",
+     "slices": [
+      {
+       "label": "Asia",
+       "value": 61
+      },
+      {
+       "label": "Europe",
+       "value": 12
+      },
+      {
+       "label": "Americas",
+       "value": 14
+      },
+      {
+       "label": "Africa",
+       "value": 13
+      }
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "introduction",
+  "module": 3,
+  "level": "elementary",
+  "type": "fill_blank",
+  "instruction": "Điền từ đồng nghĩa phù hợp để paraphrase từ khóa \"proportion\" (dữ liệu %) trong câu mở bài:",
+  "sentenceWithBlanks": "The bar chart illustrates the ___ of British teenagers who owned a smartphone in 2015.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "percentage",
+   "rate"
+  ],
+  "primaryAnswer": "percentage",
+  "grammarPoint": "proportion → percentage / rate (dữ liệu %) (Buổi 2.1)",
+  "explanation": "\"proportion\" (tỷ lệ) có thể paraphrase bằng \"percentage\" hoặc \"rate\" khi đề bài dùng số liệu %.",
+  "hints": [
+   "percentage",
+   "rate"
+  ],
+  "orderIndex": 106,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:3-106"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "British teenagers who owned a smartphone, 2015",
+   "unit": "%",
+   "labels": [
+    "13",
+    "14",
+    "15",
+    "16",
+    "17"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      65,
+      72,
+      80,
+      85,
+      90
+     ]
+    }
+   ],
+   "note": "Nhóm tuổi 13–17. Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "introduction",
+  "module": 3,
+  "level": "intermediate",
+  "type": "fill_blank",
+  "instruction": "Điền từ để hoàn thành cấu trúc liệt kê \"namely\" trong câu mở bài:",
+  "sentenceWithBlanks": "The bar chart compares three different areas, ___ Agriculture, Manufacturing, and Business and Financial Services.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "namely"
+  ],
+  "primaryAnswer": "namely",
+  "grammarPoint": "namely + A, B and C = liệt kê (Phụ lục D.5)",
+  "explanation": "\"namely\" (cụ thể là) dùng để liệt kê các đối tượng ngay sau khi nhắc đến số lượng (\"three different areas\").",
+  "hints": [
+   "namely"
+  ],
+  "orderIndex": 107,
+  "xpReward": 5,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-107"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Contribution of three sectors to the UK economy, 1901–2000",
+   "unit": "% of GDP",
+   "labels": [
+    "1901",
+    "1951",
+    "2000"
+   ],
+   "series": [
+    {
+     "name": "Agriculture",
+     "values": [
+      25,
+      10,
+      2
+     ]
+    },
+    {
+     "name": "Manufacturing",
+     "values": [
+      35,
+      40,
+      15
+     ]
+    },
+    {
+     "name": "Business & Financial",
+     "values": [
+      20,
+      30,
+      45
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "introduction",
+  "module": 3,
+  "level": "intermediate",
+  "type": "data_transform",
+  "instruction": "Viết Introduction theo Phương pháp 2 (how many + S + V) cho đề sau (Buổi 8.4):",
+  "questionEn": "ORIGINAL: \"The chart shows the average number of commuters travelling each day by car, bus or train in the UK between 1970 and 2000.\"",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "The chart illustrates how many people commuted by car, bus or train each day in the UK from 1970 to 2000.",
+   "The line graph illustrates how many people commuted by car, bus or train each day in the UK between 1970 and 2000.",
+   "The line graph illustrates how many commuters travelled by car, bus or train each day in the UK from 1970 to 2000."
+  ],
+  "primaryAnswer": "The chart illustrates how many people commuted by car, bus or train each day in the UK from 1970 to 2000.",
+  "grammarPoint": "Phương pháp 2: the average number of commuters travelling → how many people commuted",
+  "explanation": "Câu mẫu Phương pháp 2 (Buổi 8.4): \"The chart illustrates how many people commuted by car, bus or train each day in the UK from 1970 to 2000.\" Gọi đúng loại biểu đồ (\"line graph\") càng tốt.",
+  "hints": [
+   "The line graph illustrates",
+   "how many people commuted",
+   "by car, bus or train each day",
+   "from 1970 to 2000"
+  ],
+  "orderIndex": 108,
+  "xpReward": 15,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:3-108"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Average daily commuters by car, bus and train, UK 1970–2000",
+   "unit": "million",
+   "labels": [
+    "1970",
+    "1980",
+    "1990",
+    "2000"
+   ],
+   "series": [
+    {
+     "name": "Car",
+     "values": [
+      5,
+      6.5,
+      8,
+      9
+     ]
+    },
+    {
+     "name": "Bus",
+     "values": [
+      4,
+      3.5,
+      3,
+      2.5
+     ]
+    },
+    {
+     "name": "Train",
+     "values": [
+      3,
+      3,
+      2.8,
+      3.2
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "overview",
+  "module": 4,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Chọn câu Overview TỐT NHẤT cho biểu đồ sau:\n[Biểu đồ: Chicken tăng từ 150g → 250g; Beef giảm từ 220g → 150g; Lamb giảm; Fish ổn định ~50g. Giai đoạn 1979-2004]",
+  "questionEn": "Line graph: Fish and meat consumption in a European country 1979-2004",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "Overall, chicken increased and beef decreased.",
+   "It is clear that chicken consumption rose significantly while the consumption of other meats declined over the period. Additionally, fish remained the least consumed throughout.",
+   "The graph shows many changes in meat consumption.",
+   "Overall, all meats changed between 1979 and 2004."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "Công thức 1: It is clear that … . Additionally, … (Buổi 8.5) — không số liệu",
+  "explanation": "Overview tốt: 2 đặc điểm nổi bật, không có số liệu cụ thể, dùng linking words",
+  "hints": [],
+  "orderIndex": 34,
+  "xpReward": 10,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:4-34"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Consumption of fish and meat in a European country, 1979–2004",
+   "unit": "grams / person / week",
+   "labels": [
+    "1979",
+    "1984",
+    "1989",
+    "1994",
+    "1999",
+    "2004"
+   ],
+   "series": [
+    {
+     "name": "Beef",
+     "values": [
+      220,
+      205,
+      195,
+      180,
+      160,
+      150
+     ]
+    },
+    {
+     "name": "Lamb",
+     "values": [
+      150,
+      130,
+      110,
+      90,
+      70,
+      60
+     ]
+    },
+    {
+     "name": "Chicken",
+     "values": [
+      150,
+      145,
+      170,
+      200,
+      230,
+      250
+     ]
+    },
+    {
+     "name": "Fish",
+     "values": [
+      60,
+      55,
+      55,
+      52,
+      50,
+      50
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "overview",
+  "module": 4,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Câu Overview nào MẮC LỖI vì có số liệu cụ thể?",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "Overall, it is clear that Internet usage increased significantly during the period.",
+   "It is also noticeable that the figure for young adults was by far the highest throughout.",
+   "Overall, Internet usage rose from 10% in 1990 to 85% in 2020.",
+   "Additionally, while some countries saw growth, others experienced decline."
+  ],
+  "correctOptionIndex": 2,
+  "sampleAnswers": [],
+  "grammarPoint": "Overview: tuyệt đối không có số liệu (Buổi 8.5)",
+  "explanation": "Phần Overview KHÔNG được có số liệu cụ thể (10%, 85%, 1990, 2020). Chỉ nêu xu hướng tổng quát.",
+  "hints": [],
+  "orderIndex": 35,
+  "xpReward": 8,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:4-35"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Internet usage, 1990–2020",
+   "unit": "% of population",
+   "labels": [
+    "1990",
+    "1995",
+    "2000",
+    "2005",
+    "2010",
+    "2015",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Internet usage",
+     "values": [
+      10,
+      22,
+      40,
+      55,
+      68,
+      78,
+      85
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "overview",
+  "module": 4,
+  "level": "intermediate",
+  "type": "data_transform",
+  "instruction": "Viết câu Overview cho biểu đồ sau:\n- Chicken: tăng liên tục từ 1979 đến 2004 → trở thành loại thịt được tiêu thụ nhiều nhất\n- Beef và Lamb: đều giảm\n- Fish: ổn định, ít nhất",
+  "questionVi": "Viết 2 câu Overview (không dùng số liệu cụ thể)",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Overall, it is clear that chicken consumption experienced an upward trend and became the most widely consumed meat by the end of the period. Additionally, while beef and lamb saw continuous declines, fish remained relatively stable at the lowest level throughout.",
+   "It is clear that chicken was the only meat whose consumption increased over the period, while the figures for beef and lamb both fell. Additionally, fish remained the least popular choice throughout the years shown."
+  ],
+  "primaryAnswer": "Overall, it is clear that chicken consumption experienced an upward trend and became the most widely consumed meat by the end of the period. Additionally, while beef and lamb saw continuous declines, fish remained relatively stable at the lowest level throughout.",
+  "grammarPoint": "Công thức 1 / 2: 2 đặc điểm nổi bật, không số liệu (Buổi 8.5)",
+  "explanation": "Câu 1: nêu xu hướng nổi bật nhất. Câu 2: nêu xu hướng trái ngược hoặc thứ hai.",
+  "hints": [
+   "It is clear that",
+   "experienced an upward trend",
+   "while",
+   "Additionally"
+  ],
+  "orderIndex": 36,
+  "xpReward": 20,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:4-36"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Consumption of fish and meat in a European country, 1979–2004",
+   "unit": "grams / person / week",
+   "labels": [
+    "1979",
+    "1984",
+    "1989",
+    "1994",
+    "1999",
+    "2004"
+   ],
+   "series": [
+    {
+     "name": "Beef",
+     "values": [
+      220,
+      205,
+      195,
+      180,
+      160,
+      150
+     ]
+    },
+    {
+     "name": "Lamb",
+     "values": [
+      150,
+      130,
+      110,
+      90,
+      70,
+      60
+     ]
+    },
+    {
+     "name": "Chicken",
+     "values": [
+      150,
+      145,
+      170,
+      200,
+      230,
+      250
+     ]
+    },
+    {
+     "name": "Fish",
+     "values": [
+      60,
+      55,
+      55,
+      52,
+      50,
+      50
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "overview",
+  "module": 4,
+  "level": "elementary",
+  "type": "multiple_choice",
+  "instruction": "Chọn câu Overview TỐT NHẤT:",
+  "questionEn": "[Biểu đồ cột: Chi tiêu giáo dục của 5 nước. UK cao nhất ~$8,000; Japan thấp nhất ~$3,000; các nước còn lại ở giữa]",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "Overall, the UK had the highest education spending at $8,000, while Japan had the lowest at $3,000.",
+   "It is clear that the UK spent the most on education, while Japan allocated the least. The other three countries all fell between these two extremes.",
+   "Overall, education spending varied across countries.",
+   "The UK's education budget was $8,000 in total."
+  ],
+  "correctOptionIndex": 1,
+  "sampleAnswers": [],
+  "grammarPoint": "Overview biểu đồ tĩnh: cao nhất + thấp nhất, không số liệu (Buổi 8.5, 10)",
+  "explanation": "Đáp án A có số liệu cụ thể ($8,000, $3,000) → SAI. B nêu xu hướng tổng quát không có số → ĐÚNG.",
+  "hints": [],
+  "orderIndex": 74,
+  "xpReward": 10,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:4-74"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Education spending in five countries",
+   "unit": "$ per student",
+   "labels": [
+    "UK",
+    "USA",
+    "Germany",
+    "France",
+    "Japan"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      8000,
+      7000,
+      6000,
+      5000,
+      3000
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "overview",
+  "module": 4,
+  "level": "elementary",
+  "type": "data_transform",
+  "instruction": "Viết 2 câu Overview cho biểu đồ sau (KHÔNG dùng số liệu):",
+  "questionEn": "[Pie chart: Energy sources in the UK 2019. Coal = 5%, Gas = 40%, Nuclear = 20%, Renewables = 30%, Oil = 5%]",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Overall, it is clear that gas was the dominant energy source in the UK, accounting for the largest share of total production. Additionally, renewable energy was the second most significant source, while coal and oil contributed the least.",
+   "In general, gas dominated the UK's energy mix, with renewables coming in second place. By contrast, coal and oil played only a minor role in electricity generation."
+  ],
+  "primaryAnswer": "Overall, it is clear that gas was the dominant energy source in the UK, accounting for the largest share of total production. Additionally, renewable energy was the second most significant source, while coal and oil contributed the least.",
+  "grammarPoint": "Overview biểu đồ tròn: phần lớn nhất + phần nhỏ nhất, không số liệu (Buổi 8.5, 11)",
+  "explanation": "Câu 1: nêu cái chiếm tỷ lệ lớn nhất. Câu 2: nêu cái ít nhất / tương phản. Không có con số.",
+  "hints": [
+   "it is clear that",
+   "dominant",
+   "Additionally",
+   "while",
+   "contributed the least"
+  ],
+  "orderIndex": 76,
+  "xpReward": 20,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:4-76"
+  ],
+  "chart": {
+   "kind": "pie",
+   "title": "Energy sources in the UK, 2019",
+   "pies": [
+    {
+     "slices": [
+      {
+       "label": "Gas",
+       "value": 40
+      },
+      {
+       "label": "Renewables",
+       "value": 30
+      },
+      {
+       "label": "Nuclear",
+       "value": 20
+      },
+      {
+       "label": "Coal",
+       "value": 5
+      },
+      {
+       "label": "Oil",
+       "value": 5
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "overview",
+  "module": 4,
+  "level": "elementary",
+  "type": "data_transform",
+  "instruction": "Viết 2 câu Overview cho biểu đồ đường (KHÔNG dùng số liệu):",
+  "questionEn": "[Line graph: 3 loại phương tiện giao thông tại UK 1970-2030. Car: tăng liên tục và cao nhất. Bus: giảm nhẹ. Train: tăng sau 2000, được dự đoán tăng mạnh đến 2030]",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Overall, car travel was by far the most popular mode of transport throughout the period and is expected to continue rising. It is also noticeable that train usage is predicted to increase significantly towards 2030, while bus travel showed a gradual decline.",
+   "In general, the car remained the dominant form of transport over the entire period shown. Additionally, while bus usage saw a slight downward trend, train travel is projected to grow considerably in the coming years."
+  ],
+  "primaryAnswer": "Overall, car travel was by far the most popular mode of transport throughout the period and is expected to continue rising. It is also noticeable that train usage is predicted to increase significantly towards 2030, while bus travel showed a gradual decline.",
+  "grammarPoint": "Overview có dự báo: quá khứ + is expected / predicted to (Buổi 8.5, 9.3)",
+  "explanation": "Dữ liệu quá khứ → past tense. Dữ liệu tương lai trong biểu đồ → is expected/projected to.",
+  "hints": [],
+  "orderIndex": 77,
+  "xpReward": 20,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:4-77"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Commuting in the UK by car, bus and train, 1970–2030",
+   "unit": "million journeys",
+   "labels": [
+    "1970",
+    "1980",
+    "1990",
+    "2000",
+    "2010",
+    "2020",
+    "2030"
+   ],
+   "forecastFrom": 5,
+   "series": [
+    {
+     "name": "Car",
+     "values": [
+      10,
+      14,
+      18,
+      22,
+      25,
+      28,
+      31
+     ]
+    },
+    {
+     "name": "Bus",
+     "values": [
+      9,
+      8.5,
+      8,
+      7.5,
+      7,
+      6.8,
+      6.5
+     ]
+    },
+    {
+     "name": "Train",
+     "values": [
+      5,
+      4.8,
+      4.5,
+      4.3,
+      6,
+      8,
+      12
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ },
+ {
+  "skillType": "overview",
+  "module": 4,
+  "level": "intermediate",
+  "type": "multiple_choice",
+  "instruction": "Câu Overview sau sai quy tắc. Chọn câu sửa ĐÚNG (Buổi 8.5):",
+  "questionEn": "Overall, it is clear that the number of car ownership increased from 5 million to 15 million over the period, while bicycle usage fell from 8 million to 2 million.",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [
+   "Overall, it is clear that car ownership increased significantly over the period, while bicycle usage experienced a notable decline.",
+   "Overall, it is clear that the number of car ownership increased significantly over the period, while bicycle usage experienced a notable decline.",
+   "Overall, it is clear that car ownership increased from 5 million to 15 million, while bicycle usage declined.",
+   "Overall, while car ownership increased significantly, bicycles were the least popular."
+  ],
+  "grammarPoint": "Overview: KHÔNG số liệu | \"the number of car ownership\" ✗ → car ownership / the number of car owners | hai vế song song",
+  "explanation": "Bỏ hết số liệu (Buổi 8.5). \"the number of car ownership\" sai vì ownership không đếm được → \"car ownership\". Câu D hai vế không song song (xu hướng với thứ hạng — Bài tập 4 câu 5).",
+  "orderIndex": 78,
+  "xpReward": 12,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:4-78"
+  ],
+  "chart": {
+   "kind": "line",
+   "title": "Car ownership and bicycle usage",
+   "unit": "million",
+   "labels": [
+    "1990",
+    "2000",
+    "2010",
+    "2020"
+   ],
+   "series": [
+    {
+     "name": "Car ownership",
+     "values": [
+      5,
+      8,
+      12,
+      15
+     ]
+    },
+    {
+     "name": "Bicycle usage",
+     "values": [
+      8,
+      6,
+      4,
+      2
+     ]
+    }
+   ]
+  },
+  "correctOptionIndex": 0
+ },
+ {
+  "skillType": "overview",
+  "module": 4,
+  "level": "intermediate",
+  "type": "data_transform",
+  "instruction": "Viết Overview cho biểu đồ MAP/PLAN (không dùng số liệu):",
+  "questionEn": "[Map: A town in 1980 vs 2020. Thêm: shopping centre, hospital, residential area. Bỏ: farmland, forest. Đường xá mở rộng]",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Overall, the town underwent significant development over the 40-year period, with the addition of several key facilities and a considerable expansion of residential and commercial areas. The most notable change was the replacement of natural land with urban infrastructure.",
+   "In general, the town became considerably more urbanised between 1980 and 2020, with natural areas giving way to new buildings and improved transport links."
+  ],
+  "primaryAnswer": "Overall, the town underwent significant development over the 40-year period, with the addition of several key facilities and a considerable expansion of residential and commercial areas. The most notable change was the replacement of natural land with urban infrastructure.",
+  "grammarPoint": "Overview bản đồ: 2–3 thay đổi lớn nhất, không chi tiết nhỏ (Buổi 15)",
+  "explanation": "Map overview nêu xu hướng tổng quát (đô thị hóa, phát triển) + thay đổi nổi bật nhất.",
+  "hints": [],
+  "orderIndex": 79,
+  "xpReward": 20,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:dynamic",
+   "old:4-79"
+  ],
+  "chart": {
+   "kind": "map",
+   "title": "A town in 1980 and 2020",
+   "panels": [
+    {
+     "caption": "1980",
+     "items": [
+      {
+       "t": "farm",
+       "label": "Farmland",
+       "x": 5,
+       "y": 5,
+       "w": 38,
+       "h": 24
+      },
+      {
+       "t": "forest",
+       "label": "Forest",
+       "x": 57,
+       "y": 5,
+       "w": 38,
+       "h": 24
+      },
+      {
+       "t": "road",
+       "label": "Main road",
+       "x": 0,
+       "y": 34,
+       "w": 100,
+       "h": 5
+      },
+      {
+       "t": "house",
+       "label": "Houses",
+       "x": 5,
+       "y": 45,
+       "w": 26,
+       "h": 24
+      },
+      {
+       "t": "school",
+       "label": "School",
+       "x": 37,
+       "y": 45,
+       "w": 24,
+       "h": 24
+      },
+      {
+       "t": "farm",
+       "label": "Farmland",
+       "x": 67,
+       "y": 45,
+       "w": 28,
+       "h": 24
+      }
+     ]
+    },
+    {
+     "caption": "2020",
+     "items": [
+      {
+       "t": "house",
+       "label": "Residential area",
+       "x": 5,
+       "y": 5,
+       "w": 38,
+       "h": 24
+      },
+      {
+       "t": "shop",
+       "label": "Shopping centre",
+       "x": 57,
+       "y": 5,
+       "w": 38,
+       "h": 24
+      },
+      {
+       "t": "road",
+       "label": "",
+       "x": 47,
+       "y": 0,
+       "w": 6,
+       "h": 33
+      },
+      {
+       "t": "road",
+       "label": "Main road (widened)",
+       "x": 0,
+       "y": 33,
+       "w": 100,
+       "h": 8
+      },
+      {
+       "t": "house",
+       "label": "Houses",
+       "x": 5,
+       "y": 46,
+       "w": 26,
+       "h": 24
+      },
+      {
+       "t": "school",
+       "label": "School",
+       "x": 37,
+       "y": 46,
+       "w": 24,
+       "h": 24
+      },
+      {
+       "t": "hospital",
+       "label": "Hospital",
+       "x": 67,
+       "y": 46,
+       "w": 28,
+       "h": 24
+      }
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "skillType": "overview",
+  "module": 4,
+  "level": "intermediate",
+  "type": "data_transform",
+  "instruction": "Viết Overview cho biểu đồ cột so sánh (KHÔNG dùng số liệu cụ thể):",
+  "questionEn": "[Bar chart: Household spending in 5 categories (UK 2020). Food = highest. Entertainment = second. Clothing, Transport, Other = roughly equal and lowest]",
+  "blanksCount": 1,
+  "baseWords": [],
+  "options": [],
+  "sampleAnswers": [
+   "Overall, food was by far the largest expenditure category for UK households, followed by entertainment. The remaining three categories — clothing, transport and other — were all broadly similar in terms of spending levels.",
+   "In general, households allocated the greatest proportion of their budget to food, with entertainment coming in second place. By contrast, spending on clothing, transport, and other items was relatively low and fairly consistent across these categories."
+  ],
+  "primaryAnswer": "Overall, food was by far the largest expenditure category for UK households, followed by entertainment. The remaining three categories — clothing, transport and other — were all broadly similar in terms of spending levels.",
+  "grammarPoint": "Overview biểu đồ tĩnh: cao nhất + thứ hai + nhóm thấp, không số liệu (Buổi 8.5, 10)",
+  "explanation": "Cấu trúc Overview 3 phần: (1) cao nhất, (2) thứ hai, (3) nhóm tương đương ở dưới.",
+  "hints": [
+   "by far the largest",
+   "followed by",
+   "broadly similar",
+   "in terms of"
+  ],
+  "orderIndex": 86,
+  "xpReward": 20,
+  "isActive": true,
+  "tags": [
+   "set1",
+   "chart:static",
+   "old:4-86"
+  ],
+  "chart": {
+   "kind": "bar",
+   "title": "Household spending in the UK, 2020",
+   "unit": "£ per week",
+   "labels": [
+    "Food",
+    "Entertainment",
+    "Clothing",
+    "Transport",
+    "Other"
+   ],
+   "series": [
+    {
+     "name": "",
+     "values": [
+      120,
+      80,
+      40,
+      42,
+      38
+     ]
+    }
+   ],
+   "note": "Hình minh họa đề bài — số liệu chỉ mang tính minh họa."
+  }
+ }
+]

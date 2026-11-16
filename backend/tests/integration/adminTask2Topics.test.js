@@ -1,8 +1,6 @@
 // Integration tests for backend/routes/admin/task2Topics.js — Task 2
-// Topics CRUD (teacherOnly) plus nested question CRUD, plus the one-off
-// adminOnly maintenance endpoint (fix-task1-context — deliberately NOT
-// called by admin-src UI, see the route file's comment block; here we
-// only verify the auth/role gate, not the underlying script behavior).
+// Topics CRUD (teacherOnly) plus nested question CRUD. (The adminOnly
+// fix-task1-context maintenance endpoint was removed 2026-11-16.)
 // reseed-task2-week12 (formerly tested below) was removed in the
 // 2026-08-26 curriculum restructure — "week 12" no longer means what its
 // hardcoded seed data assumed; see that route file's comment block.
@@ -249,12 +247,3 @@ describe('DELETE /api/admin/task2/topics/:topicId/questions/:qid', () => {
   });
 });
 
-describe('POST /api/admin/fix-task1-context (adminOnly, no frontend caller — manual maintenance tool)', () => {
-  test('teacher is blocked with 403 (adminOnly, stricter than teacherOnly)', async () => {
-    const teacher = await createTeacher();
-    const res = await request(app)
-      .post('/api/admin/fix-task1-context')
-      .set('Authorization', `Bearer ${signTokenFor(teacher)}`);
-    expect(res.status).toBe(403);
-  });
-});

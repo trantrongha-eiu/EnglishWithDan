@@ -120,19 +120,11 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'WPExercise seed error', { errorMessage: e.message });
     }
-    // Auto-seed Task 1 exercises
+    // Task 1 Grammar bank: insert only the exercises that are missing
+    // (Bộ 1 + Bộ 2, scripts/task1GrammarBank.js) — never overwrites edits.
     try {
-      const Task1Exercise = require('./models/Task1Exercise');
-      const { exercises: t1data, runSeed: runTask1Seed, runUpdate: runTask1Update } = require('./scripts/seedTask1Exercises');
-      const t1count = await Task1Exercise.countDocuments();
-      if (t1count < t1data.length) {
-        logger.startup(`Task1Exercise has ${t1count}/${t1data.length} – seeding...`);
-        await runTask1Seed();
-        logger.startup('Task1Exercise seed done');
-      } else {
-        logger.startup(`Task1Exercise already has ${t1count} exercises – updating core 36...`);
-        await runTask1Update();
-      }
+      const { inserted, total } = await require('./scripts/task1GrammarBank').seedMissing();
+      logger.startup(`Task1Exercise: ${inserted} inserted, ${total} total`);
     } catch (e) {
       logger.error('startup', 'Task1Exercise seed error', { errorMessage: e.message });
     }

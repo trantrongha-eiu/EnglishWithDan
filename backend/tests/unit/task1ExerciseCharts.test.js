@@ -42,3 +42,40 @@ describe('Task 1 Grammar — Bộ 2 (+5 per skill)', () => {
       .forEach(e => expect(e.tags.some(t => t === 'chart:static' || t === 'chart:dynamic')).toBe(true));
   });
 });
+
+describe('Task 1 Grammar — Bộ 1 (rebuilt from the book 2026-11-16)', () => {
+  const SET1 = require('../../scripts/data/task1GrammarSet1');
+  const KEPT = require('../../scripts/data/task1GrammarSet1Kept.json');
+  const { KEEP, DROP } = require('../../scripts/data/task1GrammarSet1Legacy');
+  const { checkNewSet } = require('../../scripts/rebuildTask1GrammarSet1');
+  const { checkExercise } = require('../../scripts/addTask1GrammarSet2');
+  const { allExercises } = require('../../scripts/task1GrammarBank');
+
+  test('90 new exercises, orderIndex 110–199, every one gradeable with a chart + set1 + chart tag', () => {
+    expect(SET1.map(e => e.orderIndex).sort((a, b) => a - b)).toEqual(Array.from({ length: 90 }, (_, i) => 110 + i));
+    expect(checkNewSet()).toEqual([]);
+  });
+
+  test('kept old exercises match the KEEP list, are gradeable, charted and carry no dataContext', () => {
+    expect(KEPT.length).toBe(Object.keys(KEEP).length);
+    expect(Object.keys(KEEP).filter(k => k in DROP)).toEqual([]);
+    KEPT.forEach(e => {
+      expect(checkExercise(e)).toEqual([]);
+      expect(e.chart).toBeTruthy();
+      expect(e.dataContext).toBeUndefined();
+      expect(e.tags).toContain('set1');
+      expect(e.tags.some(t => t === 'chart:static' || t === 'chart:dynamic')).toBe(true);
+    });
+  });
+
+  test('the seed bank has unique (module, orderIndex) keys across Bộ 1 + Bộ 2', () => {
+    const keys = allExercises().map(e => `${e.module}-${e.orderIndex}`);
+    expect(new Set(keys).size).toBe(keys.length);
+  });
+
+  test('no exercise still teaches the pre-2026-11-13 Introduction "Cách 3 = compares … in terms of"', () => {
+    const SET2 = require('../../scripts/data/task1GrammarSet2');
+    const text = JSON.stringify([...SET1, ...KEPT, ...SET2]);
+    expect(text).not.toMatch(/Cách 3[^"]{0,40}in terms of/);
+  });
+});

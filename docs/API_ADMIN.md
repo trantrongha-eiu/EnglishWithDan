@@ -15,7 +15,7 @@ Every route below requires, at minimum, the base `auth` middleware (valid JWT �
 
 **Findings from an independent re-read of all 125 routes in this directory (this phase, not carried over from a prior audit's claims):**
 - **No route under `/api/admin` is missing role gating.** Every single route has at least `auth` plus an explicit role check. There is no endpoint reachable by an authenticated `student`.
-- **Routes correctly scoped to `adminOnly` beyond the obvious (user delete/ban/role-change)**: `GET /api/admin/db-status` (exposes MongoDB Atlas storage/index size — infra-level detail, not a teaching-workflow need); all four routes in `premium.js` (`PUT /users/:id/plan`, and all three `upgrade-requests` routes) because they directly grant or revoke paid access — a financial action; `POST /api/admin/reseed-task2-week12` and `POST /api/admin/fix-task1-context` in `task2Topics.js` because they are one-off, destructive maintenance scripts (delete-then-reinsert / bulk-mutate content) rather than routine content editing.
+- **Routes correctly scoped to `adminOnly` beyond the obvious (user delete/ban/role-change)**: `GET /api/admin/db-status` (exposes MongoDB Atlas storage/index size — infra-level detail, not a teaching-workflow need); all four routes in `premium.js` (`PUT /users/:id/plan`, and all three `upgrade-requests` routes) because they directly grant or revoke paid access — a financial action; `POST /api/admin/reseed-task2-week12` and the former `POST /api/admin/fix-task1-context` (removed 2026-11-16) in `task2Topics.js` because they are one-off, destructive maintenance scripts (delete-then-reinsert / bulk-mutate content) rather than routine content editing.
 
 No route in this directory is rate-limited except `POST /writing-attempts/:id/ai-grade` (see [Writing Grading (AI)](#writing-grading-ai)) — the one endpoint that calls the Gemini API with the system's largest prompt.
 
@@ -1624,14 +1624,8 @@ Identical contract to `writing-exams/upload-image` above (folder: `writing-tasks
 
 ---
 
-### POST /api/admin/fix-task1-context
-**Auth:** Bearer token required
-**Permissions:** adminOnly — runs a one-off bulk-mutation script (`scripts/updateTask1Context.js`'s `run()`) that patches ambiguous questions; not routine content editing, hence admin-only.
-**Rate limit:** none
-
-**Request:** none
-**Response:** `{ "success": true, "message": "Updated task1 context for Q15 and Q16." }`
-**Error responses:** `401`, `403`, `500`
+### ~~POST /api/admin/fix-task1-context~~ (removed 2026-11-16)
+Removed with `scripts/updateTask1Context.js`: it re-added the "data context" box to Task 1 Grammar Q15/Q16 by orderIndex alone, undoing the Bộ 1 rebuild (`scripts/rebuildTask1GrammarSet1.js`).
 
 ---
 

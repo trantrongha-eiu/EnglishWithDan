@@ -11,6 +11,11 @@
  * `note`, so nobody quotes them as real statistics.
  *
  * Applied by scripts/setTask1ExerciseCharts.js.
+ *
+ * 2026-11-16: the old bank became "Bộ 1" (scripts/rebuildTask1GrammarSet1.js);
+ * chart titles that gave the answer away ("Đếm được: …") were renamed there
+ * and here. New Bộ 1 / Bộ 2 exercises carry their chart inline in
+ * data/task1GrammarSet1.js / task1GrammarSet2.js, not in this file.
  */
 
 const DEMO = 'Số liệu minh họa — chỉ để hình dung câu mô tả.';
@@ -117,10 +122,10 @@ const SOLAR_INSTALLS = {
 
 module.exports = {
   // ─── MODULE 1 ─────────────────────────────────────────────────────────
-  '1-1': stat('👥', '5 million', 'Internet users in Vietnam (2003)', 'Đếm được: người dùng'),
-  '1-2': stat('💧', '5 million m³', 'Water used (2010)', 'Không đếm được: nước'),
+  '1-1': stat('👥', '5 million', 'Internet users in Vietnam (2003)', 'Internet users in Vietnam, 2003'),
+  '1-2': stat('💧', '5 million m³', 'Water used (2010)', 'Water used, 2010'),
   '1-3': share('Internet users in Vietnam (% of total population)', 'Internet users', 20, 'Non-users'),
-  '1-4': stat('🏍️', '20 million', 'Motorbike users in Vietnam', 'Đếm được: người dùng'),
+  '1-4': stat('🏍️', '20 million', 'Motorbike users in Vietnam', 'Motorbike users in Vietnam'),
   '1-5': stat('🎓', '2.5 million', 'University students in the UK (2010)'),
   '1-6': share('Australian population using public transport, 2018', 'Public transport users', 38, 'Others'),
   '1-7': stat('🚲', '≈ 1.2 billion', 'People using bicycles worldwide (2015)'),
@@ -154,7 +159,7 @@ module.exports = {
   '1-31': { kind: 'bar', title: 'Literacy rate', unit: '%', labels: ['Rural areas', 'Urban areas'], series: [{ name: '', values: [72, 95] }] },
   '1-32': { kind: 'pie', title: 'Energy sources', pies: [{ slices: [{ label: 'Fossil fuels', value: 40 }, { label: 'Solar', value: 25 }, { label: 'Wind', value: 20 }, { label: 'Hydro', value: 15 }] }], note: 'Fossil fuels 40% và Solar 25% lấy từ đề; Wind/Hydro là minh họa.' },
   '1-33': { kind: 'pie', title: 'Causes of water pollution', pies: [{ slices: [{ label: 'Agriculture', value: 45 }, { label: 'Industrial waste', value: 30 }, { label: 'Urban runoff', value: 15 }, { label: 'Other', value: 10 }] }] },
-  '1-37': stat('🏭', '500 tonnes', 'CO₂ emitted by factories (2010)', 'Không đếm được: khí CO₂'),
+  '1-37': stat('🏭', '500 tonnes', 'CO₂ emitted by factories (2010)', 'CO₂ emitted by factories, 2010'),
   '1-38': share('Students enrolled in university', 'Enrolled', 45, 'Not enrolled'),
   '1-39': { kind: 'bar', title: 'Electricity consumed in Germany', unit: 'TWh', labels: ['2000', '2020'], series: [{ name: '', values: [300, 600] }], note: 'Gấp đôi (doubled) — ' + DEMO },
   '1-40': stat('🗼', '38 million', 'Tourists visiting Paris (2019)'),

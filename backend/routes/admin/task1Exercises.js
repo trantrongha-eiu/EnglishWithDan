@@ -14,7 +14,9 @@ const router = express.Router();
 // ══════════════════════════════════════════════════
 
 // Bộ bài (task1-practice.html "Bộ bài" switch): Bộ 2 = tag `set2`
-// (scripts/addTask1GrammarSet2.js), Bộ 1 = the original bank (no set tag).
+// (scripts/addTask1GrammarSet2.js), Bộ 1 = everything else — tagged `set1`
+// since the 2026-11-16 rebuild (scripts/rebuildTask1GrammarSet1.js); the old
+// exercises it switched off stay here as inactive Bộ 1 rows.
 const SET_TAGS = ['set2'];
 function setOf(ex) {
   const t = (ex.tags || []).find(x => SET_TAGS.includes(x));

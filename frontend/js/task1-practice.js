@@ -47,9 +47,9 @@ let currentMode  = 'practice';
 let exercises    = [];
 let currentIdx   = 0;
 let currentSkill = 'all';
-// Exercise set: '' = whole bank, 'set2' = Bộ 2 (Task1Exercise.tags) —
-// homework "Task 1 Grammar – Bộ 2" links open ?set=set2.
-const T1_SETS = ['set2'];
+// Exercise set: '' = whole bank, 'set1' / 'set2' = Bộ 1 / Bộ 2
+// (Task1Exercise.tags) — old homework "Task 1 Grammar – Bộ 2" links open ?set=set2.
+const T1_SETS = ['set1', 'set2'];
 let currentSet   = '';
 let sessionDone  = 0;
 let sessionXP    = 0;
@@ -442,7 +442,7 @@ function mobSetSet(set) {
   _syncShareUrl();
 }
 
-// "Bộ bài" switch: whole bank vs Bộ 2 (newer exercises).
+// "Bộ bài" switch: whole bank / Bộ 1 / Bộ 2.
 function _markSetTabs() {
   document.querySelectorAll('.t1-set-tab[data-set]').forEach(b =>
     b.classList.toggle('active', b.dataset.set === currentSet));
