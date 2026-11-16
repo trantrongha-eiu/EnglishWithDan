@@ -1493,14 +1493,21 @@ Identical contract to `writing-exams/upload-image` above (folder: `writing-tasks
 
 ## Task 1 Exercises
 
-`backend/routes/admin/task1Exercises.js` — 4 endpoints, all `teacherOnly`. Manages the `Task1Exercise` drill pool (chart/graph-description micro-exercises).
+`backend/routes/admin/task1Exercises.js` — 5 endpoints, all `teacherOnly`. Manages the `Task1Exercise` drill pool (task1-practice.html, "Task 1 Grammar"). Bộ bài = tag `set1` / `set2`: every create / edit leaves exactly ONE set tag (body `set` wins, else the set tag already in `tags`, else `set1`); a body with neither `set` nor `tags` (e.g. the hide toggle) leaves tags alone. Only schema fields are written (`_id`, timestamps and list-only fields are dropped). Malformed ids → 404.
 
 ### GET /api/admin/task1/exercises
 **Auth:** Bearer token required · **Permissions:** teacherOnly · **Rate limit:** none
 
-**Request:** query params `level`, `skillType`, `type` (all default `'all'` = no filter), `page` (default 1), `limit` (default 20), `search` (regex-matches `instruction`, case-insensitive)
-**Response:** `{ "success": true, "exercises": [ { "_id": "6660a...", "skillType": "trend_language", "module": 2, "level": "intermediate", "type": "fill_blank", "instruction": "Fill in the blank with the correct trend verb." } ], "total": 64, "page": 1, "totalPages": 4 }`
+**Request:** query params `level`, `skillType`, `type`, `module`, `set` (`set1` = not `set2`, `set2`), `active` (`true`/`false`), `chart` (`yes`/`no`) — all default `'all'`; `search` (instruction / question / answer / grammar point), `sort=hard` (lowest student % correct first, ≥ 3 attempts), `page` (default 1), `limit` (default 20, max 5000)
+**Response:** `{ "success": true, "exercises": [ { "_id": "6660a...", "skillType": "trend_language", "set": "set1", "hasChart": true, "results": { "attempts": 12, "students": 5, "correctPct": 58, "last": "2026-11-15T..." } } ], "total": 64, "page": 1, "totalPages": 4, "meta": { "total": 213, "active": 192, "withChart": 180, "untagged": 0, "bySkill": { "comparison": { "set1": 30, "set2": 5, "active": 33 } } } }` — `results` = Task1Attempt over the 90-day retention window (null when nobody did it; not computed when `limit` > 200).
 **Error responses:** `401`, `403`, `500`
+
+---
+
+### GET /api/admin/task1/exercises/:id/answers
+**Auth:** Bearer token required · **Permissions:** teacherOnly · **Rate limit:** none
+**Response:** `{ "success": true, "answers": [ { "_id": "...", "userAnswer": "rose", "isCorrect": true, "score": 100, "createdAt": "...", "student": { "_id": "...", "name": "Lan Tran" } } ] }` — newest 100 student answers to one exercise (admin "Học sinh" column).
+**Error responses:** `401`, `403`, `404` (malformed id), `500`
 
 ---
 
@@ -1536,20 +1543,34 @@ Identical contract to `writing-exams/upload-image` above (folder: `writing-tasks
 
 ## Task 2 Topics
 
-`backend/routes/admin/task2Topics.js` — 10 endpoints. The 8 CRUD routes (topics + their embedded `questions[]`) are `teacherOnly`; the 2 maintenance/seed routes at the bottom are `adminOnly` because they bulk-delete-and-reinsert or bulk-mutate content rather than editing a single record.
+`backend/routes/admin/task2Topics.js` — 10 endpoints, all `teacherOnly` (admin page "Task 2 Luyện đề tuần" = task2-practice.html; one topic = one Buổi). The two old maintenance routes (`reseed-task2-week12`, `fix-task1-context`) were removed. Topic / question writes only take schema fields (`_id`, timestamps, unknown keys dropped). Malformed ids → 404.
 
 ### GET /api/admin/task2/topics
 **Auth:** Bearer token required · **Permissions:** teacherOnly · **Rate limit:** none
 
-**Request:** query params `week` (1–12, `'all'` = no filter), `essayType`, `search` (matches `topicName`), `page` (default 1), `limit` (default 20)
-**Response:** `{ "success": true, "topics": [ { "_id": "6660b...", "week": 3, "block": "Block A", "topicName": "Technology", "essayType": "cause_effect" } ], "total": 60, "page": 1, "totalPages": 3 }`
+**Request:** query params `week` (1–18, `'all'` = no filter), `essayType`, `active` (`true`/`false`), `search` (topicName or prompt), `page` (default 1), `limit` (default 20)
+**Response:** `{ "success": true, "topics": [ { "_id": "6660b...", "week": 3, "topicName": "Technology", "essayType": "cause_effect", "session": 7, "vocabCount": 12, "questionCount": 40, "activeCount": 22, "retiredCount": 18, "step3Count": 14, "fromSample": 14, "hasConclusion": true, "levels": ["beginner"] } ], "total": 38, "page": 1, "totalPages": 3 }` — rows carry counts only (no `questions`, no `prompt`); `session` = Buổi number over the active topics in (week, orderIndex) order; `fromSample` = active step ③ sentences tagged MỞ BÀI / THÂN BÀI 1 / THÂN BÀI 2 (Daniel's sample).
 **Error responses:** `401`, `403`, `500`
 
 ---
 
 ### GET /api/admin/task2/topics/:id
 **Auth:** Bearer token required · **Permissions:** teacherOnly · **Rate limit:** none
-**Response:** full `Task2Topic` document including embedded `questions[]`.
+**Response:** `{ "success": true, "topic": { "...": "full Task2Topic incl. questions[]", "session": 7 }, "sample": { "_id": "<WritingTask2 id>", "sections": [ { "title": "Introduction", "content": "..." } ] } }` — `sample` = "Bài mẫu từ Daniel" (linked WritingTask2, else matched by normalised prompt; null when none).
+**Error responses:** `401`, `403`, `404`, `500`
+
+---
+
+### GET /api/admin/task2/topics/:id/students
+**Auth:** Bearer token required · **Permissions:** teacherOnly · **Rate limit:** none
+**Response:** `{ "success": true, "students": [ { "userId": "...", "name": "Minh", "vocabSaved": 10, "vocabTotal": 12, "quizBest": 80, "brainstorm": 2, "step3Total": 15, "step3Done": 12, "step3Correct": 11, "words": { "intro": 52, "body1": 110, "body2": 0, "conclusion": 0 }, "submittedAt": null, "runs": 3, "bestScore": 73, "last": "..." } ] }` — everyone with Task2VocabProgress / Task2Attempt / Task2LessonWork / Task2Draft rows for the topic (90-day data). step3 counts use the CURRENT active sentences, best answer per sentence (a right answer is never replaced by a later wrong one), the same rule as the student page's ≥ 70% gate.
+**Error responses:** `401`, `403`, `404`, `500`
+
+---
+
+### GET /api/admin/task2/topics/:id/students/:userId
+**Auth:** Bearer token required · **Permissions:** teacherOnly · **Rate limit:** none
+**Response:** `{ "success": true, "sentences": [ { "questionId": "w5ms_d01", "section": "intro", "type": "translation", "model": "...", "en": "student's English", "isCorrect": true } ], "sections": { "intro": "...", "body1": "...", "body2": "", "conclusion": "" }, "brainstorm": ["..."], "submittedAt": null }`
 **Error responses:** `401`, `403`, `404`, `500`
 
 ---
@@ -1562,7 +1583,7 @@ Identical contract to `writing-exams/upload-image` above (folder: `writing-tasks
 { "week": 3, "block": "Block A", "topicName": "Technology", "topicEmoji": "💻", "essayType": "cause_effect", "prompt": "Discuss the causes and effects of..." }
 ```
 **Response:** `{ "success": true, "topic": { "_id": "6660b...", "topicName": "Technology" } }`
-**Validation:** `week` (1–12), `block`, `topicName`, `essayType` (enum of 6 values), `prompt` required by schema.
+**Validation:** `week` (1–18), `block`, `topicName`, `essayType` (enum of 7 values), `prompt` required by schema.
 **Error responses:** `401`, `403`, `400`, `500`
 
 ---
@@ -1570,7 +1591,7 @@ Identical contract to `writing-exams/upload-image` above (folder: `writing-tasks
 ### PUT /api/admin/task2/topics/:id
 **Auth:** Bearer token required · **Permissions:** teacherOnly · **Rate limit:** none
 
-**Request:** any subset of topic-level fields; **`questions` is explicitly stripped from the body before update** (`const { questions, ...topicData } = req.body`) — the embedded questions array is managed exclusively through the 3 dedicated sub-routes below, never through this route, even if a caller includes it.
+**Request:** any subset of topic-level fields (`week, block, topicName, topicEmoji, essayType, prompt, writingTask2Id, hintAdvantages, hintDisadvantages, brainstormHints, vocabularyList, orderIndex, isActive`); **`questions` is ignored** — the embedded questions array is managed exclusively through the 3 sub-routes below.
 **Response:** `{ "success": true, "topic": { "_id": "6660b...", "topicName": "Technology (updated)" } }`
 **Error responses:** `401`, `403`, `404`, `400`, `500`
 
@@ -1599,9 +1620,9 @@ Identical contract to `writing-exams/upload-image` above (folder: `writing-tasks
 ### PUT /api/admin/task2/topics/:topicId/questions/:qid
 **Auth:** Bearer token required · **Permissions:** teacherOnly · **Rate limit:** none
 
-**Request:** any subset of question fields — applied via positional `$` operator (`questions.$.<field>`)
+**Request:** any subset of question fields (unknown keys and `_id` ignored) — set on the subdocument and saved, so enum / required validators run (400 on e.g. an unknown `type`).
 **Response:** `{ "success": true, "question": { "_id": "6660c...", "questionText": "Updated text" } }`
-**Validation:** 404 if no topic matches `{_id: topicId, 'questions._id': qid}` — a single query that implicitly validates both the topic and the question-within-topic exist together.
+**Note:** step ③ sentences from Daniel's sample are rewritten by `scripts/seedTask2SampleSentences.js` (matched by questionId) — lasting edits belong in `scripts/data/task2/sampleSentences.js`.
 **Error responses:** `401`, `403`, `404`, `400`, `500`
 
 ---
@@ -1613,14 +1634,8 @@ Identical contract to `writing-exams/upload-image` above (folder: `writing-tasks
 
 ---
 
-### POST /api/admin/reseed-task2-week12
-**Auth:** Bearer token required
-**Permissions:** adminOnly — this deletes existing week-12 topics and bulk-reinserts fresh ones (`scripts/seedTask2Exercises.js`'s `reseedWeek12()`); a one-off maintenance/data-repair script, not routine content editing, hence admin-only rather than teacherOnly.
-**Rate limit:** none
-
-**Request:** none
-**Response:** `{ "success": true, "message": "Đã re-seed 5 topics tuần 12." }`
-**Error responses:** `401`, `403`, `500`
+### ~~POST /api/admin/reseed-task2-week12~~ (removed 2026-08-26)
+Removed in the curriculum restructure: "week 12" no longer holds the 5 topics `reseedWeek12()` was written for, so calling it would have deleted the current week-12 content.
 
 ---
 

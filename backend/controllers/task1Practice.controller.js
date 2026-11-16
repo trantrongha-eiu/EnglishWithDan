@@ -23,12 +23,16 @@ exports.listExercises = async (req, res) => {
 };
 
 exports.checkAnswer = async (req, res) => {
-  const { exerciseId, userAnswer } = req.body;
-  if (!exerciseId || userAnswer === undefined)
+  const { exerciseId } = req.body || {};
+  // MC answers arrive as an index — a number is fine; anything else that
+  // isn't a string (object, array, null) crashed .trim() → 500.
+  const raw = req.body?.userAnswer;
+  const userAnswer = typeof raw === 'number' ? String(raw) : raw;
+  if (!exerciseId || typeof userAnswer !== 'string')
     return res.status(400).json({ success: false, message: 'Thiếu exerciseId hoặc câu trả lời' });
 
   try {
-    const result = await task1PracticeService.checkAnswer(exerciseId, userAnswer.trim());
+    const result = await task1PracticeService.checkAnswer(String(exerciseId), userAnswer.slice(0, 2000).trim());
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
     res.json({ success: true, ...result });
   } catch (err) {

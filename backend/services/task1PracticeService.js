@@ -88,7 +88,9 @@ function localCheck(exercise, userAnswer) {
   }
 
   if (exercise.type === 'rearrange') {
-    const accepted = exercise.sampleAnswers.map(normalize);
+    // primaryAnswer too: an exercise saved with only primaryAnswer had no
+    // sampleAnswers and crashed here (TypeError → 500).
+    const accepted = [...(exercise.sampleAnswers || []), ...(exercise.primaryAnswer ? [exercise.primaryAnswer] : [])].map(normalize);
     const isCorrect = accepted.some(a => a === normUser);
     return {
       isCorrect, score: isCorrect ? 100 : 0,
@@ -213,6 +215,7 @@ async function listExercises({ level = 'all', skillType = 'all', module: mod = '
 }
 
 async function checkAnswer(exerciseId, userAnswer) {
+  if (!mongoose.isValidObjectId(exerciseId)) return null;
   const exercise = await Task1Exercise.findById(exerciseId).lean();
   if (!exercise) return null;
 
@@ -243,13 +246,19 @@ async function checkAnswer(exerciseId, userAnswer) {
   };
 }
 
+const TEST_MAX = 50;
+const T1_LEVELS = ['beginner', 'elementary', 'intermediate'];
+
 async function getTestQuestions({ level = 'all', count = 10 }) {
   const query = { isActive: true };
-  if (level !== 'all') query.level = level;
+  if (T1_LEVELS.includes(level)) query.level = level;
+  // $sample needs a positive integer: ?count=abc reached it as NaN
+  // (aggregate error → 500), and a huge count shipped the whole bank.
+  const size = Math.min(Math.max(parseInt(count, 10) || 10, 1), TEST_MAX);
 
   const exercises = await Task1Exercise.aggregate([
     { $match: query },
-    { $sample: { size: parseInt(count) } }
+    { $sample: { size } }
   ]);
 
   // No word-count/letter hints in Thi thử (exam) mode — the mode is meant to
@@ -264,15 +273,21 @@ async function checkTest(answers) {
   const results = [];
   let correct = 0;
 
-  const ids = answers.map(a => a.exerciseId).filter(Boolean);
-  const exerciseList = await Task1Exercise.find({ _id: { $in: ids } }).lean();
+  // One malformed id threw a CastError and failed the whole test (500); a
+  // non-string answer crashed .trim(). Capped like the test size.
+  const list = answers.filter(a => a && typeof a === 'object').slice(0, TEST_MAX);
+  const ids = list.map(a => a.exerciseId).filter(id => mongoose.isValidObjectId(id));
+  const exerciseList = ids.length ? await Task1Exercise.find({ _id: { $in: ids } }).lean() : [];
   const exMap = Object.fromEntries(exerciseList.map(e => [e._id.toString(), e]));
 
-  for (const { exerciseId, userAnswer } of answers) {
-    const exercise = exMap[String(exerciseId)];
+  for (const a of list) {
+    const { exerciseId } = a;
+    const userAnswer = typeof a.userAnswer === 'string' ? a.userAnswer.slice(0, 2000)
+      : (typeof a.userAnswer === 'number' ? String(a.userAnswer) : '');
+    const exercise = mongoose.isValidObjectId(exerciseId) ? exMap[String(exerciseId)] : null;
     if (!exercise) { results.push({ exerciseId, error: 'not found' }); continue; }
 
-    const check = localCheck(exercise, (userAnswer || '').trim());
+    const check = localCheck(exercise, userAnswer.trim());
     if (check.isCorrect) correct++;
 
     results.push({

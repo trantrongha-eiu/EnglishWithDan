@@ -276,6 +276,8 @@ async function ensureTopicEssayLinks(topics) {
 }
 
 async function listTopicsForWeek(week) {
+  // /topics/week/abc reached Mongo as week:NaN → CastError → 500.
+  if (!Number.isInteger(week)) return [];
   const topics = await Task2Topic.find({ week, isActive: true })
     .select('-questions -vocabularyList')
     .sort({ orderIndex: 1 })
@@ -285,6 +287,8 @@ async function listTopicsForWeek(week) {
 }
 
 async function getTopicQuestions(topicId, level) {
+  // A malformed id (old bookmark, typo) threw a CastError → 500; now 404.
+  if (!mongoose.isValidObjectId(topicId)) return null;
   const topic = await Task2Topic.findById(topicId).lean();
   if (!topic) return null;
 
@@ -302,19 +306,26 @@ async function getTopicQuestions(topicId, level) {
 }
 
 async function getVocabulary(topicId) {
+  if (!mongoose.isValidObjectId(topicId)) return null;
   const topic = await Task2Topic.findById(topicId).select('vocabularyList topicName').lean();
   if (!topic) return null;
   return { vocabularyList: topic.vocabularyList || [], topicName: topic.topicName };
 }
 
+// Longest answer graded / stored: a conclusion paragraph is ~80 words; this
+// leaves plenty of room while keeping a pasted essay out of the AI prompt.
+const ANSWER_MAX = 3000;
+
 async function checkAnswer(topicId, questionId, userAnswer, opts = {}) {
+  if (!mongoose.isValidObjectId(topicId)) return { status: 'topic_not_found' };
   const topic = await Task2Topic.findById(topicId).lean();
   if (!topic) return { status: 'topic_not_found' };
 
+  questionId = String(questionId);
   const q = (topic.questions || []).find(q => q._id.toString() === questionId || q.questionId === questionId);
   if (!q) return { status: 'question_not_found' };
 
-  const trimmed = (userAnswer || '').trim();
+  const trimmed = String(userAnswer ?? '').slice(0, ANSWER_MAX).trim();
   let result;
   let aiGraded = false;
 
@@ -363,9 +374,16 @@ async function checkAnswer(topicId, questionId, userAnswer, opts = {}) {
   };
 }
 
+const EXAM_MAX = 50;
+const ATTEMPT_MAX = 200; // a topic holds ~40 questions; one session never comes near
+
 async function getExam({ week = 'all', level = 'all', count = 10 }) {
   const topicFilter = { isActive: true };
-  if (week !== 'all') topicFilter.week = parseInt(week);
+  if (week !== 'all') {
+    const w = parseInt(week, 10);
+    if (!Number.isInteger(w)) return { questions: [], total: 0 };
+    topicFilter.week = w;
+  }
 
   const topics = await Task2Topic.find(topicFilter).lean();
 
@@ -380,7 +398,9 @@ async function getExam({ week = 'all', level = 'all', count = 10 }) {
     const j = Math.floor(Math.random() * (i + 1));
     [allQ[i], allQ[j]] = [allQ[j], allQ[i]];
   }
-  const selected = allQ.slice(0, parseInt(count));
+  // ?count=abc gave slice(0, NaN) = an empty exam; cap like submitExam.
+  const n = Math.min(Math.max(parseInt(count, 10) || 10, 1), EXAM_MAX);
+  const selected = allQ.slice(0, n);
   // No word-count/letter hints in Thi thử (exam) mode — the mode is meant to
   // simulate the real, hint-free test, matching the intro copy ("Không có
   // gợi ý — giống thi thật").
@@ -392,17 +412,26 @@ async function submitExam(answers) {
   const results = [];
   let correct = 0;
 
-  const topicIds = [...new Set(answers.map(a => a.topicId))];
-  const topics = await Task2Topic.find({ _id: { $in: topicIds } }).lean();
+  // One malformed topicId threw a CastError and lost the whole exam (500); a
+  // non-string answer crashed .trim(). Capped at the exam size.
+  const list = answers.filter(a => a && typeof a === 'object').slice(0, EXAM_MAX);
+  const topicIds = [...new Set(list.map(a => String(a.topicId)).filter(id => mongoose.isValidObjectId(id)))];
+  const topics = topicIds.length ? await Task2Topic.find({ _id: { $in: topicIds } }).lean() : [];
   const topicMap = Object.fromEntries(topics.map(t => [t._id.toString(), t]));
 
-  for (const { topicId, questionId, userAnswer } of answers) {
-    const topic = topicMap[topicId];
+  for (const a of list) {
+    const questionId = String(a.questionId ?? '');
+    const userAnswer = String(a.userAnswer ?? '').slice(0, ANSWER_MAX);
+    const topic = topicMap[String(a.topicId)];
     if (!topic) { results.push({ questionId, error: 'topic not found' }); continue; }
     const q = (topic.questions || []).find(q => q._id.toString() === questionId || q.questionId === questionId);
     if (!q) { results.push({ questionId, error: 'question not found' }); continue; }
 
-    const check = autoGrade(q, (userAnswer || '').trim());
+    // "Tự viết kết bài" is the student's own paragraph — the keyword ratio
+    // against Daniel's conclusion can't judge it (same as /check's fallback).
+    const check = q.type === 'short_writing'
+      ? gradeConclusionLocally(topic, userAnswer.trim())
+      : autoGrade(q, userAnswer.trim());
     if (check.isCorrect) correct++;
 
     results.push({
@@ -438,7 +467,7 @@ async function saveAttempt(userId, body) {
   // coerced to safe types but not independently re-verified — every
   // question is still confirmed to be a real question on the given topic,
   // closing the "claim an inflated correctCount/totalQuestions" vector.
-  const topic = topicId ? await Task2Topic.findById(topicId).lean() : null;
+  const topic = topicId && mongoose.isValidObjectId(topicId) ? await Task2Topic.findById(topicId).lean() : null;
   // Index by BOTH keys — the frontend sends q.questionId when present
   // (task2-practice.html's `q.questionId || q._id`), but every seeded
   // question also has a Mongo _id, so a single either/or key silently
@@ -453,21 +482,22 @@ async function saveAttempt(userId, body) {
     }
   }
 
-  const verified = (questionsAttempted || []).map(qa => {
-    const q = qMap[qa.questionId];
+  const verified = (Array.isArray(questionsAttempted) ? questionsAttempted : []).slice(0, ATTEMPT_MAX).map(qa => {
+    if (!qa || typeof qa !== 'object') return null;
+    const q = qMap[String(qa.questionId)];
     if (!q) return null; // not a real question on this topic — drop it
     let isCorrect, score;
     if (AI_GRADED_TYPES.has(q.type)) {
       isCorrect = qa.isCorrect === true;
       score = Number.isFinite(qa.score) ? Math.max(0, Math.min(100, qa.score)) : (isCorrect ? 100 : 0);
     } else {
-      const check = autoGrade(q, (qa.userAnswer || '').trim());
+      const check = autoGrade(q, String(qa.userAnswer ?? '').trim());
       isCorrect = check.isCorrect;
       score = check.score;
     }
     return {
-      questionId: qa.questionId,
-      userAnswer: qa.userAnswer || '',
+      questionId: String(qa.questionId),
+      userAnswer: String(qa.userAnswer ?? '').slice(0, ANSWER_MAX),
       isCorrect,
       score,
       timeSpentSeconds: Number.isFinite(qa.timeSpentSeconds) ? qa.timeSpentSeconds : undefined
@@ -478,9 +508,17 @@ async function saveAttempt(userId, body) {
   const verifiedCorrect = topic ? verified.filter(v => v.isCorrect).length : (Number.isFinite(correctCount) ? correctCount : 0);
   const score = verifiedTotal > 0 ? Math.round((verifiedCorrect / verifiedTotal) * 100) : 0;
 
+  // No topic = nothing to verify against: keep the session for the streak /
+  // history count, but never store unchecked client answers. (An unknown
+  // sessionType or a malformed topicId failed validation → 500 before.)
   const attempt = new Task2Attempt({
-    userId, sessionType, week, topicId, topicName, level,
-    questionsAttempted: topic ? verified : (questionsAttempted || []),
+    userId,
+    sessionType: sessionType === 'exam' ? 'exam' : 'practice',
+    week: Number.isFinite(Number(week)) ? Number(week) : undefined,
+    topicId: topic ? topic._id : undefined,
+    topicName: typeof topicName === 'string' ? topicName.slice(0, 200) : (topic ? topic.topicName : undefined),
+    level: typeof level === 'string' ? level.slice(0, 30) : undefined,
+    questionsAttempted: topic ? verified : [],
     totalQuestions: verifiedTotal, correctCount: verifiedCorrect, scorePercentage: score
   });
   await attempt.save();
@@ -571,6 +609,9 @@ async function getProgress(userId) {
 // gate on task2-practice.html (needs practised + best score >= 70%). Only
 // 'practice' sessions with real questions count; 'exam' (Thi thử) doesn't.
 async function getTopicPracticeStats(userId, topicId) {
+  if (!mongoose.isValidObjectId(topicId)) {
+    return { practiced: false, attempts: 0, bestScore: 0, lastScore: 0, cumulativeScore: 0 };
+  }
   // Secondary sort by _id: completedAt defaults to Date.now(), so two
   // attempts created within the same millisecond (routine under fast/CI
   // test timing) tie on completedAt and Mongo's tiebreak order is
@@ -596,6 +637,7 @@ async function getTopicPracticeStats(userId, topicId) {
 }
 
 async function getWrongQuestions(userId, topicId) {
+  if (!mongoose.isValidObjectId(topicId)) return [];
   const attempts = await Task2Attempt.find({ userId, topicId }).sort({ createdAt: 1 }).lean();
   if (!attempts.length) return [];
 
@@ -616,7 +658,15 @@ async function getWrongQuestions(userId, topicId) {
 const MAX_DRAFTS_PER_USER = 12;
 
 async function saveDraft(userId, body) {
-  const { topicId, topicName, week, level, mode, questionIds, currentIdx, sessionAttempts, questionStatus, sessionDone, sessionCorrect } = body;
+  const { topicId, topicName, week, level, mode, currentIdx, sessionDone, sessionCorrect } = body;
+  // A draft is one session (≤ a topic's questions); cap what a client can
+  // park in Mongo.
+  const questionIds = Array.isArray(body.questionIds) ? body.questionIds.slice(0, ATTEMPT_MAX) : body.questionIds;
+  const questionStatus = Array.isArray(body.questionStatus) ? body.questionStatus.slice(0, ATTEMPT_MAX) : body.questionStatus;
+  const sessionAttempts = Array.isArray(body.sessionAttempts)
+    ? body.sessionAttempts.slice(-ATTEMPT_MAX).map(a => (a && typeof a === 'object' && typeof a.userAnswer === 'string'
+      ? { ...a, userAnswer: a.userAnswer.slice(0, ANSWER_MAX) } : a))
+    : body.sessionAttempts;
   const prevDraft = await Task2Draft.findOneAndUpdate(
     { userId, topicId },
     { topicId, topicName, week, level, mode, questionIds, currentIdx, sessionAttempts, questionStatus, sessionDone, sessionCorrect, savedAt: new Date() },

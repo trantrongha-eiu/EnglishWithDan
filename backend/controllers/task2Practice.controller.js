@@ -60,12 +60,13 @@ exports.getVocabulary = async (req, res) => {
 };
 
 exports.checkAnswer = async (req, res) => {
-  const { topicId, questionId, userAnswer } = req.body;
-  if (!topicId || !questionId || userAnswer === undefined)
+  const { topicId, questionId, userAnswer } = req.body || {};
+  // MC answers come as an index (number); anything else must be text.
+  if (!topicId || !questionId || !['string', 'number'].includes(typeof userAnswer))
     return res.status(400).json({ success: false, message: 'Thiếu thông tin' });
 
   try {
-    const result = await task2PracticeService.checkAnswer(topicId, questionId, userAnswer, { skipAI: !!req.skipAIGrading });
+    const result = await task2PracticeService.checkAnswer(String(topicId), String(questionId), String(userAnswer), { skipAI: !!req.skipAIGrading });
     if (result.status === 'topic_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy topic' });
     if (result.status === 'question_not_found') return res.status(404).json({ success: false, message: 'Không tìm thấy câu hỏi' });
     res.json({
@@ -105,6 +106,10 @@ exports.submitExam = async (req, res) => {
 
 exports.saveAttempt = async (req, res) => {
   try {
+    const qa = (req.body || {}).questionsAttempted;
+    if (qa !== undefined && !Array.isArray(qa)) {
+      return res.status(400).json({ success: false, message: 'questionsAttempted phải là một mảng' });
+    }
     const attempt = await task2PracticeService.saveAttempt(req.user._id, req.body);
     res.json({ success: true, attempt });
   } catch (err) {

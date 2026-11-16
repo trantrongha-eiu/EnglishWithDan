@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { apiFetch, FRONTEND_URL } from '../utils/api';
 import { useToast } from '../contexts/ToastContext';
 import { useConfirm } from '../components/ConfirmDialog';
@@ -8,11 +8,14 @@ import PageHeader from '../components/ui/PageHeader';
 
 // Task 1 Grammar — admin side of task1-practice.html (Task1Exercise bank,
 // GET/POST/PUT/DELETE /api/admin/task1/exercises). Was "Task 1 Grammar (cũ)"
-// until the bank was reopened + expanded (2026-11-12/13):
-//  - Bộ 1 = the original 123 exercises, Bộ 2 = tag `set2` (orderIndex
-//    201–235, scripts/addTask1GrammarSet2.js) — the student page's "Bộ bài"
-//    switch and the homework rows (`task1_grammar`, Bộ 1 + Bộ 2 in one row
-//    per skill) both read this tag;
+// until the bank was reopened + expanded (2026-11-12/13/16):
+//  - Bộ 1 = tag `set1` (2026-11-16 rebuild from the writing book: kept old
+//    exercises + new book ones, scripts/rebuildTask1GrammarSet1.js), Bộ 2 =
+//    tag `set2` (scripts/addTask1GrammarSet2.js). The student page's "Bộ
+//    bài" switch filters on the tag, so the server keeps exactly one set tag
+//    on every saved exercise; homework `task1_grammar` covers both sets;
+//  - each row shows how students did on it (Task1Attempt, last 90 days) —
+//    "Sai nhiều nhất" sorts the hardest first, the number opens the answers;
 //  - most exercises carry a drawn chart (`chart`, frontend/js/shared/
 //    t1-chart.js); So sánh / Xu hướng ones are tagged chart:static|dynamic
 //    for the "📌 Khi nào dùng?" box.
@@ -24,7 +27,7 @@ const LEVELS = ['beginner', 'elementary', 'intermediate'];
 const SKILL_TYPES = ['noun_phrase', 'data_description', 'comparison', 'trend_language', 'paraphrase', 'overview', 'introduction'];
 const EX_TYPES = ['fill_blank', 'translation', 'rearrange', 'multiple_choice', 'error_correction', 'paraphrase_choose', 'data_transform'];
 const SETS = [['set1', 'Bộ 1'], ['set2', 'Bộ 2']];
-const SET_TAGS = ['set2'];
+const SET_TAGS = ['set1', 'set2'];
 const CHART_TAGS = ['chart:static', 'chart:dynamic'];
 
 const SKILL_LABELS = {
@@ -100,6 +103,91 @@ const EMPTY = {
   chartJson: '',
 };
 
+// Live preview with the student page's own renderer (frontend/js/shared/
+// t1-chart.js — standalone, no deps), loaded once from the site.
+let _t1ChartLoad = null;
+function loadT1Chart() {
+  if (window.T1Chart) return Promise.resolve(window.T1Chart);
+  if (!_t1ChartLoad) {
+    _t1ChartLoad = new Promise((resolve, reject) => {
+      const el = document.createElement('script');
+      el.src = `${FRONTEND_URL}/js/shared/t1-chart.js`;
+      el.onload = () => (window.T1Chart ? resolve(window.T1Chart) : reject(new Error('T1Chart missing')));
+      el.onerror = () => { _t1ChartLoad = null; reject(new Error('load failed')); };
+      document.head.appendChild(el);
+    });
+  }
+  return _t1ChartLoad;
+}
+
+function ChartPreview({ json }) {
+  const ref = useRef(null);
+  const [loadErr, setLoadErr] = useState('');
+  const parsed = useMemo(() => { try { return { spec: JSON.parse(json) }; } catch { return null; } }, [json]);
+  useEffect(() => {
+    if (!parsed) return undefined;
+    let alive = true;
+    loadT1Chart()
+      .then(T1 => { if (alive && ref.current) T1.render(ref.current, parsed.spec); })
+      .catch(() => { if (alive) setLoadErr('Không tải được bộ vẽ biểu đồ của trang học sinh'); });
+    return () => { alive = false; };
+  }, [parsed]);
+  const err = parsed ? loadErr : 'JSON chưa hợp lệ';
+  return (
+    <div style={{ marginTop: 8 }}>
+      <div className="muted" style={{ fontSize: 11, marginBottom: 4 }}>Xem trước (giống trang học sinh){err ? ` · ${err}` : ''}</div>
+      <div ref={ref} style={{ background: '#fff', color: '#111827', borderRadius: 10, maxWidth: 560 }} />
+    </div>
+  );
+}
+
+function AnswersModal({ exercise, onClose }) {
+  const toast = useToast();
+  const [rows, setRows] = useState(null);
+  useEffect(() => {
+    apiFetch(`/admin/task1/exercises/${exercise._id}/answers`)
+      .then(d => setRows(d.answers || []))
+      .catch(e => { toast(e.message, 'error'); setRows([]); });
+  }, [exercise._id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const isChoice = ['multiple_choice', 'paraphrase_choose'].includes(exercise.type);
+  const key = exercise.primaryAnswer || (isChoice ? (exercise.options || [])[exercise.correctOptionIndex] : '') || (exercise.sampleAnswers || [])[0] || '';
+  const shown = a => (isChoice && /^\d+$/.test(a) && exercise.options?.[Number(a)] != null)
+    ? `${String.fromCharCode(65 + Number(a))}. ${exercise.options[Number(a)]}` : a;
+  const body = exercise.sentenceWithBlanks || exercise.questionEn || exercise.questionVi;
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 720 }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">Học sinh trả lời · {SKILL_LABELS[exercise.skillType] || exercise.skillType} #{exercise.orderIndex}</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
+        </div>
+        <div style={{ padding: '16px 24px', maxHeight: '75vh', overflowY: 'auto' }}>
+          <div style={{ fontSize: 13, marginBottom: 6 }}>{exercise.instruction}</div>
+          {body && <div className="muted" style={{ fontSize: 13, marginBottom: 6 }}>{body}</div>}
+          {key && <div style={{ fontSize: 13, marginBottom: 12 }}>Đáp án: <b>{key}</b></div>}
+          {rows === null ? <div className="muted">Đang tải…</div> : rows.length === 0 ? (
+            <div className="muted">Chưa có học sinh nào làm câu này trong 3 tháng gần đây.</div>
+          ) : (
+            <table className="table">
+              <thead><tr><th>HỌC SINH</th><th>TRẢ LỜI</th><th></th><th>LÚC</th></tr></thead>
+              <tbody>
+                {rows.map(r => (
+                  <tr key={r._id}>
+                    <td style={{ whiteSpace: 'nowrap' }}>{r.student?.name || '—'}</td>
+                    <td style={{ wordBreak: 'break-word' }}>{shown(r.userAnswer)}</td>
+                    <td>{r.isCorrect ? <span className="badge badge-green">Đúng</span> : <span className="badge badge-red">Sai</span>}</td>
+                    <td className="muted" style={{ fontSize: 12, whiteSpace: 'nowrap' }}>{new Date(r.createdAt).toLocaleString('vi-VN')}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ExModal({ exercise, onClose, onSaved }) {
   const toast = useToast();
   const [saving, setSaving] = useState(false);
@@ -143,15 +231,18 @@ function ExModal({ exercise, onClose, onSaved }) {
     }
     setSaving(true);
     try {
+      // Exactly one set tag (the server enforces it too): a Bộ 1 exercise saved
+      // without `set1` was invisible under Bộ 1 on the student page.
       const tags = [
-        ...(form.set === 'set1' ? [] : [form.set]),
+        form.set,
         ...(usesChartTag && form.chartTag ? [form.chartTag] : []),
         ...form.otherTags.split(',').map(s => s.trim()).filter(Boolean),
       ];
       // eslint-disable-next-line no-unused-vars
-      const { set: _s, chartTag: _c, otherTags: _o, chartJson: _j, hasChart: _h, _id, createdAt, updatedAt, __v, ...rest } = form;
+      const { set: _s, chartTag: _c, otherTags: _o, chartJson: _j, hasChart: _h, results: _r, _id, createdAt, updatedAt, __v, ...rest } = form;
       const body = {
         ...rest,
+        set: form.set,
         tags: [...new Set(tags)],
         chart,
         baseWords: form.baseWords.split('|').map(s => s.trim()).filter(Boolean),
@@ -351,6 +442,7 @@ function ExModal({ exercise, onClose, onSaved }) {
             <div className="muted" style={{ fontSize: 11, marginTop: 4 }}>
               Vẽ bởi frontend/js/shared/t1-chart.js. Số liệu không có trong đề phải kèm ghi chú "Số liệu minh họa". Để trống = không có biểu đồ.
             </div>
+            {form.chartJson.trim() && <ChartPreview json={form.chartJson} />}
           </details>
 
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', color: 'var(--text2)' }}>
@@ -395,7 +487,7 @@ function SummaryGrid({ meta, skillFilter, setFilter, onPick }) {
                 ))}
                 <td style={{ textAlign: 'center' }}>{r.active}</td>
                 <td>
-                  <a className="btn btn-ghost btn-sm" href={`${FRONTEND_URL}/task1-practice.html?skill=${s}${setFilter === 'set2' ? '&set=set2' : ''}`} target="_blank" rel="noreferrer">Trang học sinh ↗</a>
+                  <a className="btn btn-ghost btn-sm" href={`${FRONTEND_URL}/task1-practice.html?skill=${s}${setFilter ? `&set=${setFilter}` : ''}`} target="_blank" rel="noreferrer">Trang học sinh ↗</a>
                 </td>
               </tr>
             );
@@ -429,6 +521,8 @@ export default function Task1Exercises() {
   const [chartFilter, setChartFilter] = useState('');
   const [activeFilter, setActiveFilter] = useState('');
   const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('');
+  const [answersEx, setAnswersEx] = useState(null);
   const [editEx, setEditEx] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [tick, setTick] = useState(0);
@@ -445,13 +539,18 @@ export default function Task1Exercises() {
     if (search) qs.set('search', search);
     return qs;
   }
+  function listQs(extra) {
+    const qs = filterQs(extra);
+    if (sort) qs.set('sort', sort);
+    return qs;
+  }
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       setLoading(true);
       try {
-        const d = await apiFetch(`/admin/task1/exercises?${filterQs({ page, limit: LIMIT })}`);
+        const d = await apiFetch(`/admin/task1/exercises?${listQs({ page, limit: LIMIT })}`);
         if (!cancelled) {
           setExercises(d.exercises || []);
           setTotal(d.total || 0);
@@ -465,7 +564,7 @@ export default function Task1Exercises() {
     })();
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, levelFilter, skillFilter, typeFilter, setFilter, moduleFilter, chartFilter, activeFilter, search, tick]);
+  }, [page, levelFilter, skillFilter, typeFilter, setFilter, moduleFilter, chartFilter, activeFilter, search, sort, tick]);
 
   function filterChange(setter) {
     return e => { setter(e.target.value); setPage(1); };
@@ -534,10 +633,11 @@ export default function Task1Exercises() {
       {(showModal || editEx) && (
         <ExModal exercise={editEx} onClose={closeModal} onSaved={forceReload} />
       )}
+      {answersEx && <AnswersModal exercise={answersEx} onClose={() => setAnswersEx(null)} />}
 
       <PageHeader
         title="Task 1 Grammar"
-        subtitle="Ngân hàng bài ngữ pháp Task 1 của trang task1-practice.html: Bộ 1 (bài gốc) + Bộ 2 (bài mới, tag set2), 7 kỹ năng, phần lớn có biểu đồ minh hoạ. Bài tập về nhà “Task 1 Grammar (Bộ 1 + Bộ 2)” giao theo từng kỹ năng."
+        subtitle="Ngân hàng bài ngữ pháp Task 1 của trang task1-practice.html: Bộ 1 (theo sách Writing, giữ các câu cũ có biểu đồ) + Bộ 2, 7 kỹ năng, phần lớn có biểu đồ minh hoạ. Cột “Học sinh” = số lượt làm và % đúng trong 3 tháng — bấm vào để xem từng câu trả lời. Bài tập về nhà “Task 1 Grammar (Bộ 1 + Bộ 2)” giao theo từng kỹ năng."
         actions={<>
           <a className="btn btn-ghost btn-sm" href={`${FRONTEND_URL}/task1-practice.html`} target="_blank" rel="noreferrer">Mở trang học sinh ↗</a>
           <button className="btn btn-ghost btn-sm" onClick={bulkToggle} disabled={exercises.length === 0}>
@@ -550,6 +650,11 @@ export default function Task1Exercises() {
       />
 
       <SummaryGrid meta={meta} skillFilter={skillFilter} setFilter={setFilter} onPick={pickCell} />
+      {meta?.untagged > 0 && (
+        <div style={{ marginBottom: 12, fontSize: 13, padding: "10px 14px", borderRadius: 10, background: "rgba(234,179,8,.12)", border: "1px solid rgba(234,179,8,.4)" }}>
+          ⚠️ {meta.untagged} câu đang hiện nhưng chưa thuộc Bộ 1 hay Bộ 2 — học sinh chỉ thấy chúng ở “Tất cả”. Mở từng câu (lọc Bộ 1) và bấm Lưu để gắn bộ.
+        </div>
+      )}
 
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', margin: '12px 0', alignItems: 'center' }}>
         <input
@@ -589,6 +694,10 @@ export default function Task1Exercises() {
           <option value="true">Đang hiện</option>
           <option value="false">Đang ẩn</option>
         </select>
+        <select className="form-input" value={sort} onChange={filterChange(setSort)} style={{ width: 170 }} aria-label="Sắp xếp">
+          <option value="">Thứ tự bài</option>
+          <option value="hard">📉 Sai nhiều nhất</option>
+        </select>
         {anyFilter && <button type="button" className="btn btn-ghost btn-sm" onClick={clearFilters}>✕ Bỏ lọc</button>}
         <span style={{ fontSize: 13, color: 'var(--text2)', marginLeft: 'auto' }}>{total} câu hỏi</span>
       </div>
@@ -605,15 +714,16 @@ export default function Task1Exercises() {
               <th>LEVEL</th>
               <th>LOẠI</th>
               <th>BIỂU ĐỒ</th>
+              <th title="Lượt làm · % đúng (3 tháng gần đây)">HỌC SINH</th>
               <th>TRẠNG THÁI</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={10} className="table-empty">Đang tải...</td></tr>
+              <tr><td colSpan={11} className="table-empty">Đang tải...</td></tr>
             ) : exercises.length === 0 ? (
-              <tr><td colSpan={10} className="table-empty">Không có câu hỏi nào</td></tr>
+              <tr><td colSpan={11} className="table-empty">Không có câu hỏi nào</td></tr>
             ) : exercises.map(ex => {
               const set = ex.set || setOfTags(ex.tags);
               const chartTag = chartTagOf(ex.tags);
@@ -635,6 +745,14 @@ export default function Task1Exercises() {
                   <td style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
                     {ex.chart ? <>📊 {CHART_KIND[ex.chart.kind] || ex.chart.kind || 'có'}</> : <span className="muted">—</span>}
                     {chartTag && <div className="muted" style={{ fontSize: 11 }}>{chartTag === 'chart:dynamic' ? 'động' : 'tĩnh'}</div>}
+                  </td>
+                  <td style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
+                    {ex.results ? (
+                      <button type="button" className="link-btn" onClick={() => setAnswersEx(ex)} title={`${ex.results.students} học sinh · bấm để xem câu trả lời`}>
+                        {ex.results.attempts} lượt ·{' '}
+                        <b style={{ color: ex.results.correctPct >= 70 ? 'var(--green)' : ex.results.correctPct >= 40 ? 'var(--yellow)' : 'var(--danger)' }}>{ex.results.correctPct}%</b>
+                      </button>
+                    ) : <span className="muted">—</span>}
                   </td>
                   <td>
                     <span className={`badge ${ex.isActive !== false ? 'badge-green' : 'badge-gray'}`}>
