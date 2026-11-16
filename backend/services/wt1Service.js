@@ -39,6 +39,12 @@ const COURSE_CODE = 'IELTS-W-T1';
 const COURSES = new Set(['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING', 'MINDSET-0', 'MINDSET-1', 'MINDSET-2']);
 function resolveCourse(code) { return COURSES.has(code) ? code : COURSE_CODE; }
 
+// Mindset lesson's Reading/Listening tests: 'reading' | 'listening' | 'mixed' | null
+function practiceKindOf(links) {
+  const kinds = new Set((links || []).map((p) => p.kind).filter((k) => k === 'reading' || k === 'listening'));
+  return kinds.size === 0 ? null : kinds.size > 1 ? 'mixed' : [...kinds][0];
+}
+
 function gateDefaults(g = {}) {
   return {
     requireObjectiveCompletion: g.requireObjectiveCompletion ?? true,
@@ -284,6 +290,9 @@ function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons,
       // Mindset: Reading/Listening tests linked from the lesson (done on
       // reading.html / listening.html, not counted in exerciseCount)
       practiceCount: (l.practiceLinks || []).filter((p) => p.kind === 'reading' || p.kind === 'listening').length,
+      // 'reading' | 'listening' | 'mixed' — the overview says "bài Listening"
+      // instead of a generic "bài Reading/Listening"
+      practiceKind: practiceKindOf(l.practiceLinks),
     };
   });
 }

@@ -23,6 +23,13 @@
 //    lessonFooter(l)  html appended under the lesson's exercise list
 //    lessonList(l, cards, exercises)  html of the exercise list itself
 //                     (default: the cards one after another)
+//    nextStep(l, exIdx, exercises)  { label, href } when something else sits
+//                     between exercise exIdx and the next one (Mindset: a
+//                     Reading/Listening test in book order) — the feedback
+//                     panel's "Bài tiếp theo" then goes there instead
+//    lessonDoneNext(l, exercises)  { label, href } — the end-of-lesson
+//                     screen's main button goes there instead of the overview
+//                     (Mindset: an "Exam skills" test after the last exercise)
 //    ui               look switches — Speaking keeps its own (older) styling,
 //                     its stylesheet has none of the newer writing classes:
 //      cueColor, imageAlt, zoom (lightbox + chart thumbnails), essayMeter,
@@ -265,7 +272,7 @@
             '<div class="t1-lesson-body">' +
               '<div class="t1-lesson-title">' + esc(l.title) + (l.isTest ? ' <span class="t1-tag">Kiểm tra</span>' : '') + '</div>' +
               '<div class="t1-lesson-meta">' + l.doneCount + '/' + l.exerciseCount + ' bài' +
-                (l.practiceCount ? ' + ' + l.practiceCount + ' bài Reading/Listening' : '') +
+                (l.practiceCount ? ' + ' + l.practiceCount + ' bài ' + (l.practiceKind === 'reading' ? 'Reading' : l.practiceKind === 'listening' ? 'Listening' : 'Reading/Listening') : '') +
                 (l.scorePercent ? ' · TB ' + l.scorePercent + '%' : '') +
                 (l.durationMinutes ? ' · ' + l.durationMinutes + ' phút' : '') + '</div>' +
               '<div class="t1-lesson-bar"><span style="width:' + pct + '%"></span></div>' +
@@ -1025,10 +1032,10 @@
       }
     }
 
-    function feedbackActions(last) {
+    function feedbackActions(last, nx) {
       return '<div style="display:flex;gap:8px;margin-top:12px">' +
           '<button class="t1-btn" id="t1-retry" style="flex:none"><i class="fas fa-rotate-left"></i> Làm lại</button>' +
-          '<button class="t1-next" id="t1-next" style="flex:1;margin-top:0">' + (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo') + ' <i class="fas fa-arrow-right"></i></button>' +
+          '<button class="t1-next" id="t1-next" style="flex:1;margin-top:0">' + (nx ? esc(nx.label) : (last ? 'Hoàn thành buổi học' : 'Bài tiếp theo')) + ' <i class="fas fa-arrow-right"></i></button>' +
         '</div>';
     }
     // Shows a finished exercise's feedback panel with the shared
@@ -1037,12 +1044,24 @@
       var fb = document.getElementById('t1-fb');
       var last = state.exIdx >= state.exercises.length - 1;
       fb.className = 't1-fb';
-      fb.innerHTML = body + feedbackActions(last);
+      var nx = nextStepOverride();
+      fb.innerHTML = body + feedbackActions(last, nx);
       fb.classList.remove('hidden'); fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      document.getElementById('t1-next').addEventListener('click', nextExercise);
+      document.getElementById('t1-next').addEventListener('click', nx
+        ? function () { stopTimer(); location.href = nx.href; }
+        : nextExercise);
       document.getElementById('t1-retry').addEventListener('click', retryExercise);
     }
     E.showFeedback = showFeedback;
+    // cfg.nextStep: the course's own next step (e.g. a Reading test page)
+    // between this exercise and the next — a page link, not an exercise.
+    function nextStepOverride() {
+      if (!cfg.nextStep || !state.lesson || state.exIdx >= state.exercises.length - 1) return null;
+      try {
+        var nx = cfg.nextStep(state.lesson, state.exIdx, state.exercises);
+        return nx && nx.href && nx.label ? nx : null;
+      } catch (e) { return null; }
+    }
 
     function showObjectiveFeedback(ex, r) {
       _recordResult({ code: ex.code, label: ex.title || ('Bài ' + (state.exIdx + 1)), kind: 'objective', score: r.score, correctCount: r.correctCount, maxScore: r.maxScore });
@@ -1202,13 +1221,17 @@
       app.classList.remove('ce-wide');
       var lessonCode = state.lesson && state.lesson.code;
       if (lessonCode) _notifyIfNextLessonUnlocked(lessonCode);
+      var doneNx = null;
+      try { doneNx = cfg.lessonDoneNext && state.lesson ? cfg.lessonDoneNext(state.lesson, state.exercises) : null; } catch (er) { doneNx = null; }
+      if (doneNx && !(doneNx.href && doneNx.label)) doneNx = null;
       if (window.CourseResult) {
         window.CourseResult.renderLessonComplete({
           mount: app,
           title: state.lesson && state.lesson.title,
           results: state.results,
           onRetry: function () { state.results = []; state.exIdx = 0; state.view = 'exercise'; render(); },
-          onDone: goOverview
+          doneLabel: doneNx && doneNx.label,
+          onDone: doneNx ? function () { location.href = doneNx.href; } : goOverview
         });
         return;
       }

@@ -56,7 +56,7 @@ module.exports = {
       objectives: [
         'Gọi tên 10 hoạt động hằng ngày trong tranh (get up, catch the bus, go online…)',
         'Chọn đúng động từ đi kèm: catch the bus, do sightseeing, chat to friends…',
-        'Lưu 18 cụm từ vào Sổ 1 và luyện đến khi đúng ≥70%',
+        'Lưu 21 cụm từ vào Sổ 1 và luyện đến khi đúng ≥70%',
       ],
       images: ['media:m0u01-leadin.jpg|Lead-in (tr. 10): Bạn làm những hoạt động nào mỗi ngày?'],
       theory: [

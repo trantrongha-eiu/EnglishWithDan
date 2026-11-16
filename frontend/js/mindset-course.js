@@ -52,24 +52,102 @@
     link:      { icon: 'fa-external-link-alt', label: 'Luyện thêm', cta: 'Mở' },
   };
 
+  function figure(im) {
+    return '<figure><img src="' + esc(im.url) + '" alt="' + esc(im.caption || 'Hình trong sách') + '" data-zoom title="Bấm để phóng to" loading="lazy">' +
+      (im.caption ? '<figcaption>' + esc(im.caption) + '</figcaption>' : '') + '</figure>';
+  }
+  // Pictures not placed next to their exercise (Lead-in pictures, or ones
+  // whose exercise is already the first step) stay above the step list.
   function renderImages(l) {
-    var imgs = l.images || [];
+    var imgs = placeImages(l, (E && E.state.exercises) || []).top;
     if (!imgs.length) return '';
-    return '<div class="ms-imgs">' + imgs.map(function (im) {
-      return '<figure><img src="' + esc(im.url) + '" alt="' + esc(im.caption || 'Hình trong sách') + '" data-zoom title="Bấm để phóng to" loading="lazy">' +
-        (im.caption ? '<figcaption>' + esc(im.caption) + '</figcaption>' : '') + '</figure>';
-    }).join('') + '</div>';
+    return '<div class="ms-imgs">' + imgs.map(figure).join('') + '</div>';
   }
 
   // Reading / Listening test card. `result` = the student's best attempt
   // (wt1Service.getLesson → coursePracticeService); ≥ PASS% counts toward
   // a Mindset lesson given as homework.
   var PASS = 70;
+  // reading.html / listening.html show "Về khóa học" (js/shared/course-return.js)
+  // and land back on this lesson — or straight on exCode, the exercise that
+  // follows the test in the book — when the student closes the practice.
+  function taskUrl(l, p, exCode) {
+    var back = '/mindset-' + LEVEL + '.html' + (l.code ? '?lesson=' + encodeURIComponent(l.code) + (exCode ? '&ex=' + encodeURIComponent(exCode) : '') : '');
+    return /^\/(reading|listening)\.html\?/.test(p.url) ? p.url + '&returnTo=' + encodeURIComponent(back) : p.url;
+  }
+  function passed(p) { return !!(p.result && p.result.total && p.result.percent >= PASS); }
+  function tasksOf(l) { return (l.practiceLinks || []).filter(function (p) { return p.kind !== 'grammar' && p.url; }); }
+
+  // The lesson in book order: exercises with the Reading/Listening tests
+  // slotted in at their `step` (number of exercises before them — set by
+  // scripts/mindset/buildMindset.js from the "(Ex. N)" tags).
+  // → [{ ex, i } | { task }]
+  function flowOf(l, exercises) {
+    var tasks = tasksOf(l);
+    var n = exercises.length;
+    var at = {};
+    tasks.forEach(function (p) {
+      var st = typeof p.step === 'number' ? Math.max(0, Math.min(p.step, n)) : n;
+      (at[st] = at[st] || []).push(p);
+    });
+    var out = [];
+    for (var i = 0; i <= n; i++) {
+      (at[i] || []).forEach(function (p) { out.push({ task: p }); });
+      if (i < n) out.push({ ex: exercises[i], i: i });
+    }
+    return out;
+  }
+  // Book exercise number in a title: "(Ex. 6–7)", "(Lead-in Ex. 1)". The
+  // end-of-unit "(G&V Ex. N)" page has no pictures, so it never matches.
+  function exNum(title) {
+    var m = /(G&V\s+)?\bEx\.?\s*(\d+)/.exec(String(title || ''));
+    return m && !m[1] ? +m[2] : null;
+  }
+  // Each "Ex. N (p. …)" picture goes right before the first step of
+  // exercise N or later, so a map used in Ex. 10 sits next to Ex. 10, not
+  // at the top of the lesson. → { top: [img], before: { flowIndex: [img] } }
+  function placeImages(l, exercises) {
+    var res = { top: [], before: {} };
+    var flow = flowOf(l, exercises);
+    (l.images || []).forEach(function (im) {
+      var m = /^\s*Ex\.?\s*(\d+)/.exec(im.caption || '');
+      var at = -1;
+      if (m) {
+        for (var k = 0; k < flow.length; k++) {
+          var x = exNum(flow[k].task ? flow[k].task.title : flow[k].ex.title);
+          if (x != null && x >= +m[1]) { at = k; break; }
+        }
+      }
+      if (at <= 0) res.top.push(im);
+      else (res.before[at] = res.before[at] || []).push(im);
+    });
+    return res;
+  }
+
+  // "Bài tiếp theo" after exercise exIdx (engine cfg.nextStep): the first
+  // Reading/Listening test not yet passed between it and the next exercise
+  // (after the last exercise: the result screen's button, lessonDoneNext).
+  function nextStep(l, exIdx, exercises) {
+    var flow = flowOf(l, exercises);
+    var k = 0;
+    while (k < flow.length && !(flow[k].ex && flow[k].i === exIdx)) k++;
+    var gap = [];
+    for (k++; k < flow.length && flow[k].task; k++) gap.push(flow[k].task);
+    var todo = gap.filter(function (p) { return !passed(p); });
+    if (!todo.length) return null;
+    var nextEx = exercises[exIdx + 1];
+    var p = todo[0];
+    // the only test left in this gap → come back straight to the next exercise
+    var href = taskUrl(l, p, todo.length === 1 && nextEx ? nextEx.code : null);
+    var kk = KIND[p.kind] || KIND.link;
+    var t = String(p.title || '').replace(/\s*\((?:G&V\s+)?Ex\.[^)]*\)\s*$/, '');
+    if (t.length > 46) t = t.slice(0, 44).replace(/\s+\S*$/, '') + '…';
+    return { label: 'Tiếp theo: bài ' + kk.label + ' “' + t + '”', href: href };
+  }
+
+  // Reading / Listening test card (result = best attempt, see above).
   function taskCard(l, p) {
-    // reading.html / listening.html show "Về khóa học" (js/shared/course-return.js)
-    // and land back on this lesson when the student closes the practice.
-    var back = '/mindset-' + LEVEL + '.html' + (l.code ? '?lesson=' + encodeURIComponent(l.code) : '');
-    var url = /^\/(reading|listening)\.html\?/.test(p.url) ? p.url + '&returnTo=' + encodeURIComponent(back) : p.url;
+    var url = taskUrl(l, p);
     var k = KIND[p.kind] || KIND.link;
     var r = p.result;
     var badge = '';
@@ -86,27 +164,24 @@
       '<span class="ms-task-go">' + (r && r.total ? 'Làm lại' : k.cta) + ' <i class="fas fa-arrow-right"></i></span></a>';
   }
 
-  // The lesson's steps in book order: exercises with the Reading/Listening
-  // tests slotted in at their `step` (number of exercises before them —
-  // set by scripts/mindset/buildMindset.js from the "(Ex. N)" tags).
-  function lessonList(l, cards) {
-    var tasks = (l.practiceLinks || []).filter(function (p) { return p.kind !== 'grammar' && p.url; });
-    if (!tasks.length) return cards.join('');
-    var at = {};
-    tasks.forEach(function (p) {
-      var s = typeof p.step === 'number' ? Math.max(0, Math.min(p.step, cards.length)) : cards.length;
-      (at[s] = at[s] || []).push(p);
+  // The lesson's steps, numbered, in book order (flowOf), each book
+  // picture right before the exercise that uses it (placeImages).
+  function lessonList(l, cards, exercises) {
+    exercises = exercises || [];
+    var flow = flowOf(l, exercises);
+    var imgs = placeImages(l, exercises).before;
+    var tasks = tasksOf(l);
+    var out = flow.map(function (f, k) {
+      var pics = imgs[k] ? '<div class="ms-step-imgs"><div class="ms-imgs">' + imgs[k].map(figure).join('') + '</div></div>' : '';
+      return pics + '<div class="ms-step"><span class="ms-step-n">' + (k + 1) + '</span>' +
+        (f.task ? taskCard(l, f.task) : cards[f.i]) + '</div>';
     });
-    var out = [];
-    var n = 0;
-    function step(html) { n++; out.push('<div class="ms-step"><span class="ms-step-n">' + n + '</span>' + html + '</div>'); }
-    for (var i = 0; i <= cards.length; i++) {
-      (at[i] || []).forEach(function (p) { step(taskCard(l, p)); });
-      if (i < cards.length) step(cards[i]);
-    }
-    return '<div class="ms-flow-h"><i class="fas fa-list-ol"></i> Các bước của buổi học — theo thứ tự trong sách' +
-      '<span>' + tasks.length + ' bài ' + (tasks.some(function (p) { return p.kind === 'listening'; }) && tasks.some(function (p) { return p.kind === 'reading'; }) ? 'Reading/Listening' : (tasks[0].kind === 'listening' ? 'Listening' : 'Reading')) +
-      ' cần đạt ≥' + PASS + '%</span></div>' + out.join('');
+    var kinds = {};
+    tasks.forEach(function (p) { kinds[p.kind] = 1; });
+    var kindLabel = kinds.reading && kinds.listening ? 'Reading/Listening' : (kinds.listening ? 'Listening' : 'Reading');
+    return '<div class="ms-flow-h"><i class="fas fa-list-ol"></i> Các bước của buổi học — làm lần lượt theo thứ tự trong sách' +
+      (tasks.length ? '<span>' + tasks.length + ' bài ' + kindLabel + ' cần đạt ≥' + PASS + '%</span>' : '') +
+      '</div>' + out.join('');
   }
 
   function renderPractice(l) {
@@ -146,12 +221,21 @@
         '<button class="t1-btn ms-vocab-copy"><i class="fas fa-copy"></i> Sao chép danh sách</button>' +
         '<span class="ms-vocab-msg" aria-live="polite"></span>' +
       '</div>' +
-      '<div class="ms-vocab-cap">Danh sách để dán (mỗi dòng “từ: nghĩa”):</div>' +
-      '<div class="ms-vocab-list">' + (v.words || []).map(function (w) {
-        return '<div class="ms-vw"><b>' + esc(w.word) + '</b>: ' + esc(w.meaning || '') +
-          (w.example ? '<div class="ms-vw-ex">' + esc(w.example) + '</div>' : '') + '</div>';
-      }).join('') + '</div>' +
+      vocabList(v) +
     '</div>';
+  }
+
+  // Word list: a long one (a whole Sổ page — 30–60 words) is folded so the
+  // lesson does not end in a screen-long column on a phone.
+  var VOCAB_FOLD = 12;
+  function vocabList(v) {
+    var words = v.words || [];
+    var list = '<div class="ms-vocab-list">' + words.map(function (w) {
+      return '<div class="ms-vw"><b>' + esc(w.word) + '</b>: ' + esc(w.meaning || '') +
+        (w.example ? '<div class="ms-vw-ex">' + esc(w.example) + '</div>' : '') + '</div>';
+    }).join('') + '</div>';
+    if (words.length <= VOCAB_FOLD) return '<div class="ms-vocab-cap">Danh sách để dán (mỗi dòng “từ: nghĩa”):</div>' + list;
+    return '<details class="ms-vocab-fold"><summary>📋 Xem danh sách ' + words.length + ' từ (nghĩa + câu ví dụ)</summary>' + list + '</details>';
   }
 
   async function saveVocab(btn) {
@@ -231,6 +315,8 @@
       ui: {},
       lessonExtra: function (l) { return renderImages(l) + renderPractice(l); },
       lessonList: lessonList,
+      nextStep: nextStep,
+      lessonDoneNext: function (l, exercises) { return exercises.length ? nextStep(l, exercises.length - 1, exercises) : null; },
       lessonFooter: renderVocabSave,
       setup: function (engine) {
         E = engine;

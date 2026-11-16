@@ -147,4 +147,39 @@ test(`a student can open, do and get marked + shown the answers for every ${name
   expect(problems).toEqual([]);
   expect(checked).toBe(units.reduce((n, u) => n + u.exercises.filter((e) => OBJECTIVE_TYPES.has(e.type)).length, 0));
 });
+
+// Debug pass 2026-11-16: what the lesson page shows must agree with itself.
+test('objectives quote the real Sổ word count; every "Ex. N" picture has its exercise in the lesson', () => {
+  const problems = [];
+  for (const { L, exercises } of units) {
+    for (const l of L.lessons) {
+      const n = (l.vocabSave && l.vocabSave.words || []).length;
+      for (const o of l.objectives || []) {
+        const m = /Lưu (\d+) (?:từ|cụm từ)/.exec(o.normalize('NFC'));
+        if (m && +m[1] !== n) problems.push(`${l.code}: objective says ${m[1]} words, Sổ has ${n}`);
+      }
+      const titles = exercises.filter((e) => e.lessonCode === l.code).map((e) => e.title)
+        .concat((l.practiceLinks || []).map((p) => p.title));
+      const nums = titles.flatMap((t) => [...String(t).matchAll(/(G&V\s+)?\bEx\.?\s*(\d+)(?:[–-](\d+))?/g)]
+        .filter((m) => !m[1]).flatMap((m) => { const a = +m[2], b = +(m[3] || m[2]); return Array.from({ length: b - a + 1 }, (_, i) => a + i); }));
+      for (const im of l.images || []) {
+        const c = /^\s*Ex\.?\s*(\d+)/.exec(im.caption || '');
+        if (c && !nums.some((x) => x >= +c[1])) problems.push(`${l.code}: picture for Ex. ${c[1]} but no exercise from Ex. ${c[1]} on`);
+      }
+    }
+  }
+  expect(problems).toEqual([]);
+});
+
+test('the course overview says which kind of book test each lesson has', async () => {
+  const student = await createPremiumStudent();
+  const res = await request(app).get(`/api/wt1/overview?course=${COURSE}`).set({ Authorization: `Bearer ${signTokenFor(student)}` });
+  expect(res.status).toBe(200);
+  const byCode = new Map(units.flatMap((u) => u.L.lessons).map((l) => [l.code, l]));
+  for (const l of res.body.modules.flatMap((m) => m.lessons)) {
+    const kinds = new Set((byCode.get(l.code).practiceLinks || []).map((p) => p.kind).filter((k) => k === 'reading' || k === 'listening'));
+    const want = kinds.size === 0 ? null : kinds.size > 1 ? 'mixed' : [...kinds][0];
+    expect([l.code, l.practiceKind]).toEqual([l.code, want]);
+  }
+});
 });
