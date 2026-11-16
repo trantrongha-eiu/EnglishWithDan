@@ -270,6 +270,7 @@ function ciClassCard(c, ck, idx) {
         'ci-tile--rose' + (ciHomeworkLevel(c) !== 'ok' ? ' ci-tile--danger' : ''), `ci-limit-h-${c.classId}`)}
     </div>
     ${ciLimitsBlock(c)}
+    ${typeof window.seBlockFor === 'function' ? window.seBlockFor(c.classId) : ''}
   </div>`;
 }
 
@@ -506,6 +507,10 @@ async function loadClassInfo() {
   }
   if (!data || !data.hasClasses || !data.classes.length) { card.style.display = 'none'; return; }
 
+  // 🎤 Đăng kí thi Speaking block (js/dashboard-speaking-exam.js) — fetched
+  // alongside the check-in; best-effort, never blocks the card.
+  const seLoad = typeof window.seFetch === 'function' ? window.seFetch() : Promise.resolve(null);
+
   // Best-effort — the check-in widget just doesn't render on a class card
   // if this fails, the rest of the class info card still shows fine.
   try {
@@ -513,6 +518,7 @@ async function loadClassInfo() {
     const ckData = await window.ApiClient.handleResponse(ckRes);
     checkinByClass = new Map((ckData.classes || []).map((c) => [String(c.classId), c]));
   } catch (err) { console.error('loadClassInfo (checkin):', err); }
+  await seLoad;
 
   // Header pill: the week of the (first) ongoing class, so the student sees
   // "Tuần 3" even before reading the cards.

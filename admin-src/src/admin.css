@@ -2358,3 +2358,12 @@ button.cp-day:hover { transform: translateY(-2px); border-color: var(--border2);
 @media (prefers-reduced-motion: reduce) {
   .cp-hero, .cp-hero *, .cp-card, .cp-card *, .cp-stats .stat-card, .cp-auto-banner, .cp-dot { animation: none !important; transition: none !important; }
 }
+
+/* Class page "🎤 Thi Speaking" tab (pages/classes/ClassSpeakingExamTab.jsx) */
+.se-info { margin-bottom: 14px; padding: 10px 14px; border-radius: 10px; font-size: 13px; line-height: 1.6; color: var(--text2); background: var(--info-bg); border: 1px solid var(--info-border); }
+.se-info b { color: var(--text); }
+.se-form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; padding: 14px 16px; border-radius: 12px; background: var(--surface2); border: 1px solid var(--border); }
+.se-form-title { font-size: 12px; font-weight: 800; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; }
+.se-range, .se-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.se-range-count { font-size: 12.5px; font-weight: 700; color: var(--purple, #7c3aed); padding-bottom: 9px; min-width: 70px; }
+.se-missing { margin: -4px 0 14px; padding: 8px 12px; border-radius: 8px; font-size: 12.5px; line-height: 1.55; color: var(--text2); background: rgba(239, 68, 68, .08); border: 1px solid rgba(239, 68, 68, .25); }

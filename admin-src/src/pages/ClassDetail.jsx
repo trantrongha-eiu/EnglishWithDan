@@ -7,6 +7,7 @@ import StudentPicker from './tuition/StudentPicker';
 import { ClassProgressHero } from './classes/ClassProgress';
 import { keyLabel } from './classes/classProgressUtils';
 import ClassTuitionTab from './classes/ClassTuitionTab';
+import ClassSpeakingExamTab from './classes/ClassSpeakingExamTab';
 import ClassMessageModal from './classes/ClassMessageModal';
 import { studentUrlFor, mockBundleUrls } from './classes/assignmentLinks';
 
@@ -26,6 +27,7 @@ const TABS = [
   { key: 'attendance', label: '✅ Điểm danh' },
   { key: 'dashboard', label: '📊 Chuyên cần' },
   { key: 'assignments', label: '📚 Bài tập' },
+  { key: 'speaking-exam', label: '🎤 Thi Speaking' },
   { key: 'tuition', label: '💰 Học phí' },
 ];
 
@@ -328,6 +330,7 @@ export default function ClassDetail() {
       {active.key === 'attendance' && <AttendanceTab key={params.get('session') || ''} cls={cls} initialSessionId={params.get('session') || ''} onSaved={reload} />}
       {active.key === 'dashboard' && <DashboardTab cls={cls} />}
       {active.key === 'assignments' && <AssignmentsTab cls={cls} />}
+      {active.key === 'speaking-exam' && <ClassSpeakingExamTab cls={cls} roster={roster} />}
       {active.key === 'tuition' && <ClassTuitionTab cls={cls} />}
     </>
   );

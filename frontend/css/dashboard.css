@@ -2542,3 +2542,35 @@ button.hw-res-btn{border:none;cursor:pointer;font-family:inherit}
 .lesson-quiz-locked-count i{color:var(--text3);margin-right:4px}
 .lesson-quiz-locked-learn{margin-top:-2px}
 #lesson-tabs .tab-btn.is-locked{opacity:.75}
+
+/* 🎤 Đăng kí thi Speaking (js/dashboard-speaking-exam.js) — block inside a
+   "Lớp học của tôi" class card + the slot-picker popup. */
+.se-block{margin-top:12px;padding:12px 14px;border-radius:12px;background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.22);font-size:13px;color:var(--text)}
+.se-block--booked{background:rgba(22,163,74,.08);border-color:rgba(22,163,74,.3)}
+.se-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.se-head{font-weight:800;font-size:13.5px}
+.se-sub,.se-muted{font-size:12px;color:var(--text2)}
+.se-when{margin-top:6px;font-size:14px}
+.se-mode,.se-where,.se-note{margin-top:5px;line-height:1.5;overflow-wrap:anywhere}
+.se-link{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:#1a73e8;text-decoration:none}
+.se-link:hover{text-decoration:underline}
+.se-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.se-btn{border:none;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,#7c3aed,#4f46e5);cursor:pointer;font-family:inherit;white-space:nowrap}
+.se-btn:disabled{opacity:.6;cursor:default}
+.se-btn--ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.se-result{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-size:12.5px;color:var(--text2)}
+.se-result--miss{color:var(--danger)}
+.se-fb summary{cursor:pointer;margin-top:4px;color:var(--text);font-weight:600}
+.se-fb div{margin-top:6px;padding:8px 10px;border-radius:8px;background:var(--surface);line-height:1.55;color:var(--text)}
+.se-box{max-width:540px;border-top-color:#7c3aed}
+.se-intro{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:12px}
+.se-days{display:flex;flex-direction:column;gap:12px;max-height:46vh;overflow:auto;padding-right:2px}
+.se-day-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--text2);margin-bottom:6px}
+.se-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:6px}
+.se-slot,.se-mode-opt{position:relative;display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);cursor:pointer;font-size:13px;font-weight:600}
+.se-slot:has(input:checked),.se-mode-opt:has(input:checked){border-color:#7c3aed;background:rgba(124,58,237,.12);box-shadow:0 0 0 1px #7c3aed inset}
+.se-slot input,.se-mode-opt input{accent-color:#7c3aed;margin:0}
+.se-mode-pick{margin-top:14px}
+.se-step{font-size:13px;font-weight:700;margin-bottom:6px}
+.se-modes{display:flex;flex-direction:column;gap:6px}
+.se-slot-note{margin-top:10px;font-size:12.5px}
