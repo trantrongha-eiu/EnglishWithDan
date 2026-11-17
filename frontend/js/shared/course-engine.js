@@ -428,7 +428,17 @@
         toast('Lỗi tải buổi học', 'error'); goOverview();
       }
     }
-    function goOverview() { state.view = 'overview'; history.pushState({ view: 'overview' }, '', cfg.pagePath); loadOverview(); }
+    function goOverview() {
+      state.view = 'overview';
+      history.pushState({ view: 'overview' }, '', cfg.pagePath);
+      if (state.overview) {
+        render();
+        // refresh in background so lesson progress counts are up to date
+        api(cfg.overviewPath).then(function (d) { state.overview = d; render(); }).catch(function () {});
+      } else {
+        loadOverview();
+      }
+    }
     function showOverviewBehindModal() {
       state.view = 'overview';
       history.replaceState({ view: 'overview' }, '', cfg.pagePath);
@@ -800,14 +810,17 @@
       var plug = TYPES[ex.type];
       var isWriting = !OBJECTIVE[ex.type];
       var paired = hasPairedImageSlots(ex);
+      var isPassage = !paired && !!(ex.stimulus && ex.stimulus.kind === 'passage');
       var pct = Math.round(((state.exIdx + 1) / state.exercises.length) * 100);
       var submitBtn = '<button class="t1-submit" id="t1-submit">' +
         ((plug && plug.submitLabel) || (isWriting ? '<i class="fas fa-paper-plane"></i> Nộp bài' : '<i class="fas fa-check"></i> Kiểm tra')) + '</button>';
       var backTitle = state.exIdx > 0 ? 'Quay lại bài trước' : 'Quay lại danh sách bài';
-      // Two columns: "Lịch sử làm bài" on the left (WT1History.mountSide),
-      // the exercise on the right. Below 980px the column is hidden and the
-      // topbar "Lịch sử" button (modal) takes over.
-      return '<div class="ce-ex-layout"><aside class="ce-hist-side" id="ce-hist-side" aria-label="Lịch sử làm bài"></aside><div class="ce-ex-main">' +
+      var wordBankHtml = ex.wordBank && ex.wordBank.length ? '<div class="t1-wb">' + ex.wordBank.map(function (w) { return '<span class="chip">' + esc(w) + '</span>'; }).join('') + '</div>' : '';
+      var bodyHtml = paired
+        ? '<div id="t1-body">' + renderPairedImageSlots(ex) + submitBtn + '</div>'
+        : '<div class="t1-card" id="t1-body">' + renderItemBody(ex) + submitBtn + '</div>';
+      var feedbackHtml = '<div class="t1-fb hidden" id="t1-fb"></div>';
+      var header = '<div class="ce-ex-layout"><div class="ce-ex-main">' +
         '<div class="t1-topbar"><span class="ce-topbar-l"><button class="t1-btn" id="t1-prev" title="' + backTitle + '"><i class="fas fa-arrow-left"></i><span class="ce-lbl"> Quay lại</span></button>' +
         '<button class="t1-btn" id="t1-quit" title="Về danh sách bài"><i class="fas fa-times"></i><span class="ce-lbl"> Thoát</span></button></span>' +
         '<span style="font-size:12px;color:#9ca3af;font-weight:700">Bài ' + (state.exIdx + 1) + ' / ' + state.exercises.length +
@@ -815,16 +828,22 @@
         (ex.timerMinutes ? '<span class="t1-timer" id="t1-timer">' + timerHtml(ex.timerMinutes * 60) + '</span>' : '<span></span>') + '</div>' +
         (ui.progressHtml ? ui.progressHtml(pct) : stepsHtml()) +
         '<div class="t1-crumb" style="padding-top:8px"><span id="t1-back-ls" role="link" tabindex="0">' + esc(state.lesson.title) + '</span> › <b>' + esc(TYPE_LABEL[ex.type] || ex.type) + '</b></div>' +
-        // The exercise's own title used to be shown nowhere on this screen —
-        // only its instruction (or the title when there was none).
         '<div class="cx-task"><div class="cx-task-t">' + esc(ex.title || TYPE_LABEL[ex.type] || '') + '</div>' +
-          (ex.instruction && ex.instruction !== ex.title ? '<div class="t1-instr">' + esc(ex.instruction) + '</div>' : '') + '</div>' +
-        (paired ? renderStimulusHeader(ex.stimulus) : renderStimulus(ex.stimulus)) +
-        (ex.wordBank && ex.wordBank.length ? '<div class="t1-wb">' + ex.wordBank.map(function (w) { return '<span class="chip">' + esc(w) + '</span>'; }).join('') + '</div>' : '') +
-        (paired
-          ? '<div id="t1-body">' + renderPairedImageSlots(ex) + submitBtn + '</div>'
-          : '<div class="t1-card" id="t1-body">' + renderItemBody(ex) + submitBtn + '</div>') +
-        '<div class="t1-fb hidden" id="t1-fb"></div></div></div>';
+          (ex.instruction && ex.instruction !== ex.title ? '<div class="t1-instr">' + esc(ex.instruction) + '</div>' : '') + '</div>';
+      var content;
+      if (isPassage) {
+        content = '<div class="ce-pass-split">' +
+          '<div class="ce-pass-left">' +
+            '<div class="ce-pass-hint"><i class="fas fa-highlighter"></i> Bôi chọn chữ để highlight</div>' +
+            renderStimulus(ex.stimulus) +
+          '</div>' +
+          '<div class="ce-pass-right">' + wordBankHtml + bodyHtml + feedbackHtml + '</div>' +
+        '</div>';
+      } else {
+        content = (paired ? renderStimulusHeader(ex.stimulus) : renderStimulus(ex.stimulus)) +
+          wordBankHtml + bodyHtml + feedbackHtml;
+      }
+      return header + content + '</div></div>';
     }
 
     // One segment per exercise of the lesson (done / current / to do) —
@@ -877,7 +896,27 @@
       });
       document.getElementById('t1-submit').addEventListener('click', submit);
       document.getElementById('t1-hist-btn').addEventListener('click', openHistory);
-      if (window.WT1History && window.WT1History.mountSide) window.WT1History.mountSide(document.getElementById('ce-hist-side'), ex.code, ex.title);
+      var passLeft = document.querySelector('.ce-pass-left');
+      if (passLeft) {
+        passLeft.addEventListener('mouseup', function (e) {
+          if (e.target.closest('input,textarea,select,button')) return;
+          var sel = window.getSelection();
+          if (!sel || sel.isCollapsed || !sel.rangeCount) return;
+          var range = sel.getRangeAt(0);
+          if (!passLeft.contains(range.commonAncestorContainer)) return;
+          var mark = document.createElement('mark');
+          mark.className = 'ce-hl';
+          try { range.surroundContents(mark); } catch (x) {}
+          sel.removeAllRanges();
+        });
+        passLeft.addEventListener('click', function (e) {
+          var mark = e.target.closest('mark.ce-hl');
+          if (!mark) return;
+          var parent = mark.parentNode;
+          while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+          parent.removeChild(mark);
+        });
+      }
 
       var plug = TYPES[ex.type];
       if (plug && plug.bind) plug.bind(ex, E);
@@ -1724,11 +1763,10 @@
     '.wh-teacher-note{font-size:13px;line-height:1.6;white-space:pre-wrap;margin-top:6px}',
     '.wh-teacher-m{font-size:11.5px;color:var(--text3,#9ca3af);margin-top:6px}',
     '.wh-gv{color:#059669;font-weight:700}',
-    // ── course pages: history column left of the exercise + back buttons ──
+    // ── course pages: exercise layout + passage split ──
     '#app.ce-wide{max-width:1240px}',
-    '.ce-ex-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px;align-items:start}',
+    '.ce-ex-layout{}',
     '.ce-ex-main{min-width:0}',
-    '.ce-hist-side{position:sticky;top:calc(var(--nav-height,64px) + 16px);max-height:calc(100vh - var(--nav-height,64px) - 32px);overflow-y:auto;margin-top:8px;background:var(--surface,#fff);border:1px solid var(--border,#e5e7eb);border-radius:14px;padding:12px 12px 10px}',
     '.ceh-h{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:800;color:var(--text,#111827)}',
     '.ceh-h i{color:#0ea5e9}',
     '.ceh-sub{font-size:11.5px;color:var(--text3,#9ca3af);margin:2px 0 8px;line-height:1.45;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}',
@@ -1743,8 +1781,18 @@
     '.ceh-all:hover{border-color:#0ea5e9}',
     '.ce-topbar-l{display:inline-flex;align-items:center;gap:8px}',
     '.ce-backrow{padding:14px 20px 0}',
-    '@media (min-width:981px){.ce-ex-layout .t1-hist-btn{display:none}}',
-    '@media (max-width:980px){.ce-ex-layout{display:block}.ce-hist-side{display:none}}',
+    // passage 50/50 split
+    '.ce-pass-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;margin-top:8px}',
+    '.ce-pass-left{position:sticky;top:calc(var(--nav-height,64px) + 12px);max-height:calc(100vh - var(--nav-height,64px) - 24px);overflow-y:auto;background:var(--surface,#fff);border:1px solid var(--border,#e5e7eb);border-radius:14px;padding:16px}',
+    '.ce-pass-right{min-width:0}',
+    '.ce-pass-hint{font-size:11.5px;color:var(--text3,#9ca3af);margin-bottom:8px;display:flex;align-items:center;gap:5px}',
+    '.ce-pass-hint i{color:#f59e0b}',
+    // highlight mark
+    'mark.ce-hl{background:#fef08a;border-radius:2px;cursor:pointer;padding:0 1px;color:inherit}',
+    'mark.ce-hl:hover{background:#fde047}',
+    '[data-theme=dark] mark.ce-hl{background:#854d0e;color:#fef9c3}',
+    '[data-theme=dark] mark.ce-hl:hover{background:#713f12}',
+    '@media (max-width:768px){.ce-pass-split{display:block}.ce-pass-left{position:static;max-height:none;margin-bottom:12px}}',
     '@media (max-width:520px){.ce-topbar-l .ce-lbl{display:none}.ce-topbar-l{gap:6px}}',
   ].join('\n');
 

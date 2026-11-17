@@ -157,7 +157,7 @@
         (ok ? '<i class="fas fa-check-circle"></i> ' : '<i class="fas fa-redo"></i> ') +
         r.correct + '/' + r.total + ' · ' + r.percent + '%' + (ok ? '' : ' — cần ≥' + PASS + '%') + '</span>';
     }
-    return '<a class="ms-task ms-' + esc(p.kind) + (r && r.total && r.percent >= PASS ? ' is-done' : '') + '" href="' + esc(url) + '">' +
+    return '<a class="ms-task ms-' + esc(p.kind) + (r && r.total && r.percent >= PASS ? ' is-done' : '') + '" href="' + esc(url) + '" target="_blank" rel="noopener">' +
       '<span class="ms-task-ic"><i class="fas ' + k.icon + '"></i></span>' +
       '<span class="ms-task-body"><span class="ms-task-k">' + k.label + ' · giao diện thi thật</span>' +
       '<b>' + esc(p.title) + '</b>' + (p.note ? '<span class="ms-task-n">' + esc(p.note) + '</span>' : '') + badge + '</span>' +
