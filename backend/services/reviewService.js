@@ -336,13 +336,11 @@ async function updateMistake(reviewId, mistakeId, userId, patch) {
 //  - 'wt1-test-unlock': opens the code's one `targetLessonCode` WT1 test
 //    lesson for this student — see wt1Service.assertLessonUnlocked. No
 //    other collection is touched; the redemption itself IS the unlock.
-//  - 'wt1-all-lessons': opens every ordinary lesson of `targetCourseCode`
-//    (or of every WT1 course) — same "redemption IS the unlock" model.
 //
 // `lessonCode` = the WT1 lesson whose unlock box the code was typed into
 // (null = the Reading/Listening/Writing review-gate box). A code that
 // can't open that lesson — e.g. a review-bypass code typed into a locked
-// lesson — is refused as 'wrong_kind' BEFORE it's redeemed, so a
+// test lesson — is refused as 'wrong_kind' BEFORE it's redeemed, so a
 // student who pastes the wrong code doesn't silently burn one of its uses.
 //
 // Returns { status, ... } — 'ok' | 'not_found' | 'not_redeemable' |
@@ -362,13 +360,11 @@ async function redeemBypassCode(userId, rawCode, lessonCode = null) {
     return { status: 'already_used' };
   }
 
-  if (doc.kind === 'wt1-test-unlock' || doc.kind === 'wt1-all-lessons') {
+  if (doc.kind === 'wt1-test-unlock') {
     doc.redemptions.push({ userId });
     doc.usedCount += 1;
     await doc.save();
-    return doc.kind === 'wt1-test-unlock'
-      ? { status: 'ok', kind: 'wt1-test-unlock', lessonCode: doc.targetLessonCode }
-      : { status: 'ok', kind: 'wt1-all-lessons', courseCode: doc.targetCourseCode || null };
+    return { status: 'ok', kind: 'wt1-test-unlock', lessonCode: doc.targetLessonCode };
   }
 
   const now = new Date();
@@ -409,23 +405,16 @@ async function codeContextMismatch(doc, lessonCode) {
   // so nothing is wasted — keep the old behaviour.
   if (!lessonCode) return null;
   if (kind === 'review-bypass') {
-    return 'Đây là mã bỏ qua Review — không mở được buổi học. Hãy xin giáo viên mã "Mở tất cả buổi học" (hoặc mã riêng của bài kiểm tra).';
+    return 'Đây là mã bỏ qua Review — không mở được bài kiểm tra. Hãy xin giáo viên mã riêng của bài kiểm tra.';
   }
   const lesson = await WT1Lesson.findOne({ code: lessonCode }).select('isTest moduleCode').lean();
   if (!lesson) return 'Không tìm thấy buổi học này.';
-  if (kind === 'wt1-test-unlock') {
-    if (doc.targetLessonCode === lessonCode) return null;
-    return lesson.isTest
-      ? 'Mã này dành cho một bài kiểm tra khác.'
-      : 'Mã này chỉ mở một bài kiểm tra, không mở buổi học thường.';
-  }
-  // wt1-all-lessons
-  if (lesson.isTest) return 'Bài kiểm tra cần mã riêng của bài đó — mã "Mở tất cả buổi học" không mở bài kiểm tra.';
-  if (doc.targetCourseCode) {
-    const mod = await WT1Module.findOne({ code: lesson.moduleCode }).select('courseCode').lean();
-    if (!mod || mod.courseCode !== doc.targetCourseCode) return 'Mã này dành cho khoá học khác.';
-  }
-  return null;
+  // wt1-test-unlock
+  if (doc.targetLessonCode === lessonCode) return null;
+  return lesson.isTest
+    ? 'Mã này dành cho một bài kiểm tra khác.'
+    : 'Mã này chỉ mở một bài kiểm tra, không mở buổi học thường.';
+
 }
 
 async function resolveOrphanedReview(attemptType, attemptId) {

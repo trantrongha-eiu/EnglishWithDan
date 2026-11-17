@@ -280,33 +280,17 @@ describe('hard lock enforcement', () => {
     expect(checkRes.status).toBe(200);
   });
 
-  test('T1-L03 (locked — T1-L02 gate not yet met) 403s on GET /lesson and POST /check', async () => {
+  test('T1-L03 is always accessible — no sequential gate', async () => {
     const u = await createPremiumStudent();
     const lessonRes = await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u));
-    expect(lessonRes.status).toBe(403);
-    expect(lessonRes.body.code).toBe('LESSON_LOCKED');
+    expect(lessonRes.status).toBe(200);
 
     const checkRes = await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MCQ2', answers: { q1: 'B' } });
-    expect(checkRes.status).toBe(403);
-    expect(checkRes.body.code).toBe('LESSON_LOCKED');
-    // Rejected before grading — no submission should have been recorded.
-    expect(await WT1Submission.countDocuments({ userId: u._id, exerciseCode: 'MCQ2' })).toBe(0);
+    expect(checkRes.status).toBe(200);
   });
 
-  test('T1-L03 opens once T1-L02\'s gate is met', async () => {
+  test('an isTest lesson (T1-L04) stays locked until an admin-issued code is redeemed', async () => {
     const u = await createPremiumStudent();
-    await passLesson02(u);
-    const res = await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u));
-    expect(res.status).toBe(200);
-  });
-
-  test('an isTest lesson (T1-L04) stays locked behind a code even once sequentially reachable', async () => {
-    const u = await createPremiumStudent();
-    await passLesson02(u);
-    // Meet T1-L03's own (trivial: 70%/0) gate too, so T1-L04 is sequentially
-    // reachable — the ONLY thing left standing between the student and it
-    // should be the missing test-unlock code.
-    await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MCQ2', answers: { q1: 'B' } });
 
     const before = await request(app).get('/api/wt1/lesson/T1-L04').set(bearer(u));
     expect(before.status).toBe(403);
@@ -336,39 +320,22 @@ describe('hard lock enforcement', () => {
 
     // A DIFFERENT student never redeemed it — still locked for them.
     const other = await createPremiumStudent();
-    await passLesson02(other);
-    await request(app).post('/api/wt1/check').set(bearer(other)).send({ exerciseCode: 'MCQ2', answers: { q1: 'B' } });
     const otherRes = await request(app).get('/api/wt1/lesson/T1-L04').set(bearer(other));
     expect(otherRes.status).toBe(403);
     expect(otherRes.body.code).toBe('TEST_CODE_REQUIRED');
   });
 
-  test('a wt1-all-lessons code opens every ordinary lesson of its course — but never a test', async () => {
+  test('all ordinary lessons are always unlocked without any code', async () => {
     const u = await createPremiumStudent();
-    const before = await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u));
-    expect(before.status).toBe(403);
-    expect(before.body.code).toBe('LESSON_LOCKED');
-
-    // A code scoped to a DIFFERENT course does nothing for Task 1.
-    await ReviewBypassCode.create({ code: 'ALLSPK1', kind: 'wt1-all-lessons', targetCourseCode: 'IELTS-SPEAKING', maxUses: 0 });
-    expect((await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'ALLSPK1' })).status).toBe(200);
-    expect((await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u))).status).toBe(403);
-
-    await ReviewBypassCode.create({ code: 'ALLT1', kind: 'wt1-all-lessons', targetCourseCode: 'IELTS-W-T1', maxUses: 0 });
-    const redeemRes = await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'ALLT1' });
-    expect(redeemRes.status).toBe(200);
-    expect(redeemRes.body.kind).toBe('wt1-all-lessons');
-
-    // Without meeting T1-L02's gate: T1-L03 opens and can be graded…
-    const after = await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u));
-    expect(after.status).toBe(200);
+    // T1-L03 is accessible even without completing T1-L02 — no sequential gate.
+    expect((await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u))).status).toBe(200);
     const checkRes = await request(app).post('/api/wt1/check').set(bearer(u)).send({ exerciseCode: 'MCQ2', answers: { q1: 'B' } });
     expect(checkRes.status).toBe(200);
 
-    // …but the test lesson still needs its own code.
-    const test = await request(app).get('/api/wt1/lesson/T1-L04').set(bearer(u));
-    expect(test.status).toBe(403);
-    expect(test.body.code).toBe('TEST_CODE_REQUIRED');
+    // Test lesson still needs its own code.
+    const testRes = await request(app).get('/api/wt1/lesson/T1-L04').set(bearer(u));
+    expect(testRes.status).toBe(403);
+    expect(testRes.body.code).toBe('TEST_CODE_REQUIRED');
 
     const overview = await request(app).get('/api/wt1/overview').set(bearer(u));
     const ls = overview.body.modules.find((m) => m.code === 'T1-M1').lessons;
@@ -376,24 +343,13 @@ describe('hard lock enforcement', () => {
     expect(ls.find((l) => l.code === 'T1-L04')).toMatchObject({ unlocked: false, needsTestCode: true });
   });
 
-  test('a wt1-all-lessons code with no course opens every course', async () => {
-    const u = await createPremiumStudent();
-    await ReviewBypassCode.create({ code: 'ALLEVERY', kind: 'wt1-all-lessons', maxUses: 0 });
-    await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'ALLEVERY' });
-    expect((await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u))).status).toBe(200);
-  });
-
   test('a code typed into the wrong lesson box is refused WITHOUT consuming a use', async () => {
     const u = await createPremiumStudent();
     await ReviewBypassCode.create({ code: 'REVIEWONLY1', kind: 'review-bypass', maxUses: 5 });
-    await ReviewBypassCode.create({ code: 'ALLT1B', kind: 'wt1-all-lessons', targetCourseCode: 'IELTS-W-T1', maxUses: 5 });
-    await ReviewBypassCode.create({ code: 'ALLSPK2', kind: 'wt1-all-lessons', targetCourseCode: 'IELTS-SPEAKING', maxUses: 5 });
     await ReviewBypassCode.create({ code: 'TESTL04B', kind: 'wt1-test-unlock', targetLessonCode: 'T1-L04', maxUses: 5 });
 
     const tries = [
-      ['REVIEWONLY1', 'T1-L03'], // review-bypass code in a lesson box
-      ['ALLT1B', 'T1-L04'],      // all-lessons code on a test
-      ['ALLSPK2', 'T1-L03'],     // all-lessons code for another course
+      ['REVIEWONLY1', 'T1-L04'], // review-bypass code in a test lesson box
       ['TESTL04B', 'T1-L03'],    // test code on an ordinary lesson
     ];
     for (const [code, lessonCode] of tries) {
@@ -403,10 +359,10 @@ describe('hard lock enforcement', () => {
       expect((await ReviewBypassCode.findOne({ code }).lean()).usedCount).toBe(0);
     }
 
-    // The right code in the right box still works.
-    const ok = await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'ALLT1B', lessonCode: 'T1-L03' });
+    // The right test-unlock code on the right test still works.
+    const ok = await request(app).post('/api/review/bypass').set(bearer(u)).send({ code: 'TESTL04B', lessonCode: 'T1-L04' });
     expect(ok.status).toBe(200);
-    expect((await request(app).get('/api/wt1/lesson/T1-L03').set(bearer(u))).status).toBe(200);
+    expect((await request(app).get('/api/wt1/lesson/T1-L04').set(bearer(u))).status).toBe(200);
   });
 });
 

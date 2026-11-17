@@ -25,9 +25,8 @@ export default function ReviewBypassCodes() {
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [tick, setTick] = useState(0);
-  const [form, setForm] = useState({ label: '', code: '', maxUses: '1', expiresAt: '', kind: 'review-bypass', targetLessonCode: '', targetCourseCode: '' });
+  const [form, setForm] = useState({ label: '', code: '', maxUses: '1', expiresAt: '', kind: 'review-bypass', targetLessonCode: '' });
   const [testLessons, setTestLessons] = useState([]);
-  const [courses, setCourses] = useState([]);
 
   const reload = () => setTick(t => t + 1);
 
@@ -54,11 +53,10 @@ export default function ReviewBypassCodes() {
   // this page is open.
   useEffect(() => {
     apiFetch('/admin/wt1/test-lessons')
-      .then(d => { setTestLessons(d.lessons || []); setCourses(d.courses || []); })
+      .then(d => { setTestLessons(d.lessons || []); })
       .catch(() => {});
   }, []);
   const lessonByCode = Object.fromEntries(testLessons.map(l => [l.code, l]));
-  const courseTitle = code => courses.find(c => c.code === code)?.title || code;
 
   async function create(e) {
     e.preventDefault();
@@ -75,11 +73,10 @@ export default function ReviewBypassCodes() {
         kind: form.kind,
       };
       if (form.kind === 'wt1-test-unlock') body.targetLessonCode = form.targetLessonCode;
-      if (form.kind === 'wt1-all-lessons' && form.targetCourseCode) body.targetCourseCode = form.targetCourseCode;
       if (form.code.trim()) body.code = form.code.trim();
       const d = await apiFetch('/admin/review-bypass-codes', { method: 'POST', body: JSON.stringify(body) });
       toast(`Đã tạo mã ${d.code.code}`);
-      setForm({ label: '', code: '', maxUses: '1', expiresAt: '', kind: 'review-bypass', targetLessonCode: '', targetCourseCode: '' });
+      setForm({ label: '', code: '', maxUses: '1', expiresAt: '', kind: 'review-bypass', targetLessonCode: '' });
       reload();
     } catch (e) { toast(e.message, 'error'); }
     finally { setCreating(false); }
@@ -130,10 +127,9 @@ export default function ReviewBypassCodes() {
         <span style={{ fontSize: 18, lineHeight: 1.3 }}>🎫</span>
         <div>
           Mã cho học sinh nhập để <strong style={{ color: 'var(--text)' }}>bỏ qua yêu cầu Review</strong> (ép
-          review sau mỗi 3 bài), <strong style={{ color: 'var(--text)' }}>mở tất cả buổi học</strong> của khoá
-          Task 1/2 Writing, Speaking (1 mã mở hết, không gồm bài kiểm tra), hoặc <strong style={{ color: 'var(--text)' }}>mở
-          khoá một bài kiểm tra</strong> (mỗi bài kiểm tra 1 mã riêng) — chọn loại mã bên dưới. Học sinh nhập ở màn
-          hình bị chặn tương ứng (Reading/Listening cho loại đầu, bấm vào buổi đang khoá 🔒/🎫 cho 2 loại sau).
+          review sau mỗi 3 bài), hoặc <strong style={{ color: 'var(--text)' }}>mở khoá một bài kiểm tra cuối
+          khoá</strong> (mỗi bài kiểm tra 1 mã riêng) — chọn loại mã bên dưới. Học sinh nhập ở màn hình bị chặn
+          tương ứng (Reading/Listening cho loại đầu, bấm vào bài kiểm tra 🎫 cho loại sau).
           Mỗi học sinh chỉ dùng được <strong style={{ color: 'var(--text)' }}>1 lần / mã</strong>.
           <br />
           Thi thử Full 4 kỹ năng không bị ràng buộc bởi review nên không cần mã.
@@ -148,10 +144,9 @@ export default function ReviewBypassCodes() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, alignItems: 'end', marginBottom: form.kind !== 'review-bypass' ? 14 : 0 }}>
           <Field label="Loại mã">
             <select className="form-input" value={form.kind}
-              onChange={e => setForm(f => ({ ...f, kind: e.target.value, targetLessonCode: '', targetCourseCode: '' }))}>
+              onChange={e => setForm(f => ({ ...f, kind: e.target.value, targetLessonCode: '' }))}>
               <option value="review-bypass">Bỏ qua Review</option>
-              <option value="wt1-all-lessons">Mở tất cả buổi học (Writing/Speaking)</option>
-              <option value="wt1-test-unlock">Mở khoá bài kiểm tra</option>
+              <option value="wt1-test-unlock">Mở khoá bài kiểm tra cuối khoá</option>
             </select>
           </Field>
           {form.kind === 'wt1-test-unlock' && (
@@ -165,17 +160,7 @@ export default function ReviewBypassCodes() {
               </select>
             </Field>
           )}
-          {form.kind === 'wt1-all-lessons' && (
-            <Field label="Khoá học">
-              <select className="form-input" value={form.targetCourseCode}
-                onChange={e => setForm(f => ({ ...f, targetCourseCode: e.target.value }))}>
-                <option value="">Tất cả khoá (Task 1, Task 2, Speaking)</option>
-                {courses.map(c => (
-                  <option key={c.code} value={c.code}>{c.title}</option>
-                ))}
-              </select>
-            </Field>
-          )}
+
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14, alignItems: 'end' }}>
           <Field label="Ghi chú">
@@ -254,11 +239,7 @@ export default function ReviewBypassCodes() {
                           : c.targetLessonCode}>
                           🎫 {lessonByCode[c.targetLessonCode]?.title || c.targetLessonCode || 'Mở khoá test'}
                         </span>
-                      : c.kind === 'wt1-all-lessons'
-                        ? <span className="badge badge-green">
-                            🔓 Mọi buổi · {c.targetCourseCode ? courseTitle(c.targetCourseCode) : 'tất cả khoá'}
-                          </span>
-                        : <span className="badge badge-blue">Bỏ qua Review</span>}
+                      : <span className="badge badge-blue">Bỏ qua Review</span>}
                   </td>
                   <td>{c.label || <span style={{ color: 'var(--text3)' }}>—</span>}</td>
                   <td style={{ fontVariantNumeric: 'tabular-nums' }}>

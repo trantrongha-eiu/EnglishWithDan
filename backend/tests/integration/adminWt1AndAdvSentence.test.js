@@ -271,7 +271,6 @@ describe('GET /api/admin/wt1/test-lessons', () => {
       title: 'TEST 1', courseCode: 'IELTS-W-T1', courseTitle: 'WT1', moduleTitle: 'Module debug 2',
     });
 
-    // Course list for the 'wt1-all-lessons' code's course picker.
     expect(res.body.courses.map((c) => c.code)).toEqual(['IELTS-W-T1', 'IELTS-W-T2', 'IELTS-SPEAKING', 'MINDSET-0', 'MINDSET-1', 'MINDSET-2']);
     expect(res.body.courses.find((c) => c.code === 'IELTS-W-T1').title).toBe('WT1');
   });

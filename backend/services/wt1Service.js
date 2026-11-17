@@ -3,20 +3,10 @@
 // WT1 course service — the mini-LMS over WT1Course/Module/Lesson/Exercise.
 // Reads: overview (modules → lessons with done/unlocked/score), one lesson
 // (+ sanitized exercises), submission recording + per-lesson progress, and
-// one saved attempt for review. Gate is now HARD: assertLessonUnlocked()
-// is called from getLesson and every submit path (check/submitWriting/
-// submitSpeaking in wt1.controller.js), so a locked lesson can't be
-// entered or graded even by calling the API directly — the `unlocked` flag
-// in getOverview isn't just decorative anymore. A lesson flagged `isTest`
-// has an ADDITIONAL gate on top of the normal sequential one: even once
-// the previous lesson's score threshold is met, the test stays locked
-// until the student redeems an admin-issued code (ReviewBypassCode,
-// kind:'wt1-test-unlock', targetLessonCode = this lesson) — see
-// reviewService.redeemBypassCode. Ordinary (non-test) lessons have a
-// separate, coarser bypass: one 'wt1-all-lessons' code (targetCourseCode =
-// one course, or null = every WT1-stack course) lifts the sequential gate
-// on every ordinary lesson of that course for the redeeming student —
-// tests still each need their own code.
+// one saved attempt for review. All ordinary lessons are freely accessible
+// (no sequential gate). Only isTest lessons stay locked until a teacher
+// issues a 'wt1-test-unlock' code (ReviewBypassCode, targetLessonCode =
+// this lesson) — one code per test per student.
 const mongoose = require('mongoose');
 const WT1Course = require('../models/WT1Course');
 const WT1Module = require('../models/WT1Module');
@@ -223,45 +213,23 @@ async function loadDoneSubs(userId) {
   return withDurableProgress(subs, progress);
 }
 
-// What this student has unlocked with admin-issued codes (all codes are,
-// like review-bypass codes, redeemable once per student regardless of
-// maxUses — see ReviewBypassCode.redemptions):
-//  - testLessons: isTest lesson codes opened by a per-test
-//    'wt1-test-unlock' code (targetLessonCode);
-//  - allLessonsCourses: course codes whose ordinary lessons are all open
-//    via a 'wt1-all-lessons' code ('*' = a code with no targetCourseCode,
-//    i.e. every course).
-// Admin/teacher accounts (opts.staff) get everything open: every course's
-// ordinary lessons and every test lesson, no code or score gate.
+// Admin/teacher accounts get every test lesson open automatically.
 const ALL_LESSONS = { has: () => true };
 async function getCodeUnlocks(userId, opts = {}) {
-  if (opts.staff) return { testLessons: ALL_LESSONS, allLessonsCourses: new Set(['*']) };
+  if (opts.staff) return { testLessons: ALL_LESSONS };
   const rows = await ReviewBypassCode.find({
-    kind: { $in: ['wt1-test-unlock', 'wt1-all-lessons'] },
+    kind: 'wt1-test-unlock',
     'redemptions.userId': userId,
-  }).select('kind targetLessonCode targetCourseCode').lean();
-  const testLessons = new Set();
-  const allLessonsCourses = new Set();
-  for (const r of rows) {
-    if (r.kind === 'wt1-test-unlock') testLessons.add(r.targetLessonCode);
-    else allLessonsCourses.add(r.targetCourseCode || '*');
-  }
-  return { testLessons, allLessonsCourses };
-}
-function allLessonsOpen(unlocks, courseCode) {
-  return unlocks.allLessonsCourses.has('*') || unlocks.allLessonsCourses.has(courseCode);
+  }).select('targetLessonCode').lean();
+  const testLessons = new Set(rows.map((r) => r.targetLessonCode));
+  return { testLessons };
 }
 
-// The sequential-gate chain for ONE module's lessons (already sorted by
-// order) — shared by getOverview (display) and assertLessonUnlocked
-// (enforcement), so the two can never drift apart (a lesson the overview
-// shows as unlocked must be exactly the same lesson the submit endpoints
-// will accept). `unlockedTestLessons` = getCodeUnlocks().testLessons.
-// `openSequence` = no sequential gate for this module's ordinary lessons —
-// a freePractice module, or the student redeemed a 'wt1-all-lessons' code
-// covering this course.
-function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons, openSequence) {
-  let prevMetGate = true; // first lesson of a module is always unlocked
+// Lesson status for ONE module's lessons (already sorted by order) —
+// shared by getOverview (display) and assertLessonUnlocked (enforcement),
+// so the two can never drift apart. All ordinary lessons are always
+// unlocked; only isTest lessons require an admin-issued code.
+function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons) {
   return mlessons.map((l) => {
     const cnt = counts[l.code] || { count: 0 };
     const sum = perLesson[l.code] || { doneCodes: new Set(), objScores: [], writingCount: 0 };
@@ -269,19 +237,9 @@ function computeLessonStatuses(mlessons, counts, perLesson, unlockedTestLessons,
     const done = cnt.count > 0 && doneCount >= cnt.count;
     const objAvg = sum.objScores.length
       ? Math.round(sum.objScores.reduce((x, y) => x + y, 0) / sum.objScores.length) : 0;
-    const g = gateDefaults(l.gate);
-    const metGate = objAvg >= g.minObjectiveScorePercent && sum.writingCount >= g.minWritingSubmissions;
-    // A freePractice module (e.g. a reference/type library students dip in
-    // and out of) has no sequence to enforce — every lesson stays reachable.
-    const sequenceUnlocked = openSequence || prevMetGate;  // this lesson is reachable if the previous one met its gate
     const hasTestCode = !!l.isTest && unlockedTestLessons.has(l.code);
     const needsTestCode = !!l.isTest && !hasTestCode;
-    // An admin-issued unlock code for this specific test lesson grants access
-    // outright, bypassing the earlier-lessons sequence gate — that's the
-    // whole point of the code (sit the end-of-course test without first
-    // clearing every prior lesson's score/writing requirement).
-    const unlocked = hasTestCode || (sequenceUnlocked && !needsTestCode);
-    prevMetGate = metGate;                 // …and THIS lesson, in turn, unlocks the next one when ITS gate is met
+    const unlocked = hasTestCode || !needsTestCode;
     return {
       code: l.code, title: l.title, titleEn: l.titleEn, order: l.order,
       isTest: !!l.isTest, exerciseCount: cnt.count, doneCount,
@@ -330,11 +288,10 @@ async function getOverview(userId, courseCode, opts = {}) {
   }
 
   const unlocks = await getCodeUnlocks(userId, opts);
-  const openAll = allLessonsOpen(unlocks, cc);
 
   const outModules = modules.map((m) => {
     const mlessons = (lessonsByModule[m.code] || []).sort((a, b) => a.order - b.order);
-    const outLessons = computeLessonStatuses(mlessons, counts, perLesson, unlocks.testLessons, m.freePractice || openAll);
+    const outLessons = computeLessonStatuses(mlessons, counts, perLesson, unlocks.testLessons);
     return {
       code: m.code, title: m.title, titleEn: m.titleEn, order: m.order,
       outcomes: m.outcomes || [], lessons: outLessons,
@@ -373,8 +330,7 @@ async function assertLessonUnlocked(userId, lessonCode, opts = {}) {
     lessonCodesByExercise, { typeByCode },
   );
   const unlocks = await getCodeUnlocks(userId);
-  const openSequence = !!(mod && (mod.freePractice || allLessonsOpen(unlocks, mod.courseCode)));
-  const statuses = computeLessonStatuses(mlessons, counts, perLesson, unlocks.testLessons, openSequence);
+  const statuses = computeLessonStatuses(mlessons, counts, perLesson, unlocks.testLessons);
   const st = statuses.find((s) => s.code === lessonCode);
   if (!st || st.unlocked) return;
 
