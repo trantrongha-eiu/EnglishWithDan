@@ -81,7 +81,7 @@ module.exports = {
         mcq('What kind of text is it? (Ex. 5, 11)', 'Decide whether each text is mainly factual, theoretical or opinion-based.', [
           ['Successful entrepreneurs (Carnegie, Ford, Lauder, Jobs)', ['factual', 'theoretical', 'opinion-based'], 'A', 'Toàn năm, số liệu, sự kiện.'],
           ['Business ideas of the future', ['factual', 'theoretical', 'opinion-based'], 'C', 'Answer Key: chủ yếu là ý kiến/dự đoán của nhiều người (predicts, believes, feels, warns).'],
-        ]),
+        ], { stimulus: passage(ENTRE.replace(/^## /, ''), { caption: 'Successful entrepreneurs', more: [{ text: IDEAS.replace(/^## /, ''), caption: 'Business ideas of the future' }] }) }),
         match('Sentence beginnings and endings (Ex. 17)', 'Complete each sentence beginning, 1–5, with the correct ending, A–E.', [
           ['Aside from the job itself,', 'the work environment is very important to an employee.'],
           ['A positive work environment makes', 'employees feel good about coming to work.'],

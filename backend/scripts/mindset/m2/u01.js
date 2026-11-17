@@ -116,7 +116,7 @@ module.exports = {
           ['visitors', 'guests'],
           ['equipped to make visitors feel welcome', 'designed to entertain guests'],
           ['expensive materials', 'rare wood and fine rugs'],
-        ]),
+        ], { stimulus: stim(untitled(ANTILIA), 'The home in the photo') }),
       ],
     },
 

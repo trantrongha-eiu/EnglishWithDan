@@ -512,6 +512,11 @@
    "type": "mcq",
    "title": "Summarise the main ideas (Ex. 17)",
    "instruction": "Read the text about Richard Doner again and choose the correct word to summarise the main idea.",
+   "stimulus": {
+    "kind": "passage",
+    "text": "**1** Today, over 50% of the world's total population can speak more than one language. Maybe you are one of these people who can communicate in many languages. However, it may be unlikely that you can speak more than Richard Doner, an American teenager who can hold a conversation in over twenty languages.\n\n**2** Richard lives in New York. It is a city where there are people from hundreds of different countries. There are around 180 languages spoken in New York schools. This is why Richard believes that New York is the perfect city for him. 'I can discuss many different topics with people from all over the world and I don't even need to travel to another country,' Richard says.\n\n**3** Can he see a disadvantage? 'You can never rest. You have to continuously practise and put in lots of effort all the time to be able to remember the languages. I believe that, if your brain doesn't do any work, you can forget what you know. I don't have time to speak all of my languages every day, so if I want to get better, if I want to make progress, the important thing is that I speak each one as often as I can. If I don't, I start to forget the phrases and words that I know.'\n\n**4** He also believes that when you learn a language, you don't only learn words or phrases. 'A language helps you begin to learn more about the people and their cultures – their ideas, their food, what is important to them and so on.'\n\n**5** Richard is very popular all over the world. There are lots of videos online of him practising his skills in a wide range of languages, such as Arabic, Mandarin, German and even Swahili – a language that is common in West Africa.\n\n**6** The most important thing for Richard is to have fun when he learns a language. Learning is easier if you can make it interesting for yourself, he explains. 'Also, take your time – you have to learn at a speed that works for you.' I don't think many would disagree with him!",
+    "caption": "Multilingual — Richard Doner"
+   },
    "items": [
     {
      "id": "q1",

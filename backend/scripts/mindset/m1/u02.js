@@ -240,12 +240,12 @@ module.exports = {
           ['surrounded by the natural world', 'having nature all around'],
           ['uncomfortable', 'not feeling pleasant'],
           ['Sweden, Norway and Finland', 'Nordic countries'],
-        ]),
+        ], { stimulus: stim(HOMES, 'Amazing homes') }),
         mcq('Choose the best paraphrase (Ex. 8)', 'Choose the best paraphrase for these sentences from the text.', [
           ['The treehouse had everything we needed.', ['We needed some more things for our stay in the treehouse.', 'The treehouse was very well equipped.', 'We need everything for the treehouse.'], 'B', 'had everything we needed = được trang bị đầy đủ (well equipped).'],
           ['Some houseboats can be moved to other parts of the river.', ['Not all houseboats are permanently fixed in one place.', 'Only some parts of the river have houseboats.', 'You can move to a houseboat in another part of the river.'], 'A', 'Một số nhà thuyền di chuyển được → không phải tất cả đều cố định.'],
           ['One house in Chile was built from 12 containers.', ['There are 12 houses in Chile made from containers.', '12 containers were used to make one house.', 'You need 12 containers to make a house in Chile.'], 'B', 'MỘT ngôi nhà, dùng 12 container. C sai vì nói như quy định chung.'],
-        ]),
+        ], { stimulus: stim(HOMES, 'Amazing homes') }),
       ],
     },
 

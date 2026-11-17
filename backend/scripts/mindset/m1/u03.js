@@ -232,7 +232,7 @@ module.exports = {
         ], { stimulus: stim(GLOBAL, 'Globalisation of education and the workplace') }),
         mcq('Where are the main ideas? (Ex. 6)', 'Answer the question.', [
           ['Where in the paragraph can the main ideas usually be found?', ['in the first sentence of the paragraph', 'in the last sentence of the paragraph', 'in the middle of the paragraph'], 'A', 'Đọc đoạn đầu và câu đầu của mỗi đoạn.'],
-        ]),
+        ], { stimulus: stim(GLOBAL, 'Globalisation of education and the workplace') }),
       ],
     },
 

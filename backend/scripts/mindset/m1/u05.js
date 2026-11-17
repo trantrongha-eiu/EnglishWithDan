@@ -153,7 +153,7 @@ module.exports = {
         ], { stimulus: stim(MALLS, 'The future of malls') }),
         match('Headings and topic sentences (Ex. 7)', 'Match the words and phrases 1–6 (from the headings) with the words and phrases a–f (from the topic sentences of paragraphs B–E).', [
           ['innovate', 'think of new ideas'], ['stay alive', 'remain in business'], ['expanding', 'becoming bigger'], ['improving', 'becoming better'], ['natural world', 'environment'], ['city centre', 'downtown'],
-        ]),
+        ], { stimulus: stim(MALLS, 'The future of malls') }),
       ],
     },
 

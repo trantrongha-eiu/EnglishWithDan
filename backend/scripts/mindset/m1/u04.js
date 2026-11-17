@@ -226,7 +226,7 @@ module.exports = {
           ['Who talks about what is considered polite in different cultures?', "In China, when we are offered something, we say 'No thanks' … In other countries, though, 'no' means 'no'", 'Qiang Shi (C).'],
           ['Who found it difficult to learn a new way of eating?', 'I thought I knew where my mouth was, but my first few attempts were a disaster.', 'Charles (A): ăn bốc lần đầu thất bại.'],
           ['Who talks about producing your own food?', 'A lot of people grow their own vegetables and keep chickens.', 'Alfredo (B): grow vegetables, keep chickens = producing your own food.'],
-        ]),
+        ], { stimulus: stim(SHOCK, 'Food culture shock') }),
       ],
     },
 

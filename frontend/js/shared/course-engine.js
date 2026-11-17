@@ -161,7 +161,9 @@
     //    clone tracks the pointer; the real node is moved into the drop zone on
     //    release. zoneSel = CSS selector matching valid drop targets.
     var Dnd = {
-      bind: function (el, zoneSel, onDrop) {
+      // root (optional): only drop zones inside it count — a passage page
+      // stacks several exercises, and a chip must not land in another one's.
+      bind: function (el, zoneSel, onDrop, root) {
         el.addEventListener('pointerdown', function (e) {
           if (e.button != null && e.button > 0) return;
           e.preventDefault();
@@ -181,6 +183,7 @@
             fl.style.top = (ev.clientY - dy) + 'px';
             var u = document.elementFromPoint(ev.clientX, ev.clientY);
             var z = u && u.closest(zoneSel);
+            if (z && root && !root.contains(z)) z = null;
             if (z !== over) { if (over) over.classList.remove('over'); if (z) z.classList.add('over'); over = z; }
           }
           function up(ev) {
@@ -522,7 +525,14 @@
       crumb.addEventListener('keydown', function (e) { if (e.key === 'Enter') goOverview(); });
       document.getElementById('t1-back-ov-btn').addEventListener('click', goOverview);
       var st = document.getElementById('cx-start');
-      if (st) st.addEventListener('click', function () { openExerciseAt(+st.dataset.i || 0); });
+      if (st) st.addEventListener('click', function () {
+        // cfg.lessonStart(l, exercises) → { href }: the first undone step is
+        // not an exercise of this page (Mindset: a Reading/Listening test)
+        var go = null;
+        try { go = cfg.lessonStart ? cfg.lessonStart(state.lesson, state.exercises) : null; } catch (e) { go = null; }
+        if (go && go.href) { location.href = go.href; return; }
+        openExerciseAt(+st.dataset.i || 0);
+      });
       document.querySelectorAll('.t1-ex-card').forEach(function (el) {
         function go() { openExerciseAt(state.exercises.findIndex(function (e) { return e.code === el.dataset.code; })); }
         el.addEventListener('click', go);
@@ -532,6 +542,45 @@
 
     // ── EXERCISE RUNNER ──────────────────────────────────────────────
     function curEx() { return state.exercises[state.exIdx]; }
+
+    // ── passage pages ───────────────────────────────────────────────
+    // Consecutive exercises that read the same passage (stimulus kind
+    // 'passage', same text) are done on ONE page: the text once on the left,
+    // every exercise stacked on the right, one "Kiểm tra tất cả" — each is
+    // still graded and saved under its own code. cfg.pageBreak(l, i, exs)
+    // → true keeps exercise i off the page before it (Mindset: a Reading
+    // test sits between them in the book). cfg.groupPassages === false: off.
+    var GROUPABLE = { mcq: 1, gap_fill: 1, error_correction: 1, word_form: 1, categorize: 1, matching: 1, ordering: 1 };
+    // The texts of a 'passage' stimulus: `text` + any `more` (an exercise
+    // about two articles) → [{ text, caption }].
+    function passTexts(st) {
+      if (!st || st.kind !== 'passage' || !st.text) return [];
+      return [{ text: st.text, caption: st.caption || '' }].concat((st.more || []).filter(function (m) { return m && m.text; }));
+    }
+    function passKeys(ex) {
+      if (!ex || !GROUPABLE[ex.type] || TYPES[ex.type] || ex.timerMinutes) return null;
+      var ts = passTexts(ex.stimulus);
+      return ts.length ? ts.map(function (t) { return String(t.text).trim(); }) : null;
+    }
+    // neighbours share a page when they read at least one same text
+    function samePage(a, b) {
+      var ka = passKeys(a), kb = passKeys(b);
+      return !!(ka && kb && ka.some(function (k) { return kb.indexOf(k) >= 0; }));
+    }
+    function pageBreakAt(i) {
+      try { return !!(cfg.pageBreak && cfg.pageBreak(state.lesson, i, state.exercises)); } catch (e) { return false; }
+    }
+    // [first, last] exercise index of the page exercise i is on.
+    function pageRange(i) {
+      var xs = state.exercises;
+      if (cfg.groupPassages === false || !passKeys(xs[i])) return [i, i];
+      var a = i, b = i;
+      while (a > 0 && !pageBreakAt(a) && samePage(xs[a - 1], xs[a])) a--;
+      while (b < xs.length - 1 && !pageBreakAt(b + 1) && samePage(xs[b], xs[b + 1])) b++;
+      return [a, b];
+    }
+    E.pageRange = pageRange;
+    E.exDone = function (ex) { return exDone(ex) || state.results.some(function (r) { return r.code === (ex && ex.code); }); };
     function _recordResult(e) {
       var i = state.results.findIndex(function (x) { return x.code === e.code; }); if (i >= 0) state.results[i] = e; else state.results.push(e);
       // the attempt is saved server-side by now — show it in the history column
@@ -668,7 +717,7 @@
         return ex.items.map(function (it) {
           return '<div class="t1-item"><div class="q">' + esc(it.prompt) + '</div>' +
             (it.options || []).map(function (o) {
-              return '<label class="t1-mc"><input type="radio" name="mc-' + it.id + '" value="' + esc(o.id) + '"> <span>' + esc(o.id) + '. ' + esc(o.text) + '</span></label>';
+              return '<label class="t1-mc"><input type="radio" name="mc-' + esc(ex.code) + '-' + it.id + '" value="' + esc(o.id) + '"> <span>' + esc(o.id) + '. ' + esc(o.text) + '</span></label>';
             }).join('') + '</div>';
         }).join('');
       }
@@ -804,42 +853,123 @@
 
     function timerHtml(sec) { return ui.plainTimer ? fmt(sec) : '<i class="fas fa-clock"></i> ' + fmt(sec); }
 
+    // Top bar + steps + crumb + task title of the exercise view. pr = the
+    // page's [first, last] exercise (a passage page shows "Bài 2–4 / 7").
+    function exHeader(ex, pr, crumb, title, instr, histTitle) {
+      var nEx = state.exercises.length;
+      var pct = Math.round(((pr[1] + 1) / nEx) * 100);
+      var backTitle = pr[0] > 0 ? 'Quay lại bài trước' : 'Quay lại danh sách bài';
+      return '<div class="ce-ex-layout"><div class="ce-ex-main">' +
+        '<div class="t1-topbar"><span class="ce-topbar-l"><button class="t1-btn" id="t1-prev" title="' + backTitle + '"><i class="fas fa-arrow-left"></i><span class="ce-lbl"> Quay lại</span></button>' +
+        '<button class="t1-btn" id="t1-quit" title="Về danh sách bài"><i class="fas fa-times"></i><span class="ce-lbl"> Thoát</span></button></span>' +
+        '<span style="font-size:12px;color:#9ca3af;font-weight:700">Bài ' + (pr[0] + 1) + (pr[1] > pr[0] ? '–' + (pr[1] + 1) : '') + ' / ' + nEx +
+        '<button class="t1-hist-btn" id="t1-hist-btn" title="' + esc(histTitle || 'Lịch sử luyện tập bài này') + '"><i class="fas fa-history"></i> Lịch sử</button></span>' +
+        (ex.timerMinutes ? '<span class="t1-timer" id="t1-timer">' + timerHtml(ex.timerMinutes * 60) + '</span>' : '<span></span>') + '</div>' +
+        (ui.progressHtml ? ui.progressHtml(pct) : stepsHtml(pr)) +
+        '<div class="t1-crumb" style="padding-top:8px"><span id="t1-back-ls" role="link" tabindex="0">' + esc(state.lesson.title) + '</span> › <b>' + esc(crumb) + '</b></div>' +
+        '<div class="cx-task"><div class="cx-task-t">' + esc(title) + '</div>' +
+          (instr && instr !== title ? '<div class="t1-instr">' + esc(instr) + '</div>' : '') + '</div>';
+    }
+    // Left half of a passage view: highlight / translate tools + the text(s).
+    // Several texts (a page over two articles) → one tab each.
+    function passageLeft(exs) {
+      var seen = {}, texts = [], st0 = exs[0].stimulus;
+      exs.forEach(function (ex) {
+        passTexts(ex.stimulus).forEach(function (t) {
+          var k = String(t.text).trim();
+          if (!seen[k]) { seen[k] = 1; texts.push(t); }
+        });
+      });
+      var body;
+      if (texts.length <= 1) body = renderStimulus(st0);
+      else {
+        body = '<div class="ce-ptabs" role="tablist">' + texts.map(function (t, k) {
+          return '<button type="button" class="ce-ptab' + (k ? '' : ' on') + '" role="tab" data-t="' + k + '">' + esc(t.caption || ('Bài ' + (k + 1))) + '</button>';
+        }).join('') + '</div>' + texts.map(function (t, k) {
+          var st = { kind: 'passage', text: t.text }; // the tab is its caption
+          if (!k) { st.imageUrl = st0.imageUrl; st.note = st0.note; }
+          return '<div class="ce-ptext" data-t="' + k + '"' + (k ? ' hidden' : '') + '>' + renderStimulus(st) + '</div>';
+        }).join('');
+      }
+      return '<div class="ce-pass-left">' +
+          '<div class="ce-pass-toolbar">' +
+            '<button class="ce-tool-btn" id="ce-tool-hl" onclick="window._ceToggleHl()" title="Bôi màu (H)"><i class="fas fa-highlighter"></i> Bôi màu</button>' +
+            '<button class="ce-tool-btn" id="ce-tool-tr" onmousedown="event.preventDefault()" onclick="window._ceTranslate()" title="Dịch đoạn đang chọn (T)"><i class="fas fa-language"></i> Dịch</button>' +
+          '</div>' +
+          body +
+        '</div>';
+    }
+
+    // "Successful entrepreneurs + Business ideas of the future" — the page's
+    // text names without "(p. 89)".
+    function pageCaption(list) {
+      var seen = {}, caps = [];
+      list.forEach(function (ex) {
+        passTexts(ex.stimulus).forEach(function (t) {
+          var c = String(t.caption || '').replace(/\s*\((?:pp?\.|tr\.)[^)]*\)\s*$/, '').trim();
+          if (c && !seen[c]) { seen[c] = 1; caps.push(c); }
+        });
+      });
+      return caps.join(' + ');
+    }
+    E.pageCaption = pageCaption;
+    // Several exercises on one passage (pageRange): the text on the left,
+    // each exercise a numbered part on the right, one check for all.
+    function renderPassagePage(pr) {
+      var list = state.exercises.slice(pr[0], pr[1] + 1);
+      var first = list[0];
+      var cap = pageCaption(list);
+      var parts = list.map(function (ex, k) {
+        var i = pr[0] + k;
+        var la = exDone(ex) ? exStatus(ex) : '';
+        return '<section class="ce-grp-ex" data-i="' + i + '">' +
+          '<div class="ce-grp-h"><span class="ce-grp-n">Phần ' + (k + 1) + '</span>' +
+            '<span class="ce-grp-t">' + esc(ex.title || TYPE_LABEL[ex.type] || '') + '</span>' + la + '</div>' +
+          (ex.instruction && ex.instruction !== ex.title ? '<div class="t1-instr ce-grp-instr">' + esc(ex.instruction) + '</div>' : '') +
+          '<div class="t1-card ce-grp-body" data-i="' + i + '">' + renderItemBody(ex) + '</div>' +
+          '<div class="t1-fb hidden ce-grp-fb"></div>' +
+        '</section>';
+      }).join('');
+      var header = exHeader(first, pr, 'Bài đọc · ' + list.length + ' phần',
+        (cap ? '📖 ' + cap + ' — ' : '📖 ') + list.length + ' phần trên cùng một bài đọc',
+        'Đọc bài bên trái, làm hết ' + list.length + ' phần bên phải rồi bấm “Kiểm tra tất cả”.',
+        'Lịch sử phần 1');
+      return header +
+        '<div class="ce-pass-split">' + passageLeft(list) +
+          '<div class="ce-pass-right">' + parts +
+            '<button class="t1-submit ce-grp-submit" id="t1-submit"><i class="fas fa-check-double"></i> Kiểm tra tất cả (' + list.length + ' phần)</button>' +
+            '<div class="t1-fb hidden" id="t1-fb"></div>' +
+          '</div>' +
+        '</div></div></div>';
+    }
+
     function renderExercise() {
       var ex = curEx();
       if (!ex) return renderLessonDone();
+      var pr = pageRange(state.exIdx);
+      if (pr[1] > pr[0]) {
+        // a deep link / step click may land on any part — the page opens at its first
+        if (state.exIdx !== pr[0]) {
+          state.exIdx = pr[0];
+          history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', cfg.pagePath + '?lesson=' + state.lesson.code + '&ex=' + curEx().code);
+        }
+        return renderPassagePage(pr);
+      }
       var plug = TYPES[ex.type];
       var isWriting = !OBJECTIVE[ex.type];
       var paired = hasPairedImageSlots(ex);
       var isPassage = !paired && !!(ex.stimulus && ex.stimulus.kind === 'passage');
-      var pct = Math.round(((state.exIdx + 1) / state.exercises.length) * 100);
       var submitBtn = '<button class="t1-submit" id="t1-submit">' +
         ((plug && plug.submitLabel) || (isWriting ? '<i class="fas fa-paper-plane"></i> Nộp bài' : '<i class="fas fa-check"></i> Kiểm tra')) + '</button>';
-      var backTitle = state.exIdx > 0 ? 'Quay lại bài trước' : 'Quay lại danh sách bài';
       var wordBankHtml = ex.wordBank && ex.wordBank.length ? '<div class="t1-wb">' + ex.wordBank.map(function (w) { return '<span class="chip">' + esc(w) + '</span>'; }).join('') + '</div>' : '';
       var bodyHtml = paired
         ? '<div id="t1-body">' + renderPairedImageSlots(ex) + submitBtn + '</div>'
         : '<div class="t1-card" id="t1-body">' + renderItemBody(ex) + submitBtn + '</div>';
       var feedbackHtml = '<div class="t1-fb hidden" id="t1-fb"></div>';
-      var header = '<div class="ce-ex-layout"><div class="ce-ex-main">' +
-        '<div class="t1-topbar"><span class="ce-topbar-l"><button class="t1-btn" id="t1-prev" title="' + backTitle + '"><i class="fas fa-arrow-left"></i><span class="ce-lbl"> Quay lại</span></button>' +
-        '<button class="t1-btn" id="t1-quit" title="Về danh sách bài"><i class="fas fa-times"></i><span class="ce-lbl"> Thoát</span></button></span>' +
-        '<span style="font-size:12px;color:#9ca3af;font-weight:700">Bài ' + (state.exIdx + 1) + ' / ' + state.exercises.length +
-        '<button class="t1-hist-btn" id="t1-hist-btn" title="Lịch sử luyện tập bài này"><i class="fas fa-history"></i> Lịch sử</button></span>' +
-        (ex.timerMinutes ? '<span class="t1-timer" id="t1-timer">' + timerHtml(ex.timerMinutes * 60) + '</span>' : '<span></span>') + '</div>' +
-        (ui.progressHtml ? ui.progressHtml(pct) : stepsHtml()) +
-        '<div class="t1-crumb" style="padding-top:8px"><span id="t1-back-ls" role="link" tabindex="0">' + esc(state.lesson.title) + '</span> › <b>' + esc(TYPE_LABEL[ex.type] || ex.type) + '</b></div>' +
-        '<div class="cx-task"><div class="cx-task-t">' + esc(ex.title || TYPE_LABEL[ex.type] || '') + '</div>' +
-          (ex.instruction && ex.instruction !== ex.title ? '<div class="t1-instr">' + esc(ex.instruction) + '</div>' : '') + '</div>';
+      var header = exHeader(ex, pr, TYPE_LABEL[ex.type] || ex.type, ex.title || TYPE_LABEL[ex.type] || '', ex.instruction);
       var content;
       if (isPassage) {
-        content = '<div class="ce-pass-split">' +
-          '<div class="ce-pass-left">' +
-            '<div class="ce-pass-toolbar">' +
-              '<button class="ce-tool-btn" id="ce-tool-hl" onclick="window._ceToggleHl()" title="Bôi màu (H)"><i class="fas fa-highlighter"></i> Bôi màu</button>' +
-              '<button class="ce-tool-btn" id="ce-tool-tr" onmousedown="event.preventDefault()" onclick="window._ceTranslate()" title="Dịch đoạn đang chọn (T)"><i class="fas fa-language"></i> Dịch</button>' +
-            '</div>' +
-            renderStimulus(ex.stimulus) +
-          '</div>' +
+        content = '<div class="ce-pass-split">' + passageLeft([ex]) +
           '<div class="ce-pass-right">' + wordBankHtml + bodyHtml + feedbackHtml + '</div>' +
         '</div>';
       } else {
@@ -851,31 +981,62 @@
 
     // One segment per exercise of the lesson (done / current / to do) —
     // click one to jump straight to that exercise.
-    function stepsHtml() {
+    function stepsHtml(pr) {
+      pr = pr || [state.exIdx, state.exIdx];
       return '<div class="cx-steps" aria-label="Các bài trong buổi học">' + state.exercises.map(function (e, i) {
         var done = exDone(e) || state.results.some(function (r) { return r.code === e.code; });
-        return '<button type="button" class="cx-seg' + (done ? ' done' : '') + (i === state.exIdx ? ' cur' : '') + '" data-i="' + i + '"' +
+        var cur = i >= pr[0] && i <= pr[1];
+        return '<button type="button" class="cx-seg' + (done ? ' done' : '') + (cur ? ' cur' : '') + '" data-i="' + i + '"' +
           ' title="Bài ' + (i + 1) + ': ' + esc(e.title || '') + '" aria-label="Bài ' + (i + 1) + (done ? ' (đã làm)' : '') + '"' +
-          (i === state.exIdx ? ' aria-current="step"' : '') + '></button>';
+          (cur ? ' aria-current="step"' : '') + '></button>';
       }).join('') + '</div>';
     }
     function fmt(s) { s = Math.max(0, s); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
 
     // Drag a chip from a pool onto a single-chip drop zone (or back to the
     // pool), evicting whatever chip already sat there — matching + gap bank.
-    function bindPoolDrops(pool, zoneSel, poolCls) {
-      document.querySelectorAll('#t1-body .t1-chip').forEach(function (chip) {
+    function bindPoolDrops(pool, zoneSel, poolCls, root) {
+      root.querySelectorAll('.t1-chip').forEach(function (chip) {
         Dnd.bind(chip, zoneSel + ',.' + poolCls, function (el, zone) {
           if (zone.classList.contains(poolCls)) { el.classList.remove('placed'); pool.appendChild(el); return; }
           var prev = zone.querySelector('.t1-chip');
           if (prev && prev !== el) { prev.classList.remove('placed'); pool.appendChild(prev); }
           el.classList.add('placed'); zone.appendChild(el);
-        });
+        }, root);
       });
-      var rb = document.getElementById('t1-reset');
+      var rb = root.querySelector('.t1-reset');
       if (rb) rb.addEventListener('click', function () {
-        document.querySelectorAll('#t1-body ' + zoneSel + ' .t1-chip').forEach(function (c) { c.classList.remove('placed'); pool.appendChild(c); });
+        root.querySelectorAll(zoneSel + ' .t1-chip').forEach(function (c) { c.classList.remove('placed'); pool.appendChild(c); });
       });
+    }
+
+    // Drag/drop wiring of one objective exercise's body, scoped to `root`
+    // (#t1-body, or one section of a passage page — several exercises share
+    // that page, so nothing here may reach outside its own root).
+    function bindObjectiveBody(ex, root) {
+      // categorize: drag each chip into a bucket (or back to the pool)
+      if (ex.type === 'categorize') {
+        var catPool = root.querySelector('.t1-cat-pool');
+        root.querySelectorAll('.t1-chip').forEach(function (chip) {
+          Dnd.bind(chip, '.t1-drop,.t1-cat-pool', function (el, zone) {
+            el.classList.toggle('placed', !zone.classList.contains('t1-cat-pool'));
+            zone.appendChild(el);
+          }, root);
+        });
+        var cr = root.querySelector('.t1-reset');
+        if (cr) cr.addEventListener('click', function () {
+          root.querySelectorAll('.t1-bucket .t1-chip').forEach(function (c) { c.classList.remove('placed'); catPool.appendChild(c); });
+        });
+      }
+      // gap_fill word bank: drag a chip into a blank, one chip per blank
+      if (ex.type === 'gap_fill' && ex.gapBank && ex.gapBank.length) {
+        bindPoolDrops(root.querySelector('.t1-gap-pool'), '.t1-gap-drop', 't1-gap-pool', root);
+      }
+      // matching: drag an answer chip from the right pool onto a left row
+      if (ex.type === 'matching') {
+        bindPoolDrops(root.querySelector('.t1-match-pool'), '.t1-drop', 't1-match-pool', root);
+      }
+      if (ex.type === 'ordering') bindOrdering(root);
     }
 
     function bindExercise() {
@@ -883,6 +1044,7 @@
       if (!ex) return;
       state.answered = false;
       state._submitting = false;
+      state._pageChecked = {};
       document.getElementById('t1-prev').addEventListener('click', prevExercise);
       document.getElementById('t1-quit').addEventListener('click', goToLesson);
       document.getElementById('t1-back-ls').addEventListener('click', goToLesson);
@@ -913,39 +1075,35 @@
           try { range.surroundContents(span); } catch (x) {}
           sel.removeAllRanges();
         });
+        // several texts: one tab each (passageLeft)
+        passLeft.querySelectorAll('.ce-ptab').forEach(function (tb) {
+          tb.addEventListener('click', function () {
+            passLeft.querySelectorAll('.ce-ptab').forEach(function (x) { x.classList.toggle('on', x === tb); });
+            passLeft.querySelectorAll('.ce-ptext').forEach(function (p) { p.hidden = p.dataset.t !== tb.dataset.t; });
+            passLeft.scrollTop = 0;
+          });
+        });
       }
 
       var plug = TYPES[ex.type];
       if (plug && plug.bind) plug.bind(ex, E);
 
-      // categorize: drag each chip into a bucket (or back to the pool)
-      if (ex.type === 'categorize') {
-        var catPool = document.getElementById('t1-cat-pool');
-        document.querySelectorAll('#t1-body .t1-chip').forEach(function (chip) {
-          Dnd.bind(chip, '.t1-drop,.t1-cat-pool', function (el, zone) {
-            el.classList.toggle('placed', !zone.classList.contains('t1-cat-pool'));
-            zone.appendChild(el);
-          });
-        });
-        var cr = document.getElementById('t1-reset');
-        if (cr) cr.addEventListener('click', function () {
-          document.querySelectorAll('#t1-body .t1-bucket .t1-chip').forEach(function (c) { c.classList.remove('placed'); catPool.appendChild(c); });
-        });
-      }
-      // gap_fill word bank: drag a chip into a blank, one chip per blank
-      if (ex.type === 'gap_fill' && ex.gapBank && ex.gapBank.length) {
-        bindPoolDrops(document.getElementById('t1-gap-pool'), '.t1-gap-drop', 't1-gap-pool');
-      }
-      // matching: drag an answer chip from the right pool onto a left row
-      if (ex.type === 'matching') {
-        bindPoolDrops(document.getElementById('t1-right-pool'), '.t1-drop', 't1-match-pool');
-      }
-      // ordering: press a row anywhere and drag — it tracks the pointer via a
-      // live transform (instead of only jumping once the cursor crosses a
-      // sibling's midpoint), and displaced siblings slide into their new slot
-      // with a short FLIP transition instead of snapping instantly.
-      if (ex.type === 'ordering') {
-        document.querySelectorAll('.t1-ord').forEach(function (box) {
+      var body = document.getElementById('t1-body');
+      if (body) bindObjectiveBody(ex, body);
+      // passage page: each part's body is its own root
+      document.querySelectorAll('.ce-grp-body').forEach(function (root) {
+        var gx = state.exercises[+root.dataset.i];
+        if (gx) bindObjectiveBody(gx, root);
+      });
+      bindAfterBody(ex);
+    }
+
+    // ordering: press a row anywhere and drag — it tracks the pointer via a
+    // live transform (instead of only jumping once the cursor crosses a
+    // sibling's midpoint), and displaced siblings slide into their new slot
+    // with a short FLIP transition instead of snapping instantly.
+    function bindOrdering(root) {
+        root.querySelectorAll('.t1-ord').forEach(function (box) {
           box.querySelectorAll('.t1-ord-row').forEach(function (row) {
             row.addEventListener('pointerdown', function (e) {
               if (e.button != null && e.button > 0) return;
@@ -1013,7 +1171,10 @@
             });
           });
         });
-      }
+    }
+
+    // The rest of bindExercise(): typing drills, lightbox, word meter, timer.
+    function bindAfterBody(ex) {
       // sentence_transform: mount a WBW typing drill per item (server ships
       // it.translationAnswer for exactly this — see wt1Service.sanitizeExercise).
       // Falls back to the plain (visible) textarea if the drill can't mount
@@ -1120,37 +1281,40 @@
       }
     }
 
-    function collectAnswers(ex) {
+    // root: where this exercise's inputs live (default the whole page; a
+    // passage page passes its own section).
+    function collectAnswers(ex, root) {
+      var R = root || document;
       var t = ex.type, ans = {};
-      if (t === 'mcq') ex.items.forEach(function (it) { var c = document.querySelector('input[name="mc-' + it.id + '"]:checked'); ans[it.id] = c ? c.value : null; });
+      if (t === 'mcq') ex.items.forEach(function (it) { var c = R.querySelector('input[name="mc-' + ex.code + '-' + it.id + '"]:checked'); ans[it.id] = c ? c.value : null; });
       else if (t === 'gap_fill') ex.items.forEach(function (it) {
         var arr = [];
         if (ex.gapBank && ex.gapBank.length) {
-          document.querySelectorAll('.t1-gap-drop[data-item="' + it.id + '"]').forEach(function (z) {
+          R.querySelectorAll('.t1-gap-drop[data-item="' + it.id + '"]').forEach(function (z) {
             var chip = z.querySelector('.t1-chip'); arr[+z.dataset.k] = chip ? chip.dataset.val : '';
           });
         } else {
-          document.querySelectorAll('.t1-gap-inp[data-item="' + it.id + '"]').forEach(function (i) { arr[+i.dataset.k] = i.value.trim(); });
+          R.querySelectorAll('.t1-gap-inp[data-item="' + it.id + '"]').forEach(function (i) { arr[+i.dataset.k] = i.value.trim(); });
         }
         ans[it.id] = arr;
       });
       else if (t === 'error_correction' || t === 'word_form' || t === 'sentence_transform') ex.items.forEach(function (it) {
-        var el = document.querySelector('[data-item="' + it.id + '"]'); ans[it.id] = el ? el.value.trim() : '';
+        var el = R.querySelector('[data-item="' + it.id + '"]'); ans[it.id] = el ? el.value.trim() : '';
         // Failed on the 3-wrong-tries rule: graded on what was typed before
         // the stuck word, even if the redo finished it.
         if (t === 'sentence_transform' && state._wbwFailed && it.id in state._wbwFailed) ans[it.id] = state._wbwFailed[it.id];
       });
       else if (t === 'categorize') ex.items.forEach(function (it) {
-        var chip = document.querySelector('#t1-body .t1-chip[data-item="' + it.id + '"]');
+        var chip = (root || document.getElementById('t1-body') || document).querySelector('.t1-chip[data-item="' + it.id + '"]');
         var slot = chip && chip.closest('.t1-drop');
         ans[it.id] = slot ? (slot.dataset.cat || null) : null;
       });
       else if (t === 'matching') ex.items.forEach(function (it) {
-        var chip = document.querySelector('.t1-drop[data-item="' + it.id + '"] .t1-chip');
+        var chip = R.querySelector('.t1-drop[data-item="' + it.id + '"] .t1-chip');
         ans[it.id] = chip ? (chip.dataset.right || null) : null;
       });
       else if (t === 'ordering') ex.items.forEach(function (it) {
-        var rows = document.querySelectorAll('.t1-ord[data-item="' + it.id + '"] .t1-ord-row');
+        var rows = R.querySelectorAll('.t1-ord[data-item="' + it.id + '"] .t1-ord-row');
         ans[it.id] = Array.prototype.map.call(rows, function (r) { return r.dataset.tok; });
       });
       return ans;
@@ -1158,6 +1322,8 @@
 
     async function submit() {
       if (state.answered || state._submitting) return;
+      var pr = pageRange(state.exIdx);
+      if (pr[1] > pr[0]) return submitPage(pr);
       var ex = curEx();
       var plug = TYPES[ex.type];
       if (plug && plug.submit) return plug.submit(ex, E);
@@ -1215,6 +1381,52 @@
       }
     }
 
+    // "Kiểm tra tất cả" on a passage page: the parts go to /wt1/check one
+    // after another (each saved under its own code, same as on its own
+    // page); each part's ✔/✗ list shows under it, the total under the button.
+    // A part already checked is not sent again if a later one failed.
+    async function submitPage(pr) {
+      var btn = document.getElementById('t1-submit');
+      var label = btn.innerHTML;
+      state._submitting = true; btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang chấm…';
+      var checked = state._pageChecked || (state._pageChecked = {});
+      var correct = 0, max = 0, lines = [], failed = null;
+      for (var i = pr[0]; i <= pr[1]; i++) {
+        var ex = state.exercises[i];
+        var sec = document.querySelector('.ce-grp-ex[data-i="' + i + '"]');
+        if (!ex || !sec) continue;
+        var body = sec.querySelector('.ce-grp-body');
+        var r = checked[ex.code];
+        if (!r) {
+          try {
+            r = await api('/wt1/check', { method: 'POST', body: JSON.stringify({ exerciseCode: ex.code, answers: collectAnswers(ex, body) }) });
+          } catch (e) { failed = e; break; }
+          checked[ex.code] = r;
+          _recordResult({ code: ex.code, label: ex.title || ('Bài ' + (i + 1)), kind: 'objective', score: r.score, correctCount: r.correctCount, maxScore: r.maxScore });
+          var fb = sec.querySelector('.ce-grp-fb');
+          var col = r.score >= 80 ? '#16a34a' : r.score >= 60 ? '#f59e0b' : '#dc2626';
+          fb.className = 't1-fb ce-grp-fb';
+          fb.innerHTML = '<div class="ce-grp-score"' + (ui.plainScore ? '' : ' style="color:' + col + '"') + '>Phần ' + (i - pr[0] + 1) + ': ' + r.correctCount + ' / ' + r.maxScore + ' câu đúng · ' + r.score + '%</div>' +
+            objectiveRows(ex, r, body);
+        }
+        correct += r.correctCount || 0; max += r.maxScore || 0;
+        lines.push('<div class="t1-res-item"><span class="' + (r.score >= 70 ? 't1-ok">✔' : 't1-bad">✗') + '</span> Phần ' + (i - pr[0] + 1) + ' · ' + esc(ex.title || '') + ' — <b>' + r.correctCount + '/' + r.maxScore + '</b></div>');
+      }
+      if (failed) {
+        state._submitting = false; btn.disabled = false; btn.innerHTML = label;
+        toast((failed && failed.message) || 'Lỗi chấm bài', 'error');
+        return;
+      }
+      state.answered = true;
+      btn.innerHTML = label;
+      var pct = max ? Math.round(correct / max * 100) : 0;
+      if (pct >= 60) { if (window.playOk) window.playOk(); } else if (window.playWrong) window.playWrong();
+      var scol = pct >= 80 ? '#16a34a' : pct >= 60 ? '#f59e0b' : '#dc2626';
+      showFeedback('<div class="t1-fb-score"' + (ui.plainScore ? '' : ' style="color:' + scol + '"') + '>' + pct + '%</div>' +
+        '<div style="text-align:center;color:#6b7280;font-size:13px;margin-bottom:8px">' + correct + ' / ' + max + ' câu đúng · đáp án chi tiết ở dưới từng phần</div>' + lines.join(''));
+    }
+
     function feedbackActions(last, nx) {
       return '<div style="display:flex;gap:8px;margin-top:12px">' +
           '<button class="t1-btn" id="t1-retry" style="flex:none"><i class="fas fa-rotate-left"></i> Làm lại</button>' +
@@ -1225,7 +1437,7 @@
     // "Làm lại" / "Bài tiếp theo" footer — every feedback renderer ends here.
     function showFeedback(body) {
       var fb = document.getElementById('t1-fb');
-      var last = state.exIdx >= state.exercises.length - 1;
+      var last = pageRange(state.exIdx)[1] >= state.exercises.length - 1;
       fb.className = 't1-fb';
       var nx = nextStepOverride();
       fb.innerHTML = body + feedbackActions(last, nx);
@@ -1239,15 +1451,24 @@
     // cfg.nextStep: the course's own next step (e.g. a Reading test page)
     // between this exercise and the next — a page link, not an exercise.
     function nextStepOverride() {
-      if (!cfg.nextStep || !state.lesson || state.exIdx >= state.exercises.length - 1) return null;
+      var end = pageRange(state.exIdx)[1];
+      if (!cfg.nextStep || !state.lesson || end >= state.exercises.length - 1) return null;
       try {
-        var nx = cfg.nextStep(state.lesson, state.exIdx, state.exercises);
+        var nx = cfg.nextStep(state.lesson, end, state.exercises);
         return nx && nx.href && nx.label ? nx : null;
       } catch (e) { return null; }
     }
 
     function showObjectiveFeedback(ex, r) {
       _recordResult({ code: ex.code, label: ex.title || ('Bài ' + (state.exIdx + 1)), kind: 'objective', score: r.score, correctCount: r.correctCount, maxScore: r.maxScore });
+      var scol = r.score >= 80 ? '#16a34a' : r.score >= 60 ? '#f59e0b' : '#dc2626';
+      showFeedback('<div class="t1-fb-score"' + (ui.plainScore ? '' : ' style="color:' + scol + '"') + '>' + r.score + '%</div>' +
+        '<div style="text-align:center;color:#6b7280;font-size:13px;margin-bottom:8px">' + r.correctCount + ' / ' + r.maxScore + ' câu đúng</div>' +
+        objectiveRows(ex, r, document.getElementById('t1-body') || document));
+    }
+    // ✔/✗ list of a checked objective exercise (ordering: written into each
+    // box's own panel inside root instead, returns '').
+    function objectiveRows(ex, r, root) {
       // Map each result item back to what the student actually saw on screen.
       // For categorize/matching the on-screen order is the student's own drag
       // order and the chips carry no visible number, so a bare "Câu 1" tells
@@ -1264,7 +1485,7 @@
         // students hunting for which line matched which box. Drop each result
         // straight into the panel next to its own box instead.
         (r.items || []).forEach(function (it) {
-          var panel = document.querySelector('.t1-ord-result[data-item="' + it.id + '"]');
+          var panel = root.querySelector('.t1-ord-result[data-item="' + it.id + '"]');
           if (!panel) return;
           panel.className = 't1-ord-result ' + (it.correct ? 'ok' : 'bad');
           panel.innerHTML = (it.correct ? '<span class="t1-ok">✔ Chính xác</span>' : '<span class="t1-bad">✗ Đúng là:</span> <span class="t1-model">' + esc(it.correctAnswer) + '</span>') +
@@ -1279,9 +1500,7 @@
           (!it.correct && it.correctAnswer ? ' — <span class="t1-model">' + esc(it.correctAnswer) + '</span>' : '') +
           (it.explanation ? '<div style="color:#6b7280;margin-top:2px">' + esc(it.explanation) + '</div>' : '') + '</div>';
       }).join('');
-      var scol = r.score >= 80 ? '#16a34a' : r.score >= 60 ? '#f59e0b' : '#dc2626';
-      showFeedback('<div class="t1-fb-score"' + (ui.plainScore ? '' : ' style="color:' + scol + '"') + '>' + r.score + '%</div>' +
-        '<div style="text-align:center;color:#6b7280;font-size:13px;margin-bottom:8px">' + r.correctCount + ' / ' + r.maxScore + ' câu đúng</div>' + rows);
+      return rows;
     }
 
     function showWritingFeedback(d) {
@@ -1349,8 +1568,9 @@
 
     function nextExercise() {
       state.itemIdx = 0;
-      if (state.exIdx >= state.exercises.length - 1) { finishLesson(); return; }
-      state.exIdx++;
+      var end = pageRange(state.exIdx)[1];
+      if (end >= state.exercises.length - 1) { finishLesson(); return; }
+      state.exIdx = end + 1;
       history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', cfg.pagePath + '?lesson=' + state.lesson.code + '&ex=' + curEx().code);
       render();
       // the feedback panel left the page scrolled to the bottom
@@ -1367,8 +1587,9 @@
     function prevExercise() {
       stopTimer();
       state.itemIdx = 0;
-      if (state.exIdx <= 0) { goToLesson(); return; }
-      state.exIdx--;
+      var startAt = pageRange(state.exIdx)[0];
+      if (startAt <= 0) { goToLesson(); return; }
+      state.exIdx = pageRange(startAt - 1)[0];
       history.replaceState({ view: 'exercise', lesson: state.lesson.code, ex: curEx().code }, '', cfg.pagePath + '?lesson=' + state.lesson.code + '&ex=' + curEx().code);
       render();
       // the feedback panel left the page scrolled to the bottom
@@ -1867,6 +2088,20 @@
     '.ce-pass-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;margin-top:8px}',
     '.ce-pass-left{position:sticky;top:calc(var(--nav-height,64px) + 12px);max-height:calc(100vh - var(--nav-height,64px) - 24px);overflow-y:auto;background:var(--surface,#fff);border:1px solid var(--border,#e5e7eb);border-radius:14px;padding:16px}',
     '.ce-pass-right{min-width:0}',
+    // passage page: several exercises on one text (renderPassagePage)
+    '.ce-ptabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border,#e5e7eb)}',
+    '.ce-ptab{font:inherit;font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px;border:1.5px solid var(--border,#e5e7eb);background:var(--surface,#fff);color:var(--text2,#4b5563);cursor:pointer}',
+    '.ce-ptab.on{background:#0ea5e9;border-color:#0ea5e9;color:#fff}',
+    '[data-theme=dark] .ce-ptab{background:#1f2937;color:#d1d5db;border-color:#374151}',
+    '[data-theme=dark] .ce-ptab.on{background:#0284c7;border-color:#0284c7;color:#fff}',
+    '.ce-grp-ex{margin-bottom:16px}',
+    '.ce-grp-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 6px}',
+    '.ce-grp-n{flex:none;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff;background:#0ea5e9;border-radius:6px;padding:2px 8px}',
+    '.ce-grp-t{flex:1;min-width:0;font-weight:800;font-size:15px;color:var(--text,#111827)}',
+    '.ce-grp-instr{margin:0 0 8px}',
+    '.ce-grp-fb{margin-top:8px}',
+    '.ce-grp-score{font-weight:800;font-size:14px;margin-bottom:6px}',
+    '.ce-grp-submit{position:sticky;bottom:12px;z-index:4;box-shadow:0 6px 18px rgba(0,0,0,.18)}',
     // passage toolbar
     '.ce-pass-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:8px}',
     '.ce-tool-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:7px;border:1.5px solid var(--border,#e5e7eb);background:var(--surface,#fff);color:var(--text2,#374151);cursor:pointer;transition:background .15s,border-color .15s}',

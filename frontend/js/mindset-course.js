@@ -71,10 +71,23 @@
   // reading.html / listening.html show "Về khóa học" (js/shared/course-return.js)
   // and land back on this lesson — or straight on exCode, the exercise that
   // follows the test in the book — when the student closes the practice.
-  function taskUrl(l, p, exCode) {
-    var back = '/mindset-' + LEVEL + '.html' + (l.code ? '?lesson=' + encodeURIComponent(l.code) + (exCode ? '&ex=' + encodeURIComponent(exCode) : '') : '');
+  // The way back carries &after=<this test's ref>: the lesson page then
+  // continues with the step that follows it in the book (afterTask below) —
+  // the next exercise, or the next test when two sit side by side.
+  function taskUrl(l, p) {
+    var back = '/mindset-' + LEVEL + '.html' + (l.code ? '?lesson=' + encodeURIComponent(l.code) + (taskId(p) ? '&after=' + encodeURIComponent(taskId(p)) : '') : '');
     return /^\/(reading|listening)\.html\?/.test(p.url) ? p.url + '&returnTo=' + encodeURIComponent(back) : p.url;
   }
+  // A test's id = its Passage / ListeningSection _id (seedCourse.js turns
+  // the authored ref into the url).
+  function taskId(p) {
+    var m = /[?&](?:passageId|sectionId)=([a-f0-9]{24})/i.exec(String((p && p.url) || ''));
+    return m ? m[1] : '';
+  }
+  // ?after=<test id> on arrival (read now — the engine rewrites the URL).
+  var AFTER = (function () {
+    try { return new URLSearchParams(location.search).get('after'); } catch (e) { return null; }
+  })();
   function passed(p) { return !!(p.result && p.result.total && p.result.percent >= PASS); }
   function tasksOf(l) { return (l.practiceLinks || []).filter(function (p) { return p.kind !== 'grammar' && p.url; }); }
 
@@ -124,25 +137,71 @@
     return res;
   }
 
-  // "Bài tiếp theo" after exercise exIdx (engine cfg.nextStep): the first
-  // Reading/Listening test not yet passed between it and the next exercise
-  // (after the last exercise: the result screen's button, lessonDoneNext).
+  function taskStep(l, p) {
+    var kk = KIND[p.kind] || KIND.link;
+    var t = String(p.title || '').replace(/\s*\((?:G&V\s+)?Ex\.[^)]*\)\s*$/, '');
+    if (t.length > 46) t = t.slice(0, 44).replace(/\s+\S*$/, '') + '…';
+    return { label: 'Tiếp theo: bài ' + kk.label + ' “' + t + '”', href: taskUrl(l, p) };
+  }
+  // "Bài tiếp theo" after exercise exIdx (engine cfg.nextStep; after the
+  // last exercise: the result screen's button, lessonDoneNext): the book's
+  // next step when it is a Reading/Listening test — ALWAYS, passed or not
+  // (skipping passed ones sent students past the reading in book order).
+  // null = the next step is the next exercise (the engine's own default).
   function nextStep(l, exIdx, exercises) {
     var flow = flowOf(l, exercises);
     var k = 0;
     while (k < flow.length && !(flow[k].ex && flow[k].i === exIdx)) k++;
-    var gap = [];
-    for (k++; k < flow.length && flow[k].task; k++) gap.push(flow[k].task);
-    var todo = gap.filter(function (p) { return !passed(p); });
-    if (!todo.length) return null;
-    var nextEx = exercises[exIdx + 1];
-    var p = todo[0];
-    // the only test left in this gap → come back straight to the next exercise
-    var href = taskUrl(l, p, todo.length === 1 && nextEx ? nextEx.code : null);
-    var kk = KIND[p.kind] || KIND.link;
-    var t = String(p.title || '').replace(/\s*\((?:G&V\s+)?Ex\.[^)]*\)\s*$/, '');
-    if (t.length > 46) t = t.slice(0, 44).replace(/\s+\S*$/, '') + '…';
-    return { label: 'Tiếp theo: bài ' + kk.label + ' “' + t + '”', href: href };
+    var nx = flow[k + 1];
+    return nx && nx.task ? taskStep(l, nx.task) : null;
+  }
+  // Back from test `ref` (?after=): the step after it in the book.
+  // → { ex: index } | { task } | null (end of the lesson)
+  function afterTask(l, exercises, ref) {
+    var flow = flowOf(l, exercises);
+    for (var k = 0; k < flow.length; k++) {
+      if (flow[k].task && taskId(flow[k].task) === ref) {
+        var nx = flow[k + 1];
+        return nx ? (nx.task ? { task: nx.task } : { ex: nx.i }) : null;
+      }
+    }
+    return null;
+  }
+  // "Bắt đầu" / "Làm tiếp" (engine cfg.lessonStart): the first step in book
+  // order not done yet — a test not passed, or an exercise never submitted.
+  // A test → its page; an exercise → null (the engine opens it).
+  function lessonStart(l, exercises) {
+    var flow = flowOf(l, exercises);
+    for (var k = 0; k < flow.length; k++) {
+      var f = flow[k];
+      if (f.task) { if (!passed(f.task)) return { href: taskUrl(l, f.task) }; }
+      else if (!E || !E.exDone(f.ex)) return null;
+    }
+    return null;
+  }
+  // Arrival with ?after=<ref>: open the next exercise, or point at the next
+  // test on the lesson page (engine onBeforeRender, once).
+  var pendingAfter = AFTER;
+  function continueAfter(engine) {
+    var st = engine.state;
+    if (!pendingAfter || st.view !== 'lesson' || !st.lesson) return;
+    var ref = pendingAfter;
+    pendingAfter = null;
+    var nx = afterTask(st.lesson, st.exercises || [], ref);
+    if (nx && nx.ex != null) {
+      st.view = 'exercise';
+      st.exIdx = nx.ex;
+      st.itemIdx = 0;
+      history.replaceState({ view: 'exercise', lesson: st.lesson.code, ex: st.exercises[nx.ex].code }, '',
+        '/mindset-' + LEVEL + '.html?lesson=' + encodeURIComponent(st.lesson.code) + '&ex=' + encodeURIComponent(st.exercises[nx.ex].code));
+    } else if (nx && nx.task) {
+      setTimeout(function () {
+        var card = document.querySelector('.ms-task[data-ref="' + (window.CSS && CSS.escape ? CSS.escape(taskId(nx.task)) : taskId(nx.task)) + '"]');
+        if (!card) return;
+        card.classList.add('is-next-step');
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 60);
+    }
   }
 
   // Reading / Listening test card (result = best attempt, see above).
@@ -157,7 +216,7 @@
         (ok ? '<i class="fas fa-check-circle"></i> ' : '<i class="fas fa-redo"></i> ') +
         r.correct + '/' + r.total + ' · ' + r.percent + '%' + (ok ? '' : ' — cần ≥' + PASS + '%') + '</span>';
     }
-    return '<a class="ms-task ms-' + esc(p.kind) + (r && r.total && r.percent >= PASS ? ' is-done' : '') + '" href="' + esc(url) + '" target="_blank" rel="noopener">' +
+    return '<a class="ms-task ms-' + esc(p.kind) + (r && r.total && r.percent >= PASS ? ' is-done' : '') + '" data-ref="' + esc(taskId(p)) + '" href="' + esc(url) + '" target="_blank" rel="noopener">' +
       '<span class="ms-task-ic"><i class="fas ' + k.icon + '"></i></span>' +
       '<span class="ms-task-body"><span class="ms-task-k">' + k.label + ' · giao diện thi thật</span>' +
       '<b>' + esc(p.title) + '</b>' + (p.note ? '<span class="ms-task-n">' + esc(p.note) + '</span>' : '') + badge + '</span>' +
@@ -171,11 +230,27 @@
     var flow = flowOf(l, exercises);
     var imgs = placeImages(l, exercises).before;
     var tasks = tasksOf(l);
-    var out = flow.map(function (f, k) {
-      var pics = imgs[k] ? '<div class="ms-step-imgs"><div class="ms-imgs">' + imgs[k].map(figure).join('') + '</div></div>' : '';
-      return pics + '<div class="ms-step"><span class="ms-step-n">' + (k + 1) + '</span>' +
-        (f.task ? taskCard(l, f.task) : cards[f.i]) + '</div>';
-    });
+    function pics(k) {
+      return imgs[k] ? '<div class="ms-step-imgs"><div class="ms-imgs">' + imgs[k].map(figure).join('') + '</div></div>' : '';
+    }
+    var out = [], n = 0;
+    for (var k = 0; k < flow.length; k++) {
+      var f = flow[k];
+      var pr = !f.task && E && E.pageRange ? E.pageRange(f.i) : null;
+      if (!pr || pr[1] <= pr[0]) {
+        out.push(pics(k) + '<div class="ms-step"><span class="ms-step-n">' + (++n) + '</span>' +
+          (f.task ? taskCard(l, f.task) : cards[f.i]) + '</div>');
+        continue;
+      }
+      // exercises on the same passage: one step, done on one page (engine
+      // pageRange — no Reading/Listening test between them, see pageBreak)
+      var pp = pics(k), group = [cards[f.i]];
+      while (k + 1 < flow.length && flow[k + 1].ex && flow[k + 1].i <= pr[1]) { k++; pp += pics(k); group.push(cards[flow[k].i]); }
+      var cap = E.pageCaption ? E.pageCaption(exercises.slice(pr[0], pr[1] + 1)) : '';
+      out.push(pp + '<div class="ms-step"><span class="ms-step-n">' + (++n) + '</span><div class="ms-page">' +
+        '<div class="ms-page-h"><i class="fas fa-book-open"></i> ' + (cap ? '“' + esc(cap) + '” — ' : '') + group.length + ' phần trên cùng một trang' +
+        '<span>· bài đọc bên trái, câu hỏi bên phải</span></div>' + group.join('') + '</div></div>');
+    }
     var kinds = {};
     tasks.forEach(function (p) { kinds[p.kind] = 1; });
     var kindLabel = kinds.reading && kinds.listening ? 'Reading/Listening' : (kinds.listening ? 'Listening' : 'Reading');
@@ -315,7 +390,21 @@
       ui: {},
       lessonExtra: function (l) { return renderImages(l) + renderPractice(l); },
       lessonList: lessonList,
+      // exercises on one passage share a page, but never across a Reading /
+      // Listening test that sits between them in the book
+      pageBreak: function (l, i, exercises) {
+        var n = (exercises || []).length;
+        return tasksOf(l || {}).some(function (p) {
+          var st = typeof p.step === 'number' ? Math.max(0, Math.min(p.step, n)) : n;
+          return st === i;
+        });
+      },
       nextStep: nextStep,
+      lessonStart: lessonStart,
+      onBeforeRender: function (engine) {
+        continueAfter(engine);
+        if (base.onBeforeRender) base.onBeforeRender(engine);
+      },
       lessonDoneNext: function (l, exercises) { return exercises.length ? nextStep(l, exercises.length - 1, exercises) : null; },
       lessonFooter: renderVocabSave,
       setup: function (engine) {

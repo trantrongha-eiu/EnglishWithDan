@@ -228,6 +228,11 @@
    "type": "categorize",
    "title": "Factual or opinion? (Ex. 5)",
    "instruction": "Which question is factual and which asks for the writer's opinion?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Muhammad Ali\n\nAlthough Muhammad Ali was responsible for many legendary moments in the boxing ring, there was much more to this man's appeal. Not only was he a successful athlete, but he was also well known for his strong work ethic and fearless approach to standing up for his beliefs.\n\nBorn as Cassius Clay in 1942, Muhammad Ali began training at just 12 years old and, at the age of 22, won the world heavyweight championship in 1964. It was a title he went on to win again, in 1974 and 1978. He referred to himself as 'The Greatest', and was famous for boasting about his ability to 'float like a butterfly and sting like a bee'.",
+    "caption": "Muhammad Ali"
+   },
    "categories": [
     {
      "id": "f",
@@ -389,6 +394,11 @@
    "type": "categorize",
    "title": "Complete the sentence or answer the question? (Ex. 8)",
    "instruction": "Which questions in exercise 7 ask you to complete the sentence and which ask you to answer the question?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Serena Williams\n\nSerena Williams has dominated women's professional tennis since the late 1990s, when she and her sister, Venus, became global tennis superstars. Serena in particular has become known for her determination, powerful game and unique fashion sense.\n\nSerena was born on 26 September 1981 in Saginaw, Michigan. When she was just a baby, her family moved to California, and it was there she started playing tennis at the age of four. She was coached by her father, Richard Williams, until she was 12. Although Mr Williams was determined that his daughters would succeed in the tennis world, he was also focused on giving them a good education. In fact, whilst they were training to be tennis stars, he also took responsibility for their home-schooling. in as ne\n\nSerena is so successful on the tennis court because of her rapid movement, speed of thought and powerful shots. Indeed, whilst she was playing a match in the 2013 Australian Open, Serena hit a serve at a speed of just under 207 km per hour, the third fastest recorded among female players. This powerful serve helps put her opponents under pressure from the very start of the game.\n\nDuring her career, she has won 56 singles championships, 22 doubles championships and was also a gold medallist at the 2000, 2008 and 2012 Olympics.",
+    "caption": "Serena Williams"
+   },
    "categories": [
     {
      "id": "c",

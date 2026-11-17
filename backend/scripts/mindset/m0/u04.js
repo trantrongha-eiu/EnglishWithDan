@@ -247,7 +247,7 @@ module.exports = {
         cat('What is in Simon\'s email? (Ex. 18)', 'Which features ARE in Simon\'s email and which are NOT?', { y: 'Yes – in the email', n: 'No – not in the email' }, [
           ['He uses a greeting to start the email.', 'y'], ['He says where he went on holiday.', 'y'], ['He says how he travelled there.', 'n'], ['He says how long he stayed.', 'n'],
           ['He says what he did on holiday.', 'y'], ['He says what he usually does on holiday.', 'y'], ['He asks about his friend\'s last holiday.', 'y'], ['He asks about his friend\'s next holiday.', 'n'], ['He finishes with his name at the end.', 'y'],
-        ]),
+        ], { stimulus: passage(SIMON, { caption: 'Email from Simon' }) }),
         write('Write an email about a holiday (Ex. 19)', 'Your friend Hannah wants to know about your last holiday: where you went and what you did. Write an email to Hannah (150–175 words). In your email: (1) say where you went; (2) say what you did there; (3) ask Hannah about her last holiday.', {
           minWords: 140, maxWords: 190, mustUse: 4,
           targetStructures: ['went', 'visited', 'was', 'On the first day', 'usually', 'What did you', 'Where did you'],

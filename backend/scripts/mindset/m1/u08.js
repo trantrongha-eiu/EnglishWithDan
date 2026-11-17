@@ -103,7 +103,7 @@ module.exports = {
         ], { stimulus: stim(FRIENDS, 'Our friends and protectors (p. 150)') }),
         match('Words with similar meanings (Ex. 4)', 'Read paragraph B in detail. Then match the words and phrases 1–5 from paragraph B with words and phrases a–e which have similar meanings.', [
           ['filming', 'videoing'], ['came to his rescue', 'saved the life of'], ['well-known', 'famous'], ['against the killing of', 'for the protection of'], ['pod', 'group (of dolphins)'],
-        ]),
+        ], { stimulus: stim(FRIENDS, 'Our friends and protectors') }),
       ],
     },
 
@@ -134,7 +134,7 @@ module.exports = {
         ], { stimulus: stim(FRIENDS, 'Our friends and protectors') }),
         mcq('Choose the ending (Ex. 8–9)', 'Choose one of these endings for the sentence.', [
           ["Moko 'spoke' to the beached whales …", ['because her first attempts had failed.', 'to help them return to the deep water.', 'because she led them to safety.'], 'B', '"led them to a channel which took them back to the ocean" = help them return to the deep water. A: attempts/failed là của con người. C: dẫn tới nơi an toàn không phải LÝ DO Moko "nói chuyện" với cá voi.'],
-        ]),
+        ], { stimulus: stim(FRIENDS, 'Our friends and protectors') }),
       ],
     },
 

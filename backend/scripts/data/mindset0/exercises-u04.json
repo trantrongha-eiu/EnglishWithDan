@@ -1117,6 +1117,11 @@
    "type": "categorize",
    "title": "What is in Simon's email? (Ex. 18)",
    "instruction": "Which features ARE in Simon's email and which are NOT?",
+   "stimulus": {
+    "kind": "passage",
+    "text": "Hi Tony,\n\nI went to Madrid for my last holiday – it was great! On the first day, I visited some of the famous sights here including the Prado museum and the Royal Palace. It is different to my usual holidays. Normally, I go to hot places and relax on the beach. At the moment, it's the opposite and it is quite cold here. On my second day, I went shopping and bought some souvenirs. That night it was really interesting because I ate in a Spanish restaurant. I usually don't try new food when I go on holiday, but I am very happy that I did this time. I tried a traditional meal of soup, vegetables and meat. It was delicious. It was only a short holiday, but I really enjoyed it. I took lots of photos. What did you do on your holiday? Where did you go?\n\nSimon",
+    "caption": "Email from Simon"
+   },
    "categories": [
     {
      "id": "y",

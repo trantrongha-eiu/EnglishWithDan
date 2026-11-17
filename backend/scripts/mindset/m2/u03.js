@@ -78,7 +78,7 @@ module.exports = {
           ['The answers do not follow the same order as the text.', 't'], ['The answers may not be the main idea of the paragraph.', 't'],
           ['Some paragraphs contain more than one answer.', 't', 'Đoạn D chứa đáp án câu 3 và 4.'], ['Not all paragraphs contain an answer.', 't', 'Đoạn C không chứa đáp án nào.'],
           ['The questions will often use synonyms rather than wording from the text.', 't'],
-        ]),
+        ], { stimulus: stim(SMARTER, 'A smarter way to access the news?') }),
         match('Words in the text and in the question (Ex. 7)', 'Look again at the text "A smarter way to access the news?" and your answers to exercise 5. Match the words in the text with the words in the questions or their synonyms.', [
           ['66%', 'over half'], ['a combination of two or three', 'several methods'], ['25%', 'a quarter of'], ['survey', 'questionnaire'], ['on a weekly basis', 'often'],
         ], { stimulus: stim(SMARTER, 'A smarter way to access the news? (p. 49)') }),

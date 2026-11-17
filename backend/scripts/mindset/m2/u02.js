@@ -97,7 +97,7 @@ module.exports = {
         cat('Factual or opinion? (Ex. 5)', 'Which question is factual and which asks for the writer\'s opinion?', { f: 'Factual information', o: "The writer's opinion" }, [
           ['Why does the writer think that Muhammad Ali is still considered a legend?', 'o', '"Why does the writer think…" → ý kiến người viết.'],
           ['What name did Muhammad Ali give himself during his career?', 'f', 'Hỏi một sự kiện (cái tên).'],
-        ]),
+        ], { stimulus: stim(ALI, 'Muhammad Ali') }),
         gap('Approaching the question (Ex. 6)', 'Complete the flow-chart showing one approach with words from the box: instructions, understand, key, questions, scan, wrong.', [
           ['① Read the ____ carefully.', 'instructions|questions', 'Answer Key chấp nhận cả instructions và questions.'],
           ['② Read the text to understand the general meaning. ③ Read the questions again and underline the ____ words, e.g. dates, names etc.', 'key'],
@@ -113,7 +113,7 @@ module.exports = {
         ], { stimulus: stim(SERENA, 'Serena Williams (p. 30)') }),
         cat('Complete the sentence or answer the question? (Ex. 8)', 'Which questions in exercise 7 ask you to complete the sentence and which ask you to answer the question?', { c: 'Complete the sentence', q: 'Answer the question' }, [
           ['According to the writer, Serena has become so famous because …', 'c'], ["During Serena's upbringing, what did her father consider to be important?", 'q'], ['Her tennis game is so successful because …', 'c'],
-        ]),
+        ], { stimulus: stim(SERENA, 'Serena Williams') }),
       ],
     },
 

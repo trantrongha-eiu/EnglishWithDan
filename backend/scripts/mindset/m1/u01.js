@@ -215,7 +215,7 @@ module.exports = {
           ['gain', 'get (something positive)', '"gain some of these advantages" → có được.'],
           ['proverb', 'a well-known phrase giving advice', '"As the Italian proverb says…" → câu tục ngữ.'],
           ['appreciate', 'be grateful for', '"Appreciate them while you can" → trân trọng.'],
-        ]),
+        ], { stimulus: passage(BLOOD.replace(/^## /, ''), { caption: 'Blood is thicker than water' }) }),
       ],
     },
 
@@ -259,7 +259,7 @@ module.exports = {
           ['What percentage of children live in extended families in Asia, the Middle East, South America and Sub-Saharan Africa?', ['percentage / children / extended families / Asia, the Middle East, South America, Sub-Saharan Africa', 'What / of / live / in', 'children / live / families'], 'A', 'Key words = từ mang thông tin: loại thông tin cần tìm (percentage) + chủ thể + các tên riêng (dễ scan nhất).'],
           ['Why are grandparents often less busy and stressed than parents?', ['Why / are / often', 'grandparents / less busy / stressed / parents', 'grandparents / parents'], 'B', 'Cần cả "less busy / stressed" để biết đang hỏi về lý do nào.'],
           ['What do young adults often think living alone will be like?', ['young adults / think / living alone', 'What / do / will be', 'young / alone'], 'A', '"young adults" và "living alone" là cụm từ có thể scan được trong đoạn E.'],
-        ]),
+        ], { stimulus: passage(BLOOD.replace(/^## /, ''), { caption: 'Blood is thicker than water' }) }),
         gap('Scanning a text (Ex. 6)', 'Answer the questions in exercise 5. Use words from the text.', [
           ['What percentage of children live in extended families in Asia, the Middle East, South America and Sub-Saharan Africa? → ____', 'over 40%|over 40 percent|40%', 'Đoạn B: "over 40% of children live in families with other adults".'],
           ['Why are grandparents often less busy and stressed than parents? → They are often ____.', 'retired', 'Đoạn C: "As they are often retired, they are not always busy and stressed".'],
@@ -270,7 +270,7 @@ module.exports = {
           ['Q2 What helps children in extended families learn about the past? — Answer: grandparents storys', 'd Be careful with spelling. You can lose marks if your spelling is wrong.', 'Sai chính tả: stories (và thiếu dấu sở hữu grandparents\').'],
           ['Q3 What negative word can describe how it sometimes feels to live alone? — Answer: Living alone can be lonely.', "a Don't write more than the number of words you are given. You mustn't write full sentences.", 'Viết cả câu → quá số từ. Chỉ cần "lonely".'],
           ['Q4 According to the Italian proverb, who should you phone when you have a problem? — Answer: your gran', "c Don't change words in the text. Remember, the instructions tell you to choose words from the text.", 'Bài viết "your grandmother" → không được đổi thành "gran".'],
-        ]),
+        ], { stimulus: passage(BLOOD.replace(/^## /, ''), { caption: 'Blood is thicker than water' }) }),
         gap('Correct the answers (Ex. 8)', 'Now correct the answers in exercise 7. Write NO MORE THAN TWO WORDS AND/OR A NUMBER.', [
           ['Q1 What percentage of children in South Africa live with their extended family? → ____', 'over 40%|over 40 percent|almost 70%|70%|almost 70 percent', 'Đáp án sách: over 40%. Đoạn B: "In Asia, the Middle East, South America and Sub-Saharan Africa over 40% of children live in families with other adults… In South Africa, it is almost 70%." South Africa thuộc Sub-Saharan Africa nên "over 40%" đúng; "almost 70%" là con số cụ thể của riêng South Africa nên cũng được chấm đúng. Lỗi của "20%": lấy nhầm con số của nơi khác (châu Âu, Úc, Bắc Mỹ là dưới 25%).'],
           ['Q2 What helps children in extended families learn about the past? → ____', "grandparents' stories|grandparents stories", 'Đoạn D: "Children learn about the past from grandparents\' stories."'],

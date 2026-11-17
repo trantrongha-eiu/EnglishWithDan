@@ -168,7 +168,7 @@ module.exports = {
           ['…than ____ people.', ['more', 'most of', 'most'], 'C', 'most people = hầu hết mọi người (không có "of" khi không có the/my…).'],
           ['Richard is very lucky as he has ____ opportunities to practise his language skills.', ['many', 'any', 'lots of'], 'C', 'Đáp án sách: lots of.'],
           ['Richard practises speaking each language ____ to improve.', ['all the time', 'regularly', 'every day'], 'B', 'Đáp án sách: regularly (đều đặn).'],
-        ]),
+        ], { stimulus: passage(ARTICLE.map((p, i) => '**' + (i + 1) + '** ' + p).join('\n\n'), { caption: 'Multilingual — Richard Doner' }) }),
       ],
     },
 

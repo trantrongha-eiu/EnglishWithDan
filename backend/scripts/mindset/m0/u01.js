@@ -194,7 +194,7 @@ module.exports = {
         ['do the cleaning', 'lau dọn nhà cửa', 'We all help and do the cleaning.'],
       ],
       ex: [
-        mcq('Words in "A Day in the Life"', 'Read the sentences from the text again and choose the best meaning of the phrase in bold. Use the context to help you.', [
+        mcq('Words in "A Day in the Life" (after Ex. 6)', 'Read the sentences from the text again and choose the best meaning of the phrase in bold. Use the context to help you.', [
           ['"You can also do things like **folk dancing** and cross-country skiing." — What is folk dancing?', ['a kind of traditional activity / dance', 'a kind of Norwegian food', 'a compulsory school subject'], 'A', '"things like…" giới thiệu các hoạt động ở câu lạc bộ → folk dancing = múa dân gian.'],
           ['"We live on a **cattle farm** in the centre of the country." — What are cattle?', ['rice plants', 'cows (farm animals)', 'lorries'], 'B', 'Cattle = gia súc (bò). Ava còn "help my dad on the farm" — đúng ngữ cảnh trang trại.'],
           ['"My mum teaches at my college, so I usually go with her in the car **instead of** taking the bus."', ['together with', 'in place of / rather than', 'after'], 'B', 'Ava đi ô tô với mẹ, KHÔNG đi xe buýt → instead of = thay vì.'],

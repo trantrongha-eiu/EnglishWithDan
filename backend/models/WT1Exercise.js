@@ -128,6 +128,9 @@ const WT1ExerciseSchema = new Schema(
       rows: [[String]],
       imageUrl: String,
       note: String,
+      // 'passage' with several texts (an exercise about two articles):
+      // the others, shown as tabs next to `text` on the course page.
+      more: { type: [{ _id: false, text: String, caption: String }], default: undefined },
     },
 
     wordBank: [String],
