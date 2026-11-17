@@ -834,7 +834,10 @@
       if (isPassage) {
         content = '<div class="ce-pass-split">' +
           '<div class="ce-pass-left">' +
-            '<div class="ce-pass-hint"><i class="fas fa-highlighter"></i> Bôi chọn chữ để highlight</div>' +
+            '<div class="ce-pass-toolbar">' +
+              '<button class="ce-tool-btn" id="ce-tool-hl" onclick="window._ceToggleHl()" title="Bôi màu (H)"><i class="fas fa-highlighter"></i> Bôi màu</button>' +
+              '<button class="ce-tool-btn" id="ce-tool-tr" onmousedown="event.preventDefault()" onclick="window._ceTranslate()" title="Dịch đoạn đang chọn (T)"><i class="fas fa-language"></i> Dịch</button>' +
+            '</div>' +
             renderStimulus(ex.stimulus) +
           '</div>' +
           '<div class="ce-pass-right">' + wordBankHtml + bodyHtml + feedbackHtml + '</div>' +
@@ -899,22 +902,16 @@
       var passLeft = document.querySelector('.ce-pass-left');
       if (passLeft) {
         passLeft.addEventListener('mouseup', function (e) {
+          if (!window._ceHlActive) return;
           if (e.target.closest('input,textarea,select,button')) return;
           var sel = window.getSelection();
           if (!sel || sel.isCollapsed || !sel.rangeCount) return;
           var range = sel.getRangeAt(0);
           if (!passLeft.contains(range.commonAncestorContainer)) return;
-          var mark = document.createElement('mark');
-          mark.className = 'ce-hl';
-          try { range.surroundContents(mark); } catch (x) {}
+          var span = document.createElement('span');
+          span.className = 'hl';
+          try { range.surroundContents(span); } catch (x) {}
           sel.removeAllRanges();
-        });
-        passLeft.addEventListener('click', function (e) {
-          var mark = e.target.closest('mark.ce-hl');
-          if (!mark) return;
-          var parent = mark.parentNode;
-          while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
-          parent.removeChild(mark);
         });
       }
 
@@ -1478,6 +1475,91 @@
 })();
 
 // ════════════════════════════════════════════════════════════════════════
+//  Passage highlight + translate helpers (used by ce-pass-toolbar buttons)
+// ════════════════════════════════════════════════════════════════════════
+(function () {
+  window._ceHlActive = false;
+
+  window._ceToggleHl = function () {
+    window._ceHlActive = !window._ceHlActive;
+    var btn = document.getElementById('ce-tool-hl');
+    if (btn) btn.classList.toggle('active', window._ceHlActive);
+    document.body.style.cursor = window._ceHlActive ? 'crosshair' : '';
+  };
+
+  // Keyboard shortcut H
+  document.addEventListener('keydown', function (e) {
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+    if (e.key === 'h' || e.key === 'H') {
+      var btn = document.getElementById('ce-tool-hl');
+      if (btn) window._ceToggleHl();
+    }
+    if ((e.key === 't' || e.key === 'T') && !e.ctrlKey && !e.altKey && !e.metaKey) {
+      var trBtn = document.getElementById('ce-tool-tr');
+      if (trBtn) window._ceTranslate();
+    }
+  });
+
+  // ── Translate ──────────────────────────────────────────────────────────
+  var _popup = null;
+
+  function _ensurePopup() {
+    if (_popup) return _popup;
+    _popup = document.createElement('div');
+    _popup.id = 'ce-tr-popup';
+    _popup.className = 'ce-tr-popup';
+    _popup.innerHTML =
+      '<div class="ce-tr-header">' +
+        '<span class="ce-tr-lang"><i class="fas fa-language"></i> Dịch sang tiếng Việt</span>' +
+        '<button class="ce-tr-close" onclick="document.getElementById(\'ce-tr-popup\').classList.remove(\'show\')"><i class="fas fa-times"></i></button>' +
+      '</div>' +
+      '<div id="ce-tr-src" class="ce-tr-src"></div>' +
+      '<div id="ce-tr-result" class="ce-tr-result"></div>';
+    document.body.appendChild(_popup);
+
+    document.addEventListener('mousedown', function (e) {
+      if (_popup && _popup.classList.contains('show') && !_popup.contains(e.target)) {
+        var trBtn = e.target.closest('#ce-tool-tr');
+        if (!trBtn) _popup.classList.remove('show');
+      }
+    });
+    return _popup;
+  }
+
+  window._ceTranslate = async function () {
+    var sel = window.getSelection();
+    var text = sel ? sel.toString().trim() : '';
+    if (!text) return;
+
+    var popup = _ensurePopup();
+    document.getElementById('ce-tr-src').textContent = text;
+    document.getElementById('ce-tr-result').innerHTML = '<span class="ce-tr-loading">Đang dịch...</span>';
+
+    // Position popup near selection
+    var PW = 320, PH = 110;
+    var lx = window.innerWidth / 2 - PW / 2, ly = 80;
+    try {
+      var rect = sel.getRangeAt(0).getBoundingClientRect();
+      lx = rect.left + rect.width / 2 - PW / 2;
+      ly = (window.innerHeight - rect.bottom >= PH + 16) ? rect.bottom + 10 : rect.top - PH - 10;
+    } catch (_) {}
+    popup.style.left = Math.max(8, Math.min(lx, window.innerWidth - PW - 8)) + 'px';
+    popup.style.top = Math.max(8, ly) + 'px';
+    popup.classList.add('show');
+
+    var query = text.length > 500 ? text.slice(0, 500) : text;
+    try {
+      var res = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q=' + encodeURIComponent(query));
+      var data = await res.json();
+      var translated = (data && data[0] ? data[0].map(function (s) { return s && s[0]; }).filter(Boolean).join('') : '') || 'Không dịch được';
+      document.getElementById('ce-tr-result').textContent = translated;
+    } catch (_) {
+      document.getElementById('ce-tr-result').textContent = 'Lỗi kết nối';
+    }
+  };
+})();
+
+// ════════════════════════════════════════════════════════════════════════
 //  Lesson result screen — window.CourseResult
 // ════════════════════════════════════════════════════════════════════════
 /**
@@ -1785,13 +1867,33 @@
     '.ce-pass-split{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;margin-top:8px}',
     '.ce-pass-left{position:sticky;top:calc(var(--nav-height,64px) + 12px);max-height:calc(100vh - var(--nav-height,64px) - 24px);overflow-y:auto;background:var(--surface,#fff);border:1px solid var(--border,#e5e7eb);border-radius:14px;padding:16px}',
     '.ce-pass-right{min-width:0}',
-    '.ce-pass-hint{font-size:11.5px;color:var(--text3,#9ca3af);margin-bottom:8px;display:flex;align-items:center;gap:5px}',
-    '.ce-pass-hint i{color:#f59e0b}',
-    // highlight mark
-    'mark.ce-hl{background:#fef08a;border-radius:2px;cursor:pointer;padding:0 1px;color:inherit}',
-    'mark.ce-hl:hover{background:#fde047}',
-    '[data-theme=dark] mark.ce-hl{background:#854d0e;color:#fef9c3}',
-    '[data-theme=dark] mark.ce-hl:hover{background:#713f12}',
+    // passage toolbar
+    '.ce-pass-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:8px}',
+    '.ce-tool-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:7px;border:1.5px solid var(--border,#e5e7eb);background:var(--surface,#fff);color:var(--text2,#374151);cursor:pointer;transition:background .15s,border-color .15s}',
+    '.ce-tool-btn:hover{background:var(--surface2,#f3f4f6)}',
+    '.ce-tool-btn.active{background:#fef9c3;border-color:#fbbf24;color:#92400e}',
+    '[data-theme=dark] .ce-tool-btn{background:var(--surface,#1f2937);color:var(--text,#f9fafb)}',
+    '[data-theme=dark] .ce-tool-btn:hover{background:#374151}',
+    '[data-theme=dark] .ce-tool-btn.active{background:#451a03;border-color:#d97706;color:#fef3c7}',
+    // highlight spans (shared with reading/listening)
+    '.hl{background:#fbbf24;border-radius:2px;cursor:pointer;padding:0 1px;color:inherit}',
+    '.hl:hover{background:#f59e0b}',
+    '.hl-green{background:#4ade80}.hl-green:hover{background:#22c55e}',
+    '.hl-purple{background:#c084fc}.hl-purple:hover{background:#a855f7}',
+    '.hl-pink{background:#f472b6}.hl-pink:hover{background:#ec4899}',
+    '.hl-orange{background:#fb923c}.hl-orange:hover{background:#f97316}',
+    '[data-theme=dark] .hl{background:#854d0e;color:#fef9c3}',
+    '[data-theme=dark] .hl:hover{background:#713f12}',
+    // translate popup
+    '.ce-tr-popup{position:fixed;z-index:3100;width:320px;background:var(--surface,#fff);border:1px solid var(--border,#e5e7eb);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:12px 14px;display:none}',
+    '.ce-tr-popup.show{display:block}',
+    '.ce-tr-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}',
+    '.ce-tr-lang{font-size:12px;font-weight:600;color:#0ea5e9}',
+    '.ce-tr-close{background:none;border:none;cursor:pointer;color:var(--text3,#9ca3af);font-size:14px;padding:2px 4px}',
+    '.ce-tr-src{font-size:13px;color:var(--text2,#4b5563);margin-bottom:6px;border-bottom:1px solid var(--border,#e5e7eb);padding-bottom:6px}',
+    '.ce-tr-result{font-size:14px;color:var(--text,#111827);font-weight:500}',
+    '.ce-tr-loading{color:#9ca3af;font-style:italic}',
+    '[data-theme=dark] .ce-tr-popup{background:#1f2937;border-color:#374151}',
     '@media (max-width:768px){.ce-pass-split{display:block}.ce-pass-left{position:static;max-height:none;margin-bottom:12px}}',
     '@media (max-width:520px){.ce-topbar-l .ce-lbl{display:none}.ce-topbar-l{gap:6px}}',
   ].join('\n');
