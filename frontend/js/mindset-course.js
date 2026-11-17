@@ -194,13 +194,11 @@
       st.itemIdx = 0;
       history.replaceState({ view: 'exercise', lesson: st.lesson.code, ex: st.exercises[nx.ex].code }, '',
         '/mindset-' + LEVEL + '.html?lesson=' + encodeURIComponent(st.lesson.code) + '&ex=' + encodeURIComponent(st.exercises[nx.ex].code));
-    } else if (nx && nx.task) {
-      setTimeout(function () {
-        var card = document.querySelector('.ms-task[data-ref="' + (window.CSS && CSS.escape ? CSS.escape(taskId(nx.task)) : taskId(nx.task)) + '"]');
-        if (!card) return;
-        card.classList.add('is-next-step');
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 60);
+    } else if (nx && nx.task && nx.task.url) {
+      // the book's next step is another test → straight to it
+      st.view = 'loading';
+      engine.app.innerHTML = '<div style="text-align:center;padding:48px"><div class="t1-spinner"></div></div>';
+      location.replace(taskUrl(st.lesson, nx.task));
     }
   }
 

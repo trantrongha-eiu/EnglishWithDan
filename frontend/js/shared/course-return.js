@@ -29,7 +29,11 @@
   window.CourseReturn = {
     url: function () { return url; },
     // Label for the practice footer's exit button.
-    exitLabel: function (fallback) {
+    // A Mindset lesson link carries &after= (continue with the book's next
+    // step after this test) → on the result screen (done) the button reads
+    // "Bài tiếp theo"; mid-test it stays "Về khóa học".
+    exitLabel: function (fallback, done) {
+      if (done && url && /[?&]after=/.test(url)) return 'Bài tiếp theo <i class="fas fa-arrow-right"></i>';
       return url ? '<i class="fas fa-graduation-cap"></i> Về khóa học'
         : '<i class="fas fa-arrow-left"></i> ' + (fallback || 'Chọn bài khác');
     },

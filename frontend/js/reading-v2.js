@@ -4084,8 +4084,9 @@ function confirmCloseRetry() {
 }
 
 // Practice footer exit button: "Về khóa học" when opened from a course lesson.
-function _rdExitLabel() {
-  return window.CourseReturn ? window.CourseReturn.exitLabel() : '<i class="fas fa-arrow-left"></i> Chọn bài khác';
+// done = on the result screen (a Mindset lesson then says "Bài tiếp theo")
+function _rdExitLabel(done) {
+  return window.CourseReturn ? window.CourseReturn.exitLabel(null, done) : '<i class="fas fa-arrow-left"></i> Chọn bài khác';
 }
 
 function closeRetry() {
@@ -4394,7 +4395,7 @@ async function _doSubmitRetry() {
   }
 
   document.getElementById('retry-footer-btns').innerHTML = fromPractice
-    ? `<button class="${window.CourseReturn?.url() ? 'btn-primary' : 'btn-ghost'}" onclick="closeRetry()">${_rdExitLabel()}</button>
+    ? `<button class="${window.CourseReturn?.url() ? 'btn-primary' : 'btn-ghost'}" onclick="closeRetry()">${_rdExitLabel(true)}</button>
        <button class="${window.CourseReturn?.url() ? 'btn-ghost' : 'btn-primary'}" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại bài này</button>`
     : `<button class="btn-ghost" onclick="closeRetry()"><i class="fas fa-arrow-left"></i> Quay lại review</button>
        <button class="btn-primary" onclick="retryReset()"><i class="fas fa-redo"></i> Làm lại từ đầu</button>`;

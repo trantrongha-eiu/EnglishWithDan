@@ -58,12 +58,7 @@
 /* a book picture placed right before the exercise that uses it */
 .ms-step-imgs { padding-left: 36px; }
 .ms-step-imgs .ms-imgs { margin: 0; }
-.ms-task.is-done { border-left-color: #10b981; }
-/* back from a test whose next step is another test (mindset-course.js continueAfter) */
-.ms-task.is-next-step { box-shadow: 0 0 0 3px #f59e0b; position: relative; }
-.ms-task.is-next-step::after { content: 'Bước tiếp theo'; position: absolute; top: -10px; right: 12px; background: #f59e0b; color: #fff;
-  font-size: 11px; font-weight: 800; padding: 1px 8px; border-radius: 999px; }
-.ms-task-res { align-self: flex-start; margin-top: 4px; font-size: 12px; font-weight: 800; padding: 2px 9px; border-radius: 999px; }
+.ms-task.is-done { border-left-color: #10b981; }.ms-task-res { align-self: flex-start; margin-top: 4px; font-size: 12px; font-weight: 800; padding: 2px 9px; border-radius: 999px; }
 .ms-task-res.is-ok { background: #dcfce7; color: #15803d; }
 .ms-task-res.is-low { background: #fef3c7; color: #b45309; }
 [data-theme="dark"] .ms-step-n { background: #1f2937; border-color: #374151; color: #d1d5db; }

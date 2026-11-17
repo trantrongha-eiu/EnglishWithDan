@@ -1563,7 +1563,7 @@ async function _doSubmitLTPractice() {
 
     // Update footer
     document.getElementById('lt-practice-footer-btns').innerHTML = `
-            <button class="${window.CourseReturn?.url() ? 'btn-primary' : 'btn-ghost'}" onclick="closeLTPractice()">${_ltExitLabel()}</button>
+            <button class="${window.CourseReturn?.url() ? 'btn-primary' : 'btn-ghost'}" onclick="closeLTPractice()">${_ltExitLabel(true)}</button>
             <button class="${window.CourseReturn?.url() ? 'btn-ghost' : 'btn-primary'}" onclick="retryLTPractice()"><i class="fas fa-redo"></i> Làm lại bài này</button>`;
     _ltSetCdSkin(true, false); // review look for questions + footer
     window.setTimeBadge?.('lt-practice-time-badge', elapsed);
@@ -1620,8 +1620,9 @@ function _ltSyncTranscript(tb, section) {
 }
 
 // Footer exit button: "Về khóa học" when opened from a course lesson.
-function _ltExitLabel() {
-    return window.CourseReturn ? window.CourseReturn.exitLabel() : '<i class="fas fa-arrow-left"></i> Chọn bài khác';
+// done = on the result screen (a Mindset lesson then says "Bài tiếp theo")
+function _ltExitLabel(done) {
+    return window.CourseReturn ? window.CourseReturn.exitLabel(null, done) : '<i class="fas fa-arrow-left"></i> Chọn bài khác';
 }
 
 /* ── Close practice → back to section list ───────────────────────────── */

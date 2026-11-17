@@ -262,19 +262,21 @@ test('"Bài tiếp theo" goes to the next Reading test even when it is already p
   expect(errors).toEqual([]);
 });
 
-test('back from a test: the next exercise opens; two tests in a row point at the second', async ({ page }) => {
+test('back from a test: the next exercise opens; two tests in a row go straight on', async ({ page }) => {
   const errors = await wire(page);
   await page.setViewportSize({ width: 1400, height: 1100 });
   await page.goto('/mindset-2.html?lesson=M2-U05-L2&after=' + await passageIdOf('M2-U05-R1'));
   await expect(page).toHaveURL(/ex=M2-U05-L2-E03/);
   await expect(page.locator('.cx-task-t')).toContainText('Ex. 9');
 
-  // M2 U7: "The university campus" (Ex. 13) and "The typewriter" (Ex. 15) sit side by side
-  const campus = await passageIdOf('M2-U07-R2');
-  await page.goto('/mindset-2.html?lesson=M2-U07-L2&after=' + campus);
-  const next = page.locator('.ms-task.is-next-step');
-  await expect(next).toHaveCount(1);
-  await expect(next).toContainText('typewriter');
+  // M2 U7: "The university campus" (Ex. 13) and "The typewriter" (Ex. 15) sit
+  // side by side → straight on to the typewriter test
+  await page.goto('/mindset-2.html?lesson=M2-U07-L2&after=' + await passageIdOf('M2-U07-R2'));
+  const typewriter = await passageIdOf('M2-U07-R3');
+  await expect(page).toHaveURL((u) => u.pathname === '/reading.html' && u.searchParams.get('passageId') === typewriter);
+  // its result screen says "Bài tiếp theo" (mid-test: "Về khóa học")
+  expect(await page.evaluate(() => window.CourseReturn.exitLabel(null, true))).toContain('Bài tiếp theo');
+  expect(await page.evaluate(() => window.CourseReturn.exitLabel())).toContain('Về khóa học');
   expect(errors).toEqual([]);
 });
 
