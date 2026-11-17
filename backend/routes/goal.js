@@ -6,6 +6,9 @@ const goalController = require('../controllers/goal.controller');
 
 const fullAccess = requirePremium();
 
+// GET /api/goals/ai-plan — Gemini-generated personalised roadmap (cached).
+router.get('/ai-plan', auth, fullAccess, goalController.getAiPlan);
+
 // GET /api/goals/estimated-performance — system-estimated per-skill band,
 // kept as its own endpoint (not folded into GET /) so it's never mistaken
 // for the student's self-assessed currentBand. Must stay above /:paramless

@@ -16,7 +16,7 @@
   <script src="/js/theme.js?v=ba9c5b81c3"></script>
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
-  <link rel="stylesheet" href="/css/goal.css?v=2b45298e08">
+  <link rel="stylesheet" href="/css/goal.css?v=c2c1397e38">
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
   <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
 </head>
@@ -87,12 +87,22 @@
     <div class="goal-feasibility" id="summary-feasibility" style="display:none"></div>
   </div>
 
+  <div class="goal-card" id="ai-plan-card">
+    <h2><i class="fas fa-robot"></i> Lộ trình học cá nhân (AI)</h2>
+    <div id="ai-plan-content" class="goal-loading">Đang tải…</div>
+    <div class="goal-form-actions" style="margin-top:14px">
+      <button class="goal-btn" id="ai-plan-refresh-btn" onclick="refreshAiPlan()" style="display:none">
+        <i class="fas fa-sync-alt"></i> Tạo lại lộ trình
+      </button>
+    </div>
+  </div>
+
   <div class="goal-card">
     <h2><i class="fas fa-calendar-week"></i> Kế hoạch học tuần này</h2>
     <div id="plan-content" class="goal-loading">Đang tải…</div>
   </div>
 </div>
 
-<script src="/js/goal.js?v=cc47bd0479"></script>
+<script src="/js/goal.js?v=9607db8a64"></script>
 </body>
 </html>

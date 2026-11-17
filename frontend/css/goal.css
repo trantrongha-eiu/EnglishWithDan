@@ -74,6 +74,11 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-
   .plan-alloc-row{grid-template-columns:80px 1fr 44px}
 }
 
+/* AI roadmap card */
+#ai-plan-card{border-left:4px solid var(--blue)}
+.ai-plan-text p{margin:0 0 10px;font-size:14px;line-height:1.65;color:var(--text)}
+.ai-plan-text p:last-child{margin-bottom:0}
+
 /* "Today's Learning" — the first thing on the page (§28/§30) */
 #today-card{border:1.5px solid var(--blue);background:linear-gradient(180deg,rgba(61,139,255,.06),transparent)}
 .today-empty{color:var(--text2);font-size:14px;text-align:center;padding:18px 10px}

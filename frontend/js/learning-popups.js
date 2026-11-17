@@ -173,12 +173,19 @@
       };
       try {
         await apiPut('/goals', payload);
-        msgEl.textContent = 'Đã lưu!'; msgEl.className = 'lp-msg ok';
+        msgEl.textContent = 'Đã lưu! Đang tạo lộ trình AI…'; msgEl.className = 'lp-msg ok';
         renderGoalBanner(false); // goal now set — drop the persistent nudge
+        // Kick off AI plan generation in background; don't block the UI.
+        apiGet('/goals/ai-plan').then(r => {
+          if (r && r.aiPlan) {
+            const el = document.getElementById('lp-goal-msg');
+            if (el) { el.textContent = 'Đã lưu và tạo lộ trình!'; el.className = 'lp-msg ok'; }
+          }
+        }).catch(() => {});
         if (chainToToday) {
-          setTimeout(() => openToday(), 400);
+          setTimeout(() => openToday(), 600);
         } else {
-          setTimeout(close, 500);
+          setTimeout(close, 700);
         }
       } catch (e) {
         msgEl.textContent = e.message || 'Không lưu được mục tiêu.';
@@ -365,6 +372,10 @@
   }
 
   async function autoShow() {
+    // Admin and teacher don't sit IELTS exams — no goal nudge for them.
+    const me = window.AuthService && window.AuthService.getUser && window.AuthService.getUser();
+    if (me && (me.role === 'admin' || me.role === 'teacher')) return;
+
     let goal;
     try { goal = (await apiGet('/goals')).goal; } catch (e) { return; }
     if (!goal.hasGoal) {
@@ -380,7 +391,41 @@
       if (localStorage.getItem(dayKey)) return;
       localStorage.setItem(dayKey, '1');
       _queue({ id: 'lp-today', priority: 15, until: '#lp-overlay', show: () => openToday(today) });
+    } else if (goal.examUrgency === 'critical' || goal.examUrgency === 'high') {
+      // Exam is close — show an urgency reminder even on non-study days.
+      const urgencyKey = 'ews_urgency_shown_' + today.date + '_' + goal.examUrgency;
+      if (localStorage.getItem(urgencyKey)) return;
+      localStorage.setItem(urgencyKey, '1');
+      _queue({ id: 'lp-urgency', priority: 20, until: '#lp-overlay', show: () => openUrgencyReminder(goal) });
     }
+  }
+
+  // ── Urgency reminder popup — shown when exam is ≤30 days away ──────────
+  function openUrgencyReminder(goal) {
+    const daysLeft = goal.daysRemaining;
+    const isCritical = goal.examUrgency === 'critical';
+    const icon = isCritical ? '🚨' : '⏰';
+    const title = isCritical ? '🚨 Ngày thi sắp đến!' : '⏰ Nhắc nhở luyện thi';
+    open(title);
+    const lines = [];
+    lines.push(`<div class="lp-review-icon" style="font-size:48px;text-align:center;margin-bottom:12px">${icon}</div>`);
+    if (daysLeft != null) {
+      lines.push(`<div class="lp-review-summary">Còn <b>${daysLeft} ngày</b> đến ngày thi!</div>`);
+    }
+    lines.push(`<div class="lp-review-sub" style="margin-top:8px">${
+      isCritical
+        ? 'Tập trung ôn tập và làm đề thử — đừng bỏ lỡ buổi nào nữa. Hôm nay không phải ngày học trong lịch nhưng bạn vẫn có thể tự luyện.'
+        : 'Hãy duy trì đúng lịch học để đạt band mục tiêu. Luyện tập đều đặn quan trọng hơn học dồn.'
+    }</div>`);
+    if (goal.targetBand) {
+      lines.push(`<div class="lp-review-sub" style="margin-top:6px;font-size:12px">Mục tiêu: Band <b>${Number(goal.targetBand).toFixed(1)}</b></div>`);
+    }
+    body().innerHTML = lines.join('');
+    foot().innerHTML =
+      '<button class="lp-btn lp-btn-primary" id="lp-urgency-plan">Xem kế hoạch học</button>' +
+      '<button class="lp-btn lp-btn-ghost" id="lp-urgency-close">Đã hiểu</button>';
+    document.getElementById('lp-urgency-plan').addEventListener('click', () => openToday());
+    document.getElementById('lp-urgency-close').addEventListener('click', close);
   }
 
   window.EWSLearning = {

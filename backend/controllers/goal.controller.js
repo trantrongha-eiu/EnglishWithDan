@@ -28,6 +28,20 @@ exports.updateGoal = async (req, res) => {
   }
 };
 
+// GET /api/goals/ai-plan — returns (and caches) a Gemini-generated
+// personalised roadmap text. ?refresh=1 forces regeneration.
+// Returns { aiPlan: string | null }.
+exports.getAiPlan = async (req, res) => {
+  try {
+    const forceRefresh = req.query.refresh === '1';
+    const plan = await goalService.getOrGenerateAiPlan(req.user._id, forceRefresh);
+    res.json({ success: true, aiPlan: plan });
+  } catch (err) {
+    console.error('[Goal] ai-plan error:', err);
+    res.status(500).json({ success: false, message: 'Lỗi server', aiPlan: null });
+  }
+};
+
 // Distinct from getGoal()'s currentBand (self-assessed) — see §5. Never
 // merged into the same field/response as the goal itself.
 exports.getEstimatedPerformance = async (req, res) => {

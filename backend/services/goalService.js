@@ -10,6 +10,7 @@ const User = require('../models/User');
 const userService = require('./userService');
 const weaknessService = require('./weaknessService');
 const { todayVNDate } = require('./streakBonusService');
+const { generateStudyRoadmap } = require('./geminiService');
 
 // Product's current teaching scope — deliberately stricter than the
 // underlying targetBand/currentBand schema fields' own bound (4-9), which
@@ -227,7 +228,56 @@ async function getEstimatedPerformance(userId) {
   return { skills: perSkill, overallEstimate };
 }
 
+// Cache-key fingerprint for the AI plan — used to detect when goal params
+// changed enough to warrant regeneration. Exam date rounded to day.
+function aiPlanKey(user) {
+  const d = user.targetExamDate ? new Date(user.targetExamDate).toISOString().slice(0, 10) : '';
+  return `${user.targetBand ?? ''}|${user.currentBand ?? ''}|${d}|${user.weeklyStudyMinutes ?? ''}`;
+}
+
+// Returns the cached AI roadmap if still valid; otherwise calls Gemini,
+// stores the result, and returns it. Never throws — on any AI failure returns
+// null so callers can degrade gracefully. forceRefresh=true bypasses cache.
+async function getOrGenerateAiPlan(userId, forceRefresh = false) {
+  const user = await User.findById(userId)
+    .select('targetBand currentBand targetExamDate weeklyStudyMinutes aiStudyPlan aiStudyPlanKey aiStudyPlanGeneratedAt')
+    .lean();
+  if (!user || !user.targetBand || !user.weeklyStudyMinutes) return null;
+
+  const key = aiPlanKey(user);
+  if (!forceRefresh && user.aiStudyPlan && user.aiStudyPlanKey === key) return user.aiStudyPlan;
+
+  // Need to (re)generate — fetch skill stats for context
+  const goal = await getGoal(userId);
+  const stats = await userService.getStats(userId);
+  const skillStats = ['reading', 'listening', 'writing', 'speaking'].map(skill => ({
+    skill,
+    avgBand: stats[skill]?.avgBand ?? null,
+    total: stats[skill]?.total ?? 0,
+  }));
+
+  let plan;
+  try {
+    plan = await generateStudyRoadmap({
+      targetBand: user.targetBand,
+      currentBand: user.currentBand ?? null,
+      daysRemaining: goal.daysRemaining,
+      examUrgency: goal.examUrgency,
+      weeklyStudyMinutes: user.weeklyStudyMinutes,
+      skillStats,
+    });
+  } catch (err) {
+    return null;
+  }
+
+  await User.updateOne({ _id: userId }, {
+    $set: { aiStudyPlan: plan, aiStudyPlanKey: key, aiStudyPlanGeneratedAt: new Date() },
+  });
+  return plan;
+}
+
 module.exports = {
   getGoal, updateGoal, getEstimatedPerformance, validateGoalInput, assessFeasibility,
+  getOrGenerateAiPlan,
   MIN_BAND, MAX_BAND, BAND_STEP, MAX_WEEKLY_MINUTES, VALID_WEEKDAYS, MIN_SAMPLE_SIZE,
 };

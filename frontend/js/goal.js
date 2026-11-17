@@ -132,6 +132,7 @@ async function saveGoal() {
     renderSummary(data.goal || {});
     loadPlan();
     loadTodayLearning();
+    loadAiPlan(false); // regenerates if goal params changed
   } catch (e) {
     msgEl.textContent = e.message || 'Không thể lưu mục tiêu.';
     msgEl.className = 'goal-msg error';
@@ -229,6 +230,44 @@ async function loadTodayLearning() {
   }
 }
 
+async function loadAiPlan(forceRefresh) {
+  const card = document.getElementById('ai-plan-card');
+  const el = document.getElementById('ai-plan-content');
+  const refreshBtn = document.getElementById('ai-plan-refresh-btn');
+  if (!el) return;
+
+  // Don't show the card at all when there's no goal yet.
+  const targetVal = document.getElementById('f-target')?.value;
+  if (!targetVal) {
+    if (card) card.style.display = 'none';
+    return;
+  }
+  if (card) card.style.display = '';
+
+  el.className = 'goal-loading'; el.textContent = forceRefresh ? 'Đang tạo lại lộ trình…' : 'Đang tải lộ trình AI…';
+  if (refreshBtn) refreshBtn.style.display = 'none';
+  try {
+    const url = `${API}/goals/ai-plan${forceRefresh ? '?refresh=1' : ''}`;
+    const res = await fetch(url, { headers: authH() });
+    const data = await window.ApiClient.handleResponse(res);
+    if (data.aiPlan) {
+      el.className = 'ai-plan-text';
+      el.innerHTML = data.aiPlan.split(/\n\n+/).filter(p => p.trim()).map(p => `<p>${escapeHtml(p.trim())}</p>`).join('');
+      if (refreshBtn) refreshBtn.style.display = '';
+    } else {
+      el.className = 'plan-empty';
+      el.textContent = 'Chưa có lộ trình AI — lưu mục tiêu để tạo tự động.';
+      if (refreshBtn) refreshBtn.style.display = '';
+    }
+  } catch (e) {
+    el.className = 'plan-empty';
+    el.textContent = 'Không thể tải lộ trình AI.';
+    if (refreshBtn) refreshBtn.style.display = '';
+  }
+}
+
+function refreshAiPlan() { loadAiPlan(true); }
+
 document.addEventListener('DOMContentLoaded', () => {
   if (!window.AuthService?.getUser?.()) { window.location.href = 'login.html'; return; }
   populateBandSelects();
@@ -238,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('f-exam').min = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   document.querySelectorAll('.goal-day-chip').forEach(el => el.addEventListener('click', () => toggleDay(el)));
   ['f-weekly', 'f-session'].forEach(id => document.getElementById(id).addEventListener('input', updateScheduleHint));
-  loadGoal();
+  loadGoal().then(() => loadAiPlan(false));
   loadPlan();
   loadTodayLearning();
 });

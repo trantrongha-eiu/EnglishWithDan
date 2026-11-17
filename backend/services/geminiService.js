@@ -1716,6 +1716,50 @@ async function gradeTask2Band(prompt, essay) {
   }
 }
 
+// ── Personalised Study Roadmap ────────────────────────────────────────────
+// Generates a Vietnamese-language roadmap summary for a student's goal.
+// Returns plain text (not JSON). Called via goalService.getOrGenerateAiPlan.
+async function generateStudyRoadmap({ targetBand, currentBand, daysRemaining, examUrgency, weeklyStudyMinutes, skillStats }) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) throw new Error('GEMINI_API_KEY chưa được cấu hình');
+  const ai = new GoogleGenAI({ apiKey });
+
+  const skillLines = skillStats.map(s =>
+    `- ${s.skill}: ${s.avgBand != null ? Number(s.avgBand).toFixed(1) : 'chưa đủ dữ liệu'} (${s.total || 0} bài)`
+  ).join('\n');
+
+  const urgencyNote = examUrgency === 'critical' ? 'RẤT GẤP — còn dưới 2 tuần!'
+    : examUrgency === 'high' ? 'GẤP — còn dưới 1 tháng'
+    : examUrgency === 'moderate' ? 'Vừa đủ thời gian nếu học đều đặn'
+    : 'Có đủ thời gian chuẩn bị';
+
+  const prompt = `Bạn là thầy Dan, giáo viên IELTS tại EnglishWithDan.
+Hãy viết một lộ trình học IELTS ngắn gọn, cá nhân hoá (3-4 đoạn, bằng tiếng Việt) dựa trên thông tin sau:
+
+Band mục tiêu: ${Number(targetBand).toFixed(1)}
+Band hiện tại: ${currentBand != null ? Number(currentBand).toFixed(1) : 'chưa tự đánh giá'}
+Ngày còn đến khi thi: ${daysRemaining != null ? daysRemaining + ' ngày' : 'chưa đặt ngày thi'} (${urgencyNote})
+Thời gian học: ${weeklyStudyMinutes} phút/tuần
+
+Kết quả luyện tập từng kỹ năng:
+${skillLines}
+
+Yêu cầu:
+1. Nhận xét ngắn tình trạng hiện tại và mức độ cấp thiết
+2. Chỉ rõ 1-2 kỹ năng cần ưu tiên nhất và lý do (dựa trên dữ liệu trên)
+3. Gợi ý phân bổ thời gian cụ thể trong tuần cho từng kỹ năng
+4. Lời khuyên thực tế phù hợp với mức độ khẩn cấp của ngày thi
+Viết tự nhiên, thân thiện như thầy giáo nói chuyện trực tiếp. Không dùng bullet-points.`;
+
+  const result = await withTimeout(
+    ai.models.generateContent({ model: MODEL_FAST, contents: prompt, config: { temperature: 0.6, maxOutputTokens: 800 } }),
+    25000, 'AI đang bận — thử lại sau ít phút.'
+  );
+  const text = result.text ?? result.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('Gemini không trả về nội dung');
+  return text.trim();
+}
+
 module.exports = {
   checkEssay, checkSpeaking, checkSpeakingLite, gradeT2Question, gradeSentenceBatch, generateSampleAnswer, generateImprovedAnswer,
   generateGapFillBlanks,
@@ -1741,4 +1785,5 @@ module.exports = {
   // FLOOR rule itself as a deterministic backstop, rather than trusting the
   // AI to always follow the prompt instruction (see applyMinimumBandFloor).
   PART2_FULL_DURATION_SEC,
+  generateStudyRoadmap,
 };

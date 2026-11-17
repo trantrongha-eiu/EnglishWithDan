@@ -109,6 +109,14 @@ const UserSchema = new mongoose.Schema({
   // 3-letter weekday codes the student can realistically study on.
   studyDays: { type: [{ type: String, enum: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] }], default: [] },
   preferredSessionMinutes: { type: Number, default: null, min: 5, max: 240 },
+  // Gemini-generated personalised roadmap text, cached to avoid re-calling AI
+  // on every page load. aiStudyPlanKey is a simple fingerprint of the goal
+  // params (targetBand|currentBand|examDate|weeklyStudyMinutes) used to
+  // detect staleness — if the key changes (student edits goal), the next
+  // /api/goals/ai-plan call regenerates from scratch.
+  aiStudyPlan: { type: String, default: null },
+  aiStudyPlanKey: { type: String, default: null },
+  aiStudyPlanGeneratedAt: { type: Date, default: null },
   // Free-text class label ("6", "6.5", ...) assigned by admin/teacher —
   // scopes which Vocabulary Lessons a student sees (see
   // vocabularyLessonService.listPublicLessons). Empty = unassigned; an
