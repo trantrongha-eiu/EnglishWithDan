@@ -120,6 +120,10 @@ const slowKey = 'ews_vocab_slow';
 function isSlow() {
   try { return localStorage.getItem(slowKey) === '1'; } catch { return false; }
 }
+export const isSlowSpeech = isSlow;
+export function setSlowSpeech(on) {
+  try { localStorage.setItem(slowKey, on ? '1' : '0'); } catch { /* private mode */ }
+}
 
 export function speakWord(word) {
   if (!word) return;

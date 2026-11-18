@@ -1310,7 +1310,9 @@
     return;
   }
   var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
-  var page = (location.pathname.replace(/\/+$/, '').split('/').pop() || 'index.html').replace(/^[^.]+$/, '$&.html'); // "/reading" is reading.html too
+  // /app/ is the React version of the vocab home (dashboard.html).
+  var page = /^\/app(\/|$)/.test(location.pathname) ? 'dashboard.html'
+    : (location.pathname.replace(/\/+$/, '').split('/').pop() || 'index.html').replace(/^[^.]+$/, '$&.html'); // "/reading" is reading.html too
 
   // "Student opened this" beacon for view-only homework items (Tips lessons,
   // Vocab/Paraphrase units — backend rcs.VIEW_TYPES). Fire-and-forget; the
@@ -1740,7 +1742,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=d913f4e1c9';
+      s.src = '/js/shared/page-help.js?v=6b1c7e3328';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);
@@ -2937,7 +2939,7 @@
   // when the student is already here it must not reload the same page.
   function _onVocabHomePage() {
     var p = location.pathname.replace(/\/+$/, '');
-    return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary' || p === '';
+    return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary' || p === '/app' || p === '';
   }
 
   function _wireVocabGoalCard(card, keep, o) {
@@ -3092,7 +3094,7 @@
       : /reading/.test(pg) ? 'reading'
       : /writing|task1|task2|grammar|sentences/.test(pg) ? 'writing'
       : /speaking/.test(pg) ? 'speaking'
-      : /dashboard/.test(pg) ? 'dashboard' : '_';
+      : /dashboard/.test(pg) || /^\/app(\/|$)/.test(location.pathname) ? 'dashboard' : '_';
   }
 
   function randomOutfit(not) {
@@ -4996,7 +4998,7 @@
   // (same paths as nav.js's _onVocabHomePage(), see frontend/_redirects).
   function _isHomePage() {
     var p = location.pathname.replace(/\/+$/, '');
-    return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary';
+    return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary' || p === '/app';
   }
 
   var FEEDBACK_TYPES = [

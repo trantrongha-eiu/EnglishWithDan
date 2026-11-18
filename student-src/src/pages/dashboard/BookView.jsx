@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import { apiFetch } from '../../utils/api';
+import { openUpgrade, showBadges } from '../../utils/shell';
 import { useToast } from '../../contexts/ToastContext';
 import { ConfirmDialog } from '../../components/Modal';
 import WordModal from './WordModal';
@@ -133,7 +134,7 @@ function BookView({ bookId }) {
           <div style={{ fontSize: 40 }}>⭐</div>
           <h3>Sổ từ vựng cần gói Premium</h3>
           <p>{bookError.message}</p>
-          <a className="btn btn-primary" href="/dashboard.html">Xem gói Premium</a>
+          <button className="btn btn-primary" onClick={() => openUpgrade()}>Xem gói Premium</button>
         </div>
       );
     }
@@ -168,7 +169,7 @@ function BookView({ bookId }) {
     w.status = status;
     rerender();
     try {
-      await apiFetch(`/vocabbook/${bookId}/words/${w._id}`, { method: 'PATCH', body: JSON.stringify({ status }) });
+      showBadges(await apiFetch(`/vocabbook/${bookId}/words/${w._id}`, { method: 'PATCH', body: JSON.stringify({ status }) }));
     } catch {
       w.status = prev;
       rerender();
@@ -181,7 +182,7 @@ function BookView({ bookId }) {
     words.forEach(w => { if (selected.has(w._id)) { prev.set(w._id, w.status); w.status = status; } });
     rerender();
     try {
-      await apiFetch(`/vocabbook/${bookId}/words`, { method: 'PATCH', body: JSON.stringify({ wordIds: [...prev.keys()], status }) });
+      showBadges(await apiFetch(`/vocabbook/${bookId}/words`, { method: 'PATCH', body: JSON.stringify({ wordIds: [...prev.keys()], status }) }));
       setSelected(new Set());
       toast(`Đã chuyển ${prev.size} từ sang ${STATUSES.find(s => s.key === status).label}`, 'success');
     } catch (err) {

@@ -3,21 +3,32 @@ import { useNavigate, useOutletContext, useParams, useSearchParams } from 'react
 import { apiFetch } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
 import WbwDrill from '../../components/WbwDrill';
+import SlowSpeechButton from '../../components/SlowSpeechButton';
+import { ConfirmDialog } from '../../components/Modal';
+import UnitStudy from './UnitStudy';
+import { hasPremiumAccess } from '../../utils/plan';
+import { letterHint } from '../../utils/lessonQuiz';
 import { clozeFor } from '../../utils/cloze';
 import {
   buildSmartSession, shuffle, speakWord, prefetchAudio, playSound,
 } from '../../utils/vocab';
 import {
   queueAnswer, flushEvidence, startStreakSession, countStreakAnswer, endStreakSession,
-  getSaveState, onSaveState,
+  getSaveState, onSaveState, onStreakResult,
 } from '../../utils/practiceSync';
 import { goalsForBook, goalProgress, noteGoalAnswer } from '../../utils/vocabGoal';
 import VocabGoalCards from './VocabGoalCards';
+import {
+  bindDict, mascotHtml, openUpgrade, reportLearningResult, resultImage, scoreMessage, setActivePractice, spawnConfetti,
+} from '../../utils/shell';
 
 // Notebook practice. Port of dashboard.js's book practice (Quiz /
 // Flashcard / Điền từ / Listen / Translate / Mixed), with the homework
-// "học N từ" bar live above the questions.
-//   ?mode=mixed|quiz|flashcard|cloze|listen|translate   &set=hard (từ hay sai)
+// "học N từ" bar live above the questions. Also runs Paraphrase Units
+// (/dashboard/unit/:n, with a Study tab) and the cross-book / cross-unit
+// review sessions (/dashboard/practice?src=…).
+//   ?mode=study|mixed|quiz|flashcard|cloze|listen|translate   &set=hard (từ hay sai)
+//   &from=paraphrase → Back returns to that list
 
 const MODES = [
   { key: 'quiz', icon: 'fa-check-circle', label: 'Quiz', title: 'Chọn nghĩa đúng trong 4 lựa chọn' },
@@ -27,7 +38,10 @@ const MODES = [
   { key: 'translate', icon: 'fa-language', label: 'Translate', title: 'Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh' },
   { key: 'mixed', icon: 'fa-random', label: 'Mixed', title: 'Trộn ngẫu nhiên Quiz · Điền từ · Nghe · Dịch' },
 ];
+const STUDY_TAB = { key: 'study', icon: 'fa-book-open', label: 'Study', title: 'Xem lại danh sách từ' };
 const MODE_KEYS = new Set(MODES.map(m => m.key));
+// ids the old page used in ?mode= links
+const LEGACY_MODES = { multipleChoice: 'quiz', fillBlank: 'flashcard', listening: 'listen', translation: 'translate' };
 const MIXED_TYPES = ['quiz', 'cloze', 'listen', 'translate'];
 const MODE_NAMES = { quiz: 'Quiz', flashcard: 'Flashcard', cloze: 'Điền từ', listen: 'Listen', translate: 'Translate', mixed: 'Mixed' };
 
@@ -45,6 +59,15 @@ const CROSS_SOURCES = {
   due: {
     title: '🧠 Ôn tập hôm nay', source: 'Ôn tập hôm nay', empty: '🎉 Không còn từ nào cần ôn lúc này!',
     load: () => apiFetch('/vocabbook/review/due?limit=50').then(fromBookItems),
+  },
+  // Paraphrase pairs due for review, any unit. The outcome goes back to the
+  // per-student schedule (POST /vocab/paraphrase/review), not to a notebook.
+  paraphrase: {
+    title: '🔑 Ôn Paraphrase', source: 'Ôn Paraphrase', empty: '🎉 Không còn cụm paraphrase nào đến hạn ôn!', unit: 'cụm',
+    load: () => apiFetch('/vocab/paraphrase/review-queue?limit=50').then(d => (d.items || []).map((it, i) => ({
+      _id: `pr:${i}`, type: 'paraphrase', word: it.word, paraphrase: it.paraphrase, meaning: it.meaning || '',
+      explanation: it.explanation || '', _paraUnitId: it.unitId,
+    }))),
   },
   difficult: {
     title: '🔥 Ôn lại từ hay sai', source: 'Từ hay sai', empty: 'Chưa có từ nào trong danh sách từ hay sai.',
@@ -73,14 +96,6 @@ function assignMixedTypes(words) {
     out.push(t);
   }
   return out;
-}
-
-function scoreMessage(pct) {
-  if (pct === 100) return '🏆 Hoàn hảo! Không sai câu nào!';
-  if (pct >= 80) return '🎉 Xuất sắc! Giữ phong độ nhé!';
-  if (pct >= 60) return '👍 Khá tốt! Ôn lại vài từ sai là ổn.';
-  if (pct >= 40) return '💪 Cố lên! Luyện thêm một lượt nữa nhé.';
-  return '📚 Đừng nản — ôn lại các từ sai rồi thử lại!';
 }
 
 // The right meaning + up to 3 other meanings from the whole notebook.
@@ -152,10 +167,20 @@ function FlashcardQuestion({ item, answered, onAnswer, onNext }) {
   const w = item.word;
   const [flipped, setFlipped] = useState(false);
   const [result, setResult] = useState(null);
-  const flip = () => {
+  const flip = useCallback(() => {
     if (!flipped) speakWord(w.word);
     setFlipped(f => !f);
-  };
+  }, [flipped, w.word]);
+  // Space / → / Enter turn the card over until it has been rated
+  useEffect(() => {
+    if (answered) return undefined;
+    const onKey = (e) => {
+      if (e.target.closest?.('input,textarea,select') || document.querySelector('.modal-overlay:not(.hidden)')) return;
+      if (e.key === ' ' || e.key === 'ArrowRight' || (e.key === 'Enter' && !flipped)) { e.preventDefault(); flip(); }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [answered, flipped, flip]);
   const mark = (ok) => {
     if (answered) return;
     setResult(ok);
@@ -172,9 +197,12 @@ function FlashcardQuestion({ item, answered, onAnswer, onNext }) {
             <button className="btn-flip-hint" type="button">Bấm để lật 🔄</button>
           </div>
           <div className="fc-face fc-back">
-            <div className="fc-label">Từ tiếng Anh</div>
+            <div className="fc-label">{w.type === 'paraphrase' ? 'Cụm trong đoạn văn' : 'Từ tiếng Anh'}</div>
             <div className="fc-main">{w.word}</div>
             <div className="fc-sub">{w.phonetic || ''}</div>
+            {w.paraphrase && (
+              <div className="fc-sub" style={{ color: 'var(--orange,#f59e0b)', fontStyle: 'italic', marginTop: 4, fontSize: '0.9em' }}>→ Diễn đạt lại: {w.paraphrase}</div>
+            )}
             <button className="btn-audio" type="button" onClick={(e) => { e.stopPropagation(); speakWord(w.word); }}
               style={{ marginTop: 6, fontSize: 18, color: 'var(--blue)' }}>🔊</button>
           </div>
@@ -195,16 +223,15 @@ function FlashcardQuestion({ item, answered, onAnswer, onNext }) {
 function TypedQuestion({ item, answered, result, onAnswer }) {
   const w = item.word;
   const isListen = item.type === 'listen';
-  useEffect(() => {
-    if (isListen) { const t = setTimeout(() => speakWord(w.word), 250); return () => clearTimeout(t); }
-    return undefined;
-  }, [isListen, w.word]);
   return (
     <>
       {isListen ? (
         <div className="question-text" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 6 }}>Nghe và gõ lại từ</div>
-          <button className="practice-listen-btn" onClick={() => speakWord(w.word)} title="Nghe lại">🔊</button>
+          <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 6 }}>Bấm nghe rồi gõ lại từ bạn nghe được</div>
+          <button className="btn-play-audio" onClick={() => speakWord(w.word)}><i className="fas fa-volume-up" style={{ fontSize: 24 }} /> Play Audio</button>
+          <div><SlowSpeechButton word={w.word} /></div>
+          {w.meaning && <div className="fb-meaning-hint"><i className="fas fa-language" /> {w.meaning}</div>}
+          <div className="listen-hint" style={{ fontSize: 13, color: 'var(--text2)', margin: '10px 0' }}>💡 {letterHint(w.word, 'en')}</div>
         </div>
       ) : (
         <div className="question-text">
@@ -277,7 +304,7 @@ function ClozeEmpty({ onSwitch }) {
 }
 
 /* ── Results ── */
-function Results({ s, onRetryWrong, onRestart, onBack }) {
+function Results({ s, hammer, backLabel, onRetryWrong, onRestart, onBack }) {
   const answered = s.correct + s.wrong;
   const pct = answered ? Math.round((s.correct / answered) * 100) : 0;
   const circ = 2 * Math.PI * 68;
@@ -286,6 +313,13 @@ function Results({ s, onRetryWrong, onRestart, onBack }) {
     const id = requestAnimationFrame(() => setOffset(circ - (pct / 100) * circ));
     return () => cancelAnimationFrame(id);
   }, [circ, pct]);
+  useEffect(() => {
+    if (pct !== 100) return undefined;
+    const t = setTimeout(() => spawnConfetti(100), 400);
+    return () => clearTimeout(t);
+  }, [pct]);
+  const msg = scoreMessage(pct);
+  const lulu = mascotHtml({ pct, text: msg.message, size: 80 });
   const wrongWords = s.words.filter(w => s.wrongSet.has(w._id));
   return (
     <div className="results-wrap">
@@ -309,7 +343,15 @@ function Results({ s, onRetryWrong, onRestart, onBack }) {
           <span className="res-correct">✓ Correct: <b>{s.correct}</b></span>
           <span className="res-wrong">✗ Wrong: <b>{s.wrong}</b></span>
         </div>
-        <div style={{ fontSize: 13, color: 'var(--text2)', margin: '6px 0' }}>{scoreMessage(pct)}</div>
+        {lulu
+          ? <div style={{ margin: '6px 0' }} dangerouslySetInnerHTML={{ __html: lulu }} />
+          : <div style={{ fontSize: 13, color: 'var(--text2)', margin: '6px 0' }}>{msg.emoji} {msg.message}</div>}
+        {hammer && (
+          <div className="hammer-earned-banner" style={{ display: 'block' }}>
+            <img src="/img/buaDaniel.jpg" alt="Búa Daniel" className="hammer-earned-icon" /> 🎉 Bạn vừa nhận <b>1 búa Daniel</b>!
+          </div>
+        )}
+        <img src={resultImage(pct)} alt="" style={{ width: '100%', maxWidth: 200, borderRadius: 12, margin: '12px auto 4px', objectFit: 'cover', display: 'block' }} />
         {wrongWords.length > 0 && (
           <>
             <div style={{ marginBottom: 10, textAlign: 'center' }}>
@@ -329,7 +371,7 @@ function Results({ s, onRetryWrong, onRestart, onBack }) {
           </>
         )}
         <div className="results-btns">
-          <button className="btn btn-ghost" onClick={onBack}><i className="fas fa-book" /> Về sổ từ</button>
+          <button className="btn btn-ghost" onClick={onBack}><i className="fas fa-book" /> {backLabel}</button>
           <button className="btn btn-primary" onClick={onRestart}><i className="fas fa-redo" /> Luyện lại</button>
         </div>
       </div>
@@ -338,7 +380,7 @@ function Results({ s, onRetryWrong, onRestart, onBack }) {
 }
 
 /* ── Session ── */
-function newSession(mode, words, { smart: useSmart, pool }) {
+function newSession(mode, words, { smart: useSmart, pool, streakUnit }) {
   const usable = words.filter(w => w.word && w.meaning);
   const smart = useSmart ? buildSmartSession(usable) : null;
   let list = smart ? [...smart.list] : shuffle([...usable]);
@@ -359,10 +401,11 @@ function newSession(mode, words, { smart: useSmart, pool }) {
     wrong: 0,
     wrongSet: new Set(),
     requeued: new Map(),
+    para: new Map(), // paraphrase pairs answered: sig → { item, correct }
     answered: false,
     lastResult: null,
     done: false,
-    streak: startStreakSession(),
+    streak: startStreakSession(streakUnit),
   };
 }
 
@@ -391,6 +434,64 @@ function GoalReachedModal({ g, p, onContinue, onStop }) {
   );
 }
 
+// Must mirror paraphraseSrsService.normalisePart on the server
+const paraNorm = (x) => String(x || '').trim().replace(/\s+/g, ' ').toLowerCase();
+
+function syncParaphrase(s, unitId) {
+  for (const { item, correct } of s.para.values()) {
+    const id = item._paraUnitId || unitId;
+    if (!id) continue;
+    apiFetch('/vocab/paraphrase/review', {
+      method: 'POST',
+      body: JSON.stringify({
+        unitId: id, word: item.word, paraphrase: item.paraphrase || '', meaning: item.meaning || '',
+        explanation: item.explanation || '', rating: correct ? 'da-thuoc' : 'chua-thuoc',
+      }),
+    }).catch(() => {});
+  }
+}
+
+function QuitModal({ s, onStay, onLeave }) {
+  const remaining = Math.max(0, s.queue.length - s.index);
+  const wrong = s.wrongSet.size;
+  const parts = [];
+  if (remaining > 0) parts.push(`còn ${remaining} từ`);
+  if (wrong > 0) parts.push(`${wrong} từ đang ôn lại`);
+  return (
+    <div className="modal-overlay">
+      <div className="modal-box modal-sm" role="dialog" aria-modal="true" style={{ overflow: 'hidden', padding: 0 }}>
+        <div className="quit-mascot-wrap">
+          <div className="quit-mascot">{wrong > 0 ? '🥺' : '🐼'}</div>
+          <p className="quit-title">{wrong > 0 ? 'Bạn vẫn còn từ cần ôn!' : 'Bạn có muốn học tiếp không?'}</p>
+          <p className="quit-sub">{parts.join(' · ')}</p>
+        </div>
+        <div className="quit-actions">
+          <button className="quit-btn-continue" onClick={onStay} autoFocus><i className="fas fa-play-circle" /> Học tiếp</button>
+          <button className="quit-btn-leave" onClick={onLeave}>Thoát</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function KbdHints({ mode }) {
+  const hints = mode === 'flashcard' ? [['Space', 'Lật thẻ'], ['Enter', 'Câu tiếp']]
+    : mode === 'quiz' ? [['1 – 4', 'Chọn đáp án'], ['Enter / →', 'Câu tiếp']]
+      : mode === 'mixed' ? [['1 – 4', 'Chọn đáp án (câu Quiz)'], ['Enter / →', 'Câu tiếp']]
+        : [['Enter / →', 'Câu tiếp']];
+  return (
+    <div id="kbd-hint-panel" style={{ position: 'fixed', right: 16, top: '50%', transform: 'translateY(-50%)', zIndex: 50, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, padding: '12px 14px', boxShadow: 'var(--shadow-md)', minWidth: 150, pointerEvents: 'none' }}>
+      <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--text3)', textTransform: 'uppercase', letterSpacing: '.6px', marginBottom: 10 }}>⌨️ Shortcuts</div>
+      {[...hints, ['Esc', 'Dừng học']].map(([k, label]) => (
+        <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, justifyContent: 'space-between' }}>
+          <kbd style={{ background: 'var(--surface2)', border: '1px solid var(--border2)', borderRadius: 5, padding: '2px 7px', fontSize: 11, fontFamily: 'inherit' }}>{k}</kbd>
+          <span style={{ fontSize: 11, color: 'var(--text2)', textAlign: 'right' }}>{label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function SaveState() {
   const [st, setSt] = useState(getSaveState);
   useEffect(() => onSaveState(setSt), []);
@@ -405,7 +506,7 @@ function SaveState() {
 }
 
 export default function Practice() {
-  const { bookId } = useParams();
+  const { bookId, unitNumber } = useParams();
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
   const toast = useToast();
@@ -416,7 +517,7 @@ export default function Practice() {
   const reachedOpen = useRef(false);
 
   // Cross-book sessions (/dashboard/practice?src=weak|due|difficult)
-  const src = !bookId && CROSS_SOURCES[params.get('src')] ? params.get('src') : null;
+  const src = !bookId && !unitNumber && CROSS_SOURCES[params.get('src')] ? params.get('src') : null;
   const [srcList, setSrcList] = useState(null); // { src, words } | { src, error }
   const [srcReload, setSrcReload] = useState(0);
   const srcData = srcList?.src === src ? srcList : null;
@@ -428,23 +529,61 @@ export default function Practice() {
       .catch(error => { if (alive) setSrcList({ src, error }); });
     return () => { alive = false; };
   }, [src, srcReload]);
-  const words0 = book ? book.words || [] : srcData?.words || null;
-  const backTo = book || bookId ? `/dashboard/book/${bookId}` : '/dashboard';
 
-  const mode = MODE_KEYS.has(params.get('mode')) ? params.get('mode') : 'mixed';
+  // Paraphrase Unit (/dashboard/unit/:n) — premium-gated like the API
+  const [unitData, setUnitData] = useState(null); // { n, unit } | { n, error }
+  const [unitReload, setUnitReload] = useState(0);
+  const unitAllowed = !unitNumber || hasPremiumAccess();
+  const current = unitNumber && unitData?.n === unitNumber ? unitData : null;
+  const unit = current?.unit || null;
+  const unitError = current?.error || null;
+  useEffect(() => {
+    if (!unitNumber || !unitAllowed) return undefined;
+    let alive = true;
+    apiFetch(`/vocab/unit/${encodeURIComponent(unitNumber)}`)
+      .then((d) => {
+        if (!alive) return;
+        if (!d.words) { setUnitData({ n: unitNumber, error: new Error('Không tải được Unit') }); return; }
+        // paraphrase items have no _id of their own
+        setUnitData({ n: unitNumber, unit: { ...d, words: d.words.map((w, i) => ({ ...w, _id: w._id || `u:${i}` })) } });
+        try { localStorage.setItem('ews_pb_last_unit', String(d.unitNumber ?? unitNumber)); } catch { /* private mode */ }
+      })
+      .catch((error) => { if (alive) setUnitData({ n: unitNumber, error }); });
+    return () => { alive = false; };
+  }, [unitNumber, unitAllowed, unitReload]);
+
+  const words0 = book ? book.words || [] : unit ? unit.words : srcData?.words || null;
+  const from = params.get('from');
+  const listBack = from === 'paraphrase' ? '/dashboard/paraphrase' : from === 'topics' ? '/dashboard/topics' : '/dashboard';
+  const backTo = bookId ? `/dashboard/book/${bookId}` : listBack;
+
+  useEffect(() => {
+    if (unitAllowed) return;
+    openUpgrade();
+    navigate(listBack, { replace: true });
+  }, [unitAllowed, listBack, navigate]);
+
+  const rawMode = LEGACY_MODES[params.get('mode')] || params.get('mode');
+  const studying = !!unitNumber && (rawMode === 'study' || !MODE_KEYS.has(rawMode));
+  const mode = studying ? 'study' : MODE_KEYS.has(rawMode) ? rawMode : 'mixed';
   const set = params.get('set'); // 'hard' | null
-  const [s, setS] = useState(null);
+  const [session, setS] = useState(null);
+  const s = studying ? null : session; // the Study tab has no session
   const [startKey, setStartKey] = useState(0); // bump = restart
   const retryWords = useRef(null);
   const practiceAll = useRef(false);
   const sRef = useRef(null); // live session for the event handlers (see answer())
+  const [hammerFor, setHammerFor] = useState(null); // streak session that earned a Búa Daniel
+  const [quit, setQuit] = useState(null); // { go } while the "học tiếp?" popup is open
+  const [confirmSwitch, setConfirmSwitch] = useState(null); // mode tab pressed mid-session
 
   useEffect(() => { if (bookId && !book) loadBook(bookId); }, [book, bookId, loadBook]);
 
   // (Re)start whenever the word source, mode, set or startKey changes
-  const sourceKey = book ? book._id : srcData?.words ? `src:${src}` : null;
+  const sourceKey = book ? book._id : unit ? `unit:${unit._id || unitNumber}` : srcData?.words ? `src:${src}` : null;
   useEffect(() => {
     if (!words0) return;
+    if (studying) { sRef.current = null; return; }
     let words = words0;
     const isRetry = !!retryWords.current;
     if (isRetry) words = retryWords.current;
@@ -455,7 +594,9 @@ export default function Practice() {
     // smart session (due words first, mastered ones hidden) only for a whole book
     const useSmart = !!book && !isRetry && set !== 'hard' && !practiceAll.current;
     practiceAll.current = false;
-    const next = newSession(mode, words, { smart: useSmart, pool: words0 });
+    // Búa Daniel counts per Paraphrase Unit
+    const streakUnit = unit?._id && unit.words.some(w => w.type === 'paraphrase') ? { unitId: unit._id, unitType: 'paraphrase' } : null;
+    const next = newSession(mode, words, { smart: useSmart, pool: words0, streakUnit });
     if (!next.queue.length && mode === 'cloze' && next.words.length) {
       // nothing has an example sentence containing the word → empty state
       sRef.current = null;
@@ -467,7 +608,14 @@ export default function Practice() {
     }
     if (!next.queue.length) {
       toast(src ? CROSS_SOURCES[src].empty
-        : set === 'hard' ? 'Chưa có từ nào sai từ 3 lần trở lên.' : 'Sổ này chưa có từ (có nghĩa) để luyện', src ? 'success' : 'info');
+        : unit ? 'Unit này chưa có từ nào để luyện'
+          : set === 'hard' ? 'Chưa có từ nào sai từ 3 lần trở lên.' : 'Sổ này chưa có từ (có nghĩa) để luyện', src ? 'success' : 'info');
+      if (unit) {
+        const p = new URLSearchParams(params);
+        p.set('mode', 'study');
+        setParams(p, { replace: true });
+        return;
+      }
       navigate(backTo, { replace: true });
       return;
     }
@@ -478,6 +626,21 @@ export default function Practice() {
   }, [sourceKey, mode, set, startKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const item = s && !s.done ? s.queue[s.index] : null;
+
+  // nav.js holds its full-screen notices while questions are on screen
+  const running = !!item;
+  useEffect(() => { setActivePractice(running); return () => setActivePractice(false); }, [running]);
+  // Lookups stay off while a question is on screen (they would give it away)
+  const runningRef = useRef(false);
+  useEffect(() => { runningRef.current = running; }, [running]);
+  const hasBody = !!words0;
+  useEffect(() => { if (hasBody) bindDict('practice-area', 'vocab-quiz', () => !runningRef.current); }, [hasBody, studying]);
+  // Búa Daniel: announced now and again on the results screen
+  useEffect(() => onStreakResult((d) => {
+    if (!d.hammerEarned) return;
+    toast('🔨 Bạn vừa nhận 1 búa Daniel vì học Paraphrase Unit xuất sắc (>=90%)!', 'success');
+    setHammerFor(sRef.current?.streak || null);
+  }), [toast]);
 
   // Side effects (sounds, saving, streak) must run once per answer, so the
   // handlers read the live session from a ref instead of inside a setState
@@ -517,6 +680,11 @@ export default function Practice() {
     countStreakAnswer(prev.streak, correct);
     // homework "học N từ" bar — same right/wrong rule as the server
     if (wordBook) noteGoalAnswer(w._id, !wrongSet.has(w._id));
+    if (w.type === 'paraphrase' && w.paraphrase) {
+      const sig = `${paraNorm(w.word)} ∴ ${paraNorm(w.paraphrase)}`;
+      const had = prev.para.get(sig);
+      prev.para.set(sig, { item: w, correct: had ? had.correct && correct : correct });
+    }
     for (const g of goals) {
       if (g.completed || goalReachedShown.has(g.key)) continue;
       const p = goalProgress(g, book?.words);
@@ -536,17 +704,19 @@ export default function Practice() {
   const finish = useCallback((cur) => {
     endStreakSession(cur.streak);
     flushEvidence().then(() => refreshHomeworkSoon(true));
+    reportLearningResult({ correct: cur.correct, answered: cur.correct + cur.wrong, wrong: cur.wrongSet.size });
+    syncParaphrase(cur, unit?._id);
     const wrong = cur.words.filter(w => cur.wrongSet.has(w._id));
     if (wrong.length) {
       apiFetch('/difficult-words/report', {
         method: 'POST',
         body: JSON.stringify({
           words: wrong.map(w => ({ word: w.word, meaning: w.meaning || '', phonetic: w.phonetic || '', partOfSpeech: w.partOfSpeech || '', example: w.example || '' })),
-          source: book?.name || (src && CROSS_SOURCES[src].source) || 'Sổ cá nhân',
+          source: book?.name || (unit && `Unit ${unit.unitNumber}`) || (src && CROSS_SOURCES[src].source) || 'Sổ cá nhân',
         }),
       }).catch(() => {});
     }
-  }, [book?.name, src, refreshHomeworkSoon]);
+  }, [book?.name, src, unit, refreshHomeworkSoon]);
 
   const next = useCallback(() => {
     const prev = sRef.current;
@@ -557,26 +727,49 @@ export default function Practice() {
     commit({ ...prev, index, answered: false, lastResult: null });
   }, [finish, commit]);
 
-  const stop = () => {
+  const stopNow = () => {
     const prev = sRef.current;
     if (!prev || prev.done) return;
     finish(prev);
     commit({ ...prev, done: true });
   };
+  const stop = () => askQuit(stopNow);
 
-  // Enter = next question once answered
+  // Some answer given and the session not finished → leaving needs a word
+  const inSession = !!s && !s.done && !s.clozeEmpty && s.correct + s.wrong > 0;
+  const askQuit = useCallback((go) => {
+    const cur = sRef.current;
+    if (cur && !cur.done && cur.correct + cur.wrong > 0) setQuit({ go });
+    else go();
+  }, []);
+
+  // Enter / Space / → = next once answered; Esc = stop (with the same question)
+  const showNext = !!s?.answered && !s.done;
   useEffect(() => {
-    if (!s?.answered || s.done) return undefined;
-    const onKey = (e) => { if (e.key === 'Enter') { e.preventDefault(); next(); } };
+    if (!s || s.done || s.clozeEmpty) return undefined;
+    const onKey = (e) => {
+      if (e.target.closest?.('input,textarea,select') || document.querySelector('.modal-overlay:not(.hidden)')) return;
+      if (e.key === 'Escape') { askQuit(stopNow); return; }
+      if (showNext && (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight')) { e.preventDefault(); next(); }
+    };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [s?.answered, s?.done, next]);
+  });
 
-  const switchMode = (m) => {
-    if (m === mode) return;
+  const applyMode = (m) => {
     const p = new URLSearchParams(params);
     p.set('mode', m);
     setParams(p, { replace: true });
+  };
+  const switchToStudy = () => applyMode('study');
+  const switchMode = (m) => {
+    if (inSession) { setConfirmSwitch(m); return; }
+    if (m === mode) { if (m !== 'study') restart(); return; }
+    applyMode(m);
+  };
+  const toggleFullscreen = () => {
+    if (document.fullscreenElement) { document.exitFullscreen?.(); return; }
+    document.getElementById('view-unit')?.requestFullscreen?.();
   };
   const restart = () => setStartKey(k => k + 1);
   const retryWrong = () => {
@@ -584,21 +777,23 @@ export default function Practice() {
     restart();
   };
   const playAll = () => { practiceAll.current = true; restart(); };
-  const back = () => navigate(backTo);
+  const back = () => askQuit(() => navigate(backTo));
 
-  if (!bookId && !src) return <div className="book-view-error"><p>Không rõ bộ từ cần luyện.</p></div>;
+  if (!unitAllowed) return null;
+  if (!bookId && !src && !unitNumber) return <div className="book-view-error"><p>Không rõ bộ từ cần luyện.</p></div>;
   if (!words0) {
-    const err = bookId ? bookError : srcData?.error;
+    const err = bookId ? bookError : unitNumber ? unitError : srcData?.error;
     const locked = err?.body?.requiresPremium;
     return (
       <div className="book-view-error">
         {locked ? <>
           <h3>Tính năng cần gói Premium</h3>
-          <a className="btn btn-primary" href="/dashboard.html">Xem gói Premium</a>
+          <button className="btn btn-primary" onClick={() => openUpgrade()}>Xem gói Premium</button>
         </> : err ? <>
           <p>{err.message}</p>
           <button className="btn btn-primary" onClick={() => {
             if (bookId) loadBook(bookId);
+            else if (unitNumber) { setUnitData(null); setUnitReload(k => k + 1); }
             else { setSrcList(null); setSrcReload(k => k + 1); }
           }}>Thử lại</button>
         </> : 'Đang tải…'}
@@ -606,7 +801,8 @@ export default function Practice() {
     );
   }
 
-  const title = src ? `${CROSS_SOURCES[src].title} – ${s?.words.length ?? 0} từ`
+  const title = unit ? `Unit ${unit.unitNumber}: ${unit.title || ''}`
+    : src ? `${CROSS_SOURCES[src].title} – ${s?.words.length ?? 0} ${CROSS_SOURCES[src].unit || 'từ'}`
     : set === 'hard' ? `🔥 Ôn lại từ hay sai – ${s?.words.length ?? 0} từ` : `📘 ${book.name}`;
   const total = s?.queue.length || 0;
   const smart = s?.smart;
@@ -618,10 +814,11 @@ export default function Practice() {
         <button className="btn btn-ghost btn-sm" onClick={back}>← Back</button>
         <h3>{title}</h3>
         <SaveState />
+        <button className="btn btn-ghost btn-sm" onClick={toggleFullscreen} title="Toàn màn hình"><i className="fas fa-expand" /></button>
       </div>
       <div className="mode-tabs-wrap">
         <div className="mode-tabs">
-          {MODES.map(m => (
+          {(unitNumber ? [STUDY_TAB, ...MODES] : MODES).map(m => (
             <button key={m.key} className={`tab-btn${m.key === mode ? ' active' : ''}`} onClick={() => switchMode(m.key)} title={m.title}>
               <i className={`fas ${m.icon}`} /> {m.label}
             </button>
@@ -629,8 +826,21 @@ export default function Practice() {
         </div>
       </div>
 
-      <div className="mode-body">
+      <div className="mode-body" id="practice-area">
         <VocabGoalCards goals={goals} words={words0} inSession />
+        {studying && unit && <UnitStudy unit={unit} />}
+        {quit && s && (
+          <QuitModal s={s} onStay={() => setQuit(null)} onLeave={() => { const { go } = quit; setQuit(null); go(); }} />
+        )}
+        {confirmSwitch && (
+          <ConfirmDialog
+            title={confirmSwitch === mode ? 'Làm lại từ đầu?' : 'Đổi chế độ học?'}
+            message={confirmSwitch === mode ? 'Thao tác này sẽ xoá tiến độ hiện tại. Làm lại?' : 'Tiến độ hiện tại sẽ bị mất. Bạn có muốn đổi không?'}
+            confirmLabel={confirmSwitch === mode ? 'Restart' : 'Switch'} confirmClass="btn-primary"
+            onClose={() => setConfirmSwitch(null)}
+            onConfirm={() => { const m = confirmSwitch; if (m === mode) restart(); else applyMode(m); }} />
+        )}
+        {running && window.innerWidth > 1024 && <KbdHints mode={mode} />}
         {reached && (
           <GoalReachedModal
             g={reached.g}
@@ -647,7 +857,7 @@ export default function Practice() {
               setReached(null);
               const cur = sRef.current;
               if (cur && !cur.done) finish(cur); // answers so far count for the homework
-              back();
+              navigate(backTo);
             }}
           />
         )}
@@ -666,7 +876,10 @@ export default function Practice() {
         )}
 
         {s?.clozeEmpty && <ClozeEmpty onSwitch={switchMode} />}
-        {s?.done && <Results s={s} onRetryWrong={retryWrong} onRestart={restart} onBack={back} />}
+        {s?.done && (
+          <Results s={s} hammer={!!hammerFor && hammerFor === s.streak} backLabel={unit ? 'View words' : src ? 'Về trang chính' : 'Về sổ từ'}
+            onRetryWrong={retryWrong} onRestart={restart} onBack={unit ? switchToStudy : back} />
+        )}
 
         {item && (
           <div className="practice-container">

@@ -48,6 +48,12 @@ export async function apiFetch(path, opts = {}) {
   }
 
   if (res.status === 401) {
+    // Pushed out by a login on another device: auth-service's popup handles it
+    const body = await res.clone().json().catch(() => null);
+    if (body?.code === 'SESSION_REPLACED' && window.AuthService) {
+      window.AuthService.logout('replaced');
+      throw new Error('Unauthorized');
+    }
     redirectToLoginOnce();
     throw new Error('Unauthorized');
   }

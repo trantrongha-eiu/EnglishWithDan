@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthProvider';
 import { ToastProvider } from './contexts/ToastProvider';
-import { ThemeProvider } from './contexts/ThemeProvider';
 import ProtectedRoute from './routes/ProtectedRoute';
 import StudentLayout from './layouts/StudentLayout';
 
@@ -11,11 +10,11 @@ import Welcome from './pages/dashboard/Welcome';
 import BookView from './pages/dashboard/BookView';
 const Practice = lazy(() => import('./pages/dashboard/Practice'));
 const Browse = lazy(() => import('./pages/dashboard/Browse'));
+const Lesson = lazy(() => import('./pages/dashboard/Lesson'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
   return (
-    <ThemeProvider>
       <HashRouter>
         <AuthProvider>
           <ToastProvider>
@@ -32,6 +31,8 @@ export default function App() {
                     <Route path="book/:bookId" element={<BookView />} />
                     <Route path="book/:bookId/practice" element={<Practice />} />
                     <Route path="practice" element={<Practice />} />
+                    <Route path="lesson/:lessonId" element={<Lesson />} />
+                    <Route path="unit/:unitNumber" element={<Practice />} />
                     <Route path="topics" element={<Browse key="topics" kind="topics" />} />
                     <Route path="paraphrase" element={<Browse key="paraphrase" kind="paraphrase" />} />
                   </Route>
@@ -43,6 +44,5 @@ export default function App() {
           </ToastProvider>
         </AuthProvider>
       </HashRouter>
-    </ThemeProvider>
   );
 }

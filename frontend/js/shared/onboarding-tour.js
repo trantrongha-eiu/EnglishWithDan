@@ -19,6 +19,12 @@
 (function () {
   'use strict';
 
+  // /app/ is the React version of dashboard.html: same tour, same "seen" key.
+  function currentTourPage() {
+    if (/^\/app(\/|$)/.test(location.pathname)) return 'dashboard.html';
+    return (location.pathname.replace(/\/+$/, '').split('/').pop() || 'dashboard.html').replace(/^[^.]+$/, '$&.html');
+  }
+
   function isVisible(el) {
     if (!el) return false;
     const r = el.getBoundingClientRect();
@@ -447,7 +453,7 @@
   // useful for testing/replay from elsewhere). No-op if that page has no
   // tour defined.
   function start(pageOverride) {
-    const page = pageOverride || (location.pathname.replace(/\/+$/, '').split('/').pop() || 'dashboard.html').replace(/^[^.]+$/, '$&.html');
+    const page = pageOverride || currentTourPage();
     const steps = PAGE_TOURS[page];
     if (!steps) return;
     endTour(); // reset any stale state before a fresh run
@@ -459,7 +465,7 @@
   }
 
   function reset(pageOverride) {
-    const page = pageOverride || (location.pathname.replace(/\/+$/, '').split('/').pop() || 'dashboard.html').replace(/^[^.]+$/, '$&.html');
+    const page = pageOverride || currentTourPage();
     try { localStorage.removeItem(tourKeyFor(page)); } catch (e) {}
   }
 
@@ -474,7 +480,7 @@
   // revealed here only on pages that actually have a tour, independent of
   // whether this browser already auto-saw it once. ───────────────────────
   document.addEventListener('DOMContentLoaded', function () {
-    const page = (location.pathname.replace(/\/+$/, '').split('/').pop() || 'dashboard.html').replace(/^[^.]+$/, '$&.html');
+    const page = currentTourPage();
     const steps = PAGE_TOURS[page];
     if (!steps) return;
 
@@ -494,6 +500,7 @@
     // ordinary visit. route-params.js loads after this file but before
     // DOMContentLoaded, so it is there by now.
     if (window.RouteParams && window.RouteParams.openedOnItem && window.RouteParams.openedOnItem()) return;
+    if (/^\/app(\/|$)/.test(location.pathname) && !/^#?\/?(dashboard\/?)?$/.test(location.hash)) return;
     // The tour goes first in the shared login-popup queue (highest priority)
     // so a brand-new student walks the tour before any goal-setup / badge /
     // review modal appears. #ews-tour-tip is removed by endTour(), which is

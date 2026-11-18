@@ -11,6 +11,7 @@
 // 2. Streak: POST /vocabbook/practice-complete every 5 answers (+ the
 //    leftover at session end), one request at a time.
 import { API, authHeaders, apiFetch } from './api';
+import { showBadges } from './shell';
 
 const LS_KEY = 'dash_vocab_evidence_q';
 const BATCH_MAX = 150;
@@ -98,6 +99,7 @@ export function flushEvidence({ keepalive = false } = {}) {
         const { bookId, ...fields } = s;
         Object.assign(w, fields);
       }
+      showBadges(data);
       ok = true;
     } catch (err) {
       const st = err?.status;
@@ -121,6 +123,14 @@ export function flushEvidence({ keepalive = false } = {}) {
   return running;
 }
 
+// One-off report (a finished Vocab Topic quiz)
+export async function reportPracticeComplete(body) {
+  const d = await apiFetch('/vocabbook/practice-complete', { method: 'POST', body: JSON.stringify(body) });
+  if (d?.success) streakListeners.forEach(fn => fn(d));
+  showBadges(d);
+  return d;
+}
+
 /* ── Streak session ── */
 let chain = Promise.resolve();
 let busy = 0;
@@ -128,8 +138,9 @@ let current = null;
 const streakListeners = new Set();
 export function onStreakResult(fn) { streakListeners.add(fn); return () => streakListeners.delete(fn); }
 
-export function startStreakSession() {
-  current = { sid: newSessionId(), answered: 0, correct: 0, reported: 0, reportedCorrect: 0, pending: false };
+// unit: a Paraphrase Unit session reports { unitId, unitType } (Búa Daniel tally)
+export function startStreakSession(unit = null) {
+  current = { unitId: unit?.unitId || null, unitType: unit?.unitType || null, sid: newSessionId(), answered: 0, correct: 0, reported: 0, reportedCorrect: 0, pending: false };
   return current;
 }
 
@@ -149,14 +160,15 @@ async function sendStreakBatch(sess, final) {
     body: JSON.stringify({
       wordsAnswered: batch,
       correctAnswered: upToCorrect - sess.reportedCorrect,
-      unitId: null,
-      unitType: null,
+      unitId: sess.unitId,
+      unitType: sess.unitType,
       sessionId: sess.sid,
     }),
   });
   sess.reported = upTo;
   sess.reportedCorrect = upToCorrect;
   if (d?.success) streakListeners.forEach(fn => fn(d));
+  showBadges(d);
   return true;
 }
 

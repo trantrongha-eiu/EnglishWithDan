@@ -1,22 +1,13 @@
 import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import Nav from '../components/Nav';
 
-const ROUTE_TITLES = {
-  '/dashboard': 'Sổ từ vựng – EnglishWithDan',
-};
-
+// The top nav comes from the site shell (js/bundles/app-shell.js → nav.js).
 export default function StudentLayout() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    document.title = ROUTE_TITLES[pathname] || (pathname.startsWith('/dashboard') ? ROUTE_TITLES['/dashboard'] : 'EnglishWithDan');
+    document.title = pathname.startsWith('/dashboard') ? 'Vocabulary – EnglishWithDan' : 'EnglishWithDan';
   }, [pathname]);
 
-  return (
-    <>
-      <Nav />
-      <Outlet />
-    </>
-  );
+  return <Outlet />;
 }

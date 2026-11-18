@@ -31,7 +31,7 @@
     [/^\/speaking(\/|$)/, 'speaking.html'],
     [/^\/reading(\/|$)/, 'reading.html'],
     [/^\/listening(\/|$)/, 'listening.html'],
-    [/^\/(dashboard|vocabulary|vocab)(\/|$)/, 'dashboard.html'],
+    [/^\/(dashboard|vocabulary|vocab|app)(\/|$)/, 'dashboard.html'],
     [/^\/(entrance-test|test-dau-vao)(\/|$)/, 'entrance-test.html'],
     [/^\/essential-grammar(\/|$)/, 'essential-grammar.html'],
     [/^\/dictation(\/|$)/, 'dictation.html'],

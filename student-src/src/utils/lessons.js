@@ -25,9 +25,11 @@ export function groupByClass(lessons) {
     .map(key => ({ key, label: key ? `Lớp ${key}` : 'Chung (mọi lớp)', items: groups.get(key) }));
 }
 
-// Lesson / unit study screens still live on the static page.
-export const lessonHref = (id) => `/dashboard.html?view=lesson&lessonId=${encodeURIComponent(id)}`;
-export const unitHref = (n) => `/dashboard.html?view=unit&unit=${encodeURIComponent(n)}`;
+// from: the list Back should return to ('topics' / 'paraphrase')
+const fromQs = (from) => (from ? `?from=${from}` : '');
+export const lessonHref = (id, from) => `/app/#/dashboard/lesson/${encodeURIComponent(id)}${fromQs(from)}`;
+export const unitHref = (n, from) => `/app/#/dashboard/unit/${encodeURIComponent(n)}${fromQs(from)}`;
+export const PARA_REVIEW_HREF = '/app/#/dashboard/practice?src=paraphrase&from=paraphrase';
 
 // "Học tiếp" memory — same keys as dashboard-browse.js
 export const LAST_KEY = { paraphrase: 'ews_pb_last_unit', topics: 'ews_pb_last_lesson' };

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../utils/api';
 import { hasPremiumAccess } from '../../utils/plan';
+import { openUpgrade } from '../../utils/shell';
 
 // "Điểm cần cải thiện" — per skill the single weakest question type /
 // criterion (GET /weakness) + a Vocabulary chip for weak notebook words
@@ -74,7 +75,7 @@ export default function WeaknessCard() {
         <div className="weakness-state">
           <div className="weakness-state-icon"><i className="fas fa-crown" /></div>
           <div className="weakness-state-title">Phân tích điểm yếu là tính năng Premium</div>
-          <a className="btn btn-primary btn-sm" href="/dashboard.html">Nâng cấp Premium</a>
+          <button className="btn btn-primary btn-sm" onClick={() => openUpgrade()}>Nâng cấp Premium</button>
         </div>
       )}
       {view?.error && (

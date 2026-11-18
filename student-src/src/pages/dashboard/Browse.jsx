@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import SearchMatch from '../../utils/searchMatch';
 import { apiFetch } from '../../utils/api';
-import { todaysLessonIndex, groupByClass, lessonHref, unitHref, LAST_KEY, lsGet, lsSet } from '../../utils/lessons';
+import { todaysLessonIndex, groupByClass, lessonHref, unitHref, PARA_REVIEW_HREF, LAST_KEY, lsGet, lsSet } from '../../utils/lessons';
 
 // Full-width "pick a Paraphrase Unit / Vocab Topic" list —
 // /dashboard/paraphrase and /dashboard/topics. Port of dashboard-browse.js:
 // "Gợi ý cho bạn" chips, collapsible "Cách học hiệu quả", search, cards.
-// The unit / lesson study screens are still on dashboard.html.
 
 const GUIDES = {
   paraphrase: {
@@ -101,7 +100,7 @@ function ParaphraseList({ units, q }) {
   return (
     <div className="pb-grid">
       {list.map(u => (
-        <a key={u.unitNumber} className={`pb-card${String(u.unitNumber) === last ? ' is-current' : ''}`} href={unitHref(u.unitNumber)}
+        <a key={u.unitNumber} className={`pb-card${String(u.unitNumber) === last ? ' is-current' : ''}`} href={unitHref(u.unitNumber, 'paraphrase')}
           onClick={() => lsSet(LAST_KEY.paraphrase, String(u.unitNumber))}>
           <span className="pb-card-top">
             <span className="pb-card-num">Unit {u.unitNumber}</span>
@@ -126,7 +125,7 @@ function TopicsList({ lessons, q }) {
       <div className="pb-group-label">{g.label} <span>{g.items.length}</span></div>
       <div className="pb-grid">
         {g.items.map(l => (
-          <a key={l._id} className="pb-card pb-card--cover" href={lessonHref(l._id)} onClick={() => lsSet(LAST_KEY.topics, String(l._id))}>
+          <a key={l._id} className="pb-card pb-card--cover" href={lessonHref(l._id, 'topics')} onClick={() => lsSet(LAST_KEY.topics, String(l._id))}>
             <span className="pb-card-cover">
               <span className="pb-card-cover-logo"><span>D</span>aniel</span>
               {l.thumbnail && <img src={l.thumbnail} alt="" loading="lazy" onError={(e) => e.currentTarget.remove()} />}
@@ -148,24 +147,24 @@ function Suggestions({ kind, units, lessons, dueCount }) {
   const chips = [];
   if (kind === 'paraphrase') {
     if (dueCount > 0) {
-      chips.push({ icon: 'fa-rotate', label: 'Đến hạn ôn', title: `${dueCount} cụm paraphrase cần ôn hôm nay`, tone: 'hot', href: '/dashboard.html?view=paraphrase' });
+      chips.push({ icon: 'fa-rotate', label: 'Đến hạn ôn', title: `${dueCount} cụm paraphrase cần ôn hôm nay`, tone: 'hot', href: PARA_REVIEW_HREF });
     }
     if (units?.length) {
       const last = lsGet(LAST_KEY.paraphrase);
       const idx = last ? units.findIndex(u => String(u.unitNumber) === last) : -1;
       const name = (u) => `Unit ${u.unitNumber} – ${u.title || ''}`;
-      if (idx === -1) chips.push({ icon: 'fa-flag', label: 'Bắt đầu từ đây', title: name(units[0]), href: unitHref(units[0].unitNumber) });
+      if (idx === -1) chips.push({ icon: 'fa-flag', label: 'Bắt đầu từ đây', title: name(units[0]), href: unitHref(units[0].unitNumber, 'paraphrase') });
       else {
-        chips.push({ icon: 'fa-play', label: 'Học tiếp', title: name(units[idx]), href: unitHref(units[idx].unitNumber) });
+        chips.push({ icon: 'fa-play', label: 'Học tiếp', title: name(units[idx]), href: unitHref(units[idx].unitNumber, 'paraphrase') });
         const nx = units[idx + 1];
-        if (nx) chips.push({ icon: 'fa-forward', label: 'Unit kế tiếp', title: name(nx), href: unitHref(nx.unitNumber) });
+        if (nx) chips.push({ icon: 'fa-forward', label: 'Unit kế tiếp', title: name(nx), href: unitHref(nx.unitNumber, 'paraphrase') });
       }
     }
   } else if (lessons?.length) {
     const today = lessons[todaysLessonIndex(lessons.length)];
-    chips.push({ icon: 'fa-calendar-day', label: 'Bài hôm nay', title: today.title || '', tone: 'hot', href: lessonHref(today._id) });
+    chips.push({ icon: 'fa-calendar-day', label: 'Bài hôm nay', title: today.title || '', tone: 'hot', href: lessonHref(today._id, 'topics') });
     const last = lessons.find(l => String(l._id) === lsGet(LAST_KEY.topics));
-    if (last && last._id !== today._id) chips.push({ icon: 'fa-play', label: 'Học tiếp', title: last.title || '', href: lessonHref(last._id) });
+    if (last && last._id !== today._id) chips.push({ icon: 'fa-play', label: 'Học tiếp', title: last.title || '', href: lessonHref(last._id, 'topics') });
   }
   if (!chips.length) return null;
   return (
@@ -217,7 +216,7 @@ export default function Browse({ kind }) {
           </div>
           <span className="pb-count">{shown ? `${shown} ${m.unit}` : ''}</span>
           {kind === 'paraphrase' && (
-            <a className="btn btn-ghost btn-sm" href="/dashboard.html?view=paraphrase" style={{ marginLeft: 'auto' }}>
+            <a className="btn btn-ghost btn-sm" href={PARA_REVIEW_HREF} style={{ marginLeft: 'auto' }}>
               <i className="fas fa-rotate" /> Ôn Paraphrase
             </a>
           )}

@@ -316,7 +316,7 @@
   // (same paths as nav.js's _onVocabHomePage(), see frontend/_redirects).
   function _isHomePage() {
     var p = location.pathname.replace(/\/+$/, '');
-    return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary';
+    return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary' || p === '/app';
   }
 
   var FEEDBACK_TYPES = [

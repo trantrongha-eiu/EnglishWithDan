@@ -3,24 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
-    <script>
-      // Apply saved theme + accent before first paint (mirrors theme.js)
-      (function () {
-        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
-        try {
-          var acc = JSON.parse(localStorage.getItem('profileAccent') || 'null');
-          if (acc && acc.primary && acc.dark) {
-            var S = document.documentElement.style;
-            S.setProperty('--brand', acc.primary);
-            S.setProperty('--brand-dark', acc.dark);
-            var h = acc.primary.replace('#', '');
-            if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
-            var r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
-            if (!isNaN(r)) S.setProperty('--brand-light', 'rgba('+r+','+g+','+b+',0.12)');
-          }
-        } catch (e) {}
-      })();
-    </script>
+    <!-- Same shell as the static pages: theme, content guard, visit + PWA -->
+    <script src="/js/theme.js"></script>
+    <script src="/js/shared/site-guard.js" defer></script>
+    <script src="/js/shared/visit-tracker.js" defer></script>
+    <script src="/js/shared/pwa-register.js" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EnglishWithDan</title>
     <link rel="manifest" href="/manifest.json" />
@@ -34,13 +21,67 @@
     <link rel="stylesheet" href="/css/components.css" />
     <link rel="stylesheet" href="/css/mobile.css" />
     <link rel="stylesheet" href="/css/dashboard.css" />
+    <link rel="stylesheet" href="/css/class-cards.css" />
+    <link rel="stylesheet" href="/css/dictionary-popup.css" />
+    <link rel="stylesheet" href="/css/playful.css" />
     <!-- Shared pronunciation engine (window.WordAudio): Oxford recordings, TTS fallback -->
     <script src="/js/shared/word-audio.js" defer></script>
     <!-- Shared "gõ từng chữ" typing drill (window.WbwDrill) for Listen / Dịch -->
     <script src="/js/shared/wbw-drill.js" defer></script>
   </head>
   <body>
+    <!-- Site shell (auth guard, top nav + its reminders, upgrade modal, toasts,
+         chat widget, online-time tracker). Must run before the React app. -->
+    <script src="/js/bundles/app-shell.js"></script>
+    <script src="/js/shared/onboarding-tour.js"></script>
+    <script src="/js/learning-popups.js"></script>
+    <script src="/js/shared/confirm-dialog.js"></script>
+    <script src="/js/shared/dictionary-lookup.js"></script>
+    <script src="/js/shared/badge-popup.js"></script>
+
     <div id="root"></div>
+
+    <!-- Markup js/shared/peer-profile.js drives (leaderboard names) -->
+    <div class="modal-overlay hidden" id="modal-peer-profile">
+      <div class="modal-box modal-sm">
+        <div class="modal-header">
+          <h3><i class="fas fa-id-card"></i> Hồ sơ học sinh</h3>
+          <button class="modal-close" aria-label="Đóng" onclick="closePeerProfile()">✕</button>
+        </div>
+        <div class="modal-body" id="peer-profile-body"></div>
+      </div>
+    </div>
+    <div class="modal-overlay hidden" id="modal-peer-chat">
+      <div class="modal-box modal-md peer-chat-box">
+        <div class="modal-header">
+          <h3><i class="fas fa-comment-dots"></i> <span id="peer-chat-name">...</span></h3>
+          <button class="modal-close" aria-label="Đóng" onclick="closePeerChat()">✕</button>
+        </div>
+        <div class="peer-chat-messages" id="peer-chat-messages"></div>
+        <div class="peer-chat-input-row">
+          <textarea id="peer-chat-input" class="peer-chat-input" placeholder="Nhắn gì đó..." rows="1"
+            onkeydown="if(event.key==='Enter' &amp;&amp; !event.shiftKey){event.preventDefault();sendPeerChatMessage();}"></textarea>
+          <button id="peer-chat-send-btn" class="btn btn-primary" onclick="sendPeerChatMessage()" aria-label="Gửi"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-overlay hidden" id="modal-peer-report">
+      <div class="modal-box modal-sm">
+        <div class="modal-header">
+          <h3 id="peer-report-title">Báo cáo</h3>
+          <button class="modal-close" aria-label="Đóng" onclick="closePeerReport()">✕</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Báo cáo sẽ được gửi tới giáo viên để xem xét.</p>
+          <textarea id="peer-report-reason" class="peer-chat-input" style="width:100%;min-height:90px" placeholder="Mô tả lý do báo cáo..." maxlength="500"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="closePeerReport()">Hủy</button>
+          <button class="btn btn-danger" onclick="submitPeerReport()"><i class="fas fa-flag"></i> Gửi báo cáo</button>
+        </div>
+      </div>
+    </div>
+    <script src="/js/shared/peer-profile.js"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

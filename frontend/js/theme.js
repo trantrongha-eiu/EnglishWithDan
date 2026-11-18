@@ -6,11 +6,12 @@
 // (= public) and bounced logged-in students to the dashboard. This is the
 // first synchronous script on every page, so drop the slash here, before
 // anything else resolves a URL — replaceState also moves the document's base
-// URL, no reload. /admin/ (its own SPA, never loads this file) keeps its slash.
+// URL, no reload. /admin/ (its own SPA, never loads this file) and /app/ (the
+// student React app, base /app/) keep their slash.
 (function () {
   try {
     var p = location.pathname;
-    if (p.length > 1 && /\/$/.test(p) && !/^\/admin\/$/.test(p)) {
+    if (p.length > 1 && /\/$/.test(p) && !/^\/(admin|app)\/$/.test(p)) {
       history.replaceState(history.state, '', p.replace(/\/+$/, '').replace(/^\/+/, '/') + location.search + location.hash);
     }
   } catch (e) { /* never block the page over this */ }

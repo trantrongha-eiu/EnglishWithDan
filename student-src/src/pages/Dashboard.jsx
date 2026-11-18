@@ -8,6 +8,7 @@ import BookMenu from './dashboard/BookMenu';
 import DifficultWordsModal from './dashboard/DifficultWordsModal';
 import GuideModal from './dashboard/GuideModal';
 import { hasPremiumAccess } from '../utils/plan';
+import { autoShowLearningPopup, isActivePractice } from '../utils/shell';
 
 // Vocab notebook page shell: notebook sidebar + the routed view
 //   /dashboard                         → Welcome (streak, weekly progress)
@@ -135,6 +136,20 @@ export default function Dashboard() {
     if (hasPremiumAccess()) apiFetch('/difficult-words').then(d => setDwCount((d.words || []).length)).catch(() => {});
     apiFetch('/user/stats').then(r => { if (r.success) setStats(r.stats); }).catch(() => {});
   }, [loadBooks, loadWeek, loadHomework]);
+
+  // Entry points nav.js and the learning popups call on the vocab home
+  useEffect(() => {
+    const hooks = {
+      openReviewDueModal: () => navigate('/dashboard/practice?src=due'),
+      practiceWeakVocab: () => navigate('/dashboard/practice?src=weak'),
+      openParaphraseReviewModal: () => navigate('/dashboard/practice?src=paraphrase'),
+      openSheet: () => setSidebarOpen(true),
+      _isActivePractice: isActivePractice,
+    };
+    Object.assign(window, hooks);
+    return () => { Object.keys(hooks).forEach((k) => { delete window[k]; }); };
+  }, [navigate]);
+  useEffect(() => { autoShowLearningPopup(); }, []);
 
   // Streak reported mid-practice → update the welcome card + week dots
   useEffect(() => onStreakResult((d) => {

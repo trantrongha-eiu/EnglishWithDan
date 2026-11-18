@@ -8,6 +8,8 @@ import ClassInfoCard from './ClassInfoCard';
 import HomeworkCard from './HomeworkCard';
 import WeaknessCard from './WeaknessCard';
 import TodaysLesson from './TodaysLesson';
+import { hasPremiumAccess } from '../../utils/plan';
+import { openUpgrade } from '../../utils/shell';
 
 const SKILL_CARDS = [
   { href: '/reading.html', icon: 'fa-book-open', label: 'Reading' },
@@ -32,6 +34,21 @@ function getMascotMsg(streak) {
   if (streak < 7) return `${streak} ngày liên tiếp — bạn đang tiến bộ rất tốt!`;
   if (streak < 14) return `🔥 ${streak} ngày streak! Thật tuyệt vời!`;
   return `🌟 ${streak} ngày streak! Bạn là chiến thần vocab rồi!`;
+}
+
+// Free-plan students only (staff + trial accounts have full access)
+function PremiumBanner() {
+  if (hasPremiumAccess()) return null;
+  return (
+    <div id="dash-premium-banner" style={{ display: 'flex', alignItems: 'center', gap: 14, background: 'linear-gradient(135deg,rgba(124,58,237,.08),rgba(79,70,229,.06))', border: '1px solid rgba(124,58,237,.2)', borderRadius: 14, padding: '14px 18px', marginBottom: 16, flexWrap: 'wrap' }}>
+      <div style={{ fontSize: 22 }}>⭐</div>
+      <div style={{ flex: 1, minWidth: 220 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: '#7c3aed', marginBottom: 2 }}>Nâng cấp Premium để mở khóa toàn bộ tính năng</div>
+        <div style={{ fontSize: 12, color: 'var(--text2,#555)' }}>Full test Reading · Listening · thi thử Writing/Speaking không giới hạn · ngân hàng đề cập nhật thường xuyên</div>
+      </div>
+      <button onClick={() => openUpgrade()} style={{ background: 'linear-gradient(135deg,#7c3aed,#4f46e5)', color: '#fff', border: 'none', borderRadius: 10, padding: '9px 18px', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>Upgrade Premium</button>
+    </div>
+  );
 }
 
 function StreakCard({ stats, onUseHammer }) {
@@ -104,6 +121,7 @@ export default function Welcome() {
   return (
     <div id="book-welcome" style={{ flex: 1, overflowY: 'auto', padding: '40px 32px' }}>
       <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+        <PremiumBanner />
         {/* 🏫 class + 📚 homework cards — render nothing for a student in no class */}
         <ClassInfoCard />
         <HomeworkCard homework={homework} reload={loadHomework} />

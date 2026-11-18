@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { openUpgrade } from '../../utils/shell';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
@@ -100,7 +101,7 @@ export default function DifficultWordsModal({ onClose, onCount }) {
         {!words && !error && <div style={{ textAlign: 'center', padding: 32, color: 'var(--text3)' }}><i className="fas fa-spinner fa-spin" /> Đang tải...</div>}
         {error && (
           <div style={{ textAlign: 'center', padding: 24, color: 'var(--text3)' }}>
-            {locked ? <>Danh sách từ hay sai là tính năng Premium. <a href="/dashboard.html">Xem gói Premium</a></> : 'Không thể tải danh sách. Vui lòng thử lại.'}
+            {locked ? <>Danh sách từ hay sai là tính năng Premium. <button className="btn btn-primary btn-sm" onClick={() => openUpgrade()}>Xem gói Premium</button></> : 'Không thể tải danh sách. Vui lòng thử lại.'}
           </div>
         )}
         {words?.length === 0 && (
