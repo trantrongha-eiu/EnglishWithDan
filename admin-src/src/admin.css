@@ -2367,3 +2367,36 @@ button.cp-day:hover { transform: translateY(-2px); border-color: var(--border2);
 .se-range, .se-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
 .se-range-count { font-size: 12.5px; font-weight: 700; color: var(--purple, #7c3aed); padding-bottom: 9px; min-width: 70px; }
 .se-missing { margin: -4px 0 14px; padding: 8px 12px; border-radius: 8px; font-size: 12.5px; line-height: 1.55; color: var(--text2); background: rgba(239, 68, 68, .08); border: 1px solid rgba(239, 68, 68, .25); }
+.se-weekbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.se-weeknav, .se-weekactions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.se-weeknav strong { min-width: 150px; text-align: center; font-size: 14px; }
+.se-daypick { display: flex; gap: 6px; flex-wrap: wrap; }
+.se-daybtn { min-width: 58px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); color: var(--text); font: inherit; font-size: 12px; cursor: pointer; }
+.se-daybtn b, .se-daybtn span { display: block; line-height: 1.3; }
+.se-daybtn.is-on { border-color: var(--purple, #7c3aed); background: rgba(124, 58, 237, .14); box-shadow: 0 0 0 1px var(--purple, #7c3aed) inset; }
+.se-daybtn:disabled { opacity: .4; cursor: not-allowed; }
+.se-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.se-wday { display: flex; flex-direction: column; gap: 5px; min-height: 120px; padding: 7px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+.se-wday.is-today { border-color: var(--purple, #7c3aed); }
+.se-wday.is-past { background: var(--surface2); }
+.se-wday-head { display: flex; align-items: center; justify-content: space-between; gap: 4px; font-size: 12px; color: var(--text2); }
+.se-wday-head b { color: var(--text); }
+.se-wday-add { width: 22px; height: 22px; padding: 0; border: 1px solid var(--border); border-radius: 6px; background: none; color: var(--text2); font-size: 14px; line-height: 1; cursor: pointer; }
+.se-wday-add:hover { color: var(--text); border-color: var(--purple, #7c3aed); }
+.se-wday-empty { margin-top: 6px; text-align: center; font-size: 12px; color: var(--text3); }
+.se-chip { display: block; width: 100%; padding: 5px 7px; border: 1px solid transparent; border-left-width: 3px; border-radius: 6px; font: inherit; font-size: 11.5px; line-height: 1.3; text-align: left; color: var(--text); cursor: pointer; }
+.se-chip b { display: block; font-size: 12px; }
+.se-chip span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text2); }
+.se-chip small { font-size: 11px; font-weight: 700; }
+.se-chip--open { background: rgba(59, 130, 246, .1); border-left-color: #3b82f6; }
+.se-chip--booked { background: rgba(245, 158, 11, .14); border-left-color: #f59e0b; }
+.se-chip--done { background: rgba(34, 197, 94, .13); border-left-color: #22c55e; }
+.se-chip--miss { background: rgba(239, 68, 68, .12); border-left-color: #ef4444; }
+.se-chip--past { background: var(--surface2); border-left-color: var(--border); opacity: .7; }
+.se-legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; font-size: 11.5px; color: var(--text2); }
+.se-legend span { padding: 2px 7px; border-left: 3px solid; border-radius: 4px; }
+@media (max-width: 900px) {
+  .se-week { grid-template-columns: 1fr; }
+  .se-wday { min-height: 0; }
+  .se-wday-empty { display: none; }
+}

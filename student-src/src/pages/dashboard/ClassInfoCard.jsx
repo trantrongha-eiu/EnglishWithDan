@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CLASSROOM_PAGE_LIVE } from '../../utils/features';
+import { Link } from 'react-router-dom';
+import { CLASS_STATUS as STATUS, fmtDate, keyLabel } from '../../utils/classroom';
 import { apiFetch } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
 import SpeakingExamBlock from './SpeakingExamBlock';
@@ -11,31 +12,14 @@ import SpeakingExamBlock from './SpeakingExamBlock';
 // Renders nothing for a student in no classroom. Same #class-info-card /
 // .ci-* markup as the static page (dashboard.css).
 
-const STATUS = {
-  active: { label: 'Đang học', cls: 'ci-badge--active' },
-  warning: { label: 'Cảnh báo', cls: 'ci-badge--warning' },
-  failed: { label: 'Rớt khóa', cls: 'ci-badge--failed' },
-  completed: { label: 'Hoàn thành', cls: 'ci-badge--completed' },
-  dropped: { label: 'Nghỉ học', cls: 'ci-badge--dropped' },
-};
-const WEEKDAY = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 const RING_R = 34;
 const RING_C = 2 * Math.PI * RING_R;
 const pad = (n) => String(n).padStart(2, '0');
 
-function fmtDate(d) {
-  if (!d) return '';
-  const dt = new Date(d);
-  return `${pad(dt.getDate())}/${pad(dt.getMonth() + 1)}/${dt.getFullYear()}`;
-}
 const fmtTime = (d) => { const dt = new Date(d); return `${pad(dt.getHours())}:${pad(dt.getMinutes())}`; };
 // "YYYY-MM-DD" keys on the Vietnam calendar → all date math in UTC
 const keyDate = (key) => new Date(`${key}T00:00:00Z`);
 const keyDiff = (a, b) => Math.round((keyDate(b) - keyDate(a)) / 864e5);
-function keyLabel(key) {
-  const d = keyDate(key);
-  return `${WEEKDAY[d.getUTCDay()]}, ${pad(d.getUTCDate())}/${pad(d.getUTCMonth() + 1)}`;
-}
 function relDay(today, key) {
   const n = keyDiff(today, key);
   if (n === 0) return 'hôm nay';
@@ -188,7 +172,7 @@ function WeekStrip({ p }) {
   );
 }
 
-function ProgressBlock({ c, animate }) {
+export function ProgressBlock({ c, animate }) {
   const p = c.progress;
   if (!p) return null;
   const total = p.totalSessions || c.totalSessions || 0;
@@ -217,7 +201,7 @@ function ProgressBlock({ c, animate }) {
 }
 
 // Self check-in for today's session (teacher still confirms on Điểm danh)
-function Checkin({ ck, todaySession, onDone }) {
+export function Checkin({ ck, todaySession, onDone }) {
   const toast = useToast();
   const [busy, setBusy] = useState(false);
   if (!ck || !ck.session) return null;
@@ -286,7 +270,7 @@ function MissedList({ items, summary, late }) {
 }
 
 // Buổi nghỉ / BT thiếu breakdown, opened by tapping its tile
-function Limits({ c, open }) {
+export function ClassLimits({ c, open }) {
   const aLvl = absenceLevel(c);
   const hLvl = homeworkLevel(c);
   const shown = (open.a ? 1 : 0) + (open.h ? 1 : 0);
@@ -353,11 +337,31 @@ function Tile({ icon, children, label, cls, toggle }) {
   );
 }
 
+// Sĩ số / Chuyên cần / Buổi nghỉ / BT thiếu (also on the Lớp học page)
+export function ClassTiles({ c, animate, open, onToggle }) {
+  const aDanger = absenceLevel(c) !== 'ok' ? ' ci-tile--danger' : '';
+  const hDanger = homeworkLevel(c) !== 'ok' ? ' ci-tile--danger' : '';
+  return (
+    <div className="ci-tiles">
+      <Tile icon="👥" label="Sĩ số lớp" cls="ci-tile--indigo"><Count value={c.classSize} animate={animate} /></Tile>
+      <Tile icon="✅" label={`Chuyên cần · ${c.heldSessions} buổi`} cls="ci-tile--blue">
+        {c.heldSessions ? <><Count value={c.attendanceRate} animate={animate} /><small>%</small></> : '—'}
+      </Tile>
+      <Tile icon="🚪" label="Buổi nghỉ" cls={`ci-tile--amber${aDanger}`}
+        toggle={{ open: !!open.a, id: `ci-limit-a-${c.classId}`, onClick: () => onToggle('a') }}>
+        {num(c.absenceEquivalent)}<small>/{c.maxAbsencesAllowed}</small>
+      </Tile>
+      <Tile icon="📌" label="BT thiếu" cls={`ci-tile--rose${hDanger}`}
+        toggle={{ open: !!open.h, id: `ci-limit-h-${c.classId}`, onClick: () => onToggle('h') }}>
+        {c.homeworkMissedCount}<small>/{c.homeworkFailThreshold}</small>
+      </Tile>
+    </div>
+  );
+}
+
 function ClassCard({ c, ck, se, idx, animate, open, onToggle, reload }) {
   const st = STATUS[c.status] || STATUS.active;
   const sub = [c.courseName, c.teacherName ? `GV: ${c.teacherName}` : ''].filter(Boolean).join(' · ');
-  const aDanger = absenceLevel(c) !== 'ok' ? ' ci-tile--danger' : '';
-  const hDanger = homeworkLevel(c) !== 'ok' ? ' ci-tile--danger' : '';
   return (
     <div className={`ci-card ci-card--${c.status}`} style={{ '--i': idx }}>
       <div className="ci-card-head">
@@ -375,21 +379,8 @@ function ClassCard({ c, ck, se, idx, animate, open, onToggle, reload }) {
       )}
       <ProgressBlock c={c} animate={animate} />
       <Checkin ck={ck} todaySession={c.progress?.todaySession} onDone={reload} />
-      <div className="ci-tiles">
-        <Tile icon="👥" label="Sĩ số lớp" cls="ci-tile--indigo"><Count value={c.classSize} animate={animate} /></Tile>
-        <Tile icon="✅" label={`Chuyên cần · ${c.heldSessions} buổi`} cls="ci-tile--blue">
-          {c.heldSessions ? <><Count value={c.attendanceRate} animate={animate} /><small>%</small></> : '—'}
-        </Tile>
-        <Tile icon="🚪" label="Buổi nghỉ" cls={`ci-tile--amber${aDanger}`}
-          toggle={{ open: !!open.a, id: `ci-limit-a-${c.classId}`, onClick: () => onToggle('a') }}>
-          {num(c.absenceEquivalent)}<small>/{c.maxAbsencesAllowed}</small>
-        </Tile>
-        <Tile icon="📌" label="BT thiếu" cls={`ci-tile--rose${hDanger}`}
-          toggle={{ open: !!open.h, id: `ci-limit-h-${c.classId}`, onClick: () => onToggle('h') }}>
-          {c.homeworkMissedCount}<small>/{c.homeworkFailThreshold}</small>
-        </Tile>
-      </div>
-      <Limits c={c} open={open} />
+      <ClassTiles c={c} animate={animate} open={open} onToggle={onToggle} />
+      <ClassLimits c={c} open={open} />
       <SpeakingExamBlock se={se} classId={c.classId} onChanged={reload} />
     </div>
   );
@@ -533,11 +524,7 @@ export default function ClassInfoCard() {
             <i className="fas fa-calendar-week" aria-hidden="true" /> Tuần {lp.currentWeek}{lp.totalWeeks ? `/${lp.totalWeeks}` : ''} · Buổi {lp.currentSessionOrdinal}{lp.totalSessions ? `/${lp.totalSessions}` : ''}
           </span>
         )}
-        {CLASSROOM_PAGE_LIVE && (
-
-          <a className="ci-head-link" href="/classroom.html">Xem chi tiết <i className="fas fa-arrow-right" aria-hidden="true" /></a>
-
-        )}
+        <Link className="ci-head-link" to="/classroom">Xem chi tiết <i className="fas fa-arrow-right" aria-hidden="true" /></Link>
       </div>
       <div className="ci-list">
         {state.classes.map((c, i) => (

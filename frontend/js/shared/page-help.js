@@ -40,9 +40,11 @@
     [/^\/profile(\/|$)/, 'profile.html'],
     [/^\/inbox(\/|$)/, 'inbox.html'],
     [/^\/tuition(\/|$)/, 'tuition.html'],
+    [/^\/(classroom|lop-hoc)(\/|$)/, 'classroom.html'],
   ];
   function pageKey() {
     var path = location.pathname.replace(/\/+$/, '');
+    if (path === '/app' && /^#\/classroom/.test(location.hash)) return 'classroom.html';
     var last = path.split('/').pop() || '';
     if (/\.html$/.test(last)) return last;
     for (var i = 0; i < CLEAN_PREFIX.length; i++) {
@@ -460,6 +462,26 @@
         { icon: '✉️', title: 'Cách dùng', items: [
           'Bấm vào một tin để đọc nội dung đầy đủ. Số tin chưa đọc hiện trên biểu tượng phong bì ở thanh menu.',
           'Kéo xuống cuối danh sách để tải thêm tin cũ.',
+        ] },
+      ],
+    },
+
+    'classroom.html': {
+      title: 'Lớp học',
+      intro: 'Toàn bộ thông tin về lớp của bạn ở một nơi.',
+      sections: [
+        { icon: '🏫', title: 'Các mục trong trang', items: [
+          '<b>Tổng quan</b>: tiến độ khóa học, điểm danh hôm nay, số buổi nghỉ và số bài thiếu so với giới hạn.',
+          '<b>Lịch học</b>: mọi buổi của khóa, kèm trạng thái điểm danh của bạn ở từng buổi.',
+          '<b>Bài tập</b>: bài giáo viên giao cho lớp này và hạn nộp.',
+        ] },
+        { icon: '🎤', title: 'Đăng kí thi Speaking', items: [
+          'Vào <b>Thi Speaking</b> → <b>Đăng kí thi</b>, chọn ngày, chọn giờ rồi chọn online hoặc offline.',
+          'Muốn đổi lịch, bấm <b>Đổi buổi</b>: buổi cũ vẫn được giữ cho tới khi đổi thành công.',
+          'Trong 2 tiếng trước giờ thi không tự đổi hoặc hủy được, hãy nhắn giáo viên.',
+        ] },
+        { icon: '💬', title: 'Chưa có lớp?', items: [
+          'Liên hệ giáo viên qua Zalo, điện thoại hoặc Facebook ngay trên trang để được xếp lớp.',
         ] },
       ],
     },

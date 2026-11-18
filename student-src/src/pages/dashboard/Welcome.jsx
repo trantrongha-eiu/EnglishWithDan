@@ -27,8 +27,6 @@ const FEAT_CHIPS = [
   { icon: 'fa-hammer', label: 'Búa Daniel', key: 'hammer' },
 ];
 
-const WEEK_DAYS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-
 // Free-plan students only (staff + trial accounts have full access)
 function PremiumBanner() {
   if (hasPremiumAccess()) return null;
@@ -44,7 +42,23 @@ function PremiumBanner() {
   );
 }
 
-function StreakCard({ stats, onUseHammer }) {
+function WeeklyProgress({ days }) {
+  return (
+    <div className="dan-week">
+      <div className="dan-week-title">Tiến độ 7 ngày qua</div>
+      <div className="dan-week-row">
+        {(days || []).map(d => (
+          <div key={d.key} className={`dan-week-day${d.isToday ? ' today' : ''}`}>
+            <div className="dan-week-dot" data-lvl={d.level} title={`${d.key}: ${d.count} bài`}>{d.count > 0 ? '✓' : ''}</div>
+            <span>{d.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StreakCard({ stats, weekDays, onUseHammer }) {
   const { streak = 0, streakHammers = 0, canUseHammer = false } = stats || {};
   const { state, mascot, fire, num } = useStreakFace(stats);
   return (
@@ -72,26 +86,7 @@ function StreakCard({ stats, onUseHammer }) {
           Dùng búa Daniel — khôi phục streak vừa mất
         </button>
       )}
-    </div>
-  );
-}
-
-function WeeklyProgress({ days }) {
-  if (!days) return null;
-  return (
-    <div className="dan-week" style={{ marginTop: 12 }}>
-      <div className="dan-week-title">Tiến độ 7 ngày qua</div>
-      <div className="dan-week-row">
-        {days.map((d, i) => {
-          const day = WEEK_DAYS[new Date(d.date).getDay()];
-          return (
-            <div key={i} className={`dan-week-dot${d.count > 0 ? ' active' : ''}`} title={`${day}: ${d.count} từ`}>
-              <span className="dan-week-day">{day}</span>
-              <span className={`dan-week-circle${d.count > 0 ? ' filled' : ''}`} />
-            </div>
-          );
-        })}
-      </div>
+      <WeeklyProgress days={weekDays} />
     </div>
   );
 }
@@ -148,10 +143,7 @@ export default function Welcome() {
             </a>
           </div>
           <div className="dash-vocab-hero-row">
-            <div>
-              <StreakCard stats={stats} onUseHammer={useHammer} />
-              <WeeklyProgress days={weekDays} />
-            </div>
+            <StreakCard stats={stats} weekDays={weekDays} onUseHammer={useHammer} />
             <TodaysLesson lessons={lessons} />
           </div>
         </section>

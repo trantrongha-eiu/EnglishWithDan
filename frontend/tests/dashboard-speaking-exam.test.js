@@ -86,3 +86,60 @@ test('picker: confirm enabled only after a slot and an allowed format are ticked
   expect(modal.querySelectorAll('input[name="se-mode"]')).toHaveLength(2);
   modal.remove();
 });
+
+test('picker: one chip per day, only the chosen day\'s times show, grouped by part of day', async () => {
+  payload = { ...base, classes: [{ classId: 'c1', className: 'A', booking: null, history: [],
+    openSlots: [slot('s1', '2026-11-20', '09:00', '09:25'), slot('s2', '2026-11-20', '19:00', '19:25'), slot('s3', '2026-11-21', '14:00', '14:25')] }] };
+  await window.seFetch();
+  window.seOpenPicker('c1');
+  const modal = document.getElementById('se-modal');
+  const chips = [...modal.querySelectorAll('.se-daychip')];
+  expect(chips.map((c) => c.getAttribute('data-day'))).toEqual(['2026-11-20', '2026-11-21']);
+  const visible = () => [...modal.querySelectorAll('.se-day:not([hidden]) input')].map((i) => i.value);
+  expect(visible()).toEqual(['s1', 's2']);
+  expect([...modal.querySelectorAll('.se-day:not([hidden]) .se-day-title')].map((t) => t.textContent)).toEqual(['Sáng', 'Tối']);
+  chips[1].click();
+  expect(visible()).toEqual(['s3']);
+  expect(chips[1].getAttribute('aria-pressed')).toBe('true');
+  modal.remove();
+});
+
+test('booked with other open slots → "Đổi buổi"; the swap sends replaceBooking and keeps the format', async () => {
+  const booking = { _id: 'b1', dayKey: '2026-11-20', startTime: '14:00', endTime: '14:25', mode: 'offline', address: 'HN', note: '', canCancel: true };
+  payload = { ...base, classes: [{ classId: 'c1', className: 'A', history: [], booking, openSlots: [slot('s9', '2026-11-22', '09:00', '09:25')] }] };
+  await window.seFetch();
+  expect(window.seBlockFor('c1')).toContain("seOpenPicker('c1', true)");
+
+  window.seOpenPicker('c1', true);
+  const modal = document.getElementById('se-modal');
+  expect(modal.textContent).toContain('Buổi hiện tại');
+  const s9 = modal.querySelector('input[value="s9"]');
+  s9.checked = true;
+  s9.dispatchEvent(new Event('change', { bubbles: true }));
+  expect(modal.querySelector('input[name="se-mode"]:checked').value).toBe('offline');
+  expect(modal.querySelector('.se-summary').textContent).toContain('09:00–09:25');
+
+  global.fetch.mockClear();
+  payload = { success: true };
+  modal.querySelector('.se-submit').click();
+  await new Promise((r) => setTimeout(r));
+  const [url, opts] = global.fetch.mock.calls[0];
+  expect(url).toBe('http://api/classes/my/speaking-exam/s9/book');
+  expect(JSON.parse(opts.body)).toEqual({ mode: 'offline', replaceBooking: true });
+  expect(document.getElementById('se-modal')).toBeNull();
+});
+
+test('exam history lists each result with band and escaped feedback', async () => {
+  payload = { ...base, classes: [{ classId: 'c1', className: 'A', booking: null, openSlots: [], history: [
+    { dayKey: '2026-11-10', startTime: '09:00', endTime: '09:25', result: 'done', band: 6.5, feedbackNote: 'Tốt <b>' },
+    { dayKey: '2026-11-03', startTime: '09:00', endTime: '09:25', result: 'no_show' },
+    { dayKey: '2026-11-01', startTime: '09:00', endTime: '09:25', result: '' },
+  ] }] };
+  await window.seFetch();
+  const html = window.seHistoryFor('c1');
+  expect(html).toContain('Band 6.5');
+  expect(html).toContain('Tốt &lt;b&gt;');
+  expect(html).toContain('Vắng thi');
+  expect(html).toContain('Chờ giáo viên ghi kết quả');
+  expect(window.seHistoryFor('nope')).toBe('');
+});

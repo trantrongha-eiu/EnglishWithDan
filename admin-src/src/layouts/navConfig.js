@@ -23,7 +23,7 @@ export const NAV_GROUPS = [
   ] },
   { id: 'students', label: 'Học sinh & Lớp', items: [
     { to: '/users', icon: '👥', label: 'Người dùng', match: ['/students/'] },
-    { to: '/classes', icon: '🗓️', label: 'Lớp & Điểm danh' },
+    { to: '/classes', icon: '🗓️', label: 'Lớp & Điểm danh', student: 'classroom.html' },
     { to: '/monitoring', icon: '📈', label: 'Theo dõi luyện tập', badge: 'violations', badgeTone: 'warn',
       badgeTitle: 'Lượt thi thử / Test Simulation bị đánh dấu vi phạm giám sát',
       match: ['/history', '/reading-stats', '/listening-stats', '/vocab-activity'] },

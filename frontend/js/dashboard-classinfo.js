@@ -238,6 +238,19 @@ function ciProgressBlock(c) {
     ${ciWeekStrip(p)}`;
 }
 
+// Sĩ số / Chuyên cần / Buổi nghỉ / BT thiếu (also used by classroom.js).
+function ciTilesBlock(c) {
+  const rate = c.heldSessions ? `<span data-count="${c.attendanceRate}">${c.attendanceRate}</span><small>%</small>` : '—';
+  return `<div class="ci-tiles">
+      ${ciTile('👥', `<span data-count="${c.classSize}">${c.classSize}</span>`, 'Sĩ số lớp', 'ci-tile--indigo')}
+      ${ciTile('✅', rate, `Chuyên cần · ${c.heldSessions} buổi`, 'ci-tile--blue')}
+      ${ciToggleTile('🚪', `${ciNum(c.absenceEquivalent)}<small>/${c.maxAbsencesAllowed}</small>`, 'Buổi nghỉ',
+        'ci-tile--amber' + (ciAbsenceLevel(c) !== 'ok' ? ' ci-tile--danger' : ''), `ci-limit-a-${c.classId}`)}
+      ${ciToggleTile('📌', `${c.homeworkMissedCount}<small>/${c.homeworkFailThreshold}</small>`, 'BT thiếu',
+        'ci-tile--rose' + (ciHomeworkLevel(c) !== 'ok' ? ' ci-tile--danger' : ''), `ci-limit-h-${c.classId}`)}
+    </div>`;
+}
+
 function ciClassCard(c, ck, idx) {
   const st = CI_STATUS[c.status] || CI_STATUS.active;
   const sub = [c.courseName, c.teacherName ? `GV: ${c.teacherName}` : ''].filter(Boolean).map(escHtml).join(' · ');
@@ -247,7 +260,6 @@ function ciClassCard(c, ck, idx) {
   const reason = c.statusReason && (c.status === 'warning' || c.status === 'failed')
     ? `<div class="ci-reason ci-reason--${c.status}">${c.status === 'failed' ? '⛔' : '⚠️'} ${escHtml(c.statusReason)}</div>`
     : '';
-  const rate = c.heldSessions ? `<span data-count="${c.attendanceRate}">${c.attendanceRate}</span><small>%</small>` : '—';
 
   return `<div class="ci-card ci-card--${c.status}" style="--i:${idx || 0}">
     <div class="ci-card-head">
@@ -261,14 +273,7 @@ function ciClassCard(c, ck, idx) {
     ${reason}
     ${ciProgressBlock(c)}
     ${ciCheckinBlock(ck, c.progress && c.progress.todaySession)}
-    <div class="ci-tiles">
-      ${ciTile('👥', `<span data-count="${c.classSize}">${c.classSize}</span>`, 'Sĩ số lớp', 'ci-tile--indigo')}
-      ${ciTile('✅', rate, `Chuyên cần · ${c.heldSessions} buổi`, 'ci-tile--blue')}
-      ${ciToggleTile('🚪', `${ciNum(c.absenceEquivalent)}<small>/${c.maxAbsencesAllowed}</small>`, 'Buổi nghỉ',
-        'ci-tile--amber' + (ciAbsenceLevel(c) !== 'ok' ? ' ci-tile--danger' : ''), `ci-limit-a-${c.classId}`)}
-      ${ciToggleTile('📌', `${c.homeworkMissedCount}<small>/${c.homeworkFailThreshold}</small>`, 'BT thiếu',
-        'ci-tile--rose' + (ciHomeworkLevel(c) !== 'ok' ? ' ci-tile--danger' : ''), `ci-limit-h-${c.classId}`)}
-    </div>
+    ${ciTilesBlock(c)}
     ${ciLimitsBlock(c)}
     ${typeof window.seBlockFor === 'function' ? window.seBlockFor(c.classId) : ''}
   </div>`;
@@ -531,7 +536,7 @@ async function loadClassInfo() {
   // Keep the Buổi nghỉ / BT thiếu panels the student had opened.
   const openTiles = [...card.querySelectorAll('.ci-tile--toggle[aria-expanded="true"]')].map((b) => b.getAttribute('aria-controls'));
   card.style.display = 'block';
-  card.innerHTML = `<div class="ci-head"><h3>🏫 Lớp học của tôi</h3>${headPill}</div>
+  card.innerHTML = `<div class="ci-head"><h3>🏫 Lớp học của tôi</h3>${headPill}<a class="ci-head-link" href="classroom.html">Xem chi tiết <i class="fas fa-arrow-right" aria-hidden="true"></i></a></div>
     <div class="ci-list">${data.classes.map((c, i) => ciClassCard(c, checkinByClass.get(String(c.classId)), i)).join('')}</div>`;
   openTiles.forEach((id) => {
     const btn = card.querySelector(`.ci-tile--toggle[aria-controls="${id}"]`);

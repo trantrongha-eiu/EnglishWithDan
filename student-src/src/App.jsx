@@ -11,6 +11,7 @@ import BookView from './pages/dashboard/BookView';
 const Practice = lazy(() => import('./pages/dashboard/Practice'));
 const Browse = lazy(() => import('./pages/dashboard/Browse'));
 const Lesson = lazy(() => import('./pages/dashboard/Lesson'));
+const Classroom = lazy(() => import('./pages/Classroom'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // A data router: running quizzes use useBlocker to ask before leaving
@@ -28,6 +29,7 @@ const router = createHashRouter(createRoutesFromElements(
         <Route path="topics" element={<Browse key="topics" kind="topics" />} />
         <Route path="paraphrase" element={<Browse key="paraphrase" kind="paraphrase" />} />
       </Route>
+      <Route path="classroom" element={<Classroom />} />
       <Route path="*" element={<NotFound />} />
     </Route>
     <Route path="*" element={<Navigate to="/dashboard" replace />} />

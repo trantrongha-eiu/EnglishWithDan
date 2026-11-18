@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <base href="/">
+  <script>
+  /* The class page now lives in the React app (/app/#/classroom, source:
+     student-src/src/pages/Classroom.jsx). Old links keep their class + tab.
+     classroom.html?legacy=1 stays on this version as a fallback. */
+  (function () {
+    var q = new URLSearchParams(location.search);
+    if (q.get('legacy') === '1') return;
+    var qs = q.toString();
+    location.replace('/app/#/classroom' + (qs ? '?' + qs : ''));
+  })();
+  </script>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Lớp học – EnglishWithDan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb">
+  <link rel="stylesheet" href="/css/components.css?v=bb5d514434">
+  <link rel="stylesheet" href="/css/mobile.css?v=1285106fee">
+  <script src="/js/theme.js?v=f5e2645f16"></script>
+  <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
+  <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
+  <link rel="stylesheet" href="/css/class-cards.css?v=0285fdd9c7">
+  <link rel="stylesheet" href="/css/classroom.css?v=500d7f0238">
+  <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
+</head>
+<body>
+  <script src="/js/bundles/app-shell.js?v=51be8ba855"></script>
+  <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
+
+  <main class="cr-layout">
+    <div id="crRoot"><div class="cr-note">Đang tải lớp học…</div></div>
+  </main>
+
+  <script src="/js/dashboard-homework.js?v=ed2e921921"></script>
+  <script src="/js/dashboard-classinfo.js?v=72de64221f"></script>
+  <script src="/js/dashboard-speaking-exam.js?v=d3d1861ff0"></script>
+  <script src="/js/classroom.js?v=b9c9611d8f"></script>
+</body>
+</html>

@@ -6,7 +6,8 @@ export default function StudentLayout() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    document.title = pathname.startsWith('/dashboard') ? 'Vocabulary – EnglishWithDan' : 'EnglishWithDan';
+    document.title = pathname.startsWith('/dashboard') ? 'Vocabulary – EnglishWithDan'
+      : pathname.startsWith('/classroom') ? 'Lớp học – EnglishWithDan' : 'EnglishWithDan';
   }, [pathname]);
 
   return <Outlet />;

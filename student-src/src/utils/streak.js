@@ -21,6 +21,24 @@ const SAD_MSGS = [
     '😭 Lulu tưởng bạn quên mất Lulu rồi... học 1 từ thôi là Lulu vui liền!'
 ];
 
+// "Tiến độ 7 ngày qua" boxes (dashboard.js loadWeeklyProgress). `activity` is
+// GET /user/activity-heatmap's list, which only holds days with some practice.
+const WEEK_DAY_LABELS = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+const pad2 = n => String(n).padStart(2, '0');
+const weekLevel = n => (n === 0 ? 0 : n === 1 ? 1 : n <= 2 ? 2 : n <= 4 ? 3 : 4);
+
+export function buildWeekDays(activity, today = new Date()) {
+  const counts = {};
+  activity.forEach((d) => { counts[d.date] = d.count; });
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() - (6 - i));
+    const key = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+    const count = counts[key] || 0;
+    return { key, count, level: weekLevel(count), label: WEEK_DAY_LABELS[d.getDay()], isToday: i === 6 };
+  });
+}
+
 function streakState(streak, previous, r) {
   if (streak === 0 && previous > 10) return { mood: 'angry', msg: ANGRY_MSGS[Math.floor(r * ANGRY_MSGS.length)](previous) };
   if (streak === 0) return { mood: 'sad', msg: SAD_MSGS[Math.floor(r * SAD_MSGS.length)] };

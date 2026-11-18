@@ -128,6 +128,9 @@
         { href: 'shop.html',              icon: 'fa-store',        label: 'Cửa hàng lửa 🔥' },
       ]
     },
+    // The student's own class page: schedule, attendance, homework, Speaking
+    // exam booking (or how to contact the teacher when not in a class yet).
+    { href: 'app/#/classroom', icon: 'fa-chalkboard-user', label: 'Lớp học' },
     // "Học phí" was an unlabeled icon in the utility cluster — students
     // missed it, so it's back in the main row as a labeled, highlighted
     // pill (.nav-link-tuition) with the unpaid-count badge next to it.
@@ -171,7 +174,7 @@
       var route = location.hash.replace(/^#/, '').split('?')[0].replace(/\/$/, '') || '/dashboard';
       var target = cHref.slice(5);
       if (target !== '/dashboard') return route === target;
-      return !/^\/dashboard\/(paraphrase|topics)$/.test(route);
+      return /^\/dashboard(\/|$)/.test(route) && !/^\/dashboard\/(paraphrase|topics)$/.test(route);
     }
     var ci = cHref.indexOf('?');
     var cBase   = ci === -1 ? cHref : cHref.slice(0, ci);
@@ -185,9 +188,15 @@
     return ok;
   }
 
+  // A top-level entry: its own page/app route, or one of its dropdown children.
+  function navTopActive(l) {
+    if (l.children) return page === l.href || l.children.some(function (c) { return !c.divider && navChildActive(c.href); });
+    return l.href.indexOf('app/#') === 0 ? navChildActive(l.href) : page === l.href;
+  }
+
   function mkDesktopLinks() {
     return LINKS.map(function (l) {
-      var isActive = page === l.href || (l.children && l.children.some(function (c) { return !c.divider && navChildActive(c.href); }));
+      var isActive = navTopActive(l);
       var cls = isActive ? ' class="active"' : '';
       var badge = l.badgeId ? '<span id="' + l.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
       if (l.children) {
@@ -207,7 +216,7 @@
   function mkMobileLinks() {
     var out = [];
     LINKS.forEach(function (l) {
-      var isActive = page === l.href || (l.children && l.children.some(function (c) { return !c.divider && navChildActive(c.href); }));
+      var isActive = navTopActive(l);
       var active = isActive ? ' active' : '';
       var badge = l.badgeId ? '<span id="mob_' + l.badgeId + '" style="' + BADGE_STYLE + '"></span>' : '';
       out.push('<a href="/' + l.href + '" class="mobile-nav-link' + active + '"><i class="fas ' + l.icon + '" style="width:20px;text-align:center"></i> ' + l.label + badge + '</a>');
@@ -303,11 +312,24 @@
     '</div>';
   document.body.insertBefore(nav, document.body.firstChild);
 
-  // The React app changes route without a page load: keep the Vocab menu right
+  // The React app changes route without a page load: keep the menu right, and
+  // shut the phone drawer the tapped link was in.
   function _syncAppRoute() {
     document.querySelectorAll('.nav-dd-menu a[href^="/app/#"], a.mobile-nav-sub[href^="/app/#"]').forEach(function (a) {
       a.classList.toggle('active', navChildActive(a.getAttribute('href').slice(1)));
     });
+    LINKS.forEach(function (l) {
+      if (l.href.indexOf('app/#') !== 0) return;
+      var sel = '.nav-links > a[href="/' + l.href + '"], .nav-dropdown > a[href="/' + l.href + '"], a.mobile-nav-link:not(.mobile-nav-sub)[href="/' + l.href + '"]';
+      document.querySelectorAll(sel).forEach(function (a) { a.classList.toggle('active', navTopActive(l)); });
+    });
+    // The account dock belongs to the vocab home, not to other app pages.
+    var dock = document.getElementById('navCornerDock');
+    if (dock) dock.style.display = /^#\/classroom/.test(location.hash) ? 'none' : '';
+    var d = document.getElementById('globalMobileNav');
+    var h = document.getElementById('globalHamburger');
+    if (d) d.classList.remove('open');
+    if (h) h.classList.remove('open');
   }
   window.addEventListener('hashchange', _syncAppRoute);
   window.addEventListener('ews:route', _syncAppRoute); // fired by student-src App.jsx
@@ -332,6 +354,7 @@
   if (_onVocabHomePage()) {
     document.body.appendChild(cornerDock);
     document.body.classList.add('has-corner-dock');
+    _syncAppRoute();
   }
 
   // ── Add padding class to body ─────────────────────────────
@@ -463,7 +486,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=6b1c7e3328';
+      s.src = '/js/shared/page-help.js?v=80dadbb365';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);
@@ -1667,7 +1690,8 @@
   // when the student is already here it must not reload the same page.
   function _onVocabHomePage() {
     var p = location.pathname.replace(/\/+$/, '');
-    return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary' || p === '/app' || p === '';
+    if (p === '/app') return location.hash.indexOf('#/classroom') !== 0; // other React pages are not the vocab home
+    return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary' || p === '';
   }
 
   function _wireVocabGoalCard(card, keep, o) {

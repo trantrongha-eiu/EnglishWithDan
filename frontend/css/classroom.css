@@ -1,0 +1,96 @@
+/* 🏫 Lớp học (classroom.html, js/classroom.js). The progress, homework and
+   speaking blocks inside it are styled by css/class-cards.css. */
+.cr-layout{width:100%;max-width:920px;margin:0 auto;padding:24px 16px 56px}
+.cr-layout #class-info-card,.cr-layout #homework-card{margin-bottom:0}
+
+.cr-classes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.cr-class{border:1px solid var(--border);background:var(--surface);color:var(--text2);border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.cr-class.is-on{background:#6b45c4;border-color:#6b45c4;color:#fff}
+
+.cr-hero{margin:0 0 14px}
+.cr-hero .ci-badge{display:inline-block;margin-bottom:8px;background:#fff}
+:root .cr-hero.pf-hero h1{margin:0 0 4px;overflow-wrap:anywhere}
+.cr-facts{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:13px;color:rgba(255,255,255,.92)}
+.cr-facts i{width:15px;text-align:center;opacity:.85}
+
+.cr-tabs{position:sticky;top:var(--nav-height,64px);z-index:20;display:flex;gap:4px;margin-bottom:14px;padding:4px;overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;scrollbar-width:none}
+.cr-tabs::-webkit-scrollbar{display:none}
+.cr-tab{flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;background:none;color:var(--text2);border-radius:9px;padding:9px 13px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.cr-tab:hover{background:var(--surface2);color:var(--text)}
+.cr-tab.is-on{background:rgba(107,69,196,.13);color:#6b45c4}
+.cr-tab em{font-style:normal;font-size:11px;line-height:1;color:#fff;background:#6b45c4;border-radius:999px;padding:3px 6px}
+[data-theme="dark"] .cr-tab.is-on{color:#c4b5fd}
+
+#crPanel{display:flex;flex-direction:column;gap:14px}
+#crPanel>.ci-reason{margin:0}
+.cr-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px}
+.cr-card .ci-head h3{font-size:16px}
+.cr-hint{margin:-6px 0 12px;font-size:13px;line-height:1.55;color:var(--text2)}
+.cr-note{padding:18px;border:1px dashed var(--border2);border-radius:12px;background:var(--surface);color:var(--text2);font-size:13.5px;line-height:1.55;text-align:center}
+.cr-note--error{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;color:var(--text)}
+
+.cr-shortcuts{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.cr-shortcut{display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;text-align:left;text-decoration:none;font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:12px;cursor:pointer}
+.cr-shortcut:hover{border-color:#6b45c4}
+.cr-shortcut-icon{font-size:21px;line-height:1}
+.cr-shortcut>span:nth-child(2){flex:1;min-width:0}
+.cr-shortcut b,.cr-shortcut small{display:block}
+.cr-shortcut b{font-size:14px}
+.cr-shortcut small{margin-top:2px;font-size:12px;color:var(--text2)}
+.cr-shortcut>i{font-size:11px;color:var(--text3)}
+
+.cr-contact{padding:18px 20px;background:var(--surface);border:1px solid var(--border);border-radius:16px}
+.cr-contact h2{margin:0 0 4px;font-size:16px;font-weight:800;color:var(--text)}
+.cr-contact p{margin:0 0 12px;font-size:13.5px;line-height:1.55;color:var(--text2)}
+.cr-contact-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.cr-contact-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);color:var(--text);text-decoration:none}
+.cr-contact-item:hover{border-color:#6b45c4}
+.cr-contact-item i{width:20px;text-align:center;font-size:17px;color:#6b45c4}
+.cr-contact-item b,.cr-contact-item small{display:block}
+.cr-contact-item b{font-size:13.5px}
+.cr-contact-item small{font-size:12px;color:var(--text2)}
+[data-theme="dark"] .cr-contact-item i{color:#c4b5fd}
+
+.cr-empty{max-width:560px;margin:48px auto 0;text-align:center}
+.cr-empty-icon{font-size:52px;line-height:1;margin-bottom:14px}
+.cr-empty .cr-contact{padding:24px}
+.cr-empty .cr-contact h2{font-size:20px}
+.cr-empty .cr-contact p{margin-bottom:16px}
+.cr-empty .cr-contact-item{text-align:left}
+
+.cr-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.cr-stats div{padding:11px 6px;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:12px}
+.cr-stats b{display:block;font-size:20px;font-weight:800;color:var(--text)}
+.cr-stats span{font-size:12px;color:var(--text2)}
+
+.cr-week+.cr-week{margin-top:16px}
+.cr-week-title{margin-bottom:6px;font-size:12px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--text2)}
+.cr-sess-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.cr-sess{display:flex;align-items:center;gap:12px;padding:9px 12px;border:1px solid var(--border);border-radius:10px}
+.cr-sess--now{border-color:#6b45c4;background:rgba(107,69,196,.08)}
+.cr-sess--off{opacity:.62}
+.cr-sess-date{flex:0 0 52px;text-align:center;font-size:12px;color:var(--text2);line-height:1.3}
+.cr-sess-date b{display:block;font-size:13px;color:var(--text)}
+.cr-sess-main{flex:1;min-width:0;font-size:13.5px;color:var(--text)}
+.cr-sess-main small{color:var(--text2);font-size:12px}
+.cr-sess-topic{display:block;margin-top:1px;font-size:12.5px;color:var(--text2);overflow-wrap:anywhere}
+.cr-pill{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap;background:var(--surface2);color:var(--text2)}
+.cr-pill--ok,.cr-pill--done{background:var(--success-light);color:var(--success)}
+.cr-pill--warn{background:var(--warning-light);color:var(--warning)}
+.cr-pill--bad{background:var(--danger-light);color:var(--danger)}
+.cr-pill--now{background:#6b45c4;color:#fff}
+.cr-pill--next{background:rgba(61,139,255,.13);color:var(--blue-dark)}
+.cr-past{margin-top:16px;padding-top:12px;border-top:1px dashed var(--border)}
+.cr-past summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--text2)}
+.cr-past .cr-week{margin-top:12px}
+
+@media (max-width:640px){
+  .cr-layout{padding:14px 12px 40px}
+  .cr-card,.cr-contact{padding:14px}
+  .cr-tab{flex:1 0 auto;gap:4px;padding:8px 6px;font-size:12.5px}
+  .cr-tab i{display:none}
+  .cr-tab em{padding:2px 5px;font-size:10px}
+  .cr-stats{grid-template-columns:repeat(3,1fr)}
+  .cr-sess{gap:9px;padding:8px 10px}
+  .cr-sess-date{flex-basis:44px}
+}

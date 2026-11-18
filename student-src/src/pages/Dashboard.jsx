@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { apiFetch } from '../utils/api';
 import { onStreakResult, onSaveState } from '../utils/practiceSync';
+import { buildWeekDays } from '../utils/streak';
 import { collectVocabGoals, readHomeworkCache, writeHomeworkCache } from '../utils/homework';
 import { useToast } from '../contexts/ToastContext';
 import BookMenu from './dashboard/BookMenu';
@@ -69,7 +70,7 @@ export default function Dashboard() {
     .catch((err) => setBooksError(err.coldStart ? 'Server đang khởi động, thử lại sau vài giây.' : 'Không tải được danh sách sổ.')), []);
 
   const loadWeek = useCallback(() => apiFetch('/user/activity-heatmap?days=8')
-    .then((res) => { if (res.days) setWeekDays(res.days.slice(-7)); })
+    .then((res) => { if (res.activity) setWeekDays(buildWeekDays(res.activity)); })
     .catch(() => { /* non-critical */ }), []);
 
   const loadBook = useCallback(async (id, { quiet = false } = {}) => {

@@ -47,6 +47,9 @@ Disallow: /inbox
 Disallow: /inbox.html
 Disallow: /tuition
 Disallow: /tuition.html
+Disallow: /classroom
+Disallow: /classroom.html
+Disallow: /lop-hoc
 Disallow: /reading
 Disallow: /reading.html
 Disallow: /listening

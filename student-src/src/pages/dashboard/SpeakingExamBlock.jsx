@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { apiFetch } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
 import { ConfirmDialog } from '../../components/Modal';
-import { SPEAKING_SWAP_LIVE } from '../../utils/features';
 
 // 🎤 Đăng kí thi Speaking — block inside each "Lớp học của tôi" class card.
 // Port of frontend/js/dashboard-speaking-exam.js (keep both in step). Slots are
@@ -19,7 +18,8 @@ const MODE = {
 };
 const PARTS = [['Sáng', 0, 12], ['Chiều', 12, 18], ['Tối', 18, 24]];
 
-function seDayLabel(key) {
+// eslint-disable-next-line react-refresh/only-export-components
+export function seDayLabel(key) {
   const d = new Date(`${key}T00:00:00Z`);
   return `${WD[d.getUTCDay()]}, ${key.slice(8, 10)}/${key.slice(5, 7)}`;
 }
@@ -38,12 +38,38 @@ function ResultLine({ h }) {
   return (
     <div className="se-result">
       ✅ Đã thi {seDayLabel(h.dayKey)}{h.band != null && <> · Band <b>{h.band}</b></>}
-      {h.feedbackNote && (
-        <details className="se-fb">
-          <summary>Xem feedback của giáo viên</summary>
-          <div style={{ whiteSpace: 'pre-line' }}>{h.feedbackNote}</div>
-        </details>
-      )}
+      <Feedback h={h} />
+    </div>
+  );
+}
+
+function Feedback({ h }) {
+  if (!h.feedbackNote) return null;
+  return (
+    <details className="se-fb">
+      <summary>Xem feedback của giáo viên</summary>
+      <div style={{ whiteSpace: 'pre-line' }}>{h.feedbackNote}</div>
+    </details>
+  );
+}
+
+// Past exams of a class, newest first (Lớp học page → Thi Speaking).
+export function SpeakingExamHistory({ history }) {
+  return (
+    <div className="se-hist">
+      {history.map((h) => (
+        <div className="se-hist-row" key={h._id}>
+          <div className="se-hist-head">
+            <span><b>{seDayLabel(h.dayKey)}</b> · {h.startTime}–{h.endTime}</span>
+            {h.result === 'done'
+              ? <span className="se-hist-tag se-hist-tag--done">Đã thi{h.band != null ? ` · Band ${h.band}` : ''}</span>
+              : h.result === 'no_show'
+                ? <span className="se-hist-tag se-hist-tag--miss">Vắng thi</span>
+                : <span className="se-hist-tag">Chờ giáo viên ghi kết quả</span>}
+          </div>
+          <Feedback h={h} />
+        </div>
+      ))}
     </div>
   );
 }
@@ -217,7 +243,7 @@ export default function SpeakingExamBlock({ se, classId, onChanged }) {
         <div className="se-actions">
           {b.canCancel
             ? <>
-              {SPEAKING_SWAP_LIVE && n > 0 && <button type="button" className="se-btn" onClick={() => setPicker(true)}>Đổi buổi</button>}
+              {n > 0 && <button type="button" className="se-btn" onClick={() => setPicker(true)}>Đổi buổi</button>}
               <button type="button" className="se-btn se-btn--ghost" disabled={busy} onClick={() => setAskCancel(true)}>Hủy buổi</button>
             </>
             : <span className="se-muted">Muốn đổi/hủy trong {se.lockHours || 2} tiếng trước giờ thi — hãy nhắn giáo viên.</span>}
