@@ -43,7 +43,22 @@ async function putObject(key, body, contentType) {
     // keys are never reused (they carry a timestamp), so the CDN may keep them
     CacheControl: 'public, max-age=31536000, immutable',
   }));
+  return publicUrlOf(key);
+}
+
+function publicUrlOf(key) {
   return `${config.r2.publicUrl}/${key.split('/').map(encodeURIComponent).join('/')}`;
+}
+
+async function objectExists(key) {
+  const { HeadObjectCommand } = require('@aws-sdk/client-s3');
+  try {
+    await s3().send(new HeadObjectCommand({ Bucket: config.r2.bucket, Key: key }));
+    return true;
+  } catch (err) {
+    if (err.name === 'NotFound' || err.$metadata?.httpStatusCode === 404) return false;
+    throw err;
+  }
 }
 
 async function deleteObject(key) {
@@ -207,7 +222,7 @@ async function uploadImageFrom(src, name, { maxWidth } = {}) {
 }
 
 module.exports = {
-  isConfigured, publicHost, putObject, deleteObject, deleteObjects, listOldKeys, keyOf,
+  isConfigured, publicHost, putObject, publicUrlOf, objectExists, deleteObject, deleteObjects, listOldKeys, keyOf,
   uploadAudio, uploadCoverImage, uploadImage, uploadAvatar, uploadFile, loadBuffer, uploadImageFrom,
   COVER_W, COVER_H,
 };

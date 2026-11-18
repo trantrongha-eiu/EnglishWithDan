@@ -121,6 +121,7 @@ app.use('/api/highlights', require('./routes/highlights'));
 app.use('/api/media',    require('./routes/media'));
 app.use('/api/writing',  require('./routes/writing'));
 app.use('/api/speaking', require('./routes/speaking'));
+app.use('/api/tts',      require('./routes/tts'));
 app.use('/api/shadowing', require('./routes/shadowing'));
 app.use('/api/mock-test', require('./routes/mockTest'));
 app.use('/api/entrance-test', require('./routes/entranceTest'));

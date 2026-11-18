@@ -9,8 +9,13 @@
    Sources, best first (real dictionary recordings; TTS only when none):
      a. Oxford recordings, US then UK (served by Google's dictionary CDN)
      b. dictionaryapi.dev / Wiktionary recordings (US, then UK)
-     c. Web Speech TTS with the clearest English voice available
-     d. Google Translate TTS (no Web Speech at all)
+     c. Neural voice from our API (/api/tts/speech, cached on R2): phrases and
+        word forms no dictionary recorded
+     d. Web Speech TTS with the clearest English voice available
+     e. Google Translate TTS (no Web Speech at all)
+
+   WordAudio.speakNeural(text, { voice }) reads a whole sentence in a chosen
+   neural voice (the Speaking examiner) on the same unlocked <audio> element.
 
    Keeping the tap fast:
    - Words are looked up AND downloaded before the tap: every 🔊 button with
@@ -41,6 +46,20 @@
   var STORE_KEY = 'ews_word_audio_v1', STORE_MAX = 3000;     // word → recording URL
   var MISS_KEY = 'ews_word_audio_miss_v1', MISS_MAX = 2000;  // word → time a miss was confirmed
   var MISS_TTL_MS = 14 * 24 * 3600 * 1000;
+
+  var DEFAULT_API = 'https://englishwithdan.onrender.com/api';
+  var NEURAL_KEY = 'ews_word_audio_neural_v1', NEURAL_MAX = 1000; // short text → MP3 URL
+  var NEURAL_STORE_MAX_LEN = 80;     // sentences stay in memory only
+  var NEURAL_WORD_MAX_LEN = 300;
+  var NEURAL_OFF_KEY = 'ews_tts_off_until';
+  var NEURAL_WORD_BUDGET_MS = 2500;  // longest a tapped phrase waits before Web Speech
+  var NEURAL_SENTENCE_BUDGET_MS = 5000;
+  var NEURAL_OFF_MS = 60 * 1000, NEURAL_DISABLED_OFF_MS = 10 * 60 * 1000;
+
+  var _neuralStored = {};     // persisted subset of _neuralUrls
+  var _neuralUrls = new Map();    // "voice|text" → MP3 URL
+  var _neuralPending = new Map(); // "voice|text" → in-flight request
+  var _cancelPlay = null;     // settles the playback in progress
 
   var _urlCache = new Map();  // lowercased word → recording URL, or '' (none → TTS)
   var _stored = {};
@@ -78,6 +97,76 @@
     });
     if (dropped) writeStore(MISS_KEY, _misses, MISS_MAX);
   })();
+
+  _neuralStored = readStore(NEURAL_KEY);
+  Object.keys(_neuralStored).forEach(function (k) { _neuralUrls.set(k, _neuralStored[k]); });
+
+  // ── Neural voice (server-generated MP3s) ─────────────────────────────
+  function neuralKey(text, voice) { return (voice || '') + '|' + text; }
+
+  function neuralOffUntil() {
+    try { return Number(localStorage.getItem(NEURAL_OFF_KEY)) || 0; } catch (e) { return 0; }
+  }
+  // Signed in, and the service hasn't just said no. Remembered across pages so
+  // an unavailable service doesn't delay the first tap on every page.
+  function neuralUsable() {
+    var token = null;
+    try { token = localStorage.getItem('token'); } catch (e) {}
+    return !!token && typeof fetch === 'function' && Date.now() >= neuralOffUntil();
+  }
+  function pauseNeural(ms) {
+    try { localStorage.setItem(NEURAL_OFF_KEY, String(Date.now() + ms)); } catch (e) {}
+  }
+
+  function rememberNeural(key, text, url) {
+    _neuralUrls.set(key, url);
+    if (text.length <= NEURAL_STORE_MAX_LEN) {
+      _neuralStored[key] = url;
+      writeStore(NEURAL_KEY, _neuralStored, NEURAL_MAX);
+    }
+  }
+  function forgetNeural(text, voice) {
+    var key = neuralKey(text, voice);
+    _neuralUrls.delete(key);
+    if (_neuralStored[key]) { delete _neuralStored[key]; writeStore(NEURAL_KEY, _neuralStored, NEURAL_MAX); }
+  }
+
+  // Resolves the MP3 URL, or '' when the browser voice should be used instead.
+  function neuralUrl(text, voice) {
+    var key = neuralKey(text, voice);
+    if (_neuralUrls.has(key)) return Promise.resolve(_neuralUrls.get(key));
+    if (_neuralPending.has(key)) return _neuralPending.get(key);
+    if (!neuralUsable()) return Promise.resolve('');
+    var api = (window.AuthService && window.AuthService.API) || DEFAULT_API;
+    var body = { text: text };
+    if (voice) body.voice = voice;
+    var p = fetch(api + '/tts/speech', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.getItem('token') },
+      body: JSON.stringify(body),
+    }).then(function (r) {
+      if (r.ok) return r.json();
+      if (r.status !== 400) pauseNeural(r.status === 503 ? NEURAL_DISABLED_OFF_MS : NEURAL_OFF_MS);
+      return null;
+    }).then(function (d) {
+      var url = (d && d.url) || '';
+      if (url) rememberNeural(key, text, url);
+      return url;
+    }).catch(function () {
+      pauseNeural(NEURAL_OFF_MS);
+      return '';
+    }).then(function (url) {
+      _neuralPending.delete(key);
+      return url;
+    });
+    _neuralPending.set(key, p);
+    return p;
+  }
+
+  // A late answer still lands in the cache for the next tap.
+  function withinBudget(p, ms) {
+    return Promise.race([p, new Promise(function (res) { setTimeout(function () { res(''); }, ms); })]);
+  }
 
   // A miss is only remembered across visits when every source answered
   // "no recording" — a timeout or a dictionary outage stays per-page.
@@ -301,7 +390,15 @@
     var a = el();
     return new Promise(function (resolve) {
       var settled = false;
-      function finish(ok) { if (settled) return; settled = true; endedAudio(); resolve(ok); }
+      function finish(ok) {
+        if (settled) return;
+        settled = true;
+        if (_cancelPlay === cancel) _cancelPlay = null;
+        endedAudio();
+        resolve(ok);
+      }
+      function cancel() { finish(true); }
+      _cancelPlay = cancel;
       a.onended = function () { finish(true); };
       a.onerror = function () { finish(false); };
       a.src = url;
@@ -351,11 +448,69 @@
     });
   }
 
+  // No dictionary recording: the neural voice if it can answer in time, else
+  // Web Speech. With nothing to wait for, Web Speech starts inside the tap.
+  function playSynth(w, slow, id) {
+    function fromUrl(url) {
+      return playUrl(url, slow).then(function (ok) {
+        if (ok || id !== _seq) return;
+        forgetNeural(w);
+        return playTts(w, slow);
+      });
+    }
+    var known = _neuralUrls.get(neuralKey(w));
+    if (known) return fromUrl(known);
+    if (w.length > NEURAL_WORD_MAX_LEN || !neuralUsable()) return playTts(w, slow);
+    return withinBudget(neuralUrl(w), NEURAL_WORD_BUDGET_MS).then(function (url) {
+      if (id !== _seq) return;
+      return url ? fromUrl(url) : playTts(w, slow);
+    });
+  }
+
   function stop() {
     _seq++;
     if (_playing) endedAudio();
     if (_el) { try { _el.pause(); } catch (e) {} }
+    if (_cancelPlay) _cancelPlay();
     if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+  }
+
+  // Reads `text` in a neural voice. Resolves 'played', 'stopped' (something
+  // newer took over) or 'failed' (the caller should use its own fallback).
+  function speakNeural(text, opts) {
+    var t = String(text || '').replace(/\s+/g, ' ').trim();
+    var voice = opts && opts.voice;
+    if (!t) return Promise.resolve('failed');
+    var warm = isWarm();
+    stop();
+    var id = _seq;
+    // Runs inside the tap, which is also what unlocks the element on iOS.
+    var lead = warm ? Promise.resolve() : playLead();
+    var found = withinBudget(neuralUrl(t, voice), NEURAL_SENTENCE_BUDGET_MS);
+    return Promise.all([lead, found]).then(function (r) {
+      if (id !== _seq) return 'stopped';
+      var url = r[1];
+      if (!url) return 'failed';
+      // A stalled download must not leave a timed exam waiting forever.
+      var watchdog = setTimeout(function () {
+        if (id !== _seq) return;
+        try { el().pause(); } catch (e) {}
+        if (_cancelPlay) _cancelPlay();
+      }, 8000 + t.length * 120);
+      return playUrl(url, false).then(function (ok) {
+        clearTimeout(watchdog);
+        if (id !== _seq) return 'stopped';
+        if (!ok) forgetNeural(t, voice);
+        return ok ? 'played' : 'failed';
+      });
+    });
+  }
+
+  // Generates and downloads a sentence ahead of time (the next exam question).
+  function prepareNeural(text, opts) {
+    var t = String(text || '').replace(/\s+/g, ' ').trim();
+    if (!t) return;
+    neuralUrl(t, opts && opts.voice).then(function (url) { if (url) probe(url); });
   }
 
   function speak(word, opts) {
@@ -369,11 +524,11 @@
 
     function play(url) {
       if (id !== _seq) return;           // a newer word was requested meanwhile
-      if (!url) return playTts(w, slow);
+      if (!url) return playSynth(w, slow, id);
       return playUrl(url, slow).then(function (ok) {
         if (ok || id !== _seq) return;
         forget(key);                     // stale / broken recording → TTS now
-        return playTts(w, slow);
+        return playSynth(w, slow, id);
       });
     }
 
@@ -427,5 +582,8 @@
     try { window.speechSynthesis.getVoices(); } catch (e) {}
   }
 
-  window.WordAudio = { speak: speak, stop: stop, prefetch: prefetch };
+  window.WordAudio = {
+    speak: speak, stop: stop, prefetch: prefetch,
+    speakNeural: speakNeural, prepareNeural: prepareNeural,
+  };
 })();

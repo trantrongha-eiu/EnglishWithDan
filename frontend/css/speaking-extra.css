@@ -124,3 +124,64 @@
   .sst-hero-title { font-size: 18px; }
   .sst-content { padding: 16px 16px 22px; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   Examiner voice picker (ev- prefix): practice screen + exam preview modal
+   ══════════════════════════════════════════════════════════════ */
+.ev-box { padding: 12px 24px 0; flex-shrink: 0; }
+.ev-box[hidden] { display: none; }
+.ev-box-modal { padding: 0 0 12px; }
+.ev-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+}
+.ev-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+}
+.ev-head::-webkit-details-marker { display: none; }
+.ev-head > .fa-volume-high { color: var(--brand); }
+.ev-current { margin-left: auto; color: var(--text2); font-size: 12px; font-weight: 600; }
+.ev-caret { color: var(--text3); font-size: 11px; transition: transform var(--duration-fast); }
+.ev-card[open] .ev-caret { transform: rotate(180deg); }
+.ev-hint { margin: 2px 0 8px; color: var(--text2); font-size: 12px; }
+.ev-list { display: flex; flex-wrap: wrap; gap: 6px; padding-bottom: 4px; }
+.ev-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 5px 11px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color var(--duration-fast), background var(--duration-fast);
+}
+.ev-chip i { color: var(--text3); font-size: 11px; }
+.ev-name { font-weight: 600; }
+.ev-accent { color: var(--text2); font-size: 12px; }
+.ev-chip:hover { border-color: var(--brand); }
+.ev-chip:focus-visible, .ev-head:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.ev-chip.active { border-color: var(--brand); background: var(--brand-light); }
+.ev-chip.active i, .ev-chip.active .ev-name { color: var(--brand); }
+
+@media (max-width: 768px) {
+  .ev-box { padding: 10px 12px 0; }
+  .ev-box-modal { padding: 0 0 12px; }
+  .ev-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ev-chip { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 7px; min-height: 48px; text-align: left; }
+  .ev-accent { grid-column: 2; font-size: 11px; }
+}

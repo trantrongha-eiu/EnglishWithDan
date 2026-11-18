@@ -44,6 +44,15 @@ module.exports = {
     mistralApiKey: process.env.MISTRAL_API_KEY,
   },
 
+  // Azure Speech neural voices (services/ttsService.js). Unset ⇒ the examiner
+  // picker stays hidden and every page keeps using the browser's voice.
+  tts: {
+    azureKey: (process.env.AZURE_SPEECH_KEY || '').trim(),
+    azureRegion: (process.env.AZURE_SPEECH_REGION || '').toLowerCase().replace(/\s+/g, ''),
+    monthlyCharLimit: parseInt(process.env.TTS_MONTHLY_CHAR_LIMIT, 10) || 450000,
+    userDailyCharLimit: parseInt(process.env.TTS_USER_DAILY_CHAR_LIMIT, 10) || 6000,
+  },
+
   google: {
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
