@@ -304,11 +304,13 @@
   document.body.insertBefore(nav, document.body.firstChild);
 
   // The React app changes route without a page load: keep the Vocab menu right
-  window.addEventListener('hashchange', function () {
+  function _syncAppRoute() {
     document.querySelectorAll('.nav-dd-menu a[href^="/app/#"], a.mobile-nav-sub[href^="/app/#"]').forEach(function (a) {
       a.classList.toggle('active', navChildActive(a.getAttribute('href').slice(1)));
     });
-  });
+  }
+  window.addEventListener('hashchange', _syncAppRoute);
+  window.addEventListener('ews:route', _syncAppRoute); // fired by student-src App.jsx
 
   // ── Account dock (bottom-left corner) ─────────────────────
   // "Về trang quản trị" / avatar (Trang cá nhân) / Đăng xuất used to sit at
@@ -528,6 +530,13 @@
       ham.classList.remove('open');
     }
   });
+  // A link inside the React app changes route without a page load
+  function _closeDrawerOnRoute() {
+    drawer.classList.remove('open');
+    ham.classList.remove('open');
+  }
+  window.addEventListener('hashchange', _closeDrawerOnRoute);
+  window.addEventListener('ews:route', _closeDrawerOnRoute);
   // Close mobile nav if window is resized to desktop width (prevents overlay getting stuck)
   window.addEventListener('resize', function () {
     if (window.innerWidth > 1024 && drawer.classList.contains('open')) {

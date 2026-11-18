@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate, useOutletContext, useParams, useSearchParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useBlocker, useNavigate, useOutletContext, useParams, useSearchParams } from 'react-router-dom';
 import { apiFetch } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
 import WbwDrill from '../../components/WbwDrill';
@@ -559,7 +559,8 @@ export default function Practice() {
     return () => { alive = false; };
   }, [unitNumber, unitAllowed, unitReload]);
 
-  const words0 = book ? book.words || [] : unit ? unit.words : srcData?.words || null;
+  const srcWords = srcData?.words;
+  const words0 = useMemo(() => (book ? book.words || [] : unit ? unit.words : srcWords || null), [book, unit, srcWords]);
   const from = params.get('from');
   const listBack = from === 'paraphrase' ? '/dashboard/paraphrase' : from === 'topics' ? '/dashboard/topics' : '/dashboard';
   const backTo = bookId ? `/dashboard/book/${bookId}` : listBack;
@@ -571,9 +572,16 @@ export default function Practice() {
   }, [unitAllowed, listBack, navigate]);
 
   const rawMode = LEGACY_MODES[params.get('mode')] || params.get('mode');
-  const studying = !!unitNumber && (rawMode === 'study' || !MODE_KEYS.has(rawMode));
+  // every session has the Study tab; a Paraphrase Unit opens on it
+  const studying = rawMode === 'study' || (!!unitNumber && !MODE_KEYS.has(rawMode));
   const mode = studying ? 'study' : MODE_KEYS.has(rawMode) ? rawMode : 'mixed';
   const set = params.get('set'); // 'hard' | null
+  const bookName = book?.name;
+  const studyUnit = useMemo(() => {
+    if (unit) return unit;
+    if (!words0) return null;
+    return { title: bookName || '', words: set === 'hard' ? words0.filter(w => (w.wrongCount || 0) >= 3) : words0 };
+  }, [unit, words0, set, bookName]);
   const [session, setS] = useState(null);
   const s = studying ? null : session; // the Study tab has no session
   const [startKey, setStartKey] = useState(0); // bump = restart
@@ -744,6 +752,10 @@ export default function Practice() {
 
   // Some answer given and the session not finished → leaving needs a word
   const inSession = !!s && !s.done && !s.clozeEmpty && s.correct + s.wrong > 0;
+  // Back button, browser Back, sidebar…: leaving mid-session asks first
+  const [leaving, setLeaving] = useState(false); // "Dừng lại" on a reached goal
+  const blocker = useBlocker(({ currentLocation, nextLocation }) => inSession && !leaving && currentLocation.pathname !== nextLocation.pathname);
+  useEffect(() => { if (leaving) navigate(backTo); }, [leaving, navigate, backTo]);
   const askQuit = useCallback((go) => {
     const cur = sRef.current;
     if (cur && !cur.done && cur.correct + cur.wrong > 0) setQuit({ go });
@@ -784,7 +796,7 @@ export default function Practice() {
     restart();
   };
   const playAll = () => { practiceAll.current = true; restart(); };
-  const back = () => askQuit(() => navigate(backTo));
+  const back = () => navigate(backTo);
 
   if (!unitAllowed) return null;
   if (!bookId && !src && !unitNumber) return <div className="book-view-error"><p>Không rõ bộ từ cần luyện.</p></div>;
@@ -825,7 +837,7 @@ export default function Practice() {
       </div>
       <div className="mode-tabs-wrap">
         <div className="mode-tabs">
-          {(unitNumber ? [STUDY_TAB, ...MODES] : MODES).map(m => (
+          {[STUDY_TAB, ...MODES].map(m => (
             <button key={m.key} className={`tab-btn${m.key === mode ? ' active' : ''}`} onClick={() => switchMode(m.key)} title={m.title}>
               <i className={`fas ${m.icon}`} /> {m.label}
             </button>
@@ -835,9 +847,12 @@ export default function Practice() {
 
       <div className="mode-body" id="practice-area">
         <VocabGoalCards goals={goals} words={words0} inSession />
-        {studying && unit && <UnitStudy unit={unit} />}
+        {studying && studyUnit && <UnitStudy unit={studyUnit} />}
         {quit && s && (
           <QuitModal s={s} onStay={() => setQuit(null)} onLeave={() => { const { go } = quit; setQuit(null); go(); }} />
+        )}
+        {blocker.state === 'blocked' && s && (
+          <QuitModal s={s} onStay={() => blocker.reset()} onLeave={() => blocker.proceed()} />
         )}
         {confirmSwitch && (
           <ConfirmDialog
@@ -864,7 +879,7 @@ export default function Practice() {
               setReached(null);
               const cur = sRef.current;
               if (cur && !cur.done) finish(cur); // answers so far count for the homework
-              navigate(backTo);
+              setLeaving(true);
             }}
           />
         )}
@@ -884,8 +899,8 @@ export default function Practice() {
 
         {s?.clozeEmpty && <ClozeEmpty onSwitch={switchMode} />}
         {s?.done && (
-          <Results s={s} hammer={!!hammerFor && hammerFor === s.streak} backLabel={unit ? 'View words' : src ? 'Về trang chính' : 'Về sổ từ'}
-            onRetryWrong={retryWrong} onRestart={restart} onBack={unit ? switchToStudy : back} />
+          <Results s={s} hammer={!!hammerFor && hammerFor === s.streak} backLabel="View words"
+            onRetryWrong={retryWrong} onRestart={restart} onBack={switchToStudy} />
         )}
 
         {item && (

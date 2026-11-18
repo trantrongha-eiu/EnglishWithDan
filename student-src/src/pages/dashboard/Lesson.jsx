@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate, useOutletContext, useParams, useSearchParams } from 'react-router-dom';
+import { useBlocker, useNavigate, useOutletContext, useParams, useSearchParams } from 'react-router-dom';
 import { apiFetch } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
 import WbwDrill from '../../components/WbwDrill';
@@ -293,11 +293,12 @@ function LessonScreen({ lessonId, backTo }) {
   const [quiz, setQuiz] = useState(null);
   const [session, setSession] = useState(null); // last finished run
   const [saveFailed, setSaveFailed] = useState(null); // retry function
-  const [askQuit, setAskQuit] = useState(false);
   const [saving, setSaving] = useState(false); // last answer given, result on its way
   const [, setSavedTick] = useState(0);
   const quizRef = useRef(null);
   const inProgress = !!quiz;
+  // Back button, browser Back, sidebar…: anything leaving a running quiz asks first
+  const blocker = useBlocker(({ currentLocation, nextLocation }) => inProgress && currentLocation.pathname !== nextLocation.pathname);
   const inProgressRef = useRef(false);
   useEffect(() => { inProgressRef.current = inProgress; setActivePractice(inProgress); }, [inProgress]);
   useEffect(() => () => setActivePractice(false), []);
@@ -420,7 +421,6 @@ function LessonScreen({ lessonId, backTo }) {
   }, [answered, next]);
 
   const leave = () => navigate(backTo);
-  const back = () => { if (inProgress) setAskQuit(true); else leave(); };
 
   if (!allowed) return null;
   if (loaded?.error) {
@@ -444,7 +444,7 @@ function LessonScreen({ lessonId, backTo }) {
   return (
     <div id="view-lesson" className="practice-shell" style={{ display: 'flex' }}>
       <div className="unit-header-bar">
-        <button className="btn btn-ghost btn-sm" onClick={back}>← Back</button>
+        <button className="btn btn-ghost btn-sm" onClick={leave}>← Back</button>
         <h3 id="lesson-title">{lesson ? lesson.title : 'Đang tải...'}</h3>
         <div />
       </div>
@@ -515,9 +515,10 @@ function LessonScreen({ lessonId, backTo }) {
         </div>
       </div>
 
-      {askQuit && (
+      {blocker.state === 'blocked' && (
         <ConfirmDialog title="Thoát bài quiz?" message="Bạn đang làm dở quiz, tiến độ lần này sẽ không được lưu."
-          confirmLabel="Thoát" confirmClass="btn-primary" onClose={() => setAskQuit(false)} onConfirm={() => { commit(null); leave(); }} />
+          confirmLabel="Thoát" confirmClass="btn-primary" onClose={() => {}} onCancel={() => blocker.reset()}
+          onConfirm={() => { commit(null); blocker.proceed(); }} />
       )}
       {saveFailed && (
         <ConfirmDialog title="Chưa lưu được kết quả" message="Chưa lưu được kết quả bài học — bài tập về nhà sẽ chưa được tính. Thử lưu lại ngay?"

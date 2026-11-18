@@ -30,14 +30,15 @@ export default function Modal({ title, onClose, children, footer, size = 'modal-
   );
 }
 
-export function ConfirmDialog({ title, message, confirmLabel = 'Xác nhận xoá', confirmClass = 'btn-danger', onConfirm, onClose }) {
+export function ConfirmDialog({ title, message, confirmLabel = 'Xác nhận xoá', confirmClass = 'btn-danger', onConfirm, onClose, onCancel }) {
+  const cancel = onCancel || onClose; // Huỷ / Esc / click outside
   useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') { e.stopPropagation(); onClose(); } };
+    const onKey = (e) => { if (e.key === 'Escape') { e.stopPropagation(); cancel(); } };
     document.addEventListener('keydown', onKey, true);
     return () => document.removeEventListener('keydown', onKey, true);
-  }, [onClose]);
+  }, [cancel]);
   return (
-    <div className="modal-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+    <div className="modal-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) cancel(); }}>
       <div className="modal-box modal-sm" role="alertdialog" aria-modal="true">
         <div className="modal-body" style={{ textAlign: 'center', padding: '28px 24px' }}>
           <div className="danger-icon">⚠️</div>
@@ -45,7 +46,7 @@ export function ConfirmDialog({ title, message, confirmLabel = 'Xác nhận xoá
           <p style={{ color: 'var(--text2)', fontSize: 14 }}>{message}</p>
         </div>
         <div className="modal-footer">
-          <button className="btn btn-ghost" onClick={onClose}>Huỷ</button>
+          <button className="btn btn-ghost" onClick={cancel}>Huỷ</button>
           <button className={`btn ${confirmClass}`} onClick={() => { onClose(); onConfirm(); }} autoFocus>{confirmLabel}</button>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import { apiFetch } from '../../utils/api';
 import { bindDict, openUpgrade, showBadges, spawnConfetti } from '../../utils/shell';
+import { useStreakFace } from '../../utils/streak';
 import { useToast } from '../../contexts/ToastContext';
 import { ConfirmDialog } from '../../components/Modal';
 import WordModal from './WordModal';
@@ -73,6 +74,47 @@ function WordRow({ w, selected, onSelect, onStatus, onEdit, onDelete }) {
 
 // Keyed by bookId, so switching notebooks starts with a fresh search,
 // filter and selection.
+function StreakBanner({ stats }) {
+  const { state, mascot, fire, num } = useStreakFace(stats);
+  return (
+    <div className="mascot-banner">
+      <div className="mascot-panda" ref={mascot}>🐼</div>
+      <div className="mascot-speech">
+        <div className="mascot-streak-row">
+          <span className="mascot-fire" ref={fire}><i className="fas fa-fire" /></span>
+          <span className="mascot-streak-num" ref={num}>{stats?.streak ?? 0}</span>
+          <span className="mascot-streak-label">day streak</span>
+        </div>
+        <div className="mascot-msg">{stats ? state.msg : "Let's study! I believe in you! 💪"}</div>
+      </div>
+    </div>
+  );
+}
+
+// "Mách nhỏ": shown on every notebook until the student closes it
+const ADD_TIP_KEY = 'dash_book_add_tip_dismissed';
+function AddTip() {
+  const [open, setOpen] = useState(() => { try { return localStorage.getItem(ADD_TIP_KEY) !== '1'; } catch { return true; } });
+  if (!open) return null;
+  return (
+    <div className="book-add-tip">
+      <span className="book-add-tip-emoji">💡</span>
+      <div className="book-add-tip-body">
+        <strong>Mách nhỏ:</strong> Có nhiều cách thêm từ vào sổ này —
+        <ul>
+          <li>Khi đang <strong>làm bài</strong> (Reading, Listening, luyện tập…): <strong>double-click</strong> vào một từ hoặc <strong>bôi đen</strong> một cụm để tra nghĩa rồi lưu ngay.</li>
+          <li>Bấm <strong>+ Add word</strong> ở đây để nhập tay.</li>
+          <li>Ở các <strong>danh sách từ vựng có sẵn</strong> (bài học từ vựng), bấm <strong>“Lưu tất cả”</strong> để lưu cả danh sách vào sổ.</li>
+        </ul>
+      </div>
+      <button type="button" className="book-add-tip-close" aria-label="Đóng mách nhỏ" onClick={() => {
+        setOpen(false);
+        try { localStorage.setItem(ADD_TIP_KEY, '1'); } catch { /* private mode */ }
+      }}>×</button>
+    </div>
+  );
+}
+
 const CLASSIFY_KEY = 'dash_classify_float_seen';
 function readClassifySeen() {
   try { return JSON.parse(localStorage.getItem(CLASSIFY_KEY) || '{}') || {}; } catch { return {}; }
@@ -91,7 +133,7 @@ function BookView({ bookId }) {
   const navigate = useNavigate();
   const toast = useToast();
   const location = useLocation();
-  const { book: cached, setBook, loadBook, bookError, loadBooks, books, setBooks, openBookMenu, vocabGoals, openGuide } = useOutletContext();
+  const { stats, book: cached, setBook, loadBook, bookError, loadBooks, books, setBooks, openBookMenu, vocabGoals, openGuide } = useOutletContext();
   const book = cached?._id === bookId ? cached : null;
 
   const [query, setQuery] = useState('');
@@ -376,9 +418,11 @@ function BookView({ bookId }) {
         </div>
       </div>
       <div className="book-progress-bar"><div className="book-progress-fill" style={{ width: `${pct}%` }} /></div>
+      <StreakBanner stats={stats} />
 
       {/* homework "học N từ trong sổ" this book counts for */}
       <VocabGoalCards goals={goalsForBook(vocabGoals, book)} words={words} onStart={() => practice('flashcard')} />
+      <AddTip />
 
       <div className="book-action-bar">
         <button className="btn btn-primary btn-sm" onClick={() => practice('mixed')}
@@ -387,6 +431,9 @@ function BookView({ bookId }) {
         </button>
         <button className="btn btn-ghost btn-sm" onClick={() => practice('flashcard')}>
           <i className="fas fa-sync-alt" /> Flashcard
+        </button>
+        <button className="btn btn-ghost btn-sm" onClick={() => practice('study')}>
+          <i className="fas fa-eye" /> Preview
         </button>
         <button className="btn btn-ghost btn-sm" onClick={() => setEditing(null)}>
           <i className="fas fa-plus" /> Add word
