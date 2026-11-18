@@ -1,0 +1,172 @@
+/* Global overrides for the React student app.
+   The design system lives in /css/tokens.css + /css/components.css
+   (linked in index.html). Only app-shell-level rules go here. */
+
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-family, 'Plus Jakarta Sans', sans-serif);
+  background: var(--bg, #f7f8fc);
+  color: var(--text, #111827);
+  min-height: 100vh;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Mobile nav overlay */
+.mobile-nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mobile-nav-drawer {
+  background: var(--surface, #fff);
+  width: min(320px, 90vw);
+  height: 100%;
+  overflow-y: auto;
+  padding: 16px 0 32px;
+  box-shadow: var(--shadow-lg);
+}
+
+.mobile-nav-close {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 4px 16px 12px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text2);
+}
+
+/* Route loading fallback */
+.route-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  color: var(--text2);
+  font-size: 15px;
+}
+
+/* Toast container (mirrors shared/toast.js positioning) */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius, 14px);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: var(--shadow-md);
+  min-width: 260px;
+  max-width: 420px;
+  pointer-events: auto;
+}
+
+.toast.success { border-color: var(--success, #16a34a); }
+.toast.error   { border-color: var(--danger, #dc2626); }
+.toast.warning { border-color: var(--warning, #d97706); }
+
+/* ── Dashboard: notebook sidebar as a drawer on phones ──
+   dashboard.css hides .vocab-sidebar under 768px (the static page uses its
+   own bottom sheet); here the same sidebar slides in as a drawer. */
+.dash-mobile-books-btn { display: none; }
+@media (max-width: 768px) {
+  .vocab-sidebar.mobile-open {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh;
+    width: min(300px, 85vw);
+    z-index: 1001;
+    box-shadow: var(--shadow-lg);
+  }
+  .dash-mobile-books-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: fixed;
+    left: 16px;
+    bottom: 20px;
+    z-index: 900;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 999px;
+    background: var(--brand);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+  }
+}
+
+/* ── Book view ── */
+.book-view-error {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--text2);
+}
+.book-view-error .btn { margin-top: 12px; }
+.words-table .word-actions { display: flex; gap: 4px; }
+.stat-dot { cursor: pointer; }
+
+/* ── Practice ── */
+.practice-shell { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.practice-shell .mode-body { flex: 1; overflow-y: auto; }
+.practice-save-state { font-size: 12px; color: var(--text3); margin-left: auto; }
+.practice-save-state.is-retry { color: var(--red, #e53935); }
+.practice-prompt-meaning { font-size: 20px; font-weight: 700; margin: 6px 0 4px; }
+.practice-listen-btn { font-size: 34px; background: none; border: none; cursor: pointer; }
+.practice-feedback { margin-top: 12px; }
+
+/* Note box in the move / merge notebook modals (inline style on the static page) */
+.move-words-note {
+  background: var(--warning-light);
+  border: 1px solid rgba(217,119,6,.35);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--warning);
+  line-height: 1.6;
+}
+/* Touch screens have no hover — keep the notebook ⋯ button visible */
+@media (hover: none) {
+  .vocab-sidebar .book-menu-btn { opacity: 1; }
+  .vocab-sidebar .book-drag-handle { display: none; }
+}
+
+/* Browse cards / suggestion chips / sidebar tabs are links here (buttons on
+   the static page) — no underline, keep the button colours */
+a.pb-card, a.pb-card *, a.pb-suggest-chip, a.pb-suggest-chip *, a.practice-tab, .pb-head a.btn { text-decoration: none; }
+a.pb-card, a.pb-suggest-chip { color: inherit; }

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
+    <script>
+      // Apply saved theme + accent before first paint (mirrors theme.js)
+      (function () {
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+        try {
+          var acc = JSON.parse(localStorage.getItem('profileAccent') || 'null');
+          if (acc && acc.primary && acc.dark) {
+            var S = document.documentElement.style;
+            S.setProperty('--brand', acc.primary);
+            S.setProperty('--brand-dark', acc.dark);
+            var h = acc.primary.replace('#', '');
+            if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+            var r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+            if (!isNaN(r)) S.setProperty('--brand-light', 'rgba('+r+','+g+','+b+',0.12)');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EnglishWithDan</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Reuse existing design system CSS (versioned files served by Render) -->
+    <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb" />
+    <link rel="stylesheet" href="/css/motion.css?v=cf232e2585" />
+    <link rel="stylesheet" href="/css/components.css?v=bb5d514434" />
+    <link rel="stylesheet" href="/css/mobile.css?v=1285106fee" />
+    <link rel="stylesheet" href="/css/dashboard.css?v=e8117cc144" />
+    <!-- Shared pronunciation engine (window.WordAudio): Oxford recordings, TTS fallback -->
+    <script src="/js/shared/word-audio.js?v=28a7a7408e" defer></script>
+    <!-- Shared "gõ từng chữ" typing drill (window.WbwDrill) for Listen / Dịch -->
+    <script src="/js/shared/wbw-drill.js?v=c4543d57c2" defer></script>
+    <script type="module" crossorigin src="/app/assets/index-Buq6AeB8.js"></script>
+    <link rel="stylesheet" crossorigin href="/app/assets/index-yJbkF0sC.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

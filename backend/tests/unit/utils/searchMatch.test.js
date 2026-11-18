@@ -18,6 +18,10 @@ describe('searchMatch', () => {
       const { adminModule } = require('../../../../scripts/sync-search-match.js');
       expect(read('admin-src/src/utils/searchMatch.js')).toBe(adminModule(src));
     });
+    it('student-src/src/utils/searchMatch.js', () => {
+      const { adminModule } = require('../../../../scripts/sync-search-match.js');
+      expect(read('student-src/src/utils/searchMatch.js')).toBe(adminModule(src));
+    });
   });
 
   describe('matches', () => {

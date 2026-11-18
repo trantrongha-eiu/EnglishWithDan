@@ -22,7 +22,8 @@ function adminModule(source) {
 if (require.main === module) {
   fs.writeFileSync(path.join(ROOT, 'frontend/js/shared/search-match.js'), src);
   fs.writeFileSync(path.join(ROOT, 'admin-src/src/utils/searchMatch.js'), adminModule(src));
-  console.log('search-match synced → frontend + admin-src');
+  fs.writeFileSync(path.join(ROOT, 'student-src/src/utils/searchMatch.js'), adminModule(src));
+  console.log('search-match synced → frontend + admin-src + student-src');
 }
 
 module.exports = { adminModule };
