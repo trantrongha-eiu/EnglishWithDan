@@ -304,7 +304,7 @@ module.exports = {
     },
     {
       ref: 'M1-U05-L3', title: 'Mindset 1 · Unit 5 — Which T-shirts sell best?',
-      description: 'A shop owner talks about T-shirts.', partNumber: 2, audioFile: 'Mindset_L1_42.mp3', transcript: T42 + '\n\n' + T43 + '\n\n' + T44,
+      description: 'A shop owner talks about T-shirts.', partNumber: 2, audioFile: 'Mindset_L1_42.mp3', transcript: T42,
       questionGroups: [
         qMcq(1, 'Read the question and match the options with their paraphrases. Then listen and choose the correct answer, A, B or C. (Ex. 6)', [
           ['What kind of T-shirts does the man sell most of?', ['T-shirts with a picture on them', 'T-shirts with words on them', 'plain T-shirts'], 'C', lx('Người đàn ông bán loại áo phông nào nhiều nhất?', 'Cuối bài.', ["I've stopped designing T-shirts with writing on them… so now we sell more T-shirts with nothing on them at all"], 'nothing on them = plain. Ảnh và chữ chỉ là distractor.')],

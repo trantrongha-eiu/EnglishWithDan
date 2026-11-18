@@ -71,23 +71,29 @@ function E_STATE(cfg, exs) {
   cfg.setup({ state: { exercises: exs } });
 }
 
-test('"Bài tiếp theo" goes to the unpassed test between two exercises, then back to the next exercise', () => {
+// Book-order navigation (c3612dfa / dbc6b254): "Bài tiếp theo" ALWAYS opens
+// the book's next test (passed or not), and the test returns with
+// &after=<its id> so the page continues with the step after it.
+const P1 = 'aaaaaaaaaaaaaaaaaaaaaaa1', P2 = 'aaaaaaaaaaaaaaaaaaaaaaa2';
+const readingAt = (title, step, id, result) => ({ kind: 'reading', title, step, url: '/reading.html?passageId=' + id, result });
+
+test('"Bài tiếp theo" goes to the test between two exercises; it returns with &after=', () => {
   const cfg = loadCfg();
-  const l = lesson([reading('Blood is thicker than water (Ex. 5–8)', 2), reading('Exam skills (Ex. 12)', 4)]);
+  const l = lesson([readingAt('Blood is thicker than water (Ex. 5–8)', 2, P1), readingAt('Exam skills (Ex. 12)', 4, P2)]);
   expect(cfg.nextStep(l, 0, exercises)).toBeNull();
   const nx = cfg.nextStep(l, 1, exercises);
   expect(nx.label).toBe('Tiếp theo: bài Reading “Blood is thicker than water”');
   const back = decodeURIComponent(nx.href.split('returnTo=')[1]);
-  expect(back).toBe('/mindset-1.html?lesson=M1-U01-L2&ex=M1-U01-L2-E03');
+  expect(back).toBe('/mindset-1.html?lesson=M1-U01-L2&after=' + P1);
   // the end-of-lesson screen leads to the Exam skills test
   expect(cfg.lessonDoneNext(l, exercises).label).toContain('Exam skills');
 });
 
-test('a passed test is not forced again; two tests in a row come back to the step list', () => {
+test('a passed test is still the next step; two tests in a row chain', () => {
   const cfg = loadCfg();
-  const passed = lesson([reading('Blood (Ex. 5)', 2, { total: 7, correct: 6, percent: 86 })]);
-  expect(cfg.nextStep(passed, 1, exercises)).toBeNull();
-  const two = lesson([reading('One (Ex. 5)', 2), reading('Two (Ex. 5)', 2)]);
+  const passed = lesson([readingAt('Blood (Ex. 5)', 2, P1, { total: 7, correct: 6, percent: 86 })]);
+  expect(cfg.nextStep(passed, 1, exercises).label).toContain('Blood');
+  const two = lesson([readingAt('One (Ex. 5)', 2, P1), readingAt('Two (Ex. 5)', 2, P2)]);
   const back = decodeURIComponent(cfg.nextStep(two, 1, exercises).href.split('returnTo=')[1]);
-  expect(back).toBe('/mindset-1.html?lesson=M1-U01-L2');
+  expect(back).toBe('/mindset-1.html?lesson=M1-U01-L2&after=' + P1);
 });

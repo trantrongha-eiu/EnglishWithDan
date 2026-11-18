@@ -1863,13 +1863,14 @@ function renderMatchingOptionsGroup(group, isReview) {
         const letter = optLetters[i];
         const isUsed = !isReview && !reuse &&
             questions.some(q => state.answers[q.questionNumber] === letter);
+        // Only the letter square drags / picks — the option text stays
+        // selectable so the student can highlight it.
         return `<div class="mo-opt-row${isUsed ? ' mo-opt-used' : ''}"
                     data-value="${letter}" data-groupid="${groupId}"
-                    data-reuse="${reuse ? 1 : 0}"
-                    draggable="${isReview ? 'false' : 'true'}"
-                    ondragstart="ltDragStart(event,'${escH(letter)}')"
-                    onclick="${isReview ? '' : `ltClickMOChip('${escH(letter)}','${groupId}')`}">
-                    <span class="mo-opt-letter">${letter}</span>
+                    data-reuse="${reuse ? 1 : 0}">
+                    <span class="mo-opt-letter${isReview ? '' : ' mo-opt-handle'}"
+                        draggable="${isReview ? 'false' : 'true'}"
+                        ${isReview ? '' : `ondragstart="ltDragStart(event,'${escH(letter)}')" onclick="ltClickMOChip('${escH(letter)}','${groupId}')" title="Kéo thả hoặc bấm để điền"`}>${letter}</span>
                     <span class="mo-opt-text">${escHtml(opt)}</span>
                 </div>`;
     }).join('');
@@ -3322,7 +3323,7 @@ function setupHighlight() {
         // sits inside a nested <label> (not a flex item's direct text node),
         // so surroundContents() splitting it doesn't create new flex items —
         // safe to allow highlighting inside them.
-        if (e.target.closest('input, textarea, select, button, .drag-chip, .drop-zone, .lt-drop')) return;
+        if (e.target.closest('input, textarea, select, button, .drag-chip, .drop-zone, .lt-drop, .mo-opt-handle')) return;
         const sel = window.getSelection();
         if (!sel || sel.isCollapsed || sel.rangeCount === 0) return;
         const range = sel.getRangeAt(0);

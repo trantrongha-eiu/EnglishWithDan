@@ -712,14 +712,17 @@ body.tool-hl .check-box { user-select: none; }
   gap: 12px;
   padding: 12px 16px;
   border-bottom: 1px solid #eff0f2;
-  cursor: pointer;
   transition: background .13s;
-  user-select: none;
   line-height: 1.5;
 }
 .mo-opt-row:last-child { border-bottom: none; }
-.mo-opt-row:hover:not(.mo-opt-used):not([draggable="false"]) { background: #eff6ff; }
-.mo-opt-row.mo-opt-used { opacity: .38; pointer-events: none; }
+.mo-opt-row:hover:not(.mo-opt-used) { background: #eff6ff; }
+/* Used letter: faded + not draggable, but its text can still be highlighted. */
+.mo-opt-row.mo-opt-used { opacity: .38; }
+.mo-opt-row.mo-opt-used .mo-opt-handle { pointer-events: none; }
+.mo-opt-handle { cursor: grab; user-select: none; -webkit-user-drag: element; }
+.mo-opt-handle:active { cursor: grabbing; }
+.mo-opt-handle:hover { box-shadow: 0 0 0 3px #bfdbfe; }
 .mo-opt-letter {
   min-width: 26px; height: 26px;
   background: #1d4ed8; color: #fff;
