@@ -41,9 +41,9 @@ export default function WordModal({ bookId, word, onClose, onSaved }) {
 
   useEffect(() => {
     if (isEdit) return undefined;
+    const id = ++seq.current; // a lookup still running is for an older spelling
     const w = form.word.trim();
     if (w.length < 2) return undefined;
-    const id = ++seq.current;
     const t = setTimeout(async () => {
       setLookup({ for: w, loading: true });
       const res = await lookupWord(w).catch(() => null);
@@ -62,7 +62,13 @@ export default function WordModal({ bookId, word, onClose, onSaved }) {
 
   const set = (key, val, byUser = true) => {
     if (byUser) touched.current.add(key);
-    setForm(f => ({ ...f, [key]: val }));
+    setForm((f) => {
+      const next = { ...f, [key]: val };
+      // the phonetic belongs to the word that was looked up
+      if (!isEdit && key === 'word' && !touched.current.has('phonetic')) next.phonetic = '';
+      return next;
+    });
+    if (!isEdit && key === 'word') setLookup(null);
   };
 
   async function save() {

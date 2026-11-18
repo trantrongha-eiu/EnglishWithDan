@@ -12,7 +12,7 @@ import {
   buildQuizQueue, requeueQuestion, letterHint, savedTerms, markTermsSaved, savedCount, quizUnlocked,
 } from '../../utils/lessonQuiz';
 import {
-  bindDict, mascotHtml, openUpgrade, resultImage, scoreMessage, setActivePractice, spawnConfetti,
+  bindDict, mascotHtml, openUpgrade, resultImage, scoreMessage, setActivePractice, spawnConfetti, useLeaveWarning,
 } from '../../utils/shell';
 
 // Vocab Topic lesson: Learn / Quiz / Results (port of dashboard-lesson.js).
@@ -106,7 +106,7 @@ function TypedQuestion({ q, answered, onAnswer }) {
       ) : <div className="question-text">{q.sentence}</div>}
       <div className="fb-meaning-hint"><i className="fas fa-lightbulb" /> Gợi ý (nghĩa): {q.word.meaning || ''}</div>
       <div className="listen-hint">💡 {letterHint(word, 'vi')}</div>
-      {!answered && <WbwDrill answer={word} onDone={done} placeholder={listen ? 'Nhập từ bạn vừa nghe...' : 'Nhập từ còn thiếu...'} />}
+      {!answered && <WbwDrill answer={word} onDone={done} hint placeholder={listen ? 'Nhập từ bạn vừa nghe...' : 'Nhập từ còn thiếu...'} />}
     </>
   );
 }
@@ -302,6 +302,7 @@ function LessonScreen({ lessonId, backTo }) {
   const inProgressRef = useRef(false);
   useEffect(() => { inProgressRef.current = inProgress; setActivePractice(inProgress); }, [inProgress]);
   useEffect(() => () => setActivePractice(false), []);
+  useLeaveWarning(inProgress); // closing the tab, or a site-menu link
 
   const allowed = hasPremiumAccess();
   useEffect(() => {

@@ -2,6 +2,7 @@
 // Ported from frontend/js/dashboard.js (+ dashboard-audio.js); keep the
 // rules in step with the old page while both exist.
 import SearchMatch from './searchMatch';
+import { isGoalFresh } from './vocabGoal';
 
 export const VOCAB_BOOK_MAX_WORDS = 1000;
 
@@ -48,11 +49,12 @@ export function normAnswer(s) {
 }
 
 /* ── Smart book session ──
-   Same rule as dashboard.js _buildSmartBookSession (minus the homework-goal
-   boost, which lives in the homework card the React app doesn't have yet):
-   mastered words not due for review are hidden except a light ~10% sample,
-   the rest are ordered by need, and "hay sai" words get a 2nd rep 5–9
-   questions later. */
+   Same rule as dashboard.js _buildSmartBookSession: mastered words not due
+   for review are hidden except a light ~10% sample, the rest are ordered by
+   need, and "hay sai" words get a 2nd rep 5–9 questions later. With an open
+   homework goal ("học N từ"), words that would still count for it come
+   first, and hidden mastered ones return if the goal could not be reached
+   without them. */
 const DAY_MS = 86400000;
 const isMastered = w => w.status === 'da-thuoc' || (w.srsBox || 0) >= 3;
 const isWeak = w => (w.wrongCount || 0) >= 3 || w.lastPracticeCorrect === false;
@@ -64,13 +66,27 @@ function dueAt(w) {
   return t;
 }
 
-export function buildSmartSession(words) {
+export function buildSmartSession(words, goals = []) {
   const now = Date.now();
   const core = [], restMastered = [];
   for (const w of words) (isMastered(w) && dueAt(w) > now ? restMastered : core).push(w);
 
+  const openGoals = goals.filter(g => !g.completed);
+  for (const g of openGoals) {
+    if (words.length < g.target) continue;
+    const fresh = w => isGoalFresh(g, w);
+    const counted = words.filter(w => !fresh(w)).length;
+    let pull = g.target - counted - core.filter(fresh).length;
+    for (let i = 0; pull > 0 && i < restMastered.length;) {
+      if (fresh(restMastered[i])) { core.push(restMastered.splice(i, 1)[0]); pull--; } else i++;
+    }
+  }
+  const goalFresh = new Set();
+  for (const g of openGoals) for (const w of words) if (isGoalFresh(g, w)) goalFresh.add(w);
+
   const score = (w) => {
     let s = (w.srsBox || 0) === 0 && !isMastered(w) ? 3 : isMastered(w) ? 0.5 : 2;
+    if (goalFresh.has(w)) s += 6;
     s += Math.min(w.wrongCount || 0, 6) * 0.5;
     if (w.lastPracticeCorrect === false) s += 2;
     const overdueDays = w.nextReviewAt ? (now - new Date(w.nextReviewAt).getTime()) / DAY_MS : 0;

@@ -9,7 +9,7 @@ import BookMenu from './dashboard/BookMenu';
 import DifficultWordsModal from './dashboard/DifficultWordsModal';
 import GuideModal from './dashboard/GuideModal';
 import { hasPremiumAccess } from '../utils/plan';
-import { autoShowLearningPopup, isActivePractice } from '../utils/shell';
+import { autoShowLearningPopup, isActivePractice, openUpgrade } from '../utils/shell';
 
 // Vocab notebook page shell: notebook sidebar + the routed view
 //   /dashboard                         → Welcome (streak, weekly progress)
@@ -72,6 +72,16 @@ export default function Dashboard() {
   const loadWeek = useCallback(() => apiFetch('/user/activity-heatmap?days=8')
     .then((res) => { if (res.activity) setWeekDays(buildWeekDays(res.activity)); })
     .catch(() => { /* non-critical */ }), []);
+
+  const loadStats = useCallback(() => apiFetch('/user/stats')
+    .then((r) => { if (r.success) setStats(r.stats); })
+    .catch(() => { /* non-critical */ }), []);
+
+  // 🔥 sidebar badge (premium-only endpoint)
+  const loadDifficultCount = useCallback(() => {
+    if (!hasPremiumAccess()) return;
+    apiFetch('/difficult-words').then(d => setDwCount((d.words || []).length)).catch(() => {});
+  }, []);
 
   const loadBook = useCallback(async (id, { quiet = false } = {}) => {
     loadingId.current = id;
@@ -136,17 +146,21 @@ export default function Dashboard() {
     loadHomework();
     apiFetch('/vocabulary-lessons').then(d => setLessons(d.lessons || [])).catch(() => setLessons([]));
     apiFetch('/vocab/units').then(d => setUnits(Array.isArray(d) ? d : [])).catch(() => setUnits([]));
-    // 🔥 badge (premium-only endpoint)
-    if (hasPremiumAccess()) apiFetch('/difficult-words').then(d => setDwCount((d.words || []).length)).catch(() => {});
-    apiFetch('/user/stats').then(r => { if (r.success) setStats(r.stats); }).catch(() => {});
-  }, [loadBooks, loadWeek, loadHomework]);
+    loadDifficultCount();
+    loadStats();
+  }, [loadBooks, loadWeek, loadHomework, loadDifficultCount, loadStats]);
 
-  // Entry points nav.js and the learning popups call on the vocab home
+  // Entry points nav.js and the learning popups call on the vocab home.
+  // The review lists are Premium-only: a locked account gets the upgrade popup.
   useEffect(() => {
+    const review = (src) => () => {
+      if (hasPremiumAccess()) navigate(`/dashboard/practice?src=${src}`);
+      else openUpgrade();
+    };
     const hooks = {
-      openReviewDueModal: () => navigate('/dashboard/practice?src=due'),
-      practiceWeakVocab: () => navigate('/dashboard/practice?src=weak'),
-      openParaphraseReviewModal: () => navigate('/dashboard/practice?src=paraphrase'),
+      openReviewDueModal: review('due'),
+      practiceWeakVocab: review('weak'),
+      openParaphraseReviewModal: review('paraphrase'),
       openSheet: () => setSidebarOpen(true),
       _isActivePractice: isActivePractice,
     };
@@ -163,10 +177,21 @@ export default function Dashboard() {
 
   function openBook(b) {
     setSidebarOpen(false);
+    if (!hasPremiumAccess()) { openUpgrade(); return; }
     navigate(`/dashboard/book/${b._id}`);
   }
 
-  const openBookMenu = useCallback((bookId, view = 'menu') => setMenu({ bookId, view }), []);
+  const closeDifficultWords = useCallback(() => setDwOpen(false), []);
+  function openDifficultWords() {
+    setSidebarOpen(false);
+    if (!hasPremiumAccess()) { openUpgrade(); return; }
+    setDwOpen(true);
+  }
+
+  const openBookMenu = useCallback((bookId, view = 'menu') => {
+    setSidebarOpen(false);
+    setMenu({ bookId, view });
+  }, []);
 
   // After move / merge / delete: refresh the list and whatever is open.
   function onBooksChanged(ev) {
@@ -184,6 +209,7 @@ export default function Dashboard() {
     const from = drag.from;
     setDrag({ from: null, over: null });
     if (from === null || from === targetIdx || !books) return;
+    if (!hasPremiumAccess()) { openUpgrade(); return; } // reordering is Premium-only on the server
     const next = [...books];
     const [moved] = next.splice(from, 1);
     next.splice(targetIdx, 0, moved);
@@ -210,8 +236,8 @@ export default function Dashboard() {
   const menuBook = menu && (book?._id === menu.bookId ? { ...books?.find(b => b._id === menu.bookId), ...book } : books?.find(b => b._id === menu.bookId));
 
   const ctx = {
-    books, loadBooks, setBooks, stats, setStats, weekDays, book, setBook, loadBook, bookError, openBookMenu,
-    homework, loadHomework, vocabGoals, refreshHomeworkSoon, openGuide: () => setGuideOpen(true),
+    books, loadBooks, setBooks, stats, setStats, loadStats, weekDays, loadWeek, book, setBook, loadBook, bookError, openBookMenu,
+    homework, loadHomework, vocabGoals, refreshHomeworkSoon, loadDifficultCount, openGuide: () => setGuideOpen(true),
     lessons, units,
   };
 
@@ -256,7 +282,7 @@ export default function Dashboard() {
               <i className="fas fa-layer-group" /> Vocab Topics
             </NavLink>
           </div>
-          <button className="btn-difficult-words" onClick={() => { setSidebarOpen(false); setDwOpen(true); }}>
+          <button className="btn-difficult-words" onClick={openDifficultWords}>
             <i className="fas fa-fire" /> Ôn lại từ hay sai
             {dwCount > 0 && <span className="difficult-count-badge" style={{ display: 'flex' }}>{dwCount}</span>}
           </button>
@@ -268,7 +294,7 @@ export default function Dashboard() {
           <Outlet context={ctx} />
         </div>
 
-        {dwOpen && <DifficultWordsModal onClose={() => setDwOpen(false)} onCount={setDwCount} />}
+        {dwOpen && <DifficultWordsModal onClose={closeDifficultWords} onCount={setDwCount} />}
         {guideOpen && <GuideModal onClose={() => setGuideOpen(false)} />}
 
         {menuBook && (

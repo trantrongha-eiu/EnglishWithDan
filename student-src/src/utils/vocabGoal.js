@@ -27,8 +27,13 @@ function wordState(w, sinceMs) {
   return undefined;
 }
 
+const goalSince = (g) => (g.since ? new Date(g.since).getTime() : 0);
+
+// Not practised for this goal yet → it would count if it came up now
+export const isGoalFresh = (g, w) => wordState(w, goalSince(g)) === undefined;
+
 export function goalProgress(g, words = []) {
-  const sinceMs = g.since ? new Date(g.since).getTime() : 0;
+  const sinceMs = goalSince(g);
   let practiced = 0, correct = 0, fresh = 0, noMeaning = 0;
   for (const w of words) {
     const st = wordState(w, sinceMs);

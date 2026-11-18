@@ -1,5 +1,6 @@
 // Bridge to the static site shell loaded by index.html (js/bundles/app-shell.js
 // and friends): upgrade modal, badge popup, learning popups, nav.js hooks.
+import { useEffect } from 'react';
 
 export const openUpgrade = (reason) => window.openUpgradeModal?.(reason);
 
@@ -13,6 +14,19 @@ export function showBadges(data) {
 let activePractice = false;
 export function setActivePractice(on) { activePractice = !!on; }
 export const isActivePractice = () => activePractice;
+
+// Lulu's speech bubble next to a "Hỏi Lulu" button
+export const luluSay = (btn, text) => window.AskLulu?.say?.(btn, text);
+
+// Closing the tab or following a site-menu link mid-quiz: the browser asks first
+export function useLeaveWarning(active) {
+  useEffect(() => {
+    if (!active) return undefined;
+    const warn = (e) => { e.preventDefault(); e.returnValue = ''; };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [active]);
+}
 
 // Today's plan popup → practice finished (dashboard.js showResults)
 export function reportLearningResult({ correct, answered, wrong }) {

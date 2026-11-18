@@ -58,7 +58,7 @@ function WeeklyProgress({ days }) {
   );
 }
 
-function StreakCard({ stats, weekDays, onUseHammer }) {
+function StreakCard({ stats, weekDays, onUseHammer, hammerBusy, onFlameRules }) {
   const { streak = 0, streakHammers = 0, canUseHammer = false } = stats || {};
   const { state, mascot, fire, num } = useStreakFace(stats);
   return (
@@ -80,8 +80,11 @@ function StreakCard({ stats, weekDays, onUseHammer }) {
           <div className="dan-streak-msg">{stats ? state.msg : 'Đang tải...'}</div>
         </div>
       </div>
+      <button type="button" className="dan-flame-rules-btn" onClick={onFlameRules}>
+        <i className="fas fa-fire" /> Cách tính lửa <span className="dan-flame-rules-new">Mới</span>
+      </button>
       {canUseHammer && (
-        <button className="btn-use-hammer" onClick={onUseHammer}>
+        <button className="btn-use-hammer" style={{ display: 'inline-flex' }} onClick={onUseHammer} disabled={hammerBusy}>
           <img src="/img/buaDaniel.jpg" alt="" className="dan-hammer-icon" />
           Dùng búa Daniel — khôi phục streak vừa mất
         </button>
@@ -92,9 +95,10 @@ function StreakCard({ stats, weekDays, onUseHammer }) {
 }
 
 export default function Welcome() {
-  const { stats, setStats, weekDays, homework, loadHomework, openGuide, lessons } = useOutletContext();
+  const { stats, loadStats, weekDays, loadWeek, homework, loadHomework, openGuide, lessons } = useOutletContext();
   const toast = useToast();
   const [infoKey, setInfoKey] = useState(null);
+  const [hammerBusy, setHammerBusy] = useState(false);
   const info = infoKey && FEAT_INFO[infoKey];
 
   useEffect(() => { bindDict('book-welcome', 'dashboard-home'); }, []);
@@ -115,12 +119,16 @@ export default function Welcome() {
   useEffect(() => { if (richSkills) window.Mascot.renderSkillCards(); }, [richSkills]);
 
   async function useHammer() {
+    setHammerBusy(true);
     try {
       const d = await apiFetch('/user/streak/use-hammer', { method: 'POST' });
-      setStats(s => ({ ...s, streak: d.streak, streakHammers: d.streakHammers ?? Math.max(0, (s?.streakHammers || 1) - 1), canUseHammer: false }));
-      toast('Đã khôi phục streak bằng búa Daniel!', 'success');
+      toast(`🔨 Đã khôi phục streak ${d.streak} ngày!`, 'success');
+      await loadStats();
+      loadWeek();
     } catch (err) {
-      toast(err.message || 'Không dùng được búa', 'error');
+      toast(err.message || 'Không thể dùng búa lúc này', 'error');
+    } finally {
+      setHammerBusy(false);
     }
   }
 
@@ -137,13 +145,16 @@ export default function Welcome() {
             <div className="dash-vocab-hero-text">
               <h2 className="dash-vocab-hero-title">Sổ từ vựng thông minh</h2>
               <p className="dash-vocab-hero-sub">Chọn sổ ở sidebar để xem từ — hoặc khám phá các tính năng bên cạnh</p>
+              <p className="dash-vocab-hero-sub dash-mob-hint">
+                <i className="fas fa-hand-pointer" /> Bấm <strong>Sổ từ</strong> bên dưới để chọn sổ, học Paraphrase hoặc Vocab Topics
+              </p>
             </div>
             <a className="dash-vocab-hero-lb" href="/vocab-leaderboard.html">
               <i className="fas fa-ranking-star" /> Xem BXH vocab
             </a>
           </div>
           <div className="dash-vocab-hero-row">
-            <StreakCard stats={stats} weekDays={weekDays} onUseHammer={useHammer} />
+            <StreakCard stats={stats} weekDays={weekDays} onUseHammer={useHammer} hammerBusy={hammerBusy} onFlameRules={() => setInfoKey('streak')} />
             <TodaysLesson lessons={lessons} />
           </div>
         </section>

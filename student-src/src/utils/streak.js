@@ -3,11 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 // Streak message + Lulu's mood (dashboard.js getMascotState), shared by the
 // home card and the notebook banner.
 export function getMascotMsg(streak) {
-  if (streak === 0) return 'Bắt đầu luyện từ hôm nay để xây dựng streak!';
-  if (streak < 3) return 'Streak đang bắt đầu! Giữ vững nhé 💪';
-  if (streak < 7) return `${streak} ngày liên tiếp — bạn đang tiến bộ rất tốt!`;
-  if (streak < 14) return `🔥 ${streak} ngày streak! Thật tuyệt vời!`;
-  return `🌟 ${streak} ngày streak! Bạn là chiến thần vocab rồi!`;
+  if (streak >= 7) return `🔥 Chuỗi ${streak} ngày! Tuyệt vời – giữ vững nhé! 🌟`;
+  if (streak >= 3) return `😤 ${streak} ngày liên tiếp! Bạn đang làm rất tốt!`;
+  if (streak >= 2) return `🥳 ${streak} ngày! Mỗi từ đưa bạn gần hơn tới 7.0+!`;
+  return '💪 Cố lên! Học mỗi ngày tạo nên thói quen tuyệt vời!';
 }
 
 const ANGRY_MSGS = [

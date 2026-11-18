@@ -67,9 +67,14 @@ export default function DifficultWordsModal({ onClose, onCount }) {
     let alive = true;
     apiFetch('/difficult-words')
       .then(d => { if (alive) { setWords(d.words || []); onCount?.((d.words || []).length); } })
-      .catch(err => { if (alive) setError(err); });
+      .catch((err) => {
+        if (!alive) return;
+        // the plan ran out while the page was open
+        if (err?.body?.requiresPremium) { onClose(); openUpgrade('trial_expired'); return; }
+        setError(err);
+      });
     return () => { alive = false; };
-  }, [onCount]);
+  }, [onCount, onClose]);
 
   async function remove(w) {
     try {
@@ -81,7 +86,6 @@ export default function DifficultWordsModal({ onClose, onCount }) {
     } catch { toast('Lỗi khi xóa', 'error'); }
   }
 
-  const locked = error?.body?.requiresPremium;
   return (
     <Modal
       size="modal-md"
@@ -101,7 +105,7 @@ export default function DifficultWordsModal({ onClose, onCount }) {
         {!words && !error && <div style={{ textAlign: 'center', padding: 32, color: 'var(--text3)' }}><i className="fas fa-spinner fa-spin" /> Đang tải...</div>}
         {error && (
           <div style={{ textAlign: 'center', padding: 24, color: 'var(--text3)' }}>
-            {locked ? <>Danh sách từ hay sai là tính năng Premium. <button className="btn btn-primary btn-sm" onClick={() => openUpgrade()}>Xem gói Premium</button></> : 'Không thể tải danh sách. Vui lòng thử lại.'}
+            Không thể tải danh sách. Vui lòng thử lại.
           </div>
         )}
         {words?.length === 0 && (

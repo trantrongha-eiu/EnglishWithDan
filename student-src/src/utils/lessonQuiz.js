@@ -109,6 +109,13 @@ export function letterHint(word, lang = 'vi') {
   return lang === 'vi' ? `${words.length} từ · ${per} chữ cái` : `${words.length} words · ${per} letters`;
 }
 
+// "Hỏi Lulu": the first `reveal` letters of every word, the rest masked
+export function buildLetterHint(word, reveal) {
+  return String(word || '').split(/\s+/).filter(Boolean)
+    .map(w => [...w].map((c, i) => (i < reveal ? c : '_')).join(' '))
+    .join('  ');
+}
+
 /* "Lưu tất cả" memory: there is no server field for it, same key as the old page */
 const SAVED_KEY = 'lesson_vocab_saved';
 function readSavedMap() {

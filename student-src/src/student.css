@@ -96,7 +96,16 @@ body {
    dashboard.css hides .vocab-sidebar under 768px (the static page uses its
    own bottom sheet); here the same sidebar slides in as a drawer. */
 .dash-mobile-books-btn { display: none; }
+.dash-mob-hint { display: none; }
 @media (max-width: 768px) {
+  .dash-mob-hint {
+    display: block;
+    margin-top: 6px;
+    color: var(--blue);
+    font-weight: 600;
+  }
+  /* no hover on a phone: the ⋯ menu has to be visible */
+  .vocab-sidebar.mobile-open .book-menu-btn { opacity: 1; }
   .vocab-sidebar.mobile-open {
     display: flex !important;
     position: fixed;

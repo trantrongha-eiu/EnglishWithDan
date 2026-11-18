@@ -7,10 +7,10 @@ import SlowSpeechButton from '../../components/SlowSpeechButton';
 import { ConfirmDialog } from '../../components/Modal';
 import UnitStudy from './UnitStudy';
 import { hasPremiumAccess } from '../../utils/plan';
-import { letterHint } from '../../utils/lessonQuiz';
+import { letterHint, buildLetterHint } from '../../utils/lessonQuiz';
 import { clozeFor } from '../../utils/cloze';
 import {
-  buildSmartSession, shuffle, speakWord, prefetchAudio, playSound,
+  buildSmartSession, shuffle, speakWord, prefetchAudio, playSound, normAnswer,
 } from '../../utils/vocab';
 import {
   queueAnswer, flushEvidence, startStreakSession, countStreakAnswer, endStreakSession,
@@ -19,7 +19,7 @@ import {
 import { goalsForBook, goalProgress, noteGoalAnswer } from '../../utils/vocabGoal';
 import VocabGoalCards from './VocabGoalCards';
 import {
-  bindDict, mascotHtml, openUpgrade, reportLearningResult, resultImage, scoreMessage, setActivePractice, spawnConfetti,
+  bindDict, luluSay, mascotHtml, openUpgrade, reportLearningResult, resultImage, scoreMessage, setActivePractice, spawnConfetti, useLeaveWarning,
 } from '../../utils/shell';
 
 // Notebook practice. Port of dashboard.js's book practice (Quiz /
@@ -44,6 +44,22 @@ const MODE_KEYS = new Set(MODES.map(m => m.key));
 const LEGACY_MODES = { multipleChoice: 'quiz', fillBlank: 'flashcard', listening: 'listen', translation: 'translate' };
 const MIXED_TYPES = ['quiz', 'cloze', 'listen', 'translate'];
 const MODE_NAMES = { quiz: 'Quiz', flashcard: 'Flashcard', cloze: 'Điền từ', listen: 'Listen', translate: 'Translate', mixed: 'Mixed' };
+const MODE_HOWTO = {
+  quiz: 'Chọn đáp án đúng',
+  flashcard: 'Xem nghĩa → Nhớ lại từ → Lật thẻ',
+  cloze: 'Đọc câu ví dụ, gõ từ còn thiếu vào chỗ trống',
+  listen: 'Nghe và viết lại từ',
+  translate: 'Nhìn nghĩa tiếng Việt, gõ từ tiếng Anh',
+  mixed: 'Trộn ngẫu nhiên 4 dạng: Quiz · Điền từ · Nghe · Dịch',
+};
+// Mixed: every question opens with its type and a one-line instruction
+const MIX_HEAD = {
+  quiz: ['multipleChoice', 'fa-check-circle', 'Quiz', 'Chọn nghĩa đúng của từ'],
+  cloze: ['cloze', 'fa-pen', 'Điền từ', 'Gõ từ còn thiếu trong câu'],
+  listen: ['listening', 'fa-headphones', 'Listen', 'Bấm nghe rồi gõ lại từ bạn nghe được'],
+  translate: ['translation', 'fa-language', 'Translate', 'Gõ từ tiếng Anh có nghĩa này'],
+};
+const FLASH_HINT_MAX = 3;
 
 // Cross-book sessions (/dashboard/practice?src=…) — dashboard-review.js
 // practiceWeakVocab / openReviewDueModal and dashboard.js
@@ -163,10 +179,51 @@ function QuizQuestion({ item, answered, onAnswer }) {
   );
 }
 
+function MixHead({ item }) {
+  const [cls, icon, name, howTo] = MIX_HEAD[item.type];
+  return (
+    <>
+      <div className="mix-q-head">
+        <span className={`mix-type-chip mix-type-${cls}`}><i className={`fas ${icon}`} /> {name}</span>
+        {item.repeat && <span className="mix-repeat-badge">🔁 Ôn lại</span>}
+      </div>
+      <div className="mix-q-howto">{howTo}</div>
+    </>
+  );
+}
+
+// Right / wrong line under a typed answer; names the dictionary form when the
+// sentence uses another one ("analysed" for "analyse").
+function AnswerFeedback({ ok, answer, w }) {
+  const shown = (
+    <>
+      <strong>{answer}</strong>
+      {normAnswer(answer) !== normAnswer(w.word) && <> <span className="fb-base-form">(từ gốc: {w.word})</span></>}
+    </>
+  );
+  return (
+    <div className="practice-feedback">
+      {ok
+        ? <div className="feedback-correct">✅ Đúng! {shown} – {w.meaning}</div>
+        : (
+          <div className="feedback-wrong">
+            ❌ Đáp án: {shown} {w.phonetic && <span style={{ opacity: 0.7 }}>{w.phonetic}</span>} – {w.meaning}
+            <button type="button" className="btn-check" style={{ marginTop: 8 }} onClick={() => speakWord(w.word)}>🔊 Nghe lại</button>
+          </div>
+        )}
+    </div>
+  );
+}
+
 function FlashcardQuestion({ item, answered, onAnswer, onNext }) {
   const w = item.word;
+  const toast = useToast();
   const [flipped, setFlipped] = useState(false);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState(null); // { ok, typed }
+  const [typed, setTyped] = useState('');
+  const [hints, setHints] = useState(0);
+  const timer = useRef(null);
+  useEffect(() => () => clearTimeout(timer.current), []);
   const flip = useCallback(() => {
     if (!flipped) speakWord(w.word);
     setFlipped(f => !f);
@@ -181,11 +238,26 @@ function FlashcardQuestion({ item, answered, onAnswer, onNext }) {
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [answered, flipped, flip]);
+  // Remembered → next card shortly; not remembered → time to read it (15s or "Tiếp")
   const mark = (ok) => {
     if (answered) return;
-    setResult(ok);
+    setResult({ ok });
     onAnswer(ok);
-    if (ok) setTimeout(onNext, 1200);
+    timer.current = setTimeout(onNext, ok ? 1500 : 15000);
+  };
+  const check = () => {
+    if (answered || !flipped) return;
+    const ua = normAnswer(typed);
+    if (!ua) { toast('Nhập một từ trước đã', 'error'); return; }
+    const ok = ua === normAnswer(w.word);
+    setResult({ ok, typed: true });
+    onAnswer(ok, { typed: true });
+  };
+  const askLulu = (e) => {
+    if (hints >= FLASH_HINT_MAX) return;
+    const n = hints + 1;
+    setHints(n);
+    luluSay(e.currentTarget, `Lulu mách nè: ${buildLetterHint(w.word, n)} 🍊`);
   };
   return (
     <>
@@ -209,45 +281,55 @@ function FlashcardQuestion({ item, answered, onAnswer, onNext }) {
         </div>
       </div>
       {flipped && !answered && (
-        <div className="quick-btns" style={{ display: 'flex' }}>
-          <button className="btn-remembered" onClick={() => mark(true)}><i className="fas fa-check-circle" /> Đã nhớ</button>
-          <button className="btn-not-remembered" onClick={() => mark(false)}><i className="fas fa-times-circle" /> Chưa nhớ</button>
-        </div>
+        <>
+          <div className="quick-btns" style={{ display: 'flex' }}>
+            <button className="btn-remembered" onClick={() => mark(true)}><i className="fas fa-check-circle" /> Đã nhớ</button>
+            <button className="btn-not-remembered" onClick={() => mark(false)}><i className="fas fa-times-circle" /> Chưa nhớ</button>
+          </div>
+          <div style={{ marginTop: 14 }}>
+            <div className="fb-input-row">
+              <input className="fb-input" placeholder="Gõ từ để kiểm tra..." value={typed} autoFocus autoComplete="off" autoCapitalize="off" spellCheck={false}
+                onChange={(e) => setTyped(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') check(); }} />
+              <button type="button" className="btn-hint-sm ask-lulu" disabled={hints >= FLASH_HINT_MAX} onClick={askLulu} title="Hỏi Lulu chữ cái tiếp theo">
+                <span className="ask-lulu-ic" /> Hỏi Lulu
+              </button>
+              <button type="button" className="btn-check" onClick={check}>Kiểm tra</button>
+            </div>
+            {hints > 0 && (
+              <div className="feedback-hint">🍊 Lulu gợi ý: <strong>{buildLetterHint(w.word, hints)}</strong> ({letterHint(w.word, 'en')})</div>
+            )}
+          </div>
+        </>
       )}
-      {result === true && <div className="feedback-correct">✅ Tuyệt vời! Bạn đã nhớ từ này! 🎉</div>}
-      {result === false && <div className="feedback-wrong">💪 Cố lên! Từ: <strong>{w.word}</strong> – {w.meaning}</div>}
+      {result?.typed && result.ok && <div className="feedback-correct">✅ Đúng! 🎉</div>}
+      {result?.typed && !result.ok && <div className="feedback-wrong">❌ Đáp án: <strong>{w.word}</strong></div>}
+      {result && !result.typed && result.ok && <div className="feedback-correct">✅ Tuyệt vời! Bạn đã nhớ từ này! 🎉</div>}
+      {result && !result.typed && !result.ok && <div className="feedback-wrong">💪 Cố lên! Từ: <strong>{w.word}</strong> – {w.meaning}</div>}
     </>
   );
 }
 
-function TypedQuestion({ item, answered, result, onAnswer }) {
+function TypedQuestion({ item, answered, result, onAnswer, mixed }) {
   const w = item.word;
   const isListen = item.type === 'listen';
   return (
     <>
       {isListen ? (
         <div className="question-text" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 6 }}>Bấm nghe rồi gõ lại từ bạn nghe được</div>
           <button className="btn-play-audio" onClick={() => speakWord(w.word)}><i className="fas fa-volume-up" style={{ fontSize: 24 }} /> Play Audio</button>
           <div><SlowSpeechButton word={w.word} /></div>
-          {w.meaning && <div className="fb-meaning-hint"><i className="fas fa-language" /> {w.meaning}</div>}
+          {!mixed && w.meaning && <div className="fb-meaning-hint"><i className="fas fa-language" /> {w.meaning}</div>}
           <div className="listen-hint" style={{ fontSize: 13, color: 'var(--text2)', margin: '10px 0' }}>💡 {letterHint(w.word, 'en')}</div>
         </div>
       ) : (
         <div className="question-text">
-          <div style={{ fontSize: 13, color: 'var(--text2)' }}>Gõ từ tiếng Anh có nghĩa:</div>
           <div className="trans-meaning practice-prompt-meaning">{w.meaning}</div>
-          {w.partOfSpeech && <span className="colloc-chip">{w.partOfSpeech}</span>}
+          {w.partOfSpeech && <div className="cloze-meta"><span className="pos-chip">{w.partOfSpeech}</span></div>}
         </div>
       )}
-      {!answered && <WbwDrill answer={w.word} onDone={onAnswer} />}
-      {answered && (
-        <div className="practice-feedback">
-          {result
-            ? <div className="feedback-correct">✅ Chính xác! <strong>{w.word}</strong> – {w.meaning}</div>
-            : <div className="feedback-wrong">❌ Đáp án: <strong>{w.word}</strong> {w.phonetic && <span style={{ opacity: 0.7 }}>{w.phonetic}</span>} – {w.meaning}</div>}
-        </div>
-      )}
+      {!answered && <WbwDrill answer={w.word} onDone={onAnswer} hint={isListen && !mixed}
+        placeholder={isListen ? 'Gõ từ bạn nghe được...' : 'Nhập từ tiếng Anh...'} />}
+      {answered && <AnswerFeedback ok={result} answer={w.word} w={w} />}
     </>
   );
 }
@@ -276,13 +358,7 @@ function ClozeQuestion({ item, answered, result, onAnswer }) {
           : <button type="button" className="btn-reveal-meaning" onClick={() => setShowMeaning(true)}><i className="fas fa-eye" /> Xem nghĩa</button>}
       </div>
       {!answered && <WbwDrill answer={c.answer} onDone={onAnswer} placeholder="Gõ từ còn thiếu..." />}
-      {answered && (
-        <div className="practice-feedback">
-          {result
-            ? <div className="feedback-correct">✅ Chính xác! <strong>{c.answer}</strong> – {w.meaning}</div>
-            : <div className="feedback-wrong">❌ Đáp án: <strong>{c.answer}</strong> ({w.word}) – {w.meaning}</div>}
-        </div>
-      )}
+      {answered && <AnswerFeedback ok={result} answer={c.answer} w={w} />}
     </>
   );
 }
@@ -380,22 +456,28 @@ function Results({ s, hammer, backLabel, onRetryWrong, onRestart, onBack }) {
 }
 
 /* ── Session ── */
-function newSession(mode, words, { smart: useSmart, pool, streakUnit }) {
+function newSession(mode, words, { smart: useSmart, pool, streakUnit, goals }) {
   const usable = words.filter(w => w.word && w.meaning);
-  const smart = useSmart ? buildSmartSession(usable) : null;
+  const smart = useSmart ? buildSmartSession(usable, goals) : null;
   let list = smart ? [...smart.list] : shuffle([...usable]);
   const before = new Set(list).size;
   if (mode === 'cloze') list = list.filter(w => clozeFor(w));
   const clozeSkipped = before - new Set(list).size;
   const types = mode === 'mixed' ? assignMixedTypes(list) : list.map(() => mode);
   prefetchAudio(list.map(w => w.word));
+  const seen = new Set(); // a smart session shows "hay sai" words twice
+  const queue = list.map((word, i) => {
+    const repeat = seen.has(word);
+    seen.add(word);
+    return makeItem(word, types[i], pool, repeat);
+  });
   return {
     mode,
     words: usable,
     smart,
     pool,
     clozeSkipped,
-    queue: list.map((word, i) => makeItem(word, types[i], pool)),
+    queue,
     index: 0,
     correct: 0,
     wrong: 0,
@@ -404,6 +486,7 @@ function newSession(mode, words, { smart: useSmart, pool, streakUnit }) {
     para: new Map(), // paraphrase pairs answered: sig → { item, correct }
     answered: false,
     lastResult: null,
+    lastTyped: false,
     done: false,
     streak: startStreakSession(streakUnit),
   };
@@ -451,7 +534,7 @@ function syncParaphrase(s, unitId) {
   }
 }
 
-function QuitModal({ s, onStay, onLeave }) {
+function QuitModal({ s, streak, onStay, onLeave }) {
   const face = useRef(null);
   const sad = s.wrongSet.size > 0;
   useEffect(() => {
@@ -464,6 +547,7 @@ function QuitModal({ s, onStay, onLeave }) {
   const parts = [];
   if (remaining > 0) parts.push(`còn ${remaining} từ`);
   if (wrong > 0) parts.push(`${wrong} từ đang ôn lại`);
+  if (streak > 0) parts.push(`Chuỗi ${streak} ngày đang chờ bạn! 🔥`);
   return (
     <div className="modal-overlay">
       <div className="modal-box modal-sm" role="dialog" aria-modal="true" style={{ overflow: 'hidden', padding: 0 }}>
@@ -517,7 +601,7 @@ export default function Practice() {
   const [params, setParams] = useSearchParams();
   const navigate = useNavigate();
   const toast = useToast();
-  const { book: cached, loadBook, bookError, vocabGoals, refreshHomeworkSoon } = useOutletContext();
+  const { book: cached, loadBook, bookError, vocabGoals, refreshHomeworkSoon, stats, loadDifficultCount } = useOutletContext();
   const book = bookId && cached?._id === bookId ? cached : null;
   const goals = goalsForBook(vocabGoals, book);
   const [reached, setReached] = useState(null); // { g, p } — homework quota just reached
@@ -591,6 +675,13 @@ export default function Practice() {
   const [hammerFor, setHammerFor] = useState(null); // streak session that earned a Búa Daniel
   const [quit, setQuit] = useState(null); // { go } while the "học tiếp?" popup is open
   const [confirmSwitch, setConfirmSwitch] = useState(null); // mode tab pressed mid-session
+  const [confirmAll, setConfirmAll] = useState(false); // "Luyện tất cả" mid-session
+  const [fullscreen, setFullscreen] = useState(false);
+  useEffect(() => {
+    const onChange = () => setFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, []);
 
   useEffect(() => { if (bookId && !book) loadBook(bookId); }, [book, bookId, loadBook]);
 
@@ -611,7 +702,7 @@ export default function Practice() {
     practiceAll.current = false;
     // Búa Daniel counts per Paraphrase Unit
     const streakUnit = unit?._id && unit.words.some(w => w.type === 'paraphrase') ? { unitId: unit._id, unitType: 'paraphrase' } : null;
-    const next = newSession(mode, words, { smart: useSmart, pool: words0, streakUnit });
+    const next = newSession(mode, words, { smart: useSmart, pool: words0, streakUnit, goals });
     if (!next.queue.length && mode === 'cloze' && next.words.length) {
       // nothing has an example sentence containing the word → empty state
       sRef.current = null;
@@ -662,7 +753,7 @@ export default function Practice() {
   // updater (StrictMode runs updaters twice).
   const commit = useCallback((nextS) => { sRef.current = nextS; setS(nextS); }, []);
 
-  const answer = useCallback((correct) => {
+  const answer = useCallback((correct, { typed = false } = {}) => {
     const prev = sRef.current;
     if (!prev || prev.answered || prev.done) return;
     const it = prev.queue[prev.index];
@@ -711,7 +802,7 @@ export default function Practice() {
       break;
     }
     commit({
-      ...prev, queue, wrongSet, requeued, answered: true, lastResult: correct,
+      ...prev, queue, wrongSet, requeued, answered: true, lastResult: correct, lastTyped: typed,
       correct: prev.correct + (correct ? 1 : 0), wrong: prev.wrong + (correct ? 0 : 1),
     });
   }, [bookId, commit, goals, book?.words]);
@@ -729,9 +820,9 @@ export default function Practice() {
           words: wrong.map(w => ({ word: w.word, meaning: w.meaning || '', phonetic: w.phonetic || '', partOfSpeech: w.partOfSpeech || '', example: w.example || '' })),
           source: book?.name || (unit && `Unit ${unit.unitNumber}`) || (src && CROSS_SOURCES[src].source) || 'Sổ cá nhân',
         }),
-      }).catch(() => {});
+      }).then(() => loadDifficultCount()).catch(() => {});
     }
-  }, [book?.name, src, unit, refreshHomeworkSoon]);
+  }, [book?.name, src, unit, refreshHomeworkSoon, loadDifficultCount]);
 
   const next = useCallback(() => {
     const prev = sRef.current;
@@ -739,7 +830,7 @@ export default function Practice() {
     if (!prev || !prev.answered || prev.done || reachedOpen.current) return;
     const index = prev.index + 1;
     if (index >= prev.queue.length) { finish(prev); commit({ ...prev, done: true }); return; }
-    commit({ ...prev, index, answered: false, lastResult: null });
+    commit({ ...prev, index, answered: false, lastResult: null, lastTyped: false });
   }, [finish, commit]);
 
   const stopNow = () => {
@@ -752,6 +843,7 @@ export default function Practice() {
 
   // Some answer given and the session not finished → leaving needs a word
   const inSession = !!s && !s.done && !s.clozeEmpty && s.correct + s.wrong > 0;
+  useLeaveWarning(inSession); // closing the tab, or a site-menu link
   // Back button, browser Back, sidebar…: leaving mid-session asks first
   const [leaving, setLeaving] = useState(false); // "Dừng lại" on a reached goal
   const blocker = useBlocker(({ currentLocation, nextLocation }) => inSession && !leaving && currentLocation.pathname !== nextLocation.pathname);
@@ -768,7 +860,7 @@ export default function Practice() {
     if (!s || s.done || s.clozeEmpty) return undefined;
     const onKey = (e) => {
       if (e.target.closest?.('input,textarea,select') || document.querySelector('.modal-overlay:not(.hidden)')) return;
-      if (e.key === 'Escape') { askQuit(stopNow); return; }
+      if (e.key === 'Escape') { if (inSession) askQuit(stopNow); return; }
       if (showNext && (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight')) { e.preventDefault(); next(); }
     };
     document.addEventListener('keydown', onKey);
@@ -795,7 +887,8 @@ export default function Practice() {
     retryWords.current = s.words.filter(w => s.wrongSet.has(w._id));
     restart();
   };
-  const playAll = () => { practiceAll.current = true; restart(); };
+  const startAll = () => { practiceAll.current = true; restart(); };
+  const playAll = () => { if (inSession) setConfirmAll(true); else startAll(); };
   const back = () => navigate(backTo);
 
   if (!unitAllowed) return null;
@@ -833,7 +926,9 @@ export default function Practice() {
         <button className="btn btn-ghost btn-sm" onClick={back}>← Back</button>
         <h3>{title}</h3>
         <SaveState />
-        <button className="btn btn-ghost btn-sm" onClick={toggleFullscreen} title="Toàn màn hình"><i className="fas fa-expand" /></button>
+        <button className="btn btn-ghost btn-sm" onClick={toggleFullscreen} title={fullscreen ? 'Thoát toàn màn hình' : 'Toàn màn hình'}>
+          <i className={`fas ${fullscreen ? 'fa-compress' : 'fa-expand'}`} />
+        </button>
       </div>
       <div className="mode-tabs-wrap">
         <div className="mode-tabs">
@@ -846,13 +941,13 @@ export default function Practice() {
       </div>
 
       <div className="mode-body" id="practice-area">
-        <VocabGoalCards goals={goals} words={words0} inSession />
+        {!studying && <VocabGoalCards goals={goals} words={words0} inSession />}
         {studying && studyUnit && <UnitStudy unit={studyUnit} />}
         {quit && s && (
-          <QuitModal s={s} onStay={() => setQuit(null)} onLeave={() => { const { go } = quit; setQuit(null); go(); }} />
+          <QuitModal s={s} streak={stats?.streak || 0} onStay={() => setQuit(null)} onLeave={() => { const { go } = quit; setQuit(null); go(); }} />
         )}
         {blocker.state === 'blocked' && s && (
-          <QuitModal s={s} onStay={() => blocker.reset()} onLeave={() => blocker.proceed()} />
+          <QuitModal s={s} streak={stats?.streak || 0} onStay={() => blocker.reset()} onLeave={() => blocker.proceed()} />
         )}
         {confirmSwitch && (
           <ConfirmDialog
@@ -861,6 +956,10 @@ export default function Practice() {
             confirmLabel={confirmSwitch === mode ? 'Restart' : 'Switch'} confirmClass="btn-primary"
             onClose={() => setConfirmSwitch(null)}
             onConfirm={() => { const m = confirmSwitch; if (m === mode) restart(); else applyMode(m); }} />
+        )}
+        {confirmAll && (
+          <ConfirmDialog title="Luyện tất cả từ?" message="Phiên hiện tại sẽ bắt đầu lại với toàn bộ từ trong sổ."
+            confirmLabel="Bắt đầu" confirmClass="btn-primary" onClose={() => setConfirmAll(false)} onConfirm={startAll} />
         )}
         {running && window.innerWidth > 1024 && <KbdHints mode={mode} />}
         {reached && (
@@ -872,7 +971,7 @@ export default function Practice() {
               setReached(null);
               // a right flashcard would have auto-advanced — do it now
               const cur = sRef.current;
-              if (cur?.answered && cur.lastResult && cur.queue[cur.index]?.type === 'flashcard') next();
+              if (cur?.answered && cur.lastResult && !cur.lastTyped && cur.queue[cur.index]?.type === 'flashcard') next();
             }}
             onStop={() => {
               reachedOpen.current = false;
@@ -900,32 +999,35 @@ export default function Practice() {
         {s?.clozeEmpty && <ClozeEmpty onSwitch={switchMode} />}
         {s?.done && (
           <Results s={s} hammer={!!hammerFor && hammerFor === s.streak} backLabel="View words"
-            onRetryWrong={retryWrong} onRestart={restart} onBack={switchToStudy} />
+            onRetryWrong={retryWrong} onRestart={s.wrongSet.size ? retryWrong : restart} onBack={switchToStudy} />
         )}
 
         {item && (
           <div className="practice-container">
             <div className="practice-header">
-              <h3><i className={`fas ${MODES.find(m => m.key === (mode === 'mixed' ? item.type : mode)).icon}`} /> {MODE_NAMES[mode]}</h3>
+              <h3><i className={`fas ${MODES.find(m => m.key === mode).icon}`} /> {MODE_NAMES[mode]}</h3>
+              <p>{MODE_HOWTO[mode]}</p>
             </div>
             <div className="practice-progress vp-progress">
               <div className="vp-progress-track">
-                <div className="progress-bar"><div className="progress-fill" style={{ width: `${(s.index / total) * 100}%` }} /></div>
-                <div className="progress-text">{s.index}/{total}</div>
+                <div className="progress-bar"><div className="progress-fill" style={{ width: `${((s.index + 1) / total) * 100}%` }} /></div>
+                <div className="progress-text">{s.index + 1}/{total}</div>
               </div>
               <button className="vp-stop-btn" onClick={stop} title="Dừng và xem kết quả"><i className="fas fa-stop-circle" /> Dừng lại</button>
             </div>
             <div className="question-card" key={s.index}>
-              <div className="question-number">Câu {s.index + 1}/{total}{item.repeat ? ' · ôn lại' : ''}</div>
+              {mode === 'mixed'
+                ? <MixHead item={item} />
+                : <div className="question-number">Câu {s.index + 1}/{total}{item.repeat ? ' · ôn lại' : ''}</div>}
               {item.type === 'quiz' && <QuizQuestion item={item} answered={s.answered} onAnswer={answer} />}
               {item.type === 'flashcard' && <FlashcardQuestion item={item} answered={s.answered} onAnswer={answer} onNext={next} />}
               {item.type === 'cloze' && (
                 <ClozeQuestion item={item} answered={s.answered} result={s.lastResult} onAnswer={answer} />
               )}
               {(item.type === 'listen' || item.type === 'translate') && (
-                <TypedQuestion item={item} answered={s.answered} result={s.lastResult} onAnswer={answer} />
+                <TypedQuestion item={item} answered={s.answered} result={s.lastResult} onAnswer={answer} mixed={mode === 'mixed'} />
               )}
-              {s.answered && !(item.type === 'flashcard' && s.lastResult) && (
+              {s.answered && !(item.type === 'flashcard' && s.lastResult && !s.lastTyped) && (
                 <button className="btn-next" style={{ display: 'flex' }} onClick={next}>Tiếp <i className="fas fa-arrow-right" /></button>
               )}
             </div>

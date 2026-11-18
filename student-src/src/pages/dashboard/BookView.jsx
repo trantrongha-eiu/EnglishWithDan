@@ -29,10 +29,39 @@ function copyText(text) {
   });
 }
 
-function WordRow({ w, selected, onSelect, onStatus, onEdit, onDelete }) {
+// Counts up to the new value; after the first paint a change also "pops"
+function CountUp({ value }) {
+  const ref = useRef(null);
+  const shown = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    const first = shown.current === null;
+    const from = shown.current ?? 0;
+    shown.current = value;
+    if (!el || from === value) { if (el) el.textContent = value; return undefined; }
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) { el.textContent = value; return undefined; }
+    const ms = first ? 550 : 380;
+    const start = performance.now();
+    let raf = requestAnimationFrame(function step(now) {
+      const t = Math.min((now - start) / ms, 1);
+      el.textContent = Math.round(from + (value - from) * (1 - (1 - t) ** 3));
+      if (t < 1) raf = requestAnimationFrame(step);
+    });
+    if (!first) {
+      el.classList.remove('stat-pop');
+      void el.offsetWidth; // restart the animation
+      el.classList.add('stat-pop');
+    }
+    return () => { cancelAnimationFrame(raf); el.textContent = value; };
+  }, [value]);
+  return <span ref={ref} onAnimationEnd={(e) => e.currentTarget.classList.remove('stat-pop')}>0</span>;
+}
+
+function WordRow({ w, index, selected, flash, onSelect, onStatus, onEdit, onDelete }) {
   const wc = w.wrongCount || 0;
   return (
-    <tr className={selected ? 'selected' : ''}>
+    <tr className={`word-row-anim${selected ? ' selected' : ''}${flash ? ' word-mastered-flash' : ''}`}
+      style={{ animationDelay: `${Math.min(index * 22, 380)}ms` }}>
       <td className="cb-wrap">
         <input type="checkbox" checked={selected} onChange={(e) => onSelect(w._id, e.target.checked)} aria-label={`Chọn ${w.word}`} />
       </td>
@@ -133,7 +162,7 @@ function BookView({ bookId }) {
   const navigate = useNavigate();
   const toast = useToast();
   const location = useLocation();
-  const { stats, book: cached, setBook, loadBook, bookError, loadBooks, books, setBooks, openBookMenu, vocabGoals, openGuide } = useOutletContext();
+  const { stats, loadStats, book: cached, setBook, loadBook, bookError, loadBooks, books, setBooks, openBookMenu, vocabGoals, openGuide } = useOutletContext();
   const book = cached?._id === bookId ? cached : null;
 
   const [query, setQuery] = useState('');
@@ -145,6 +174,9 @@ function BookView({ bookId }) {
   const renameAsk = location.state?.rename;
   const [editing, setEditing] = useState(undefined); // undefined = closed, null = add, word = edit
   const [confirm, setConfirm] = useState(null);
+  const [flashId, setFlashId] = useState(null); // row just marked Mastered
+  const [completePulse, setCompletePulse] = useState(false);
+  const checkAllRef = useRef(null);
   const [, setTick] = useState(0); // re-render after optimistic edits on word objects
   const rerender = () => setTick(t => t + 1);
 
@@ -153,7 +185,8 @@ function BookView({ bookId }) {
   const hadCache = useRef(cached?._id === bookId);
   useEffect(() => {
     loadBook(bookId, { quiet: hadCache.current });
-  }, [bookId, loadBook]);
+    loadStats();
+  }, [bookId, loadBook, loadStats]);
 
   const bookLoaded = !!book;
   // "Đổi tên sổ" from the ⋯ menu → focus the name field once it is there
@@ -179,9 +212,18 @@ function BookView({ bookId }) {
 
   useEffect(() => { if (bookLoaded) bindDict('words-tbody', 'vocab-list'); }, [bookLoaded, bookId]);
 
+  // "Select all" shows a dash while only some of the visible words are ticked
+  const someVisibleSelected = visible.some(w => selected.has(w._id));
+  const everyVisibleSelected = visible.length > 0 && visible.every(w => selected.has(w._id));
+  useEffect(() => {
+    if (checkAllRef.current) checkAllRef.current.indeterminate = someVisibleSelected && !everyVisibleSelected;
+  }, [someVisibleSelected, everyVisibleSelected]);
+
   // Every word mastered → celebrate (after the server confirmed the change)
   const celebrateIfDone = () => {
     if (!words.length || words.some(w => w.status !== 'da-thuoc')) return;
+    setCompletePulse(true);
+    setTimeout(() => setCompletePulse(false), 2800);
     spawnConfetti(90);
     toast(`🎉 Excellent! You've mastered all ${words.length} words!`, 'success');
   };
@@ -250,6 +292,10 @@ function BookView({ bookId }) {
     const prev = w.status;
     w.status = status;
     rerender();
+    if (status === 'da-thuoc') {
+      setFlashId(w._id);
+      setTimeout(() => setFlashId(id => (id === w._id ? null : id)), 850);
+    }
     try {
       showBadges(await apiFetch(`/vocabbook/${bookId}/words/${w._id}`, { method: 'PATCH', body: JSON.stringify({ status }) }));
       if (status === 'da-thuoc') celebrateIfDone();
@@ -324,6 +370,14 @@ function BookView({ bookId }) {
     }
   }
 
+  function addWord() {
+    if (words.length >= VOCAB_BOOK_MAX_WORDS) {
+      toast(`Sổ này đã đạt giới hạn ${VOCAB_BOOK_MAX_WORDS} từ. Hãy chuyển bớt sang sổ khác hoặc xóa từ cũ.`, 'error');
+      return;
+    }
+    setEditing(null);
+  }
+
   function copyList() {
     if (!words.length) { toast('Sổ này chưa có từ nào', 'error'); return; }
     let list = visible;
@@ -350,7 +404,6 @@ function BookView({ bookId }) {
   }
 
   const toggleSelect = (id, on) => setSelected(s => { const n = new Set(s); if (on) n.add(id); else n.delete(id); return n; });
-  const allVisibleSelected = visible.length > 0 && visible.every(w => selected.has(w._id));
   const toggleAll = (on) => setSelected(s => {
     const n = new Set(s);
     visible.forEach(w => (on ? n.add(w._id) : n.delete(w._id)));
@@ -372,7 +425,7 @@ function BookView({ bookId }) {
           {counts['chua-thuoc'] === words.length
             ? <p className="classify-float-note">Tất cả từ đang ở <b>Not yet</b> — từ nào đã nhớ thì đổi sang So-so hoặc Mastered nhé.</p>
             : counts['nho-so-so'] > 0 && <p className="classify-float-note">Có <b>{counts['nho-so-so']}</b> từ <b>So-so</b> — từ nào giờ đã nhớ chắc thì nâng lên Mastered.</p>}
-          <p className="classify-float-hint">Đổi nhiều từ cùng lúc: tick ô vuông đầu dòng rồi chọn trạng thái mới.</p>
+          <p className="classify-float-hint">Đổi nhiều từ cùng lúc: tick ô vuông đầu dòng rồi chọn trạng thái mới. Phân loại càng đúng, hệ thống nhắc ôn càng chính xác.</p>
           <div className="classify-float-btns">
             <button type="button" className="btn btn-primary btn-sm" onClick={classifyNow}><i className="fas fa-tags" /> Phân loại ngay</button>
             <button type="button" className="btn btn-ghost btn-sm" onClick={() => setClassify(null)}>Để sau</button>
@@ -407,21 +460,21 @@ function BookView({ bookId }) {
               title={`Lọc: chỉ hiện từ ${s.label}`}
               onClick={() => setStatusFilter(f => (f === s.key ? null : s.key))}
             >
-              <span className={s.dot} />{counts[s.key]} {s.label}
+              <span className={s.dot} /><CountUp value={counts[s.key]} /> {s.label}
             </span>
           ))}
           <span style={{ color: 'var(--text3)', fontSize: 12 }}>·</span>
           <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text2)' }}>
-            {isFiltered ? visible.length : words.length}
+            <CountUp value={isFiltered ? visible.length : words.length} />
             {isFiltered ? ` / ${words.length} từ` : ` / ${VOCAB_BOOK_MAX_WORDS} từ`}
           </span>
         </div>
       </div>
-      <div className="book-progress-bar"><div className="book-progress-fill" style={{ width: `${pct}%` }} /></div>
+      <div className="book-progress-bar"><div className={`book-progress-fill${completePulse ? ' complete' : ''}`} style={{ width: `${pct}%` }} /></div>
       <StreakBanner stats={stats} />
 
       {/* homework "học N từ trong sổ" this book counts for */}
-      <VocabGoalCards goals={goalsForBook(vocabGoals, book)} words={words} onStart={() => practice('flashcard')} />
+      <VocabGoalCards goals={goalsForBook(vocabGoals, book)} words={words} onStart={() => practice('mixed')} />
       <AddTip />
 
       <div className="book-action-bar">
@@ -435,7 +488,7 @@ function BookView({ bookId }) {
         <button className="btn btn-ghost btn-sm" onClick={() => practice('study')}>
           <i className="fas fa-eye" /> Preview
         </button>
-        <button className="btn btn-ghost btn-sm" onClick={() => setEditing(null)}>
+        <button className="btn btn-ghost btn-sm" onClick={addWord}>
           <i className="fas fa-plus" /> Add word
         </button>
         <button className="btn btn-ghost btn-sm" onClick={() => setBulkOpen(true)} title="Nhập nhiều từ một lúc từ danh sách">
@@ -476,7 +529,7 @@ function BookView({ bookId }) {
           <thead>
             <tr>
               <th style={{ width: 36 }}>
-                <input type="checkbox" checked={allVisibleSelected} onChange={(e) => toggleAll(e.target.checked)} aria-label="Chọn tất cả" />
+                <input ref={checkAllRef} type="checkbox" checked={everyVisibleSelected} onChange={(e) => toggleAll(e.target.checked)} aria-label="Chọn tất cả" />
               </th>
               <th>Status</th>
               <th>Word</th>
@@ -500,8 +553,8 @@ function BookView({ bookId }) {
                 <div>Không tìm thấy từ phù hợp</div>
               </td></tr>
             )}
-            {visible.map(w => (
-              <WordRow key={w._id} w={w} selected={selected.has(w._id)} onSelect={toggleSelect}
+            {visible.map((w, i) => (
+              <WordRow key={w._id} w={w} index={i} flash={flashId === w._id} selected={selected.has(w._id)} onSelect={toggleSelect}
                 onStatus={changeStatus} onEdit={setEditing} onDelete={askDelete} />
             ))}
           </tbody>
