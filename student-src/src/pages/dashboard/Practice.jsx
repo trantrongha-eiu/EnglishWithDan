@@ -238,9 +238,13 @@ function FlashcardQuestion({ item, answered, onAnswer, onNext }) {
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [answered, flipped, flip]);
+  // The controls stay on screen but locked once answered. Focus has to leave
+  // them, or Enter / Space would not reach the "next card" shortcut.
+  const releaseFocus = () => document.activeElement?.blur?.();
   // Remembered → next card shortly; not remembered → time to read it (15s or "Tiếp")
   const mark = (ok) => {
     if (answered) return;
+    releaseFocus();
     setResult({ ok });
     onAnswer(ok);
     timer.current = setTimeout(onNext, ok ? 1500 : 15000);
@@ -250,11 +254,12 @@ function FlashcardQuestion({ item, answered, onAnswer, onNext }) {
     const ua = normAnswer(typed);
     if (!ua) { toast('Nhập một từ trước đã', 'error'); return; }
     const ok = ua === normAnswer(w.word);
+    releaseFocus();
     setResult({ ok, typed: true });
     onAnswer(ok, { typed: true });
   };
   const askLulu = (e) => {
-    if (hints >= FLASH_HINT_MAX) return;
+    if (answered || hints >= FLASH_HINT_MAX) return;
     const n = hints + 1;
     setHints(n);
     luluSay(e.currentTarget, `Lulu mách nè: ${buildLetterHint(w.word, n)} 🍊`);
@@ -280,22 +285,23 @@ function FlashcardQuestion({ item, answered, onAnswer, onNext }) {
           </div>
         </div>
       </div>
-      {flipped && !answered && (
+      {flipped && (
         <>
           <div className="quick-btns" style={{ display: 'flex' }}>
-            <button className="btn-remembered" onClick={() => mark(true)}><i className="fas fa-check-circle" /> Đã nhớ</button>
-            <button className="btn-not-remembered" onClick={() => mark(false)}><i className="fas fa-times-circle" /> Chưa nhớ</button>
+            <button className="btn-remembered" disabled={answered} onClick={() => mark(true)}><i className="fas fa-check-circle" /> Đã nhớ</button>
+            <button className="btn-not-remembered" disabled={answered} onClick={() => mark(false)}><i className="fas fa-times-circle" /> Chưa nhớ</button>
           </div>
           <div style={{ marginTop: 14 }}>
             <div className="fb-input-row">
-              <input className="fb-input" placeholder="Gõ từ để kiểm tra..." value={typed} autoFocus autoComplete="off" autoCapitalize="off" spellCheck={false}
-                onChange={(e) => setTyped(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') check(); }} />
-              <button type="button" className="btn-hint-sm ask-lulu" disabled={hints >= FLASH_HINT_MAX} onClick={askLulu} title="Hỏi Lulu chữ cái tiếp theo">
+              <input className="fb-input" placeholder="Gõ từ để kiểm tra..." value={typed} disabled={answered} autoFocus autoComplete="off" autoCapitalize="off" spellCheck={false}
+                onChange={(e) => setTyped(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) check(); }} />
+              <button type="button" className="btn-hint-sm ask-lulu" disabled={answered || hints >= FLASH_HINT_MAX} onClick={askLulu} title="Hỏi Lulu chữ cái tiếp theo">
                 <span className="ask-lulu-ic" /> Hỏi Lulu
               </button>
-              <button type="button" className="btn-check" onClick={check}>Kiểm tra</button>
+              <button type="button" className="btn-check" disabled={answered} onClick={check}>Kiểm tra</button>
             </div>
-            {hints > 0 && (
+            {hints > 0 && !answered && (
               <div className="feedback-hint">🍊 Lulu gợi ý: <strong>{buildLetterHint(w.word, hints)}</strong> ({letterHint(w.word, 'en')})</div>
             )}
           </div>

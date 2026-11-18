@@ -156,6 +156,11 @@ body {
 .practice-prompt-meaning { font-size: 20px; font-weight: 700; margin: 6px 0 4px; }
 .practice-listen-btn { font-size: 34px; background: none; border: none; cursor: pointer; }
 .practice-feedback { margin-top: 12px; }
+/* Flashcard controls stay visible once answered, visibly locked */
+.question-card .btn-remembered:disabled,
+.question-card .btn-not-remembered:disabled,
+.question-card .btn-check:disabled,
+.question-card .fb-input:disabled { opacity: 0.55; cursor: not-allowed; }
 
 /* Note box in the move / merge notebook modals (inline style on the static page) */
 .move-words-note {
