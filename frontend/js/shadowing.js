@@ -582,9 +582,13 @@
   // ══════════════ DICTATION ══════════════
   function dcCheck() {
     const seg = lesson.segments[idx];
-    const typed = tokens($('dc-input').value.trim(), !!seg.answer);
+    let typed = tokens($('dc-input').value.trim(), !!seg.answer);
     if (!typed.length) return;
     const ref = tokens(dictRef(seg), !!seg.answer);
+    // A name/number `answer` also counts when only the spacing differs —
+    // a postcode typed "se100dx" for "SE10 0DX", "AB 12" for "AB12".
+    const compact = (ws) => ws.map(normWord).join('');
+    if (seg.answer && compact(typed) === compact(ref)) typed = ref.slice();
     const { refHit, saidHit } = diffWords(ref, typed);
     const extra = typed.filter((_, k) => !saidHit.has(k));
     const perfect = refHit.size === ref.length && !extra.length;

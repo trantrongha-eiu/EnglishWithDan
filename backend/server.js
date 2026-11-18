@@ -164,6 +164,14 @@ mongoose.connect(process.env.MONGO_URI)
     } catch (e) {
       logger.error('startup', 'ShadowingLesson seed error', { errorMessage: e.message });
     }
+
+    // Auto-seed dictation drills (spelling names / long numbers) — idempotent upsert
+    try {
+      const { runSeed: runDictationDrillSeed } = require('./scripts/seedDictationDrills');
+      await runDictationDrillSeed();
+    } catch (e) {
+      logger.error('startup', 'DictationDrill seed error', { errorMessage: e.message });
+    }
     // Auto-seed Listening Tips strategy articles (always run – replaceOne+upsert is idempotent)
     try {
       const { runSeed: runListeningTipsSeed } = require('./scripts/seedListeningTips');

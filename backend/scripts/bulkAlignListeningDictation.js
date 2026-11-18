@@ -37,23 +37,53 @@
 //   node backend/scripts/bulkAlignListeningDictation.js --include-skipped # also retry content-rejected sections (e.g. after a transcript/code fix) — still skips permanent failures like "file too large"
 //   node backend/scripts/bulkAlignListeningDictation.js --force          # re-align EVERYTHING, including already-successful and permanently-failed sections
 //   node backend/scripts/bulkAlignListeningDictation.js --delay 2000     # ms between sections (default 1500)
+//   node backend/scripts/bulkAlignListeningDictation.js --local-asr      # use the local faster-whisper word cache
+//                                                                        # (scripts/data/transcriptAsr/s_<id>.json, built for transcript sync) instead of
+//                                                                        # Groq — no API quota, and no 25MB cap so "file too large" sections become eligible
+//   node backend/scripts/bulkAlignListeningDictation.js --parts 2,3,4    # only these IELTS parts
 //   node backend/scripts/bulkAlignListeningDictation.js --ids id1,id2    # re-align ONLY these specific _ids (always force-mode for exactly this set — for
 //                                                                        # targeted re-fixes, e.g. sections whose transcript was edited after their last
 //                                                                        # alignment and drifted out of sync, without re-touching the rest of the catalogue)
 'use strict';
 
 require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
 
 function parseArgs(argv) {
-  const args = { limit: Infinity, force: false, delay: 1500, includeSkipped: false, ids: null };
+  const args = { limit: Infinity, force: false, delay: 1500, includeSkipped: false, ids: null, localAsr: false, parts: null };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--limit') args.limit = parseInt(argv[++i], 10) || Infinity;
     else if (argv[i] === '--force') args.force = true;
     else if (argv[i] === '--delay') args.delay = parseInt(argv[++i], 10) || 1500;
     else if (argv[i] === '--include-skipped') args.includeSkipped = true;
+    else if (argv[i] === '--local-asr') args.localAsr = true;
+    else if (argv[i] === '--parts') args.parts = argv[++i].split(',').map(Number).filter(Boolean);
     else if (argv[i] === '--ids') args.ids = argv[++i].split(',').map(s => s.trim()).filter(Boolean);
   }
   return args;
+}
+
+// Local base.en word timestamps end a sentence ~0.4s earlier than Groq's
+// (median, measured 2026-11-17 on the 92 Groq-aligned sections) — played
+// raw, the clip would clip the last word. Pad each unit out into the
+// surrounding silence only: never past the next / before the previous
+// spoken ASR word, so no neighbouring speech leaks in. Brings the median
+// end within ~0.1s of Groq's.
+function padUnitsIntoSilence(units, asrWords, endPad = 0.4, startPad = 0.15) {
+  const r2 = n => Math.round(n * 100) / 100;
+  return units.map(u => {
+    let prevEnd = 0, nextStart = Infinity;
+    for (const w of asrWords) {
+      if (w.end <= u.start + 0.01) prevEnd = Math.max(prevEnd, w.end);
+      if (w.start >= u.end - 0.01 && w.start < nextStart) nextStart = w.start;
+    }
+    return {
+      ...u,
+      start: r2(Math.max(u.start - startPad, prevEnd, 0)),
+      end: r2(Math.max(u.end, Math.min(u.end + endPad, nextStart))),
+    };
+  });
 }
 
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
@@ -61,6 +91,7 @@ function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 async function run() {
   const mongoose = require('mongoose');
   const ListeningSection = require('../models/ListeningSection');
+  const { NOT_COURSE } = require('../utils/courseContent');
   const { splitTranscriptIntoSentences, normalizeDictationUnits } = require('../services/listeningTranscriptSplitter');
   const { transcribeWithWordTimestamps, alignSentences, selectDictationSentences } = require('../services/listeningAlignmentService');
   const { dropNameHeavySentences, buildLexicon } = require('../services/dictationNameFilter');
@@ -97,9 +128,19 @@ async function run() {
     // "file too large" — no transcript/code change can ever fix those, so
     // retrying them is pure wasted time on every single run. Only --force
     // (skipped this whole block) touches those.
-    if (!args.includeSkipped) filter.dictationSkippedAt = null;
+    if (args.localAsr) {
+      // Local ASR has no upload-size cap, so the "permanent" Groq 413
+      // failures are retryable here; content rejections still need
+      // --include-skipped.
+      if (!args.includeSkipped) filter.$and = [{ $or: [{ dictationSkippedAt: null }, { dictationSkipPermanent: true }] }];
+    } else if (!args.includeSkipped) filter.dictationSkippedAt = null;
     else filter.dictationSkipPermanent = { $ne: true };
   }
+  if (args.parts) filter.partNumber = { $in: args.parts };
+  // Course-only sections (giáo trình audio) stay out of the public
+  // dictation list, same as the practice catalogue — only --ids reaches them.
+  if (!args.ids) Object.assign(filter, NOT_COURSE);
+  if (args.localAsr) args.delay = 0;
 
   const totalMissing = await ListeningSection.countDocuments(filter);
   const sections = await ListeningSection.find(filter).select('title audioUrl audioDuration transcript').limit(args.limit).lean();
@@ -111,7 +152,7 @@ async function run() {
   // near-empty exercise.
   const MIN_SECTION_SENTENCES = 5;
 
-  let ok = 0, rejected = 0, failed = 0;
+  let ok = 0, rejected = 0, failed = 0, noCache = 0;
   const rejectedList = [];
   for (const [i, section] of sections.entries()) {
     const tag = `[${i + 1}/${sections.length}] "${section.title}"`;
@@ -127,11 +168,24 @@ async function run() {
         continue;
       }
 
-      const res = await fetch(section.audioUrl);
-      if (!res.ok) throw new Error(`audio download HTTP ${res.status}`);
-      const audioBuffer = Buffer.from(await res.arrayBuffer());
-
-      const asrWords = await transcribeWithWordTimestamps(audioBuffer, 'section.mp3');
+      let asrWords;
+      if (args.localAsr) {
+        const cacheFile = path.join(__dirname, 'data', 'transcriptAsr', `s_${section._id}.json`);
+        if (!fs.existsSync(cacheFile)) {
+          // Not an alignment failure — just not transcribed locally yet.
+          // Leave it untouched (no skip mark) so a later run picks it up.
+          console.log(`${tag} NO LOCAL ASR — run alignTranscriptTiming.js --export-jobs + asr_words.py first`);
+          noCache++;
+          continue;
+        }
+        asrWords = (JSON.parse(fs.readFileSync(cacheFile, 'utf8')).words || [])
+          .map(w => ({ word: w.w, start: w.s, end: w.e }));
+      } else {
+        const res = await fetch(section.audioUrl);
+        if (!res.ok) throw new Error(`audio download HTTP ${res.status}`);
+        const audioBuffer = Buffer.from(await res.arrayBuffer());
+        asrWords = await transcribeWithWordTimestamps(audioBuffer, 'section.mp3');
+      }
       const aligned = alignSentences(sentences, asrWords);
       const sel = selectDictationSentences(aligned);
       const dropped = sel.dropped;
@@ -149,7 +203,8 @@ async function run() {
       // stubs are folded away (normalizeDictationUnits). Both run AFTER
       // selectDictationSentences so its MIN_DICTATION_WORDS / words-per-
       // second gates judge real aligned sentences, not fragments.
-      const kept = normalizeDictationUnits(nf.kept, { maxSec: 9 });
+      let kept = normalizeDictationUnits(nf.kept, { maxSec: 9 });
+      if (args.localAsr) kept = padUnitsIntoSilence(kept, asrWords);
 
       if (kept.length < MIN_SECTION_SENTENCES) {
         rejected++;
@@ -213,7 +268,7 @@ async function run() {
     if (i < sections.length - 1) await sleep(args.delay);
   }
 
-  console.log(`\n[bulkAlign] Done. ${ok} accepted, ${rejected} rejected (too few usable sentences left after filtering), ${failed} errored, ${totalMissing - ok - rejected - failed} still pending.`);
+  console.log(`\n[bulkAlign] Done. ${ok} accepted, ${rejected} rejected (too few usable sentences left after filtering), ${failed} errored, ${noCache} without local ASR, ${totalMissing - ok - rejected - failed - noCache} still pending.`);
   if (rejectedList.length) {
     console.log(`[bulkAlign] ${rejectedList.length} section(s) rejected — marked skipped, won't be retried by default (use --include-skipped or --force):`);
     rejectedList.forEach(r => console.log(`  - "${r.title}" (${r.issues.length} dropped sentence(s))`));

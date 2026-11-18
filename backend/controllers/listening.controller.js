@@ -162,8 +162,11 @@ exports.getSectionAnswerKey = async (req, res) => {
 
 exports.listDictationSections = async (req, res) => {
   try {
-    const sections = await listeningService.listDictationSections();
-    res.json({ success: true, sections });
+    const [sections, drills] = await Promise.all([
+      listeningService.listDictationSections(),
+      listeningService.listDictationDrills(),
+    ]);
+    res.json({ success: true, sections, drills });
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 
@@ -179,13 +182,21 @@ exports.getDictationTranslations = async (req, res) => {
   }
 };
 
+exports.getDictationDrill = async (req, res) => {
+  try {
+    const drill = await listeningService.getDictationDrill(req.params.slug);
+    if (!drill) return res.status(404).json({ success: false, message: 'Không tìm thấy bài' });
+    res.json({ success: true, drill });
+  } catch (err) { console.error('[Dictation drill]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
+};
+
 exports.saveDictationAttempt = async (req, res) => {
   try {
-    const { sectionId, sectionTitle, partNumber, answers } = req.body;
-    if (!sectionId || !Array.isArray(answers) || !answers.length) {
+    const { sectionId, drillSlug, sectionTitle, partNumber, answers } = req.body;
+    if ((!sectionId && !drillSlug) || !Array.isArray(answers) || !answers.length) {
       return res.status(400).json({ success: false, message: 'Thiếu dữ liệu' });
     }
-    const result = await listeningService.saveDictationAttempt({ sectionId, sectionTitle, partNumber, answers }, req.user._id);
+    const result = await listeningService.saveDictationAttempt({ sectionId, drillSlug, sectionTitle, partNumber, answers }, req.user._id);
     if (!result) return res.status(404).json({ success: false, message: 'Không tìm thấy section' });
     res.json({ success: true, ...result });
   } catch (err) {

@@ -60,6 +60,8 @@ router.get('/dictation/list', auth, contentLimiter, listeningController.listDict
 router.get('/dictation/section/:id', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getPracticeSectionById);
 // Vietnamese meaning per sentence (shown once a sentence is typed correctly);
 // generated + cached on first request — listeningService.getDictationTranslations.
+// One "Đánh vần tên & số dài" lesson (DictationDrill) — same gate as a section.
+router.get('/dictation/drill/:slug', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getDictationDrill);
 router.get('/dictation/section/:id/translations', auth, contentLimiter, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.getDictationTranslations);
 // requirePremium added (audit finding BUG-A11) — this creates a real
 // DictationAttempt (feeds admin's "Lịch sử làm bài" + dictation stats), yet

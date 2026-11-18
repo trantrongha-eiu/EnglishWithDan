@@ -17,6 +17,7 @@ const auth = require('../../middleware/auth');
 const { teacherOnly } = require('./_shared');
 
 const DictationAttempt = require('../../models/DictationAttempt');
+const DictationDrill = require('../../models/DictationDrill');
 const GapFillAttempt = require('../../models/GapFillAttempt');
 const AdvSentenceAttempt = require('../../models/AdvSentenceAttempt');
 const Task2Attempt = require('../../models/Task2Attempt');
@@ -39,8 +40,15 @@ const BUILDERS = {
   async 'dictation'(id) {
     const a = await DictationAttempt.findById(id).lean();
     if (!a) return null;
-    const section = await ListeningSection.findById(a.sectionId).select('dictationSentences').lean().catch(() => null);
-    const sentences = section?.dictationSentences || [];
+    let sentences;
+    if (a.drillId) {
+      // spelling / numbers lesson: show the expected answer with its clip text
+      const drill = await DictationDrill.findById(a.drillId).select('items.answer items.text').lean().catch(() => null);
+      sentences = (drill?.items || []).map(it => ({ text: `${it.answer} — "${it.text}"` }));
+    } else {
+      const section = await ListeningSection.findById(a.sectionId).select('dictationSentences').lean().catch(() => null);
+      sentences = section?.dictationSentences || [];
+    }
     return {
       title: a.sectionTitle || `Dictation Part ${a.partNumber || ''}`.trim(),
       subtitle: '🎧 Dictation — chép chính tả từng câu',

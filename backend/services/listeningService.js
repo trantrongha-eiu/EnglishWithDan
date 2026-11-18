@@ -17,6 +17,7 @@ const ListeningSection = require('../models/ListeningSection');
 const { NOT_COURSE } = require('../utils/courseContent');
 const ListeningPracticeAttempt = require('../models/ListeningPracticeAttempt');
 const DictationAttempt = require('../models/DictationAttempt');
+const DictationDrill = require('../models/DictationDrill');
 const GapFillAttempt = require('../models/GapFillAttempt');
 const geminiService = require('./geminiService');
 const logger = require('../utils/logger');
@@ -536,6 +537,7 @@ async function listDictationSections() {
   const sections = await ListeningSection.find({
     isActive: true,
     dictationSentences: { $exists: true, $not: { $size: 0 } },
+    ...NOT_COURSE,
   })
     .select('_id title partNumber audioDuration isActualTest dictationSentences')
     .sort({ partNumber: 1, title: 1 })
@@ -599,8 +601,35 @@ async function getDictationTranslations(id) {
 // (it has its own gate-free content route, GET /listening/dictation/
 // section/:id — see routes/listening.js), so it must never create a
 // pending review.
-async function saveDictationAttempt({ sectionId, sectionTitle, partNumber, answers }, userId) {
-  const section = await ListeningSection.findById(sectionId).select('_id title partNumber').lean();
+// "Đánh vần tên & số dài" lessons (models/DictationDrill.js) — listed on
+// the same dictation page, each item a clip of an existing Listening file.
+async function listDictationDrills() {
+  const drills = await DictationDrill.find({ isPublished: true })
+    .select('slug title category order items.kind').sort({ order: 1 }).lean();
+  return drills.map(d => ({ _id: d._id, slug: d.slug, title: d.title, category: d.category, itemCount: (d.items || []).length }));
+}
+
+async function getDictationDrill(slug) {
+  const d = await DictationDrill.findOne({ slug: String(slug), isPublished: true })
+    .select('slug title category items').lean();
+  if (!d) return null;
+  return {
+    _id: d._id, slug: d.slug, title: d.title, category: d.category,
+    items: d.items.map(({ kind, answer, text, audioUrl, start, end, sourceTitle }) => ({ kind, answer, text, audioUrl, start, end, sourceTitle })),
+  };
+}
+
+async function saveDictationAttempt({ sectionId, drillSlug, sectionTitle, partNumber, answers }, userId) {
+  let section;
+  let drill = null;
+  if (drillSlug) {
+    drill = await DictationDrill.findOne({ slug: String(drillSlug) }).select('_id title').lean();
+    if (!drill) return null;
+    section = { _id: drill._id, title: drill.title, partNumber: 1 };
+  } else {
+    if (!mongoose.isValidObjectId(sectionId)) return null;
+    section = await ListeningSection.findById(sectionId).select('_id title partNumber').lean();
+  }
   if (!section) return null;
 
   const safeAnswers = (answers || []).map(a => ({
@@ -614,7 +643,7 @@ async function saveDictationAttempt({ sectionId, sectionTitle, partNumber, answe
   const correctCount = safeAnswers.filter(a => a.isCorrect).length;
   const attempt = await DictationAttempt.create({
     userId,
-    sectionId,
+    ...(drill ? { drillId: drill._id } : { sectionId }),
     sectionTitle: sectionTitle || section.title || '',
     partNumber: partNumber || section.partNumber || 1,
     answers: safeAnswers,
@@ -623,7 +652,7 @@ async function saveDictationAttempt({ sectionId, sectionTitle, partNumber, answe
     submittedAt: new Date()
   });
   if (safeAnswers.length >= MIN_STREAK_SENTENCES) {
-    await awardPracticeFlames(userId, `dictation:${section._id}`, drillBonusForAccuracy(correctCount / safeAnswers.length));
+    await awardPracticeFlames(userId, `dictation:${drill ? 'drill:' : ''}${section._id}`, drillBonusForAccuracy(correctCount / safeAnswers.length));
   }
 
   return { attemptId: attempt._id, correctCount, totalSentences: safeAnswers.length };
@@ -1525,7 +1554,7 @@ module.exports = {
   uploadTestAudio, uploadStandaloneAudio, uploadMapImage, uploadSectionAudio,
   updateTranscript,
   listAdminAttempts, getAdminAttemptsStats,
-  listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, getDictationTranslations, saveDictationAttempt,
+  listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, listDictationDrills, getDictationDrill, getDictationTranslations, saveDictationAttempt,
   listGapFillSections, gapFillSectionIdsFor, getGapFillSectionById, getGapFillGlossary, saveGapFillAttempt, generateSectionGapFill, updateSectionGapFill,
   getWarmUpSectionById, buildSectionWarmUp, generateSectionWarmUp, getSectionWarmUp, updateSectionWarmUp,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent, bulkSetSectionsActive,

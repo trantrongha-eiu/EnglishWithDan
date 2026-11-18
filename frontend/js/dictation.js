@@ -1,34 +1,61 @@
-// dictation.html — Luyện Dictation
+/* frontend/js/dictation.js — Luyện Dictation (dictation.html).
+ *
+ * Two kinds of lesson share one player:
+ *  - a Listening section: its dictationSentences, all clips of ONE audio
+ *    file; the student types the whole sentence (word-level LCS diff).
+ *  - a "drill" (DictationDrill, "Đánh vần tên" / "Số dài & mã số"): ~10
+ *    clips of MANY Listening files, each with its own audioUrl; the student
+ *    types only the `answer` (the spelled name / number), like an IELTS
+ *    answer sheet — spacing and digit grouping don't matter.
+ * Plus the Shadowing page's spelling-numbers videos, listed here and opened
+ * in shadowing.html's own Dictation mode.
+ *
+ * Player layout follows dailydictation-style screens: tabs (Dictation /
+ * Full transcript), media card + sentence grid on the left, typing panel on
+ * the right with Correct/Incorrect + Skip, a masked answer line
+ * ("According ** *******") and "Show answer immediately / Show full
+ * answer" options; tips bar and full audio + plain transcript below.
+ */
 const API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
 function authH() { return { ...window.AuthService.authHeader(), 'Content-Type': 'application/json' }; }
 function pad(n) { return String(Math.floor(n)).padStart(2, '0'); }
 function fmtTime(s) { if (!isFinite(s) || s < 0) s = 0; return Math.floor(s / 60) + ':' + pad(s % 60); }
 
-let dictSections = [];      // picker list
-let dictSection  = null;    // currently open section (full doc incl. dictationSentences + audioUrl)
-let dictIndex    = 0;       // current sentence index
-let dictHintShown = [];     // letters Lulu has opened per word of the current sentence
-let dictAsks = 0;           // "Hỏi Lulu" asks used on the current sentence
-const DICT_MAX_ASKS = 3;    // …at most this many (graded, so capped)
-let dictDone     = new Set(); // indices answered correctly this session
-let dictTranslations = null; // Vietnamese meaning per sentence (null until loaded)
-let dictSpeeds   = [1, 1.25, 1.5, 0.75];
-let dictSpeedIdx = 0;
+let dictSections = [];      // picker: Listening sections with dictation
+let dictDrills = [];        // picker: spelling / numbers drills
+// Shadowing's spelling-numbers video lessons (embedded YouTube, never
+// re-hosted) — a card opens them in shadowing.html's Dictation mode.
+let dictSpellLessons = [];
+let dictPart = '';          // active chip: '' | '1'..'4' | 'drill-spelling' | 'drill-numbers' | 'spell'
+
+// The open lesson, normalised: { kind: 'section'|'drill', _id, slug, title,
+// sub, transcript, audioUrl, sentences: [{ text, start, end, audioUrl, answer?, sourceTitle? }] }
+let dictSection = null;
+let dictIndex = 0;
+let dictDone = new Set();      // sentences typed right this session
+let dictPeeked = new Set();    // sentences whose full answer was shown → not scored as correct
+let dictLast = {};             // per sentence: result of the latest check (drives the mask)
+let dictTranslations = null;   // sections: Vietnamese meaning per sentence
+let dictSpeed = 1;
 const audio = document.getElementById('dict-audio');
 
-// Single source of truth for the play/pause button glyph — dictGoTo(),
-// dictTogglePlay(), the timeupdate end-of-sentence stop and the audio
-// 'error' handler all need to keep it in sync, and previously each poked
-// the innerHTML directly (so navigating away mid-play left it stuck on the
-// pause icon).
+const DICT_TIPS = [
+  'Luyện ít nhất 30 phút mỗi ngày để tiến bộ nhanh hơn!',
+  'Nghe lại một câu nhiều lần trước khi xem đáp án — phím Ctrl để nghe lại nhanh.',
+  'Đánh vần: "double L" = LL, "triple 5" = 555, "oh" = số 0.',
+  'Số điện thoại: viết theo nhóm 3–4 số trong lúc nghe để không bị sót.',
+  'Bẫy "13 hay 30": -teen nhấn âm cuối và kéo dài, -ty nhấn âm đầu.',
+  'Chép xong câu khó, đọc to lại một lần theo băng để nhớ cách nối âm.',
+  'Gặp từ mới, nháy đúp vào từ trong đáp án để tra nghĩa và lưu vào sổ từ.',
+];
+let dictTipIdx = 0;
+
+// Single source of truth for the play/pause glyph.
 function _setDictPlayIcon(playing) {
   document.getElementById('dict-play-btn').innerHTML =
     playing ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
 }
 
-// Genuine load failure (bad/missing audioUrl, network error, unsupported
-// format) — mirrors listening.html's audio 'error' listener; without it a
-// broken file just fails silently with the button stuck on "pause".
 audio.addEventListener('error', () => {
   console.error('[dictation audio] load error:', audio.error);
   if (!dictSection) return;
@@ -36,50 +63,62 @@ audio.addEventListener('error', () => {
   toast('Lỗi tải audio của bài này — vui lòng liên hệ giáo viên.', 'error');
 });
 
-// ══════════════ SAVE RESULTS (so admin's "Lịch sử làm bài" actually sees
-// dictation practice — this page previously never sent anything to the
-// server, checking answers entirely client-side). Keyed by sentenceIndex so
-// re-checking the same sentence (dictRetry()) overwrites its earlier result
-// instead of double-counting it. ══════════════
+/* ══════════════ PREFS (per viewer, best effort) ══════════════ */
+const PREFS_KEY = 'dictation-prefs-v2';
+function dictLoadPrefs() {
+  let p = {};
+  try { p = JSON.parse(localStorage.getItem(PREFS_KEY) || '{}') || {}; } catch (e) { p = {}; }
+  if (typeof p.autoplay === 'boolean') document.getElementById('opt-autoplay').checked = p.autoplay;
+  if (typeof p.autonext === 'boolean') document.getElementById('opt-autonext').checked = p.autonext;
+  if (typeof p.showAnswer === 'boolean') document.getElementById('opt-show-answer').checked = p.showAnswer;
+  if ([0.75, 1, 1.25, 1.5].includes(p.speed)) { dictSpeed = p.speed; document.getElementById('dict-speed-sel').value = String(p.speed); }
+}
+function dictSavePrefs() {
+  try {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({
+      autoplay: document.getElementById('opt-autoplay').checked,
+      autonext: document.getElementById('opt-autonext').checked,
+      showAnswer: document.getElementById('opt-show-answer').checked,
+      speed: dictSpeed,
+    }));
+  } catch (e) { /* private mode etc. — prefs just don't stick */ }
+}
+
+/* ══════════════ SAVE RESULTS (admin "Lịch sử làm bài") ══════════════
+   Keyed by sentenceIndex so re-checking a sentence overwrites its row. */
 let dictSessionAnswers = [];
-let dictSessionSaved   = false; // guards against double-POSTing from both backToList() and pagehide
+let dictSessionSaved = false;
 
 function _recordDictAnswer(sentenceIndex, isCorrect, matchedWords, totalWords) {
   const row = { sentenceIndex, isCorrect, matchedWords, totalWords };
   const i = dictSessionAnswers.findIndex(a => a.sentenceIndex === sentenceIndex);
   if (i >= 0) dictSessionAnswers[i] = row; else dictSessionAnswers.push(row);
-  dictSessionSaved = false; // new activity since the last save
+  dictSessionSaved = false;
 }
 
-// Fire-and-forget, same as other session/progress saves in this codebase
-// (e.g. task2-practice.html's saveDraft()) — a failed save silently drops
-// this session's history without blocking the student's practice.
-// keepalive:true keeps the request alive past page unload (pagehide below),
-// unlike a plain fetch which the browser would otherwise cancel.
+// Fire-and-forget; keepalive lets it outlive a page unload (pagehide below).
 function saveDictSession() {
   if (dictSessionSaved || !dictSection || !dictSessionAnswers.length) return;
   dictSessionSaved = true;
+  const body = dictSection.kind === 'drill'
+    ? { drillSlug: dictSection.slug, sectionTitle: dictSection.title, answers: dictSessionAnswers }
+    : { sectionId: dictSection._id, sectionTitle: dictSection.title, partNumber: dictSection.partNumber, answers: dictSessionAnswers };
   fetch(`${API}/listening/dictation/save-attempt`, {
-    method: 'POST',
-    headers: authH(),
-    keepalive: true,
-    body: JSON.stringify({
-      sectionId: dictSection._id,
-      sectionTitle: dictSection.title,
-      partNumber: dictSection.partNumber,
-      answers: dictSessionAnswers
-    })
+    method: 'POST', headers: authH(), keepalive: true, body: JSON.stringify(body),
   }).catch(() => {});
 }
-
-document.addEventListener('pagehide', saveDictSession);
+window.addEventListener('pagehide', saveDictSession);
 
 /* ══════════════ PICKER ══════════════ */
 async function loadDictList() {
   try {
-    const res = await fetch(`${API}/listening/dictation/list`, { headers: authH() });
+    const [res] = await Promise.all([
+      fetch(`${API}/listening/dictation/list`, { headers: authH() }),
+      _loadDictSpellLessons(),
+    ]);
     const data = await window.ApiClient.handleResponse(res);
     dictSections = data.sections || [];
+    dictDrills = data.drills || [];
   } catch (e) {
     document.getElementById('dict-grid').innerHTML = `<div class="dict-empty"><i class="fas fa-triangle-exclamation"></i>Không tải được danh sách. Vui lòng thử lại.</div>`;
     return;
@@ -87,22 +126,64 @@ async function loadDictList() {
   renderDictList();
 }
 
-// Case/diacritic-insensitive, so "cam18 test 2" or "festival" both match.
+// Best effort: without it the page still lists everything else.
+async function _loadDictSpellLessons() {
+  try {
+    const res = await fetch(`${API}/shadowing/lessons`, { headers: authH() });
+    if (!res.ok) return;
+    const data = await res.json();
+    dictSpellLessons = (data.lessons || []).filter(l => l.category === 'spelling-numbers');
+  } catch (e) { dictSpellLessons = []; }
+}
+
+function _dictPool(part) {
+  const drills = dictDrills.map(d => ({ ...d, _drill: true }));
+  const spell = dictSpellLessons.map(l => ({ ...l, _spell: true }));
+  if (part === 'spell') return spell;
+  if (part === 'drill-spelling') return drills.filter(d => d.category === 'spelling');
+  if (part === 'drill-numbers') return drills.filter(d => d.category === 'numbers');
+  if (part) return dictSections.filter(s => !s.isActualTest && String(s.partNumber) === part);
+  return drills.concat(spell, dictSections);
+}
+
+function _dictChipCounts() {
+  document.querySelectorAll('#dict-filters .dict-chip').forEach(btn => {
+    let el = btn.querySelector('.n');
+    if (!el) { el = document.createElement('span'); el.className = 'n'; btn.appendChild(el); }
+    el.textContent = `(${_dictPool(btn.dataset.part).length})`;
+  });
+}
+
+document.getElementById('dict-filters')?.addEventListener('click', e => {
+  const btn = e.target.closest('.dict-chip');
+  if (!btn) return;
+  dictPart = btn.dataset.part;
+  document.querySelectorAll('#dict-filters .dict-chip').forEach(b => b.classList.toggle('active', b === btn));
+  renderDictList();
+});
+
+function openDictSpell(slug) {
+  location.href = '/shadowing.html?lesson=' + encodeURIComponent(slug) + '&mode=dictation';
+}
+
+// Case/diacritic-insensitive fallback matcher (SearchMatch is preferred).
 function _dictNorm(t) {
   return String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 }
 
 function renderDictList() {
   const grid = document.getElementById('dict-grid');
-  if (!dictSections.length) {
+  _dictChipCounts();
+  if (!dictSections.length && !dictDrills.length && !dictSpellLessons.length) {
     grid.innerHTML = `<div class="dict-empty"><i class="fas fa-keyboard"></i>Chưa có bài nào sẵn sàng để luyện Dictation.</div>`;
     return;
   }
-  // Every word typed must appear somewhere in the title / Part label —
-  // SearchMatch (js/shared/search-match.js), same matcher as the other pages.
   const query = document.getElementById('dict-search').value;
-  const text = s => [s.title, s.isActualTest ? 'actual test' : 'part ' + s.partNumber];
-  const list = window.SearchMatch ? window.SearchMatch.filter(dictSections, query, text) : dictSections.filter(s => {
+  const text = s => s._drill ? [s.title, s.category === 'spelling' ? 'đánh vần spelling names tên' : 'số numbers phone price postcode']
+    : s._spell ? [s.title, 'video đánh vần spelling names numbers số']
+    : [s.title, s.isActualTest ? 'actual test' : 'part ' + s.partNumber];
+  const pool = _dictPool(dictPart);
+  const list = window.SearchMatch ? window.SearchMatch.filter(pool, query, text) : pool.filter(s => {
     const terms = _dictNorm(query).split(' ').filter(Boolean);
     const hay = _dictNorm(text(s).join(' '));
     const compact = hay.replace(/ /g, '');
@@ -112,7 +193,28 @@ function renderDictList() {
     grid.innerHTML = `<div class="dict-empty"><i class="fas fa-search"></i>Không tìm thấy bài nào khớp với từ khóa.</div>`;
     return;
   }
-  grid.innerHTML = list.map(s => `
+  grid.innerHTML = list.map(s => {
+    if (s._drill) return `
+    <div class="dict-card" onclick="openDictDrill('${escHtml(s.slug)}')">
+      <div class="dict-card-badges">
+        <span class="dict-badge ${s.category === 'spelling' ? 'spell' : 'num'}">${s.category === 'spelling' ? '🔤 Đánh vần tên' : '🔢 Số & mã số'}</span>
+      </div>
+      <div class="dict-card-title">${escHtml(s.title)}</div>
+      <div class="dict-card-meta"><span><i class="fas fa-list-ol"></i> ${s.itemCount} câu</span><span><i class="fas fa-headphones"></i> Audio đề thi</span></div>
+    </div>`;
+    if (s._spell) return `
+    <div class="dict-card" onclick="openDictSpell('${escHtml(s.slug)}')">
+      <div class="dict-card-badges">
+        <span class="dict-badge">Đánh vần &amp; số</span>
+        <span class="dict-badge video"><i class="fab fa-youtube"></i> Video</span>
+      </div>
+      <div class="dict-card-title">${escHtml(s.title)}</div>
+      <div class="dict-card-meta">
+        <span><i class="fas fa-list-ol"></i> ${s.segmentCount || 0} câu</span>
+        ${s.duration ? `<span><i class="fas fa-clock"></i> ${fmtTime(s.duration)}</span>` : ''}
+      </div>
+    </div>`;
+    return `
     <div class="dict-card" onclick="openDictSection('${s._id}')">
       <div class="dict-card-badges">
         <span class="dict-badge">${s.isActualTest ? 'Actual Test' : 'Part ' + s.partNumber}</span>
@@ -122,86 +224,108 @@ function renderDictList() {
         <span><i class="fas fa-list-ol"></i> ${s.sentenceCount} câu</span>
         ${s.audioDuration ? `<span><i class="fas fa-clock"></i> ${fmtTime(s.audioDuration)}</span>` : ''}
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
-/* ══════════════ OPEN A SECTION ══════════════ */
+/* ══════════════ OPEN A LESSON ══════════════ */
 let _openDictSeq = 0;
-async function openDictSection(id, fromCleanPath) {
-  // Same free-plan gate as reading/listening tests — browsing the list
-  // above stays free, but actually opening a section to practice requires
-  // premium (backend also enforces this on /listening/practice/by-id/:id).
+
+function _dictEnterPractice() {
   if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
     if (window.openUpgradeModal) window.openUpgradeModal();
-    return;
+    return false;
   }
   document.getElementById('screen-list').classList.add('hidden');
   document.getElementById('screen-practice').classList.add('active');
-  // Dictation has no timed exam mode — every session here is self-paced
-  // practice/review, so double-click-to-save is on unconditionally (no
-  // gate), same as e.g. profile.html/inbox.html's ungated calls.
-  if (typeof setupDictionaryDouble === 'function') {
-    setupDictionaryDouble('screen-practice', 'dictation');
-  }
+  if (typeof setupDictionaryDouble === 'function') setupDictionaryDouble('screen-practice', 'dictation');
   document.getElementById('dict-section-title').textContent = 'Đang tải...';
-  // Guards against double-clicking a card (or clicking a second card before
-  // the first finishes loading) resolving out of order, and against a
-  // fetch that's still in flight when the user has already clicked "back"
-  // — only the most recently-requested section is allowed to apply, and a
-  // stale one is discarded instead of silently overwriting the screen the
-  // user is now looking at (or re-adding ?sectionId= after backToList()
-  // already cleared it).
-  const requestId = ++_openDictSeq;
-  let data;
+  window.scrollTo(0, 0);
+  return true;
+}
+
+async function _dictFetch(url, requestId) {
   try {
-    // Dedicated dictation-content route — same data as /practice/by-id/:id
-    // but not behind the mandatory-review gate (dictation is an ungraded
-    // drill that never creates a pending review). See
-    // backend/routes/listening.js (/dictation/section/:id).
-    const res = await fetch(`${API}/listening/dictation/section/${id}`, { headers: authH() });
-    data = await window.ApiClient.handleResponse(res);
+    const res = await fetch(url, { headers: authH() });
+    const data = await window.ApiClient.handleResponse(res);
+    return requestId === _openDictSeq ? data : null;
   } catch (e) {
-    if (requestId !== _openDictSeq) return;
-    toast('Không tải được bài này.', 'error');
-    backToList();
-    return;
+    if (requestId === _openDictSeq) { toast('Không tải được bài này.', 'error'); backToList(); }
+    return null;
   }
-  if (requestId !== _openDictSeq) return;
-  dictSection = data.section;
-  if (!dictSection || !(dictSection.dictationSentences || []).length) {
+}
+
+async function openDictSection(id, fromCleanPath) {
+  if (!_dictEnterPractice()) return;
+  const requestId = ++_openDictSeq;
+  const data = await _dictFetch(`${API}/listening/dictation/section/${id}`, requestId);
+  if (!data) return;
+  const s = data.section;
+  if (!s || !(s.dictationSentences || []).length) {
     toast('Bài này chưa có dữ liệu dictation.', 'error');
     backToList();
     return;
   }
-  // Reassigning .src resets playbackRate to 1 in every browser, so the speed
-  // button would otherwise keep showing a stale "1.5x" from the previous
-  // section while playback is actually 1x. Reset both together.
-  audio.src = dictSection.audioUrl;
-  audio.playbackRate = 1;
-  dictSpeedIdx = 0;
-  document.getElementById('dict-speed-btn').textContent = '1x';
-  _setDictPlayIcon(false);
-  dictIndex = 0;
-  dictDone = new Set();
-  dictSessionAnswers = [];
-  dictSessionSaved = false;
-  document.getElementById('dict-section-title').textContent = dictSection.title;
-  document.getElementById('dict-section-sub').textContent = (dictSection.isActualTest ? 'Actual Test' : 'Part ' + dictSection.partNumber) + ' · ' + dictSection.dictationSentences.length + ' câu';
-  document.getElementById('dict-total-num').textContent = dictSection.dictationSentences.length;
-  document.getElementById('dict-session-score').textContent = `0/${dictSection.dictationSentences.length} ✓`;
+  _dictStart({
+    kind: 'section', _id: s._id, title: s.title, partNumber: s.partNumber,
+    sub: (s.isActualTest ? 'Actual Test' : 'Part ' + s.partNumber),
+    transcript: s.transcript || '', audioUrl: s.audioUrl,
+    sentences: s.dictationSentences.map(x => ({ text: x.text, start: x.start, end: x.end, audioUrl: s.audioUrl })),
+  });
   _loadDictTranslations(id, requestId);
-  renderNumGrid();
-  dictGoTo(0);
-  // Skip when the clean /dictation/:sectionId path already resolved to this
-  // exact section — that URL is meant to keep showing forever, same
-  // fromCleanPath idiom reading-v2.js uses for /reading/test/:id.
-  if (!fromCleanPath) syncViewUrl(id);
+  if (!fromCleanPath) syncViewUrl('sectionId', id);
 }
 
-// Vietnamese meanings (shown under a correctly typed sentence). Fetched in
-// the background — the first student on a section waits on a one-off AI
-// translation server-side, so practice never blocks on it.
+async function openDictDrill(slug) {
+  if (!_dictEnterPractice()) return;
+  const requestId = ++_openDictSeq;
+  const data = await _dictFetch(`${API}/listening/dictation/drill/${encodeURIComponent(slug)}`, requestId);
+  if (!data) return;
+  const d = data.drill;
+  if (!d || !(d.items || []).length) { toast('Bài này chưa có dữ liệu.', 'error'); backToList(); return; }
+  dictTranslations = [];
+  _dictStart({
+    kind: 'drill', _id: d._id, slug: d.slug, title: d.title,
+    sub: d.category === 'spelling' ? '🔤 Đánh vần tên — gõ đúng chính tả cái tên' : '🔢 Số dài & mã số — gõ lại con số / mã',
+    transcript: '', audioUrl: '',
+    sentences: d.items.map(x => ({ text: x.text, start: x.start, end: x.end, audioUrl: x.audioUrl, answer: x.answer, sourceTitle: x.sourceTitle })),
+  });
+  syncViewUrl('drill', d.slug);
+}
+
+function _dictStart(lesson) {
+  dictSection = lesson;
+  dictIndex = 0;
+  dictDone = new Set();
+  dictPeeked = new Set();
+  dictLast = {};
+  dictSessionAnswers = [];
+  dictSessionSaved = false;
+  if (lesson.kind === 'section') dictTranslations = null;
+  audio.removeAttribute('src');
+  _setDictPlayIcon(false);
+  const n = lesson.sentences.length;
+  document.getElementById('dict-section-title').textContent = lesson.title;
+  document.getElementById('dict-section-sub').textContent = `${lesson.sub} · ${n} câu`;
+  document.getElementById('dict-media-title').textContent = lesson.title;
+  document.getElementById('dict-total-num').textContent = n;
+  document.getElementById('dict-session-score').textContent = `0/${n} ✓`;
+  document.getElementById('opt-show-full').checked = false;
+  // Full audio + plain transcript (sections only — a drill has many files).
+  const full = document.getElementById('dict-full');
+  full.open = false;
+  full.style.display = lesson.kind === 'section' ? '' : 'none';
+  const fullAudio = document.getElementById('dict-full-audio');
+  fullAudio.pause();
+  if (lesson.kind === 'section') fullAudio.src = lesson.audioUrl; else fullAudio.removeAttribute('src');
+  document.getElementById('dict-full-text').innerHTML = (lesson.transcript || '').split(/\n+/).filter(Boolean)
+    .map(p => `<p>${escHtml(p)}</p>`).join('');
+  dictTab('dictation');
+  renderNumGrid();
+  dictGoTo(0, { noAutoplay: true });
+}
+
+// Vietnamese meanings (shown once a sentence is typed right) — sections only.
 function _loadDictTranslations(id, requestId) {
   dictTranslations = null;
   fetch(`${API}/listening/dictation/section/${id}/translations`, { headers: authH() })
@@ -211,7 +335,7 @@ function _loadDictTranslations(id, requestId) {
     .then(list => {
       if (requestId !== _openDictSeq) return;
       dictTranslations = list;
-      _fillDictVi(); // a sentence may already be showing "Đang tải nghĩa..."
+      _fillDictVi();
     });
 }
 
@@ -224,130 +348,152 @@ function _fillDictVi() {
 }
 
 function backToList() {
-  _openDictSeq++; // invalidate any in-flight openDictSection() fetch
+  _openDictSeq++;
   saveDictSession();
   audio.pause();
+  document.getElementById('dict-full-audio').pause();
+  dictSection = null;
   document.getElementById('screen-practice').classList.remove('active');
   document.getElementById('screen-list').classList.remove('hidden');
   history.replaceState({}, '', '/dictation.html');
 }
 
-function syncViewUrl(id) {
+function syncViewUrl(param, value) {
   const url = new URL(location.href);
-  url.searchParams.set('sectionId', id);
+  url.searchParams.delete('sectionId');
+  url.searchParams.delete('drill');
+  url.searchParams.set(param, value);
   history.replaceState({}, '', url);
 }
 
 function renderNumGrid() {
-  const grid = document.getElementById('dict-num-grid');
-  grid.innerHTML = dictSection.dictationSentences.map((_, i) => `
-    <button class="dict-num-btn${i === dictIndex ? ' current' : ''}${dictDone.has(i) ? ' done' : ''}" data-i="${i}" onclick="dictGoTo(${i})">${i + 1}</button>
-  `).join('');
+  document.getElementById('dict-num-grid').innerHTML = dictSection.sentences.map((_, i) =>
+    `<button class="dict-num-btn${i === dictIndex ? ' current' : ''}${dictDone.has(i) ? ' done' : ''}" data-i="${i}" onclick="dictGoTo(${i})">${i + 1}</button>`
+  ).join('');
+}
+
+/* ══════════════ TABS / TRANSCRIPT / TIPS ══════════════ */
+function dictTab(name) {
+  document.querySelectorAll('.dx-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.getElementById('dict-pane-dictation').classList.toggle('hidden', name !== 'dictation');
+  document.getElementById('dict-pane-transcript').classList.toggle('hidden', name !== 'transcript');
+  if (name === 'transcript') renderDictTranscript();
+}
+
+function renderDictTranscript() {
+  if (!dictSection) return;
+  document.getElementById('dict-transcript-list').innerHTML = dictSection.sentences.map((s, i) => `
+    <li class="${dictDone.has(i) ? 'done' : ''}${i === dictIndex ? ' current' : ''}" onclick="dictTab('dictation'); dictGoTo(${i})">
+      ${s.answer ? `<b class="dict-t-answer">${escHtml(s.answer)}</b> — ` : ''}${escHtml(s.text)}
+      ${s.sourceTitle ? `<span class="dict-t-src">${escHtml(s.sourceTitle)}</span>` : ''}
+    </li>`).join('');
+}
+
+function dictNextTip() {
+  dictTipIdx = (dictTipIdx + 1) % DICT_TIPS.length;
+  document.getElementById('dict-tip-text').textContent = DICT_TIPS[dictTipIdx];
+}
+
+/* ══════════════ SETTINGS ══════════════ */
+function dictToggleSettings(e) {
+  if (e) e.stopPropagation();
+  document.getElementById('dict-settings').classList.toggle('show');
+}
+document.addEventListener('click', e => {
+  const box = document.getElementById('dict-settings');
+  if (box && box.classList.contains('show') && !e.target.closest('.dict-gear-wrap')) box.classList.remove('show');
+});
+function dictSetSpeed(v) {
+  dictSpeed = Number(v) || 1;
+  audio.playbackRate = dictSpeed;
+  dictSavePrefs();
 }
 
 /* ══════════════ SENTENCE NAVIGATION ══════════════ */
-function dictGoTo(i) {
-  const sentences = dictSection.dictationSentences;
+function currentSentence() { return dictSection.sentences[dictIndex]; }
+
+// A drill's answer = what to type; a section sentence = the whole text.
+function dictRef(s) { return s.answer || s.text || ''; }
+
+function dictGoTo(i, opts = {}) {
+  if (!dictSection) return;
+  const sentences = dictSection.sentences;
   if (i < 0 || i >= sentences.length) return;
+  clearTimeout(_dictAutoNextTimer);
   audio.pause();
-  _setDictPlayIcon(false); // was left showing "pause" when navigating mid-play
+  _setDictPlayIcon(false);
   dictIndex = i;
+  const s = sentences[i];
+  // A drill's clips come from different files — switch source when needed.
+  if (audio.getAttribute('src') !== s.audioUrl) {
+    audio.src = s.audioUrl;
+    audio.playbackRate = dictSpeed;
+  }
   document.getElementById('dict-cur-num').textContent = i + 1;
   document.getElementById('dict-prev-btn').disabled = i === 0;
   document.getElementById('dict-next-btn').disabled = i === sentences.length - 1;
-  document.getElementById('dict-input').value = '';
-  document.getElementById('dict-time').textContent = '0:00 / 0:00';
-  document.getElementById('dict-result').classList.remove('show', 'correct', 'wrong');
-  document.getElementById('dict-script-body').classList.remove('show');
-  document.getElementById('dict-script-chevron').className = 'fas fa-chevron-down';
-  document.getElementById('dict-check-btn').disabled = false;
-  const sentence = sentences[i];
-  const sentenceText = sentence.text || '';
-  document.getElementById('dict-word-count').textContent = dictWords(sentenceText).length + ' từ';
-  const hint = _buildDictHint(sentenceText);
-  dictHintShown = [];
-  dictAsks = 0;
-  document.getElementById('dict-script-body').innerHTML =
-    `<div class="dict-hint-step">Gợi ý · chữ cái đầu mỗi từ</div>` +
-    `<div class="dict-hint-count">📏 ${hint.wordCount} từ</div>` +
-    `<div class="dict-hint-pattern" id="dict-hint-pattern">${escHtml(hint.pattern)}</div>` +
-    `<div class="dict-hint2">` +
-      `<button type="button" class="dict-hint2-btn ask-lulu" id="dict-hint2-btn" onclick="dictAskLulu()"><span class="ask-lulu-ic"></span> Hỏi Lulu thêm 1 chữ</button>` +
-    `</div>`;
-  if (window.AskLulu) AskLulu.left(document.getElementById('dict-hint2-btn'), DICT_MAX_ASKS);
+  document.getElementById('dict-media-src').textContent = s.sourceTitle ? '🎧 ' + s.sourceTitle : '';
+  const input = document.getElementById('dict-input');
+  input.value = '';
+  input.disabled = false;
+  document.getElementById('dict-check-btn').disabled = dictDone.has(i);
+  document.getElementById('dict-time').textContent = '0:00 / ' + fmtTime(s.end - s.start);
+  document.getElementById('opt-show-full').checked = false;
+  document.getElementById('dict-prompt').innerHTML = s.answer
+    ? (dictSection.slug && dictSection.slug.startsWith('spelling')
+      ? 'Nghe và gõ lại <b>cái tên / từ được đánh vần</b>.'
+      : 'Nghe và gõ lại <b>con số / mã số / địa chỉ</b> trong câu.')
+    : '';
   updateDictProgress(0);
+  dictRenderMask();
   document.querySelectorAll('.dict-num-btn').forEach(b => b.classList.toggle('current', parseInt(b.dataset.i, 10) === i));
-  // Only auto-focus on desktop — on mobile this yanks the on-screen keyboard
-  // up over the audio controls the moment the student opens a section or
-  // taps the sentence grid, before they've even heard anything.
-  if (window.matchMedia('(min-width: 800px)').matches) {
-    document.getElementById('dict-input').focus();
-  }
+  if (!document.getElementById('dict-pane-transcript').classList.contains('hidden')) renderDictTranscript();
+  if (window.matchMedia('(min-width: 800px)').matches) input.focus();
+  if (!opts.noAutoplay && document.getElementById('opt-autoplay').checked) dictRestart(true);
 }
 
-// Word count + first-letter-per-word hint — same UX as Task 1/2 writing
-// practice (see backend/utils/textMatch.js's buildAnswerHint) and the
-// Task 2 Template's Dịch câu mode. Was previously the full correct
-// sentence text (clickable per word, spoken via TTS) — replaced since
-// showing the literal answer let a student just read it instead of
-// transcribing what they actually heard, defeating dictation practice.
-function _buildDictHint(text) {
-  const words = dictWords(text);
-  const pattern = words.map(w => w.charAt(0) + w.slice(1).replace(/[a-zA-Z]/g, '_')).join(' ');
-  return { wordCount: words.length, pattern };
+function dictSkip() {
+  if (!dictSection) return;
+  if (dictIndex < dictSection.sentences.length - 1) dictGoTo(dictIndex + 1);
+  else toast('Đây là câu cuối rồi.', 'info');
 }
 
-// "Hỏi Lulu", for when the first-letter pattern isn't enough: each ask
-// opens ONE more letter of the first word the student hasn't typed right
-// yet (AskLulu.letterHint) — letter by letter, never the whole sentence
-// (that used to be a "Hiện cả câu" button, which let a student just read
-// the answer instead of transcribing what they heard). At most
-// DICT_MAX_ASKS asks per sentence.
-function dictAskLulu() {
-  if (!dictSection || !window.AskLulu || dictAsks >= DICT_MAX_ASKS) return;
-  const btn = document.getElementById('dict-hint2-btn');
-  const text = dictWords(currentSentence().text || '').join(' ');
-  const res = AskLulu.letterHint(text, document.getElementById('dict-input').value, dictHintShown);
-  const el = document.getElementById('dict-hint-pattern');
-  if (el) el.textContent = res.pattern;
-  if (!res.done) { dictAsks++; AskLulu.left(btn, DICT_MAX_ASKS - dictAsks); }
-  AskLulu.say(btn, AskLulu.line(res));
+/* ══════════════ AUDIO (seek within each clip's file) ══════════════ */
+// Seeking before metadata has loaded is ignored by some browsers.
+function _dictSeek(t, then) {
+  if (audio.readyState >= 1) { audio.currentTime = t; then(); return; }
+  audio.addEventListener('loadedmetadata', function once() {
+    audio.removeEventListener('loadedmetadata', once);
+    audio.currentTime = t;
+    then();
+  });
+  audio.load();
 }
 
-/* ══════════════ AUDIO PLAYBACK (seek within the section's ONE shared
-   audio file, using this sentence's start/end timestamps) ══════════════ */
-function currentSentence() { return dictSection.dictationSentences[dictIndex]; }
-
-function _dictPlay() {
-  // audio.play() rejects on a load failure or an autoplay-policy block; without
-  // a catch the button would flip to "pause" while nothing actually plays.
+function _dictPlay(silent) {
+  audio.playbackRate = dictSpeed;
   audio.play().then(() => _setDictPlayIcon(true)).catch(() => {
     _setDictPlayIcon(false);
-    toast('Không phát được audio — thử lại hoặc tải lại trang.', 'error');
+    if (!silent) toast('Không phát được audio — thử lại hoặc tải lại trang.', 'error');
   });
 }
 
 function dictTogglePlay() {
+  if (!dictSection) return;
   if (audio.paused) {
-    if (audio.currentTime < currentSentence().start || audio.currentTime >= currentSentence().end) {
-      audio.currentTime = currentSentence().start;
-    }
-    _dictPlay();
+    const s = currentSentence();
+    if (audio.readyState < 1 || audio.currentTime < s.start - 0.05 || audio.currentTime >= s.end) _dictSeek(s.start, () => _dictPlay());
+    else _dictPlay();
   } else {
     audio.pause();
     _setDictPlayIcon(false);
   }
 }
 
-function dictRestart() {
-  audio.currentTime = currentSentence().start;
-  _dictPlay();
-}
-
-function dictCycleSpeed() {
-  dictSpeedIdx = (dictSpeedIdx + 1) % dictSpeeds.length;
-  audio.playbackRate = dictSpeeds[dictSpeedIdx];
-  document.getElementById('dict-speed-btn').textContent = dictSpeeds[dictSpeedIdx] + 'x';
+// silent = an automatic play (sentence change): an autoplay block is not an error.
+function dictRestart(silent) {
+  if (!dictSection) return;
+  _dictSeek(currentSentence().start, () => _dictPlay(silent === true));
 }
 
 function updateDictProgress(ratio) {
@@ -366,118 +512,176 @@ audio.addEventListener('timeupdate', () => {
   }
 });
 
-/* ══════════════ CHECK ANSWER (word-level diff against the correct,
-   human-verified sentence — not the ASR's own wording) ══════════════ */
-// Curly/typographic apostrophes (’ ‘ ʼ ` ´) count as a plain ' — the
-// transcripts mostly use ’ ("you’ll") while a keyboard types ' ("you'll"),
-// and a phone's smart punctuation can do either; without this a perfectly
-// typed "you'll" was graded wrong against "you’ll".
+/* ══════════════ CHECKING ══════════════ */
+// Curly apostrophes count as a plain ' (transcripts use ’, keyboards ').
 function normWord(w) { return w.toLowerCase().replace(/[’‘ʼ`´]/g, "'").replace(/[^a-z0-9']/g, ''); }
 
-// Tokenise a sentence into scorable words, dropping any token that is pure
-// punctuation (a lone "–", "-", ".", "—", "…" that the transcript writes
-// between spaces). normWord() strips those to "", so a standalone dash used
-// to be counted as its own "word" the student could never type — marking a
-// perfect transcription as "22/23". Punctuation attached to a real word
-// (e.g. "William.") still rides along and is ignored by normWord() at
-// compare time, so it never counts against the student either.
+// Scorable words; pure punctuation tokens ("–", "…") are dropped.
 function dictWords(text) {
   return (text || '').trim().split(/\s+/).filter(w => normWord(w) !== '');
 }
 
-function dictCheck() {
-  const inputEl = document.getElementById('dict-input');
-  const typed = inputEl.value.trim();
-  const correct = currentSentence().text || '';
-  const typedWords = dictWords(typed);
-  const correctWords = dictWords(correct);
-  if (!typedWords.length) { _dictShake(inputEl); inputEl.focus(); return; }
-
-  // Simple LCS-based word alignment — small sentences (a few dozen words at
-  // most), so an O(n*m) table is trivial.
-  const n = typedWords.length, m = correctWords.length;
-  const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
-  for (let i = 1; i <= n; i++) {
-    for (let j = 1; j <= m; j++) {
-      dp[i][j] = normWord(typedWords[i - 1]) === normWord(correctWords[j - 1])
-        ? dp[i - 1][j - 1] + 1
-        : Math.max(dp[i - 1][j], dp[i][j - 1]);
-    }
+// A drill answer: hyphens split ("091-463-8520"), consecutive digit groups
+// join ("0491 577 248" = "0491577248") so the grouping never matters.
+function answerWords(text) {
+  const out = [];
+  let joinNext = false;
+  for (const w of (text || '').replace(/[-–—]/g, ' ').split(/\s+/).filter(x => normWord(x) !== '')) {
+    const digits = /^\d+$/.test(normWord(w));
+    if (digits && joinNext) out[out.length - 1] += w; else out.push(w);
+    joinNext = digits;
   }
-  // Walk the table back into an ordered list of ops: 'ok' (typed word
-  // matches), 'bad' (typed word with no match) and 'gap' (answer word the
-  // student didn't type).
+  return out;
+}
+
+// LCS word alignment → ordered ops: ok (typed word matches), bad (typed
+// word with no match), gap (reference word not typed). Each op that
+// consumes a reference word carries its index `r`.
+function _dictAlign(typedWords, refWords) {
+  const n = typedWords.length, m = refWords.length;
+  const a = typedWords.map(normWord), b = refWords.map(normWord);
+  const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++)
+    dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);
   const ops = [];
   let i = n, j = m;
   while (i > 0 || j > 0) {
-    if (i > 0 && j > 0 && normWord(typedWords[i - 1]) === normWord(correctWords[j - 1])) {
-      ops.push({ type: 'ok', word: typedWords[i - 1] }); i--; j--;
-    } else if (i > 0 && (j === 0 || dp[i - 1][j] >= dp[i][j - 1])) {
-      ops.push({ type: 'bad', word: typedWords[i - 1] }); i--;
-    } else {
-      ops.push({ type: 'gap' }); j--;
-    }
+    if (i > 0 && j > 0 && a[i - 1] === b[j - 1]) { ops.push({ type: 'ok', word: typedWords[i - 1], r: j - 1 }); i--; j--; }
+    else if (i > 0 && (j === 0 || dp[i - 1][j] >= dp[i][j - 1])) { ops.push({ type: 'bad', word: typedWords[i - 1] }); i--; }
+    else { ops.push({ type: 'gap', r: j - 1 }); j--; }
   }
-  ops.reverse();
-  const matched = ops.filter(o => o.type === 'ok').length;
-  const isPerfect = matched === m && n === m;
+  return ops.reverse();
+}
 
-  const resultEl = document.getElementById('dict-result');
-  const diffEl = document.getElementById('dict-diff');
-  resultEl.classList.add('show');
-  resultEl.classList.toggle('correct', isPerfect);
-  resultEl.classList.toggle('wrong', !isPerfect);
-  _recordDictAnswer(dictIndex, isPerfect, matched, m);
+function dictCheck() {
+  if (!dictSection) return;
+  const inputEl = document.getElementById('dict-input');
+  const typed = inputEl.value.trim();
+  if (!typed) { _dictShake(inputEl); inputEl.focus(); return; }
+  const s = currentSentence();
+  const isDrill = !!s.answer;
+  const refWords = isDrill ? answerWords(s.answer) : dictWords(s.text);
+  const typedWords = isDrill ? answerWords(typed) : dictWords(typed);
+  const ops = _dictAlign(typedWords, refWords);
+  const okRefs = new Set(ops.filter(o => o.type === 'ok').map(o => o.r));
+  let perfect = okRefs.size === refWords.length && typedWords.length === refWords.length;
+  // A name / number also counts when only the spacing differs ("se100dx").
+  if (isDrill && !perfect && typedWords.map(normWord).join('') === refWords.map(normWord).join('')) perfect = true;
 
-  if (!isPerfect) {
-    // Show the student's OWN text with each wrong word in red (shaking, same
-    // as Task 2's Dịch câu drill) and ＿＿ where words are missing — never the
-    // answer, so they fix it from the audio. Between two matched words, a
-    // wrong word stands in for a missing one (a misspelling), so only the
-    // surplus missing words become gaps.
-    const html = [];
-    let bad = [], gaps = 0;
-    const flush = () => {
-      bad.forEach(w => html.push(`<span class="w-bad">${escHtml(w)}</span>`));
-      for (let k = bad.length; k < gaps; k++) html.push('<span class="w-gap">＿＿</span>');
-      bad = []; gaps = 0;
-    };
-    ops.forEach(o => {
-      if (o.type === 'ok') { flush(); html.push(`<span class="w-ok">${escHtml(o.word)}</span>`); }
-      else if (o.type === 'bad') bad.push(o.word);
-      else gaps++;
-    });
-    flush();
-    const hasGap = html.some(h => h.includes('w-gap'));
-    document.getElementById('dict-result-label').textContent =
-      `Đúng ${matched}/${m} từ — sửa các từ bôi đỏ${hasGap ? ' (＿＿ là chỗ còn thiếu từ)' : ''} rồi kiểm tra lại.`;
-    diffEl.innerHTML = html.join(' ');
+  // The first reference word not typed right, and the typed word standing in
+  // for it (a misspelling) — "Show answer immediately" reveals that word.
+  let firstWrong = -1, typedFor = '';
+  if (!perfect) {
+    firstWrong = refWords.findIndex((_, r) => !okRefs.has(r));
+    // the run of unmatched ops (between two matched words) holding that gap
+    let seg = [];
+    for (const o of ops) {
+      if (o.type !== 'ok') { seg.push(o); continue; }
+      if (seg.some(x => x.type === 'gap' && x.r === firstWrong)) break;
+      seg = [];
+    }
+    const bad = seg.find(o => o.type === 'bad');
+    typedFor = bad ? bad.word : '';
+  }
+  dictLast[dictIndex] = { okRefs: perfect ? new Set(refWords.map((_, r) => r)) : okRefs, firstWrong, typedFor, perfect, checked: true };
+
+  const scored = perfect && !dictPeeked.has(dictIndex);
+  _recordDictAnswer(dictIndex, scored, perfect ? refWords.length : okRefs.size, refWords.length);
+  dictRenderMask();
+
+  if (!perfect) {
     _dictShake(inputEl);
     if (typeof playWrong === 'function') playWrong();
     inputEl.focus();
     return;
   }
 
-  document.getElementById('dict-result-label').textContent = '✓ Chính xác!';
-  diffEl.innerHTML =
-    `<div class="dict-correct-en">${escHtml(correct)}</div>` +
-    `<div class="dict-vi" id="dict-vi" data-i="${dictIndex}">${dictTranslations ? '' : '<i class="fas fa-spinner fa-spin"></i> Đang tải nghĩa...'}</div>`;
-  _fillDictVi();
-  document.getElementById('dict-check-btn').disabled = true;
   if (typeof playOk === 'function') playOk();
-
+  document.getElementById('dict-check-btn').disabled = true;
   dictDone.add(dictIndex);
   document.querySelector(`.dict-num-btn[data-i="${dictIndex}"]`)?.classList.add('done');
-  document.getElementById('dict-session-score').textContent = `${dictDone.size}/${dictSection.dictationSentences.length} ✓`;
-  // Corner Lulu (js/shared/playful.js): a hop per perfect sentence, a
-  // cheer when the whole section is done.
+  const total = dictSection.sentences.length;
+  document.getElementById('dict-session-score').textContent = `${dictDone.size}/${total} ✓`;
   if (window.Mascot) {
-    if (dictDone.size === dictSection.dictationSentences.length) window.Mascot.cheer(100, 'Chép đúng hết cả bài luôn! Tai cậu thính quá trời 🎧🍊');
+    if (dictDone.size === total) window.Mascot.cheer(100, 'Chép đúng hết cả bài luôn! Tai cậu thính quá trời 🎧🍊');
     else window.Mascot.hop('excited');
   }
+  if (dictDone.size === total) saveDictSession();
+  else if (document.getElementById('opt-autonext').checked) {
+    const next = _nextUndone();
+    if (next >= 0) _dictAutoNextTimer = setTimeout(() => { if (dictSection) dictGoTo(next); }, 1600);
+  }
+}
+let _dictAutoNextTimer = null;
+
+function _nextUndone() {
+  const n = dictSection.sentences.length;
+  for (let k = 1; k <= n; k++) { const i = (dictIndex + k) % n; if (!dictDone.has(i)) return i; }
+  return -1;
 }
 
-// Restartable shake (re-adding the class alone wouldn't replay it).
+// Status line + masked answer ("According ** *******"): words typed right
+// are shown, the rest are asterisks; with "Show answer immediately" the
+// first wrong word is revealed with its wrong letters marked; "Show full
+// answer" shows everything (that sentence then isn't scored as correct).
+function dictRenderMask() {
+  if (!dictSection) return;
+  const s = currentSentence();
+  const isDrill = !!s.answer;
+  const st = dictLast[dictIndex];
+  const statusEl = document.getElementById('dict-status');
+  const maskEl = document.getElementById('dict-mask');
+  const revealEl = document.getElementById('dict-reveal');
+  const showFull = document.getElementById('opt-show-full').checked;
+  const showAnswer = document.getElementById('opt-show-answer').checked;
+  if (showFull && !(st && st.perfect)) dictPeeked.add(dictIndex);
+
+  statusEl.className = 'dict-status' + (st ? (st.perfect ? ' ok' : ' bad') : '');
+  statusEl.innerHTML = !st ? ''
+    : st.perfect ? '<i class="fas fa-circle-check"></i> Correct!'
+    : '<i class="fas fa-triangle-exclamation"></i> Incorrect' + (st.firstWrong < 0 ? ' <small>— bạn gõ thừa từ</small>' : '');
+
+  const done = st && st.perfect;
+  if (done || showFull) {
+    maskEl.innerHTML = '';
+    revealEl.innerHTML = (isDrill ? `<div class="dict-reveal-answer">${escHtml(s.answer)}</div>` : '') +
+      `<div class="dict-correct-en">${escHtml(s.text)}</div>` +
+      (!isDrill ? `<div class="dict-vi" id="dict-vi" data-i="${dictIndex}">${dictTranslations ? '' : (done ? '<i class="fas fa-spinner fa-spin"></i> Đang tải nghĩa...' : '')}</div>` : '') +
+      (done && dictPeeked.has(dictIndex) ? '<div class="dict-peek-note">Câu này đã xem đáp án nên không tính điểm.</div>' : '');
+    if (!isDrill) _fillDictVi();
+    return;
+  }
+  revealEl.innerHTML = '';
+  if (!st) { maskEl.innerHTML = ''; return; }
+  const words = isDrill ? (s.answer || '').split(/\s+/).filter(Boolean) : dictWords(s.text);
+  // map displayed words → scored words (identical for sections; a drill's
+  // digit groups were joined for scoring, so reveal a group only when the
+  // whole joined token was right)
+  const scored = isDrill ? answerWords(s.answer) : words;
+  let si = 0, acc = '';
+  const owner = words.map(w => {
+    const idx = si;
+    acc += normWord(w);
+    if (acc === normWord(scored[si] || '')) { si++; acc = ''; }
+    return idx;
+  });
+  maskEl.innerHTML = words.map((w, k) => {
+    const r = owner[k];
+    if (st.okRefs.has(r)) return `<span class="m-ok">${escHtml(w)}</span>`;
+    if (showAnswer && r === st.firstWrong) return `<span class="m-show">${_markDiff(w, st.typedFor)}</span>`;
+    return `<span class="m-hide">${w.replace(/[A-Za-z0-9]/g, '*')}</span>`;
+  }).join(' ');
+}
+
+// The revealed word with the first letter the student got wrong underlined.
+function _markDiff(word, typed) {
+  const a = word, b = (typed || '').toLowerCase();
+  let k = 0;
+  while (k < a.length && k < b.length && a[k].toLowerCase() === b[k]) k++;
+  if (!typed || k >= a.length) return escHtml(a);
+  return escHtml(a.slice(0, k)) + `<u class="m-err">${escHtml(a[k])}</u>` + escHtml(a.slice(k + 1));
+}
+
 function _dictShake(el) {
   el.classList.remove('dict-shake');
   void el.offsetWidth;
@@ -485,32 +689,25 @@ function _dictShake(el) {
   setTimeout(() => el.classList.remove('dict-shake'), 450);
 }
 
-function dictRetry() {
-  document.getElementById('dict-input').value = '';
-  document.getElementById('dict-result').classList.remove('show', 'correct', 'wrong');
-  document.getElementById('dict-check-btn').disabled = false;
-  document.getElementById('dict-input').focus();
-}
-
-function dictToggleScript() {
-  const body = document.getElementById('dict-script-body');
-  const chevron = document.getElementById('dict-script-chevron');
-  const show = !body.classList.contains('show');
-  body.classList.toggle('show', show);
-  chevron.className = show ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
-}
-
+/* ══════════════ KEYBOARD ══════════════ */
 document.getElementById('dict-input').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
     if (!document.getElementById('dict-check-btn').disabled) dictCheck();
+    else if (dictSection && dictDone.has(dictIndex)) { const n = _nextUndone(); if (n >= 0) dictGoTo(n); }
   }
 });
 
-// Anti-cheat: dictation is meant to be typed from what the student hears,
-// never pasted in from an outside source. Blocks Ctrl+V, right-click
-// "Paste", and dragging text in — normal typing is untouched. Same
-// pattern as speaking.js's #transcript-textarea guard.
+// Ctrl pressed and released on its own = replay the sentence (Ctrl+C etc.
+// still work: any other key in between cancels it).
+let _ctrlAlone = false;
+document.addEventListener('keydown', e => { _ctrlAlone = e.key === 'Control' && !e.repeat ? true : (e.key === 'Control' ? _ctrlAlone : false); });
+document.addEventListener('keyup', e => {
+  if (e.key === 'Control' && _ctrlAlone && dictSection && document.getElementById('screen-practice').classList.contains('active')) dictRestart();
+  _ctrlAlone = false;
+});
+
+// Anti-cheat: typed from what was heard, never pasted in.
 (() => {
   const input = document.getElementById('dict-input');
   input.addEventListener('paste', e => {
@@ -526,20 +723,21 @@ document.getElementById('dict-input').addEventListener('keydown', e => {
 
 /* ══════════════ INIT ══════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-  // Premium promo banner (site-wide UX unification, 2026-08-26) — same
-  // browsable-with-a-nudge pattern as reading/listening. openDictSection()
-  // below still does its own proactive hasPremiumAccess() check.
   const promoBanner = document.getElementById('premium-promo-banner');
   if (promoBanner) promoBanner.style.display = (window.AuthService && !window.AuthService.hasPremiumAccess()) ? 'flex' : 'none';
+  dictLoadPrefs();
+  dictTipIdx = Math.floor(Math.random() * DICT_TIPS.length);
+  document.getElementById('dict-tip-text').textContent = DICT_TIPS[dictTipIdx];
 
-  // Clean path /dictation/:sectionId (a _redirects 200 rewrite to this same
-  // file) — same additive pattern as reading-v2.js/listening.html's
-  // RouteParams.match(): checked first, falls back to ?sectionId= unchanged.
+  // Clean path /dictation/:sectionId, else ?sectionId= / ?drill=
   const cleanSection = window.RouteParams ? window.RouteParams.match([
-    { pattern: /^\/dictation\/([^/?#]+)$/, param: 'sectionId' }
+    { pattern: /^\/dictation\/([^/?#]+)$/, param: 'sectionId' },
   ]) : null;
-  const sectionId = (cleanSection && cleanSection.sectionId) || new URLSearchParams(location.search).get('sectionId');
+  const params = new URLSearchParams(location.search);
+  const sectionId = (cleanSection && cleanSection.sectionId) || params.get('sectionId');
+  const drill = params.get('drill');
   loadDictList().then(() => {
-    if (sectionId) openDictSection(sectionId, !!cleanSection);
+    if (drill) openDictDrill(drill);
+    else if (sectionId) openDictSection(sectionId, !!cleanSection);
   });
 });

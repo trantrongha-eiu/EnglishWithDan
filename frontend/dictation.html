@@ -18,7 +18,7 @@
   <script src="/js/theme.js?v=ba9c5b81c3"></script>
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
-  <link rel="stylesheet" href="/css/dictation.css?v=247bf83289">
+  <link rel="stylesheet" href="/css/dictation.css?v=7f7e342b96">
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
   <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
 </head>
@@ -55,12 +55,25 @@
       <button onclick="openUpgradeModal()" style="background:linear-gradient(135deg,var(--brand,#e53935),var(--brand-dark,#c62828));color:#fff;border:none;border-radius:10px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap">Upgrade Premium</button>
     </div>
 
+    <div class="dict-filters" id="dict-filters">
+      <button class="dict-chip active" data-part="">Tất cả</button>
+      <button class="dict-chip" data-part="1">Part 1</button>
+      <button class="dict-chip" data-part="2">Part 2</button>
+      <button class="dict-chip" data-part="3">Part 3</button>
+      <button class="dict-chip" data-part="4">Part 4</button>
+      <button class="dict-chip" data-part="drill-spelling">🔤 Đánh vần tên</button>
+      <button class="dict-chip" data-part="drill-numbers">🔢 Số dài &amp; mã số</button>
+      <button class="dict-chip" data-part="spell">🎬 Video đánh vần &amp; số</button>
+    </div>
+
     <div id="dict-grid" class="dict-grid">
       <div class="dict-loading"><i class="fas fa-spinner fa-spin"></i>Đang tải danh sách...</div>
     </div>
   </div>
 
-  <!-- ══════════════ PRACTICE SCREEN ══════════════ -->
+  <!-- ══════════════ PRACTICE SCREEN ══════════════
+       Layout after dailydictation-style players: tabs, media card on the
+       left, the typing panel on the right, tips + full audio below. -->
   <div id="screen-practice">
     <div class="dict-practice-top">
       <button class="dict-back-btn" onclick="backToList()" title="Quay lại"><i class="fas fa-arrow-left"></i></button>
@@ -70,57 +83,94 @@
       </div>
     </div>
 
-    <div class="dict-layout">
-      <div class="dict-sidebar">
-        <div class="dict-sidebar-head"><span>Danh sách câu</span> <span id="dict-session-score"></span></div>
-        <div class="dict-num-grid" id="dict-num-grid"></div>
+    <div class="dx-tabs" role="tablist">
+      <button class="dx-tab active" data-tab="dictation" role="tab" onclick="dictTab('dictation')">Dictation</button>
+      <button class="dx-tab" data-tab="transcript" role="tab" onclick="dictTab('transcript')">Full transcript</button>
+    </div>
+
+    <div class="dict-card-box">
+      <!-- Tab 1: dictation -->
+      <div class="dict-pane" id="dict-pane-dictation">
+        <div class="dict-media">
+          <div class="dict-media-cover">
+            <div class="dict-media-icon"><i class="fas fa-headphones"></i></div>
+            <div class="dict-media-title" id="dict-media-title">—</div>
+            <div class="dict-media-src" id="dict-media-src"></div>
+            <div class="dict-audio-row">
+              <button class="dict-restart-btn" onclick="dictRestart()" title="Nghe lại câu này (phím Ctrl)"><i class="fas fa-undo"></i></button>
+              <div class="dict-progress-wrap"><div class="dict-progress-fill" id="dict-progress-fill"></div></div>
+              <span class="dict-time" id="dict-time">0:00 / 0:00</span>
+            </div>
+          </div>
+          <div class="dict-sidebar-head"><span>Danh sách câu</span> <span id="dict-session-score"></span></div>
+          <div class="dict-num-grid" id="dict-num-grid"></div>
+        </div>
+
+        <div class="dict-panel">
+          <div class="dict-panel-top">
+            <button class="dict-play-btn" id="dict-play-btn" onclick="dictTogglePlay()" title="Phát / dừng (phím Ctrl để nghe lại)"><i class="fas fa-play"></i></button>
+            <button class="dict-nav-arrow" id="dict-prev-btn" onclick="dictGoTo(dictIndex - 1)" title="Câu trước"><i class="fas fa-arrow-left"></i></button>
+            <span class="dict-counter"><span id="dict-cur-num">1</span> / <span id="dict-total-num">1</span></span>
+            <button class="dict-nav-arrow" id="dict-next-btn" onclick="dictGoTo(dictIndex + 1)" title="Câu sau"><i class="fas fa-arrow-right"></i></button>
+            <div class="dict-gear-wrap">
+              <button class="dict-gear" id="dict-gear-btn" onclick="dictToggleSettings(event)" title="Cài đặt"><i class="fas fa-cog"></i></button>
+              <div class="dict-settings" id="dict-settings">
+                <label>Tốc độ
+                  <select id="dict-speed-sel" onchange="dictSetSpeed(this.value)">
+                    <option value="0.75">0.75x</option><option value="1" selected>1x</option><option value="1.25">1.25x</option><option value="1.5">1.5x</option>
+                  </select>
+                </label>
+                <label class="dict-check"><input type="checkbox" id="opt-autoplay" checked onchange="dictSavePrefs()"> Tự phát khi sang câu mới</label>
+                <label class="dict-check"><input type="checkbox" id="opt-autonext" checked onchange="dictSavePrefs()"> Đúng thì tự sang câu tiếp</label>
+                <div class="dict-settings-note">Phím tắt: <kbd>Enter</kbd> kiểm tra · <kbd>Ctrl</kbd> nghe lại câu</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dict-prompt" id="dict-prompt"></div>
+          <textarea class="dict-input" id="dict-input" placeholder="Gõ những gì bạn nghe được rồi nhấn Enter..." autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+
+          <div class="dict-status-row">
+            <div class="dict-status" id="dict-status"></div>
+            <button class="dict-btn dict-btn-ghost" id="dict-skip-btn" onclick="dictSkip()">Skip</button>
+            <button class="dict-btn dict-btn-primary" id="dict-check-btn" onclick="dictCheck()">Kiểm tra</button>
+          </div>
+
+          <div class="dict-mask" id="dict-mask"></div>
+          <div class="dict-reveal" id="dict-reveal"></div>
+
+          <label class="dict-check dict-check-lg"><input type="checkbox" id="opt-show-answer" checked onchange="dictSavePrefs(); dictRenderMask()"> Show answer immediately <span class="dict-check-hint">— lộ chữ sai đầu tiên khi bạn gõ sai</span></label>
+          <label class="dict-check dict-check-lg"><input type="checkbox" id="opt-show-full" onchange="dictRenderMask()"> Show full answer <span class="dict-check-hint">— câu xem đáp án không tính điểm</span></label>
+        </div>
       </div>
 
-      <div class="dict-main">
-        <div class="dict-nav-row">
-          <button class="dict-nav-arrow" id="dict-prev-btn" onclick="dictGoTo(dictIndex - 1)"><i class="fas fa-chevron-left"></i></button>
-          <span class="dict-counter">Câu <span id="dict-cur-num">1</span>/<span id="dict-total-num">1</span></span>
-          <button class="dict-nav-arrow" id="dict-next-btn" onclick="dictGoTo(dictIndex + 1)"><i class="fas fa-chevron-right"></i></button>
-          <span class="dict-word-count" id="dict-word-count">0 từ</span>
-        </div>
-
-        <div class="dict-audio-row">
-          <button class="dict-play-btn" id="dict-play-btn" onclick="dictTogglePlay()"><i class="fas fa-play"></i></button>
-          <button class="dict-restart-btn" onclick="dictRestart()" title="Nghe lại từ đầu câu"><i class="fas fa-undo"></i></button>
-          <div class="dict-progress-wrap"><div class="dict-progress-fill" id="dict-progress-fill"></div></div>
-          <span class="dict-time" id="dict-time">0:00 / 0:00</span>
-          <button class="dict-speed-btn" id="dict-speed-btn" onclick="dictCycleSpeed()">1x</button>
-        </div>
-
-        <textarea class="dict-input" id="dict-input" placeholder="Nhập những gì bạn nghe được..."></textarea>
-        <div class="dict-hint-row">
-          <i class="fas fa-info-circle"></i> Nhấn <kbd>Enter</kbd> để kiểm tra (Shift+Enter để xuống dòng).
-        </div>
-
-        <div class="dict-actions">
-          <button class="dict-btn dict-btn-ghost" onclick="dictRetry()">Làm lại</button>
-          <button class="dict-btn dict-btn-primary" id="dict-check-btn" onclick="dictCheck()">Kiểm tra</button>
-        </div>
-
-        <div class="dict-result" id="dict-result">
-          <div class="dict-result-label" id="dict-result-label"></div>
-          <div class="dict-diff" id="dict-diff"></div>
-        </div>
-
-        <div class="dict-script-toggle" onclick="dictToggleScript()">
-          <span class="dict-script-toggle-label"><span class="ask-lulu-ic"></span> Hỏi Lulu gợi ý</span>
-          <i class="fas fa-chevron-down" id="dict-script-chevron"></i>
-        </div>
-        <div class="dict-script-body" id="dict-script-body"></div>
+      <!-- Tab 2: full transcript -->
+      <div class="dict-pane hidden" id="dict-pane-transcript">
+        <p class="dict-transcript-note">Bấm vào một câu để quay lại luyện câu đó.</p>
+        <ol class="dict-transcript-list" id="dict-transcript-list"></ol>
       </div>
     </div>
+
+    <div class="dict-tip" id="dict-tip">
+      <span class="dict-tip-ic">💡</span>
+      <span id="dict-tip-text">Luyện ít nhất 30 phút mỗi ngày để tiến bộ nhanh hơn!</span>
+      <button class="dict-tip-next" onclick="dictNextTip()" title="Mẹo khác"><i class="fas fa-rotate-right"></i></button>
+    </div>
+
+    <details class="dict-full" id="dict-full">
+      <summary>Full Audio &amp; Plain Transcript</summary>
+      <div class="dict-full-body">
+        <audio id="dict-full-audio" controls preload="none"></audio>
+        <div class="dict-full-text" id="dict-full-text"></div>
+      </div>
+    </details>
   </div>
 
 </div>
 
 <audio id="dict-audio" preload="metadata"></audio>
 
-<script src="/js/dictation.js?v=fff74a0ffb"></script>
+<script src="/js/dictation.js?v=95ef601f83"></script>
 
 <div id="dict-popup" class="dict-popup hidden">
   <div class="dict-header">

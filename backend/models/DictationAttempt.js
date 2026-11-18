@@ -16,7 +16,10 @@ const DictationAnswerSchema = new mongoose.Schema({
 
 const DictationAttemptSchema = new mongoose.Schema({
   userId:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-  sectionId:    { type: mongoose.Schema.Types.ObjectId, ref: 'ListeningSection', required: true },
+  // A Listening section's dictation — or, with drillId, a "Đánh vần tên &
+  // số dài" lesson (DictationDrill; its items are clips of many sections).
+  sectionId:    { type: mongoose.Schema.Types.ObjectId, ref: 'ListeningSection', required() { return !this.drillId; } },
+  drillId:      { type: mongoose.Schema.Types.ObjectId, ref: 'DictationDrill', default: undefined },
   sectionTitle: { type: String, default: '' },
   partNumber:   { type: Number, default: 1 },
 
