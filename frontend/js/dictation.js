@@ -442,7 +442,7 @@ function dictGoTo(i, opts = {}) {
   document.getElementById('dict-prompt').innerHTML = s.answer
     ? (dictSection.slug && dictSection.slug.startsWith('spelling')
       ? 'Nghe và gõ lại <b>cái tên / từ được đánh vần</b>.'
-      : 'Nghe và gõ lại <b>con số / mã số / địa chỉ</b> trong câu.')
+      : 'Nghe và gõ lại <b>con số / mã số / địa chỉ</b>.')
     : '';
   updateDictProgress(0);
   dictRenderMask();
@@ -511,6 +511,27 @@ audio.addEventListener('timeupdate', () => {
     _setDictPlayIcon(false);
   }
 });
+
+// timeupdate fires only ~4×/s — too late to stop before the next word, so
+// while playing the clip end is watched every frame (timeupdate stays as the
+// fallback for background tabs, where frames are paused).
+let _dictEndWatch = 0;
+function _dictWatchEnd() {
+  cancelAnimationFrame(_dictEndWatch);
+  const tick = () => {
+    if (audio.paused || !dictSection) return;
+    if (audio.currentTime >= currentSentence().end) {
+      audio.pause();
+      _setDictPlayIcon(false);
+      return;
+    }
+    _dictEndWatch = requestAnimationFrame(tick);
+  };
+  _dictEndWatch = requestAnimationFrame(tick);
+}
+audio.addEventListener('play', _dictWatchEnd);
+// A drill clip is its own short file: it can simply run to its end.
+audio.addEventListener('ended', () => _setDictPlayIcon(false));
 
 /* ══════════════ CHECKING ══════════════ */
 // Curly apostrophes count as a plain ' (transcripts use ’, keyboards ').

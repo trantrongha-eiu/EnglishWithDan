@@ -3,13 +3,13 @@
  * "Đánh vần tên & số dài" lessons on dictation.html: ~10 short clips of the
  * site's OWN Listening audio (standalone sections + full tests) where a
  * speaker spells a name or says a phone number / postcode / price / big
- * number. Each item carries its own audio file + start/end (seconds), so one
- * lesson mixes clips from many recordings; the student types only `answer`
- * (what an IELTS answer sheet wants), `text` is the clip's transcript shown
- * afterwards.
+ * number. Each item is its own short mp3 (only the name + spelling / the
+ * number + any read-back; start = 0, end = its length), so one lesson mixes
+ * clips from many recordings; the student types only `answer` (what an IELTS
+ * answer sheet wants), `text` is what the clip says, shown afterwards.
  *
- * Built by scripts/dictationDrills/buildDictationDrills.js (mines the
- * transcripts + word timing), seeded by scripts/seedDictationDrills.js
+ * Built by scripts/dictationDrills/buildDictationDrills.js + cutClips.py (finds,
+ * cuts and verifies each clip), seeded by scripts/seedDictationDrills.js
  * (upsert key: slug).
  */
 const mongoose = require('mongoose');

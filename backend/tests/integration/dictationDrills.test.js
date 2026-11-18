@@ -115,4 +115,28 @@ describe('buildDictationDrills miner', () => {
     expect(sam.end).toBeGreaterThan(sam.start);
     expect(sam.text).not.toMatch(/WOMAN:/);
   });
+
+  test('a clip covers only the item: name + spelling, number, read-back, unit', () => {
+    const items = mineSource(src(
+      "WOMAN: When you arrive, ask for Gerald. That's G-E-R-A-L-D. " +
+      'MAN: The reference is 4471 9082 and that is all. WOMAN: 4471 9082, thanks. ' +
+      'MAN: The whole project cost us £2 million in the end.',
+    ), decodeTiming);
+    const by = (a) => items.find((x) => x.answer === a);
+
+    const name = by('Gerald');
+    expect(name.clip.target).toBe('GERALD');
+    expect(name.clip.nameTarget).toBe('GERALD');
+    expect(name.clip.parts).toEqual({ name: "Gerald. That's", core: 'G-E-R-A-L-D.', repeat: null });
+
+    const num = by('4471 9082');
+    expect(num.clip.parts.core).toBe('4471 9082');
+    expect(num.clip.hasRepeat).toBe(true);
+    expect(num.clip.parts.repeat).toBe('and that is all. 4471 9082');
+
+    // a scale word changes the value, so it is part of what to type
+    const price = by('£2 million');
+    expect(price.clip.target).toBe('2');
+    expect(price.clip.parts.core).toBe('£2 million');
+  });
 });
