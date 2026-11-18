@@ -47,6 +47,8 @@
   Cache-Control: no-cache
 /admin/
   Cache-Control: no-cache
+/app/
+  Cache-Control: no-cache
 
 # JS/CSS: every local ref carries ?v=<content hash>, stamped by
 # scripts/stamp-asset-versions.js (frontend/tests/asset-versions.test.js
@@ -69,6 +71,8 @@
 /sw.js
   Cache-Control: no-cache
 /admin/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+/app/assets/*
   Cache-Control: public, max-age=31536000, immutable
 
 # Back office — keep it out of every search index even if a link to it leaks

@@ -1110,6 +1110,7 @@
     moodForScore: moodForScore, react: react, reactHtml: reactHtml, cheer: cheer,
     say: function (t, m, who) { say(t, m, who); }, hop: function (m) { hop(m); },
     lumiOutfit: lumiOutfit,
+    renderSkillCards: renderSkillCards, // for hosts added after load (React /app/)
   };
   window.AskLulu = { say: askSay, letterHint: letterHint, line: letterLine, left: askLeft, MAX: 3 };
   window.TestCardArt = TestCardArt;

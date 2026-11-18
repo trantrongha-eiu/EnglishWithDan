@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import { apiFetch } from '../../utils/api';
-import { openUpgrade, showBadges } from '../../utils/shell';
+import { bindDict, openUpgrade, showBadges, spawnConfetti } from '../../utils/shell';
 import { useToast } from '../../contexts/ToastContext';
 import { ConfirmDialog } from '../../components/Modal';
 import WordModal from './WordModal';
@@ -73,6 +73,15 @@ function WordRow({ w, selected, onSelect, onStatus, onEdit, onDelete }) {
 
 // Keyed by bookId, so switching notebooks starts with a fresh search,
 // filter and selection.
+const CLASSIFY_KEY = 'dash_classify_float_seen';
+function readClassifySeen() {
+  try { return JSON.parse(localStorage.getItem(CLASSIFY_KEY) || '{}') || {}; } catch { return {}; }
+}
+function localDay() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
 export default function BookViewRoute() {
   const { bookId } = useParams();
   return <BookView key={bookId} bookId={bookId} />;
@@ -126,6 +135,37 @@ function BookView({ bookId }) {
 
   const refresh = () => { loadBook(bookId, { quiet: true }); loadBooks(); };
 
+  useEffect(() => { if (bookLoaded) bindDict('words-tbody', 'vocab-list'); }, [bookLoaded, bookId]);
+
+  // Every word mastered → celebrate (after the server confirmed the change)
+  const celebrateIfDone = () => {
+    if (!words.length || words.some(w => w.status !== 'da-thuoc')) return;
+    spawnConfetti(90);
+    toast(`🎉 Excellent! You've mastered all ${words.length} words!`, 'success');
+  };
+
+  // "Bạn đã thuộc kĩ chưa?" — once per notebook per day, shortly after opening
+  const [classify, setClassify] = useState(null); // book id it is showing for
+  const hasWords = words.length > 0;
+  useEffect(() => {
+    if (!bookLoaded || !hasWords) return undefined;
+    const seen = readClassifySeen();
+    const today = localDay();
+    if (seen[bookId] === today) return undefined;
+    const t = setTimeout(() => {
+      try { localStorage.setItem(CLASSIFY_KEY, JSON.stringify({ ...seen, [bookId]: today })); } catch { /* private mode */ }
+      setClassify(bookId);
+    }, 900);
+    return () => clearTimeout(t);
+  }, [bookLoaded, hasWords, bookId]);
+  const classifyNow = () => {
+    setClassify(null);
+    document.querySelector('.words-table-wrap')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const boxes = document.querySelectorAll('#words-tbody .status-select');
+    boxes.forEach(s => s.classList.add('status-pulse'));
+    setTimeout(() => boxes.forEach(s => s.classList.remove('status-pulse')), 3200);
+  };
+
   /* ── Errors / loading ── */
   if (!book) {
     if (bookError?.body?.requiresPremium) {
@@ -170,6 +210,7 @@ function BookView({ bookId }) {
     rerender();
     try {
       showBadges(await apiFetch(`/vocabbook/${bookId}/words/${w._id}`, { method: 'PATCH', body: JSON.stringify({ status }) }));
+      if (status === 'da-thuoc') celebrateIfDone();
     } catch {
       w.status = prev;
       rerender();
@@ -183,6 +224,7 @@ function BookView({ bookId }) {
     rerender();
     try {
       showBadges(await apiFetch(`/vocabbook/${bookId}/words`, { method: 'PATCH', body: JSON.stringify({ wordIds: [...prev.keys()], status }) }));
+      if (status === 'da-thuoc') celebrateIfDone();
       setSelected(new Set());
       toast(`Đã chuyển ${prev.size} từ sang ${STATUSES.find(s => s.key === status).label}`, 'success');
     } catch (err) {
@@ -275,6 +317,26 @@ function BookView({ bookId }) {
 
   return (
     <div id="book-content" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {classify === bookId && (
+        <div className="classify-float show" role="dialog" aria-live="polite">
+          <button type="button" className="classify-float-close" aria-label="Đóng" onClick={() => setClassify(null)}>×</button>
+          <div className="classify-float-title"><span className="classify-float-emoji">🏷️</span> Bạn đã thuộc kĩ chưa?</div>
+          <p className="classify-float-text">Xem lại mức độ nhớ của từng từ — bấm ô trạng thái ở mỗi dòng để cập nhật.</p>
+          <div className="classify-float-counts">
+            <span className="status-select-hint chua-thuoc">Not yet <b>{counts['chua-thuoc']}</b></span>
+            <span className="status-select-hint nho-so-so">So-so <b>{counts['nho-so-so']}</b></span>
+            <span className="status-select-hint da-thuoc">Mastered <b>{counts['da-thuoc']}</b></span>
+          </div>
+          {counts['chua-thuoc'] === words.length
+            ? <p className="classify-float-note">Tất cả từ đang ở <b>Not yet</b> — từ nào đã nhớ thì đổi sang So-so hoặc Mastered nhé.</p>
+            : counts['nho-so-so'] > 0 && <p className="classify-float-note">Có <b>{counts['nho-so-so']}</b> từ <b>So-so</b> — từ nào giờ đã nhớ chắc thì nâng lên Mastered.</p>}
+          <p className="classify-float-hint">Đổi nhiều từ cùng lúc: tick ô vuông đầu dòng rồi chọn trạng thái mới.</p>
+          <div className="classify-float-btns">
+            <button type="button" className="btn btn-primary btn-sm" onClick={classifyNow}><i className="fas fa-tags" /> Phân loại ngay</button>
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => setClassify(null)}>Để sau</button>
+          </div>
+        </div>
+      )}
       <div className="book-topbar">
         <div className="book-top-title">
           <span className="book-top-emoji">{book.emoji || '📘'}</span>
@@ -377,7 +439,7 @@ function BookView({ bookId }) {
               <th style={{ width: 60 }} />
             </tr>
           </thead>
-          <tbody>
+          <tbody id="words-tbody">
             {!words.length && (
               <tr><td colSpan={7} style={{ textAlign: 'center', padding: 48, color: 'var(--text3)' }}>
                 <div style={{ fontSize: 40, marginBottom: 10 }}>📭</div>

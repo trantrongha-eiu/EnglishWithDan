@@ -294,6 +294,7 @@ function LessonScreen({ lessonId, backTo }) {
   const [session, setSession] = useState(null); // last finished run
   const [saveFailed, setSaveFailed] = useState(null); // retry function
   const [askQuit, setAskQuit] = useState(false);
+  const [saving, setSaving] = useState(false); // last answer given, result on its way
   const [, setSavedTick] = useState(0);
   const quizRef = useRef(null);
   const inProgress = !!quiz;
@@ -373,6 +374,7 @@ function LessonScreen({ lessonId, backTo }) {
   }, [commit]);
 
   const finish = useCallback(async (q) => {
+    setSaving(true);
     commit(null);
     const total = q.queue.filter(x => !x._redo).length;
     const timeSpentSec = Math.max(1, Math.round((Date.now() - q.startTime) / 1000));
@@ -393,6 +395,7 @@ function LessonScreen({ lessonId, backTo }) {
     refreshHomeworkSoon(true);
     if (run.score === 100) setTimeout(() => spawnConfetti(100), 400);
     setSession(run);
+    setSaving(false);
     setTab('results');
   }, [commit, lessonId, refreshHomeworkSoon]);
 
@@ -468,7 +471,8 @@ function LessonScreen({ lessonId, backTo }) {
 
         <div id="lesson-tab-quiz" style={{ display: tab === 'quiz' ? 'block' : 'none' }}>
           {lesson && !words.length && <div className="classroom-empty">Bài học chưa có từ vựng</div>}
-          {lesson && words.length > 0 && !item && !unlocked && (
+          {saving && <div className="classroom-empty">Đang lưu kết quả...</div>}
+          {lesson && words.length > 0 && !item && !saving && !unlocked && (
             <div className="practice-container lesson-quiz-locked">
               <Mascot html={lockHtml}><p style={{ fontWeight: 700 }}>Lưu hết từ vựng vào sổ trước rồi mới được làm Quiz nha ní!</p></Mascot>
               <div className="lesson-quiz-locked-count"><i className="fas fa-lock" /> Đã lưu <b>{savedCount(lesson)}/{words.length}</b> từ</div>
@@ -476,7 +480,7 @@ function LessonScreen({ lessonId, backTo }) {
               <button className="btn btn-ghost btn-sm lesson-quiz-locked-learn" onClick={() => switchTab('learn')}><i className="fas fa-book-open" /> Xem lại từ vựng</button>
             </div>
           )}
-          {lesson && words.length > 0 && !item && unlocked && (
+          {lesson && words.length > 0 && !item && !saving && unlocked && (
             <div className="practice-container">
               <div className="practice-header">
                 <h3><i className="fas fa-check-circle" /> Quiz</h3>

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useOutletContext, useSearchParams } from 'react-router-dom';
 import { apiFetch } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
 import Modal from '../../components/Modal';
@@ -9,7 +9,7 @@ import HomeworkCard from './HomeworkCard';
 import WeaknessCard from './WeaknessCard';
 import TodaysLesson from './TodaysLesson';
 import { hasPremiumAccess } from '../../utils/plan';
-import { openUpgrade } from '../../utils/shell';
+import { bindDict, openUpgrade } from '../../utils/shell';
 
 const SKILL_CARDS = [
   { href: '/reading.html', icon: 'fa-book-open', label: 'Reading' },
@@ -51,16 +51,48 @@ function PremiumBanner() {
   );
 }
 
+// Lulu reacts to a lost streak (dashboard.js getMascotState)
+const ANGRY_MSGS = [
+    n => `😡 Lulu CỰC KỲ TỨC GIẬN vì bạn vừa làm bay màu ${n} ngày streak! ${n} NGÀY! Học 1 từ ngay đi, không Lulu giận cả tuần cho xem.`,
+    n => `😤 ${n} ngày công sức... đi tong trong một nốt nhạc. Lulu không khóc đâu, Lulu chỉ đang tức giận dữ dội thôi.`,
+    n => `🔥💔 Streak ${n} ngày vừa nằm xuống. Lulu đang thắp hương cho nó — còn bạn thì đang làm gì thế?`
+];
+const SAD_MSGS = [
+    '😢 Lulu đang buồn thiu vì hôm nay chưa thấy bạn học từ nào cả...',
+    '🥺 0 ngày streak. Lulu ngồi một mình cắn hạt dưa cả ngày, buồn ơi là buồn.',
+    '😭 Lulu tưởng bạn quên mất Lulu rồi... học 1 từ thôi là Lulu vui liền!'
+];
+
+function streakState(streak, previous, r) {
+  if (streak === 0 && previous > 10) return { mood: 'angry', msg: ANGRY_MSGS[Math.floor(r * ANGRY_MSGS.length)](previous) };
+  if (streak === 0) return { mood: 'sad', msg: SAD_MSGS[Math.floor(r * SAD_MSGS.length)] };
+  return { mood: null, msg: getMascotMsg(streak) };
+}
+
 function StreakCard({ stats, onUseHammer }) {
-  const { streak = 0, streakHammers = 0, canUseHammer = false } = stats || {};
+  const { streak = 0, previousStreak = 0, streakHammers = 0, canUseHammer = false } = stats || {};
+  const [r] = useState(() => Math.random());
+  const state = streakState(streak, previousStreak, r);
+  const mascot = useRef(null);
+  const fire = useRef(null);
+  const num = useRef(null);
+  const loaded = !!stats;
+  useEffect(() => {
+    if (!loaded) return;
+    if (window.Mascot && mascot.current) {
+      mascot.current.textContent = '';
+      window.Mascot.mount(mascot.current, state.mood || window.Mascot.moodForStreak(streak), { label: 'Lulu' });
+    }
+    window.applyFireTier?.(fire.current, num.current, streak);
+  }, [loaded, streak, state.mood]);
   return (
-    <div className="dan-streak-card">
+    <div className={`dan-streak-card${state.mood === 'angry' ? ' is-angry' : state.mood === 'sad' ? ' is-sad' : ''}`}>
       <div className="dan-streak-top">
-        <div className="dan-mascot">🐼</div>
+        <div className="dan-mascot" ref={mascot}>🐼</div>
         <div className="dan-streak-info">
           <div className="dan-streak-badge">
-            <span className="dan-fire"><i className="fas fa-fire" /></span>
-            <span className="dan-streak-num">{stats ? streak : '–'}</span>
+            <span className="dan-fire" ref={fire}><i className="fas fa-fire" /></span>
+            <span className="dan-streak-num" ref={num}>{stats ? streak : '–'}</span>
             <span className="dan-streak-label">ngày streak</span>
             {streakHammers > 0 && (
               <span className="dan-hammer-badge" title="Búa Daniel">
@@ -69,7 +101,7 @@ function StreakCard({ stats, onUseHammer }) {
               </span>
             )}
           </div>
-          <div className="dan-streak-msg">{stats ? getMascotMsg(streak) : 'Đang tải...'}</div>
+          <div className="dan-streak-msg">{stats ? state.msg : 'Đang tải...'}</div>
         </div>
       </div>
       {canUseHammer && (
@@ -107,6 +139,23 @@ export default function Welcome() {
   const toast = useToast();
   const [infoKey, setInfoKey] = useState(null);
   const info = infoKey && FEAT_INFO[infoKey];
+
+  useEffect(() => { bindDict('book-welcome', 'dashboard-home'); }, []);
+
+  // /dashboard?focus=homework-card (nav.js homework reminders): the card
+  // appears once the homework has loaded
+  const [params] = useSearchParams();
+  const focus = params.get('focus');
+  const hwReady = !!homework;
+  useEffect(() => {
+    if (!focus || !hwReady) return undefined;
+    const t = setTimeout(() => document.getElementById(focus)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+    return () => clearTimeout(t);
+  }, [focus, hwReady]);
+
+  // The colourful skill tiles come from playful.js, like on the static pages
+  const [richSkills] = useState(() => !!window.Mascot?.renderSkillCards);
+  useEffect(() => { if (richSkills) window.Mascot.renderSkillCards(); }, [richSkills]);
 
   async function useHammer() {
     try {
@@ -164,7 +213,10 @@ export default function Welcome() {
           </Modal>
         )}
 
-        <div className="skill-cards" style={{ marginBottom: 24 }}>
+        {richSkills
+          ? <div className="skill-cards" data-skill-cards style={{ marginBottom: 24 }} />
+          : (
+            <div style={{ marginBottom: 24 }}>
           <div className="skills-explore-row">
             <span className="skills-explore-label">Khám phá:</span>
             {SKILL_CARDS.map(s => (
@@ -173,7 +225,8 @@ export default function Welcome() {
               </a>
             ))}
           </div>
-        </div>
+            </div>
+          )}
 
         <div style={{ textAlign: 'center', marginTop: 28 }}>
           <button className="btn btn-primary btn-sm" onClick={openGuide}><i className="fas fa-book-open" /> Xem hướng dẫn chi tiết</button>

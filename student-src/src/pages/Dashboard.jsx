@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
-import { NavLink, Outlet, useNavigate, useParams } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { apiFetch } from '../utils/api';
 import { onStreakResult, onSaveState } from '../utils/practiceSync';
 import { collectVocabGoals, readHomeworkCache, writeHomeworkCache } from '../utils/homework';
@@ -39,6 +39,9 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const toast = useToast();
   const { bookId: activeBookId } = useParams();
+  const { pathname } = useLocation();
+  // on a study screen the button would only sit on top of the content
+  const studyScreen = /\/(lesson|unit)\/|\/practice$/.test(pathname);
   const [books, setBooks] = useState(null);
   const [booksError, setBooksError] = useState(null);
   const [stats, setStats] = useState(null);
@@ -279,9 +282,11 @@ export default function Dashboard() {
           />
         )}
 
-        <button className="mobile-sidebar-btn dash-mobile-books-btn" onClick={() => setSidebarOpen(o => !o)} aria-label="Chọn sổ">
-          <i className="fas fa-book" /> Sổ từ
-        </button>
+        {!studyScreen && (
+          <button className="mobile-sidebar-btn dash-mobile-books-btn" onClick={() => setSidebarOpen(o => !o)} aria-label="Chọn sổ">
+            <i className="fas fa-book" /> Sổ từ
+          </button>
+        )}
       </main>
     </div>
   );

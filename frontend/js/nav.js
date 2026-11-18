@@ -98,11 +98,11 @@
         { href: 'shadowing.html',                   icon: 'fa-comment-dots', label: 'Shadowing (Video)' },
       ]
     },
-    { href: 'dashboard.html',        icon: 'fa-layer-group', label: 'Vocab',
+    { href: 'app/#/dashboard',       icon: 'fa-layer-group', label: 'Vocab',
       children: [
-        { href: 'dashboard.html',                    icon: 'fa-layer-group', label: 'Sổ từ vựng' },
-        { href: 'dashboard.html?view=paraphrase',    icon: 'fa-graduation-cap', label: 'Học Paraphrase' },
-        { href: 'dashboard.html?view=topics',        icon: 'fa-shapes',      label: 'Học Vocab Topics' },
+        { href: 'app/#/dashboard',                   icon: 'fa-layer-group', label: 'Sổ từ vựng' },
+        { href: 'app/#/dashboard/paraphrase',        icon: 'fa-graduation-cap', label: 'Học Paraphrase' },
+        { href: 'app/#/dashboard/topics',            icon: 'fa-shapes',      label: 'Học Vocab Topics' },
       ]
     },
     // Both thi-thử ("mock test") features live under one dropdown: the new
@@ -165,6 +165,14 @@
   // AND every query param in the child href is present in the current URL.
   // A child with no query string is only active when the current URL also has no query string.
   function navChildActive(cHref) {
+    // Routes of the React app (/app/#/dashboard/…) live in the hash
+    if (cHref.indexOf('app/#') === 0) {
+      if (!/^\/app(\/|$)/.test(location.pathname)) return false;
+      var route = location.hash.replace(/^#/, '').split('?')[0].replace(/\/$/, '') || '/dashboard';
+      var target = cHref.slice(5);
+      if (target !== '/dashboard') return route === target;
+      return !/^\/dashboard\/(paraphrase|topics)$/.test(route);
+    }
     var ci = cHref.indexOf('?');
     var cBase   = ci === -1 ? cHref : cHref.slice(0, ci);
     var cSearch = ci === -1 ? '' : cHref.slice(ci + 1);
@@ -253,7 +261,7 @@
   nav.className = 'top-nav';
   nav.id = 'globalTopNav';
   nav.innerHTML =
-    '<a href="/dashboard.html" class="nav-brand"><img src="/img/big_logo.png" alt="EnglishWithDan" style="height:38px;width:auto;border-radius:6px;display:block;"></a>' +
+    '<a href="/app/#/dashboard" class="nav-brand"><img src="/img/big_logo.png" alt="EnglishWithDan" style="height:38px;width:auto;border-radius:6px;display:block;"></a>' +
     '<div class="nav-links">' + mkDesktopLinks() + '</div>' +
     '<div class="nav-actions">' +
       // "Hướng dẫn trang này" — Lulu (js/shared/playful.js fills the face in
@@ -294,6 +302,13 @@
       '<button class="hamburger" id="globalHamburger" aria-label="Mở menu"><span></span><span></span><span></span></button>' +
     '</div>';
   document.body.insertBefore(nav, document.body.firstChild);
+
+  // The React app changes route without a page load: keep the Vocab menu right
+  window.addEventListener('hashchange', function () {
+    document.querySelectorAll('.nav-dd-menu a[href^="/app/#"], a.mobile-nav-sub[href^="/app/#"]').forEach(function (a) {
+      a.classList.toggle('active', navChildActive(a.getAttribute('href').slice(1)));
+    });
+  });
 
   // ── Account dock (bottom-left corner) ─────────────────────
   // "Về trang quản trị" / avatar (Trang cá nhân) / Đăng xuất used to sit at
@@ -1126,7 +1141,7 @@
       'nav-homework-warning-banner',
       'linear-gradient(90deg,#b45309,#d97706)',
       '<span style="flex:1;text-align:center">' + parts.join('') + '</span>' +
-      '<a href="dashboard.html" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem bài tập</a>'
+      '<a href="/app/#/dashboard" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem bài tập</a>'
     );
   }
 
@@ -1139,7 +1154,7 @@
       'linear-gradient(90deg,#b91c1c,#ea580c)',
       '<span style="flex:1;text-align:center">🔒 Bạn còn <strong>' + old + ' bài tập cũ</strong> chưa hoàn thành nên <strong>' +
       lock.lockedCount + ' bài tập mới</strong> đang bị khoá. Hãy làm xong bài cũ để mở khoá bài mới.</span>' +
-      '<a href="dashboard.html#homework-card" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Làm bài cũ</a>'
+      '<a href="/app/#/dashboard?focus=homework-card" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Làm bài cũ</a>'
     );
   }
 
@@ -1459,7 +1474,7 @@
     // is deliberate: the student picks which sổ to study, per the product ask.
     document.getElementById('nav-vocab-inactivity-go').addEventListener('click', function () {
       overlay.remove();
-      location.href = '/dashboard.html';
+      location.href = '/app/#/dashboard';
     });
   }
 
@@ -1551,12 +1566,12 @@
     // On the vocab page already → launch straight into the due-review quiz;
     // otherwise navigate there with the trigger param (dashboard.js reads it).
     if (typeof window.openReviewDueModal === 'function') { window.openReviewDueModal(); return; }
-    location.href = '/dashboard.html?action=review-due';
+    location.href = '/app/#/dashboard/practice?src=due';
   }
 
   function _goParaphraseReviewDue() {
     if (typeof window.openParaphraseReviewModal === 'function') { window.openParaphraseReviewModal(); return; }
-    location.href = '/dashboard.html?action=review-paraphrase';
+    location.href = '/app/#/dashboard/practice?src=paraphrase';
   }
 
   function _renderVocabGoalCard(o) {
@@ -1656,7 +1671,7 @@
     if (x) x.addEventListener('click', close);
     var go = card.querySelector('#nav-vocab-goal-go');
     if (go) go.addEventListener('click', function () {
-      if (!_onVocabHomePage()) { location.href = '/dashboard.html'; return; }
+      if (!_onVocabHomePage()) { location.href = '/app/#/dashboard'; return; }
       // Mid-quiz on this page (deep-linked ?view=unit): just dismiss — don't
       // yank them out of an in-progress session.
       if (typeof window._isActivePractice === 'function' && window._isActivePractice()) { close(); return; }

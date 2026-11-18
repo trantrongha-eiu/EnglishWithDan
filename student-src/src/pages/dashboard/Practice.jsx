@@ -129,7 +129,7 @@ function QuizQuestion({ item, answered, onAnswer }) {
 
   useEffect(() => {
     const onKey = (e) => {
-      if (e.target.closest?.('input,textarea,select')) return;
+      if (e.target.closest?.('input,textarea,select') || document.querySelector('.modal-overlay:not(.hidden)')) return;
       const n = parseInt(e.key, 10);
       if (n >= 1 && n <= options.length) pick(options[n - 1]);
     };
@@ -452,6 +452,13 @@ function syncParaphrase(s, unitId) {
 }
 
 function QuitModal({ s, onStay, onLeave }) {
+  const face = useRef(null);
+  const sad = s.wrongSet.size > 0;
+  useEffect(() => {
+    if (!window.Mascot || !face.current) return;
+    face.current.textContent = '';
+    window.Mascot.mount(face.current, sad ? 'sad' : 'think', { label: 'Lulu' });
+  }, [sad]);
   const remaining = Math.max(0, s.queue.length - s.index);
   const wrong = s.wrongSet.size;
   const parts = [];
@@ -461,7 +468,7 @@ function QuitModal({ s, onStay, onLeave }) {
     <div className="modal-overlay">
       <div className="modal-box modal-sm" role="dialog" aria-modal="true" style={{ overflow: 'hidden', padding: 0 }}>
         <div className="quit-mascot-wrap">
-          <div className="quit-mascot">{wrong > 0 ? '🥺' : '🐼'}</div>
+          <div className="quit-mascot" ref={face}>{wrong > 0 ? '🥺' : '🐼'}</div>
           <p className="quit-title">{wrong > 0 ? 'Bạn vẫn còn từ cần ôn!' : 'Bạn có muốn học tiếp không?'}</p>
           <p className="quit-sub">{parts.join(' · ')}</p>
         </div>

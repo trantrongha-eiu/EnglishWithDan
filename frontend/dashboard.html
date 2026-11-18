@@ -1,6 +1,31 @@
 <!DOCTYPE html>
 <html lang="vi" data-theme="light">
 <head>
+  <script>
+  /* The vocab home now lives in the React app (/app/, source: student-src).
+     Every old link keeps working through this map. The page below stays as a
+     fallback: dashboard.html?legacy=1 keeps this tab on it, ?legacy=0 leaves. */
+  (function () {
+    var q = new URLSearchParams(location.search);
+    try {
+      if (q.get('legacy') === '1') sessionStorage.setItem('ews_legacy_dash', '1');
+      if (q.get('legacy') === '0') sessionStorage.removeItem('ews_legacy_dash');
+      if (sessionStorage.getItem('ews_legacy_dash')) return;
+    } catch (e) { /* private mode: go to the new page */ }
+    var e = encodeURIComponent, view = q.get('view'), action = q.get('action'), m = q.get('mode');
+    var modes = { multipleChoice: 'quiz', fillBlank: 'flashcard', listening: 'listen', translation: 'translate' };
+    var mode = m ? '?mode=' + e(modes[m] || m) : '';
+    var r = '/dashboard';
+    if (action === 'review-due') r += '/practice?src=due';
+    else if (action === 'review-paraphrase') r += '/practice?src=paraphrase';
+    else if (view === 'book' && q.get('bookId')) r += '/book/' + e(q.get('bookId')) + (m && m !== 'study' ? '/practice' + mode : '');
+    else if (view === 'unit' && q.get('unit')) r += '/unit/' + e(q.get('unit')) + mode;
+    else if (view === 'lesson' && q.get('lessonId')) r += '/lesson/' + e(q.get('lessonId'));
+    else if (view === 'paraphrase' || view === 'topics') r += '/' + view;
+    else if (location.hash === '#homework-card') r += '?focus=homework-card';
+    location.replace('/app/#' + r);
+  })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
   <link rel="manifest" href="/manifest.json">
   <meta charset="UTF-8"/>
@@ -25,7 +50,7 @@
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=18c5e091e8"></script>
+<script src="/js/bundles/app-shell.js?v=780f009a7f"></script>
 <script src="/js/shared/onboarding-tour.js?v=957baa6b76"></script>
 <script src="/js/learning-popups.js?v=fd5ee1e733"></script>
 <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>

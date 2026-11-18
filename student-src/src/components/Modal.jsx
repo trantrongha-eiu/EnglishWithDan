@@ -4,7 +4,12 @@ import { useEffect } from 'react';
 // in components.css), so it looks identical.
 export default function Modal({ title, onClose, children, footer, size = 'modal-sm' }) {
   useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return;
+      // a confirm opened on top takes the key (it closes first)
+      if (document.querySelector('.modal-overlay [role="alertdialog"]')) return;
+      onClose();
+    };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose]);
@@ -26,6 +31,11 @@ export default function Modal({ title, onClose, children, footer, size = 'modal-
 }
 
 export function ConfirmDialog({ title, message, confirmLabel = 'Xác nhận xoá', confirmClass = 'btn-danger', onConfirm, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') { e.stopPropagation(); onClose(); } };
+    document.addEventListener('keydown', onKey, true);
+    return () => document.removeEventListener('keydown', onKey, true);
+  }, [onClose]);
   return (
     <div className="modal-overlay" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="modal-box modal-sm" role="alertdialog" aria-modal="true">
