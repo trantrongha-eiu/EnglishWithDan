@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { apiFetch } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
 import { ConfirmDialog } from '../../components/Modal';
+import { SPEAKING_SWAP_LIVE } from '../../utils/features';
 
 // 🎤 Đăng kí thi Speaking — block inside each "Lớp học của tôi" class card.
 // Port of frontend/js/dashboard-speaking-exam.js (keep both in step). Slots are
@@ -216,7 +217,7 @@ export default function SpeakingExamBlock({ se, classId, onChanged }) {
         <div className="se-actions">
           {b.canCancel
             ? <>
-              {n > 0 && <button type="button" className="se-btn" onClick={() => setPicker(true)}>Đổi buổi</button>}
+              {SPEAKING_SWAP_LIVE && n > 0 && <button type="button" className="se-btn" onClick={() => setPicker(true)}>Đổi buổi</button>}
               <button type="button" className="se-btn se-btn--ghost" disabled={busy} onClick={() => setAskCancel(true)}>Hủy buổi</button>
             </>
             : <span className="se-muted">Muốn đổi/hủy trong {se.lockHours || 2} tiếng trước giờ thi — hãy nhắn giáo viên.</span>}

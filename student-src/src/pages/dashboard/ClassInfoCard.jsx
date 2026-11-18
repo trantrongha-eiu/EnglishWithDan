@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { CLASSROOM_PAGE_LIVE } from '../../utils/features';
 import { apiFetch } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
 import SpeakingExamBlock from './SpeakingExamBlock';
@@ -532,7 +533,11 @@ export default function ClassInfoCard() {
             <i className="fas fa-calendar-week" aria-hidden="true" /> Tuần {lp.currentWeek}{lp.totalWeeks ? `/${lp.totalWeeks}` : ''} · Buổi {lp.currentSessionOrdinal}{lp.totalSessions ? `/${lp.totalSessions}` : ''}
           </span>
         )}
-        <a className="ci-head-link" href="/classroom.html">Xem chi tiết <i className="fas fa-arrow-right" aria-hidden="true" /></a>
+        {CLASSROOM_PAGE_LIVE && (
+
+          <a className="ci-head-link" href="/classroom.html">Xem chi tiết <i className="fas fa-arrow-right" aria-hidden="true" /></a>
+
+        )}
       </div>
       <div className="ci-list">
         {state.classes.map((c, i) => (
