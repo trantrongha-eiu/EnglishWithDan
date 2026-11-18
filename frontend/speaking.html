@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="/css/pdf-viewer.css?v=7d99d6420a" />
   <link rel="stylesheet" href="/css/mobile.css?v=1285106fee" />
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3" />
-  <link rel="stylesheet" href="/css/speaking-extra.css?v=9cd8b0c306" />
+  <link rel="stylesheet" href="/css/speaking-extra.css?v=f4afff5b46" />
   <link rel="stylesheet" href="/css/speaking-criteria.css?v=df84f55e36" />
   <script src="/js/theme.js?v=f5e2645f16"></script>
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
@@ -30,7 +30,7 @@
 <script src="/js/learning-popups.js?v=fd5ee1e733"></script>
 <script src="/js/shared/paste-guard.js?v=574d1d5eb9"></script>
 <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
-<script src="/js/shared/word-audio.js?v=28a7a7408e"></script>
+<script src="/js/shared/word-audio.js?v=9fd314228b"></script>
 <script src="/js/shared/dictionary-lookup.js?v=74785ced6f"></script>
 <script src="/js/shared/badge-popup.js?v=b1f5e551eb"></script>
 <script src="/js/shared/proctor-capture.js?v=c6d9bf6e8c"></script>
@@ -181,6 +181,9 @@
     <i class="fas fa-circle-info"></i>
     Trình duyệt này không tạo phụ đề trực tiếp khi ghi âm. Cứ bấm mic và <strong>nói bình thường</strong> — sau khi bấm <strong>Dừng</strong>, AI sẽ <strong>nghe bản ghi âm và tự chép lại lời thoại</strong> để chấm. (Bạn cũng có thể tự gõ vào ô bên dưới nếu muốn.)
   </div>
+
+  <!-- Examiner voice picker, filled by renderExaminerVoicePickers() -->
+  <div class="ev-box" data-voice-picker="open" hidden></div>
 
   <!-- Two-column layout -->
   <div class="practice-layout">
@@ -746,6 +749,7 @@
       </button>
     </div>
     <div class="sp-modal-body">
+      <div class="ev-box ev-box-modal" data-voice-picker="closed" hidden></div>
       <div class="seq-preview-list" id="seq-preview-list"></div>
     </div>
     <div class="sp-modal-footer">
@@ -794,6 +798,6 @@
 <script src="/js/speaking-criteria.js?v=f7a3742640"></script>
 <script src="/js/shared/route-params.js?v=cb2d4fee78"></script>
 <script src="/js/speaking-tips.js?v=6c3882fdde"></script>
-<script src="/js/speaking.js?v=f1d45b2c6d"></script>
+<script src="/js/speaking.js?v=19ff5a1a50"></script>
 </body>
 </html>

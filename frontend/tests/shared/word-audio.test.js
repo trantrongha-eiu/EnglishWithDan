@@ -158,3 +158,77 @@ test('🔊 buttons rendered with speakWord(\'…\') are prefetched before the ta
   expect(stored["o'clock"]).toBe(OX("o'clock", 'us'));
   expect(plays).toEqual([]);                    // prefetch never plays anything
 });
+
+describe('neural voice', () => {
+  const MP3 = 'https://media.test/tts/v1/sophia/abc.mp3';
+  const ttsCalls = () => global.fetch.mock.calls.filter(([u]) => String(u).endsWith('/tts/speech'));
+
+  function mockTts(status, url = MP3) {
+    global.fetch = jest.fn(() => Promise.resolve({
+      ok: status === 200, status, json: () => Promise.resolve({ success: status === 200, url }),
+    }));
+  }
+  function signedIn() {
+    const WA = load();
+    localStorage.setItem('token', 't');
+    return WA;
+  }
+
+  test('a phrase uses the neural voice and is remembered for the next tap', async () => {
+    remote[MP3] = 'ok';
+    mockTts(200);
+    const WA = signedIn();
+    await WA.speak('carbon footprint');
+    expect(plays[plays.length - 1]).toBe(MP3);
+    expect(spoken).toEqual([]);
+    expect(JSON.parse(ttsCalls()[0][1].body)).toEqual({ text: 'carbon footprint' });
+
+    await WA.speak('carbon footprint');
+    expect(ttsCalls()).toHaveLength(1);
+  });
+
+  test('a dictionary recording still wins over the neural voice', async () => {
+    remote[OX('mitigate', 'us')] = 'ok';
+    mockTts(200);
+    const WA = signedIn();
+    await WA.speak('mitigate');
+    expect(plays[plays.length - 1]).toBe(OX('mitigate', 'us'));
+    expect(ttsCalls()).toHaveLength(0);
+  });
+
+  test('service off → browser voice now, and no more requests for a while', async () => {
+    mockTts(503);
+    const WA = signedIn();
+    await WA.speak('carbon footprint');
+    await WA.speak('climate change');
+    expect(spoken).toEqual(['carbon footprint', 'climate change']);
+    expect(ttsCalls()).toHaveLength(1);
+  });
+
+  test('speakNeural sends the chosen voice and reports how it ended', async () => {
+    remote[MP3] = 'ok';
+    mockTts(200);
+    const WA = signedIn();
+    await expect(WA.speakNeural('Where are you from?', { voice: 'tony' })).resolves.toBe('played');
+    expect(JSON.parse(ttsCalls()[0][1].body)).toEqual({ text: 'Where are you from?', voice: 'tony' });
+    expect(plays[plays.length - 1]).toBe(MP3);
+  });
+
+  test('speakNeural says "failed" so the page can use its own voice', async () => {
+    mockTts(429);
+    const WA = signedIn();
+    await expect(WA.speakNeural('Do you like music?', { voice: 'tony' })).resolves.toBe('failed');
+    expect(spoken).toEqual([]);
+  });
+
+  test('stop() ends a sentence that is playing, so a waiting exam moves on', async () => {
+    const stuck = 'https://media.test/tts/v1/tony/stuck.mp3';
+    mockTts(200, stuck);
+    const WA = signedIn();
+    FakeAudio.prototype.play = function () { plays.push(this.src); return Promise.resolve(); };
+    const run = WA.speakNeural('Tell me about your hometown.', { voice: 'tony' });
+    await wait(450);
+    WA.stop();
+    await expect(run).resolves.toBe('stopped');
+  });
+});

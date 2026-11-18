@@ -206,6 +206,7 @@ function showScreen(id) {
     setupRecognition();
   }
   primeTtsVoice();
+  loadExaminerVoices();
   window.SpeakingAudioStore?.pruneOldRecordings(); // best-effort, non-blocking housekeeping
 
   // Enable analyze button on manual typing
@@ -918,27 +919,118 @@ function pickNaturalVoice(voices) {
   return voices.find(v => v.lang?.startsWith('en')) || null;
 }
 
-// onEnd (optional) fires once the utterance finishes — used by sequential
-// mode to delay starting recording until the question has actually been
-// read aloud (see loadSeqQuestion()). Guarded against firing twice and
-// backstopped with a timeout in case onend/onerror never arrive (a known
-// flaky quirk in some browsers, e.g. after the tab was backgrounded).
-function speakText(text, onEnd) {
-  if (!text || !('speechSynthesis' in window)) { if (onEnd) onEnd(); return; }
+// ──────────────────────────────────────────────────────
+// Examiner voices — neural voices from /api/tts. The picker only appears when
+// the server has them switched on; otherwise the browser voice above is used.
+// ──────────────────────────────────────────────────────
+const EXAMINER_VOICE_KEY = 'ews_examiner_voice';
+let _examinerVoices = [];
+let _examinerVoiceId = null;
+let _speakSeq = 0;
+
+function examinerVoice() {
+  return _examinerVoices.find(v => v.id === _examinerVoiceId) || null;
+}
+
+async function loadExaminerVoices() {
+  let data;
+  try { data = await apiFetch('/api/tts/voices'); } catch { return; }
+  if (!data?.enabled || !data.voices?.length) return;
+  _examinerVoices = data.voices;
+  let saved = null;
+  try { saved = localStorage.getItem(EXAMINER_VOICE_KEY); } catch { /* private mode */ }
+  _examinerVoiceId = data.voices.some(v => v.id === saved) ? saved : data.defaultVoice;
+  renderExaminerVoicePickers();
+}
+
+function renderExaminerVoicePickers() {
+  const chips = _examinerVoices.map(v => `
+    <button type="button" class="ev-chip" aria-pressed="false" data-voice="${escHtml(v.id)}">
+      <i class="fas fa-volume-low" aria-hidden="true"></i>
+      <span class="ev-name">${escHtml(v.name)} · ${escHtml(v.gender)}</span>
+      <span class="ev-accent">${escHtml(v.accent)}</span>
+    </button>`).join('');
+  // Open only until a voice has been chosen: after that the panel would just
+  // take height from the question list.
+  let hasChosen = false;
+  try { hasChosen = !!localStorage.getItem(EXAMINER_VOICE_KEY); } catch { /* private mode */ }
+  const wide = window.matchMedia('(min-width: 769px)').matches;
+  document.querySelectorAll('[data-voice-picker]').forEach(box => {
+    const open = box.dataset.voicePicker === 'open' && wide && !hasChosen;
+    box.innerHTML = `<details class="ev-card"${open ? ' open' : ''}>
+      <summary class="ev-head">
+        <i class="fas fa-volume-high" aria-hidden="true"></i>
+        <span class="ev-title">Giọng giám khảo</span>
+        <span class="ev-current"></span>
+        <i class="fas fa-chevron-down ev-caret" aria-hidden="true"></i>
+      </summary>
+      <p class="ev-hint">Bấm vào một giọng để nghe thử.</p>
+      <div class="ev-list" role="group" aria-label="Giọng giám khảo">${chips}</div>
+    </details>`;
+    box.hidden = false;
+  });
+  syncExaminerVoicePickers();
+}
+
+function syncExaminerVoicePickers() {
+  const current = examinerVoice();
+  document.querySelectorAll('.ev-chip').forEach(chip => {
+    const on = chip.dataset.voice === _examinerVoiceId;
+    chip.classList.toggle('active', on);
+    chip.setAttribute('aria-pressed', String(on));
+  });
+  document.querySelectorAll('.ev-current').forEach(el => {
+    el.textContent = current ? `${current.name} · ${current.accent}` : '';
+  });
+}
+
+function onExaminerVoiceClick(ev) {
+  const chip = ev.target.closest?.('.ev-chip');
+  if (!chip) return;
+  _examinerVoiceId = chip.dataset.voice;
+  try { localStorage.setItem(EXAMINER_VOICE_KEY, _examinerVoiceId); } catch { /* private mode */ }
+  syncExaminerVoicePickers();
+  const v = examinerVoice();
+  if (v) speakText(`Hello, my name is ${v.name}. I'll be your examiner today.`);
+}
+document.addEventListener('click', onExaminerVoiceClick);
+
+function speakWithBrowserVoice(text, done) {
+  if (!('speechSynthesis' in window)) { done(); return; }
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang  = 'en-US';
   utter.rate  = 0.95;
   utter.pitch = 1.0;
   if (_ttsVoice) utter.voice = _ttsVoice;
-  if (onEnd) {
-    let fired = false;
-    const fire = () => { if (!fired) { fired = true; onEnd(); } };
-    utter.onend = fire;
-    utter.onerror = fire;
-    setTimeout(fire, 10000);
-  }
+  utter.onend = done;
+  utter.onerror = done;
+  setTimeout(done, 10000);
   window.speechSynthesis.speak(utter);
+}
+
+function stopExaminerSpeech() {
+  _speakSeq++;
+  if (window.WordAudio) window.WordAudio.stop();
+  else window.speechSynthesis?.cancel();
+}
+
+// onEnd (optional) fires once the question has been read — used by sequential
+// mode to delay starting recording until then (see loadSeqQuestion()). Guarded
+// against firing twice; speakWithBrowserVoice() also has a timeout in case
+// onend/onerror never arrive (a known flaky quirk in some browsers, e.g. after
+// the tab was backgrounded).
+function speakText(text, onEnd) {
+  const seq = ++_speakSeq;
+  let fired = false;
+  const done = () => { if (!fired) { fired = true; if (onEnd) onEnd(); } };
+  if (!text) { done(); return; }
+  const voice = examinerVoice();
+  if (!voice || !window.WordAudio?.speakNeural) { speakWithBrowserVoice(text, done); return; }
+  window.WordAudio.speakNeural(text, { voice: voice.id }).then(result => {
+    if (result === 'failed' && seq === _speakSeq) speakWithBrowserVoice(text, done);
+    else done();
+  });
 }
 
 function readQuestion() {
@@ -2693,6 +2785,11 @@ function loadSeqQuestion() {
       if (state.seqActive && state.seqQueue[state.seqIndex] === q) startSeqRecording();
     });
   }
+
+  // Have the next question ready so the examiner doesn't pause before it.
+  const next = state.seqQueue[state.seqIndex + 1];
+  const voice = examinerVoice();
+  if (next && voice) window.WordAudio?.prepareNeural?.(next.question, { voice: voice.id });
 }
 
 function toggleSeqQuestionText() {
@@ -2995,7 +3092,7 @@ function exitSequentialSession() {
   state.seqIsRecording = false;
   state._seqAudioOnly = false;
   _stopAudioCapture(); // abandoned run — release the mic, nothing is uploaded
-  window.speechSynthesis?.cancel();
+  stopExaminerSpeech();
   // Full mock test was launched from the home card, not from browsing a
   // topic — return there instead of the (unvisited) practice sidebar.
   showScreen(state.seqIsFullMock ? 'screen-home' : 'screen-practice');

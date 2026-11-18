@@ -29,6 +29,8 @@ jest.mock('resend', () => ({
 // set, even to '' — so r2Service.isConfigured() is false unless a test
 // opts in by mocking it.
 for (const k of ['R2_ACCOUNT_ID', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY', 'R2_BUCKET', 'R2_PUBLIC_URL']) process.env[k] = '';
+// And the paid speech service: no test may spend real Azure characters.
+for (const k of ['AZURE_SPEECH_KEY', 'AZURE_SPEECH_REGION']) process.env[k] = '';
 
 const dbName = `test_${crypto.randomUUID().replace(/-/g, '')}`;
 
