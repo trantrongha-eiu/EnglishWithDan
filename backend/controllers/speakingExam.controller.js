@@ -7,9 +7,14 @@
 // back-to-back 25-minute slots = 15' thi + 10' feedback. Slots can be opened
 // to several of the teacher's classes at once.
 //
-// Student side ("Lớp học của tôi" on the dashboard): ticks ONE open slot per
-// class and picks online (Google Meet) / offline (tại nhà giáo viên). The Meet
-// link and the address are only ever sent to the student who booked.
+// A week's schedule can be copied to the following week (copyWeek — the free
+// time only, never the bookings/results), and a week's still-open future slots
+// removed in one go (clearWeek).
+//
+// Student side (classroom.html + "Lớp học của tôi" on the dashboard): ticks ONE
+// open slot per class and picks online (Google Meet) / offline (tại nhà giáo
+// viên); can swap to another open slot in one step (book + replaceBooking). The
+// Meet link and the address are only ever sent to the student who booked.
 
 const mongoose = require('mongoose');
 const SpeakingExamSlot = require('../models/SpeakingExamSlot');
@@ -37,6 +42,17 @@ const DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
 const toMin = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
 const fromMin = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
 const vnInstant = (dayKey, time) => new Date(`${dayKey}T${time}:00+07:00`);
+const addDays = (dayKey, n) => new Date(Date.parse(`${dayKey}T00:00:00Z`) + n * 864e5).toISOString().slice(0, 10);
+// A real calendar day ("2026-02-31" is rejected, not rolled over).
+function isDayKey(v) {
+  if (!DAY_RE.test(v)) return false;
+  const t = Date.parse(`${v}T00:00:00Z`);
+  return !Number.isNaN(t) && new Date(t).toISOString().slice(0, 10) === v;
+}
+// Monday of the week containing dayKey (weeks run Monday → Sunday).
+function weekStartOf(dayKey) {
+  return addDays(dayKey, -((new Date(`${dayKey}T00:00:00Z`).getUTCDay() + 6) % 7));
+}
 
 function fmtDay(dayKey) {
   const d = new Date(`${dayKey}T00:00:00Z`);
@@ -94,6 +110,27 @@ function staffSlotView(s, classNames) {
     band: s.band,
     feedbackNote: s.feedbackNote,
   };
+}
+
+// Inserts the candidates that don't overlap this teacher's existing slots (any
+// class) or an earlier candidate of the same batch.
+async function insertFreeSlots(teacherId, createdBy, candidates) {
+  const days = [...new Set(candidates.map((c) => c.dayKey))];
+  const existing = days.length
+    ? await SpeakingExamSlot.find({ teacherId, dayKey: { $in: days } }).select('startsAt endsAt').lean()
+    : [];
+  const taken = existing.map((s) => [s.startsAt.getTime(), s.endsAt.getTime()]);
+  const docs = [];
+  let skippedOverlap = 0;
+  for (const c of candidates) {
+    const s = c.startsAt.getTime();
+    const e = c.endsAt.getTime();
+    if (taken.some(([ts, te]) => s < te && ts < e)) { skippedOverlap += 1; continue; }
+    taken.push([s, e]);
+    docs.push({ ...c, teacherId, createdBy });
+  }
+  const created = docs.length ? await SpeakingExamSlot.insertMany(docs) : [];
+  return { created: created.length, skippedOverlap };
 }
 
 // ── Staff ─────────────────────────────────────────────────────────────
@@ -164,7 +201,7 @@ exports.createSlots = async (req, res) => {
       const date = String(r?.date || '');
       const from = String(r?.from || '');
       const to = String(r?.to || '');
-      if (!DAY_RE.test(date) || Number.isNaN(new Date(`${date}T00:00:00Z`).getTime())) {
+      if (!isDayKey(date)) {
         return res.status(400).json({ success: false, message: `Ngày không hợp lệ: ${date || '(trống)'}` });
       }
       if (!TIME_RE.test(from) || !TIME_RE.test(to)) {
@@ -180,33 +217,77 @@ exports.createSlots = async (req, res) => {
         const endTime = fromMin(t + SLOT_MIN);
         const startsAt = vnInstant(date, startTime);
         if (startsAt.getTime() <= now) { skippedPast += 1; continue; }
-        candidates.push({ dayKey: date, startTime, endTime, startsAt, endsAt: vnInstant(date, endTime) });
+        candidates.push({ dayKey: date, startTime, endTime, startsAt, endsAt: vnInstant(date, endTime), classIds, modes, meetLink, address, note });
       }
     }
     if (candidates.length > MAX_SLOTS_PER_REQUEST) {
       return res.status(400).json({ success: false, message: `Tối đa ${MAX_SLOTS_PER_REQUEST} buổi mỗi lần tạo` });
     }
 
-    // Skip anything overlapping this teacher's existing slots (any class) or
-    // another candidate from the same request.
-    const days = [...new Set(candidates.map((c) => c.dayKey))];
-    const existing = days.length
-      ? await SpeakingExamSlot.find({ teacherId: cls.teacherId, dayKey: { $in: days } }).select('startsAt endsAt').lean()
-      : [];
-    const taken = existing.map((s) => [s.startsAt.getTime(), s.endsAt.getTime()]);
-    const docs = [];
-    let skippedOverlap = 0;
-    for (const c of candidates) {
-      const s = c.startsAt.getTime();
-      const e = c.endsAt.getTime();
-      if (taken.some(([ts, te]) => s < te && ts < e)) { skippedOverlap += 1; continue; }
-      taken.push([s, e]);
-      docs.push({ ...c, teacherId: cls.teacherId, classIds, modes, meetLink, address, note, createdBy: req.user._id });
-    }
-    const created = docs.length ? await SpeakingExamSlot.insertMany(docs) : [];
-    res.status(201).json({ success: true, created: created.length, skippedOverlap, skippedPast });
+    const { created, skippedOverlap } = await insertFreeSlots(cls.teacherId, req.user._id, candidates);
+    res.status(201).json({ success: true, created, skippedOverlap, skippedPast });
   } catch (err) {
     logger.error('speakingExam', 'createSlots failed', { errorMessage: err.message });
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// POST /api/classes/:classId/speaking-exam/copy-week  { fromWeek: 'YYYY-MM-DD' }
+// fromWeek = any day of the source week. Every slot of that week (open or
+// booked — both are the teacher's free time) is re-created 7 days later with
+// the same hours, formats, Meet link, address, note and classes. Bookings and
+// results are NOT copied. Re-running is safe: what already exists is skipped.
+exports.copyWeek = async (req, res) => {
+  try {
+    const cls = req.classGroup;
+    const from = String(req.body?.fromWeek || '');
+    if (!isDayKey(from)) return res.status(400).json({ success: false, message: 'Tuần cần copy không hợp lệ' });
+    const fromWeek = weekStartOf(from);
+    const toWeek = addDays(fromWeek, 7);
+    const [source, active] = await Promise.all([
+      SpeakingExamSlot.find({ classIds: cls._id, dayKey: { $gte: fromWeek, $lte: addDays(fromWeek, 6) } }).sort({ startsAt: 1 }).lean(),
+      ClassGroup.find({ teacherId: cls.teacherId, status: 'active' }).select('_id').lean(),
+    ]);
+    if (!source.length) return res.status(400).json({ success: false, message: 'Tuần này chưa có buổi thi nào để copy' });
+
+    const activeIds = new Set(active.map((c) => String(c._id)));
+    const now = Date.now();
+    const candidates = [];
+    let skippedPast = 0;
+    for (const s of source) {
+      const dayKey = addDays(s.dayKey, 7);
+      const startsAt = vnInstant(dayKey, s.startTime);
+      if (startsAt.getTime() <= now) { skippedPast += 1; continue; }
+      candidates.push({
+        dayKey, startTime: s.startTime, endTime: s.endTime, startsAt, endsAt: vnInstant(dayKey, s.endTime),
+        // this class + whichever other classes are still running
+        classIds: [cls._id, ...(s.classIds || []).filter((id) => !id.equals(cls._id) && activeIds.has(String(id)))],
+        modes: s.modes, meetLink: s.meetLink, address: s.address, note: s.note,
+      });
+    }
+    const { created, skippedOverlap } = await insertFreeSlots(cls.teacherId, req.user._id, candidates);
+    res.status(201).json({ success: true, fromWeek, toWeek, sourceCount: source.length, created, skippedOverlap, skippedPast });
+  } catch (err) {
+    logger.error('speakingExam', 'copyWeek failed', { errorMessage: err.message });
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// POST /api/classes/:classId/speaking-exam/clear-week  { week: 'YYYY-MM-DD' }
+// Removes the week's future slots nobody has booked (e.g. a copy made by
+// mistake). Booked and past slots always stay.
+exports.clearWeek = async (req, res) => {
+  try {
+    const cls = req.classGroup;
+    const day = String(req.body?.week || '');
+    if (!isDayKey(day)) return res.status(400).json({ success: false, message: 'Tuần không hợp lệ' });
+    const week = weekStartOf(day);
+    const out = await SpeakingExamSlot.deleteMany({
+      classIds: cls._id, dayKey: { $gte: week, $lte: addDays(week, 6) }, studentId: null, startsAt: { $gt: new Date() },
+    });
+    res.json({ success: true, week, deleted: out.deletedCount || 0 });
+  } catch (err) {
+    logger.error('speakingExam', 'clearWeek failed', { errorMessage: err.message });
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
 };
@@ -237,7 +318,7 @@ exports.updateSlot = async (req, res) => {
       await slot.save();
       if (slot.startsAt.getTime() > Date.now()) {
         await notifyStudent(req.user, studentId, '🎤 Buổi thi Speaking đã bị hủy',
-          `Giáo viên đã hủy buổi thi Speaking bạn đăng kí (${slotLabel(slot)}).${reason ? `\nLý do: ${reason}` : ''}\nBạn hãy vào trang chủ → "Lớp học của tôi" để chọn buổi khác.`);
+          `Giáo viên đã hủy buổi thi Speaking bạn đăng kí (${slotLabel(slot)}).${reason ? `\nLý do: ${reason}` : ''}\nBạn hãy vào mục "Lớp học" → "Thi Speaking" để chọn buổi khác.`);
       }
       return res.json({ success: true });
     }
@@ -292,7 +373,7 @@ exports.deleteSlot = async (req, res) => {
     await SpeakingExamSlot.deleteOne({ _id: slot._id });
     if (studentId && future) {
       await notifyStudent(req.user, studentId, '🎤 Buổi thi Speaking đã bị hủy',
-        `Giáo viên đã hủy buổi thi Speaking bạn đăng kí (${slotLabel(slot)}).\nBạn hãy vào trang chủ → "Lớp học của tôi" để chọn buổi khác.`);
+        `Giáo viên đã hủy buổi thi Speaking bạn đăng kí (${slotLabel(slot)}).\nBạn hãy vào mục "Lớp học" → "Thi Speaking" để chọn buổi khác.`);
     }
     res.json({ success: true });
   } catch (err) {
@@ -364,7 +445,11 @@ exports.myOverview = async (req, res) => {
   }
 };
 
-// POST /api/classes/my/speaking-exam/:slotId/book  { mode: 'online'|'offline' }
+// POST /api/classes/my/speaking-exam/:slotId/book
+// { mode: 'online'|'offline', replaceBooking?: true }
+// replaceBooking = "đổi buổi": the new slot is claimed FIRST and the old one
+// released only after that, so a slot lost to a classmate never costs the
+// student the booking they already had.
 exports.book = async (req, res) => {
   try {
     const slot = await SpeakingExamSlot.findById(req.params.slotId).lean();
@@ -385,8 +470,11 @@ exports.book = async (req, res) => {
     const existing = await SpeakingExamSlot.findOne({
       studentId: req.user._id, classId: cls._id, result: '', endsAt: { $gt: new Date() },
     }).lean();
-    if (existing) {
+    if (existing && !req.body?.replaceBooking) {
       return res.status(409).json({ success: false, message: `Bạn đã đăng kí buổi ${slotLabel(existing)} — hủy buổi đó trước khi chọn buổi khác` });
+    }
+    if (existing && existing.startsAt.getTime() - Date.now() <= LOCK_MS) {
+      return res.status(400).json({ success: false, message: `Chỉ đổi được trước giờ thi ít nhất ${LOCK_HOURS} tiếng — hãy nhắn giáo viên` });
     }
     const updated = await SpeakingExamSlot.findOneAndUpdate(
       { _id: slot._id, studentId: null },
@@ -394,6 +482,12 @@ exports.book = async (req, res) => {
       { returnDocument: 'after' },
     ).lean();
     if (!updated) return res.status(409).json({ success: false, message: 'Buổi này vừa có bạn khác đăng kí — chọn buổi khác nhé' });
+    if (existing) {
+      await SpeakingExamSlot.updateOne(
+        { _id: existing._id, studentId: req.user._id, result: '' },
+        { $set: { studentId: null, classId: null, mode: null, bookedAt: null } },
+      );
+    }
     res.json({ success: true, booking: bookingView(updated) });
   } catch (err) {
     logger.error('speakingExam', 'book failed', { errorMessage: err.message });

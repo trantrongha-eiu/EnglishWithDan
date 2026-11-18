@@ -141,4 +141,21 @@ function computeClassProgress(cls, sessions = [], now = new Date()) {
   };
 }
 
-module.exports = { computeClassProgress, vnTodayKey, dayKey };
+/**
+ * The whole timetable of a class, oldest first, for the student's Lớp học page:
+ * same row shape as progress.weekSessions, cancelled sessions included (their
+ * `ordinal` is null — like makeup sessions they don't use up a numbered lesson).
+ * @param {object} cls       { startDate, startTime }
+ * @param {Array}  sessions  this class's ClassSession rows (any status)
+ */
+function classSchedule(cls, sessions = []) {
+  const rows = sessions
+    .filter((s) => s && dayKey(s.date))
+    .sort((a, b) => (dayKey(a.date) < dayKey(b.date) ? -1 : dayKey(a.date) > dayKey(b.date) ? 1 : a.sessionNumber - b.sessionNumber));
+  const live = rows.filter((s) => s.status !== 'cancelled');
+  const ordinalOf = new Map(live.filter((s) => (s.type || 'regular') === 'regular').map((s, i) => [String(s._id), i + 1]));
+  const startKey = dayKey(cls.startDate) || (live[0] && dayKey(live[0].date)) || null;
+  return rows.map((s) => shapeSession(s, ordinalOf.get(String(s._id)), startKey, cls.startTime));
+}
+
+module.exports = { computeClassProgress, classSchedule, vnTodayKey, dayKey };

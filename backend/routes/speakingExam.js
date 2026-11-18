@@ -21,6 +21,8 @@ router.post('/my/speaking-exam/:slotId/cancel', auth, sid, c.cancel);
 // Teacher / admin, per class
 router.get('/:classId/speaking-exam', ...staff, cid, loadOwnedClass, c.listSlots);
 router.post('/:classId/speaking-exam', ...staff, cid, loadOwnedClass, c.createSlots);
+router.post('/:classId/speaking-exam/copy-week', ...staff, cid, loadOwnedClass, c.copyWeek);
+router.post('/:classId/speaking-exam/clear-week', ...staff, cid, loadOwnedClass, c.clearWeek);
 router.put('/:classId/speaking-exam/:slotId', ...staff, cid, sid, loadOwnedClass, c.updateSlot);
 router.delete('/:classId/speaking-exam/:slotId', ...staff, cid, sid, loadOwnedClass, c.deleteSlot);
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const { computeClassProgress, vnTodayKey } = require('../../../utils/classProgress');
+const { computeClassProgress, classSchedule, vnTodayKey } = require('../../../utils/classProgress');
 
 const d = (key) => new Date(`${key}T00:00:00Z`);
 let n = 0;
@@ -76,5 +76,30 @@ describe('computeClassProgress', () => {
     expect(p.totalSessions).toBe(20);
     expect(p.currentSessionOrdinal).toBe(0);
     expect(p.weekSessions).toEqual([]);
+  });
+});
+
+describe('classSchedule', () => {
+  test('lists every session by date; cancelled and makeup ones take no lesson number', () => {
+    n = 0;
+    const rows = classSchedule({ startDate: '2026-09-01', startTime: '19:30' }, [
+      sess('2026-09-08'),
+      sess('2026-09-01'),
+      sess('2026-09-03', { status: 'cancelled' }),
+      sess('2026-09-05', { type: 'makeup', startTime: '08:00' }),
+    ]);
+    expect(rows.map((r) => [r.dayKey, r.ordinal, r.week, r.startTime])).toEqual([
+      ['2026-09-01', 1, 1, '19:30'],
+      ['2026-09-03', null, 1, '19:30'],
+      ['2026-09-05', null, 1, '08:00'],
+      ['2026-09-08', 2, 2, '19:30'],
+    ]);
+  });
+
+  test('without a start date, weeks count from the first session that is not cancelled', () => {
+    n = 0;
+    const rows = classSchedule({}, [sess('2026-09-01', { status: 'cancelled' }), sess('2026-09-10')]);
+    expect(rows[1].week).toBe(1);
+    expect(classSchedule({}, [])).toEqual([]);
   });
 });

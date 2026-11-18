@@ -439,6 +439,45 @@ describe('student self-view', () => {
   });
 });
 
+describe('GET /api/classes/my/classroom — the student Lớp học page', () => {
+  test('student in no classroom → hasClasses: false', async () => {
+    const s = await createStudent();
+    const res = await request(app).get('/api/classes/my/classroom').set(auth(s));
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ success: true, hasClasses: false, classes: [] });
+  });
+
+  test('401 without a token', async () => {
+    expect((await request(app).get('/api/classes/my/classroom')).status).toBe(401);
+  });
+
+  test('full timetable with only this student\'s own marks', async () => {
+    const t = await createTeacher();
+    const s1 = await createStudent();
+    const s2 = await createStudent();
+    const cls = await makeClass(t, { startTime: '19:30' });
+    const e1 = await addStudent(t, cls._id, s1);
+    const e2 = await addStudent(t, cls._id, s2);
+    const held = await addSession(t, cls._id, { date: past(3), topic: 'Unit 1' });
+    const next = await addSession(t, cls._id, { date: future(3), topic: 'Unit 2' });
+    await mark(t, cls._id, held._id, [
+      { enrollmentId: e1.enrollmentId, status: 'late' },
+      { enrollmentId: e2.enrollmentId, status: 'absent' },
+    ]);
+
+    const res = await request(app).get('/api/classes/my/classroom').set(auth(s1));
+    expect(res.body.hasClasses).toBe(true);
+    const c = res.body.classes[0];
+    expect(c).toMatchObject({ className: 'Lớp Test', classSize: 2, startTime: '19:30' });
+    expect(c.sessions.map((x) => [x.topic, x.ordinal, x.mark, x.startTime])).toEqual([
+      ['Unit 1', 1, 'late', '19:30'],
+      ['Unit 2', 2, null, '19:30'],
+    ]);
+    expect(String(c.sessions[1]._id)).toBe(String(next._id));
+    expect(JSON.stringify(res.body)).not.toContain(s2.email);
+  });
+});
+
 describe('GET /api/classes/my/overview — dashboard homepage class summary', () => {
   test('student in no classroom → hasClasses: false', async () => {
     const s = await createStudent();

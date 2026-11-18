@@ -18,7 +18,7 @@ const assignmentService = require('../services/assignmentService');
 const classMessageService = require('../services/classMessageService');
 const { staffOnly, loadOwnedClass, displayName: studentName } = require('../middleware/classAccess');
 const logger = require('../utils/logger');
-const { computeClassProgress, vnTodayKey } = require('../utils/classProgress');
+const { computeClassProgress, classSchedule, vnTodayKey } = require('../utils/classProgress');
 const { autoMarkDueSessions } = require('../services/classAutoAttendanceService');
 const ParentLink = require('../models/ParentLink');
 const parentNotifyService = require('../services/parentNotifyService');
@@ -1131,6 +1131,36 @@ exports.myOverview = async (req, res) => {
   try {
     const classes = await overviewForStudent(req.user._id);
     res.json({ success: true, hasClasses: classes.length > 0, classes });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// GET /api/classes/my/classroom — the student's "Lớp học" page: everything in
+// /my/overview plus each class's full timetable with this student's own
+// attendance mark on every session. Classmates' names are not included.
+exports.myClassroom = async (req, res) => {
+  try {
+    const classes = await overviewForStudent(req.user._id);
+    if (!classes.length) return res.json({ success: true, hasClasses: false, classes: [] });
+    const classIds = classes.map((c) => c.classId);
+    const [sessMap, records] = await Promise.all([
+      sessionsByClass(classIds),
+      AttendanceRecord.find({ studentId: req.user._id, classId: { $in: classIds } }).select('sessionId status').lean(),
+    ]);
+    const markOf = new Map(records.map((r) => [String(r.sessionId), r.status]));
+    res.json({
+      success: true,
+      hasClasses: true,
+      classes: classes.map((c) => ({
+        ...c,
+        startTime: c.progress?.startTime || '',
+        sessions: classSchedule(
+          { startDate: c.progress?.startDate, startTime: c.progress?.startTime },
+          sessMap.get(String(c.classId)) || [],
+        ).map((s) => ({ ...s, mark: markOf.get(String(s._id)) || null })),
+      })),
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }
