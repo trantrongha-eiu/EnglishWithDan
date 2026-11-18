@@ -65,7 +65,7 @@
     }
     el = document.createElement('a');
     el.className = 'ews-shopfeed';
-    el.href = '/shop.html';
+    el.href = '/app/#/shop';
     el.setAttribute('role', 'status');
     el.setAttribute('aria-live', 'polite');
     document.body.appendChild(el);
@@ -309,11 +309,12 @@
       + '<button type="button" class="ews-cake-close">Để sau</button>'
       + (c.towels
         ? '<button type="button" class="ews-cake-wipe" data-cake-wipe>🧽 Lau ngay</button>'
-        : '<a class="ews-cake-wipe" href="/shop.html">🧽 Mua khăn lau</a>')
+        : '<a class="ews-cake-wipe" href="/app/#/shop">🧽 Mua khăn lau</a>')
       + '</div>';
     cakeEl.addEventListener('click', function (e) {
       if (e.target.closest('.ews-cake-close')) closeCake();
       else if (e.target.closest('[data-cake-wipe]')) wipeCake(e.target.closest('[data-cake-wipe]'));
+      else if (e.target.closest('a.ews-cake-wipe')) closeCake(); // the React app changes route without a page load
     });
     document.body.appendChild(cakeEl);
     var box = cakeEl;

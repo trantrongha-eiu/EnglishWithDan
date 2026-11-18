@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="vi" data-theme="light">
 <head>
+  <script>
+  /* This page now lives in the React app (/app/#/leaderboard, source:
+     student-src/src/pages/Leaderboard.jsx). Old links keep their query string.
+     ?legacy=1 stays on this version as a fallback. */
+  (function () {
+    var q = new URLSearchParams(location.search);
+    if (q.get('legacy') === '1') return;
+    var qs = q.toString();
+    location.replace('/app/#/leaderboard' + (qs ? '?' + qs : ''));
+  })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
   <link rel="manifest" href="/manifest.json">
   <meta charset="UTF-8"/>
@@ -32,12 +43,12 @@
 <body>
 <script src="/js/shared/auth-service.js?v=a4b3e5e969"></script>
 <script src="/js/auth.js?v=d0540958cf"></script>
-<script src="/js/nav.js?v=f4f9c83a03"></script>
-<script src="/js/shared/playful.js?v=bcb6e62049"></script>
+<script src="/js/nav.js?v=3f99eeab98"></script>
+<script src="/js/shared/playful.js?v=45b0f85150"></script>
 <script src="/js/shared/utils.js?v=87a790033c"></script>
 <script src="/js/shared/toast.js?v=08d12e7571"></script>
 <script src="/js/shared/api-client.js?v=5bb9a26ee8"></script>
-<script src="/js/shared/online-tracker.js?v=71cd4a61ac"></script>
+<script src="/js/shared/online-tracker.js?v=b422f7c466"></script>
 <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
 
 <div class="et-shell vlb-shell">
@@ -140,7 +151,7 @@
 
 <script src="/js/shared/peer-profile.js?v=a13eda43b1"></script>
 <script src="/js/shared/pets.js?v=4dbddf4829" id="ews-pets-js"></script>
-<script src="/js/shared/duel.js?v=bb1a9c081b"></script>
+<script src="/js/shared/duel.js?v=8de4cfac7f"></script>
 <script src="/js/vocab-leaderboard.js?v=5df5a2ec6d"></script>
 </body>
 </html>

@@ -49,6 +49,16 @@ body {
   color: var(--text2);
 }
 
+/* #root is a flex column: these static-page shells center with auto margins */
+#root > .et-shell, #root > .inbox-layout { width: 100%; }
+/* Their old pages had no dashboard.css, whose body sets line-height: 1.5 */
+#root > .shop-shell, #root > .inbox-layout { line-height: normal; }
+body:has(> #root > .shop-shell) .duel-modal { line-height: normal; }
+[data-theme="dark"] #root > .shop-shell .btn-ghost,
+[data-theme="dark"] body:has(> #root > .shop-shell) .duel-modal .btn-ghost { background: var(--surface); }
+[data-theme="dark"] #root > .inbox-layout .btn-ghost { background: transparent; }
+#root > .inbox-layout .empty-state p, #root > .inbox-layout .detail-placeholder p { margin: 1em 0; }
+
 /* Route loading fallback */
 .route-loading {
   display: flex;

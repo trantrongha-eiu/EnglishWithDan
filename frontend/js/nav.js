@@ -14,6 +14,13 @@
     return;
   }
   var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
+  // Route of the React app (/app/#/…), '' on every other page.
+  function _appRoute() {
+    if (!/^\/app(\/|$)/.test(location.pathname)) return '';
+    return location.hash.replace(/^#/, '').split('?')[0].replace(/\/$/, '') || '/dashboard';
+  }
+  function _onVocabAppRoute() { return /^\/dashboard(\/|$)/.test(_appRoute()); }
+
   // /app/ is the React version of the vocab home (dashboard.html).
   var page = /^\/app(\/|$)/.test(location.pathname) ? 'dashboard.html'
     : (location.pathname.replace(/\/+$/, '').split('/').pop() || 'index.html').replace(/^[^.]+$/, '$&.html'); // "/reading" is reading.html too
@@ -122,10 +129,10 @@
     // Cửa hàng lửa (shop.html) sits under BXH: it sells the items that
     // show up there (linh thú, crown, cloak, cake) and the streak boosts
     // students race the board with.
-    { href: 'vocab-leaderboard.html', icon: 'fa-ranking-star', label: 'BXH vocab',
+    { href: 'app/#/leaderboard', icon: 'fa-ranking-star', label: 'BXH vocab',
       children: [
-        { href: 'vocab-leaderboard.html', icon: 'fa-ranking-star', label: 'Bảng xếp hạng' },
-        { href: 'shop.html',              icon: 'fa-store',        label: 'Cửa hàng lửa 🔥' },
+        { href: 'app/#/leaderboard', icon: 'fa-ranking-star', label: 'Bảng xếp hạng' },
+        { href: 'app/#/shop',             icon: 'fa-store',        label: 'Cửa hàng lửa 🔥' },
       ]
     },
     // The student's own class page: schedule, attendance, homework, Speaking
@@ -145,7 +152,7 @@
   // there's still a way to reach them once the icon row hides) — so href/
   // icon/label/badgeId never drift between the two.
   var UTILITY_LINKS = [
-    { href: 'inbox.html',   icon: 'fa-envelope',        label: 'Hộp thư', badgeId: 'navInboxBadge' },
+    { href: 'app/#/inbox',  icon: 'fa-envelope',        label: 'Hộp thư', badgeId: 'navInboxBadge' },
   ];
 
   var BADGE_STYLE = 'display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle';
@@ -170,8 +177,8 @@
   function navChildActive(cHref) {
     // Routes of the React app (/app/#/dashboard/…) live in the hash
     if (cHref.indexOf('app/#') === 0) {
-      if (!/^\/app(\/|$)/.test(location.pathname)) return false;
-      var route = location.hash.replace(/^#/, '').split('?')[0].replace(/\/$/, '') || '/dashboard';
+      var route = _appRoute();
+      if (!route) return false;
       var target = cHref.slice(5);
       if (target !== '/dashboard') return route === target;
       return /^\/dashboard(\/|$)/.test(route) && !/^\/dashboard\/(paraphrase|topics)$/.test(route);
@@ -325,7 +332,11 @@
     });
     // The account dock belongs to the vocab home, not to other app pages.
     var dock = document.getElementById('navCornerDock');
-    if (dock) dock.style.display = /^#\/classroom/.test(location.hash) ? 'none' : '';
+    if (dock && _appRoute()) {
+      var onVocab = _onVocabAppRoute();
+      dock.style.display = onVocab ? '' : 'none';
+      document.body.classList.toggle('has-corner-dock', onVocab);
+    }
     var d = document.getElementById('globalMobileNav');
     var h = document.getElementById('globalHamburger');
     if (d) d.classList.remove('open');
@@ -350,8 +361,10 @@
     '</a>' +
     '<button class="btn-dark-mode" id="globalLogoutBtn" title="Đăng xuất" aria-label="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>';
   // Home page (vocab dashboard) only — every other page leaves it out; the
-  // drawer / profile link still cover those actions there.
-  if (_onVocabHomePage()) {
+  // drawer / profile link still cover those actions there. The React app
+  // always has it: a student can walk from another route to the vocab home
+  // without a page load (_syncAppRoute shows / hides it).
+  if (_onVocabHomePage() || _appRoute()) {
     document.body.appendChild(cornerDock);
     document.body.classList.add('has-corner-dock');
     _syncAppRoute();
@@ -464,7 +477,7 @@
   if (!document.getElementById('ews-shopfeed-js')) {
     var feedScript = document.createElement('script');
     feedScript.id = 'ews-shopfeed-js';
-    feedScript.src = '/js/shared/shop-feed.js?v=45be474403';
+    feedScript.src = '/js/shared/shop-feed.js?v=4908ffc24a';
     document.body.appendChild(feedScript);
   }
 
@@ -486,7 +499,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=80dadbb365';
+      s.src = '/js/shared/page-help.js?v=b3afeef7ca';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);
@@ -844,6 +857,9 @@
     // itself once the student reads the message in another tab.
     var INBOX_POLL_MS = 20000;
     var _inboxPolledOnce = false;
+    // The React inbox reads a message without a page load: it asks for a
+    // fresh count right away instead of waiting for the next tick.
+    window.refreshInboxBadge = function () { _pollInboxBadge(); };
     function _pollInboxBadge() {
       // First tick (page load) rides the nav summary; later ticks are live.
       var p = _inboxPolledOnce
@@ -1044,7 +1060,7 @@
     banner.style.cssText = 'position:fixed;top:calc(var(--nav-height,64px) + ' + baseOffset + 'px);left:0;right:0;z-index:996;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(90deg,#b91c1c,#dc2626);box-shadow:0 2px 8px rgba(0,0,0,.15)';
     banner.innerHTML =
       '<span style="flex:1;text-align:center">⚠️ Bạn đã bị nhắc nhở <strong>' + count + ' lần</strong> về việc học từ vựng / làm bài tập chưa đầy đủ. Hãy chăm chỉ ôn tập nhé!</span>' +
-      '<a href="inbox.html" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem hộp thư</a>' +
+      '<a href="/app/#/inbox" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem hộp thư</a>' +
       '<button style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0" title="Đóng">&times;</button>';
     var afterEl = document.getElementById('nav-expiry-banner') || document.getElementById('globalTopNav');
     document.body.insertBefore(banner, afterEl.nextSibling);
@@ -1321,8 +1337,13 @@
   // hides it for this page — and stops for good only once every such
   // message has been opened in inbox.html (which marks it read).
   var _mustReadState = 0; // 0 idle · 1 queued · 2 shown on this page
+  function _onInboxPage() { return page === 'inbox.html' || _appRoute() === '/inbox'; }
+  // A route of the React app counts as a new page: "Để sau" lasts until then.
+  window.addEventListener('ews:route', function () {
+    if (_mustReadState === 2 && !document.getElementById('nav-mustread-overlay')) _mustReadState = 0;
+  });
   function _showMustReadPopup() {
-    if (_mustReadState || page === 'inbox.html') return;
+    if (_mustReadState || _onInboxPage()) return;
     _mustReadState = 1;
     _queueNotice({
       id: 'nav-must-read', priority: 50, until: '#nav-mustread-overlay',
@@ -1330,7 +1351,7 @@
     });
   }
   function _renderMustReadPopup(done) {
-    if (_fullscreenActivityActive()) { _mustReadState = 0; done(); return; } // next poll retries
+    if (_fullscreenActivityActive() || _onInboxPage()) { _mustReadState = 0; done(); return; } // next poll retries
     var headers = window.AuthService ? window.AuthService.authHeader() : {};
     fetch(API + '/user/messages/must-read', { headers: headers })
       .then(function (r) { return r.json(); })
@@ -1341,7 +1362,7 @@
 
         var items = list.slice(0, 5).map(function (m) {
           var when = m.createdAt ? new Date(m.createdAt).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : '';
-          return '<a href="inbox.html?msg=' + encodeURIComponent(m._id) + '" style="display:block;padding:10px 12px;border:1px solid var(--border,#e5e7eb);border-radius:10px;margin-bottom:8px;text-decoration:none;color:inherit;text-align:left">' +
+          return '<a href="/app/#/inbox?msg=' + encodeURIComponent(m._id) + '" style="display:block;padding:10px 12px;border:1px solid var(--border,#e5e7eb);border-radius:10px;margin-bottom:8px;text-decoration:none;color:inherit;text-align:left">' +
             '<div style="font-weight:700;font-size:14px">✉️ ' + _escAttn(m.subject || '(không tiêu đề)') + '</div>' +
             '<div style="font-size:12px;color:var(--text2,#6b7280);margin-top:2px">Từ ' + _escAttn(m.fromName) + (when ? ' · ' + when : '') + '</div>' +
           '</a>';
@@ -1359,11 +1380,15 @@
             items + more +
             '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px">' +
               '<button type="button" id="nav-mustread-later" style="background:transparent;color:var(--text2,#6b7280);border:1px solid var(--border,#e5e7eb);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Để sau</button>' +
-              '<a href="inbox.html?msg=' + encodeURIComponent(list[0]._id) + '" style="background:var(--brand,#2563eb);color:#fff;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;text-decoration:none">Đọc ngay</a>' +
+              '<a href="/app/#/inbox?msg=' + encodeURIComponent(list[0]._id) + '" style="background:var(--brand,#2563eb);color:#fff;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;text-decoration:none">Đọc ngay</a>' +
             '</div>' +
           '</div>';
         document.body.appendChild(overlay);
         document.getElementById('nav-mustread-later').addEventListener('click', function () { overlay.remove(); });
+        // Inside the React app the link changes route without a page load.
+        overlay.addEventListener('click', function (e) {
+          if (e.target.closest && e.target.closest('a[href]')) overlay.remove();
+        });
       })
       .catch(function () { _mustReadState = 0; done(); });
   }
@@ -1690,7 +1715,7 @@
   // when the student is already here it must not reload the same page.
   function _onVocabHomePage() {
     var p = location.pathname.replace(/\/+$/, '');
-    if (p === '/app') return location.hash.indexOf('#/classroom') !== 0; // other React pages are not the vocab home
+    if (p === '/app') return _onVocabAppRoute(); // other React pages are not the vocab home
     return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary' || p === '';
   }
 

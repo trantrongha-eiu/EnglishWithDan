@@ -5,6 +5,8 @@
  *                             outgoing challenges with Nhận lời / Từ chối /
  *                             Hủy, running duels with live 🔥 bars and a
  *                             countdown, and the last few results.
+ *   • Duel.unmount()        — stop the board (the React shop leaves its route
+ *                             without a page load).
  *   • Duel.challenge(target, opts) — the challenge dialog: pick a rival
  *                             (search, unless `target` {id, name} is given —
  *                             the ⚔️ button on a BXH row) and a stake.
@@ -52,6 +54,7 @@
 
   /* ── Board ─────────────────────────────────────────────────────── */
   var board = null;   // { el, opts, data }
+  var boardTimer = null;
 
   function openCard(d) {
     var rival = '<b>' + esc(d.rival.name) + '</b>';
@@ -126,9 +129,11 @@
     return api('GET', '/shop/duels').then(function (d) {
       if (!d || !d.success) throw new Error('load');
       if (d.rules) RULES = d.rules;
+      if (!board) return; // left the shop while this was loading
       board.data = d;
       render();
     }).catch(function () {
+      if (!board) return;
       board.el.removeAttribute('aria-busy');
       board.el.innerHTML = '<div class="duel-empty">Không tải được các trận thách đấu.</div>';
     });
@@ -167,10 +172,17 @@
 
   function mount(el, opts) {
     if (!el) return;
+    unmount();
     board = { el: el, opts: opts || {}, data: null };
     load();
     // Live bars tick over while the shop stays open.
-    setInterval(function () { if (!document.hidden) load(); }, 60 * 1000);
+    boardTimer = setInterval(function () { if (!document.hidden) load(); }, 60 * 1000);
+  }
+
+  function unmount() {
+    clearInterval(boardTimer);
+    boardTimer = null;
+    board = null;
   }
 
   /* ── Challenge dialog ──────────────────────────────────────────── */
@@ -301,5 +313,5 @@
     sync();
   }
 
-  window.Duel = { mount: mount, challenge: challenge, reload: load };
+  window.Duel = { mount: mount, unmount: unmount, challenge: challenge, reload: load };
 })();

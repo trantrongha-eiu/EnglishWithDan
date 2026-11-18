@@ -1,8 +1,30 @@
 // Bridge to the static site shell loaded by index.html (js/bundles/app-shell.js
 // and friends): upgrade modal, badge popup, learning popups, nav.js hooks.
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export const openUpgrade = (reason) => window.openUpgradeModal?.(reason);
+
+// The site's own toast and confirm popup (js/shared/toast.js, confirm-dialog.js)
+export const siteToast = (msg, type = 'info') => window.showToast?.(msg, type);
+export function siteConfirm(title, msg, confirmLabel, onOk) {
+  if (window.confirmDialog) window.confirmDialog(title, msg, onOk, { confirmLabel, confirmClass: 'btn-primary' });
+  else if (window.confirm(msg)) onOk();
+}
+
+// Linh thú art (js/shared/pets.js): nav.js adds that script after the app starts
+export function usePets() {
+  const [pets, setPets] = useState(() => window.Pets || null);
+  useEffect(() => {
+    if (pets) return undefined;
+    const started = Date.now();
+    const timer = setInterval(() => {
+      if (window.Pets) setPets(window.Pets);
+      if (window.Pets || Date.now() - started > 15000) clearInterval(timer);
+    }, 100);
+    return () => clearInterval(timer);
+  }, [pets]);
+  return pets;
+}
 
 // Any API answer may carry newly unlocked badges
 export function showBadges(data) {

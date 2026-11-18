@@ -49,7 +49,7 @@
             use = '<button type="button" class="btn btn-primary btn-sm" data-inv-use="' + i.key + '"' + (hopeOn ? ' disabled' : '') + '>'
                 + (hopeOn ? 'Đang dùng hôm nay' : 'Dùng') + '</button>';
         } else if (i.usage === 'target') {
-            use = '<a class="btn btn-primary btn-sm" href="vocab-leaderboard.html">' + (i.key === 'lens' ? '🔍 Soi ở BXH' : 'Ném ở BXH') + '</a>';
+            use = '<a class="btn btn-primary btn-sm" href="/app/#/leaderboard">' + (i.key === 'lens' ? '🔍 Soi ở BXH' : 'Ném ở BXH') + '</a>';
         } else {
             use = '<span class="inv-passive">🛡️ Tự động bật khi lỡ 1 ngày</span>';
         }
@@ -113,13 +113,13 @@
             + '<div class="inv-stat"><span>Ví lửa</span><b>🔥 ' + state.wallet + '</b></div>'
             + '<div class="inv-stat inv-stat--streak"><span>Lửa chuỗi hiện có</span><b>🔥 ' + state.streak + '</b></div>'
             + '</div>'
-            + '<a class="btn btn-primary btn-sm" href="shop.html"><i class="fas fa-store"></i> Cửa hàng</a></div>'
+            + '<a class="btn btn-primary btn-sm" href="/app/#/shop"><i class="fas fa-store"></i> Cửa hàng</a></div>'
             + '<p class="inv-note">Ví lửa dùng để mua sắm; lửa chuỗi là thứ hạng trên BXH. Bán lại được một nửa giá mua (làm tròn xuống). Bấm 🎁 Tặng để gửi vật phẩm / linh thú cho bạn bè. Kỹ năng linh thú chỉ có tác dụng với bé đang đi dạo.</p>';
         el.innerHTML = head
             + '<h4 class="inv-h">⚔️ Vật phẩm</h4><div class="inv-grid">' + danielCard() + items.map(itemCard).join('') + '</div>'
             + (pets.length
                 ? '<h4 class="inv-h">🐾 Linh thú</h4><div class="inv-grid">' + pets.map(petCard).join('') + '</div>'
-                : '<div class="inv-empty">🐾 Chưa có linh thú — ghé <a href="shop.html">Cửa hàng lửa</a> rước một bé về nhé!</div>');
+                : '<div class="inv-empty">🐾 Chưa có linh thú — ghé <a href="/app/#/shop">Cửa hàng lửa</a> rước một bé về nhé!</div>');
     }
 
     /* ── Actions ────────────────────────────────────────────────────── */

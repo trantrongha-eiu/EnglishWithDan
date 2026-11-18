@@ -108,7 +108,7 @@ function Overview({ c, ck, homework, se, animate, closed, onToggle, reload, go }
         <Shortcut icon="📚" title="Bài tập" text={hwText} onClick={() => go('homework')} />
         <Shortcut icon="🎤" title="Thi Speaking" text={seText} onClick={() => go('speaking')} />
         <Shortcut icon="💰" title="Học phí" text="Xem các khoản cần đóng" href="/tuition.html" />
-        <Shortcut icon="✉️" title="Hộp thư" text="Tin nhắn từ giáo viên" href="/inbox.html" />
+        <Shortcut icon="✉️" title="Hộp thư" text="Tin nhắn từ giáo viên" href="/app/#/inbox" />
       </div>
       <Contact title="Cần hỗ trợ về lớp học?" text="Xin nghỉ, đổi buổi hoặc có thắc mắc, hãy liên hệ giáo viên qua:" />
     </>

@@ -12,6 +12,14 @@ const MIME = {
   '.webp': 'image/webp', '.gif': 'image/gif', '.mp3': 'audio/mpeg', '.woff2': 'font/woff2',
 }
 
+const assetHash = (rel) => {
+  const text = fs.readFileSync(path.join(FRONTEND, rel), 'utf8').replace(/\r\n/g, '\n')
+  return crypto.createHash('sha256').update(text, 'utf8').digest('hex').slice(0, 10)
+}
+
+// Stylesheets a route loads only while it is open (components/PageCss.jsx)
+const PAGE_CSS = ['entrance-test', 'vocab-leaderboard', 'shop', 'duel', 'inbox', 'pf-pages']
+
 // The app reuses the static site's CSS/JS/images (/css/tokens.css,
 // /js/shared/word-audio.js, /img/…). On Render they sit next to /app/; in
 // `npm run dev` this serves them straight from ../frontend.
@@ -45,9 +53,7 @@ function stampSharedAssets() {
       return html.replace(/(["'])(\/(?:css|js)\/[\w./-]+\.(?:css|js))\1/g, (m, q, rel) => {
         const file = path.join(FRONTEND, rel)
         if (!fs.existsSync(file)) return m
-        const text = fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n')
-        const hash = crypto.createHash('sha256').update(text, 'utf8').digest('hex').slice(0, 10)
-        return `${q}${rel}?v=${hash}${q}`
+        return `${q}${rel}?v=${assetHash(rel)}${q}`
       })
     },
   }
@@ -56,6 +62,11 @@ function stampSharedAssets() {
 export default defineConfig({
   plugins: [react(), serveFrontendInDev(), stampSharedAssets()],
   base: '/app/',
+  define: {
+    __PAGE_CSS__: JSON.stringify(Object.fromEntries(
+      PAGE_CSS.map(n => [n, `/css/${n}.css?v=${assetHash(`/css/${n}.css`)}`]),
+    )),
+  },
   build: {
     outDir: '../frontend/app',
     emptyOutDir: true,

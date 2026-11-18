@@ -137,6 +137,15 @@
     save(s);
   }
 
+  // Pages of the React app keep the name they had as static pages, so the
+  // admin "Trang đã mở" list and usage counts stay comparable.
+  function currentPage() {
+    if (!/^\/app(\/|$)/.test(location.pathname)) return location.pathname;
+    var m = location.hash.match(/^#\/(classroom|leaderboard|shop|inbox)(?=[/?]|$)/);
+    if (!m) return location.pathname;
+    return m[1] === 'leaderboard' ? '/vocab-leaderboard.html' : '/' + m[1] + '.html';
+  }
+
   function flush(keepalive) {
     if (stopped || !hasData(pending)) return;
     var token = window.AuthService.getToken();
@@ -148,7 +157,7 @@
       sid: p.sid, startedAt: p.startedAt,
       lastActiveAt: s.sid === p.sid ? s.lastActive : Date.now(),
       active: whole, tabSwitches: p.tabSwitches, idlePauses: p.idlePauses,
-      breaks: p.breaks.slice(0, 50), page: location.pathname,
+      breaks: p.breaks.slice(0, 50), page: currentPage(),
     };
     // Keep the fractional second so short beats don't lose time.
     pending = { sid: p.sid, startedAt: p.startedAt, active: p.active - whole, tabSwitches: 0, idlePauses: 0, breaks: [] };

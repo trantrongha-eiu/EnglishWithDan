@@ -44,7 +44,10 @@
   ];
   function pageKey() {
     var path = location.pathname.replace(/\/+$/, '');
-    if (path === '/app' && /^#\/classroom/.test(location.hash)) return 'classroom.html';
+    if (path === '/app') {
+      var route = (location.hash.match(/^#\/(classroom|leaderboard|shop|inbox)(?=[/?]|$)/) || [])[1];
+      if (route) return route === 'leaderboard' ? 'vocab-leaderboard.html' : route + '.html';
+    }
     var last = path.split('/').pop() || '';
     if (/\.html$/.test(last)) return last;
     for (var i = 0; i < CLEAN_PREFIX.length; i++) {
