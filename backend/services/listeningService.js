@@ -537,7 +537,9 @@ async function listDictationSections() {
   const sections = await ListeningSection.find({
     isActive: true,
     dictationSentences: { $exists: true, $not: { $size: 0 } },
-    ...NOT_COURSE,
+    // Not ...NOT_COURSE: dictation-only parts (seedTestPartDictation.js)
+    // belong here — only course sections stay out.
+    courseRef: NOT_COURSE.courseRef,
   })
     .select('_id title partNumber audioDuration isActualTest dictationSentences')
     .sort({ partNumber: 1, title: 1 })

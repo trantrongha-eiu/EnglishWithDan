@@ -93,3 +93,34 @@ describe('course passages / sections stay out of the IELTS practice lists', () =
     expect(JSON.stringify(res.body)).toContain('Mindset passage');
   });
 });
+
+// A full-test part cut out only for Luyện Dictation (scripts/
+// seedTestPartDictation.js — e.g. Cam 20, which has no đề lẻ) is hidden like
+// a course section everywhere except the dictation list.
+describe('dictation-only sections', () => {
+  const sentences = [{ text: 'Hello there, how are you today?', start: 1, end: 3 }];
+  beforeEach(async () => {
+    await ListeningSection.deleteMany({});
+    await ListeningSection.create([
+      { partNumber: 4, title: 'IELTS section', isActive: true, isActualTest: true, questionRange: { start: 31, end: 40 }, dictationSentences: sentences },
+      { partNumber: 4, title: 'Cam 20 part', isActive: true, isActualTest: true, questionRange: { start: 31, end: 40 }, dictationSentences: sentences, dictationOnly: true },
+      { partNumber: 4, title: 'Mindset section', isActive: true, questionRange: { start: 1, end: 7 }, dictationSentences: sentences, courseRef: 'M0-U01-L1' },
+    ]);
+  });
+
+  test('listed on the dictation page, course sections still are not', async () => {
+    const u = await createPremiumStudent();
+    const res = await request(app).get('/api/listening/dictation/list').set(bearer(u));
+    expect(res.status).toBe(200);
+    expect(res.body.sections.map((s) => s.title).sort()).toEqual(['Cam 20 part', 'IELTS section']);
+  });
+
+  test('kept out of the listening practice list', async () => {
+    const u = await createPremiumStudent();
+    const res = await request(app).get('/api/listening/practice/list?part=4').set(bearer(u));
+    expect(res.status).toBe(200);
+    const titles = JSON.stringify(res.body);
+    expect(titles).toContain('IELTS section');
+    expect(titles).not.toContain('Cam 20 part');
+  });
+});

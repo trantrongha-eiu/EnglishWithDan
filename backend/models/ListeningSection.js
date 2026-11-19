@@ -69,6 +69,11 @@ const ListeningSectionSchema = new mongoose.Schema({
   // practice UI from the course's lesson links, but stay out of every
   // practice list / search / tips pool (utils/courseContent.js NOT_COURSE).
   courseRef:       { type: String, default: undefined, index: { sparse: true } },
+  // A full-test part cut out only so it can be practised on Luyện Dictation
+  // (scripts/seedTestPartDictation.js — the test has no đề lẻ of its own).
+  // Hidden from every practice list / search / tips pool like courseRef
+  // (NOT_COURSE); listDictationSections is the one list that shows it.
+  dictationOnly:   { type: Boolean, default: undefined },
   // Cover image of the student practice-list card (cover only — never shown inside the test).
   thumbnailUrl:    { type: String, default: '' },
   // Sentence-level dictation practice ("chép chính tả từng câu") — one

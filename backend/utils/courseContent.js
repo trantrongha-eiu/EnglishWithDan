@@ -7,6 +7,8 @@
 // among the IELTS tests. Fetching one by _id needs no filter.
 // `$in: [null, '']` also matches documents without the field (every
 // pre-existing passage/section).
-const NOT_COURSE = Object.freeze({ courseRef: { $in: [null, ''] } });
+// Dictation-only sections (ListeningSection.dictationOnly — a full-test part
+// cut out just for Luyện Dictation) stay out of the same lists.
+const NOT_COURSE = Object.freeze({ courseRef: { $in: [null, ''] }, dictationOnly: { $ne: true } });
 
 module.exports = { NOT_COURSE };

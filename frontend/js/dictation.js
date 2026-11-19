@@ -142,7 +142,8 @@ function _dictPool(part) {
   if (part === 'spell') return spell;
   if (part === 'drill-spelling') return drills.filter(d => d.category === 'spelling');
   if (part === 'drill-numbers') return drills.filter(d => d.category === 'numbers');
-  if (part) return dictSections.filter(s => !s.isActualTest && String(s.partNumber) === part);
+  // every section of that part — Actual Test parts included
+  if (part) return dictSections.filter(s => String(s.partNumber) === part);
   return drills.concat(spell, dictSections);
 }
 
@@ -181,7 +182,7 @@ function renderDictList() {
   const query = document.getElementById('dict-search').value;
   const text = s => s._drill ? [s.title, s.category === 'spelling' ? 'đánh vần spelling names tên' : 'số numbers phone price postcode']
     : s._spell ? [s.title, 'video đánh vần spelling names numbers số']
-    : [s.title, s.isActualTest ? 'actual test' : 'part ' + s.partNumber];
+    : [s.title, 'part ' + s.partNumber + (s.isActualTest ? ' actual test' : '')];
   const pool = _dictPool(dictPart);
   const list = window.SearchMatch ? window.SearchMatch.filter(pool, query, text) : pool.filter(s => {
     const terms = _dictNorm(query).split(' ').filter(Boolean);
@@ -217,7 +218,7 @@ function renderDictList() {
     return `
     <div class="dict-card" onclick="openDictSection('${s._id}')">
       <div class="dict-card-badges">
-        <span class="dict-badge">${s.isActualTest ? 'Actual Test' : 'Part ' + s.partNumber}</span>
+        <span class="dict-badge">${'Part ' + s.partNumber + (s.isActualTest ? ' · Actual Test' : '')}</span>
       </div>
       <div class="dict-card-title">${escHtml(s.title)}</div>
       <div class="dict-card-meta">
@@ -268,7 +269,7 @@ async function openDictSection(id, fromCleanPath) {
   }
   _dictStart({
     kind: 'section', _id: s._id, title: s.title, partNumber: s.partNumber,
-    sub: (s.isActualTest ? 'Actual Test' : 'Part ' + s.partNumber),
+    sub: 'Part ' + s.partNumber + (s.isActualTest ? ' · Actual Test' : ''),
     transcript: s.transcript || '', audioUrl: s.audioUrl,
     sentences: s.dictationSentences.map(x => ({ text: x.text, start: x.start, end: x.end, audioUrl: s.audioUrl })),
   });

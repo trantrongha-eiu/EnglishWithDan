@@ -470,7 +470,7 @@ function Practice({ lesson, onBack }) {
 
 const sectionLesson = (s) => ({
   kind: 'section', _id: s._id, title: s.title, partNumber: s.partNumber,
-  sub: s.isActualTest ? 'Actual Test' : `Part ${s.partNumber}`,
+  sub: s.isActualTest ? `Part ${s.partNumber} · Actual Test` : `Part ${s.partNumber}`,
   transcript: s.transcript || '', audioUrl: s.audioUrl,
   sentences: s.dictationSentences.map((x) => ({ text: x.text, start: x.start, end: x.end, audioUrl: s.audioUrl })),
 });
@@ -484,7 +484,7 @@ const drillLesson = (d) => ({
 function searchText(s) {
   if (s.kind === 'drill') return [s.title, s.category === 'spelling' ? 'đánh vần spelling names tên' : 'số numbers phone price postcode'];
   if (s.kind === 'spell') return [s.title, 'video đánh vần spelling names numbers số'];
-  return [s.title, s.isActualTest ? 'actual test' : `part ${s.partNumber}`];
+  return [s.title, `part ${s.partNumber}${s.isActualTest ? ' actual test' : ''}`];
 }
 
 function LessonCard({ s, onOpen }) {
@@ -507,7 +507,7 @@ function LessonCard({ s, onOpen }) {
       <div className="dict-card-badges">
         {spell
           ? <><span className="dict-badge">Đánh vần &amp; số</span><span className="dict-badge video"><i className="fab fa-youtube" /> Video</span></>
-          : <span className="dict-badge">{s.isActualTest ? 'Actual Test' : `Part ${s.partNumber}`}</span>}
+          : <span className="dict-badge">{s.isActualTest ? `Part ${s.partNumber} · Actual Test` : `Part ${s.partNumber}`}</span>}
       </div>
       <div className="dict-card-title">{s.title}</div>
       <div className="dict-card-meta">
@@ -582,7 +582,8 @@ export default function Dictation() {
       if (p === 'spell') return spell;
       if (p === 'drill-spelling') return drills.filter((d) => d.category === 'spelling');
       if (p === 'drill-numbers') return drills.filter((d) => d.category === 'numbers');
-      if (p) return sections.filter((s) => !s.isActualTest && String(s.partNumber) === p);
+      // every section of that part — Actual Test parts included
+      if (p) return sections.filter((s) => String(s.partNumber) === p);
       return [...drills, ...spell, ...sections];
     };
   }, [list]);
