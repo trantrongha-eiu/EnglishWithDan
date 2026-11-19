@@ -179,12 +179,16 @@ test('task1_grammar_set2: every Bộ 2 exercise of the skill answered since assi
   await answer(set2[0], true); await answer(set2[1], true);
   expect(await done()).toEqual([false, false]);
 
-  // All 3 answered but 3/5 = 60% correct → still not passed.
-  await answer(set2[2], false); await answer(set2[2], false); await answer(set2[2], true);
+  // All 3 answered, but the latest answer of set2[2] is wrong → 2/3 = 67%, not passed.
+  await answer(set2[2], true); await answer(set2[2], false);
   expect(await done()).toEqual([false, false]);
 
-  // 6/8 = 75% → comparison passes; the whole-set row still needs the overview one.
-  await answer(set2[0], true); await answer(set2[1], true); await answer(set2[2], true);
+  // Redoing it right → 3/3 on latest answers → comparison passes, even though
+  // re-tries make the all-answers ratio lower; the whole-set row still needs the overview one.
+  // (all answers: 5/9 = 56% — the old rule failed this)
+  for (let i = 0; i < 3; i++) await answer(set2[0], false);
+  await answer(set2[0], true);
+  await answer(set2[2], true);
   expect(await done()).toEqual([true, false]);
   await answer(other, true);
   expect(await done()).toEqual([true, true]);

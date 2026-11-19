@@ -323,7 +323,8 @@ const T1_GRAMMAR_ROWS =[['all', 'Cả 7 kỹ năng'], ...T1_SKILLS].map(([code, 
 
 // Passed when, since the assignment, the student has answered EVERY active
 // Bộ 2 exercise of that skill (all 35 for the 'all' row) and >= PASS_PERCENT
-// of those answers are correct (re-tries count, like task1_skill).
+// of the exercises are correct on their latest answer (re-doing the set only
+// ever helps; changed 2026-11-19 — before, every re-try counted).
 // task1_grammar (Bộ 1 + Bộ 2) uses the same rule over the whole bank.
 function checkTask1Set2(studentId, ids, since) {
   return checkTask1SetRows(T1_SET2_ROWS, { tags: T1_SET2_TAG }, studentId, ids, since);
@@ -339,14 +340,22 @@ async function checkTask1SetRows(setRows, setFilter, studentId, ids, since) {
   if (!exs.length) return out;
   const q = { userId: studentId, exerciseId: { $in: exs.map((e) => e._id) } };
   if (since) q.createdAt = { $gte: since };
-  const rows = await Task1Attempt.find(q).select('exerciseId isCorrect createdAt').lean().catch(() => []);
+  const rows = await Task1Attempt.find(q).select('exerciseId isCorrect createdAt').sort({ createdAt: 1, _id: 1 }).lean().catch(() => []);
   for (const s of want) {
     const pool = new Set(exs.filter((e) => s.code === 'all' || e.skillType === s.code).map((e) => String(e._id)));
     if (!pool.size) continue;
     const mine = rows.filter((r) => pool.has(String(r.exerciseId)));
     if (!mine.length) continue;
-    const covered = new Set(mine.map((r) => String(r.exerciseId))).size;
-    const pct = (mine.filter((r) => r.isCorrect).length / mine.length) * 100;
+    // Judged on the LATEST answer of each exercise — redoing the set must
+    // never pull the score down (a 38% first run used to sink a later 86% run).
+    const latest = new Map();
+    for (const r of mine) {
+      const k = String(r.exerciseId);
+      const prev = latest.get(k);
+      if (!prev || r.createdAt >= prev.createdAt) latest.set(k, r);
+    }
+    const covered = latest.size;
+    const pct = ([...latest.values()].filter((r) => r.isCorrect).length / covered) * 100;
     const last = mine.reduce((a, r) => (!a || r.createdAt > a ? r.createdAt : a), null);
     out.set(String(s._id), { completed: covered >= pool.size && pct >= PASS_PERCENT, completedAt: last, scorePercent: Math.round(pct) });
   }
