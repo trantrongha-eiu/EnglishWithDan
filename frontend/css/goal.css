@@ -1,10 +1,5 @@
-/* goal.html — Mục tiêu &amp; Kế hoạch học IELTS */
-/* This page's own header (back-link + title) sits below the global
-   top nav now (see the nav.js include below) — kept as a lightweight
-   secondary header rather than removed, since it's still useful
-   in-page context once you're on Goal & Study Plan. */
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif}
+/* Mục tiêu: the tab in Hồ sơ (/app/profile?tab=goal) and goal.html?legacy=1.
+   Loaded with every Hồ sơ tab, so nothing here may touch body or * . */
 .goal-header{display:flex;align-items:center;gap:14px;padding:18px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
 .goal-back{color:var(--text2);text-decoration:none;font-size:14px;display:flex;align-items:center;gap:6px}
 .goal-back:hover{color:var(--text)}
@@ -25,7 +20,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-
 }
 .goal-days{display:flex;gap:6px;flex-wrap:wrap}
 .goal-day-chip{
-  padding:7px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:13px;font-weight:600;
+  font-family:inherit;padding:7px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:13px;font-weight:600;
   cursor:pointer;user-select:none;background:var(--bg);color:var(--text2);
 }
 .goal-day-chip.active{background:var(--blue);border-color:var(--blue);color:#fff}
@@ -95,3 +90,20 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-
   background:var(--blue);color:#fff;text-decoration:none;font-size:13.5px;font-weight:700;border:none;cursor:pointer;
 }
 .today-start-btn:hover{filter:brightness(.95)}
+
+/* Playful look, same as the rest of Hồ sơ */
+:root .goal-card,
+:root #today-card.goal-card { border: 2.5px solid var(--pf-ink); border-radius: 20px; box-shadow: var(--pf-shadow); }
+:root .goal-card h2 { font-family: var(--pf-head); font-weight: 900; font-size: 17px; }
+:root .goal-card h2 i { color: var(--pf-tangerine); }
+:root .goal-field select,
+:root .goal-field input { border: 2px solid var(--pf-ink); border-radius: 12px; background: #fff; }
+:root .goal-day-chip { border: 2px solid var(--pf-ink); font-weight: 800; color: var(--text); box-shadow: 2px 2px 0 var(--pf-ink); background: #fff; }
+:root .goal-day-chip.active { background: var(--pf-sun); border-color: var(--pf-ink); color: var(--pf-ink); }
+:root .goal-btn { border: 2.5px solid var(--pf-ink); border-radius: 14px; box-shadow: var(--pf-shadow); font-weight: 900; font-family: inherit; }
+:root .goal-btn-primary { background: #4d63d8; }
+:root .goal-btn:hover { transform: translate(-1px, -2px); box-shadow: 5px 6px 0 var(--pf-ink); filter: none; }
+:root .goal-btn:disabled { opacity: .6; cursor: default; transform: none; }
+[data-theme="dark"] .goal-field select,
+[data-theme="dark"] .goal-field input,
+[data-theme="dark"] .goal-day-chip:not(.active) { background: var(--surface); }

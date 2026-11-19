@@ -28,6 +28,7 @@ describe('static pages that moved to /app/', () => {
     ['profile.html', '/profile.html#security', '/app/profile?tab=security'],
     ['profile.html', '/profile.html#plan', '/app/profile?focus=plan'],
     ['profile.html', '/profile.html#readingHistoryCard', '/app/profile?focus=readingHistoryCard'],
+    ['goal.html', '/goal', '/app/profile?tab=goal'],
     ['tuition.html', '/tuition', '/app/tuition'],
     ['review-history.html', '/review-history.html', '/app/review-history'],
     ['review-history.html', '/review-history.html?view=mock', '/app/review-history?view=mock'],
@@ -40,7 +41,7 @@ describe('static pages that moved to /app/', () => {
     expect(redirectOf(file, url)).toBe(to);
   });
 
-  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html', 'profile.html', 'tuition.html', 'review-history.html', 'dictation.html', 'shadowing.html'])('%s stays put with ?legacy=1', (file) => {
+  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html', 'profile.html', 'tuition.html', 'review-history.html', 'dictation.html', 'shadowing.html', 'goal.html'])('%s stays put with ?legacy=1', (file) => {
     expect(redirectOf(file, `/${file}?legacy=1`)).toBeUndefined();
   });
 });

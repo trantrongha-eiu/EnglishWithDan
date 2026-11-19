@@ -449,6 +449,7 @@
       sections: [
         { icon: '🗂️', title: 'Các tab', items: [
           '<b>Tổng quan</b>: streak, huy hiệu và điểm các bài đã làm.',
+          '<b>Mục tiêu</b>: đặt band mục tiêu, ngày thi và lịch học; xem việc cần làm hôm nay, kế hoạch tuần và lộ trình AI.',
           '<b>Chỉnh sửa</b>: họ tên, giới thiệu, motto, band mục tiêu, ngày thi, màu chủ đề — nhớ bấm <b>Lưu thay đổi</b>.',
           '<b>Bảo mật</b>: đổi mật khẩu.',
           '<b>Lịch sử</b>: các bài đã làm.',

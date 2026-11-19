@@ -180,6 +180,27 @@ test('review history: real pages, filter and the mock test tab', async ({ page }
   expect(errors).toEqual([]);
 });
 
+test('goal tab in Hồ sơ: saved on the server and shown in the sidebar', async ({ page }) => {
+  const errors = await wire(page);
+  await page.goto(`${BASE}/app/profile`);
+  await page.locator('.tab-btn[data-tab="goal"]').click();
+  await expect(page.locator('#today-content')).not.toHaveClass(/goal-loading/);
+  await page.selectOption('#f-current', '5');
+  await page.selectOption('#f-target', '6.5');
+  await page.fill('#f-exam', '2031-03-10');
+  await page.fill('#f-weekly', '180');
+  await page.fill('#f-session', '60');
+  for (const d of ['mon', 'wed', 'fri']) await page.locator(`.goal-day-chip[data-day="${d}"]`).click();
+  await page.click('#goal-save-btn');
+  await expect(page.locator('#goal-msg')).toHaveText('Đã lưu!');
+  await expect(page.locator('#targetBandDisplay')).toHaveText('6.5');
+  await expect(page.locator('#summary-stats .goal-stat')).toHaveCount(6);
+  await expect(page.locator('#plan-content .plan-day').first()).toBeVisible({ timeout: 15000 });
+  const saved = await model('User').findById(student._id).lean();
+  expect(saved).toMatchObject({ targetBand: 6.5, currentBand: 5, weeklyStudyMinutes: 180, studyDays: ['mon', 'wed', 'fri'] });
+  expect(errors).toEqual([]);
+});
+
 test('shadowing: record, hear yourself, score saved and shown on the card', async ({ page }) => {
   test.setTimeout(90 * 1000);
   const errors = await wire(page);

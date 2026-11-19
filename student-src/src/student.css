@@ -71,6 +71,10 @@ body:has(> #root > .shop-shell) .duel-modal { line-height: normal; }
   letter-spacing: normal; margin-bottom: 6px;
 }
 :where(#root > .profile-layout) p { margin-block: 1em; }
+/* Six tabs on a phone: two even rows, not one left alone on the second */
+@media (max-width: 640px) {
+  #root > .profile-layout .tabs:has(.tab-btn[data-tab="goal"]) .tab-btn { flex: 1 1 30%; }
+}
 .inv-gift-modal { line-height: normal; }
 [data-theme="dark"] .inv-gift-modal .btn-ghost,
 [data-theme="dark"] #root > .profile-layout .btn-ghost { background: var(--surface); }

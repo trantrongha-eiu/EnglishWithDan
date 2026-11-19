@@ -18,7 +18,7 @@ const assetHash = (rel) => {
 }
 
 // Stylesheets a route loads only while it is open (components/PageCss.jsx)
-const PAGE_CSS = ['entrance-test', 'vocab-leaderboard', 'shop', 'duel', 'inbox', 'pf-pages', 'profile', 'pf-profile', 'inventory', 'tuition', 'review-history', 'dictation', 'shadowing']
+const PAGE_CSS = ['entrance-test', 'vocab-leaderboard', 'shop', 'duel', 'inbox', 'pf-pages', 'profile', 'pf-profile', 'inventory', 'tuition', 'review-history', 'dictation', 'shadowing', 'goal']
 
 // The app reuses the static site's CSS/JS/images (/css/tokens.css,
 // /js/shared/word-audio.js, /img/…). On Render they sit next to /app/; in

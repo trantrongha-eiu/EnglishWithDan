@@ -10,14 +10,16 @@ import {
 import OverviewTab from './profile/OverviewTab';
 import HistoryTab from './profile/HistoryTab';
 import InventoryTab from './profile/InventoryTab';
+import GoalTab from './profile/GoalTab';
 import { EditTab, SecurityTab } from './profile/AccountTabs';
 
-// 👤 Hồ sơ — /app/profile?tab=edit|security|history|inventory&focus=plan
+// 👤 Hồ sơ — /app/profile?tab=goal|edit|security|history|inventory&focus=plan
 // (js/profile.js + js/inventory.js). Profile, stats and badges load side by
 // side, so one failing leaves the others on screen.
 
 const TABS = [
   { key: 'overview', icon: 'fa-chart-bar', label: 'Tổng quan' },
+  { key: 'goal', icon: 'fa-bullseye', label: 'Mục tiêu' },
   { key: 'edit', icon: 'fa-edit', label: 'Chỉnh sửa' },
   { key: 'security', icon: 'fa-lock', label: 'Bảo mật' },
   { key: 'history', icon: 'fa-history', label: 'Lịch sử' },
@@ -274,6 +276,7 @@ export default function Profile() {
         </div>
 
         <OverviewTab active={tab === 'overview'} user={user} stats={stats} badges={badges} />
+        <GoalTab active={tab === 'goal'} onSaved={load} />
         <EditTab active={tab === 'edit'} form={form} setForm={setForm} onSaved={load} />
         <SecurityTab active={tab === 'security'} hasPassword={user?.hasPassword !== false} onPasswordSet={markPasswordSet} onLogout={signOut} />
         <InventoryTab active={tab === 'inventory'} canPlay={canPlay} />

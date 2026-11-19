@@ -27,7 +27,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const LEADERBOARD_CSS = ['entrance-test', 'vocab-leaderboard', 'duel', 'pf-pages'];
 const SHOP_CSS = ['entrance-test', 'shop', 'duel', 'pf-pages'];
 const INBOX_CSS = ['inbox', 'pf-pages'];
-const PROFILE_CSS = ['profile', 'pf-profile', 'inventory'];
+const PROFILE_CSS = ['profile', 'pf-profile', 'inventory', 'goal'];
 const TUITION_CSS = ['tuition', 'pf-pages'];
 const REVIEW_HISTORY_CSS = ['review-history', 'pf-pages'];
 const DICTATION_CSS = ['dictation', 'pf-pages'];

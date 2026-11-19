@@ -162,6 +162,7 @@ function makeState() {
     })),
     mustRead: 0,
     unreadCount: 3,
+    goal: { hasGoal: true, currentBand: 5.5, targetBand: 8, examDate: '2030-01-15T00:00:00.000Z', weeklyStudyMinutes: 240, preferredSessionMinutes: 60, studyDays: ['mon', 'wed'], currentBandSource: 'self_assessed', gapBands: 2.5, daysRemaining: 100, feasibility: { level: 'tight', message: 'Hơi gấp' } },
     fees: [
       { _id: 'f1', feeType: 'monthly', month: 11, year: 2026, amount: 1500000, note: 'Giảm 10% <đợt 1>', isPaid: false },
       { _id: 'f2', feeType: 'course', courseName: 'IELTS <7.0>', amount: 6000000, isPaid: false, studentNotified: true },
@@ -297,8 +298,16 @@ async function open(page, url, state = makeState()) {
     if (p === '/vocabulary-lessons/leaderboard') return boardReply('quiz');
     if (p === '/shop' && req.method() === 'GET') return state.failShop ? json({ success: false }, 500) : json(shopBody(state));
     if (p === '/shop/duels' && req.method() === 'GET') return json(state.duels);
-    if (p === '/goals') return json({ success: true, goal: { hasGoal: true } });
-    if (p === '/learning/today') return json({ success: true, hasGoal: true, tasks: [] });
+    if (p === '/goals' && req.method() === 'PUT') {
+      const b = req.postDataJSON();
+      Object.assign(state.goal, b, { hasGoal: true });
+      state.profile.targetBand = b.targetBand;
+      return json({ success: true, goal: state.goal });
+    }
+    if (p === '/goals') { state.goalCalls = (state.goalCalls || 0) + 1; return json({ success: true, goal: state.goal }); }
+    if (p === '/goals/ai-plan') { state.aiCalls = (state.aiCalls || 0) + 1; return json({ success: true, aiPlan: 'Tuần đầu ôn từ vựng.\n\nTuần sau luyện đề.' }); }
+    if (p === '/learning/today') return json({ success: true, hasGoal: true, hasPlan: true, isStudyDay: true, totalMinutes: 30, sessions: [{ category: 'reading', minutes: 30, reason: 'Điểm yếu nhất', action: 'Luyện Reading', practiceUrl: 'reading.html' }] });
+    if (p === '/study-plan/current') return json({ success: true, hasPlan: true, weekStart: '2026-11-16', weekEnd: '2026-11-22', totalMinutes: 60, scheduledMinutes: 30, allocation: [{ category: 'reading', minutes: 30 }], sessions: [{ day: 'mon', date: '2026-11-16', totalMinutes: 30, items: [{ category: 'reading', reason: 'Điểm yếu', minutes: 30 }] }] });
     if (p === '/shop/gift-recipients') return json({ success: true, users: [{ _id: 'u9', name: 'Giang', username: 'giang' }] });
     if (p === '/shop/feed') return json({ success: true, feed: [], announce: [] });
     if (p === '/shop/pet') return json({ success: true, pet: null, activePet: state.activePet || '' });
@@ -595,6 +604,9 @@ async function compare(browser, name, label, { viewport = { width: 1280, height:
     patch(state);
     const { errors } = await open(page, url, state);
     await (ready || cfg.ready)(page);
+    // A tab only the new Hồ sơ has
+    await page.locator('.tab-btn[data-tab="goal"]').evaluateAll((els) => els.forEach((e) => e.remove()));
+    await page.mouse.move(0, 0); // the layout moved: nothing should stay hovered by accident
     const print = await fingerprint(page, cfg.root);
     const words = await text(page, cfg.root);
     if (SHOTS) await page.screenshot({ path: path.join(SHOTS, `${name}-${label}-${tag}.png`.replace(/\s+/g, '-')), fullPage: true });
@@ -1002,7 +1014,7 @@ test.describe('inside the React app', () => {
     ['/inbox.html', '/app/inbox'], ['/inbox.html?msg=m7', '/app/inbox?msg=m7'],
     ['/profile.html', '/app/profile'], ['/profile.html#inventory', '/app/profile?tab=inventory'],
     ['/profile.html#plan', '/app/profile?focus=plan'],
-    ['/tuition.html', '/app/tuition'],
+    ['/tuition.html', '/app/tuition'], ['/goal.html', '/app/profile?tab=goal'],
     ['/review-history.html', '/app/review-history'], ['/review-history.html?view=mock', '/app/review-history?view=mock'],
     ['/dictation.html?sectionId=s1', '/app/dictation?sectionId=s1'], ['/dictation/s1', '/app/dictation?sectionId=s1'],
     ['/shadowing.html?lesson=l0&mode=watch', '/app/shadowing?lesson=l0&mode=watch'], ['/shadowing/l0', '/app/shadowing?lesson=l0'],
@@ -1503,6 +1515,85 @@ test.describe('inside the React app', () => {
     await expect(page.locator('.nav-dd-menu a[href="/app/shadowing"]').first()).toHaveClass(/active/);
     await expect(page.locator('.nav-dropdown > a[href="/speaking.html"]')).toHaveClass(/active/);
     await expect(page.locator('.nav-dropdown > a[href="/listening.html"]')).not.toHaveClass(/active/);
+  });
+
+  test('goal tab: nothing loads until it opens; saving sends what the old page sent', async ({ browser, page }) => {
+    const state = makeState();
+    const { log } = await open(page, '/app/profile', state);
+    await PAGES.profile.ready(page);
+    expect(state.aiCalls || 0).toBe(0);
+    await page.locator('.tab-btn[data-tab="goal"]').click();
+    await expect(page).toHaveURL(`${BASE}/app/profile?tab=goal`);
+    await expect(page.locator('#f-target')).toHaveValue('8');
+    await expect(page.locator('#f-target option:checked')).toContainText('8.0');
+    await expect(page.locator('#ai-plan-content p')).toHaveCount(2);
+    await expect(page.locator('.today-start-btn')).toHaveAttribute('href', 'reading.html');
+    await expect(page.locator('#plan-content .goal-hint.warn')).toContainText('30/60');
+    await expect(page.locator('#summary-stats .goal-stat')).toHaveCount(6);
+    await expect(page.locator('#schedule-hint')).toContainText('2 ngày × 60 phút = 120 phút/tuần');
+    if (SHOTS) {
+      await page.screenshot({ path: path.join(SHOTS, 'goal-tab.png'), fullPage: true });
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.screenshot({ path: path.join(SHOTS, 'goal-tab-phone.png'), fullPage: true });
+      await page.setViewportSize({ width: 1280, height: 900 });
+    }
+
+    await page.locator('.goal-day-chip[data-day="fri"]').click();
+    await page.locator('.goal-day-chip[data-day="mon"]').click();
+    await page.selectOption('#f-target', '7');
+    await page.fill('#f-weekly', '90');
+    await page.click('#goal-save-btn');
+    await expect(page.locator('#goal-msg')).toHaveText('Đã lưu!');
+    await expect(page.locator('#targetBandDisplay')).toHaveText('7');
+    await expect.poll(() => state.aiCalls).toBe(2);
+    expect(log).toHaveLength(1);
+
+    const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+    const old = await ctx.newPage();
+    const { log: oldLog } = await open(old, '/goal.html?legacy=1');
+    await expect(old.locator('#f-target')).toHaveValue('8');
+    await old.locator('.goal-day-chip[data-day="fri"]').click();
+    await old.locator('.goal-day-chip[data-day="mon"]').click();
+    await old.selectOption('#f-target', '7');
+    await old.fill('#f-weekly', '90');
+    await old.click('#goal-save-btn');
+    await expect(old.locator('#goal-msg')).toHaveText('Đã lưu!');
+    expect(log).toEqual(oldLog);
+    await ctx.close();
+  });
+
+  test('goal tab: a draft survives other tabs; a saved change elsewhere shows up', async ({ page }) => {
+    const state = makeState();
+    await open(page, '/app/profile?tab=goal', state);
+    await expect(page.locator('#f-target')).toHaveValue('8');
+    await page.fill('#f-session', '45');
+    await page.locator('.tab-btn[data-tab="edit"]').click();
+    await page.locator('.tab-btn[data-tab="goal"]').click();
+    await expect(page.locator('#f-session')).toHaveValue('45');
+    await page.click('#goal-save-btn');
+    await expect(page.locator('#goal-msg')).toHaveText('Đã lưu!');
+    state.goal.targetBand = 6.5;
+    await page.locator('.tab-btn[data-tab="edit"]').click();
+    await page.locator('.tab-btn[data-tab="goal"]').click();
+    await expect(page.locator('#f-target')).toHaveValue('6.5');
+  });
+
+  test('goal tab: a target is required; without Premium it asks to upgrade', async ({ page }) => {
+    const state = makeState();
+    state.goal = { hasGoal: false };
+    await open(page, '/app/profile?tab=goal', state);
+    await expect(page.locator('#ai-plan-card')).toHaveCount(0);
+    await page.waitForFunction(() => document.querySelector('#today-content .today-start-btn'));
+    await page.click('#goal-save-btn');
+    await expect(page.locator('#goal-msg')).toContainText('Hãy chọn band mục tiêu');
+
+    const free = makeState();
+    free.user = { ...USER, plan: 'free', createdAt: daysAgo(30) };
+    await page.context().clearCookies();
+    const other = await page.context().newPage();
+    await open(other, '/app/profile?tab=goal', free);
+    await expect(other.locator('#tab-goal')).toContainText('Nâng cấp Premium');
+    expect(free.goalCalls || 0).toBe(0);
   });
 
   test('the pet stays off Dictation but comes back on the next page', async ({ page }) => {
