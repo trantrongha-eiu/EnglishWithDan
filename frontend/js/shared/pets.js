@@ -774,7 +774,7 @@
   function ensureCss() {
     if (document.getElementById('ews-pets-css')) return;
     var l = document.createElement('link');
-    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=a0806c9887';
+    l.id = 'ews-pets-css'; l.rel = 'stylesheet'; l.href = '/css/pets.css?v=aa12ca9baa';
     document.head.appendChild(l);
   }
   try { ensureCss(); } catch (e) {}
@@ -1015,25 +1015,61 @@
     this.raf = requestAnimationFrame(function (t) { self.tick(t); });
   };
   // 💥 Bom vĩ thú: sit, gather the sphere in front of the mouth (~1.2s),
-  // fire it forward along the edge it stands on, burst. The sphere lives
-  // inside the flip box, so it follows the pet's facing and rotation.
-  var BOMB_CHARGE = 1250, BOMB_FLY = 520, BOMB_BOOM = 650;
+  // then fire it diagonally across the screen — forward the way the pet
+  // faces and away from the edge it stands on — and burst near the far
+  // side. While charging the sphere lives inside the flip box (follows the
+  // pet's facing/rotation); on firing it moves to the full-screen layer so
+  // it can fly the long way (.pt-bomb.is-free, --dx/--dy/--fly).
+  var BOMB_CHARGE = 1250, BOMB_BOOM = 650;
+  // From the centre of `r` (a DOMRect), facing `dir`: the diagonal flight.
+  Walker.prototype.bombPath = function (r, dir) {
+    var sx = r.left + r.width / 2, sy = r.top + r.height / 2;
+    var w = window.innerWidth || 800, h = window.innerHeight || 600;
+    var rad = (this.rot || 0) * Math.PI / 180;
+    // forward (facing) + inward (off the wall/floor it stands on) → diagonal
+    var ux = dir * Math.cos(rad) + 0.8 * Math.sin(rad), uy = dir * Math.sin(rad) - 0.8 * Math.cos(rad);
+    var len = Math.sqrt(ux * ux + uy * uy) || 1;
+    ux /= len; uy /= len;
+    // Fly until just short of the screen edge it's heading for.
+    var m = r.width / 2 + 10;
+    var top = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 64) + m;
+    var tx = ux > 0.01 ? (w - m - sx) / ux : ux < -0.01 ? (sx - m) / -ux : Infinity;
+    var ty = uy > 0.01 ? (h - m - sy) / uy : uy < -0.01 ? (sy - top) / -uy : Infinity;
+    var room = Math.min(tx, ty, 1600), dist = Math.max(180, room);
+    return { room: room, sx: sx, sy: sy, dx: ux * dist, dy: uy * dist, fly: Math.round(Math.min(1400, 380 + dist * 0.75)) };
+  };
   Walker.prototype.bomb = function () {
     var n = tailsOf(this.id);
     if (REDUCED || !n || this.bombing) return;
     var self = this, spec = bombSpec(this.id);
     this.bombing = true;
     this.setState('sit');
-    this.until = performance.now() + BOMB_CHARGE + BOMB_FLY + BOMB_BOOM + 400;
+    this.until = performance.now() + BOMB_CHARGE + 500;
+    // Turn to face the longer diagonal (e.g. away from a nearby corner).
+    var pr = this.el.getBoundingClientRect();
+    if (this.bombPath(pr, -this.dir).room > this.bombPath(pr, this.dir).room * 1.15) { this.dir = -this.dir; this.place(); }
     this.el.classList.add('is-charging');
     var wrap = document.createElement('div');
     wrap.innerHTML = bombHtml(spec, spec.px * this.size / 58);
     var b = wrap.firstChild;
-    b.style.setProperty('--dist', Math.round(130 + n * 16) + 'px');
     this.flip.appendChild(b);
-    setTimeout(function () { self.el.classList.remove('is-charging'); b.classList.add('is-fired'); }, BOMB_CHARGE);
-    setTimeout(function () { b.classList.add('is-boom'); }, BOMB_CHARGE + BOMB_FLY);
-    setTimeout(function () { b.remove(); self.bombing = false; }, BOMB_CHARGE + BOMB_FLY + BOMB_BOOM);
+    setTimeout(function () {
+      self.el.classList.remove('is-charging');
+      if (!b.isConnected) { self.bombing = false; return; }
+      var p = self.bombPath(b.getBoundingClientRect(), self.dir < 0 ? -1 : 1);
+      // Re-home on the screen layer at the same spot, then launch.
+      b.classList.add('is-free');
+      b.style.left = Math.round(p.sx) + 'px';
+      b.style.top = Math.round(p.sy) + 'px';
+      b.style.setProperty('--dx', Math.round(p.dx) + 'px');
+      b.style.setProperty('--dy', Math.round(p.dy) + 'px');
+      b.style.setProperty('--fly', p.fly + 'ms');
+      self.layer.appendChild(b);
+      void b.offsetWidth; // commit the start position so the flight animates
+      b.classList.add('is-fired');
+      setTimeout(function () { b.classList.add('is-boom'); }, p.fly);
+      setTimeout(function () { b.remove(); self.bombing = false; }, p.fly + BOMB_BOOM);
+    }, BOMB_CHARGE);
   };
   Walker.prototype.puff = function () {
     var el = this.el;

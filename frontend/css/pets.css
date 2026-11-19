@@ -464,6 +464,18 @@
   transform: translateX(var(--dist, 160px));
   transition: transform .5s cubic-bezier(.55, 0, .85, .55);
 }
+/* Walker: fired from the full-screen layer (pets.js bombPath) — a long
+   diagonal flight across the screen, --dx/--dy over --fly, with a trail. */
+.pt-bomb.is-free { position: fixed; z-index: 3; }
+.pt-bomb.is-free.is-fired, .pt-bomb.is-free.is-boom {
+  transform: translate(var(--dx, 200px), var(--dy, -200px));
+  transition: transform var(--fly, .9s) cubic-bezier(.4, 0, .75, .7);
+}
+.pt-bomb.is-free.is-fired:not(.is-boom) .pt-bomb-core {
+  box-shadow: 0 0 calc(var(--b) * .22) calc(var(--b) * .07) rgba(var(--bg), .95),
+    0 0 calc(var(--b) * .9) calc(var(--b) * .25) rgba(var(--bg), .55),
+    inset 0 0 calc(var(--b) * .22) rgba(233, 213, 255, .75);
+}
 .pt-bomb.is-fired .pt-bomb-bit, .pt-bomb.is-boom .pt-bomb-bit { display: none; }
 .pt-bomb.is-boom .pt-bomb-core { animation: pt-bomb-pop .45s ease-out forwards; }
 .pt-bomb.is-boom .pt-bomb-boom { animation: pt-bomb-ring .65s ease-out forwards; }
