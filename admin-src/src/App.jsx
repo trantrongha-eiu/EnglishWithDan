@@ -51,6 +51,7 @@ const WritingGrades = lazy(() => import('./pages/WritingGrades'));
 const SubmissionReviews = lazy(() => import('./pages/SubmissionReviews'));
 const Tuition = lazy(() => import('./pages/Tuition'));
 const UpgradeRequests = lazy(() => import('./pages/UpgradeRequests'));
+const Affiliate = lazy(() => import('./pages/Affiliate'));
 const ReviewBypassCodes = lazy(() => import('./pages/ReviewBypassCodes'));
 const TipLecturePacks = lazy(() => import('./pages/TipLecturePacks'));
 const Tips = lazy(() => import('./pages/Tips'));
@@ -122,6 +123,7 @@ export default function App() {
                 <Route path="writing-samples" element={<Navigate to="/writing-tests" replace />} />
                 <Route path="tuition" element={<ProtectedRoute role="admin"><Tuition /></ProtectedRoute>} />
                 <Route path="upgrade-requests" element={<ProtectedRoute role="admin"><UpgradeRequests /></ProtectedRoute>} />
+                <Route path="affiliate" element={<ProtectedRoute role="admin"><Affiliate /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Route>
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

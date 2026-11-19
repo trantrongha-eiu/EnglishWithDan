@@ -14,6 +14,7 @@ const { sendEmail } = require('./emailService');
 const { applyStreakActivity } = require('../utils/streak');
 const { checkEmail } = require('../utils/emailCheck');
 const deviceSession = require('../utils/deviceSession');
+const affiliateService = require('./affiliateService');
 
 const MAX_OTP_ATTEMPTS = 5;
 const EMAIL_VERIFY_TTL_MS = 24 * 60 * 60 * 1000; // link valid 24h
@@ -158,7 +159,7 @@ async function findOrCreateGoogleUser(profile) {
 // student locked out until they clicked it. A passing account is created
 // verified with its trial starting now, so the student can log in at once.
 // No session is issued here: the client sends them to login.html.
-async function registerUser({ firstName, lastName, username, email, password }) {
+async function registerUser({ firstName, lastName, username, email, password, ref }) {
   const check = await checkEmail(email);
   if (!check.ok) {
     logger.auth('Registration rejected by email check', { email, reason: check.reason });
@@ -176,6 +177,9 @@ async function registerUser({ firstName, lastName, username, email, password }) 
     authProvider: 'local',
     emailVerified: true,
     trialStartedAt: new Date(),
+    // Signed up through someone's affiliate link → tie them now (a bad or
+    // disabled code just leaves the account unreferred)
+    ...(ref ? await affiliateService.referralFieldsForSignup(ref).catch(() => ({})) : {}),
   });
   try {
     await user.save();

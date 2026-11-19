@@ -10,6 +10,7 @@ const TuitionSettings = require('../models/TuitionSettings');
 const Message = require('../models/Message');
 const User = require('../models/User');
 const emailService = require('./emailService');
+const affiliateService = require('./affiliateService');
 const { escapeHtml } = require('../utils/escapeHtml');
 const ClassGroup = require('../models/ClassGroup');
 const ClassEnrollment = require('../models/ClassEnrollment');
@@ -455,6 +456,7 @@ async function updateFee(id, body, sender) {
   const monthChanged  = month  !== undefined && Number(month)  !== fee.month;
   const yearChanged   = year   !== undefined && Number(year)   !== fee.year;
   const justMarkedPaid = isPaid === true && !fee.isPaid; // false→true transition only
+  const wasPaid = fee.isPaid;
 
   if (amount     !== undefined) fee.amount     = Number(amount);
   if (isPaid     !== undefined) {
@@ -504,6 +506,9 @@ async function updateFee(id, body, sender) {
     });
   }
   if (justMarkedPaid) await resetTuitionReminderCountIfCaughtUp(fee.studentId);
+  // Affiliate: a paid fee of a referred student earns (or refreshes) the
+  // referrer's commission; un-marking it cancels that commission.
+  if (wasPaid || fee.isPaid) await affiliateService.syncTuitionFee(fee, sender);
 
   return fee.populate('studentId', 'username email firstName lastName');
 }
@@ -514,6 +519,7 @@ async function deleteFee(id) {
   // Deleting an unpaid fee (e.g. it was created by mistake) can itself
   // resolve the "still owes money" nag, same as marking it paid.
   if (fee && !fee.isPaid) await resetTuitionReminderCountIfCaughtUp(fee.studentId);
+  if (fee && fee.isPaid) await affiliateService.onTuitionFeeDeleted(fee);
 }
 
 // null = no such fee (or its student account was deleted — the populate

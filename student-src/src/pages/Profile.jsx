@@ -11,6 +11,7 @@ import OverviewTab from './profile/OverviewTab';
 import HistoryTab from './profile/HistoryTab';
 import InventoryTab from './profile/InventoryTab';
 import GoalTab from './profile/GoalTab';
+import AffiliateTab from './profile/AffiliateTab';
 import { EditTab, SecurityTab } from './profile/AccountTabs';
 
 // 👤 Hồ sơ — /app/profile?tab=goal|edit|security|history|inventory&focus=plan
@@ -24,6 +25,7 @@ const TABS = [
   { key: 'security', icon: 'fa-lock', label: 'Bảo mật' },
   { key: 'history', icon: 'fa-history', label: 'Lịch sử' },
   { key: 'inventory', icon: 'fa-box-open', label: 'Kho đồ' },
+  { key: 'affiliate', icon: 'fa-bullhorn', label: 'Affiliate' },
 ];
 const ROLE_LABEL = { teacher: 'Giáo viên', admin: 'Quản trị viên' };
 // A sleeping server can take a while to answer
@@ -281,6 +283,7 @@ export default function Profile() {
         <SecurityTab active={tab === 'security'} hasPassword={user?.hasPassword !== false} onPasswordSet={markPasswordSet} onLogout={signOut} />
         <InventoryTab active={tab === 'inventory'} canPlay={canPlay} />
         <HistoryTab active={tab === 'history'} stats={stats} />
+        <AffiliateTab active={tab === 'affiliate'} />
       </main>
     </div>
   );

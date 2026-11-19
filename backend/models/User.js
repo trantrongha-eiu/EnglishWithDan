@@ -262,6 +262,24 @@ const UserSchema = new mongoose.Schema({
   plan:           { type: String, enum: ['free', 'premium'], default: 'free' },
   planExpiresAt:  { type: Date, default: null },
   planStartedAt:  { type: Date, default: null },
+  // ── Affiliate (services/affiliateService.js) ─────────────────────────
+  // referralCode is created lazily the first time the user opens Hồ sơ →
+  // Affiliate. referredBy is set once (register body `ref`, or the
+  // /api/affiliate/claim call visit-tracker.js makes after a new account's
+  // first login) and never changes — every later paid order earns the
+  // referrer a commission.
+  referralCode:   { type: String, default: undefined },
+  referredBy:     { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  referredAt:     { type: Date, default: null },
+  referralClicks: { type: Number, default: 0 },
+  affiliateBank: {
+    bankName:    { type: String, default: '' },
+    bankAccount: { type: String, default: '' },
+    accountName: { type: String, default: '' },
+    // Bank-app QR the referrer uploads so the admin can scan-to-pay
+    qrImageUrl:      { type: String, default: '' },
+    qrImagePublicId: { type: String, default: '' },
+  },
   savedVocab: [SavedVocabSchema]
 }, { timestamps: true });
 
@@ -270,6 +288,8 @@ const UserSchema = new mongoose.Schema({
 // a full collection scan on the User model.
 UserSchema.index({ role: 1, createdAt: -1 });
 UserSchema.index({ lastSeen: 1 });
+UserSchema.index({ referralCode: 1 }, { unique: true, sparse: true });
+UserSchema.index({ referredBy: 1, referredAt: -1 });
 // Leaderboard-time sweep for unsettled Búa Hi Vọng bets.
 UserSchema.index({ hopeHammerDay: 1 });
 

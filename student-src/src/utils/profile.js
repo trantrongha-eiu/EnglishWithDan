@@ -1,6 +1,6 @@
 // Hồ sơ (pages/Profile.jsx): the rules from js/profile.js, without the page.
 
-export const VALID_TABS = ['overview', 'goal', 'edit', 'security', 'history', 'inventory'];
+export const VALID_TABS = ['overview', 'goal', 'edit', 'security', 'history', 'inventory', 'affiliate'];
 
 // ?focus=<id> sections that live inside a tab
 export const FOCUS_TABS = {

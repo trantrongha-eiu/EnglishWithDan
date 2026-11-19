@@ -162,6 +162,7 @@ app.use('/api/speaking-part2',  require('./routes/speakingPart2'));
 app.use('/api/difficult-words', require('./routes/difficultWords'));
 app.use('/api/tuition',        require('./routes/tuition'));
 app.use('/api/upgrade',        require('./routes/upgrade'));
+app.use('/api/affiliate',      require('./routes/affiliate'));
 app.use('/api/parent',         require('./routes/parent'));
 
 // ── 404 handler ──────────────────────────────────────────────

@@ -99,6 +99,8 @@ exports.register = async (req, res) => {
       username: username.trim(),
       email,
       password,
+      // Affiliate link code (?ref=) kept by visit-tracker.js — optional
+      ref: typeof req.body.ref === 'string' ? req.body.ref : '',
     });
     if (result.status === 'bad_email') {
       const message = result.suggestion

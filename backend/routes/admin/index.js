@@ -34,6 +34,7 @@ router.use(require('./advSentences'));     // "Viết câu nâng cao" grammar-st
 router.use(require('./wt1'));              // WT1 course (Module/Lesson/Exercise) CRUD
 router.use(require('./messages'));         // Messages
 router.use(require('./premium'));          // Plan Management, Upgrade Requests (renamed from billing.js — no payment/invoice logic here, see file header)
+router.use(require('./affiliate'));        // Affiliate: settings, payout queue, commissions, referrers
 router.use(require('./reviewBypass'));     // Review-gate bypass codes
 router.use(require('./mockTests'));        // Full 4-skill mock test monitoring + proctoring log
 router.use(require('./entranceTest'));     // IELTS Entrance Test config + Grammar bank + attempt monitoring

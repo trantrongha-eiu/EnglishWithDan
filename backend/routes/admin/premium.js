@@ -14,6 +14,7 @@ const { computePlanExpiry } = require('../../utils/plan');
 
 const User           = require('../../models/User');
 const UpgradeRequest = require('../../models/UpgradeRequest');
+const affiliateService = require('../../services/affiliateService');
 
 const router = express.Router();
 
@@ -121,6 +122,9 @@ router.put('/upgrade-requests/:id/approve', auth, adminOnly, async (req, res) =>
       await UpgradeRequest.findByIdAndUpdate(request._id, { status: 'pending', reviewedBy: null, reviewedAt: null });
       throw grantErr;
     }
+
+    // Referred buyer → the referrer earns a commission (never fails the approval)
+    await affiliateService.onPremiumApproved(request, req.user);
 
     res.json({ success: true, message: `Đã nâng cấp Premium cho ${updatedUser.username} đến ${updatedUser.planExpiresAt.toLocaleDateString('vi-VN')}` });
   } catch (err) {
