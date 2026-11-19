@@ -8,6 +8,10 @@ const TITLES = {
   '/shop': 'Cửa hàng lửa',
   '/inbox': 'Hộp thư',
   '/profile': 'Hồ sơ',
+  '/tuition': 'Học phí',
+  '/review-history': 'Lịch sử Review',
+  '/dictation': 'Luyện Dictation',
+  '/shadowing': 'Luyện Shadowing',
 };
 
 // The top nav comes from the site shell (js/bundles/app-shell.js → nav.js).

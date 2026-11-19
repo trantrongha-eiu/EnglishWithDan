@@ -96,7 +96,7 @@ function resourcePath(r) {
     case 'listening_test': return `listening.html?testId=${id}${partsQs(r)}${examQs(r)}`;
     case 'listening_practice': return `listening.html?sectionId=${id}${examQs(r)}`;
     case 'listening_gapfill': return `listening.html?gapfillId=${id}`;
-    case 'dictation': return `dictation.html?sectionId=${id}`;
+    case 'dictation': return `app/dictation?sectionId=${id}`;
     case 'writing_exam': return `writing.html?examId=${id}`;
     case 'task1_lesson': return code ? `writing-task1.html?lesson=${enc(code)}` : null;
     case 'task2_course_lesson': return code ? `writing-task2-course.html?lesson=${enc(code)}` : null;
@@ -115,7 +115,7 @@ function resourcePath(r) {
     case 'grammar': return code ? `essential-grammar.html?lesson=${enc(code)}` : 'essential-grammar.html';
     case 'vocabulary_lesson': return `app/dashboard/lesson/${id}`;
     case 'mock_test': return 'mock-test.html';
-    case 'shadowing': return code ? `shadowing.html?lesson=${enc(code)}` : 'shadowing.html';
+    case 'shadowing': return code ? `app/shadowing?lesson=${enc(code)}` : 'app/shadowing';
     case 'listening_tip': return `listening.html?mode=tips${tipQs(code)}`;
     case 'reading_tip': return `reading.html?mode=tips${tipQs(code)}`;
     case 'writing_tip': return `writing.html?view=writing-tips${tipQs(code)}`;

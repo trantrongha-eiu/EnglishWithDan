@@ -17,6 +17,10 @@ const Leaderboard = lazy(() => import('./pages/Leaderboard'));
 const Shop = lazy(() => import('./pages/Shop'));
 const Inbox = lazy(() => import('./pages/Inbox'));
 const Profile = lazy(() => import('./pages/Profile'));
+const Tuition = lazy(() => import('./pages/Tuition'));
+const ReviewHistory = lazy(() => import('./pages/ReviewHistory'));
+const Dictation = lazy(() => import('./pages/Dictation'));
+const Shadowing = lazy(() => import('./pages/Shadowing'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Each list is the page's stylesheets in the old static page's order
@@ -24,6 +28,10 @@ const LEADERBOARD_CSS = ['entrance-test', 'vocab-leaderboard', 'duel', 'pf-pages
 const SHOP_CSS = ['entrance-test', 'shop', 'duel', 'pf-pages'];
 const INBOX_CSS = ['inbox', 'pf-pages'];
 const PROFILE_CSS = ['profile', 'pf-profile', 'inventory'];
+const TUITION_CSS = ['tuition', 'pf-pages'];
+const REVIEW_HISTORY_CSS = ['review-history', 'pf-pages'];
+const DICTATION_CSS = ['dictation', 'pf-pages'];
+const SHADOWING_CSS = ['shadowing', 'pf-pages'];
 
 // A data router: running quizzes use useBlocker to ask before leaving
 const router = createBrowserRouter(createRoutesFromElements(
@@ -45,6 +53,10 @@ const router = createBrowserRouter(createRoutesFromElements(
       <Route path="shop" element={<PageCss names={SHOP_CSS}><Shop /></PageCss>} />
       <Route path="inbox" element={<PageCss names={INBOX_CSS}><Inbox /></PageCss>} />
       <Route path="profile" element={<PageCss names={PROFILE_CSS}><Profile /></PageCss>} />
+      <Route path="tuition" element={<PageCss names={TUITION_CSS}><Tuition /></PageCss>} />
+      <Route path="review-history" element={<PageCss names={REVIEW_HISTORY_CSS}><ReviewHistory /></PageCss>} />
+      <Route path="dictation" element={<PageCss names={DICTATION_CSS}><Dictation /></PageCss>} />
+      <Route path="shadowing" element={<PageCss names={SHADOWING_CSS}><Shadowing /></PageCss>} />
       <Route path="*" element={<NotFound />} />
     </Route>
     <Route path="*" element={<Navigate to="/dashboard" replace />} />

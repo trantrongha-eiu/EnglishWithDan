@@ -1116,7 +1116,10 @@
       if (!window.AuthService || !window.AuthService.isLoggedIn || !window.AuthService.isLoggedIn()) return;
       var u = window.AuthService.getUser && window.AuthService.getUser();
       if (u && u.role && u.role !== 'student' && u.role !== 'teacher') return;
-      if (EXAM_PAGES.test(location.pathname.split('/').pop()) || NO_PET_PATHS.test(location.pathname)) return;
+      // The React app changes page without a reload: a visit that starts on
+      // /app/dictation still needs the pet later (examActive() hides it there).
+      var inApp = /^\/app(\/|$)/.test(location.pathname);
+      if (EXAM_PAGES.test(location.pathname.split('/').pop()) || (!inApp && NO_PET_PATHS.test(location.pathname))) return;
       var cached = lsGet(CACHE_KEY);
       if (cacheFresh(cached)) { cachedId = cached.id; giftState = cached.gift; show(cached.id); return; }
       fetchPet(show);

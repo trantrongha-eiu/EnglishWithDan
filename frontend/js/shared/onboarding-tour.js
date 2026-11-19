@@ -128,7 +128,7 @@
         title: 'Dictation',
         body: 'Ngoài Listening, mục "Dictation" trong menu Listening giúp bạn luyện nghe — chép chính tả từng câu để rèn khả năng nghe chi tiết.',
         resolve() {
-          const link = document.querySelector('.top-nav a[href="dictation.html"]');
+          const link = document.querySelector('.top-nav a[href="/app/dictation"]');
           const dropdown = link && link.closest('.nav-dropdown');
           return isVisible(dropdown) ? dropdown : resolveNavMenu();
         },

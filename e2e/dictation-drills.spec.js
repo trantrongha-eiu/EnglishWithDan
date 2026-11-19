@@ -1,7 +1,8 @@
 // @ts-check
 /**
- * dictation.html — the dailydictation-style player and the "Đánh vần tên /
- * Số dài & mã số" drills (clips of the site's own Listening audio).
+ * /app/dictation (old links: dictation.html) — the dailydictation-style player
+ * and the "Đánh vần tên / Số dài & mã số" drills (clips of the site's own
+ * Listening audio).
  *
  * Self-contained like mindset-passage-page.spec.js: in-memory MongoDB seeded
  * with the real drills (scripts/data/dictationDrills.json) + one Listening
@@ -40,6 +41,8 @@ function startStatic() {
     const srv = http.createServer((req, res) => {
       let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
       if (p.endsWith('/')) p += 'index.html';
+      // The host's rewrite: every /app path is the React app
+      if (p.startsWith('/app/') && !p.startsWith('/app/assets/')) p = '/app/index.html';
       const file = path.join(FRONTEND, p);
       if (!file.startsWith(FRONTEND) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
         res.writeHead(404); res.end('not found'); return;

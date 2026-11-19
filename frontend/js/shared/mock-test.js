@@ -56,7 +56,7 @@
   // Shared by advance()'s success path and flushPendingAdvance() below.
   function _navigateByResult(nav, mockId) {
     nav = nav || {};
-    if (nav.done)         { location.href = 'review-history.html?view=mock'; return; }
+    if (nav.done)         { location.href = '/app/review-history?view=mock'; return; }
     // Sitting break — back to the mock-test card page; the student self-
     // starts the next skill. `breakAfter` ('reading' | 'writing') picks the
     // copy. (Was 'dashboard.html?mockbreak=' before the card moved to its

@@ -99,7 +99,7 @@ function MockAction({ assignmentId, r }) {
   const toast = useToast();
   const [busy, setBusy] = useState(false);
   const [askReplace, setAskReplace] = useState(false);
-  if (r.completed && !mockOpen(r)) return <a className="hw-res-btn" href="/review-history.html?view=mock">Xem kết quả</a>;
+  if (r.completed && !mockOpen(r)) return <a className="hw-res-btn" href="/app/review-history?view=mock">Xem kết quả</a>;
   const label = mockOpen(r) ? (r.mock.progress === 'speaking' ? 'Bắt đầu Speaking' : 'Tiếp tục') : 'Bắt đầu';
 
   // POST /mock-test/start { assignmentId, itemId } (mockTestService.startMockTest `assigned`)

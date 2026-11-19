@@ -1373,7 +1373,7 @@
         { href: 'mindset-1.html',           icon: 'fa-leaf',       label: 'Mindset Level 1' },
         { href: 'mindset-2.html',           icon: 'fa-leaf',       label: 'Mindset Level 2' },
         { divider: true, label: 'Luyện tập' },
-        { href: 'dictation.html',             icon: 'fa-keyboard',   label: 'Dictation' },
+        { href: 'app/dictation',              icon: 'fa-keyboard',   label: 'Dictation' },
       ]
     },
     // "Luyện viết" used to be its own top-level nav item — folded into
@@ -1406,7 +1406,7 @@
         { href: 'speaking-course.html',             icon: 'fa-graduation-cap', label: 'Khóa học Speaking' },
         { divider: true, label: 'Luyện tập' },
         { href: 'speaking-part2.html',              icon: 'fa-book-reader', label: 'Part 2 · 7 câu chuyện gốc' },
-        { href: 'shadowing.html',                   icon: 'fa-comment-dots', label: 'Shadowing (Video)' },
+        { href: 'app/shadowing',                    icon: 'fa-comment-dots', label: 'Shadowing (Video)' },
       ]
     },
     { href: 'app/dashboard',       icon: 'fa-layer-group', label: 'Vocab',
@@ -1445,7 +1445,7 @@
     // "Học phí" was an unlabeled icon in the utility cluster — students
     // missed it, so it's back in the main row as a labeled, highlighted
     // pill (.nav-link-tuition) with the unpaid-count badge next to it.
-    { href: 'tuition.html', icon: 'fa-money-bill-wave', label: 'Học phí', badgeId: 'navTuitionBadge', highlight: 'nav-link-tuition' },
+    { href: 'app/tuition', icon: 'fa-money-bill-wave', label: 'Học phí', badgeId: 'navTuitionBadge', highlight: 'nav-link-tuition' },
   ];
 
   // "Hộp thư" moved out of the main dropdown row into the utility icon
@@ -1630,7 +1630,9 @@
       a.classList.toggle('active', navChildActive(a.getAttribute('href').slice(1)));
     });
     LINKS.forEach(function (l) {
-      if (l.href.indexOf('app/') !== 0) return;
+      // Listening and Speaking are static pages with an app page in their menu
+      var hasAppChild = (l.children || []).some(function (c) { return c.href && c.href.indexOf('app/') === 0; });
+      if (l.href.indexOf('app/') !== 0 && !hasAppChild) return;
       var sel = '.nav-links > a[href="/' + l.href + '"], .nav-dropdown > a[href="/' + l.href + '"], a.mobile-nav-link:not(.mobile-nav-sub)[href="/' + l.href + '"]';
       document.querySelectorAll(sel).forEach(function (a) { a.classList.toggle('active', navTopActive(l)); });
     });
@@ -1772,7 +1774,7 @@
   if (!document.getElementById('ews-pets-js')) {
     var petScript = document.createElement('script');
     petScript.id = 'ews-pets-js';
-    petScript.src = '/js/shared/pets.js?v=4dbddf4829';
+    petScript.src = '/js/shared/pets.js?v=2d67b1acae';
     document.body.appendChild(petScript);
   }
 
@@ -1802,7 +1804,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=cfca499d88';
+      s.src = '/js/shared/page-help.js?v=fbe69d4448';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);
@@ -2392,7 +2394,7 @@
     banner.style.cssText = 'position:fixed;top:calc(var(--nav-height,64px) + ' + baseOffset + 'px);left:0;right:0;z-index:996;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(90deg,#b45309,#d97706);box-shadow:0 2px 8px rgba(0,0,0,.15)';
     banner.innerHTML =
       '<span style="flex:1;text-align:center">💰 Bạn có học phí chưa thanh toán (đã nhắc <strong>' + count + ' lần</strong>). Vui lòng kiểm tra và xác nhận chuyển khoản nhé!</span>' +
-      '<a href="tuition.html" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem học phí</a>' +
+      '<a href="/app/tuition" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem học phí</a>' +
       '<button style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0" title="Đóng">&times;</button>';
     var afterEl = document.getElementById('nav-study-warning-banner') || document.getElementById('nav-expiry-banner') || document.getElementById('globalTopNav');
     document.body.insertBefore(banner, afterEl.nextSibling);
@@ -2586,7 +2588,7 @@
   }
   function _renderTuitionReminderPopup(count, done) {
     if (_fullscreenActivityActive()) { done(); return; } // retries next load
-    if (page === 'tuition.html') { done(); return; } // already looking at it
+    if (page === 'tuition.html' || _appRoute() === '/tuition') { done(); return; } // already looking at it
     var headers = window.AuthService ? window.AuthService.authHeader() : {};
     fetch(API + '/tuition/my/summary', { headers: headers })
       .then(function (r) { return r.json(); })
@@ -2623,11 +2625,13 @@
             '<p style="font-size:14px;color:var(--text2,#6b7280);line-height:1.65;margin-bottom:18px;text-align:left">' + body + '</p>' +
             '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
               '<button type="button" id="nav-tuition-popup-later" style="background:transparent;color:var(--text2,#6b7280);border:1px solid var(--border,#e5e7eb);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Để sau</button>' +
-              '<a href="tuition.html" id="nav-tuition-popup-go" style="background:#d97706;color:#fff;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;text-decoration:none">Xem học phí</a>' +
+              '<a href="/app/tuition" id="nav-tuition-popup-go" style="background:#d97706;color:#fff;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;text-decoration:none">Xem học phí</a>' +
             '</div>' +
           '</div>';
         document.body.appendChild(overlay);
         document.getElementById('nav-tuition-popup-later').addEventListener('click', function () { overlay.remove(); });
+        // Inside the React app the link changes route without a page load.
+        document.getElementById('nav-tuition-popup-go').addEventListener('click', function () { overlay.remove(); });
       })
       .catch(function () { done(); });
   }
@@ -3168,7 +3172,8 @@
   }
 
   function pageKey() {
-    if (/^\/app(\/|$)/.test(location.pathname)) return /^\/app\/(classroom|leaderboard|shop|inbox|profile)(\/|$)/.test(location.pathname) ? '_' : 'dashboard';
+    if (/^\/app\/(dictation|shadowing)(\/|$)/.test(location.pathname)) return 'listening';
+    if (/^\/app(\/|$)/.test(location.pathname)) return /^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history)(\/|$)/.test(location.pathname) ? '_' : 'dashboard';
     var pg = (location.pathname.split('/').pop() || '').replace('.html', '');
     return /listening|dictation|shadowing/.test(pg) ? 'listening'
       : /reading/.test(pg) ? 'reading'
@@ -5736,7 +5741,7 @@
   // admin "Trang đã mở" list and usage counts stay comparable.
   function currentPage() {
     if (!/^\/app(\/|$)/.test(location.pathname)) return location.pathname;
-    var m = location.pathname.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile)(?=\/|$)/);
+    var m = location.pathname.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history|dictation|shadowing)(?=\/|$)/);
     if (!m) return '/app/'; // the vocab home, whatever is open inside it
     return m[1] === 'leaderboard' ? '/vocab-leaderboard.html' : '/' + m[1] + '.html';
   }

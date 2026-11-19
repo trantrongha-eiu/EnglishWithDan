@@ -12,7 +12,7 @@ function redirectOf(file, url) {
     .replace(/^<script>/, '').replace(/<\/script>$/, '');
   const target = [];
   const u = new URL(url, 'https://example.test');
-  vm.runInNewContext(script, { URLSearchParams, location: { search: u.search, hash: u.hash, replace: (x) => target.push(x) } });
+  vm.runInNewContext(script, { URLSearchParams, location: { pathname: u.pathname, search: u.search, hash: u.hash, replace: (x) => target.push(x) } });
   return target[0];
 }
 
@@ -28,11 +28,19 @@ describe('static pages that moved to /app/', () => {
     ['profile.html', '/profile.html#security', '/app/profile?tab=security'],
     ['profile.html', '/profile.html#plan', '/app/profile?focus=plan'],
     ['profile.html', '/profile.html#readingHistoryCard', '/app/profile?focus=readingHistoryCard'],
+    ['tuition.html', '/tuition', '/app/tuition'],
+    ['review-history.html', '/review-history.html', '/app/review-history'],
+    ['review-history.html', '/review-history.html?view=mock', '/app/review-history?view=mock'],
+    ['dictation.html', '/dictation.html', '/app/dictation'],
+    ['dictation.html', '/dictation.html?drill=spelling-1', '/app/dictation?drill=spelling-1'],
+    ['dictation.html', '/dictation/s1', '/app/dictation?sectionId=s1'],
+    ['shadowing.html', '/shadowing.html?lesson=a&mode=watch', '/app/shadowing?lesson=a&mode=watch'],
+    ['shadowing.html', '/shadowing/keith-small-talk/', '/app/shadowing?lesson=keith-small-talk'],
   ])('%s: %s → %s', (file, url, to) => {
     expect(redirectOf(file, url)).toBe(to);
   });
 
-  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html', 'profile.html'])('%s stays put with ?legacy=1', (file) => {
+  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html', 'profile.html', 'tuition.html', 'review-history.html', 'dictation.html', 'shadowing.html'])('%s stays put with ?legacy=1', (file) => {
     expect(redirectOf(file, `/${file}?legacy=1`)).toBeUndefined();
   });
 });

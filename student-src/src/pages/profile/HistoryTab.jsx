@@ -69,7 +69,7 @@ export default function HistoryTab({ active, stats }) {
           a.aiFeedback?.overallBand ? <Band key="b" cls="badge-warning" value={a.aiFeedback.overallBand} /> : '-',
         ])} />
 
-      <a href="/review-history.html" className="card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px', textDecoration: 'none', color: 'inherit' }}>
+      <a href="/app/review-history" className="card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px', textDecoration: 'none', color: 'inherit' }}>
         <span style={{ fontWeight: 700 }}><i className="fas fa-clipboard-check" /> My Mistakes — Lịch sử Review lỗi sai</span>
         <i className="fas fa-chevron-right" style={{ color: 'var(--text-light)' }} />
       </a>

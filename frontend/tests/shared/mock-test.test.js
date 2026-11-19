@@ -67,7 +67,7 @@ describe('MockTest.advance — success', () => {
     global.fetch = fetchOnce({ status: 200, body: { success: true, nav: { done: true } } });
     await withMockLocation('?mock=M1&skill=speaking', async (loc) => {
       await window.MockTest.advance('speaking', 'sub4');
-      expect(loc.href).toBe('review-history.html?view=mock');
+      expect(loc.href).toBe('/app/review-history?view=mock');
     });
   });
 });

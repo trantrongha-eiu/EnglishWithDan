@@ -28,9 +28,51 @@ const MIME = {
 };
 let server;
 
+// 20 seconds of silence, so the Dictation player has a real file to seek in
+function silentWav() {
+  const rate = 8000;
+  const bytes = rate * 20;
+  const h = Buffer.alloc(44);
+  h.write('RIFF', 0); h.writeUInt32LE(36 + bytes, 4); h.write('WAVEfmt ', 8); h.writeUInt32LE(16, 16);
+  h.writeUInt16LE(1, 20); h.writeUInt16LE(1, 22); h.writeUInt32LE(rate, 24); h.writeUInt32LE(rate, 28);
+  h.writeUInt16LE(1, 32); h.writeUInt16LE(8, 34); h.write('data', 36); h.writeUInt32LE(bytes, 40);
+  return Buffer.concat([h, Buffer.alloc(bytes, 128)]);
+}
+
+// Stands in for the YouTube IFrame API; window.__yt lists the players made
+const FAKE_YOUTUBE = `
+window.__yt = [];
+window.YT = { PlayerState: { PLAYING: 1, PAUSED: 2 }, Player: function (el, o) {
+  var host = typeof el === 'string' ? document.getElementById(el) : el;
+  var frame = document.createElement('iframe');
+  frame.id = 'yt-player';
+  host.replaceWith(frame);
+  var self = this, timer = null;
+  self.t = o.playerVars.start || 0; self.calls = []; self.videoId = o.videoId; self.rate = 1; self.destroyed = false;
+  self.getCurrentTime = function () { return self.t; };
+  self.seekTo = function (t) { self.t = t; self.calls.push('seek:' + t); };
+  self.setPlaybackRate = function (r) { self.rate = r; };
+  self.playVideo = function () {
+    self.calls.push('play');
+    clearInterval(timer);
+    timer = setInterval(function () { self.t += 0.05; }, 50);
+    o.events.onStateChange({ data: 1 });
+  };
+  self.pauseVideo = function () { self.calls.push('pause'); clearInterval(timer); o.events.onStateChange({ data: 2 }); };
+  self.destroy = function () { self.destroyed = true; clearInterval(timer); frame.remove(); };
+  self.unloadModule = function () {};
+  window.__yt.push(self);
+  setTimeout(function () { o.events.onReady(); }, 0);
+} };
+if (window.onYouTubeIframeAPIReady) window.onYouTubeIframeAPIReady();`;
+
 test.beforeAll(async () => {
   server = http.createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+    if (p === '/test-audio.wav') { res.writeHead(200, { 'Content-Type': 'audio/wav' }); res.end(silentWav()); return; }
+    // The host serves these clean paths from the page's own file
+    const clean = p.match(/^\/(dictation|shadowing)\/[^/]+\/?$/);
+    if (clean) p = `/${clean[1]}.html`;
     if (p.endsWith('/')) p += 'index.html';
     // The host's rewrite: every /app path is the app
     if (p.startsWith('/app/') && !p.startsWith('/app/assets/')) p = '/app/index.html';
@@ -120,6 +162,48 @@ function makeState() {
     })),
     mustRead: 0,
     unreadCount: 3,
+    fees: [
+      { _id: 'f1', feeType: 'monthly', month: 11, year: 2026, amount: 1500000, note: 'Giảm 10% <đợt 1>', isPaid: false },
+      { _id: 'f2', feeType: 'course', courseName: 'IELTS <7.0>', amount: 6000000, isPaid: false, studentNotified: true },
+      { _id: 'f3', feeType: 'monthly', month: 10, year: 2026, amount: 1500000, isPaid: true, paidDate: daysAgo(30) },
+    ],
+    feeSettings: {
+      bankName: 'Vietcombank', accountName: 'TRAN VAN A', bankAccount: '0123456789', defaultMonthlyFee: 1500000,
+      paymentNote: 'Ghi rõ họ tên\nvà tháng đóng', qrImageUrl: '/img/buaDaniel.jpg',
+    },
+    tuitionSummary: { success: true, unpaidCount: 2, monthCount: 0, dueCount: 0 },
+    reviews: Array.from({ length: 25 }, (_, i) => ({
+      _id: `r${i}`,
+      attemptType: i % 2 ? 'listening-practice' : 'reading',
+      completedAt: daysAgo(i + 1),
+      mistakes: [
+        { questionNumber: i + 1, questionType: 'Matching', errorCategory: i % 3 ? 'Từ vựng' : 'Ngữ pháp', errorReason: 'Không biết <từ>', retryResult: 'correct', note: 'Nhớ kỹ', learningPoint: { content: 'Đọc lại câu hỏi' } },
+        { questionNumber: i + 2, retryResult: 'wrong' },
+      ],
+    })),
+    mocks: Array.from({ length: 12 }, (_, i) => ({
+      _id: `t${i}`,
+      createdAt: daysAgo(i + 1),
+      status: ['completed', 'in-progress', 'disqualified', 'grading'][i % 4],
+      overallBand: i % 4 === 0 ? 6.5 : null,
+      proctor: i % 4 === 2 ? { violated: true, violationCount: 5 } : {},
+      steps: { listening: { band: 7, attemptId: `l${i}` }, reading: { band: i % 4 === 3 ? null : 6.5, attemptId: `g${i}` }, writing: {}, speaking: {} },
+    })),
+    dictSections: [
+      { _id: 's1', title: 'Cam 18 Test 1 Part 1', partNumber: 1, sentenceCount: 3, audioDuration: 125 },
+      { _id: 's2', title: 'Festival talk', partNumber: 4, sentenceCount: 2 },
+      { _id: 's3', title: 'Actual flights', partNumber: 2, isActualTest: true, sentenceCount: 2 },
+    ],
+    dictDrills: [
+      { _id: 'dr1', slug: 'spelling-1', title: 'Tên riêng 1', category: 'spelling', itemCount: 2 },
+      { _id: 'dr2', slug: 'numbers-1', title: 'Số điện thoại 1', category: 'numbers', itemCount: 2 },
+    ],
+    shadowLessons: Array.from({ length: 30 }, (_, i) => ({
+      slug: `l${i}`, youtubeId: `vid${i}`, title: `Bài video ${i}`, description: i % 2 ? '' : `Mô tả bài ${i}`, channel: 'Kênh A',
+      category: ['ielts-part1', 'fun-shorts', 'spelling-numbers'][i % 3], level: i % 2 ? 'C1' : 'B1',
+      duration: 125 + i, segmentCount: 3,
+      progress: i === 0 ? { shadowing: 90, dictation: 40 } : {}, answered: i === 0 ? { shadowing: 3, dictation: 1 } : {},
+    })),
     duels: {
       success: true,
       rules: { min: 5, max: 100, maxOpen: 3, pendingHours: 24 },
@@ -167,7 +251,19 @@ function board(kind, limit) {
 
 async function open(page, url, state = makeState()) {
   const log = [];
-  await page.addInitScript(([u, theme]) => {
+  await page.addInitScript(([u, theme, fixedRandom, fakeSpeech]) => {
+    if (fixedRandom) Math.random = () => 0;
+    // Hears the sentence on screen, read back perfectly
+    if (fakeSpeech) {
+      window.SpeechRecognition = function () {
+        const self = this;
+        self.start = () => setTimeout(() => {
+          const said = Object.assign([{ transcript: document.getElementById('sh-sentence').textContent }], { isFinal: true });
+          self.onresult({ results: [said] });
+        }, 50);
+        self.stop = () => {};
+      };
+    }
     if (theme) localStorage.setItem('theme', theme);
     localStorage.setItem('token', 'test-token');
     localStorage.setItem('user', JSON.stringify(u));
@@ -177,8 +273,9 @@ async function open(page, url, state = makeState()) {
     localStorage.setItem('ews_onboarding_tour_v1_dashboard.html', '1');
     // Change route the way the browser's Back button does
     window.__go = (route) => { history.pushState(null, '', '/app' + route); window.dispatchEvent(new PopStateEvent('popstate')); };
-  }, [USER, state.theme || '']);
-  await page.route(/fonts\.(googleapis|gstatic)\.com|cdnjs\.cloudflare\.com|media\.ieltsthayha\.com/, (r) => r.abort());
+  }, [state.user || USER, state.theme || '', !!state.fixedRandom, !!state.fakeSpeech]);
+  await page.route(/fonts\.(googleapis|gstatic)\.com|cdnjs\.cloudflare\.com|media\.ieltsthayha\.com|i\.ytimg\.com/, (r) => r.abort());
+  await page.route('https://www.youtube.com/iframe_api', (r) => r.fulfill({ contentType: 'application/javascript', body: FAKE_YOUTUBE }));
   await page.route('https://englishwithdan.onrender.com/**', (route) => {
     const req = route.request();
     const u = new URL(req.url());
@@ -204,7 +301,7 @@ async function open(page, url, state = makeState()) {
     if (p === '/learning/today') return json({ success: true, hasGoal: true, tasks: [] });
     if (p === '/shop/gift-recipients') return json({ success: true, users: [{ _id: 'u9', name: 'Giang', username: 'giang' }] });
     if (p === '/shop/feed') return json({ success: true, feed: [], announce: [] });
-    if (p === '/shop/pet') return json({ success: true, pet: null, activePet: '' });
+    if (p === '/shop/pet') return json({ success: true, pet: null, activePet: state.activePet || '' });
     if (p === '/shop/buy') {
       const b = req.postDataJSON();
       if (state.failBuy) return json({ success: false, message: 'Ví không đủ lửa' }, 400);
@@ -261,6 +358,59 @@ async function open(page, url, state = makeState()) {
     }
     m = p.match(/^\/user\/messages\/(m\d+)$/);
     if (m && req.method() === 'DELETE') { state.messages = state.messages.filter((x) => x._id !== m[1]); return json({ success: true }); }
+    if (p === '/tuition/my/summary') return json(state.tuitionSummary);
+    if (p === '/tuition/my') return state.failTuition ? json({ success: false, message: 'Lỗi máy chủ' }, 500) : json({ success: true, fees: state.fees, settings: state.feeSettings });
+    m = p.match(/^\/tuition\/(f\d)\/notify$/);
+    if (m) { state.fees.find((f) => f._id === m[1]).studentNotified = true; return json({ success: true, message: 'Đã báo admin' }); }
+    const pageOf = (list) => {
+      const pg = Number(u.searchParams.get('page') || 1);
+      return json({ success: true, items: list.slice((pg - 1) * limit, pg * limit), total: list.length, page: pg, limit });
+    };
+    if (p === '/review/history') {
+      if (state.failReviews) return json({ success: false, message: 'Lỗi' }, 500);
+      const type = u.searchParams.get('attemptType');
+      return pageOf(type ? state.reviews.filter((r) => r.attemptType === type) : state.reviews);
+    }
+    if (p === '/mock-test/history') return pageOf(state.mocks);
+    if (p === '/listening/dictation/list') return state.failDictList ? json({ success: false }, 500) : json({ success: true, sections: state.dictSections, drills: state.dictDrills });
+    m = p.match(/^\/listening\/dictation\/section\/(\w+)\/translations$/);
+    if (m) return json({ success: true, translations: ['Xin chào bạn tôi.', 'Hôm nay trời đẹp.', ''] });
+    m = p.match(/^\/listening\/dictation\/section\/(\w+)$/);
+    if (m) {
+      if (m[1] === 'bad') return json({ success: false, message: 'Không có' }, 404);
+      return json({ success: true, section: {
+        _id: m[1], title: 'Cam 18 Test 1 Part 1', partNumber: 1, audioUrl: `${BASE}/test-audio.wav`, transcript: 'Dòng một.\nDòng hai.',
+        dictationSentences: [
+          { text: 'Hello there, my friend.', start: 0, end: 2 },
+          { text: 'It is a lovely day.', start: 2, end: 4 },
+          { text: 'See you soon.', start: 4, end: 6 },
+        ],
+      } });
+    }
+    m = p.match(/^\/listening\/dictation\/drill\/([\w-]+)$/);
+    if (m) {
+      return json({ success: true, drill: {
+        _id: 'dr1', slug: m[1], title: 'Tên riêng 1', category: m[1].startsWith('spelling') ? 'spelling' : 'numbers',
+        items: [
+          { text: 'My number is 0491 577 248.', answer: '0491 577 248', start: 0, end: 2, audioUrl: `${BASE}/test-audio.wav`, sourceTitle: 'Cam 17 Part 1' },
+          { text: 'It is spelled S-M-I-T-H.', answer: 'Smith', start: 2, end: 4, audioUrl: `${BASE}/test-audio.wav`, sourceTitle: 'Cam 16 Part 1' },
+        ],
+      } });
+    }
+    if (p === '/shadowing/lessons') return state.failShadowList ? json({ success: false }, 500) : json({ success: true, lessons: state.shadowLessons });
+    m = p.match(/^\/shadowing\/lessons\/([\w-]+)$/);
+    if (m) {
+      const l = state.shadowLessons.find((x) => x.slug === m[1]);
+      if (!l) return json({ success: false, message: 'Không có' }, 404);
+      return json({ success: true, lesson: {
+        ...l, clipStart: 10, sourceTitle: 'Video gốc A', burnedInCaptions: false,
+        segments: [
+          { text: 'Hello there, my friend.', vi: 'Xin chào bạn tôi.', start: 10, end: 11 },
+          { text: 'It is a lovely day.', vi: 'Hôm nay trời đẹp.', start: 11.2, end: 12 },
+          { text: 'See you soon.', vi: 'Hẹn sớm gặp lại.', start: 12.2, end: 13, answer: l.category === 'spelling-numbers' ? 'soon' : undefined },
+        ],
+      } });
+    }
     return json({ success: true });
   });
   const errors = [];
@@ -359,7 +509,66 @@ const PAGES = {
       await p.locator('.pfp-cover-dan svg').waitFor();
     },
   },
+  tuition: {
+    legacy: '/tuition.html?legacy=1', app: '/app/tuition', root: '.tuition-layout',
+    ready: async (p) => {
+      await p.locator('.fee-card').first().waitFor();
+      await p.locator('#qrImg').waitFor();
+      await p.locator('.tuition-hero .lh-mascot').waitFor();
+    },
+  },
+  reviewHistory: {
+    legacy: '/review-history.html?legacy=1', app: '/app/review-history', root: '.rh-layout',
+    ready: async (p) => {
+      await p.locator('#rhList .rh-item').nth(9).waitFor();
+      await p.locator('#rhPagination').waitFor();
+      await p.locator('.rh-hero .lh-mascot').waitFor();
+    },
+  },
+  reviewHistoryMock: {
+    legacy: '/review-history.html?legacy=1&view=mock', app: '/app/review-history?view=mock', root: '.rh-layout',
+    ready: async (p) => {
+      await p.locator('#mockList .rh-item').nth(9).waitFor();
+      await p.locator('#mockPagination').waitFor();
+      await p.locator('.rh-hero .lh-mascot').waitFor();
+    },
+  },
+  dictation: {
+    legacy: '/dictation.html?legacy=1', app: '/app/dictation', root: '.dict-wrap',
+    ready: async (p) => {
+      await p.locator('.dict-card').nth(9).waitFor();
+      await p.locator('.dict-picker-head .lh-mascot').waitFor();
+    },
+  },
+  dictationPractice: {
+    legacy: '/dictation.html?legacy=1&sectionId=s1', app: '/app/dictation?sectionId=s1', root: '.dict-wrap', patch: (s) => { s.fixedRandom = true; },
+    ready: (p) => p.locator('.dict-num-btn').nth(2).waitFor(),
+  },
+  dictationDrill: {
+    legacy: '/dictation.html?legacy=1&drill=spelling-1', app: '/app/dictation?drill=spelling-1', root: '.dict-wrap', patch: (s) => { s.fixedRandom = true; },
+    ready: (p) => p.locator('.dict-num-btn').nth(1).waitFor(),
+  },
+  shadowing: {
+    legacy: '/shadowing.html?legacy=1', app: '/app/shadowing', root: '.sh-wrap',
+    ready: async (p) => {
+      await p.locator('.sh-card').nth(23).waitFor();
+      await p.locator('.pg-wrap').waitFor();
+      await p.locator('.sh-head .lh-mascot').waitFor();
+    },
+  },
+  shadowingChooser: { legacy: '/shadowing.html?legacy=1&lesson=l0', app: '/app/shadowing?lesson=l0', root: '.sh-wrap', ready: shadowReady('.sh-choice.last') },
+  shadowingPractice: { legacy: '/shadowing.html?legacy=1&lesson=l0&mode=shadowing', app: '/app/shadowing?lesson=l0&mode=shadowing', root: '.sh-wrap', ready: shadowReady('#sh-play') },
+  shadowingWatch: { legacy: '/shadowing.html?legacy=1&lesson=l0&mode=watch', app: '/app/shadowing?lesson=l0&mode=watch', root: '.sh-wrap', ready: shadowReady('#wt-play') },
+  shadowingDictation: { legacy: '/shadowing.html?legacy=1&lesson=l0&mode=dictation', app: '/app/shadowing?lesson=l0&mode=dictation', root: '.sh-wrap', ready: shadowReady('#dc-play') },
 };
+
+function shadowReady(sel) {
+  return async (p) => {
+    await p.locator('#sh-list .sh-item').nth(2).waitFor();
+    await p.locator('iframe#yt-player').waitFor({ state: 'attached' });
+    await p.locator(sel).waitFor();
+  };
+}
 
 // Open one tab of the profile, on either version of the page
 const profileTab = (name, sel) => async (p) => {
@@ -382,6 +591,7 @@ async function compare(browser, name, label, { viewport = { width: 1280, height:
     const ctx = await browser.newContext({ viewport, reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     const state = makeState();
+    cfg.patch?.(state);
     patch(state);
     const { errors } = await open(page, url, state);
     await (ready || cfg.ready)(page);
@@ -733,7 +943,38 @@ async function inboxFlow(page, log, state, isApp) {
   expect(log.length).toBe(5);
 }
 
-const FLOWS = { leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow, profile: profileFlow };
+async function tuitionFlow(page) {
+  await PAGES.tuition.ready(page);
+  await page.locator('#nbtn-f1').click();
+  await expect(page.locator('#fcard-f1 .status-notified')).toBeVisible(); // the old page gets there by reloading
+}
+
+async function dictationFlow(page, log) {
+  await page.locator('.dict-card', { hasText: 'Cam 18 Test 1' }).click();
+  await page.locator('.dict-num-btn').nth(2).waitFor();
+  await page.fill('#dict-input', 'hello wrong');
+  await page.click('#dict-check-btn');
+  await expect(page.locator('#dict-status')).toContainText('Incorrect');
+  await page.fill('#dict-input', 'Hello there, my friend.');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#dict-status')).toContainText('Correct!');
+  await page.click('.dict-back-btn');
+  await page.locator('.dict-card').first().waitFor();
+  await expect.poll(() => log.length).toBe(1);
+}
+
+async function shadowingFlow(page, log) {
+  await page.locator('.sh-card[data-slug="l0"]').click();
+  await page.locator('.sh-choice[data-mode="dictation"]').click();
+  await page.fill('#dc-input', 'Hello there my friend');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#dc-score')).toContainText('Chính xác');
+  await page.click('.sh-back');
+  await page.locator('.sh-card').first().waitFor();
+  await expect.poll(() => log.length).toBe(1);
+}
+
+const FLOWS = { leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow, profile: profileFlow, tuition: tuitionFlow, dictation: dictationFlow, shadowing: shadowingFlow };
 
 for (const [name, flow] of Object.entries(FLOWS)) {
   test(`${name}: every action sends the same requests as the old page`, async ({ browser }) => {
@@ -744,7 +985,7 @@ for (const [name, flow] of Object.entries(FLOWS)) {
       await flow(page, log, state, url.startsWith('/app/'));
       await ctx.close();
       // (the picture itself is re-encoded by each browser run)
-      return { log: log.map((l) => l.replace(/^(POST \/user\/avatar) .*/, '$1')), errors };
+      return { log: log.map((l) => l.replace(/^(POST \/user\/avatar) .*/, '$1').replace(/"sessionId":"[^"]+"/, '"sessionId":"x"')), errors };
     };
     const old = await run(PAGES[name].legacy);
     const now = await run(PAGES[name].app);
@@ -761,6 +1002,10 @@ test.describe('inside the React app', () => {
     ['/inbox.html', '/app/inbox'], ['/inbox.html?msg=m7', '/app/inbox?msg=m7'],
     ['/profile.html', '/app/profile'], ['/profile.html#inventory', '/app/profile?tab=inventory'],
     ['/profile.html#plan', '/app/profile?focus=plan'],
+    ['/tuition.html', '/app/tuition'],
+    ['/review-history.html', '/app/review-history'], ['/review-history.html?view=mock', '/app/review-history?view=mock'],
+    ['/dictation.html?sectionId=s1', '/app/dictation?sectionId=s1'], ['/dictation/s1', '/app/dictation?sectionId=s1'],
+    ['/shadowing.html?lesson=l0&mode=watch', '/app/shadowing?lesson=l0&mode=watch'], ['/shadowing/l0', '/app/shadowing?lesson=l0'],
   ]) {
     test(`${from} forwards to ${to}`, async ({ page }) => {
       await open(page, from);
@@ -979,5 +1224,296 @@ test.describe('inside the React app', () => {
     await open(page, '/app/shop', { ...makeState(), failShop: true });
     await expect(page.locator('#shop-items .shop-empty')).toContainText('Không tải được cửa hàng');
     await expect(page.locator('#shop-duels .shop-empty')).toBeVisible();
+  });
+
+  test('tuition: "Đã chuyển khoản" updates the card without a reload', async ({ page }) => {
+    const { log } = await open(page, '/app/tuition');
+    await PAGES.tuition.ready(page);
+    await page.evaluate(() => { window.__sameDocument = true; });
+    await expect(page.locator('.nav-links > a[href="/app/tuition"]')).toHaveClass(/nav-link-tuition.*active|active.*nav-link-tuition/);
+    await expect(page.locator('.fee-note')).toHaveText('Giảm 10% <đợt 1>');
+    await page.locator('#nbtn-f1').click();
+    await expect(page.locator('#fcard-f1')).toHaveClass(/notified/);
+    await expect(page.locator('.debt-sub')).toContainText('2 kỳ đang chờ xác nhận');
+    await expect(page.locator('#nbtn-f1')).toHaveCount(0);
+    await toastSeen(page, 'Đã báo admin');
+    await page.waitForTimeout(1700); // the old page reloaded after 1.5s
+    expect(await page.evaluate(() => window.__sameDocument)).toBe(true);
+    expect(log).toEqual(['POST /tuition/f1/notify ']);
+
+    await expect(page.locator('#paidList')).toHaveCount(0);
+    await page.locator('.paid-toggle').click();
+    await expect(page.locator('#paidList .fee-card')).toHaveCount(1);
+    await expect(page.locator('#paidToggleLabel')).toHaveText('Ẩn học phí đã đóng');
+  });
+
+  test('tuition: a failed load can be retried; no fees shows the empty state', async ({ page }) => {
+    const state = makeState();
+    state.failTuition = true;
+    await open(page, '/app/tuition', state);
+    await expect(page.locator('#debtBanner')).toContainText('Lỗi máy chủ');
+    state.failTuition = false;
+    state.fees = [];
+    await page.locator('#debtBanner button').click();
+    await expect(page.locator('#emptyState')).toBeVisible();
+    await expect(page.locator('#debtBanner')).toContainText('Không có thông tin học phí nào');
+  });
+
+  test('tuition reminder: never on the tuition page; its link opens the page in place', async ({ page }) => {
+    const state = makeState();
+    state.tuitionSummary = { success: true, unpaidCount: 2, monthCount: 1, monthTotal: 1500000, dueCount: 1 };
+    await open(page, '/app/tuition', state);
+    await PAGES.tuition.ready(page);
+    await page.waitForTimeout(600);
+    await expect(page.locator('#nav-tuition-popup-overlay')).toHaveCount(0);
+
+    await page.goto(`${BASE}/app/shop`);
+    await expect(page.locator('#nav-tuition-popup-overlay')).toBeVisible();
+    await page.evaluate(() => { window.__sameDocument = true; });
+    await page.locator('#nav-tuition-popup-go').click();
+    await expect(page.locator('#nav-tuition-popup-overlay')).toHaveCount(0);
+    await page.locator('.fee-card').first().waitFor();
+    await expect(page).toHaveURL(`${BASE}/app/tuition`);
+    expect(await page.evaluate(() => window.__sameDocument)).toBe(true);
+  });
+
+  test('review history: filters restart at page 1, the category list follows the page', async ({ page }) => {
+    await open(page, '/app/review-history');
+    await PAGES.reviewHistory.ready(page);
+    await expect(page.locator('#rhPrevBtn')).toBeDisabled();
+    await page.locator('#rhNextBtn').click();
+    await expect(page.locator('#rhPageLabel')).toHaveText('Trang 2/3');
+    await page.locator('#rhFilterType').selectOption('reading');
+    await expect(page.locator('#rhPageLabel')).toHaveText('Trang 1/2');
+    await expect(page.locator('#rhList .badge').first()).toHaveText('Reading (Full test)');
+
+    await page.locator('#rhFilterCategory').selectOption('Ngữ pháp');
+    const rows = page.locator('#rhList .rh-item');
+    expect(await rows.count()).toBeLessThan(10);
+    for (const row of await rows.all()) await expect(row).toContainText('Ngữ pháp');
+  });
+
+  test('review history: the tabs keep their place in the address', async ({ page }) => {
+    await open(page, '/app/review-history');
+    await PAGES.reviewHistory.ready(page);
+    await page.locator('#rhTabMock').click();
+    await expect(page).toHaveURL(`${BASE}/app/review-history?view=mock`);
+    await page.locator('#mockList .rh-item').first().waitFor();
+    await expect(page.locator('#rhList')).toBeHidden();
+    await expect(page.locator('.rh-filters')).toBeHidden();
+    await expect(page.locator('#rhPagination')).toHaveCount(0);
+    await expect(page.locator('#mockList a', { hasText: 'Tiếp tục thi thử' }).first()).toHaveAttribute('href', '/mock-test.html');
+    await page.locator('#rhTabMistakes').click();
+    await expect(page).toHaveURL(`${BASE}/app/review-history`);
+    await expect(page.locator('#rhList')).toBeVisible();
+    await expect(page.locator('#mockList')).toBeHidden();
+  });
+
+  test('review history: a failed list says so', async ({ page }) => {
+    await open(page, '/app/review-history', { ...makeState(), failReviews: true });
+    await expect(page.locator('#rhList .rh-empty')).toHaveText('Lỗi tải lịch sử review.');
+  });
+
+  test('dictation: a wrong try shows the mask, a right one the meaning, then moves on', async ({ page }) => {
+    await open(page, '/app/dictation?sectionId=s1');
+    await page.locator('.dict-num-btn').nth(2).waitFor();
+    await page.fill('#dict-input', 'hello thera');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#dict-mask')).toHaveText('Hello there, ** ******.');
+    await expect(page.locator('#dict-mask .m-err')).toHaveText('e');
+    await page.locator('#opt-show-answer').uncheck();
+    await expect(page.locator('#dict-mask')).toHaveText('Hello *****, ** ******.');
+    await page.fill('#dict-input', 'hello there my friend');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#dict-vi')).toContainText('Xin chào bạn tôi.');
+    await expect(page.locator('#dict-session-score')).toHaveText('1/3 ✓');
+    await expect(page.locator('.dict-num-btn').first()).toHaveClass(/done/);
+    await expect(page.locator('#dict-cur-num')).toHaveText('2', { timeout: 4000 });
+    await expect(page.locator('#dict-input')).toHaveValue('');
+  });
+
+  test('dictation: a sentence whose answer was seen is saved as not correct', async ({ page }) => {
+    const { log } = await open(page, '/app/dictation?sectionId=s1');
+    await page.locator('.dict-num-btn').nth(2).waitFor();
+    await page.locator('#opt-show-full').check();
+    await expect(page.locator('.dict-correct-en')).toHaveText('Hello there, my friend.');
+    await page.fill('#dict-input', 'Hello there, my friend.');
+    await page.click('#dict-check-btn');
+    await expect(page.locator('.dict-peek-note')).toBeVisible();
+    // Leaving through the menu saves too
+    await page.evaluate(() => window.__go('/classroom'));
+    await expect.poll(() => log.length).toBe(1);
+    expect(log[0]).toContain('"sentenceIndex":0,"isCorrect":false,"matchedWords":4,"totalWords":4');
+  });
+
+  test('dictation: a drill ignores digit grouping; pasting is refused', async ({ page }) => {
+    await open(page, '/app/dictation?drill=numbers-1');
+    await page.locator('.dict-num-btn').nth(1).waitFor();
+    await expect(page.locator('#dict-media-src')).toHaveText('🎧 Cam 17 Part 1');
+    await page.locator('#dict-input').evaluate((el) => el.dispatchEvent(new ClipboardEvent('paste', { bubbles: true, cancelable: true })));
+    await toastSeen(page, 'Không thể dán văn bản');
+    await page.fill('#dict-input', '0491577248');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('.dict-reveal-answer')).toHaveText('0491 577 248');
+    await expect(page.locator('#dict-check-btn')).toBeDisabled();
+  });
+
+  test('dictation: leaving stops the audio; a bad link returns to the list', async ({ page }) => {
+    await open(page, '/app/dictation?sectionId=bad');
+    await toastSeen(page, 'Không tải được bài này');
+    await expect(page).toHaveURL(`${BASE}/app/dictation`);
+    await page.locator('.dict-card').first().waitFor();
+
+    await page.locator('.dict-card', { hasText: 'Cam 18 Test 1' }).click();
+    await expect(page).toHaveURL(`${BASE}/app/dictation?sectionId=s1`);
+    await page.locator('.dict-num-btn').nth(2).waitFor();
+    await page.evaluate(() => { window.__audio = document.getElementById('dict-audio'); window.__audio.muted = true; return window.__audio.play().catch(() => {}); });
+    await page.click('.dict-back-btn');
+    await expect(page).toHaveURL(`${BASE}/app/dictation`);
+    expect(await page.evaluate(() => window.__audio.paused)).toBe(true);
+    await expect(page.locator('#screen-practice')).toHaveCount(0);
+  });
+
+  test('dictation and shadowing: without Premium a lesson asks to upgrade', async ({ page }) => {
+    const state = makeState();
+    state.user = { ...USER, plan: 'free', createdAt: daysAgo(30) };
+    await open(page, '/app/dictation?sectionId=s1', state);
+    await expect(page.locator('#premium-promo-banner')).toBeVisible();
+    await expect(page.locator('#screen-practice')).toHaveCount(0);
+    await page.goto(`${BASE}/app/shadowing`);
+    await page.locator('.sh-card').first().click();
+    await expect(page.locator('#screen-practice')).toHaveCount(0);
+    await expect(page).toHaveURL(`${BASE}/app/shadowing`);
+  });
+
+  test('shadowing: the picker starts the video; the address follows the mode', async ({ page }) => {
+    await open(page, '/app/shadowing');
+    await page.locator('.sh-card[data-slug="l0"]').click();
+    await expect(page).toHaveURL(`${BASE}/app/shadowing?lesson=l0`);
+    await expect(page.locator('#sh-chooser')).toBeVisible();
+    await expect(page.locator('.sh-choice.last')).toBeFocused();
+    await page.locator('.sh-choice[data-mode="watch"]').click();
+    await expect(page.locator('#sh-chooser')).toBeHidden();
+    await expect(page).toHaveURL(`${BASE}/app/shadowing?lesson=l0&mode=watch`);
+    await expect(page.locator('#wt-play')).toContainText('Tạm dừng');
+    expect(await page.evaluate(() => window.__yt[0].calls.slice(0, 2))).toEqual(['seek:10', 'play']);
+    // The subtitle and the transcript follow the video
+    await expect(page.locator('#sh-subtitle')).toContainText('Hello there');
+    await expect(page.locator('#sh-cur')).toHaveText('2');
+    await expect(page.locator('#sh-subtitle')).toContainText('It is a lovely day.');
+    await expect(page.locator('#wt-done')).toContainText('Xem hết bài rồi', { timeout: 6000 });
+    await page.locator('.sh-mode[data-mode="shadowing"]').click();
+    await expect(page).toHaveURL(`${BASE}/app/shadowing?lesson=l0`);
+  });
+
+  test('shadowing: a mode in the first address does not skip the picker of the next lesson', async ({ page }) => {
+    await open(page, '/app/shadowing?lesson=l0&mode=watch');
+    await page.waitForFunction(() => window.__yt?.length === 1);
+    await expect(page.locator('#sh-chooser')).toBeHidden();
+    await page.click('.sh-back');
+    await page.locator('.sh-card[data-slug="l1"]').click();
+    await expect(page.locator('#sh-chooser')).toBeVisible();
+  });
+
+  test('shadowing: a sentence stops at its end; keys move and play', async ({ page }) => {
+    await open(page, '/app/shadowing?lesson=l0&mode=shadowing');
+    await page.locator('iframe#yt-player').waitFor({ state: 'attached' });
+    await page.locator('#sh-play').waitFor();
+    await page.waitForFunction(() => window.__yt?.length === 1);
+    await page.keyboard.press('Space');
+    await expect(page.locator('#sh-play')).toContainText('Dừng');
+    await expect(page.locator('#sh-play')).toContainText('Nghe', { timeout: 3000 });
+    expect(await page.evaluate(() => window.__yt[0].calls.at(-1))).toBe('pause');
+    await page.keyboard.press('ArrowRight');
+    await expect(page.locator('#sh-cur')).toHaveText('2');
+    await expect(page.locator('#sh-sentence')).toHaveText('It is a lovely day.');
+    await page.locator('#opt-hide').check();
+    await expect(page.locator('#sh-sentence')).toHaveText('I_ i_ a l_____ d__.');
+    await expect(page.locator('.sh-item').first().locator('.sh-item-text')).toHaveText('•••');
+    await page.locator('#sh-speed').click();
+    await expect(page.locator('#sh-speed')).toHaveText('0.75x');
+    expect(await page.evaluate(() => window.__yt[0].rate)).toBe(0.75);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('ews_shadowing_prefs')))).toMatchObject({ hide: true, speedIdx: 1 });
+  });
+
+  test('shadowing: speaking the sentence is scored, and saved on leaving', async ({ page }) => {
+    const state = makeState();
+    state.fakeSpeech = true;
+    const { log } = await open(page, '/app/shadowing?lesson=l0&mode=shadowing', state);
+    await page.waitForFunction(() => window.__yt?.length === 1);
+    await page.locator('#sh-rec').click();
+    await expect(page.locator('#sh-rec')).toContainText('Dừng');
+    await expect(page.locator('#sh-score')).toContainText('100%', { timeout: 4000 });
+    await expect(page.locator('#sh-sentence .w-match')).toHaveCount(4);
+    await expect(page.locator('.sh-item').first().locator('.sh-item-score')).toHaveText('100%');
+    await expect(page.locator('#sh-progress')).toHaveText('1/3 câu');
+    await page.click('.sh-back');
+    await expect.poll(() => log.length).toBe(1);
+    expect(log[0]).toContain('"mode":"shadowing"');
+    expect(await page.evaluate(() => window.__yt[0].destroyed)).toBe(true);
+    await page.locator('.sh-card').first().waitFor();
+  });
+
+  test('shadowing: dictation mode covers the video, Enter checks then moves on', async ({ page }) => {
+    await open(page, '/app/shadowing?lesson=l0&mode=dictation');
+    await page.waitForFunction(() => window.__yt?.length === 1);
+    await expect(page.locator('#sh-chooser')).toBeHidden();
+    await expect(page.locator('.sh-video-cover')).toBeVisible();
+    await page.locator('.sh-video-cover button').click();
+    await expect(page.locator('.sh-video-cover')).toBeHidden();
+    await page.locator('#dc-hint-btn').click();
+    await expect(page.locator('#dc-hint')).toHaveText('4 từ · H____ t____, m_ f_____.');
+    await page.fill('#dc-input', 'hello friend extra');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#dc-score')).toContainText('Đúng 2/4 từ');
+    await expect(page.locator('#dc-diff .w-extra')).toHaveText('extra');
+    await expect(page.locator('#dc-vi')).toHaveText('');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#sh-cur')).toHaveText('2');
+    await expect(page.locator('#dc-input')).toHaveValue('');
+    await expect(page.locator('#dc-hint')).toBeHidden();
+    await expect(page.locator('#dc-play')).toContainText('Dừng');
+  });
+
+  test('shadowing: filters, pages and the progress on the cards', async ({ page }) => {
+    await open(page, '/app/shadowing');
+    await PAGES.shadowing.ready(page);
+    await expect(page.locator('.sh-card')).toHaveCount(24);
+    await expect(page.locator('.sh-card[data-slug="l0"] .sh-pill.good')).toContainText('90%');
+    await page.locator('.pg-btn:text-is("2")').click();
+    await expect(page.locator('.sh-card')).toHaveCount(6);
+    await page.locator('#sh-filters .sh-chip[data-cat="fun-shorts"]').click();
+    await expect(page.locator('.sh-card')).toHaveCount(10);
+    await expect(page.locator('#sh-filters .sh-chip[data-cat="comedy"]')).toBeHidden();
+    await page.locator('#sh-levels .sh-chip[data-level="C1"]').click();
+    await expect(page.locator('.sh-card')).toHaveCount(5);
+    await page.locator('#sh-tips summary').click();
+    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('ews_shadowing_prefs'))?.tipsClosed)).toBe(true);
+  });
+
+  test('the spelling videos listed on Dictation open in Shadowing, in place', async ({ page }) => {
+    await open(page, '/app/dictation');
+    await page.locator('.dict-chip[data-part="spell"]').click();
+    await page.evaluate(() => { window.__sameDocument = true; });
+    await page.locator('.dict-card').first().click();
+    await expect(page).toHaveURL(`${BASE}/app/shadowing?lesson=l2&mode=dictation`);
+    await expect(page.locator('#dc-input')).toHaveAttribute('placeholder', /Nhập những gì/);
+    await expect(page.locator('#sh-chooser')).toBeHidden();
+    expect(await page.evaluate(() => window.__sameDocument)).toBe(true);
+    await expect(page.locator('.nav-dd-menu a[href="/app/shadowing"]').first()).toHaveClass(/active/);
+    await expect(page.locator('.nav-dropdown > a[href="/speaking.html"]')).toHaveClass(/active/);
+    await expect(page.locator('.nav-dropdown > a[href="/listening.html"]')).not.toHaveClass(/active/);
+  });
+
+  test('the pet stays off Dictation but comes back on the next page', async ({ page }) => {
+    const state = makeState();
+    state.activePet = 'meo';
+    await open(page, '/app/dictation', state);
+    await page.locator('.dict-card').first().waitFor();
+    const shown = () => page.evaluate(() => document.getElementById('ews-pet-layer')?.style.display);
+    await expect.poll(shown).toBe('none');
+    await page.evaluate(() => window.__go('/shadowing'));
+    await page.locator('.sh-card').first().waitFor();
+    await expect.poll(shown).toBe('');
   });
 });
