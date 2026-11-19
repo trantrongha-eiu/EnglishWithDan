@@ -190,9 +190,10 @@ exports.analyze = catchAsync(async (req, res) => {
 // One question's recording from a multi-question run (Part 1 topic, Part 2
 // + 3, the full mock), uploaded as soon as the student moves on so the
 // teacher can listen to every answer. /analyze then lists the returned URLs
-// on the attempt (audioClips). transcribe=1: the device recorded without
-// live speech-to-text (its mic can't feed both at once), so the text comes
-// from Whisper here — '' when that fails; the recording is still kept.
+// on the attempt (audioClips). transcribe=1: live speech-to-text gave no usable
+// text for this answer (the device can't run it alongside the recorder, or it
+// came back empty), so the text comes from Whisper here — '' when that fails;
+// the recording is still kept.
 exports.clip = catchAsync(async (req, res) => {
   if (!req.file || !req.file.buffer || !req.file.buffer.length) {
     return res.status(400).json({ success: false, message: 'Không có bản ghi âm.' });

@@ -264,7 +264,7 @@ function startSeqSilenceTimer() {
       clearInterval(state.seqSilenceTimer);
       state.seqSilenceTimer = null;
       if (hintEl) hintEl.classList.add('hidden');
-      confirmSeqAnswer();
+      confirmSeqAnswer({ autoSkipped: true });
     }
   }, 1000);
 }

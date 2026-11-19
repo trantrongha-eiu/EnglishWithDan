@@ -110,6 +110,7 @@ const state = {
   seqRecognition:     null,
   seqIsRecording:     false,
   seqFinalTranscript: '',
+  seqInterimTranscript: '', // words heard but not finalised yet — see confirmSeqAnswer
   _seqUserStoppedRecording: false,
   _seqRestartAttempts:      0,
   _seqRecognitionEverStarted: false,
@@ -1532,6 +1533,7 @@ let _captureStarting = null; // getUserMedia still pending — see _startAudioCa
 const MIC_CONFLICT_KEY = 'ews_sp_mic_conflict';
 const SILENT_PEAK = 0.002;  // RMS; real speech is ~0.02–0.3, a starved track is ~0
 const VOICE_LEVEL = 0.02;   // RMS that counts as "the student is talking"
+const LEVEL_TICK_MS = 200;
 function _micConflictKnown() {
   try { return localStorage.getItem(MIC_CONFLICT_KEY) === '1'; } catch (_) { return false; }
 }
@@ -1564,7 +1566,7 @@ function _startLevelMeter(stream) {
     an.fftSize = 2048;
     src.connect(an);
     const buf = new Float32Array(an.fftSize);
-    const lv = { src, peak: 0, samples: 0, startedAt: Date.now(), onVoice: null };
+    const lv = { src, peak: 0, samples: 0, voiced: 0, startedAt: Date.now(), onVoice: null };
     lv.timer = setInterval(() => {
       if (!_meterCtx || _meterCtx.state !== 'running') return; // a suspended context reads 0 — not evidence
       an.getFloatTimeDomainData(buf);
@@ -1573,8 +1575,9 @@ function _startLevelMeter(stream) {
       const rms = Math.sqrt(sum / buf.length);
       lv.samples++;
       if (rms > lv.peak) lv.peak = rms;
+      if (rms > VOICE_LEVEL) lv.voiced++;
       if (rms > VOICE_LEVEL && lv.onVoice) { const f = lv.onVoice; lv.onVoice = null; f(); }
-    }, 200);
+    }, LEVEL_TICK_MS);
     _level = lv;
   } catch (e) {
     console.warn('_startLevelMeter:', e.message);
@@ -1587,7 +1590,7 @@ function _stopLevelMeter() {
   if (!lv) return null;
   clearInterval(lv.timer);
   try { lv.src.disconnect(); } catch (_) {}
-  return { peak: lv.peak, measured: lv.samples >= 5 };
+  return { peak: lv.peak, measured: lv.samples >= 5, voicedMs: lv.voiced * LEVEL_TICK_MS };
 }
 // True once it's clear the recorder is getting silence while speech-to-text
 // is hearing words — the mic conflict described above.
@@ -1656,7 +1659,10 @@ function _stopAudioCapture() {
     recorder.onstop = () => {
       const chunks = recorder._chunks || [];
       const blob = chunks.length ? new Blob(chunks, { type: recorder.mimeType || 'audio/webm' }) : null;
-      if (blob) blob._silent = !!(lvl && lvl.measured && lvl.peak < SILENT_PEAK);
+      if (blob) {
+        blob._silent = !!(lvl && lvl.measured && lvl.peak < SILENT_PEAK);
+        blob._voicedMs = lvl && lvl.measured ? lvl.voicedMs : null; // null = not measured
+      }
       release();
       resolve(blob);
     };
@@ -2716,6 +2722,7 @@ function loadSeqQuestion() {
   // (widened by the TTS-first sequencing below) would carry the previous
   // question's leftover transcript into this one.
   state.seqFinalTranscript = '';
+  state.seqInterimTranscript = '';
 
   const progress = document.getElementById('seq-progress');
   if (progress) progress.textContent = `${state.seqIndex + 1}/${state.seqQueue.length}`;
@@ -2865,6 +2872,7 @@ function _seqSwitchToAudioOnly() {
   state._seqUserStoppedRecording = true;
   try { state.seqRecognition.stop(); } catch (_) {} // stop, not abort: abort reports an "aborted" error
   state.seqFinalTranscript = '';
+  state.seqInterimTranscript = '';
   _stopAudioCapture(); // the silent part — discarded
   _startAudioCapture().then(_seqWatchVoice);
   clearSeqSilenceTimer();
@@ -2883,9 +2891,24 @@ function _seqWatchVoice() {
   _level.onVoice = () => { if (state._seqAudioOnly) clearSeqSilenceTimer(); };
 }
 
+// Live speech-to-text can come back empty for an answer the student really
+// gave (2026-11-18: 22–28s answers saved as "không trả lời", so the homework
+// never ticked). Such an answer is transcribed from its recording — but not
+// a question the student let time out, or a recording with no voice in it,
+// because Whisper tends to invent words from noise and those would count.
+const SEQ_MIN_VOICED_MS = 3000;
+const SEQ_MIN_UNMEASURED_BYTES = 30000; // ~2s of audio, when the level meter couldn't run
+function seqClipNeedsTranscript(ans, blob) {
+  if (ans.audioOnly) return true;
+  if (_wordCount(ans.transcript) >= SEQ_ANSWER_MIN_WORDS) return false;
+  if (ans.autoSkipped || blob._silent) return false;
+  return blob._voicedMs == null ? blob.size >= SEQ_MIN_UNMEASURED_BYTES : blob._voicedMs >= SEQ_MIN_VOICED_MS;
+}
+
 // Stop this question's recording and upload it (POST /api/speaking/clip) in
 // the background while the student goes on; finishSequentialSession waits
-// for these before grading. Audio-only answers come back transcribed.
+// for these before grading. Answers with no usable live transcript come back
+// transcribed (seqClipNeedsTranscript).
 async function _seqUploadClip(ansIdx) {
   const blob = await _stopAudioCapture();
   const ans = state.seqAnswers[ansIdx];
@@ -2894,15 +2917,16 @@ async function _seqUploadClip(ansIdx) {
     _rememberMicConflict(); // missed mid-question — the next questions go audio-only
     return;                 // nothing audible to keep; the transcript is still graded
   }
+  const transcribe = seqClipNeedsTranscript(ans, blob);
   for (let tries = 0; tries < 2; tries++) {
     try {
       const fd = new FormData();
       fd.append('index', String(ansIdx));
-      if (ans.audioOnly) fd.append('transcribe', '1');
+      if (transcribe) fd.append('transcribe', '1');
       fd.append('audio', blob, `answer.${_recordingExt(blob)}`);
       const d = await apiFetch('/api/speaking/clip', { method: 'POST', body: fd });
       if (d && d.url) ans.audioUrl = d.url;
-      if (ans.audioOnly && d && d.transcript && !String(ans.transcript || '').trim()) ans.transcript = d.transcript;
+      if (transcribe && d && d.transcript) ans.transcript = d.transcript;
       return;
     } catch (e) {
       console.warn('_seqUploadClip:', e && e.message);
@@ -2927,6 +2951,8 @@ function setupSeqRecognition() {
     // answer don't exhaust the dead-mic cap and cut the recording off early.
     state._seqRestartAttempts = 0;
     if (state._seqAudioOnly) return; // late results of the take dropped by _seqSwitchToAudioOnly
+    // Late results of an answer already recorded — not part of the next one.
+    if (state._seqUserStoppedRecording) return;
     // Deliberately NOT rendered anywhere while recording — the student's
     // transcript only becomes visible after the whole session is submitted
     // (finishSequentialSession's results screen), never live as they speak.
@@ -2936,6 +2962,7 @@ function setupSeqRecognition() {
       if (e.results[i].isFinal) state.seqFinalTranscript += t + ' ';
       else interim += t;
     }
+    state.seqInterimTranscript = interim;
     if (!state._seqAudioOnly && state.seqIsRecording && _recordingLooksSilent(state.seqFinalTranscript + ' ' + interim)) {
       _seqSwitchToAudioOnly();
       return;
@@ -2944,6 +2971,12 @@ function setupSeqRecognition() {
   };
 
   state.seqRecognition.onend = () => {
+    // A session that ended on unfinalised words will never finalise them, and
+    // the restarted one begins with an empty result list — keep them now.
+    if (!state._seqUserStoppedRecording && state.seqInterimTranscript.trim()) {
+      state.seqFinalTranscript += state.seqInterimTranscript.trim() + ' ';
+      state.seqInterimTranscript = '';
+    }
     // Same transparent-resume logic as the single-question flow's
     // setupRecognition() — Chrome can end "continuous" recognition on its
     // own mid-answer; don't let that silently truncate the transcript.
@@ -3002,6 +3035,7 @@ function startSeqRecording() {
   state._seqRestartAttempts = 0;
   state._seqRecognitionEverStarted = false;
   state.seqFinalTranscript = '';
+  state.seqInterimTranscript = '';
   // Every answer is recorded for the teacher (uploaded in confirmSeqAnswer).
   const capture = _startAudioCapture();
   if (audioOnly) {
@@ -3016,7 +3050,8 @@ function startSeqRecording() {
   }
 }
 
-function confirmSeqAnswer() {
+// autoSkipped: the "haven't said anything yet" timer ran out (speaking-timer.js).
+function confirmSeqAnswer({ autoSkipped = false } = {}) {
   if (!state.seqActive) return;
   // Re-entrancy guard — the 120s speak countdown can auto-call this exactly
   // as the student manually clicks "Ghi nhận câu trả lời" (the post-load
@@ -3030,7 +3065,9 @@ function confirmSeqAnswer() {
     hideSeqPrepTimer();
     hideSeqSpeakCountdown();
 
-    const transcript = state.seqFinalTranscript.trim();
+    // Includes the words not finalised yet: stopping recognition delivers them
+    // too late for this answer, and they can be the whole answer.
+    const transcript = (state.seqFinalTranscript + state.seqInterimTranscript).trim();
     if (state.seqIsRecording && state.seqRecognition) {
       state._seqUserStoppedRecording = true; // moving to the next question — don't auto-restart this session
       try { state.seqRecognition.stop(); } catch (e) {}
@@ -3039,7 +3076,7 @@ function confirmSeqAnswer() {
     stopSeqElapsedTimer();
 
     const q = state.seqQueue[state.seqIndex];
-    state.seqAnswers.push({ questionId: q._id, question: q.question, part: q.part, transcript, audioOnly: !!state._seqAudioOnly });
+    state.seqAnswers.push({ questionId: q._id, question: q.question, part: q.part, transcript, audioOnly: !!state._seqAudioOnly, autoSkipped });
     const ansIdx = state.seqAnswers.length - 1;
     (state.seqClipJobs = state.seqClipJobs || [])[ansIdx] = _seqUploadClip(ansIdx);
     if (state._seqAudioOnly) {
