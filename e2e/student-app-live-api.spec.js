@@ -49,7 +49,7 @@ window.YT = { PlayerState: { PLAYING: 1, PAUSED: 2 }, Player: function (el, o) {
 } };
 if (window.onYouTubeIframeAPIReady) window.onYouTubeIframeAPIReady();`;
 
-let mongod, apiServer, staticServer, apiBase, student, token, paidFee, unpaidFee;
+let mongod, apiServer, staticServer, apiBase, student, token, paidFee, unpaidFee, advGroup;
 
 test.describe.configure({ mode: 'serial' });
 test.use({
@@ -94,6 +94,14 @@ test.beforeAll(async () => {
       { type: 'overview', data: { text: 'Thì hiện tại đơn.' } },
       { type: 'practice_exercises', data: { exercises: [{ type: 'multiple_choice', question: 'He ___ tea.', options: ['drink', 'drinks'], answerIndex: 1, explanation: 'Thêm s' }] } },
       { type: 'quiz', data: { questions: [{ question: 'We ___ here.', options: ['live', 'lives'], answerIndex: 0, explanation: 'Số nhiều' }] } },
+    ],
+  });
+  advGroup = await model('SentenceStructureGroup').create({
+    code: 'complex-sentences', order: 1, week: 1, slotInWeek: 1, nameVi: 'Câu phức', nameEn: 'Complex Sentences', emoji: '🔗',
+    targetStructure: 'Although + S + V, S + V',
+    sentences: [
+      { order: 1, promptVi: 'Mặc dù trời mưa, tôi vẫn đi học.', answerEn: 'Although it rained, I went to school.', hintWords: ['although'] },
+      { order: 2, promptVi: 'Tôi thích đọc sách.', answerEn: 'I like reading books.' },
     ],
   });
 
@@ -223,6 +231,31 @@ test('essential grammar: graded by the server, kept in the history', async ({ pa
   await page.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('eg_lesson_scores')).forEach((k) => localStorage.removeItem(k)));
   await page.reload();
   await expect(page.locator('#header-eg-progress')).toHaveText(/1\/1/);
+  expect(errors).toEqual([]);
+});
+
+test('advanced sentences: graded by the server, draft kept, attempt in the history', async ({ page }) => {
+  const errors = await wire(page);
+  await page.goto(`${BASE}/app/advanced-sentences`);
+  await page.locator('.as-week-card[data-week="1"]').click();
+  await page.locator('.as-group-card').first().click();
+  await page.locator('.wbwd-input').pressSequentially('AlthoughitrainedIwenttoschool', { delay: 15 });
+  await expect(page.locator('#as-fb.ok')).toBeVisible();
+  const draft = await model('AdvSentenceDraft').findOne({ userId: student._id }).lean();
+  expect(draft).toMatchObject({ currentIdx: 1, sentenceStatus: ['correct', 'pending'] });
+  // a reload finds the draft and resumes on the second sentence
+  await page.reload();
+  await page.locator('#as-resume-yes').click();
+  await expect(page.locator('.as-counter')).toHaveText('2 / 2 câu');
+  await page.locator('.wbwd-input').pressSequentially('Ilikereadingbooks', { delay: 15 });
+  await page.locator('#as-next-btn', { hasText: 'Xem kết quả' }).click();
+  await expect(page.locator('.as-result-score')).toHaveText('100%');
+  expect(await model('AdvSentenceDraft').countDocuments({ userId: student._id })).toBe(0);
+  await page.locator('#as-done').click();
+  await page.locator('#as-hist-btn').click();
+  await page.locator('.as-hist-entry.clickable').first().click();
+  await expect(page.locator('#as-hist-body')).toContainText('Câu phức');
+  await expect(page.locator('#as-hist-body .as-review-item.ok')).toHaveCount(2);
   expect(errors).toEqual([]);
 });
 

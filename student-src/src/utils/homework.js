@@ -108,7 +108,7 @@ function resourcePath(r) {
     case 'task1_practice': return `writing.html?taskType=1&taskId=${id}`;
     case 'task2_practice': return `writing.html?taskType=2&taskId=${id}`;
     case 'task2': return code ? `task2-practice.html?week=${enc(code)}&topicId=${id}` : 'task2-practice.html';
-    case 'advanced_sentences': return code ? `advanced-sentences.html?week=${enc(code)}&groupId=${id}` : 'advanced-sentences.html';
+    case 'advanced_sentences': return code ? `app/advanced-sentences?week=${enc(code)}&groupId=${id}` : 'app/advanced-sentences';
     case 'speaking': return `speaking.html?questionId=${id}`;
     case 'speaking_topic': return `speaking.html?topicSet=${id}`;
     case 'speaking_full_mock': return 'speaking.html?tab=fullmock';

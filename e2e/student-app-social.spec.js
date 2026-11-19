@@ -161,6 +161,27 @@ const GRAMMAR_BLOCKS = [
   ] } },
   { type: 'summary', data: { text: 'Nhớ thêm s.' } },
 ];
+// Viết câu nâng cao: two weeks, the first with two structure groups
+const ADV_GROUPS = [
+  { _id: 'ag1', week: 1, emoji: '🔗', nameEn: 'Relative clauses', nameVi: 'Mệnh đề quan hệ', targetStructure: 'N + which/who + V', sentenceCount: 3 },
+  { _id: 'ag2', week: 1, emoji: '🔄', nameEn: 'Inversion', nameVi: 'Đảo ngữ', targetStructure: 'Not only + aux + S + V', sentenceCount: 2 },
+];
+const ADV_SENTENCES = {
+  ag1: [
+    { _id: 'as1', promptVi: 'Cuốn sách mà tôi đọc rất hay.', translationAnswer: 'The book is good.', hintWords: ['which', 'read'], structureNote: 'which' },
+    { _id: 'as2', promptVi: 'Người đàn ông sống ở đây là bác sĩ.', translationAnswer: 'He is a doctor.', hintWords: [] },
+    { _id: 'as3', promptVi: 'Câu tự do không có đáp án gõ.', hintWords: ['free'] },
+  ],
+  ag2: [
+    { _id: 'as4', promptVi: 'Không những anh ấy học giỏi.', translationAnswer: 'Not only is he smart.' },
+    { _id: 'as5', promptVi: 'Hiếm khi tôi thấy cảnh này.', translationAnswer: 'Rarely do I see this.' },
+  ],
+};
+const ADV_EXAM = [
+  { _id: 'as1', groupId: 'ag1', groupName: 'Mệnh đề quan hệ', promptVi: 'Cuốn sách mà tôi đọc rất hay.' },
+  { _id: 'as4', groupId: 'ag2', groupName: 'Đảo ngữ', promptVi: 'Không những anh ấy học giỏi.' },
+];
+
 const GRAMMAR_LESSONS = () => [
   { _id: 'g1', category: 'Thì', lessonKey: 'present-simple', title: 'Hiện tại đơn', icon: '⏰', orderIndex: 1, blocks: GRAMMAR_BLOCKS },
   { _id: 'g2', category: 'Thì', lessonKey: 'past-simple', title: 'Quá khứ đơn', orderIndex: 2, blocks: [{ type: 'overview', data: { text: 'Quá khứ.' } }] },
@@ -199,6 +220,12 @@ function makeState() {
     grammarHistory: [{ _id: 'h1', score: 75, correct: 3, total: 4, answered: 3, timeSpent: 95, createdAt: daysAgo(2) }],
     grammarProgress: [{ lessonId: 'g2', bestScore: 90, score: 90, lastAttempt: daysAgo(3) }],
     assignments: [],
+    advDrafts: [{ groupId: 'ag2', groupName: 'Đảo ngữ', week: 1, mode: 'practice', sentenceIds: ['as4', 'as5'], currentIdx: 1, sentenceStatus: ['correct'], sessionAttempts: [{ sentenceId: 'as4', userAnswer: 'Not only is he smart.', isCorrect: true, score: 100 }] }],
+    advHistory: [
+      { _id: 'at1', sessionType: 'practice', week: 1, groupName: 'Mệnh đề quan hệ', correctCount: 2, totalQuestions: 3, scorePercentage: 66.7, completedAt: daysAgo(1) },
+      { _id: 'at2', sessionType: 'exam', week: 1, groupName: 'Thi thử Tuần 1', correctCount: 1, totalQuestions: 2, scorePercentage: 50, completedAt: daysAgo(4) },
+      { sessionType: 'practice', week: 2, groupName: 'Câu điều kiện', correctCount: 0, totalQuestions: 4, scorePercentage: 0, completedAt: daysAgo(9) },
+    ],
     goal: { hasGoal: true, currentBand: 5.5, targetBand: 8, examDate: '2030-01-15T00:00:00.000Z', weeklyStudyMinutes: 240, preferredSessionMinutes: 60, studyDays: ['mon', 'wed'], currentBandSource: 'self_assessed', gapBands: 2.5, daysRemaining: 100, feasibility: { level: 'tight', message: 'Hơi gấp' } },
     fees: [
       { _id: 'f1', feeType: 'monthly', month: 11, year: 2026, amount: 1500000, note: 'Giảm 10% <đợt 1>', isPaid: false },
@@ -289,7 +316,7 @@ function board(kind, limit) {
 
 async function open(page, url, state = makeState()) {
   const log = [];
-  await page.addInitScript(([u, theme, fixedRandom, fakeSpeech]) => {
+  await page.addInitScript(([u, theme, fixedRandom, fakeSpeech, advScores]) => {
     if (fixedRandom) Math.random = () => 0;
     // Hears the sentence on screen, read back perfectly
     if (fakeSpeech) {
@@ -303,6 +330,7 @@ async function open(page, url, state = makeState()) {
       };
     }
     if (theme) localStorage.setItem('theme', theme);
+    if (advScores) localStorage.setItem('as_group_scores', JSON.stringify({ ag1: { best: 90, completed: true } }));
     localStorage.setItem('token', 'test-token');
     localStorage.setItem('user', JSON.stringify(u));
     localStorage.setItem('lastLoginAt', String(Date.now()));
@@ -312,7 +340,7 @@ async function open(page, url, state = makeState()) {
     if (!window.__keepGrammarTour) localStorage.setItem('ews_onboarding_tour_v1_essential-grammar.html', '1');
     // Change route the way the browser's Back button does
     window.__go = (route) => { history.pushState(null, '', '/app' + route); window.dispatchEvent(new PopStateEvent('popstate')); };
-  }, [state.user || USER, state.theme || '', !!state.fixedRandom, !!state.fakeSpeech]);
+  }, [state.user || USER, state.theme || '', !!state.fixedRandom, !!state.fakeSpeech, !!state.advScores]);
   await page.route(/fonts\.(googleapis|gstatic)\.com|cdnjs\.cloudflare\.com|media\.ieltsthayha\.com|i\.ytimg\.com/, (r) => r.abort());
   await page.route('https://www.youtube.com/iframe_api', (r) => r.fulfill({ contentType: 'application/javascript', body: FAKE_YOUTUBE }));
   await page.route('https://englishwithdan.onrender.com/**', (route) => {
@@ -432,6 +460,45 @@ async function open(page, url, state = makeState()) {
       state.grammarHistory = [{ _id: 'h2', score: 100, correct: 3, total: 3, answered: 3, timeSpent: 9, createdAt: new Date(NOW).toISOString() }, ...state.grammarHistory];
       return json({ success: true });
     }
+    if (p === '/adv-sentence/weeks') return json({ success: true, weeks: [
+      { week: 1, groupNames: ['Mệnh đề quan hệ', 'Đảo ngữ'], sentenceCount: 5, groupCount: 2 },
+      { week: 2, groupNames: ['Câu điều kiện'], sentenceCount: 4, groupCount: 1 },
+    ] });
+    if (p === '/adv-sentence/drafts') return json({ success: true, drafts: state.advDrafts });
+    m = p.match(/^\/adv-sentence\/groups\/week\/(\d+)$/);
+    if (m) return json({ success: true, groups: ADV_GROUPS.filter((g) => g.week === Number(m[1])) });
+    m = p.match(/^\/adv-sentence\/group\/(\w+)$/);
+    if (m) {
+      const group = ADV_GROUPS.find((g) => g._id === m[1]);
+      return group ? json({ success: true, group, sentences: ADV_SENTENCES[m[1]] }) : json({ success: false, message: 'Không có' }, 404);
+    }
+    m = p.match(/^\/adv-sentence\/draft\/(\w+)$/);
+    if (m) {
+      if (req.method() === 'DELETE') { state.advDrafts = state.advDrafts.filter((d) => d.groupId !== m[1]); return json({ success: true }); }
+      return json({ success: true, draft: state.advDrafts.find((d) => d.groupId === m[1]) || null });
+    }
+    if (p === '/adv-sentence/check') {
+      const b = JSON.parse(req.postData());
+      const all = Object.values(ADV_SENTENCES).flat();
+      const model = all.find((x) => x._id === b.sentenceId)?.translationAnswer || 'Model answer here.';
+      const ok = !/wrong/.test(b.userAnswer);
+      return json({ success: true, isCorrect: ok, score: ok ? 100 : 30, modelAnswer: model, feedbackVi: ok ? 'Chính xác, rất tốt!' : 'Chưa đúng cấu trúc <which>.' });
+    }
+    if (p === '/adv-sentence/exam') return json({ success: true, questions: ADV_EXAM });
+    if (p === '/adv-sentence/exam/submit') {
+      const { answers } = JSON.parse(req.postData());
+      const results = answers.map((a, i) => ({
+        sentenceId: a.sentenceId, userAnswer: a.userAnswer, isCorrect: i === 0, score: i === 0 ? 100 : 0,
+        promptVi: ADV_EXAM[i].promptVi, groupName: ADV_EXAM[i].groupName, structureNote: i ? 'Not only' : '', modelAnswer: 'Model ' + (i + 1),
+      }));
+      return json({ success: true, results, correct: 1, total: results.length, score: 50 });
+    }
+    if (p === '/adv-sentence/history') return json({ success: true, attempts: state.advHistory });
+    m = p.match(/^\/adv-sentence\/attempt\/(\w+)$/);
+    if (m) return json({ success: true, attempt: { ...state.advHistory.find((a) => a._id === m[1]), targetStructure: 'N + which/who + V', sentences: m[1] === 'at2' ? [] : [
+      { index: 1, isCorrect: true, promptVi: 'Cuốn sách mà tôi đọc rất hay.', userAnswer: 'The book is good.', structureNote: 'which' },
+      { index: 2, isCorrect: false, promptVi: 'Người đàn ông sống ở đây.', userAnswer: '', modelAnswer: 'He is a doctor.' },
+    ] } });
     if (p === '/listening/dictation/list') return state.failDictList ? json({ success: false }, 500) : json({ success: true, sections: state.dictSections, drills: state.dictDrills });
     m = p.match(/^\/listening\/dictation\/section\/(\w+)\/translations$/);
     if (m) return json({ success: true, translations: ['Xin chào bạn tôi.', 'Hôm nay trời đẹp.', ''] });
@@ -619,6 +686,30 @@ const PAGES = {
   grammar: {
     legacy: '/essential-grammar.html?legacy=1&lesson=present-simple', app: '/app/essential-grammar?lesson=present-simple', root: '.eg-layout',
     ready: grammarReady,
+  },
+  advWeeks: {
+    legacy: '/advanced-sentences.html?legacy=1', app: '/app/advanced-sentences', root: '#app',
+    ready: (p) => p.locator('.as-week-card.has-draft').waitFor(),
+  },
+  advWeeksFree: {
+    legacy: '/advanced-sentences.html?legacy=1', app: '/app/advanced-sentences', root: '#app', patch: (s) => { s.user = { ...USER, plan: 'free' }; },
+    ready: (p) => p.locator('.as-premium-banner').waitFor(),
+  },
+  advGroups: {
+    legacy: '/advanced-sentences.html?legacy=1&week=1', app: '/app/advanced-sentences?week=1', root: '#app', patch: (s) => { s.advScores = true; },
+    ready: async (p) => {
+      await p.locator('.as-group-card').nth(1).waitFor();
+      await p.locator('.as-group-card.has-draft').waitFor();
+      await p.locator('.as-group-done').waitFor();
+    },
+  },
+  advPractice: {
+    legacy: '/advanced-sentences.html?legacy=1&week=1&groupId=ag1', app: '/app/advanced-sentences?week=1&groupId=ag1', root: '#app',
+    ready: async (p) => {
+      await p.locator('.wbwd-input').waitFor();
+      await p.locator('#as-hint-btn').click();
+      await p.locator('.as-hint-chip').waitFor();
+    },
   },
   shadowingChooser: { legacy: '/shadowing.html?legacy=1&lesson=l0', app: '/app/shadowing?lesson=l0', root: '.sh-wrap', ready: shadowReady('.sh-choice.last') },
   shadowingPractice: { legacy: '/shadowing.html?legacy=1&lesson=l0&mode=shadowing', app: '/app/shadowing?lesson=l0&mode=shadowing', root: '.sh-wrap', ready: shadowReady('#sh-play') },
@@ -1085,7 +1176,41 @@ async function grammarFlow(page, log) {
   log[0] = log[0].replace(/"timeSpent":\d+/, '"timeSpent":1');
 }
 
-const FLOWS = { grammar: grammarFlow, leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow, profile: profileFlow, tuition: tuitionFlow, dictation: dictationFlow, shadowing: shadowingFlow };
+// Types a sentence into the "gõ từng chữ" drill, letters only
+const typeDrill = (page, letters) => page.locator('.wbwd-input').pressSequentially(letters, { delay: 15 });
+async function advFlow(page, log) {
+  await page.locator('.as-week-card[data-week="1"]').click();
+  await page.locator('.as-group-card[data-id="ag1"]').click();
+  await typeDrill(page, 'Thebookisgood');
+  await expect(page.locator('#as-fb')).toContainText('Chính xác');
+  await page.locator('#as-next-btn').click();
+  // three wrong letters on one word fail the sentence
+  for (const ch of 'xxx') { await page.locator('.wbwd-input').press(ch); await page.waitForTimeout(320); }
+  await expect(page.locator('#as-fb')).toContainText('gõ sai từ “He” 3 lần');
+  await page.locator('#as-next-btn').click();
+  await page.locator('#as-fallback').fill('A wrong free answer');
+  await page.locator('#as-submit-btn').click();
+  await expect(page.locator('#as-fb')).toContainText('Chưa đúng cấu trúc <which>.');
+  await page.locator('#as-next-btn').click(); // the failed sentence, again
+  await expect(page.locator('.as-counter')).toContainText('4 / 4 câu · 🔁 Làm lại');
+  await page.locator('#as-quit-btn').click();
+  await page.locator('#as-quit-save').click();
+  await page.locator('.as-week-card').first().waitFor();
+  await page.locator('.as-week-card[data-week="1"]').click();
+  await page.locator('#as-exam-btn').click();
+  await page.locator('#as-exam-input').fill('The book I read is good.');
+  await page.locator('#as-exam-next').click();
+  await page.locator('#as-exam-input').fill('Not only he smart');
+  await page.locator('#as-exam-next').click();
+  await expect(page.locator('.as-result-score')).toHaveText('50%');
+  await page.locator('#as-exam-done').click();
+  await page.locator('#as-hist-btn').click();
+  await page.locator('.as-hist-entry.clickable').first().click();
+  await expect(page.locator('#as-hist-body')).toContainText('He is a doctor.');
+  await expect.poll(() => log.length).toBe(8);
+}
+
+const FLOWS = { advSentences: advFlow, grammar: grammarFlow, leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow, profile: profileFlow, tuition: tuitionFlow, dictation: dictationFlow, shadowing: shadowingFlow };
 
 for (const [name, flow] of Object.entries(FLOWS)) {
   test(`${name}: every action sends the same requests as the old page`, async ({ browser }) => {
@@ -1098,8 +1223,8 @@ for (const [name, flow] of Object.entries(FLOWS)) {
       // (the picture itself is re-encoded by each browser run)
       return { log: log.map((l) => l.replace(/^(POST \/user\/avatar) .*/, '$1').replace(/"sessionId":"[^"]+"/, '"sessionId":"x"')), errors };
     };
-    const old = await run(PAGES[name].legacy);
-    const now = await run(PAGES[name].app);
+    const old = await run((PAGES[name] || PAGES.advWeeks).legacy);
+    const now = await run((PAGES[name] || PAGES.advWeeks).app);
     expect(now.errors).toEqual([]);
     expect(now.log).toEqual(old.log);
   });
@@ -1118,6 +1243,7 @@ test.describe('inside the React app', () => {
     ['/review-history.html', '/app/review-history'], ['/review-history.html?view=mock', '/app/review-history?view=mock'],
     ['/dictation.html?sectionId=s1', '/app/dictation?sectionId=s1'], ['/dictation/s1', '/app/dictation?sectionId=s1'],
     ['/shadowing.html?lesson=l0&mode=watch', '/app/shadowing?lesson=l0&mode=watch'], ['/shadowing/l0', '/app/shadowing?lesson=l0'],
+    ['/advanced-sentences.html?week=1&groupId=ag1', '/app/advanced-sentences?week=1&groupId=ag1'],
   ]) {
     test(`${from} forwards to ${to}`, async ({ page }) => {
       await open(page, from);
@@ -1814,5 +1940,82 @@ test.describe('inside the React app', () => {
     await page.evaluate(() => window.__go('/shadowing'));
     await page.locator('.sh-card').first().waitFor();
     await expect.poll(shown).toBe('');
+  });
+
+  test('advanced sentences: a draft asks first, then resumes where it stopped or starts over', async ({ page }) => {
+    const { log } = await open(page, '/app/advanced-sentences?week=1');
+    await page.locator('.as-group-card[data-id="ag2"]').click();
+    await expect(page.locator('#as-resume-overlay')).toContainText('Đã làm 1/2 câu');
+    await page.locator('#as-resume-yes').click();
+    await expect(page.locator('.as-counter')).toHaveText('2 / 2 câu');
+    await expect(page.locator('.as-dot').first()).toHaveClass(/ok/);
+    await page.goBack();
+    await page.locator('.as-group-card[data-id="ag2"]').click();
+    await page.locator('#as-resume-no').click();
+    await expect(page.locator('.as-counter')).toHaveText('1 / 2 câu');
+    expect(log).toEqual(['DELETE /adv-sentence/draft/ag2 ']);
+  });
+
+  test('advanced sentences: finishing a group scores it and ticks it; hints follow the mode', async ({ page }) => {
+    const state = makeState();
+    state.advDrafts = [];
+    const { log } = await open(page, '/app/advanced-sentences?week=1', state);
+    await page.locator('.as-toggle[data-hints="0"]').click();
+    await page.locator('.as-group-card[data-id="ag1"]').click();
+    await page.locator('.wbwd-input').waitFor();
+    await expect(page.locator('#as-hint-btn')).toHaveCount(0);
+    await expect(page.locator('.as-struct-reminder')).toHaveCount(0);
+    await typeDrill(page, 'Thebookisgood');
+    await page.locator('#as-next-btn').click();
+    await typeDrill(page, 'Heisadoctor');
+    await page.locator('#as-next-btn').click();
+    await page.locator('#as-fallback').fill('Free answer');
+    await page.locator('#as-submit-btn').click();
+    await expect(page.locator('#as-next-btn')).toHaveText(/Xem kết quả/);
+    await page.locator('#as-next-btn').click();
+    await expect(page.locator('.as-result-score')).toHaveText('100%');
+    expect(log.filter((l) => l.startsWith('POST /adv-sentence/save-attempt'))).toHaveLength(1);
+    await page.locator('#as-done').click();
+    await page.locator('.as-week-card[data-week="1"]').click();
+    await expect(page.locator('.as-group-card[data-id="ag1"] .as-group-done')).toBeVisible();
+    await expect(page.locator('.as-toggle[data-hints="0"]')).toHaveClass(/active/);
+  });
+
+  test('advanced sentences: a failed check can be retried; a reload drops out of the exam', async ({ page }) => {
+    let failOnce = true;
+    await open(page, '/app/advanced-sentences?week=1&groupId=ag1');
+    await page.route('https://englishwithdan.onrender.com/api/adv-sentence/check', (r) => {
+      if (failOnce && r.request().method() === 'POST') { failOnce = false; return r.abort(); }
+      return r.fallback();
+    });
+    await typeDrill(page, 'Thebookisgood');
+    await toastSeen(page, 'Không chấm được');
+    await page.locator('#as-submit-btn', { hasText: 'Thử lại' }).click();
+    await expect(page.locator('#as-fb')).toContainText('Chính xác');
+    await page.locator('#as-quit-btn').click();
+    await page.locator('#as-quit-leave').click();
+    await page.locator('.as-week-card[data-week="1"]').click();
+    await page.locator('#as-exam-btn').click();
+    await expect(page).toHaveURL(`${BASE}/app/advanced-sentences?week=1&mode=exam`);
+    await expect(page.locator('#as-exam-timer')).toHaveText(/^0[23]:\d\d$/);
+    await page.reload();
+    await expect(page).toHaveURL(`${BASE}/app/advanced-sentences?week=1`);
+    await page.locator('.as-group-card').first().waitFor();
+  });
+
+  test('advanced sentences: history lists sessions and opens one; the guide knows the page', async ({ page }) => {
+    await open(page, '/app/advanced-sentences');
+    await page.locator('#as-hist-btn').click();
+    await expect(page.locator('.as-hist-stat .n')).toHaveText(['3', '3/9', '39%']);
+    await expect(page.locator('.as-hist-entry.clickable')).toHaveCount(2);
+    await page.locator('.as-hist-entry.clickable').nth(1).click();
+    await expect(page.locator('#as-hist-body')).toContainText('Lượt này được lưu trước khi');
+    await page.locator('#as-hist-back').click();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#as-hist-overlay')).toHaveCount(0);
+    expect(await page.evaluate(() => document.title)).toBe('Viết câu nâng cao – EnglishWithDan');
+    await page.locator('#globalHelpBtn').click();
+    await page.waitForFunction(() => !!window.PageHelp);
+    expect(await page.evaluate(() => window.PageHelp.pageKey())).toBe('advanced-sentences.html');
   });
 });

@@ -39,11 +39,13 @@ describe('static pages that moved to /app/', () => {
     ['dictation.html', '/dictation/s1', '/app/dictation?sectionId=s1'],
     ['shadowing.html', '/shadowing.html?lesson=a&mode=watch', '/app/shadowing?lesson=a&mode=watch'],
     ['shadowing.html', '/shadowing/keith-small-talk/', '/app/shadowing?lesson=keith-small-talk'],
+    ['advanced-sentences.html', '/advanced-sentences.html', '/app/advanced-sentences'],
+    ['advanced-sentences.html', '/advanced-sentences.html?week=2&groupId=g1', '/app/advanced-sentences?week=2&groupId=g1'],
   ])('%s: %s → %s', (file, url, to) => {
     expect(redirectOf(file, url)).toBe(to);
   });
 
-  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html', 'profile.html', 'tuition.html', 'review-history.html', 'dictation.html', 'shadowing.html', 'goal.html', 'essential-grammar.html'])('%s stays put with ?legacy=1', (file) => {
+  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html', 'profile.html', 'tuition.html', 'review-history.html', 'dictation.html', 'shadowing.html', 'goal.html', 'essential-grammar.html', 'advanced-sentences.html'])('%s stays put with ?legacy=1', (file) => {
     expect(redirectOf(file, `/${file}?legacy=1`)).toBeUndefined();
   });
 });

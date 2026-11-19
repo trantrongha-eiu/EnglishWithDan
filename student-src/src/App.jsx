@@ -22,6 +22,7 @@ const ReviewHistory = lazy(() => import('./pages/ReviewHistory'));
 const Dictation = lazy(() => import('./pages/Dictation'));
 const Shadowing = lazy(() => import('./pages/Shadowing'));
 const EssentialGrammar = lazy(() => import('./pages/EssentialGrammar'));
+const AdvancedSentences = lazy(() => import('./pages/AdvancedSentences'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Each list is the page's stylesheets in the old static page's order
@@ -35,6 +36,7 @@ const DICTATION_CSS = ['dictation', 'pf-pages'];
 const SHADOWING_CSS = ['shadowing', 'pf-pages'];
 // playful again after the page's own sheet: same order as the old page, or .eg-hero wipes the banner colour
 const GRAMMAR_CSS = ['writing-practice', 'essential-grammar', 'playful', 'pf-pages'];
+const ADV_SENTENCES_CSS = ['advanced-sentences', 'playful', 'pf-pages'];
 
 // A data router: running quizzes use useBlocker to ask before leaving
 const router = createBrowserRouter(createRoutesFromElements(
@@ -61,6 +63,7 @@ const router = createBrowserRouter(createRoutesFromElements(
       <Route path="dictation" element={<PageCss names={DICTATION_CSS}><Dictation /></PageCss>} />
       <Route path="shadowing" element={<PageCss names={SHADOWING_CSS}><Shadowing /></PageCss>} />
       <Route path="essential-grammar" element={<PageCss names={GRAMMAR_CSS}><EssentialGrammar /></PageCss>} />
+      <Route path="advanced-sentences" element={<PageCss names={ADV_SENTENCES_CSS}><AdvancedSentences /></PageCss>} />
       <Route path="*" element={<NotFound />} />
     </Route>
     <Route path="*" element={<Navigate to="/dashboard" replace />} />

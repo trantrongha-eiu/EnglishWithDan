@@ -52,11 +52,16 @@ body {
 /* #root is a flex column: these static-page shells center with auto margins */
 #root > .et-shell, #root > .inbox-layout, #root > .profile-layout,
 #root > .tuition-layout, #root > .rh-layout,
-#root > .dict-wrap, #root > .sh-wrap, #root > .eg-layout { width: 100%; }
+#root > .dict-wrap, #root > .sh-wrap, #root > .eg-layout, #root > #app { width: 100%; }
 /* Their old pages had no dashboard.css, whose body sets line-height: 1.5 */
 #root > .shop-shell, #root > .inbox-layout, #root > .profile-layout,
 #root > .tuition-layout, #root > .rh-layout,
-#root > .dict-wrap, #root > .sh-wrap, #root > .eg-layout { line-height: normal; }
+#root > .dict-wrap, #root > .sh-wrap, #root > .eg-layout, #root > #app { line-height: normal; }
+/* Viết câu nâng cao: on the old page the hero's top margin fell outside #app
+   (a flex item keeps it inside), so move it there */
+#root > #app > .as-head.pf-hero:first-child { margin-top: 0; }
+#root > #app:has(> .as-head.pf-hero:first-child) { margin-top: 22px; }
+@media (max-width: 640px) { #root > #app:has(> .as-head.pf-hero:first-child) { margin-top: 14px; } }
 body:has(> #root > .shop-shell) .duel-modal { line-height: normal; }
 [data-theme="dark"] #root > .shop-shell .btn-ghost,
 [data-theme="dark"] body:has(> #root > .shop-shell) .duel-modal .btn-ghost { background: var(--surface); }

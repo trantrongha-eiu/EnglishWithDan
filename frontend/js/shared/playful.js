@@ -77,7 +77,7 @@
 
   function pageKey() {
     if (/^\/app\/(dictation|shadowing)(\/|$)/.test(location.pathname)) return 'listening';
-    if (/^\/app\/essential-grammar(\/|$)/.test(location.pathname)) return 'writing';
+    if (/^\/app\/(essential-grammar|advanced-sentences)(\/|$)/.test(location.pathname)) return 'writing';
     if (/^\/app(\/|$)/.test(location.pathname)) return /^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history)(\/|$)/.test(location.pathname) ? '_' : 'dashboard';
     var pg = (location.pathname.split('/').pop() || '').replace('.html', '');
     return /listening|dictation|shadowing/.test(pg) ? 'listening'

@@ -13,6 +13,7 @@ const TITLES = {
   '/dictation': 'Luyện Dictation',
   '/shadowing': 'Luyện Shadowing',
   '/essential-grammar': 'Essential Grammar',
+  '/advanced-sentences': 'Viết câu nâng cao',
 };
 
 // The top nav comes from the site shell (js/bundles/app-shell.js → nav.js).
