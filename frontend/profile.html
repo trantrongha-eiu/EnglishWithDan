@@ -2,7 +2,7 @@
 <html lang="vi" data-theme="light">
 <head>
   <script>
-  /* This page now lives in the React app (/app/#/profile, source:
+  /* This page now lives in the React app (/app/profile, source:
      student-src/src/pages/Profile.jsx). Old links keep their query string, and
      #tab / #section become ?tab= / ?focus=. ?legacy=1 stays on this version as
      a fallback. */
@@ -13,7 +13,7 @@
     if (/^(edit|security|history|inventory)$/.test(h)) q.set('tab', h);
     else if (h && h !== 'overview') q.set('focus', h);
     var qs = q.toString();
-    location.replace('/app/#/profile' + (qs ? '?' + qs : ''));
+    location.replace('/app/profile' + (qs ? '?' + qs : ''));
   })();
   </script>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb">
   <link rel="stylesheet" href="/css/components.css?v=bb5d514434">
   <link rel="stylesheet" href="/css/mobile.css?v=1285106fee">
-  <script src="/js/theme.js?v=f5e2645f16"></script>
+  <script src="/js/theme.js?v=5269b2b242"></script>
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <link rel="stylesheet" href="/css/profile.css?v=d8efbe387d">
@@ -39,12 +39,12 @@
   <link rel="stylesheet" href="/css/inventory.css?v=10c24e4883"/>
 </head>
 <body>
-  <script src="/js/bundles/app-shell.js?v=7d1f03ee18"></script>
+  <script src="/js/bundles/app-shell.js?v=c927ecd9be"></script>
   <script src="/js/shared/word-audio.js?v=9fd314228b"></script>
-  <script src="/js/shared/dictionary-lookup.js?v=74785ced6f"></script>
+  <script src="/js/shared/dictionary-lookup.js?v=182fa667a3"></script>
   <script src="/js/shared/badge-popup.js?v=b1f5e551eb"></script>
   <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
-  <script src="/js/inventory.js?v=380648afb9"></script>
+  <script src="/js/inventory.js?v=fe5585dee7"></script>
 
   <!-- Main Content -->
   <div class="profile-layout">

@@ -24,7 +24,7 @@ describe('apiFetch', () => {
     localStorage.clear();
     originalLocation = window.location;
     delete window.location;
-    window.location = { href: '', hash: '' };
+    window.location = { href: '', pathname: '/admin/', search: '' };
   });
 
   afterEach(() => {
@@ -50,11 +50,12 @@ describe('apiFetch', () => {
     );
   });
 
-  it('clears the session and redirects to login on a 401, remembering the current hash', async () => {
+  it('clears the session and redirects to login on a 401, remembering the current page', async () => {
     localStorage.setItem('token', 'expired');
     localStorage.setItem('user', JSON.stringify({ role: 'teacher' }));
     localStorage.setItem('lastLoginAt', '123');
-    window.location.hash = '#/writing-grades';
+    window.location.pathname = '/admin/writing-grades';
+    window.location.search = '?tab=open';
     global.fetch = vi.fn().mockResolvedValue({ status: 401, ok: false, text: async () => '' });
 
     await expect(apiFetch('/secret')).rejects.toThrow('Unauthorized');
@@ -63,17 +64,17 @@ describe('apiFetch', () => {
     expect(localStorage.getItem('user')).toBeNull();
     expect(localStorage.getItem('lastLoginAt')).toBeNull();
     expect(window.location.href).toBe(
-      '/login.html?next=' + encodeURIComponent('/admin/#/writing-grades')
+      '/login.html?next=' + encodeURIComponent('/admin/writing-grades?tab=open')
     );
   });
 
   it('does not redirect again on later 401s (no repeated "Leave page?"), until a new token appears', async () => {
     // The previous test already sent this module to login once.
-    window.location.href = '/admin/#/listening/edit';
+    window.location.href = '/admin/listening/edit';
     global.fetch = vi.fn().mockResolvedValue({ status: 401, ok: false, text: async () => '' });
 
     await expect(apiFetch('/poll')).rejects.toThrow('Unauthorized');
-    expect(window.location.href).toBe('/admin/#/listening/edit');
+    expect(window.location.href).toBe('/admin/listening/edit');
 
     // Signed in again in another tab → the next dead session redirects again.
     window.dispatchEvent(new StorageEvent('storage', { key: 'token', newValue: 'fresh' }));

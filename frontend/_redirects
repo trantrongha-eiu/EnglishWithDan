@@ -19,6 +19,7 @@
 /admin.html /admin/ 301
 /admin      /admin/ 301
 /admin/* /admin/index.html 200
+/app/* /app/index.html 200
 
 # ── 2026-09-25: production does NOT read this file ────────────────────
 # Render Static Site ignores _redirects (verified live: /vocabulary and

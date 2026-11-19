@@ -528,7 +528,7 @@
  *   - an absolute clean path (student pages reached via a Phase 4 _redirects
  *     rewrite, e.g. "/tuition" or "/reading/test/abc123" — these have no
  *     ".html" in the pathname at all)
- *   - an admin HashRouter route of the form "/admin/#/..."
+ *   - an admin route: "/admin/..." (or the older "/admin/#/..." form)
  * Anything containing "://" or starting with "//" is rejected outright —
  * both are how a same-looking string can actually point off-site.
  */
@@ -538,11 +538,11 @@
   function getSafeNext(raw) {
     if (!raw) return null;
     if (raw.includes('://') || raw.startsWith('//')) return null;
-    // Admin routes may carry a query (#/students/:id?tab=online,
-    // #/monitoring?tab=mock) — those used to fail this test and fall through
-    // to the student branch below as admin:false, so staff logging back in
-    // landed on /admin/ instead of the page they had open.
-    if (/^\/admin\/(#\/[\w./-]*(\?[\w.=&%,:+-]*)?)?$/.test(raw)) return { url: raw, admin: true };
+    // Admin routes may carry a query (/admin/students/:id?tab=online,
+    // /admin/monitoring?tab=mock) — those used to fail this test and fall
+    // through to the student branch below as admin:false, so staff logging
+    // back in landed on /admin/ instead of the page they had open.
+    if (!raw.includes('..') && /^\/admin\/(#\/)?[\w./-]*(\?[\w.=&%,:+-]*)?$/.test(raw)) return { url: raw, admin: true };
     if (/^\/admin(\/|$)/.test(raw)) return null;
     if (/^[a-zA-Z0-9][\w-]*\.html([?#].*)?$/.test(raw)) return { url: raw, admin: false };
     if (/^\/[a-zA-Z][\w./-]*([?#].*)?$/.test(raw)) return { url: raw, admin: false };

@@ -6,7 +6,7 @@ export default function ProtectedRoute({ children }) {
 
   useEffect(() => {
     if (token) return;
-    const next = encodeURIComponent('/app/' + window.location.hash);
+    const next = encodeURIComponent(window.location.pathname + window.location.search);
     window.location.href = '/login.html?next=' + next;
   }, [token]);
 

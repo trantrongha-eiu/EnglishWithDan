@@ -3,14 +3,14 @@
 <head>
   <base href="/">
   <script>
-  /* The class page now lives in the React app (/app/#/classroom, source:
+  /* The class page now lives in the React app (/app/classroom, source:
      student-src/src/pages/Classroom.jsx). Old links keep their class + tab.
      classroom.html?legacy=1 stays on this version as a fallback. */
   (function () {
     var q = new URLSearchParams(location.search);
     if (q.get('legacy') === '1') return;
     var qs = q.toString();
-    location.replace('/app/#/classroom' + (qs ? '?' + qs : ''));
+    location.replace('/app/classroom' + (qs ? '?' + qs : ''));
   })();
   </script>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb">
   <link rel="stylesheet" href="/css/components.css?v=bb5d514434">
   <link rel="stylesheet" href="/css/mobile.css?v=1285106fee">
-  <script src="/js/theme.js?v=f5e2645f16"></script>
+  <script src="/js/theme.js?v=5269b2b242"></script>
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <link rel="stylesheet" href="/css/class-cards.css?v=0285fdd9c7">
@@ -34,7 +34,7 @@
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
 </head>
 <body>
-  <script src="/js/bundles/app-shell.js?v=7d1f03ee18"></script>
+  <script src="/js/bundles/app-shell.js?v=c927ecd9be"></script>
   <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
 
   <main class="cr-layout">

@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { apiFetch } from '../utils/api';
 import { bindDict, siteToast, usePets } from '../utils/shell';
 
-// ✉️ Hộp thư — /app/#/inbox?msg=<id> (js/inbox.js). nav.js's "Bạn có tin nhắn
+// ✉️ Hộp thư — /app/inbox?msg=<id> (js/inbox.js). nav.js's "Bạn có tin nhắn
 // mới" popup links here with ?msg: opening the message marks it read, which is
 // what stops that popup.
 

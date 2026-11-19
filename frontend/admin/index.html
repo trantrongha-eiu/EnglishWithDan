@@ -2,6 +2,10 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      /* Links from before the address lost its "#": /admin/#/x?y → /admin/x?y */
+      if (location.hash.indexOf('#/') === 0) history.replaceState(null, '', '/admin' + location.hash.slice(1));
+    </script>
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
     <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('admin-theme')||'light')</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,13 +13,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-    <script type="module" crossorigin src="/admin/assets/index-CSS2gnDr.js"></script>
+    <script type="module" crossorigin src="/admin/assets/index-6Sg2xqez.js"></script>
     <link rel="modulepreload" crossorigin href="/admin/assets/jsx-runtime-bzQ4Vb5N.js">
-    <link rel="modulepreload" crossorigin href="/admin/assets/api-YbGjtXtc.js">
+    <link rel="modulepreload" crossorigin href="/admin/assets/api-D7xQojbN.js">
     <link rel="modulepreload" crossorigin href="/admin/assets/Modal-D2sG7pZh.js">
     <link rel="stylesheet" crossorigin href="/admin/assets/index-CKSkXAIf.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>

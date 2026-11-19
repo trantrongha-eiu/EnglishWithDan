@@ -15,7 +15,7 @@ function redirectToLoginOnce() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   localStorage.removeItem('lastLoginAt');
-  const next = encodeURIComponent('/app/' + window.location.hash);
+  const next = encodeURIComponent(window.location.pathname + window.location.search);
   window.location.href = '/login.html?next=' + next;
 }
 

@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { siteConfirm, siteToast, usePets } from '../utils/shell';
 import { canBuyItem, fmtUntil, maxQty, shopApi, takeHopeResult } from '../utils/shop';
 
-// 🔥 Cửa hàng lửa — /app/#/shop (js/shop.js). GET /shop gives the wallet, the
+// 🔥 Cửa hàng lửa — /app/shop (js/shop.js). GET /shop gives the wallet, the
 // active effects, items and linh thú; this page only sells. Using, walking a
 // pet and selling back stay in the Kho đồ tab of the profile page.
 
-const KHO = '/app/#/profile?tab=inventory';
+const KHO = '/app/profile?tab=inventory';
 const SKELETON = '<div class="shop-card shop-skel"></div>';
 const html = (__html) => ({ __html });
 

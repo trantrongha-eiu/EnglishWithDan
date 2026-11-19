@@ -1,6 +1,6 @@
 // @ts-check
 /**
- * BXH vocab, Cửa hàng lửa and Hộp thư in the React app (/app/#/leaderboard,
+ * BXH vocab, Cửa hàng lửa and Hộp thư in the React app (/app/leaderboard,
  * /shop, /inbox) against their old static pages (?legacy=1).
  *
  * The API is a stateful mock (production is never touched). Each page is
@@ -32,6 +32,8 @@ test.beforeAll(async () => {
   server = http.createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
     if (p.endsWith('/')) p += 'index.html';
+    // The host's rewrite: every /app path is the app
+    if (p.startsWith('/app/') && !p.startsWith('/app/assets/')) p = '/app/index.html';
     const file = path.join(FRONTEND, p);
     if (!file.startsWith(FRONTEND) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
       res.writeHead(404); res.end('not found'); return;
@@ -173,6 +175,8 @@ async function open(page, url, state = makeState()) {
     localStorage.setItem('ews_seen_streak35_notice', '1');
     localStorage.setItem('ews_page_help_seen', '1');
     localStorage.setItem('ews_onboarding_tour_v1_dashboard.html', '1');
+    // Change route the way the browser's Back button does
+    window.__go = (route) => { history.pushState(null, '', '/app' + route); window.dispatchEvent(new PopStateEvent('popstate')); };
   }, [USER, state.theme || '']);
   await page.route(/fonts\.(googleapis|gstatic)\.com|cdnjs\.cloudflare\.com|media\.ieltsthayha\.com/, (r) => r.abort());
   await page.route('https://englishwithdan.onrender.com/**', (route) => {
@@ -313,7 +317,7 @@ const petsReady = (page) => page.waitForFunction(() => !!window.Pets);
 
 const PAGES = {
   leaderboard: {
-    legacy: '/vocab-leaderboard.html?legacy=1', app: '/app/#/leaderboard', root: '.vlb-shell',
+    legacy: '/vocab-leaderboard.html?legacy=1', app: '/app/leaderboard', root: '.vlb-shell',
     ready: async (p) => {
       await petsReady(p);
       await p.locator('#dan-lb-list .dan-lb-row').nth(9).waitFor();
@@ -324,7 +328,7 @@ const PAGES = {
     },
   },
   shop: {
-    legacy: '/shop.html?legacy=1', app: '/app/#/shop', root: '.shop-shell',
+    legacy: '/shop.html?legacy=1', app: '/app/shop', root: '.shop-shell',
     ready: async (p) => {
       await petsReady(p);
       await p.locator('#shop-items h3').first().waitFor();
@@ -334,7 +338,7 @@ const PAGES = {
     },
   },
   inbox: {
-    legacy: '/inbox.html?legacy=1', app: '/app/#/inbox', root: '.inbox-layout',
+    legacy: '/inbox.html?legacy=1', app: '/app/inbox', root: '.inbox-layout',
     ready: async (p) => {
       await petsReady(p);
       await p.locator('.msg-item').nth(49).waitFor();
@@ -344,7 +348,7 @@ const PAGES = {
     },
   },
   profile: {
-    legacy: '/profile.html?legacy=1', app: '/app/#/profile', root: '.profile-layout',
+    legacy: '/profile.html?legacy=1', app: '/app/profile', root: '.profile-layout',
     ready: async (p) => {
       await petsReady(p);
       await p.locator('#profileName:has-text("An Trần")').waitFor();
@@ -753,10 +757,10 @@ test.describe('inside the React app', () => {
   test.beforeEach(({ page }) => page.setViewportSize({ width: 1280, height: 900 }));
 
   for (const [from, to] of [
-    ['/vocab-leaderboard.html', '/app/#/leaderboard'], ['/shop.html', '/app/#/shop'],
-    ['/inbox.html', '/app/#/inbox'], ['/inbox.html?msg=m7', '/app/#/inbox?msg=m7'],
-    ['/profile.html', '/app/#/profile'], ['/profile.html#inventory', '/app/#/profile?tab=inventory'],
-    ['/profile.html#plan', '/app/#/profile?focus=plan'],
+    ['/vocab-leaderboard.html', '/app/leaderboard'], ['/shop.html', '/app/shop'],
+    ['/inbox.html', '/app/inbox'], ['/inbox.html?msg=m7', '/app/inbox?msg=m7'],
+    ['/profile.html', '/app/profile'], ['/profile.html#inventory', '/app/profile?tab=inventory'],
+    ['/profile.html#plan', '/app/profile?focus=plan'],
   ]) {
     test(`${from} forwards to ${to}`, async ({ page }) => {
       await open(page, from);
@@ -765,36 +769,36 @@ test.describe('inside the React app', () => {
   }
 
   test('?msg= finds a message on a later page and marks it read', async ({ page }) => {
-    const { log } = await open(page, '/app/#/inbox?msg=m55');
+    const { log } = await open(page, '/app/inbox?msg=m55');
     await expect(page.locator('.detail-subject')).toHaveText('Tin nhắn số 55');
     await expect(page.locator('.msg-item[data-id="m55"]')).toHaveClass(/selected/);
     expect(log).toEqual(['PATCH /user/messages/m55/read ']);
   });
 
   test('moves between pages without a reload; each page stylesheet leaves with it', async ({ page }) => {
-    await open(page, '/app/#/shop');
+    await open(page, '/app/shop');
     await PAGES.shop.ready(page);
     await page.evaluate(() => { window.__sameDocument = true; });
-    await expect(page.locator('.nav-dropdown > a[href="/app/#/leaderboard"]')).toHaveClass(/active/);
+    await expect(page.locator('.nav-dropdown > a[href="/app/leaderboard"]')).toHaveClass(/active/);
     await page.locator('.shop-wallet-side a').click();
     await PAGES.leaderboard.ready(page);
     await expect(page).toHaveTitle(/BXH Vocab/);
-    await page.locator('a[href="/app/#/inbox"]').first().click();
+    await page.locator('a[href="/app/inbox"]').first().click();
     await page.locator('.msg-item').first().waitFor();
     await expect(page).toHaveTitle(/Hộp thư/);
     expect(await page.evaluate(() => [...document.querySelectorAll('link[href*="/css/"]')].some((l) => /css\/(shop|vocab-leaderboard|entrance-test)\.css/.test(l.href)))).toBe(false);
-    await page.evaluate(() => { location.hash = '#/classroom'; });
+    await page.evaluate(() => { window.__go('/classroom'); });
     await page.waitForFunction(() => !document.querySelector('.inbox-layout'));
     expect(await page.evaluate(() => [...document.querySelectorAll('link[href*="/css/"]')].some((l) => /css\/(inbox|pf-pages)\.css/.test(l.href)))).toBe(false);
     expect(await page.evaluate(() => window.__sameDocument)).toBe(true);
   });
 
   test('leaving the shop stops the duel board and closes its dialog', async ({ page }) => {
-    await open(page, '/app/#/shop');
+    await open(page, '/app/shop');
     await PAGES.shop.ready(page);
     await page.locator('[data-duel-new]').click();
     await expect(page.locator('.duel-modal')).toBeVisible();
-    await page.evaluate(() => { location.hash = '#/classroom'; });
+    await page.evaluate(() => { window.__go('/classroom'); });
     await expect(page.locator('.duel-modal')).toHaveCount(0);
     let calls = 0;
     page.on('request', (r) => { if (r.url().endsWith('/shop/duels')) calls += 1; });
@@ -804,7 +808,7 @@ test.describe('inside the React app', () => {
   });
 
   test('reading a message refreshes the nav badge at once', async ({ page }) => {
-    await open(page, '/app/#/inbox');
+    await open(page, '/app/inbox');
     await expect(page.locator('#navInboxBadge')).toHaveText('3');
     await page.locator('.msg-item[data-id="m0"]').click();
     await expect(page.locator('#navInboxBadge')).toHaveText('2');
@@ -813,12 +817,12 @@ test.describe('inside the React app', () => {
   test('must-read popup: never on the inbox; its link opens the message in place', async ({ page }) => {
     const state = makeState();
     state.mustRead = 1;
-    await open(page, '/app/#/inbox', state);
+    await open(page, '/app/inbox', state);
     await page.locator('.msg-item').first().waitFor();
     await page.waitForTimeout(600);
     await expect(page.locator('#nav-mustread-overlay')).toHaveCount(0);
 
-    await page.evaluate(() => { location.hash = '#/classroom'; });
+    await page.evaluate(() => { window.__go('/classroom'); });
     await page.evaluate(() => window.refreshInboxBadge());
     await expect(page.locator('#nav-mustread-overlay')).toBeVisible();
     await page.evaluate(() => { window.__sameDocument = true; });
@@ -829,18 +833,18 @@ test.describe('inside the React app', () => {
   });
 
   test('page guide and activity tracking know the route', async ({ page }) => {
-    await open(page, '/app/#/shop');
+    await open(page, '/app/shop');
     await PAGES.shop.ready(page);
     await page.locator('#globalHelpBtn').click();
     await page.waitForFunction(() => !!window.PageHelp);
     expect(await page.evaluate(() => window.PageHelp.pageKey())).toBe('shop.html');
-    await page.evaluate(() => { window.PageHelp.close(); location.hash = '#/leaderboard'; });
+    await page.evaluate(() => { window.PageHelp.close(); window.__go('/leaderboard'); });
     await page.waitForFunction(() => window.PageHelp.pageKey() === 'vocab-leaderboard.html');
   });
 
   test('on a phone an opened message comes into view, and Back returns to its row', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await open(page, '/app/#/inbox');
+    await open(page, '/app/inbox');
     await page.locator('.msg-item[data-id="m20"]').click();
     await expect(page.locator('.detail-subject')).toBeInViewport();
     await page.locator('.mobile-back-btn').click();
@@ -848,14 +852,14 @@ test.describe('inside the React app', () => {
   });
 
   test('the account dock belongs to the vocab home only', async ({ page }) => {
-    const errors = (await open(page, '/app/#/shop')).errors;
+    const errors = (await open(page, '/app/shop')).errors;
     await PAGES.shop.ready(page);
     const dock = () => page.evaluate(() => ({
       shown: document.getElementById('navCornerDock').style.display !== 'none',
       cls: document.body.classList.contains('has-corner-dock'),
     }));
     expect(await dock()).toEqual({ shown: false, cls: false });
-    await page.locator('.nav-dropdown > a[href="/app/#/dashboard"]').click();
+    await page.locator('.nav-dropdown > a[href="/app/dashboard"]').click();
     await page.locator('.dash-vocab-hero').waitFor();
     expect(await dock()).toEqual({ shown: true, cls: true });
     await page.locator('.dash-vocab-hero-lb').evaluate((a) => a.click()); // a popup may cover it
@@ -864,10 +868,33 @@ test.describe('inside the React app', () => {
     expect(errors).toEqual([]);
   });
 
+  for (const [from, to] of [
+    ['/app/#/shop', '/app/shop'], ['/app/#/inbox?msg=m7', '/app/inbox?msg=m7'], ['/app/#/profile?tab=edit', '/app/profile?tab=edit'], ['/app/', '/app/dashboard'],
+  ]) {
+    test(`the old address ${from} becomes ${to}`, async ({ page }) => {
+      await open(page, from);
+      await page.waitForURL(BASE + to);
+    });
+  }
+
+  test('a deep link survives a reload, and Back returns to the page before', async ({ page }) => {
+    await open(page, '/app/shop');
+    await PAGES.shop.ready(page);
+    await page.locator('.shop-wallet-side a').click();
+    await PAGES.leaderboard.ready(page);
+    await expect(page).toHaveURL(BASE + '/app/leaderboard');
+    await page.reload();
+    await PAGES.leaderboard.ready(page);
+    await page.goBack();
+    await PAGES.shop.ready(page);
+    await expect(page).toHaveURL(BASE + '/app/shop');
+    await expect(page.locator('.nav-dropdown > a[href="/app/leaderboard"]')).toHaveClass(/active/);
+  });
+
   test('a pet gift that failed can be tried again', async ({ page }) => {
     const state = makeState();
     state.failGift = true;
-    await open(page, '/app/#/shop', state);
+    await open(page, '/app/shop', state);
     await PAGES.shop.ready(page);
     await page.locator('[data-pet-gift]').click();
     await toastSeen(page, 'Chưa mở được quà');
@@ -879,7 +906,7 @@ test.describe('inside the React app', () => {
 
   test('a message that arrives between pages does not show a row twice', async ({ page }) => {
     const state = makeState();
-    const { errors } = await open(page, '/app/#/inbox', state);
+    const { errors } = await open(page, '/app/inbox', state);
     await page.locator('.msg-item').nth(49).waitFor();
     state.messages.unshift({ ...state.messages[5], _id: 'm999', subject: 'Tin mới' });
     await page.locator('#loadMoreBtn').click();
@@ -893,18 +920,18 @@ test.describe('inside the React app', () => {
   });
 
   test('profile: tabs and sections open from the address, and the menu goes there in place', async ({ page }) => {
-    await open(page, '/app/#/profile?tab=history');
+    await open(page, '/app/profile?tab=history');
     await page.locator('#profileName:has-text("An Trần")').waitFor();
     await expect(page.locator('.tab-btn.active')).toHaveAttribute('data-tab', 'history');
     await expect(page).toHaveTitle(/Hồ sơ/);
-    await page.evaluate(() => { window.__sameDocument = true; location.hash = '#/profile?focus=plan'; });
+    await page.evaluate(() => { window.__sameDocument = true; window.__go('/profile?focus=plan'); });
     await expect(page.locator('#plan')).toHaveClass(/highlight-pulse/);
     await expect(page.locator('.tab-btn.active')).toHaveAttribute('data-tab', 'overview');
-    await page.evaluate(() => { location.hash = '#/profile?focus=speakingHistoryCard'; });
+    await page.evaluate(() => { window.__go('/profile?focus=speakingHistoryCard'); });
     await expect(page.locator('.tab-btn.active')).toHaveAttribute('data-tab', 'history');
     await page.locator('.tab-btn[data-tab="edit"]').click();
-    await expect(page).toHaveURL(/#\/profile\?tab=edit$/);
-    await page.evaluate(() => { location.hash = '#/shop'; });
+    await expect(page).toHaveURL(/\/app\/profile\?tab=edit$/);
+    await page.evaluate(() => { window.__go('/shop'); });
     await PAGES.shop.ready(page);
     expect(await page.evaluate(() => [...document.querySelectorAll('link[href*="/css/"]')].some((l) => /css\/(profile|pf-profile|inventory)\.css/.test(l.href)))).toBe(false);
     await page.locator('.shop-card-actions a[href*="profile"]').first().click();
@@ -915,12 +942,12 @@ test.describe('inside the React app', () => {
 
   test('profile: a new name reaches the BXH without a reload', async ({ page }) => {
     const state = makeState();
-    await open(page, '/app/#/profile?tab=edit', state);
+    await open(page, '/app/profile?tab=edit', state);
     await expect(page.locator('#editFirstName')).toHaveValue('An');
     await page.locator('#editFirstName').fill('Bình');
     await page.locator('#tab-edit .btn-primary').click();
     await expect(page.locator('#profileName')).toHaveText('Bình Trần');
-    await page.evaluate(() => { location.hash = '#/leaderboard'; });
+    await page.evaluate(() => { window.__go('/leaderboard'); });
     await PAGES.leaderboard.ready(page);
     await expect(page.locator('#dan-lb-list .dan-lb-row.is-me .dan-lb-name')).toHaveText('Bình Trần (Bạn)');
   });
@@ -928,7 +955,7 @@ test.describe('inside the React app', () => {
   test('profile: a failed part leaves the rest on screen', async ({ page }) => {
     const state = makeState();
     state.failStats = true;
-    await open(page, '/app/#/profile', state);
+    await open(page, '/app/profile', state);
     await page.locator('#profileName:has-text("An Trần")').waitFor();
     await toastSeen(page, 'Không thể tải số liệu thống kê');
     await expect(page.locator('#statReading')).toHaveText('-');
@@ -942,14 +969,14 @@ test.describe('inside the React app', () => {
     }, { ...USER, role: 'admin' });
     const state = makeState();
     state.profile.role = 'admin';
-    await open(page, '/app/#/profile?tab=inventory', state);
+    await open(page, '/app/profile?tab=inventory', state);
     await page.locator('#profileRole:has-text("Quản trị viên")').waitFor();
     await expect(page.locator('.tab-btn[data-tab="inventory"]')).toHaveCount(0);
     await expect(page.locator('#inventory-body')).toContainText('chỉ dành cho học sinh và giáo viên');
   });
 
   test('a failed load offers a retry', async ({ page }) => {
-    await open(page, '/app/#/shop', { ...makeState(), failShop: true });
+    await open(page, '/app/shop', { ...makeState(), failShop: true });
     await expect(page.locator('#shop-items .shop-empty')).toContainText('Không tải được cửa hàng');
     await expect(page.locator('#shop-duels .shop-empty')).toBeVisible();
   });

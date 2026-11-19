@@ -2,6 +2,10 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      /* Links from before the address lost its "#": /admin/#/x?y → /admin/x?y */
+      if (location.hash.indexOf('#/') === 0) history.replaceState(null, '', '/admin' + location.hash.slice(1));
+    </script>
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
     <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('admin-theme')||'light')</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

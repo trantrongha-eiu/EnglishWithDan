@@ -20,7 +20,7 @@ describe('ProtectedRoute', () => {
     // ProtectedRoute redirects via window.location.href, not react-router's
     // Navigate (the import is unused in the source) — jsdom doesn't
     // implement real navigation, so we swap in a plain mock object.
-    window.location = { href: '', hash: '#/dashboard' };
+    window.location = { href: '', pathname: '/admin/dashboard', search: '' };
   });
 
   afterEach(() => {
@@ -61,12 +61,13 @@ describe('ProtectedRoute', () => {
     expect(screen.queryByText('admin secret')).not.toBeInTheDocument();
   });
 
-  it('encodes the current hash into the redirect-back "next" param', () => {
-    window.location.hash = '#/writing-grades';
+  it('encodes the current page into the redirect-back "next" param', () => {
+    window.location.pathname = '/admin/writing-grades';
+    window.location.search = '?tab=open';
     mockUseAuth.mockReturnValue({ token: null, loading: false, isAdmin: false, isTeacher: false });
     render(<ProtectedRoute><div>secret</div></ProtectedRoute>);
     expect(window.location.href).toBe(
-      '/login.html?next=' + encodeURIComponent('/admin/#/writing-grades')
+      '/login.html?next=' + encodeURIComponent('/admin/writing-grades?tab=open')
     );
   });
 });

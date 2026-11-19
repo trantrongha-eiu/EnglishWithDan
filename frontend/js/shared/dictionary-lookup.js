@@ -871,6 +871,7 @@
 
   // Saved words remember where they came from — the page name here.
   function _fallbackSource() {
+    if (/^\/app(\/|$)/.test(location.pathname)) return 'home';
     return (location.pathname.split('/').pop() || 'home').replace(/\.html$/, '') || 'other';
   }
 

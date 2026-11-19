@@ -2,14 +2,14 @@
 <html lang="vi">
 <head>
   <script>
-  /* This page now lives in the React app (/app/#/inbox, source:
+  /* This page now lives in the React app (/app/inbox, source:
      student-src/src/pages/Inbox.jsx). Old links keep their query string.
      ?legacy=1 stays on this version as a fallback. */
   (function () {
     var q = new URLSearchParams(location.search);
     if (q.get('legacy') === '1') return;
     var qs = q.toString();
-    location.replace('/app/#/inbox' + (qs ? '?' + qs : ''));
+    location.replace('/app/inbox' + (qs ? '?' + qs : ''));
   })();
   </script>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="/css/components.css?v=bb5d514434">
   <link rel="stylesheet" href="/css/mobile.css?v=1285106fee">
   <link rel="stylesheet" href="/css/dictionary-popup.css?v=dd9cf65aa3">
-  <script src="/js/theme.js?v=f5e2645f16"></script>
+  <script src="/js/theme.js?v=5269b2b242"></script>
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
   <link rel="stylesheet" href="/css/inbox.css?v=1e2d68206b">
@@ -33,10 +33,10 @@
   <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
 </head>
 <body>
-  <script src="/js/bundles/app-shell.js?v=7d1f03ee18"></script>
+  <script src="/js/bundles/app-shell.js?v=c927ecd9be"></script>
   <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
   <script src="/js/shared/word-audio.js?v=9fd314228b"></script>
-  <script src="/js/shared/dictionary-lookup.js?v=74785ced6f"></script>
+  <script src="/js/shared/dictionary-lookup.js?v=182fa667a3"></script>
 
   <div class="inbox-layout">
     <!-- Message list -->

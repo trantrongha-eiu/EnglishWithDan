@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthProvider';
 import { ToastProvider } from './contexts/ToastProvider';
 import { ThemeProvider } from './contexts/ThemeProvider';
@@ -62,7 +62,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 export default function App() {
   return (
     <ThemeProvider>
-    <HashRouter>
+    <BrowserRouter basename="/admin">
       <AuthProvider>
         <ToastProvider>
           <ConfirmProvider>
@@ -130,7 +130,7 @@ export default function App() {
           </ConfirmProvider>
         </ToastProvider>
       </AuthProvider>
-    </HashRouter>
+    </BrowserRouter>
     </ThemeProvider>
   );
 }

@@ -44,10 +44,9 @@
   ];
   function pageKey() {
     var path = location.pathname.replace(/\/+$/, '');
-    if (path === '/app') {
-      var route = (location.hash.match(/^#\/(classroom|leaderboard|shop|inbox|profile)(?=[/?]|$)/) || [])[1];
-      if (route) return route === 'leaderboard' ? 'vocab-leaderboard.html' : route + '.html';
-    }
+    var route = (path.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile)(?=\/|$)/) || [])[1];
+    if (route) return route === 'leaderboard' ? 'vocab-leaderboard.html' : route + '.html';
+    if (/^\/app(\/|$)/.test(path)) return 'dashboard.html';
     var last = path.split('/').pop() || '';
     if (/\.html$/.test(last)) return last;
     for (var i = 0; i < CLEAN_PREFIX.length; i++) {

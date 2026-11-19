@@ -27,9 +27,9 @@ export function groupByClass(lessons) {
 
 // from: the list Back should return to ('topics' / 'paraphrase')
 const fromQs = (from) => (from ? `?from=${from}` : '');
-export const lessonHref = (id, from) => `/app/#/dashboard/lesson/${encodeURIComponent(id)}${fromQs(from)}`;
-export const unitHref = (n, from) => `/app/#/dashboard/unit/${encodeURIComponent(n)}${fromQs(from)}`;
-export const PARA_REVIEW_HREF = '/app/#/dashboard/practice?src=paraphrase&from=paraphrase';
+export const lessonHref = (id, from) => `/app/dashboard/lesson/${encodeURIComponent(id)}${fromQs(from)}`;
+export const unitHref = (n, from) => `/app/dashboard/unit/${encodeURIComponent(n)}${fromQs(from)}`;
+export const PARA_REVIEW_HREF = '/app/dashboard/practice?src=paraphrase&from=paraphrase';
 
 // "Học tiếp" memory — same keys as dashboard-browse.js
 export const LAST_KEY = { paraphrase: 'ews_pb_last_unit', topics: 'ews_pb_last_lesson' };

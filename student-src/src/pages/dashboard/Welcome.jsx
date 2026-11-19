@@ -149,7 +149,7 @@ export default function Welcome() {
                 <i className="fas fa-hand-pointer" /> Bấm <strong>Sổ từ</strong> bên dưới để chọn sổ, học Paraphrase hoặc Vocab Topics
               </p>
             </div>
-            <a className="dash-vocab-hero-lb" href="/app/#/leaderboard">
+            <a className="dash-vocab-hero-lb" href="/app/leaderboard">
               <i className="fas fa-ranking-star" /> Xem BXH vocab
             </a>
           </div>

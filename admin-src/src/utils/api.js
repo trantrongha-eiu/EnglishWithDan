@@ -29,7 +29,7 @@ function redirectToLoginOnce() {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   localStorage.removeItem('lastLoginAt');
-  const url = '/login.html?next=' + encodeURIComponent('/admin/' + (window.location.hash || ''));
+  const url = '/login.html?next=' + encodeURIComponent(window.location.pathname + window.location.search);
   window.location.href = url;
   setTimeout(() => showSessionExpiredBanner(url), 2500);
 }

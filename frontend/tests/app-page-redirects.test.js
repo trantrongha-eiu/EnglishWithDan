@@ -18,16 +18,16 @@ function redirectOf(file, url) {
 
 describe('static pages that moved to /app/', () => {
   it.each([
-    ['vocab-leaderboard.html', '/vocab-leaderboard.html', '/app/#/leaderboard'],
-    ['shop.html', '/shop', '/app/#/shop'],
-    ['inbox.html', '/inbox.html', '/app/#/inbox'],
-    ['inbox.html', '/inbox.html?msg=abc', '/app/#/inbox?msg=abc'],
-    ['profile.html', '/profile', '/app/#/profile'],
-    ['profile.html', '/profile.html#overview', '/app/#/profile'],
-    ['profile.html', '/profile.html#inventory', '/app/#/profile?tab=inventory'],
-    ['profile.html', '/profile.html#security', '/app/#/profile?tab=security'],
-    ['profile.html', '/profile.html#plan', '/app/#/profile?focus=plan'],
-    ['profile.html', '/profile.html#readingHistoryCard', '/app/#/profile?focus=readingHistoryCard'],
+    ['vocab-leaderboard.html', '/vocab-leaderboard.html', '/app/leaderboard'],
+    ['shop.html', '/shop', '/app/shop'],
+    ['inbox.html', '/inbox.html', '/app/inbox'],
+    ['inbox.html', '/inbox.html?msg=abc', '/app/inbox?msg=abc'],
+    ['profile.html', '/profile', '/app/profile'],
+    ['profile.html', '/profile.html#overview', '/app/profile'],
+    ['profile.html', '/profile.html#inventory', '/app/profile?tab=inventory'],
+    ['profile.html', '/profile.html#security', '/app/profile?tab=security'],
+    ['profile.html', '/profile.html#plan', '/app/profile?focus=plan'],
+    ['profile.html', '/profile.html#readingHistoryCard', '/app/profile?focus=readingHistoryCard'],
   ])('%s: %s → %s', (file, url, to) => {
     expect(redirectOf(file, url)).toBe(to);
   });

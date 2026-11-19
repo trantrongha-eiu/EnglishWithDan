@@ -59,6 +59,20 @@ window.hexToRgba = function (hex, alpha) {
   } catch (e) { /* malformed value — ignore, keep the brand default */ }
 })();
 
+// Links to a section of this page (#contact) scroll there without adding a
+// "#…" to the address.
+document.addEventListener('click', function (e) {
+  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  var a = e.target.closest && e.target.closest('a[href^="#"]');
+  if (!a || (a.target && a.target !== '_self')) return;
+  var id = a.getAttribute('href').slice(1);
+  try { id = decodeURIComponent(id); } catch (err) { return; }
+  var el = id && document.getElementById(id);
+  if (!el) return;
+  e.preventDefault();
+  el.scrollIntoView();
+});
+
 function toggleDark() {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   const next = isDark ? 'light' : 'dark';

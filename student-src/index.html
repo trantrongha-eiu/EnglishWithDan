@@ -2,6 +2,10 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      /* Links from before the address lost its "#": /app/#/x?y → /app/x?y */
+      if (location.hash.indexOf('#/') === 0) history.replaceState(null, '', '/app' + location.hash.slice(1));
+    </script>
     <!-- The shared shell builds relative links ("tuition.html"): they mean the site root -->
     <base href="/" />
     <meta name="robots" content="noindex" />

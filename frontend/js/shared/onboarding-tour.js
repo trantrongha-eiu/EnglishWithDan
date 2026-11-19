@@ -500,7 +500,7 @@
     // ordinary visit. route-params.js loads after this file but before
     // DOMContentLoaded, so it is there by now.
     if (window.RouteParams && window.RouteParams.openedOnItem && window.RouteParams.openedOnItem()) return;
-    if (/^\/app(\/|$)/.test(location.pathname) && !/^#?\/?(dashboard\/?)?$/.test(location.hash)) return;
+    if (/^\/app(\/|$)/.test(location.pathname) && !/^\/app\/?(dashboard\/?)?$/.test(location.pathname)) return;
     // The tour goes first in the shared login-popup queue (highest priority)
     // so a brand-new student walks the tour before any goal-setup / badge /
     // review modal appears. #ews-tour-tip is removed by endTour(), which is

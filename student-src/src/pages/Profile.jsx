@@ -12,7 +12,7 @@ import HistoryTab from './profile/HistoryTab';
 import InventoryTab from './profile/InventoryTab';
 import { EditTab, SecurityTab } from './profile/AccountTabs';
 
-// 👤 Hồ sơ — /app/#/profile?tab=edit|security|history|inventory&focus=plan
+// 👤 Hồ sơ — /app/profile?tab=edit|security|history|inventory&focus=plan
 // (js/profile.js + js/inventory.js). Profile, stats and badges load side by
 // side, so one failing leaves the others on screen.
 

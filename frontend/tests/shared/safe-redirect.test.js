@@ -62,6 +62,13 @@ describe('SafeRedirect.getSafeNext — open-redirect guard', () => {
     });
   });
 
+  test('accepts an admin route without "#", with its query', () => {
+    expect(window.SafeRedirect.getSafeNext('/admin/students/abc123?tab=online')).toEqual({
+      url: '/admin/students/abc123?tab=online',
+      admin: true,
+    });
+  });
+
   test('accepts the bare "/admin/" route with no hash fragment', () => {
     expect(window.SafeRedirect.getSafeNext('/admin/')).toEqual({
       url: '/admin/',
@@ -82,7 +89,8 @@ describe('SafeRedirect.getSafeNext — open-redirect guard', () => {
 
   test('never hands an /admin path to the student branch', () => {
     expect(window.SafeRedirect.getSafeNext('/admin/#/x?<script>')).toBeNull();
-    expect(window.SafeRedirect.getSafeNext('/admin/users')).toBeNull();
+    expect(window.SafeRedirect.getSafeNext('/admin/../reading.html')).toBeNull();
+    expect(window.SafeRedirect.getSafeNext('/admin/x?<script>')).toBeNull();
   });
 
   test('rejects a relative path with no leading "/" that is not a .html file', () => {

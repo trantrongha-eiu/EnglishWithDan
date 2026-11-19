@@ -21,11 +21,9 @@ export default function ProtectedRoute({ children, role = 'teacher' }) {
   useEffect(() => {
     if (loading || allowed || forbidden) return;
     // Redirect-back support (Phase 4 routing): remember the admin route
-    // that was open (HashRouter, so window.location.hash already has the
-    // form "#/writing-grades") so login.html can send the user straight
-    // back here after re-authenticating instead of always to /admin/.
-    const hash = window.location.hash || '';
-    const next = encodeURIComponent('/admin/' + hash);
+    // that was open so login.html can send the user straight back here
+    // after re-authenticating instead of always to /admin/.
+    const next = encodeURIComponent(window.location.pathname + window.location.search);
     window.location.href = '/login.html?next=' + next;
   }, [loading, allowed, forbidden]);
 

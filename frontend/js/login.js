@@ -33,7 +33,7 @@ function showError(msg) { showToastWithTitle('error', 'Thông báo', msg); }
 // Reads ?next=... — either a student page (set by
 // AuthService.requirePageAuth when it bounced an unauthenticated
 // visitor from a deep link) or an admin hash-route like
-// /admin/#/writing-grades (set by admin-src's ProtectedRoute.jsx
+// /admin/writing-grades (set by admin-src's ProtectedRoute.jsx
 // when a session expires mid-use). AuthService.getSafeNext()
 // validates the shape before ever using it as a redirect target —
 // never honor next= as-is, to avoid an open-redirect vector.

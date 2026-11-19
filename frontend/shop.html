@@ -2,14 +2,14 @@
 <html lang="vi" data-theme="light">
 <head>
   <script>
-  /* This page now lives in the React app (/app/#/shop, source:
+  /* This page now lives in the React app (/app/shop, source:
      student-src/src/pages/Shop.jsx). Old links keep their query string.
      ?legacy=1 stays on this version as a fallback. */
   (function () {
     var q = new URLSearchParams(location.search);
     if (q.get('legacy') === '1') return;
     var qs = q.toString();
-    location.replace('/app/#/shop' + (qs ? '?' + qs : ''));
+    location.replace('/app/shop' + (qs ? '?' + qs : ''));
   })();
   </script>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="/css/motion.css?v=cf232e2585"/>
   <link rel="stylesheet" href="/css/components.css?v=bb5d514434"/>
   <link rel="stylesheet" href="/css/mobile.css?v=1285106fee"/>
-  <script src="/js/theme.js?v=f5e2645f16"></script>
+  <script src="/js/theme.js?v=5269b2b242"></script>
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
   <!-- .et-shell / .et-hero: the same simple page shell as vocab-leaderboard.html. -->
   <link rel="stylesheet" href="/css/entrance-test.css?v=cc30835470">
@@ -37,14 +37,14 @@
   <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
 </head>
 <body>
-<script src="/js/shared/auth-service.js?v=a4b3e5e969"></script>
-<script src="/js/auth.js?v=d0540958cf"></script>
-<script src="/js/nav.js?v=3c4cc821ba"></script>
-<script src="/js/shared/playful.js?v=bf8cdd717e"></script>
+<script src="/js/shared/auth-service.js?v=2d37935963"></script>
+<script src="/js/auth.js?v=14669bb12e"></script>
+<script src="/js/nav.js?v=aea9e8473d"></script>
+<script src="/js/shared/playful.js?v=ffa48bea38"></script>
 <script src="/js/shared/utils.js?v=87a790033c"></script>
 <script src="/js/shared/toast.js?v=08d12e7571"></script>
 <script src="/js/shared/api-client.js?v=5bb9a26ee8"></script>
-<script src="/js/shared/online-tracker.js?v=b67ab1c88b"></script>
+<script src="/js/shared/online-tracker.js?v=c0eda679a6"></script>
 <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
 
 <div class="et-shell shop-shell">

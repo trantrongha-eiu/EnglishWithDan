@@ -29,19 +29,19 @@ function run(url, stored = {}) {
 
 describe('dashboard.html redirect', () => {
   it.each([
-    ['/dashboard.html', '/app/#/dashboard'],
-    ['/dashboard.html?view=home', '/app/#/dashboard'],
-    ['/dashboard.html?view=topics', '/app/#/dashboard/topics'],
-    ['/dashboard.html?view=paraphrase', '/app/#/dashboard/paraphrase'],
-    ['/dashboard.html?view=lesson&lessonId=abc', '/app/#/dashboard/lesson/abc'],
-    ['/dashboard.html?view=unit&unit=3', '/app/#/dashboard/unit/3'],
-    ['/dashboard.html?view=unit&unit=3&mode=multipleChoice', '/app/#/dashboard/unit/3?mode=quiz'],
-    ['/dashboard.html?view=book&bookId=b1', '/app/#/dashboard/book/b1'],
-    ['/dashboard.html?view=book&bookId=b1&mode=study', '/app/#/dashboard/book/b1'],
-    ['/dashboard.html?view=book&bookId=b1&mode=fillBlank', '/app/#/dashboard/book/b1/practice?mode=flashcard'],
-    ['/dashboard.html?action=review-due', '/app/#/dashboard/practice?src=due'],
-    ['/dashboard.html?action=review-paraphrase', '/app/#/dashboard/practice?src=paraphrase'],
-    ['/dashboard.html#homework-card', '/app/#/dashboard?focus=homework-card'],
+    ['/dashboard.html', '/app/dashboard'],
+    ['/dashboard.html?view=home', '/app/dashboard'],
+    ['/dashboard.html?view=topics', '/app/dashboard/topics'],
+    ['/dashboard.html?view=paraphrase', '/app/dashboard/paraphrase'],
+    ['/dashboard.html?view=lesson&lessonId=abc', '/app/dashboard/lesson/abc'],
+    ['/dashboard.html?view=unit&unit=3', '/app/dashboard/unit/3'],
+    ['/dashboard.html?view=unit&unit=3&mode=multipleChoice', '/app/dashboard/unit/3?mode=quiz'],
+    ['/dashboard.html?view=book&bookId=b1', '/app/dashboard/book/b1'],
+    ['/dashboard.html?view=book&bookId=b1&mode=study', '/app/dashboard/book/b1'],
+    ['/dashboard.html?view=book&bookId=b1&mode=fillBlank', '/app/dashboard/book/b1/practice?mode=flashcard'],
+    ['/dashboard.html?action=review-due', '/app/dashboard/practice?src=due'],
+    ['/dashboard.html?action=review-paraphrase', '/app/dashboard/practice?src=paraphrase'],
+    ['/dashboard.html#homework-card', '/app/dashboard?focus=homework-card'],
   ])('%s', (from, to) => {
     expect(run(from).to).toBe(to);
   });
@@ -53,6 +53,6 @@ describe('dashboard.html redirect', () => {
   });
 
   it('?legacy=0 goes back to the new page', () => {
-    expect(run('/dashboard.html?legacy=0', { ews_legacy_dash: '1' }).to).toBe('/app/#/dashboard');
+    expect(run('/dashboard.html?legacy=0', { ews_legacy_dash: '1' }).to).toBe('/app/dashboard');
   });
 });

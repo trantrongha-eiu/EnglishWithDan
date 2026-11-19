@@ -38,7 +38,8 @@
 
   // [pattern (matched against the path with trailing slashes removed), builder]
   var ROUTES = [
-    // Admin SPA uses a HashRouter — /admin/users means /admin/#/users.
+    // Only reached if the host's /admin/* rewrite is missing: the admin app
+    // turns this form back into /admin/users as it starts.
     [/^\/admin\/(.+)$/, function (m) { return '/admin/#/' + m[1]; }],
     [/^\/admin\.html$/, function () { return '/admin/'; }],
 

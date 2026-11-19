@@ -14,10 +14,17 @@
     return;
   }
   var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
-  // Route of the React app (/app/#/…), '' on every other page.
+  // Route of the React app (/app/…), '' on every other page.
   function _appRoute() {
-    if (!/^\/app(\/|$)/.test(location.pathname)) return '';
-    return location.hash.replace(/^#/, '').split('?')[0].replace(/\/$/, '') || '/dashboard';
+    var m = location.pathname.match(/^\/app(\/.*)?$/);
+    if (!m) return '';
+    return (m[1] || '').replace(/\/+$/, '') || '/dashboard';
+  }
+  // Inside the app a route change needs no page load (and a running quiz can
+  // still ask before leaving).
+  function _goApp(route) {
+    if (_appRoute() && window.ewsNavigate) window.ewsNavigate(route);
+    else location.href = '/app' + route;
   }
   function _onVocabAppRoute() { return /^\/dashboard(\/|$)/.test(_appRoute()); }
 
@@ -105,11 +112,11 @@
         { href: 'shadowing.html',                   icon: 'fa-comment-dots', label: 'Shadowing (Video)' },
       ]
     },
-    { href: 'app/#/dashboard',       icon: 'fa-layer-group', label: 'Vocab',
+    { href: 'app/dashboard',       icon: 'fa-layer-group', label: 'Vocab',
       children: [
-        { href: 'app/#/dashboard',                   icon: 'fa-layer-group', label: 'Sổ từ vựng' },
-        { href: 'app/#/dashboard/paraphrase',        icon: 'fa-graduation-cap', label: 'Học Paraphrase' },
-        { href: 'app/#/dashboard/topics',            icon: 'fa-shapes',      label: 'Học Vocab Topics' },
+        { href: 'app/dashboard',                   icon: 'fa-layer-group', label: 'Sổ từ vựng' },
+        { href: 'app/dashboard/paraphrase',        icon: 'fa-graduation-cap', label: 'Học Paraphrase' },
+        { href: 'app/dashboard/topics',            icon: 'fa-shapes',      label: 'Học Vocab Topics' },
       ]
     },
     // Both thi-thử ("mock test") features live under one dropdown: the new
@@ -129,15 +136,15 @@
     // Cửa hàng lửa (shop.html) sits under BXH: it sells the items that
     // show up there (linh thú, crown, cloak, cake) and the streak boosts
     // students race the board with.
-    { href: 'app/#/leaderboard', icon: 'fa-ranking-star', label: 'BXH vocab',
+    { href: 'app/leaderboard', icon: 'fa-ranking-star', label: 'BXH vocab',
       children: [
-        { href: 'app/#/leaderboard', icon: 'fa-ranking-star', label: 'Bảng xếp hạng' },
-        { href: 'app/#/shop',             icon: 'fa-store',        label: 'Cửa hàng lửa 🔥' },
+        { href: 'app/leaderboard', icon: 'fa-ranking-star', label: 'Bảng xếp hạng' },
+        { href: 'app/shop',             icon: 'fa-store',        label: 'Cửa hàng lửa 🔥' },
       ]
     },
     // The student's own class page: schedule, attendance, homework, Speaking
     // exam booking (or how to contact the teacher when not in a class yet).
-    { href: 'app/#/classroom', icon: 'fa-chalkboard-user', label: 'Lớp học' },
+    { href: 'app/classroom', icon: 'fa-chalkboard-user', label: 'Lớp học' },
     // "Học phí" was an unlabeled icon in the utility cluster — students
     // missed it, so it's back in the main row as a labeled, highlighted
     // pill (.nav-link-tuition) with the unpaid-count badge next to it.
@@ -152,7 +159,7 @@
   // there's still a way to reach them once the icon row hides) — so href/
   // icon/label/badgeId never drift between the two.
   var UTILITY_LINKS = [
-    { href: 'app/#/inbox',  icon: 'fa-envelope',        label: 'Hộp thư', badgeId: 'navInboxBadge' },
+    { href: 'app/inbox',  icon: 'fa-envelope',        label: 'Hộp thư', badgeId: 'navInboxBadge' },
   ];
 
   var BADGE_STYLE = 'display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:3px;vertical-align:middle';
@@ -175,11 +182,11 @@
   // AND every query param in the child href is present in the current URL.
   // A child with no query string is only active when the current URL also has no query string.
   function navChildActive(cHref) {
-    // Routes of the React app (/app/#/dashboard/…) live in the hash
-    if (cHref.indexOf('app/#') === 0) {
+    // Routes of the React app (/app/dashboard/…)
+    if (cHref.indexOf('app/') === 0) {
       var route = _appRoute();
       if (!route) return false;
-      var target = cHref.slice(5);
+      var target = cHref.slice(3);
       if (target !== '/dashboard') return route === target;
       return /^\/dashboard(\/|$)/.test(route) && !/^\/dashboard\/(paraphrase|topics)$/.test(route);
     }
@@ -198,7 +205,7 @@
   // A top-level entry: its own page/app route, or one of its dropdown children.
   function navTopActive(l) {
     if (l.children) return page === l.href || l.children.some(function (c) { return !c.divider && navChildActive(c.href); });
-    return l.href.indexOf('app/#') === 0 ? navChildActive(l.href) : page === l.href;
+    return l.href.indexOf('app/') === 0 ? navChildActive(l.href) : page === l.href;
   }
 
   function mkDesktopLinks() {
@@ -277,7 +284,7 @@
   nav.className = 'top-nav';
   nav.id = 'globalTopNav';
   nav.innerHTML =
-    '<a href="/app/#/dashboard" class="nav-brand"><img src="/img/big_logo.png" alt="EnglishWithDan" style="height:38px;width:auto;border-radius:6px;display:block;"></a>' +
+    '<a href="/app/dashboard" class="nav-brand"><img src="/img/big_logo.png" alt="EnglishWithDan" style="height:38px;width:auto;border-radius:6px;display:block;"></a>' +
     '<div class="nav-links">' + mkDesktopLinks() + '</div>' +
     '<div class="nav-actions">' +
       // "Hướng dẫn trang này" — Lulu (js/shared/playful.js fills the face in
@@ -322,11 +329,11 @@
   // The React app changes route without a page load: keep the menu right, and
   // shut the phone drawer the tapped link was in.
   function _syncAppRoute() {
-    document.querySelectorAll('.nav-dd-menu a[href^="/app/#"], a.mobile-nav-sub[href^="/app/#"]').forEach(function (a) {
+    document.querySelectorAll('.nav-dd-menu a[href^="/app/"], a.mobile-nav-sub[href^="/app/"]').forEach(function (a) {
       a.classList.toggle('active', navChildActive(a.getAttribute('href').slice(1)));
     });
     LINKS.forEach(function (l) {
-      if (l.href.indexOf('app/#') !== 0) return;
+      if (l.href.indexOf('app/') !== 0) return;
       var sel = '.nav-links > a[href="/' + l.href + '"], .nav-dropdown > a[href="/' + l.href + '"], a.mobile-nav-link:not(.mobile-nav-sub)[href="/' + l.href + '"]';
       document.querySelectorAll(sel).forEach(function (a) { a.classList.toggle('active', navTopActive(l)); });
     });
@@ -342,7 +349,6 @@
     if (d) d.classList.remove('open');
     if (h) h.classList.remove('open');
   }
-  window.addEventListener('hashchange', _syncAppRoute);
   window.addEventListener('ews:route', _syncAppRoute); // fired by student-src App.jsx
 
   // ── Account dock (bottom-left corner) ─────────────────────
@@ -356,7 +362,7 @@
   cornerDock.id = 'navCornerDock';
   cornerDock.innerHTML =
     STAFF_ADMIN_ICON +
-    '<a href="/app/#/profile" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân">' +
+    '<a href="/app/profile" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân">' +
       '<span id="navAvatar">?</span>' +
     '</a>' +
     '<button class="btn-dark-mode" id="globalLogoutBtn" title="Đăng xuất" aria-label="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>';
@@ -401,7 +407,7 @@
     '<div class="mobile-nav-inner">' +
     mkMobileLinks() +
     mkUtilityMobileLinks() +
-    '<a href="/app/#/profile" class="mobile-nav-link"><i class="fas fa-user-circle" style="width:20px;text-align:center"></i> Trang cá nhân</a>' +
+    '<a href="/app/profile" class="mobile-nav-link"><i class="fas fa-user-circle" style="width:20px;text-align:center"></i> Trang cá nhân</a>' +
     STAFF_ADMIN_MOBILE +
     '<div class="mobile-nav-divider"></div>' +
     '<button id="mobileLangBtn" class="mobile-nav-link ews-lang-mobile" data-i18n-skip style="width:100%;border:none;background:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:500;text-align:left;color:var(--text-light);">' +
@@ -444,7 +450,7 @@
     if (/^(mock-test|entrance-test|test-dau-vao)(\.html)?$/.test(page)) return;
     var dlScript = document.createElement('script');
     dlScript.id = 'ews-dict-lookup-js';
-    dlScript.src = '/js/shared/dictionary-lookup.js?v=74785ced6f';
+    dlScript.src = '/js/shared/dictionary-lookup.js?v=182fa667a3';
     document.body.appendChild(dlScript);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _injectDictLookup);
@@ -477,7 +483,7 @@
   if (!document.getElementById('ews-shopfeed-js')) {
     var feedScript = document.createElement('script');
     feedScript.id = 'ews-shopfeed-js';
-    feedScript.src = '/js/shared/shop-feed.js?v=4908ffc24a';
+    feedScript.src = '/js/shared/shop-feed.js?v=be6e847485';
     document.body.appendChild(feedScript);
   }
 
@@ -499,7 +505,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=431b76a1a4';
+      s.src = '/js/shared/page-help.js?v=cfca499d88';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);
@@ -571,7 +577,6 @@
     drawer.classList.remove('open');
     ham.classList.remove('open');
   }
-  window.addEventListener('hashchange', _closeDrawerOnRoute);
   window.addEventListener('ews:route', _closeDrawerOnRoute);
   // Close mobile nav if window is resized to desktop width (prevents overlay getting stuck)
   window.addEventListener('resize', function () {
@@ -1060,7 +1065,7 @@
     banner.style.cssText = 'position:fixed;top:calc(var(--nav-height,64px) + ' + baseOffset + 'px);left:0;right:0;z-index:996;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 16px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(90deg,#b91c1c,#dc2626);box-shadow:0 2px 8px rgba(0,0,0,.15)';
     banner.innerHTML =
       '<span style="flex:1;text-align:center">⚠️ Bạn đã bị nhắc nhở <strong>' + count + ' lần</strong> về việc học từ vựng / làm bài tập chưa đầy đủ. Hãy chăm chỉ ôn tập nhé!</span>' +
-      '<a href="/app/#/inbox" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem hộp thư</a>' +
+      '<a href="/app/inbox" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem hộp thư</a>' +
       '<button style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;padding:2px 4px;flex-shrink:0" title="Đóng">&times;</button>';
     var afterEl = document.getElementById('nav-expiry-banner') || document.getElementById('globalTopNav');
     document.body.insertBefore(banner, afterEl.nextSibling);
@@ -1189,7 +1194,7 @@
       'nav-homework-warning-banner',
       'linear-gradient(90deg,#b45309,#d97706)',
       '<span style="flex:1;text-align:center">' + parts.join('') + '</span>' +
-      '<a href="/app/#/dashboard" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem bài tập</a>'
+      '<a href="/app/dashboard" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Xem bài tập</a>'
     );
   }
 
@@ -1202,7 +1207,7 @@
       'linear-gradient(90deg,#b91c1c,#ea580c)',
       '<span style="flex:1;text-align:center">🔒 Bạn còn <strong>' + old + ' bài tập cũ</strong> chưa hoàn thành nên <strong>' +
       lock.lockedCount + ' bài tập mới</strong> đang bị khoá. Hãy làm xong bài cũ để mở khoá bài mới.</span>' +
-      '<a href="/app/#/dashboard?focus=homework-card" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Làm bài cũ</a>'
+      '<a href="/app/dashboard?focus=homework-card" style="color:#fff;background:rgba(255,255,255,.25);border-radius:6px;padding:4px 10px;text-decoration:none;font-size:12px;white-space:nowrap">Làm bài cũ</a>'
     );
   }
 
@@ -1362,7 +1367,7 @@
 
         var items = list.slice(0, 5).map(function (m) {
           var when = m.createdAt ? new Date(m.createdAt).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : '';
-          return '<a href="/app/#/inbox?msg=' + encodeURIComponent(m._id) + '" style="display:block;padding:10px 12px;border:1px solid var(--border,#e5e7eb);border-radius:10px;margin-bottom:8px;text-decoration:none;color:inherit;text-align:left">' +
+          return '<a href="/app/inbox?msg=' + encodeURIComponent(m._id) + '" style="display:block;padding:10px 12px;border:1px solid var(--border,#e5e7eb);border-radius:10px;margin-bottom:8px;text-decoration:none;color:inherit;text-align:left">' +
             '<div style="font-weight:700;font-size:14px">✉️ ' + _escAttn(m.subject || '(không tiêu đề)') + '</div>' +
             '<div style="font-size:12px;color:var(--text2,#6b7280);margin-top:2px">Từ ' + _escAttn(m.fromName) + (when ? ' · ' + when : '') + '</div>' +
           '</a>';
@@ -1380,7 +1385,7 @@
             items + more +
             '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px">' +
               '<button type="button" id="nav-mustread-later" style="background:transparent;color:var(--text2,#6b7280);border:1px solid var(--border,#e5e7eb);border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Để sau</button>' +
-              '<a href="/app/#/inbox?msg=' + encodeURIComponent(list[0]._id) + '" style="background:var(--brand,#2563eb);color:#fff;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;text-decoration:none">Đọc ngay</a>' +
+              '<a href="/app/inbox?msg=' + encodeURIComponent(list[0]._id) + '" style="background:var(--brand,#2563eb);color:#fff;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;text-decoration:none">Đọc ngay</a>' +
             '</div>' +
           '</div>';
         document.body.appendChild(overlay);
@@ -1531,7 +1536,7 @@
     // is deliberate: the student picks which sổ to study, per the product ask.
     document.getElementById('nav-vocab-inactivity-go').addEventListener('click', function () {
       overlay.remove();
-      location.href = '/app/#/dashboard';
+      _goApp('/dashboard');
     });
   }
 
@@ -1623,12 +1628,12 @@
     // On the vocab page already → launch straight into the due-review quiz;
     // otherwise navigate there with the trigger param (dashboard.js reads it).
     if (typeof window.openReviewDueModal === 'function') { window.openReviewDueModal(); return; }
-    location.href = '/app/#/dashboard/practice?src=due';
+    _goApp('/dashboard/practice?src=due');
   }
 
   function _goParaphraseReviewDue() {
     if (typeof window.openParaphraseReviewModal === 'function') { window.openParaphraseReviewModal(); return; }
-    location.href = '/app/#/dashboard/practice?src=paraphrase';
+    _goApp('/dashboard/practice?src=paraphrase');
   }
 
   function _renderVocabGoalCard(o) {
@@ -1715,7 +1720,7 @@
   // when the student is already here it must not reload the same page.
   function _onVocabHomePage() {
     var p = location.pathname.replace(/\/+$/, '');
-    if (p === '/app') return _onVocabAppRoute(); // other React pages are not the vocab home
+    if (/^\/app(\/|$)/.test(p)) return _onVocabAppRoute(); // other React pages are not the vocab home
     return p === '/dashboard' || p === '/dashboard.html' || p === '/vocabulary' || p === '';
   }
 
@@ -1729,7 +1734,7 @@
     if (x) x.addEventListener('click', close);
     var go = card.querySelector('#nav-vocab-goal-go');
     if (go) go.addEventListener('click', function () {
-      if (!_onVocabHomePage()) { location.href = '/app/#/dashboard'; return; }
+      if (!_onVocabHomePage()) { _goApp('/dashboard'); return; }
       // Mid-quiz on this page (deep-linked ?view=unit): just dismiss — don't
       // yank them out of an in-progress session.
       if (typeof window._isActivePractice === 'function' && window._isActivePractice()) { close(); return; }

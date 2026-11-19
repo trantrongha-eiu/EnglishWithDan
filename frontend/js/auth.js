@@ -26,8 +26,9 @@
   // theme.js drops the slash) — normalize to the file name so "/register"
   // isn't treated as a private page (visitors got bounced to login) and
   // "/reading/" isn't treated as the public "" home page.
-  const currentPage = (window.location.pathname.replace(/\/+$/, '').split('/').pop() || 'index.html')
-    .replace(/^[^.]+$/, '$&.html');
+  // Every route of the React app is one private page, whatever its last segment.
+  const currentPage = /^\/app(\/|$)/.test(window.location.pathname) ? 'app.html'
+    : (window.location.pathname.replace(/\/+$/, '').split('/').pop() || 'index.html').replace(/^[^.]+$/, '$&.html');
 
   const PUBLIC_PAGES = ['login.html', 'register.html', 'verify-email.html', 'index.html', ''];
   const isPublic     = PUBLIC_PAGES.some(p => currentPage === p);

@@ -5,7 +5,7 @@ import { apiFetch } from '../utils/api';
 import { siteConfirm, siteToast, usePets } from '../utils/shell';
 import { cakeToast, luluLine, quizSub, shopApi, streakSub } from '../utils/shop';
 
-// 🏆 BXH vocab — /app/#/leaderboard (js/vocab-leaderboard.js): Top streak and
+// 🏆 BXH vocab — /app/leaderboard (js/vocab-leaderboard.js): Top streak and
 // Top Quiz boards, the viewer's own standing, and the Cửa hàng lửa actions on
 // each row (🎂 ném bánh, 🔍 Kính Soi, ⚔️ thách đấu).
 

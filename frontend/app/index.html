@@ -2,12 +2,16 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      /* Links from before the address lost its "#": /app/#/x?y → /app/x?y */
+      if (location.hash.indexOf('#/') === 0) history.replaceState(null, '', '/app' + location.hash.slice(1));
+    </script>
     <!-- The shared shell builds relative links ("tuition.html"): they mean the site root -->
     <base href="/" />
     <meta name="robots" content="noindex" />
     <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
     <!-- Same shell as the static pages: theme, content guard, visit + PWA -->
-    <script src="/js/theme.js?v=f5e2645f16"></script>
+    <script src="/js/theme.js?v=5269b2b242"></script>
     <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
     <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
     <script src="/js/shared/pwa-register.js?v=713d4c39e1" defer></script>
@@ -32,20 +36,20 @@
     <script src="/js/shared/word-audio.js?v=9fd314228b" defer></script>
     <!-- Shared "gõ từng chữ" typing drill (window.WbwDrill) for Listen / Dịch -->
     <script src="/js/shared/wbw-drill.js?v=c4543d57c2" defer></script>
-    <script type="module" crossorigin src="/app/assets/index-G7ixRQZ9.js"></script>
-    <link rel="modulepreload" crossorigin href="/app/assets/jsx-runtime-COjLxO0e.js">
-    <link rel="modulepreload" crossorigin href="/app/assets/api-CmONPy7v.js">
-    <link rel="modulepreload" crossorigin href="/app/assets/shell-1YV9HmK_.js">
+    <script type="module" crossorigin src="/app/assets/index-Cb6SUeIs.js"></script>
+    <link rel="modulepreload" crossorigin href="/app/assets/jsx-runtime-CpjHm1VX.js">
+    <link rel="modulepreload" crossorigin href="/app/assets/api-D1qJwJkE.js">
+    <link rel="modulepreload" crossorigin href="/app/assets/shell-B8xtxukc.js">
     <link rel="stylesheet" crossorigin href="/app/assets/index-DIwGhdaC.css">
   </head>
   <body>
     <!-- Site shell (auth guard, top nav + its reminders, upgrade modal, toasts,
          chat widget, online-time tracker). Must run before the React app. -->
-    <script src="/js/bundles/app-shell.js?v=7d1f03ee18"></script>
-    <script src="/js/shared/onboarding-tour.js?v=957baa6b76"></script>
+    <script src="/js/bundles/app-shell.js?v=c927ecd9be"></script>
+    <script src="/js/shared/onboarding-tour.js?v=4ddb633bb4"></script>
     <script src="/js/learning-popups.js?v=fd5ee1e733"></script>
     <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
-    <script src="/js/shared/dictionary-lookup.js?v=74785ced6f"></script>
+    <script src="/js/shared/dictionary-lookup.js?v=182fa667a3"></script>
     <script src="/js/shared/badge-popup.js?v=b1f5e551eb"></script>
 
     <div id="root"></div>

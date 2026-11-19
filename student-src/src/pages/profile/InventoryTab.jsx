@@ -30,7 +30,7 @@ function ItemAction({ item: i, effects, onUse }) {
     return <button type="button" className="btn btn-primary btn-sm" data-inv-use={i.key} disabled={hopeOn} onClick={() => onUse(i)}>{hopeOn ? 'Đang dùng hôm nay' : 'Dùng'}</button>;
   }
   if (i.usage === 'target') {
-    return <a className="btn btn-primary btn-sm" href="/app/#/leaderboard">{i.key === 'lens' ? '🔍 Soi ở BXH' : 'Ném ở BXH'}</a>;
+    return <a className="btn btn-primary btn-sm" href="/app/leaderboard">{i.key === 'lens' ? '🔍 Soi ở BXH' : 'Ném ở BXH'}</a>;
   }
   return <span className="inv-passive">🛡️ Tự động bật khi lỡ 1 ngày</span>;
 }
@@ -325,7 +325,7 @@ export default function InventoryTab({ active, canPlay }) {
             <div className="inv-stat"><span>Ví lửa</span><b>🔥 {data.wallet}</b></div>
             <div className="inv-stat inv-stat--streak"><span>Lửa chuỗi hiện có</span><b>🔥 {data.streak}</b></div>
           </div>
-          <a className="btn btn-primary btn-sm" href="/app/#/shop"><i className="fas fa-store" /> Cửa hàng</a>
+          <a className="btn btn-primary btn-sm" href="/app/shop"><i className="fas fa-store" /> Cửa hàng</a>
         </div>
         <p className="inv-note">Ví lửa dùng để mua sắm; lửa chuỗi là thứ hạng trên BXH. Bán lại được một nửa giá mua (làm tròn xuống). Bấm 🎁 Tặng để gửi vật phẩm / linh thú cho bạn bè. Kỹ năng linh thú chỉ có tác dụng với bé đang đi dạo.</p>
         <h4 className="inv-h">⚔️ Vật phẩm</h4>
@@ -340,7 +340,7 @@ export default function InventoryTab({ active, canPlay }) {
               <div className="inv-grid">{owned.map((p) => <PetCard key={p.id} pet={p} activePet={data.activePet} pets={pets} act={act} />)}</div>
             </>
           )
-          : <div className="inv-empty">🐾 Chưa có linh thú — ghé <a href="/app/#/shop">Cửa hàng lửa</a> rước một bé về nhé!</div>}
+          : <div className="inv-empty">🐾 Chưa có linh thú — ghé <a href="/app/shop">Cửa hàng lửa</a> rước một bé về nhé!</div>}
       </>
     );
   }

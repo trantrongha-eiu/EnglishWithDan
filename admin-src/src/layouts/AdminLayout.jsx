@@ -33,7 +33,7 @@ export default function AdminLayout() {
 
   return (
     <AdminDataProvider>
-      <a href="#admin-main" className="skip-link">Bỏ qua menu</a>
+      <a href="#admin-main" className="skip-link" onClick={(e) => { e.preventDefault(); document.getElementById('admin-main')?.focus(); }}>Bỏ qua menu</a>
       <div className={`admin-shell${compact ? ' is-compact' : ''}`}>
         <Sidebar
           mobileOpen={mobileOpen}

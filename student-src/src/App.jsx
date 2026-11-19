@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { createHashRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthProvider';
 import { ToastProvider } from './contexts/ToastProvider';
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -26,7 +26,7 @@ const INBOX_CSS = ['inbox', 'pf-pages'];
 const PROFILE_CSS = ['profile', 'pf-profile', 'inventory'];
 
 // A data router: running quizzes use useBlocker to ask before leaving
-const router = createHashRouter(createRoutesFromElements(
+const router = createBrowserRouter(createRoutesFromElements(
   <>
     <Route path="/" element={<ProtectedRoute><StudentLayout /></ProtectedRoute>}>
       <Route index element={<Navigate to="/dashboard" replace />} />
@@ -49,19 +49,21 @@ const router = createHashRouter(createRoutesFromElements(
     </Route>
     <Route path="*" element={<Navigate to="/dashboard" replace />} />
   </>,
-));
+), { basename: '/app' });
 
 // Tell the site nav (js/nav.js) about route changes
 router.subscribe(() => window.dispatchEvent(new Event('ews:route')));
+// …and let it change route without a page load
+window.ewsNavigate = (to) => router.navigate(to);
 
-// Plain links to /app/#/… (site menu, list cards) go through the router, so
+// Plain links to /app/… (site menu, list cards) go through the router, so
 // they stay in its history and Back can be guarded during a quiz.
 document.addEventListener('click', (e) => {
   if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-  const a = e.target.closest?.('a[href^="/app/#"]');
-  if (!a || (a.target && a.target !== '_self') || !['/app', '/app/'].includes(location.pathname)) return;
+  const a = e.target.closest?.('a[href^="/app/"]');
+  if (!a || (a.target && a.target !== '_self') || !/^\/app(\/|$)/.test(location.pathname)) return;
   e.preventDefault();
-  router.navigate(a.getAttribute('href').slice('/app/#'.length));
+  router.navigate(a.getAttribute('href').slice('/app'.length));
 });
 
 export default function App() {

@@ -76,12 +76,13 @@
   }
 
   function pageKey() {
+    if (/^\/app(\/|$)/.test(location.pathname)) return /^\/app\/(classroom|leaderboard|shop|inbox|profile)(\/|$)/.test(location.pathname) ? '_' : 'dashboard';
     var pg = (location.pathname.split('/').pop() || '').replace('.html', '');
     return /listening|dictation|shadowing/.test(pg) ? 'listening'
       : /reading/.test(pg) ? 'reading'
       : /writing|task1|task2|grammar|sentences/.test(pg) ? 'writing'
       : /speaking/.test(pg) ? 'speaking'
-      : /dashboard/.test(pg) || (/^\/app(\/|$)/.test(location.pathname) && !/^#\/(classroom|leaderboard|shop|inbox|profile)(?=[/?]|$)/.test(location.hash)) ? 'dashboard' : '_';
+      : /dashboard/.test(pg) ? 'dashboard' : '_';
   }
 
   function randomOutfit(not) {

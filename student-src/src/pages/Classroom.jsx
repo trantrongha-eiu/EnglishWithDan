@@ -9,7 +9,7 @@ import { Checkin, ClassLimits, ClassTiles, ProgressBlock } from './dashboard/Cla
 import HomeworkCard from './dashboard/HomeworkCard';
 import SpeakingExamBlock, { SpeakingExamHistory, seDayLabel } from './dashboard/SpeakingExamBlock';
 
-// 🏫 Lớp học — /app/#/classroom?class=<id>&tab=overview|schedule|homework|speaking
+// 🏫 Lớp học — /app/classroom?class=<id>&tab=overview|schedule|homework|speaking
 //   GET /classes/my/classroom gates the page; check-in, homework and the
 //   Speaking exam are best-effort: their tab says so if they fail.
 // A student in no class sees how to contact the teacher.
@@ -108,7 +108,7 @@ function Overview({ c, ck, homework, se, animate, closed, onToggle, reload, go }
         <Shortcut icon="📚" title="Bài tập" text={hwText} onClick={() => go('homework')} />
         <Shortcut icon="🎤" title="Thi Speaking" text={seText} onClick={() => go('speaking')} />
         <Shortcut icon="💰" title="Học phí" text="Xem các khoản cần đóng" href="/tuition.html" />
-        <Shortcut icon="✉️" title="Hộp thư" text="Tin nhắn từ giáo viên" href="/app/#/inbox" />
+        <Shortcut icon="✉️" title="Hộp thư" text="Tin nhắn từ giáo viên" href="/app/inbox" />
       </div>
       <Contact title="Cần hỗ trợ về lớp học?" text="Xin nghỉ, đổi buổi hoặc có thắc mắc, hãy liên hệ giáo viên qua:" />
     </>

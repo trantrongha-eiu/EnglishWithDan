@@ -113,14 +113,14 @@ function resourcePath(r) {
     case 'speaking_topic': return `speaking.html?topicSet=${id}`;
     case 'speaking_full_mock': return 'speaking.html?tab=fullmock';
     case 'grammar': return code ? `essential-grammar.html?lesson=${enc(code)}` : 'essential-grammar.html';
-    case 'vocabulary_lesson': return `app/#/dashboard/lesson/${id}`;
+    case 'vocabulary_lesson': return `app/dashboard/lesson/${id}`;
     case 'mock_test': return 'mock-test.html';
     case 'shadowing': return code ? `shadowing.html?lesson=${enc(code)}` : 'shadowing.html';
     case 'listening_tip': return `listening.html?mode=tips${tipQs(code)}`;
     case 'reading_tip': return `reading.html?mode=tips${tipQs(code)}`;
     case 'writing_tip': return `writing.html?view=writing-tips${tipQs(code)}`;
     case 'speaking_tip': return `speaking.html?tab=speaking-tips${tipQs(code)}`;
-    case 'vocab_unit': return code ? `app/#/dashboard/unit/${enc(code)}` : 'app/#/dashboard/topics';
+    case 'vocab_unit': return code ? `app/dashboard/unit/${enc(code)}` : 'app/dashboard/topics';
     case 'task2_template': {
       const [type, level] = String(code || '').split('||');
       return type ? `task2-template.html?type=${enc(type)}&level=${enc(level || 'band7')}` : 'task2-template.html';
