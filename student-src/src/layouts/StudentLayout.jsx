@@ -15,6 +15,7 @@ const TITLES = {
   '/essential-grammar': 'Essential Grammar',
   '/advanced-sentences': 'Viết câu nâng cao',
   '/writing-practice': 'Luyện viết câu giao tiếp',
+  '/task1-practice': 'Task 1 Grammar',
 };
 
 // The top nav comes from the site shell (js/bundles/app-shell.js → nav.js).

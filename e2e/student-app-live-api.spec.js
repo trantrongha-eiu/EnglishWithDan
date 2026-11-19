@@ -111,6 +111,11 @@ test.beforeAll(async () => {
     { topicKey: 'myself', level: 'beginner', type: 'fill_blank', orderIndex: 2, question: 'I live ___ Hanoi.', blankAnswer: 'in', sampleAnswer: 'I live in Hanoi.', options: ['in', 'on'] },
   ]);
 
+  await model('Task1Exercise').create([
+    { skillType: 'noun_phrase', module: 1, level: 'beginner', type: 'translation', orderIndex: 1, tags: ['set1'], instruction: 'Dịch sang tiếng Anh:', questionVi: 'Số người dùng tăng.', sampleAnswers: ['The number of users rose.'], primaryAnswer: 'The number of users rose.', grammarPoint: 'Cụm danh từ' },
+    { skillType: 'overview', module: 4, level: 'beginner', type: 'multiple_choice', orderIndex: 2, tags: ['set1'], instruction: 'Chọn câu overview:', questionEn: 'Which is the best overview?', options: ['Sales were 20% in 2000.', 'Overall, sales rose.'], correctOptionIndex: 1, grammarPoint: 'Overview' },
+  ]);
+
   await new Promise((resolve) => { apiServer = app.listen(0, resolve); });
   apiBase = `http://127.0.0.1:${apiServer.address().port}`;
   staticServer = http.createServer((req, res) => {
@@ -297,6 +302,42 @@ test('writing practice: graded by the server, the session saved and in the histo
   await page.goto(`${BASE}/app/writing-practice`);
   await page.locator('.t1-hist-open-btn').click();
   await expect(page.locator('.t1-hist-row-count')).toHaveText('1/2 câu đúng');
+  expect(errors).toEqual([]);
+});
+
+test('task 1 grammar: graded by the server, the session saved and in the history', async ({ page }) => {
+  const errors = await wire(page);
+  await page.goto(`${BASE}/app/task1-practice`);
+  await page.locator('.t1-skill-tab .wp-lc-badge').first().waitFor({ state: 'attached' });
+  await expect(page.locator('#practice-filters .t1-skill-tab[data-skill="all"] .wp-lc-badge')).toHaveText('2');
+  await page.locator('.wp-welcome-start').click();
+  await page.locator('.wbw-input').pressSequentially('Thenumberofusersrose', { delay: 15 });
+  await expect(page.locator('#result-banner')).toHaveText('✅ Chính xác!');
+  await page.locator('#next-btn-practice').click();
+  await page.locator('#mc-options .t1-mc-option').first().click();
+  await page.locator('#submit-btn').click();
+  await expect(page.locator('#result-banner')).toHaveText('❌ Chưa đúng');
+  await expect(page.locator('#mc-feedback-options .t1-mc-option').nth(1)).toHaveClass(/correct/);
+  await page.locator('#next-btn-practice').click();
+  await expect(page.locator('#done-summary')).toHaveText('Hoàn thành 2 câu — tỉ lệ đúng 50%');
+  await expect.poll(() => model('Task1Attempt').countDocuments({ userId: student._id })).toBe(2);
+  const rows = await model('Task1Attempt').find({ userId: student._id }).lean();
+  expect(new Set(rows.map((r) => r.sessionId)).size).toBe(1);
+  expect(rows.map((r) => r.isCorrect).sort()).toEqual([false, true]);
+  await page.locator('#btn-mode-test').click();
+  await page.locator('#quit-leave-btn').click();
+  await page.locator('#test-setup .wp-start-test-btn').click();
+  for (let i = 0; i < 2; i++) {
+    await expect(page.locator('#test-counter')).toHaveText(`${i + 1} / 2`);
+    const box = page.locator('#test-answer-box');
+    if (await box.isVisible()) await box.fill('The number of users rose.'); else await page.locator('#test-mc-options .t1-mc-option').nth(1).click();
+    await page.locator('#test-next-btn').click();
+  }
+  await expect(page.locator('#test-score-header h2')).toHaveText('100%');
+  await page.locator('#test-results .wp-more-btn').click();
+  await page.goto(`${BASE}/app/task1-practice`);
+  await page.locator('.t1-hist-open-btn').first().click();
+  await expect(page.locator('.t1-hist-row-count')).toHaveText('2 câu');
   expect(errors).toEqual([]);
 });
 

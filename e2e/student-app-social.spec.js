@@ -194,6 +194,23 @@ const WP_EXERCISES = [
 const WP_SAMPLES = { w1: 'I am a student.', w2: 'I like reading books.', w3: 'She plays tennis daily', w4: 'in', w5: 'I really like pop music.', w6: 'It rained, so we stayed home.' };
 const WP_META = { success: true, counts: { beginner: { _total: 6, myself: 6, family: 0 }, elementary: { _total: 2, food: 2 } } };
 
+// Task 1 Grammar: one exercise of each kind; t3/t4 have charts and the "Khi nào dùng?" box
+const T1_EXERCISES = [
+  { _id: 't1', type: 'translation', skillType: 'noun_phrase', level: 'beginner', tags: ['set1'], xpReward: 10, grammarPoint: 'Cụm danh từ', instruction: 'Dịch sang tiếng Anh:', questionVi: 'Số người dùng tăng.', translationAnswer: 'The number of users rose.', dataContext: { subject: 'Users', year: '2020', value: '50', unit: '%' } },
+  { _id: 't2', type: 'data_transform', skillType: 'data_description', level: 'beginner', tags: ['set1'], grammarPoint: 'Danh từ hoá', instruction: 'Viết lại câu:', questionEn: 'Sales went up by 10%.', hints: ['increase', 'by'], answerWordCount: 6, answerLetterHint: 'T____ w__ a_ i_______ o_ 10%' },
+  { _id: 't3', type: 'rearrange', skillType: 'comparison', level: 'beginner', tags: ['set1', 'chart:static'], grammarPoint: 'So sánh nhất', questionVi: 'Trung Quốc đứng đầu.', baseWords: ['China', 'topped', 'the', 'list'], chart: { kind: 'bar', labels: ['China', 'India'], series: [{ name: '2020', values: [40, 30] }], unit: '%' } },
+  { _id: 't4', type: 'fill_blank', skillType: 'trend_language', level: 'elementary', tags: ['set2', 'chart:dynamic'], grammarPoint: 'from … to …', instruction: 'Điền giới từ', sentenceWithBlanks: 'The figure rose ___ 20% ___ 35%.', hints: ['from', 'to', 'by'], answerWordCount: 2, dataContext: { subject: 'Car sales', year: '2000–2010', value: '20 → 35', unit: '%', additionalData: { note: 'mốc đầu và mốc cuối' } }, chart: { kind: 'line', labels: ['2000', '2010'], series: [{ name: 'Cars', values: [20, 35] }], unit: '%' } },
+  { _id: 't5', type: 'multiple_choice', skillType: 'overview', level: 'elementary', tags: ['set2'], grammarPoint: 'Overview', instruction: 'Chọn câu overview tốt nhất:', questionEn: 'Which sentence is the best overview?', options: ['Sales were 20% in 2000.', 'Overall, sales rose steadily.', 'Sales rose by 1% in 2001.'] },
+  { _id: 't6', type: 'error_correction', skillType: 'paraphrase', level: 'beginner', tags: ['set1'], grammarPoint: 'Chia động từ', instruction: 'Sửa lỗi sai:', sentenceWithBlanks: 'The number of people increase.', questionVi: 'Viết lại câu đúng:', answerWordCount: 5, answerLetterHint: 'T__ n_____ o_ p_____ i________' },
+];
+const T1_SAMPLES = { t1: 'The number of users rose.', t2: 'There was an increase of 10%', t3: 'China topped the list', t4: 'from, to', t5: 'Overall, sales rose steadily.', t6: 'The number of people increased.' };
+const T1_COUNTS = (list) => list.reduce((c, e) => { c._total += 1; c[e.skillType] = (c[e.skillType] || 0) + 1; return c; }, { _total: 0 });
+const T1_META = {
+  success: true,
+  counts: { beginner: { _total: 4 }, elementary: { _total: 2 }, intermediate: { _total: 0 }, all: T1_COUNTS(T1_EXERCISES) },
+  setCounts: { set1: T1_COUNTS(T1_EXERCISES.filter((e) => e.tags.includes('set1'))), set2: T1_COUNTS(T1_EXERCISES.filter((e) => e.tags.includes('set2'))) },
+};
+
 const GRAMMAR_LESSONS = () => [
   { _id: 'g1', category: 'Thì', lessonKey: 'present-simple', title: 'Hiện tại đơn', icon: '⏰', orderIndex: 1, blocks: GRAMMAR_BLOCKS },
   { _id: 'g2', category: 'Thì', lessonKey: 'past-simple', title: 'Quá khứ đơn', orderIndex: 2, blocks: [{ type: 'overview', data: { text: 'Quá khứ.' } }] },
@@ -233,6 +250,11 @@ function makeState() {
     grammarProgress: [{ lessonId: 'g2', bestScore: 90, score: 90, lastAttempt: daysAgo(3) }],
     assignments: [],
     advDrafts: [{ groupId: 'ag2', groupName: 'Đảo ngữ', week: 1, mode: 'practice', sentenceIds: ['as4', 'as5'], currentIdx: 1, sentenceStatus: ['correct'], sessionAttempts: [{ sentenceId: 'as4', userAnswer: 'Not only is he smart.', isCorrect: true, score: 100 }] }],
+    t1History: [
+      { _id: 'th1', sessionId: 's1', skillType: 'comparison', isCorrect: true, xpEarned: 10, createdAt: daysAgo(1) },
+      { _id: 'th2', sessionId: 's1', skillType: 'overview', isCorrect: false, xpEarned: 1, createdAt: daysAgo(1) },
+      { _id: 'th3', skillType: 'noun_phrase', isCorrect: true, xpEarned: 10, createdAt: daysAgo(5) },
+    ],
     wpHistory: [
       { _id: 'wh1', level: 'beginner', types: ['translation', 'rearrange'], totalItems: 6, correctItems: 4, xpEarned: 70, createdAt: daysAgo(1) },
       { _id: 'wh2', level: 'elementary', type: 'fill_blank', xpEarned: 15, createdAt: daysAgo(3) },
@@ -351,6 +373,9 @@ async function open(page, url, state = makeState()) {
     if (advScores) localStorage.setItem('wp_topic_scores', JSON.stringify({ family: { bestScore: 85, latestScore: 85, completed: true } }));
     if (advScores) localStorage.setItem('wp_progress', JSON.stringify({ xp: 120, streak: 4, lastDate: new Date().toISOString().slice(0, 10) }));
     if (!window.__keepWpTour) localStorage.setItem('ews_onboarding_tour_v1_writing-practice.html', '1');
+    if (!window.__keepT1Tour) localStorage.setItem('ews_onboarding_tour_v1_task1-practice.html', '1');
+    if (advScores) localStorage.setItem('t1_skill_scores', JSON.stringify({ comparison: { bestScore: 90, latestScore: 90, completed: true } }));
+    if (advScores) localStorage.setItem('t1_progress', JSON.stringify({ xp: 75, lastDate: new Date().toISOString().slice(0, 10) }));
     localStorage.setItem('token', 'test-token');
     localStorage.setItem('user', JSON.stringify(u));
     localStorage.setItem('lastLoginAt', String(Date.now()));
@@ -505,6 +530,37 @@ async function open(page, url, state = makeState()) {
       return json({ success: true, results, correct: results.filter((r) => r.isCorrect).length, countable: results.length, score: Math.round((results.filter((r) => r.isCorrect).length / results.length) * 100) });
     }
     if (p === '/writing-practice/history') return json({ success: true, attempts: state.wpHistory });
+    if (p === '/task1/meta') return json(T1_META);
+    if (p === '/task1/exercises') {
+      if (state.user?.plan === 'free') return json({ success: false, message: 'Premium', requiresPremium: true }, 403);
+      const sk = u.searchParams.get('skillType');
+      const tag = u.searchParams.get('tag');
+      return json({ success: true, exercises: T1_EXERCISES.filter((e) => (sk === 'all' || e.skillType === sk) && (!tag || e.tags.includes(tag))) });
+    }
+    if (p === '/task1/check') {
+      if (state.failT1Check) return json({ success: false, message: 'Lỗi máy chủ' }, 500);
+      const b = JSON.parse(req.postData());
+      const e = T1_EXERCISES.find((x) => x._id === b.exerciseId);
+      const mc = e.type === 'multiple_choice';
+      const ok = mc ? b.userAnswer === '1' : !/wrong/i.test(b.userAnswer);
+      return json({
+        success: true, isCorrect: ok, score: ok ? 100 : 0, xpEarned: ok ? 10 : 1,
+        feedbackVi: ok ? '✅ Chính xác!' : '❌ Chưa đúng — xem đáp án mẫu bên dưới.',
+        sampleAnswer: T1_SAMPLES[e._id], correctOptionIndex: mc ? 1 : undefined,
+        grammarPoint: e.grammarPoint, explanation: e._id === 't2' ? 'Dùng danh từ increase.' : undefined,
+      });
+    }
+    if (p === '/task1/test-questions') return json({ success: true, exercises: T1_EXERCISES.slice(1, 5).map(({ translationAnswer, ...e }) => e) });
+    if (p === '/task1/check-test') {
+      const { answers } = JSON.parse(req.postData());
+      const results = answers.map((a, i) => {
+        const e = T1_EXERCISES.find((x) => x._id === a.exerciseId);
+        return { exerciseId: e._id, type: e.type, skillType: e.skillType, instruction: e.instruction, questionVi: e.questionVi, questionEn: e.questionEn, userAnswer: a.userAnswer, sampleAnswer: T1_SAMPLES[e._id], isCorrect: i !== 1, grammarPoint: e.grammarPoint };
+      });
+      const correct = results.filter((r) => r.isCorrect).length;
+      return json({ success: true, results, correct, total: results.length, score: Math.round((correct / results.length) * 100) });
+    }
+    if (p === '/task1/history') return json({ success: true, attempts: state.t1History });
     if (p === '/writing/pending-rewrites') return json({ success: true, count: state.pendingRewrites, max: 2, blocked: false, items: state.pendingRewrites ? [{ _id: 'r1' }] : [] });
     if (p === '/adv-sentence/weeks') return json({ success: true, weeks: [
       { week: 1, groupNames: ['Mệnh đề quan hệ', 'Đảo ngữ'], sentenceCount: 5, groupCount: 2 },
@@ -849,7 +905,123 @@ const PAGES = {
       await p.locator('#wp-quit-results').waitFor();
     }),
   },
+  t1Welcome: {
+    legacy: '/task1-practice.html?legacy=1', app: '/app/task1-practice', root: '.wp-layout', patch: (s) => { s.advScores = true; },
+    ready: t1Ready(),
+  },
+  t1Set2: {
+    legacy: '/task1-practice.html?legacy=1&skill=trend_language&set=set2', app: '/app/task1-practice?skill=trend_language&set=set2', root: '.wp-layout',
+    ready: t1Ready(),
+  },
+  t1Translation: {
+    legacy: '/task1-practice.html?legacy=1&skill=noun_phrase', app: '/app/task1-practice?skill=noun_phrase', root: '.wp-layout',
+    ready: t1Ready(async (p) => { await t1Start(p); await typeWbw(p, 'Thenu'); await p.locator('.wbw-word.is-done').first().waitFor(); }),
+  },
+  t1Transform: {
+    legacy: '/task1-practice.html?legacy=1&skill=data_description', app: '/app/task1-practice?skill=data_description', root: '.wp-layout',
+    ready: t1Ready(async (p) => {
+      await t1Start(p);
+      await p.locator('#vocab-hint-btn').click();
+      await p.locator('.t1-hint-chip').waitFor();
+    }),
+  },
+  t1Feedback: {
+    legacy: '/task1-practice.html?legacy=1&skill=data_description', app: '/app/task1-practice?skill=data_description', root: '.wp-layout',
+    ready: t1Ready(async (p) => {
+      await t1Start(p);
+      await p.locator('#answer-box').fill('There was a wrong increase');
+      await p.locator('#submit-btn').click();
+      await p.locator('#feedback-card .wp-diff-err').first().waitFor();
+      await settle(p);
+    }),
+  },
+  t1Chart: {
+    legacy: '/task1-practice.html?legacy=1&skill=comparison', app: '/app/task1-practice?skill=comparison', root: '.wp-layout',
+    patch: (s) => { s.fixedRandom = true; },
+    ready: t1Ready(async (p) => { await t1Start(p); await p.locator('#t1-chart svg').waitFor(); await p.locator('#rearrange-bank .wp-word-chip', { hasText: 'topped' }).click(); }),
+  },
+  t1Fill: {
+    legacy: '/task1-practice.html?legacy=1&skill=trend_language', app: '/app/task1-practice?skill=trend_language', root: '.wp-layout',
+    ready: t1Ready(async (p) => { await t1Start(p); await p.locator('#t1-chart svg').waitFor(); await p.locator('#fill-input').fill('from, to'); await p.evaluate(() => window.scrollTo(0, 0)); }),
+  },
+  t1Mc: {
+    legacy: '/task1-practice.html?legacy=1&skill=overview', app: '/app/task1-practice?skill=overview', root: '.wp-layout',
+    ready: t1Ready(async (p) => { await t1Start(p); await p.locator('#mc-options .t1-mc-option').nth(2).click(); }),
+  },
+  t1Error: {
+    legacy: '/task1-practice.html?legacy=1&skill=paraphrase', app: '/app/task1-practice?skill=paraphrase', root: '.wp-layout',
+    ready: t1Ready(async (p) => { await t1Start(p); await p.locator('#error-orig-text').waitFor(); }),
+  },
+  t1Done: {
+    legacy: '/task1-practice.html?legacy=1&skill=paraphrase', app: '/app/task1-practice?skill=paraphrase', root: '.wp-layout',
+    patch: (s) => { s.advScores = true; },
+    ready: t1Ready(async (p) => {
+      await t1Start(p);
+      await p.locator('#answer-box').fill('The number of people wrong.');
+      await p.locator('#submit-btn').click();
+      await p.locator('#next-btn-practice').click();
+      await p.locator('.wp-wr-item').waitFor();
+      await p.locator('#done-icon > *').first().waitFor();
+    }),
+  },
+  t1Test: {
+    legacy: '/task1-practice.html?legacy=1', app: '/app/task1-practice', root: '.wp-layout', patch: (s) => { s.fixedRandom = true; },
+    ready: t1Ready(async (p) => {
+      await wpStartTest(p, '15');
+      await p.locator('#test-answer-box').fill('There was an increase of 10%');
+      await p.locator('#test-next-btn').click();
+      await p.locator('#test-rearrange-bank .wp-word-chip').first().waitFor();
+      await p.locator('#test-chart svg').waitFor();
+      await p.evaluate(() => { document.getElementById('test-timer').textContent = '⏱ 05:59'; });
+    }),
+  },
+  t1TestResults: {
+    legacy: '/task1-practice.html?legacy=1', app: '/app/task1-practice', root: '.wp-layout', patch: (s) => { s.fixedRandom = true; },
+    ready: t1Ready(async (p) => {
+      await wpStartTest(p);
+      await p.locator('#test-answer-box').fill('There was an increase of 10%');
+      await p.locator('#test-next-btn').click();
+      for (const w of ['China', 'topped', 'the', 'list']) await p.locator('#test-rearrange-bank .wp-word-chip', { hasText: w }).click();
+      await p.locator('#test-next-btn').click();
+      await p.locator('#test-fill-input').fill('from, to');
+      await p.locator('#test-next-btn').click();
+      await p.locator('#test-mc-options .t1-mc-option').nth(1).click();
+      await p.locator('#test-next-btn').click();
+      await p.locator('#test-review-list > div').nth(3).waitFor();
+    }),
+  },
+  t1History: {
+    legacy: '/task1-practice.html?legacy=1', app: '/app/task1-practice', root: '.t1-hist-modal',
+    ready: t1Ready(async (p) => {
+      await p.locator('.t1-hist-open-btn').first().click();
+      await p.locator('.t1-hist-row').nth(1).waitFor();
+    }),
+  },
+  t1Quit: {
+    legacy: '/task1-practice.html?legacy=1&skill=data_description', app: '/app/task1-practice?skill=data_description', root: '.wp-quit-box',
+    ready: t1Ready(async (p) => {
+      await t1Start(p);
+      await p.locator('#answer-box').fill('There was an increase of 10%');
+      await p.locator('#submit-btn').click();
+      await p.locator('#feedback-card').waitFor();
+      await p.locator('#state-exercise .wp-stop-btn').click();
+      await p.locator('#quit-title').waitFor();
+    }),
+  },
 };
+
+// Task 1 Grammar: the skill counts are in, then the given steps
+function t1Ready(steps) {
+  return async (p) => {
+    await p.locator('.t1-skill-tab .wp-lc-badge').first().waitFor({ state: 'attached' });
+    if (steps) await steps(p);
+  };
+}
+// "Bắt đầu luyện tập", then the first exercise is on screen
+async function t1Start(p) {
+  await p.locator('.wp-welcome-start').click();
+  await p.locator('#exercise-card').waitFor();
+}
 
 // Luyện viết câu giao tiếp: the filter counts are in, then the given steps
 function wpReady(steps) {
@@ -1423,7 +1595,70 @@ async function wpFlow(page, log) {
   await expect.poll(() => log.length).toBe(9);
 }
 
-const FLOWS = { wpDrill: wpFlow, advSentences: advFlow, grammar: grammarFlow, leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow, profile: profileFlow, tuition: tuitionFlow, dictation: dictationFlow, shadowing: shadowingFlow };
+async function t1Flow(page, log) {
+  const fb = page.locator('#feedback-card');
+  const next = page.locator('#next-btn-practice');
+  await t1Start(page);
+  await typeWbw(page, 'Thenumberofusersrose');
+  await expect(fb).toContainText('Chính xác');
+  await page.keyboard.press('Enter');
+  await page.locator('#vocab-hint-btn').click();
+  await page.locator('#answer-box').fill('There was a wrong increase');
+  await page.locator('#answer-box').press('Enter');
+  await expect(fb).toContainText('Dùng danh từ increase.');
+  await next.click();
+  for (const w of ['China', 'topped', 'the', 'list']) await page.locator('#rearrange-bank .wp-word-chip', { hasText: w }).click();
+  await page.locator('#submit-btn').click();
+  await expect(page.locator('#result-banner')).toHaveText('✅ Chính xác!');
+  await next.click();
+  await page.locator('#skip-btn').click(); // the blank comes back at the end
+  await page.locator('#mc-options .t1-mc-option').nth(1).click();
+  await page.locator('#submit-btn').click();
+  await expect(fb).toBeVisible();
+  await next.click();
+  await page.locator('#answer-box').fill('The number of people increased.');
+  await page.locator('#answer-box').press('Enter');
+  await expect(fb).toBeVisible();
+  await next.click();
+  await expect(page.locator('#type-tag')).toHaveText('✏️ Điền chỗ trống');
+  await page.locator('#fill-input').fill('from, to');
+  await page.locator('#fill-input').press('Enter');
+  await expect(fb).toBeVisible();
+  await next.click();
+  await expect(page.locator('#done-summary')).toHaveText('Hoàn thành 6 câu — tỉ lệ đúng 83%');
+  // only the wrong one again
+  await page.locator('#done-retry-wrong-btn').click();
+  await expect(page.locator('#ex-counter')).toHaveText('1 / 1');
+  await page.locator('#answer-box').fill('There was an increase of 10%');
+  await page.locator('#submit-btn').click();
+  await next.click();
+  await expect(page.locator('#done-summary')).toHaveText('Hoàn thành 1 câu — tỉ lệ đúng 100%');
+  // Thi thử: switching mode asks first
+  await page.locator('#btn-mode-test').click();
+  await page.locator('#quit-leave-btn').click();
+  await page.locator('#test-setup .wp-start-test-btn').click();
+  await page.locator('#test-answer-box').fill('There was an increase of 10%');
+  await page.locator('#test-next-btn').click();
+  for (const w of ['China', 'topped', 'the', 'list']) await page.locator('#test-rearrange-bank .wp-word-chip', { hasText: w }).click();
+  await page.locator('#test-next-btn').click();
+  await page.locator('#test-fill-input').fill('from, to');
+  await page.locator('#test-fill-input').press('Enter');
+  await page.locator('#test-mc-options .t1-mc-option').nth(1).click();
+  await page.locator('#test-next-btn').click();
+  await expect(page.locator('#test-score-header h2')).toHaveText('75%');
+  // Back to practice, start over: three wrong letters fail the sentence without a check
+  await page.locator('#test-results .wp-more-btn').click();
+  await page.locator('#state-done .wp-restart-btn:not(#done-retry-wrong-btn)').click();
+  for (const ch of 'xxx') { await page.locator('.wbw-input').press(ch); await page.waitForTimeout(320); }
+  await expect(fb).toContainText('Bạn gõ sai từ “The” 3 lần');
+  await page.locator('#state-exercise .wp-stop-btn').click();
+  await expect(page.locator('#quit-title')).toHaveText('Dừng luyện tập?');
+  await page.locator('#quit-leave-btn').click();
+  await expect(page.locator('#done-summary')).toHaveText('Hoàn thành 1 câu — tỉ lệ đúng 0%');
+  await expect.poll(() => log.length).toBe(11);
+}
+
+const FLOWS = { t1Welcome: t1Flow, wpDrill: wpFlow, advSentences: advFlow, grammar: grammarFlow, leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow, profile: profileFlow, tuition: tuitionFlow, dictation: dictationFlow, shadowing: shadowingFlow };
 
 for (const [name, flow] of Object.entries(FLOWS)) {
   test(`${name}: every action sends the same requests as the old page`, async ({ browser }) => {
@@ -1459,6 +1694,8 @@ test.describe('inside the React app', () => {
     ['/advanced-sentences.html?week=1&groupId=ag1', '/app/advanced-sentences?week=1&groupId=ag1'],
     ['/writing-practice.html', '/app/writing-practice?level=beginner&topic=all&type=all'],
     ['/writing-practice.html?topic=family', '/app/writing-practice?level=beginner&topic=family&type=all'],
+    ['/task1-practice.html', '/app/task1-practice?skill=all&mode=practice'],
+    ['/task1-practice.html?skill=comparison&set=set2', '/app/task1-practice?skill=comparison&set=set2&mode=practice'],
   ]) {
     test(`${from} forwards to ${to}`, async ({ page }) => {
       await open(page, from);
@@ -2290,6 +2527,74 @@ test.describe('inside the React app', () => {
     await page.locator('#globalHelpBtn').click();
     await page.waitForFunction(() => !!window.PageHelp);
     expect(await page.evaluate(() => window.PageHelp.pageKey())).toBe('writing-practice.html');
+  });
+  test('task 1 grammar: the address keeps skill, set and mode; Back goes to the set before', async ({ page }) => {
+    const { log } = await open(page, '/app/task1-practice?skill=comparison');
+    await expect(page).toHaveURL(`${BASE}/app/task1-practice?skill=comparison&mode=practice`);
+    await expect(page.locator('#state-welcome')).toBeVisible(); // a link only selects the skill
+    await expect(page.locator('#practice-filters .t1-skill-tab.active')).toHaveAttribute('data-skill', 'comparison');
+    await page.locator('#practice-filters .t1-set-tab[data-set="set2"]').click();
+    await expect(page).toHaveURL(`${BASE}/app/task1-practice?skill=comparison&set=set2&mode=practice`);
+    await expect(page.locator('#state-empty')).toBeVisible(); // Bộ 2 has no So sánh
+    await expect(page.locator('#practice-filters .t1-skill-tab[data-skill="trend_language"] .wp-lc-badge')).toHaveText('1');
+    await page.locator('#practice-filters .t1-skill-tab[data-skill="trend_language"]').click();
+    await page.locator('#fill-input').fill('from, to');
+    await page.locator('#fill-input').press('Enter');
+    await page.locator('#feedback-card').waitFor();
+    await page.locator('#practice-filters .t1-set-tab[data-set=""]').click();
+    await expect(page.locator('#quit-title')).toHaveText('Đổi bộ bài?');
+    await page.locator('#quit-leave-btn').click();
+    await expect(page).toHaveURL(`${BASE}/app/task1-practice?skill=trend_language&mode=practice`);
+    await expect.poll(() => log.filter((l) => l.startsWith('POST /task1/save-batch')).length).toBe(1);
+    await page.goBack();
+    await expect(page).toHaveURL(`${BASE}/app/task1-practice?skill=trend_language&set=set2&mode=practice`);
+    await expect(page.locator('#practice-filters .t1-set-tab.active')).toHaveAttribute('data-set', 'set2');
+    await expect(page.locator('#ex-counter')).toHaveText('1 / 1');
+    await page.locator('#btn-mode-test').click();
+    await expect(page).toHaveURL(`${BASE}/app/task1-practice?skill=trend_language&set=set2&mode=test`);
+    await page.reload();
+    await expect(page.locator('#test-intro')).toBeVisible();
+  });
+
+  test('task 1 grammar: a free student is asked to upgrade', async ({ page }) => {
+    const state = makeState();
+    state.user = { ...USER, plan: 'free', createdAt: '2020-01-01T00:00:00.000Z' };
+    const { log } = await open(page, '/app/task1-practice?skill=overview', state);
+    await page.locator('.wp-welcome-start').click();
+    await expect(page.locator('#um-overlay')).toBeVisible();
+    await expect(page.locator('#state-welcome')).toBeVisible();
+    expect(log).toEqual([]);
+  });
+
+  test('task 1 grammar: a multiple-choice answer shows the options with the right one marked', async ({ page }) => {
+    await open(page, '/app/task1-practice?skill=overview');
+    await t1Start(page);
+    await page.locator('#mc-options .t1-mc-option').nth(2).click();
+    await page.locator('#submit-btn').click();
+    const opts = page.locator('#mc-feedback-options .t1-mc-option');
+    await expect(opts.nth(2)).toHaveClass(/wrong/);
+    await expect(opts.nth(1)).toHaveClass(/correct/);
+    await expect(page.locator('#grammar-explanation-text')).toHaveText('Overview');
+  });
+
+  test('task 1 grammar: leaving Thi thử stops its clock; the guide, menu and tour know the page', async ({ page }) => {
+    await page.addInitScript(() => { window.__keepT1Tour = true; });
+    await open(page, '/app/task1-practice');
+    await expect(page.locator('#ews-tour-tip')).toContainText('Luyện tập hay Thi thử', { timeout: 4000 });
+    await page.evaluate(() => document.querySelectorAll('#ews-tour-tip, #ews-tour-hole').forEach((e) => e.remove()));
+    expect(await page.evaluate(() => document.title)).toBe('Task 1 Grammar – EnglishWithDan');
+    await expect(page.locator('.nav-dd-menu a[href="/app/task1-practice"]').first()).toHaveClass(/active/);
+    await page.locator('#btn-mode-test').click();
+    await page.locator('#test-setup .wp-start-test-btn').click();
+    await page.locator('#test-answer-box').waitFor();
+    await page.locator('#btn-mode-practice').click(); // nothing answered yet: no question asked
+    await expect(page.locator('#state-welcome')).toBeVisible();
+    await page.waitForTimeout(1200);
+    await page.locator('#btn-mode-test').click();
+    await expect(page.locator('#test-intro')).toBeVisible();
+    await page.locator('#globalHelpBtn').click();
+    await page.waitForFunction(() => !!window.PageHelp);
+    expect(await page.evaluate(() => window.PageHelp.pageKey())).toBe('task1-practice.html');
   });
 });
 

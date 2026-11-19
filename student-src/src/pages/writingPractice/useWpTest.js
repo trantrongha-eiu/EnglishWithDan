@@ -123,10 +123,15 @@ export function useWpTest() {
     setPhase('intro');
   }
 
-  // Leaving the page mid-test keeps it for the resume banner
-  useEffect(() => () => {
-    const { phase: ph, run: r, timeLeft: t, level: l, count: c } = live.current;
-    if (ph === 'progress' && r.idx > 0) saveTest({ ...r, timeLeft: t, level: l, count: c });
+  // Leaving the page mid-test (another app page, or the tab closed) keeps it,
+  // clock included, for the resume banner
+  useEffect(() => {
+    const keep = () => {
+      const { phase: ph, run: r, timeLeft: t, level: l, count: c } = live.current;
+      if (ph === 'progress' && r.idx > 0) saveTest({ ...r, timeLeft: t, level: l, count: c });
+    };
+    window.addEventListener('beforeunload', keep);
+    return () => { window.removeEventListener('beforeunload', keep); keep(); };
   }, []);
 
   return {

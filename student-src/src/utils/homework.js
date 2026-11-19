@@ -126,9 +126,9 @@ function resourcePath(r) {
       return type ? `task2-template.html?type=${enc(type)}&level=${enc(level || 'band7')}` : 'task2-template.html';
     }
     case 'writing_practice': return code ? `app/writing-practice?topic=${enc(code)}` : 'app/writing-practice';
-    case 'task1_skill': return code ? `task1-practice.html?skill=${enc(code)}` : 'task1-practice.html';
-    case 'task1_grammar': return `task1-practice.html?skill=${enc(code || 'all')}`;
-    case 'task1_grammar_set2': return `task1-practice.html?skill=${enc(code || 'all')}&set=set2`;
+    case 'task1_skill': return code ? `app/task1-practice?skill=${enc(code)}` : 'app/task1-practice';
+    case 'task1_grammar': return `app/task1-practice?skill=${enc(code || 'all')}`;
+    case 'task1_grammar_set2': return `app/task1-practice?skill=${enc(code || 'all')}&set=set2`;
     case 'speaking_part2': return code ? `speaking-part2.html?story=${enc(code)}` : 'speaking-part2.html';
     default: return null;
   }
