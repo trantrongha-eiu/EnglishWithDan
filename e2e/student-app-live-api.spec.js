@@ -426,3 +426,56 @@ test('speaking part 2: read, nhại with a real recording, dịch — progress s
   await expect(page.locator('.sp2-full-body .sp2-full-p').first()).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+test('task 2 templates: ① and ② saved on the server, a mock test in the history, all back after a reload', async ({ page }) => {
+  const errors = await wire(page);
+  await page.addInitScript(() => { localStorage.setItem('ews_onboarding_tour_v1_task2-template.html', '1'); });
+  const guide = require(path.join(BACKEND, 'scripts', 'data', 'task2', 'typeGuides.js')).find((g) => g.typeId === 'type05');
+  await model('Task2TypeGuide').create(guide);
+  await page.goto(`${BASE}/app/task2-template?type=type05`);
+  // the menu's vocab-goal nudge would sit over the buttons
+  await page.addStyleTag({ content: '#nav-vocab-goal-nudge{display:none!important}' });
+  await page.locator('.pth-steps .pth-step').nth(4).waitFor();
+  await expect(page.locator('.t2-guide > summary')).toContainText(guide.name);
+
+  // ① Khung bài: each paragraph checked, the answer shown, on to the next
+  await page.locator('.pth-step.is-current .pth-btn').click();
+  await page.locator('.pth-actions .pth-btn--primary').click();
+  for (let k = 0; k < 12 && !(await page.locator('.pth-done').count()); k++) {
+    while (await page.locator('.pth-pool .pth-sent').count()) await page.locator('.pth-pool .pth-sent').first().click();
+    const check = page.locator('.pth-actions .pth-btn--primary', { hasText: 'Kiểm tra' });
+    if (await check.count()) await check.click();
+    const answer = page.locator('.pth-actions .pth-btn', { hasText: 'Xem đáp án' });
+    if (await answer.count()) await answer.click();
+    await page.locator('.pth-actions .pth-btn--primary', { hasText: /Đoạn tiếp theo|Hoàn thành/ }).click();
+  }
+  // ② Đọc & nghe
+  await page.locator('.pth-actions .pth-btn--primary', { hasText: 'Sang bước ②' }).click();
+  await page.locator('.pth-actions .pth-btn--primary', { hasText: 'Tôi đã đọc xong' }).click();
+  await page.locator('.pth-actions .pth-btn--primary', { hasText: 'Sang bước ③' }).waitFor();
+
+  const Progress = model('Task2TemplateProgress');
+  await expect.poll(async () => {
+    const doc = await Progress.findOne({ userId: student._id, typeId: 'type05', level: 'band6' }).lean();
+    return !!(doc && doc.steps && doc.steps.warmup && doc.steps.read);
+  }, { timeout: 10000 }).toBe(true);
+
+  // Thi thử: one sentence typed, then handed in from the toolbar
+  await page.locator('.pth-back').click();
+  await page.locator('#tpl-exam-btn').click();
+  await page.locator('#pth-recall-in').fill('In recent years something has become increasingly common');
+  await page.locator('#pth-recall-check').click();
+  await page.locator('#pth-next').click();
+  await page.locator('#tpl-exam-btn').click();
+  await page.locator('.pth-done').waitFor();
+  const Attempt = model('Task2TemplateAttempt');
+  await expect.poll(async () => Attempt.countDocuments({ userId: student._id, templateType: 'type05', isExam: true }), { timeout: 10000 }).toBe(1);
+
+  // From the server after a reload: ③ is next, the tab shows the progress, the test is in the history
+  await page.reload();
+  await expect(page.locator('.pth-step.is-current .pth-step-title')).toContainText('Luyện từng đoạn');
+  await expect(page.locator('.t2-type-tab-btn[data-tpl-type="type05"] .t2-tab-pct-badge')).toHaveText('40%');
+  await page.locator('.tpl-glass-btn', { hasText: 'Lịch sử' }).click();
+  await expect(page.locator('.tpl-hist-entry').first()).toContainText('Thi thử');
+  expect(errors).toEqual([]);
+});

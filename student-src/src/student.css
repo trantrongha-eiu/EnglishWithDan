@@ -68,6 +68,9 @@ body {
 #root > :is(.wp-mini-stats, .wp-mobile-stats, .wp-layout, .wp-stats-widget, .wp-mob-fab, .wp-mob-sheet, .t1-hist-overlay, .wp-quit-overlay) { line-height: normal; }
 /* Speaking Part 2: its dialogs sit on <body>, as on the old page */
 body > :is(.sp2-full-ov, .t2-quit-overlay) { line-height: normal; }
+/* Task 2 Templates: the page and its dialogs (on <body>), as on the old page */
+#root > .tpl-page { width: 100%; line-height: normal; }
+body > .tpl-hist-overlay { line-height: normal; }
 body:has(> #root > .shop-shell) .duel-modal { line-height: normal; }
 [data-theme="dark"] #root > .shop-shell .btn-ghost,
 [data-theme="dark"] body:has(> #root > .shop-shell) .duel-modal .btn-ghost { background: var(--surface); }

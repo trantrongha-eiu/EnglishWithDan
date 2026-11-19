@@ -24,6 +24,7 @@
     if (/^\/app\/essential-grammar(\/|$)/.test(location.pathname)) return 'essential-grammar.html';
     if (/^\/app\/writing-practice(\/|$)/.test(location.pathname)) return 'writing-practice.html';
     if (/^\/app\/task1-practice(\/|$)/.test(location.pathname)) return 'task1-practice.html';
+    if (/^\/app\/task2-template(\/|$)/.test(location.pathname)) return 'task2-template.html';
     if (/^\/app(\/|$)/.test(location.pathname)) return 'dashboard.html';
     return (location.pathname.replace(/\/+$/, '').split('/').pop() || 'dashboard.html').replace(/^[^.]+$/, '$&.html');
   }

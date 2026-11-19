@@ -124,7 +124,7 @@ function resourcePath(r) {
     case 'vocab_unit': return code ? `app/dashboard/unit/${enc(code)}` : 'app/dashboard/topics';
     case 'task2_template': {
       const [type, level] = String(code || '').split('||');
-      return type ? `task2-template.html?type=${enc(type)}&level=${enc(level || 'band7')}` : 'task2-template.html';
+      return type ? `app/task2-template?type=${enc(type)}&level=${enc(level || 'band7')}` : 'app/task2-template';
     }
     case 'writing_practice': return code ? `app/writing-practice?topic=${enc(code)}` : 'app/writing-practice';
     case 'task1_skill': return code ? `app/task1-practice?skill=${enc(code)}` : 'app/task1-practice';

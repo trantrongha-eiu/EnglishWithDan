@@ -26,6 +26,7 @@ const AdvancedSentences = lazy(() => import('./pages/AdvancedSentences'));
 const WritingPractice = lazy(() => import('./pages/WritingPractice'));
 const Task1Grammar = lazy(() => import('./pages/Task1Grammar'));
 const SpeakingPart2 = lazy(() => import('./pages/SpeakingPart2'));
+const Task2Template = lazy(() => import('./pages/Task2Template'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Each list is the page's stylesheets in the old static page's order
@@ -43,6 +44,7 @@ const ADV_SENTENCES_CSS = ['advanced-sentences', 'playful', 'pf-pages'];
 const WRITING_PRACTICE_CSS = ['writing-practice', 'writing-practice-page', 'playful', 'pf-pages'];
 const TASK1_CSS = ['writing-practice', 'task1-practice', 'playful', 'pf-pages'];
 const SPEAKING_PART2_CSS = ['writing-practice', 'task2-practice', 'playful', 'pf-pages', 'speaking-part2'];
+const TASK2_TEMPLATE_CSS = ['writing-practice', 'task2-highlight', 'task2-generic-tpl', 'task2-template', 'playful'];
 
 // A data router: running quizzes use useBlocker to ask before leaving
 const router = createBrowserRouter(createRoutesFromElements(
@@ -73,6 +75,7 @@ const router = createBrowserRouter(createRoutesFromElements(
       <Route path="writing-practice" element={<PageCss names={WRITING_PRACTICE_CSS}><WritingPractice /></PageCss>} />
       <Route path="task1-practice" element={<PageCss names={TASK1_CSS}><Task1Grammar /></PageCss>} />
       <Route path="speaking-part2" element={<PageCss names={SPEAKING_PART2_CSS}><SpeakingPart2 /></PageCss>} />
+      <Route path="task2-template" element={<PageCss names={TASK2_TEMPLATE_CSS}><Task2Template /></PageCss>} />
       <Route path="*" element={<NotFound />} />
     </Route>
     <Route path="*" element={<Navigate to="/dashboard" replace />} />

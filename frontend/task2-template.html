@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="vi" data-theme="light">
 <head>
+  <script>
+  /* This page now lives in the React app (/app/task2-template, source:
+     student-src/src/pages/Task2Template.jsx). Old links keep their query
+     string (?type=&level=). ?legacy=1 stays here. */
+  (function () {
+    var q = new URLSearchParams(location.search);
+    if (q.get('legacy') === '1') return;
+    var qs = q.toString();
+    location.replace('/app/task2-template' + (qs ? '?' + qs : ''));
+  })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -24,8 +35,8 @@
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=1a895db110"></script>
-<script src="/js/shared/onboarding-tour.js?v=7a8f913b41"></script>
+<script src="/js/bundles/app-shell.js?v=9b20c116b8"></script>
+<script src="/js/shared/onboarding-tour.js?v=8e47b6357b"></script>
 <script src="/js/shared/review-required-popup.js?v=987d9f0585"></script>
 <script src="/js/shared/word-audio.js?v=9fd314228b"></script>
 <script src="/js/shared/dictionary-lookup.js?v=182fa667a3"></script>
