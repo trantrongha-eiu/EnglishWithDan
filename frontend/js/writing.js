@@ -960,7 +960,7 @@ function _renderHistory() {
     }
     return `
       <tr>
-        <td>${typeBadge}${escHtml(a.examName || '–')}</td>
+        <td>${typeBadge}${escHtml(a.examName || '–')}${_unreadTag(a)}</td>
         <td>${t1badge}</td>
         <td>${t2badge}</td>
         <td>${scoreBadge}</td>
@@ -997,6 +997,14 @@ function _renderHistory() {
     </table>
   `;
   _refreshRewriteBanner();
+}
+
+// "Mới" tag on a graded attempt whose feedback the student hasn't opened yet —
+// these are what the nav's Writing / Full đề / Task 1 / Task 2 badges count,
+// so the student can see which row the number is for. viewAttempt() removes it.
+function _unreadTag(a) {
+  if (_isStaffUser() || a.gradingStatus !== 'confirmed' || a.feedbackRead) return '';
+  return `<span data-unread-tag="${a._id}" style="background:#ef4444;color:#fff;border-radius:999px;padding:1px 7px;font-size:10px;font-weight:700;margin-left:6px;vertical-align:middle">Mới</span>`;
 }
 
 async function loadHistory() {
@@ -1038,15 +1046,26 @@ async function viewAttempt(id) {
     // Mark feedback as read (fire-and-forget) + update nav badge
     if (a.gradingStatus === 'confirmed' && !a.feedbackRead) {
       apiFetch(`/api/writing/attempt/${id}/mark-read`, { method: 'PATCH' }).then(() => {
-        // Decrement nav badge
-        const badgeEl = document.getElementById('navWritingBadge');
-        const mobEl   = document.getElementById('mob_navWritingBadge');
-        [badgeEl, mobEl].forEach(b => {
+        // Decrement the "Writing" nav badge + the dropdown row it came from
+        // (same split as /writing/practice/nav-counts).
+        a.feedbackRead = true;
+        const ids = ['navWritingBadge'];
+        if (a.submissionType !== 'practice') ids.push('navWritingFullBadge');
+        else {
+          if (a.task1Id) ids.push('navWritingTask1Badge');
+          if (a.task2Id) ids.push('navWritingTask2Badge');
+        }
+        ids.forEach(bid => [bid, 'mob_' + bid].forEach(elId => {
+          const b = document.getElementById(elId);
           if (!b) return;
           const n = Math.max(0, parseInt(b.textContent || '0', 10) - 1);
           b.textContent = n;
           b.style.display = n > 0 ? 'inline' : 'none';
-        });
+        }));
+        // Drop the "Mới" tag on this attempt's history row.
+        const hit = (_allAttempts || []).find(x => String(x._id) === String(id));
+        if (hit) hit.feedbackRead = true;
+        document.querySelectorAll(`[data-unread-tag="${id}"]`).forEach(el => el.remove());
       }).catch(() => {});
     }
 
@@ -2800,7 +2819,7 @@ async function loadPracticeHistory(taskTypeFilter = null) {
         return `
           <div class="phist-card" onclick="viewAttempt('${a._id}')">
             <div class="phist-card-top">
-              <span class="phist-date">${date}</span>
+              <span class="phist-date">${date}${_unreadTag(a)}</span>
               <span class="badge-wc">${wc}w</span>
             </div>
             <div class="phist-card-bottom">
@@ -2826,7 +2845,7 @@ async function loadPracticeHistory(taskTypeFilter = null) {
         const status = a.gradingStatus || 'pending';
         const date = new Date(a.submittedAt).toLocaleDateString('vi-VN');
         return `<tr>
-          <td><span class="badge-wc">${taskLabel}</span></td>
+          <td><span class="badge-wc">${taskLabel}</span>${_unreadTag(a)}</td>
           <td style="font-size:13px;color:#6b7280">${date}</td>
           <td><span class="badge-wc">${wc}w</span></td>
           <td><span style="color:${STATUS_COL[status] || '#6b7280'};font-size:13px;font-weight:600">${STATUS[status] || status}</span></td>

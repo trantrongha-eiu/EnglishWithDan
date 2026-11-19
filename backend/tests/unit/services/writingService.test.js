@@ -366,7 +366,7 @@ describe('writingService.getPracticeNavCounts', () => {
   test('returns {1:0, 2:0} when there is nothing to resume or read', async () => {
     const student = await createStudent();
     const counts = await writingService.getPracticeNavCounts(student._id);
-    expect(counts).toEqual({ 1: 0, 2: 0 });
+    expect(counts).toEqual({ 1: 0, 2: 0, full: 0 });
   });
 
   test('counts unfinished drafts per taskType', async () => {
@@ -376,7 +376,7 @@ describe('writingService.getPracticeNavCounts', () => {
     await writingService.saveDraft(student._id, { taskType: 2, task: { _id: 'task-3', prompt: 'p3' }, answer: 'third' });
 
     const counts = await writingService.getPracticeNavCounts(student._id);
-    expect(counts).toEqual({ 1: 1, 2: 2 });
+    expect(counts).toEqual({ 1: 1, 2: 2, full: 0 });
   });
 
   test('counts unread graded practice feedback per taskType, keyed by which task field is set', async () => {
@@ -400,7 +400,8 @@ describe('writingService.getPracticeNavCounts', () => {
       gradingStatus: 'pending', feedbackRead: false, task1Id: new mongoose.Types.ObjectId(),
     });
     // A full-exam (not practice) submission — must not count towards either
-    // Task 1/Task 2 practice badge even though it carries both task ids.
+    // Task 1/Task 2 practice badge even though it carries both task ids;
+    // it goes to the "Full đề" row's own `full` count instead.
     await WritingAttempt.create({
       userId: student._id, examName: 'X', submissionType: 'exam',
       gradingStatus: 'confirmed', feedbackRead: false,
@@ -408,7 +409,7 @@ describe('writingService.getPracticeNavCounts', () => {
     });
 
     const counts = await writingService.getPracticeNavCounts(student._id);
-    expect(counts).toEqual({ 1: 1, 2: 1 });
+    expect(counts).toEqual({ 1: 1, 2: 1, full: 1 });
   });
 
   test('is scoped to the requesting user only', async () => {
@@ -417,7 +418,7 @@ describe('writingService.getPracticeNavCounts', () => {
     await writingService.saveDraft(other._id, { taskType: 1, task: { _id: 'task-1', prompt: 'p1' }, answer: 'first' });
 
     const counts = await writingService.getPracticeNavCounts(student._id);
-    expect(counts).toEqual({ 1: 0, 2: 0 });
+    expect(counts).toEqual({ 1: 0, 2: 0, full: 0 });
   });
 });
 

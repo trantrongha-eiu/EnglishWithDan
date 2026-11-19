@@ -84,7 +84,7 @@
     // same skill, and 8 top-level items crowded the bar.
     { href: 'writing.html',          icon: 'fa-pen',         label: 'Writing', badgeId: 'navWritingBadge',
       children: [
-        { href: 'writing.html',             icon: 'fa-file-alt',  label: 'Full đề' },
+        { href: 'writing.html',             icon: 'fa-file-alt',  label: 'Full đề', badgeId: 'navWritingFullBadge' },
         { href: 'writing.html?taskType=1',  icon: 'fa-chart-bar', label: 'Task 1', badgeId: 'navWritingTask1Badge' },
         { href: 'writing.html?taskType=2',  icon: 'fa-edit',      label: 'Task 2', badgeId: 'navWritingTask2Badge' },
         { href: 'writing.html?view=writing-tips', icon: 'fa-lightbulb', label: 'Writing Tips' },
@@ -899,6 +899,9 @@
         if (!d.success || !d.counts) return;
         showBadge('navWritingTask1Badge', d.counts[1] || 0);
         showBadge('navWritingTask2Badge', d.counts[2] || 0);
+        // Full-exam unread feedback — the parent badge above counts these
+        // too, so without this row the number had no visible source.
+        showBadge('navWritingFullBadge', d.counts.full || 0);
       })
       .catch(function () {});
 

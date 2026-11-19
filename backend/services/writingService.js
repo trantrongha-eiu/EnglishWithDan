@@ -373,16 +373,21 @@ async function getUnreadFeedbackCount(userId) {
 // drafts + unread graded feedback, combined into one number per type (a
 // student doesn't need to know which of the two reasons the badge is for —
 // either way there's something waiting for them under that nav item).
+// `full` = unread graded feedback on full-exam ("Full đề") submissions, so the
+// dropdown's "Full đề" row can carry its own badge — before 2026-11-19 those
+// lit the parent "Writing" badge (unread-feedback-count counts every
+// submissionType) with no child row showing where the number came from.
 async function getPracticeNavCounts(userId) {
   const [drafts, unreadAttempts] = await Promise.all([
     WritingDraft.find({ userId }).select('taskType').lean(),
     WritingAttempt.find({
-      userId, submissionType: 'practice', gradingStatus: 'confirmed', feedbackRead: { $ne: true },
-    }).select('task1Id task2Id').lean(),
+      userId, gradingStatus: 'confirmed', feedbackRead: { $ne: true },
+    }).select('submissionType task1Id task2Id').lean(),
   ]);
-  const counts = { 1: 0, 2: 0 };
+  const counts = { 1: 0, 2: 0, full: 0 };
   drafts.forEach(d => { if (counts[d.taskType] != null) counts[d.taskType]++; });
   unreadAttempts.forEach(a => {
+    if (a.submissionType !== 'practice') { counts.full++; return; }
     if (a.task1Id) counts[1]++;
     if (a.task2Id) counts[2]++;
   });
