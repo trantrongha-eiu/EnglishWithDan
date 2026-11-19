@@ -103,6 +103,11 @@ body{background:#f9fafb}
 [data-theme="dark"] .eg-example-en{color:#e2e8f0}
 .eg-example-vi{font-size:12.5px;color:#6b7280;font-style:italic}
 [data-theme="dark"] .eg-example-vi{color:#94a3b8}
+.eg-example-say{float:right;margin:-2px 0 4px 10px;width:32px;height:32px;border-radius:50%;border:1px solid #c7d2fe;
+  background:#eef2ff;color:#4f46e5;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+.eg-example-say:hover{background:#e0e7ff}
+[data-theme="dark"] .eg-example-say{background:#1e1b4b;border-color:#3730a3;color:#a5b4fc}
+.eg-example-item::after{content:"";display:table;clear:both}
 
 .eg-mistake-item{background:#fff;border:1.5px solid #f3f4f6;border-radius:10px;padding:10px 14px;margin-bottom:10px}
 [data-theme="dark"] .eg-mistake-item{background:var(--bg, #000000);border-color:var(--surface, #0d0d0d)}

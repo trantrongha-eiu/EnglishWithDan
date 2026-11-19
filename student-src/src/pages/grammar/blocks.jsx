@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { speakWord } from '../../utils/vocab';
 
 // The teaching blocks of an Essential Grammar lesson: nothing to grade here.
 
@@ -54,10 +55,18 @@ const Picture = ({ data }) => (
   </Block>
 );
 
+// ex.say (Pronunciation lessons): the word/phrase the 🔊 button reads aloud
 const Examples = ({ data }) => (
   <Block icon="fa-quote-left" title="Ví dụ">
     {(data.items || []).map((ex, i) => (
-      <div className="eg-example-item" key={i}><div className="eg-example-en">{ex.en}</div><div className="eg-example-vi">{ex.vi}</div></div>
+      <div className="eg-example-item" key={i}>
+        {ex.say && (
+          <button type="button" className="eg-example-say" title="Nghe phát âm" aria-label="Nghe phát âm" onClick={() => speakWord(ex.say)}>
+            <i className="fas fa-volume-up" />
+          </button>
+        )}
+        <div className="eg-example-en">{ex.en}</div><div className="eg-example-vi">{ex.vi}</div>
+      </div>
     ))}
   </Block>
 );

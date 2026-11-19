@@ -16,15 +16,23 @@ const writingFoundation = [
   ...require("./essentialGrammarData/writingFoundationPractice")
 ];
 
+// Advanced Grammar = the "Viết câu nâng cao" structures (inversion, cleft…)
+const advancedGrammar = require("./essentialGrammarData/advancedGrammar");
+// Pronunciation: -s/-es and -ed endings
+const pronunciation = require("./essentialGrammarData/pronunciation");
+
 // Sidebar order comes from orderIndex: Writing Foundation first, then
-// Tenses → Grammar Essentials → Conditionals → Linking → Directions.
+// Tenses → Grammar Essentials → Conditionals → Linking → Directions →
+// Advanced Grammar → Pronunciation.
 const lessons = [
   ...writingFoundation,
   ...tenses,
   ...grammarEssentials,
   ...conditionals,
   ...linkingSequencing,
-  ...directions
+  ...directions,
+  ...advancedGrammar,
+  ...pronunciation
 ];
 
 async function runSeed() {

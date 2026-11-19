@@ -614,9 +614,23 @@ function renderImageBlock(data) {
     + '</div></div>';
 }
 
+// ex.say (Pronunciation lessons): the word/phrase the 🔊 button reads aloud
+function _egSay(text) {
+  if (!text) return;
+  if (window.WordAudio) { window.WordAudio.speak(text); return; }
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    window.speechSynthesis.speak(u);
+  }
+}
+
 function renderExamplesBlock(data) {
   const items = (data.items || []).map(ex =>
-    '<div class="eg-example-item"><div class="eg-example-en">' + escHtml(ex.en) + '</div>'
+    '<div class="eg-example-item">'
+    + (ex.say ? '<button type="button" class="eg-example-say" data-eg-act="say" data-say="' + escHtml(ex.say) + '" title="Nghe phát âm" aria-label="Nghe phát âm"><i class="fas fa-volume-up"></i></button>' : '')
+    + '<div class="eg-example-en">' + escHtml(ex.en) + '</div>'
     + '<div class="eg-example-vi">' + escHtml(ex.vi) + '</div></div>'
   ).join('');
   return '<div class="eg-block"><div class="eg-block-label"><i class="fas fa-quote-left"></i> Ví dụ</div>' + items + '</div>';
@@ -1174,6 +1188,7 @@ function _egBindDrillEvents() {
     if (!btn || !root.contains(btn)) return;
     switch (btn.dataset.egAct) {
       case 'play-video': _egPlayVideo(btn); break;
+      case 'say': _egSay(btn.dataset.say); break;
       case 'check-drill': checkEgDrill(btn.dataset.egDrill); break;
       case 'reset-drill': resetEgDrill(btn.dataset.egDrill); break;
       case 'check-tr': checkEgTranslation(btn.dataset.egDrill, Number(btn.dataset.i)); break;
