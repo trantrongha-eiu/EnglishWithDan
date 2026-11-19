@@ -1538,3 +1538,41 @@ describe('late make-ups ("nộp trễ")', () => {
     expect(st).toMatchObject({ homeworkMissedCount: 0, homeworkOverdueCount: 0, homeworkLateCount: 1 });
   });
 });
+
+// Dictation homework: section dictation lists only sections that have
+// dictation sentences; the spelling / numbers drills are their own type,
+// linked by slug and ticked from a DictationAttempt with drillId.
+describe('dictation homework catalog', () => {
+  const ListeningSection = require('../../models/ListeningSection');
+  const DictationDrill = require('../../models/DictationDrill');
+  const DictationAttempt = require('../../models/DictationAttempt');
+  const rcs = require('../../services/resourceCompletionService');
+
+  test('dictation lists sections with dictation only; dictation_drill lists drills by slug', async () => {
+    await ListeningSection.create([
+      { partNumber: 2, title: 'Has dictation', isActive: true, questionRange: { start: 11, end: 20 }, dictationSentences: [{ text: 'Write this down please.', start: 1, end: 3 }] },
+      { partNumber: 2, title: 'No dictation', isActive: true, questionRange: { start: 11, end: 20 } },
+    ]);
+    const secs = await rcs.listCatalog('dictation', '');
+    expect(secs.map((r) => r.label)).toEqual(['Has dictation']);
+    expect(secs[0].meta).toBe('Part 2 · 1 câu');
+
+    await DictationDrill.create({ slug: 'spelling-1', title: 'Spelling names · Set 1', category: 'spelling', items: [{ text: 'It is S-M-I-T-H.', answer: 'SMITH', audioUrl: 'x', start: 0, end: 1 }] });
+    const drills = await rcs.listCatalog('dictation_drill', '');
+    expect(drills).toEqual([expect.objectContaining({ label: 'Spelling names · Set 1', resourceCode: 'spelling-1' })]);
+  });
+
+  test('a drill attempt ≥50% ticks dictation_drill homework', async () => {
+    const drill = await DictationDrill.create({ slug: 'numbers-1', title: 'Numbers · Set 1', category: 'numbers', items: [{ text: 'It is 0412.', answer: '0412', audioUrl: 'x', start: 0, end: 1 }] });
+    const userId = new (require('mongoose').Types.ObjectId)();
+    const since = new Date(Date.now() - 1000);
+    await DictationAttempt.create({ userId, drillId: drill._id, sectionTitle: drill.title, totalSentences: 2, correctCount: 1, answers: [] });
+    const item = { resourceType: 'dictation_drill', resourceId: drill._id };
+    const done = await rcs.checkCompleted(userId, [item], since);
+    expect([...done.values()][0]).toEqual(expect.objectContaining({ completed: true }));
+
+    await DictationAttempt.updateMany({}, { correctCount: 0 });
+    const notDone = await rcs.checkCompleted(userId, [item], since);
+    expect([...notDone.values()][0]?.completed).toBeFalsy();
+  });
+});

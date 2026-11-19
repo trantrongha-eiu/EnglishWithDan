@@ -29,7 +29,7 @@ const HW_STATUS = {
 // explanation.
 const HW_QUIZ_TYPES = new Set(['grammar', 'vocabulary_lesson', 'advanced_sentences']);
 // Reading / Listening (full tests, bài lẻ, dictation): lower bar — backend's PRACTICE_PASS_PERCENT.
-const HW_PRACTICE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'dictation']);
+const HW_PRACTICE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'dictation', 'dictation_drill']);
 // Course lessons: every exercise done AND the quiz-style ones average ≥70%.
 const HW_COURSE_TYPES = new Set(['task1_lesson', 'task2_course_lesson', 'speaking_course_lesson', 'mindset_course_lesson']);
 const PRACTICE_PASS = 50;
@@ -100,6 +100,7 @@ function hwResourceHref(r) {
     case 'listening_practice': return `listening.html?sectionId=${id}${hwExamQs(r)}`;
     case 'listening_gapfill':  return `listening.html?gapfillId=${id}`;
     case 'dictation':          return `dictation.html?sectionId=${id}`;
+    case 'dictation_drill':    return r.resourceCode ? `dictation.html?drill=${encodeURIComponent(r.resourceCode)}` : 'dictation.html';
     // writing.js reads ?examId= and forwards it to POST /api/writing/start so
     // the ASSIGNED WritingExam opens — without it, startExam()'s no-examId
     // fallback (most-recently-created active exam) decides instead, which is

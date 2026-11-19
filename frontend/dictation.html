@@ -31,7 +31,7 @@
   <script src="/js/theme.js?v=5269b2b242"></script>
   <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
   <script src="/js/shared/visit-tracker.js?v=c9376aa47f" defer></script>
-  <link rel="stylesheet" href="/css/dictation.css?v=7f7e342b96">
+  <link rel="stylesheet" href="/css/dictation.css?v=58277ddd4c">
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
   <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
 </head>
@@ -141,6 +141,7 @@
           </div>
 
           <div class="dict-prompt" id="dict-prompt"></div>
+          <div class="dict-vi-hint" id="dict-vi-hint" style="display:none"></div>
           <textarea class="dict-input" id="dict-input" placeholder="Gõ những gì bạn nghe được rồi nhấn Enter..." autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
 
           <div class="dict-status-row">
@@ -154,6 +155,7 @@
 
           <label class="dict-check dict-check-lg"><input type="checkbox" id="opt-show-answer" checked onchange="dictSavePrefs(); dictRenderMask()"> Show answer immediately <span class="dict-check-hint">— lộ chữ sai đầu tiên khi bạn gõ sai</span></label>
           <label class="dict-check dict-check-lg"><input type="checkbox" id="opt-show-full" onchange="dictRenderMask()"> Show full answer <span class="dict-check-hint">— câu xem đáp án không tính điểm</span></label>
+          <label class="dict-check dict-check-lg" id="opt-show-vi-row"><input type="checkbox" id="opt-show-vi" checked onchange="dictSavePrefs(); dictRenderMask(); renderDictTranscript()"> Hiện nghĩa tiếng Việt <span class="dict-check-hint">— xem nghĩa của câu trong lúc nghe</span></label>
         </div>
       </div>
 
@@ -183,7 +185,7 @@
 
 <audio id="dict-audio" preload="metadata"></audio>
 
-<script src="/js/dictation.js?v=50589da564"></script>
+<script src="/js/dictation.js?v=165fff7249"></script>
 
 <div id="dict-popup" class="dict-popup hidden">
   <div class="dict-header">

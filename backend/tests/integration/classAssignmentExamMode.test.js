@@ -90,7 +90,7 @@ describe('Reading / Listening homework pinned to one exam mode', () => {
     const bad = await post(t, cls, [{ kind: 'internal', resourceType: 'reading_test', resourceId: String(rt._id), examMode: 'exam' }]);
     expect(bad.status).toBe(400);
 
-    const sec = await createListeningSection();
+    const sec = await createListeningSection({ extra: { dictationSentences: [{ text: 'A sentence to write down.', start: 1, end: 3 }] } });
     const ok = await post(t, cls, [{ kind: 'internal', resourceType: 'dictation', resourceId: String(sec._id), examMode: 'simulation' }]);
     expect(ok.status).toBe(201);
     expect(ok.body.assignment.resources[0].examMode).toBeUndefined();

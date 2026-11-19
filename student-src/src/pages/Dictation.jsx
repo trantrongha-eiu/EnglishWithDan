@@ -4,7 +4,7 @@ import { apiFetch } from '../utils/api';
 import { hasPremiumAccess } from '../utils/plan';
 import SearchMatch from '../utils/searchMatch';
 import { bindDict, openUpgrade, siteToast } from '../utils/shell';
-import { firstDiff, fmtTime, gradeSentence, maskWords } from '../utils/dictation';
+import { PASS_RATIO, fmtTime, diffSentence } from '../utils/dictation';
 
 // ⌨️ Luyện Dictation — /app/dictation, ?sectionId= (a Listening section, one
 // audio file) or ?drill= (spelling / numbers clips from many files). The
@@ -35,6 +35,8 @@ function loadPrefs() {
     autoplay: typeof p.autoplay === 'boolean' ? p.autoplay : true,
     autonext: typeof p.autonext === 'boolean' ? p.autonext : true,
     showAnswer: typeof p.showAnswer === 'boolean' ? p.showAnswer : true,
+    showVi: typeof p.showVi === 'boolean' ? p.showVi : true,
+    loop: typeof p.loop === 'boolean' ? p.loop : false,
     speed: SPEEDS.includes(p.speed) ? p.speed : 1,
   };
 }
@@ -47,20 +49,38 @@ function shake(el) {
   setTimeout(() => el.classList.remove('dict-shake'), 450);
 }
 
-function MaskLine({ sentence, result, showAnswer }) {
-  return maskWords(sentence, result, showAnswer).map((w, i) => {
-    let body = <span className="m-hide">{w.word}</span>;
-    if (w.kind === 'ok') body = <span className="m-ok">{w.word}</span>;
-    if (w.kind === 'show') {
-      const k = firstDiff(w.word, result.typedFor);
-      body = (
-        <span className="m-show">
-          {k < 0 ? w.word : <>{w.word.slice(0, k)}<u className="m-err">{w.word[k]}</u>{w.word.slice(k + 1)}</>}
-        </span>
-      );
-    }
-    return <Fragment key={i}>{i > 0 && ' '}{body}</Fragment>;
-  });
+const PASS_PCT = Math.round(PASS_RATIO * 100);
+
+// The check, word by word: right words green, a wrong word underlined with
+// the right one beside it, a missing word as a gap, an extra one struck out.
+// With "Hiện từ đúng" off the right words of the mistakes stay hidden.
+function DiffLine({ r, showAnswer, stale }) {
+  return (
+    <div className={`dx-diff${stale ? ' stale' : ''}`} id="dict-diff">
+      {r.tokens.map((t, i) => {
+        let body;
+        if (t.kind === 'ok') body = <span className="dx-ok">{t.word}</span>;
+        else if (t.kind === 'typo' || t.kind === 'wrong') {
+          body = <><span className={`dx-bad ${t.kind}`}>{t.typed}</span>{showAnswer && <span className="dx-fix">→ {t.word}</span>}</>;
+        } else if (t.kind === 'miss') body = <span className="dx-miss">{showAnswer ? t.word : '＿＿'}</span>;
+        else body = <span className="dx-extra" title="Từ thừa">{t.typed}</span>;
+        return <Fragment key={i}>{i > 0 && ' '}{body}</Fragment>;
+      })}
+    </div>
+  );
+}
+
+function ScoreLine({ r }) {
+  const pct = Math.round(r.ratio * 100);
+  return (
+    <div className="dx-score" id="dict-score">
+      <span>Đúng <b>{r.ok}/{r.total}</b> từ ({pct}%)</span>
+      {!!r.typos && <span className="dx-legend typo"><u>abc</u> {r.typos} từ sai chữ</span>}
+      {!!r.wrong && <span className="dx-legend wrong"><u>abc</u> {r.wrong} từ sai</span>}
+      {!!r.missing && <span className="dx-legend miss"><i>＿</i> {r.missing} từ thiếu</span>}
+      {!!r.extra && <span className="dx-legend extra"><s>abc</s> {r.extra} từ thừa</span>}
+    </div>
+  );
 }
 
 function Meaning({ index, translations, done }) {
@@ -78,7 +98,7 @@ function Practice({ lesson, onBack }) {
   const screenRef = useRef(null);
   const [prefs, setPrefs] = useState(loadPrefs);
   // What the audio callbacks and timers need right now
-  const live = useRef({ index: 0, prefs, answers: [], saved: false, autoNext: null });
+  const live = useRef({ index: 0, prefs, answers: [], saved: false, autoNext: null, loopTimer: null, lastKey: 0, onClipEnd: null });
 
   const [index, setIndex] = useState(0);
   const [done, setDone] = useState(NO_SET);
@@ -96,7 +116,10 @@ function Practice({ lesson, onBack }) {
   const sentence = sentences[index];
   const result = results[index];
   const isDrill = !!sentence?.answer;
-  const correct = !!result?.perfect;
+  const passed = !!result?.passed;
+  const revealed = passed || showFull;
+  // typed something new since the last check: its marks are out of date
+  const stale = !!result && typed.trim() !== result.typedText;
 
   const save = useCallback(() => {
     const l = live.current;
@@ -142,7 +165,13 @@ function Practice({ lesson, onBack }) {
     audio.playbackRate = l.prefs.speed;
     let frame = 0;
     const current = () => sentences[l.index];
-    const stop = () => { audio.pause(); setPlaying(false); };
+    // atEnd: the clip played to its end (🔁 may replay it), not a pause
+    const stop = (atEnd) => {
+      const wasPlaying = !audio.paused;
+      audio.pause();
+      setPlaying(false);
+      if (atEnd && wasPlaying) l.onClipEnd?.();
+    };
     const onError = () => {
       setPlaying(false);
       siteToast('Lỗi tải audio của bài này — vui lòng liên hệ giáo viên.', 'error');
@@ -151,7 +180,7 @@ function Practice({ lesson, onBack }) {
       const s = current();
       const length = s.end - s.start || 1;
       setClock({ ratio: Math.min(1, Math.max(0, (audio.currentTime - s.start) / length)), now: Math.max(0, audio.currentTime - s.start) });
-      if (audio.currentTime >= s.end) stop();
+      if (audio.currentTime >= s.end) stop(true);
     };
     // timeupdate fires ~4×/s, too late to stop before the next word: while
     // playing, the clip end is watched every frame.
@@ -159,7 +188,7 @@ function Practice({ lesson, onBack }) {
       cancelAnimationFrame(frame);
       const tick = () => {
         if (audio.paused) return;
-        if (audio.currentTime >= current().end) { stop(); return; }
+        if (audio.currentTime >= current().end) { stop(true); return; }
         frame = requestAnimationFrame(tick);
       };
       frame = requestAnimationFrame(tick);
@@ -172,6 +201,7 @@ function Practice({ lesson, onBack }) {
     return () => {
       cancelAnimationFrame(frame);
       clearTimeout(l.autoNext);
+      clearTimeout(l.loopTimer);
       audio.removeEventListener('error', onError);
       audio.removeEventListener('timeupdate', onTime);
       audio.removeEventListener('play', onPlay);
@@ -241,6 +271,8 @@ function Practice({ lesson, onBack }) {
     const l = live.current;
     const audio = audioRef.current;
     clearTimeout(l.autoNext);
+    clearTimeout(l.loopTimer);
+    l.lastKey = 0; // 🔁 waits for the first key on the new sentence
     audio.pause();
     setPlaying(false);
     l.index = i;
@@ -260,6 +292,7 @@ function Practice({ lesson, onBack }) {
   function togglePlay() {
     if (!sentence) return;
     const audio = audioRef.current;
+    clearTimeout(live.current.loopTimer);
     if (!audio.paused) { audio.pause(); setPlaying(false); return; }
     if (audio.readyState < 1 || audio.currentTime < sentence.start - 0.05 || audio.currentTime >= sentence.end) seekThen(sentence.start, () => play());
     else play();
@@ -286,43 +319,67 @@ function Practice({ lesson, onBack }) {
     l.saved = false;
   }
 
+  // 🔁: while the sentence is being worked on, the clip plays again 1–3 s
+  // after it ends (longer sentences get a longer pause to type). Stops once
+  // it's passed, or after 20 s without a key pressed.
+  useEffect(() => {
+    live.current.onClipEnd = () => {
+      const l = live.current;
+      clearTimeout(l.loopTimer);
+      if (!l.prefs.loop || !sentence || done.has(index) || Date.now() - l.lastKey > 20000) return;
+      const wait = Math.min(3, Math.max(1, (sentence.end - sentence.start) * 0.3));
+      l.loopTimer = setTimeout(() => { if (l.index === index) restart(true); }, wait * 1000);
+    };
+  });
+
   function check() {
     if (!sentence) return;
     const text = typed.trim();
     if (!text) { shake(inputRef.current); inputRef.current?.focus(); return; }
-    const r = gradeSentence(text, sentence);
+    const r = { ...diffSentence(text, sentence), typedText: text };
     setResults((all) => ({ ...all, [index]: r }));
-    record(r.perfect && !peeked.has(index), r.okRefs.size, r.refCount);
-    if (!r.perfect) {
+    // a sentence whose answer was seen first doesn't count as right
+    record(r.passed && !peeked.has(index), r.ok, r.total);
+    if (!r.passed) {
       shake(inputRef.current);
       window.playWrong?.();
       inputRef.current?.focus();
       return;
     }
+    clearTimeout(live.current.loopTimer);
     window.playOk?.();
+    if (done.has(index)) return; // a re-check after fixing the red words
     const nextDone = new Set(done).add(index);
     setDone(nextDone);
     if (nextDone.size === total) window.Mascot?.cheer?.(100, 'Chép đúng hết cả bài luôn! Tai cậu thính quá trời 🎧🍊');
     else window.Mascot?.hop?.('excited');
     if (nextDone.size === total) { save(); return; }
-    if (live.current.prefs.autonext) {
+    // only a perfect sentence moves on by itself — at 80–99% the student
+    // may still want to fix the red words
+    if (r.perfect && live.current.prefs.autonext) {
       const next = nextUndone(nextDone);
       if (next >= 0) live.current.autoNext = setTimeout(() => goTo(next), 1600);
     }
   }
 
+  function goNext() {
+    const next = nextUndone(done);
+    if (next >= 0) goTo(next);
+    else if (index < total - 1) goTo(index + 1);
+  }
+
+  // Enter = check; on a passed sentence with nothing changed since = next
   function onInputKey(e) {
     if (e.key !== 'Enter' || e.shiftKey) return;
     e.preventDefault();
-    if (!done.has(index)) { check(); return; }
-    const next = nextUndone(done);
-    if (next >= 0) goTo(next);
+    if (passed && !stale) { goNext(); return; }
+    check();
   }
 
   function toggleShowFull(on) {
     setShowFull(on);
     // A sentence whose answer was seen isn't scored as correct
-    if (on && !correct) setPeeked((p) => new Set(p).add(index));
+    if (on && !passed) setPeeked((p) => new Set(p).add(index));
   }
 
   // Typed from what was heard, never pasted in
@@ -363,11 +420,6 @@ function Practice({ lesson, onBack }) {
               <div className="dict-media-icon"><i className="fas fa-headphones" /></div>
               <div className="dict-media-title" id="dict-media-title">{total ? lesson.title : '—'}</div>
               <div className="dict-media-src" id="dict-media-src">{sentence?.sourceTitle ? `🎧 ${sentence.sourceTitle}` : ''}</div>
-              <div className="dict-audio-row">
-                <button className="dict-restart-btn" title="Nghe lại câu này (phím Ctrl)" onClick={() => restart()}><i className="fas fa-undo" /></button>
-                <div className="dict-progress-wrap"><div className="dict-progress-fill" id="dict-progress-fill" style={{ width: `${clock.ratio * 100}%` }} /></div>
-                <span className="dict-time" id="dict-time">{fmtTime(clock.now)} / {fmtTime(length)}</span>
-              </div>
             </div>
             <div className="dict-sidebar-head"><span>Danh sách câu</span> <span id="dict-session-score">{total ? `${done.size}/${total} ✓` : ''}</span></div>
             <div className="dict-num-grid" id="dict-num-grid">
@@ -379,59 +431,86 @@ function Practice({ lesson, onBack }) {
 
           <div className="dict-panel">
             <div className="dict-panel-top">
-              <button className="dict-play-btn" id="dict-play-btn" title="Phát / dừng (phím Ctrl để nghe lại)" onClick={togglePlay}><i className={`fas ${playing ? 'fa-pause' : 'fa-play'}`} /></button>
               <button className="dict-nav-arrow" id="dict-prev-btn" title="Câu trước" disabled={index === 0} onClick={() => goTo(index - 1)}><i className="fas fa-arrow-left" /></button>
-              <span className="dict-counter"><span id="dict-cur-num">{index + 1}</span> / <span id="dict-total-num">{total || 1}</span></span>
+              <span className="dict-counter">Câu <span id="dict-cur-num">{index + 1}</span>/<span id="dict-total-num">{total || 1}</span></span>
               <button className="dict-nav-arrow" id="dict-next-btn" title="Câu sau" disabled={index >= total - 1} onClick={() => goTo(index + 1)}><i className="fas fa-arrow-right" /></button>
+              {done.has(index) && <span className="dx-done-pill"><i className="fas fa-check" /> Đã xong</span>}
               <div className="dict-gear-wrap">
                 <button className="dict-gear" id="dict-gear-btn" title="Cài đặt" onClick={() => setSettingsOpen((o) => !o)}><i className="fas fa-cog" /></button>
                 <div className={`dict-settings${settingsOpen ? ' show' : ''}`} id="dict-settings">
-                  <label>Tốc độ
-                    <select id="dict-speed-sel" value={String(prefs.speed)} onChange={(e) => {
-                      const speed = Number(e.target.value) || 1;
-                      audioRef.current.playbackRate = speed;
-                      changePrefs({ speed });
-                    }}>
-                      {SPEEDS.map((s) => <option key={s} value={String(s)}>{s}x</option>)}
-                    </select>
-                  </label>
                   <label className="dict-check"><input type="checkbox" id="opt-autoplay" checked={prefs.autoplay} onChange={(e) => changePrefs({ autoplay: e.target.checked })} /> Tự phát khi sang câu mới</label>
-                  <label className="dict-check"><input type="checkbox" id="opt-autonext" checked={prefs.autonext} onChange={(e) => changePrefs({ autonext: e.target.checked })} /> Đúng thì tự sang câu tiếp</label>
-                  <div className="dict-settings-note">Phím tắt: <kbd>Enter</kbd> kiểm tra · <kbd>Ctrl</kbd> nghe lại câu</div>
+                  <label className="dict-check"><input type="checkbox" id="opt-autonext" checked={prefs.autonext} onChange={(e) => changePrefs({ autonext: e.target.checked })} /> Đúng 100% thì tự sang câu tiếp</label>
+                  <label className="dict-check"><input type="checkbox" id="opt-show-answer" checked={prefs.showAnswer} onChange={(e) => changePrefs({ showAnswer: e.target.checked })} /> Hiện từ đúng bên cạnh từ sai</label>
+                  {lesson.kind === 'section' && (
+                    <label className="dict-check"><input type="checkbox" id="opt-show-vi" checked={prefs.showVi} onChange={(e) => changePrefs({ showVi: e.target.checked })} /> Hiện nghĩa tiếng Việt trong lúc nghe</label>
+                  )}
+                  <div className="dict-settings-note">Phím tắt: <kbd>Enter</kbd> kiểm tra / câu tiếp · <kbd>Shift</kbd>+<kbd>Enter</kbd> xuống dòng · <kbd>Ctrl</kbd> nghe lại câu</div>
                 </div>
               </div>
             </div>
 
+            {/* The sentence's own player: play, replay, where it is, speed, 🔁 */}
+            <div className="dx-player">
+              <button className="dict-play-btn" id="dict-play-btn" title="Phát / dừng" onClick={togglePlay}><i className={`fas ${playing ? 'fa-pause' : 'fa-play'}`} /></button>
+              <button className="dict-restart-btn" title="Nghe lại câu này (phím Ctrl)" onClick={() => restart()}><i className="fas fa-rotate-left" /></button>
+              <div className="dict-progress-wrap"><div className="dict-progress-fill" id="dict-progress-fill" style={{ width: `${clock.ratio * 100}%` }} /></div>
+              <span className="dict-time" id="dict-time">{fmtTime(clock.now)} / {fmtTime(length)}</span>
+              <select className="dx-speed" id="dict-speed-sel" title="Tốc độ" value={String(prefs.speed)} onChange={(e) => {
+                const speed = Number(e.target.value) || 1;
+                audioRef.current.playbackRate = speed;
+                changePrefs({ speed });
+              }}>
+                {SPEEDS.map((sp) => <option key={sp} value={String(sp)}>{sp}×</option>)}
+              </select>
+              <button className={`dx-loop${prefs.loop ? ' on' : ''}`} id="dict-loop-btn" aria-pressed={prefs.loop}
+                title={prefs.loop ? 'Đang bật: tự nghe lại câu sau 1–3 giây khi bạn đang gõ' : 'Bật tự nghe lại câu sau 1–3 giây khi bạn đang gõ'}
+                onClick={() => { changePrefs({ loop: !prefs.loop }); clearTimeout(live.current.loopTimer); }}><i className="fas fa-repeat" /></button>
+            </div>
+
             <div className="dict-prompt" id="dict-prompt">{isDrill && prompt}</div>
+            {/* "Hiện nghĩa tiếng Việt": the sentence's meaning while it's being listened to —
+                once it's revealed the meaning shows under the answer instead */}
+            {!isDrill && prefs.showVi && !revealed && translations?.[index] && (
+              <div className="dict-vi-hint" id="dict-vi-hint"><b>Nghĩa:</b> {translations[index]}</div>
+            )}
             <textarea className="dict-input" id="dict-input" ref={inputRef} placeholder="Gõ những gì bạn nghe được rồi nhấn Enter..."
-              autoComplete="off" autoCapitalize="off" spellCheck={false} value={typed} onChange={(e) => setTyped(e.target.value)}
+              autoComplete="off" autoCapitalize="off" spellCheck={false} value={typed}
+              onChange={(e) => { live.current.lastKey = Date.now(); setTyped(e.target.value); }}
               onKeyDown={onInputKey} onPaste={blockPaste} onDrop={blockDrop} onDragOver={(e) => e.preventDefault()} />
 
-            <div className="dict-status-row">
-              <div className={`dict-status${result ? (correct ? ' ok' : ' bad') : ''}`} id="dict-status">
-                {correct && <><i className="fas fa-circle-check" /> Correct!</>}
-                {result && !correct && <><i className="fas fa-triangle-exclamation" /> Incorrect{result.firstWrong < 0 && <> <small>— bạn gõ thừa từ</small></>}</>}
+            {result && !showFull && <DiffLine r={result} showAnswer={prefs.showAnswer} stale={stale} />}
+            {result && !showFull && <ScoreLine r={result} />}
+            {result && (
+              <div className={`dict-status dx-verdict${passed ? ' ok' : ' bad'}`} id="dict-status">
+                {result.perfect && <><i className="fas fa-circle-check" /> Correct! Chính xác 100%.</>}
+                {passed && !result.perfect && <><i className="fas fa-circle-check" /> Đạt {Math.round(result.ratio * 100)}%, câu đã xong. Sửa các từ tô đỏ rồi bấm Kiểm tra lại, hoặc sang câu tiếp.</>}
+                {!passed && <><i className="fas fa-triangle-exclamation" /> Incorrect — {isDrill ? 'tên / con số phải đúng hết.' : `chưa đạt ${PASS_PCT}%. Nghe lại (Ctrl) rồi sửa các từ tô đỏ.`}</>}
               </div>
-              <button className="dict-btn dict-btn-ghost" id="dict-skip-btn" onClick={skip}>Bỏ qua</button>
-              <button className="dict-btn dict-btn-primary" id="dict-check-btn" disabled={done.has(index)} onClick={check}>Kiểm tra</button>
-            </div>
+            )}
 
-            <div className="dict-mask" id="dict-mask">
-              {sentence && result && !correct && !showFull && <MaskLine sentence={sentence} result={result} showAnswer={prefs.showAnswer} />}
-            </div>
             <div className="dict-reveal" id="dict-reveal">
-              {sentence && (correct || showFull) && (
+              {sentence && revealed && (
                 <>
                   {isDrill && <div className="dict-reveal-answer">{sentence.answer}</div>}
                   <div className="dict-correct-en">{sentence.text}</div>
-                  {!isDrill && <Meaning index={index} translations={translations} done={correct} />}
-                  {correct && peeked.has(index) && <div className="dict-peek-note">Câu này đã xem đáp án nên không tính điểm.</div>}
+                  {!isDrill && <Meaning index={index} translations={translations} done={passed} />}
+                  {passed && peeked.has(index) && <div className="dict-peek-note">Câu này đã xem đáp án nên không tính điểm.</div>}
                 </>
               )}
             </div>
 
-            <label className="dict-check dict-check-lg"><input type="checkbox" id="opt-show-answer" checked={prefs.showAnswer} onChange={(e) => changePrefs({ showAnswer: e.target.checked })} /> Show answer immediately <span className="dict-check-hint">— lộ chữ sai đầu tiên khi bạn gõ sai</span></label>
-            <label className="dict-check dict-check-lg"><input type="checkbox" id="opt-show-full" checked={showFull} onChange={(e) => toggleShowFull(e.target.checked)} /> Show full answer <span className="dict-check-hint">— câu xem đáp án không tính điểm</span></label>
+            <div className="dx-actions">
+              {passed && !stale
+                ? <button className="dict-btn dict-btn-ok" id="dict-next-sentence-btn" onClick={goNext}>Câu tiếp (Enter)</button>
+                : <button className="dict-btn dict-btn-primary" id="dict-check-btn" onClick={check}>{result ? 'Kiểm tra lại' : 'Kiểm tra'} (Enter)</button>}
+              {passed && !stale && !result.perfect && <button className="dict-btn dict-btn-ghost" id="dict-recheck-btn" onClick={check}>Kiểm tra lại</button>}
+              <button className={`dict-btn dict-btn-ghost${showFull ? ' active' : ''}`} id="dict-reveal-btn" onClick={() => toggleShowFull(!showFull)}>{showFull ? 'Ẩn đáp án' : 'Hiện đáp án'}</button>
+              {!passed && <button className="dict-btn dict-btn-ghost" id="dict-skip-btn" onClick={skip}>Bỏ qua</button>}
+            </div>
+            <div className="dx-foot">
+              <div>{isDrill ? 'Tên / con số phải đúng hết mới xong câu.' : `Đạt từ ${PASS_PCT}% số từ là xong câu.`}</div>
+              <div><kbd>Shift</kbd>+<kbd>Enter</kbd> xuống dòng · <kbd>Ctrl</kbd> nghe lại · <i className="fas fa-repeat" /> tự nghe lại câu sau 1–3 giây khi đang gõ</div>
+            </div>
           </div>
         </div>
 
@@ -442,6 +521,7 @@ function Practice({ lesson, onBack }) {
               <li key={i} className={`${done.has(i) ? 'done' : ''}${i === index ? ' current' : ''}`} onClick={() => { setTab('dictation'); goTo(i); }}>
                 {s.answer && <><b className="dict-t-answer">{s.answer}</b> — </>}{s.text}
                 {s.sourceTitle && <> <span className="dict-t-src">{s.sourceTitle}</span></>}
+                {prefs.showVi && translations?.[i] && <div className="dict-t-vi">{translations[i]}</div>}
               </li>
             ))}
           </ol>

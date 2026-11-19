@@ -12,7 +12,7 @@ export const HW_STATUS = {
 // Mirrors backend/services/resourceCompletionService.js (scoreGate ≥70%,
 // Reading/Listening ≥50%, wordCountGate, VIEW_TYPES …).
 const QUIZ_TYPES = new Set(['grammar', 'vocabulary_lesson', 'advanced_sentences']);
-const PRACTICE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'dictation']);
+const PRACTICE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'dictation', 'dictation_drill']);
 const COURSE_TYPES = new Set(['task1_lesson', 'task2_course_lesson', 'speaking_course_lesson', 'mindset_course_lesson']);
 export const PRACTICE_PASS = 50;
 export const GAPFILL_MIN_CORRECT = 18;
@@ -97,6 +97,7 @@ function resourcePath(r) {
     case 'listening_practice': return `listening.html?sectionId=${id}${examQs(r)}`;
     case 'listening_gapfill': return `listening.html?gapfillId=${id}`;
     case 'dictation': return `app/dictation?sectionId=${id}`;
+    case 'dictation_drill': return r.resourceCode ? `app/dictation?drill=${enc(r.resourceCode)}` : 'app/dictation';
     case 'writing_exam': return `writing.html?examId=${id}`;
     case 'task1_lesson': return code ? `writing-task1.html?lesson=${enc(code)}` : null;
     case 'task2_course_lesson': return code ? `writing-task2-course.html?lesson=${enc(code)}` : null;

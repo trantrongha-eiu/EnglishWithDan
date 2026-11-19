@@ -20,6 +20,7 @@ const ReadingTest = require('../models/ReadingTest');
 const ListeningTest = require('../models/ListeningTest');
 const Passage = require('../models/Passage');
 const ListeningSection = require('../models/ListeningSection');
+const DictationDrill = require('../models/DictationDrill');
 const WritingExam = require('../models/WritingExam');
 const WritingTask1 = require('../models/WritingTask1');
 const WritingTask2 = require('../models/WritingTask2');
@@ -428,11 +429,28 @@ const REGISTRY = {
       pass: gapFillPasses,
     },
   },
+  // A Listening section's sentence-by-sentence dictation — only sections that
+  // have dictation sentences, the same set the Dictation page lists
+  // (listeningService.listDictationSections: course sections excluded,
+  // dictation-only full-test parts included).
   dictation: {
     label: 'Dictation (Section)',
-    catalog: { model: ListeningSection, filter: { isActive: true }, sort: { createdAt: -1 }, sectionSearch: true,
-      shape: (d) => ({ _id: d._id, label: d.title, meta: 'Dictation' }) },
+    catalog: { model: ListeningSection, filter: { isActive: true, 'dictationSentences.0': { $exists: true }, courseRef: { $in: [null, ''] } },
+      sort: { partNumber: 1, title: 1 }, sectionSearch: true,
+      shape: (d) => ({ _id: d._id, label: d.title,
+        meta: [d.partNumber ? `Part ${d.partNumber}` : '', d.isActualTest ? 'Actual Test' : '', (d.dictationSentences || []).length ? `${d.dictationSentences.length} câu` : ''].filter(Boolean).join(' · ') }) },
     attempt: { model: DictationAttempt, userField: 'userId', idField: 'sectionId', filter: {} },
+    scoreGate: { fields: 'correctCount totalSentences', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalSentences ? (d.correctCount / d.totalSentences) * 100 : 0) },
+  },
+  // "Đánh vần tên" / "Số dài & mã số" sets on the Dictation page
+  // (DictationAttempt with drillId). Linked by slug (?drill=).
+  dictation_drill: {
+    label: 'Dictation – Đánh vần tên / Số & mã số',
+    catalog: { model: DictationDrill, filter: { isPublished: true }, sort: { category: -1, order: 1 },
+      shape: (d) => ({ _id: d._id, label: d.title,
+        meta: [d.category === 'spelling' ? '🔤 Đánh vần tên' : '🔢 Số & mã số', `${(d.items || []).length} câu`].join(' · ') }),
+      deepLinkKey: (d) => d.slug },
+    attempt: { model: DictationAttempt, userField: 'userId', idField: 'drillId', filter: {} },
     scoreGate: { fields: 'correctCount totalSentences', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalSentences ? (d.correctCount / d.totalSentences) * 100 : 0) },
   },
   writing_exam: {

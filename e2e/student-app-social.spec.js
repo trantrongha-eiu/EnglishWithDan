@@ -769,14 +769,9 @@ const PAGES = {
       await p.locator('.dict-picker-head .lh-mascot').waitFor();
     },
   },
-  dictationPractice: {
-    legacy: '/dictation.html?legacy=1&sectionId=s1', app: '/app/dictation?sectionId=s1', root: '.dict-wrap', patch: (s) => { s.fixedRandom = true; },
-    ready: (p) => p.locator('.dict-num-btn').nth(2).waitFor(),
-  },
-  dictationDrill: {
-    legacy: '/dictation.html?legacy=1&drill=spelling-1', app: '/app/dictation?drill=spelling-1', root: '.dict-wrap', patch: (s) => { s.fixedRandom = true; },
-    ready: (p) => p.locator('.dict-num-btn').nth(1).waitFor(),
-  },
+  // dictationPractice / dictationDrill: the React practice screen was
+  // redesigned (word-by-word check, sentence player) — covered by the
+  // dictation tests further down instead of a look-alike check.
   shadowing: {
     legacy: '/shadowing.html?legacy=1', app: '/app/shadowing', root: '.sh-wrap',
     ready: async (p) => {
@@ -2004,17 +1999,28 @@ test.describe('inside the React app', () => {
     await expect(page.locator('#rhList .rh-empty')).toHaveText('Lỗi tải lịch sử review.');
   });
 
-  test('dictation: a wrong try shows the mask, a right one the meaning, then moves on', async ({ page }) => {
+  test('dictation: a wrong try is marked word by word, a right one shows the meaning, then moves on', async ({ page }) => {
     await open(page, '/app/dictation?sectionId=s1');
     await page.locator('.dict-num-btn').nth(2).waitFor();
     await page.fill('#dict-input', 'hello thera');
     await page.keyboard.press('Enter');
-    await expect(page.locator('#dict-mask')).toHaveText('Hello there, ** ******.');
-    await expect(page.locator('#dict-mask .m-err')).toHaveText('e');
+    // Hello there, my friend. → hello ✓, thera = misspelt there, my + friend missing
+    await expect(page.locator('#dict-diff .dx-ok')).toHaveText(['Hello']);
+    await expect(page.locator('#dict-diff .dx-bad.typo')).toHaveText('thera');
+    await expect(page.locator('#dict-diff .dx-fix')).toHaveText('→ there,');
+    await expect(page.locator('#dict-diff .dx-miss')).toHaveText(['my', 'friend.']);
+    await expect(page.locator('#dict-score')).toContainText('Đúng 1/4 từ (25%)');
+    await expect(page.locator('#dict-score')).toContainText('1 từ sai chữ');
+    await expect(page.locator('#dict-score')).toContainText('2 từ thiếu');
+    await expect(page.locator('#dict-status')).toContainText('chưa đạt 80%');
+    // without "Hiện từ đúng" the mistakes' right words stay hidden
+    await page.click('#dict-gear-btn');
     await page.locator('#opt-show-answer').uncheck();
-    await expect(page.locator('#dict-mask')).toHaveText('Hello *****, ** ******.');
+    await expect(page.locator('#dict-diff .dx-fix')).toHaveCount(0);
+    await expect(page.locator('#dict-diff .dx-miss').first()).toHaveText('＿＿');
     await page.fill('#dict-input', 'hello there my friend');
     await page.keyboard.press('Enter');
+    await expect(page.locator('#dict-status')).toContainText('Correct!');
     await expect(page.locator('#dict-vi')).toContainText('Xin chào bạn tôi.');
     await expect(page.locator('#dict-session-score')).toHaveText('1/3 ✓');
     await expect(page.locator('.dict-num-btn').first()).toHaveClass(/done/);
@@ -2022,10 +2028,34 @@ test.describe('inside the React app', () => {
     await expect(page.locator('#dict-input')).toHaveValue('');
   });
 
+  test('dictation: 80% of the words is enough — Enter then goes on, a fix can be re-checked', async ({ page }) => {
+    const { log } = await open(page, '/app/dictation?sectionId=s1');
+    await page.locator('.dict-num-btn').nth(2).waitFor();
+    await page.fill('#dict-input', 'hello there my frend'); // 3/4 = 75%
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#dict-status')).toContainText('Incorrect');
+    await page.fill('#dict-input', 'hello there my friend extra');
+    await page.keyboard.press('Enter');
+    // every word right + one extra: 100% of the words, not perfect → passed, stays
+    await expect(page.locator('#dict-status')).toContainText('câu đã xong');
+    await expect(page.locator('#dict-diff .dx-extra')).toHaveText('extra');
+    await expect(page.locator('.dict-num-btn').first()).toHaveClass(/done/);
+    await expect(page.locator('#dict-cur-num')).toHaveText('1');
+    await expect(page.locator('#dict-next-sentence-btn')).toBeVisible();
+    await page.click('#dict-recheck-btn');
+    await page.fill('#dict-input', 'hello there my friend');
+    await expect(page.locator('#dict-diff')).toHaveClass(/stale/);
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#dict-status')).toContainText('Correct!');
+    await page.evaluate(() => window.__go('/classroom'));
+    await expect.poll(() => log.length).toBe(1);
+    expect(log[0]).toContain('"sentenceIndex":0,"isCorrect":true,"matchedWords":4,"totalWords":4');
+  });
+
   test('dictation: a sentence whose answer was seen is saved as not correct', async ({ page }) => {
     const { log } = await open(page, '/app/dictation?sectionId=s1');
     await page.locator('.dict-num-btn').nth(2).waitFor();
-    await page.locator('#opt-show-full').check();
+    await page.click('#dict-reveal-btn');
     await expect(page.locator('.dict-correct-en')).toHaveText('Hello there, my friend.');
     await page.fill('#dict-input', 'Hello there, my friend.');
     await page.click('#dict-check-btn');
@@ -2034,6 +2064,26 @@ test.describe('inside the React app', () => {
     await page.evaluate(() => window.__go('/classroom'));
     await expect.poll(() => log.length).toBe(1);
     expect(log[0]).toContain('"sentenceIndex":0,"isCorrect":false,"matchedWords":4,"totalWords":4');
+  });
+
+  test('dictation: the Vietnamese meaning shows while listening and can be turned off', async ({ page }) => {
+    await open(page, '/app/dictation?sectionId=s1');
+    await page.locator('.dict-num-btn').nth(2).waitFor();
+    await expect(page.locator('#dict-vi-hint')).toHaveText('Nghĩa: Xin chào bạn tôi.');
+    // revealed → the meaning moves under the answer
+    await page.fill('#dict-input', 'Hello there, my friend.');
+    await page.click('#dict-check-btn');
+    await expect(page.locator('#dict-vi')).toHaveText('Nghĩa: Xin chào bạn tôi.');
+    await expect(page.locator('#dict-vi-hint')).toHaveCount(0);
+    await page.click('.dx-tab[data-tab="transcript"]');
+    await expect(page.locator('.dict-t-vi').first()).toHaveText('Xin chào bạn tôi.');
+    await page.click('.dx-tab[data-tab="dictation"]');
+    await page.locator('.dict-num-btn').nth(1).click();
+    await expect(page.locator('#dict-vi-hint')).toHaveText('Nghĩa: Hôm nay trời đẹp.');
+    await page.click('#dict-gear-btn');
+    await page.locator('#opt-show-vi').uncheck();
+    await expect(page.locator('#dict-vi-hint')).toHaveCount(0);
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('dictation-prefs-v2')).showVi)).toBe(false);
   });
 
   test('dictation: a drill ignores digit grouping; pasting is refused', async ({ page }) => {
@@ -2045,7 +2095,8 @@ test.describe('inside the React app', () => {
     await page.fill('#dict-input', '0491577248');
     await page.keyboard.press('Enter');
     await expect(page.locator('.dict-reveal-answer')).toHaveText('0491 577 248');
-    await expect(page.locator('#dict-check-btn')).toBeDisabled();
+    await expect(page.locator('#dict-check-btn')).toHaveCount(0);
+    await expect(page.locator('#dict-next-sentence-btn')).toBeVisible();
   });
 
   test('dictation: leaving stops the audio; a bad link returns to the list', async ({ page }) => {

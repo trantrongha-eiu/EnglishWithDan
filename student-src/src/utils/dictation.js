@@ -107,3 +107,71 @@ export function firstDiff(word, typed) {
   while (k < word.length && k < b.length && word[k].toLowerCase() === b[k]) k += 1;
   return k < word.length ? k : -1;
 }
+
+// A sentence counts as done from this share of its words right (a drill's
+// name / number still has to be exact).
+export const PASS_RATIO = 0.8;
+
+function editDistance(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    }
+  }
+  return d[a.length][b.length];
+}
+
+// Close enough to be the same word misspelt ("recieve" for "receive")
+export function isTypo(typed, word) {
+  const a = normWord(typed);
+  const b = normWord(word);
+  if (!a || !b) return false;
+  const dist = editDistance(a, b);
+  return dist <= Math.max(1, Math.floor(b.length / 3));
+}
+
+// The check, word by word in the sentence's order:
+//   ok    — typed right
+//   typo  — a typed word standing in for it, spelt wrong (or another word)
+//   miss  — not typed at all
+//   extra — typed but not in the sentence
+// plus the counts and the score. `word` is the sentence's own spelling.
+export function diffSentence(typed, sentence) {
+  const isDrill = !!sentence.answer;
+  const refWords = isDrill ? answerWords(sentence.answer) : dictWords(sentence.text);
+  const typedWords = isDrill ? answerWords(typed) : dictWords(typed);
+  const ops = alignWords(typedWords, refWords);
+  const tokens = [];
+  let run = [];
+  const flush = () => {
+    const bads = run.filter((o) => o.type === 'bad');
+    const gaps = run.filter((o) => o.type === 'gap');
+    // pair them up in order: a typed word in the place of a missing one
+    gaps.forEach((g, k) => {
+      const b = bads[k];
+      if (b) tokens.push({ kind: isTypo(b.word, refWords[g.r]) ? 'typo' : 'wrong', typed: b.word, word: refWords[g.r], r: g.r });
+      else tokens.push({ kind: 'miss', word: refWords[g.r], r: g.r });
+    });
+    bads.slice(gaps.length).forEach((b) => tokens.push({ kind: 'extra', typed: b.word }));
+    run = [];
+  };
+  for (const o of ops) {
+    if (o.type === 'ok') { flush(); tokens.push({ kind: 'ok', word: refWords[o.r], r: o.r }); } else run.push(o);
+  }
+  flush();
+  const count = (k) => tokens.filter((t) => t.kind === k).length;
+  const ok = count('ok');
+  const total = refWords.length;
+  let perfect = ok === total && !count('extra');
+  if (isDrill && !perfect && typedWords.map(normWord).join('') === refWords.map(normWord).join('')) perfect = true;
+  const ratio = perfect ? 1 : total ? ok / total : 0;
+  return {
+    tokens: perfect ? refWords.map((word, r) => ({ kind: 'ok', word, r })) : tokens,
+    ok: perfect ? total : ok, total, ratio, perfect,
+    passed: perfect || (!isDrill && ratio >= PASS_RATIO),
+    typos: perfect ? 0 : count('typo'), wrong: perfect ? 0 : count('wrong'),
+    missing: perfect ? 0 : count('miss'), extra: perfect ? 0 : count('extra'),
+  };
+}

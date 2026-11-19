@@ -71,6 +71,7 @@ function dictLoadPrefs() {
   if (typeof p.autoplay === 'boolean') document.getElementById('opt-autoplay').checked = p.autoplay;
   if (typeof p.autonext === 'boolean') document.getElementById('opt-autonext').checked = p.autonext;
   if (typeof p.showAnswer === 'boolean') document.getElementById('opt-show-answer').checked = p.showAnswer;
+  if (typeof p.showVi === 'boolean') document.getElementById('opt-show-vi').checked = p.showVi;
   if ([0.75, 1, 1.25, 1.5].includes(p.speed)) { dictSpeed = p.speed; document.getElementById('dict-speed-sel').value = String(p.speed); }
 }
 function dictSavePrefs() {
@@ -79,6 +80,7 @@ function dictSavePrefs() {
       autoplay: document.getElementById('opt-autoplay').checked,
       autonext: document.getElementById('opt-autonext').checked,
       showAnswer: document.getElementById('opt-show-answer').checked,
+      showVi: document.getElementById('opt-show-vi').checked,
       speed: dictSpeed,
     }));
   } catch (e) { /* private mode etc. — prefs just don't stick */ }
@@ -312,6 +314,7 @@ function _dictStart(lesson) {
   document.getElementById('dict-total-num').textContent = n;
   document.getElementById('dict-session-score').textContent = `0/${n} ✓`;
   document.getElementById('opt-show-full').checked = false;
+  document.getElementById('opt-show-vi-row').style.display = lesson.kind === 'section' ? '' : 'none';
   // Full audio + plain transcript (sections only — a drill has many files).
   const full = document.getElementById('dict-full');
   full.open = false;
@@ -337,6 +340,8 @@ function _loadDictTranslations(id, requestId) {
       if (requestId !== _openDictSeq) return;
       dictTranslations = list;
       _fillDictVi();
+      _fillDictViHint();
+      if (!document.getElementById('dict-pane-transcript').classList.contains('hidden')) renderDictTranscript();
     });
 }
 
@@ -344,6 +349,19 @@ function _fillDictVi() {
   const el = document.getElementById('dict-vi');
   if (!el || Number(el.dataset.i) !== dictIndex || !dictTranslations) return;
   const vi = dictTranslations[dictIndex] || '';
+  el.innerHTML = vi ? `<b>Nghĩa:</b> ${escHtml(vi)}` : '';
+  el.style.display = vi ? '' : 'none';
+}
+
+// "Hiện nghĩa tiếng Việt": the meaning while the sentence is being listened
+// to — once it's revealed the meaning shows under the answer instead.
+function _fillDictViHint() {
+  const el = document.getElementById('dict-vi-hint');
+  if (!el) return;
+  const s = dictSection && currentSentence();
+  const st = dictLast[dictIndex];
+  const revealed = (st && st.perfect) || document.getElementById('opt-show-full').checked;
+  const vi = s && !s.answer && document.getElementById('opt-show-vi').checked && !revealed && dictTranslations ? dictTranslations[dictIndex] || '' : '';
   el.innerHTML = vi ? `<b>Nghĩa:</b> ${escHtml(vi)}` : '';
   el.style.display = vi ? '' : 'none';
 }
@@ -387,6 +405,7 @@ function renderDictTranscript() {
     <li class="${dictDone.has(i) ? 'done' : ''}${i === dictIndex ? ' current' : ''}" onclick="dictTab('dictation'); dictGoTo(${i})">
       ${s.answer ? `<b class="dict-t-answer">${escHtml(s.answer)}</b> — ` : ''}${escHtml(s.text)}
       ${s.sourceTitle ? `<span class="dict-t-src">${escHtml(s.sourceTitle)}</span>` : ''}
+      ${document.getElementById('opt-show-vi').checked && dictTranslations && dictTranslations[i] ? `<div class="dict-t-vi">${escHtml(dictTranslations[i])}</div>` : ''}
     </li>`).join('');
 }
 
@@ -657,6 +676,7 @@ function dictRenderMask() {
   const showFull = document.getElementById('opt-show-full').checked;
   const showAnswer = document.getElementById('opt-show-answer').checked;
   if (showFull && !(st && st.perfect)) dictPeeked.add(dictIndex);
+  _fillDictViHint();
 
   statusEl.className = 'dict-status' + (st ? (st.perfect ? ' ok' : ' bad') : '');
   statusEl.innerHTML = !st ? ''
