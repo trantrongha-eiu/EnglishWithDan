@@ -22,6 +22,7 @@
   // /app/ is the React version of dashboard.html: same tour, same "seen" key.
   function currentTourPage() {
     if (/^\/app\/essential-grammar(\/|$)/.test(location.pathname)) return 'essential-grammar.html';
+    if (/^\/app\/writing-practice(\/|$)/.test(location.pathname)) return 'writing-practice.html';
     if (/^\/app(\/|$)/.test(location.pathname)) return 'dashboard.html';
     return (location.pathname.replace(/\/+$/, '').split('/').pop() || 'dashboard.html').replace(/^[^.]+$/, '$&.html');
   }
@@ -57,7 +58,7 @@
         title: 'Writing & Luyện tập',
         body: 'Mục "Writing" gồm đề thi thật ở trên cùng, rồi các nhóm bên dưới (kéo xuống): Khóa học Task 1 / Task 2, Luyện tập (Task 2 Luyện đề tuần, Task 2 Templates) và Ngữ pháp (Essential Grammar, Viết câu giao tiếp). Bấm vào để mở danh sách.',
         resolve() {
-          const link = document.querySelector('.top-nav a[href="writing-practice.html"]');
+          const link = document.querySelector('.top-nav a[href$="writing-practice"], .top-nav a[href$="writing-practice.html"]');
           const dropdown = link && link.closest('.nav-dropdown');
           return isVisible(dropdown) ? dropdown : null;
         }

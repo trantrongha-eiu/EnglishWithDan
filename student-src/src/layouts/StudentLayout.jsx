@@ -14,6 +14,7 @@ const TITLES = {
   '/shadowing': 'Luyện Shadowing',
   '/essential-grammar': 'Essential Grammar',
   '/advanced-sentences': 'Viết câu nâng cao',
+  '/writing-practice': 'Luyện viết câu giao tiếp',
 };
 
 // The top nav comes from the site shell (js/bundles/app-shell.js → nav.js).

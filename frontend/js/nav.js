@@ -97,7 +97,7 @@
         { divider: true, label: 'Ngữ pháp' },
         { href: 'app/essential-grammar', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
         { href: 'task1-practice.html',    icon: 'fa-chart-pie',      label: 'Task 1 Grammar' },
-        { href: 'writing-practice.html',  icon: 'fa-comment',        label: 'Viết câu giao tiếp' },
+        { href: 'app/writing-practice',   icon: 'fa-comment',        label: 'Viết câu giao tiếp' },
       ]
     },
     { href: 'speaking.html',          icon: 'fa-microphone',  label: 'Speaking',
@@ -507,7 +507,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=0b31489179';
+      s.src = '/js/shared/page-help.js?v=47cfe44191';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);

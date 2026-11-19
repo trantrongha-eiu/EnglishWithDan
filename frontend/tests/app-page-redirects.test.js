@@ -41,11 +41,13 @@ describe('static pages that moved to /app/', () => {
     ['shadowing.html', '/shadowing/keith-small-talk/', '/app/shadowing?lesson=keith-small-talk'],
     ['advanced-sentences.html', '/advanced-sentences.html', '/app/advanced-sentences'],
     ['advanced-sentences.html', '/advanced-sentences.html?week=2&groupId=g1', '/app/advanced-sentences?week=2&groupId=g1'],
+    ['writing-practice.html', '/writing-practice.html', '/app/writing-practice'],
+    ['writing-practice.html', '/writing-practice.html?level=elementary&topic=food&type=combine', '/app/writing-practice?level=elementary&topic=food&type=combine'],
   ])('%s: %s → %s', (file, url, to) => {
     expect(redirectOf(file, url)).toBe(to);
   });
 
-  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html', 'profile.html', 'tuition.html', 'review-history.html', 'dictation.html', 'shadowing.html', 'goal.html', 'essential-grammar.html', 'advanced-sentences.html'])('%s stays put with ?legacy=1', (file) => {
+  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html', 'profile.html', 'tuition.html', 'review-history.html', 'dictation.html', 'shadowing.html', 'goal.html', 'essential-grammar.html', 'advanced-sentences.html', 'writing-practice.html'])('%s stays put with ?legacy=1', (file) => {
     expect(redirectOf(file, `/${file}?legacy=1`)).toBeUndefined();
   });
 });

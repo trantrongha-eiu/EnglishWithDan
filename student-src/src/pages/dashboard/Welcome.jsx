@@ -17,7 +17,7 @@ const SKILL_CARDS = [
   { href: '/listening.html', icon: 'fa-headphones', label: 'Listening' },
   { href: '/writing.html', icon: 'fa-pen-nib', label: 'Writing' },
   { href: '/speaking.html', icon: 'fa-microphone', label: 'Speaking' },
-  { href: '/writing-practice.html', icon: 'fa-dumbbell', label: 'Luyện viết' },
+  { href: '/app/writing-practice', icon: 'fa-dumbbell', label: 'Luyện viết' },
 ];
 
 const FEAT_CHIPS = [

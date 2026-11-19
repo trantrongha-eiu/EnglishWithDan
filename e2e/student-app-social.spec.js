@@ -182,6 +182,18 @@ const ADV_EXAM = [
   { _id: 'as4', groupId: 'ag2', groupName: 'Đảo ngữ', promptVi: 'Không những anh ấy học giỏi.' },
 ];
 
+// Luyện viết câu giao tiếp: topic 'myself' has one exercise of each kind
+const WP_EXERCISES = [
+  { _id: 'w1', type: 'translation', level: 'beginner', topic: 'myself', grammarPoint: 'To be', question: 'Tôi là học sinh.', translationAnswer: 'I am a student.', explanation: 'Chủ ngữ I đi với am.' },
+  { _id: 'w2', type: 'translation', level: 'beginner', topic: 'myself', grammarPoint: 'Hiện tại đơn', question: 'Tôi thích đọc sách.', hints: ['like', 'reading'], answerWordCount: 4, answerLetterHint: 'I l____ r______ b____' },
+  { _id: 'w3', type: 'rearrange', level: 'beginner', topic: 'myself', grammarPoint: 'Trật tự từ', question: 'Cô ấy chơi quần vợt mỗi ngày.', baseWords: ['She', 'plays', 'tennis', 'daily'] },
+  { _id: 'w4', type: 'fill_blank', level: 'beginner', topic: 'myself', grammarPoint: 'Giới từ', instruction: 'Chọn từ đúng:', question: 'I live ___ Hanoi.', options: ['in', 'on', 'at'] },
+  { _id: 'w5', type: 'expand', level: 'beginner', topic: 'myself', grammarPoint: 'Mở rộng', baseText: 'I like music.', question: 'I like music.', instruction: 'Viết dài hơn:' },
+  { _id: 'w6', type: 'combine', level: 'beginner', topic: 'myself', grammarPoint: 'Liên từ', sentences: ['It rained.', 'We stayed home.'], connector: 'so', answerWordCount: 5, answerLetterHint: 'I_ r_____, s_ w_ s_____ h___' },
+];
+const WP_SAMPLES = { w1: 'I am a student.', w2: 'I like reading books.', w3: 'She plays tennis daily', w4: 'in', w5: 'I really like pop music.', w6: 'It rained, so we stayed home.' };
+const WP_META = { success: true, counts: { beginner: { _total: 6, myself: 6, family: 0 }, elementary: { _total: 2, food: 2 } } };
+
 const GRAMMAR_LESSONS = () => [
   { _id: 'g1', category: 'Thì', lessonKey: 'present-simple', title: 'Hiện tại đơn', icon: '⏰', orderIndex: 1, blocks: GRAMMAR_BLOCKS },
   { _id: 'g2', category: 'Thì', lessonKey: 'past-simple', title: 'Quá khứ đơn', orderIndex: 2, blocks: [{ type: 'overview', data: { text: 'Quá khứ.' } }] },
@@ -221,6 +233,11 @@ function makeState() {
     grammarProgress: [{ lessonId: 'g2', bestScore: 90, score: 90, lastAttempt: daysAgo(3) }],
     assignments: [],
     advDrafts: [{ groupId: 'ag2', groupName: 'Đảo ngữ', week: 1, mode: 'practice', sentenceIds: ['as4', 'as5'], currentIdx: 1, sentenceStatus: ['correct'], sessionAttempts: [{ sentenceId: 'as4', userAnswer: 'Not only is he smart.', isCorrect: true, score: 100 }] }],
+    wpHistory: [
+      { _id: 'wh1', level: 'beginner', types: ['translation', 'rearrange'], totalItems: 6, correctItems: 4, xpEarned: 70, createdAt: daysAgo(1) },
+      { _id: 'wh2', level: 'elementary', type: 'fill_blank', xpEarned: 15, createdAt: daysAgo(3) },
+    ],
+    pendingRewrites: 0,
     advHistory: [
       { _id: 'at1', sessionType: 'practice', week: 1, groupName: 'Mệnh đề quan hệ', correctCount: 2, totalQuestions: 3, scorePercentage: 66.7, completedAt: daysAgo(1) },
       { _id: 'at2', sessionType: 'exam', week: 1, groupName: 'Thi thử Tuần 1', correctCount: 1, totalQuestions: 2, scorePercentage: 50, completedAt: daysAgo(4) },
@@ -331,6 +348,9 @@ async function open(page, url, state = makeState()) {
     }
     if (theme) localStorage.setItem('theme', theme);
     if (advScores) localStorage.setItem('as_group_scores', JSON.stringify({ ag1: { best: 90, completed: true } }));
+    if (advScores) localStorage.setItem('wp_topic_scores', JSON.stringify({ family: { bestScore: 85, latestScore: 85, completed: true } }));
+    if (advScores) localStorage.setItem('wp_progress', JSON.stringify({ xp: 120, streak: 4, lastDate: new Date().toISOString().slice(0, 10) }));
+    if (!window.__keepWpTour) localStorage.setItem('ews_onboarding_tour_v1_writing-practice.html', '1');
     localStorage.setItem('token', 'test-token');
     localStorage.setItem('user', JSON.stringify(u));
     localStorage.setItem('lastLoginAt', String(Date.now()));
@@ -460,6 +480,32 @@ async function open(page, url, state = makeState()) {
       state.grammarHistory = [{ _id: 'h2', score: 100, correct: 3, total: 3, answered: 3, timeSpent: 9, createdAt: new Date(NOW).toISOString() }, ...state.grammarHistory];
       return json({ success: true });
     }
+    if (p === '/writing-practice/meta') return json(WP_META);
+    if (p === '/writing-practice/exercises') {
+      if (state.user?.plan === 'free') return json({ success: false, message: 'Premium', requiresPremium: true }, 403);
+      const topic = u.searchParams.get('topic');
+      const type = u.searchParams.get('type');
+      const list = WP_EXERCISES.filter((e) => (topic === 'all' || e.topic === topic) && (type === 'all' || e.type === type) && u.searchParams.get('level') === 'beginner');
+      return json({ success: true, exercises: list });
+    }
+    if (p === '/writing-practice/check') {
+      if (state.failWpCheck) return json({ success: false, message: 'Lỗi máy chủ' }, 500);
+      const b = JSON.parse(req.postData());
+      const sample = WP_SAMPLES[b.exerciseId];
+      const ok = !/wrong/i.test(b.userAnswer);
+      return json({ success: true, xpEarned: ok ? 15 : 5, sampleAnswer: sample, feedback: { isCorrect: ok, feedbackVi: ok ? 'Câu đúng ngữ pháp.' : 'Sai thì của động từ.' } });
+    }
+    if (p === '/writing-practice/test-questions') return json({ success: true, exercises: WP_EXERCISES.slice(1, 4) });
+    if (p === '/writing-practice/check-test') {
+      const { answers } = JSON.parse(req.postData());
+      const results = answers.map((a, i) => {
+        const e = WP_EXERCISES.find((x) => x._id === a.exerciseId);
+        return { ...e, userAnswer: a.userAnswer, sampleAnswer: WP_SAMPLES[e._id], isCorrect: i !== 1, isExpand: false, explanation: i === 2 ? 'Dùng in với thành phố.' : '' };
+      });
+      return json({ success: true, results, correct: results.filter((r) => r.isCorrect).length, countable: results.length, score: Math.round((results.filter((r) => r.isCorrect).length / results.length) * 100) });
+    }
+    if (p === '/writing-practice/history') return json({ success: true, attempts: state.wpHistory });
+    if (p === '/writing/pending-rewrites') return json({ success: true, count: state.pendingRewrites, max: 2, blocked: false, items: state.pendingRewrites ? [{ _id: 'r1' }] : [] });
     if (p === '/adv-sentence/weeks') return json({ success: true, weeks: [
       { week: 1, groupNames: ['Mệnh đề quan hệ', 'Đảo ngữ'], sentenceCount: 5, groupCount: 2 },
       { week: 2, groupNames: ['Câu điều kiện'], sentenceCount: 4, groupCount: 1 },
@@ -715,7 +761,122 @@ const PAGES = {
   shadowingPractice: { legacy: '/shadowing.html?legacy=1&lesson=l0&mode=shadowing', app: '/app/shadowing?lesson=l0&mode=shadowing', root: '.sh-wrap', ready: shadowReady('#sh-play') },
   shadowingWatch: { legacy: '/shadowing.html?legacy=1&lesson=l0&mode=watch', app: '/app/shadowing?lesson=l0&mode=watch', root: '.sh-wrap', ready: shadowReady('#wt-play') },
   shadowingDictation: { legacy: '/shadowing.html?legacy=1&lesson=l0&mode=dictation', app: '/app/shadowing?lesson=l0&mode=dictation', root: '.sh-wrap', ready: shadowReady('#dc-play') },
+  wpWelcome: {
+    legacy: '/writing-practice.html?legacy=1', app: '/app/writing-practice', root: '.wp-layout', patch: (s) => { s.advScores = true; },
+    ready: wpReady(),
+  },
+  wpWelcomeFree: {
+    legacy: '/writing-practice.html?legacy=1', app: '/app/writing-practice', root: '.wp-layout', patch: (s) => { s.user = { ...USER, plan: 'free' }; },
+    ready: async (p) => { await wpReady()(p); await p.locator('#premium-promo-banner').waitFor(); },
+  },
+  wpDrill: {
+    legacy: '/writing-practice.html?legacy=1&level=beginner&topic=myself&type=all', app: '/app/writing-practice?level=beginner&topic=myself&type=all', root: '.wp-layout',
+    ready: wpReady(async (p) => { await typeWbw(p, 'Ia'); await p.locator('.wbw-word.is-done').first().waitFor(); }),
+  },
+  wpFeedback: {
+    legacy: '/writing-practice.html?legacy=1&level=beginner&topic=myself&type=translation', app: '/app/writing-practice?level=beginner&topic=myself&type=translation', root: '.wp-layout',
+    ready: wpReady(async (p) => {
+      await typeWbw(p, 'Iamastudent');
+      await p.locator('#feedback-card').waitFor();
+      await p.keyboard.press('Enter');
+      await p.locator('#vocab-hint-btn').click();
+      await p.locator('#vocab-hint-btn').click();
+      await p.locator('#answer-box').fill('I like wrong book');
+      await p.locator('#submit-btn').click();
+      await p.locator('#feedback-card .wp-diff-err').first().waitFor();
+      await settle(p);
+    }),
+  },
+  wpCombine: {
+    legacy: '/writing-practice.html?legacy=1&level=beginner&topic=all&type=combine', app: '/app/writing-practice?level=beginner&topic=all&type=combine', root: '.wp-layout',
+    ready: wpReady((p) => p.locator('#combine-answer-box').waitFor()),
+  },
+  wpRearrange: {
+    legacy: '/writing-practice.html?legacy=1&level=beginner&topic=all&type=rearrange', app: '/app/writing-practice?level=beginner&topic=all&type=rearrange', root: '.wp-layout',
+    patch: (s) => { s.fixedRandom = true; },
+    ready: wpReady((p) => p.locator('#rearrange-bank .wp-word-chip', { hasText: 'plays' }).click()),
+  },
+  wpDone: {
+    legacy: '/writing-practice.html?legacy=1&level=beginner&topic=myself&type=fill_blank', app: '/app/writing-practice?level=beginner&topic=myself&type=fill_blank', root: '.wp-layout',
+    patch: (s) => { s.advScores = true; },
+    ready: wpReady(async (p) => {
+      await p.locator('#fill-options .wp-option-btn', { hasText: 'on' }).click();
+      await p.locator('#fill-input').fill('wrong');
+      await p.locator('#submit-btn').click();
+      await p.locator('#wp-next-btn').click();
+      await p.locator('.wp-wr-item').waitFor();
+      await p.locator('#done-icon > *').first().waitFor();
+      await p.evaluate(() => { document.querySelectorAll('.wp-done-stats span:last-child').forEach((e) => { e.textContent = '⏱ 0:01'; }); });
+    }),
+  },
+  wpTest: {
+    legacy: '/writing-practice.html?legacy=1', app: '/app/writing-practice', root: '.wp-layout', patch: (s) => { s.fixedRandom = true; },
+    ready: wpReady(async (p) => {
+      await wpStartTest(p, '15');
+      await p.locator('#test-answer-box').fill('I like reading books.');
+      await p.locator('#test-next-btn').click();
+      await p.locator('#test-rearrange-bank .wp-word-chip').first().waitFor();
+      await p.evaluate(() => { document.getElementById('test-timer').textContent = '⏱ 04:29'; });
+    }),
+  },
+  wpTestResults: {
+    legacy: '/writing-practice.html?legacy=1', app: '/app/writing-practice', root: '.wp-layout', patch: (s) => { s.fixedRandom = true; },
+    ready: wpReady(async (p) => {
+      await wpStartTest(p);
+      await p.locator('#test-answer-box').fill('I like reading books.');
+      await p.locator('#test-next-btn').click();
+      for (const w of ['She', 'plays', 'tennis', 'daily']) await p.locator('#test-rearrange-bank .wp-word-chip', { hasText: w }).click();
+      await p.locator('#test-next-btn').click();
+      await p.locator('#test-fill-options .wp-option-btn', { hasText: 'in' }).click();
+      await p.locator('#test-next-btn').click();
+      await p.locator('.wp-test-big-score').waitFor();
+      await p.locator('.wp-review-item').nth(2).waitFor();
+    }),
+  },
+  wpHistory: {
+    legacy: '/writing-practice.html?legacy=1', app: '/app/writing-practice', root: '.t1-hist-modal',
+    ready: wpReady(async (p) => {
+      await p.locator('.t1-hist-open-btn').click();
+      await p.locator('.t1-hist-row').nth(1).waitFor();
+    }),
+  },
+  wpQuit: {
+    legacy: '/writing-practice.html?legacy=1&level=beginner&topic=myself&type=translation', app: '/app/writing-practice?level=beginner&topic=myself&type=translation', root: '.wp-quit-box',
+    ready: wpReady(async (p) => {
+      await typeWbw(p, 'Iamastudent');
+      await p.locator('#feedback-card').waitFor();
+      await p.locator('#state-exercise .wp-stop-btn').click();
+      await p.locator('#wp-quit-results').waitFor();
+    }),
+  },
 };
+
+// Luyện viết câu giao tiếp: the filter counts are in, then the given steps
+function wpReady(steps) {
+  return async (p) => {
+    await p.locator('.wp-topic-btn .wp-lc-badge').first().waitFor({ state: 'attached' });
+    await p.locator('.wp-level-btn .wp-lc-badge').first().waitFor({ state: 'attached' });
+    if (steps) await steps(p);
+  };
+}
+// Thi thử from the sidebar, or on a phone from the settings sheet
+async function wpStartTest(p, count) {
+  const phone = !(await p.locator('#btn-mode-test').isVisible());
+  if (phone) { await p.locator('#wp-mob-fab').click(); await p.locator('#sheet-btn-mode-test').click(); await p.locator('#wp-mob-fab').click(); }
+  else await p.locator('#btn-mode-test').click();
+  const box = phone ? '#sheet-test-setup' : '#test-setup';
+  if (count) await p.locator(box + ' [data-tcount="' + count + '"]').click();
+  await p.locator(box + ' .wp-start-test-btn').click();
+}
+const typeWbw = (page, letters) => page.locator('.wbw-input').pressSequentially(letters, { delay: 15 });
+// A smooth scrollIntoView has come to rest
+const settle = (p) => p.evaluate(() => new Promise((done) => {
+  let last = -1;
+  const timer = setInterval(() => {
+    if (window.scrollY === last) { clearInterval(timer); done(); }
+    last = window.scrollY;
+  }, 200);
+}));
 
 async function grammarReady(p) {
   await p.locator('.eg-hero .lh-mascot').waitFor();
@@ -1210,7 +1371,59 @@ async function advFlow(page, log) {
   await expect.poll(() => log.length).toBe(8);
 }
 
-const FLOWS = { advSentences: advFlow, grammar: grammarFlow, leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow, profile: profileFlow, tuition: tuitionFlow, dictation: dictationFlow, shadowing: shadowingFlow };
+async function wpFlow(page, log) {
+  const fb = page.locator('#feedback-card');
+  await typeWbw(page, 'Iamastudent');
+  await expect(fb).toContainText('Câu đúng ngữ pháp.');
+  await page.keyboard.press('Enter');
+  await page.locator('#vocab-hint-btn').click();
+  await page.locator('#answer-box').fill('I like wrong books');
+  await page.locator('#answer-box').press('Enter');
+  await expect(fb).toContainText('Sai thì của động từ.');
+  await page.locator('#wp-next-btn').click();
+  for (const w of ['She', 'plays', 'tennis', 'daily']) await page.locator('#rearrange-bank .wp-word-chip', { hasText: w }).click();
+  await page.locator('#submit-btn').click();
+  await expect(fb).toContainText('Câu đúng');
+  await page.locator('#wp-next-btn').click();
+  await page.locator('#skip-btn').click(); // the blank comes back at the end
+  await page.locator('#answer-box').fill('I really like music a lot.');
+  await page.locator('#submit-btn').click();
+  await expect(page.locator('#result-banner')).toHaveText('📖 Xem câu mẫu để so sánh');
+  await page.locator('#wp-next-btn').click();
+  await page.locator('#combine-answer-box').fill('It rained, so we stayed home.');
+  await page.locator('#combine-answer-box').press('Enter');
+  await expect(fb).toBeVisible();
+  await page.locator('#wp-next-btn').click();
+  await expect(page.locator('#type-tag')).toHaveText('✏️ Điền chỗ trống');
+  await page.locator('#fill-input').fill('in');
+  await page.locator('#fill-input').press('Enter');
+  await expect(fb).toBeVisible();
+  await page.locator('#wp-next-btn').click();
+  await expect(page.locator('#done-summary')).toHaveText('Bạn đã hoàn thành 6 bài và kiếm được 80 XP!');
+  // Thi thử: switching mode asks first
+  await page.locator('#btn-mode-test').click();
+  await page.locator('#wp-quit-leave-btn').click();
+  await page.locator('#test-setup .wp-start-test-btn').click();
+  await page.locator('#test-answer-box').fill('I like reading books.');
+  await page.locator('#test-next-btn').click();
+  for (const w of ['She', 'plays', 'tennis', 'daily']) await page.locator('#test-rearrange-bank .wp-word-chip', { hasText: w }).click();
+  await page.locator('#test-next-btn').click();
+  await page.locator('#test-fill-options .wp-option-btn', { hasText: 'in' }).click();
+  await page.locator('#test-next-btn').click();
+  await expect(page.locator('.wp-test-big-score')).toContainText('67%');
+  // Back to practice, start over: three wrong letters fail the sentence without a check
+  await page.locator('#test-results .wp-more-btn').click();
+  await page.locator('#state-done .wp-restart-btn').click();
+  for (const ch of 'xxx') { await page.locator('.wbw-input').press(ch); await page.waitForTimeout(320); }
+  await expect(fb).toContainText('Bạn gõ sai từ “I” 3 lần');
+  await page.locator('#state-exercise .wp-stop-btn').click();
+  await expect(page.locator('#wp-quit-ring-pct')).toHaveText('0%');
+  await page.locator('#wp-quit-leave-btn').click();
+  await expect(page.locator('#done-summary')).toHaveText('Bạn đã hoàn thành 1 bài và kiếm được 5 XP!');
+  await expect.poll(() => log.length).toBe(9);
+}
+
+const FLOWS = { wpDrill: wpFlow, advSentences: advFlow, grammar: grammarFlow, leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow, profile: profileFlow, tuition: tuitionFlow, dictation: dictationFlow, shadowing: shadowingFlow };
 
 for (const [name, flow] of Object.entries(FLOWS)) {
   test(`${name}: every action sends the same requests as the old page`, async ({ browser }) => {
@@ -1244,6 +1457,8 @@ test.describe('inside the React app', () => {
     ['/dictation.html?sectionId=s1', '/app/dictation?sectionId=s1'], ['/dictation/s1', '/app/dictation?sectionId=s1'],
     ['/shadowing.html?lesson=l0&mode=watch', '/app/shadowing?lesson=l0&mode=watch'], ['/shadowing/l0', '/app/shadowing?lesson=l0'],
     ['/advanced-sentences.html?week=1&groupId=ag1', '/app/advanced-sentences?week=1&groupId=ag1'],
+    ['/writing-practice.html', '/app/writing-practice?level=beginner&topic=all&type=all'],
+    ['/writing-practice.html?topic=family', '/app/writing-practice?level=beginner&topic=family&type=all'],
   ]) {
     test(`${from} forwards to ${to}`, async ({ page }) => {
       await open(page, from);
@@ -2018,4 +2233,63 @@ test.describe('inside the React app', () => {
     await page.waitForFunction(() => !!window.PageHelp);
     expect(await page.evaluate(() => window.PageHelp.pageKey())).toBe('advanced-sentences.html');
   });
+  test('writing practice: Back between filter sets reloads that set; the address keeps the filters', async ({ page }) => {
+    const { log } = await open(page, '/app/writing-practice');
+    await expect(page).toHaveURL(`${BASE}/app/writing-practice?level=beginner&topic=all&type=all`);
+    await page.locator('#practice-filters .wp-type-btn[data-type="combine"]').click();
+    await expect(page).toHaveURL(`${BASE}/app/writing-practice?level=beginner&topic=all&type=combine`);
+    await page.locator('#combine-answer-box').fill('It rained, so we stayed home.');
+    await page.locator('#submit-btn').click();
+    await page.locator('#feedback-card').waitFor();
+    await page.locator('#practice-filters .wp-type-btn[data-type="fill_blank"]').click();
+    await expect(page.locator('#wp-quit-title')).toHaveText('Đổi dạng bài?');
+    await page.locator('#wp-quit-leave-btn').click();
+    await expect(page.locator('#type-tag')).toHaveText('✏️ Điền chỗ trống');
+    await expect.poll(() => log.filter((l) => l.startsWith('POST /writing-practice/save-batch')).length).toBe(1);
+    await page.goBack();
+    await expect(page.locator('#type-tag')).toHaveText('🔗 Nối câu');
+    await expect(page.locator('#practice-filters .wp-type-btn.active')).toHaveAttribute('data-type', 'combine');
+  });
+
+  test('writing practice: a free student is asked to upgrade, from a link too', async ({ page }) => {
+    const state = makeState();
+    state.user = { ...USER, plan: 'free', createdAt: '2020-01-01T00:00:00.000Z' };
+    await open(page, '/app/writing-practice?topic=myself', state);
+    await expect(page.locator('#um-overlay')).toBeVisible();
+    await expect(page.locator('#state-welcome')).toBeVisible();
+  });
+
+  test('writing practice: a test survives leaving the page and resumes where it was', async ({ page }) => {
+    await open(page, '/app/writing-practice');
+    await page.locator('#btn-mode-test').click();
+    await page.locator('#test-setup .wp-start-test-btn').click();
+    await page.locator('#test-answer-box').fill('I like reading books.');
+    await page.locator('#test-next-btn').click();
+    await page.locator('#test-rearrange-bank .wp-word-chip').first().waitFor();
+    await page.evaluate(() => window.__go('/shop'));
+    await page.locator('.shop-shell').waitFor();
+    await page.evaluate(() => window.__go('/writing-practice'));
+    await page.locator('#btn-mode-test').click();
+    await expect(page.locator('#test-resume-banner')).toContainText('câu 2/3');
+    await page.locator('#test-resume-banner button', { hasText: 'Tiếp tục thi' }).click();
+    await expect(page.locator('#test-counter')).toHaveText('2 / 3');
+  });
+
+  test('writing practice: the rewrite reminder shows on the page only; the guide and menu know it', async ({ page }) => {
+    const state = makeState();
+    state.pendingRewrites = 1;
+    await open(page, '/app/writing-practice', state);
+    await expect(page.locator('#writing-rewrite-banner')).toContainText('1');
+    expect(await page.evaluate(() => document.title)).toBe('Luyện viết câu giao tiếp – EnglishWithDan');
+    await expect(page.locator('.nav-dd-menu a[href="/app/writing-practice"]').first()).toHaveClass(/active/);
+    await page.evaluate(() => window.__go('/shop'));
+    await page.locator('.shop-shell').waitFor();
+    await expect(page.locator('#writing-rewrite-banner')).toHaveCount(0);
+    await page.evaluate(() => window.__go('/writing-practice'));
+    await page.locator('#writing-rewrite-banner').waitFor();
+    await page.locator('#globalHelpBtn').click();
+    await page.waitForFunction(() => !!window.PageHelp);
+    expect(await page.evaluate(() => window.PageHelp.pageKey())).toBe('writing-practice.html');
+  });
 });
+

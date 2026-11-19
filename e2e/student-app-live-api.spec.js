@@ -105,6 +105,12 @@ test.beforeAll(async () => {
     ],
   });
 
+  await model('WPTopic').create({ key: 'myself', title: 'Bản thân', orderIndex: 1 });
+  await model('WPExercise').create([
+    { topicKey: 'myself', level: 'beginner', type: 'translation', orderIndex: 1, question: 'Tôi là học sinh.', sampleAnswer: 'I am a student.', grammarPoint: 'To be' },
+    { topicKey: 'myself', level: 'beginner', type: 'fill_blank', orderIndex: 2, question: 'I live ___ Hanoi.', blankAnswer: 'in', sampleAnswer: 'I live in Hanoi.', options: ['in', 'on'] },
+  ]);
+
   await new Promise((resolve) => { apiServer = app.listen(0, resolve); });
   apiBase = `http://127.0.0.1:${apiServer.address().port}`;
   staticServer = http.createServer((req, res) => {
@@ -256,6 +262,41 @@ test('advanced sentences: graded by the server, draft kept, attempt in the histo
   await page.locator('.as-hist-entry.clickable').first().click();
   await expect(page.locator('#as-hist-body')).toContainText('Câu phức');
   await expect(page.locator('#as-hist-body .as-review-item.ok')).toHaveCount(2);
+  expect(errors).toEqual([]);
+});
+
+test('writing practice: graded by the server, the session saved and in the history', async ({ page }) => {
+  const errors = await wire(page);
+  await page.goto(`${BASE}/app/writing-practice?level=beginner&topic=myself&type=all`);
+  await page.locator('.wbw-input').pressSequentially('Iamastudent', { delay: 15 });
+  await expect(page.locator('#result-banner')).toHaveText('✅ Chính xác! Rất tốt!');
+  await page.locator('#wp-next-btn').click();
+  await page.locator('#fill-options .wp-option-btn', { hasText: 'on' }).click();
+  await page.locator('#submit-btn').click();
+  await expect(page.locator('#result-banner')).toHaveText('❌ Chưa đúng – xem đáp án gợi ý');
+  await expect(page.locator('#sample-answer-display')).toHaveText('I live in Hanoi.');
+  await page.locator('#wp-next-btn').click();
+  await expect(page.locator('#done-stats')).toContainText('Đúng: 1/2 (50%)');
+  await expect.poll(() => model('WritingPracticeAttempt').countDocuments({ studentId: student._id })).toBe(1);
+  const row = await model('WritingPracticeAttempt').findOne({ studentId: student._id }).lean();
+  expect(row).toMatchObject({ topic: 'myself', level: 'beginner', totalItems: 2, correctItems: 1, xpEarned: 20 });
+  await page.locator('#state-done .wp-more-btn').click();
+  await page.locator('#practice-filters .wp-type-btn[data-type="all"]').waitFor();
+  await page.locator('#state-done .wp-restart-btn').click();
+  await page.locator('#state-exercise .wp-stop-btn').click();
+  await page.locator('#btn-mode-test').click();
+  await page.locator('#test-setup .wp-start-test-btn').click();
+  for (let i = 0; i < 2; i++) {
+    await expect(page.locator('#test-counter')).toHaveText(`${i + 1} / 2`);
+    const fill = page.locator('#test-fill-input');
+    if (await fill.isVisible()) await fill.fill('in'); else await page.locator('#test-answer-box').fill('I am a student.');
+    await page.locator('#test-next-btn').click();
+  }
+  await expect(page.locator('.wp-test-big-score')).toContainText('100%');
+  await page.locator('#test-results .wp-more-btn').click();
+  await page.goto(`${BASE}/app/writing-practice`);
+  await page.locator('.t1-hist-open-btn').click();
+  await expect(page.locator('.t1-hist-row-count')).toHaveText('1/2 câu đúng');
   expect(errors).toEqual([]);
 });
 

@@ -291,9 +291,12 @@
   if (window.AuthService.getRole && window.AuthService.getRole() !== 'student') return;
 
   // Only the essay-writing pages — not every page that merely mentions writing.
+  // The React app (/app/) loads this file on every route; its writing pages
+  // call window.WritingRewriteReminder.check() themselves when they open.
   var WRITING_PAGES = ['writing.html', 'task1-practice.html', 'task2-practice.html', 'writing-practice.html', 'task2-template.html'];
+  var inApp = /^\/app(\/|$)/.test(location.pathname);
   var here = (location.pathname.replace(/\/+$/, '').split('/').pop() || 'index.html').replace(/^[^.]+$/, '$&.html').toLowerCase();
-  if (WRITING_PAGES.indexOf(here) === -1) return;
+  if (!inApp && WRITING_PAGES.indexOf(here) === -1) return;
 
   var API = (window.AuthService && window.AuthService.API) || 'https://englishwithdan.onrender.com/api';
   var _modalShown = false;
@@ -373,10 +376,12 @@
   }
 
   function check() {
+    var from = location.pathname;
     fetch(API + '/writing/pending-rewrites', { headers: h() })
       .then(function (r) { return r.json(); })
       .then(function (d) {
         if (!d || !d.success) return;
+        if (inApp && location.pathname !== from) return; // the app has moved on to another page
         var count = d.count || 0;
         var max = d.max || 2;
         var blocked = typeof d.blocked === 'boolean' ? d.blocked : count >= max;
@@ -389,6 +394,9 @@
 
   // Re-check after a rewrite is submitted on writing.html.
   window.addEventListener('ews:rewrite-saved', check);
+  // The React app's writing pages call it on opening (and remove the banner on leaving)
+  window.WritingRewriteReminder = { check: check };
+  if (inApp) return;
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', check);
   else check();

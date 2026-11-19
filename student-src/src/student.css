@@ -62,6 +62,10 @@ body {
 #root > #app > .as-head.pf-hero:first-child { margin-top: 0; }
 #root > #app:has(> .as-head.pf-hero:first-child) { margin-top: 22px; }
 @media (max-width: 640px) { #root > #app:has(> .as-head.pf-hero:first-child) { margin-top: 14px; } }
+/* Luyện viết câu giao tiếp: its pieces sit straight in #root, and the old
+   page had no dashboard.css either */
+#root > .wp-layout { width: 100%; }
+#root > :is(.wp-mini-stats, .wp-mobile-stats, .wp-layout, .wp-stats-widget, .wp-mob-fab, .wp-mob-sheet, .t1-hist-overlay, .wp-quit-overlay) { line-height: normal; }
 body:has(> #root > .shop-shell) .duel-modal { line-height: normal; }
 [data-theme="dark"] #root > .shop-shell .btn-ghost,
 [data-theme="dark"] body:has(> #root > .shop-shell) .duel-modal .btn-ghost { background: var(--surface); }
